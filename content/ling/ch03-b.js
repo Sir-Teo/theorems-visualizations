@@ -13,7 +13,7 @@ for (const L of Object.values(TYPO)) {
   const ms = L.words.flat(); L.W = L.words.length; L.M = ms.length; L.mw = L.M / L.W;
   const aff = ms.filter((m) => m[2] === 'a'); L.fus = aff.length ? aff.reduce((a, m) => a + m[3], 0) / aff.length : 0; L.nAff = aff.length;
 }
-const TYPO_ZONES = [[1.0, 0.0, 'isolating'], [3.1, 1.0, 'agglutinative'], [1.5, 4.9, 'fusional'], [7.6, 2.2, 'polysynthetic']];
+const TYPO_ZONES = [[0.1, 1.3, 'isolating', 'left'], [3.7, 0.3, 'agglutinative', 'left'], [2.0, 3.9, 'fusional', 'left'], [8.9, 3.0, 'polysynthetic', 'right']];
 
 // ---------- 3.7: two toy models of an affix ----------
 function runModel(rand, kind, N, par, checks) {
@@ -74,12 +74,13 @@ const cvOf = (stem, rule) => {
   return m ? m[0] : stem;
 };
 const IRR_SRC = 'be:was:23970367,do:did:7781726,have:had:7279963,get:got:5363833,go:went:4972372,know:knew:4468046,come:came:3132857,think:thought:2662244,see:saw:2476595,say:said:2424483,take:took:1950902,tell:told:1865223,let:let:1750195,make:made:1739103,give:gave:1216087,mean:meant:1099659,find:found:1017117,leave:left:1009069,feel:felt:717293,win:won:708396,hear:heard:671019,keep:kept:653607,put:put:617889,meet:met:492805,run:ran:451634,bring:brought:448029,understand:understood:407458,lose:lost:386837,hold:held:355042,drink:drank:321677,break:broke:314493,speak:spoke:307905,pay:paid:297857,bite:bit:297805,eat:ate:297443,forget:forgot:294686,shoot:shot:294171,sit:sat:290849,send:sent:281467,sleep:slept:251559,fight:fought:250357,stand:stood:249940,write:wrote:233344,buy:bought:231067,become:became:223810,fall:fell:215116,deal:dealt:209554,hit:hit:209048,hurt:hurt:207314,read:read:200216,drive:drove:194606,set:set:191328,shut:shut:186359,catch:caught:184451,cut:cut:178669,wear:wore:162429,build:built:156611,hang:hung:155753,throw:threw:153793,sell:sold:149646,begin:began:149291,spend:spent:143408,sing:sang:141962,hide:hid:140111,steal:stole:133877,grow:grew:126557,lead:led:122701,blow:blew:120713,fly:flew:118370,wake:woke:108853,teach:taught:105080,ride:rode:103885,choose:chose:90816,rise:rose:74012,draw:drew:69213,lay:laid:66638,tear:tore:61661,feed:fed:60309,quit:quit:57416,cost:cost:54561,strike:struck:54529,dig:dug:47073,shake:shook:45784,swim:swam:37524,spread:spread:33647,split:split:31370,seek:sought:29713,shine:shone:26762,cast:cast:23987,swing:swung:22779,sink:sank:22256,spin:spun:20370,bind:bound:19799,bend:bent:18730,lend:lent:17089,sweep:swept:14563,slide:slid:14531,creep:crept:12875,burst:burst:11950,weep:wept:8543,shrink:shrank:8121';
-const REG_SRC = 'want:2574969,look:1999272,need:1250687,talk:990094,love:988365,call:984393,work:974943,try:775878,help:766833,wait:763684,happen:739643,stop:671969,ask:643692,kill:639929,use:598633,live:566731,start:507753,believe:454507,show:446409,move:440445,listen:426176,stay:425967,miss:416580,remember:384948,play:380480,turn:379636,care:374052,change:320653,open:315455,worry:313002,watch:303191,hope:287486,seem:276144,laugh:267918,guess:266009,close:247611,walk:245535,marry:244382,check:239287,excuse:229690,plan:213468,save:212881,order:200933,pick:193300,answer:179803,wish:171670,follow:170247,rest:168541,trust:163840,pull:149625,pass:142147,dance:140526,drop:138743,cry:136914,wonder:135879,clean:116211,land:115465,kiss:103683,allow:97481,join:93026,count:92290,lock:90259,mark:89045,fix:88791,share:83543,push:82746,visit:82129,reach:78259,shop:77573,jump:74908,cook:70275,smile:64319,fill:63770,add:43128';
+const REG_SRC = 'die:422718,want:2574969,look:1999272,need:1250687,talk:990094,love:988365,call:984393,work:974943,try:775878,help:766833,wait:763684,happen:739643,stop:671969,ask:643692,kill:639929,use:598633,live:566731,start:507753,believe:454507,show:446409,move:440445,listen:426176,stay:425967,miss:416580,remember:384948,play:380480,turn:379636,care:374052,change:320653,open:315455,worry:313002,watch:303191,hope:287486,seem:276144,laugh:267918,guess:266009,close:247611,walk:245535,marry:244382,check:239287,excuse:229690,plan:213468,save:212881,order:200933,pick:193300,answer:179803,wish:171670,follow:170247,rest:168541,trust:163840,pull:149625,pass:142147,dance:140526,drop:138743,cry:136914,wonder:135879,clean:116211,land:115465,kiss:103683,allow:97481,join:93026,count:92290,lock:90259,mark:89045,fix:88791,share:83543,push:82746,visit:82129,reach:78259,shop:77573,jump:74908,cook:70275,smile:64319,fill:63770,add:43128';
 
 // ---------- 3.10: verb counts from a published frequency list (see the caption) ----------
 const IRR = IRR_SRC.split(',').map((x) => { const [w, past, f] = x.split(':'); return { w, past, f: +f, irr: true }; });
 const REG = REG_SRC.split(',').map((x) => { const [w, f] = x.split(':'); return { w, past: w + (w.endsWith('e') ? 'd' : 'ed'), f: +f, irr: false }; });
 const ALLV = [...IRR, ...REG].sort((a, b) => b.f - a.f); ALLV.forEach((d, i) => { d.rank = i + 1; });
+const DISP = ALLV.filter((d) => d.f >= 150000);
 const HALF = ['be', 'go', 'think', 'give', 'break', 'fight', 'sleep', 'dig', 'weep', 'shrink'];
 
 export default {
@@ -127,7 +128,7 @@ export default {
           });
           s.text(`“${L.free}”`, 6, 1.9, { size: 14, color: 'muted', align: 'center' });
           s.text(`${L.M} morphemes in ${L.W} word${L.W > 1 ? 's' : ''}`, 6, 1.1, { size: 13, color: 'ink', align: 'center' });
-          for (const [zx, zy, name] of TYPO_ZONES) sp.text(name, zx, zy + 0.55, { size: 11.5, color: 'faint', align: name === 'polysynthetic' ? 'center' : 'left' });
+          for (const [zx, zy, name, al] of TYPO_ZONES) sp.text(name, zx, zy, { size: 12, color: 'faint', align: al });
           for (const k of keys) {
             const M = TYPO[k], on = k === sel.value;
             if (on) sp.dot(M.mw, M.fus, { r: 13, hollow: true, color: 'gold' });
@@ -136,7 +137,7 @@ export default {
         });
         v.readout(() => {
           const L = TYPO[sel.value];
-          return `**${L.name}**: ${L.M} morphemes in ${L.W} word${L.W > 1 ? 's' : ''}, so **${v.fix(L.mw, 2)}** morphemes per word; ${L.nAff ? `its ${L.nAff} affix${L.nAff > 1 ? 'es' : ''} carry${L.nAff > 1 ? '' : 'ies'} on average **${v.fix(L.fus, 2)}** grammatical features each` : 'it has no affixes in this clause'}.`;
+          return `**${L.name}**: ${L.M} morphemes in ${L.W} word${L.W > 1 ? 's' : ''}, so **${v.fix(L.mw, 2)}** morphemes per word; ${L.nAff ? `its ${L.nAff} affix${L.nAff > 1 ? 'es' : ''} ${L.nAff > 1 ? 'carry' : 'carries'} on average **${v.fix(L.fus, 2)}** grammatical features each` : 'it has no affixes in this clause'}.`;
         });
       },
     },
@@ -145,9 +146,9 @@ export default {
       kind: 'Concept',
       name: 'Productivity',
       credit: 'Hapax-based measure: Baayen, 1989; Baayen & Lieber, 1991',
-      statement: String.raw`An affix is **productive** when speakers readily use it to coin new words and when new formations go unnoticed (*-ness*, as in *awkwardnessy*-type coinages, or the plural *-s*), and **unproductive** when its words are a closed, learned set (*-th* in *warmth*, *depth*, *width*). Baayen's corpus measure counts the **hapax legomena** (words occurring once in a corpus) among the tokens of the affix: $P=n_1/N$, where $n_1$ is the number of hapaxes with the affix and $N$ the total number of its tokens. $P$ estimates the probability that the next token of the affix is a word not seen before.`,
+      statement: String.raw`An affix is **productive** when speakers readily use it to coin new words and when new formations go unnoticed (*-ness*, which attaches to almost any adjective, and the plural *-s*), and **unproductive** when its words are a closed, learned set (*-th* in *warmth*, *depth*, *width*). Baayen's corpus measure counts the **hapax legomena** (words occurring once in a corpus) among the tokens of the affix: $P=n_1/N$, where $n_1$ is the number of hapaxes with the affix and $N$ the total number of its tokens. For sampling from a fixed population $P$ is the Good–Turing estimate of the probability that the next token is a word not seen before; for a process that keeps inventing words it is a conservative estimate of that rate, but it still ranks the processes correctly.`,
       idea: String.raw`A closed list is exhausted quickly: after a while every token is a repeat and the hapaxes vanish ($n_1/N\to0$). An open process keeps minting new words, and in any finite sample some of them occur just once, so $n_1/N$ stays positive. This is the Good–Turing logic of unseen species: the frequency of singletons estimates the probability mass of what has not been seen. The affix does not need many words to be productive, only a steady supply of new ones; and the rare words are exactly where the rule is visible, because they could not have been learned individually (see also the wug test, 10.4).`,
-      caption: String.raw`**This is a model, not corpus data** (I have no corpus counts for *-ness* or *-th* to show). Green: a productive affix, simulated as a process that coins a new word with probability $\theta$ at each token and otherwise repeats an old one with probability proportional to its past use. Red: a closed list of $S$ words with Zipf-distributed frequencies. The left panel shows the number of distinct words, the right panel $P=n_1/N$ (lines) against the rate at which new words really appear over the next stretch of text (dots): they agree, so $P$ is a usable estimate of productivity from the hapaxes alone. Raise the size of the closed list to see how a big fixed set can look productive until the list runs out.`,
+      caption: String.raw`**This is a model, not corpus data** (I have no corpus counts for *-ness* or *-th* to show). Green: a productive affix, simulated as a process that coins a new word with probability $\theta$ at each token and otherwise repeats an old one with probability proportional to its past use. Red: a closed list of $S$ words with Zipf-distributed frequencies. The left panel shows the number of distinct words, the right panel $P=n_1/N$ (lines) against the rate at which new words really appear over the next stretch of text (dots): for the closed list both fall to zero, and for the productive affix both stay positive, with the real rate about twice $P$ in this particular process: the hapax ratio ranks the affixes correctly, which is what it is used for. Raise the size of the closed list to see how a big fixed set can look productive until the list runs out.`,
       deps: ['ling-3.5'],
       refs: ['Fromkin et al. ch. 2'],
       tags: ['productivity', 'corpus'],
@@ -170,7 +171,7 @@ export default {
           let ymax = 0.1;
           for (const A of [cache.open, cache.closed]) for (const d of A) ymax = Math.max(ymax, d.n1 / d.n);
           s1.setView([20, N], [10, N]); s2.setView([20, N], [0, Math.min(1, ymax * 1.15)]);
-          s1.path([[20, 20], [N, N]], { color: 'faint', dash: true, width: 1 }); s1.text('every token new', N / 3, N / 3 * 1.4, { size: 10, color: 'faint', align: 'left' });
+          s1.path([[20, 20], [N, N]], { color: 'faint', dash: true, width: 1 }); s1.text('every token a new word', N * 0.1, N * 0.1 * 2.3, { size: 10, color: 'faint', align: 'left' });
           [[cache.open, 'green'], [cache.closed, 'red']].forEach(([A, c]) => {
             s1.path(A.map((d) => [d.n, d.V]), { color: c, width: 2.5 });
             s2.path(A.map((d) => [d.n, d.n1 / d.n]), { color: c, width: 2.5 });
@@ -264,20 +265,18 @@ export default {
       verify: true,
       scope: String.raw`Orthographic copying, not phonological: Tagalog vowel-initial roots copy the glottal stop plus vowel, and many languages restrict the copy by syllable weight. Indonesian reduplication is not always plural (*anak-anak* can also be an age group, *mata-mata* is “spy”).`,
       viz(v) {
-        const lang = v.select('Language', Object.entries(REDUP).map(([k, L]) => ({ value: k, label: L.name })), 'tl');
-        const stemSel = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'sulat');
+        const lang = v.select('Language', Object.entries(REDUP).map(([k, L]) => ({ value: k, label: L.name })), 'id');
+        const stemTl = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'sulat');
+        const stemId = v.select('Stem', REDUP.id.stems.map((x) => ({ value: x[0], label: x[0] })), 'buku');
         const inp = v.input('stem', 'tapa', { width: 130 });
         const ruleSel = v.select('Rule', [{ value: 'full', label: 'full' }, { value: 'CV', label: 'first CV' }, { value: 'CVC', label: 'first CVC' }], 'CV');
         const s = v.stage({ x: [0, 12], y: [0, 6], axes: false, height: 300, weight: 1.4, minWidth: 340, title: 'copy' });
         const sb = v.stage({ x: [0, 4], y: [0, 300], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 260, xlabel: '', ylabel: 'languages (of 368)', xticks: [[0.7, 'full + partial'], [2, 'full only'], [3.3, 'none']], title: 'reduplication in WALS ch. 27' });
-        let prevLang = null, cur = null;
+        let cur = null;
         v.render(() => {
           const L = REDUP[lang.value];
-          if (prevLang !== lang.value) {
-            prevLang = lang.value;
-            if (lang.value !== 'free') { stemSel.el.style.display = ''; if (!L.stems.some((x) => x[0] === stemSel.value)) stemSel.value = L.stems[0][0]; }
-          }
-          stemSel.el.hidden = lang.value === 'free'; inp.el.hidden = lang.value !== 'free'; ruleSel.el.hidden = lang.value !== 'free';
+          const stemSel = lang.value === 'id' ? stemId : stemTl;
+          stemTl.el.hidden = lang.value !== 'tl'; stemId.el.hidden = lang.value !== 'id'; inp.el.hidden = lang.value !== 'free'; ruleSel.el.hidden = lang.value !== 'free';
           let stem, rule, gloss = '', meaning = '', cat = null;
           if (lang.value === 'free') { stem = inp.value.toLowerCase().replace(/[^a-z]/g, '') || 'tapa'; rule = ruleSel.value; }
           else {
@@ -311,33 +310,33 @@ export default {
       kind: 'Phenomenon',
       name: 'Irregular forms and blocking',
       credit: 'Blocking: Aronoff, 1976; frequency law: Lieberman et al., 2007',
-      statement: String.raw`English has a regular way of making the past tense (add *-ed*) and a few hundred verbs that use a stored irregular form instead (*go* → *went*). Two regularities govern the irregulars. **Blocking**: if a word has a listed form for a grammatical slot, it pre-empts the regular rule for that slot, which is why *went* blocks **goed* (and *glory* blocks **gloriosity*). **Frequency**: irregular forms survive among the most frequent verbs, since only frequently heard forms are learned reliably, and rarer irregulars tend to be regularised over the centuries. Lieberman et al. (2007) found that the half-life of an irregular verb grows with the square root of its frequency, so a verb used 100 times less often is regularised about 10 times faster.`,
+      statement: String.raw`English has a regular way of making the past tense (add *-ed*) and a few hundred verbs that use a stored irregular form instead (*go* → *went*). Two regularities govern the irregulars. **Blocking**: if a word has a listed form for a grammatical slot, it pre-empts the regular rule for that slot, which is why *went* blocks the regular form (*goed*, not English) and *glory* blocks *gloriosity*. **Frequency**: irregular forms survive among the most frequent verbs, since only frequently heard forms are learned reliably, and rarer irregulars tend to be regularised over the centuries. Lieberman et al. (2007) found that the half-life of an irregular verb grows with the square root of its frequency, so a verb used 100 times less often is regularised about 10 times faster.`,
       idea: String.raw`A speaker stores the past forms she has heard often enough and applies the rule to anything else (3.5, 3.7). Retrieval of a stored form is faster than the rule when the form is strong, and a strong enough form blocks the rule; a rare irregular is stored weakly and gets overtaken by the regular output. The verbs that remain irregular are therefore the ones that are strong in memory, which are the frequent ones. Children's *goed* (10.5) is the same competition seen early, when the stored form is not yet strong.`,
-      caption: String.raw`Left: about 175 English verbs ordered by frequency (rank on the horizontal axis), irregular verbs in red and a hand-picked set of common regular verbs in blue; drag the slider to take the $N$ most frequent and read the share of irregulars. Right: relative regularisation time (the square root of the frequency, relative to *shrink*) for ten irregulars. Pick a verb and toggle the stored past form on and off to see blocking: with the form, *go* gives *went*; without it, the regular rule yields **goed*. **Data**: counts are summed over the verb's base, *-s*, *-ing* and past forms in the OpenSubtitles 2018 English word list (FrequencyWords by H. Hermit Dave, CC BY-SA 4.0), so they include noun uses (*work*, *set*) and my list of verbs is not exhaustive: the regular verbs are only the most frequent ones I picked, so read the share as approximate and the trend as the point.`,
+      caption: String.raw`Left: the English verbs of my list that occur at least 150 000 times in the word list, ordered by frequency (rank on the horizontal axis), irregular verbs in red and common regular verbs in blue (below that frequency my list of regular verbs is far from complete, so the tail is not drawn, and ambiguous words such as *like*, *please* and *thank* were left out); drag the slider to take the $N$ most frequent and read the share of irregulars (the head of the list is dominated by them; the tail of my list is not trustworthy). Right: relative regularisation time (the square root of the frequency, relative to *shrink*) for ten irregulars. Pick a verb and toggle the stored past form on and off to see blocking: with the form, *go* gives *went*; without it, the regular rule yields the non-English *goed*. **Data**: counts are summed over the verb's base, *-s*, *-ing* and past forms in the OpenSubtitles 2018 English word list (FrequencyWords by H. Hermit Dave, CC BY-SA 4.0), so they include noun uses (*work*, *set*) and I assembled the list of regular verbs by hand, so read the shares as approximate and the trend as the point.`,
       deps: ['ling-3.7'],
       refs: ['Fromkin et al. ch. 2'],
       tags: ['irregular verbs', 'blocking', 'frequency'],
       verify: true,
       scope: String.raw`The square-root law is an empirical fit by Lieberman et al. for 177 Old English irregular verbs (I quote it from the paper's summary and press reports; 145 remained irregular in Middle English and 98 still are, reported secondhand); the relative values drawn here apply it to counts from a different corpus (subtitles) and are only a scaling illustration.`,
       viz(v) {
-        const N = v.slider('the N most frequent verbs', 5, ALLV.length, 40, { int: true });
+        const N = v.slider('the N most frequent verbs', 5, DISP.length, 30, { int: true });
         const pick = v.select('Verb', HALF.map((w) => ({ value: w, label: w })), 'go');
         const stored = v.toggle('stored past form', true);
-        const s = v.stage({ x: [1, ALLV.length], y: [3.7, 7.5], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 320, xlabel: 'frequency rank among these verbs', ylabel: 'occurrences (log₁₀)', yticks: [[4, '10⁴'], [5, '10⁵'], [6, '10⁶'], [7, '10⁷']], title: 'which verbs are irregular?' });
+        const s = v.stage({ x: [1, DISP.length + 1], y: [5, 7.5], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 320, xlabel: 'frequency rank among these verbs', ylabel: 'occurrences (log₁₀)', yticks: [[5, '10⁵'], [6, '10⁶'], [7, '10⁷']], title: 'which verbs are irregular?' });
         const sb = v.stage({ x: [0, HALF.length], y: [0, 60], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: '', ylabel: 'time to regularise, relative to shrink', title: 'rarer irregulars regularise sooner (model)', xticks: HALF.map((w, i) => [i + 0.5, w]) });
         v.legend([['red', 'irregular'], ['accent', 'regular']]);
         const fmin = ALLV.find((d) => d.w === 'shrink').f;
         v.render(() => {
           const n = N.value;
-          s.rect(1, 3.7, n + 0.5, 7.5, { fill: 'gold', fillAlpha: 0.1, color: 'gold', width: 1 }); s.vline(n + 0.5, { color: 'gold', width: 2 });
-          for (const d of ALLV) { const y = Math.log10(d.f), sel = d.w === pick.value; s.dot(d.rank, y, { r: sel ? 6.5 : 4, color: d.irr ? 'red' : 'accent', fill: d.irr ? 'red' : 'accent', ...(sel ? { label: d.w, labelPos: 'ne' } : {}) }); }
+          s.rect(1, 5, n + 0.5, 7.5, { fill: 'gold', fillAlpha: 0.1, color: 'gold', width: 1 }); s.vline(n + 0.5, { color: 'gold', width: 2 });
+          for (const d of DISP) { const y = Math.log10(d.f), sel = d.w === pick.value; s.dot(d.rank, y, { r: sel ? 6.5 : 4, color: d.irr ? 'red' : 'accent', fill: d.irr ? 'red' : 'accent', ...(sel ? { label: d.w, labelPos: 'ne' } : {}) }); }
           HALF.forEach((w, i) => { const d = ALLV.find((q) => q.w === w), r = Math.sqrt(d.f / fmin), sel = w === pick.value; sb.rect(i + 0.12, 0, i + 0.88, r, { fill: sel ? 'gold' : 'red', fillAlpha: sel ? 0.5 : 0.28, color: sel ? 'gold' : 'red', width: 1.6 }); sb.text(r >= 10 ? String(Math.round(r)) : v.fix(r, 1), i + 0.5, r + 3, { size: 11, color: 'ink', align: 'center' }); });
         });
         v.readout(() => {
-          const n = N.value, top = ALLV.slice(0, n), ir = top.filter((d) => d.irr).length, rest = ALLV.slice(n), ir2 = rest.filter((d) => d.irr).length;
+          const n = N.value, top = DISP.slice(0, n), ir = top.filter((d) => d.irr).length;
           const d = ALLV.find((q) => q.w === pick.value), r = Math.sqrt(d.f / fmin);
-          const form = stored.value ? `${d.w} + past → **${d.past}** (the stored form blocks the rule)` : `${d.w} + past → **${d.w}${d.w.endsWith('e') ? 'd' : 'ed'}*** (no stored form: the regular rule applies)`;
-          return `Among the ${n} most frequent verbs in this list, **${ir}** (${Math.round((100 * ir) / n)}%) are irregular; among the other ${rest.length}, ${ir2} (${rest.length ? Math.round((100 * ir2) / rest.length) : 0}%).\n${form.replace('***', '**')}. Occurrences of ${d.w}: ${d.f.toLocaleString('en')}; a square-root law puts its regularisation time at about **${v.fix(r, 0)}×** that of *shrink*.`;
+          const form = stored.value ? `${d.w} + past → **${d.past}** (the stored form blocks the rule)` : `${d.w} + past → **${d.w}${d.w.endsWith('e') ? 'd' : 'ed'}** (no stored form, so the regular rule applies; not English)`;
+          return `Among the ${n} most frequent verbs in this list, **${ir}** (${Math.round((100 * ir) / n)}%) are irregular (an upper estimate: regular verbs missing from my list would lower it); in the first ten it is ${DISP.slice(0, 10).filter((d) => d.irr).length} of 10.\n${form}. Occurrences of ${d.w}: ${d.f.toLocaleString('en')}; a square-root law puts its regularisation time at about **${v.fix(r, 0)}×** that of *shrink*.`;
         });
       },
     },

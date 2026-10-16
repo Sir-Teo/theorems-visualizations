@@ -46,7 +46,7 @@ where $m$ is the mass of the reaction coordinate. The true rate differs from thi
             langevinStep(W, st.x, st.p, g.value, dt, st.rnd);
             for (let i = 0; i < N; i++) {
               const a = st.prev[i], b = st.x[i];
-              if ((a - xd) * (b - xd) < 0) { counts.cross += 0.5; st.flash.push({ x: xd, y: W.V(b) + 0.5 * st.p[i] ** 2, age: 0 }); }
+              if ((a - xd) * (b - xd) < 0) { counts.cross += 0.5; if (st.flash.length < 10) st.flash.push({ x: xd, y: W.V(b) + 0.5 * st.p[i] ** 2, age: 0 }); }
               if (Math.abs(b) > 0.6) { const sd = b < 0 ? -1 : 1; if (sd !== st.side[i]) { counts.trans += 0.5; st.side[i] = sd; } }
             }
           }
@@ -67,7 +67,7 @@ where $m$ is the mass of the reaction coordinate. The true rate differs from thi
           if (counts.cross > 0) B.dot(h.x, clamp(rc, pr(0) / 2.2, pr(1) * 2), { r: 6, color: 'gold' });
           if (counts.trans > 0) B.hline(clamp(rt, pr(0) / 2.2, pr(1) * 2), { color: 'green', width: 2 });
           info = { rc, rt, pred: pr(h.x), n: counts.cross, nt: counts.trans, kappa: counts.cross > 0 ? counts.trans / counts.cross : NaN, V: W.V(h.x) };
-        }, { period: 200, still: 60 });
+        }, { period: 400, still: 300 });
         v.legend([['accent', 'last in left well', { dot: true }], ['purple', 'last in right well', { dot: true }], ['orange', 'dividing surface', { dash: true }], ['gold', 'crossing', { dot: true }], ['green', 'measured transition rate']]);
         v.readout(() => `surface at $x_d=${v.fix(h.x, 2)}$ ($V=${v.fix(info.V, 2)}\\,k_BT$): Boltzmann flux $\\langle v_+\\rangle\\rho(x_d)=${v.sci(info.pred, 3)}$, measured crossings $${v.sci(info.rc || 0, 3)}$ per particle per unit time\nwell-to-well transitions $${v.sci(info.rt || 0, 3)}$ → each reaction event was crossed ${isFinite(info.kappa) ? v.fix(1 / info.kappa, 1) : '–'} times; measured $\\kappa=${isFinite(info.kappa) ? v.fix(Math.min(1, info.kappa), 2) : '–'}$  (${v.fix(info.n, 0)} crossings, ${v.fix(info.nt, 0)} transitions)`);
       },

@@ -48,8 +48,8 @@ const COMPOUNDS = [
 // ---------- 3.5 ----------
 const PLURALS = [
   ['cat', 'kat', ''], ['dog', 'dog', ''], ['bus', 'bus', ''], ['church', 'cherch', ''], ['judge', 'juj', ''], ['dish', 'dish', ''], ['moth', 'mawth', ''], ['toe', 'toh', ''],
-  ['cab', 'kab', ''], ['gap', 'gap', ''], ['cliff', 'klif', ''], ['tree', 'tree', ''], ['rose', 'rohz', ''], ['face', 'fays', ''], ['lip', 'lip', ''], ['bell', 'bel', ''], ['ring', 'ring', ''], ['book', 'buk', ''], ['egg', 'eg', ''], ['pie', 'pie', ''],
-  ['ox', 'oks', 'oxen'], ['child', 'chield', 'children'], ['mouse', 'mows', 'mice'], ['foot', 'fuut', 'feet'],
+  ['cab', 'kab', ''], ['gap', 'gap', ''], ['cliff', 'klif', ''], ['tree', 'tree', ''], ['rose', 'rohz', ''], ['face', 'fays', ''], ['lip', 'lip', ''], ['bell', 'bel', ''], ['ring', 'ring', ''], ['book', 'book', ''], ['egg', 'eg', ''], ['pie', 'pie', ''],
+  ['ox', 'oks', 'oxen'], ['child', 'chield', 'children'], ['mouse', 'mows', 'mice'], ['foot', 'foot', 'feet'],
 ];
 const PL_RULES = {
   z: [{ name: 'insert ɪ', rule: { A: '∅', B: 'ɪ', L: ['[+strid]'], R: ['z', '#'] } }, { name: 'devoice', rule: { A: 'z', B: '[-voi]', L: ['[-voi]'], R: ['#'] } }],
@@ -123,7 +123,7 @@ export default {
       name: 'Inflection versus derivation',
       statement: String.raw`Affixes come in two kinds. **Inflection** marks the grammatical form of a word that the syntax requires (plural, tense, agreement, comparison) and leaves it the same lexeme; **derivation** builds a new lexeme, usually with a new category or meaning (*teach* → *teacher*, *kind* → *kindness*). The distinction is made by a bundle of tests rather than one: derivation tends to change the category, give less predictable meanings, apply to only some bases, sit closer to the root, and be optional, while inflection is outermost, regular, general and forced by the grammar. Several affixes are borderline.`,
       idea: String.raw`No single criterion is decisive (*un-* derives but keeps the category, *-ly* changes the category but is almost fully regular), so the line is a cluster of correlated properties, which is why textbooks insist on several tests. Their origin is the word-formation architecture: derivation builds the stems that the lexicon stores, inflection then adds the grammar the sentence needs. That order is the reason inflection sits outside derivation (*re-start-ed*, never *start-ed-re*) and why it applies across a whole class of stems (3.7).`,
-      caption: String.raw`The table gives each affix's answers to five tests (does it change the category? is the meaning not fully predictable? does it come outside all derivation? does it apply to the whole class of stems? is it forced by the grammar?; blue = the answer typical of inflection, orange = typical of derivation). **Click a row** to put it in your bin: first click inflection, second derivation, third clear. Rows where your sort disagrees with the majority of the tests turn red and the readout explains the case. Three or more inflection-like answers count as inflection; the borderline rows (*-er* comparative, *-est*, *-ly*) show where a hard line is artificial. The yes/no answers are the usual textbook judgements, entered by hand.`,
+      caption: String.raw`The table gives each affix's answers to five tests (new category: does it change the category? new meaning: is the meaning not fully predictable? outermost: does it come outside all derivation? whole class: does it apply to every stem of the class? forced: does the grammar demand it?; blue = the answer typical of inflection, orange = typical of derivation). **Click a row** to put it in your bin: first click inflection, second derivation, third clear. Rows where your sort disagrees with the majority of the tests turn red and the readout explains the case. Three or more inflection-like answers count as inflection; the borderline rows (*-er* comparative, *-est*, *-ly*) show where a hard line is artificial. The yes/no answers are the usual textbook judgements, entered by hand.`,
       deps: ['ling-3.1'],
       refs: ['Fromkin et al. ch. 2'],
       tags: ['inflection', 'derivation'],
@@ -132,7 +132,7 @@ export default {
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 520, full: true });
         const choice = AFFIXES.map(() => 0);
         let last = 0;
-        const T = v.table(s, { rows: AFFIXES.length, cols: 7, square: false, cellAspect: 2.4, maxCell: 32, size: 12.5, labelSize: 11.5, colLabels: ['category change?', 'unpredictable?', 'outermost?', 'whole class?', 'forced?', 'your sort', 'tests say'], rowLabels: AFFIXES.map((r) => `${r.a}  ${r.ex}`) });
+        const T = v.table(s, { rows: AFFIXES.length, cols: 7, square: false, cellAspect: 2.4, maxCell: 32, size: 12.5, labelSize: 11.5, colLabels: ['new category?', 'new meaning?', 'outermost?', 'whole class?', 'forced?', 'your sort', 'tests say'], rowLabels: AFFIXES.map((r) => `${r.a}  ${r.ex}`) });
         s.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0) { choice[c.i] = (choice[c.i] + 1) % 3; last = c.i; } });
         v.render(() => {
           T.draw({
@@ -212,9 +212,9 @@ export default {
           s.text(real ? `“${real[1]}”` : 'not a standard English word', 5, 3.9, { size: 12.5, color: real ? 'muted' : 'red', align: 'center', baseline: 'top' });
           cur = { c, L, R, real, head };
           const drawWord = (txt, y, label, col) => {
-            s2.text(label, 0.3, y + 0.75, { size: 11.5, color: 'muted', align: 'left' });
-            const parts = txt.split(/[·\s]/).filter(Boolean); let x = 0.5; const up = s2.width / 10;
-            parts.forEach((p) => { const big = p === p.toUpperCase() && /[A-Z]/.test(p), sz = big ? 26 : 19, w = (0.58 * sz * p.length) / up; s2.text(p, x, y, { size: sz, color: big ? col : 'ink', align: 'left', baseline: 'middle' }); if (big) s2.text('▲', x + w / 2, y - 0.75, { size: 11, color: col, align: 'center' }); x += w + 0.15; });
+            s2.text(label, 0.3, y + 1.15, { size: 11.5, color: 'muted', align: 'left' });
+            const parts = txt.split(/([·\s])/).filter(Boolean); let x = 0.5; const up = s2.width / 10;
+            parts.forEach((p) => { if (p === '·') return; if (p === ' ') { x += 0.3; return; } const big = p === p.toUpperCase() && /[A-Z]/.test(p), sz = big ? 26 : 19, w = ((big ? 0.72 : 0.52) * sz * p.length) / up; s2.text(p, x, y, { size: sz, color: big ? col : 'ink', align: 'left', baseline: 'middle' }); if (big) s2.text('▲', x + w / 2, y + 0.5, { size: 11, color: col, align: 'center' }); x += w; });
           };
           if (real) drawWord(real[2], 3.4, 'compound (one word)', 'accent');
           else s2.text('(no real compound in this order)', 0.5, 3.4, { size: 13, color: 'red', align: 'left' });
@@ -287,7 +287,8 @@ export default {
         v.readout(() => {
           if (!info) return 'Type a noun in the respelling.';
           const { surf, last, f, irr, st } = info;
-          return `**/${st.join('')}/ + plural → [${irr ? irr[2] : st.join('') + surf}]**. Last segment /${last}/: [${f.voi === '+' ? '+' : '−'}voice], [${f.strid === '+' ? '+' : '−'}strident], so the allomorph is **[${surf}]**.\nWork for the three underlying forms (words changed by rule 1 / rule 2, of 20): /z/ ${work.z.join(' / ')}; /s/ ${work.s.join(' / ')}; /ɪz/ ${work['ɪz'].join(' / ')}.`;
+          if (irr) return `**/${st.join('')}/ + plural → ${irr[2]}**: a listed irregular form, so the regular rule (which would give [${st.join('') + surf}]) is blocked (see 3.10).`;
+          return `**/${st.join('')}/ + plural → [${st.join('') + surf}]**. Last segment /${last}/: [${f.voi === '+' ? '+' : '−'}voice], [${f.strid === '+' ? '+' : '−'}strident], so the allomorph is **[${surf}]**.\nWork for the three underlying forms (words changed by rule 1 / rule 2, of 20): /z/ ${work.z.join(' / ')}; /s/ ${work.s.join(' / ')}; /ɪz/ ${work['ɪz'].join(' / ')}.`;
         });
       },
     },

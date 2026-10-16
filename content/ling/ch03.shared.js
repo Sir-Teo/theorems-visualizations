@@ -90,7 +90,7 @@ export function drawTree(s, t, o = {}) {
   const walk = (n) => {
     if (n.k && n.k.length) {
       s.text(n.c || '', n.x, n.y, { size: 14, color: 'ink', align: 'center', baseline: 'middle' });
-      if (n.note) s.text(n.note, n.x + 0.3, n.y, { size: 11.5, color: n.nc || 'muted', align: 'left', baseline: 'middle' });
+      if (n.note) s.text(n.note, n.x + 0.5, n.y, { size: 11.5, color: n.nc || 'muted', align: 'left', baseline: 'middle' });
       n.k.forEach(walk);
     } else {
       const w = Math.max(0.5, (o.pill || 0.2) * n.l.length + 0.35), col = n.col || 'accent';

@@ -24,8 +24,8 @@ so a more exothermic member of the family has a lower barrier. The slope $\alpha
       viz(v) {
         const kR = 200;
         const nS = v.slider('members of the family $n$', 3, 9, 7, { int: true });
-        const cen = v.slider('centre $\\Delta E$ (kJ/mol)', -250, 150, -20, { step: 1 });
-        const spr = v.slider('spread of $\\Delta E$ (kJ/mol)', 10, 260, 90, { step: 1 });
+        const cen = v.slider('centre $\\Delta E$ (kJ/mol)', -250, 150, 0, { step: 1 });
+        const spr = v.slider('spread of $\\Delta E$ (kJ/mol)', 10, 260, 140, { step: 1 });
         const rat = v.slider('stiffness ratio $k_{\\rm P}/k_{\\rm R}$', 0.5, 2, 1, { step: 0.05 });
         const cross = (kP, dE) => {
           const a = kR - kP, b = 2 * kP, c = -kP - 2 * dE;
@@ -82,7 +82,7 @@ where the **substituent constant** $\sigma$ depends only on the substituent and 
         const r = v.rng(1937), nz = SUB.map(() => [r.normal(), r.normal()]);
         const A = v.stage({ x: [-0.8, 0.9], y: [-2.4, 2.4], axes: true, height: 350, xlabel: 'σ', ylabel: 'log (k / k₀)', title: 'Hammett plot', weight: 1.1 });
         const B = v.stage({ x: [-0.5, 11.5], y: [-15, 15], axes: 'box', gutter: true, height: 350, xlabel: 'substituent (sorted by σ)', ylabel: 'ΔΔG‡ (kJ/mol)', title: 'change of barrier at 298 K', weight: 1 });
-        const hRho = A.handle(0.7, 0, { color: 'orange', label: 'ρ (yours)', constrain: (x, y) => [0.7, clamp(y, -2.6, 2.6)] });
+        const hRho = A.handle(0.55, 0.55, { color: 'orange', label: 'ρ', constrain: (x, y) => [0.55, clamp(y, -2.2, 2.2)] });
         let sel = 'NO₂';
         let data = [];
         const build = () => {
@@ -98,12 +98,13 @@ where the **substituent constant** $\sigma$ depends only on the substituent and 
           build();
           const rho = RX[rx.value][1];
           const fit = v.M.linreg(data.map((d) => d.sg), data.map((d) => d.y));
-          const rh = hRho.y / 0.7;
+          const rh = hRho.y / 0.55;
           A.hline(0, { color: 'faint' });
           A.line(-0.8, fit.slope * -0.8 + fit.intercept, 0.9, fit.slope * 0.9 + fit.intercept, { color: 'green', width: 2.2, dash: [7, 4] });
           A.line(-0.8, -0.8 * rh, 0.9, 0.9 * rh, { color: 'orange', width: 2 });
           const lab = pos.value !== 'pm';
-          data.forEach((d) => A.dot(d.sg, d.y, { r: d.key === sel ? 7 : 5, color: d.key === sel ? 'gold' : d.p === 'p' ? 'accent' : 'purple', label: lab || d.key === sel ? d.n : undefined, labelPos: 'n' }));
+          const byS = data.slice().sort((a, b) => a.sg - b.sg);
+          data.forEach((d) => A.dot(d.sg, d.y, { r: d.key === sel ? 7 : 5, color: d.key === sel ? 'gold' : d.p === 'p' ? 'accent' : 'purple', label: lab || d.key === sel ? d.n : undefined, labelPos: byS.indexOf(d) % 2 ? 'se' : 'nw' }));
           const sorted = data.slice().sort((a, b) => a.sg - b.sg);
           const RT = RJ * 298.15 / 1000;
           const vals = sorted.map((d) => -Math.LN10 * RT * fit.slope * d.sg);
@@ -124,12 +125,12 @@ where the **substituent constant** $\sigma$ depends only on the substituent and 
       statement: String.raw`Let two interconverting species A and B (for example conformers) each react irreversibly to its own product, $\mathrm A\xrightarrow{k_{\rm A}}\mathrm P_{\rm A}$ and $\mathrm B\xrightarrow{k_{\rm B}}\mathrm P_{\rm B}$, and let A and B interconvert much faster than either reacts. Then A and B stay in equilibrium throughout, and the final product ratio is set by the **difference of the transition-state free energies**, not by the populations of A and B:
 $$\frac{[\mathrm P_{\rm B}]}{[\mathrm P_{\rm A}]}\;=\;\frac{K\,k_{\rm B}}{k_{\rm A}}\;=\;\exp\!\Big[-\frac{G^\ddagger_{\rm B}-G^\ddagger_{\rm A}}{RT}\Big],\qquad K=\frac{[\mathrm B]}{[\mathrm A]}=e^{-(G_{\rm B}-G_{\rm A})/RT},$$
 with both transition-state energies measured from the same reference. If interconversion is slower than the reactions, the principle fails and the ratio reflects the initial populations.`,
-      idea: String.raw`With fast interconversion the pool is always at its equilibrium composition, $[\mathrm B]/[\mathrm A]=K$, so the rates of formation of the products are $k_{\rm A}[\mathrm A]$ and $k_{\rm B}K[\mathrm A]$ and their ratio is $Kk_{\rm B}/k_{\rm A}$. By the Eyring equation (3.2) $K k_{\rm B}/k_{\rm A}$ is the ratio of $e^{-G^\ddagger/RT}$ measured from a common zero, so the stabilities of A and B drop out: a lower-energy transition state gives the major product even if it arises from a minor conformer. The principle is named for Curtin (1954) and for Hammett, who is credited for his insight into the kinetics, and the underlying kinetics is the Winstein–Holness equation.`,
+      idea: String.raw`With fast interconversion the pool is always at its equilibrium composition, $[\mathrm B]/[\mathrm A]=K$, so the rates of formation of the products are $k_{\rm A}[\mathrm A]$ and $k_{\rm B}K[\mathrm A]$ and their ratio is $Kk_{\rm B}/k_{\rm A}$. By the Eyring equation (3.2) $K k_{\rm B}/k_{\rm A}$ is the ratio of $e^{-G^\ddagger/RT}$ measured from a common zero, so the stabilities of A and B drop out: a lower-energy transition state gives the major product even if it arises from a minor conformer. The principle is named for D. Y. Curtin and L. P. Hammett (a later review by Seeman, 1983, is the standard account) and the underlying kinetics is the Winstein–Holness equation.`,
       caption: String.raw`Left: the free-energy profile, with draggable ledges for $B$ and for the two transition states (the interconversion barrier is a slider). Right: the final product ratio $[\mathrm P_{\rm B}]/[\mathrm P_{\rm A}]$ against the interconversion barrier, computed exactly from the linear kinetic scheme, for a start at equilibrium (blue) and for a start with pure A (orange). Left of the knee the ratio sits on the Curtin–Hammett line (green); right of it the products simply record the initial populations (grey) and the principle fails.`,
       deps: ['kin-3.2', 'kin-1.9'],
       refs: ['Houston'],
       tags: ['selectivity', 'conformers'],
-      credit: 'Curtin, 1954 (named with Hammett; Seeman, Chem. Rev. 1983)',
+      credit: 'Curtin and Hammett, mid-20th century (name from later reviews, e.g. Seeman, 1983; date of the original statement not confirmed)',
       verify: true,
       scope: String.raw`Two species interconverting by a first-order process, each reacting irreversibly by a first-order step; the free energies are illustrative and the temperature is a parameter.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Curtin%E2%80%93Hammett_principle' },
@@ -137,11 +138,11 @@ with both transition-state energies measured from the same reference. If interco
         const Tm = v.slider('$T$ (K)', 250, 400, 298, { step: 1 });
         const gInt = v.slider('interconversion barrier (kJ/mol)', 30, 140, 50, { step: 1 });
         const start = v.select('start', [{ value: 'eq', label: 'at equilibrium' }, { value: 'A', label: 'pure A' }], 'eq');
-        const A = v.stage({ x: [-2.6, 7.2], y: [-50, 120], axes: 'box', gutter: true, height: 350, xlabel: '', ylabel: 'G (kJ/mol)', title: 'free-energy profile', weight: 1.15 });
-        const B = v.stage({ x: [30, 140], y: [1e-4, 1e3], ylog: true, axes: 'box', gutter: true, height: 350, xlabel: 'interconversion barrier (kJ/mol)', ylabel: '[P_B] / [P_A]', title: 'final product ratio', weight: 1 });
-        const hB = A.handle(4, 8, { color: 'orange', label: 'B', constrain: (x, y) => [4, clamp(y, -15, 40)] });
-        const hA = A.handle(-0.9, 76, { color: 'accent', label: 'TS to P_A', constrain: (x, y) => [-0.9, clamp(y, 50, 105)] });
-        const hT = A.handle(5.1, 82, { color: 'purple', label: 'TS to P_B', constrain: (x, y) => [5.1, clamp(y, 50, 105)] });
+        const A = v.stage({ x: [-3.2, 8.2], y: [-50, 120], axes: 'box', gutter: true, height: 350, ylabel: 'G (kJ/mol)', title: 'free-energy profile', weight: 1.15 });
+        const B = v.stage({ x: [30, 140], y: [1e-4, 1e3], ylog: true, axes: 'box', gutter: true, height: 350, xlabel: 'interconversion barrier (kJ/mol)', ylabel: 'P(B) / P(A)', title: 'final product ratio', weight: 1 });
+        const hB = A.handle(4.2, 8, { color: 'orange', label: 'B', constrain: (x, y) => [4.2, clamp(y, -15, 40)] });
+        const hA = A.handle(-1, 76, { color: 'accent', label: 'TS A', constrain: (x, y) => [-1, clamp(y, 50, 105)] });
+        const hT = A.handle(5.6, 82, { color: 'purple', label: 'TS B', constrain: (x, y) => [5.6, clamp(y, 50, 105)] });
         const gPA = -35, gPB = -35;
         const ratio = (T, gB, gA, gTB, gI, st) => {
           const RT = RJ * T / 1000, f = (G) => kTh(T) * Math.exp(-G / RT);
@@ -153,16 +154,16 @@ with both transition-state energies measured from the same reference. If interco
           const IA = -(d * x0[0] - b * x0[1]) / det, IB = -(-c * x0[0] + a * x0[1]) / det;
           return { r: (kB * IB) / (kA * IA), kA, kB, kAB, kBA, K, GI };
         };
-        const ledge = (x, y, col, lab, w = 0.55) => { A.line(x - w, y, x + w, y, { color: col, width: 3.4 }); if (lab) A.text(lab, x, y - 9, { size: 11.5, color: 'muted', align: 'center' }); };
-        const link = (x1, y1, x2, y2, w = 0.55) => A.curve((x) => [x, y1 + (y2 - y1) * (1 - Math.cos(Math.PI * (x - (x1 + w)) / ((x2 - w) - (x1 + w)))) / 2], x1 + w, x2 - w, { n: 30, color: 'ink', width: 1.6, alpha: 0.7 });
+        const ledge = (x, y, col, lab, w = 0.35) => { A.line(x - w, y, x + w, y, { color: col, width: 3.4 }); if (lab) A.tex(lab, x, y - 11, { size: 13, color: 'muted', align: 'center' }); };
+        const link = (x1, y1, x2, y2, w = 0.35) => A.curve((x) => [x, y1 + (y2 - y1) * (1 - Math.cos(Math.PI * (x - (x1 + w)) / ((x2 - w) - (x1 + w)))) / 2], x1 + w, x2 - w, { n: 30, color: 'ink', width: 1.6, alpha: 0.7 });
         let info = {};
         v.render(() => {
           const gB = hB.y, gA = hA.y, gTB = hT.y, T = Tm.value, st = start.value;
           const RT = RJ * T / 1000, GI = Math.max(gInt.value, Math.max(0, gB) + 2);
-          const xs = [-1.8, -0.9, 1, 2.5, 4, 5.1, 6.2], ys = [gPA, gA, 0, GI, gB, gTB, gPB];
+          const xs = [-2.2, -1, 1, 2.6, 4.2, 5.6, 7], ys = [gPA, gA, 0, GI, gB, gTB, gPB];
           for (let i = 0; i < 6; i++) link(xs[i], ys[i], xs[i + 1], ys[i + 1]);
-          ledge(-1.8, gPA, 'ink', 'P_A'); ledge(-0.9, gA, 'accent'); ledge(1, 0, 'ink', 'A'); ledge(2.5, GI, 'ink'); ledge(4, gB, 'orange'); ledge(5.1, gTB, 'purple'); ledge(6.2, gPB, 'ink', 'P_B');
-          A.text('interconversion', 2.5, GI + 7, { size: 11, color: 'muted', align: 'center' });
+          ledge(-2.2, gPA, 'ink', '\\mathrm P_A'); ledge(-1, gA, 'accent'); ledge(1, 0, 'ink', '\\mathrm A'); ledge(2.6, GI, 'ink'); ledge(4.2, gB, 'orange'); ledge(5.6, gTB, 'purple'); ledge(7, gPB, 'ink', '\\mathrm P_B');
+          A.text('interconversion', 2.6, GI + 7, { size: 11, color: 'muted', align: 'center' });
           const here = ratio(T, gB, gA, gTB, GI, st), CH = Math.exp(-(gTB - gA) / RT), K = Math.exp(-gB / RT);
           const f = (a) => Math.max(1e-4, Math.min(1e3, a));
           const pts1 = [], pts2 = []; for (let g = 30; g <= 140; g += 2) { pts1.push([g, f(ratio(T, gB, gA, gTB, g, 'eq').r)]); pts2.push([g, f(ratio(T, gB, gA, gTB, g, 'A').r)]); }
@@ -200,7 +201,10 @@ with both transition-state energies measured from the same reference. If interco
           const kf1 = f(g1.value), kr1 = f(g1.value - p1.value), kf2 = f(g2.value), kr2 = f(g2.value - p2.value);
           const M = [[-(kf1 + kf2), kr1, kr2], [kf1, -kr1, 0], [kf2, 0, -kr2]];
           const E = expmSmall(M, t);
-          return { y: [E[0][0], E[1][0], E[2][0]], kf1, kr1, kf2, kr2 };
+          let y = [E[0][0], E[1][0], E[2][0]];
+          if (!y.every(isFinite) || Math.abs(y[0] + y[1] + y[2] - 1) > 0.05) { const K1 = kf1 / kr1, K2 = kf2 / kr2, Z = 1 + K1 + K2; y = [1 / Z, K1 / Z, K2 / Z]; }
+          const sm = y[0] + y[1] + y[2]; y = y.map((q) => Math.max(0, q / sm));
+          return { y, kf1, kr1, kf2, kr2 };
         };
         const key = () => [g1.value, g2.value, p1.value, p2.value].join(',');
         const led = (x, y, col, lab) => { A.line(x - 0.4, y, x + 0.4, y, { color: col, width: 3.4 }); if (lab) A.text(lab, x, y - 10, { size: 11.5, color: 'muted', align: 'center' }); };
@@ -224,7 +228,7 @@ with both transition-state energies measured from the same reference. If interco
           info = { T: T0, lt, y: now.y, kin: now.kf2 / now.kf1, th: Math.exp(-(p2.value - p1.value) / RT), kf1: now.kf1, kr1: now.kr1, kf2: now.kf2, kr2: now.kr2 };
         });
         v.legend([['faint', 'A'], ['accent', 'P₁ (kinetic product)'], ['red', 'P₂ (thermodynamic product)']]);
-        v.readout(() => `at $T=${v.fix(info.T, 0)}$ K, $t=10^{${v.fix(info.lt, 1)}}$ s: $[\\mathrm A]=${v.fix(info.y[0], 3)}$, $[\\mathrm P_1]=${v.fix(info.y[1], 3)}$, $[\\mathrm P_2]=${v.fix(info.y[2], 3)}$ → $\\mathrm P_2/\\mathrm P_1=${v.sci(info.y[2] / Math.max(info.y[1], 1e-300), 2)}$\nkinetic limit $k_{f2}/k_{f1}=${v.sci(info.kin, 2)}$ · thermodynamic limit $e^{-\\Delta G^\\circ/RT}=${v.sci(info.th, 2)}$ · $k_{r1}=${v.sci(info.kr1, 2)}\\ \\mathrm{s^{-1}}$ (so equilibrium needs $t\\gtrsim${v.sci(1 / (info.kr1 + info.kr2), 1)}\\ \\mathrm s$)`);
+        v.readout(() => `at $T=${v.fix(info.T, 0)}$ K, $t=10^{${v.fix(info.lt, 1)}}$ s: $[\\mathrm A]=${v.fix(info.y[0], 3)}$, $[\\mathrm P_1]=${v.fix(info.y[1], 3)}$, $[\\mathrm P_2]=${v.fix(info.y[2], 3)}$ → $\\mathrm P_2/\\mathrm P_1=${v.sci(info.y[2] / Math.max(info.y[1], 1e-300), 2)}$\nkinetic limit $k_{f2}/k_{f1}=${v.sci(info.kin, 2)}$ · thermodynamic limit $e^{-\\Delta G^\\circ/RT}=${v.sci(info.th, 2)}$ · rough time to reach equilibrium (fast pre-equilibrium of A and P₁, then the slow step) $(1+k_{f1}/k_{r1})/k_{f2}\\approx${v.sci((1 + info.kf1 / info.kr1) / info.kf2, 1)}$ s`);
       },
     },
     // ------------------------------------------------------------------ 3.11
@@ -260,7 +264,7 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
         v.onCleanup(() => { token++; if (timer) clearTimeout(timer); });
         v.button('Resample', () => { seed++; run(false); });
         const A = v.stage({ x: [0, 400], y: [-2.1, 2.1], axes: 'box', gutter: true, height: 230, xlabel: 'time (reduced units)', ylabel: 'x', title: 'one trajectory at your friction', full: true });
-        const B = v.stage({ x: [0.01, 30], y: [0.02, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'friction γ (reduced units)', ylabel: 'k / k_TST', title: 'Kramers turnover', full: true });
+        const B = v.stage({ x: [0.01, 30], y: [0.02, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'friction γ (reduced units)', ylabel: 'k / kTST', title: 'Kramers turnover', full: true });
         let cache = { key: '', tr: [] };
         const traj = (gv) => {
           const key = gv.toFixed(4); if (cache.key === key) return cache.tr;
@@ -283,14 +287,14 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
           info = { gv, kTST: kT, kK: W.kKramers(gv), kL: W.kLow(gv), n: pts.length, nc };
         });
         v.legend([['gold', 'simulation: 1/mean passage time', { dot: true }], ['green', 'Kramers, moderate and strong friction'], ['red', 'Kramers, weak friction', { dash: true }], ['ink', 'classical TST', { dash: true }]]);
-        v.readout(() => `$\\Delta V=5\\,k_BT$: $\\omega_a=${v.fix(W.w0, 2)}$, $\\omega_b=${v.fix(W.wb, 2)}$; TST rate $${v.sci(info.kTST, 3)}$ per unit time\nat $\\gamma=${v.fix(info.gv, 2)}$: strong-friction formula $k/k_{\\rm TST}=${v.fix(info.kK / info.kTST, 3)}$, weak-friction formula $${v.fix(info.kL / info.kTST, 3)}$ · barrier crossings of the plotted trajectory: ${info.nc} · ${info.n} of ${GS.length} simulated points ready${busy ? ' (computing…)' : ''}`);
+        v.readout(() => `$\\Delta V=5\\,k_BT$: $\\omega_a=${v.fix(W.w0, 2)}$, $\\omega_b=${v.fix(W.wb, 2)}$; TST rate $${v.sci(info.kTST, 3)}$ per unit time\nat $\\gamma=${v.fix(info.gv, 2)}$: strong-friction formula $k/k_{\\rm TST}=${v.fix(info.kK / info.kTST, 3)}$, weak-friction formula $${info.gv < 0.3 ? v.fix(info.kL / info.kTST, 3) : '\\text{(not valid here)}'}$ · barrier crossings of the plotted trajectory: ${info.nc} · ${info.n} of ${GS.length} simulated points ready${busy ? ' (computing…)' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 3.12
     {
       num: '3.12', kind: 'Paper', name: 'The Activated Complex in Chemical Reactions',
       statement: String.raw`Eyring formulated the calculation of **absolute reaction rates** in terms of quantities that can be obtained from a potential energy surface: the reactants' partition functions, and those of the **activated complex**, a molecule-like configuration at the saddle point of the surface. The probability of the activated state follows from ordinary statistical mechanics, and multiplying that probability by the rate at which complexes pass through to products gives the specific rate, which takes the form $k=(k_BT/h)\,K^\ddagger$ (with a transmission coefficient to be added). The paper also pointed out that vibrations of the complex that are quantized, while the corresponding degrees of freedom in the reactants are not, lead to rate ratios for isotopes that differ from the predictions of simple kinetic theory, and it gave the conditions under which the general treatment reduces to ordinary collision theory.`,
-      idea: String.raw`Before 1935 the rate of a reaction could be estimated from collision theory (2.3), which needs an unknown steric factor, or from the Arrhenius law (2.1), which needs two fitted constants. London, Eyring and Polanyi had meanwhile shown how to build potential energy surfaces from molecular data (2.6), and Pelzer and Wigner (1932) had pointed to the saddle point as the bottleneck. Eyring's step was to give the saddle-point region a *thermodynamic* status, treating the complex as an ordinary molecule in equilibrium with the reactants except for one degree of freedom, which crosses the barrier at frequency $k_BT/h$. This introduced the activated complex, the quasi-equilibrium (3.1) and the rate equation that is now named for him (3.2), and it came out, within a month, of Evans and Polanyi's parallel derivation.`,
+      idea: String.raw`Before 1935 the rate of a reaction could be estimated from collision theory (2.3), which needs an unknown steric factor, or from the Arrhenius law (2.1), which needs two fitted constants. Potential energy surfaces had meanwhile been constructed semi-empirically for simple systems, for instance for three hydrogen atoms by Eyring and Polanyi around 1930 (2.6), and Pelzer and Wigner (1932) had pointed to the saddle point as the bottleneck. Eyring's step was to give the saddle-point region a *thermodynamic* status, treating the complex as an ordinary molecule in equilibrium with the reactants except for one degree of freedom, which crosses the barrier at frequency $k_BT/h$. This introduced the activated complex, the quasi-equilibrium (3.1) and the rate equation that is now named for him (3.2), and it came out, within a month, of Evans and Polanyi's parallel derivation.`,
       caption: String.raw`**Not Eyring's calculation:** the figure below is a modern classical reconstruction on a model surface (the LEPS surface of 2.6, three hydrogen-mass atoms in a line, barrier set by the weight $w$). The reactive flux through the dividing surface is computed by trajectories started on the surface from the Boltzmann flux distribution, the way a modern chemist would test the assumptions of the 1935 paper. Left: the surface with sample trajectories (green: ends as product; red: comes back to reactants). Middle: the transmission coefficient $\kappa(t)$ falls from 1 to a plateau. Right: the TST rate (blue line) and $\kappa\,k_{\rm TST}$ (gold) against $1/T$; the slope is the activation energy, to be compared with the barrier.`,
       deps: ['kin-2.6', 'kin-2.7', 'thermo-6.2', 'kin-2.12'],
       refs: [],
