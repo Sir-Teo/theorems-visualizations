@@ -33,7 +33,7 @@ export default {
 $$k_\infty = \eta\, f\, p\, \varepsilon,$$
 the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of thermal neutrons absorbed in fuel ($f$), the probability of escaping resonance capture while slowing down ($p$) and the fast-fission boost ($\varepsilon$); a finite core multiplies by the probability $P_{NL}$ of not leaking out, $k_{\mathrm{eff}} = k_\infty P_{NL}$. A single neutron starts a growing chain with probability less than one even when $k_{\mathrm{eff}}>1$, because the lineage can die out by chance.`,
       idea: String.raw`Each factor is a ratio of cross sections. Enrichment raises $\eta$ by adding U-235, whose fission-to-absorption ratio is high, and lowers the share of U-238 that only absorbs. A moderator must slow neutrons without absorbing them: light water is a superb slowing-down medium but absorbs enough neutrons (hydrogen's absorption cross section is 0.33 b against 0.0005 b for deuterium) that natural uranium cannot reach $k_\infty=1$ in it, whereas graphite and heavy water allow natural uranium. The branching statistics are those of a Galton–Watson process: with Poisson offspring of mean $k$, extinction probability is the smaller root of $q = e^{k(q-1)}$.`,
-      caption: String.raw`Choose a moderator, then move the enrichment, the moderator-to-uranium ratio, the control absorber and the leakage: the four bars show $\eta,f,p,\varepsilon$ and the product turns green once $k_{\mathrm{eff}}\ge 1$. The tree is one simulated neutron lineage (each neutron leaves a Poisson number of successors); press *Resample* for another run. Try natural uranium (0.72 %) in light water, then in graphite.`,
+      caption: String.raw`Choose a moderator, then move the enrichment, the moderator-to-uranium ratio, the control absorber and the leakage: the four bars show $\eta,f,p,\varepsilon$ and the product turns green once $k_{\mathrm{eff}}\ge 1$. The tree follows four source neutrons through the generations (each neutron leaves a Poisson number of successors); press *Resample* for another run. Try natural uranium (0.72 %) in light water, then in graphite.`,
       deps: ['energy-3.5'],
       refs: ['Tester ch. 9'],
       tags: ['chain reaction', 'criticality', 'neutron multiplication'],
@@ -69,13 +69,13 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
           fac.forEach(([n, val, col], i) => { s.rect(i * 0.9 + 0.15, 0, i * 0.9 + 0.8, Math.min(val, 2.2), { fill: col, fillAlpha: 0.55, color: col }); s.text(n, i * 0.9 + 0.475, -0.16, { size: 13, weight: 700, color: col, align: 'center' }); s.text(v.fix(val, 3), i * 0.9 + 0.475, Math.min(val, 2.2) + 0.1, { size: 12, weight: 700, color: 'ink', align: 'center' }); });
           s.hline(1, { color: 'ink', dash: true, alpha: 0.6 }); s.text('k = 1', 5.35, 1.07, { size: 11, color: 'muted', align: 'right' });
           // lineage tree
-          const r = v.rng(seed * 101 + 3), G = 9, gens = [[0]], edges = [], pop = [1]; let ids = [{ g: 0, i: 0, par: -1 }]; let cur = [0]; const layers = [[{ par: -1 }]];
+          const r = v.rng(seed * 101 + 3), G = 9, gens = [[0]], edges = [], pop = [1]; let ids = [{ g: 0, i: 0, par: -1 }]; let cur = [0]; const layers = [[{ par: -1 }, { par: -1 }, { par: -1 }, { par: -1 }]];
           for (let g = 1; g <= G; g++) { const prev = layers[g - 1], lay = []; let total = 0; for (let i = 0; i < prev.length && lay.length < 60; i++) { const c = pois(r, keff); for (let j = 0; j < c && lay.length < 60; j++) lay.push({ par: i }); total += c; } pop.push(lay.length >= 60 ? 60 : lay.length); layers.push(lay); if (!lay.length) break; }
           const cx = (g) => 0.4 + g * (9.2 / G);
           layers.forEach((lay, g) => { const n = lay.length; lay.forEach((nd, i) => { nd.y = (i + 0.5) / Math.max(n, 1); if (g > 0) { const p = layers[g - 1][nd.par]; s2.line(cx(g - 1), p.y, cx(g), nd.y, { color: 'faint', width: 1 }); } });
             { const c = s2.ctx; c.fillStyle = v.color(g === 0 ? 'gold' : 'accent'); for (const nd of lay) { c.beginPath(); c.arc(s2.X(cx(g)), s2.Y(nd.y), n > 30 ? 3 : 5, 0, 6.2832); c.fill(); } } s2.text(`g${g}`, cx(g), -0.07, { size: 10.5, color: 'muted', align: 'center' }); });
           const last = layers.length - 1; if (!layers[last].length) s2.text('chain died out (press Resample)', cx(last) + 0.25, 0.78, { size: 13, weight: 700, color: 'red', align: 'left' });
-          s2.text(`one neutron, Poisson(${f2(v, keff)}) offspring each; populations ${layers.map((l) => (l.length >= 60 ? '60+' : l.length)).join(' → ')}`, 0.1, 1.07, { size: 11.5, color: 'muted', align: 'left' });
+          s2.text(`four source neutrons, Poisson(${f2(v, keff)}) offspring each; populations ${layers.map((l) => (l.length >= 60 ? '60+' : l.length)).join(' → ')}`, 0.1, 1.07, { size: 11.5, color: 'muted', align: 'left' });
         });
         v.readout(() => {
           const k = C.keff, q = extinct(k);
@@ -270,7 +270,7 @@ and for ignition ($Q\to\infty$) the triple product $n T \tau_E$ must exceed a mi
           // experiments ladder
           sq.text('gain reported by experiments', 0.02, 5.2, { size: 12.5, weight: 700, color: 'ink', align: 'left' });
           exps.forEach(([nm, q, note], i) => { const y = 4.1 - i * 1.0; sq.rect(0.02, y - 0.22, 0.02 + q * 0.7, y + 0.22, { fill: i === 3 ? 'teal' : 'accent', fillAlpha: 0.5, color: i === 3 ? 'teal' : 'accent' }); sq.text(`${nm}:  ${q}`, 0.02, y + 0.46, { size: 12, weight: 700, color: 'ink', align: 'left' }); sq.text(note, 0.02 + q * 0.7 + 0.04, y - 0.02, { size: 11, color: 'muted', align: 'left' }); });
-          sq.vline(0.02 + 0.7, { color: 'red', dash: true }); sq.text('Q = 1', 0.02 + 0.7, 0.2, { size: 11.5, color: 'red', align: 'center' });
+          sq.vline(0.02 + 0.7, { color: 'red', dash: true, alpha: 0.5 }); sq.text('Q = 1', 0.02 + 0.7, 0.2, { size: 11.5, color: 'red', align: 'center' });
           sq.text(`your plasma: ${isFinite(Q) ? 'Q = ' + f2(v, Q) : 'ignited'}`, 0.02, 0.7, { size: 12.5, weight: 700, color: 'gold', align: 'left' });
         });
         v.legend([['red', '$Q=1$'], ['orange', '$Q=5$'], ['purple', '$Q=20$'], ['green', 'ignition'], ['gold', 'your plasma', { dot: true }]]);
