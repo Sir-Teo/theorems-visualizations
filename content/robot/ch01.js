@@ -19,7 +19,7 @@ export default {
       name: 'Degrees of freedom of a rigid body',
       statement: String.raw`The number of degrees of freedom of a mechanical system is the least number of real coordinates needed to specify the position of every point of it. A rigid body in the plane has $3$ — for instance the position $(x,y)$ of one point and an angle $\theta$ — and a rigid body in space has $6$: three position coordinates and three for orientation. Equivalently, count: $n$ points of a body in $\R^d$ carry $nd$ coordinates, and the rigidity constraints $\|p_i-p_j\|=\text{const}$ remove all but $3$ (for $d=2$) or $6$ (for $d=3$) of them once the points are not collinear.`,
       idea: String.raw`Three non-collinear points of the plane have $6$ coordinates and three fixed mutual distances, so $6-3=3$. In space, three points have $9$ coordinates and $3$ distances: $9-3=6$, and any further point is fixed by its distances to the three. A fast way to see the same number is to pin the body: a pinned point removes its two (resp. three) translational freedoms; pinning one point leaves the rotations ($1$, resp. $3$), a second point leaves one rotation about the line through the pins (in the plane nothing), and a third non-collinear point freezes the body. The count therefore is a rank computation: the velocity of a body point $P$ under a twist is $v+\omega\times P$, and the number of freedoms is the dimension of the twists that keep every pinned point still.`,
-      caption: String.raw`**Plane:** drag the body by the diamond (position) and the dot $\theta$ (heading); click the body to pin it at that spot, click a pin to remove it. **Space:** choose how many vertices to pin and whether they lie on an edge. The right panel plots the degrees of freedom left against the number of pins, from the rank of the pinning equations. Pin three points on one line in space and a rotation about that line survives.`,
+      caption: String.raw`**Plane:** drag the body by the blue handle (position) and the orange handle $\theta$ (heading); click the body to pin it at that spot, click a pin to remove it. **Space:** choose how many vertices to pin and whether they lie on an edge. The right panel plots the degrees of freedom left against the number of pins, from the rank of the pinning equations. Pin three points on one line in space and a rotation about that line survives.`,
       deps: ['mech-6.1'],
       refs: ['Lynch–Park §2.1'],
       tags: ['degrees of freedom', 'rigid body'],
@@ -32,9 +32,9 @@ export default {
         const cs = [0, 1, 2, 3, 4, 5].map((k) => v.slider(`free motion ${k + 1}`, -2.4, 2.4, k === 0 ? 0.9 : 0, { step: 0.01 }));
         const L = v.stage({ x: [-3.6, 3.6], y: [-2.5, 2.5], equal: true, axes: false, height: 340, title: 'the body in the plane' });
         const S3 = v.stage3d({ range: 2.1, height: 340, yaw: -0.7, pitch: 0.45, axes: false, title: 'the body in space' });
-        const R = v.stage({ x: [-0.6, 5.6], y: [-0.7, 6.8], height: 340, axes: false, title: 'freedoms left vs pins' });
+        const R = v.stage({ x: [-0.6, 5.6], y: [-1.1, 7], height: 340, axes: false, title: 'freedoms left vs pins' });
         const BODY = [[-1.4, -0.8], [1.4, -0.9], [1.7, 0.4], [0.3, 1.1], [-1.5, 0.7]];
-        let o = [0.2, 0.1], th = 0.45; const pins = [];
+        let o = [0.2, 0.1], th = 0.45; const pins = [{ b: [0.9, -0.25], W: [0.2 + Math.cos(0.45) * 0.9 + Math.sin(0.45) * 0.25, 0.1 + Math.sin(0.45) * 0.9 - Math.cos(0.45) * 0.25] }];
         const world = (b) => { const r = rot2(th, b); return [o[0] + r[0], o[1] + r[1]]; };
         const local = (w) => rot2(-th, [w[0] - o[0], w[1] - o[1]]);
         const HB = [1.0, 0.15];
@@ -101,15 +101,15 @@ export default {
           }
           if (planar) st = { drift: 0 };
           // staircase of freedoms vs pins
-          const top = planar ? 3 : 6;
+          const top = planar ? 3 : 6; R.setView([-0.6, 5.6], [-1.1, planar ? 4 : 7]);
           for (let j = 0; j < seq.length; j++) {
             if (seq[j] == null) { R.rect(j - 0.3, 0, j + 0.3, top, { color: 'faint', fill: false, dash: [3, 3], alpha: 0.6 }); continue; }
             const cur = j === k;
             R.rect(j - 0.3, 0, j + 0.3, Math.max(seq[j], 0.04), { fill: cur ? 'green' : 'accent', fillAlpha: cur ? 0.7 : 0.35, color: cur ? 'green' : 'accent', width: cur ? 2.2 : 1.2 });
             R.text(String(seq[j]), j, seq[j] + 0.28, { size: 15, color: cur ? 'green' : 'ink', align: 'center' });
-            R.text(String(j), j, -0.42, { size: 12, color: 'muted', align: 'center' });
+            R.text(String(j), j, planar ? -0.4 : -0.55, { size: 12, color: 'muted', align: 'center' });
           }
-          R.text('pins', 2.5, -0.68, { size: 11.5, color: 'muted', align: 'center' });
+          R.text('pins', 2.5, planar ? -0.85 : -1.0, { size: 11.5, color: 'muted', align: 'center' });
           R.hline(0, { color: 'muted', width: 1 });
           st.k = k; st.dof = dof; st.planar = planar; st.seq = seq;
         });
@@ -139,7 +139,7 @@ It counts correctly when the joint constraints are independent; for special, ove
         const M = v.M;
         const sel = v.select('mechanism', Object.keys(MECHS).map((k) => ({ value: k, label: MECHS[k].name })), 'four');
         const L = v.stage({ x: [-1.5, 6.5], y: [-2.5, 4.5], equal: true, axes: false, height: 380, title: 'drag a dot' });
-        const W = v.stage({ x: [-0.6, 10.2], y: [-3.4, 11], axes: false, height: 380, title: 'Grübler ledger' });
+        const W = v.stage({ x: [-0.8, 10], y: [-1.7, 11], axes: false, height: 380, title: 'Grübler ledger' });
         let key = '', mech = null, q = null;
         const H = [L.handle(0, 0, { color: 'accent', r: 8 }), L.handle(0, 0, { color: 'orange', r: 8 })];
         const spec = () => MECHS[sel.value];
@@ -165,19 +165,19 @@ It counts correctly when the joint constraints are independent; for special, ove
           const gap = g !== info.dof;
           if (info.dof === 0) L.corner('locked: 0 degrees of freedom', 'tl', { color: 'red' });
           // ledger
-          const n0 = 3 * (N - 1); let y = n0;
+          const n0 = 3 * (N - 1); let y = n0; W.setView([-0.8, Jn + 4.6], [-1.7, n0 + 2]);
           W.rect(-0.35, 0, 0.35, y, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.6 });
-          W.text(String(n0), 0, y + 0.55, { size: 14, align: 'center' }); W.text('3(N−1)', 0, -0.9, { size: 11, color: 'muted', align: 'center' });
+          W.text(String(n0), 0, y + 0.55, { size: 14, align: 'center' }); W.text('3(N−1)', 0, -0.95, { size: 11, color: 'muted', align: 'center' });
           sp.joints.forEach((j, i) => {
             const d = j.type === 'R' ? 2 : 2; W.rect(i + 0.65, y - d, i + 1.35, y, { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.4 });
-            W.text('−2', i + 1, y + 0.55, { size: 12, color: 'red', align: 'center' }); W.text(j.type === 'P' ? 'P' : 'R', i + 1, -0.9, { size: 11, color: 'muted', align: 'center' }); y -= d;
+            W.text('−2', i + 1, y + 0.55, { size: 12, color: 'red', align: 'center' }); W.text(j.type === 'P' ? 'P' : 'R', i + 1, -0.95, { size: 11, color: 'muted', align: 'center' }); y -= d;
           });
           const xe = Jn + 1.9;
           W.rect(xe - 0.35, Math.min(0, y), xe + 0.35, Math.max(0, y) + (y === 0 ? 0.06 : 0), { fill: 'accent', fillAlpha: 0.7, color: 'accent', width: 2 });
-          W.text(String(g), xe, Math.max(y, 0) + 0.7, { size: 17, color: 'accent', align: 'center' }); W.text('Grübler', xe, -0.9, { size: 11, color: 'muted', align: 'center' });
+          W.text(String(g), xe, Math.max(y, 0) + 0.7, { size: 17, color: 'accent', align: 'center' }); W.text('Grübler', xe, -0.95, { size: 11, color: 'muted', align: 'center' });
           W.hline(0, { color: 'muted', width: 1 });
-          W.line(-0.6, info.dof, 10.2, info.dof, { color: 'green', width: 2, dash: [6, 4] });
-          W.text(`rank test: ${info.dof}`, 10.1, info.dof + 0.6, { size: 12.5, color: 'green', align: 'right' });
+          W.line(-0.8, info.dof, Jn + 4.6, info.dof, { color: 'green', width: 2, dash: [6, 4] });
+          W.text(`rank test: ${info.dof}`, Jn + 4.5, info.dof - 0.55, { size: 12.5, color: 'green', align: 'right' });
           if (gap) W.corner('Grübler is wrong here', 'tr', { color: 'red', weight: 600 });
           st = { sp, N, Jn, g, info, gap };
         });

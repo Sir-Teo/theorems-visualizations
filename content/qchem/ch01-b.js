@@ -82,7 +82,6 @@ For position and momentum $[\hat x,\hat p]=i\hbar$, so $\Delta x\,\Delta p\ge\hb
           s1.path(Array.from(xg, (X, i) => [X, D.re[i] ** 2 + D.im[i] ** 2]), { color: 'accent', width: 2.4 });
           const pts = []; for (let i = 0; i < NX; i++) pts.push([xg[i], D.re[i] ** 2 + D.im[i] ** 2]);
           s1.poly([[xg[0], 0], ...pts, [xg[NX - 1], 0]], { fill: 'accent', fillAlpha: 0.14, stroke: false });
-          s1.path(Array.from(xg, (X, i) => [X, (D.re[i] * 0.45) / Math.sqrt(pk)]), { color: 'muted', width: 1, alpha: 0.7 });
           s1.measure(D.mx - D.dX, pk * 1.18, D.mx + D.dX, pk * 1.18, 'Δx');
           // momentum distribution (ordered)
           const order = Array.from({ length: NX }, (_, j) => j).sort((a, b) => D.pc[a] - D.pc[b]);
