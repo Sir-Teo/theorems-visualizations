@@ -47,7 +47,6 @@ the set of parameter values that the likelihood-ratio test of $H_0:\theta=\theta
         v.render(() => {
           const n = nS.value, x = clamp(xS.value, 1, n - 1), ph = x / n, psh = logit(ph);
           const L = (p) => (p <= 0 || p >= 1 ? -Infinity : x * Math.log(p) + (n - x) * Math.log(1 - p)), Lm = L(ph), rel = (p) => L(p) - Lm;
-          const side = (a, b) => { let lo = a, hi = b; for (let i = 0; i < 80; i++) { const m = 0.5 * (lo + hi); if (rel(m) > -cut === (a < b ? m < ph : m > ph)) lo = m; else hi = m; } return 0.5 * (lo + hi); };
           const root = (a) => { let lo = a, hi = ph; if (a > ph) { lo = ph; hi = a; } for (let i = 0; i < 80; i++) { const m = 0.5 * (lo + hi); const inside = rel(m) > -cut; if (a < ph) { if (inside) hi = m; else lo = m; } else { if (inside) lo = m; else hi = m; } } return 0.5 * (lo + hi); };
           const lr = [root(1e-12), root(1 - 1e-12)];
           const wp = waldBin(x, n, z), sePs = 1 / Math.sqrt(n * ph * (1 - ph)), wl = [expit(psh - z * sePs), expit(psh + z * sePs)];
@@ -90,7 +89,7 @@ for $\sigma^2$. If the data are i.i.d. with mean $\mu$, variance $\sigma^2$ and 
 $$2\Phi\!\Big(z_{1-\alpha/2}\sqrt{\tfrac{2}{\kappa-1}}\Big)-1,$$
 which is $0.95$ only for $\kappa=3$. For $t_5$ data ($\kappa=9$) the limit is $0.67$ at nominal $95\%$, for the Laplace law ($\kappa=6$) $0.80$, for the uniform ($\kappa=1.8$) it is $0.998$. Increasing $n$ does not repair the interval.`,
       idea: String.raw`The $\chi^2$ pivot rests on a fact special to the normal law: $S^2$ has variance $2\sigma^4/(n-1)$ exactly because the fourth moment is $3\sigma^4$ (stat-1.9, stat-1.8). In general $\mathrm{Var}(S^2)\approx\sigma^4(\kappa-1)/n$, so heavy tails inflate the true spread of $S^2$ relative to what the $\chi^2$ quantiles assume, and the interval is too short; light tails do the opposite. Unlike the $t$-interval for a mean, which is protected by the central limit theorem, the variance interval's validity depends on a feature (the kurtosis) that no amount of data washes out.`,
-      caption: String.raw`Choose the population (unit variance, so the target is $\sigma^2=1$). Left: simulated coverage of the nominal 95% $\chi^2$ interval against $n$ (gold, 1,500 samples per point) and the limiting value from the kurtosis formula (dashed): the coverage settles on it instead of rising to 95%. Right: the histogram of the pivot $(n-1)S^2/\sigma^2$ at the chosen $n$ against its $\chi^2_{n-1}$ density; the cut points $\chi^2_{n-1,0.025}$ and $\chi^2_{n-1,0.975}$ trap 95% only if the histogram matches the curve. Normal: it does. $t_5$: it is far wider.`,
+      caption: String.raw`Choose the population (unit variance, so the target is $\sigma^2=1$). Left: simulated coverage of the nominal 95% $\chi^2$ interval against $n$ (gold, 1,500 samples per point) and the limiting value from the kurtosis formula (dashed): the coverage drifts toward it (slowly when the tails are heavy) instead of rising to 95%. Right: the histogram of the pivot $(n-1)S^2/\sigma^2$ at the chosen $n$ against its $\chi^2_{n-1}$ density; the cut points $\chi^2_{n-1,0.025}$ and $\chi^2_{n-1,0.975}$ trap 95% only if the histogram matches the curve. Normal: it does. $t_5$: it is far wider.`,
       deps: ['stat-8.2', 'stat-1.9'],
       refs: ['Casella–Berger §9.2'],
       tags: ['variance interval', 'robustness', 'kurtosis'],
@@ -114,12 +113,12 @@ which is $0.95$ only for $\kappa=3$. For $t_5$ data ($\kappa=9$) the limit is $0
           sL.path(G, { color: CC.sim, width: 1.4, alpha: 0.7 }); sL.dots(G, { r: 4.5, color: CC.sim });
           sL.vline(n, { color: 'faint', width: 1.4 });
           const lo = qchi(df, 0.025), hi = qchi(df, 0.975), T = sample(pop, n);
-          const sd = Math.sqrt(2 * df), xmax = Math.max(hi * 1.5, df + 5 * sd * Math.max(1, Math.sqrt((P.kurt - 1) / 2)));
-          const B = binned(T, 0, xmax, 70), f0 = dchi(df, Math.max(df - 1, 0.1));
-          sR.setView([0, xmax], [0, Math.min(Math.max(B.max, f0) * 1.2, 0.6)]);
-          area(sR, (x) => dchi(df, x), 0, lo, 'red', 0.3); area(sR, (x) => dchi(df, x), hi, xmax, 'red', 0.3);
+          const sd = Math.sqrt(2 * df), wd = 5 * sd * Math.max(1, Math.sqrt((P.kurt - 1) / 2)), xmax = Math.max(hi * 1.5, df + wd), xl = Math.max(0, df - wd);
+          const B = binned(T, xl, xmax, 70), f0 = dchi(df, Math.max(df - 1, 0.1));
+          sR.setView([xl, xmax], [0, Math.min(Math.max(B.max, f0) * 1.2, 0.6)]);
+          area(sR, (x) => dchi(df, x), xl, lo, 'red', 0.3); area(sR, (x) => dchi(df, x), hi, xmax, 'red', 0.3);
           sR.hist(B, { density: true, color: CC.sim, fillAlpha: 0.3, width: 1.2 });
-          sR.fn((x) => dchi(df, x), { domain: [Math.max(0.01, 0), xmax], color: 'ink', width: 2.4, n: 400 });
+          sR.fn((x) => dchi(df, x), { domain: [Math.max(0.01, xl), xmax], color: 'ink', width: 2.4, n: 400 });
           sR.vline(lo, { color: 'red', width: 1.3, dash: [5, 4] }); sR.vline(hi, { color: 'red', width: 1.3, dash: [5, 4] });
           leg([[CC.sim, 'simulated coverage / pivot', { dot: true }], [CC.wald, 'limiting coverage $2\\Phi(z\\sqrt{2/(\\kappa-1)})-1$', { dash: true }], ['muted', 'nominal', { dash: true }], ['ink', '$\\chi^2_{n-1}$ density'], ['red', 'cut tails', { area: true }]]);
           const cov = T.filter((q) => q >= lo && q <= hi).length / T.length;
@@ -140,7 +139,7 @@ which is $0.95$ only for $\kappa=3$. For $t_5$ data ($\kappa=9$) the limit is $0
       credit: 'A. Dvoretzky, J. Kiefer & J. Wolfowitz, 1956; P. Massart, 1990 (constant)',
       statement: String.raw`A **$1-\alpha$ confidence band** for a function $F$ is a pair of random functions $\ell\le u$ with $P\big(\ell(x)\le F(x)\le u(x)\ \text{for all }x\big)\ge1-\alpha$: the coverage is **simultaneous**, over the whole curve at once. Intervals that are $1-\alpha$ at each fixed $x$ (**pointwise**) do not give this: the probability that all of them cover decreases with the number of points examined. For the distribution function, the DKW inequality (stat-1.6), $P\big(\sup_x|\hat F_n(x)-F(x)|>\varepsilon\big)\le2e^{-2n\varepsilon^2}$, gives the band
 $$\hat F_n(x)\pm\varepsilon_n,\qquad \varepsilon_n=\sqrt{\tfrac1{2n}\ln\tfrac2\alpha},$$
-of constant width, valid for every continuous $F$ and every $n$. It is conservative (the true coverage exceeds $1-\alpha$) but exact in its guarantee.`,
+of constant width, valid for every continuous $F$ and every $n$. The guarantee holds for every $n$ (with Massart's sharp constant $2$ in front of the exponential), and at conventional levels the band is nearly exact.`,
       idea: String.raw`A pointwise interval is a statement about one value $x$; a band is a statement about the entire graph, and the sup-norm distance $D_n=\sup_x|\hat F_n(x)-F(x)|$ is the single random variable that controls it. Bounding the tail of $D_n$ (stat-1.6, via the Kolmogorov–Smirnov argument and Massart's tight constant) gives a band with a guaranteed level. Pointwise intervals each fail with probability about $\alpha$, but different intervals fail on different samples, so with hundreds of effectively independent places to look the chance that all are right is small.`,
       caption: String.raw`Left: one sample of $n$ standard normal observations, its empirical distribution function (blue steps), the true $\Phi$ (black), the DKW band (green) and pointwise 95% Wilson intervals (orange). Right: the share of 1,000 repeated samples in which each kind of band fails to contain $\Phi$ *somewhere* on a 400-point grid, against the allowed $\alpha$. Pointwise intervals cover each $x$ about 95% of the time yet the whole curve in only a fraction of the samples; the DKW band keeps its promise. Press **New samples** to redraw.`,
       deps: ['stat-1.6', 'stat-8.1'],
@@ -187,17 +186,17 @@ of constant width, valid for every continuous $F$ and every $n$. It is conservat
           sL.path(steps, { color: CC.wilson, width: 1.6 });
           // right bars
           sR.hline(a, { color: 'muted', width: 1.4, dash: [5, 4] });
-          sR.text(`allowed $\\alpha$ = ${v.fix(a, 2)}`, 2.95, a, { color: 'muted', size: 11, align: 'right', dy: -9 });
+          sR.text(`allowed α = ${v.fix(a, 2)}`, 0.05, a, { color: 'muted', size: 11, align: 'left', dy: -9 });
           sR.rect(0.6, 0, 1.4, S.pw, { fill: CC.wald, fillAlpha: 0.5, color: CC.wald, width: 1.4 });
-          sR.rect(2.1 - 0.0, 0, 2.9, S.dk, { fill: CC.cover, fillAlpha: 0.5, color: CC.cover, width: 1.4 });
-          sR.text(pct(S.pw, 0), 1, S.pw, { color: 'ink', size: 13, weight: 700, dy: -10 }); sR.text(pct(S.dk, 1), 2.5, S.dk, { color: 'ink', size: 13, weight: 700, dy: -10 });
+          sR.rect(1.6, 0, 2.4, S.dk, { fill: CC.cover, fillAlpha: 0.5, color: CC.cover, width: 1.4 });
+          sR.text(pct(S.pw, 0), 1, S.pw, { color: 'ink', size: 13, weight: 700, dy: -10 }); sR.text(pct(S.dk, 1), 2, S.dk, { color: 'ink', size: 13, weight: 700, dy: -10 });
           leg([[CC.cover, 'DKW band $\\hat F_n\\pm\\varepsilon_n$'], [CC.wald, 'pointwise Wilson intervals', { dash: true }], [CC.wilson, 'empirical d.f.'], ['ink', 'true $\\Phi$']]);
           st = { n, lv, eps, S };
         });
         v.readout(() => {
           if (!st) return '';
           const { n, lv, eps, S } = st;
-          return `$n=${n}$, $\\varepsilon_n=\\sqrt{\\ln(2/\\alpha)/(2n)}=${v.fix(eps, 3)}$. Over 1,000 samples, the pointwise ${pct(lv, 0)} intervals miss $\\Phi$ somewhere in **${pct(S.pw, 0)}** of them (each one is right at ${pct(lv, 0)} of the points); the DKW band fails in **${pct(S.dk, 1)}** (allowed ${pct(1 - lv, 0)}; the guarantee is conservative).`;
+          return `$n=${n}$, $\\varepsilon_n=\\sqrt{\\ln(2/\\alpha)/(2n)}=${v.fix(eps, 3)}$. Over 1,000 samples, the pointwise ${pct(lv, 0)} intervals miss $\\Phi$ somewhere in **${pct(S.pw, 0)}** of them (each one is right at ${pct(lv, 0)} of the points); the DKW band fails in **${pct(S.dk, 1)}** (allowed at most ${pct(1 - lv, 0)}; the inequality is nearly tight at these levels).`;
         });
       },
     },
@@ -221,7 +220,7 @@ is an exact prediction interval, compared with the confidence interval $\bar X\p
         let seed = 0;
         v.button('New sample', () => { seed++; });
         const sL = v.stage({ x: [-4, 6], y: [0, 4], axes: false, height: 300, weight: 1.15, title: 'one sample, its two intervals, and 20 new observations' });
-        const sR = v.stage({ x: [3, 400], y: [0, 4.4], xlog: true, axes: 'box', gutter: true, height: 300, weight: 0.85, minWidth: 260, xlabel: 'sample size $n$', ylabel: 'interval width ($\\sigma=1$)', title: 'widths versus $n$' });
+        const sR = v.stage({ x: [3, 400], y: [0, 10], xlog: true, axes: 'box', gutter: true, height: 300, weight: 0.85, minWidth: 260, xlabel: 'sample size $n$', ylabel: 'interval width ($\\sigma=1$)', title: 'widths versus $n$' });
         const leg = legender(v);
         const mc = memo();
         const cover = (pop, n) => mc(pop + '|' + n, () => {
@@ -236,8 +235,8 @@ is an exact prediction interval, compared with the confidence interval $\bar X\p
           sL.vline(0, { color: CC.truth, width: 1.6 });
           sL.dots(xs.slice(0, 200).map((x, i) => [x, 0.25 + 0.5 * ((i * 0.6180339887) % 1)]), { r: 2.6, color: 'muted', alpha: 0.7 });
           sL.line(m - hp, 2.4, m + hp, 2.4, { color: CC.pi, width: 8 }); sL.line(m - hc, 1.5, m + hc, 1.5, { color: CC.ci, width: 8 });
-          sL.tex('\\text{prediction interval}', m + hp + 0.1, 2.4, { color: 'ink', size: 12, align: 'left' });
-          sL.tex('\\text{confidence interval for }\\mu', m + hc + 0.1, 1.5, { color: 'ink', size: 12, align: 'left' });
+          sL.tex('\\text{prediction interval}', m + hp + 0.25, 2.4, { color: 'ink', size: 12, align: 'left' });
+          sL.tex('\\text{confidence interval for }\\mu', m + hc + 0.25, 1.5, { color: 'ink', size: 12, align: 'left' });
           let inN = 0; const fresh = []; for (let k = 0; k < 20; k++) { const x = P.draw(r); fresh.push(x); if (Math.abs(x - m) <= hp) inN++; }
           fresh.forEach((x) => sL.line(x, 3.2, x, 3.75, { color: Math.abs(x - m) <= hp ? CC.sim : CC.miss, width: 2.4 }));
           sL.text('20 new observations', -3.9, 3.45, { color: 'muted', size: 11, align: 'left' });
@@ -296,7 +295,6 @@ A pair of draws more than $\tfrac12$ apart *certainly* brackets $\theta$, while 
           let hit = 0;
           P.forEach((p, i) => { if (bar(sL, p[0], p[1], 60 - i, 0, { mid: (p[0] + p[1]) / 2 })) hit++; });
           sL.vline(0, { color: CC.truth, width: 1.6 });
-          sL.tex('D\\ge d_0', -0.95, 61 - 2, { color: 'muted', size: 12, align: 'left' });
           let nb = 0; P.forEach((p) => { if (p[1] - p[0] >= d0) nb++; });
           sL.hline(61 - nb - 0.5, { color: 'muted', width: 1.2, dash: [4, 4] });
           // right
@@ -364,8 +362,6 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
           const rh = a / (Math.abs(b) < 1e-9 ? 1e-9 : b), se = Math.sqrt((1 + rh * rh) / (b * b + 1e-12)), dl = [rh - z * se, rh + z * se];
           if (Math.abs(b) > 1e-6) sL.line(Math.max(-8, dl[0]), 1.5, Math.min(8, dl[1]), 1.5, { color: CC.wald, width: 7 });
           sL.dot(clamp(rh, -8, 8), 0, { r: 5, color: CC.sim });
-          sL.tex('\\text{Fieller set}', 7.8, y0, { color: 'ink', size: 12, align: 'right', baseline: 'bottom', dy: -9 });
-          sL.tex('\\text{delta interval}', 7.8, 1.5, { color: 'ink', size: 12, align: 'right', baseline: 'bottom', dy: -9 });
           const C = covs();
           sR.hline(0.95, { color: 'muted', width: 1.4, dash: [5, 4] });
           sR.path(C.map((c) => [c[0], c[1]]), { color: CC.cover, width: 2.4 }); sR.dots(C.map((c) => [c[0], c[1]]), { r: 3.5, color: CC.cover });
@@ -392,19 +388,21 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
       credit: 'J. Neyman, 1937',
       statement: String.raw`Neyman's 1937 memoir lays out a theory of interval estimation that needs no prior distribution for the parameter: from the sampling law of the data alone one constructs, for every value $\theta$, a region $A(\theta)$ of sample values with probability at least $\alpha$ (the **confidence coefficient**) under $\theta$, and these regions form a **confidence belt** in the plane of (parameter, observation). An observation $x$ cuts the belt along a horizontal line, and the set of $\theta$ whose region contains $x$ is the confidence interval; whatever the true $\theta$ is, the interval contains it with probability $\alpha$ in repeated sampling, a statement about the procedure and not about any single interval. The memoir also treats the choice of belts that give the shortest intervals, and argues that this is a coherent frequency alternative to inverse probability for estimation. (This page reconstructs the *construction* on a binomial and a normal model; the paper's own examples and tables are not reproduced.)`,
       idea: String.raw`Before 1937, estimation by "probable error" and Fisher's fiducial argument rested on assigning a probability distribution to the parameter, either by Bayes' postulate or by fiducial reasoning. Neyman, building on the test theory he developed with E. S. Pearson (stat-6.4), showed that the same estimation problem can be solved purely within classical probability by using the inversion of a family of tests (8.4): the guarantee is a coverage probability (8.1) fixed before the data, true for all values of the unknown parameter. His construction, the confidence belt, is the picture still used in textbooks, and the term "confidence interval" and the associated vocabulary come from this work.`,
-      caption: String.raw`Neyman's belt on a model you choose. For each $\theta$ the vertical segment between the lower and upper curves is the region $A(\theta)$ of values $x$ with probability at least the confidence coefficient (binomial: exact equal-tailed regions, so the belt is a staircase; normal: $\theta\pm1.96/\sqrt n$). The horizontal line is your observation $x$ (slider); the green bar where it lies inside the belt is the confidence interval. Right: 100 repeated samples at the true $\theta$ you set (the handle on the left) and their intervals. About 95 cover: coverage describes the procedure, not any one interval. The picture reconstructs the construction; the numbers are computed here, not taken from the paper.`,
+      caption: String.raw`Neyman's belt on a model you choose. For each $\theta$ the vertical segment between the lower and upper curves is the region $A(\theta)$ of values $x$ with probability at least the confidence coefficient (binomial: exact equal-tailed regions, so the belt is a staircase; normal: $\theta\pm1.96\,\sigma/\sqrt n=\theta\pm0.196$ at $n=100$ and 95%). The horizontal line is your observation $x$ (slider); the green bar where it lies inside the belt is the confidence interval. Right: 100 repeated samples at the true $\theta$ you set (the handle on the left) and their intervals. About 95 cover: coverage describes the procedure, not any one interval. The picture reconstructs the construction; the numbers are computed here, not taken from the paper.`,
       deps: ['stat-8.2', 'stat-6.4'],
       refs: [],
       tags: ['confidence belt', 'history', 'interval estimation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Confidence_interval#History' },
       verify: true,
       viz(v) {
-        const mS = v.select('model', [{ value: 'bin', label: 'binomial, $n=20$' }, { value: 'norm', label: 'normal mean, $\\sigma=1$, $n=4$' }], 'bin');
+        const mS = v.select('model', [{ value: 'bin', label: 'binomial, $n=20$' }, { value: 'norm', label: 'normal mean, $\\sigma=1$, $n=100$' }], 'bin');
         const lvS = v.slider('confidence coefficient', 0.8, 0.99, 0.95, { step: 0.01 });
-        const xS = v.slider('observed value (binomial count / normal mean ×10)', 0, 20, 6, { int: true });
-        const NB = 20, NN = 4, sg = 1 / Math.sqrt(NN);
+        const xS = v.slider('observed $x$ (binomial count; normal: mean $=x/20$)', 0, 20, 6, { int: true });
+        const NB = 20, NN = 100, sg = 1 / Math.sqrt(NN);
+        let seed = 1;
+        v.button('New 100', () => { seed++; });
         const sL = v.stage({ x: [0, 1], y: [-0.5, 20.5], axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'parameter $\\theta$', ylabel: 'observation $x$', title: 'confidence belt' });
-        const th0 = sL.handle(0.35, 20.2, { color: CC.sim, label: 'true $\\theta$', constrain: (x) => [clamp(x, 0.05, 0.95), 20.2] });
+        const th0 = sL.handle(0.35, 20.2, { color: CC.sim, label: 'true θ', constrain: (x) => [clamp(x, 0.05, 0.95), 20.2] });
         const sR = v.stage({ x: [0, 1], y: [0, 101], axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 260, xlabel: 'confidence interval for $\\theta$', ylabel: 'sample', title: '100 repeated samples' });
         const leg = legender(v);
         // model-specific: observed x scale for the plot is the binomial count (0..20); for the normal model x = 20 * (mean on [0,1]) i.e. mean = x/20
@@ -412,7 +410,8 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
           const a = 1 - lv, z = zOf(lv);
           if (m === 'bin') {
             const I = binIntervals('cp', NB, lv);
-            return { belt: (th) => { let lo = NB, hi = 0; for (let k = 0; k <= NB; k++) { let L = 0, U = 0; for (let j = 0; j <= k; j++) L += dbinom(j, NB, th); for (let j = k; j <= NB; j++) U += dbinom(j, NB, th); if (L > a / 2 && U > a / 2) { lo = Math.min(lo, k); hi = Math.max(hi, k); } } return [lo - 0.5, hi + 0.5]; }, ci: (x) => I[x], draw: (r, th) => { let k = 0; for (let i = 0; i < NB; i++) if (r() < th) k++; return k; }, obs: (x) => x, sd: 0 };
+            const tab = []; for (let i = 0; i <= 1000; i++) { const th = Math.min(1 - 1e-9, Math.max(1e-9, i / 1000)); let lo = NB, hi = 0; for (let k = 0; k <= NB; k++) { let L = 0, U = 0; for (let j = 0; j <= k; j++) L += dbinom(j, NB, th); for (let j = k; j <= NB; j++) U += dbinom(j, NB, th); if (L > a / 2 && U > a / 2) { lo = Math.min(lo, k); hi = Math.max(hi, k); } } tab.push([lo - 0.5, hi + 0.5]); }
+            return { belt: (th) => tab[Math.round(clamp(th, 0, 1) * 1000)], ci: (x) => I[x], draw: (r, th) => { let k = 0; for (let i = 0; i < NB; i++) if (r() < th) k++; return k; }, obs: (x) => x, sd: 0 };
           }
           return { belt: (th) => [20 * (th - z * sg), 20 * (th + z * sg)], ci: (x) => [x / 20 - z * sg, x / 20 + z * sg], draw: (r, th) => Math.round(20 * (th + sg * r.normal()) * 1000) / 1000, obs: (x) => x, sd: sg };
         };
@@ -424,22 +423,22 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
           const lo = [], hi = []; for (let i = 0; i <= 200; i++) { const t = i / 200, b = M.belt(t); lo.push([t, b[0]]); hi.push([t, b[1]]); }
           sL.path(lo, { color: CC.wilson, width: 1.8 }); sL.path(hi, { color: CC.wilson, width: 1.8 });
           sL.hline(x, { color: CC.sim, width: 1.4 });
-          const ci = M.ci(m === 'bin' ? x : x);
+          const ci = M.ci(x);
           const cl = clamp(ci[0], 0, 1), cu = clamp(ci[1], 0, 1);
           sL.line(cl, x, cu, x, { color: CC.cover, width: 6 });
           sL.vline(th, { color: CC.sim, width: 1.2, dash: [4, 4] });
           const [bl, bh] = M.belt(th); sL.line(th, bl, th, bh, { color: CC.sim, width: 4, alpha: 0.9 });
           // repeated samples
-          const r = v.rng(hashStr(`8.15|${m}|${Math.round(th * 100)}`)); let hit = 0;
+          const r = v.rng(hashStr(`8.15|${m}|${Math.round(th * 100)}|${seed}`)); let hit = 0;
           sR.vline(th, { color: CC.truth, width: 1.6 });
-          for (let i = 1; i <= 100; i++) { const xx = M.draw(r, th), c = M.ci(m === 'bin' ? xx : Math.round(xx)), c2 = m === 'bin' ? c : [xx / 20 - zOf(lv) * sg, xx / 20 + zOf(lv) * sg]; if (bar(sR, c2[0], c2[1], i, th, { mid: m === 'bin' ? xx / NB : xx / 20 })) hit++; }
+          for (let i = 1; i <= 100; i++) { const xx = M.draw(r, th), c2 = m === 'bin' ? M.ci(xx) : [xx / 20 - zOf(lv) * sg, xx / 20 + zOf(lv) * sg]; if (bar(sR, c2[0], c2[1], i, th, { mid: m === 'bin' ? xx / NB : xx / 20 })) hit++; }
           leg([['accent', 'belt: acceptance regions $A(\\theta)$', { area: true }], [CC.cover, 'interval / covers'], [CC.miss, 'misses'], [CC.sim, 'observation and true $\\theta$']]);
           st = { m, x, ci, th, hit, lv, bl, bh };
         });
         v.readout(() => {
           if (!st) return '';
           const { m, x, ci, th, hit, lv, bl, bh } = st, f = (a) => v.fix(a, 3);
-          return `${m === 'bin' ? `$x=${x}$ of 20` : `sample mean $\\bar x=${v.fix(x / 20, 2)}$`}: confidence interval **[${f(Math.max(0, ci[0]))}, ${f(Math.min(1, ci[1]))}]** at coefficient ${v.fix(lv, 2)}. At the true $\\theta=${f(th)}$ the belt accepts observations in $[${v.fix(bl + 0.5 * (m === 'bin' ? 1 : 0), 1)},\\,${v.fix(bh - 0.5 * (m === 'bin' ? 1 : 0), 1)}]$.\nIn this set of 100 repeated samples **${hit}** intervals cover $\\theta$ (expected about ${Math.round(100 * lv)}).`;
+          return `${m === 'bin' ? `$x=${x}$ of 20` : `sample mean $\\bar x=${v.fix(x / 20, 2)}$`}: confidence interval **[${f(Math.max(0, ci[0]))}, ${f(Math.min(1, ci[1]))}]** at coefficient ${v.fix(lv, 2)}. At the true $\\theta=${f(th)}$ the belt accepts ${m === 'bin' ? `counts $${v.fix(bl + 0.5, 0)},\\dots,${v.fix(bh - 0.5, 0)}$` : `sample means in $[${v.fix(bl / 20, 3)},\\,${v.fix(bh / 20, 3)}]$`}.\nIn this set of 100 repeated samples **${hit}** intervals cover $\\theta$ (expected about ${Math.round(100 * lv)}).`;
         });
       },
     },

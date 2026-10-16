@@ -60,7 +60,7 @@ Among 200 fresh samples of size $m=${info.m}$, ${info.rep} were $\varepsilon$-re
       statement: String.raw`Assume that $S$ is $\tfrac{\varepsilon}{2}$-representative with respect to $(Z,\mathcal H,\ell,\mathcal D)$. Then every output $h_S\in\operatorname{argmin}_{h\in\mathcal H}L_S(h)$ of the ERM rule satisfies
 $$L_{\mathcal D}(h_S)\;\le\;\min_{h\in\mathcal H}L_{\mathcal D}(h)+\varepsilon .$$`,
       idea: String.raw`Chain three inequalities, and pay $\varepsilon/2$ twice. For any competitor $h\in\mathcal H$: $L_{\mathcal D}(h_S)\le L_S(h_S)+\varepsilon/2$ (representativeness at $h_S$), then $L_S(h_S)\le L_S(h)$ (ERM minimizes the empirical risk), then $L_S(h)\le L_{\mathcal D}(h)+\varepsilon/2$ (representativeness at $h$). So $L_{\mathcal D}(h_S)\le L_{\mathcal D}(h)+\varepsilon$ for every $h$, hence for the minimizer of the true risk. Nothing about $h_S$ other than "it minimizes $L_S$" is used, and the argument works for any loss and any class.`,
-      caption: String.raw`Left: the picture of ml-4.1 with tube half-width $\varepsilon/2$. The blue dot is the ERM threshold (lowest point of the blue curve); the black dot sits above it on the true curve; the dashed lines are the true minimum and the minimum plus $\varepsilon$. Right: 400 samples, each contributing the excess risk $L_{\mathcal D}(h_S)-\min L_{\mathcal D}$ of its ERM. Green bars are the $\varepsilon/2$-representative samples, and **all of them** end at or below $\varepsilon$; red bars are samples that were not representative, and only some of those exceed $\varepsilon$.`,
+      caption: String.raw`Left: the picture of ml-4.1 with tube half-width $\varepsilon/2$. The blue dot is the ERM threshold (lowest point of the blue curve); the black dot sits above it on the true curve; the dashed lines are the true minimum and the minimum plus $\varepsilon$. Right: 400 samples, each contributing the excess risk $L_{\mathcal D}(h_S)-\min L_{\mathcal D}$ of its ERM. Green bars are the $\varepsilon/2$-representative samples, and **all of them** end at or below $\varepsilon$; red bars are samples that were not representative, and at small $m$ or small $\varepsilon$ some of those do exceed $\varepsilon$ (try $m=20$).`,
       deps: ['ml-4.1', 'ml-2.1b'],
       refs: ['UML §4.1'],
       tags: ['ERM', 'excess risk'],
@@ -68,8 +68,8 @@ $$L_{\mathcal D}(h_S)\;\le\;\min_{h\in\mathcal H}L_{\mathcal D}(h)+\varepsilon .
       viz(v) {
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'threshold $t$', ylabel: 'risk', title: 'one sample and its ERM' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'excess risk $L_{\\mathcal D}(h_S)-\\min L_{\\mathcal D}$', ylabel: 'samples', yticks: [], title: '400 samples' });
-        const mS = v.slider('sample size $m$', 5, 1000, 50, { int: true, log: true });
-        const eS = v.slider('$\\varepsilon$', 0.02, 0.4, 0.12, { step: 0.005 });
+        const mS = v.slider('sample size $m$', 5, 1000, 150, { int: true, log: true });
+        const eS = v.slider('$\\varepsilon$', 0.02, 0.4, 0.1, { step: 0.005 });
         const nS = v.slider('label noise $\\nu$', 0, 0.4, 0.1, { step: 0.01 });
         let seed = 3;
         v.button('Resample', () => { seed++; });
@@ -169,10 +169,10 @@ and the ERM$_{\mathcal H}$ rule is a successful agnostic PAC learner for $\mathc
       tags: ['agnostic PAC', 'ERM'],
       scope: String.raw`Thresholds world with 101 hypotheses; the failure rate is estimated from 400 rounds.`,
       viz(v) {
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'threshold $t$', ylabel: 'risk', title: 'round: the band around $L_{\\mathcal D}$' });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'threshold $t$', ylabel: 'risk', title: 'one round' });
         const sR = v.stage({ x: [0, 0.3], y: [0, 0.3], axes: 'box', gutter: true, height: 360, xlabel: 'worst gap $\\Delta$', ylabel: 'excess risk of ERM', title: 'all rounds' });
-        const mS = v.slider('sample size $m$', 10, 600, 60, { int: true, log: true });
-        const eS = v.slider('$\\varepsilon$', 0.02, 0.4, 0.15, { step: 0.005 });
+        const mS = v.slider('sample size $m$', 10, 600, 25, { int: true, log: true });
+        const eS = v.slider('$\\varepsilon$', 0.02, 0.4, 0.06, { step: 0.005 });
         const nS = v.slider('label noise $\\nu$', 0, 0.4, 0.1, { step: 0.01 });
         const kS = v.slider('round', 1, 400, 1, { int: true });
         v.button('Next round', () => { kS.set(kS.value % 400 + 1); });
@@ -284,7 +284,7 @@ $$m^{\mathrm{UC}}_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{\ln(2|\
 and is therefore agnostic PAC learnable by ERM$_{\mathcal H}$ with
 $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;m^{\mathrm{UC}}_{\mathcal H}(\varepsilon/2,\delta)\;\le\;\Big\lceil\frac{2\ln(2|\mathcal H|/\delta)}{\varepsilon^2}\Big\rceil .$$`,
       idea: String.raw`Fix $h$. The losses $\ell(h,z_i)$ are i.i.d. with values in $[0,1]$ and mean $L_{\mathcal D}(h)$, so Hoeffding (ml-4.5, $b-a=1$) gives $\mathbb P[|L_S(h)-L_{\mathcal D}(h)|>\varepsilon]\le2e^{-2m\varepsilon^2}$. The union bound (ml-2.2) over the $|\mathcal H|$ hypotheses multiplies this by $|\mathcal H|$; making the result at most $\delta$ gives the sample size. The class size enters only through $\ln|\mathcal H|$, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.`,
-      caption: String.raw`The data are 3000 labelled points in the square (a fixed population standing in for $\mathcal D$); labels follow a half-plane, with a fraction $\nu$ flipped. The class is $k$ random half-planes (left, grey; the red one is the worst offender at the chosen $m$ in the first run). **Right:** for 6 independent samples of size up to 1000 (blue), the largest gap $\max_h|L_S(h)-L_{\mathcal D}(h)|$ against $m$, and the guarantee $\sqrt{\ln(2k/\delta)/2m}$ (orange; dashed: for $100k$ classifiers). Multiply $k$ by 100 and the guarantee barely rises, as does the observed gap; none of the runs crosses the orange line (the guarantee holds with probability $1-\delta$ each).`,
+      caption: String.raw`The data are 3000 labelled points in the square (a fixed population standing in for $\mathcal D$); labels follow a half-plane, with a fraction $\nu$ flipped. The class is $k$ random half-planes (left, grey; the red one is the worst offender at the chosen $m$ in the first run). **Right:** for 6 independent samples of size up to 1000 (blue), the largest gap $\max_h|L_S(h)-L_{\mathcal D}(h)|$ against $m$, and the guarantee $\sqrt{\ln(2k/\delta)/2m}$ (orange; dashed: for $100k$ classifiers). Multiply $k$ by 100 and the guarantee rises only slightly (the dashed line); raise $k$ yourself and compare how much the observed gaps move. The runs should stay under the orange line (each does so with probability at least $1-\delta$).`,
       deps: ['ml-4.5', 'ml-2.2', 'ml-4.4'],
       refs: ['UML §4.2'],
       tags: ['finite class', 'union bound'],
@@ -372,13 +372,14 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
       verify: true,
       viz(v) {
         const sA = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'parameter $\\theta_1\\in[0,1)$', ylabel: 'parameter $\\theta_2$', title: 'representable parameters' });
-        const sB = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'number of parameters $d$', ylabel: 'examples sufficient', title: 'the guarantee grows linearly in $bd$' });
+        const sB = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'number of parameters $d$', ylabel: 'examples sufficient (thousands)', title: 'the guarantee grows linearly in $bd$' });
         const bS = v.slider('bits per parameter $b$', 1, 64, 4, { int: true });
         const dS = v.slider('parameters $d$', 1, 100, 10, { int: true });
         const eS = v.slider('$\\varepsilon$', 0.02, 0.3, 0.1, { step: 0.005 });
         const dl = v.slider('$\\delta$', 0.01, 0.5, 0.05, { step: 0.01 });
         const th = sA.handle(0.37, 0.62, { color: 'accent', label: '$\\theta$' });
         const mB = (bits, d, eps, del) => (2 * (bits * d * LN2 + Math.log(2 / del))) / (eps * eps);
+        const mK = (bits, d, eps, del) => mB(bits, d, eps, del) / 1000;
         let info = null;
         v.render(() => {
           const b = bS.value, d = dS.value, eps = eS.value, del = dl.value, n = Math.pow(2, b), bd = Math.min(b, 6), nd = Math.pow(2, bd);
@@ -387,14 +388,14 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
           const rx = rnd(th.x), ry = rnd(th.y);
           sA.segment([th.x, th.y], [rx, ry], { color: 'orange', width: 2 });
           sA.dot(rx, ry, { color: 'green', r: 5 });
-          const ymax = mB(64, 100, eps, del) * 1.05;
+          const ymax = mK(64, 100, eps, del) * 1.05;
           sB.setView([0, 100], [0, ymax]);
-          for (const bb of [8, 16, 32, 64]) { sB.line(0, mB(bb, 0, eps, del), 100, mB(bb, 100, eps, del), { color: 'muted', width: 1.3 }); sB.text(`${bb} bits`, 100, mB(bb, 100, eps, del), { align: 'right', dy: -9, size: 11.5 }); }
-          sB.line(0, mB(b, 0, eps, del), 100, mB(b, 100, eps, del), { color: 'accent', width: 2.8 });
-          sB.dot(d, mB(b, d, eps, del), { color: 'gold', r: 7 });
+          for (const bb of [8, 16, 32, 64]) { sB.line(0, mK(bb, 0, eps, del), 100, mK(bb, 100, eps, del), { color: 'muted', width: 1.3 }); sB.text(`${bb} bits`, 100, mK(bb, 100, eps, del), { align: 'right', dy: -9, size: 11.5 }); }
+          sB.line(0, mK(b, 0, eps, del), 100, mK(b, 100, eps, del), { color: 'accent', width: 2.8 });
+          sB.dot(d, mK(b, d, eps, del), { color: 'gold', r: 7 });
           info = { b, d, m: Math.ceil(mB(b, d, eps, del)), err: Math.max(Math.abs(th.x - rx), Math.abs(th.y - ry)), half: 1 / (2 * n), lnH: b * d * LN2, big: Math.ceil(mB(32, 1e6, eps, del)) };
         });
-        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. Rounding error of $\theta$: $${info.err.toExponential(1)}$ (at most $2^{-b-1}=${info.half.toExponential(1)}$). For comparison, a model of $10^6$ float32 weights would need at most ${info.big.toExponential(2)} examples by this bound at the same $\varepsilon,\delta$.`);
+        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. Rounding error of $\theta$ (largest coordinate): $${v.sci(info.err, 2)}$, at most $2^{-b-1}=${v.sci(info.half, 2)}$. For comparison, a model of $10^6$ float32 weights would need at most $${v.sci(info.big, 2)}$ examples by this bound at the same $\varepsilon,\delta$.`);
       },
     },
   ],

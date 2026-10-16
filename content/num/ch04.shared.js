@@ -100,3 +100,52 @@ export function pade(c, L, M) {
   return { p, q };
 }
 export const polyEvalAsc = (a, x) => { let r = 0; for (let i = a.length - 1; i >= 0; i--) r = r * x + a[i]; return r; };
+
+/** Best type-(n,n) rational approximation to exp(-x) on [0,∞) (Chebyshev/minimax), by a Lawson start and a rational Remez (Newton) polish.
+ *  Works on t = (x-c)/(x+c) ∈ [-1,1] with Chebyshev bases. Returns {E, r (function of x), poles (as [re,im] pairs), n}. Reliable for n ≤ 8. */
+const _Tm = (k, t) => Math.cos(k * Math.acos(Math.max(-1, Math.min(1, t))));
+export function rationalExpBest(n, svd, c = 3, NT = 700) {
+  const ts = Array.from({ length: NT + 1 }, (_, i) => -Math.cos(Math.PI * i / NT));
+  const F = (t) => (t >= 1 ? 0 : Math.exp(-c * (1 + t) / (1 - t)));
+  const f = ts.map(F);
+  const B = ts.map((t) => Array.from({ length: n + 1 }, (_, k) => _Tm(k, t)));
+  const ev = (co, t) => { let s = 0; for (let k = 0; k < co.length; k++) s += co[k] * _Tm(k, t); return s; };
+  let w = ts.map(() => 1 / ts.length), qprev = ts.map(() => 1), sol = null, bestE = Infinity;
+  for (let it = 0; it < 40; it++) {
+    const A = ts.map((t, i) => { const s = Math.sqrt(w[i]) / Math.abs(qprev[i]); return [...B[i].map((b) => b * s), ...B[i].map((b) => -f[i] * b * s)]; });
+    const sv = svd(A), k = sv.S.length - 1, v = sv.V.map((r) => r[k]);
+    const pc = v.slice(0, n + 1), qc = v.slice(n + 1);
+    const qv = B.map((b) => b.reduce((s, x, j) => s + x * qc[j], 0)), pv = B.map((b) => b.reduce((s, x, j) => s + x * pc[j], 0));
+    qprev = qv;
+    const r = f.map((fi, i) => fi - pv[i] / qv[i]), emax = Math.max(...r.map(Math.abs));
+    if (emax < bestE) { bestE = emax; sol = { pc, qc, r }; }
+    let sw = 0; w = w.map((wi, i) => { const x = wi * Math.abs(r[i]); sw += x; return x; }); w = w.map((x) => x / sw);
+  }
+  let { pc, qc, r: err } = sol; const s0 = qc[0]; pc = pc.map((x) => x / s0); qc = qc.map((x) => x / s0);
+  const M2 = 2 * n + 2; let E = bestE;
+  for (let ex = 0; ex < 25; ex++) {
+    const cand = [];
+    for (let i = 0; i <= NT; i++) { const a = Math.abs(err[i]), l = i > 0 ? Math.abs(err[i - 1]) : -1, rr = i < NT ? Math.abs(err[i + 1]) : -1; if (a >= l && a >= rr && a > 0) cand.push(i); }
+    const alt = [];
+    for (const i of cand) { const L = alt[alt.length - 1]; if (L !== undefined && Math.sign(err[L]) === Math.sign(err[i])) { if (Math.abs(err[i]) > Math.abs(err[L])) alt[alt.length - 1] = i; } else alt.push(i); }
+    while (alt.length > M2) { if (Math.abs(err[alt[0]]) < Math.abs(err[alt[alt.length - 1]])) alt.shift(); else alt.pop(); }
+    if (alt.length < M2) break;
+    const rt = alt.map((i) => ts[i]), rf = rt.map(F), sgn0 = Math.sign(err[alt[0]]), sg = rt.map((_, i) => sgn0 * (i % 2 ? -1 : 1));
+    let h = Math.abs(err[alt[0]]);
+    for (let nw = 0; nw < 8; nw++) {
+      const Fv = [], J = [];
+      for (let i = 0; i < M2; i++) {
+        const qi = ev(qc, rt[i]), pi = ev(pc, rt[i]), g = rf[i] - sg[i] * h; Fv.push(pi - g * qi);
+        const row = []; for (let k = 0; k <= n; k++) row.push(_Tm(k, rt[i])); for (let k = 1; k <= n; k++) row.push(-g * _Tm(k, rt[i])); row.push(sg[i] * qi); J.push(row);
+      }
+      const d = solveGE(J, Fv.map((x) => -x)); if (!d) break;
+      for (let k = 0; k <= n; k++) pc[k] += d[k]; for (let k = 1; k <= n; k++) qc[k] += d[n + k]; h += d[2 * n + 1];
+      if (Math.max(...d.map(Math.abs)) < 1e-14 * (1 + Math.abs(h))) break;
+    }
+    err = ts.map((t, i) => f[i] - ev(pc, t) / ev(qc, t));
+    E = Math.max(...err.map(Math.abs));
+    if (E - Math.abs(h) < 1e-7 * E) break;
+  }
+  const r = (x) => { const t = (x - c) / (x + c); return ev(pc, t) / ev(qc, t); };
+  return { E, r, n, c, pc, qc };
+}
