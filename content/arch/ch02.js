@@ -109,7 +109,7 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
         const rise = v.slider('net: corner rise (m)', 0, 3, 1.8, { step: 0.05 });
         const qr = v.slider('net: force density ratio q₁/q₂', 0.25, 4, 1, { log: true });
         const pn = v.slider('net: load per node (kN)', 0, 25, 8, { step: 0.5 });
-        const S = v.stage({ x: [-1.2, 21.2], y: [-10.5, 3.6], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
+        const S = v.stage({ x: [-1.2, 21.2], y: [-9, 3], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
         const F = v.stage({ x: [-5.6, 5.6], y: [-5.4, 5.4], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'force polygon' });
         const sc = v.scene3(F, { yaw: -0.65, pitch: 0.5, axes: false, hint: false, lim: 4 });
         const LS = 20;
@@ -119,7 +119,7 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
         const B = S.handle(LS, 0, { color: 'accent', label: 'B', constrain: (x, y) => [LS, clamp(y, -5, 3)] });
         B.labelPos = 'e';
         const hs = X.map((x0, i) => S.handle(x0, -4, { color: COLS[i], constrain: (x, y) => {
-          const xx = clamp(x, 0.6, LS - 0.6), yn = nodeY(xx); X[i] = xx; P[i] = clamp(Math.round((yn - 0.5 - y) * 10), 5, 80);
+          const xx = clamp(x, 0.6, LS - 0.6), yn = nodeY(xx); X[i] = xx; P[i] = clamp(Math.round((yn - 0.5 - y) * 10), 5, 60);
           return [xx, yn - 0.5 - P[i] / 10];
         } }));
         function solve() {
@@ -164,14 +164,14 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
           S.text('A', 0, 0, { dx: -10, dy: -2, align: 'right', size: 12, weight: 650, color: 'ink' });
           // weights
           st.loads.forEach((l, k) => {
-            const xn = st.xs[k + 1], yn = st.ys[k + 1], side = 0.25 + Math.sqrt(l.P) * 0.07, yb = yn - 0.5 - l.P / 10;
+            const xn = st.xs[k + 1], yn = st.ys[k + 1], side = 0.4 + Math.sqrt(l.P) * 0.12, yb = yn - 0.5 - l.P / 10;
             S.line(xn, yn, xn, yb + side / 2, { color: 'muted', width: 1 });
             S.rect(xn - side / 2, yb - side / 2, xn + side / 2, yb + side / 2, { fill: COLS[l.i], fillAlpha: 0.35, color: COLS[l.i], width: 1.5, radius: 2 });
             hs[l.i].set(xn, yb);
           });
           const labs = st.loads.map((l, k) => ({ x: st.xs[k + 1], y: st.ys[k + 1] - 0.5 - l.P / 10, text: `${l.P} kN`, color: COLS[l.i], weight: 650, r: 10, prefer: [1, 0] }));
           const segL = st.T.map((T, k) => ({ x: (st.xs[k] + st.xs[k + 1]) / 2, y: (st.ys[k] + st.ys[k + 1]) / 2, text: net ? `q = ${(T / Math.hypot(st.xs[k + 1] - st.xs[k], st.ys[k + 1] - st.ys[k])).toFixed(1)} kN/m` : `${T.toFixed(0)} kN`, color: 'red', size: 10.5, r: 2, prefer: [0, -1] }));
-          placeLabels(v, S, [...segL, ...labs, { x: st.xs[kd], y: (st.ys[kd] + (B.y * st.xs[kd]) / LS) / 2, text: `sag ${dmax.toFixed(2)} m`, color: 'green', size: 10.5, r: 1, prefer: [1, 0] }], { points: [[S.X(0), S.Y(0), 12], [S.X(LS), S.Y(B.y), 12]] });
+          placeLabels(v, S, [...segL, ...labs, { x: st.xs[kd], y: (st.ys[kd] + (B.y * st.xs[kd]) / LS) / 2, text: `sag ${dmax.toFixed(2)} m`, color: 'green', size: 10.5, r: 1, prefer: [1, 0] }], { points: [[S.X(0), S.Y(0), 24], [S.X(LS), S.Y(B.y), 24]] });
           if (!net) {
             const tot = st.tot, u = Math.min(8.6 / tot, 8.6 / st.H), xL = -4.4, top = (tot * u) / 2;
             const pts = [top]; st.loads.forEach((l) => pts.push(pts[pts.length - 1] - l.P * u));
@@ -181,7 +181,9 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
             F.line(xL, py, px, py, { color: 'accent', width: 1.5, dash: [5, 4] });
             F.dot(px, py, { r: 4.5, color: 'accent' });
             F.text('O', px, py, { dx: 9, align: 'left', size: 12, weight: 650, color: 'accent' });
-            F.text(`H = ${st.H.toFixed(1)} kN`, (xL + px) / 2, py, { dy: py > 0 ? 13 : -13, align: 'center', size: 11, weight: 650, color: 'accent' });
+            const yb = Math.min(...pts, py) - 0.55;
+            F.line(xL, yb, px, yb, { color: 'accent', width: 1.2 }); for (const xx of [xL, px]) F.line(xx, yb - 0.15, xx, yb + 0.15, { color: 'accent', width: 1.2 });
+            F.text(`H = ${st.H.toFixed(1)} kN`, (xL + px) / 2, yb, { dy: 12, align: 'center', size: 11, weight: 650, color: 'accent' });
             F.text(`ΣP = ${tot} kN`, xL, pts[0], { dx: -6, dy: -10, align: 'left', size: 10.5, color: 'muted' });
           } else {
             const nt = solveNet(), Nmax = Math.max(...nt.N), Nmin = Math.min(...nt.N);
@@ -291,11 +293,11 @@ so the difference, relative to the sag, grows like $(d/L)^2$. At the sag ratios 
       credit: 'Leibniz, Huygens and Johann Bernoulli, 1691',
       tags: ['catenary', 'parabola', 'cables'],
       viz(v) {
-        const sr = v.slider('sag / span', 0.02, 1.5, 0.3, { log: true });
+        const sr = v.slider('sag / span', 0.02, 1.5, 0.7, { log: true });
         const sh = v.slider('deck share of the load per metre', 0, 1, 0.5, { step: 0.01 });
         const chainT = v.toggle('hang a chain of 16 equal links', true);
-        const A = v.stage({ x: [-0.56, 0.56], y: [-0.4, 0.06], equal: true, axes: false, height: 360, weight: 1.25, title: 'equal span and sag' });
-        const Bs = v.stage({ x: [0.02, 1.5], y: [0.001, 60], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 260, xlabel: 'sag / span', ylabel: 'largest gap (% of sag)', title: 'catenary − parabola' });
+        const A = v.stage({ x: [-0.56, 0.56], y: [-0.4, 0.06], equal: true, axes: false, height: 340, weight: 1.25, title: 'equal span and sag' });
+        const Bs = v.stage({ x: [0.02, 1.5], y: [0.003, 50], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'sag / span', ylabel: 'largest gap (% of sag)', title: 'catenary − parabola' });
         const curves = (r) => {
           const a = catA(1, r), c = a * Math.cosh(0.5 / a);
           return { a, cat: (x) => a * Math.cosh(x / a) - c, par: (x) => r * (4 * x * x - 1) };
@@ -333,13 +335,13 @@ so the difference, relative to the sag, grows like $(d/L)^2$. At the sag ratios 
             A.path(ch, { color: 'ink', width: 1, alpha: 0.6 }); A.dots(ch.slice(1, -1), { r: 3.2, color: 'ink' });
           }
           for (const x of [-0.5, 0.5]) A.dot(x, 0, { r: 4, color: 'muted' });
-          A.measure(0.53, 0, 0.53, -r, `d = ${v.fix(r, 3)} L`);
+          A.measure(0, 0, 0, -r, `d = ${v.fix(r, 3)} L`);
           // right: gap vs sag ratio
           Bs.path(GAP, { color: 'red', width: 2.2 });
           const g = maxGap(r);
           Bs.dot(r, g, { r: 5, color: 'red' });
           Bs.path([[0.02, GAP[0][1] / 3], [0.3, (GAP[0][1] / 3) * 225]], { color: 'muted', width: 1, dash: [4, 4] });
-          Bs.text('slope 2', 0.09, (GAP[0][1] / 3) * 20.25, { dx: 6, dy: 10, align: 'left', size: 10.5, color: 'muted' });
+          Bs.text('slope 2', 0.045, (GAP[0][1] / 3) * 5.06, { dx: 4, dy: 12, align: 'left', size: 10.5, color: 'muted' });
           Bs.vline(143 / 1280, { color: 'accent', width: 1, dash: [3, 3] }); Bs.text('Golden Gate', 143 / 1280, 25, { dx: -4, align: 'right', size: 10.5, color: 'accent' });
           let chCat = 0, chPar = 0; if (ch) for (const [x, y] of ch) { chCat = Math.max(chCat, Math.abs(y - cat(x))); chPar = Math.max(chPar, Math.abs(y - par(x))); }
           info = { a, g, chCat: (100 * chCat) / r, chPar: (100 * chPar) / r, mx };
@@ -367,9 +369,9 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
       refs: ['Allen & Zalewski'],
       tags: ['cables', 'sag', 'design'],
       viz(v) {
-        const rS = v.slider('sag ratio d/L', 1 / 30, 1 / 4, 1 / 9, { step: 0.001, fmt: (x) => `1/${(1 / x).toFixed(1)}` });
+        const rS = v.slider('sag ratio d/L', 1 / 30, 1 / 4, 1 / 12, { step: 0.001, fmt: (x) => `1/${(1 / x).toFixed(1)}` });
         const LS = v.slider('span L (m)', 200, 5000, 1280, { step: 10 });
-        const wS = v.slider('deck load w (kN/m, both cables)', 20, 400, 200, { step: 5 });
+        const wS = v.slider('deck load (kN/m)', 20, 400, 200, { step: 5 });
         const kS = v.slider('tower cost weighting (illustrative)', 0, 4, 1, { step: 0.05 });
         const A = v.stage({ x: [-0.12, 1.12], y: [-0.06, 0.36], equal: true, axes: false, height: 330, weight: 1.2, title: 'the cable to scale' });
         const Bs = v.stage({ x: [1 / 32, 1 / 3.6], y: [0, 4.6], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'sag ratio d/L', ylabel: 'per unit of load wL', xticks: [[1 / 30, '1/30'], [1 / 20, '1/20'], [1 / 15, '1/15'], [1 / 10, '1/10'], [1 / 8, '1/8'], [1 / 6, '1/6'], [1 / 4, '1/4']], title: 'tension and cost against sag' });
@@ -384,7 +386,7 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
         let cur = {};
         v.render(() => {
           const r = rS.value, L = LS.value, w = wS.value, D = design(r, L, w), hT = r + CLR / L;
-          A.setView([-0.12, 1.12], [-0.06, Math.max(0.36, hT + 0.05)]);
+          A.setView([-0.16, 1.12], [-0.07, Math.max(0.2, hT + 0.07)]);
           // towers, deck, cable
           A.line(-0.1, 0, 1.1, 0, { color: 'faint', width: 1 });
           for (const x of [0, 1]) A.rect(x - 0.008, 0, x + 0.008, hT, { fill: 'gray', fillAlpha: 0.4, color: 'muted', width: 1 });
@@ -435,11 +437,10 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
       viz(v) {
         const defaults = { gg: 400, ak: 600 };
         const which = v.select('bridge', [{ value: 'gg', label: 'Golden Gate' }, { value: 'ak', label: 'Akashi Kaikyō' }], 'gg', { onChange: (k) => { wS.set(defaults[k]); truck.set(0.62 * BRIDGES[k].L, BRIDGES[k].deck); } });
-        const wS = v.slider('dead load (kN/m, assumed)', 100, 800, 400, { step: 10 });
+        const wS = v.slider('dead load (kN/m)', 100, 800, 400, { step: 10 });
         const PS = v.slider('truck (MN)', 0, 20, 6, { step: 0.5 });
         const s = v.stage({ x: [-450, 1730], y: [-20, 260], height: 360, full: true, axes: false, title: 'elevation (vertical scale exaggerated)' });
-        const truck = s.handle(900, 67, { color: 'gold', label: 'truck', constrain: (x) => { const b = BRIDGES[which.value]; return [clamp(x, 0.03 * b.L, 0.97 * b.L), b.deck]; } });
-        truck.labelPos = 'n';
+        const truck = s.handle(900, 67, { color: 'gold', constrain: (x) => { const b = BRIDGES[which.value]; return [clamp(x, 0.03 * b.L, 0.97 * b.L), b.deck]; } });
         function model(b, w, P, xP) {
           const n = 20, nodes = [], el = [], sup = {}, loads = {};
           const add = (x, y) => (nodes.push({ x, y }), nodes.length - 1);
@@ -463,7 +464,7 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
           const b = BRIDGES[which.value];
           truck.y = b.deck; truck.x = clamp(truck.x, 0.03 * b.L, 0.97 * b.L);
           s.setView([-b.side - 0.04 * b.L, b.L + b.side + 0.04 * b.L], [-0.1 * b.top, 1.16 * b.top]);
-          const P = PS.value * 1000, M = model(b, wS.value, P, truck.x), sol = M.sol; cur = { b, M };
+          const P = PS.value * 1000, M = model(b, wS.value, P, truck.x), sol = M.sol; cur = { b, M, M0: P > 0 ? model(b, wS.value, 0, 0) : M };
           s.rect(-b.side - 0.1 * b.L, -0.1 * b.top, b.L + b.side + 0.1 * b.L, 0, { fill: 'blue', fillAlpha: 0.08, stroke: false });
           const Nmax = Math.max(...sol.el.map((e) => Math.abs(internal(e, 0).N)));
           const order = ['deck', 'hanger', 'tower', 'cable'];
@@ -475,14 +476,14 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
           });
           for (const k of [M.aL, M.aR]) { const p = sol.nodes[k]; s.rect(p.x - 0.025 * b.L, p.y - 0.11 * b.top, p.x + 0.025 * b.L, p.y + 0.02 * b.top, { fill: 'gray', fillAlpha: 0.45, color: 'muted', width: 1 }); }
           // truck arrow
-          if (P > 0) { s.arrow(truck.x, b.deck + 0.2 * b.top, truck.x, b.deck + 0.02 * b.top, { color: 'gold', width: 3 }); }
+          if (P > 0) { s.arrow(truck.x, b.deck + 0.2 * b.top, truck.x, b.deck + 0.03 * b.top, { color: 'gold', width: 3 }); s.text(`truck ${PS.value} MN`, truck.x, b.deck + 0.2 * b.top, { dy: -9, align: 'center', size: 10.5, weight: 650, color: 'gold' }); }
           // labels
           const H = internal(sol.el.find((e) => e.part === 'main'), 0).N * Math.cos(Math.atan2(sol.nodes[M.cab[1]].y - b.top, sol.nodes[M.cab[1]].x));
           const tow = internal(sol.el[1], 0).N, back = internal(sol.el[4], 0).N;
           placeLabels(v, s, [
             { x: b.L / 2, y: b.top - b.sag, text: `main cable: H = ${MN(H)}`, color: 'red', weight: 650, prefer: [0, -1], r: 3 },
             { x: 0, y: b.top, text: `tower ${MN(-tow)} compression`, color: 'blue', weight: 650, prefer: [1, -1], r: 6 },
-            { x: -b.side / 2, y: (b.top + b.deck) / 2, text: `back-stay ${MN(back)}`, color: 'red', prefer: [-1, -1], r: 3 },
+            { x: -b.side / 2, y: (b.top + b.deck) / 2, text: `back-stay ${MN(back)}`, color: 'red', prefer: [-1, 0], r: 3 },
             { x: b.L / 2, y: b.deck, text: `${b.name}: span ${b.L.toLocaleString('en-US')} m, sag ${b.sag} m (${b.sagNote})`, color: 'muted', size: 10.5, prefer: [0, 2], r: 2 },
           ]);
           const ex = (s.height / (1.26 * b.top)) / (s.width / (b.L + 2 * b.side + 0.08 * b.L));
@@ -490,11 +491,11 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
           v.legend([['red', 'tension (thickness ∝ force)'], ['blue', 'compression'], ['muted', 'deck (a beam)'], ['gold', 'truck (drag it)']]);
         });
         v.readout(() => {
-          const { b, M } = cur, sol = M.sol, w = wS.value;
-          const main = sol.el.filter((e) => e.part === 'main'), e0 = main[0], ang = Math.atan2(sol.nodes[e0.j].y - sol.nodes[e0.i].y, sol.nodes[e0.j].x - sol.nodes[e0.i].x);
-          const Hf = internal(e0, 0).N * Math.cos(ang), Hform = (w * b.L * b.L) / (8 * b.sag), Tmax = Math.max(...main.map((e) => internal(e, 0).N));
+          const { b, M, M0 } = cur, sol = M.sol, w = wS.value;
+          const Hof = (S) => { const e0 = S.el.find((e) => e.part === 'main'), ang = Math.atan2(S.nodes[e0.j].y - S.nodes[e0.i].y, S.nodes[e0.j].x - S.nodes[e0.i].x); return internal(e0, 0).N * Math.cos(ang); };
+          const main = sol.el.filter((e) => e.part === 'main'), H0 = Hof(M0.sol), Hf = Hof(sol), Hform = (w * b.L * b.L) / (8 * b.sag), Tmax = Math.max(...main.map((e) => internal(e, 0).N));
           const sig = Tmax / b.A / 1000, mBase = Math.abs(sol.R[M.bL][2]) / 1000;
-          return `Frame solution: cable $H$ = **${MN(Hf)}** vs $wL^2/8d$ = ${MN(Hform)} (${v.fix(100 * (Hf / Hform - 1), 1)}%, the deck carries the rest by bending) · cable tension at the tower ${MN(Tmax)} → stress **${sig.toFixed(0)} MPa** in ${b.A.toFixed(2)} m² of wire (strength ${b.fu.toLocaleString('en-US')} MPa, i.e. ${(100 * sig / b.fu).toFixed(0)}%) · anchorage pull ${MN(Math.hypot(...sol.R[M.aL].slice(0, 2)))} · left tower base moment ${v.fmt(mBase, 3)} MN·m.`;
+          return `Dead load alone: frame $H$ = **${MN(H0)}** vs $wL^2/8d$ = ${MN(Hform)} (${v.fix(100 * (H0 / Hform - 1), 1)}%: the deck takes a sliver by bending) · the truck adds ${MN(Hf - H0, 2)} · cable tension at the tower ${MN(Tmax)} → stress **${sig.toFixed(0)} MPa** in ${b.A.toFixed(2)} m² of wire (strength ${b.fu.toLocaleString('en-US')} MPa, i.e. ${(100 * sig / b.fu).toFixed(0)}%) · anchorage pull ${MN(Math.hypot(...sol.R[M.aL].slice(0, 2)))} · left tower base moment ${v.fmt(mBase, 3)} MN·m.`;
         });
       },
     },
@@ -517,8 +518,8 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
         const PRE = { gg: { name: 'Golden Gate', L: 1280, h: 7.6 }, bw: { name: 'Bronx–Whitestone', L: 701, h: 3.35 }, tn: { name: 'Tacoma Narrows 1940', L: 853, h: 2.44 } };
         const pre = v.select('deck', [{ value: 'gg', label: 'Golden Gate (25 ft truss, 1:168)' }, { value: 'bw', label: 'Bronx–Whitestone (11 ft, 1:209)' }, { value: 'tn', label: 'Tacoma 1940 (8 ft, 1:350)' }], 'tn', { onChange: (k) => hS.set(PRE[k].h) });
         const hS = v.slider('deck depth (m)', 1, 16, 2.44, { step: 0.01 });
-        const xS = v.slider('truck position (fraction of span)', 0.05, 0.95, 0.27, { step: 0.005 });
-        const PS = v.slider('truck load (MN, spread over 30 m)', 0.5, 8, 3, { step: 0.1 });
+        const xS = v.slider('truck at (× span)', 0.05, 0.95, 0.27, { step: 0.005 });
+        const PS = v.slider('truck (MN on 30 m)', 0.5, 8, 3, { step: 0.1 });
         const A = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 230, full: true, title: 'deck deflection (exaggerated)' });
         const B = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'position along the span (fraction)', ylabel: 'deck moment (MN·m)' });
         const W = 150, E = 2e8, EcAcPerH = 1 / 0.003; // kN/m dead load; kPa; cable sized to work at ≈ 600 MPa (strain 0.003)
@@ -545,14 +546,14 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
           const dt = solveDeck(L, depth, xS.value, P, true), et = solveDeck(L, depth, xS.value, P, false); cur = { dt, et, L, depth };
           const xs = dt.v.map((_, i) => i / (dt.n + 1));
           const vmax = Math.max(...et.v.map(Math.abs), ...dt.v.map(Math.abs), 1e-9), k = 0.6 / vmax;
-          A.setView([-0.02, 1.02], [-0.85, 0.35]);
+          A.setView([-0.02, 1.02], [-0.8, 0.95]);
           A.line(0, 0, 1, 0, { color: 'faint', width: 1, dash: [4, 4] });
           A.path(xs.map((x, i) => [x, -k * et.v[i]]), { color: 'orange', width: 2.2 });
           A.path(xs.map((x, i) => [x, -k * dt.v[i]]), { color: 'green', width: 2.6 });
           A.rect(xS.value - 15 / L, 0.03, xS.value + 15 / L, 0.13, { fill: 'gold', fillAlpha: 0.5, color: 'gold', width: 1.4, radius: 2 });
           A.arrow(xS.value, 0.3, xS.value, 0.15, { color: 'gold', width: 2.4 });
           for (const x of [0, 1]) drawSupport(v, A, x, 0, 'pin');
-          A.corner(`${PRE[pre.value].name}: span ${L} m, depth ${depth.toFixed(2)} m (1:${(L / depth).toFixed(0)})`, 'tl', { color: 'muted' });
+          A.corner(`${PRE[pre.value].name}: span ${L} m, depth ${depth.toFixed(2)} m (1:${(L / depth).toFixed(0)})`, 'bl', { color: 'muted' });
           const Mx = Math.max(...et.M.map(Math.abs), ...dt.M.map(Math.abs)) / 1000 * 1.12;
           B.setView([0, 1], [-Mx, Mx]);
           B.hline(0, { color: 'faint', width: 1 });
@@ -582,12 +583,11 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
       tags: ['bridges', 'cable-stayed'],
       viz(v) {
         const lay = v.select('layout', [{ value: 'fan', label: 'fan' }, { value: 'harp', label: 'harp' }], 'fan');
-        const hS = v.slider('pylon height above deck (m)', 40, 140, 80, { step: 1 });
+        const hS = v.slider('pylon height (m)', 40, 140, 80, { step: 1 });
         const nS = v.slider('stays per side', 3, 12, 7, { int: true });
         const qS = v.slider('traffic patch (kN/m over 60 m)', 0, 200, 80, { step: 5 });
         const s = v.stage({ x: [-215, 215], y: [-45, 160], equal: true, axes: false, height: 340, full: true, title: 'single-pylon cable-stayed bridge, 2 × 200 m' });
-        const patch = s.handle(90, 0, { color: 'gold', label: 'traffic', constrain: (x) => [clamp(x, -170, 170), 0] });
-        patch.labelPos = 's';
+        const patch = s.handle(90, 0, { color: 'gold', constrain: (x) => [clamp(x, -170, 170), 0] });
         const L = 200, QD = 150, BASE = -35;
         function model(type, h, n, xp, ql) {
           const nodes = [], el = [], sup = {}, loads = {}, add = (x, y) => (nodes.push({ x, y }), nodes.length - 1);
@@ -597,7 +597,7 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
           const base = add(0, BASE);
           const tops = []; // pylon anchor nodes (bottom to top)
           if (type === 'fan') tops.push(add(0, h)); else for (let k = 1; k <= n; k++) tops.push(add(0, (h * xs[k - 1]) / xs[n - 1]));
-          const DK = { EA: 3e8, EI: 4e6, kind: 'deck' }, PY = { EA: 6e8, EI: 3e8, kind: 'pylon' }, ST = { EA: 195e6 * 0.012, EI: 1, kind: 'stay' };
+          const DK = { EA: 3e8, EI: 1e6, kind: 'deck' }, PY = { EA: 6e8, EI: 3e8, kind: 'pylon' }, ST = { EA: 195e6 * 0.02, EI: 1, kind: 'stay' };
           for (let k = 0; k + 1 < dk.length; k++) { const xm = (dx[k] + dx[k + 1]) / 2; el.push({ i: dk[k], j: dk[k + 1], ...DK, q: -(QD + (Math.abs(xm - xp) <= 30 ? ql : 0)) }); }
           el.push({ i: base, j: mid, ...PY }); let prev = mid; for (const t of tops) { el.push({ i: prev, j: t, ...PY }); prev = t; }
           for (let k = 0; k < n; k++) {
@@ -610,7 +610,7 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
         let cur = null;
         v.render(() => {
           const h = hS.value, n = nS.value, M = model(lay.value, h, n, patch.x, qS.value), sol = M.sol; cur = M;
-          s.setView([-215, 215], [-48, Math.max(150, h + 18)]);
+          s.setView([-215, 215], [-48, h + 22]);
           s.rect(-215, BASE - 15, 215, BASE, { fill: 'blue', fillAlpha: 0.08, stroke: false });
           const stays = sol.el.filter((e) => e.kind === 'stay'), Ns = stays.map((e) => internal(e, 0).N), Smax = Math.max(...Ns);
           const deck = sol.el.filter((e) => e.kind === 'deck'), Nd = deck.map((e) => internal(e, (e.L) / 2).N), Dmax = Math.max(...Nd.map(Math.abs), 1);
@@ -633,10 +633,10 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
         });
         v.readout(() => {
           const M = cur, sol = M.sol, stays = sol.el.filter((e) => e.kind === 'stay');
-          const out = stays.find((e) => e.k === nS.value - 1 && e.side === -1), a = sol.nodes[out.i], c = sol.nodes[out.j], sinT = (c.y - a.y) / Math.hypot(c.x - a.x, c.y - a.y);
+          const out = stays.find((e) => e.k === Math.floor(nS.value / 2) && e.side === -1), a = sol.nodes[out.i], c = sol.nodes[out.j], sinT = (c.y - a.y) / Math.hypot(c.x - a.x, c.y - a.y);
           const W = QD * (L / nS.value), hand = W / sinT, Nout = internal(out, 0).N;
           const pyl = sol.el.find((e) => e.kind === 'pylon'), Mbase = Math.abs(sol.R[M.base][2]) / 1000;
-          return `Outer stay (θ = ${(Math.asin(sinT) * 180 / Math.PI).toFixed(1)}°): frame **${MN(Nout)}**, hand rule $W/\\sin\\theta$ = ${MN(hand)} for its ${(L / nS.value).toFixed(0)} m of dead load · total stay tension ${MN(stays.reduce((acc, e) => acc + internal(e, 0).N, 0))} · pylon base: ${MN(-internal(pyl, 0).N)} compression, bending moment **${v.fmt(Mbase, 3)} MN·m** (${lay.value}).`;
+          return `Middle stay on the left (θ = ${(Math.asin(sinT) * 180 / Math.PI).toFixed(1)}°): frame **${MN(Nout)}**, hand rule $W/\\sin\\theta$ = ${MN(hand)} for its ${(L / nS.value).toFixed(0)} m of dead load · total stay tension ${MN(stays.reduce((acc, e) => acc + internal(e, 0).N, 0))} · pylon base: ${MN(-internal(pyl, 0).N)} compression, bending moment **${v.fmt(Mbase, 3)} MN·m** (${lay.value}).`;
         });
       },
     },

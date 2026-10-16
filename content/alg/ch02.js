@@ -64,8 +64,8 @@ Then $S(n)$ is true for every integer $n\ge n_0$.`,
         };
         v.animate((t) => {
           const L = layout(), { c, n0, xs } = L;
-          s.setView([Math.min(0.2, xs[n0] - 1.25), xs[NMAX] + 1.6], [-0.75, 2.3]);
-          s.line(0.3, 0, xs[NMAX] + 1.5, 0, { color: 'muted', width: 1.5 });
+          s.setView([Math.min(0.2, xs[n0] - 1.25), xs[NMAX] + 1.95], [-0.75, 2.3]);
+          s.line(0.3, 0, xs[NMAX] + 1.9, 0, { color: 'muted', width: 1.5 });
           for (let k = 1; k <= NMAX; k++) {
             const x = xs[k], active = k >= n0, truth = c.S(k);
             let phi = 0;
@@ -252,7 +252,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
             const m = I.least, pos = Math.min(m, lo + Math.floor(t / 0.09));
             if (pos > lo) s.rect(lo - 0.4, -0.22, pos - 0.6, 0.22, { fill: 'green', fillAlpha: 0.22, stroke: false });
             s.arrow(pos, 1.85, pos, 1.05, { color: 'gold', width: 2.6 });
-            if (pos === m) { s.circle(m, 0.75, 0.55, { color: 'gold', width: 2.6, fill: false }); s.text(`least element ${sub(m)}`, m, 1.9, { dx: 10, align: 'left', size: 12.5, weight: 700, color: 'gold' }); }
+            if (pos === m) { s.dot(m, 0.75, { r: 11, hollow: true, color: 'gold' }); s.text(`least element ${sub(m)}`, m, 1.9, { dx: 10, align: 'left', size: 12.5, weight: 700, color: 'gold' }); }
             else s.text(`checking ${sub(pos)}`, pos, 1.9, { dx: 8, align: 'left', size: 11.5, color: 'muted' });
           } else if (mem.length) {
             const desc = mem.slice().reverse(), cyc = desc.length + 4, i = Math.floor(t / 0.3) % cyc;
