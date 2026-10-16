@@ -2,7 +2,7 @@
 // The network engine, least squares and piecewise-linear algebra are chapter 1's (ch01.shared.js), re-exported here so
 // that each chapter file still imports from its own shared module only.
 export * from './ch01.shared.js';
-import { forward, sigm } from './ch01.shared.js';
+import { forward } from './ch01.shared.js';
 
 /** Sparse-table range max/min over an array, for the modulus of continuity ω(δ) = sup_{|x−y|≤δ} |f(x) − f(y)|. */
 export function modulus(vals) {
@@ -30,4 +30,4 @@ export const tent = (x, p = 0.5) => (x <= p ? x / p : (1 - x) / (1 - p));
 export function sawtooth(x, k, p = 0.5) { for (let i = 0; i < k; i++) x = tent(Math.min(1, Math.max(0, x)), p); return x; }
 /** Yarotsky's approximation of x² on [0,1]: f_m(x) = x − Σ_{s=1}^m g_s(x)/4^s, with g_s the s-fold symmetric tent. */
 export function yarotsky(x, m) { let s = x, g = x; for (let i = 1; i <= m; i++) { g = tent(g); s -= g / 4 ** i; } return s; }
-export { sigm };
+

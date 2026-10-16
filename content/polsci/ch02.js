@@ -269,7 +269,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         const Bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, minWidth: 400, weight: 1.35, title: 'plurality count, and with each candidate withdrawn' });
         const wS = v.slider('voters on the left', 0.25, 0.6, 0.41, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
         const ball = v.select('on the ballot', [{ value: -1, label: 'all three' }, { value: 2, label: 'C withdraws' }, { value: 1, label: 'B withdraws' }, { value: 0, label: 'A withdraws' }], -1);
-        const YA = 0.1, H = [[30, 'A'], [61, 'B'], [71, 'C']].map(([x, l], k) => S.handle(x, YA, { color: CC[k], r: 9, label: l, labelPos: 's', constrain: (x2) => [clamp(x2, 2, 98), YA] }));
+        const YA = 0.17, H = [[30, 'A'], [61, 'B'], [71, 'C']].map(([x, l], k) => S.handle(x, YA, { color: CC[k], r: 9, label: l, labelPos: 's', constrain: (x2) => [clamp(x2, 2, 98), YA] }));
         const NV = 200, gauss = (x, mu, sd) => Math.exp(-0.5 * ((x - mu) / sd) ** 2) / sd;
         const dens = (x) => wS.value * gauss(x, 30, 11) + (1 - wS.value) * gauss(x, 68, 10);
         const voters = () => {
@@ -287,19 +287,19 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         v.render(() => {
           const Mo = model(), out = +ball.value, al = range(3).filter((c) => c !== out), c = S.ctx;
           let fmax = 0; for (let x = 0; x <= 100; x += 0.5) fmax = Math.max(fmax, dens(x));
-          const fy = (x) => 0.24 + (0.6 * dens(x)) / fmax;
+          const fy = (x) => 0.3 + (0.55 * dens(x)) / fmax;
           const xs = al.map((k) => H[k].x), srt = al.slice().sort((a, b) => H[a].x - H[b].x);
           const cuts = []; for (let k = 0; k + 1 < srt.length; k++) cuts.push((H[srt[k]].x + H[srt[k + 1]].x) / 2);
           const edges = [0, ...cuts, 100];
           srt.forEach((k, i) => {
-            S.fn(fy, { domain: [edges[i], edges[i + 1]], color: CC[k], width: 2, fill: CC[k], fillAlpha: 0.3, base: 0.24 });
+            S.fn(fy, { domain: [edges[i], edges[i + 1]], color: CC[k], width: 2, fill: CC[k], fillAlpha: 0.3, base: 0.3 });
             const share = Mo.cur.t[k], mid = (edges[i] + edges[i + 1]) / 2;
             S.text(`${LET[k]} ${pct(share, NV)}`, mid, 0.93, { size: 13, weight: 800, color: CC[k], align: 'center' });
           });
-          cuts.forEach((x) => S.line(x, 0.18, x, 0.88, { color: 'muted', dash: [4, 4], width: 1.2 }));
+          cuts.forEach((x) => S.line(x, 0.26, x, 0.88, { color: 'muted', dash: [4, 4], width: 1.2 }));
           S.line(0, YA, 100, YA, { color: 'muted', width: 1.5 });
-          S.text('← left', 1, 0.18, { size: 10.5, color: 'muted', weight: 600 });
-          S.text('right →', 99, 0.18, { size: 10.5, color: 'muted', weight: 600, align: 'right' });
+          S.text('← left', 1, 0.25, { size: 10.5, color: 'muted', weight: 600 });
+          S.text('right →', 99, 0.25, { size: 10.5, color: 'muted', weight: 600, align: 'right' });
           if (out >= 0) S.text('withdrawn', H[out].x, YA, { dy: -16, size: 10.5, weight: 700, color: 'red', align: 'center' });
           const w = Mo.cur.win;
           if (w.length === 1) S.text('plurality winner', H[w[0]].x, YA, { dy: -16, size: 10.5, weight: 700, color: 'gold', align: 'center' });
@@ -326,7 +326,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
             });
             hlinePx(v, bc, x0, x1, base - (0.5 / YM) * (base - top), 'red', [4, 3], 1);
           });
-          txt(v, bc, '50%', BW - 8, BH - 36 - (0.5 / YM) * (BH - 36 - 52) - 8, { size: 9.5, weight: 700, color: 'red', align: 'right' });
+          txt(v, bc, 'half', 16, BH - 36 - (0.5 / YM) * (BH - 36 - 52) - 8, { size: 9.5, weight: 700, color: 'red', align: 'left', halo: true });
         });
         v.legend([['gold', 'plurality winner', { dot: true }], ['red', 'Condorcet loser / majority line', { dot: true }], ['green', 'Condorcet winner', { dot: true }]]);
         v.readout(() => {

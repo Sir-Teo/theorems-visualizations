@@ -154,7 +154,7 @@ Firing proceeds through stages. Pore water leaves below about 200 °C. Between a
           B.text(`dehydroxylated ${Math.round(100 * a)}%`, tMax * 0.99, Math.min(0.94, a - 0.06), { size: 11.5, color: 'orange', align: 'right', weight: 700 });
           B.text(`porosity ${Math.round(100 * P)}% (from ${Math.round(100 * P0)}%)`, tMax * 0.99, Math.abs(P / P0 - a) < 0.15 ? Math.max(0.05, Math.min(a, P / P0) - 0.2) : Math.max(0.05, P / P0 - 0.07), { size: 11.5, color: 'accent', align: 'right', weight: 700 });
           // ---- C: particles packed closer by densification: linear shrinkage from (1 − P0)/(1 − P) = (L0/L)^3
-          const s = Math.cbrt((1 - P0) / (1 - P)), sp = 0.17 * s, r0 = 0.066 + 0.035 * (1 - P / P0);
+          const s = Math.cbrt((1 - P0) / (1 - P)), sp = 0.17 * s, r0 = 0.066 + 0.012 * (1 - P / P0);
           C.rect(0.02, 0.05, 1.02, 1.0, { color: 'faint', width: 1 });
           C.clip(() => {
             for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) {
