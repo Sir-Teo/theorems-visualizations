@@ -175,7 +175,7 @@ export default {
           s.text('server $A$', 0.2, 9.8, { color: 'accent', size: 13 }); s.text('server $B$', 0.2, 9.0, { color: 'orange', size: 13 });
           s.text('true time', 10.4, 10.4, { align: 'right', size: 11.5, color: 'muted' });
           s.line(t1, s1, 11, s1, { color: 'accent', width: 1.6, dash: [6, 4] }); s.text('$s_1$', 10.9, s1, { align: 'right', baseline: info0 ? 'top' : 'bottom', dy: info0 ? 3 : -3, size: 14, color: 'accent', halo: true });
-          s.dot(t1, s1, { r: 7, color: 'accent' }); s.text('$T_1$ picks $s_1=\\mathrm{TT.now()}.\\mathrm{latest}$', t1, s1, { align: 'right', baseline: 'bottom', dx: -10, dy: -8, size: 12, color: 'accent', halo: true });
+          s.dot(t1, s1, { r: 7, color: 'accent' }); s.text('$T_1$ picks $s_1=\\mathrm{TT.now()}.\\mathrm{latest}$', 0.12, s1, { align: 'left', baseline: 'bottom', dy: -10, size: 12, color: 'accent', halo: true });
           if (wait.value) { s.line(t1, t1 + a - e, w1, w1 + a - e, { color: 'green', width: 7, alpha: 0.7 }); s.dot(w1, s1, { r: 8, color: 'green' }); s.text('commit wait ends', w1, s1, { align: 'left', baseline: 'top', dx: 8, dy: 8, size: 12, color: 'green', halo: true }); }
           s.vline(done, { color: 'gold', width: 1.6, dash: [3, 4] }); s.text('$T_1$ visible', done, 0.3, { align: 'left', dx: 5, size: 12, color: 'gold', halo: true });
           s.line(t2, s2, 11, s2, { color: 'orange', width: 1.6, dash: [6, 4] }); s.text('$s_2$', 10.9, s2, { align: 'right', baseline: info0 ? 'bottom' : 'top', dy: info0 ? -3 : 3, size: 14, color: 'orange', halo: true });

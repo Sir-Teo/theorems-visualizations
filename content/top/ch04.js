@@ -66,7 +66,7 @@ export default {
           }
           info = res;
         });
-        v.legend([['blue', 'open sets of the cover'], ['green', 'a finite subcover'], ['red', 'points left uncovered']]);
+        v.legend([['blue', 'open sets of the cover'], ['teal', 'a finite subcover (bottom, coloured)'], ['red', 'points left uncovered']]);
         v.readout(() => {
           if (!info) return '';
           if (info.mode === 'half') return `With $N=${N.value}$ sets $(1/n,2)$ the point $1/N=${v.fix(info.gap, 3)}\\in(0,1]$ is **not covered**, and neither is anything below it. A finite subfamily of this cover always lies inside its largest member, so $(0,1]$ has **no finite subcover**: not compact.`;
@@ -89,7 +89,7 @@ export default {
       tags: ['compactness', 'closed sets'],
       viz(v) {
         const sel = v.select('subset $C$', [{ value: 'closed', label: 'closed: three pieces' }, { value: 'open', label: 'not closed: $(0.1,0.9)$' }], 'closed', { onChange: () => S.reset({ at: 'start' }) });
-        const s = v.stage({ x: [-0.1, 1.1], y: [0, 1.02], axes: false, height: 340 });
+        const s = v.stage({ x: [-0.1, 1.1], y: [-0.08, 1.02], axes: false, height: 340 });
         const P = [[0.1, 0.3], [0.45, 0.55], [0.7, 0.9]];
         const G = [[-0.3, 0.1], [0.3, 0.45], [0.55, 0.7], [0.9, 1.3]];
         const frames = () => {
@@ -119,12 +119,12 @@ export default {
           s.line(0, 0.05, 1, 0.05, { color: 'muted', width: 2 });
           if (!cOpen) for (const [a, b] of P) s.interval(a, b, 0.05, { color: 'accent', width: 8, r: 4 });
           else s.interval(0.1, 0.9, 0.05, { color: 'accent', width: 8, r: 4, open: [true, true] });
-          s.text('$X=[0,1]$', 1.02, 0.05, { align: 'left', size: 12, color: 'muted' });
+          s.text('$X=[0,1]$', 0.5, -0.03, { align: 'center', size: 12, color: 'muted' });
           const all = [...f.A, ...f.G], pk = new Set(f.pick);
-          drawBars(s, all, (i) => (i < f.A.length ? i : f.A.length + 0), 0.12, 0.012, (i) => (pk.size && !pk.has(i) ? null : i < f.A.length ? 'blue' : 'orange'), { width: 3, alpha: pk.size ? 1 : 0.5, r: 2.4 });
+          drawBars(s, all, (i) => (i < f.A.length ? i : f.A.length + 0), 0.12, 0.016, (i) => (pk.size && !pk.has(i) ? null : i < f.A.length ? 'blue' : 'orange'), { width: 3, alpha: pk.size ? 1 : 0.5, r: 2.4 });
           if (pk.size) {
             const list = [...pk];
-            list.forEach((i, k) => { const [a, b] = all[i]; const y = 0.5 + 0.06 * k; s.line(Math.max(a, -0.08), y, Math.min(b, 1.08), y, { color: i < f.A.length ? 'blue' : 'orange', width: 5, cap: 'butt' }); });
+            list.forEach((i, k) => { const [a, b] = all[i]; const y = 0.55 + Math.min(0.045, 0.42 / list.length) * k; s.line(Math.max(a, -0.08), y, Math.min(b, 1.08), y, { color: i < f.A.length ? 'blue' : 'orange', width: 5, cap: 'butt' }); });
           }
           if (f.bad && !f.gap) { s.rect(0, 0.03, 0.1, 0.07, { color: 'red', width: 1.8, dash: true }); s.rect(0.9, 0.03, 1, 0.07, { color: 'red', width: 1.8, dash: true }); }
           if (f.gap) s.rect(0.1, 0.0, 0.1 + 0.8 / (f.A.length + 1), 0.1, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.2 });
@@ -143,7 +143,7 @@ export default {
       name: 'Compact subsets of Hausdorff spaces are closed',
       statement: String.raw`Let $X$ be a Hausdorff space and $K\subset X$ compact. Then $K$ is closed in $X$. More precisely, for every $p\in X\setminus K$ there are disjoint open sets $U\supset K$ and $V\ni p$.`,
       idea: String.raw`For each $k\in K$ the Hausdorff property gives disjoint open sets $U_k\ni k$ and $V_k\ni p$. The $U_k$ cover $K$, so finitely many, $U_{k_1},\dots,U_{k_m}$, suffice. Put $U=\bigcup U_{k_i}$ and $V=\bigcap V_{k_i}$: the union is an open set containing $K$, the *finite* intersection is an open neighbourhood of $p$, and $U\cap V=\varnothing$. The step that needs compactness is that the intersection is finite. In the cofinite topology (not Hausdorff) every subset is compact and the construction collapses: nonempty open sets meet.`,
-      caption: String.raw`The blob is the compact set $K\subset\R^2$; drag $p$ outside it. Every $k\in K$ gets a ball of radius $|pk|/2$ (so the ball at $k$ and the ball at $p$ of the same radius are disjoint). A greedy finite family of these balls (orange) covers $K$; the intersection of the matching balls around $p$ is the green disc, an open neighbourhood of $p$ missing $K$. In the cofinite line the same attempt fails: a neighbourhood of $p$ is everything except finitely many points, so it meets an infinite set $K$.`,
+      caption: String.raw`The blob is the compact set $K\subset\R^2$; drag $p$ outside it. Every $k\in K$ gets a ball of radius $r_k=\min(|pk|/2,\text{cap})$ (so the ball at $k$ and the ball at $p$ of the same radius are disjoint). A greedy finite family of these balls (orange) covers $K$; the intersection of the matching balls around $p$ is the green disc, an open neighbourhood of $p$ missing $K$. In the cofinite line the same attempt fails: a neighbourhood of $p$ is everything except finitely many points, so it meets an infinite set $K$.`,
       deps: ['top-4.1', 'top-1.11'],
       see: ['pma-2.34', 'rca-2.5a'],
       refs: ['Munkres §26'],
@@ -151,15 +151,16 @@ export default {
       viz(v) {
         const sp = v.select('space', [{ value: 'plane', label: '$\\R^2$ (Hausdorff)' }, { value: 'cof', label: 'cofinite topology (not Hausdorff)' }], 'plane');
         const nK = v.slider('points of $K$ drawn (cofinite mode)', 3, 40, 14, { int: true });
+        const cap = v.slider('largest ball radius', 0.2, 1.6, 0.5, { step: 0.05 });
         const s = v.stage({ x: [-2.7, 2.7], y: [-1.7, 1.7], equal: true, axes: false, height: 360 });
         const K = v.M.blob(-0.9, 0, 0.95, 3, 0.3, 120);
         const pts = [];
         for (let x = -2.1; x <= 0.4; x += 0.1) for (let y = -1.3; y <= 1.3; y += 0.1) if (v.M.pointInPoly([x, y], K)) pts.push([x, y]);
         const hp = s.handle(1.5, 0.6, { color: 'gold', label: 'p', labelPos: 'ne', r: 7 });
         let cache = { key: '', val: null };
-        const separate = (p) => {
-          const key = p[0].toFixed(2) + ',' + p[1].toFixed(2); if (cache.key === key) return cache.val;
-          const n = pts.length, rr = pts.map((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) / 2), unc = new Uint8Array(n).fill(1), picks = [];
+        const separate = (p, cp) => {
+          const key = p[0].toFixed(2) + ',' + p[1].toFixed(2) + ',' + cp; if (cache.key === key) return cache.val;
+          const n = pts.length, rr = pts.map((q) => Math.min(cp, Math.hypot(q[0] - p[0], q[1] - p[1]) / 2)), unc = new Uint8Array(n).fill(1), picks = [];
           let left = n;
           while (left > 0 && picks.length < 80) {
             let best = -1, bc = 0;
@@ -173,13 +174,13 @@ export default {
         };
         let info = null;
         v.render(() => {
-          const cof = sp.value === 'cof'; nK.el.hidden = !cof; hp.visible = !cof;
+          const cof = sp.value === 'cof'; nK.el.hidden = !cof; cap.el.hidden = cof; hp.visible = !cof;
           if (!cof) {
             s.poly(K, { fill: 'blue', fillAlpha: 0.25, color: 'blue', width: 2 });
             s.text('$K$', -0.9, 0, { size: 16, color: 'blue' });
             const p = [hp.x, hp.y];
             if (v.M.pointInPoly(p, K)) { info = { inside: true }; return; }
-            const R = separate(p);
+            const R = separate(p, cap.value);
             for (const k of R.picks) { const q = pts[k]; s.circle(q[0], q[1], Math.hypot(q[0] - p[0], q[1] - p[1]) / 2, { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 1.2 }); s.dot(q[0], q[1], { r: 2.5, color: 'orange' }); }
             s.circle(p[0], p[1], R.vr, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 2.4 });
             info = { m: R.picks.length, vr: R.vr, left: R.left };
@@ -319,7 +320,7 @@ export default {
         const sp = v.select('the factor $Y$', [{ value: 'c', label: 'compact $[-L,L]$' }, { value: 'r', label: '$\\R$ (not compact)' }], 'c');
         const L = v.slider('$L$', 0.5, 5, 2.5, { step: 0.05 });
         const c = v.slider('narrowing rate $c$', 0.2, 4, 1.2, { step: 0.05 });
-        const dl = v.slider('tube half-width $\\delta$', 0.02, 1, 0.3, { step: 0.01 });
+        const dl = v.slider('tube half-width $\\delta$', 0.02, 1, 0.1, { step: 0.01 });
         const s = v.stage({ x: [-1.25, 1.25], y: [-6, 6], axes: 'box', gutter: true, height: 380, xlabel: '$x$', ylabel: '$y$' });
         let info = null;
         v.render(() => {
@@ -327,7 +328,7 @@ export default {
           L.el.hidden = !compact;
           const ys = Array.from({ length: 241 }, (_, k) => -6 + (12 * k) / 240);
           s.poly([...ys.map((y) => [w(y), y]), ...ys.map((y) => [-w(y), y]).reverse()], { fill: 'blue', fillAlpha: 0.25, color: 'blue', width: 2 });
-          if (compact) { s.rect(-1.25, -6, 1.25, -L.value, { fill: 'muted', fillAlpha: 0.12, stroke: false, hatch: true }); s.rect(-1.25, L.value, 1.25, 6, { fill: 'muted', fillAlpha: 0.12, stroke: false, hatch: true }); }
+          if (compact) { s.rect(-1.25, -6, 1.25, -L.value, { fill: 'muted', fillAlpha: 0.06, stroke: false, hatch: true, hatchAlpha: 0.18 }); s.rect(-1.25, L.value, 1.25, 6, { fill: 'muted', fillAlpha: 0.06, stroke: false, hatch: true, hatchAlpha: 0.18 }); }
           s.line(0, -Lc, 0, Lc, { color: 'ink', width: 2.2, dash: [5, 4] });
           const inf = compact ? w(L.value) : 0;
           const fits = d <= inf + 1e-12, ystar = Math.sqrt(Math.max(0, (1 / d - 1) / c.value));

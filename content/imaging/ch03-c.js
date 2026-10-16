@@ -247,7 +247,7 @@ Water is $0$ HU, air $-1000$ HU, and a change of one unit is about $0.1\%$ of th
         let res = null, rkey = '';
         const run = () => {
           const key = `${kv.value}|${Rs.value}|${metal.value}|${corr.value}|${noiseT.value}`; if (key === rkey) return; rkey = key;
-          const S = setup(kv.value), rho = Rs.value / RFOV, rods = metal.value === 'none' ? [] : metal.value === 'one' ? [[0.4 * rho, 0.0]] : [[-0.5 * rho, 0.0], [0.5 * rho, 0.0]], rr = 0.9 / RFOV;
+          const S = setup(kv.value), rho = Rs.value / RFOV, rods = metal.value === 'none' ? [] : metal.value === 'one' ? [[0.4 * rho, 0.0]] : [[-0.5 * rho, 0.0], [0.5 * rho, 0.0]], rr = 1.5 / RFOV;
           const sino = new Float64Array(nA * nd);
           for (let k = 0; k < nA; k++) for (let j = 0; j < nd; j++) {
             const s = sc.sOf(j), th = sc.th[k]; let Lw = 0, Lm = 0;
@@ -255,12 +255,12 @@ Water is $0$ HU, air $-1000$ HU, and a change of one unit is about $0.1\%$ of th
             for (const [cx, cy] of rods) { const tt = s - (cx * Math.cos(th) + cy * Math.sin(th)); if (tt * tt < rr * rr) { const c = 2 * Math.sqrt(rr * rr - tt * tt); Lm += c; Lw -= c; } }
             Lw = Math.max(0, Lw) * RFOV; Lm *= RFOV;
             let tr = 0; for (let e = 0; e < S.Es.length; e++) tr += S.wn[e] * Math.exp(-S.muW[e] * Lw - S.muC[e] * Lm);
-            if (noiseT.value) { const I0 = 3e4, N = poissonFrom(I0 * tr, U[k * nd + j], Z[k * nd + j]); tr = Math.max(N, 0.5) / I0; }
+            if (noiseT.value) { const I0 = 3e5, N = poissonFrom(I0 * tr, U[k * nd + j], Z[k * nd + j]); tr = Math.max(N, 0.5) / I0; }
             let p = -Math.log(tr);
             if (corr.value) p = S.mueff * S.invp(p);
             sino[k * nd + j] = p;
           }
-          const img = fbp(sino, sc, Wp, Wp, 'shepp').map((x) => 1000 * (x / RFOV / S.mueff - 1));
+          const img = fbp(sino, sc, Wp, Wp, 'hann', 0.9).map((x) => 1000 * (x / RFOV / S.mueff - 1));
           res = { img, S, rho, Rs: Rs.value };
         };
         let st = null;

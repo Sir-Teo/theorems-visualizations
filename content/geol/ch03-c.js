@@ -339,10 +339,11 @@ export default {
             G.dot(p, { r: 3, color: 'ink' });
           });
           G.dot(pole, { r: 4, color: 'purple' });
+          const mx = pts.reduce((a, p) => a + proj(p)[0], 0) / pts.length; m.setView([mx - 110, mx + 110], [-25, 85]);
           // Mercator about the pole
           m.hline(0, { color: 'grid' });
-          for (const lat of [0, 15, 30, 45, 60, 75]) { const y = Math.log(Math.tan(Math.PI / 4 + (lat * D) / 2)) / D; m.hline(y, { color: 'grid', alpha: 0.6 }); m.text(`${90 - lat}°`, -148, y + 1.5, { size: 10, color: 'muted' }); }
-          m.text('angular distance from E', -148, 82, { size: 10, color: 'muted' });
+          for (const lat of [0, 15, 30, 45, 60, 75]) { const y = Math.log(Math.tan(Math.PI / 4 + (lat * D) / 2)) / D; m.hline(y, { color: 'grid', alpha: 0.6 }); m.text(`${90 - lat}°`, mx - 108, y + 1.5, { size: 10, color: 'muted' }); }
+          m.text('angular distance from E', mx - 108, 82, { size: 10, color: 'muted' });
           for (const ring of landRings) {
             const out = []; let prev = null;
             for (const p of ring) { const q = proj(p); if (q[2] < 8 || q[2] > 118) { out.push(null); prev = null; continue; } if (prev && Math.abs(q[0] - prev[0]) > 180) out.push(null); out.push([q[0], q[1]]); prev = q; }

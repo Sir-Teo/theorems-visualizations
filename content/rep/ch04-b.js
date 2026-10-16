@@ -17,8 +17,8 @@ export default {
       name: 'A₅ and the icosahedron',
       statement: String.raw`The rotation group of the icosahedron is $A_5$ (order $60$, classes of sizes $1,15,20,12,12$: the identity, half-turns, third-turns about face axes, and fifth-turns by $72^\circ$ and by $144^\circ$ about vertex axes). Its irreducible characters have degrees $1,3,3',4,5$ ($1+9+9+16+25=60$), with
 $$\begin{array}{c|ccccc} &e&(12)(34)&(123)&(12345)&(13524)\\ \hline \mathbf 1&1&1&1&1&1\\ \chi_3&3&-1&0&\varphi&1-\varphi\\ \chi_3'&3&-1&0&1-\varphi&\varphi\\ \chi_4&4&0&1&-1&-1\\ \chi_5&5&1&-1&0&0\end{array}$$
-where $\varphi=\tfrac{1+\sqrt5}2$ is the golden ratio. Here $\chi_3$ is the character of the rotation representation, $\chi_3'(g)=\chi_3(g^2)$, $\chi_5=\frac12(\chi_3^2+\chi_3(g^2))-1$ and $\chi_4=\chi_3\chi_3'-\chi_5$.`,
-      idea: String.raw`A rotation by $\theta$ has trace $1+2\cos\theta$, giving $3,-1,0$ and, for $72^\circ$ and $144^\circ$, the numbers $1+2\cos72^\circ=\varphi$ and $1+2\cos144^\circ=1-\varphi$ — the golden ratio enters through the pentagon. Everything else is built by the operations of 3.3: the symmetric square of the rotation representation has character $\frac12(\chi^2(g)+\chi(g^2))$ and decomposes as $\mathbf1\oplus\chi_5$, the Galois-conjugate row $\chi_3'$ comes from $g\mapsto g^2$, and $\chi_3\chi_3'$ splits as $\chi_4+\chi_5$. Orthogonality (3.5) checks each row, and $\sum d^2=60$ shows the table is complete.`,
+where $\varphi=\tfrac{1+\sqrt5}2$ is the golden ratio. Here $\chi_3$ is the character of the rotation representation, $\chi_3'$ is the Galois conjugate of $\chi_3$ ($\sqrt5\mapsto-\sqrt5$, i.e. $\chi_3'(g)=\chi_3(g^2)$ on elements of order $5$ and $\chi_3'=\chi_3$ elsewhere), $\chi_5=\frac12(\chi_3^2+\chi_3(g^2))-1$ and $\chi_4=\chi_3\chi_3'-\chi_5$.`,
+      idea: String.raw`A rotation by $\theta$ has trace $1+2\cos\theta$, giving $3,-1,0$ and, for $72^\circ$ and $144^\circ$, the numbers $1+2\cos72^\circ=\varphi$ and $1+2\cos144^\circ=1-\varphi$ — the golden ratio enters through the pentagon. Everything else is built by the operations of 3.3: the symmetric square of the rotation representation has character $\frac12(\chi^2(g)+\chi(g^2))$ and decomposes as $\mathbf1\oplus\chi_5$, the Galois-conjugate row $\chi_3'$ is obtained by replacing $\sqrt5$ by $-\sqrt5$ (on elements of order $5$ this is $g\mapsto g^2$), and $\chi_3\chi_3'$ splits as $\chi_4+\chi_5$. Orthogonality (3.5) checks each row, and $\sum d^2=60$ shows the table is complete.`,
       caption: String.raw`Rotate the icosahedron about the axis of a chosen class (slide "turn"); the 12 vertices are mapped to vertices. Raise "rows derived" to build the table in the order trivial, $\chi_3$, $\chi_3'$, $\chi_5$, $\chi_4$ from the $3\times3$ matrices alone; each new row is tested against the rows above. The entries involving $\varphi$ are the traces $1+2\cos72^\circ$ and $1+2\cos144^\circ$.`,
       deps: ['rep-3.14', 'rep-3.3'],
       refs: ['Fulton–Harris §3.1'],
@@ -31,9 +31,9 @@ where $\varphi=\tfrac{1+\sqrt5}2$ is the golden ratio. Here $\chi_3$ is the char
         const turn = v.slider('turn', 0, 1, 0.6, { step: 0.01 });
         const nrows = v.slider('rows derived', 1, 5, 5, { int: true });
         const chi3 = (g) => tr3(G.mats[g]), sq = (g) => G.mul[g][g];
-        const rowF = [() => 1, chi3, (g) => chi3(sq(g)), (g) => (chi3(g) ** 2 + chi3(sq(g))) / 2 - 1, (g) => chi3(g) * chi3(sq(g)) - ((chi3(g) ** 2 + chi3(sq(g))) / 2 - 1)];
+        const rowF = [() => 1, chi3, (g) => (elOrder(G, g) % 5 === 0 ? chi3(sq(g)) : chi3(g)), (g) => (chi3(g) ** 2 + chi3(sq(g))) / 2 - 1, (g) => chi3(g) * (elOrder(G, g) % 5 === 0 ? chi3(sq(g)) : chi3(g)) - ((chi3(g) ** 2 + chi3(sq(g))) / 2 - 1)];
         const rowTex = ['\\mathbf 1', '\\chi_3', "\\chi_3'", '\\chi_5', '\\chi_4'];
-        const how = ['trivial', 'trace of the rotation matrix', '$\\chi_3(g^2)$', 'symmetric square of $\\chi_3$, minus the trivial row', '$\\chi_3\\chi_3'+"'"+'-\\chi_5$'];
+        const how = ['trivial', 'trace of the rotation matrix', 'Galois conjugate of $\\chi_3$ ($\\sqrt5\\mapsto-\\sqrt5$)', 'symmetric square of $\\chi_3$, minus the trivial row', '$\\chi_3\\chi_3'+"'"+'-\\chi_5$'];
         const vals = rowF.map((f) => G.classes.map((c) => [clean(f(c.rep)), 0]));
         const ok = rowF.every((f) => G.classes.every((c) => c.els.every((g) => Math.abs(f(g) - f(c.rep)) < 1e-9)));
         const Sx = v.stage({ x: [-2.5, 2.5], y: [-2.3, 2.3], equal: true, axes: false, height: 340, weight: 1 });
@@ -110,7 +110,7 @@ where $\varphi=\tfrac{1+\sqrt5}2$ is the golden ratio. Here $\chi_3$ is the char
         v.readout(() => {
           const n = ns.value, k = Math.min(ks.value, n - 1), { G, polys, err, norms } = calc(n);
           const dimk = polys[0][k];
-          return `$S_{${n}}$ has ${G.classes.length} classes. $\\dim\\Lambda^{${k}}V=\\binom{${n - 1}}{${k}}=${dimk}$. Product formula vs. traces of minors of the actual matrices: largest difference ${err < 1e-9 ? '**0**' : nm(err, 3)}. $\\langle\\chi_{${k}},\\chi_{${k}}\\rangle=${nm(norms[k], 6)}$; over all $k$ the largest deviation from $1$ is ${nm(Math.max(...norms.map((x) => Math.abs(x - 1))), 9)}$.`;
+          return `$S_{${n}}$ has ${G.classes.length} classes. $\\dim\\Lambda^{${k}}V=\\binom{${n - 1}}{${k}}=${dimk}$. Product formula vs. traces of minors of the actual matrices: largest difference ${err < 1e-9 ? '**0**' : nm(err, 3)}. $\\langle\\chi_{${k}},\\chi_{${k}}\\rangle=${nm(norms[k], 6)}$; over all $k$ the largest deviation from $1$ is ${nm(Math.max(...norms.map((x) => Math.abs(x - 1))), 9)}.`;
         });
       },
     },
@@ -131,8 +131,8 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       tags: ['real structure', 'bilinear forms', 'quaternions'],
       viz(v) {
         const GK = ['Z3', 'Z4', 'S3', 'D4', 'Q8', 'A4'];
-        let idx = 0;
-        const gsel = v.select('group', GK.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'Q8', { onChange: () => { idx = 0; } });
+        let idx = irrepMats('Q8').length - 1;
+        const gsel = v.select('group', GK.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'Q8', { onChange: () => { idx = irrepMats(gsel.value).length - 1; } });
         v.button('next irreducible', () => { idx = (idx + 1) % irrepMats(gsel.value).length; });
         const sh = v.slider('change of basis (shear)', 0, 2, 0, { step: 0.05 });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, weight: 0.9, title: 'invariant forms: dimension' });
@@ -203,7 +203,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         v.render(() => {
           const { T, G, nu, roots, viaChars, found } = calc(gsel.value), r = T.rows.length;
           A.setView([-0.6, r - 0.4], [-1.6, 1.6]);
-          A.setTicks(T.rows.map((q, i) => [i, q.name === '1' || q.name === 'A1' ? '1' : q.name.replace('psi', 'ψ')]), [[-1, '−1'], [0, '0'], [1, '+1']]);
+          A.setTicks(T.rows.map((q, i) => [i, q.tex.replace(/\\mathbf 1/, '1').replace(/\\varepsilon/, 'ε').replace(/\\psi_\{?(\d+)\}?/, 'ψ$1').replace(/\\chi_\{?([^}]*)\}?/, 'χ$1').replace(/\\omega/, 'ω').replace(/[_{}\\]/g, '').replace(/ω ?bar/, 'ω̄')]), [[-1, '−1'], [0, '0'], [1, '+1']]);
           A.bars(nu.map(clean), { x0: 0, dx: 1, color: (x) => (Math.abs(x - 1) < 1e-6 ? 'green' : Math.abs(x + 1) < 1e-6 ? 'purple' : 'red') });
           A.hline(0, { color: 'ink', width: 1 });
           nu.forEach((x, i) => { if (found[i] !== undefined) A.dot(i, found[i] * 1.35, { r: 5, color: Math.abs(found[i] - clean(x)) < 1e-6 ? 'green' : 'red', hollow: true }); });
@@ -229,7 +229,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       name: 'Counting molecular vibrations by symmetry',
       statement: String.raw`Let a molecule with $N$ atoms have symmetry group $G$ (its point group). The $3N$ displacement coordinates form a representation $\Gamma_{3N}$ of $G$ whose character is $\chi_{3N}(g)=(\text{number of atoms fixed by }g)\cdot\operatorname{tr}(g)$, where $\operatorname{tr}(g)$ is the trace of $g\in O(3)$. Then the vibrations (normal modes) form the representation $\Gamma_{\mathrm{vib}}=\Gamma_{3N}-\Gamma_{\mathrm{trans}}-\Gamma_{\mathrm{rot}}$, where $\Gamma_{\mathrm{trans}}$ is the representation on vectors $(x,y,z)$ and $\Gamma_{\mathrm{rot}}$ the one on axial vectors ($\chi_{\mathrm{rot}}(g)=\det g\cdot\operatorname{tr}g$). The multiplicity of each irreducible $\Gamma_i$ in $\Gamma_{\mathrm{vib}}$, computed by 3.6, is the number of modes of that symmetry type (for a non-linear molecule $3N-6$ in all). For example $\Gamma_{\mathrm{vib}}(\mathrm{H_2O})=2A_1\oplus B_1$ and $\Gamma_{\mathrm{vib}}(\mathrm{NH_3})=2A_1\oplus2E$.`,
       idea: String.raw`A symmetry of the molecule permutes the atoms and rotates or reflects the displacement of each; the trace of the resulting $3N\times3N$ matrix only gets contributions from atoms that stay where they are, each contributing $\operatorname{tr}g$. Because the force constants are invariant under $G$, the Hessian commutes with this representation, so normal modes with distinct frequencies span subrepresentations (Schur, 2.5); the six trivial motions (translations and rotations of the whole molecule) have known characters, and the rest is multiplicity counting with 3.6. The same logic was introduced for vibrations of symmetric systems by Wigner.`,
-      caption: String.raw`Choose water ($C_{2v}$) or ammonia ($C_{3v}$). The table is computed from the actual geometry: atoms fixed by each class, the trace of the matrix, and the characters of $\Gamma_{3N}$, translations, rotations; the decomposition appears in the readout. In the picture, a random displacement of the atoms (new random button) is projected onto one irreducible type with the projection formula of 3.12: what remains is a symmetry-adapted displacement of that type. For water, the three $A_1$ and $B_1$ projections of the vibrations are the familiar bending and stretching motions' symmetry types; the projection onto an irrep that does not occur in $\Gamma_{\mathrm{vib}}$ is a translation or rotation (or zero).`,
+      caption: String.raw`Choose water ($C_{2v}$) or ammonia ($C_{3v}$). The table is computed from the actual geometry: atoms fixed by each class, the trace of the matrix, and the characters of $\Gamma_{3N}$, translations, rotations; the decomposition appears in the readout. In the picture, a random displacement of the atoms (new random button) is projected onto one irreducible type with the projection formula of 3.12: what remains is a symmetry-adapted displacement of that type. Projecting onto a type that does not occur in $\Gamma_{\mathrm{vib}}$ leaves only a translation or rotation (or zero); types that do occur show what a mode of that symmetry looks like.`,
       deps: ['rep-3.6'],
       refs: ['Serre Ch. 5'],
       see: ['qchem-8.9'],
@@ -243,7 +243,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         v.button('next irreducible type', () => { irx = (irx + 1) % mols[msel.value].P.irreps.length; });
         v.button('new random displacement', () => { seed += 1; });
         const amp = v.slider('amplitude', 0, 1, 0.8, { step: 0.02 });
-        const Sx = v.stage({ x: [-2, 2], y: [-1.7, 1.7], equal: true, axes: false, height: 330, weight: 1, title: 'displacement projected onto one type' });
+        const Sx = v.stage({ x: [-1.5, 1.5], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1, title: 'displacement projected onto one type' });
         const sc = v.scene3(Sx, { yaw: 0.5, pitch: 0.25, axis: 0, lim: 1.3, axes: false, hint: true });
         const Stab = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.15 });
         const Tb = v.table(Stab, { square: false, maxCell: 62, cellAspect: 1.3, size: 13, labelSize: 11, margin: 6 });
@@ -267,10 +267,10 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           });
           sc.flush();
           Tb.draw({
-            rows: 5, cols: P.classes.length, colLabels: (j) => `$${P.classes[j].tex}$`, cornerLabel: '',
-            rowLabels: ['fixed atoms', '$\\operatorname{tr}g$', '$\\Gamma_{3N}$', '$\\Gamma_{\\mathrm{trans}}$ / rot', '$\\Gamma_{\\mathrm{vib}}$'],
-            value: (i, j) => [String(ch.fixed[j]), String(clean(ch.trans[j])), String(clean(ch.disp[j])), `${clean(ch.trans[j])} / ${clean(ch.rot[j])}`, String(clean(vib[j]))][i],
-            fill: (i, j) => (i === 4 ? ['green', 0.2] : null),
+            rows: 6, cols: P.classes.length, colLabels: (j) => `$${P.classes[j].tex}$`, cornerLabel: '',
+            rowLabels: ['atoms fixed', '$\\operatorname{tr}g$', '$\\Gamma_{3N}$', '$\\Gamma_{\\mathrm{trans}}$', '$\\Gamma_{\\mathrm{rot}}$', '$\\Gamma_{\\mathrm{vib}}$'],
+            value: (i, j) => [String(ch.fixed[j]), String(clean(ch.trans[j])), String(clean(ch.disp[j])), String(clean(ch.trans[j])), String(clean(ch.rot[j])), String(clean(vib[j]))][i],
+            fill: (i, j) => (i === 5 ? ['green', 0.2] : null),
           });
         });
         v.legend([['orange', 'projected displacement (arrows, scaled)']]);
@@ -297,9 +297,9 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       verify: true,
       viz(v) {
         const PG = { C2v: C2V, C3v: C3V };
-        let sel = [0, 0];
+        let sel = [0, 2];
         const gsel = v.select('point group', [{ value: 'C2v', label: '$C_{2v}$' }, { value: 'C3v', label: '$C_{3v}$' }], 'C2v', { onChange: () => { sel = [0, 0]; } });
-        const osel = v.select('operator', [{ value: 'z', label: '$z$' }, { value: 'x', label: '$x$' }, { value: 'y', label: '$y$' }, { value: 'xy', label: '$xy$' }, { value: 'r2', label: '$x^2+y^2$' }], 'z');
+        const osel = v.select('operator', [{ value: 'z', label: '$z$' }, { value: 'x', label: '$x$' }, { value: 'y', label: '$y$' }, { value: 'xy', label: '$xy$' }, { value: 'r2', label: '$x^2+y^2$' }], 'x');
         const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.1, title: 'initial (rows) and final (columns)' });
         const T = v.table(S, { square: false, maxCell: 70, cellAspect: 1.15, size: 13, labelSize: 12, margin: 8 });
         const Sb = v.stage({ x: [-0.6, 3.6], y: [-3, 3], axes: 'box', gutter: true, height: 330, weight: 0.9, title: '$\\chi_f\\chi_V\\chi_i$ on each class', xlabel: 'class' });

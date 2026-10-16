@@ -202,7 +202,7 @@ export function symData(n) {
     // classes ordered by cycle type (partition), largest first
     const type = (c) => { const p = G.perms[c.rep], seen = Array(n).fill(false), t = []; for (let i = 0; i < n; i++) if (!seen[i]) { let k = i, l = 0; while (!seen[k]) { seen[k] = true; k = p[k]; l++; } t.push(l); } return t.sort((a, b) => b - a); };
     const types = G.classes.map(type);
-    const order = G.classes.map((_, i) => i).sort((a, b) => { const A = types[a], B = types[b]; for (let i = 0; i < Math.max(A.length, B.length); i++) { const d = (A[i] || 0) - (B[i] || 0); if (d) return -d; } return 0; });
+    const order = G.classes.map((_, i) => i).sort((a, b) => { const A = types[a], B = types[b]; for (let i = 0; i < Math.max(A.length, B.length); i++) { const d = (A[i] || 0) - (B[i] || 0); if (d) return d; } return 0; });
     orderClasses(G, order.map((i) => G.classes[i].rep));
     cacheS[n] = { G, types: order.map((i) => types[i]) };
   }
