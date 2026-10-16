@@ -80,7 +80,7 @@ export default {
       num: '1.8', kind: 'Definition', name: 'Positivity',
       statement: String.raw`**Positivity** (overlap): every kind of unit has a chance of receiving each treatment value of interest. In terms of covariates $L$: $P(A=a\mid L=l)>0$ for every $a$ and every $l$ with $P(L=l)>0$. If it fails in a stratum, that stratum contains only treated or only untreated units, so its outcome under the missing treatment is never observed and no comparison of treated with untreated is possible there: any estimate for that stratum is an extrapolation from a model, not a feature of the data. Violations may be **structural** (nobody of that kind can be treated) or **random** (by chance, in a finite sample).`,
       idea: String.raw`Under conditional exchangeability the stratum-specific effect is $E[Y\mid A=1,L=l]-E[Y\mid A=0,L=l]$, which requires both conditional means to exist: positivity is what makes these conditional expectations defined. Where propensities approach 0 or 1 the estimates become imprecise too (extreme weights, item 5.5). Positivity is checkable from the data on measured $L$, unlike exchangeability.`,
-      caption: String.raw`500 simulated patients with a covariate $x$ (say, age); the **steepness** of the treatment rule is set by the slider. Top: the probability of treatment, with each patient as a dot on the rug. Red bands are $x$-ranges where one arm is empty. Bottom: observed outcomes with the truth (dashed curves, which bend) and a straight-line outcome model fitted to each arm (solid), extended across the red band: the model's average effect over everyone is off, while the comparison restricted to the overlap is sound but answers a smaller question.`,
+      caption: String.raw`500 simulated patients with a covariate $x$ (say, age); the **steepness** of the treatment rule is set by the slider. Top: the probability of treatment, with each patient as a dot on the rug. Red bands are $x$-ranges where one arm is (nearly) empty. Bottom: observed outcomes with the truth (dashed curves, which bend) and a straight-line outcome model fitted to each arm (solid), extended across the red band: the model's average effect over everyone is off, while the comparison restricted to the overlap is sound but answers a smaller question.`,
       deps: ['causal-1.7'], refs: ['Hernán–Robins §3.3'], tags: ['positivity', 'overlap', 'extrapolation'],
       credit: 'Rosenbaum & Rubin, 1983 (strong ignorability)',
       viz(v) {
@@ -94,12 +94,12 @@ export default {
         let seed = 1;
         const sA = v.stage({ x: [-3, 3], y: [0, 1], axes: 'box', gutter: true, height: 230, full: true, xlabel: null, ylabel: '$P(A=1\\mid x)$', title: 'probability of treatment, and the patients' });
         const sB = v.stage({ x: [-3, 3], y: [10, 90], axes: 'box', gutter: true, height: 330, full: true, xlabel: 'covariate $x$', ylabel: 'outcome', title: 'observed outcomes, truth and a straight-line model' });
-        const get = memo(), BW = 0.5, NBIN = 12;
+        const get = memo(), BW = 0.25, NBIN = 24;
         const calc = () => get([kS.value, cS.value, seed].join('|'), () => {
           const rr = rng(seed * 313 + 9), A = Array.from(xs, (x) => (rr() < logistic(kS.value * (x - cS.value)) ? 1 : 0));
           const n1 = new Array(NBIN).fill(0), n0 = new Array(NBIN).fill(0), s1 = new Array(NBIN).fill(0), s0 = new Array(NBIN).fill(0), tau = new Array(NBIN).fill(0), cnt = new Array(NBIN).fill(0);
           for (let i = 0; i < N; i++) { const b = Math.min(NBIN - 1, Math.floor((xs[i] + 3) / BW)); cnt[b]++; tau[b] += y1[i] - y0[i]; if (A[i]) { n1[b]++; s1[b] += y1[i]; } else { n0[b]++; s0[b] += y0[i]; } }
-          const bad = cnt.map((c, b) => c > 0 && (n1[b] === 0 || n0[b] === 0));
+          const bad = cnt.map((c, b) => c > 0 && (n1[b] < 3 || n0[b] < 3));
           const tx = [], ty = [], ux = [], uy = []; for (let i = 0; i < N; i++) { if (A[i]) { tx.push(xs[i]); ty.push(y1[i]); } else { ux.push(xs[i]); uy.push(y0[i]); } }
           const L1 = ols(tx, ty), L0 = ols(ux, uy);
           const extrap = mean(Array.from(xs, (x) => L1.a + L1.b * x - (L0.a + L0.b * x)));
@@ -118,7 +118,7 @@ export default {
         });
         v.readout(() => {
           const C = calc(), nb = C.bad.filter(Boolean).length;
-          return `${nb ? `**${nb}** of 12 $x$-bins have one arm missing (${pct(1 - C.share, 0)} of patients).` : 'Every bin contains both treated and untreated patients.'} True average effect over all 500: **$${fx(C.ate, 2)}$**. ` +
+          return `${nb ? `**${nb}** of ${NBIN} $x$-bins have fewer than 3 patients in one arm (${pct(1 - C.share, 0)} of patients).` : 'Every bin contains both treated and untreated patients.'} True average effect over all 500: **$${fx(C.ate, 2)}$**. ` +
             `Straight-line outcome model: $${fx(C.extrap, 2)}$ (error $${sg(C.extrap - C.ate, 2)}$). Comparison within the overlap only: $${fx(C.overlap, 2)}$ vs the true effect in those bins $${fx(C.overlapTruth, 2)}$, a correct answer to a narrower question.`;
         });
       },
@@ -140,7 +140,7 @@ export default {
         let seed = 1;
         const sH = v.stage({ x: [-4, 14], y: [0, 40], axes: 'box', gutter: true, height: 320, xlabel: 'estimate of the average effect', ylabel: 'studies', title: 'estimates over 300 repeated studies', weight: 1.25 });
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'the first study, stratum by stratum', weight: 1.1 });
-        const T = v.table(sT, { rows: 4, cols: 6, square: false, cellAspect: 1.3, maxCell: 60, size: 12.5, colLabels: ['share', 'treated', 'mean Y, treated', 'mean Y, untreated', 'difference', 'true effect'], labelSize: 10.5, rowLabels: (l) => 'L = ' + (l + 1) });
+        const T = v.table(sT, { rows: 4, cols: 6, square: false, cellAspect: 1.3, maxCell: 60, size: 12.5, colLabels: ['share', '% treated', 'mean A=1', 'mean A=0', 'difference', 'truth'], labelSize: 10.5, rowLabels: (l) => 'L = ' + (l + 1) });
         const get = memo(), N = 1500, REP = 300;
         const sim = (sd) => {
           const r = rng(sd * 2654435 + 11), n1 = [0, 0, 0, 0], n0 = [0, 0, 0, 0], s1 = [0, 0, 0, 0], s0 = [0, 0, 0, 0], nl = [0, 0, 0, 0];
@@ -250,7 +250,7 @@ export default {
         const b0 = v.slider('baseline log-odds (untreated, $L=0$)', -4, 0, -2, { step: 0.1 });
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, title: 'exact risks from the model', weight: 1.35 });
         const sC = v.stage({ x: [1, 40], y: [1, 10], xlog: true, axes: 'box', gutter: true, height: 260, xlabel: 'odds ratio of $L$ (prognostic strength)', ylabel: 'odds ratio of treatment', title: 'conditional vs marginal odds ratio', weight: 1 });
-        const T = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.55, maxCell: 62, size: 13, colLabels: ['risk, untreated', 'risk, treated', 'risk difference', 'risk ratio', 'odds ratio'], labelSize: 10.5, rowLabels: ['stratum L = 0', 'stratum L = 1', 'whole population', 'average of strata'] });
+        const T = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.55, maxCell: 62, size: 13, colLabels: ['risk A=0', 'risk A=1', 'RD', 'RR', 'OR'], labelSize: 10.5, rowLabels: ['stratum L = 0', 'stratum L = 1', 'whole population', 'average of strata'] });
         const odds = (p) => p / (1 - p);
         const model = (oa, ol, pl, bb) => {
           const pr = (a, l) => logistic(bb + Math.log(oa) * a + Math.log(ol) * l);

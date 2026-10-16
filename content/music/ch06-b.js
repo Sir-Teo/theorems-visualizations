@@ -280,7 +280,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
           const R = INT.map(([p, q]) => [gradus([p, q]), rough(cents(p / q))]);
           const rkf = (a) => { const o = a.map((x, i) => [x, i]).sort((u, w) => u[0] - w[0]), r = []; o.forEach(([, i], k) => (r[i] = k)); return r; };
           const ra = rkf(R.map((x) => x[0])), rb = rkf(R.map((x) => x[1])), n = R.length; let s6 = 0; for (let i = 0; i < n; i++) s6 += (ra[i] - rb[i]) ** 2;
-          return `chord ${t.join(':')} · exponent ${L} · Euler's gradus Γ = ${gradusN(L)} (his examples: octave 2, fifth 4, fourth 5, major triad 4:5:6 → 9) · rank agreement of Euler's gradus with today's roughness model over the ${n} intervals listed: Spearman ρ ≈ ${v.fix(1 - (6 * s6) / (n * (n * n - 1)), 2)}`;
+          return `chord ${t.join(':')} · exponent ${L} · Euler's gradus Γ = ${gradusN(L)} (by his formula: octave 2, fifth 4, fourth 5, major triad 4:5:6 → 9) · rank agreement of Euler's gradus with today's roughness model over the ${n} intervals listed: Spearman ρ ≈ ${v.fix(1 - (6 * s6) / (n * (n * n - 1)), 2)}`;
         });
       },
     },

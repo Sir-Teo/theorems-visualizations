@@ -51,7 +51,7 @@ Scope: smooth straight pipes, fully developed flow. The upper critical number de
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Reynolds_number' },
       viz(v) {
         const M = v.M;
-        const lr = v.slider('Reynolds number (log₁₀)', 2.7, 4.6, 3.5, { step: 0.005, fmt: (x) => Math.round(10 ** x).toLocaleString('en-US') });
+        const lr = v.slider('Reynolds number (log₁₀)', 2.7, 4.6, 4.16, { step: 0.005, fmt: (x) => Math.round(10 ** x).toLocaleString('en-US') });
         const inflow = v.select('inflow', [{ value: 'still', label: 'still tank (colour bands)' }, { value: 'dist', label: 'disturbed' }], 'still');
         const pipe = v.select('tube', [{ value: '1', label: 'No. 1 (26.8 mm)' }, { value: '2', label: 'No. 2 (15.3 mm)' }, { value: '3', label: 'No. 3 (7.9 mm)' }], '1');
         const T = v.slider('water temperature (°C)', 4, 22, 10, { step: 0.5 });
