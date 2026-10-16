@@ -199,7 +199,7 @@ export default {
         const mk = { secondA: () => NFAS.secondA(), endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), abb: () => thompson(parseRegex('(a|b)*abb'), ['a', 'b']).N };
         let N = mk.secondA(), D = null, w = 'abbab', frames = [], S = null;
         v.select('NFA', [{ value: 'secondA', label: '2nd symbol from the end is a' }, { value: 'endsAB', label: 'ends in ab' }, { value: 'aaOrBb', label: 'contains aa or bb' }, { value: 'abb', label: '(a|b)*abb (ε-NFA)' }], 'secondA', { onChange: (k) => { N = mk[k](); rebuild(); } });
-        const mode = v.select('mode', [{ value: 'build', label: 'construct' }, { value: 'run', label: 'run both' }], 'build', { onChange: () => { S.el.hidden = mode.value !== 'build'; kS.el.hidden = mode.value !== 'run'; } });
+        const mode = v.select('mode', [{ value: 'build', label: 'construct' }, { value: 'run', label: 'run both' }], 'build', { onChange: () => { S.el.hidden = mode.value !== 'build'; S.noteEl.hidden = mode.value !== 'build'; kS.el.hidden = mode.value !== 'run'; } });
         keypad(v, ['a', 'b'], () => w, (x) => { w = x; kS.set(Math.min(kS.value, w.length)); }, { max: 8 });
         const kS = v.slider('symbols read', 0, 8, 3, { int: true });
         const ns = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 320, weight: 1 });
@@ -212,6 +212,7 @@ export default {
           D.states.forEach((s, i) => { s.label = small() ? s.label : `$D_{${i}}$`; s.sets = s.set; });
           GN.sync(N); fit(ns, N);
           GD.set({ nodes: D.states, edges: dfaEdges(D) }); GD.layout('layered', { rankdir: 'right' });
+          { const xs = D.states.map((q) => q.x), ys = D.states.map((q) => q.y), lx = Math.min(...xs), hx = Math.max(...xs), ly = Math.min(...ys), hy = Math.max(...ys); D.states.forEach((q) => { q.x = hx > lx ? 2.0 + ((q.x - lx) / (hx - lx)) * 5.2 : 5; q.y = hy > ly ? 1.7 + ((q.y - ly) / (hy - ly)) * 3.0 : 3.6; }); }
           const known = new Set(['S0']); const out = [{ cur: null, proc: [], shown: ['S0'], note: `Start: $D_0=E(\\{${texName3(N, N.start)}\\})=${setTex(N, D.states[0].set)}$.` }]; const proc = [];
           D.states.forEach((st, i) => {
             const row = N.alpha.map((c) => { const t = D.delta[st.id][c][0]; const isNew = !known.has(t); known.add(t); return { c, t, isNew }; }); proc.push(st.id);
@@ -225,7 +226,7 @@ export default {
         v.render(() => {
           const run = mode.value === 'run', n = w.length;
           if (kS.value > n) kS.set(n);
-          fit(ns, N);
+          const u3 = fit(ns, N); if (N.thompson) bendEdges(GN, u3);
           const f = S.frame, shown = run ? D.states.map((s) => s.id) : f.shown ?? ['S0'], proc = run ? D.states.map((s) => s.id) : f.proc ?? [];
           const Dv = { ...D, states: D.states.filter((s) => shown.includes(s.id)), delta: Object.fromEntries(D.states.filter((s) => proc.includes(s.id)).map((s) => [s.id, D.delta[s.id]])) };
           GD.nodes = Dv.states; GD.edges = dfaEdges(Dv);
@@ -266,7 +267,8 @@ export default {
       caption: String.raw`Left: the $(k+1)$-state NFA for $L_k$. Middle: its subset automaton, whose states are labelled by the **last $k$ symbols read** — a shift register, one state per bit pattern. Right: sizes on a **log axis** for $k=1,\dots,10$, all computed by running the subset construction and Moore's partition refinement on the actual machines: the NFA grows by one state per step, the DFA doubles. Switch to **from the left** and the blow-up disappears.`,
       deps: ['toc-3.3'],
       refs: ['Sipser §1.2'],
-      credit: 'Meyer & Fischer, 1971; Moore, 1971',
+      credit: 'Meyer & Fischer, 1971; Moore, 1971 (tightness of the 2^n bound)',
+      scope: String.raw`Meyer and Fischer (1971) and Moore (1971) are the standard references for the exponential gap between NFAs and DFAs; Moore's paper concerns exactly the number of states in the subset construction. That the family drawn here (the $k$-th symbol from the end) is the one used in those papers has not been checked.`,
       tags: ['automata', 'state complexity'],
       viz(v) {
         let fam = 'end';
@@ -292,7 +294,7 @@ export default {
           drawNFA(v, ns, GN, I.N, {});
           GD.draw({ nodeLabel: (id, nd) => nd.label, nodeRing: (id) => (I.D.states.find((s) => s.id === id).acc ? 'ink' : null), nodeFill: (id) => (id === 'S0' ? null : null), edgeLabel: (e) => e.label, edgeColor: (e) => (e.syms.includes('1') && !e.syms.includes('0') ? 'orange' : e.syms.includes('0') && !e.syms.includes('1') ? 'blue' : null), edgeLabelColor: (e) => (e.syms.includes('1') && !e.syms.includes('0') ? 'orange' : e.syms.includes('0') && !e.syms.includes('1') ? 'blue' : null) });
           const sd = GD.node('S0'); if (sd && isFinite(sd.x)) { const px = ds.X(sd.x), py = ds.Y(sd.y); ds.arrow(ds.invX(px), ds.invY(py - 62), ds.invX(px), ds.invY(py - 26), { color: 'ink', width: 2, head: 8 }); }
-          ns.corner(`NFA: ${I.nfa} states`, 'tl', { size: 12, color: 'muted', weight: 600 }); ds.corner(`subset DFA: ${I.sub} states`, 'tl', { size: 12, color: 'muted', weight: 600 });
+          ns.corner(`NFA: ${I.nfa} states`, 'tl', { size: 12, color: 'muted', weight: 600 }); ds.corner(`subset DFA: ${I.sub} states`, 'bl', { size: 12, color: 'muted', weight: 600 });
           const ser = series(fam), pts = (key) => ser.map((r, i) => [i + 1, r[key]]);
           cs.fn((x) => 2 ** x, { color: 'faint', dash: true, width: 1.4, domain: [1, 10] });
           cs.path(pts('nfa'), { color: 'blue', width: 2.4 }); cs.path(pts('sub'), { color: 'orange', width: 2.4 }); cs.path(pts('min'), { color: 'green', width: 1.8, dash: [6, 3] });
@@ -485,13 +487,13 @@ export default {
       deps: ['toc-3.1', 'toc-3.6'],
       refs: ['Sipser §1.3'],
       credit: 'McNaughton & Yamada, 1960; Brzozowski & McCluskey, 1963',
-      scope: String.raw`McNaughton and Yamada (1960) give a construction of regular expressions from state graphs; the "rip out one state at a time" formulation drawn here is the one in current textbooks, and attribution of that exact formulation (to Brzozowski & McCluskey's signal-flow-graph method of 1963) is from memory.`,
+      scope: String.raw`McNaughton and Yamada (1960) give a construction of regular expressions from state graphs; the "rip out one state at a time" formulation drawn here is the one in current textbooks, and its attribution to the signal-flow-graph method of Brzozowski and McCluskey (IEEE Trans. Electronic Computers EC-12, 1963) is not verified here.`,
       verify: true,
       tags: ['regular expressions', 'construction'],
       viz(v) {
         const PS = { endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), secondA: () => NFAS.secondA(), evenA: () => asNFA(PRESETS.evenA()) };
-        let N = PS.endsAB(), hist = [], removed = [], note = '', G = null, nodesIF = null;
-        const sel = v.select('automaton', [{ value: 'endsAB', label: 'ends in ab' }, { value: 'aaOrBb', label: 'contains aa or bb' }, { value: 'secondA', label: '2nd from end is a' }, { value: 'evenA', label: 'even number of a (DFA)' }], 'endsAB', { onChange: (k) => { N = PS[k](); reset(); } });
+        let N = PS.aaOrBb(), hist = [], removed = [], note = '', G = null, nodesIF = null;
+        const sel = v.select('automaton', [{ value: 'endsAB', label: 'ends in ab' }, { value: 'aaOrBb', label: 'contains aa or bb' }, { value: 'secondA', label: '2nd from end is a' }, { value: 'evenA', label: 'even number of a (DFA)' }], 'aaOrBb', { onChange: (k) => { N = PS[k](); reset(); } });
         v.button('undo', () => { if (hist.length > 1) { hist.pop(); removed.pop(); note = ''; } });
         v.button('reset', () => reset());
         const cur = () => hist[hist.length - 1];

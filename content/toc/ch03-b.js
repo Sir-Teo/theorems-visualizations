@@ -34,7 +34,7 @@ export default {
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 470, full: true });
         const KN = { R: 'regular expression', N: 'NFA', D: 'DFA' }, NEXT = { R: 'N', N: 'D', D: 'R' }, CONV = { R: 'Thompson (3.7)', N: 'subset construction (3.3)', D: 'state elimination (3.8)' };
         const thom = (r) => { const T = thompson(r, AB); const N = T.N; if (sab.value) for (const k of Object.keys(N.flag)) if (N.flag[k].kind === 'loop') { const [a, b] = k.split('>'); N.eps[a] = N.eps[a].filter((x) => x !== b); } return N; };
-        const info = (k, o) => (k === 'R' ? { head: cut(rx(o), 34), foot: `size ${rxSize(o)}` } : { head: `${o.states.length} states`, foot: k === 'N' ? `${nfaEdges(o).length} arrow groups` : 'deterministic' });
+        const info = (k, o) => (k === 'R' ? { head: cut(rx(o).replace(/∪/g, '|'), 34), foot: `size ${rxSize(o)}` } : { head: `${o.states.length} states`, foot: k === 'N' ? `${nfaEdges(o).length} arrow groups` : 'deterministic' });
         const setOf = (k, o, n) => (k === 'R' ? langFlat(o, n) : nfaLang(o, n));
         let cache = { key: '', val: null };
         function chain() {
@@ -113,7 +113,7 @@ export default {
       deps: ['toc-3.6'],
       refs: ['Sipser §1.3'],
       credit: 'D. N. Arden, c. 1960',
-      scope: String.raw`Strings are checked up to length 7, which is exact for the equation (a string of length $\le7$ of $AX$ only involves strings of $X$ of length $\le7$); Arden's own publication details are not verified here (the lemma is attributed to his 1960–61 work on delayed-logic and finite-state machines).`,
+      scope: String.raw`Strings are checked up to length 7, which is exact for the equation (a string of length $\le7$ of $AX$ only involves strings of $X$ of length $\le7$); the attribution to D. N. Arden rests on secondary listings (Wikipedia and a Journal of Symbolic Logic record cite his "Delayed-logic and finite-state machines" in *Theory of Computing Machine Design*, University of Michigan Press, 1960, and a 1961 symposium version with different page numbers) and was not checked against the original.`,
       verify: true,
       tags: ['regular expressions', 'equations'],
       viz(v) {
@@ -295,7 +295,7 @@ export default {
           // live sets
           const Q = pen(ss, v), N = r.N, run = nfaRun(N, 'a'.repeat(n)), m = N.states.length, L0 = 36, cw = Math.min(26, (Q.W - L0 - 12) / (n + 1)), ch = Math.min(18, (Q.H - 44) / m), y0 = 26;
           Q.sans('input position →', L0, 11, { align: 'left', size: 11, color: 'muted' });
-          N.states.forEach((s, i) => { Q.text(String(i), 14, y0 + i * ch + ch / 2, { size: 9.5, color: 'muted' }); });
+          if (ch >= 11) N.states.forEach((s, i) => { Q.text(String(i), 14, y0 + i * ch + ch / 2, { size: 9.5, color: 'muted' }); });
           for (let t = 0; t <= n; t++) N.states.forEach((s, i) => { const on = run.sets[t].includes(s.id); Q.box(L0 + t * cw, y0 + i * ch, cw - 1.2, ch - 1.2, { r: 0, fill: on ? 'blue' : 'faint', alpha: on ? 0.85 : 0.14, stroke: false }); });
           Q.sans(`${m} NFA states (rows); live in blue`, Q.W / 2, Q.H - 10, { size: 11, color: 'muted' });
         });
@@ -354,12 +354,12 @@ export default {
             const T = A.states.find((q) => q.id === t); let prev = s.id;
             for (let i = 0; i < im.length - 1; i++) {
               const id = 'm' + cnt++; let X, Y;
-              if (t === s.id) { const a = Math.PI / 2 + (i - (im.length - 2) / 2) * 1.0; X = s.x + Math.cos(a) * 1.5; Y = s.y + Math.sin(a) * 1.5; } else { const f = (i + 1) / im.length; X = s.x + (T.x - s.x) * f; Y = s.y + (T.y - s.y) * f; }
+              if (t === s.id) { const a = Math.PI / 2 + (i - (im.length - 2) / 2) * 0.9; X = s.x + Math.cos(a) * 2.0; Y = s.y + Math.sin(a) * 2.0; } else { const f = (i + 1) / im.length; X = s.x + (T.x - s.x) * f; Y = s.y + (T.y - s.y) * f; }
               st.push([id, X, Y, false, '$\\cdot$']); delta[id] = { x: [], y: [] }; eps[id] = []; delta[prev][im[i]].push(id); prev = id;
             }
             delta[prev][im[im.length - 1]].push(t);
           }
-          return nfa(al, st, A.start, delta, eps, { loops: A.loops });
+          return nfa(al, st, A.start, delta, eps, { loops: Object.fromEntries(A.states.map((q) => [q.id, ((A.loops?.[q.id] ?? 90) - 70 + 360) % 360])) });
         }
         function build() { M = op === 'rev' ? reverseOf(N) : homOf(N, HOM[hk]); GN.sync(N); if (!GM) GM = nfaGraph(v, rs, M, { draggable: true, r: 17, texSize: 14 }); else GM.sync(M); }
         build();
@@ -369,7 +369,6 @@ export default {
           const P = pen(bs, v), n = 6;
           if (op === 'rev') {
             drawBarcode(P, AB, n, (u) => { const hit = nfaAccepts(M, u), ref = nfaAccepts(N, rev(u)); return hit !== ref ? { color: 'red', hit, outline: 'red', alpha: 0.9 } : hit ? { color: 'green', hit } : null; });
-            P.sans('L(reversed machine), one row per length', P.W - 62, 8, { align: 'right', size: 10.5, color: 'muted' });
           } else {
             const rows = []; for (let k = 0; k <= 6; k++) rows.push(layer(['x', 'y'], k).filter((u) => nfaAccepts(M, u)));
             drawLangRows(P, rows, 2, { rh: (P.H - 10) / 7, top: 5 });
@@ -396,7 +395,7 @@ export default {
       name: 'Lexical analysis with automata',
       statement: String.raw`A **lexer** (scanner) splits program text into tokens. Each token class is a regular expression $r_1,\dots,r_m$, listed in priority order. The expressions are compiled into one NFA (a new start state with ε-arrows to the NFAs of the $r_i$, 3.7), and then into a DFA by the subset construction (3.3), where each DFA state is labelled with the *first* rule whose accepting state it contains. To scan, run the DFA from the current position and remember the last position at which it was in a labelled state; when the DFA reaches the dead state (or the input ends), cut the token there — the **longest match** — and restart after it, labelled by the rule of that state (ties go to the earlier rule, which is how keywords beat identifiers). If no accepting state was passed, report an error.`,
       idea: String.raw`The DFA keeps all token classes in play at once, each as a set of NFA states, and the subset labelled with the best rule describes the best token ending at the current position; the dead state is the signal that no longer match is possible. Longest match and rule priority are not part of regular languages: they are two extra conventions on top of the automaton, and changing either changes the tokens (reading $\texttt{iffy}$ as the keyword $\texttt{if}$ followed by $\texttt{fy}$, or $\texttt{==}$ as two assignments).`,
-      caption: String.raw`Type source text in the toy language (keywords \texttt{if else while}, identifiers, numbers, operators \texttt{== <= = < +}, parentheses, \texttt{;}, spaces). Each token is a coloured chip with its class; **click a token** to see the DFA's path over it (states under the characters, the position of the last accepting state, the lookahead character that killed the run). Switch the rule to **stop at the first accepting state** (no longest match) or turn the **keyword rules off** (keywords then lex as identifiers) and watch the tokens change. The DFA is built live from the regular expressions with the code of 3.7 and 3.3.`,
+      caption: String.raw`Type source text in the toy language (keywords *if*, *else*, *while*; identifiers; numbers; the operators == <= = < +; parentheses; semicolons; spaces). Each token is a coloured chip with its class; **click a token** to see the DFA's path over it (states under the characters, the position of the last accepting state, the lookahead character that killed the run). Switch the rule to **stop at the first accepting state** (no longest match) or turn the **keyword rules off** (keywords then lex as identifiers) and watch the tokens change. The DFA is built live from the regular expressions with the code of 3.7 and 3.3.`,
       deps: ['toc-3.9', 'toc-3.12'],
       refs: ['Sipser §1.3'],
       credit: 'cf. Lesk & Schmidt, Lex, 1975',
@@ -455,7 +454,7 @@ export default {
           toks.forEach((t, k) => {
             const c = colorOf(B, t), wpx = (t.e - t.s) * cw - 2, name = t.r < 0 ? 'error' : B.rules[t.r][0];
             P.box(x0 + t.s * cw, 54, wpx, 26, { r: 5, fill: c, alpha: k === sel ? 0.45 : 0.22, stroke: k === sel ? 'ink' : c, width: k === sel ? 2.4 : 1.3 });
-            if (B.rules[t.r]?.[2] !== 'ws') P.sans(cut(name, Math.max(2, Math.floor(wpx / 7.2))), x0 + t.s * cw + wpx / 2, 67, { size: 11, weight: 700, color: 'ink' });
+            if (B.rules[t.r]?.[2] !== 'ws') P.sans(cut(name, Math.max(2, Math.floor(wpx / 6.2))), x0 + t.s * cw + wpx / 2, 67, { size: 10, weight: 700, color: 'ink' });
           });
           P.sans('click a token to see how the DFA scanned it', 12, P.H - 24, { align: 'left', size: 11.5, color: 'muted' });
           P.sans(`${toks.length} tokens`, P.W - 12, P.H - 24, { align: 'right', size: 11.5, color: 'muted' });
@@ -485,7 +484,202 @@ export default {
         v.legend([['purple', 'keyword', { dot: true }], ['blue', 'identifier', { dot: true }], ['orange', 'number', { dot: true }], ['teal', 'operator', { dot: true }], ['red', 'error / dead state', { dot: true }]]);
         v.readout(() => {
           const B = build(kwT.value), text = inp.value.slice(0, 48), R1 = scan(B, text), t = R1.toks[Math.min(sel, R1.toks.length - 1)];
-          return `${B.rules.length} token rules → combined ε-NFA with **${B.N.states.length}** states → DFA with **${B.D.states.length}** states (${B.tok.filter((x) => x >= 0).length} accepting) · text of ${text.length} characters scanned in ${R1.steps} DFA steps (${R1.steps - text.length >= 0 ? R1.steps - text.length + ' lookahead re-reads' : ''})${t ? ` · token ${Math.min(sel, R1.toks.length - 1) + 1}: ${t.r < 0 ? '**error**' : `**${B.rules[t.r][0]}**`} \`${text.slice(t.s, t.e)}\`` : ''}`;
+          return `${B.rules.length} token rules → combined ε-NFA with **${B.N.states.length}** states → DFA with **${B.D.states.length}** states (${B.tok.filter((x) => x >= 0).length} accepting) · text of ${text.length} characters scanned in ${R1.steps} DFA steps (${Math.max(0, R1.steps - text.length)} of them lookahead characters that are read again by the next token)${t ? ` · token ${Math.min(sel, R1.toks.length - 1) + 1}: ${t.r < 0 ? '**error**' : `**${B.rules[t.r][0]}**`} \`${text.slice(t.s, t.e)}\`` : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.15
+    {
+      num: '3.15',
+      kind: 'Paper',
+      name: 'Representation of Events in Nerve Nets and Finite Automata',
+      paper: { authors: 'S. C. Kleene', year: 1956, title: 'Representation of Events in Nerve Nets and Finite Automata', venue: 'in C. E. Shannon and J. McCarthy (eds.), Automata Studies, Annals of Mathematics Studies 34, Princeton University Press: 3–42', doi: '10.1515/9781400882618-002' },
+      introduces: ['toc-1.2', 'toc-3.6', 'toc-3.9'],
+      statement: String.raw`Kleene asked which "events" — sets of input histories — a McCulloch–Pitts **nerve net** (a network of threshold neurons with unit delays) can recognise by firing a designated neuron, and answered it in two directions. He defined the **regular events**: starting from finite events, close under disjunction (union), product (concatenation) and iteration (the star). **Representability:** every regular event is representable by a nerve net (and by a finite automaton). **Converse:** every event representable in a nerve net or a finite automaton is regular (up to the paper's conventions about time and about which neuron's firing counts). In modern terms, regular expressions, finite automata and threshold-neuron nets recognise exactly the same languages — the result later called Kleene's theorem (3.9).`,
+      idea: String.raw`McCulloch and Pitts had proposed nets of idealised threshold neurons; Kleene asked precisely which events (sets of input histories) such a net can represent by the firing of one neuron, and extended the question to arbitrary finite automata, whose cells and states he also defines. Part I of the report treats nerve nets and the "definite events" they can represent, §7 defines the regular events and shows them representable, and Part II (§9) shows that every representable event is regular. The work created the vocabulary of regular events (3.6) and the star operation (1.2), and is where the equivalence (3.9) first appears; it first circulated as RAND memorandum RM-704 in 1951.`,
+      caption: String.raw`**Reconstruction, not Kleene's own net.** The page builds, from the expression you type, a net of threshold neurons with one-tick delays by the position (Glushkov) construction: one neuron for each letter occurrence, firing when its letter is on the input line and a predecessor fired one tick earlier (weights: the letter line has weight equal to the number of predecessors $m$, each predecessor weight 1, threshold $m+1$), a start pulse $S$ and an output neuron $O$. Type a string and step: the gold neurons fired at this tick; the raster on the right is the history. **Click a synapse** (an arrow) to cut it: the net now recognises a different event, which the page reads back as a regular expression by state elimination (3.8) and compares with your expression on all strings up to length 7. The example $(aaa)^*a$ is the event "the time is $\equiv1\pmod 3$" that Kleene writes $(I^3)^*I^0$ in RM-704.`,
+      deps: ['toc-2.1'],
+      refs: [],
+      tags: ['history', 'automata', 'regular expressions'],
+      credit: 'S. C. Kleene, RAND report 1951, published 1956',
+      scope: String.raw`The nets drawn here are a modern reconstruction (position construction, with weights chosen by the page), not the construction of the paper. What I checked in the scan of RM-704 (15 December 1951): its section 7.1 defines "regular events" by three operations and lists examples such as $p\equiv1 \bmod 3$ as $(I^3)^*I^0$; Part I treats McCulloch–Pitts nets, Part II finite automata, §7.4 the representability of regular events and §9 the regularity of representable events. The 1956 chapter in Automata Studies was not examined, so notation there may differ.`,
+      verify: true,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kleene%27s_theorem' },
+      viz(v) {
+        let w = 'aaaa', built = '', net = null, cut = new Set(), selT = 0;
+        const RI = rxInput(v, { value: '(aaa)*a', presets: [['(aaa)*a (Kleene)', '(aaa)*a'], ['(a|b)*abb', '(a|b)*abb'], ['a*b', 'a*b'], ['(ab)*', '(ab)*'], ['a(a|b)*', 'a(a|b)*']], onPick: () => { cut = new Set(); S.reset({ at: 'end' }); } });
+        v.button('restore all synapses', () => { cut = new Set(); S.reset({ at: 'end' }); });
+        keypad(v, AB, () => w, (x) => { w = x; S.reset({ at: 'end' }); }, { max: 9 });
+        const gs = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 300, weight: 1.15 });
+        const rs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
+        const G = v.graph(gs, { nodes: [], edges: [], layout: 'none', directed: true, r: 17, autoRadius: false, fontSize: 14, draggable: true, edgeFontSize: 11 });
+        function glush(ast) {
+          const pos = [], follow = [];
+          const go = (e) => {
+            if (e.t === 'sym') { const i = pos.length; pos.push(e.c); follow.push(new Set()); return { nl: false, first: [i], last: [i] }; }
+            if (e.t === 'eps') return { nl: true, first: [], last: [] };
+            if (e.t === 'empty') return { nl: false, first: [], last: [] };
+            if (e.t === 'alt') { const a = go(e.l), b = go(e.r); return { nl: a.nl || b.nl, first: [...a.first, ...b.first], last: [...a.last, ...b.last] }; }
+            if (e.t === 'cat') { const a = go(e.l), b = go(e.r); for (const p of a.last) for (const q of b.first) follow[p].add(q); return { nl: a.nl && b.nl, first: a.nl ? [...a.first, ...b.first] : a.first, last: b.nl ? [...b.last, ...a.last] : b.last }; }
+            const a = go(e.e); for (const p of a.last) for (const q of a.first) follow[p].add(q); return { nl: true, first: a.first, last: a.last };
+          };
+          const r = go(ast); const first = new Set(r.first), last = new Set(r.last);
+          const edges = []; // [from, to]
+          for (const i of first) edges.push(['S', 'p' + i]);
+          follow.forEach((F, j) => F.forEach((i) => edges.push(['p' + j, 'p' + i])));
+          for (const j of last) edges.push(['p' + j, 'O']);
+          if (r.nl) edges.push(['S', 'O']);
+          return { pos, edges };
+        }
+        const eff = (id) => net.edges.filter(([a, b]) => b === id && !cut.has(a + '>' + b)).map(([a]) => a);
+        function sim(u) {
+          const n = u.length, F = [new Set(['S'])];
+          for (let t = 1; t <= n + 1; t++) {
+            const prev = F[t - 1], cur = new Set();
+            net.pos.forEach((c, i) => { const id = 'p' + i, preds = eff(id), m = preds.length, x = t - 1 < n && u[t - 1] === c ? 1 : 0; const sum = m * x + preds.filter((q) => prev.has(q)).length; if (m > 0 && sum >= m + 1) cur.add(id); });
+            if (eff('O').some((q) => prev.has(q))) cur.add('O');
+            F.push(cur);
+          }
+          return F;
+        }
+        const accepts = (u) => sim(u)[u.length + 1].has('O');
+        function readOff() { // the net as an automaton on firing patterns, then state elimination
+          const key = (F) => [...F].sort().join(','), ids = new Map(), list = [], delta = {};
+          const add = (F) => { const k = key(F); if (!ids.has(k)) { ids.set(k, 'F' + list.length); list.push({ F, id: 'F' + list.length }); } return ids.get(k); };
+          add(new Set(['S']));
+          for (let h = 0; h < list.length; h++) {
+            const { F, id } = list[h]; delta[id] = {};
+            for (const c of AB) { const nx = new Set(); net.pos.forEach((cc, i) => { const q = 'p' + i, preds = eff(q); if (cc === c && preds.some((p) => F.has(p))) nx.add(q); }); delta[id][c] = [add(nx)]; }
+            if (list.length > 12) return null;
+          }
+          const lastE = new Set(eff('O'));
+          const states = list.map((s, i) => [s.id, 0, 0, [...s.F].some((q) => lastE.has(q)), '$F_{' + i + '}$']);
+          return nfaToRegex(asNFA(nfa(AB, states, 'F0', delta, {})));
+        }
+        const layoutNet = () => {
+          const nodes = [{ id: 'S', label: 'S', t: 'S' }, ...net.pos.map((c, i) => ({ id: 'p' + i, label: c + i, t: 'p' })), { id: 'O', label: 'O', t: 'O' }];
+          G.set({ nodes, edges: net.edges.map(([a, b]) => ({ from: a, to: b, directed: true })) }); G.layout('layered', { rankdir: 'right' });
+        };
+        G.onClick = ({ edge }) => { if (edge) { const k = edge.from + '>' + edge.to; if (cut.has(k)) cut.delete(k); else cut.add(k); S.reset({ at: 'end' }); } return true; };
+        const frames = () => {
+          if (!net) return [];
+          const F = sim(w), out = [], sym = (t) => (t < w.length ? w[t] : null);
+          for (let t = 0; t <= w.length + 1; t++) {
+            const fired = [...F[t]];
+            out.push({ t, note: t === 0 ? `Time 0: the start pulse $S$ fires; the first input symbol${w.length ? ` (**${w[0]}**)` : ''} is on the input lines.` : t <= w.length ? `Time ${t}: neurons that fire: ${fired.length ? fired.join(', ') : 'none — the pulse has died'}. The input line now carries ${sym(t) ? `**${sym(t)}**` : 'nothing (the string has ended)'}.` : `Time ${t}: the output neuron $O$ ${F[t].has('O') ? '**fires**: the string is in the event.' : 'is silent: the string is not in the event.'}`, final: t === w.length + 1 });
+          }
+          return out;
+        };
+        const S = v.steps({ frames, speed: 1.2, still: 99 });
+        v.render(() => {
+          const res = RI.cur(), P = pen(rs, v);
+          if (res.error) { P.sans(res.error, P.W / 2, P.H / 2, { size: 14, color: 'red', weight: 600 }); return; }
+          if (!res.ast || ![...symbolsOf(res.ast)].every((c) => AB.includes(c))) { P.sans('use only the letters a and b', P.W / 2, P.H / 2, { size: 14, color: 'red', weight: 600 }); return; }
+          if (built !== RI.inp.value) { built = RI.inp.value; net = glush(res.ast); net.ast = res.ast; layoutNet(); S.reset({ at: 'end' }); }
+          const f = S.frame, t = f.t ?? 0, F = sim(w), cur = F[Math.min(t, F.length - 1)], prev = t > 0 ? F[t - 1] : new Set();
+          const m = (id) => eff(id).length;
+          G.draw({
+            nodeLabel: (id, nd) => nd.label, nodeRing: (id) => (id === 'O' ? 'ink' : null),
+            nodeFill: (id) => (cur.has(id) ? (id === 'O' ? 'green' : 'gold') : null),
+            nodeColor: (id) => (id === 'S' ? 'green' : id === 'O' ? 'green' : null),
+            nodeNote: (id) => (id === 'S' ? '' : id === 'O' ? 'θ=1' : `θ=${m(id) + 1}`),
+            edgeColor: (e) => (cut.has(e.from + '>' + e.to) ? 'red' : prev.has(e.from) ? 'gold' : null), edgeWidth: (e) => (prev.has(e.from) && !cut.has(e.from + '>' + e.to) ? 2.8 : null), edgeDash: (e) => (cut.has(e.from + '>' + e.to) ? [4, 4] : null),
+          });
+          gs.corner(`${net.pos.length} letter neurons · ${net.edges.length} synapses · ${cut.size} cut`, 'tl', { size: 12, color: 'muted', weight: 600 });
+          // raster of firing history
+          const rows = ['input', 'S', ...net.pos.map((c, i) => 'p' + i), 'O'], L0 = 52, cw = Math.min(46, (P.W - L0 - 10) / (w.length + 2)), rh = Math.min(26, (P.H - 30) / rows.length), y0 = 22;
+          for (let tt0 = 0; tt0 <= w.length + 1; tt0++) P.text(String(tt0), L0 + tt0 * cw + cw / 2, 12, { size: 10.5, color: tt0 === t ? 'gold' : 'muted', weight: tt0 === t ? 700 : 500 });
+          rows.forEach((id, r) => {
+            P.sans(id === 'input' ? 'input' : id.startsWith('p') ? `${net.pos[+id.slice(1)]}${id.slice(1)}` : id, 8, y0 + r * rh + rh / 2, { align: 'left', size: 10.5, color: 'muted', weight: 600 });
+            for (let tt0 = 0; tt0 <= w.length + 1; tt0++) {
+              const on = id === 'input' ? false : F[tt0].has(id), x = L0 + tt0 * cw;
+              if (id === 'input') { const ch = tt0 < w.length ? w[tt0] : ''; P.box(x + 1, y0 + r * rh + 1, cw - 2, rh - 2, { r: 3, stroke: 'faint' }); P.text(ch, x + cw / 2, y0 + r * rh + rh / 2, { size: 12.5, weight: 700 }); }
+              else P.box(x + 1, y0 + r * rh + 1, cw - 2, rh - 2, { r: 3, fill: on ? (id === 'O' ? 'green' : 'gold') : 'faint', alpha: on ? 0.8 : 0.15, stroke: false });
+            }
+          });
+          P.line(L0 + t * cw, y0, L0 + t * cw, y0 + rows.length * rh, { color: 'gold', width: 2 }); P.line(L0 + (t + 1) * cw, y0, L0 + (t + 1) * cw, y0 + rows.length * rh, { color: 'gold', width: 2 });
+        });
+        v.legend([['gold', 'neuron fired at this tick', { dot: true }], ['green', 'start pulse / output neuron', { dot: true }], ['red', 'cut synapse']]);
+        v.readout(() => {
+          const res = RI.cur(); if (res.error || !net) return '';
+          const A = new Set(), B = new Set(); for (const u of upTo(AB, 7)) if (accepts(u)) A.add(u);
+          const E = langFlat(res.ast, 7), same = eqSets(A, E), fd = same ? null : firstDiff(A, E);
+          const reg = readOff(), txt = reg ? rx(reg) : null;
+          return `$w=${tt(w)}$: output neuron ${accepts(w) ? '**fires**' : 'stays silent'} · event of the net, all strings of length ≤ 7: ${A.size} strings, ${same ? 'identical to $L(r)$ ✓' : `**differs** from $L(r)$ ✗ (first at $${tt(fd ?? '')}$)`} · read back from the net by state elimination: $${reg ? rxTeX(reg).length < 260 ? rxTeX(reg) : `\\text{an expression of size ${rxSize(reg)}, starting }\\mathtt{${rx(reg).slice(0, 40).replace(/[∪]/g, '|')}}\\ldots` : '\\ldots'}$`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.16
+    {
+      num: '3.16',
+      kind: 'Paper',
+      name: 'Finite Automata and Their Decision Problems',
+      paper: { authors: 'M. O. Rabin and D. Scott', year: 1959, title: 'Finite Automata and Their Decision Problems', venue: 'IBM Journal of Research and Development 3 (2): 114–125', doi: '10.1147/rd.32.0114' },
+      introduces: ['toc-3.1', 'toc-3.3', 'toc-2.7', 'toc-4.11'],
+      statement: String.raw`Rabin and Scott studied finite automata as devices that classify finite *tapes* (strings) and proved: (i) for an automaton with $r$ states, the set of accepted tapes is non-empty iff it contains a tape shorter than $r$ (Theorem 7), it is infinite iff it contains a tape of length $n$ with $r\le n<2r$ (Theorem 9), and two automata with $r_1$ and $r_2$ states are inequivalent iff some tape shorter than $r_1r_2$ is accepted by exactly one (Theorem 10) — so emptiness, finiteness and equivalence are decidable; (ii) the **nondeterministic automaton**, which may choose among several moves and accepts a tape if some choice of moves ends in a final state, defines exactly the same sets of tapes as the ordinary automaton, via the automaton whose states are the *sets* of states (Theorem 11); (iii) the **dual** automaton (all moves reversed, initial and final states exchanged) accepts the reversed tapes (Theorem 12); (iv) **two-way** automata, which may move back and forth on the tape, accept exactly the same sets of tapes as one-way automata (Theorem 15); (v) for two-way automata with two tapes even the problem whether any tape is accepted is, as the introduction states, not solvable by an algorithm.`,
+      idea: String.raw`Turing machines, the authors say, are too general a model for actual computers, so they study the finite-state restriction as "black boxes" that answer yes or no to typed questions, building on Kleene's characterisation of the events nerve nets can represent (3.15) and on Myhill's unpublished treatment of it with directed graphs. The decision procedures all rest on one loop argument: a tape that visits a state twice can be shortened or lengthened by cutting out or repeating the loop (the same idea reappears as the pumping lemma, 4.1). The nondeterministic machine was introduced as a design tool with few states, and Theorem 11 shows that it adds no power; the construction is the one we now call the subset construction. Rabin and Scott received the 1976 Turing Award for this paper, the ACM citing its introduction of the idea of nondeterministic machines.`,
+      caption: String.raw`**The experiment is a modern reconstruction, not a figure from the paper.** Take the nondeterministic automaton for "the $n$-th symbol from the end is 1" (not taken from the paper: it is the standard family for exhibiting the blow-up) and a random tape. Slide the **tape position**: the live NFA states (gold) are exactly the state of the paper's automaton $\mathfrak D(\mathfrak A)$, whose states are sets of states; the right picture counts how many *different* sets the tape has visited so far, climbing to $2^n$. The readout checks three of the paper's bounds on this automaton: the shortest accepted tape is shorter than its number $r$ of states (Theorem 7), an accepted tape of length in $[r,2r)$ exists because the language is infinite (Theorem 9), and the nondeterministic machine and $\mathfrak D(\mathfrak A)$ agree on every tape up to length 10 (Theorem 11).`,
+      deps: ['toc-2.1', 'toc-3.9'],
+      refs: [],
+      tags: ['history', 'automata', 'nondeterminism'],
+      credit: 'M. O. Rabin & D. Scott, 1959',
+      scope: String.raw`Verified against the scan of the printed paper (IBM Journal, April 1959, pp. 114–125): the abstract, introduction, Definitions 1–14 and Theorems 5–15 as summarised above (pages 114–123). The paper's $\mathfrak D(\mathfrak A)$ uses all subsets of the states as its states; here only the reachable subsets are counted, which satisfies the same bounds with a smaller $r$. Whether the exponential family drawn here appears in the paper is not claimed.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Powerset_construction' },
+      viz(v) {
+        const FAMk = (k) => { const st = [], dl = {}; for (let i = 0; i <= k; i++) { st.push(['q' + i, 1.6 + (i * 7.4) / Math.max(k, 1), 3.6, i === k]); dl['q' + i] = i === 0 ? { 0: ['q0'], 1: ['q0', 'q1'] } : i < k ? { 0: ['q' + (i + 1)], 1: ['q' + (i + 1)] } : {}; } return nfa(['0', '1'], st, 'q0', dl, {}, { loops: { q0: 90 } }); };
+        const T = 120;
+        let seed = 3;
+        const kS = v.slider('$n$', 1, 5, 3, { int: true });
+        const tS = v.slider('tape position $t$', 0, T, 14, { int: true });
+        v.button('new random tape', () => { seed++; });
+        const gs = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 270, weight: 1 });
+        const ds = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.75], axes: false, equal: true, height: 270, weight: 1 });
+        const cs = v.stage({ x: [0, T], y: [0, 36], axes: 'box', gutter: true, xlabel: 'tape position t', ylabel: 'different sets visited', height: 270, weight: 1.2 });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
+        const GN = nfaGraph(v, gs, FAMk(3), { draggable: false, r: 18 });
+        const GD = v.graph(ds, { nodes: [], edges: [], layout: 'none', directed: true, draggable: false, r: 17, autoRadius: false, texSize: 11.5, edgeFontSize: 11 });
+        let kk = -1, sd = -1, M = null;
+        const build = (k) => {
+          const N = FAMk(k), D = determinize(N), r = D.states.length;
+          // shortest accepted tape (Theorem 7) and a tape in [r, 2r) (Theorem 9) by breadth-first search over D
+          let reach = new Set([D.start]), shortest = -1, inRange = -1;
+          for (let l = 0; l < 2 * r + 1; l++) {
+            const hasAcc = [...reach].some((q) => D.states.find((s) => s.id === q).acc);
+            if (hasAcc && shortest < 0) shortest = l; if (hasAcc && l >= r && inRange < 0) inRange = l;
+            const nx = new Set(); for (const q of reach) for (const c of N.alpha) nx.add(D.delta[q][c][0]); reach = nx;
+          }
+          let bad = null; for (const u of upTo(N.alpha, 10)) if (nfaAccepts(N, u) !== dfaAccepts(D, u)) { bad = u; break; }
+          return { N, D, r, shortest, inRange, bad };
+        };
+        let B = null, tape = '', walk = null;
+        const refresh = () => {
+          const k = kS.value; if (k !== kk || sd !== seed) {
+            if (k !== kk) { kk = k; B = build(k); GN.sync(B.N); B.D.states.forEach((s, i) => { const a = (2 * Math.PI * i) / B.D.states.length; s.x = Math.sin(a) * 1.15; s.y = Math.cos(a) * 1.15; s.label = '$\\mathtt{' + Array.from({ length: k }, (_, j) => (s.set.includes('q' + (k - j)) ? '1' : '0')).join('') + '}$'; }); GD.set({ nodes: B.D.states, edges: dfaEdges(B.D) }); }
+            sd = seed; const r = v.rng(seed); tape = Array.from({ length: T }, () => (r() < 0.5 ? '0' : '1')).join('');
+            let q = B.D.start; const seen = new Set([q]), path = [q], cnt = [1]; for (const c of tape) { q = B.D.delta[q][c][0]; path.push(q); seen.add(q); cnt.push(seen.size); } walk = { path, cnt };
+          }
+        };
+        v.render(() => {
+          refresh(); const k = kS.value, t = tS.value, q = walk.path[t], cur = B.D.states.find((s) => s.id === q);
+          drawNFA(v, gs, GN, B.N, { fill: (id) => (cur.set.includes(id) ? 'gold' : null) });
+          gs.corner(`nondeterministic automaton, ${B.N.states.length} states`, 'tl', { size: 12, color: 'muted', weight: 600 });
+          ds.setView([-1.75, 1.75], [-1.6, 1.75]);
+          GD.draw({ nodeLabel: (id, nd) => nd.label, nodeRing: (id) => (B.D.states.find((s) => s.id === id).acc ? 'ink' : null), nodeFill: (id) => (id === q ? 'gold' : null), labelColor: (id) => (id === q ? onColor(v, 'gold') : null), edgeLabel: (e) => e.label, edgeColor: (e) => (e.syms.includes('1') && !e.syms.includes('0') ? 'orange' : e.syms.includes('0') && !e.syms.includes('1') ? 'blue' : null), edgeLabelColor: (e) => (e.syms.includes('1') && !e.syms.includes('0') ? 'orange' : e.syms.includes('0') && !e.syms.includes('1') ? 'blue' : null) });
+          const n0 = GD.node('S0'); if (n0 && isFinite(n0.x)) { const px = ds.X(n0.x), py = ds.Y(n0.y); ds.arrow(ds.invX(px), ds.invY(py - 62), ds.invX(px), ds.invY(py - 26), { color: 'ink', width: 2, head: 8 }); }
+          ds.corner(`𝔇(𝔄): ${B.D.states.length} subsets`, 'br', { size: 12, color: 'muted', weight: 600 });
+          cs.setView([0, T], [0, Math.max(2 ** k * 1.15, 3)]);
+          cs.hline(2 ** k, { color: 'faint', dash: true, width: 1.5 }); cs.text(`2^${k} = ${2 ** k}`, T - 2, 2 ** k, { size: 11.5, color: 'muted', align: 'right', dy: -10 });
+          cs.path(walk.cnt.map((c, i) => [i, c]), { color: 'orange', width: 2.2 });
+          cs.vline(t, { color: 'gold', width: 1.4, dash: true, alpha: 0.8 }); cs.dot(t, walk.cnt[t], { r: 5.5, color: 'orange' });
+          const P = pen(ts, v), lo = Math.max(0, Math.min(t - 18, T - 40)), cw = Math.min(26, (P.W - 24) / 40);
+          for (let i = 0; i < 40 && lo + i < T; i++) { const p = lo + i, done = p < t; P.box(12 + i * cw, 18, cw - 2, 26, { r: 3, fill: p === t ? 'gold' : done ? 'faint' : null, alpha: p === t ? 0.4 : 0.2, stroke: p === t ? 'gold' : 'muted', width: p === t ? 2.2 : 1 }); P.text(tape[p], 12 + i * cw + cw / 2 - 1, 31, { size: 13, weight: 600, color: done ? 'muted' : 'ink' }); }
+          P.sans(`tape (positions ${lo + 1}–${Math.min(T, lo + 40)}); symbols before the gold cell have been read`, 12, 8, { align: 'left', size: 10.5, color: 'muted' });
+        });
+        v.legend([['gold', 'live NFA states = current state of 𝔇(𝔄)', { dot: true }], ['orange', 'tape 1', { dot: true }], ['blue', 'tape 0 (arrows)']]);
+        v.readout(() => {
+          refresh(); const k = kS.value, t = tS.value, cur = B.D.states.find((s) => s.id === walk.path[t]);
+          const first = walk.cnt.findIndex((c) => c === B.D.states.length);
+          return `$n=${k}$: live states $${setTex(B.N, cur.set)}$ · the tape has visited **${walk.cnt[t]}** of the ${B.D.states.length} reachable sets ($2^{${k}}$)${first >= 0 ? `, all of them from position ${first} on` : ' so far'} · $r=${B.r}$: shortest accepted tape has length **${B.shortest}** $<r$ ${B.shortest < B.r ? '✓' : '✗'} (Thm 7) · an accepted tape of length **${B.inRange}** lies in $[r,2r)=[${B.r},${2 * B.r})$ ✓ (Thm 9, the language is infinite) · $\\mathfrak A$ and $\\mathfrak D(\\mathfrak A)$ agree on all tapes of length ≤ 10: ${B.bad == null ? '✓' : '✗ at ' + B.bad} (Thm 11)`;
         });
       },
     },
