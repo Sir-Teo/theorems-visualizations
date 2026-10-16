@@ -507,7 +507,7 @@ export function drawStruct(s, M, lang, opts = {}) {
   });
   for (let a = 0; a < n; a++) {
     const [x, y] = pos[a], mk0 = opts.mark ? opts.mark(a) : null;
-    s.dot(x, y, { r: rpx, color: mk0 || 'ink', fill: mk0 || 'panel', fillAlpha: mk0 ? 0.25 : 1, width: 1.8 });
+    s.circle(x, y, rpx / sc, { color: mk0 || 'ink', fill: mk0 || 'panel', fillAlpha: mk0 ? 0.28 : 1, width: 1.8 });
     s.text(opts.label ? opts.label(a) : String(a), x, y, { align: 'center', baseline: 'middle', size: 12.5, weight: 600, color: 'ink' });
     const us = uns.filter((u) => M.rel(u, [a])).join(' ');
     if (us) s.text(us, x, y, { align: 'center', baseline: 'top', dy: rpx + 3, size: 12, weight: 700, color: 'teal' });

@@ -172,7 +172,7 @@ In words, to prove an implication it is enough to assume its antecedent and deri
         };
         setup();
         const S = v.steps({
-          frames: () => lines.map((_, i) => ({ i, line: [D.out[D.at[i]] && (D.out[D.at[i]].role === 'id' ? 1 : D.out[D.at[i]].role === 'mp1' ? 0 : 2)], note: `Line ${i + 1} of the original is converted into ${i ? 'the next lines' : 'the first lines'} of the new deduction.` })),
+          frames: () => lines.map((_, i) => ({ i, line: [D.out[D.at[i]].role === 'id' ? 2 : D.out[D.at[i]].role === 'mp1' ? 1 : 3], note: `Line ${i + 1} of the original is converted into ${i ? 'the next lines' : 'the first lines'} of the new deduction.` })),
           start: 'end', still: 'end', speed: 1,
           code: ['θ is an axiom or in Γ: write θ, then θ → (φ → θ), then φ → θ', 'θ is φ itself: write φ → φ (a tautology)', 'θ from θⱼ and θⱼ → θᵢ: use (φ→θⱼ) → ((φ→(θⱼ→θᵢ)) → (φ→θᵢ)) and modus ponens twice'],
           codeTitle: 'the conversion, case by case', codePos: 'side',
@@ -191,7 +191,6 @@ In words, to prove an implication it is enough to assume its antecedent and deri
             n: k + 1, text: o.sch && toStr(o.f).length > 52 ? o.sch : clip(toStr(o.f), 60), just: chk1[k].label, jcolor: JCOL[chk1[k].kind], color: chk1[k].ok ? 'ink' : 'red', hl: o.src === i,
           }));
           drawRows(BOT, rows, { maxRows: 13, size: 12 });
-          BOT.corner(`from Γ = {${G.map(toStr).join('; ')}}  — φ is gone`, 'br', { size: 11.5, color: 'muted' });
         });
         v.readout(() => {
           const i = S.frame.i ?? lines.length - 1, upto = D.at[i] ?? -1, ok = chk1.slice(0, upto + 1).every((c) => c.ok);
@@ -226,7 +225,7 @@ The restriction cannot be dropped: from the hypothesis $P(x)$ one can derive $P(
         };
         setup();
         const S = v.steps({
-          frames: () => lines.map((_, i) => ({ i, line: [D.failAt >= 0 && i >= D.failAt ? 1 : (axiomOf(lines[i]) ? 0 : G.some((h) => equalAst(h, lines[i])) ? 1 : 2)], note: `Converting line ${i + 1}.` })),
+          frames: () => lines.map((_, i) => ({ i, line: [D.failAt >= 0 && i >= D.failAt ? 2 : (axiomOf(lines[i]) ? 1 : G.some((h) => equalAst(h, lines[i])) ? 2 : 3)], note: `Converting line ${i + 1}.` })),
           start: 'end', still: 'end', speed: 1,
           code: ['θ is a logical axiom: its generalization ∀x θ is also an axiom', 'θ is in Γ: x is not free in θ, so θ → ∀x θ is axiom (4); modus ponens gives ∀x θ', 'θ from θⱼ, θⱼ → θᵢ: use ∀x(θⱼ→θᵢ) → (∀xθⱼ → ∀xθᵢ), axiom (3), and modus ponens twice'],
           codeTitle: 'the conversion, case by case', codePos: 'side',
@@ -348,7 +347,7 @@ The restriction cannot be dropped: from the hypothesis $P(x)$ one can derive $P(
         v.render(() => {
           const i = Math.min(S.frame.i ?? run.frames.length - 1, run.frames.length - 1);
           const fr = run.frames.slice(0, i + 1), N = 18244;
-          const rowH = 5.4, top = 94;
+          const rowH = 5.4, top = 90;
           L.text('the theory so far', 2, 99, { align: 'left', baseline: 'top', size: 12, color: 'muted', weight: 700 });
           const start = Math.max(0, fr.length - 16);
           fr.slice(start).forEach((f, k) => {
@@ -420,8 +419,8 @@ Equivalently: every consistent set of sentences has a model. Together with sound
           range(n).forEach((a) => {
             const [x, y] = n === 1 ? [0, 0] : circlePos(a, n, 0.95, 0, 0, 90 + 180 / n);
             const inP = (M.Pm >> a) & 1, inQ = (M.Qm >> a) & 1;
-            L.dot(x, y, { r: 22, color: inP ? 'accent' : 'muted', fill: inP ? 'accent' : 'panel', fillAlpha: inP ? 0.3 : 1, width: 2 });
-            if (inQ) L.dot(x, y, { r: 28, color: 'orange', hollow: true, width: 2.2 });
+            L.circle(x, y, 0.27, { color: inP ? 'accent' : 'muted', fill: inP ? 'accent' : 'panel', fillAlpha: inP ? 0.3 : 1, width: 2 });
+            if (inQ) L.circle(x, y, 0.34, { color: 'orange', fill: false, width: 2.4 });
             L.text(M.members[a].map((i) => `c${subNum(i)}`).join(' = '), x, y, { align: 'center', baseline: 'middle', size: 12, weight: 600, color: 'ink', math: true });
             L.text(`${inP ? 'P' : '¬P'}${inQ ? ' Q' : ''}`, x, y, { align: 'center', baseline: 'top', dy: 32, size: 11, weight: 700, color: inP ? 'accent' : 'muted' });
           });
