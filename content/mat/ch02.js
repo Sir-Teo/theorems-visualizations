@@ -605,7 +605,7 @@ export default {
       num: '2.9',
       kind: 'Phenomenon',
       name: 'Kirkendall effect',
-      statement: String.raw`When two metals A and B are welded together and annealed, inert markers (fine wires) placed at the original interface do not stay put relative to the ends of the specimen: they move toward the side of the **slower** diffuser, and the shift grows as $\sqrt t$. Pores often form on the side of the faster diffuser. If the intrinsic diffusivities are $D_A$ and $D_B$ and $N$ is the mole fraction of A, the lattice (and marker) velocity is $$v_m=(D_A-D_B)\,\frac{\partial N}{\partial x},$$ and the observed interdiffusion coefficient is Darken's $\tilde D=N_BD_A+N_AD_B$. Only if $D_A=D_B$ are the markers stationary.`,
+      statement: String.raw`When two metals A and B are welded together and annealed, inert markers (fine wires) placed at the original interface do not stay put relative to the ends of the specimen: they drift toward the side that is losing the **faster** diffuser (the brass, when zinc outruns copper), and the shift grows as $\sqrt t$. Pores often form on that same side, where the vacancies pile up. If the intrinsic diffusivities are $D_A$ and $D_B$ and $N$ is the mole fraction of A, the lattice (and marker) velocity is $$v_m=(D_A-D_B)\,\frac{\partial N}{\partial x},$$ and the observed interdiffusion coefficient is Darken's $\tilde D=N_BD_A+N_AD_B$. Only if $D_A=D_B$ are the markers stationary.`,
       idea: String.raw`If atoms exchanged places directly, equal numbers of A and B atoms would cross any plane and nothing could move. With a vacancy mechanism (2.5), the faster species A takes more atoms out of its side than the slower B puts back, so there is a net flow of atoms one way and an equal and opposite flow of vacancies. The lattice planes must absorb the vacancies (by climbing dislocations), shifting the whole lattice, markers included, by the net amount; where the vacancies cannot be absorbed they condense into pores. Because the effect cannot occur by direct exchange, it was the decisive evidence that diffusion in metals goes by vacancies.`,
       caption: String.raw`Left: the zinc profile of a copper/brass couple after time $t$ (dashed: the starting step), with five markers carried by the lattice flow. Middle: how far the marker that began at the interface has moved, against $\sqrt t$: a straight line. Bottom: the specimen itself, coloured by composition, with markers and the pores that open where vacancies pile up. Set $D_{\rm Zn}=D_{\rm Cu}$ and the markers stay still.`,
       deps: ['mat-2.5', 'mat-2.6'],
@@ -660,12 +660,12 @@ export default {
           // specimen strip
           const c1 = v.rgb('orange'), c2 = v.rgb('gold');
           sC.raster((x) => { const w = clamp(prof(x) / N0, 0, 1); return [c1[0] + (c2[0] - c1[0]) * w, c1[1] + (c2[1] - c1[1]) * w, c1[2] + (c2[2] - c1[2]) * w, 0.55]; }, { res: 3, key: `${rS.value}|${NS.value}|${tS.value}|${ver}|${v.color('ink')}` });
-          const thr = 0.0025;
-          for (let i = 1; i < n - 1; i++) { const cnt = Math.min(40, Math.floor(Math.max(0, ex[i]) / thr)); for (let k = 0; k < cnt; k++) { const q = voids[(i * 7 + k * 13) % voids.length]; sC.dot(xs[i] + (q[0] - 0.5) * dx * 6, 0.15 + 0.7 * q[1], { r: 2.5 + (k % 3), hollow: true, color: 'ink' }); } }
+          const thr = 0.03;
+          for (let i = 1; i < n - 1; i++) { const cnt = Math.min(9, Math.floor(Math.max(0, ex[i]) / thr)); for (let k = 0; k < cnt; k++) { const q = voids[(i * 7 + k * 13) % voids.length]; sC.dot(xs[i] + (q[0] - 0.5) * dx * 6, 0.15 + 0.7 * q[1], { r: 2 + (k % 3) * 0.8, hollow: true, color: 'ink' }); } }
           for (const x of mk) sC.vline(x, { color: 'ink', width: 2.2 });
           sC.vline(0, { color: 'faint', dash: [3, 4] });
           sC.text('Cu', -2.4, 0.5, { size: 14, color: 'ink', weight: 700 });
-          sC.text('Cu–Zn brass', 2.5, 0.5, { size: 14, color: 'ink', weight: 700, align: 'right' });
+          sC.text('Cu–Zn brass', 2.5, 0.08, { size: 13, color: 'ink', weight: 700, align: 'right' });
         });
         v.legend([['accent', 'Zn profile'], ['gold', 'inert markers', { dot: true }], ['ink', 'pores (vacancy condensation)']]);
         v.readout(() => {
@@ -673,7 +673,7 @@ export default {
           const { mk, hist, r, N0, N, ex } = R, sh = hist[hist.length - 1][1], sq = hist[hist.length - 1][0];
           let ip = 0; for (let i = 0; i < n; i++) if (ex[i] > ex[ip]) ip = i;
           const nb = Math.round(0.5 * n), dn = R.dN(nb), JZn = -r * dn, JCu = dn;
-          return `Marker shift $=${v.fix(sh, 3)}$ (towards the **${sh >= 0 ? 'zinc-rich' : 'copper'}** side), i.e. $${sq > 0 ? v.fix(sh / sq, 3) : '0'}\\sqrt t$ at every instant. At the interface the zinc flux is $J_{\\rm Zn}=${v.fix(JZn, 3)}$ and the copper flux $J_{\\rm Cu}=${v.fix(JCu, 3)}$ (in units of $\\rho D_{\\rm Cu}/x_0$); they do not cancel, the difference ${v.fix(JZn + JCu, 3)}$ being carried by vacancies.\n${r === 1 ? '$D_{\\rm Zn}=D_{\\rm Cu}$: no shift.' : `Vacancies pile up most near $x=${v.fix(xs[ip], 2)}$ on the brass side (the pores).`}`;
+          return `Marker shift $=${v.fix(sh, 3)}$ (towards the **${sh >= 0 ? 'zinc-rich' : 'copper'}** side), i.e. $${sq > 0 ? v.fix(sh / sq, 3) : '0'}\\sqrt t$ at every instant. At the interface the zinc flux is $J_{\\rm Zn}=${v.fix(JZn, 3)}$ and the copper flux $J_{\\rm Cu}=${v.fix(JCu, 3)}$ (in units of $\\rho D_{\\rm Cu}/x_0$); they do not cancel, the difference $${v.fix(JZn + JCu, 3)}$ being carried by vacancies.\n${r === 1 ? '$D_{\\rm Zn}=D_{\\rm Cu}$: no shift.' : `Vacancies pile up most near $x=${v.fix(xs[ip], 2)}$ on the brass side (the pores).`}`;
         });
       },
     },
@@ -711,9 +711,8 @@ export default {
             for (let k = 0; k < seeds.length; k++) { const d = Math.hypot(x - seeds[k][0], y - seeds[k][1]); if (d < d1) { d2 = d1; d1 = d; i1 = k; } else if (d < d2) d2 = d; }
             return d2 - d1 < 0.012 ? [co[0], co[1], co[2], 0.95] : [ca[0], ca[1], ca[2], tint[i1]];
           }, { res: 3, key: `v${v.color('ink')}` });
-          sP.text(`grain size d = ${dS.value < 1 ? (dS.value * 1000).toFixed(0) + ' nm' : dS.value.toFixed(dS.value < 10 ? 1 : 0) + ' µm'}  (5 grains across ≈ 5d)`, 0.5, 0.02, { size: 12, color: 'ink', align: 'center', plate: true });
+          sP.text(`grain size d = ${dS.value < 1 ? (dS.value * 1000).toFixed(0) + ' nm' : dS.value.toFixed(dS.value < 10 ? 1 : 0) + ' µm'}  (5 grains across ≈ 5d)`, 0.5, 0.06, { size: 12, color: 'ink', align: 'center', plate: true });
           const f = fOf();
-          sA.hband(1e-40, 1e-40, {});
           sA.vline(1000 / 1235, { color: 'red', dash: [5, 4], alpha: 0.6 });
           sA.text('$T_m$ (silver-like)', 1000 / 1235, 3e-25, { size: 11, color: 'red', dx: 5, align: 'left' });
           for (const [fn, c, w] of [[Ds, 'pink', 2], [Dg, 'orange', 2], [Dl, 'accent', 2]]) sA.fn((x) => fn(1000 / x), { color: c, width: w });
@@ -752,8 +751,8 @@ export default {
         const t1 = v.slider('$t_1$ (min)', 2, 240, 30, { log: true, sig: 2 });
         const T2 = v.slider('drive-in $T_2$ (°C)', 1000, 1250, 1100, { step: 5 });
         const t2 = v.slider('$t_2$ (min)', 5, 600, 90, { log: true, sig: 2 });
-        const Cs = v.slider('surface $C_s$ (cm⁻³)', 1e18, 1e21, 2e20, { log: true, sig: 2 });
-        const CB = v.slider('background $C_B$ (cm⁻³)', 1e14, 1e17, 1e15, { log: true, sig: 2 });
+        const Cs = v.slider('surface $C_s$ (cm⁻³)', 1e18, 1e21, 2e20, { log: true, sig: 2, fmt: (x) => x.toExponential(1).replace('e+', '×10^') });
+        const CB = v.slider('background $C_B$ (cm⁻³)', 1e14, 1e17, 1e15, { log: true, sig: 2, fmt: (x) => x.toExponential(1).replace('e+', '×10^') });
         const s = v.stage({ x: [0, 1], y: [1e13, 1e21], ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'depth  $x$ (µm)', ylabel: 'dopant concentration (cm⁻³)', title: 'dopant profiles' });
         let info = {};
         v.render(() => {
