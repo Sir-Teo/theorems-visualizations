@@ -382,7 +382,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         reset();
         const load = (i) => { selI = i; setProfile(P, samples[i].Q); };
         v.button('Next case: Condorcet winner loses', () => { for (let k = 0; k < 20000; k++) { const s = gen(); if (s.cwLoses) { load(samples.length - 1); return; } } });
-        const ed = blocEditor(v, E, P, { max: 12, rank: true, rowMax: 34, onEdit: () => { selI = -1; } });
+        const ed = blocEditor(v, E, P, { max: 12, rank: true, rowMax: 40, onEdit: () => { selI = -1; } });
         St.onClick((x) => { if (!geo) return; const i = Math.round((St.X(x) - geo.x0) / geo.dx); if (i >= 0 && i < samples.length) load(i); });
         v.animate((t) => {
           const target = CAP + Math.floor(t * 10);
@@ -392,7 +392,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
           geo = { x0, dx };
           const Y = (b) => y1 - b * (y1 - y0);
           [0, 0.25, 0.5, 0.75, 1].forEach((b) => { hlinePx(v, c, x0 - 4, x1, Y(b), b === 0.5 ? 'ink' : 'grid', b === 0.5 ? [6, 4] : null, b === 0.5 ? 1.4 : 1); txt(v, c, b === 0.5 ? '½' : String(b), x0 - 9, Y(b), { size: 10, weight: 600, color: 'muted', align: 'right' }); });
-          txt(v, c, 'average', x1 - 2, Y(0.5) - 9, { size: 10, weight: 700, color: 'ink', align: 'right', halo: true });
+          txt(v, c, 'average', x0 + 2, Y(0.5) - 9, { size: 10, weight: 700, color: 'ink', align: 'left', halo: true });
           samples.forEach((s, i) => {
             const X = x0 + i * dx;
             if (i === selI) { c.fillStyle = v.color('accent', 0.14); c.fillRect(X - dx / 2, y0 - 4, dx, y1 - y0 + 8); }

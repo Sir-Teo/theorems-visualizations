@@ -208,7 +208,7 @@ The results assume non-negative edge costs bounded away from zero and a finite b
         const base = v.select('estimate h', [{ value: 'man', label: 'Manhattan' }, { value: 'euc', label: 'straight line' }], 'man', { onChange: () => v.restart() });
         const wS = v.slider('weight w (h × w)', 0, 4, 1, { step: 0.05, onChange: () => v.restart() });
         v.button('reset maze', () => { reset(); v.restart(); });
-        const opts = { x: [0, AS_W], y: [0, AS_H], equal: true, axes: false, height: 300 };
+        const opts = { x: [0, AS_W], y: [0, AS_H + 1.4], equal: true, axes: false, height: 300 };
         const L = v.stage({ ...opts, title: 'A*, f = g + w·h' }), R = v.stage({ ...opts, title: 'Dijkstra, h = 0' });
         const snapCell = (x, y) => [Math.min(AS_W - 1, Math.max(0, Math.floor(x))) + 0.5, Math.min(AS_H - 1, Math.max(0, Math.floor(y))) + 0.5];
         const S = L.handle(3.5, AS_H - 8.5, { color: 'blue', r: 9, label: 'S', labelPos: 'w', constrain: (x, y) => snapCell(x, y), onDrag: () => v.restart() });
@@ -239,7 +239,7 @@ The results assume non-negative edge costs bounded away from zero and a finite b
           const { A, D, w } = st;
           if (!D.path.length) return 'no path between S and G: both searches exhaust the reachable cells';
           const opt = A.cost === D.cost, adm = w <= 1 + 1e-9;
-          return `A* with ${w === 0 ? '$h = 0$ (Dijkstra itself)' : `$${v.fix(w, 2)}\\times$ ${base.value === 'man' ? 'Manhattan' : 'straight-line'} distance`}: **${A.order.length}** nodes expanded against **${D.order.length}** for Dijkstra (${v.fix((100 * A.order.length) / D.order.length, 0)}%); path cost **${A.cost}**, shortest ${D.cost} — ${opt ? 'optimal' : `**${A.cost - D.cost} longer than optimal**`}${adm ? ' (the estimate is admissible, so optimality is guaranteed)' : opt ? ' (no guarantee at w > 1: here it happened to be optimal)' : ' (w > 1 lets h overestimate, so the guarantee is lost; Pohl later showed the cost stays within w × optimal)'} · on this grid Manhattan distance is the exact cost without walls, the most informed admissible estimate; straight-line distance is admissible but weaker`;
+          return `A* with ${w === 0 ? '$h = 0$ (Dijkstra itself)' : `$${v.fix(w, 2)}\\times$ ${base.value === 'man' ? 'Manhattan' : 'straight-line'} distance`}: **${A.order.length}** nodes expanded against **${D.order.length}** for Dijkstra (${v.fix((100 * A.order.length) / D.order.length, 0)}%); path cost **${A.cost}**, shortest ${D.cost} — ${opt ? 'optimal' : `**${A.cost - D.cost} longer than optimal**`}${adm ? ' (the estimate is admissible, so optimality is guaranteed)' : opt ? ' (no guarantee at w > 1: here it happened to be optimal)' : ' (w > 1 lets h overestimate, so the guarantee is lost; Pohl later showed the cost stays within w × optimal)'} · on this grid Manhattan distance is the exact cost when no wall intervenes, the better informed of the two; straight-line distance is admissible but weaker, so A* expands more`;
         });
       },
     },

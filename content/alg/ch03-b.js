@@ -46,7 +46,7 @@ export default {
       viz(v) {
         const which = v.select('group', [{ value: 'Zn', label: '$\\mathbb Z_n$' }, { value: 'Un', label: '$U(n)$' }, { value: 'D3', label: '$S_3$' }, { value: 'Q8', label: '$Q_8$' }, { value: 'D4', label: '$D_4$' }, { value: 'Z', label: '$\\mathbb Z$' }], 'Un');
         const N = v.slider('$n$', 2, 40, 15, { int: true });
-        const s = v.stage({ x: [0, 10], y: [0, 3.2], axes: false, height: 170, full: true });
+        const s = v.stage({ x: [0, 10], y: [0, 3.2], axes: false, height: 150, full: true });
         const b = v.stage({ x: [1.5, 40.5], y: [0, 42], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'n', ylabel: 'order' });
         const G = () => (which.value === 'Zn' ? cyclic(N.value) : which.value === 'Un' ? units(N.value) : which.value === 'D3' ? dihedral(3) : which.value === 'Q8' ? quaternion() : which.value === 'D4' ? dihedral(4) : null);
         v.animate((tt) => {
@@ -58,7 +58,7 @@ export default {
             s.text('|ℤ| = ∞ : the shelf never ends', 5, 0.55, { align: 'center', size: 14, weight: 700 });
           } else {
             const n = g.n, per = Math.min(n, 20), rows = Math.ceil(n / per), w = Math.min(0.62, 9.4 / per);
-            for (let i = 0; i < n; i++) { const r = Math.floor(i / per), c = i % per, x = 5 + (c - (Math.min(per, n - r * per) - 1) / 2) * w, y = 2.3 - r * 0.75; s.dot(x, y, { r: 13, color: elColor(v, i, n) }); s.tex(g.L[i], x, y, { size: 12, color: 'panel' }); }
+            for (let i = 0; i < n; i++) { const r = Math.floor(i / per), c = i % per, x = 5 + (c - (Math.min(per, n - r * per) - 1) / 2) * w, y = 2.3 - r * 0.75; s.dot(x, y, { r: 14, color: elColor(v, i, n) }); if (/^\d+$/.test(g.L[i])) s.text(g.L[i], x, y, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false }); else s.tex(g.L[i], x, y + 0.42, { size: 13 }); }
             s.text(`|${g.tex.replace(/\\mathbb Z_\{(\d+)\}/, 'ℤ$1').replace('D_{3}', 'S₃').replace('D_{4}', 'D₄').replace('Q_8', 'Q₈')}| = ${n}`, 5, 0.45, { align: 'center', size: 14, weight: 700 });
           }
           const n0 = N.value;
@@ -70,7 +70,7 @@ export default {
         v.readout(() => {
           const g = G();
           if (!g) return String.raw`$\mathbb Z$ is an **infinite** group: $|\mathbb Z| = \infty$.`;
-          return String.raw`$|${g.tex}| = ${g.n}$${which.value === 'Un' ? ` $= \\varphi(${N.value})$` : ''}; the group is ${g.abelian ? 'abelian' : 'nonabelian'}. ${which.value === 'Un' ? `Its elements are the residues coprime to ${N.value}.` : ''}`;
+          return String.raw`$|${g.tex}| = ${g.n}$${which.value === 'Un' ? String.raw` $= \\varphi(${N.value})$` : ''}; the group is ${g.abelian ? 'abelian' : 'nonabelian'}. ${which.value === 'Un' ? `Its elements are the residues coprime to ${N.value}.` : ''}`;
         });
       },
     },
@@ -105,7 +105,7 @@ export default {
           const rowOk = G.T[c].every((x, j) => x === j), colOk = G.T.every((r, i) => r[c] === i);
           if (which.value === 'LZ') return String.raw`In $x\circ y = y$ every row repeats the header, so $${L[c]}$ is a **left** identity ($${L[c]}\circ x = x$ for all $x$) — and so are the other two: three left identities. But the column of $${L[c]}$ is constant, so $x\circ ${L[c]} = ${L[c]} \ne x$: there is **no** two-sided identity, and nothing contradicts Proposition 3.17.`;
           if (rowOk && colOk) return String.raw`$e' = ${L[c]}$ passes both tests — it is the identity $e$ itself. Any other candidate would have to satisfy $e = e e' = e'$.`;
-          return String.raw`$e' = ${L[c]}$ fails: ${!rowOk ? `$${L[c]}\,${L[G.T[c].findIndex((x, j) => x !== j)]} = ${L[G.T[c][G.T[c].findIndex((x, j) => x !== j)]]}$ is not $${L[G.T[c].findIndex((x, j) => x !== j)]}$` : ''}${!rowOk && !colOk ? ', and ' : ''}${!colOk ? 'its column differs from the header' : ''}. The ringed cell shows $e\,e' = ${L[G.T[e][c]]}$: an identity $e'$ would force it to be $e$ as well, i.e. $e' = e = ${L[e]}$.`;
+          return String.raw`$e' = ${L[c]}$ fails: ${!rowOk ? String.raw`$${L[c]}\,${L[G.T[c].findIndex((x, j) => x !== j)]} = ${L[G.T[c][G.T[c].findIndex((x, j) => x !== j)]]}$ is not $${L[G.T[c].findIndex((x, j) => x !== j)]}$` : ''}${!rowOk && !colOk ? ', and ' : ''}${!colOk ? 'its column differs from the header' : ''}. The ringed cell shows $e\,e' = ${L[G.T[e][c]]}$: an identity $e'$ would force it to be $e$ as well, i.e. $e' = e = ${L[e]}$.`;
         });
       },
     },
@@ -204,7 +204,7 @@ The middle step is associativity — that is where the proof really works. In th
         Gr.onClick = ({ node }) => { if (node) sel = +node.id; return true; };
         v.render(() => {
           const G = GR[which.value], n = G.n, a = sel % n, ai = G.inv[a];
-          Gr.nodes = Array.from({ length: n }, (_, i) => ({ id: i, x: 1.05 * Math.cos(Math.PI / 2 - (2 * Math.PI * i) / n), y: 1.05 * Math.sin(Math.PI / 2 - (2 * Math.PI * i) / n), label: lab(G.L[i]) }));
+          Gr.nodes = Array.from({ length: n }, (_, i) => ({ id: i, x: 0.92 * Math.cos(Math.PI / 2 - (2 * Math.PI * i) / n), y: -0.06 + 0.92 * Math.sin(Math.PI / 2 - (2 * Math.PI * i) / n), label: lab(G.L[i]) }));
           const E = []; for (let i = 0; i < n; i++) { const j = G.inv[i]; if (j === i) E.push({ from: i, to: i }); else if (i < j) E.push({ from: i, to: j, directed: true, both: true }); }
           Gr.edges = E;
           Gr.draw({ nodeFill: (id) => (+id === a ? 'gold' : null), nodeColor: (id) => (+id === ai ? 'gold' : G.inv[+id] === +id ? 'green' : null), edgeColor: (e) => ((e.from === a || e.to === a) ? 'gold' : e.from === e.to ? 'green' : 'muted'), edgeWidth: (e) => (e.from === a || e.to === a ? 3 : null), arrows: false });
@@ -287,7 +287,7 @@ The middle step is associativity — that is where the proof really works. In th
           if (!lf.length) return String.raw`Every row and column is a permutation: left multiplication by each element is one-to-one, as cancellation demands. ${assocFail(G) ? '' : `This is the table of $${G.tex}$.`}`;
           const f = lf[0], [j1, j2] = f.at, af = assocFail(G);
           const eq = f.kind === 'row' ? String.raw`$${L[f.k]}\,${L[j1]} = ${L[f.k]}\,${L[j2]} = ${L[f.dup]}$` : String.raw`$${L[j1]}\,${L[f.k]} = ${L[j2]}\,${L[f.k]} = ${L[f.dup]}$`;
-          return String.raw`**Cancellation fails:** ${eq} although $${L[j1]}\ne ${L[j2]}$. So this table is no group: ${G.e == null ? 'it has no identity' : G.inv.some((x) => x < 0) ? 'some element has no inverse' : af ? `associativity breaks, e.g. $(${L[af[0]]}${L[af[1]]})${L[af[2]]} \ne ${L[af[0]]}(${L[af[1]]}${L[af[2]]})$` : 'an axiom fails'}.`;
+          return String.raw`**Cancellation fails:** ${eq} although $${L[j1]}\ne ${L[j2]}$. So this table is no group: ${G.e == null ? 'it has no identity' : G.inv.some((x) => x < 0) ? 'some element has no inverse' : af ? String.raw`associativity breaks, e.g. $(${L[af[0]]}${L[af[1]]})${L[af[2]]} \ne ${L[af[0]]}(${L[af[1]]}${L[af[2]]})$` : 'an axiom fails'}.`;
         });
       },
     },

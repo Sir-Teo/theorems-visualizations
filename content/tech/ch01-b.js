@@ -197,7 +197,7 @@ The key trait of domestic cereals is the **tough rachis**. A wild ear shatters w
       idea: String.raw`Each year the next crop grows from saved harvest. If a brittle plant sheds a fraction $\ell$ of its grain before the harvest, it contributes $1-\ell$ as much seed as a tough plant, which is selection with coefficient $s=\ell$ on the shattering type. For a self-pollinating cereal the frequency $p$ of tough-rachis lines then grows like a haploid allele (popgen-4.3):
 $$p' = \frac{p}{p+(1-p)(1-s)}, \qquad \text{so}\qquad \ln\frac{p_t}{1-p_t}=\ln\frac{p_0}{1-p_0}+t\ln\frac{1}{1-s}.$$
 Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s$ (exactly $9.85/\ln\frac{1}{1-s}$): 28 years at $s=0.3$, but 2,500 years at $s=0.004$. Several things weaken selection. Harvesting green, before ears shatter, lowers $\ell$. Sowing the same plot lets shed grain come up again. Restocking with wild seed adds back the wild type. Beating ripe ears into baskets, the way wild stands were gathered, even favours the brittle type. In a small population random drift can lose a new mutant before selection takes hold.`,
-      caption: String.raw`Choose a **harvest method**, or set the fraction of grain a brittle ear sheds before harvest; switch **fresh ground** off to let shed grain re-seed the plot, and add **wild seed**. **Right:** the tough-rachis frequency over the years, deterministic (blue) and eight random runs in a population of $N$ plants (gold), against the 20–200 years of the harvesting experiments (orange band) and the 2,000–2,500 years read from the archaeological record (green band). **Left:** the field in the year chosen with the slider: intact ears are tough, ears dropping grain are wild-type.`,
+      caption: String.raw`Choose a **harvest method**, or set the fraction of grain a brittle ear sheds before harvest; switch **fresh ground** off to let shed grain re-seed the plot, and add **wild seed**. **Right:** the tough-rachis frequency over the years, deterministic (blue) and eight random runs in a population of $N$ plants (gold), against the 20–200 years of the harvesting experiments (orange band) and the 2,000–2,500 years read from the archaeological record (green band). **Left:** the field in the year chosen with the slider: intact blue ears are tough, gold ears dropping their grain are the wild type.`,
       deps: ['tech-1.2', 'popgen-4.3'],
       see: ['bighist-5.2', 'bighist-5.3', 'popgen-6.7', 'popgen-6.2'],
       refs: ['Cardwell', 'Hillman & Davies 1990, J. World Prehist. 4:157', 'Tanno & Willcox 2006, Science 311:1886', 'Purugganan & Fuller 2011, Evolution 65:171', 'Fuller et al. 2014, PNAS 111:6147'],
@@ -205,7 +205,7 @@ Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Domestication' },
       viz(v) {
         const YMAX = 3000, P0 = 0.001;
-        const A = v.stage({ x: [0, 12], y: [-0.6, 10.4], equal: true, axes: false, height: 300, weight: 0.85, minWidth: 290, title: 'the field' });
+        const A = v.stage({ x: [0, 8], y: [-0.7, 6.3], equal: true, axes: false, height: 300, weight: 0.85, minWidth: 290, title: 'the field' });
         const B = v.stage({ x: [1, YMAX], y: [0, 1.02], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.35, minWidth: 420, xlabel: 'years of cultivation', ylabel: 'tough-rachis frequency', title: 'the tough rachis spreading' });
         const METHODS = { beat: { label: 'beat into baskets', l: -0.05 }, green: { label: 'reap green', l: 0.004 }, sickle: { label: 'sickle, near ripe', l: 0.3 }, uproot: { label: 'uproot, ripe', l: 0.6 } };
         const lS = v.slider('grain shed by a brittle ear before harvest', 0.001, 0.6, 0.004, { log: true, fmt: (x) => `${(100 * x).toPrecision(2)}%` });
@@ -213,8 +213,8 @@ Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s
         const mSel = v.select('harvest', Object.entries(METHODS).map(([k, m]) => ({ value: k, label: m.label })), 'green', { onChange: (k) => { against = k === 'beat'; lS.set(Math.abs(METHODS[k].l)); } });
         const fresh = v.toggle('sow on fresh ground each year', true);
         const wildS = v.slider('wild seed mixed in each year', 0, 0.05, 0, { step: 0.001, fmt: (x) => `${(100 * x).toFixed(1)}%` });
-        const NSel = v.select('plants $N$', [{ value: 200, label: '200' }, { value: 2000, label: '2,000' }, { value: 20000, label: '20,000' }], 2000);
-        const yS = v.slider('year shown in the field', 1, YMAX, 600, { log: true, fmt: (x) => `${Math.round(x)}` });
+        const NSel = v.select('plants $N$', [{ value: 200, label: '200' }, { value: 2000, label: '2,000' }, { value: 20000, label: '20,000' }], 20000);
+        const yS = v.slider('year shown in the field', 1, YMAX, 1800, { log: true, fmt: (x) => `${Math.round(x)}` });
         const sEff = () => (against ? -lS.value : lS.value * (fresh.value ? 1 : 0.4)); // shed grain that re-seeds the plot gives back 60% of the loss
         const step = (p, s, m) => (1 - m) * (p / (p + (1 - p) * (1 - s)));
         function binom(rng, n, p) { // binomial sample: normal or Poisson approximations away from the middle
@@ -244,25 +244,23 @@ Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s
           B.vband(20, 200, { color: 'orange', alpha: 0.13 });
           B.vband(2000, 2500, { color: 'green', alpha: 0.16 });
           B.text('harvest experiments', 63, 0.06, { size: 10.5, color: 'orange', align: 'center' });
-          B.text('archaeology', 2240, 0.06, { size: 10.5, color: 'green', align: 'center' });
+          B.text('archaeology', 1900, 0.06, { size: 10.5, color: 'green', align: 'right' });
           for (const arr of reps) B.path(Array.from(arr, (q, t) => [t + 1, q]).filter((_, t) => t % 3 === 0 || t < 60), { color: 'gold', width: 1, alpha: 0.6 });
           B.path(det.map((q, t) => [t + 1, q]), { color: 'accent', width: 2.8 });
           B.vline(yr + 1, { color: 'ink', dash: [3, 4], width: 1 });
           B.dot(yr + 1, p, { r: 5, color: 'gold' });
-          // ---- A: 120 plants, the first random run's frequency in year yr
-          const rng = v.rng(5), cols = 12, rows = 10;
+          // ---- A: 48 plants drawn with the expected frequency in year yr
+          const pf = det[yr], rng = v.rng(5), cols = 8, rows = 6;
           for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-            const x = i + 0.5 + 0.18 * (rng() - 0.5), y = j + 0.05, tough = rng() < p;
-            A.line(x, y, x + 0.05, y + 0.55, { color: 'green', width: 1.2, alpha: 0.7 });
-            const top = [x + 0.05, y + 0.55];
-            for (let k = 0; k < 5; k++) {
-              const gone = !tough && k % 2 === 0;
-              const ex = top[0] + 0.02 * k, ey = top[1] + 0.07 * k;
-              if (!gone) A.circle(ex + (k % 2 ? 0.06 : -0.06), ey, 0.06, { fill: tough ? 'accent' : 'gold', fillAlpha: 0.9, stroke: false });
-              else A.circle(ex + 0.12 + 0.1 * (rng() - 0.3), y + 0.05 + 0.1 * rng(), 0.045, { fill: 'gold', fillAlpha: 0.7, stroke: false });
+            const x = i + 0.5 + 0.2 * (rng() - 0.5), y = j - 0.05, tough = rng() < pf;
+            A.line(x, y, x + 0.04, y + 0.42, { color: 'green', width: 1.4, alpha: 0.8 });
+            for (let k = 0; k < 6; k++) {
+              const ex = x + 0.04 + (k % 2 ? 0.07 : -0.07), ey = y + 0.47 + 0.075 * k;
+              if (tough || k < 3) A.circle(ex, ey, 0.055, { fill: tough ? 'accent' : 'gold', fillAlpha: 0.9, stroke: false });
+              else A.circle(x + 0.22 + 0.18 * rng(), y + 0.05 + 0.25 * rng(), 0.045, { fill: 'gold', fillAlpha: 0.75, stroke: false });
             }
           }
-          A.text(`year ${yr}: ${Math.round(100 * p)}% tough`, 6, -0.4, { size: 12, color: 'ink', align: 'center', weight: 700 });
+          A.text(`year ${yr}: ${Math.round(100 * det[yr])}% tough (expected)`, 4, -0.45, { size: 12, color: 'ink', align: 'center', weight: 700 });
         });
         v.legend([['accent', 'expected (no drift)'], ['gold', 'random runs, $N$ plants'], ['orange', 'Hillman & Davies: 20–200 yr', { area: true }], ['green', 'archaeology: ≥ 2,000–2,500 yr', { area: true }]]);
         v.readout(() => {
