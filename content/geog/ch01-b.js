@@ -161,13 +161,14 @@ where $q$ compares the centrifugal and gravitational accelerations at the equato
           sB.path(mac, { color: 'blue', width: 2.4 });
           sB.fn((x) => 1.25 * x, { color: 'blue', width: 1.1, dash: [4, 4], alpha: 0.7 });
           sB.fn((x) => fDR(x, C), { color: 'orange', width: 2.2 });
-          for (const p of PLANETS) {
-            sB.dot(p.q, p.f, { r: 5, color: p.name === 'Earth' ? 'green' : 'ink', ring: true });
-            sB.text(`${p.name} (${p.C})`, p.q, p.f, { size: 11, color: p.name === 'Earth' ? 'green' : 'ink', align: 'right', dx: -8, dy: p.name === 'Mars' ? -8 : 6, weight: 600 });
-          }
           sB.vline(q, { color: 'gold', width: 1, dash: [3, 3] });
-          sB.dot(q, f, { r: 7, color: 'gold' });
-          v.legend([['blue', 'uniform fluid, exact (Maclaurin)'], ['blue', String.raw`first order $f = 5q/4$`, { dash: true }], ['orange', String.raw`Radau–Darwin at this $C/Ma^2$`], ['gold', 'your planet', { dot: true }], ['ink', 'measured (moment of inertia)', { dot: true }]]);
+          sB.dot(q, f, { r: 8, color: 'gold' });
+          for (const p of PLANETS) {
+            const E = p.name === 'Earth';
+            sB.dot(p.q, p.f, { r: 4.5, color: E ? 'green' : 'ink', ring: true });
+            sB.text(`${p.name} (${p.C})`, p.q, p.f, { size: 11, color: E ? 'green' : 'ink', align: E ? 'left' : 'right', dx: E ? 10 : -8, dy: E ? 12 : p.name === 'Mars' ? -8 : 6, weight: 600 });
+          }
+          v.legend([['blue', 'uniform fluid, exact (Maclaurin)'], ['blue', String.raw`first order $f = 5q/4$`, { dash: true }], ['orange', String.raw`Radau–Darwin at this $C/Ma^2$`], ['gold', 'your planet', { dot: true }], ['ink', 'measured planets (I/MR² in brackets)', { dot: true }]]);
         });
         v.readout(() => {
           const q = qOf(per.value), C = conc.value, f = fDR(q, C), fM = maclaurinF(q), fE = 1 / 298.257223563;
@@ -199,7 +200,7 @@ They are linked by $\tan\psi = (b/a)^2\tan\varphi = (1-e^2)\tan\varphi$ and $\ta
         const sB = v.stage({ x: [0, 90], y: [0, 12.6], axes: 'box', gutter: true, height: 360, xlabel: 'geodetic latitude φ (°)', ylabel: 'difference (arcmin)', xticks: [0, 15, 30, 45, 60, 75, 90] });
         let beta = 42 * D2R;
         const P = sA.handle(Math.cos(beta), 0.7 * Math.sin(beta), {
-          color: 'accent', label: 'P', labelPos: 'ne',
+          color: 'accent', label: 'P', labelPos: 'e',
           constrain: (x, y) => { const k = ba.value; beta = clamp(Math.atan2(y / k, x), 0.03, 1.54); return [Math.cos(beta), k * Math.sin(beta)]; },
         });
         const e2 = WGS84.e2, k0 = 1 - e2, sq = Math.sqrt(1 - e2);
@@ -238,7 +239,7 @@ They are linked by $\tan\psi = (b/a)^2\tan\varphi = (1-e^2)\tan\varphi$ and $\ta
           sB.fn((f) => dBeta(f * D2R), { color: 'purple', width: 2.4, domain: [0, 89.99] });
           const fmax = Math.atan(1 / sq) * R2D, m1 = dPsi(fmax * D2R);
           sB.dot(fmax, m1, { r: 4, color: 'red' });
-          sB.text(`max ${m1.toFixed(2)}′ at ${fmax.toFixed(2)}° ≈ ${(m1 / 60 * D2R * radii(fmax).M / 1000).toFixed(1)} km`, fmax, m1 + 0.45, { align: 'center', size: 11.5, color: 'red', weight: 600, baseline: 'bottom' });
+          sB.text(`max ${m1.toFixed(2)}′ at ${fmax.toFixed(2)}° ≈ ${(m1 / 60 * D2R * radii(fmax).M / 1000).toFixed(1)} km`, fmax, m1 + 0.45, { align: 'center', size: 11.5, color: 'red', weight: 600, baseline: 'bottom', plate: true });
           const fd = phi * R2D;
           sB.vline(fd, { color: 'accent', dash: [3, 3] });
           sB.dot(fd, dPsi(phi), { r: 5.5, color: 'red' }); sB.dot(fd, dBeta(phi), { r: 5.5, color: 'purple' });
@@ -273,7 +274,7 @@ A **geodetic datum** fixes a reference ellipsoid $(a, f)$ and how it sits in the
         const sC = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 330 });
         const G = v.globe(sA, { projection: 'mollweide', center: [10, 0], graticule: 30, drag: false });
         const probe = G.handle(-0.0015, 51.4778, { label: 'probe', color: 'ink' });
-        const col = (N) => { const c = v.diverge(clamp(N / 110, -1, 1), 'blue', 'red'); return [c[0], c[1], c[2], 235]; };
+        const col = (N) => { const c = v.diverge(clamp(N / 95, -1, 1), 'blue', 'red'); return [c[0], c[1], c[2], 255]; };
         v.render(() => {
           geoidGrid();
           const lat = probe.lat, lon = probe.lon, Np = geoidAt(lon, lat);
@@ -285,7 +286,7 @@ A **geodetic datum** fixes a reference ellipsoid $(a, f)$ and how it sits in the
           G.draw({ ocean: false, graticule: false, land: false, shade: false });
           G.text('Indian Ocean low', [78, -12], { size: 11, color: 'ink', align: 'center', plate: true });
           G.text('New Guinea high', [146, 12], { size: 11, color: 'ink', align: 'center', plate: true });
-          G.text('N. Atlantic high', [-28, 58], { size: 11, color: 'ink', align: 'center', plate: true });
+          G.text('N. Atlantic high', [-42, 66], { size: 11, color: 'ink', align: 'center', plate: true });
           G.path((() => { const p = []; for (let l = -180; l <= 180; l += 2) p.push([l, lat]); return p; })(), { geodesic: false, color: 'ink', width: 1.2, dash: [5, 4], alpha: 0.7 });
           sA.colorbar([-110, 110], (t) => v.diverge(2 * t - 1, 'blue', 'red'), { pos: 'right', label: 'N (m)', ticks: [-100, -50, 0, 50, 100] });
           // ---- the parallel, exaggerated
@@ -310,7 +311,7 @@ A **geodetic datum** fixes a reference ellipsoid $(a, f)$ and how it sits in the
           const sh = DATUMS.map((D) => ({ D, ...datumShift(lat, lon, D) }));
           const big = Math.max(...sh.map((x) => Math.hypot(x.dE, x.dN)));
           const stepM = [50, 100, 200, 250, 500, 1000].find((st) => big / st <= 4) || 1000, R = Math.ceil(big / stepM + 0.3) * stepM, sc = 0.82 / R;
-          for (let r = stepM; r <= R + 1e-9; r += stepM) { sC.circle(0, 0, r * sc, { color: 'grid', width: 1 }); sC.text(`${r} m`, r * sc * 0.707 + 0.02, -r * sc * 0.707, { size: 10, color: 'muted' }); }
+          for (let r = stepM; r <= R + 1e-9; r += stepM) { sC.circle(0, 0, r * sc, { color: 'grid', width: 1 }); sC.text(`${r} m`, 0.02, -r * sc - 0.03, { size: 10, color: 'muted' }); }
           sC.line(-0.9, 0, 0.9, 0, { color: 'grid', width: 1 }); sC.line(0, -0.9, 0, 0.9, { color: 'grid', width: 1 });
           sC.text('N', 0, 0.94, { size: 11, color: 'muted', align: 'center' }); sC.text('E', 0.94, 0, { size: 11, color: 'muted' });
           for (const x of sh) {
@@ -348,7 +349,7 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
       viz(v) {
         const PRE = { h4: [-2.667, 0.5], watch: [8, 6], pend: [0, 40] };
         const kind = v.select('timekeeper', [{ value: 'h4', label: 'Harrison’s H4' }, { value: 'watch', label: 'a good pocket watch' }, { value: 'pend', label: 'pendulum clock at sea' }], 'h4', { onChange: (p) => { rate.set(PRE[p][0]); scat.set(PRE[p][1]); } });
-        const rate = v.slider('rate (s gained per day)', -20, 20, -2.667, { step: 0.01, fmt: (x) => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(2) });
+        const rate = v.slider('rate (s/day)', -20, 20, -2.667, { step: 0.01, fmt: (x) => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(2) });
         const scat = v.slider('day-to-day scatter (s/day)', 0.1, 60, 0.5, { log: true, sig: 2, fmt: (x) => x.toFixed(x < 1 ? 2 : 1) });
         const allow = v.toggle('allow for the rate measured before sailing', true);
         const zoom = v.select('map', [{ value: 'all', label: 'the voyage' }, { value: 'kgn', label: 'arrival at Kingston' }], 'all');
@@ -359,7 +360,7 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
         const days = []; for (let d = 0; d < ND; d++) days.push(d); days.push(T);
         const rng = v.rng(1761), W = []; // cumulative standard random walks, one per voyage
         for (let k = 0; k < NV; k++) { const w = [0]; let s = 0; for (let d = 1; d < days.length; d++) { s += rng.normal() * Math.sqrt(days[d] - days[d - 1]); w.push(s); } W.push(w); }
-        const route = [[-1.09, 50.8], [-16.92, 32.65], [-45, 17], [-62, 15], KGN];
+        const route = [[-1.09, 50.8], [-10.5, 44], [-16.92, 32.65], [-45, 17], [-62, 15], KGN];
         const dense = []; for (let i = 0; i + 1 < route.length; i++) { const seg = v.geo('interpolate', route[i], route[i + 1]); dense.push(...(i ? seg.slice(1) : seg)); }
         const cum = [0]; for (let i = 1; i < dense.length; i++) cum.push(cum[i - 1] + v.geo('centralAngle', dense[i - 1], dense[i]));
         const at = (frac) => { const s = frac * cum[cum.length - 1]; let i = 1; while (i < cum.length - 1 && cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1] || 1); return [dense[i - 1][0] + t * (dense[i][0] - dense[i - 1][0]), dense[i - 1][1] + t * (dense[i][1] - dense[i - 1][1])]; };
@@ -367,14 +368,16 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
         let lastZoom = 'all';
         const tier = (e) => { const a = Math.abs(e); return a <= 120 ? 2 : a <= 160 ? 1 : a <= 240 ? 0 : -1; };
         v.render(() => {
-          const fin = W.map((_, k) => err(k, days.length - 1)), big = Math.max(300, ...fin.map(Math.abs)) * 1.12;
+          let mx = 0; for (let k = 0; k < NV; k++) for (let i = 0; i < days.length; i++) mx = Math.max(mx, Math.abs(err(k, i)));
+          const fin = W.map((_, k) => err(k, days.length - 1)), big = Math.max(25, mx * 1.18);
+          if (big < 120) sA.text('the whole panel lies inside the ½° band (±120 s)', T * 0.02, big * 0.9, { size: 11, color: 'green', weight: 600 });
           sA.setView([0, T], [-big, big]);
           sA.hband(-240, 240, { color: 'orange', alpha: 0.08 }); sA.hband(-160, 160, { color: 'gold', alpha: 0.1 }); sA.hband(-120, 120, { color: 'green', alpha: 0.12 });
           for (const [y, lab, c] of [[120, '½° = 2 min: £20,000', 'green'], [160, '40′: £15,000', 'gold'], [240, '1°: £10,000', 'orange']]) if (y < big) sA.text(lab, 1, y, { size: 10.5, color: c, baseline: 'bottom', dy: -2, weight: 600 });
           sA.hline(0, { color: 'muted', width: 0.8 });
           for (let k = 1; k < NV; k++) sA.path(days.map((d, i) => [d, err(k, i)]), { color: 'gold', width: 1, alpha: 0.35 });
           sA.path(days.map((d, i) => [d, err(0, i)]), { color: 'accent', width: 2.4 });
-          if (kind.value === 'h4' && allow.value) { sA.dot(T, -5, { r: 6, color: 'red' }); sA.text('H4 at Jamaica: 5 s slow', T - 1, -5, { size: 11, color: 'red', align: 'right', baseline: 'top', dy: 8, weight: 600 }); }
+          if (kind.value === 'h4' && allow.value) { sA.dot(T, -5, { r: 6, color: 'red' }); sA.text('H4 at Jamaica: 5 s slow', T - 1, -5, { size: 11, color: 'red', align: 'right', baseline: 'bottom', dy: -9, weight: 600, plate: true }); }
           // ---- map
           if (zoom.value !== lastZoom) { lastZoom = zoom.value; if (zoom.value === 'kgn') G.set({ center: KGN, zoom: 18 }); else G.set({ center: [-40, 32], zoom: 1.45 }); }
           G.draw({ graticule: zoom.value === 'kgn' ? 1 : 10 });
@@ -383,6 +386,7 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
           const believed = days.map((d, i) => { const p = at(d / T); return [p[0] - (err(0, i) * 15) / 3600, p[1]]; });
           G.path(believed, { geodesic: false, color: 'accent', width: 2, dash: [5, 4] });
           for (let k = 0; k < NV; k++) G.dot([KGN[0] - (fin[k] * 15) / 3600, KGN[1]], { r: k ? 2.8 : 5, color: k ? 'gold' : 'accent', ring: false, alpha: k ? 0.8 : 1 });
+          if (zoom.value === 'kgn') for (const [w, lab, c] of [[0.5, '½°', 'green'], [40 / 60, '40′', 'gold'], [1, '1°', 'orange']]) G.text(lab, [KGN[0] + w, KGN[1] - 0.32], { size: 11, color: c, align: 'center', weight: 700 });
           G.dot(KGN, { r: 4, color: 'ink', label: 'Kingston', labelPos: zoom.value === 'kgn' ? 'n' : 'w', math: false });
           if (zoom.value === 'all') G.dot(route[0], { r: 4, color: 'ink', label: 'Portsmouth', labelPos: 'ne', math: false });
           v.legend([['accent', 'first voyage: clock error / believed track'], ['gold', 'other voyages'], ['green', '½° (£20,000)', { area: true }], ['gold', '40′ (£15,000)', { area: true }], ['orange', '1° (£10,000)', { area: true }]]);
@@ -417,7 +421,7 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
         const solveB = v.toggle('solve for the receiver clock', true);
         const cb2 = v.slider('clock error $c\\,\\delta t$ (km)', -4, 4, 1.6, { step: 0.05, fmt: (x) => x.toFixed(2) });
         const sg2 = v.slider('range noise $\\sigma$ (m)', 5, 400, 80, { log: true, sig: 2, fmt: (x) => x.toFixed(0) });
-        const dt3 = v.slider('clock error $\\delta t$ (ms)', -1, 1, 0.4, { step: 0.01, fmt: (x) => x.toFixed(2) });
+        const dt3 = v.slider('clock error $\\delta t$ (ms)', -1, 1, 0.7, { step: 0.01, fmt: (x) => x.toFixed(2) });
         const sg3 = v.slider('range noise $\\sigma$ (m)', 1, 50, 5, { log: true, sig: 2, fmt: (x) => x.toFixed(1) });
         const sA = v.stage({ x: [-12, 12], y: [-12, 12], equal: true, axes: false, grid: true, height: 360 });
         const sG = v.stage({ height: 360 });
@@ -528,7 +532,7 @@ The Longitude Act of 1714 offered £10,000, £15,000 and £20,000 for a practica
             sB.text(`S${i + 1}`, x, y, { size: 11, dx: 10, color: R.used[i] ? COLS[i] : 'muted', weight: 600 });
           });
           sB.corner(R.dop ? `PDOP ${R.dop.P.toFixed(2)} · HDOP ${R.dop.H.toFixed(2)} · VDOP ${R.dop.V.toFixed(2)}` : 'no fix', 'tl', { size: 11.5, color: 'ink', weight: 600 });
-          sB.corner('sky above the receiver · 10° mask', 'bl', { size: 10.5 });
+          sB.corner('sky plot · 10° mask', 'bl', { size: 10.5 });
           v.legend([['muted', 'raw pseudorange sphere ∩ Earth', { dash: true }], ['accent', 'after solving for the clock'], ['red', 'least-squares fix', { dot: true }]]);
         });
         v.readout(() => {

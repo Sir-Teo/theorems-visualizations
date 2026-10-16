@@ -119,7 +119,7 @@ export default {
           L.dots(X.map((x, i) => [x, Y[i] + J[i]]), { color: 'accent', r: 1.7, alpha: 0.5 });
           const W = X.map((x, i) => a * x + b * Y[i]), mean = M.mean(W), sd = M.stdev(W), th = a * 1 + b * 3.5;
           const lo = Math.min(...W), hi = Math.max(...W), span = Math.max(4, hi - lo);
-          const x0 = Math.min(th, mean) - 0.65 * span, x1 = Math.max(th, mean) + 0.65 * span;
+          const x0 = Math.min(lo, th) - 0.08 * span, x1 = Math.max(hi, th) + 0.08 * span;
           const Hh = M.histogram(W, { bins: 48, range: [x0, x1] }), ymax = Math.max(...Hh.density) * 1.25;
           R.setView([x0, x1], [0, ymax]);
           R.hist(Hh, { density: true, color: 'teal', fillAlpha: 0.35 });
@@ -132,7 +132,7 @@ export default {
           st = { mean, th, sd, emax, a, b, corr: M.linreg(X, Y).r };
           v.legend([['teal', 'histogram of $aX+bY$', { area: true }], ['gold', 'sample mean'], ['green', '$a\\,EX+b\\,EY$', { dash: true }], ['orange', '$\\pm1$ s.d.']]);
         });
-        v.readout(() => st && `sample mean of $aX+bY$: $${v.fix(st.mean, 3)}$, $\\ a\\,EX+b\\,EY = ${v.fix(st.a, 1)}\\cdot1+${v.fix(st.b, 1)}\\cdot3.5 = ${v.fix(st.th, 3)}$ whatever the dependence (sample correlation $${v.fix(st.corr, 2)}$); the s.d. $${v.fix(st.sd, 2)}$ does depend on it. (c): $\\max(X,Y)\\ge Y$ and $E\\max(X,Y)\\approx${v.fix(st.emax, 2)}\\ge EY=3.5$.`);
+        v.readout(() => st && `sample mean of $aX+bY$: $${v.fix(st.mean, 3)}$, $\\ a\\,EX+b\\,EY = ${v.fix(st.a, 1)}\\cdot1+${v.fix(st.b, 1)}\\cdot3.5 = ${v.fix(st.th, 3)}$ whatever the dependence; the sample correlation $${v.fix(st.corr, 2)}$ and the s.d. $${v.fix(st.sd, 2)}$ do depend on $\\rho$. (c): $\\max(X,Y)\\ge Y$ and $E\\max(X,Y)\\approx${v.fix(st.emax, 2)}\\ge EY=3.5$.`);
       },
     },
     {
@@ -166,7 +166,7 @@ Special cases: $|EX|\le E|X|$ and $(EX)^2\le E(X^2)$. If $\varphi$ is strictly c
         let seed = 1; v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [-3.5, 3.5], y: [-0.6, 9.5], height: 330, weight: 1.4, axes: 'box', gutter: true, xlabel: '$x$', title: 'draws $(X_i,\\varphi(X_i))$ on the graph of $\\varphi$' });
         const R = v.stage({ x: [0, 2], y: [-0.5, 4], height: 330, axes: 'box', gutter: true, xlabel: '$\\sigma$', title: 'gap $E\\varphi(X)-\\varphi(EX)$' });
-        const H = L.handle(0.4, -0.6, { color: 'gold', label: 'm', labelPos: 'n', constrain: (x) => [clampN(x, -2.5, 2.5), L.yr[0]] });
+        const H = L.handle(0.4, -0.6, { color: 'gold', label: 'm', labelPos: 'e', constrain: (x) => [clampN(x, -2.5, 2.5), L.yr[0]] });
         let st = null;
         v.render(() => {
           const P = PH[phiSel.value], Lw = LAW[lawSel.value], m = H.x, s = sS.value;
@@ -325,7 +325,7 @@ where $E(Z;B)=\int_BZ\,dP$. With $\varphi(x)=|x|$ or $x^2$ and $A=\{|x|\ge a\}$ 
             B.setView([0, 22], [0, 2.1]);
             B.fn((x) => (x >= 1 && x < n ? 2 * x ** -3 : NaN), { domain: [1, n], color: 'teal', width: 2.2, fill: 'teal', fillAlpha: 0.2 });
             B.line(n, 0, n, 1 / (n * n), { color: 'teal', width: 4 }); B.dot(n, 1 / (n * n), { color: 'teal', r: 4 });
-            cornerIn(B, `density $2x^{-3}$ on $[1,n)$, atom $1/n^2$ at $n$`, 'tr', { color: 'teal' });
+            cornerIn(B, `density $2x^{-3}$, atom $1/n^2$ at $n$`, 'tr', { color: 'teal', size: 11 });
           } else {
             B.setView([-1, 22], [0, 1.08]);
             const atoms = md === 'esc' ? [[0, 1 - 1 / n], [n, 1 / n]] : [[0, 0.5], [2, 0.5]];
@@ -333,7 +333,6 @@ where $E(Z;B)=\int_BZ\,dP$. With $\varphi(x)=|x|$ or $x^2$ and $A=\{|x|\ge a\}$ 
               if (x > 0) B.rect(x - 0.35, 0, x + 0.35, x * pr, { fill: 'orange', fillAlpha: 0.35, hatch: 'orange', stroke: false });
               B.line(x, 0, x, pr, { color: 'teal', width: 4 }); B.dot(x, pr, { color: 'teal', r: 4.5 });
             }
-            cornerIn(B, 'teal: probability; orange: value × probability', 'tr', { color: 'muted' });
           }
           // expectations
           const ks = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -343,7 +342,7 @@ where $E(Z;B)=\int_BZ\,dP$. With $\varphi(x)=|x|$ or $x^2$ and $A=\{|x|\ge a\}$ 
           C.dots(mc, { color: 'gold', r: 3.2 });
           C.dot(n, Md.E(n), { color: 'accent', r: 5.5 });
           st = { n, E: Md.E(n), mc: mc[n - 1][1], Eli: Md.Eliminf, md };
-          v.legend([['accent', '$X_n$ and $EX_n$'], ['gold', 'seeded $\\omega$ and their average', { dot: true }], ['teal', 'law of $X_n$'], ['green', '$E\\liminf X_n$', { dash: true }]]);
+          v.legend([['accent', '$X_n$ and $EX_n$'], ['gold', 'seeded $\\omega$ and their average', { dot: true }], ['teal', 'law of $X_n$'], ['orange', 'value × probability', { area: true }], ['green', '$E\\liminf X_n$', { dash: true }]]);
         });
         v.readout(() => st && `$EX_n = ${v.fix(st.E, 3)}$ (average over 400 draws: $${v.fix(st.mc, 3)}$), $\\ E\\liminf_n X_n = ${v.fix(st.Eli, 3)}$: ` + (st.md === 'up' ? 'equality, as monotone convergence guarantees.' : st.md === 'esc' ? 'for each $\\omega$, $X_n(\\omega)=0$ as soon as $n>1/U(\\omega)$, yet the mean is stuck at $1$.' : 'each $\\omega$ sees $X_n=0$ for every other $n$, so $\\liminf X_n=0$, while $EX_n=1$.'));
       },
@@ -355,7 +354,7 @@ where $E(Z;B)=\int_BZ\,dP$. With $\varphi(x)=|x|$ or $x^2$ and $A=\{|x|\ge a\}$ 
       credit: 'B. Levi, 1906',
       statement: String.raw`If $0\le X_n\uparrow X$, then $EX_n\uparrow EX$ (possibly $+\infty$). More generally (Exercise 1.6.13) it suffices that $X_n\uparrow X$ and $EX_1^-<\infty$.`,
       idea: String.raw`Theorem 1.5.7 with $\mu=P$. Its most frequent use is truncation: $X\wedge n\uparrow X$ for $X\ge0$, so $EX=\lim E(X\wedge n)$, and $E(X\wedge n)=\int_0^nP(X>x)\,dx$ is a finite area for each $n$. Whether $EX$ is finite is then a question about how fast the tail $P(X>x)$ decays.`,
-      caption: String.raw`$X$ is Pareto: $P(X>x)=x^{-\alpha}$ for $x\ge1$. Left: the tail $P(X>x)$ (black) and the empirical tail of 2000 seeded draws (gold); the shaded area up to the cut $x=n$ is $E(X\wedge n)$. Right: $E(X\wedge n)$ against $n$, exact (blue) and from the samples (gold). For $\alpha>1$ it rises to $EX=\alpha/(\alpha-1)$; for $\alpha\le1$ the area under the tail is infinite and the means grow without bound.`,
+      caption: String.raw`$X$ is Pareto: $P(X>x)=x^{-\alpha}$ for $x\ge1$. Left: the tail $P(X>x)$ (black) and the empirical tail of 2000 seeded draws (gold); the shaded area up to the cut $x=n$ is $E(X\wedge n)$. Right: $E(X\wedge n)$ against $n$, exact (blue) and from the samples (gold, which lag at large $n$: the values that matter there are too rare to appear in 2000 draws). For $\alpha>1$ it rises to $EX=\alpha/(\alpha-1)$; for $\alpha\le1$ the area under the tail is infinite and the means grow without bound.`,
       deps: ['prob-1.5.7'],
       see: ['rca-1.26'],
       tags: ['convergence theorems', 'expectation'],
@@ -474,7 +473,7 @@ Then $Eh(X_n)\to Eh(X)$. The most important case is $g(x)=|x|^p$ with $p>1$ and 
           P.fn((x) => 2 / x, { domain: [2 / 3, 3], color: 'green', width: 1.6 });
           P.hline(1, { color: 'green', width: 1.6, dash: [5, 4] });
           P.vline(2, { color: 'red', width: 1.6 }); P.vline(1, { color: 'blue', width: 1.2, dash: [4, 4] });
-          P.text('theorem applies', 0.15, 1.35, { size: 11, color: 'green' }); P.text('DCT', 0.15, 2.8, { size: 11, color: 'blue' }); P.text('$EX_n\\not\\to0$', 2.1, 2.8, { size: 11, color: 'red' });
+          P.text('theorem applies', 1.03, 1.1, { size: 11, color: 'green' }); P.text('DCT', 0.15, 2.8, { size: 11, color: 'blue' }); P.text('$EX_n\\not\\to0$', 2.1, 2.8, { size: 11, color: 'red' });
           const applies = r > 1 && a * r <= 2 + 1e-9, dct = a < 1, concl = a < 2;
           st = { a, r, applies, dct, concl, Ksup: a * r <= 2 ? Math.max(...[1, 2, 5, 10, 100, 1e4].map(Eg)) : Infinity };
           v.legend([['accent', '$EX_n$ (blocks: $X_n$)'], ['orange', '$Eg(X_n)$'], ['green', '(ii) and (iii) hold', { area: true }], ['blue', 'dominated', { area: true }], ['red', 'conclusion fails', { area: true }]]);
@@ -505,10 +504,10 @@ Writing $h$ for $X$ and $P\circ h^{-1}$ for $\mu$: $\int_\Omega f(h(\omega))\,dP
         const xSel = v.select('$X$ =', Object.entries(XS).map(([value, o]) => ({ value, label: o.label })), 'sin');
         const fSel = v.select('', Object.entries(FS).map(([value, o]) => ({ value, label: o.label })), 'ind');
         const Y = [-3.3, 3.3];
-        const A = v.stage({ x: [0, 1], y: Y, height: 250, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$X$ on $\\Omega=(0,1)$, $P$ = length' });
-        const Bs = v.stage({ x: [0, 1], y: Y, height: 250, axes: 'box', gutter: true, xlabel: 'density', title: 'law $\\mu$ of $X$ (sideways)' });
-        const C1 = v.stage({ x: [0, 1], y: [-1.2, 10], height: 200, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$f(X(\\omega))$: area $=Ef(X)$' });
-        const C2 = v.stage({ x: Y, y: [-0.4, 1.2], height: 200, axes: 'box', gutter: true, xlabel: '$x$', title: '$f(x)\\,\\mu(dx)$: area $=\\int f\\,d\\mu$' });
+        const A = v.stage({ x: [0, 1], y: Y, height: 250, minWidth: 380, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$X$ on $\\Omega=(0,1)$, $P$ = length' });
+        const Bs = v.stage({ x: [0, 1], y: Y, height: 250, minWidth: 380, axes: 'box', gutter: true, xlabel: 'density', title: 'law $\\mu$ of $X$ (sideways)' });
+        const C1 = v.stage({ x: [0, 1], y: [-1.2, 10], height: 200, minWidth: 380, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$f(X(\\omega))$: area $=Ef(X)$' });
+        const C2 = v.stage({ x: Y, y: [-0.4, 1.2], height: 200, minWidth: 380, axes: 'box', gutter: true, xlabel: '$x$', title: '$f(x)\\,\\mu(dx)$: area $=\\int f\\,d\\mu$' });
         const lo = Bs.handle(0.92, 0.8, { color: 'gold', constrain: (x, y) => [Bs.xr[1] * 0.92, clampN(y, -3.2, hi.y - 0.05)] });
         const hi = Bs.handle(0.92, 2.4, { color: 'gold', constrain: (x, y) => [Bs.xr[1] * 0.92, clampN(y, lo.y + 0.05, 3.2)] });
         const r0 = v.rng(31), Us = Float64Array.from({ length: 4000 }, () => r0());
@@ -532,7 +531,7 @@ Writing $h$ for $X$ and $P\circ h^{-1}$ for $\mu$: $\int_\Omega f(h(\omega))\,dP
             Bs.path(pts, { color: 'ink', width: 2 });
           }
           const muB = Xd.atoms ? Xd.atoms.reduce((s, [x, p]) => s + (inB(x) ? p : 0), 0) : Xd.cdf(d) - Xd.cdf(c);
-          cornerIn(Bs, `$\\mu(B)=${v.fix(muB, 4)}$`, 'tr', { color: 'gold', plate: true });
+          cornerIn(Bs, `$\\mu(B)=${v.fix(muB, 4)}$`, 'br', { color: 'gold', plate: true });
           // C1: f∘X on Ω
           const fX = (w) => f(Xd.X(w)), NW = 20000; let IO = 0; for (let i = 0; i < NW; i++) IO += fX((i + 0.5) / NW); IO /= NW;
           const yr = fSel.value === 'sq' ? [-0.6, 10] : [-1.2, 1.3];
@@ -569,7 +568,7 @@ Writing $h$ for $X$ and $P\circ h^{-1}$ for $\mu$: $\int_\Omega f(h(\omega))\,dP
 $$\operatorname{var}(X)=E(X-\mu)^2=EX^2-\mu^2,$$
 so $\operatorname{var}(X)\le EX^2$, and $\operatorname{var}(aX+b)=a^2\operatorname{var}(X)$. By the change of variables formula all of these are integrals against the law of $X$: $EX^k=\int x^k\,\mu(dx)$. If $E|X|^k<\infty$ then $E|X|^j<\infty$ for $0<j<k$ (Exercise 1.6.11).`,
       idea: String.raw`Expanding the square and using linearity: $E(X-\mu)^2=EX^2-2\mu EX+\mu^2=EX^2-\mu^2$. A moment exists only if the tail of the law decays fast enough: $E|X|^s<\infty$ asks that $\int s\,x^{s-1}P(|X|>x)\,dx$ converge (Lemma 2.2.13). Conversely, the full sequence of moments need not determine the law: Heyde's lognormal family is the classical example (Section 3.3.5).`,
-      caption: String.raw`*Tail:* Student's $t_\nu$ has $P(|X|>x)\approx Cx^{-\nu}$. Slide $\nu$. Right: $s\mapsto\log_{10}E|X|^s$, finite exactly for $s<\nu$ (red asymptote), with the normal law (dashed) for comparison. The mean exists for $\nu>1$, the variance for $\nu>2$. *Lognormal:* the densities $f(x)\,(1+a\sin(2\pi\log x))$ for $|a|\le1$ all share every integer moment $EX^k=e^{k^2/2}$ with the lognormal $f$. Left: the density of $\log X$; right: the relative difference of $E|X|^s$, $\times10^9$, computed by quadrature. It vanishes at every integer $s$.`,
+      caption: String.raw`*Tail:* Student's $t_\nu$ has $P(|X|>x)\approx Cx^{-\nu}$. Slide $\nu$. Right: $s\mapsto\log_{10}E|X|^s$, finite exactly for $s<\nu$ (red asymptote), with the normal law (dashed) for comparison. The mean exists for $\nu>1$, the variance for $\nu>2$. *Lognormal:* the densities $f(x)\,(1+a\sin(2\pi\log x))$ for $|a|\le1$ all share every integer moment $EX^k=e^{k^2/2}$ with the lognormal $f$. Left: the density of $\log X$; right: the relative difference of $E|X|^s$, $\times10^9$, computed by quadrature: it vanishes at every integer $s$ (for this family also at the half-integers) and never exceeds $|a|e^{-2\pi^2}\approx2.7\times10^{-9}$.`,
       deps: ['prob-1.6.9'],
       see: ['prob-2.2.13', 'prob-3.3.25', 'stat-1.3'],
       tags: ['expectation', 'moments'],

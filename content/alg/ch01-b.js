@@ -63,7 +63,7 @@ export default {
           ['f', 'g', 'h'].forEach((nm, k) => s.text(nm, (XS[k] + XS[k + 1]) / 2, 6.45, { math: true, size: 17, align: 'center', weight: 700 }));
           s.text(L ? 'dashed: h ∘ g' : 'dashed: g ∘ f', 6, 0.25, { align: 'center', size: 12, color: L ? 'purple' : 'teal', weight: 600 });
           // right panel: the two composites A → D
-          const A = colPts(sz[0], 2.6, 5.2, 1.6), D = colPts(sz[3], 7.4, 5.2, 1.6);
+          const A = colPts(sz[0], 2.6, 5.3, 2.35), D = colPts(sz[3], 7.4, 5.3, 2.35);
           drawBlob(v, t, A, { name: 'A', nameColor: 'blue', color: 'blue', fill: 'blue', padPx: 24 }); drawBlob(v, t, D, { name: 'D', nameColor: 'purple', color: 'purple', fill: 'purple', padPx: 24 });
           const hg = g.map((c) => h[c]), gf = f.map((b) => g[b]);
           f.forEach((b, a) => mapArrow(v, t, A[a], D[hg[b]], { color: a === sel ? 'gold' : 'accent', width: 4.5, alpha: 0.45 }));
@@ -110,7 +110,7 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
           { onChange: (k) => { E1.visible = E2.visible = k === 'custom'; } });
         const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: 'box', gutter: true, height: 340, title: 'domain $\\mathbb R^2$' });
         const T = v.stage({ x: [-8, 8], y: [-8, 8], equal: true, axes: 'box', gutter: true, height: 340, title: 'codomain $\\mathbb R^2$' });
-        const p = S.handle(0.8, 0.5, { color: 'accent', label: 'p' }), q = T.handle(-3, 4, { color: 'orange', label: 'q' });
+        const p = S.handle(0.8, 0.5, { color: 'accent', label: 'p' }), q = T.handle(2, 3, { color: 'orange', label: 'q' });
         const E1 = T.handle(2, 1, { color: 'blue', label: 'Te_1', r: 6 }), E2 = T.handle(-1, 2, { color: 'red', label: 'Te_2', r: 6 });
         E1.visible = E2.visible = false;
         const mat = () => (which.value === 'custom' ? [[E1.x, E2.x], [E1.y, E2.y]] : MATS[which.value]);
@@ -144,7 +144,6 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
             if (Math.hypot(img[0], img[1]) > 1e-9) { const L = Math.hypot(img[0], img[1]); T.line(-20 * img[0] / L, -20 * img[1] / L, 20 * img[0] / L, 20 * img[1] / L, { color: 'orange', width: 3, alpha: 0.55 }); }
             T.text('no preimage', q.x, q.y, { dx: 12, dy: -16, size: 11.5, color: 'red', weight: 600 });
           }
-          S.dot(p.x, p.y, { r: 0 });
         });
         v.readout(() => {
           const M = mat(), det = M[0][0] * M[1][1] - M[0][1] * M[1][0];
@@ -200,7 +199,7 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
         });
         v.readout(() => {
           const F = fv(), info = mapInfo(F, nB.value);
-          if (info.bij) return String.raw`$f$ is a **bijection**, so reversing the arrows gives a map $f^{-1} : B\to A$ (${info.hits.map((h, j) => `$${LB[j]}\mapsto ${LA[h[0]]}$`).join(', ')}) with $f^{-1}\circ f = \mathrm{id}_A$ and $f\circ f^{-1} = \mathrm{id}_B$.`;
+          if (info.bij) return String.raw`$f$ is a **bijection**, so reversing the arrows gives a map $f^{-1} : B\to A$ (${info.hits.map((h, j) => String.raw`$${LB[j]}\mapsto ${LA[h[0]]}$`).join(', ')}) with $f^{-1}\circ f = \mathrm{id}_A$ and $f\circ f^{-1} = \mathrm{id}_B$.`;
           const bits = [];
           if (!info.inj) bits.push(`$${LB[info.collisions[0][0]]}$ has two preimages, so $g(${LB[info.collisions[0][0]]})$ cannot be both and $g\\circ f \\ne \\mathrm{id}_A$`);
           if (!info.surj) bits.push(`$${info.missed.map((j) => LB[j]).join(', ')}$ ${info.missed.length > 1 ? 'have' : 'has'} no preimage, so whatever $g$ does there, $f\\circ g \\ne \\mathrm{id}_B$`);
@@ -232,11 +231,11 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
         load('near');
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1 });
         const g = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1 });
-        const T = v.table(s, { rows: n, cols: n, maxCell: 44, size: 15, rowLabels: X.map(String), colLabels: X.map(String), cornerLabel: 'x ∖ y' });
+        const T = v.table(s, { rows: n, cols: n, maxCell: 44, size: 15, rowLabels: X.map(String), colLabels: X.map(String) });
         s.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) R[c.i][c.j] = !R[c.i][c.j]; });
-        const G = v.graph(g, { nodes: X.map((x, i) => ({ id: i, label: String(x) })), edges: [], layout: 'circle', directed: true, draggable: false, r: 14 });
+        const G = v.graph(g, { nodes: X.map((x, i) => ({ id: i, label: String(x), x: 0.25 + 0.82 * Math.sin((i * Math.PI) / 3), y: -0.08 + 0.82 * Math.cos((i * Math.PI) / 3) })), edges: [], layout: 'none', directed: true, draggable: false, r: 14 });
         v.render(() => {
-          const C = relChecks(R), w = C.trans[0], missMirror = new Set(C.sym.map(([i, j]) => `${j},${i}`));
+          const C = relChecks(R), w = C.trans[0];
           const hl = [];
           for (const i of C.refl) hl.push([i, i, 'red']);
           for (const [i, j] of C.sym) hl.push([j, i, 'orange']);
@@ -253,7 +252,6 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
           });
           const badge = (ok, txt, k) => g.text(`${tick(ok)} ${txt}`, -1.4, 1.22 - k * 0.2, { size: 12.5, weight: 700, color: ok ? 'green' : 'red' });
           badge(!C.refl.length, 'reflexive', 0); badge(!C.sym.length, 'symmetric', 1); badge(!C.trans.length, 'transitive', 2);
-          void missMirror;
         });
         v.readout(() => {
           const C = relChecks(R);
@@ -324,7 +322,7 @@ $$[x]=\{y\in X : y\sim x\}.$$`,
           }
           const R = REL[k], fp = R.f(p.x, p.y), fq = R.f(q.x, q.y), same = Math.abs(fp - fq) < (k === 'cell' ? 0.5 : 0.04);
           const show = (val, h) => (k === 'cell' ? `(${Math.floor(h.x)}, ${Math.floor(h.y)})` : v.fix(val, 2));
-          return String.raw`Classes are the sets of constant $${R.name}$ (${R.desc}). $${R.name} = ${show(fp, p)}$ at $p$ and $${show(fq, q)}$ at $q$: ${same ? `$p\sim q$, so $[p] = [q]$ — **the same class**.` : `$p\not\sim q$, and $[p]\cap[q] = \varnothing$ — **disjoint classes**.`}`;
+          return String.raw`Classes are the sets of constant $${R.name}$ (${R.desc}). $${R.name} = ${show(fp, p)}$ at $p$ and $${show(fq, q)}$ at $q$: ${same ? String.raw`$p\sim q$, so $[p] = [q]$ — **the same class**.` : String.raw`$p\not\sim q$, and $[p]\cap[q] = \varnothing$ — **disjoint classes**.`}`;
         });
       },
     },
@@ -395,7 +393,7 @@ $$[x]=\{y\in X : y\sim x\}.$$`,
         v.readout(() => {
           const n = N.value, nb = Math.max(...block.slice(0, n)) + 1, blocks = Array.from({ length: nb }, (_, b) => [...Array(n).keys()].filter((i) => block[i] === b).map((i) => i + 1));
           const size = blocks.reduce((a, b) => a + b.length * b.length, 0), C = relChecks(relOfBlocks(block.slice(0, n)));
-          return String.raw`Partition $\{${blocks.map((b) => setList(b)).join(', ')}\}$ of $X = \{1, \ldots, ${n}\}$ ↔ the relation "same bin", with $|R| = ${blocks.map((b) => `${b.length}^2`).join(' + ')} = ${size}$ pairs — reflexive ${tick(!C.refl.length)}, symmetric ${tick(!C.sym.length)}, transitive ${tick(!C.trans.length)}; its classes are the ${nb} bins. There are $B_{${n}} = ${bell(n)[n]}$ partitions of an ${n}-set, hence exactly as many equivalence relations.`;
+          return String.raw`Partition $\{${blocks.map((b) => setList(b)).join(', ')}\}$ of $X = \{1, \ldots, ${n}\}$ ↔ the relation "same bin", with $|R| = ${blocks.map((b) => `${b.length}^2`).join(' + ')} = ${size}$ pairs — reflexive ${tick(!C.refl.length)}, symmetric ${tick(!C.sym.length)}, transitive ${tick(!C.trans.length)}; its classes are the ${nb} bins. There are $B_{${n}} = ${bell(n)[n]}$ partitions of a ${n}-element set, hence exactly as many equivalence relations.`;
         });
       },
     },
@@ -436,7 +434,7 @@ $$[x]=\{y\in X : y\sim x\}.$$`,
             return String.raw`Here the two blobs ${both.length ? 'coincide' : 'happen to be disjoint'}; move $x$ or $y$ (e.g. $x = 1/2$, $y = 3/4$) until they overlap only partly — impossible for a genuine equivalence relation.`;
           }
           const eq = p * ss === q * r;
-          return String.raw`$x = ${p}/${q}$, $y = ${r}/${ss}$: $p\,s = ${p * ss}$ and $q\,r = ${q * r}$, so ${eq ? `$x\sim y$ and $[x] = [y]$ — the same line, all ${cx.length} points shared (each equals $${fx[0]}/${fx[1]}$ in lowest terms).` : `$x\not\sim y$, and $[x]\cap[y] = \varnothing$: two different lines through the origin meet only at $(0, 0)$, which is not a fraction. ($[x]$ is $${fx[0]}/${fx[1]}$ with ${cx.length} names here, $[y]$ is $${fy[0]}/${fy[1]}$ with ${cy.length}.)`}`;
+          return String.raw`$x = ${p}/${q}$, $y = ${r}/${ss}$: $p\,s = ${p * ss}$ and $q\,r = ${q * r}$, so ${eq ? String.raw`$x\sim y$ and $[x] = [y]$ — the same line, all ${cx.length} points shared (each equals $${fx[0]}/${fx[1]}$ in lowest terms).` : String.raw`$x\not\sim y$, and $[x]\cap[y] = \varnothing$: two different lines through the origin meet only at $(0, 0)$, which is not a fraction. ($[x]$ is $${fx[0]}/${fx[1]}$ with ${cx.length} names here, $[y]$ is $${fy[0]}/${fy[1]}$ with ${cy.length}.)`}`;
         });
       },
     },
@@ -477,7 +475,6 @@ which partition $\mathbb Z$. For example $41\equiv17\pmod 8$, since $41-17=24=3\
           for (let k = lo; k <= hi; k++) {
             const [x, y] = place(k, R), r = ((k % n) + n) % n, sel = k === A.value || k === B.value;
             s.dot(x, y, { r: sel ? r0 + 3 : r0, color: col(r, n) });
-            if (sel) s.circle(x, y, 0, {}) && null;
             if (r0 >= 7) s.text(String(k), x, y, { align: 'center', size: Math.min(11, r0 * 1.05), weight: 700, color: 'panel', halo: false });
             if (sel) { const c = s.ctx; c.save(); c.beginPath(); c.arc(s.X(x), s.Y(y), r0 + 7, 0, 2 * Math.PI); c.strokeStyle = v.color('ink'); c.lineWidth = 2.2; c.stroke(); c.restore(); s.text(k === A.value ? 'a' : 'b', x, y, { dx: r0 + 10, dy: -r0 - 4, math: true, size: 15, weight: 700 }); }
           }
@@ -496,7 +493,7 @@ which partition $\mathbb Z$. For example $41\equiv17\pmod 8$, since $41-17=24=3\
         v.readout(() => {
           const n = N.value, a = A.value, b = B.value, d = a - b, ra = ((a % n) + n) % n, rb = ((b % n) + n) % n, cong = d % n === 0;
           const cls = (r) => `\\{\\ldots, ${r - 2 * n}, ${r - n}, ${r}, ${r + n}, ${r + 2 * n}, \\ldots\\}`;
-          return String.raw`$a - b = ${a} - ${b < 0 ? `(${b})` : b} = ${d}$ ${cong ? `$= ${d / n}\cdot ${n}$, so $${a}\equiv ${b} \pmod{${n}}$: both lie in $[${ra}] = ${cls(ra)}$.` : `is not a multiple of ${n} (remainder ${((d % n) + n) % n}), so $${a}\not\equiv ${b} \pmod{${n}}$: $a\in[${ra}]$ and $b\in[${rb}]$, disjoint classes.`} The ${n} classes $[0], \ldots, [${n - 1}]$ partition $\mathbb Z$.`;
+          return String.raw`$a - b = ${a} - ${b < 0 ? String.raw`(${b})` : b} = ${d}$ ${cong ? String.raw`$= ${d / n}\cdot ${n}$, so $${a}\equiv ${b} \pmod{${n}}$: both lie in $[${ra}] = ${cls(ra)}$.` : String.raw`is not a multiple of ${n} (remainder ${((d % n) + n) % n}), so $${a}\not\equiv ${b} \pmod{${n}}$: $a\in[${ra}]$ and $b\in[${rb}]$, disjoint classes.`} The ${n} classes $[0], \ldots, [${n - 1}]$ partition $\mathbb Z$.`;
         });
       },
     },

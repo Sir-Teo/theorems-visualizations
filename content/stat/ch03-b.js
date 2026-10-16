@@ -454,12 +454,16 @@ For a mixture of $K$ normals $z_i$ is the label of the component that produced $
           axisLabels(sL, 'x_1', 'x_2');
           // right: the log-likelihood trace
           const all = S.frames[S.frames.length - 1].lls, ls = f.lls, T = Math.max(4, all.length - 1);
-          const lo = Math.min(...all), hi = Math.max(...all), pad = Math.max(1, 0.08 * (hi - lo));
+          // scale to iterations 1, 2, …: the starting value is usually far below and is flagged instead
+          const body = all.length > 2 ? all.slice(1) : all, lo = Math.min(...body), hi = Math.max(...body), pad = Math.max(1, 0.1 * (hi - lo));
           viewPad(sR, [0, T], [lo - pad, hi + pad], { left: 46 });
-          sR.path(all.map((l, t) => [t, l]), { color: 'faint', width: 1.2, dash: [3, 3] });
-          sR.path(ls.map((l, t) => [t, l]), { color: 'accent', width: 2.4 });
-          sR.dots(ls.map((l, t) => [t, l]), { r: 3.2, color: 'accent' });
-          sR.dot(ls.length - 1, ls[ls.length - 1], { r: 6, color: 'gold' });
+          sR.clip(() => {
+            sR.path(all.map((l, t) => [t, l]), { color: 'faint', width: 1.2, dash: [3, 3] });
+            sR.path(ls.map((l, t) => [t, l]), { color: 'accent', width: 2.4 });
+            sR.dots(ls.map((l, t) => [t, l]), { r: 3.2, color: 'accent' });
+            sR.dot(ls.length - 1, ls[ls.length - 1], { r: 6, color: 'gold' });
+          });
+          if (all[0] < lo - pad) sR.text(`↓ start: ℓ₀ = ${v.fix(all[0], 1)}`, 0, lo - pad, { color: 'muted', size: 11.5, dx: 8, dy: -32, plate: true });
           axisLabels(sR, '\\text{iteration}', null);
           v.legend([['accent', 'component 1 · responsibility for it · $\\ell$ after each M-step'], ['orange', 'component 2'], ['muted', 'not yet assigned', { dot: true }]]);
           let minInc = Infinity; for (let t = 1; t < ls.length; t++) minInc = Math.min(minInc, ls[t] - ls[t - 1]);
@@ -527,7 +531,8 @@ with equality at $\theta=\theta_t$, and the gap $\ell(\theta)-B_t(\theta)$ equal
         v.render(() => {
           const f = S.frame; if (!f.th) return;
           viewPad(sL, [-2.5, 5.5], [-2.5, 5.5], { left: 30 });
-          sL.heat((a, b) => Math.max(0, Math.min(1, (ll(a, b) - lmax + 180) / 180)), { range: [0, 1], cmap: 'theme', res: 3, key: 'emb' });
+          sL.heat((a, b) => 0.6 * Math.max(0, Math.min(1, (ll(a, b) - lmax + 180) / 180)), { range: [0, 1], cmap: 'theme', res: 3, key: 'emb' });
+          sL.axes();
           sL.contour(ll, [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144].map((c) => lmax - c), { color: 'ink', alpha: 0.32, width: 1, res: 110 });
           sL.line(-2.5, -2.5, 5.5, 5.5, { color: 'muted', width: 1, dash: [4, 4] });
           sL.dot(Gm[0], Gm[1], { r: 5.5, color: 'ink' }); sL.text('G', Gm[0], Gm[1], { size: 13, weight: 700, dx: 9, dy: -9, plate: true });
@@ -602,7 +607,7 @@ and $\frac{n+1}nX_{(n)}$ is unbiased. The error is of order $1/n$, not $1/\sqrt 
         let nkey = null, info = null;
         v.render(() => {
           const n = nS.value;
-          if (nkey !== n) { nkey = n; const r = v.rng(hashStr('unif|' + n)); pts.forEach((h, i) => { h.x = TH * r(); h.visible = i < n; }); }
+          if (nkey !== n) { nkey = n; const r = v.rng(hashStr('unif3|' + n)); pts.forEach((h, i) => { h.x = TH * r(); h.visible = i < n; }); }
           const xs = pts.slice(0, n).map((h) => h.x), xm = Math.max(...xs);
           Lrel = (t) => (t < xm ? 0 : Math.pow(xm / t, n));
           mk.y = Lrel(mk.x);
@@ -610,7 +615,7 @@ and $\frac{n+1}nX_{(n)}$ is unbiased. The error is of order $1/n$, not $1/\sqrt 
           viewPad(sL, [0, 1.6], [-0.16, 1.12], { left: 36, noY: true });
           sL.vband(0, t, { color: 'accent', alpha: 0.09 });
           sL.vline(TH, { color: 'green', width: 1.4, dash: [5, 4] });
-          sL.text('θ', TH, 1.1, { color: 'green', size: 15, math: true, dx: 6, baseline: 'top' });
+          sL.text('θ', TH, 0, { color: 'green', size: 15, math: true, dx: 6, dy: -12 });
           sL.hline(0, { color: 'faint', width: 1 });
           sL.line(0, 0, xm, 0, { color: 'accent', width: 3 });
           sL.fn((u) => Math.pow(xm / u, n), { domain: [xm, 1.6], color: 'accent', width: 3, n: 300 });
@@ -654,7 +659,7 @@ and $\frac{n+1}nX_{(n)}$ is unbiased. The error is of order $1/n$, not $1/\sqrt 
       credit: 'Dempster, Laird & Rubin, 1977',
       statement: String.raw`Dempster, Laird and Rubin gathered many special-purpose algorithms under one name and one theory. Observed data $y$ are a function of complete data $x$ with density $f(x\mid\phi)$; the **E-step** computes $Q(\phi'\mid\phi^{(p)})=E\big[\log f(x\mid\phi')\bigm|y,\phi^{(p)}\big]$ and the **M-step** maximizes it over $\phi'$. They proved that each iteration does not decrease the observed likelihood (their Theorem 1, from Jensen's inequality), showed that near a limit the convergence is linear with rate equal to the largest fraction of missing information, and that for exponential families the E-step reduces to computing the expected complete-data sufficient statistics. Their examples covered missing values in multivariate normal data, grouped, censored and truncated data, finite mixtures, variance components, hyperparameter estimation, iteratively reweighted least squares and factor analysis.
 
-The opening example is Rao's genetic linkage data: 197 animals in four classes with counts $(125,18,20,34)$ and probabilities $\big(\tfrac12+\tfrac\theta4,\ \tfrac{1-\theta}4,\ \tfrac{1-\theta}4,\ \tfrac\theta4\big)$. Splitting the first class into its $\tfrac12$ and $\tfrac\theta4$ parts makes the problem binomial; EM from $\theta=0.5$ converges to $\theta^*=0.6268214980$ with ratio 0.1328 between successive errors. Scope: the general convergence argument had a gap, repaired by Wu (1983); EM converges to stationary points, not necessarily to global maxima.`,
+The opening example is Rao's genetic linkage data: 197 animals in four classes with counts $(125,18,20,34)$ and probabilities $\big(\tfrac12+\tfrac\theta4,\ \tfrac{1-\theta}4,\ \tfrac{1-\theta}4,\ \tfrac\theta4\big)$. Splitting the first class into its $\tfrac12$ and $\tfrac\theta4$ parts makes the problem binomial; EM from $\theta=0.5$ converges to $\theta^*=0.626821498$ with ratio 0.1328 between successive errors. Scope: the general convergence argument had a gap, repaired by Wu (1983); EM converges to stationary points, not necessarily to global maxima.`,
       idea: String.raw`Before 1977 the idea had appeared many times in special cases: McKendrick's epidemic counts (1926), Hartley's counted data (1958), the Baum–Welch algorithm for hidden Markov models (1970), Orchard and Woodbury's missing-information principle (1972), Sundberg's exponential families (1974). There was no common name and no general proof. The paper supplied both, the E- and M-steps of the EM algorithm (stat-3.11) and its monotonicity (stat-3.12), and named the price: convergence is linear, and slow when much information is missing, as in overlapping mixtures (stat-3.8). It became one of the most cited papers in statistics, the engine of latent-variable modelling from mixtures and hidden Markov models to factor analysis and imputation, and the template for later minorize–maximize and variational methods.`,
       caption: String.raw`Rao's linkage data as in the paper. Step through. E-step: the 125 animals of the first class are split in the ratio $\tfrac12:\tfrac\theta4$ into an expected count from the $\tfrac12$ part (grey) and from the $\tfrac\theta4$ part (gold). M-step: with that split the data are binomial, and $\theta$ becomes (gold count + 34)/(gold count + 34 + 18 + 20). Middle: the observed log-likelihood (blue) with the bound $B_p$ that the M-step maximizes (purple), touching it at the current $\theta$. Bottom: the iterates laid out like the paper's Table 1, with $\theta^{(p)}$, its distance from $\theta^*$, and the ratio of successive distances, which settles at 0.1328. Move the starting value; the ratio does not care.`,
       deps: ['stat-3.5', 'stat-1.17'],
@@ -678,7 +683,7 @@ The opening example is Rao's genetic linkage data: 197 animals in four classes w
         const t0S = v.slider('starting value $\\theta^{(0)}$', 0.05, 0.95, 0.5, { step: 0.01, onChange: () => S && S.reset() });
         const sC = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', height: 300, weight: 0.9, xticks: [], title: 'the four classes (counts)' });
         const sQ = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', height: 300, weight: 1.1, title: 'observed log-likelihood and the bound $B_p$' });
-        const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, title: 'iterates, as in Table 1 of the paper' });
+        const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: 'iterates, as in Table 1 of the paper' });
         const frames = () => {
           const out = []; let t = t0S.value; const th = [t];
           out.push({ p: 0, th: th.slice(), x2: null, phase: 'start', note: String.raw`Start at $\theta^{(0)}=${v.fix(t, 4)}$.` });
@@ -707,7 +712,7 @@ The opening example is Rao's genetic linkage data: 197 animals in four classes w
               sC.text(v.fix(f.x2, 1), x + 0.36, c - f.x2 / 2, { align: 'left', size: 11.5, weight: 700, color: 'gold', plate: true });
             } else sC.rect(x - 0.32, 0, x + 0.32, c, { fill: i === 3 ? 'gold' : 'accent', fillAlpha: i === 3 ? 0.75 : 0.45, stroke: false });
             sC.line(x - 0.4, NT * fitP[i], x + 0.4, NT * fitP[i], { color: 'ink', width: 2 });
-            sC.text(String(c), x, c, { align: 'center', dy: -10, size: 12, weight: 700 });
+            sC.text(String(c), x, Math.max(c, NT * fitP[i]), { align: 'center', dy: -11, size: 12, weight: 700 });
           });
           ['\\tfrac12+\\tfrac\\theta4', '\\tfrac{1-\\theta}4', '\\tfrac{1-\\theta}4', '\\tfrac\\theta4'].forEach((s, i) => sC.tex(s, i + 1, 0, { dy: 6, baseline: 'top', size: 13, color: 'muted' }));
           // log-likelihood and the bound
@@ -738,7 +743,7 @@ The opening example is Rao's genetic linkage data: 197 animals in four classes w
         v.readout(() => {
           if (!info) return '';
           const I = info;
-          return String.raw`$\theta^{(${I.p})}=${v.fix(I.tc, 9)}$ · exact maximum $\theta^*=${v.fix(TSTAR, 10)}$ (root of $-197\theta^2+15\theta+68=0$), paper: **0.6268214980** · ratio of successive errors ` + (I.r != null ? `**${v.fix(I.r, 4)}**` : '—') + String.raw` (paper: **0.1328**), which equals the fraction of missing information $1-I_{\rm obs}/I_{\rm complete}=${v.fix(FMI, 4)}$ at $\theta^*$, as the paper's rate theorem predicts`;
+          return String.raw`$\theta^{(${I.p})}=${v.fix(I.tc, 9)}$ · exact maximum $\theta^*=${v.fix(TSTAR, 10)}$ (root of $-197\theta^2+15\theta+68=0$), paper's Table 1: **0.626821498** · ratio of successive errors ` + (I.r != null ? `**${v.fix(I.r, 4)}**` : '—') + String.raw` (paper: **0.1328**), which equals the fraction of missing information $1-I_{\rm obs}/I_{\rm complete}=${v.fix(FMI, 4)}$ at $\theta^*$, as the paper's rate theorem predicts`;
         });
       },
     },

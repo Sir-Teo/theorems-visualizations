@@ -28,7 +28,7 @@ export default {
       name: 'Formants and the spectral envelope',
       statement: String.raw`The **spectral envelope** of a sound is the smooth curve that its harmonic levels follow when plotted against frequency, and a **formant** is a peak of that envelope: a band of frequencies emphasised whatever note is played. Formants arise when a source with a broad harmonic spectrum drives a resonant body or air cavity whose gain $|H(f)|$ is fixed in hertz:
 $$A_n^{\rm out}=A_n^{\rm source}\,\big|H(nf_0)\big| .$$
-Change the pitch and the harmonics slide along the same envelope: what stays constant is the envelope, not the recipe of harmonic levels. Several orchestral instruments behave this way. Measured over their whole range, the bassoon, horn and trombone have harmonic levels that line up against frequency, with broad formants near 400–600 Hz. The clarinet's spectrum is organised by harmonic number instead (odd against even, 3.3).`,
+Change the pitch and the harmonics slide along the same envelope: what stays constant is the envelope, not the recipe of harmonic levels. Several orchestral instruments behave this way. Measured over their whole range, the bassoon, horn and trombone have harmonic levels that line up against frequency, with broad formant regions in the few hundred hertz. The clarinet's spectrum is organised by harmonic number instead (odd against even, 3.3).`,
       idea: String.raw`A fixed linear filter multiplies each frequency component by its own gain, the convolution theorem in action (sig-5.6). So the output's harmonic levels are samples, at the points $nf_0$, of one fixed curve. A low note samples the curve densely, a high note sparsely, but the samples always fall on the same curve. When the resonance belongs to the instrument (a bell, a bore, a body) its frequency is set by size, not by the note, and the formant stays put. Speeding up a recording transposes it by scaling every frequency, envelope included. The formants then move with the pitch, and the result sounds like a smaller instrument or a chipmunk voice, not the same instrument playing higher. Vowels are formants of the vocal tract (4.10).`,
       caption: String.raw`Every dot is one harmonic of one note in the McGill recordings (SHARC data, all notes of the instrument, levels relative to each note's total). Colour runs from the lowest note (blue) to the highest (orange). Switch the horizontal axis between **frequency** and **harmonic number**: for the bassoon, horn and trombone the cloud tightens against frequency (a fixed formant), for the clarinet it tightens against harmonic number. The readout gives the scatter both ways. Drag the gold handles to fit a two-peak envelope to the cloud, or press *Fit*. Below, a synthetic note at the chosen pitch: in *keep the envelope* mode its harmonics follow your envelope; in *keep the recipe* mode they keep the levels the lowest note had, so the envelope slides along with the pitch. *Play a scale* in both modes and compare.`,
       deps: ['music-4.5'],
@@ -78,8 +78,8 @@ Change the pitch and the harmonics slide along the same envelope: what stays con
         }
         fit();
         v.button('Fit', () => { fit(); sync(); });
-        const sc = v.stage({ x: [Math.log10(55), Math.log10(5200)], y: [-62, 8], height: 300, axes: 'box', full: true, yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'every harmonic of every recorded note' });
-        const sy = v.stage({ x: [Math.log10(40), Math.log10(5200)], y: [-62, 8], height: 230, axes: 'box', full: true, yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], title: 'a synthetic note through the envelope' });
+        const sc = v.stage({ x: [Math.log10(55), Math.log10(5200)], y: [-70, 8], height: 300, axes: 'box', full: true, yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'every harmonic of every recorded note (level re the note’s total)' });
+        const sy = v.stage({ x: [Math.log10(40), Math.log10(5200)], y: [-70, 8], height: 230, axes: 'box', full: true, yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], title: 'a synthetic note through the envelope' });
         const fTicks = [[Math.log10(100), '100'], [Math.log10(200), '200'], [Math.log10(500), '500'], [Math.log10(1000), '1k'], [Math.log10(2000), '2k'], [Math.log10(5000), '5k Hz']];
         const nTicks = [1, 2, 3, 5, 10, 20, 50].map((n) => [Math.log10(n), String(n)]);
         const h1 = sc.handle(Math.log10(P.F1), 0, { color: 'gold', label: 'F1', labelPos: 'n' });
@@ -111,21 +111,21 @@ Change the pitch and the harmonics slide along the same envelope: what stays con
           const d = data(), byF = axS.value === 'f', r = resid();
           if (!h1.dragging && !h2.dragging) placeHandles();
           h1.visible = h2.visible = byF;
-          sc.setView(byF ? [Math.log10(55), Math.log10(5200)] : [Math.log10(0.8), Math.log10(90)], [-62, 8]);
+          sc.setView(byF ? [Math.log10(55), Math.log10(5200)] : [Math.log10(0.8), Math.log10(90)], [-70, 8]);
           sc.setTicks(byF ? fTicks : nTicks, undefined);
           // dots, coloured by the note's pitch
           const groups = 6;
-          for (let g = 0; g < groups; g++) sc.dots(d.pts.filter((p) => Math.min(groups - 1, Math.floor(p.u * groups)) === g).map((p) => [Math.log10(byF ? p.f : p.n), p.y]), { r: 2.4, color: ramp(g / (groups - 1)), alpha: 0.75 });
+          for (let g = 0; g < groups; g++) sc.dots(d.pts.filter((p) => Math.min(groups - 1, Math.floor(p.u * groups)) === g).map((p) => (p.y < -62 ? null : [Math.log10(byF ? p.f : p.n), p.y])), { r: 2.4, color: ramp(g / (groups - 1)), alpha: 0.75 });
           const tr = byF ? d.sF.trend : d.sN.trend;
           sc.path(tr.map(([x, y]) => [Math.log10(x), y]), { color: 'ink', width: 1.6, alpha: 0.7 });
           if (byF) sc.fn((x) => shape(10 ** x) + r.off, { domain: [Math.log10(55), Math.log10(5200)], color: 'gold', width: 2.6 });
           sc.corner(`scatter about the trend: ${v.fix(byF ? d.sF.sd : d.sN.sd, 1)} dB`, 'tr', { color: 'ink', weight: 600, plate: true });
-          sc.corner(byF ? 'x: frequency of the harmonic (Hz)' : 'x: harmonic number n', 'bl', { color: 'muted', size: 11 });
+          sc.corner(byF ? 'x: frequency of the harmonic (Hz)' : 'x: harmonic number n', 'tl', { color: 'muted', size: 11, plate: true });
           // ---- the synthetic note
           const f0 = pS.value, lev = levels(f0), mx = Math.max(...lev);
           sy.fn((x) => shape(10 ** x) - dB(mx), { domain: [Math.log10(40), Math.log10(5200)], color: 'gold', width: 1.6, dash: mode.value === 'env' ? false : [5, 4], alpha: mode.value === 'env' ? 1 : 0.6 });
           if (mode.value === 'rec') { const k = f0 / d.ref.f; sy.fn((x) => shape(10 ** x / k) - dB(mx), { domain: [Math.log10(40), Math.log10(5200)], color: 'red', width: 2 }); }
-          lev.forEach((a, i) => { const x = Math.log10((i + 1) * f0), y = dB(a / mx); if (y > -62) { sy.line(x, -62, x, y, { color: 'accent', width: 2 }); sy.dot(x, y, { r: 3, color: 'accent' }); } });
+          lev.forEach((a, i) => { const x = Math.log10((i + 1) * f0), y = dB(a / mx); if (y > -60) { sy.line(x, -60, x, y, { color: 'accent', width: 2 }); sy.dot(x, y, { r: 3, color: 'accent' }); } });
           sy.setTicks(fTicks, undefined);
           sy.corner(mode.value === 'env' ? 'harmonics sample the fixed envelope (gold)' : 'the recipe of the lowest note, transposed: its envelope (red) moves with the pitch', 'tl', { color: mode.value === 'env' ? 'ink' : 'red', size: 11.5, weight: 600 });
           if (ph.t != null) sy.corner('♪', 'tr', { color: 'gold', weight: 700 });
@@ -165,8 +165,8 @@ Two consequences shape classical singing:
         const orch = v.toggle('orchestra (illustrative)', false);
         // chart coordinates: x = −log2(F2/1000) (front vowels on the left), y = −log2(F1/1000) (close vowels on top)
         const pos = ([F1, F2]) => [-Math.log2(F2 / 1000), -Math.log2(F1 / 1000)];
-        const ch = v.stage({ x: [-1.62, 0.42], y: [-0.25, 1.95], height: 300, axes: 'box', weight: 0.85, minWidth: 260, xticks: [2500, 2000, 1500, 1000, 800].map((f) => [-Math.log2(f / 1000), String(f)]), yticks: [250, 300, 400, 500, 600, 800, 1000].map((f) => [-Math.log2(f / 1000), String(f)]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)', title: 'the vowel chart' });
-        const sp = v.stage({ x: [0, 5000], y: [-65, 8], height: 300, axes: 'box', xlabel: 'frequency (Hz)', weight: 1.4, xticks: [500, 1000, 2000, 3000, 4000], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'harmonics under the vocal-tract envelope' });
+        const ch = v.stage({ x: [-1.62, 0.42], y: [-0.25, 2.12], height: 300, axes: 'box', weight: 0.85, minWidth: 260, xticks: [2500, 2000, 1500, 1000, 800].map((f) => [-Math.log2(f / 1000), String(f)]), yticks: [250, 300, 400, 500, 600, 800, 1000].map((f) => [-Math.log2(f / 1000), String(f)]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)', title: 'the vowel chart' });
+        const sp = v.stage({ x: [-250, 5000], y: [-76, 8], height: 300, axes: 'box', xlabel: 'frequency (Hz)', weight: 1.4, xticks: [500, 1000, 2000, 3000, 4000], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'harmonics under the vocal-tract envelope' });
         const h = ch.handle(...pos([730, 1090]), { color: 'gold', constrain: (x, y) => [M.clamp(x, -1.55, 0.35), M.clamp(y, -0.2, 1.9)] });
         const F12 = () => [1000 * 2 ** -h.y, 1000 * 2 ** -h.x];
         const formants = () => {
@@ -202,12 +202,12 @@ Two consequences shape classical singing:
           ch.hline(-Math.log2(f0 / 1000), { color: 'orange', width: 1.4, dash: [5, 4] });
           ch.text(`f₀ = ${v.fix(f0, 0)} Hz`, 0.4, -Math.log2(f0 / 1000), { color: 'orange', size: 11, align: 'right', baseline: 'bottom', dy: -2 });
           const near = PB.map((p) => { const [x, y] = pos(p[w ? 3 : 2]); return [p, Math.hypot(x - h.x, y - h.y)]; }).sort((a, b) => a[1] - b[1])[0];
-          ch.corner(`nearest: /${near[0][0]}/ as in “${near[0][1]}”`, 'br', { color: 'ink', weight: 600, plate: true });
+          ch.corner(`nearest: /${near[0][0]}/ as in “${near[0][1]}”`, 'tr', { color: 'ink', weight: 600, plate: true });
           // ---- spectrum
-          if (orch.value) { sp.fn((f) => orchDB(f), { domain: [60, 5000], color: 'muted', width: 2.2, fill: 'muted', fillAlpha: 0.12, base: -65 }); sp.text('orchestra', 1500, orchDB(1500) + 3, { color: 'muted', size: 11.5 }); }
+          if (orch.value) { sp.fn((f) => orchDB(f), { domain: [60, 5000], color: 'muted', width: 2.2, fill: 'muted', fillAlpha: 0.12, base: -64 }); sp.text('orchestra', 1500, orchDB(1500) + 3, { color: 'muted', size: 11.5 }); }
           const envDB = (f) => dB((src(f, f0) * Hgain(FB, f)) / mx);
           sp.fn(envDB, { domain: [40, 5000], n: 600, color: 'gold', width: 2 });
-          A.forEach((a, i) => { const f = (i + 1) * f0, y = dB(a / mx); if (y > -65) { sp.line(f, -65, f, y, { color: 'accent', width: 2.2 }); sp.dot(f, y, { r: 3.2, color: 'accent' }); } });
+          A.forEach((a, i) => { const f = (i + 1) * f0, y = dB(a / mx); if (y > -64) { sp.line(f, -64, f, y, { color: 'accent', width: 2.2 }); sp.dot(f, y, { r: 3.2, color: 'accent' }); } });
           FB.F.slice(0, 2).forEach((F, i) => { sp.vline(F, { color: i === 0 && FB.F[0] !== F1u ? 'red' : 'ink', width: 1, dash: [3, 4], alpha: 0.7 }); sp.text(`F${i + 1}`, F, 6, { align: 'center', color: i === 0 && FB.F[0] !== F1u ? 'red' : 'ink', size: 11.5, weight: 600 }); });
           if (sf.value) sp.text('singer’s formant', 2800 * (w ? 1.17 : 1), envDB(2800 * (w ? 1.17 : 1)) + 5, { align: 'center', color: 'gold', size: 11.5, weight: 600 });
           const below = A.filter((_, i) => (i + 1) * f0 < 3000).length;
@@ -336,7 +336,7 @@ $$p\approx\frac{Ng+\Delta}{N}=g+\frac{\Delta}{N}$$
         v.soundButton('Δ = 0 → 200 Hz in steps', (snd) => { const keep = dS.value, bufs = []; for (const d of [0, 40, 80, 120, 160, 200]) { dS.set(d); bufs.push(tone(0.55)); } dS.set(keep); snd.samples(join(bufs, 0.1), SR, { gain: 0.9 }); });
         const pd = v.stage({ x: [0, 200], y: [150, 262], height: 270, axes: 'box', xlabel: 'shift Δ (Hz)', ylabel: 'pitch (Hz)', weight: 1.2, title: 'pitch-shift diagram' });
         const ps = v.stage({ x: [0, 3400], y: [-0.12, 1.25], height: 270, axes: 'box', xlabel: 'frequency (Hz)', yticks: [], weight: 1, title: 'partials and the best-fitting template' });
-        const wv = v.stage({ x: [0, 15], y: [-1.25, 1.3], height: 190, axes: 'box', xlabel: 'time (ms)', yticks: [], full: true });
+        const wv = v.stage({ x: [0, 15], y: [-1.25, 1.3], height: 190, axes: 'box', xlabel: 'time (ms)', yticks: [], full: true, title: 'waveform: envelope (green dashes) repeats every 1/g = 5 ms; gold: the crest under each envelope peak' });
         v.render(() => {
           const N = nS.value, d = dS.value, fs = comps(), sv = sieve(), pa = acPitch();
           // ---- pitch-shift diagram
@@ -356,7 +356,6 @@ $$p\approx\frac{Ng+\Delta}{N}=g+\frac{\Delta}{N}$$
           for (let k = 1; k * G < 3400; k++) ps.line(k * G, -0.1, k * G, -0.02, { color: 'green', width: 1.5 });
           fs.forEach((f) => { ps.line(f, 0, f, 1, { color: 'ink', width: 3 }); ps.dot(f, 1, { r: 4, color: 'ink' }); });
           ps.text(`template p = ${v.fix(sv.p, 1)} Hz`, 60, 1.17, { color: 'accent', size: 11.5, weight: 600, align: 'left' });
-          ps.text('green: harmonics of g', 3340, -0.06, { color: 'green', size: 10.5, align: 'right', baseline: 'bottom', dy: -4 });
           ps.hline(0, { color: 'muted', width: 1 });
           // ---- waveform: envelope period 1/g, fine-structure peaks
           const w = (tms) => { const t = tms / 1000; return fs.reduce((s, f) => s + Math.cos(TAU * f * t), 0) / 3; };
@@ -365,12 +364,12 @@ $$p\approx\frac{Ng+\Delta}{N}=g+\frac{\Delta}{N}$$
           wv.fn(env, { domain: [0, 15], n: 400, color: 'green', width: 1.4, dash: [5, 4] });
           let prev = null;
           for (let k = 0; k * 5 <= 15; k++) { // the tallest fine-structure peak under each envelope maximum
-            let best = -9, at = 0; for (let i = -300; i <= 300; i++) { const t = k * 5 + i * 0.004; if (t < 0 || t > 15) continue; const y = w(t); if (y > best) { best = y; at = t; } }
+            const fcm = fs[1] / 1000; let at = Math.round(k * 5 * fcm) / fcm; if (at > 15) at -= 1 / fcm; const best = w(at); // the carrier crest nearest the envelope maximum
             wv.dot(at, best, { r: 4, color: 'gold' });
             if (prev != null) wv.text(`${v.fix(at - prev, 3)} ms`, (at + prev) / 2, 1.18, { align: 'center', color: 'gold', size: 10.5, weight: 600 });
             prev = at;
           }
-          wv.corner('green: envelope, period 1/g = 5 ms; gold: fine-structure peaks', 'bl', { color: 'muted', size: 11, plate: true });
+          
         });
         v.legend([['accent', 'best-fitting template'], ['gold', 'autocorrelation estimate'], ['green', 'spacing g (envelope)'], ['orange', 'your match']]);
         v.readout(() => {
@@ -417,7 +416,7 @@ With $f_n=nf_0$ and constant $a_n$ it reproduces any periodic tone to any accura
         v.soundButton('Build up', (snd) => snd.samples(join([1, 2, 3, 4, 6, 9, 14, 24].map((N) => tone(N, 0.6)), 0.1), SR, { gain: 0.9 }));
         const wv = v.stage({ x: [0, 1], y: [-1.25, 1.3], height: 240, axes: false, weight: 1, title: 'target (dashed) and the sum' });
         const es = v.stage({ x: [0, NB + 1], y: [-3.3, 0.25], height: 240, axes: 'box', xlabel: 'oscillators N', xticks: [1, 4, 8, 12, 16, 20, 24], yticks: [[0, '100%'], [-1, '10%'], [-2, '1%'], [-3, '0.1%']], weight: 1, title: 'relative rms error (log scale)' });
-        const bank = v.stage({ x: [-0.16, 1.32], y: [0, NB + 1.2], height: 360, axes: false, full: true, title: 'the oscillator bank: envelope of each partial over 1 s' });
+        const bank = v.stage({ x: [-0.16, 1.32], y: [0, NB + 1.7], height: 330, axes: false, full: true, title: 'the oscillator bank: envelope of each partial over 1 s' });
         v.render(() => {
           const T = target(), N = nS.value, a = amps(T, N), s = sS.value;
           // ---- one period (or three overlaid when stretched)
@@ -446,7 +445,7 @@ With $f_n=nf_0$ and constant $a_n$ it reproduces any periodic tone to any accura
             const f = fr(n, T.f0), dc = 1200 * Math.log2(f / (n * T.f0));
             if (n <= T.A.length) bank.text(`${v.fix(f, 0)} Hz${s > 0 && n > 1 ? ` (+${v.fix(dc, 0)} ¢)` : ''}`, 1.02, y0 + 0.3, { align: 'left', color: onN ? (s > 0 ? 'purple' : 'ink') : 'faint', size: 10.5 });
           }
-          bank.text('row height: level (50 dB range)', 0.5, NB + 1.0, { align: 'center', color: 'muted', size: 10.5 });
+          bank.text('row height: level (50 dB range)', 0.5, NB + 1.15, { align: 'center', color: 'muted', size: 10.5 });
         });
         v.legend([['accent', 'sum of $N$ oscillators'], ['muted', 'target (all measured harmonics)', { dash: true }], ['red', 'with random level errors']]);
         v.readout(() => {
@@ -505,17 +504,17 @@ where $J_k$ are Bessel functions of the first kind. The spectrum has lines at $f
         });
         const sp = v.stage({ x: [0, 4000], y: [-0.08, 1.12], height: 250, axes: 'box', xlabel: 'frequency (Hz)', yticks: [[0.5, '0.5'], [1, '1']], full: true, title: 'spectrum: lines at $f_c+kf_m$ with heights $|J_k(I)|$' });
         const bs = v.stage({ x: [0, 15], y: [-0.5, 1.05], height: 220, axes: 'box', xlabel: 'index I', weight: 1.1, title: 'Bessel functions $J_0,\\dots,J_4$' });
-        const ws = v.stage({ x: [0, 10], y: [-1.2, 1.2], height: 220, axes: 'box', xlabel: 'time (ms)', yticks: [], weight: 1, title: 'waveform' });
+        const ws = v.stage({ x: [0, 5], y: [-1.2, 1.2], height: 220, axes: 'box', xlabel: 'time (ms)', yticks: [], weight: 1, title: 'waveform' });
         const KC = ['ink', 'accent', 'orange', 'green', 'purple', 'teal', 'pink'];
         v.render(() => {
           const fc = cS.value, fm = fc * rS.value, I = iS.value, L = lines(), pq = ratioPQ();
           const fmax = Math.min(8000, Math.max(1500, fc + (I + 3) * fm)); sp.setView([0, fmax], [-0.08, 1.12]);
           sp.vband(Math.max(0, fc - (I + 1) * fm), fc + (I + 1) * fm, { color: 'gold', alpha: 0.09 });
-          if (pq) { const f0 = fc / pq[0]; for (let k = 1; k * f0 < fmax; k++) sp.line(k * f0, -0.07, k * f0, -0.02, { color: 'green', width: 1.5 }); }
+          if (pq && fc / pq[0] >= 80) { const f0 = fc / pq[0]; for (let k = 1; k * f0 < fmax; k++) sp.line(k * f0, -0.07, k * f0, -0.02, { color: 'green', width: 1.5 }); }
           for (const e of L) { if (e.f > fmax || Math.abs(e.a) < 0.004) continue; const k = e.ks.reduce((a, b) => (Math.abs(b) < Math.abs(a) ? b : a)); const col = KC[Math.min(KC.length - 1, Math.abs(k))]; sp.line(e.f, 0, e.f, Math.abs(e.a), { color: col, width: 2.4 }); sp.dot(e.f, Math.abs(e.a), { r: 4, color: col, hollow: e.folded }); }
           sp.hline(0, { color: 'muted', width: 1 });
           sp.vline(fc, { color: 'ink', width: 1, dash: [3, 4], alpha: 0.5 });
-          sp.corner(pq ? `ratio ${pq[1]}:${pq[0]} → harmonic, fundamental ${v.fix(fc / pq[0], 1)} Hz (green ticks)` : 'irrational-looking ratio → inharmonic', 'tr', { color: pq ? 'green' : 'red', weight: 600, plate: true });
+          const harmonicQ = pq && pq[0] <= 4; sp.corner(harmonicQ ? `ratio ${pq[1]}:${pq[0]} → harmonic, fundamental ${v.fix(fc / pq[0], 1)} Hz (green ticks)` : pq ? `ratio ${pq[1]}:${pq[0]}: common fundamental only ${v.fix(fc / pq[0], 1)} Hz, heard as inharmonic (bell-like)` : 'irrational ratio → inharmonic', 'tr', { color: harmonicQ ? 'green' : 'red', weight: 600, plate: true });
           // ---- Bessel curves
           bs.hline(0, { color: 'faint', width: 1 });
           for (let k = 0; k <= 4; k++) { bs.fn((x) => besselJ(k, x), { domain: [0, 15], n: 300, color: KC[k], width: 1.8 }); bs.dot(I, besselJ(k, I), { r: 4.5, color: KC[k] }); }
@@ -524,7 +523,7 @@ where $J_k$ are Bessel functions of the first kind. The spectrum has lines at $f
           [[1, 1.84, 0.62], [2, 3.05, 0.53], [3, 4.2, 0.48], [4, 5.32, 0.44]].forEach(([k, x, y]) => bs.text(`J${'₀₁₂₃₄'[k]}`, x, y + 0.07, { color: KC[k], size: 12, align: 'center' }));
           // ---- waveform
           ws.hline(0, { color: 'faint', width: 1 });
-          ws.fn((tms) => Math.sin(TAU * fc * tms / 1000 + I * Math.sin(TAU * fm * tms / 1000)), { domain: [0, 10], n: 2000, color: 'accent', width: 1.4 });
+          ws.fn((tms) => Math.sin(TAU * fc * tms / 1000 + I * Math.sin(TAU * fm * tms / 1000)), { domain: [0, 5], n: 2000, color: 'accent', width: 1.4 });
         });
         v.legend([['ink', '$k=0$ (carrier)'], ['accent', '$|k|=1$'], ['orange', '$|k|=2$'], ['green', '$|k|=3$'], ['purple', '$|k|=4$'], ['gold', 'Carson band $|k|\\le I+1$', { area: true }]]);
         v.readout(() => {
@@ -532,7 +531,7 @@ where $J_k$ are Bessel functions of the first kind. The spectrum has lines at $f
           for (const e of L) { p += e.a * e.a; if (Math.abs(e.f - fc) <= (I + 1) * fm + 1e-6) pin += e.a * e.a; }
           let sum = 0; for (let k = -40; k <= 40; k++) sum += besselJ(k, I) ** 2;
           const sig = L.filter((e) => Math.abs(e.a) > 0.01).length, pq = ratioPQ();
-          return `$f_c$ = ${v.fix(fc, 0)} Hz, $f_m$ = ${v.fix(fm, 1)} Hz, $I$ = ${v.fix(I, 2)} · $\\sum_kJ_k(I)^2$ = ${v.fix(sum, 6)} · Carson band ${v.fix(Math.max(0, fc - (I + 1) * fm), 0)}–${v.fix(fc + (I + 1) * fm, 0)} Hz holds ${v.fix((100 * pin) / p, 1)}% of the power · ${sig} lines above 1% · carrier level $|J_0(I)|$ = ${v.fix(Math.abs(besselJ(0, I)), 3)}${Math.abs(besselJ(0, I)) < 0.03 ? ' (near a zero of $J_0$: the carrier has vanished)' : ''}${pq ? ` · harmonic, fundamental ${v.fix(fc / pq[0], 1)} Hz (${noteOf(M, fc / pq[0])})` : ''}`;
+          return `$f_c$ = ${v.fix(fc, 0)} Hz, $f_m$ = ${v.fix(fm, 1)} Hz, $I$ = ${v.fix(I, 2)} · $\\sum_kJ_k(I)^2$ = ${v.fix(sum, 6)} · Carson band ${v.fix(Math.max(0, fc - (I + 1) * fm), 0)}–${v.fix(fc + (I + 1) * fm, 0)} Hz holds ${v.fix((100 * pin) / p, 1)}% of the power · ${sig} lines above 1% · carrier level $|J_0(I)|$ = ${v.fix(Math.abs(besselJ(0, I)), 3)}${Math.abs(besselJ(0, I)) < 0.03 ? ' (near a zero of $J_0$: the carrier has vanished)' : ''}${pq && pq[0] <= 4 ? ` · harmonic, fundamental ${v.fix(fc / pq[0], 1)} Hz (${noteOf(M, fc / pq[0])})` : pq ? ` · strictly periodic at ${v.fix(fc / pq[0], 1)} Hz, but the lines are a sparse, irregular subset of that series, so the ear hears no such pitch` : ''}`;
         });
       },
     },

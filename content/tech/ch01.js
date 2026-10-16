@@ -269,7 +269,7 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
             const x = cx(i), y = cy(j), th = Math.atan2(y, x);
             const a = 4.7 * (1 - 0.18 * Math.max(0, y) / 8) * (1 + 0.04 * Math.sin(3 * th + 1) + 0.03 * Math.cos(5 * th)), b = 7.9 * (1 + 0.03 * Math.sin(2 * th + 0.4));
             const q = (x / a) ** 2 + (y / b) ** 2;
-            if (q < 1) { const sq = Math.sqrt(1 - q); zt[idx(i, j)] = 2.05 * sq * (1 + 0.05 * Math.sin(1.3 * x + 0.7 * y)); zb[idx(i, j)] = -1.3 * sq * (1 + 0.06 * Math.cos(0.9 * x - 1.1 * y)); }
+            if (q < 1) { const sq = (1 - q) ** 0.6; zt[idx(i, j)] = 1.75 * sq * (1 + 0.16 * Math.sin(2 * th + 1)); zb[idx(i, j)] = -1.15 * sq * (1 + 0.16 * Math.cos(3 * th)); }
           }
           ver++; z0t = zt.slice(); z0b = zb.slice(); nRem = [0, 0]; nextFace = 'A'; last = null; msg = ''; stack.length = 0;
         }
@@ -286,12 +286,11 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
           for (let dj = -7; dj <= 7; dj++) for (let di = -7; di <= 7; di++) if (di * di + dj * dj <= 49 && has(i + di, j + dj)) { sx += di; sy += dj; n++; }
           const L = Math.hypot(sx, sy) || 1; return [sx / L, sy / L];
         }
-        function edgeAngle(i, j) { // angle between the two faces, from the surfaces 0.25 and 0.9 cm in from the margin
-          const [nx, ny] = inward(i, j), x = cx(i), y = cy(j);
-          const ta = sample(zt, x + 0.25 * nx, y + 0.25 * ny), tb = sample(zt, x + 0.9 * nx, y + 0.9 * ny);
-          const ba = sample(zb, x + 0.25 * nx, y + 0.25 * ny), bb = sample(zb, x + 0.9 * nx, y + 0.9 * ny);
-          if (![ta, tb, ba, bb].every(isFinite)) return 120;
-          return (Math.atan2(tb - ta, 0.65) + Math.atan2(ba - bb, 0.65)) / D2R; // sum of the two faces' slopes
+        function edgeAngle(i, j) { // angle at which the two faces meet: from the middle of the rim to the faces 0.6 cm inside
+          const [nx, ny] = inward(i, j), x = cx(i), y = cy(j), k = idx(i, j), mid = (zt[k] + zb[k]) / 2;
+          const ta = sample(zt, x + 0.6 * nx, y + 0.6 * ny), ba = sample(zb, x + 0.6 * nx, y + 0.6 * ny);
+          if (!isFinite(ta) || !isFinite(ba)) return 120;
+          return (Math.atan2(ta - mid, 0.6) + Math.atan2(mid - ba, 0.6)) / D2R;
         }
         function strike(x, y, face, depth = depthS.value, soft = hamSel.value === 'soft') {
           // nearest margin cell within 1.3 cm of the click
@@ -362,7 +361,7 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
         }
         // reference: an Oldowan chopper made from the same cobble in the same model
         function chopper() { cobble(); for (const [phi, d] of [[-1.25, 0.45], [-1.57, 0.45], [-1.9, 0.45], [-1.42, 0.3], [-1.72, 0.3]]) strikeDir(phi, 'A', d, false); }
-        chopper(); const ref = metrics(); cobble();
+        chopper(); const ref = metrics(); cobble(); for (const p of autoPlan()) strikeDir(p.phi, p.face, p.depth, p.soft); // TEMP
         const secH = P.handle(6.1, 0, { color: 'orange', constrain: (x, y) => [6.1, clamp(y, -8.6, 8.6)] });
         P.onClick((x, y, mod) => {
           const xx = view.value ? -x : x;
@@ -419,14 +418,14 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
           if (Mt) {
             const rows = [['flip-test symmetry', Mt.sym, ref.sym, (x) => `${Math.round(100 * x)}%`, 1],
               ['cutting edge per kg', Mt.sharp / Mt.mass, ref.sharp / ref.mass, (x) => `${Math.round(x)} cm/kg`, 160],
-              ['sharp edge (angle < 70°)', Mt.sharp / Mt.edge, ref.sharp / ref.edge, (x) => `${Math.round(100 * x)}% of margin`, 1]];
+              ['margin sharper than 70°', Mt.sharp / Mt.edge, ref.sharp / ref.edge, (x) => `${Math.round(100 * x)}%`, 1]];
             rows.forEach(([lab, val, rv, fmt, max], k) => {
               const y = 2.5 - k;
               R.text(lab, 0.01, y, { size: 12, color: 'ink', align: 'left' });
-              R.rect(0.25, y - 0.3, 0.25 + 0.5 * clamp(val / max, 0, 1), y + 0.05, { fill: 'accent', fillAlpha: 0.7, stroke: false });
-              R.rect(0.25, y - 0.05, 0.25 + 0.5 * clamp(rv / max, 0, 1), y + 0.3, { fill: 'orange', fillAlpha: 0.55, stroke: false });
-              R.text(fmt(val), 0.77, y - 0.12, { size: 11.5, color: 'accent', align: 'left', weight: 700 });
-              R.text(`chopper ${fmt(rv)}`, 0.88, y + 0.12, { size: 11, color: 'orange', align: 'left' });
+              R.rect(0.24, y - 0.3, 0.24 + 0.4 * clamp(val / max, 0, 1), y + 0.02, { fill: 'accent', fillAlpha: 0.7, stroke: false });
+              R.rect(0.24, y + 0.02, 0.24 + 0.4 * clamp(rv / max, 0, 1), y + 0.3, { fill: 'orange', fillAlpha: 0.55, stroke: false });
+              R.text(`this piece ${fmt(val)}`, 0.67, y - 0.14, { size: 11.5, color: 'accent', align: 'left', weight: 700 });
+              R.text(`chopper ${fmt(rv)}`, 0.67, y + 0.16, { size: 11, color: 'orange', align: 'left' });
             });
           }
         });

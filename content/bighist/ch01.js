@@ -418,7 +418,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           A: { name: 'timber A (barn beam)', true0: 1770, data: sample(1770, 1940, 20 + SEED), color: 'accent', row: 1.6 },
           B: { name: 'timber B (church roof)', true0: 1700, full: sample(1700, 1840, 30 + SEED), color: 'purple', row: 0.65 },
         };
-        let posA = 1735, posB = 1846;                        // current outermost-ring years (A: true 1940, B: true 1840)
+        let posA = 1905, posB = 1975;                        // current outermost-ring years (A: true 1940, B: true 1840)
         const lenA = series.A.data.length;
         const bData = () => series.B.full.slice(series.B.full.length - lenB.value);
         // Baillie–Pilcher high-pass: ln(100 x_i / centred 5-yr mean)
@@ -439,11 +439,25 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           if (xs.length < 12) return null;
           const rr = pearson(xs, ys); return { t: (rr * Math.sqrt(xs.length - 2)) / Math.sqrt(Math.max(1e-9, 1 - rr * rr)), n: xs.length, r: rr };
         }
-        function scan(key) {
-          const P = placed(), me = P.find((p) => p.key === key), others = P.filter((p) => p !== me), out = [];
-          for (let end = Y0 + 12; end <= Y1 - 2; end++) { const res = tval(me.f, end - me.d.length + 1, others); out.push([end, res ? res.t : null, res]); }
+        /** t-values of timber `me` at every possible end year against the reference set `ref`. */
+        function scanAgainst(me, ref) {
+          const out = [];
+          for (let end = Y0 + 12; end <= Y1 - 2; end++) { const res = tval(me.f, end - me.d.length + 1, ref); out.push([end, res ? res.t : null, res]); }
           return out;
         }
+        /** Build the chronology as a dendrochronologist would: a timber joins the master only when its current placement
+         *  is significant (t >= 3.5) and the best of all placements against what is already dated. */
+        function chron() {
+          const P = placed(), M = [P[0]], acc = { A: false, B: false };
+          for (let pass = 0; pass < 2; pass++) for (const k of ['A', 'B']) {
+            if (acc[k]) continue;
+            const me = P.find((p) => p.key === k), cur = tval(me.f, me.y0, M); if (!cur) continue;
+            const best = Math.max(...scanAgainst(me, M).map((q) => q[1] ?? -Infinity));
+            if (cur.t >= 3.5 && cur.t >= best - 1e-9) { acc[k] = true; M.push(me); }
+          }
+          return { P, M, acc };
+        }
+        function scan(key) { const { P, M } = chron(), me = P.find((p) => p.key === key); return scanAgainst(me, M.filter((p) => p !== me)); }
         let drag = null;
         T1.onDrag((x, y, phase) => {
           if (phase === 'start') { drag = Math.abs(y - series.A.row) < 0.45 ? { k: 'A', off: posA - x } : Math.abs(y - series.B.row) < 0.45 ? { k: 'B', off: posB - x } : null; }
@@ -455,7 +469,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
         const btnFit = v.button('cross-date (best placements)', () => {
           for (const k of ['A', 'B']) { const sc = scan(k).filter((q) => q[1] != null); const best = sc.reduce((b, q) => (q[1] > b[1] ? q : b)); if (k === 'A') posA = best[0]; else posB = best[0]; }
         });
-        const btnScr = v.button('scramble', () => { posA = 1735; posB = 1846; });
+        const btnScr = v.button('scramble', () => { posA = 1905; posB = 1975; });
         function drawSeries(s, d, y0, row, color, label) {
           const h = 0.6;
           s.rect(y0 - 0.5, row - 0.04, y0 + d.length - 0.5, row + h + 0.04, { fill: color, fillAlpha: 0.07, color, alpha: 0.5, width: 1, radius: 3 });
@@ -463,8 +477,8 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           s.text(label, y0 - 1.5, row + h * 0.55, { align: 'right', size: 11.5, weight: 600, color });
         }
         // ---------------- ice core
-        const I1 = v.stage({ x: [0, 1], y: [-3260, 40], axes: false, height: 400, weight: 0.5, minWidth: 200, title: 'EPICA Dome C, 10-kyr bands' });
-        const I2 = v.stage({ x: [-805, 5], y: [0, 2], axes: false, height: 400, weight: 1.5, title: 'CO₂ in trapped air and Antarctic temperature' });
+        const I1 = v.stage({ x: [0, 1], y: [-3260, 40], axes: false, height: 400, weight: 0.5, minWidth: 200, title: 'EPICA Dome C, 10-kyr bands coloured by temperature' });
+        const I2 = v.stage({ x: [-872, 10], y: [-0.13, 2.02], axes: false, height: 400, weight: 1.5, title: 'CO₂ in trapped air and Antarctic temperature' });
         const depthOf = (age) => interp(DEPTH, age, 1, 0), ageOf = (z) => interp(DEPTH, z, 0, 1);
         const hz = I1.handle(0.5, -1500, { color: 'red', constrain: (x, y) => [0.5, Math.max(-3189, Math.min(0, y))] });
         const ha = I2.handle(-ageOf(1500) / 1000, 1.0, { color: 'red', constrain: (x) => [Math.max(-801, Math.min(0, x)), 1.0] });
@@ -479,13 +493,13 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
         }
         v.render(() => {
           if (mode.value === 'tree') {
-            const P = placed();
+            const { P, M, acc } = chron();
             for (let yr = 1700; yr <= 1980; yr += 20) { T1.line(yr, 0.25, yr, 3.05, { color: 'grid', width: 1 }); T1.text(String(yr), yr, 0.12, { align: 'center', size: 10.5, color: 'muted', halo: false }); }
             drawSeries(T1, series.M.data, 1870, series.M.row, 'green', 'living trees');
             drawSeries(T1, P[1].d, P[1].y0, series.A.row, 'accent', 'A');
             drawSeries(T1, P[2].d, P[2].y0, series.B.row, 'purple', 'B');
-            const tA = tval(P[1].f, P[1].y0, [P[0], P[2]]), tB = tval(P[2].f, P[2].y0, [P[0], P[1]]);
-            const okA = posA === 1940, okB = posB === 1840;
+            const tA = tval(P[1].f, P[1].y0, M.filter((p) => p !== P[1])), tB = tval(P[2].f, P[2].y0, M.filter((p) => p !== P[2]));
+            const okA = acc.A, okB = acc.B;
             T1.text(`A ends ${posA}${tA ? ` · t = ${v.fix(tA.t, 1)} (n = ${tA.n})` : ' · no overlap'}${okA ? ' ✓' : ''}`, Math.min(Y1 - 2, posA + 2), series.A.row + 0.75, { align: posA > 1900 ? 'right' : 'left', size: 11, color: okA ? 'green' : 'accent', weight: 600 });
             T1.text(`B ends ${posB}${tB ? ` · t = ${v.fix(tB.t, 1)} (n = ${tB.n})` : ' · no overlap'}${okB ? ' ✓' : ''}`, Math.min(Y1 - 2, posB + 2), series.B.row + 0.75, { align: posB > 1900 ? 'right' : 'left', size: 11, color: okB ? 'green' : 'purple', weight: 600 });
             // t-value scans
@@ -502,7 +516,9 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
             // core column with 10-kyr bands
             for (let a = 0; a < 800000; a += 10000) {
               const z0 = depthOf(a), z1 = depthOf(Math.min(801662, a + 10000)), k = a / 10000;
-              I1.rect(0.28, -z1, 0.72, -z0, { fill: k % 2 ? 'blue' : 'teal', fillAlpha: k % 10 === 0 ? 0.42 : 0.18, stroke: false });
+              const mT = DT.slice(5 * k, 5 * k + 5).reduce((u, w) => u + w, 0) / 5;
+              I1.rect(0.28, -z1, 0.72, -z0, { fill: v.diverge(Math.max(-1, Math.min(1, (mT + 4) / 6))), fillAlpha: 0.95, stroke: false });
+              I1.line(0.28, -z0, 0.72, -z0, { color: 'panel', width: a % 100000 === 0 ? 1.6 : 0.6, alpha: 0.9 });
               if (a % 100000 === 0) { I1.line(0.72, -z0, 0.8, -z0, { color: 'muted', width: 1 }); I1.text(`${a / 1000} ka`, 0.82, -z0, { size: 10.5, color: 'muted' }); }
             }
             I1.rect(0.28, -3189.4, 0.72, 0, { color: 'muted', width: 1 });
@@ -510,28 +526,31 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
             I1.line(0.22, hz.y, 0.78, hz.y, { color: 'red', width: 1.5 });
             // records
             const xs = CO2.map((_, k) => -(2 * k + 1));
-            for (const c of [180, 220, 260, 300, 340, 380, 420]) { I2.line(-800, yCO2(c), 0, yCO2(c), { color: 'grid', width: 1 }); I2.text(`${c}`, -803, yCO2(c), { align: 'right', size: 10, color: 'muted', halo: false }); }
-            for (const t of [-10, -5, 0, 5]) { I2.line(-800, yT(t), 0, yT(t), { color: 'grid', width: 1 }); I2.text(`${t > 0 ? '+' : ''}${t}°`, -803, yT(t), { align: 'right', size: 10, color: 'muted', halo: false }); }
-            for (let a = 0; a <= 800; a += 100) I2.text(`${a}`, -a, -0.02, { align: 'center', baseline: 'top', size: 10, color: 'muted', halo: false });
-            I2.text('ka', 3, -0.02, { baseline: 'top', size: 10, color: 'muted', halo: false });
+            for (const c of [180, 220, 260, 300, 340, 380, 420]) { I2.line(-800, yCO2(c), 0, yCO2(c), { color: 'grid', width: 1 }); I2.text(`${c}`, -808, yCO2(c), { align: 'right', size: 10, color: 'muted', halo: false }); }
+            for (const t of [-10, -5, 0, 5]) { I2.line(-800, yT(t), 0, yT(t), { color: 'grid', width: 1 }); I2.text(`${t > 0 ? '+' : ''}${t}°`, -808, yT(t), { align: 'right', size: 10, color: 'muted', halo: false }); }
+            for (let a = 0; a <= 800; a += 100) I2.text(`${a}`, -a, -0.03, { align: 'center', baseline: 'top', size: 10, color: 'muted', halo: false });
+            I2.text('ka', -840, -0.03, { baseline: 'top', size: 10, color: 'muted', halo: false });
             I2.path(xs.map((x, k) => [x, yCO2(CO2[k])]), { color: 'orange', width: 1.8 });
             I2.path(xs.map((x, k) => [x, yT(DT[k])]), { color: 'blue', width: 1.6 });
             I2.text('CO₂ (ppm)', -795, 1.96, { size: 11.5, weight: 650, color: 'orange' });
             I2.text('temperature vs last 1,000 yr (°C)', -795, 0.97, { size: 11.5, weight: 650, color: 'blue' });
             I2.hline(yCO2(300), { color: 'orange', dash: [3, 4], width: 1, alpha: 0.6 });
-            I2.dot(0, yCO2(424.61), { r: 5, color: 'red', label: '2024: 425 ppm', labelPos: 'w', labelColor: 'red', math: false });
+            I2.dot(0, yCO2(424.61), { r: 5, color: 'red', label: '2024: 425 ppm', labelPos: 'sw', labelColor: 'red', math: false });
+            I2.text('pre-1750 maximum ≈ 300 ppm', -400, yCO2(300), { align: 'center', dy: -8, size: 10.5, color: 'orange' });
             I2.line(ha.x, 0.02, ha.x, 1.98, { color: 'red', width: 1.3, dash: [4, 3] });
-            v.legend([['orange', 'Antarctic CO₂ (Bereiter et al. 2015)'], ['blue', 'EPICA Dome C temperature (Jouzel et al. 2007)'], ['red', 'cursor; Mauna Loa 2024', { dot: true }]]);
+            v.legend([['orange', 'Antarctic CO₂ (Bereiter et al. 2015)'], ['blue', 'EPICA Dome C temperature (Jouzel et al. 2007)'], ['red', 'cursor; Mauna Loa 2024', { dot: true }], ['red', 'core bands: warm', { area: true }], ['blue', 'cold', { area: true }]]);
           }
         });
         v.readout(() => {
           if (mode.value === 'tree') {
-            const okA = posA === 1940, okB = posB === 1840, oldest = okA ? (okB ? 1700 : 1770) : 1870;
-            return `Chronology so far: **${oldest}–1983** (${1983 - oldest + 1} years)${okA && okB ? ' — the timbers bridge the gap back to 1700, as Douglass bridged his with beam HH-39 in 1929.' : okA ? ' — now date B against A.' : ' — date A first: only it overlaps the living trees.'} B has ${lenB.value} rings${lenB.value < 40 ? ': a short fragment, so chance alignments compete with the true one.' : '.'}`;
+            const { P, acc } = chron(), oldest = Math.min(1870, ...['A', 'B'].filter((k) => acc[k]).map((k) => P.find((p) => p.key === k).y0));
+            const wrong = ['A', 'B'].filter((k) => acc[k] && (k === 'A' ? posA !== 1940 : posB !== 1840));
+            const state = wrong.length ? ` — but timber ${wrong.join(' and ')} was accepted at a **false match** (its true outermost ring is ${wrong[0] === 'A' ? 1940 : 1840}): short or noisy series can pass the test by chance.` : acc.A && acc.B ? ' — the timbers bridge the gap back to 1700, as Douglass bridged his with beam HH-39 in 1929.' : acc.A ? ' — A is dated; now date B against it.' : ' — date A first: only it overlaps the living trees.';
+            return `Accepted chronology: **${oldest}–1983** (${1983 - oldest + 1} years)${state} A timber is accepted when its placement is the best one and t ≥ 3.5. B has ${lenB.value} rings${lenB.value < 40 ? ': a short fragment, so chance alignments compete with the true one.' : '.'}`;
           }
           const z = -hz.y, a = ageOf(z), dz = 20, layer = (2 * dz) / Math.max(1, ageOf(Math.min(3189, z + dz)) - ageOf(Math.max(0, z - dz)));
           const k = Math.min(399, Math.max(0, Math.floor(a / 2000)));
-          return `depth **${v.fix(z, 0)} m** ↔ age **${yrShort(Math.max(0, a))}** (EDC3) · annual layer here ≈ **${layer >= 0.01 ? v.fix(layer * 1000, 1) + ' mm' : v.fix(layer * 1e6, 0) + ' µm'}** of ice, far too thin to count at Dome C · CO₂ ${CO2[k]} ppm, ΔT ${v.fix(DT[k], 1)} °C · over 800 kyr r(CO₂, T) = ${v.fix(pearson(CO2, DT), 2)}; the highest value before 1750 is ${Math.max(...CO2)} ppm, against 425 ppm in 2024.`;
+          return `depth **${v.fix(z, 0)} m** ↔ age **${yrShort(Math.max(0, a))}** (EDC3) · one year here ≈ **${layer >= 0.001 ? v.fix(layer * 1000, 1) + ' mm' : v.fix(layer * 1e6, 0) + ' µm'}** of ice (Dome C gets only a few cm of snow a year, too little and too wind-blown for countable layers; Greenland's GICC05 is counted to 60 ka) · CO₂ ${CO2[k]} ppm, ΔT ${v.fix(DT[k], 1)} °C · over 800 kyr r(CO₂, T) = ${v.fix(pearson(CO2, DT), 2)}; the highest value before 1750 is ${Math.max(...CO2)} ppm, against 425 ppm in 2024.`;
         });
         vis();
       },
@@ -544,7 +563,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
       statement: String.raw`David Christian's framework, adopted by the Big History Project, tells the history of everything as eight **thresholds**, moments when new and more complex kinds of thing appeared:
 (1) the Big Bang, (2) the first stars, (3) new chemical elements forged in dying stars, (4) the Sun, Earth and Solar System, (5) life, (6) humans and collective learning, (7) agriculture and (8) the modern, fossil-fuelled world. *Origin Story* (2018) recast threshold 8 as the Anthropocene and added a possible ninth, a sustainable world order.
 
-**This framing is contested.** Fred Spier (2022) argues that the thresholds have no stated criteria. Thresholds 1–3 apply to the whole universe while 4–8 concern one planet. Four of the eight fall within human history, which is about 0.05% of the timeline. Equally important transitions, such as plate tectonics, photosynthesis, complex cells, life on land, fire and states, are left out, and the decline of complexity is ignored.`,
+**This framing is contested.** Fred Spier (2022) argues that the thresholds have no stated criteria. Thresholds 1–3 apply to the whole universe while 4–8 concern one planet. Thresholds 6–8, and the hoped-for ninth, all fall within human history, which is about 0.05% of the timeline. Equally important transitions, such as plate tectonics, photosynthesis, complex cells, life on land, fire and states, are left out, and the decline of complexity is ignored.`,
       idea: String.raw`Plotted on the log axis of 1.1, the thresholds seem to crowd towards the present, which suggests an accelerating rise of complexity. Two things make this hard to judge. A log axis crowds *any* recent events together, and the choice of which transitions count is made by the storyteller. The gaps between successive thresholds do not in fact shrink steadily: the 9-billion-year wait between the first heavy elements and the Solar System is the longest of all. Treated as a teaching device, the thresholds give a memorable narrative arc; treated as a finding, they need criteria that would let someone else draw up the same list.`,
       caption: String.raw`Choose Christian's 2011 list or the 2018 version, or **click** any event on the axis to add it to the list or remove it (faint dots are transitions Spier says could equally count). Arcs join consecutive thresholds, and the lower chart shows the gaps between them on a log scale: green where a gap is shorter than the one before, red where it is longer. The readout tests the "ever-shrinking gaps" story and counts how many thresholds fall in the last 0.05% of time.`,
       deps: ['bighist-1.1'],
@@ -566,7 +585,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
         const scheme = v.select('thresholds', [{ value: 'bhp', label: 'Christian / BHP (2011)' }, { value: 'os', label: 'Origin Story (2018)' }, { value: 'custom', label: 'your own list' }], 'bhp', { onChange: (k) => { if (SCHEMES[k]) chosen = new Set(SCHEMES[k]); } });
         const all = [...TH.map(([id, label, ago]) => ({ id, label, ago, th: true })), ...CAND.map(([id, label, ago]) => ({ id, label, ago, th: false }))];
         const s = v.stage({ height: 300, full: true });
-        const g = v.stage({ x: [0.3, 9.7], y: [1, 3e10], ylog: true, axes: 'box', gutter: true, height: 220, full: true, ylabel: 'gap to the next threshold (years)', title: 'gaps between consecutive thresholds' });
+        const g = v.stage({ x: [0.3, 9.7], y: [1, 3e11], ylog: true, axes: 'box', gutter: true, height: 230, xticks: [], full: true, ylabel: 'gap to the next threshold (years)', title: 'gaps between consecutive thresholds' });
         const T = v.timeline(s, { scale: 'log', range: ['13.79 Ga', '10 yr ago'], minAgo: 10, zoom: false, fontSize: 11.5, laneHeight: 16, linkBand: 46, events: [] });
         T.onSelect = (e) => {
           if (e && e.id != null && all.some((q) => q.id === e.id)) { if (chosen.has(e.id)) chosen.delete(e.id); else chosen.add(e.id); scheme.set('custom'); }
@@ -583,7 +602,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           T.draw();
           // gap bars
           const gaps = S.slice(1).map((e, i) => S[i].ago - e.ago);
-          g.setView([0.3, Math.max(4, gaps.length) + 0.7], [1, 3e10]);
+          g.setView([0.3, Math.max(4, gaps.length) + 0.7], [1, 3e11]);
           gaps.forEach((gp, i) => {
             const shorter = i === 0 || gp < gaps[i - 1], col = i === 0 ? 'accent' : shorter ? 'green' : 'red';
             g.rect(i + 1 - 0.36, 1, i + 1 + 0.36, Math.max(1.01, gp), { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
@@ -702,7 +721,7 @@ He proposes it as a single, physical measure of complexity. His estimates rise b
 
 The plot cannot settle the question by itself. Any list that names a roughly equal number of events in each factor-of-ten interval of the past gives the same line, whether or not anything accelerated. Recent events are better recorded and seem more important to the people compiling the list, so such lists are the norm. Modis himself warned that the lists are neither independent nor checked for quality.`,
       idea: String.raw`If events are sampled with density proportional to $t^{-k}$ in time-before-present $t$, the expected spacing near $t$ is the reciprocal of the density, so $\Delta t \propto t^{k}$ and the log–log plot has slope $k$. A list with equal numbers per decade has $k = 1$; a uniform sample in linear time has $k = 0$, a flat plot. The slope measures the compiler's sampling density as much as the rate of change. A real test needs a measure fixed in advance, such as population growth rates, energy use or the number of species, rather than a list of what seems important (for population, see bighist-6.11).`,
-      caption: String.raw`The milestone list is the 27 events used throughout this chapter. Fit a line through log(time to next event) against log(time before present) and read its slope. Then switch to random events with sampling density ∝ t⁻ᵏ: with k = 1 (equal numbers per decade) pure noise gives the same straight line of slope ≈ 1, and with k = 0 (uniform in time) the line goes flat. The right panel counts events per decade, which is what sets the slope.`,
+      caption: String.raw`The milestone list is the 27 events used throughout this chapter. Fit a line through log(time to next event) against log(time before present) and read its slope. Then switch to random events with sampling density ∝ t⁻ᵏ: with k = 1 (equal numbers per decade) pure noise gives the same straight line of slope ≈ 1, and with k = 0 (uniform in time) the line goes flat. The lower panel counts events per decade, which is what sets the slope.`,
       deps: ['bighist-1.1'],
       see: ['bighist-6.11'],
       refs: ['Christian'],
@@ -710,14 +729,14 @@ The plot cannot settle the question by itself. Any list that names a roughly equ
       tags: ['acceleration', 'selection bias'],
       viz(v) {
         const data = v.select('events', [{ value: 'list', label: 'milestone list (27 events)' }, { value: 'rand', label: 'random events' }], 'list', { onChange: () => vis() });
-        const kS = v.slider('sampling density ∝ t^−k, k =', 0, 1.5, 1, { step: 0.05 });
+        const kS = v.slider('sampling density $\\propto t^{-k}$, $k$', 0, 1.5, 1, { step: 0.05 });
         const nS = v.slider('number of events', 10, 200, 40, { int: true });
         let seed = 3;
         const rb = v.button('resample', () => { seed++; });
         const vis = () => { kS.el.hidden = nS.el.hidden = rb.hidden = data.value !== 'rand'; };
         const XT = [[-10, '10 Gyr'], [-9, '1 Gyr'], [-8, '100 Myr'], [-7, '10 Myr'], [-6, '1 Myr'], [-5, '100 kyr'], [-4, '10 kyr'], [-3, '1 kyr'], [-2, '100 yr'], [-1, '10 yr']];
-        const L = v.stage({ x: [-10.4, -0.8], y: [1, 3e10], ylog: true, axes: 'box', gutter: true, height: 360, weight: 1.6, xlabel: 'time before present', ylabel: 'time to the next event (years)', xticks: XT });
-        const R = v.stage({ x: [0, 1], y: [0.5, 10.4], axes: 'box', gutter: true, height: 360, weight: 0.7, minWidth: 220, xlabel: 'events per decade', yticks: XT.map(([u, l]) => [-u, l]), title: 'sampling density' });
+        const L = v.stage({ x: [-10.4, -0.8], y: [1, 3e10], ylog: true, axes: 'box', gutter: { l: 52 }, height: 340, full: true, ylabel: 'time to the next event (years)', xticks: XT });
+        const R = v.stage({ x: [-10.4, -0.8], y: [0, 10], axes: 'box', gutter: { l: 52 }, height: 150, full: true, xlabel: 'time before present', ylabel: 'events per decade', xticks: XT });
         const A = 10, Bmax = 1.38e10;
         function events() {
           if (data.value === 'list') return MILESTONES.map((m) => ({ t: m[1], label: m[0] }));
@@ -736,17 +755,18 @@ The plot cannot settle the question by itself. Any list that names a roughly equ
           L.fn((x) => Math.pow(10, fit.predict(-x)), { color: 'green', width: 2.2, domain: [-10.2, -1] });
           L.fn((x) => Math.pow(10, -x - 0.6), { color: 'gray', width: 1, dash: [4, 4], domain: [-10.2, -1] });
           for (const p of P) L.dot(-Math.log10(p.t), p.dt, { r: data.value === 'list' ? 4.5 : 3.2, color: data.value === 'list' ? 'accent' : 'gold' });
-          if (data.value === 'list') for (const p of P) if (['Big Bang', 'Cambrian explosion', 'K–Pg extinction', 'Homo sapiens', 'writing', 'steam engine', 'Sun & Earth', 'farming'].includes(p.label)) L.text(p.label, -Math.log10(p.t), p.dt, { dx: 7, dy: -8, size: 10.5, color: 'ink' });
-          L.text('slope 1 (Δt ∝ t)', -9.6, Math.pow(10, 9.6 - 0.6), { dy: 12, size: 10.5, color: 'muted' });
+          if (data.value === 'list') placeLabels(v, L, P.filter((p) => ['Big Bang', 'Cambrian explosion', 'K–Pg extinction', 'Homo sapiens', 'writing', 'steam engine', 'Sun & Earth', 'farming', 'hominins'].includes(p.label)).map((p) => ({ x: -Math.log10(p.t), y: p.dt, text: p.label, size: 10.5 })), { points: P.map((p) => [L.X(-Math.log10(p.t)), L.Y(p.dt), 5]) });
+          L.text('slope 1 (Δt ∝ t)', -2.2, Math.pow(10, 2.2 - 0.6), { dy: 14, size: 10.5, color: 'muted' });
           // per-decade histogram
           const cnt = new Array(10).fill(0); for (const e of E) { const d = Math.floor(Math.log10(e.t)); if (d >= 1 && d <= 10) cnt[d - 1]++; }
-          const mx = Math.max(...cnt, 1); R.setView([0, mx * 1.2], [0.5, 10.4]);
-          cnt.forEach((c, i) => { R.rect(0, i + 1, c, i + 2, { fill: data.value === 'list' ? 'accent' : 'gold', fillAlpha: 0.5, color: data.value === 'list' ? 'accent' : 'gold', width: 1 }); if (c) R.text(String(c), c, i + 1.5, { dx: 5, size: 10.5, color: 'ink' }); });
+          const mx = Math.max(...cnt, 1); R.setView([-10.4, -0.8], [0, mx * 1.3]);
+          const hc = data.value === 'list' ? 'accent' : 'gold';
+          cnt.forEach((c, i) => { const d = i + 1; R.rect(-Math.min(10.14, d + 1), 0, -d, c, { fill: hc, fillAlpha: 0.5, color: hc, width: 1 }); if (c) R.text(String(c), -(d + Math.min(10.14, d + 1)) / 2, c, { align: 'center', baseline: 'bottom', dy: -2, size: 10.5, color: 'ink' }); });
           v.legend([[data.value === 'list' ? 'accent' : 'gold', data.value === 'list' ? 'milestones' : 'random events', { dot: true }], ['green', 'least-squares fit'], ['gray', 'slope 1', { dash: true }]]);
         });
         v.readout(() => {
           const E = events(), P = pairs(E), fit = v.M.linreg(P.map((p) => Math.log10(p.t)), P.map((p) => Math.log10(p.dt)));
-          const tail = data.value === 'rand' ? ` · expected slope for density ∝ t^−k: **${v.fix(kS.value, 2)}**` : ' · the same slope as random events sampled evenly per decade (switch to see)';
+          const tail = data.value === 'rand' ? ` · expected slope for density $\\propto t^{-k}$: **${v.fix(kS.value, 2)}**` : ' · the same slope as random events sampled evenly per decade (switch to see)';
           return `Fitted log–log slope **${v.fix(fit.slope, 2)} ± ${v.fix(fit.seSlope, 2)}**, R² = ${v.fix(fit.r2, 3)} (${P.length} intervals)${tail}.`;
         });
         vis();

@@ -49,7 +49,62 @@ function lc(G) {
 const PGRID = [1e-4, 2e-4, 5e-4, 1e-3, 2e-3, 5e-3, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1];
 const pf = (x, d = 2) => x.toFixed(d);
 
+// ═══════════ Travers & Milgram (1969), Barabási & Albert (1999) ═══════════
+// Travers & Milgram, Sociometry 32: 425–443 (PDF via snap.stanford.edu): 296 starters (196 Nebraska: 100 stockholders,
+// 96 random; 100 Boston random); 217 sent the folder on; 64 reached the target (29% of 217); Table 2, completed chains
+// by number of intermediaries 0–11 for each group; mean 5.2, median 5; Table 1, chains reaching, completions and dropouts
+// at each remove 0–14; footnote 4 (H. White): random dropout ≈ 25% per step, the next holder knowing the target rising
+// to about 1/3 by six removes; with no dropouts the median of completed chains "rises from 5 to 7". Today: Backstrom et
+// al. (2012, WebSci): average distance 4.74 among 721 million Facebook users; Facebook (2016): 3.57 degrees, 1.59 billion.
+// Barabási & Albert, Science 286: 509 (arXiv cond-mat/9910332): m₀ = m = 5, t = 150,000, γ_model = 2.9 ± 0.1; actors
+// γ = 2.3 ± 0.1 (N = 212,250), WWW 2.1 ± 0.1 (N = 325,729), power grid ≈ 4 (N = 4,941); model A (uniform attachment):
+// exponential; model B (no growth): not stationary; k_i(t) = m(t/t_i)^0.5 (Fig. 2C, t₁ = 5, t₂ = 95); P(k) ≈ 2m²k⁻³.
+// Exact large-t law 2m(m+1)/[k(k+1)(k+2)] (Dorogovtsev, Mendes & Samukhin; Krapivsky, Redner & Leyvraz, 2000).
+// Broido & Clauset (2019, Nat. Commun. 10: 1017): of 927 networks only about 4% strongly scale-free.
+const TM_T2 = [[0, 0, 0, 1, 4, 3, 6, 2, 0, 1, 1, 0], [0, 0, 0, 3, 6, 4, 6, 2, 1, 1, 1, 0], [0, 2, 3, 4, 4, 1, 4, 2, 1, 0, 1, 0]]; // Nebraska random, Nebraska stockholders, Boston random
+const TM_T1 = [[296, 0, 79], [217, 0, 59], [158, 2, 34], [122, 3, 24], [95, 8, 11], [76, 14, 12], [50, 8, 4], [38, 16, 5], [17, 6, 1], [10, 2, 2], [6, 2, 0], [4, 3, 0], [1, 0, 0], [1, 0, 0], [1, 0, 1]]; // remove: [chains reaching, completions, dropouts]
+/** Hazard that the r-th intermediary knows the target, from Table 1 (pooled from the sixth on, where counts are small). */
+function tmHazards() {
+  const q = [0];
+  for (let r = 1; r <= 5; r++) q.push(TM_T1[r + 1][1] / (TM_T1[r][0] - TM_T1[r][1]));
+  let c = 0, h = 0; for (let r = 6; r <= 11; r++) { c += TM_T1[r + 1][1]; h += TM_T1[r][0] - TM_T1[r][1]; }
+  for (let r = 6; r <= 30; r++) q.push(c / h);
+  return q;
+}
+/** Expected completed chains with k intermediaries out of `n0` starters, constant dropout d per holder. */
+function tmModel(d, n0 = 296, K = 30) { const q = tmHazards(), out = [0]; let alive = n0 * (1 - d); for (let k = 1; k <= K; k++) { out.push(alive * q[k]); alive *= (1 - q[k]) * (1 - d); } return out; }
+const medianOf = (counts) => { const tot = counts.reduce((a, b) => a + b, 0); let c = 0; for (let k = 0; k < counts.length; k++) { c += counts[k]; if (c >= tot / 2) return k; } return counts.length - 1; };
+
+/** Growing network with m links per newcomer (preferential or uniform), or Barabási–Albert model B (fixed N). */
+function baGrow(N, m, model, seed, track = []) {
+  const R = rng32(seed), deg = new Int32Array(N), ends = new Int32Array(2 * N * Math.max(m, 1) * 6 + 16), rec = track.map(() => []); let ne = 0;
+  if (model === 'B') { // N vertices, no growth: a random vertex links to j with probability ∝ k_j + 1
+    const T = 3 * N;
+    for (let s = 0; s < T; s++) { const i = Math.floor(R() * N); const u = R() * (ne + N); const j = u < ne ? ends[Math.floor(u)] : Math.floor(u - ne); if (j === i) continue; deg[i]++; deg[j]++; ends[ne++] = i; ends[ne++] = j; }
+    return { deg, rec, steps: T };
+  }
+  for (let t = m; t < N; t++) {
+    const ch = []; let guard = 0;
+    while (ch.length < m && guard++ < 1000) { const j = model === 'A' || ne === 0 ? Math.floor(R() * t) : ends[Math.floor(R() * ne)]; if (!ch.includes(j)) ch.push(j); }
+    for (const j of ch) { deg[t]++; deg[j]++; ends[ne++] = t; ends[ne++] = j; }
+    if (t >= 8 && ((t & (t - 1)) === 0 || t % 2000 === 0)) track.forEach((v0, i) => { if (v0 < t) rec[i].push([t, deg[v0]]); });
+  }
+  return { deg, rec };
+}
+/** Log-binned degree density (ratio 1.35) and the least-squares slope over k ≥ kfit with ≥ 10 counts per bin. */
+function degDist(deg, kfit) {
+  const N = deg.length; let kmax = 0; for (const k of deg) if (k > kmax) kmax = k;
+  const edges = []; for (let e = 1; e <= kmax + 1; e *= 1.35) { const r = Math.round(e); if (!edges.length || r > edges[edges.length - 1]) edges.push(r); } edges.push(kmax + 1);
+  const cnt = new Array(edges.length - 1).fill(0);
+  for (const k of deg) { if (k < 1) continue; let lo = 0, hi = edges.length - 2; while (lo < hi) { const md = (lo + hi + 1) >> 1; if (edges[md] <= k) lo = md; else hi = md - 1; } cnt[lo]++; }
+  const pts = []; for (let i = 0; i < cnt.length; i++) if (cnt[i] > 0) pts.push([Math.sqrt(edges[i] * (edges[i + 1] - 1)), cnt[i] / N / (edges[i + 1] - edges[i]), cnt[i]]);
+  const use = pts.filter((p) => p[0] >= kfit && p[2] >= 10), xs = use.map((p) => Math.log(p[0])), ys = use.map((p) => Math.log(p[1]));
+  let slope = NaN; if (use.length >= 3) { const mx = xs.reduce((a, b) => a + b) / xs.length, my = ys.reduce((a, b) => a + b) / ys.length; let sxy = 0, sxx = 0; xs.forEach((x, i) => { sxy += (x - mx) * (ys[i] - my); sxx += (x - mx) ** 2; }); slope = sxy / sxx; }
+  return { pts, slope, kmax };
+}
+
 export default {
+
   collection: 'soc',
   chapter: 4,
   items: [

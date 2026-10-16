@@ -14,7 +14,7 @@ function invariants(G) {
   let tri = 0; const A = H.adj.map((l) => new Set(l.map(([w]) => w)));
   H.E.forEach(([a, b]) => { for (const w of A[a]) if (w > b && A[b].has(w)) tri++; });
   const cnt = {}; d.forEach((x) => (cnt[x] = (cnt[x] || 0) + 1));
-  return { n: H.n, m: H.m, deg: Object.keys(cnt).sort((a, b) => b - a).map((x) => `${x}^${cnt[x]}`).join(' '), g, diam: e.diam, tri };
+  return { n: H.n, m: H.m, deg: Object.keys(cnt).sort((a, b) => b - a).map((x) => `${x}^{${cnt[x]}}`).join('\\,'), g, diam: e.diam, tri };
 }
 /** Random graph with girth ≥ t and average degree ≥ d (greedy insertion); returns {n, avg, g}. */
 function greedyGirth(n, t, d, r) {
@@ -388,7 +388,7 @@ export default {
         const s = gstage(v, { height: 290, full: true });
         const L = v.stage({ x: [-0.6, 10.6], y: [-0.9, 3.4], axes: false, height: 150, full: true, title: 'the longest path $x_0\\dots x_k$ and the neighbours of $x_k$' });
         const G = v.graph(s, { ...fixed({ a: [1.0, 1.2], b: [3.0, 0.6], c: [5.2, 0.9], d: [7.6, 0.7], e: [9.4, 2.0], f: [2.0, 3.4], g: [4.2, 2.8], h: [6.4, 3.0], i: [8.4, 4.2], j: [3.4, 5.6], k: [6.0, 5.6], l: [1.2, 5.4] },
-          'ab bc cd de af bg ch di ei fg gh hi fj gk hk ij jk jl fl lj bf cg dh ek'), editable: true, r: 13 });
+          'ab bc cd de af bg ch di ei fg gh hi fj gk hk ij jk jl fl bf cg dh ek'), editable: true, r: 13 });
         const comp = () => {
           const H = ix(G), d = degrees(H), del = H.n ? Math.min(...d) : 0, lp = longestPath(H, 6e5), P = lp.path, k = P.length - 1, xk = P[k];
           const nb = new Set(H.adj[xk] ? H.adj[xk].map(([w]) => w) : []); let i = P.findIndex((u) => nb.has(u));
@@ -401,7 +401,7 @@ export default {
           G.draw({ nodeFill: (id) => (H.at(id) === c.xk ? 'gold' : onP.has(id) ? 'green' : null), nodeRing: (id) => (nbIds.has(id) ? 'orange' : null),
             edgeColor: (e) => (cycE.has(e) && !pathE.has(e) ? 'purple' : pathE.has(e) ? 'green' : null), edgeWidth: (e) => (cycE.has(e) || pathE.has(e) ? 4 : null) });
           // straightened path
-          const k = c.k; L.setView([-0.7, k + 0.7], [-0.9, Math.max(2.2, (k + 1) / 2.6)]);
+          const k = c.k; L.setView([-0.7, k + 0.7], [-1.3, Math.max(2.2, (k + 1) / 2.6)]);
           L.line(0, 0, k, 0, { color: 'green', width: 4 });
           for (const u of c.nb) { const j = c.P.indexOf(u); if (j < 0 || j === k - 1) continue; const r = (k - j) / 2, cx = (k + j) / 2, col = j === c.i && c.del >= 2 ? 'purple' : 'orange';
             L.curve((t) => [cx + r * Math.cos(Math.PI * t), r * 0.9 * Math.sin(Math.PI * t)], 0, 1, { color: col, width: j === c.i ? 3 : 1.8, n: 60 }); }
@@ -444,7 +444,7 @@ export default {
           const fin = E.ecc.every((e) => e < Infinity); if (!fin) { p.corner('disconnected: all eccentricities ∞', 'tl', { color: 'red' }); return; }
           p.setView([-0.7, H.n - 0.3], [0, 2 * E.rad + 1.4]); p.setTicks(H.ids.map((id, i) => [i, String(id)]), null);
           p.bars(E.ecc, { x0: 0, color: (e, i) => (H.ids[i] === root ? 'ink' : e === E.rad ? 'green' : e === E.diam ? 'orange' : 'accent'), fillAlpha: 0.6 });
-          [[E.rad, 'green', 'rad'], [E.diam, 'orange', 'diam'], [2 * E.rad, 'muted', '2·rad']].forEach(([yv, c, lab], i) => { p.hline(yv, { color: c, width: 1.6, dash: i === 2 ? [5, 4] : false }); p.text(lab, H.n - 0.4, yv, { color: c, align: 'right', baseline: 'bottom', dy: -2, size: 12, weight: 600 }); });
+          [[E.rad, 'green', 'rad'], [E.diam, 'orange', 'diam'], [2 * E.rad, 'muted', '2·rad']].forEach(([yv, c, lab], i) => { p.hline(yv, { color: c, width: 1.6, dash: i === 2 ? [5, 4] : false }); const left = lab === 'diam'; p.text(lab, left ? -0.6 : H.n - 0.4, yv, { color: c, align: left ? 'left' : 'right', baseline: 'bottom', dy: -2, size: 12, weight: 600, plate: true }); });
         });
         v.legend([['green', 'central vertex', { dot: true }], ['orange', 'diametral path', { dash: true }]]);
         v.readout(() => {
@@ -483,11 +483,11 @@ export default {
           p.line(0, 1, 5, 11, { color: 'red', width: 1.6 });
           p.text('g > 2 diam + 1: impossible', 0.25, 10.2, { color: 'red', size: 12, weight: 600 });
           for (let n = 3; n <= 11; n++) p.dot(Math.floor(n / 2), n, { r: 3, color: 'muted' });
-          p.text('cycles Cⁿ', 4.2, 8.3, { color: 'muted', size: 11.5, align: 'center' });
-          REF.forEach(([dx, gy, lab]) => { p.dot(dx, gy, { r: 4, color: 'teal' }); p.tex(lab, dx, gy, { color: 'teal', size: 11.5, align: 'left', dx: 7, dy: 7 }); });
+          p.text('cycles Cⁿ', 4.12, 9.0, { color: 'muted', size: 11.5, align: 'left', baseline: 'top' });
+          REF.forEach(([dx, gy, lab]) => { p.dot(dx, gy, { r: 4, color: 'teal' }); p.tex(lab, dx, gy, { color: 'teal', size: 11.5, align: dx >= 4 ? 'right' : 'left', dx: dx >= 4 ? -7 : 7, dy: 7 }); });
           if (c.gc.g < Infinity && c.E.diam < Infinity) p.dot(c.E.diam, c.gc.g, { r: 7, color: 'accent' });
         });
-        v.legend([['blue', 'shortest cycle $C$'], ['orange', 'shortest $x$–$y$ path in $G$', { dash: true }], ['accent', 'this graph', { dot: true }], ['teal', 'named graphs', { dot: true }]]);
+        v.legend([['blue', 'shortest cycle $C$'], ['orange', 'shortest $x$–$y$ path in $G$'], ['accent', 'this graph', { dot: true }], ['teal', 'named graphs', { dot: true }]]);
         v.readout(() => {
           const c = comp(); if (c.gc.g === Infinity) return 'No cycle: $g(G) = \\infty$ and the proposition says nothing.';
           if (c.E.diam === Infinity) return 'Disconnected: $\\operatorname{diam}(G) = \\infty$ and the bound is trivial.';
@@ -545,7 +545,7 @@ export default {
       viz(v) {
         const dS = v.slider('$d$', 2, 5, 3, { step: 0.1 });
         const fails = v.toggle('show samples with $d(G) < d$', true);
-        const p = v.stage({ x: [2.5, 10.5], y: [3, 500], ylog: true, axes: 'box', gutter: true, height: 360, full: true, xlabel: 'girth g(G)', ylabel: 'order |G|', xticks: [3, 4, 5, 6, 7, 8, 9, 10] });
+        const p = v.stage({ x: [2.5, 10.5], y: [3, 250], ylog: true, axes: 'box', gutter: true, height: 360, full: true, xlabel: 'girth g(G)', ylabel: 'order |G|', xticks: [3, 4, 5, 6, 7, 8, 9, 10] });
         let seed = 1, cache = { key: '', pts: [] };
         v.button('Resample', () => { seed++; });
         const samples = () => {
@@ -558,7 +558,7 @@ export default {
           const d = dS.value, pts = samples();
           const curve = []; for (let g = 3; g <= 10; g++) curve.push([g, n0(d, g)]);
           p.path(curve, { color: 'red', width: 2.2 }); curve.forEach(([g, n]) => p.dot(g, n, { r: 3.5, color: 'red' }));
-          p.text('n₀(d, g)', 10.2, n0(d, 10), { color: 'red', align: 'right', baseline: 'bottom', dy: -6, size: 12, weight: 600 });
+          p.text('n₀(d, g)', 9.5, n0(d, 9.5 | 0), { color: 'red', align: 'left', baseline: 'top', dy: 10, size: 12, weight: 600 });
           for (const q of pts) { if (q.g === Infinity || q.g > 10.4) continue; const ok = q.avg >= d - 1e-9; if (!ok && !fails.value) continue; p.dot(q.g + (q.n % 5 - 2) * 0.05, q.n, ok ? { r: 4, color: 'accent', alpha: 0.85 } : { r: 4, hollow: true, color: 'muted' }); }
           for (const [n, g, lab] of CUBIC_CAGES) { if (g > 10) continue; p.dot(g, n, { r: 5, color: 'teal' }); if (lab) p.tex(lab, g, n, { color: 'teal', size: 11.5, align: 'left', dx: 8, dy: 8 }); }
         });
@@ -592,13 +592,13 @@ export default {
         let key = '';
         v.render(() => {
           const n = nS.value, cyc = mode.value === '2';
-          if (key !== mode.value + n) { key = mode.value + n; const E = cyc ? named('cycle', n).edges : cubic(n); G.set({ nodes: [...Array(n)].map((_, i) => ({ id: i })), edges: E }).layout(cyc ? 'circle' : 'force', { seed: 2 }); }
+          if (key !== mode.value + n) { key = mode.value + n; const E = cyc ? named('cycle', n).edges : cubic(n); G.set({ nodes: [...Array(n)].map((_, i) => ({ id: i, label: '' })), edges: E }).layout(cyc ? 'circle' : 'force', { seed: 2 }); }
           const H = ix(G), gc = girth(H), CE = eset(H, pathEdges(H, gc.cycle, true)), on = new Set(gc.cycle.map((u) => H.ids[u]));
-          G.draw({ nodeFill: (id) => (on.has(id) ? 'blue' : 'muted'), edgeColor: (e) => (CE.has(e) ? 'blue' : null), edgeWidth: (e) => (CE.has(e) ? 3.5 : 1.3) });
+          G.draw({ nodeLabel: '', nodeFill: (id) => (on.has(id) ? 'blue' : 'muted'), edgeColor: (e) => (CE.has(e) ? 'blue' : null), edgeWidth: (e) => (CE.has(e) ? 3.5 : 1.3) });
           p.fn((x) => 2 * Math.log2(x), { color: 'red', width: 2.2 });
           p.text('2 log₂ n', 100, 2 * Math.log2(100), { color: 'red', baseline: 'top', dy: 8, size: 12, weight: 600, align: 'center' });
           if (cyc) { p.fn((x) => x, { color: 'orange', width: 2, dash: [5, 4] }); p.text('cycles: g = n', 9.5, 12.5, { color: 'orange', size: 12, weight: 600 }); }
-          for (const [cn, cg, lab] of CUBIC_CAGES) { p.dot(cn, cg, { r: 4.5, color: 'teal' }); if (lab && cn >= 10) p.tex(lab, cn, cg, { color: 'teal', size: 11, align: 'right', dx: -7, dy: -8 }); }
+          for (const [cn, cg, lab] of CUBIC_CAGES) { p.dot(cn, cg, { r: 4.5, color: 'teal' }); if (lab && cn >= 10) p.tex(lab, cn, cg, { color: 'teal', size: 11, align: 'left', dx: 7, dy: 9 }); }
           for (const [sn, sg] of samples) p.dot(sn, sg, { r: 4, color: 'accent', alpha: 0.85 });
           p.dot(n, gc.g, { r: 7, color: cyc ? 'orange' : 'gold' });
         });
