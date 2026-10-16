@@ -25,7 +25,7 @@ const parts = (m, T) => ({
 const classical = (m) => 1.5 + (m.rot === 'none' ? 0 : m.rot === 'nonlinear' ? 1.5 : 1) + m.vib.length;
 
 // ---- bomb calorimeter simulation --------------------------------------------------------------------------
-const CCAL = 10.20, TJ = 25.0, T_START = 24.0, T_IGN = 10, T_END = 30, TAU = 0.4, STIR = 0.0015;   // kJ/K, °C, °C, min, min, min, K/min
+const CCAL = 10.20, TJ = 25.0, T_START = 24.0, T_IGN = 10, T_END = 30, TAU = 0.8, STIR = 0.0015;   // kJ/K, °C, °C, min, min, min, K/min
 function bomb(Q, kl, seed) {
   const dt = 0.01, n = Math.round(T_END / dt), rng = seed ? seed : null;
   const ts = [], Ts = [];
@@ -40,7 +40,7 @@ function bomb(Q, kl, seed) {
 }
 function fitLine(ts, Ts, a, b) { const xs = [], ys = []; ts.forEach((t, i) => { if (t >= a && t <= b) { xs.push(t); ys.push(Ts[i]); } }); const n = xs.length; const mx = xs.reduce((s, x) => s + x) / n, my = ys.reduce((s, y) => s + y) / n; let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) ** 2; } const m = sxy / sxx; return { m, c: my - m * mx }; }
 function analyse(sim) {
-  const f = fitLine(sim.ts, sim.Ts, 1, T_IGN - 0.5), a = fitLine(sim.ts, sim.Ts, T_IGN + 4, T_IGN + 14);
+  const f = fitLine(sim.ts, sim.Ts, 1, T_IGN - 0.5), a = fitLine(sim.ts, sim.Ts, T_IGN + 5, T_IGN + 14);
   const fore = (t) => f.m * t + f.c, aft = (t) => a.m * t + a.c;
   const dt = sim.ts[1] - sim.ts[0], i0 = Math.round(T_IGN / dt), i1 = Math.round((T_IGN + 6) / dt);
   // equal-area time: ∫(T − fore) over [ign, t*] = ∫(aft − T) over [t*, ign+6]
@@ -155,7 +155,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
           sp.fn((V) => p1 * (V1 / V) ** g, { color: 'accent', width: 2.6, domain: [V1 / 25, V1 * 1.2] });
           sp.dot(V1, p1, { r: 6, color: 'ink', label: '1', labelPos: 'ne' });
           sp.tex('pV = \\text{const}', 9, p1 * V1 / 9 * 0.55, { color: 'ink', size: 12 });
-          sp.tex('pV^\\gamma = \\text{const}', 2.2, p1 * (V1 / 2.2) ** g * 1.6, { color: 'accent', size: 12 });
+          sp.tex('pV^\\gamma = \\text{const}', 8, p1 * (V1 / 8) ** g * 1.9, { color: 'accent', size: 12 });
           // numerical check: integrate C_V dT = −(RT/V) dV from V1 to V2 (RK4 on ln T against ln V)
           const Tnum = v.M.rk4((V, y) => -(R / Cv) * y / V, V1, T1, V2, 200).pop()[1];
           const wAd = Cv * (T2 - T1), wIso = R * T1 * Math.log(r);
@@ -183,12 +183,12 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
       deps: ['pchem-2.4', 'pchem-2.5'],
       refs: ['Atkins Focus 2'],
       tags: ['calorimetry', 'internal energy'],
-      scope: String.raw`Illustrative simulation: heat capacity of the calorimeter 10.20 kJ/K, jacket at 25.00 °C, release time constant 0.4 min; the energies of combustion per gram of the four samples are rounded literature values quoted from memory.`,
+      scope: String.raw`Illustrative simulation: heat capacity of the calorimeter 10.20 kJ/K, jacket at 25.00 °C, release time constant 0.8 min; the energies of combustion per gram of the four samples are rounded literature values quoted from memory.`,
       viz(v) {
         const sel = v.select('sample', Object.keys(SAMPLES).map((k) => ({ value: k, label: SAMPLES[k].name })), 'sucr');
         const mass = v.slider('mass of sample', 0.3, 2, 1, { step: 0.05, fmt: (x) => `${x.toFixed(2)} g` });
         const leak = v.slider('heat-leak coefficient', 0, 0.08, 0.03, { step: 0.002, fmt: (x) => `${x.toFixed(3)} /min` });
-        const s = v.stage({ x: [0, T_END], y: [23.5, 28], axes: 'box', gutter: true, xlabel: 'time / min', ylabel: 'T / °C', height: 360, title: 'temperature record' });
+        const s = v.stage({ x: [6, 22], y: [23.5, 28], axes: 'box', gutter: true, xlabel: 'time / min', ylabel: 'T / °C', height: 360, title: 'temperature record' });
         const sb = v.stage({ x: [0, 4], y: [-20, 0], axes: 'box', gutter: true, ylabel: 'kJ/mol', height: 360, title: 'from the temperature rise to the energy of combustion',
           xticks: [[0.8, 'ΔcU measured'], [1.8, 'ΔcU tabulated'], [3.0, 'ΔcH']] });
         const hnd = s.handle(T_IGN + 2.5, 25, { color: 'gold', r: 8, constrain: (x) => [Math.min(T_IGN + 5, Math.max(T_IGN, x)), 25.5] });
@@ -208,7 +208,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
           const ts = sim.ts, Ts = sim.Ts;
           if (first) { first = false; hnd.x = an.tEq; }
           const lo = Math.min(...Ts) - 0.2, hi = Math.max(...Ts) + 0.3;
-          s.setView([0, T_END], [lo, hi]);
+          s.setView([6, 22], [lo, hi]);
           const tS = hnd.x;
           hnd.y = lo + 0.12 * (hi - lo); hnd.set(tS, lo + 0.12 * (hi - lo));
           const i0 = Math.round(T_IGN / 0.01), i1 = Math.round((T_IGN + 6) / 0.01), iS = Math.round(tS / 0.01);
@@ -219,8 +219,8 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
           const back = []; for (let i = i1; i >= iS; i -= 2) back.push([ts[i], an.aft(ts[i])]);
           s.poly([...post, ...back], { fill: 'green', fillAlpha: 0.35, stroke: false });
           s.path(ts.filter((_, i) => i % 3 === 0).map((t, i) => [t, Ts[i * 3]]), { color: 'accent', width: 2 });
-          s.line(0, an.fore(0), T_IGN + 5, an.fore(T_IGN + 5), { color: 'orange', dash: true, width: 1.6 });
-          s.line(T_IGN, an.aft(T_IGN), T_END, an.aft(T_END), { color: 'green', dash: true, width: 1.6 });
+          s.line(6, an.fore(6), T_IGN + 5, an.fore(T_IGN + 5), { color: 'orange', dash: true, width: 1.6 });
+          s.line(T_IGN, an.aft(T_IGN), 22, an.aft(22), { color: 'green', dash: true, width: 1.6 });
           s.vline(tS, { color: 'gold', width: 2 });
           s.vline(T_IGN, { color: 'muted', dash: true, width: 1 }); s.text('ignition', T_IGN, hi, { dx: 4, dy: 12, size: 11, align: 'left', color: 'muted' });
           const dT = an.aft(tS) - an.fore(tS), naive = Ts[Ts.length - 1] - Ts[0];
@@ -238,7 +238,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
         v.legend([['accent', 'temperature record'], ['orange', 'fore-period drift and area', { area: true }], ['green', 'after-period drift and area', { area: true }]]);
         v.readout(() => {
           const i = info;
-          return `Corrected rise $\\Delta T = ${v.fix(i.dT, 3)}$ K (true adiabatic rise $Q/C = ${v.fix(i.dTtrue, 3)}$ K; naive end minus start $= ${v.fix(i.naive, 3)}$ K; equal areas at $t = ${v.fix(i.tEq, 2)}$ min). Calibration from 1.000 g of benzoic acid in this run: $C_\\text{cal} = ${v.fix(i.cal, 3)}$ kJ/K (true 10.200).\n${i.sm.name}: $\\Delta_cU = -C_\\text{cal}\\Delta T\\,M/m = ${v.fix(i.dcU, 0)}$ kJ/mol (tabulated $${v.fix(i.dcUlit, 0)}$); $\\Delta_cH = \\Delta_cU + \\Delta n_g RT = ${v.fix(i.dcH, 1)}$ kJ/mol with $\\Delta n_g = ${i.sm.dn}$.`;
+          return `Corrected rise $\\Delta T = ${v.fix(i.dT, 3)}$ K (true adiabatic rise $Q/C = ${v.fix(i.dTtrue, 3)}$ K; naive end minus start $= ${v.fix(i.naive, 3)}$ K; equal areas at $t = ${v.fix(i.tEq, 2)}$ min). Calibration from 1.000 g of benzoic acid in this run: $C_\\text{cal} = ${v.fix(i.cal, 3)}$ kJ/K (effective value of this method; the true heat capacity is 10.200).\n${i.sm.name}: $\\Delta_cU = -C_\\text{cal}\\Delta T\\,M/m = ${v.fix(i.dcU, 0)}$ kJ/mol (tabulated $${v.fix(i.dcUlit, 0)}$); $\\Delta_cH = \\Delta_cU + \\Delta n_g RT = ${v.fix(i.dcH, 1)}$ kJ/mol with $\\Delta n_g = ${i.sm.dn}$.`;
         });
       },
     },
@@ -259,8 +259,8 @@ Equivalently the enthalpy change between two states is the same along every rout
           co2: { name: 'graphite → CO₂ via CO', start: 'a', goal: 'c', y: [-460, 70],
             nodes: { a: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, b: { x: 3, h: -110.53, t: '\\mathrm{CO+\\tfrac12O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}', below: true } },
             edges: [['a', 'b'], ['b', 'c'], ['a', 'c']], direct: 2 },
-          ethene: { name: 'hydrogenation of ethene (from combustion data)', start: 'n2', goal: 'n1', y: [-100, 1800],
-            nodes: { n2: { x: 1, h: 1411.2 + 285.83, t: '\\mathrm{C_2H_4+H_2+3\\tfrac12O_2}' }, n3: { x: 3, h: 285.83, t: '\\mathrm{2CO_2+2H_2O(l)+H_2+\\tfrac12O_2}' }, n1: { x: 2, h: 1560.7, t: '\\mathrm{C_2H_6+3\\tfrac12O_2}' }, n0: { x: 2.5, h: 0, t: '\\mathrm{2CO_2+3H_2O(l)}', below: true } },
+          ethene: { name: 'hydrogenation of ethene (from combustion data)', start: 'n2', goal: 'n1', y: [-300, 1950],
+            nodes: { n2: { x: 1, h: 1411.2 + 285.83, t: '\\mathrm{C_2H_4+H_2+3\\tfrac12O_2}' }, n3: { x: 1.7, h: 285.83, t: '\\mathrm{2CO_2+2H_2O(l)+H_2+\\tfrac12O_2}', right: true }, n1: { x: 2.6, h: 1560.7, t: '\\mathrm{C_2H_6+3\\tfrac12O_2}' }, n0: { x: 2.6, h: 0, t: '\\mathrm{2CO_2+3H_2O(l)}', below: true } },
             edges: [['n2', 'n3'], ['n3', 'n0'], ['n1', 'n0'], ['n2', 'n1']], direct: 3 },
           dia: { name: 'graphite → diamond', start: 'g', goal: 'd', y: [-460, 60],
             nodes: { g: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, d: { x: 3, h: 1.895, t: '\\mathrm{C(diamond)+O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}', below: true } },
@@ -293,13 +293,13 @@ Equivalently the enthalpy change between two states is the same along every rout
             const [a, b] = e, A = N[a], B = N[b], on = used.has(ei), isDirect = ei === X.direct;
             s.arrow(A.x, A.h, B.x, B.h, { color: on ? 'accent' : isDirect ? 'purple' : 'faint', width: on ? 3.2 : 1.8, head: 9 });
             const d = B.h - A.h + (isDirect ? cheat.value : 0);
-            s.text(`${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)}`, (A.x + B.x) / 2, (A.h + B.h) / 2, { size: 12, color: on ? 'accent' : 'muted', dx: ei % 2 ? 24 : -24, plate: true });
+            s.text(`${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)}`, A.x + (B.x - A.x) * (isDirect ? 0.3 : 0.5), A.h + (B.h - A.h) * (isDirect ? 0.3 : 0.5), { size: 12, color: on ? 'accent' : 'muted', dx: ei % 2 ? 24 : -24, plate: true });
           });
           for (const k in N) {
             const n = N[k], tip = route[route.length - 1] === k;
             s.dot(n.x, n.h, { r: tip ? 9 : 6, color: k === X.goal ? 'red' : k === X.start ? 'green' : 'ink', hollow: k === X.goal || k === X.start });
             s.line(n.x - 0.28, n.h, n.x + 0.28, n.h, { color: 'muted', width: 1.5 });
-            s.tex(n.t, n.x, n.h, { dy: n.below ? 18 : -16, size: 12.5, align: 'center' });
+            if (n.right) s.tex(n.t, n.x, n.h, { dx: 8, dy: -16, size: 12.5, align: 'left' }); else s.tex(n.t, n.x, n.h, { dy: n.below ? 18 : -16, size: 12.5, align: 'center' });
           }
           const direct = N[X.goal].h - N[X.start].h;
           info = { sum, direct, atGoal: route[route.length - 1] === X.goal, atStart: route.length > 1 && route[route.length - 1] === X.start, n: steps.length, steps };
@@ -333,23 +333,23 @@ $$\Delta_rH^\circ = \sum_\text{products}\nu\,\Delta_fH^\circ - \sum_\text{reacta
           const rx = RXNS[sel.value], k = dbl.value ? 2 : 1;
           const col = (items, x0) => { let up = 0, dn = 0; const segs = []; items.forEach(([nu, key], i) => { const val = nu * k * F[key][0], c = pal[i % pal.length]; if (val < 0) { segs.push([dn, dn + val, key, nu * k, c, val]); dn += val; } else if (val > 0) { segs.push([up, up + val, key, nu * k, c, val]); up += val; } else segs.push([0, 0, key, nu * k, c, 0]); }); return { segs, tot: up + dn, up, dn }; };
           const Rc = col(rx.R, 1.5), Pc = col(rx.P, 4.5);
-          const hi = Math.max(Rc.up, Pc.up, 0), lo = Math.min(Rc.dn, Pc.dn, 0), pad = (hi - lo) * 0.14 + 20;
+          const hi = Math.max(Rc.up, Pc.up, 0), lo = Math.min(Rc.dn, Pc.dn, 0), pad = (hi - lo) * 0.14 + 40;
           s.setView([0, 6], [lo - pad, hi + pad]);
           s.hline(0, { color: 'ink', width: 2 });
-          s.text('elements in their standard states: Δ_fH° = 0', 0.1, 0, { align: 'left', size: 12, dy: -10, color: 'muted' });
+          s.text('elements: $\\Delta_fH^\\circ = 0$', 5.95, 0, { align: 'right', size: 12, dy: -12, color: 'muted' });
           const span = hi - lo + 2 * pad;
           [[Rc, 1.5, 'reactants', -1], [Pc, 4.5, 'products', 1]].forEach(([c, x0, nm, side]) => {
             let nz = 0;
             c.segs.forEach(([a, b, key, nu, colr, val]) => {
-              if (a === b) { s.tex(`${nu}\\,\\mathrm{${F[key][1]}}\\ (0)`, x0, 0, { size: 12, dy: 16 + 17 * nz++, color: 'muted' }); return; }
+              if (a === b) { s.tex(`${nu}\\,\\mathrm{${F[key][1]}}\\ (0)`, x0, 0, { size: 12, dy: -14 - 17 * nz++, color: 'muted' }); return; }
               s.rect(x0 - 0.7, a, x0 + 0.7, b, { fill: colr, fillAlpha: 0.55, color: colr });
               const lab = `${nu}\\,\\mathrm{${F[key][1]}}\\ \\ ${val < 0 ? '−' : '+'}${Math.abs(val).toFixed(1)}`;
-              if (Math.abs(b - a) < 0.07 * span) s.tex(lab, x0 - side * 0.75, (a + b) / 2, { size: 12, align: side < 0 ? 'left' : 'right', dx: 0 });
+              if (Math.abs(b - a) < 0.07 * span) s.tex(lab, x0 - side * 0.75, (a + b) / 2, { size: 12, align: side < 0 ? 'left' : 'right', dy: val < 0 ? 15 : -15 });
               else s.tex(lab, x0, (a + b) / 2, { size: 12 });
             });
-            s.tex(nm, x0, hi + pad * 0.55, { size: 14 });
+            s.tex(nm, x0, hi + pad * 0.85, { size: 14 });
             s.line(x0 - 0.9, c.tot, x0 + 0.9, c.tot, { color: 'ink', width: 2.4 });
-            s.text(`Σ = ${v.fix(c.tot, 1)}`, x0 + side * 0.95, c.tot, { align: side < 0 ? 'right' : 'left', size: 12, dx: side < 0 ? 0 : 0 });
+            s.text(`Σ = ${v.fix(c.tot, 1)}`, x0 + side * 0.95, c.tot, { align: side < 0 ? 'right' : 'left', size: 12, dy: -10 });
           });
           s.line(1.5 + 0.9, Rc.tot, 4.5 - 0.9, Rc.tot, { color: 'faint', dash: true });
           s.arrow(3, Rc.tot, 3, Pc.tot, { color: 'red', width: 3, head: 11 });

@@ -160,7 +160,7 @@ a straight line (the *isochron*) in the plane of ${'$'}^{87}$Rb/${'$'}^{86}$Sr a
       tags: ['isochron', 'Rb–Sr'],
       scope: String.raw`Needs a closed system for Rb and Sr, a common initial ratio (cogenetic minerals), and enough spread in Rb/Sr.`,
       viz(v) {
-        const MIN = [['apatite', 0.05, 'ne'], ['plagioclase', 0.6, 'se'], ['whole rock', 2, 'nw'], ['K-feldspar', 5, 'se'], ['muscovite', 14, 'se'], ['biotite', 30, 'nw']];
+        const MIN = [['apatite', 0.05, 'se'], ['plagioclase', 1.2, 'n'], ['whole rock', 3.5, 'se'], ['K-feldspar', 7, 'ne'], ['muscovite', 14, 'se'], ['biotite', 30, 'nw']];
         const tsl = v.slider('true age (Ga)', 0.2, 4.5, 1.8, { step: 0.01 });
         const y0s = v.slider('initial $^{87}$Sr/$^{86}$Sr', 0.700, 0.720, 0.705, { step: 0.0005, decimals: 4 });
         const sg = v.slider('analytical error $\\sigma$ (Sr ratio)', 0, 0.05, 0.01, { step: 0.001, decimals: 3 });
@@ -169,12 +169,12 @@ a straight line (the *isochron*) in the plane of ${'$'}^{87}$Rb/${'$'}^{86}$Sr a
         const excl = v.toggle('exclude biotite from fit', false);
         const lam = LAM.Rb87 * 1e9;
         const r = v.rng(11), noise = MIN.map(() => r.normal());
-        const s = v.stage({ x: [0, 34], y: [0.69, 0.9], axes: 'box', gutter: true, xlabel: '$^{87}$Rb/$^{86}$Sr', ylabel: '$^{87}$Sr/$^{86}$Sr', height: 360 });
+        const s = v.stage({ x: [-1, 34], y: [0.64, 0.9], axes: 'box', gutter: true, xlabel: '$^{87}$Rb/$^{86}$Sr', ylabel: '$^{87}$Sr/$^{86}$Sr', height: 360 });
         let st = {};
         v.render(() => {
           const T = tsl.value, y0 = y0s.value, sd = sg.value;
           const ev = Math.min(evs.value, T * 0.95);
-          const xwr = 2;
+          const xwr = 3.5;
           const pts = MIN.map(([nm, x, lp], i) => {
             let y = y0 + x * Math.expm1(lam * T);
             if (dist.value && nm === 'biotite') {
@@ -186,7 +186,7 @@ a straight line (the *isochron*) in the plane of ${'$'}^{87}$Rb/${'$'}^{86}$Sr a
           const fitpts = excl.value ? pts.filter((p) => p.nm !== 'biotite') : pts;
           const f = v.M.linreg(fitpts.map((p) => p.x), fitpts.map((p) => p.y));
           const ymax = Math.max(...pts.map((p) => p.y)) + 0.01;
-          s.setView([0, 34], [y0 - 0.012, Math.max(y0 + 0.05, ymax + 0.02)]);
+          s.setView([-1, 34], [y0 - 0.07, Math.max(y0 + 0.05, ymax + 0.02)]);
           s.hline(y0, { color: 'faint', dash: true });
           s.line(0, y0, 34, y0 + 34 * Math.expm1(lam * T), { color: 'faint', width: 1 });
           s.line(0, f.intercept, 34, f.intercept + 34 * f.slope, { color: 'green', width: 2.5 });
@@ -230,7 +230,7 @@ $r^2=${v.fix(f.r2, 5)}$, MSWD $=$ ${isFinite(mswd) ? v.fix(mswd, 1) : 'n/a (no e
         const lam = CH.map(([, T]) => LN2 / T), K = CH.length;
         const cols = ['ink', 'blue', 'teal', 'orange', 'purple', 'pink', 'gold'];
         const INIT = { fresh: [1, 0, 0, 0, 0, 0, 0], coral: [1, 1, 0, 0, 0, 0, 0], ra: [1, 1, 1, 0, 0, 0, 0], rn: [1, 1, 1, 1, 0, 1, 1] };
-        const sc = v.select('start', [{ value: 'fresh', label: 'pure $^{238}$U' }, { value: 'coral', label: 'U, no Th' }, { value: 'ra', label: 'Ra leached' }, { value: 'rn', label: 'Rn lost' }], 'ra');
+        const sc = v.select('start', [{ value: 'fresh', label: 'pure $^{238}$U' }, { value: 'coral', label: 'U, no Th' }, { value: 'ra', label: 'Ra leached' }, { value: 'rn', label: 'Rn lost' }], 'fresh');
         const ratioSl = v.slider('$T_{1/2}$ parent / daughter', 0.1, 1e4, 100, { log: true, sig: 2 });
         const Amat = Array.from({ length: K }, (_, i) => Array.from({ length: K }, (_, j) => (i === j ? -lam[i] : (j === i - 1 ? lam[j] : 0))));
         const cache = new Map();
