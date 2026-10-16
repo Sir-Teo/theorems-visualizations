@@ -68,8 +68,8 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
             A.vline(t, { color: c, width: 1.2, dash: [4, 3] });
             A.text(lab, t, t > 1500 ? 2.5e-5 : 2.5e-6, { size: 10.5, color: c, align: right ? 'right' : 'left', dx: right ? -4 : 4, baseline: 'bottom', plate: true });
           }
-          const yStab = key === 'Cu2O' ? 3e-2 : key === 'SnO2' ? 30 : 300, yOx = key === 'Cu2O' ? 1.5e-5 : key === 'SnO2' ? 3e-3 : 3e-2;
-          A.text(`${o.mname} stable`, key === 'Cu2O' ? 900 : 1250, yStab, { size: 12, color: 'green', align: 'left', weight: 700, plate: true });
+          const yStab = key === 'Cu2O' ? 3e-2 : 1.5e3, yOx = key === 'Cu2O' ? 1.5e-5 : key === 'SnO2' ? 3e-3 : 3e-2;
+          A.text(`${o.mname} stable`, key === 'Cu2O' ? 900 : 1340, yStab, { size: 12, color: 'green', align: 'left', weight: 700, plate: true });
           A.text('oxide stable', key === 'Cu2O' ? 700 : 1250, yOx, { size: 12, color: 'red', align: 'left', weight: 700, plate: true });
           // ---- B: furnace section
           const th = reduceRatio(key, T), red = extent(key, Tc, r), liquid = red > 0.05 && Tc >= o.mp, slag = Tc >= SLAG_T;

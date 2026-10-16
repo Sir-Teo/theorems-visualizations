@@ -62,7 +62,7 @@ export default {
           }
           lab(sA, `KS gap ${fx(C.ks0, 2)}`, HI - 2, ym * 0.93, { align: 'right', color: C.ks0 > 0.12 ? 'red' : 'green' });
           lab(sB, `KS gap ${fx(C.ks1, 2)}`, HI - 2, ym * 0.93, { align: 'right', color: C.ks1 > 0.12 ? 'red' : 'green' });
-          const hr = binCounts(C.reps, -20, 20, 40); sC.setView([-20, 20], [0, Math.max(8, ...hr.counts) * 1.2]);
+          const lo = Math.floor(Math.min(C.truth, ...C.reps) - 3), hi = Math.ceil(Math.max(C.truth, ...C.reps) + 3), hr = binCounts(C.reps, lo, hi, 50); sC.setView([lo, hi], [0, Math.max(8, ...hr.counts) * 1.2]);
           barsH(sC, hr, { color: 'purple', fillAlpha: 0.3 });
           sC.vline(C.truth, { color: 'green', width: 2.4 }); sC.vline(mean(C.reps), { color: 'ink', width: 1.6, dash: [5, 3] });
           sC.dot(C.est, 0, { r: 5, color: 'gold' });
@@ -89,7 +89,7 @@ export default {
         const f0 = (x) => 55 + 5 * x - 3 * x * x, f1 = (x) => f0(x) + 4 + 2 * x;
         const y0 = Array.from(xs, (x, i) => f0(x) + e0[i]), y1 = Array.from(xs, (x, i) => f1(x) + e1[i]);
         const kS = v.slider('steepness of the treatment rule', 0, 9, 4.5, { step: 0.1 });
-        const cS = v.slider('where the rule switches on', -1, 1, 0, { step: 0.05 });
+        const cS = v.slider('where the rule switches on', -1, 1, 0.5, { step: 0.05 });
         v.button('new random treatments', () => { seed++; });
         let seed = 1;
         const sA = v.stage({ x: [-3, 3], y: [0, 1], axes: 'box', gutter: true, height: 230, full: true, xlabel: null, ylabel: '$P(A=1\\mid x)$', title: 'probability of treatment, and the patients' });
@@ -140,7 +140,7 @@ export default {
         let seed = 1;
         const sH = v.stage({ x: [-4, 14], y: [0, 40], axes: 'box', gutter: true, height: 320, xlabel: 'estimate of the average effect', ylabel: 'studies', title: 'estimates over 300 repeated studies', weight: 1.25 });
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'the first study, stratum by stratum', weight: 1.1 });
-        const T = v.table(sT, { rows: 4, cols: 6, square: false, cellAspect: 1.3, maxCell: 60, size: 12.5, colLabels: ['share', '$P(A{=}1\\mid L)$', '$\\bar Y_{A=1}$', '$\\bar Y_{A=0}$', 'difference', 'true $\\tau_L$'], rowLabels: (l) => 'L = ' + (l + 1) });
+        const T = v.table(sT, { rows: 4, cols: 6, square: false, cellAspect: 1.3, maxCell: 60, size: 12.5, colLabels: ['share', 'treated', 'mean Y, treated', 'mean Y, untreated', 'difference', 'true effect'], labelSize: 10.5, rowLabels: (l) => 'L = ' + (l + 1) });
         const get = memo(), N = 1500, REP = 300;
         const sim = (sd) => {
           const r = rng(sd * 2654435 + 11), n1 = [0, 0, 0, 0], n0 = [0, 0, 0, 0], s1 = [0, 0, 0, 0], s0 = [0, 0, 0, 0], nl = [0, 0, 0, 0];
@@ -202,7 +202,7 @@ export default {
         const rB = v.slider('baseline risk in B', 0.02, 0.9, 0.1, { step: 0.01 });
         const sI = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, title: '300 people, coloured by their own effect', weight: 1.1 });
         const sL = v.stage({ x: [0, 1], y: [-4, 14], axes: 'box', gutter: true, height: 330, xlabel: 'share in stratum B', ylabel: 'average effect', title: 'the population effect is a mixture', weight: 1 });
-        const sR = v.stage({ x: [-0.6, 4.1], y: [0, 1], axes: 'box', gutter: true, height: 260, full: true, xticks: [[0, 'A untreated'], [1, 'A treated'], [2.9, 'B untreated'], [3.9, 'B treated']], ylabel: 'risk of the event', title: 'same risk ratio, different risk difference' });
+        const sR = v.stage({ x: [-0.6, 4.6], y: [0, 1], axes: 'box', gutter: true, height: 260, full: true, xticks: [[0, 'A untreated'], [1, 'A treated'], [2.9, 'B untreated'], [3.9, 'B treated']], ylabel: 'risk of the event', title: 'same risk ratio, different risk difference' });
         const I = v.icons(sI, { n: 300, shape: 'person' });
         const rg = rng(12), eta = Array.from({ length: 300 }, () => rg.normal());
         const h = sL.handle(0.35, 0, { color: 'accent', r: 8, label: 'population', labelPos: 'nw', constrain: (x) => [clamp(x, 0, 1), t0.value + (t1.value - t0.value) * clamp(x, 0, 1)] });
@@ -250,7 +250,7 @@ export default {
         const b0 = v.slider('baseline log-odds (untreated, $L=0$)', -4, 0, -2, { step: 0.1 });
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, title: 'exact risks from the model', weight: 1.35 });
         const sC = v.stage({ x: [1, 40], y: [1, 10], xlog: true, axes: 'box', gutter: true, height: 260, xlabel: 'odds ratio of $L$ (prognostic strength)', ylabel: 'odds ratio of treatment', title: 'conditional vs marginal odds ratio', weight: 1 });
-        const T = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.55, maxCell: 62, size: 13, colLabels: ['risk, $A=0$', 'risk, $A=1$', 'risk difference', 'risk ratio', 'odds ratio'], rowLabels: ['stratum $L=0$', 'stratum $L=1$', 'whole population', 'average of strata'] });
+        const T = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.55, maxCell: 62, size: 13, colLabels: ['risk, untreated', 'risk, treated', 'risk difference', 'risk ratio', 'odds ratio'], labelSize: 10.5, rowLabels: ['stratum L = 0', 'stratum L = 1', 'whole population', 'average of strata'] });
         const odds = (p) => p / (1 - p);
         const model = (oa, ol, pl, bb) => {
           const pr = (a, l) => logistic(bb + Math.log(oa) * a + Math.log(ol) * l);
@@ -268,6 +268,7 @@ export default {
             value: (i, j) => (i < 3 ? (j === 0 ? fx(rows[i].r0, 3) : j === 1 ? fx(rows[i].r1, 3) : fx(meas(rows[i])[j - 2], j === 2 ? 3 : 2)) : j < 2 ? '' : fx(avg[j - 2], j === 2 ? 3 : 2)),
             fill: (i, j) => (j === 2 && i >= 2 ? ['green', 0.2] : j === 4 && i === 2 ? ['red', 0.22] : j === 4 && i < 2 ? ['accent', 0.2] : null),
           });
+          sC.setView([1, 40], [1, Math.max(2, orA.value * 1.2)]);
           sC.fn((x) => orA.value, { color: 'accent', width: 2.4, domain: [1, 40] });
           sC.curve((t) => { const x = Math.exp(t); const q = model(orA.value, x, pL.value, b0.value).pop; return [x, odds(q.r1) / odds(q.r0)]; }, 0, Math.log(40), { color: 'red', width: 2.4, n: 120 });
           const q = M.pop; sC.dot(orL.value, odds(q.r1) / odds(q.r0), { r: 6.5, color: 'gold' });
@@ -335,15 +336,16 @@ export default {
             if (show.value) { sS.dot(P.x[i], A[i] ? P.y0[i] : P.y1[i], { r: 3.5, hollow: true, color: A[i] ? 'orange' : 'accent', alpha: 0.7 }); sS.line(P.x[i], P.y0[i], P.x[i], P.y1[i], { color: 'faint', width: 1, alpha: 0.6 }); }
             sS.dot(P.x[i], y[i], { r: 4.5, color: A[i] ? 'accent' : 'orange' });
           }
-          const hn = binCounts(C.R.map((e) => e.naive), -8, 14, 44), hm = binCounts(C.R.map((e) => e.matched), -8, 14, 44);
-          sH.setView([-8, 14], [0, Math.max(10, ...hn.counts, ...hm.counts) * 1.15]);
+          const all = C.R.flatMap((e) => [e.naive, e.matched]), lo = Math.floor(Math.min(ate, ...all) - 2), hi = Math.ceil(Math.max(ate, ...all) + 2);
+          const hn = binCounts(C.R.map((e) => e.naive), lo, hi, 44), hm = binCounts(C.R.map((e) => e.matched), lo, hi, 44);
+          sH.setView([lo, hi], [0, Math.max(10, ...hn.counts, ...hm.counts) * 1.15]);
           barsH(sH, hn, { color: 'purple', fillAlpha: 0.28 }); barsH(sH, hm, { color: 'green', fillAlpha: 0.3 });
           sH.vline(ate, { color: 'ink', width: 2.2 });
         });
         v.readout(() => {
           const C = calc(), nm = mean(C.R.map((e) => e.naive)), mm = mean(C.R.map((e) => e.matched));
           return `True average effect over the 60 students **$${fx(ate, 2)}$**. This study: crude $${fx(C.cur.naive, 2)}$, matched $${fx(C.cur.matched, 2)}$ (${C.cur.pairs.length} treated students matched to their nearest untreated one). Over 400 re-assignments: crude averages **$${fx(nm, 2)}$** (bias $${sg(nm - ate, 2)}$), matched **$${fx(mm, 2)}$** (bias $${sg(mm - ate, 2)}$). ` +
-            (mech.value === 'rand' ? 'Random assignment: no extraneous variable to control, both are unbiased.' : 'Matching on the variable that drove assignment removes (nearly all of) the bias; matching on the wrong variable would not.');
+            (mech.value === 'rand' ? 'Random assignment: no extraneous variable to control, both are unbiased.' : 'Matching on the variable that drove assignment removes most of the bias; what remains comes from imperfect matches where few untreated students have a high pre-test, and matching on a variable that did not drive assignment would not help.');
         });
       },
     },

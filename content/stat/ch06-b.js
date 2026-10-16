@@ -682,7 +682,7 @@ and that $P$, the probability of a system of deviations as improbable as or more
 
 Scope: the derivation is a large-sample approximation (expected counts not too small). Pearson used $n'-1$ degrees of freedom even when the theoretical frequencies had been fitted to the same data; Fisher (1922–24) showed that each fitted constant removes one more degree of freedom.`,
       idea: String.raw`Before 1900, fits of curves to data were judged by eye; Airy's textbook, which Pearson singles out, smoothed observations three times and then declared the normal law verified. Pearson's criterion gave the first general, quantitative test of goodness of fit, and with it the modern pattern of a test: a statistic, its distribution under the hypothesis, and a tail probability. It introduced the $\chi^2$ statistic and distribution into statistics (stat-6.14, stat-1.8), and used it at once against the reigning belief that errors are normal: of his normal fits, Merriman's target data fail badly and Pearson's own line-bisecting errors pass. The one flaw, the degrees of freedom when parameters are estimated, was fixed by Fisher and led to a long dispute between the two men.`,
-      caption: String.raw`Pearson's own tables, read from the scan of the 1900 *Philosophical Magazine*. Left: observed frequencies (gold) against theoretical ones (blue outline); right: each group's contribution $(m'-m)^2/m$ to $\chi^2$ (purple where more were observed than expected, blue where fewer). For **Weldon's dice** slide $p$, the chance that one die shows 5 or 6: at $p=\tfrac13$ the fives and sixes are over-represented in every group above 4 (Illustration I); at the observed $p=0.3377$ the fit is acceptable (Illustration II); the readout tracks $\chi^2(p)$ and its minimum. Switch the counts to **simulated fair dice** to see what 26,306 honest casts give. **Roulette** and **Merriman's shots** show the other two verdicts, each compared with today's computation.`,
+      caption: String.raw`Pearson's own tables, read from the scan of the 1900 *Philosophical Magazine*. Left: observed frequencies (gold) against theoretical ones (blue outline); right: each group's contribution $(m'-m)^2/m$ to $\chi^2$ (purple where more were observed than expected, blue where fewer). For **Weldon's dice** slide $p$, the chance that one die shows 5 or 6: at $p=\tfrac13$ casts with many fives and sixes are over-represented in every group from 5 to 11 (Illustration I); at the observed $p=0.3377$ the fit is acceptable (Illustration II); the readout tracks $\chi^2(p)$ and its minimum. Switch the counts to **simulated fair dice** to see what 26,306 honest casts give. **Roulette** and **Merriman's shots** show the other two verdicts, each compared with today's computation.`,
       deps: ['stat-1.8', 'stat-1.19'],
       refs: [],
       tags: ['chi-squared test', 'goodness of fit', 'history'],
@@ -727,9 +727,9 @@ Scope: the derivation is a large-sample approximation (expected counts not too s
             const x = labs[k];
             sL.rect(x - 0.32, 0, x + 0.32, O[k], { fill: TC.sim, fillAlpha: 0.65, color: TC.sim, width: 1 });
             sL.rect(x - 0.4, 0, x + 0.4, E[k], { color: TC.h0, width: 2, fill: false });
-            if (printed) sL.line(x - 0.42, printed[k], x + 0.42, printed[k], { color: TC.h1, width: 1.6, dash: [3, 2] });
+            if (printed) sL.line(x - 0.46, printed[k], x + 0.46, printed[k], { color: TC.h1, width: 2.4, dash: [3, 2] });
           }
-          if (ill === 'rou') sL.text('Pearson’s theory: half the runs of each length ends there', x0 + G - 0.5, ym * 0.93, { color: 'muted', size: 11, align: 'right' });
+          if (ill === 'rou') sL.text('theory: each spin ends a run with chance ½, so 4274/2ᵏ runs of length k', x0 + G - 0.5, ym * 0.93, { color: 'muted', size: 11, align: 'right' });
           // contributions
           const C = O.map((o, k) => (E[k] > 0 ? (o - E[k]) ** 2 / E[k] : 0)), X = C.reduce((a, b) => a + b, 0), cm = Math.max(...C) * 1.15 || 1;
           sR.setView([x0 - 0.6, x0 + G - 0.4], [0, cm]);
@@ -814,7 +814,7 @@ Scope: the derivation is a large-sample approximation (expected counts not too s
           const m0 = ld(0, Math.sqrt((n - 1) / n), 0, 1, n), m1 = ld(mu1, sg1 * Math.sqrt((n - 1) / n), mu1, sg1, n);
           sL.contour((x, y) => (y > 0.005 ? ld(x, y, 0, 1, n) : -50), [m0 - 1, m0 - 3], { color: TC.h0, width: 1.4, alpha: 0.8 });
           sL.contour((x, y) => (y > 0.005 ? ld(x, y, mu1, sg1, n) : -50), [m1 - 1, m1 - 3], { color: TC.h1, width: 1.4, alpha: 0.8 });
-          sL.contour((x, y) => (y > 0.005 ? stat('lr', x, y, mu1, sg1, n) : -50), [L.thr], { color: 'green', width: 2.6 });
+          sL.contour((x, y) => stat('lr', x, Math.max(y, 0.003), mu1, sg1, n), [L.thr], { color: 'green', width: 2.6 });
           sL.dot(0, 1, { r: 4.5, color: TC.h0, label: '$H_0$', labelPos: 'sw' });
           // ROC curves
           sR.fn((x) => x, { domain: [0, 1], color: 'faint', width: 1, dash: [4, 4] });

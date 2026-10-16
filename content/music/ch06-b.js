@@ -142,9 +142,9 @@ export default {
       num: '6.11',
       kind: 'Phenomenon',
       name: 'The harmonic seventh (7:4)',
-      statement: String.raw`The seventh harmonic of a tone is $7f$, and the interval $7{:}4$ from the fourth harmonic, the **harmonic seventh**, measures $1200\log_2(7/4)\approx968.8$ ¢: 31.2 ¢ flatter than the equal-tempered minor seventh (1000 ¢) and 27.3 ¢ flatter than the Pythagorean $16/9$ (996.1 ¢). A dominant seventh chord tuned $4{:}5{:}6{:}7$ consists of harmonics 4–7 of one fundamental: all its notes' partials fall on a single harmonic series, so the beating between the seventh and the other notes stops. Barbershop quartets, singing without fixed pitch, are said to tune toward this chord, the "locked" or "ringing" chord.`,
+      statement: String.raw`The seventh harmonic of a tone is $7f$, and the interval $7{:}4$ from the fourth harmonic, the **harmonic seventh**, measures $1200\log_2(7/4)\approx968.8$ ¢: 31.2 ¢ flatter than the equal-tempered minor seventh (1000 ¢) and 27.3 ¢ flatter than the Pythagorean $16/9$ (996.1 ¢). A dominant seventh chord tuned $4{:}5{:}6{:}7$ consists of harmonics 4–7 of one fundamental: all its notes' partials fall on a single harmonic series, so the slow beating of the seventh's partials against the 7th partials of the other notes stops; only the fast roughness between neighbouring low partials (such as the seventh against the root's octave, a whole tone above it) remains. Barbershop quartets, singing without fixed pitch, are said to tune toward this chord, the "locked" or "ringing" chord.`,
       idea: String.raw`In equal temperament the seventh's 4th, 5th and 6th partials miss the 7th partials of the root, third and fifth: on C3 ($f=130.8$ Hz) the seventh's 4th partial ($4\times233.1=932$ Hz) lies 17 Hz above the root's 7th (916 Hz), and the other two pairs beat at about 21 and 25 Hz against a just triad, squarely in the rough range (5.7). Lowering the seventh by 31 ¢ makes $4\cdot\tfrac74f=7f$ exactly, and with a just triad ($4{:}5{:}6$) every near-coincidence becomes an exact one: the chord's partials are the harmonics of $f/4$ (6.1). The dissonance curve against the position of the seventh accordingly has a local minimum at 968.8 ¢, while 1000 ¢ sits on its wall.`,
-      caption: String.raw`A C dominant seventh chord on C3 with 8-partial tones. Slide the seventh between 940 and 1040 ¢ and choose a just ($4{:}5{:}6$) or equal-tempered triad below it. Left: the chord's total dissonance against the seventh's position, with 7/4, 16/9, 12-TET and 9/5 marked. Right: every pair of partials (one from the seventh, one from another note) closer than 40 Hz, as bars at their beat rate; at 7/4 over a just triad they collapse onto 0 Hz, the "lock". Play the chord, or equal temperament followed by 4:5:6:7.`,
+      caption: String.raw`A C dominant seventh chord on C3 with 8-partial tones. Slide the seventh between 940 and 1040 ¢ and choose a just ($4{:}5{:}6$) or equal-tempered triad below it. Left: the chord's total dissonance against the seventh's position, with 7/4, 16/9, 12-TET and 9/5 marked. Right: every pair of partials (one from the seventh, one from another note) closer than 40 Hz, as bars at their beat rate; at 7/4 over a just triad the three slow pairs (the seventh's 4th, 5th and 6th partials against the 7th partials of root, third and fifth) collapse onto 0 Hz, the "lock", while fast beats between low partials remain. Play the chord, or equal temperament followed by 4:5:6:7.`,
       deps: ['music-6.4', 'music-2.6'],
       see: ['music-7.5', 'music-7.12', 'music-5.6'],
       refs: ['Benson ch. 5'],
@@ -165,7 +165,7 @@ export default {
         const pairs = () => {
           const ns = notes(), out = [], names = ['root', '3rd', '5th'];
           const S7 = at(SP, ns[3]);
-          for (let n = 0; n < 3; n++) at(SP, ns[n]).forEach(([fa, aa], i) => S7.forEach(([fb, ab], j) => { const b = Math.abs(fb - fa); if (b < 40) out.push({ b, w: b < 0.5 ? Math.min(aa, ab) : pl(fa, fb, aa, ab), lab: `7th·${j + 1} – ${names[n]}·${i + 1}` }); }));
+          for (let n = 0; n < 3; n++) at(SP, ns[n]).forEach(([fa, aa], i) => S7.forEach(([fb, ab], j) => { const b = Math.abs(fb - fa); if (b < 40) out.push({ b, w: b < 0.5 ? Math.min(aa, ab) : pl(fa, fb, aa, ab), lab: `7th·${j + 1} – ${names[n]}·${i + 1}`, lock: i === 6 && j === 3 + n }); }));
           return out.sort((a, b) => b.w - a.w);
         };
         v.soundButton('play the chord', (snd) => snd.samples(mixBuf(notes().map((f) => [SP, f]), 2.2), SR, { gain: 0.9 }));
@@ -176,10 +176,12 @@ export default {
           cv.path(K.P.map(([c, y]) => [c, nrm(y)]), { color: 'accent', width: 2.4 });
           cv.dot(sev.value, nrm(D(sev.value)), { r: 6, color: 'gold' });
           const P = pairs();
-          P.forEach((p, k) => {
-            const x = Math.max(p.b, 0.25);
+          const top = P.filter((p) => p.b >= 0.5).sort((a, b) => b.w - a.w)[0];
+          let row = 0;
+          P.slice().sort((a, b) => a.b - b.b).forEach((p) => {
+            const x = Math.max(p.b, 0.35), lock = p.lock || p === top;
             bt.line(x, 0, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', width: 4, alpha: 0.85 });
-            if (k < 4) bt.text(p.lab, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', size: 10, align: x > 26 ? 'right' : 'left', dx: x > 26 ? -5 : 5, dy: -2, plate: true });
+            if (lock) { bt.text(p.lab, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', size: 10, align: x > 26 ? 'right' : 'left', dx: x > 26 ? -5 : 5, dy: -2 + 15 * (row % 2), plate: true }); row++; }
           });
           if (!P.length) bt.text('no partial pairs within 40 Hz', 20, 0.6, { color: 'muted', size: 12, align: 'center' });
           bt.vband(15, 40, { color: 'red', alpha: 0.05 });
