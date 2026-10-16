@@ -322,9 +322,9 @@ Every excited level $m$ above $n$ pushes it down, every level below pushes it up
       statement: String.raw`In a uniform field $\mathcal F$ along $z$ the hydrogen Hamiltonian acquires $W=\mathcal F z$ (atomic units, electron charge $-1$). The nondegenerate ground state shifts quadratically,
 $$E_{1s}(\mathcal F)=-\tfrac12-\tfrac12\,\alpha\,\mathcal F^2+\cdots,\qquad \alpha=2\sum_{m}\frac{|\langle m|z|1s\rangle|^2}{E_m-E_{1s}}=\tfrac92\ \text{a.u.},$$
 because $\langle z\rangle_{1s}=0$ and the field induces the dipole $p=\alpha\mathcal F$. The $n=2$ level is degenerate (2s and 2p), $z$ couples the 2s to the $2p_0$ state, and the first-order shifts are *linear*, $E=-\tfrac18\pm3\mathcal F$ (for the $m=0$ pair); the $2p_{\pm1}$ states do not shift to first order.`,
-      scope: String.raw`Weak fields only: a real hydrogen atom in a static field is ionised by tunnelling (the levels are resonances). The numerical model below uses a finite basis that cannot ionise, so keep $\mathcal F\lesssim0.03$ a.u. ($1\ \text{a.u.}=5.14\times10^{11}$ V/m; laboratory fields are $10^{-5}$ a.u. or less).`,
+      scope: String.raw`Weak fields only: a real hydrogen atom in a static field is ionised by tunnelling (the levels are resonances). The numerical model below uses a finite basis that cannot ionise, so the slider stops at $\mathcal F=0.005$ a.u., where the $n=2$ levels are still well below the field's saddle point ($1\ \text{a.u.}=5.14\times10^{11}$ V/m; laboratory fields are $10^{-5}$ a.u. or less, so the effects drawn here are enormously exaggerated).`,
       idea: String.raw`For a nondegenerate level the first-order shift is $\langle z\rangle=0$ by parity (the unperturbed state has definite parity), so the leading effect is second order (4.5): the field mixes in $p$ states, which lowers the energy and shifts the electron *against* the field, giving the induced dipole. In the degenerate $n=2$ shell the correct zeroth-order states are mixtures of 2s and 2p (4.7), which already have a permanent dipole $\mp3$ a.u., hence the linear shift. The numbers below come from diagonalising $H_0+\mathcal Fz$ in a basis of $r^{l+1}e^{-\lambda r}L_k^{(2l+2)}(2\lambda r)Y_{l0}$ with $l\le4$.`,
-      caption: String.raw`Left: the lowest $m=0$ levels of hydrogen against the field (computed by diagonalisation in a finite basis, solid) with the textbook parabola $-\tfrac12-\tfrac94\mathcal F^2$ and the linear $n=2$ shifts $-\tfrac18\pm3\mathcal F$ (dashed). Right: a cross-section of the electron cloud of the level you choose, in the $xz$ plane; the field points along $+z$ (arrow), and the cloud of the ground state is pushed to $-z$. Notice that the ground cloud barely changes shape while the $n=2$ clouds become strongly one-sided, and that the sign of the shift of the second and third levels is the sign of their dipole.`,
+      caption: String.raw`Left: the lowest $m=0$ levels of hydrogen against the field, computed by diagonalisation in a finite basis (solid). Choose the ground-state view for $E_{1s}(\mathcal F)-E_{1s}(0)$ against the textbook parabola $-\tfrac94\mathcal F^2$, or the $n=2$ shell for the linear shifts $-\tfrac18\pm3\mathcal F$ (dashed). Right: a cross-section of the electron cloud in the $xz$ plane; the field points along $+z$ (arrow). For the $1s$ state the picture is the *change* of density caused by the field (the shift is far too small to see in the density itself): charge moves toward $-z$ and leaves a deficit at $+z$. The two $n=2$ clouds are strongly one-sided from the start, one toward each side, and the readout's slope $dE/d\mathcal F$ equals the average $\langle z\rangle$ of that cloud.`,
       deps: ['qchem-4.5', 'qchem-2.1', 'qm-11.16'],
       see: ['qm-11.16'],
       refs: ['McQuarrie ch. 8'],
@@ -332,59 +332,65 @@ because $\langle z\rangle_{1s}=0$ and the field induces the dipole $p=\alpha\mat
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stark_effect' },
       viz(v) {
-        const M = v.M, LAM = 0.6, KB = 7, LM = 5, NR = 2400, RMAX = 60, h = RMAX / NR;
-        // basis u_{kl}(r) = r^{l+1} e^{-λr} L_k^{(2l+2)}(2λr); matrices H0, S, Z (z-coupling) precomputed once
+        const M = v.M, LAM = 0.6, KB = 7, LM = 5, NR = 1600, RMAX = 70, AQ6 = RMAX / (NR * NR);
+        // basis u_{kl}(r) = r^{l+1} e^{-λr} L_k^{(2l+2)}(2λr); matrices H0, S, Z (z-coupling) precomputed once (quadrature r = a(i+½)²)
         const fns = []; for (let l = 0; l <= LM; l++) for (let k = 0; k < KB; k++) fns.push({ l, k });
-        const nF = fns.length, r = Float64Array.from({ length: NR }, (_, i) => (i + 0.5) * h);
+        const nF = fns.length, r = Float64Array.from({ length: NR }, (_, i) => AQ6 * (i + 0.5) ** 2), wq = Float64Array.from({ length: NR }, (_, i) => 2 * AQ6 * (i + 0.5));
         const U = fns.map(({ l, k }) => Float64Array.from(r, (x) => x ** (l + 1) * Math.exp(-LAM * x) * lagL(k, 2 * l + 2, 2 * LAM * x)));
         const dU = fns.map(({ l, k }) => Float64Array.from(r, (x) => { const L = lagL(k, 2 * l + 2, 2 * LAM * x), Lp = k > 0 ? -lagL(k - 1, 2 * l + 3, 2 * LAM * x) : 0; return Math.exp(-LAM * x) * ((l + 1) * x ** l * L - LAM * x ** (l + 1) * L + x ** (l + 1) * 2 * LAM * Lp); }));
         const S = [], H0 = [], Zm = [];
         for (let i = 0; i < nF; i++) { S.push(new Array(nF).fill(0)); H0.push(new Array(nF).fill(0)); Zm.push(new Array(nF).fill(0)); }
         for (let i = 0; i < nF; i++) for (let j = i; j < nF; j++) {
           const A = fns[i], B = fns[j]; let s = 0, hh = 0, z = 0;
-          if (A.l === B.l) { for (let q = 0; q < NR; q++) { s += U[i][q] * U[j][q]; hh += 0.5 * dU[i][q] * dU[j][q] + ((A.l * (A.l + 1)) / (2 * r[q] * r[q]) - 1 / r[q]) * U[i][q] * U[j][q]; } s *= h; hh *= h; }
-          else if (Math.abs(A.l - B.l) === 1) { const l = Math.min(A.l, B.l); for (let q = 0; q < NR; q++) z += U[i][q] * r[q] * U[j][q]; z *= h * (l + 1) / Math.sqrt((2 * l + 1) * (2 * l + 3)); }
+          if (A.l === B.l) { for (let q = 0; q < NR; q++) { const w = wq[q]; s += w * U[i][q] * U[j][q]; hh += w * (0.5 * dU[i][q] * dU[j][q] + ((A.l * (A.l + 1)) / (2 * r[q] * r[q]) - 1 / r[q]) * U[i][q] * U[j][q]); } }
+          else if (Math.abs(A.l - B.l) === 1) { const l = Math.min(A.l, B.l); for (let q = 0; q < NR; q++) z += wq[q] * U[i][q] * r[q] * U[j][q]; z *= (l + 1) / Math.sqrt((2 * l + 1) * (2 * l + 3)); }
           S[i][j] = S[j][i] = s; H0[i][j] = H0[j][i] = hh; Zm[i][j] = Zm[j][i] = z;
         }
         const solve = (F) => M.genEig(H0.map((row, i) => row.map((x, j) => x + F * Zm[i][j])), S);
-        const FMAX = 0.04, NL = 7, mapF = [], map = [];
-        const fS = v.slider('field $\\mathcal F$ (a.u.)', 0, FMAX, 0.015, { step: 0.0005, decimals: 4 });
-        const lvS = v.select('level shown (counting up from the ground state)', [{ value: 0, label: '1st (1s)' }, { value: 1, label: '2nd' }, { value: 2, label: '3rd' }], 0);
-        const sM = v.stage({ x: [0, FMAX], y: [-0.4, 0.0], axes: 'box', gutter: true, height: 340, weight: 1.05, xlabel: 'field F (a.u.)', ylabel: 'E (hartree)', title: 'Stark map, m = 0' });
-        const sC = v.stage({ x: [-6, 6], y: [-6, 6], equal: true, axes: 'box', gutter: true, height: 340, weight: 0.95, xlabel: 'x (bohr)', ylabel: 'z (bohr)', title: 'electron cloud |ψ|², xz plane' });
-        let step = 0, timer = null;
-        const fill = () => { for (let k = 0; k < 6 && step <= 32; k++, step++) { const F = (FMAX * step) / 32; mapF.push(F); map.push(solve(F).values.slice(0, NL)); } v.invalidate(); if (step <= 32) timer = setTimeout(fill, 0); };
-        if (window.__vizStill) { while (step <= 32) { const F = (FMAX * step) / 32; mapF.push(F); map.push(solve(F).values.slice(0, NL)); step++; } } else timer = setTimeout(fill, 0);
-        v.onCleanup(() => clearTimeout(timer));
-        // radial lookup tables for the cloud
-        const NT = 500, RC = 14, tab = fns.map(({ l, k }) => Float64Array.from({ length: NT + 1 }, (_, i) => { const x = Math.max((i / NT) * RC, 1e-9); return (x ** l * Math.exp(-LAM * x) * lagL(k, 2 * l + 2, 2 * LAM * x)); }));
+        const base = solve(0), E00 = base.values[0];
+        const FMAX = 0.005, NL = 4, NS = 25, mapF = Array.from({ length: NS + 1 }, (_, i) => (FMAX * i) / NS);
+        const map = mapF.map((F) => solve(F).values.slice(0, NL));
+        const fS = v.slider('field $\\mathcal F$ (a.u.)', 0, FMAX, 0.003, { step: 0.0001, decimals: 4 });
+        const lvS = v.select('state shown', [{ value: 0, label: '1s: change of density' }, { value: 1, label: '2nd level (n = 2)' }, { value: 2, label: '3rd level (n = 2)' }], 0);
+        const viewS = v.select('left panel', [{ value: 'gs', label: 'ground-state shift' }, { value: 'n2', label: 'n = 2 shell' }], 'gs');
+        const sM = v.stage({ x: [0, FMAX], y: [-12, 0], axes: 'box', gutter: true, height: 340, weight: 1.05, xlabel: 'field F (a.u.)', ylabel: 'E (hartree)', title: 'Stark map, m = 0' });
+        const sC = v.stage({ x: [-6, 6], y: [-6, 6], equal: true, axes: 'box', gutter: true, height: 340, weight: 0.95, xlabel: 'x (bohr)', ylabel: 'z (bohr)', title: 'cloud in the xz plane' });
+        // radial lookup tables R_kl(r) = u/r for the cloud
+        const NT = 500, RC = 14, tab = fns.map(({ l, k }) => Float64Array.from({ length: NT + 1 }, (_, i) => { const x = Math.max((i / NT) * RC, 1e-9); return x ** l * Math.exp(-LAM * x) * lagL(k, 2 * l + 2, 2 * LAM * x); }));
         const legendre = (l, x) => { let p0 = 1, p1 = x; if (l === 0) return 1; for (let q = 2; q <= l; q++) { const p2 = ((2 * q - 1) * x * p1 - (q - 1) * p0) / q; p0 = p1; p1 = p2; } return p1; };
-        let info = null, key0 = '';
+        const normed = (sol, k) => { const c = sol.vecs[k]; let nrm = 0, zz = 0; for (let i = 0; i < nF; i++) for (let j = 0; j < nF; j++) { nrm += c[i] * c[j] * S[i][j]; zz += c[i] * c[j] * Zm[i][j]; } const cut = c.map((x) => x / Math.sqrt(nrm)); return { cut, act: cut.map((x, i) => (Math.abs(x) > 1e-4 ? i : -1)).filter((i) => i >= 0), dz: zz / nrm }; };
+        const psiAt = (st, x, z) => { const rr = Math.hypot(x, z); if (rr > RC - 0.1) return 0; const ct = rr < 1e-9 ? 1 : z / rr, f = (rr / RC) * NT, i0 = Math.min(NT - 1, Math.floor(f)), t = f - i0; let psi = 0; for (const i of st.act) { const l = fns[i].l; psi += st.cut[i] * (tab[i][i0] * (1 - t) + tab[i][i0 + 1] * t) * Math.sqrt((2 * l + 1) / (4 * Math.PI)) * legendre(l, ct); } return psi; };
+        let info = null;
         v.render(() => {
-          const F = fS.value, k = +lvS.value, sol = solve(F), E = sol.values[k], c = sol.vecs[k];
-          sM.setView([0, FMAX], [-0.42, 0.0]);
-          sM.fn((f) => -0.5 - 2.25 * f * f, { color: 'orange', dash: true, width: 1.4 });
-          sM.fn((f) => -0.125 - 3 * f, { color: 'green', dash: true, width: 1.4 }); sM.fn((f) => -0.125 + 3 * f, { color: 'green', dash: true, width: 1.4 });
-          for (let j = 0; j < NL; j++) sM.path(mapF.map((f, i) => [f, map[i][j]]), { color: j === k ? 'accent' : 'muted', width: j === k ? 2.6 : 1.4, alpha: j === k ? 1 : 0.8 });
-          sM.vline(F, { color: 'gold', dash: true }); sM.dot(F, E, { r: 6, color: 'gold' });
-          // norm and dipole of the chosen state
-          let nrm = 0, zz = 0; for (let i = 0; i < nF; i++) for (let j = 0; j < nF; j++) { nrm += c[i] * c[j] * S[i][j]; zz += c[i] * c[j] * Zm[i][j]; }
-          const dz = zz / nrm, cut = c.map((x) => x / Math.sqrt(nrm)), act = cut.map((x, i) => (Math.abs(x) > 2e-3 ? i : -1)).filter((i) => i >= 0);
-          const key = `${F},${k}`; void key0; key0 = key;
-          sC.raster((x, z) => {
-            const rr = Math.hypot(x, z); if (rr > RC - 0.1) return null;
-            const ct = rr < 1e-9 ? 1 : z / rr, f = (rr / RC) * NT, i0 = Math.min(NT - 1, Math.floor(f)), t = f - i0;
-            let psi = 0; for (const i of act) { const l = fns[i].l; psi += cut[i] * (tab[i][i0] * (1 - t) + tab[i][i0 + 1] * t) * Math.sqrt((2 * l + 1) / (4 * Math.PI)) * legendre(l, ct); }
-            const d = Math.min(1, (psi * psi * 4 * Math.PI) / (k === 0 ? 1.0 : 0.12));
-            return v.ramp(Math.sqrt(d), 'accent', 'panel');
-          }, { res: 3, key });
+          const F = fS.value, k = +lvS.value, sol = solve(F), E = sol.values[k], st = normed(sol, k), st0 = normed(base, 0), n2 = viewS.value === 'n2';
+          if (!n2) {
+            sM.setView([0, FMAX], [-6.5, 0.5]); sM.setLabels('field F (a.u.)', 'E(F) − E(0)  (10⁻⁵ hartree)');
+            sM.hline(0, { color: 'faint' });
+            sM.fn((f) => -2.25 * f * f * 1e5, { color: 'orange', dash: true, width: 1.6 });
+            sM.path(mapF.map((f, i) => [f, (map[i][0] - E00) * 1e5]), { color: 'accent', width: 2.6 });
+            sM.dot(F, (sol.values[0] - E00) * 1e5, { r: 6, color: 'gold' });
+          } else {
+            sM.setView([0, FMAX], [-0.15, -0.095]); sM.setLabels('field F (a.u.)', 'E (hartree)');
+            sM.fn((f) => -0.125 - 3 * f, { color: 'green', dash: true, width: 1.6 }); sM.fn((f) => -0.125 + 3 * f, { color: 'green', dash: true, width: 1.6 });
+            sM.hline(-0.125, { color: 'faint' });
+            for (let j = 1; j < NL; j++) sM.path(mapF.map((f, i) => [f, map[i][j]]), { color: j === k ? 'accent' : 'muted', width: j === k ? 2.6 : 1.5 });
+            if (k > 0) sM.dot(F, E, { r: 6, color: 'gold' });
+          }
+          sM.vline(F, { color: 'gold', dash: true, alpha: 0.6 });
+          const key = `${F},${k}`;
+          if (k === 0) {
+            let mx = 1e-12; for (let a = -6; a <= 6; a += 0.5) for (let b = -6; b <= 6; b += 0.5) mx = Math.max(mx, Math.abs(psiAt(st, a, b) ** 2 - psiAt(st0, a, b) ** 2));
+            sC.raster((x, z) => { const rr = Math.hypot(x, z); if (rr > RC - 0.1) return null; const d = (psiAt(st, x, z) ** 2 - psiAt(st0, x, z) ** 2) / mx; return v.diverge(M.clamp(d * 1.4, -1, 1), 'orange', 'accent'); }, { res: 3, key });
+          } else {
+            sC.raster((x, z) => { const rr = Math.hypot(x, z); if (rr > RC - 0.1) return null; return v.ramp(Math.sqrt(Math.min(1, (psiAt(st, x, z) ** 2 * 4 * Math.PI) / 0.12)), 'accent', 'panel'); }, { res: 3, key });
+          }
           sC.dot(0, 0, { r: 3, color: 'ink' });
-          if (F > 0) { sC.arrow(4.8, -1.2, 4.8, 1.8, { color: 'red', width: 2 }); sC.text('field', 4.8, 2.4, { color: 'red', align: 'center', size: 11 }); }
-          sC.dot(0, dz, { r: 5, color: 'gold', hollow: true });
-          info = { F, k, E, dz, alpha: F > 0 ? (-2 * (sol.values[0] + 0.5)) / (F * F) : NaN, E1s: sol.values[0], ready: step > 32 };
+          sC.arrow(4.8, -1.2, 4.8, 1.8, { color: 'red', width: 2 }); sC.text('field', 4.8, 2.4, { color: 'red', align: 'center', size: 11 });
+          sC.setTitle(k === 0 ? '1s: density with field minus without (blue +, orange −)' : 'electron density |ψ|²');
+          info = { F, k, E, dz: st.dz, alpha: F > 0 ? (-2 * (sol.values[0] - E00)) / (F * F) : NaN, slope: (solve(F + 1e-4).values[k] - solve(Math.max(0, F - 1e-4)).values[k]) / (F > 1e-4 ? 2e-4 : 1e-4) };
         });
-        v.legend([['accent', 'computed levels'], ['orange', '$-\\tfrac12-\\tfrac94\\mathcal F^2$', { dash: true }], ['green', '$-\\tfrac18\\pm3\\mathcal F$', { dash: true }]]);
-        v.readout(() => info && `level ${info.k + 1}: $E=${v.fix(info.E, 5)}$ hartree · $\\langle z\\rangle=${v.fix(info.dz, 3)}$ bohr (gold ring) · induced dipole of the 1s state: $\\alpha_{\\rm est}=-2(E_{1s}+\\tfrac12)/\\mathcal F^2=${isNaN(info.alpha) ? '—' : v.fix(info.alpha, 3)}$ a.u. (exact $4.5$; the small excess is the basis and fourth order)\n$\\mathcal F=${v.fix(info.F, 4)}$ a.u. $=${v.fix(info.F * 5.14220674763e11 / 1e9, 1)}$ GV/m${info.ready ? '' : ' · (computing the map…)'}`);
+        v.legend([['accent', 'computed levels'], ['orange', '$-\\tfrac94\\mathcal F^2$', { dash: true }], ['green', '$-\\tfrac18\\pm3\\mathcal F$', { dash: true }]]);
+        v.readout(() => info && `level ${info.k + 1}: $E=${v.fix(info.E, 6)}$ hartree · $\\langle z\\rangle=${v.fix(info.dz, 4)}$ bohr · slope $dE/d\\mathcal F=${v.fix(info.slope, 4)}$ (equals $\\langle z\\rangle$, see 4.8)\nground-state polarizability from the curvature: $\\alpha_{\\rm est}=-2(E_{1s}(\\mathcal F)-E_{1s}(0))/\\mathcal F^2=${isNaN(info.alpha) ? '—' : v.fix(info.alpha, 3)}$ a.u. (exact $4.5$) · $\\mathcal F=${v.fix(info.F, 4)}$ a.u. $=${v.fix(info.F * 5.14220674763e11 / 1e9, 2)}$ GV/m`);
       },
     },
   ],
