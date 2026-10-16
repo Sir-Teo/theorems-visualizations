@@ -156,7 +156,7 @@ For the planar five-bar mechanism drawn here (two actuated base joints, four mov
       caption: String.raw`Drag the gold output point $P$ of the five-bar (the two **flip** switches move an elbow to its other branch). The map behind the mechanism shades in red how close $P$ is to the chosen singularity (kind 1: a leg stretched or folded; kind 2: distal links collinear). The right panel shows the ellipse of output velocities for unit-speed actuators: it flattens near kind 1 and runs off the panel near kind 2. When the output approaches kind 2, the red arrow at $P$ marks the direction in which $P$ could creep with the actuators locked; near kind 1 the purple arrow marks the direction the actuators cannot push. Try $P$ at $(0,0.76)$.`,
       deps: ['robot-3.5', 'robot-1.2'],
       refs: ['Lynch–Park ch. 7'],
-      credit: 'C. Gosselin & J. Angeles, 1990 (classification of singularities of closed-loop chains)',
+      credit: 'C. Gosselin & J. Angeles, 1990 (singularity analysis of closed-loop chains)',
       scope: String.raw`First-order (velocity) analysis of this planar five-bar with link lengths $\ell_1=1$, $\ell_2=1.25$ and bases $1.2$ apart; other mechanisms have the same two Jacobians but different geometric conditions.`,
       tags: ['singularity', 'five-bar', 'parallel robot'],
       viz(v) {
