@@ -115,6 +115,7 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
           return p;
         };
         const meas = (p) => { let rd = 0, rad = 0, mfv = 0; for (let t = 1; t <= T; t++) mfv += FV(t) / T; for (let t = 1; t <= T; t++) { rd += (p[t - 1] - FV(t)) / T / mfv; rad += Math.abs(p[t - 1] - FV(t)) / T / mfv; } return { rd, rad, }; };
+        v.legend([['green', 'fundamental value'], ['red', 'inexperienced'], ['orange', 'once experienced'], ['teal', 'twice experienced']]);
         let m = {};
         v.render(() => {
           const stairs = []; for (let t = 1; t <= T; t++) { stairs.push([t - 0.5, FV(t)], [t + 0.5, FV(t)]); }
@@ -124,7 +125,7 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
           A.path(main.map((y, t) => [t + 1, y]), { color: 'accent', width: 2.8 }); A.dots(main.map((y, t) => [t + 1, y]), { r: 3.4, color: 'accent' });
           B.path(stairs, { color: 'green', width: 2.2 });
           const cols = ['red', 'orange', 'teal'], names = ['inexperienced', 'once experienced', 'twice experienced'];
-          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 }); B.text(names[k], [10, 8, 5][k], avg[[10, 8, 5][k] - 1], { dy: -12, align: 'center', size: 11, color: cols[k], weight: 700 }); });
+          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 });  });
           const mm = meas(main); let pk = 0, pf = 0; main.forEach((y, t) => { if (y > pk) { pk = y; pf = FV(t + 1); } }); m = { ...mm, pk, pf };
         });
         v.readout(() => `Session shown in bold: mean relative deviation from fundamental value **RD = ${sg(m.rd, 2)}**, relative absolute deviation **RAD = ${v.fix(m.rad, 2)}** (both divided by the mean fundamental value 1.92 dollars); peak price \\$${v.fix(m.pk, 2)} against a fundamental value of \\$${v.fix(m.pf, 2)} in that period. A market that follows the staircase would have RD = RAD = 0.\nModel parameters, not estimates: the presets are chosen to mimic the qualitative pattern (bubble, then smaller bubbles with experience), not fitted to the 1988 data.`);

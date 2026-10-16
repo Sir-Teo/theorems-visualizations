@@ -158,7 +158,7 @@ With degree distribution $p_k$ and mean $\langle k\rangle$:
 (c) **Molloy–Reed criterion**: a giant component exists iff $\langle k^2\rangle-2\langle k\rangle>0$, i.e. when the mean excess degree exceeds 1 (the analogue of $c>1$ in 4.2); its size follows from $u=\sum_k q_k u^{k}$ and $S=1-\sum_kp_ku^k$.`,
       idea: String.raw`Pick an edge at random and then an end of it: you land on a vertex of degree $k$ with probability proportional to $k\,p_k$, because a vertex with $k$ stubs has $k$ chances of being chosen. That single observation, normalised, is $q_k$. Exploring a component then behaves like a branching process whose offspring distribution is $q_k$ (not $p_k$) after the first step, so the process survives exactly when its mean $\langle k^2\rangle/\langle k\rangle-1$ exceeds one, and the extinction probability $u$ is the fixed point of its generating function $G_1(u)=\sum_k q_ku^k$. For Poisson degrees $q=p$ and the criterion is $c>1$ (4.2); for heavy-tailed $p_k$, $\langle k^2\rangle$ is huge and a giant component exists however sparse the network.`,
       caption: String.raw`A model: 3000 vertices with a degree sequence from the chosen family, wired by random stub matching (loops and repeated pairs dropped). **Left**: the degree distribution $p_k$ (bars) and the excess-degree distribution measured at random edge ends (dots) against $(k+1)p_{k+1}/\langle k\rangle$ (line). **Right**: mean degree of a vertex's neighbours against its own degree: flat at $\langle k^2\rangle/\langle k\rangle$, above the diagonal for most vertices (the friendship paradox). Compare the giant component with the prediction.`,
-      scope: String.raw`Exact for the multigraph model as $n\to\infty$ with bounded moments; with $n=3000$, loops and multiple edges are dropped, which matters for the high-degree tail of the power-law family (capped at degree 800). The power-law family has exponent about 2.5 and minimum degree set by the slider.`,
+      scope: String.raw`Exact for the multigraph model as $n\to\infty$ with bounded moments; with $n=3000$, loops and multiple edges are dropped, which matters for the high-degree tail of the power-law family (capped at degree 800). The power-law family has exponent about 2.5 (its mean degree follows the slider only roughly, because of the heavy tail).`,
       deps: ['soc-4.1', 'soc-2.4'],
       refs: ['Newman ch. 12'],
       tags: ['configuration model', 'degree', 'friendship paradox'],
@@ -173,7 +173,7 @@ With degree distribution $p_k$ and mean $\langle k\rangle$:
         const A = v.stage({ x: [-0.5, KM + 0.5], y: [0, 0.5], axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: 'probability', title: 'degrees and excess degrees', minWidth: 300, weight: 1.1 });
         const B = v.stage({ x: [0, KM], y: [0, 20], axes: 'box', gutter: true, height: 340, xlabel: 'own degree $k$', ylabel: 'mean degree of neighbours', title: 'friendship paradox', minWidth: 280, weight: 1 });
         const cache = {};
-        const build = () => { const key = `${fam.value}|${cS.value}|${seed}`; if (cache[key]) return cache[key]; const R = rng32(seed * 91 + 5), seq = degreeSequence(fam.value, n, cS.value, R), { g, dropped } = configModel(seq, R); return (cache[key] = { g, dropped }); };
+        const build = () => { const key = `${fam.value}|${cS.value}|${seed}`; if (cache[key]) return cache[key]; const R = rng32(seed * 91 + 5), seq = degreeSequence(fam.value, n, fam.value === 'power' ? cS.value / 3 : cS.value, R), { g, dropped } = configModel(seq, R); return (cache[key] = { g, dropped }); };
         let st = null;
         v.render(() => {
           const { g, dropped } = build(), deg = g.adj.map((a) => a.length), m2 = g.edges.length;
@@ -188,7 +188,7 @@ With degree distribution $p_k$ and mean $\langle k\rangle$:
           // neighbour degrees
           const nd = deg.map((d, i) => (d ? g.adj[i].reduce((s, j) => s + deg[j], 0) / d : NaN)), sum = new Float64Array(KM + 1), cnt = new Float64Array(KM + 1);
           let higher = 0, nz = 0; deg.forEach((d, i) => { if (d > 0) { nz++; if (nd[i] > d) higher++; if (d <= KM) { sum[d] += nd[i]; cnt[d]++; } } });
-          const kap = k2 / mean, pts = []; for (let k = 1; k <= KM; k++) if (cnt[k] >= 3) pts.push([k, sum[k] / cnt[k]]);
+          const kap = k2 / mean, pts = []; for (let k = 1; k <= KM; k++) if (cnt[k] >= 10) pts.push([k, sum[k] / cnt[k]]);
           B.setView([0, KM], [0, Math.max(10, kap * 1.5, ...pts.map((x) => x[1])) * 1.1]);
           B.line(0, 0, KM, KM, { color: 'muted', width: 1.2, dash: [5, 4] });
           B.hline(kap, { color: 'green', width: 2 });
@@ -271,7 +271,7 @@ Reported: niche books ≈ 39% of Amazon's 2000 sales (extrapolated power-law fit
 (d) **tendrils** (43.8 million, 21.5%): pages attached only to IN or OUT, including "tubes" that link IN directly to OUT;
 (e) **disconnected** pieces (16.8 million, 8.2%).
 
-The core is a single strongly connected component because directed random graphs have exactly this structure above the giant-component threshold; the proportions of the regions, however, are properties of the crawl and the date and have changed since.`,
+The proportions of the regions are properties of the crawl and its date (later studies, with other crawls, find the same shape with different proportions).`,
       idea: String.raw`In a directed random graph with mean out-degree $c>1$, a vertex reaches a giant set with probability $S$ (the branching-process survival probability of 4.2, $S=1-e^{-cS}$) and is reached from a giant set with the same probability. The core is the intersection, of relative size $S^2$; IN and OUT are the vertices that only reach, or are only reached by, the giant set (each $S(1-S)$); the rest, $(1-S)^2$, are the tendrils, tubes and disconnected parts. The Web's four big regions of similar size are what a not-too-sparse directed graph with heavy-tailed degrees tends to produce; a bow-tie shape does *not* mean the Web is a random graph.`,
       caption: String.raw`A model, not a crawl: 400 pages with random directed links, mean out-degree $c$. The page classes (core, IN, OUT, tendrils and tubes, disconnected) are computed by actual reachability searches and laid out as a bow-tie. **Right**: the shares of the six classes in this graph against the shares in the 1999 AltaVista crawl and the large-$n$ prediction for directed random graphs ($S^2$ for the core, $S(1-S)$ for IN and OUT). Drag $c$ across 1 to see the core appear.`,
       scope: String.raw`The percentages for AltaVista are the figures in the original paper (May 1999 crawl, 203,549,046 pages; the paper lists tendrils as one class, here labelled as such, and calls the tubes a sub-class). The simulated graph is a plain directed Erdős–Rényi graph with only 400 vertices, so its classes fluctuate from draw to draw and the tubes are rare.`,

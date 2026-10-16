@@ -48,7 +48,9 @@ export function profile(o = {}) {
  */
 export function membrane(P, w, L = 0) {
   const wf = typeof w === 'function' ? w : () => w, W = [];
-  let acc = 0;
+  // a closed crown starts at r ≈ 0: the small cap above the first node is treated as a cone
+  const rmax = Math.max(...P.map((q) => q.r)), p0 = P[0];
+  let acc = p0.r < 0.03 * rmax ? wf(p0, 0) * Math.PI * p0.r * p0.r / Math.cos(p0.psi) : 0;
   P.forEach((q, i) => {
     if (i) { const p = P[i - 1]; acc += 0.5 * (wf(p, i - 1) * p.r + wf(q, i) * q.r) * 2 * Math.PI * (q.s - p.s); }
     W.push(acc);

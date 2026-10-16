@@ -187,5 +187,184 @@ export default {
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────────────────────────────── 4.3
+    {
+      num: '4.3',
+      kind: 'Model',
+      name: 'Membrane theory of domes',
+      statement: String.raw`A thin shell of revolution can carry its load by forces in its own surface alone, with no bending: a **meridional force** $N_\varphi$ along each meridian and a **hoop force** $N_\theta$ along each parallel circle, both per unit length of the shell. For a spherical dome of radius $a$ and constant thickness, with weight $w$ per unit area of surface, cutting the dome at the polar angle $\varphi$ from the crown gives
+$$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\varphi}-\cos\varphi\Big)$$
+(compression negative). For a vertical load $p$ per unit area of *plan* (snow) the forces are $N_\varphi=-pa/2$ and $N_\theta=-\tfrac12 pa\cos2\varphi$. The meridional force is always compressive; the hoop force starts as compression at the crown and, for a deep dome, changes sign lower down.`,
+      idea: String.raw`Cut the dome along a parallel circle and keep the cap above the cut. Its weight must be balanced by the vertical components of $N_\varphi$ around the circle of radius $a\sin\varphi$, which fixes $N_\varphi$ (this is the equilibrium of arch-1.2 applied to a cap). The weight of a small element has a component normal to the surface that $N_\varphi$ and $N_\theta$ must balance together, as the tension of a balloon balances pressure, and that equation gives $N_\theta$ once $N_\varphi$ is known. A dome is therefore a statically determinate system of arches (the meridians) held in place by rings (the parallels), which is why one can read off whether it can stand without tension (arch-4.4).`,
+      caption: String.raw`Choose a load, set the opening angle of the dome, and drag the gold handle along the section: the plot shows $N_\varphi$ (blue) and $N_\theta$ (red) in units of $wa$ (or $pa$), and the dome is coloured along the meridian, blue where the hoop force is compression and red where it is tension. The dashed curves are the closed-form formulas; the full curves are computed numerically from equilibrium of every cap, so the two agree. With a lantern the crown is open and a ring load is added at its edge.`,
+      deps: ['arch-3.2'],
+      see: ['arch-4.4', 'arch-6.1'],
+      tags: ['dome', 'shells', 'membrane'],
+      refs: ['Heyman'],
+      scope: String.raw`Thin, smoothly curved shell of revolution, loaded symmetrically, with supports free to follow the membrane forces (no edge bending). Near the base of a real dome, where the support restrains the hoop strain, bending develops that membrane theory cannot show.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dome#Structure' },
+      viz(v) {
+        const D2R = Math.PI / 180;
+        const mode = v.select('load', [{ value: 'self', label: 'own weight' }, { value: 'snow', label: 'snow on the plan' }, { value: 'lantern', label: 'own weight + lantern' }], 'self');
+        const end = v.slider('opening angle of the dome (°)', 30, 120, 90, { step: 1 });
+        const lam = v.slider('lantern weight (fraction of the dome’s own)', 0, 0.6, 0.25, { step: 0.01 });
+        const A = v.stage({ x: [-1.3, 1.3], y: [-0.75, 1.25], equal: true, axes: false, height: 320, weight: 1, minWidth: 280, title: 'the meridian section' });
+        const B = v.stage({ x: [0, 120], y: [-2.4, 1.6], axes: 'box', gutter: true, xlabel: 'angle from the crown, φ (°)', ylabel: 'force per length / (w a)', height: 320, weight: 1.15, minWidth: 320 });
+        let phiC = 60, data = null;
+        const h = A.handle(Math.sin(60 * D2R), Math.cos(60 * D2R), { color: 'gold', label: 'cut', labelPos: 'e', constrain: (x, y) => { const p = clamp(Math.atan2(Math.abs(x), y), (mode.value === 'lantern' ? 10 : 0.5) * D2R, end.value * D2R); return [Math.sin(p), Math.cos(p)]; }, onDrag: () => { phiC = deg(Math.atan2(h.x, h.y)); } });
+        const compute = () => {
+          const p0 = mode.value === 'lantern' ? 10 : 0, P = profile({ type: 'sphere', R: 1, phi0: p0, phi1: end.value, n: 300 });
+          const wf = mode.value === 'snow' ? (q) => Math.cos(q.psi) : 1;
+          const W = membrane(P, wf).W.at(-1), m = membrane(P, wf, mode.value === 'lantern' ? lam.value * W : 0);
+          return { P, m, zero: hoopZero(P, m.Ntheta), p0 };
+        };
+        v.render(() => {
+          const d = data = compute(), { P, m } = d;
+          phiC = clamp(phiC, Math.max(d.p0, 0.5), end.value);
+          h.set(Math.sin(phiC * D2R), Math.cos(phiC * D2R));
+          const z0 = Math.cos(end.value * D2R);
+          for (let i = 1; i < P.length; i++) {
+            const nt = (m.Ntheta[i] + m.Ntheta[i - 1]) / 2, c = nt > 0 ? 'red' : 'accent', al = clamp(0.25 + 0.55 * Math.abs(nt) / 1.2, 0.25, 0.9);
+            for (const sg of [-1, 1]) A.line(sg * P[i - 1].r, P[i - 1].z + z0, sg * P[i].r, P[i].z + z0, { color: c, width: 7, alpha: al });
+          }
+          A.line(-1.15, z0, 1.15, z0, { color: 'faint', dash: [3, 4], width: 1 });
+          A.line(0, -0.6, 0, 1.15, { color: 'faint', dash: [2, 4], width: 1 });
+          if (d.zero !== null && d.zero < end.value * D2R) { const z = d.zero; for (const sg of [-1, 1]) A.dot(sg * Math.sin(z), Math.cos(z), { r: 4, color: 'green' }); A.text(`${f2(deg(z), 1)}°`, 1.0 * Math.sin(z) + 0.05, Math.cos(z) + 0.1, { size: 12, color: 'green', align: 'left' }); }
+          // plot
+          const ds = P.map((q, i) => [deg(q.psi), m.Nphi[i]]), dt = P.map((q, i) => [deg(q.psi), m.Ntheta[i]]);
+          B.hline(0, { color: 'faint', width: 1 });
+          if (d.zero !== null && d.zero < end.value * D2R) B.vline(deg(d.zero), { color: 'green', dash: [4, 4], width: 1.2 });
+          if (mode.value === 'self' || mode.value === 'snow') {
+            const cl = mode.value === 'self' ? [(f) => -1 / (1 + Math.cos(f)), (f) => 1 / (1 + Math.cos(f)) - Math.cos(f)] : [() => -0.5, (f) => -0.5 * Math.cos(2 * f)];
+            B.curve((t) => [t, cl[0](t * D2R)], 0.5, end.value, { color: 'accent', dash: [4, 4], width: 1.3, alpha: 0.7 });
+            B.curve((t) => [t, cl[1](t * D2R)], 0.5, end.value, { color: 'red', dash: [4, 4], width: 1.3, alpha: 0.7 });
+          }
+          B.path(ds, { color: 'accent', width: 2.6 }); B.path(dt, { color: 'red', width: 2.6 });
+          const i = clamp(Math.round(((phiC * D2R - P[0].psi) / (P[P.length - 1].psi - P[0].psi)) * (P.length - 1)), 0, P.length - 1);
+          B.dot(phiC, m.Nphi[i], { r: 5, color: 'accent' }); B.dot(phiC, m.Ntheta[i], { r: 5, color: 'red' });
+          v.legend([['accent', 'meridional $N_\\varphi$'], ['red', 'hoop $N_\\theta$'], ['muted', 'closed form', { dash: true }]]);
+        });
+        v.readout(() => {
+          const { P, m, zero } = data, i = clamp(Math.round(((phiC * D2R - P[0].psi) / (P[P.length - 1].psi - P[0].psi)) * (P.length - 1)), 0, P.length - 1), u = mode.value === 'snow' ? 'pa' : 'wa';
+          return `At $\\varphi=${f2(phiC, 0)}^\\circ$: $N_\\varphi=${f2(m.Nphi[i], 3)}\\,${u}$ (compression), $N_\\theta=${f2(m.Ntheta[i], 3)}\\,${u}$ (${m.Ntheta[i] > 0 ? '**tension**' : 'compression'}). ${zero !== null && zero < end.value * D2R ? `The hoop force changes sign at $\\varphi=${f2(deg(zero), 2)}^\\circ$.` : 'No tension anywhere in this dome.'}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 4.4
+    {
+      num: '4.4',
+      kind: 'Proposition',
+      name: 'Hoop tension below 51.8° in a hemisphere',
+      statement: String.raw`For a spherical dome of constant thickness carrying only its own weight, the membrane hoop force $N_\theta$ is compressive near the crown, vanishes at the polar angle $\varphi^*$ with $\cos\varphi^*(1+\cos\varphi^*)=1$, that is $\cos\varphi^*=\tfrac{\sqrt5-1}{2}=0.618\ldots$, $\varphi^*\approx51.83^\circ$ ($51^\circ49'$), and is **tensile** for $\varphi>\varphi^*$. A dome whose opening angle (measured from the crown) is at most $\varphi^*$ is in compression everywhere; a full hemisphere has a belt of hoop tension between $51.8^\circ$ and the base. The angle moves if the thickness varies or if a lantern loads the crown.`,
+      idea: String.raw`Set $N_\theta=0$ in the formula of arch-4.3: $\dfrac1{1+\cos\varphi}=\cos\varphi$, which is the quadratic $c^2+c-1=0$ in $c=\cos\varphi$, whose positive root is the reciprocal of the golden ratio. Physically, above $\varphi^*$ the shell is steep enough that each meridian arch can carry its weight and also squeezes the parallel circles as it contracts; below $\varphi^*$ the meridians push outward on the parallels, which are then pulled apart like the hoops of a barrel. A material with no tensile strength must crack there (arch-4.5) or be tied by a chain (arch-4.8).`,
+      caption: String.raw`The left panel is the dome section with the tension belt in red; use the **opening angle** to cut the dome off (the colour of the band is the sign of the hoop force and its width is the relative weight). The right panel plots $N_\theta/(wa)$ against $\varphi$ (the faint curve is the constant-thickness case). Choose a thickness distribution and a lantern load to *break the hypothesis* of constant thickness: a heavier haunch or a lantern move the angle at which tension begins, and a dome opened less than that angle has no tension at all.`,
+      deps: ['arch-4.3'],
+      see: ['arch-4.7', 'arch-4.8'],
+      tags: ['dome', 'hoop tension'],
+      refs: ['Heyman'],
+      scope: String.raw`Membrane state of a thin spherical shell under its own weight, free at the base; the classical value $51.8^\circ$ is for constant thickness and no lantern. Other thickness laws shift it (the factor $w(\varphi)$ below is an illustration, not a particular building).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dome#Structure' },
+      viz(v) {
+        const D2R = Math.PI / 180;
+        const thick = v.select('thickness', [{ value: 'uni', label: 'constant' }, { value: 'heavy', label: 'heavier toward the base' }, { value: 'light', label: 'lighter toward the base' }], 'uni');
+        const kk = v.slider('strength of the variation k', 0, 3, 1, { step: 0.05 });
+        const lam = v.slider('lantern weight (fraction of the dome’s own)', 0, 0.6, 0, { step: 0.01 });
+        const end = v.slider('opening angle of the dome (°)', 30, 100, 90, { step: 1 });
+        const A = v.stage({ x: [-1.3, 1.3], y: [-0.2, 1.25], equal: true, axes: false, height: 300, weight: 1, minWidth: 280, title: 'tension belt of the dome' });
+        const B = v.stage({ x: [0, 100], y: [-1.6, 1.8], axes: 'box', gutter: true, xlabel: 'angle from the crown, φ (°)', ylabel: 'hoop force / (w a)', height: 300, weight: 1.15, minWidth: 320 });
+        let data = null;
+        const wfn = () => { const k = kk.value; return thick.value === 'heavy' ? (q) => 1 + k * (q.psi / (Math.PI / 2)) ** 2 : thick.value === 'light' ? (q) => 1 / (1 + k * (q.psi / (Math.PI / 2)) ** 2) : () => 1; };
+        const compute = () => {
+          const p0 = lam.value > 0 ? 8 : 0, P = profile({ type: 'sphere', R: 1, phi0: p0, phi1: 100, n: 400 }), wf = wfn();
+          const Wt = membrane(P, wf).W.at(-1), m = membrane(P, wf, lam.value * Wt), ref = membrane(P, 1);
+          return { P, m, ref, zero: hoopZero(P, m.Ntheta), zref: hoopZero(P, ref.Ntheta) };
+        };
+        v.render(() => {
+          const wrel = wfn(), d = data = compute(), { P, m } = d, e = end.value * D2R, z0 = Math.cos(e), c100 = Math.cos(100 * D2R);
+          for (let i = 1; i < P.length; i++) {
+            if (P[i].psi > e) break;
+            const nt = (m.Ntheta[i] + m.Ntheta[i - 1]) / 2;
+            for (const sg of [-1, 1]) A.line(sg * P[i - 1].r, P[i - 1].z + c100, sg * P[i].r, P[i].z + c100, { color: nt > 0 ? 'red' : 'accent', width: clamp(3 + 4 * wrel(P[i]), 3, 20), alpha: clamp(0.3 + Math.abs(nt) * 0.5, 0.3, 0.9) });
+          }
+          A.line(-1.15, z0, 1.15, z0, { color: 'faint', dash: [3, 4], width: 1 });
+          if (d.zero !== null) for (const sg of [-1, 1]) A.dot(sg * Math.sin(d.zero), Math.cos(d.zero), { r: 5, color: 'green' });
+          const dt = P.filter((q) => q.psi <= e).map((q, i) => [deg(q.psi), m.Ntheta[i]]), dr = P.filter((q) => q.psi <= e).map((q, i) => [deg(q.psi), d.ref.Ntheta[i]]);
+          B.hline(0, { color: 'faint', width: 1 });
+          if (thick.value !== 'uni' || lam.value > 0) B.path(dr, { color: 'muted', width: 1.6, dash: [4, 4], alpha: 0.8 });
+          B.path(dt, { color: 'red', width: 2.8 });
+          B.vline(51.83, { color: 'muted', dash: [2, 4], width: 1 }); B.text('51.8°', 51.83 + 1, -1.4, { size: 11, color: 'muted', align: 'left' });
+          if (d.zero !== null) { B.vline(deg(d.zero), { color: 'green', width: 1.4 }); B.dot(deg(d.zero), 0, { r: 5, color: 'green' }); }
+          v.legend([['red', 'hoop force, this dome'], ['muted', 'constant thickness', { dash: true }], ['green', 'sign change']]);
+        });
+        v.readout(() => {
+          const d = data, e = end.value;
+          const zdeg = d.zero === null ? null : deg(d.zero);
+          const maxT = Math.max(0, ...d.P.map((q, i) => (deg(q.psi) <= e ? d.m.Ntheta[i] : 0)));
+          return `Constant thickness: $\\varphi^*=${f2(deg(d.zref), 3)}^\\circ$ (formula: $\\arccos\\frac{\\sqrt5-1}2=${f2(deg(Math.acos((Math.sqrt(5) - 1) / 2)), 3)}^\\circ$). This dome: ${zdeg === null ? 'no sign change' : `$\\varphi^*=${f2(zdeg, 2)}^\\circ$`}. Opened to ${f2(e, 0)}°: ${zdeg !== null && e > zdeg ? `a tension belt of ${f2(e - zdeg, 1)}°, peak $N_\\theta=${f2(maxT, 2)}\\,wa$` : '**compression only**'}.`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────────────────────────────── 4.5
+    {
+      num: '4.5',
+      kind: 'Phenomenon',
+      name: 'Meridional cracking and the dome as sliced arches',
+      statement: String.raw`Masonry cannot take the hoop tension that arch-4.4 predicts below about $52^\circ$ from the crown, so a masonry dome cracks along **meridians**, from the base upwards, at some angular spacing. The cracks are not a failure: each gore between two cracks is an arch of its own, in compression, whose width grows from zero at the crown to its maximum at the base. The dome stands if a thrust line fits inside the thickness of one such gore (Heyman's safe theorem, arch-3.5). The cracked dome no longer pulls on itself in the hoop direction; its base pushes outward instead, and the outward thrust of all the gores has to be taken by the support, by a buttress ring or by iron or timber ties.`,
+      idea: String.raw`Cracking removes the tensile hoop stress by changing the structure: the shell becomes a set of independent arches (arch-4.3, arch-4.4 say where the membrane theory would need tension; arch-3.4 says masonry has none to give). Each gore weighs in proportion to its width $\sin\varphi$, so its loading differs from that of a plane arch of constant width, but arch-3.5 applies unchanged: find *any* admissible line of thrust. The hoop tension that was relieved reappears as the outward thrust at the base, equal to the ring tension a tie would have to carry. Because the cracks are a consequence of the dome's shape and not a sign of weakness, a dome can be cracked for centuries and still be safe, while a tie, or a change in the supports, can make the cracks grow.`,
+      caption: String.raw`The left panel is the dome seen from above with its meridional cracks (opening exaggerated twenty times) rising from the rim to the angle where the membrane hoop tension ends. The right panel is one gore with its opposite gore, as an arch of the chapter-3 engine: weights proportional to the gore width, voussoirs normal to the shell, the most central thrust line in green (orange where it leaves the masonry). Thin the shell until it cannot hold a line (the readout gives the smallest thickness), tick the box to see the hinges of the thinnest dome that stands, and spread the base to open the cracks.`,
+      deps: ['arch-4.4', 'arch-3.5'],
+      see: ['arch-4.6', 'arch-3.6'],
+      tags: ['cracking', 'dome', 'limit analysis'],
+      refs: ['Heyman'],
+      scope: String.raw`Axisymmetric dome of constant thickness cut into gores by radial joints and loaded by its own weight; no sliding between the voussoirs and no tensile or crushing failure; the gore is treated as a plane arch whose weight is proportional to its width, with the crown joint as a pin (the gores meet at a point there).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dome#Structure' },
+      viz(v) {
+        const D2R = Math.PI / 180, R0 = 10, GAM = 22;
+        const ng = v.slider('number of meridional cracks', 6, 36, 16, { int: true });
+        const tr = v.slider('thickness t / R', 0.02, 0.15, 0.07, { step: 0.002 });
+        const end = v.slider('opening angle of the dome (°)', 60, 90, 90, { step: 1 });
+        const spread = v.slider('outward spread of the base (cm), R = 10 m', 0, 12, 4, { step: 0.5 });
+        const showMin = v.toggle('show the thinnest dome that stands (with its hinges)', false);
+        const A = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 0.95, minWidth: 260, title: 'plan: cracks rise from the base' });
+        const B = v.stage({ x: [-1.3, 1.3], y: [-0.15, 1.15], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 300, title: 'one gore and its opposite, as an arch' });
+        let M = null;
+        const model = () => {
+          const e = end.value, N = 24, mid = sphereMid(1, e, N), dth = (2 * Math.PI) / ng;
+          const mk = (t) => domeSlice(mid, t, { gamma: 1, dtheta: dth });
+          const g = mk(tr.value), c = centralLine(g, []), fit = bestFit(mk, () => [], {}, 0.002, 0.4, 26);
+          const P = profile({ type: 'sphere', R: 1, phi1: e, n: 300 }), mem = membrane(P, 1), zero = hoopZero(P, mem.Ntheta);
+          return { g, c, fit, zero, mk, dth };
+        };
+        v.render(() => {
+          const m = M = model(), Gs = showMin.value && m.fit ? m.fit.g : m.g, u = showMin.value && m.fit ? m.fit.u : m.c ? m.c.u : m.fit ? m.fit.u : [0, 0, 0];
+          // plan
+          const rc = m.zero !== null ? Math.sin(m.zero) : 1, ow = (20 * 2 * Math.PI * (spread.value / 100)) / (ng * R0);
+          A.circle(0, 0, 1, { color: 'ink', fill: 'muted', fillAlpha: 0.08, width: 1.6 });
+          A.circle(0, 0, rc, { color: 'green', width: 1.2, dash: [4, 4] });
+          for (let k = 0; k < ng; k++) {
+            const th = (2 * Math.PI * (k + 0.5)) / ng, c = Math.cos(th), s = Math.sin(th);
+            A.poly([[rc * c, rc * s], [c - ow * 0.5 * -s, s - ow * 0.5 * c], [c + ow * 0.5 * -s, s + ow * 0.5 * c]], { fill: 'red', fillAlpha: 0.6, color: 'red', width: 1 });
+          }
+          A.text(m.zero !== null ? `no cracks above φ = ${f2(deg(m.zero), 1)}°` : 'no tension: no cracks', 0, 0, { size: 12, color: 'green', align: 'center' });
+          // gore as an arch
+          const e = end.value, zb = Math.cos(e * D2R);
+          Gs.blocks.forEach((b, i) => {
+            const phi = deg(Math.atan2(Math.abs(b.cx), b.cy + zb)), tens = m.zero !== null && phi > deg(m.zero);
+            B.poly(b.poly, { fill: tens ? 'red' : 'accent', fillAlpha: 0.13 + (i % 2) * 0.07, color: 'ink', width: 0.8, alpha: 0.8 });
+          });
+          const tl = thrustLine(Gs, [], u);
+          drawThrust(v, B, tl, { color: 'green', bad: 'orange', width: 2.6 });
+          if (showMin.value && m.fit) for (const h of hinges(m.fit.g, [], m.fit.u, {}, 1e-6)) { const J = m.fit.g.joints[h.j], p = h.side === 'a' ? J.a : J.b; B.dot(p[0], p[1], { r: 5, color: 'red' }); }
+          B.line(-1.2, 0, 1.2, 0, { color: 'faint', dash: [3, 4], width: 1 });
+          v.legend([['green', 'thrust line (inside)'], ['orange', 'thrust line (outside)'], ['red', 'cracked zone / hinges'], ['accent', 'uncracked zone', { area: true }]]);
+        });
+        v.readout(() => {
+          const m = M, ok = !!m.c, Hk = ((showMin.value && m.fit ? m.fit.u : m.c ? m.c.u : m.fit.u)[0]) * GAM * R0 ** 3, Ttot = (Hk * ng) / (2 * Math.PI);
+          return `Thickness $t/R=${f2(showMin.value && m.fit ? m.fit.t : tr.value, 3)}$: ${showMin.value ? 'this is the **thinnest** dome with a thrust line' : ok ? 'the gore **stands**' : '**no thrust line fits**: the gores would fall'}; smallest thickness $t_{\\min}/R=${f2(m.fit ? m.fit.t : NaN, 4)}$ (mean radius). Thrust of one gore at the crown ${f2(Hk, 1)} kN (R = 10 m, 22 kN/m³), so a ring tie at the base must carry $T=nH/2\\pi=${f2(Ttot, 0)}$ kN to stop the cracks from opening. The membrane hoop tension ends at $\\varphi=${m.zero !== null ? f2(deg(m.zero), 1) : '—'}^\\circ$.`;
+        });
+      },
+    },
   ],
 };

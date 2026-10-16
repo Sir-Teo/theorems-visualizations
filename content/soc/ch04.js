@@ -8,8 +8,8 @@
 // as stated in course notes (side length n of an n × n lattice; q < 2: Omega(n^((2-q)/3)); q > 2: Omega(n^((q-2)/(q-1)))),
 // not checked against the paper. Everything drawn from a simulation is labelled as a model on the page.
 import {
-  rng32, mkGraph, components, gnpSkip, distHist, meanDistER, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
-  wsSkeleton, wsBuild, pathAndClustering, kleinberg, greedyRoute, meanDelivery, linkLengthShares, circlePos,
+  rng32, components, meanDistER, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
+  wsSkeleton, wsBuild, pathAndClustering, meanDelivery, linkLengthShares, circlePos,
 } from './ch04.shared.js';
 
 export default {
@@ -229,7 +229,7 @@ So online social networks are "small" in the sense of 4.3, and have become small
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Six_degrees_of_separation', arxiv: 'https://arxiv.org/abs/1111.4503' },
       verify: true,
       viz(v) {
-        const fmtN = (x) => (x >= 1e9 ? `${(x / 1e9).toPrecision(3)} billion` : x >= 1e6 ? `${(x / 1e6).toPrecision(3)} million` : x >= 1e3 ? `${(x / 1e3).toPrecision(3)} thousand` : `${Math.round(x)}`);
+        const fmtN = (x) => (x >= 1e9 ? `${(x / 1e9).toPrecision(3)} billion` : x >= 1e6 ? `${(x / 1e6).toPrecision(3)} million` : x >= 1e3 ? `${Math.round(x / 1e3 * 10) / 10} thousand` : `${Math.round(x)}`);
         const cS = v.slider('mean degree $c$', 3, 400, 190, { step: 1, int: true });
         const NS = v.slider('population $N$', 1e3, 1e10, 7.21e8, { log: true, fmt: fmtN });
         const A = v.stage({ x: [-0.5, 9.5], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'distance $d$ (hops)', ylabel: 'share of the population at distance $d$', title: 'model: how a neighbourhood fills the network', minWidth: 280, weight: 1 });
@@ -247,7 +247,7 @@ So online social networks are "small" in the sense of 4.3, and have become small
           B.fn((x) => meanDistER(x, c), { color: 'accent', width: 2.4, n: 200 });
           B.dot(7.21e8, 4.74, { r: 6, color: 'red' }); B.text('2011: 4.74', 7.21e8, 4.74, { dx: -9, dy: -14, size: 11.5, weight: 700, color: 'red', align: 'right' });
           B.dot(7.21e8, meanDistER(7.21e8, 190), { r: 5, hollow: true, color: 'green' });
-          B.dot(1.59e9, 4.57, { r: 6, color: 'purple' }); B.text('2016: 4.57', 1.59e9, 4.57, { dx: 2, dy: 20, size: 11.5, weight: 700, color: 'purple', align: 'right' });
+          B.dot(1.59e9, 4.57, { r: 6, color: 'purple' }); B.text('2016: 4.57', 1.59e9, 4.57, { dx: 10, dy: 20, size: 11.5, weight: 700, color: 'purple', align: 'left' });
           B.vline(N, { color: 'gold', width: 1.4, dash: true });
           B.dot(N, meanDistER(N, c), { r: 5, color: 'gold' });
           st = { c, N, sm: mean, pred: meanDistER(N, c), p2011: meanDistER(7.21e8, 190) };
@@ -256,7 +256,7 @@ So online social networks are "small" in the sense of 4.3, and have become small
         v.readout(() => {
           if (!st) return '';
           const { c, N, sm, pred, p2011 } = st;
-          return String.raw`$c=${c}$, $N=$ ${fmtN(N)}: neighbourhood-growth model mean **${v.fix(sm, 2)}**, formula $(\ln N-\gamma)/\ln c+\tfrac12=$ **${v.fix(pred, 2)}** · within $d$ hops about $c^d$ people (at $c=${c}$: ${[1, 2, 3, 4].map((d) => (Math.pow(c, d) >= 1e6 ? `${(Math.pow(c, d) / 1e6).toPrecision(2)}M` : Math.round(Math.pow(c, d)).toLocaleString('en-US'))).join(', ')} for $d=1..4$) · each factor of 1000 in $N$ adds $\ln1000/\ln c=${v.fix(Math.log(1000) / Math.log(c), 2)}$ hops
+          return String.raw`$c=${c}$, $N=$ ${fmtN(N)}: neighbourhood-growth model mean **${v.fix(sm, 2)}**, formula $(\ln N-\gamma)/\ln c+\tfrac12=$ **${v.fix(pred, 2)}** · within $d$ hops about $c^d$ people (at $c=${c}$: ${[1, 2, 3, 4].map((d) => fmtN(Math.pow(c, d))).join(', ')} for $d=1,\dots,4$) · each factor of 1000 in $N$ adds $\ln1000/\ln c=${v.fix(Math.log(1000) / Math.log(c), 2)}$ hops
 2011: measured 4.74 vs random-graph value ${v.fix(p2011, 2)} ($N=721$ million, $c=190$); 2016: measured 4.57 with 1.59 billion users`;
         });
       },
@@ -329,7 +329,7 @@ So online social networks are "small" in the sense of 4.3, and have become small
 
 (b) For every other exponent no decentralised rule is polylogarithmic: the expected time is at least a power of $n$: $\Omega(n^{(2-q)/3})$ for $q<2$ and $\Omega(n^{(q-2)/(q-1)})$ for $q>2$.
 
-So short paths exist for a whole range of $q$ (shortest paths are short for $q<3$) but can be **found** without a map only when long links are spread evenly over all distance scales.`,
+So short paths may exist without being **findable**: without a map, a message can be routed efficiently only when long links are spread evenly over all distance scales.`,
       idea: String.raw`At $q=2$ the probability that the long link of $u$ has length in $[2^j,2^{j+1})$ is about the same for every $j$: a link falls in each "distance scale" equally often (the number of vertices at that scale grows like $d^2$ and each is chosen with weight $d^{-2}$). The greedy message needs to halve its distance to the target, and in each such phase it has a chance of order $1/\log n$ per step of finding a link that does it, so each phase costs $O(\log n)$ steps and there are $O(\log n)$ phases. For $q<2$ links are too long, so they are rarely close enough to the target to help in the final approach; for $q>2$ links are too short to cross the lattice quickly. In both cases the missing scales cost a polynomial factor.`,
       caption: String.raw`A model run on real routes: **left**, mean greedy delivery time against $q$ for lattices of side 32, 128 and 512 (200 random messages per point); **middle**, delivery time against side length for the chosen $q$ on log–log axes, with the theorem's lower-bound slopes dashed; **right**, the share of long links in each distance scale $[2^j,2^{j+1})$: flat only at $q=2$. Finite lattices are small, so the best $q$ drifts towards 2 only slowly as the side grows.`,
       scope: String.raw`Statement as given in course notes for the $n\times n$ lattice with one long-range contact per node; the lower bounds in terms of the side length are quoted from those notes and were not checked against Kleinberg's paper. The simulated lattice is a torus with Manhattan distance, for sizes up to 512×512; the optimum at finite size is below 2, and the theorem is asymptotic.`,
