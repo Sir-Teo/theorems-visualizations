@@ -427,14 +427,14 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
             for (const p of ALL) { const x = xf(p); if (x <= 1.6) s.dot(x, (p.r - Fx.a) / Fx.b, { r: 4, color: FCOL[p.fm] }); }
             s.corner(`rms misfit ${v.fix(Fx.rms, 2)} rating points (critical band: ${v.fix(FCB.rms, 2)}, fixed 132 Hz: ${v.fix(FH.rms, 2)})`, 'tr', { color: 'ink', weight: 600, plate: true });
           } else if (md === 'f11') {
-            s.setScale({ xlog: false, x: [240, 515], y: [-0.3, 6.2] }); s.setTitle('Fig. 11: two complex tones of 6 harmonics, the lower at 250 Hz');
+            s.setScale({ xlog: false, x: [240, 515], y: [-0.75, 6.2] }); s.setTitle('Fig. 11: two complex tones of 6 harmonics, the lower at 250 Hz');
             s.setLabels('frequency of the upper tone (Hz)', 'dissonance ↓'); s.setTicks([250, 300, 350, 400, 450, 500].map((x) => [x, String(x)]), [0, 1, 2, 3, 4, 5, 6].map((k) => [6 - k, String(k)]));
             for (let k = -1; k <= 13; k++) { const f = 250 * 2 ** (k / 12); if (f > 240 && f < 515) s.vline(f, { color: 'grid', width: 1 }); }
             const P = []; for (let i = 0; i <= 600; i++) { const f = 242 + (273 * i) / 600; P.push([f, 6 - plComplex(H6(250).concat(H6(f)))]); }
             s.path(P, { color: 'accent', width: 2.2 });
             for (const [f, d] of PL_FIG11) s.dot(f, 6 - d, { r: 2.6, color: 'ink' });
-            for (const [p, q] of [[1, 1], [6, 5], [5, 4], [4, 3], [3, 2], [5, 3], [2, 1]]) { const f = (250 * p) / q; s.text(`${q}:${p}`, f, 6 - plComplex(H6(250).concat(H6(f))), { color: 'accent', size: 10.5, align: 'center', dy: -9, plate: true }); }
             s.vline(cur11, { color: 'gold', width: 1.5 });
+            for (const [p, q] of [[1, 1], [6, 5], [5, 4], [4, 3], [3, 2], [5, 3], [2, 1]]) { const f = (250 * p) / q; s.text(`${q}:${p}`, f, 6 - plComplex(H6(250).concat(H6(f))), { color: 'accent', size: 10.5, align: 'center', dy: -9, plate: true }); }
           } else {
             s.setScale({ xlog: true, x: [40, 1200], y: [-0.2, 4.2] }); s.setTitle('Fig. 12: six intervals of 6-harmonic tones against the pitch of the lower tone');
             s.setLabels('frequency of the lower tone (Hz)', 'dissonance ↓'); s.setTicks([[50, '50'], [100, '100'], [200, '200'], [500, '500'], [1000, '1000']], [0, 1, 2, 3, 4].map((k) => [4 - k, String(k)]));
@@ -454,7 +454,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
           if (md === 'rate') { const fm = fmS.value, P = PL_MEDIANS[fm].pts, lo = P.reduce((a, b) => (b[1] < a[1] ? b : a)); return `${fm} Hz: lowest median ${v.fix(lo[1], 2)} at $\\Delta f = ${v.fix(lo[0], 1)}$ Hz = ${v.fix(lo[0] / cbw(fm), 2)} CB (critical band ${v.fix(cbw(fm), 0)} Hz) · your ratings so far: ${mine.length}${pending ? ' · a test interval is waiting for your rating' : ''}`; }
           if (md === 'one') return `standard curve fitted to all 68 medians: rating ≈ ${v.fix(FCB.a, 2)} − ${v.fix(-FCB.b, 2)}·d · misfit with critical-band scaling ${v.fix(FCB.rms, 2)} vs fixed-Hz scaling ${v.fix(FH.rms, 2)} rating points · paper: maximal dissonance at about 25% of a critical band, consonance from 100%; with today's narrower bands, about 40% (Greenwood, 1991)`;
           if (md === 'f11') { let ss = 0; for (const [f, d] of PL_FIG11) ss += (plComplex(H6(250).concat(H6(f))) - d) ** 2; return `upper tone ${v.fix(cur11, 1)} Hz: recomputed dissonance ${v.fix(plComplex(H6(250).concat(H6(cur11))), 2)} · agreement with the paper's Fig. 11 over ${PL_FIG11.length} read-off points: rms ${v.fix(Math.sqrt(ss / PL_FIG11.length), 2)} (scale 0–6) · computation: Fig. 10 curve, critical band at the mean frequency, adjacent partials only, equal amplitudes`; }
-          return `lower tone ${v.fix(cur12, 0)} Hz (fifth): recomputed dissonance ${v.fix(plComplex(H6(cur12).concat(H6(cur12 * 1.5))), 2)} · the paper: "below a critical frequency, the intervals become more and more dissonant … the critical frequency is lower for more consonant intervals" · open circles: values read from the paper's Fig. 12 (approximate)`;
+          return `lower tone ${v.fix(cur12, 0)} Hz (fifth): recomputed dissonance ${v.fix(plComplex(H6(cur12).concat(H6(cur12 * 1.5))), 2)} · the paper: "below a critical frequency, the intervals become more and more dissonant … the critical frequency is lower for more consonant intervals" · open circles: values read from the paper's Fig. 12; the recomputation runs a little rougher than the paper's below about 150 Hz, where the critical-band curve they used is uncertain`;
         });
       },
     },

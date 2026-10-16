@@ -269,5 +269,185 @@ There is no logarithmic factor here (unlike time): a universal machine simulates
         });
       },
     },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Theorem',
+      name: 'Nondeterministic time hierarchy theorem',
+      statement: String.raw`If $f,g$ are time-constructible and $f(n+1)=o(g(n))$, then
+$$\mathrm{NTIME}(f(n))\subsetneq\mathrm{NTIME}(g(n)).$$
+This is the nondeterministic analogue of the time hierarchy theorem (Cook 1973; Seiferas–Fischer–Meyer 1978 for the sharp form $f(n+1)=o(g(n))$). In particular $\mathrm{NTIME}(n)\subsetneq\mathrm{NTIME}(n^2)\subsetneq\cdots$ and $\mathrm{NP}\subsetneq\mathrm{NEXP}$.`,
+      idea: String.raw`Direct diagonalization fails: a nondeterministic machine cannot cheaply *complement* another one's answer. The fix is **lazy diagonalization** (Žák 1983). Choose rapidly growing breakpoints $a_1<a_2<\cdots$ and let $D_i$ work on the lengths in $(a_i,a_{i+1}]$ against the $i$-th machine $M_i$: for $n<a_{i+1}$ it copies the answer of $M_i$ on the *next* length, $D(1^n)=M_i(1^{n+1})$ (affordable nondeterministically, as $f(n+1)=o(g(n))$); only at the last length does it spend exponential time — deterministically trying every computation of $M_i$ on $1^{a_i+1}$, which the huge gap pays for — and answer the opposite, $D(1^{a_{i+1}})=1-M_i(1^{a_i+1})$. If $M_i$ agreed with $D$ everywhere on the interval, the answers would chain $M_i(1^{a_i+1})=M_i(1^{a_i+2})=\cdots=M_i(1^{a_{i+1}})=1-M_i(1^{a_i+1})$, absurd. So each machine is beaten somewhere on its own interval, with only one flip per interval.`,
+      caption: String.raw`**Top**: the number line cut at breakpoints $a_1<a_2<\cdots$ (here $a_{i+1}=2^{a_i}$, drawn with equal-width cells); pick the interval whose machine $M_i$ you want to test. **Bottom**: the lengths $a_i+1,\dots,a_{i+1}$ as columns. **Click the top row** to write any answers you like for $M_i$ (a toy: it is *any* function of the length). The diagonalizer's row is computed by the lazy rule: copy the *next* column, and flip the first one at the very end (arrows). The agreement row shows where $M_i$ and $D$ coincide. Try to make them agree everywhere: you can only reach $L-1$ of $L$ columns — one disagreement is forced, and that is the whole proof.`,
+      deps: ['cplx-1.2', 'toc-12.11'],
+      refs: ['Arora–Barak ch. 3'],
+      credit: 'Cook, 1973; Seiferas, Fischer & Meyer, 1978; simple proof by Žák, 1983',
+      tags: ['hierarchy', 'nondeterminism', 'lazy diagonalization'],
+      viz(v) {
+        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
+        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, full: true });
+        let M = [], seeded = 0;
+        const Ls = v.slider('columns shown $L$', 4, 12, 8, { int: true, onChange: () => reset() });
+        const iS = v.select('interval', [{ value: 0, label: '$(2,4]$' }, { value: 1, label: '$(4,16]$' }, { value: 2, label: '$(16,2^{16}]$' }, { value: 3, label: '$(2^{16},2^{2^{16}}]$' }], 0, { onChange: () => reset() });
+        v.button('copy chain', () => { M = M.map(() => M[0] ?? 0); });
+        v.button('random machine', () => { const r = v.rng(++seeded * 7 + 3); M = M.map(() => (r() < 0.5 ? 0 : 1)); });
+        const reset = () => { const r = v.rng(11 + iS.value); M = Array.from({ length: Ls.value }, () => (r() < 0.5 ? 0 : 1)); };
+        reset();
+        const T = v.table(B, { rows: 3, cols: 8, square: false, cellAspect: 1.05, maxCell: 62, size: 17, labelSize: 12.5, rowLabels: ['$M_i(n)$ (you choose)', '$D(n)$ (lazy rule)', '$D(n)=M_i(n)$ ?'] });
+        const Dv = () => M.map((_, k) => (k < M.length - 1 ? M[k + 1] : 1 - M[0]));
+        B.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i === 0 && c.j >= 0) M[c.j] = 1 - M[c.j]; });
+        const BP = ['2', '4', '16', '2^{16}', '2^{65536}'];
+        v.render(() => {
+          const L = M.length, D = Dv(), sel = iS.value;
+          // number line
+          A.setView([-0.2, 4.2], [-1, 1.6]);
+          for (let k = 0; k < 4; k++) {
+            const on = k === sel;
+            A.rect(k + 0.03, 0, k + 0.97, 0.8, { fill: on ? 'accent' : 'muted', fillAlpha: on ? 0.28 : 0.08, color: on ? 'accent' : 'faint', width: on ? 2.4 : 1, radius: 4 });
+            A.text(`$(a_{${k + 1}},a_{${k + 2}}]$`, k + 0.5, 0.4, { align: 'center', baseline: 'middle', size: 13, weight: on ? 700 : 500 });
+            A.dot(k + 0.97, 0, { r: 5, color: 'red' });
+            A.text(`$${BP[k + 1]}$`, k + 1, -0.35, { align: 'center', size: 11.5, color: 'muted' });
+          }
+          A.dot(0.03, 0, { r: 4, color: 'muted' }); A.text(`$${BP[0]}$`, 0, -0.35, { align: 'center', size: 11.5, color: 'muted' });
+          A.text('inside an interval: $D(1^n)=M_i(1^{n+1})$   ·   at the right end (red): $D=1-M_i(1^{a_i+1})$ by brute force', 2, 1.3, { align: 'center', size: 12.5, color: 'muted' });
+          T.set({ cols: L });
+          T.draw({
+            value: (i, j) => (i === 0 ? M[j] : i === 1 ? D[j] : M[j] === D[j] ? '✓' : '✗'),
+            colLabels: (j) => (j === 0 ? '$a_i{+}1$' : j === L - 1 ? '$a_{i+1}$' : `$+${j}$`),
+            fill: (i, j) => (i === 0 ? ['accent', 0.14] : i === 1 ? [j === L - 1 ? 'red' : 'orange', 0.22] : [M[j] === D[j] ? 'green' : 'red', 0.3]),
+          });
+          for (let k = 0; k < L - 1; k++) T.arrow([0, k + 1], [1, k], { color: 'orange', width: 1.6 });
+          T.arrow([0, 0], [1, L - 1], { color: 'red', width: 1.8, dash: true });
+        });
+        v.legend([['orange', 'copy the answer on the next length'], ['red', 'flip: the exponential-time step at the last length', { dash: true }]]);
+        v.readout(() => {
+          const L = M.length, D = Dv(), ag = M.filter((m, k) => m === D[k]).length;
+          return `$M_i$ agrees with $D$ on **${ag}** of $L=${L}$ lengths · full agreement would need $M_i(a_i{+}1)=\\dots=M_i(a_{i+1})$ **and** $M_i(a_{i+1})=1-M_i(a_i{+}1)$ — ${ag === L ? 'impossible (check the table!)' : `so the best possible is $L-1=${L - 1}$`}${ag === L - 1 ? ' — you have reached it' : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6',
+      kind: 'Theorem',
+      name: 'Linear speedup theorem',
+      statement: String.raw`Let $L$ be decided by a multitape Turing machine in time $t(n)$, with $t(n)/n\to\infty$ (more precisely $t(n)=\omega(n)$), and let $c>0$. Then $L$ is decided by another multitape machine in time $c\,t(n)$. Hence $\mathrm{DTIME}(t)=\mathrm{DTIME}(c\,t)$, and big-$O$ is the right way to state time bounds. For $t(n)=O(n)$ the same trick gives $n+\varepsilon n$ steps (the reading of the input cannot be sped up).`,
+      idea: String.raw`Choose a block size $k$ and let the new machine use the alphabet $\Gamma^k$: one new symbol is a whole block of $k$ old symbols. After copying the input into blocks (cost $n+n/k$), it simulates $k$ old steps at a time: it looks at the current block and both neighbours (the old head cannot leave them in $k$ steps), computes the outcome of the next $k$ old steps *inside its finite control*, and rewrites the three blocks — at most five moves of its head. So $t$ old steps cost about $5t/k+n+n/k$ new ones: choose $k\ge 5/c$. Nothing here uses a hypothesis about the language, which is why constants are ignored, and why the hierarchy theorems (1.2) are stated with $o(\cdot)$.`,
+      caption: String.raw`The machine is a real palindrome-checker run on $0^n$. **Left**: space–time diagram, head position against the step count; the faint vertical lines mark macro-steps of $k$ old steps, the orange staircase is the compressed machine's block position. **Right** (log scale): measured steps of the original machine for every input length (blue) against the compressed machine's total (orange, counted from the actual head trace: 3 to 5 moves per macro-step, plus compressing the input). Change the block size $k$ and watch the gap open by roughly $k/4$; for small $n$ the $n+n/k$ set-up cost dominates, which is why the theorem needs $t(n)=\omega(n)$.`,
+      deps: ['toc-12.2'],
+      refs: ['Arora–Barak ch. 1'],
+      credit: 'Hartmanis & Stearns, 1965',
+      tags: ['time bounds', 'constants'],
+      viz(v) {
+        const PAL = machineById('palin'), runs = {};
+        const R = (n) => (runs[n] ??= runTM(PAL, '0'.repeat(n), { posTrace: true, loopCheck: false, maxSteps: 1e6 }));
+        const blk = (p, k) => Math.floor(p / k);
+        const comp = (n, k) => {
+          const r = R(n), t = r.steps; let moves = 0, macro = 0;
+          for (let s = 0; s < t; s += k) { moves += 3 + Math.abs(blk(r.pos[s], k) + 1 - blk(r.pos[Math.min(s + k, t)], k)); macro++; }
+          const prep = n + Math.ceil(n / k);
+          return { macro, moves, prep, total: prep + moves };
+        };
+        const kS = v.select('block size $k$', [1, 2, 4, 8, 16, 32].map((k) => ({ value: k, label: String(k) })), 4);
+        const nS = v.slider('input length $n$', 6, 60, 36, { int: true });
+        const A = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'step $t$', ylabel: 'head cell', title: 'space–time diagram of the palindrome machine' });
+        const B = v.stage({ x: [4, 61], y: [3, 3e3], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'input length $n$', ylabel: 'steps (log scale)' });
+        v.render(() => {
+          const n = nS.value, k = kS.value, r = R(n), t = r.steps, c = comp(n, k);
+          A.setView([-t * 0.02, t * 1.03], [-2, n + 3]);
+          for (let s = 0; s <= t && t / k <= 120; s += k) A.vline(s, { color: 'faint', width: 1, alpha: 0.5 });
+          A.hline(n - 0.5, { color: 'faint', dash: true }); A.hline(-0.5, { color: 'faint', dash: true });
+          A.path(r.pos.map((p, s) => [s, p]), { color: 'accent', width: 1.8 });
+          const st = []; for (let s = 0; s <= t + k; s += k) { const q = Math.min(s, t); st.push([q, blk(r.pos[q], k) * k + k / 2 - 0.5]); }
+          if (k > 1) A.path(st, { color: 'orange', width: 2.2 });
+          B.fn((x) => 0.5 * x * x, { color: 'faint', dash: true, width: 1, domain: [4, 60] });
+          const ts = [], cs = []; for (let m = 4; m <= 60; m++) { ts.push([m, R(m).steps]); cs.push([m, comp(m, k).total]); }
+          B.path(ts, { color: 'accent', width: 2.4 }); B.path(cs, { color: 'orange', width: 2.4 });
+          B.vline(n, { color: 'gold', dash: [4, 3] }); B.dot(n, t, { r: 5, color: 'accent' }); B.dot(n, c.total, { r: 5, color: 'orange' });
+        });
+        v.legend([['accent', 'original machine'], ['orange', 'compressed machine (blocks of $k$)'], ['faint', '$n^2/2$', { dash: true }]]);
+        v.readout(() => {
+          const n = nS.value, k = kS.value, t = R(n).steps, c = comp(n, k);
+          return `$n=${n}$: original **${t}** steps · compressed: ${c.macro} macro-steps, ${c.moves} moves + ${c.prep} to compress the input = **${c.total}** steps · speed-up **${(t / c.total).toFixed(2)}**× (asymptotically about $k/4=${(k / 4).toFixed(2)}$ when $t\\gg n$) · answer unchanged: ${R(n).status === 'acc' ? 'accepts' : 'rejects'}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7',
+      kind: 'Theorem',
+      name: 'Hopcroft–Paul–Valiant: time t fits in space t/log t',
+      statement: String.raw`For every time-constructible $t(n)\ge n$,
+$$\mathrm{DTIME}(t(n))\subseteq\mathrm{DSPACE}\big(t(n)/\log t(n)\big).$$
+This holds for multitape Turing machines; the trivial inclusion is $\mathrm{DTIME}(t)\subseteq\mathrm{DSPACE}(t)$. Combined with the space hierarchy theorem it gives $\mathrm{DTIME}(t)\subsetneq\mathrm{DSPACE}(t)$, i.e. space is strictly more powerful than time at the same bound.`,
+      idea: String.raw`Cut the computation into $t/\log t$ blocks of $\log t$ steps; a block touches only a bounded number of tape segments, so the whole run becomes a bounded-degree DAG of $N\approx t/\log t$ nodes (each node: the contents of a few segments after a block). To evaluate the last node the simulator need not keep all intermediate values: it plays the **pebble game** on this DAG — a pebble on a node means "its value is stored"; a pebble may be placed on a node only when all its predecessors carry pebbles, and may be removed at any moment. The Hopcroft–Paul–Valiant lemma says every bounded-degree DAG can be pebbled with $O(N/\log N)$ pebbles, so the simulation stores $O(t/\log t)$ segments of $\log t$ cells… and recomputes what it has thrown away.`,
+      caption: String.raw`Play the **pebble game** on a computation graph (arrows run from the inputs of a step to the step). In *play* mode click a node to place a pebble (only when all its predecessors are pebbled; sources are free) or to take it off; get a pebble onto the gold output node using as few pebbles as you can. *Optimal strategy* steps through a shortest sequence of moves found by exhaustive search over all pebble placements, with the **provably minimum** number of pebbles. In *edit* mode drag nodes, click empty space to add a node, click two nodes in turn to add an arrow (Alt-click deletes), and the minimum is recomputed. Path: 2 pebbles whatever the length; binary tree of depth $d$: $d+1$; pyramid of height $h$: $h+1$.`,
+      deps: ['toc-14.1'],
+      refs: ['Arora–Barak ch. 4'],
+      credit: 'Hopcroft, Paul & Valiant, 1977',
+      tags: ['time vs space', 'pebbling'],
+      viz(v) {
+        const PRE = {
+          path: () => ({ nodes: Array.from({ length: 10 }, (_, i) => ({ id: i, x: 0.6 + i * 1.2, y: 2.5 })), edges: Array.from({ length: 9 }, (_, i) => [i, i + 1]) }),
+          pyramid: () => { const nodes = [], edges = [], id = (r, c) => r * 10 + c; for (let r = 0; r < 4; r++) for (let c = 0; c < 4 - r; c++) { nodes.push({ id: id(r, c), x: 3.1 + c * 1.9 + r * 0.95, y: 0.6 + r * 1.35 }); if (r) { edges.push([id(r - 1, c), id(r, c)]); edges.push([id(r - 1, c + 1), id(r, c)]); } } return { nodes, edges }; },
+          tree: () => { const nodes = [], edges = []; for (let d = 0; d < 4; d++) for (let c = 0; c < 2 ** (3 - d); c++) { const x = (c + 0.5) * (12 / 2 ** (3 - d)), id = 100 * d + c; nodes.push({ id, x, y: 0.5 + d * 1.5 }); if (d) { edges.push([100 * (d - 1) + 2 * c, id]); edges.push([100 * (d - 1) + 2 * c + 1, id]); } } return { nodes, edges }; },
+          grid: () => { const nodes = [], edges = [], id = (r, c) => r * 10 + c; for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) { nodes.push({ id: id(r, c), x: 2.5 + c * 2.4 + r * 0.0, y: 0.7 + r * 1.9 }); if (r) edges.push([id(r - 1, c), id(r, c)]); if (c) edges.push([id(r, c - 1), id(r, c)]); } return { nodes, edges }; },
+        };
+        const mode = v.select('mode', [{ value: 'play', label: 'play' }, { value: 'solve', label: 'optimal strategy' }, { value: 'edit', label: 'edit graph' }], 'play', { onChange: () => { peb = new Set(); S.reset(); } });
+        const pre = v.select('graph', [{ value: 'path', label: 'path' }, { value: 'pyramid', label: 'pyramid' }, { value: 'tree', label: 'binary tree' }, { value: 'grid', label: 'grid' }], 'pyramid', { onChange: () => load() });
+        const s = v.stage({ x: [0, 12], y: [-0.3, 5.7], axes: false, height: 330, full: true });
+        let peb = new Set(), moves = 0, maxP = 0, info = null, solFrames = [];
+        const G = v.graph(s, { directed: true, layout: 'none', editable: true, ...PRE.pyramid(), r: 15, fontSize: 11,
+          onClick: ({ node }) => {
+            if (mode.value === 'edit') return false;
+            if (mode.value === 'play' && node) {
+              const ps = structure().preds[idxOf(node.id)];
+              if (peb.has(node.id)) { peb.delete(node.id); moves++; }
+              else if (ps.every((p) => peb.has(G.nodes[p].id))) { peb.add(node.id); moves++; maxP = Math.max(maxP, peb.size); }
+            }
+            return true;
+          },
+          onChange: () => { peb = new Set(); recompute(); S.reset(); } });
+        const idxOf = (id) => G.nodes.findIndex((n) => n.id === id);
+        const structure = () => {
+          const N = G.nodes.length, preds = Array.from({ length: N }, () => []), outd = new Array(N).fill(0);
+          for (const e of G.edges) { const a = idxOf(e.from), b = idxOf(e.to); if (a < 0 || b < 0) continue; preds[b].push(a); outd[a]++; }
+          const sinks = outd.map((d, i) => (d ? -1 : i)).filter((i) => i >= 0);
+          // acyclic?
+          const indeg = preds.map((p) => p.length), q = indeg.map((d, i) => (d ? -1 : i)).filter((i) => i >= 0); let seen = 0;
+          const succ = Array.from({ length: N }, () => []); preds.forEach((ps, b) => ps.forEach((a) => succ[a].push(b)));
+          while (q.length) { const u = q.pop(); seen++; succ[u].forEach((w) => { if (!--indeg[w]) q.push(w); }); }
+          return { N, preds, sinks, acyclic: seen === N };
+        };
+        const recompute = () => {
+          const st = structure(); info = null; solFrames = [];
+          if (st.acyclic && st.sinks.length === 1 && st.N <= 16) {
+            info = minPebbles(st.N, st.preds, st.sinks[0]);
+            if (info) { let m = new Set(); solFrames = [{ peb: [], note: `Start: no pebbles. The minimum for this graph is **${info.p}** pebbles; the search explored ${info.states.toLocaleString('en-US')} placements.`, vars: { pebbles: 0 } }];
+              info.moves.forEach((mv, k) => { const id = G.nodes[Math.abs(mv) - 1].id; if (mv > 0) m.add(id); else m.delete(id); solFrames.push({ peb: [...m], last: id, add: mv > 0, note: `${mv > 0 ? 'Place a pebble on' : 'Remove the pebble from'} node ${id}${mv > 0 ? ' (all its predecessors are pebbled)' : ' (its value is no longer needed)'}.`, vars: { pebbles: m.size, move: k + 1 } }); }); }
+          }
+          info = info ? { ...info, st } : { st };
+        };
+        function load() { G.set({ directed: true, layout: 'none', ...PRE[pre.value]() }); peb = new Set(); moves = 0; maxP = 0; recompute(); S.reset(); }
+        const S = v.steps({ frames: () => solFrames, speed: 1.2, still: 2, note: true, counter: 'move' });
+        recompute();
+        v.render(() => {
+          S.el.hidden = mode.value !== 'solve'; S.noteEl.hidden = mode.value !== 'solve';
+          const st = info.st, goal = st.sinks.length === 1 ? G.nodes[st.sinks[0]].id : null;
+          const cur = mode.value === 'solve' ? new Set(S.frame.peb || []) : peb;
+          G.draw({ nodeFill: (id) => (cur.has(id) ? 'accent' : null), nodeRing: (id) => (id === goal ? 'gold' : null), nodeColor: (id) => (id === goal ? 'gold' : null), nodeLabel: (id) => (cur.has(id) ? '' : String(id)), edgeColor: (e) => (cur.has(e.from) ? 'accent' : null) });
+        });
+        v.legend([['accent', 'pebbled', { dot: true }], ['gold', 'output node to be pebbled']]);
+        v.readout(() => {
+          const st = info.st, N = st.N;
+          if (!st.acyclic) return 'The graph has a directed **cycle** — a computation graph must be acyclic.';
+          if (st.sinks.length !== 1) return `The graph needs exactly one output node (it has ${st.sinks.length}).`;
+          if (!info.p) return `$N=${N}$ nodes — too many for exhaustive search (limit 16).`;
+          const goal = G.nodes[st.sinks[0]].id, won = peb.has(goal);
+          const base = `$N=${N}$ nodes: **${info.p}** pebbles suffice and are necessary (exhaustive search over all $2^{${N}}$ placements) · $N/\\log_2 N=${(N / log2(N)).toFixed(1)}$`;
+          return mode.value === 'play' ? `${base}\nyour game: **${peb.size}** pebbles on now, **${maxP}** at most, ${moves} moves${won ? ` — output pebbled${maxP === info.p ? ', and with the minimum number of pebbles!' : maxP > info.p ? `, but ${info.p} would have sufficed` : ''}` : ''}` : base;
+        });
+      },
+    },
   ],
 };

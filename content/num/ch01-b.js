@@ -223,8 +223,8 @@ in which every exponent is $\le0$, the largest term is exactly $1$, so the sum l
           sH.line(-1100, 0.08, 1100, 0.08, { color: 'faint', width: 1.5 });
           for (const t of [-1000, -750, -500, -250, 0, 250, 500, 750, 1000]) { sH.line(t, 0.05, t, 0.11, { color: 'faint' }); sH.text(String(t), t, 0.0, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
           sH.vline(R.m, { color: 'green', width: 1.5, dash: true });
-          sH.text(`e^x overflows for x > ${lnMax.toFixed(2)}`, 1090, 0.95, { size: 11, color: 'red', align: 'right' });
-          sH.text(`e^x rounds to 0 for x < ${lnMin.toFixed(1)}`, -1090, 0.95, { size: 11, color: 'muted', align: 'left' });
+          sH.text(`eˣ overflows for x > ${lnMax.toFixed(2)}`, 1090, 0.95, { size: 11, color: 'red', align: 'right' });
+          sH.text(`eˣ rounds to 0 for x < ${lnMin.toFixed(1)}`, -1090, 0.95, { size: 11, color: 'muted', align: 'left' });
           sH.text('max', R.m, 0.12, { size: 10.5, color: 'green', align: 'center' });
           // bars
           const L = Math.log10(F.max), Lm = Math.log10(F.sub / 2);
@@ -238,8 +238,8 @@ in which every exponent is $\le0$, the largest term is exactly $1$, so the sum l
             if (over) sB.text('∞', x0 - 0.2, clamp(a, -500, 500) + 24, { align: 'center', size: 15, weight: 800, color: 'red' });
             else if (R.naiveTerms[i] === 0) sB.text('0', x0 - 0.2, -22, { align: 'center', size: 13, weight: 800, color: 'red' });
           });
-          sB.text(`largest ${F.name} number ≈ 10^${L.toFixed(1)}`, 4.95, L + 14, { size: 11, color: 'red', align: 'right' });
-          sB.text(`smallest ${F.name} number ≈ 10^${Lm.toFixed(1)}`, 4.95, Lm - 18, { size: 11, color: 'muted', align: 'right' });
+          sB.text(`largest ${F.name} number ≈ ${sci(F.max, 2)}`, 4.95, Math.max(L + 14, 40), { size: 11, color: 'red', align: 'right' });
+          sB.text(`smallest (subnormal) ${F.name} number ≈ ${sci(F.sub, 2)}`, 4.95, Math.min(Lm - 18, -40), { size: 11, color: 'muted', align: 'right' });
         });
         v.legend([['red', 'naive: $e^{x_i}$'], ['green', 'shifted: $e^{x_i-m}$']]);
         v.readout(() => {

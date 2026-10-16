@@ -42,7 +42,7 @@ export function drawMsg(s, n, m, o = {}) {
     else s.line(m.ts, y1, x2, yy, { color: col, width: o.width || 2 });
   }
   if (m.label != null && o.label !== false) {
-    const f = m.lost ? 0.3 : 0.5;
+    const f = m.lost ? 0.3 : 0.72;
     s.text(String(m.label), m.ts + (m.tr - m.ts) * f, y1 + (y2 - y1) * f, { size: 11, color: o.labelColor || col, align: 'center', baseline: 'bottom', dy: -3 });
   }
 }

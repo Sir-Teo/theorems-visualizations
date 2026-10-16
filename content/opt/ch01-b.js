@@ -402,7 +402,7 @@ For one constraint: at a constrained extremum the level curve of $f$ is tangent 
           color: 'gold', r: 8, label: '$p$', labelPos: 'ne',
           constrain: (x, y) => { const V = modeS.value === 'quad' ? VQ : VR; return [clamp(x, V.x[0], V.x[1]), clamp(y, V.y[0], V.y[1])]; },
         });
-        const mem = memo1();
+        let info = null;
         v.render(() => {
           const quad = modeS.value === 'quad', view = quad ? VQ : VR, kap = kS.value, th = (tS.value * Math.PI) / 180;
           const c = Math.cos(th), sn = Math.sin(th);

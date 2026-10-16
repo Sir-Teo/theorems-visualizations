@@ -85,7 +85,7 @@ export default {
       num: '1.2', kind: 'Definition', name: 'Synchronous, asynchronous and partially synchronous timing',
       statement: String.raw`A timing model constrains message delays and relative process speeds. In the **synchronous** model there are known bounds $\delta$ on message delay (and on the time for a step), equivalently execution proceeds in lockstep rounds. In the **asynchronous** model there is no bound at all: every message is delivered eventually, but after an arbitrary finite delay, and processes can run at arbitrarily different speeds. In the **partially synchronous** model (Dwork–Lynch–Stockmeyer) bounds exist but are either unknown, or hold only after an unknown global stabilization time (GST).`,
       idea: String.raw`A timeout is only evidence of failure if the bound it assumes is real. With a known bound $\delta$ and heartbeat period $p$, a silence longer than $p+\delta$ proves the sender crashed, so a timeout $\Delta>p+\delta$ never errs. With no bound, the adversary delays one heartbeat just beyond whatever $\Delta$ is chosen, so every timeout eventually suspects a live process. With bounds that hold only after GST, a timeout can err finitely often and then becomes accurate for ever, which is the property that protocols such as Paxos and Raft rely on.`,
-      caption: String.raw`A (top lane) sends a heartbeat each time unit to B, which suspects A when no heartbeat arrives within the timeout $\Delta$ (red = a false suspicion of a live process, green = a correct suspicion). Switch the timing model, drag $\delta$, $\Delta$ and GST, and click A's lane to crash it at that instant. The lower panel plots the gap between successive arrivals against $\Delta$. The asynchronous schedule is an illustrative adversary that delays every fifth heartbeat past $\Delta$.`,
+      caption: String.raw`A (top lane) sends a heartbeat each time unit to B, which suspects A when no heartbeat arrives within the timeout $\Delta$ (red = a false suspicion of a live process, green = a correct suspicion). Switch the timing model, drag $\delta$, $\Delta$ and GST, and click A's lane to crash it at that instant. The lower panel plots the gap between successive arrivals against $\Delta$. The asynchronous schedule is an illustrative adversary: it holds back a short burst of heartbeats until just after $\Delta$ has expired, and does it again, longer, every 5.5 time units.`,
       deps: ['dist-1.1'], refs: ['Lynch §2.1', 'Lynch §23.4'], tags: ['timing', 'timeouts'],
       credit: 'Dwork, Lynch & Stockmeyer, 1988 (partial synchrony)',
       scope: String.raw`Heartbeat period fixed at 1; delay is uniform in $[0.1,\delta]$ except where the adversarial schedule says otherwise.`,
@@ -100,16 +100,17 @@ export default {
         let crash = null;
         v.button('remove crash', () => { crash = null; });
         const sim = () => {
-          const arr = [], beats = [];
+          const beats = [];
+          // adversarial outages (asynchronous / before GST): every beat sent in [3.2 + 5.5 j, 3.2 + 5.5 j + 1.5) is held until just after Δ has run out
+          const outage = (t) => { const j = Math.floor((t - 3.2) / 5.5); if (t < 3.2 || t >= 3.2 + 5.5 * j + 1.5) return -1; return j; };
           for (let k = 0; k * 1 < T; k++) {
             const t = k + 0.2; if (crash != null && t >= crash) break;
-            let d = 0.1 + (dl.value - 0.1) * hash01(3, k);
-            const spiky = k % 5 === 3, spike = to.value + 0.4 + 0.15 * k;
-            let tr;
-            if (mdl.value === 'sync') tr = t + d;
-            else if (mdl.value === 'async') tr = t + d + (spiky ? spike : 0);
-            else { tr = t + d + (t < gs.value && spiky ? spike : 0); if (t < gs.value) tr = Math.min(tr, Math.max(gs.value + dl.value, t + d)); }
-            beats.push({ k, ts: t, tr, late: tr - t > dl.value + 1e-9 }); arr.push(tr);
+            const d = 0.1 + (dl.value - 0.1) * hash01(3, k);
+            let tr = t + d;
+            const j = outage(t), adv = mdl.value === 'async' || (mdl.value === 'part' && t < gs.value);
+            if (adv && j >= 0) { const start = 3.2 + 5.5 * j; tr = start + to.value + 0.5 + 0.15 * j + 0.06 * (t - start); }
+            if (mdl.value === 'part' && t < gs.value) tr = Math.min(tr, Math.max(gs.value + dl.value, t + d));
+            beats.push({ k, ts: t, tr, late: tr - t > dl.value + 1e-9 });
           }
           const sorted = beats.filter((b) => b.tr <= T).slice().sort((a, b) => a.tr - b.tr);
           const ints = []; let prev = 0.2; const gaps = [];
@@ -129,12 +130,13 @@ export default {
           sA.text('crash: click A’s lane', T - 0.1, 1.5, { align: 'right', size: 11, color: 'muted' });
           // gap panel
           const safe = 1 + dl.value - 0.1;
+          sB.setView([0, T], [0, Math.max(3.2, to.value * 1.35, ...R.gaps.map((g) => g.gap * 1.1))]);
           sB.hline(to.value, { color: 'red', dash: true, width: 1.8 }); sB.text('timeout Δ', 0.2, to.value + 0.25, { size: 11.5, color: 'red', halo: true });
-          if (mdl.value !== 'async') { sB.hline(safe, { color: 'green', dash: [2, 4], width: 1.5 }); sB.text('1 + δ − 0.1 (largest gap once delays are bounded)', 0.2, safe - 0.3, { size: 11, color: 'green', halo: true }); }
-          for (const g of R.gaps) sB.rect(g.at - 0.14, 0, g.at + 0.14, Math.min(5.9, g.gap), { fill: g.gap > to.value ? 'red' : 'accent', fillAlpha: 0.55, color: g.gap > to.value ? 'red' : 'accent', width: 1 });
+          if (mdl.value !== 'async') { sB.hline(safe, { color: 'green', dash: [2, 4], width: 1.5 }); sB.text('1 + δ − 0.1: largest gap once delays are bounded', T - 0.2, safe + 0.28, { size: 11, color: 'green', halo: true, align: 'right' }); }
+          for (const g of R.gaps) sB.rect(g.at - 0.14, 0, g.at + 0.14, g.gap, { fill: g.gap > to.value ? 'red' : 'accent', fillAlpha: 0.55, color: g.gap > to.value ? 'red' : 'accent', width: 1 });
           if (mdl.value === 'part') sB.vline(gs.value, { color: 'gold', dash: true });
         });
-        v.legend([['accent', 'heartbeat'], ['orange', 'heartbeat slower than the model allows'], ['red', 'false suspicion', { area: true }], ['green', 'correct suspicion', { area: true }]]);
+        v.legend([['accent', 'heartbeat'], ['orange', 'heartbeat held back beyond δ'], ['red', 'false suspicion', { area: true }], ['green', 'correct suspicion', { area: true }]]);
         v.readout(() => {
           const R = sim(), falseN = R.ints.filter((q) => !q.ok).length, last = R.ints.filter((q) => !q.ok).map((q) => q.b).pop();
           const lat = crash != null ? R.ints.filter((q) => q.ok)[0] : null;
@@ -148,13 +150,13 @@ export default {
       num: '1.3', kind: 'Definition', name: 'Failure models: crash, omission and Byzantine',
       statement: String.raw`A process is **faulty** if it deviates from its specified behaviour; models differ in how it may deviate. A *crash* fault stops the process for ever (possibly in the middle of sending a batch of messages). An *omission* fault lets the process continue but fail to send (or receive) some messages. A *Byzantine* (arbitrary) fault allows any behaviour, including sending different values to different recipients. The models are nested: crash $\subset$ omission $\subset$ Byzantine, so a protocol that tolerates Byzantine faults tolerates the others. Correct processes are the ones that never deviate; guarantees are stated only for them.`,
       idea: String.raw`The only thing another process can observe of a fault is the messages that do or do not arrive, so each model is a statement about what the set of received messages can look like. Crash faults make messages disappear from some point on; omission faults make arbitrary messages disappear; Byzantine faults can also invent or alter messages and tell different lies to different recipients. The picture runs the same two-round exchange under every model and compares the decisions of the correct processes.`,
-      caption: String.raw`Commander P0 sends the value 1 to the three lieutenants, who then echo to each other, and each lieutenant decides the majority of the three values it has seen. Click a process name to cycle ok → crash → omission → Byzantine. Click a crashed process's lane to move the crash instant, or click an arrow of an omission-faulty process to drop it. Watch the views on the right: one fault is always absorbed; two faults often are not. The table below is a brute-force check over every possible behaviour.`,
+      caption: String.raw`Commander P0 sends the value 1 to the three lieutenants, who then echo to each other, and each lieutenant decides the majority of the three values it has seen. Click a process name to cycle ok → crash → omission → Byzantine. Click a crashed process's lane to move the crash instant, or click an arrow of an omission-faulty process to drop it. Watch the views on the right: one fault is always absorbed; two faults often are not. The last line of the readout is a brute-force check over every possible behaviour of the faulty processes.`,
       deps: ['dist-1.1'], refs: ['Lynch §2.2', 'Attiya–Welch ch. 5'], tags: ['faults', 'byzantine'],
       credit: 'Lamport, Shostak & Pease, 1982 (the Byzantine model)',
       scope: String.raw`Four processes, reliable synchronous delivery for the messages that are sent; a missing message is read as the default value 0.`,
       viz(v) {
         const T = 5, N = 4, KIND = ['ok', 'crash', 'omit', 'byz'], NAME = { ok: '', crash: ' crash', omit: ' omission', byz: ' Byzantine' };
-        const s = v.stage({ x: [-0.7, 9.4], y: [-0.6, 4.1], axes: false, height: 330, full: true });
+        const s = v.stage({ x: [-0.7, 8.0], y: [-0.6, 4.1], axes: false, height: 330, full: true });
         const fault = ['ok', 'ok', 'ok', 'ok'], ct = [0.75, 2.7, 2.7, 2.7], drops = new Set();
         const fl = (i) => (fault[i] === 'crash' ? 'crash' : fault[i]);
         const build = () => {
@@ -239,10 +241,10 @@ export default {
       num: '1.4', kind: 'Definition', name: 'Shared-memory systems',
       statement: String.raw`In a shared-memory system the $n$ processes communicate through a set of shared variables (registers). An atomic step of one process reads or writes one variable (or, with stronger primitives, does a read–modify–write on it) and updates the process's local state. An execution is a sequence of such steps chosen by a scheduler; the system is asynchronous in that any interleaving of the processes' steps is possible. Registers are atomic here: each read or write takes effect at a single instant.`,
       idea: String.raw`The program "increment $x$" is not one step: it is a read followed by a write, and other processes may run in between. The scheduler, not the programmer, decides the interleaving, so correctness must hold for every interleaving. Counting all interleavings of the same program shows how the outcomes split: with read/write steps only, some schedules lose updates; with an atomic read–modify–write step (fetch-and-add) every schedule gives the same answer.`,
-      caption: String.raw`Each process runs *r := x; x := r + 1* the chosen number of times. You are the scheduler: press a process button to let it take one step, or *random* to finish the run with a seeded random schedule. The right panel counts, over **all** interleavings, how many give each final value of $x$ (exact, by dynamic programming); the green marker shows where your run landed. Flip to atomic increments and the histogram collapses to a single bar.`,
+      caption: String.raw`Each process runs *r := x; x := r + 1* the chosen number of times. You are the scheduler: press a process button to let it take one step, or *random* to finish the run with a seeded random schedule. The right panel counts, over **all** interleavings, how many give each final value of $x$ (exact, by dynamic programming); the gold marker shows where your run landed. Flip to atomic increments and the histogram collapses to a single bar.`,
       deps: [], refs: ['Lynch §9.1', 'Lynch §9.4'], tags: ['shared memory', 'interleavings'],
       viz(v) {
-        let sched = [], seed = 1;
+        let sched = [0, 1, 0, 1], seed = 1;
         const rs = () => { sched = []; };
         const np = v.select('processes', [{ value: 2, label: '2' }, { value: 3, label: '3' }], 2, { onChange: rs });
         const rp = v.select('increments each', [{ value: 1, label: '1' }, { value: 2, label: '2' }], 1, { onChange: rs });
@@ -259,6 +261,7 @@ export default {
         v.button('undo', () => { sched.pop(); });
         v.button('reset', () => { sched = []; });
         const COL = ['accent', 'orange', 'purple'];
+        v.legend([['green', 'final value = no update lost'], ['red', 'final value with lost updates', ]]);
         v.render(() => {
           const { n, reps, atomic } = cfg(); bs.forEach((b, i) => { b.hidden = i >= n; });
           // schedule from a changed configuration may be invalid: replay is tolerant
@@ -289,7 +292,7 @@ export default {
             const stp = cur.pc[i]; const isW = atomic || stp % 2 === 1; cur = incStep(cur, i, reps, atomic) || cur;
             sL.dot(k + 0.5, n - 1 - i, { r: 6, color: COL[i], fill: !isW ? false : true, hollow: !isW });
           });
-          range(n).forEach((i) => sL.text(`P${i + 1}`, -0.25, n - 1 - i, { align: 'right', size: 12, color: COL[i] }));
+          sL.setTicks(null, range(n).map((i) => [n - 1 - i, `P${i + 1}`]));
           sL.text('● write   ○ read', 0.1, n - 0.45, { size: 11, color: 'muted', align: 'left' });
           // x over time
           void xs;

@@ -231,12 +231,13 @@ whose peak lies at $s\,\Delta f=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$. Because the 
           s.setLabels(mode.value === 'hz' ? 'frequency difference $\\Delta f$ (Hz)' : mode.value === 'c' ? 'interval (cents)' : 'frequency difference in critical bandwidths, $\\Delta f/\\mathrm{CB}$');
           s.setTicks(mode.value === 'c' ? [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200].map((c) => [c, c % 200 ? '' : String(c)]) : mode.value === 'cb' ? [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1'], [1.25, ''], [1.5, '1.5']] : null, undefined);
           if (mode.value === 'cb') { s.vline(0.25, { color: 'red', dash: [3, 4], width: 1 }); s.vline(1, { color: 'green', dash: [3, 4], width: 1 }); s.text('¼ band', 0.25, 1.08, { color: 'red', size: 10.5, align: 'left', dx: 4 }); s.text('one band', 1, 1.08, { color: 'green', size: 10.5, align: 'left', dx: 4 }); }
+          let lastLX = -1e9, lift = 0;
           for (const fb of BASES) {
             const xM = mode.value === 'hz' ? X1 : mode.value === 'c' ? X1 : 1.5, P = [];
             for (let i = 0; i <= 300; i++) { const X = (xM * i) / 300, d = mode.value === 'hz' ? X : fromX(fb, X); P.push([X, pl(fb, fb + d)]); }
             s.path(P, { color: 'muted', width: 1, alpha: 0.5 });
             let im = 0; P.forEach((p, i) => { if (p[1] > P[im][1]) im = i; });
-            if (mode.value !== 'cb' && P[im][0] < X1 * 0.97) s.text(`${fb}`, P[im][0], P[im][1], { color: 'muted', size: 10, align: 'center', dy: -6 });
+            if (mode.value !== 'cb' && P[im][0] < X1 * 0.97) { lift = P[im][0] - lastLX < X1 * 0.05 ? lift + 1 : 0; s.text(`${fb}`, P[im][0], P[im][1], { color: 'muted', size: 10, align: 'center', dy: -6 - 12 * lift }); lastLX = P[im][0]; }
           }
           // Plomp–Levelt standard curve (their Fig. 10), drawn in the current unit for this f1
           const P2 = []; for (let i = 0; i <= 300; i++) { const X = (X1 * i) / 300, d = fromX(f, X); P2.push([X, plDiss65(f, f + d)]); }

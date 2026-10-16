@@ -251,3 +251,35 @@ export function letterRow(P, str, x, y, cw, colorOf, st = {}) {
 /** Wrap a letter string into rows of n. */
 export const rowsOf = (str, n) => { const o = []; for (let i = 0; i < str.length; i += n) o.push(str.slice(i, i + n)); return o; };
 export const groups5 = (s) => s.replace(/(.{5})/g, '$1 ').trim();
+
+// ------------------------------------------------------------------ key equivocation (unicity distance, item 1.10)
+/**
+ * For the Vigenère family with key length L (26^L keys, all enumerated), the posterior over keys given the first n ciphertext letters,
+ * under the bigram model of English, for n = 0…N: entropy of that posterior (the key equivocation H(K | c₁…cₙ), in bits) and the
+ * top-scoring keys at the end. Returns {H: Float64Array(N+1), keys(n) → [{key, score}] top 6}.
+ */
+export function equivocation(cipherCodes, L, N) {
+  const K = 26 ** L, c = cipherCodes, scores = new Float64Array(K), digits = [];
+  for (let i = 0, d = 1; i < L; i++, d *= 26) { const a = new Uint8Array(K); for (let k = 0; k < K; k++) a[k] = Math.floor(k / d) % 26; digits.push(a); }
+  const H = new Float64Array(N + 1); H[0] = L * Math.log2(26);
+  const entropy = () => {
+    let m = -Infinity; for (let k = 0; k < K; k++) if (scores[k] > m) m = scores[k];
+    let Z = 0, W = 0; for (let k = 0; k < K; k++) { const d = scores[k] - m; if (d < -48) continue; const w = Math.pow(2, d); Z += w; W += w * d; }
+    return Math.log2(Z) - W / Z;
+  };
+  const snaps = []; // the score vector after n letters is only kept for requested n
+  for (let j = 0; j < N; j++) {
+    const dj = digits[j % L], dp = digits[(j + L - 1) % L];
+    for (let k = 0; k < K; k++) {
+      const p = mod(c[j] - dj[k], 26);
+      scores[k] += j === 0 ? LOGP[p] : LOGB[mod(c[j - 1] - dp[k], 26)][p];
+    }
+    H[j + 1] = entropy();
+  }
+  return { H, scoresAt: null, final: scores, K, digits };
+}
+/** Top keys (as letter strings) by score from an equivocation() result computed for exactly n letters. */
+export function topKeys(res, L, count = 6) {
+  const idx = [...Array(res.K).keys()]; idx.sort((a, b) => res.final[b] - res.final[a]);
+  return idx.slice(0, count).map((k) => ({ key: Array.from({ length: L }, (_, i) => A[res.digits[i][k]]).join(''), score: res.final[k] }));
+}
