@@ -7,9 +7,10 @@ import {
 
 const tf = (v, label, def, onChange, width = 340) => field(v, label, def, (s) => parse(s, DEFS), { width, onChange });
 const ptr = (s) => { const p = s.pointer; return p && p.inside ? { x: s.X(p.x), y: s.Y(p.y) } : null; };
-const txt = (t, o) => '\\texttt{' + show(t, o).replace(/λ/g, '\\lambda ').replace(/ /g, '\\ ') + '}';
+const txt = (t, o) => '\\mathtt{' + show(t, o).replace(/λ/g, '\\lambda ').replace(/ /g, '\\ ') + '}';
 const NICE = { abbr: { names: true } };
 const NUMS = { abbr: { names: true, nums: true } };
+const dbTex = (x) => x.replace(/λ/g, '\\lambda').replace(/ /g, '\\ ');
 const COLS = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];
 const countF = (t) => { let n = 0; while (t.t === 'a' && t.f.t === 'v' && t.f.x === 'f') { n++; t = t.a; } return t.t === 'v' && t.x === 'x' ? n : -1; };
 
@@ -32,7 +33,7 @@ export default {
       num: '2.7', kind: 'Method', name: 'Church numerals and arithmetic',
       statement: String.raw`The **Church numeral** of $n$ is $\overline{n}=\lambda f\,x.\,f^{n}x=\lambda f\,x.\,f(f(\cdots(f\,x)\cdots))$ ($n$ applications): it is the function “iterate $n$ times”. With $\mathsf{succ}=\lambda n\,f\,x.\,f\,(n\,f\,x)$, $\mathsf{plus}=\lambda m\,n\,f\,x.\,m\,f\,(n\,f\,x)$, $\mathsf{times}=\lambda m\,n\,f.\,m\,(n\,f)$, $\mathsf{pow}=\lambda m\,n.\,n\,m$ and $\mathsf{iszero}=\lambda n.\,n\,(\lambda z.\,\mathsf{false})\,\mathsf{true}$ one has, for all $m,n\in\N$: $\mathsf{succ}\,\overline m\to^{*}_\beta\overline{m+1}$, $\mathsf{plus}\,\overline m\,\overline n\to^{*}_\beta\overline{m+n}$, $\mathsf{times}\,\overline m\,\overline n\to^{*}_\beta\overline{mn}$, $\mathsf{pow}\,\overline m\,\overline n\to^{*}_\beta\overline{m^n}$ (for $n\ge1$), and $\mathsf{iszero}$ returns $\mathsf{true}$ on $\overline 0$ and $\mathsf{false}$ on every other numeral. The **predecessor** is definable, but not by a direct rearrangement: $\mathsf{pred}=\lambda n.\,\mathsf{fst}\,(n\,(\lambda p.\,\mathsf{pair}\,(\mathsf{snd}\,p)\,(\mathsf{succ}\,(\mathsf{snd}\,p)))\,(\mathsf{pair}\,\overline0\,\overline0))$ satisfies $\mathsf{pred}\,\overline{n+1}\to^*_\beta\overline n$ and $\mathsf{pred}\,\overline0\to^*_\beta\overline0$.`,
       idea: String.raw`If a numeral is “do $f$ that many times”, then adding is doing $f$ first $n$ times and then $m$ times (plus), multiplying is iterating the iteration (times: $(n\,f)$ is “$f$ done $n$ times” and $m$ copies of that), and exponentiation is applying the numeral $n$ to the numeral $m$ itself (pow). Pred is hard because a numeral can only be consumed by iterating; one iterates a step that maps the pair $(k-1,k)$ to $(k,k+1)$, starting at $(0,0)$ and reads the first component, so $\mathsf{pred}$ costs about $n$ steps while $\mathsf{succ}$ costs a constant. (For $n=0$, $\mathsf{pow}\,\overline m\,\overline0\to^*_\beta\lambda x.\,x$, which is $\eta$-equal to $\overline1$ but not the numeral itself: see 2.12.)`,
-      caption: String.raw`Choose an operation and the inputs $m,n$; the term is applied to two free variables $f$ and $x$ so that the numeral that comes out is visible as a chain of $f$'s (second panel). Drag “step” along the normal-order reduction. The right panel measures, by actual reduction, how many $\beta$-steps $\mathsf{succ}$, $\mathsf{pred}$, $\mathsf{times}\,n\,n$ and $\mathsf{pow}\,2\,n$ take as $n$ grows.`,
+      caption: String.raw`Choose an operation and the inputs $m,n$; the term is applied to two free variables $f$ and $x$ so that the numeral that comes out is visible as a chain of $f$'s (panel below). Drag “step” along the normal-order reduction. The right panel measures, by actual reduction, how many $\beta$-steps $\mathsf{succ}$, $\mathsf{pred}$, $\mathsf{times}\,n\,n$ and $\mathsf{pow}\,2\,n$ take as $n$ grows.`,
       deps: ['pl-2.6'], refs: ['Pierce §5.2'], tags: ['encoding', 'arithmetic'],
       credit: 'Alonzo Church, 1930s; the predecessor via pairs is due to Stephen Kleene (1935, found at the dentist, as the story goes)',
       viz(v) {
@@ -55,7 +56,7 @@ export default {
         v.legend(SER.map((S) => [S.color, S.name]));
         let cur = null;
         v.render(() => {
-          const O = OPS.find((o) => o.id === op.value), m = mS.value, n = nS.value;
+          const O = OPS.find((o) => o.id === op.value), m = mS.value, n = O.id === 'Pow' ? Math.min(nS.value, 4) : nS.value;
           nS.el.hidden = !!O.un; kS.el.hidden = false;
           const src = O.un ? `${O.id} ${m} f x` : `${O.id} ${m} ${n} f x`;
           const run = runStrategy(P(src), 'normal', { max: 400, maxSize: 4000 });
@@ -87,7 +88,7 @@ export default {
         v.readout(() => {
           if (!cur) return '';
           const O = OPS.find((o) => o.id === op.value);
-          return `$${txt(P(cur.src), { abbr: { names: true, nums: true } })}\\ \\to^{*}\\ f^{${cur.got}}x$ in $${cur.steps}$ steps; expected $${cur.want}$ ${cur.got === cur.want ? '✓' : '✗'}` + (O.id === 'Pred' ? ' · pred must rebuild the numeral (linear in $m$), succ costs 5 steps whatever $m$ is.' : O.id === 'Pow' ? ' · the numeral $n$ is applied to the numeral $m$: the result has $m^n$ copies of $f$.' : '');
+          return `$${txt(P(cur.src), { abbr: { names: true, nums: true } })}\\ \\to^{*}\\ f^{${cur.got}}x$ in $${cur.steps}$ steps; expected $${cur.want}$ ${cur.got === cur.want ? '✓' : '✗'}` + (O.id === 'Pred' ? ' · pred must rebuild the numeral (linear in $m$), succ costs 5 steps whatever $m$ is.' : O.id === 'Pow' ? ' · the numeral $n$ (capped at 4 here) is applied to the numeral $m$: the result has $m^n$ copies of $f$.' : '');
         });
       },
     },
@@ -111,11 +112,14 @@ export default {
           if (cache && cache.id === ex.value) return cache;
           const t0 = P(EX[ex.value]); const run = runStrategy(t0, 'normal', { max: N, maxSize: 4000 });
           const G = makeGraph(t0, { cap: 5, maxSize: 300 }); G.exploreAll();
-          cache = { id: ex.value, t0, run, G, sizes: run.states.map(size), keys: run.states.map(key) };
+          // a loop repeats forever: extend the sequence periodically up to N steps
+          const states = run.states.slice();
+          if (run.status === 'loop') { const per = run.states.length - 1 - run.loopAt; for (let i = states.length; i <= N; i++) states.push(run.states[run.loopAt + ((i - run.loopAt) % per)]); }
+          cache = { id: ex.value, t0, run, states, G, sizes: states.map(size), keys: states.map((t) => key(t)) };
           return cache;
         };
         v.render(() => {
-          const C = prep(), k = Math.min(kS.value, C.run.states.length - 1), t = C.run.states[k];
+          const C = prep(), k = Math.min(kS.value, C.states.length - 1), t = C.states[k];
           const lay = layoutTerm(t, {});
           drawLine(v, sT, lay, sT.W / 2, sT.H / 2 + 2, { size: 22, align: 'center', maxW: sT.W - 40, weight: 600, color: 'ink' });
           const cn = C.G.byKey.get(C.keys[k]);
@@ -130,10 +134,10 @@ export default {
           sS.bars(C.sizes, { x0: 0, color: (val, i) => (i === k ? 'gold' : 'accent') });
         });
         v.readout(() => {
-          const C = prep(), k = Math.min(kS.value, C.run.states.length - 1);
+          const C = prep(), k = Math.min(kS.value, C.states.length - 1);
           const same = C.keys[k] === C.keys[0];
           const grow = C.sizes[k] - C.sizes[0];
-          return `After $${k}$ steps the term has size $${C.sizes[k]}$ (start: $${C.sizes[0]}$) · ${same ? '**α-equal to the start term: the reduction has gone round a loop.**' : `different from the start (size ${grow >= 0 ? '+' : ''}${grow}): the term keeps growing, no term repeats.`} · It has ${redexes(C.run.states[k]).length} redex, so reduction never stops.`;
+          return `After $${k}$ steps the term has size $${C.sizes[k]}$ (start: $${C.sizes[0]}$) · ${same ? '**α-equal to the start term: the reduction has gone round a loop.**' : `different from the start (size ${grow >= 0 ? '+' : ''}${grow}): the term keeps growing, no term repeats.`} · It has ${redexes(C.states[k]).length} redex, so reduction never stops.`;
         });
       },
     },
@@ -173,19 +177,15 @@ export default {
         let tree = null, Lt = null, order = [], unf = 0;
         const build = (fid, m) => {
           const fun = FUNS[fid]; let parent = null, count = 0; order = [];
-          const Zfix = (F) => { count++; return (x) => F(Zfix(F))(x); }; // Z in JavaScript: eta-expanded so the unfolding is delayed
-          const F = fun.F;
-          const traced = (self0) => (x) => { const node = { label: `${fun.name}(${x})`, kids: [], idx: order.length, parent }; order.push(node); if (parent) parent.kids.push(node); const saved = parent; parent = node; const r = F(self0)(x); parent = saved; node.val = r; node.last = order.length - 1; return r; };
-          void traced;
-          // instrument: each call of the unfolded function is a node
+          // fix F = λx. F (fix F) x : every call of `self` is one unfolding of fix F
           const self = (x) => {
             const node = { label: `${fun.name}(${x})`, kids: [], idx: order.length }; order.push(node); if (parent) parent.kids.push(node);
-            const saved = parent; parent = node; count++; const r = F(self)(x); parent = saved; node.val = r; node.last = order.length - 1; return r;
+            const saved = parent; parent = node; count++; const r = fun.F(self)(x); parent = saved; node.val = r; node.last = order.length - 1; return r;
           };
-          const r = self(m); void Zfix;
+          const r = self(m);
           return { root: order[0], r, count };
         };
-        const S = v.steps({ frames: [{}], codePos: 'below', note: false, still: 'end', speed: 2.5,
+        const S = v.steps({ frames: [{}], codePos: 'below', start: 'end', speed: 2.5,
           code: ['fix F  =  λx. F (fix F) x       // Z: delay the unfolding', 'fact = fix (λf. λn. if n = 0 then 1 else n · f (n − 1))', 'fib  = fix (λf. λn. if n < 2 then n else f (n − 1) + f (n − 2))'] });
         function rebuild() {
           const b = build(fsel.value, mS.value); tree = b.root; Lt = layoutG(tree); unf = b.count;
@@ -199,7 +199,8 @@ export default {
           const pts = R.sizes.map((z, i) => [i, z]);
           sA.path(pts, { color: R.rs.status === 'done' ? 'green' : 'red', width: 2.2 });
           const last = pts[pts.length - 1];
-          sA.dot(last[0], last[1], { r: 5, color: R.rs.status === 'done' ? 'green' : 'red', label: R.rs.status === 'done' ? `done: ${R.val === null ? 'value' : n + '! = ' + R.val}` : 'budget reached', labelPos: 'nw' });
+          sA.dot(last[0], last[1], { r: 5, color: R.rs.status === 'done' ? 'green' : 'red' });
+          sA.corner(R.rs.status === 'done' ? `done: ${n}! = ${R.val}` : 'not finished: the term keeps growing', 'tr', { color: R.rs.status === 'done' ? 'green' : 'red', weight: 700 });
           // tree
           const k = S.frame && S.frame.i != null ? S.frame.i : order.length - 1;
           drawTreePx(v, sB, Lt, {
@@ -247,14 +248,15 @@ export default {
         const simulate = (prog, input, max = 60) => {
           const syms = prog.syms, idx = (c) => syms.indexOf(c);
           let q = 0, tape = [...input].map(idx), head = 0; const hist = [];
+          if (!tape.length) tape = [0];
           const snap = () => ({ q, tape: tape.slice(), head });
           hist.push(snap());
           for (let s = 0; s < max && q !== prog.states.length - 1; s++) {
-            const a = head < tape.length && head >= 0 ? tape[head] : 0;
+            const a = tape[head];
             const [q2, w, d] = prog.delta[prog.states[q]][syms[a]];
-            while (head >= tape.length) tape.push(0);
-            if (head < 0) { tape.unshift(0); head = 0; }
             tape[head] = idx(w); q = prog.states.indexOf(q2); head += d === 'R' ? 1 : -1;
+            if (head < 0) { tape.unshift(0); head = 0; }
+            while (head >= tape.length) tape.push(0);
             hist.push(snap());
           }
           return hist;
@@ -266,8 +268,8 @@ export default {
           if (!ok) { M = { err: `the tape may contain only: ${prog.syms.filter((c) => c !== '_').join(' ')}` }; return; }
           const nQ = prog.states.length, nS = prog.syms.length;
           const defs = { ...DEFS };
-          const selector = (i, n) => { const names = Array.from({ length: n }, (_, j) => 'a' + j); return L(names[0], names.slice(1).reduceRight((acc, x) => L(x, acc), V(names[i]))).t ? lamsOf(names, names[i]) : null; };
           const lamsOf = (names, body) => names.reduceRight((acc, x) => L(x, acc), V(body));
+          const selector = (i, n) => { const names = Array.from({ length: n }, (_, j) => 'a' + j); return lamsOf(names, names[i]); };
           const qn = prog.states.map((_, i) => 'Q' + 'abcdefg'[i]), sn = prog.syms.map((_, i) => 'Y' + 'abcdefg'[i]);
           qn.forEach((nm, i) => { defs[nm] = selector(i, nQ); }); sn.forEach((nm, i) => { defs[nm] = selector(i, nS); });
           defs.Left = P('λl r. l', defs); defs.Right = P('λl r. r', defs);
@@ -284,7 +286,7 @@ export default {
           defs.Step = P('λc. c (λq l a r. Delta q a (λq2 w d. d (Cfg q2 (Tl l) (Hd l) (Cons w r)) (Cfg q2 (Cons w l) (Hd r) (Tl r))))', defs);
           const haltSrc = `(λq. q ${prog.states.map((_, i) => (i === nQ - 1 ? 'True' : 'False')).join(' ')})`;
           defs.Halted = P(haltSrc, defs);
-          defs.Run = P('Y (λrun c. c (λq l a r. Halted q c (run (Step c))))', defs);
+          defs.Run = P('Y (λg c. c (λq l a r. Halted q c (g (Step c))))', defs);
           const arr = [...text].map((c) => prog.syms.indexOf(c));
           const list = (xs) => xs.reduceRight((acc, x) => A(A(defs.Cons, defs[sn[x]]), acc), defs.Nil);
           const init = arr.length ? A(A(A(A(defs.Cfg, defs.Qa), defs.Nil), defs[sn[arr[0]]]), list(arr.slice(1))) : A(A(A(A(defs.Cfg, defs.Qa), defs.Nil), defs.Ya), defs.Nil);
@@ -357,12 +359,12 @@ export default {
           // run the whole term with Y
           let agreeAll = true; for (let i = 0; i <= total; i++) if (!sameSt(M.hist[i], lamState(i))) { agreeAll = false; break; }
           let runRes = null;
-          try { runRes = observe(M.defs.Run.t === 'v' ? M.defs.Run : A(M.defs.Run, M.init)); } catch (e) { runRes = null; }
+          try { runRes = observe(A(M.defs.Run, M.init)); } catch (e) { runRes = null; }
           const fin = trim(M.hist[total]), tapeStr = (T) => T.tape.map((s) => prog.syms[s]).join('').replace(/_/g, '␣');
           let runOk = false, runTape = '';
           if (runRes) { const T = trim({ q: runRes.q, tape: [...runRes.left.slice().reverse(), runRes.a, ...runRes.right], head: runRes.left.length }); runOk = sameSt(fin, T); runTape = tapeStr(T); }
           const halted = M.hist[total].q === prog.states.length - 1;
-          return `The machine ${halted ? `halts after $${total}$ steps` : 'has not halted after 60 steps'} with tape $\\texttt{${tapeStr(fin)}}$ · the λ-term agrees at all $${total + 1}$ configurations: ${agreeAll ? '✓' : '✗'} · \`run init\` (a single term, using $Y$) evaluates to tape $\\texttt{${runTape}}$: ${runOk ? '✓ equal' : '✗'}.`;
+          return `The machine ${halted ? `halts after $${total}$ steps` : 'has not halted after 60 steps'} with tape $\\texttt{${tapeStr(fin)}}$ · the λ-term agrees at all $${total + 1}$ configurations: ${agreeAll ? '✓' : '✗'} · the single term $\\mathsf{run}\\ \\mathsf{init}$ (using $Y$) evaluates to tape $\\texttt{${runTape}}$: ${runOk ? '✓ equal' : '✗'}.`;
         });
       },
     },
@@ -376,7 +378,7 @@ export default {
       credit: 'N. G. de Bruijn, 1972',
       viz(v) {
         const sA = pxStage(v, { height: 196, full: true, title: 'Named and nameless forms' });
-        const sB = pxStage(v, { height: 188, full: true, title: 'β-reduction of the first term, in nameless form' });
+        const sB = pxStage(v, { height: 176, full: true, title: 'β-reduction of the first term, in nameless form' });
         const EX = { a: ['(λx. λy. x y z) (λw. w)', '(λa. λb. a b z) (λc. c)'], b: ['λx. λy. x', 'λx. λy. y'], c: ['(λx. λy. x) y', '(λx. λz. x) y'], d: ['λx. x (λy. x y)', 'λy. y (λx. y x)'] };
         const f1 = tf(v, 'term 1', EX.a[0], () => redo(), 300), f2 = tf(v, 'term 2', EX.a[1], () => redo(), 300);
         const ex = v.select('Examples', [{ value: 'a', label: 'α-equal pair' }, { value: 'b', label: 'different' }, { value: 'c', label: 'free y' }, { value: 'd', label: 'shadow' }], 'a', { onChange: () => { f1.set(EX[ex.value][0]); f2.set(EX[ex.value][1]); redo(); } });
@@ -410,11 +412,11 @@ export default {
           const expect = toDB(subst(R.f.b, R.f.x, R.a), gamma), ok = dbStr(s3) === dbStr(expect) && dbStr(betaDB(b, a)) === dbStr(s3);
           red = { R, gamma, d, b, a, a1, s2, s3, ok, p };
           S.reset([
-            { line: 1, note: `The first redex (leftmost-outermost) in nameless form: $${dbStr(d).replace(/λ/g, '\\lambda')}$. The body is orange-framed, the argument blue.`, k: 0 },
+            { line: 1, note: `The first redex (leftmost-outermost) in nameless form: $${dbTex(dbStr(d))}$. The body is orange-framed, the argument blue.`, k: 0 },
             { line: 2, note: 'The argument is going to be placed under the λ of the redex… so its free indices are shifted up by one first (changed indices in gold).', k: 1 },
             { line: 3, note: 'Every occurrence of index 0 in the body (those bound by the redex’s λ) is replaced by the shifted argument (inserted copies in orange); deeper binders already shifted it again.', k: 2 },
-            { line: 4, note: `The redex’s λ has disappeared, so free indices of the result drop by one. Result: $${dbStr(s3).replace(/λ/g, '\\lambda')}$ — equal to named capture-avoiding substitution: ${ok ? '✓' : '✗'}.`, k: 3 },
-          ], { at: 'start' });
+            { line: 4, note: `The redex’s λ has disappeared, so free indices of the result drop by one. Result: $${dbTex(dbStr(s3))}$ — equal to named capture-avoiding substitution: ${ok ? '✓' : '✗'}.`, k: 3 },
+          ], { at: 'end' });
         }
         redo();
         const lineAt = (s, lay, y, label, color) => {
@@ -456,7 +458,7 @@ export default {
       caption: String.raw`Pick a function $f$ and read the table: for every argument, $(\lambda x.\,f\,x)\,a$ and $f\,a$ are reduced to normal form (normal order, with a step budget) and compared. They agree whenever $x\notin\mathrm{FV}(f)$. Choose $f=x$ to break the side condition. The bottom lines evaluate the two terms alone by call by name: the abstraction is already a value, while $f$ may loop.`,
       deps: ['pl-2.4'], refs: ['Pierce §5.3'], tags: ['extensionality', 'equality'],
       viz(v) {
-        const s = pxStage(v, { height: 322, full: true, title: 'Does  λx. f x  behave like  f ?' });
+        const s = pxStage(v, { height: 362, full: true, title: 'Does  λx. f x  behave like  f ?' });
         const FS = { g: 'g', succ: 'Succ', plus: 'Plus 2', k: 'K a', om: 'Omega', x: 'x' };
         const fs = v.select('f', [{ value: 'g', label: 'g (a variable)' }, { value: 'succ', label: 'succ' }, { value: 'plus', label: 'plus 2' }, { value: 'k', label: 'K a' }, { value: 'om', label: 'Ω' }, { value: 'x', label: 'x  (x is free in f)' }], 'succ');
         const ARGS = ['b', '0', '3', 'I', 'λz. z z', 'Omega'];
@@ -485,9 +487,9 @@ export default {
           s.ctx.save(); s.ctx.strokeStyle = v.color('grid', 1); s.ctx.beginPath(); s.ctx.moveTo(14, yy - 14); s.ctx.lineTo(s.W - 14, yy - 14); s.ctx.stroke(); s.ctx.restore();
           const alone = (t) => { const r = runStrategy(t, 'name', { max: 60, maxSize: 600 }); return r.status === 'done' ? `a value after ${r.paths.length} step${r.paths.length === 1 ? '' : 's'}` : 'loops (never a value)'; };
           const a1 = alone(lam), a2 = alone(f);
-          s.textPx('evaluated alone, by name:', 20, yy + 6, { size: 12, weight: 700, color: 'muted', align: 'left', halo: false });
-          s.textPx(`λx. f x  →  ${a1}`, X[1], yy + 6, { size: 13.5, weight: 600, color: 'accent', align: 'left', halo: false });
-          s.textPx(`f  →  ${a2}`, X[2] + 30, yy + 6, { size: 13.5, weight: 600, color: a2.startsWith('loops') ? 'red' : 'orange', align: 'left', halo: false });
+          s.textPx('evaluated alone, by call by name (no argument supplied):', 20, yy + 8, { size: 12.5, weight: 700, color: 'muted', align: 'left', halo: false });
+          s.textPx(`λx. f x   →   ${a1}`, 40, yy + 36, { size: 14, weight: 600, color: 'accent', align: 'left', halo: false });
+          s.textPx(`f   →   ${a2}`, 40, yy + 62, { size: 14, weight: 600, color: a2.startsWith('loops') ? 'red' : 'orange', align: 'left', halo: false });
           res = { side, allEq: rows.every((r) => r.eq), n: rows.length, weakDiff: a1 !== a2 && a2.startsWith('loops') };
         });
         v.readout(() => (res ? (res.side ? `For all ${res.n} test arguments the two terms reduce to α-equal normal forms: ${res.allEq ? '✓ they agree' : '✗'} (η is sound when $x\\notin\\mathrm{FV}(f)$).` : `With $x$ free in $f$ the terms $\\lambda x.\\,x\\,x$ and $x$ differ: ${res.allEq ? 'they agree on these arguments' : '**they disagree**'}.`) + (res.weakDiff ? ' · Under weak (by-name) evaluation $\\lambda x.\\,\\Omega\\,x$ is a value but $\\Omega$ is not: η-equal terms can be told apart by an evaluation strategy.' : '') : ''));

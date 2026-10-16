@@ -336,11 +336,24 @@ export function makeGraph(t0, { cap = 40, maxSize = 70 } = {}) {
   return { nodes, edges, root, add, addEdge, expand, exploreAll, get truncated() { return truncated; }, byKey };
 }
 
+/** Longest-path layering: every edge that is not a back edge (closing a cycle) points strictly downwards. */
+export function layerAssign(nodeList, edgeList) {
+  const ids = new Set(nodeList.map((n) => n.id)), out = new Map(nodeList.map((n) => [n.id, []])), indeg = new Map(nodeList.map((n) => [n.id, 0]));
+  for (const e of edgeList) if (ids.has(e.from) && ids.has(e.to) && e.from !== e.to) { out.get(e.from).push(e.to); indeg.set(e.to, indeg.get(e.to) + 1); }
+  const state = new Map(), order = [], back = new Set();
+  const dfs = (u) => { state.set(u, 1); for (const w of out.get(u)) { const sw = state.get(w); if (sw === 1) back.add(u + '>' + w); else if (!sw) dfs(w); } state.set(u, 2); order.push(u); };
+  const roots = nodeList.filter((n) => indeg.get(n.id) === 0).map((n) => n.id).concat(nodeList.map((n) => n.id));
+  for (const r of roots) if (!state.get(r)) dfs(r);
+  const layer = new Map(nodeList.map((n) => [n.id, 0]));
+  for (const u of order.slice().reverse()) for (const w of out.get(u)) if (!back.has(u + '>' + w)) layer.set(w, Math.max(layer.get(w), layer.get(u) + 1));
+  return layer;
+}
 /** Layered drawing of a reduction graph in pixel space. opts: region, colorOf(nd), ringOf(nd), faint(nd), edgeColor(e), labelOf(nd), hover → returns hit node. */
 export function drawGraph(v, s, G, nodeList, edgeList, opts = {}) {
   const [rx0, ry0, rx1, ry1] = opts.region || [0, 0, s.W, s.H];
   const ctx = s.ctx, byLayer = new Map();
-  for (const nd of nodeList) { const d = opts.layerOf ? opts.layerOf(nd) : nd.depth; if (!byLayer.has(d)) byLayer.set(d, []); byLayer.get(d).push(nd); }
+  const LAY = opts.layerOf ? null : layerAssign(nodeList, edgeList);
+  for (const nd of nodeList) { const d = opts.layerOf ? opts.layerOf(nd) : LAY.get(nd.id); if (!byLayer.has(d)) byLayer.set(d, []); byLayer.get(d).push(nd); }
   const layers = [...byLayer.keys()].sort((a, b) => a - b), nL = layers.length;
   const boxH = 24, padY = 22;
   const dy = nL > 1 ? Math.min(74, (ry1 - ry0 - 2 * padY - boxH) / (nL - 1)) : 0;

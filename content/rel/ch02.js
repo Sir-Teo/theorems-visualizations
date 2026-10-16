@@ -17,7 +17,7 @@ export default {
 $$ct'=\gamma\,(ct-\beta x),\qquad x'=\gamma\,(x-\beta ct),\qquad y'=y,\quad z'=z,\qquad \beta=\frac vc,\ \ \gamma=\frac1{\sqrt{1-\beta^2}},$$
 and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it reduces to the Galilean map $x'=x-vt$, $t'=t$. It holds for $|v|<c$; there is no frame moving at $c$.`,
       idea: String.raw`Light rays $x=\pm ct$ must stay light rays in every frame (rel-1.3), so the new axes are mirror images of each other in the light line: both tilt toward it by the same angle. Inside the plane of $t$ and $x$, the only linear maps that keep $c^2t^2-x^2$ fixed (rel-1.7) are $\bigl(\begin{smallmatrix}\cosh\varphi&-\sinh\varphi\\-\sinh\varphi&\cosh\varphi\end{smallmatrix}\bigr)$, and the origin of $S'$, which sits at $x=vt$ in $S$, fixes $\tanh\varphi=v/c$. The relativity principle (rel-1.2) says the inverse is the boost with $-v$, which rules out any extra overall scale factor.`,
-      caption: String.raw`**Drag $E$** and the **velocity slider.** The grey axes are frame $S$; the blue lines $x'=\text{const}$ and orange lines $ct'=\text{const}$ are the grid of frame $S'$. The grid scissors toward the gold light lines but never crosses them. Read $E$'s coordinates in both frames, and notice that $c^2t^2-x^2$ is the same. Switch to the Galilean map and the grid shears instead, the light line is no longer a light line in $S'$, and the interval is not preserved.`,
+      caption: String.raw`**Drag $E$** and the **velocity slider.** The grey axes are frame $S$; the orange lines $x'=\text{const}$ (worldlines of the points of $S'$) and blue lines $ct'=\text{const}$ (its instants) are the grid of frame $S'$. The grid scissors toward the gold light lines but never crosses them. Read $E$'s coordinates in both frames, and notice that $c^2t^2-x^2$ is the same. Switch to the Galilean map and the grid shears instead, the light line is no longer a light line in $S'$, and the interval is not preserved.`,
       deps: ['rel-1.7', 'rel-1.2'],
       refs: ['Taylor–Wheeler ch. L', 'Schutz §1.9'],
       tags: ['lorentz transformation', 'boost', 'spacetime diagram'],
@@ -37,11 +37,11 @@ and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it redu
           D.line(-R, 0, R, 0, { color: 'muted', width: 1.2 }); D.line(0, -3.2, 0, 3.4, { color: 'muted', width: 1.2 });
           D.text('x', R - 0.1, 0, { dy: 10, align: 'right', color: 'muted', math: true }); D.text('ct', 0, 3.3, { dx: -8, align: 'right', color: 'muted', math: true });
           lightLines(D, 8);
-          frameGrid(D, map, { n: 8, R: 10, alpha: 0.38 });
+          frameGrid(D, map, { n: 8, R: 10, alpha: 0.38, cx: 'orange', ct: 'accent' });
           for (let k = -3; k <= 3; k++) {
             if (!k) continue;
             const a = P(...map(k, 0)), c = P(...map(0, k));
-            D.text(String(k), a[0], a[1], { dx: -9, size: 10, color: 'orange' }); D.text(String(k), c[0], c[1], { dy: 11, size: 10, color: 'accent' });
+            D.text(String(k), a[0], a[1], { dx: -9, size: 10, color: 'accent' }); D.text(String(k), c[0], c[1], { dy: 11, size: 10, color: 'orange' });
           }
           const ta = P(...map(3.1, 0)), xa = P(...map(0, 3.4));
           D.text(`ct′`, ta[0], ta[1], { dx: 12, dy: -4, color: 'orange', math: true, size: 13 });
@@ -52,7 +52,7 @@ and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it redu
           // a light flash sent from the common origin
           st = { b, gal, tp, xp, g: gam(b) };
         });
-        v.legend([['accent', 'lines $x\'$ = const'], ['orange', 'lines $ct\'$ = const'], ['gold', 'light', { dash: true }], ['purple', 'event E projected parallel to the $S\'$ axes', { dash: true }]]);
+        v.legend([['orange', 'lines $x\'$ = const'], ['accent', 'lines $ct\'$ = const'], ['gold', 'light', { dash: true }], ['purple', 'event E projected parallel to the $S\'$ axes', { dash: true }]]);
         v.readout(() => {
           const { b, gal, tp, xp, g } = st; if (!g) return '';
           const I = E.y ** 2 - E.x ** 2, Ip = tp ** 2 - xp ** 2;
@@ -134,7 +134,7 @@ and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it redu
         const f1 = v.slider('$\\varphi_1$', -1, 1, 0.6, { step: 0.01 });
         const f2 = v.slider('$\\varphi_2$', -1, 1, 0.7, { step: 0.01 });
         const A = v.stage({ x: [-4.2, 4.2], y: [-0.3, 4.4], equal: true, axes: false, height: 400, weight: 1.1, minWidth: 300, title: 'unit hyperbola $c^2t^2-x^2=1$' });
-        const B = v.stage({ x: [-2.2, 2.2], y: [-1.15, 1.15], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 280, xlabel: 'rapidity $\\varphi$', ylabel: '$v/c$', title: 'velocity $=\\tanh\\varphi$' });
+        const B = v.stage({ x: [-2.2, 2.2], y: [-1.15, 2.1], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 280, xlabel: 'rapidity $\\varphi$', ylabel: '$v/c$', title: 'velocity $=\\tanh\\varphi$' });
         let st = {};
         v.render(() => {
           const a = f1.value, c = f2.value, s = a + c;
@@ -154,8 +154,8 @@ and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it redu
           B.line(0, 0, 0, 0);
           const va = Math.tanh(a), vc = Math.tanh(c), vs = Math.tanh(s);
           B.dot(a, va, { r: 5, color: 'accent', label: '$v_1$', labelPos: 'se' }); B.dot(c, vc, { r: 5, color: 'orange', label: '$v_2$', labelPos: 'se' });
-          B.dot(s, Math.max(-1.1, Math.min(1.1, vs)), { r: 6, color: 'green', label: '$v_{12}$', labelPos: 'nw' });
-          B.dot(Math.max(-2.2, Math.min(2.2, atanh(Math.max(-0.999999, Math.min(0.999999, va + vc)))) ), Math.max(-1.1, Math.min(1.1, va + vc)), { r: 4, color: 'red', hollow: true });
+          B.dot(s, vs, { r: 6, color: 'green', label: '$v_{12}$', labelPos: 'nw' });
+          B.segment([s, vs], [s, va + vc], { color: 'red', dash: true, alpha: 0.6 }); B.dot(s, va + vc, { r: 5, color: 'red', hollow: true });
           st = { a, c, s, va, vc, vs };
         });
         v.legend([['accent', 'after boost 1'], ['green', 'after both boosts'], ['red', 'Galilean sum $v_1+v_2$', { dot: true }]]);
@@ -307,6 +307,79 @@ so the medium drags the light only by the fraction $k=1-1/n^2$ of its own speed 
         v.readout(() => {
           const { b, g, T } = st; if (!g) return '';
           return String.raw`$v/c=${v.fix(b, 2)}$, $\gamma=${v.fix(g, 3)}$. In $A$'s frame: when $A$ reads $T=${v.fix(T, 2)}$, $B$ reads $T/\gamma=${v.fix(T / g, 3)}$. In $B$'s frame: when $B$ reads $T=${v.fix(T, 2)}$, $A$ reads $T/\gamma=${v.fix(T / g, 3)}$. The pairs of events are different, so both are true.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 2.7
+    {
+      num: '2.7',
+      kind: 'Paradox',
+      name: 'Twin paradox',
+      credit: 'Langevin, 1911 (the travelling-twin form)',
+      statement: String.raw`One twin stays at rest in an inertial frame; the other leaves, turns around at some event and returns to meet the first. When they meet, the travelling twin has aged less: if the stay-at-home twin's elapsed time is $T$ and the traveller moves with constant speeds $v_1$ out and $v_2$ back in the home frame, the traveller's elapsed proper time is $\tau=\tfrac{t_1}{\gamma_1}+\tfrac{T-t_1}{\gamma_2}<T$, where $t_1$ is the home time of the turn. Each twin sees the other's clock slow in any inertial stretch (2.6), yet the result is not symmetric, because only the traveller changes inertial frame.`,
+      idea: String.raw`The paradox arises from applying "moving clocks run slow" symmetrically. But the two worldlines between the same pair of events are not equivalent: the straight inertial one has the **longest** proper time, since $\tau=\int\sqrt{1-v^2/c^2}\,dt$ (rel-1.9) is largest for $v=0$. In the traveller's own accounting the resolution is that at the turnaround his line of simultaneity swings from one inertial frame to another and sweeps over a stretch of the home twin's life, $2\beta^2 t_1$ in the symmetric case. Before the turn he reckons the home clock slow, after the turn too, but the jump in between makes up the difference.`,
+      caption: String.raw`**Drag the turnaround event** $E$ of the traveller (blue) in the home frame (the vertical worldline). Left: the traveller's lines of simultaneity, blue on the way out and orange on the way back, hit the home worldline at the home age the traveller assigns to "now"; the red stretch is the home time that his simultaneity skips at the turn. Right: that assigned home age against the traveller's own proper time: it rises slowly, jumps at the turn, then rises slowly again, and ends at $T$. Switch on the yearly signals to count them instead.`,
+      deps: ['rel-1.9', 'rel-2.6'],
+      refs: ['Taylor–Wheeler §4.6', 'Schutz §1.13'],
+      tags: ['twin paradox', 'proper time', 'simultaneity'],
+      scope: String.raw`Special relativity with instantaneous (idealized) turnaround; the acceleration itself changes nothing about the proper-time integral. In general relativity the same logic holds with the straight line replaced by a geodesic.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Twin_paradox' },
+      viz(v) {
+        const T = 10;
+        const sig = v.toggle('show yearly light signals from home', false);
+        const A = v.stage({ x: [-5.5, 5.5], y: [-0.4, 10.6], equal: true, axes: false, height: 460, weight: 1.15, minWidth: 320, title: 'home frame: years up, light-years across' });
+        const B = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, height: 460, weight: 0.85, minWidth: 280, xlabel: 'traveller\'s proper time $\\tau$ (years)', ylabel: 'home age by his simultaneity', title: 'what the traveller assigns to the home twin' });
+        const E = A.handle(3, 5, { color: 'accent', label: 'E', labelPos: 'e', constrain: (x, y) => { const t = Math.max(1.2, Math.min(T - 1.2, y)); const m = Math.min(t, T - t) - 0.15; return [Math.max(-m, Math.min(m, x)), t]; } });
+        let st = {};
+        v.render(() => {
+          const xt = E.x, tt = E.y;
+          const b1 = xt / tt, b2 = -xt / (T - tt), g1 = gam(b1), g2 = gam(Math.abs(b2));
+          const tau1 = tt / g1, tau2 = (T - tt) / g2, tau = tau1 + tau2;
+          // clock ticks of the traveller (yearly) and the home twin
+          A.line(-5.5, 0, 5.5, 0, { color: 'faint' });
+          A.clip(() => { A.line(-12, -12, 12, 12, { color: 'gold', alpha: 0.35, dash: [4, 4] }); A.line(12, -12, -12, 12, { color: 'gold', alpha: 0.35, dash: [4, 4] }); });
+          A.path([[0, 0], [0, T]], { color: 'ink', width: 2.6 }); A.path([[0, 0], [xt, tt], [0, T]], { color: 'accent', width: 2.6 });
+          // lines of simultaneity of the traveller
+          const hOut = (s) => s / g1, N = 14;
+          const hIn = (s) => { const s2 = s - tau1, tp = tt + g2 * s2, xp = xt + g2 * s2 * b2; return tp - b2 * xp; };
+          for (let k = 1; k < N; k++) {
+            const s = (tau * k) / N;
+            if (Math.abs(s - tau1) < 0.12) continue;
+            const out = s < tau1, bb = out ? b1 : b2;
+            const p = out ? [g1 * s * b1, g1 * s] : [xt + g2 * (s - tau1) * b2, tt + g2 * (s - tau1)];
+            const hh = out ? hOut(s) : hIn(s);
+            A.segment([0, hh], p, { color: out ? 'accent' : 'orange', width: 1.2, alpha: 0.6 });
+            A.dot(p[0], p[1], { r: 2.8, color: out ? 'accent' : 'orange' });
+          }
+          // the home years skipped at the turn
+          const h1 = hOut(tau1), h2 = hIn(tau1 + 1e-9);
+          A.segment([0, h1], [0, h2], { color: 'red', width: 6, alpha: 0.75 });
+          A.segment([0, h1], [xt, tt], { color: 'accent', width: 1.6 }); A.segment([0, h2], [xt, tt], { color: 'orange', width: 1.6 });
+          A.text(`skipped: ${v.fix(h2 - h1, 2)} yr`, 0, (h1 + h2) / 2, { dx: -10, align: 'right', color: 'red', size: 11 });
+          let nOut = 0, nIn = 0;
+          if (sig.value) {
+            for (let k = 1; k <= T; k++) {
+              let th = k / (1 - b1), onOut = th <= tt + 1e-9;
+              if (!onOut) th = (k + xt - b2 * tt) / (1 - b2);
+              const xh = onOut ? b1 * th : xt + b2 * (th - tt);
+              A.segment([0, k], [xh, th], { color: 'gold', width: 1.3, alpha: 0.9 }); A.dot(0, k, { r: 3, color: 'gold' });
+              if (onOut) nOut++; else nIn++;
+            }
+          }
+          // plot of the home age assigned by the traveller
+          B.line(0, 0, 10, 10, { color: 'faint', dash: true });
+          B.fn((s) => hOut(s), { color: 'accent', width: 2.4, domain: [0, tau1] });
+          B.fn((s) => hIn(s), { color: 'orange', width: 2.4, domain: [tau1, tau] });
+          B.segment([tau1, h1], [tau1, h2], { color: 'red', width: 3 });
+          B.dot(tau, T, { r: 5, color: 'green' }); B.dot(0, 0, { r: 4, color: 'ink' });
+          B.vline(tau, { color: 'faint', dash: true });
+          B.text(`τ = ${v.fix(tau, 2)}`, tau, 0.3, { align: 'right', dx: -4, size: 11, color: 'green' });
+          st = { b1, b2, g1, g2, tau, h1, h2, nOut, nIn, xt, tt };
+        });
+        v.legend([['ink', 'home twin'], ['accent', 'traveller outbound, and his simultaneity'], ['orange', 'traveller inbound'], ['red', 'home years skipped at the turn']]);
+        v.readout(() => {
+          const { b1, b2, g1, g2, tau, h1, h2, nOut, nIn } = st; if (!g1) return '';
+          return String.raw`Out at $v_1=${v.fix(b1, 3)}c$ ($\gamma=${v.fix(g1, 3)}$), back at $v_2=${v.fix(Math.abs(b2), 3)}c$ ($\gamma=${v.fix(g2, 3)}$). Home twin ages $T=${T}$ yr; traveller ages $\tau=${v.fix(tau, 3)}$ yr — always less than $T$. On the way out he assigns the home clock ${v.fix(h1, 2)} yr when he is at the turn, on the way back ${v.fix(h2, 2)} yr: a jump of ${v.fix(h2 - h1, 2)} yr in the simultaneity, which accounts for the difference.` + (sig.value ? String.raw` Signals received: ${nOut} on the way out, ${nIn} on the way back (the last one at the reunion), ${nOut + nIn} in all.` : '');
         });
       },
     },

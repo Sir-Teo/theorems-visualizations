@@ -8,7 +8,7 @@ import {
 const tf = (v, label, def, onChange, width = 340) => field(v, label, def, (s) => parse(s, DEFS), { width, onChange });
 const ptr = (s) => { const p = s.pointer; return p && p.inside ? { x: s.X(p.x), y: s.Y(p.y) } : null; };
 const setStr = (set) => (set.size ? '\\{' + [...set].sort().join(',\\,') + '\\}' : '\\varnothing');
-const txt = (t, o) => '\\texttt{' + show(t, o).replace(/λ/g, '\\lambda ').replace(/ /g, '\\ ') + '}';
+const txt = (t, o) => '\\mathtt{' + show(t, o).replace(/λ/g, '\\lambda ').replace(/ /g, '\\ ') + '}';
 const parens = (str) => (str.match(/\(/g) || []).length;
 const NICE = { abbr: { names: true } };
 
@@ -77,7 +77,7 @@ export default {
       caption: String.raw`Every occurrence is joined by an arc to its binder (colour = binder); free occurrences are underlined in red. Click a variable or a $\lambda$ to select its binder, then type a new name and press Rename. A safe rename leaves every arc in place; switch on “allow unsafe renames” to force a capturing rename and watch an arc jump to a different binder — the nameless form changes.`,
       deps: ['pl-2.1'], refs: ['Pierce §5.3'], tags: ['binding', 'substitution'],
       viz(v) {
-        const s = pxStage(v, { height: 214, full: true, title: 'Binders, occurrences and scopes' });
+        const s = pxStage(v, { height: 192, full: true, title: 'Binders, occurrences and scopes' });
         const EX = { a: 'λx. λy. x (y z)', b: 'λx. x (λx. x) y', c: '(λx. x y) (λy. y x)', d: 'λf. (λx. f (x x)) (λx. f (x x))' };
         let orig = P(EX.a), cur = orig, sel = null, msg = null;
         const f = tf(v, 'term', EX.a, () => { if (f.ast) { orig = f.ast; cur = orig; sel = null; msg = null; } v.invalidate(); });

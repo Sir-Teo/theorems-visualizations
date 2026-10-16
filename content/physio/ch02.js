@@ -154,8 +154,8 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
           const r = get(), p = P();
           st.hband(0.1, 0.1, { color: 'faint' });
           trace(st, r.t, r.Z, { color: 'accent', width: 2.2 });
-          st.text('resting level ~0.1 µM', 14.85, 0.1, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
           // phase plane
+          sp.setView([0, 1.6], [0.3, cicr.value ? 2.6 : Math.max(2.6, 1.08 * Math.max(...r.Y))]);
           sp.contour((Z, Y) => gdbRHS(Z, Y, beta.value, p).dZ, [0], { color: 'orange', width: 2, res: 160 });
           sp.contour((Z, Y) => gdbRHS(Z, Y, beta.value, p).dY, [0], { color: 'purple', width: 2, res: 160 });
           trace(sp, r.Z, r.Y, { color: 'accent', width: 1, alpha: 0.35 });
@@ -362,7 +362,7 @@ where $F_0$ is the isometric force (the load at which $v = 0$), $v_{\max} = bF_0
         const vm = v.slider('$v_{\\max}$', 1, 10, 4, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} L₀/s` });
         const sf = v.stage({ x: [0, 1.1], y: [0, 10.5], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'shortening speed v (L₀/s)', weight: 1.1 });
         const sm = v.stage({ x: [0, 4], y: [0, 6.4], height: 300, axes: false, weight: 0.65, minWidth: 190 });
-        const sp = v.stage({ x: [0, 1.1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'power  F·v  (units of F₀·v_max)', weight: 1, minWidth: 220 });
+        const sp = v.stage({ x: [0, 1.1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'power F·v  (relative to F₀·vmax)', weight: 1, minWidth: 220 });
         const bOf = () => al.value * vm.value;
         const h = sf.handle(0.5, 1, { color: 'gold', r: 8, constrain: (x) => { const F = clamp(x, 0.005, 1); return [F, hillV(F, al.value, bOf())]; } });
         const load = { F: 0.5 };
