@@ -11,7 +11,7 @@ export const SURV = {
   III: [0.25, 0.55, 0.78, 0.85, 0.85, 0.85, 0.85],
 };
 /** Fecundity schedule for 8 classes (offspring per individual per step). */
-export const FEC = [0, 0, 0.9, 1.8, 2.2, 1.8, 1.2, 0.6];
+export const FEC = [0, 0, 0.5, 1, 1.2, 1, 0.7, 0.35];
 
 /** Survivorship l_x from class survival probabilities s (length n-1). */
 export function survivorship(s) { const l = [1]; for (const p of s) l.push(l[l.length - 1] * p); return l; }

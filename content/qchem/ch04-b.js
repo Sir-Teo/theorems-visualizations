@@ -59,7 +59,7 @@ export default {
           const sel = showS.value;
           let coef; if (sel === 'p') coef = { [P]: 1 }; else { const c = pr.c[sel === 'lo' ? 0 : 1]; coef = {}; c.forEach((x, i) => { if (Math.abs(x) > 2e-3) coef[i] = x; }); }
           const ent = Object.entries(coef).map(([i, c]) => [Math.floor(+i / N) + 1, (+i % N) + 1, c]);
-          sH.heat((x, y) => { let s = 0; for (const [a, b, c] of ent) s += c * phi(a, x) * phi(b, y); return s / 2; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'orange', pos: 'accent', res: 3, key: `${kind},${lam},${sel}` });
+          sH.heat((x, y) => { if (x < 0 || x > 1 || y < 0 || y > 1) return 0; let s = 0; for (const [a, b, c] of ent) s += c * phi(a, x) * phi(b, y); return s / 2; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'orange', pos: 'accent', res: 3, key: `${kind},${lam},${sel}` });
           const cp = sel === 'p' ? 1 : (pr.c[sel === 'lo' ? 0 : 1][P]), cq = sel === 'p' ? 0 : (pr.c[sel === 'lo' ? 0 : 1][Q]);
           info = { kind, lam, wpp, wqq, wpq, split: pr.E[1] - pr.E[0], pred: 2 * half * lam, cp, cq, sel };
         });
@@ -156,7 +156,7 @@ For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\ra
         const sS = v.slider('exponent $s$ in $V\\propto r^s$ ($s=0$: $\\ln r$)', -1, 4, -1, { step: 0.25 });
         const nS = v.select('level', [{ value: 0, label: '1s' }, { value: 1, label: '2s' }, { value: 2, label: '3s' }], 0);
         const pot = (s) => (s === 0 ? Math.log : s > 0 ? (r) => r ** s : (r) => -(r ** s));
-        const solve = (s, k) => { const rmax = s <= -0.5 ? 120 : s <= 1 ? 60 : 25, h = rmax / 1600; return radialLevels(M, pot(s), 0, k, { rmax, h }); };
+        const solve = (s, k) => { const rmax = s <= -0.5 ? 40 + 30 * k : s <= 1 ? 50 : 22, h = rmax / 3500; return radialLevels(M, pot(s), 0, k, { rmax, h }); };
         const stats = (s, sol, k) => {
           const u = sol.u[k], h = sol.h, V = pot(s); let T = 0, Vv = 0, prev = 0;
           for (let i = 0; i < u.length; i++) { const d = (u[i] - prev) / h; T += 0.5 * d * d * h; prev = u[i]; Vv += V((i + 1) * h) * u[i] * u[i] * h; }
@@ -220,12 +220,12 @@ For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\ra
           s2.hline(0, { color: 'faint' });
           s2.line(-1, e1(-1), 1, e1(1), { color: 'accent', dash: true, alpha: 0.7, width: 1.5 }); s2.line(-1, e2(-1), 1, e2(1), { color: 'orange', dash: true, alpha: 0.7, width: 1.5 });
           const d = (R) => A * 0.9 * R, E = (R, sg) => sg * Math.hypot(d(R), V);
-          const w = (R, sg) => { const dd = d(R), r = Math.hypot(dd, V) || 1e-12; return 0.5 * (1 - (sg * dd) / r); };   // weight of diabat 2 in state sg  (sg=+1 upper)
+          const w = (R, sg) => { const dd = d(R), r = Math.hypot(dd, V) || 1e-12; return 0.5 * (1 + (sg * dd) / r); };   // weight of diabat 2 in state sg  (sg=+1 upper)
           for (const sg of [-1, 1]) {
             const NSEG = 160;
             for (let i = 0; i < NSEG; i++) { const R0 = -1 + (2 * i) / NSEG, R1 = -1 + (2 * (i + 1)) / NSEG; s2.segment([R0, E(R0, sg)], [R1, E(R1, sg)], { color: v.mix('accent', 'orange', w((R0 + R1) / 2, sg) ), width: 3.2 }); }
           }
-          if (same && Math.abs(V) > 1e-6) { s2.measure(0.02, -Math.abs(V), 0.02, Math.abs(V), '$2|V|$'); }
+          if (same && Math.abs(V) > 1e-6) { s2.measure(0.02, -Math.abs(V), 0.02, Math.abs(V), '2|V|'); }
           // cone
           const cone = (sg) => s3.surface((r, ph) => [r * Math.cos(ph), r * Math.sin(ph), sg * r], [0, 1.2], [0, 2 * Math.PI], { n: 26, color: sg > 0 ? 'orange' : 'accent', alpha: 0.35, wire: true });
           cone(1); cone(-1);
@@ -249,7 +249,7 @@ $$E_{\rm disp}(R)=-\frac{C_6}{R^6},\qquad C_6=\sum_{m,n\ne0}\frac{|\langle0|\bol
 and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$ the ionisation energy and polarizability volume $\alpha'=\alpha/4\pi\varepsilon_0$ for both atoms, $C_6\approx\tfrac34\hbar\omega_0\alpha'^2$.`,
       scope: String.raw`Valid at distances where the electron clouds do not overlap and retardation is negligible ($R\ll$ the wavelength of the dominant transitions; beyond that the $R^{-7}$ Casimir–Polder law takes over). The Drude estimate is accurate only to tens of percent: for argon it gives $\approx53$ a.u. while the best dipole-oscillator-strength and *ab initio* values are near $64$ a.u. (quoted from a literature range 62–65, not looked up in the primary source).`,
       idea: String.raw`The first-order dipole–dipole energy vanishes because each atom's ground state has $\langle\boldsymbol\mu\rangle=0$ (4.4). At second order (4.5) the ground state is lowered by mixing in simultaneous excitations of both atoms, which is an effect of the *correlation* of the two fluctuating dipoles: the energy is $-\sum|W_{0,mn}|^2/(\Delta E)$ with $W\propto R^{-3}$, hence $R^{-6}$. The Drude model makes this exact: two oscillators coupled by $-2\mu_1\mu_2/4\pi\varepsilon_0R^3$ have normal modes $\omega_\pm=\omega_0\sqrt{1\pm\kappa}$ with $\kappa=2\alpha'/R^3$, and the zero-point energy sinks by $\tfrac12\hbar(\omega_++\omega_--2\omega_0)\approx-\hbar\omega_0\kappa^2/8$; adding the two transverse pairs ($\kappa/2$) gives $-\tfrac34\hbar\omega_0\alpha'^2/R^6$.`,
-      caption: String.raw`Pick a noble gas (polarizability $\alpha'$ from experiment and $\hbar\omega_0=$ the first ionisation energy, as London proposed) or edit the sliders, and drag the separation $R$. Left, on log-log axes: the exact zero-point energy shift of three coupled Drude oscillator pairs (blue) and the $-C_6/R^6$ asymptote (dashed); they merge at large $R$ with slope $-6$, and the model breaks down (grey zone) where $\kappa\to1$ and the soft mode collapses. Right: samples of the joint ground-state distribution of the two dipole coordinates along the axis, $(x_1,x_2)$ in units of $\sqrt{\hbar/m\omega_0}$: the cloud is tilted onto the diagonal because the fluctuations are correlated, and that correlation is what the energy comes from.`,
+      caption: String.raw`Pick a noble gas (polarizability $\alpha'$ from experiment and $\hbar\omega_0=$ the first ionisation energy, as London proposed) or edit the sliders, and drag the separation $R$. Left, on log-log axes: the exact zero-point energy shift of three coupled Drude oscillator pairs (blue) and the $-C_6/R^6$ asymptote (dashed); they merge at large $R$ with slope $-6$, and the model breaks down (grey zone, far inside the region where real atoms overlap) where $\kappa\to1$ and the soft mode collapses. Shrink $R$ to see the correlation tilt grow. Right: samples of the joint ground-state distribution of the two dipole coordinates along the axis, $(x_1,x_2)$ in units of $\sqrt{\hbar/m\omega_0}$: the cloud is tilted onto the diagonal because the fluctuations are correlated, and that correlation is what the energy comes from.`,
       deps: ['qchem-4.5', 'qchem-4.6', 'qm-11.17'],
       see: ['qm-11.17', 'qchem-4.12'],
       refs: ['McQuarrie ch. 8'],
@@ -264,8 +264,8 @@ and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$
         const atom = v.select('atom (London’s $\\hbar\\omega_0\\approx I$)', [...Object.keys(ATOMS), 'custom'], 'Ar', { onChange: (x) => { if (ATOMS[x]) { aS.set(ATOMS[x].a * A03); wS.set(IE[ATOMS[x].Z - 1]); } } });
         const aS = v.slider('polarizability volume $\\alpha\'$ (Å³)', 0.1, 6, ATOMS.Ar.a * A03, { step: 0.01 });
         const wS = v.slider('$\\hbar\\omega_0$ (eV)', 5, 30, IE[17], { step: 0.01 });
-        const rS = v.slider('separation $R$ (Å)', 2.5, 12, 3.8, { step: 0.05 });
-        const sE = v.stage({ x: [2, 14], y: [1e-4, 1e3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: 'R (Å)', ylabel: '|ΔE| (meV)', title: 'dispersion energy of two atoms' });
+        const rS = v.slider('separation $R$ (Å)', 1.6, 12, 3.8, { step: 0.05 });
+        const sE = v.stage({ x: [1.2, 14], y: [1e-4, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: 'R (Å)', ylabel: '|ΔE| (meV)', title: 'dispersion energy of two atoms' });
         const sS = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: 'box', gutter: true, height: 330, weight: 0.85, xlabel: 'x₁', ylabel: 'x₂', title: 'correlated dipole fluctuations' });
         const g = (k) => Math.sqrt(1 + k) + Math.sqrt(1 - k) - 2;
         const dE = (R, al, w) => { const k = (2 * al) / R ** 3; return k >= 1 ? NaN : 0.5 * w * (g(k) + 2 * g(k / 2)); };       // eV, three Drude pairs
@@ -274,12 +274,12 @@ and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$
         v.render(() => {
           const al = aS.value, w = wS.value, R = rS.value, C6 = 0.75 * w * al * al, k = (2 * al) / R ** 3;
           const Rc = (2 * al) ** (1 / 3);
-          sE.vband(2, Math.max(2.0001, Rc), { color: 'muted', alpha: 0.18 });
-          sE.fn((x) => (C6 / x ** 6) * 1e3, { color: 'orange', dash: true, width: 1.8, domain: [2, 14] });
-          sE.fn((x) => { const e = dE(x, al, w); return Number.isNaN(e) ? NaN : -e * 1e3; }, { color: 'accent', width: 2.6, domain: [Math.max(2, Rc * 1.0001), 14] });
+          sE.vband(1.2, Math.max(1.2001, Rc), { color: 'muted', alpha: 0.18 });
+          sE.fn((x) => (C6 / x ** 6) * 1e3, { color: 'orange', dash: true, width: 1.8, domain: [1.2, 14] });
+          sE.fn((x) => { const e = dE(x, al, w); return Number.isNaN(e) ? NaN : -e * 1e3; }, { color: 'accent', width: 2.6, domain: [Math.max(1.2, Rc * 1.0001), 14] });
           const e = dE(R, al, w);
           if (!Number.isNaN(e)) sE.dot(R, -e * 1e3, { r: 7, color: 'gold' });
-          sE.text('model collapses (κ ≥ 1)', 2.1, 3e-4, { color: 'muted', size: 11 });
+          sE.text('κ ≥ 1: model collapses', 1.3, 3e-4, { color: 'muted', size: 11 });
           // correlated Gaussians for the axial pair: modes (x1 ± x2)/√2 with ω² = ω0²(1 ∓ κ), variances 1/(2√(1∓κ)) in units of ħ/mω0
           if (k < 1) {
             const vs = 1 / (2 * Math.sqrt(1 - k)), va = 1 / (2 * Math.sqrt(1 + k)), pts = Zs.map(([a, b]) => { const X = a * Math.sqrt(vs), Y = b * Math.sqrt(va); return [(X + Y) / Math.SQRT2, (X - Y) / Math.SQRT2]; });
@@ -343,7 +343,7 @@ with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122
           const C6 = f === 'lj' ? 4 * EPS * SIG ** 6 : f === 'nm' ? (EPS * s * RM ** 6) / (s - 6) : (EPS * RM ** 6) / (1 - 6 / s);
           sU.fn((r) => -C6 / r ** 6, { color: 'orange', dash: [2, 3], width: 1.4, domain: [3.3, 8.5] });
           sU.fn((r) => (f === 'exp' && r < rp ? NaN : U(f, s, r)), { color: 'accent', width: 2.6, domain: [3, 8.5] });
-          sU.dot(RM, -EPS, { r: 5, color: 'green', label: `r_m = ${RM.toFixed(2)} Å`, labelPos: 'ne' });
+          sU.dot(RM, -EPS, { r: 5, color: 'green', label: `rₘ = ${RM.toFixed(2)} Å`, labelPos: 'n' });
           sU.text('σ', SIG, 27, { color: 'muted', align: 'center' });
           const Ts = Array.from({ length: 36 }, (_, i) => 60 + (940 * i) / 35), pts = Ts.map((T) => [T, B2(f, s, T)]);
           const ref = f === 'lj' ? null : Ts.map((T) => [T, B2('lj', 12, T)]);
@@ -351,7 +351,7 @@ with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122
           sB.hline(0, { color: 'faint' });
           sB.path(pts, { color: 'accent', width: 2.6 });
           let TB = NaN; for (let i = 1; i < pts.length; i++) if (pts[i - 1][1] < 0 && pts[i][1] >= 0) { TB = pts[i - 1][0] + ((pts[i][0] - pts[i - 1][0]) * -pts[i - 1][1]) / (pts[i][1] - pts[i - 1][1]); break; }
-          if (!Number.isNaN(TB)) sB.dot(TB, 0, { r: 6, color: 'gold', label: `T_B ≈ ${TB.toFixed(0)} K`, labelPos: 'ne' });
+          if (!Number.isNaN(TB)) sB.dot(TB, 0, { r: 6, color: 'gold', label: `Boyle T ≈ ${TB.toFixed(0)} K`, labelPos: 'ne' });
           info = { f, s, C6, TB, rp, b300: B2(f, s, 300) };
         });
         v.legend([['accent', 'this potential'], ['muted', '12–6', { dash: true }], ['orange', '$-C_6/r^6$ tail', { dash: [2, 3] }], ['green', 'well: $-\\varepsilon$, $r_m$', { dash: true }]]);

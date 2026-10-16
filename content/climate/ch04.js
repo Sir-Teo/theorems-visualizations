@@ -46,14 +46,14 @@ export default {
           sA.path(pts, { color: 'gold', width: 1.6, alpha: 0.7 }); sA.dots(pts, { color: 'gold', r: 3.5 });
           const G = F < 1 ? 1 / (1 - F) : Infinity;
           sB.fn((x) => 1 / (1 - x), { domain: [-1, 0.9167], color: 'accent', width: 2.4 });
-          sB.vband(1, 1.4, { color: 'red', alpha: 0.12 }); sB.vline(1, { color: 'red', dash: [5, 4] }); sB.text('no equilibrium', 1.2, 6, { size: 11, color: 'red', align: 'center' });
+          sB.vband(1, 1.4, { color: 'red', alpha: 0.12 }); sB.vline(1, { color: 'red', dash: [5, 4] }); sB.text('runaway', 1.2, 6, { size: 11, color: 'red', align: 'center' });
           const f6 = 2.06 / LAM0; sB.dot(f6, 1 / (1 - f6), { color: 'green', r: 4, hollow: true, label: 'AR6', labelPos: 'nw' });
           if (F < 1) sB.dot(F, Math.min(G, 12), { color: 'gold', r: 6 });
           sB.hline(1, { color: 'faint', dash: [3, 4] });
           R = { S, lim, G, lam: LAM0 * (1 - F), F };
         });
         v.legend([['blue', 'no-feedback response'], ['orange', 'feedback round'], ['gold', 'running total', { dot: true }], ['green', 'limit', { dash: true }]]);
-        v.readout(() => R && (R.F < 1
+        v.readout(() => !R ? 'computing…' : (R.F < 1
           ? String.raw`$f=${v.fix(R.F, 2)}$: after ${nR.value} rounds ${v.fix(R.S, 2)} K, limit $\Delta T_0/(1-f)=$ **${v.fix(R.lim, 2)} K** (gain ${v.fix(R.G, 2)}) · net feedback $\lambda=\lambda_0(1-f)=$ ${v.fix(R.lam, 2)} W/m²/K with $\lambda_0=3.22$ · AR6: gain ${v.fix(1 / (1 - 2.06 / LAM0), 2)}, $\lambda=1.16$`
           : String.raw`$f=${v.fix(R.F, 2)}\ge1$: each round adds more than the one before, the total after ${nR.value} rounds is ${v.fix(R.S, 1)} K and keeps growing — the linear model has no equilibrium.`));
       },
@@ -66,7 +66,7 @@ export default {
       credit: 'idea: Arrhenius, 1896 and Manabe & Wetherald, 1967 (fixed relative humidity); AR6 value: IPCC AR6 WG1 (2021) §7.4.2.2',
       statement: String.raw`Saturation vapour pressure rises by roughly 6–7 % per kelvin (Clausius–Clapeyron, geo-1.5), and observations and models show that the atmosphere's relative humidity changes little as it warms, so its water-vapour content rises by about that rate. Water vapour is a greenhouse gas, so the extra vapour, mostly in the upper troposphere, reduces the outgoing longwave radiation at a given temperature. The result is a **positive feedback**: AR6 gives a water-vapour feedback of $\alpha_{WV}\approx+1.8$ W m⁻² K⁻¹ (CMIP5/6: $1.77\pm0.20$; satellite estimate $1.85\pm0.32$), more than half the size of the Planck response, which raises the no-feedback warming by about a factor 1.6–2 on its own.`,
       idea: String.raw`Compute the outgoing radiation of the same warmed atmosphere twice: once with the humidity left unchanged, which gives the Planck response alone, and once with relative humidity held fixed, so that $q$ follows Clausius–Clapeyron (geo-1.5). The difference in outgoing radiation, per kelvin, is the feedback. It comes mainly from the upper troposphere because the emission level (climate-2.7) of the water bands lies there, and the vapour that matters most is the small amount in cold air, where a given percentage increase blocks most of the radiation that would have escaped. The feedback is thus a statement about how the emission level of water vapour rises as the air warms.`,
-      caption: String.raw`The synthetic-spectrum column is warmed uniformly by $\Delta T$. Left: how much more radiation escapes to space, with humidity frozen (blue: the Planck response) and with fixed relative humidity (red: less escapes, because the added vapour traps it); the gap divided by $\Delta T$ is the water-vapour feedback. Middle: which layers matter; each bar is the part of the effect from moistening one slab of the troposphere (the slider restricts moistening to layers above a chosen pressure). Right: Clausius–Clapeyron growth per kelvin falls from about 7 % per kelvin at the surface to 9–10 % in cold air. The first computation takes a few seconds.`,
+      caption: String.raw`The synthetic-spectrum column is warmed uniformly by $\Delta T$. Left: how much more radiation escapes to space, with humidity frozen (blue: the Planck response) and with fixed relative humidity (red: less escapes, because the added vapour traps it); the gap divided by $\Delta T$ is the water-vapour feedback. Middle: which layers matter; each bar is the part of the effect from moistening one slab of the troposphere (the slider restricts moistening to layers above a chosen pressure). Right: Clausius–Clapeyron growth per kelvin falls from about 7 % per kelvin at the surface to 10–11 % in the cold upper troposphere. The first computation takes a few seconds.`,
       deps: ['climate-4.1', 'geo-1.5'],
       refs: ['Archer ch. 7', 'IPCC AR6 WG1 ch. 7'],
       tags: ['feedback', 'water vapour', 'Clausius–Clapeyron'],
@@ -76,7 +76,7 @@ export default {
         const dT = v.slider('uniform warming $\\Delta T$ (K)', 0.5, 6, 2, { step: 0.1 });
         const cut = v.slider('moisten only layers above (hPa)', 100, 1000, 1000, { step: 10 });
         const sA = v.stage({ x: [0, 6], y: [0, 24], axes: 'box', gutter: true, height: 320, weight: 1.2, minWidth: 270, xlabel: 'warming $\\Delta T$ (K)', ylabel: 'extra outgoing radiation (W/m²)', title: 'what escapes to space as the column warms' });
-        const sB = v.stage({ x: [0, 1100], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1.2, minWidth: 270, xlabel: 'pressure of the moistened slab (hPa)', ylabel: 'W/m² per K', title: 'where the vapour matters', xticks: [[100, '100'], [300, '300'], [500, '500'], [700, '700'], [900, '900']] });
+        const sB = v.stage({ x: [100, 1000], xlog: true, y: [0, 0.6], axes: 'box', gutter: true, height: 320, weight: 1.2, minWidth: 270, xlabel: 'pressure of the moistened slab (hPa)', ylabel: 'W/m² per K', title: 'where the vapour matters' });
         const sC = v.stage({ x: [200, 310], y: [0, 14], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 230, xlabel: 'temperature (K)', ylabel: '% per K', title: 'Clausius–Clapeyron growth' });
         let ctrl = null, R = null;
         const T1 = (T, d) => T.map((t) => t + d);
@@ -95,20 +95,20 @@ export default {
           const d = dT.value, pD = olrAt(d, qFixed) - base, wD = olrAt(d, qCut(cut.value)) - base;
           sA.line(d, wD, d, pD, { color: 'orange', width: 3 }); sA.text('trapped by extra vapour ' + v.fix(pD - wD, 1), d + 0.1, (pD + wD) / 2, { size: 11, color: 'orange', align: 'left' });
           // slabs: moistening only the layers above each cutoff
-          const edges = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
+          const edges = Array.from({ length: 14 }, (_, j) => 1000 * 0.84 ** j);
           const O = edges.map((p0) => olrAt(d, qCut(p0)) - base);
-          for (let j = 0; j < edges.length - 1; j++) { const part = (O[j + 1] - O[j]) / d; sB.rect(edges[j + 1] + 6, 0, edges[j] - 6, Math.max(0, part), { fill: 'red', fillAlpha: 0.6, stroke: false }); }
+          for (let j = 0; j < edges.length - 1; j++) { const part = (O[j + 1] - O[j]) / d; sB.rect(edges[j + 1] * 1.01, 0, edges[j] * 0.99, Math.max(0, part), { fill: 'red', fillAlpha: 0.6, stroke: false }); }
           const alpha = (pD - wD) / d, alphaAll = (pD - (olrAt(d, qCut(1100)) - base)) / d;
           const qNew = qCut(1100)(T1(ctrl.T, d));
           R = { alpha, alphaAll, pD, wD, d, pwr: (pw(qNew) / pw(ctrl.q) - 1) * 100 / d };
           // CC
           sC.fn((T) => 100 * (esat(T + 1) / esat(T) - 1), { domain: [200, 310], color: 'accent', width: 2.4 });
-          sC.dot(288, 100 * (esat(289) / esat(288) - 1), { color: 'gold', r: 5, label: 'surface', labelPos: 'ne' });
+          sC.dot(288, 100 * (esat(289) / esat(288) - 1), { color: 'gold', r: 5, label: 'surface', labelPos: 'nw' });
           sC.dot(235, 100 * (esat(236) / esat(235) - 1), { color: 'gold', r: 5, label: 'upper troposphere', labelPos: 'ne' });
           sC.hline(7, { color: 'faint', dash: [4, 4] });
         });
         v.legend([['blue', 'humidity frozen'], ['red', 'relative humidity fixed']]);
-        v.readout(() => R && String.raw`At $\Delta T=${v.fix(R.d, 1)}$ K the frozen-humidity column gains ${v.fix(R.pD, 1)} W/m², the moistening column ${v.fix(R.wD, 1)}: the vapour traps ${v.fix(R.pD - R.wD, 1)} W/m², i.e. a feedback of **${v.fix(R.alpha, 2)}** W/m²/K (all layers moistened: ${v.fix(R.alphaAll, 2)}) · column water vapour rises ${v.fix(R.pwr, 1)} % per K · AR6 assessment: water vapour ${AR6.wv.toFixed(2)} ± 0.20 W/m²/K, Planck −3.22`);
+        v.readout(() => !R ? 'integrating the control column (a few seconds)…' : String.raw`At $\Delta T=${v.fix(R.d, 1)}$ K the frozen-humidity column gains ${v.fix(R.pD, 1)} W/m², the moistening column ${v.fix(R.wD, 1)}: the vapour traps ${v.fix(R.pD - R.wD, 1)} W/m², i.e. a feedback of **${v.fix(R.alpha, 2)}** W/m²/K (all layers moistened: ${v.fix(R.alphaAll, 2)}) · column water vapour rises ${v.fix(R.pwr, 1)} % per K · AR6 assessment: water vapour ${AR6.wv.toFixed(2)} ± 0.20 W/m²/K, Planck −3.22`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.3
@@ -158,10 +158,12 @@ export default {
           sC.hline(0, { color: 'faint' }); sC.path(pts, { color: 'accent', width: 2.4 }); sC.dots(pts, { color: 'accent', r: 3 });
           sC.dot(str.value, a, { color: 'gold', r: 6 });
           sC.hline(fol ? AR6.lrStar : -0.5, { color: 'green', dash: [5, 4] }); sC.text(fol ? 'AR6 LR* −0.10' : 'AR6 ≈ −0.5', 1.48, fol ? AR6.lrStar : -0.5, { size: 10.5, color: 'green', align: 'right', baseline: 'bottom', dy: -2 });
-          R = { a, dU, dP, d, fol };
+          const aOf = (amp) => -(olrWith(amp, d, fol) - base2 - dU) / d;
+          const mix = 0.5 * aOf(ampOf('trop', 1)) + 0.366 * aOf(ampOf('trop', 0.5)) + 0.134 * aOf(ampOf('pol', 1));
+          R = { a, dU, dP, d, fol, mix };
         });
-        v.readout(() => R && String.raw`Surface warming ${v.fix(R.d, 1)} K: uniform warming lets ${v.fix(R.dU, 2)} W/m² more escape, the pattern ${v.fix(R.dP, 2)} W/m² → lapse-rate feedback **${v.fix(R.a, 2)}** W/m²/K (${R.fol ? 'relative humidity fixed; AR6 LR* = −0.10 ± 0.07' : 'specific humidity held; AR6: water vapour + lapse rate = +1.30 and water vapour alone 1.77, so roughly −0.5'})`);
-      },
+        v.readout(() => !R ? 'integrating the control column (a few seconds)…' : String.raw`Surface warming ${v.fix(R.d, 1)} K: uniform warming lets ${v.fix(R.dU, 2)} W/m² more escape, the pattern ${v.fix(R.dP, 2)} W/m² → lapse-rate feedback **${v.fix(R.a, 2)}** W/m²/K (${R.fol ? 'relative humidity fixed; AR6 LR* = −0.10 ± 0.07' : 'specific humidity held; AR6: water vapour + lapse rate = +1.30 and water vapour alone 1.77, so roughly −0.5'})
+Global mix (tropics 50 % of the area with the full pattern, mid-latitudes 37 % at half strength, poles 13 % surface-trapped): **${v.fix(R.mix, 2)}** W/m²/K against AR6's ${R.fol ? '−0.10 ± 0.07' : 'about −0.5'}: the sign is right, but this column overstates the size`);      },
     },
     // ───────────────────────────────────────────────────────────── 4.4
     {
@@ -206,7 +208,7 @@ export default {
           const rs = roots(F, k);
           rs.forEach((r) => sA.dot(r.T, olr(r.T), { color: r.stable ? 'green' : 'red', hollow: !r.stable, r: 6 }));
           const T0 = Math.pow(((S / 4) * 0.7 + F) / (EPS * SIG), 0.25);
-          sA.dot(T0, olr(T0), { color: 'muted', r: 5, label: 'fixed albedo', labelPos: 'se' });
+          sA.dot(T0, olr(T0), { color: 'muted', r: 5, label: 'fixed albedo', labelPos: 'sw' });
           const near = rs.filter((r) => r.stable).sort((a, b) => Math.abs(a.T - 288 - (F > 0 ? 3 : 0)) - Math.abs(b.T - 288 - (F > 0 ? 3 : 0)))[0];
           if (near) sA.dot(near.T, olr(near.T), { color: 'gold', r: 5, label: 'with ice', labelPos: 'nw' });
           // bifurcation diagram
