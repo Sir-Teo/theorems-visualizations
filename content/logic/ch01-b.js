@@ -297,14 +297,14 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           const n = sys.length;
           // sentence cards
           boxes = [];
-          const bh = Math.min(8, 46 / n - 2.2), gap = 2.2;
+          const gap = 2.6, bh = Math.min(12, (50 - gap * (n - 1)) / n);
           sys.forEach((S, i) => {
             const y1 = 56 - i * (bh + gap), y0 = y1 - bh;
             boxes.push([2, y0, 44, y1]);
             s.rect(2, y0, 44, y1, { fill: 'accent', fillAlpha: 0.06, color: 'accent', width: 1.4, radius: 6 });
             s.text(`${sname(i)}:`, 3.5, (y0 + y1) / 2, { size: 13, weight: 700, color: 'accent' });
             const txt = sentenceText(S, i);
-            s.text(txt.length > 34 ? txt : `“${txt}”`, 10, (y0 + y1) / 2, { size: txt.length > 40 ? 10.5 : 12, color: 'ink' });
+            s.text(txt.length > 34 || S.fact != null ? txt : `“${txt}”`, 10, (y0 + y1) / 2, { size: txt.length > 40 ? 10.5 : 12, color: 'ink' });
             // reference arcs on the right edge of the cards
             (S.refs || []).forEach(([j, p], k) => {
               const ya = (y0 + y1) / 2, yb = 56 - j * (bh + gap) - bh / 2;
@@ -315,7 +315,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
             });
           });
           // truth table of all assignments
-          const rows = 1 << n, cw = 6.2, ch = Math.min(7, 52 / (rows + 0.6)), x0 = 62, y0 = 55;
+          const rows = 1 << n, cw = 6.2, ch = Math.min(10, 52 / (rows + 0.6)), x0 = 62, y0 = 55;
           for (let i = 0; i < n; i++) s.text(sname(i), x0 + (i + 0.5) * cw, y0 + 1.6, { align: 'center', size: 11.5, weight: 700, color: 'accent' });
           s.text('consistent?', x0 + (n + 0.9) * cw, y0 + 1.6, { align: 'center', size: 11, color: 'muted' });
           const sols = [];
@@ -336,7 +336,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           // naive evaluation
           let cur = Array(n).fill(true); const hist = [cur];
           for (let k = 0; k < 12; k++) { cur = sys.map((S) => claim(S, cur)); hist.push(cur); }
-          const rh = 4 / Math.max(n, 1);
+          const rh = Math.min(1.3, 4 / Math.max(n, 1));
           hist.forEach((hv, k) => hv.forEach((val, i) => {
             const y1 = 4.3 - i * rh, y0b = y1 - rh * 0.85;
             b.rect(k - 0.42, y0b, k + 0.42, y1, { fill: val ? 'green' : 'red', fillAlpha: 0.35, color: val ? 'green' : 'red', width: 1, radius: 3 });
@@ -481,7 +481,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           const pts = []; for (let k = 1; k <= 30; k++) pts.push([k, letters(`${numWord(k)}-lettered`)]);
           pl.path(pts, { color: 'muted', width: 1.4 });
           pts.forEach(([k, L]) => pl.dot(k, L, { r: k === n ? 6 : 3.4, color: L === k ? 'green' : k === n ? 'accent' : 'muted' }));
-          pl.text(`“${nl}”: ${letters(nl)} letters`, 1, 29, { size: 10.5, color: letters(nl) === n ? 'green' : 'accent', weight: 600 });
+          pl.text(`“${nl}”: ${letters(nl)} letters`, 30, 3, { align: 'right', size: 10.5, color: letters(nl) === n ? 'green' : 'accent', weight: 600 });
           const diag = PRED.map(([w, P]) => P(w));
           st = { nl, auto: diag[PRED.length - 1], diag, words };
         });
@@ -512,7 +512,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
         const adm = v.toggle('admit the phrase δ = “the diagonal of this list”', false, { onChange: () => { guess = 5; evals = 0; } });
         let guess = 5, evals = 0;
         const bEval = v.button('evaluate digit 1 of δ', () => { evals++; guess = guess === 5 ? 4 : 5; });
-        const s = v.stage({ x: [0, 100], y: [0, 64], axes: false, height: 440, full: true });
+        const s = v.stage({ x: [0, 100], y: [-7, 64], axes: false, height: 480, full: true });
         const rule = (x) => (x === 5 ? 4 : 5);
         let st = null;
         v.render(() => {
@@ -594,7 +594,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
         const mode = v.select('list', [{ value: 'alg', label: 'algebraic numbers (Cantor’s list)' }, { value: 'rat', label: 'rationals only' }], 'alg', { onChange: () => rebuild() });
         const NS = v.slider('heights $N\\le$', 6, 11, 10, { int: true, onChange: () => rebuild() });
         const top = v.stage({ x: [0.4, 11.6], y: [0.7, 3e4], ylog: true, axes: 'box', height: 150, full: true, xlabel: 'height N', ylabel: 'φ(N)', xticks: [...Array(11)].map((_, i) => i + 1) });
-        const s = v.stage({ x: [-0.08, 1.08], y: [-0.2, 7.2], axes: false, height: 400, full: true });
+        const s = v.stage({ x: [-0.08, 1.08], y: [-0.15, 7.15], axes: false, height: 380, full: true });
         const ha = s.handle(0.05, 6.6, { color: 'orange', label: 'α', constrain: (x) => [v.M.clamp(Math.round(x * 100) / 100, 0, 0.99), 6.6], onDrag: () => rebuild() });
         const hb = s.handle(0.95, 6.6, { color: 'orange', label: 'β', constrain: (x) => [v.M.clamp(Math.round(x * 100) / 100, 0.01, 1), 6.6], onDrag: () => rebuild() });
         const build = () => {
@@ -613,13 +613,13 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
             let A = Q(BigInt(Math.round(Math.min(ha.x, hb.x) * 100)), 100n), B = Q(BigInt(Math.round(Math.max(ha.x, hb.x) * 100)), 100n);
             if (!qlt(A, B)) B = Q(A[0] * 100n + A[1], A[1] * 100n);
             frames[0].A = A; frames[0].B = B;
-            for (let step = 1; step <= 26; step++) {
+            for (let step = 1; step <= 16; step++) {
               const s1 = simplest(A, B), l = simplest(A, s1), r = simplest(s1, B);
               const s2 = qh(l) < qh(r) || (qh(l) === qh(r)) ? l : r;
               const lo = qlt(s1, s2) ? s1 : s2, hi = qlt(s1, s2) ? s2 : s1;
               A = lo; B = hi;
               const fq = (q) => `${q[0]}/${q[1]}`;
-              frames.push({ a: qnum(A), b: qnum(B), A, B, pick: [{ x: qnum(s1), h: Number(qh(s1)), lab: fq(s1) }, { x: qnum(s2), h: Number(qh(s2)), lab: fq(s2) }], note: `Step ${step}: the two rationals of least height inside are $${s1[0]}/${s1[1]}$ (height ${qh(s1)}) and $${s2[0]}/${s2[1]}$ (height ${qh(s2)}).` });
+              frames.push({ a: qnum(A), b: qnum(B), A, B, pick: [{ x: qnum(s1), q: s1, h: Number(qh(s1)), lab: fq(s1) }, { x: qnum(s2), q: s2, h: Number(qh(s2)), lab: fq(s2) }], note: `Step ${step}: the two rationals of least height inside are $${s1[0]}/${s1[1]}$ (height ${qh(s1)}) and $${s2[0]}/${s2[1]}$ (height ${qh(s2)}).` });
             }
           }
           return frames;
@@ -632,29 +632,33 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           // φ(N)
           const H = algebraicByHeight(11).map((L) => L.length);
           H.forEach((c, i) => top.rect(i + 1 - 0.32, 0.7, i + 1 + 0.32, c, { fill: 'blue', fillAlpha: 0.45, color: 'blue', width: 1 }));
-          H.forEach((c, i) => top.text(String(c), i + 1, c * 1.9, { align: 'center', size: 9.5, color: 'ink' }));
+          H.forEach((c, i) => top.text(String(c), i + 1 + (i < 3 ? 0.3 : 0), c * (i < 3 ? 1.6 : 1.9), { align: 'center', size: 9.5, color: 'ink' }));
           Object.entries(PAPER).forEach(([N, c]) => top.dot(+N, c, { r: 7, hollow: true, color: 'red', width: 2.2 }));
           // nested intervals
           const fr = S.frame, k = S.i, frames = S.frames;
-          ha.visible = hb.visible = true;
+          ha.visible = hb.visible = true; NS.el.hidden = mode.value !== 'alg';
           s.line(0, 6.6, 1, 6.6, { color: 'ink', width: 1.6 });
           for (let t = 0; t <= 10; t++) { s.line(t / 10, 6.53, t / 10, 6.67, { color: 'muted', width: 1 }); if (t % 5 === 0) s.text(String(t / 10), t / 10, 6.35, { align: 'center', size: 9.5, color: 'muted' }); }
           const f0 = frames[0];
           s.rect(f0.a, 6.56, f0.b, 6.64, { fill: 'orange', fillAlpha: 0.35, stroke: false });
           const shown = []; for (let j = Math.max(1, k - 4); j <= k; j++) shown.push(j);
           shown.forEach((j, r) => {
-            const P = frames[j - 1], C = frames[j], y = 5.3 - r * 1.25, W = P.b - P.a, Xm = (x) => (x - P.a) / W;
+            const P = frames[j - 1], C = frames[j], y = 5.3 - r * 1.25, W = P.b - P.a;
+            const qrat = (q) => { const num = qsub(q, P.A), den = qsub(P.B, P.A); const t = Q(num[0] * den[1], num[1] * den[0]); return qnum(t); };
+            const Xm = (x, q) => (P.A && q ? qrat(q) : (x - P.a) / W);
             s.line(0, y, 1, y, { color: 'ink', width: 1.4 });
-            s.text(fmt(P.a, W), 0, y - 0.25, { size: 9.5, color: 'muted' }); s.text(fmt(P.b, W), 1, y - 0.25, { align: 'right', size: 9.5, color: 'muted' });
+            const lab = (x, q) => { if (!q) return fmt(x, W); const dd = qdigits(q, Math.min(28, Math.max(3, Math.ceil(-Math.log10(Math.max(W, 1e-300))) + 2))); return `${dd.neg ? '−' : ''}${dd.ip}.${dd.s}`; };
+            s.text(lab(P.a, P.A), 0, y - 0.25, { size: 9.5, color: 'muted' }); s.text(lab(P.b, P.B), 1, y - 0.25, { align: 'right', size: 9.5, color: 'muted' });
             if (mode.value === 'alg') { const list = cantorList(NS.value); let cnt = 0; for (const e of list) if (e.x > P.a && e.x < P.b && cnt++ < 400) s.line(Xm(e.x), y - 0.06, Xm(e.x), y + 0.06, { color: 'faint', width: 1 }); }
-            s.rect(Xm(C.a), y - 0.07, Xm(C.b), y + 0.07, { fill: 'orange', fillAlpha: 0.45, stroke: false });
-            C.pick.forEach((e, q) => { s.line(Xm(e.x), y - 0.15, Xm(e.x), y + 0.15, { color: 'gold', width: 2.6 }); s.text(e.lab ?? `ω${sub(e.k)}`, Xm(e.x), y + 0.3, { align: 'center', size: 10, weight: 700, color: 'gold' }); });
+            s.rect(Xm(C.a, C.A), y - 0.07, Xm(C.b, C.B), y + 0.07, { fill: 'orange', fillAlpha: 0.45, stroke: false });
+            C.pick.forEach((e, q) => { const xx = Xm(e.x, e.q); s.line(xx, y - 0.15, xx, y + 0.15, { color: 'gold', width: 2.6 }); s.text(e.lab ?? `ω${sub(e.k)}`, xx, y + 0.3, { align: 'center', size: 10, weight: 700, color: 'gold' }); });
             const yPrev = r === 0 ? (j === 1 ? 6.6 : null) : y + 1.25;
             if (yPrev != null) {
-              const PP = j === 1 ? { a: 0, b: 1 } : frames[j - 2], WW = PP.b - PP.a, Xp = (x) => (x - PP.a) / WW;
-              s.line(Xp(P.a), yPrev - 0.08, 0, y + 0.08, { color: 'orange', width: 1, dash: [3, 3] }); s.line(Xp(P.b), yPrev - 0.08, 1, y + 0.08, { color: 'orange', width: 1, dash: [3, 3] });
+              const PP = j === 1 ? { a: 0, b: 1 } : frames[j - 2], WW = PP.b - PP.a;
+              const Xp = (x, q) => { if (PP.A && q) { const num = qsub(q, PP.A), den = qsub(PP.B, PP.A); return qnum(Q(num[0] * den[1], num[1] * den[0])); } return (x - PP.a) / WW; };
+              s.line(Xp(P.a, j === 1 ? null : P.A), yPrev - 0.08, 0, y + 0.08, { color: 'orange', width: 1, dash: [3, 3] }); s.line(Xp(P.b, j === 1 ? null : P.B), yPrev - 0.08, 1, y + 0.08, { color: 'orange', width: 1, dash: [3, 3] });
             }
-            s.text(`×${v.fmt(1 / W, 3)}`, 1.06, y, { align: 'right', size: 9, color: 'muted' });
+            s.text(W > 1e-12 ? `×${v.fmt(1 / W, 3)}` : `×${(1 / W).toExponential(1)}`, 1.075, y, { align: 'right', size: 9, color: 'muted' });
           });
           if (k === 0) s.text('press ▶ to take the first step', 0.5, 5.3, { align: 'center', size: 12, color: 'muted' });
           // certified digits of η: common prefix of the endpoints

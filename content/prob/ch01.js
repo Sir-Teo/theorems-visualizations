@@ -431,7 +431,7 @@ For $F(x)=x$ this measure is **Lebesgue measure**.`,
           if (!R) {
             if (!c) return 'This $F$ is not right-continuous at its jumps. Move $a$ onto a jump (it snaps) to watch countable additivity fail.';
             const h = b - c.x, whole = E.Fm(b) - E.Fm(c.x), parts = E.Fm(b) - c.hi;
-            return `With the jump at $c=${v.fix(c.x, 2)}$ taken late ($F(c)=${v.fix(c.lo, 3)}$), the formula gives $(c,b]$ the mass $F(b)-F(c)=${v.fix(whole, 3)}$. But $(c,b]=\\bigcup_k\\big(c+\\tfrac{${v.fix(h, 2)}}{k+1},\\,c+\\tfrac{${v.fix(h, 2)}}{k}\\big]$, and these pieces (purple/teal) add up to only $F(b)-F(c+)=${v.fix(parts, 3)}$. The jump ${v.fix(c.hi - c.lo, 3)}$ is lost, so no measure has these interval masses.`;
+            return `With the jump at $c=${v.fix(c.x, 2)}$ taken late ($F(c)=${v.fix(c.lo, 3)}$), the formula gives $(c,b]$ the mass $F(b)-F(c)=${v.fix(whole, 3)}$. But $(c,b]=\\bigcup_k\\big(c+\\tfrac{${v.fix(h, 2)}}{k+1},\\,c+\\tfrac{${v.fix(h, 2)}}{k}\\big]$, and these pieces (purple/teal) add up to only $F(b)-F(c+)=${v.fix(parts, 3)}$. The jump $${v.fix(c.hi - c.lo, 3)}$ is lost, so no measure has these interval masses.`;
           }
           const L = cl ? 'F(a-)' : 'F(a)', U = cr ? 'F(b)' : 'F(b-)', I = `${cl ? '[' : '('}a,b${cr ? ']' : ')'}`;
           return `$\\mu(${I}) = ${U}-${L} = ${v.fix(hi, 3)}-${v.fix(lo, 3)} = ${v.fix(hi - lo, 3)}$: density part $${v.fix(hi - lo - atomSum, 3)}$ plus point masses $${v.fix(atomSum, 3)}$.`;
@@ -1029,7 +1029,7 @@ Then $P(X\le x)=F(x)$ for all $x$. This $X$ is written $F^{-1}$ even when $F$ is
           sH.hist(H, { density: true, color: 'gold', fillAlpha: 0.4 });
           const step = [[edges[0], 0]]; exact.forEach((d, j) => step.push([edges[j], d], [edges[j + 1], d])); step.push([edges[40], 0]);
           sH.path(step, { color: 'green', width: 2 });
-          sH.corner(`n = ${n.toLocaleString('en-US')}`, 'tl', { color: 'gold', weight: 600 });
+          sH.text(`n = ${n.toLocaleString('en-US')}`, 10.2, Math.max(top, 0.1) * 0.95, { align: 'right', baseline: 'top', color: 'gold', weight: 600, size: 12.5 });
           // Kolmogorov distance
           const srt = Array.from(Xs).sort((p, q) => p - q); let ks2 = 0;
           for (let i = 0, j = 0; i < n; i++) { if (i > 0 && srt[i] !== srt[i - 1]) j = i; if (i + 1 < n && srt[i + 1] === srt[i]) continue; ks2 = Math.max(ks2, Math.abs((i + 1) / n - E.F(srt[i])), Math.abs(j / n - E.Fm(srt[i]))); }

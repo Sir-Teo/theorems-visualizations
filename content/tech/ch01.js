@@ -614,5 +614,91 @@ The gain is less than that because the longer lever and the dart at its end add 
         });
       },
     },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Invention',
+      name: 'The bow and arrow',
+      credit: 'Homo sapiens in southern Africa, by c. 64,000 years ago',
+      statement: String.raw`A bow is a spring. Drawing the string slowly bends the limbs and stores elastic energy, and on release the limbs give most of it back to a light arrow in a few hundredths of a second. The stored energy is the area under the **draw-force curve**,
+$$E=\int_0^{D}F(x)\,dx ,$$
+where $x$ is the draw beyond the braced position and $D$ the full draw. Only a fraction $\eta$ reaches the arrow, so the arrow leaves at $v=\sqrt{2\eta E/m}$. Part of the energy stays in the moving limbs and string, which act like an extra mass $m_v$ (the bow's *virtual mass*, Klopsteg), giving $\eta\approx m/(m+m_v)$. Hadza hunters in Tanzania today draw about 311 N and shoot arrows at 45 m/s, recovering about 70% of the stored energy (Pontzer et al. 2017).
+
+The earliest evidence of archery is indirect: small stone points with impact fractures and residues, hafted as arrowheads. Quartz segments from Sibudu Cave, South Africa, about 64,000 years old (Lombard & Phillipson 2010), and microliths from nearby Umhlatuzana Rock Shelter, about 60,000 years old, carrying traces of plant poison (Isaksson, Högberg & Lombard 2026). In Eurasia the earliest evidence comes from Grotte Mandrin, France, about 54,000 years ago (Metz et al. 2023). Possible arrow tips at Pinnacle Point, South Africa, about 71,000 years old (Brown et al. 2012), are **contested**. The oldest surviving bows, from Holmegaard, Denmark, date from about 7000 BCE.`,
+      idea: String.raw`Human muscle delivers a few hundred watts at most. A bow separates the slow input from the fast output: the archer does the work $E$ over a second or so, and the limbs return it in milliseconds, a power gain of a hundred times or more. Energy conservation (mech-3.1) gives the arrow's speed. Because the limbs' own kinetic energy is lost to the arrow, a heavier arrow takes a larger share of $E$ (higher efficiency) but leaves more slowly. A recurve or reflexed bow stores more energy for the same peak draw force because its curve rises early and then flattens. A short, stiff bow "stacks": its force shoots up at the end of the draw and the area under the curve shrinks. Compared with the atlatl (tech-1.4), the bow turns elastic energy, not the arm's angular speed, into arrow speed, so an arrow leaves about twice as fast as a dart.`,
+      caption: String.raw`**Drag the nock** (gold) to draw the bow. The area under the draw-force curve fills as energy is stored. Release it in your head: the readout computes the arrow's speed with the virtual-mass efficiency, and the bars compare it with a hand-thrown spear and an atlatl dart. Try a heavy and a light arrow, and compare the self bow, a stacking short bow and a recurve at the same peak force. **Hadza bow** loads the values measured by Pontzer et al. (2017).`,
+      deps: ['tech-1.4', 'mech-4.1', 'mech-3.1'],
+      see: ['solid-1.14', 'mat-8.6'],
+      refs: ['Cardwell', 'Pontzer et al. 2017, J. Archaeol. Sci. Rep. 16:57', 'Lombard & Phillipson 2010, Antiquity 84:635', 'Metz, Lewis & Slimak 2023, Sci. Adv. 9:eadd4675'],
+      tags: ['prehistory', 'elastic energy', 'projectiles'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Bow_and_arrow' },
+      viz(v) {
+        const TYPES = { self: { label: 'self bow', f: (u) => u ** 1.15, mv: 0.0154 }, stack: { label: 'short stacking bow', f: (u) => u ** 1.7, mv: 0.012 }, recurve: { label: 'recurve', f: (u) => 1 - (1 - u) ** 1.8, mv: 0.02 } };
+        const A = v.stage({ x: [-0.25, 0.85], y: [-0.75, 0.75], equal: true, axes: false, height: 300, weight: 0.85, minWidth: 260, title: 'the bow (m)' });
+        const B = v.stage({ x: [0, 0.62], y: [0, 520], axes: 'box', gutter: true, height: 300, weight: 1.3, minWidth: 400, xlabel: 'draw beyond brace x (m)', ylabel: 'draw force F (N)', title: 'draw-force curve: stored energy = area' });
+        const C = v.stage({ x: [0, 70], y: [0, 4], axes: false, height: 200, weight: 1, minWidth: 330, title: 'launch speed (m/s)' });
+        const D = evidenceStage(v, [1e5, 5e3], { height: 200, weight: 1.3, minWidth: 400, title: 'earliest archery (years ago, log scale)' });
+        const typeSel = v.select('bow', Object.entries(TYPES).map(([k, t]) => ({ value: k, label: t.label })), 'self');
+        const FS = v.slider('peak draw force', 100, 500, 311, { step: 1, fmt: (x) => `${Math.round(x)} N` });
+        const DS = v.slider('full draw $D$', 0.25, 0.6, 0.364, { step: 0.001, fmt: (x) => `${x.toFixed(2)} m` });
+        const mS = v.slider('arrow mass', 15, 90, 36, { step: 1, fmt: (x) => `${Math.round(x)} g` });
+        const nock = A.handle(-0.02 - 0.364, 0, { color: 'gold', label: 'nock', labelPos: 's', constrain: (x) => [clamp(x, -0.02 - DS.value, -0.02), 0] });
+        const draw = () => clamp((-0.02 - nock.x) / DS.value, 0, 1);
+        v.button('Hadza bow', () => { typeSel.set('self'); FS.set(311); DS.set(0.364); mS.set(36); nock.set(-0.02 - 0.364, 0); });
+        const force = (x) => FS.value * TYPES[typeSel.value].f(clamp(x / DS.value, 0, 1));
+        const energy = (x) => v.M.integrate(force, 0, x, 200);
+        function release(x0) { // (m + m_v) ẍ = −F(x) from x0 back to 0 → release time
+          const m = mS.value / 1000, mt = m + TYPES[typeSel.value].mv; let x = x0, u = 0, t = 0; const dt = 2e-5;
+          while (x > 0 && t < 0.2) { u += (force(x) / mt) * dt; x -= u * dt; t += dt; }
+          return { t, vel: u };
+        }
+        v.render(() => {
+          // keep the nock inside the draw range when D changes
+          if (-0.02 - nock.x > DS.value) nock.set(-0.02 - DS.value, 0);
+          const u = draw(), x = u * DS.value, E = energy(x), m = mS.value / 1000, mv = TYPES[typeSel.value].mv, eta = m / (m + mv), vel = Math.sqrt((2 * eta * E) / m);
+          // ---- A: the bow, limbs bending with the draw (schematic)
+          const half = 0.62, bend = 0.05 + 0.2 * u, tipX = 0.06 - 0.17 * u * (typeSel.value === 'stack' ? 0.8 : 1), tipY = half - 0.06 * u;
+          const limb = (s) => { const pts = []; for (let k = 0; k <= 24; k++) { const t = k / 24, y = s * tipY * t; pts.push([0.06 + bend * (1 - (2 * t - 1) ** 2) * 0 + (tipX - 0.06) * t * t + 0.03 * (1 - t * t), y]); } if (typeSel.value === 'recurve') pts.push([pts[pts.length - 1][0] + 0.04, s * (tipY + 0.03)]); return pts; };
+          A.path(limb(1), { color: 'orange', width: 6 }); A.path(limb(-1), { color: 'orange', width: 6 });
+          const tp = limb(1)[limb(1).length - 1];
+          A.path([[tp[0], tp[1]], [nock.x, 0], [tp[0], -tp[1]]], { color: 'ink', width: 1.4 });
+          A.line(nock.x, 0, nock.x + 0.72, 0, { color: 'muted', width: 3 }); A.poly([[nock.x + 0.72, 0.02], [nock.x + 0.78, 0], [nock.x + 0.72, -0.02]], { fill: 'muted', fillAlpha: 1, stroke: false });
+          A.text(`${Math.round(force(x))} N`, nock.x, 0.1, { size: 12, color: 'red', align: 'center', weight: 700 });
+          // ---- B: draw-force curve and stored energy
+          B.fn((xx) => (xx <= DS.value ? force(xx) : NaN), { color: 'red', width: 2.6, domain: [0, DS.value] });
+          B.clip(() => B.between((xx) => force(Math.min(xx, x)), () => 0, 0, x, { fill: 'gold', fillAlpha: 0.4 }));
+          B.fn((xx) => (FS.value * xx) / DS.value, { color: 'muted', width: 1.2, dash: [5, 4], domain: [0, DS.value] });
+          B.dot(x, force(x), { r: 5.5, color: 'red' });
+          B.text(`E = ${v.fix(E, 1)} J`, x * 0.62, Math.max(30, force(x * 0.62) * 0.4), { size: 13, color: 'ink', align: 'center', weight: 700, plate: true });
+          B.text('linear spring, same peak force', DS.value * 0.42, FS.value * 0.42 + 45, { size: 10.5, color: 'muted', align: 'center', plate: true });
+          // ---- C: speed bars
+          const full = Math.sqrt((2 * eta * energy(DS.value)) / m);
+          const bars = [['hand-thrown spear (measured mean)', 15.85, 'orange'], ['atlatl dart (measured 20–35)', 27.5, 'accent'], ['this arrow', vel, 'red'], ['Hadza arrows (measured)', 45.1, 'green']];
+          bars.forEach(([lab, val, col], k) => {
+            const y = 3.5 - k;
+            C.rect(0, y - 0.32, val, y + 0.12, { fill: col, fillAlpha: 0.6, stroke: false, radius: 3 });
+            C.text(`${lab}: ${v.fix(val, 1)}`, 0.8, y + 0.32, { size: 11, color: 'ink', align: 'left' });
+          });
+          C.rect(20, 2.18, 35, 2.62, { fill: 'accent', fillAlpha: 0.15, stroke: false });
+          C.rect(45.1 - 7, 0.18, 45.1 + 7, 0.62, { fill: 'green', fillAlpha: 0.18, stroke: false });
+          if (u < 0.999) C.line(full, 1.18, full, 1.62, { color: 'red', width: 2, dash: [3, 2] });
+          // ---- D: evidence
+          drawEvidence(v, D, [
+            { ago: 7.1e4, label: 'Pinnacle Point', contested: true },
+            { ago: 6.4e4, label: 'Sibudu' },
+            { ago: 6.0e4, label: 'Umhlatuzana (poison)' },
+            { ago: 5.4e4, label: 'Grotte Mandrin' },
+            { ago: 9e3, label: 'Holmegaard bows', color: 'orange' },
+          ], { lanes: 4, laneH: 0.18, ticks: [5e4, 2e4, 1e4] });
+        });
+        v.legend([['red', 'draw-force curve'], ['gold', 'stored energy', { area: true }], ['muted', 'linear spring', { dash: true }]]);
+        v.readout(() => {
+          const u = draw(), x = u * DS.value, E = energy(x), m = mS.value / 1000, mv = TYPES[typeSel.value].mv, eta = m / (m + mv), vel = Math.sqrt((2 * eta * E) / m);
+          if (u < 0.02) return 'drag the gold nock back to draw the bow';
+          const r = release(x);
+          return `drawn ${Math.round(100 * x)} cm: stored **${v.fix(E, 1)} J** (a linear spring would store ${v.fix(0.5 * force(x) * x, 1)} J) · efficiency $\\eta = m/(m+m_v)$ = ${Math.round(100 * eta)}% → arrow **${v.fix(vel, 1)} m/s**, ${v.fix(eta * E, 1)} J · released in ${v.fix(r.t * 1000, 0)} ms, a mean power of ${v.fix((eta * E) / r.t / 1000, 1)} kW (the archer took about a second to put the energy in)`;
+        });
+      },
+    },
   ],
 };

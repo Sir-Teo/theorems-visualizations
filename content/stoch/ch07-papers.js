@@ -164,5 +164,85 @@ They applied it on the Los Alamos MANIAC to 224 rigid discs in a periodic square
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 7.13
+    // Verified against the paper (Biometrika 57: 97–109; scan via aliquote.org): §2.2 reversibility π_i p_ij = π_j p_ji
+    // (eq. 4); p_ij = q_ij α_ij for an arbitrary proposal matrix Q (eq. 5), α_ij = s_ij / (1 + π_i q_ij/(π_j q_ji)) (eq. 6)
+    // with the "test ratio" π_j q_ji/(π_i q_ij); s^(M) gives Metropolis et al. (1953) when q is symmetric, s^(B) = 1 gives
+    // Barker (1965); §2.3 Example 1, Poisson π_i = λ^i e^{−λ}/i! with q_ij = ½ (j = i ± 1), q_00 = q_01 = ½; Example 2,
+    // standard normal, X′ uniform on [e_k X − Δ, e_k X + Δ], e₁ = +1, e₂ = −1, N = 1000, L = 25, X(0) = 0, Δ = 1:
+    // X̄ = −0.12, s = 0.11 (e₁) and X̄ = −0.013, s = 0.02 (e₂), against 0.031 for 1000 independent draws.
+    {
+      num: '7.13',
+      kind: 'Paper',
+      name: 'Monte Carlo sampling methods using Markov chains',
+      paper: { authors: 'W. K. Hastings', year: 1970, title: 'Monte Carlo sampling methods using Markov chains and their applications', venue: 'Biometrika 57 (1): 97–109', doi: '10.1093/biomet/57.1.97' },
+      introduces: ['stoch-7.2'],
+      statement: String.raw`Hastings showed how to build, for any target distribution $\pi$ known up to a constant, a Markov chain having $\pi$ as its stationary distribution, starting from an **arbitrary** proposal chain $Q=(q_{ij})$. From state $i$ propose $j$ with probability $q_{ij}$ and accept it with probability
+$$\alpha_{ij}=\frac{s_{ij}}{1+\dfrac{\pi_iq_{ij}}{\pi_jq_{ji}}},$$
+where $s_{ij}$ is symmetric and keeps $0\le\alpha_{ij}\le1$; otherwise stay at $i$. Then $\pi_ip_{ij}=\pi_jp_{ji}$ (detailed balance, stoch-4.9), so $\pi$ is stationary, and an irreducible chain's averages converge to expectations under $\pi$. The choice $s^{(M)}$ gives
+$$\alpha_{ij}=\min\Big(1,\frac{\pi_j\,q_{ji}}{\pi_i\,q_{ij}}\Big),$$
+the Metropolis–Hastings rule (stoch-7.2), which reduces to Metropolis et al. (1953) when $Q$ is symmetric; $s_{ij}=1$ gives Barker's rule $\pi_jq_{ji}/(\pi_iq_{ij}+\pi_jq_{ji})$. Only ratios $\pi_j/\pi_i$ are needed, so the normalising constant never has to be computed.
+
+The samples are correlated, so their errors must be estimated from the chain (Hastings used batch means); the theory needs irreducibility, and in practice good mixing.`,
+      idea: String.raw`Metropolis and his colleagues (stoch-7.12) had used a symmetric trial move in statistical mechanics, where accepting with probability $\min(1,\pi_j/\pi_i)$ balances the flows. Hastings, a statistician, saw that the same idea works with any proposal if the acceptance corrects for its asymmetry: the factor $q_{ji}/q_{ij}$ in the test ratio removes the proposal's bias exactly, so detailed balance holds for every pair of states. That freed the method from physics: independence proposals, proposals adapted to the target, and moves in constrained spaces (his example: random orthogonal matrices). The paper also treated the statistics of correlated output. It went largely unnoticed until Gelfand and Smith (1990) brought Markov chain Monte Carlo (stoch-7.1) into Bayesian statistics, where the Metropolis–Hastings algorithm became the workhorse; Gibbs sampling is its special case with acceptance one.`,
+      caption: String.raw`A chain on the states 0–30 with an **asymmetric** proposal: step up with probability $p$, down with $1-p$. **Left**: the target (outline), the exact stationary distribution of the resulting chain (dots, from its transition matrix) and the histogram of the running chain (bars). With Hastings's rule, or Barker's, they agree for any $p$; choose **"ignore q"** (Metropolis's symmetric rule used with this asymmetric proposal) and the chain drifts toward the favoured direction. **Right**: detailed balance for each neighbouring pair: the flow $\pi_ip_{i,i+1}$ up (above) against $\pi_{i+1}p_{i+1,i}$ down (below); the gold line is their difference, zero when balanced. **Bottom**: the trace. The readout repeats Hastings's Example 2, the normal target with an antithetic proposal.`,
+      deps: ['stoch-7.1', 'stoch-4.9'],
+      refs: [],
+      tags: ['MCMC', 'Markov chains', 'sampling'],
+      credit: 'W. K. Hastings, 1970',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm' },
+      viz(v) {
+        const SN = 30;
+        const tgt = v.select('target', [{ value: 'pois', label: 'Poisson, λ = 8' }, { value: 'bi', label: 'two bumps' }, { value: 'geo', label: 'geometric' }], 'bi', { onChange: () => v.restart() });
+        const rule = v.select('acceptance', [{ value: 'H', label: 'Hastings (min)' }, { value: 'B', label: 'Barker' }, { value: 'M', label: 'ignore q' }], 'H', { onChange: () => v.restart() });
+        const pS = v.slider('proposal: P(step up) = p', 0.5, 0.95, 0.8, { step: 0.01, onChange: () => v.restart() });
+        const A = v.stage({ x: [-0.7, 30.7], y: [0, 0.2], axes: 'box', height: 300, weight: 1.1, xlabel: 'state', ylabel: 'probability', title: 'target, stationary law, and the chain' });
+        const Bf = v.stage({ x: [-0.7, 29.7], y: [-0.06, 0.06], axes: 'box', height: 300, weight: 0.9, minWidth: 250, xlabel: 'pair (i, i+1)', ylabel: 'flow per step', title: 'detailed balance, pair by pair' });
+        const Tr = v.stage({ x: [0, 600], y: [0, 30], axes: 'box', height: 160, full: true, xlabel: 'last 600 steps', ylabel: 'state', title: 'trace' });
+        const target = () => {
+          const w = []; for (let i = 0; i <= SN; i++) { const x = tgt.value === 'pois' ? Math.exp(i * Math.log(8) - 8 - v.M.lgamma(i + 1)) : tgt.value === 'bi' ? Math.exp(-0.5 * ((i - 7) / 2.2) ** 2) + 0.6 * Math.exp(-0.5 * ((i - 21) / 2.6) ** 2) : 0.82 ** i; w.push(x); }
+          const Z = w.reduce((a, b) => a + b, 0); return w.map((x) => x / Z);
+        };
+        const qq = (i, j, p) => (j === i + 1 ? p : j === i - 1 ? 1 - p : 0);
+        const acc = (pi, i, j, p, r) => { if (j < 0 || j > SN) return 0; const t = r === 'M' ? pi[j] / pi[i] : (pi[j] * qq(j, i, p)) / (pi[i] * qq(i, j, p)); return r === 'B' ? t / (1 + t) : Math.min(1, t); };
+        let sim = null;
+        const build = () => {
+          const pi = target(), p = pS.value, r = rule.value, P = pi.map(() => new Array(SN + 1).fill(0));
+          for (let i = 0; i <= SN; i++) { let out = 0; for (const j of [i - 1, i + 1]) { if (j < 0 || j > SN) continue; P[i][j] = qq(i, j, p) * acc(pi, i, j, p, r); out += P[i][j]; } P[i][i] = 1 - out; }
+          const s = [1]; for (let i = 0; i < SN; i++) s.push((s[i] * P[i][i + 1]) / P[i + 1][i]); { const Z = s.reduce((a, b) => a + b, 0); for (let i = 0; i <= SN; i++) s[i] /= Z; } // a birth–death chain: its stationary law solves the cut equations exactly
+          return { pi, P, stat: s, p, r, x: 15, cnt: new Array(SN + 1).fill(0), n: 0, acc: 0, trace: [], rng: v.rng(1970) };
+        };
+        // Hastings's Example 2, repeated: standard normal, X' uniform on [eX − 1, eX + 1], N = 1000 from X(0) = 0
+        const ex2 = (() => { const R = v.rng(57), res = [[], []]; for (const [k, e] of [[0, 1], [1, -1]]) for (let rep = 0; rep < 300; rep++) { let x = 0, s = 0; for (let t = 0; t < 1000; t++) { const y = e * x + (2 * R() - 1); if (R() < Math.exp(0.5 * (x * x - y * y))) x = y; s += x; } res[k].push(s / 1000); } const sd = (a) => Math.sqrt(a.reduce((u, z) => u + z * z, 0) / a.length - (a.reduce((u, z) => u + z, 0) / a.length) ** 2); return [sd(res[0]), sd(res[1])]; })();
+        let st = null, lastT = 0;
+        v.animate((t) => {
+          if (!sim || sim.p !== pS.value || sim.r !== rule.value || t < lastT - 1e-6) sim = build();
+          lastT = t;
+          const target2 = Math.min(200000, Math.floor(3000 + t * 4000));
+          while (sim.n < target2) { const i = sim.x, j = sim.rng() < sim.p ? i + 1 : i - 1; if (sim.rng() < acc(sim.pi, i, j, sim.p, sim.r)) { sim.x = j; sim.acc++; } sim.cnt[sim.x]++; sim.n++; if (sim.n % 7 === 0) { sim.trace.push(sim.x); if (sim.trace.length > 600) sim.trace.shift(); } }
+          const { pi, P, stat, cnt, n } = sim, ymax = Math.max(...pi, ...stat) * 1.25;
+          A.setView([-0.7, 30.7], [0, ymax]);
+          cnt.forEach((c, i) => A.rect(i - 0.38, 0, i + 0.38, c / Math.max(1, n), { fill: 'accent', fillAlpha: 0.4, stroke: false }));
+          A.path(pi.flatMap((y, i) => [[i - 0.5, y], [i + 0.5, y]]), { color: 'ink', width: 2 });
+          A.dots(stat.map((y, i) => [i, y]), { r: 3.6, color: sim.r === 'M' ? 'red' : 'green' });
+          // detailed balance
+          const up = [], dn = []; let worst = 0; for (let i = 0; i < SN; i++) { up.push(pi[i] * P[i][i + 1]); dn.push(pi[i + 1] * P[i + 1][i]); worst = Math.max(worst, Math.abs(up[i] - dn[i])); }
+          const fm = Math.max(...up, ...dn) * 1.2; Bf.setView([-0.7, 29.7], [-fm, fm]);
+          up.forEach((u, i) => { Bf.rect(i - 0.35, 0, i + 0.35, u, { fill: 'blue', fillAlpha: 0.45, stroke: false }); Bf.rect(i - 0.35, -dn[i], i + 0.35, 0, { fill: 'orange', fillAlpha: 0.45, stroke: false }); });
+          Bf.path(up.map((u, i) => [i, u - dn[i]]), { color: 'gold', width: 2.4 });
+          Bf.hline(0, { color: 'ink', width: 1 });
+          Bf.text('up: πᵢ pᵢ,ᵢ₊₁', 29, fm * 0.85, { align: 'right', size: 11, weight: 700, color: 'blue' }); Bf.text('down: πᵢ₊₁ pᵢ₊₁,ᵢ', 29, -fm * 0.62, { align: 'right', size: 11, weight: 700, color: 'orange' });
+          Tr.path(sim.trace.map((x, k) => [k, x]), { color: 'accent', width: 1.2 });
+          const tv = (a, b) => 0.5 * a.reduce((s, x, i) => s + Math.abs(x - b[i]), 0);
+          st = { tvStat: tv(stat, pi), tvRun: tv(cnt.map((c) => c / Math.max(1, n)), pi), rate: sim.acc / Math.max(1, n), n, worst };
+        }, { still: 12, period: 1e9 });
+        v.legend([['ink', 'target π'], ['green', 'exact stationary law of the chain', { dot: true }], ['accent', 'chain histogram', { area: true }], ['gold', 'net flow (zero = detailed balance)']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { tvStat, tvRun, rate, n, worst } = st, r = rule.value, p = pS.value;
+          return `${r === 'M' ? '**ignoring the proposal ratio**' : r === 'B' ? 'Barker’s rule' : 'Hastings’s rule'} with $p = ${v.fix(p, 2)}$: largest imbalance $|\\pi_ip_{i,i+1} - \\pi_{i+1}p_{i+1,i}| = ${worst < 1e-15 ? '0' : v.sci(worst, 1)}$${worst < 1e-12 ? ' (rounding error)' : ''}; distance (total variation) from the target to the chain's exact stationary law **${v.fix(tvStat, 4)}**${r === 'M' && p > 0.5 ? ' — the chain samples the wrong distribution' : ''}, to the histogram of ${n.toLocaleString('en-US')} steps ${v.fix(tvRun, 3)}; acceptance rate ${v.fix(100 * rate, 0)}% · Hastings’s Example 2 rerun 300 times (N = 1000, Δ = 1): sd of $\\bar X$ ${v.fix(ex2[0], 3)} with the ordinary proposal and **${v.fix(ex2[1], 3)}** with the antithetic one $e = -1$ (his single runs: s = 0.11 and 0.02; independent sampling 0.031) · today: Metropolis–Hastings is the core of MCMC in Bayesian statistics`;
+        });
+      },
+    },
   ],
 };

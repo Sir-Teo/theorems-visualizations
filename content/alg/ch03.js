@@ -208,5 +208,233 @@ $G$ is **abelian** (commutative) if $a\circ b=b\circ a$ for all $a,b$, and **non
         });
       },
     },
+    // ------------------------------------------------------------------ 3.8a
+    {
+      num: '3.8a',
+      kind: 'Definition',
+      name: 'Cayley table',
+      statement: String.raw`The **Cayley table** (multiplication table) of a finite group $G=\{g_1,\ldots,g_n\}$ is the $n\times n$ array whose entry in row $g_i$ and column $g_j$ is the product $g_ig_j$. It describes the group completely. In it, the row and the column of the identity repeat the headers, every row and every column contains each element exactly once (a **Latin square**), and the table is symmetric about its main diagonal exactly when $G$ is abelian.`,
+      idea: String.raw`Row $a$ lists $ax$ as $x$ runs through $G$; if two entries agreed, $ax=ay$, multiplying by $a^{-1}$ would give $x=y$ — so the row is a permutation of $G$, and likewise each column. The identity row is $ex=x$, the header itself. The entry at $(a,b)$ is $ab$ and the entry at $(b,a)$ is $ba$, so mirror symmetry is commutativity. Associativity, in contrast, cannot be read off at a glance: it is a condition on triples.`,
+      caption: String.raw`Step through the table cell by cell (or press play). As the entries appear, the identity row and column are outlined green, a row turns green in the check column once it is complete with no repeats, and mirror pairs are compared: $=$ when $ab=ba$, a red $\ne$ when not — which happens only in the nonabelian groups $D_3$ and $Q_8$. The readout also checks associativity on all $n^3$ triples.`,
+      deps: ['alg-3.7a'],
+      refs: ['Judson §3.2'],
+      tags: ['groups', 'tables'],
+      credit: 'Arthur Cayley, 1854',
+      viz(v) {
+        const GR = { Z4: cyclic(4), Z5: cyclic(5), U8: units(8), D3: dihedral(3), Q8: quaternion() };
+        const which = v.select('group', [{ value: 'Z4', label: '$\\mathbb Z_4$' }, { value: 'Z5', label: '$\\mathbb Z_5$' }, { value: 'U8', label: '$U(8)$' }, { value: 'D3', label: '$D_3$' }, { value: 'Q8', label: '$Q_8$' }], 'D3', { onChange: () => S.reset(null, { at: 'end' }) });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const T = v.table(s, { rows: 6, cols: 7, square: false, maxCell: 40, cellAspect: 1.25, size: 14 });
+        const S = v.steps({ frames: () => { const n = GR[which.value].n; return Array.from({ length: n * n + 1 }, (_, k) => ({ k, note: k === n * n ? 'Table complete.' : `Fill row ${Math.floor(k / n) + 1}, column ${(k % n) + 1}.` })); }, speed: 6, start: 'end', still: 'end' });
+        v.render(() => {
+          const G = GR[which.value], n = G.n, k = S.frame.k ?? n * n, shown = (i, j) => i * n + j < k;
+          const rowDone = (i) => shown(i, n - 1), rowOk = (i) => new Set(G.T[i]).size === n;
+          const hl = [];
+          if (rowDone(G.e)) for (let j = 0; j < n; j++) hl.push([G.e, j, 'green']);
+          if (k > (n - 1) * n + G.e) for (let i = 0; i < n; i++) hl.push([i, G.e, 'green']);
+          if (k > 0 && k <= n * n - 0) { const c = k - 1; hl.push([Math.floor(c / n), c % n, 'gold']); }
+          T.draw({
+            rows: n, cols: n + 1, colWeights: [...Array(n).fill(1), 1.9],
+            rowLabels: (i) => cellLab(G.L[i]), colLabels: (j) => (j < n ? cellLab(G.L[j]) : 'row ok?'), cornerLabel: `$${G.sym}$`,
+            value: (i, j) => (j === n ? (rowDone(i) ? (rowOk(i) ? '✓ permutation' : '✗') : '') : shown(i, j) ? cellLab(G.L[G.T[i][j]]) : null),
+            fill: (i, j) => (j === n ? (rowDone(i) ? ['green', 0.25] : null) : shown(i, j) ? [elColor(v, G.T[i][j], n), 0.24] : null),
+            sub: (i, j) => (j < n && i !== j && shown(i, j) && shown(j, i) ? (G.T[i][j] === G.T[j][i] ? '=' : '≠') : ''),
+            subColor: (i, j) => (j < n && G.T[i][j] !== G.T[j][i] ? 'red' : 'muted'), subSize: 11,
+            highlight: hl,
+          });
+        });
+        v.readout(() => {
+          const G = GR[which.value], n = G.n, af = assocFail(G), lat = latinFails(G).length === 0;
+          const bad = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (G.T[i][j] !== G.T[j][i]) bad.push([i, j]);
+          return String.raw`$${G.tex}$, order ${n}: identity $${G.L[G.e]}$; Latin square ${lat ? '✓' : '✗'}; associativity on all ${n ** 3} triples ${af ? '✗' : '✓'}. ${bad.length ? `**Nonabelian**: ${bad.length} mirror pairs differ, e.g. $${G.L[bad[0][0]]}${G.L[bad[0][1]]} = ${G.L[G.T[bad[0][0]][bad[0][1]]]}$ but $${G.L[bad[0][1]]}${G.L[bad[0][0]]} = ${G.L[G.T[bad[0][1]][bad[0][0]]]}$.` : '**Abelian**: the table is symmetric about its diagonal.'}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.11a
+    {
+      num: '3.11a',
+      kind: 'Definition',
+      name: 'Group of units U(n)',
+      statement: String.raw`For $n\ge2$, the **group of units** of $\mathbb Z_n$ is
+$$U(n)=\{a\in\mathbb Z_n\setminus\{0\} : \gcd(a,n)=1\},$$
+the nonzero residues that are relatively prime to $n$, under multiplication mod $n$. It is an abelian group of order $\varphi(n)$; for example $U(8)=\{1,3,5,7\}$, in which every element is its own inverse.`,
+      idea: String.raw`$(\mathbb Z_n,\cdot)$ is not a group — $0$, and every $a$ sharing a factor with $n$, has no inverse (Proposition 3.4(6)). Keep only the residues coprime to $n$: a product of two of them is again coprime to $n$ (a prime dividing $ab$ and $n$ would divide $a$ or $b$), $1$ is among them, and each has an inverse by Bézout. Associativity and commutativity are inherited from $\mathbb Z_n$. In the table, the rows of the non-units contain $0$ or repeats; the rows of the units are permutations.`,
+      caption: String.raw`Left: the whole multiplication table of $\mathbb Z_n$, with the rows and columns of units in colour and the rest greyed (note the zeros and repeats there). Right: those rows and columns lifted out — the table of $U(n)$, a Latin square with no zeros, $1$ marked green in each row. Move $n$.`,
+      deps: ['alg-3.7a', 'alg-3.4'],
+      see: ['nt-2.3', 'nt-2.7'],
+      refs: ['Judson §3.2'],
+      tags: ['groups', 'modular arithmetic'],
+      viz(v) {
+        const N = v.slider('$n$', 2, 16, 8, { int: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1.15, title: 'multiplication in $\\mathbb Z_n$' });
+        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1, title: 'the units, lifted out: $U(n)$' });
+        const TA = v.table(s, { rows: 8, cols: 8, maxCell: 34, size: 11.5, margin: 4 }), TB = v.table(t, { rows: 4, cols: 4, maxCell: 40, size: 13, margin: 6 });
+        v.render(() => {
+          const n = N.value, U = units(n), isU = (k) => k > 0 && gcd(k, n) === 1;
+          TA.draw({ rows: n, cols: n, rowLabels: (i) => String(i), colLabels: (j) => String(j), cornerLabel: '·', value: (i, j) => (i * j) % n,
+            fill: (i, j) => (isU(i) && isU(j) ? [((i * j) % n) === 1 ? 'green' : 'accent', ((i * j) % n) === 1 ? 0.45 : 0.18] : ((i * j) % n) === 0 ? ['red', 0.12] : null),
+            textColor: (i, j) => (isU(i) && isU(j) ? 'ink' : 'muted'), rowLabelColor: (i) => (isU(i) ? 'accent' : 'faint'), colLabelColor: (j) => (isU(j) ? 'accent' : 'faint') });
+          TB.draw({ rows: U.n, cols: U.n, rowLabels: (i) => U.L[i], colLabels: (j) => U.L[j], cornerLabel: '·', value: (i, j) => U.L[U.T[i][j]],
+            fill: (i, j) => (U.T[i][j] === U.e ? ['green', 0.45] : [elColor(v, U.T[i][j], U.n), 0.22]) });
+        });
+        v.readout(() => {
+          const n = N.value, U = units(n), non = [...Array(n).keys()].filter((k) => k && gcd(k, n) > 1);
+          const lat = latinFails(U).length === 0, self = U.vals.filter((x, i) => U.inv[i] === i);
+          return String.raw`$U(${n}) = \{${U.vals.join(', ')}\}$, order $\varphi(${n}) = ${U.n}$. Its table is a Latin square ${lat ? '✓' : '✗'} without zeros; inverses: ${U.vals.map((x, i) => `$${x}^{-1} = ${U.vals[U.inv[i]]}$`).join(', ')}${self.length === U.n ? ' — every element is its own inverse' : ''}. ${non.length ? `Left out: $${non.join(', ')}$ (sharing a factor with ${n}) and $0$.` : `($${n}$ is prime: every nonzero residue is a unit.)`}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.13
+    {
+      num: '3.13',
+      kind: 'Concept',
+      name: 'The symmetries of a triangle form a nonabelian group',
+      statement: String.raw`The six symmetries of an equilateral triangle — $\mathrm{id}$, the rotations $\rho_1,\rho_2$ by $120^\circ$ and $240^\circ$, and the reflections $\mu_1,\mu_2,\mu_3$ fixing $A$, $B$, $C$ — form a group under composition, written $S_3$ or $D_3$. It is **nonabelian**: for example $\mu_1\rho_1=\mu_2$ while $\rho_1\mu_1=\mu_3$. (Products are compositions, read right to left: $\mu_1\rho_1$ means "first $\rho_1$, then $\mu_1$".)`,
+      idea: String.raw`Composition of maps is associative (Theorem 1.15), the identity motion does nothing, and each motion can be undone by another (a rotation by the opposite rotation, a reflection by itself), so the axioms hold; the Cayley table lists the closure. Commutativity fails because a reflection reverses the sense of rotation: rotating then flipping is not flipping then rotating. Following vertex $A$: $\rho_1$ sends $A\to B$ and then $\mu_1$ sends $B\to C$; in the other order $\mu_1$ fixes $A$ and $\rho_1$ sends it to $B$.`,
+      caption: String.raw`Choose $\alpha$ and $\beta$. The left card performs $\beta$ then $\alpha$ (the product $\alpha\beta$), the right card $\alpha$ then $\beta$ (the product $\beta\alpha$); the axes of the flips are drawn dashed. When the end positions differ the two products are different, and the Cayley table marks the asymmetric pair of entries.`,
+      deps: ['alg-3.7a', 'alg-3.5a'],
+      see: ['rep-1.1'],
+      refs: ['Judson §3.1', 'Judson §3.2'],
+      tags: ['groups', 'symmetry'],
+      viz(v) {
+        const G = dihedral(3), opts = G.L.map((l, i) => ({ value: i, label: `$${l}$` }));
+        const A = v.select('$\\alpha$', opts, 3), B = v.select('$\\beta$', opts, 1);
+        const s1 = v.stage({ x: [-1.5, 1.5], y: [-1.35, 1.45], equal: true, axes: false, height: 260 });
+        const s2 = v.stage({ x: [-1.5, 1.5], y: [-1.35, 1.45], equal: true, axes: false, height: 260 });
+        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, full: true });
+        const T = v.table(t, { rows: 6, cols: 6, maxCell: 34, size: 13, margin: 4 });
+        const PER = 6;
+        const pose = (first, second, tt) => {
+          const M1 = G.mat[first], M2 = G.mat[second], u1 = Math.min(1, Math.max(0, tt / 2)), u2 = Math.min(1, Math.max(0, (tt - 2.4) / 2));
+          return { M: tt < 2.4 ? partial(M1, u1) : mm(partial(M2, u2), M1), cur: tt < 2.4 ? first : second, phase: tt < 2.4 ? 1 : 2 };
+        };
+        v.animate((tt) => {
+          const a = A.value, b = B.value;
+          [[s1, b, a, `first $${G.L[b]}$, then $${G.L[a]}$: $${G.L[a]}${G.L[b]} = ${G.L[G.T[a][b]]}$`], [s2, a, b, `first $${G.L[a]}$, then $${G.L[b]}$: $${G.L[b]}${G.L[a]} = ${G.L[G.T[b][a]]}$`]].forEach(([s, f1, f2, title]) => {
+            const P = pose(f1, f2, tt), ax = axisOf(G.mat[P.cur]);
+            if (ax && tt < 4.4) s.line(-1.4 * ax[0], -1.4 * ax[1], 1.4 * ax[0], 1.4 * ax[1], { color: 'gold', width: 1.6, dash: [6, 4] });
+            drawFigure(v, s, P.M, G.pos, { R: 1, lab: 0.22 });
+            s.setTitle(title);
+            s.corner(tt < 4.4 ? `step ${P.phase}: $${G.L[P.cur]}$` : 'done', 'tl', { size: 13, plate: true });
+          });
+          const diff = G.T[a][b] !== G.T[b][a];
+          drawCayley(v, T, G, { draw: { highlight: [[a, b, diff ? 'red' : 'green'], [b, a, diff ? 'red' : 'green']] } });
+        }, { period: PER, still: 5.6 });
+        v.readout(() => {
+          const a = A.value, b = B.value, ab = G.T[a][b], ba = G.T[b][a];
+          return String.raw`$${G.L[a]}${G.L[b]} = ${G.L[ab]} = ${permTex(G.perms[ab])}$ and $${G.L[b]}${G.L[a]} = ${G.L[ba]} = ${permTex(G.perms[ba])}$: ${ab === ba ? 'these two commute.' : '**different** — the group is nonabelian.'} (Of the 15 pairs of distinct elements, ${(() => { let c = 0; for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) if (G.T[i][j] !== G.T[j][i]) c++; return c; })()} fail to commute.)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.14
+    {
+      num: '3.14',
+      kind: 'Concept',
+      name: 'The general linear group GL₂(ℝ)',
+      statement: String.raw`The invertible $2\times2$ real matrices form a group under matrix multiplication, the **general linear group**
+$$GL_2(\mathbb R)=\Big\{A=\begin{pmatrix}a&b\\c&d\end{pmatrix} : \det A=ad-bc\ne0\Big\},$$
+with identity $I$ and inverse $A^{-1}=\frac1{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$. It is nonabelian: in general $AB\ne BA$.`,
+      idea: String.raw`Matrix multiplication is associative (it is composition of linear maps), $\det(AB)=\det A\det B$ shows that products of invertible matrices are invertible, and the formula for $A^{-1}$ works exactly when $\det A\ne0$. Geometrically $\det A$ is the signed area of the image of the unit square: the map can be undone precisely when the square is not crushed to a segment or a point. Two such maps applied in different orders — a rotation and a shear, say — give different results.`,
+      caption: String.raw`Drag the images $Ae_1$, $Ae_2$ of the basis vectors. The unit square goes to the parallelogram (blue if orientation is kept, orange if it is reversed), and the letter F shows the whole map. Line the two vectors up and the area — $\det A$ — drops to $0$: the matrix leaves $GL_2(\mathbb R)$. The right panel applies a second matrix $B$ in both orders: $AB$ and $BA$ move the square differently.`,
+      deps: ['alg-3.7a'],
+      see: ['ladr-9.50', 'ladr-9.49'],
+      refs: ['Judson §3.2'],
+      tags: ['groups', 'matrices'],
+      viz(v) {
+        const BM = { rot: [[0, -1], [1, 0]], shear: [[1, 1], [0, 1]], refl: [[1, 0], [0, -1]] };
+        const Bsel = v.select('$B$', [{ value: 'rot', label: 'rotation $90^\\circ$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: 'reflection' }], 'shear');
+        const s = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: 'box', gutter: true, height: 350 });
+        const t = v.stage({ x: [-1.3, 4.2], y: [-1.6, 3.6], equal: true, axes: 'box', gutter: true, height: 350 });
+        const h1 = s.handle(1.5, 0.5, { color: 'blue', label: 'Ae₁' }), h2 = s.handle(0.4, 1.2, { color: 'red', label: 'Ae₂' });
+        const F = [[0.15, 0.08], [0.35, 0.08], [0.35, 0.45], [0.65, 0.45], [0.65, 0.62], [0.35, 0.62], [0.35, 0.75], [0.82, 0.75], [0.82, 0.92], [0.15, 0.92]], SQ = [[0, 0], [1, 0], [1, 1], [0, 1]];
+        const A = () => [[h1.x, h2.x], [h1.y, h2.y]];
+        const draw = (st, M, col, lab) => {
+          const d = M[0][0] * M[1][1] - M[0][1] * M[1][0];
+          st.poly(SQ.map((p) => mv(M, p)), { fill: col || (d >= 0 ? 'accent' : 'orange'), fillAlpha: 0.2, color: col || (d >= 0 ? 'accent' : 'orange'), width: 2 });
+          st.poly(F.map((p) => mv(M, p)), { fill: 'purple', fillAlpha: col ? 0 : 0.3, color: col || 'purple', width: 1.3 });
+          if (lab) { const c = mv(M, [1, 1]); st.text(lab, c[0], c[1], { dx: 8, dy: lab === 'AB' ? -10 : 10, align: 'left', size: 13, weight: 700, color: col, math: true, plate: true }); }
+        };
+        v.render(() => {
+          const M = A(), d = M[0][0] * M[1][1] - M[0][1] * M[1][0];
+          s.poly(SQ, { color: 'muted', width: 1.2, dash: [4, 4], fill: false });
+          if (Math.abs(d) < 0.05) { const dir = Math.hypot(h1.x, h1.y) > 0.05 ? [h1.x, h1.y] : [h2.x, h2.y], L = Math.hypot(...dir) || 1; s.line(-5 * dir[0] / L, -5 * dir[1] / L, 5 * dir[0] / L, 5 * dir[1] / L, { color: 'red', width: 2.5, alpha: 0.6 }); }
+          draw(s, M);
+          s.arrow(0, 0, h1.x, h1.y, { color: 'blue', width: 2.4 }); s.arrow(0, 0, h2.x, h2.y, { color: 'red', width: 2.4 });
+          s.text(`det A = ${v.fix(d, 2)}${Math.abs(d) < 0.05 ? '  — singular, not in GL₂(ℝ)' : ''}`, -2.85, 2.7, { size: 13, weight: 700, color: Math.abs(d) < 0.05 ? 'red' : 'ink', plate: true });
+          const B = BM[Bsel.value];
+          t.poly(SQ, { color: 'muted', width: 1.2, dash: [4, 4], fill: false });
+          draw(t, mm(M, B), 'teal', 'AB'); draw(t, mm(B, M), 'pink', 'BA');
+        });
+        v.readout(() => {
+          const M = A(), d = M[0][0] * M[1][1] - M[0][1] * M[1][0], B = BM[Bsel.value], f = (x) => v.fix(x, 2).replace('−', '-');
+          const mt = (X) => `\\begin{pmatrix}${f(X[0][0])}&${f(X[0][1])}\\\\${f(X[1][0])}&${f(X[1][1])}\\end{pmatrix}`;
+          const AB = mm(M, B), BA = mm(B, M), same = AB.every((r, i) => r.every((x, j) => Math.abs(x - BA[i][j]) < 1e-6));
+          const head = `$A = ${mt(M)}$, $\\det A = ${f(d)}$`;
+          if (Math.abs(d) < 0.05) return `${head}: the square is crushed, so $A$ has no inverse and is **not in** $GL_2(\\mathbb R)$.`;
+          return `${head}, $A^{-1} = ${mt([[M[1][1] / d, -M[0][1] / d], [-M[1][0] / d, M[0][0] / d]])}$. With $B$: $AB = ${mt(AB)}$, $BA = ${mt(BA)}$ — ${same ? 'equal for this pair.' : '**different**: $GL_2(\\mathbb R)$ is nonabelian.'} $\\det(AB) = ${f(d * (B[0][0] * B[1][1] - B[0][1] * B[1][0]))} = \\det A\\det B$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.15
+    {
+      num: '3.15',
+      kind: 'Concept',
+      name: 'The quaternion group Q₈',
+      statement: String.raw`The **quaternion group** is $Q_8=\{\pm1,\pm i,\pm j,\pm k\}$ with the multiplication determined by
+$$i^2=j^2=k^2=-1,\qquad ij=k,\quad jk=i,\quad ki=j,\qquad ji=-k,\quad kj=-i,\quad ik=-j,$$
+and the usual rules for signs. It is a nonabelian group of order 8. Judson realises it by complex matrices: $1=I_2$, $I=\begin{pmatrix}0&1\\-1&0\end{pmatrix}$, $J=\begin{pmatrix}0&i\\i&0\end{pmatrix}$, $K=\begin{pmatrix}i&0\\0&-i\end{pmatrix}$.`,
+      idea: String.raw`Going around the cycle $i\to j\to k\to i$ in its direction gives a plus sign ($ij=k$), going against it a minus sign ($ji=-k$). Since these eight elements are invertible matrices closed under multiplication, they form a group (a subgroup of $GL_2(\mathbb C)$), and associativity comes free. Each unit quaternion $q$ also turns 3-space: $v\mapsto qvq^{-1}$ rotates by twice the angle of $q$ about its axis — $\pm i$ give the same half turn about the $x$-axis, and $-1$ a full turn, which is why $q$ and $-q$ look alike in 3D.`,
+      caption: String.raw`Click a cell of the table to multiply $a$ (row) by $b$ (column). The cycle diagram gives the sign; the readout checks the product with Judson's $2\times2$ complex matrices. On the right a box is rotated by the product $q=ab$, moving along the shortest path from $1$ to $q$ (play to repeat; drag to turn the view). $ij$ and $ji$ differ — yet as rotations they agree, because they differ only by the sign.`,
+      deps: ['alg-3.14'],
+      see: ['alg-16.7'],
+      refs: ['Judson §3.2'],
+      tags: ['groups', 'quaternions'],
+      credit: 'William Rowan Hamilton, 1843',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Quaternion_group' },
+      viz(v) {
+        const G = quaternion(); let sel = [2, 4];
+        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1 });
+        const S = v.stage({ x: [-2.05, 2.05], y: [-2.05, 2.05], equal: true, axes: false, height: 340, weight: 1 });
+        const T = v.table(t, { rows: 8, cols: 8, maxCell: 36, size: 13, margin: 4 });
+        t.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) { sel = [c.i, c.j]; v.restart(); } });
+        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.38, axis: 1.65, labels: ['i', 'j', 'k'] });
+        const quat = (idx) => { const [sg, u] = G.els[idx], q = [0, 0, 0, 0]; q[u] = sg; return q; }; // [w, x, y, z]
+        const rotM = ([w, x, y, z]) => [[1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)], [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)], [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)]];
+        const ap3 = (M, p) => [0, 1, 2].map((r) => M[r][0] * p[0] + M[r][1] * p[1] + M[r][2] * p[2]);
+        const V = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]].map((p) => [p[0] * 0.75, p[1] * 0.5, p[2] * 0.32]);
+        const FACES = [[[1, 2, 6, 5], 'blue'], [[0, 3, 7, 4], 'blue'], [[3, 2, 6, 7], 'green'], [[0, 1, 5, 4], 'green'], [[4, 5, 6, 7], 'red'], [[0, 1, 2, 3], 'red']];
+        const MAT = [[[[1, 0], [0, 0]], [[0, 0], [1, 0]]], [[[0, 0], [1, 0]], [[-1, 0], [0, 0]]], [[[0, 0], [0, 1]], [[0, 1], [0, 0]]], [[[0, 1], [0, 0]], [[0, 0], [0, -1]]]];
+        const cm = (A, B) => [0, 1].map((r) => [0, 1].map((c) => { let re = 0, im = 0; for (let k = 0; k < 2; k++) { const a = A[r][k], b = B[k][c]; re += a[0] * b[0] - a[1] * b[1]; im += a[0] * b[1] + a[1] * b[0]; } return [re, im]; }));
+        const matOf = (idx) => { const [sg, u] = G.els[idx]; return MAT[u].map((row) => row.map(([re, im]) => [sg * re, sg * im])); };
+        const cTex = ([re, im]) => (Math.abs(im) < 1e-9 ? `${Math.round(re)}` : Math.abs(re) < 1e-9 ? `${im < 0 ? '-' : ''}i` : `${re}+${im}i`);
+        v.animate((tt) => {
+          const [a, b] = sel, c = G.T[a][b], q = quat(c), u = Math.min(1, tt / 2.2);
+          drawCayley(v, T, G, { draw: { highlight: [[a, b, 'gold'], [b, a, G.T[b][a] === c ? 'gold' : 'red']], activeRow: a, activeCol: b } });
+          // path 1 → q: q(t) = cos(tα) + sin(tα)·axis
+          const w = q[0], vec = [q[1], q[2], q[3]], al = Math.acos(Math.max(-1, Math.min(1, w))), ax = Math.hypot(...vec) > 1e-9 ? vec : [0, 0, 1];
+          const qt = [Math.cos(al * u), ...ax.map((x) => (Math.sin(al * u) * x) / (Math.hypot(...ax) || 1))], R = rotM(qt);
+          sc.begin();
+          const P = V.map((p) => ap3(R, p));
+          for (const [f, col] of FACES) sc.poly(f.map((i) => P[i]), { fill: col, fillAlpha: 0.32, color: col, width: 1.2 });
+          sc.arrow([0, 0, 0], ap3(R, [1.05, 0, 0]), { color: 'blue', width: 2 });
+          if (Math.hypot(...vec) > 1e-9) sc.line(ax.map((x) => -1.8 * x), ax.map((x) => 1.8 * x), { color: 'gold', width: 2.4, dash: [6, 4] });
+          sc.flush();
+          S.corner(`rotation by q = ${G.L[c].replace('-', '−')}: ${c < 2 ? (c === 0 ? 'none' : 'a full turn (360°)') : 'a half turn about the ' + 'ijk'[G.els[c][1] - 1] + '-axis'}`, 'tl', { size: 12.5, plate: true });
+          // the sign cycle i → j → k
+          const cx = -1.6, cy = -1.55, r0 = 0.32, ang = [90, -30, 210].map((d) => (d * Math.PI) / 180);
+          ang.forEach((g, k) => {
+            const pts = []; for (let m = 0; m <= 16; m++) { const a = g - 0.42 - ((2 * Math.PI / 3 - 0.84) * m) / 16; pts.push([cx + r0 * Math.cos(a), cy + r0 * Math.sin(a)]); }
+            S.path(pts.slice(0, -1), { color: 'muted', width: 1.5 }); S.arrow(...pts[14], ...pts[16], { color: 'muted', width: 1.5, head: 7 });
+            S.text('ijk'[k], cx + (r0 + 0.02) * Math.cos(g), cy + (r0 + 0.02) * Math.sin(g), { align: 'center', math: true, size: 16, weight: 700 });
+          });
+          S.text('+', cx, cy, { align: 'center', size: 13, color: 'muted', weight: 700 });
+        }, { period: 3.4, still: 3.0 });
+        v.readout(() => {
+          const [a, b] = sel, c = G.T[a][b], d = G.T[b][a], P = cm(matOf(a), matOf(b)), C = matOf(c), ok = P.every((r, i) => r.every((z, j) => Math.abs(z[0] - C[i][j][0]) < 1e-9 && Math.abs(z[1] - C[i][j][1]) < 1e-9));
+          const mtx = (X) => `\\begin{pmatrix}${cTex(X[0][0])}&${cTex(X[0][1])}\\\\${cTex(X[1][0])}&${cTex(X[1][1])}\\end{pmatrix}`;
+          return String.raw`$(${G.L[a]})(${G.L[b]}) = ${G.L[c]}$ but $(${G.L[b]})(${G.L[a]}) = ${G.L[d]}$${c === d ? ' (these commute)' : ''}. Matrix check: the product of the matrices of $${G.L[a]}$ and $${G.L[b]}$ is $${mtx(P)}$, the matrix of $${G.L[c]}$ ${ok ? '✓' : '✗'}.`;
+        });
+      },
+    },
   ],
 };

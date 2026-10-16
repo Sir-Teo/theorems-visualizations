@@ -274,7 +274,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const C = need.value, F = FAMc(C), M = m.value, P = pa.value, P1 = pb.value;
           const A = demand(F, P, p2, M), uA = F.u(...A), C1 = demand(F, P1, p2, M), H = hicks(F, P1, p2, uA), Bx = H.x;
           // hunger region and calorie line
-          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text(`below the dashed line: fewer calories than the need ${v.fix(C, 1)}`, 0.3, 0.55, { color: 'red', ...LBL, align: 'left', plate: true }); }
+          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text(`below the dashed line: hungry (need ${v.fix(C, 1)})`, 0.3, 1.1, { color: 'red', ...LBL, align: 'left', plate: true }); }
           // indifference map (faint)
           for (const t of [0.25, 0.5, 0.75]) { const q = demand(F, 0.5, p2, 3 + 7 * t); drawLevel(s, F, F.u(...q), { color: v.color('purple', 0.18), width: 1 }); }
           bline(s, P, p2, M, { color: 'muted', width: 1.8, dash: [7, 5] });
@@ -310,7 +310,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const iM = clamp(Math.round(((M - 2) / 10) * 80), 0, 80); e.vline(M, GUIDE); if (isFinite(el[iM])) e.dot(M, el[iM], { r: 5.5, color: 'ink' });
           // the three regimes: rice only / subsistence (Giffen) / fed
           const only = ms.findIndex((q) => demand(F, P, p2, q)[1] > 1e-6), pos = el.map((z) => z > 0), g0 = pos.indexOf(true), g1 = pos.lastIndexOf(true);
-          const yl = e.bounds.y[1] - 0.14 * (e.bounds.y[1] - e.bounds.y[0]);
+          const yl = e.bounds.y[1] - 0.24 * (e.bounds.y[1] - e.bounds.y[0]);
           if (only > 6) e.text('rice only', (2 + ms[only]) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });
           if (g0 >= 0 && g1 - g0 > 6) e.text('subsistence: Giffen', (ms[g0] + ms[g1]) / 2, yl, { color: 'gold', ...LBL, align: 'center', plate: true });
           if (g1 >= 0 && g1 < 72) e.text('fed: ordinary', (ms[g1] + 12) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });

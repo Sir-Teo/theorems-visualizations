@@ -125,7 +125,7 @@ When $L$ is convex in $\dot q$ this is $H(q,p,t) = \max_{\dot q}\,\big(p\cdot\do
 $$\dot q_i = \frac{\partial H}{\partial p_i}, \qquad \dot p_i = -\frac{\partial H}{\partial q_i}, \qquad \frac{\partial H}{\partial t} = -\frac{\partial L}{\partial t},$$
 and conversely. In one degree of freedom the velocity of the phase point is the **Hamiltonian vector field** $X_H = (\partial H/\partial p, -\partial H/\partial q)$, the gradient $\nabla H$ turned through a right angle. It is therefore tangent to the level curves of $H$, so a time-independent $H$ is constant along every motion, and the orbits are the level curves themselves. For the pendulum $H = p^2/2ml^2 - mgl\cos q$, and $\dot q = p/ml^2$, $\dot p = -mgl\sin q$.`,
       idea: String.raw`Take the differential of $H = p\dot q - L$: the terms $p\,d\dot q$ and $-(\partial L/\partial\dot q)\,d\dot q$ cancel, because $p$ is defined as $\partial L/\partial\dot q$. What is left is $dH = \dot q\,dp - (\partial L/\partial q)\,dq - (\partial L/\partial t)\,dt$. Reading off the coefficients gives $\partial H/\partial p = \dot q$, and Lagrange’s equation $\tfrac{d}{dt}\partial L/\partial\dot q = \partial L/\partial q$ turns $-\partial H/\partial q = \partial L/\partial q$ into $\dot p$. Tangency follows from $X_H\cdot\nabla H = H_pH_q - H_qH_p = 0$; the minus sign in $\dot p$ is what makes the rotation a right angle rather than an ascent.`,
-      caption: String.raw`Left: the pendulum’s phase plane, with level curves of $H$ (the red curve is the separatrix $H = mgl$) and the faint field $X_H$. Drag the white handle to choose a starting point. The gold point then moves by Hamilton’s equations: the orange arrow is $\nabla H$ and the blue arrow, the velocity, is at right angles to it, so the point slides along its level curve, swinging back and forth inside the eye (libration) or going over the top outside it (rotation). Right: the same motion in real space; below, $q(t)$ and $p(t)$. Switch to gradient flow and the point climbs straight across the level curves instead: without the quarter turn, energy is not conserved.`,
+      caption: String.raw`Left: the pendulum’s phase plane, with level curves of $H$ (the red curve is the separatrix $H = mgl$) and the faint field $X_H$. Drag the dark handle to choose a starting point. The gold point then moves by Hamilton’s equations: the orange arrow is $\nabla H$ and the blue arrow, the velocity, is at right angles to it, so the point slides along its level curve, swinging back and forth inside the eye (libration) or going over the top outside it (rotation). Right: the same motion in real space; below, $q(t)$ and $p(t)$. Switch to gradient flow and the point climbs straight across the level curves instead: without the quarter turn, energy is not conserved.`,
       deps: ['mech-12.2', 'mech-6.6'],
       refs: ['Taylor §13.3', 'Goldstein §8.1'],
       tags: ['Hamilton’s equations', 'phase space', 'pendulum'],
@@ -135,7 +135,7 @@ and conversely. In one degree of freedom the velocity of the phase point is the 
         const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.6, 2.6], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.45, xlabel: 'q (rad)', ylabel: 'p', xticks: piTicks(-Math.PI, Math.PI) });
         const sR = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 380, weight: 1, title: 'the pendulum in real space' });
         const sT = v.stage({ x: [0, 20], y: [-3.4, 3.4], axes: 'box', gutter: true, height: 150, full: true, xlabel: 't  (units of 1/ω₀)' });
-        const h0 = sP.handle(-0.4, 1.35, { color: 'panel', r: 7, constrain: (x, y) => [clamp(x, -Math.PI + 0.02, Math.PI - 0.02), clamp(y, -2.5, 2.5)] });
+        const h0 = sP.handle(-0.4, 1.35, { color: 'ink', r: 7, constrain: (x, y) => [clamp(x, -Math.PI + 0.02, Math.PI - 0.02), clamp(y, -2.5, 2.5)] });
         h0.onDrag = () => v.restart();
         const cache = memo(); let cur = null;
         const run = () => cache([h0.x, h0.y, flow.value].join('|'), () => {
@@ -205,7 +205,7 @@ and conversely. In one degree of freedom the velocity of the phase point is the 
       name: 'Phase space and phase portraits',
       statement: String.raw`The **phase space** of a system with $n$ degrees of freedom is the $2n$-dimensional space of its states $(q, p)$. A state determines the whole motion (1.9), so through each point passes exactly one **trajectory** of Hamilton’s equations, and distinct trajectories never cross. Equilibria are the points where $\nabla H = 0$. The **phase portrait** is the family of all trajectories. For $H = p^2/2m + U(q)$ in one degree of freedom it is the set of level curves $p = \pm\sqrt{2m(E - U(q))}$: closed curves around minima of $U$ (oscillations), curves running to infinity (unbounded or rotating motion), and **separatrices** through the saddle points at maxima of $U$, which divide these kinds of motion and take infinite time to traverse.`,
       idea: String.raw`Uniqueness of solutions of first-order ODEs with smooth right-hand side (1.9) is what forbids crossings: two trajectories through the same point would be two solutions with the same initial data. Energy conservation (12.3) puts each trajectory on a level curve, and $p = \pm\sqrt{2m(E-U)}$ can be read off the potential: turning points where $E = U$, speed greatest at the bottom of a well. Near a minimum, $H$ is a positive quadratic form and its levels are ellipses (centres); near a maximum of $U$ it is indefinite and its levels are hyperbolas (saddles). The time to reach a saddle, $\int dq/\sqrt{2(E-U)}$, diverges logarithmically on the separatrix.`,
-      caption: String.raw`Choose a system. Top: the potential $U(q)$, with the energy line of the white handle’s orbit and its turning points; the gold ball rolls in the well. Bottom: the phase portrait, aligned with the potential, with level curves of $H$ (separatrices in red). The cloud of dots, each with a short tail, flows by Hamilton’s equations: the tails trace the portrait, and no two of them ever cross. Drag the handle to pick any orbit and read its period.`,
+      caption: String.raw`Choose a system. Top: the potential $U(q)$, with the energy line of the dark handle’s orbit and its turning points; the gold ball rolls in the well. Bottom: the phase portrait, aligned with the potential, with level curves of $H$ (separatrices in red). The cloud of dots, each with a short tail, flows by Hamilton’s equations: the tails trace the portrait, and no two of them ever cross. Drag the handle to pick any orbit and read its period.`,
       deps: ['mech-12.3', 'mech-1.9'],
       refs: ['Taylor §13.6'],
       tags: ['phase portrait', 'separatrix'],
@@ -220,7 +220,7 @@ and conversely. In one degree of freedom the velocity of the phase point is the 
         const S0 = SYS.pend;
         const sU = v.stage({ x: S0.x, y: S0.u, axes: 'box', gutter: { l: 42, r: 12, t: 26, b: 10 }, height: 150, full: true, title: 'potential $U(q)$ and the energy of the chosen orbit', xticks: [] });
         const sP = v.stage({ x: S0.x, y: S0.y, axes: 'box', gutter: true, height: 330, full: true, xlabel: 'q', ylabel: 'p' });
-        const hd = sP.handle(S0.h[0], S0.h[1], { color: 'panel', r: 7 });
+        const hd = sP.handle(S0.h[0], S0.h[1], { color: 'ink', r: 7 });
         hd.onDrag = () => v.restart();
         const NP = 280, TAIL = 12;
         const sim = v.sim(() => {
@@ -308,7 +308,7 @@ $\theta$ is cyclic, $p_\theta = mr^2\dot\theta$ is the angular momentum, and the
       viz(v) {
         const mode = v.select('potential', [{ value: 'st', label: 'central, static' }, { value: 'pul', label: 'central, pulsing $k(t)$' }, { value: 'side', label: 'plus sideways field' }], 'st', { onChange: () => v.restart() });
         const sO = v.stage({ x: [-2.3, 1.5], y: [-1.6, 1.6], equal: true, axes: false, height: 320, weight: 1, title: 'orbit in the plane' });
-        const sR = v.stage({ x: [0.3, 2.6], y: [-1.25, 1.25], axes: 'box', gutter: true, height: 320, weight: 1.15, xlabel: 'r', ylabel: 'p_r', title: 'reduced phase plane $(r, p_r)$' });
+        const sR = v.stage({ x: [0.3, 2.6], y: [-1.25, 1.25], axes: 'box', gutter: true, height: 320, weight: 1.15, xlabel: 'r', ylabel: 'pᵣ', title: 'reduced phase plane $(r, p_r)$' });
         const sT = v.stage({ x: [0, 60], y: [-1, 1], axes: 'box', gutter: true, height: 170, full: true, xlabel: 't' });
         const EPS = 0.3, OM = 1.3, F = 0.06, TT = 60, DT = 0.004, EV = 5;
         const kf = (t, m) => (m === 'pul' ? 1 + EPS * Math.sin(OM * t) : 1), kd = (t, m) => (m === 'pul' ? EPS * OM * Math.cos(OM * t) : 0);
@@ -379,10 +379,10 @@ Equivalently, the orbits of energy $E$ are the geodesics of the **Jacobi metric*
       tags: ['Maupertuis', 'abbreviated action', 'Jacobi metric'],
       credit: 'Maupertuis, 1744; Euler, 1744; Jacobi, 1842',
       viz(v) {
-        const Es = v.slider('energy $E$ (units $mg\\times$length, $U = mgy$)', 0.6, 2.4, 1.25, { step: 0.01 });
+        const Es = v.slider('energy $E$ (units $mg\\times$length, $U = mgy$)', 0.6, 2.4, 1.6, { step: 0.01 });
         const XR = [-1.8, 1.8], YR = [-0.55, 2];
         const sP = v.stage({ x: XR, y: YR, equal: true, axes: 'box', gutter: true, height: 330, xlabel: 'x', ylabel: 'y', title: 'paths from $A$ to $B$' });
-        const sW = v.stage({ x: XR, y: YR, equal: true, axes: 'box', gutter: true, height: 330, xlabel: 'C_x', ylabel: 'C_y', title: 'abbreviated action $W$ as a function of $C$' });
+        const sW = v.stage({ x: XR, y: YR, equal: true, axes: 'box', gutter: true, height: 330, xlabel: 'x of C', ylabel: 'y of C', title: 'abbreviated action $W$ as a function of $C$' });
         const hA = sP.handle(-1.2, 0, { color: 'ink', label: 'A', labelPos: 'sw', constrain: (x, y) => [clamp(x, -1.7, 1.7), clamp(y, -0.45, 1.2)] });
         const hB = sP.handle(1.05, 0.35, { color: 'ink', label: 'B', labelPos: 'se', constrain: (x, y) => [clamp(x, -1.7, 1.7), clamp(y, -0.45, 1.2)] });
         const hC = sP.handle(-0.2, 1.1, { color: 'accent', label: 'C', labelPos: 'n', constrain: (x, y) => [clamp(x, XR[0], XR[1]), clamp(y, YR[0], YR[1])] });
@@ -562,8 +562,9 @@ holds, so the Poisson bracket makes the smooth functions a Lie algebra. **Poisso
           const f = rnd(), g = rnd(), h = rnd(), s = brS.value === 'pb' ? -1 : 1;
           const B = (X, Y) => pLin(pMul(pD(X, 'q'), pD(Y, 'p')), pMul(pD(X, 'p'), pD(Y, 'q')), s);
           const T = [B(f, B(g, h)), B(g, B(h, f)), B(h, B(f, g))], Sm = pLin(pLin(T[0], T[1]), T[2]);
-          let mx = 1e-12, ms = 0; for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40; j++) { const q = -1.2 + (2.4 * i) / 40, p = -1.2 + (2.4 * j) / 40; for (const X of T) mx = Math.max(mx, Math.abs(pEval(X, q, p))); ms = Math.max(ms, Math.abs(pEval(Sm, q, p))); }
-          return { T, Sm, mx, ms, key: seed + '|' + brS.value };
+          let mx = 1e-12, ms = 0; const all = []; for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40; j++) { const q = -1.2 + (2.4 * i) / 40, p = -1.2 + (2.4 * j) / 40; for (const X of T) { const z = Math.abs(pEval(X, q, p)); mx = Math.max(mx, z); all.push(z); } ms = Math.max(ms, Math.abs(pEval(Sm, q, p))); }
+          all.sort((u, w) => u - w); const rng = Math.max(1e-9, all[Math.floor(0.85 * (all.length - 1))]);
+          return { T, Sm, mx, ms, rng, key: seed + '|' + brS.value };
         });
         v.animate((tt) => {
           const B = run(), tau = Math.min(2.2 * tt, 50), i = idxAt(B.R, tau), y = B.R.y[i], l = B.L[i];
@@ -581,7 +582,7 @@ holds, so the Poisson bracket makes the smooth functions a Lie algebra. **Poisso
           const P = polys(), labels = ['\\{f,\\{g,h\\}\\}', '\\{g,\\{h,f\\}\\}', '\\{h,\\{f,g\\}\\}', '\\text{sum}'];
           [...P.T, P.Sm].forEach((X, k) => {
             const x0 = k * 1.13, rect = [x0, 0, x0 + 1, 1];
-            sJ.heat((x, yy) => pEval(X, -1.2 + 2.4 * (x - x0), -1.2 + 2.4 * yy), { range: [-P.mx, P.mx], cmap: 'theme-diverging', res: 2, rect, key: P.key, id: 'j' + k });
+            sJ.heat((x, yy) => pEval(X, -1.2 + 2.4 * (x - x0), -1.2 + 2.4 * yy), { range: [-P.rng, P.rng], cmap: 'theme-diverging', res: 2, rect, key: P.key, id: 'j' + k });
             sJ.rect(...rect, { color: k === 3 ? 'ink' : 'faint', width: k === 3 ? 1.6 : 1 });
             sJ.tex(labels[k], x0 + 0.5, 1.06, { size: 14, color: k === 3 ? 'ink' : 'muted' });
             if (k < 3) sJ.text(k < 2 ? '+' : '=', x0 + 1.065, 0.5, { size: 18, align: 'center', color: 'muted' });
@@ -613,8 +614,8 @@ holds, so the Poisson bracket makes the smooth functions a Lie algebra. **Poisso
         const eS = v.slider('eccentricity of the starting orbit', 0, 0.75, 0.35, { step: 0.01 });
         const epS = v.slider('extra $1/r^3$ force $\\varepsilon$', 0, 0.2, 0, { step: 0.002 });
         const sS = v.slider('flow parameter $s$ of $A_y$', -1.2, 1.2, 0.45, { step: 0.01 });
-        const sO = v.stage({ x: [-2, 1.2], y: [-1.5, 1.5], equal: true, axes: false, height: 340, title: 'orbit and $\\mathbf A$' });
-        const sF = v.stage({ x: [-2, 1.2], y: [-1.5, 1.5], equal: true, axes: false, height: 340, title: 'orbits swept by the flow of $A_y$' });
+        const sO = v.stage({ x: [-2.1, 1.7], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'orbit and $\\mathbf A$' });
+        const sF = v.stage({ x: [-2.1, 2.1], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'orbits swept by the flow of $A_y$' });
         const Avec = (y) => { const r = Math.hypot(y[0], y[1]), L = y[0] * y[3] - y[1] * y[2]; return [y[3] * L - y[0] / r, -y[2] * L - y[1] / r]; };
         const elems = (y) => { const r = Math.hypot(y[0], y[1]), E = 0.5 * (y[2] ** 2 + y[3] ** 2) - 1 / r, L = y[0] * y[3] - y[1] * y[2], A = Avec(y); return { E, L, a: -1 / (2 * E), e: Math.hypot(A[0], A[1]), w: Math.atan2(A[1], A[0]) }; };
         const ellipse = (el) => { const pts = [], pl = el.a * (1 - el.e * el.e); for (let k = 0; k <= 240; k++) { const th = (TAU * k) / 240, r = pl / (1 + el.e * Math.cos(th - el.w)); pts.push([r * Math.cos(th), r * Math.sin(th)]); } return pts; };
@@ -628,7 +629,12 @@ holds, so the Poisson bracket makes the smooth functions a Lie algebra. **Poisso
             if (k % EV === 0) { out.t.push(k * dt); out.y.push(y.slice()); }
           }
           const rs = out.y.map((z) => Math.hypot(z[0], z[1])), peri = [];
-          for (let i = 1; i < rs.length - 1; i++) if (rs[i] < rs[i - 1] && rs[i] <= rs[i + 1]) peri.push(Math.atan2(out.y[i][1], out.y[i][0]));
+          for (let i = 1; i < rs.length - 1; i++) if (rs[i] < rs[i - 1] && rs[i] <= rs[i + 1]) {
+            // parabolic refinement of the minimum of r between samples, then interpolate the polar angle
+            const den = rs[i - 1] - 2 * rs[i] + rs[i + 1], d = den > 0 ? (0.5 * (rs[i - 1] - rs[i + 1])) / den : 0, th = (z) => Math.atan2(z[1], z[0]);
+            let a0 = th(out.y[i - 1]), a1 = th(out.y[i]), a2 = th(out.y[i + 1]); a0 = a1 + wrap(a0 - a1); a2 = a1 + wrap(a2 - a1);
+            peri.push(a1 + d * (a2 - a0) / 2 + 0.5 * d * d * (a2 - 2 * a1 + a0));
+          }
           let tot = 0; for (let i = 1; i < peri.length; i++) { let d = peri[i] - peri[i - 1]; d -= TAU * Math.round(d / TAU); tot += d; }
           const L = start()[0] * start()[3], gam = Math.sqrt(Math.max(1e-9, 1 - eps / (L * L)));
           return { out, A: out.y.map(Avec), meas: peri.length > 1 ? tot / (peri.length - 1) : NaN, pred: TAU * (1 / gam - 1), eps };

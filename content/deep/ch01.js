@@ -216,14 +216,14 @@ with hidden-unit weights $w_k\in\R^d$, biases $b_k$, output weights $v_k$ and ou
 $$h_1=\mathrm{ReLU}(x_1+x_2),\quad h_2=\mathrm{ReLU}(x_1+x_2-1),\quad f=h_1-2h_2,$$
 which gives $f=0,1,1,0$ on the four points. The hidden layer maps the inputs to $(0,0),(1,0),(1,0),(2,1)$, where the classes *are* separated by a line.`,
       idea: String.raw`Suppose $w\cdot x+b$ were $\ge0$ on $(0,1)$ and $(1,0)$ and $<0$ on $(0,0)$ and $(1,1)$. Adding the first two inequalities gives $w_1+w_2+2b\ge0$, adding the last two gives $w_1+w_2+2b<0$: a contradiction, because both pairs have the same midpoint $(\tfrac12,\tfrac12)$. A hidden layer escapes by changing the representation: the map $x\mapsto h(x)$ folds the plane so that the two class-1 points land on top of each other and away from the class-0 points, after which a linear output unit suffices. Trained networks find such representations by gradient descent, though from some initializations they stall in poor local minima.`,
-      caption: String.raw`**One layer**: drag the two handles to place a line; the counter never drops below one mistake, and the right panel proves it — for every direction $\theta$ of the line's normal it shows the fewest mistakes any offset can achieve. **Hand-built**: the network above; right, the hidden representation $(h_1,h_2)$ with the image of the input grid folded along $x_1+x_2=1$. **Trained**: a 2–2–1 tanh network learns by Adam from the seed you choose (press play to restart); the right panel shows the four points moving in hidden space until a line separates them. Some seeds get stuck.`,
+      caption: String.raw`**One layer**: drag the two handles to place a line; the counter never drops below one mistake, and the right panel proves it — for every direction $\theta$ of the line's normal it shows the fewest mistakes any offset can achieve. **Hand-built**: the network above; right, the hidden representation $(h_1,h_2)$: the whole input plane lands on a line bent at $x_1+x_2=1$, and the two label-1 points land on the same spot. **Trained**: a 2–2–1 tanh network learns by Adam from the seed you choose (press play to restart); the right panel shows the four points moving in hidden space until a line separates them. About half the seeds (1–4, 6, 11) get stuck with two points at $0.5$.`,
       deps: ['deep-1.3'],
       refs: ['Goodfellow §6.1'],
       tags: ['XOR', 'linear separability'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perceptrons_(book)' },
       viz(v) {
         const modeS = v.select('model', [{ value: 'lin', label: 'one layer (a line)' }, { value: 'hand', label: 'two ReLU units, by hand' }, { value: 'train', label: 'two tanh units, trained' }], 'lin');
-        const seedS = v.slider('seed', 1, 12, 2, { int: true });
+        const seedS = v.slider('seed', 1, 12, 5, { int: true });
         const sL = v.stage({ x: [-0.6, 1.6], y: [-0.6, 1.6], equal: true, height: 340, axes: 'box', gutter: true, xlabel: '$x_1$', ylabel: '$x_2$', title: 'input space' });
         const sR = v.stage({ x: [0, 180], y: [-0.2, 3.2], height: 340, axes: 'box', gutter: true, xlabel: ' ', ylabel: ' ', title: 'right panel' });
         const tR = titler(sR);

@@ -225,8 +225,8 @@ It is negative for a price rise (the most the consumer would pay to avoid it) an
           e.hline(M, { color: 'ink', width: 1.4, dash: [4, 3] }); e.text('income m', 2.1, M, { dy: -9, color: 'ink', size: 11.5, weight: 600, align: 'left' });
           e.fn((u) => hicks(F, P0, 1, u).e, { domain: [2, 9], color: 'muted', width: 2.4, n: 60 });
           e.fn((u) => hicks(F, P, 1, u).e, { domain: [2, 9], color: 'accent', width: 2.4, n: 60 });
-          const ul = (pp) => Math.min(8.9, 17 / hicks(F, pp, 1, 1).e); // e is linear in u for Cobb–Douglas
-          e.text('e(p⁰, u)', ul(P0), hicks(F, P0, 1, ul(P0)).e, { dx: 8, dy: 6, color: 'muted', ...LBL, align: 'left', baseline: 'top', plate: true });
+          const ul = (pp) => Math.min(7.6, 17 / hicks(F, pp, 1, 1).e); // e is linear in u for Cobb–Douglas
+          e.text('e(p⁰, u)', ul(P0) - 0.3, hicks(F, P0, 1, ul(P0) - 0.3).e, { dx: 8, dy: 8, color: 'muted', ...LBL, align: 'left', baseline: 'top', plate: true });
           e.text('e(p¹, u)', ul(P), hicks(F, P, 1, ul(P)).e, { dx: -8, dy: -6, color: 'accent', ...LBL, align: 'right', baseline: 'bottom', plate: true });
           e.line(u1, M, u1, M + EV, { color: 'gold', width: 4 }); e.line(u0, M, u0, M + CV, { color: 'orange', width: 4 });
           e.vline(u0, GUIDE); e.vline(u1, GUIDE);
@@ -279,8 +279,8 @@ for price cuts and price rises alike, with equality throughout when there is no 
           const eOld = hicks(F, P0, 1, u1), eNew = hicks(F, Pn, 1, u0);
           s.clip(() => { s.line(eOld.e / P0, 0, 0, eOld.e, { color: 'gold', width: 2.2 }); s.line(eNew.e / Pn, 0, 0, eNew.e, { color: 'orange', width: 2.2 }); });
           const yt = (y) => Math.min(y, 19.8);
-          s.line(0.25, M, 0.25, yt(eOld.e), { color: 'gold', width: 5 }); s.line(0.7, M, 0.7, yt(eNew.e), { color: 'orange', width: 5 });
-          s.text('EV', 0.25, (M + yt(eOld.e)) / 2, { dx: -2, color: 'gold', ...LBL, align: 'right' }); s.text('CV', 0.9, (M + yt(eNew.e)) / 2, { color: 'orange', ...LBL, align: 'left' });
+          s.line(0.3, M, 0.3, yt(eOld.e), { color: 'gold', width: 5 }); s.line(1.9, M, 1.9, yt(eNew.e), { color: 'orange', width: 5 });
+          s.text('EV', 0.3, (M + yt(eOld.e)) / 2, { dx: 7, color: 'gold', ...LBL, align: 'left', plate: true }); s.text('CV', 1.9, (M + yt(eNew.e)) / 2, { dx: 7, color: 'orange', ...LBL, align: 'left', plate: true });
           s.dot(A[0], A[1], { r: 5, color: 'ink' }); s.dot(C[0], C[1], { r: 5.5, color: 'green' });
           // demand curves
           const lo = Math.min(P0, Pn), hi = Math.max(P0, Pn), ps = []; for (let i = 0; i <= 50; i++) ps.push(0.25 + (2.9 * i) / 50);
@@ -306,7 +306,7 @@ for price cuts and price rises alike, with equality throughout when there is no 
         });
         v.readout(() => {
           const { e0, up, Pn, cs, cv, ev, inc } = st, f = (q) => v.fix(q, 3);
-          const order = cv <= cs + 1e-9 && cs <= ev + 1e-9 ? 'so $CV \\le \\Delta CS \\le EV$' : 'ordered as stated';
+          const tol = 1e-4 * Math.abs(cs), order = Math.abs(ev - cv) < tol ? 'all three equal' : cv <= cs + tol && cs <= ev + tol ? 'so $CV \\le \\Delta CS \\le EV$' : 'so $CV \\ge \\Delta CS \\ge EV$ (good 1 is inferior here)';
           const will = e0 > 0 ? ` Willig's rule of thumb predicts a relative gap $(\\Delta CS - CV)/|\\Delta CS| \\approx \\eta\\,|\\Delta CS|/2m \\approx ${v.fix((100 * inc * Math.abs(cs)) / 20, 1)}\\%$, using the income elasticity $\\eta = ${v.fix(inc, 2)}$ of good 1 at the old optimum; the actual gap is ${v.fix(100 * (cs - cv) / Math.abs(cs), 1)}%.` : ' With no income effect the three measures coincide, as 6.8 showed.';
           return `$p_1$: 1.5 → ${v.fix(Pn, 2)} (a price ${up ? 'rise: the gains are negative' : 'cut'}). Gains: $CV = ${f(cv)}$, $\\Delta CS = ${f(cs)}$, $EV = ${f(ev)}$, ${order}.${will}`;
         });
@@ -409,7 +409,7 @@ the substitution effect plus an income term weighted by her **net sales** $\omeg
           // net supply curve
           const ps = []; for (let i = 0; i <= 80; i++) ps.push(0.3 + (2.9 * i) / 80);
           const ns = ps.map((p) => w[0] - demand(F, p, 1, p * w[0] + w[1])[0]);
-          n.setView([Math.min(-1, ...ns) - 0.5, Math.max(w[0], ...ns) + 0.5], [0.3, 3.2]);
+          const nlo = Math.min(0, ...ns), nhi = Math.max(0.5, ...ns), nr = nhi - nlo; n.setView([nlo - 0.15 * nr, nhi + 0.15 * nr], [0.3, 3.2]);
           n.vline(0, { color: 'faint', width: 1 });
           n.path(ps.map((p, i) => [ns[i], p]), { color: 'accent', width: 2.6 });
           for (let i = 1; i < ps.length; i++) if (ns[i] < ns[i - 1] - 1e-9 && ns[i] > 0) n.line(ns[i - 1], ps[i - 1], ns[i], ps[i], { color: 'red', width: 5, alpha: 0.5 });
@@ -423,7 +423,7 @@ the substitution effect plus an income term weighted by her **net sales** $\omeg
           const { P, w, A, B, C, D, sl, tot } = st, f = (q) => v.fix(q, 2), f3 = (q) => v.fix(q, 3);
           const sells = w[0] - A[0] > 0, end = sl.dm * w[0];
           const check = `At $p_1 = 1$: $dx_1/dp_1 = ${f3(tot)}$ directly, and $\\partial h_1/\\partial p_1 + (\\omega_1 - x_1)\\,\\partial x_1/\\partial m = ${f3(sl.dh)} + (${f(w[0] - A[0])})(${f3(sl.dm)}) = ${f3(sl.dh + (w[0] - A[0]) * sl.dm)}$.`;
-          const story = sells ? `She is a net seller of good 1 (${f(w[0] - A[0])} units at $p_1 = 1$). After the rise to ${f(P)} she sells ${f(w[0] - D[0])}: ${w[0] - D[0] < w[0] - A[0] ? '**less**, because the endowment income effect outweighs the substitution effect' : 'more, because the substitution effect dominates'}.` : 'She is a net buyer of good 1, so the price rise makes her poorer and both income effects push the same way as for a money income.';
+          const story = sells ? `She is a net seller of good 1 (${f(w[0] - A[0])} units at $p_1 = 1$). After the rise to ${f(P)} she sells ${f(w[0] - D[0])}: ${w[0] - D[0] < w[0] - A[0] ? '**less**: the endowment income effect, net of the ordinary one, outweighs the substitution effect' : 'more, because the substitution effect dominates'}.` : 'She is a net buyer of good 1, so the price rise makes her poorer and both income effects push the same way as for a money income.';
           return `$p_1$: 1 → ${f(P)}. Substitution ${sgn(B[0] - A[0])}, ordinary income ${sgn(C[0] - B[0])}, endowment income ${sgn(D[0] - C[0])}: total change in $x_1$ ${sgn(D[0] - A[0])}. ${story} ${check} (Endowment term $\\omega_1\\,\\partial x_1/\\partial m = ${f3(end)}$.)`;
         });
       },

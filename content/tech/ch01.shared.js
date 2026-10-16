@@ -46,7 +46,11 @@ export function drawEvidence(v, s, finds, o = {}) {
     if (x0 < x1min) x0 = x1min; if (x0 + it.w > x1max) x0 = x1max - it.w;
     let lane = 0;
     while (lane < lanes && placed.some((p) => p.lane === lane && !(x0 + it.w < p.x0 || x0 > p.x1))) lane++;
-    if (lane >= lanes) lane = lanes - 1;
+    if (lane >= lanes) { // every lane is busy here: slide the label right in the lane that needs the smallest shift
+      let best = Infinity;
+      for (let L = 0; L < lanes; L++) { const x = Math.max(x0, ...placed.filter((p) => p.lane === L && p.x1 > x0 - it.w).map((p) => p.x1 + 6)); if (x - x0 < best) { best = x - x0; lane = L; } }
+      x0 = Math.min(x0 + best, x1max - it.w);
+    }
     placed.push({ lane, x0, x1: x0 + it.w }); it.lane = lane; it.x0 = x0;
   }
   ctx.restore();

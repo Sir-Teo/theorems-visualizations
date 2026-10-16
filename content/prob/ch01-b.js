@@ -64,7 +64,7 @@ A function $f$ defines a distribution function in this way if and only if $f\ge0
         let info = {};
         v.render(() => {
           const Md = model(), a = ha.x, b = hb.x;
-          if (!(Md.tot > 0)) { sD.corner('f is never positive: not a density', 'tl', { color: 'red', weight: 600 }); info = { bad: true }; return; }
+          if (!(Md.tot > 0)) { sD.text('f is never positive: not a density', 0, 0.5, { align: 'center', color: 'red', weight: 600 }); info = { bad: true }; return; }
           top = Md.max * 1.15; sD.setView(null, [-0.1 * top, top]); ha.y = hb.y = -0.05 * top;
           const fN = (x) => { if (x < -4 || x > 4) return 0; const i = Math.min(1599, Math.max(0, Math.floor((x + 4) * 200))), t = (x + 4) * 200 - i; return ((1 - t) * Md.pos[i] + t * Md.pos[i + 1]) / Md.tot; };
           sD.between(fN, () => 0, a, b, { fill: 'accent', fillAlpha: 0.35, n: 300 });
@@ -659,7 +659,7 @@ as maps into the extended line $\R^*=[-\infty,\infty]$ with its Borel sets. Cons
         const mid = (w) => 0.35 * Math.sin(2 * Math.PI * w), wob = (w) => (w > 0.2 && w < 0.7 ? 0.45 * Math.sin((Math.PI * (w - 0.2)) / 0.5) : 0);
         const X = (n, w) => mid(w) + (n % 2 ? -1 : 1) * wob(w) + 0.8 * Math.pow(n, -0.6) * Math.sin(2.7 * n + 7 * w);
         const s = v.stage({ x: [0, 1], y: [-1.45, 1.6], height: 300, axes: 'box', gutter: true, xlabel: '$\\omega$', full: true });
-        const sR = v.stage({ x: [0, 1], y: [0, 1], height: 170, axes: false, gutter: { l: 42, r: 12, t: 4, b: 4 }, full: true });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], height: 220, axes: false, gutter: { l: 42, r: 12, t: 4, b: 4 }, full: true });
         const G = 400, ws = Array.from({ length: G + 1 }, (_, i) => i / G), MMAX = 500;
         let cache = {};
         const env = (n) => { if (cache[n]) return cache[n]; const sup = [], inf = []; ws.forEach((w) => { let hi = -Infinity, lo = Infinity; for (let m = n; m <= MMAX; m++) { const y = X(m, w); if (y > hi) hi = y; if (y < lo) lo = y; } sup.push([w, hi]); inf.push([w, lo]); }); return (cache[n] = { sup, inf }); };
@@ -681,15 +681,15 @@ as maps into the extended line $\R^*=[-\infty,\infty]$ with its Borel sets. Cons
             v.legend([['gold', '$X_n$'], ['red', '$\\sup_{m\\ge n}X_m$ and $\\limsup$ (dashed)'], ['blue', '$\\inf_{m\\ge n}X_m$ and $\\liminf$ (dashed)']]);
           } else {
             const a = aS.value; s.hline(a, { color: 'purple', width: 1.6, dash: [5, 3] });
-            const K = Math.min(n, 9), rowH = 0.8 / (K + 2), rows = [];
+            const K = Math.min(n, 6), rowH = 0.9 / (K + 2), rows = [];
             let U = [];
             for (let m = 1; m <= n; m++) { const P = preimage((w) => X(m, w) < a, 0, 1, 800); U = U.concat(P); if (m > n - K) rows.push([m, P]); }
-            rows.forEach(([m, P], i) => { const y = 0.95 - (i + 0.5) * rowH; sR.text(`{X${String(m).split('').map((c) => '₀₁₂₃₄₅₆₇₈₉'[c]).join('')} < a}`, 0, y, { size: 10, color: 'muted' }); P.forEach(([p, q]) => sR.line(Math.max(p, 0.1), y, q, y, { color: 'purple', width: 4, cap: 'butt', alpha: q > 0.1 ? 1 : 0 })); });
-            const yU = 0.95 - (K + 0.6) * rowH, yT = 0.95 - (K + 1.5) * rowH;
+            rows.forEach(([m, P], i) => { const y = 0.95 - (i + 0.75) * rowH; sR.text(`{X${String(m).split('').map((c) => '₀₁₂₃₄₅₆₇₈₉'[c]).join('')} < a}`, 0.002, y, { size: 9.5, color: 'muted', dy: -8 }); P.forEach(([p, q]) => sR.line(p, y, q, y, { color: 'purple', width: 4, cap: 'butt' })); });
+            const yU = 0.95 - (K + 0.85) * rowH, yT = 0.95 - (K + 1.8) * rowH;
             const unionM = preimage((w) => { for (let m = 1; m <= n; m++) if (X(m, w) < a) return true; return false; }, 0, 1, 800);
             const all = preimage((w) => { for (let m = 1; m <= MMAX; m++) if (X(m, w) < a) return true; return false; }, 0, 1, 600);
-            sR.text(`⋃ m ≤ ${n}`, 0, yU, { size: 10, color: 'gold', weight: 600 }); unionM.forEach(([p, q]) => sR.line(Math.max(p, 0.1), yU, q, yU, { color: 'gold', width: 6, cap: 'butt' }));
-            sR.text('{inf Xₘ < a}', 0, yT, { size: 10, color: 'green', weight: 600 }); all.forEach(([p, q]) => sR.line(Math.max(p, 0.1), yT, q, yT, { color: 'green', width: 6, cap: 'butt' }));
+            sR.text(`union over m ≤ ${n}`, 0.002, yU, { size: 9.5, color: 'gold', weight: 600, dy: -9 }); unionM.forEach(([p, q]) => sR.line(p, yU, q, yU, { color: 'gold', width: 6, cap: 'butt' }));
+            sR.text('{inf Xₘ < a}', 0.002, yT, { size: 9.5, color: 'green', weight: 600, dy: -9 }); all.forEach(([p, q]) => sR.line(p, yT, q, yT, { color: 'green', width: 6, cap: 'butt' }));
             info = { md, n, a, pu: lenOf(unionM), pa: lenOf(all) };
             v.legend([['gold', '$X_n$'], ['purple', '$\\{X_m<a\\}$'], ['green', '$\\{\\inf_mX_m<a\\}$']]);
           }

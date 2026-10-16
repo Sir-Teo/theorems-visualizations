@@ -83,10 +83,10 @@ A **topological space** is a pair $(X,\tau)$. A subset $C\subset X$ is **closed*
         let n = 3, lastMsg = '';
         const L = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 330, title: 'subsets of $X$ — click to toggle “open”' });
         const Rt = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 330, title: 'Hasse diagram of the family (inclusion upward)' });
-        const G = v.graph(L, { ...powerSpec(3, [0.7, 9.3], [0.7, 6.7]), shape: 'box', r: 10, fontSize: 12, draggable: false, layout: 'none' });
+        const G = v.graph(L, { ...powerSpec(3, [0.7, 9.3], [0.6, 6.35]), shape: 'box', r: 10, fontSize: 12, draggable: false, layout: 'none' });
         const H = v.graph(Rt, { nodes: [], edges: [], shape: 'box', r: 10, fontSize: 12, draggable: false, layout: 'none' });
         G.onClick = ({ node }) => { if (node) { fam[n] ^= 1 << node.id; lastMsg = ''; } return true; };
-        v.select('points $n$', ['1', '2', '3', '4'].map((s) => ({ value: s, label: s })), '3', { onChange: (s) => { n = +s; G.set(powerSpec(n, [0.7, 9.3], [0.7, 6.7])); lastMsg = ''; } });
+        v.select('points $n$', ['1', '2', '3', '4'].map((s) => ({ value: s, label: s })), '3', { onChange: (s) => { n = +s; G.set(powerSpec(n, [0.7, 9.3], [0.6, 6.35])); lastMsg = ''; } });
         v.button('Generate', () => { const before = pc(fam[n]); const g = generate(fam[n], n); fam[n] = g.top; lastMsg = `Generated: using your ${before} sets as a subbasis, finite intersections give a basis of ${pc(g.basis)} sets and their unions give ${pc(g.top)} open sets.`; });
         v.button('Indiscrete', () => { fam[n] = famOf([0, FULL(n)]); lastMsg = ''; });
         v.button('Discrete', () => { fam[n] = (2 ** (1 << n)) - 1; lastMsg = ''; });
@@ -99,7 +99,7 @@ A **topological space** is a pair $(X,\tau)$. A subset $C\subset X$ is **closed*
           if (chk.ok) found[n].add(F);
           const missSet = new Set(chk.missing.map((o) => o.w));
           // witness lines for (up to three) missing unions/intersections
-          const pos = powerPos(n, [0.7, 9.3], [0.7, 6.7]);
+          const pos = powerPos(n, [0.7, 9.3], [0.6, 6.35]);
           chk.missing.slice(0, 3).forEach((o) => {
             if (o.op !== '∪' && o.op !== '∩') return;
             for (const a of [o.a, o.b]) L.line(pos[a][0], pos[a][1], pos[o.w][0], pos[o.w][1], { color: 'red', width: 1.6, dash: [5, 4], alpha: 0.8 });

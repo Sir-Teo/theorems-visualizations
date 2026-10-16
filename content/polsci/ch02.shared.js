@@ -3,7 +3,7 @@
 // Builds on the profile model of ch01.shared.js: P = { m, blocs: [{ n, r }] }, r a ranked ballot (best first) that
 // may be truncated (candidates left off rank below every listed one). Every rule here is resolute: ties are broken by
 // a fixed order (the earlier letter), so the searches below compare single winners.
-import { CC, LET, sum, range, perms, tops, positional, bordaW as bordaVec, txt, chip } from './ch01.shared.js';
+import { CC, LET, sum, range, perms, tops, positional, bordaW as bordaVec, txt, chip, irv, drawSankey } from './ch01.shared.js';
 
 // ================================================================== tallies with truncated ballots
 /** N[x][y] = voters ranking x above y, a listed candidate counting above every unlisted one. */
@@ -173,4 +173,29 @@ export function pill(v, c, s, X, Y, o = {}) {
 }
 /** 12345 → "12,345". */
 export const fmtK = (x) => (Math.abs(x) >= 1000 ? Math.round(x).toLocaleString('en-US') : String(+(+x).toFixed(1)));
+
+/**
+ * IRV rounds as a Sankey in pixel box [x0, y0, x1, y1] (round headers drawn above y0). Ballots that run out of
+ * listed candidates collect in an "exhausted" node. o = { lab(c), col(c), upto (rounds shown, fractional = growing),
+ * big (thousands separators), dim }. Returns the irv() result.
+ */
+export function drawIRV(v, s, P, box, o = {}) {
+  const I = irv(P), R = I.rounds, K = R.length, tot = sum(P.blocs.map((b) => b.n));
+  const lab = (c) => (o.lab ? o.lab(c) : LET[c]), col = (c) => (o.col ? o.col(c) : CC[c]);
+  const cols = R.map((Rd, k) => {
+    const nodes = Rd.alive.map((c) => ({ id: c, label: lab(c), color: col(c), value: Rd.counts[c], out: Rd.out === c, win: k === K - 1 && I.win.includes(c), text: Rd.out === c ? 'red' : k === K - 1 && I.win.includes(c) ? 'green' : 'ink' }));
+    const ex = tot - Rd.cont; if (ex > 0) nodes.push({ id: 'x', label: 'exhausted', color: 'gray', value: ex, text: 'muted' });
+    return nodes;
+  });
+  const flows = R.slice(0, -1).map((Rd, k) => {
+    const f = [...Rd.flows].map(([key, val]) => { const [a, b] = key.split('>'); return { from: +a, to: b === 'x' ? 'x' : +b, value: val, color: col(+a) }; });
+    const ex = tot - Rd.cont; if (ex > 0) f.push({ from: 'x', to: 'x', value: ex, color: 'gray' });
+    return f;
+  });
+  const c = s.ctx, colX = (j) => box[0] + (K === 1 ? 0 : (j * (box[2] - box[0] - 14)) / (K - 1));
+  const upto = o.upto ?? K;
+  for (let j = 0; j < K; j++) txt(v, c, `round ${j + 1}`, colX(j) + 7, box[1] - 14, { size: 11, weight: 600, color: j < Math.ceil(upto) ? 'muted' : 'faint' });
+  drawSankey(v, s, cols, flows, box, { upto, colX, labels: (nd) => `${nd.label} ${o.big ? fmtK(nd.value) : +nd.value.toFixed(1)}${nd.out ? ' ✗' : ''}${nd.win ? ' wins' : ''}` });
+  return I;
+}
 export { CC, LET };

@@ -447,7 +447,7 @@ Sequences are the nets indexed by $\N$. Other standard index sets: the neighbour
             if (u) s.rect(L - e, 0.3, L + e, 15.8, { fill: 'orange', fillAlpha: 0.15, stroke: false });
             else { s.rect(L, 0.3, L + e, 15.8, { fill: 'orange', fillAlpha: 0.18, stroke: false }); s.line(L, 0.3, L, 15.8, { color: 'orange', width: 2 }); s.line(L + e, 0.3, L + e, 15.8, { color: 'orange', width: 1, dash: [4, 3] }); }
             s.line(-1.2, 0, 1.2, 0, { color: 'ink', width: 1.4 });
-            for (const t of [-1, -0.5, 0, 0.5, 1]) s.text(String(t).replace('-', '−'), t, -1.0, { align: 'center', size: 10.5, color: 'muted' });
+            for (const t of [-1, -0.5, 0.5, 1]) s.text(String(t).replace('-', '−'), t, -1.0, { align: 'center', size: 10.5, color: 'muted' });
             let last = 0; for (let n = 1; n <= 3000; n++) if (!inU(f(n))) last = n;
             for (let n = 1; n <= 15; n++) s.dot(f(n), n, { r: 4, color: inU(f(n)) ? 'gold' : 'red' });
             s.text('n ↑', -1.15, 15, { size: 11, color: 'muted' });
@@ -471,9 +471,10 @@ Sequences are the nets indexed by $\N$. Other standard index sets: the neighbour
             st = { W, u };
           } else {
             s.setScale({ equal: true, x: [-1.5, 1.5], y: [-1.5, 1.5] });
-            s.line(-1.6, 0, 1.6, 0, { color: 'faint', width: 1 }); s.line(0, -1.6, 0, 1.6, { color: 'faint', width: 1 });
+            s.line(-4, 0, 4, 0, { color: 'faint', width: 1 }); s.line(0, -1.6, 0, 1.6, { color: 'faint', width: 1 });
             s.line(-1.6, 1.6, 1.6, -1.6, { color: 'blue', width: 2.2 });
-            const x = hp.x, y = hp.y;
+            const x = hp.x, y = hp.y, e = Math.min(0.9, eps.value * 2.5);
+            for (const t of [-1.2, -0.9, -0.6, -0.3, 0, 0.3, 0.6, 0.9, 1.2]) if (Math.abs(t - x) > 0.05) { if (u) s.rect(t - e * 0.4, -t - e * 0.4, t + e * 0.4, -t + e * 0.4, { fill: 'orange', fillAlpha: 0.08, stroke: false }); else s.rect(t, -t, t + e * 0.4, -t + e * 0.4, { fill: 'orange', fillAlpha: 0.12, stroke: false }); s.dot(t, -t, { r: 2.5, color: 'blue' }); }
             if (u) s.rect(x - e, y - e, x + e, y + e, { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.5, dash: [4, 3] });
             else { s.rect(x, y, x + e, y + e, { fill: 'orange', fillAlpha: 0.25, stroke: false }); s.line(x, y, x + e, y, { color: 'orange', width: 2 }); s.line(x, y, x, y + e, { color: 'orange', width: 2 }); s.line(x + e, y, x + e, y + e, { color: 'orange', width: 1, dash: [3, 3] }); s.line(x, y + e, x + e, y + e, { color: 'orange', width: 1, dash: [3, 3] }); }
             if (u) s.line(x - e, y + e, x + e, y - e, { color: 'red', width: 4 });
@@ -525,19 +526,19 @@ of families $S$ of polynomials. On $\R$ the closed sets are $\R$ and the finite 
           // Z(f) ∩ Z(g) by Newton's method from a grid of seeds
           const sols = [];
           for (let i = 0; i <= 14; i++) for (let j = 0; j <= 10; j++) {
-            let x = -2.6 + (5.2 * i) / 14, y = -2 + (4 * j) / 10;
+            const [bx0, bx1] = s.bounds.x; let x = bx0 + ((bx1 - bx0) * i) / 14, y = -2 + (4 * j) / 10;
             for (let it = 0; it < 30; it++) {
               const h = 1e-6, F = f(x, y), G = g(x, y);
               const a = (f(x + h, y) - F) / h, b = (f(x, y + h) - F) / h, c = (g(x + h, y) - G) / h, d = (g(x, y + h) - G) / h, D = a * d - b * c;
               if (!isFinite(D) || Math.abs(D) < 1e-12) break;
               x -= (d * F - b * G) / D; y -= (-c * F + a * G) / D;
             }
-            if (isFinite(x) && Math.abs(f(x, y)) < 1e-8 && Math.abs(g(x, y)) < 1e-8 && Math.abs(x) < 2.6 && Math.abs(y) < 2 && !sols.some(([u, w]) => Math.hypot(u - x, w - y) < 1e-4)) sols.push([x, y]);
+            if (isFinite(x) && Math.abs(f(x, y)) < 1e-8 && Math.abs(g(x, y)) < 1e-8 && x > s.bounds.x[0] && x < s.bounds.x[1] && Math.abs(y) < 2 && !sols.some(([u, w]) => Math.hypot(u - x, w - y) < 1e-4)) sols.push([x, y]);
           }
           for (const [x, y] of sols) s.dot(x, y, { r: 5, color: 'purple' });
           // a witness of U ∩ V
           let w = null;
-          for (let t = 0; t < 200 && !w; t++) { const a = 0.5 + 0.37 * Math.sin(t * 1.7), x = a * p.x + (1 - a) * q.x + 0.013 * t * Math.cos(t), y = a * p.y + (1 - a) * q.y + 0.011 * t * Math.sin(t * 1.3); if (Math.abs(f(x, y) * g(x, y)) > 1e-6) w = [x, y]; }
+          for (let t = 0; t < 200 && !w; t++) { const a = 0.5 + 0.37 * Math.sin(t * 1.7), x = a * p.x + (1 - a) * q.x + 0.013 * t * Math.cos(t), y = a * p.y + (1 - a) * q.y + 0.011 * t * Math.sin(t * 1.3); if (Math.abs(f(x, y)) > 0.15 && Math.abs(g(x, y)) > 0.15) w = [x, y]; }
           if (w) { s.dot(w[0], w[1], { r: 5, color: 'green', label: 'r', labelPos: 'ne' }); s.line(p.x, p.y, w[0], w[1], { color: 'blue', width: 1, dash: [3, 3] }); s.line(q.x, q.y, w[0], w[1], { color: 'orange', width: 1, dash: [3, 3] }); }
           st = { sols, w, fp: f(p.x, p.y), gq: g(q.x, q.y) };
         });

@@ -15,7 +15,7 @@ function bridges(H) {
 }
 /** A graph on letters used by the normal-tree items. */
 const NT = () => fixed({ a: [1.0, 1.0], b: [3.2, 0.7], c: [5.4, 1.0], d: [7.6, 0.8], e: [9.2, 2.2], f: [2.0, 3.2], g: [4.4, 3.0], h: [6.6, 3.2], i: [8.4, 4.6], j: [1.4, 5.4], k: [3.8, 5.6], l: [6.2, 5.6] },
-  'ab bc cd de af bg ch di ei fg gh hi fj gk hl jk kl il bf ch dh fk');
+  'ab bc cd de af bg ch di ei fg gh hi fj gk hl jk kl il bf dh fk');
 /** Tidy-ish layered layout of the rooted tree T (vertex indices of H): Map id → [x, y] relative coordinates (y up), for layout 'fit'. */
 function treeLayout(H, T, rootIdx) {
   const kids = Array.from({ length: H.n }, () => []); for (let u = 0; u < H.n; u++) if (T.par[u] >= 0) kids[T.par[u]].push(u);
@@ -100,7 +100,7 @@ export default {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [0.9, 1.4], b: [2.6, 0.6], c: [2.6, 3.0], d: [0.9, 4.6], e: [2.8, 5.6], f: [4.6, 2.2], g: [5.4, 4.4], h: [7.2, 1.0], i: [7.4, 3.4], j: [9.2, 2.2], k: [8.8, 5.4], l: [6.6, 5.8] },
           'ab ac bc ad cd de ce bf cf fg eg fh fi gi gl hi hj ij ik jk kl il'), r: 14 });
-        let goneV = new Set(), goneE = new Set();
+        let goneV = new Set(['e', 'f']), goneE = new Set();
         G.onClick = ({ node, edge }) => { if (node) { goneV.has(node.id) ? goneV.delete(node.id) : goneV.add(node.id); } else if (edge) { goneE.has(edge) ? goneE.delete(edge) : goneE.add(edge); } return true; };
         const base = () => ix(G);
         v.button('Delete a smallest separator', () => { const H = base(), r = kappa(H); goneE.clear(); goneV = new Set(r.sep.map((u) => H.ids[u])); });
@@ -166,7 +166,7 @@ export default {
           const pin = k === 1 ? 0.62 : 0.85, pout = k === 1 ? 0.18 : 0.42, core = Math.ceil(n * 0.55);
           for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (r() < (i < core && j < core ? pin : pout)) edges.push([nodes[i].id, nodes[j].id]);
           for (let t = 0; t < 400 && (2 * edges.length) / n < 4 * k; t++) { const i = r.int(0, n - 1), j = r.int(0, n - 1); if (i !== j && !edges.some(([a, b]) => ekey(a, b) === ekey(nodes[i].id, nodes[j].id))) edges.push([nodes[i].id, nodes[j].id]); }
-          G.set({ nodes, edges }).layout('force', { seed: 3 });
+          G.set({ nodes, edges }).layout('circle');
         }
         resample();
         v.button('Resample', () => { seed++; resample(); });
@@ -197,8 +197,8 @@ export default {
         v.legend([['green', 'smallest $G\'$ with $\\|G\'\\|>\\gamma(|G\'|-k)$: the subgraph $H$']]);
         v.readout(() => {
           const r = solve(), dG = (2 * r.H.m) / r.H.n, hyp = dG >= 4 * r.k;
-          if (r.mask < 0) return String.raw`$d(G) = ${fmt2(dG)}$ ${hyp ? '' : `< 4k = ${4 * r.k}$ (hypothesis fails) $`} · no subgraph satisfies Mader's inequality`;
-          return String.raw`$d(G) = ${fmt2(dG)} ${hyp ? '\ge' : '<'} 4k = ${4 * r.k}$${hyp ? '' : ' (hypothesis fails)'} · $H$: $|H| = ${r.sub.n}$, $\kappa(H) = ${r.kap} ${r.kap >= r.k + 1 ? '\ge' : '<'} k+1 = ${r.k + 1}$ ${r.kap >= r.k + 1 ? '✓' : '✗'}, $\varepsilon(H) = ${fmt2(r.epsH)} > \varepsilon(G) - k = ${fmt2(r.gam - r.k)}$ ${r.epsH > r.gam - r.k ? '✓' : '✗'}`;
+          if (r.mask < 0) return `$d(G) = ${fmt2(dG)}$${hyp ? '' : ` < 4k = ${4 * r.k} (hypothesis fails)`} · no subgraph satisfies Mader's inequality`;
+          return String.raw`$d(G) = ${fmt2(dG)} ${hyp ? '\\ge' : '<'} 4k = ${4 * r.k}$${hyp ? '' : ' (hypothesis fails)'} · $H$: $|H| = ${r.sub.n}$, $\kappa(H) = ${r.kap} ${r.kap >= r.k + 1 ? '\\ge' : '<'} k+1 = ${r.k + 1}$ ${r.kap >= r.k + 1 ? '✓' : '✗'}, $\varepsilon(H) = ${fmt2(r.epsH)} > \varepsilon(G) - k = ${fmt2(r.gam - r.k)}$ ${r.epsH > r.gam - r.k ? '✓' : '✗'}`;
         });
       },
     },
@@ -256,7 +256,7 @@ export default {
           if (which.value === '2') {
             if (!A.conn) { const x = A.C.lists[0][0], y = A.C.lists[1][0]; ring = new Set([H.ids[x], H.ids[y]]); note = `${H.ids[x]} and ${H.ids[y]}: no path`; }
             else if (!A.acyc) { const ks = [...Array(H.m).keys()].filter((k) => !A.br.has(k)), k = ks[idx % ks.length], [x, y] = H.E[k]; const P2 = parPath(bfs(H, x, null, (kk) => kk !== k).par, y); hiE = eset(H, [k]); hiE2 = eset(H, pathEdges(H, P2)); ring = new Set([H.ids[x], H.ids[y]]); note = `${H.ids[x]} and ${H.ids[y]}: two paths`; }
-            else { const pairs = []; for (let a = 0; a < H.n; a++) for (let b = a + 1; b < H.n; b++) pairs.push([a, b]); const [x, y] = pairs[(idx * 7) % pairs.length]; const T = spanTree(H, x); hiE = eset(H, pathEdges(H, treePath(T, x, y))); ring = new Set([H.ids[x], H.ids[y]]); note = `the unique path ${H.ids[x]}T${H.ids[y]}`; }
+            else { const E0 = eccs(H), pairs = []; for (let a = 0; a < H.n; a++) for (let b = a + 1; b < H.n; b++) pairs.push([a, b]); pairs.sort((p, q) => E0.D[q[0]][q[1]] - E0.D[p[0]][p[1]] || p[0] - q[0]); const [x, y] = pairs[(idx * 5) % pairs.length]; const T = spanTree(H, x); hiE = eset(H, pathEdges(H, treePath(T, x, y))); ring = new Set([H.ids[x], H.ids[y]]); note = `the unique path ${H.ids[x]}T${H.ids[y]}`; }
           } else if (which.value === '3') {
             if (!A.conn) { cols = A.C; note = 'already disconnected'; }
             else if (!A.acyc) { const ks = [...Array(H.m).keys()].filter((k) => !A.br.has(k)); const k = ks[idx % ks.length]; hiE = eset(H, [k]); note = `T − ${H.ids[H.E[k][0]]}${H.ids[H.E[k][1]]} is still connected`; }
@@ -345,7 +345,7 @@ export default {
             nodeColor: (id) => (f.stuck != null && GG.node(id) && ix(GG).at(id) === f.stuck ? 'red' : null), edgeColor: (e) => (imgE.has(ekey(e.from, e.to)) ? 'accent' : null), edgeWidth: (e) => (imgE.has(ekey(e.from, e.to)) ? 3.4 : 1.4) });
         });
         v.legend([['accent', 'embedded'], ['gold', 'placed now', { dot: true }], ['orange', 'free neighbours of the parent\'s image', { dot: true }]]);
-        v.readout(() => { const HG = ix(GG), d = Math.min(...degrees(HG)), t = TG.nodes.length, f = S.frame; return String.raw`$\delta(G) = ${d} ${d >= t - 1 ? '\ge' : '<'} |T| - 1 = ${t - 1}$${d >= t - 1 ? '' : ' (hypothesis fails)'} · embedded ${f.img ? f.img.size : 0} of ${t}${f.stuck != null ? ' — **stuck**' : f.img && f.img.size === t ? ' — $T\\subseteq G$ ✓' : ''}`; });
+        v.readout(() => { const HG = ix(GG), d = Math.min(...degrees(HG)), t = TG.nodes.length, f = S.frame; return String.raw`$\delta(G) = ${d} ${d >= t - 1 ? '\\ge' : '<'} |T| - 1 = ${t - 1}$${d >= t - 1 ? '' : ' (hypothesis fails)'} · embedded ${f.img ? f.img.size : 0} of ${t}${f.stuck != null ? ' — **stuck**' : f.img && f.img.size === t ? ' — $T\\subseteq G$ ✓' : ''}`; });
       },
     },
     {
@@ -383,17 +383,22 @@ export default {
 
 (ii) If $V(T)=V(G)=:V$ and $S\subseteq V$ is down-closed, then the components of $G-S$ are spanned by the sets $\lfloor x\rfloor$ with $x$ minimal in $V\setminus S$.`,
       idea: String.raw`(i) Follow any $x$–$y$ path $P$ and record the vertices of $T$ on it; consecutive ones are comparable, because each stretch between them is a tree edge or a $T$-path. A shortest such comparable chain from $x$ to $y$ must first go down and then up, so its lowest member lies below both $x$ and $y$: it is in $\lceil x\rceil\cap\lceil y\rceil$. (ii) Each up-closure $\lfloor x\rfloor$ is connected in $T$; for distinct minimal $x,x'$ the set $\lceil x\rceil\cap\lceil x'\rceil\subseteq S$ separates them by (i), so these sets are exactly the components of $G-S$.`,
-      caption: String.raw`$G$ is drawn along a DFS (hence normal) spanning tree. In mode (i), click two incomparable vertices: the gold set $\lceil x\rceil\cap\lceil y\rceil$ is removed and the components of what remains are coloured — $x$ and $y$ always end up apart. In mode (ii), the slider cuts off the down-closed set $S$ of the lowest levels; the components of $G-S$ coincide with the up-closures of the minimal vertices above $S$.`,
+      caption: String.raw`$G$ is drawn along a normal spanning tree $T$ (every other edge of $G$ joins a vertex to one of its ancestors). In mode (i), click two incomparable vertices: the gold set $\lceil x\rceil\cap\lceil y\rceil$ is removed and the components of what remains are coloured — $x$ and $y$ always end up apart. In mode (ii), the slider cuts off the down-closed set $S$ of the lowest levels; the components of $G-S$ coincide with the up-closures of the minimal vertices above $S$.`,
       deps: ['graph-1.5.3a'], refs: ['Diestel §1.5'], tags: ['trees', 'normal trees', 'separation'],
       viz(v) {
         const mode = v.select('', [{ value: '1', label: '(i) separate two vertices' }, { value: '2', label: '(ii) down-closed S' }], '1');
         const hS = v.slider('levels in $S$', 1, 4, 2, { int: true });
         const s = v.stage({ x: [0, 10], y: [0, 7], axes: false, equal: true, height: 360 });
-        const base = NT(), H0 = ix(base), T = spanTree(H0, 0, 'dfs');
+        // a normal spanning tree T (parent pointers) and G = T plus edges between comparable vertices
+        const PAR = { b: 'a', c: 'a', d: 'b', e: 'b', f: 'c', g: 'c', h: 'd', i: 'd', j: 'f', k: 'f', l: 'g' };
+        const base = { nodes: 'abcdefghijkl'.split('').map((id) => ({ id })), edges: [...Object.entries(PAR).map(([c, p]) => [p, c]), ['a', 'd'], ['a', 'f'], ['b', 'h'], ['b', 'i'], ['c', 'j'], ['c', 'l'], ['a', 'k'], ['a', 'e']] };
+        const H0 = ix(base), T = { par: H0.ids.map((id) => (PAR[id] ? H0.at(PAR[id]) : -1)), depth: [], inT: new Uint8Array(H0.m) };
+        H0.ids.forEach((id, u) => { let d = 0; for (let w = u; T.par[w] !== -1; w = T.par[w]) d++; T.depth[u] = d; });
+        H0.E.forEach(([a, b], k) => { if (T.par[a] === b || T.par[b] === a) T.inT[k] = 1; });
         const G = v.graph(s, { nodes: [], edges: [], r: 13 });
         const P = treeLayout(H0, T, 0);
         G.set({ nodes: H0.ids.map((id) => ({ id, x: P.get(K(id))[0], y: P.get(K(id))[1] })), edges: H0.E.map(([a, b], k) => ({ from: H0.ids[a], to: H0.ids[b], bend: T.inT[k] ? 0 : 22 })) }).layout('fit');
-        let pick = ['h', 'l'];
+        let pick = ['i', 'k'];
         G.onClick = ({ node }) => { if (node && mode.value === '1') { pick = [pick[1], node.id]; } return true; };
         const comp = () => {
           const at = (id) => H0.at(id);
@@ -416,7 +421,7 @@ export default {
             edgeColor: (e) => (c.S.has(H0.at(e.from)) || c.S.has(H0.at(e.to)) ? 'faint' : tE.has(e) ? 'green' : 'muted'), edgeWidth: (e) => (tE.has(e) ? 3 : 1.5), edgeDash: (e) => !tE.has(e) });
           if (mode.value === '2') { const yv = G.nodes.find((n) => T.depth[H0.at(n.id)] === hS.value - 1); if (yv) s.hline(yv.y - 0.55, { color: 'gold', dash: [6, 4], width: 1.5 }); }
         });
-        v.legend([['gold', 'the separating set $S$', { dot: true }], ['green', 'normal spanning tree (DFS)'], ['muted', 'other edges of $G$', { dash: true }]]);
+        v.legend([['gold', 'the separating set $S$', { dot: true }], ['green', 'normal spanning tree $T$'], ['muted', 'other edges of $G$', { dash: true }]]);
         v.readout(() => {
           const c = comp(), nm = (S) => [...S].map((u) => H0.ids[u]).join(', ');
           if (mode.value === '1') { if (!c.inc) return `${pick[0]} and ${pick[1]} are comparable — pick two vertices in different branches.`; return String.raw`$\lceil ${pick[0]}\rceil\cap\lceil ${pick[1]}\rceil = \{${nm(c.S)}\}$ · in $G - S$: ${pick[0]} and ${pick[1]} lie in ${c.C.comp[c.x] !== c.C.comp[c.y] ? '**different components** ✓' : 'the same component ✗'}`; }
@@ -502,7 +507,7 @@ export default {
       caption: String.raw`Step through breadth-first search from the root, colouring each vertex by the parity of its distance. At the end, either no edge joins equal colours — a bipartition — or a monochromatic edge (red) appears; together with the two tree paths up to their meeting point it closes an **odd cycle**, highlighted as the certificate. Edit the graph (${EDIT}) or switch presets.`,
       deps: ['graph-1.6.1a', 'graph-1.3.1a', 'graph-1.5.1'], see: ['algo-8.6'], refs: ['Diestel §1.6'], tags: ['bipartite', 'cycles', 'BFS'],
       viz(v) {
-        const PRE = { odd: () => fixed({ a: [1.0, 3.2], b: [2.6, 1.2], c: [2.6, 5.2], d: [4.6, 1.0], e: [4.6, 3.2], f: [4.6, 5.4], g: [6.6, 1.6], h: [6.6, 4.8], i: [8.6, 3.2] }, 'ab ac bd be ce cf dg eg eh fh gi hi dh'),
+        const PRE = { odd: () => fixed({ a: [1.0, 3.2], b: [2.6, 1.2], c: [2.6, 5.2], d: [4.6, 1.0], e: [3.9, 3.2], f: [4.6, 5.4], g: [6.6, 1.6], h: [6.6, 4.8], i: [8.6, 3.2] }, 'ab ac bd be ce cf dg eg eh fh gi hi df'),
           even: () => ({ ...named('cube') }), grid: () => { const Gr = v.graphs('grid', 3, 4); return { nodes: Gr.nodes.map((n) => ({ id: 'abcdefghijkl'[n.id], x: n.x, y: n.y })), edges: Gr.edges.map((e) => ['abcdefghijkl'[e.from], 'abcdefghijkl'[e.to]]), layout: 'fit' }; } };
         const pre = v.select('', [{ value: 'odd', label: 'with an odd cycle' }, { value: 'even', label: 'cube' }, { value: 'grid', label: 'grid' }], 'odd', { onChange: () => load() });
         const s = gstage(v, { height: 330 });
