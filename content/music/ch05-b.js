@@ -140,7 +140,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
         const s3 = v.stage3d({ range: 2.05, height: 360, yaw: 0.5, pitch: 0.32, axes: false, labels: null, weight: 1.2, minWidth: 300, title: 'the pitch helix (drag to rotate)' });
         const kb = v.stage({ x: [LO - 0.5, HI + 0.5], y: [0, 1], height: 360, axes: false, weight: 1, minWidth: 260, title: 'C2 to C7 (click a key)' });
         const pos = (m) => {
-          const c = M.mod(m * order.value, 12) / 12, R = 1.3 * (1 - unw.value), h = ((m - 66) / 12) * 0.62 * (1 - flat.value);
+          const c = M.mod(m * order.value, 12) / 12, R = 1.3 * (1 - unw.value), h = ((m - 66) / 12) * 0.46 * (1 - flat.value);
           return [R * Math.cos(TAU * c - Math.PI / 2), R * Math.sin(TAU * c - Math.PI / 2), h];
         };
         const play = (m) => { sel = m; v.sound().samples(pluck(M.midiToFreq(m), 0.8), SR, { gain: 0.8 }); ph.start(0.8, m); };
@@ -169,8 +169,8 @@ so that notes an octave apart lie directly above one another. Projecting onto th
           for (let oct = 0; oct <= 5; oct++) for (let col = 0; col < 12; col++) {
             const m = LO + 12 * oct + col; if (m > HI) continue;
             const x0 = LO - 0.5 + ((HI - LO + 1) * col) / 12, x1 = LO - 0.5 + ((HI - LO + 1) * (col + 1)) / 12, y0 = oct / 6.05, y1 = (oct + 0.9) / 6.05, black = [1, 3, 6, 8, 10].includes(col);
-            kb.rect(x0 + 0.15, y0, x1 - 0.15, y1, { fill: m === cur ? 'red' : col === pc ? 'accent' : black ? 'ink' : 'panel', fillAlpha: m === cur ? 0.85 : col === pc ? 0.35 : black ? 0.75 : 1, color: 'muted', width: 1, radius: 3 });
-            if (col === 0) kb.text(`C${oct + 2}`, (x0 + x1) / 2, (y0 + y1) / 2, { align: 'center', color: m === cur ? 'panel' : 'ink', size: 10.5 });
+            kb.rect(x0 + 0.15, y0, x1 - 0.15, y1, { fill: m === cur ? 'red' : col === pc ? 'accent' : black ? 'ink' : 'panel', fillAlpha: m === cur ? 0.5 : col === pc ? 0.35 : black ? 0.75 : 1, color: m === cur ? 'red' : 'muted', width: m === cur ? 2.5 : 1, radius: 3 });
+            if (col === 0) kb.text(`C${oct + 2}`, (x0 + x1) / 2, (y0 + y1) / 2, { align: 'center', color: 'ink', size: 10.5, weight: m === cur ? 700 : 400 });
           }
           kb.corner('same chroma = same column', 'tl', { color: 'accent', size: 11, plate: true });
         });

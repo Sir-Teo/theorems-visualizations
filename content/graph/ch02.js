@@ -259,6 +259,7 @@ export default {
         v.render(() => {
           const f = S.frame; if (!f.H) return;
           const showM = f.flip || M;
+          if (f.blos && !f.flip) blobs(v, s, G, f.blos, 'purple', 40, 0.16);
           G.draw({
             nodeFill: (id) => (f.flip ? null : f.outer && f.outer.has(K(id)) ? 'blue' : f.inner && f.inner.has(K(id)) ? 'orange' : null),
             nodeRing: (id) => (K(id) === K(root) ? 'gold' : null),
@@ -266,7 +267,6 @@ export default {
             edgeWidth: (e) => (f.flip ? (showM.has(e) ? 5 : null) : f.path && f.path.has(e) ? 5.5 : e === f.cur ? 4 : M.has(e) ? 5 : f.tree && f.tree.has(e) ? 2.6 : null),
             edgeDash: (e) => !!(!f.flip && f.path && f.path.has(e) && !M.has(e)) || (e === f.cur && !!f.bad),
           });
-          if (f.blos) blobs(v, s, G, f.blos, 'purple', 40, 0.16);
         });
         v.legend([['accent', 'matching $M$'], ['blue', 'outer', { dot: true }], ['orange', 'inner', { dot: true }], ['purple', 'shrunk blossom', { area: true }], ['green', 'alternating tree / augmenting path']]);
         v.readout(() => {
