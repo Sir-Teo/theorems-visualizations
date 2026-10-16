@@ -384,7 +384,7 @@ Leading digits cancel and the result keeps only the noisy trailing digits. For $
 $$q=-\tfrac12\big(b+\operatorname{sgn}(b)\sqrt{b^2-4c}\big),\qquad x_1=q,\qquad x_2=\frac{c}{q},$$
 using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (the discriminant itself must not suffer cancellation, i.e. $b^2\not\approx4c$).`,
       idea: String.raw`Cancellation (1.4) hits only the sum of two numbers of opposite sign. Choose the sign so that the two terms of $q$ have the same sign, so there is no subtraction, then recover the other root from the product $x_1x_2=c$, which is a single division. The algorithm is accurate not because every intermediate is exact but because no step amplifies earlier rounding errors.`,
-      caption: String.raw`Drag $b$ (log scale) with $a=1$. **Top:** relative error of the small root against $b$ on log–log axes: textbook (red) climbs, then collapses to $100\%$, while the stable formula (green) stays at $u$. **Bottom:** both roots digit by digit against the exact roots (computed with 200-bit integers): matching digits are green, wrong ones red. Switch to binary32 to move the cliff to $b\approx10^4$.`,
+      caption: String.raw`Drag $b$ (log scale) with $a=1$. **Top:** relative error of the small root against $b$ on log–log axes: textbook (red) climbs, then collapses to $100\%$, while the stable formula (green) stays at $u$. **Bottom:** both roots digit by digit against the exact roots (computed with 200-bit integers): the correct leading digits (as many as $-\log_{10}$ of the relative error) are green, the rest red. Switch to binary32 to move the cliff to $b\approx10^4$.`,
       deps: ['num-1.4'],
       refs: ['Süli–Mayers ch. 2'],
       tags: ['cancellation', 'algorithms'],
@@ -446,10 +446,10 @@ using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (t
             [['exact', E], ['textbook', dig(a, nd)], ['stable', dig(bb, nd)]].forEach(([lab, D], k) => {
               const yy = y0 + 14 + k * (ch + 5);
               sD.text(lab, left - 10, Y(yy + ch / 2), { align: 'right', baseline: 'middle', size: 11.5, color: lab === 'textbook' ? 'red' : lab === 'stable' ? 'green' : 'ink' });
-              let ok = lab === 'exact' || D.exp === E.exp;
+              const xv = lab === 'textbook' ? a : bb, rel = Math.abs(xv - Math.sign(xv) * Math.abs(ratioNum(exact, two))) / Math.abs(ratioNum(exact, two));
+              const good = lab === 'exact' ? nd : clamp(Math.floor(-Math.log10(Math.max(rel, 1e-300)) + 1e-9), 0, nd);
               for (let i = 0; i < nd; i++) {
-                if (lab !== 'exact' && ok && D.digits[i] !== E.digits[i]) ok = false;
-                const col = lab === 'exact' ? 'accent' : ok ? 'green' : 'red', x0 = left + i * cw;
+                const col = lab === 'exact' ? 'accent' : i < good ? 'green' : 'red', x0 = left + i * cw;
                 sD.rect(x0, Y(yy + ch), x0 + cw - 1.5, Y(yy), { fill: col, fillAlpha: 0.25, color: col, width: 1, radius: 3 });
                 sD.text(D.digits[i], x0 + (cw - 1.5) / 2, Y(yy + ch / 2), { align: 'center', baseline: 'middle', size: cw > 14 ? 12 : 10, weight: 600, color: 'ink', halo: false });
               }

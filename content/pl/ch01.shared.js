@@ -140,7 +140,7 @@ export const isCongruence = (r) => ['E-If', 'E-Succ', 'E-Pred', 'E-Iszero', 'E-F
 /** All one-step successors of t under the rule set R (array of names). Each: {rule (root rule), axiom (innermost rule), to, redex (node), deriv}. */
 export function stepsOf(t, R = BASE_RULES) {
   const has = (r) => R.includes(r), res = [];
-  const mkRes = (rule, to, redex, axiomOf, kidRes) => ({ rule, axiom: axiomOf ? axiomOf.axiom : rule, to, redex, deriv: { c: `${str(t)} → ${str(to)}`, rule, kids: kidRes ? [kidRes.deriv] : [] } });
+  const mkRes = (rule, to, redex, axiomOf, kidRes) => { let d = null; return { rule, axiom: axiomOf ? axiomOf.axiom : rule, to, redex, get deriv() { return d || (d = { c: `${str(t)} → ${str(to)}`, rule, kids: kidRes ? [kidRes.deriv] : [] }); } }; };
   const cong = (rule, child, build) => { if (has(rule)) for (const s of stepsOf(child, R)) res.push(mkRes(rule, build(s.to), s.redex, s, s)); };
   switch (t.op) {
     case 'if':

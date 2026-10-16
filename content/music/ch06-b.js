@@ -86,7 +86,7 @@ export default {
       name: 'Dissonance of three-note chords',
       statement: String.raw`The sensory dissonance of a chord is the sum of the Plomp–Levelt dissonances of all pairs of partials of all its notes. For a three-note chord with intervals $x$ (lower to middle) and $y$ (middle to upper) it is a function $D(x,y)$ on the plane, the sum of the three two-note curves $D_2(x)$, $D_2(y)$ and $D_2(x+y)$ (6.4) plus the intrinsic dissonance of each tone. For harmonic tones the smoothest three-note chords are those built only from octaves, fifths and fourths (C–G–C′). Among chords containing thirds, the **major** and **minor triads** in just intonation ($x,y$ = 5/4 and 6/5, in either order) and their inversions sit in sharp local valleys, the major and minor triads almost equally deep, while the diminished and augmented triads lie far higher; the equal-tempered triads sit on the valley walls, a dozen cents from the bottoms.`,
       idea: String.raw`A triad's three intervals are all consonant at once only when each of $x$, $y$ and $x+y$ falls in a dip of the two-note curve. With $x+y$ a fifth (3/2), the choices $x=5/4$, $y=6/5$ and the reverse put all three intervals on minima: those are the major and minor triads, and their dissonance comes out nearly equal in this model; diminished and augmented triads place $x+y$ on a tritone or minor sixth instead. Changing the timbre changes $D_2$ and so moves the valleys: with stretched partials the triad valleys follow the stretched scale (6.5), and with a bar's inharmonic spectrum the familiar triads are no longer special.`,
-      caption: String.raw`A map of the total dissonance of three-note chords on C4: horizontally the lower interval, vertically the upper one, with contours; light means smooth. Named chords are marked at their equal-tempered positions (just triads as rings). Drag the gold point to choose a chord and hear it; switch the timbre to stretched partials or to a free bar's partials and watch the valleys move away from the triads.`,
+      caption: String.raw`A map of the total dissonance of three-note chords on C4: horizontally the lower interval, vertically the upper one, with contours; the stronger the colour, the rougher the chord, and smooth chords fade into the background. Named chords are marked at their equal-tempered positions (just triads as rings). Drag the gold point to choose a chord and hear it; switch the timbre to stretched partials or to a free bar's partials and watch the valleys move away from the triads.`,
       deps: ['music-6.4'],
       see: ['music-9.1', 'music-6.5', 'music-7.16'],
       refs: ['Sethares ch. 6'],
@@ -129,7 +129,7 @@ export default {
           for (const [x, y] of JT) s.dot(x, y, { r: 6, color: 'green', hollow: true });
           s.dot(h.x, h.y, { r: 9, color: 'gold', hollow: true });
         });
-        v.legend([['accent', 'more dissonant (darker)', { area: true }], ['green', 'local minima of the map; rings: just major and minor triads'], ['gold', 'your chord']]);
+        v.legend([['accent', 'stronger colour = more dissonant', { area: true }], ['green', 'local minima of the map; rings: just major and minor triads'], ['gold', 'your chord']]);
         v.readout(() => {
           const g = build(), S = specOf(tim.value), E = (x, y) => chordD(S, x, y), d = E(h.x, h.y), nm = NAMED.reduce((b, c) => (Math.hypot(c[1] - h.x, c[2] - h.y) < Math.hypot(b[1] - h.x, b[2] - h.y) ? c : b));
           const rank = (val) => (val - g.lo) / (g.hi - g.lo);

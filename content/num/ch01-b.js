@@ -356,7 +356,7 @@ It is the factor by which a relative error in the input is magnified in the outp
           sB.text(`${f}-bit register ends here`, left + f * cw - 6, Y(112), { size: 11, color: 'ink', align: 'right' });
           sB.text('bits beyond: lost', left + f * cw + 6, Y(112), { size: 11, color: 'red', align: 'left' });
           sB.text('stored value', left, Y(138), { size: 12, color: 'ink', weight: 600 });
-          if (rep.value === 'int') sB.text('time is kept as an integer count of tenths:\nno conversion, no error', left, Y(190), { size: 13, color: 'green' });
+          if (rep.value === 'int') { sB.text('time is kept as an integer count of tenths:', left, Y(170), { size: 13, color: 'green' }); sB.text('no conversion, no error', left, Y(192), { size: 13, color: 'green' }); }
           else {
             const lastBit = rep.value === 'near' ? Number((pt.c & 1n)) : bit(f);
             for (let j = 1; j <= nb; j++) {
@@ -368,11 +368,11 @@ It is the factor by which a relative error in the input is magnified in the outp
             sB.text(`error per tick  0.1 − stored = ${sci(pt.e, 3)} s`, left, Y(210), { size: 12.5, color: 'ink' });
           }
           sB.text(`${(TPH).toLocaleString('en-US')} ticks per hour`, left, Y(h - 30), { size: 11, color: 'muted' });
-          sB.text(`${(pt.e * TPH).toExponential(2)} s of drift per hour of uptime`, left, Y(h - 12), { size: 11, color: 'muted' });
+          sB.text(`${pt.e ? (pt.e * TPH).toExponential(2) : '0'} s of drift per hour of uptime`, left, Y(h - 12), { size: 11, color: 'muted' });
         });
         v.readout(() => {
           const pt = perTick(), hrs = sh.value, e = errAt(hrs), dist = e * sv.value;
-          return `After **${hrs} h** (${(hrs * TPH).toLocaleString('en-US')} ticks${sr.value ? `, ${hrs % sr.value} h since the last reboot` : ''}): clock error **${e.toFixed(4)} s**, so a target at ${sv.value} m/s is mislocated by **${dist.toFixed(0)} m**.\nPer tick the stored 0.1 is off by ${sci(pt.e, 3)} s (the Patriot's 24-bit register: $9.5\\times10^{-8}$ s). The error is one-sided, so it grows linearly with the tick count${rep.value === 'near' ? ' (rounding to nearest shrinks it here but the bias remains)' : ''}.`;
+          return `After **${hrs} h** (${(hrs * TPH).toLocaleString('en-US')} ticks${sr.value ? `, ${hrs % sr.value} h since the last reboot` : ''}): clock error **${e.toFixed(4)} s**, so a target at ${sv.value} m/s is mislocated by **${dist.toFixed(0)} m**.\nPer tick the stored 0.1 is off by ${sci(pt.e, 3)} s (the Patriot's 24-bit register: $9.5\\times10^{-8}$ s). ${rep.value === 'int' ? 'Nothing is converted, so nothing drifts.' : `The error is one-sided, so it grows linearly with the tick count${rep.value === 'near' ? ' (rounding to nearest shrinks it here but the bias remains)' : ''}.`}`;
         });
       },
     },
