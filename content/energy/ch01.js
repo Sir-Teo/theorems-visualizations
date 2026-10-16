@@ -2,18 +2,17 @@
 //
 // Sources (all checked October 2026; shared data and its provenance are described at the top of ch01.shared.js):
 //   1.1 Unit definitions: kWh = 3.6 MJ and the thermochemical calorie 4.184 J are exact; Btu(IT) = 1055.05585262 J; 1 toe =
-//     41.868 GJ (10 Gcal; Energy Institute / IEA convention); 1 boe = 5.8 million Btu (a convention; EIA's crude oil average is
-//     about 5.7); 1 quad = 10^15 Btu. EIA "British thermal units (Btu)" page: 1 kWh = 3,412 Btu, 1 gallon motor gasoline =
+//     41.868 GJ (10 Gcal; Energy Institute / IEA convention); 1 boe = 5.8 million Btu (a convention; Wikipedia quotes EIA as about 5.7 and many industry sources 5.8, so treat as approximate); 1 quad = 10^15 Btu. EIA "British thermal units (Btu)" page: 1 kWh = 3,412 Btu, 1 gallon motor gasoline =
 //     120,214 Btu (higher heating value). Solar constant 1361 W/m² (Kopp & Lean 2011) × Earth's cross-section π(6371 km)².
 //     Power station ratings: Three Gorges 22.5 GW (32 × 700 MW + 2 × 50 MW); Hoover Dam 2.08 GW; EIA/Sargent & Lundy "Capital
 //     Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies" (Dec 2023):
 //     2 × AP1000 = 2,156 MW net, onshore wind reference turbine 2.8 MW. Country and world primary power: OWID energy data
-//     (Energy Institute 2025, substitution method) ÷ 8766 h/yr. Hiroshima: 15 kt TNT ≈ 6.3×10¹³ J (conventional yield estimate).
+//     (OWID, substitution-method series that follows the Energy Institute Statistical Review methodology up to its 2024 edition; the Review's own 2025 headline totals use a different, physical-energy-content basis and are lower) ÷ 8766 h/yr. Hiroshima: 15 kt TNT ≈ 6.3×10¹³ J (conventional yield estimate; published estimates differ by a few kt, e.g. 13 kt at Atomic Archive).
 //     EV battery 45 kWh: ICCT 2021 (lower-medium segment, Table 2.4). American's 2022 primary energy: 77,628 kWh (OWID/EI).
 //   1.2 LLNL energy flow chart, United States 2024 (July 2026; DOE/EIA SEDS 2026), all link values read from the chart: total
 //     94.6 quads, rejected energy 62.27, energy services 32.34; end-use efficiencies 65% residential, 65% commercial, 49%
 //     industrial, 21% transportation; non-combustible renewables counted at 3,412 Btu/kWh (captured-energy method). World mix:
-//     OWID energy data (Energy Institute Statistical Review 2025), substitution method, 1965–2024.
+//     OWID energy data (Energy Institute Statistical Review data, substitution-method series; not the Review's own post-2024 physical-content totals), 1965–2024.
 //   1.3 Median spatial power densities: J. K. Nøland, J. Auxepaules, A. Rousset, B. Perney, G. Falletti, "Spatial energy
 //     density of large-scale electricity generation from power sources worldwide", Scientific Reports 12: 21280 (2022),
 //     doi:10.1038/s41598-022-25341-9, Tables of median W/m² (nuclear incl. safety area 587; natural gas incl. pipelines and
@@ -24,8 +23,8 @@
 //     gas combined cycle 58.4%, hydro 35.3% (2024: 90.8, 34.3, 23.2, 42.6, 60.5, 34.6).
 //   1.5 EROI: Brockway, Owen, Brand-Correa & Hardt, Nature Energy 4: 612–621 (2019), Table 1 (published estimates, primary
 //     versus final stage) and their global results (fossil primary-stage EROI 37 → 29 and final-stage ≈ 6.8 → 6 over 1995–2011;
-//     electricity from fossil fuels ≈ 3); net EROI = gross − 1 (their eq. 1); the net-energy cliff below about 5:1 after
-//     Hall, Balogh & Murphy, Energies 2: 25–47 (2009) and Lambert et al. (2013, UK DFID report).
+//     electricity from fossil fuels ≈ 3); net EROI = gross − 1 (their eq. 1); the net-energy cliff below about 5:1: Brockway et al. attribute the concept to Lambert et al. (2013, UK DFID report) and
+//     adapt their Figure 6 from Mearns (2008); the related question of a minimum society-wide EROI is Hall, Balogh & Murphy, Energies 2: 25–47 (2009).
 //   1.6 Costs: EIA/Sargent & Lundy overnight capital costs (2023 $/kW), fixed and variable O&M, heat rates (Table 1-2, Dec 2023);
 //     EIA Electric Power Monthly capacity factors (tables 6.07.A/B, 2025) and fuel costs (table 4.2: coal delivered to
 //     electric utilities $2.49/MMBtu in 2025). Natural gas $3.5/MMBtu and nuclear fuel $0.5/MMBtu are ILLUSTRATIVE inputs.
@@ -56,7 +55,7 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
       deps: ['mech-3.1'],
       refs: ['MacKay ch. 2', 'Tester ch. 1'],
       tags: ['units', 'scale'],
-      scope: String.raw`The kWh, kcal and Btu values are exact definitions; toe and boe are conventions (heating values of real oil vary by a few per cent), and "primary energy" totals depend on the accounting method (the world totals plotted here use the substitution method).`,
+      scope: String.raw`The kWh, kcal and Btu values are exact definitions; toe and boe are conventions (heating values of real oil vary by a few per cent), and "primary energy" totals depend on the accounting method (the world totals plotted here use the substitution method, as OWID does; the Energy Institute's own 2025 headline total uses a physical-energy-content basis and is lower).`,
       viz(v) {
         const find = (T, id) => T.find((u) => u.id === id);
         const qty = v.select('quantity', [{ value: 'E', label: 'energy' }, { value: 'P', label: 'power' }], 'E', { onChange: (q) => { eu.el.hidden = q === 'P'; pu.el.hidden = q === 'E'; amt.set(q === 'E' ? '1' : '100'); (q === 'E' ? eu : pu).set(q === 'E' ? 'kWh' : 'kWh/d'); fix(); } });
@@ -85,12 +84,12 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
           [6.12e9, '1 barrel of oil equivalent', 'accent', '5.8 million Btu (convention)'],
           [1.62e8, 'EV battery, 45 kWh', 'teal', 'ICCT 2021 lower-medium car, Table 2.4'],
           [4.1868e10, '1 toe', 'accent', 'IEA/EI convention, 10 Gcal'],
-          [2.795e11, 'an American, one year', 'orange', '77,628 kWh of primary energy per person in 2022 (OWID/EI, substitution method)'],
-          [6.28e13, 'Hiroshima bomb (15 kt)', 'teal', '15,000 t × 4.184 GJ/t (conventional yield estimate)'],
+          [2.795e11, 'an American, one year', 'orange', '77,628 kWh of primary energy per person in 2022 (OWID, from Energy Institute data, substitution method)'],
+          [6.28e13, 'Hiroshima bomb (≈15 kt)', 'teal', '15,000 t × 4.184 GJ/t (conventional estimate; others are a few kt lower or higher)'],
           [1.055e18, '1 quad', 'accent', '10¹⁵ Btu'],
           [9.98e19, 'USA 2024: 94.6 quad', 'orange', 'LLNL flow chart, 2024'],
           [6.25e20, 'one hour of sunlight on Earth', 'gold', '1361 W/m² × π R⊕² × 3600 s'],
-          [6.36e20, 'world primary energy, 1 year', 'orange', '176,737 TWh in 2024 (OWID/EI, substitution method)'],
+          [6.36e20, 'world primary energy, 1 year', 'orange', '176,737 TWh in 2024 (OWID, substitution method; the Energy Institute 2025 headline basis gives a lower total)'],
         ];
         const P = [
           [10, 'LED bulb, 10 W', 'teal', 'typical'],
@@ -369,8 +368,8 @@ Of each unit of energy delivered, the fraction $1/\text{EROI}$ is spent on getti
       deps: ['energy-1.1'],
       refs: ['Tester ch. 6'],
       tags: ['EROI', 'net energy'],
-      credit: 'Hall, Balogh & Murphy, 2009; Brockway et al., 2019',
-      scope: String.raw`EROI is a sensitive function of method and system boundary; ranges in the chart are published estimates, not measurements, and many studies do not say which boundary they use. The net energy cliff is a statement about arithmetic, not a prediction of society's breakdown point: the minimum EROI a society needs is itself debated (Hall et al. 2009; Fizaine & Court 2016).`,
+      credit: 'Lambert et al., 2013 (net energy cliff); Hall, Balogh & Murphy, 2009 (minimum EROI); Brockway et al., 2019',
+      scope: String.raw`EROI is a sensitive function of method and system boundary; ranges in the chart are published estimates, not measurements, and many studies do not say which boundary they use. The net energy cliff is a statement about arithmetic, not a prediction of society's breakdown point: the minimum EROI a society needs is itself debated (Hall, Balogh & Murphy 2009; Fizaine & Court 2016).`,
       viz(v) {
         // [label, lo, hi, stage, source]
         const R = [
