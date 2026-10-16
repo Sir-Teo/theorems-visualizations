@@ -223,7 +223,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         const mode = v.select('arm', [{ value: '2', label: '2R' }, { value: '3', label: '3R' }], '2');
         const l1 = v.slider('$\\ell_1$', 0.4, 1.2, 1.2, { step: 0.01 }), l2 = v.slider('$\\ell_2$', 0.4, 1.2, 0.9, { step: 0.01 }), l3 = v.slider('$\\ell_3$', 0.4, 1.2, 0.7, { step: 0.01 });
         const loci = v.toggle('show the tip paths of single joints', true);
-        const S = v.stage({ x: [-3.7, 3.7], y: [-3.3, 3.3], equal: true, axes: false, height: 440, title: 'a planar arm' });
+        const S = v.stage({ x: [-3.7, 3.7], y: [-3.3, 3.3], equal: true, axes: false, height: 400, title: 'a planar arm' });
         let th = [0.8, 0.9, -0.7];
         const Ls = () => [l1.value, l2.value, l3.value];
         const ends = (n) => { const L = Ls(), pts = [[0, 0]]; let a = 0, x = 0, y = 0; for (let i = 0; i < n; i++) { a += th[i]; x += L[i] * Math.cos(a); y += L[i] * Math.sin(a); pts.push([x, y]); } return pts; };
