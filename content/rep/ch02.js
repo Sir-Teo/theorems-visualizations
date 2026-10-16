@@ -88,6 +88,142 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
         });
       },
     },
+    // ------------------------------------------------------------------ 2.2
+    {
+      num: '2.2',
+      kind: 'Theorem',
+      name: 'Maschke’s theorem',
+      statement: String.raw`Let $G$ be a finite group and $V$ a finite-dimensional representation of $G$ over a field $k$ whose characteristic does not divide $|G|$ (for instance $\mathbb R$ or $\mathbb C$). If $W\subseteq V$ is an invariant subspace, then there is an invariant subspace $U$ with $V=W\oplus U$. Consequently every such representation is a direct sum of irreducible ones (**complete reducibility**).`,
+      idea: String.raw`Pick any complement $U_0$ and let $\pi_0$ be the projection onto $W$ along $U_0$ — it need not commute with the group. Average it: $\pi=\frac1{|G|}\sum_g\rho(g)\,\pi_0\,\rho(g)^{-1}$, which needs $|G|$ to be invertible in $k$. Since $W$ is invariant, $\pi$ still maps $V$ onto $W$ and is the identity on $W$, so $\pi$ is a projection; the reindexing $g\mapsto gh$ of 2.1 shows $\pi\rho(h)=\rho(h)\pi$, so $\ker\pi$ is invariant. Induct on the dimension to split into irreducibles.`,
+      caption: String.raw`$S_3$ permutes the coordinates of $\mathbb R^3$, but the basis is skewed, so the matrices are not orthogonal. Choose the invariant subspace $W$ (the line of constants, or the plane of sum zero) and drag the red handle to pick any complement $U_0$; the leak readout measures how far $U_0$ is moved out of itself by the six matrices. The naive Euclidean complement (the starting position) is not invariant. With "average" on, the green complement $\ker\pi$ is computed from the averaged projection; its leak is exactly $0$ wherever you put $U_0$.`,
+      deps: ['rep-2.1', 'rep-1.5'],
+      refs: ['Serre §1.4', 'Fulton–Harris §1.2'],
+      tags: ['complete reducibility', 'projection', 'averaging'],
+      credit: 'Maschke, 1899 (finite groups of matrices over $\\mathbb C$); the modular case $p\\nmid|G|$ is due to Dickson (1902) and Maschke',
+      viz(v) {
+        const G = dihedral(3), Pm = [[1, 0.5, 0.2], [0, 1, 0.4], [0.3, 0, 1]], Pi = inv(Pm);
+        const mats = G.perms.map((p) => mm(Pm, mm(permMat(p), Pi)));
+        const w = mv(Pm, [1, 1, 1]), m = mv(tp(Pi), [1, 1, 1]); // W-line direction, W-plane normal
+        const nrm = (a) => vsc(a, 1 / len(a));
+        const wsel = v.select('invariant subspace $W$', [{ value: 'line', label: 'line of constants' }, { value: 'plane', label: 'plane of sum 0' }], 'line', { onChange: () => reset() });
+        const avg = v.toggle('average (Maschke)', true);
+        const S = v.stage({ x: [-2.1, 2.1], y: [-1.8, 1.9], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.4, axis: 1.6, lim: 1.5, labels: ['x', 'y', 'z'] });
+        const h = sc.handle(vsc(nrm(w), 1.1), { color: 'red', r: 8, label: 'h' });
+        const reset = () => h.set(vsc(nrm(wsel.value === 'line' ? w : m), 1.1));
+        const basisOf = (rows) => v.M.nullspace(rows, 1e-9); // orthonormal basis of {x : rows·x = 0}
+        const dist = (y, Q) => len(vsub(y, Q.reduce((s, q) => vadd(s, vsc(q, dot(q, y))), [0, 0, 0])));
+        const calc = () => {
+          const line = wsel.value === 'line', d = h.p;
+          let pi0;
+          if (line) { const c = dot(d, w); if (Math.abs(c) < 0.05) return null; pi0 = w.map((wi) => d.map((di) => (wi * di) / c)); }
+          else { const c = dot(m, d); if (Math.abs(c) < 0.05) return null; pi0 = eye(3).map((r, i) => r.map((x, j) => x - (d[i] * m[j]) / c)); }
+          let pi = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+          G.perms.forEach((_, g) => { pi = madd(pi, mm(mats[g], mm(pi0, mats[G.inv[g]]))); });
+          pi = msc(pi, 1 / G.n);
+          const K0 = line ? basisOf([d]) : [nrm(d)], K = basisOf(pi);
+          const Wb = line ? [nrm(w)] : basisOf([m]);
+          const leak = (Q) => Math.max(...mats.flatMap((A) => Q.map((q) => dist(mv(A, q), Q))));
+          let comm = 0; mats.forEach((A) => { comm = Math.max(comm, fro(msub(mm(pi, A), mm(A, pi)))); });
+          return { line, d, pi, K0, K, Wb, l0: leak(K0), l1: leak(K), comm, idem: fro(msub(mm(pi, pi), pi)) };
+        };
+        const draw = (Q, col, fa, r) => {
+          if (Q.length === 1) sc.line(vsc(Q[0], -r), vsc(Q[0], r), { color: col, width: 3.2 }, 6);
+          else sc.disc(Q[0], Q[1], r, { fill: col, fillAlpha: fa, color: col, width: 1.6, grid: true });
+        };
+        v.render(() => {
+          const c = calc();
+          sc.begin();
+          if (c) {
+            draw(c.Wb, 'accent', 0.12, 1.45);
+            draw(c.K0, 'red', 0.09, 1.3);
+            if (avg.value) draw(c.K, 'green', 0.16, 1.2);
+            sc.arrow([0, 0, 0], c.d, { color: 'red', width: 1.8, dash: true });
+          } else sc.tex('\\text{choose } h \\text{ so that the splitting is transverse}', [0, 0, 0], { color: 'red' });
+          sc.flush();
+        });
+        v.legend([['accent', '$W$ (invariant)'], ['red', '$U_0$: your complement'], ['green', '$U=\\ker\\pi$ (averaged)']]);
+        v.readout(() => {
+          const c = calc();
+          if (!c) return 'The handle must not lie in $W$ (or its normal plane): then $U_0$ would not be a complement.';
+          const f = (x) => (x < 1e-9 ? '0' : nm(x, 3));
+          const dimU = c.line ? 2 : 1;
+          return `$\\dim V=3=\\dim W+\\dim U$ with $\\dim U_0=${dimU}$. Leak of $U_0$ (largest distance of $\\rho(g)u$ from $U_0$, $|u|=1$): $${f(c.l0)}$ ${c.l0 < 1e-9 ? '— invariant by luck' : '— **not invariant**'}.\n${avg.value ? `Averaged $\\pi$: $\\|\\pi^2-\\pi\\|=${f(c.idem)}$, $\\max_g\\|\\pi\\rho(g)-\\rho(g)\\pi\\|=${f(c.comm)}$, leak of $U=\\ker\\pi$: $${f(c.l1)}$ — $V=W\\oplus U$ as representations.` : 'Switch on the average to compute $\\pi=\\frac1{|G|}\\sum\\rho(g)\\pi_0\\rho(g)^{-1}$.'}${c.line && avg.value ? ' The plane $U$ has no invariant line, so it is irreducible (1.6).' : ''}`;
+        });
+      },
+    },
+
+    // ------------------------------------------------------------------ 2.3
+    {
+      num: '2.3',
+      kind: 'Proposition',
+      name: 'Maschke fails in characteristic p',
+      statement: String.raw`Let $p$ be a prime and let $G=\mathbb Z/p$ act on $\mathbb F_p^{\,2}$ through the generator $\begin{pmatrix}1&1\\0&1\end{pmatrix}$ (a shear of order $p$). The line $W=\mathbb F_p e_1$ is invariant, but it has no invariant complement: of the $p+1$ lines through the origin it is the only one fixed by the generator. So the representation is reducible without being a direct sum of irreducibles, and Maschke's theorem fails when the characteristic divides $|G|$.`,
+      idea: String.raw`The generator sends $(a,b)$ to $(a+b,b)$, so it fixes a line $\mathbb F_p(a,b)$ only when $b=0$. Therefore the other $p$ lines are permuted by it in one cycle, and none can serve as complement. The proof of 2.2 breaks at one point: averaging $\rho(g)\pi_0\rho(g)^{-1}$ over the $p$ elements gives $p\cdot\pi$ and one cannot divide by $|G|=p=0$. Computing the sum literally produces a nilpotent matrix, not a projection.`,
+      caption: String.raw`Pick the prime $p$ (the group is $\mathbb Z/p$) and step the "line" slider through the $p+1$ lines of $\mathbb F_p^2$; each line's points have their own colour. In the left grid the selected line (ring) and its image under the shear (square) coincide only for the $x$-axis. On the right the lines are nodes and the generator's action is the arrow: one loop and one $p$-cycle. The readout computes $\sum_g\rho(g)\pi_0\rho(g)^{-1}$ modulo $p$ for the projection along your line.`,
+      deps: ['rep-2.2'],
+      refs: ['Fulton–Harris §1.2'],
+      tags: ['characteristic p', 'modular representation'],
+      scope: String.raw`Characteristic $p$ dividing $|G|$ (here $|G|=p$). Maschke's theorem still holds in characteristic $p$ for groups whose order is prime to $p$.`,
+      viz(v) {
+        const ps = v.select('prime $p$', [2, 3, 5, 7].map((p) => ({ value: p, label: String(p) })), 5, { onChange: () => {} });
+        const ls = v.slider('line number', 0, 7, 1, { step: 1, int: true });
+        const A = v.stage({ x: [-0.8, 7.0], y: [-0.8, 7.0], equal: true, axes: false, height: 400, weight: 1, title: '$\\mathbb F_p^{\\,2}$: points $(a,b)$, coloured by line' });
+        const B = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 400, weight: 1, title: 'the $p+1$ lines and the shear' });
+        const mod = (a, p) => ((a % p) + p) % p;
+        const invp = (a, p) => { for (let k = 1; k < p; k++) if ((a * k) % p === 1) return k; return 0; };
+        // line l < p: direction (1,l); l = p: direction (0,1)
+        const lineOf = (a, b, p) => (a === 0 ? p : mod(b * invp(a, p), p));
+        const shear = (a, b, p) => [mod(a + b, p), b];
+        const dir = (l, p) => (l === p ? [0, 1] : [1, l]);
+        v.render(() => {
+          const p = ps.value, l = ls.value % (p + 1), gl = lineOf(...shear(...dir(l, p), p), p);
+          const col = (k) => (k === 0 ? 'green' : EC[(k + 1) % 8 === 2 ? 3 : (k + 1) % 8]);
+          const lc = (k) => ['green', 'blue', 'orange', 'purple', 'red', 'teal', 'gold', 'pink'][k % 8];
+          for (let a = 0; a < p; a++) for (let b = 0; b < p; b++) {
+            if (!a && !b) { A.dot(0, 0, { r: 5, color: 'ink' }); continue; }
+            const k = lineOf(a, b, p), on = k === l, im = k === gl;
+            A.dot(a, b, { r: on || im ? 7 : 5, color: lc(k), fill: lc(k) });
+          }
+          // draw selected line and its image
+          const [da, db] = dir(l, p), [ga, gb] = shear(da, db, p);
+          for (let c = 1; c < p; c++) {
+            const x = (da * c) % p, y = (db * c) % p, X = (ga * c) % p, Y = (gb * c) % p;
+            A.dot(x, y, { r: 11, hollow: true, color: 'ink', width: 2 });
+            A.rect(X - 0.17, Y - 0.17, X + 0.17, Y + 0.17, { color: 'ink', width: 1.6, fill: false });
+            A.arrow(x, y, X + (x === X && y === Y ? 0 : 0), Y, { color: 'faint', width: 1, head: 5 });
+          }
+          A.corner(l === gl ? 'the line is mapped to itself' : 'the line is moved to another line', 'tl', { plate: true });
+          // right: the p+1 lines on a circle
+          const pos = (k) => { const t = Math.PI / 2 - (TAU * k) / (p + 1); return [1.15 * Math.cos(t), 1.15 * Math.sin(t)]; };
+          for (let k = 0; k <= p; k++) {
+            const [x, y] = pos(k), tk = lineOf(...shear(...dir(k, p), p), p), [x2, y2] = pos(tk);
+            if (tk === k) { B.circle(x * 1.2, y * 1.2, 0.17, { color: 'green', width: 2 }); }
+            else { const d = [x2 - x, y2 - y], L = Math.hypot(...d); B.arrow(x + (d[0] / L) * 0.2, y + (d[1] / L) * 0.2, x2 - (d[0] / L) * 0.2, y2 - (d[1] / L) * 0.2, { color: k === l ? 'ink' : 'faint', width: k === l ? 2.4 : 1.4, head: 7 }); }
+          }
+          for (let k = 0; k <= p; k++) { const [x, y] = pos(k); B.dot(x, y, { r: k === l ? 15 : 12, color: lc(k), fill: lc(k) }); B.text(k === 0 ? 'x' : k === p ? 'y' : String(k), x, y, { align: 'center', baseline: 'middle', size: 11, weight: 700, color: 'panel' }); }
+          B.text(`lines: $x$-axis (0), $y(1,\\ell)$ ...`, 0, 0, { color: 'panel', size: 1 });
+        });
+        v.readout(() => {
+          const p = ps.value, l = ls.value % (p + 1);
+          let fixed = 0; for (let k = 0; k <= p; k++) if (lineOf(...shear(...dir(k, p), p), p) === k) fixed++;
+          // projection onto the x-axis along line l (l != 0): pi0 = [[1, -1/l],[0,0]]
+          let sum = [[0, 0], [0, 0]], pi0 = null;
+          if (l !== 0) {
+            const t = l === p ? 0 : mod(-invp(l, p), p); // along (1,l): (a,b) -> (a - b/l, 0); along (0,1): (a,b) -> (a, 0)
+            pi0 = [[1, t], [0, 0]];
+            for (let k = 0; k < p; k++) {
+              const g = [[1, k], [0, 1]], gi = [[1, mod(-k, p)], [0, 1]];
+              const T = mm(g, mm(pi0, gi)); sum = sum.map((r, i) => r.map((x, j) => x + T[i][j]));
+            }
+            sum = sum.map((r) => r.map((x) => mod(x, p)));
+          }
+          const msum = (A) => `\\begin{pmatrix}${A[0][0]}&${A[0][1]}\\\\${A[1][0]}&${A[1][1]}\\end{pmatrix}`;
+          const sq = pi0 ? mm(sum, sum).map((r) => r.map((x) => mod(x, p))) : null;
+          return `Invariant lines of the shear: **${fixed}** of the ${p + 1} (only the $x$-axis). A complement of $W=x$-axis would have to be a different invariant line, so none exists: $\\mathbb F_p^2$ is not $W\\oplus U$.\n${pi0 ? `Projection along line ${l === p ? '$y$' : l} (mod $${p}$): $\\pi_0=${msum(pi0)}$; the group sum $\\sum_g\\rho(g)\\pi_0\\rho(g)^{-1}=${msum(sum)}$ ${sum[0][0] === 0 ? '$=p\\cdot\\pi$ has a zero diagonal — dividing by $|G|=p\\equiv0$ is impossible, and the sum is not a projection onto $W$' : ''}.` : 'Select a line other than the $x$-axis to see the failed averaging.'}`;
+        });
+      },
+    },
 // @@NEXT@@
   ],
 };

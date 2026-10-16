@@ -61,7 +61,7 @@ function planarize(pos, edges, s = 0.12) {
 }
 const DRAWINGS = (() => {
   const reg = (n, R = 1, a0 = 90) => Array.from({ length: n }, (_, i) => [R * Math.cos(((a0 - (360 * i) / n) * Math.PI) / 180), R * Math.sin(((a0 - (360 * i) / n) * Math.PI) / 180)]);
-  const k4 = { name: 'K₄ (not 3-colourable)', pos: [[-1, 1], [1, 1], [1, -1], [-1, -1]].map((p) => [p[0] * 0.8, p[1] * 0.8]), edges: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 2], [1, 3]] };
+  const k4 = { s: 0.3, name: 'K₄ (not 3-colourable)', pos: [[-1, 1], [1, 1], [1, -1], [-1, -1]].map((p) => [p[0] * 0.8, p[1] * 0.8]), edges: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 2], [1, 3]] };
   const k5 = { name: 'K₅ (not 3-colourable)', pos: reg(5, 1), edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 2], [2, 4], [4, 1], [1, 3], [3, 0]] };
   const pet = { name: 'Petersen graph', pos: [...reg(5, 1), ...reg(5, 0.5)], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 5], [1, 6], [2, 7], [3, 8], [4, 9], [5, 7], [7, 9], [9, 6], [6, 8], [8, 5]] };
   return [k4, k5, pet];
@@ -348,7 +348,7 @@ export default {
         const cacheR = {};
         const reduction = (gi) => {
           if (cacheR[gi]) return cacheR[gi];
-          const D = DRAWINGS[gi], P = planarize(D.pos, D.edges);
+          const D = DRAWINGS[gi], P = planarize(D.pos, D.edges, D.s || 0.12);
           const c0 = threeColour(D.pos.length, D.edges, { limit: 2e5 });
           const c1 = threeColour(P.pos.length, P.edges, { limit: 2e5 });
           let crossings = 0; // segment crossings in the planarised drawing
