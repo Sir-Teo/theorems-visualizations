@@ -139,7 +139,7 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
           if (Math.abs(P - Pn) > 1e-9) { const t = G.x / Pn; Pn = P; G.set(t * P, (1 - t) * P); }
           const F1 = G.x, F2 = P - G.x;
           // force plane
-          Pl.setView([-0.2 * P, 1.1 * P], [-0.2 * P, 1.1 * P]);
+          Pl.setView([-0.2 * P, 1.1 * P], [-0.2 * P, 1.1 * P]); Pl.setLabels(mode.value === 'par' ? 'F₁ (kN)' : 'R_A (kN)', mode.value === 'par' ? 'F₂ (kN)' : 'R_B (kN)');
           Pl.line(-0.2 * P, 1.2 * P, 1.2 * P, -0.2 * P, { color: 'red', width: 2.4 });
           const slope = f1 / f2; Pl.line(0, 0, 1.1 * P / Math.max(1, slope), 1.1 * P / Math.max(1, slope) * slope, { color: 'accent', width: 2.4 });
           const [a, b] = sol(); Pl.dot(a, b, { r: 6, color: 'green' });
@@ -172,12 +172,12 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
             S.rect(0, yc - w1, xB, yc + w1, { fill: 'accent', fillAlpha: 0.35, color: 'ink', width: 1.6 });
             const xRend = xB + (9 - aL) - F2 * 1000 * f2 * mag;
             S.rect(xB, yc - w2, xRend, yc + w2, { fill: 'orange', fillAlpha: 0.35, color: 'ink', width: 1.6 });
-            if (Math.abs(xRend - 9) > 0.01) { S.rect(Math.min(xRend, 9), yc - w2 - 0.1, Math.max(xRend, 9), yc + w2 + 0.1, { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.2, hatch: true }); S.text(xRend < 9 ? 'gap' : 'overlap', (xRend + 9) / 2, yc + w2 + 0.5, { size: 11, color: 'red', weight: 700, align: 'center' }); }
+            if (Math.abs(xRend - 9) > 0.01) { S.rect(Math.min(xRend, 9), yc - w2 - 0.1, Math.max(xRend, 9), yc + w2 + 0.1, { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.2, hatch: true }); S.text(xRend < 9 ? 'gap' : 'overlap', 8.0, yc + w2 + 0.5, { size: 11, color: 'red', weight: 700, align: 'center' }); }
             S.arrow(xB, yc + w1 + 1.3, xB + 1.4, yc + w1 + 1.3, { color: 'orange', width: 0 });
             S.arrow(xB - 0.0, yc + 1.8, xB + 1.7, yc + 1.8, { color: 'orange', width: 3.5, head: 12 });
             S.text(`P = ${f3(P)} kN`, xB + 0.9, yc + 2.2, { size: 12.5, weight: 700, color: 'orange', align: 'center' });
-            S.text(`R_A = ${f3(F1)} kN`, 0.2, -0.7, { size: 11.5, weight: 650, color: 'accent', align: 'left' });
-            S.text(`R_B = ${f3(F2)} kN`, 8.8, -0.7, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
+            S.text(`left reaction ${f3(F1)} kN`, 0.2, -0.7, { size: 11.5, weight: 650, color: 'accent', align: 'left' });
+            S.text(`right reaction ${f3(F2)} kN`, 8.8, -0.7, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
             S.text('δ exaggerated', 9.3, -1.55, { size: 10.5, color: 'muted', align: 'right' });
             void gapR;
           }
@@ -312,7 +312,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           P.vline(45, { color: 'muted', width: 1, dash: [2, 3], alpha: 0.5 }); P.vline(-45, { color: 'muted', width: 1, dash: [2, 3], alpha: 0.5 });
           P.text('σθ/σ = cos²θ', 3, 0.97, { size: 11, color: 'green', align: 'left', weight: 650 });
           P.text('τθ/σ = ½ sin 2θ', -88, 0.62, { size: 11, color: 'purple', align: 'left', weight: 650 });
-          P.text('peak shear σ/2 at ±45°', 88, 0.82, { size: 10.5, color: 'muted', align: 'right' });
+          P.text('peak shear σ/2 at ±45°', 88, -0.88, { size: 10.5, color: 'muted', align: 'right' });
           // Mohr circle
           const mc = []; for (let i = 0; i <= 80; i++) { const a = (2 * Math.PI * i) / 80; mc.push([0.5 + 0.5 * Math.cos(a), 0.5 * Math.sin(a)]); }
           M.path(mc, { color: 'accent', width: 2.2 }); M.hline(0, { color: 'muted', width: 1 });
@@ -320,7 +320,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           const a2 = []; for (let i = 0; i <= 20; i++) { const a = (2 * t * i) / 20; a2.push([0.5 + 0.14 * Math.cos(a), 0.14 * Math.sin(a)]); } M.path(a2, { color: 'gold', width: 1.6 });
           M.text('2θ', 0.5 + 0.2, 0.05 * Math.sign(t || 1) + 0.07 * Math.sign(t || 1), { size: 11, color: 'gold', weight: 700 });
           M.dot(c * c, s * c, { r: 6, color: 'gold' });
-          M.dot(1, 0, { r: 4, color: 'green', hollow: true, label: 'cross-section', labelPos: 'ne' }); M.dot(0, 0, { r: 4, color: 'muted', hollow: true, label: 'along axis', labelPos: 'nw' });
+          M.dot(1, 0, { r: 4, color: 'green', hollow: true, label: 'cross-section', labelPos: 'n' }); M.dot(0, 0, { r: 4, color: 'muted', hollow: true, label: 'along axis', labelPos: 'n' });
           M.dot(0.5, 0.5, { r: 4, color: 'purple', hollow: true, label: 'θ = 45°', labelPos: 'ne' });
           void sync; void ext; void s0;
         });

@@ -243,7 +243,7 @@ A **Sankey diagram** draws every flow as a band whose width is proportional to t
 $$A = \frac{P}{\rho}.$$
 Published medians span almost four orders of magnitude, from several hundred W/m² for nuclear and gas plants (counting their safety zones, pads and pipelines) through about 9 W/m² for utility-scale solar and 1.5 W/m² for onshore wind, to under 0.1 W/m² for biomass. A country's own **demand density** — its average primary power divided by its land area — is typically between 0.3 and 3 W/m². Where demand density is comparable to a source's supply density, that source would need most of the country.`,
       idea: String.raw`Concentrated sources (a fuel burned in a small boiler, a chain reaction in a small core) can deliver kilowatts through every square metre of the plant, and the land is dominated by safety zones and mining. Renewable flows are *spread out by nature*: sunlight reaches the ground at roughly a hundred or two watts per square metre on average and a cell turns a fraction of it into electricity; wind turbines must stand several rotor diameters apart or they steal each other's wind (chapter 5); photosynthesis stores well under 1% of the sunlight as biomass. So the land needed scales as $P/\rho$ and is set by physics and engineering, not by how many machines are built. Densities depend strongly on the boundary drawn around a site, which is why the published ranges are wide.`,
-      caption: String.raw`The left panel shows the median power density of each source on a log axis, with the chosen country's average demand density as a gold line. The right panel draws, to scale and **concentrically**, the square of land each source alone would need to supply the chosen share of that country's primary energy, inside a square of the country's own area (dashed). Squares that spill out of the view are labelled with how many times the country they would cover. Change the country and the share: for the Netherlands even wind farms cannot fit.`,
+      caption: String.raw`The upper panel shows the median power density of each source on a log axis, with the chosen country's average demand density as a gold line. The lower panel draws, to scale and **concentrically**, the square of land each source alone would need to supply the chosen share of that country's primary energy, inside a square of the country's own area (dashed). Squares bigger than the country are cut off at its edge; the key gives their area and how many countries they would cover. Change the country and the share: for the Netherlands even wind farms cannot fit.`,
       deps: ['energy-1.1'],
       refs: ['MacKay ch. 18'],
       tags: ['power density', 'land use'],
@@ -254,8 +254,8 @@ Published medians span almost four orders of magnitude, from several hundred W/m
         const NAMES = ['United Kingdom', 'Germany', 'Netherlands', 'Japan', 'United States', 'China', 'India'];
         const ctry = v.select('country', NAMES.map((n) => ({ value: n, label: n.replace('United Kingdom', 'UK').replace('United States', 'USA') })), 'United Kingdom');
         const share = v.slider('share of primary energy supplied', 0.05, 1, 1, { step: 0.05, fmt: (x) => v.fix(100 * x, 0) + ' %' });
-        const s1 = v.stage({ x: [0.04, 6000], y: [-0.2, 9.2], xlog: true, axes: 'box', gutter: true, height: 430, weight: 1, minWidth: 300, xlabel: 'median power density (W/m²)', yticks: [], xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [100, '100'], [1000, '1000']] });
-        const s2 = v.stage({ x: [-1, 3], y: [-1, 1], axes: false, height: 430, weight: 1.25, minWidth: 330 });
+        const s1 = v.stage({ x: [0.04, 6000], y: [-0.2, 9.2], xlog: true, axes: 'box', gutter: true, height: 340, full: true, xlabel: 'median power density (W/m²)', yticks: [], xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [100, '100'], [1000, '1000']] });
+        const s2 = v.stage({ x: [-1, 3], y: [-1, 1], axes: false, height: 400, full: true });
         const geo = () => { const c = C[ctry.value]; const P = c[3] * 1e12 / 8766, A = c[5] * 1e6; return { P, A, km2: c[5], d: P / A, name: ctry.value, year: c[2] }; };
         const need = (g, rho) => share.value * g.P / rho / 1e6; // km²
         const short = (n) => (n === 'United Kingdom' ? 'UK' : n === 'United States' ? 'USA' : n);
@@ -274,7 +274,7 @@ Published medians span almost four orders of magnitude, from several hundred W/m
           const half = Math.sqrt(g.km2) * 0.85, sq = clamp(s2.W - 250, 190, s2.H), kmpx = (2 * half) / sq;
           s2.setView([-half, -half + s2.W * kmpx], [-half, -half + s2.H * kmpx]);
           const sides = SRC.map(([name, rho, col]) => ({ name, col, a: need(g, rho), s: Math.sqrt(need(g, rho)) })).sort((p, q) => q.s - p.s);
-          s2.clip(() => { for (const q of sides) s2.rect(-q.s / 2, -q.s / 2, q.s / 2, q.s / 2, { fill: q.col, fillAlpha: 0.07, color: q.col, width: 2 }); }, [-half, half], [-half, half]);
+          s2.clip(() => { for (const q of sides) s2.rect(-q.s / 2, -q.s / 2, q.s / 2, q.s / 2, { fill: q.col, fillAlpha: 0.035, color: q.col, width: 2 }); }, [-half, half], [-half, half]);
           const cs = Math.sqrt(g.km2);
           s2.rect(-cs / 2, -cs / 2, cs / 2, cs / 2, { color: 'ink', width: 2.4, dash: true });
           s2.textPx(`${short(g.name)} land: ${grp(g.km2)} km²`, s2.X(0), s2.Y(cs / 2) - 10, { size: 11.5, weight: 700, color: 'ink', align: 'center' });
