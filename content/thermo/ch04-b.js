@@ -414,7 +414,7 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
       refs: ['Schroeder §5.5'],
       tags: ['colligative properties', 'osmosis'],
       credit: 'W. Pfeffer, 1877 (measurements); J. H. van ’t Hoff, 1887; F.-M. Raoult, 1878–1887',
-      scope: String.raw`Ideal dilute solutions. Real solutes deviate at higher concentration (osmotic coefficient ≠ 1; for NaCl about 0.93 at 0.5 mol/kg), and ionic solutes dissociate only partly in effect.`,
+      scope: String.raw`Ideal dilute solutions. Real solutes deviate at higher concentration (osmotic coefficient ≠ 1; for NaCl about 0.92 at 0.5 mol/kg), and ionic solutes dissociate only partly in effect.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Colligative_properties' },
       viz(v) {
         const mol = v.slider('molality m', 0, 2, 0.5, { step: 0.01, fmt: (x) => v.fix(x, 2) + ' mol/kg' });

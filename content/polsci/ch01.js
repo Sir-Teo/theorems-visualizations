@@ -306,7 +306,7 @@ The winner always has a majority in the final round. But the finalists are chose
       caption: String.raw`Step through the rounds, or let them play. Each column is a round of counting. A band carries ballots from the candidate who held them to the one who holds them next: pale bands are ballots staying put, coloured fans are the transfers from the eliminated candidate (✗). Edit the electorate on the right — drag bars, click letters to move them up — and the count reruns. *Burlington 2009* draws the official round totals of that mayoral election. Smith and two minor candidates are merged into one node, since they were eliminated together.`,
       deps: ['polsci-1.3'],
       see: ['polsci-2.5', 'polsci-2.13'],
-      refs: ['T&P ch. 1', 'Wikipedia: 2009 Burlington mayoral election'],
+      refs: ['T&P ch. 1', 'Wikipedia: 2009 Burlington mayoral election (tournament matrix, after Stensholt 2015)'],
       tags: ['instant runoff', 'ranked-choice voting'],
       credit: 'Carl Andræ (1855) and Thomas Hare (1857) as the transferable vote; single-winner form W. R. Ware, 1870s',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Instant-runoff_voting' },
@@ -365,7 +365,7 @@ The winner always has a majority in the final round. But the finalists are chose
           });
         });
         v.readout(() => {
-          if (data.value === 'bur') return 'Burlington 2009, official count: Wright 2,951 → 3,294 → 4,061; Kiss 2,585 → 2,981 → **4,313**; Montroll 2,063 → 2,554 (eliminated). Head to head Montroll beats Kiss 4,067–3,477 and Wright 4,597–3,668 (Bolson’s tabulation of the ballot file; Wikipedia gives 4,064–3,476 for Montroll–Kiss), so IRV eliminated the Condorcet winner.';
+          if (data.value === 'bur') return 'Burlington 2009, official count: Wright 2,951 → 3,294 → 4,061; Kiss 2,585 → 2,981 → **4,313**; Montroll 2,063 → 2,554 (eliminated). Head to head Montroll beats Kiss 4,064–3,476 and Wright 4,597–3,664 (tournament matrix of Stensholt 2015 as given on Wikipedia, consistent with the official 4,313–4,061 final; Bolson’s own tabulation of the ballot file differs by a few ballots: 4,067–3,477, 4,597–3,668), so IRV eliminated the Condorcet winner.';
           const I = irv(P), C = condorcet(P), pl = plurality(P).win, R = I.rounds;
           let s = `IRV elects **${names(I.win)}** after ${R.length} round${R.length > 1 ? 's' : ''} (elimination order ${R.filter((Rd) => Rd.out != null).map((Rd) => LET[Rd.out]).join(', ') || '—'}); plurality would elect ${names(pl)}. `;
           if (C.winner >= 0) {

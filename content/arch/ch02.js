@@ -8,7 +8,7 @@
 //     main span 4,200 ft (1,280 m), side spans 1,125 ft (343 m), towers 746 ft (227 m) above water, clearance 220 ft
 //     (67 m), each main cable 27,572 wires of 0.192 in (4.87 mm), 36 3/8 in (0.92 m) over the wrapping, completed 1937.
 //     Cable sag at mid-span 470 ft (143 m): design figure in US Naval Institute Proceedings, April 1935. Wire tensile
-//     strength ≈ 235,000 psi (≈ 1,620 MPa) is a secondary-source figure (fire-service and museum articles).
+//     strength 235,600 psi (≈ 1,624 MPa; 220,000 psi minimum specified) from the Golden Gate Bridge District design & construction stats (checked).
 //   Akashi Kaikyō Bridge: central span 1,991 m (was 1,990 m before the 1995 Hyōgo-ken Nanbu earthquake moved the towers),
 //     side spans 960 m, pylons 282.8 m above sea level, clearance 65 m, opened 5 April 1998; cables 1,122 mm diameter,
 //     290 strands × 127 wires of 5.23 mm (36,830 wires), wire strength 1,800 MPa; stiffening truss 14 m deep, 35.5 m wide

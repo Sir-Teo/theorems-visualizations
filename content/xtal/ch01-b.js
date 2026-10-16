@@ -67,7 +67,7 @@ export default {
       tags: ['interstitial sites', 'close packing'],
       viz(v) {
         const HD = findHoles(), HS = HD.holes, rHost = HD.rHost;
-        const probe = v.slider('probe radius / host radius', 0.05, 0.6, 0.3, { step: 0.005 });
+        const probe = v.slider('probe radius / host radius', 0.05, 0.6, 0.25, { step: 0.005 });
         const fillSel = v.select('fill the holes', [{ value: 'none', label: 'empty' }, { value: 'oct', label: 'all octahedral' }, { value: 'tet', label: 'all tetrahedral' }, { value: 'half', label: 'half the tetrahedral' }], 'none');
         const s = v.stage({ x: [-2.2, 2.2], y: [-2.1, 2.1], equal: true, axes: false, height: 440, weight: 1.35, title: 'fcc packing (drag to rotate)' });
         const sc = v.scene3(s, { yaw: -0.62, pitch: 0.36, axes: false });
@@ -198,7 +198,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           ['LiF', 76, 133, 'r'], ['LiCl', 76, 181, 'r'], ['LiBr', 76, 196, 'r'], ['LiI', 76, 220, 'r'], ['NaF', 102, 133, 'r'], ['NaCl', 102, 181, 'r'], ['NaBr', 102, 196, 'r'], ['NaI', 102, 220, 'r'],
           ['KF', 133, 138, 'r'], ['KCl', 138, 181, 'r'], ['RbCl', 152, 181, 'r'], ['CsF', 133, 167, 'r'], ['CsCl', 167, 181, 'c'], ['CsBr', 167, 196, 'c'], ['CsI', 167, 220, 'c'],
           ['MgO', 72, 140, 'r'], ['CaO', 100, 140, 'r'], ['ZnS', 74, 184, 'z'], ['BeO', 45, 140, 'z'], ['ZnO', 74, 140, 'z'],
-        ].map(([n, a, b, t]) => ({ n, ratio: Math.min(a, b) / Math.max(a, b), t }));
+        ].map(([n, a, b, t]) => ({ n, ratio: Math.min(a, b) / Math.max(a, b), t })).sort((p, q) => p.ratio - q.ratio);
         const g = v.stage({ x: [0, 1.05], y: [0, 1], axes: 'box', gutter: true, height: 460, weight: 0.95, xlabel: 'radius ratio $r_{small}/r_{large}$', yticks: [[0.17, 'ZnS'], [0.5, 'NaCl'], [0.83, 'CsCl']], title: 'the radius-ratio rule against real compounds' });
         const ROWY = { z: 0.17, r: 0.5, c: 0.83 }, pred = (x) => (x >= 0.732 ? 'c' : x >= 0.414 ? 'r' : 'z');
         let pickBasis = null, atomsP = [], cur = null;
@@ -269,7 +269,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
         // typical cation–oxygen distances (Å), illustrative round numbers from Shannon-type ionic radii sums
         const CAT = {
           Si: { z: 4, cn: 4, d: 1.62, label: 'Si⁴⁺', color: 'purple' }, Al: { z: 3, cn: 6, d: 1.91, label: 'Al³⁺', color: 'teal' }, Mg: { z: 2, cn: 6, d: 2.10, label: 'Mg²⁺', color: 'green' },
-          Ti: { z: 4, cn: 6, d: 1.96, label: 'Ti⁴⁺', color: 'orange' }, Na: { z: 1, cn: 6, d: 2.42, label: 'Na⁺', color: 'gold' }, MgT: { z: 2, cn: 4, d: 1.95, label: 'Mg²⁺ (IV)', color: 'pink' },
+          Ti: { z: 4, cn: 6, d: 1.96, label: 'Ti⁴⁺', color: 'orange' }, Na: { z: 1, cn: 6, d: 2.42, label: 'Na⁺', color: 'gold' }, MgT: { z: 2, cn: 4, d: 1.95, label: 'Mg²⁺', color: 'pink' },
         };
         const cat = v.select('cation', [{ value: 'Si', label: 'Si⁴⁺ (CN 4)' }, { value: 'Ti', label: 'Ti⁴⁺ (CN 6)' }, { value: 'Al', label: 'Al³⁺ (CN 6)' }, { value: 'Mg', label: 'Mg²⁺ (CN 6)' }, { value: 'Na', label: 'Na⁺ (CN 6)' }], 'Si');
         const mode = v.select('polyhedra share', [{ value: 'corner', label: 'a corner' }, { value: 'edge', label: 'an edge' }, { value: 'face', label: 'a face' }], 'corner');
@@ -305,7 +305,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           const c = cat.value, kind = kindOf(c), C = CAT[c], md = mode.value;
           th.el.hidden = md !== 'corner';
           const V1 = kind === 'tet' ? TETRA : OCTA, { V2, c2 } = build(kind, md, th.value);
-          const SH = SHARED[kind][md], k0 = 1.45;
+          const SH = SHARED[kind][md], k0 = 1.2;
           sc.begin();
           const shared = (p) => SH.some((i) => norm(sub(p, V1[i])) < 1e-6);
           const f1 = hullFaces(V1), f2 = hullFaces(V2);
@@ -327,7 +327,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           bonds.forEach((b, i) => {
             const a = (i / Math.max(n, 1)) * Math.PI * 2 + 0.5, sS = CAT[b].z / CAT[b].cn, cx = -0.7 + 1.55 * Math.cos(a), cy = 1.55 * Math.sin(a);
             w.line(-0.7 + 0.32 * Math.cos(a), 0.32 * Math.sin(a), cx, cy, { color: CAT[b].color, width: 1 + 6 * sS });
-            w.circle(cx, cy, 0.3, { fill: CAT[b].color, fillAlpha: 0.9, color: CAT[b].color });
+            w.circle(cx, cy, 0.34, { fill: CAT[b].color, fillAlpha: 0.9, color: CAT[b].color });
             w.text(CAT[b].label, cx, cy, { align: 'center', size: 10, weight: 700, color: 'panel', halo: false });
             w.text(`s = ${CAT[b].z}/${CAT[b].cn}`, -0.7 + 0.95 * Math.cos(a), 0.95 * Math.sin(a), { align: 'center', size: 10, color: 'ink', dy: -9 });
           });

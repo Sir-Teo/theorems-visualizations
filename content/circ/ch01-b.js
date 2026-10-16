@@ -44,11 +44,11 @@ export default {
           const xm = Math.max(7, 1.2 * Math.max(VA, IA * R.value, S.vB)), ym = Math.max(7, 1.2 * Math.max(IA * 1e3, VA / R.value * 1e3));
           sp.setView([0, xm], [0, ym]);
           sp.fn((x) => x / R.value * 1e3, { color: 'ink', width: 2, n: 2 });
-          sp.text('load: $i = v/R$', xm * 0.04, Math.min(ym * 0.93, xm * 0.04 / R.value * 1e3 + ym * 0.07), { size: 12, color: 'ink', align: 'left' });
+          sp.text('load line $i = v/R$', xm * 0.02, ym * 0.95, { size: 12, color: 'ink', align: 'left', plate: true });
           sp.vline(VA, { color: 'accent', width: 3 }); sp.hline(IA * 1e3, { color: 'orange', width: 3 });
           sp.text('ideal voltage source: $v = V_s$', VA, ym * 0.04, { size: 12, color: 'accent', align: VA > xm * 0.6 ? 'right' : 'left', dx: VA > xm * 0.6 ? -6 : 6, baseline: 'bottom' });
           sp.text('ideal current source: $i = I_s$', xm * 0.99, IA * 1e3, { size: 12, color: 'orange', align: 'right', baseline: 'bottom', dy: -5 });
-          sp.dot(S.vA, S.iA * 1e3, { r: 7, color: 'accent', label: 'voltage source', labelPos: 'ne' }); sp.dot(S.vB, S.iB * 1e3, { r: 7, color: 'orange', hollow: true, label: 'current source', labelPos: 'sw' });
+          sp.dot(S.vA, S.iA * 1e3, { r: 7, color: 'accent' }); sp.dot(S.vB, S.iB * 1e3, { r: 9, color: 'orange', hollow: true });
         });
         v.legend([['accent', 'voltage-source operating point'], ['orange', 'current-source operating point'], ['ink', 'load line']]);
         v.readout(() => {
@@ -71,7 +71,7 @@ export default {
       refs: ['Agarwal–Lang §1.7', 'Horowitz–Hill §1.2'],
       tags: ['internal resistance', 'sources'],
       viz(v) {
-        const s = v.stage({ x: [-1.6, 6.1], y: [-0.9, 4], equal: true, axes: false, height: 300, weight: 0.95 });
+        const s = v.stage({ x: [-1.7, 6.1], y: [-0.9, 4.9], equal: true, axes: false, height: 310, weight: 0.95 });
         const sp = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1.2, xlabel: 'terminal voltage $v$ (V)', ylabel: 'load current $i$ (A)' });
         const C = v.circuit(s, [
           { type: 'V', id: 'Voc', name: 'Voc', value: 1.5, at: [0, 3, 0, 0] },
@@ -90,8 +90,8 @@ export default {
         const solve = () => { apply(); const r = C.dc(), n = C.net.termNode.get('RL').a; return { r, v: r.V(n), i: r.I('RL') }; };
         v.render(() => {
           const S = solve(), Vo = Voc.value, Rg = Ri.value, Isc = Vo / Rg;
-          s.rect(-0.7, 0.55, 3.4, 3.65, { stroke: true, color: 'muted', dash: [5, 4], width: 1.3, fill: false });
-          s.text('real source', 1.35, 3.85, { size: 12, color: 'muted', align: 'center' });
+          s.rect(-1.3, 0.55, 3.5, 4.45, { stroke: true, color: 'muted', dash: [5, 4], width: 1.3, fill: false });
+          s.text('real source', 1.1, 0.3, { size: 12, color: 'muted', align: 'center' });
           C.draw({ result: S.r, vmax: Vo });
           sp.setView([0, Vo * 1.18], [0, Isc * 1.12]);
           sp.vline(Vo, { color: 'accent', width: 1.5, dash: [6, 4] }); sp.hline(Isc, { color: 'orange', width: 1.5, dash: [6, 4] });
@@ -108,14 +108,14 @@ export default {
           C.part('RL').value = keep;
           for (const [vv, ii] of pts) sp.dot(vv, ii, { r: 3.2, color: 'blue' });
           sp.dot(S.v, S.i, { r: 7, color: 'gold' });
-          sp.text('$V_{oc}$', Vo, Isc * 0.04, { size: 12, color: 'accent', align: 'right', dx: -5 });
+          sp.text('$V_{oc}$', Vo, Isc * 0.55, { size: 12, color: 'accent', align: 'left', dx: 5 });
           sp.text('$I_{sc}=V_{oc}/R_{\\text{int}}$', Vo * 0.02, Isc, { size: 12, color: 'orange', align: 'left', baseline: 'bottom', dy: -4 });
           s.__dev = dev;
         });
         v.legend([['ink', 'terminal line $v = V_{oc} - R_{\\text{int}}i$'], ['blue', 'solver, $R_L$ swept', { dot: true }], ['green', 'load line'], ['gold', 'operating point', { dot: true }], ['accent', 'ideal voltage source', { dash: true }], ['orange', 'ideal current source', { dash: true }]]);
         v.readout(() => {
           const S = solve(), Vo = Voc.value, Rg = Ri.value, sag = Rg * S.i;
-          return `terminal voltage $v = ${v.fix(S.v, 4)}$ V, formula $V_{oc}R_L/(R_L+R_{\\text{int}}) = ${v.fix(Vo * RL.value / (RL.value + Rg), 4)}$ V · load current $${v.fix(S.i, 4)}$ A · sag $R_{\\text{int}}i = ${v.fix(sag, 4)}$ V (${v.fix(100 * sag / Vo, 1)} % of $V_{oc}$)\n$I_{sc} = ${sI(Vo / Rg, 'A', 3)}$ · efficiency (power in $R_L$ / power from the ideal source) $= R_L/(R_L+R_{\\text{int}}) = ${v.fix(100 * RL.value / (RL.value + Rg), 1)}$ % · largest deviation of the 36 solver points from the line: ${v.sci(Math.max(s.__dev || 0, 1e-16), 1)} V`;
+          return `terminal voltage $v = ${v.fix(S.v, 4)}$ V, formula $V_{oc}R_L/(R_L+R_{\\text{int}}) = ${v.fix(Vo * RL.value / (RL.value + Rg), 4)}$ V · load current $${v.fix(S.i, 4)}$ A · sag $R_{\\text{int}}i = ${v.fix(sag, 4)}$ V (${v.fix(100 * sag / Vo, 1)} % of $V_{oc}$)\n$I_{sc} = V_{oc}/R_{\\text{int}}$ = ${sI(Vo / Rg, 'A', 3)} · efficiency (power in $R_L$ / power from the ideal source) $= R_L/(R_L+R_{\\text{int}}) = ${v.fix(100 * RL.value / (RL.value + Rg), 1)}$ % · largest deviation of the 36 solver points from the line: $${v.sci(Math.max(s.__dev || 0, 1e-16), 1)}$ V`;
         });
       },
     },
@@ -154,9 +154,9 @@ export default {
           const Tnow = Tamb + dT, melted = Tnow >= Tmelt;
           // glowing resistor
           const k1 = clamp((Tnow - Tamb) / 400, 0, 1), k2 = clamp((Tnow - 450) / 600, 0, 1);
-          const col = v.mix(v.mix('muted', 'orange', k1), 'red', k2);
+          const col = v.mix(v.mix('panel', 'orange', k1), 'red', k2);
           glow.line(0, 0, 1.6, 0, { color: 'ink', width: 3 }); glow.line(8.4, 0, 10, 0, { color: 'ink', width: 3 });
-          glow.rect(1.6, -0.45, 8.4 - 1.6, 0.45, { fill: true, fillAlpha: 0, color: 'ink', width: 2, radius: 6 });
+          glow.rect(1.6, -0.45, 8.4, 0.45, { fill: true, fillAlpha: 0, color: 'ink', width: 2, radius: 6 });
           const c = glow.ctx; c.save(); c.fillStyle = col; const x0 = glow.X(1.6), x1 = glow.X(8.4), y0 = glow.Y(0.45), y1 = glow.Y(-0.45); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 7); c.fill(); c.restore();
           const pin = I.value ** 2 * R0 * (1 + a * dT), pout = hh * dT;
           glow.text(`${melted ? 'MELTED' : ''}  ${v.fix(Tnow, 0)} °C`, 5, 0, { size: 15, color: 'ink', align: 'center', baseline: 'middle', weight: 700, plate: true });
@@ -167,7 +167,7 @@ export default {
           tr.hline(Tmelt, { color: 'red', width: 1.3, dash: [6, 4] }); tr.text('copper melts (1085 °C)', 298, Tmelt - 25, { size: 11.5, color: 'red', align: 'right', baseline: 'top' });
           tr.hline(Tamb, { color: 'muted', width: 1, dash: [2, 3] });
           const dTinf = (() => { const g = hh - a * I.value ** 2 * R0; return g > 1e-9 ? I.value ** 2 * R0 / g : Infinity; })();
-          if (isFinite(dTinf) && Tamb + dTinf < 1100) { tr.hline(Tamb + dTinf, { color: 'green', width: 1.4, dash: [5, 4] }); tr.text('steady value', 3, Tamb + dTinf + 6, { size: 11.5, color: 'green', align: 'left', baseline: 'bottom' }); }
+          if (isFinite(dTinf) && Tamb + dTinf < 1100) { tr.hline(Tamb + dTinf, { color: 'green', width: 1.4, dash: [5, 4] }); tr.text('steady value', 298, Tamb + dTinf + 8, { size: 11.5, color: 'green', align: 'right', baseline: 'bottom' }); }
           const tau = Cth / Math.max(1e-9, hh - a * I.value ** 2 * R0);
           if (tau > 0 && tau < 300 && hh - a * I.value ** 2 * R0 > 0) { tr.vline(tau, { color: 'muted', dash: [4, 4], width: 1 }); tr.text('$\\tau$', tau, 1060, { size: 12, color: 'muted', align: 'left', dx: 3 }); }
           tr.path(tt.map((x, k) => [x, Tamb + closed(x)]).filter(([, y]) => y < 1200), { color: 'ink', width: 1.4, dash: [5, 4], alpha: 0.75 });
@@ -187,7 +187,7 @@ export default {
           const a = fb.value ? alpha : 0, g = hh - a * I.value ** 2 * R0, p = I.value ** 2 * R0, { tt, yy } = traj();
           let dev = 0; for (let k = 0; k < tt.length; k += 10) { if (yy[k] > 4000) break; dev = Math.max(dev, Math.abs(yy[k] - closed(tt[k]))); }
           const d1 = g > 1e-9 ? p / g : Infinity, g2 = hh - a * 4 * I.value ** 2 * R0, d2 = g2 > 1e-9 ? 4 * p / g2 : Infinity;
-          return `$I^2R_0 = ${v.fix(p, 2)}$ W · ${g > 1e-9 ? `steady rise $\\Delta T_\\infty = ${v.fix(d1, 1)}$ K (${v.fix(Tamb + d1, 0)} °C), $\\tau = C_{th}/h_{\\text{eff}} = ${v.fix(Cth / g, 1)}$ s` : '**no steady state: thermal runaway**'} · $\\Delta T_\\infty(2I)/\\Delta T_\\infty(I) = ${isFinite(d1) && isFinite(d2) ? v.fix(d2 / d1, 3) : '\\infty'}$ ${fb.value ? '' : '(exactly 4)'} · RK4 vs closed form: max deviation ${v.sci(Math.max(dev, 1e-12), 1)} K\nparameters (illustrative): $R_0=0.2\\ \\Omega$, $C_{th}=10$ J/K, $h=0.2$ W/K, ambient 20 °C; critical current at constant current $I_c = \\sqrt{h/(\\alpha R_0)} = ${v.fix(Icr, 1)}$ A`;
+          return `$I^2R_0 = ${v.fix(p, 2)}$ W · ${g > 1e-9 ? `steady rise $\\Delta T_\\infty = ${v.fix(d1, 1)}$ K (${v.fix(Tamb + d1, 0)} °C), $\\tau = C_{th}/h_{\\text{eff}} = ${v.fix(Cth / g, 1)}$ s` : '**no steady state: thermal runaway**'} · $\\Delta T_\\infty(2I)/\\Delta T_\\infty(I) = ${isFinite(d1) && isFinite(d2) ? v.fix(d2 / d1, 3) : '\\infty'}$ ${fb.value ? '' : '(exactly 4)'} · RK4 vs closed form: max deviation $${v.sci(Math.max(dev, 1e-12), 1)}$ K\nparameters (illustrative): $R_0=0.2\\ \\Omega$, $C_{th}=10$ J/K, $h=0.2$ W/K, ambient 20 °C; critical current at constant current $I_c = \\sqrt{h/(\\alpha R_0)} = ${v.fix(Icr, 1)}$ A`;
         });
       },
     },
@@ -234,8 +234,8 @@ export default {
         v.readout(() => {
           const x = H.x, rows = vis().map((e) => {
             if (e.vert != null) return `${e.name}: a vertical line, $v = ${e.vert}$ V for every current — a relation, not a function $i(v)$`;
-            const a = e.f(x), b = e.f(2 * x), ok = Math.abs(b - 2 * a) < 1e-6 * (1 + Math.abs(a));
-            return `${e.name}: $i(v) = ${v.fix(a, 3)}$, $i(2v) = ${v.fix(b, 3)}$, $2i(v) = ${v.fix(2 * a, 3)}$ mA → ${ok ? '**passes** the scaling test' : '**fails** it'}`;
+            const a = e.f(x), b = e.f(2 * x), ok = Math.abs(b - 2 * a) < 1e-6 * (1 + Math.abs(a)), n = (q) => (Math.abs(q) < 1e4 ? `$${v.fix(q, 3)}$` : `$${v.sci(q, 2)}$`);
+            return `${e.name}: $i(v) =$ ${n(a)}, $i(2v) =$ ${n(b)}, $2i(v) =$ ${n(2 * a)} mA → ${ok ? '**passes** the scaling test' : '**fails** it'}`;
           });
           return `test voltage $v = ${v.fix(x, 2)}$ V, $2v = ${v.fix(2 * x, 2)}$ V\n${rows.join('\n') || 'switch some elements on'}\n(illustrative models: diode $i = I_s(e^{v/V_T}-1)$, $I_s = 10^{-14}$ A, $V_T = 25.85$ mV; lamp as in 1.4 with a 6 V, 0.3 W rating)`;
         });
@@ -262,7 +262,7 @@ export default {
             { type: 'W', at: [0, 3, 2, 3] }, { type: 'W', at: [2, 3, 5, 3] }, { type: 'W', at: [0, 0, 5, 0] },
             { type: 'R', id: 'R1', name: 'R1', value: 1000, at: [2, 3, 2, 1.5] }, { type: 'R', id: 'R3', name: 'R3', value: 2000, at: [2, 1.5, 2, 0] },
             { type: 'R', id: 'R2', name: 'R2', value: 2000, at: [5, 3, 5, 1.5] }, { type: 'R', id: 'R4', name: 'R4', value: 1000, at: [5, 1.5, 5, 0] },
-            { type: 'R', id: 'R5', name: 'R5', value: 500, at: [2, 1.5, 5, 1.5] }, { type: 'GND', at: [2.5, 0] },
+            { type: 'R', id: 'R5', name: 'R5', value: 500, at: [2, 1.5, 5, 1.5], labelSide: -1 }, { type: 'GND', at: [2.5, 0] },
           ],
           ladder: [
             { type: 'V', id: 'V1', name: 'V1', value: 10, at: [0, 3, 0, 0] },
@@ -312,7 +312,7 @@ export default {
             // node positions = centroid of the terminals attached
             const pos = new Map(); for (const p of C.parts) { const T = C.net.terminals(p), m = C.net.termNode.get(p.id); if (!['R', 'C', 'L', 'V', 'I', 'SW', 'D'].includes(p.type)) continue; for (const [pin, name] of [['a', m.a], ['b', m.b]]) { const t = T.find((q) => q.pin === pin); const o = pos.get(name) || [0, 0, 0]; o[0] += t.x; o[1] += t.y; o[2]++; pos.set(name, o); } }
             const nodes = info.names.map((id, i) => ({ id, label: id === '0' ? '0' : `${i}`, x: pos.get(id)[0] / pos.get(id)[2], y: pos.get(id)[1] / pos.get(id)[2], color: PAL[i % PAL.length] }));
-            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('fit');
+            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('force', { seed: 3 });
           }
           const L = Math.min(Math.max(1, info.loops.length), 4); li.el.hidden = info.loops.length < 2; const sel2 = clamp(li.value, 1, L) - 1, lp = info.loops[sel2];
           C.draw({ colors: false, dots: false, probes: false });

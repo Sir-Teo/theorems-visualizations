@@ -1,5 +1,5 @@
 // Pharmacology — Chapter 1: Drug disposition: the basic quantities
-import { BODY, DRUGS, clOf, clamp, trapz, trapzLog, logSlope, bateman, rk4, idxAt, trace, memo, sig, box, wire, flowDots, logTicks } from './ch01.shared.js';
+import { BODY, clamp, trapz, trapzLog, logSlope, bateman, rk4, idxAt, trace, memo, sig, box, wire, flowDots } from './ch01.shared.js';
 
 // ---------- Theophylline, subject 1 of the classic data set (Boeckmann, Sheiner & Beal 1992; R: datasets::Theoph) ----------
 // 79.6 kg man, 4.02 mg/kg orally (≈ 320 mg); serum theophylline in mg/L. Times in h.
@@ -77,7 +77,7 @@ export default {
           const phase = tt * 1.6;
           const fl = { port: R.ka * G, hv: R.ka * (1 - R.E) * G, met: R.km * P, ren: R.kr * P, in: R.k12 * P, out: R.k21 * T };
           const arrows = [
-            ['port', [[2.65, 5], [3.5, 5]], 'orange'],
+            ['port', [[2.2, 5], [3.5, 5]], 'orange'],
             ['hv', [[4.55, 4.45], [4.55, 3.15]], 'accent'],
             ['met', [[5.45, 3.15], [5.45, 4.45]], 'teal'],
             ['in', [[6.15, 2.85], [7.5, 2.85]], 'purple'],
@@ -90,15 +90,15 @@ export default {
             if (fl[k] > 0.15) flowDots(sb, pts, phase * 0.45, 0.42, { color: col, alpha: 0.25 + 0.75 * a, r: 2.2 + 1.4 * a });
           }
           if (iv) { wire(sb, [[5, 0.6], [5, 2.0]], { color: 'red', width: 2 }); sb.text('IV injection', 5.15, 0.75, { size: 10.5, color: 'red', align: 'left', baseline: 'middle', weight: 600 }); }
-          sb.text('portal vein', 3.0, 4.6, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
+          sb.text('portal vein', 2.9, 4.62, { size: 9.5, color: 'muted', align: 'center', baseline: 'middle' });
           sb.text('first pass', 4.45, 3.8, { size: 10, color: 'muted', align: 'right', baseline: 'middle' });
           const b = (x, y, label, amt, col, w = 2.3, sub) => box(sb, x, y, w, 1.2, label, { color: col, fill: col, fillAlpha: 0.05 + 0.5 * clamp(amt / R.D, 0, 1), active: amt / R.D > 0.15, sub: sub ?? `${v.fix(amt, 1)} mg` });
-          b(1.45, 5, 'gut', G, COL.G);
+          b(1.2, 5, 'gut', G, COL.G, 2.0);
           b(5, 5, 'liver', M, COL.M, 2.9, `${v.fix(M, 1)} mg metabolized`);
           b(5, 2.6, 'plasma', P, COL.P);
           b(8.7, 2.6, 'tissues', T, COL.T, 2.2);
           b(1.45, 2.6, 'urine', U, COL.U, 2.6, `${v.fix(U, 1)} mg excreted`);
-          sb.text('absorption', 1.45, 4.2, { size: 10.5, color: 'orange', align: 'center', baseline: 'middle' });
+          sb.text('absorption', 1.2, 4.2, { size: 10.5, color: 'orange', align: 'center', baseline: 'middle' });
           sb.text('distribution', 6.85, 3.15, { size: 10.5, color: 'purple', align: 'center', baseline: 'middle' });
           sb.text('metabolism', 5.6, 3.8, { size: 10.5, color: 'teal', align: 'left', baseline: 'middle', dx: 0 });
           sb.text('excretion', 3.3, 1.9, { size: 10.5, color: 'green', align: 'center', baseline: 'middle' });
@@ -244,7 +244,7 @@ export default {
       name: 'Volume of distribution',
       statement: String.raw`The **apparent volume of distribution** of a drug is the proportionality constant between the amount of drug in the body and the plasma concentration, $V = A/C$. After an intravenous bolus of dose $D$ it is $V = D/C(0)$, with $C(0)$ found by extrapolating the decline back to time zero. It is not a real volume. If the drug stays in plasma, $V\approx 3$ L; if it spreads through all body water, $V\approx 42$ L (70 kg adult); if tissues bind it much more strongly than plasma does, $V$ can be hundreds or thousands of litres. In a model where the body is plasma (volume $V_p$) in equilibrium with tissue water (volume $V_T$) with tissue-to-plasma concentration ratio $K_p$, $V = V_p + K_p V_T$.`,
       idea: String.raw`At equilibrium the same plasma concentration is paired with a tissue concentration $K_p C$, so the amount in the body is $A = C\,V_p + K_p C\,V_T$. Dividing by $C$ gives $V = V_p + K_p V_T$. A drug that is bound or dissolved in tissue (fat, bone, cell proteins) has a large $K_p$: most of the dose hides outside the blood and the plasma concentration is low, which is the same as saying the dose was "diluted" into a huge volume. Polar drugs that cannot enter cells, or that stick to albumin, have $K_p<1$ and a small volume.`,
-      caption: String.raw`A dose of 200 dots (1 dot = 0.5 % of the dose) is dissolved in a body with 3 L of plasma and 39 L of tissue water; the box areas are drawn to scale. Dot density is concentration. Drag the **tissue-to-plasma ratio** $K_p$, or click a drug (preset values for a 70 kg adult): the more tissue binding, the sparser the plasma and the larger the apparent volume $V = D/C$, shown on the log ruler against plasma, extracellular fluid and total body water. Chloroquine's volume is about a thousand times total body water.`,
+      caption: String.raw`A dose of 200 dots (1 dot = 0.5 % of the dose) is dissolved in a body with 3 L of plasma and 39 L of tissue water; the box areas are drawn to scale. Dot density is concentration. Drag the **tissue-to-plasma ratio** $K_p$, or click a drug (preset values for a 70 kg adult): the more tissue binding, the sparser the plasma and the larger the apparent volume $V = D/C$, shown on the log ruler against plasma, extracellular fluid and total body water. Chloroquine's apparent volume is more than three hundred times total body water.`,
       scope: String.raw`$V$ is a ratio defined by a distribution that has reached equilibrium; for a real drug the value depends on the model used (initial volume, steady-state volume, terminal volume differ for multi-compartment drugs, ch. 3).`,
       deps: ['pharm-1.2'],
       refs: ['Rowland–Tozer', 'Rang, Pharmacology (2003) p. 103'],
@@ -341,7 +341,7 @@ export default {
           // cleared part of the stream (cross-section at the inlet)
           sb.rect(0.3, yc - hh / 2, 3.6, yc - hh / 2 + E * hh, { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1 });
           sb.text('organ', 5, yc + 1.45, { size: 11.5, color: 'orange', align: 'center', baseline: 'bottom', dy: -4, weight: 600 });
-          sb.text(`cleared part: E·Q = ${Math.round(CL)} mL/min`, 0.45, yc - hh / 2 - 0.15, { size: 10.5, color: 'orange', align: 'left', baseline: 'top' });
+          sb.text(`cleared: ${Math.round(CL)} mL/min`, 0.45, yc - hh / 2 - 0.15, { size: 10.5, color: 'orange', align: 'left', baseline: 'top' });
           sb.arrow(0.0, yc, 0.3, yc, { color: 'muted', width: 2, head: 7 });
           sb.arrow(9.7, yc, 10.0, yc, { color: 'muted', width: 2, head: 7 });
           sb.text(`C_in = ${v.fix(Cin, 2)}`, 1.9, yc + hh / 2 + 0.2, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom', weight: 600 });
@@ -369,7 +369,7 @@ export default {
           sr.hline(r, { color: 'gold', dash: [4, 3], width: 1 });
           sr.dot(C, r, { r: 6, color: 'gold' });
           sr.text(`rate = CL·C = ${sig(r, 3)} mg/min`, C, r, { size: 11, color: 'ink', align: C > 6 ? 'right' : 'left', baseline: 'bottom', dx: C > 6 ? -8 : 8, dy: -8, weight: 600 });
-          sr.text(`slope = CL = ${sig(CL / 1000, 3)} L/min`, 9.8, (CL / 1000) * 9.8, { size: 11, color: 'orange', align: 'right', baseline: 'top', dy: 8, weight: 600 });
+          sr.text(`slope = CL = ${sig(CL / 1000, 3)} L/min`, 9.8, ymax * 0.1, { size: 11, color: 'orange', align: 'right', baseline: 'middle', weight: 600 });
         }, { period: 14, still: 3 });
         v.legend([['accent', 'drug in the stream', { dot: true }], ['orange', 'molecules removed in the organ', { dot: true }]]);
         v.readout(() => {
@@ -394,7 +394,7 @@ export default {
       viz(v) {
         const CL = v.slider('clearance $CL$', 1, 30, 6, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} L/h` });
         const Vs = v.slider('volume $V$', 10, 150, 40, { log: true, sig: 2, fmt: (x) => `${Math.round(x)} L` });
-        const bol = v.slider('IV bolus at $t=0$', 0, 500, 0, { step: 10, fmt: (x) => `${Math.round(x)} mg` });
+        const bol = v.slider('IV bolus', 0, 500, 0, { step: 10, fmt: (x) => `${Math.round(x)} mg` });
         const sat = v.toggle('saturable elimination (break linearity)', false);
         const Km = v.slider('$K_m$', 1, 20, 4, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} mg/L` });
         const TS = [0, 2, 4, 6, 8, 10, 12];
@@ -498,7 +498,7 @@ export default {
         const ka = v.slider('absorption rate $k_a$', 0.2, 6, 1.5, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} /h` });
         const si = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 0.8, minWidth: 230 });
         const sc = v.stage({ x: [0, 20], y: [0, 1], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'concentration (mg/L)', height: 300, weight: 1.3 });
-        const I = v.icons(si, { n: 100, order: 'group', shape: 'dot' });
+        const I = v.icons(si, { n: 100, order: 'group', shape: 'dot', cols: 10, rows: 10 });
         let last = sel.value, info = null, lastPre = 'propranolol';
         v.render(() => {
           if (sel.value !== last) { last = sel.value; if (sel.value !== 'free') { const p = PRE[sel.value]; prog = true; Fa.set(p.Fa); Fg.set(p.Fg); Eh.set(p.Eh); ka.set(p.ka); prog = false; } }
@@ -508,7 +508,7 @@ export default {
           const nUn = Math.round(100 * (1 - Fa.value)), nGut = Math.round(100 * Fa.value * (1 - Fg.value)), nLiv = Math.round(100 * Fa.value * Fg.value * Eh.value);
           const nSys = Math.max(0, 100 - nUn - nGut - nLiv);
           I.set({ groups: [{ n: nSys, color: 'green', label: 'reaches the circulation' }, { n: nLiv, color: 'orange', label: 'lost in the liver (first pass)' }, { n: nGut, color: 'purple', label: 'lost in the gut wall' }, { n: nUn, color: 'red', label: 'not absorbed' }], rest: { color: 'muted', alpha: 0.3 } });
-          I.draw();
+          I.draw(); I.legend();
           // curves
           const tmax = Math.max(4, Math.min(300, 6 * Math.LN2 / k)), nt = 600;
           const ts = [], civ = [], cpo = [];
@@ -528,6 +528,239 @@ export default {
         v.readout(() => {
           const r = info;
           return `$F = F_a F_g (1-E_h) = ${v.fix(Fa.value, 2)}\\times ${v.fix(Fg.value, 2)}\\times ${v.fix(1 - Eh.value, 2)} = ${v.fix(r.F, 3)}$. From the curves: $\\mathrm{AUC_{po}}/\\mathrm{AUC_{iv}} = ${sig(r.apo, 4)}/${sig(r.aiv, 4)} = ${v.fix(r.Fm, 3)}$. Tablet fates (of 100): ${r.nSys} reach the circulation, ${r.nLiv} lost in the liver, ${r.nGut} in the gut wall, ${r.nUn} not absorbed. Systemic parameters used: $V = ${sig(r.V, 3)}$ L, $CL = ${sig(r.CL, 3)}$ L/h (typical adult values; educational).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7',
+      kind: 'Concept',
+      name: 'Plasma protein binding and the unbound fraction',
+      statement: String.raw`Many drugs bind reversibly to plasma proteins, chiefly albumin (acidic and neutral drugs) and $\alpha_1$-acid glycoprotein (basic drugs). With binding sites of total concentration $P_T$ and dissociation constant $K_d$, the bound concentration is $B = P_T\,C_u/(K_d + C_u)$ (a Langmuir isotherm), where $C_u$ is the **unbound** concentration. Far below saturation the unbound fraction $f_u = C_u/(C_u + B) \approx 1/(1+P_T/K_d)$ is a constant. Only unbound drug crosses membranes, reaches receptors and is filtered or metabolized (for a drug with a low extraction ratio). A displacing drug that competes for the sites raises $f_u$: the unbound concentration jumps transiently, but at steady state under constant dosing the unbound concentration of a low-extraction drug returns to its original value, since it is set by dosing rate and unbound clearance, while the total concentration falls.`,
+      idea: String.raw`Mass action gives the isotherm, and in the linear range $B = (P_T/K_d)C_u$, a fixed fraction. A competitor with concentration $I$ and constant $K_i$ multiplies the apparent $K_d$ by $1+I/K_i$, so $f_u$ rises. For a low-extraction drug the elimination rate is $CL_u\,C_u$, with unbound clearance $CL_u$ unchanged. At steady state input equals output, $R = CL_u\,C_u$, so $C_u = R/CL_u$ does not depend on $f_u$ at all, and the total concentration $C_u/f_u$ drops by the factor by which $f_u$ rose. If the drug is instead cleared as fast as the blood delivers it (high extraction, $CL\approx Q$), the total concentration $R/Q$ is fixed and the unbound one rises permanently.`,
+      caption: String.raw`Left: the albumin binding isotherm on a log axis, for warfarin-like binding ($K_d$ chosen so that 99 % is bound), without (blue) and with (orange) a competing drug; the shaded band marks the unbound concentrations of a typical therapeutic range. Right: constant-rate dosing at steady state; at the dashed line the displacer is added. Time is in baseline half-lives. With **enzyme-limited** (low-extraction) clearance the unbound concentration spikes and then returns to baseline while the total concentration settles lower; with **flow-limited** clearance the unbound concentration stays elevated. Lower the albumin to mimic hypoalbuminaemia.`,
+      scope: String.raw`One-compartment model with instantaneous equilibrium, a single class of binding sites and competitive displacement; $K_d$ and the tissue binding are tuned to a warfarin-like drug (99 % bound, $V\approx 10$ L), not measured. Educational only; this is not guidance on drug interactions.`,
+      deps: ['pharm-1.3', 'mathbio-5.2'],
+      refs: ['Rowland–Tozer'],
+      tags: ['protein binding', 'displacement'],
+      viz(v) {
+        const Kd = 6, PT0 = 40000 / 66.5; // µM; albumin 40 g/L, M = 66.5 kg/mol
+        const alb = v.slider('albumin', 15, 50, 40, { step: 1, fmt: (x) => `${Math.round(x)} g/L` });
+        const disp = v.slider('displacer $I/K_i$', 0, 10, 3, { step: 0.1, fmt: (x) => v.fix(x, 1) });
+        const mode = v.select('clearance of the drug', [{ value: 'enz', label: 'enzyme-limited (low extraction)' }, { value: 'flow', label: 'flow-limited (high extraction)' }], 'enz');
+        const sI = v.stage({ x: [0.01, 3000], y: [0, 640], xlog: true, axes: 'box', gutter: true, xlabel: 'unbound drug concentration $C_u$ (µM)', ylabel: 'bound drug (µM)', height: 300, weight: 1 });
+        const sT = v.stage({ x: [0, 14], y: [0, 2.2], axes: 'box', gutter: true, xlabel: 'time (baseline half-lives)', ylabel: 'concentration / its baseline value', height: 300, weight: 1.15 });
+        const fuOf = (P, kd) => { const lo = 1e-9; return 1 / (1 + P / kd); };
+        const T0 = 6, Vp = 3, VT = 39, V0 = 9.8, fu0w = 0.01;
+        const fut = (fu0w * VT) / (V0 - Vp);
+        const model = () => {
+          const P = (alb.value * 1000) / 66.5, fuA = 1 / (1 + P / Kd), fuB = 1 / (1 + P / (Kd * (1 + disp.value)));
+          const fu0 = fuA, fu1 = fuB;
+          const Vf = (fu) => Vp + (VT * fu) / fut;
+          const V0m = Vf(fu0), V1 = Vf(fu1);
+          const CL0 = 1; // arbitrary unit; baseline half-life ln2·V0/CL0
+          const th0 = (Math.LN2 * V0m) / CL0; // one baseline half-life (time unit)
+          const CL1 = mode.value === 'enz' ? (CL0 * fu1) / fu0 : CL0;
+          const R = CL0 * 1; // dosing rate giving C_tot,ss = R/CL0 = 1 in the baseline
+          const A0 = (R * V0m) / CL0; // steady-state amount at baseline (C_tot = 1)
+          const Ainf = (R * V1) / CL1, k1 = CL1 / V1;
+          const f = (tt) => {
+            // tt in baseline half-lives; baseline is at steady state until T0
+            const t = tt * th0;
+            if (tt < T0) return { Ct: A0 / V0m, Cu: (fu0 * A0) / V0m };
+            const A = Ainf + (A0 - Ainf) * Math.exp(-k1 * (t - T0 * th0));
+            return { Ct: A / V1, Cu: (fu1 * A) / V1 };
+          };
+          return { fu0, fu1, V0: V0m, V1, f, A0, Ainf, CL0, CL1, P };
+        };
+        let mdl = null;
+        v.render(() => {
+          mdl = model();
+          const P = mdl.P;
+          // isotherm: with and without displacer. Bound = P·Cu/(Kd_app + Cu) (free-ligand form).
+          const bnd = (kd) => (Cu) => (P * Cu) / (kd + Cu);
+          sI.hband(P - 0.5, P + 0.5, { color: 'muted', alpha: 0.35 });
+          sI.text(`all binding sites occupied: ${Math.round(P)} µM`, 0.012, P + 6, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom' });
+          sI.fn(bnd(Kd), { color: 'accent', width: 2.4, domain: [0.01, 3000] });
+          sI.fn(bnd(Kd * (1 + disp.value)), { color: 'orange', width: 2.4, domain: [0.01, 3000] });
+          // therapeutic band: total 3–16 µM (warfarin-like 1–5 mg/L)
+          const cuOf = (Ct, kd) => { let lo = 0, hi = Ct; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (m + (P * m) / (kd + m) > Ct) hi = m; else lo = m; } return (lo + hi) / 2; };
+          const a = cuOf(3, Kd), b = cuOf(16, Kd);
+          sI.vband(a, b, { color: 'green', alpha: 0.14 });
+          sI.text('therapeutic range', b * 1.3, 0.55 * P, { size: 10.5, color: 'green', align: 'left', baseline: 'top' }); sI.text('(total 3–16 µM)', b * 1.3, 0.55 * P - 30, { size: 10.5, color: 'green', align: 'left', baseline: 'top' });
+          const Ct0 = 8, cu0 = cuOf(Ct0, Kd), cu1 = cuOf(Ct0, Kd * (1 + disp.value));
+          sI.dot(cu0, bnd(Kd)(cu0), { r: 5.5, color: 'accent' });
+          sI.dot(cu1, bnd(Kd * (1 + disp.value))(cu1), { r: 5.5, color: 'orange' });
+          // time course
+          const ts = []; for (let i = 0; i <= 280; i++) ts.push((i / 280) * 14);
+          const f0 = mdl.f(0);
+          sT.vline(T0, { color: 'orange', dash: [5, 4], width: 1.4 });
+          sT.text('displacer added', T0 + 0.15, 2.15, { size: 10.5, color: 'orange', align: 'left', baseline: 'top' });
+          sT.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
+          sT.clip(() => {
+            sT.path(ts.map((t) => [t, mdl.f(t).Ct / f0.Ct]), { color: 'accent', width: 2.6 });
+            sT.path(ts.map((t) => [t, mdl.f(t).Cu / f0.Cu]), { color: 'green', width: 2.6 });
+          });
+        });
+        v.legend([['accent', 'total drug (bound + unbound)'], ['green', 'unbound drug'], ['orange', 'with displacer (left panel)']]);
+        v.readout(() => {
+          const m = mdl, a = m.f(0), z = m.f(T0 + 0.01), e = m.f(14);
+          const peak = Math.max(...Array.from({ length: 200 }, (_, i) => m.f(T0 + (i / 199) * 8).Cu)) / a.Cu;
+          return `$f_u$ rises from ${v.fix(100 * m.fu0, 2)} % to ${v.fix(100 * m.fu1, 2)} % (×${v.fix(m.fu1 / m.fu0, 2)}). Right after the displacement: total $\\times ${v.fix(z.Ct / a.Ct, 2)}$, unbound $\\times ${v.fix(z.Cu / a.Cu, 2)}$ (peak unbound ×${v.fix(peak, 2)}). After 8 more half-lives: total $\\times ${v.fix(e.Ct / a.Ct, 2)}$, unbound $\\times ${v.fix(e.Cu / a.Cu, 2)}$ — ${mode.value === 'enz' ? 'unbound returns to baseline, total falls by $1/(f_{u,1}/f_{u,0})$' : 'total is unchanged, unbound stays raised by $f_{u,1}/f_{u,0}$'}. (Modelled, educational.)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.8
+    {
+      num: '1.8',
+      kind: 'Model',
+      name: 'pH partition and ion trapping',
+      statement: String.raw`A weak electrolyte exists as a neutral and an ionized form in a ratio set by the pH and its $\mathrm{p}K_a$ (Henderson–Hasselbalch): for an acid the neutral fraction is $f = 1/(1+10^{\mathrm{pH}-\mathrm{p}K_a})$, for a base $f = 1/(1+10^{\mathrm{p}K_a-\mathrm{pH}})$. If only the neutral form can cross a membrane, then at equilibrium the neutral concentrations are equal on both sides, so the total concentrations differ in the ratio $\dfrac{C_2}{C_1} = \dfrac{f_1}{f_2}$; for an acid $\dfrac{C_2}{C_1} = \dfrac{1+10^{\mathrm{pH}_2-\mathrm{p}K_a}}{1+10^{\mathrm{pH}_1-\mathrm{p}K_a}}$. A weak acid accumulates on the more alkaline side and a weak base on the more acidic side: **ion trapping**.`,
+      idea: String.raw`Charged molecules cannot cross the lipid bilayer (1.9), so the neutral species equilibrates: net flux is proportional to $f_1C_1 - f_2C_2$ and stops when this vanishes. Mass is conserved, so the totals simply redistribute to satisfy $f_1C_1=f_2C_2$, and the relaxation is a single exponential at rate $k(f_1+f_2)$. The ratio does not depend on the permeability, only on pH and $\mathrm{p}K_a$, which is why alkalinizing the urine speeds the excretion of a weak acid such as phenobarbital or salicylate (it traps more of it in the urine), while acidifying it does the same for amphetamine (a base).`,
+      caption: String.raw`Two compartments of equal volume with equal total drug at the start, separated by a membrane that passes only the neutral form (hollow dots; filled dots are ionized). Pick a drug or set its $\mathrm{p}K_a$, and set the pH of each side (or use a preset pair). The chambers equilibrate (animation, time in units of $1/k$); the middle panel shows both total concentrations on a log axis diverging to the Henderson–Hasselbalch ratio, and the right panel plots that ratio against the pH of side B. Dot density is relative to the more concentrated side. The $\mathrm{p}K_a$ values are rounded textbook figures.`,
+      scope: String.raw`Applies to weak electrolytes that cross only as the neutral species by passive diffusion, with no active transport and no binding; the two sides are assumed to keep their pH. Real membranes also pass some ionized drug and have transporters.`,
+      deps: ['physio-8.2', 'physio-1.3'],
+      refs: ['Goodman–Gilman ch. 2'],
+      tags: ['pH partition', 'ionization'],
+      credit: 'Brodie, Schanker, Hogben and others, 1950s (pH-partition hypothesis)',
+      viz(v) {
+        const PRE = {
+          aspirin: { kind: 'acid', pKa: 3.5 }, phenobarbital: { kind: 'acid', pKa: 7.2 },
+          morphine: { kind: 'base', pKa: 8.2 }, amphetamine: { kind: 'base', pKa: 9.9 },
+        };
+        const sel = v.select('drug', [{ value: 'aspirin', label: 'aspirin (acid, 3.5)' }, { value: 'phenobarbital', label: 'phenobarbital (acid, 7.2)' }, { value: 'morphine', label: 'morphine (base, 8.2)' }, { value: 'amphetamine', label: 'amphetamine (base, 9.9)' }, { value: 'free', label: 'free' }], 'aspirin');
+        const kind = v.select('type', [{ value: 'acid', label: 'weak acid' }, { value: 'base', label: 'weak base' }], 'acid');
+        let prog = false;
+        const pKa = v.slider('$\\mathrm{p}K_a$', 1, 12, 3.5, { step: 0.1, fmt: (x) => v.fix(x, 1), onChange: () => { if (!prog) sel.value = 'free'; } });
+        const pH1 = v.slider('pH of side A', 1, 9, 1.5, { step: 0.1, fmt: (x) => v.fix(x, 1) });
+        const pH2 = v.slider('pH of side B', 1, 9, 7.4, { step: 0.1, fmt: (x) => v.fix(x, 1) });
+        v.button('plasma | acidic urine', () => { pH1.set(7.4); pH2.set(5.5); });
+        v.button('plasma | alkaline urine', () => { pH1.set(7.4); pH2.set(8.0); });
+        v.button('stomach | plasma', () => { pH1.set(1.5); pH2.set(7.4); });
+        const sc = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1.05, minWidth: 250 });
+        const st = v.stage({ x: [0, 6], y: [1e-4, 10], ylog: true, axes: 'box', gutter: true, xlabel: 'time ($1/k$)', ylabel: 'total concentration / initial', height: 300, weight: 1, minWidth: 250 });
+        const sr = v.stage({ x: [1, 9], y: [1e-4, 1e4], ylog: true, axes: 'box', gutter: true, xlabel: 'pH of side B', ylabel: 'ratio $C_B/C_A$', height: 300, weight: 0.95, minWidth: 250 });
+        const rng = v.rng(11);
+        const N = 120;
+        const pts = [0, 1].map(() => Array.from({ length: N }, () => [rng(), rng(), rng()]));
+        const neut = (pH, pk, kd) => (kd === 'acid' ? 1 / (1 + Math.pow(10, pH - pk)) : 1 / (1 + Math.pow(10, pk - pH)));
+        let last = sel.value, info = null;
+        v.animate((tt) => {
+          if (sel.value !== last) { last = sel.value; if (sel.value !== 'free') { const p = PRE[sel.value]; prog = true; pKa.set(p.pKa); kind.set(p.kind); prog = false; } }
+          const f1 = neut(pH1.value, pKa.value, kind.value), f2 = neut(pH2.value, pKa.value, kind.value);
+          const lam = f1 + f2, C1inf = (2 * f2) / (f1 + f2), C2inf = 2 - C1inf;
+          const C = (t) => { const e = Math.exp(-lam * t); return [C1inf + (1 - C1inf) * e, C2inf + (1 - C2inf) * e]; };
+          const t = clamp(((tt % 12) / 9) * 6, 0, 6);
+          const [c1, c2] = C(t), cm = Math.max(c1, c2);
+          // ---- chambers
+          const y0 = 0.6, y1 = 5.0, xm = 5, wm = 0.28;
+          const side = (xa, xb, c, f, col, label, pH, k) => {
+            sc.rect(xa, y0, xb, y1, { fill: col, fillAlpha: 0.05, color: col, width: 1.6 });
+            const n = Math.round((N * c) / cm), nN = Math.round(n * f);
+            const P = pts[k];
+            const nn = [], ni = [];
+            for (let i = 0; i < n; i++) { const p = [xa + 0.15 + P[i][0] * (xb - xa - 0.3), y0 + 0.15 + P[i][1] * (y1 - y0 - 0.3)]; (i < nN ? nn : ni).push(p); }
+            sc.dots(ni, { r: 2.8, color: col });
+            for (const p of nn) sc.dot(p[0], p[1], { r: 3.4, color: col, hollow: true, width: 1.5 });
+            sc.text(label, (xa + xb) / 2, y1 + 0.18, { size: 11.5, color: col, align: 'center', baseline: 'bottom', weight: 600 });
+            sc.text(`pH ${v.fix(pH, 1)} · neutral ${v.fix(100 * f, f < 0.01 ? 2 : 1)} %`, (xa + xb) / 2, y0 - 0.12, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
+          };
+          side(0.3, xm - wm / 2, c1, f1, 'accent', 'side A', pH1.value, 0);
+          side(xm + wm / 2, 9.7, c2, f2, 'orange', 'side B', pH2.value, 1);
+          sc.rect(xm - wm / 2, y0, xm + wm / 2, y1, { fill: 'gold', fillAlpha: 0.2, color: 'gold', width: 1.2 });
+          // neutral molecules crossing (decorative, scaled to the net flux sign)
+          const flux = f1 * c1 - f2 * c2;
+          if (Math.abs(flux) > 0.02) for (let j = 0; j < 4; j++) { const u = ((tt * 0.8 + j / 4) % 1), x = flux > 0 ? 3.6 + u * 2.8 : 6.4 - u * 2.8; sc.dot(x, 1.3 + j * 0.95, { r: 3.4, color: flux > 0 ? 'accent' : 'orange', hollow: true, width: 1.5, alpha: 0.9 }); }
+          sc.text('passes neutral form only', xm, y1 + 0.18 + 0.55, { size: 10, color: 'gold', align: 'center', baseline: 'bottom' });
+          // ---- time curves
+          const ts = []; for (let i = 0; i <= 120; i++) ts.push((i / 120) * 6);
+          st.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
+          st.path(ts.map((x) => [x, C(x)[0]]), { color: 'accent', width: 1.4, alpha: 0.3 });
+          st.path(ts.map((x) => [x, C(x)[1]]), { color: 'orange', width: 1.4, alpha: 0.3 });
+          const tt2 = ts.filter((x) => x <= t);
+          st.path(tt2.map((x) => [x, C(x)[0]]), { color: 'accent', width: 2.6 });
+          st.path(tt2.map((x) => [x, C(x)[1]]), { color: 'orange', width: 2.6 });
+          st.dot(t, c1, { r: 5, color: 'accent' }); st.dot(t, c2, { r: 5, color: 'orange' });
+          st.vline(t, { color: 'gold', width: 1 });
+          // ---- ratio vs pH B
+          const ratio = (ph2) => neut(pH1.value, pKa.value, kind.value) / neut(ph2, pKa.value, kind.value);
+          sr.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
+          sr.vline(pH1.value, { color: 'accent', width: 1, dash: [4, 3] });
+          sr.fn(ratio, { color: 'ink', width: 2.4, domain: [1, 9] });
+          sr.dot(pH2.value, ratio(pH2.value), { r: 6, color: 'orange' });
+          sr.vline(pKa.value, { color: 'purple', width: 1, dash: [2, 3] });
+          sr.text('p$K_a$', pKa.value, 3000, { size: 10.5, color: 'purple', align: 'left', baseline: 'top', dx: 4 });
+          info = { f1, f2, c1, c2, t, R: f1 / f2 };
+        }, { period: 12, still: 8 });
+        v.legend([['accent', 'side A, total'], ['orange', 'side B, total'], ['gold', 'membrane (neutral form only)', { area: true }]]);
+        v.readout(() => {
+          const r = info;
+          return `Neutral fractions $f_A = ${v.sci(r.f1, 3)}$, $f_B = ${v.sci(r.f2, 3)}$. Predicted equilibrium ratio $C_B/C_A = f_A/f_B = ${v.sci(r.R, 3)}$; simulated now (t = ${v.fix(r.t, 1)}): $C_B/C_A = ${v.sci(r.c2 / r.c1, 3)}$. The ${kind.value === 'acid' ? 'weak acid piles up on the more alkaline side' : 'weak base piles up on the more acidic side'}; equilibration speed is $k(f_A+f_B) = ${v.fix(r.f1 + r.f2, 3)}\\,k$, but the final ratio does not depend on $k$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9',
+      kind: 'Concept',
+      name: 'Membrane permeability, lipophilicity and the blood–brain barrier',
+      statement: String.raw`Drugs cross cell membranes mainly by passive diffusion through the lipid bilayer, so the permeability of the neutral form rises with its **lipophilicity**, measured by the octanol–water partition coefficient $\log P$ (Overton's rule). Ionized forms are excluded, so for acids and bases the relevant quantity is the distribution coefficient at the local pH, $\log D = \log P - \log_{10}(1+10^{\mathrm{pH}-\mathrm{p}K_a})$ for an acid and $\log P - \log_{10}(1+10^{\mathrm{p}K_a-\mathrm{pH}})$ for a base. The blood–brain barrier, formed by tight junctions between brain capillary endothelial cells, has almost no gaps between cells, so entry into the brain follows these rules, except that **efflux transporters** such as P-glycoprotein pump certain drugs back out, giving brain levels far below what lipophilicity predicts.`,
+      idea: String.raw`A molecule must leave water, dissolve in the oily interior of the bilayer and re-enter water on the other side, so permeability scales with its oil/water solubility ratio; this is the same logic as the neutral-form-only crossing of 1.8. A strong acid at pH 7.4 is almost entirely ionized, so its effective lipophilicity is $\log D\ll\log P$; replacing $\log P$ by $\log D$ therefore moves the acids (salicylic acid, indometacin) toward the trend line. What remains off the line are drugs with an extra mechanism: here quinidine, a P-glycoprotein substrate.`,
+      caption: String.raw`Each point is a compound with a measured steady-state brain/blood ratio ($\log BB$, 21 compounds from the literature). **Hover** over a point for its name and values. Plot against $\log P$ or against $\log D$ at the pH you set (acids move left when the pH is high and base-like drugs move left when it is low) and choose which points enter the least-squares line. The neutral compounds rise clearly with lipophilicity; the acids lie far below the line until ionization is accounted for, and the efflux substrate stays well below it. $\log P$ and $\mathrm{p}K_a$ values are rounded textbook figures.`,
+      scope: String.raw`$\log BB$ for 21 mixed compounds from rodent studies is a coarse picture: each compound has its own protein binding, blood flow and active-transport behaviour. The trend is for passive entry only; no rule of lipophilicity alone predicts brain uptake of a transporter substrate.`,
+      deps: ['physio-1.3'],
+      refs: ['Goodman–Gilman ch. 2'],
+      tags: ['permeability', 'lipophilicity', 'blood–brain barrier'],
+      credit: 'Overton, 1890s (lipid solubility); logBB set compiled from the literature (see PMC3617654, Table 1)',
+      viz(v) {
+        // name, logBB (as printed in the literature table), logP (octanol/water, rounded), kind, pKa, P-gp substrate
+        const DATA = [
+          ['acetone', -0.15, -0.24, 'n'], ['butan-2-one', -0.08, 0.29, 'n'], ['trichloroethene', 0.34, 2.42, 'n'], ['toluene', 0.37, 2.73, 'n'],
+          ['o-xylene', 0.37, 3.12, 'n'], ['p-xylene', 0.31, 3.15, 'n'], ['carbon disulphide', 0.6, 1.94, 'n'],
+          ['salicylic acid', -1.1, 2.26, 'a', 3.0], ['aspirin', -0.5, 1.19, 'a', 3.5], ['paracetamol', -0.31, 0.46, 'n'], ['ibuprofen', -0.18, 3.97, 'a', 4.4],
+          ['indometacin', -1.26, 4.27, 'a', 4.5], ['phenazone', -0.097, 0.38, 'n'], ['aminophenazone', 0, 1.0, 'n'], ['codeine', 0.55, 1.19, 'b', 8.2],
+          ['phenytoin', -0.04, 2.47, 'a', 8.3], ['caffeine', -0.055, -0.07, 'n'], ['theophylline', -0.29, -0.02, 'a', 8.8], ['quinidine', -0.46, 3.44, 'b', 8.6, true],
+          ['physostigmine', 0.079, 1.58, 'b', 7.9], ['diazepam', 0.52, 2.82, 'n'],
+        ].map(([name, bb, lp, kind, pka, pgp]) => ({ name, bb, lp, kind, pka, pgp: !!pgp }));
+        const xs = v.select('horizontal axis', [{ value: 'P', label: 'log P (octanol/water)' }, { value: 'D', label: 'log D at the pH below' }], 'P');
+        const fitSel = v.select('line fitted to', [{ value: 'all', label: 'all points' }, { value: 'nopgp', label: 'all but the efflux substrate' }, { value: 'neutral', label: 'neutral compounds only' }], 'neutral');
+        const pH = v.slider('pH', 6.4, 8.4, 7.4, { step: 0.1, fmt: (x) => v.fix(x, 1) });
+        const s = v.stage({ x: [-2, 5.2], y: [-1.5, 0.9], axes: 'box', gutter: true, xlabel: 'lipophilicity', ylabel: 'log BB (brain / blood)', height: 360, weight: 1, hover: true });
+        const lgD = (d) => (d.kind === 'a' ? d.lp - Math.log10(1 + Math.pow(10, pH.value - d.pka)) : d.kind === 'b' ? d.lp - Math.log10(1 + Math.pow(10, d.pka - pH.value)) : d.lp);
+        let fitInfo = null, hit = null;
+        v.render(() => {
+          const X = DATA.map((d) => (xs.value === 'P' ? d.lp : lgD(d)));
+          s.setView(xs.value === 'P' ? [-2, 5.2] : [-4, 5.2], [-1.5, 0.9]);
+          s.setLabels(xs.value === 'P' ? 'log P (octanol/water)' : `log D at pH ${v.fix(pH.value, 1)}`);
+          pH.el.hidden = xs.value === 'P';
+          const idx = DATA.map((_, i) => i).filter((i) => fitSel.value === 'all' || (fitSel.value === 'nopgp' ? !DATA[i].pgp : DATA[i].kind === 'n'));
+          const lr = v.M.linreg(idx.map((i) => X[i]), idx.map((i) => DATA[i].bb));
+          const lrAll = v.M.linreg(X, DATA.map((d) => d.bb));
+          s.hline(0, { color: 'faint', width: 1 });
+          s.hband(-1.5, -1, { color: 'red', alpha: 0.05 });
+          s.text('log BB < −1: poorly distributed to brain', 5.1, -1.42, { size: 10, color: 'muted', align: 'right', baseline: 'middle' });
+          s.fn((x) => lr.predict(x), { color: 'ink', width: 1.8, dash: [6, 4], domain: [-4, 5.2] });
+          DATA.forEach((d, i) => {
+            const col = d.pgp ? 'red' : d.kind === 'a' ? 'orange' : d.kind === 'b' ? 'purple' : 'accent';
+            s.dot(X[i], d.bb, { r: 6, color: col, hollow: false });
+            if (xs.value === 'D' && d.kind !== 'n') s.arrow(d.lp, d.bb, X[i] + (X[i] < d.lp ? 0.06 : -0.06), d.bb, { color: col, width: 1, alpha: 0.45, head: 5 });
+          });
+          // hover
+          hit = null;
+          const p = s.pointer;
+          if (p && p.inside) { let bd = 24; DATA.forEach((d, i) => { const dd = Math.hypot(s.X(X[i]) - s.X(p.x), s.Y(d.bb) - s.Y(p.y)); if (dd < bd) { bd = dd; hit = i; } }); }
+          if (hit !== null) {
+            const d = DATA[hit];
+            s.dot(X[hit], d.bb, { r: 9, color: 'gold', hollow: true, width: 2 });
+            s.text(`${d.name}: log BB ${v.fix(d.bb, 2)}, log P ${v.fix(d.lp, 2)}${d.kind !== 'n' ? `, log D ${v.fix(lgD(d), 2)}` : ''}${d.pgp ? ' · P-gp substrate' : ''}`, X[hit], d.bb, { size: 11, color: 'ink', align: X[hit] > 2.5 ? 'right' : 'left', baseline: 'bottom', dx: X[hit] > 2.5 ? -10 : 10, dy: -10, weight: 600, plate: true });
+          }
+          const r2P = v.M.linreg(DATA.map((d) => d.lp), DATA.map((d) => d.bb)).r2, r2D = v.M.linreg(DATA.map(lgD), DATA.map((d) => d.bb)).r2;
+          fitInfo = { lr, lrAll, r2P, r2D, n: idx.length };
+        });
+        v.legend([['accent', 'neutral', { dot: true }], ['orange', 'acid', { dot: true }], ['purple', 'base', { dot: true }], ['red', 'P-glycoprotein substrate', { dot: true }], ['ink', 'least-squares line', { dash: true }]]);
+        v.readout(() => {
+          const f = fitInfo;
+          return `Line through the ${f.n} selected points: $\\log BB = ${v.fix(f.lr.intercept, 2)} + ${v.fix(f.lr.slope, 2)}\\,x$, $r^2 = ${v.fix(f.lr.r2, 2)}$. For all 21 compounds: $r^2 = ${v.fix(f.r2P, 2)}$ against $\\log P$ and $${v.fix(f.r2D, 2)}$ against $\\log D$ at pH ${v.fix(pH.value, 1)}. The neutral compounds rise with $\\log P$; acids (orange) fall far below it in $\\log P$ because they are ionized in blood, and correcting for ionization closes much of the gap. Quinidine remains low because it is pumped out.`;
         });
       },
     },

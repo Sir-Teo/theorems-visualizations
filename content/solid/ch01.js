@@ -49,7 +49,7 @@ positive when it pulls (tension) and negative when it pushes (compression). Its 
         const diam = (x) => D0 - (D0 - dn.value) * sm(2.4, 3.5, x) * (1 - sm(5.3, 6.4, x));
         const FH = A.handle(11.2, 0, { color: 'orange', label: 'F', labelPos: 'n', constrain: { x: [9.2, 13.2], y: [0, 0] } });
         const PR = A.handle(7.2, 0, { color: 'accent', constrain: { x: [1.0, 8.6], y: [0, 0] } });
-        FH.set(11.0, 0);
+        FH.set(9.8, 0);
         const Fk = () => (FH.x - X1) * 70; // kN
         const area = (x) => (Math.PI * diam(x) ** 2) / 4;
         v.render(() => {
@@ -81,7 +81,7 @@ positive when it pulls (tension) and negative when it pushes (compression). Its 
         v.readout(() => {
           const m = MATS[mat.value], F = Fk(), a = area(PR.x), s = (F * 1000) / a, an = area(4.5), sn = (F * 1000) / an;
           const state = sn >= m.sy ? '**the neck has yielded**' : s >= m.sy ? '**yielded here**' : 'elastic everywhere';
-          return `Probe: $A = ${f3(a)}\\ \\text{mm}^2$, $\\sigma = F/A = ${f3(F * 1000)}/${f3(a)} = **${f3(s)}\\ \\text{MPa}**$ (${f3(s / m.sy)} of yield). · Neck: $A = ${f3(an)}\\ \\text{mm}^2$, $\\sigma = ${f3(sn)}$ MPa, i.e. ${f3(sn / ((F * 1000) / area(1)) || 0)}× the stress in the thick part. · ${state} (${m.name}, $\\sigma_y = ${m.sy}$ MPa).`;
+          return `Probe: $A = ${f3(a)}\\ \\text{mm}^2$, $\\sigma = F/A = ${f3(F * 1000)}/${f3(a)}\\ \\text{N/mm}^2 =$ **${f3(s)} MPa** (${f3(s / m.sy)} of yield). · Neck: $A = ${f3(an)}\\ \\text{mm}^2$, $\\sigma = ${f3(sn)}$ MPa, i.e. ${f3(area(1) / an)}× the stress in the thick part. · ${state} (${m.name}, $\\sigma_y = ${m.sy}$ MPa).`;
         });
       },
     },
@@ -138,7 +138,7 @@ a pure number (often quoted in microstrain, $1\,\mu\varepsilon = 10^{-6}$). At a
         });
         v.readout(() => {
           const delta = Math.max(0, H.x - 10), ea = delta / L0, p = prof();
-          return `$\\varepsilon_{\\text{avg}} = \\delta/L = ${delta.toFixed(3)}/10 = **${ea.toFixed(4)}**$ ($${(ea * 1e6).toExponential(1).replace('e+', '\\times 10^{').replace('e-', '\\times 10^{-')}}\\ \\mu\\varepsilon$) · ${shape.value === 'u' ? 'every segment shows the same strain: local = average.' : `local strain runs from **${(ea * p(0)).toFixed(3)}** at the thick (wall) end to **${(ea * p(10)).toFixed(3)}** at the thin end, averaging ${ea.toFixed(3)}.`} · $\\delta = \\int_0^L\\varepsilon\\,dx$ ✓.`;
+          return `$\\varepsilon_{\\text{avg}} = \\delta/L = ${delta.toFixed(3)}/10 =$ **${ea.toFixed(4)}** (${(ea * 1e6).toFixed(0)} microstrain) · ${shape.value === 'u' ? 'every segment shows the same strain: local = average.' : `local strain runs from **${(ea * p(0)).toFixed(3)}** at the thick (wall) end to **${(ea * p(10)).toFixed(3)}** at the thin end, averaging ${ea.toFixed(3)}.`} · $\\delta = \\int_0^L\\varepsilon\\,dx$ ✓.`;
         });
       },
     },
@@ -163,7 +163,7 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
         const matSel = v.select('material', [{ value: 'steel', label: 'steel S355' }, { value: 'al', label: 'Al 6061-T6' }, { value: 'cu', label: 'copper' }, { value: 'rub', label: 'rubber' }], 'steel');
         const win = v.select('strain window', [{ value: 'full', label: 'whole test' }, { value: 'zoom', label: 'first 1 %' }], 'full');
         const unl = v.slider('unload (% of the stress)', 0, 100, 0, { step: 1 });
-        const SP = v.stage({ x: [-1.2, 1.2 + 0.0], y: [-0.2, 4.4], axes: false, height: 400, weight: 0.55, minWidth: 190, title: 'specimen (gauge length marked)' });
+        const SP = v.stage({ x: [-2.3, 1.2], y: [-0.2, 4.4], axes: false, height: 400, weight: 0.55, minWidth: 190, title: 'specimen (gauge length marked)' });
         const C = v.stage({ x: [0, 0.3], y: [0, 560], axes: 'box', gutter: { l: 50, b: 38 }, height: 400, weight: 1.6, xlabel: 'engineering strain ε = δ/L₀', ylabel: 'engineering stress σ (MPa)', title: 'stress–strain curve' });
         const sigF = () => (matSel.value === 'rub' ? rubberSig : curveOf(matSel.value).sig);
         const emaxOf = () => (matSel.value === 'rub' ? 5 : curveOf(matSel.value).ef);
@@ -199,8 +199,8 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
             const items = [
               { x: cv.ePL, y: cv.sPL, text: 'proportional limit', color: 'muted', r: 4 },
               { x: cv.eOff, y: cv.sOff, text: `yield ${cv.sy} MPa${MATS[m].eL ? ' (plateau)' : ' (0.2 % offset)'}`, color: 'orange', r: 4 },
-              { x: cv.eu, y: cv.su, text: `ultimate ${cv.su} MPa`, color: 'green', r: 4 },
-              { x: cv.ef, y: cv.sig(cv.ef), text: 'fracture', color: 'red', r: 4 },
+              { x: cv.eu, y: cv.su, text: `ultimate ${cv.su} MPa`, color: 'green', r: 4, prefer: [0, -1] },
+              { x: cv.ef, y: cv.sig(cv.ef), text: 'fracture', color: 'red', r: 4, prefer: [0, -1] },
             ].filter((it) => it.x < xmax * 0.98 && it.y < ymax * 0.98);
             items.forEach((it) => C.dot(it.x, it.y, { r: 4.5, color: it.color }));
             placeLabels(v, C, items.map((it) => ({ ...it, size: 11 })), { points: [[C.X(st.e), C.Y(st.s), 10]] });
@@ -252,7 +252,7 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
             void hiB; void loT;
           }
           SP.text(frac ? 'cup and cone' : '', 0, mid, { size: 11, color: 'red', align: 'center', weight: 650, dx: 62 });
-          SP.measure(-1.05, ylo, -1.05, yhi, `L = ${(1 + (mo === 'rub' ? e : e)).toFixed(mo === 'rub' ? 2 : 3)} L₀`);
+          SP.measure(-1.0, ylo, -1.0, yhi, `L = ${(1 + (mo === 'rub' ? e : e)).toFixed(mo === 'rub' ? 2 : 3)} L₀`);
         });
         v.readout(() => {
           const st = state(), m = st.m;
@@ -284,7 +284,7 @@ where the constant $E$ (the **modulus of elasticity** or Young's modulus, in GPa
         const matSel = v.select('material', [{ value: 'steel', label: 'steel S355' }, { value: 'al', label: 'Al 6061-T6' }, { value: 'cu', label: 'copper' }, { value: 'rub', label: 'rubber' }], 'steel');
         const S = v.stage({ x: [0, 0.01], y: [0, 500], axes: 'box', gutter: { l: 50 }, height: 340, weight: 1.4, xlabel: 'strain ε', ylabel: 'stress σ (MPa)', title: 'recorded readings' });
         const R = v.stage({ x: [0, 0.01], y: [-8, 8], axes: 'box', gutter: { l: 50 }, height: 340, weight: 1, xlabel: 'strain ε', ylabel: 'deviation from Hooke line (%)', title: 'departure from linearity' });
-        const XMAX = { steel: 0.0055, al: 0.0075, cu: 0.0022, rub: 0.5 };
+        const XMAX = { steel: 0.0032, al: 0.0075, cu: 0.0022, rub: 0.5 };
         const sigF = () => (matSel.value === 'rub' ? rubberSig : curveOf(matSel.value).sig);
         const H = S.handle(0.002, 100, { color: 'gold', r: 8, constrain: (x) => { const e = Math.max(0, Math.min(XMAX[matSel.value], x)); return [e, sigF()(e)]; } });
         let last = '';
@@ -354,7 +354,7 @@ Poisson's ratio is dimensionless and lies between $-1$ and $\tfrac12$ for a stab
           S.rect(-wL, 0, wL, Hh, { fill: 'accent', fillAlpha: 0.22, color: 'ink', width: 2 });
           for (let i = 1; i < 4; i++) { S.line(-wL, (Hh * i) / 4, wL, (Hh * i) / 4, { color: 'ink', width: 1, alpha: 0.5 }); S.line((-wL * (4 - 2 * i)) / 4 * 1, 0, (-wL * (4 - 2 * i)) / 4, Hh, { color: 'ink', width: 1, alpha: 0.5 }); }
           if (sel.value === 'rub') { const we = W0 * (1 + e) ** -0.5; S.rect(-we, 0, we, Hh, { color: 'orange', width: 1.5, dash: [5, 3], fill: false }); }
-          S.measure(-W0 - 0.35, 0, -W0 - 0.35, 4, 'H');
+          S.measure(-W0 - 0.7, 0, -W0 - 0.7, 4, 'H');
           S.arrow(0, Hh, 0, Hh + 0.9, { color: 'orange', width: 3, head: 10 });
           S.arrow(0, 0, 0, -0.01, { color: 'muted', width: 1 });
           S.line(-W0, -0.18, W0, -0.18, { color: 'muted', width: 1 });
@@ -372,7 +372,7 @@ Poisson's ratio is dimensionless and lies between $-1$ and $\tfrac12$ for a stab
           const nu = NU[sel.value], e = (H.y - 4) / 4, el = -(1 - nu * e - 1);
           const wm = 1 - nu * e, nuMeas = e > 1e-9 ? (1 - wm) / e : nu;
           const dV = (1 + e) * wm * wm - 1, dVsmall = (1 - 2 * nu) * e;
-          return `$\\varepsilon_{\\text{axial}} = ${e.toFixed(3)}$, $\\varepsilon_{\\text{lateral}} = ${(-nu * e).toFixed(3)}$ → measured $\\nu = ${nuMeas.toFixed(2)}$ · volume change $\\Delta V/V = (1+\\varepsilon)(1-\\nu\\varepsilon)^2 - 1 = **${(dV * 100).toFixed(1)}\\ \\%**$ (small-strain $(1-2\\nu)\\varepsilon = ${(dVsmall * 100).toFixed(1)}$ %) ${sel.value === 'rub' ? '· rubber: no volume change' : sel.value === 'cork' ? '· cork: the width does not change at all' : ''}`;
+          return `$\\varepsilon_{\\text{axial}} = ${e.toFixed(3)}$, $\\varepsilon_{\\text{lateral}} = ${(-nu * e).toFixed(3)}$ → measured $\\nu = ${nuMeas.toFixed(2)}$ · volume change $\\Delta V/V = (1+\\varepsilon)(1-\\nu\\varepsilon)^2 - 1 =$ **${(dV * 100).toFixed(1)} %** (small-strain $(1-2\\nu)\\varepsilon = ${(dVsmall * 100).toFixed(1)}$ %) ${sel.value === 'rub' ? '· rubber: no volume change' : sel.value === 'cork' ? '· cork: the width does not change at all' : ''}`;
           void el;
         });
       },
@@ -385,58 +385,224 @@ Poisson's ratio is dimensionless and lies between $-1$ and $\tfrac12$ for a stab
       statement: String.raw`A force $V$ acting **parallel** to a cut of area $A$ produces **shear stress** $\tau = V/A$ (average, unit Pa). Matching it, equilibrium of a small element requires equal shear stresses on its perpendicular faces ($\tau_{xy} = \tau_{yx}$). Under shear a small rectangle deforms into a parallelogram; the **shear strain** $\gamma$ is the decrease of the right angle between two originally perpendicular edges, $\gamma = \tan^{-1}(\delta/h) \approx \delta/h$ for a layer of thickness $h$ displaced by $\delta$. In the linear elastic range
 $$\tau = G\gamma,\qquad G = \frac{E}{2(1+\nu)},$$
 with $G$ the **shear modulus**. The shear modulus is not independent: for steel $G \approx 81$ GPa, for aluminium 26 GPa, for copper 44 GPa.`,
-      idea: String.raw`Normal stress changes lengths; shear stress changes angles, so a separate constant is needed, but only one: an isotropic material has just two independent elastic constants. Looking at a square sheared by $\tau$ along its diagonal (2.8, 3.1) shows that this loading is the same as tension in one diagonal direction and compression in the other, each of size $\tau$; the diagonal stretches by $(1+\nu)\tau/E$, and comparing this with the geometric stretch $\gamma/2$ of the diagonal gives $\gamma = 2(1+\nu)\tau/E$, i.e. the formula for $G$.`,
+      idea: String.raw`Normal stress changes lengths; shear stress changes angles, so a separate constant is needed, but only one: an isotropic material has just two independent elastic constants. Looking at a square sheared by $\tau$ along its diagonal (Mohr's circle, 3.3) shows that this loading is the same as tension in one diagonal direction and compression in the other, each of size $\tau$; the diagonal stretches by $(1+\nu)\tau/E$, and comparing this with the geometric stretch $\gamma/2$ of the diagonal gives $\gamma = 2(1+\nu)\tau/E$, i.e. the formula for $G$.`,
       caption: String.raw`Drag the top face of the block sideways to shear it. The four arrows are the shear stresses: equal pairs on perpendicular faces (the complementary shears needed for moment equilibrium). The angle at the corner is $\gamma$; the lower panel plots $\tau$ against $\gamma$ for all materials, a line of slope $G = E/2(1+\nu)$ (computed from the table values of $E$ and $\nu$). The angle is drawn magnified so that steel's tiny shear strain is visible: the magnification is printed on the picture.`,
       deps: ['solid-1.1'],
       refs: ['Gere–Goodno §1.8'],
       tags: ['shear', 'modulus'],
       viz(v) {
-        const sel = v.select('material', [{ value: 'steel', label: 'steel' }, { value: 'al', label: 'aluminium' }, { value: 'cu', label: 'copper' }, { value: 'conc', label: 'concrete' }, { value: 'rub', label: 'rubber' }], 'steel');
-        const S = v.stage({ x: [-3.2, 3.2], y: [-1.2, 4.8], equal: true, axes: false, height: 360, weight: 1, minWidth: 280, title: 'a block sheared by τ' });
-        const P = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: { l: 56 }, height: 360, weight: 1.15, xlabel: 'shear strain γ', ylabel: 'shear stress τ (MPa)', title: 'τ = Gγ' });
+        const MK = ['steel', 'al', 'cu', 'conc', 'rub'];
+        const NM = { steel: 'steel', al: 'aluminium', cu: 'copper', conc: 'concrete', rub: 'rubber' };
+        const sel = v.select('material', MK.map((k) => ({ value: k, label: NM[k] })), 'steel');
+        const S = v.stage({ x: [-3.2, 3.2], y: [-1.3, 4.8], equal: true, axes: false, height: 360, weight: 1, minWidth: 280, title: 'a block sheared by τ' });
+        const P = v.stage({ x: [1e-5, 1], y: [1e-2, 1e3], xlog: true, ylog: true, axes: 'box', gutter: { l: 52 }, height: 360, weight: 1.1, xlabel: 'shear strain γ', ylabel: 'shear stress τ (MPa)', title: 'τ = Gγ on log axes: slope 1, height ∝ G' });
         const G = (k) => (k === 'rub' ? RUBBER.G : G_of(MATS[k]));
-        // reference shear stress (end of the plotted line): ~Tresca 0.5σy for metals, fctm for concrete, γ = 0.5 for rubber
+        // end of the plotted range: half the yield stress for metals (Tresca), the tensile strength for concrete, γ = 0.5 for rubber
         const tauRef = (k) => (k === 'rub' ? RUBBER.G * 0.5 : k === 'conc' ? 2.9 : 0.5 * MATS[k].sy);
-        const H = S.handle(1.2, 2.0, { color: 'orange', r: 8, constrain: (x, y) => [Math.max(0.01, Math.min(2.4, x)), 2.0] });
+        const H = S.handle(1.2, 2.0, { color: 'orange', r: 8, constrain: (x) => [Math.max(0.03, Math.min(2.4, x)), 2.0] });
         let last = '';
         v.render(() => {
           const k = sel.value; if (k !== last) { last = k; H.set(1.2, 2.0); }
-          const frac = Math.min(1, H.x / 2.4), tau = frac * tauRef(k) * 1.0, gam = tau / G(k), mag = 0.45 / (tauRef(k) / G(k)), d = Math.tan(gam * mag) * 2;
-          void d;
-          const th = gam * mag, dd = 2 * Math.tan(th);
-          S.rect(-2.2, -0.3, 2.2, 0, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.5 });
-          for (let x = -2.2; x < 2.2; x += 0.3) S.line(x, -0.3, x - 0.3, -0.6, { color: 'muted', width: 1 });
+          const frac = Math.min(1, H.x / 2.4), tau = frac * tauRef(k), gam = tau / G(k), mag = 0.4 / (tauRef(k) / G(k)), th = Math.atan(gam * mag), dd = 2 * Math.tan(th);
+          S.rect(-2.3, -0.3, 2.3, 0, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.5 });
+          for (let x = -2.3; x < 2.3; x += 0.3) S.line(x, -0.3, x - 0.3, -0.6, { color: 'muted', width: 1 });
           S.rect(-1.2, 0, 1.2, 2, { fill: 'gray', fillAlpha: 0.1, color: 'muted', width: 1.2, dash: [4, 3] });
           S.poly([[-1.2, 0], [1.2, 0], [1.2 + dd, 2], [-1.2 + dd, 2]], { fill: 'accent', fillAlpha: 0.28, color: 'ink', width: 2 });
-          S.rect(-1.2 + dd - 0.9, 2, 1.2 + dd + 0.9, 2.28, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.5 });
-          // stress arrows on four faces
-          const a = Math.max(0.0, frac) * 1.1 + 0.001;
+          S.rect(-1.5 + dd, 2, 1.5 + dd, 2.3, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.5 });
           if (frac > 0.02) {
-            for (const yy of [0.5, 1.5]) { S.arrow(1.2 + dd * (yy / 2) + 0.05, yy, 1.2 + dd * (yy / 2) + 0.05, yy + a * 0.0, { color: 'red', width: 0 }); }
-            S.arrow(-1.2 + dd * 0.0, 2.0 + 0.62, -1.2 + dd * 0.0 + 0.0 + Math.max(0.35, a), 2.62, { color: 'orange', width: 0 });
-            S.arrow(dd + 0.9, 2.62, dd + 0.9 + Math.max(0.5, a * 1.3), 2.62, { color: 'orange', width: 3, head: 10 });
-            S.arrow(-0.9, -0.62, -0.9 - Math.max(0.5, a * 1.3), -0.62, { color: 'orange', width: 0 });
-            // complementary shears on the side faces
-            const xr = 1.2 + dd * 0.5 + 0.12, xl = -1.2 + dd * 0.5 - 0.12;
-            S.arrow(xr, 0.35, xr, 1.65, { color: 'red', width: 2.6, head: 9 });
-            S.arrow(xl, 1.65, xl, 0.35, { color: 'red', width: 2.6, head: 9 });
-            S.text('τ', xr + 0.12, 1.0, { size: 13, color: 'red', weight: 700 });
+            const L = 0.5 + 0.7 * frac;
+            S.arrow(1.5 + dd - L, 2.65, 1.5 + dd, 2.65, { color: 'orange', width: 3, head: 10 });
+            S.text('V', 1.5 + dd - L / 2, 2.65, { size: 13, color: 'orange', weight: 700, dy: -12, align: 'center' });
+            const xr = 1.2 + dd * 0.5 + 0.13, xl = -1.2 + dd * 0.5 - 0.13;
+            S.arrow(xr, 0.3, xr, 1.7, { color: 'red', width: 2.6, head: 9 });
+            S.arrow(xl, 1.7, xl, 0.3, { color: 'red', width: 2.6, head: 9 });
+            S.arrow(0.4 + dd * 1.0, 2.0 + 0.0, 0.4 + dd * 1.0 + 0.001, 2.0, { color: 'red', width: 0 });
+            S.text('τ', xr + 0.14, 1.0, { size: 13, color: 'red', weight: 700 });
+            S.text('τ', xl - 0.14, 1.3, { size: 13, color: 'red', weight: 700, align: 'right' });
+            S.arrow(-0.2 + dd * 0.0 - 0.0, 2.0, -0.2, 2.0, { color: 'red', width: 0 });
           }
-          // angle
-          S.arc?.(0, 0, 0, 0);
-          const ang = (x0, y0) => { const r = 0.7, pts = []; for (let i = 0; i <= 14; i++) { const t = (Math.PI / 2) - th + (th * i) / 14 + 0; pts.push([x0 + r * Math.cos(t), y0 + r * Math.sin(t)]); } return pts; };
-          S.path(ang(1.2, 0), { color: 'green', width: 2 });
-          S.text(`γ = ${gam.toFixed(gam < 0.01 ? 5 : 3)}`, 1.2 + 0.2, 0.6, { size: 12, weight: 700, color: 'green', align: 'left', dx: 24 });
-          S.text(`angle drawn ×${mag.toFixed(0)} larger`, 0, -1.0, { size: 10.5, color: 'muted', align: 'center' });
-          // tau-gamma plot: all materials as lines
-          const gmax = Math.max(...['steel', 'al', 'cu', 'conc', 'rub'].map((q) => tauRef(q) / G(q)));
-          P.setView([0, gmax * 1.1], [0, 1]);
-          void gmax;
+          const arc = []; for (let i = 0; i <= 16; i++) { const t = Math.PI / 2 - th + (th * i) / 16; arc.push([-1.2 + 0.75 * Math.cos(t), 0.75 * Math.sin(t)]); }
+          S.path(arc, { color: 'green', width: 2.4 });
+          S.text(`γ = ${gam < 0.01 ? gam.toExponential(1).replace('e-', '·10⁻') : gam.toFixed(3)}`, -1.45, 0.3, { size: 12.5, weight: 700, color: 'green', align: 'right' });
+          S.text(`angle drawn ×${mag.toFixed(mag < 10 ? 1 : 0)} larger than true`, 0, -0.95, { size: 10.5, color: 'muted', align: 'center' });
+          // τ–γ chart
+          P.setView([1e-5, 1], [1e-2, 1e3]);
+          const COL = { steel: 'accent', al: 'orange', cu: 'teal', conc: 'purple', rub: 'pink' };
+          for (const q of MK) {
+            const act = q === k, g1 = tauRef(q) / G(q);
+            P.fn((g) => G(q) * g, { domain: [1e-5, g1], color: COL[q], width: act ? 3.2 : 1.6, alpha: act ? 1 : 0.7 });
+          }
+          v.legend(MK.map((q) => [COL[q], `${NM[q]} G = ${G(q) >= 1000 ? (G(q) / 1000).toFixed(1) + ' GPa' : G(q).toFixed(2) + ' MPa'}`]));
+          P.dot(gam, tau, { r: 6, color: 'gold' });
         });
         v.readout(() => {
           const k = sel.value, frac = Math.min(1, H.x / 2.4), tau = frac * tauRef(k), gam = tau / G(k);
           const nu = k === 'rub' ? 0.5 : MATS[k].nu, Ee = k === 'rub' ? 3 * RUBBER.G : MATS[k].E;
-          return `$\\tau = ${f3(tau)}$ MPa, $\\gamma = \\tau/G = ${gam.toExponential(2).replace('e-', '\\times10^{-').replace('e+', '\\times10^{')}}$ rad · $G = E/2(1+\\nu) = ${f3(Ee)}/(2\\cdot ${(1 + nu).toFixed(2)}) = **${f3(G(k) / (k === 'rub' ? 1 : 1000))}\\ \\text{${k === 'rub' ? 'MPa' : 'GPa'}}**$ · complementary shear on the side faces equals ${f3(tau)} MPa.`;
+          return `$\\tau = ${f3(tau)}$ MPa, $\\gamma = \\tau/G = ${gam.toExponential(2).replace('e-', '\\times10^{-').replace('e+', '\\times10^{')}}$ rad · $G = E/2(1+\\nu) = ${f3(Ee)}/(2\\cdot ${(1 + nu).toFixed(2)}) =$ **${f3(G(k) / (k === 'rub' ? 1 : 1000))} ${k === 'rub' ? 'MPa' : 'GPa'}** · the complementary shear on the side faces is also ${f3(tau)} MPa.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.7
+    {
+      num: '1.7',
+      kind: 'Concept',
+      name: 'Ductile versus brittle behaviour',
+      statement: String.raw`A **ductile** material (structural steel, aluminium, copper) can stretch a long way beyond yield before it breaks: its elongation at fracture is of order 10–50 %, it necks, and a tensile specimen fails on a **cup-and-cone** surface. A **brittle** material (cast iron, glass, concrete in tension, ceramics) fractures at small strain, typically below about 5 %, with little or no yielding and a flat surface perpendicular to the load. Ductility is measured by the percentage elongation at fracture and the percentage reduction of area. What distinguishes the two is not the strength but the **area under the curve**: a ductile metal absorbs one to three orders of magnitude more energy per unit volume before breaking, and warns before it fails by deforming visibly.`,
+      idea: String.raw`In a ductile metal planes of atoms can slip, so peak stresses at flaws are relieved by local yielding and the material redistributes load; this shows as a long plastic plateau and hardening in the curve (1.3). In a brittle material slip is blocked, so a flaw cannot yield: the stress at its tip keeps rising until bonds break and the crack runs through the cross-section (the energy balance for that is Griffith's, 11.4). The tensile curve of a brittle solid is therefore an almost straight line cut short at a strength that depends on the largest flaw, and the material gives no early warning.`,
+      caption: String.raw`Two specimens are pulled together at the same speed: ductile steel S355 on the left, grey cast iron on the right. Watch which breaks first and how: the cast iron snaps flat after a stretch you cannot see; steel yields, stretches, necks and tears on a cup and cone. The right-hand plot draws both curves with the energy absorbed so far shaded. Switch to the **first 0.5 %** window: steel is still going when the iron has broken (strains are magnified ×40 in this window so that you can see them).`,
+      deps: ['solid-1.3'],
+      refs: ['Gere–Goodno §1.5'],
+      tags: ['ductility', 'fracture'],
+      viz(v) {
+        const win = v.select('strain window', [{ value: 'full', label: '0 – 30 %' }, { value: 'zoom', label: 'first 0.5 %' }], 'full');
+        const SP = v.stage({ x: [-3.6, 3.6], y: [-0.2, 9.2], equal: true, axes: false, height: 400, weight: 1.0, minWidth: 270, title: 'steel S355 (left) · grey cast iron (right)' });
+        const C = v.stage({ x: [0, 0.3], y: [0, 560], axes: 'box', gutter: { l: 52 }, height: 400, weight: 1.15, xlabel: 'engineering strain ε', ylabel: 'stress σ (MPa)', title: 'the two stress–strain curves' });
+        const cd = curveOf('steel'), M = MATS.cast, efb = (2 * M.su) / M.E; // brittle: σ = su (1 − (1 − ε/εf)²), initial slope E
+        const sigB = (e) => (e >= efb ? M.su : M.su * (1 - (1 - e / efb) ** 2));
+        const workB = (e) => { const x = Math.min(e, efb); return M.su * (x - x * x / efb + x ** 3 / (3 * efb * efb)); };
+        const T = 8;
+        const cup = (S, cx, ylo, yhi, w, gap) => {
+          const nw = w * 0.45, lo = ylo, hi = yhi;
+          S.path([[cx - w, lo], [cx + w, lo], [cx + w, lo + 0.9], [cx + nw, lo + 0.9 + 0.3 * 0], [cx + nw, hi - 0.0], [cx, hi + 0.3], [cx - nw, hi - 0.0], [cx - nw, lo + 0.9], [cx - w, lo + 0.9]], { close: true, color: 'ink', width: 1.6, fill: 'accent', fillAlpha: 0.3 });
+          void gap;
+        };
+        v.animate((t) => {
+          const zoom = win.value === 'zoom', emax = zoom ? 0.005 : 0.30, ec = emax * Math.min(1, t / T), mag = zoom ? 40 : 1;
+          const fD = ec >= cd.ef, fB = ec >= efb;
+          // curves
+          C.setView([0, emax], [0, 560]);
+          C.fn(cd.sig, { domain: [0, Math.min(emax, cd.ef)], n: 500, color: 'accent', width: 2.4, alpha: 0.9 });
+          C.fn(sigB, { domain: [0, Math.min(emax, efb)], n: 200, color: 'purple', width: 2.4 });
+          const eD = Math.min(ec, cd.ef), eB = Math.min(ec, efb);
+          C.fn(cd.sig, { domain: [0, eD], n: 400, fill: true, fillAlpha: 0.22, color: 'accent', width: 0 });
+          C.fn(sigB, { domain: [0, eB], n: 100, fill: true, fillAlpha: 0.4, color: 'purple', width: 0 });
+          if (!fD) C.dot(eD, cd.sig(eD), { r: 6, color: 'gold' }); else C.dot(cd.ef, cd.sig(cd.ef), { r: 6, color: 'red', hollow: true });
+          if (!fB) C.dot(eB, sigB(eB), { r: 6, color: 'gold' }); else C.dot(efb, M.su, { r: 6, color: 'red', hollow: true });
+          const labs = [{ x: Math.min(emax, efb), y: M.su, text: fB ? 'cast iron: broke at ε = 0.4 %' : 'cast iron', color: 'purple', r: 5 }, { x: Math.min(emax * 0.55, cd.eu * 0.9), y: cd.sig(Math.min(emax * 0.55, cd.eu * 0.9)), text: 'steel S355', color: 'accent', r: 3, prefer: [0, -1] }];
+          placeLabels(v, C, labs.slice(1));
+          C.text(fB ? 'cast iron: broke at ε = 0.4 %' : 'cast iron', Math.min(emax, efb) + emax * 0.03, M.su, { size: 11, color: 'purple', weight: 650, align: 'left', plate: true });
+          // specimens
+          const y0 = 2.0, L0 = 3.4, grip = (S, cx, y, top) => { S.rect(cx - 0.9, top ? y : y - 1.2, cx + 0.9, top ? y + 1.2 : y, { fill: 'gray', fillAlpha: 0.45, color: 'ink', width: 1.4 }); };
+          const draw = (cx, e, fr, brittle) => {
+            const wEl = 0.36, w = (ee) => wEl * (1 - 0.3 * ee), ext = (brittle ? e : e) * mag, yt = y0 + L0 * (1 + ext);
+            const neck = brittle ? 0 : cd.neck(e), mid = y0 + (yt - y0) / 2;
+            if (!fr) {
+              const body = []; const prof = (y) => { const tt = (y - y0) / (yt - y0); return w(e) * (1 - neck * Math.exp(-(((tt - 0.5) / 0.13) ** 2))); };
+              for (let k = 0; k <= 70; k++) { const y = y0 + ((yt - y0) * k) / 70; body.push([cx - prof(y), y]); } for (let k = 70; k >= 0; k--) { const y = y0 + ((yt - y0) * k) / 70; body.push([cx + prof(y), y]); }
+              SP.rect(cx - 0.62, y0 - 0.5, cx + 0.62, y0, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 }); SP.rect(cx - 0.62, yt, cx + 0.62, yt + 0.5, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 });
+              SP.path(body, { close: true, color: 'ink', width: 1.6, fill: brittle ? 'purple' : 'accent', fillAlpha: 0.3 });
+              for (let i = 0; i <= 6; i++) { const y = y0 + ((yt - y0) * i) / 6; SP.line(cx - w(e) - 0.08, y, cx + w(e) + 0.08, y, { color: 'orange', width: 1.4 }); }
+              grip(SP, cx, y0 - 0.5, false); grip(SP, cx, yt + 0.5, true);
+              SP.arrow(cx, yt + 1.75, cx, yt + 2.4, { color: 'orange', width: 3, head: 10 });
+              return;
+            }
+            // fractured: pieces recoil/separate
+            const gp = brittle ? 0.18 + 0.3 * Math.min(1, (ec - efb) / 0.01) : 0.4 + 2.0 * Math.min(0.3, ec - cd.ef), lowTop = y0 + L0 * (1 + (brittle ? 0.0 : cd.ef * mag) * 0.55);
+            const nw = brittle ? w(0) : w(cd.ef) * (1 - cd.neck(cd.ef)), wB = brittle ? w(0) : w(cd.ef);
+            if (brittle) {
+              const mid2 = y0 + L0 * 0.55;
+              SP.rect(cx - 0.62, y0 - 0.5, cx + 0.62, y0, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 }); grip(SP, cx, y0 - 0.5, false);
+              SP.poly([[cx - wB, y0], [cx + wB, y0], [cx + wB, mid2], [cx - wB, mid2]], { color: 'ink', width: 1.6, fill: 'purple', fillAlpha: 0.3 });
+              const top0 = mid2 + gp, yt2 = y0 + L0 + gp + 0.4 + 0.0;
+              SP.poly([[cx - wB, top0], [cx + wB, top0], [cx + wB, yt2], [cx - wB, yt2]], { color: 'ink', width: 1.6, fill: 'purple', fillAlpha: 0.3 });
+              SP.rect(cx - 0.62, yt2, cx + 0.62, yt2 + 0.5, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 }); grip(SP, cx, yt2 + 0.5, true);
+              SP.text('flat fracture', cx + wB + 0.2, mid2 + gp / 2, { size: 11, color: 'red', weight: 650, align: 'left' });
+              return;
+            }
+            const half = (y0 + L0 * (1 + cd.ef)) / 2 + 0.6 * 0, yb = y0 + L0 * 0.55 + 0.45;
+            const lowTop2 = yb, upBot = yb + gp;
+            SP.rect(cx - 0.62, y0 - 0.5, cx + 0.62, y0, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 }); grip(SP, cx, y0 - 0.5, false);
+            SP.path([[cx - wB, y0], [cx + wB, y0], [cx + wB * 0.95, yb - 0.9], [cx + nw, yb - 0.35], [cx + nw, yb], [cx, yb + 0.28], [cx - nw, yb], [cx - nw, yb - 0.35], [cx - wB * 0.95, yb - 0.9]], { close: true, color: 'ink', width: 1.6, fill: 'accent', fillAlpha: 0.3 });
+            const ytop = y0 + L0 * (1 + 0.3) + gp + 0.2, ub = upBot;
+            SP.path([[cx - wB, ytop], [cx + wB, ytop], [cx + wB * 0.95, ub + 0.9], [cx + nw, ub + 0.35], [cx + nw, ub], [cx, ub + 0.28], [cx - nw, ub], [cx - nw, ub + 0.35], [cx - wB * 0.95, ub + 0.9]], { close: true, color: 'ink', width: 1.6, fill: 'accent', fillAlpha: 0.3 });
+            SP.rect(cx - 0.62, ytop, cx + 0.62, ytop + 0.5, { fill: 'accent', fillAlpha: 0.2, color: 'ink', width: 1.4 }); grip(SP, cx, ytop + 0.5, true);
+            SP.text('cup and cone', cx + wB + 0.2, (yb + ub) / 2, { size: 11, color: 'red', weight: 650, align: 'left' });
+            void half; void lowTop; void lowTop2; void cup;
+          };
+          draw(-1.9, Math.min(ec, cd.ef), fD, false);
+          draw(1.9, Math.min(ec, efb), fB, true);
+          SP.text(zoom ? 'stretch magnified ×40' : 'true proportions', 0, -0.05, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
+          v.legend([['accent', 'steel', { area: true }], ['purple', 'cast iron', { area: true }], ['orange', 'gauge marks']]);
+        }, { period: T + 1.5, still: 7.4 });
+        v.readout(() => {
+          const zoom = win.value === 'zoom', ec = (zoom ? 0.005 : 0.30) * Math.min(1, v.t % (T + 1.5) / T);
+          const wD = cd.work(Math.min(ec, cd.ef)), wB = workB(ec), fB = ec >= efb, fD = ec >= cd.ef;
+          return `$\\varepsilon = ${ec.toFixed(4)}$ · steel: ${fD ? '**fractured**' : `σ = ${f3(cd.sig(ec))} MPa`}, absorbed ${f3(wD)} MJ/m³ · cast iron: ${fB ? '**fractured at ε = ' + efb.toFixed(4) + '**' : `σ = ${f3(sigB(ec))} MPa`}, absorbed ${f3(wB)} MJ/m³ · to fracture, steel absorbs ${f3(cd.work(cd.ef) / workB(efb))}× more energy per unit volume.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.8
+    {
+      num: '1.8',
+      kind: 'Definition',
+      name: 'Allowable stress and the factor of safety',
+      statement: String.raw`Uncertainty in loads, in material strength and in the analysis itself is covered by a **factor of safety** $n > 1$: the ratio of the stress that would cause failure to the stress expected in service,
+$$n = \frac{\sigma_{\text{fail}}}{\sigma_{\text{actual}}}, \qquad \sigma_{\text{allow}} = \frac{\sigma_{\text{fail}}}{n}.$$
+For ductile metals the failure stress is usually the yield strength $\sigma_y$ (permanent deformation), for brittle materials the ultimate strength $\sigma_u$. A member in axial tension $P$ must satisfy $P/A \le \sigma_{\text{allow}}$, so the **required area** is $A_{\text{req}} = P/\sigma_{\text{allow}}$ and, for a round rod, $d_{\text{req}} = \sqrt{4P/(\pi\sigma_{\text{allow}})}$ — larger with $\sqrt n$. Modern codes split $n$ into separate load and resistance factors (limit-state design), but the principle is the same.`,
+      idea: String.raw`The stress that a bar actually reaches is $P/A$ (1.1) and the stress that damages it is read from the stress–strain curve (1.3): yield for a ductile metal, fracture for a brittle one. Their ratio is the margin. A factor of one means the part is exactly at the edge, in practice no margin at all; because the diameter scales as $\sqrt{n}$ the cost of extra safety rises only slowly, and a design with $n < 1$ is stressed past yield from the very first load.`,
+      caption: String.raw`Size a hanger rod for a design load. Choose the material, the load and the factor of safety; the rod diameter is computed from $d = \sqrt{4P/\pi\sigma_{\text{allow}}}$. The ladder shows the actual stress against $\sigma_{\text{allow}}$, yield and ultimate, and the rod is drawn with its real strain. Drag the **safety factor** below 1, or raise the overload slider (the load that actually arrives, as a multiple of the design load), and watch the rod yield and finally break. Timber uses the characteristic tensile strength of C24 and a plain factor, not the full Eurocode modification factors.`,
+      scope: String.raw`Static axial tension; a single global factor on the strength-basis stress (yield for the metals, ultimate or characteristic strength for the brittle materials).`,
+      deps: ['solid-1.3'],
+      refs: ['Gere–Goodno §1.9'],
+      tags: ['design', 'safety'],
+      viz(v) {
+        const sel = v.select('rod', [{ value: 'steel', label: 'steel S355' }, { value: 'al', label: 'Al 6061-T6' }, { value: 'timber', label: 'timber C24' }, { value: 'cast', label: 'cast iron' }], 'steel');
+        const Pd = v.slider('design load P (kN)', 5, 500, 100, { log: true, sig: 2 });
+        const FS = v.slider('factor of safety n', 0.5, 5, 2, { log: true, sig: 2 });
+        const OV = v.slider('actual load ÷ design load', 1, 3, 1, { step: 0.05 });
+        const S = v.stage({ x: [-3.2, 6.6], y: [-0.3, 7.0], equal: true, axes: false, height: 400, weight: 1.2, minWidth: 290, title: 'the hanger rod and its stress ladder' });
+        const C = v.stage({ x: [0.5, 5], y: [0, 100], axes: 'box', gutter: { l: 52 }, height: 400, weight: 1, minWidth: 260, xlabel: 'factor of safety n used in the design', ylabel: 'required rod diameter (mm)', title: 'what the factor of safety costs' });
+        const basis = (m) => (m.id === 'steel' || m.id === 'al' ? m.sy : m.su);
+        const strainAt = (m, s) => { if (!m.ductile) return s / m.E; if (m.id === 'cast') return s / m.E; const cv = curveOf(m.id); let lo = 0, hi = cv.eu; for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (cv.sig(mid) < s) lo = mid; else hi = mid; } return Math.min(s > cv.su ? cv.eu : lo, cv.eu); };
+        const ST = () => {
+          const m = MATS[sel.value], b = basis(m), sa = b / FS.value, dReq = Math.sqrt((4 * Pd.value * 1000) / (Math.PI * sa));
+          const A = (Math.PI * dReq * dReq) / 4, s = (OV.value * Pd.value * 1000) / A, nAct = b / s;
+          const broke = s >= m.su - 1e-9 && s > sa + 1e-9, yielded = m.ductile && s > m.sy + 1e-9;
+          return { m, b, sa, dReq, A, s, nAct, broke: s > m.su + 1e-9, yielded: m.ductile && s > m.sy + 1e-9, eps: strainAt(m, Math.min(s, m.su)), void: broke };
+        };
+        v.render(() => {
+          const st = ST(), m = st.m;
+          ceilingH(v, S, 6.4, -1.6, 1.6, 10);
+          const wr = Math.max(0.05, Math.min(0.9, 0.05 + 0.85 * Math.sqrt(st.dReq / 300))), rodTop = 6.4, len0 = 3.6, len = len0 * (1 + st.eps * (st.eps > 0.01 ? 1 : 1));
+          const bot = rodTop - len, blkH = 0.9, blkW = 1.1 + 0.4 * Math.min(1, OV.value * Pd.value / 500);
+          S.rect(-wr, rodTop - len0, wr, rodTop, { color: 'muted', width: 1.2, dash: [4, 3], fill: false });
+          const tcol = st.broke ? 'red' : st.yielded ? 'orange' : 'accent';
+          if (!st.broke) {
+            S.rect(-wr, bot, wr, rodTop, { fill: tcol, fillAlpha: 0.35, color: 'ink', width: 1.6 });
+            S.rect(-blkW, bot - blkH, blkW, bot, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.6 });
+            S.text(`${f3(OV.value * Pd.value)} kN`, 0, bot - blkH / 2, { size: 12, weight: 700, align: 'center', color: 'ink' });
+          } else {
+            S.rect(-wr, rodTop - 1.3, wr, rodTop, { fill: 'red', fillAlpha: 0.35, color: 'ink', width: 1.6 });
+            S.rect(-blkW, 0.1, blkW, 0.1 + blkH, { fill: 'gray', fillAlpha: 0.5, color: 'ink', width: 1.6, dash: [4, 3] });
+            S.text('ROD FRACTURED', 0, 3.6, { size: 13, weight: 700, color: 'red', align: 'center' });
+          }
+          S.text(`ø ${f3(st.dReq)} mm`, -wr - 0.15, rodTop - 0.65, { size: 11.5, weight: 650, color: 'ink', align: 'right' });
+          // ladder
+          const lx = 3.2, ymax = 1.22 * Math.max(m.su, st.s), Y = (s) => 0.4 + (5.9 * s) / ymax;
+          S.line(lx, Y(0), lx, Y(ymax), { color: 'muted', width: 1.4 });
+          const mk = (s, text, color, dy = 0) => { S.line(lx - 0.25, Y(s), lx + 0.25, Y(s), { color, width: 2.2 }); S.text(text, lx + 0.4, Y(s) + dy, { size: 11, color, align: 'left', weight: 600 }); };
+          mk(st.sa, `σ_allow ${f3(st.sa)}`, 'green', -0.12);
+          if (m.ductile && m.sy < m.su) { mk(m.sy, `yield ${m.sy}`, 'orange', 0.12); mk(m.su, `ultimate ${m.su}`, 'red', 0.18); } else mk(m.su, `strength ${m.su}`, 'red', 0.12);
+          S.rect(lx - 0.18, Y(0), lx + 0.18, Y(Math.min(st.s, ymax)), { fill: tcol, fillAlpha: 0.5, color: tcol, width: 1.2 });
+          S.dot(lx, Y(Math.min(st.s, ymax)), { r: 5, color: 'gold' });
+          S.text(`σ = ${f3(st.s)} MPa`, lx - 0.3, Y(Math.min(st.s, ymax)), { size: 11.5, weight: 700, color: 'ink', align: 'right' });
+          // d vs n
+          const d1 = Math.sqrt((4 * Pd.value * 1000) / (Math.PI * st.b));
+          C.setView([0.5, 5], [0, d1 * Math.sqrt(5) * 1.08]);
+          const nBrk = (OV.value * st.b) / m.su, nYld = m.ductile ? OV.value : 0;
+          C.vband(0.5, nBrk, { color: 'red', alpha: 0.13 });
+          if (nYld > nBrk) C.vband(nBrk, nYld, { color: 'orange', alpha: 0.14 });
+          C.vband(Math.max(nYld, nBrk), 5, { color: 'green', alpha: 0.09 });
+          C.fn((n) => d1 * Math.sqrt(n), { domain: [0.5, 5], color: 'accent', width: 2.4 });
+          C.vline(FS.value, { color: 'gold', width: 1.4, dash: [4, 3] });
+          C.dot(FS.value, st.dReq, { r: 6, color: 'gold' });
+          v.legend([['red', 'rod breaks', { area: true }], ['orange', 'rod yields', { area: true }], ['green', 'stays elastic', { area: true }], ['gold', 'this design', { dot: true }]]);
+          C.text('d ∝ √n', 3.4, d1 * Math.sqrt(3.4) * 0.84, { size: 11, color: 'accent', align: 'center' });
+        });
+        v.readout(() => {
+          const st = ST(), m = st.m;
+          const verdict = st.broke ? '**the rod fractures**' : st.yielded ? '**the rod has yielded** (permanent stretch ' + (st.eps * 100).toFixed(1) + ' %)' : st.s > st.sa * 1.0001 ? 'above the allowable stress but still elastic' : 'within the allowable stress';
+          return `Basis ${m.ductile && m.id !== 'cast' ? '$\\sigma_y$' : '$\\sigma_u$'} = ${m.id === 'timber' ? '14.5 (characteristic)' : f3(st.b)} MPa → $\\sigma_{\\text{allow}} = ${f3(st.b)}/${st.m ? FS.value.toFixed(2) : ''} = ${f3(st.sa)}$ MPa → $d = \\sqrt{4P/\\pi\\sigma_{\\text{allow}}} =$ **${f3(st.dReq)} mm** ($A = ${f3(st.A)}\\ \\text{mm}^2$) · actual $\\sigma = ${f3(st.s)}$ MPa, actual factor of safety $n = ${st.nAct.toFixed(2)}$ · ${verdict}.`;
         });
       },
     },

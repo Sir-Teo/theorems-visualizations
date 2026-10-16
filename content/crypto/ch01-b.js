@@ -205,7 +205,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Enigma_machine' },
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, full: true });
-        const sS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 138, full: true });
+        const sS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 152, full: true });
         const sC = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 176, full: true });
         const names = ['I', 'II', 'III', 'IV', 'V'], fmtL = (x) => A[Math.round(x)];
         const rotL = v.select('Left rotor', names, 'I'), rotM = v.select('Middle', names, 'II'), rotR = v.select('Right', names, 'III');
@@ -243,7 +243,7 @@ export default {
         v.render(() => {
           const X = sim(), P = pix(sD), { W, H } = P;
           const t = clamp(key.value, 1, Math.max(1, X.steps.length)) - 1, S = X.steps[t] || null;
-          const top = 66, bot = 12, rh = (H - top - bot) / 25, Y = (i) => top + i * rh;
+          const top = 66, bot = 28, rh = (H - top - bot) / 25, Y = (i) => top + i * rh;
           const r3 = 0.17 * W, r2 = 0.36 * W, r1 = 0.55 * W, r0 = 0.74 * W, kb = 0.93 * W;
           const pos = S ? S.pos : X.cfg.pos, prev = S ? S.prev : X.cfg.pos;
           const E = makeEnigma({ ...X.cfg, pos });
@@ -286,7 +286,7 @@ export default {
             P.dot(kb, Y(x), { r: 6.5, color: G }); P.dot(kb, Y(out), { r: 6.5, color: Gr });
             const lab = (rx, row, col, side) => P.text(A[row], rx + side * 8, Y(row), { size: 9.5, weight: 800, color: col, align: side > 0 ? 'left' : 'right' });
             lab(r0, p1, G, 1); lab(r0, l2, Gr, 1); lab(r1, r2v, G, 1); lab(r1, l1, Gr, 1); lab(r2, r1v, G, 1); lab(r2, l0, Gr, 1); lab(r3, r0v, G, 1); lab(r3, u, Gr, 1);
-            P.text(`${A[x]} → ${A[out]}`, (r3 + r2) / 2, H - 4, { size: 12.5, weight: 700, color: 'ink', align: 'center', halo: false });
+            P.text(`${A[x]} → ${A[out]}`, (r3 + r2) / 2, H - 9, { size: 12.5, weight: 700, color: 'ink', align: 'center', halo: false });
           }
         });
         v.render(() => {
@@ -301,7 +301,7 @@ export default {
             rows.forEach(([, f], r) => P.text(f(s), x + cw / 2, 14 + r * 24, { size: 13, weight: r < 2 ? 700 : 600, color: r === 1 ? 'orange' : r === 0 ? 'blue' : 'ink', align: 'center', halo: false }));
             if (cw > 14 && (t0 + c) % 5 === 4) P.text(String(t0 + c + 1), x + cw / 2, 130, { size: 8.5, color: 'muted', align: 'center', halo: false });
           }
-          P.text('red / orange cells: the left / middle rotor stepped on that key press', W - 8, 130, { size: 10, color: 'muted', align: 'right', halo: false });
+          P.text('red / orange cells: the left / middle rotor stepped on that key press', W - 8, 145, { size: 10, color: 'muted', align: 'right', halo: false });
         });
         const cribGeom = () => { const X = sim(), crib = cribSel.value, N = X.ct.length, m = N - crib.length + 1; const bad = []; for (let p = 0; p < Math.max(0, m); p++) { let b = false; for (let i = 0; i < crib.length; i++) if (crib[i] === X.ct[p + i]) { b = true; break; } bad.push(b); } return { X, crib, N, m, bad, truth: X.L.indexOf(crib) }; };
         v.render(() => {
@@ -334,6 +334,169 @@ export default {
             String.raw`Message → ciphertext: ${groups5(X.ct.slice(0, 55))}${X.ct.length > 55 ? ' …' : ''}. Typing it back at the same start settings gives ${makeEnigma(cfg).run(X.ct) === X.L ? '**the plaintext ✓ (reciprocal)**' : '✗'}.` + '\n' +
             String.raw`Self-encipherment: **${X.fixed}** of ${X.NS} test key presses mapped a letter to itself (none can, whatever the settings). Crib ${G.crib}: ${surv} of ${Math.max(0, G.m)} alignments survive; a random text would leave about $(25/26)^{${G.crib.length}}\cdot${Math.max(0, G.m)} \approx ${exp.toFixed(1)}$.` + '\n' +
             'Simulator checked against published vectors:\n' + tl;
+        });
+      },
+    },
+
+    // ================================================================== 1.10
+    {
+      num: '1.10',
+      kind: 'Concept',
+      name: 'Unicity distance',
+      statement: String.raw`Let a cipher with key space $\mathcal K$ encrypt text from a language of redundancy $D = \log_2|\Sigma| - h$ bits per letter, where $h$ is the language’s entropy rate. After observing $n$ ciphertext letters the attacker still faces the **key equivocation** $H(K\mid C_1\dots C_n)$; under Shannon’s random-cipher model it falls by about $D$ bits per letter, $H(K\mid C^n)\approx H(K)-nD$. The **unicity distance** $U = H(K)/D$ is the length at which the equivocation reaches $0$: beyond it, essentially one key (one meaningful decryption) remains, so an unbounded attacker can in principle recover the key; below it, many keys give equally plausible plaintexts. For simple substitution on English, $H(K)=\log_2 26!\approx 88.4$ bits and $D\approx 3.2$, giving $U\approx 28$ letters.`,
+      idea: String.raw`Redundancy is what lets a ciphertext identify its key: if all letter strings were equally likely (the one-time pad’s situation) every key would remain consistent with every ciphertext and $U=\infty$. For a real language, only a fraction $2^{-nD}$ of the $26^n$ strings are meaningful, so of the $|\mathcal K|$ wrong keys about $|\mathcal K|\,2^{-nD}$ produce a meaningful-looking decryption (“spurious keys”); this drops below one at $n=H(K)/D$. The picture computes the equivocation *exactly*, by enumerating all $26^L$ keys of a short Vigenère cipher and weighting each decryption by its probability under a bigram model of English.`,
+      caption: String.raw`Choose a key length $L$ and the number $n$ of ciphertext letters the attacker has seen. The thick curve is the exact posterior entropy of the key, averaged over several plaintext windows (thin: the sample on the right); the dashed line is Shannon’s $H(K)-nD$. The table lists the most probable keys for the sample: at small $n$ many keys give plausible plaintexts, past the unicity distance one key wins.`,
+      deps: ['crypto-1.5', 'info-11.9'],
+      tags: ['unicity distance', 'entropy', 'redundancy'],
+      refs: ['Boneh–Shoup ch. 2'],
+      credit: 'Claude Shannon, “Communication Theory of Secrecy Systems”, 1949',
+      scope: String.raw`computed for a Vigenère cipher with $L\le 4$ key letters and a *bigram* model of English ($D\approx 1.4$ bits per letter, estimated from the corpus); real English has more redundancy (Shannon’s $D\approx 3.2$), so real unicity distances are shorter.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Unicity_distance' },
+      viz(v) {
+        const D = Math.log2(26) - H2;
+        const s = v.stage({ x: [0, 40], y: [0, 20], axes: 'box', gutter: true, height: 350, weight: 1.15, minWidth: 360, xlabel: 'ciphertext letters seen, n', ylabel: 'key equivocation H(K | c₁…cₙ) in bits', xticks: [0, 5, 10, 15, 20, 25, 30, 35, 40].map((x) => [x, String(x)]) });
+        const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1, minWidth: 340 });
+        const Lsel = v.select('Key length $L$ (letters)', [{ value: 1, label: '1 · 26 keys' }, { value: 2, label: '2 · 676' }, { value: 3, label: '3 · 17 576' }, { value: 4, label: '4 · 456 976' }], 3);
+        const nS = v.slider('Ciphertext letters seen $n$', 0, 40, 6, { int: true });
+        let off = 40; v.button('New sample', () => { off += 53; });
+        const cache = {};
+        const data = () => {
+          const L = Lsel.value, id = `${L}|${off}`;
+          if (cache[id]) return cache[id];
+          const Wn = L === 4 ? 3 : 6, curves = [], samples = [];
+          for (let w = 0; w < Wn; w++) {
+            const o = (off + 61 * w) % (PASSAGE.length - 45), plain = PASSAGE.slice(o, o + 40), key = randomKey(v.rng(off * 13 + w * 7 + L), L), ct = vigC(plain, key);
+            const codes = [...ct].map(code); curves.push(equivocation(codes, L, 40).H); samples.push({ plain, key, ct, codes });
+          }
+          const mean = Array.from({ length: 41 }, (_, i) => curves.reduce((a, c) => a + c[i], 0) / curves.length);
+          return (cache[id] = { L, curves, mean, sample: samples[0] });
+        };
+        v.render(() => {
+          const d = data(), HK = d.L * Math.log2(26), n = nS.value;
+          s.setView([0, 40], [0, Math.max(20, HK + 1)]);
+          s.path(Array.from({ length: 41 }, (_, i) => [i, Math.max(0, HK - i * D)]), { color: 'red', width: 2, dash: true });
+          s.path(Array.from(d.curves[0], (y, i) => [i, y]), { color: 'orange', width: 1.4, alpha: 0.8 });
+          s.path(Array.from(d.mean, (y, i) => [i, y]), { color: 'accent', width: 3.4 });
+          const U = HK / D; if (U < 40) { s.vline(U, { color: 'green', width: 1.4, dash: true }); s.text(`U = ${U.toFixed(1)}`, U + 0.5, Math.max(20, HK + 1) * 0.55, { size: 11.5, color: 'green', align: 'left', weight: 700 }); }
+          s.vline(n, { color: 'gold', width: 2 });
+          s.dot(n, d.mean[n], { r: 6, color: 'accent' });
+          s.dot(n, d.curves[0][n], { r: 4.5, color: 'orange' });
+        });
+        v.legend([['accent', 'exact equivocation, mean of windows'], ['orange', 'this sample'], ['red', 'Shannon: H(K) − nD', { dash: true }], ['green', 'unicity distance', { dash: true }]]);
+        v.render(() => {
+          const d = data(), P = pix(sL), { W } = P, n = nS.value, smp = d.sample, L = d.L;
+          const keyLab = `sample key ${smp.key}`;
+          P.text(`ciphertext seen (n = ${n}):`, 10, 16, { size: 11.5, weight: 700, color: 'orange', align: 'left', halo: false });
+          letterRow(P, smp.ct.slice(0, n) || '—', 10, 36, 10.5, () => 'orange', { size: 13 });
+          P.text(`most probable keys for these ${n} letters (${keyLab}):`, 10, 66, { size: 11.5, weight: 700, color: 'muted', align: 'left', halo: false });
+          if (n < 1) { P.text('(all keys equally likely: n = 0)', 10, 92, { size: 12, color: 'muted', align: 'left', halo: false }); return; }
+          const top = topAt(smp.codes, L, n, 7), cw = 7.4, fit = Math.max(6, Math.floor((W - 150 - 24 - L * 9) / cw));
+          top.forEach((r, i) => {
+            const y = 92 + i * 34, isT = r.key === smp.key, dec = vigC(smp.ct.slice(0, n), r.key, true);
+            P.rect(8, y - 13, W - 16, 30, { fill: isT ? 'green' : 'accent', fillAlpha: isT ? 0.14 : 0.04, color: isT ? 'green' : 'faint', width: 1, radius: 6 });
+            P.text(r.key + (isT ? ' ★' : ''), 16, y, { size: 12.5, weight: 700, color: isT ? 'green' : 'ink', align: 'left', halo: false });
+            const shown = dec.length > fit ? dec.slice(0, fit - 1) + '…' : dec;
+            letterRow(P, shown, 16 + 26 + L * 9, y, cw, () => (isT ? 'green' : 'ink'), { size: 12, weight: 600 });
+            const bw = 52; P.rect(W - 18 - bw - 44, y - 4, bw, 8, { fill: 'accent', fillAlpha: 0.12, stroke: false, radius: 2 });
+            P.rect(W - 18 - bw - 44, y - 4, Math.max(1.5, bw * r.post), 8, { fill: isT ? 'green' : 'accent', fillAlpha: 0.7, stroke: false, radius: 2 });
+            P.text(`${(100 * r.post).toFixed(r.post < 0.1 ? 1 : 0)}%`, W - 18 - 38, y, { size: 11, weight: 700, color: isT ? 'green' : 'muted', align: 'left', halo: false });
+          });
+        });
+        v.readout(() => {
+          const d = data(), HK = d.L * Math.log2(26), n = nS.value, Hn = d.mean[n], Hs = d.curves[0][n];
+          const cross = d.mean.findIndex((h, i) => i > 0 && h < 1);
+          return String.raw`$H(K) = ${d.L}\log_2 26 = ${HK.toFixed(1)}$ bits; redundancy of the bigram model $D = \log_2 26 - h = ${Math.log2(26).toFixed(2)} - ${H2.toFixed(2)} = ${D.toFixed(2)}$ bits/letter, so $U = H(K)/D \approx ${(HK / D).toFixed(1)}$ letters.` + '\n' +
+            String.raw`At $n=${n}$: equivocation ${Hn.toFixed(1)} bits on average (${Hs.toFixed(1)} for this sample) — about $2^{${Hn.toFixed(1)}} \approx ${sciText(Math.pow(2, Hn), 2)}$ equally plausible keys. Measured: it drops below one bit at $n = ${cross > 0 ? cross : '>40'}$.` + '\n' +
+            String.raw`Full substitution cipher: $H(K)=\log_2 26! = ${LOG2_FACT26.toFixed(1)}$ bits, so under this bigram model $U\approx ${(LOG2_FACT26 / D).toFixed(0)}$ letters; with Shannon’s estimate $D\approx3.2$ bits/letter (English entropy rate about 1.5) it is $88.4/3.2\approx 28$. A one-time pad has $D$ irrelevant: its keys are as long as the text and $U=\infty$.`;
+        });
+      },
+    },
+
+    // ================================================================== 1.11
+    {
+      num: '1.11',
+      kind: 'Principle',
+      name: 'Principles of modern cryptography',
+      statement: String.raw`Modern cryptography replaces the invent-and-break cycle of classical ciphers by three principles. (1) **Formal definitions** of security: state precisely the adversary’s capabilities (the threat model) and what it means for the scheme to be secure against it. (2) **Precise assumptions**: any unproven hardness assumption the scheme needs (a function is one-way, a block cipher is pseudorandom, factoring is hard) is stated explicitly and can be studied on its own. (3) **Rigorous proofs of security** by reduction: any adversary that breaks the scheme according to the definition yields an adversary that violates the assumption. Together with Kerckhoffs’s principle (item 1.2), the scheme itself is public and only the key is secret.`,
+      idea: String.raw`Each classical failure came from skipping one of the steps. Without a definition, “nobody has broken it” was taken for security (Vigenère, for about three centuries). Without a stated threat model, designers ignored cribs and procedures (Enigma). Without explicit assumptions, a key length that was once enough silently stopped being enough (DES, 56 bits). Without proofs, every scheme stood or fell with the cleverness of its next attacker. A reduction turns “we could not break it” into “breaking it means solving a problem we have studied far longer, or one that is believed hard”.`,
+      caption: String.raw`Click a box of the flow chart to read the historical failure that motivated it; click a cell of the table to see how each cipher fares against the four steps. Green ✓ = done properly, gold ~ = informal or implicit, red ✗ = missing. The table is the author’s summary of what each design’s own publication claimed, not a measurement.`,
+      deps: ['crypto-1.2'],
+      tags: ['principles', 'proofs'],
+      refs: ['Katz–Lindell §1.4'],
+      scope: String.raw`a summary of the historical record (sources: Wikipedia articles on the Vigenère cipher, Kasiski examination, Enigma, EFF DES cracker; cryptocellar.org); the table’s judgements are illustrative.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Provable_security' },
+      viz(v) {
+        const sG = v.stage({ x: [0, 10], y: [0, 4.4], axes: false, height: 250, full: true });
+        const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 348, full: true });
+        const ST = {
+          T: { name: 'Threat model', col: 0, text: String.raw`**Threat model** — what can the adversary see and do? Enigma’s designers planned for an enemy holding ciphertext only. The Allies also had guessed plaintext (cribs), captured keys and operator habits: Rejewski broke the plugboard Enigma around 1932 using the way daily keys and message keys were used, and the reflector’s “no letter maps to itself” rule let cribs be placed (item 1.9). Modern practice names the attacker’s powers: eavesdropping, chosen plaintexts, chosen ciphertexts, bounded running time.` },
+          D: { name: 'Definition', col: 1, text: String.raw`**Definition** — what exactly does “secure” mean? The Vigenère cipher was called *le chiffre indéchiffrable*; it stayed in use while no one published a break, though Babbage (c. 1854, unpublished) and then Kasiski (1863) broke it (items 1.7–1.8). “Unbroken so far” is not a claim one can prove or refute. A definition (perfect secrecy, indistinguishability) says what a proof must show and what an attack must achieve.` },
+          S: { name: 'Assumption', col: 2, text: String.raw`**Assumption** — unproven but explicit. DES used a 56-bit key whose sufficiency was an unstated assumption about attackers’ resources; in 1998 EFF’s Deep Crack, built for under \$250,000, found a DES key in 56 hours (item 1.4). Modern schemes list what they rely on (AES is a pseudorandom permutation, factoring is hard) and choose parameters with a margin, so that when an assumption weakens it is clear what to replace.` },
+          C: { name: 'Construction', col: null, text: String.raw`**Construction** — public by Kerckhoffs’s principle (1883): the scheme is published and only the key is secret, so it can be scrutinised, standardised and re-keyed after a leak (item 1.2). Secret designs fall when one device or one person is lost, and cannot be repaired by changing a key.` },
+          P: { name: 'Proof by reduction', col: 3, text: String.raw`**Proof by reduction** — if an adversary $\mathcal A$ breaks the scheme, build from it an adversary $\mathcal B$ that violates the assumption, with comparable running time and success probability. Shift, substitution, Vigenère and Enigma had nothing like it: each fell to a method its designers had not considered. A reduction converts “our attackers failed” into “breaking this requires solving a problem many have attacked in vain”.` },
+          X: { name: 'Cryptanalysis', col: null, text: String.raw`**Cryptanalysis** — public scrutiny feeds back into every step: al-Kindi’s frequency analysis (9th century) retired monoalphabetic ciphers, Kasiski’s and Friedman’s period tests retired Vigenère, Rejewski and Bletchley Park retired Enigma, EFF retired 56-bit DES. Each break revises the threat model, the definition or the assumption, never just the cipher.` },
+        };
+        const pos = { T: [1, 3.2], D: [3.1, 3.2], S: [5.2, 3.2], C: [7.3, 3.2], P: [9.1, 3.2], X: [5.2, 0.9] };
+        const label = { T: 'Threat\nmodel', D: 'Formal\ndefinition', S: 'Explicit\nassumption', C: 'Public\nconstruction', P: 'Proof by\nreduction', X: 'Cryptanalysis:\nattack found' };
+        const G = v.graph(sG, { directed: true, shape: 'box', layout: 'none', draggable: false, fontSize: 13, r: 14,
+          nodes: Object.keys(pos).map((id) => ({ id, x: pos[id][0], y: pos[id][1], label: label[id] })),
+          edges: [['T', 'D'], ['D', 'S'], ['S', 'C'], ['C', 'P'], ['C', 'X'], ['X', 'S'], ['X', 'D'], ['X', 'T']] });
+        let sel = 'D', cell = null;
+        G.onClick = ({ node }) => { if (node) { sel = node.id; cell = null; } return true; };
+        // systems × steps
+        const YES = '✓', NO = '✗', PART = '~';
+        const rows = [
+          { n: 'Shift cipher', c: [NO, NO, NO, NO], out: 'broken by trying all 26 keys', note: 'Caesar’s shift (item 1.3): 26 keys, so exhaustive search is the whole attack.' },
+          { n: 'Monoalphabetic substitution', c: [NO, NO, NO, NO], out: 'broken by frequency analysis (al-Kindi, 9th c.)', note: 'A huge key space (26!) without any argument that the ciphertext hides the plaintext: it does not (items 1.5–1.6).' },
+          { n: 'Vigenère', c: [NO, NO, NO, NO], out: 'broken: Babbage c. 1854, Kasiski 1863', note: 'Reputed unbreakable for centuries on no stated ground; its period is its weakness (items 1.7–1.8).' },
+          { n: 'Enigma', c: [PART, NO, PART, NO], out: 'broken: Rejewski 1932, Bletchley Park 1940s', note: 'The threat model (ciphertext only) was implicit and wrong; the huge key space was an implicit assumption; no proof (item 1.9).' },
+          { n: 'DES (1977)', c: [PART, NO, PART, NO], out: '56-bit key found in 56 h (EFF, 1998)', note: 'A careful design with no structural break, but its key length was an implicit assumption that expired (item 1.4).' },
+          { n: 'One-time pad', c: [YES, YES, YES, YES], out: 'provably perfectly secret (Shannon 1949)', note: 'Threat model: unbounded eavesdropper; definition: perfect secrecy; assumption: the key is uniform, as long as the message, used once; proof: Shannon (chapter 2).' },
+          { n: 'AES in counter mode', c: [YES, YES, YES, YES], out: 'no break; security relative to AES being pseudorandom', note: 'CPA-security is proved by reduction to the assumption that AES is a pseudorandom permutation (chapter 3): conditional, but explicit.' },
+        ];
+        const heads = [['threat model', 'stated?'], ['formal', 'definition?'], ['assumption', 'explicit?'], ['proof of', 'security?']];
+        const geo = () => { const P = pix(sT), { W } = P, lw = Math.min(190, W * 0.25), tw = Math.max(64, Math.min(104, (W - lw - 160) / 4)); return { P, W, lw, tw, ox: lw + 4 * tw, rh: 40, y0: 52 }; };
+        sT.onClick((x, y) => {
+          const g = geo(), [px, py] = g.P.at(x, y), i = Math.floor((py - g.y0) / g.rh);
+          if (i < 0 || i >= rows.length) return;
+          if (px < g.lw) cell = [i, 4];
+          else if (px < g.ox) { const j = Math.floor((px - g.lw) / g.tw); cell = [i, j]; sel = ['T', 'D', 'S', 'P'][j]; }
+          else cell = [i, 4];
+        });
+        const wrap = (str, n) => { const out = []; let cur = ''; for (const w of str.split(' ')) { if ((cur + ' ' + w).trim().length > n) { out.push(cur); cur = w; } else cur = (cur + ' ' + w).trim(); } if (cur) out.push(cur); return out; };
+        v.render(() => {
+          const st = ST[sel];
+          G.draw({
+            nodeFill: (id) => (id === sel ? 'accent' : null),
+            nodeColor: (id) => (id === 'X' ? 'red' : id === 'C' ? 'teal' : null),
+            edgeColor: (e) => (e.from === 'X' ? 'red' : null),
+            edgeDash: (e) => (e.from === 'X' ? true : null),
+          });
+          sG.text('each break feeds back into the earlier steps', 9.9, 0.9, { size: 11, color: 'red', weight: 600, align: 'right' });
+        });
+        v.render(() => {
+          const g = geo(), { P, W, lw, tw, ox, rh, y0 } = g, col = ST[sel] && ST[sel].col != null ? ST[sel].col : null;
+          heads.forEach((h, j) => { const x = lw + j * tw; if (col === j) P.rect(x, 6, tw, y0 - 6 + rows.length * rh, { fill: 'accent', fillAlpha: 0.12, stroke: false }); h.forEach((l, k) => P.text(l, x + tw / 2, 20 + k * 15, { size: 11.5, weight: 700, color: col === j ? 'accent' : 'muted', align: 'center', halo: false })); });
+          P.text('what happened', ox + 12, 28, { size: 11.5, weight: 700, color: 'muted', align: 'left', halo: false });
+          rows.forEach((r, i) => {
+            const y = y0 + i * rh;
+            P.line(8, y, W - 8, y, { color: 'faint', width: 1 });
+            P.text(r.n, 12, y + rh / 2, { size: 12.5, weight: 700, color: 'ink', align: 'left', halo: false });
+            r.c.forEach((c, j) => {
+              const x = lw + j * tw, cc = c === YES ? 'green' : c === NO ? 'red' : 'gold';
+              P.rect(x + 8, y + 5, tw - 16, rh - 10, { fill: cc, fillAlpha: 0.26, color: cc, width: 1.2, radius: 6 });
+              P.text(c, x + tw / 2, y + rh / 2, { size: 17, weight: 800, color: cc, align: 'center', halo: false });
+            });
+            const lines = wrap(r.out, Math.max(14, Math.floor((W - ox - 24) / 6.4)));
+            lines.forEach((l, k) => P.text(l, ox + 12, y + rh / 2 + (k - (lines.length - 1) / 2) * 14, { size: 12, color: 'ink', align: 'left', halo: false }));
+          });
+          P.line(8, y0 + rows.length * rh, W - 8, y0 + rows.length * rh, { color: 'faint', width: 1 });
+          if (cell) P.rect(cell[1] === 4 ? 6 : lw + cell[1] * tw + 4, y0 + cell[0] * rh + 2, cell[1] === 4 ? W - 12 : tw - 8, rh - 4, { fill: false, color: 'gold', width: 2.4, radius: 8 });
+        });
+        v.readout(() => {
+          const s0 = ST[sel];
+          const extra = cell ? `\n**${rows[cell[0]].n}:** ${rows[cell[0]].note}` : '';
+          return `${s0.text}${extra}`;
         });
       },
     },

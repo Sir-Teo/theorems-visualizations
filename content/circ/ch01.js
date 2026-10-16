@@ -65,7 +65,7 @@ export default {
           wire.text('cross-section', XC, -1.35, { size: 12, color: 'muted', align: 'center', baseline: 'top' });
           wire.text(`passed so far: ${cnt} C  in  ${v.fix(T, 1)} s`, 0.3, -1.95, { size: 12.5, color: 'ink', align: 'left', baseline: 'middle', plate: true });
           // potential map
-          pot.heat(phi, { range: [-14, 14], cmap: 'diverging', key: 'phi1', res: 150 });
+          pot.heat(phi, { range: [-14, 14], cmap: 'diverging', key: 'phi1', res: 3 });
           pot.contour(phi, [-12, -9, -6, -3, 0, 3, 6, 9, 12], { color: 'ink', width: 0.8, alpha: 0.35 });
           for (const [qx, qy, q] of Qs) pot.dot(qx, qy, { r: 7, color: q > 0 ? 'orange' : 'blue', label: q > 0 ? `+${q} nC` : `${q} nC`, labelPos: 'n' });
           if (gam.value > 0) { pot.circle(0, -0.2, 0.5, { color: 'purple', width: 1.6, dash: true }); pot.text('changing flux', 0, -0.9, { size: 11.5, color: 'purple', align: 'center', plate: true }); }
@@ -203,7 +203,7 @@ export default {
           loop.poly(poly, { fill: 'purple', fillAlpha: 0.14, stroke: false });
           loop.path([Aa, [P1.x, P1.y], [P2.x, P2.y], Bb], { color: 'orange', width: 2.4 });
           loop.text('meter', 0, (P1.y + P2.y) / 2 + 0.05, { size: 12, color: 'ink', align: 'center', baseline: 'middle', plate: true });
-          loop.text('flux $\\Phi=B_0A$ through here', 0, 1.0, { size: 11.5, color: 'purple', align: 'center', baseline: 'middle' });
+          loop.text('flux $\\Phi=B_0A$', 0, 1.15, { size: 11.5, color: 'purple', align: 'center', baseline: 'middle' });
           void t;
         }, { period: 4, still: 0.35 });
         v.legend([['accent', 'actual wave (envelope faint)'], ['muted', 'lumped prediction', { dash: true }], ['gold', 'source end'], ['red', 'far end']]);
@@ -211,7 +211,7 @@ export default {
           const M = model(), L = len.value, area = Math.abs(v.M.polyArea([[-2.4, 0.2], [P1.x, P1.y], [P2.x, P2.y], [2.4, 0.2]])) * 0.01; // 1 unit = 10 cm
           const z = M.Vx(L), aL = Math.hypot(z[0], z[1]), lagDeg = -Math.atan2(z[1], z[0]) * 180 / Math.PI, emf = TAU * f.value * B0.value * 1e-9 * area;
           const ok = M.ratio < 0.1;
-          return `$\\lambda = c_{\\text{line}}/f = ${sI(M.lam, 'm', 3)}$ · $\\ell/\\lambda = ${v.fix(M.ratio, 3)}$ — ${ok ? '**lumped picture fine** (under 1/10 of a wavelength)' : '**lumped picture broken**'} · delay $\\ell/v = ${sI(L / vp, 's', 3)}$ = ${v.fix(M.ratio * 360, 1)}° of phase\n far-end amplitude $${v.fix(aL, 3)}\\,V_0$ with a phase lag of $${v.fix(lagDeg, 1)}^\\circ$ (the lumped model says $1\\,V_0$ and $0^\\circ$)\nvoltmeter loop area $A = ${v.fix(area * 1e4, 1)}$ cm² → the two lead paths differ by $\\omega B_0 A = ${sI(emf, 'V', 3)}$, i.e. ${v.fix(emf * 100, 4)} % of the 1 V element`;
+          return `wavelength $\\lambda = c_{\\text{line}}/f$ = ${sI(M.lam, 'm', 3)} (line speed 2×10⁸ m/s) · $\\ell/\\lambda = ${v.fix(M.ratio, 3)}$ — ${ok ? '**lumped picture fine** (under 1/10 of a wavelength)' : '**lumped picture broken**'} · delay $\\ell/v$ = ${sI(L / vp, 's', 3)} = ${v.fix(M.ratio * 360, 1)}° of phase\nfar-end amplitude $${v.fix(aL, 3)}\\,V_0$ with a phase lag of $${v.fix(lagDeg, 1)}^\\circ$ (the lumped model says $1\\,V_0$ and $0^\\circ$)\nvoltmeter loop area $A = ${v.fix(area * 1e4, 1)}$ cm² → the two lead paths differ by $\\omega B_0 A$ = ${sI(emf, 'V', 3)}, i.e. ${v.fix(emf * 100, 4)} % of the 1 V element (negligible at low $f$, dominant at high $f$)`;
         });
       },
     },
@@ -269,7 +269,7 @@ export default {
         v.readout(() => {
           const V = Vs.value, st = state(V), I = st.I, d = 0.05, dI = (state(V + d).I - state(V - d).I) / (2 * d);
           const ratio = Math.abs(V) > 0.05 ? state(2 * V).I / I : NaN;
-          return `$V = ${v.fix(V, 2)}$ V, $I = ${v.fix(I, 4)}$ A (kit solve) · static $R = V/I = ${Math.abs(V) > 0.05 ? v.fix(V / I, 3) : v.fix(st.R, 3)}\\ \\Omega$ · differential $dV/dI = ${v.fix(1 / dI, 3)}\\ \\Omega$\nOhm test: $I(2V)/I(V) = ${isNaN(ratio) ? '—' : v.fix(ratio, 4)}$ (exactly 2 for a linear element) · power $P = VI = ${v.fix(V * I, 3)}$ W${mode.value === 'lamp' ? ` · cold resistance $R_0 = ${v.fix(lamp.R0, 2)}\\ \\Omega$ at 293 K (illustrative 12 V, 12 W lamp, $T_{\\text{hot}}\\approx 2500$ K)` : ''}`;
+          return `$V = ${v.fix(V, 2)}$ V, $I = ${v.fix(I, 4)}$ A (circuit solver) · static $R = V/I = ${Math.abs(V) > 0.05 ? v.fix(V / I, 3) : v.fix(st.R, 3)}\\ \\Omega$ · differential $dV/dI = ${v.fix(1 / dI, 3)}\\ \\Omega$\nOhm test: $I(2V)/I(V) = ${isNaN(ratio) ? '—' : v.fix(ratio, 4)}$ (exactly 2 for a linear element) · power $P = VI = ${v.fix(V * I, 3)}$ W${mode.value === 'lamp' ? ` · cold resistance $R_0 = ${v.fix(lamp.R0, 2)}\\ \\Omega$ at 293 K (illustrative 12 V, 12 W lamp, $T_{\\text{hot}}\\approx 2500$ K)` : ''}`;
         });
       },
     },
@@ -286,7 +286,7 @@ export default {
       refs: ['Agarwal–Lang §1.5'],
       tags: ['resistivity', 'geometry'],
       viz(v) {
-        const s = v.stage({ x: [-1, 11.4], y: [-7.2, 7.2], axes: false, height: 320, weight: 1.6, title: 'a bar carrying a current (vertical scale exaggerated)' });
+        const s = v.stage({ x: [-1, 11.4], y: [-6.2, 6.2], axes: false, height: 235, weight: 1.6, title: 'a bar carrying a current (vertical scale exaggerated)' });
         const mat = v.select('material', [{ value: 1.68e-8, label: 'copper' }, { value: 2.65e-8, label: 'aluminium' }, { value: 9.71e-8, label: 'iron' }, { value: 1.0e-6, label: 'nichrome' }], 1.68e-8);
         const th = v.slider('thickness $t$', 0.5, 5, 1, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mm` });
         const hole = v.toggle('drill a hole', false);
@@ -298,7 +298,7 @@ export default {
         const solve = () => {
           const L = Lh.x, w = 2 * Wh.y, ny = hole.value ? 10 : 8, nx = clamp(Math.round(ny * L * 10 / w), 4, 560), hx = L * 10 / nx, hy = w / ny;
           const key = [nx, ny, w.toFixed(3), L.toFixed(3), hole.value].join('|');
-          if (key !== cache.key) { cache.key = key; cache.sol = barSolve(nx, ny, hx, hy, hole.value ? { cx: L * 5, cy: w / 2, r: 0.3 * w } : null); }
+          if (key !== cache.key) { cache.key = key; cache.sol = barSolve(nx, ny, hx, hy, hole.value ? { cx: L * 5, cy: w / 2, r: 0.4 * w } : null); }
           return { sol: cache.sol, L, w, nx, ny, hx, hy };
         };
         v.render(() => {
@@ -313,10 +313,10 @@ export default {
             if (!sol.alive[sol.id(Math.round(i), Math.round(j))]) return null;
             const p = (1 - fi) * ((1 - fj) * g(i0, j0) + fj * g(i0, j0 + 1)) + fi * ((1 - fj) * g(i0 + 1, j0) + fj * g(i0 + 1, j0 + 1));
             return [...v.diverge(2 * p - 1, 'blue', 'red'), 1];
-          }, { rect: [0, -w / 2, L, w / 2], res: 300, key: `${cache.key}` });
+          }, { rect: [0, -w / 2, L, w / 2], res: 2, key: `${cache.key}` });
           s.rect(0, -w / 2, L, w / 2, { stroke: true, color: 'ink', width: 2, fill: false });
           // current-density arrows
-          const c = s.ctx, J0 = 1 / (L * 10), di = Math.max(1, Math.round(S.nx / 12)), dj = hole.value ? 1 : 2;
+          const c = s.ctx, J0 = 1 / (L * 10), di = Math.max(1, Math.round(S.nx / 12)), dj = 2;
           c.save(); c.strokeStyle = v.color('ink', 0.85); c.fillStyle = v.color('ink', 0.85); c.lineWidth = 1.6;
           for (let i = Math.round(di / 2) + 1; i < S.nx - 1; i += di) for (let j = 1; j < S.ny; j += dj) {
             const a = sol.id(i, j); if (!sol.alive[a] || !sol.alive[sol.id(i + 1, j)] || !sol.alive[sol.id(i, j + 1)]) continue;
@@ -329,6 +329,7 @@ export default {
             c.beginPath(); c.moveTo(hx, hy2); c.lineTo(hx - ux * 6 + uy * 3.5, hy2 - uy * 6 - ux * 3.5); c.lineTo(hx - ux * 6 - uy * 3.5, hy2 - uy * 6 + ux * 3.5); c.closePath(); c.fill();
           }
           c.restore();
+          if (hole.value) { const cx0 = s.X(L / 2), cy0 = s.Y(0), rx = s.X(L / 2 + 0.4 * w / 10) - cx0, ry = cy0 - s.Y(0.4 * w); c.save(); c.beginPath(); c.ellipse(cx0, cy0, rx, ry, 0, 0, TAU); c.fillStyle = v.color('panel'); c.fill(); c.strokeStyle = v.color('ink'); c.lineWidth = 2; c.stroke(); c.restore(); }
           s.measure(0, -w / 2 - 1.1, L, -w / 2 - 1.1, `L = ${v.fix(L, 1)} cm`);
           s.text(`w = ${v.fix(w, 1)} mm`, 1.75, w / 2 + 0.2, { size: 12.5, color: 'ink', align: 'left', baseline: 'bottom' });
           s.text('+', -0.5, 0, { size: 18, color: 'red', align: 'center', baseline: 'middle' }); s.text('−', L + 0.5, 0, { size: 18, color: 'blue', align: 'center', baseline: 'middle' });
@@ -338,7 +339,7 @@ export default {
         v.readout(() => {
           const S = solve(), L = Lh.x, w = 2 * Wh.y, rho = mat.value, t = th.value * 1e-3, A = w * 1e-3 * t;
           const Rnum = (rho / t) / S.sol.G, Rf = rho * (L * 1e-2) / A;
-          return `$A = wt = ${v.fix(w * th.value, 2)}$ mm² · formula $\\rho L/A = ${sI(Rf, 'Ω', 4)}$ · numerical solution (resistor grid ${S.nx}×${S.ny}, CG) $R = ${sI(Rnum, 'Ω', 4)}$ · ratio $${v.fix(Rnum / Rf, 4)}$ ${hole.value ? '(the hole crowds the current: the formula for the full section is too low)' : '(uniform bar: grid and formula agree)'}\nat $I = 1$ A the drop is $V = IR = ${sI(Rnum, 'V', 3)}$ and the loss $I^2R = ${sI(Rnum, 'W', 3)}$ ${Rref ? `· compared with the remembered sample: $R/R_{\\text{ref}} = ${v.fix(Rnum / Rref, 3)}$` : ''}`;
+          return `$A = wt = ${v.fix(w * th.value, 2)}$ mm² · formula $\\rho L/A$ = ${sI(Rf, 'Ω', 4)} · numerical solution (resistor grid ${S.nx}×${S.ny}, CG) $R$ = ${sI(Rnum, 'Ω', 4)} · ratio $${v.fix(Rnum / Rf, 4)}$ ${hole.value ? '(the hole crowds the current: the formula for the full section is too low)' : '(uniform bar: grid and formula agree)'}\nat $I = 1$ A the drop is $V = IR$ = ${sI(Rnum, 'V', 3)} and the loss $I^2R$ = ${sI(Rnum, 'W', 3)} ${Rref ? `· compared with the remembered sample: $R/R_{\\text{ref}} = ${v.fix(Rnum / Rref, 3)}$` : ''}`;
         });
       },
     },

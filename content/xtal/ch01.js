@@ -201,7 +201,7 @@ export default {
       credit: 'N. Steno, 1669 (quartz); J.-B. Romé de l’Isle, 1783',
       tags: ['crystal morphology', 'interfacial angle'],
       viz(v) {
-        const H100 = v.slider('side faces {100}', 0.3, 2.4, 1, { step: 0.02 }), HZ = v.slider('top/bottom faces (001)', 0.3, 2.4, 1, { step: 0.02 });
+        const H100 = v.slider('side faces {100}', 0.3, 2.4, 0.8, { step: 0.02 }), HZ = v.slider('top/bottom faces (001)', 0.3, 2.4, 1.4, { step: 0.02 });
         const H111 = v.slider('octahedral {111}', 0.3, 2.6, 1.45, { step: 0.02 }), H110 = v.slider('dodecahedral {110}', 0.3, 3, 2.2, { step: 0.02 });
         let seed = 0, jit = null;
         const rnd = () => { const r = v.rng(++seed); jit = Array.from({ length: 26 }, () => 0.55 + 0.9 * r()); };
@@ -344,7 +344,7 @@ export default {
         v.button('undo', () => { if (seq.length > 1) seq.pop(); });
         v.button('hcp ABAB…', () => set('ABABABAB')); v.button('fcc ABC…', () => set('ABCABCAB')); v.button('dhcp ABAC…', () => set('ABACABAC'));
         const s = v.stage({ x: [-3.6, 3.6], y: [-3.5, 3.5], equal: true, axes: false, height: 440, weight: 1.35, title: 'stacking (drag to rotate)' });
-        const sc = v.scene3(s, { yaw: -0.5, pitch: 0.5, axes: false });
+        const sc = v.scene3(s, { yaw: -0.5, pitch: 0.3, axes: false });
         const top = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 440, weight: 0.9, title: 'seen from above' });
         const t1 = [1, 0], t2 = [0.5, Math.sqrt(3) / 2], off = [[0, 0], [(t1[0] + t2[0]) / 3, (t1[1] + t2[1]) / 3], [(2 * (t1[0] + t2[0])) / 3, (2 * (t1[1] + t2[1])) / 3]];
         const H = Math.sqrt(2 / 3);
@@ -353,7 +353,7 @@ export default {
         v.render(() => {
           const n = seq.length, z0 = ((n - 1) * H) / 2;
           // spheres: hexagon patch of lattice points of radius R around the centre of the A layer
-          const RR = 2.15;
+          const RR = 1.15;
           const centreOf = (L) => [off[L][0] * 0, off[L][1] * 0];
           sc.begin();
           const ppx = ppu(s);
@@ -361,7 +361,7 @@ export default {
             for (const [x, y] of layerPts(L)) {
               if (Math.hypot(x - 0.5, y - 0.3) > RR + 0.1) continue;
               const p = [x - 0.5, y - 0.3, li * H - z0];
-              sc.dot(p, { r: 0.5 * ppx * 0.8, color: COL[L], alpha: 0.82, top: false });
+              sc.dot(p, { r: 0.5 * ppx * 0.9, color: COL[L], alpha: 0.82, top: false });
             }
           });
           sc.flush();
@@ -456,7 +456,7 @@ with $N$ atoms per cell. For simple cubic, body-centred cubic, face-centred cubi
             b.line(i - 0.42, exact[q], i + 0.42, exact[q], { color: 'green', width: 2 });
             b.text(`CN ${aa.cn}`, i, aa.eta + 0.04, { align: 'center', size: 11, color: q === k ? 'ink' : 'muted', weight: q === k ? 700 : 500 });
           });
-          b.corner('green line: exact value', 'tr', { size: 11, color: 'green' });
+          b.corner('green line: exact value', 'tl', { size: 11, color: 'green' });
           cur = { k, A };
         });
         v.readout(() => {

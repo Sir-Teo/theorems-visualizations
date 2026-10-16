@@ -625,10 +625,10 @@ $T_e$ is the **effective (emission) temperature**: the temperature of the blackb
       statement: String.raw`The zero-dimensional balance (1.6) predicts each body's effective temperature from its distance and albedo alone. Compared with measured mean surface temperatures it ranks the strength of their greenhouse effects:
 - **Venus** $T_e \approx 229$ K, surface 737 K: about $+510$ K under 92 bar of CO₂;
 - **Earth** 255 K against 288 K: $+33$ K;
-- **Mars** 210 K against roughly 215 K: a few kelvin from 6 mbar of CO₂;
+- **Mars** 210 K against roughly 210–215 K (mean surface temperature is uncertain by several kelvin): a few kelvin from 6 mbar of CO₂;
 - **Titan** 83 K against 94 K: about $+11$ K from 1.5 bar of nitrogen with methane.
 
-Venus is hot although it absorbs *less* sunlight than Earth — its clouds reflect 76 % — and no albedo, not even zero, explains its surface by sunlight alone. An airless, slowly rotating body breaks the model the other way: the Moon's mean surface temperature (about 200 K) lies far *below* its $T_e = 270$ K, because a body with uneven temperature has $\langle T\rangle < \langle T^4\rangle^{1/4}$.`,
+Venus is hot although it absorbs *less* sunlight than Earth — its clouds reflect 76 % — and no albedo, not even zero, explains its surface by sunlight alone. An airless, slowly rotating body breaks the model the other way: the Moon's mean surface temperature (about 197 K, from Diviner-constrained thermal models) lies far *below* its $T_e = 270$ K, because a body with uneven temperature has $\langle T\rangle < \langle T^4\rangle^{1/4}$.`,
       idea: String.raw`$T_e$ follows from $S = S_\oplus/d^2$ and $\alpha$ (1.5, 1.6); the excess $T_s - T_e$ measures how far the atmosphere lifts the surface above the level that radiates to space, and it grows with the amount of infrared-absorbing gas (chapter 2). Without an atmosphere and without heat storage or transport, each patch balances its own sunlight: $T = T_{ss}\cos^{1/4}Z$ by day and nearly zero at night, where $T_{ss} = (S(1-\alpha)/\sigma)^{1/4}$. The power-mean inequality then gives $\langle T\rangle \le \langle T^4\rangle^{1/4} = T_e$, with equality only for a uniform temperature; the numerical sphere average is $\langle T\rangle = 0.400\,T_{ss} \approx 0.57\,T_e$.`,
       caption: String.raw`Each row compares the computed effective temperature (hollow dot) with the measured mean surface temperature (filled dot) and labels the difference; the small orange mark is the mean temperature the body would have with no atmosphere and no heat transport. Pick a body (or click its row) and change its albedo to test whether reflectivity alone could produce its surface temperature. The globe shows the selected body either at a uniform $T_e$ or in local radiative equilibrium; drag it to turn it.`,
       deps: ['climate-1.6'],
@@ -641,7 +641,7 @@ Venus is hot although it absorbs *less* sunlight than Earth — its clouds refle
           { id: 'earth', name: 'Earth', d: 1, alb: 0.3, Ts: 288, atm: '1 bar N₂ and O₂ with H₂O and CO₂' },
           { id: 'mars', name: 'Mars', d: 1.524, alb: 0.25, Ts: 215, atm: '6 mbar CO₂ (mean surface temperature uncertain by several K)' },
           { id: 'titan', name: 'Titan', d: 9.58, alb: 0.265, Ts: 94, atm: '1.5 bar N₂ with methane and organic haze' },
-          { id: 'moon', name: 'Moon', d: 1, alb: 0.11, Ts: 200, atm: 'none' },
+          { id: 'moon', name: 'Moon', d: 1, alb: 0.11, Ts: 197, atm: 'none' },
         ];
         // sphere averages of max(0, cos Z) and max(0, cos Z)^{1/4}, by quadrature on a 1° grid
         let m1 = 0, mq = 0, wsum = 0;
@@ -693,7 +693,7 @@ Venus is hot although it absorbs *less* sunlight than Earth — its clouds refle
           let s = String.raw`**${b.name}**: $S$ = ${v.fix(t.S, t.S < 100 ? 1 : 0)} W/m², $\alpha$ = ${v.fix(a, 2)} → $T_e$ = ${v.fix(t.Te, 1)} K; measured ${b.Ts} K → ${b.Ts >= t.Te ? 'greenhouse warming' : 'difference'} ${b.Ts >= t.Te ? '+' : '−'}${v.fix(Math.abs(b.Ts - t.Te), 0)} K · atmosphere: ${b.atm}`;
           if (b.id !== 'moon') s += need < 0 ? String.raw` · no albedo can do it: even $\alpha = 0$ gives only ${v.fix(((t.S / 4) / sig) ** 0.25, 0)} K` : String.raw` · sunlight alone would need $\alpha$ = ${v.fix(need, 3)}`;
           s += String.raw` · airless and without heat transport: $\langle T\rangle$ = ${v.fix(mq, 3)} $T_{ss}$ = ${v.fix(t.Tloc, 0)} K, while $\langle T^4\rangle^{1/4}$ = ${v.fix(Math.sqrt(Math.sqrt(m1)) * t.Tss, 1)} K = $T_e$`;
-          if (b.id === 'moon') s += ' — the measured ≈ 200 K lies between this no-storage limit and the uniform $T_e$, because the regolith stores a little daytime heat';
+          if (b.id === 'moon') s += ' — the modelled ≈ 197 K lies between this no-storage limit and the uniform $T_e$, because the regolith stores a little daytime heat';
           return s;
         });
       },

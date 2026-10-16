@@ -38,7 +38,7 @@ Scope: this is the "who regulates whom" skeleton; it ignores the signals (small 
         s.onClick((x, y) => { const h = G.hitNode(x, y); if (h) { sel = h.id; v.invalidate(); } });
         let laid = false;
         v.render(() => {
-          if (!laid) { laid = true; G.layout('force', { seed: 11, restarts: 8, iterations: 400 }); G.layout('fit'); }
+          if (!laid) { laid = true; G.layout('force', { seed: 11, restarts: 8, iterations: 400 }); G.nodes.forEach((n) => { n.x = 5 + (n.x - 5) * 0.84; n.y = 3.5 + (n.y - 3.5) * 0.82; }); }
           const outs = new Set(G.edges.filter((e) => e.from === sel && e.to !== sel).map((e) => e.to));
           const ins = new Set(G.edges.filter((e) => e.to === sel && e.from !== sel).map((e) => e.from));
           const dimN = G.nodes.filter((n) => n.id !== sel && !outs.has(n.id) && !ins.has(n.id)).map((n) => n.id);
@@ -239,7 +239,7 @@ where $\beta$ is the production rate (given by the input function, 1.2–1.4) an
 $$p(t)=\frac{\beta}{\alpha}+\Big(p_0-\frac{\beta}{\alpha}\Big)e^{-\alpha t}:$$
 the level relaxes exponentially to the steady state $p_{\rm st}=\beta/\alpha$. The steady state depends on both rates; the *speed* of approach depends only on $\alpha$.`,
       idea: String.raw`The equation is first-order linear (ode-1.x): production is a constant inflow, removal an outflow proportional to the level, so the deviation $p-\beta/\alpha$ decays as $e^{-\alpha t}$. Switching production off sends $p\to0$ with the same rate; switching it on from zero gives $p=p_{\rm st}(1-e^{-\alpha t})$. In a stochastic treatment the same two reactions $\varnothing\to p$ (rate $\beta$) and $p\to\varnothing$ (rate $\alpha p$) give a Poisson steady state with mean $\beta/\alpha$ and standard deviation $\sqrt{\beta/\alpha}$ (chapter 9).`,
-      caption: String.raw`Choose a production schedule (always on, on-then-off, or pulsed) and slide $\beta$ and the doubling time (which sets $\alpha=\ln2/T_{\rm div}$ for a stable protein). **Top**: the exact solution (blue) together with the RK4 solution of the ODE (black dots) and six seeded Gillespie single-cell simulations (gold), inside a $\pm\sqrt{p_{\rm st}}$ band. **Bottom**: the rate balance — constant production $\beta$ against removal $\alpha p$ — with the point at the time shown by the cursor $t$.`,
+      caption: String.raw`Choose a production schedule (always on, on-then-off, or pulsed) and slide $\beta$ and the doubling time (which sets $\alpha=\ln2/T_{\rm div}$ for a stable protein). **Left**: the exact solution (blue) together with the RK4 solution of the ODE (black dots) and six seeded Gillespie single-cell simulations (gold), inside a $\pm\sqrt{p_{\rm st}}$ band. **Right**: the rate balance — constant production $\beta$ against removal $\alpha p$ — with the point at the time shown by the cursor $t$.`,
       deps: ['sysbio-1.2'],
       refs: ['Alon: Transcription Networks: Basic Concepts'],
       tags: ['production-degradation', 'dynamics'],
@@ -303,7 +303,7 @@ the level relaxes exponentially to the steady state $p_{\rm st}=\beta/\alpha$. T
 $$T_{1/2}=\frac{\ln 2}{\alpha},$$
 independent of the production rate $\beta$ and of the steady state. If $\alpha$ is due only to dilution by growth, $\alpha=\ln 2/T_{\rm div}$ and therefore $T_{1/2}=T_{\rm div}$: the response time of a stable protein equals one cell-cycle time. Making a protein unstable ($\alpha=\alpha_{\rm deg}+\alpha_{\rm dil}$) is the way to speed a circuit up.`,
       idea: String.raw`Write the deviation $\Delta=p-p_{\rm final}$; it satisfies $\dot\Delta=-\alpha\Delta$ with $\Delta(0)=p_{\rm initial}-p_{\rm final}$, so $\Delta(t)=\Delta(0)e^{-\alpha t}$. Half-way means $|\Delta|=|\Delta(0)|/2$, i.e. $e^{-\alpha t}=1/2$. The proof therefore uses the closed-form solution of 1.5 and nothing about $\beta$, which only shifts the final level. The theorem fails when production is itself still changing — for instance when the regulator is made by an upstream gene that has its own response time — the delays then add, which is why gene cascades are slow.`,
-      caption: String.raw`Three genes with production rates in ratio $1:2:4$ are switched on together (or off, using the toggle). Their half-way marks (gold dots) fall on one vertical line at $\ln2/\alpha$. Move $\alpha$ via the doubling time: the line slides, and the log–log plot on the right shows $T_{1/2}\propto 1/\alpha$ with slope $-1$, with $E.\,coli$ doubling times of 40 and 63.5 min marked. Switch on *upstream gene still rising* to see the theorem's hypothesis fail: the measured half-time (numerical) moves to the right of $\ln2/\alpha$.`,
+      caption: String.raw`Three genes with production rates in ratio $1:2:4$ are switched on together (or off, with the switch control). Their half-way marks (gold dots) fall on one vertical line at $\ln2/\alpha$. Move $\alpha$ via the doubling time: the line slides, and the log–log plot on the right shows $T_{1/2}\propto 1/\alpha$ with slope $-1$, with $E.\,coli$ doubling times of 40 and 63.5 min marked. Switch on *upstream gene still rising* to see the theorem's hypothesis fail: the measured half-time (numerical) moves to the right of $\ln2/\alpha$.`,
       deps: ['sysbio-1.5'],
       refs: ['Alon: Transcription Networks: Basic Concepts'],
       tags: ['response time', 'dilution'],
@@ -348,7 +348,7 @@ independent of the production rate $\beta$ and of the steady state. If $\alpha$ 
         v.legend([['blue', 'β = 1'], ['teal', 'β = 2'], ['purple', 'β = 4'], ['gold', 'half-way point (numerical)', { dot: true }], ['green', 'T½ = ln2/α', { dash: true }]]);
         v.readout(() => {
           const T = Td.value, mode = dir.value, d = delay.value, ts = [0, 1, 2].map((k) => halfTime(T, k, mode, d).t);
-          return `$\\alpha=\\ln2/${v.fix(T, 0)}\\,\\text{min}=${v.fix(LN2 / T, 4)}\\,\\text{min}^{-1}$ → predicted $T_{1/2}=\\ln2/\\alpha = ${v.fix(T, 1)}$ min. Measured half-times for $\\beta=1,2,4$: ${ts.map((t) => v.fix(t, 1)).join(', ')} min ${d ? '— upstream delay adds roughly its own response time' : '— identical, whatever β is ✓'}.`;
+          return `$\\alpha=\\ln2/${v.fix(T, 0)}\\,\\text{min}=${v.fix(LN2 / T, 4)}\\,\\text{min}^{-1}$ → predicted $T_{1/2}=\\ln2/\\alpha = ${v.fix(T, 1)}$ min. Measured half-times for $\\beta=1,2,4$: ${ts.map((t) => v.fix(t, 1)).join(', ')} min ${d ? '— later than $\\ln2/\\alpha$: the upstream gene’s own response time adds a delay' : '— identical, whatever β is ✓'}.`;
         });
       },
     },
