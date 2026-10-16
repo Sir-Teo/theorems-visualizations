@@ -424,3 +424,16 @@ export function schnyderRegions(n, tri, out, v) {
   tri.forEach((_, i) => { const r = regOf.indexOf(lab[i]); reg[i] = r; if (r >= 0) counts[r]++; });
   return { counts, reg, nl, bar };
 }
+/** Put relative positions pos[i] on the nodes of a kit graph G (vertex i = H.ids[i]) and fit them into the view. */
+export function fitPos(G, H, pos) { H.ids.forEach((id, i) => { const nd = G.node(id); nd.x = pos[i][0]; nd.y = pos[i][1]; }); G.layout('fit'); }
+/** Current drawing positions of the vertices of H (data coordinates). */
+export const posOf = (G, H) => H.ids.map((id) => [G.node(id).x, G.node(id).y]);
+/** Replace the contents of kit graph G by nodes and edges (arrays of pairs) with positions 'fit'. */
+export function loadSpec(G, spec) { G.set({ nodes: spec.nodes.map((n) => ({ ...n })), edges: spec.edges.map((e) => (Array.isArray(e) ? [e[0], e[1]] : [e.from, e.to])) }); G.layout(spec.layout || 'none'); }
+/** Intersection point of two segments, or null. */
+export function segPoint(p, q, r, s) {
+  const d = (q[0] - p[0]) * (s[1] - r[1]) - (q[1] - p[1]) * (s[0] - r[0]); if (!d) return null;
+  const t = ((r[0] - p[0]) * (s[1] - r[1]) - (r[1] - p[1]) * (s[0] - r[0])) / d; return [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
+}
+/** Spec of a graph given by relative positions P = [[x, y], …] and edge pairs. */
+export const specOf = (P, E) => ({ nodes: P.map(([x, y], i) => ({ id: i, x, y })), edges: E.map(([a, b]) => [a, b]), layout: 'fit' });
