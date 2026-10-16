@@ -166,8 +166,9 @@ export default {
           const ths = sample(mech.value);
           const isAB = prod.value === 'AB', uP = isAB ? uAB : uC, off = isAB ? 0 : Math.PI;
           const pts = ths.map((t) => [vcm[0] + uP * Math.cos(e0 + t + off), vcm[1] + uP * Math.sin(e0 + t + off)]);
-          const ext = Math.max(Math.hypot(...VA), Math.hypot(...VB), Math.hypot(vcm[0], vcm[1]) + uP) * 1.15;
-          A.setView([-ext * 0.35, ext * 1.05], [-ext * 0.8, ext * 0.8]);
+          const bx = [0, VA[0], VB[0], vcm[0] - uP, vcm[0] + uP], by = [0, VA[1], VB[1], vcm[1] - uP, vcm[1] + uP];
+          const x0 = Math.min(...bx), x1 = Math.max(...bx), y0 = Math.min(...by), y1 = Math.max(...by), pad = 0.12 * Math.max(x1 - x0, y1 - y0), ext = Math.max(x1 - x0, y1 - y0);
+          A.setView([x0 - pad, x1 + pad], [y0 - pad, y1 + pad]);
           A.circle(vcm[0], vcm[1], uP, { color: 'ink', width: 1.4, dash: [5, 4], fill: 'purple', fillAlpha: 0.05 });
           A.dots(pts, { r: 1.6, color: 'purple', alpha: 0.5 });
           A.arrow(0, 0, VA[0], VA[1], { color: 'accent', width: 2.4, head: 9 }); A.arrow(0, 0, VB[0], VB[1], { color: 'orange', width: 2.4, head: 9 });

@@ -228,9 +228,9 @@ $r^2=${v.fix(f.r2, 5)}$, MSWD $=$ ${isFinite(mswd) ? v.fix(mswd, 1) : 'n/a (no e
       viz(v) {
         const CH = [['²³⁸U', 4.468e9], ['²³⁴U', 2.455e5], ['²³⁰Th', 7.538e4], ['²²⁶Ra', 1600], ['²²²Rn', 3.8235 / 365.25], ['²¹⁰Pb', 22.2], ['²¹⁰Po', 138.376 / 365.25]];
         const lam = CH.map(([, T]) => LN2 / T), K = CH.length;
-        const cols = ['accent', 'blue', 'teal', 'orange', 'purple', 'pink', 'gold'];
+        const cols = ['ink', 'blue', 'teal', 'orange', 'purple', 'pink', 'gold'];
         const INIT = { fresh: [1, 0, 0, 0, 0, 0, 0], coral: [1, 1, 0, 0, 0, 0, 0], ra: [1, 1, 1, 0, 0, 0, 0], rn: [1, 1, 1, 1, 0, 1, 1] };
-        const sc = v.select('start', [{ value: 'fresh', label: 'pure $^{238}$U' }, { value: 'coral', label: 'U, no Th' }, { value: 'ra', label: 'Ra leached' }, { value: 'rn', label: 'Rn lost' }], 'fresh');
+        const sc = v.select('start', [{ value: 'fresh', label: 'pure $^{238}$U' }, { value: 'coral', label: 'U, no Th' }, { value: 'ra', label: 'Ra leached' }, { value: 'rn', label: 'Rn lost' }], 'ra');
         const ratioSl = v.slider('$T_{1/2}$ parent / daughter', 0.1, 1e4, 100, { log: true, sig: 2 });
         const Amat = Array.from({ length: K }, (_, i) => Array.from({ length: K }, (_, j) => (i === j ? -lam[i] : (j === i - 1 ? lam[j] : 0))));
         const cache = new Map();
@@ -352,7 +352,7 @@ ${spread < 1e-3 || F.value === 0 ? 'No lead loss: all zircons sit together on th
       tags: ['radiocarbon', 'calibration'],
       scope: String.raw`Organic material up to roughly 50 kyr old, with no contamination by older carbon; reservoir effects (marine samples, hard-water lakes) need a separate offset.`,
       viz(v) {
-        const ANC = [[0, 0], [500, 460], [1000, 1110], [1500, 1600], [2000, 2050], [2400, 2380], [2750, 2470], [2850, 2700], [3000, 2850], [4000, 3650], [5000, 4400], [6000, 5250], [7000, 6150], [8000, 7150], [9000, 8000], [10000, 8900], [11000, 9700], [11400, 9950], [12000, 10300], [13000, 11100], [14000, 12000], [15000, 12700], [17000, 14200], [20000, 16900], [25000, 21000], [30000, 26000], [35000, 30700], [40000, 35500], [45000, 40300], [50000, 44800]];
+        const ANC = [[0, 0], [500, 460], [1000, 1110], [1500, 1600], [2000, 2050], [2350, 2400], [2500, 2440], [2750, 2480], [2850, 2700], [3000, 2850], [4000, 3650], [5000, 4400], [6000, 5250], [7000, 6150], [8000, 7150], [9000, 8000], [10000, 8900], [11000, 9700], [11400, 9950], [12000, 10300], [13000, 11100], [14000, 12000], [15000, 12700], [17000, 14200], [20000, 16900], [25000, 21000], [30000, 26000], [35000, 30700], [40000, 35500], [45000, 40300], [50000, 44800]];
         const r = (c) => {
           let i = 0; while (i < ANC.length - 2 && ANC[i + 1][0] < c) i++;
           const [c0, r0] = ANC[i], [c1, r1] = ANC[i + 1], u = (c - c0) / (c1 - c0);
@@ -366,7 +366,7 @@ ${spread < 1e-3 || F.value === 0 ? 'No lead loss: all zircons sit together on th
         let st = {}, lastView = 0;
         v.render(() => {
           const W = view.value;
-          if (W !== lastView) { lastView = W; s.setView([0, W], [0, W]); p.setView([0, W], [0, 1.1]); hr.set(W * 0.05, Math.min(hr.y, W * 0.95)); }
+          if (W !== lastView) { lastView = W; s.setView([0, W * 1.04], [0, W * 1.04]); hr.set(W * 0.05, Math.min(hr.y, W * 0.95)); }
           hr.set(W * 0.05, Math.max(30, Math.min(hr.y, r(W) * 0.98)));
           const rm = hr.y, sd = sg.value;
           s.line(0, 0, W, W, { color: 'faint', dash: true });
@@ -383,6 +383,9 @@ ${spread < 1e-3 || F.value === 0 ? 'No lead loss: all zircons sit together on th
           const mx = Math.max(...ds) || 1;
           const ranges = []; let a0 = null;
           for (let i = 0; i <= n; i++) { if (inn[i] && a0 === null) a0 = xs[i]; if ((!inn[i] || i === n) && a0 !== null) { ranges.push([a0, xs[i - (inn[i] ? 0 : 1)]]); a0 = null; } }
+          let i0 = 0, i1 = n; while (i0 < n && ds[i0] / mx < 0.01) i0++; while (i1 > 0 && ds[i1] / mx < 0.01) i1--;
+          let lo = xs[i0], hi = xs[i1]; const wd = Math.max(hi - lo, 300), mid = (lo + hi) / 2;
+          p.setView([Math.max(0, mid - wd * 0.8), mid + wd * 0.8], [0, 1.1]);
           p.path(xs.map((c, i) => [c, ds[i] / mx]), { color: 'ink', width: 1 });
           ranges.forEach(([a, b]) => { p.vband(a, b, { color: 'green', alpha: 0.2 }); });
           const poly = []; xs.forEach((c, i) => { if (inn[i]) poly.push([c, ds[i] / mx]); });

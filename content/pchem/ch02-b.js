@@ -190,7 +190,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
         const leak = v.slider('heat-leak coefficient', 0, 0.08, 0.03, { step: 0.002, fmt: (x) => `${x.toFixed(3)} /min` });
         const s = v.stage({ x: [0, T_END], y: [23.5, 28], axes: 'box', gutter: true, xlabel: 'time / min', ylabel: 'T / °C', height: 360, title: 'temperature record' });
         const sb = v.stage({ x: [0, 4], y: [-20, 0], axes: 'box', gutter: true, ylabel: 'kJ/mol', height: 360, title: 'from the temperature rise to the energy of combustion',
-          xticks: [[0.8, 'Δ_cU measured'], [1.8, 'Δ_cU tabulated'], [3.0, 'Δ_cH']] });
+          xticks: [[0.8, 'ΔcU measured'], [1.8, 'ΔcU tabulated'], [3.0, 'ΔcH']] });
         const hnd = s.handle(T_IGN + 2.5, 25, { color: 'gold', r: 8, constrain: (x) => [Math.min(T_IGN + 5, Math.max(T_IGN, x)), 25.5] });
         v.button('Equal areas', () => { hnd.x = info.tEq; });
         let info = {}, key = '';
@@ -257,22 +257,22 @@ Equivalently the enthalpy change between two states is the same along every rout
       viz(v) {
         const EX = {
           co2: { name: 'graphite → CO₂ via CO', start: 'a', goal: 'c', y: [-460, 70],
-            nodes: { a: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, b: { x: 3, h: -110.53, t: '\\mathrm{CO+\\tfrac12O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}' } },
+            nodes: { a: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, b: { x: 3, h: -110.53, t: '\\mathrm{CO+\\tfrac12O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}', below: true } },
             edges: [['a', 'b'], ['b', 'c'], ['a', 'c']], direct: 2 },
           ethene: { name: 'hydrogenation of ethene (from combustion data)', start: 'n2', goal: 'n1', y: [-100, 1800],
-            nodes: { n2: { x: 1, h: 1411.2 + 285.83, t: '\\mathrm{C_2H_4+H_2+3\\tfrac12O_2}' }, n3: { x: 3, h: 285.83, t: '\\mathrm{2CO_2+2H_2O(l)+H_2+\\tfrac12O_2}' }, n1: { x: 2, h: 1560.7, t: '\\mathrm{C_2H_6+3\\tfrac12O_2}' }, n0: { x: 2.5, h: 0, t: '\\mathrm{2CO_2+3H_2O(l)}' } },
+            nodes: { n2: { x: 1, h: 1411.2 + 285.83, t: '\\mathrm{C_2H_4+H_2+3\\tfrac12O_2}' }, n3: { x: 3, h: 285.83, t: '\\mathrm{2CO_2+2H_2O(l)+H_2+\\tfrac12O_2}' }, n1: { x: 2, h: 1560.7, t: '\\mathrm{C_2H_6+3\\tfrac12O_2}' }, n0: { x: 2.5, h: 0, t: '\\mathrm{2CO_2+3H_2O(l)}', below: true } },
             edges: [['n2', 'n3'], ['n3', 'n0'], ['n1', 'n0'], ['n2', 'n1']], direct: 3 },
           dia: { name: 'graphite → diamond', start: 'g', goal: 'd', y: [-460, 60],
-            nodes: { g: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, d: { x: 3, h: 1.895, t: '\\mathrm{C(diamond)+O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}' } },
+            nodes: { g: { x: 1, h: 0, t: '\\mathrm{C(gr)+O_2}' }, d: { x: 3, h: 1.895, t: '\\mathrm{C(diamond)+O_2}' }, c: { x: 2, h: -393.51, t: '\\mathrm{CO_2}', below: true } },
             edges: [['g', 'c'], ['d', 'c'], ['g', 'd']], direct: 2 },
         };
         const ex = v.select('reaction', Object.keys(EX).map((k) => ({ value: k, label: EX[k].name })), 'co2');
-        const cheat = v.slider('cheat: error in the tabulated value of the last step', 0, 100, 0, { step: 1, fmt: (x) => `${x.toFixed(0)} kJ/mol` });
+        const cheat = v.slider('cheat: error in the tabulated value of the direct step', 0, 100, 0, { step: 1, fmt: (x) => `${x.toFixed(0)} kJ/mol` });
         v.button('Reset route', () => { route = [EX[ex.value].start]; });
         const s = v.stage({ x: [0.2, 3.8], y: [-460, 70], axes: false, height: 400, full: true, title: 'enthalpy ladder (heights to scale, kJ/mol)' });
         let route = [EX.co2.start], cur = 'co2';
         const E = () => EX[ex.value];
-        const edgeDH = (e, a, b) => { const N = E().nodes; let d = N[b].h - N[a].h; if (e === E().edges.length - 1 && E().direct === E().edges.length - 1) { /* direct edge */ } if (e === E().direct) d += (a === E().edges[e][0] ? 1 : -1) * cheat.value; return d; };
+        const edgeDH = (e, a, b) => { const N = E().nodes; let d = N[b].h - N[a].h; if (e === E().direct) d += (a === E().edges[e][0] ? 1 : -1) * cheat.value; return d; };
         s.onClick((x, y) => {
           const N = E().nodes, tip = route[route.length - 1];
           let best = null, bd = 60;
@@ -298,7 +298,8 @@ Equivalently the enthalpy change between two states is the same along every rout
           for (const k in N) {
             const n = N[k], tip = route[route.length - 1] === k;
             s.dot(n.x, n.h, { r: tip ? 9 : 6, color: k === X.goal ? 'red' : k === X.start ? 'green' : 'ink', hollow: k === X.goal || k === X.start });
-            s.tex(n.t, n.x, n.h, { dy: -16, size: 12.5, align: 'center' });
+            s.line(n.x - 0.28, n.h, n.x + 0.28, n.h, { color: 'muted', width: 1.5 });
+            s.tex(n.t, n.x, n.h, { dy: n.below ? 18 : -16, size: 12.5, align: 'center' });
           }
           const direct = N[X.goal].h - N[X.start].h;
           info = { sum, direct, atGoal: route[route.length - 1] === X.goal, atStart: route.length > 1 && route[route.length - 1] === X.start, n: steps.length, steps };
@@ -336,15 +337,19 @@ $$\Delta_rH^\circ = \sum_\text{products}\nu\,\Delta_fH^\circ - \sum_\text{reacta
           s.setView([0, 6], [lo - pad, hi + pad]);
           s.hline(0, { color: 'ink', width: 2 });
           s.text('elements in their standard states: Δ_fH° = 0', 0.1, 0, { align: 'left', size: 12, dy: -10, color: 'muted' });
-          [[Rc, 1.5, 'reactants'], [Pc, 4.5, 'products']].forEach(([c, x0, nm]) => {
+          const span = hi - lo + 2 * pad;
+          [[Rc, 1.5, 'reactants', -1], [Pc, 4.5, 'products', 1]].forEach(([c, x0, nm, side]) => {
+            let nz = 0;
             c.segs.forEach(([a, b, key, nu, colr, val]) => {
-              if (a === b) { s.text(`${nu} ${F[key][1].replace(/[_{}]/g, '')} (0)`, x0, 0, { size: 11, color: 'muted', dy: 12 }); return; }
+              if (a === b) { s.tex(`${nu}\\,\\mathrm{${F[key][1]}}\\ (0)`, x0, 0, { size: 12, dy: 16 + 17 * nz++, color: 'muted' }); return; }
               s.rect(x0 - 0.7, a, x0 + 0.7, b, { fill: colr, fillAlpha: 0.55, color: colr });
-              s.tex(`${nu}\\,\\mathrm{${F[key][1]}}\\ \\ ${val < 0 ? '−' : '+'}${Math.abs(val).toFixed(1)}`, x0, (a + b) / 2, { size: 12 });
+              const lab = `${nu}\\,\\mathrm{${F[key][1]}}\\ \\ ${val < 0 ? '−' : '+'}${Math.abs(val).toFixed(1)}`;
+              if (Math.abs(b - a) < 0.07 * span) s.tex(lab, x0 - side * 0.75, (a + b) / 2, { size: 12, align: side < 0 ? 'left' : 'right', dx: 0 });
+              else s.tex(lab, x0, (a + b) / 2, { size: 12 });
             });
             s.tex(nm, x0, hi + pad * 0.55, { size: 14 });
             s.line(x0 - 0.9, c.tot, x0 + 0.9, c.tot, { color: 'ink', width: 2.4 });
-            s.text(`Σ = ${c.tot.toFixed(1)}`, x0 + 0.95, c.tot, { align: 'left', size: 12 });
+            s.text(`Σ = ${v.fix(c.tot, 1)}`, x0 + side * 0.95, c.tot, { align: side < 0 ? 'right' : 'left', size: 12, dx: side < 0 ? 0 : 0 });
           });
           s.line(1.5 + 0.9, Rc.tot, 4.5 - 0.9, Rc.tot, { color: 'faint', dash: true });
           s.arrow(3, Rc.tot, 3, Pc.tot, { color: 'red', width: 3, head: 11 });

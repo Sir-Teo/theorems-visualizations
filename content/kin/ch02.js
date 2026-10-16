@@ -204,10 +204,10 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
       viz(v) {
         const model = v.select('model', [{ value: 'loc', label: 'line of centres' }, { value: 'step', label: 'hard threshold' }], 'loc');
         const E0 = v.slider('$E_0$ (kJ/mol)', 5, 100, 40, { step: 1 });
-        const Tsl = v.slider('$T$ (K)', 200, 1500, 600, { step: 10 });
+        const Tsl = v.slider('$T$ (K)', 200, 1500, 900, { step: 10 });
         const Es = v.slider('collision energy $E$ (kJ/mol)', 1, 200, 70, { step: 1 });
         const A = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 300, title: 'impact geometry', weight: 0.8, minWidth: 240 });
-        const B = v.stage({ x: [0, 200], y: [0, 1.15], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'σ_r / πd²', title: 'excitation function', weight: 1, minWidth: 240 });
+        const B = v.stage({ x: [0, 200], y: [0, 1.15], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'σᵣ / πd²', title: 'excitation function', weight: 1, minWidth: 240 });
         const C = v.stage({ x: [0, 200], y: [0, 1.1], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'integrand (relative)', title: 'thermal average', weight: 1, minWidth: 240 });
         const hb = A.handle(-1.3, 0.5, { color: 'gold', label: 'b', constrain: (x, y) => [-1.3, clamp(y, -1.4, 1.4)] });
         const sig = (E) => model.value === 'loc' ? (E > E0.value ? 1 - E0.value / E : 0) : (E > E0.value ? 1 : 0);
@@ -222,14 +222,16 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
           A.measure(0, 0, 0, bmax, ''); A.tex('b_{\\max}', 0.08, bmax / 2 + 0.05, { color: 'green' });
           B.fn((x) => sig(x), { color: 'accent', width: 2.6, domain: [0.01, 200] }); B.vline(e0, { color: 'faint', dash: [4, 4] }); B.dot(E, sig(E), { r: 6, color: 'gold' });
           const f = (x) => sig(x) * x * Math.exp(-x / kT) / (kT * kT);
-          const w0 = (x) => x * Math.exp(-x / kT) / (kT * kT), top = w0(kT); // the weight peaks at E = kT
+          const w0 = (x) => x * Math.exp(-x / kT) / (kT * kT);
+          let top = 0, ex = 1; for (let x = 0.5; x <= 200; x += 0.5) { const q = f(x); if (q > top) { top = q; ex = x; } }
+          top = Math.max(top, 1e-300); const sw = top / w0(ex); // the dashed weight is scaled to touch the integrand's peak
           C.fn((x) => f(Math.max(x, 1e-6)) / top, { color: 'accent', width: 2.2, fill: 'accent', domain: [0.01, 200] });
-          C.fn((x) => w0(x) / top, { color: 'faint', width: 1.4, dash: [5, 4], domain: [0.01, 200] });
+          C.fn((x) => sw * w0(x) / top, { color: 'faint', width: 1.4, dash: [5, 4], domain: [0.01, 200] });
           const num = v.M.integrate((x) => f(x), 0, 12 * kT + e0, 3000);
           const closed = model.value === 'loc' ? Math.exp(-e0 / kT) : (1 + e0 / kT) * Math.exp(-e0 / kT);
           info = { num, closed, kT, b, bmax, sigE: sig(E) };
         });
-        v.legend([['accent', 'integrand'], ['faint', 'weight $Ee^{-E/k_BT}$ (σ = 1)', { dash: true }], ['green', 'reactive core', { area: true }]]);
+        v.legend([['accent', 'integrand'], ['faint', 'weight $Ee^{-E/k_BT}$ (rescaled)', { dash: true }], ['green', 'reactive core', { area: true }]]);
         v.readout(() => `$k_BT=${v.fix(info.kT, 2)}$ kJ/mol · $\\sigma_r(E)/\\pi d^2=${v.fix(info.sigE, 3)}$, $b_{\\max}=${v.fix(info.bmax, 3)}\\,d$ · thermal average $k/\\big(\\pi d^2\\sqrt{8k_BT/\\pi\\mu}\\big)=${v.sci(info.num, 4)}$ by numerical integration vs closed form ${model.value === 'loc' ? '$e^{-E_0/k_BT}$' : '$(1+E_0/k_BT)e^{-E_0/k_BT}$'} $=${v.sci(info.closed, 4)}$`);
       },
     },

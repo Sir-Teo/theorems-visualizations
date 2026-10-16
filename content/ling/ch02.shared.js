@@ -237,3 +237,52 @@ export function segDistance(a, b) {
   d += (a.includes('ʰ') ? 1 : 0) !== (b.includes('ʰ') ? 1 : 0) ? 1 : 0;
   return d;
 }
+
+// ------------------------------------------------------------------ 2.8: a toy lexicon (respelled) and two phonotactic models
+/** About 450 common English words in the respelling of `respell` (a hand-written sample, not a corpus). */
+export const LEXICON = `bat bed big bus bug bun cab cup cut dad dig dip dot dug fan fat fed fit fix fun gap gas get gum gun hat hid hit hop hot hug jam jar jet job jog jug kid kit lap leg let lid lip lit log lot mad map mat men mix mud mug nap net nod nut pan pat peg pen pet pin pit pop pot pub pup ran rat red rib rid rip rob rod rot rub rug run sad sat set sip sit sob sun tab tan tap ten tin tip top tub van vet wag web wed wet win wit yam yes zip zap
+blak bloo blud bloh bred brown bring brij brush play plan plant pleez plum pritee pries print proov tree trayn truk trie trip dringk dreem driev drop dres klok kleen kliem klohz klap krie kraws krowd kreem krab glad glas gluv gloh gloo gras green grayt groh grownd grab flie flowr flawr flat flag free fresh frum frunt frawst frog sloh sleep slied slip sled smawl smiel smohk smel snoh snayk snap snif speek spoon spin spot spel spend stop star stohn stawree stand step stik skin skie skool skayl skert skip split splash spring spred spray street strawng string streem striek skreem skrach skroo swim sweet swing sweep twin twelv twentee twist kween kwik three throh throo thred thum thik thingk dhis dhat dhen widh ship shop shut sheep shel shien chair chin chop cheez chield cherch juj jump joy yeloh yung yeer
+tieger wawter buter beter leter mudher fadher sister brudher taybuhl apuhl lituhl peepuhl windoh mungkee garduhn markit pikcher animuhl buhnanuh uhbowt uhgen uhrownd uhway bigin bihiend bitween bifawr under ohver after sunday hapee candee pupee baybee munee funee sunee partee karuht rabit baskit pokit jakit tikit rokit dokter diner winter sumer blangkit chikin kichin childruhn eluhfuhnt hospituhl yesterday sandwich pensuhl payper tuhmaytoh puhtaytoh umbreluh monster airplayn sunshien berthday
+frend tooth mowth munth bath path wosh woch wish push bush much kach mach beech teech reech milk help self belt gohld kohld ohld feeld film woolf bulb sawlt fawlt wield werld gerl perl hand land sand wind bend pond sownd rownd bangk singk pingk sungk thangk kamp lamp bump dump ramp tent went paynt poynt kownt mint fast last best nest rest test list mist ferst must dust kawst desk task risk ask nekst tekst siks boks foks kats dawgz handz frendz munths apt kept slept krept left gift lift sawft akt fakt dukt askt helpt jumpt wawkt wosht past dropt stopt bagd begd rubd hugd pland kawld fild ternd raynd seemd
+eg end ant arm up us in it iz awf on ohpuhn owt oyl ies eet eer ie air inch ekoh awrinj bee see shoo too zoo hoo yoo noo day say way boy toy now how kow roh goh noh soh shoh loh mee hee shee wee dhuh uh doo bie mie`.split(/\s+/).filter(Boolean);
+
+const MANNER = (s) => { const f = SEG[s]?.f; if (!f) return '?'; if (f.syl === '+') return 'V'; if (f.son === '+') return f.nas === '+' ? 'N' : f.cons === '-' ? 'G' : 'L'; if (s === 'tʃ' || s === 'dʒ') return 'A'; return f.cont === '+' ? 'F' : 'S'; };
+const CLASS_SIZE = { S: 6, A: 2, F: 9, N: 3, L: 3, G: 2 };
+const K_PHONES = 38;
+/** The units each model scores in a word (segment bigrams; or syllable onsets, nuclei and codas). */
+export function modelUnits(syms, kind) {
+  if (kind === 'bigram') { const q = ['#', ...syms, '#']; return q.slice(1).map((b, i) => ['b:' + q[i], b]); }
+  const out = []; const sy = syllabify(syms);
+  sy.forEach((y, i) => { out.push(['on:', y.on.join('')], ['nu:', y.nu.join('') || '∅'], ['co:', y.co.join('')]); });
+  return out;
+}
+/** Train both models on the lexicon; score(word syms, kind, loo) → {units: [{label, p, bits}], bits per segment}. */
+export function trainPhonotactics() {
+  const words = LEXICON.map((w) => respell(w)).filter((s) => s.length);
+  const cnt = { bigram: new Map(), syl: new Map() }; const ctx = new Map();
+  const add = (kind, u, d) => { const m = cnt[kind]; m.set(u[0] + u[1], (m.get(u[0] + u[1]) || 0) + d); const c = u[0] + '*'; ctx.set(c, (ctx.get(c) || 0) + d); };
+  const clsKey = (u) => u[0] + [...(u[1] === '∅' ? '' : u[1] ? u[1].match(/tʃ|dʒ|./gu) : [])].map(MANNER).join('');
+  const clsCnt = new Map();
+  const addCls = (u, d) => { if (u[0] === 'on:' || u[0] === 'co:') { const k = clsKey(u); clsCnt.set(k, (clsCnt.get(k) || 0) + d); } };
+  const unitsOf = (w, kind) => modelUnits(w, kind);
+  for (const w of words) { for (const u of unitsOf(w, 'bigram')) add('bigram', u, 1); for (const u of unitsOf(w, 'syl')) { add('syl', u, 1); addCls(u, 1); } }
+  const seg = (s) => s.match(/tʃ|dʒ|aɪ|aʊ|eɪ|oʊ|ɔɪ|ʌɪ|./gu) || [];
+  const prob = (kind, u) => {
+    const c = cnt[kind].get(u[0] + u[1]) || 0;
+    if (kind === 'bigram') { const n = (ctx.get(u[0] + '*') || 0) - 0; return { c, n, p: (c + 0.5 / K_PHONES * 1) / (n + 0.5) }; }
+    const n = ctx.get(u[0] + '*') || 0;
+    if (u[0] === 'nu:') return { c, n, p: (c + 0.5) / (n + 0.5 * 20) };
+    const k = clsKey(u), kc = clsCnt.get(k) || 0, size = seg(u[1] === '∅' ? '' : u[1]).reduce((a, s) => a * (CLASS_SIZE[MANNER(s)] || 20), 1);
+    const pcls = (kc + 0.3) / (n + 0.3 * 40) / (u[1] === '' ? 1 : size);
+    return { c, n, kc, p: (c + 4 * pcls) / (n + 4) };
+  };
+  const scoreWord = (syms, kind, loo) => {
+    const us = modelUnits(syms, kind);
+    if (loo) for (const u of us) { add(kind, u, -1); if (kind === 'syl') addCls(u, -1); }
+    const res = us.map((u) => { const r = prob(kind, u); return { u, c: r.c, kc: r.kc, p: r.p, bits: -Math.log2(r.p) }; });
+    if (loo) for (const u of us) { add(kind, u, 1); if (kind === 'syl') addCls(u, 1); }
+    return { units: res, perSeg: res.reduce((a, r) => a + r.bits, 0) / Math.max(1, syms.length + 1) };
+  };
+  const dist = { bigram: words.map((w) => scoreWord(w, 'bigram', true).perSeg), syl: words.map((w) => scoreWord(w, 'syl', true).perSeg) };
+  return { words, score: (syms, kind) => scoreWord(syms, kind, false), dist, n: words.length };
+}
