@@ -467,14 +467,16 @@ Each explains facts the other cannot. Unresolved high harmonics, which form no s
           // normalise: remove the DC part by the zero-lag value of a fully flat response
           const z = sacf[0]; let mean = 0; for (let L = 0; L < sacf.length; L++) mean += sacf[L]; mean /= sacf.length;
           const nac = Array.from(sacf, (q) => q / z);
-          // first main peak after the zero-lag lobe: the earliest local maximum within 10% of the best one
+          // pitch: the local maximum whose multiples (L, 2L, 3L, … within the window) have the highest mean autocorrelation
           let L0 = 1; while (L0 < nac.length - 1 && nac[L0] < nac[L0 - 1]) L0++;
-          let lo = Infinity, best = -Infinity; for (let L = L0; L < nac.length; L++) { lo = Math.min(lo, nac[L]); best = Math.max(best, nac[L]); }
-          let pk = -1; for (let L = L0; L < nac.length - 1; L++) if (nac[L] >= nac[L - 1] && nac[L] >= nac[L + 1] && nac[L] - lo >= 0.9 * (best - lo)) { pk = L; break; }
-          if (pk < 0) pk = nac.length - 1;
+          const at = (q) => { const i = Math.round(q); let m = -Infinity; for (let j = i - 2; j <= i + 2; j++) if (j >= 0 && j < nac.length) m = Math.max(m, nac[j]); return m; };
+          const cands = []; for (let L = Math.max(L0, 2); L < nac.length - 1; L++) if (nac[L] >= nac[L - 1] && nac[L] >= nac[L + 1]) { const den = nac[L - 1] - 2 * nac[L] + nac[L + 1], Lf = den < 0 ? L + (0.5 * (nac[L - 1] - nac[L + 1])) / den : L; let sc = 0, n = 0; for (let k = 1; k * Lf < nac.length - 2; k++) { sc += at(k * Lf); n++; } cands.push([L, sc / n, Lf]); }
+          let top = -Infinity; for (const c of cands) top = Math.max(top, c[1]);
+          const pick = cands.find((c) => c[1] >= top - 0.01);
+          const pk = pick ? pick[0] : nac.length - 1, pkF = pick ? pick[2] : pk;
           let mn = Infinity; for (let L = L0 > 1 ? L0 - 1 : 1; L <= pk; L++) mn = Math.min(mn, nac[L]);
           const mx = Math.max(...lev);
-          C = { lev: lev.map((q) => q - mx), gram, nac, pk, depth: nac[pk] - mn, ps };
+          C = { lev: lev.map((q) => q - mx), gram, nac, pk, pkF, depth: nac[pk] - mn, ps };
           return C;
         };
         const resolvedPeaks = (lev) => { const out = []; for (let i = 1; i < NCH - 1; i++) if (lev[i] > lev[i - 1] && lev[i] >= lev[i + 1] && lev[i] > -40) { let l = i, r = i; while (l > 0 && lev[l - 1] < lev[l]) l--; while (r < NCH - 1 && lev[r + 1] < lev[r]) r++; if (lev[i] - Math.max(lev[l], lev[r]) > 3 || l === 0 || r === NCH - 1) out.push(chans[i]); } return out; };
@@ -501,14 +503,14 @@ Each explains facts the other cannot. Unresolved high harmonics, which form no s
           const lagMs = (L) => (1000 * L) / FS;
           ac.path(A.nac.map((q, L) => [lagMs(L), q]), { color: 'accent', width: 2 });
           for (let k = 1; k * (1000 / f0) < LAG && k < 30; k++) ac.vline(k * (1000 / f0), { color: 'gold', width: 1, alpha: 0.5, dash: [3, 4] });
-          const ok = A.depth > 0.08;
-          ac.dot(lagMs(A.pk), A.nac[A.pk], { r: 6, color: ok ? 'green' : 'red', label: ok ? `pitch ${v.fix(1000 / lagMs(A.pk), 0)} Hz` : 'no clear peak', labelPos: 'ne' });
+          const ok = A.depth > 0.12;
+          ac.dot(lagMs(A.pkF), A.nac[A.pk], { r: 6, color: A.depth > 0.25 ? 'green' : ok ? 'orange' : 'red', label: ok ? `${A.depth > 0.25 ? '' : 'weak '}pitch ${v.fix(1000 / lagMs(A.pkF), 0)} Hz` : 'no clear peak', labelPos: lagMs(A.pkF) > LAG * 0.75 ? 'nw' : 'ne' });
         });
         v.legend([['accent', 'model response'], ['orange', 'stimulus components'], ['gold', 'multiples of the period $1/f_0$'], ['green', 'resolved peaks / pitch found']]);
         v.readout(() => {
-          const A = analyse(), f0 = f0S.value, rp = resolvedPeaks(A.lev), ok = A.depth > 0.08, est = 1000 / ((1000 * A.pk) / FS);
+          const A = analyse(), f0 = f0S.value, rp = resolvedPeaks(A.lev), ok = A.depth > 0.12, est = FS / A.pkF;
           const place = rp.length >= 2 ? `place view: ${rp.length} resolved harmonics, spacing ≈ ${v.fix(M.median(rp.slice(1).map((f, i) => f - rp[i])), 0)} Hz` : rp.length === 1 ? 'place view: a single peak (its place gives the pitch of a pure tone)' : 'place view: no resolved harmonics';
-          return `${stim.value === 'pure' ? `pure tone ${v.fix(f0, 0)} Hz` : `harmonics ${harm()[0]}–${harm()[1]} of ${v.fix(f0, 0)} Hz (${A.ps.length} below 12 kHz)`} · ${place} · timing view: summary autocorrelation peak at ${v.fix((1000 * A.pk) / FS, 2)} ms → ${ok ? `**${v.fix(est, 1)} Hz** (${noteOf(M, est)}; true period gives ${v.fix(f0, 1)} Hz)` : '**no clear periodicity**: above the phase-locking limit the timing code is lost'} · peak prominence ${v.fix(A.depth, 3)}`;
+          return `${stim.value === 'pure' ? `pure tone ${v.fix(f0, 0)} Hz` : `harmonics ${harm()[0]}–${harm()[1]} of ${v.fix(f0, 0)} Hz (${A.ps.length} below 12 kHz)`} · ${place} · timing view: summary autocorrelation peak at ${v.fix((1000 * A.pkF) / FS, 3)} ms → ${ok ? `${A.depth > 0.25 ? '' : 'weak periodicity, '}**${v.fix(est, 1)} Hz** (${noteOf(M, est)}; true period gives ${v.fix(f0, 1)} Hz)` : '**no clear periodicity**: above the phase-locking limit the timing code is lost'} · peak prominence ${v.fix(A.depth, 3)}`;
         });
       },
     },

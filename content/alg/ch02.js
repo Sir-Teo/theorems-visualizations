@@ -49,7 +49,7 @@ Then $S(n)$ is true for every integer $n\ge n_0$.`,
         };
         const claim = v.select('claim', Object.entries(CL).map(([value, c]) => ({ value, label: c.label })), 'pow', { onChange: (k) => { N0.set(CL[k].n0); v.restart(); } });
         const N0 = v.slider('$n_0$', 1, 6, 3, { int: true, onChange: () => v.restart() });
-        const s = v.stage({ x: [0, 17], y: [-0.95, 2.5], equal: true, axes: false, height: 250, full: true });
+        const s = v.stage({ x: [0, 17], y: [-0.75, 2.3], equal: true, axes: false, height: 205, full: true });
         const layout = () => {
           const c = CL[claim.value], n0 = N0.value, xs = [0, 1];
           for (let k = 1; k < NMAX; k++) xs.push(xs[k] + 1 + (k >= n0 && !c.ok(k) ? 0.95 : 0));
@@ -64,7 +64,7 @@ Then $S(n)$ is true for every integer $n\ge n_0$.`,
         };
         v.animate((t) => {
           const L = layout(), { c, n0, xs } = L;
-          s.setView([0.2, xs[NMAX] + 1.6], [-0.95, 2.5]);
+          s.setView([0.2, xs[NMAX] + 1.6], [-0.75, 2.3]);
           s.line(0.3, 0, xs[NMAX] + 1.5, 0, { color: 'muted', width: 1.5 });
           for (let k = 1; k <= NMAX; k++) {
             const x = xs[k], active = k >= n0, truth = c.S(k);
@@ -85,7 +85,7 @@ Then $S(n)$ is true for every integer $n\ge n_0$.`,
           }
           // the push = base case
           const x0 = xs[n0];
-          if (L.base) { const u = clamp(t / T0, 0, 1); s.arrow(x0 - 1.1 + 0.55 * u, H * 0.85, x0 - 0.2 - 0.05 * (1 - u), H * 0.85, { color: 'gold', width: 3 }); s.text('base case', x0 - 0.6, H * 0.85, { dy: -14, align: 'center', size: 11, weight: 700, color: 'gold' }); }
+          if (L.base) { const u = clamp(t / T0, 0, 1); s.arrow(x0 - 0.95 + 0.45 * u, H * 0.8, x0 - 0.18 - 0.05 * (1 - u), H * 0.8, { color: 'gold', width: 3 }); s.text('push', x0 - 0.55, H * 0.8, { dy: -13, align: 'center', size: 11, weight: 800, color: 'gold', plate: true }); }
           else { s.text('✗', x0, H / 2, { align: 'center', size: 22, weight: 800, color: 'red' }); s.text(`S(${n0}) is false: no push`, x0 - 0.15, -0.62, { align: 'left', size: 11.5, weight: 700, color: 'red' }); }
           s.corner('badge = is S(n) actually true?', 'tr', { size: 11.5 });
         }, { period: T0 + DT * NMAX + FALL + 2.2, still: T0 + DT * NMAX + FALL + 1.5 });
@@ -175,7 +175,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
       viz(v) {
         const NN = v.slider('up to', 12, 60, 36, { int: true, onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [1, 61], y: [-1.1, 2.6], axes: false, height: 170, full: true });
-        const t = v.stage({ x: [0, 1], y: [-5.6, 0.6], axes: false, height: 250, full: true });
+        const t = v.stage({ x: [0, 1], y: [-5.5, 0.45], axes: false, height: 225, full: true });
         const S = v.steps({
           frames: () => Array.from({ length: NN.value - 1 }, (_, i) => { const k = i + 2, p = spf(k); return { k, note: p === k ? `$${k}$ is prime: it is its own factorization (a leaf).` : `$${k} = ${p}\\cdot ${k / p}$ with both factors smaller than ${k}: the cases $S(${p})$ and $S(${k / p})$, already proved, factor ${k} into primes.` }; }),
           start: 'end', still: 'end', speed: 3,
@@ -191,7 +191,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
           }
           if (p !== k) {
             const hgt = (d) => Math.min(58, 10 + 2.2 * d);
-            if (k - 1 !== p && k - 1 !== q) hop(v, s, k, k - 1, 0, -14, { color: 'muted', dash: true, width: 1.4 });
+            if (k - 1 !== p && k - 1 !== q) hop(v, s, k, k - 1, 0, 9, { color: 'muted', dash: true, width: 1.4 });
             hop(v, s, k, q, 0, hgt(k - q), { color: 'gold', width: 2.4 });
             if (q !== p) hop(v, s, k, p, 0, hgt(k - p) + 6, { color: 'gold', width: 2.4 });
             s.corner(`${k} = ${p} · ${q}: uses S(${p}) and S(${q})`, 'tl', { size: 12.5, color: 'ink', weight: 700 });
@@ -199,7 +199,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
           const T = buildTree(k), d = Math.max(1, depth(T)), dy = Math.min(1.25, 5.2 / d);
           layoutTree(T, 0.04, 0.96, 0, dy);
           drawTree(v, t, T, { style: (n) => (n === T ? { color: 'gold', fillAlpha: 0.25 } : n.path === 'L' || n.path === 'R' ? { ring: true } : null) });
-          t.corner(p === k ? 'a prime is a one-node tree' : 'the two subtrees are the trees of the earlier cases', 'tl', { size: 11.5 });
+          t.corner(p === k ? 'a prime is a one-node tree' : 'the two subtrees are the trees of the earlier cases', 'bl', { size: 11.5 });
         });
         v.legend([['green', 'proved (earlier cases)', { dot: true }], ['gold', 'current case and the cases it uses', { dot: true }]]);
         v.readout(() => {
@@ -233,7 +233,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
         let picks = new Set([17, 26, 31, 38]);
         const rule = v.select('set S', Object.entries(R).map(([value, r]) => ({ value, label: r.label })), 'sq', { onChange: () => v.restart() });
         const Z = v.toggle('allow negative integers ($\\mathbb Z$)', false, { onChange: () => v.restart() });
-        const s = v.stage({ x: [-0.5, 40.5], y: [-1.3, 2.2], axes: false, height: 200, full: true });
+        const s = v.stage({ x: [-0.5, 40.5], y: [-0.9, 2.2], axes: false, height: 185, full: true });
         s.onClick((x) => { const n = Math.round(x), lo = Z.value ? -40 : 1; if (n < lo || n > 40) return; if (rule.value !== 'pick') { picks = new Set(); for (let m = lo; m <= 40; m++) if (R[rule.value].f(m)) picks.add(m); rule.value = 'pick'; } if (picks.has(n)) picks.delete(n); else picks.add(n); v.restart(); });
         const info = () => {
           const f = R[rule.value].f, lo = Z.value ? -40 : 1, mem = []; for (let n = lo; n <= 40; n++) if (f(n)) mem.push(n);
@@ -243,9 +243,9 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
         };
         v.animate((t) => {
           const I = info(), { lo, mem } = I;
-          s.setView([lo - 1.5, 40.5], [-1.3, 2.2]);
+          s.setView([lo - 1.5, 40.5], [-0.9, 2.2]);
           numberLine(v, s, lo, 40, 0, { every: 5 });
-          if (!Z.value) s.text('0 ∉ ℕ', 0, 0, { dy: -14, align: 'center', size: 10.5, color: 'muted' });
+          s.corner(Z.value ? 'universe: ℤ' : 'universe: ℕ = {1, 2, 3, …}', 'bl', { size: 11.5 });
           for (let n = lo; n <= 40; n++) if (I.f(n)) s.dot(n, 0.75, { r: 5, color: 'accent' });
           s.text('S', lo - 1, 0.75, { align: 'center', size: 15, math: true, color: 'accent' });
           if (I.least != null && I.least <= 40) {
@@ -333,7 +333,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
         let S0 = new Set([12, 17, 25]);
         v.button('Clear S', () => { S0 = new Set(); St.reset({ at: 'end' }); });
         v.button('Random S', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); S0 = new Set(); const k = r.int(1, 4); for (let i = 0; i < k; i++) S0.add(r.int(3, NMAX)); St.reset({ at: 'end' }); });
-        const s = v.stage({ x: [0.3, NMAX + 0.7], y: [-1.3, 2.1], axes: false, height: 210, full: true });
+        const s = v.stage({ x: [0.3, NMAX + 0.7], y: [-1.0, 2.1], axes: false, height: 190, full: true });
         s.onClick((x) => { const n = Math.round(x); if (n < 1 || n > NMAX) return; if (S0.has(n)) S0.delete(n); else S0.add(n); St.reset({ at: 'end' }); });
         const St = v.steps({
           frames: () => {
@@ -347,7 +347,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
         v.render(() => {
           const f = St.frame, j = f.j ?? 0, Tn = f.hit ? j - 1 : Math.min(j, NMAX);
           numberLine(v, s, 1, NMAX, 0, { every: 5 });
-          if (Tn > 0) s.rect(0.55, -0.26, Tn + 0.45, 0.26, { fill: 'green', fillAlpha: 0.25, color: 'green', width: 1.2 });
+          if (Tn > 0) s.rect(0.55, -0.14, Tn + 0.45, 0.14, { fill: 'green', fillAlpha: 0.25, color: 'green', width: 1.2 });
           for (let n = 1; n <= NMAX; n++) s.dot(n, 0, { r: n <= Tn ? 5 : 3.5, color: n <= Tn ? 'green' : 'muted' });
           for (const n of S0) { s.rect(n - 0.3, 0.62, n + 0.3, 1.02, { fill: 'red', fillAlpha: f.hit && n === j ? 0.8 : 0.4, color: 'red', width: 1.4, radius: 3 }); }
           if (S0.size) s.text('S', 0.6, 0.82, { size: 15, math: true, color: 'red' });
@@ -376,7 +376,7 @@ $$a=bq+r\qquad\text{and}\qquad 0\le r<b.$$`,
       tags: ['division', 'integers'],
       viz(v) {
         const B = v.slider('$b$', 1, 12, 7, { int: true });
-        const s = v.stage({ x: [-45, 65], y: [-1.5, 2.6], axes: false, height: 250, full: true });
+        const s = v.stage({ x: [-45, 65], y: [-1.0, 2.3], axes: false, height: 215, full: true });
         const A = s.handle(47, 0, { color: 'accent', label: 'a', labelPos: 's', constrain: (x) => [clamp(Math.round(x), -42, 62), 0] });
         v.render(() => {
           const a = A.x, b = B.value, q = Math.floor(a / b), r = a - b * q;
@@ -390,8 +390,8 @@ $$a=bq+r\qquad\text{and}\qquad 0\le r<b.$$`,
           // S = {a − bk ≥ 0}
           s.text('S = {a − bk ≥ 0}', -42, 1.75, { align: 'left', size: 12, weight: 700, color: 'purple' });
           for (let x = r; x <= 62; x += b) s.dot(x, 1.75, { r: x === r ? 5.5 : 4, color: 'purple' });
-          s.circle(r, 1.75, 1.2, { color: 'gold', width: 2.4, fill: false });
-          s.text('least', r, 1.75, { dy: -16, align: 'center', size: 11, weight: 700, color: 'gold' });
+          s.dot(r, 1.75, { r: 10, hollow: true, color: 'gold' });
+          s.text('least', r, 1.75, { dy: -19, align: 'center', size: 11, weight: 700, color: 'gold' });
           s.dot(0, 0, { r: 4, color: 'ink' });
         });
         v.readout(() => {

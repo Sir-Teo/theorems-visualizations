@@ -710,7 +710,7 @@ The canonical forms can be exponentially large. For example, every DNF for $p_1\
           }
           const list = [...name.values()].sort((x, y) => x.length - y.length), cols = list.length > 9 ? 3 : 2, rows = Math.ceil(list.length / cols);
           list.forEach((t, i) => s.text(t.replace(/^\((.*)\)$/, '$1'), 0.8 + (i % cols) * (9 / cols), 5.3 - Math.floor(i / cols) * Math.min(1, 4.4 / Math.max(rows, 1)), { align: 'left', size: list.length > 9 ? 12 : 15, math: true, color: 'green' }));
-          s.text(`target ${toStr(F.ast)}: not reachable`, 5, 0.85, { align: 'center', size: 13, math: true, color: 'red' });
+          s.text(`target ${toStr(F.ast)}: not reachable`, 5, 0.85, { align: 'center', size: 13, color: 'red' });
           s.text(`${list.length} functions, all monotone; the target is not among them`, 5, 0.25, { align: 'center', size: 12, weight: 600, color: 'red' });
         };
         v.render(() => {

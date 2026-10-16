@@ -290,9 +290,9 @@ The law holds for partials that are **resolved**, each falling in its own audito
             fb.line(0, y0, 2, y0, { color: 'faint', width: 0.8 });
             const pts = []; for (let j = 0; j < E.length; j++) pts.push([(2 * j) / (E.length - 1), y0 + (E[j] - d.mean) * k]);
             fb.path(pts, { color: 'accent', width: 1.6, alpha: 0.9 });
-            fb.text(`${v.fix(fc, 0)} Hz`, 0, y0 + 0.36, { align: 'left', color: 'muted', size: 10, dx: 2 });
+            fb.text(`${v.fix(fc, 0)} Hz`, 0, y0 + 0.36, { align: 'left', color: 'muted', size: 10, dx: 2, plate: true });
             const sw = (D) => Math.min(40, dB(D.mx / Math.max(D.mn, 1e-6))), md = sw(d), mc = sw(depth(envOf(fc, 'cos', 120))), ch = Math.abs(md - mc) > 3;
-            fb.text(recipe.value === 'cos' ? `swing ${v.fix(md, 1)} dB` : `swing ${v.fix(md, 1)} dB (cosine ${v.fix(mc, 1)})`, 2, y0 + 0.36, { align: 'right', color: recipe.value === 'cos' ? 'muted' : ch ? 'red' : 'green', size: 10, dx: -2 });
+            fb.text(recipe.value === 'cos' ? `swing ${v.fix(md, 1)} dB` : `swing ${v.fix(md, 1)} dB (cosine ${v.fix(mc, 1)})`, 2, y0 + 0.36, { align: 'right', color: recipe.value === 'cos' ? 'muted' : ch ? 'red' : 'green', size: 10, dx: -2, plate: true });
           });
         });
         v.legend([['accent', 'waveform / filter envelopes'], ['orange', 'auditory filter shapes'], ['green', 'envelope swing as in cosine phase (±3 dB)'], ['red', 'swing changed by the phases']]);

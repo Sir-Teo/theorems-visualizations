@@ -200,7 +200,7 @@ Each class is closed under composition and contains the projections. So if $\mat
           });
           const rows = R.sel.length + 1;
           T.draw({
-            rows, cols: 5,
+            rows, cols: 5, region: rows <= 5 ? [0, 2.4, 12, 7.8] : [0, 0, 12, 7.8],
             colLabels: CLASS.map((c) => `$${c.tex}$`),
             rowLabels: (i) => (i < R.sel.length ? `$${R.sel[i].tex}$` : 'all of 𝒞'),
             value: (i, j) => (i < R.sel.length ? (R.cls[i][CLASS[j].k] ? '✓' : '✗') : R.trap[j] ? 'trapped' : 'escapes'),
