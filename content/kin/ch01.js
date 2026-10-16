@@ -96,7 +96,7 @@ The exponents $m,n$ are the **orders** with respect to A and B (integers, halves
       deps: ['kin-1.1'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['rate law', 'order'],
-      credit: 'Rate laws by Wilhelmy (1850) and Guldberg & Waage (1864); "order" by van \'t Hoff (1884)',
+      credit: 'Rate laws by Wilhelmy (1850) and Guldberg & Waage (1864); rate laws classified by molecularity and order by van \'t Hoff (1884; the word "order" is Ostwald’s, 1887)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rate_equation' },
       viz(v) {
         const PRE = {

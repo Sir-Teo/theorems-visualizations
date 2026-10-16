@@ -211,7 +211,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
       refs: ['Steinfeld et al.'],
       tags: ['temperature jump', 'relaxation', 'fast reactions'],
       credit: 'Manfred Eigen (with De Maeyer), 1954–55; Nobel Prize in Chemistry 1967 (shared with Norrish and Porter)',
-      scope: String.raw`Single-exponential analysis holds for small perturbations; the water numbers are $k_r=1.4\times10^{11}\,\mathrm{M^{-1}s^{-1}}$ (quoted from memory, textbooks give 1.3–1.4$\times10^{11}$), $K_w=10^{-14}$ at 25 °C and $\Delta H=55.8$ kJ/mol, $\tau\approx36\ \mu$s; the A ⇌ B rate constants are illustrative.`,
+      scope: String.raw`Single-exponential analysis holds for small perturbations; the water numbers are $k_r=1.4\times10^{11}\,\mathrm{M^{-1}s^{-1}}$ (Eigen and De Maeyer's value is quoted as 1.3–1.4$\times10^{11}$ in different textbooks; 1.4 is used here), $K_w=10^{-14}$ at 25 °C and $\Delta H=55.8$ kJ/mol, $\tau\approx36\ \mu$s; the A ⇌ B rate constants are illustrative.`,
       viz(v) {
         const sys = v.select('system', [{ value: 'ab', label: 'A ⇌ B (illustrative)' }, { value: 'w', label: 'H₂O ⇌ H⁺ + OH⁻' }], 'w');
         const dT = v.slider('temperature jump $\\Delta T$ (K)', 0.5, 40, 5, { log: true });

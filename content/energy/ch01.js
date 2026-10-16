@@ -131,8 +131,8 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
           const line = T.filter((o) => o.id !== u.id).map((o) => `${f(q / o.f)} ${o.label}`).join(' = ');
           const near = (isE ? E : P).reduce((b, e) => (Math.abs(Math.log(e[0] / q)) < Math.abs(Math.log(b[0] / q)) ? e : b));
           const r = q / near[0];
-          const a = isE ? `${f(q / YEAR_S)} W averaged over one year` : `${f(q * YEAR_S / 3.6e6)} kWh in one year (${f(q * YEAR_S / 4.1868e10)} toe)`;
-          return `**${f(+amt.value || num())} ${u.label}** = ${f(q)} ${isE ? 'J' : 'W'} = ${line}.\n${a}. Nearest reference: **${near[1]}** (${r >= 1 ? f(r) + '× larger' : f(1 / r) + '× smaller'} than your amount's ratio to it; ${near[3]}).`;
+          const a = isE ? `Spent over one year it is ${f(q / YEAR_S)} W on average.` : `Running for one year it uses ${f(q * YEAR_S / 3.6e6)} kWh (${f(q * YEAR_S / 4.1868e10)} toe).`;
+          return `**${amt.value} ${u.label}** = ${f(q)} ${isE ? 'J' : 'W'} = ${line}.\n${a} Nearest reference: **${near[1]}** — your amount is ${r >= 1 ? f(r) + '×' : '1/' + f(1 / r)} of it (${near[3]}).`;
         });
       },
     },
