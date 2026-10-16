@@ -440,5 +440,84 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────── 2.5
+    {
+      num: '2.5',
+      kind: 'Paradox',
+      name: 'Non-monotonicity of instant runoff',
+      statement: String.raw`A voting rule is **monotone** if a winner who is moved up on some ballots, with the rest of those ballots unchanged, still wins. Instant-runoff voting is not monotone. With 39 voters ranking $A \succ B \succ C$, 35 ranking $B \succ C \succ A$ and 26 ranking $C \succ A \succ B$, IRV eliminates $C$ and $A$ wins $65$–$35$. If 10 of the $B \succ C \succ A$ voters move $A$ to the top ($A \succ B \succ C$), the first count is $A$ 49, $B$ 25, $C$ 26: now $B$ is eliminated, its ballots go to $C$, and $C$ beats $A$ $51$–$49$. Raising $A$ made $A$ lose. Plurality, Borda and every Condorcet method that looks only at the pairwise matrix are monotone in this sense; the failure comes from IRV’s sequential eliminations.`,
+      idea: String.raw`Moving $A$ up cannot hurt $A$ in any single count, but it changes *who else* survives. Here the extra first preferences for $A$ come out of $B$’s pile, pushing $B$ below $C$; the elimination order flips, and $A$ meets in the final the one opponent who beats it head to head ($C$ beats $A$ $51$–$49$, while $A$ would have beaten $B$). In general a non-monotonicity needs three ingredients: the winner $w$ beats one rival and loses to another, and voters who raise $w$ are taken from the rival $w$ beats, so that this rival — not the one who beats $w$ — is eliminated first. That is the pattern of Burlington 2009 (polsci-2.13), where Kiss, the IRV winner, would have lost had more Wright voters ranked him first.`,
+      caption: String.raw`Left: the IRV count of the ballots as they stand. Right: the count after $k$ voters of one bloc move the winner to the top of their ballots, all else unchanged (the moved ballots are the new bloc in the readout). Slide the share of the bloc that moves. The strip shows the winner for every possible $k$: wherever it changes colour, more support made the winner lose. Edit the ballots below (drag bars, click letters), or press *Search* to draw random electorates until one with a monotonicity failure appears; the smallest failing move is chosen automatically.`,
+      deps: ['polsci-1.4'],
+      see: ['polsci-2.6', 'polsci-2.13'],
+      refs: ['T&P ch. 7', 'Smith (1973), Aggregation of preferences with variable electorate'],
+      tags: ['instant runoff', 'monotonicity'],
+      credit: 'Non-monotonicity of the alternative vote: J. H. Smith 1973; Doron & Kronick 1977',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Monotonicity_criterion' },
+      viz(v) {
+        const Bf = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 330, title: 'IRV count: the ballots as cast' });
+        const Af = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 330, title: 'after k voters raise the winner' });
+        const St = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 74, full: true, title: 'winner for every k' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, title: 'ballots' });
+        const BASE = mkProfile(3, [[39, 'ABC'], [35, 'BCA'], [26, 'CAB']]);
+        const P = copyProfile(BASE);
+        let F = null, donor = -1, msg = '', seed = 1;
+        const share = v.slider('share of the bloc that moves', 0, 1, 10 / 35, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
+        const kOf = () => (donor >= 0 ? Math.round(share.value * P.blocs[donor].n) : 0);
+        function analyse(setShare = true) {
+          F = monoFail(P, irvW); donor = F ? F.i : -1;
+          if (F && setShare) share.set(F.k / P.blocs[F.i].n);
+        }
+        analyse();
+        v.button('Search', () => {
+          for (let tries = 1; tries < 50000; tries++) {
+            const r = v.rng(seed++), m = r() < 0.5 ? 3 : 4, Q = tidy(randomProfile(r, m, 3 + Math.floor(r() * 3), 2, 20));
+            if (Q.blocs.length < 3) continue;
+            const f = monoFail(Q, irvW);
+            if (f && f.k <= Q.blocs[f.i].n * 0.8) { setProfile(P, Q); analyse(); msg = `found after ${tries} random electorates`; return; }
+          }
+        });
+        v.button('Other bloc', () => {
+          const w = irvW(P), cand = range(P.blocs.length).filter((i) => P.blocs[i].n && P.blocs[i].r[0] !== w);
+          if (!cand.length) return; donor = cand[(cand.indexOf(donor) + 1) % cand.length]; msg = '';
+        });
+        v.button('Classic example', () => { setProfile(P, BASE); analyse(); msg = ''; });
+        const ed = blocEditor(v, E, P, {
+          max: () => Math.max(20, Math.ceil(Math.max(...P.blocs.map((b) => b.n)) / 10) * 10 + 5), rank: true, rowMax: 34,
+          ring: (b, k, c) => (P.blocs.indexOf(b) === donor && c === irvW(P) ? 'gold' : null),
+          tag: (b) => (P.blocs.indexOf(b) === donor ? { text: `${kOf()} raise ${LET[irvW(P)]} ↑`, color: 'gold' } : null),
+          onEdit: (kind) => { if (kind !== 'size') { analyse(); msg = ''; } else { analyse(false); } },
+        });
+        const after = () => { if (donor < 0) return null; const w = irvW(P), b = P.blocs[donor]; return shift(P, donor, kOf(), raise(b.r, w)); };
+        v.render(() => {
+          ed.draw();
+          const box = (s) => [44, 34, s.width - 74, s.height - 10];
+          drawIRV(v, Bf, P, box(Bf));
+          const Q = after();
+          if (Q) drawIRV(v, Af, Q, box(Af)); else txt(v, Af.ctx, 'every bloc already ranks the winner first', Af.width / 2, Af.height / 2, { size: 12, color: 'muted' });
+          // ---- strip: winner for k = 0 … n
+          const c = St.ctx, W = St.width, w0 = irvW(P);
+          if (donor >= 0) {
+            const b = P.blocs[donor], n = b.n, r2 = raise(b.r, w0), x0 = 120, x1 = W - 16, cw = (x1 - x0) / (n + 1);
+            txt(v, c, `k = 0 … ${n}`, 12, 30, { size: 11, weight: 700, color: 'muted', align: 'left' });
+            const ws = range(n + 1).map((k) => irvW(shift(P, donor, k, r2)));
+            ws.forEach((wk, k) => { c.fillStyle = v.color(CC[wk], wk === w0 ? 0.35 : 0.8); c.fillRect(x0 + k * cw, 16, Math.max(1, cw - (cw > 4 ? 1 : 0)), 24); });
+            for (let a = 0; a <= n;) { let e = a; while (e + 1 <= n && ws[e + 1] === ws[a]) e++; if ((e - a + 1) * cw > 64) txt(v, c, `${LET[ws[a]]} wins`, x0 + ((a + e + 1) / 2) * cw, 28, { size: 11, weight: 800, color: ws[a] === w0 ? 'ink' : 'panel' }); a = e + 1; }
+            const kk = kOf(); c.strokeStyle = v.color('ink'); c.lineWidth = 2; c.strokeRect(x0 + kk * cw - 1, 13, cw + 2, 30);
+            txt(v, c, `k = ${kk}`, clamp(x0 + (kk + 0.5) * cw, x0 + 16, x1 - 16), 54, { size: 10.5, weight: 700 });
+          }
+        });
+        v.readout(() => {
+          const w = irvW(P), L = (x) => LET[x];
+          if (donor < 0) return `IRV elects **${L(w)}**; no bloc can raise it.`;
+          const b = P.blocs[donor], k = kOf(), Q = after(), w2 = irvW(Q), I1 = irvRun(P), I2 = irvRun(Q);
+          let s = `As cast: IRV eliminates ${I1.out.map(L).join(', ')} and elects **${L(w)}**. Move ${L(w)} up on **${k}** of the ${b.n} ballots ${rkStr(b.r)} → ${rkStr(raise(b.r, w))}: elimination order ${I2.out.map(L).join(', ') || '—'}, winner **${L(w2)}**.`;
+          s += w2 !== w ? ` **Non-monotonic:** ${L(w)} gained ${k} first preferences and lost the election.` : ' Still the same winner.';
+          if (F) s += ` Smallest failing move from this profile: ${F.k} voters of the bloc ${rkStr(P.blocs[F.i].r)}.`; else s += ' (No bloc’s move makes the winner lose in this profile.)';
+          return s + (msg ? ` (${msg}.)` : '');
+        });
+      },
+    },
   ],
 };

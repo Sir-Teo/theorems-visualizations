@@ -239,16 +239,16 @@ Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s
         const yearTo = (q) => { const i = det.findIndex((p) => p >= q); return i < 0 ? null : i; };
         v.render(() => {
           simulate();
-          const yr = Math.round(yS.value), p = reps[0][yr];
+          const yr = Math.round(yS.value);
           // ---- B
           B.vband(20, 200, { color: 'orange', alpha: 0.13 });
           B.vband(2000, 2500, { color: 'green', alpha: 0.16 });
-          B.text('harvest experiments', 63, 0.06, { size: 10.5, color: 'orange', align: 'center' });
-          B.text('archaeology', 1900, 0.06, { size: 10.5, color: 'green', align: 'right' });
+          B.text('harvest experiments', 63, 0.95, { size: 10.5, color: 'orange', align: 'center' });
+          B.text('archaeology', 1900, 0.95, { size: 10.5, color: 'green', align: 'right' });
           for (const arr of reps) B.path(Array.from(arr, (q, t) => [t + 1, q]).filter((_, t) => t % 3 === 0 || t < 60), { color: 'gold', width: 1, alpha: 0.6 });
           B.path(det.map((q, t) => [t + 1, q]), { color: 'accent', width: 2.8 });
           B.vline(yr + 1, { color: 'ink', dash: [3, 4], width: 1 });
-          B.dot(yr + 1, p, { r: 5, color: 'gold' });
+          B.dot(yr + 1, det[yr], { r: 5, color: 'accent' });
           // ---- A: 48 plants drawn with the expected frequency in year yr
           const pf = det[yr], rng = v.rng(5), cols = 8, rows = 6;
           for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {

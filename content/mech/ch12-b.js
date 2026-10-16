@@ -134,8 +134,8 @@ define, locally, a canonical transformation $(q, p) \mapsto (Q, P)$: solve the f
       refs: ['Goldstein §9.1', 'Arnold §48'],
       tags: ['generating function', 'canonical transformation'],
       viz(v) {
-        const PRE = { id: 'q P', shear: 'q P + 0.3 q^3', imp: 'q P + 0.25 q^2 P^2', sq: 'exp(0.5) q P' };
-        const kind = v.select('generating function', [{ value: 'id', label: '$qP$' }, { value: 'shear', label: '$qP + 0.3q^3$' }, { value: 'imp', label: '$qP + \\tfrac14 q^2P^2$' }, { value: 'sq', label: '$e^{1/2}qP$' }, { value: 'osc', label: 'oscillator $F_1 = \\tfrac12q^2\\cot Q$' }, { value: 'own', label: 'type your own' }], 'imp', { onChange: (k) => { if (PRE[k]) fI.set(PRE[k]); fI.el.hidden = k !== 'own'; } });
+        const PRE = { id: 'q P', shear: 'q P + 0.3 q^3', imp: 'q P + 0.1 q^2 P^2', sq: 'exp(0.5) q P' };
+        const kind = v.select('generating function', [{ value: 'id', label: '$qP$' }, { value: 'shear', label: '$qP + 0.3q^3$' }, { value: 'imp', label: '$qP + 0.1\\,q^2P^2$' }, { value: 'sq', label: '$e^{1/2}qP$' }, { value: 'osc', label: 'oscillator $F_1 = \\tfrac12q^2\\cot Q$' }, { value: 'own', label: 'type your own' }], 'imp', { onChange: (k) => { if (PRE[k]) fI.set(PRE[k]); fI.el.hidden = k !== 'own'; } });
         const fI = v.input('$F_2(q, P) =$', PRE.imp, { vars: ['q', 'P'] });
         fI.el.hidden = true;
         const sA = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: 'box', gutter: true, height: 360, xlabel: 'q', ylabel: 'p', title: 'new coordinate lines in the old plane' });
