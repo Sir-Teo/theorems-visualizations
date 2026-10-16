@@ -86,7 +86,7 @@ export default {
         const bS = v.slider('speed of lab B, $u/c$', 0, 0.6, 0.45, { step: 0.01 });
         const law = v.select('light law', [{ value: 'rel', label: 'same speed in every frame' }, { value: 'gal', label: 'Galilean ether (c ± u)' }], 'rel');
         const view = v.select('view from', [{ value: 'ground', label: 'ground' }, { value: 'B', label: 'lab B' }], 'ground');
-        const S = v.stage({ x: [-0.5, 12.5], y: [-3, 3], equal: true, axes: false, height: 330, full: true });
+        const S = v.stage({ x: [-0.5, 12.5], y: [-3, 3.6], equal: true, axes: false, height: 340, full: true });
         const C = 3, LW = 3.4, LH = 2.4, PER = 4;
         const rtTime = (u, gal) => (gal ? 3 / (C - u) + 3 / (C + u) : 6 / C);
         let st = {};
@@ -270,7 +270,7 @@ export default {
             S.dot(x, y, { r: 11, color: set ? 'green' : 'faint', hollow: !set });
             S.text(set ? v.fix(t, 1) : '–', x, y, { size: 9, align: 'center', baseline: 'middle', color: set ? 'ink' : 'muted' });
           }
-          S.dot(0, 0, { r: 15, color: 'accent' }); S.text(v.fix(t, 1), 0, 0, { size: 10, align: 'center', baseline: 'middle', color: 'panel', weight: 700 });
+          S.dot(0, 0, { r: 15, color: 'accent', hollow: true }); S.text(v.fix(t, 1), 0, 0, { size: 10, align: 'center', baseline: 'middle', color: 'ink' });
           S.text('master', 0, -0.62, { size: 10, align: 'center', color: 'accent' });
           st = { d, t, back: t >= 2 * d };
         }, { period: 10, still: 5 });
@@ -307,7 +307,7 @@ export default {
           A.line(-6, -0.8, 8, -0.8, { color: 'muted', width: 2 });
           A.dot(0, -0.8, { r: 7, color: 'accent', label: 'platform observer', labelPos: 's' });
           A.rect(cx - L, -0.5, cx + L, 0.7, { color: 'orange', fill: 'orange', fillAlpha: 0.15, width: 2 });
-          A.dot(cx, 0.1, { r: 7, color: 'orange', label: 'train observer', labelPos: 'n' });
+          A.dot(cx, 0.1, { r: 7, color: 'orange' }); A.text('train observer', cx, 1.15, { color: 'orange', size: 12, align: 'center' });
           if (t > 0) for (const x of [-L, L]) A.circle(x, 0.1, t, { color: 'gold', width: 1.6, alpha: 0.9 });
           if (t > 0) { A.text('flash A', L, 2.2, { size: 11, color: 'gold', align: 'center' }); A.text('flash B', -L, 2.2, { size: 11, color: 'gold', align: 'center' }); }
           const tF = L / (1 + b), tR = L / (1 - b);
@@ -329,7 +329,7 @@ export default {
         v.legend([['gold', 'light from the strikes'], ['accent', 'platform observer'], ['orange', 'train observer, simultaneity lines', { dash: true }]]);
         v.readout(() => {
           if (!st.b && st.b !== 0) return '';
-          return String.raw`Platform: both flashes strike at $ct=0$ and arrive together at $ct=L=${v.fix(2, 2)}$. Train observer: sees A at $ct=${v.fix(st.tF, 2)}$ and B at $ct=${v.fix(st.tR, 2)}$ (platform clock). In the train's frame A happened $\Delta t'=${v.fix(st.dtp, 2)}$ (in units of $L/c$) **before** B: the two strikes are not simultaneous there. At $v=0$ all agree.`;
+          return String.raw`Platform: both flashes strike at $ct=0$ and arrive together at $ct=L=${v.fix(2, 2)}$. Train observer: sees A at $ct=${v.fix(st.tF, 2)}$ and B at $ct=${v.fix(st.tR, 2)}$ (platform clock). In the train's frame A happened $\Delta t'=${v.fix(st.dtp, 2)}$ (in $ct$ units) **before** B: the two strikes are not simultaneous there. At $v=0$ all agree.`;
         });
       },
     },

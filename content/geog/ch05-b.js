@@ -70,7 +70,7 @@ The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose
         const regime = v.select('viewpoint', [{ value: 'out', label: 'above the surface' }, { value: 'inf', label: 'at infinity' }, { value: 'in', label: 'inside the globe' }], 'out');
         const alt = v.slider('altitude $h$ of the viewpoint', 100, 400000, 35786, { log: true, fmt: (x) => comma(x) + ' km' });
         const pin = v.slider('viewpoint position $P$', -1, 0.9, 0, { step: 0.01, fmt: (x) => x.toFixed(2) });
-        const sA = v.stage({ x: [-2.6, 2.6], y: [-1.4, 2.5], equal: true, axes: false, height: 350, weight: 1.0 });
+        const sA = v.stage({ x: [-1.9, 1.9], y: [-1.3, 2.5], equal: true, axes: false, height: 350, weight: 1.0 });
         const sB = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 350, weight: 1.1 });
         const sC = v.stage({ x: [0, 120], y: [0, 3.2], axes: 'box', gutter: true, height: 350, weight: 0.85, xlabel: 'angular distance c (°)', ylabel: 'map radius r / R', xticks: [0, 30, 60, 90, 120] });
         let ctr = [10, 35], start = null, st = null;
@@ -97,8 +97,8 @@ The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose
           const arc = (a, b, n = 60) => { const p = []; for (let i = 0; i <= n; i++) { const t = a + ((b - a) * i) / n; p.push([Math.sin(t), Math.cos(t)]); } return p; };
           sA.circle(0, 0, 1, { color: 'ink', width: 1.4 });
           for (const sg of [1, -1]) sA.path(arc(0, cMax).map((q) => [sg * q[0], q[1]]), { color: 'accent', width: 4 });
-          sA.line(-2.5, 1, 2.5, 1, { color: 'muted', width: 1.3 });
-          sA.text('picture plane', -2.5, 1.1, { size: 11, color: 'muted', align: 'left' });
+          sA.line(-1.85, 1, 1.85, 1, { color: 'muted', width: 1.3 });
+          sA.text('picture plane', -1.85, 1.1, { size: 11, color: 'muted', align: 'left' });
           const Vp = P === Infinity ? null : [0, P], top = 2.4;
           const toward = (X) => { // from X towards the eye, clipped at the top of the panel
             if (!Vp) return [X[0], top];
@@ -113,7 +113,7 @@ The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose
           if (P > 1 && P !== Infinity) for (const sg of [1, -1]) { const T = [sg * Math.sin(ch), Math.cos(ch)], E = toward(T); sA.line(T[0], T[1], E[0], E[1], { color: 'red', width: 1.2, dash: [5, 4] }); }
           if (P === Infinity) for (const sg of [1, -1]) sA.line(sg, 0, sg, top, { color: 'red', width: 1.2, dash: [5, 4] });
           if (P !== Infinity && P >= -1 && P <= top - 0.05) { sA.dot(0, P, { r: 6, color: 'red' }); sA.text('eye', 0.12, P, { size: 12, color: 'red', weight: 700, align: 'left', plate: true }); }
-          else if (P > top) { sA.arrow(0, 2.1, 0, 2.45, { color: 'red', width: 2, head: 7 }); sA.text(`eye at ${comma((P - 1) * R_MEAN)} km altitude`, 0.1, 2.28, { size: 11.5, color: 'red', weight: 700, align: 'left', plate: true }); }
+          else if (P > top) { sA.arrow(0, 2.1, 0, 2.45, { color: 'red', width: 2, head: 7 }); sA.text(`eye, ${comma((P - 1) * R_MEAN)} km up`, 0.1, 2.28, { size: 11.5, color: 'red', weight: 700, align: 'left', plate: true }); }
           else if (P === Infinity) sA.text('eye at infinity', 0.1, 2.28, { size: 11.5, color: 'red', weight: 700, align: 'left', plate: true });
           sA.line(-M.rMax, 1, M.rMax, 1, { color: 'accent', width: 5, alpha: 0.45 });
           sA.corner('section through the axis', 'tl', { color: 'muted', weight: 600 });
@@ -159,7 +159,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
       viz(v) {
         const f1 = v.slider('standard parallel $\\varphi_1$', 10, 80, 20, { step: 0.5, fmt: (x) => x.toFixed(1) + '°' });
         const f2 = v.slider('standard parallel $\\varphi_2$', 10, 80, 60, { step: 0.5, fmt: (x) => x.toFixed(1) + '°' });
-        const sA = v.stage({ x: [-1.8, 1.8], y: [-1.4, 3], equal: true, axes: false, height: 360, weight: 0.8 });
+        const sA = v.stage({ x: [-2.1, 2.1], y: [-1.4, 3], equal: true, axes: false, height: 360, weight: 0.8 });
         const sB = v.stage({ height: 360, weight: 1.3, equal: true, axes: false });
         const sC = v.stage({ x: [-50, 85], y: [0.5, 3.5], axes: 'box', gutter: true, height: 360, weight: 0.8, xlabel: 'latitude φ (°)', ylabel: 'scale along the parallel k', xticks: [-45, -15, 15, 45, 75] });
         let st = null;
@@ -170,7 +170,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
           const Qa = [Math.cos(a * D2R), Math.sin(a * D2R)], Qb = [Math.cos(b * D2R), Math.sin(b * D2R)];
           const ya = b - a < 1e-6 ? 1 / Math.sin(a * D2R) : Qa[1] - (Qa[0] * (Qb[1] - Qa[1])) / (Qb[0] - Qa[0]);
           const nChord = Qa[0] / Math.hypot(Qa[0], Qa[1] - ya);
-          sA.setView([-1.8, 1.8], [-1.4, Math.max(1.8, ya + 0.35)]);
+          sA.setView([-2.1, 2.1], [-1.4, Math.max(1.8, ya + 0.35)]);
           sA.circle(0, 0, 1, { color: 'ink', width: 1.5 });
           sA.line(0, -1.2, 0, ya + 0.2, { color: 'faint', width: 1, dash: [3, 3] });
           for (const sg of [1, -1]) {
@@ -203,7 +203,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
         v.readout(() => {
           const { a, b, n, nChord, ya, C } = st;
           const tangent = b - a < 1e-6;
-          return `**Cone constant** $n = ${tangent ? '\\sin\\varphi_1' : '\\dfrac{\\cos\\varphi_1-\\cos\\varphi_2}{\\varphi_2-\\varphi_1}'} = ${n.toFixed(4)}$: the map fans out over $360^\\circ n = ${(360 * n).toFixed(1)}^\\circ$ and meridians $30^\\circ$ apart are ${(30 * n).toFixed(2)}$° apart. The cone through the two parallels (chord version, section) has $n = ${nChord.toFixed(4)}$ and its apex is ${ya.toFixed(2)} $R$ above the centre; the equidistant conic uses the arc instead of the chord${tangent ? ', which coincide for a tangent cone' : ''}. Scales: $k(\\varphi_1) = ${C.k(a * D2R).toFixed(4)}$, $k(\\varphi_2) = ${C.k(b * D2R).toFixed(4)}$, $k(0^\\circ) = ${C.k(0).toFixed(3)}$, $k(60^\\circ) = ${C.k(60 * D2R).toFixed(3)}$; along every meridian $h = 1$. The pole is not a point but the arc of radius ${(Math.abs(C.rho(PI / 2))).toFixed(3)} (where $k \\to \\infty$).`;
+          return `**Cone constant** $n = ${tangent ? '\\sin\\varphi_1' : '\\tfrac{\\cos\\varphi_1-\\cos\\varphi_2}{\\varphi_2-\\varphi_1}'} = ${n.toFixed(4)}$: the map fans out over $360^\\circ n = ${(360 * n).toFixed(1)}^\\circ$ and meridians $30^\\circ$ apart are ${(30 * n).toFixed(2)}° apart. The cone through the two parallels (chord version, section) has $n = ${nChord.toFixed(4)}$ and its apex is ${ya.toFixed(2)} $R$ above the centre; the equidistant conic uses the arc instead of the chord${tangent ? ', which coincide for a tangent cone' : ''}. Scales: $k(\\varphi_1) = ${C.k(a * D2R).toFixed(4)}$, $k(\\varphi_2) = ${C.k(b * D2R).toFixed(4)}$, $k(0^\\circ) = ${C.k(0).toFixed(3)}$, $k(60^\\circ) = ${C.k(60 * D2R).toFixed(3)}$; along every meridian $h = 1$. The pole is not a point but the arc of radius ${(Math.abs(C.rho(PI / 2))).toFixed(3)} (where $k \\to \\infty$).`;
         });
       },
     },
@@ -240,7 +240,7 @@ $$n = \frac{\ln(\cos\varphi_1/\cos\varphi_2)}{\ln\big(\tan(\frac\pi4 + \frac{\va
           const C = conic('lcc', a * D2R, b * D2R, f0 * D2R), V = boxView(C, R, lon0);
           sA.setView(V.x, V.y);
           sA.rect(V.x[0] - 5, V.y[0] - 5, V.x[1] + 5, V.y[1] + 5, { fill: 'blue', fillAlpha: 0.07, stroke: false });
-          conicBase(sA, v, C, lon0, Math.max(-80, ls - 14), Math.min(84, ln + 14), { span: (R.lon[1] - R.lon[0]) / 2 + 22, frame: false, step: ln - ls > 30 ? 10 : 5 });
+          conicBase(sA, v, C, lon0, Math.max(-80, ls - 35), Math.min(84, ln + 35), { span: (R.lon[1] - R.lon[0]) / 2 + 22, frame: false, step: ln - ls > 30 ? 10 : 5 });
           sA.path(boxPath(C, R, lon0), { close: true, color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.07 });
           for (const f of [a, b]) { const p = []; for (let l = R.lon[0] - 12; l <= R.lon[1] + 12; l += 2) p.push(C.fwd((l - lon0) * D2R, f * D2R)); sA.path(p, { color: 'green', width: 1.8, dash: [6, 4] }); }
           const r0 = V.size * 0.028;
@@ -295,10 +295,10 @@ Its scales are $k = n\rho/(R\cos\varphi)$ along the parallels and $h = 1/k$ alon
           const CA = conic('albers', a * D2R, b * D2R, f0 * D2R), CL = conic('lcc', a * D2R, b * D2R, f0 * D2R), V = boxView(CA, R, lon0);
           sA.setView(V.x, V.y);
           sA.rect(V.x[0] - 5, V.y[0] - 5, V.x[1] + 5, V.y[1] + 5, { fill: 'blue', fillAlpha: 0.07, stroke: false });
-          conicBase(sA, v, CA, lon0, Math.max(-80, ls - 14), Math.min(84, ln + 14), { span: (R.lon[1] - R.lon[0]) / 2 + 22, frame: false, step: ln - ls > 30 ? 10 : 5 });
+          conicBase(sA, v, CA, lon0, Math.max(-80, ls - 35), Math.min(84, ln + 35), { span: (R.lon[1] - R.lon[0]) / 2 + 22, frame: false, step: ln - ls > 30 ? 10 : 5 });
           // Lambert conformal conic coastlines on top
           const L = landFrame(v, lon0), lines = [];
-          for (const pl of L.lines) { for (const p of pl) lines.push(CL.fwd(p[0], clamp(p[1], (ls - 14) * D2R, (ln + 14) * D2R))); lines.push(null); }
+          for (const pl of L.lines) { for (const p of pl) { if (p[1] >= (ls - 35) * D2R && p[1] <= (ln + 35) * D2R) lines.push(CL.fwd(p[0], p[1])); else if (lines.length && lines[lines.length - 1]) lines.push(null); } lines.push(null); }
           sA.path(lines, { color: 'red', width: 0.9, alpha: 0.9 });
           // cells
           const cs = 5, lat0 = Math.floor(ls / cs) * cs, lat1 = Math.ceil(ln / cs) * cs, lonA = Math.floor(R.lon[0] / cs) * cs, lonB = Math.ceil(R.lon[1] / cs) * cs;

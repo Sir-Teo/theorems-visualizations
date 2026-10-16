@@ -24,7 +24,7 @@ export default {
       statement: String.raw`The **gnomonic projection** projects the sphere of radius $R$ from its centre $O$ onto the plane tangent at the map centre $P_0$. A point at angular distance $c$ from $P_0$ lands at distance and in the direction
 $$r = R\tan c,\qquad \text{azimuth preserved},\qquad \cos c = \sin\varphi_0\sin\varphi + \cos\varphi_0\cos\varphi\cos(\lambda-\lambda_0).$$
 It shows only points with $c < 90^\circ$ (a hemisphere would need an infinite plane). **Every great circle is mapped to a straight line, and every straight line on the map is the image of a great circle arc**, so the shortest route between two points is the ruler line joining them. The scale is $h = \sec^2 c$ along the radius and $k = \sec c$ across it, so the area factor is $\sec^3 c$: the map is neither conformal nor equal-area, and shapes blow up away from the centre.`,
-      idea: String.raw`A great circle is the intersection of the sphere with a plane through $O$ (geog-1.3). Projecting from $O$ sends each point of that circle along its own ray in that plane, so the image lies in the intersection of the plane with the tangent plane: a straight line. Conversely, a line in the tangent plane together with $O$ spans a plane through the centre, which cuts the sphere in a great circle. A parallel of latitude (other than the equator's image at infinity-side) is not a great circle, so it becomes a conic section. The price is the radial law $r = R\tan c$: it diverges at $c = 90^\circ$, so the Tissot indicatrix (geog-3.4) stretches as $\sec^2 c$ radially.`,
+      idea: String.raw`A great circle is the intersection of the sphere with a plane through $O$ (geog-1.3). Projecting from $O$ sends each point of that circle along its own ray in that plane, so the image lies in the intersection of the plane with the tangent plane: a straight line. Conversely, a line in the tangent plane together with $O$ spans a plane through the centre, which cuts the sphere in a great circle. The equator is a great circle and is straight; every other parallel is a small circle and becomes a conic section (a cone with its vertex at $O$ cuts the tangent plane in a conic). The price is the radial law $r = R\tan c$: it diverges at $c = 90^\circ$, so the Tissot indicatrix (geog-3.4) stretches as $\sec^2 c$ radially.`,
       caption: String.raw`Drag the two airports (or choose a route) on the globe or on the map, and drag the map to move its centre. The orange band is the ruler line between the images of $A$ and $B$; the green great-circle arc lies on top of it. Switch on the rhumb line (red) and it curves away from the ruler. Meridians are straight too, the parallels are conic sections, and the red indicatrices swell with distance from the centre; points more than $70^\circ$ away are off the map.`,
       deps: ['geog-1.3', 'geog-3.1'],
       see: ['geog-2.2', 'geog-2.6'],
@@ -101,7 +101,7 @@ and the scale is the same in every direction, $h = k = \sec^2\frac c2$. Hence th
       viz(v) {
         const rho = v.slider('circle radius $\\rho$', 3, 100, 35, { step: 1, fmt: (x) => x + '°' });
         const sA = v.stage({ height: 330, weight: 0.8 }), sB = v.stage({ height: 330, weight: 1.25 });
-        const sC = v.stage({ x: [0, 150], y: [0, 16], axes: 'box', gutter: true, height: 330, weight: 0.8, xlabel: 'angular distance c from the map centre (°)', ylabel: 'scale factor k', xticks: [0, 30, 60, 90, 120, 150] });
+        const sC = v.stage({ x: [0, 150], y: [0, 16], axes: 'box', gutter: true, height: 330, weight: 0.8, xlabel: 'distance c from the map centre (°)', ylabel: 'scale factor k', xticks: [0, 30, 60, 90, 120, 150] });
         const G2 = v.globe(sB, { projection: 'stereographic', center: [10, 45], graticule: 30 });
         const G1 = v.globe(sA, { projection: 'orthographic', center: [10, 45], graticule: 30, drag: false });
         const C = G1.handle(-35, 25, { label: 'C', color: 'accent' }); G2.handle(C);
@@ -206,10 +206,10 @@ Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k 
           sA.line(Math.sin(a), Yb - 0.09, Math.sin(b), Yb - 0.09, { color: 'red', width: 6 });
           for (const t of [a, b]) sA.line(Math.sin(t), Math.cos(t), Math.sin(t), Yb - 0.09, { color: 'red', width: 1.1, dash: [4, 3] });
           sA.dot(Math.sin(cr), Math.cos(cr), { r: 5, color: 'accent' });
-          sA.dot(0, 1, { r: 3, color: 'ink' }); sA.text('map centre', 0.02, 1.12, { size: 11, color: 'muted', align: 'left' });
+          sA.dot(0, 1, { r: 3, color: 'ink' }); sA.text('map centre', 0, 1.14, { size: 11, color: 'muted' });
           sA.text(`c = ${c.toFixed(0)}°`, Math.sin(cr) + 0.07, Math.cos(cr) + 0.07, { size: 12, color: 'accent', weight: 700, align: 'left', plate: true });
-          sA.text('rays arrive parallel (viewpoint at infinity)', 0, -1.52, { size: 11.5, color: 'muted', plate: true });
-          for (const x of [-0.7, 0.7]) sA.arrow(x, 1.25, x, 1.0, { color: 'muted', width: 1, head: 5 });
+          sA.text('parallel rays', 0, -1.52, { size: 11.5, color: 'muted', plate: true });
+          for (const x of [-0.9, 0.9]) sA.arrow(x, 1.25, x, 0.55, { color: 'muted', width: 1, head: 5 });
           sA.corner('section through the axis', 'tl', { color: 'muted', weight: 600 });
           // map
           G.draw();
@@ -252,7 +252,7 @@ where $c$ is the central angle (geog-1.4) and $\theta$ the initial bearing of th
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Azimuthal_equidistant_projection' },
       scope: String.raw`The emblem detail follows the United Nations' own description (a polar azimuthal equidistant map reaching $60^\circ$ south); sources disagree on the extent of the earlier 1945 design, and no attribution of the design is made here.`,
       viz(v) {
-        const CITY = { london: [-0.13, 51.51], tokyo: [139.69, 35.69], sydney: [151.21, -33.87], mecca: [39.83, 21.42], pole: [0, 90], quito: [-78.5, -0.18] };
+        const CITY = { london: [-0.13, 51.51], tokyo: [139.69, 35.69], sydney: [151.21, -33.87], mecca: [39.83, 21.42], pole: [0, 89.99], quito: [-78.5, -0.18] };
         const sel = v.select('centre', [{ value: 'london', label: 'London' }, { value: 'tokyo', label: 'Tokyo' }, { value: 'sydney', label: 'Sydney' }, { value: 'mecca', label: 'Mecca' }, { value: 'quito', label: 'Quito' }, { value: 'pole', label: 'North Pole' }], 'london', { onChange: (k) => G.set({ center: CITY[k] }) });
         const sA = v.stage({ height: 400, weight: 1.45 });
         const sB = v.stage({ x: [0, 180], y: [0.9, 60], ylog: true, axes: 'box', gutter: true, height: 400, weight: 0.75, xlabel: 'angular distance c (°)', ylabel: 'scale factor', xticks: [0, 30, 60, 90, 120, 150, 180] });
@@ -271,7 +271,7 @@ where $c$ is the central angle (geog-1.4) and $\theta$ the initial bearing of th
           sA.dot(0, 0, { r: 5, color: 'ink' }); sA.text('centre', 0, 0, { size: 11, color: 'ink', dy: 14, plate: true });
           if (pq) sA.line(0, 0, pq[0], pq[1], { color: 'green', width: 2.6 });
           G.indicatrix(q, { radius: 6, color: 'red', fillAlpha: 0.25, axes: true });
-          sA.corner('azimuthal equidistant, centred at ' + ctr[0].toFixed(0) + '°, ' + ctr[1].toFixed(0) + '°', 'tl', { color: 'muted', weight: 600, plate: true });
+          sA.corner(pole ? 'azimuthal equidistant, polar aspect' : 'azimuthal equidistant', 'tl', { color: 'muted', weight: 600, plate: true });
           const cq = v.geo('centralAngle', ctr, q);
           sB.hline(1, { color: 'green', width: 2.2 });
           sB.fn((x) => x * D2R / Math.sin(x * D2R), { domain: [0.5, 179], color: 'red', width: 2.6 });

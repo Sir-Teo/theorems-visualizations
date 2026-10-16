@@ -156,7 +156,8 @@ export function conicBase(s, v, C, lon0, fa, fb, o = {}) {
   if (o.land !== false) {
     const L = landFrame(v, lon0), lim = open ? 10 : span * D2R, T = (r) => r.map((p) => X(clamp(p[0], -lim, lim), p[1]));
     s.rings(L.fills.map(T), { fill: 'gold', fillAlpha: 0.26, stroke: false });
-    const out = []; for (const pl of L.lines) out.push(...T(pl), null);
+    const out = [];
+    for (const pl of L.lines) { for (const p of pl) { if (p[1] >= A && p[1] <= B) out.push(X(clamp(p[0], -lim, lim), p[1])); else if (out.length && out[out.length - 1]) out.push(null); } out.push(null); }
     s.path(out, { color: 'gold', width: 0.9, alpha: 0.8 });
   }
   if (!open) s.poly(frame, { color: 'faint', width: 1.2, fill: false });
