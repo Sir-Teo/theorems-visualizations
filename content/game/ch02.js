@@ -227,7 +227,7 @@ whose fixed points are exactly the equilibria; Brouwer's theorem gives a fixed p
       tags: ['fixed point', 'best reply'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Kakutani_fixed-point_theorem' },
       viz(v) {
-        const S = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'opponent’s probability x of the first action', ylabel: 'my best replies y', title: 'the best-reply correspondence' });
+        const S = v.stage({ x: [-0.04, 1.04], y: [-0.05, 1.05], axes: 'box', gutter: true, height: 380, xlabel: 'opponent’s probability x of the first action', ylabel: 'my best replies y', title: 'the best-reply correspondence' });
         const sa = v.slider('$a=u(T,T)$', -3, 6, 2, { int: true }), sb = v.slider('$b=u(T,B)$', -3, 6, 1, { int: true });
         const sc = v.slider('$c=u(B,T)$', -3, 6, 3, { int: true }), sd = v.slider('$d=u(B,B)$', -3, 6, 0, { int: true });
         const pre = { chicken: [2, 1, 3, 0], stag: [4, 0, 3, 3], pd: [3, 0, 5, 1], coord: [2, 0, 0, 1] };
@@ -259,8 +259,8 @@ whose fixed points are exactly the equilibria; Brouwer's theorem gives a fixed p
           for (const [x, y0, y1] of vs) S.line(x, y0, x, y1, { color: C1, width: 5, alpha: 0.85 });
           for (const [x, y] of pts) S.dot(x, y, { r: 6.5, color: C1 });
           if (t != null) {
-            if (mode.value !== 'full') { for (const y of [0, 1]) S.dot(t, y, { r: 7, hollow: true, color: 'red', width: 2 }); S.text('open end', t, 0.5, { dx: 8, size: 11, color: 'red', align: 'left' }); }
-            if (mode.value === 'pure') S.line(t, 0.04, t, 0.96, { color: 'red', dash: [3, 5], width: 2 });
+            if (mode.value === 'pure') { S.line(t, 0.05, t, 0.95, { color: 'red', dash: [3, 5], width: 2.5 }); S.text('mixtures removed', t, 0.5, { dx: 10, size: 11.5, color: 'red', align: 'left', weight: 700 }); }
+            if (mode.value === 'jump') { S.dot(t, 1, { r: 7, hollow: true, color: 'red', width: 2 }); S.text('open end: the limit is missing', t, 1, { dx: 12, dy: 14, size: 11.5, color: 'red', align: 'left', weight: 700 }); }
           }
           [...new Set(fp.map((z) => Math.round(z * 1e6) / 1e6))].forEach((z) => S.dot(z, z, { r: 9, color: 'green' }));
           st = { t, fp: [...new Set(fp.map((z) => Math.round(z * 1e6) / 1e6))], zero };

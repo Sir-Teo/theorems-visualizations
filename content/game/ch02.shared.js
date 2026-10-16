@@ -121,7 +121,7 @@ export function drawTriangle(s, v, o = {}) {
   s.path([TRI[0], TRI[1], TRI[2], TRI[0]], { color: o.color || 'muted', width: 1.4 });
   if (o.labels) o.labels.forEach((t, i) => {
     const [x, y] = TRI[i];
-    s.text(t, x, y, { dx: i === 0 ? -20 : i === 1 ? 20 : 0, dy: i === 2 ? -20 : 4, align: i === 0 ? 'right' : i === 1 ? 'left' : 'center', size: 12, weight: 700, color: o.labelColor || 'muted' });
+    s.text(t, x, y, { dx: 0, dy: i === 2 ? -16 : 18, align: 'center', size: 12, weight: 700, color: o.labelColor || 'muted' });
   });
 }
 
