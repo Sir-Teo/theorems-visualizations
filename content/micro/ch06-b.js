@@ -348,7 +348,7 @@ the **compensated law of demand**. In the limit this is the negative semidefinit
           // map (both modes): old budget, pivoted line, forbidden part
           budget(s, 1, 1, M, { color: 'muted', fillAlpha: 0.08, width: 1.8, dash: [7, 5] });
           s.clip(() => { s.line(0, Y1, A[0], A[1], { color: 'green', width: 4, alpha: 0.75 }); s.line(A[0], A[1], X1, 0, { color: 'red', width: 4, alpha: 0.75 }); });
-          s.text('forbidden by WARP', (A[0] + X1) / 2, A[1] / 2, { dx: 10, color: 'red', ...LBL, align: 'left', plate: true });
+          s.text('forbidden by WARP', A[0] + 0.78 * (X1 - A[0]), 0.22 * A[1], { dx: 10, color: 'red', ...LBL, align: 'left', plate: true });
           const qx = tQ * X1, qy = (1 - tQ) * Y1; Q.x = qx; Q.y = qy;
           s.dot(A[0], A[1], { r: 6, color: 'ink', label: 'A', labelPos: 'ne' });
           const bad = B[0] > A[0] + 1e-9;
@@ -359,13 +359,13 @@ the **compensated law of demand**. In the limit this is the negative semidefinit
           const D = sz.value, th = [], val = [];
           for (let d = 0; d <= 360; d += 2) { const t = (d * Math.PI) / 180, p1 = 1 + D * Math.cos(t), p2 = 1 + D * Math.sin(t), x0 = R.dem(1, 1, M), m2 = p1 * x0[0] + p2 * x0[1], x1 = R.dem(p1, p2, m2); th.push(d); val.push((p1 - 1) * (x1[0] - x0[0]) + (p2 - 1) * (x1[1] - x0[1])); }
           const vmin = Math.min(0, ...val), vmax = Math.max(0, ...val), pad = 0.15 * (vmax - vmin || 1);
-          g.setView([0, 360], [vmin - pad, vmax + pad]);
+          g.setView([0, 360], [vmin - pad, vmax + 1.8 * pad]);
           const at = (d) => val[clamp(Math.round(d / 2), 0, 180)];
           g.between((d) => Math.min(0, at(d)), () => 0, 0, 360, { fill: 'green', fillAlpha: 0.2, n: 180 });
           g.between((d) => Math.max(0, at(d)), () => 0, 0, 360, { fill: 'red', fillAlpha: 0.3, n: 180 });
           g.hline(0, { color: 'ink', width: 1.2 });
           g.path(th.map((d, i) => [d, val[i]]), { color: vmax > 1e-9 ? 'red' : 'green', width: 2.6 });
-          for (const d of [45, 225]) g.text('p changes in proportion', d, 0, { dy: -10, color: 'muted', size: 10.5, weight: 600, align: 'center' });
+          for (const d of [45, 225]) { g.vline(d, GUIDE); g.text('Δp ∝ p', d, g.bounds.y[1], { dx: 5, dy: 12, color: 'muted', size: 11, weight: 600, align: 'left' }); }
           st.vmax = vmax; st.vmin = vmin; st.warpMode = warpMode;
         });
         v.readout(() => {

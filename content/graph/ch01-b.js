@@ -16,10 +16,13 @@ function bridges(H) {
 /** A graph on letters used by the normal-tree items. */
 const NT = () => fixed({ a: [1.0, 1.0], b: [3.2, 0.7], c: [5.4, 1.0], d: [7.6, 0.8], e: [9.2, 2.2], f: [2.0, 3.2], g: [4.4, 3.0], h: [6.6, 3.2], i: [8.4, 4.6], j: [1.4, 5.4], k: [3.8, 5.6], l: [6.2, 5.6] },
   'ab bc cd de af bg ch di ei fg gh hi fj gk hl jk kl il bf ch dh fk');
-/** Lay a kit graph out as the rooted tree T (vertex indices of H) and return the positions by id. */
-function treeLayout(v, stage, H, T, rootIdx) {
-  const tmp = v.graph(stage, { nodes: H.ids.map((id) => ({ id })), edges: H.E.filter((_, k) => T.inT[k]).map(([a, b]) => [H.ids[a], H.ids[b]]), layout: 'none', draggable: false });
-  tmp.layout('tree', { root: H.ids[rootIdx] }); const P = new Map(tmp.nodes.map((n) => [K(n.id), [n.x, n.y]])); tmp.set({ nodes: [], edges: [] }); return P;
+/** Tidy-ish layered layout of the rooted tree T (vertex indices of H): Map id → [x, y] relative coordinates (y up), for layout 'fit'. */
+function treeLayout(H, T, rootIdx) {
+  const kids = Array.from({ length: H.n }, () => []); for (let u = 0; u < H.n; u++) if (T.par[u] >= 0) kids[T.par[u]].push(u);
+  const X = new Array(H.n).fill(0); let leaf = 0;
+  const go = (u) => { if (!kids[u].length) { X[u] = leaf++; return; } kids[u].forEach(go); X[u] = (X[kids[u][0]] + X[kids[u][kids[u].length - 1]]) / 2; };
+  go(rootIdx);
+  return new Map(H.ids.map((id, u) => [K(id), [X[u] * 1.3, -T.depth[u] * 1.6]]));
 }
 
 export default {
@@ -111,8 +114,7 @@ export default {
           s.corner(C.k > 1 ? `disconnected: ${C.k} components` : 'connected', 'tl', { color: C.k > 1 ? 'red' : 'green', weight: 700, size: 13 });
         });
         v.legend([['red', 'deleted', { dash: true }]]);
-        const H0 = base(), kp0 = kappa(H0), lm0 = lambda(H0);
-        v.readout(() => { const H = base(), kp = kappa(H), lm = lambda(H); return String.raw`$\kappa(G) = ${kp.k}$ (e.g. {${kp.sep.map((u) => H.ids[u]).join(', ')}}) · $\lambda(G) = ${lm.l}$ · deleted ${goneV.size} vertices and ${goneE.size} edges` + (kp0 && lm0 ? '' : ''); });
+        v.readout(() => { const H = base(), kp = kappa(H), lm = lambda(H); return String.raw`$\kappa(G) = ${kp.k}$ (e.g. {${kp.sep.map((u) => H.ids[u]).join(', ')}}) · $\lambda(G) = ${lm.l}$ · deleted ${goneV.size} vertices and ${goneE.size} edges`; });
       },
     },
     {
@@ -265,7 +267,6 @@ export default {
               const [x, y] = A.nonE[idx % A.nonE.length]; ring = new Set([H.ids[x], H.ids[y]]);
               if (A.C.comp[x] !== A.C.comp[y]) note = `adding ${H.ids[x]}${H.ids[y]} creates no cycle`;
               else { hiE = eset(H, pathEdges(H, treePath(spanTree(H, x), x, y))); note = `T + ${H.ids[x]}${H.ids[y]} has exactly one cycle`; }
-              v._extra = [H.ids[x], H.ids[y]];
             }
           }
           const ex = which.value === '4' && A.acyc && A.nonE.length ? (() => { const [x, y] = A.nonE[idx % A.nonE.length]; return [H.ids[x], H.ids[y]]; })() : null;
@@ -365,7 +366,7 @@ export default {
         v.render(() => {
           const { H, T, bad } = comp(), badE = eset(H, [...bad]), tE = eset(H, [...Array(H.m).keys()].filter((k) => T.inT[k]));
           G.draw({ nodeFill: (id) => (id === root ? 'ink' : null), edgeColor: (e) => (tE.has(e) ? 'green' : badE.has(e) ? 'red' : null), edgeWidth: (e) => (tE.has(e) ? 3.4 : badE.has(e) ? 2.4 : 1.4), edgeDash: (e) => badE.has(e) });
-          const key = root + kind.value; if (key !== last) { last = key; const P = treeLayout(v, B, H, T, H.at(root)); G2.set({ nodes: H.ids.map((id) => ({ id, x: P.get(K(id))[0], y: P.get(K(id))[1] })), edges: H.E.map(([a, b]) => ({ from: H.ids[a], to: H.ids[b] })) }); }
+          const key = root + kind.value; if (key !== last) { last = key; const P = treeLayout(H, T, H.at(root)); G2.set({ nodes: H.ids.map((id) => ({ id, x: P.get(K(id))[0], y: P.get(K(id))[1] })), edges: H.E.map(([a, b]) => ({ from: H.ids[a], to: H.ids[b] })) }).layout('fit'); }
           const H2 = ix(G2); G2.edges.forEach((e) => { const k = H2.eix.get(e); e.bend = T.inT[k] ? 0 : 22; });
           G2.draw({ nodeFill: (id) => (id === root ? 'ink' : null), nodeNote: (id) => 'h' + T.depth[H.at(id)], noteColor: () => 'muted', notePos: 'e',
             edgeColor: (e) => { const k = H2.eix.get(e); return T.inT[k] ? 'green' : bad.has(k) ? 'red' : 'muted'; }, edgeWidth: (e) => (T.inT[H2.eix.get(e)] ? 3.2 : 1.6), edgeDash: (e) => !T.inT[H2.eix.get(e)] });
@@ -390,8 +391,8 @@ export default {
         const s = v.stage({ x: [0, 10], y: [0, 7], axes: false, equal: true, height: 360 });
         const base = NT(), H0 = ix(base), T = spanTree(H0, 0, 'dfs');
         const G = v.graph(s, { nodes: [], edges: [], r: 13 });
-        const P = treeLayout(v, s, H0, T, 0);
-        G.set({ nodes: H0.ids.map((id) => ({ id, x: P.get(K(id))[0], y: P.get(K(id))[1] })), edges: H0.E.map(([a, b], k) => ({ from: H0.ids[a], to: H0.ids[b], bend: T.inT[k] ? 0 : 22 })) });
+        const P = treeLayout(H0, T, 0);
+        G.set({ nodes: H0.ids.map((id) => ({ id, x: P.get(K(id))[0], y: P.get(K(id))[1] })), edges: H0.E.map(([a, b], k) => ({ from: H0.ids[a], to: H0.ids[b], bend: T.inT[k] ? 0 : 22 })) }).layout('fit');
         let pick = ['h', 'l'];
         G.onClick = ({ node }) => { if (node && mode.value === '1') { pick = [pick[1], node.id]; } return true; };
         const comp = () => {

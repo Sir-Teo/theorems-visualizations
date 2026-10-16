@@ -299,7 +299,7 @@ Because orders are words in M, a program can compute its own orders: a number se
             St.text(`${rho}`, cx + (R + 0.17) * Math.cos(a), (R + 0.17) * Math.sin(a), { size: 8.5, color: 'muted', align: 'center' });
           }
           St.poly([[cx + R + 0.3, 0], [cx + R + 0.42, 0.07], [cx + R + 0.42, -0.07]], { fill: 'gold', fillAlpha: 1, color: 'gold' });
-          St.text('output head', cx + R + 0.36, -0.14, { size: 10.5, color: 'gold', weight: 700, align: 'center' });
+          St.text('output head', cx + R + 0.33, 0.16, { size: 10.5, color: 'gold', weight: 700, align: 'center' });
           St.text('the words circulate ↻', cx, 0, { size: 11, color: 'muted', align: 'center' });
           // CC and CA boxes
           const box = (x0, y0, x1, y1, title, col, lit) => { St.rect(x0, y0, x1, y1, { fill: col, fillAlpha: lit ? 0.22 : 0.08, color: col, width: lit ? 2.4 : 1.4, radius: 8 }); St.text(title, x0 + 0.06, y1 - 0.1, { size: 12, weight: 700, color: col, align: 'left' }); };

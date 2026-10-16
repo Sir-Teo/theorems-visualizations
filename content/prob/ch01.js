@@ -909,7 +909,7 @@ One then says that $X$ is $\mathcal F$-**measurable** and writes $X\in\mathcal F
           sF.fn((x) => Fg(k, x), { color: 'ink', width: 2.4, n: 700 });
           const srt = vals.slice().sort((p, q) => p - q), st = [[X.y[0], 0]];
           let ks = 0;
-          srt.forEach((x, i) => { st.push([x, i / n], [x, (i + 1) / n]); const Fx = Fg(k, x); ks = Math.max(ks, Math.abs((i + 1) / n - Fx), Math.abs(i / n - Fg(k, x - 1e-9))); });
+          srt.forEach((x, i) => { st.push([x, i / n], [x, (i + 1) / n]); if (i + 1 < n && srt[i + 1] === x) return; let j = i; while (j > 0 && srt[j - 1] === x) j--; ks = Math.max(ks, Math.abs((i + 1) / n - Fg(k, x)), Math.abs(j / n - Fg(k, x - 1e-9))); });
           st.push([X.y[1], 1]);
           sF.path(st, { color: 'gold', width: 1.6 });
           const Fc = Fg(k, c), Fd = Fg(k, d);
@@ -1032,7 +1032,7 @@ Then $P(X\le x)=F(x)$ for all $x$. This $X$ is written $F^{-1}$ even when $F$ is
           sH.corner(`n = ${n.toLocaleString('en-US')}`, 'tl', { color: 'gold', weight: 600 });
           // Kolmogorov distance
           const srt = Array.from(Xs).sort((p, q) => p - q); let ks2 = 0;
-          for (let i = 0; i < n; i++) { const Fx = E.F(srt[i]), Fl = E.Fm(srt[i]); ks2 = Math.max(ks2, Math.abs((i + 1) / n - Fx), Math.abs(i / n - Fl)); }
+          for (let i = 0, j = 0; i < n; i++) { if (i > 0 && srt[i] !== srt[i - 1]) j = i; if (i + 1 < n && srt[i + 1] === srt[i]) continue; ks2 = Math.max(ks2, Math.abs((i + 1) / n - E.F(srt[i])), Math.abs(j / n - E.Fm(srt[i]))); }
           const J = E.jumps().filter((k) => k.x > E.K[0].x - 1e-9);
           info = { n, ks: ks2, J: J.map((k) => [k.x, k.hi - k.lo, srt.filter((x) => x === k.x).length / n]) };
           v.legend([['ink', '$F$'], ['gold', 'uniform $u\\mapsto F^{-1}(u)$'], ['accent', 'quantile function $F^{-1}$'], ['green', 'exact bin masses']]);

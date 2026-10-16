@@ -250,8 +250,8 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
         const sq = v.select('$x_n$', Object.entries(SQ).map(([value, o]) => ({ value, label: o.label })), 'inv');
         const eps = v.slider('neighbourhood size $\\varepsilon$', 0.01, 0.8, 0.15, { log: true });
         const k = v.slider('terms excluded by $U$', 0, 12, 5, { int: true });
-        const s = v.stage({ x: [-1.5, 31], y: [-1.25, 1.3], height: 320, full: true, axes: 'box', xlabel: 'n', yticks: [[-1, '−1'], [0, '0'], [1, '1']] });
-        const hL = s.handle(-0.5, 0, { color: 'accent', label: '$L$', labelPos: 'w', constrain: (x, y) => [-0.5, Math.abs(y) < 0.05 ? 0 : v.M.clamp(y, -1.15, 1.15)] });
+        const s = v.stage({ x: [-1.5, 31], y: [-1.25, 1.3], height: 320, full: true, axes: 'box', xlabel: 'n', yticks: [[-1, '−1'], [1, '1']] });
+        const hL = s.handle(-0.5, 0, { color: 'accent', label: '$L$', labelPos: 'ne', constrain: (x, y) => [-0.5, Math.abs(y) < 0.05 ? 0 : v.M.clamp(y, -1.15, 1.15)] });
         let st = null;
         const limits = (S, Q) => {
           if (Q === 'pm') return 'none';
@@ -299,7 +299,7 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
 
 Sequences are the nets indexed by $\N$. Other standard index sets: the neighbourhoods of a point ordered by reverse inclusion, and the finite subsets of a set ordered by inclusion — the net of finite partial sums $F\mapsto\sum_{k\in F}a_k$ of a series converges exactly when the series converges unconditionally, i.e. (for real terms) when $\sum|a_k|<\infty$.`,
       idea: String.raw`Directedness is what makes "eventually" meaningful: two tail conditions $\alpha\succeq\alpha_1$ and $\alpha\succeq\alpha_2$ are both implied by $\alpha\succeq\alpha_3$ for a common upper bound. For the finite-subset net, the tail beyond $F_0=\{1,\dots,m\}$ is the set of all sums $S_m+\sum_{k\in G}a_k$ with $G$ a finite set of indices above $m$, which fills an interval from $S_m+$ (sum of the negative tail terms) to $S_m+$ (sum of the positive ones). That interval shrinks to a point exactly when $\sum|a_k|<\infty$; for $\sum(-1)^{k+1}/k$ it does not shrink at all, although the ordinary partial sums converge to $\log2$.`,
-      caption: String.raw`The shaded band over each $m$ is the exact range of the net beyond $F_0=\{1,\dots,m\}$ (using indices up to $N$); gold points are sums over random finite sets $F\supseteq F_0$, and blue is the ordinary sequence of partial sums $S_m$. Raise $N$: for an absolutely convergent series the band is unchanged and closes on the limit; for $\sum(-1)^{k+1}/k$ it widens without bound.`,
+      caption: String.raw`The shaded band over each $m$ is the exact range of the net beyond $F_0=\{1,\dots,m\}$ (using indices up to $N$); gold points are sums over random finite sets $F\supseteq F_0$ (biased toward positive or negative terms, to explore the whole range), and blue is the ordinary sequence of partial sums $S_m$. Raise $N$: for an absolutely convergent series the band is unchanged and closes on the limit; for $\sum(-1)^{k+1}/k$ it widens without bound.`,
       deps: ['top-1.1'],
       refs: ['Munkres Ch. 3'],
       tags: ['nets', 'convergence'],
@@ -329,7 +329,7 @@ Sequences are the nets indexed by $\N$. Other standard index sets: the neighbour
           s.hline(S.lim, { color: 'green', width: 1.4, dash: [6, 4] });
           const r = v.rng(7);
           for (let m = 1; m <= M; m++) for (let j = 0; j < 7; j++) {
-            let t = part[m]; for (let kk = m + 1; kk <= N; kk++) if (r() < 0.5) t += a[kk];
+            const qq = [0.04, 0.2, 0.35, 0.5, 0.65, 0.8, 0.96][j]; let t = part[m]; for (let kk = m + 1; kk <= N; kk++) if (r() < (a[kk] > 0 ? qq : 1 - qq)) t += a[kk];
             s.dot(m, t, { r: 2.2, color: 'gold', ring: false, alpha: 0.85 });
           }
           s.path(Array.from({ length: M }, (_, i) => [i + 1, part[i + 1]]), { color: 'blue', width: 2 });
@@ -341,7 +341,7 @@ Sequences are the nets indexed by $\N$. Other standard index sets: the neighbour
         v.readout(() => {
           if (!st) return '';
           const { S, w, w40, N, m } = st;
-          return `Beyond $F_0=\\{1,\\dots,${m}\\}$ the net takes values in an interval of width **${v.fmt(w, 4)}** (with indices up to $N=${N}$); at $m=40$ the width is ${v.fmt(w40, 4)}. ` + (S.abs ? `The widths do not depend on $N$ in any visible way and tend to $0$: $\\sum|a_k|<\\infty$, so **the net converges** to $${S.limTex}$, like the sequence.` : `The width is about $\\tfrac12\\log N$ and grows with $N$: $\\sum|a_k|=\\infty$, so **the net does not converge**, although the sequence $S_m\\to${S.limTex}$.`);
+          return `Beyond $F_0=\\{1,\\dots,${m}\\}$ the net takes values in an interval of width **${v.fmt(w, 4)}** (with indices up to $N=${N}$); at $m=40$ the width is ${v.fmt(w40, 4)}. ` + (S.abs ? `The widths do not depend on $N$ in any visible way and tend to $0$: $\\sum|a_k|<\\infty$, so **the net converges** to $${S.limTex}$, like the sequence.` : `The width is about $\\log(N/m)$ and grows with $N$: $\\sum|a_k|=\\infty$, so **the net does not converge**, although the sequence $S_m\\to${S.limTex}$.`);
         });
       },
     },
@@ -361,7 +361,7 @@ Sequences are the nets indexed by $\N$. Other standard index sets: the neighbour
         const SQ = { right: { label: '$x+1/n$', f: (n) => 1 + 0.9 / n }, alt: { label: '$x+(-1)^n/n$', f: (n) => 1 + (0.9 * (-1) ** n) / n }, rat: { label: 'rationals $\\to x$', f: (n) => 1 + Math.round(900 / n) / 1000 * (n % 2 ? -1 : 1) } };
         const sq = v.select('sequence', Object.entries(SQ).map(([value, o]) => ({ value, label: o.label })), 'right');
         const s = v.stage({ x: [-0.05, 2.05], y: [-0.45, 4.35], height: 400, axes: false, full: true });
-        const X = 1, NJ = 6, rowY = (j) => 2.55 - 0.48 * j;
+        const X = 1, NJ = 6, rowY = (j) => 2.5 - 0.46 * j;
         let st = null;
         v.render(() => {
           const cc = top.value === 'cc', f = SQ[sq.value].f;

@@ -225,13 +225,13 @@ Dividing by $\sqrt{2\pi}$ bounds the standard normal tail $P(Z\ge x)$. Since the
             sB.vline(x, { color: 'gold', width: 1, dash: [3, 3] });
           } else if (md === 'up') {
             const zmax = Math.min(4, 7 / x), e0 = Math.exp(-x * x / 2);
-            sB.setView([0, zmax], [0, e0 * 1.1]); sB.setTitle(`upper bound at x = ${v.fix(x, 2)}: e^{−x²/2}e^{−xz} (red) above e^{−(x+z)²/2} (ink)`);
+            sB.setView([0, zmax], [0, e0 * 1.1]); sB.setTitle(`upper bound at $x=${v.fix(x, 2)}$: $e^{-x^2/2}e^{-xz}$ (red) lies above $e^{-(x+z)^2/2}$ (ink), against $z$`);
             sB.between((z) => e0 * Math.exp(-x * z), (z) => Math.exp(-((x + z) ** 2) / 2), 0, zmax, { fill: 'red', fillAlpha: 0.18 });
             sB.between((z) => Math.exp(-((x + z) ** 2) / 2), () => 0, 0, zmax, { fill: 'ink', fillAlpha: 0.12 });
             sB.fn((z) => e0 * Math.exp(-x * z), { color: 'red', width: 2.2 }); sB.fn((z) => Math.exp(-((x + z) ** 2) / 2), { color: 'ink', width: 2.2 });
           } else {
             const ymax = x + Math.min(4, 6 / x), e0 = Math.exp(-x * x / 2);
-            sB.setView([x, ymax], [Math.min(0, (1 - 3 / x ** 4) * e0) * 1.1, e0 * 1.1]); sB.setTitle(`lower bound at x = ${v.fix(x, 2)}: (1 − 3y⁻⁴)e^{−y²/2} (blue) below e^{−y²/2} (ink)`);
+            sB.setView([x, ymax], [Math.min(0, (1 - 3 / x ** 4) * e0) * 1.1, e0 * 1.1]); sB.setTitle(`lower bound at $x=${v.fix(x, 2)}$: $(1-3y^{-4})e^{-y^2/2}$ (blue) lies below $e^{-y^2/2}$ (ink), against $y$`);
             sB.between((y) => Math.exp(-y * y / 2), (y) => (1 - 3 / y ** 4) * Math.exp(-y * y / 2), x, ymax, { fill: 'blue', fillAlpha: 0.15 });
             sB.fn((y) => Math.exp(-y * y / 2), { color: 'ink', width: 2.2 }); sB.fn((y) => (1 - 3 / y ** 4) * Math.exp(-y * y / 2), { color: 'blue', width: 2.2 });
             sB.hline(0, { color: 'faint', width: 1 });
@@ -414,7 +414,7 @@ For $(S,\mathcal S)=(\R,\mathcal R)$ one may take $\mathcal A=\{(-\infty,x]:x\in
           const R = ranges(f, m), cut = (t) => R.some(([lo, hi]) => lo <= t && t < hi - 1e-12);
           R.forEach(([lo, hi], j) => {
             const x = (j + 0.5) / N, col = ATOMS[j % ATOMS.length];
-            if (hi - lo < 1e-9) sC.dot(x, lo, { r: 5, color: col }); else sC.line(x, lo, x, hi, { color: col, width: Math.max(3, 140 / N), cap: 'round' });
+            if (hi - lo < 1e-9) sC.dot(x, lo, { r: 5, color: col }); else sC.line(x, lo, x, hi, { color: col, width: Math.max(4, 70 / N), cap: 'round' });
           });
           if (md === 'ray') sC.hline(hx.y, { color: cut(hx.y) ? 'red' : 'green', width: 2 });
           else [ha.y, hb.y].forEach((t) => sC.hline(t, { color: cut(t) ? 'red' : 'green', width: 2, dash: [5, 3] }));

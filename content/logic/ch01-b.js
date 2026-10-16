@@ -223,7 +223,7 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
           pos.forEach((p, i) => {
             const isA = sep && i === A;
             if (isA) s.dot(p[0], p[1], { r: 24, hollow: true, color: 'orange', width: 2.4 });
-            s.dot(p[0], p[1], { r: 19, color: Rm[i] ? 'blue' : 'purple', hollow: sel !== i, width: 2.2 });
+            s.dot(p[0], p[1], { r: 19, color: M[i][i] ? 'purple' : 'blue', hollow: sel !== i, width: 2.2 });
             s.text(names[i], p[0], p[1], { align: 'center', size: names[i].length > 4 ? 9 : 12.5, weight: 700, color: sel === i ? 'panel' : 'ink', halo: false });
             if (desc[i]) s.text(desc[i], p[0], p[1] - 0.72, { align: 'center', size: 10, color: 'muted' });
             if (isA) s.text('A', p[0] - 0.75, p[1] + 0.6, { size: 13, weight: 700, color: 'orange' });
@@ -287,8 +287,8 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
       viz(v) {
         const pre = v.select('', Object.entries(LIAR_PRESETS).map(([value, P]) => ({ value, label: P.lab })), 'card');
         let sys = null, last = null;
-        const s = v.stage({ x: [0, 100], y: [0, 60], axes: false, height: 360, full: true });
-        const b = v.stage({ x: [-0.5, 12.5], y: [-0.2, 4.6], axes: false, height: 150, full: true, title: 'naive evaluation: round $k+1$ re-evaluates every sentence using round $k$' });
+        const s = v.stage({ x: [0, 100], y: [0, 60], axes: false, height: 300, full: true });
+        const b = v.stage({ x: [-0.9, 12.5], y: [-0.2, 4.6], axes: false, height: 130, full: true, title: 'naive evaluation: round $k+1$ re-evaluates every sentence using round $k$' });
         let boxes = [];
         s.onClick((x, y) => { boxes.forEach((bx, i) => { if (x > bx[0] && x < bx[2] && y > bx[1] && y < bx[3]) { const S = sys[i]; if (S.fact != null) S.fact = !S.fact; else S.refs = S.refs.map(([j, p]) => [j, !p]); } }); });
         let st = null;
@@ -297,7 +297,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           const n = sys.length;
           // sentence cards
           boxes = [];
-          const bh = Math.min(10, 50 / n), gap = 2.2;
+          const bh = Math.min(8, 46 / n - 2.2), gap = 2.2;
           sys.forEach((S, i) => {
             const y1 = 56 - i * (bh + gap), y0 = y1 - bh;
             boxes.push([2, y0, 44, y1]);
@@ -309,13 +309,13 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
             (S.refs || []).forEach(([j, p], k) => {
               const ya = (y0 + y1) / 2, yb = 56 - j * (bh + gap) - bh / 2;
               if (j === i) { s.arrow(44.5, ya + 1.5, 44.5, ya - 1.5, { color: p ? 'green' : 'red', width: 1.6, head: 6 }); s.circle(46, ya, 1.8, { color: p ? 'green' : 'red', width: 1.6 }); return; }
-              const c = [46 + 3 + 2.5 * k + Math.abs(i - j) * 1.5, (ya + yb) / 2], pts = [];
+              const c = [46 + 2 + 2.5 * k + Math.abs(i - j) * 1.5 + (j > i ? 0 : 4.5), (ya + yb) / 2], pts = [];
               for (let u = 0; u <= 20; u++) { const w = u / 20; pts.push([(1 - w) ** 2 * 44.5 + 2 * (1 - w) * w * c[0] + w * w * 44.5, (1 - w) ** 2 * ya + 2 * (1 - w) * w * c[1] + w * w * yb]); }
               s.path(pts, { color: p ? 'green' : 'red', width: 1.6 }); s.arrow(pts[18][0], pts[18][1], 44.5, yb, { color: p ? 'green' : 'red', width: 1.6, head: 6 });
             });
           });
           // truth table of all assignments
-          const rows = 1 << n, cw = 6.2, ch = Math.min(5.6, 50 / (rows + 1)), x0 = 62, y0 = 56;
+          const rows = 1 << n, cw = 6.2, ch = Math.min(7, 52 / (rows + 0.6)), x0 = 62, y0 = 55;
           for (let i = 0; i < n; i++) s.text(sname(i), x0 + (i + 0.5) * cw, y0 + 1.6, { align: 'center', size: 11.5, weight: 700, color: 'accent' });
           s.text('consistent?', x0 + (n + 0.9) * cw, y0 + 1.6, { align: 'center', size: 11, color: 'muted' });
           const sols = [];
@@ -341,7 +341,7 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
             const y1 = 4.3 - i * rh, y0b = y1 - rh * 0.85;
             b.rect(k - 0.42, y0b, k + 0.42, y1, { fill: val ? 'green' : 'red', fillAlpha: 0.35, color: val ? 'green' : 'red', width: 1, radius: 3 });
             b.text(val ? 'T' : 'F', k, (y0b + y1) / 2, { align: 'center', size: 10.5, weight: 600, color: 'ink' });
-            if (k === 0) b.text(sname(i), -0.55, (y0b + y1) / 2, { align: 'right', size: 10.5, weight: 700, color: 'accent' });
+            if (k === 0) b.text(sname(i), -0.5, (y0b + y1) / 2, { align: 'right', size: 10.5, weight: 700, color: 'accent' });
           }));
           const same = (a, c) => a.every((x, i) => x === c[i]);
           let period = 0; for (let p = 1; p <= 6; p++) if (same(hist[12], hist[12 - p])) { period = p; break; }
