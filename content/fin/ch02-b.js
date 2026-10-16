@@ -40,7 +40,7 @@ because the $n$-year bond is worth the present value of its early coupons (alrea
         function build() {
           const P = prices(), Z = [], sp = [], frames = [{ k: 0, Z: [], s: [], P, note: String.raw`Six annual-coupon bonds with prices $P_1,\dots,P_6$. Press ▶ to peel off one discount factor at a time.` }];
           for (let k = 1; k <= N; k++) {
-            const pv = CP.slice(0, k - 1).map((c, t) => c * Z[t]), known = pv.reduce((a, b) => a + b, 0), rem = P[k - 1] - known, Zk = rem / (100 + CP[k - 1]), sk = Math.pow(Zk, -1 / k) - 1;
+            const pv = Z.slice(0, k - 1).map((z) => CP[k - 1] * z), known = pv.reduce((a, b) => a + b, 0), rem = P[k - 1] - known, Zk = rem / (100 + CP[k - 1]), sk = Math.pow(Zk, -1 / k) - 1;
             Z.push(Zk); sp.push(sk);
             const bad = k > 1 && Zk >= Z[k - 2];
             frames.push({ k, Z: Z.slice(), s: sp.slice(), P, pv, known, rem, Zk, sk, bad, line: [2, 3, 4],
@@ -68,7 +68,7 @@ because the $n$-year bond is worth the present value of its early coupons (alrea
             W.rect(k - w, cum, k + w, cum + f.rem, { fill: 'gold', fillAlpha: 0.7, color: 'gold', width: 1 });
             W.hline(f.P[k - 1], { color: 'orange', width: 1.5, dash: [6, 4] });
             W.text(`price ${fx(f.P[k - 1], 2)}`, 0.2, f.P[k - 1], { dx: 4, dy: -9, color: 'orange', size: 12, weight: 700, align: 'left' });
-            W.text(`left: ${fx(f.rem, 2)}`, k, cum + f.rem, { dy: 14, color: 'gold', size: 11.5, weight: 700, align: 'center' });
+            W.text(`left: ${fx(f.rem, 2)}`, k, cum + f.rem / 2, { dy: 0, color: 'ink', size: 11.5, weight: 700, align: 'center' });
           }
           // curve
           C.path(tr.map((s, i) => [i + 1, s]), { color: 'muted', width: 1.6, dash: [5, 4] });
@@ -287,7 +287,7 @@ and the yield curve $y(T)=-\ln P(0,T)/T$ rises, falls or is humped according to 
         v.button('Resample paths', () => { seed += 1; });
         const L = v.stage({ x: [0, 10], y: [-2, 10], height: 330, axes: 'box', gutter: true, weight: 1.15, minWidth: 320, xlabel: 'years', ylabel: 'short rate (%)', title: 'simulated short-rate paths' });
         const R = v.stage({ x: [0, 30], y: [0, 8], height: 330, axes: 'box', gutter: true, weight: 1, minWidth: 300, xlabel: 'maturity $T$ (years)', ylabel: 'zero yield (%)', title: 'the yield curve the model implies' });
-        const h0 = L.handle(0, 0.02, { color: 'gold', r: 8, label: '$r_0$', labelPos: 'ne', constrain: (x, y) => [0, clamp(y, -0.01, 0.1)] });
+        const h0 = L.handle(0, 2, { color: 'gold', r: 8, label: '$r_0$', labelPos: 'ne', constrain: (x, y) => [0, clamp(y, -1, 10)] });
         v.legend([['accent', 'sample path'], ['orange', 'mean ± 2 sd', { area: true }], ['accent', 'curve from your $r_0$'], ['muted', 'long yield $y_\\infty$', { dash: true }]]);
         const yld = (T, r0, a, b, s) => { const B = (1 - Math.exp(-a * T)) / a, yi = b - (s * s) / (2 * a * a); return yi + ((r0 - yi) * B) / T + (s * s * B * B) / (4 * a * T); };
         let mc = { key: '' };
@@ -314,7 +314,7 @@ and the yield curve $y(T)=-\ln P(0,T)/T$ rises, falls or is humped according to 
         }
         let info = {};
         v.render(() => {
-          const a = aS.value, b = bS.value, s = sS.value, r0 = h0.y, S = simulate(a, b, s, r0);
+          const a = aS.value, b = bS.value, s = sS.value, r0 = h0.y / 100, S = simulate(a, b, s, r0);
           const mean = (t) => 100 * (b + (r0 - b) * Math.exp(-a * t)), sdv = (t) => 100 * s * Math.sqrt((1 - Math.exp(-2 * a * t)) / (2 * a));
           const band = [];
           for (let k = 0; k <= 60; k++) band.push([k / 6, mean(k / 6) + 2 * sdv(k / 6)]);
@@ -376,7 +376,7 @@ and the yield curve $y(T)=-\ln P(0,T)/T$ rises, falls or is humped according to 
         const implied = (s, Rr, T, r) => { let lo = 0, hi = 0.999; if (spreadOf(hi, Rr, T, r) < s) return NaN; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (spreadOf(m, Rr, T, r) < s) lo = m; else hi = m; } return (lo + hi) / 2; };
         const hq = L.handle(0.04, 250, { color: 'gold', label: '$q$', labelPos: 'ne', constrain: (x) => { const q = clamp(x, 0.0005, QM); return [q, 1e4 * spreadOf(q, rS.value, tS.value, rfS.value)]; } });
         hq.onDrag = () => sS.set(clamp(Math.round((1e4 * spreadOf(hq.x, rS.value, tS.value, rfS.value)) / 5) * 5, 0, 1500));
-        v.legend([['accent', 'exact spread for $q$'], ['orange', 'rule of thumb $(1-R)q$', { dash: true }], ['muted', 'observed spread', { dash: true }], ['red', 'default in year $t$', { area: true }], ['green', 'cumulative survival', { dot: true }]]);
+        v.legend([['accent', 'exact spread for $q$'], ['orange', 'rule of thumb $(1-R)q$', { dash: true }], ['muted', 'observed spread', { dash: true }], ['red', 'default in year $t$', { area: true }]]);
         let info = {};
         v.render(() => {
           const s = sS.value * 1e-4, Rr = rS.value, T = tS.value, r = rfS.value, q = implied(s, Rr, T, r), ok = Number.isFinite(q);
@@ -400,7 +400,7 @@ and the yield curve $y(T)=-\ln P(0,T)/T$ rises, falls or is humped according to 
           const t = info;
           if (!t.ok) return 'No default probability reproduces this spread (it exceeds even certain default).';
           return String.raw`implied annual default probability $q=${pct(t.q, 3)}$ (rule of thumb $s/(1-R)=${pct(t.approx, 3)}$)  ·  probability of default within ${t.T} years ${pct(t.cum, 2)}` + '\n' +
-            String.raw`zero-coupon price ${dl(100 * t.price, 2)} per 100 vs ${dl(100 * t.pf, 2)} riskless; expected loss ${pct(t.loss, 2)} of face over the life; the spread is $${bp(t.s)}$`;
+            String.raw`zero-coupon price ${dl(100 * t.price, 2)} per 100 vs ${dl(100 * t.pf, 2)} riskless; expected loss ${pct(t.loss, 2)} of face over the life; the spread is ${bp(t.s)}`;
         });
       },
     },

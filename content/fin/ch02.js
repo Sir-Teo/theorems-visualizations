@@ -94,7 +94,7 @@ So a given rise in yield lowers the price by *less* than the same fall in yield 
         const XR = [0, 0.15];
         const cS = v.slider('coupon rate $c$ (annual)', 0, 0.10, 0.05, { step: 0.0025, fmt: (x) => pct(x, 2) });
         const mS = v.select('maturity (years)', MATS.map((x) => ({ value: String(x), label: String(x) })), '10');
-        const wS = v.slider('middle payment × (1 = ordinary bond)', -12, 1, 1, { step: 0.05, fmt: (x) => fx(x, 2) });
+        const wS = v.slider('middle payment × (1 = ordinary bond)', -60, 1, 1, { step: 0.5, fmt: (x) => fx(x, 2) });
         const L = v.stage({ x: XR, y: [0, 300], height: 330, axes: 'box', gutter: true, weight: 1.2, minWidth: 320, xlabel: 'yield $y$', ylabel: 'price (USD per 100 face)', xticks: pctTicks(0, 0.15, 0.025, 1), title: 'price–yield curves and a chord' });
         const R = v.stage({ x: XR, y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1, minWidth: 280, xlabel: 'yield $y$', ylabel: "$P''(y)$ (per 1 of face)", xticks: pctTicks(0, 0.15, 0.025, 1), title: 'the second derivative of the selected bond' });
         const flowsFor = (n, w) => { const fl = bondFlows(cS.value, n, 1); const mid = Math.max(1, Math.round(n / 2)); if (w !== 1 && mid < n) fl[mid - 1].cf *= w; return fl; };

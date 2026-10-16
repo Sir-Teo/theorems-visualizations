@@ -477,7 +477,7 @@ $$\rho_{xy}=\frac{h}{\nu e^2},\qquad \nu=1,2,3,\dots$$
           // right panel: the (ρxy, ρxx) plane, traced by the gate sweep; every plateau is a point (h/ie², 0)
           const curve = []; for (let i = 0; i <= 320; i++) { const Vg = VT + ((26 - VT) * i) / 320, r = qheAt(COX * (Vg - VT), B, p); if (r.rxy * RK < 14000) curve.push([(r.rxy * RK) / 1000, (r.rxx * RK) / 1000]); }
           sR.path(curve, { color: 'accent', width: 2.4 });
-          for (const i of [4, 8, 12]) { sR.dot(RK / i / 1000, 0, { r: 5, color: 'green' }); sR.text(`$h/${i}e^2$`, RK / i / 1000, 0.7, { size: 11, color: 'green', align: 'center' }); }
+          for (const i of [4, 8, 12]) { sR.dot(RK / i / 1000, 0, { r: 5, color: 'green' }); sR.text(`$h/${i}e^2$`, RK / i / 1000, i === 8 ? 1.9 : 0.8, { size: 11, color: 'green', align: 'center' }); }
           if (plat) {
             const Rk = 4 * plat.rxy * RK; plat.ainv = (2 * Rk) / (C.mu0 * C.c); plat.ppm = (Rk / RK - 1) * 1e6;
             sR.dot(plat.rxy * RK / 1000, plat.rxx * RK / 1000, { r: 7, color: 'gold' });
