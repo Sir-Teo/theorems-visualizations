@@ -61,18 +61,18 @@ with eigenfunctions $\psi_n(x)=\big(\tfrac{m\omega}{\pi\hbar}\big)^{1/4}\frac{1}
           quartic: { V: (x) => x ** 4 / 8, dom: [-7.5, 7.5], view: [-6, 6] },
         };
         const tg = v.select('morph toward', [{ value: 'morse', label: 'Morse well' }, { value: 'quartic', label: 'quartic $x^4/8$' }], 'morse');
-        const sm = v.slider('morph $s$ (0 = parabola)', 0, 1, 0, { step: 0.01 });
+        const sm = v.slider('morph $s$ (0 = parabola)', 0, 1, 0.5, { step: 0.01 });
         const sL = v.stage({ x: [-5, 13], y: [0, 10], height: 360, axes: 'box', gutter: { r: 4 }, weight: 1.45, xlabel: 'x', ylabel: 'E / ħω', title: '$V_s=(1-s)\\tfrac12x^2+s\\,V_{\\rm target}$ and its levels' });
         const sR = v.stage({ x: [0, 10], y: [0, 2], height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'E / ħω', ylabel: 'spacing / ħω', title: 'level spacing vs $2\\pi\\hbar/T_{\\rm cl}(E)$' });
         let S = null;
         const solve = () => {
           const key = `${tg.value}|${sm.value}`; if (S && S.key === key) return S;
           const T = TG[tg.value], s = sm.value, Vf = (x) => (1 - s) * 0.5 * x * x + s * T.V(x);
-          const R = M.schrodinger1D(Vf, T.dom, { n: 1100, k: K }), x = R.x, Vg = Float64Array.from(x, Vf);
+          const R = M.schrodinger1D(Vf, T.dom, { n: 2600, k: K }), x = R.x, Vg = Float64Array.from(x, Vf);
           // classical: A(E) on a fine grid, ω_cl = 2π dE/dA
-          const xf = Float64Array.from({ length: 6001 }, (_, i) => T.dom[0] + ((T.dom[1] - T.dom[0]) * i) / 6000), Vff = Float64Array.from(xf, Vf);
+          const xf = Float64Array.from({ length: 12001 }, (_, i) => T.dom[0] + ((T.dom[1] - T.dom[0]) * i) / 12000), Vff = Float64Array.from(xf, Vf);
           const Etop = R.E[K - 1] + 0.4, cl = [];
-          for (let k = 1; k <= 120; k++) { const E = (Etop * k) / 120, h = 0.01, dA = action(xf, Vff, E + h) - action(xf, Vff, E - h); if (dA > 0) cl.push([E, (TAU * 2 * h) / dA]); }
+          for (let k = 1; k <= 120; k++) { const E = (Etop * k) / 120, h = 0.06, dA = action(xf, Vff, E + h) - action(xf, Vff, E - h); if (dA > 0) cl.push([E, (TAU * 2 * h) / dA]); }
           const sp = []; for (let n = 0; n < K - 1; n++) sp.push([(R.E[n] + R.E[n + 1]) / 2, R.E[n + 1] - R.E[n]]);
           return (S = { key, x, Vg, E: R.E, psi: R.psi, cl, sp, s, tg: tg.value, Etop });
         };
@@ -87,7 +87,7 @@ with eigenfunctions $\psi_n(x)=\big(\tfrac{m\omega}{\pi\hbar}\big)^{1/4}\frac{1}
           const ymax = Math.max(1.6, ...S.sp.map((p) => p[1] * 1.15), ...S.cl.map((p) => Math.min(p[1], 3) * 1.08));
           sR.setView([0, S.Etop], [0, Math.min(3.2, ymax)]);
           sR.hline(1, { color: 'green', width: 1.4, dash: [5, 4] });
-          sR.text('ħω (parabola)', S.Etop * 0.03, 1, { color: 'green', size: 10.5, dy: -9 });
+          sR.text('ħω (parabola)', S.Etop * 0.03, 1, { color: 'green', size: 10.5, dy: -14, plate: true });
           sR.path(S.cl, { color: 'orange', width: 2.4 });
           for (const [E, d] of S.sp) sR.line(E, 0, E, d, { color: 'accent', width: 1, alpha: 0.35 });
           sR.dots(S.sp, { r: 4.5, color: 'accent' });
@@ -142,9 +142,9 @@ On the normalized eigenstates they act as $a_+\psi_n=\sqrt{n+1}\,\psi_{n+1}$ and
         v.button('apply $a_-$', () => apply(false));
         v.button('reset', () => reset());
         const terms = v.toggle('show the two terms', true);
-        reset();
+        reset(); apply(true);
         const sA = v.stage({ x: [-6.5, 6.5], y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1.65, xlabel: 'x', title: 'the state on screen and what the operator makes of it' });
-        const sB = v.stage({ x: [-4.6, 4.6], y: [-1.1, NMAX + 1], height: 330, axes: false, weight: 0.6, title: 'the ladder $E_n=n+\\frac12$' });
+        const sB = v.stage({ x: [-5.2, 5.2], y: [-1.1, NMAX + 1], height: 330, axes: false, weight: 0.6, title: 'the ladder $E_n=n+\\frac12$' });
         let st = null;
         v.render(() => {
           const col = phaseLUT(v);
@@ -161,7 +161,7 @@ On the normalized eigenstates they act as $a_+\psi_n=\sqrt{n+1}\,\psi_{n+1}$ and
           drawReal(sA, x, cur, { col, alpha: 0.45, width: 2 });
           if (c !== 0) sA.path(Array.from(x, (X, i) => [X, c * phi[n][i]]), { color: 'gold', width: 2, dash: [7, 5] });
           // the ladder
-          sB.clip(() => { const pts = []; for (let k = 0; k <= 100; k++) { const X = -4.6 + 9.2 * k / 100; pts.push([X, 0.5 * X * X]); } sB.path(pts, { color: 'muted', width: 1.5 }); });
+          sB.clip(() => { const pts = []; for (let k = 0; k <= 100; k++) { const X = -5.2 + 10.4 * k / 100; pts.push([X, 0.5 * X * X]); } sB.path(pts, { color: 'muted', width: 1.5 }); });
           for (let k = 0; k <= NMAX; k++) { const w = Math.sqrt(2 * k + 1); sB.line(-w, k + 0.5, w, k + 0.5, { color: c !== 0 && k === n ? 'gold' : 'muted', width: c !== 0 && k === n ? 3.5 : 1, alpha: c !== 0 && k === n ? 1 : 0.6 }); }
           sB.text('0', 0, -0.6, { size: 14, color: c === 0 ? 'red' : 'faint', align: 'center', weight: 700 });
           const yOf = (k) => (k < 0 ? -0.6 : k + 0.5), m = hist.length;
@@ -180,7 +180,7 @@ On the normalized eigenstates they act as $a_+\psi_n=\sqrt{n+1}\,\psi_{n+1}$ and
           if (!st) return '';
           if (c === 0) return `$a_-\\psi_0 = \\tfrac{1}{\\sqrt2}(x\\psi_0+\\psi_0') = 0$: the Gaussian is the only state the lowering operator kills — numerically $\\max|a_-\\psi_0| = ${v.sci(Math.max(st.err, 1e-16), 1)}$ (finite differences). The ladder has a bottom rung. Further operators keep giving 0.`;
           const hd = last ? `$a_${last.raise ? '+' : '-'}\\psi_{${last.from}} = \\sqrt{${last.raise ? last.from + 1 : last.from}}\\,\\psi_{${last.to}}$ · ` : '';
-          return hd + `state on screen $= ${v.fix(c, 4)}\\,\\psi_{${n}}$, $\\int|\\cdot|^2dx = ${v.fix(st.nrm, 4)}$ (predicted ${v.fix(c * c, 4)}) · largest deviation from the prediction: $${v.sci(Math.max(st.err, 1e-16), 1)}$ (relative ${v.sci(Math.max(st.err / st.ref, 1e-16), 1)}, the error of the numerical derivative).`;
+          return hd + `state on screen $= ${v.fix(c, 4)}\\,\\psi_{${n}}$, $\\int|\\cdot|^2dx = ${v.fix(st.nrm, 4)}$ (predicted ${v.fix(c * c, 4)}) · largest deviation from the prediction: $${v.sci(Math.max(st.err, 1e-16), 1)}$ (relative $${v.sci(Math.max(st.err / st.ref, 1e-16), 1)}$, the error of the numerical derivative).`;
         });
       },
     },
@@ -303,8 +303,8 @@ Every state satisfies $\langle H\rangle\ge\tfrac12\hbar\omega$, with equality on
           const P = psiOf(d); let pk = 0; for (let i = 0; i < G.n; i++) pk = Math.max(pk, Math.hypot(P.re[i], P.im[i]));
           drawPsi(sL, G.x, P.re, P.im, { col, base: E, scale: 0.75 / Math.max(pk, 0.75) });
           sL.hline(E, { color: 'accent', width: 1.2, dash: [2, 3], alpha: 0.6 });
-          sL.dot(0, 0, { r: 6, color: 'red', label: 'classical rest, E = 0', labelPos: 'e' });
-          phaseWheel(sL, col, sL.W - 40, 48, 11);
+          sL.dot(0, 0, { r: 6, color: 'red' }); sL.text('classical rest, E = 0', 0.25, 0.12, { size: 11, color: 'red', plate: true });
+          phaseWheel(sL, col, sL.W - 40, 64, 11);
           // right
           const g = 0.25, sh = shift();
           if (fam.value !== 'gauss') sR.fn((q) => 0.5 * g / (q * q) + 0.5 * q * q + sh, { color: 'muted', width: 1.3, dash: [5, 4] });
@@ -312,7 +312,7 @@ Every state satisfies $\langle H\rangle\ge\tfrac12\hbar\omega$, with equality on
           sR.fn(Etot, { color: 'accent', width: 3 });
           sR.hline(0.5, { color: 'green', width: 1.3, dash: [5, 4] });
           const kq = FAM[fam.value].k, dmin = Math.pow(kq, 0.25), Emin = Math.sqrt(kq) + sh;
-          sR.dot(dmin, Emin, { r: 4.5, color: 'green', label: `min ${v.fix(Emin, 4)}`, labelPos: 's' });
+          sR.dot(dmin, Emin, { r: 4.5, color: 'green' }); sR.text(`min ${v.fix(Emin, 4)}`, dmin, Emin, { size: 11, color: 'green', align: 'center', dy: -16, plate: true });
           sR.text('kinetic ∝ 1/Δx²', 0.36, top - 0.3, { size: 11, color: 'orange' }); sR.text('potential ∝ Δx²', 2.25, Math.min(top - 0.3, 2.3), { size: 11, color: 'purple', align: 'right' });
           // numerical check
           const mo = moments(G.x, P.re, P.im), T = 0.5 * (mo.sp * mo.sp + mo.mp * mo.mp), V = 0.5 * (mo.sx * mo.sx + mo.mx * mo.mx);
@@ -334,7 +334,7 @@ where $H_n$ is the $n$-th Hermite polynomial ($H_0=1$, $H_1=2x$, $H_{n+1}=2xH_n-
 (b) $\int\psi_m\psi_n\,dx=\delta_{mn}$;
 (c) they form an orthonormal basis of $L^2(\R)$.`,
       idea: String.raw`$\psi_0$ is fixed by the first-order equation $a_-\psi_0=\tfrac1{\sqrt2}(x+\tfrac{d}{dx})\psi_0=0$, whose only solution is the Gaussian. Each application of $a_+=\tfrac1{\sqrt2}(x-\tfrac{d}{dx})$ to a polynomial times $e^{-x^2/2}$ gives another one of one higher degree, $(2xH_n-H_n')e^{-x^2/2}/\sqrt2$, which is the Hermite recurrence. Orthogonality is automatic for eigenvectors of the self-adjoint $\hat H$ with different eigenvalues; the zeros interlace by the node theorem (qm-3.7). Completeness follows because $\{x^ne^{-x^2/2}\}$ spans a dense subspace of $L^2$ (its orthogonal complement would have a Fourier transform that vanishes identically).`,
-      caption: String.raw`Left: starting from the chosen state, $a_+$ is applied **numerically** (finite differences) again and again and each result is normalized; the functions appear in the well at their energies $\langle H\rangle$, nodes marked in red. Right: the matrix of overlaps $\int\psi_j\psi_k\,dx$ of everything built so far, colour-coded on a log scale — the identity, to rounding. **Raise $n$** to add rungs. Then switch the starting state to a **sech** that is *not* killed by $a_-$: the functions built from it are not eigenstates (their energy spread is large), and the overlap matrix fills with red.`,
+      caption: String.raw`Left: starting from the chosen state, $a_+$ is applied **numerically** (finite differences) again and again and each result is normalized; the functions appear in the well at their energies $\langle H\rangle$, nodes marked in red. Right: the matrix of overlaps $\int\psi_j\psi_k\,dx$ of everything built so far, colour-coded on a log scale — the identity, to rounding. **Raise $n$** to add rungs. Then switch the starting state to a **narrower Gaussian** $e^{-x^2}$, which is *not* killed by $a_-$: the functions built from it are not eigenstates (their energy spread is large), and the overlap matrix fills with red.`,
       deps: ['qm-4.3', 'qm-3.7'],
       see: ['rca-4.18', 'ode-4.10'],
       refs: ['Griffiths §2.3'],
@@ -342,20 +342,20 @@ where $H_n$ is the $n$-th Hermite polynomial ($H_0=1$, $H_1=2x$, $H_{n+1}=2xH_n-
       tags: ['Hermite functions', 'orthogonality', 'eigenfunctions'],
       viz(v) {
         const G = grid(-9, 9, 1801), x = G.x, NMAX = 11;
-        const start = v.select('start from', [{ value: 'g', label: 'Gaussian ($a_-\\psi_0=0$)' }, { value: 's', label: 'sech $x$ ($a_-\\psi\\neq0$)' }], 'g');
+        const start = v.select('start from', [{ value: 'g', label: 'Gaussian $e^{-x^2/2}$ ($a_-\\psi_0=0$)' }, { value: 's', label: 'narrow $e^{-x^2}$ ($a_-\\psi\\neq0$)' }], 'g');
         const ns = v.slider('raise to $n$', 0, NMAX, 5, { int: true });
         const sL = v.stage({ x: [-6, 6], y: [0, 7], height: 360, axes: 'box', gutter: { r: 4 }, weight: 1.35, xlabel: 'x', ylabel: 'E / ħω', title: '$\\psi_{k+1}\\propto a_+\\psi_k$, each drawn at its energy' });
         const sG = v.stage({ x: [0, 1], y: [0, 1], height: 360, axes: false, weight: 1, equal: true, title: 'overlaps $\\int\\psi_j\\psi_k\\,dx$' });
         let D = null;
         const build = () => {
           if (D && D.key === start.value) return D;
-          const f = []; let y = Float64Array.from(x, (X) => (start.value === 'g' ? Math.exp(-0.5 * X * X) : 1 / Math.cosh(X)));
+          const f = []; let y = Float64Array.from(x, (X) => (start.value === 'g' ? Math.exp(-0.5 * X * X) : Math.exp(-X * X)));
           const nrm = (y) => { let s = 0; for (const q of y) s += q * q; s = Math.sqrt(s * G.dx); return y.map((q) => q / s); };
           y = nrm(y); f.push(y);
           for (let k = 0; k < NMAX; k++) { y = nrm(ladder(x, y, true)); f.push(y); }
           const E = [], res = [], Vg = Float64Array.from(x, (X) => 0.5 * X * X);
           for (const y of f) {
-            const d = deriv(y, G.dx), d2 = deriv(d, G.dx); let e = 0; for (let i = 0; i < y.length; i++) e += 0.5 * d[i] * d[i] + Vg[i] * y[i] * y[i]; e *= G.dx; E.push(e);
+            const d = deriv(y, G.dx), h2 = G.dx * G.dx, d2 = y.map((q, i) => (i < 2 || i > y.length - 3 ? 0 : (-y[i - 2] + 16 * y[i - 1] - 30 * q + 16 * y[i + 1] - y[i + 2]) / (12 * h2))); let e = 0; for (let i = 0; i < y.length; i++) e += 0.5 * d[i] * d[i] + Vg[i] * y[i] * y[i]; e *= G.dx; E.push(e);
             let r = 0; for (let i = 20; i < y.length - 20; i++) r += (-0.5 * d2[i] + Vg[i] * y[i] - e * y[i]) ** 2; res.push(Math.sqrt(r * G.dx));
           }
           const Gm = f.map((a) => f.map((b) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s * G.dx; }));
@@ -371,12 +371,11 @@ where $H_n$ is the $n$-th Hermite polynomial ($H_0=1$, $H_1=2x$, $H_{n+1}=2xH_n-
           levelDiagram(sL, { x, V: D.Vg, E: D.E, psi: D.f, col, amp: 0.42, show, hi: n, nodes: true, label: (k) => `ψ${sub(k)}` });
           const A = Math.sqrt(2 * D.E[n]);
           for (const s of [-1, 1]) sL.line(s * A, 0, s * A, D.E[n], { color: 'green', width: 1.2, dash: [3, 3] });
-          sL.text('turning points ±√(2E)', 0, 0.22, { size: 10.5, color: 'green', align: 'center', plate: true });
           // overlap matrix
           const m = n + 1; sG.setView([0, m], [0, m]);
           const Gs = D.Gm.slice(0, m).map((r) => r.slice(0, m));
           cells(v, sG, Gs, {
-            fill: (q, i, j) => (i === j ? ['green', 0.45] : [RAMP(Math.min(1, Math.max(0, (Math.log10(Math.abs(q) + 1e-300) + 14) / 14))), 1]),
+            fill: (q, i, j) => (i === j ? ['green', 0.45] : [RAMP(Math.min(1, Math.max(0, (Math.log10(Math.abs(q) + 1e-300) + 7) / 7))), 1]),
             text: (q, i, j) => (m > 7 ? null : i === j ? v.fix(q, 3) : Math.abs(q) < 1e-3 ? '≈0' : v.fix(q, 2)),
             textColor: (q, i, j) => (i === j || Math.abs(q) > 0.05 ? 'ink' : 'muted'),
           });
@@ -384,11 +383,11 @@ where $H_n$ is the $n$-th Hermite polynomial ($H_0=1$, $H_1=2x$, $H_{n+1}=2xH_n-
           let zeros = 0; const y = D.f[n]; let mx = 0; for (const q of y) mx = Math.max(mx, Math.abs(q)); for (let i = 1; i < y.length; i++) if (y[i - 1] * y[i] < 0 && Math.abs(y[i]) + Math.abs(y[i - 1]) > 1e-4 * mx) zeros++;
           st = { n, off, E: D.E[n], res: D.res[n], ex: D.ex[n], zeros, g: start.value === 'g' };
         });
-        v.legend([['green', 'diagonal: norms', { area: true }], ['red', 'off-diagonal, colour = log₁₀ of size (white ≤ 10⁻¹⁴)', { area: true }]]);
+        v.legend([['green', 'turning points $\\pm\\sqrt{2E}$', { dash: true }], ['green', 'diagonal: norms', { area: true }], ['red', 'off-diagonal, shade = log₁₀ of size (white ≤ 10⁻⁷)', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           if (st.g) return `$\\psi_{${st.n}}\\propto H_{${st.n}}(x)e^{-x^2/2}$, $H_{${st.n}} = ${hermiteTeX(st.n)}$ · ${st.zeros} nodes · $\\langle H\\rangle = ${v.fix(st.E, 5)}$ (exact ${st.n}.5), residual $\\norm{\\hat H\\psi-E\\psi} = ${v.sci(Math.max(st.res, 1e-16), 1)}$ · largest off-diagonal overlap $${v.sci(Math.max(st.off, 1e-17), 1)}$ · differs from the closed form by $${v.sci(Math.max(st.ex, 1e-16), 1)}$.`;
-          return `Built from sech $x$: $\\langle H\\rangle = ${v.fix(st.E, 4)}$, but $\\norm{\\hat H\\psi-\\langle H\\rangle\\psi} = ${v.fix(st.res, 3)}$ — **not** an eigenstate; largest off-diagonal overlap **${v.fix(st.off, 3)}**. Raising preserves eigenstates only if you start at the bottom rung, the state with $a_-\\psi=0$.`;
+          return `Built from $e^{-x^2}$: $\\langle H\\rangle = ${v.fix(st.E, 4)}$, but $\\norm{\\hat H\\psi-\\langle H\\rangle\\psi} = ${v.fix(st.res, 3)}$ — **not** an eigenstate; largest off-diagonal overlap **${v.fix(st.off, 3)}**. Raising preserves eigenstates only if you start at the bottom rung, the state with $a_-\\psi=0$.`;
         });
       },
     },
@@ -455,7 +454,7 @@ for every initial state (units $\hbar=m=\omega=1$). Evolving for a general time 
           // eigenvalue wheel
           sB.circle(0, 0, 1, { color: 'muted', width: 1.2 }); sB.line(-1.35, 0, 1.35, 0, { color: 'grid' }); sB.line(0, -1.35, 0, 1.35, { color: 'grid' });
           const pts = [[1, 0, '1', 'e'], [0, -1, '−i', 's'], [-1, 0, '−1', 'w'], [0, 1, 'i', 'n']];
-          pts.forEach(([a, b, lab, pos], k) => { sB.dot(a, b, { r: 5, color: k === n % 4 ? 'accent' : 'muted', hollow: k !== n % 4, label: `${lab}  (n ≡ ${k})`, labelPos: pos }); });
+          pts.forEach(([a, b, lab, pos], k) => { sB.dot(a, b, { r: 5, color: k === n % 4 ? 'accent' : 'muted', hollow: k !== n % 4 }); const off = { e: [10, 0, 'left'], w: [-10, 0, 'right'], n: [0, -14, 'center'], s: [0, 14, 'center'] }[pos]; sB.text(`${lab}  (n ≡ ${k} mod 4)`, a, b, { size: 11.5, color: k === n % 4 ? 'accent' : 'muted', dx: off[0], dy: off[1], align: off[2], baseline: 'middle', plate: true }); });
           for (let k = 0; k < 4; k++) { const a0 = -(k * Math.PI) / 2 - 0.25, a1 = -((k + 1) * Math.PI) / 2 + 0.25; sB.curve((u) => [0.78 * Math.cos(a0 + (a1 - a0) * u), 0.78 * Math.sin(a0 + (a1 - a0) * u)], 0, 1, { color: 'faint', width: 1 }); }
           sB.dot(lr, li, { r: 7, color: 'gold' });
           // fractional Fourier transform
@@ -492,7 +491,7 @@ for every initial state (units $\hbar=m=\omega=1$). Evolving for a general time 
 $$|\alpha\rangle=e^{-|\alpha|^2/2}\sum_{n\ge0}\frac{\alpha^n}{\sqrt{n!}}\,|n\rangle,\qquad \psi_\alpha(x)=\pi^{-1/4}e^{-(x-\langle x\rangle)^2/2+i\langle p\rangle x}\ (\text{up to phase}).$$
 Its properties: the number of quanta is **Poisson distributed** with mean and variance $|\alpha|^2$; $\Delta x=\Delta p=1/\sqrt2$, the minimum uncertainty; and under the oscillator it stays coherent with $\alpha(t)=\alpha e^{-i\omega t}$ — a Gaussian that swings back and forth **without changing shape**.`,
       idea: String.raw`Solving $a\psi=\alpha\psi$, i.e. $\frac1{\sqrt2}(x+\frac d{dx})\psi=\alpha\psi$, gives a Gaussian of the ground-state width centred at $\sqrt2\alpha$. In the number basis the eigen-equation reads $\sqrt{n+1}\,c_{n+1}=\alpha c_n$, so $c_n\propto\alpha^n/\sqrt{n!}$ and $|c_n|^2$ is Poisson. Time evolution multiplies $c_n$ by $e^{-i(n+\frac12)t}$, which is the same as replacing $\alpha$ by $\alpha e^{-it}$ (and an overall phase), so the state is always a displaced ground state. Ehrenfest (qm-2.9) then says the centre follows the classical orbit, which 4.8 shows in phase space.`,
-      caption: String.raw`**Drag $\alpha$** in the phase-plane panel (its position is the packet's starting $\langle x\rangle,\langle p\rangle$). Top: $\Psi(x,t)$ swinging in the well (height $|\Psi|$, colour phase), computed by projecting the displaced Gaussian onto 60 Hermite functions and evolving each one exactly. The dashed outline is the ground state's shape re-centred on the packet: it never deviates, and the red dot is a classical particle with the same start. Bottom right: the probabilities $|\langle n|\alpha\rangle|^2$ from that projection (bars) against the Poisson law with mean $|\alpha|^2$ (dots).`,
+      caption: String.raw`**Drag $\alpha$** in the phase-plane panel (its position is the packet's starting $\langle x\rangle,\langle p\rangle$). Top: $\Psi(x,t)$ swinging in the well (height $|\Psi|$, colour phase), computed by projecting the displaced Gaussian onto 60 Hermite functions and evolving each one exactly. The gold dashed outline is the ground state's shape re-centred on the packet: it never deviates, and the red dot is a classical particle with the same start. Bottom right: the probabilities $|\langle n|\alpha\rangle|^2$ from that projection (bars) against the Poisson law with mean $|\alpha|^2$ (dots).`,
       deps: ['qm-4.2', 'qm-2.9'],
       see: ['qm-4.12'],
       refs: ['Sakurai ch. 2'],
@@ -523,7 +522,7 @@ Its properties: the number of quanta is **Poisson distributed** with mean and va
           sA.fn((X) => (0.5 * X * X) / 12 * 1.25 * pk, { color: 'muted', width: 1.5, fill: 'muted', fillAlpha: 0.1, n: 300 });
           drawPsi(sA, x, P.re, P.im, { col });
           const cv = covariance(x, P.re, P.im);
-          sA.path(Array.from(x, (X) => [X, pk * Math.exp(-0.5 * (X - cv.mx) ** 2)]), { color: 'ink', width: 1.4, dash: [4, 3] });
+          sA.path(Array.from(x, (X) => [X, pk * Math.exp(-0.5 * (X - cv.mx) ** 2)]), { color: 'gold', width: 2.2, dash: [6, 5] });
           const al = { r: (D.x0 * Math.cos(t) + D.p0 * Math.sin(t)), i: (D.p0 * Math.cos(t) - D.x0 * Math.sin(t)) }; // classical (x, p) after time t
           sA.dot(al.r, 0, { r: 6, color: 'red' });
           phaseWheel(sA, col, sA.W - 40, 44, 11);
@@ -531,6 +530,7 @@ Its properties: the number of quanta is **Poisson distributed** with mean and va
           const R = Math.hypot(D.x0, D.p0);
           sP.circle(0, 0, R, { color: 'muted', width: 1.2, dash: [4, 4] });
           sP.circle(cv.mx, cv.mp, Math.SQRT1_2, { color: 'accent', width: 1.6, fill: 'accent', fillAlpha: 0.2 });
+          sP.arrow(0, 0, cv.mx, cv.mp, { color: 'faint', width: 1.2, head: 6 });
           sP.dot(al.r, al.i, { r: 4, color: 'red' });
           // number distribution
           const top = Math.max(0.12, ...D.P.slice(0, 22)) * 1.18; sN.setView([-0.6, 20.5], [0, top]);
@@ -542,7 +542,7 @@ Its properties: the number of quanta is **Poisson distributed** with mean and va
           let tv = 0; for (let k = 0; k < NH; k++) tv += Math.abs(D.P[k] - poisson(D.lam, k));
           st = { D, cv, res: Math.sqrt(res * G.dx), tv: tv / 2, t };
         }, { period: PER, still: 2.2 });
-        v.legend([['accent', '$|\\langle n|\\alpha\\rangle|^2$ (projection)', { area: true }], ['orange', 'Poisson, mean $|\\alpha|^2$', { dot: true }], ['ink', 'ground-state shape, re-centred', { dash: true }], ['red', 'classical particle', { dot: true }]]);
+        v.legend([['accent', '$|\\langle n|\\alpha\\rangle|^2$ (projection)', { area: true }], ['orange', 'Poisson, mean $|\\alpha|^2$', { dot: true }], ['gold', 'ground-state shape, re-centred', { dash: true }], ['red', 'classical particle', { dot: true }]]);
         v.readout(() => st && `$|\\alpha|^2 = ${v.fix(st.D.lam, 3)}$: from the projection $\\langle n\\rangle = ${v.fix(st.D.mean, 3)}$, $\\operatorname{Var}n = ${v.fix(st.D.vr, 3)}$ (Poisson: both equal $|\\alpha|^2$), total-variation distance to Poisson $${v.sci(Math.max(st.tv, 1e-16), 1)}$ · now $\\Delta x = ${v.fix(Math.sqrt(st.cv.sxx), 4)}$, $\\Delta p = ${v.fix(Math.sqrt(st.cv.spp), 4)}$ (vacuum $1/\\sqrt2 = 0.7071$) · $\\norm{a\\Psi_t-\\alpha e^{-it}\\Psi_t} = ${v.sci(Math.max(st.res, 1e-16), 1)}$.`);
       },
     },

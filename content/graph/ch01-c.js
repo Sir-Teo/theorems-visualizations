@@ -678,7 +678,7 @@ export default {
         const G = v.graph(s, { nodes: [], edges: [], r: 15 });
         const T = v.table(t, { rows: 1, cols: 1, maxCell: 34, size: 13 });
         function load() {
-          const N = [{ id: 'u', x: 1.4, y: 3.2 }, { id: 'v', x: 4.6, y: 5.6 }, { id: 'w', x: 4.6, y: 0.8 }, { id: 'x', x: 8.4, y: 3.2 }];
+          const N = [{ id: 'u', x: 1.4, y: 3.2 }, { id: 'v', x: 4.6, y: 5.6 }, { id: 'w', x: 4.6, y: 0.8, notePos: 's' }, { id: 'x', x: 8.4, y: 3.2 }];
           const E = mode.value === 'g' ? [['u', 'v'], ['u', 'w'], ['v', 'x'], ['w', 'x'], ['v', 'w']]
             : mode.value === 'm' ? [['u', 'v'], ['u', 'v'], ['u', 'w'], ['w', 'x'], ['v', 'x'], ['v', 'w'], ['x', 'x']]
             : [['u', 'v'], ['v', 'u'], ['u', 'w'], ['w', 'x'], ['x', 'v'], ['v', 'w'], ['x', 'x']];

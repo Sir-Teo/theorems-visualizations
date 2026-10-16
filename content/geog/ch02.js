@@ -236,7 +236,7 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
 $$\hat{\mathbf x}(t) = \mathbf x_0 + \int_0^t V\,(\sin H,\ \cos H)\,dt' .$$
 The true position adds whatever the log and compass do not see: steering noise, compass and log calibration errors, and the set and drift of currents and leeway. Random errors that are independent from hour to hour make the position error grow like $\sqrt t$; systematic errors (a compass bias, a mis-calibrated log, an unknown current) make it grow like $t$. Dead reckoning therefore needs periodic *fixes* — celestial sights (2.4), landmarks, or today satellites — to reset the error.`,
       idea: String.raw`The estimate is a sum of many small displacement vectors, so its error is the sum of their errors. Independent errors add in quadrature (the variance of a sum is the sum of variances), giving the random-walk $\sqrt t$ law; a constant error adds coherently, giving $t$. A heading error $\delta H$ displaces the ship sideways by about $V t\,\delta H$, a speed error lengthens the track along it, so the cloud of possible positions stretches into an ellipse whose axes follow the course. A current $\mathbf c$ simply adds $\mathbf c\,t$, which the navigator cannot see at all until a fix reveals it.`,
-      caption: String.raw`Slide the time and the error sizes. Blue: the navigator's dead-reckoning track (it jumps to the true position at each fix when fixes are on). Gold: where the ship really went in one voyage. Purple: 400 possible true positions given the same log, with their 95% error ellipse (orange) centred on the cloud. The teal arrow is the unseen drift from the current. Below: the root-mean-square error against time, against the current's drift and a $\sqrt t$ guide. All errors are illustrative.`,
+      caption: String.raw`Slide the time and the error sizes. Blue: the navigator's dead-reckoning track (it jumps to the true position at each fix when fixes are on). Gold: where the ship really went in one voyage. Purple: 400 possible true positions given the same log, with their 95% error ellipse (orange) centred on the cloud. The teal arrow is the unseen drift from the current. Below: the root-mean-square error against time, against the current's drift and the $\sqrt t$ growth that steering noise alone would give. All errors are illustrative.`,
       deps: ['geog-2.1'],
       see: ['geog-1.9'],
       refs: ['Haggett'],
@@ -251,9 +251,9 @@ The true position adds whatever the log and compass do not see: steering noise, 
         const fix = v.toggle('fix the position every 12 h', false);
         let seed = 3;
         v.button('New voyage', () => { seed++; });
-        const sA = v.stage({ x: [-30, 420], y: [-110, 205], equal: true, axes: false, height: 340, full: true });
-        const sB = v.stage({ x: [0, 36], y: [0, 1], axes: 'box', gutter: true, height: 210, full: true, xlabel: 'hours since departure', ylabel: 'position error (nmi)' });
-        const PLAN = [[70, 12, 12], [110, 12, 12], [40, 12, 12]]; // [heading °, speed kn, hours]
+        const sA = v.stage({ x: [-25, 415], y: [-95, 195], equal: true, axes: false, height: 380, weight: 1.5 });
+        const sB = v.stage({ x: [0, 36], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'hours since departure', ylabel: 'position error (nmi)' });
+        const PLAN = [[72, 12, 12], [112, 12, 12], [45, 12, 12]]; // [heading °, speed kn, hours]
         const legAt = (k) => { let s = 0; for (const p of PLAN) { s += p[2]; if (k < s) return p; } return PLAN[PLAN.length - 1]; };
         const NR = 400, NH = 36;
         let cache = null, key = '';
@@ -302,17 +302,18 @@ The true position adds whatever the log and compass do not see: steering noise, 
         v.render(() => {
           const S = sim(), t = tt.value;
           // chart furniture
-          for (let x = 0; x <= 400; x += 50) sA.line(x, -110, x, 205, { color: 'grid', width: 0.7 });
-          for (let y = -100; y <= 200; y += 50) sA.line(-30, y, 420, y, { color: 'grid', width: 0.7 });
-          sA.line(-15, 150, -15, 190, { color: 'ink', width: 1.4 }); sA.arrow(-15, 175, -15, 195, { color: 'ink', head: 7 }); sA.text('N', -15, 199, { size: 12, weight: 700, align: 'center', baseline: 'bottom' });
-          sA.line(320, -100, 370, -100, { color: 'ink', width: 2 }); sA.text('50 nmi', 345, -96, { align: 'center', size: 11, baseline: 'bottom' });
+          const [X0, X1] = sA.xr, [Y0, Y1] = sA.yr;
+          for (let x = Math.ceil(X0 / 50) * 50; x <= X1; x += 50) sA.line(x, Y0, x, Y1, { color: 'grid', width: 0.7 });
+          for (let y = Math.ceil(Y0 / 50) * 50; y <= Y1; y += 50) sA.line(X0, y, X1, y, { color: 'grid', width: 0.7 });
+          sA.arrow(X0 + 18, Y1 - 50, X0 + 18, Y1 - 18, { color: 'ink', head: 7, width: 1.6 }); sA.text('N', X0 + 18, Y1 - 56, { size: 12, weight: 700, align: 'center', baseline: 'top' });
+          sA.line(X1 - 70, Y0 + 12, X1 - 20, Y0 + 12, { color: 'ink', width: 2 }); sA.text('50 nmi', X1 - 45, Y0 + 16, { align: 'center', size: 11, baseline: 'bottom' });
           sA.path(S.nom, { color: 'muted', width: 1, dash: [2, 4] });
           sA.text('planned course', S.nom[36][0] - 6, S.nom[36][1] + 6, { size: 11, color: 'muted', align: 'right' });
           for (const p of S.dr0) sA.path(p, { color: 'accent', width: 2, dash: [6, 3] });
           // true track of this voyage up to t
           const k = Math.floor(t), tr = S.tr0.slice(0, k + 1); if (t > k) tr.push(lerp2(S.tr0, t));
           sA.path(tr, { color: 'gold', width: 2.6 });
-          if (fix.value) for (let h = 12; h < 36 && h <= t; h += 12) sA.dot(S.tr0[h][0], S.tr0[h][1], { r: 5, color: 'green', label: 'fix', labelPos: 'n', labelColor: 'green' });
+          if (fix.value) for (let h = 12; h < 36 && h <= t; h += 12) sA.dot(S.tr0[h][0], S.tr0[h][1], { r: 5, color: 'green', label: 'fix', labelPos: 'n', labelColor: 'green', math: false });
           // cloud + ellipse at t
           const D = drAt(S, t);
           for (let r = 0; r < S.offX.length; r++) sA.dot(D[0] + lerpA(S.offX[r], t), D[1] + lerpA(S.offY[r], t), { r: 1.6, color: 'purple', alpha: 0.45, ring: false });
@@ -321,22 +322,22 @@ The true position adds whatever the log and compass do not see: steering noise, 
           const tc0 = fix.value ? t - Math.min(24, Math.floor(t / 12 - 1e-9) * 12) : t;
           if (cs.value > 0 && tc0 > 0.5) sA.arrow(D[0], D[1], D[0] + S.cx * tc0, D[1] + S.cy * tc0, { color: 'teal', width: 2, head: 7 });
           const T = lerp2(S.tr0, t);
-          sA.dot(D[0], D[1], { r: 5, color: 'accent', label: 'DR', labelPos: 'nw' });
-          sA.dot(T[0], T[1], { r: 5, color: 'gold', label: 'true', labelPos: 'se' });
-          sA.dot(0, 0, { r: 4, color: 'ink', label: 'departure', labelPos: 's' });
+          sA.dot(D[0], D[1], { r: 5, color: 'accent', label: 'DR', labelPos: 'nw', math: false });
+          sA.dot(T[0], T[1], { r: 5, color: 'gold', label: 'true', labelPos: 'se', math: false });
+          sA.dot(0, 0, { r: 4, color: 'ink', label: 'departure', labelPos: 's', math: false });
           // errors against time
           const ts = S.rms.map((r, i) => [i, r]), run0 = S.tr0.map((p, i) => [i, Math.hypot(S.offX[0][i], S.offY[0][i])]);
           const drift = (h) => cs.value * (fix.value ? h - clamp(Math.floor((h - 1e-9) / 12), 0, 2) * 12 : h);
           const ymax = Math.max(5, ...S.rms, ...run0.map((p) => p[1]), drift(36)) * 1.1;
           sB.setView([0, 36], [0, ymax]);
-          const g = S.rms[36] > 0 && !fix.value ? S.rms[36] / 6 : 0;
-          if (g > 0) sB.fn((h) => g * Math.sqrt(h), { color: 'muted', width: 1.2, dash: [3, 4] });
+          const g = 12 * sh.value * D2R; // steering noise alone: σ_lateral = V·σ_H per hour, adding in quadrature
+          if (g > 0) sB.fn((h) => g * Math.sqrt(fix.value ? h - clamp(Math.floor((h - 1e-9) / 12), 0, 2) * 12 : h), { color: 'muted', width: 1.4, dash: [3, 4], n: 400 });
           if (cs.value > 0) sB.fn((h) => drift(h), { color: 'teal', width: 1.6, dash: [6, 4], n: 400 });
           sB.path(run0, { color: 'gold', width: 1.8 });
           sB.path(ts, { color: 'purple', width: 2.6 });
           sB.vline(t, { color: 'muted', dash: [3, 3] });
           sB.dot(t, lerpA(S.rms, t), { r: 5, color: 'purple' });
-          v.legend([['accent', 'dead reckoning', { dash: true }], ['gold', 'true track (this voyage)'], ['purple', 'possible positions; RMS error'], ['orange', '95% error ellipse', { area: true }], ['teal', 'drift from the current', { dash: true }], ['muted', String.raw`$\propto\sqrt t$ guide`, { dash: true }]]);
+          v.legend([['accent', 'dead reckoning', { dash: true }], ['gold', 'true track (this voyage)'], ['purple', 'possible positions; RMS error'], ['orange', '95% error ellipse', { area: true }], ['teal', 'drift from the current', { dash: true }], ['muted', String.raw`steering noise alone, $V\sigma_H\sqrt t$`, { dash: true }]]);
         });
         v.readout(() => {
           const S = sim(), t = tt.value, D = drAt(S, t), T = lerp2(S.tr0, t);

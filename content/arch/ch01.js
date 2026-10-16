@@ -647,7 +647,7 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
       statement: String.raw`A member carries load in one of three basic ways. In **tension** (a rope, a hanger) or **compression** (a column, a strut, an arch) the internal force runs along the member and, away from its ends, spreads almost uniformly over the cross-section: $\sigma = N/A$. In **bending** (a beam, a plank) the load crosses the member; the internal bending moment $M$ is resisted by compression on one face and tension on the other, varying linearly through the depth: $\sigma = -My/I$, with the largest value $Mc/I$ at the outer fibres and none at the middle. A load applied off-centre on a column combines the two, $\sigma = -P/A \mp Pe\,y/I$; for a rectangle no tension appears while the eccentricity stays within the **middle third** ($e \le d/6$).
 
 For the same load, span and cross-section, bending stresses are far larger than axial ones, which is why the most efficient structures shape themselves so that loads travel along their axis (cables, arches, trusses, shells).`,
-      idea: String.raw`Cut the member and apply equilibrium (1.2) to one piece. A rope or strut can only transmit a force along itself, and the uniform stress $N/A$ follows from spreading it evenly. In a beam the cut face must supply a moment $M$ with no net axial force. If plane sections stay plane (solid-6.3) the strain, and so the stress, varies linearly from one face to the other, and the couple of the two stress wedges equals $M$. Compare a rope with sag $f$ and a beam of depth $d$ carrying the same point load at mid-span: the ratio of the largest stresses is about $6f/d$, so a rope sagging a tenth of its span carries the load with roughly a twentieth of the beam's peak stress.`,
+      idea: String.raw`Cut the member and apply equilibrium (1.2) to one piece. A rope or strut can only transmit a force along itself, and the uniform stress $N/A$ follows from spreading it evenly. In a beam the cut face must supply a moment $M$ with no net axial force. If plane sections stay plane (solid-6.3) the strain, and so the stress, varies linearly from one face to the other, and the couple of the two stress wedges equals $M$. Compare a rope with sag $f$ and a beam of depth $d$ carrying the same point load at mid-span: the ratio of the largest stresses is about $6f/d$, so with a sag of a tenth of the span and a beam depth of a twentieth of it, the rope works about twelve times less hard.`,
       caption: String.raw`Choose a rope, an arch, a column or a plank, all with the same 100 × 200 mm section, and set the load. Colour shows stress, red for tension and blue for compression, on one scale for all four, so the plank glows hottest. For the plank, drag the load and the dashed **cut**: the right panel plots the stress across the depth there, linear through zero. For the column, move the load off-centre: once it leaves the middle third, tension appears on the far face.`,
       deps: ['arch-1.2', 'solid-1.1'],
       see: ['solid-6.1', 'solid-6.4'],
@@ -699,7 +699,7 @@ For the same load, span and cross-section, bending stresses are far larger than 
             // moment diagram below
             const Mm = Math.max(1e-6, ...v.M.linspace(0, Lb, 81).map((x) => Math.abs(Mx(x)))), ms = 0.7 / Mm, y0 = -1.15;
             A.path([[0, y0], ...v.M.linspace(0, Lb, 81).map((x) => [x, y0 - Mx(x) * ms]), [Lb, y0]], { fill: 'purple', fillAlpha: 0.18, color: 'purple', width: 1.5, close: true });
-            A.text(`bending moment, max ${Mm.toFixed(1)} kN·m`, Lb + 0.05, y0 - 0.1, { align: 'right', dy: 0, size: 10.5, color: 'purple' });
+            A.text(`bending moment diagram (max ${Mm.toFixed(1)} kN·m)`, Lb / 2, y0 - 0.95, { align: 'center', size: 10.5, color: 'purple' });
             A.line(hCut.x, d / 2 * DS + 0.1, hCut.x, -0.7, { color: 'accent', dash: [4, 3], width: 1.4 });
             A.text('tension below, compression above', 2, 1.75, { align: 'center', size: 10.5, color: 'muted' });
             prof = (y) => sigBeam(hCut.x, y);
@@ -709,8 +709,8 @@ For the same load, span and cross-section, bending stresses are far larger than 
           for (let k = 0; k < 20; k++) { const y0 = -100 + k * 10, ym = y0 + 5, sg = prof(ym / 1000); B.rect(0, y0 + 0.8, sg, y0 + 9.2, { fill: sg > 0 ? 'red' : 'blue', fillAlpha: 0.55, stroke: false }); }
           B.vline(0, { color: 'muted', width: 1 });
           const top = prof(0.1), bot = prof(-0.1);
-          B.text(`${top.toFixed(1)}`, top, 96, { align: top > 0 ? 'left' : 'right', dx: top > 0 ? 4 : -4, size: 10.5, weight: 650, color: top > 0 ? 'red' : 'blue' });
-          B.text(`${bot.toFixed(1)}`, bot, -96, { align: bot > 0 ? 'left' : 'right', dx: bot > 0 ? 4 : -4, size: 10.5, weight: 650, color: bot > 0 ? 'red' : 'blue' });
+          B.text(`${top.toFixed(1)}`, 0, 95, { align: top > 0 ? 'right' : 'left', dx: top > 0 ? -5 : 5, size: 10.5, weight: 650, color: top > 0 ? 'red' : 'blue' });
+          B.text(`${bot.toFixed(1)}`, 0, -95, { align: bot > 0 ? 'right' : 'left', dx: bot > 0 ? -5 : 5, size: 10.5, weight: 650, color: bot > 0 ? 'red' : 'blue' });
           v.legend([['red', 'tension', { area: true }], ['blue', 'compression', { area: true }], ['orange', 'load']]);
         });
         v.readout(() => {
