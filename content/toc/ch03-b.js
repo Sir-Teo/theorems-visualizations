@@ -309,5 +309,185 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 3.13
+    {
+      num: '3.13',
+      kind: 'Theorem',
+      name: 'Closure under reversal and homomorphism',
+      statement: String.raw`If $L$ is regular then so are (a) its **reversal** $L^R=\{w^R: w\in L\}$, and (b) its image $h(L)=\{h(w): w\in L\}$ under any **homomorphism** $h:\Sigma^*\to\Gamma^*$, i.e. a map determined by the strings $h(a)$ for $a\in\Sigma$ (extended by $h(xy)=h(x)h(y)$, $h(\varepsilon)=\varepsilon$; some $h(a)$ may be $\varepsilon$). Constructions from an NFA $N$ for $L$: **reversal** — reverse every arrow, make the old start state the only accepting state, and add a new start state with ε-arrows to the old accepting states (not needed if there is only one); **homomorphism** — replace each arrow $p\xrightarrow{a}q$ by a path from $p$ to $q$ spelling $h(a)$ through fresh states (an ε-arrow if $h(a)=\varepsilon$). Since $L$ regular means $L=L(N)$ for an NFA (3.3, 3.9), both images are NFA languages, hence regular.`,
+      idea: String.raw`An accepting run of $N$ on $w$ is a path from the start state to an accepting state; read backwards it is a path from an accepting state to the start state labelled $w^R$, and the reversed automaton follows exactly those paths. For $h$, each arrow of the run is replaced by the string $h(a)$ it was labelled by, so the run of the new automaton on $h(w)$ is the old run with the arrows stretched. The converse direction for the homomorphism needs care: a string $y$ accepted by the new automaton splits along the new paths into images $h(a_1)\cdots h(a_n)$ of the arrows of a run of $N$, so $y=h(w)$ for some $w\in L$.`,
+      caption: String.raw`Pick a machine and an operation. Left: the automaton $N$ for $L$; right: the constructed automaton (reversed arrows with a new start $q_s$ if needed, or each arrow replaced by the path for $h(a)$, with small dots as the fresh states). Type a string $w$: for **reversal** the readout runs $N$ on $w$ and the new machine on $w^R$; for the **homomorphism** it feeds $h(w)$ to the new machine. The panel below checks the construction on **all strings** up to length 7 (reversal: both directions; homomorphism: all of $h(L)$ — except for the erasing map $a\mapsto\varepsilon$, where only "$h(w)$ is accepted whenever $w\in L$" can be tested up to a length bound).`,
+      deps: ['toc-3.9'],
+      refs: ['Sipser §1.3'],
+      credit: 'reversal via the "dual" machine in Rabin & Scott, 1959',
+      scope: String.raw`Rabin and Scott's 1959 paper (Definition 12, Theorem 12) defines the dual of a nondeterministic automaton by reversing the transition relation and exchanging initial and final states, and shows that it accepts exactly the reversed tapes; the homomorphism construction is the standard textbook one.`,
+      tags: ['closure properties', 'regular languages'],
+      viz(v) {
+        const MACH = {
+          endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), secondA: () => NFAS.secondA(),
+          either: () => nfa(['a', 'b'], [['q0', 1.4, 3.6, 0], ['q1', 5.4, 5.4, 1], ['q2', 5.4, 1.8, 1]], 'q0', { q0: { a: ['q1'], b: ['q2'] }, q1: { a: ['q1'] }, q2: { b: ['q2'] } }, {}, { loops: { q1: 0, q2: 0 } }),
+        };
+        const HOM = { h1: { a: 'xy', b: 'y', name: 'a → xy, b → y' }, h2: { a: 'x', b: 'xx', name: 'a → x, b → xx' }, h3: { a: '', b: 'y', name: 'a → ε, b → y (erasing)' } };
+        let N = MACH.endsAB(), w = 'aab', op = 'rev', hk = 'h1';
+        const sel = v.select('machine', [{ value: 'endsAB', label: 'ends in ab' }, { value: 'aaOrBb', label: 'contains aa or bb' }, { value: 'secondA', label: '2nd from end is a' }, { value: 'either', label: 'a⁺ ∪ b⁺ (two accepting states)' }], 'endsAB', { onChange: (k) => { N = MACH[k](); build(); } });
+        v.select('operation', [{ value: 'rev', label: 'reversal' }, { value: 'hom', label: 'homomorphism' }], 'rev', { onChange: (k) => { op = k; hs.el.hidden = k !== 'hom'; build(); } });
+        const hs = v.select('$h$', Object.entries(HOM).map(([k, h]) => ({ value: k, label: h.name })), 'h1', { onChange: (k) => { hk = k; build(); } }); hs.el.hidden = true;
+        keypad(v, AB, () => w, (x) => { w = x; }, { max: 8 });
+        const ns = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 290, weight: 1 });
+        const rs = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 290, weight: 1 });
+        const bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 175, full: true });
+        const GN = nfaGraph(v, ns, N, { draggable: true, r: 17, texSize: 14 });
+        let M = null, GM = null;
+        const rev = (u) => [...u].reverse().join(''), img = (u) => [...u].map((c) => HOM[hk][c]).join('');
+        function reverseOf(A) {
+          const acc = A.states.filter((s) => s.acc).map((s) => s.id), st = A.states.map((s) => [s.id, s.x, s.y, s.id === A.start]), delta = {}, eps = {};
+          for (const s of A.states) { delta[s.id] = Object.fromEntries(A.alpha.map((c) => [c, []])); eps[s.id] = []; }
+          for (const s of A.states) { for (const c of A.alpha) for (const t of A.delta[s.id][c] || []) delta[t][c].push(s.id); for (const t of A.eps?.[s.id] || []) eps[t].push(s.id); }
+          let start; if (acc.length === 1) start = acc[0]; else { const ax = acc.reduce((a, q) => a + A.states.find((s) => s.id === q).x, 0) / acc.length, ay = acc.reduce((a, q) => a + A.states.find((s) => s.id === q).y, 0) / acc.length; st.push(['qs', Math.max(0.8, ax - 2.4), ay, false, '$q_{s}$']); delta.qs = Object.fromEntries(A.alpha.map((c) => [c, []])); eps.qs = acc; start = 'qs'; }
+          return nfa(A.alpha, st, start, delta, eps, { loops: A.loops });
+        }
+        function homOf(A, h) {
+          const al = ['x', 'y'], st = A.states.map((s) => [s.id, s.x, s.y, s.acc, s.label]), delta = {}, eps = {}; let cnt = 0;
+          for (const s of A.states) { delta[s.id] = { x: [], y: [] }; eps[s.id] = []; }
+          for (const s of A.states) for (const c of A.alpha) for (const t of A.delta[s.id][c] || []) {
+            const im = h[c]; if (im === '') { eps[s.id].push(t); continue; }
+            const T = A.states.find((q) => q.id === t); let prev = s.id;
+            for (let i = 0; i < im.length - 1; i++) {
+              const id = 'm' + cnt++; let X, Y;
+              if (t === s.id) { const a = Math.PI / 2 + (i - (im.length - 2) / 2) * 1.0; X = s.x + Math.cos(a) * 1.5; Y = s.y + Math.sin(a) * 1.5; } else { const f = (i + 1) / im.length; X = s.x + (T.x - s.x) * f; Y = s.y + (T.y - s.y) * f; }
+              st.push([id, X, Y, false, '$\\cdot$']); delta[id] = { x: [], y: [] }; eps[id] = []; delta[prev][im[i]].push(id); prev = id;
+            }
+            delta[prev][im[im.length - 1]].push(t);
+          }
+          return nfa(al, st, A.start, delta, eps, { loops: A.loops });
+        }
+        function build() { M = op === 'rev' ? reverseOf(N) : homOf(N, HOM[hk]); GN.sync(N); if (!GM) GM = nfaGraph(v, rs, M, { draggable: true, r: 17, texSize: 14 }); else GM.sync(M); }
+        build();
+        v.render(() => {
+          drawNFA(v, ns, GN, N, {}); drawNFA(v, rs, GM, M, { color: (id) => (id === 'qs' ? 'green' : null), fill: (id) => null });
+          ns.corner(`N  (${N.states.length} states)`, 'tl', { size: 12, color: 'muted', weight: 600 }); rs.corner(op === 'rev' ? `reversed machine (${M.states.length} states)` : `h(L) machine (${M.states.length} states)`, 'tl', { size: 12, color: 'muted', weight: 600 });
+          const P = pen(bs, v), n = 6;
+          if (op === 'rev') {
+            drawBarcode(P, AB, n, (u) => { const hit = nfaAccepts(M, u), ref = nfaAccepts(N, rev(u)); return hit !== ref ? { color: 'red', hit, outline: 'red', alpha: 0.9 } : hit ? { color: 'green', hit } : null; });
+            P.sans('L(reversed machine), one row per length', P.W - 62, 8, { align: 'right', size: 10.5, color: 'muted' });
+          } else {
+            const rows = []; for (let k = 0; k <= 6; k++) rows.push(layer(['x', 'y'], k).filter((u) => nfaAccepts(M, u)));
+            drawLangRows(P, rows, 2, { rh: (P.H - 10) / 7, top: 5 });
+          }
+        });
+        v.legend([['green', 'new start state / accepted', { dot: true }], ['red', 'mismatch with the language operation', { dot: true }]]);
+        v.readout(() => {
+          const a = nfaAccepts(N, w);
+          if (op === 'rev') {
+            const b = nfaAccepts(M, rev(w)), A1 = nfaLang(N, 7), B1 = nfaLang(M, 7), R1 = new Set([...A1].map(rev));
+            return `$w=${tt(w)}$ is ${a ? 'accepted' : 'rejected'} by $N$; $w^R=${tt(rev(w))}$ is ${b ? 'accepted' : 'rejected'} by the reversed machine ${a === b ? '✓' : '✗'} · all strings of length ≤ 7: $L(N^R)=L(N)^R$ ${eqSets(B1, R1) ? '✓' : '✗'}`;
+          }
+          const hw = img(w), b = nfaAccepts(M, hw), erasing = HOM[hk].a === '' || HOM[hk].b === '';
+          const B1 = nfaLang(M, 7), H1 = new Set(); for (const u of upTo(AB, 7)) if (nfaAccepts(N, u) && img(u).length <= 7) H1.add(img(u));
+          const sound = [...H1].every((y) => B1.has(y)), complete = [...B1].every((y) => H1.has(y));
+          return `$h(${tt(w)})=${tt(hw)}$: ${a ? '$w\\in L$' : '$w\\notin L$'}, new machine ${b ? 'accepts' : 'rejects'} it ${a && !b ? '✗' : '✓'} · $h(w)$ for all $w\\in L$ (|w|≤7, image ≤7) accepted: ${sound ? '✓' : '✗'}${erasing ? ' (the other direction cannot be bounded for an erasing $h$)' : ` · and nothing else is accepted up to length 7: ${complete ? '✓' : '✗'}`}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.14
+    {
+      num: '3.14',
+      kind: 'Concept',
+      name: 'Lexical analysis with automata',
+      statement: String.raw`A **lexer** (scanner) splits program text into tokens. Each token class is a regular expression $r_1,\dots,r_m$, listed in priority order. The expressions are compiled into one NFA (a new start state with ε-arrows to the NFAs of the $r_i$, 3.7), and then into a DFA by the subset construction (3.3), where each DFA state is labelled with the *first* rule whose accepting state it contains. To scan, run the DFA from the current position and remember the last position at which it was in a labelled state; when the DFA reaches the dead state (or the input ends), cut the token there — the **longest match** — and restart after it, labelled by the rule of that state (ties go to the earlier rule, which is how keywords beat identifiers). If no accepting state was passed, report an error.`,
+      idea: String.raw`The DFA keeps all token classes in play at once, each as a set of NFA states, and the subset labelled with the best rule describes the best token ending at the current position; the dead state is the signal that no longer match is possible. Longest match and rule priority are not part of regular languages: they are two extra conventions on top of the automaton, and changing either changes the tokens (reading $\texttt{iffy}$ as the keyword $\texttt{if}$ followed by $\texttt{fy}$, or $\texttt{==}$ as two assignments).`,
+      caption: String.raw`Type source text in the toy language (keywords \texttt{if else while}, identifiers, numbers, operators \texttt{== <= = < +}, parentheses, \texttt{;}, spaces). Each token is a coloured chip with its class; **click a token** to see the DFA's path over it (states under the characters, the position of the last accepting state, the lookahead character that killed the run). Switch the rule to **stop at the first accepting state** (no longest match) or turn the **keyword rules off** (keywords then lex as identifiers) and watch the tokens change. The DFA is built live from the regular expressions with the code of 3.7 and 3.3.`,
+      deps: ['toc-3.9', 'toc-3.12'],
+      refs: ['Sipser §1.3'],
+      credit: 'cf. Lesk & Schmidt, Lex, 1975',
+      scope: String.raw`The token classes are a toy language chosen for this page, not those of any real language; the combined-DFA technique is that of Lex (M. E. Lesk and E. Schmidt, Bell Laboratories, 1975), which compiles a list of regular expressions into one DFA and resolves ambiguity by the longest match and then by the earlier rule.`,
+      tags: ['lexical analysis', 'automata'],
+      viz(v) {
+        const LET = 'abcdefghijklmnopqrstuvwxyz', DIG = '0123456789', ALPHA = [...LET, ...DIG, '=', '<', '+', '(', ')', ';', ' '];
+        const L = (s) => catAll([...s].map(R.sym)), CL = (s) => altAll([...s].map(R.sym));
+        const KW = [['if', L('if'), 'kw'], ['else', L('else'), 'kw'], ['while', L('while'), 'kw']];
+        const REST = [['ID', R.cat(CL(LET), R.star(R.alt(CL(LET), CL(DIG)))), 'id'], ['NUM', R.cat(CL(DIG), R.star(CL(DIG))), 'num'], ['==', L('=='), 'op'], ['<=', L('<='), 'op'], ['=', L('='), 'op'], ['<', L('<'), 'op'], ['+', L('+'), 'op'], ['(', L('('), 'op'], [')', L(')'), 'op'], [';', L(';'), 'op'], ['space', R.cat(R.sym(' '), R.star(R.sym(' '))), 'ws']];
+        const KC = { kw: 'purple', id: 'blue', num: 'orange', op: 'teal', ws: 'faint', err: 'red' };
+        const cache = {};
+        const build = (kw) => {
+          const k = kw ? 1 : 0; if (cache[k]) return cache[k];
+          const rules = kw ? [...KW, ...REST] : REST, st = [['s', 0, 0, false]], delta = { s: Object.fromEntries(ALPHA.map((c) => [c, []])) }, eps = { s: [] }, tokOf = {};
+          rules.forEach(([name, ast], r) => {
+            const T = thompson(ast, ALPHA).N;
+            for (const s of T.states) { const id = r + ':' + s.id; st.push([id, 0, 0, s.acc]); delta[id] = Object.fromEntries(ALPHA.map((c) => [c, (s.id in T.delta ? T.delta[s.id][c] || [] : []).map((t) => r + ':' + t)])); eps[id] = (T.eps[s.id] || []).map((t) => r + ':' + t); if (s.acc) tokOf[id] = r; }
+            eps.s.push(r + ':' + T.start);
+          });
+          const N = nfa(ALPHA, st, 's', delta, eps), D = determinize(N);
+          const tok = D.states.map((s) => { const rs = s.set.filter((q) => q in tokOf).map((q) => tokOf[q]); return rs.length ? Math.min(...rs) : -1; });
+          const dead = D.states.findIndex((s) => s.set.length === 0);
+          return (cache[k] = { rules, N, D, tok, dead, idx: Object.fromEntries(D.states.map((s, i) => [s.id, i])) });
+        };
+        let src = 'if x1 <= 42 == y;', mode = 'long', sel = 0;
+        const inp = v.input('source text', src, { width: 360 });
+        v.select('examples', [['if x1<=42 ;', 'if x1 <= 42 == y;'], ['iffy = ifx + 7', 'iffy = ifx + 7'], ['while a2 < 10 ( b )', 'while a2 < 10 ( b )'], ['x==y=z<=<', 'x==y=z<=<']].map(([l, s]) => ({ value: s, label: l })), src, { onChange: (s) => { inp.set(s); sel = 0; } });
+        v.select('rule', [{ value: 'long', label: 'longest match' }, { value: 'short', label: 'stop at first accepting state' }], 'long', { onChange: (m) => { mode = m; sel = 0; } });
+        const kwT = v.toggle('keyword rules (if, else, while)', true);
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
+        const ps = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
+        const scan = (B, text) => {
+          const toks = []; let i = 0, steps = 0;
+          while (i < text.length) {
+            let q = B.D.start, qi = 0; const path = [qi]; let last = -1, lastTok = -1, j = i, died = false;
+            for (; j < text.length; j++) {
+              const c = text[j], t = ALPHA.includes(c) ? B.D.delta[B.D.states[qi].id][c][0] : null;
+              qi = t == null ? B.dead : B.idx[t]; path.push(qi); steps++;
+              if (qi === B.dead || qi < 0) { died = true; break; }
+              if (B.tok[qi] >= 0) { last = j + 1; lastTok = B.tok[qi]; if (mode === 'short') break; }
+            }
+            if (last < 0) { toks.push({ s: i, e: i + 1, r: -1, path: path.slice(0, 2), lastIdx: -1, died: true }); i += 1; continue; }
+            toks.push({ s: i, e: last, r: lastTok, path, lastIdx: last - i, died, examined: Math.min(j + 1, text.length) - i }); i = last;
+          }
+          return { toks, steps };
+        };
+        const colorOf = (B, t) => (t.r < 0 ? 'red' : KC[B.rules[t.r][2]]);
+        const lay = (P, text) => { const cw = Math.min(24, (P.W - 24) / Math.max(text.length, 1)); return { cw, x0: 12 }; };
+        clickPxLocal(ts);
+        function clickPxLocal(s) { s.onClick((x, y) => { const B = build(kwT.value), text = inp.value.slice(0, 48), P = { W: s.width }, { cw, x0 } = lay(P, text), idx = Math.floor((x - x0) / cw), R1 = scan(B, text); const k = R1.toks.findIndex((t) => idx >= t.s && idx < t.e); if (k >= 0) sel = k; }); }
+        v.render(() => {
+          const B = build(kwT.value), text = inp.value.slice(0, 48), P = pen(ts, v), Q = pen(ps, v), { toks } = scan(B, text), { cw, x0 } = lay(P, text);
+          sel = Math.min(sel, Math.max(toks.length - 1, 0));
+          for (let i = 0; i < text.length; i++) { P.box(x0 + i * cw, 18, cw - 2, 28, { r: 3, stroke: 'faint' }); P.text(text[i] === ' ' ? '␣' : text[i], x0 + i * cw + cw / 2 - 1, 32, { size: Math.min(15, cw * 0.62), weight: 600, color: text[i] === ' ' ? 'faint' : 'ink' }); }
+          toks.forEach((t, k) => {
+            const c = colorOf(B, t), wpx = (t.e - t.s) * cw - 2, name = t.r < 0 ? 'error' : B.rules[t.r][0];
+            P.box(x0 + t.s * cw, 54, wpx, 26, { r: 5, fill: c, alpha: k === sel ? 0.45 : 0.22, stroke: k === sel ? 'ink' : c, width: k === sel ? 2.4 : 1.3 });
+            if (B.rules[t.r]?.[2] !== 'ws') P.sans(cut(name, Math.max(2, Math.floor(wpx / 7.2))), x0 + t.s * cw + wpx / 2, 67, { size: 11, weight: 700, color: 'ink' });
+          });
+          P.sans('click a token to see how the DFA scanned it', 12, P.H - 24, { align: 'left', size: 11.5, color: 'muted' });
+          P.sans(`${toks.length} tokens`, P.W - 12, P.H - 24, { align: 'right', size: 11.5, color: 'muted' });
+          // trace of the selected token
+          const t = toks[sel]; if (!t) { Q.sans('no tokens', Q.W / 2, Q.H / 2, { color: 'muted' }); return; }
+          const seg = text.slice(t.s, Math.min(text.length, t.s + t.path.length - 1)), cw2 = Math.min(40, (Q.W - 130) / Math.max(seg.length + 1, 1)), xs = 70;
+          Q.sans('DFA state after each character:', 12, 14, { align: 'left', size: 11.5, color: 'muted', weight: 600 });
+          Q.text('start', xs - cw2 / 2 - 20, 60, { size: 10.5, color: 'muted' });
+          const lab = (qi) => (qi === B.dead ? '∅' : 'D' + qi);
+          const drawState = (k, qi) => {
+            const x = xs + k * cw2, acc = qi >= 0 && qi !== B.dead && B.tok[qi] >= 0, c = acc ? KC[B.rules[B.tok[qi]][2]] : qi === B.dead ? 'red' : 'faint';
+            Q.box(x - cw2 / 2 + 2, 48, cw2 - 4, 24, { r: 12, fill: c, alpha: acc ? 0.5 : 0.18, stroke: acc ? c : 'muted', width: acc ? 1.8 : 1.1 });
+            Q.text(lab(qi), x, 60, { size: 11.5, weight: 600 });
+            if (acc) Q.sans(B.rules[B.tok[qi]][0], x, 84, { size: 10.5, color: c, weight: 700 });
+          };
+          drawState(0, t.path[0]);
+          for (let k = 0; k < seg.length; k++) {
+            const x = xs + (k + 1) * cw2, inTok = t.s + k < t.e;
+            Q.box(x - cw2 / 2 + 2, 96, cw2 - 4, 26, { r: 3, fill: inTok ? colorOf(B, t) : 'red', alpha: 0.2, stroke: inTok ? colorOf(B, t) : 'red' });
+            Q.text(seg[k] === ' ' ? '␣' : seg[k], x, 109, { size: 14, weight: 600 });
+            drawState(k + 1, t.path[k + 1]);
+            if (k + 1 === t.lastIdx) Q.sans('▲ last accepting state: the token ends here', x, 140, { size: 11, color: 'green', weight: 700, align: 'center' });
+          }
+          if (t.died && mode === 'long') Q.sans('✗ dead state reached: no longer match is possible, so the scanner stops', Q.W - 12, 14, { align: 'right', size: 11.5, color: 'red', weight: 600 });
+          if (mode === 'short') Q.sans('stopped at the first accepting state', Q.W - 12, 14, { align: 'right', size: 11.5, color: 'orange', weight: 600 });
+        });
+        v.legend([['purple', 'keyword', { dot: true }], ['blue', 'identifier', { dot: true }], ['orange', 'number', { dot: true }], ['teal', 'operator', { dot: true }], ['red', 'error / dead state', { dot: true }]]);
+        v.readout(() => {
+          const B = build(kwT.value), text = inp.value.slice(0, 48), R1 = scan(B, text), t = R1.toks[Math.min(sel, R1.toks.length - 1)];
+          return `${B.rules.length} token rules → combined ε-NFA with **${B.N.states.length}** states → DFA with **${B.D.states.length}** states (${B.tok.filter((x) => x >= 0).length} accepting) · text of ${text.length} characters scanned in ${R1.steps} DFA steps (${R1.steps - text.length >= 0 ? R1.steps - text.length + ' lookahead re-reads' : ''})${t ? ` · token ${Math.min(sel, R1.toks.length - 1) + 1}: ${t.r < 0 ? '**error**' : `**${B.rules[t.r][0]}**`} \`${text.slice(t.s, t.e)}\`` : ''}`;
+        });
+      },
+    },
   ],
 };
