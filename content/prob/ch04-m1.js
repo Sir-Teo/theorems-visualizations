@@ -354,8 +354,8 @@ $$\frac{\mu(I)}{\lambda(I)}=\tfrac12\Big(\frac{\mu(I_0)}{\lambda(I_0)}+\frac{\mu
             const row = LV - n, mm = m(n);
             for (let k = 0; k < mm; k++) {
               const val = lv[n][k], t = Math.min(1, val / 2) ** 0.7;
-              P.rect(k / mm, row + 0.08, (k + 1) / mm, row + 0.92, { fill: v.ramp(t, 'accent', 'panel'), color: 'panel', width: mm > 16 ? 0.4 : 1, stroke: mm <= 16 });
-              if (mm <= 8) P.text(fr(val, 2), (k + 0.5) / mm, row + 0.5, { size: 11, align: 'center', baseline: 'middle', color: t > 0.55 ? 'panel' : 'ink' });
+              P.rect(k / mm, row + 0.08, (k + 1) / mm, row + 0.92, { fill: 'accent', fillAlpha: 0.05 + 0.75 * t, color: 'panel', width: 1, stroke: mm <= 16 });
+              if (mm <= 8) P.text(fr(val, 2), (k + 0.5) / mm, row + 0.5, { size: 11, align: 'center', baseline: 'middle', color: 'ink' });
             }
           }
           const { n, k } = sel, row = LV - n, mm = m(n);
