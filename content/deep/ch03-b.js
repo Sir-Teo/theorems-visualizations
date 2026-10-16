@@ -407,7 +407,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
           sZ.dot(0, 0, { r: 4, color: 'ink', label: 'z₀', labelPos: 'sw' });
           const conv = I.dz < 1e-9;
           sZ.dot(I.z[0], I.z[1], { r: 7, color: conv ? 'green' : 'red', label: conv ? 'z*' : 'no fixed point reached', labelPos: 'ne' });
-          sZ.text(`z_K, K = ${K}`, path[K][0], path[K][1], { dx: -8, dy: 12, align: 'right', size: 11.5, color: 'gold', weight: 600, plate: true });
+          sZ.text(`$z_K$, K = ${K}`, path[K][0], path[K][1], { dx: -8, dy: 12, align: 'right', size: 11.5, color: 'gold', weight: 600, plate: true });
           // error vs K
           const E = curve(s.toFixed(3) + '|' + t[0].toFixed(4) + '|' + t[1].toFixed(4), () => Array.from({ length: 60 }, (_, k) => { const u = unrolledGrad(s, b0, t, k + 1); return [k + 1, Math.max(1e-16, Math.hypot(u.g[0] - I.g[0], u.g[1] - I.g[1], u.g[2] - I.g[2]))]; }));
           sE.path(E, { color: 'accent', width: 2 }); sE.dots(E, { r: 2.8, color: 'accent' });
@@ -419,7 +419,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
           info = { I, U, fd, conv, K, err: E[K - 1][1] };
         });
         v.legend([['gold', 'iterates $z_k$'], ['green', 'fixed point $z^\\ast$', { dot: true }], ['accent', 'gap to the implicit gradient'], ['ink', 'predicted $\\propto\\rho^K$', { dash: true }]]);
-        v.readout(() => info && (info.conv ? String.raw`contraction rate $\rho=${info.I.rho.toFixed(3)}$ · implicit gradient $(\partial_{b_1},\partial_{b_2},\partial_s)L=(${info.I.g.map((x) => mnus(x.toFixed(6))).join(',\,')})$, finite differences on $z^\ast$: $(${info.fd.map((x) => mnus(x.toFixed(6))).join(',\,')})$ · unrolled with $K=${info.K}$: gap $${tsci(info.err, 1)}$, tape of **${info.U.len} entries** (grows with $K$) versus one $2\times2$ solve for the implicit gradient` :
+        v.readout(() => info && (info.conv ? String.raw`contraction rate $\rho=${info.I.rho.toFixed(3)}$ · implicit gradient $(\partial_{b_1},\partial_{b_2},\partial_s)L=(${info.I.g.map((x) => mnus(x.toFixed(6))).join(',\\,')})$, finite differences on $z^\ast$: $(${info.fd.map((x) => mnus(x.toFixed(6))).join(',\\,')})$ · unrolled with $K=${info.K}$: gap $${tsci(info.err, 1)}$, tape of **${info.U.len} entries** (grows with $K$) versus one $2\times2$ solve for the implicit gradient` :
           String.raw`**the iteration does not converge** (contraction rate $\rho=${info.I.rho.toFixed(3)}$ ${info.I.rho >= 1 ? '$\\ge1$' : ''}): there is no well-defined $z^\ast$ to differentiate, and the unrolled gradients do not settle — lower $s$`));
       },
     },

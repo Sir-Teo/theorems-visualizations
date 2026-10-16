@@ -522,12 +522,15 @@ In case (b), relax that edge and walk back $n$ steps along predecessor pointers 
           ch.vband(f.round - 0.5, f.round + 0.5, { color: 'gold', alpha: 0.16, edges: false });
           ch.vline(n - 1, { color: 'ink', width: 1.4, dash: [5, 4] });
           ch.text('round n − 1', n - 1, lo, { align: 'right', baseline: 'bottom', dx: -4, dy: -4, size: 11, color: 'ink', plate: true });
+          const ends = [];
           I.forEach((u, k) => {
             const pts = H.map((h, r) => (h[u] < INF ? [r, h[u]] : null));
             const col = VCOL[(k + 1) % VCOL.length];
             ch.path(pts, { color: col, width: 2, alpha: 0.9 });
-            const lastPt = pts[pts.length - 1]; if (lastPt) ch.text(u, Rn + 0.3, lastPt[1], { size: 11.5, color: col, align: 'left' });
+            const lastPt = pts[pts.length - 1]; if (lastPt) ends.push({ u, col, Y: ch.Y(lastPt[1]) });
           });
+          ends.sort((p, q) => p.Y - q.Y); for (let k = 1; k < ends.length; k++) ends[k].Y = Math.max(ends[k].Y, ends[k - 1].Y + 12);
+          for (const e of ends) TX(ch, e.u, ch.X(Rn + 0.3), e.Y, { size: 11.5, weight: 600, color: e.col });
         });
         v.legend([['orange', 'improved this round'], ['red', 'tense in the check round / negative cycle'], ['green', 'predecessor edges'], ['gold', 'current round', { area: true }]]);
         v.readout(() => {
@@ -558,7 +561,7 @@ With a binary heap (algo-3.8) there are at most $n$ inserts and extract-mins and
       credit: 'Dijkstra, 1959',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320 });
-        const hp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 190, full: true });
+        const hp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true });
         const G = v.graph(s, { directed: true, weights: true, layout: 'none', editable: { editWeight: true, minWeight: 0, maxWeight: 12 }, nodes: nodesAt(P98, { s: { notePos: 'w' }, b: { notePos: 's' }, e: { notePos: 's' }, t: { notePos: 's' } }), edges: E98.map(([a, b, w]) => [a, b, w]) });
         let run = null;
         const S = v.steps({ frames: () => (run = dijkstra(G, 's')).frames, code: DIJ_CODE, codeTitle: 'Dijkstra(G, s)', codePos: 'below', speed: 2, start: 17, still: 17 });

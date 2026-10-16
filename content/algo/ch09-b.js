@@ -409,7 +409,7 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
       name: 'Johnson’s algorithm',
       statement: String.raw`**Input:** a directed graph with possibly negative weights. **Algorithm:** add a new vertex $q$ with an edge $q\to v$ of weight $0$ to every vertex, and run Bellman–Ford from $q$. If it reports a negative cycle, stop. Otherwise set $h(v)=\delta(q,v)$ and reweight $w_h(u,v)=w(u,v)+h(u)-h(v)\ge0$. Run Dijkstra from every vertex $u$ under $w_h$, and recover $\delta(u,v)=\delta_h(u,v)-h(u)+h(v)$. **Running time:** $O(nm)$ for Bellman–Ford plus $n$ Dijkstra runs, $O(nm\log n)$ with binary heaps or $O(nm+n^2\log n)$ with Fibonacci heaps. On sparse graphs that beats Floyd–Warshall's $\Theta(n^3)$.`,
       idea: String.raw`Reweighting by any potential preserves shortest paths (9.11), so the only question is how to find a potential with all $w_h\ge0$. Distances from a single vertex are such a potential, by the triangle inequality, and the extra vertex $q$ reaches everything with zero-weight edges, so $h(v)=\delta(q,v)\le0$ is defined everywhere. Bellman–Ford (9.7) computes it, or finds a negative cycle, in which case there is nothing to compute. After that, the graph has nonnegative weights and Dijkstra (9.9) is correct from every source.`,
-      caption: String.raw`Step through the four phases. Add the vertex q (dashed zero edges). Bellman–Ford from q gives the potentials $h$, drawn as purple bars hanging below each vertex. Reweighting turns every edge label nonnegative: green zeros mark tight edges. Then one Dijkstra run per source fills one row of the table, the green tree showing the current run. **Click weights** to edit them. A negative cycle stops the algorithm at phase 2. The readout compares the table with Floyd–Warshall.`,
+      caption: String.raw`Step through the four phases. Add the vertex q (dashed zero edges). Bellman–Ford from q gives the potentials $h$, written beside each vertex and drawn as purple bars under the table. Reweighting turns every edge label nonnegative: green zeros mark tight edges. Then one Dijkstra run per source fills one row of the table, the green tree showing the current run. **Click weights** to edit them. A negative cycle stops the algorithm at phase 2. The readout compares the table with Floyd–Warshall.`,
       deps: ['algo-9.11', 'algo-9.7', 'algo-9.8'],
       refs: ['CLRS 4e §23.3', 'Erickson Ch. 9'],
       tags: ['shortest paths', 'all pairs', 'potentials'],
@@ -446,7 +446,7 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
         };
         const S = v.steps({ frames, code: JOHNSON_CODE, codeTitle: 'Johnson(G)', codePos: 'below', speed: 0.8, start: 'end', still: 5 });
         G.onChange = () => S.reset({ at: 'keep' });
-        const T = v.table(ts, { rows: 5, cols: 5, maxCell: 40, size: 14, rowLabels: (i) => V[i], colLabels: (j) => V[j], cornerLabel: 'u \\ v', region: [0, 0.36, 1, 1] });
+        const T = v.table(ts, { rows: 5, cols: 5, maxCell: 40, size: 14, rowLabels: (i) => V[i], colLabels: (j) => V[j], cornerLabel: 'u \\ v', region: [0, 0.42, 1, 1] });
         v.render(() => {
           const f = S.frame, ph = f.ph ?? 0;
           G.node('q').hidden = ph < 1;
@@ -466,8 +466,8 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
             fill: (i, j) => (f.u === V[i] ? ['gold', 0.3] : null),
           });
           // the potentials as bars hanging below a zero line
-          const Wd = ts.width, Ht = ts.height, Y0 = Ht - 96, bw = Math.min(46, (Wd - 120) / V.length), X0 = (Wd - V.length * bw) / 2;
-          TX(ts, showH ? 'potentials h(v) = δ(q, v)' : 'potentials: after Bellman–Ford', Wd / 2, Y0 - 16, { align: 'center', size: 12, weight: 600, color: 'muted' });
+          const Wd = ts.width, Ht = ts.height, Y0 = Ht - 90, bw = Math.min(46, (Wd - 120) / V.length), X0 = (Wd - V.length * bw) / 2;
+          TX(ts, showH ? 'potentials h(v) = δ(q, v)' : 'potentials: after Bellman–Ford', Wd / 2, Y0 - 34, { align: 'center', size: 12, weight: 600, color: 'muted' });
           R(ts, X0 - 10, Y0, X0 + V.length * bw + 10, Y0 + 1.2, { fill: 'ink', fillAlpha: 0.6, stroke: false });
           V.forEach((x, k) => {
             const X = X0 + k * bw + bw / 2, hv = showH ? run.h[x] : 0, len = -hv * 16;

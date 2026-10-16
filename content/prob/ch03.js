@@ -710,6 +710,7 @@ for every $n$. The right side tends to $0$ as $M\to\infty$. Typical choices: $\v
           let worst = 0; for (let n = 1; n <= 2000; n++) worst = Math.max(worst, tail(f, n, m0));
           L.dot(m0, Math.max(1.1e-4, worst), { r: 5, color: 'accent' });
           if (isB) L.dot(m0, Math.min(1.4, C / phi(m0)), { r: 5, color: 'orange' });
+          const mlo = Math.min(...moms.map((q) => q[1])); R.setView(null, [Math.max(0.02, mlo / 4), Math.max(C * 6, mlo * 30)]);
           R.dots(moms, { r: 2.6, color: 'accent' });
           if (isB) { R.hline(C, { color: 'orange', width: 2 }); R.text('$C$', 1.4, C, { dy: -12, color: 'orange' }); }
           st = { C, isB, worst, bd: C / phi(m0), m0, tight: tight(f) };
@@ -755,6 +756,7 @@ for every $n$. The right side tends to $0$ as $M\to\infty$. Typical choices: $\v
           R.dots(pts.filter((p) => !p[2]).map((p) => [p[0], p[1]]), { r: 3, color: 'orange' });
           const evTail = Math.min(...[200, 250, 300, 350, 400].map((m) => dist(k, m, d))), odTail = dist(k, 399, d);
           R.hline(Math.max(2.1e-3, evTail), { color: 'orange', dash: [5, 4], width: 1 });
+          R.vline(n, { color: 'muted', dash: [3, 4], width: 1 });
           st = { n, dOdd: dist(k, nOdd, d), dEven: dist(k, nEven, d), nOdd, nEven, evTail, odTail };
           v.legend([['accent', 'odd $n$: $S_n/\\sqrt n$', { dot: true }], ['orange', 'even $n$', { dot: true }], ['ink', '$\\Phi$']]);
         });

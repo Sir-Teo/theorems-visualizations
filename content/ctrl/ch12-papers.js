@@ -10,7 +10,7 @@ function mat2(a, b, c, d) { return [[a, b], [c, d]]; }
 /** One axis of a constant-velocity target: returns truth, measurements and the Kalman filter run with (qf, rf). */
 function track(r, q, rr, qf, rf) {
   const xs = [], zs = [];
-  let p = 0, vel = 0.6 * r.normal();
+  let p = 0, vel = 0.3 * r.normal();
   for (let k = 0; k < N; k++) { const a = Math.sqrt(q) * r.normal(); p += vel + a / 2; vel += a; xs.push(p); zs.push(p + rr * r.normal()); }
   const Q = mat2(qf / 4, qf / 2, qf / 2, qf), R = rf * rf;
   let x = [zs[0], 0], P = mat2(R, 0, 0, 4);
@@ -57,7 +57,7 @@ Scope: exactly optimal for linear Gaussian models (best linear estimator otherwi
         const mis = v.select('filter assumes', [{ value: '1', label: 'true q' }, { value: '0.01', label: 'q ÷ 100' }, { value: '100', label: 'q × 100' }], '1');
         let seed = 5;
         v.button('New track', () => { seed++; v.restart(); });
-        const s = v.stage({ x: [-40, 40], y: [-30, 30], equal: true, axes: false, height: 380, weight: 1.5, title: 'tracking from noisy fixes (simulation)' });
+        const s = v.stage({ x: [-40, 40], y: [-30, 30], equal: true, axes: false, height: 380, weight: 1.5, title: 'tracking from noisy fixes (simulation; view follows the target)' });
         const g = v.stage({ x: [0, N], y: [0, 1], axes: 'box', gutter: true, height: 380, weight: 0.9, minWidth: 240, xlabel: 'step k', ylabel: 'position gain K', title: 'the gain settles' });
         let cache = null, key = '';
         const run = () => {
@@ -73,14 +73,13 @@ Scope: exactly optimal for linear Gaussian models (best linear estimator otherwi
         v.animate((t) => {
           const { X, Y } = run();
           const k = Math.min(N - 1, Math.floor(t * 12));
-          // fit the view to the whole track
-          let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-          for (let i = 0; i < N; i++) { x0 = Math.min(x0, X.xs[i]); x1 = Math.max(x1, X.xs[i]); y0 = Math.min(y0, Y.xs[i]); y1 = Math.max(y1, Y.xs[i]); }
-          const pad = 3 * rS.value + 2;
-          s.setView([x0 - pad, x1 + pad], [y0 - pad, y1 + pad]);
-          s.path(X.xs.slice(0, k + 1).map((x, i) => [x, Y.xs[i]]), { color: 'ink', width: 1.6, alpha: 0.7 });
-          for (let i = 0; i <= k; i++) s.dot(X.zs[i], Y.zs[i], { r: 2.4, color: 'muted', alpha: i === k ? 1 : 0.45 });
-          s.path(X.est.slice(0, k + 1).map((x, i) => [x, Y.est[i]]), { color: 'green', width: 2.4 });
+          // follow the target: a window around the current true position, last 40 steps drawn
+          const hw = Math.max(5 * rS.value, 8), cx = X.xs[k], cy = Y.xs[k];
+          s.setView([cx - 1.6 * hw, cx + 1.6 * hw], [cy - hw, cy + hw]);
+          const i0 = Math.max(0, k - 40);
+          s.path(X.xs.slice(i0, k + 1).map((x, i) => [x, Y.xs[i + i0]]), { color: 'ink', width: 2, alpha: 0.8 });
+          for (let i = i0; i <= k; i++) s.dot(X.zs[i], Y.zs[i], { r: 3, color: 'muted', alpha: 0.35 + 0.65 * ((i - i0) / Math.max(1, k - i0)) });
+          s.path(X.est.slice(i0, k + 1).map((x, i) => [x, Y.est[i + i0]]), { color: 'green', width: 2.6 });
           // 2-sigma ellipse (axes independent here: a circle-ish ellipse)
           s.curve((a) => [X.est[k] + 2 * X.sd[k] * Math.cos(a), Y.est[k] + 2 * Y.sd[k] * Math.sin(a)], 0, 2 * Math.PI, { color: 'gold', width: 2, fill: 'gold', fillAlpha: 0.15 });
           s.dot(X.xs[k], Y.xs[k], { r: 5, color: 'ink' });
