@@ -259,7 +259,7 @@ In particular $\sum_k c(n,k)=n!$ and $c(n,k)$ is the coefficient of $x^k$ in the
         v.render(() => {
           const P = pen(v, A), W = P.W, f = S.frame, g = S.prev || f, tw = S.tween;
           const tot = Math.max(...M.frames.map((fr) => fr.total)), sc = Math.min(54, (W - 20) / tot), x0 = (W - tot * sc) / 2, bh = Math.min(38, sc * 0.85), y = P.H / 2 - bh / 2;
-          const fin = M.frames.find((fr) => fr.k === 3), lead = new Set(M.frames[0].cs.map((c) => Math.max(...c)));
+          const fin = M.frames.find((fr) => fr.k === 3), lead = new Set(cyclesOf(p).map((c) => Math.max(...c)));
           const nowF = f.k === 3 || (dir.value === 'b' && f.k >= 1);
           const drawBr = (fr, alpha) => fr.spans.forEach(([a, b]) => {
             const xa = x0 + a * sc, xb = x0 + b * sc;
@@ -341,7 +341,7 @@ In particular $\sum_k c(n,k)=n!$ and $c(n,k)$ is the coefficient of $x^k$ in the
         v.legend([['blue', 'even: sign $+1$', { dot: true }], ['orange', 'odd: sign $-1$', { dot: true }], ['red', 'crossing = inversion', { dot: true }]]);
         v.readout(() => {
           const inv = inversions(w), c = cycleCount(w), s1 = sgn(w), s2 = (w.length - c) % 2 ? -1 : 1;
-          return `$w=${wordStr(w)}$: $\\operatorname{inv}(w)=${inv}$, so $\\operatorname{sgn}(w)=(-1)^{${inv}}=${s1 > 0 ? '+1' : '-1'}$. Cycles: $c(w)=${c}$, $(-1)^{n-c}=(-1)^{${w.length - c}}=${s2 > 0 ? '+1' : '-1'}$ ${s1 === s2 ? '✓' : '✗'}.\nAfter ${hist.length - 1} adjacent swap${hist.length === 2 ? '' : 's'} the parity of $\\operatorname{inv}$ is ${hist.length - 1 === 0 ? 'that of the start' : (hist[0] + hist.length - 1) % 2 === inv % 2 ? 'start parity flipped once per swap ✓' : '✗'}.`;
+          return `$w=${wordStr(w)}$: $\\operatorname{inv}(w)=${inv}$, so $\\operatorname{sgn}(w)=(-1)^{${inv}}=${s1 > 0 ? '+1' : '-1'}$. Cycles: $c(w)=${c}$, $(-1)^{n-c}=(-1)^{${w.length - c}}=${s2 > 0 ? '+1' : '-1'}$ ${s1 === s2 ? '✓' : '✗'}.\nAfter ${hist.length - 1} adjacent swap${hist.length === 2 ? '' : 's'}: $\\operatorname{inv}\\equiv\\operatorname{inv}_0+${hist.length - 1}\\pmod 2$ ${(hist[0] + hist.length - 1) % 2 === inv % 2 ? '✓' : '✗'} (each swap flips the parity).`;
         });
       },
     },
@@ -387,7 +387,7 @@ Equivalently, the number of permutations of $[n]$ with exactly $m$ inversions is
             }
             P.text(`${i + 1}`, x0 + (i + 0.5) * cw, yb + 14, { align: 'center', size: 12.5, color: CAT[i % CAT.length], weight: 700, halo: false });
           }
-          P.tex('\\text{insert letter } i \\text{ with } c_i \\text{ letters to its right}', W / 2, yb + 27, { align: 'center', size: 12.5, color: 'muted' });
+          P.tex('\\text{insert letter } i \\text{ with } c_i \\text{ letters to its right}', W / 2, yb + 33, { align: 'center', size: 12.5, color: 'muted' });
           const t = tally(n), q = qFactPoly(n), cur = c.reduce((a, b) => a + b, 0), mx = Math.max(...t);
           B.setView([-0.8, t.length - 0.2], [0, mx * 1.15]); B.setTicks(null, null);
           t.forEach((cnt, m) => { B.rect(m - 0.4, 0, m + 0.4, cnt, { fill: m === cur ? 'gold' : 'accent', fillAlpha: m === cur ? 0.95 : 0.55, color: m === cur ? 'gold' : 'accent', width: 1 }); B.dot(m, q[m], { r: 5.5, hollow: true, color: 'ink' }); });

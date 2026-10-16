@@ -7,15 +7,15 @@ import {
 /** Foata's second fundamental transformation, with every intermediate stage kept for the step player. */
 function foata(w) {
   const frames = []; let g = [w[0]];
-  frames.push({ k: 0, phase: 'init', g: g.slice(), x: w[0], cuts: [], ng: g.slice(), blocks: [g.slice()] });
+  frames.push({ k: 0, phase: 'init', g: g.slice(), x: w[0], cuts: [], ng: g.slice(), blocks: [g.slice()], note: String.raw`Start with the working word $\gamma=w_1$. Letters of $w$ are fed in one at a time.` });
   for (let k = 1; k < w.length; k++) {
     const x = w[k], last = g[g.length - 1], big = last > x, blocks = []; let cur = [], cuts = [];
     g.forEach((e, i) => { cur.push(e); if (big ? e > x : e < x) { blocks.push(cur); cuts.push(i); cur = []; } });
     if (cur.length) blocks.push(cur);
     const ng = blocks.flatMap((b) => [b[b.length - 1], ...b.slice(0, -1)]).concat([x]);
-    frames.push({ k, phase: 'cut', g: g.slice(), x, big, cuts, blocks, ng });
+    frames.push({ k, phase: 'cut', g: g.slice(), x, big, cuts, blocks, ng, note: `New letter $x=${x + 1}$. The last letter of $\\gamma$ is ${last + 1}, ${big ? 'larger' : 'smaller'} than $x$, so cut after every letter ${big ? 'larger' : 'smaller'} than ${x + 1} (red bars).` });
     g = ng;
-    frames.push({ k, phase: 'rot', g: g.slice(), x, big, cuts, blocks, ng: g.slice() });
+    frames.push({ k, phase: 'rot', g: g.slice(), x, big, cuts, blocks, ng: g.slice(), note: `Rotate each block (its last letter, in teal, goes to the front) and append $x=${x + 1}$. Now $\\operatorname{inv}(\\gamma)=\\operatorname{maj}(w_1\\cdots w_${k + 1})=${maj(w.slice(0, k + 1))}$.` });
   }
   return { frames, image: g };
 }
@@ -56,7 +56,8 @@ export default {
           for (let i = 0; i + 1 < n; i++) A.line(i + 1, w[i] + 1, i + 2, w[i + 1] + 1, { color: w[i] > w[i + 1] ? 'red' : 'blue', width: w[i] > w[i + 1] ? 3.4 : 2.4, alpha: w[i] > w[i + 1] ? 1 : 0.8 });
           d.forEach((i) => A.text('↓', i + 1.5, (w[i] + w[i + 1]) / 2 + 1.35, { align: 'center', size: 13, color: 'red', halo: false }));
           w.forEach((x, i) => A.dot(i + 1, x + 1, { r: sel === i ? 9 : 6.5, color: sel === i ? 'gold' : 'ink' }));
-          const P = pen(v, B), W = P.W, H = P.H, N = n, cw = Math.min(60, (W - 60) / N), rh = Math.min(38, (H - 20) / N), cx = W / 2 + 14, y0 = 12;
+          const P = pen(v, B), W = P.W, H = P.H, N = n, cw = Math.min(60, (W - 60) / N), rh = Math.min(46, (H - 20) / N), cx = W / 2 + 14, y0 = 12;
+          P.line(cx, y0 - 4, cx, y0 + N * rh + 2, { color: 'muted', width: 1, dash: true, alpha: 0.6 });
           for (let m = 1; m <= N; m++) {
             const r = row(m), mx = Math.max(...r), yy = y0 + (m - 1) * rh;
             P.text(`${m}`, 12, yy + rh / 2, { size: 12, color: 'muted', halo: false, align: 'left' });
@@ -66,8 +67,7 @@ export default {
               P.text(String(a), xx, yy + rh / 2, { align: 'center', size: Math.min(14, cw * 0.32), weight: cur ? 700 : 500, color: cur ? 'panel' : 'ink', halo: false });
             });
           }
-          P.line(cx, y0 - 4, cx, y0 + N * rh + 2, { color: 'muted', width: 1, dash: true, alpha: 0.6 });
-          P.text('$m$', 10, H - 8, { size: 12, color: 'muted', halo: false, align: 'left' });
+          P.tex('m', 12, H - 12, { size: 13, color: 'muted', align: 'left' });
         });
         v.legend([['red', 'descent', { dot: true }], ['blue', 'ascent', { dot: true }], ['gold', 'cell of your permutation', { dot: true }]]);
         v.readout(() => {
@@ -110,22 +110,20 @@ Moreover there is an explicit bijection $\phi:S_n\to S_n$ (Foata's) with $\opera
           a.forEach((c, m) => { A.rect(m - 0.4, 0, m + 0.4, c, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1 }); A.dot(m, b[m], { r: 5.5, hollow: true, color: 'orange' }); });
           A.dot(maj(w), 0, { r: 7, color: 'gold' });
           const P = pen(v, B), W = P.W, f = S.frame, bw = Math.min(42, (W - 70) / n), x0 = 60 + (W - 70 - n * bw) / 2, bh = Math.min(34, bw * 0.85);
-          const rowW = (y, lab, arr, st) => { P.text(lab, 8, y + bh / 2, { size: 13, color: 'muted', align: 'left', halo: false }); arr.forEach((e, i) => st(e, i, x0 + i * bw + 2, y)); };
+          const rowW = (y, lab, arr, st) => { P.tex('w', 10, y + bh / 2, { size: 15, color: 'muted', align: 'left' }); arr.forEach((e, i) => st(e, i, x0 + i * bw + 2, y)); };
           // input
-          rowW(26, 'w', w, (e, i, x, y) => letterBox(P, x, y, bw - 4, bh, e + 1, { fill: i <= f.k ? CAT[e % CAT.length] : 'panel', fillAlpha: i <= f.k ? 0.9 : 1, color: i === f.k ? 'gold' : i < f.k ? CAT[e % CAT.length] : 'faint', width: i === f.k ? 3.4 : 1.2, text: i <= f.k ? 'panel' : 'faint', weight: 700 }));
-          const y2 = P.H / 2 - bh / 2 + 6;
+          rowW(26, '', w, (e, i, x, y) => letterBox(P, x, y, bw - 4, bh, e + 1, { fill: i <= f.k ? CAT[e % CAT.length] : 'panel', fillAlpha: i <= f.k ? 0.9 : 1, color: i === f.k ? 'gold' : i < f.k ? CAT[e % CAT.length] : 'faint', width: i === f.k ? 3.4 : 1.2, text: i <= f.k ? 'panel' : 'faint', weight: 700 }));
+          const y2 = P.H / 2 - bh / 2;
           if (f.phase === 'init') {
-            P.text('γ', 8, y2 + bh / 2, { size: 14, color: 'muted', align: 'left', halo: false });
+            P.tex('\\gamma', 8, y2 + bh / 2, { size: 15, color: 'muted', align: 'left' });
             letterBox(P, x0 + 2, y2, bw - 4, bh, w[0] + 1, { fill: CAT[w[0] % CAT.length], fillAlpha: 0.9, color: CAT[w[0] % CAT.length], text: 'panel', weight: 700 });
-            P.text('start: $\\gamma=w_1$', W / 2, y2 + bh + 30, { align: 'center', size: 13, color: 'muted', halo: false });
           } else if (f.phase === 'cut') {
-            P.text('γ', 8, y2 + bh / 2, { size: 14, color: 'muted', align: 'left', halo: false });
+            P.tex('\\gamma', 8, y2 + bh / 2, { size: 15, color: 'muted', align: 'left' });
             f.g.forEach((e, i) => letterBox(P, x0 + i * bw + 2, y2, bw - 4, bh, e + 1, { fill: CAT[e % CAT.length], fillAlpha: 0.9, color: CAT[e % CAT.length], text: 'panel', weight: 700 }));
             f.cuts.forEach((i) => P.line(x0 + (i + 1) * bw, y2 - 8, x0 + (i + 1) * bw, y2 + bh + 8, { color: 'red', width: 3 }));
             letterBox(P, x0 + f.g.length * bw + 2, y2, bw - 4, bh, f.x + 1, { fill: 'panel', color: 'gold', width: 3.4, text: 'ink', weight: 700 });
-            P.text(`${f.big ? `last letter ${f.g[f.g.length - 1] + 1} > ${f.x + 1}: cut after each letter > ${f.x + 1}` : `last letter ${f.g[f.g.length - 1] + 1} < ${f.x + 1}: cut after each letter < ${f.x + 1}`}`, W / 2, y2 + bh + 30, { align: 'center', size: 13, color: 'red', weight: 600, halo: false });
           } else {
-            P.text('γ', 8, y2 + bh / 2, { size: 14, color: 'muted', align: 'left', halo: false });
+            P.tex('\\gamma', 8, y2 + bh / 2, { size: 15, color: 'muted', align: 'left' });
             let pos = 0;
             f.blocks.forEach((blk) => {
               const x1 = x0 + pos * bw;
@@ -134,11 +132,10 @@ Moreover there is an explicit bijection $\phi:S_n\to S_n$ (Foata's) with $\opera
               pos += blk.length;
             });
             letterBox(P, x0 + pos * bw + 2, y2, bw - 4, bh, f.x + 1, { fill: CAT[f.x % CAT.length], fillAlpha: 0.9, color: 'gold', width: 3.4, text: 'panel', weight: 700 });
-            P.text('rotate each block (last letter to the front), then append $x$', W / 2, y2 + bh + 30, { align: 'center', size: 13, color: 'muted', halo: false });
           }
           // result
           const done = S.i === S.n - 1, res = F.image;
-          P.text('φ(w)', 8, P.H - 46 + bh / 2, { size: 13, color: done ? 'green' : 'faint', align: 'left', halo: false });
+          P.tex('\\phi(w)', 8, P.H - 46 + bh / 2, { size: 14, color: done ? 'green' : 'faint', align: 'left' });
           res.forEach((e, i) => letterBox(P, x0 + i * bw + 2, P.H - 46, bw - 4, bh, e + 1, { fill: done ? CAT[e % CAT.length] : 'panel', fillAlpha: done ? 0.9 : 1, color: done ? 'green' : 'faint', width: done ? 2.4 : 1, text: done ? 'panel' : 'faint', weight: 700 }));
         });
         v.legend([['accent', '$\\#\\{w:\\operatorname{inv}(w)=m\\}$'], ['orange', '$\\#\\{w:\\operatorname{maj}(w)=m\\}$', { dot: true }], ['gold', '$\\operatorname{maj}$ of your $w$', { dot: true }]]);
@@ -274,12 +271,12 @@ Each subspace has a unique basis in reduced row echelon form; the coefficient of
           const q = qS.value, n = nS.value, k = kS.value, P = pen(v, A), tot = E.total, W = P.W, H = P.H;
           const g = fitGrid(tot, W - 16, H - 34, 1, 1.5, 22, 'top'); const cell = g.w;
           E.subs.forEach((gi, i) => { const [x, y] = g.at(i), col = CAT[gi % CAT.length]; P.rect(8 + x, 28 + y, cell, cell, { fill: found[i] ? col : 'faint', fillAlpha: found[i] ? 0.95 : 0.16 }); });
-          P.text(`${tot} subspaces = ${E.pats.length} pivot patterns; ${found.reduce((a, b) => a + b, 0)} found after ${tries - dep} independent samples`, 8, 14, { size: 12.5, color: 'ink', weight: 600 });
+          P.text(`${tot} subspaces; ${found.reduce((a, b) => a + b, 0)} found in ${tries - dep} samples`, 8, 14, { size: 12.5, color: 'ink', weight: 600 });
           const tl = hits.reduce((a, b) => a + b, 0) || 1, ng = E.pats.length;
           B.setView([-0.8, ng - 0.2], [0, Math.max(...E.pats.map((p) => p.size / tot), ...hits.map((h) => h / tl)) * 1.2]); B.setTicks(range(ng).filter((i) => ng <= 12 || i % 3 === 0).map((i) => [i, E.pats[i].name]), null);
           E.pats.forEach((pt, i) => { B.rect(i - 0.38, 0, i + 0.38, hits[i] / tl, { fill: CAT[i % CAT.length], fillAlpha: 0.8, color: CAT[i % CAT.length], width: 1 }); B.dot(i, pt.size / tot, { r: 5, hollow: true, color: 'ink' }); });
         });
-        v.legend([['accent', 'observed share of samples'], ['ink', 'predicted: $q^m/\\binom nk_q$', { dot: true }]]);
+        v.legend([['muted', 'observed share of samples (colour = pivot pattern)'], ['ink', 'predicted: $q^m/\\binom nk_q$', { dot: true }]]);
         v.readout(() => {
           const q = qS.value, n = nS.value, k = kS.value, c = qBinomPoly(n, k), val = polyEval(c, q);
           let num = 1, den = 1; for (let i = 0; i < k; i++) { num *= q ** n - q ** i; den *= q ** k - q ** i; }
@@ -326,7 +323,7 @@ so $a_0,a_1,\dots=1,1,2,4,10,26,76,232,\dots$.`,
           }
           return cache.get(n);
         };
-        const geomA = () => { const n = nS.value, W = A.width, dx = Math.min(70, (W - 40) / n); return { n, dx, x0: (W - n * dx) / 2 + dx / 2, base: A.height * 0.7 }; };
+        const geomA = () => { const n = nS.value, W = A.width, dx = Math.min(70, (W - 40) / n); return { n, dx, x0: (W - n * dx) / 2 + dx / 2, base: A.height * 0.78 }; };
         A.onClick((x, y) => {
           const { n, dx, x0 } = geomA(), [px] = toPx(A, x, y), i = Math.round((px - x0) / dx); if (i < 0 || i >= n) return;
           if (sel == null) sel = i;
@@ -336,7 +333,7 @@ so $a_0,a_1,\dots=1,1,2,4,10,26,76,232,\dots$.`,
         const arcs = (P, mt, x0, dx, base, st) => {
           const n = mt.length;
           for (let i = 0; i < n; i++) if (mt[i] > i) {
-            const xa = x0 + i * dx, xb = x0 + mt[i] * dx, hh = Math.min((xb - xa) * 0.62, st.max ?? 999);
+            const xa = x0 + i * dx, xb = x0 + mt[i] * dx, hh = Math.min((xb - xa) * 0.9, st.max ?? 999);
             P.quad(xa, base, (xa + xb) / 2, base - hh * 1.35, xb, base, { color: st.color ? st.color(i, mt[i]) : CAT[i % CAT.length], width: st.width ?? 2.8, alpha: st.alpha });
           }
         };

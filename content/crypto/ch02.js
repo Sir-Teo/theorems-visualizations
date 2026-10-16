@@ -165,7 +165,7 @@ export default {
       credit: 'Vernam 1917; Shannon 1949 (proof)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/One-time_pad' },
       viz(v) {
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 320 });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 470, minWidth: 320 });
         const mode = v.select('Messages', [{ value: 'bits', label: '3 bits (8 messages)' }, { value: 'let', label: '2 letters (676)' }], 'let');
         const cIn = v.input('Ciphertext (2 letters)', 'QX', { width: 90 });
         const cBits = v.select('Ciphertext $c$', Array.from({ length: 8 }, (_, i) => ({ value: i, label: bits(i, 3) })), 5);
@@ -186,7 +186,7 @@ export default {
             for (let m = 0; m < 8; m++) {
               const k = m ^ c, y = 40 + m * rowH + rowH / 2, allowed = !R || k < 4, on = m === sel.bit;
               if (allowed) ok++;
-              P.rect(x0 - 6, y - rowH / 2 + 2, 352 + 40, rowH - 4, { fill: on ? 'accent' : 'panel', fillAlpha: on ? 0.16 : 0.0, color: on ? 'accent' : 'faint', width: on ? 2 : 1, radius: 6 });
+              P.rect(x0 - 6, y - rowH / 2 + 2, 452, rowH - 4, { fill: on ? 'accent' : 'panel', fillAlpha: on ? 0.16 : 0.0, color: on ? 'accent' : 'faint', width: on ? 2 : 1, radius: 6 });
               P.text(bits(m, 3), x0 + 40, y, { size: 15, weight: 700, color: allowed ? 'accent' : 'faint', halo: false });
               P.text('⊕', x0 + 108, y, { size: 15, color: 'muted', halo: false });
               P.text(allowed ? bits(k, 3) : 'no such key', x0 + 182, y, { size: allowed ? 15 : 12, weight: 700, color: allowed ? 'gold' : 'faint', halo: false });
@@ -372,7 +372,7 @@ export default {
         const sB = v.stage({ x: [0, 6], y: [0, 3.6], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1, ylabel: 'bits', xticks: [[1, 'H(M)'], [2, 'H(K)'], [3, 'H(C)'], [4, 'H(M|C)'], [5, 'I(M;C)']], yticks: [0, 1, 2, 3].map((y) => [y, String(y)]) });
         const sS = v.stage({ x: [-3, 3], y: [0, 3.2], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1, xlabel: 'H(M) − H(K)', ylabel: 'leakage I(M;C)', title: '300 random schemes' });
         const tS = v.slider('Prior skew', 0, 1.5, 0.3, { step: 0.01 });
-        const kS = v.slider('Number of keys $|\\mathcal K|$', 1, 8, 8, { int: true });
+        const kS = v.slider('Number of keys $|\\mathcal K|$', 1, 8, 4, { int: true });
         const sS2 = v.slider('Key skew', 0, 3, 0, { step: 0.01 });
         const analyse = (t, K, s) => {
           const pm = normalize(Array.from({ length: 8 }, (_, m) => Math.exp(-t * m)));
@@ -381,7 +381,8 @@ export default {
           for (let m = 0; m < 8; m++) for (let k = 0; k < K; k++) J[m][(m + k) % 8] += pm[m] * pk[k];
           const pc = Array.from({ length: 8 }, (_, c) => J.reduce((a, row) => a + row[c], 0));
           const HM = ent(pm), HK = ent(pk), HC = ent(pc), HMC = ent(J.flat());
-          return { HM, HK, HC, HMC, HMgC: HMC - HC, I: HM + HC - HMC };
+          const I = Math.max(0, HM + HC - HMC);
+          return { HM, HK, HC, HMC, HMgC: HM - I, I };
         };
         const pts = (() => { const r = v.rng(2718); return Array.from({ length: 300 }, () => { const K = 1 + Math.floor(r() * 8), t = r() * 1.5, s = r() < 0.3 ? 0 : r() * 3; const a = analyse(t, K, s); return [a.HM - a.HK, a.I]; }); })();
         let cur = null;
@@ -393,11 +394,11 @@ export default {
           sB.hline(a.HM, { color: 'accent', width: 1.4, dash: true });
           const lb = Math.max(0, a.HM - a.HK);
           sB.line(4.6, lb, 5.4, lb, { color: 'red', width: 3 });
-          sB.text('bound', 5.5, lb + 0.02, { size: 11, color: 'red', align: 'left', weight: 700 });
+          sB.text('bound', 5.38, lb + 0.2, { size: 11, color: 'red', align: 'left', weight: 700 });
           // scatter
           sS.poly([[0, 0], [3, 0], [3, 3]], { fill: 'red', fillAlpha: 0.1, hatch: true, color: 'red', width: 0.01 });
           sS.path([[-3, 0], [0, 0], [3, 3]], { color: 'red', width: 2.2 });
-          sS.text('impossible', 2.1, 0.55, { size: 11.5, color: 'red', weight: 700 });
+          sS.text('impossible', 1.9, 0.5, { size: 11.5, color: 'red', weight: 700, align: 'center' });
           sS.dots(pts, { r: 2.6, color: 'accent', alpha: 0.55 });
           sS.dot(a.HM - a.HK, a.I, { r: 7, color: 'gold' });
         });
@@ -424,7 +425,7 @@ export default {
       scope: String.raw`Applies to any stream or XOR cipher that reuses its keystream (a pad, a stream cipher with a repeated nonce, WEP-style IV collisions); the pictures here are illustrative bitmaps, not real data.`,
       viz(v) {
         const GW = 72, GH = 36, N = GW * GH;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 320 });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 320 });
         const txt = v.input('Message 1 (≤ 6 letters)', 'ATTACK', { width: 110 });
         const reuse = v.slider('Pad reuse', 0, 1, 1, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
         let seed = 1; v.button('New pad', () => { seed++; });
@@ -437,20 +438,20 @@ export default {
           const k2 = new Uint8Array(N); for (let i = 0; i < N; i++) k2[i] = i < nre ? k1[i] : kf[i];
           const c1 = xorBits(p1, k1), c2 = xorBits(p2, k2), d = xorBits(c1, c2), truth = xorBits(p1, p2);
           const cols = W >= 560 ? 3 : 2, gap = 10, pw = Math.min((W - gap * (cols + 1)) / cols, 260), ph = pw * GH / GW, rowH = ph + 26;
-          const panels = [['plaintext 1', p1, 'accent'], ['plaintext 2', p2, 'orange'], ['pad $k$ (first message)', k1, 'muted'], ['$c_1 = m_1\\oplus k$', c1, 'ink'], ['$c_2 = m_2\\oplus k$', c2, 'ink'], ['$c_1\\oplus c_2$ — what Eve computes', d, 'red']];
+          const panels = [['plaintext 1', p1, 'accent'], ['plaintext 2', p2, 'orange'], ['pad k (used for message 1)', k1, 'muted'], ['c₁ = m₁ ⊕ k', c1, 'ink'], ['c₂ = m₂ ⊕ k′  (k′ = k on the reused part)', c2, 'ink'], ['c₁ ⊕ c₂ — what Eve computes', d, 'red']];
           const x00 = (W - (cols * pw + (cols - 1) * gap)) / 2;
           panels.forEach(([lab, b, col], i) => {
             const cx = i % cols, cy = Math.floor(i / cols), x = x00 + cx * (pw + gap), y = 22 + cy * rowH;
             P.rect(x, y, pw, ph, { fill: 'panel', color: i === 5 ? 'red' : 'faint', width: i === 5 ? 2 : 1, radius: 3 });
             paintBits(s, v.color(col === 'muted' ? 'muted' : col), b, GW, GH, x, y, pw);
-            P.text(lab.replace(/\$/g, ''), x, y - 9, { size: 11, color: i < 3 ? col : 'ink', weight: 700, align: 'left', halo: false });
+            P.text(lab, x, y - 9, { size: 11, color: i < 3 ? col : 'ink', weight: 700, align: 'left', halo: false });
           });
           let agree = 0, agreeR = 0, agreeF = 0;
           for (let i = 0; i < N; i++) { const a = d[i] === truth[i]; if (a) agree++; if (i < nre) { if (a) agreeR++; } else if (a) agreeF++; }
           let ones = 0; for (let i = 0; i < N; i++) ones += c1[i];
           info = { agree, agreeR, agreeF, nre, ones };
         });
-        v.readout(() => `$c_1$ alone: ${v.fix(100 * info.ones / N, 1)}% ones — indistinguishable from noise. $c_1\\oplus c_2$ equals $m_1\\oplus m_2$ on **${info.agreeR}** of the ${info.nre} reused pixels (exactly all of them) and on ${info.agreeF} of the ${N - info.nre} fresh-pad pixels (${N - info.nre ? v.fix(100 * info.agreeF / (N - info.nre), 1) : '–'}%, i.e. chance level).`);
+        v.readout(() => `$c_1$ alone: ${v.fix(100 * info.ones / N, 1)}% ones — indistinguishable from noise. $c_1\\oplus c_2$ equals $m_1\\oplus m_2$ on **${info.agreeR}** of the ${info.nre} reused pixels${info.agreeR === info.nre && info.nre ? ' (exactly all of them)' : ''}${N - info.nre ? ` and on ${info.agreeF} of the ${N - info.nre} fresh-pad pixels (${v.fix(100 * info.agreeF / (N - info.nre), 1)}%, i.e. chance level)` : ''}.`);
       },
     },
 
@@ -520,7 +521,7 @@ export default {
       refs: ['Katz–Lindell §15.3'],
       viz(v) {
         const GW = 72, GH = 20, N = GW * GH;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 320 });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 320 });
         const secret = v.input('Secret (≤ 6 letters)', 'SECRET', { width: 110 });
         const nS = v.slider('Shares $n$', 2, 5, 4, { int: true });
         let seed = 1; v.button('Reshare', () => { seed++; });
@@ -627,7 +628,7 @@ export default {
         v.readout(() => {
           const { L, n, possible } = info, HK = (L || 12) * LOG2_26;
           const cur = L ? `$H(K)=${L}\\log_2 26=${v.fix(HK, 1)}$ bits; with $D=\\log_2 26-h=${v.fix(D, 2)}$ bits/letter (bigram model) the unicity distance is $U=H(K)/D\\approx ${v.fix(HK / D, 1)}$ letters` : `The pad key has $H(K)=12\\log_2 26 = ${v.fix(HK, 1)}$ bits, as long as the message, so the equivocation stays at 1 for ever ($U=\\infty$)`;
-          return `Eve has seen $n=${n}$ letters: **${possible} of 6** candidate messages are still consistent with the cryptogram (a candidate survives iff the key stream it implies is periodic with period ${info.Lp}).\n${cur}. Shannon’s 1949 estimate for a simple substitution cipher, $\\log_2 26!/D$ with $D\\approx3.2$, is $${v.fix(LOG2_FACT26 / 3.2, 1)}$ letters (quoted from memory); this model’s $D$ is smaller, so its $U$ is larger.`;
+          return `Eve has seen $n=${n}$ letters: **${possible} of 6** candidate messages are still consistent with the cryptogram (a candidate survives iff the key stream it implies is periodic with period ${info.Lp}).\n${cur}. The textbook figure for a simple substitution cipher, $\\log_2 26!/D$ with $D\\approx3.2$ bits/letter (a value quoted from memory), is $${v.fix(LOG2_FACT26 / 3.2, 1)}$ letters, about the 28 usually cited; this model’s $D$ is smaller, so its $U$ is larger.`;
         });
       },
     },
