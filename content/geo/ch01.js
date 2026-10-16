@@ -295,7 +295,7 @@ If $N^2>0$ (environmental lapse rate below the dry adiabatic one) the parcel osc
           const zc2 = []; for (let i = 1; i < s.hist.length; i++) if (s.hist[i - 1][1] < 0 && s.hist[i][1] >= 0) zc2.push(s.hist[i][0]);
           const Pm = zc2.length >= 2 ? zc2[zc2.length - 1] - zc2[zc2.length - 2] : null;
           info = { N2, N2formula, N, kk, Pm, bound: s.z <= 0 || s.z >= ZT };
-        }, { period: 45, still: 20 });
+        }, { period: 45, still: 28 });
         v.legend([['ink', 'environment'], ['accent', 'parcel'], ['red', 'buoyancy force'], ['orange', 'linear theory', { dash: true }]]);
         v.readout(() => {
           if (!info) return '';

@@ -230,7 +230,7 @@ export default {
       tags: ['resistance', 'linearity'],
       viz(v) {
         const lamp = makeLamp({ Vr: 12, Pr: 12 });
-        const s = v.stage({ x: [-1.5, 5.9], y: [-1, 4.4], equal: true, height: 300, axes: false, weight: 0.95 });
+        const s = v.stage({ x: [-1.5, 6.9], y: [-1, 4.4], equal: true, height: 300, axes: false, weight: 0.95 });
         const sp = v.stage({ x: [-13, 13], y: [-2.2, 2.2], axes: 'box', gutter: true, height: 300, weight: 1.2, xlabel: 'voltage $V$ (V)', ylabel: 'current $I$ (A)' });
         const C = v.circuit(s, [
           { type: 'V', id: 'V0', name: 'V', value: 6, at: [0, 3, 0, 0] },
@@ -251,8 +251,9 @@ export default {
           rec.set(Math.round(V * 10), [V, I]);
           if (mode.value !== 'res') {
             const glow = clamp((st.T - 293) / 2200, 0, 1);
-            s.circle(2.9, 3.95, 0.34, { fill: 'orange', fillAlpha: 0.1 + 0.8 * glow, color: 'orange', width: 1.4 });
-            s.text(`filament ${v.fix(st.T, 0)} K`, 3.35, 3.95, { size: 12, color: 'ink', align: 'left', baseline: 'middle' });
+            s.circle(5.8, 2.1, 0.4, { fill: 'orange', fillAlpha: 0.1 + 0.8 * glow, color: 'orange', width: 1.4 });
+            s.text('filament', 5.8, 1.45, { size: 12, color: 'muted', align: 'center', baseline: 'middle' });
+            s.text(`${v.fix(st.T, 0)} K`, 5.8, 1.1, { size: 13, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
           }
           // I–V plane
           sp.hline(0, { color: 'muted', width: 1 }); sp.vline(0, { color: 'muted', width: 1 });
@@ -265,7 +266,7 @@ export default {
           for (const [pv, pi] of rec.values()) sp.dot(pv, pi, { r: 3, color: 'gold' });
           sp.dot(V, I, { r: 6.5, color: 'ink' });
         });
-        v.legend([['accent', 'resistor'], ['orange', 'lamp'], ['green', 'secant: static $V/I$', { dash: true }], ['purple', 'tangent: $dV/dI$'], ['gold', 'your measurements', { dot: true }]]);
+        v.legend([['accent', 'resistor'], ['orange', 'lamp'], ['green', 'secant: static $V/I$', { dash: true }], ['purple', 'tangent: $dV/dI$'], ['gold', 'your measurements', { dot: true }], ['muted', 'cold resistance $R_0$', { dash: true }]]);
         v.readout(() => {
           const V = Vs.value, st = state(V), I = st.I, d = 0.05, dI = (state(V + d).I - state(V - d).I) / (2 * d);
           const ratio = Math.abs(V) > 0.05 ? state(2 * V).I / I : NaN;
