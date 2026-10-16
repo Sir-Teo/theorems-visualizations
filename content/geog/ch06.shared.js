@@ -152,6 +152,15 @@ export const lobeOf = (lobes, lon, lat) => lobes.find((b) => (lat >= 0 ? b[3] > 
 export function interrupted(lobes, base) {
   return (lonDeg, f) => { const b = lobeOf(lobes, lonDeg, f), p = base((lonDeg - b[2]) * D2R, f); return [p[0] + b[2] * D2R, p[1]]; };
 }
+/** Insert points so that no edge of the closed ring is longer than `step` (so a clipped edge follows the curved image of a parallel). */
+export function densify(ring, step = 0.02) {
+  const out = [];
+  for (let i = 0; i < ring.length; i++) {
+    const p = ring[i], q = ring[(i + 1) % ring.length], n = Math.max(1, Math.ceil(Math.hypot(q[0] - p[0], q[1] - p[1]) / step));
+    for (let k = 0; k < n; k++) out.push([p[0] + ((q[0] - p[0]) * k) / n, p[1] + ((q[1] - p[1]) * k) / n]);
+  }
+  return out;
+}
 /** Sutherland-Hodgman clip of a ring (array of [x, y]) to an axis-aligned rectangle. */
 export function clipRect(ring, x0, x1, y0, y1) {
   const edges = [[(p) => p[0] >= x0, (p, q) => [x0, p[1] + ((q[1] - p[1]) * (x0 - p[0])) / (q[0] - p[0])]], [(p) => p[0] <= x1, (p, q) => [x1, p[1] + ((q[1] - p[1]) * (x1 - p[0])) / (q[0] - p[0])]],

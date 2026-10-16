@@ -53,7 +53,7 @@ export default {
         });
         v.readout(() => {
           const d = dl.value, t = h.x, rho = -Math.log(d);
-          return `A reward of ${usdR(R.value)} at delay $t=${t.toFixed(1)}$ is worth **${usdC(R.value * Math.pow(d, t))}** now ($D=${Math.pow(d, t).toFixed(3)}$). Rate $\\rho=-\\ln\\delta=${(100 * rho).toFixed(1)}\\%$ per period, half-life of value $\\ln2/\\rho=${(Math.LN2 / rho).toFixed(1)}$ periods. Every period of waiting multiplies value by **${d.toFixed(3)}**, at any horizon.`;
+          return `A reward of ${usdR(R.value)} at delay $t=${t.toFixed(1)}$ is worth **${usdR(R.value * Math.pow(d, t), 2)}** now ($D=${Math.pow(d, t).toFixed(3)}$). Rate $\\rho=-\\ln\\delta=${(100 * rho).toFixed(1)}\\%$ per period, half-life of value $\\ln2/\\rho=${(Math.LN2 / rho).toFixed(1)}$ periods. Every period of waiting multiplies value by **${d.toFixed(3)}**, at any horizon.`;
         });
       },
     },
@@ -85,7 +85,7 @@ export default {
           const s = h.x; h.set(s, Rr(s));
           A.vline(s, GUIDE);
           const vs = 100 * D(T - s), vl = yy.value * D(T + g.value - s), mx = Math.max(vs, vl, 1);
-          B.setView([0, 3], [0, Math.max(105, mx * 1.15)]);
+          B.setView([0, 3], [0, mx * 1.3]);
           B.rect(0.35, 0, 1.25, vs, { fill: 'orange', fillAlpha: 0.6, color: 'orange', width: 1.5 });
           B.rect(1.75, 0, 2.65, vl, { fill: 'blue', fillAlpha: vl > vs ? 0.75 : 0.45, color: 'blue', width: vl > vs ? 3 : 1.5 });
           B.text('$100 on day 30', 0.8, 0, { dy: 18, align: 'center', size: 12, color: 'orange', weight: 700 });
@@ -142,7 +142,7 @@ export default {
           B.fn((t) => Math.log(1 + k * t) / t, { color: 'red', width: 2.6 });
           THALER.forEach(([t, X, r]) => {
             B.dot(t, r, { r: 6, color: 'green' });
-            B.text('15 → ' + X + ' dollars', t, r, { dx: 9, dy: -11, size: 11, color: 'green', weight: 700 });
+            B.text('15 → ' + X, t, r, t > 5 ? { dx: -10, dy: -4, align: 'right', size: 11, color: 'green', weight: 700, plate: true } : t < 0.5 ? { dx: 10, dy: -12, size: 11, color: 'green', weight: 700 } : { dx: 10, dy: 14, size: 11, color: 'green', weight: 700, plate: true });
           });
         });
         v.readout(() => {
@@ -191,15 +191,15 @@ export default {
             B.rect(i + 0.08, 1.3, i + 0.92, 3.5, { fill: u === 1 ? 'orange' : u === 2 ? 'blue' : 'panel', fillAlpha: u ? 0.4 : 1, color: u === 1 ? 'orange' : u === 2 ? 'blue' : 'faint', width: u ? 2.6 : 1.2, radius: 8 });
             B.text(d === 0 ? 'now' : d + ' wk', i + 0.5, 3.5, { dy: -20, align: 'center', size: 12.5, weight: 800, color: 'ink' });
             B.text(u === 1 ? 'sooner' : u === 2 ? 'later' : 'click', i + 0.5, 2.4, { align: 'center', size: 11, color: u === 1 ? 'orange' : u === 2 ? 'blue' : 'muted', weight: 700 });
-            B.text(m === 1 ? 'model: sooner' : 'model: later', i + 0.5, 1.3, { dy: 16, align: 'center', size: 10, weight: 700, color: m === 1 ? 'orange' : 'blue' });
+            B.text(m === 1 ? 'sooner' : 'later', i + 0.5, 1.3, { dy: 17, align: 'center', size: 11, weight: 800, color: m === 1 ? 'orange' : 'blue' });
           });
-          B.text('front-end delay before the smaller reward', DELAYS.length / 2, 0.35, { align: 'center', size: 11, color: 'muted' });
+          B.text('coloured word = the model’s choice', DELAYS.length / 2, 0.45, { align: 'center', size: 11, color: 'muted' });
         });
         v.readout(() => {
           const s = h.x, a = SS.value * D(tSS - s), b = 100 * D(tSS + gap.value - s);
           const ms = DELAYS.map(model), sw = ms.some((m, i) => i > 0 && m !== ms[i - 1]);
           const picks = mine.filter((x) => x), rev = mine.some((x, i) => i > 0 && x && mine[i - 1] && x !== mine[i - 1]);
-          return `At week $s=${s.toFixed(1)}$ the smaller reward is worth ${usdC(a)} and the larger ${usdC(b)}: you want **${a >= b ? 'the smaller, sooner' : 'the larger, later'}**. The model ${sw ? '**reverses** across the front-end delays' : 'gives the same choice at every front-end delay'}. ${picks.length ? `Your row: ${rev ? '**you reversed too**' : 'no reversal so far'}.` : 'Click cells to add your own row.'}`;
+          return `At week $s=${s.toFixed(1)}$ the smaller reward is worth ${usdR(a, 2)} and the larger ${usdR(b, 2)}: you want **${a >= b ? 'the smaller, sooner' : 'the larger, later'}**. The model ${sw ? '**reverses** across the front-end delays' : 'gives the same choice at every front-end delay'}. ${picks.length ? `Your row: ${rev ? '**you reversed too**' : 'no reversal so far'}.` : 'Click cells to add your own row.'}`;
         });
       },
     },

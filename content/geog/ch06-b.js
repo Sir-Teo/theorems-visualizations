@@ -1,5 +1,5 @@
 // Geography & Cartography — Chapter 6 (part b): scoring world maps, interrupted and polyhedral maps, choosing a projection
-import { PI, D2R, R2D, comma, enu, vec, dot3, clamp, conic, landFrame, landMask, isLand, azLines, PROJ, GOODE_LOBES, GOODE_PHI0, interrupted, clipRect, icosa, distort, jacEllipse, mapErrors, sphereGrid, worldBase, wrapRel } from './ch06.shared.js';
+import { PI, D2R, R2D, comma, enu, vec, dot3, clamp, conic, landFrame, landMask, isLand, azLines, PROJ, GOODE_LOBES, GOODE_PHI0, interrupted, clipRect, densify, icosa, distort, jacEllipse, mapErrors, sphereGrid, worldBase, wrapRel } from './ch06.shared.js';
 
 const fixd = (x, d = 1) => (x < 0 ? '−' : '') + Math.abs(x).toFixed(d);
 function fitView(s, ring, pad = 0.06) {
@@ -79,7 +79,7 @@ This item implements four simpler measures in the same spirit: with $J$ the Jaco
           const F = landFrame(v, 0), out = [];
           for (const pl of F.lines) { for (const p of pl) out.push([p[0] * R2D, p[1] * R2D]); out.push(null); }
           sB.path(out, { color: 'ink', width: 0.7, alpha: 0.7 });
-          sB.corner(`${m.label}: ${what.value === 'shape' ? 'ω (dark = high)' : 'area error (blue small, red inflated)'}`, 'tl', { color: 'muted', weight: 600, plate: true });
+          sB.corner(`${m.label}: ${what.value === 'shape' ? 'ω (stronger red = larger)' : 'area error (blue small, red inflated)'}`, 'tl', { color: 'muted', weight: 600, plate: true });
           info = { best: sc[0], m, e: E[m.k], second: sc[1] };
         });
         v.readout(() => {
@@ -128,7 +128,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
         const lobeCuts = [[180, 0, 90], [-40, 0, 90], [180, -90, 0], [-100, -90, 0], [-20, -90, 0], [80, -90, 0]];
         { const pts = lobeCuts.flatMap(([L, a, b]) => meridian(L, a, b)); cutInfo.goodeInt = { len: lobeCuts.length * 0.5, land: arcLand(pts) }; cutInfo.sinuInt = cutInfo.goodeInt; }
         cutInfo.goode = { len: 1, land: arcLand(meridian(180, -90, 90)) };
-        { const arcs = I.outline.map((e) => slerp(e[2], e[3])); cutInfo.icosa = { len: (I.outline.length * I.edgeAngle) / PI, land: arcLand(arcs.flat()) }; }
+        { const arcs = I.outline.map((e) => slerp(e[2], e[3])); cutInfo.icosa = { len: (I.outline.length / 2 * I.edgeAngle) / PI, land: arcLand(arcs.flat()) }; }
         const E = {}; for (const k of Object.keys(MAPS)) E[k] = mapErrors(MAPS[k].F);
         const REF = [['Winkel tripel', PROJ.winkel.fwd, 'orange'], ['Mollweide', PROJ.moll.fwd, 'green'], ['plate carrée', PROJ.equirect.fwd, 'orange']].map(([n, f, c]) => ({ n, c, w: mapErrors(f).shape }));
         // ---- land and outlines per lobe
@@ -137,7 +137,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
           const base = MAPS[key].base, F = landFrame(v, 0), res = [];
           for (const b of GOODE_LOBES) {
             const north = b[3] > 0, f0 = north ? 0 : -PI / 2, f1 = north ? PI / 2 : 0, P = (l, f) => { const p = base((l - b[2] * D2R), f); return [p[0] + b[2] * D2R, p[1]]; };
-            const fills = F.fills.map((r) => clipRect(r, b[0] * D2R, b[1] * D2R, f0, f1)).filter((r) => r.length > 2).map((r) => r.map((p) => P(p[0], clamp(p[1], f0 + 1e-9, f1 - 1e-9))));
+            const fills = F.fills.map((r) => clipRect(r, b[0] * D2R, b[1] * D2R, f0, f1)).filter((r) => r.length > 2).map((r) => densify(r).map((p) => P(p[0], clamp(p[1], f0 + 1e-9, f1 - 1e-9))));
             const out = []; for (let f = 0; f <= 90; f += 2) out.push(P(b[0] * D2R, (north ? f : -f) * D2R)); for (let f = 90; f >= 0; f -= 2) out.push(P(b[1] * D2R, (north ? f : -f) * D2R));
             const gr = [];
             for (let L = Math.ceil((b[0] + 1) / 30) * 30; L < b[1]; L += 30) { for (let f = 0; f <= 90; f += 3) gr.push(P(L * D2R, (north ? f : -f) * D2R)); gr.push(null); }
@@ -179,7 +179,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
         });
         v.readout(() => {
           const I2 = info; if (!I2) return '';
-          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, area error ${(I2.e.area * 100).toFixed(0)} %${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, distance error ${(I2.e.dist * 100).toFixed(0)} % over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. Goode's join latitude here: ${(GOODE_PHI0 * R2D).toFixed(2)}°.`;
+          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, area error ${(I2.e.area * 100).toFixed(0)} %${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, distance error ${(I2.e.dist * 100).toFixed(0)} % over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. ${I2.M.lobes || I2.M.base || I2.k === 'goode' ? `Goode's join latitude between sinusoidal and Mollweide: ${(GOODE_PHI0 * R2D).toFixed(2)}°.` : ''}`;
         });
       },
     },
@@ -262,7 +262,7 @@ For conformal maps the quality of a choice is the spread $k_{\max}/k_{\min}$ of 
             for (let L = Math.ceil(W / st) * st; L <= Ea; L += st) { for (let t = 0; t <= 30; t++) gr.push(F(L, S + ((N - S) * t) / 30)); gr.push(null); }
             for (let f = Math.ceil(S / st) * st; f <= N; f += st) { for (let t = 0; t <= 30; t++) gr.push(F(W + ((Ea - W) * t) / 30, f)); gr.push(null); }
             sR.path(gr, { color: 'muted', width: 0.7, alpha: 0.4 });
-            const LF = landFrame(v, lon0), fills = LF.fills.map((r) => clipRect(r, (W - lon0) * D2R, (Ea - lon0) * D2R, S * D2R, N * D2R)).filter((r) => r.length > 2).map((r) => r.map((p) => F(p[0] * R2D + lon0, p[1] * R2D)));
+            const LF = landFrame(v, lon0), fills = LF.fills.map((r) => clipRect(r, (W - lon0) * D2R, (Ea - lon0) * D2R, S * D2R, N * D2R)).filter((r) => r.length > 2).map((r) => densify(r).map((p) => F(p[0] * R2D + lon0, p[1] * R2D)));
             sR.rings(fills, { fill: 'gold', fillAlpha: 0.3, stroke: false });
             const co = []; for (const pl of LF.lines) { let run = []; for (const p of pl) { const LL = p[0] * R2D + lon0, ff = p[1] * R2D; if (LL >= W && LL <= Ea && ff >= S && ff <= N) run.push(F(LL, ff)); else { if (run.length > 1) co.push(...run, null); run = []; } } if (run.length > 1) co.push(...run, null); }
             sR.path(co, { color: 'gold', width: 0.9, alpha: 0.8 });
