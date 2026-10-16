@@ -77,7 +77,7 @@ export default {
       verify: true,
       viz(v) {
         const S = v.slider('spotlight strength $S$', 1, 30, 10, { log: true });
-        const wl = v.slider('local anchoring weight', 0, 1, 0.75, { step: 0.01 });
+        const wl = v.slider('local anchoring weight', 0, 1, 0.9, { step: 0.01 });
         const R = [0.35, 0.9, 0.09, 0.6, 0.03, 0.18, 0.6, 0.35, 0.03, 0.9, 0.18, 0.09, 0.6, 0.35], NP = R.length, K = 6;
         const sc = v.stage({ x: [0, NP], y: [-0.5, 6.4], axes: false, height: 330, weight: 1.5, minWidth: 340, title: 'the scene and what it looks like' });
         const sp = v.stage({ x: [-1.8, 0.05], y: [-1.8, 0.05], axes: 'box', gutter: true, equal: true, height: 330, weight: 0.85, minWidth: 270, xlabel: 'true reflectance (log₁₀)', ylabel: 'perceived reflectance (log₁₀)', title: 'constancy', xticks: logTicks(-1.8, 0.05), yticks: logTicks(-1.8, 0.05) });
