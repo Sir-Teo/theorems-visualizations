@@ -40,7 +40,7 @@ export default {
       links: { doi: 'https://doi.org/10.1016/j.comgeo.2007.06.003' },
       viz(v) {
         const form = v.select('evaluate', [{ value: 0, label: 'orient(p,q,r)' }, { value: 1, label: 'orient(q,r,p)' }, { value: 2, label: 'orient(r,p,q)' }], 0);
-        const kk = v.slider('spacing $k$ (units of $u=2^{-53}$)', 1, 4096, 1, { log: true, int: true, step: 1 });
+        const kk = v.slider('spacing $k$ (in $u$)', 1, 4096, 1, { log: true, int: true, step: 1 });
         const L = grid(v, 'floating-point sign'), E = grid(v, 'exact sign'), W = grid(v, 'wrong cells');
         const probe = L.handle(NG * 0.62, NG * 0.38, { color: 'gold', r: 6, label: 'p', labelPos: 'ne', constrain: (x, y) => [Math.floor(x) + 0.5, Math.floor(y) + 0.5] });
         // ---- hull panel
@@ -81,7 +81,7 @@ export default {
           const s = stats, N = NG * NG, c = s.pc, p = c >= 0 ? pCell(c % NG, Math.floor(c / NG), kk.value) : [0, 0];
           const dv = floatDet(p[0], p[1], Q[0], Q[1], R[0], R[1]);
           return `spacing $k=${kk.value}$: **${(100 * s.wrong / N).toFixed(1)}%** of the ${N} cells have a wrong sign (${s.zero} computed as zero); in **${(100 * s.incons / N).toFixed(1)}%** the three cyclic evaluations of the same triple disagree.\n` +
-            `probe cell: double precision gives $\\Delta=${dv.toExponential(2)}$ (${sg(sgn(dv))}), exact sign ${sg(c >= 0 ? s.g.ex[c] : 0)}. Hull: exact has ${s.ne} vertices, double-precision version ${s.nf}, leaving ${s.outside} input point${s.outside === 1 ? '' : 's'} outside its "hull".`;
+            `probe cell: double precision gives $\\Delta=${dv.toExponential(1).replace('e', '\\times10^{').replace('{+','{')}}$ (${sg(sgn(dv))}), exact sign ${sg(c >= 0 ? s.g.ex[c] : 0)}. Hull: exact has ${s.ne} vertices, double-precision version ${s.nf}, leaving ${s.outside} input point${s.outside === 1 ? '' : 's'} outside its "hull".`;
         });
       },
     },
@@ -95,7 +95,7 @@ export default {
       credit: 'Shewchuk, 1997; Fortune & Van Wyk, 1993 (exact arithmetic for geometry)',
       links: { doi: 'https://doi.org/10.1007/PL00009321' },
       viz(v) {
-        const kk = v.slider('spacing $k$ (units of $u=2^{-53}$)', 1, 2 ** 20, 1, { log: true, int: true });
+        const kk = v.slider('spacing $k$ (in $u$)', 1, 2 ** 20, 1, { log: true, int: true });
         const A = grid(v, 'adaptive sign'), S = grid(v, 'stage needed');
         const B = v.stage({ x: [0.4, 3.6], y: [0, 1], axes: false, minWidth: 230, height: 300, title: 'flops per predicate call' });
         const STC = { A: 'green', B: 'gold', C: 'orange', D: 'red' };
@@ -118,9 +118,9 @@ export default {
           S.raster((x, y) => { const c = cellOf(x, y); return c < 0 ? null : rgba(v, STC[res.stage[c]], 0.75); }, { res: 2, key: `s${k}` });
           for (const T of [A, S]) T.line(0, 0, NG, NG, { color: 'ink', alpha: 0.3, width: 1, dash: true });
           const vals = [11, res.avg, res.exact], mx = Math.max(...vals) * 1.15;
-          B.setView([0.4, 3.6], [0, mx]);
+          B.setView([0.4, 3.6], [-0.1 * mx, mx]);
           vals.forEach((val, i) => { B.rect(i + 1 - 0.32, 0, i + 1 + 0.32, val, { fill: ['green', 'gold', 'red'][i], color: ['green', 'gold', 'red'][i], fillAlpha: 0.45, width: 1.5 }); B.text(Math.round(val).toString(), i + 1, val, { dy: -10, align: 'center', size: 13, color: 'ink' }); });
-          ['float only', 'adaptive', 'always exact'].forEach((t, i) => B.text(t, i + 1, 0, { dy: 14, align: 'center', size: 11, color: 'muted' }));
+          ['float only', 'adaptive', 'always exact'].forEach((t, i) => B.text(t, i + 1, 0, { dy: 16, align: 'center', size: 11, color: 'muted' }));
         });
         v.legend([['green', 'A: plain float suffices', { area: true }], ['gold', 'B', { area: true }], ['orange', 'C', { area: true }], ['red', 'D: full exact expansion', { area: true }]]);
         v.readout(() => {
@@ -149,7 +149,7 @@ export default {
         let cset = new Set();
         function reset() {
           if (mode.value === 'hull') { on = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 3], [3, 3], [5, 3], [7, 3], [1, 5], [3, 5], [5, 5], [4, 2], [2, 1]].filter((p, i, a) => a.findIndex((q) => q[0] === p[0] && q[1] === p[1]) === i).map((p, i) => [p[0], p[1], i]); nextId = on.length; s.setView([-1.2, 8.2], [-1.2, 7.2]); }
-          else { cset = new Set(CIRC.map((_, i) => i)); s.setView([-2, 11], [-2, 8.6]); }
+          else { cset = new Set(CIRC.map((_, i) => i)); s.setView([-1.6, 10.6], [-2.2, 9.2]); }
         }
         reset();
         s.onClick((x, y) => {

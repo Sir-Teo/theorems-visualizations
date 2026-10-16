@@ -75,7 +75,7 @@ an unconstrained problem with a convex quadratic objective. Its minimizers are e
           if (!info) return '';
           const { sq, ssr, ssrMin, aO, bO, aLS, bLS, g, sr, sxr, a, b } = info;
           let s = String.raw`line $y=${v.fix(a, 2)}+${v.fix(b, 2)}\,x$ has ${sq ? 'SSR' : 'total absolute residual'} $=${v.fix(ssr, 3)}$; the minimum is $${v.fix(ssrMin, 3)}$ at $(a,b)=(${v.fix(aO, 3)},${v.fix(bO, 3)})$`;
-          if (sq) s += String.raw` · normal equations $(A^{\mathsf T}A)x=A^{\mathsf T}y$ give $(${v.fix(aLS, 3)},${v.fix(bLS, 3)})$ — the bottom of the bowl ✓ · at the minimum $\sum r_i=${v.sci(Math.abs(sr) + 1e-300, 1)}$ and $\sum x_ir_i=${v.sci(Math.abs(sxr) + 1e-300, 1)}$ (both 0: the residual is orthogonal to the columns $1$ and $x$) · $\norm{\nabla\mathrm{SSR}}$ at your line $=${v.fix(g, 2)}$`;
+          if (sq) s += String.raw` · normal equations $(A^{\mathsf T}A)x=A^{\mathsf T}y$ give $(${v.fix(aLS, 3)},${v.fix(bLS, 3)})$ — the bottom of the bowl ✓ · at the minimum $\sum r_i=${v.fix(Math.abs(sr) < 1e-9 ? 0 : sr, 6)}$ and $\sum x_ir_i=${v.fix(Math.abs(sxr) < 1e-9 ? 0 : sxr, 6)}$ (both 0: the residual is orthogonal to the columns $1$ and $x$) · $\norm{\nabla\mathrm{SSR}}$ at your line $=${v.fix(g, 2)}$`;
           else s += String.raw` · for the $\ell^1$ loss the optimum passes through two data points and the surface has creases, so there is no gradient equation there (the least-squares line would be $(${v.fix(aLS, 2)},${v.fix(bLS, 2)})$)`;
           return s;
         });
@@ -99,7 +99,7 @@ with $c\in\R^n$, $A\in\R^{m\times n}$, $b\in\R^m$ (equality constraints and sign
       viz(v) {
         const BX = 4.2, BY = 3.2, NMAX = 7;
         const dirS = v.select('objective', [{ value: 'min', label: 'minimize' }, { value: 'max', label: 'maximize' }], 'min');
-        const uS = v.slider('level $t$ (from lowest to highest vertex value)', 0, 1, 0.45, { step: 0.005 });
+        const uS = v.slider('level $t$', 0, 1, 0.45, { step: 0.005 });
         const s = v.stage({ x: [-4.6, 4.6], y: [-3.5, 3.5], equal: true, axes: 'box', gutter: true, height: 420, xlabel: '$x_1$', ylabel: '$x_2$', title: 'polygon from half-planes and the sweeping level line' });
         const init = [];
         for (let k = 0; k < 5; k++) { const th = Math.PI / 2 + (2 * Math.PI * k) / 5, r = 2.3; init.push([r * Math.cos(th), r * Math.sin(th), th]); }
@@ -349,7 +349,7 @@ For one constraint: at a constrained extremum the level curve of $f$ is tangent 
           const gf = gradNum(f, x, y), gh = gradNum(C.h, x, y), nh = Math.hypot(gh[0], gh[1]) || 1e-12, nx = gh[0] / nh, ny = gh[1] / nh;
           const gn = Math.hypot(gf[0], gf[1]), lam = (gf[0] * gh[0] + gf[1] * gh[1]) / (nh * nh);
           const along = gf[0] * -ny + gf[1] * nx, normal = gf[0] * nx + gf[1] * ny;
-          const Lf = 0.22 * W * Math.tanh(gn / (1.5 * A.gs)), k = gn > 1e-12 ? Lf / gn : 0;
+          const Lf = 0.24 * W * Math.tanh(gn / (0.5 * A.gs)), k = gn > 1e-12 ? Lf / gn : 0;
           s.arrow(x, y, x + 0.2 * W * nx, y + 0.2 * W * ny, { color: 'orange', width: 1.6, alpha: 0.55 });
           s.arrow(x, y, x + k * normal * nx, y + k * normal * ny, { color: 'orange', width: 3.2 });
           s.arrow(x, y, x + k * along * -ny, y + k * along * nx, { color: 'green', width: 3.2 });
@@ -369,7 +369,7 @@ For one constraint: at a constrained extremum the level curve of $f$ is tangent 
           if (!info) return '';
           const { lam, along, gn, fp, R, fminS, atCrit } = info;
           let s = String.raw`at $p$: $\norm{\nabla f}=${v.fix(gn, 3)}$, component of $\nabla f$ along the curve $=${v.fix(along, 4)}$, multiplier $\lambda=\nabla f\cdot\nabla h/\norm{\nabla h}^2=${v.fix(lam, 3)}$, $f(p)=${v.fix(fp, 3)}$`;
-          s += atCrit ? String.raw` → **$\nabla f=\lambda\nabla h$ holds**: $p$ is a constrained stationary point` : String.raw` → $\nabla f\not\parallel\nabla h$, so $p$ is not a constrained optimum: sliding along the curve changes $f$`;
+          s += atCrit ? String.raw` → **$\nabla f=\lambda\nabla h$ holds**: $p$ is a constrained stationary point` : String.raw` → $\nabla f$ is not parallel to $\nabla h$, so $p$ is not a constrained optimum: sliding along the curve changes $f$`;
           const list = R.out.map((c) => `${c.type === 'min' ? 'min' : 'max'} ${v.fix(c.f, 3)} ($\\lambda=${v.fix(c.lam, 2)}$)`).join(', ');
           s += '\n' + String.raw`stationary points of $f$ on the curve found by scanning: ${R.out.length ? list : 'none (an open curve, whose extremes are its end points)'} · smallest sampled value of $f$ on the curve ${v.fix(fminS, 3)}${R.out.filter((c) => c.type === 'min').length ? ` vs smallest multiplier solution ${v.fix(Math.min(...R.out.filter((c) => c.type === 'min').map((c) => c.f)), 3)}` : ''}`;
           return s;
@@ -465,7 +465,7 @@ For one constraint: at a constrained extremum the level curve of $f$ is tangent 
           let s = String.raw`Hessian at the minimizer: $\lambda_{\min}=${v.fix(lmin, 3)}$, $\lambda_{\max}=${v.fix(lmax, 2)}$, condition number $\kappa=${v.fix(kap, kap < 100 ? 2 : 0)}$ → level sets are ellipses with axis ratio $\sqrt\kappa=${v.fix(Math.sqrt(kap), 1)}$`;
           if (Number.isFinite(angle)) s += String.raw` · at $p$ the angle between $-\nabla f$ and the direction to $x^\star$ is $${v.fix(angle, 1)}^\circ$`;
           if (!quad) s += String.raw` · the local ratio $\lambda_{\max}/\lambda_{\min}$ at $p$ is ${Number.isFinite(kappaEff) ? v.fix(kappaEff, 0) : 'undefined (the Hessian at $p$ is not positive definite)'}`;
-          if (quad && iters !== null) s += '\n' + String.raw`steepest descent with exact line search needs **${iters}** steps to cut $f$ by a factor $10^6$ from $p$; its guaranteed contraction of $f-f^\star$ per step is $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2=${v.fix(((kap - 1) / (kap + 1)) ** 2, 4)}$ (a worst case that is attained for starts on the unlucky diagonal)`;
+          if (quad && iters !== null) s += '\n' + String.raw`steepest descent with exact line search needs **${iters}** steps to cut $f$ by a factor $10^6$ from $p$; its guaranteed contraction of $f-f^\star$ per step is $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2=${v.fix(((kap - 1) / (kap + 1)) ** 2, 4)}$ (a worst-case bound, attained only from special starting points)`;
           return s;
         });
         sync();

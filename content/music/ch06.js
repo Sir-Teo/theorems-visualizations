@@ -263,7 +263,7 @@ whose peak lies at $s\,\Delta f=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$. Because the 
 $$D(\alpha)=\sum_{\text{pairs }i<j\text{ of the }2n\text{ partials }\{f_k\}\cup\{\alpha f_k\}}d(\text{freq}_i,\text{freq}_j)\,\min(\text{amp}_i,\text{amp}_j),$$
 with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectrum $D$ has its global minimum at the unison and **local minima exactly at simple ratios** $\alpha=p/q$ ($p,q\le n$): $2/1$, $3/2$, $4/3$, $5/3$, $5/4$, $6/5$, …, deeper for smaller numbers. Which minima exist, and how deep they are, depends on the amplitudes of the partials.`,
       idea: String.raw`Near $\alpha=p/q$ the $q$-th partial of the upper copy approaches the $p$-th partial of the lower; their contribution to $D$ is a narrow Plomp–Levelt peak centred on the coincidence, so $D$ has a sharp notch there, of depth set by the two amplitudes and of width about a critical band. All other partial pairs vary smoothly. The curve is the sum of a broad, smooth background and these notches; notches from strong low partials (octave, fifth) are deepest, and a notch disappears when one of the partials that make it is removed. This is the model behind Plomp and Levelt's Fig. 11 (6.14) and Sethares's dissonance curves (6.15).`,
-      caption: String.raw`Top: the spectrum; drag a bar up or down to change a partial's amplitude, or choose a preset (Sethares's $0.88^{k-1}$, $1/k$, odd harmonics only like a clarinet's low register, or the measured violin and clarinet spectra of SHARC). Bottom: the dissonance curve over a little more than an octave above middle C, with its local minima (green) labelled by the nearest simple ratio; the faint curve is the same for pure tones. Remove the 3rd partial and the fifth's dip weakens; remove all even partials and the octave's dip shrinks while 5/3 and 7/5 grow. Click the curve to hear that interval with this timbre.`,
+      caption: String.raw`Top: the spectrum; drag a bar up or down to change a partial's amplitude, or choose a preset (Sethares's $0.88^{k-1}$, $1/k$, odd harmonics only like a clarinet's low register, or the measured violin and clarinet spectra of SHARC). Bottom: the dissonance curve over a little more than an octave above middle C, with its local minima (green) labelled by the nearest simple ratio; the faint curve is the same for pure tones. Remove the 3rd partial and the fifth's dip weakens; with odd harmonics only the octave and fifth dips vanish while 5/3 and 7/5 survive. Click the curve to hear that interval with this timbre.`,
       deps: ['music-6.3', 'music-6.2'],
       see: ['music-6.15', 'music-6.14', 'music-4.1'],
       refs: ['Sethares ch. 5', 'Benson ch. 4'],
@@ -296,7 +296,7 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
           cv.path(Array.from(K.C.c, (x, i) => [x, K.C.d[i] / K.mx]), { color: 'accent', width: 2.4 });
           let lastX = -1e9;
           for (const m of K.mins) {
-            const r = nearRatio(m.c, 9, 25), y = m.d / K.mx;
+            const r0 = nearRatio(m.c, 9, 15), r = r0 && Math.abs(r0.err) <= 15 ? r0 : null, y = m.d / K.mx;
             cv.dot(m.c, y, { r: 4, color: 'green' });
             if (m.c - lastX > 45 && m.c > 30) { cv.text(r ? rl(r) : `${v.fix(m.c, 0)}¢`, m.c, y, { color: 'green', size: 10.5, align: 'center', dy: y < 0.16 ? -10 : 14 }); lastX = m.c; }
           }
@@ -304,7 +304,7 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
         });
         v.legend([['accent', 'this spectrum'], ['muted', 'pure tones (rescaled)'], ['green', 'local minima'], ['gold', 'clicked interval']]);
         v.readout(() => {
-          const K = curve(), list = K.mins.filter((m) => m.c > 30).map((m) => { const r = nearRatio(m.c, 9, 25); return `${v.fix(m.c, 0)} ¢${r ? ` (${rl(r)} ${sc(v, r.err, 1)})` : ''}`; });
+          const K = curve(), list = K.mins.filter((m) => m.c > 30).map((m) => { const r = nearRatio(m.c, 9, 15); return `${v.fix(m.c, 0)} ¢${r && Math.abs(r.err) <= 15 ? ` (${rl(r)} ${sc(v, r.err, 1)})` : ' (shallow, no simple ratio)'}`; });
           return `${list.length} local minima above the unison: ${list.join(' · ')}${cur != null ? ` · clicked ${v.fix(cur, 0)} ¢, dissonance ${v.fix(sample(K.C, cur) / K.mx, 3)}` : ''}`;
         });
       },
@@ -444,9 +444,9 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
         const BARS = { jublag: JUBLAG, ugal: UGAL, beam: BEAM.slice(0, 4), harm: [1, 2, 3, 4, 5] };
         let ratios = BARS.jublag.slice(), cache = null;
         const bar = v.select('bar', [{ value: 'jublag', label: 'jublag (measured)' }, { value: 'ugal', label: 'ugal (measured)' }, { value: 'beam', label: 'ideal free bar' }, { value: 'harm', label: 'harmonic' }], 'jublag', { onChange: (x) => { ratios = BARS[x].slice(); cache = null; place(); v.invalidate(); } });
-        const sp = v.stage({ x: [0.9, 9], y: [0, 1.2], xlog: true, height: 170, axes: 'box', gutter: true, full: true, xticks: [[1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [8, '8']], yticks: [], xlabel: 'partial frequency ÷ fundamental (log scale)', title: 'the bar’s partials (drag the upper ones)' });
+        const sp = v.stage({ x: [0.9, 11], y: [0, 1.2], xlog: true, height: 170, axes: 'box', gutter: true, full: true, xticks: [[1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [8, '8']], yticks: [], xlabel: 'partial frequency ÷ fundamental (log scale)', title: 'the bar’s partials (drag the upper ones)' });
         const cv = v.stage({ x: [0, CMAX], y: [0, 1.15], height: 290, axes: 'box', gutter: true, full: true, xticks: [0, 240, 480, 720, 960, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents; slendro steps marked)', ylabel: 'dissonance', title: 'dissonance curve against slendro' });
-        const H = []; for (let i = 1; i < 6; i++) { const h = sp.handle(2, 0.5, { color: 'orange', r: 6, constrain: (x) => [M.clamp(x, 1.05, 8.8), AM[i] * 0.9] }); h.onDrag = () => { ratios[i] = h.x; cache = null; }; H.push(h); }
+        const H = []; for (let i = 1; i < 6; i++) { const h = sp.handle(2, 0.5, { color: 'orange', r: 6, constrain: (x) => [M.clamp(x, 1.05, 10.5), AM[i] * 0.9] }); h.onDrag = () => { ratios[i] = h.x; cache = null; }; H.push(h); }
         function place() { H.forEach((h, k) => { const i = k + 1; h.visible = i < ratios.length; if (i < ratios.length) h.set(ratios[i], AM[i] * 0.9); }); }
         place();
         const spec = () => ratios.map((r, i) => [r, AM[i]]);

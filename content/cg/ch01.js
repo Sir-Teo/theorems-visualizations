@@ -84,11 +84,9 @@ export default {
           const ux = (Q[0] - P[0]) / L, uy = (Q[1] - P[1]) / L, nx = -uy, ny = ux;
           for (let k = -6; k <= 6; k++) if (k) s.line(P[0] + nx * k - ux * 30, P[1] + ny * k - uy * 30, P[0] + nx * k + ux * 30, P[1] + ny * k + uy * 30, { color: 'grid', width: 1, alpha: 0.9 });
           s.line(P[0] - ux * 30, P[1] - uy * 30, P[0] + ux * 30, P[1] + uy * 30, { color: 'ink', width: 1.4, alpha: 0.6 });
-          s.poly([P, [P[0] + R[0] - P[0] + Q[0] - P[0], P[1] + R[1] - P[1] + Q[1] - P[1]], R, Q].slice(0, 0));
           s.poly([P, Q, [Q[0] + R[0] - P[0], Q[1] + R[1] - P[1]], R], { color: 'faint', fill: 'faint', fillAlpha: 0.08, width: 1, dash: true });
           s.poly([P, Q, R], { color: sgCol(sgn(d)), fill: sgCol(sgn(d)), fillAlpha: 0.3, width: 2.2 });
           s.arrow(P[0], P[1], Q[0], Q[1], { color: 'ink', width: 2.2 });
-          s.dot(R[0], R[1], { r: 0 });
           s.corner(sgn(d) > 0 ? 'left turn · orient = +1' : sgn(d) < 0 ? 'right turn · orient = −1' : 'collinear · orient = 0', 'tr', { color: sgCol(sgn(d)), weight: 700, plate: true });
         });
         v.legend([['blue', 'left of $pq$: $\\Delta>0$', { area: true }], ['red', 'right of $pq$: $\\Delta<0$', { area: true }]]);
@@ -113,10 +111,7 @@ export default {
         const mk = (x, y, label, pos, col) => s.handle(x, y, { color: col, label, labelPos: pos, constrain: grid });
         const a = mk(1.5, 1.5, 'a', 'sw', 'accent'), b = mk(7.5, 4.5, 'b', 'ne', 'accent'), c = mk(2, 4.8, 'c', 'nw', 'orange'), d = mk(7, 1, 'd', 'se', 'orange');
         const H = [a, b, c, d];
-        const presets = {
-          cross: [[1.5, 1.5], [7.5, 4.5], [2, 4.5], [7, 1]], T: [[1, 1], [8, 4], [3, 3.5], [5, 1.5]].map((q, i) => (i === 2 ? [4.5, 2.5] : q)), overlap: [[1, 1.5], [6, 4], [3, 2.5], [8.5, 5]],
-          gap: [[1, 1.5], [4, 3], [6, 4], [8.5, 5.25]], vee: [[1.5, 1.5], [5, 3.5], [5, 3.5], [8, 1.5]].map((q, i) => (i === 2 ? [5, 3.5] : q)), free: null,
-        };
+        const presets = { cross: [[1.5, 1.5], [7.5, 4.5], [2, 4.5], [7, 1]], free: null };
         presets.T = [[1.5, 1.5], [7.5, 1.5], [4.5, 4.5], [4.5, 1.5]]; presets.vee = [[1.5, 1.5], [5, 4], [5, 4], [8.5, 1.5]]; presets.overlap = [[1, 1], [6, 4], [3, 2], [8.5, 5.5]]; presets.gap = [[1, 1], [4, 3], [5, 3.5], [8, 5.5]];
         v.select('preset', [{ value: 'free', label: 'free' }, { value: 'cross', label: 'proper crossing' }, { value: 'T', label: 'T-touch' }, { value: 'vee', label: 'shared endpoint' }, { value: 'overlap', label: 'collinear overlap' }, { value: 'gap', label: 'collinear, disjoint' }], 'free', {
           onChange: (k) => { const P = presets[k]; if (P) H.forEach((h, i) => h.set(P[i][0], P[i][1])); },
@@ -161,7 +156,6 @@ export default {
             s.text(f2(t), (O.x + a[0] + b[0]) / 3, (O.y + a[1] + b[1]) / 3, { color: t >= 0 ? 'blue' : 'red', size: 11, align: 'center', plate: true });
           }
           s.path(P, { close: true, color: 'ink', width: 2.4 });
-          P.forEach((p, i) => s.line(p[0], p[1], P[(i + 1) % n][0], P[(i + 1) % n][1], { alpha: 0 }));
           s.corner(`A = ${f2(signedArea(P))}`, 'tr', { color: 'ink', weight: 700, plate: true });
         });
         v.legend([['blue', 'counter-clockwise (+)', { area: true }], ['red', 'clockwise (−)', { area: true }]]);
@@ -187,7 +181,7 @@ export default {
         const shape = v.select('polygon', [{ value: 'p52', label: 'pentagram {5/2}' }, { value: 'p73', label: 'heptagram {7/3}' }, { value: 'bow', label: 'bow tie' }, { value: 'conc', label: 'simple concave' }], 'p52', { onChange: () => load() });
         const fill = v.select('shading', [{ value: 'eo', label: 'even–odd' }, { value: 'nz', label: 'nonzero' }, { value: 'w', label: 'winding number' }], 'w');
         const ang = v.slider('ray angle (°)', 0, 360, 20, { step: 1 });
-        const s = gstage(v, { x: [-3.6, 3.6], y: [-3.3, 3.3], height: 370 });
+        const s = gstage(v, { x: [-3.6, 3.6], y: [-3.4, 3.7], height: 380 });
         const star = (n, k, R = 3) => Array.from({ length: n }, (_, i) => [R * Math.cos(Math.PI / 2 + (2 * Math.PI * k * i) / n), R * Math.sin(Math.PI / 2 + (2 * Math.PI * k * i) / n)]);
         const SH = { p52: star(5, 2), p73: star(7, 3), bow: [[-2.8, -2.2], [2.8, 2.2], [2.8, -2.2], [-2.8, 2.2]], conc: [[-3, -2.5], [3, -2.5], [3, 2.5], [1, 2.5], [0, -0.2], [-1, 2.5], [-3, 2.5]] };
         const Vh = Array.from({ length: 7 }, (_, i) => s.handle(0, 0, { color: 'accent', r: 6, label: String(i), labelPos: 'n' }));
@@ -225,9 +219,10 @@ export default {
       num: '1.6', kind: 'Definition', name: 'Barycentric coordinates',
       statement: String.raw`Let $A,B,C$ be affinely independent points of the plane. Every point $P$ has unique **barycentric coordinates** $(\lambda_A,\lambda_B,\lambda_C)$ with $\lambda_A+\lambda_B+\lambda_C=1$ and $P=\lambda_AA+\lambda_BB+\lambda_CC$. They are ratios of signed areas, $\lambda_A=\operatorname{area}(PBC)/\operatorname{area}(ABC)$ and cyclically, i.e. ratios of orientation determinants. $P$ lies in the closed triangle iff all three are $\ge0$, and for any quantity $f$ known at the vertices, $\sum\lambda_if(A_i)$ is its linear interpolation.`,
       idea: String.raw`$\lambda_A$ is the signed distance from $P$ to line $BC$ relative to that of $A$ — an affine function equal to 1 at $A$ and 0 on $BC$ — and the three affine functions sum to the constant 1. Written as areas, each is a quotient of two orientation determinants (1.2), negative exactly when $P$ is across the opposite side. This is the weighting used to interpolate colours and depths across a triangle, and in the ray-triangle test of rendering.`,
-      caption: String.raw`Drag the triangle's corners and the point $P$. The three sub-triangles $PBC$, $PCA$, $PAB$ are coloured with the colour of the opposite vertex (hatched when their signed area is negative, i.e. $P$ is outside), and the interior shows the blend of the vertex colours with weights $\lambda$. Drag $P$ outside and a weight goes negative.`,
+      caption: String.raw`Drag the triangle's corners and the point $P$. In *areas* view the three sub-triangles $PBC$, $PCA$, $PAB$ are coloured with the colour of the opposite vertex (hatched when their signed area is negative, i.e. $P$ is outside); in *colour blend* view the triangle shows the mix of the vertex colours with weights $\lambda$. Drag $P$ outside and a weight goes negative.`,
       deps: ['cg-1.1'], refs: ['PBRT 4e §6.5'], tags: ['barycentric', 'triangle', 'interpolation'], credit: 'Möbius, 1827',
       viz(v) {
+        const vw = v.select('view', [{ value: 'areas', label: 'sub-triangle areas' }, { value: 'blend', label: 'colour blend' }], 'areas');
         const s = gstage(v);
         const A = s.handle(1.4, 1.1, { color: 'red', label: 'A', labelPos: 'sw' }), B = s.handle(8, 1.7, { color: 'green', label: 'B', labelPos: 'se' }), C = s.handle(4.4, 5.6, { color: 'blue', label: 'C', labelPos: 'n' });
         const P = s.handle(4.2, 2.6, { color: 'gold', r: 8, label: 'P', labelPos: 'ne' });
@@ -236,9 +231,9 @@ export default {
         v.render(() => {
           const a = [A.x, A.y], b = [B.x, B.y], c = [C.x, C.y], p = [P.x, P.y], T = det3(a, b, c) || 1e-12;
           const rg = cols.map((n) => v.rgb(n));
-          s.raster((x, y) => { const l = [det3([x, y], b, c) / T, det3(a, [x, y], c) / T, det3(a, b, [x, y]) / T]; if (l[0] < 0 || l[1] < 0 || l[2] < 0) return null; return [0, 1, 2].map((k) => l[0] * rg[0][k] + l[1] * rg[1][k] + l[2] * rg[2][k]).concat(0.55); }, { res: 3, key: `${A.x}|${A.y}|${B.x}|${B.y}|${C.x}|${C.y}` });
+          if (vw.value === 'blend') s.raster((x, y) => { const l = [det3([x, y], b, c) / T, det3(a, [x, y], c) / T, det3(a, b, [x, y]) / T]; if (l[0] < 0 || l[1] < 0 || l[2] < 0) return null; return [0, 1, 2].map((k) => l[0] * rg[0][k] + l[1] * rg[1][k] + l[2] * rg[2][k]).concat(0.8); }, { res: 3, key: `${A.x}|${A.y}|${B.x}|${B.y}|${C.x}|${C.y}` });
           const L = lam(), subs = [[p, b, c], [a, p, c], [a, b, p]];
-          subs.forEach((tri, k) => s.poly(tri, { color: cols[k], fill: cols[k], fillAlpha: L[k] < 0 ? 0.0 : 0.22, width: 1.8, hatch: L[k] < 0 ? cols[k] : false, dash: L[k] < 0 }));
+          if (vw.value === 'areas') subs.forEach((tri, k) => s.poly(tri, { color: cols[k], fill: cols[k], fillAlpha: L[k] < 0 ? 0.0 : 0.32, width: 1.8, hatch: L[k] < 0 ? cols[k] : false, dash: L[k] < 0 }));
           s.poly([a, b, c], { color: 'ink', width: 2.2, fill: false });
           [a, b, c].forEach((q) => s.line(p[0], p[1], q[0], q[1], { color: 'ink', alpha: 0.35, width: 1, dash: true }));
           s.corner(L.every((x) => x >= 0) ? 'P inside' : 'P outside', 'tr', { color: L.every((x) => x >= 0) ? 'green' : 'red', weight: 700, plate: true });
