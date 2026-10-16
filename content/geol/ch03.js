@@ -37,7 +37,7 @@ export default {
       name: 'Continental drift (Wegener)',
       statement: String.raw`The continents were once joined in a single land mass and have since moved apart horizontally, over distances of thousands of kilometres. The evidence offered for it is geometrical and geological: the facing coasts of the Atlantic fit like torn pieces of paper, and when they are closed, rock belts, fold belts, glacial deposits and fossil land animals and plants that make no sense on opposite sides of an ocean line up across the join. In the form proposed by Wegener (1912), the mechanism was left unspecified — and his own was inadequate — so the hypothesis described *that* the continents moved, not *how*.`,
       idea: String.raw`The argument is a test by coincidence: if the continents never moved, the fit of coastlines and the matching of unrelated features across the join would both have to be accidents. A rigid rotation of one continent about a single axis (Euler's theorem, mech-10.1) is the minimal motion that could close the gap, so one rotation should bring *all* the matching pairs together at once, and the pairs become a quantitative check. What the hypothesis lacked was a mechanism and a way to measure: it needed the sea-floor evidence of the 1950s–60s, and a fit of the continental *shelf edge* instead of the shoreline, to be accepted.`,
-      caption: String.raw`Slide the Atlantic closed: South America rotates about the purple Euler pole $E$ (start at the pole of Bullard, Everett & Smith, 1965). The three coloured pairs are matching features on the two sides (approximate localities): they approach each other together as one rotation closes the gap. Drag $E$ away from the published pole and watch the coastlines overlap and the pairs part again; the globe also rotates when you drag the sea.`,
+      caption: String.raw`Slide the Atlantic closed: South America rotates about the purple Euler pole $E$ (start at the pole of Bullard, Everett & Smith, 1965). The three coloured pairs are matching features on the two sides (Paraná and Etendeka flood basalts, the Ventana and Cape fold belts, the Mesosaurus-bearing shales; localities approximate): they approach each other together as one rotation closes the gap. Drag $E$ away from the published pole and watch the coastlines overlap and the pairs part again; the globe also rotates when you drag the sea.`,
       deps: [],
       refs: ['Turcotte–Schubert ch. 1', 'Press–Siever'],
       tags: ['drift', 'wegener', 'fit'],
@@ -56,9 +56,9 @@ export default {
         for (let la = -56; la <= 13; la += 1.5) for (let lo = -82; lo <= -34; lo += 1.5) if (inRing(lo, la, SA[0])) samples.push([lo, la, Math.cos(la * D)]);
         const wsum = samples.reduce((a, q) => a + q[2], 0);
         const pairs = [
-          { name: 'Mesosaurus beds', a: [-52, -28], b: [20, -29], color: 'green' },
-          { name: 'fold belt (Ventana – Cape)', a: [-62, -38], b: [20, -33.5], color: 'gold' },
-          { name: 'Permo-Carboniferous tillite', a: [-50, -24.5], b: [27, -27], color: 'pink' },
+          { name: 'Paraná – Etendeka basalts', a: [-50, -25], b: [14.5, -20], color: 'green' },
+          { name: 'Ventana – Cape fold belt', a: [-62, -38], b: [20, -33.5], color: 'gold' },
+          { name: 'Mesosaurus beds', a: [-57, -32], b: [18, -25], color: 'pink' },
         ];
         v.render(() => {
           const ang = (57.1 * pct.value) / 100, M = rotMat([E.lon, E.lat], ang);
@@ -74,13 +74,13 @@ export default {
           }
           s.corner(`rotation ${v.fix(ang, 1)}°`, 'tl');
         });
-        v.legend([['orange', 'Africa (fixed)'], ['teal', 'South America'], ['green', 'Mesosaurus beds'], ['gold', 'fold belts'], ['pink', 'tillites']]);
+        v.legend([['orange', 'Africa (fixed)'], ['teal', 'South America'], ['green', 'Paraná–Etendeka basalts'], ['gold', 'Ventana–Cape fold belt'], ['pink', 'Mesosaurus beds']]);
         v.readout(() => {
           const ang = (57.1 * pct.value) / 100, M = rotMat([E.lon, E.lat], ang);
           let ov = 0; for (const q of samples) { const r = rotApply(M, [q[0], q[1]]); if (inRing(r[0], r[1], AF[0])) ov += q[2]; }
           const dists = pairs.map((p) => (angDist(rotApply(M, p.a), p.b) * D * R_EARTH));
           const m = dists.reduce((a, x) => a + x, 0) / dists.length;
-          return `pair separations: ${dists.map((d) => v.fix(d / 1000, 1) + '\\,000').join(' · ')} km (mean **${v.fix(m, 0)} km**) · coastline overlap: **${v.fix((100 * ov) / wsum, 1)}%** of South America · pole $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$. Bullard et al. closed the 500-fathom contours with rms misfit about 130 km (their pole: $42.9^\\circ$N, $30.1^\\circ$W, $57.1^\\circ$).`;
+          return `separations of the three pairs (open ocean at 0%: about 5 000–6 500 km): ${dists.map((d) => Math.round(d).toLocaleString('en-US').replace(/,/g, ' ')).join(' · ')} km (mean **${v.fix(m, 0)} km**) · coastline overlap: **${v.fix((100 * ov) / wsum, 1)}%** of South America · pole $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$. Bullard et al. closed the 500-fathom contours with rms misfit about 130 km (their pole: $42.9^\\circ$N, $30.1^\\circ$W, $57.1^\\circ$).`;
         });
       },
     },
@@ -122,8 +122,7 @@ export default {
             for (const sg of [-1, 1]) strip.rect(Math.min(sg * ev[i] * u, sg * ev[i + 1] * u), 0.05, Math.max(sg * ev[i] * u, sg * ev[i + 1] * u), 0.78, { fill: pol > 0 ? 'ink' : 'faint', fillAlpha: pol > 0 ? 0.75 : 0.25, color: 'muted', width: 0.5 });
           }
           for (const [nm, a, b] of [['Brunhes', 0, 0.78], ['Matuyama', 0.78, 2.58], ['Gauss', 2.58, 3.58], ['Gilbert', 3.58, T]]) for (const sg of [-1, 1]) strip.text(nm, sg * ((a + b) / 2) * u, 0.92, { size: 10.5, color: 'muted', align: 'center' });
-          strip.text('normal ■   reversed □', X * 0.62, 0.0, { size: 11, color: 'muted', baseline: 'bottom' }); strip.vline(0, { color: 'orange', width: 1.5 });
-          strip.text('ridge', 0, 0.99, { size: 11, color: 'orange', align: 'center', baseline: 'top' });
+          strip.vline(0, { color: 'orange', width: 1.5 });
           const n = 260, xs = Array.from({ length: n }, (_, i) => -X + (2 * X * i) / (n - 1));
           let ys = anomalyProfile(xs, blocks, { zTop: depth.value, thick: 2, F: 50000, incl: incl.value, dAng: 0 });
           if (blur.value > 0.01) { // Gaussian smoothing = blurred polarity boundaries
@@ -138,6 +137,7 @@ export default {
           info = { mx, bru: 2 * 0.78 * u, jar: 0.08 * u, X };
           prof.setView([-X, X], [-Math.max(300, Math.ceil(mx / 100) * 100), Math.max(300, Math.ceil(mx / 100) * 100)]);
         });
+        v.legend([['ink', 'normal polarity'], ['faint', 'reversed polarity'], ['orange', 'ridge axis'], ['accent', 'computed anomaly']]);
         v.readout(() => `Brunhes (normal) central stripe: $2\\times0.78\\,\\mathrm{Myr}\\times u=${v.fix(info.bru, 1)}$ km wide; the Jaramillo event (0.08 Myr) is only ${v.fix(info.jar, 1)} km per side, against a layer ${v.fix(depth.value, 1)} km deep · peak anomaly **${v.fix(info.mx, 0)} nT**. Time scale: rounded Cande–Kent values to 5.9 Ma.`);
       },
     },

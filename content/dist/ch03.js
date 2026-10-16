@@ -151,7 +151,7 @@ export default {
           const x = R.x, same = x[0] === x[1] && x[1] === x[2];
           const seq = (p) => R.applied[p].map((a) => a.req.op.label).join(' ');
           const sameSeq = [1, 2].every((p) => seq(p) === seq(0));
-          return `Final values: ${NAMES.map((n, p) => `$${n}{=}${x[p]}$`).join(', ')} — ${same ? '**all replicas agree**' : '**the replicas have diverged**'}; same execution order everywhere: ${sameSeq ? '**yes**' : '**no**'}.\nOrders: ${NAMES.map((n, p) => `${n}: ${seq(p)}`).join(' · ')}. Messages: ${R.msgs.filter((m) => m.kind === 'req').length} requests, ${R.msgs.filter((m) => m.kind === 'ack').length} acknowledgements.`;
+          return `Final values: ${NAMES.slice(0, 3).map((n, p) => `$${n}{=}${x[p]}$`).join(', ')} — ${same ? '**all replicas agree**' : '**the replicas have diverged**'}; same execution order everywhere: ${sameSeq ? '**yes**' : '**no**'}.\nOrders: ${NAMES.slice(0, 3).map((n, p) => `${n}: ${seq(p)}`).join(' · ')}. Messages: ${R.msgs.filter((m) => m.kind === 'req').length} requests, ${R.msgs.filter((m) => m.kind === 'ack').length} acknowledgements.`;
         });
       },
     },
