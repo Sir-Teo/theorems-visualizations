@@ -8,7 +8,6 @@ import { C_LIGHT, K_B, L_SUN, AU, TAU } from './ch03.shared.js';
 export const H_PL = 6.62607015e-34, EV = 1.602176634e-19, M_E = 9.1093837015e-31, SIGMA = 5.670374419e-8;
 export const PC = (648000 / Math.PI) * AU, R_SUN = 6.957e8, T_SUN = 5772; // T_sun: IAU 2015 nominal effective temperature
 export const CHI_H = 13.598434; // hydrogen ionization energy, eV
-export const LOGT_TICKS = (lo, hi) => [];
 
 // ── blackbody radiation ──────────────────────────────────────────────────────
 /** Planck spectral radiance B_lambda(T), W m^-2 sr^-1 m^-1, lambda in metres. */

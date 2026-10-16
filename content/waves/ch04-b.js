@@ -181,7 +181,7 @@ The reflection for the reversed incidence therefore has the opposite sign, and $
             P1.line(0, 0, si * L, ci * L, { color: 'red', width: lw(I.r) });
             P1.line(0, 0, s2 * L, -c2 * L, { color: 'green', width: lw(I.t) });
             P1.tex('1', -si * L * 0.5 - 0.25, ci * L * 0.5 + 0.25, { size: 14, color: 'accent' });
-            P1.tex(`r=${v.fix(I.r, 3)}`, 1.2, 1.45, { size: 13, color: 'red', align: 'left' });
+            P1.tex(`r=${v.fix(I.r, 3)}`, 0.2, 1.5, { size: 13, color: 'red', align: 'left' });
             P1.tex(`t=${v.fix(I.t, 3)}`, 0.5, -1.55, { size: 13, color: 'green', align: 'left' });
             // reversed: rays r (along the reflected ray reversed) and t (along refracted reversed) arrive; outgoing: back along incident ray, and along the reflected-ray side with r' etc.
             P2.arrow(si * L, ci * L, 0, 0, { color: 'red', width: lw(I.r), head: 9 });
@@ -189,8 +189,8 @@ The reflection for the reversed incidence therefore has the opposite sign, and $
             const out1 = I.r * I.r + I.t * I.tp, out2 = I.r * I.t + I.t * I.rp;
             P2.line(0, 0, -si * L, ci * L, { color: 'accent', width: lw(out1) });
             P2.tex(`r^2+tt'=${v.fix(out1, 3)}`, -1.9, 1.5, { size: 13, color: 'accent', align: 'left' });
-            P2.tex(`rt+tr'=${v.fix(out2, 3)}`, 0.3, 1.5, { size: 13, color: 'muted', align: 'left' });
-            P2.tex(`r'=${v.fix(I.rp, 3)}`, -1.9, -1.3, { size: 13, color: 'orange', align: 'left' });
+            P2.tex(`rt+tr'=${v.fix(out2, 3)}`, -1.9, -1.55, { size: 12, color: 'muted', align: 'left' });
+            P2.tex(`r'=${v.fix(I.rp, 3)}`, -1.9, -1.1, { size: 12, color: 'orange', align: 'left' });
             st = { ...I, out1, out2, ok };
           } else st = { ok };
           P3.fn((a) => { if (a >= deg(crit)) return NaN; return info(rad(a)).r; }, { color: 'accent', width: 2.2, n: 300 });
@@ -417,7 +417,7 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           E.hline(r, { color: 'red', width: 1, dash: [3, 4], alpha: 0.5 });
           const f = (x) => (x < 0 ? g(x + 7 - v1 * tm) + r * g(-x + 7 - v1 * tm) : tt * g((x * v1) / v2 + 7 - v1 * tm));
           E.fn(f, { color: 'accent', width: 2.6, n: 800 });
-          E.text(`$n_1=${v.fix(n1, 2)}$`, -7.5, 1.2, { size: 13, color: 'ink' }); E.text(`$n_2=${v.fix(n2, 2)}$`, 5.5, 1.2, { size: 13, color: 'ink' });
+          E.text(`$n_1=${v.fix(n1, 2)}$`, -7.5, 1.2, { size: 13, color: 'ink' }); E.text(`$n_2=${v.fix(n2, 2)}$`, 7.7, 1.2, { size: 13, color: 'ink', align: 'right' });
           // reflected peak height after reflection
           const xr = 7 - v1 * tm, hasR = xr < -0.5;
           if (hasR) E.dot(xr, r, { r: 5, color: 'red' });

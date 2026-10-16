@@ -114,12 +114,12 @@ In the $(pc,E)$ plane every state of a particle of mass $m$ lies on one branch o
       scope: String.raw`Closed systems with no external forces; in a collision, interaction energy must be negligible except at the contact event.`,
       viz(v) {
         const m1S = v.slider('mass $m_1$', 0.3, 3, 1, { step: 0.01 });
-        const m2S = v.slider('mass $m_2$', 0.3, 3, 1, { step: 0.01 });
+        const m2S = v.slider('mass $m_2$', 0.3, 3, 2, { step: 0.01 });
         const b1S = v.slider('$\\beta_1$ (lab)', -0.95, 0.95, 0.8, { step: 0.01 });
         const b2S = v.slider('$\\beta_2$ (lab)', -0.95, 0.95, -0.4, { step: 0.01 });
         const fS = v.slider("observer frame $\\beta_o$", -0.9, 0.9, 0, { step: 0.01 });
         const A = v.stage({ x: [-4, 4], y: [-3, 3], axes: true, height: 380, minWidth: 300, title: "worldlines in the observer frame: $x$ across, $ct$ up" });
-        const B = v.stage({ x: [0, 9], y: [-5, 5], axes: 'box', gutter: true, height: 380, minWidth: 300, weight: 1.1, xlabel: 'before | after for $\\sum E$, $\\sum p$, $\\sum mv$', title: 'totals before and after' });
+        const B = v.stage({ x: [0, 9], y: [-5, 5], axes: 'box', gutter: true, height: 380, minWidth: 300, weight: 1.1, title: 'totals before (blue) and after (green)' });
         let st = {};
         const mk = (m, b) => { const g = gam(b); return [g * m, g * m * b, m]; };
         v.render(() => {
@@ -142,7 +142,7 @@ In the $(pc,E)$ plane every state of a particle of mass $m$ lies on one branch o
           B.setView([0, 9], [-mx, mx]);
           const xs = [[1, 2], [4, 5], [7, 8]];
           for (let k = 0; k < 3; k++) { B.rect(xs[k][0] - 0.4, 0, xs[k][0] + 0.4, sb[k], { fill: 'blue', fillAlpha: 0.55, color: 'blue' }); B.rect(xs[k][1] - 0.4, 0, xs[k][1] + 0.4, sa[k], { fill: 'green', fillAlpha: 0.55, color: 'green' }); }
-          B.tex(String.raw`\sum E`, 1.5, -mx * 0.9, { size: 15 }); B.tex(String.raw`\sum p\ (\gamma m v)`, 4.5, -mx * 0.9, { size: 15 }); B.tex(String.raw`\sum m v\ \text{(Newton)}`, 7.5, -mx * 0.9, { size: 15 });
+          B.tex(String.raw`\sum E`, 1.5, -mx * 0.92, { size: 14 }); B.tex(String.raw`\sum \gamma m v`, 4.5, -mx * 0.92, { size: 14 }); B.tex(String.raw`\sum m v`, 7.5, -mx * 0.92, { size: 14 });
           st = { sb, sa, mx, bc };
         });
         v.legend([['blue', 'particle 1 / totals before'], ['orange', 'particle 2'], ['green', 'totals after']]);
@@ -172,7 +172,7 @@ and $M-m_1-m_2=K_{\text{cm}}/c^2$, where $K_{\text{cm}}$ is the kinetic energy t
         const bS = v.slider('speed of lump 1, $\\beta$', 0, 0.99, 0.8, { step: 0.005 });
         const rS = v.slider('mass ratio $m_2/m_1$', 0.2, 5, 1, { step: 0.01, log: true });
         const A = v.stage({ x: [-6, 6], y: [-3.4, 3.4], equal: true, axes: false, height: 340, minWidth: 300, title: 'area ∝ mass' });
-        const B = v.stage({ x: [0, 7], y: [0, 6], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1.1, ylabel: 'energy / mass, units $m_1c^2$', title: 'CM frame (left) and lab frame (right) ledgers' });
+        const B = v.stage({ x: [0, 7], y: [0, 6], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1.1, xticks: [[1, 'm₁+m₂'], [2.8, 'M'], [4.9, 'E before'], [6.1, 'γcm·M']], ylabel: 'energy / mass, units $m_1c^2$', title: 'CM frame (left) and lab frame (right) ledgers' });
         let st = {};
         v.render(() => {
           const b = bS.value, m2 = rS.value, m1 = 1, g = gam(b);
@@ -183,15 +183,11 @@ and $M-m_1-m_2=K_{\text{cm}}/c^2$, where $K_{\text{cm}}$ is the kinetic energy t
           A.arrow(-6 + 0.2, 1.6, -5.4 + b * 1.2, 1.6, { color: 'blue', width: 2 });
           A.circle(3, -1.1, rad(M), { fill: 'red', fillAlpha: 0.15 + Math.min(0.5, dM / M * 1.5), color: 'red' });
           A.arrow(3 + rad(M) + 0.1, -1.1, 3 + rad(M) + 0.1 + bc * 1.6, -1.1, { color: 'ink', width: 2 });
-          A.text('before', -2.6, 3.1, { color: 'muted' }); A.text('after (stuck)', 3, -3, { color: 'muted' });
+          A.text('before', -2.6, 3.1, { color: 'muted' }); A.text('after (stuck)', 3, 2.9, { color: 'muted' });
           // ledger: CM frame masses
           const tot = m1 + m2;
           B.rect(0.4, 0, 1.6, m1, { fill: 'blue', fillAlpha: 0.55, color: 'blue' }); B.rect(0.4, m1, 1.6, tot, { fill: 'orange', fillAlpha: 0.55, color: 'orange' });
           B.rect(2.2, 0, 3.4, tot, { fill: 'faint', fillAlpha: 0.4, color: 'muted' }); B.rect(2.2, tot, 3.4, M, { fill: 'red', fillAlpha: 0.6, color: 'red' });
-          B.tex(String.raw`m_1{+}m_2`, 1, -0.45, { size: 13 }); B.tex(String.raw`M`, 2.8, -0.45, { size: 13 });
-          // lab frame energies
-          B.rect(4.4, 0, 5.4, E, { fill: 'accent', fillAlpha: 0.5, color: 'accent' }); B.rect(5.6, 0, 6.6, gc * M, { fill: 'red', fillAlpha: 0.5, color: 'red' });
-          B.tex(String.raw`E_{\text{before}}`, 4.9, -0.45, { size: 13 }); B.tex(String.raw`\gamma_{cm}M`, 6.1, -0.45, { size: 13 });
           B.setView([0, 7], [0, Math.max(6, 1.1 * E)]);
           st = { b, m2, M, dM, Kcm, E, gM: gc * M, tot };
         });
@@ -242,7 +238,7 @@ so the Newtonian $\tfrac12mv^2$ is the leading term, with relative error about $
         v.readout(() => {
           const { b, t, n, e } = st; if (t === undefined) return '';
           return String.raw`$\beta=${v.fix(b, 3)}$: $T/mc^2=${v.fix(t, 5)}$ against Newton $${v.fix(n, 5)}$; error ${v.fix(100 * e, 2)}% (≈ $\tfrac34\beta^2=${v.fix(75 * b * b, 2)}$%).` + '\n' +
-            String.raw`For an electron: $T=${eng(t * ME)}$ vs ${eng(n * ME)}; for a proton: ${eng(t * MP)} vs ${eng(n * MP)}. The 1% error point is $\beta=${v.fix(b1, 3)}$.`;
+            `For an electron T = ${eng(t * ME)} (Newton: ${eng(n * ME)}); for a proton T = ${eng(t * MP)} (Newton: ${eng(n * MP)}). The 1% error point is $\\beta=${v.fix(b1, 3)}$.`;
         });
       },
     },
@@ -273,7 +269,7 @@ so the Newtonian $\tfrac12mv^2$ is the leading term, with relative error about $
           A.text('$E=pc$', 0.72, 0.8, { color: 'gold', dx: 10, dy: 10 });
           B.fn((x) => 1 / (x * x * (1 + Math.sqrt(1 - 1 / (x * x)))), { color: 'accent', width: 2.6, n: 300 });
           B.fn((x) => 1 / (2 * x * x), { color: 'muted', width: 1.2, dash: true, n: 100 });
-          for (const [E, lab] of [[1, '1 MeV'], [1000, '1 GeV'], [104500, '104.5 GeV']]) { const gg = E / ME; B.dot(gg, 1 / (gg * gg * (1 + Math.sqrt(1 - 1 / (gg * gg)))), { r: 4.5, color: 'orange', label: lab, labelPos: 'ne' }); }
+          for (const [E, lab] of [[1, '1 MeV'], [1000, '1 GeV'], [104500, '104.5 GeV']]) { const gg = E / ME; B.dot(gg, 1 / (gg * gg * (1 + Math.sqrt(1 - 1 / (gg * gg)))), { r: 4.5, color: 'orange', label: lab, labelPos: E > 1e5 ? 'sw' : 'ne' }); }
           B.dot(g, gap, { r: 6, color: 'gold' });
           st = { g, m, p, gap };
         });

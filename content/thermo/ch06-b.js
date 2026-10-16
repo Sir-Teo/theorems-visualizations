@@ -272,3 +272,236 @@ with most probable speed $v_{\rm mp}=\sqrt{2kT/m}$, mean speed $\bar v=\sqrt{8kT
         v.readout(() => st && `$t=${fix(st.t, 1)}$, ${fix(st.col, 1)} collisions per molecule · $kT=${fix(st.kT, 3)}$ · mean speed measured **${fix(st.mean, 3)}** vs Maxwell $\\sqrt{8kT/\\pi m}=${fix(st.vm, 3)}$ · $v_{\\rm mp}=${fix(st.vmp, 3)}$, $v_{\\rm rms}=${fix(st.vr, 3)}$`);
       },
     },
+    // ------------------------------------------------------------------ 6.16
+    {
+      num: '6.16', kind: 'Model', name: 'Classical ideal gas in the canonical ensemble',
+      statement: String.raw`For $N$ indistinguishable non-interacting atoms of mass $m$ in a volume $V$ at temperature $T$,
+$$Z=\frac{Z_1^N}{N!},\qquad Z_1=\frac{V}{\lambda^3},\qquad\lambda=\frac{h}{\sqrt{2\pi mkT}}.$$
+Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial F/\partial V=NkT/V$, $U=\frac32NkT$ and the **Sackur–Tetrode** entropy $S=Nk\bigl[\ln\frac{V}{N\lambda^3}+\frac52\bigr]$. Valid when $n\lambda^3\ll1$.`,
+      idea: String.raw`Independent atoms give a product of single-atom sums (6.8); the single-atom sum is the phase-space integral $\int d^3x\,d^3p\,e^{-p^2/2mkT}/h^3=V/\lambda^3$ (a Gaussian integral). The $1/N!$ corrects for the indistinguishability of identical atoms, which is what restores extensivity of $S$ (Gibbs paradox, 5.12); with Stirling's formula $\ln N!\approx N\ln N-N$ it produces $V/N$ inside the logarithm. The constant $h$ is the only trace of quantum mechanics.`,
+      caption: String.raw`**Pick a gas and the conditions.** Left: the Sackur–Tetrode entropy per atom against $T$ at the chosen pressure; the gold dot is the standard molar entropy at $298.15$ K, $1$ bar, from the NIST WebBook (red). Middle: $F/NkT=\ln n\lambda^3-1$ against $\ln n\lambda^3$; the shaded region $n\lambda^3\gtrsim1$ is where the classical formula fails. Right: the pieces of $\ln Z$ for $N$ atoms.`,
+      deps: ['thermo-6.8', 'thermo-5.12'], refs: ['Schroeder §6.7'], tags: ['ideal gas', 'partition function', 'Sackur–Tetrode'],
+      credit: 'Sackur, 1911; Tetrode, 1912; Gibbs, 1902', verify: true,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sackur%E2%80%93Tetrode_equation' },
+      scope: String.raw`Monatomic gas with no internal structure (noble gases) and $n\lambda^3\ll1$; the standard entropies are the CODATA key values quoted in the NIST WebBook.`,
+      viz(v) {
+        const NOB = { He: { m: 4.002602, S: 126.153 }, Ne: { m: 20.1797, S: 146.328 }, Ar: { m: 39.948, S: 154.846 }, Kr: { m: 83.798, S: 164.085 }, Xe: { m: 131.293, S: 169.685 } };
+        const gas = v.select('gas', Object.keys(NOB), 'Ar');
+        const Ts = v.slider('temperature $T$ (K)', 5, 2000, 298.15, { log: true, sig: 3 });
+        const Pp = v.slider('pressure $P$ (bar)', 1e-3, 1e3, 1, { log: true, sig: 2 });
+        const lam = (m, T) => HP / Math.sqrt(2 * Math.PI * m * AMU * KB * T);
+        const sST = (m, T, P) => Math.log(KB * T / (P * lam(m, T) ** 3)) + 2.5;
+        const sa = v.stage({ x: [5, 2000], xlog: true, y: [0, 25], axes: 'box', gutter: true, height: 290, xlabel: '$T$ (K)', ylabel: '$S/Nk$', title: 'Sackur–Tetrode entropy', weight: 1.1 });
+        const sb = v.stage({ x: [-8, 3], y: [-12, 2], axes: 'box', gutter: true, height: 290, xlabel: '$\\ln n\\lambda^3$', ylabel: '$F/NkT$', title: 'free energy per atom', weight: 1 });
+        const sc = v.stage({ x: [0, 4], y: [-10, 10], axes: 'box', gutter: true, height: 290, weight: 0.8, minWidth: 190, ylabel: 'units of $N$', title: '$\\ln Z$ for $N=10^3$ atoms', xticks: [[0.5, 'ln Z₁ᴺ'], [1.5, '−ln N!'], [2.5, 'ln Z']] });
+        let st = null;
+        v.render(() => {
+          const g = NOB[gas.value], T = Ts.value, P = Pp.value * 1e5, m = g.m;
+          sa.fn((t) => sST(m, t, P), { color: 'accent', width: 2.4, n: 160, domain: [5, 2000] });
+          sa.setView([5, 2000], [-2, 25]);
+          sa.fn((t) => sST(m, t, 1e5), { color: 'muted', width: 1.4, dash: true, n: 160 });
+          const Smol = g.S / Rg; sa.dot(298.15, Smol, { r: 6, color: 'red' });
+          sa.dot(T, sST(m, T, P), { r: 6, color: 'gold' }); sa.vline(T, { color: 'faint', dash: true });
+          const x0 = -8, x1 = 3;
+          sb.fn((x) => x - 1, { color: 'accent', width: 2.4, domain: [x0, x1] });
+          sb.rect(0, -12, 3, 2, { fill: 'red', fillAlpha: 0.12, stroke: false });
+          sb.text('quantum:  $n\\lambda^3\\gtrsim1$', 2.9, 1.2, { size: 11, color: 'red', align: 'right' });
+          const n = P / (KB * T), nl3 = Math.log(n * lam(m, T) ** 3);
+          sb.dot(clamp(nl3, x0, x1), clamp(nl3 - 1, -12, 2), { r: 6, color: 'gold' });
+          const Nn = 1e3, V = Nn / n, lnZ1N = Nn * Math.log(V / lam(m, T) ** 3), lnNf = lnFac(Nn);
+          const vals = [lnZ1N / Nn, -lnNf / Nn, (lnZ1N - lnNf) / Nn], cols = ['accent', 'orange', 'green'];
+          const mx = Math.max(...vals.map(Math.abs), 1) * 1.2;
+          sc.setView([0, 4], [-mx, mx]);
+          vals.forEach((x, i) => sc.rect(i + 0.15, 0, i + 0.85, x, { fill: cols[i], fillAlpha: 0.65, color: cols[i], width: 1 }));
+          // derived quantities by differentiating ln Z numerically
+          const lnZ = (VV, TT) => Nn * Math.log(VV / lam(m, TT) ** 3) - lnFac(Nn);
+          const hv = V * 1e-4, ht = T * 1e-4;
+          const Pn = KB * T * (lnZ(V + hv, T) - lnZ(V - hv, T)) / (2 * hv);
+          const Un = KB * T * T * (lnZ(V, T + ht) - lnZ(V, T - ht)) / (2 * ht);
+          st = { nl3, S: sST(m, T, P), Smol, Sstd: sST(m, 298.15, 1e5) * Rg, Sref: g.S, Pn, P, Un, U32: 1.5 * Nn * KB * T, lam: lam(m, T) };
+        });
+        v.legend([['accent', '$S/Nk$ at chosen $P$'], ['muted', 'at 1 bar', { dash: true }], ['red', 'NIST $S^\\circ$ (298.15 K, 1 bar)', { dot: true }]]);
+        v.readout(() => st && `$\\lambda=${fix(st.lam * 1e12, 2)}$ pm, $n\\lambda^3=${st.nl3 < -9 ? (Math.exp(st.nl3)).toExponential(1) : fix(Math.exp(st.nl3), 4)}$ · $S/Nk=${fix(st.S, 3)}$ · Sackur–Tetrode $S^\\circ(298.15\\,\\mathrm K,1\\,\\mathrm{bar})=${fix(st.Sstd, 2)}$ J/(mol K) vs NIST ${fix(st.Sref, 3)}\nfrom $\\ln Z$: $P=kT\\,\\partial_V\\ln Z=${st.Pn.toExponential(4)}$ Pa vs $nkT=${st.P.toExponential(4)}$ · $U=-\\partial_\\beta\\ln Z=${fix(st.Un / st.U32, 6)}\\times\\frac32NkT$`);
+      },
+    },
+    // ------------------------------------------------------------------ 6.17
+    {
+      num: '6.17', kind: 'Theorem', name: 'Equivalence of ensembles',
+      statement: String.raw`For a large system with short-range interactions the microcanonical ensemble (fixed $U$) and the canonical ensemble (fixed $T$) give the same thermodynamics: if $U=\langle E\rangle_T$ then the entropy per particle and the temperature computed either way agree up to corrections of order $1/N$, and the canonical energy distribution has relative width $\sim1/\sqrt N$. For small systems or near phase transitions, the two can differ.`,
+      idea: String.raw`The canonical probability of energy $E$ is $\Omega(E)e^{-\beta E}/Z$, the product of a rapidly rising and a rapidly falling function, whose peak has width $\sqrt{kT^2C_V}$ (6.4), a relative width $N^{-1/2}$. Since the sharp peak sits where $\partial S/\partial U=1/T$ (5.4, 5.8), the canonical $\ln Z=\max_E[S/k-\beta E]$ up to $O(\ln N)$ terms: $F$ is the Legendre transform of $S$, and energy fluctuations do not matter for extensive quantities. Equivalence is an asymptotic statement; ensembles fail to be equivalent exactly when $S(U)$ is not concave.`,
+      caption: String.raw`The system is $N$ quantum oscillators (an Einstein solid) with $q$ quanta, mean $u=q/N$ quanta per oscillator. Left: the **canonical** energy distribution (bars) against the **microcanonical** delta spike at fixed $q$ (green); **change $N$** to see the bars squeeze onto the spike. Right: the relative disagreement between the microcanonical temperature $\partial S/\partial U$ and the canonical $T$ at the same $U$, against $N$: it falls as $1/N$.`,
+      deps: ['thermo-6.4', 'thermo-5.4'], refs: ['Kardar §4.6'], tags: ['ensembles', 'thermodynamic limit'],
+      credit: 'Gibbs, 1902', verify: true,
+      scope: String.raw`For systems with short-range interactions and a concave entropy; long-range interactions (gravitating systems) and first-order transitions in finite systems can break equivalence.`,
+      viz(v) {
+        const Ns = v.slider('oscillators $N$', 1, 1000, 20, { int: true, log: true });
+        const us = v.slider('quanta per oscillator $u=q/N$', 0.2, 4, 1.5, { step: 0.05 });
+        const sa = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: 'energy $q$ (quanta)', ylabel: 'probability', title: 'canonical vs microcanonical energy', weight: 1.2 });
+        const sb = v.stage({ x: [1, 1000], xlog: true, y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 290, xlabel: '$N$', ylabel: '$|T_{\\rm micro}-T_{\\rm can}|/T$', title: 'temperatures at equal energy', weight: 1 });
+        const Tmic = (N, q) => 1 / Math.log((q + N - 1) / q);   // exact: Ω(q)/Ω(q−1) = (q+N−1)/q
+        let st = null;
+        v.render(() => {
+          const N = Ns.value, u = us.value, q = Math.max(1, Math.round(u * N)), uq = q / N;
+          const x = uq / (1 + uq), Tc = 1 / Math.log(1 + 1 / uq);
+          const lnP = (k) => lnEin(N, k) + k * Math.log(x) + N * Math.log(1 - x);
+          const sd = Math.sqrt(N * x / (1 - x) ** 2), lo = Math.max(0, Math.floor(q - 4.5 * sd)), hi = Math.ceil(q + 4.5 * sd);
+          const ks = []; for (let k = lo; k <= hi; k++) ks.push(k);
+          const P = ks.map((k) => Math.exp(lnP(k)));
+          sa.setView([lo - 0.5, hi + 0.5], [0, Math.max(...P) * 1.25]);
+          ks.forEach((k, i) => sa.rect(k - 0.4, 0, k + 0.4, P[i], { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1 }));
+          sa.vline(q, { color: 'green', width: 2.4 });
+          sa.text('microcanonical: $q$ fixed', q, Math.max(...P) * 1.18, { size: 11, color: 'green', dx: 8 });
+          const df = (n) => { const qq = Math.max(1, Math.round(u * n)), uu = qq / n; return Math.abs(Tmic(n, qq) - 1 / Math.log(1 + 1 / uu)) / (1 / Math.log(1 + 1 / uu)); };
+          const pts = []; for (let n = 1; n <= 1000; n = Math.ceil(n * 1.25 + 0.01)) pts.push([n, Math.max(df(n), 1.1e-4)]);
+          sb.path(pts, { color: 'accent', width: 1.8 }); sb.dots(pts, { r: 3, color: 'accent' });
+          sb.fn((n) => 0.5 / n, { color: 'orange', dash: true, width: 1.6 });
+          const d = df(N); sb.dot(N, Math.max(d, 1.1e-4), { r: 6, color: 'gold' });
+          const smic = lnEin(N, q) / N, scan = (1 + uq) * Math.log(1 + uq) - uq * Math.log(uq);
+          st = { q, Tc, Tm: Tmic(N, q), d, sd, rel: sd / q, smic, scan, N };
+        });
+        v.legend([['accent', 'canonical $P(q)$ / computed difference'], ['green', 'microcanonical'], ['orange', '$1/2N$ (guide)', { dash: true }]]);
+        v.readout(() => st && `$N=${st.N}$, $q=${st.q}$ · $kT_{\\rm micro}=${fix(st.Tm, 4)}\\,\\varepsilon$ vs $kT_{\\rm can}=${fix(st.Tc, 4)}\\,\\varepsilon$ (relative difference ${st.d.toExponential(1)}) · entropy per oscillator $s_{\\rm micro}=${fix(st.smic, 4)}$ vs Legendre transform of $\\ln Z$: ${fix(st.scan, 4)} · canonical energy width $${fix(100 * st.rel, 1)}$ % of $q$`);
+      },
+    },
+    // ------------------------------------------------------------------ 6.18
+    {
+      num: '6.18', kind: 'Theorem', name: 'Bohr–van Leeuwen theorem',
+      statement: String.raw`In classical statistical mechanics the thermal equilibrium magnetization of any system of charges in an external magnetic field is zero at every temperature: $Z(\mathbf B)=Z(0)$, hence $\mathbf M=kT\,\partial_{\mathbf B}\ln Z/V=0$. There is no classical diamagnetism, paramagnetism or ferromagnetism; magnetism is a quantum effect.`,
+      idea: String.raw`With the Hamiltonian $H=\sum(\mathbf p_i-q\mathbf A(\mathbf r_i))^2/2m+V(\mathbf r)$ the field enters only through the vector potential, and in the classical phase-space integral $Z=\int d^3r\,d^3p\,e^{-\beta H}$ one may shift each momentum, $\mathbf p\to\mathbf p+q\mathbf A(\mathbf r)$, at fixed $\mathbf r$. The shift is a change of variables with unit Jacobian (the Lorentz force does no work, em-7.3, and the canonical momentum of mech-6.14 only reparametrizes phase space), so $Z$ does not depend on $B$. Physically, the diamagnetic moment of closed cyclotron orbits is exactly cancelled by the opposite moment of orbits that skip along the boundary.`,
+      caption: String.raw`**Classical charged particles bounce in a circular box** under a perpendicular field $B$ (units $m=q=kT=1$). Blue particles execute complete orbits inside the box and are diamagnetic; orange particles touch the wall and their skipping orbits go the other way. The right panel shows the running time average of the magnetic moment per particle for each class and the total. **Change $B$**: the two parts become large (about $\mp kT/B$ per particle for the full orbits) but their sum stays at zero within the noise.`,
+      deps: ['thermo-6.2', 'em-7.3', 'mech-6.14'], refs: ['Tong ch. 3'], tags: ['magnetism', 'classical limit'],
+      credit: 'Bohr, 1911; van Leeuwen, 1919',
+      links: { doi: 'https://doi.org/10.1051/jphysrad:01921002012036100' },
+      scope: String.raw`Classical mechanics of charges with velocity-independent forces; quantum spin and Landau diamagnetism are outside it. Van Leeuwen's paper: *Problèmes de la théorie électronique du magnétisme*, J. Phys. Radium 2, 361 (1921) (her 1919 Leiden thesis).`,
+      viz(v) {
+        const NP = 220, R0 = 1;
+        const Bs = v.slider('field $B$', 0.4, 6, 2, { step: 0.1, onChange: () => S.reset() });
+        const S = v.sim(() => {
+          const r = v.rng(31), P = [];
+          for (let i = 0; i < NP; i++) { const rr = Math.sqrt(r()) * R0, a = 2 * Math.PI * r(); P.push({ x: rr * Math.cos(a), y: rr * Math.sin(a), vx: r.normal(), vy: r.normal() }); }
+          return { P, sb: 0, ss: 0, n: 0, hist: [], tt: 0 };
+        }, (s, dt) => {
+          const Om = -Bs.value, c = Math.cos(Om * dt), sn = Math.sin(Om * dt);
+          let mb = 0, ms = 0;
+          for (const p of s.P) {
+            const nx = p.x + (p.vx * sn - p.vy * (1 - c)) / Om, ny = p.y + (p.vy * sn + p.vx * (1 - c)) / Om;
+            const nvx = p.vx * c - p.vy * sn, nvy = p.vx * sn + p.vy * c;
+            p.x = nx; p.y = ny; p.vx = nvx; p.vy = nvy;
+            const rr = Math.hypot(p.x, p.y);
+            if (rr > R0) { const ux = p.x / rr, uy = p.y / rr, vn = p.vx * ux + p.vy * uy; if (vn > 0) { p.vx -= 2 * vn * ux; p.vy -= 2 * vn * uy; } p.x = ux * (2 * R0 - rr); p.y = uy * (2 * R0 - rr); if (Math.hypot(p.x, p.y) > R0) { p.x = ux * R0 * 0.999; p.y = uy * R0 * 0.999; } }
+            const cx = p.x - p.vy / Om, cy = p.y + p.vx / Om, rc = Math.hypot(p.vx, p.vy) / Math.abs(Om);
+            p.bulk = Math.hypot(cx, cy) + rc < R0;
+            const mu = 0.5 * (p.x * p.vy - p.y * p.vx);
+            if (p.bulk) mb += mu; else ms += mu;
+          }
+          s.sb += mb / NP; s.ss += ms / NP; s.n++; s.tt += dt;
+          if (s.n % 25 === 0) s.hist.push([s.tt, s.sb / s.n, s.ss / s.n, (s.sb + s.ss) / s.n]);
+        }, { dt: 0.01, maxSteps: 3000 });
+        const sa = v.stage({ x: [-1.15, 1.15], y: [-1.15, 1.15], equal: true, axes: false, height: 300, weight: 0.9, minWidth: 240, title: 'particles in a magnetic field' });
+        const sb = v.stage({ x: [0, 20], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'time-averaged moment per particle, $\\times B/kT$', title: 'magnetic moment', weight: 1.2 });
+        let info = null;
+        v.animate((t) => {
+          const s = S.advance(t * 6) || S.state;
+          sa.circle(0, 0, R0, { color: 'ink', width: 2.4 });
+          s.P.forEach((p) => sa.dot(p.x, p.y, { r: 2.6, color: p.bulk ? 'accent' : 'orange', alpha: 0.8, ring: false }));
+          const p0 = s.P.find((p) => p.bulk) || s.P[0], Om = -Bs.value, cx = p0.x - p0.vy / Om, cy = p0.y + p0.vx / Om, rc = Math.hypot(p0.vx, p0.vy) / Math.abs(Om);
+          sa.circle(cx, cy, rc, { color: 'accent', width: 1, dash: true });
+          const T = Math.max(20, Math.ceil(s.tt / 20) * 20), B = Bs.value;
+          sb.setView([0, T], [-1.5, 1.5]);
+          sb.hline(0, { color: 'faint' });
+          const ser = (k, c) => sb.path(s.hist.map((h) => [h[0], h[k] * B]), { color: c, width: k === 3 ? 2.8 : 1.8 });
+          ser(1, 'accent'); ser(2, 'orange'); ser(3, 'green');
+          const last = s.hist[s.hist.length - 1] || [0, 0, 0, 0];
+          info = { nb: s.P.filter((p) => p.bulk).length, b: last[1] * B, k: last[2] * B, t: last[3] * B, tt: s.tt };
+        }, { still: 6 });
+        v.legend([['accent', 'complete orbits (diamagnetic)'], ['orange', 'skipping orbits at the wall'], ['green', 'total']]);
+        v.readout(() => info && `$B=${fix(Bs.value, 1)}$, ${info.nb} of ${NP} particles on complete orbits · averages so far, in units of $kT/B$ per particle: complete orbits **${fix(info.b, 3)}**, skipping orbits **${fix(info.k, 3)}**, **total ${fix(info.t, 3)}** (theorem: 0; noise $\\sim1/\\sqrt{NP\\,t}$)`);
+      },
+    },
+    // ------------------------------------------------------------------ 6.19
+    {
+      num: '6.19', kind: 'Definition', name: 'Thermal density operator',
+      statement: String.raw`A quantum system with Hamiltonian $H$ in equilibrium with a bath at temperature $T$ is described by the **thermal density operator**
+$$\hat\rho=\frac{e^{-\beta\hat H}}{Z},\qquad Z=\operatorname{tr}e^{-\beta\hat H},$$
+so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the energy basis with the Boltzmann populations. It is a mixed state with purity $\operatorname{tr}\hat\rho^2<1$ and von Neumann entropy $S=-k\operatorname{tr}\hat\rho\ln\hat\rho$ equal to the Gibbs entropy of those populations.`,
+      idea: String.raw`In the eigenbasis of $H$ the operator is $\operatorname{diag}(e^{-\beta E_n})/Z$, exactly the Boltzmann law (6.1) now read as a statement about a quantum state: the ensemble is a classical mixture of energy eigenstates, not a superposition. Its coherences vanish in the energy basis but do not vanish in other bases (for a spin in a field they are the transverse components of the Bloch vector). As $T\to0$ it tends to the pure ground state and as $T\to\infty$ to the maximally mixed state $\hat 1/d$.`,
+      caption: String.raw`A spin-$\frac12$ with $H=\frac\Delta2\,\hat{\mathbf n}\cdot\boldsymbol\sigma$. **Drag the orange handle** to turn the field direction $\hat{\mathbf n}$ (in the $x$–$z$ plane of the Bloch sphere) and move $kT$. The thermal state is the Bloch vector $\mathbf r=-\tanh(\Delta/2kT)\,\hat{\mathbf n}$: it points at the ground state and shrinks toward the centre (the fully mixed state) as the temperature rises. Right: its length, the purity and the entropy against $kT$; the readout checks the exponential against a direct diagonalization.`,
+      deps: ['thermo-6.2', 'qm-14.3'], refs: ['Kardar §6.5'], tags: ['density matrix', 'quantum statistics'],
+      credit: 'von Neumann, 1927; Landau, 1927', verify: true,
+      viz(v) {
+        const kT = v.slider('$kT/\\Delta$', 0.05, 5, 0.5, { log: true, sig: 2 });
+        const sa = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 310, weight: 1, title: 'Bloch disc ($x$–$z$ plane)' });
+        const h = sa.handle(0.6, 0.8, { color: 'orange', r: 7, constrain: (x, y) => { const n = Math.hypot(x, y) || 1; return [x / n, y / n]; } });
+        const sb = v.stage({ x: [0.05, 5], xlog: true, y: [0, 1.05], axes: 'box', gutter: true, height: 310, xlabel: '$kT/\\Delta$', ylabel: '', title: 'length, purity, entropy', weight: 1.1 });
+        let st = null;
+        v.render(() => {
+          const T = kT.value, nx = h.x, nz = h.y, r = Math.tanh(1 / (2 * T));
+          sa.circle(0, 0, 1, { color: 'ink', width: 2 });
+          sa.line(-1, 0, 1, 0, { color: 'faint' }); sa.line(0, -1, 0, 1, { color: 'faint' });
+          sa.text('$|{\\uparrow}\\rangle$', 0, 1.18, { size: 12, color: 'muted', align: 'center' }); sa.text('$|{\\downarrow}\\rangle$', 0, -1.2, { size: 12, color: 'muted', align: 'center' });
+          sa.arrow(0, 0, nx, nz, { color: 'orange', width: 2, head: 8 });
+          sa.arrow(0, 0, -r * nx, -r * nz, { color: 'gold', width: 3.2, head: 9 });
+          sa.dot(0, 0, { r: 3.5, color: 'muted' });
+          sa.text('field $\\hat n$', nx * 1.12, nz * 1.12, { size: 11, color: 'orange', align: nx > 0 ? 'left' : 'right' });
+          const Sf = (t) => { const p = (1 + Math.tanh(1 / (2 * t))) / 2, q = 1 - p; return (-(p * Math.log(p)) - (q > 0 ? q * Math.log(q) : 0)) / Math.LN2; };
+          sb.fn((t) => Math.tanh(1 / (2 * t)), { color: 'gold', width: 2.4, n: 160 });
+          sb.fn((t) => (1 + Math.tanh(1 / (2 * t)) ** 2) / 2, { color: 'accent', width: 2.2, n: 160 });
+          sb.fn(Sf, { color: 'purple', width: 2.2, n: 160 });
+          sb.vline(T, { color: 'faint', dash: true });
+          // direct diagonalization of H = (Δ/2)(n·σ) with Δ = 1 in the (z, x) real basis
+          const Hm = [[0.5 * nz, 0.5 * nx], [0.5 * nx, -0.5 * nz]];
+          const e = v.M.eigSym(Hm), b = 1 / T, w = e.values.map((E) => Math.exp(-b * E)), Z = w[0] + w[1];
+          const rho = [[0, 0], [0, 0]];
+          e.vecs.forEach((u, k) => { for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) rho[i][j] += (w[k] / Z) * u[i] * u[j]; });
+          const cf = [[0.5 * (1 - r * nz), -0.5 * r * nx], [-0.5 * r * nx, 0.5 * (1 + r * nz)]];
+          const err = Math.max(...[0, 1].flatMap((i) => [0, 1].map((j) => Math.abs(rho[i][j] - cf[i][j]))));
+          st = { r, rho: cf, err, pur: (1 + r * r) / 2, S: Sf(T), Z };
+        });
+        v.legend([['orange', 'field direction $\\hat n$'], ['gold', 'Bloch vector (length $|\\mathbf r|$)'], ['accent', 'purity $\\operatorname{tr}\\hat\\rho^2$'], ['purple', '$S/(k\\ln2)$']]);
+        v.readout(() => st && `$\\hat\\rho=\\begin{pmatrix}${fix(st.rho[0][0], 3)}&${fix(st.rho[0][1], 3)}\\\\${fix(st.rho[1][0], 3)}&${fix(st.rho[1][1], 3)}\\end{pmatrix}$ in the $\\sigma_z$ basis · $|\\mathbf r|=\\tanh\\frac{\\Delta}{2kT}=${fix(st.r, 3)}$ · purity ${fix(st.pur, 3)} · $S/k=${fix(st.S * Math.LN2, 3)}$ · matches $e^{-\\beta H}/Z$ from diagonalization to ${st.err.toExponential(1)}`);
+      },
+    },
+    // ------------------------------------------------------------------ 6.20
+    {
+      num: '6.20', kind: 'Method', name: 'Adiabatic demagnetization',
+      statement: String.raw`To cool a paramagnetic salt, magnetize it **isothermally** in a strong field $B_i$ (heat flows to the bath, the spin entropy falls), then isolate it and reduce the field **adiabatically** to $B_f$. For an ideal paramagnet $S$ depends only on $B/T$, so constant $S$ means $T_f=T_i\,B_f/B_i$. In a real salt the moments feel an internal field $b$ from their neighbours, $S=S(\sqrt{B^2+b^2}/T)$, and the temperature cannot fall below $T_i\,b/B_i$. Giauque and MacDougall reached about $0.25$ K this way in 1933, and with nuclear spins microkelvin temperatures have been reached.`,
+      idea: String.raw`The entropy of $N$ spin-$\frac12$ moments in a field is $S/Nk=\ln(2\cosh x)-x\tanh x$ with $x=\mu B/kT$ (6.10, 6.6): a decreasing function of $x$ ($\ln2$ at $x=0$, $0$ at $x\to\infty$). A strong field at $T_i$ orders the spins and the entropy flows out as heat. Removing the field while thermally isolated keeps the spin entropy constant: the spins remain as ordered as they were, which at a weaker field means a lower temperature. It works because the lattice entropy is negligible at low $T$ (third law, 3.17), so the spin entropy is nearly all the entropy there is; the internal field sets how far the third law lets you go.`,
+      caption: String.raw`**Choose the starting temperature $T_i$, the field $B_i$, the final field $B_f$ and the internal field $b$** (illustrative, mT scale; no particular salt is claimed). The curves are the spin-entropy-versus-temperature at the three fields. Orange: the isothermal magnetization at $T_i$; green: the adiabatic step at constant entropy over to the $B_f$ curve. The right panel shows $T_f$ against $B_f$: linear for $b=0$ (dashed), flattening at a floor set by $b$.`,
+      deps: ['thermo-6.10', 'thermo-3.17'], refs: ['Schroeder §4.4'], tags: ['cooling', 'paramagnet', 'entropy'],
+      credit: 'Debye, 1926; Giauque, 1927; Giauque & MacDougall, 1933',
+      links: { doi: 'https://doi.org/10.1021/ja01407a003' },
+      scope: String.raw`Ideal spin-$\frac12$ moments ($g=2$) with a single internal field $b$ and no lattice heat capacity or heat leak; the numbers are a model. Debye (Ann. Phys. 386, 1154 (1926)) and Giauque (J. Am. Chem. Soc. 49, 1864 (1927)) proposed the method; the 1933 experiment on gadolinium sulfate octahydrate reported 0.25 K.`,
+      viz(v) {
+        const muK = v.M.CONST.muB / v.M.CONST.kB;                       // K per tesla for a g = 2 moment of 1 μB
+        const Ti = v.slider('initial temperature $T_i$ (K)', 0.3, 4, 1.2, { step: 0.05 });
+        const Bi = v.slider('initial field $B_i$ (T)', 0.5, 10, 5, { step: 0.1 });
+        const Bf = v.slider('final field $B_f$ (T)', 0, 10, 0, { step: 0.05 });
+        const bs = v.slider('internal field $b$ (T)', 0.001, 0.1, 0.01, { log: true, sig: 2 });
+        const Sf = (B, T) => { const x = muK * Math.sqrt(B * B + bs.value ** 2) / T; return x > 30 ? Math.exp(-2 * x) * (1 + 2 * x) : Math.log(2 * Math.cosh(x)) - x * Math.tanh(x); };
+        const sa = v.stage({ x: [0.002, 5], xlog: true, y: [0, 0.75], axes: 'box', gutter: true, height: 310, xlabel: '$T$ (K)', ylabel: '$S/Nk$', title: 'spin entropy', weight: 1.2 });
+        const sb = v.stage({ x: [0, 10], y: [0.001, 5], ylog: true, axes: 'box', gutter: true, height: 310, xlabel: 'final field $B_f$ (T)', ylabel: '$T_f$ (K)', title: 'final temperature', weight: 1 });
+        let st = null;
+        v.render(() => {
+          const T0 = Ti.value, B0 = Bi.value, B1 = Math.min(Bf.value, B0);
+          const S0 = Sf(0, T0), S1 = Sf(B0, T0);
+          const Tf = (B) => bis((T) => Sf(B, T) - S1, 1e-5, 20);
+          sa.fn((t) => Sf(0, t), { color: 'muted', width: 1.8, n: 240 });
+          sa.fn((t) => Sf(B0, t), { color: 'accent', width: 2.4, n: 240 });
+          if (B1 > 0) sa.fn((t) => Sf(B1, t), { color: 'purple', width: 2, n: 240 });
+          const T1 = Tf(B1);
+          sa.arrow(T0, S0, T0, S1, { color: 'orange', width: 3, head: 9 });
+          sa.arrow(T0, S1, Math.max(T1, 0.0021), S1, { color: 'green', width: 3, head: 9 });
+          sa.dot(T0, S0, { r: 5, color: 'muted' }); sa.dot(T0, S1, { r: 5.5, color: 'gold' }); sa.dot(Math.max(T1, 0.0021), S1, { r: 6, color: 'green' });
+          sa.text('magnetize, isothermal', T0 * 1.08, (S0 + S1) / 2, { size: 11, color: 'orange' });
+          sa.text('demagnetize, adiabatic', Math.sqrt(T0 * Math.max(T1, 0.0021)), S1, { size: 11, color: 'green', dy: -10, align: 'center' });
+          sb.fn((B) => Tf(Math.min(B, B0)), { color: 'accent', width: 2.4, n: 100, domain: [0, B0] });
+          sb.fn((B) => Math.max(T0 * B / B0, 0.0011), { color: 'ink', dash: true, width: 1.5, domain: [0, B0] });
+          sb.dot(B1, Math.max(T1, 0.0011), { r: 6, color: 'green' });
+          st = { T1, ideal: T0 * B1 / B0, S0, S1, floor: T0 * bs.value / B0, B1, B0, x0: muK * B0 / T0 };
+        });
+        v.legend([['muted', '$B=0$ (internal field only)'], ['accent', '$B=B_i$'], ['purple', '$B=B_f$'], ['ink', 'ideal $T_i B_f/B_i$', { dash: true }]]);
+        v.readout(() => st && `$\\mu B_i/kT_i=${fix(st.x0, 2)}$: entropy $${fix(st.S0, 3)}\\to${fix(st.S1, 4)}\\,Nk$ on magnetizing · after reducing the field to ${fix(st.B1, 2)} T: $T_f=${st.T1 < 0.01 ? fix(st.T1 * 1000, 2) + '$ mK$' : fix(st.T1, 3) + '$ K$'}$ · ideal ($b=0$) $T_iB_f/B_i=${st.ideal < 0.01 ? fix(st.ideal * 1000, 2) + '$ mK$' : fix(st.ideal, 3) + '$ K$'}$ · floor at $B_f=0$: ${fix(st.floor * 1000, 2)} mK`);
+      },
+    },
+  ],
+};
