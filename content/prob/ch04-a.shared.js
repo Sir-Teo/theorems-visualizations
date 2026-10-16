@@ -57,12 +57,13 @@ export function drawCuts(S, cuts, o = {}) { for (let k = 1; k + 1 < cuts.length;
  */
 export function cutLane(S, init, y, o = {}) {
   const snap = (x) => clampN(Math.round(x * SNAP) / SNAP, 1 / SNAP, 1 - 1 / SNAP);
-  const hs = init.map((x) => S.handle(snap(x), y, { color: o.color || 'orange', r: o.r ?? 7, constrain: (xx) => [snap(xx), y], label: o.label }));
-  return {
-    hs,
-    get() { const xs = [...new Set(hs.map((h) => snap(h.x)))].sort((a, b) => a - b); return [0, ...xs, 1]; },
-    set(xs) { xs.forEach((x, i) => hs[i] && hs[i].set(snap(x), y)); },
-  };
+  const L = { y };
+  L.hs = init.map((x) => S.handle(snap(x), y, { color: o.color || 'orange', r: o.r ?? 7, constrain: (xx) => [snap(xx), L.y], label: o.label }));
+  L.get = () => { const xs = [...new Set(L.hs.map((h) => snap(h.x)))].sort((a, b) => a - b); return [0, ...xs, 1]; };
+  L.set = (xs) => xs.forEach((x, i) => L.hs[i] && L.hs[i].set(snap(x), L.y));
+  /** Move the whole lane to height y (call inside render after changing the stage's view). */
+  L.setY = (yy) => { L.y = yy; L.hs.forEach((h) => h.set(h.x, yy)); };
+  return L;
 }
 /** Is every cut of A also a cut of B (σ(A) ⊂ σ(B))? */
 export const nestedIn = (A, B) => A.every((a) => B.some((b) => Math.abs(a - b) < 1e-9));

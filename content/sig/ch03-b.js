@@ -177,7 +177,7 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
           // convolution y = ∫ h(τ) x(t − τ) dτ on every 4th point
           const P = [], Q = []; let err = 0, ym = 1, hm = 0.5;
           for (let i = 0; i <= n; i += 4) {
-            const t = i * dt; let s = 0; for (let j = 0; j <= i; j += 2) s += h[j] * x(t - j * dt) * 2 * dt - (j === 0 ? h[0] * x(t) * dt : 0);
+            const t = i * dt; let s = 0; for (let j = 0; j < i; j++) s += 0.5 * (h[j] + h[j + 1]) * x(t - (j + 0.5) * dt) * dt;
             P.push([t, ys[i]]); Q.push([t, s]); err = Math.max(err, Math.abs(ys[i] - s)); ym = Math.max(ym, Math.abs(ys[i]) * 1.15, Math.abs(s) * 1.15); hm = Math.max(hm, Math.abs(h[i]) * 1.15);
           }
           ym = Math.min(ym, 30); hm = Math.min(hm, 30);
@@ -303,7 +303,7 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
           pulse: Array.from({ length: LS }, (_, n) => (n >= 10 && n < 40 ? Math.sin((Math.PI * (n - 10)) / 30) : 0)),
           doub: Array.from({ length: LS }, (_, n) => (n < 25 ? 1 : -1) * Math.sin((Math.PI * n) / (LS - 1)) ** 2),
         };
-        const A = v.stage({ x: [0, NR], y: [-4, 4], axes: 'box', gutter: true, xlabel: 'n', full: true, height: 150, title: 'recording $r[n]$ = hidden template + noise' });
+        const A = v.stage({ x: [0, NR], y: [-4, 4], axes: 'box', gutter: true, xlabel: 'n', full: true, height: 150, title: 'recording $r[n]$ = hidden template (amplitude $A=2$) + noise' });
         const T = v.stage({ x: [0, LS], y: [-1.5, 1.5], axes: 'box', gutter: true, xlabel: 'n', height: 140, title: 'template $s[n]$ (what we look for)' });
         const C = v.stage({ x: [0, NR], y: [-30, 30], axes: 'box', gutter: true, xlabel: 'lag m', full: true, height: 190, title: 'correlation $c[m]=\\sum_n r[n]\\,s[n-m]$' });
         const hd = C.handle(100, 0, { color: 'gold', r: 7, constrain: (x) => [Math.max(0, Math.min(NR - LS, Math.round(x))), 0] });
@@ -357,7 +357,7 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
         };
         const sel = v.select('room', Object.entries(ROOMS).map(([value, o]) => ({ value, label: o.label })), 'living', { onChange: (k) => { const R = ROOMS[k]; beta.set(R.beta); hs.set(...R.src); hm.set(...R.mic); } });
         const beta = v.slider('wall reflectivity $\\beta$', 0.5, 0.97, 0.8, { step: 0.01 });
-        const A = v.stage({ x: [-1, 6], y: [-1, 5], equal: true, axes: false, height: 300, title: 'plan view (drag the source and the microphone)' });
+        const A = v.stage({ x: [-1, 6], y: [-1, 5], equal: true, axes: false, height: 300, title: 'plan view: drag source and mic' });
         const B = v.stage({ x: [0, 0.3], y: [-1, 1], axes: 'box', gutter: true, xlabel: 't (s)', height: 190, title: 'room impulse response $h(t)$' });
         const D = v.stage({ x: [0, 2.5], y: [-70, 3], axes: 'box', gutter: true, xlabel: 't (s)', height: 190, title: 'energy decay (dB)' });
         const dims = () => ROOMS[sel.value].d;
@@ -365,7 +365,7 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
         const hs = A.handle(...ROOMS.living.src, { color: 'orange', r: 8, label: 'source', labelPos: 'n', constrain: clamp });
         const hm = A.handle(...ROOMS.living.mic, { color: 'accent', r: 8, label: 'mic', labelPos: 'n', constrain: clamp });
         const axisList = (L, s, m, bt) => {
-          const maxd = C0 * TMAX, Nn = Math.min(Math.ceil(maxd / (2 * L)) + 1, Math.ceil(Math.log(1e-5) / (2 * Math.log(bt))) + 1), out = [];
+          const maxd = C0 * TMAX, Nn = Math.min(45, Math.ceil(maxd / (2 * L)) + 1, Math.ceil(Math.log(1e-5) / (2 * Math.log(bt))) + 1), out = [];
           for (let n = -Nn; n <= Nn; n++) for (const q of [0, 1]) out.push([(1 - 2 * q) * s + 2 * n * L - m, Math.abs(n - q) + Math.abs(n)]);
           return out;
         };
