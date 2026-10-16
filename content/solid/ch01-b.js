@@ -69,7 +69,7 @@ which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i
             S.line(X, FY - 0.9, H[i].x, FY, { color: 'orange', width: 1, dash: [2, 3], alpha: 0.7 });
             S.text(`${f3(f[i])} kN`, X, FY - 0.55, { size: 11, weight: 650, color: 'orange', align: 'center' });
           });
-          S.text(`deformation magnified ×${f3(mag * 100)}`, 14.6, -2.35, { size: 10.5, color: 'muted', align: 'right' });
+          S.text(`deformation magnified ×${f3(mag * 100)}`, -0.5, 3.25, { size: 10.5, color: 'muted', align: 'left' });
           // segment force labels
           [[2.5, f[0] + f[1] + f[2], 'AB'], [7, f[1] + f[2], 'BC'], [10.5, f[2], 'CD']].forEach(([x, N, nm]) => S.text(`N${nm} = ${f3(N)} kN`, x, -1.55 - 0.0, { size: 11, weight: 650, color: N >= 0 ? 'orange' : 'blue', align: 'center' }));
           // strain chart

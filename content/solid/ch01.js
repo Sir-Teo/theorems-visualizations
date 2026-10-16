@@ -163,7 +163,7 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
         const matSel = v.select('material', [{ value: 'steel', label: 'steel S355' }, { value: 'al', label: 'Al 6061-T6' }, { value: 'cu', label: 'copper' }, { value: 'rub', label: 'rubber' }], 'steel');
         const win = v.select('strain window', [{ value: 'full', label: 'whole test' }, { value: 'zoom', label: 'first 1 %' }], 'full');
         const unl = v.slider('unload (% of the stress)', 0, 100, 0, { step: 1 });
-        const SP = v.stage({ x: [-2.3, 1.2], y: [-0.2, 4.4], axes: false, height: 400, weight: 0.55, minWidth: 190, title: 'specimen (gauge length marked)' });
+        const SP = v.stage({ x: [-2.9, 1.2], y: [-0.2, 4.4], axes: false, height: 400, weight: 0.55, minWidth: 190, title: 'specimen (gauge length marked)' });
         const C = v.stage({ x: [0, 0.3], y: [0, 560], axes: 'box', gutter: { l: 50, b: 38 }, height: 400, weight: 1.6, xlabel: 'engineering strain ε = δ/L₀', ylabel: 'engineering stress σ (MPa)', title: 'stress–strain curve' });
         const sigF = () => (matSel.value === 'rub' ? rubberSig : curveOf(matSel.value).sig);
         const emaxOf = () => (matSel.value === 'rub' ? 5 : curveOf(matSel.value).ef);
@@ -252,7 +252,7 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
             void hiB; void loT;
           }
           SP.text(frac ? 'cup and cone' : '', 0, mid, { size: 11, color: 'red', align: 'center', weight: 650, dx: 62 });
-          SP.measure(-1.0, ylo, -1.0, yhi, `L = ${(1 + (mo === 'rub' ? e : e)).toFixed(mo === 'rub' ? 2 : 3)} L₀`);
+          SP.measure(-1.1, ylo, -1.1, yhi, `L = ${(1 + (mo === 'rub' ? e : e)).toFixed(mo === 'rub' ? 2 : 3)} L₀`);
         });
         v.readout(() => {
           const st = state(), m = st.m;
@@ -371,8 +371,8 @@ Poisson's ratio is dimensionless and lies between $-1$ and $\tfrac12$ for a stab
         v.readout(() => {
           const nu = NU[sel.value], e = (H.y - 4) / 4, el = -(1 - nu * e - 1);
           const wm = 1 - nu * e, nuMeas = e > 1e-9 ? (1 - wm) / e : nu;
-          const dV = (1 + e) * wm * wm - 1, dVsmall = (1 - 2 * nu) * e;
-          return `$\\varepsilon_{\\text{axial}} = ${e.toFixed(3)}$, $\\varepsilon_{\\text{lateral}} = ${(-nu * e).toFixed(3)}$ → measured $\\nu = ${nuMeas.toFixed(2)}$ · volume change $\\Delta V/V = (1+\\varepsilon)(1-\\nu\\varepsilon)^2 - 1 =$ **${(dV * 100).toFixed(1)} %** (small-strain $(1-2\\nu)\\varepsilon = ${(dVsmall * 100).toFixed(1)}$ %) ${sel.value === 'rub' ? '· rubber: no volume change' : sel.value === 'cork' ? '· cork: the width does not change at all' : ''}`;
+          const dVlin = (1 + e) * wm * wm - 1, dVsmall = (1 - 2 * nu) * e, dV = sel.value === 'rub' ? 0 : dVlin;
+          return `$\\varepsilon_{\\text{axial}} = ${e.toFixed(3)}$, $\\varepsilon_{\\text{lateral}} = ${(-nu * e).toFixed(3)}$ → measured $\\nu = ${nuMeas.toFixed(2)}$ · volume change $\\Delta V/V = (1+\\varepsilon)(1-\\nu\\varepsilon)^2 - 1 =$ **${(dVlin * 100).toFixed(1)} %** (small-strain $(1-2\\nu)\\varepsilon = ${(dVsmall * 100).toFixed(1)}$ %) ${sel.value === 'rub' ? '· rubber follows the dashed exact shape, volume change **0** (the linear rule drifts at this large strain)' : sel.value === 'cork' ? '· cork: the width does not change at all' : ''}`;
           void el;
         });
       },

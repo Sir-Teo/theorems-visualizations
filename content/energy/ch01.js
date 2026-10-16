@@ -296,5 +296,67 @@ Published medians span almost four orders of magnitude, from several hundred W/m
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.4
+    {
+      num: '1.4', kind: 'Definition', name: 'Capacity factor',
+      statement: String.raw`The **capacity factor** of a generator over a period is the energy it actually delivered divided by what it would have delivered running at its rated (nameplate) power $P_{\text{rated}}$ the whole time:
+$$\text{CF} = \frac{E_{\text{delivered}}}{P_{\text{rated}}\,T} = \frac{\bar P}{P_{\text{rated}}}, \qquad E_{\text{year}} = P_{\text{rated}} \times 8760\ \text{h} \times \text{CF}.$$
+It is the average power as a fraction of the peak. For the US power fleet in 2025 (EIA) the annual capacity factors were about 91% for nuclear, 58% for gas combined-cycle plants, 49% for coal, 35% for hydro, 34% for wind and 24% for utility-scale solar PV. A rating in megawatts therefore says little about annual energy until it is multiplied by the capacity factor: 1 GW of nuclear and 3 GW of solar PV deliver about the same energy per year.`,
+      idea: String.raw`A plant falls short of its rating for three different reasons. *Resource*: the Sun sets and the wind drops, so a solar farm sits at zero half the hours and at its peak only briefly. *Availability*: refuelling and maintenance outages take even reliable plants offline for weeks. *Dispatch*: a plant that is more expensive than its neighbours is switched on only at times of high demand, so gas and coal capacity factors depend on the market, not the machine. Averaging power over the year turns the hourly output curve into one number; geometrically, the capacity factor is the height of the rectangle spanning the whole year that has the same area as the sorted (duration) curve.`,
+      caption: String.raw`Real hourly output of three plant types in France in 2023 (Energy-Charts / RTE), as a fraction of installed capacity. Pick a technology: the calendar shows every hour of the year (days across, hour of day up); drag the week slider to see 168 hours; the right panel sorts all 8760 hours and shades their area — the dashed rectangle with the same area has height equal to the capacity factor. The gold line marks the 2025 US average for the same technology.`,
+      deps: ['energy-1.1'],
+      refs: ['Tester ch. 3'],
+      tags: ['capacity factor', 'generation'],
+      scope: String.raw`France's 2023 fleet is one data point: its nuclear plants ran well below their usual performance that year (outages and load-following), so the 59% is lower than the 90%+ typical of the US or of France in good years. Capacity factors for wind and solar depend on the site and the technology (tracking, turbine height); the French onshore wind and solar shown here are national averages relative to mid-year installed capacity.`,
+      links: { eia: 'https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_6_07_b' },
+      viz(v) {
+        const DATA = { nuc: decodeCF(FR23.nuc), wind: decodeCF(FR23.wind), sun: decodeCF(FR23.sun) };
+        const INFO = { nuc: ['Nuclear (61.4 GW)', 'purple', 0.91, 'US nuclear 2025'], wind: ['Onshore wind (21.3 GW)', 'teal', 0.342, 'US wind 2025'], sun: ['Solar PV (16.2 GW)', 'gold', 0.244, 'US utility solar 2025'] };
+        const tech = v.select('plant', [{ value: 'nuc', label: 'nuclear fleet' }, { value: 'wind', label: 'onshore wind' }, { value: 'sun', label: 'solar PV' }], 'wind');
+        const wk = v.slider('week starting day', 1, 358, 20, { step: 1, int: true, fmt: (x) => `day ${x}` });
+        const cap = v.slider('rated power', 1, 1000, 100, { log: true, sig: 2, fmt: (x) => `${v.fix(x, x < 10 ? 1 : 0)} MW` });
+        const sy = v.stage({ x: [0, 365], y: [0, 24], axes: 'box', gutter: true, height: 250, full: true, xlabel: 'day of 2023', ylabel: 'hour of day (local)', yticks: [0, 6, 12, 18, 24], xticks: [[1, 'Jan'], [32, 'Feb'], [60, 'Mar'], [91, 'Apr'], [121, 'May'], [152, 'Jun'], [182, 'Jul'], [213, 'Aug'], [244, 'Sep'], [274, 'Oct'], [305, 'Nov'], [335, 'Dec']] });
+        const sw = v.stage({ x: [0, 168], y: [0, 1.05], axes: 'box', gutter: true, height: 270, weight: 1, minWidth: 300, xlabel: 'hours from midnight of the first day', ylabel: 'output ÷ rated power', xticks: [[0, '0'], [24, '24'], [48, '48'], [72, '72'], [96, '96'], [120, '120'], [144, '144'], [168, '168']] });
+        const sd = v.stage({ x: [0, 8760], y: [0, 1.05], axes: 'box', gutter: true, height: 270, weight: 1, minWidth: 300, xlabel: 'hours of the year, sorted from best to worst', ylabel: 'output ÷ rated power', xticks: [[0, '0'], [2000, '2000'], [4000, '4000'], [6000, '6000'], [8760, '8760']] });
+        const cache = {};
+        const stat = (k) => {
+          if (cache[k]) return cache[k];
+          const a = DATA[k]; let sum = 0, low = 0, high = 0, mx = 0; for (const x of a) { sum += x; if (x < 0.05) low++; if (x > 0.9) high++; if (x > mx) mx = x; }
+          const sorted = Float32Array.from(a).sort().reverse();
+          return (cache[k] = { mean: sum / a.length, low, high, mx, sorted });
+        };
+        v.render(() => {
+          const k = tech.value, a = DATA[k], st = stat(k), [name, col, us, usn] = INFO[k];
+          sy.raster((x, y) => { const d = Math.floor(x), h = Math.floor(y); if (d < 0 || d > 364 || h < 0 || h > 23) return null; return [...v.ramp(Math.min(1, a[d * 24 + h]), col, 'panel'), 1]; }, { res: 1, key: k });
+          const d0 = wk.value - 1;
+          sy.rect(d0, 0, d0 + 7, 24, { color: 'ink', width: 2 });
+          sy.textPx(name, 12, 14, { size: 12, weight: 700, color: 'ink', plate: true });
+          // week trace
+          const pts = []; for (let i = 0; i < 168; i++) pts.push([i, a[d0 * 24 + i]]);
+          const area = [[0, 0], ...pts, [167, 0]];
+          sw.poly(area, { fill: col, fillAlpha: 0.3, stroke: false });
+          sw.path(pts, { color: col, width: 2 });
+          sw.hline(st.mean, { color: 'ink', width: 1.5, dash: true });
+          sw.hline(1, { color: 'faint', width: 1.2 });
+          sw.textPx(`annual mean ${v.fix(100 * st.mean, 1)}%`, sw.X(167), sw.Y(st.mean) - 9, { size: 11, weight: 600, color: 'ink', align: 'right' });
+          sw.textPx('rated power', sw.X(2), sw.Y(1) + 11, { size: 11, color: 'muted', align: 'left' });
+          // duration curve
+          const dp = []; for (let i = 0; i < 8760; i += 8) dp.push([i, st.sorted[i]]);
+          dp.push([8759, st.sorted[8759]]);
+          sd.poly([[0, 0], ...dp, [8760, 0]], { fill: col, fillAlpha: 0.32, stroke: false });
+          sd.path(dp, { color: col, width: 2.2 });
+          sd.rect(0, 0, 8760, st.mean, { color: 'ink', width: 1.8, dash: true });
+          sd.hline(us, { color: 'gold', width: 1.8 });
+          sd.hline(1, { color: 'faint', width: 1.2 });
+          sd.textPx(`${usn} ${v.fix(100 * us, 1)}%`, sd.X(8750), sd.Y(us) - 9, { size: 11, weight: 650, color: 'gold', align: 'right' });
+          sd.textPx(`equal-area rectangle: CF = ${v.fix(100 * st.mean, 1)}%`, sd.X(8750), sd.Y(st.mean / 2), { size: 11.5, weight: 700, color: 'ink', align: 'right', plate: true });
+          v.legend([[col, name, { area: true }], ['ink', 'annual mean = capacity factor', { dash: true }], ['gold', 'US average, 2025 (EIA)', {}]]);
+        });
+        v.readout(() => {
+          const k = tech.value, st = stat(k), [name, , us, usn] = INFO[k], E = cap.value * 8760 * st.mean;
+          return `**${name}**, France 2023: capacity factor **${v.fix(100 * st.mean, 1)}%** (${v.fix(st.mean * 8760, 0)} full-power hours of 8760). Best hour ${v.fix(100 * st.mx, 0)}% of rated power; ${grp(st.high)} hours above 90%, ${grp(st.low)} hours below 5%.\nA ${v.fix(cap.value, cap.value < 10 ? 1 : 0)} MW plant would deliver **${E >= 1e4 ? v.fix(E / 1000, 0) + ' GWh' : v.fix(E, 0) + ' MWh'}** a year (average power ${v.fix(cap.value * st.mean, 1)} MW); to match 1 GW of US nuclear at ${v.fix(100 * 0.91, 0)}% you would need ${v.fix(1000 * 0.91 / us, 1)} MW of this technology at the US average of ${v.fix(100 * us, 1)}%.`;
+        });
+      },
+    },
   ],
 };
