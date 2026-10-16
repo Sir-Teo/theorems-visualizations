@@ -261,7 +261,7 @@ export const COMPC = ['blue', 'orange', 'purple', 'teal', 'pink', 'green', 'gold
 export const popc = (m) => { let c = 0; while (m) { m &= m - 1; c++; } return c; };
 export const bitsOf = (m, n) => { const o = []; for (let i = 0; i < n; i++) if (m >> i & 1) o.push(i); return o; };
 export function sysGraphic(edges) { const vs = [...new Set(edges.flat())]; return { n: edges.length, indep: (m) => { const u = new UF(vs); for (const i of bitsOf(m, edges.length)) if (!u.union(edges[i][0], edges[i][1])) return false; return true; } }; }
-export function sysLinear(vecs) { return { n: vecs.length, indep: (m) => { const b = bitsOf(m, vecs.length).map((i) => vecs[i]); if (b.some(([x, y]) => Math.hypot(x, y) < 0.05)) return false; if (b.length > 2) return false; if (b.length === 2) { const [p, q] = b; return Math.abs(p[0] * q[1] - p[1] * q[0]) > 0.08 * Math.hypot(...p) * Math.hypot(...q); } return true; } }; }
+export function sysLinear(vecs) { return { n: vecs.length, indep: (m) => { const b = bitsOf(m, vecs.length).map((i) => vecs[i]); if (b.some(([x, y]) => x === 0 && y === 0)) return false; if (b.length > 2) return false; if (b.length === 2) { const [p, q] = b; return p[0] * q[1] - p[1] * q[0] !== 0; } return true; } }; }
 export function sysUniform(k, n) { return { n, indep: (m) => popc(m) <= k }; }
 export function sysMatching(edges) { return { n: edges.length, indep: (m) => { const seen = new Set(); for (const i of bitsOf(m, edges.length)) for (const x of edges[i]) { if (seen.has(x)) return false; seen.add(x); } return true; } }; }
 export function allIndep(sys) { const out = []; for (let m = 0; m < 1 << sys.n; m++) if (sys.indep(m)) out.push(m); return out; }

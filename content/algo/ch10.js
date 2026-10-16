@@ -56,7 +56,7 @@ export default {
       name: 'The greedy method',
       statement: String.raw`A **greedy algorithm** builds a solution one irrevocable choice at a time. At each step it looks at the choices that keep the partial solution extendable and takes the one that looks best by a fixed local rule (largest coin, earliest finish, lightest edge), without ever reconsidering. It is fast, usually a sort followed by one scan. Whether it is also **correct** is a separate question that depends on both the problem and the rule: the same rule can be optimal for one instance family and wrong for another, and a plausible rule for a problem can fail on small instances. A greedy rule is justified only by a proof, typically that greed *stays ahead* (10.2) or that an optimal solution can be *exchanged* into the greedy one (10.3).`,
       idea: String.raw`Greedy choice only makes sense when a problem has optimal substructure (7.3): after the first choice, what is left is a smaller problem of the same kind. Dynamic programming tries every first choice and solves each remainder; greedy is the special case in which a proof shows that one particular first choice is always safe, so the other branches need never be explored. When no such proof exists, a counterexample usually does: it is enough to find one instance on which the rule loses, and small instances are where they live. Always test a proposed rule against brute force first.`,
-      caption: String.raw`**Coins:** choose a coin system and drag the amount. The greedy row takes the largest coin that fits; the lower row is the dynamic-programming optimum (7.3). The bars on the right show, for every amount up to 60, how many extra coins greed uses: the US system never loses, while $\{1,3,4\}$ loses at 6 ($4+1+1$ against $3+3$). **Intervals:** the bars show, for 30 random instances, how many compatible intervals the chosen rule leaves on the table; only the earliest-finish rule is never red. Both pictures are tests, not proofs: no red bar does not prove a rule safe.`,
+      caption: String.raw`**Coins:** choose a coin system and drag the amount. The greedy row takes the largest coin that fits; the lower row is the dynamic-programming optimum (7.3). The bars on the right show, for every amount up to 60, how many extra coins greed uses: the US system never loses, while $\{1,3,4\}$ loses at 6 ($4+1+1$ against $3+3$). **Intervals:** twelve random intervals; the bars show, over 60 random instances, how many compatible intervals the chosen rule leaves on the table. Earliest start loses on about half of them, while *shortest* and *fewest conflicts* lose only rarely (instance 7 is one such case for both); earliest finish never does, and 10.4 proves why. Both pictures are tests, not proofs: an empty chart does not make a rule safe.`,
       deps: ['algo-7.3'],
       refs: ['CLRS 4e §15.2'],
       tags: ['greedy'],
@@ -64,15 +64,15 @@ export default {
         const mode = v.select('problem', [{ value: 'coins', label: 'making change' }, { value: 'iv', label: 'choosing intervals' }], 'coins', { onChange: () => sync() });
         const sys = v.select('coin system', [{ value: 'us', label: '1, 5, 10, 25' }, { value: 'odd', label: '1, 3, 4' }, { value: 'mix', label: '1, 5, 10, 20, 25' }, { value: 'pow', label: '1, 2, 4, 8, 16' }], 'odd');
         const amt = v.slider('amount', 1, 60, 6, { int: true });
-        const rule = v.select('greedy rule', RULES, 'finish');
-        const seed = v.slider('instance', 1, 30, 4, { int: true });
+        const rule = v.select('greedy rule', RULES, 'short');
+        const seed = v.slider('instance', 1, 60, 7, { int: true });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 320, title: undefined });
         const ch = v.stage({ x: [0, 31], y: [0, 4], axes: 'box', gutter: true, height: 320, xlabel: 'amount', ylabel: 'extra coins used by greed', weight: 0.9 });
         const sync = () => { const c = mode.value === 'coins'; sys.el.hidden = !c; amt.el.hidden = !c; rule.el.hidden = c; seed.el.hidden = c; };
         sync();
         let info = null;
-        const IVN = 9, IVT = 20;
-        const ivOpt = (rl, sd) => { const iv = ivRandom(sd, IVN, IVT, 7), g = ivGreedy(iv, rl), b = ivBrute(iv); return { iv, g, b, gap: b.best - g.picked.length }; };
+        const IVN = 12, IVT = 24;
+        const ivOpt = (rl, sd) => { const iv = ivRandom(sd, IVN, IVT, 10), g = ivGreedy(iv, rl), b = ivBrute(iv); return { iv, g, b, gap: b.best - g.picked.length }; };
         v.render(() => {
           if (mode.value === 'coins') {
             const coins = COIN_SYS[sys.value], a = amt.value, G = coinGreedy(coins, a), O = coinOpt(coins, a);
@@ -92,7 +92,7 @@ export default {
           } else {
             const { iv, g, b, gap } = ivOpt(rule.value, seed.value), pick = new Set(g.picked), opt = new Set(b.sets[0]);
             s.setView([0, IVT], [0, IVN]);
-            const T0 = 28, W0 = s.width - 40, X = (t) => 28 + (t / IVT) * W0, rowH = (s.height - 34) / IVN;
+            const T0 = 28, W0 = s.width - 40, X = (t) => 28 + (t / IVT) * W0, rowH = (s.height - 50) / IVN;
             TX(s, `rule: ${RULE_NAME[rule.value]}`, 28, 12, { size: 12.5, weight: 700, color: 'muted', align: 'left' });
             for (let t = 0; t <= IVT; t += 5) { LN(s, X(t), 26, X(t), s.height - 20, { color: 'grid', width: 1 }); TX(s, t, X(t), s.height - 9, { size: 10, color: 'faint', align: 'center' }); }
             void T0;
@@ -102,8 +102,8 @@ export default {
               if (inO) R(s, X(a.s) - 2, y + 1, X(a.f) + 2, y + rowH - 2, { color: 'gold', width: 2, stroke: true, radius: 5 });
               TX(s, LETTER(a.id), (X(a.s) + X(a.f)) / 2, y + rowH / 2 + 0.5, { size: 11.5, weight: 700, color: 'ink', align: 'center', halo: false });
             });
-            const gaps = []; for (let sd = 1; sd <= 30; sd++) gaps.push(ivOpt(rule.value, sd).gap);
-            ch.setView([0, 31], [0, Math.max(2, ...gaps) + 0.5]); ch.setLabels('random instance', 'intervals missed by greed');
+            const gaps = []; for (let sd = 1; sd <= 60; sd++) gaps.push(ivOpt(rule.value, sd).gap);
+            ch.setView([0, 61], [0, Math.max(2, ...gaps) + 0.5]); ch.setLabels('random instance', 'intervals missed by greed');
             ch.bars(gaps, { x0: 1, color: (g, i) => (i + 1 === seed.value ? 'gold' : g > 0 ? 'red' : 'green') });
             ch.vline(seed.value, { color: 'gold', width: 1.6, dash: [4, 3] });
             info = { g, b, gap, bad: gaps.filter((x) => x > 0).length };
@@ -117,7 +117,7 @@ export default {
             return `amount ${a} with coins ${coins.join(', ')}: greedy takes ${G.join(' + ')} = ${G.length} coin${G.length === 1 ? '' : 's'}; the optimum is ${O.join(' + ')} = ${O.length} · ${bad.length ? `greed is **not optimal** at ${plural(bad.length, 'amount')} up to 60 (first: ${bad[0]})` : 'greed matches the optimum at every amount up to 60 ✓ (a test, not a proof)'}`;
           }
           const { g, b, gap, bad } = info;
-          return `rule “${RULE_NAME[rule.value]}” keeps ${g.picked.length} intervals (green); the exhaustive optimum is ${b.best} (gold outlines show one optimal set; ${plural(b.sets.length, 'optimal set')}) · ${gap ? `**loses by ${gap}** on this instance` : 'optimal on this instance'} · over the 30 instances shown it loses on ${bad}`;
+          return `rule “${RULE_NAME[rule.value]}” keeps ${g.picked.length} intervals (green); the exhaustive optimum is ${b.best} (gold outlines show one optimal set; ${plural(b.sets.length, 'optimal set')}) · ${gap ? `**loses by ${gap}** on this instance` : 'optimal on this instance'} · over the 60 instances in the chart it loses on ${bad}`;
         });
       },
     },
@@ -278,7 +278,7 @@ export default {
       name: 'Interval partitioning meets the depth bound',
       statement: String.raw`**Problem.** Partition $n$ intervals $[s_i,f_i)$ (lectures) into the fewest classes (rooms) so that the intervals in one class are pairwise disjoint. The **depth** $d$ is the largest number of intervals that contain a common point. **Algorithm.** Sort by start time and assign each interval to any room that is free at its start, opening a new room if there is none. **Claim.** The algorithm uses exactly $d$ rooms, and no schedule can use fewer, so it is optimal. It runs in $O(n\log n)$ time with a priority queue of room finishing times.`,
       idea: String.raw`No schedule can beat $d$: the $d$ intervals through one point pairwise overlap, so they need $d$ different rooms. Conversely suppose the algorithm opens room number $d+1$ for an interval $I$ starting at time $s$. All $d$ existing rooms must hold an interval running at time $s$ (otherwise one would be free), and each of those started no later than $s$ because the intervals come in start order. So together with $I$ there are $d+1$ intervals containing the point $s$, contradicting the definition of $d$. The picture is the interplay of a **lower bound** (depth) and an **upper bound** (the algorithm), which meet, a pattern that shows up again in max-flow min-cut.`,
-      caption: String.raw`**Drag the bar ends.** The player assigns intervals in start order; a room is a row, and colours name the room. The step chart underneath is the number of intervals alive at each time, its maximum is the depth, and the slider drops a sweep line (gold) that circles the intervals through that moment. The rooms used and the depth always coincide.`,
+      caption: String.raw`**Drag the bar ends.** The player assigns intervals in start order; the colour and the number after the dot name the room. The step chart underneath is the number of intervals alive at each time, its maximum is the depth, and the slider drops a sweep line (gold) that circles the intervals through that moment. The rooms used and the depth always coincide.`,
       deps: ['algo-10.4'],
       refs: ['KT §4.1'],
       tags: ['greedy', 'scheduling'],
@@ -296,7 +296,7 @@ export default {
             let r = free.findIndex((x) => x <= a.s), opened = false;
             if (r < 0) { r = free.length; free.push(0); opened = true; }
             free[r] = a.f; room[a.id] = r;
-            F.push({ room: { ...room }, nr: free.length, cur: a.id, opened, line: opened ? [3, 4, 5] : [3, 4], note: opened ? `${LETTER(a.id)} = [${a.s}, ${a.f}): every open room is busy at ${a.s}, so open **room ${r + 1}**.` : `${LETTER(a.id)} = [${a.s}, ${a.f}): room ${r + 1} is free from time ${free[r] === a.f ? 'before' : ''} ${a.s}, so reuse it.` });
+            F.push({ room: { ...room }, nr: free.length, cur: a.id, opened, line: opened ? [3, 4, 5] : [3, 4], note: opened ? `${LETTER(a.id)} = [${a.s}, ${a.f}): every open room is busy at ${a.s}, so open **room ${r + 1}**.` : `${LETTER(a.id)} = [${a.s}, ${a.f}): room ${r + 1} is already free at time ${a.s}, so reuse it.` });
           }
           return F;
         };
@@ -336,7 +336,7 @@ export default {
       deps: ['algo-10.3'],
       refs: ['KT §4.2'],
       tags: ['greedy', 'scheduling'],
-      credit: 'J. R. Jackson, 1955 (earliest-due-date rule)',
+      credit: 'Jackson, 1955 (earliest-due-date rule)',
       verify: true,
       viz(v) {
         const N = 5, NAMES = 'ABCDE', COL = ['blue', 'orange', 'purple', 'teal', 'pink'];
@@ -448,7 +448,7 @@ export default {
       kind: 'Algorithm',
       name: 'Optimal offline caching (furthest in future)',
       statement: String.raw`**Problem.** A cache holds $k$ pages. A sequence of page requests $r_1,r_2,\dots,r_n$ is known in advance. A request for a page not in the cache is a **miss**: the page is brought in and, if the cache was full, some cached page is evicted. Minimise the number of misses. **Theorem (Bélády).** Evicting, at every miss, the cached page whose next request lies furthest in the future (or that is never requested again) minimises the number of misses over all eviction policies.`,
-      idea: String.raw`Exchange argument (10.3). Let $S$ be any schedule that agrees with furthest-in-future (FF) up to some miss, where FF evicts page $e$ but $S$ evicts a different page $f$ (so $e$ is requested later than $f$, or never). Let $S'$ evict $e$ there instead and then imitate $S$. The caches of $S$ and $S'$ differ in exactly one page, $f$ against $e$. Follow them until $f$ is requested (this comes before $e$ is): if $S$ evicted $e$ meanwhile, $S'$ evicts $f$ and the caches coincide again; otherwise $S'$ pays one miss at $f$ but $S$ paid one at some earlier point ($S$ must evict something, and it is one of the two). In all cases $S'$ has no more misses than $S$, so FF can be imposed one decision at a time. FF needs the future, so it is a benchmark for online policies such as LRU; as a rule it cannot be implemented without knowing the requests.`,
+      idea: String.raw`Exchange argument (10.3). Let $S$ be any schedule that agrees with furthest-in-future (FF) up to some miss at which FF evicts a page $e$ but $S$ evicts a different page $f$, so $e$ is requested later than $f$ (or never). Let $S'$ evict $e$ there instead and then follow $S$, with one change: whenever $S$ would evict $e$, $S'$ evicts $f$. Until $f$ is next requested the two caches differ in exactly one page ($S$ holds $e$ where $S'$ holds $f$). If $S$ evicts $e$ first, $S'$ evicts $f$ at that moment and the caches coincide again at no extra cost. If $f$ is requested first, $S$ misses while $S'$ hits, so $S'$ is a miss ahead at that point, and that spare miss pays for bringing the two caches back together. Hence $S'$ has no more misses than $S$ and agrees with FF one decision longer; repeating, FF is optimal (the careful bookkeeping is in KT §4.3). FF needs the future, so it cannot be implemented, but it is the benchmark against which online policies such as LRU are measured.`,
       caption: String.raw`Type a request sequence and set the cache size, then step through. Each column is one request: the cache contents below it, hits in green, misses in red with the page evicted. For the optimal policy the arrows show, at the current miss, each cached page's next request; the evicted page is the one with the longest arrow. The readout compares the miss counts of all three policies with an exhaustive search over every eviction choice. The default sequence is a classic: try $k=3$ against $k=4$ under FIFO.`,
       deps: ['algo-10.3'],
       refs: ['CLRS 4e §15.4', 'KT §4.3'],

@@ -53,7 +53,7 @@ export default {
       kind: 'Definition',
       name: 'Prefix codes as binary trees',
       statement: String.raw`A **binary code** assigns to each symbol of an alphabet a nonempty bit string, its **codeword**. A code is a **prefix code** (prefix-free) if no codeword is a proper prefix of another and no two symbols share a codeword. Such a code corresponds to a binary tree whose leaves are the symbols: the codeword of a leaf spells the path from the root, $0$ for a left edge and $1$ for a right edge. Conversely every binary tree with the symbols on (some of) its leaves defines a prefix code. A bit string is **decoded** by walking down from the root, reading one bit per edge, and emitting a symbol and returning to the root each time a leaf is reached. The cost of the code for symbol frequencies $f_x$ is $\sum_x f_x\,|c(x)|$, the weighted depth of the leaves.`,
-      idea: String.raw`Prefix-freeness is exactly what lets the decoder act without lookahead: the first time the walk reaches a codeword it knows that symbol is the right one, because no longer codeword starts with it. If one codeword is a prefix of another, the symbol sits on an internal node, and a bit string can be parsed in more than one way (for example $a=0$, $b=01$, $c=1$ reads $01$ as $ab$... or as $b$). Restricting attention to prefix codes costs nothing in compression: any uniquely decodable code has lengths satisfying Kraft's inequality $\sum_x 2^{-|c(x)|}\le1$ (McMillan), and the same inequality is enough to build a prefix code with those lengths (info-4.3), so no uniquely decodable code beats the best prefix code.`,
+      idea: String.raw`Prefix-freeness is exactly what lets the decoder act without lookahead: the first time the walk reaches a codeword it knows that symbol is the right one, because no longer codeword starts with it. If one codeword is a prefix of another, the symbol sits on an internal node, and a bit string can be parsed in more than one way (for example with $a=0$, $b=01$, $c=1$ the string $01$ reads as $ac$ or as $b$). Restricting attention to prefix codes costs nothing in compression: any uniquely decodable code has lengths satisfying Kraft's inequality $\sum_x 2^{-|c(x)|}\le1$ (McMillan), and the same inequality is enough to build a prefix code with those lengths (info-4.3), so no uniquely decodable code beats the best prefix code.`,
       caption: String.raw`Type a code table as symbol:bits pairs (like a:0 b:10), or pick one of the presets. The tree draws itself: boxes are codewords, and any codeword sitting above another codeword (or shared by two symbols) turns red. Type a bit string and **drag the slider** to read it one bit at a time: the gold path is the decoder's walk, and the readout counts how many different ways the whole string can be split into codewords. A prefix code always gives exactly one.`,
       deps: ['info-4.3'],
       refs: ['CLRS 4e §15.3'],
@@ -86,7 +86,7 @@ export default {
           for (const [p, n] of nodes) {
             const [x, d] = pxs.get(p), isCode = n.syms.length > 0, hot = cur != null && p === cur;
             const col = n.bad ? 'red' : isCode ? 'green' : 'muted';
-            if (isCode) { R(s, X(x) - 19, Y(d) - 12, X(x) + 19, Y(d) + 12, { fill: 'panel', fillAlpha: 1, stroke: false, radius: 6 }); R(s, X(x) - 19, Y(d) - 12, X(x) + 19, Y(d) + 12, { fill: col, fillAlpha: 0.22, color: col, width: hot ? 3 : 1.6, radius: 6 }); TX(s, n.syms.join('='), X(x), Y(d) + 0.5, { align: 'center', size: 13, weight: 700, color: 'ink', halo: false }); TX(s, p, X(x), Y(d) + 24, { align: 'center', size: 10.5, color: n.bad ? 'red' : 'muted', weight: 600 }); }
+            if (isCode) { R(s, X(x) - 19, Y(d) - 12, X(x) + 19, Y(d) + 12, { fill: 'panel', fillAlpha: 1, stroke: false, radius: 6 }); R(s, X(x) - 19, Y(d) - 12, X(x) + 19, Y(d) + 12, { fill: col, fillAlpha: 0.22, color: col, width: hot ? 3 : 1.6, radius: 6 }); TX(s, n.syms.join('='), X(x), Y(d) + 0.5, { align: 'center', size: 13, weight: 700, color: 'ink', halo: false }); if (n.kids.length) TX(s, p, X(x) - 26, Y(d) + 0.5, { align: 'right', size: 10.5, color: n.bad ? 'red' : 'muted', weight: 600 }); else TX(s, p, X(x), Y(d) + 24, { align: 'center', size: 10.5, color: n.bad ? 'red' : 'muted', weight: 600 }); }
             else { s.dot(s.invX(X(x)), s.invY(Y(d)), { r: p === '' ? 7 : 4.5, color: hot ? 'gold' : 'muted', fill: hot ? 'gold' : 'panel' }); }
             if (hot && !isCode) s.dot(s.invX(X(x)), s.invY(Y(d)), { r: 8, color: 'gold', fill: 'gold' });
           }
@@ -118,8 +118,8 @@ export default {
       credit: 'D. A. Huffman, 1952',
       viz(v) {
         const txt = v.input('text', 'abracadabra', { width: 300, onChange: () => S.reset({ at: 'keep' }) });
-        const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 330, weight: 1.5, title: 'the forest of trees' });
-        const tb = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 330, weight: 1, title: 'code and cost' });
+        const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1.5, title: 'the forest of trees' });
+        const tb = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1, title: 'code and cost' });
         let model = null;
         const build = () => {
           const { list, cut, all } = textFreqs(String(txt.value).slice(0, 200), 14);
@@ -134,7 +134,7 @@ export default {
           if (!M || !M.H) return;
           const { list, H } = M, n = list.length, F = H.total;
           // table
-          const rows = list.length, rh = Math.min(20, (tb.height - 140) / Math.max(1, rows));
+          const rows = list.length, rh = Math.min(20, (tb.height - 150) / Math.max(1, rows));
           TX(tb, 'symbol', 14, 22, { size: 11.5, weight: 700, color: 'muted', align: 'left' }); TX(tb, 'count', 78, 22, { size: 11.5, weight: 700, color: 'muted', align: 'left' }); TX(tb, 'codeword', 134, 22, { size: 11.5, weight: 700, color: 'muted', align: 'left' });
           list.forEach((it, i) => { const y = 42 + i * rh; TX(tb, it.sym, 14, y, { size: 12.5, weight: 700, color: 'ink', align: 'left' }); TX(tb, it.w, 78, y, { size: 12, color: 'muted', align: 'left' }); TX(tb, done ? H.codes[it.sym] : '…', 134, y, { size: 12.5, weight: 600, color: done ? 'green' : 'faint', align: 'left' }); });
           const fix = Math.max(1, Math.ceil(Math.log2(n))), Hh = entropy(list), by = 42 + rows * rh + 24, bw = tb.width - 150, sc = bw / Math.max(fix, H.avg, Hh, 1) * 0.92;
@@ -203,7 +203,7 @@ export default {
           const Qs = S.frames.map((g) => g.Q), mx = Math.max(10, ...Qs) * 1.1;
           ch.setView([-0.5, Math.max(3, Qs.length - 0.5)], [0, mx]); ch.setTicks(Qs.length <= 14 ? Qs.map((_, i) => i) : null, null);
           ch.path(Qs.slice(0, S.i + 1).map((q, i) => [i, q]), { color: 'accent', width: 2.4 });
-          Qs.forEach((q, i) => ch.dot(i, q, { r: i === S.i ? 7 : 4, color: S.frames[i].merge ? 'green' : i === S.i ? 'gold' : 'accent', fill: i <= S.i ? (S.frames[i].merge ? 'green' : 'accent') : 'panel' }));
+          Qs.forEach((q, i) => { if (i <= S.i) ch.dot(i, q, { r: i === S.i ? 7 : 4, color: S.frames[i].merge ? 'green' : i === S.i ? 'gold' : 'accent', fill: S.frames[i].merge ? 'green' : i === S.i ? 'gold' : 'accent' }); });
           if (S.frames[0]) ch.hline(S.frames[S.frames.length - 1].Q, { color: 'green', width: 1.6, dash: [5, 4] });
         });
         v.legend([['accent', '$Q$ after a swap'], ['green', '$Q$ after a merge (unchanged)', { dot: true }], ['green', 'Huffman\'s cost', { dash: true }]]);
@@ -392,7 +392,7 @@ export default {
       credit: 'J. B. Kruskal, 1956',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340, weight: 1.5 });
-        const ls = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 340, weight: 1, title: 'edges in sorted order' });
+        const ls = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1, title: 'edges in sorted order' });
         const G = mapGraph(v, s, { editable: { editWeight: true, minWeight: 1, maxWeight: 20, addNode: false, addEdge: false, deleteNode: false, deleteEdge: false, moveNode: true }, onChange: () => S.reset({ at: 'keep' }) });
         let run = null;
         const S = v.steps({ frames: () => { run = kruskalTrace(G); return run.frames; }, code: KRUSKAL_CODE, codeTitle: 'Kruskal(G)', speed: 1.4, start: 'end', still: 'end' });
@@ -431,7 +431,7 @@ export default {
       credit: 'V. Jarník, 1930; R. C. Prim, 1957',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340, weight: 1.5 });
-        const ls = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 340, weight: 1, title: 'crossing edges (priority queue)' });
+        const ls = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1, title: 'crossing edges (priority queue)' });
         const G = mapGraph(v, s, { editable: { editWeight: true, minWeight: 1, maxWeight: 20, addNode: false, addEdge: false, deleteNode: false, deleteEdge: false, moveNode: true }, onChange: () => S.reset({ at: 'keep' }) });
         let root = 'a', run = null;
         G.onClick = ({ node }) => { if (!node) return false; root = K(node.id); S.reset({ at: 'start' }); return true; };

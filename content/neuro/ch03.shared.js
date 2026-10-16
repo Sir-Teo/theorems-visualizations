@@ -154,3 +154,42 @@ export function izhRun(p, Ifn, tEnd, { dt = 0.5 } = {}) {
   }
   return o;
 }
+
+// ---------------------------------------------------------------- cached ML f–I curves and onset current
+const _curve = new Map();
+/** [[I, rate Hz], …] of the named ML set on the grid Is (cached; long runs near onset are costly). */
+export function mlCurve(name, Is, opt) {
+  const k = name + '|' + Is.join(',') + '|' + (opt?.T ?? '');
+  if (!_curve.has(k)) _curve.set(k, Is.map((I) => [I, mlRate(ML_SETS[name], I, opt)]));
+  return _curve.get(k);
+}
+/** Current at which the stable node and the saddle of the 'snic' set merge (bisection on the number of equilibria). */
+export function snicCurrent(p = ML_SETS.snic) {
+  let lo = 30, hi = 50;
+  for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (mlEquilibria(p, m).length > 1) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+/** Equilibria of the fast subsystem of BURST at frozen z: [{V, stable}]. */
+export function burstFastEq(p, z, I = p.I) {
+  const g = (V) => { const w = mlWinf(p, V); return burstF(p, V, w, z, I, z)[0]; };
+  const out = []; let Va = -80, ga = g(Va);
+  for (let V = -79.5; V <= 60; V += 0.5) {
+    const gb = g(V);
+    if (ga * gb <= 0) {
+      let lo = V - 0.5, hi = V; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (g(lo) * g(m) <= 0) hi = m; else lo = m; }
+      const Vr = (lo + hi) / 2, w = mlWinf(p, Vr), h = 1e-4, F = (V1, w1) => burstF(p, V1, w1, z, I, z);
+      const a = F(Vr + h, w), b = F(Vr - h, w), c = F(Vr, w + h), d = F(Vr, w - h);
+      const j11 = (a[0] - b[0]) / (2 * h), j12 = (c[0] - d[0]) / (2 * h), j21 = (a[1] - b[1]) / (2 * h), j22 = (c[1] - d[1]) / (2 * h);
+      out.push({ V: Vr, stable: j11 + j22 < 0 && j11 * j22 - j12 * j21 > 0 });
+    }
+    Va = V; ga = gb;
+  }
+  return out;
+}
+/** Range of V on the fast subsystem's attracting oscillation at frozen z (null if it settles): {lo, hi, period}. */
+export function burstFastCycle(p, z, I = p.I, { T = 900, dt = 0.25 } = {}) {
+  let y = [0, mlWinf(p, 0)]; const F = (s) => { const f = burstF(p, s[0], s[1], z, I, z); return [f[0], f[1]]; }, N = Math.round(T / dt);
+  let lo = Infinity, hi = -Infinity; const tc = []; let Vp = y[0];
+  for (let k = 0; k < N; k++) { y = rk4(F, y, dt); if (k * dt > T / 2) { lo = Math.min(lo, y[0]); hi = Math.max(hi, y[0]); if (Vp < 0 && y[0] >= 0) tc.push(k * dt); } Vp = y[0]; }
+  return hi - lo > 8 && tc.length > 1 ? { lo, hi, period: (tc[tc.length - 1] - tc[0]) / (tc.length - 1) } : null;
+}
