@@ -155,9 +155,9 @@ export default {
       scope: String.raw`Rigid plates meeting at a line; real boundaries are often diffuse zones, and "convergent" may mean subduction or collision depending on the crust involved.`,
       viz(v) {
         const s = v.stage({ height: 400, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-165, 25], graticule: 30 });
-        const P1 = G.handle(-150, 5, { label: '', color: 'orange' }), P2 = G.handle(-175, 50, { label: '', color: 'orange' });
-        const E = G.handle(-100, 40, { label: 'E', color: 'purple' });
+        const G = v.globe(s, { projection: 'orthographic', center: [-135, 22], graticule: 30 });
+        const P1 = G.handle(-174, 36, { label: '', color: 'orange' }), P2 = G.handle(-98, -10, { label: '', color: 'orange' });
+        const E = G.handle(-95, 45, { label: 'E', color: 'purple' });
         const om = v.slider('rate $\\omega$ (°/Myr)', 0.1, 1.5, 0.7, { step: 0.01 });
         const over = v.select('on a convergent boundary, the overriding plate is', [{ value: 'A', label: 'A (left)' }, { value: 'B', label: 'B (right)' }], 'B');
         const gr = v.stage({ x: [0, 1], y: [-100, 100], axes: 'box', gutter: true, xlabel: 'distance along the boundary (°)', ylabel: 'velocity of B rel. A (mm/yr)', height: 230, full: true });
@@ -179,7 +179,7 @@ export default {
           G.smallCircle(pol, angDist(pol, samp[Math.round(N / 2)].p), { color: 'purple', width: 1, dash: [3, 4], alpha: 0.55 });
           for (let i = 0; i < N; i++) { const c = samp[i].cls === samp[i + 1].cls ? samp[i].cls : samp[i].cls; G.path([samp[i].p, samp[i + 1].p], { color: col[c], width: 5 }); }
           for (let i = 3; i < N; i += 6) { // relative motion arrows (each plate moves half)
-            const q = samp[i], len = Math.min(10, q.vel.speed / 6);
+            const q = samp[i], len = Math.min(12, q.vel.speed / 5);
             if (q.vel.speed < 1) continue;
             G.arrow(q.p, dest(q.p, q.vel.az, len / 2 + 0.01), { color: 'gold', width: 2 });
             G.arrow(q.p, dest(q.p, q.vel.az + 180, len / 2 + 0.01), { color: 'gold', width: 2 });
@@ -252,7 +252,7 @@ export default {
           info = { aa, err, sum: A.reduce((a, x) => a + x.value, 0) };
         });
         v.legend([['muted', 'initial cap'], ['orange', 'after step 1', { dash: true }], ['teal', 'after step 2', { dash: true }], ['green', 'turned by the net rotation'], ['purple', 'Euler pole $E$ and path of the cap centre']]);
-        v.readout(() => `net rotation: **${v.fix(info.aa.angle, 2)}°** about **E = (${v.fix(info.aa.pole[1], 2)}°N, ${v.fix(info.aa.pole[0], 2)}°E)** · sum of the three angles ${v.fix(info.sum, 1)}° (not the net angle: the axes differ) · largest gap between the composed motion and the single rotation over the cap: **${v.sci(Math.max(info.err, 1e-12), 2)}** km`);
+        v.readout(() => `net rotation: **${v.fix(info.aa.angle, 2)}°** about **E = (${v.fix(info.aa.pole[1], 2)}°N, ${v.fix(info.aa.pole[0], 2)}°E)** · sum of the three angles ${v.fix(info.sum, 1)}° (not the net angle: the axes differ) · largest gap between the composed motion and the single rotation over the cap: **$${v.sci(Math.max(info.err, 1e-12), 2)}$** km`);
       },
     },
     // ───────────────────────────────────────── 3.5
@@ -290,7 +290,7 @@ export default {
             const wv = vscale(V(pole), w * D / 1e6), cr = vnorm(cross(wv, V(p))) * R_EARTH * 1e6, fm = w * D / 1e6 * R_EARTH * 1e6 * Math.sin(d * D);
             rows.push({ d, sp: vel.speed, cr, fm });
             if (i % 5 === 2 && vel.speed > 0.5) {
-              const len = Math.max(1.2, vel.speed / 9);
+              const len = Math.max(2, vel.speed / 5);
               G.arrow(p, dest(p, vel.az, len), { color: 'gold', width: 2 }); G.arrow(p, dest(p, vel.az + 180, len), { color: 'gold', width: 2 });
             }
           });
@@ -302,7 +302,7 @@ export default {
           info = { max: Math.max(...rows.map((r) => r.sp)), min: Math.min(...rows.map((r) => r.sp)), dd, w, dmin: Math.min(...rows.map((r) => r.d)), dmax: Math.max(...rows.map((r) => r.d)) };
         });
         v.legend([['blue', 'schematic ridge'], ['gold', 'opening velocity'], ['purple', '$\\omega R\\sin\\Delta$ and the $90^\\circ$ circle']]);
-        v.readout(() => `$\\omega R=${v.fix(info.w * 111.195, 1)}$ mm/yr is the maximum possible (at $\\Delta=90^\\circ$) · along this ridge ($\\Delta$ from ${v.fix(info.dmin, 0)}° to ${v.fix(info.dmax, 0)}°) the speed runs from **${v.fix(info.min, 1)}** to **${v.fix(info.max, 1)}** mm/yr · $|\\boldsymbol\\omega\\times\\mathbf r|$ from the vectors and $\\omega R\\sin\\Delta$ agree to ${v.sci(Math.max(info.dd, 1e-12), 1)} mm/yr.`);
+        v.readout(() => `$\\omega R=${v.fix(info.w * 111.195, 1)}$ mm/yr is the maximum possible (at $\\Delta=90^\\circ$) · along this ridge ($\\Delta$ from ${v.fix(info.dmin, 0)}° to ${v.fix(info.dmax, 0)}°) the speed runs from **${v.fix(info.min, 1)}** to **${v.fix(info.max, 1)}** mm/yr · $|\\boldsymbol\\omega\\times\\mathbf r|$ from the vectors and $\\omega R\\sin\\Delta$ agree to $${v.sci(Math.max(info.dd, 1e-12), 1)}$ mm/yr.`);
       },
     },
   ],

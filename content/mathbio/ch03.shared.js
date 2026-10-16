@@ -83,3 +83,10 @@ export function cycleMean(ts, vs, xs, level) {
   }
   return { mean: I / (t1 - t0), period: (t1 - t0) / (c.length - 1), t0, t1 };
 }
+
+/** Period of the scaled Lotka–Volterra orbit through (g + s, a) (x' = x(a - y), y' = y(x - g)); NaN if not found within Tmax. */
+export function lvOrbitPeriod(a, g, s, Tmax = 400, dt = 0.01) {
+  const sol = rk4sys(lvField(a, g), [g + s, a], Tmax, Math.round(Tmax / dt), 1e-12);
+  const c = crossings(sol.ts, sol.ys.map((p) => p[1]), a, 1);
+  return c.length ? c[0] : NaN;
+}

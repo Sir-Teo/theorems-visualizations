@@ -231,7 +231,7 @@ of degree $n$ with parity $(-1)^n$. They satisfy $(n+1)P_{n+1}=(2n+1)xP_n-nP_{n-
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Legendre_polynomials' },
       viz(v) {
         const sP = v.stage({ x: [-1, 1], y: [-1.15, 1.15], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'P_n(x)', title: 'Legendre polynomials', weight: 1.1, minWidth: 260 });
-        const sG = v.stage({ x: [-0.7, 9.2], y: [-0.1, 9.45], aspect: 1, axes: false, title: 'Gram matrix $\\int P_iP_j$', weight: 0.9, minWidth: 250 });
+        const sG = v.stage({ x: [-1.0, 9.2], y: [-0.1, 9.45], aspect: 1, axes: false, title: 'Gram matrix $\\int P_iP_j$', weight: 0.9, minWidth: 250 });
         const sS = v.stage({ x: [-1.05, 1.05], y: [-4, 4], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'y', title: 'power-series solution', weight: 1, minWidth: 250 });
         const Nn = v.slider('degrees up to $n$', 1, 8, 5, { int: true });
         const ell = v.slider('$\\ell$ in the series', 0, 6, 1.5, { step: 0.01 }), par = v.select('series', [{ value: 0, label: 'even' }, { value: 1, label: 'odd' }], 0);
@@ -249,9 +249,9 @@ of degree $n$ with parity $(-1)^n$. They satisfy $(n+1)P_{n+1}=(2n+1)xP_n-nP_{n-
             if (i !== j) off = Math.max(off, i <= n && j <= n ? Math.abs(val) : 0); else if (inn) dg = Math.max(dg, Math.abs(val - 2 / (2 * i + 1)));
             const c = v.ramp(inn ? Math.min(1, Math.abs(val) / 1.0) : 0, 'accent');
             sG.rect(j + 0.04, y + 0.04, j + 0.96, y + 0.96, { fill: [c[0], c[1], c[2], inn ? 1 : 0.25], stroke: false });
-            if (inn) sG.text(Math.abs(val) < 5e-7 ? '0' : v.fix(val, 3), j + 0.5, y + 0.5, { size: 10.5, align: 'center', baseline: 'middle', color: i === j ? 'ink' : 'muted' });
+            if (inn) sG.text(Math.abs(val) < 5e-7 ? '0' : v.fix(val, 3), j + 0.5, y + 0.5, { size: 10, align: 'center', baseline: 'middle', color: i === j ? 'ink' : 'muted' });
           }
-          for (let k = 0; k <= 8; k++) { sG.text(String(k), k + 0.5, 9.05, { size: 11, align: 'center', color: 'muted' }); sG.text(String(k), -0.1, 8 - k + 0.5, { size: 11, align: 'right', baseline: 'middle', color: 'muted' }); }
+          for (let k = 0; k <= 8; k++) { sG.text(String(k), k + 0.5, 9.05, { size: 11, align: 'center', color: 'muted' }); sG.text(String(k), -0.3, 8 - k + 0.5, { size: 11, align: 'right', baseline: 'middle', color: 'muted' }); }
           const L = ell.value, odd = par.value === 1, a = legendreSeriesCoef(L, odd, 3000), pts = [];
           for (let i = 0; i <= 400; i++) { const x = -0.999 + (1.998 * i) / 400; pts.push([x, polyHorner(a, x)]); }
           sS.vline(-1, { color: 'red', dash: true, alpha: 0.7 }); sS.vline(1, { color: 'red', dash: true, alpha: 0.7 });

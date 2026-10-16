@@ -188,8 +188,8 @@ Here $K_i$ is the carrying capacity of species $i$ alone and $\alpha_{12}$ (resp
           M.raster((a, b) => { const c = v.rgb(outcome(a, b)[1]); return [c[0], c[1], c[2], 0.28]; }, { res: 4, key: 'regions' });
           M.line(1, 0, 1, 2, { color: 'ink', width: 1.5 }); M.line(0, 1, 2, 1, { color: 'ink', width: 1.5 });
           M.text('coexistence', 0.5, 0.2, { color: 'green', size: 13, align: 'center' });
-          M.text('1 wins', 1.5, 0.2, { color: 'accent', size: 13, align: 'center' });
-          M.text('2 wins', 0.5, 1.8, { color: 'orange', size: 13, align: 'center' });
+          M.text('2 wins', 1.5, 0.2, { color: 'orange', size: 13, align: 'center' });
+          M.text('1 wins', 0.5, 1.8, { color: 'accent', size: 13, align: 'center' });
           M.text('founder control', 1.5, 1.8, { color: 'red', size: 13, align: 'center' });
           pp.draw();
         });
@@ -280,7 +280,7 @@ If $\alpha\beta<1$ (weak mutualism) the coexistence equilibrium $\bigl(\tfrac{1+
           T.path(ser.map((q) => [q[0], q[1]]), { color: 'accent', width: 2.4 }); T.path(ser.map((q) => [q[0], q[2]]), { color: 'orange', width: 2.4 });
           if (blow != null) T.vline(blow, { color: 'red', dash: true });
         });
-        pp.legend([['orange', 'time series: v (species 2)']]);
+        pp.legend([['accent', 'time series: u (species 1)'], ['orange', 'time series: v (species 2)']]);
         v.readout(() => { run(); const a = al.value, b = be.value, g = a * b; if (form.value === 'sat') return `saturating benefit: always bounded; $\\alpha\\beta=${v.fix(g, 2)}$\n${pp.describe({ max: 4 })}`; return `$\\alpha\\beta=${v.fix(g, 2)}$ → ${g < 1 ? `weak mutualism: equilibrium $(${v.fix((1 + a) / (1 - g), 3)},\\,${v.fix((1 + b) / (1 - g), 3)})$, above the solo capacities $(1,1)$` : `**strong mutualism**: unbounded growth${blow != null ? `, density exceeds $10^3$ at $t=${v.fix(blow, 2)}$` : ''}`}\n${pp.describe({ max: 4 })}`; });
       },
     },

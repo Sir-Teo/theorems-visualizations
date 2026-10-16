@@ -6,13 +6,15 @@ function diagram(v, o = {}) {
   const D = { M: defaultModel(), sel: [], seed: 0, X: null, opts: o.build || {} };
   D.build = () => { D.X = buildExec(D.M, D.opts); return D.X; };
   D.build();
+  D.pre = () => (o.sel || []).map(([p, i]) => D.X.byProc[p][i]);
+  D.sel = D.pre();
   D.s = v.stage({ x: [-1.3, T0 + 0.5], y: [-0.75, 2.85], axes: false, height: o.height || 300, full: true, title: o.title || 'space-time diagram (time runs to the right)' });
   D.ed = attachEditor(D.s, D.M, () => D.X, {
     onPick: (id) => { if (o.one) D.sel = [id]; else D.sel = D.sel.length >= 2 ? [id] : D.sel.includes(id) ? D.sel : [...D.sel, id]; },
     onChange: () => { D.sel = []; },
   });
   v.button('random execution', () => { D.seed++; setModel(D.M, randomModel(D.seed)); D.sel = []; });
-  v.button('reset', () => { setModel(D.M, defaultModel()); D.sel = []; D.seed = 0; });
+  v.button('reset', () => { setModel(D.M, defaultModel()); D.build(); D.sel = D.pre(); D.seed = 0; });
   D.draw = (x = {}) => {
     drawExec(D.s, D.X, { ghost: D.ed.ghost, ...x });
     D.s.text('drawing time →', T0 + 0.35, -0.55, { align: 'right', size: 11, color: 'muted' });
@@ -37,7 +39,7 @@ export default {
       scope: String.raw`Messages are reliable and each is received once; the diagram is a finite execution in which only messages actually sent count (as opposed to messages that could have been sent).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Happened-before' },
       viz(v) {
-        const D = diagram(v, {});
+        const D = diagram(v, { sel: [[1, 2], [2, 3]] });
         v.legend([['gold', 'a (first pick)', { dot: true }], ['blue', 'happened before a', { dot: true }], ['green', 'happens after a', { dot: true }], ['muted', 'concurrent with a', { dot: true }]]);
         let info = null;
         v.render(() => {
@@ -75,7 +77,7 @@ export default {
       scope: String.raw`Reliable message delivery; no failures. The stamps give a total order consistent with causality, not real time, and carry no information about concurrency.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lamport_timestamp' },
       viz(v) {
-        const D = diagram(v, { height: 285, one: true });
+        const D = diagram(v, { height: 285, one: true, sel: [[2, 1]] });
         const rule = v.select('rule', [{ value: 'max', label: 'Lamport: max, then +1' }, { value: 'inc', label: 'broken: +1 only' }], 'max');
         const sT = v.stage({ x: [-0.7, 12], y: [-1, 1.2], axes: false, height: 110, full: true, title: 'all events in the total order (C, process)' });
         let info = null;
@@ -86,7 +88,7 @@ export default {
           D.draw({ label: (e) => X.lam[e.id], dotColor: (e) => (e.id === sel ? 'gold' : PCOL[e.p]), localHollow: false, msgColor: (m) => (bad(m) ? 'red' : 'accent'), msgWidth: (m) => (bad(m) ? 3 : 2), ring: (e) => (e.id === sel ? 'gold' : null), labelSize: 13 });
           const ord = X.ev.map((e) => e.id).sort((a, b) => X.lam[a] - X.lam[b] || X.ev[a].p - X.ev[b].p || X.ev[a].t - X.ev[b].t);
           sT.setView([-0.7, Math.max(11.3, X.N - 0.3)], [-1, 1.2]);
-          sT.line(-0.5, -0.45, X.N - 0.5, -0.45, { color: 'faint', width: 1.4 }); sT.text('total order', -0.6, -0.45, { align: 'right', size: 11, color: 'muted' });
+          sT.text('smallest stamp first →', X.N - 0.5, -0.55, { align: 'right', size: 11, color: 'muted' });
           ord.forEach((id, i) => {
             const e = X.ev[id], c = PCOL[e.p];
             sT.rect(i - 0.43, -0.2, i + 0.43, 0.9, { fill: c, fillAlpha: id === sel ? 0.5 : 0.2, color: id === sel ? 'gold' : c, width: id === sel ? 2.6 : 1.4, radius: 4 });
@@ -145,7 +147,7 @@ export default {
             sR.text('start: 1', x0, 4.4, { align: 'center', size: 12.5, color: 'muted' });
             R.applied[p].filter((a) => a.t <= t).forEach((a, i) => sR.text(`${a.req.op.label}  →  ${a.val}`, x0, 3.6 - 0.75 * i, { align: 'center', size: 14, color: 'ink' }));
           }
-        }, { period: 20, still: 19 });
+        }, { period: 16, still: 15.5 });
         v.legend([['accent', 'request (coloured by operation)'], ['muted', 'acknowledgement'], ['green', 'replica executes an operation', { dot: true }]]);
         v.readout(() => {
           const x = R.x, same = x[0] === x[1] && x[1] === x[2];
@@ -166,7 +168,7 @@ export default {
       scope: String.raw`Reliable messages; the vector has one entry for each process in the system, so it grows with $n$ and the set of processes is fixed in advance.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Vector_clock' },
       viz(v) {
-        const D = diagram(v, { height: 300, one: true });
+        const D = diagram(v, { height: 300, one: true, sel: [[1, 3]] });
         let info = null;
         v.render(() => {
           const X = D.build(), n = X.n, sel = D.sel[0];
@@ -200,9 +202,9 @@ export default {
       credit: 'Fidge, 1988; Mattern, 1989',
       scope: String.raw`Holds for the vector clock rules exactly as stated, in every execution with reliable messages. For Lamport clocks only the forward implication holds; the "no merge" variant is deliberately wrong.`,
       viz(v) {
-        const D = diagram(v, { height: 270 });
+        const D = diagram(v, { height: 270, sel: [[1, 1], [2, 0]] });
         const clk = v.select('clock under test', [{ value: 'vec', label: 'vector clocks' }, { value: 'lam', label: 'Lamport clocks' }, { value: 'own', label: 'vectors without the merge' }], 'vec');
-        const sM = v.stage({ x: [-1.6, 12], y: [-0.2, 12.9], axes: false, equal: true, height: 360, full: true, title: 'does the clock predict a → b ?  (row a, column b)' });
+        const sM = v.stage({ x: [-1.6, 12], y: [-0.2, 12.9], axes: false, equal: true, height: 430, full: true, title: 'does the clock predict a → b ?  (row a, column b)' });
         let info = null;
         sM.onClick((x, y) => { const X = D.X, b = Math.round(x), a = X.N - 1 - Math.round(y); if (a >= 0 && b >= 0 && a < X.N && b < X.N) D.sel = [a, b]; });
         v.render(() => {
@@ -210,7 +212,7 @@ export default {
           const X = D.build(), N = X.N, [pa, pb] = D.sel;
           const claim = (a, b) => (clk.value === 'lam' ? X.lam[a] < X.lam[b] : vecLess(X.vec[a], X.vec[b]));
           D.draw({ label: (e) => (clk.value === 'lam' ? X.lam[e.id] : vecStr(X.vec[e.id])), labelSize: 11, localHollow: false, ring: (e) => (e.id === pa ? 'gold' : e.id === pb ? 'orange' : null), dotColor: (e) => PCOL[e.p] });
-          sM.setView([-1.9, N + 0.2], [-0.3, N + 0.9]);
+          sM.setView([-1.9, N + 0.2], [-0.9, N + 0.9]);
           let fp = 0, miss = 0, agree = 0;
           for (let a = 0; a < N; a++) for (let b = 0; b < N; b++) {
             const x = b, y = N - 1 - a;
