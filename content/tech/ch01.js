@@ -464,7 +464,7 @@ Each side of the triangle moves a curve. Fine, dry fuel (tinder) reacts faster, 
         const fuelSel = v.select('fuel', [{ value: 3, label: 'dry grass tinder' }, { value: 1, label: 'kindling' }, { value: 0.3, label: 'thick logs' }], 1);
         const airS = v.slider('air supply (draft)', 0, 1, 0.8, { step: 0.01 });
         const wetS = v.slider('moisture in the wood', 0, 0.7, 0.15, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
-        const hS = A.handle(380, 4, { color: 'gold', label: 'spark / ember', labelPos: 'n', constrain: (x) => [clamp(x, 20, 1250), 4] });
+        const hS = A.handle(380, 4, { color: 'gold', constrain: (x) => [clamp(x, 20, 1250), 4] });
         const lhv = () => (18.7 * (1 - wetS.value) - 2.44 * wetS.value) / 18.7; // lower heating value relative to dry wood
         const G = (Tc) => { const T = Tc + 273, d = Math.max(airS.value, 1e-4), x = (fuelSel.value / d) * Math.exp(ER * (1 / TH - 1 / T)); return Math.max(0, GMAX * airS.value * lhv() * x / (1 + x)); };
         const L = (Tc) => { const T = Tc + 273; return 0.015 * (T - T0) + (0.6 * SIG * (T ** 4 - T0 ** 4)) / 1000; };
@@ -489,15 +489,16 @@ Each side of the triangle moves a curve. Fine, dry fuel (tinder) reacts faster, 
           const X = crossings(), ign = X.find((c) => !c.stable), burn = [...X].reverse().find((c) => c.stable && c.T > 150);
           // ---- A
           A.vband(250, 365, { color: 'red', alpha: 0.08 });
-          A.text('wood ignites', 307, 172, { size: 10.5, color: 'red', align: 'center' });
+          A.text('wood ignites', 307, 168, { size: 10.5, color: 'red', align: 'center' });
           A.fn(G, { color: 'orange', width: 2.6, domain: [20, 1300] });
           A.fn(L, { color: 'blue', width: 2.2, domain: [20, 1300] });
           A.clip(() => { A.between((T) => Math.max(G(T), L(T)), L, 20, 1300, { fill: 'green', fillAlpha: 0.16 }); });
-          if (ign) { A.dot(ign.T, L(ign.T), { r: 5.5, color: 'red', hollow: true }); A.text(`ignition ${Math.round(ign.T)} °C`, ign.T + 18, L(ign.T) + 14, { size: 11.5, color: 'red', align: 'left' }); }
+          if (ign) { A.dot(ign.T, L(ign.T), { r: 5.5, color: 'red', hollow: true }); A.text(`ignition ${Math.round(ign.T)} °C`, ign.T - 14, L(ign.T) + 16, { size: 11.5, color: 'red', align: 'right', plate: true }); }
           if (burn) { A.dot(burn.T, L(burn.T), { r: 6, color: 'green' }); A.text(`burning ${Math.round(burn.T)} °C`, burn.T - 12, L(burn.T) + 14, { size: 11.5, color: 'green', align: 'right', weight: 700 }); }
-          A.text('G: heat released', 1290, Math.min(170, G(1290) + 9), { size: 11.5, color: 'orange', align: 'right' });
+          A.text('G: heat released', 760, Math.min(170, G(760) + 10), { size: 11.5, color: 'orange', align: 'center' });
           A.text('L: heat lost', 1290, Math.min(176, L(1290)) - 10, { size: 11.5, color: 'blue', align: 'right', baseline: 'top' });
-          A.line(hS.x, 0, hS.x, 180, { color: 'gold', width: 1, dash: [4, 4] });
+          A.line(hS.x, 0, hS.x, 150, { color: 'gold', width: 1, dash: [4, 4] });
+          A.text(`your ember: ${Math.round(hS.x)} °C`, hS.x + 6, 150, { size: 11, color: 'gold', align: 'left', weight: 700 });
           // ---- B
           const pts = run(hS.x), Tend = pts[pts.length - 1][1], lit = Tend > 150;
           B.hline(100, { color: 'faint', dash: [3, 4] }); B.text('water boils', 148, 108, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });

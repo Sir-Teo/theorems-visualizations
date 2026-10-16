@@ -75,7 +75,6 @@ In particular $A$ is closed if and only if it contains all its limit points. Poi
           // portion of the segment inside the ball
           const segPts = []; for (let i = 1; i < 400; i++) { const t = i / 400, q = [P0[0] + t * (P1[0] - P0[0]), P0[1] + t * (P1[1] - P0[1])]; segPts.push(Math.hypot(q[0] - P[0], q[1] - P[1]) < e && !same(q, P) ? q : null); }
           s.path(segPts, { color: 'gold', width: 5 });
-          s.clip(() => s.circle(C[0], C[1], CR, { fill: 'gold', fillAlpha: 0.0, stroke: false }));
           // distance from p to A \ {p}
           let dS = Math.hypot(P[0] - L[0], P[1] - L[1]);
           for (const q of xs) { if (same(q, P)) continue; const d = Math.hypot(q[0] - P[0], q[1] - P[1]); if (d < dS) dS = d; }
