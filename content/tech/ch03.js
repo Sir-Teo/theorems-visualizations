@@ -33,7 +33,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
       viz(v) {
         const A = v.stage({ x: [600, 1600], y: [1e-6, 3e4], ylog: true, axes: 'box', gutter: true, height: 320, weight: 1.25, minWidth: 380, xlabel: 'furnace temperature (°C)', ylabel: 'CO / CO₂ in the furnace gas', title: 'which oxides charcoal can reduce' });
         const B = v.stage({ x: [-1.25, 1.25], y: [-1.05, 1.25], equal: true, axes: false, height: 320, weight: 1, minWidth: 300, title: 'inside the furnace after an hour' });
-        const C = yearStage(v, [-9000, -3500], { height: 175, full: true, title: 'dated evidence: from hammered native copper to smelting' });
+        const C = yearStage(v, [-9300, -3500], { height: 175, full: true, title: 'dated evidence: from hammered native copper to smelting' });
         const ORES = {
           Cu2O: { label: 'malachite (copper)', raw: 'green', metal: 'orange', mp: 1085, mname: 'copper' },
           SnO2: { label: 'cassiterite (tin)', raw: 'muted', metal: 'faint', mp: 232, mname: 'tin' },
@@ -62,13 +62,15 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
           A.text('SnO₂ → Sn', 1590, reduceRatio('SnO2', 1590 + K0) * 2.2, { size: 11, color: key === 'SnO2' ? 'accent' : 'muted', align: 'right', baseline: 'bottom' });
           A.text('FeO → Fe', 1590, reduceRatio('FeO', 1590 + K0) * 2.2, { size: 11, color: key === 'FeO' ? 'accent' : 'muted', align: 'right', baseline: 'bottom' });
           A.fn((Tx) => boudouardRatio(Tx + K0), { color: 'ink', width: 2, dash: [6, 4] });
-          A.text('charcoal limit (C + CO₂ ⇌ 2CO)', 640, boudouardRatio(640 + K0) * 0.25, { size: 10.5, color: 'ink', align: 'left', baseline: 'top', plate: true });
-          for (const [t, lab, c] of [[1085, 'Cu melts 1085', 'orange'], [SLAG_T, 'slag runs ~1150', 'purple'], [1538, 'Fe melts 1538', 'red']]) {
+          A.text('charcoal limit (C + CO₂ ⇌ 2CO)', 630, 900, { size: 10.5, color: 'ink', align: 'left', baseline: 'middle', plate: true });
+          A.arrow(700, 400, 745, boudouardRatio(745 + K0) * 1.6, { color: 'ink', width: 1, head: 6 });
+          for (const [t, lab, c, right] of [[1085, 'Cu melts 1085', 'orange', true], [SLAG_T, 'slag runs ~1150', 'purple', false], [1538, 'Fe melts 1538', 'red', true]]) {
             A.vline(t, { color: c, width: 1.2, dash: [4, 3] });
-            A.text(lab, t, 4e-6, { size: 10.5, color: c, align: t > 1500 ? 'right' : 'left', dx: t > 1500 ? -4 : 4, baseline: 'bottom', plate: true });
+            A.text(lab, t, 2.5e-6, { size: 10.5, color: c, align: right ? 'right' : 'left', dx: right ? -4 : 4, baseline: 'bottom', plate: true });
           }
-          A.text(`${o.mname} stable`, 700, 3e3, { size: 12, color: 'green', align: 'left', weight: 700 });
-          A.text('oxide stable', 700, 2e-5, { size: 12, color: 'red', align: 'left', weight: 700 });
+          const yStab = key === 'Cu2O' ? 3e-2 : key === 'SnO2' ? 30 : 300, yOx = key === 'Cu2O' ? 1.5e-5 : key === 'SnO2' ? 3e-3 : 3e-2;
+          A.text(`${o.mname} stable`, key === 'Cu2O' ? 900 : 1250, yStab, { size: 12, color: 'green', align: 'left', weight: 700, plate: true });
+          A.text('oxide stable', key === 'Cu2O' ? 700 : 1250, yOx, { size: 12, color: 'red', align: 'left', weight: 700, plate: true });
           // ---- B: furnace section
           const th = reduceRatio(key, T), red = extent(key, Tc, r), liquid = red > 0.05 && Tc >= o.mp, slag = Tc >= SLAG_T;
           const glow = clamp((Tc - 600) / 1000, 0, 1);
@@ -79,7 +81,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
           B.text('air', -1.18, 1.2, { size: 10.5, color: 'accent', align: 'left' }); B.text('air', 1.18, 1.2, { size: 10.5, color: 'accent', align: 'right' });
           // charge: charcoal and ore lumps
           const rng = v.rng(7), lumps = [];
-          for (let i = 0; i < 26; i++) lumps.push([rng.uniform(-0.78, 0.78) * (0.85 + 0.15 * rng()), rng.uniform(-0.45, 0.82), 0.075 + 0.04 * rng(), i % 3 === 0]);
+          for (let j = 0; j < 5; j++) for (let i = 0; i < 6; i++) { const y = -0.4 + j * 0.27, w = 0.72 + 0.12 * (y + 0.4) / 1.1; lumps.push([-w + (i + 0.5) * (2 * w / 6) + rng.uniform(-0.04, 0.04), y + rng.uniform(-0.04, 0.04), 0.075 + 0.03 * rng(), (i + 2 * j) % 3 === 0]); }
           const pool = liquid ? 0.12 + 0.12 * red : 0, slagH = slag ? 0.12 : 0;
           for (const [x, y, rr, isOre] of lumps) {
             const pts = lump(x, y, rr, Math.round((x + 2) * 1000 + y * 77));
@@ -109,7 +111,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
         v.legend([['accent', 'reduction threshold of the selected ore'], ['muted', 'other ores'], ['ink', 'charcoal limit', { dash: [6, 4] }], ['gold', 'furnace state', { dot: true }]]);
         v.readout(() => {
           const key = ore.value, o = ORES[key], Tc = P.x, r = P.y, T = Tc + K0, th = reduceRatio(key, T), red = extent(key, Tc, r), co = (100 * r) / (1 + r);
-          return `furnace ${Math.round(Tc)} °C, gas CO/CO₂ = ${v.fmt(r, 3)} (${v.fix(co, co > 99 ? 2 : 1)}% CO; charcoal limit ${v.fmt(boudouardRatio(T), 3)}) · ${OXIDES[key].label} needs CO/CO₂ > **${v.fmt(th, 3)}** → ${r > th ? `reducing by a factor ${v.fmt(r / th, 3)}, about **${Math.round(100 * red)}%** reduced after an hour (illustrative kinetics)` : '**no reduction**'} · ${o.mname} melts at ${o.mp} °C`;
+          return `furnace ${Math.round(Tc)} °C, gas CO/CO₂ = ${v.fmt(r, 3)} (${v.fix(co, co > 99 ? 2 : 1)}% CO; charcoal limit ${v.fmt(boudouardRatio(T), 3)}) · ${OXIDES[key].label} needs CO/CO₂ > **${v.fmt(th, 3)}** → ${r > th ? `reducing by a factor $${v.sci(r / th, 2)}$, about **${Math.round(100 * red)}%** reduced after an hour (illustrative kinetics)` : '**no reduction**'} · ${o.mname} melts at ${o.mp} °C`;
         });
       },
     },
@@ -134,10 +136,10 @@ The phase diagram explains the casting advantage (mat-6.1): tin lowers the liqui
       viz(v) {
         const A = v.stage({ x: [0, 30], y: [450, 1120], axes: 'box', gutter: true, height: 290, weight: 1.15, minWidth: 330, xlabel: 'tin (wt %)', ylabel: '°C', title: 'Cu–Sn phase diagram (copper side)' });
         const B = v.stage({ x: [0, 30], y: [0, 340], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 290, xlabel: 'tin (wt %)', ylabel: 'hardness (HV)', title: 'hardness' });
-        const Cs = v.stage({ x: [-2.2, 2.2], y: [-0.25, 3.2], equal: true, axes: false, height: 260, weight: 1, minWidth: 290, title: 'blade edges after the same work' });
-        const D = yearStage(v, [-5000, -1000], { height: 200, weight: 1.3, minWidth: 380, title: 'dated evidence: bronze' });
+        const Cs = v.stage({ x: [-2.2, 2.2], y: [-0.25, 3.2], equal: true, axes: false, height: 260, weight: 1, minWidth: 290, title: 'the last 4 mm of each edge, after the same work' });
+        const D = yearStage(v, [-5250, -750], { height: 200, weight: 1.3, minWidth: 380, title: 'dated evidence: bronze' });
         const sn = v.slider('tin', 0, 25, 10, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} wt %` });
-        const cw = v.slider('cold work (thickness reduction)', 0, 80, 50, { step: 1, fmt: (x) => `${Math.round(x)}%` });
+        const cw = v.slider('cold work', 0, 80, 50, { step: 1, fmt: (x) => `${Math.round(x)}%` });
         const cuts = v.slider('cuts', 0, 3000, 1000, { step: 50, int: true });
         // liquidus through (0, 1085), (11, 1000: C90700 datasheet), (26.75, 796: NIST peritectic); α solidus through (0, 1085), (11, 831), (14.3, 796)
         const liq = (x) => 1085 - 5.579 * x - 0.1953 * x * x;
@@ -163,7 +165,7 @@ The phase diagram explains the casting advantage (mat-6.1): tin lowers the liqui
           A.text('β', 21, 690, { size: 13, color: 'ink', align: 'center' });
           A.text('α + δ (brittle)', 22.5, 480, { size: 11, color: 'red', align: 'center' });
           A.text('796', 27, 796, { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
-          for (const [px, lab] of [[11.7, 'Pločnik'], [100 / 11, 'Uluburun 10:1']]) { A.line(px, 450, px, 490, { color: 'purple', width: 2 }); A.text(lab, px + (lab === 'Pločnik' ? 0.4 : -0.4), 500, { size: 10.5, color: 'purple', align: lab === 'Pločnik' ? 'left' : 'right', baseline: 'bottom' }); }
+          for (const [px, lab] of [[11.7, 'Pločnik'], [100 / 11, 'Uluburun 10:1']]) { A.line(px, 450, px, 490, { color: 'purple', width: 2 }); if (lab === 'Pločnik') A.text(lab, px, 548, { size: 10.5, color: 'purple', align: 'center', baseline: 'bottom', plate: true }); else A.text(lab, px - 0.4, 500, { size: 10.5, color: 'purple', align: 'right', baseline: 'bottom', plate: true }); }
           A.vline(x, { color: 'orange', width: 2 });
           A.dot(x, liq(x), { r: 4.5, color: 'orange' });
           A.text(`liquidus ${Math.round(liq(x))} °C`, x + (x > 18 ? -0.5 : 0.5), liq(x) + 18, { size: 11, color: 'orange', align: x > 18 ? 'right' : 'left', weight: 700, plate: true });
@@ -178,20 +180,21 @@ The phase diagram explains the casting advantage (mat-6.1): tin lowers the liqui
           B.text('annealed', 1, Ha(1) + 14, { size: 11, color: 'accent', align: 'left' });
           B.text(`hammered ${Math.round(r * 100)}%`, 1, Hc(1, r) + 14, { size: 11, color: 'green', align: 'left' });
           // ---- C: two wedge edges, worn by Archard's law (edge loss ∝ cuts / hardness)
-          const kW = 0.12 / 1000 * 60; // edge loss in data units per cut × HV (illustrative)
+          const kW = 0.098, MM = 0.7; // edge loss (mm) = kW · cuts / HV (illustrative: about 1 mm per 1000 cuts for hammered copper); 0.7 data units per mm
           const blades = [[-1.05, 'copper', Hc(0, r), false], [1.05, `${v.fix(x, 1)}% tin`, Hc(x, r), brittle(x) && r > 0]];
           const half = Math.tan((22 / 2) * Math.PI / 180) * 2.8;
           for (const [cx, lab, H, chip] of blades) {
-            const loss = Math.min(2.2, (kW * cuts.value) / H), tipY = 0.1 + loss, w = half * loss / 2.8;
+            const lossMM = (kW * cuts.value) / H, loss = Math.min(2.6, lossMM * MM), tipY = 0.1 + loss, w = half * loss / 2.8;
             const pts = [[cx - half, 2.9], [cx + half, 2.9]];
             if (chip) pts.push([cx + w + 0.06, tipY + 0.25], [cx + 0.1, tipY + 0.05], [cx + 0.02, tipY + 0.35], [cx - 0.12, tipY + 0.1], [cx - w - 0.06, tipY + 0.3]);
             else pts.push([cx + w, tipY], [cx - w, tipY]);
             C2(cx, half);
             Cs.poly(pts, { fill: chip ? 'red' : 'orange', fillAlpha: chip ? 0.35 : 0.45, color: chip ? 'red' : 'orange', width: 1.4 });
             Cs.text(lab, cx, 3.05, { size: 12, color: 'ink', align: 'center', weight: 700 });
-            Cs.text(chip ? 'chipped' : `edge lost ${v.fix(loss * 10, 1)} mm`, cx, -0.12, { size: 11, color: chip ? 'red' : 'ink', align: 'center' });
+            Cs.text(chip ? 'chipped' : lossMM * MM > 2.6 ? 'worn blunt' : `edge lost ${v.fix(lossMM, 2)} mm`, cx, -0.12, { size: 11, color: chip || lossMM * MM > 2.6 ? 'red' : 'ink', align: 'center' });
             Cs.text(`${Math.round(H)} HV`, cx, 1.6, { size: 11, color: 'ink', align: 'center', plate: true });
           }
+          Cs.line(-0.35, 0.3, -0.35, 0.3 + MM, { color: 'ink', width: 2 }); Cs.text('1 mm', -0.28, 0.3 + MM / 2, { size: 10.5, color: 'ink', align: 'left', baseline: 'middle' });
           function C2(cx, h) { Cs.poly([[cx - h, 2.9], [cx + h, 2.9], [cx, 0.1]], { color: 'muted', width: 1, dash: [4, 3] }); }
           // ---- D
           drawYears(v, D, [
@@ -229,9 +232,9 @@ The furnace must also not get too hot. Hot iron in contact with charcoal absorbs
       tags: ['ancient', 'c. 1200 BCE', 'metallurgy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bloomery' },
       viz(v) {
-        const A = v.stage({ x: [-1.3, 1.3], y: [-1.2, 2.35], equal: true, axes: false, height: 330, weight: 0.85, minWidth: 250, title: 'the bloomery' });
-        const B = v.stage({ x: [-1.6, 1.6], y: [-1.0, 1.0], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 300, title: 'cross-section of the bloom' });
-        const Cs = v.stage({ x: [0, 1], y: [0, 100], axes: false, height: 330, weight: 1, minWidth: 260, title: 'where 100 kg of ore goes' });
+        const A = v.stage({ x: [-1.3, 1.3], y: [-1.2, 2.35], equal: true, axes: false, height: 330, weight: 0.8, minWidth: 210, title: 'the bloomery' });
+        const B = v.stage({ x: [-1.6, 1.6], y: [-1.0, 1.0], equal: true, axes: false, height: 330, weight: 1.1, minWidth: 250, title: 'cross-section of the bloom' });
+        const Cs = v.stage({ x: [0, 1], y: [-9, 100], axes: false, height: 330, weight: 0.85, minWidth: 210, title: 'where 100 kg of ore goes' });
         const D = yearStage(v, [-3400, -300], { height: 190, full: true, title: 'dated evidence: meteoritic iron, smelted iron, cast iron' });
         const silica = v.slider('silica in the ore', 3, 30, 12, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} wt %` });
         const Tf = v.slider('hottest zone of the furnace', 1000, 1450, 1220, { step: 5, fmt: (x) => `${Math.round(x)} °C` });
@@ -244,7 +247,7 @@ The furnace must also not get too hot. Hot iron in contact with charcoal absorbs
           { k: 4, note: 'Break open the furnace and pull out the bloom: iron sponge full of slag and holes.' },
         ];
         for (let p = 1; p <= PASSES; p++) frames.push({ k: 4 + p, pass: p, note: `Hammering pass ${p}: reheat to a welding heat (~1250 °C, slag liquid) and hammer; slag squirts out, voids close, the bloom becomes a bar.` });
-        const S = v.steps({ frames, still: 6, speed: 0.8 });
+        const S = v.steps({ frames, start: 6, still: 7, speed: 0.8 });
         // model -----------------------------------------------------------
         const model = () => {
           const s = silica.value, fe2o3 = 100 - s, T = Tf.value;
@@ -294,8 +297,8 @@ The furnace must also not get too hot. Hot iron in contact with charcoal absorbs
           bar(0.06, 0.42, [[m.feTot, 'muted', `iron ${v.fix(m.feTot, 0)} kg`], [oxyIn, 'faint', 'oxygen'], [m.s, 'gold', 'silica']]);
           const feB = m.liquidIron ? 0 : m.feBloom;
           bar(0.58, 0.94, [[feB, 'accent', `bloom ${v.fix(feB, 0)} kg`], [m.liquidIron ? m.feBloom : 0, 'red', 'cast iron'], [m.feSlag, 'purple', `Fe in slag ${v.fix(m.feSlag, 0)} kg`]]);
-          Cs.text('ore', 0.24, 99, { size: 11, color: 'ink', align: 'center', baseline: 'top', weight: 700 });
-          Cs.text('iron out', 0.76, 99, { size: 11, color: 'ink', align: 'center', baseline: 'top', weight: 700 });
+          Cs.text('ore', 0.24, -4.5, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
+          Cs.text('iron out', 0.76, -4.5, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
           // ---- D
           drawYears(v, D, [
             { t: -3200, label: 'meteoritic beads, Gerzeh', color: 'purple' },

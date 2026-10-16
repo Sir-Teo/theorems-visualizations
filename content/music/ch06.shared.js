@@ -11,9 +11,9 @@ import { cbw } from './ch05.shared.js';
 /**
  * Fig. 10 of Plomp & Levelt (1965), "standard curve" of two pure tones: dissonance (their right-hand scale, 0–1) against the
  * frequency difference in units of the critical bandwidth. Traced from the published figure (scan of JASA 38, p. 556) by
- * locating the curve's pixels column by column between the printed grid lines (accuracy about ±0.01 in both coordinates).
+ * locating the curve's pixels column by column between the printed grid lines, then smoothed by local linear fits (accuracy about ±0.01).
  */
-export const PL_FIG10 = [[0, 0], [0.01, 0.098], [0.02, 0.147], [0.03, 0.224], [0.04, 0.289], [0.05, 0.376], [0.06, 0.468], [0.07, 0.549], [0.08, 0.618], [0.09, 0.659], [0.1, 0.705], [0.12, 0.788], [0.14, 0.85], [0.16, 0.895], [0.18, 0.934], [0.2, 0.975], [0.22, 0.988], [0.24, 0.993], [0.26, 0.994], [0.28, 0.994], [0.3, 0.985], [0.32, 0.962], [0.34, 0.934], [0.36, 0.899], [0.38, 0.858], [0.4, 0.827], [0.44, 0.716], [0.48, 0.625], [0.52, 0.536], [0.56, 0.458], [0.6, 0.4], [0.65, 0.311], [0.7, 0.242], [0.75, 0.188], [0.8, 0.132], [0.85, 0.101], [0.9, 0.068], [0.95, 0.042], [1.0, 0.022], [1.05, 0.008], [1.1, 0.002], [1.2, 0]];
+export const PL_FIG10 = [[0, 0], [0.01, 0.079], [0.02, 0.154], [0.03, 0.224], [0.04, 0.295], [0.05, 0.375], [0.06, 0.462], [0.07, 0.54], [0.08, 0.604], [0.09, 0.657], [0.1, 0.707], [0.12, 0.784], [0.14, 0.847], [0.16, 0.894], [0.18, 0.933], [0.2, 0.96], [0.22, 0.982], [0.24, 0.991], [0.26, 0.993], [0.28, 0.991], [0.3, 0.979], [0.32, 0.959], [0.34, 0.932], [0.36, 0.897], [0.38, 0.857], [0.4, 0.809], [0.44, 0.714], [0.48, 0.623], [0.52, 0.538], [0.56, 0.461], [0.6, 0.389], [0.65, 0.312], [0.7, 0.244], [0.75, 0.187], [0.8, 0.14], [0.85, 0.101], [0.9, 0.068], [0.95, 0.043], [1.0, 0.023], [1.05, 0.009], [1.1, 0.002], [1.2, 0]];
 
 /** Monotone (Fritsch–Carlson) cubic interpolation through [[x, y], …] (x increasing); constant outside. */
 export function pchip(pts) {

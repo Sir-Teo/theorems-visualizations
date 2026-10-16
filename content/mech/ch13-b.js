@@ -401,5 +401,154 @@ exists for almost every $x$, and it equals the space average $\int_X f\,d\mu$ fo
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────── 13.12
+    {
+      num: '13.12',
+      kind: 'Definition',
+      name: 'Dissipation and attractors',
+      statement: String.raw`A flow $\dot x = f(x)$ is **dissipative** if it contracts phase-space volume on average. By Liouville’s formula (12.13) a region $D$ evolves as
+$$\frac{d}{dt}\ln\operatorname{vol}(\varphi_tD) = \big\langle \nabla\!\cdot f\big\rangle_{\varphi_tD},$$
+the mean divergence over the current region, so friction ($\nabla\!\cdot f = -\gamma$ for linear damping) makes volumes shrink like $e^{-\gamma t}$. An **attractor** is a closed invariant set $A$ that attracts an open neighbourhood (its **basin**) and is minimal with this property. In the plane, the possible attractors of a flow are stable fixed points and stable limit cycles (4.19). In three or more dimensions, including a forced oscillator with time as the third coordinate, the attractor can be **strange**: a fractal set of zero volume, on which the motion is chaotic, with nearby orbits separating exponentially (13.4) while the volume of every blob still shrinks to zero.`,
+      idea: String.raw`Contraction of volume does not mean contraction in every direction. A blob can be stretched along one direction and squeezed even harder along another, so its volume tends to zero while its length grows. Folding keeps the stretched blob in a bounded region, and repeated stretching and folding turns it into a set with a layered, Cantor-like cross-section: the strange attractor. In the plane there is no room to fold without crossing, so (Poincaré–Bendixson) only fixed points and cycles remain. Hamiltonian systems have zero divergence and can have no attractors at all, which is why recurrence (13.1) holds for them and not for dissipative systems.`,
+      caption: String.raw`A disc of 1 500 initial states (gold) and its boundary (blue, a loop of states refined adaptively as in 12.13) move under the flow. Drag the handle to move the disc. Right: the disc’s area, measured from the polygon (log scale), against the prediction from Liouville’s formula (dashed). For the damped pendulum the cloud winds into the stable equilibrium and its area falls like $e^{-\gamma t}$. For the van der Pol oscillator the divergence $\mu(1 - x^2)$ changes sign, so the area grows near the origin and shrinks outside, and the cloud is wrapped onto the limit cycle. For the forced Duffing oscillator ($\ddot x + 0.25\dot x - x + x^3 = 0.3\cos t$) the area shrinks like $e^{-0.25t}$ while the cloud is stretched and folded onto the strange attractor; the green dots show that attractor at the current phase of the forcing.`,
+      deps: ['mech-12.13', 'mech-4.19'],
+      refs: ['Goldstein §11.3'],
+      tags: ['attractor', 'dissipation', 'strange attractor'],
+      viz(v) {
+        const sys = v.select('system', [{ value: 'pend', label: 'damped pendulum' }, { value: 'vdp', label: 'van der Pol ($\\mu = 1$)' }, { value: 'duff', label: 'forced Duffing' }], 'pend', { onChange: () => { const c = CENT[sys.value]; hc.set(c[0], c[1]); } });
+        const gS = v.slider('damping $\\gamma$', 0.05, 0.6, 0.25, { step: 0.01 });
+        const TT = 32, DT = 0.02, NP = 1500, RAD = 0.38, MU = 1, DD = 0.25, DG = 0.3;
+        const CENT = { pend: [-2.2, 1.7], vdp: [2.3, 1.6], duff: [0.95, 0.35] }, VIEW = { pend: [[-Math.PI, Math.PI], [-2.7, 2.7]], vdp: [[-3.2, 3.2], [-3.6, 3.6]], duff: [[-1.9, 1.9], [-1.25, 1.25]] };
+        const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.7, 2.7], axes: 'box', gutter: true, height: 380, weight: 1.4, xlabel: 'x', ylabel: 'ẋ' });
+        const sA = v.stage({ x: [0, TT], y: [1e-3, 3], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 't', title: 'area of the cloud ÷ initial' });
+        const hc = sP.handle(-2.2, 1.7, { color: 'ink', r: 7 });
+        hc.onDrag = () => v.restart();
+        const F = (name, g) => name === 'pend' ? (t, x, y) => [y, -Math.sin(x) - g * y] : name === 'vdp' ? (t, x, y) => [y, MU * (1 - x * x) * y - x] : (t, x, y) => [y, -DD * y + x - x * x * x + DG * Math.cos(t)];
+        const rk = (f, z, h) => { // z = [x, y, t]
+          const [x, y, t] = z, k1 = f(t, x, y), k2 = f(t + h / 2, x + (h / 2) * k1[0], y + (h / 2) * k1[1]), k3 = f(t + h / 2, x + (h / 2) * k2[0], y + (h / 2) * k2[1]), k4 = f(t + h, x + h * k3[0], y + h * k3[1]);
+          z[0] = x + (h / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); z[1] = y + (h / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); z[2] = t + h;
+        };
+        const meanDiv = (name, g, Y) => {
+          if (name === 'pend') return -g; if (name === 'duff') return -DD;
+          let A = 0, Ixx = 0; const n = Y.length; for (let i = 0, j = n - 1; i < n; j = i++) { const cr = Y[j][0] * Y[i][1] - Y[i][0] * Y[j][1]; A += cr / 2; Ixx += (cr * (Y[j][0] ** 2 + Y[j][0] * Y[i][0] + Y[i][0] ** 2)) / 12; }
+          return MU * (1 - Ixx / A);
+        };
+        const attCache = memo();
+        const attractor = () => attCache(sys.value, () => {
+          if (sys.value === 'pend') return null;
+          const f = F(sys.value, 0), z = [0.5, 0, 0];
+          if (sys.value === 'vdp') { for (let i = 0; i < 3000; i++) rk(f, z, DT); const pts = []; for (let i = 0; i < 360; i++) { rk(f, z, DT); pts.push([z[0], z[1]]); } return { cycle: pts }; }
+          const per = 64, h = TAU / per, n = 2000, xs = new Float32Array(n * per), ys = new Float32Array(n * per);
+          for (let i = 0; i < 100 * per; i++) rk(f, z, h);
+          for (let i = 0; i < n * per; i++) { rk(f, z, h); xs[i] = z[0]; ys[i] = z[1]; }
+          return { per, n, xs, ys };
+        });
+        const sim = v.sim(() => {
+          const name = sys.value, g = gS.value, f = F(name, g), cx = hc.x, cy = hc.y, r = v.rng(23), xs = new Float64Array(NP), ys = new Float64Array(NP);
+          for (let k = 0; k < NP; k++) { const a = TAU * r(), rr = RAD * Math.sqrt(r()); xs[k] = cx + rr * Math.cos(a); ys[k] = cy + rr * Math.sin(a); }
+          const step = name === 'pend' ? (y, h) => { pendStep(y, h, g); y[2] += h; } : (y, h) => rk(f, y, h);
+          const L = makeLoop({ init: (s) => [cx + RAD * Math.cos(TAU * s), cy + RAD * Math.sin(TAU * s), 0], step, h: DT, n0: 160, tol: 0.05, maxPts: 9000 });
+          const A0 = shoelace(L.Y);
+          return { name, g, f, xs, ys, L, A0, lnPred: 0, hist: [[0, 1, 1]], n: 0, step };
+        }, (st, dt) => {
+          const z = [0, 0, st.n * dt];
+          for (let k = 0; k < NP; k++) { z[0] = st.xs[k]; z[1] = st.ys[k]; z[2] = st.n * dt; st.step(z, dt); st.xs[k] = z[0]; st.ys[k] = z[1]; }
+          const md = meanDiv(st.name, st.g, st.L.Y); st.L.advance(); st.n++; st.lnPred += dt * md;
+          if (st.n % 5 === 0 && !st.L.capped) { st.L.refine(1500); if (!st.L.capped) st.hist.push([st.n * dt, shoelace(st.L.Y) / st.A0, Math.exp(st.lnPred)]); }
+        }, { dt: DT });
+        let cur = null, lastKey = '';
+        v.animate((tt) => {
+          const key = `${sys.value}|${gS.value}`; if (key !== lastKey) { lastKey = key; sim.reset(); }
+          gS.el.hidden = sys.value !== 'pend';
+          const st = sim.advance(Math.min(2 * tt, TT)), t = st.n * DT, name = st.name, [vx, vy] = VIEW[name];
+          sP.setView(vx, vy); sP.setTicks(name === 'pend' ? piTicks(-Math.PI, Math.PI) : null, null);
+          const att = attractor();
+          if (name === 'pend') { sP.contour((x, y) => 0.5 * y * y - Math.cos(x), [1], { color: 'muted', width: 1, alpha: 0.6, res: 120 }); sP.dot(0, 0, { r: 6, color: 'green' }); }
+          if (att && att.cycle) sP.path(att.cycle, { color: 'green', width: 2.6, close: true });
+          if (att && att.xs) { const j = Math.round(((t % TAU) / TAU) * att.per) % att.per, xs = new Float32Array(att.n), ys = new Float32Array(att.n); for (let i = 0; i < att.n; i++) { xs[i] = att.xs[i * att.per + j]; ys[i] = att.ys[i * att.per + j]; } fastDots(v, sP, xs, ys, att.n, 'green', { alpha: 0.7, size: 1.8 }); }
+          const W = name === 'pend' ? (x) => wrap(x) : (x) => x, px = new Float64Array(NP); for (let k = 0; k < NP; k++) px[k] = W(st.xs[k]);
+          fastDots(v, sP, px, st.ys, NP, 'gold', { alpha: 0.8, size: 2 });
+          if (!st.L.capped) { if (name === 'pend') drawCyl(sP, st.L.Y, { fill: false, color: 'accent', width: 1.4 }); else sP.poly(st.L.Y, { fill: false, color: 'accent', width: 1.4 }); }
+          sP.corner(`t = ${v.fix(t, 1)}`, 'tr', { color: 'ink', plate: true });
+          sA.path(st.hist.map((h) => [h[0], h[2]]), { color: 'red', width: 1.6, dash: [6, 4] });
+          sA.path(st.hist.map((h) => [h[0], h[1]]), { color: 'accent', width: 2.6 });
+          sA.hline(1, { color: 'faint', width: 1 }); sA.vline(t, { color: 'gold', width: 1.2 });
+          cur = { st, t };
+        }, { period: TT / 2 + 2, still: 9 });
+        v.legend([['gold', 'cloud of states'], ['accent', 'its boundary / measured area'], ['red', 'Liouville: $d\\ln A/dt = \\langle\\nabla\\cdot f\\rangle$', { dash: true }], ['green', 'attractor']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { st } = cur, h = st.hist[st.hist.length - 1];
+          const kind = st.name === 'pend' ? 'a stable fixed point' : st.name === 'vdp' ? 'a limit cycle' : 'a strange attractor';
+          return String.raw`area ÷ initial at $t = ${v.fix(h[0], 1)}$: measured ${num(v, h[1], 4)}, Liouville’s formula ${num(v, h[2], 4)}` + (st.name !== 'vdp' ? String.raw` $= e^{-${st.name === 'pend' ? v.fix(st.g, 2) : DD}t}$` : String.raw` (from the mean of $\mu(1 - x^2)$ over the cloud)`) + (st.L.capped ? ' · the boundary has been stretched beyond what can be tracked (strange attractor: length grows exponentially while area shrinks)' : ` · boundary states: ${st.L.S.length}`) + ` · attractor: ${kind}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 13.13
+    {
+      num: '13.13',
+      kind: 'Model',
+      name: 'Driven damped pendulum: the route to chaos',
+      statement: String.raw`A pendulum with linear damping and a sinusoidal driving torque obeys
+$$\ddot\phi + 2\beta\dot\phi + \omega_0^2\sin\phi = \gamma\,\omega_0^2\cos\omega t ,$$
+where the dimensionless **drive strength** $\gamma$ is the ratio of the drive torque to the maximum gravitational torque. With Taylor’s parameters $\omega = 2\pi$ (drive period 1), $\omega_0 = 1.5\omega$, $\beta = \omega_0/4$, and starting from rest at $\phi = -\pi/2$: for small $\gamma$ the motion settles into a periodic response with the drive’s period, nearly sinusoidal; around $\gamma \approx 1$ it is periodic but strongly anharmonic; near $\gamma \approx 1.066$ it **doubles its period** (alternate swings differ), at $\gamma \approx 1.079$ doubles again, then again ever faster, and beyond about $\gamma \approx 1.083$ it is **chaotic**, never repeating, with a positive Lyapunov exponent. At larger $\gamma$ periodic windows and rolling motions, where the pendulum goes over the top, alternate with chaos.`,
+      scope: String.raw`The thresholds quoted depend on the damping, frequencies and initial state; the qualitative route (period doubling to chaos) is generic for driven dissipative oscillators.`,
+      idea: String.raw`Sampling the state once per drive cycle gives a two-dimensional map that contracts area by $e^{-2\beta}$ per cycle (13.12). A periodic response is a fixed point of this map, stable while its two Floquet multipliers lie inside the unit circle. As $\gamma$ grows, one multiplier passes through $-1$: the fixed point becomes unstable, and a stable cycle of period two is born (a flip bifurcation). The same happens to that cycle and its descendants, at drive strengths that accumulate geometrically (13.14). Past the accumulation point the attractor is strange: the stroboscopic points no longer repeat but lie on a fractal set, and nearby states separate exponentially (13.4).`,
+      caption: String.raw`Top left: the stroboscopic section, the state $(\phi, \dot\phi)$ once per drive cycle, after the transient has died away (red dots), over the continuous trajectory (faint). Top right: the pendulum itself. Bottom: $\phi(t)$ over eight drive cycles; the grey bars mark the drive cycles. Use the presets or the slider. At $1.060$ one red dot: the motion repeats every cycle. At $1.078$ two dots, and alternate swings differ. At $1.081$ four, at $1.0826$ eight. At $1.105$ the dots never repeat and fill a strange attractor, the time series wanders, and the Lyapunov exponent in the readout turns positive.`,
+      deps: ['mech-13.12', 'mech-4.14'],
+      refs: ['Taylor §12.2', 'Taylor §12.4'],
+      tags: ['driven pendulum', 'period doubling', 'chaos'],
+      viz(v) {
+        const gS = v.slider('drive strength $\\gamma$', 0.9, 1.11, 1.078, { step: 0.0001, decimals: 4 });
+        const pre = v.select('preset', ['1.060', '1.078', '1.081', '1.0826', '1.105'].map((x) => ({ value: x, label: x })), '1.078', { onChange: () => gS.set(+pre.value) });
+        const NC = 8;
+        const sS = v.stage({ x: [-Math.PI, Math.PI], y: [-20, 20], axes: 'box', gutter: true, height: 330, weight: 1.45, xlabel: 'φ (rad)', ylabel: 'dφ/dt', xticks: piTicks(-Math.PI, Math.PI), title: 'stroboscopic section (once per drive cycle)' });
+        const sR = v.stage({ x: [-1.35, 1.35], y: [-1.35, 1.35], equal: true, axes: false, height: 330, weight: 1, title: 'the pendulum' });
+        const sT = v.stage({ x: [0, NC], y: [-3.5, 1], axes: 'box', gutter: true, height: 180, full: true, xlabel: 't (drive cycles)', ylabel: 'φ (rad)' });
+        const cache = memo();
+        const data = () => cache(gS.value, () => {
+          const g = gS.value, y = [-Math.PI / 2, 0];
+          for (let k = 0; k < 300; k++) ddpPeriod(y, g, 50);
+          const rec = [[y[0], y[1]]]; const y2 = y.slice(); for (let k = 0; k < NC; k++) ddpPeriod(y2, g, 60, rec);
+          const strobe = []; const y3 = y.slice(); for (let k = 0; k < 600; k++) { ddpPeriod(y3, g, 50); strobe.push([y3[0], y3[1]]); }
+          const P = strobePeriod(strobe);
+          // largest Lyapunov exponent of the stroboscopic map (tangent vector renormalised every cycle)
+          let q = y[0], p = y[1], u = [1, 0], S = 0;
+          for (let k = 0; k < 160; k++) { const s = ddpMapJ(q, p, g, 1, 50); q = s[0]; p = s[1]; const nu = [s[2] * u[0] + s[3] * u[1], s[4] * u[0] + s[5] * u[1]], r = Math.hypot(nu[0], nu[1]); S += Math.log(r); u = [nu[0] / r, nu[1] / r]; }
+          let lo = Infinity, hi = -Infinity, plo = Infinity, phi = -Infinity; for (const z of rec) { lo = Math.min(lo, z[0]); hi = Math.max(hi, z[0]); plo = Math.min(plo, z[1]); phi = Math.max(phi, z[1]); }
+          const rolls = Math.abs(strobe[strobe.length - 1][0] - strobe[0][0]) > 4 * Math.PI;
+          return { g, rec, strobe, P, lam: S / 160, lo, hi, plo, phi, rolls };
+        });
+        let cur = null;
+        v.animate((tt) => {
+          const D = data(), tau = (0.55 * tt) % NC, i = Math.min(D.rec.length - 1, Math.round(tau * 60)), q = D.rec[i][0];
+          // section
+          const pm = Math.max(Math.abs(D.plo), Math.abs(D.phi)) * 1.1; sS.setView([-Math.PI, Math.PI], [-pm, pm]);
+          const tr = []; let prev = null; for (const z of D.rec) { const w = wrap(z[0]); if (prev !== null && Math.abs(w - prev) > Math.PI) tr.push(null); tr.push([w, z[1]]); prev = w; }
+          sS.path(tr, { color: 'accent', width: 1.2, alpha: 0.35 });
+          const xs = D.strobe.map((z) => wrap(z[0])), ys = D.strobe.map((z) => z[1]);
+          fastDots(v, sS, xs, ys, xs.length, 'red', { alpha: 0.85, size: D.P ? 7 : 2.2 });
+          sS.dot(wrap(q), D.rec[i][1], { r: 5, color: 'gold' });
+          // pendulum and the drive
+          sR.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] });
+          const drive = Math.cos(TAU * tau); sR.arrow(0, 1.2, 0.5 * drive, 1.2, { color: 'orange', width: 2.4, head: 8 }); sR.text('drive', 0, 1.2, { color: 'orange', size: 12, dy: -12 });
+          drawPendulum(sR, q, 1, { color: 'gold' });
+          // time series
+          const span = Math.max(1, D.hi - D.lo); sT.setView([0, NC], [D.lo - 0.12 * span, D.hi + 0.12 * span]);
+          for (let k = 0; k < NC; k += 2) sT.vband(k, k + 1, { color: 'muted', alpha: 0.06 });
+          sT.path(D.rec.map((z, k) => [k / 60, z[0]]), { color: 'accent', width: 1.8 });
+          for (let k = 0; k <= NC; k++) sT.dot(k, D.rec[k * 60][0], { r: 3.5, color: 'red' });
+          sT.vline(tau, { color: 'gold', width: 1.4 });
+          cur = D;
+        }, { period: NC / 0.55, still: 5 });
+        v.legend([['red', 'state once per drive cycle'], ['accent', 'trajectory / φ(t)'], ['gold', 'now'], ['orange', 'drive torque']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const D = cur, vals = D.P ? D.strobe.slice(-D.P).map((z) => v.fix(wrap(z[0]), 3)).join(', ') : '';
+          return String.raw`$\gamma = ${v.fix(D.g, 4)}$ · ` + (D.P ? String.raw`**period ${D.P}**: the stroboscopic angle cycles through ${vals} rad` : '**no period up to 32** in 600 drive cycles: chaotic') + String.raw` · Lyapunov exponent of the stroboscopic map ${v.fix(D.lam, 3)} per cycle ${D.lam > 0.02 ? '(> 0: chaos)' : D.lam > -0.05 ? '(≈ 0: at a bifurcation)' : '(< 0: stable periodic motion)'}` + (D.rolls ? ' · the pendulum rolls over the top' : '');
+        });
+      },
+    },
   ],
 };

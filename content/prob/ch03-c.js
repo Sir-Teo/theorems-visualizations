@@ -57,6 +57,14 @@ function ksLattice(M, z, q) {
   }
   return { d: best, at, F: lo, G: hi };
 }
+/** Polyline of x ↦ (lattice distribution function at x) − g(x) on [lo, hi], broken at the jumps. */
+function stepPts(z, q, lo, hi, g = () => 0) {
+  const pts = []; let c = 0, prev = lo;
+  const seg = (a, b) => { if (b <= a) return; for (let i = 0; i <= 10; i++) { const x = a + ((b - a) * i) / 10; pts.push([x, c - g(x)]); } pts.push(null); };
+  for (let k = 0; k < z.length; k++) { if (z[k] > hi) break; if (z[k] > prev) { seg(prev, z[k]); prev = z[k]; } c += q[k]; }
+  seg(prev, hi);
+  return pts;
+}
 /** Sorted-sample Kolmogorov distance to Φ. */
 function ksSample(M, xs) {
   const a = Float64Array.from(xs).sort(), n = a.length; let d = 0;
@@ -146,9 +154,8 @@ by the complex version of $(1+c_n/n)^n\to e^c$ (3.4.2). Since $e^{-t^2/2}$ is th
           else L.fn(E.dens, { color: 'accent', width: 2.2, n: 500 });
           L.fn(PHI, { color: 'green', width: 2, dash: [6, 4] });
           // right: error curve
-          const pts = [];
-          if (E.lattice) { let c = 0; let prev = -4.2; for (let k = 0; k < E.z.length; k++) { const z = E.z[k]; if (z > 4.2) break; if (z >= -4.2) { for (let i = 0; i <= 6; i++) { const x = prev + ((z - prev) * i) / 6; pts.push([x, c - PhiN(M, x)]); } } c += E.q[k]; if (z >= -4.2) { pts.push(null); pts.push([z, c - PhiN(M, z)]); prev = z; } }
-            for (let i = 0; i <= 6; i++) { const x = prev + ((4.2 - prev) * i) / 6; pts.push([x, c - PhiN(M, x)]); } }
+          let pts = [];
+          if (E.lattice) pts = stepPts(E.z, E.q, -4.2, 4.2, (x) => PhiN(M, x));
           else for (let i = 0; i <= 600; i++) { const x = -4.2 + (8.4 * i) / 600; pts.push([x, E.cdf(x) - PhiN(M, x)]); }
           const D = E.ks.d, yr = Math.max(0.004, D * 1.25); R.setView(null, [-yr, yr]);
           R.hband(-D, D, { color: 'gold', alpha: 0.08 });
@@ -186,7 +193,7 @@ by the complex version of $(1+c_n/n)^n\to e^c$ (3.4.2). Since $e^{-t^2/2}$ is th
           S.circle(0, 0, 1, { color: 'faint', width: 1 });
           const seq = []; for (let k = 1; k <= 80; k++) seq.push(cpowN(cn(k), k));
           S.path(seq, { color: 'gold', width: 1, alpha: 0.5 });
-          seq.forEach((p, i) => S.dot(p[0], p[1], { r: i + 1 === n ? 0 : 2.6, color: 'gold' }));
+          seq.forEach((p, i) => { if (i + 1 !== n) S.dot(p[0], p[1], { r: 2.6, color: 'gold' }); });
           const c0 = cn(n), arc = []; for (let i = 0; i <= 120; i++) arc.push(cexp([(c0[0] * i) / 120, (c0[1] * i) / 120]));
           S.path(arc, { color: 'green', width: 2, dash: [5, 4] });
           const poly = [[1, 0]]; let z = [1, 0]; const step = [1 + c0[0] / n, c0[1] / n]; for (let k = 1; k <= n; k++) { z = cmul(z, step); poly.push(z); }
@@ -352,7 +359,6 @@ Then $S_n=X_{n,1}+\dots+X_{n,n}\Rightarrow\sigma\chi$, with $\chi$ standard norm
           const Le = lind(md, n, s, e);
           R.vline(e, { color: 'gold', width: 1.2, dash: [4, 3] });
           R.dot(e, Le, { r: 5, color: 'gold' });
-          R.text(`n = ${n}`, Math.min(1.1, 0.12 + 0.05), Math.min(1, lind(md, n, s, 0.17) + 0.06), { size: 11, color: 'accent' });
           v.legend([['gold', 'seeded row sums', { area: true }], ['green', '$N(0,1)$'], ...(md !== 'iid' ? [['orange', 'actual limit', { dash: true }]] : []), ['accent', '$L_n(\\eps)$ for $n/16,\\ n/4,\\ n$']]);
           let mx; if (md === 'iid') mx = 1 / n; else if (md === 'big') mx = s; else mx = 1 / n;
           st = { Le, mx, ks: ksSample(M, sm.xs), e, md };
@@ -379,7 +385,7 @@ Finite variance is sufficient but not necessary. (Durrett states this without pr
         let seed = 1; v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [1, 1e12], xlog: true, y: [0, 1.4], height: 320, axes: 'box', gutter: true, xlabel: '$y$', title: '$y^2P(|X|>y)\\,/\\,E(X^2;|X|\\le y)$' });
         const R = v.stage({ x: [-5, 5], y: [0, 0.6], height: 320, weight: 1.1, axes: 'box', gutter: true, xlabel: '$S_n/(\\mathrm{IQR}/1.349)$', title: 'sums scaled by a robust spread' });
-        const ratio = (a, y) => { if (y <= 1) return y * y / Math.max(1e-12, y * y * 0 + (y * y) / 1 - y * y + 1e-12); const t = y ** (2 - a); const kept = Math.abs(a - 2) < 1e-9 ? 2 * Math.log(y) : 1 + (2 * (t - 1)) / (2 - a) - t; return t / kept; };
+        const ratio = (a, y) => { if (y <= 1) return NaN; const t = y ** (2 - a); const kept = Math.abs(a - 2) < 1e-9 ? 2 * Math.log(y) : 1 + (2 * (t - 1)) / (2 - a) - t; return t / kept; };
         let sm = null, st = null;
         v.render(() => {
           const a = aS.value, n = nS.value;
@@ -521,9 +527,7 @@ The rate $n^{-1/2}$ cannot be improved in general (coin tossing), and the consta
           if (!cache || cache.p !== p) cache = { p, pts: logGrid(1, 1e4, 140).map((k) => [k, ksBin(k, p).d]) };
           const q = binomPmf(M, n, p), s = sig * Math.sqrt(n), z = Array.from(q, (_, k) => (k - n * p) / s), K = ksLattice(M, z, q);
           L.fn((x) => PhiN(M, x), { color: 'green', width: 2.2 });
-          const stair = []; let cum = 0, prev = -3.6;
-          for (let k = 0; k < z.length; k++) { if (z[k] > 3.6) break; if (z[k] >= -3.6) { stair.push([prev, cum], [z[k], cum], null); prev = z[k]; } cum += q[k]; }
-          stair.push([prev, cum], [3.6, cum]);
+          const stair = stepPts(z, q, -3.6, 3.6);
           L.path(stair, { color: 'accent', width: 2 });
           L.line(K.at, K.F, K.at, K.G, { color: 'gold', width: 4 });
           L.dot(K.at, K.F, { r: 3.5, color: 'gold' });
@@ -564,9 +568,7 @@ $$\eta_L\ge\frac\eta2-\frac{12\lambda}{\pi L},\qquad\text{equivalently}\qquad\et
           const n = nS.value, Lv = LS.value, B0 = setup(n), K = ksLattice(M, B0.z, B0.q), eta = K.d;
           if (!cache || cache.n !== n) cache = { n, curve: logGrid(1, 200, 22).map((k) => { const l = k / 2; return [l, etaL(B0, l)]; }) };
           const yr = eta * 1.3; A.setView(null, [-yr, yr]);
-          const pts = []; let c = 0, prev = -4.2;
-          for (let k = 0; k < B0.z.length; k++) { const zz = B0.z[k]; if (zz > 4.2) break; if (zz >= -4.2) { for (let i = 0; i <= 8; i++) { const x = prev + ((zz - prev) * i) / 8; pts.push([x, c - PhiN(M, x)]); } pts.push(null); prev = zz; } c += B0.q[k]; }
-          for (let i = 0; i <= 8; i++) { const x = prev + ((4.2 - prev) * i) / 8; pts.push([x, c - PhiN(M, x)]); }
+          const pts = stepPts(B0.z, B0.q, -4.2, 4.2, (x) => PhiN(M, x));
           A.hline(0, { color: 'muted', width: 1 });
           A.hline(eta, { color: 'accent', dash: [5, 4], width: 1 }); A.hline(-eta, { color: 'accent', dash: [5, 4], width: 1 });
           A.path(pts, { color: 'accent', width: 1.8 });
@@ -742,7 +744,7 @@ and in particular $\sup_x|K_1(x)-K_2(x)|\le\frac1{2\pi}\int|\kappa_1(t)-\kappa_2
       statement: String.raw`Let $X_1,X_2,\dots$ be i.i.d. with $EX_i=0$, $EX_i^2=\sigma^2\in(0,\infty)$ and a lattice distribution of span $h$, $P(X_i\in b+h\Z)=1$. Let $p_n(x)=P(S_n/\sqrt n=x)$ for $x\in\mathcal L_n=\{(nb+hz)/\sqrt n:z\in\Z\}$ and $n(x)=(2\pi\sigma^2)^{-1/2}e^{-x^2/2\sigma^2}$. Then
 $$\sup_{x\in\mathcal L_n}\Big|\frac{\sqrt n}{h}\,p_n(x)-n(x)\Big|\to0.$$`,
       idea: String.raw`Write the point probabilities by Fourier inversion on a lattice: $\frac{\sqrt n}hp_n(x)=\frac1{2\pi}\int_{|t|\le\pi\sqrt n/h}e^{-itx}\varphi^n(t/\sqrt n)\,dt$, and $n(x)$ is the full-line inversion of $e^{-\sigma^2t^2/2}$ (3.3.14). The difference is bounded uniformly in $x$ by $\int|\varphi^n(t/\sqrt n)-e^{-\sigma^2t^2/2}|$ plus a Gaussian tail. Split: on $|t|\le A$ the CLT expansion (3.3.20) gives pointwise convergence; on $A<|t|\le\delta\sqrt n$ the bound $|\varphi(u)|\le e^{-\sigma^2u^2/4}$ dominates; and on $\delta\le|u|\le\pi/h$, $|\varphi|\le\eta<1$ because the span is exactly $h$ (3.5.2), so $\eta^n$ kills that piece.`,
-      caption: String.raw`Exact probabilities of $S_n$ for four lattice step laws. Left: $\frac{\sqrt n}hP(S_n/\sqrt n=x)$ at the lattice points (dots) against the normal density $n(x)$ (green). Switch off "divide by $h$" to see why the span matters: for $\pm1$ steps ($h=2$) half the sites are empty and the others carry twice the density. Right: the sup error over the lattice against $n$, on log axes, with reference slopes $n^{-1/2}$ and $n^{-1}$ (symmetric steps converge faster).`,
+      caption: String.raw`Exact probabilities of $S_n$ for four lattice step laws. Left: $\frac{\sqrt n}hP(S_n/\sqrt n=x)$ at the lattice points (dots) against the normal density $n(x)$ (green). Switch off "divide by $h$" to see why the span matters: the points of $\mathcal L_n$ are $h/\sqrt n$ apart, so without the factor $1/h$ the dots settle at $h\,n(x)$ instead of $n(x)$. Right: the sup error over the lattice against $n$, on log axes, with reference slopes $n^{-1/2}$ and $n^{-1}$ (symmetric steps converge faster).`,
       deps: ['prob-3.5.2', 'prob-3.3.11', 'prob-3.3.20'],
       tags: ['local limit'],
       viz(v) {
@@ -760,7 +762,8 @@ $$\sup_{x\in\mathcal L_n}\Big|\frac{\sqrt n}{h}\,p_n(x)-n(x)\Big|\to0.$$`,
         const R = v.stage({ x: [1, 1000], xlog: true, y: [1e-5, 2], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: '$\\sup_x|\\frac{\\sqrt n}{h}p_n(x)-n(x)|$' });
         const dist = (S, n) => { const lo = S.vals[0], g = S.vals.length > 1 ? Math.min(...S.vals.slice(1).map((x, i) => x - S.vals[i])) : 1; const K = Math.round((S.vals[S.vals.length - 1] - lo) / g) + 1; const p = new Float64Array(K); S.vals.forEach((x, i) => { p[Math.round((x - lo) / g)] += S.p[i]; }); return { q: n === 1 ? p : convPow(M, p, n), x0: n * lo, g }; };
         const sigOf = (S) => Math.sqrt(S.vals.reduce((a, x, i) => a + x * x * S.p[i], 0));
-        const supErr = (S, n, sc) => { const D = dist(S, n), s = sigOf(S), rn = Math.sqrt(n); let e = 0; for (let j = 0; j < D.q.length; j++) { const x = (D.x0 + j * D.g) / rn, onLat = D.q[j] > 1e-300 || Math.abs(Math.round(((D.x0 + j * D.g) - n * S.vals[0]) / S.h) - ((D.x0 + j * D.g) - n * S.vals[0]) / S.h) < 1e-9; if (!onLat) continue; e = Math.max(e, Math.abs((rn / sc) * D.q[j] - PHI(x / s) / s)); } return e; };
+        // the grid step of the pmf array equals the span h for all four laws, so every grid point lies in L_n = (nb + hZ)/√n
+        const supErr = (S, n, sc) => { const D = dist(S, n), s = sigOf(S), rn = Math.sqrt(n); let e = 0; for (let j = 0; j < D.q.length; j++) { const x = (D.x0 + j * D.g) / rn; e = Math.max(e, Math.abs((rn / sc) * D.q[j] - PHI(x / s) / s)); } return e; };
         let cache = null, st = null;
         v.render(() => {
           const S = STEPS[law.value], n = nS.value, s = sigOf(S), sc = divH.value ? S.h : 1, rn = Math.sqrt(n);
@@ -770,7 +773,6 @@ $$\sup_{x\in\mathcal L_n}\Big|\frac{\sqrt n}{h}\,p_n(x)-n(x)\Big|\to0.$$`,
           L.fn((x) => PHI(x / s) / s, { color: 'green', width: 2.2 });
           for (let j = 0; j < D.q.length; j++) {
             const x = (D.x0 + j * D.g) / rn; if (Math.abs(x) > 4.1 * s) continue;
-            const offset = ((D.x0 + j * D.g) - n * S.vals[0]) / S.h; if (Math.abs(offset - Math.round(offset)) > 1e-9) continue; // not in nb + hZ
             const y = (rn / sc) * D.q[j];
             if (n <= 120) L.line(x, 0, x, y, { color: 'accent', width: 1, alpha: 0.45 });
             L.dot(x, y, { r: n <= 120 ? 3 : 1.8, color: 'accent' });

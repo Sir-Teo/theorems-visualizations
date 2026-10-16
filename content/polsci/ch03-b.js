@@ -535,5 +535,418 @@ so the maximum-likelihood estimate of $t$ is exactly the ranking minimizing $\su
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 3.12
+    {
+      num: '3.12',
+      kind: 'Theorem',
+      name: 'List–Pettit impossibility for judgment aggregation',
+      statement: String.raw`A group of $n \ge 2$ individuals each accepts or rejects every proposition on an agenda containing $p$, $q$, $p \wedge q$ and their negations, with complete and consistent individual judgments. An **aggregation function** turns every such profile into collective judgments. List and Pettit proved that no aggregation function satisfies all of
+(a) **universal domain** (it accepts every profile of consistent, complete judgment sets);
+(b) **collective rationality** (the collective judgments are always complete and consistent);
+(c) **anonymity** (permuting the individuals changes nothing);
+(d) **systematicity** (the collective verdict on each proposition depends only on the pattern of individual verdicts on it, by the same rule for every proposition).
+Dropping anonymity leaves the dictatorships; dropping systematicity allows the premise-based procedure.`,
+      idea: String.raw`Systematicity makes the rule a single function $f$ from voting patterns to verdicts; completeness on a proposition and its negation forces $f$ to be self-dual, and anonymity makes it depend only on the number of acceptances. The doctrinal paradox (polsci-2.12) then sinks every such $f$: arrange the individuals so that $p$, $q$ and $\neg(p \wedge q)$ each receive the same number of acceptances (for three judges: 2, 2, 2), so $f$ treats them alike and must accept all three or reject all three — and accepting all three is inconsistent, rejecting all three accepts $\neg p$, $\neg q$ and $p \wedge q$, also inconsistent. With an even number of judges self-duality already fails on a tie. It is the judgment-aggregation analogue of Arrow’s theorem (polsci-3.3), with systematicity playing the role of IIA and neutrality together.`,
+      caption: String.raw`Left: each judge’s view of $p$ and $q$ (**click to flip**); $p \wedge q$ follows. The bottom row is the collective verdict of the chosen rule, and the tags say which conditions the rule meets on **all** profiles. Right: every systematic, complete rule — a verdict for each pattern of acceptances, the same for all propositions — checked on every profile; ✗ cards are inconsistent somewhere (click one to load the profile that breaks it), and the only consistent ones are dictatorships. Anonymous rules carry a ring: none survives. With four judges even completeness fails for the anonymous rules.`,
+      deps: ['polsci-2.12', 'polsci-3.3'],
+      see: ['polsci-2.12'],
+      refs: ['T&P ch. 7', 'List & Pettit (2002), Aggregating sets of judgments: an impossibility result, Economics and Philosophy 18: 89–110'],
+      tags: ['judgment aggregation', 'discursive dilemma', 'impossibility'],
+      credit: 'Christian List & Philip Pettit, 2002',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Discursive_dilemma' },
+      viz(v) {
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 330, title: 'judges and propositions · click p or q' });
+        const Gs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 380, weight: 1.2, title: 'every systematic complete rule, checked on every profile' });
+        let n = 3, J = [[1, 1], [1, 0], [0, 1]], custom = null, geo = null, cards = [];
+        const nS = v.select('judges', [{ value: 3, label: '3' }, { value: 4, label: '4' }], 3, { onChange: (k) => { n = k; J = range(n).map((i) => J[i] || [1, 0]); custom = null; if (rS.value === 'sys') rS.set('prop'); } });
+        const rS = v.select('rule', [{ value: 'prop', label: 'proposition-wise majority' }, { value: 'premise', label: 'premise-based' }, { value: 'dict', label: 'dictator (judge 1)' }, { value: 'unan', label: 'unanimity' }, { value: 'sys', label: 'picked card' }], 'prop');
+        const judg = (pq) => [pq[0], pq[1], pq[0] & pq[1]];
+        const maj = (vals) => { const a = vals.filter((x) => x === 1).length, r = vals.length - a; return a * 2 > vals.length ? 1 : r * 2 > vals.length ? 0 : null; };
+        const pat = (Jx, k) => Jx.reduce((m, pq, i) => m | (judg(pq)[k] << i), 0);
+        const rule = (Jx, id = rS.value) => {
+          const cols = [0, 1, 2].map((k) => Jx.map((pq) => judg(pq)[k]));
+          if (id === 'prop') return cols.map(maj);
+          if (id === 'premise') { const P = maj(cols[0]), Q = maj(cols[1]); return [P, Q, P === 1 && Q === 1 ? 1 : P === 0 || Q === 0 ? 0 : null]; }
+          if (id === 'dict') return judg(Jx[0]);
+          if (id === 'unan') return cols.map((c) => (c.every((x) => x === 1) ? 1 : c.every((x) => x === 0) ? 0 : null));
+          if (id === 'sys' && custom) return [0, 1, 2].map((k) => custom.f[pat(Jx, k)]);
+          return cols.map(maj);
+        };
+        const consistent = (o) => [[0, 0], [0, 1], [1, 0], [1, 1]].some(([P, Q]) => [P, Q, P & Q].every((x, k) => o[k] === null || o[k] === x));
+        const profilesJ = (nn) => { const out = [], T = [[1, 1], [1, 0], [0, 1], [0, 0]], rec = (cur) => { if (cur.length === nn) { out.push(cur.slice()); return; } for (const t of T) { cur.push(t); rec(cur); cur.pop(); } }; rec([]); return out; };
+        const cache = new Map();
+        function audit(id) {
+          const key = id + n + (id === 'sys' && custom ? custom.key : ''); if (cache.has(key)) return cache.get(key);
+          const PR = profilesJ(n); let complete = true, cons = true, anon = true, sys = true, wit = {};
+          const seen = new Map();
+          for (const Jx of PR) {
+            const o = rule(Jx, id);
+            if (complete && o.some((x) => x === null)) { complete = false; wit.complete = Jx; }
+            if (cons && !consistent(o)) { cons = false; wit.cons = Jx; }
+            const srt = Jx.slice().sort((a, b) => b[0] * 2 + b[1] - (a[0] * 2 + a[1]));
+            if (anon && rule(srt, id).some((x, k) => x !== o[k])) { anon = false; wit.anon = Jx; }
+            if (sys) for (let k = 0; k < 3; k++) { const p = pat(Jx, k); if (!seen.has(p)) seen.set(p, [o[k], k, Jx]); else if (seen.get(p)[0] !== o[k]) { sys = false; wit.sys = { p, a: seen.get(p), b: [o[k], k, Jx] }; break; } }
+          }
+          const out = { complete, cons, anon, sys, wit }; cache.set(key, out); return out;
+        }
+        // all systematic complete (self-dual) rules
+        const galCache = new Map();
+        function gallery(nn) {
+          if (galCache.has(nn)) return galCache.get(nn);
+          const NP = 1 << nn, full = NP - 1, half = range(NP).filter((p) => !(p & (1 << (nn - 1)))), PR = profilesJ(nn), out = [];
+          for (let code = 0; code < 1 << half.length; code++) {
+            const f = Array(NP).fill(0); half.forEach((p, k) => { f[p] = (code >> k) & 1; f[full ^ p] = 1 - f[p]; });
+            let bad = null; for (const Jx of PR) { const o = [0, 1, 2].map((k) => f[pat(Jx, k)]); if (!consistent(o)) { bad = Jx; break; } }
+            const dict = range(nn).find((i) => range(NP).every((p) => f[p] === ((p >> i) & 1)));
+            const anonR = range(NP).every((p) => range(NP).every((q) => popc(p) !== popc(q) || f[p] === f[q]));
+            const isMaj = range(NP).every((p) => f[p] === (popc(p) * 2 > nn ? 1 : 0));
+            out.push({ f, key: f.join(''), bad, dict, anon: anonR, label: dict !== undefined ? `dictator ${dict + 1}` : isMaj ? 'majority' : anonR ? 'anonymous' : '' });
+          }
+          galCache.set(nn, out); return out;
+        }
+        Tb.onClick((x, y) => { if (!geo) return; const px = Tb.X(x), py = Tb.Y(y), i = Math.floor((py - geo.Y0) / geo.rh), k = Math.floor((px - geo.X0) / geo.cw); if (i >= 0 && i < n && (k === 0 || k === 1)) J[i][k] = 1 - J[i][k]; });
+        Gs.onClick((x, y) => { const px = Gs.X(x), py = Gs.Y(y); const hit = cards.find((cd) => px >= cd.b[0] && px <= cd.b[2] && py >= cd.b[1] && py <= cd.b[3]); if (hit) { custom = hit.r; if (hit.r.bad) J = hit.r.bad.map((q) => q.slice()); rS.set('sys'); } });
+        const YN = (x) => (x === 1 ? ['yes', 'green'] : x === 0 ? ['no', 'red'] : ['—', 'muted']);
+        v.render(() => {
+          const c = Tb.ctx, W = Tb.width, H = Tb.height, o = rule(J), Au = audit(rS.value);
+          const X0 = 96, cw = Math.min(80, (W - 110) / 3), rh = Math.min(30, (H - 170) / (n + 1)), Y0 = 34;
+          geo = { X0, cw, rh, Y0 };
+          ['p', 'q', 'p ∧ q'].forEach((h, k) => txt(v, c, h, X0 + (k + 0.5) * cw, 18, { size: 13, weight: 750, color: k === 2 ? 'muted' : 'ink' }));
+          J.forEach((pq, i) => {
+            const Y = Y0 + i * rh, jj = judg(pq);
+            txt(v, c, `judge ${i + 1}`, X0 - 12, Y + rh / 2, { size: 11.5, weight: 650, color: 'muted', align: 'right' });
+            jj.forEach((val, k) => { const [t, col] = YN(val); rr(c, X0 + k * cw + 3, Y + 2, cw - 6, rh - 4, 6); c.fillStyle = v.color(col, k === 2 ? 0.1 : 0.22); c.fill(); txt(v, c, t, X0 + (k + 0.5) * cw, Y + rh / 2, { size: 12, weight: 700, color: k === 2 ? 'muted' : col }); });
+          });
+          const Yc = Y0 + n * rh + 10;
+          hl(v, c, 10, W - 10, Yc - 4, 'ink', null, 1.4);
+          txt(v, c, 'group', X0 - 12, Yc + rh / 2, { size: 12, weight: 800, align: 'right' });
+          o.forEach((val, k) => { const [t, col] = YN(val); rr(c, X0 + k * cw + 3, Yc + 2, cw - 6, rh - 4, 6); c.fillStyle = v.color(col, 0.4); c.fill(); txt(v, c, t, X0 + (k + 0.5) * cw, Yc + rh / 2, { size: 12.5, weight: 800, color: 'ink' }); });
+          const okNow = consistent(o) && o.every((x) => x !== null);
+          txt(v, c, o.some((x) => x === null) ? 'incomplete' : consistent(o) ? 'consistent' : 'inconsistent!', W - 12, Yc + rh + 16, { size: 12, weight: 750, color: okNow ? 'green' : 'red', align: 'right' });
+          let ty = Yc + rh + 44;
+          [['complete', Au.complete], ['consistent', Au.cons], ['anonymous', Au.anon], ['systematic', Au.sys]].forEach(([lab, ok], k) => { const X = 12 + (k % 2) * (W / 2 - 6); tag(v, c, ok, lab, X, ty + Math.floor(k / 2) * 28, { size: 11 }); });
+          txt(v, c, 'on all profiles', W - 12, ty + 56, { size: 10, color: 'muted', align: 'right' });
+          // ---- gallery
+          const d = Gs.ctx, GW = Gs.width, GH = Gs.height, Gl = gallery(n);
+          cards = [];
+          const good = Gl.filter((r) => !r.bad);
+          if (n === 3) {
+            const cols = 4, cwg = (GW - 16) / cols, chg = Math.min(66, (GH - 40) / 4);
+            Gl.forEach((r, k) => {
+              const X = 8 + (k % cols) * cwg, Y = 8 + Math.floor(k / cols) * chg, isSel = custom && custom.key === r.key && rS.value === 'sys';
+              cards.push({ b: [X, Y, X + cwg - 6, Y + chg - 6], r });
+              rr(d, X, Y, cwg - 6, chg - 6, 7); d.fillStyle = v.color(r.bad ? 'red' : 'green', isSel ? 0.25 : 0.1); d.fill();
+              d.strokeStyle = v.color(isSel ? 'ink' : r.anon ? 'gold' : r.bad ? 'red' : 'green', r.anon || isSel ? 1 : 0.5); d.lineWidth = r.anon || isSel ? 2.4 : 1; d.stroke();
+              const cs = Math.min(12, (cwg - 22) / 8);
+              for (let p = 0; p < 8; p++) { d.fillStyle = v.color(r.f[p] ? 'green' : 'red', 0.7); d.fillRect(X + 8 + p * cs, Y + 8, cs - 1.5, cs - 1.5); }
+              txt(v, d, r.bad ? '✗ inconsistent' : '✓ consistent', X + 8, Y + chg - 30, { size: 10, weight: 700, color: r.bad ? 'red' : 'green', align: 'left' });
+              if (r.label) txt(v, d, r.label, X + 8, Y + chg - 16, { size: 10, weight: 650, color: 'ink', align: 'left' });
+            });
+            txt(v, d, 'squares: verdict for each pattern ∅ {1} {2} {1,2} {3} {1,3} {2,3} {1,2,3} of judges accepting', GW / 2, GH - 10, { size: 9.5, color: 'muted' });
+          } else {
+            const cols = 16, cs = Math.min(17, (GW - 30) / cols, (GH - 90) / 16);
+            Gl.forEach((r, k) => { const X = 14 + (k % cols) * cs, Y = 14 + Math.floor(k / cols) * cs; cards.push({ b: [X, Y, X + cs, Y + cs], r }); d.fillStyle = v.color(r.bad ? 'red' : 'green', r.bad ? 0.35 : 0.9); d.fillRect(X, Y, cs - 2, cs - 2); });
+            const tx = 22 + cols * cs;
+            txt(v, d, `${Gl.length} self-dual systematic rules`, tx, 26, { size: 11.5, weight: 650, align: 'left' });
+            txt(v, d, `${good.length} consistent:`, tx, 48, { size: 11.5, weight: 750, color: 'green', align: 'left' });
+            good.forEach((r, k) => txt(v, d, r.label || 'other', tx + 10, 68 + k * 18, { size: 11, weight: 650, align: 'left' }));
+            txt(v, d, 'no anonymous rule is complete:', tx, 160, { size: 11, weight: 650, color: 'muted', align: 'left' });
+            txt(v, d, 'a 2–2 split has no self-dual verdict', tx, 176, { size: 11, weight: 650, color: 'muted', align: 'left' });
+          }
+        });
+        v.legend([['green', 'accept / consistent', { dot: true }], ['red', 'reject / inconsistent', { dot: true }], ['gold', 'anonymous rule (ring)']]);
+        v.readout(() => {
+          const Au = audit(rS.value), Gl = gallery(n), good = Gl.filter((r) => !r.bad), anonGood = good.filter((r) => r.anon).length;
+          const names = { prop: 'Proposition-wise majority', premise: 'The premise-based procedure', dict: 'The dictatorship', unan: 'Unanimity', sys: 'The picked rule' };
+          const fails = [!Au.complete && 'complete', !Au.cons && 'consistent', !Au.anon && 'anonymous', !Au.sys && 'systematic'].filter(Boolean);
+          return `${names[rS.value]} is ${fails.length ? `**not ${fails.join(', not ')}**` : 'complete, consistent, anonymous and systematic?!'} (checked on all ${4 ** n} profiles of ${n} judges). Exhaustive search: of the ${Gl.length} systematic complete rules, **${good.length}** are always consistent — ${good.map((r) => r.label || 'other').join(', ')} — and ${anonGood} of them anonymous: List and Pettit’s theorem.`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 3.13
+    {
+      num: '3.13',
+      kind: 'Paper',
+      name: 'A Difficulty in the Concept of Social Welfare',
+      paper: { authors: 'Kenneth J. Arrow', year: 1950, title: 'A Difficulty in the Concept of Social Welfare', venue: 'Journal of Political Economy 58 (4): 328–346', doi: '10.1086/256963' },
+      introduces: ['polsci-3.2', 'polsci-3.3'],
+      statement: String.raw`Arrow asks whether a **social welfare function** can turn the orderings $R_1, \dots, R_n$ of individuals into a social ordering $R$ (complete and transitive: Axioms I and II) subject to five conditions: (1) it is defined for every admissible profile, and with three alternatives all orderings are admissible; (2) **positive association** — if $x$ rises or does not fall in every individual ordering, a social preference for $x$ over $y$ survives; (3) **independence of irrelevant alternatives** — the social choice from a set depends only on individual orderings of that set; (4) **non-imposition** (citizens’ sovereignty) — for every pair there is some profile in which society prefers $y$ to $x$; (5) **non-dictatorship**. For clarity he proves the **Possibility Theorem** for two individuals and three alternatives, noting that it holds for any number of individuals: *every social welfare function satisfying Conditions 2 and 3 and yielding a social ordering is either imposed or dictatorial.* Neither majority voting nor any scheme of proportional representation escapes it.`,
+      idea: String.raw`Condorcet’s paradox (polsci-5.10, polsci-2.1) showed that majority voting can fail to produce an ordering, and welfare economists (Bergson, Samuelson) had assumed a social welfare function ranking social states existed. Arrow, working at RAND and the Cowles Commission, turned the question into axioms and showed the difficulty is general. His proof is a chain of profiles: Conditions 2 and 4 give unanimity (Consequence 1); a voter who prevails against opposition prevails always (Consequence 2); and if individual 1 prevailed against individual 2 on one pair, a chain of five profiles would spread this to every pair and make 1 a dictator — so opposed preferences must produce social indifference (Consequence 3). One more profile then makes $x$ both preferred and indifferent to $z$. The paper (and the 1951 monograph *Social Choice and Individual Values*) introduced the axiomatic method into social choice — the conditions now called Arrow’s conditions (polsci-3.2) and the impossibility theorem (polsci-3.3) — and founded the modern field; Arrow received the Nobel Memorial Prize in 1972 partly for it.`,
+      caption: String.raw`Arrow’s own setting: two individuals and three alternatives $x, y, z$. Each cell of the grid is a profile — individual 1’s ordering by row, individual 2’s by column — showing the social ordering your rule assigns. **Click a cell** to select it, click again to cycle through the 13 orderings. The checklist tests Arrow’s conditions on all 36 profiles (click a failed one to see the offending cells). Step through Arrow’s proof: each step highlights the profile Arrow uses — the same orderings as in his text — and compares what the proof deduces with what your rule does. Below the checklist, the exhaustive search over all 531,441 rules satisfying IIA (by Condition 3 a rule is three pairwise tables) reproduces the theorem’s conclusion; the paper’s numbers are not numerical data, so the comparison is with its logic.`,
+      deps: ['polsci-2.1', 'micro-4.3', 'polsci-5.10'],
+      refs: [],
+      tags: ['Arrow', 'paper', 'impossibility'],
+      credit: 'Kenneth J. Arrow, 1950',
+      links: { doi: 'https://doi.org/10.1086/256963' },
+      viz(v) {
+        const Gd = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, minWidth: 380, title: 'social ordering for each pair of individual orderings' });
+        const Ck = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, minWidth: 330, title: 'Arrow’s conditions on all 36 profiles' });
+        const XYZ = 'xyz';
+        const PROF = []; for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) PROF.push([R3[i], R3[j]]);
+        const PRE = {
+          borda: { label: 'rank-order (Borda)', f: (P) => { const s = [0, 0, 0]; P.forEach((r) => r.forEach((c, k) => { s[c] += 2 - k; })); return tripleOf(relFromScores(s)); } },
+          d1: { label: 'individual 1 dictates', f: (P) => tripleOf(relOfRanking(P[0])) },
+          d2: { label: 'individual 2 dictates', f: (P) => tripleOf(relOfRanking(P[1])) },
+          una: { label: 'unanimity, else indifferent', f: (P) => PAIRS3.map(([x, y]) => (P.every((r) => above(r, x, y)) ? 1 : P.every((r) => above(r, y, x)) ? -1 : 0)) },
+          inv: { label: 'reverse of 1', f: (P) => tripleOf(relOfRanking(P[0].slice().reverse())) },
+          imp: { label: 'imposed x > y > z', f: () => [1, 1, 1] },
+        };
+        const pre = v.select('rule', Object.entries(PRE).map(([value, r]) => ({ value, label: r.label })), 'borda', { onChange: () => load() });
+        let F = [], sel = -1, custom = false, geo = null, condSel = null, rowsGeo = [];
+        function load() { F = PROF.map((P) => PRE[pre.value].f(P)); custom = false; sel = -1; }
+        load();
+        const S = (k) => relFromTriple(F[k]);
+        const kOf = (i, j) => i * 6 + j;
+        Gd.onClick((x, y) => {
+          if (!geo) return; const px = Gd.X(x), py = Gd.Y(y), j = Math.floor((px - geo.X0) / geo.s), i = Math.floor((py - geo.Y0) / geo.s);
+          if (i < 0 || i > 5 || j < 0 || j > 5) return; const k = kOf(i, j);
+          if (sel === k) { const w = WEAK3.findIndex((t) => t.every((q, m) => q === F[k][m])); F[k] = WEAK3[(w + 1) % WEAK3.length].slice(); custom = true; } else sel = k;
+        });
+        Ck.onClick((x, y) => { const py = Ck.Y(y); const r = rowsGeo.find((g) => Math.abs(py - g.Y) < 11); if (r) condSel = r.id; });
+        // ---- Arrow's conditions on the current table
+        const check = () => {
+          const out = {};
+          const bad = PROF.map((_, k) => k).filter((k) => !isWeakOrder(S(k)));
+          out.ord = { ok: !bad.length, cells: bad.slice(0, 3) };
+          // Condition 2: x rises (others' relative order unchanged) and x P y before => x P y after
+          let c2 = null;
+          for (let a = 0; a < 36 && !c2; a++) for (let b = 0; b < 36 && !c2; b++) {
+            if (a === b) continue;
+            for (let x = 0; x < 3 && !c2; x++) {
+              const ok = PROF[a].every((r, i) => { const q = PROF[b][i], r2 = r.filter((c) => c !== x), q2 = q.filter((c) => c !== x); return r2[0] === q2[0] && q.indexOf(x) <= r.indexOf(x); });
+              if (!ok) continue;
+              for (let y = 0; y < 3; y++) if (y !== x && S(a)[x][y] === 1 && S(b)[x][y] !== 1) { c2 = { cells: [a, b], x, y }; break; }
+            }
+          }
+          out.c2 = { ok: !c2, ...(c2 || {}) };
+          // Condition 3: IIA
+          let c3 = null;
+          for (const [x, y] of PAIRS3) { const m = new Map(); for (let k = 0; k < 36 && !c3; k++) { const p = patternOf(PROF[k], x, y), r = S(k)[x][y]; if (!m.has(p)) m.set(p, k); else if (S(m.get(p))[x][y] !== r) c3 = { cells: [m.get(p), k], x, y }; } if (c3) break; }
+          out.c3 = { ok: !c3, ...(c3 || {}) };
+          // Condition 4: non-imposition
+          let c4 = null;
+          for (let x = 0; x < 3 && !c4; x++) for (let y = 0; y < 3 && !c4; y++) if (x !== y && !PROF.some((_, k) => S(k)[y][x] === 1)) c4 = { x, y, cells: [] };
+          out.c4 = { ok: !c4, ...(c4 || {}) };
+          // Condition 5: dictator
+          const dict = [0, 1].filter((i) => PROF.every((P, k) => PAIRS3.every(([x, y]) => (above(P[i], x, y) ? S(k)[x][y] === 1 : S(k)[y][x] === 1))));
+          out.c5 = { ok: !dict.length, dict, cells: [] };
+          // Pareto (Consequence 1)
+          let par = null;
+          for (let k = 0; k < 36 && !par; k++) for (const [x, y] of PAIRS3) { const P = PROF[k]; if (P.every((r) => above(r, x, y)) && S(k)[x][y] !== 1) { par = { cells: [k], x, y }; break; } if (P.every((r) => above(r, y, x)) && S(k)[y][x] !== 1) { par = { cells: [k], x: y, y: x }; break; } }
+          out.par = { ok: !par, ...(par || {}) };
+          return out;
+        };
+        // ---- exhaustive search over IIA rules (pair tables over the 4 patterns of two individuals)
+        let funnel = null;
+        const runFunnel = () => {
+          if (funnel) return funnel;
+          const vals = [1, 0, -1], T = []; for (let code = 0; code < 81; code++) { const f = []; let t = code; for (let p = 0; p < 4; p++) { f.push(vals[t % 3]); t = Math.floor(t / 3); } T.push(f); }
+          const PP = PROF.map((P) => PAIRS3.map(([x, y]) => patternOf(P, x, y)));
+          const rules = [];
+          for (const fa of T) for (const fb of T) {
+            const al = [7, 7, 7, 7]; let dead = false;
+            for (const q of PP) { al[q[2]] &= ALLOW[fa[q[0]] + 1][fb[q[1]] + 1]; if (!al[q[2]]) { dead = true; break; } }
+            if (dead) continue;
+            const opts = al.map((m) => vals.filter((c) => m & (1 << (c + 1))));
+            for (const c0 of opts[0]) for (const c1 of opts[1]) for (const c2 of opts[2]) for (const c3 of opts[3]) rules.push([fa, fb, [c0, c1, c2, c3]]);
+          }
+          const mono = (f) => { for (let p = 0; p < 4; p++) for (let q = 0; q < 4; q++) if ((p & q) === p && p !== q) { if (f[p] === 1 && f[q] !== 1) return false; if (f[q] === -1 && f[p] !== -1) return false; } return true; };
+          const nonImp = (f) => f.includes(1) && f.includes(-1);
+          const dictOf = (R) => [0, 1].find((i) => R.every((f) => [0, 1, 2, 3].every((p) => f[p] === ((p >> i) & 1 ? 1 : -1))));
+          const r2 = rules.filter((R) => R.every(mono)), r4 = r2.filter((R) => R.every(nonImp)), r5 = r4.filter((R) => dictOf(R) === undefined);
+          funnel = { total: 81 ** 3, trans: rules.length, c2: r2.length, c4: r4.length, c5: r5.length, dicts: r4.map(dictOf).filter((d) => d !== undefined).map((d) => d + 1) };
+          return funnel;
+        };
+        // ---- Arrow's chain of profiles (R3 order: xyz, xzy, yxz, yzx, zxy, zyx)
+        const X = 0, Y = 1, Z = 2, P = 'P', I = 'I';
+        const frames = [
+          { cell: [0, 2], claims: [[X, Z, P, 'both prefer x to z: Consequence 1']], note: String.raw`**Consequence 1** (from Conditions 2–4): if both individuals prefer $x'$ to $y'$, so does society. Here both rank $x$ above $z$.` },
+          { cell: [0, 3], claims: [[X, Y, P, 'assumption (1): 1 prevails on x vs y']], note: String.raw`To prove **Consequence 3** Arrow supposes the contrary: (1) whenever $xP_1y$ and $yP_2x$, $xPy$ — individual 1 prevails against 2 on $x$ vs $y$. Profile: $R_1 = x, y, z$; $R_2 = y, z, x$.` },
+          { cell: [0, 3], claims: [[Y, Z, P, 'both prefer y to z: Consequence 1'], [X, Z, P, 'transitivity, so (2): xP₁z & zP₂x ⇒ xPz']], note: String.raw`Same profile: $yPz$ by Consequence 1, so $xPz$ by transitivity. Since only the $x$-vs-$z$ opinions matter (Condition 3): **(2)** whenever $xP_1z$ and $zP_2x$, $xPz$.` },
+          { cell: [2, 5], claims: [[Y, X, P, 'Consequence 1'], [X, Z, P, 'by (2)'], [Y, Z, P, 'so (3): yP₁z & zP₂y ⇒ yPz']], note: String.raw`$R_1 = y, x, z$; $R_2 = z, y, x$. $yPx$ by Consequence 1, $xPz$ by (2), hence **(3)** whenever $yP_1z$ and $zP_2y$, $yPz$.` },
+          { cell: [3, 4], claims: [[Z, X, P, 'Consequence 1'], [Y, Z, P, 'by (3)'], [Y, X, P, 'so (4): yP₁x & xP₂y ⇒ yPx']], note: String.raw`$R_1 = y, z, x$; $R_2 = z, x, y$. $zPx$ by Consequence 1 and $yPz$ by (3), so **(4)** whenever $yP_1x$ and $xP_2y$, $yPx$.` },
+          { cell: [5, 1], claims: [[Z, Y, P, 'Consequence 1'], [Y, X, P, 'by (4)'], [Z, X, P, 'so (5): zP₁x & xP₂z ⇒ zPx']], note: String.raw`$R_1 = z, y, x$; $R_2 = x, z, y$. $zPy$ and $yPx$ give **(5)** whenever $zP_1x$ and $xP_2z$, $zPx$.` },
+          { cell: [4, 0], claims: [[Z, X, P, 'by (5)'], [X, Y, P, 'Consequence 1'], [Z, Y, P, 'so (6): zP₁y & yP₂z ⇒ zPy']], note: String.raw`$R_1 = z, x, y$; $R_2 = x, y, z$. By (5) and Consequence 1, **(6)** whenever $zP_1y$ and $yP_2z$, $zPy$. Together with (1)–(5), individual 1 prevails against opposition on every pair.` },
+          { cell: null, claims: [], note: String.raw`By **Consequence 2** a voter who prevails against opposition also prevails when the other agrees or is indifferent, so (1) would make individual 1 a **dictator**, which Condition 5 forbids. Hence (1) is false: **Consequence 3** — when the two have exactly opposed interests on a pair, society is indifferent.` },
+          { cell: [0, 4], claims: [[X, Y, P, '(7): both prefer x to y'], [Y, Z, I, '(8): opposed on y vs z ⇒ yIz'], [X, Z, P, 'so xPz by transitivity'], [X, Z, I, 'but opposed on x vs z ⇒ xIz']], note: String.raw`**The contradiction.** $R_1 = x, y, z$; $R_2 = z, x, y$. By Consequence 1 $xPy$ (7); by Consequence 3 $yIz$ (8), so $xPz$ — yet the two are opposed on $x$ vs $z$, so Consequence 3 also demands $xIz$. No social welfare function satisfies Conditions 1–5.` },
+        ];
+        const St = v.steps({ frames, speed: 0.6, still: 2 });
+        const holds = (k, [a, b, kind]) => (kind === P ? S(k)[a][b] === 1 : S(k)[a][b] === 0);
+        v.render(() => {
+          const K = check(), c = Gd.ctx, W = Gd.width, H = Gd.height, fr = St.frame;
+          const s = Math.min(52, (W - 100) / 6, (H - 86) / 6), X0 = Math.max(76, (W - 6 * s) / 2 + 18), Y0 = 64;
+          geo = { X0, Y0, s };
+          for (let k = 0; k < 6; k++) {
+            R3[k].forEach((cc, q) => chip(v, c, X0 - 54 + q * 15, Y0 + (k + 0.5) * s, cc, { r: 6.5, label: XYZ[cc] }));
+            R3[k].forEach((cc, q) => chip(v, c, X0 + (k + 0.5) * s, Y0 - 46 + q * 14, cc, { r: 6.5, label: XYZ[cc] }));
+          }
+          txt(v, c, '1 ↓', X0 - 34, Y0 - 58, { size: 10.5, weight: 700, color: 'muted' });
+          txt(v, c, '2 →', X0 + 6 * s + 6, Y0 - 32, { size: 10.5, weight: 700, color: 'muted', align: 'left' });
+          const sh = condSel && !K[condSel].ok ? K[condSel].cells || [] : [];
+          PROF.forEach((Pp, k) => {
+            const i = Math.floor(k / 6), j = k % 6, Xc = X0 + j * s, Yc = Y0 + i * s, Sk = S(k), G = groupsOf(Sk);
+            c.fillStyle = v.color(G ? 'muted' : 'red', G ? 0.05 : 0.15); c.fillRect(Xc + 1, Yc + 1, s - 2, s - 2);
+            c.strokeStyle = v.color('faint'); c.lineWidth = 1; c.strokeRect(Xc + 0.5, Yc + 0.5, s - 1, s - 1);
+            if (G) {
+              const gap = Math.min(13, (s - 12) / Math.max(1, G.length - 1)), top = Yc + s / 2 - ((G.length - 1) * gap) / 2;
+              G.forEach((grp, q) => grp.forEach((cc, t) => chip(v, c, Xc + s / 2 + (t - (grp.length - 1) / 2) * 13, top + q * gap, cc, { r: 5.5, label: XYZ[cc] })));
+            } else txt(v, c, 'no order', Xc + s / 2, Yc + s / 2, { size: 9, weight: 700, color: 'red' });
+            if (sh.includes(k)) { c.save(); c.strokeStyle = v.color('red'); c.lineWidth = 2.6; c.setLineDash([4, 3]); c.strokeRect(Xc + 2, Yc + 2, s - 4, s - 4); c.restore(); }
+          });
+          if (sel >= 0) { const i = Math.floor(sel / 6), j = sel % 6; c.strokeStyle = v.color('ink'); c.lineWidth = 2.4; c.strokeRect(X0 + j * s + 1, Y0 + i * s + 1, s - 2, s - 2); }
+          if (fr.cell) { const [i, j] = fr.cell; c.strokeStyle = v.color('gold'); c.lineWidth = 3.4; c.strokeRect(X0 + j * s - 1, Y0 + i * s - 1, s + 2, s + 2); }
+          txt(v, c, custom ? 'your rule' : PRE[pre.value].label, X0 + 3 * s, Y0 + 6 * s + 18, { size: 12, weight: 750 });
+          // ---- conditions
+          const d = Ck.ctx, CW = Ck.width;
+          rowsGeo = [];
+          const rows = [['ord', 'Axioms I–II: an ordering'], ['c2', 'Condition 2: positive association'], ['c3', 'Condition 3: IIA'], ['c4', 'Condition 4: not imposed'], ['c5', 'Condition 5: no dictator'], ['par', 'Consequence 1: Pareto']];
+          rows.forEach(([id, lab2], k) => { const Yr = 18 + k * 25; rowsGeo.push({ id, Y: Yr }); tag(v, d, K[id].ok, lab2, 10, Yr, { size: 10.5, sel: condSel === id && !K[id].ok }); });
+          // step claims
+          let Yy = 18 + 6 * 25 + 10;
+          hl(v, d, 8, CW - 8, Yy - 8, 'grid');
+          if (fr.cell) {
+            const k = kOf(...fr.cell);
+            txt(v, d, `Arrow’s profile: R₁ = ${R3[fr.cell[0]].map((q) => XYZ[q]).join(', ')}   R₂ = ${R3[fr.cell[1]].map((q) => XYZ[q]).join(', ')}`, 10, Yy + 4, { size: 10.5, weight: 700, color: 'gold', align: 'left' });
+            fr.claims.forEach((cl, q) => tag(v, d, holds(k, cl), `${XYZ[cl[0]]} ${cl[2]} ${XYZ[cl[1]]} — ${cl[3]}`, 10, Yy + 26 + q * 23, { size: 9.5 }));
+          } else txt(v, d, 'no profile: a step of pure logic', 10, Yy + 4, { size: 10.5, weight: 600, color: 'muted', align: 'left' });
+          // funnel
+          const Fn = runFunnel(), yF = Ck.height - 118;
+          hl(v, d, 8, CW - 8, yF - 10, 'grid');
+          txt(v, d, 'all IIA rules for 2 individuals, searched:', 10, yF + 2, { size: 10.5, weight: 650, color: 'muted', align: 'left' });
+          [['IIA rules', Fn.total], ['+ Axioms I–II', Fn.trans], ['+ Condition 2', Fn.c2], ['+ Condition 4', Fn.c4], ['+ Condition 5', Fn.c5]].forEach(([l, nn], q) => {
+            const Yq = yF + 22 + q * 18, w = (Math.log10(nn + 1) / Math.log10(Fn.total + 1)) * (CW - 190);
+            txt(v, d, l, 104, Yq, { size: 10, weight: 650, align: 'right' });
+            rr(d, 112, Yq - 6, Math.max(2, w), 12, 3); d.fillStyle = v.color(q === 4 ? 'red' : q === 3 ? 'purple' : 'accent', 0.5); d.fill();
+            txt(v, d, fmtK(nn) + (q === 3 ? ` (dictators: ${Fn.dicts.join(', ')})` : ''), 118 + Math.max(2, w), Yq, { size: 10, weight: 800, align: 'left', color: nn ? 'ink' : 'red' });
+          });
+        });
+        v.legend([['gold', 'the profile of the current proof step'], ['red', 'offending profiles / not an ordering'], ['green', 'condition holds', { dot: true }]]);
+        v.readout(() => {
+          const K = check(), Fn = runFunnel(), fr = St.frame;
+          const failed = [['ord', 'Axioms I–II'], ['c2', 'Condition 2'], ['c3', 'Condition 3'], ['c4', 'Condition 4'], ['c5', 'Condition 5']].filter(([id]) => !K[id].ok).map(([, l]) => l);
+          const st = fr.cell ? ` At this step your rule ${fr.claims.every((cl) => holds(kOf(...fr.cell), cl)) ? 'agrees with every deduction' : 'departs from the deduction — so it must break one of Conditions 1–5'}.` : '';
+          return `Your rule breaks ${failed.length ? `**${failed.join(', ')}**` : 'nothing?!'}.${st} Exhaustive check of the theorem: of ${fmtK(Fn.total)} IIA rules for two individuals, ${Fn.trans} give an ordering, ${Fn.c2} of those satisfy positive association, ${Fn.c4} are also non-imposed — individuals ${Fn.dicts.join(' and ')} as dictators — and **${Fn.c5}** survive non-dictatorship, as Arrow proved.`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 3.14
+    {
+      num: '3.14',
+      kind: 'Paper',
+      name: 'Conditions for Simple Majority Decision',
+      paper: { authors: 'Kenneth O. May', year: 1952, title: 'A Set of Independent Necessary and Sufficient Conditions for Simple Majority Decision', venue: 'Econometrica 20 (4): 680–684', doi: '10.2307/1907651' },
+      introduces: ['polsci-3.1'],
+      statement: String.raw`May models a choice between two alternatives $x$ and $y$: individual $i$ reports $D_i = 1$, $0$ or $-1$ (prefers $x$, indifferent, prefers $y$), and a **group decision function** gives $D = f(D_1, \dots, D_n)$. He proves that $f$ is **simple majority decision** — $D = 1, 0, -1$ according as $N(1) >, =, < N(-1)$ — if and only if it is (I) **decisive** (defined and single-valued for every pattern), (II) **egalitarian** (symmetric in the individuals), (III) **neutral** ($f(-D) = -f(D)$), and (IV) **positively responsive** (if $D$ is a tie or $x$, a change of one individual toward $x$ makes it $x$). He also shows the four conditions are independent: each can fail while the other three hold. Since group choice among many alternatives can be built from pairwise choices, May remarks that his theorem characterizes majority decision between every pair.`,
+      idea: String.raw`Arrow (polsci-3.13) had just shown that no social welfare function on three or more alternatives meets his conditions; May asked what is special about majority rule on two. His proof is three lines: egalitarianism makes $D$ a function of the counts; neutrality makes a tie of counts a tie of outcome (the pattern and its negation have the same counts); positive responsiveness then gives $x$ whenever $N(1) - N(-1) \ge 1$, by induction, and neutrality gives $y$ for the rest. Independence is shown by four rules, each failing exactly one condition: adopting both alternatives on a tie (not decisive), counting one individual twice (not egalitarian), requiring a two-thirds majority for $x$ (not neutral), and unanimity (not positively responsive). May’s theorem (polsci-3.1) became the standard justification of majority rule; his remark that pairwise choices determine choices from larger sets drew Arrow’s rejoinder that this needs transitivity — which majority rule lacks (polsci-2.1).`,
+      caption: String.raw`The table is a group decision function for two individuals: rows are individual 1’s vote, columns individual 2’s, and each cell the group outcome — $x$, tie, $y$, or *both* (May’s non-decisive output, $x$ and $y$ both adopted). **Click a cell** to cycle it. With three individuals the 27 patterns appear as three tables, one for each vote of individual 3. The four checks mark the cells that break each condition. Load May’s four independence examples from *rule*. The bar chart is an exhaustive census of all $4^9 = 262{,}144$ such functions for two individuals: only simple majority meets all four conditions, and each “three out of four” class is non-empty — May’s independence result, recomputed.`,
+      deps: ['polsci-1.1'],
+      refs: [],
+      tags: ['May', 'paper', 'majority rule'],
+      credit: 'Kenneth O. May, 1952',
+      links: { doi: 'https://doi.org/10.2307/1907651' },
+      viz(v) {
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 360, title: 'group decision function · click a cell' });
+        const Ck = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 360, title: 'May’s conditions · census of all rules for two individuals' });
+        const RULES = {
+          majority: { label: 'simple majority', f: (D) => Math.sign(sum(D)) },
+          both: { label: 'both on ties (not I)', f: (D) => (sum(D) === 0 ? 2 : Math.sign(sum(D))) },
+          twice: { label: 'individual 1 twice (not II)', f: (D) => Math.sign(sum(D) + D[0]) },
+          twothirds: { label: 'two-thirds for x (not III)', f: (D) => { const a = D.filter((x) => x === 1).length, b = D.filter((x) => x === -1).length; return a > 2 * b ? 1 : a === 2 * b ? 0 : -1; } },
+          unanimity: { label: 'unanimity (not IV)', f: (D) => (D.every((x) => x === 1) ? 1 : D.every((x) => x === -1) ? -1 : 0) },
+        };
+        let n = 2, F = new Map(), custom = false, cellsGeo = [];
+        const nS = v.select('individuals', [{ value: 2, label: '2' }, { value: 3, label: '3' }], 2, { onChange: (k) => { n = k; load(); } });
+        const rS = v.select('rule', Object.entries(RULES).map(([value, r]) => ({ value, label: r.label })), 'majority', { onChange: () => load() });
+        const pats = () => { const out = [], rec = (cur) => { if (cur.length === n) { out.push(cur.slice()); return; } for (const x of [1, 0, -1]) { cur.push(x); rec(cur); cur.pop(); } }; rec([]); return out; };
+        function load() { F = new Map(); for (const D of pats()) F.set(D.join(','), RULES[rS.value].f(D)); custom = false; }
+        load();
+        const neg = (val) => (val === 2 ? 2 : -val);
+        const setOf = (val) => (val === 2 ? [1, -1] : [val]);
+        function analyse(G = F, nn = n) {
+          const P = [...G.keys()].map((k) => k.split(',').map(Number)), get = (D) => G.get(D.join(','));
+          const bad = { I: [], II: [], III: [], IV: [] };
+          for (const D of P) {
+            const f = get(D);
+            if (f === 2) bad.I.push([D]);
+            const srt = D.slice().sort((a, b) => b - a); if (get(srt) !== f) bad.II.push([D, srt]);
+            if (get(D.map((x) => -x)) !== neg(f)) bad.III.push([D, D.map((x) => -x)]);
+            if (setOf(f).some((x) => x >= 0)) for (let i = 0; i < nn; i++) for (const up of [0, 1]) { if (up <= D[i]) continue; const D2 = D.slice(); D2[i] = up; if (get(D2) !== 1) bad.IV.push([D, D2]); }
+          }
+          return bad;
+        }
+        // census: all 4^9 rules for two individuals
+        let census = null;
+        const runCensus = () => {
+          if (census) return census;
+          const P2 = []; for (const a of [1, 0, -1]) for (const b of [1, 0, -1]) P2.push([a, b]);
+          const idx = (D) => (1 - D[0]) * 3 + (1 - D[1]);
+          const bins = Array(16).fill(0), vals = [1, 0, -1, 2], f = Array(9).fill(0);
+          for (let code = 0; code < 1 << 18; code++) {
+            let t = code; for (let q = 0; q < 9; q++) { f[q] = vals[t & 3]; t >>= 2; }
+            let I = 1, II = 1, III = 1, IV = 1;
+            for (let q = 0; q < 9; q++) {
+              const D = P2[q], val = f[q];
+              if (val === 2) I = 0;
+              if (II && f[idx([D[1], D[0]])] !== val) II = 0;
+              if (III && f[idx([-D[0], -D[1]])] !== (val === 2 ? 2 : -val)) III = 0;
+              if (IV && (val !== -1)) for (let i = 0; i < 2; i++) for (const up of [0, 1]) { if (up <= D[i]) continue; const D2 = D.slice(); D2[i] = up; if (f[idx(D2)] !== 1) IV = 0; }
+            }
+            bins[I | (II << 1) | (III << 2) | (IV << 3)]++;
+          }
+          census = { bins, total: 1 << 18 }; return census;
+        };
+        Tb.onClick((x, y) => { const px = Tb.X(x), py = Tb.Y(y); const g = cellsGeo.find((q) => px >= q[0] && px <= q[2] && py >= q[1] && py <= q[3]); if (g) { const cur = F.get(g[4]); F.set(g[4], cur === 1 ? 0 : cur === 0 ? -1 : cur === -1 ? 2 : 1); custom = true; } });
+        const VT = (val) => (val === 1 ? ['x', 'blue'] : val === -1 ? ['y', 'orange'] : val === 0 ? ['tie', 'gray'] : ['both', 'purple']);
+        const DL = (x) => (x === 1 ? 'x' : x === -1 ? 'y' : '0');
+        v.render(() => {
+          const A = analyse(), c = Tb.ctx, W = Tb.width, H = Tb.height;
+          cellsGeo = [];
+          const blocks = n === 2 ? [null] : [1, 0, -1], bw = (W - 20) / blocks.length, s = Math.min(n === 2 ? 64 : 36, (bw - 40) / 3, (H - 120) / 3);
+          const markCells = new Set(); Object.values(A).forEach((list) => list.slice(0, 40).forEach((pr) => markCells.add(pr[0].join(','))));
+          blocks.forEach((d3, b) => {
+            const X0 = 10 + b * bw + (bw - 3 * s) / 2 + 12, Y0 = 56;
+            if (d3 !== null) txt(v, c, `individual 3 votes ${DL(d3)}`, X0 + 1.5 * s, 18, { size: 10.5, weight: 700, color: 'muted' });
+            [1, 0, -1].forEach((d1, i) => {
+              txt(v, c, DL(d1), X0 - 12, Y0 + (i + 0.5) * s, { size: 11, weight: 700, color: 'muted' });
+              [1, 0, -1].forEach((d2, j) => {
+                if (i === 0) txt(v, c, DL(d2), X0 + (j + 0.5) * s, Y0 - 10, { size: 11, weight: 700, color: 'muted' });
+                const D = d3 === null ? [d1, d2] : [d1, d2, d3], key = D.join(','), val = F.get(key), [t, col] = VT(val);
+                const Xc = X0 + j * s, Yc = Y0 + i * s;
+                cellsGeo.push([Xc, Yc, Xc + s, Yc + s, key]);
+                rr(c, Xc + 2, Yc + 2, s - 4, s - 4, 5); c.fillStyle = v.color(col, val === 0 ? 0.16 : 0.42); c.fill();
+                if (markCells.has(key)) { c.strokeStyle = v.color('red'); c.lineWidth = 2.2; c.stroke(); }
+                txt(v, c, t, Xc + s / 2, Yc + s / 2, { size: Math.min(14, s * 0.32), weight: 750, color: val === 0 ? 'muted' : 'ink' });
+              });
+            });
+            if (b === 0) { txt(v, c, '1 ↓', X0 - 14, Y0 - 26, { size: 10, weight: 700, color: 'muted' }); txt(v, c, '2 →', X0 + 3 * s + 4, Y0 - 10, { size: 10, weight: 700, color: 'muted', align: 'left' }); }
+          });
+          let ty = H - 50;
+          [['I', 'decisive'], ['II', 'egalitarian'], ['III', 'neutral'], ['IV', 'pos. responsive']].forEach(([k, lab], q) => tag(v, c, A[k].length === 0, `${k} ${lab}`, 12 + (q % 2) * (W / 2 - 4), ty + Math.floor(q / 2) * 26, { size: 10.5 }));
+          // ---- census
+          const d = Ck.ctx, CW = Ck.width, CH = Ck.height, Cs = runCensus();
+          const show = [[15, 'all four: majority', 'green'], [14, 'all but I (decisive)', 'purple'], [13, 'all but II (egalitarian)', 'accent'], [11, 'all but III (neutral)', 'teal'], [7, 'all but IV (responsive)', 'orange'], [0, 'none of the four', 'gray']];
+          txt(v, d, `${fmtK(Cs.total)} rules for two individuals (4 outcomes × 9 patterns)`, 12, 16, { size: 11, weight: 650, color: 'muted', align: 'left' });
+          const mx = Math.log10(Math.max(...show.map(([b]) => Cs.bins[b])) + 1), x0 = 168, rh = Math.min(30, (CH - 70) / show.length);
+          show.forEach(([b, lab, col], q) => {
+            const Yq = 42 + q * rh, nn = Cs.bins[b], w = (Math.log10(nn + 1) / mx) * (CW - x0 - 70);
+            txt(v, d, lab, x0 - 8, Yq, { size: 10.5, weight: 650, align: 'right' });
+            rr(d, x0, Yq - 8, Math.max(3, w), 16, 4); d.fillStyle = v.color(col, 0.5); d.fill();
+            txt(v, d, fmtK(nn), x0 + Math.max(3, w) + 6, Yq, { size: 11.5, weight: 800, align: 'left' });
+          });
+          txt(v, d, 'log scale · each “all but one” class is non-empty: independence', CW / 2, CH - 14, { size: 10, color: 'muted' });
+        });
+        v.legend([['blue', 'x', { dot: true }], ['orange', 'y', { dot: true }], ['gray', 'tie', { dot: true }], ['purple', 'both adopted', { dot: true }], ['red', 'cell breaks a condition']]);
+        v.readout(() => {
+          const A = analyse(), Cs = runCensus(), failing = Object.keys(A).filter((k) => A[k].length);
+          let ex = '';
+          if (A.II.length) { const [D, D2] = A.II[0]; ex = ` E.g. II: (${D.map(DL).join(', ')}) and (${D2.map(DL).join(', ')}) are the same votes by different people but get different outcomes.`; }
+          else if (A.IV.length) { const [D, D2] = A.IV[0]; ex = ` E.g. IV: from (${D.map(DL).join(', ')}) one individual moves toward x, giving (${D2.map(DL).join(', ')}), which is not x.`; }
+          else if (A.III.length) { const [D, D2] = A.III[0]; ex = ` E.g. III: (${D.map(DL).join(', ')}) and its mirror (${D2.map(DL).join(', ')}) are not mirrored.`; }
+          return `${custom ? 'Your rule' : RULES[rS.value].label} ${failing.length ? `fails condition${failing.length > 1 ? 's' : ''} **${failing.join(', ')}**` : 'satisfies all four conditions — and it is simple majority, as May’s theorem says'}.${ex} Census: **${Cs.bins[15]}** of ${fmtK(Cs.total)} rules satisfy I–IV; ${fmtK(Cs.bins[14])}, ${fmtK(Cs.bins[13])}, ${fmtK(Cs.bins[11])} and ${fmtK(Cs.bins[7])} satisfy all but I, II, III and IV respectively.`;
+        });
+      },
+    },
   ],
 };

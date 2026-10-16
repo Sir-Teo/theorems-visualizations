@@ -13,7 +13,7 @@ const nz = (spec) => spec.filter(([, a]) => a > 1e-4);
 /** Label of a ratio p/q. */
 const rl = (r) => `${r.p}/${r.q}`;
 /** Signed cents string. */
-const sc = (v, x, d = 0) => `${x >= 0 ? '+' : '−'}${v.fix(Math.abs(x), d)}`;
+const sc = (v, x, d = 0) => (Math.abs(x) < 0.5 * 10 ** -d ? `±${v.fix(0, d)}` : `${x >= 0 ? '+' : '−'}${v.fix(Math.abs(x), d)}`);
 
 export default {
   collection: 'music',
@@ -49,7 +49,7 @@ Three kinds of explanation compete:
         const lv = loopVoice(v);
         const ms = v.stage({ x: [-0.05, 1.05], y: [-1.05, 1.0], height: 190, axes: false, full: true, title: 'a monochord: drag the bridge' });
         const th = v.stage({ x: [0, CMAX], y: [0, 1.16], height: 290, axes: 'box', gutter: true, full: true, xticks: ratioTicks(0, CMAX, [[1, 1], [6, 5], [5, 4], [4, 3], [3, 2], [5, 3], [2, 1], [5, 2], [3, 1], [4, 1]]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval between the two segments (cents; just ratios marked)', ylabel: 'predicted consonance', title: 'what three theories predict' });
-        const br = ms.handle(0.4, 0, { color: 'accent', r: 7, constrain: (x) => [M.clamp(x, 0.2, 0.8), 0] });
+        const br = ms.handle(0.4, 0, { color: 'accent', r: 7, constrain: (x) => [M.clamp(x, 0.2, 0.5), 0] });
         const segs = () => { const a = br.x, b = 1 - br.x; return { a, b, fa: F / a, fb: F / b }; };
         const iv = () => { const { fa, fb } = segs(); return cents(Math.max(fa, fb) / Math.min(fa, fb)); };
         const parts = () => { const { fa, fb } = segs(); return at(spec(), fa).concat(at(spec(), fb)); };
@@ -68,38 +68,35 @@ Three kinds of explanation compete:
             const ci = (CMAX * i) / n, P = at(S, FLO).concat(at(S, FLO * 2 ** (ci / 1200)));
             c.push(ci); R.push(dissAll(P)); H.push(harmonicity(P).h);
           }
-          const rmax = Math.max(...R), hmax = Math.max(...H);
-          cache = { c, rough: R.map((x) => 1 - x / rmax), harm: H.map((x) => x / hmax) };
+          const rmax = Math.max(...R), hmax = Math.max(...H), hmin = Math.min(...H);
+          cache = { c, rough: R.map((x) => 1 - x / rmax), harm: H.map((x) => (x - hmin) / (hmax - hmin || 1)) };
           return cache;
         };
-        const DIV = [[1, 1], [3, 2], [4, 3], [2, 1], [5, 3], [5, 4], [6, 5], [3, 1], [5, 2], [4, 1]];
+        const DIV = [[4, 1], [3, 1], [5, 2], [2, 1], [5, 3], [3, 2], [4, 3], [5, 4], [6, 5], [1, 1]];
         v.render(() => {
           const { a, b, fa, fb } = segs();
           // ---- monochord
           ms.rect(-0.03, -0.98, 1.03, -0.62, { fill: 'orange', fillAlpha: 0.12, color: 'orange', width: 1, radius: 6 });
           ms.text('sounding box', 0.5, -0.8, { color: 'orange', size: 11, align: 'center' });
-          for (const [p, q] of DIV) {
-            for (const x of p === q ? [0.5] : [q / (p + q), p / (p + q)]) {
-              const near = Math.abs(x - br.x) < 0.004;
-              ms.line(x, -0.06, x, -0.16, { color: near ? 'green' : 'muted', width: near ? 2 : 1 });
-              if (x > 0.19 && x < 0.81) ms.text(`${p}:${q}`, x, -0.27, { color: near ? 'green' : 'muted', size: near ? 12 : 10, align: 'center', weight: near ? 700 : 400 });
-            }
-          }
+          DIV.forEach(([p, q], k) => {
+            const x = q / (p + q), near = Math.abs(x - br.x) < 0.004, row = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1][k];
+            ms.line(x, -0.06, x, row ? -0.33 : -0.18, { color: near ? 'green' : 'muted', width: near ? 2 : 1, alpha: 0.8 });
+            ms.text(`${p}:${q}`, x, row ? -0.43 : -0.28, { color: near ? 'green' : 'muted', size: near ? 12 : 10.5, align: 'center', weight: near ? 700 : 400 });
+          });
           const lens = (x0, x1, amp, col) => { const P = [], Q = []; for (let i = 0; i <= 60; i++) { const u = i / 60, x = x0 + (x1 - x0) * u, y = amp * Math.sin(Math.PI * u); P.push([x, y]); Q.push([x, -y]); } ms.poly(P.concat(Q.reverse()), { fill: col, fillAlpha: 0.13, color: col, width: 1 }); };
           lens(0, a, 0.42 * Math.sqrt(a), 'accent'); lens(a, 1, 0.42 * Math.sqrt(b), 'teal');
           ms.line(0, 0, 1, 0, { color: 'ink', width: 2 });
           for (const x of [0, 1]) ms.poly([[x, 0], [x - 0.012, -0.12], [x + 0.012, -0.12]], { fill: 'ink', fillAlpha: 0.8, color: 'ink' });
           ms.poly([[br.x, 0], [br.x - 0.02, -0.17], [br.x + 0.02, -0.17]], { fill: 'accent', fillAlpha: 0.6, color: 'accent' });
-          ms.text(`length ${v.fix(a, 3)} → ${v.fix(fa, 0)} Hz`, a / 2, 0.7, { color: 'accent', size: 12, align: 'center' });
-          ms.text(`length ${v.fix(b, 3)} → ${v.fix(fb, 0)} Hz`, a + b / 2, 0.7, { color: 'teal', size: 12, align: 'center' });
+          ms.text(`${v.fix(a, 3)} → ${v.fix(fa, 0)} Hz`, a / 2, 0.55, { color: 'accent', size: 12, align: 'center' });
+          ms.text(`length ${v.fix(b, 3)} → ${v.fix(fb, 0)} Hz`, a + b / 2, 0.55, { color: 'teal', size: 12, align: 'center' });
           const r = nearRatio(iv(), 6, 15);
-          ms.corner(`frequency ratio ${v.fix(Math.max(a, b) / Math.min(a, b), 4)}${r && Math.abs(r.err) < 15 ? ` ≈ ${r.p}:${r.q} (${sc(v, r.err)} ¢)` : ''}`, 'tr', { color: 'ink', weight: 600, plate: true });
+          ms.text(`frequency ratio ${v.fix(Math.max(a, b) / Math.min(a, b), 4)}${r && Math.abs(r.err) < 15 ? ` ≈ ${r.p}:${r.q} (${sc(v, r.err)} ¢)` : ''}`, 0.5, 0.86, { color: 'ink', weight: 600, size: 13, align: 'center' });
           // ---- theory curves
           const C = curves(), c0 = iv();
           for (const s of STEMS) {
             const near = Math.abs(s.c - c0) < 12;
             th.line(s.c, 0, s.c, s.h, { color: 'orange', width: near ? 3 : 1.6, alpha: near ? 1 : 0.65 });
-            if (s.p * s.q <= 12 || (near && s.p * s.q <= 40)) th.text(`${s.p}:${s.q}`, s.c, s.h, { color: 'orange', size: 10, align: 'center', dy: -7 });
           }
           th.path(C.c.map((x, i) => [x, C.harm[i]]), { color: 'purple', width: 1.8 });
           th.path(C.c.map((x, i) => [x, C.rough[i]]), { color: 'accent', width: 2.4 });
@@ -107,7 +104,7 @@ Three kinds of explanation compete:
           const idx = Math.round((c0 / CMAX) * 600);
           th.dot(c0, C.rough[idx], { r: 5, color: 'accent' }); th.dot(c0, C.harm[idx], { r: 5, color: 'purple' });
         });
-        v.legend([['accent', 'roughness theory: 1 − summed dissonance'], ['purple', 'harmonicity of the combined partials (toy model)'], ['orange', 'ratio simplicity: 1 − log₂(pq)/6.4'], ['gold', 'your bridge']]);
+        v.legend([['accent', 'roughness theory: 1 − summed dissonance'], ['purple', 'harmonicity of the combined partials (toy model, rescaled 0–1)'], ['orange', 'ratio simplicity: 1 − log₂(pq)/6.4'], ['gold', 'your bridge']]);
         v.readout(() => {
           const c0 = iv(), C = curves(), idx = Math.round((c0 / CMAX) * 600), r = nearRatio(c0, 8, 10), P = parts(), hm = harmonicity(P);
           return `interval ${v.fix(c0, 1)} ¢ · nearest simple ratio ${r ? `${r.p}:${r.q} (${sc(v, r.err, 1)} ¢, $\\log_2 pq = ${v.fix(tenney(r.p, r.q), 2)}$)` : 'none'} · roughness-theory consonance ${v.fix(C.rough[idx], 2)} · harmonicity ${v.fix(C.harm[idx], 2)} (best common fundamental ${v.fix(hm.f0, 1)} Hz)`;
@@ -156,9 +153,10 @@ and all the $b_{jk}$ for small $j,k$ vanish or are large only when $f_2/f_1=k/j$
           const S = spec(), f2 = F1 * 2 ** (cur / 1200), A = at(S, F1), B = at(S, f2), K = curve();
           h.set(cur, K.f(cur));
           // ---- ladders
-          const xl = 0.36, xr = 0.64;
-          ld.text('lower tone', 0.2, 12, { color: 'accent', size: 12, align: 'center' });
-          ld.text('upper tone', 0.8, 12, { color: 'teal', size: 12, align: 'center' });
+          const xl = 0.36, xr = 0.64, ytop = 1.18 * nP.value * Math.max(1, f2 / F1);
+          ld.setView([0, 1], [0.85, ytop]);
+          ld.text('lower tone', 0.2, ytop / 1.06, { color: 'accent', size: 12, align: 'center' });
+          ld.text('upper tone', 0.8, ytop / 1.06, { color: 'teal', size: 12, align: 'center' });
           const links = [];
           A.forEach(([fa, aa], i) => B.forEach(([fb, ab], j) => {
             const dc = Math.abs(cents(fb / fa)), r = pl(fa, fb, aa, ab);
@@ -173,7 +171,7 @@ and all the $b_{jk}$ for small $j,k$ vanish or are large only when $f_2/f_1=k/j$
           const tagged = links.filter((L) => L.kind === 'ro').sort((a, b) => b.r - a.r).slice(0, 5);
           for (const L of tagged) { const ym = Math.sqrt((L.fa * L.fb) / (F1 * F1)); ld.text(`${v.fix(Math.abs(L.fb - L.fa), 0)} Hz`, 0.5, ym, { color: 'red', size: 10.5, align: 'center', dy: -2, plate: true }); }
           A.forEach(([fa, aa], i) => { const y = fa / F1; ld.line(xl - 0.3 * aa, y, xl, y, { color: 'accent', width: 3 }); ld.text(String(i + 1), xl - 0.3 * aa - 0.025, y, { color: 'accent', size: 10, align: 'right', baseline: 'middle' }); });
-          B.forEach(([fb, ab], j) => { const y = fb / F1; if (y > 13) return; ld.line(xr, y, xr + 0.3 * ab, y, { color: 'teal', width: 3 }); ld.text(String(j + 1), xr + 0.3 * ab + 0.025, y, { color: 'teal', size: 10, align: 'left', baseline: 'middle' }); });
+          B.forEach(([fb, ab], j) => { const y = fb / F1; ld.line(xr, y, xr + 0.3 * ab, y, { color: 'teal', width: 3 }); ld.text(String(j + 1), xr + 0.3 * ab + 0.025, y, { color: 'teal', size: 10, align: 'left', baseline: 'middle' }); });
           // ---- curve
           cv.path(Array.from(K.C.c, (x, i) => [x, K.f(x)]), { color: 'accent', width: 2.2 });
           for (const m of minima(K.C, 0.01)) cv.dot(m.c, K.f(m.c), { r: 3, color: 'green' });
@@ -276,7 +274,7 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
         const M = v.M, F0 = 261.63, CMAX = 1250, N = 8;
         let amps = harmonic(N, 0.88).map((p) => p[1]), cache = null, cur = null;
         const pre = v.select('spectrum', [{ value: 'set', label: '0.88ᵏ' }, { value: 'inv', label: '1/k' }, { value: 'odd', label: 'odd only' }, { value: 'violin', label: 'violin' }, { value: 'clarinet', label: 'clarinet' }], 'set', { onChange: (x) => { amps = preset(x, N).map((p) => p[1]); const m = Math.max(...amps); amps = amps.map((a) => a / m); cache = null; v.invalidate(); } });
-        const sp = v.stage({ x: [0.4, N + 0.6], y: [0, 1.12], height: 200, axes: 'box', gutter: true, weight: 0.75, minWidth: 250, xticks: Array.from({ length: N }, (_, k) => [k + 1, String(k + 1)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'partial number', ylabel: 'amplitude', title: 'the spectrum (drag the bars)' });
+        const sp = v.stage({ x: [0.4, N + 0.6], y: [0, 1.12], height: 170, axes: 'box', gutter: true, full: true, xticks: Array.from({ length: N }, (_, k) => [k + 1, String(k + 1)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'partial number', ylabel: 'amplitude', title: 'the spectrum (drag the bars)' });
         const cv = v.stage({ x: [0, CMAX], y: [0, 1.1], height: 300, axes: 'box', gutter: true, full: true, xticks: [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval above C4 (cents)', ylabel: 'dissonance (rel.)', title: 'dissonance curve: the tone against a transposed copy of itself' });
         sp.onDrag((x, y) => { const k = Math.round(x); if (k >= 1 && k <= N) { amps[k - 1] = M.clamp(y, 0, 1); cache = null; } });
         const spec = () => amps.map((a, k) => [k + 1, a]);
@@ -299,7 +297,7 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
           for (const m of K.mins) {
             const r = nearRatio(m.c, 9, 25), y = m.d / K.mx;
             cv.dot(m.c, y, { r: 4, color: 'green' });
-            if (m.c - lastX > 45 && m.c > 30) { cv.text(r ? rl(r) : `${v.fix(m.c, 0)}¢`, m.c, y, { color: 'green', size: 10.5, align: 'center', dy: 14 }); lastX = m.c; }
+            if (m.c - lastX > 45 && m.c > 30) { cv.text(r ? rl(r) : `${v.fix(m.c, 0)}¢`, m.c, y, { color: 'green', size: 10.5, align: 'center', dy: y < 0.16 ? -10 : 14 }); lastX = m.c; }
           }
           if (cur != null) { cv.vline(cur, { color: 'gold', width: 2 }); cv.dot(cur, sample(K.C, cur) / K.mx, { r: 5, color: 'gold' }); }
         });
@@ -326,10 +324,10 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
       scope: String.raw`Concerns sensory roughness, not melody or harmonicity; listeners also hear stretched timbres as less fused and their pseudo-octaves as "wrong" octaves (Mathews and Pierce report musically usable but distinctly different results). The real stretch of piano strings (2.11) is far smaller (a few cents per octave) than these examples.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pseudo-octave' },
       viz(v) {
-        const M = v.M, F0 = 261.63, CMAX = 1350;
+        const M = v.M, F0 = 261.63, CMAX = 1480;
         let cache = null;
         const aS = v.slider('pseudo-octave $A$', 1.87, 2.22, 2.1, { step: 0.005, fmt: (x) => `${v.fix(x, 3)} (${v.fix(cents(x), 0)} ¢)`, onChange: () => { cache = null; } });
-        const s = v.stage({ x: [0, CMAX], y: [0, 1.12], height: 340, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance (rel.)', title: 'stretched timbre: the minima follow the partials' });
+        const s = v.stage({ x: [0, CMAX], y: [0, 1.12], height: 340, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200, 1400].map((c) => [c, String(c)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance (rel.)', title: 'stretched timbre: the minima follow the partials' });
         const harm = dissCurve(harmonic(6, 0.88), F0, 0, CMAX, 540); let hm = 0; for (const x of harm.d) hm = Math.max(hm, x);
         const curve = () => {
           if (cache) return cache;
@@ -346,8 +344,8 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
           const K = curve(), cA = cents(aS.value);
           for (let k = 1; k <= 12; k++) { const c = (k * cA) / 12; if (c <= CMAX) s.line(c, 0, c, 0.05, { color: 'orange', width: 2 }); }
           s.text('stretched 12-step scale', (2 * cA) / 12, 0.075, { color: 'orange', size: 10.5, align: 'left' });
-          s.vline(1200, { color: 'red', dash: [5, 4], width: 1.2 }); s.text('octave 2:1', 1200, 1.08, { color: 'red', size: 10.5, align: 'right', dx: -4 });
-          s.vline(cA, { color: 'green', dash: [5, 4], width: 1.2 }); s.text(`pseudo-octave A`, cA, 1.0, { color: 'green', size: 10.5, align: cA > 1200 ? 'left' : 'right', dx: cA > 1200 ? 4 : -4 });
+          s.vline(1200, { color: 'red', dash: [5, 4], width: 1.2 }); s.text('octave 2:1', 1200, 1.08, { color: 'red', size: 10.5, align: cA >= 1200 ? 'right' : 'left', dx: cA >= 1200 ? -4 : 4, plate: true });
+          s.vline(cA, { color: 'green', dash: [5, 4], width: 1.2 }); s.text('pseudo-octave A', cA, 1.0, { color: 'green', size: 10.5, align: cA >= 1200 ? 'left' : 'right', dx: cA >= 1200 ? 4 : -4, plate: true });
           s.path(Array.from(harm.c, (x, i) => [x, harm.d[i] / hm]), { color: 'muted', width: 1.2, alpha: 0.6 });
           s.path(Array.from(K.C.c, (x, i) => [x, K.C.d[i] / K.mx]), { color: 'accent', width: 2.4 });
           for (const m of K.mins) s.dot(m.c, m.d / K.mx, { r: 4, color: 'green' });
@@ -404,8 +402,8 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
         v.soundButton('dyads, harmonic timbre', (snd) => snd.samples(seqBuf(dyads(harmonic(NP, 0.88)), 0.55, 0.06), SR, { gain: 0.9 }));
         v.render(() => {
           const n = edo.value, fr = S.frame, spec = fr.spec || [];
-          for (let m = 0; m <= 3 * n; m++) sp.vline(m / n, { color: m % n ? 'grid' : 'muted', width: m % n ? 1 : 1.4 });
-          for (let k = 1; k <= NP; k++) sp.line(Math.log2(k), 0, Math.log2(k), 0.2 * AMP(k - 1), { color: 'muted', width: 1, dash: [2, 3] });
+          for (let m = 0; m <= 3 * n; m++) sp.line(m / n, 0, m / n, 1.15, { color: 'grid', width: m % n ? 1 : 2 });
+          for (let k = 2; k <= NP; k++) { sp.line(Math.log2(k), 0, Math.log2(k), AMP(k - 1), { color: 'muted', width: 1, dash: [2, 3], alpha: 0.7 }); sp.dot(Math.log2(k), AMP(k - 1), { r: 3, color: 'muted', hollow: true }); }
           spec.forEach(([r, a], i) => {
             const x = Math.log2(r), hl = i === fr.moved;
             sp.line(x, 0, x, a, { color: hl ? 'orange' : 'accent', width: hl ? 4 : 3 });
@@ -460,7 +458,7 @@ with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectr
           ratios.forEach((r, i) => {
             sp.line(r, 0, r, AM[i] * 0.9, { color: i ? 'orange' : 'accent', width: 3 });
             if (!i) sp.dot(r, AM[0] * 0.9, { r: 5, color: 'accent' });
-            sp.text(ratioStr(r), r, AM[i] * 0.9, { color: i ? 'orange' : 'accent', size: 11, align: 'center', dy: -12 });
+            const crowd = i > 0 && r / ratios[i - 1] < 1.1 && r / ratios[i - 1] > 0.91; sp.text(ratioStr(r), r, AM[i] * 0.9, { color: i ? 'orange' : 'accent', size: 11, align: crowd ? 'left' : 'center', dx: crowd ? 6 : 0, dy: crowd ? -2 : -12 });
           });
           const K = curve();
           for (let c = 100; c < CMAX; c += 100) cv.vline(c, { color: 'grid', width: 1 });
@@ -503,15 +501,15 @@ Both rank the classical consonances in roughly the traditional order, and both p
         const meas = v.select('complexity', [{ value: 'euler', label: 'Euler gradus Γ' }, { value: 'tenney', label: 'Tenney height log₂pq' }], 'euler', { onChange: () => { cut.set(1240, meas.value === 'euler' ? 8.5 : 4.6); v.invalidate(); } });
         const R = []; for (let q = 1; q <= 16; q++) for (let p = q; p <= 2 * q && p <= 16; p++) if (gcd(p, q) === 1) R.push({ p, q, c: cents(p / q), g: gradus([p, q]), t: tenney(p, q) });
         const cx = (r) => (meas.value === 'euler' ? r.g : r.t);
-        const top = v.stage({ x: [-30, 1260], y: [0, 17.5], height: 300, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200].map((c) => [c, String(c)]), xlabel: 'interval (cents)', ylabel: 'complexity (lower = simpler)', title: 'just ratios and their complexity' });
-        const cut = top.handle(1240, 8.5, { color: 'green', r: 7, constrain: (x, y) => [1240, M.clamp(y, 1.5, 16.5)] });
+        const top = v.stage({ x: [-30, 1260], y: [0, 25], height: 300, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200].map((c) => [c, String(c)]), xlabel: 'interval (cents)', ylabel: 'complexity (lower = simpler)', title: 'just ratios and their complexity' });
+        const cut = top.handle(1240, 8.5, { color: 'green', r: 7, constrain: (x, y) => [1240, M.clamp(y, 1.5, meas.value === 'euler' ? 24 : 8.2)] });
         const harm = dissCurve(harmonic(6, 0.88), F0, -30, 1260, 645); let hm = 0; for (const x of harm.d) hm = Math.max(hm, x);
         const dAt = (c) => sample(harm, c) / hm;
         const bot = v.stage({ x: [-30, 1260], y: [0, 1.15], height: 240, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance', title: 'roughness of a harmonic tone at those ratios' });
         const spearman = (xs, ys) => { const rk = (a) => { const o = a.map((x, i) => [x, i]).sort((u, w) => u[0] - w[0]), r = new Array(a.length); let i = 0; while (i < o.length) { let j = i; while (j + 1 < o.length && o[j + 1][0] === o[i][0]) j++; for (let k = i; k <= j; k++) r[o[k][1]] = (i + j) / 2; i = j + 1; } return r; }; const a = rk(xs), b = rk(ys), n = a.length, ma = (n - 1) / 2; let sab = 0, saa = 0, sbb = 0; for (let i = 0; i < n; i++) { sab += (a[i] - ma) * (b[i] - ma); saa += (a[i] - ma) ** 2; sbb += (b[i] - ma) ** 2; } return sab / Math.sqrt(saa * sbb); };
         const sel = () => R.filter((r) => cx(r) <= cut.y);
         v.render(() => {
-          const top17 = meas.value === 'euler' ? 17.5 : 8.5;
+          const top17 = meas.value === 'euler' ? 25 : 8.5;
           top.setView([-30, 1260], [0, top17]);
           if (meas.value === 'tenney') cut.set(1240, Math.min(cut.y, 8.2));
           top.hband(0, cut.y, { color: 'green', alpha: 0.06 });

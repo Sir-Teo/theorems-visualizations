@@ -187,7 +187,7 @@ Products are read by juxtaposition: $A|\psi\rangle$ is a ket, $\langle\varphi|A|
               S.text('=', x - gap / 2, yc, { align: 'center', size: 20, color: 'muted' });
               S.rect(x - 0.08, y0 - 0.08, x + nc * u + 0.08, y0 + nr * u + 0.08, { color: 'green', width: 2, radius: 5 });
             } else if (k > 0) S.text(r.terms.length === 1 ? '·' : '+', x - gap / 2, yc, { align: 'center', size: 20, color: 'muted' });
-            cells(v, S, it.M, [x, y0, x + nc * u, y0 + nr * u], { max, text: (z) => `$${texC(v, z, 2)}$`, size: 10 });
+            cells(v, S, it.M, [x, y0, x + nc * u, y0 + nr * u], { max, text: (z) => texC(v, z, 2).replace(/-/g, '−'), size: 11 });
             const shape = nr === 1 && nc === 1 ? 'number' : nc === 1 ? `${nr}×1 ket` : nr === 1 ? `1×${nc} bra` : `${nr}×${nc} operator`;
             if (it.lab) S.text(`$${it.lab}$`, x + (nc * u) / 2, y0 - 0.32, { align: 'center', size: 14, baseline: 'top' });
             S.text(shape, x + (nc * u) / 2, y0 + nr * u + 0.18, { align: 'center', size: 10.5, color: it.res ? 'green' : 'muted', baseline: 'bottom' });

@@ -561,10 +561,10 @@ $$f_{V_{n+1}}(x)=(2n+1)\binom{2n}{n}x^n(1-x)^n,\qquad0<x<1.$$`,
           R.dots(P.map((p) => [p[0], p[1]]), { r: 2.4, color: 'accent' });
           const pn = prob(k, n, a, b); R.dot(n, pn[0], { r: 5.5, color: 'accent' }); R.dot(n, pn[1], { r: 5.5, color: 'orange' });
           const tail = []; for (let m = 200; m <= 400; m++) tail.push(prob(k, m, a, b));
-          st = { a, b, G, K, bd, li: Math.min(...tail.map((t) => t[0])), ls: Math.max(...tail.map((t) => t[1])) };
+          st = { a, b, G, K, bd, gl: Math.min(...tail.map((t) => t[0])), gh: Math.max(...tail.map((t) => t[0])), kl: Math.min(...tail.map((t) => t[1])), kh: Math.max(...tail.map((t) => t[1])) };
           v.legend([['accent', '$P(X_n\\in G)$', { dot: true }], ['orange', '$P(X_n\\in K)$', { dot: true }], ['green', '$P(X_\\infty\\in G)$'], ['green', '$P(X_\\infty\\in K)$', { dash: [6, 4] }]]);
         });
-        v.readout(() => st && `$A$ from $${fr(st.a, 2)}$ to $${fr(st.b, 2)}$, $P(X_\\infty\\in\\partial A)=${fr(st.bd, 2)}$. Over $200\\le n\\le400$: $\\min P(X_n\\in G)=${fr(st.li, 3)}\\ge P(X_\\infty\\in G)=${fr(st.G, 3)}$ and $\\max P(X_n\\in K)=${fr(st.ls, 3)}\\le P(X_\\infty\\in K)=${fr(st.K, 3)}$` + (st.bd > 0 ? ': the boundary is charged, so the inequalities can be strict.' : ': the boundary is null, so both tend to the same limit, as (iv) says.'));
+        v.readout(() => st && `$A$ from $${fr(st.a, 2)}$ to $${fr(st.b, 2)}$, $P(X_\\infty\\in\\partial A)=${fr(st.bd, 2)}$. For $200\\le n\\le400$: $P(X_n\\in G)\\in[${fr(st.gl, 3)},${fr(st.gh, 3)}]$ vs $P(X_\\infty\\in G)=${fr(st.G, 3)}$; $P(X_n\\in K)\\in[${fr(st.kl, 3)},${fr(st.kh, 3)}]$ vs $P(X_\\infty\\in K)=${fr(st.K, 3)}$` + (st.bd > 0 ? '. The boundary is charged: the limits of $P(X_n\\in G)$ and $P(X_n\\in K)$ can sit strictly above $P(X_\\infty\\in G)$ and below $P(X_\\infty\\in K)$.' : '. The boundary is null, so by (iv) both tend to the same limit; the spread is lattice noise that shrinks as $n$ grows.'));
       },
     },
     {
@@ -760,7 +760,7 @@ for every $n$. The right side tends to $0$ as $M\to\infty$. Typical choices: $\v
           st = { n, dOdd: dist(k, nOdd, d), dEven: dist(k, nEven, d), nOdd, nEven, evTail, odTail };
           v.legend([['accent', 'odd $n$: $S_n/\\sqrt n$', { dot: true }], ['orange', 'even $n$', { dot: true }], ['ink', '$\\Phi$']]);
         });
-        v.readout(() => st && `$d(F_{${st.nOdd}},\\Phi)=${fr(st.dOdd, 4)}$, $d(F_{${st.nEven}},\\Phi)=${fr(st.dEven, 4)}$. Even terms with $n\\ge200$ stay at least $${fr(st.evTail, 4)}$ away` + (st.evTail > 0.02 ? `: this subsequence has no sub-subsequence converging to $\\Phi$, so $X_n\\not\\Rightarrow\\Phi$.` : `: both families tend to $\\Phi$, every subsequence has a sub-subsequence converging to $\\Phi$, and $X_n\\Rightarrow\\Phi$.`));
+        v.readout(() => st && `$d(F_{${st.nOdd}},\\Phi)=${fr(st.dOdd, 4)}$, $d(F_{${st.nEven}},\\Phi)=${fr(st.dEven, 4)}$. Closest even term with $200\\le n\\le400$: distance $${fr(st.evTail, 4)}$` + (st.evTail > 0.02 ? `. The even terms stay away from $\\Phi$: this subsequence has no sub-subsequence converging to $\\Phi$, so $X_n\\not\\Rightarrow\\Phi$.` : `: both families tend to $\\Phi$, every subsequence has a sub-subsequence converging to $\\Phi$, and $X_n\\Rightarrow\\Phi$.`));
       },
     },
   ],

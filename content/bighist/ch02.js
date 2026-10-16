@@ -191,8 +191,8 @@ export default {
           B.path(pts, { color: 'accent', width: 2.6 });
           B.line(t0 - tH, 0, Math.min(xmax, t0 + 0.6 * tH), 1 + 0.6, { color: 'orange', width: 1.4, dash: [6, 4] });
           B.dot(t0, 1, { r: 5, color: 'accent', label: 'today', labelPos: 'nw' });
-          B.dot(Math.max(0, t0 - tH), 0, { r: 4, color: 'orange' });
-          B.text(`← tangent meets a = 0: 1/H₀ = ${tH.toFixed(1)} Gyr before today`, Math.max(0, t0 - tH) + 0.04 * xmax, 0.045, { align: 'left', size: 11, color: 'orange' });
+          if (t0 >= tH) B.dot(t0 - tH, 0, { r: 4, color: 'orange' });
+          B.text(t0 >= tH ? `← tangent meets a = 0: 1/H₀ = ${tH.toFixed(1)} Gyr before today` : `tangent meets a = 0 ${tH.toFixed(1)} Gyr before today, before the Big Bang: decelerating, so younger than 1/H₀`, Math.max(0, t0 - tH) + 0.04 * xmax, 0.045, { align: 'left', size: 11, color: 'orange' });
           B.vline(t0, { color: 'accent', width: 1, dash: [3, 3], alpha: 0.6 });
           // cursor and lattice inset
           const tb = Math.min(back.value, t0), ab = bisectA(C, tb);

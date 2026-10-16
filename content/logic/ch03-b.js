@@ -489,7 +489,7 @@ their duals with $\exists$ and $\lor$, valid whenever $x$ does not occur free in
           if (firstBad < 0) return `${head} Every step is an equivalence ✓ (each checked on ${checks[1] ? checks[1].tested.toLocaleString('en') : checks[0].tested.toLocaleString('en')} structure–assignment pairs with at most 3 elements).`;
           const c = checks[firstBad].counter, E = [];
           for (let a = 0; a < c.M.n; a++) for (let b = 0; b < c.M.n; b++) if (c.M.rel('E', [a, b])) E.push(`(${a},${b})`);
-          return `${head} **Step ${firstBad} is wrong:** in the ${c.n}-element structure with $E = \\{${E.join(',')}\\}$ and ${Object.entries(c.env).map(([x, d]) => `$${x}=${d}$`).join(', ') || 'no free variables'}, the original is ${TF(c.a)} but the rewritten formula is ${TF(c.b)}.${ok.ok ? '' : ' (The current step is not equivalent either.)'}`;
+          return `${head} **Step ${firstBad} is wrong:** in the ${c.n}-element structure with $E = \\{${E.join(',')}\\}$ and ${Object.entries(c.env).map(([x, d]) => `$${x}=${d}$`).join(', ') || 'no free variables'}, the original is ${TF(c.a)} but the rewritten formula is ${TF(c.b)}.${ok.ok ? '' : ' (The formula shown is not equivalent to the original either.)'}`;
         });
       },
     },

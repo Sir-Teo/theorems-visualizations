@@ -8,7 +8,7 @@
 //   ideal curve); Fig. 7 (C/W₀ against W/W₀, W₀ = P/N₀, asymptote log₂e = 1.443).
 // - The PCM points here are recomputed with the paper's assumptions (m-level pulses, positive and negative, at 2W per
 //   second, error rate ≈ 10⁻⁵, as in Oliver, Pierce & Shannon 1948), not read from the figure: binary PCM needs
-//   P/N ≈ 12.9 dB for 2 bits per cycle, where the ideal curve needs 4.8 dB — 8.1 dB, the paper's "about 8 db".
+//   P/N ≈ 12.6 dB for 2 bits per cycle, where the ideal curve needs 4.8 dB — 7.8 dB, the paper's "about 8 db".
 // - Today: turbo codes reach a bit error rate of 10⁻⁵ at Eb/N0 ≈ 0.7 dB for rate 1/2 (Berrou, Glavieux & Thitimajshima
 //   1993); LDPC codes have thresholds within 0.0045 dB of the binary-input Shannon limit (Chung, Forney, Richardson &
 //   Urbanke 2001, IEEE Comm. Letters 5: 58–60). At 1 bit per cycle (rate 1/2 per dimension) P/N = Eb/N0.
@@ -51,11 +51,11 @@ achieved in the limit by long codes whose signals fill the sphere of radius $\sq
       viz(v) {
         const M = v.M;
         const fsr = v.slider('sampling rate f_s / 2W', 0.4, 2, 1.25, { step: 0.01 });
-        const fig = v.select('right panel', [{ value: 'f6', label: 'Fig. 6: capacity vs P/N' }, { value: 'f7', label: 'Fig. 7: capacity vs bandwidth' }], 'f6');
+        const fig = v.select('right panel', [{ value: 'f6', label: 'Fig. 6: capacity vs P/N' }, { value: 'f7', label: 'Fig. 7: capacity vs bandwidth' }], 'f6', { onChange: (m) => hp.set(m === 'f6' ? 10 : 1, 0) });
         const S = v.stage({ x: [0, 12], y: [-3.6, 3.6], axes: 'box', gutter: true, height: 320, weight: 1.15, minWidth: 260, xlabel: 'time (units of 1/W)', ylabel: 'signal', title: 'sampling and sinc reconstruction' });
         const C = v.stage({ x: [-20, 30], y: [0, 10.5], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 260, xlabel: 'P/N (db)', ylabel: 'C/W (bits per cycle)', title: 'Shannon’s Figure 6' });
-        const hp = C.handle(10, 0, { color: 'gold', constrain: (x) => [M.clamp(x, -19.5, 29.5), 0] });
-        const PCM = [2, 3, 4, 5, 6, 8, 12, 16, 32].map((m) => ({ m, ...pcmPoint(M, m, 1e-5) }));
+        const hp = C.handle(10, 0, { color: 'gold', constrain: (x) => (fig.value === 'f6' ? [M.clamp(x, -19.5, 29.5), 0] : [M.clamp(x, 0.02, 5.1), 0]) });
+        const PCM = [2, 3, 4, 5, 6, 8, 12, 16].map((m) => ({ m, ...pcmPoint(M, m, 1e-5) }));
         let st = null;
         v.render(() => {
           // ---- sampling
@@ -80,7 +80,7 @@ achieved in the limit by long codes whose signals fill the sphere of radius $\sq
             const b = PCM[0];
             C.line(db(b.snr), b.rate, db(3), b.rate, { color: 'red', width: 1.2, dash: [3, 3] });
             C.text(`${v.fix(db(b.snr) - db(3), 1)} db`, (db(b.snr) + db(3)) / 2, b.rate, { dy: 13, size: 11.5, color: 'red', weight: 700 });
-            C.dot(0.7, 1, { r: 5.5, color: 'purple' }); C.text('turbo 1993', 0.7, 1, { dx: 8, dy: 9, align: 'left', size: 11, color: 'purple', weight: 600 });
+            C.dot(0.7, 1, { r: 5.5, color: 'purple' }); C.text('turbo 1993', 0.7, 1, { dx: 10, dy: 14, align: 'left', size: 11, color: 'purple', weight: 600 });
             C.dot(0.19, 1, { r: 5.5, color: 'green' }); C.text('LDPC 2001', 0.19, 1, { dx: -8, dy: -10, align: 'right', size: 11, color: 'green', weight: 600 });
             const x = hp.x, cap = Math.log2(1 + 10 ** (x / 10));
             hp.set(x, cap);
@@ -92,13 +92,11 @@ achieved in the limit by long codes whose signals fill the sphere of radius $\sq
             C.hline(Math.LOG2E, { color: 'faint', width: 1.2, dash: [5, 4] });
             C.text('asymptote log₂ e = 1.443', 5.1, Math.LOG2E, { dy: -8, align: 'right', size: 11.5, color: 'muted', weight: 600 });
             C.fn((x) => (x <= 0 ? 0 : x * Math.log2(1 + 1 / x)), { color: 'accent', width: 2.6, domain: [0.001, 5.2] });
-            const x = M.clamp((hp.x + 20) / 50 * 5.2, 0.02, 5.1), cap = x * Math.log2(1 + 1 / x);
-            hp.set(hp.x, 0);
-            C.dot(x, cap, { r: 6, color: 'gold' });
+            const x = M.clamp(hp.x, 0.02, 5.1), cap = x * Math.log2(1 + 1 / x);
+            hp.set(x, cap);
             C.text(`W = ${v.fix(x, 2)} W₀: C = ${v.fix(cap, 3)} W₀`, x, cap, { dx: 8, dy: 16, align: 'left', size: 12, weight: 700, color: 'gold', plate: true });
             st = { rel, x, cap, f7: true };
           }
-          hp.visible = fig.value === 'f6';
         });
         v.legend([['ink', 'band-limited signal (≤ W)'], ['gold', 'samples', { dot: true }], ['green', 'sinc rebuild', { dash: true }], ['accent', 'ideal: C = W log₂(1 + P/N)'], ['red', 'PCM, m levels (recomputed)', { dot: true }]]);
         v.readout(() => {
