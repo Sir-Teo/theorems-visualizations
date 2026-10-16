@@ -38,7 +38,7 @@ Scope: this is the "who regulates whom" skeleton; it ignores the signals (small 
         s.onClick((x, y) => { const h = G.hitNode(x, y); if (h) { sel = h.id; v.invalidate(); } });
         let laid = false;
         v.render(() => {
-          if (!laid) { laid = true; G.layout('force', { seed: 11, restarts: 8, iterations: 400 }); }
+          if (!laid) { laid = true; G.layout('force', { seed: 11, restarts: 8, iterations: 400 }); G.layout('fit'); }
           const outs = new Set(G.edges.filter((e) => e.from === sel && e.to !== sel).map((e) => e.to));
           const ins = new Set(G.edges.filter((e) => e.to === sel && e.from !== sel).map((e) => e.from));
           const dimN = G.nodes.filter((n) => n.id !== sel && !outs.has(n.id) && !ins.has(n.id)).map((n) => n.id);

@@ -61,7 +61,7 @@ export default {
       name: 'Interstitial sites: octahedral and tetrahedral holes',
       statement: String.raw`A close-packed array of spheres (fcc or hcp) of radius $r$ leaves two kinds of holes. An **octahedral hole** is surrounded by 6 spheres at the corners of an octahedron; the largest sphere that fits has radius $(\sqrt2-1)\,r=0.414\,r$. A **tetrahedral hole** is surrounded by 4 spheres; the largest sphere that fits has radius $(\sqrt{3/2}-1)\,r=0.225\,r$. For $N$ spheres there are $N$ octahedral and $2N$ tetrahedral holes. Filling the holes with a second kind of atom generates many structures: all octahedral holes of fcc give rock salt (NaCl), all tetrahedral holes give fluorite (CaF$_2$), half of the tetrahedral holes give zinc blende (ZnS).`,
       idea: String.raw`The centre of an octahedral hole in the fcc cell is the cell centre, at distance $a/2$ from the six spheres; the spheres touch along a face diagonal, $4r=a\sqrt2$, so the free radius is $a/2-r=r(\sqrt2-1)$. A tetrahedral hole sits at $(\tfrac14,\tfrac14,\tfrac14)$, at distance $a\sqrt3/4=r\sqrt{3/2}$ from its four neighbours, which leaves $r(\sqrt{3/2}-1)$. Counting holes with the sharing rule (centre of cell 1, edge midpoints $12\times\tfrac14$ for the octahedral; 8 interior points for the tetrahedral) gives $4$ and $8$ per $4$ spheres. The same numbers hold in hcp, whose holes have the same shape.`,
-      caption: String.raw`Drag the gold probe through the fcc packing (translucent spheres at the true size). Its sphere is green where it fits between the host spheres and red where it overlaps one; the readout gives the largest radius that fits at that point. The numerical search for local maxima of this ‘gap’ has found the holes (gold octahedral, purple tetrahedral) and their radii, compared with the exact values. Use the buttons to jump to the nearest hole, and *fill the holes* to build rock salt, fluorite or zinc blende.`,
+      caption: String.raw`Drag the green probe through the fcc packing (translucent spheres at the true size). Its sphere is green where it fits between the host spheres and red where it overlaps one; the readout gives the largest radius that fits at that point. The numerical search for local maxima of this ‘gap’ has found the holes (gold octahedral, purple tetrahedral) and their radii, compared with the exact values. Use the buttons to jump to the nearest hole, and *fill the holes* to build rock salt, fluorite or zinc blende.`,
       deps: ['xtal-1.5'],
       refs: ['Hammond ch. 1'],
       tags: ['interstitial sites', 'close packing'],
@@ -71,7 +71,7 @@ export default {
         const fillSel = v.select('fill the holes', [{ value: 'none', label: 'empty' }, { value: 'oct', label: 'all octahedral' }, { value: 'tet', label: 'all tetrahedral' }, { value: 'half', label: 'half the tetrahedral' }], 'none');
         const s = v.stage({ x: [-2.2, 2.2], y: [-2.1, 2.1], equal: true, axes: false, height: 440, weight: 1.35, title: 'fcc packing (drag to rotate)' });
         const sc = v.scene3(s, { yaw: -0.62, pitch: 0.36, axes: false });
-        const P = sc.handle([0.15, 0.25, 0.05], { color: 'green', r: 8, label: 'probe' });
+        const P = sc.handle([0.1, 0.05, 0.05], { color: 'green', r: 8, label: 'probe' });
         const toW = (f) => f.map((x) => 2 * (x - 0.5)), toF = (w) => w.map((x) => x / 2 + 0.5);
         // all hole sites inside the closed cell, with sharing weights
         const sites = [];
@@ -90,7 +90,7 @@ export default {
           sc.begin();
           drawCell(sc, [[2, 0, 0], [0, 2, 0], [0, 0, 2]], [-1, -1, -1], {});
           // host spheres: true size (world radius = 2·r)
-          for (const a of hosts) ball(sc, s, toW(a.f), 2 * rHost, 'accent', { alpha: 0.2 });
+          for (const a of hosts) ball(sc, s, toW(a.f), 2 * rHost, 'accent', { alpha: 0.13 });
           const mode = fillSel.value;
           for (const t of sites) {
             const showFill = (mode === 'oct' && t.cn === 6) || (mode === 'tet' && t.cn === 4) || (mode === 'half' && t.cn === 4 && inHalf(t.f));
@@ -140,7 +140,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
         const wrong = v.toggle('wrong structure (swap fcc ↔ bcc)', false);
         const s = v.stage({ x: [-2.2, 2.2], y: [-2.1, 2.1], equal: true, axes: false, height: 440, weight: 1.05, title: 'conventional cell (drag to rotate)' });
         const sc = v.scene3(s, { yaw: -0.6, pitch: 0.34, axes: false });
-        const g = v.stage({ x: [1.2, 25], y: [1.2, 25], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, weight: 1, xlabel: 'measured density (g/cm³)', ylabel: 'calculated nM/(N_A V) (g/cm³)', title: 'calculated vs measured' });
+        const g = v.stage({ x: [1.2, 25], y: [1.2, 25], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, weight: 1, xlabel: 'measured density (g/cm³)', ylabel: 'calculated density n·M/(N_A·V) (g/cm³)', title: 'calculated vs measured' });
         const structOf = (e, w) => { const k = w && e.st !== 'hcp' ? (e.st === 'fcc' ? 'bcc' : 'fcc') : e.st; return { k, S: k === 'hcp' ? { ...STRUCT.hcp(e.c / e.a), cell: [e.a, e.a, e.c, 90, 90, 120] } : { ...STRUCT[k], cell: [e.a, e.a, e.a, 90, 90, 90] } }; };
         const calc = (e, w) => { const { S } = structOf(e, w), n = atomsPerCell(S), Vc = cellVolume(S); return { n, V: Vc, rho: (n * e.M) / (NA * Vc * 1e-24) }; };
         const COLST = { fcc: 'blue', bcc: 'orange', hcp: 'green' };
@@ -163,7 +163,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           EL.forEach((q) => {
             const c = calc(q, wrong.value), on = q.sym === e.sym;
             g.dot(q.rho, c.rho, { r: on ? 8 : 5.5, color: COLST[q.st], hollow: wrong.value && q.st !== 'hcp' ? false : false });
-            g.text(q.sym, q.rho, c.rho, { dx: 8, dy: -9, align: 'left', size: on ? 13 : 11, weight: on ? 700 : 500, color: on ? 'ink' : 'muted' });
+            const ix = EL.indexOf(q); g.text(q.sym, q.rho, c.rho, { dx: ix % 2 ? -9 : 9, dy: ix % 2 ? 10 : -10, align: ix % 2 ? 'right' : 'left', size: on ? 13 : 11, weight: on ? 700 : 500, color: on ? 'ink' : 'muted' });
           });
           g.corner('blue fcc · orange bcc · green hcp', 'tl', { size: 11, color: 'muted', plate: true });
           cur = { e, k, res, groups, cls };
@@ -172,7 +172,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           const { e, k, res, groups, cls } = cur;
           const parts = Object.keys(groups).map(Number).sort((a, b) => a - b).map((w) => `${groups[w]}×${w === 0.125 ? '1/8' : w === 0.25 ? '1/4' : w === 0.5 ? '1/2' : '1'}`);
           const dev = (res.rho / e.rho - 1) * 100;
-          return `${e.sym}, ${k}${wrong.value && k !== e.st ? ' (wrong: real structure is ' + e.st + ')' : ''}, $a=${v.fix(e.a, 4)}$ Å${e.c ? `, $c=${v.fix(e.c, 4)}$ Å` : ''}: atoms in the cell $n=${parts.join(' + ')}=${v.fix(res.n, 2)}$, $V=${v.fix(res.V, 2)}$ Å$^3$.\n$\\rho=nM/(N_AV)=${v.fix(res.n, 0)}\\cdot${v.fix(e.M, 3)}/(6.022\\times10^{23}\\cdot${v.fix(res.V * 1e-24, 3)}\\times10^{-24}\\ \\text{cm}^3)=\\mathbf{${v.fix(res.rho, 3)}}$ g/cm³ against measured ${v.fix(e.rho, 3)}: ${v.fix(dev, 2)} %.`;
+          return `${e.sym}, ${k}${wrong.value && k !== e.st ? ' (wrong: real structure is ' + e.st + ')' : ''}, $a=${v.fix(e.a, 4)}$ Å${e.c ? `, $c=${v.fix(e.c, 4)}$ Å` : ''}: atoms in the cell $n=${parts.join(' + ')}=${v.fix(res.n, 2)}$, $V=${v.fix(res.V, 2)}$ Å$^3$.\n$\\rho=nM/(N_AV)=${v.fix(res.n, 0)}\\cdot${v.fix(e.M, 3)}/(6.022\\times10^{23}\\cdot${v.fix(res.V, 2)}\\times10^{-24}\\ \\text{cm}^3)=\\mathbf{${v.fix(res.rho, 3)}}$ g/cm³ against measured ${v.fix(e.rho, 3)}: ${v.fix(dev, 2)} %.`;
         });
       },
     },
@@ -199,7 +199,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           ['KF', 133, 138, 'r'], ['KCl', 138, 181, 'r'], ['RbCl', 152, 181, 'r'], ['CsF', 133, 167, 'r'], ['CsCl', 167, 181, 'c'], ['CsBr', 167, 196, 'c'], ['CsI', 167, 220, 'c'],
           ['MgO', 72, 140, 'r'], ['CaO', 100, 140, 'r'], ['ZnS', 74, 184, 'z'], ['BeO', 45, 140, 'z'], ['ZnO', 74, 140, 'z'],
         ].map(([n, a, b, t]) => ({ n, ratio: Math.min(a, b) / Math.max(a, b), t }));
-        const g = v.stage({ x: [0, 1.05], y: [0, 1], axes: 'box', gutter: true, height: 460, weight: 0.95, xlabel: 'radius ratio $r_{small}/r_{large}$', yticks: [[0.17, 'ZnS type'], [0.5, 'NaCl type'], [0.83, 'CsCl type']], title: 'the radius-ratio rule against real compounds' });
+        const g = v.stage({ x: [0, 1.05], y: [0, 1], axes: 'box', gutter: true, height: 460, weight: 0.95, xlabel: 'radius ratio $r_{small}/r_{large}$', yticks: [[0.17, 'ZnS'], [0.5, 'NaCl'], [0.83, 'CsCl']], title: 'the radius-ratio rule against real compounds' });
         const ROWY = { z: 0.17, r: 0.5, c: 0.83 }, pred = (x) => (x >= 0.732 ? 'c' : x >= 0.414 ? 'r' : 'z');
         let pickBasis = null, atomsP = [], cur = null;
         s.onClick((x, y) => { let best = null; for (const a of atomsP) { const d = Math.hypot(a.px - x, a.py - y); if (!best || d < best.d) best = { d, a }; } if (best && best.d < 0.3) { pickBasis = best.a.basis; v.invalidate(); } });
@@ -219,7 +219,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           for (const f of hull) sc.poly(f.verts.map((p) => Pp(add(p, cpos))), { fill: 'gold', fillAlpha: 0.2, color: 'gold', width: 1.4, alpha: 0.9 });
           for (const p of nbPos) sc.line(Pp(cpos), Pp(p), { color: 'gold', width: 2.2 }, 1);
           atomsP = [];
-          const R0 = 0.24 * kk * Math.min(...[0, 1, 2].map((i) => norm(V[i]))) * 0.9;
+          const R0 = 0.16 * kk * Math.min(...[0, 1, 2].map((i) => norm(V[i]))) * 0.9;
           const drawn = [];
           for (const a of atoms) { const rr = R0 * SPECIES[a.sp].r; ball(sc, s, Pp(a.r), rr, speciesColor(a.sp), { alpha: a.basis === bi && norm(sub(a.r, cpos)) < 1e-6 ? 1 : 0.85 }); const q = sc.P(Pp(a.r)); atomsP.push({ px: q[0], py: q[1], basis: a.basis }); drawn.push(a.r); }
           for (const t of sh.list) { const q = add(cpos, t.rel); if (!drawn.some((r) => norm(sub(r, q)) < 1e-5)) ball(sc, s, Pp(q), R0 * SPECIES[t.sp].r, speciesColor(t.sp), { alpha: 0.4 }); }
@@ -239,7 +239,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
             const ok = pred(q.ratio) === q.t; if (ok) hits++;
             const row = ROWY[q.t], k2 = (used[q.t] = (used[q.t] || 0) + 1);
             g.dot(q.ratio, row, { r: 5, color: ok ? 'green' : 'red' });
-            g.text(q.n, q.ratio, row, { dy: k2 % 2 ? -13 : 14, align: 'center', size: 10, color: ok ? 'muted' : 'red' });
+            g.text(q.n, q.ratio, row, { dy: [-12, 14, -26, 28][(k2 - 1) % 4], align: 'center', size: 10, color: ok ? 'muted' : 'red' });
           });
           g.vline(rho.value, { color: 'ink', width: 2 });
           g.text(`ρ = ${v.fix(rho.value, 3)}`, rho.value, 0.06, { dx: 4, align: rho.value > 0.85 ? 'right' : 'left', size: 11.5, weight: 700 });
@@ -305,7 +305,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           const c = cat.value, kind = kindOf(c), C = CAT[c], md = mode.value;
           th.el.hidden = md !== 'corner';
           const V1 = kind === 'tet' ? TETRA : OCTA, { V2, c2 } = build(kind, md, th.value);
-          const SH = SHARED[kind][md], k0 = 0.95;
+          const SH = SHARED[kind][md], k0 = 1.45;
           sc.begin();
           const shared = (p) => SH.some((i) => norm(sub(p, V1[i])) < 1e-6);
           const f1 = hullFaces(V1), f2 = hullFaces(V2);
@@ -323,12 +323,12 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           // oxygen panel
           const n = bonds.length, sum = bonds.reduce((a, b) => a + CAT[b].z / CAT[b].cn, 0);
           w.circle(-0.7, 0, 0.32, { fill: 'red', fillAlpha: 0.85, color: 'red' });
-          w.text('O²⁻', -0.7, 0, { align: 'center', size: 12, weight: 700, color: 'panel' });
+          w.text('O²⁻', -0.7, 0, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
           bonds.forEach((b, i) => {
             const a = (i / Math.max(n, 1)) * Math.PI * 2 + 0.5, sS = CAT[b].z / CAT[b].cn, cx = -0.7 + 1.55 * Math.cos(a), cy = 1.55 * Math.sin(a);
             w.line(-0.7 + 0.32 * Math.cos(a), 0.32 * Math.sin(a), cx, cy, { color: CAT[b].color, width: 1 + 6 * sS });
             w.circle(cx, cy, 0.3, { fill: CAT[b].color, fillAlpha: 0.9, color: CAT[b].color });
-            w.text(CAT[b].label, cx, cy, { align: 'center', size: 9.5, weight: 700, color: 'panel' });
+            w.text(CAT[b].label, cx, cy, { align: 'center', size: 10, weight: 700, color: 'panel', halo: false });
             w.text(`s = ${CAT[b].z}/${CAT[b].cn}`, -0.7 + 0.95 * Math.cos(a), 0.95 * Math.sin(a), { align: 'center', size: 10, color: 'ink', dy: -9 });
           });
           // stacked bar of bond strengths at x ≈ 2.2
@@ -410,7 +410,7 @@ For cubic cells $V=a^3$; for hexagonal cells $V=\tfrac{\sqrt3}{2}a^2c$. The meth
           for (const [x, y] of pts) s.dot(x, y, { r: 3.6, color: 'ink' });
           s.arrow(0, 0, a[0], a[1], { color: 'accent', width: 2.4 }); s.arrow(0, 0, b[0], b[1], { color: 'orange', width: 2.4 });
           // 3D
-          const K = sel.value, D = ws3(K), k = 1.35;
+          const K = sel.value, D = ws3(K), k = 2.0;
           sc.begin();
           D.faces.forEach((f) => sc.poly(f.verts.map((p) => mul(k, p)), { fill: ['accent', 'orange', 'green'][f.cls % 3], fillAlpha: 0.32, color: 'ink', width: 1.3, alpha: 0.9 }));
           sc.dot([0, 0, 0], { r: 5, color: 'gold' });

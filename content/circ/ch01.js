@@ -211,7 +211,7 @@ export default {
           const M = model(), L = len.value, area = Math.abs(v.M.polyArea([[-2.4, 0.2], [P1.x, P1.y], [P2.x, P2.y], [2.4, 0.2]])) * 0.01; // 1 unit = 10 cm
           const z = M.Vx(L), aL = Math.hypot(z[0], z[1]), lagDeg = -Math.atan2(z[1], z[0]) * 180 / Math.PI, emf = TAU * f.value * B0.value * 1e-9 * area;
           const ok = M.ratio < 0.1;
-          return `$\\lambda = c_{\\text{line}}/f = ${sI(M.lam, 'm', 3)}$ · $\\ell/\\lambda = ${v.fix(M.ratio, 3)}$ — ${ok ? '**lumped picture fine** (under 1/10 of a wavelength)' : '**lumped picture broken**'} · delay $\\ell/v = ${sI(L / vp, 's', 3)}$ = ${v.fix(M.ratio * 360, 1)}° of phase\n far-end amplitude $${v.fix(aL, 3)}\\,V_0$ with a phase lag of $${v.fix(lagDeg, 1)}^\\circ$ (the lumped model says $1\\,V_0$ and $0^\\circ$)\nvoltmeter loop area $A = ${v.fix(area * 1e4, 1)}$ cm² → the two lead paths differ by $\\omega B_0 A = ${sI(emf, 'V', 3)}$, i.e. ${v.sci(Math.max(emf, 1e-30) / 1, 2)} of the 1 V element`;
+          return `$\\lambda = c_{\\text{line}}/f = ${sI(M.lam, 'm', 3)}$ · $\\ell/\\lambda = ${v.fix(M.ratio, 3)}$ — ${ok ? '**lumped picture fine** (under 1/10 of a wavelength)' : '**lumped picture broken**'} · delay $\\ell/v = ${sI(L / vp, 's', 3)}$ = ${v.fix(M.ratio * 360, 1)}° of phase\n far-end amplitude $${v.fix(aL, 3)}\\,V_0$ with a phase lag of $${v.fix(lagDeg, 1)}^\\circ$ (the lumped model says $1\\,V_0$ and $0^\\circ$)\nvoltmeter loop area $A = ${v.fix(area * 1e4, 1)}$ cm² → the two lead paths differ by $\\omega B_0 A = ${sI(emf, 'V', 3)}$, i.e. ${v.fix(emf * 100, 4)} % of the 1 V element`;
         });
       },
     },
@@ -223,7 +223,7 @@ export default {
       statement: String.raw`For a resistor the voltage across it and the current through it are proportional, $v = Ri$ (or $i = Gv$ with conductance $G = 1/R$), with a constant $R$ that does not depend on $v$ or $i$. The constant is a property of the sample and of its temperature. Ohm published the law in 1827; devices for which the ratio $v/i$ changes with $v$ (lamps, thermistors, diodes) are called **non-ohmic**, and for them $v/i$ is only a *static* resistance at one operating point.`,
       idea: String.raw`Microscopically (em-6.3) the drift velocity of carriers is proportional to the field because collisions give a constant mobility, so current density is proportional to $\mathbf E$ and integrating over a sample gives $v = Ri$. The proportionality fails when the material changes during the measurement: a filament that heats up has a resistance that rises with temperature, so the $i$–$v$ curve bends even though the metal obeys Ohm's law at each fixed temperature.`,
       caption: String.raw`Sweep $V$ across the element (the kit solves the schematic at every setting; gold dots record the points you visit). A resistor gives a straight line through the origin of slope $1/R$. Choose the lamp: the filament heats, its resistance climbs, and the curve bends; hold its temperature fixed ("cooled") and the line returns. The dashed secant is the static resistance $V/I$, the tangent the differential resistance $dV/dI$.`,
-      scope: String.raw`Holds for metals and many resistive materials at constant temperature and moderate fields; fails for semiconductors junctions, plasmas and self-heating elements.`,
+      scope: String.raw`Holds for metals and many resistive materials at constant temperature and moderate fields; fails for semiconductor junctions, plasmas and self-heating elements.`,
       credit: 'Georg Simon Ohm, 1827',
       deps: ['circ-1.1', 'em-6.3'],
       refs: ['Horowitz–Hill §1.2', 'Agarwal–Lang §1.5'],
@@ -251,7 +251,6 @@ export default {
           rec.set(Math.round(V * 10), [V, I]);
           if (mode.value !== 'res') {
             const glow = clamp((st.T - 293) / 2200, 0, 1);
-            s.circle(4.4 + 0.0, 3.0, 0.0001, {});
             s.circle(2.9, 3.95, 0.34, { fill: 'orange', fillAlpha: 0.1 + 0.8 * glow, color: 'orange', width: 1.4 });
             s.text(`filament ${v.fix(st.T, 0)} K`, 3.35, 3.95, { size: 12, color: 'ink', align: 'left', baseline: 'middle' });
           }
@@ -330,7 +329,6 @@ export default {
             c.beginPath(); c.moveTo(hx, hy2); c.lineTo(hx - ux * 6 + uy * 3.5, hy2 - uy * 6 - ux * 3.5); c.lineTo(hx - ux * 6 - uy * 3.5, hy2 - uy * 6 + ux * 3.5); c.closePath(); c.fill();
           }
           c.restore();
-          if (hole.value) s.circle(L / 2, 0, 0.3 * w / 10 * 0 + 0.0001, {});
           s.measure(0, -w / 2 - 1.1, L, -w / 2 - 1.1, `L = ${v.fix(L, 1)} cm`);
           s.text(`w = ${v.fix(w, 1)} mm`, 1.75, w / 2 + 0.2, { size: 12.5, color: 'ink', align: 'left', baseline: 'bottom' });
           s.text('+', -0.5, 0, { size: 18, color: 'red', align: 'center', baseline: 'middle' }); s.text('−', L + 0.5, 0, { size: 18, color: 'blue', align: 'center', baseline: 'middle' });

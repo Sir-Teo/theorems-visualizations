@@ -188,5 +188,154 @@ export default {
         });
       },
     },
+
+    // ================================================================== 1.9
+    {
+      num: '1.9',
+      kind: 'Invention',
+      name: 'The Enigma machine and its cryptanalysis',
+      statement: String.raw`The **Enigma** (Arthur Scherbius, patent 1918) is an electromechanical cipher machine. Each key press sends current through a plugboard that swaps up to ten pairs of letters, then through three wired rotors (chosen from five, each with a ring setting and a start position), into a **reflector** that sends it back through the rotors and the plugboard to a lamp. Before every letter the right rotor advances one step; it carries the middle rotor along when it passes its notch, and the middle rotor, at its own notch, advances itself *and* the left rotor (the “double step”). The result is a different substitution for every letter. Because the reflector is an involution without fixed points, Enigma is **reciprocal** (typing the ciphertext with the same settings decrypts it) and **no letter is ever enciphered as itself**. The latter, with guessed plaintext (a *crib*), was one of the weaknesses that Rejewski’s permutation methods (1932) and later Bletchley Park exploited.`,
+      idea: String.raw`Each rotor is a fixed permutation of 26 contacts, rotated by its position; the machine applies $\mathrm{plug}\circ R_1^{-1}R_2^{-1}R_3^{-1}\,U\,R_3R_2R_1\circ\mathrm{plug}$ with rotors moved before each letter, so it is a polyalphabetic cipher with period $26\cdot25\cdot26=16\,900$ for single-notch rotors. The key space is huge (about $1.6\times10^{20}$ settings with five rotors), yet the machine is insecure because of structure: the reflector forbids self-encipherment, so every crib position with a letter matching the ciphertext at the same place is *impossible*; stereotyped messages supplied the cribs, the plugboard commutes with the rest of the structure in Rejewski’s cycle analysis, and daily-key procedures leaked more. The lesson is Kerckhoffs’s: the design was recovered, so only the key counted.`,
+      caption: String.raw`Choose rotors, rings, start positions and plugboard pairs, type a message, and slide through the key presses: the diagram shows the current through the machine for the selected letter (gold going in, green coming back through the reflector). The strip shows the windows stepping, including the double step. Below, slide a crib along the ciphertext: red cells are positions the reflector rules out. **Load 1930 manual** sets the settings of the published test message.`,
+      deps: ['crypto-1.5'],
+      tags: ['Enigma', 'rotor machine'],
+      refs: ['Katz–Lindell §1.3'],
+      credit: 'Arthur Scherbius, patent 1918; broken from 1932 by Marian Rejewski, then at Bletchley Park (Turing, Welchman)',
+      scope: String.raw`Enigma I (Army/Air Force, three rotors chosen from five, reflectors A, B, C; no Navy M4 fourth rotor). The sample message is invented for illustration.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Enigma_machine' },
+      viz(v) {
+        const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, full: true });
+        const sS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 138, full: true });
+        const sC = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 176, full: true });
+        const names = ['I', 'II', 'III', 'IV', 'V'], fmtL = (x) => A[Math.round(x)];
+        const rotL = v.select('Left rotor', names, 'I'), rotM = v.select('Middle', names, 'II'), rotR = v.select('Right', names, 'III');
+        const refl = v.select('Reflector', ['A', 'B', 'C'], 'B');
+        const ring = [0, 1, 2].map((i) => v.slider(`Ring ${'LMR'[i]}`, 0, 25, 0, { int: true, fmt: (x) => `${Math.round(x) + 1} (${A[Math.round(x)]})` }));
+        const start = [0, 1, 2].map((i) => v.slider(`Start ${'LMR'[i]}`, 0, 25, [0, 3, 18][i], { int: true, fmt: fmtL }));
+        const plugIn = v.input('Plugboard', 'AM FI NV PS TU WZ', { width: 190 });
+        const msg = v.input('Message', 'ANX WETTERBERICHT KEINE BESONDEREN EREIGNISSE', { width: 330 });
+        const key = v.slider('Key press #', 1, 60, 5, { int: true });
+        const cribSel = v.select('Crib', ['WETTER', 'WETTERBERICHT', 'KEINEBESONDERENEREIGNISSE'], 'WETTERBERICHT');
+        const cribPos = v.slider('Crib position', 0, 40, 3, { int: true });
+        const load = (c) => { rotL.set(c.rotors[0]); rotM.set(c.rotors[1]); rotR.set(c.rotors[2]); refl.set(c.refl); c.rings.forEach((r, i) => ring[i].set(r)); c.pos.forEach((r, i) => start[i].set(r)); plugIn.set(c.plug); msg.set(c.msg); };
+        const MANUAL = { rotors: ['II', 'I', 'III'], refl: 'A', rings: [23, 12, 21], pos: [0, 1, 11], plug: 'AM FI NV PS TU WZ', msg: 'GCDSE AHUGW TQGRK VLFGX UCALX VYMIG MMNMF DXTGN VHVRM MEVOU YFZSL RHDRR XFJWC FHUHM UNZEF RDISI KBGPM YVXUZ' };
+        v.button('Load 1930 manual', () => load(MANUAL));
+        v.button('Reset', () => load({ rotors: ['I', 'II', 'III'], refl: 'B', rings: [0, 0, 0], pos: [0, 3, 18], plug: 'AM FI NV PS TU WZ', msg: 'ANX WETTERBERICHT KEINE BESONDEREN EREIGNISSE' }));
+        // published test vectors, independent of the controls
+        const run0 = (cfg, text) => makeEnigma(cfg).run(text);
+        const tests = [
+          { name: 'rotors I II III, UKW B, rings AAA, start AAA: AAAAA → BDZGO', ok: run0({ rotors: ['I', 'II', 'III'], refl: 'B', rings: [0, 0, 0], pos: [0, 0, 0] }, 'AAAAA') === 'BDZGO', src: 'Wikipedia, Enigma rotor details' },
+          { name: 'double step ADU → ADV → AEW → BFX → BFY', ok: (() => { const E = makeEnigma({ rotors: ['I', 'II', 'III'], refl: 'B', rings: [0, 0, 0], pos: [0, 3, 20] }); const s = [posName(E.pos)]; for (let i = 0; i < 4; i++) { E.press(0); s.push(posName(E.pos)); } return s.join(' ') === 'ADU ADV AEW BFX BFY'; })(), src: 'Wikipedia, Enigma rotor details' },
+          { name: '1930 manual message: key PKPJXI → ABLABL, then 84 letters → FEIND LIQEI NFANT …', ok: (() => { const c = { rotors: ['II', 'I', 'III'], refl: 'A', rings: [23, 12, 21], pos: [5, 14, 11], plug: 'AM FI NV PS TU WZ' }; const k = run0(c, 'PKPJXI'); const p = run0({ ...c, pos: [0, 1, 11] }, norm(MANUAL.msg)); return k === 'ABLABL' && p === 'FEINDLIQEINFANTERIEKOLONNEBEOBAQTETXANFANGSUEDAUSGANGBAERWALDEXENDEDREIKMOSTWAERTSNEUSTADT'; })(), src: 'Enigma instruction manual 1930, test message (cryptocellar.org)' },
+        ];
+        const cfgNow = () => ({ rotors: [rotL.value, rotM.value, rotR.value], refl: refl.value, rings: ring.map((r) => r.value), pos: start.map((r) => r.value), plug: plugIn.value });
+        let cache = null;
+        const sim = () => {
+          const cfg = cfgNow(), text = msg.value.toUpperCase(), sig = JSON.stringify(cfg) + '|' + text;
+          if (cache && cache.sig === sig) return cache;
+          const E = makeEnigma(cfg), L = norm(text), steps = [], init = cfg.pos.slice(); let prev = init;
+          for (const ch of L) { const r = E.press(code(ch)); steps.push({ x: code(ch), out: r.out, trace: r.trace, pos: r.pos, prev }); prev = r.pos; }
+          // stress test: no letter is enciphered as itself
+          const S = makeEnigma(cfg); let fixed = 0; const NS = 26 * 400; for (let i = 0; i < NS; i++) if (S.press((i * 7 + (i >> 5)) % 26).out === (i * 7 + (i >> 5)) % 26) fixed++;
+          cache = { sig, cfg, L, steps, ct: steps.map((s) => A[s.out]).join(''), fixed, NS, plug: parsePlug(cfg.plug) };
+          return cache;
+        };
+        v.render(() => {
+          const X = sim(), P = pix(sD), { W, H } = P;
+          const t = clamp(key.value, 1, Math.max(1, X.steps.length)) - 1, S = X.steps[t] || null;
+          const top = 66, bot = 12, rh = (H - top - bot) / 25, Y = (i) => top + i * rh;
+          const r3 = 0.17 * W, r2 = 0.36 * W, r1 = 0.55 * W, r0 = 0.74 * W, kb = 0.93 * W;
+          const pos = S ? S.pos : X.cfg.pos, prev = S ? S.prev : X.cfg.pos;
+          const E = makeEnigma({ ...X.cfg, pos });
+          const rails = [r0, r1, r2, r3];
+          // rotor boxes with headers
+          const rotX = [[r3, r2], [r2, r1], [r1, r0]];
+          rotX.forEach(([xl, xr], i) => {
+            const moved = pos[i] !== prev[i], nm = X.cfg.rotors[i], w = xr - xl;
+            P.rect(xl, top - 8, w, H - top - bot + 16, { fill: 'accent', fillAlpha: 0.04, color: 'faint', width: 1, radius: 8 });
+            P.text(`${['left', 'middle', 'right'][i]} rotor ${nm}`, (xl + xr) / 2, 12, { size: 11.5, weight: 700, color: 'muted', align: 'center', halo: false });
+            P.rect((xl + xr) / 2 - 17, 22, 34, 30, { fill: moved ? 'gold' : 'accent', fillAlpha: moved ? 0.4 : 0.1, color: moved ? 'gold' : 'faint', width: 2, radius: 6 });
+            P.text(A[pos[i]], (xl + xr) / 2, 38, { size: 20, weight: 800, color: 'ink', align: 'center', halo: false });
+            if (pos[i] === E.notch(i)) P.text('▲ notch', (xl + xr) / 2 + 52, 38, { size: 10.5, weight: 700, color: 'orange', align: 'center', halo: false });
+            P.text(`ring ${(X.cfg.rings[i] + 1)}`, (xl + xr) / 2 - 48, 38, { size: 10, color: 'muted', align: 'center', halo: false });
+          });
+          P.text('reflector ' + X.cfg.refl, r3 - 38, 12, { size: 11.5, weight: 700, color: 'muted', align: 'center', halo: false });
+          P.text('plugboard', (r0 + kb) / 2, 12, { size: 11.5, weight: 700, color: 'muted', align: 'center', halo: false });
+          P.text('keys / lamps', kb, 12, { size: 11.5, weight: 700, color: 'muted', align: 'center', halo: false });
+          // rotor wires (all 26) in the machine frame
+          const fw = [E.map(0), E.map(1), E.map(2)];
+          rotX.forEach(([xl, xr], i) => { for (let x = 0; x < 26; x++) P.line(xr, Y(x), xl, Y(fw[i][x]), { color: 'muted', width: 0.8, alpha: 0.28 }); });
+          // reflector arcs
+          const rf = E.reflMap();
+          for (let a = 0; a < 26; a++) { const b = rf[a]; if (b > a) { const d = 8 + (b - a) * rh * 0.22, pts = []; for (let k = 0; k <= 14; k++) { const u = k / 14, yy = (1 - u) * (1 - u) * Y(a) + 2 * u * (1 - u) * ((Y(a) + Y(b)) / 2) + u * u * Y(b), xx = (1 - u) * (1 - u) * r3 + 2 * u * (1 - u) * (r3 - 2 * d) + u * u * r3; pts.push([xx, yy]); } P.path(pts, { color: 'muted', width: 0.9, alpha: 0.3 }); } }
+          // plugboard wires and keyboard
+          const pl = X.plug.map;
+          for (let i = 0; i < 26; i++) P.line(kb, Y(i), r0, Y(pl[i]), { color: pl[i] !== i ? 'purple' : 'muted', width: pl[i] !== i ? 1.2 : 0.7, alpha: pl[i] !== i ? 0.55 : 0.25 });
+          rails.forEach((rx) => { for (let i = 0; i < 26; i++) P.dot(rx, Y(i), { r: 1.7, color: 'muted' }); });
+          for (let i = 0; i < 26; i++) { P.dot(kb, Y(i), { r: 5, color: 'faint', hollow: true }); P.text(A[i], kb + 14, Y(i), { size: 9.5, color: 'muted', weight: 600, align: 'left', halo: false }); }
+          // the path
+          if (S) {
+            const [x, p1, r2v, r1v, r0v, u, l0, l1, l2, out] = S.trace, G = 'gold', Gr = 'green', w = 2.6;
+            P.line(kb, Y(x), r0, Y(p1), { color: G, width: w });
+            P.line(r0, Y(p1), r1, Y(r2v), { color: G, width: w }); P.line(r1, Y(r2v), r2, Y(r1v), { color: G, width: w }); P.line(r2, Y(r1v), r3, Y(r0v), { color: G, width: w });
+            const d = 8 + Math.abs(u - r0v) * rh * 0.22, pts = [];
+            for (let k = 0; k <= 16; k++) { const q = k / 16, yy = (1 - q) * (1 - q) * Y(r0v) + 2 * q * (1 - q) * ((Y(r0v) + Y(u)) / 2) + q * q * Y(u), xx = (1 - q) * (1 - q) * r3 + 2 * q * (1 - q) * (r3 - 2 * d) + q * q * r3; pts.push([xx, yy]); }
+            P.path(pts, { color: 'orange', width: w });
+            P.line(r3, Y(u), r2, Y(l0), { color: Gr, width: w }); P.line(r2, Y(l0), r1, Y(l1), { color: Gr, width: w }); P.line(r1, Y(l1), r0, Y(l2), { color: Gr, width: w });
+            P.line(r0, Y(l2), kb, Y(out), { color: Gr, width: w });
+            P.dot(kb, Y(x), { r: 6.5, color: G }); P.dot(kb, Y(out), { r: 6.5, color: Gr });
+            const lab = (rx, row, col, side) => P.text(A[row], rx + side * 8, Y(row), { size: 9.5, weight: 800, color: col, align: side > 0 ? 'left' : 'right' });
+            lab(r0, p1, G, 1); lab(r0, l2, Gr, 1); lab(r1, r2v, G, 1); lab(r1, l1, Gr, 1); lab(r2, r1v, G, 1); lab(r2, l0, Gr, 1); lab(r3, r0v, G, 1); lab(r3, u, Gr, 1);
+            P.text(`${A[x]} → ${A[out]}`, (r3 + r2) / 2, H - 4, { size: 12.5, weight: 700, color: 'ink', align: 'center', halo: false });
+          }
+        });
+        v.render(() => {
+          const X = sim(), P = pix(sS), { W } = P, n = X.steps.length, t = clamp(key.value, 1, Math.max(1, n)) - 1, cols = 28;
+          const lm = 78, cw = Math.min(24, (W - lm - 8) / cols), t0 = clamp(t - 13, 0, Math.max(0, n - cols));
+          const rows = [['plain', (s) => A[s.x]], ['cipher', (s) => A[s.out]], ['left', (s) => A[s.pos[0]]], ['middle', (s) => A[s.pos[1]]], ['right', (s) => A[s.pos[2]]]];
+          rows.forEach(([lab, f], r) => P.text(lab, 8, 14 + r * 24, { size: 11, weight: 700, color: r < 2 ? 'ink' : 'muted', align: 'left', halo: false }));
+          for (let c = 0; c < cols && t0 + c < n; c++) {
+            const s = X.steps[t0 + c], x = lm + c * cw;
+            if (t0 + c === t) P.rect(x, 1, cw, 128, { fill: 'gold', fillAlpha: 0.18, color: 'gold', width: 1.6, radius: 4 });
+            [0, 1].forEach((i) => { if (s.pos[i] !== s.prev[i]) P.rect(x + 1, 2 + 24 * (2 + i) + 0, cw - 2, 24, { fill: i === 0 ? 'red' : 'orange', fillAlpha: 0.28, stroke: false, radius: 3 }); });
+            rows.forEach(([, f], r) => P.text(f(s), x + cw / 2, 14 + r * 24, { size: 13, weight: r < 2 ? 700 : 600, color: r === 1 ? 'orange' : r === 0 ? 'blue' : 'ink', align: 'center', halo: false }));
+            if (cw > 14 && (t0 + c) % 5 === 4) P.text(String(t0 + c + 1), x + cw / 2, 130, { size: 8.5, color: 'muted', align: 'center', halo: false });
+          }
+          P.text('red / orange cells: the left / middle rotor stepped on that key press', W - 8, 130, { size: 10, color: 'muted', align: 'right', halo: false });
+        });
+        const cribGeom = () => { const X = sim(), crib = cribSel.value, N = X.ct.length, m = N - crib.length + 1; const bad = []; for (let p = 0; p < Math.max(0, m); p++) { let b = false; for (let i = 0; i < crib.length; i++) if (crib[i] === X.ct[p + i]) { b = true; break; } bad.push(b); } return { X, crib, N, m, bad, truth: X.L.indexOf(crib) }; };
+        v.render(() => {
+          const G = cribGeom(), P = pix(sC), { W } = P, N = Math.min(G.N, 90), lm = 70, cw = Math.min(18, (W - lm - 8) / Math.max(N, 1));
+          const p = clamp(cribPos.value, 0, Math.max(0, G.m - 1));
+          P.text('ciphertext', 8, 22, { size: 11, weight: 700, color: 'orange', align: 'left', halo: false });
+          P.text('crib', 8, 54, { size: 11, weight: 700, color: 'blue', align: 'left', halo: false });
+          for (let i = 0; i < N; i++) P.text(G.X.ct[i], lm + (i + 0.5) * cw, 22, { size: 12.5, weight: 700, color: 'orange', align: 'center', halo: false });
+          for (let i = 0; i < G.crib.length && p + i < N; i++) {
+            const clash = G.crib[i] === G.X.ct[p + i], x = lm + (p + i) * cw;
+            if (clash) P.rect(x, 8, cw, 58, { fill: 'red', fillAlpha: 0.2, color: 'red', width: 1.4, radius: 3 });
+            P.text(G.crib[i], x + cw / 2, 54, { size: 12.5, weight: 700, color: clash ? 'red' : 'blue', align: 'center', halo: false });
+          }
+          P.text(G.bad[p] ? '✗ impossible here: a plaintext letter would equal its ciphertext letter' : '✓ no letter clashes: this alignment survives', lm, 82, { size: 12, weight: 700, color: G.bad[p] ? 'red' : 'green', align: 'left', halo: false });
+          P.text('every alignment of the crib:', 8, 112, { size: 11, weight: 700, color: 'muted', align: 'left', halo: false });
+          const sw = Math.min(16, (W - lm - 8) / Math.max(G.m, 1));
+          G.bad.forEach((b, k) => {
+            const x = lm + k * sw;
+            P.rect(x + 1, 124, sw - 2, 22, { fill: b ? 'red' : 'green', fillAlpha: b ? 0.55 : 0.5, stroke: false, radius: 3 });
+            if (k === G.truth) P.rect(x, 121, sw, 28, { fill: false, color: 'ink', width: 2, radius: 4 });
+            if (k === p) P.rect(x - 1, 119, sw + 2, 32, { fill: false, color: 'gold', width: 2.4, radius: 4 });
+          });
+          if (G.truth >= 0) P.text('▲ true position', lm + G.truth * sw + sw / 2, 162, { size: 10.5, weight: 700, color: 'ink', align: 'center', halo: false });
+        });
+        v.readout(() => {
+          const X = sim(), G = cribGeom(), cfg = X.cfg, dup = new Set(cfg.rotors).size < 3;
+          const surv = G.bad.filter((b) => !b).length, exp = Math.max(0, G.m) * Math.pow(25 / 26, G.crib.length);
+          const tl = tests.map((t) => `${t.ok ? '✓' : '✗'} ${t.name} (${t.src})`).join('\n');
+          return (dup ? '**Warning:** the same rotor is used twice — impossible on a real machine.\n' : '') +
+            String.raw`Message → ciphertext: ${groups5(X.ct.slice(0, 55))}${X.ct.length > 55 ? ' …' : ''}. Typing it back at the same start settings gives ${makeEnigma(cfg).run(X.ct) === X.L ? '**the plaintext ✓ (reciprocal)**' : '✗'}.` + '\n' +
+            String.raw`Self-encipherment: **${X.fixed}** of ${X.NS} test key presses mapped a letter to itself (none can, whatever the settings). Crib ${G.crib}: ${surv} of ${Math.max(0, G.m)} alignments survive; a random text would leave about $(25/26)^{${G.crib.length}}\cdot${Math.max(0, G.m)} \approx ${exp.toFixed(1)}$.` + '\n' +
+            'Simulator checked against published vectors:\n' + tl;
+        });
+      },
+    },
   ],
 };

@@ -30,8 +30,8 @@ export default {
           const T = Td.value, gam = LN2 / th.value, al = LN2 / T, koff = 60 / tb.value, kon = koff; // K = 1
           rows.forEach(([nm, a, b, c], i) => {
             const y = 3.9 - i;
-            R.rect(a, y - 0.3, b, y + 0.3, { fill: c, fillAlpha: 0.35, color: c, radius: 4 });
-            R.tex(String.raw`\text{${nm}}`, Math.sqrt(a * b), y + 0.58, { size: 12, color: c });
+            R.rect(a, y - 0.22, b, y + 0.22, { fill: c, fillAlpha: 0.35, color: c, radius: 4 });
+            R.tex(String.raw`\text{${nm}}`, Math.sqrt(a * b), y + 0.47, { size: 12, color: c });
           });
           R.dot(tb.value, 3.9, { r: 7, color: 'gold' }); R.dot(th.value * 60, 1.9, { r: 7, color: 'gold' }); R.dot(T * 60, 0.9, { r: 7, color: 'gold' });
           // integration: B exact relaxation within a step, m and p by midpoint on the B average
@@ -144,7 +144,7 @@ In the *E. coli* transcription network (577 interactions among 424 operons) Shen
         const ST = {};
         const PAT = [['ffl', 'feed-forward loop'], ['cycle3', '3-cycle (feedback loop)'], ['cascade', 'cascade X→Y→Z'], ['bifan', 'bi-fan'], ['fanout', 'fan-out (two targets)']];
         const pat = v.select('pattern', PAT.map(([value, label]) => ({ value, label })), 'ffl');
-        const bias = v.slider('feed-forward loop bias', 0, 1, 0.8, { step: 0.05 });
+        const bias = v.slider('feed-forward loop bias', 0, 1, 0.3, { step: 0.05 });
         let seed = 3; v.button('new network', () => { seed++; });
         const G0 = v.stage({ x: [0, 10], y: [0, 7], equal: true, axes: false, height: 440, full: true });
         const H = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, height: 290, minWidth: 280, xlabel: 'number of instances in a randomized network', ylabel: 'networks (of 150)' });
@@ -173,7 +173,7 @@ In the *E. coli* transcription network (577 interactions among 424 operons) Shen
           G.draw({
             nodeColor: (id) => (hn.has(id) ? 'orange' : id.startsWith('G') ? 'accent' : id.startsWith('S') ? 'teal' : 'muted'),
             nodeFill: (id) => (id.startsWith('o') ? null : id.startsWith('G') ? 'accent' : 'teal'),
-            edgeColor: (e) => (hl.has(e.from + '>' + e.to) ? 'orange' : null), edgeWidth: (e) => (hl.has(e.from + '>' + e.to) ? 2.6 : 1),
+            edgeColor: (e) => (hl.has(e.from + '>' + e.to) ? 'orange' : null), edgeWidth: (e) => (hl.has(e.from + '>' + e.to) ? 1.8 : 0.8),
             dim: pat.value === 'ffl' ? [] : [],
           });
           const st = c.stats[pat.value], xs = st.xs, real = c.real[pat.value];
@@ -209,13 +209,13 @@ In the *E. coli* transcription network (577 interactions among 424 operons) Shen
 $$n_{\rm eff}=\frac{\ln 81}{\ln (x_{90}/x_{10})}.$$
 For a Hill function $n_{\rm eff}=n$. The local steepness is the **logarithmic sensitivity** $S=d\ln\tilde f/d\ln x$; for a Hill function it equals $n/2$ at half-maximum and falls from $n$ at small $x$, so $2S_{50}$ is a second estimate of $n$ that agrees with $n_{\rm eff}$ for Hill functions and differs for other shapes.`,
       idea: String.raw`The definition simply inverts the Hill identity $x_{90}/x_{10}=81^{1/n}$ of 1.3, which makes the number meaningful for curves that are not Hill functions: it measures how many-fold the input must change to sweep the response from 10% to 90%. The two estimates answer different questions — $n_{\rm eff}$ is a *global* width, $S_{50}$ a *local* slope at the midpoint — and they disagree when the curve has a shoulder, a plateau or several thresholds, as in the multi-plateau *lac* input function.`,
-      caption: String.raw`Drag the seven blue handles to draw any increasing input function (a monotone cubic through them), or choose a preset. The left panel shows the curve, the 10%/90% inputs and the Hill curve with the same $n_{\rm eff}$ (dashed) through the same half-maximum; the right panel shows the logarithmic sensitivity along the curve. Presets: ordinary Hill functions, a leaky one, a two-step curve like the four-plateau *lac* promoter, and a titration threshold. Notice how the two-step curve gets a modest $n_{\rm eff}$ although its steps are steep.`,
+      caption: String.raw`Drag the eleven blue handles to draw any increasing input function (a monotone cubic through them), or choose a preset. The left panel shows the curve, the 10%/90% inputs and the Hill curve with the same $n_{\rm eff}$ (dashed) through the same half-maximum; the right panel shows the logarithmic sensitivity along the curve. Presets: ordinary Hill functions, a leaky one, a two-step curve like the four-plateau *lac* promoter, and a titration threshold. Notice how the two-step curve gets a modest $n_{\rm eff}$ although its steps are steep.`,
       deps: ['sysbio-1.3'],
       refs: ['Alon: Transcription Networks: Basic Concepts'],
       tags: ['Hill function', 'sensitivity'],
       viz(v) {
         const ST = {};
-        const XS = [0.03, 0.1, 0.3, 1, 3, 10, 30], LX = XS.map(Math.log10);
+        const XS = Array.from({ length: 11 }, (_, k) => 10 ** (-2 + 0.4 * k)), LX = XS.map(Math.log10);
         const PRE = {
           h1: (x) => hillAct(x, 1, 1), h2: (x) => hillAct(x, 1, 2), h4: (x) => hillAct(x, 1, 4),
           leaky: (x) => 0.15 + 0.85 * hillAct(x, 1, 3), two: (x) => 0.5 * hillAct(x, 0.15, 4) + 0.5 * hillAct(x, 6, 4),
@@ -233,7 +233,7 @@ For a Hill function $n_{\rm eff}=n$. The local steepness is the **logarithmic se
           const cross = (lv) => { for (let i = 1; i <= N; i++) if (ft[i - 1] < lv && ft[i] >= lv) { const t = (lv - ft[i - 1]) / (ft[i] - ft[i - 1]); return 10 ** (-2 + (4 * (i - 1 + t)) / N); } return NaN; };
           const x10 = cross(0.1), x90 = cross(0.9), x50 = cross(0.5), neff = Math.log(81) / Math.log(x90 / x10);
           // sensitivity of normalised response
-          const dl = 4 / N, sens = ft.map((y, i) => (i === 0 || i === N || y < 1e-3 ? NaN : ((ft[i + 1] - ft[i - 1]) / (2 * dl * Math.LN10)) / y));
+          const dl = 4 / N, sens = ft.map((y, i) => (i === 0 || i === N || y < 0.02 || y > 0.985 ? NaN : ((ft[i + 1] - ft[i - 1]) / (2 * dl * Math.LN10)) / y));
           const i50 = ft.findIndex((y) => y >= 0.5), S50 = sens[i50];
           A.path(xs.map((x, i) => [x, ys[i]]), { color: 'accent', width: 3 });
           if (Number.isFinite(neff)) A.fn((x) => fmin + rng * hillAct(x, x50, neff), { color: 'green', dash: [6, 4], width: 2 });
@@ -246,7 +246,7 @@ For a Hill function $n_{\rm eff}=n$. The local steepness is the **logarithmic se
         v.legend([['accent', 'your input function'], ['green', 'Hill curve with the same n_eff', { dash: true }], ['orange', 'x₁₀, x₉₀', { dot: true }], ['purple', 'logarithmic sensitivity'], ['gold', 'half-maximum', { dot: true }]]);
         v.readout(() => {
           const m = ST.m; if (!m) return '';
-          return `$x_{10}=${v.fix(m.x10, 3)}$, $x_{90}=${v.fix(m.x90, 3)}$, ratio ${v.fix(m.x90 / m.x10, 2)} → $n_{\\rm eff}=\\ln81/\\ln(x_{90}/x_{10}) = ${v.fix(m.neff, 2)}$. Sensitivity at half-maximum $S_{50}=${v.fix(m.S50, 2)}$ → $2S_{50}=${v.fix(2 * m.S50, 2)}$ ${Math.abs(2 * m.S50 - m.neff) < 0.15 * m.neff ? '(agrees with $n_{\\rm eff}$: Hill-like)' : '(differs from $n_{\\rm eff}$: not a Hill shape)'}.`;
+          return `$x_{10}=${v.fix(m.x10, 3)}$, $x_{90}=${v.fix(m.x90, 3)}$, ratio ${v.fix(m.x90 / m.x10, 2)} → $n_{\\rm eff}=\\ln81/\\ln(x_{90}/x_{10}) = ${v.fix(m.neff, 2)}$. Sensitivity at half-maximum $S_{50}=${v.fix(m.S50, 2)}$ → $2S_{50}=${v.fix(2 * m.S50, 2)}$ ${Math.abs(2 * m.S50 - m.neff) < 0.2 * m.neff ? '(agrees with $n_{\\rm eff}$: Hill-like)' : '(differs from $n_{\\rm eff}$: not a Hill shape)'}.`;
         });
       },
     },
@@ -301,6 +301,7 @@ Scope: the logic is that of negative control by a repressor binding at one opera
               const al = d[g], bad = (g === 'i' && al === '-') || (g === 'o' && al === 'c') || (g === 'z' && al === '-');
               const col = bad ? 'red' : g === 'i' ? 'blue' : g === 'o' ? 'orange' : 'green';
               const w = g === 'o' ? 0.55 : 1.0;
+              S.rect(gx - w / 2, y - 0.3, gx + w / 2, y + 0.3, { fill: 'panel', fillAlpha: 1, color: 'panel' });
               S.rect(gx - w / 2, y - 0.3, gx + w / 2, y + 0.3, { fill: col, fillAlpha: bad ? 0.2 : 0.45, color: col, radius: 4 });
               S.text(g === 'i' ? (al === '+' ? 'i⁺' : 'i⁻') : g === 'o' ? (al === '+' ? 'o⁺' : 'oᶜ') : (al === '+' ? 'z⁺' : 'z⁻'), gx, y, { size: 13, color: 'ink', align: 'center', baseline: 'middle' });
             }
