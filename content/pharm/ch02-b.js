@@ -290,7 +290,7 @@ export default {
           sB.fn((t) => Ainf * Math.exp(-k * t), { domain: [0, tEnd], color: 'green', width: 1.8, dash: true });
           if (fit) sB.fn((t) => fit.c0 * Math.exp(-fit.k * t), { domain: [0, tEnd], color: 'accent', width: 2.2 });
           sB.dots(idx.map((i) => [ends[i], rem[i]]), { r: 5, color: 'gold' });
-          if (!idx.includes(n - 1)) sB.text('last point: remaining $=0$ (not plottable)', ends[n - 1], Ainf * 0.0035 + 0.3, { size: 10, color: 'red', align: 'right', baseline: 'bottom' });
+          if (!idx.includes(n - 1)) sB.corner('last point: remaining = 0, not plottable', 'bl', { color: 'red' });
         });
         v.legend([['gold', 'collections (interval ends)', { dot: true }], ['accent', 'fitted line'], ['green', 'truth', { dash: true }]]);
         v.readout(() => {
