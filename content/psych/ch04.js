@@ -14,7 +14,7 @@ export default {
       name: 'Duplex retina: rods and cones',
       statement: String.raw`The human retina contains two kinds of photoreceptor with complementary jobs. **Cones** (three types, about 4.6 million per eye) work in bright light, are packed most densely at the **fovea** and give fine detail and colour. **Rods** (about 92 million per eye) are far more sensitive, work in dim light, are absent from a rod-free zone about $1.25^\circ$ across at the centre of the fovea, reach their highest density some $15$–$20^\circ$ off the centre and give no colour. Which system carries vision depends on the light level: cones in daylight (*photopic*), rods in starlight (*scotopic*) and both in between (*mesopic*). The eye is therefore two sensors in one, with a hand-over between them.`,
       idea: String.raw`The two systems have different photochemistry and wiring, and the numbers above are anatomical counts from human retinas (Curcio et al. 1990). The rod pigment catches single photons and its signal is pooled over many receptors (4.4), which buys sensitivity; cones are sparse enough in the periphery to be outnumbered by rods but dense enough in the fovea to sample the image at about a micrometre-scale grid, which buys acuity. A cone mosaic of spacing $s$ cannot resolve gratings finer than one cycle per $2s$ (the sampling limit), which is why the fovea, and only the fovea, resolves detail at the limit of the optics.`,
-      caption: String.raw`**Top:** receptor density against distance from the fovea along the temporal retina (log scale). Drag the **gold** handle. **Bottom:** a $30\,\mu$m square patch of retina at that place, drawn as a random mosaic with the density given by the curves: large **blue** discs are cones and small **orange** dots are rods. The *Lighting* control switches which receptors are active (the rest are dimmed). Notice that the fovea has no rods at all, so a faint star vanishes when you look straight at it. The density curves are a **stylised model** built through the published peak values, not the measured profile.`,
+      caption: String.raw`**Top:** receptor density against distance from the fovea along the temporal retina (log scale). Drag the **gold** handle. **Bottom:** a 30 µm square patch of retina at that place, drawn as a random mosaic with the density given by the curves: large **blue** discs are cones and small **orange** dots are rods. The *Lighting* control switches which receptors are active (the rest are dimmed). Notice that the fovea has no rods at all, so a faint star vanishes when you look straight at it. The density curves are a **stylised model** built through the published peak values, not the measured profile.`,
       deps: [],
       refs: ['Goldstein ch. 2'],
       tags: ['retina', 'rods and cones', 'acuity'],
@@ -25,18 +25,18 @@ export default {
       viz(v) {
         const M = v.M;
         const light = v.select('Lighting', [{ value: 'day', label: 'daylight' }, { value: 'dusk', label: 'twilight' }, { value: 'star', label: 'starlight' }], 'day');
-        const dens = v.stage({ x: [0, 70], y: [1e3, 3e5], ylog: true, axes: 'box', gutter: true, height: 290, weight: 1.1, minWidth: 320, xlabel: 'distance from the fovea (degrees)', ylabel: 'receptors per mm²', title: 'receptor density (stylised model)' });
+        const dens = v.stage({ x: [0.1, 70], y: [1e3, 3e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, weight: 1.1, minWidth: 320, xlabel: 'distance from the fovea (degrees)', ylabel: 'receptors per mm²', title: 'receptor density (stylised model)', xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [70, '70']] });
         const mos = v.stage({ x: [0, 30], y: [0, 30], equal: true, axes: false, height: 290, weight: 0.9, minWidth: 280, title: 'a 30 µm patch of retina' });
-        const h = dens.handle(1.2, 1.5e3, { color: 'gold', r: 8, label: 'here', labelPos: 'n', constrain: (x) => [M.clamp(x, 0, 70), 1.5e3] });
+        const h = dens.handle(8, 1.5e3, { color: 'gold', r: 8, label: 'here', labelPos: 'n', constrain: (x) => [M.clamp(x, 0.1, 70), 1.5e3] });
         v.legend([['accent', 'cones'], ['orange', 'rods'], ['gold', 'where you are looking at the patch']]);
         let st = null;
         v.render(() => {
           const e = h.x, rc = coneDensity(e), rr = rodDensity(e);
-          dens.fn(coneDensity, { domain: [0, 70], color: 'accent', width: 2.6 });
-          dens.fn(rodDensity, { domain: [0, 70], color: 'orange', width: 2.6 });
+          dens.fn(coneDensity, { domain: [0.1, 70], color: 'accent', width: 2.6 });
+          dens.fn(rodDensity, { domain: [0.1, 70], color: 'orange', width: 2.6 });
           dens.line(e, 1e3, e, Math.max(rc, rr, 1e3), { color: 'gold', dash: [4, 3], width: 1.4 });
-          dens.vband(0, 0.625, { color: 'accent', alpha: 0.08 });
-          dens.text('rod-free fovea', 0.9, 2.4e5, { align: 'left', size: 11.5, color: 'muted' });
+          dens.vband(0.1, 0.625, { color: 'accent', alpha: 0.08 });
+          dens.text('rod-free zone', 0.7, 2.4e5, { align: 'left', size: 11.5, color: 'muted' });
           // mosaic: jittered grid at the combined density
           const tot = rc + rr, sp = Math.sqrt(1e6 / tot) * 1.0; // µm (square grid of the same density)
           const nx = Math.max(2, Math.ceil(30 / sp)), R = v.rng(11);
@@ -98,9 +98,9 @@ export default {
           if (brk) {
             s.vline(brk.t, { color: 'orange', dash: [4, 3], width: 1.5 });
             s.dot(brk.t, brk.y, { r: 6, color: 'orange' });
-            s.text('rod–cone break', brk.t, brk.y, { dx: 10, dy: -16, align: 'left', color: 'orange', weight: 700, size: 12.5 });
+            s.text('rod–cone break', brk.t, 0.6, { dx: 8, align: 'left', color: 'orange', weight: 700, size: 12.5 });
           }
-          s.text('cones recover fast but to a limit', 6, cone(6), { dx: 4, dy: -12, align: 'left', size: 11.5, color: 'accent' });
+          s.text('cones recover fast but to a limit', 16, cone(16), { dy: -14, align: 'left', size: 11.5, color: 'accent' });
           s.text('rods go on to the dark-adapted limit', 38, rod(38, t0), { dy: -14, align: 'right', size: 11.5, color: 'purple' });
         });
         v.readout(() => {
@@ -126,7 +126,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
       verify: true,
       viz(v) {
-        const lv = v.slider('light level, $\\log_{10}$ luminance (cd/m²)', -4.5, 2, 2, { step: 0.05 });
+        const lv = v.slider('light level, $\\log_{10}$ luminance (cd/m²)', -4.5, 2, -1, { step: 0.05 });
         const sp = v.stage({ x: [400, 700], y: [0, 1.12], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 320, xlabel: 'wavelength (nm)', ylabel: 'relative sensitivity', title: 'spectral sensitivity', xticks: [400, 450, 500, 550, 600, 650, 700] });
         const fl = v.stage({ x: [0, 10], y: [0, 6], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 240, title: 'two flowers' });
         const ag = (l, p, a, b) => Math.exp(-0.5 * ((l - p) / (l < p ? a : b)) ** 2);
@@ -184,12 +184,12 @@ export default {
       viz(v) {
         const mode = v.select('Stimulus', [{ value: 'grat', label: 'grating' }, { value: 'spot', label: 'dim spot' }], 'grat');
         const gs = v.select('Pool size $g$', ['1', '2', '3', '4', '6', '8', '12'], '4');
-        const fq = v.slider('grating frequency (cycles per receptor)', 0.02, 0.5, 0.11, { step: 0.005 });
+        const fq = v.slider('grating frequency (cycles/receptor)', 0.02, 0.5, 0.11, { step: 0.005 });
         const sg = v.slider('spot signal per receptor ($s/\\sigma$)', 0.1, 1.5, 0.45, { step: 0.01 });
         const N = 48, KS = 6;
         const rw = v.stage({ x: [0, N], y: [-3.4, 3.2], axes: false, height: 290, weight: 1.5, minWidth: 340, title: 'receptors (top) and ganglion cells (bottom)' });
         const tf = v.stage({ x: [0, 0.5], y: [0, 1.15], axes: 'box', gutter: true, height: 290, weight: 0.9, minWidth: 250, xlabel: 'grating frequency (cycles per receptor)', ylabel: 'modulation at the ganglion', title: 'what pooling does to a grating' });
-        const dp = v.stage({ x: [0, 7], y: [0, 6], axes: 'box', gutter: true, height: 290, weight: 0.9, minWidth: 250, xlabel: 'pool size g', ylabel: 'detectability d′', title: 'detecting a 6-receptor spot', xticks: [[0.5, '1'], [1.5, '2'], [2.5, '3'], [3.5, '4'], [4.5, '6'], [5.5, '8'], [6.5, '12']] });
+        const dp = v.stage({ x: [0, 7], y: [0, 4], axes: 'box', gutter: true, height: 290, weight: 0.9, minWidth: 250, xlabel: 'pool size g', ylabel: 'detectability d′', title: 'detecting a 6-receptor spot', xticks: [[0.5, '1'], [1.5, '2'], [2.5, '3'], [3.5, '4'], [4.5, '6'], [5.5, '8'], [6.5, '12']] });
         const G = [1, 2, 3, 4, 6, 8, 12];
         const sinc = (x) => (Math.abs(x) < 1e-9 ? 1 : Math.sin(x) / x);
         const gOf = () => +gs.value;
@@ -206,7 +206,7 @@ export default {
           const out = [];
           for (let a = 0; a < N; a += g) {
             const b = Math.min(N, a + g); let m = 0; for (let i = a; i < b; i++) m += vals[i]; m /= b - a; out.push([a, b, m]);
-            rw.line(a + 0.06, 3.05, b - 0.06, 3.05, { color: 'orange', width: 3 });
+            rw.line(a + 0.15, 3.05, b - 0.15, 3.05, { color: 'orange', width: 3 });
             rw.rect(a + 0.06, -0.5, b - 0.06, -0.5 - 2.4 * Math.max(0, m), { fill: 'orange', fillAlpha: 0.75, stroke: false });
           }
           rw.line(0, -0.5, N, -0.5, { color: 'muted', width: 1 });
@@ -263,10 +263,10 @@ export default {
           sa.fn((a) => th(a, ac, b), { domain: [0, 4.2], color: 'ink', width: 3 });
           sa.fn((a) => th(a, ac, b) + a, { domain: [0, 4.2], color: 'accent', width: 2, dash: [5, 4] });
           st.fn((t) => th(t, tc, b), { domain: [0.8, 3.2], color: 'ink', width: 3 });
-          st.fn((t) => th(t, tc, b) + t - 2, { domain: [0.8, 3.2], color: 'accent', width: 2, dash: [5, 4] });
+          st.fn((t) => th(t, tc, b) + t - 3, { domain: [0.8, 3.2], color: 'accent', width: 2, dash: [5, 4] });
           ha.set(ac, th(ac, ac, b)); ht.set(tc, th(tc, tc, b));
-          sa.text('slope −1', Math.max(0.15, ac / 2), th(ac / 2, ac, b), { dx: -8, dy: -12, align: 'right', color: 'muted', size: 12 });
-          st.text('slope −1', 0.8 + (tc - 0.8) / 2, th(0.8 + (tc - 0.8) / 2, tc, b), { dx: -8, dy: -12, align: 'right', color: 'muted', size: 12 });
+          sa.text('slope −1', ac / 2, th(ac / 2, ac, b), { dx: 8, dy: -14, align: 'left', color: 'muted', size: 12 });
+          st.text('slope −1', 0.8 + (tc - 0.8) / 2, th(0.8 + (tc - 0.8) / 2, tc, b), { dx: 8, dy: -14, align: 'left', color: 'muted', size: 12 });
           info = { Ac: Math.pow(10, ac), tc: Math.pow(10, tc) };
         });
         v.readout(() => info ? `Critical area ≈ ${v.fmt(info.Ac, 3)} arcmin² (a disc of diameter ${v.fix(2 * Math.sqrt(info.Ac / Math.PI) / 60, 2)}°) · critical duration ≈ ${v.fmt(info.tc, 3)} ms · below them the threshold energy is **constant** (the dashed lines are flat); beyond them it rises on the log–log plot with slope ${v.fix(1 - beta.value, 2)}` : '');

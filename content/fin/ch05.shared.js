@@ -60,3 +60,21 @@ export function simGarch(n, omega, alpha, beta, seed, df = 0) {
   }
   return { r: out, s2: sg2 };
 }
+
+/** First T years of the Shiller series, real, divided by the exponential trend of the real price fitted on those years: {year, p, d, g, trend}. */
+export function shillerDetrended(T) {
+  const s = shiller(); T = Math.min(T, s.n);
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  for (let i = 0; i < T; i++) { const y = Math.log(s.pr[i]); sx += i; sy += y; sxx += i * i; sxy += i * y; }
+  const g = (T * sxy - sx * sy) / (T * sxx - sx * sx), p = [], d = [], trend = [];
+  for (let i = 0; i < T; i++) { const f = Math.exp(g * i); trend.push(f); p.push(s.pr[i] / f); d.push(s.dr[i] / f); }
+  return { year: s.year.slice(0, T), p, d, g, trend, T };
+}
+/** Ex-post rational price p*_t = (p*_{t+1} + d_t)/(1 + r) with terminal value `term` (a number) at the last date. */
+export function exPost(d, r, term) {
+  const T = d.length, ps = new Array(T); ps[T - 1] = term;
+  for (let i = T - 2; i >= 0; i--) ps[i] = (ps[i + 1] + d[i]) / (1 + r);
+  return ps;
+}
+export const meanOf = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+export const sdOf = (a) => { const m = meanOf(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / a.length); };

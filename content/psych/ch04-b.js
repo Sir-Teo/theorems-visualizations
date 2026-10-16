@@ -80,9 +80,9 @@ export default {
         const wd = v.slider('patch width $w$', 1, 12, 5, { int: true });
         const mode = v.select('Steady state', [{ value: 'rec', label: 'recurrent (solved)' }, { value: 'one', label: 'one pass' }], 'rec');
         const e0 = 0.35, thr = 0.1;
-        const inp = v.stage({ x: [0, N], y: [0, 1.25], axes: false, height: 200, weight: 1.4, minWidth: 340, title: 'light on the receptors' });
+        const inp = v.stage({ x: [0, N], y: [0, 1.4], axes: false, height: 200, weight: 1.4, minWidth: 340, title: 'light on the receptors' });
         const out = v.stage({ x: [0, N], y: [-0.2, 1.25], axes: false, height: 240, weight: 1.4, minWidth: 340, title: 'steady response' });
-        const hd = inp.handle(12.5, 1.1, { color: 'gold', r: 8, label: 'move', labelPos: 'n', constrain: (x) => [Math.min(N - 1, Math.max(1, Math.round(x - 0.5) + 0.5)), 1.1] });
+        const hd = inp.handle(12.5, 1.2, { color: 'gold', r: 8, label: 'move', labelPos: 'n', constrain: (x) => [Math.min(N - 1, Math.max(1, Math.round(x - 0.5) + 0.5)), 1.2] });
         const Kmat = (k, l) => Array.from({ length: N }, (_, p) => Array.from({ length: N }, (_, q) => (p === q ? 0 : k * Math.exp(-(Math.abs(p - q) - 1) / l) * (Math.abs(p - q) <= 8 ? 1 : 0))));
         const solve = (e, K, rec) => {
           if (!rec) return e.map((x, p) => x - K[p].reduce((a, kq, q) => a + kq * Math.max(e[q] - thr, 0), 0));
@@ -114,8 +114,8 @@ export default {
           if (!info) return '';
           const { r, r0, c, e } = info;
           if (pat.value === 'edge') {
-            const hi = r[N - 1], lo = r[0], pkv = info.pk, dpv = info.dp;
-            return `Far from the edge the lit side settles at ${v.fix(hi, 3)} and the dark side at ${v.fix(lo, 3)} (uninhibited 1 and ${e0}); at the edge the bright side peaks at **${v.fix(pkv, 3)}** (+${v.fix(100 * (pkv - hi) / Math.max(hi, 1e-9), 0)}%) and the dark side dips to **${v.fix(dpv, 3)}** (${v.fix(100 * (dpv - lo) / Math.max(lo, 1e-9), 0)}%).`;
+            const hi = r[Math.min(N - 1, Math.round((c + N) / 2))], lo = r[Math.max(0, Math.round(c / 2))], pkv = info.pk, dpv = info.dp;
+            return `Away from the edge (the ends of a short row are less inhibited) the lit side settles at ${v.fix(hi, 3)} and the dark side at ${v.fix(lo, 3)} (uninhibited 1 and ${e0}); at the edge the bright side peaks at **${v.fix(pkv, 3)}** (+${v.fix(100 * (pkv - hi) / Math.max(hi, 1e-9), 0)}%) and the dark side dips to **${v.fix(dpv, 3)}** (${v.fix(100 * (dpv - lo) / Math.max(lo, 1e-9), 0)}%).`;
           }
           const cc = Math.min(N - 1, Math.max(0, c));
           const nb = Math.min(N - 1, cc + (pat.value === 'patch' ? Math.ceil(wd.value / 2) + 1 : 2));
@@ -144,11 +144,11 @@ export default {
         const kk = v.slider('surround weight $k$', 0, 1.2, 1, { step: 0.01 });
         const N = 400, X0 = 0, X1 = 10, dx = (X1 - X0) / N, LO = 0.25, HI = 0.8;
         const lum = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 180, weight: 1.4, minWidth: 340, ylabel: 'luminance', title: 'stimulus' });
-        const rs = v.stage({ x: [0, 10], y: [-0.45, 0.45], axes: 'box', gutter: true, height: 210, weight: 1.4, minWidth: 340, ylabel: 'response', xlabel: 'position', title: 'response of the centre–surround unit' });
+        const rs = v.stage({ x: [0, 10], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 210, weight: 1.4, minWidth: 340, ylabel: 'response', xlabel: 'position', title: 'response of the centre–surround unit' });
         const st = v.stage({ x: [0, 10], y: [0, 2], axes: false, height: 120, weight: 1.4, minWidth: 340, title: 'stimulus (top) and model brightness (bottom)' });
         const L = (x, a, b) => (x <= a ? LO : x >= b ? HI : LO + ((HI - LO) * (x - a)) / (b - a));
-        const ha = lum.handle(3.8, LO, { color: 'gold', r: 8, constrain: (x) => [Math.min(Math.max(x, 1.5), hb.x - 0.1), LO] });
-        const hb = lum.handle(6.2, HI, { color: 'gold', r: 8, constrain: (x) => [Math.max(Math.min(x, 8.5), ha.x + 0.1), HI] });
+        const ha = lum.handle(4.4, LO, { color: 'gold', r: 8, constrain: (x) => [Math.min(Math.max(x, 1.5), hb.x - 0.1), LO] });
+        const hb = lum.handle(5.6, HI, { color: 'gold', r: 8, constrain: (x) => [Math.max(Math.min(x, 8.5), ha.x + 0.1), HI] });
         let R = null, key = '', info = null;
         v.legend([['ink', 'luminance'], ['accent', 'unit response'], ['muted', 'plateau levels', { dash: true }]]);
         v.render(() => {
@@ -158,6 +158,7 @@ export default {
           lum.fn((x) => L(x, a, b), { domain: [0, 10], color: 'ink', width: 3 });
           const i1 = Math.floor(0.4 * N * 0.1), i2 = N - i1;
           const pl = R[Math.floor(0.08 * N)], ph = R[Math.floor(0.92 * N)];
+          { let m = 0.02; for (const r of R) m = Math.max(m, Math.abs(r)); rs.setView([0, 10], [-1.35 * m, 1.35 * m]); }
           rs.hline(pl, { color: 'muted', dash: [5, 4] }); rs.hline(ph, { color: 'muted', dash: [5, 4] });
           rs.path(R.map((r, i) => [X0 + (i + 0.5) * dx, r]), { color: 'accent', width: 2.8 });
           // extremes near the knees
@@ -167,9 +168,9 @@ export default {
           const span = Math.max(1e-6, ph - pl), lo = Math.min(R[Math.floor(0.08 * N)], mn), hi2 = Math.max(ph, mx);
           const k2 = `${a.toFixed(2)}|${b.toFixed(2)}|${sc.value}|${sr.value}|${kk.value}`;
           st.raster((x, y) => { const i = Math.min(N - 1, Math.max(0, Math.floor((x - X0) / dx))); if (y > 1) return [...grey(l[i]), 1]; const t = 0.5 + 0.5 * (R[i] - (pl + ph) / 2) / Math.max(1e-6, Math.max(hi2 - (pl + ph) / 2, (pl + ph) / 2 - lo)); return [...grey(LO + (HI - LO) * clamp01(t)), 1]; }, { res: 2, key: k2 });
-          info = { over: (mx - ph) / span, under: (pl - mn) / span, xb: X0 + (mxi + 0.5) * dx, xa: X0 + (mni + 0.5) * dx, a, b, ph, pl };
+          info = { over: (mx - ph) / (HI - LO), under: (pl - mn) / (HI - LO), xb: X0 + (mxi + 0.5) * dx, xa: X0 + (mni + 0.5) * dx, a, b, ph, pl };
         });
-        v.readout(() => info ? `Bright band: response peaks ${v.fix(100 * info.over, 0)}% of the plateau step above the bright plateau, at x = ${v.fix(info.xb, 2)} (knee at ${v.fix(info.b, 2)}) · dark band: ${v.fix(100 * info.under, 0)}% below the dark plateau, at x = ${v.fix(info.xa, 2)} (knee at ${v.fix(info.a, 2)}) · ramp width ${v.fix(info.b - info.a, 2)} vs surround width ${v.fix(sc.value * sr.value, 2)}` : '');
+        v.readout(() => info ? `Bright band: response peaks ${v.fix(100 * info.over, 1)}% of the luminance step above the bright plateau, at x = ${v.fix(info.xb, 2)} (knee at ${v.fix(info.b, 2)}) · dark band: ${v.fix(100 * info.under, 1)}% below the dark plateau, at x = ${v.fix(info.xa, 2)} (knee at ${v.fix(info.a, 2)}) · ramp width ${v.fix(info.b - info.a, 2)} vs surround width ${v.fix(sc.value * sr.value, 2)}` : '');
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -177,9 +178,9 @@ export default {
       num: '4.9',
       kind: 'Phenomenon',
       name: 'The Hermann grid and its wavy-line refutation',
-      statement: String.raw`In a grid of black squares separated by white streets, faint dark smudges appear at the street intersections that you are not looking at (they vanish when you fixate one). The standard account (Baumgartner, 1960) is that a ganglion cell with a centre–surround field sitting on an intersection has more of its inhibitory surround lit (four streets) than a cell on a street (two), so it responds less. But when the straight streets are replaced by gently **wavy** or bent ones, the smudges disappear, although a linear centre–surround model still predicts a dip at the intersections. This argues that the receptive-field account is, at best, incomplete, and that straightness of the grid lines matters.`,
-      idea: String.raw`The centre–surround model is a linear filter, so the response at any point is a fixed weighted sum of the image near it; computing it for the straight grid does give lower values at the intersections than on the streets. The model's response to a bent grid also contains dips at the (now curved) crossings, but nothing in a filter of the model's kind makes the percept depend on whether the streets are straight, and the percept does. Geier and colleagues therefore proposed that the illusion arises from the straightness of the lines' edges (a property that requires orientation-selective cortical processing), not from retinal centre–surround cells alone. This item is deliberately a *test* of the model against an observation: the model's output is computed here; what you see is your own data.`,
-      caption: String.raw`**Left:** the grid; fixate a point in the middle of a block of squares and look for grey smudges at the nearby crossings. Increase the *waviness* and see whether they vanish. **Right:** the output of a centre–surround model on the same picture (bright = strong response): the intersections show dips. The readout compares the model's response at the crossings with the middle of the streets, for the straight grid and for the grid as drawn. The model is a plain difference of Gaussians, with no orientation selectivity; "what the observers see" comes only from you and from the cited study.`,
+      statement: String.raw`In a grid of black squares separated by white streets, faint dark smudges appear at the street intersections that you are not looking at (they vanish when you fixate one). The standard account (Baumgartner, 1960) is that a ganglion cell with a centre–surround field sitting on an intersection has more of its inhibitory surround lit (four streets) than a cell on a street (two), so it responds less. But when the straight streets are replaced by gently **wavy** or bent ones, the smudges are reported to weaken or disappear, although for modest bending a linear centre–surround model still predicts most of its dip at the crossings. This argues that the receptive-field account is, at best, incomplete, and that straightness of the grid lines matters.`,
+      idea: String.raw`The centre–surround model is a linear filter, so the response at any point is a fixed weighted sum of the image near it; computing it for the straight grid does give lower values at the intersections than on the streets. The model's response to a modestly bent grid still contains dips at the (now curved) crossings, shrinking only gradually as the bending grows, but nothing in a filter of the model's kind makes the percept depend on whether the streets are straight, and the percept does. Geier and colleagues therefore proposed that the illusion arises from the straightness of the lines' edges (a property that requires orientation-selective cortical processing), not from retinal centre–surround cells alone. This item is deliberately a *test* of the model against an observation: the model's output is computed here; what you see is your own data.`,
+      caption: String.raw`**Left:** the grid; fixate a point in the middle of a block of squares and look for grey smudges at the nearby crossings. Increase the *waviness* and see whether they weaken or vanish. **Right:** the output of a centre–surround model on the same picture (bright = strong response): the intersections show dips. The readout compares the model's response at the crossings with the middle of the streets, for the straight grid and for the grid as drawn. The model is a plain difference of Gaussians, with no orientation selectivity; "what the observers see" comes only from you and from the cited study.`,
       deps: ['psych-4.7'],
       refs: ['Goldstein ch. 3'],
       tags: ['Hermann grid', 'illusion', 'receptive field'],
@@ -223,7 +224,7 @@ export default {
           const w = wst.value, A = amp.value, s = sc.value;
           const I = make(w, A), R = respOf(I, s);
           const key = `${w}|${A}|${s}`;
-          left.raster((x, y) => { const g = I[Math.min(n - 1, Math.floor(y / u)) * n + Math.min(n - 1, Math.floor(x / u))]; return [...grey(g), 1]; }, { res: 2, key: 'L' + key });
+          left.raster((x, y) => { const g = I[Math.max(0, Math.min(n - 1, Math.floor(y / u))) * n + Math.max(0, Math.min(n - 1, Math.floor(x / u)))]; return [...grey(g), 1]; }, { res: 2, key: 'L' + key });
           let lo = 1e9, hi = -1e9; for (let i = 0; i < R.length; i++) { lo = Math.min(lo, R[i]); hi = Math.max(hi, R[i]); }
           right.raster((x, y) => { const r = at(R, x, y); const t = (r - lo) / Math.max(1e-6, hi - lo); return [...grey(0.1 + 0.85 * t), 1]; }, { res: 2, key: 'R' + key });
           left.dot(5, 5, { r: 4, color: 'red' });
@@ -239,7 +240,7 @@ export default {
       kind: 'Phenomenon',
       name: 'White’s illusion: contrast against lateral inhibition',
       statement: String.raw`Take vertical black and white stripes and replace short stretches of two stripes by grey bars of the **same** luminance, one lying in a black stripe and one in a white stripe. The bar in the **black** stripe looks **lighter** than the one in the white stripe. This is the *reverse* of what centre–surround inhibition predicts for the pattern as drawn: a bar in a black stripe has white stripes along its long sides, so a cell centred on it receives a lot of inhibitory light and should signal *darker*. By contrast, grey squares on a plain black and white background (simultaneous contrast) look as the model predicts, with the square on black lighter. So a purely local contrast account cannot be the whole story of lightness.`,
-      idea: String.raw`Lateral inhibition (4.7) turns the image into a map of local contrasts; here the map contradicts the percept. Proposed repairs include multiscale filters whose coarse channels show contrast and fine channels assimilation (Blakeslee & McCourt's oriented difference-of-Gaussians model, 1999), and accounts in terms of grouping (the bar belongs with the stripe it lies in) or of framework anchoring (4.12). The effect depends on how much of the target's border touches the contrasting stripes, and reverses for the shorter bars used in some variants.`,
+      idea: String.raw`Lateral inhibition (4.7) turns the image into a map of local contrasts; here the map contradicts the percept. Proposed repairs include multiscale filters whose coarse channels show contrast and fine channels assimilation (Blakeslee & McCourt's oriented difference-of-Gaussians model, 1999), and accounts in terms of grouping (the bar belongs with the stripe it lies in) or of framework anchoring (4.12). The effect depends on how much of each bar's border touches the contrasting stripes.`,
       caption: String.raw`**Left:** White's pattern (or the plain simultaneous-contrast *control*), with a **probe** square beside each grey bar. Both bars have the grey level set by *bar luminance*. Adjust the two **match** sliders until each probe looks the same grey as the bar beside it: the difference between your two settings is the size of the illusion for you (nulling it). **Right:** the output of a difference-of-Gaussians model with the scale you choose; the readout says which bar the model calls lighter. The model is plain centre–surround, one scale; real outcomes differ by observer and viewing conditions, and no data from experiments are shown.`,
       deps: ['psych-4.7', 'art-6.3'],
       refs: ['Goldstein ch. 9'],
@@ -275,8 +276,7 @@ export default {
           const p = pat.value, T = tg.value, I = build(p, T), s = sc.value / u;
           const c = blur2(I, nx, ny, s), b = blur2(I, nx, ny, 4 * s), R = Float64Array.from(c, (x, i) => x - b[i]);
           const key = `${p}|${T}|${sc.value}`;
-          img.raster((x, y) => { if (x > 10) return null; return [...grey(I[Math.min(ny - 1, Math.floor(y / u)) * nx + Math.min(nx - 1, Math.floor(x / u))]), 1]; }, { res: 2, key: 'I' + key });
-          img.rect(10, 0, 13.4, 6, { fill: grey(0.5), fillAlpha: 1, stroke: false });
+          img.raster((x, y) => { if (x > 10) return [...grey(0.5), 1]; return [...grey(I[Math.max(0, Math.min(ny - 1, Math.floor(y / u))) * nx + Math.max(0, Math.min(nx - 1, Math.floor(x / u)))]), 1]; }, { res: 2, key: 'I' + key });
           const rA = p === 'white' ? A : AC, rB = p === 'white' ? B : BC;
           const sw = (r, m, lab) => { img.rect(10.7, r[1] + 0.3, 12.7, r[3] - 0.3, { fill: grey(m), fillAlpha: 1, color: 'gold', width: 1.6 }); };
           sw(rA, mA.value, 'A'); sw(rB, mB.value, 'B');
@@ -285,7 +285,7 @@ export default {
           const samp = (r) => { const cx = (r[0] + r[2]) / 2, cy = (r[1] + r[3]) / 2; let a = 0, k = 0; for (let dy = -0.3; dy <= 0.3; dy += 0.05) for (let dx = -0.3; dx <= 0.3; dx += 0.05) { const i = Math.floor((cx + dx) / u), j = Math.floor((cy + dy) / u); a += R[j * nx + i]; k++; } return a / k; };
           const ra = samp(rA), rb = samp(rB);
           let lo = 1e9, hi = -1e9; for (let i = 0; i < R.length; i++) { lo = Math.min(lo, R[i]); hi = Math.max(hi, R[i]); }
-          mod.raster((x, y) => { const t = (R[Math.min(ny - 1, Math.floor(y / u)) * nx + Math.min(nx - 1, Math.floor(x / u))] - lo) / Math.max(1e-6, hi - lo); return [...grey(0.05 + 0.9 * t), 1]; }, { res: 2, key: 'M' + key });
+          mod.raster((x, y) => { const t = (R[Math.max(0, Math.min(ny - 1, Math.floor(y / u))) * nx + Math.max(0, Math.min(nx - 1, Math.floor(x / u)))] - lo) / Math.max(1e-6, hi - lo); return [...grey(0.05 + 0.9 * t), 1]; }, { res: 2, key: 'M' + key });
           for (const [r, l] of [[rA, 'A'], [rB, 'B']]) { mod.rect(r[0], r[1], r[2], r[3], { color: 'gold', width: 1.4, stroke: true, fillAlpha: 0 }); mod.text(l, (r[0] + r[2]) / 2, r[3] + 0.3, { align: 'center', color: 'gold', size: 12, weight: 700 }); }
           info = { ra, rb, p };
         });
