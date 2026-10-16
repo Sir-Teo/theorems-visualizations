@@ -301,5 +301,150 @@ $\psi_n$ has $n-1$ nodes; the lowest energy $E_1>0$ is the zero-point energy of 
         v.readout(() => st && `$L=${v.fix(st.L, 2)}$ nm: $E_1=${v.fix(st.e1, 3)}$ eV, $E_2-E_1=${v.fix(3 * st.e1, 3)}$ eV (a photon of ${v.fix(U.nm_eV / (3 * st.e1), 0)} nm) · level $n=${st.n0}$ has ${st.n0 - 1} node${st.n0 === 2 ? '' : 's'} · $(E_2-E_1)/k_BT$: electron **${v.fix(st.ratio, 1)}**, N$_2$ at this $L$ $${v.sci(st.ratioN2, 2)}$ · electron spacing equals $k_BT$ at $L=${v.fix(st.Lcl, 1)}$ nm; N$_2$ in a 1 cm box has $(E_2-E_1)/k_BT=${v.sci(st.flask, 1)}$.`);
       },
     },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Model',
+      name: 'Free-electron model of conjugated dyes',
+      credit: 'Kuhn, 1948–49 (building on Pauling, 1936)',
+      statement: String.raw`In the free-electron (Kuhn) model the $N$ $\pi$ electrons of a conjugated chain are treated as non-interacting particles in a one-dimensional box of length $L$ equal to the chain length plus one bond length at each end. They fill the levels $E_n=n^2h^2/8m_eL^2$ two per level, so the HOMO is $n=N/2$ and the LUMO $n=N/2+1$, and the longest-wavelength absorption is the HOMO$\to$LUMO jump
+$$\Delta E=\frac{(N+1)\,h^2}{8m_eL^2},\qquad \lambda_{\max}=\frac{hc}{\Delta E}=\frac{8m_ec\,L^2}{h\,(N+1)}.$$
+With $L=(N_{\rm bonds}+2)\,\ell$ and $\ell\approx1.39$ Å, lengthening a **cyanine** chain by one vinylene group ($N\to N+2$) shifts the band by roughly 100 nm toward the red, from the ultraviolet through the visible to the near infrared, in fair agreement with measurement.`,
+      scope: String.raw`Good for symmetric polymethine (cyanine) dyes, whose bonds are nearly equal. It fails for neutral polyenes: it predicts $\lambda\propto N+1$, growing without limit, whereas real polyenes saturate because bond-length alternation opens a gap (see 6.15).`,
+      idea: String.raw`The box levels $\propto n^2/L^2$ (1.4) are filled by the Pauli principle. Because $L$ grows linearly with $N$, the gap $\Delta E\propto (N+1)/L^2\propto 1/N$ falls, so $\lambda\propto L^2/(N+1)\propto N$. The model replaces the whole $\sigma$ frame and electron repulsion by a constant potential: it throws away nearly everything, and still captures the main trend because the chain length is what sets the kinetic-energy scale of the $\pi$ electrons.`,
+      caption: String.raw`**Lengthen the chain** with the slider: the box grows, the $\pi$ electrons (arrows) fill the levels two by two and the gap shrinks; the photon's colour is the predicted absorption. Right: predicted $\lambda_{\max}$ against measured values (filled dots, with their sources in the readout). Switch to **neutral polyenes** and the model keeps rising while the real values flatten. Tune the **bond length $\ell$**, toggle the end correction or press **fit** to see how far a single parameter can go.`,
+      deps: ['qchem-1.4'],
+      refs: ['McQuarrie ch. 3', 'Kuhn, J. Chem. Phys. 17, 1198 (1949)'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cyanine' },
+      tags: ['conjugated dyes', 'free-electron model', 'absorption'],
+      viz(v) {
+        const M = v.M, U = units(M), E1nm = U.boxE1;
+        const fam = v.select('family', [{ value: 'cy', label: 'cyanine dyes (equal bonds)' }, { value: 'poly', label: 'neutral polyenes (alternating)' }], 'cy', { onChange: () => { nS.el.hidden = fam.value !== 'cy'; kS.el.hidden = fam.value !== 'poly'; } });
+        const nS = v.slider('vinylene groups added $n$', 0, 6, 1, { int: true });
+        const kS = v.slider('C=C double bonds $k$', 1, 12, 3, { int: true }); kS.el.hidden = true;
+        const lS = v.slider('bond length $\\ell$ (Å)', 1.1, 1.7, 1.39, { step: 0.005 });
+        const endT = v.toggle('end correction (+1 bond each end)', true);
+        // chain geometry: N π electrons, bonds in the path
+        const geo = { cy: (N) => ({ N, bonds: N - 2 }), poly: (N) => ({ N, bonds: N - 1 }) };
+        const lam = (f, N, l = lS.value) => { const g = geo[f](N), L = (g.bonds + (endT.value ? 2 : 0)) * l * 0.1; return (U.nm_eV * L * L) / ((N + 1) * E1nm); };
+        const DATA = { cy: CYANINE.map(([n, w], i) => [6 + 2 * n, w, ['DTC', 'DTCC', 'DTDC', 'DTTC'][i]]), poly: POLYENE.map(([k, w]) => [2 * k, w, { 2: 'butadiene', 3: 'hexatriene', 4: 'octatetraene', 11: 'β-carotene' }[k]]) };
+        v.button('Fit $\\ell$ to this family\'s data', () => {
+          const f = fam.value; let num = 0, den = 0;
+          for (const [N, w] of DATA[f]) { const a = lam(f, N, 1); num += a * w; den += a * a; }
+          lS.set(M.clamp(Math.sqrt(num / den), 1.1, 1.7));
+        });
+        const sL = v.stage({ x: [0, 1], y: [0, 3], height: 380, axes: 'box', gutter: true, weight: 1, xticks: [], ylabel: 'E (eV)', title: 'π levels of the chain (box of length $L$)' });
+        const sR = v.stage({ x: [2, 24], y: [100, 1500], height: 380, axes: 'box', gutter: true, weight: 1.15, xlabel: 'number of π electrons N', ylabel: 'λ_max (nm)', title: 'predicted and measured absorption maximum' });
+        let st = null;
+        v.render(() => {
+          const f = fam.value, l = lS.value;
+          const N = f === 'cy' ? 6 + 2 * nS.value : 2 * kS.value, g = geo[f](N), L = (g.bonds + (endT.value ? 2 : 0)) * l * 0.1;  // nm
+          const E = (j) => (j * j * E1nm) / (L * L), nH = N / 2, nTop = nH + 3, wl = lam(f, N);
+          // levels
+          const Ytop = E(nTop) * 1.08; sL.setView([0, 1], [0, Ytop]);
+          for (let j = 1; j <= nTop; j++) {
+            const e = E(j), hom = j === nH, lum = j === nH + 1;
+            sL.line(0.12, e, 0.68, e, { color: hom || lum ? 'ink' : 'muted', width: hom || lum ? 2.4 : 1.4 });
+            if (j <= nH) sL.text('↑↓', 0.4, e, { size: 13, color: 'accent', align: 'center', baseline: 'bottom', dy: -1 });
+            sL.text(hom ? 'HOMO' : lum ? 'LUMO' : `n=${j}`, 0.7, e, { size: 11, color: hom || lum ? 'ink' : 'muted', align: 'left', baseline: 'middle' });
+          }
+          const rgb = wl >= 380 && wl <= 780 ? M.wavelengthRGB(wl) : null;
+          sL.arrow(0.82, E(nH), 0.82, E(nH + 1), { color: rgb ? `rgb(${rgb[0]},${rgb[1]},${rgb[2]})` : 'ink', width: 3, head: 9 });
+          sL.text(`${v.fix(wl, 0)} nm`, 0.95, (E(nH) + E(nH + 1)) / 2, { size: 12, color: 'ink', align: 'right', baseline: 'middle', dy: -14 });
+          sL.corner(`L = ${v.fix(L * 10, 1)} Å`, 'tl', { color: 'muted' });
+          // right: λ against N
+          sR.raster((x, y) => (y >= 380 && y <= 750 ? [...M.wavelengthRGB(y), 0.32] : null), { res: 3, key: 'vis', rect: [2, 380, 24, 750] });
+          sR.text('visible', 2.5, 750 - 20, { size: 11, color: 'muted', align: 'left' });
+          for (const [ff, color] of [['cy', 'accent'], ['poly', 'orange']]) {
+            const on = ff === f;
+            sR.fn((x) => lam(ff, x), { domain: [ff === 'cy' ? 6 : 2, 24], color, width: on ? 2.6 : 1.3, alpha: on ? 1 : 0.4, dash: on ? false : [5, 4] });
+            for (const [n, w, name] of DATA[ff]) sR.dot(n, w, { r: on ? 6 : 4, color, alpha: on ? 1 : 0.5, label: on ? name : undefined, labelPos: 'se' });
+          }
+          sR.dot(N, wl, { r: 7, color: 'gold', hollow: true });
+          sR.vline(N, { color: 'gold', width: 1, dash: [3, 3], alpha: 0.7 });
+          let rms = 0; for (const [n, w] of DATA[f]) rms += (lam(f, n) - w) ** 2; rms = Math.sqrt(rms / DATA[f].length);
+          const hit = DATA[f].find((d) => d[0] === N);
+          st = { f, N, L, wl, rms, hit, l };
+        });
+        v.legend([['accent', 'model: cyanines'], ['orange', 'model: polyenes'], ['gold', 'chain shown', { dot: true }]]);
+        v.readout(() => st && `$N=${st.N}$ π electrons, $L=${v.fix(st.L * 10, 1)}$ Å: $\\Delta E=${v.fix((((st.N + 1) * U.boxE1) / (st.L * st.L)), 3)}$ eV, predicted $\\lambda_{\\max}=${v.fix(st.wl, 0)}$ nm` + (st.hit ? `, measured **${st.hit[1]} nm** (${st.hit[2]}): error ${v.fix(((st.wl - st.hit[1]) / st.hit[1]) * 100, 0)} %` : ' (no measurement at this length)') + ` · rms error over this family's data: ${v.fix(st.rms, 0)} nm.\n` + (st.f === 'cy' ? 'Data: 3,3\'-diethylthia-, carbo-, dicarbo-, tricarbocyanine iodides (Sturmer, as tabulated in a lab manual; carbocyanine 557 nm and tricarbocyanine 762 nm confirmed on supplier sheets). The π-electron count $N=6+2n$ is the usual textbook counting.' : 'Data: butadiene 217, hexatriene 258, octatetraene 290 nm (OpenStax Organic Chemistry); β-carotene about 451–455 nm in hexane (PhotochemCAD; supplier sheet). The model has no way to saturate.'));
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6',
+      kind: 'Phenomenon',
+      name: 'Degeneracy in two- and three-dimensional boxes',
+      statement: String.raw`For a particle in a rectangular box with sides $L_x,L_y$ (and $L_z$) the Schrödinger equation separates and
+$$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qquad \psi=\psi_{n_x}(x)\,\psi_{n_y}(y),\quad n_x,n_y\ge1,$$
+(with a third term $n_z^2/L_z^2$ in three dimensions). Different quantum numbers can give the same energy: a **degenerate** level has several independent eigenfunctions. In a square the swap $(n_x,n_y)\leftrightarrow(n_y,n_x)$ always does so; in a cube all permutations of $(n_x,n_y,n_z)$ do. Stretching the box breaks this symmetry-related degeneracy, but further coincidences, such as $(n_x,n_y)=(1,2)$ against $(2,1)$ at a rational ratio of $L_y^2/L_x^2$, can reappear at special aspect ratios.`,
+      idea: String.raw`Separation of variables turns the energy into a sum of one-dimensional box energies (1.4). Degeneracy of a symmetric box is forced by symmetry: the operation exchanging $x$ and $y$ commutes with $\hat H$ and maps $\psi_{n_xn_y}$ into $\psi_{n_yn_x}$ with the same energy. Stretching removes the symmetry and lifts the degeneracy. A coincidence $n_x^2+n_y^2/a^2=m_x^2+m_y^2/a^2$ requires $a^2=(m_y^2-n_y^2)/(n_x^2-m_x^2)$ to be a ratio of integers — an *accidental* degeneracy, with no symmetry behind it.`,
+      caption: String.raw`**Drag the aspect ratio $a$** (2D: $L_y=aL_x$; 3D: a square-based box with height $L_z=aL_x$). The correlation diagram shows every level as a line; at $a=1$ the lines in a square or cube pile up pairwise or in triples, and the right-hand ladder reads off the degeneracy of each level. Away from $a=1$ they separate; **snap to $\sqrt2$, $3/2$ or $2$** and look for new crossings, which occur only when $a^2$ is rational. The heat map shows $|\psi|^2$ of the chosen partner of the chosen level.`,
+      deps: ['qchem-1.4'],
+      refs: ['McQuarrie ch. 3'],
+      tags: ['degeneracy', 'separation of variables', 'symmetry'],
+      viz(v) {
+        const M = v.M, NM = 5, NL = 14;
+        const dim = v.select('box', [{ value: '2', label: '2D rectangle' }, { value: '3', label: '3D box with square base' }], '2', { onChange: () => { jS.set(Math.min(jS.value, NL)); } });
+        const aS = v.slider('aspect ratio $a$', 0.5, 2.5, 1, { step: 0.005 });
+        const jS = v.slider('inspect level #', 1, NL, 4, { int: true });
+        const pS = v.slider('partner state', 1, 6, 1, { int: true });
+        for (const [lab, val] of [['$a=1$', 1], ['$a=\\sqrt2$', Math.SQRT2], ['$a=\\tfrac32$', 1.5], ['$a=2$', 2]]) v.button(lab, () => aS.set(val));
+        const states = () => {
+          const a = aS.value, three = dim.value === '3', out = [];
+          for (let i = 1; i <= NM; i++) for (let j = 1; j <= NM; j++) {
+            if (three) for (let k = 1; k <= NM; k++) out.push({ q: [i, j, k], E: i * i + j * j + (k * k) / (a * a) });
+            else out.push({ q: [i, j], E: i * i + (j * j) / (a * a) });
+          }
+          return out;
+        };
+        const levelsOf = (S) => {
+          const A = S.slice().sort((p, q) => p.E - q.E), L = [];
+          for (const s of A) { const last = L[L.length - 1]; if (last && Math.abs(s.E - last.E) < 1e-9 * Math.max(1, s.E)) last.s.push(s); else L.push({ E: s.E, s: [s] }); }
+          return L;
+        };
+        const sC = v.stage({ x: [0.5, 2.5], y: [0, 26], height: 360, axes: 'box', gutter: true, weight: 1.25, xlabel: 'aspect ratio a', ylabel: 'E / E₀', title: 'correlation diagram: every level against $a$' });
+        const sD = v.stage({ x: [0, 1], y: [0, 26], height: 360, axes: 'box', gutter: true, weight: 0.8, xticks: [], title: 'levels at this $a$ (× degeneracy)' });
+        const sH = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 360, axes: false, weight: 0.9, title: '$|\\psi|^2$ of the chosen state' });
+        const ha = sC.handle(1, 0.8, { color: 'gold', r: 8, label: 'a', labelPos: 'n', constrain: (x) => [M.clamp(x, 0.5, 2.5), ha.y] });
+        ha.onDrag = () => aS.set(M.clamp(ha.x, 0.5, 2.5));
+        let st = null;
+        v.render(() => {
+          const three = dim.value === '3', a = aS.value, S = states(), L = levelsOf(S);
+          const top = three ? 22 : 26; sC.setView([0.5, 2.5], [0, top]); sD.setView([0, 1], [0, top]);
+          ha.set(a, 0.04 * top);
+          const lev = Math.min(jS.value, L.length) - 1, cur = L[lev], g = cur.s.length, part = Math.min(pS.value, g) - 1;
+          pS.el.hidden = g < 2;
+          const hiKey = new Set(cur.s.map((s) => s.q.join(',')));
+          // lines
+          for (const s0 of S) {
+            const key = s0.q.join(','), hi = hiKey.has(key), q = s0.q;
+            const f = three ? (x) => q[0] * q[0] + q[1] * q[1] + (q[2] * q[2]) / (x * x) : (x) => q[0] * q[0] + (q[1] * q[1]) / (x * x);
+            sC.fn(f, { domain: [0.5, 2.5], color: hi ? 'orange' : 'muted', width: hi ? 2.6 : 1, alpha: hi ? 1 : 0.4 });
+          }
+          sC.vline(a, { color: 'gold', width: 1.4, dash: [4, 3] });
+          L.slice(0, NL).forEach((lv) => { if (lv.s.length > 1 && lv.E < top) sC.dot(a, lv.E, { r: 5, hollow: true, color: 'green' }); });
+          // ladder
+          L.slice(0, NL).forEach((lv, i) => {
+            const hi = i === lev, e = lv.E; if (e > top) return;
+            sD.line(0.08, e, 0.52, e, { color: hi ? 'orange' : 'muted', width: hi ? 3 : 1.8, alpha: hi ? 1 : 0.7 });
+            sD.text(`${lv.s.length > 1 ? '×' + lv.s.length : ''}`, 0.56, e, { size: 12, color: lv.s.length > 1 ? 'green' : 'muted', align: 'left', baseline: 'middle' });
+            sD.text(v.fix(e, 2), 0.97, e, { size: 10.5, color: hi ? 'ink' : 'muted', align: 'right', baseline: 'middle', dy: -7 });
+          });
+          // density of the chosen partner (projected on the xy-plane in 3D)
+          const q = cur.s[part].q, wy = three ? 1 : a;
+          sH.setView([0, 1], [0, wy]);
+          sH.heat((x, y) => (2 * Math.sin(q[0] * Math.PI * x) ** 2) * (2 * Math.sin(q[1] * Math.PI * (y / wy)) ** 2) / wy, { cmap: 'theme', color: 'accent', range: [0, 4.2 / wy], res: 3, key: `${q}|${wy.toFixed(3)}` });
+          sH.rect(0, 0, 1, wy, { stroke: true, fill: false, color: 'ink', width: 1.5 });
+          sH.corner(`(n = ${q.join(', ')})`, 'tl', { color: 'ink', plate: true });
+          // statistics
+          const lows = L.slice(0, NL), degPairs = lows.filter((l) => l.s.length > 1).length;
+          let ratio = null; if (Math.abs(a - 1) > 1e-6) for (let d = 1; d <= 12 && !ratio; d++) { const p = Math.round(a * a * d); if (p > 0 && Math.abs(a * a - p / d) < 1e-6) ratio = `${p}/${d}`; }
+          st = { a, g, E: cur.E, degPairs, ratio, q: cur.s.map((s) => `(${s.q.join(',')})`).join(' '), degs: lows.map((l) => l.s.length).join(', ') };
+        });
+        v.legend([['muted', 'a level (one line per $(n_x,n_y)$ state)'], ['orange', 'states of the inspected level'], ['green', 'degenerate here', { dot: true }]]);
+        v.readout(() => st && `$a=${v.fix(st.a, 3)}$ ($a^2=${v.fix(st.a * st.a, 4)}$${st.ratio ? ' $=' + st.ratio + '$' : ''}) · degeneracies of the lowest ${NL} levels: ${st.degs} · ${st.degPairs} of them degenerate · inspected level: $E=${v.fix(st.E, 3)}\\,E_0$ with states ${st.q}` + (Math.abs(st.a - 1) < 1e-6 ? ' — symmetric box: pairs (or triples) forced by symmetry.' : st.degPairs ? ' — an accidental degeneracy at a rational $a^2$ (no symmetry forces it).' : ' — all levels non-degenerate.'));
+      },
+    },
   ],
 };

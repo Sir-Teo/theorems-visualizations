@@ -64,6 +64,16 @@ function treeCenter(nodes, edges) {
   for (const u of L) { const d = bfs(H, u).dist, e = Math.max(...L.map((w) => d[w])); if (e < be) { be = e; best = u; } }
   return H.ids[best];
 }
+/** Is the closed polygon simple (no two non-adjacent sides cross)? */
+function simplePoly(P) {
+  const n = P.length, cr = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {
+    if (i === 0 && j === n - 1) continue;
+    const a = P[i], b = P[(i + 1) % n], c = P[j], d = P[(j + 1) % n];
+    if (cr(a, b, c) * cr(a, b, d) < 0 && cr(c, d, a) * cr(c, d, b) < 0) return false;
+  }
+  return true;
+}
 /** Is the plain index structure 3-connected? */
 const is3 = (H) => isKconn(H, 3).ok;
 
@@ -637,7 +647,8 @@ export default {
           (f.sol || []).forEach((gi, j) => {
             const pts = gens[gi].vs.map(P), cx = pts.reduce((a, p) => a + p[0], 0) / pts.length, cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
             const sh = pts.map(([x, y]) => [cx + 0.86 * (x - cx), cy + 0.86 * (y - cy)]), col = EARC[(j + 1) % EARC.length];
-            s.poly(sh, { fill: col, fillAlpha: 0.2, color: col, width: 1.6 });
+            // a self-crossing drawing (non-planar graphs) is outlined only, so that the overlaps stay readable
+            s.poly(sh, simplePoly(sh) ? { fill: col, fillAlpha: 0.2, color: col, width: 1.6 } : { color: col, width: 2.2 });
           });
           const cE = new Set(pathEdges(H, f.C.vs, true).map((k) => H.E[k][2]));
           G.draw({ edgeColor: (e) => (cE.has(e) ? 'ink' : null), edgeWidth: (e) => (cE.has(e) ? 5 : 1.6), nodeLabel: () => '' });

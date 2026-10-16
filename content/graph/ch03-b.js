@@ -322,7 +322,7 @@ export default {
           if (!sel && n > 1) { outer: for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (M[i][j] === mn) { sel = [i, j]; break outer; } }
           const labs = H.ids.map((id) => G.lab(id));
           T.draw({ rows: n, cols: n, rowLabels: labs, colLabels: labs, value: (i, j) => (i === j ? null : M[i][j]),
-            fill: (i, j) => (i === j ? null : M[i][j] === mn ? ['red', 0.45] : ['accent', 0.08 + (0.4 * (mx - M[i][j])) / Math.max(1, mx - mn)]),
+            fill: (i, j) => (i === j ? null : M[i][j] === mn ? ['red', mn === mx ? 0.22 : 0.45] : ['accent', 0.08 + (0.4 * (mx - M[i][j])) / Math.max(1, mx - mn)]),
             highlight: sel ? [[sel[0], sel[1], 'ink'], [sel[1], sel[0], 'ink']] : [] });
           if (!sel) { G.draw({}); return; }
           const [a, b] = sel, paths = mode.value === 'v' ? indepPaths(H, a, b).paths : edgeMenger(H, a, b).paths, pm = pathMap(H, paths);
@@ -343,7 +343,7 @@ export default {
       caption: String.raw`Click vertices to put them into $A$ (blue) or take them out; choose $k$ with the slider. If $k$ disjoint $A$-paths exist they are drawn; otherwise a smallest set meeting all $A$-paths is boxed in red — never more than $2k-2$ vertices. The chart plots, against $k$, the bound $2k-2$ (orange) and the true minimum $\tau$ of such a set (red): where $k$ disjoint paths exist the band is green, and to its right the red line always stays under the orange one. $K^5$ with $k=3$ is the tight case.`,
       deps: ['graph-1.3.1a'], see: ['graph-3.4.3'], refs: ['Diestel §3.4'], tags: ['A-paths', 'Erdős–Pósa'],
       viz(v) {
-        const PRE = { k5: () => ({ ...named('complete', 5), A: [0, 1, 2, 3, 4] }), pet: () => ({ ...named('petersen'), A: [0, 1, 2, 3, 4] }), grid: () => ({ ...GRID(), A: ['a', 'e', 'k', 'o', 'c', 'm', 'h'] }) };
+        const PRE = { k5: () => ({ ...named('complete', 5), A: [0, 1, 2, 3, 4] }), pet: () => ({ ...named('petersen'), A: [0, 1, 2, 3, 4] }), grid: () => ({ ...GRID(), layout: 'fit', A: ['a', 'e', 'k', 'o', 'c', 'm', 'h'] }) };
         const pre = v.select('', [{ value: 'k5', label: '$K^5$, $A = V$' }, { value: 'pet', label: 'Petersen, $A$ = outer cycle' }, { value: 'grid', label: 'triangulated grid' }], 'k5', { onChange: () => reload() });
         const kS = v.slider('$k$', 1, 6, 3, { int: true });
         const s = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.45], axes: false, equal: true, height: 320, weight: 1.35 });

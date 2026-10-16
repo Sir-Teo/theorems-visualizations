@@ -388,7 +388,7 @@ whose right side converges to $Y_1+\dots+Y_k$ with i.i.d. $Y_j\sim Y$, while $Z_
             L.setView(unif ? [-1.6, 1.6] : [-0.6, 1.6], [0, 1.1]);
             if (unif) L.fn((x) => (Math.abs(x) <= 1 ? 0.5 : 0), { domain: [-1.6, 1.6], color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.15 });
             else { L.rect(-0.3, 0, 0.3, 0.5, { fill: 'accent', fillAlpha: 0.6, stroke: false }); L.rect(0.7, 0, 1.3, 0.5, { fill: 'accent', fillAlpha: 0.6, stroke: false }); }
-            cornerIn(L, `no ${n}-th piece: φ vanishes at t = ${unif ? 'π' : 'π'}`, 'tr', { color: 'red', plate: true });
+            cornerIn(L, `no ${n}-fold split: φ(π) = 0`, 'tr', { color: 'red', plate: true });
             info = `$\\varphi_Z(\\pi)=0$, so $Z$ is not infinitely divisible`;
           }
           const f = PHIS[md];
