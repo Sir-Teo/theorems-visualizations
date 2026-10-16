@@ -13,11 +13,15 @@ function rckModel(A, a, d, rho, th) {
     for (let t = dt; t <= T + 1e-9; t += dt) {
       const k1 = F(k, c), k2 = F(k + 0.5 * dt * k1[0], c + 0.5 * dt * k1[1]), k3 = F(k + 0.5 * dt * k2[0], c + 0.5 * dt * k2[1]), k4 = F(k + dt * k3[0], c + dt * k3[1]);
       k += (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); c += (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+      if (!(isFinite(k) && isFinite(c))) { if (verdict === 'ok') verdict = 'high'; break; }
       if (keep) pts.push([t, k, c]);
-      if (k <= 1e-3 || c <= 1e-6) { verdict = k <= 1e-3 ? 'high' : 'low'; break; }
-      const kd = f(k) - d * k - c;
-      if (dir > 0) { if (k >= ks) { verdict = 'low'; break; } if (kd < 0) { verdict = 'high'; break; } }
-      else { if (k <= ks) { verdict = 'high'; break; } if (kd > 0) { verdict = 'low'; break; } }
+      if (k <= 1e-3 || c <= 1e-6 || c > 4 * f(kg)) { if (verdict === 'ok') verdict = k <= 1e-3 ? 'high' : 'low'; break; }
+      if (verdict === 'ok') {
+        const kd = f(k) - d * k - c;
+        if (dir > 0) { if (k >= ks) verdict = 'low'; else if (kd < 0) verdict = 'high'; }
+        else { if (k <= ks) verdict = 'high'; else if (kd > 0) verdict = 'low'; }
+        if (verdict !== 'ok' && !keep) break;
+      }
     }
     return { pts, verdict };
   }
@@ -58,7 +62,7 @@ Scope: a closed, one-good economy with no growth in technology or labour (adding
         const onS = v.toggle('start on the saddle path', false);
         const P = v.stage({ x: [0, 40], y: [0, 3], axes: 'box', gutter: true, height: 360, weight: 1.15, minWidth: 290, xlabel: 'capital per worker k', ylabel: 'consumption per worker c', title: 'phase diagram' });
         const T = v.stage({ x: [0, 120], y: [0, 2], axes: 'box', gutter: true, height: 360, weight: 0.85, minWidth: 250, xlabel: 'years', ylabel: 'relative to steady state', title: 'time paths from the handle' });
-        const h = P.handle(5, 1, { color: 'gold', label: 'start', labelPos: 'ne' });
+        const h = P.handle(5, 1, { color: 'gold', label: 'start', labelPos: 'se' });
         let M = null, key = '', tab = null, st = null, first = true;
         const A = 1, d = 0.05;
         v.button('snap to saddle path', () => { if (M && tab) h.set(h.x, M.saddle(h.x)); });
@@ -69,7 +73,7 @@ Scope: a closed, one-good economy with no growth in technology or labour (adding
             const kmax = 2 * M.kg, N = 36; tab = [];
             for (let i = 0; i <= N; i++) { const k = Math.max(0.05 * M.ks, (kmax * i) / N); tab.push([k, M.saddle(k)]); }
             tab.sort((p, q) => p[0] - q[0]);
-            if (first) { first = false; h.set(0.35 * M.ks, 1.12 * M.saddle(0.35 * M.ks)); }
+            if (first) { first = false; h.set(0.45 * M.ks, 1.1 * M.saddle(0.45 * M.ks)); }
           }
           const kmax = 2 * M.kg, cmax = 1.3 * (M.f(M.kg) - d * M.kg);
           P.setView([0, kmax], [0, cmax]);
@@ -87,7 +91,7 @@ Scope: a closed, one-good economy with no growth in technology or labour (adding
           P.text('golden rule', M.kg, 0, { dy: -10, dx: 4, align: 'left', color: 'muted', size: 11 });
           P.text('k̇ = 0', 0.18 * kmax, M.f(0.18 * kmax) - d * 0.18 * kmax, { dy: -10, color: 'red', weight: 700, align: 'left' });
           P.text('ċ = 0', M.ks, cmax, { dx: 6, dy: 12, align: 'left', color: 'gold', weight: 700 });
-          P.text('saddle path', 0.62 * M.ks, csAt(0.62 * M.ks), { dx: -6, dy: 14, align: 'right', color: 'green', weight: 700, size: 12 });
+          P.text('saddle path', 0.7 * M.ks, csAt(0.7 * M.ks), { dx: 8, dy: 16, align: 'left', color: 'green', weight: 700, size: 12 });
           let path, verdict;
           if (onS.value) {
             // drift-free: follow the 1-D flow on the saddle curve
@@ -97,14 +101,14 @@ Scope: a closed, one-good economy with no growth in technology or labour (adding
           } else { const r = M.traj(k0, c0, 160, 0.25, true); path = r.pts; verdict = r.verdict; }
           const col = verdict === 'saddle' ? 'green' : verdict === 'ok' ? 'accent' : 'purple';
           P.path(path.map((p) => [p[1], p[2]]), { color: col, width: 2.4 });
-          T.hline(1, { color: 'faint', dash: [4, 4] });
           const sh = path.filter((p) => p[0] <= 120);
-          T.path(sh.map((p) => [p[0], p[1] / M.ks]), { color: 'orange', width: 2.4 });
-          T.path(sh.map((p) => [p[0], p[2] / M.cs]), { color: 'accent', width: 2.4 });
-          T.text('k / k*', 100, 0.1 + (sh[sh.length - 1][1] / M.ks), { color: 'orange', weight: 700, size: 12, dy: -8 });
-          T.text('c / c*', 100, sh[sh.length - 1][2] / M.cs, { color: 'accent', weight: 700, size: 12, dy: 14 });
           const ymax = Math.max(1.5, ...sh.map((p) => Math.max(p[1] / M.ks, p[2] / M.cs)));
           T.setView([0, 120], [0, Math.min(ymax * 1.05, 4)]);
+          T.hline(1, { color: 'faint', dash: [4, 4] });
+          T.path(sh.map((p) => [p[0], p[1] / M.ks]), { color: 'orange', width: 2.4 });
+          T.path(sh.map((p) => [p[0], p[2] / M.cs]), { color: 'accent', width: 2.4 });
+          T.text('k / k*', 2, sh[0][1] / M.ks, { color: 'orange', weight: 700, size: 12, dy: 16, dx: 4, align: 'left' });
+          T.text('c / c*', 2, sh[0][2] / M.cs, { color: 'accent', weight: 700, size: 12, dy: -10, dx: 4, align: 'left' });
           st = { verdict, k0, c0, cs: csAt(k0), end: path[path.length - 1] };
         });
         v.legend([['red', 'k̇ = 0'], ['gold', 'ċ = 0 (k*)'], ['green', 'saddle path'], ['purple', 'off the saddle path']]);
@@ -193,7 +197,7 @@ Scope: the model asserts constant returns to the reproducible factor; it is a de
         v.render(() => {
           const a = aS.value, sa = s1.value, sb = s2.value, d = nd.value;
           const r1 = (k) => (sa * A) * k ** (a - 1), r2 = (k) => (sb * A) * k ** (a - 1);
-          L.setView([0.5, 30], [0, Math.max(0.05, r2(0.5), r1(0.5), d * 1.4)]);
+          L.setView([0.5, 30], [0, Math.max(0.05, r2(0.5) * 1.15, r1(0.5) * 1.15, d * 1.4)]);
           L.fn(r1, { color: 'green', width: 2.6, domain: [0.5, 30], n: 200 });
           L.fn(r2, { color: 'teal', width: 2.4, domain: [0.5, 30], n: 200, dash: [6, 4] });
           L.hline(d, { color: 'red', width: 2.4 });
@@ -255,9 +259,9 @@ Scope: a deliberately simple version of Romer (1990) without monopolistic compet
           Lf.setView([0, 100], [Math.min(-0.2, lv1 - 0.1), Math.max(0.5, y0(100), y1(100)) * 1.05]);
           Lf.path([[0, y0(0)], [100, y0(100)]], { color: 'ink', width: 2.2 });
           Lf.path([[0, y1(0)], [100, y1(100)]], { color: 'accent', width: 2.8 });
-          if (isFinite(tc) && tc > 0 && tc < 100) { Lf.vline(tc, { color: 'gold', dash: [4, 4] }); Lf.dot(tc, y0(tc), { r: 6, color: 'gold' }); Lf.text('crossing', tc, y0(tc), { dx: 8, dy: 16, align: 'left', color: 'gold', weight: 700, size: 12 }); }
-          Lf.text('baseline s_R = 0.05', 4, y0(4), { dy: -10, color: 'ink', align: 'left', weight: 700, size: 12 });
-          Lf.text('new s_R', 4, y1(4), { dy: 18, color: 'accent', align: 'left', weight: 700, size: 12 });
+          if (isFinite(tc) && tc > 0 && tc < 100) { Lf.vline(tc, { color: 'gold', dash: [4, 4] }); Lf.dot(tc, y0(tc), { r: 6, color: 'gold' }); Lf.text('crossing', tc, y0(tc), { dx: 10, dy: 20, align: 'left', color: 'gold', weight: 700, size: 12 }); }
+          Lf.text('baseline s_R = 0.05', 98, y0(98), { dy: 16, color: 'ink', align: 'right', weight: 700, size: 12 });
+          Lf.text('new s_R', 98, y1(98), { dy: -10, color: 'accent', align: 'right', weight: 700, size: 12 });
           st = { g0, g1, tc, L, s1, drop: 1 - (1 - s1) / (1 - s0) };
         });
         v.legend([['ink', 'baseline research share'], ['accent', 'new research share'], ['gold', 'crossing date', { dot: true }]]);

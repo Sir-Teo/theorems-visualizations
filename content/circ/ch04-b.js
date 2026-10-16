@@ -276,7 +276,7 @@ export default {
           info = { q, ib, b, ratio: ib > 0 ? (q.i / (ib * 1e-6)) : b, sat: q.vce < 0.25 };
         });
         v.legend([['accent', '$i_C(v_{CE})$ per $i_B$'], ['ink', 'load line'], ['faint', '$\\beta i_B$ (ideal)', { dash: true }], ['red', 'saturation']]);
-        v.readout(() => info && `$i_C = ${v.fix(info.q.i * 1e3, 3)}$ mA, $v_{CE} = ${v.fix(info.q.vce, 2)}$ V; $i_C/i_B = ${v.fix(info.ratio, 1)}$ against $\\beta = ${v.fix(info.b, 0)}$. ${info.sat ? 'The transistor is saturated: the load, not the base current, sets $i_C$.' : 'Active region: the collector current is $\\beta$ times the base current.'}`);
+        v.readout(() => info && `$i_C = ${v.fix(info.q.i * 1e3, 3)}$ mA, $v_{CE} = ${v.fix(info.q.vce, 2)}$ V; $i_C/i_B = ${v.fix(info.ratio, 1)}$ against $\\beta = ${v.fix(info.b, 0)}$ (the small excess is the Early effect). ${info.sat ? 'The transistor is saturated: the load, not the base current, sets $i_C$.' : 'Active region: the collector current is $\\beta$ times the base current.'}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.12
@@ -312,9 +312,9 @@ export default {
           const vtri = bisectDec((x) => (vout(x, R) < x - Vt ? -1 : 1), Vt, 4, 50);
           s.vband(vtri, 4, { color: 'orange', alpha: 0.1 });
           s.vband(Vt, vtri, { color: 'green', alpha: 0.08 });
-          s.tex('\\text{cutoff}', 0.5, 4.9, { color: 'red', size: 12.5 });
-          s.tex('\\text{saturation}', (Vt + vtri) / 2, 5.0, { color: 'green', size: 12.5 });
-          s.tex('\\text{triode}', (vtri + 4) / 2, 0.55, { color: 'orange', size: 12.5 });
+          s.tex('\\text{cutoff}', 0.5, 2.5, { color: 'red', size: 12.5 });
+          s.tex('\\text{saturation}', (Vt + vtri) / 2, 0.6, { color: 'green', size: 12.5 });
+          s.tex('\\text{triode}', (vtri + 4) / 2, 2.5, { color: 'orange', size: 12.5 });
           s.vband(vb - a, vb + a, { color: 'gold', alpha: 0.2 });
           s.line(vb - 0.6, v0 - Av * 0.6, vb + 0.6, v0 + Av * 0.6, { color: 'green', width: 1.8, dash: true });
           s.dot(vb, v0, { color: 'gold', r: 7, label: 'Q', labelPos: 'ne' });

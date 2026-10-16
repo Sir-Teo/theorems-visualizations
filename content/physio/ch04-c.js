@@ -177,9 +177,9 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
         v.soundButton('Listen (stethoscope)', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
         const A = v.stage({ x: [0, 10], y: [-1.4, 1.4], height: 260, axes: false, weight: 1.1 });
         const B = v.stage({ x: [0.005, 50], y: [1e-4, 10], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
-        const h = B.handle(14, 0.4, { color: 'gold', label: 'you', labelPos: 'sw', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
+        const h = B.handle(14, 0.4, { color: 'gold', label: 'you', labelPos: 'n', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
         const P = [
-          { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.45 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.5 }, { n: 'capillary', D: 0.008, u: 0.0004 },
+          { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.45 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.45 }, { n: 'capillary', D: 0.008, u: 0.0004 },
           { n: 'stenotic jet', D: 4, u: 4 },
         ];
         const cur = { Re: 0 };
@@ -208,9 +208,9 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
           B.fn((d) => (Rec * mu * 1e-3) / (RHO_BLOOD * d * 1e-3), { color: 'red', width: 2.4, domain: [0.005, 50] });
           B.text('Re = 1', 0.0075, 1 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
           B.text('Re = 100', 0.0075, 100 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
-          B.text('critical Re', 1.3, (Rec * mu * 1e-3) / (RHO_BLOOD * 1.3e-3) * 0.55, { size: 11, color: 'red', align: 'left', weight: 700 });
           for (const q of P) { B.dot(q.D, q.u, { r: 4, color: 'ink' }); B.text(q.n, q.D, q.u * (q.dy || 1.7), { size: 10, color: 'muted', align: 'center' }); }
         }, { period: 4, still: 1.7 });
+        v.legend([['red', 'critical Re: laminar below, turbulent above'], ['faint', 'Re = 1, 100, 10⁴', { dash: true }]]);
         v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.fix(cur.Re, cur.Re < 10 ? 3 : 0)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'laminar: a quiet vessel' : cur.Re < sCrit.value * 1.2 ? 'transitional' : 'turbulent: expect a murmur / bruit'}\nat the normal viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.fix(cur.Re * sMu.value / 3.5, 0)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fix(cur.Re, 0)}`);
       },
     },
