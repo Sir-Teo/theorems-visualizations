@@ -591,7 +591,7 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
       credit: 'J. W. Gibbs, 1875–1878',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phase_rule' },
       viz(v) {
-        const sys = v.select('system', [{ value: 'w', label: 'water (C = 1)' }, { value: 'bt', label: 'benzene + toluene (C = 2)' }], 'w', { onChange: () => { if (sys.value === 'w') h.set(330, 3e4); else h.set(0.4, 368); } });
+        const sys = v.select('system', [{ value: 'w', label: 'water (C = 1)' }, { value: 'bt', label: 'benzene + toluene (C = 2)' }], 'w', { onChange: () => { if (sys.value === 'w') h.set(330, 3e4); else h.set(0.45, 371); } });
         const Pb = v.slider('pressure (binary)', 0.5, 1.5, 1.01325, { step: 0.005, fmt: (x) => v.fix(x, 3) + ' bar' });
         const s = v.stage({ x: [190, 700], y: [0.1, 3e9], ylog: true, height: 380, axes: 'box', gutter: { l: 64 }, xlabel: 'T (K)', ylabel: 'P', yticks: PT_TICKS.concat([[1e9, '1 GPa']]), weight: 1.25, title: 'phase diagram' });
         const sc = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: false, weight: 0.85, minWidth: 230, title: 'counting: unknowns − conditions' });
@@ -636,31 +636,31 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
             const P = Pb.value * BAR;
             const TA = tAnt(A, P), TB = tAnt(B, P);
             s.setScale({ xlog: false, ylog: false, x: [0, 1], y: [341, 397] }); s.setLabels('mole fraction of benzene', 'T (K)'); s.setTicks(null, null); s.setTitle(`benzene + toluene at ${v.fix(Pb.value, 3)} bar (Raoult's law)`);
-            if (h.x > 2) h.set(0.4, 368);
+            if (h.x > 2) h.set(0.45, 371);
             const liq = tint(v, PHASE.liquid, 0.2), gas = tint(v, PHASE.gas, 0.2), two = tint(v, 'gold', 0.16);
-            s.raster((x, T) => { if (T < TA) return liq; if (T > TB) return gas; const xb = xBub(T, P), yd = yDew(T, P); return x < xb && x > yd ? two : x >= xb ? liq : gas; }, { res: 3, key: 'bt' + Pb.value + v.color('panel') });
+            s.raster((x, T) => { if (T < TA) return liq; if (T > TB) return gas; const xb = xBub(T, P), yd = yDew(T, P); return x > xb && x < yd ? two : x <= xb ? liq : gas; }, { res: 3, key: 'bt' + Pb.value + v.color('panel') });
             s.curve((x) => [x, tBub(x, P)], 0, 1, { color: PHASE.liquid, width: 2.6, n: 80 });
             s.curve((y) => [y, tDew(y, P)], 0, 1, { color: PHASE.gas, width: 2.6, n: 80 });
-            s.text('liquid', 0.82, TA - 5 + (TB - TA) * 0.0, { size: 13, weight: 700, color: PHASE.liquid, align: 'center' });
-            s.text('vapour', 0.2, TB + 4, { size: 13, weight: 700, color: PHASE.gas, align: 'center' });
+            s.text('liquid', 0.3, TA - 6, { size: 13, weight: 700, color: PHASE.liquid, align: 'center' });
+            s.text('vapour', 0.6, TB + 6, { size: 13, weight: 700, color: PHASE.gas, align: 'center' });
             s.text('bubble line', 0.62, tBub(0.62, P), { dx: 6, dy: 12, size: 11, color: PHASE.liquid, align: 'left', plate: true });
             s.text('dew line', 0.4, tDew(0.4, P), { dx: 6, dy: -10, size: 11, color: PHASE.gas, align: 'left', plate: true });
             s.dot(1, TA, { r: 4, color: 'ink' }); s.dot(0, TB, { r: 4, color: 'ink' });
-            s.text(`benzene boils ${v.fix(TA, 1)} K`, 1, TA, { dx: -8, dy: 12, size: 10.5, align: 'right', color: 'ink' });
-            s.text(`toluene ${v.fix(TB, 1)} K`, 0, TB, { dx: 8, dy: -10, size: 10.5, align: 'left', color: 'ink' });
+            s.text(`benzene boils ${v.fix(TA, 1)} K`, 1, TA, { dx: -8, dy: -12, size: 10.5, align: 'right', color: 'ink', plate: true });
+            s.text(`toluene boils ${v.fix(TB, 1)} K`, 0, TB, { dx: 8, dy: 12, size: 10.5, align: 'left', color: 'ink', plate: true });
             const z = h.x, T = h.y;
             if (T > TA && T < TB) {
               const xb = xBub(T, P), yd = yDew(T, P);
-              if (z > yd && z < xb) {
+              if (z > xb && z < yd) {
                 Pn = 2;
-                s.line(yd, T, xb, T, { color: 'green', width: 2.6 });
+                s.line(xb, T, yd, T, { color: 'green', width: 2.6 });
                 s.dot(yd, T, { r: 5, color: PHASE.gas }); s.dot(xb, T, { r: 5, color: PHASE.liquid });
-                const fl = (z - yd) / (xb - yd);
+                const fl = (yd - z) / (yd - xb);
                 lever = { xb, yd, fl };
-                s.text(`liquid x = ${v.fix(xb, 3)}`, xb, T, { dx: 8, dy: 12, size: 11, color: PHASE.liquid, align: 'left', plate: true });
-                s.text(`vapour y = ${v.fix(yd, 3)}`, yd, T, { dx: -8, dy: -11, size: 11, color: PHASE.gas, align: 'right', plate: true });
+                s.text(`liquid x = ${v.fix(xb, 3)}`, xb, T, { dx: -8, dy: 12, size: 11, color: PHASE.liquid, align: 'right', plate: true });
+                s.text(`vapour y = ${v.fix(yd, 3)}`, yd, T, { dx: 8, dy: -11, size: 11, color: PHASE.gas, align: 'left', plate: true });
                 info = 'liquid + vapour (tie line)';
-              } else info = z >= xb ? 'liquid' : 'vapour';
+              } else info = z <= xb ? 'liquid' : 'vapour';
             } else info = T <= TA ? 'liquid' : 'vapour';
           }
           // counting panel
@@ -680,7 +680,7 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
           if (!st) return '';
           const { water, C, Pn, F, info, lever } = st;
           const meaning = water ? (F === 2 ? 'both T and P can be changed freely: a region' : F === 1 ? 'choosing T fixes P: a curve' : 'T and P both fixed: an isolated point') : (Pn === 2 ? 'at fixed pressure F − 1 = 1: temperature alone fixes both compositions (the ends of the tie line)' : 'at fixed pressure F − 1 = 2: temperature and composition are both free');
-          const lv = lever ? ` · lever rule: liquid fraction $(z - y)/(x - y)$ = **${v.fix(lever.fl, 3)}**, vapour ${v.fix(1 - lever.fl, 3)}` : '';
+          const lv = lever ? ` · lever rule: liquid fraction $(y - z)/(y - x)$ = **${v.fix(lever.fl, 3)}**, vapour ${v.fix(1 - lever.fl, 3)}` : '';
           return `**${info}** · $F = C - P + 2$ = ${C} − ${Pn} + 2 = **${F}**: ${meaning}${lv}${water ? '' : `\nRaoult's law $p_i = x_i\\,p_i^*(T)$ with Antoine vapour pressures (NIST): the mixture is nearly ideal, so the lens is accurate to a few tenths of a kelvin`}`;
         });
       },
