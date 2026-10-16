@@ -167,9 +167,8 @@ and no engine working between the same two reservoirs can exceed it. For a perfe
       deps: ['pchem-3.2', 'pchem-2.7', 'thermo-2.7'],
       refs: ['Atkins 3A', 'M–S ch. 20'],
       tags: ['Carnot', 'efficiency', 'heat engine'],
-      credit: 'Carnot, 1824; Kelvin, 1848',
+      credit: 'Carnot, 1824',
       scope: String.raw`Reversible cycle between two reservoirs; the pV diagram uses a monatomic perfect gas ($\gamma = 5/3$). Efficiency formula as a limit: real engines run irreversibly and are slower than this (see pchem-3.4).`,
-      verify: true,
       viz(v) {
         const Th = v.slider('$T_h$', 350, 900, 600, { step: 5, fmt: (x) => `${x.toFixed(0)} K` });
         const Tc = v.slider('$T_c$', 150, 500, 300, { step: 5, fmt: (x) => `${x.toFixed(0)} K` });

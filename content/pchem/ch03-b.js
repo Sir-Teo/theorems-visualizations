@@ -34,22 +34,18 @@ const partial = (f, g, h, T, V) => jac(f, h, T, V) / jac(g, h, T, V);           
 const reducedRoots = (pr, Tr) => cubicRoots(3 * pr, -(pr + 8 * Tr), 9, -3).filter((x) => x > 1 / 3);
 function psatReduced(Tr) {
   if (Tr >= 1) return null;
-  // spinodal pressure window
+  const sp = cubicRoots(4 * Tr, -9, 6, -1).filter((x) => x > 1 / 3);          // spinodal volumes: dp/dV = 0
+  if (sp.length < 2) return null;
   const pOf = (Vr) => 8 * Tr / (3 * Vr - 1) - 3 / (Vr * Vr);
-  let lo = 0, hi = 0; { let best = -1e9, bestMin = 1e9; for (let V = 0.5; V < 20; V += 0.002) { const p = pOf(V); if (V > 0.5 && pOf(V - 0.002) < p) { /* rising */ } } }
-  let Vmin = null, Vmax = null; let prev = pOf(0.4), up = null;
-  for (let V = 0.4; V < 30; V += 0.0005) { const p = pOf(V), dp = p - pOf(V - 0.0005); if (up !== null && up && dp < 0) Vmin = V; if (up !== null && !up && dp > 0) Vmax = V; up = dp > 0; }
-  // Vmin is the local min of p at smaller V (liquid-side), Vmax the local max (gas-side); pressures
-  const pMin = Math.max(1e-6, pOf(Vmax === null ? 3 : Vmax)), pMax = pOf(Vmin === null ? 1 : Vmin);
+  const pLo = Math.max(1e-9, pOf(sp[0])), pHi = pOf(sp[sp.length - 1]);
   const area = (p) => { const r = reducedRoots(p, Tr); if (r.length < 3) return null; const l = r[0], gg = r[r.length - 1]; return (8 * Tr / 3) * Math.log((3 * gg - 1) / (3 * l - 1)) + 3 / gg - 3 / l - p * (gg - l); };
-  let a = Math.max(pMin, 1e-6) * 1.0001, b = pMax * 0.9999;
-  let fa = area(a), fb = area(b);
-  if (fa === null || fb === null) return null;
-  for (let i = 0; i < 80; i++) { const m = (a + b) / 2, fm = area(m); if (fm === null) break; if ((fm > 0) === (fa > 0)) { a = m; fa = fm; } else b = m; }
-  return (a + b) / 2;
+  let lo = pLo * 1.0001 + 1e-12, hi = pHi * 0.9999, fl = area(lo);
+  if (fl === null || area(hi) === null) return null;
+  for (let i = 0; i < 90; i++) { const m = (lo + hi) / 2, fm = area(m); if (fm === null) break; if ((fm > 0) === (fl > 0)) { lo = m; fl = fm; } else hi = m; }
+  return (lo + hi) / 2;
 }
 /** ln φ(p) by integrating (Z − 1)/p from 0 along the gas branch (p in bar). Returns {p[], lnphi[], pend}. */
-function fugacityCurve(g, T, pmax, n = 160) {
+function fugacityCurve(g, T, pmax, n = 800) {
   let pend = pmax;
   if (T < g.Tc) { const ps = psatReduced(T / g.Tc); if (ps) pend = Math.min(pmax, ps * g.pc * 0.9995); }
   const B = (g.b - g.a / (RL * T)), lim = B / (RL * T);
@@ -106,8 +102,8 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
           seg(AR.Tb, 320, () => AR.CpG, 'teal');
           s1.fn((T) => 12 * Math.PI ** 4 / 5 * R * (T / th.value) ** 3, { domain: [1, 12], color: 'ink', width: 1.2, dash: true });
           s1.text('Debye $T^3$ law', 2.2, 4.3, { size: 11, color: 'ink', align: 'left' });
-          s1.vline(AR.Tm, { color: 'muted', dash: true }); s1.text('melting: +' + v.fix(AR.Hf / AR.Tm, 1) + ' J/K', AR.Tm, 47, { align: 'right', dx: -6, size: 11, color: 'muted' });
-          s1.vline(AR.Tb, { color: 'muted', dash: true }); s1.text('boiling: +' + v.fix(AR.Hv / AR.Tb, 1) + ' J/K', AR.Tb, 41, { align: 'left', dx: 6, size: 11, color: 'muted' });
+          s1.vline(AR.Tm, { color: 'muted', dash: true }); s1.text('melt +' + v.fix(AR.Hf / AR.Tm, 1), AR.Tm, 47, { align: 'right', dx: -6, size: 11, color: 'muted' });
+          s1.vline(AR.Tb, { color: 'muted', dash: true }); s1.text('boil +' + v.fix(AR.Hv / AR.Tb, 1), AR.Tb, 41, { align: 'left', dx: 6, size: 11, color: 'muted' });
           s1.vline(T1, { color: 'gold', width: 2 });
           // running entropy
           const pts = [];
@@ -148,7 +144,7 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
       refs: ['Atkins 3D', 'M–S ch. 22'],
       tags: ['Gibbs energy', 'Helmholtz energy', 'spontaneity'],
       credit: 'Helmholtz, 1882; Gibbs, 1876–78',
-      scope: String.raw`Closed systems with only expansion work, in contact with a bath at the temperature of the system. The model takes $\Delta H$ and $\Delta S$ independent of $T$ (their change with $T$ is a heat-capacity effect, pchem-2.12), and $\Delta U=\Delta H-\Delta n_{\text{gas}}RT$ for ideal gases. The ice-melting default uses the 273.15 K values; the dates are the commonly quoted ones, checked against secondary sources only.`,
+      scope: String.raw`Closed systems with only expansion work, in contact with a bath at the temperature of the system. The model takes $\Delta H$ and $\Delta S$ independent of $T$ (their change with $T$ is a heat-capacity effect, pchem-2.11), and $\Delta U=\Delta H-\Delta n_{\text{gas}}RT$ for ideal gases. The ice-melting default uses the 273.15 K values; the dates are the commonly quoted ones, checked against secondary sources only.`,
       verify: true,
       viz(v) {
         const cons = v.select('constraint', [{ value: 'p', label: 'constant $T, p$ → $G$' }, { value: 'V', label: 'constant $T, V$ → $A$' }], 'p');
@@ -169,7 +165,6 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
           const lo = Math.min(...ys, calc(hT.x).Stot), hi = Math.max(...ys, calc(hT.x).Stot), pad = Math.max(2, (hi - lo) * 0.15);
           s1.setView([100, 600], [Math.min(lo, 0) - pad, Math.max(hi, 0) + pad]);
           s1.hline(0, { color: 'muted' });
-          s1.between((T) => 0, (T) => calc(T).Stot, 100, 600, { fill: 'green', fillAlpha: 0.0 });
           const path = []; for (let T = 100; T <= 600; T += 2) path.push([T, calc(T).Stot]);
           // colour by sign
           let seg = []; let sgn = null;
@@ -216,7 +211,7 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
           s1.hline(Eth, { color: 'muted', dash: true }); s1.text('thermoneutral $-\\Delta H/2F$ = ' + v.fix(Eth, 3) + ' V', 1.48, Eth, { align: 'right', dy: -10, size: 11, color: 'muted' });
           const j = h.x, V = Vj(j); h.set(j, V);
           s1.between(() => 0, (x) => Vj(x), 0.0003, j, { fill: 'blue', fillAlpha: 0.1 });
-          const bar = (x0, wk) => { const th = -dH / 1000, rev = (dG - dH) / -1000; const dis = th - rev - wk + 0; let y = 0; [[wk, 'blue'], [rev, 'orange'], [Math.max(0, th - wk - rev), 'red']].forEach(([hh, c]) => { s2.rect(x0 - 0.5, y, x0 + 0.5, y + hh, { fill: c, fillAlpha: 0.65, color: c }); if (hh > 12) s2.text(v.fix(hh, 1), x0, y + hh / 2, { size: 12 }); y += hh; }); };
+          const bar = (x0, wk) => { const th = -dH / 1000, rev = (dG - dH) / 1000; let y = 0; [[wk, 'blue'], [rev, 'orange'], [Math.max(0, th - wk - rev), 'red']].forEach(([hh, c]) => { s2.rect(x0 - 0.5, y, x0 + 0.5, y + hh, { fill: c, fillAlpha: 0.65, color: c }); if (hh > 12) s2.text(v.fix(hh, 1), x0, y + hh / 2, { size: 12 }); y += hh; }); };
           bar(0.8, -dG / 1000); bar(2.2, 2 * Fc * V / 1000);
           s2.hline(-dH / 1000, { color: 'muted', dash: true }); s2.text('$-\\Delta H$ = 285.8', 2.95, -dH / 1000, { align: 'right', dy: -9, size: 11, color: 'muted' });
         });
@@ -245,9 +240,9 @@ $$\Big(\tfrac{\partial T}{\partial V}\Big)_S = -\Big(\tfrac{\partial p}{\partial
         const gas = v.select('gas', [{ value: 'CO2', label: '$\\mathrm{CO_2}$' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'Ar', label: 'Ar' }, { value: 'ideal', label: 'ideal' }], 'CO2');
         const pot = v.select('potential', [{ value: 'U', label: '$U(S,V)$' }, { value: 'H', label: '$H(S,p)$' }, { value: 'A', label: '$A(T,V)$' }, { value: 'G', label: '$G(T,p)$' }], 'A');
         const sq = v.stage({ x: [0, 4], y: [0, 4], axes: false, height: 330, title: 'thermodynamic square' });
-        const sp = v.stage({ x: [150, 650], y: [0.06, 0.6], axes: 'box', gutter: true, xlabel: '$T$ / K', ylabel: '$V$ / (L mol⁻¹)', height: 330, title: 'state plane: isobars and isentropes' });
+        const sp = v.stage({ x: [250, 650], y: [0.06, 0.6], axes: 'box', gutter: true, xlabel: '$T$ / K', ylabel: '$V$ / (L mol⁻¹)', height: 330, title: 'state plane: isobars and isentropes' });
         const sb = v.stage({ x: [0, 3], y: [-1, 1], axes: 'box', gutter: true, height: 330, title: 'both sides of the relation', xticks: [[0.8, 'left side'], [2.2, 'right side']] });
-        const hs = sp.handle(350, 0.22, { color: 'gold', label: 'state', constrain: { x: [160, 640], y: [0.07, 0.58] } });
+        const hs = sp.handle(400, 0.22, { color: 'gold', label: 'state', constrain: { x: [260, 640], y: [0.07, 0.58] } });
         const REL = {
           U: { tex: '\\left(\\frac{\\partial T}{\\partial V}\\right)_S = -\\left(\\frac{\\partial p}{\\partial S}\\right)_V', d: '\\mathrm{d}U=T\\,\\mathrm{d}S-p\\,\\mathrm{d}V', unit: 'K/L' },
           H: { tex: '\\left(\\frac{\\partial T}{\\partial p}\\right)_S = \\left(\\frac{\\partial V}{\\partial S}\\right)_p', d: '\\mathrm{d}H=T\\,\\mathrm{d}S+V\\,\\mathrm{d}p', unit: 'K/kPa' },
@@ -271,20 +266,20 @@ $$\Big(\tfrac{\partial T}{\partial V}\Big)_S = -\Big(\tfrac{\partial p}{\partial
           sq.tex(REL[pot.value].d, 2, 0.12, { size: 14 });
           const { S, p } = model();
           sp.clip(() => {
-            const Ss = []; for (let i = 0; i <= 12; i++) for (let T of [160, 400, 640]) { const V = 0.07 + 0.51 * i / 12; Ss.push(S(T, V)); }
+            const Ss = []; for (let i = 0; i <= 12; i++) for (let T of [250, 450, 650]) { const V = 0.07 + 0.51 * i / 12; Ss.push(S(T, V)); }
             const lo = Math.min(...Ss), hi = Math.max(...Ss);
             sp.contour((T, V) => S(T, V), Array.from({ length: 8 }, (_, i) => lo + (hi - lo) * (i + 1) / 9), { color: 'orange', width: 1.4, res: 80 });
-            sp.contour((T, V) => p(T, V) / 100, [5, 20, 50, 100, 200, 400], { color: 'blue', width: 1.4, res: 80, labels: true });
+            sp.contour((T, V) => p(T, V) / 100, [5, 20, 50, 100, 200, 400], { color: 'blue', width: 1.4, res: 80 });
           });
           const [l, r] = sides(hs.x, hs.y), m = Math.max(1e-9, Math.abs(l), Math.abs(r)) * 1.35;
           sb.setView([0, 3], [-m, m]); sb.hline(0, { color: 'muted' });
-          [[0.8, l, 'accent'], [2.2, r, 'green']].forEach(([x, h, c]) => { sb.rect(x - 0.5, 0, x + 0.5, h, { fill: c, fillAlpha: 0.6, color: c }); sb.text(v.sci(h, 5).replace(/^/, '$').replace(/$/, '$'), x, h, { dy: h >= 0 ? -12 : 14, size: 12 }); });
+          [[0.8, l, 'accent'], [2.2, r, 'green']].forEach(([x, h, c]) => { sb.rect(x - 0.5, 0, x + 0.5, h, { fill: c, fillAlpha: 0.6, color: c }); sb.text('$' + v.sci(h, 4) + '$', x, h, { dy: h >= 0 ? -12 : 14, size: 12 }); });
           sb.setLabels(undefined, REL[pot.value].unit);
         });
         v.legend([['orange', 'isentropes (S = const)'], ['blue', 'isobars (p / bar)']]);
         v.readout(() => {
           const [l, r] = sides(hs.x, hs.y);
-          return `$${REL[pot.value].tex}$\nat $T=${v.fix(hs.x, 0)}$ K, $V=${v.fix(hs.y, 3)}$ L/mol: left $=${v.sci(l, 6)}$, right $=${v.sci(r, 6)}$ ${REL[pot.value].unit.replace(/_/g, '')}; relative difference $${v.sci(Math.abs(l - r) / Math.max(1e-30, Math.abs(l)), 2)}$`;
+          return `$${REL[pot.value].tex}$\nat $T=${v.fix(hs.x, 0)}$ K, $V=${v.fix(hs.y, 3)}$ L/mol: left $=${v.sci(l, 6)}$, right $=${v.sci(r, 6)}$ ${REL[pot.value].unit}; relative difference $${v.sci(Math.abs(l - r) / Math.max(1e-30, Math.abs(l)), 2)}$`;
         });
       },
     },
@@ -293,7 +288,7 @@ $$\Big(\tfrac{\partial T}{\partial V}\Big)_S = -\Big(\tfrac{\partial p}{\partial
       statement: String.raw`At constant pressure the temperature dependence of the Gibbs energy is
 $$\Big(\frac{\partial (G/T)}{\partial T}\Big)_p = -\frac{H}{T^2},\qquad\text{equivalently}\qquad \Big(\frac{\partial (G/T)}{\partial (1/T)}\Big)_p = H,$$
 and for a change of state or reaction $\Big(\partial(\Delta G/T)/\partial(1/T)\Big)_p=\Delta H$. If $\Delta H$ is nearly constant between $T_1$ and $T_2$, then $\Delta G(T_2)/T_2 \approx \Delta G(T_1)/T_1 + \Delta H\,(1/T_2 - 1/T_1)$.`,
-      idea: String.raw`From $G = H - TS$ and $(\partial G/\partial T)_p = -S$ (pchem-3.12, the $\mathrm{d}G$ relation), $(\partial (G/T)/\partial T)_p = \frac1T(\partial G/\partial T)_p - \frac{G}{T^2} = -\frac{S}{T} - \frac{H-TS}{T^2} = -\frac{H}{T^2}$. The substitution $u = 1/T$ turns this into a slope, so a plot of $\Delta G/T$ against $1/T$ has slope $\Delta H$: a straight line only if $\Delta H$ is constant, and a curve of slowly changing slope, set by $\Delta C_p$ (Kirchhoff, pchem-2.12), otherwise.`,
+      idea: String.raw`From $G = H - TS$ and $(\partial G/\partial T)_p = -S$ (pchem-3.12, the $\mathrm{d}G$ relation), $(\partial (G/T)/\partial T)_p = \frac1T(\partial G/\partial T)_p - \frac{G}{T^2} = -\frac{S}{T} - \frac{H-TS}{T^2} = -\frac{H}{T^2}$. The substitution $u = 1/T$ turns this into a slope, so a plot of $\Delta G/T$ against $1/T$ has slope $\Delta H$: a straight line only if $\Delta H$ is constant, and a curve of slowly changing slope, set by $\Delta C_p$ (Kirchhoff, pchem-2.11), otherwise.`,
       caption: String.raw`Choose a reaction. The curve is $\Delta G^\circ/T$ against $1000/T$, built from standard enthalpies of formation, standard entropies and $C_p(T)$ polynomials. Drag the point along the curve: the tangent's slope is $\Delta H^\circ(T)$ in kJ/mol. Set a second temperature $T_2$ with the slider and compare the constant-$\Delta H$ extrapolation (open square) with the full calculation (filled); the right panel shows the error across the temperature range.`,
       deps: ['pchem-3.12'],
       refs: ['Atkins 3E', 'M–S ch. 22'],
@@ -341,45 +336,45 @@ and for a change of state or reaction $\Big(\partial(\Delta G/T)/\partial(1/T)\B
       num: '3.14', kind: 'Definition', name: 'Pressure dependence of G and fugacity',
       statement: String.raw`At constant temperature $(\partial G/\partial p)_T = V$, so $G_m(p)-G_m(p_0)=\int_{p_0}^{p}V_m\,\mathrm{d}p$. For a perfect gas this is $RT\ln(p/p_0)$. For a real gas one keeps the same form by defining the **fugacity** $f$, an effective pressure, through
 $$\mu(p) = \mu^\circ + RT\ln\frac{f}{p^\circ},\qquad f=\varphi\,p,\qquad \ln\varphi = \int_0^{p}\frac{Z-1}{p'}\,\mathrm{d}p',$$
-where $Z=pV_m/RT$ is the compressibility factor (pchem-1.12) and $\varphi\to1$ as $p\to0$. The fugacity coefficient is below 1 where attractions dominate ($Z<1$) and above 1 where repulsion dominates.`,
+where $Z=pV_m/RT$ is the compression factor (pchem-1.11) and $\varphi\to1$ as $p\to0$. The fugacity coefficient is below 1 where attractions dominate ($Z<1$) and above 1 where repulsion dominates.`,
       idea: String.raw`The relation $(\partial G/\partial p)_T=V$ is the $\mathrm{d}G$ equation of pchem-3.12. Subtracting the perfect-gas integral $\int RT\,\mathrm{d}p/p$ from the real one gives $\int_0^p (V_m - RT/p')\,\mathrm{d}p' = RT\int_0^p (Z-1)/p'\,\mathrm{d}p'$, which defines $\ln\varphi$, since at low enough pressure every gas is perfect and the integral is anchored there. For the van der Waals gas (pchem-1.13) $Z-1\to (b - a/RT)\,p/RT$, so $\varphi<1$ at low pressure when $T$ is below the Boyle temperature $a/Rb$ and above 1 when it is higher.`,
-      caption: String.raw`Pick a gas and a temperature. Left: the Gibbs energy relative to 1 bar from $\int V\,\mathrm{d}p$ along the van der Waals gas branch (blue), against the perfect gas $RT\ln p$ (dashed); the red dashed curve is the perfect-gas formula evaluated at the fugacity, and lies exactly on the blue one. Right: $\varphi=f/p$ against $p$: below 1 at moderate pressure, back above 1 at high pressure. Below $T_c$ the curve stops at the vapour pressure from the Maxwell construction.`,
-      deps: ['pchem-3.12', 'pchem-1.13'],
+      caption: String.raw`Pick a gas and a temperature. Left: the Gibbs energy relative to 1 bar from $\int V\,\mathrm{d}p$ along the van der Waals gas branch (blue), against the perfect gas $RT\ln p$ (dashed); the red dashed curve is the perfect-gas formula evaluated at the fugacity, and lies exactly on the blue one. Right: $\varphi=f/p$ against $p$: below 1 where attraction dominates and turning back up as repulsion takes over; for hydrogen at room temperature (far above its Boyle temperature) it is above 1 from the start. Below $T_c$ the curve stops at the vapour pressure from the Maxwell construction. The default is $\mathrm{CO_2}$ just above its critical temperature.`,
+      deps: ['pchem-3.12', 'pchem-1.13', 'pchem-1.11'],
       refs: ['Atkins 3E', 'M–S ch. 22'],
       tags: ['fugacity', 'real gas', 'chemical potential'],
       credit: 'Lewis, 1901 (fugacity); Proc. Am. Acad. 37, 49',
       scope: String.raw`van der Waals gas with constants computed from the critical constants (a = 27R²T_c²/64p_c, b = RT_c/8p_c), so quantitative agreement with a particular real gas is only rough (a second-virial-coefficient comparison would be better at low pressure). Pressures run along the single-phase gas branch only.`,
       viz(v) {
         const gas = v.select('gas', Object.keys(VDW).map((k) => ({ value: k, label: k === 'CO2' ? '$\\mathrm{CO_2}$' : k === 'N2' ? '$\\mathrm{N_2}$' : k === 'CH4' ? '$\\mathrm{CH_4}$' : k === 'H2' ? '$\\mathrm{H_2}$' : k })), 'CO2');
-        const Ts = v.slider('temperature $T$', 150, 700, 280, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
-        const s1 = v.stage({ x: [1, 400], y: [0, 30], xlog: true, axes: 'box', gutter: true, xlabel: '$p$ / bar', ylabel: '$G_m(p)-G_m(1\\ \\mathrm{bar})$ / kJ mol⁻¹', height: 340, title: 'Gibbs energy of the gas' });
-        const s2 = v.stage({ x: [0, 400], y: [0, 2], axes: 'box', gutter: true, xlabel: '$p$ / bar', ylabel: '$\\varphi = f/p$', height: 340, title: 'fugacity coefficient' });
+        const Ts = v.slider('temperature $T$', 200, 700, 320, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
+        const s1 = v.stage({ x: [1, 800], y: [0, 30], xlog: true, axes: 'box', gutter: true, xlabel: '$p$ / bar', ylabel: '$G_m(p)-G_m(1\\ \\mathrm{bar})$ / kJ mol⁻¹', height: 340, title: 'Gibbs energy of the gas' });
+        const s2 = v.stage({ x: [0, 800], y: [0, 2], axes: 'box', gutter: true, xlabel: '$p$ / bar', ylabel: '$\\varphi = f/p$', height: 340, title: 'fugacity coefficient' });
         let info = {};
         v.render(() => {
           const g = VDW[gas.value], T = Math.min(Ts.value, 1e4);
-          const fc = fugacityCurve(g, T, 400);
+          const fc = fugacityCurve(g, T, 800);
+          if (fc.pend < 1.5) { s1.corner('vapour pressure below 1.5 bar: liquid at 1 bar', 'tl', { color: 'red', plate: true }); info = { phi: 1, p50: 1, pend: fc.pend, G: 0, Gid: 0, direct: 0 }; return; }
           const RT = R * T;
-          const at = (p) => { const x = p / fc.pend * 160, i = Math.min(159, Math.floor(x)), u = x - i; return (1 - u) * fc.lnphi[i] + u * fc.lnphi[i + 1]; };
+          const at = (p) => { const nn = fc.p.length - 1, x = p / fc.pend * nn, i = Math.min(nn - 1, Math.floor(x)), u = x - i; return (1 - u) * fc.lnphi[i] + u * fc.lnphi[i + 1]; };
           const l1 = at(1), pend = fc.pend;
           const G = (p) => RT * (Math.log(p) + at(p) - (Math.log(1) + l1)) / 1000;
           const Gid = (p) => RT * Math.log(p) / 1000;
           // direct ∫V dp, Simpson on 400 points
-          const direct = (p) => { const n = 400, h = (p - 1) / n; let s = 0; for (let i = 0; i <= n; i++) { const pp = 1 + i * h, r = vdwV(g, T, pp), Vg = r[r.length - 1]; s += (i === 0 || i === n ? 1 : i % 2 ? 4 : 2) * Vg; } return s * h / 3 * 100 / 1000; };
-          s1.setView([1, 400], [Math.min(0, G(pend)) - 1, Math.max(Gid(Math.min(400, 1e9)), G(pend), 1) * 1.1]);
-          s1.fn(Gid, { color: 'muted', width: 2, dash: true, domain: [1, 400], n: 160 });
+          const direct = (p) => { const n = 600, u0 = 0, u1 = Math.log(p), h = (u1 - u0) / n; let s = 0; for (let i = 0; i <= n; i++) { const pp = Math.exp(u0 + i * h), r = vdwV(g, T, pp), Vg = r[r.length - 1]; s += (i === 0 || i === n ? 1 : i % 2 ? 4 : 2) * Vg * pp; } return s * h / 3 * 100 / 1000; };   // ∫V dp = ∫V p d(ln p), Simpson in ln p
+          const xmax = Math.max(10, pend * 1.25);
+          s1.setView([1, xmax], [Math.min(0, G(pend)) - 1, Math.max(Gid(xmax), G(pend), 1) * 1.05]);
+          s1.fn(Gid, { color: 'muted', width: 2, dash: true, domain: [1, xmax], n: 160 });
           s1.fn(G, { color: 'blue', width: 3, domain: [1, pend], n: 160 });
           const ff = (p) => RT * Math.log(p * Math.exp(at(p)) / 1) / 1000 - RT * Math.log(1 * Math.exp(l1)) / 1000;
           s1.fn(ff, { color: 'red', width: 1.5, dash: [4, 4], domain: [1, pend], n: 80 });
-          if (pend < 399) { s1.vline(pend, { color: 'orange', dash: true }); s1.text('vapour pressure', pend, 1, { align: 'right', dx: -6, dy: -10, size: 11, color: 'orange' }); }
+          if (pend < 799) { s1.vline(pend, { color: 'orange', dash: true }); s1.text('vapour pressure', pend, 1, { align: 'right', dx: -6, dy: -10, size: 11, color: 'orange' }); }
           // φ
           const ps = fc.p.slice(1), phis = fc.lnphi.slice(1).map(Math.exp);
           const mx = Math.max(1.3, ...phis) * 1.1;
-          s2.setView([0, 400], [0, Math.min(mx, 3)]); s2.hline(1, { color: 'muted', dash: true });
+          s2.setView([0, Math.max(10, pend * 1.15)], [0, Math.min(mx, 3)]); s2.hline(1, { color: 'muted', dash: true });
           s2.path(ps.map((p, i) => [p, phis[i]]), { color: 'green', width: 3 });
-          if (pend < 399) { s2.vline(pend, { color: 'orange', dash: true }); }
-          info = { phi: Math.exp(at(Math.min(pend, 50))), p50: Math.min(pend, 50), pend, G: G(pend), Gid: Gid(pend), direct: direct(pend), Gf: ff(pend), TB: g.a / (RL * g.b) / RL / 1 };
-          info.TB = g.a / (RL * g.b);
-          info.Zend = fc.Z[160];
+          if (pend < 799) { s2.vline(pend, { color: 'orange', dash: true }); }
+          info = { phi: Math.exp(at(Math.min(pend, 50))), p50: Math.min(pend, 50), pend, G: G(pend), Gid: Gid(pend), direct: direct(pend), TB: g.a / (RL * g.b) };
         });
         v.legend([['blue', 'real gas, $\\int V\\,\\mathrm{d}p$'], ['muted', 'perfect gas', { dash: true }], ['red', 'perfect-gas formula at $f$', { dash: true }], ['green', '$\\varphi=f/p$']]);
         v.readout(() => `at the end of the gas branch ($p=${v.fix(info.pend, 1)}$ bar): $G-G(1\\,\\mathrm{bar})$ = ${v.fix(info.G, 3)} kJ/mol from $RT\\ln(f/f_1)$ and ${v.fix(info.direct, 3)} kJ/mol from direct integration of $V\\,\\mathrm{d}p$; perfect gas ${v.fix(info.Gid, 3)} kJ/mol\n$\\varphi(${v.fix(info.p50, 0)}\\ \\text{bar})=${v.fix(info.phi, 3)}$; Boyle temperature of this van der Waals gas $a/Rb=${v.fix(info.TB, 0)}$ K`);
@@ -401,10 +396,10 @@ It vanishes for a perfect gas and equals $a/V_m^2$ for a van der Waals gas. Cons
       viz(v) {
         const gas = v.select('gas', [{ value: 'CO2', label: '$\\mathrm{CO_2}$' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'Ar', label: 'Ar' }], 'CO2');
         const T1 = v.slider('initial temperature $T_1$', 200, 500, 300, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
-        const V1 = v.slider('initial volume $V_1$', 0.05, 1, 0.1, { step: 0.005, fmt: (x) => `${x.toFixed(3)} L/mol` });
+        const V1 = v.slider('initial volume $V_1$', 0.07, 1.5, 0.5, { step: 0.005, fmt: (x) => `${x.toFixed(3)} L/mol` });
         const fac = v.slider('expansion factor $V_2/V_1$', 1.5, 20, 8, { step: 0.5 });
         const mode = v.select('gas model', [{ value: 'real', label: 'van der Waals' }, { value: 'ideal', label: 'perfect' }], 'real');
-        const sa = v.stage({ x: [0.03, 1], y: [-1, 1], axes: 'box', gutter: true, xlabel: '$V_m$ / (L mol⁻¹)', ylabel: '$\\pi_T$ / bar', height: 330, title: 'internal pressure $T(\\partial p/\\partial T)_V-p$', xlog: true });
+        const sa = v.stage({ x: [0.07, 2], y: [-1, 1], axes: 'box', gutter: true, xlabel: '$V_m$ / (L mol⁻¹)', ylabel: '$\\pi_T$ / bar', height: 330, title: 'internal pressure $T(\\partial p/\\partial T)_V-p$', xlog: true });
         const sb = v.stage({ x: [0, 2.2], y: [0, 1.1], axes: false, equal: true, height: 330, title: 'free expansion into vacuum' });
         const sc = v.stage({ x: [1, 20], y: [-30, 5], axes: 'box', gutter: true, xlabel: '$V_2/V_1$', ylabel: '$T-T_1$ / K', height: 330, title: 'temperature after expansion' });
         const rng = v.rng(3);
@@ -417,13 +412,12 @@ It vanishes for a perfect gas and equals $a/V_m^2$ for a van der Waals gas. Cons
           xi = Math.min(1, Math.max(0, (t - 0.6) / 2.2)); xi = xi * xi * (3 - 2 * xi);
           // π_T by finite differences of the van der Waals pressure (bar)
           const T = T1.value, pT = (V) => { const h = 1e-3 * T; return T * (vdwP(g, T + h, V) - vdwP(g, T - h, V)) / (2 * h) - vdwP(g, T, V); };
-          sa.setView([0.03, 1], [-0.05 * Math.max(1, g.a / 0.1 ** 2), Math.max(30, 1.15 * g.a / 0.03 ** 2)]);
-          sa.fn((V) => g.a / (V * V), { color: 'muted', width: 2, dash: true, domain: [Math.max(0.03, g.b * 1.05), 1], n: 160 });
-          sa.fn(pT, { color: 'blue', width: 3, domain: [Math.max(0.03, g.b * 1.05), 1], n: 160 });
-          sa.hline(0, { color: 'red', width: 2.5 }); sa.text('perfect gas: 0', 0.9, 0, { align: 'right', dy: -10, size: 11, color: 'red' });
+          sa.setView([0.07, 2], [-0.1 * g.a / 0.07 ** 2, 1.1 * g.a / 0.07 ** 2]);
+          sa.fn((V) => g.a / (V * V), { color: 'muted', width: 2, dash: true, domain: [0.07, 2], n: 160 });
+          sa.fn(pT, { color: 'blue', width: 3, domain: [0.07, 2], n: 160 });
+          sa.hline(0, { color: 'red', width: 2.5 }); sa.text('perfect gas: 0', 1.9, 0, { align: 'right', dy: -10, size: 11, color: 'red' });
           sa.vline(V1.value, { color: 'gold', dash: true }); sa.dot(V1.value, g.a / V1.value ** 2, { r: 6, color: 'gold' });
           // box
-          const frac = 1 / fac.value, wR = 1 + xi * (1 - 0);                            // gas spreads into the second chamber
           sb.rect(0, 0, 1, 1, { color: 'ink', width: 2 }); sb.rect(1, 0, 2.2, 1, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.04 });
           const Tcur = T1.value + (real ? dT(g, cv, V1.value, fac.value) * xi : 0);
           const speed = Math.sqrt(Tcur / 300);

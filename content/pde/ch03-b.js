@@ -14,7 +14,7 @@ export default {
 $$u(x,t)=\tfrac12\Big[\operatorname{erf}\tfrac{x+a}{2\sqrt{kt}}-\operatorname{erf}\tfrac{x-a}{2\sqrt{kt}}\Big]\approx\frac{\sqrt{kt}}{\sqrt\pi\,|x|}\,e^{-(|x|-a)^2/(4kt)}\ \ (|x|\gg a),$$
 which is positive but super-exponentially small far away. The wave equation with the same data has $u\equiv0$ for $|x|>a+ct$.`,
       idea: String.raw`The kernel $\Phi(x-y,t)$ is strictly positive for all $x,y$, so the integral of a nonnegative, nonzero $g$ against it cannot vanish. The size of the tail is governed by the exponent $-(|x|-a)^2/(4kt)$: for a fixed threshold the arrival time grows like $x^2$, not like $x$, so there is no propagation *speed* at all. This is an artefact of the model that ignores finite molecular speeds; the tail is irrelevant physically, but mathematically the equation has no domain of dependence of the wave type (compare 2.3).`,
-      caption: String.raw`A bar of unit conductivity is heated on $[-a,a]$ at $t=0$. Left: $u(x,t)$ on a **logarithmic** scale (blue). The red dashed lines are the wave front $x=\pm(a+ct)$ of the wave equation with the same data and $c=1$; the red steps are that solution, which is exactly zero outside (off the picture). Right: the temperature at the probe $x_0$ against time, and the time $t^*$ at which it first reaches the threshold $\theta$ (green); the wave equation would deliver the full jump at $t=(x_0-a)/c$ (red). Pull $\theta$ down to $10^{-30}$: heat arrives at every $x_0$ almost immediately, and $t^*\propto x_0^2$ for large $x_0$.`,
+      caption: String.raw`A bar with diffusivity $k=\tfrac12$ is heated on $[-a,a]$ at $t=0$. Left: $u(x,t)$ on a **logarithmic** scale (blue). The red dashed lines are the wave front $x=\pm(a+ct)$ of the wave equation with the same data and $c=1$; the red steps are that solution, which is exactly zero outside (off the picture). Right: the temperature at the probe $x_0$ against time, and the time $t^*$ at which it first reaches the threshold $\theta$ (green); the wave equation would deliver the full jump at $t=(x_0-a)/c$ (red). Pull $\theta$ down to $10^{-30}$: heat arrives at every $x_0$ almost immediately, and $t^*\propto x_0^2$ for large $x_0$.`,
       deps: ['pde-3.4'],
       refs: ['Evans §2.3'],
       tags: ['propagation speed', 'heat equation', 'Gaussian tails'],
@@ -25,7 +25,7 @@ which is positive but super-exponentially small far away. The wave equation with
         const tS = v.slider('time $t$', 0.01, 10, 1, { log: true });
         const aS = v.slider('half-width $a$', 0.3, 2, 1, { step: 0.05 });
         const xS = v.slider('probe $x_0$', 2, 12, 6, { step: 0.1 });
-        const thS = v.slider('threshold $\\theta$', 1e-30, 1e-2, 1e-8, { log: true });
+        const thS = v.slider('threshold $\\theta$', 1e-30, 1e-2, 1e-8, { log: true, fmt: (z) => z.toExponential(0) });
         const P1 = v.stage({ x: [-14, 14], y: [1e-40, 3], ylog: true, axes: 'box', gutter: true, height: 260, xlabel: 'x', title: 'temperature $u(x,t)$ (log scale)', minWidth: 300 });
         const P2 = v.stage({ x: [0.01, 100], y: [1e-40, 3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 260, xlabel: 't', title: 'temperature at the probe $x_0$', minWidth: 300 });
         let info = null;
@@ -103,18 +103,23 @@ which is positive but super-exponentially small far away. The wave equation with
           const sharp = (f, e) => { let m = 0; for (const x of grid) m = Math.max(m, Math.abs(f(x + e) - 2 * f(x) + f(x - e)) / e); return m; };
           const e = 0.06, s0 = sharp(phi, e);
           const mxw = Math.max(...grid.map((x) => uw(x, t))), mxh = Math.max(...grid.map((x) => uh(x, t))), mx0 = Math.max(...grid.map(phi));
-          const hh = 1e-3, Ew = (tt) => {
-            let s = 0; const dx = 0.04;
-            for (let x = -XL; x <= XL; x += dx) { const ut = (uw(x, tt + hh) - uw(x, tt - hh)) / (2 * hh), ux = (uw(x + 1e-3, tt) - uw(x - 1e-3, tt)) / 2e-3; s += 0.5 * (ut * ut + c * c * ux * ux) * dx; }
+          const dphi = (x) => ((Math.abs(x - hA.x) < hw ? -Math.sign(x - hA.x) * hA.y / hw : 0) + (Math.abs(x - hB.x) < hw ? -Math.sign(x - hB.x) * hB.y / hw : 0));
+          const Ew = (tt) => { // exact u_t, u_x from d'Alembert's formula, midpoint rule
+            let s = 0; const dx = 0.005;
+            for (let x = -XL + dx / 2; x < XL; x += dx) {
+              const p = x + c * tt, m = x - c * tt;
+              const ut = 0.5 * c * (dphi(p) - dphi(m)) + 0.5 * (psi(p) + psi(m)), ux = 0.5 * (dphi(p) + dphi(m)) + (psi(p) - psi(m)) / (2 * c);
+              s += 0.5 * (ut * ut + c * c * ux * ux) * dx;
+            }
             return s;
           };
           let L2h = 0, L2h0 = 0; for (const x of grid) { L2h += uh(x, t) ** 2 * (2 * XL / 360); L2h0 += phi(x) ** 2 * (2 * XL / 360); }
-          info = { ow: outside((x) => uw(x, t)), oh: outside((x) => uh(x, t)), sw: sharp((x) => uw(x, t), e) / s0, sh: sharp((x) => uh(x, t), e) / s0, E0: Ew(1e-3 + 0.0), Et: Ew(t), L2h, L2h0, mxw, mxh, mx0, kap: 6, ampH: Math.exp(k * 36 * t), cone };
+          info = { ow: outside((x) => uw(x, t)), oh: outside((x) => uh(x, t)), sw: sharp((x) => uw(x, t), e) / s0, sh: sharp((x) => uh(x, t), e) / s0, E0: Ew(0), Et: Ew(t), L2h, L2h0, mxw, mxh, mx0, kap: 6, ampH: Math.exp(k * 36 * t), cone };
         });
         v.legend([['accent', 'wave'], ['orange', 'heat'], ['red', 'edge of the wave cone', { dash: true }]]);
-        v.readout(() => info && `finite speed — outside the cone, $\\max|u|$: wave $${v.sci(Math.max(info.ow, 1e-300), 2)}$ ${info.ow < 1e-12 ? '(zero ✓)' : ''} · heat $${v.sci(info.oh, 2)}$ ${info.oh > 1e-300 ? '(positive: no finite speed)' : ''}\n` +
+        v.readout(() => info && `finite speed — outside the cone, $\\max|u|$: wave ${info.ow < 1e-12 ? '$0$ ✓' : `$${v.sci(info.ow, 2)}$`} · heat $${v.sci(info.oh, 2)}$ ${info.oh > 1e-300 ? '(positive: no finite speed)' : ''}\n` +
           `kinks — sharpness of the data kept: wave ${v.fix(info.sw, 2)} · heat ${v.fix(info.sh, 2)} (1 = unchanged)\n` +
-          `energy — wave $E(t)/E(0^+)=${v.fix(info.Et / info.E0, 4)}$ (conserved) · heat $\\int u^2$ falls to ${v.fix(info.L2h / info.L2h0, 3)} of its initial value\n` +
+          `energy — wave $E(t)/E(0)=${v.fix(info.Et / info.E0, 4)}$ (conserved) · heat $\\int u^2$ falls to ${v.fix(info.L2h / info.L2h0, 3)} of its initial value\n` +
           `maximum principle — $\\max u/\\max\\varphi$: wave ${v.fix(info.mxw / info.mx0, 3)}${info.mxw > info.mx0 * 1.0005 ? ' (exceeds 1: fails)' : ''} · heat ${v.fix(info.mxh / info.mx0, 3)} (≤ 1)\n` +
           `reversibility — a ripple of wavenumber 6 added at time $t$ is amplified by $\\le1$ when run backwards for the wave equation, but by $e^{k\\cdot36\\,t}=${v.fix(info.ampH, 2)}$ for the heat equation (and by $e^{kn^2t}$ in general)`);
       },
@@ -131,7 +136,7 @@ Solve on the whole line by 3.4 and restrict to $x>0$. Explicitly
 $$u(x,t)=\int_0^\infty\big[\Phi(x-y,t)\mp\Phi(x+y,t)\big]\varphi(y)\,dy,$$
 with the minus sign for Dirichlet and the plus sign for Neumann. (For Dirichlet data one needs $\varphi(0)=0$ for $u$ to be continuous at the corner.)`,
       idea: String.raw`The heat equation is invariant under $x\mapsto-x$, so the solution of an odd (even) datum stays odd (even) by uniqueness (3.2); an odd continuous function vanishes at $0$, and an even differentiable one has zero derivative there. The restriction to $x>0$ therefore satisfies the boundary condition and the initial condition, and by uniqueness it is the solution. The same method with waves (2.7) reflects a pulse; here the mirror image diffuses into the half-line, subtracting (Dirichlet: the wall is a perfect sink) or adding (Neumann: an insulating wall bounces heat back).`,
-      caption: String.raw`Shape the initial temperature on $x>0$ with the handles (the leftmost one is the value at the wall). The dashed light curve on $x<0$ is the odd or even mirror image; the solution is computed on the whole line by the kernel formula and the solid blue part is the physical half-line. Right: the boundary quantity $u(0,t)$ (Dirichlet) or $u_x(0,t)$ (Neumann), which stays zero, and the total heat $\int_0^\infty u$: conserved for Neumann, lost through the wall for Dirichlet. The readout also compares with an independent finite-difference solution on $[0,8]$.`,
+      caption: String.raw`Shape the initial temperature on $x>0$ with the handles (the leftmost one is the value at the wall). The dashed light curve on $x<0$ is the odd or even mirror image; the solution is computed on the whole line by the kernel formula and the solid blue part is the physical half-line. Right: the boundary quantity $u(0,t)$ (Dirichlet) or $u_x(0,t)$ (Neumann), which stays zero, and the fraction of the initial heat $\int_0^\infty u$ still in the half-line: conserved for Neumann, lost through the wall for Dirichlet. The readout also compares with an independent finite-difference solution on $[0,8]$.`,
       deps: ['pde-3.4', 'pde-1.6'],
       refs: ['Strauss §3.1'],
       tags: ['reflection', 'half-line', 'boundary conditions'],
@@ -141,7 +146,7 @@ with the minus sign for Dirichlet and the plus sign for Neumann. (For Dirichlet 
         const bc = v.select('wall', [{ value: 'D', label: 'Dirichlet $u=0$ (odd)' }, { value: 'N', label: 'Neumann $u_x=0$ (even)' }], 'D');
         const tS = v.slider('time $t$', 0, 4, 0.5, { step: 0.02 });
         const P1 = v.stage({ x: [-6, 6], y: [-1.1, 1.3], axes: 'box', gutter: true, height: 250, xlabel: 'x', title: 'extension of the data and solution', minWidth: 330 });
-        const P2 = v.stage({ x: [0, 4], y: [-0.3, 1.2], axes: 'box', gutter: true, height: 250, xlabel: 't', title: 'at the wall, and total heat', minWidth: 280 });
+        const P2 = v.stage({ x: [0, 4], y: [-0.3, 1.2], axes: 'box', gutter: true, height: 250, xlabel: 't', title: 'wall value (blue), heat fraction (green)', minWidth: 280 });
         const px = [0, 0.7, 1.4, 2.1, 2.8, 3.5], py = [0.0, 0.8, 1.0, 0.4, 0.7, 0.0];
         const hs = px.map((x, i) => P1.handle(x, py[i], { color: 'orange', r: 6, constrain: (xx, y) => [x, M.clamp(y, -0.9, 1.2)] }));
         hs[5].visible = true;
@@ -161,7 +166,7 @@ with the minus sign for Dirichlet and the plus sign for Neumann. (For Dirichlet 
           const ts = M.range(41).map((i) => (4 * i) / 40), h = 1e-3;
           const wall = ts.map((tt) => (bc.value === 'D' ? full(0, Math.max(tt, 1e-3)) : (full(h, Math.max(tt, 1e-3)) - full(-h, Math.max(tt, 1e-3))) / (2 * h)));
           const tot = (tt) => M.integrate((x) => full(x, tt), 0, XR, 120);
-          const totals = ts.map((tt) => tot(Math.max(tt, 1e-3)));
+          const t00 = tot(1e-3), totals = ts.map((tt) => tot(Math.max(tt, 1e-3)) / t00);
           P2.path(ts.map((tt, i) => [tt, wall[i]]), { color: 'accent', width: 2.6 });
           P2.path(ts.map((tt, i) => [tt, totals[i]]), { color: 'green', width: 2.6 });
           P2.hline(0, { color: 'faint', width: 1 }); P2.vline(t, { color: 'gold', width: 1.2 });
@@ -174,7 +179,7 @@ with the minus sign for Dirichlet and the plus sign for Neumann. (For Dirichlet 
           const wallNow = bc.value === 'D' ? full(0, Math.max(t, 1e-4)) : (full(h, Math.max(t, 1e-4)) - full(-h, Math.max(t, 1e-4))) / (2 * h);
           info = { dif, wallNow, tot: tot(Math.max(t, 1e-4)), tot0: tot(1e-4), t };
         });
-        v.legend([['orange', 'initial data'], ['accent', 'solution'], ['green', 'total heat $\\int_0^\\infty u$']]);
+        v.legend([['orange', 'initial data'], ['accent', 'solution'], ['green', 'fraction of the initial heat left']]);
         v.readout(() => info && `${bc.value === 'D' ? '$u(0,t)$' : '$u_x(0,t)$'} $=${v.sci(Math.max(Math.abs(info.wallNow), 1e-16), 2)}$ (zero up to rounding) · total heat $${v.fix(info.tot, 4)}$ versus initial $${v.fix(info.tot0, 4)}$ · largest difference from finite differences on $[0,8]$: $${v.sci(Math.max(info.dif, 1e-16), 2)}$` + (bc.value === 'D' && Math.abs(hs[0].y) > 0.02 ? '\ndata at the wall are not zero: $\\varphi(0)\\neq0$ is incompatible with $u(0,t)=0$, so the solution is discontinuous at the corner $(0,0)$' : ''));
       },
     },
@@ -195,7 +200,7 @@ Interpretation: at each time $s$ the source deposits the heat $f(\cdot,s)\,ds$, 
       tags: ['Duhamel', 'source', 'superposition'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Duhamel%27s_principle' },
       viz(v) {
-        const M = v.M, k = 0.2, NS = 14, TM = 3;
+        const M = v.M, k = 0.2, NS = 10, TM = 3;
         const wS = v.slider('heater width $w$', 0.15, 1, 0.4, { step: 0.01 });
         const TS = v.slider('observation time $T$', 0.2, TM, 2, { step: 0.02 });
         const P0 = v.stage({ x: [0, TM], y: [0, 1.4], axes: 'box', gutter: true, height: 200, xlabel: 's', title: 'heater on/off: $h(s)$', minWidth: 260 });
@@ -216,6 +221,8 @@ Interpretation: at each time $s$ the source deposits the heat $f(\cdot,s)\,ds$, 
           for (let j = 0; j < NS; j++) { const s = lo + (j + 0.5) * dsl; slices.push(s); }
           slices.forEach((s, j) => P1.fn((x) => dsl * pk(x, T - s), { color: v.mix('accent', 'orange', j / (NS - 1)), width: 1.6, alpha: 0.8 }));
           const riem = (x) => { let sum = 0; for (const s of slices) sum += dsl * pk(x, T - s); return sum; };
+          let ymax = 0.05; for (let x = -5; x <= 5; x += 0.25) ymax = Math.max(ymax, exact(x));
+          P1.setView([-5, 5], [-0.08 * ymax, 1.2 * ymax]);
           P1.fn(exact, { color: 'ink', width: 2.4 });
           P1.fn(riem, { color: 'accent', width: 3.6, alpha: 0.9 });
           const Hh = makeHeat(400, -8, 8, k, {});
@@ -235,7 +242,7 @@ Interpretation: at each time $s$ the source deposits the heat $f(\cdot,s)\,ds$, 
       name: 'Strong maximum principle for the heat equation',
       statement: String.raw`Let $U\subset\R^n$ be open, bounded and connected, $U_T=U\times(0,T]$, and let $u\in C^2_1(U_T)\cap C(\overline{U_T})$ solve $u_t=k\Delta u$ in $U_T$. If $u$ attains its maximum over $\overline{U_T}$ at a point $(x_0,t_0)\in U_T$ (an interior point, or a point of the top $t_0=T$), then $u$ is constant on $\overline{U}\times[0,t_0]$. Consequently, if the data are not constant, $u<\max_{\overline{U_T}}u$ at every point of $U\times(0,T]$: the maximum is *strictly* attained only on the parabolic boundary.`,
       idea: String.raw`One proves it with the mean-value property over heat balls (3.11): if $u(x_0,t_0)=M$ is the maximum, the weighted average of $u$ over a heat ball at $(x_0,t_0)$ equals $M$, so $u\equiv M$ on the whole ball, which reaches back in time; chaining balls covers $U\times[0,t_0]$ (the domain must be connected). Louis Nirenberg proved the analogue for general linear parabolic operators in 1953 by Hopf's method. In words: heat that is anywhere strictly below the maximum stays strictly below it, because a positive kernel mixes all the neighbouring values into every point.`,
-      caption: String.raw`The sides of the bar are held at the temperature $s$ and the initial profile is below or equal to $1$; the colour map shows $\log_{10}(M-u)$, the gap to the global maximum $M$ (dark = the maximum is nearly touched). Pick *free data* (drag the handles), *plateau* ($\varphi\equiv1$ in the interior, sides at $s<1$: the maximum is touched on the bottom edge) or *constant* ($\varphi\equiv s=1$, the only way to touch the maximum inside). Even in the plateau case the gap is positive at every interior point for $t>0$ (right panel, log scale; it decays to roundoff $\approx10^{-16}$ deep inside); only constant data give a gap of exactly $0$.`,
+      caption: String.raw`The sides of the bar are held at the temperature $s$ and the initial profile is below or equal to $1$; the colour map shows $\log_{10}(M-u)$, the gap to the global maximum $M$ (dark = the maximum is nearly touched). Pick *free data* (drag the handles), *plateau* ($\varphi\equiv1$ in the interior, sides at $s<1$: the maximum is touched on the bottom edge) or *constant* ($\varphi\equiv s=1$, the only way to touch the maximum inside). Even in the plateau case the gap is positive at every interior point for $t>0$ (right panel, log scale): it shrinks as $t\to0^+$ but never reaches $0$; only constant data give a gap of exactly $0$.`,
       deps: ['pde-3.1'],
       refs: ['Evans §2.3'],
       tags: ['maximum principle', 'heat equation'],
