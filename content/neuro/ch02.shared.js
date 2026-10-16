@@ -44,6 +44,38 @@ export function hhSim(Ifn, { T = 6.3, tEnd = 30, dt = 0.02, every = 1, y0, p = H
   o.y = y;
   return o;
 }
+
+/**
+ * Fast integration without recording (preallocated RK4, same scheme as hhSim): returns {spikes, peak, trough, y}. Use it for sweeps
+ * and bisections; Ifn(t) is the current waveform (µA/cm²), p may carry freeze: 'h' | 'n' | 'hn'.
+ */
+export function hhRun(Ifn, { T = 6.3, tEnd = 30, dt = 0.04, y0, p = HH, thr = 0 } = {}) {
+  const phi = phiT(T), fz = p.freeze || '', fh = fz.includes('h'), fn = fz.includes('n');
+  const y = Float64Array.from(y0 || hhRest()), a = new Float64Array(4), k1 = new Float64Array(4), k2 = new Float64Array(4), k3 = new Float64Array(4), k4 = new Float64Array(4);
+  const f = (s, I, o) => {
+    const V = s[0], m = s[1], h = s[2], n = s[3];
+    o[0] = (I - p.gNa * m * m * m * h * (V - p.ENa) - p.gK * n * n * n * n * (V - p.EK) - p.gL * (V - p.EL)) / p.C;
+    o[1] = phi * (HH.am(V) * (1 - m) - HH.bm(V) * m);
+    o[2] = fh ? 0 : phi * (HH.ah(V) * (1 - h) - HH.bh(V) * h);
+    o[3] = fn ? 0 : phi * (HH.an(V) * (1 - n) - HH.bn(V) * n);
+  };
+  const N = Math.round(tEnd / dt), spikes = [];
+  let armed = true, peak = -Infinity, trough = Infinity, Vp = y[0];
+  for (let k = 0; k < N; k++) {
+    const t = k * dt, I0 = Ifn(t), I1 = Ifn(t + dt), Im = 0.5 * (I0 + I1);
+    f(y, I0, k1);
+    for (let i = 0; i < 4; i++) a[i] = y[i] + 0.5 * dt * k1[i]; f(a, Im, k2);
+    for (let i = 0; i < 4; i++) a[i] = y[i] + 0.5 * dt * k2[i]; f(a, Im, k3);
+    for (let i = 0; i < 4; i++) a[i] = y[i] + dt * k3[i]; f(a, I1, k4);
+    for (let i = 0; i < 4; i++) y[i] += (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    const V = y[0];
+    if (armed && Vp < thr && V >= thr) { spikes.push(t + dt * ((thr - Vp) / (V - Vp))); armed = false; }
+    if (V < thr - 20) armed = true;
+    if (V > peak) peak = V; if (V < trough) trough = V;
+    Vp = V;
+  }
+  return { spikes, peak, trough, y: Array.from(y) };
+}
 /** Upward crossings of `thr` (linear interpolation), re-armed once V falls below thr − 20 mV. */
 export function spikeTimes(ts, Vs, thr = 0) {
   const out = []; let armed = true;
@@ -147,6 +179,32 @@ export function csRun(I, gA, { tEnd = 400, t0 = 20, dt = 0.05, every = 4 } = {})
   }
   o.spikes = spikeTimes(o.t, o.V, -20);
   return o;
+}
+
+
+/** Fast Connor–Stevens run without recording: spike times (V crossing −20 mV) for a current step I switched on at t0. */
+export function csSpikes(I, gA, { tEnd = 800, t0 = 20, dt = 0.05 } = {}) {
+  const EL = csEL(gA), y = Float64Array.from(csRest(gA)), a = new Float64Array(6), k1 = new Float64Array(6), k2 = new Float64Array(6), k3 = new Float64Array(6), k4 = new Float64Array(6);
+  const f = (s, Ii, o) => {
+    const V = s[0], m = s[1], h = s[2], n = s[3], aa = s[4], b = s[5];
+    o[0] = -CS.gL * (V - EL) - CS.gNa * m * m * m * h * (V - CS.ENa) - CS.gK * n * n * n * n * (V - CS.EK) - gA * aa * aa * aa * b * (V - CS.EA) + Ii;
+    o[1] = (csInf('m', V) - m) / csTau('m', V); o[2] = (csInf('h', V) - h) / csTau('h', V); o[3] = (csInf('n', V) - n) / csTau('n', V);
+    o[4] = (csA.ainf(V) - aa) / csA.taua(V); o[5] = (csA.binf(V) - b) / csA.taub(V);
+  };
+  const N = Math.round(tEnd / dt), spikes = []; let armed = true, Vp = y[0];
+  for (let k = 0; k < N; k++) {
+    const t = k * dt, Ii = t >= t0 ? I : 0;
+    f(y, Ii, k1);
+    for (let i = 0; i < 6; i++) a[i] = y[i] + 0.5 * dt * k1[i]; f(a, Ii, k2);
+    for (let i = 0; i < 6; i++) a[i] = y[i] + 0.5 * dt * k2[i]; f(a, Ii, k3);
+    for (let i = 0; i < 6; i++) a[i] = y[i] + dt * k3[i]; f(a, Ii, k4);
+    for (let i = 0; i < 6; i++) y[i] += (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    const V = y[0];
+    if (armed && Vp < -20 && V >= -20) { spikes.push(t + dt * ((-20 - Vp) / (V - Vp))); armed = false; }
+    if (V < -40) armed = true;
+    Vp = V;
+  }
+  return spikes;
 }
 
 // ---------------------------------------------------------------- lumped Markov channels (binomial transitions per step)

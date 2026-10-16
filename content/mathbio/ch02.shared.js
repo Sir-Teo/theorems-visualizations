@@ -5,7 +5,7 @@ export * from './ch01.shared.js';
 export const MAPS = {
   logistic: { name: 'logistic', tex: 'x\\mapsto rx(1-x)', par: 'r', f: (r, x) => r * x * (1 - x), df: (r, x) => r * (1 - 2 * x), crit: () => 0.5, fixed: (r) => (r > 1 ? 1 - 1 / r : 0), xmax: () => 1, ymax: (r) => Math.max(1, r / 4) },
   ricker: { name: 'Ricker', tex: 'x\\mapsto x\\,e^{r(1-x)}', par: 'r', f: (r, x) => x * Math.exp(r * (1 - x)), df: (r, x) => Math.exp(r * (1 - x)) * (1 - r * x), crit: (r) => 1 / r, fixed: () => 1, xmax: (r) => Math.max(2.2, Math.exp(r - 1) / r * 1.05), ymax: (r) => Math.max(1.5, Math.exp(r - 1) / r * 1.05) },
-  sine: { name: 'sine', tex: 'x\\mapsto a\\sin\\pi x', par: 'a', f: (a, x) => a * Math.sin(Math.PI * x), df: (a, x) => a * Math.PI * Math.cos(Math.PI * x), crit: () => 0.5, fixed: (a) => { const g = (x) => a * Math.sin(Math.PI * x) - x; let lo = 0.02, hi = 0.5; if (g(lo) <= 0) return 0; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (g(m) > 0) lo = m; else hi = m; } return (lo + hi) / 2; }, xmax: () => 1, ymax: () => 1 },
+  sine: { name: 'sine', tex: 'x\\mapsto a\\sin\\pi x', par: 'a', f: (a, x) => a * Math.sin(Math.PI * x), df: (a, x) => a * Math.PI * Math.cos(Math.PI * x), crit: () => 0.5, fixed: (a) => { const g = (x) => a * Math.sin(Math.PI * x) - x; let lo = 0.02, hi = 1; if (g(lo) <= 0) return 0; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (g(m) > 0) lo = m; else hi = m; } return (lo + hi) / 2; }, xmax: () => 1, ymax: () => 1 },
   tent: { name: 'tent', tex: 'x\\mapsto \\mu\\min(x,1-x)', par: '\\mu', f: (m, x) => m * Math.min(x, 1 - x), df: (m, x) => (x < 0.5 ? m : -m), crit: () => 0.5, fixed: (m) => (m > 1 ? m / (1 + m) : 0), xmax: () => 1, ymax: (m) => Math.max(1, m / 2) },
 };
 

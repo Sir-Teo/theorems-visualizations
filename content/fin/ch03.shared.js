@@ -5,7 +5,7 @@
 // covariances are in-sample estimates: monthly values times 12 (means) and 12 (covariances), i.e. annualised arithmetic means
 // and variances, in decimals (0.12 = 12% a year).
 export { clamp, pct, fx, sg, bp, money, usd, dl, pctTicks } from './ch02.shared.js';
-export { data, mean, sdev, ols, solveLin, invert, matVec, dot, frontierConsts, frontierSd, frontierWeights, tangency, covRho, quad, rng, fanLabels, IND_NAMES, IND_LONG, monthLabel, idxOf, ymOf } from './ch04.shared.js';
+export { data, mean, sdev, ols, excess, solveLin, invert, matVec, dot, frontierConsts, frontierSd, frontierWeights, tangency, covRho, quad, rng, fanLabels, IND_NAMES, IND_LONG, monthLabel, idxOf, ymOf } from './ch04.shared.js';
 import { data, mean, solveLin, matVec, dot, quad, frontierConsts, IND_NAMES } from './ch04.shared.js';
 
 /** Total market return series (Mkt−RF + RF), monthly decimals. */
