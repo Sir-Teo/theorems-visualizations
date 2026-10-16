@@ -224,7 +224,7 @@ Two lights with different $S$ but the same $(X,Y,Z)$ look identical (metamers); 
 
 The rule is exact in one respect, that mixing is a weighted average: the colour of a mixture lies on the segment between the colours mixed, in proportion to their amounts. It is only a rough guide in another: the circle is a diagram, and the true mixing space is the chromaticity diagram, whose colour-wheel is not a circle with equal-weight centres.`,
       idea: String.raw`Light adds linearly, so the response of the eye to a mixture is the weighted sum of its responses to the parts; in the chromaticity plane that is a weighted average of points. Newton’s circle is a hand-drawn version of that plane in which the spectrum is bent into a ring, and its centre stands for white. The picture is qualitative: the true spectral locus is not a circle and the weights $X+Y+Z$ that make the average exact are not equal for equal powers, which is why the comparison panel disagrees with the circle by a visible amount.`,
-      caption: String.raw`Drag the seven sliders (amounts of each spectral colour). The coloured ring is Newton’s circle with his arc proportions; the gold point $Z$ is the centre of gravity of the weights placed at the arcs’ own centres of gravity, and the line $OZ$ extended hits the rim at the hue. On the right, the chromaticity diagram compares Newton’s prediction (open ring) with the true mixture of lights at the same wavelengths (gold dot). Try the presets: Newton’s own example, a red–green–violet mixture balanced so that $Z=O$, and a white-looking pair.`,
+      caption: String.raw`Drag the seven sliders (amounts of each spectral colour). The coloured ring is Newton’s circle with his arc proportions; the gold point $Z$ is the centre of gravity of the weights placed at the arcs’ own centres of gravity, and the line $OZ$ extended hits the rim at the hue. On the right, the chromaticity diagram compares Newton’s prediction (open ring) with the true mixture of lights at the same wavelengths (gold dot). Try the presets: Newton’s own example, a red–green–violet mixture balanced so that $Z=O$, and an orange–blue pair.`,
       deps: ['art-3.1'],
       refs: ['Kemp ch. 7'],
       tags: ['Newton', 'colour circle', 'mixing'],
@@ -496,7 +496,7 @@ $\psi(b)$ has a **maximum**, $\psi_{\max}$, where $\cos^2 i=(n^2-1)/3$: rays nea
       num: '3.6',
       kind: 'Concept',
       name: 'Subtractive mixing: filters multiply spectra',
-      credit: 'Beer–Lambert law (Bouguer 1729, Lambert 1760, Beer 1852); Ducos du Hauron’s subtractive colour printing, 1868',
+      credit: 'The Beer–Lambert law of absorption (Bouguer, Lambert and Beer)',
       statement: String.raw`A filter with transmittance $T(\lambda)$ passes the fraction $T(\lambda)$ of the light at each wavelength. Light that goes through a stack of filters has the spectrum
 $$S_{\text{out}}(\lambda)=S_{\text{in}}(\lambda)\,T_1(\lambda)\,T_2(\lambda)\cdots T_m(\lambda),$$
 the **product** of the transmittances, in whatever order the filters are stacked. For an absorbing medium of thickness (or density) $d$ the transmittance is $T^{\,d}$, so doubling the layer squares it. A product of numbers at most 1 never exceeds any of its factors: filtering only removes light, and a pair of filters that overlap in no wavelength passes none.`,

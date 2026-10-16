@@ -209,8 +209,8 @@ export default {
       refs: ['Agarwal–Lang §3.6'],
       tags: ['source transformation', 'equivalence'],
       viz(v) {
-        const sA = v.stage({ x: [-1.0, 6.2], y: [-0.7, 3.9], equal: true, axes: false, height: 250, weight: 1, title: 'voltage source + series $R_s$' });
-        const sB = v.stage({ x: [-1.0, 6.2], y: [-0.7, 3.9], equal: true, axes: false, height: 250, weight: 1, title: 'current source ∥ $R_s$' });
+        const sA = v.stage({ x: [-1.0, 6.2], y: [-0.7, 4.5], equal: true, axes: false, height: 250, weight: 1, title: 'voltage source + series $R_s$' });
+        const sB = v.stage({ x: [-1.0, 6.2], y: [-0.7, 4.5], equal: true, axes: false, height: 250, weight: 1, title: 'current source ∥ $R_s$' });
         const sp = v.stage({ x: [10, 1e5], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 300, full: true, xlabel: 'load resistance $R_L$ ($\\Omega$)', ylabel: 'power (mW)', title: 'what is dissipated where' });
         const CA = v.circuit(sA, [
           { type: 'V', id: 'V', name: 'Vs', value: 10, at: [0, 3, 0, 0] }, { type: 'W', at: [0, 3, 0.8, 3] }, { type: 'R', id: 'Rs', name: 'Rs', value: 500, at: [0.8, 3, 3.3, 3] }, { type: 'W', at: [3.3, 3, 5, 3] },
@@ -311,7 +311,7 @@ export default {
       tags: ['tellegen', 'power balance', 'graph'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tellegen%27s_theorem' },
       viz(v) {
-        const s = v.stage({ x: [-0.78, 0.78], y: [-0.68, 0.68], equal: true, axes: false, height: 360, weight: 1, title: 'one graph, two circuits' });
+        const s = v.stage({ x: [-0.85, 0.85], y: [-0.7, 0.7], equal: true, axes: false, height: 360, weight: 1, title: 'one graph, two circuits (width = |product|)' });
         const sb = v.stage({ x: [0.3, 7.7], y: [-1, 1], axes: 'box', gutter: true, height: 360, weight: 1, xlabel: 'branch', ylabel: 'running sum of $v^A_k i^B_k$ (V·mA)', title: 'the products add to zero' });
         const sel = v.select('graph', ['k4', 'bridge', 'ladder', 'grid3'].map((k) => ({ value: k, label: NETS[k].label })), 'k4');
         const sA = v.slider('circuit A (voltages), seed', 1, 40, 3, { int: true });
@@ -337,13 +337,14 @@ export default {
           const sum = (x, y) => x.reduce((a, q, k) => a + q * y[k], 0);
           const cross = { AB: sum(A.vk, B.ik), BA: sum(B.vk, A.ik), AA: sum(A.vk, A.ik), BB: sum(B.vk, B.ik) };
           const vmax = Math.max(1e-9, ...A.phi.map(Math.abs)), pmax = Math.max(1e-9, ...prod.map(Math.abs));
-          const els = E.map(([a, b], k) => ({ a, b, kind: 'W', color: prod[k] >= 0 ? 'orange' : 'green', width: 2 + 8 * Math.abs(prod[k]) / pmax, label: E.length <= 7 ? `${v.fix(A.vk[k], 1)} V · ${v.fix(B.ik[k], 2)} mA` : null }));
+          const els = E.map(([a, b], k) => ({ a, b, kind: 'W', color: prod[k] >= 0 ? 'orange' : 'green', width: 2 + 8 * Math.abs(prod[k]) / pmax, label: E.length <= 5 ? `${v.fix(A.vk[k], 1)} V · ${v.fix(B.ik[k], 2)} mA` : null }));
           drawNet(s, v, P, els, { phi: A.phi, vmax, names: net.names.map((nm, i) => `${nm} ${v.fix(A.phi[i], 1)}`), nodeR: 9, nameDy: -20, labelOff: 0.05, labelSize: 10.5 });
           if (eps.value > 0) { const p0 = P[0], p1 = P[n - 1]; s.arrow(p0[0] - 0.2, p0[1] + 0.12, p0[0] - 0.02, p0[1] + 0.02, { color: 'red', width: 3 }); s.arrow(p1[0] + 0.02, p1[1] - 0.02, p1[0] + 0.2, p1[1] - 0.12, { color: 'red', width: 3 }); }
           let run = 0; const lev = [0];
           prod.forEach((x, k) => { sb.rect(k + 1 - 0.34, Math.min(run, run + x), k + 1 + 0.34, Math.max(run, run + x), { fill: x >= 0 ? 'orange' : 'green', fillAlpha: 0.4, color: x >= 0 ? 'orange' : 'green', width: 1.4 }); run += x; lev.push(run); });
           const top = Math.max(1, ...lev.map(Math.abs)) * 1.3;
-          sb.setView([0.3, E.length + 0.9], [-top, top]);
+          sb.setView([0.3, E.length + 1.5], [-top, top]);
+          prod.forEach((x, k) => sb.text(v.fix(x, 2), k + 1, Math.max(lev[k], lev[k + 1]), { size: 11, baseline: 'bottom', dy: -3, color: 'muted' }));
           sb.hline(0, { color: 'ink', width: 1.2 });
           sb.dot(E.length + 0.5, run, { r: 7, color: Math.abs(run) < 1e-9 ? 'green' : 'red' });
           sb.text('Σ', E.length + 0.5, run, { size: 12, dx: 12, color: Math.abs(run) < 1e-9 ? 'green' : 'red', plate: true });
@@ -378,7 +379,7 @@ export default {
         const sel = v.select('network', ['bridge', 'k4', 'ladder', 'grid3'].map((k) => ({ value: k, label: NETS[k].label })), 'bridge');
         const seed = v.slider('resistor seed', 1, 40, 5, { int: true });
         const gain = v.slider('dependent source gain $g$', -2, 2, 0, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mS` });
-        const PORTS = { bridge: [[0, 3], [1, 2]], k4: [[0, 2], [1, 3]], ladder: [[0, 2], [3, 5]], grid3: [[0, 8], [2, 6]] };
+        const PORTS = { bridge: [[0, 1], [2, 3]], k4: [[0, 2], [1, 3]], ladder: [[0, 2], [3, 5]], grid3: [[0, 8], [2, 6]] };
         let info = null;
         v.render(() => {
           const net = NETS[sel.value], n = net.names.length, P = geom(net), E = net.edges, rng = v.rng(seed.value * 31 + 7);
@@ -397,8 +398,8 @@ export default {
             st.arrow(P[d[0]][0] - 0.16, P[d[0]][1] + 0.1, P[d[0]][0] - 0.03, P[d[0]][1] + 0.02, { color: 'gold', width: 4 });
             st.arrow(P[d[1]][0] + 0.03, P[d[1]][1] - 0.02, P[d[1]][0] + 0.16, P[d[1]][1] - 0.1, { color: 'gold', width: 4 });
             st.text('1 mA in', P[d[0]][0] - 0.15, P[d[0]][1] + 0.16, { size: 11, color: 'gold' });
-            st.text('M', P[m[0]][0], P[m[0]][1], { size: 10, color: 'ink', dy: 16 });
-            st.text('M', P[m[1]][0], P[m[1]][1], { size: 10, color: 'ink', dy: 16 });
+            st.text('meter +', P[m[0]][0], P[m[0]][1], { size: 10.5, color: 'green', dy: 20, plate: true });
+            st.text('meter −', P[m[1]][0], P[m[1]][1], { size: 10.5, color: 'green', dy: 20, plate: true });
             st.corner(`reads ${v.fix(r.z, 4)} V`, 'br', { color: 'green', plate: true });
           });
           info = { z1: r1.z, z2: r2.z, g: gain.value };
