@@ -73,7 +73,7 @@ The constant $A$ stands for risks that do not depend on age (accidents, violence
       viz(v) {
         const co = v.select('country', cOpts(LC_CTRY), 'USA');
         const yr = v.slider('year', 1950, 2023, 2019, { int: true });
-        const Asl = v.slider('$A$ (per 100 000 per year)', 0, 400, 100, { step: 1 });
+        const Asl = v.slider('$A$ per 100 000', 0, 400, 52, { step: 1 });
         const s = v.stage({ x: [10, 100], y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'age', ylabel: 'death rate m(x), per year', height: 360, title: 'Gompertz and Gompertz–Makeham fits' });
         const t = v.stage({ x: [15, 100], y: [0, 1], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'share of $A$ in $\\mu(x)$', height: 360, title: 'Share of the age-independent term' });
         const objective = (pts, Afix) => (p) => {
@@ -95,8 +95,11 @@ The constant $A$ stands for risks that do not depend on age (accidents, violence
           return (cache = { key, pts, gg, Aopt, gOpt: costA(Aopt) });
         };
         v.button('least-squares $A$', () => Asl.set(Math.round(fits().Aopt * 1e5)));
+        let firstA = true;
         v.render(() => {
-          const F = fits(), A = Asl.value / 1e5;
+          const F = fits();
+          if (firstA) { firstA = false; Asl.set(Math.round(F.Aopt * 1e5)); }
+          const A = Asl.value / 1e5;
           const fit = v.M.nelderMead(objective(F.pts, A), F.gg.x, { step: [0.3, 0.005], tol: 1e-12, maxIt: 300 });
           const B = Math.exp(fit.x[0]), al = fit.x[1], Bg = Math.exp(F.gg.x[0]), ag = F.gg.x[1];
           const mu = (x) => A + B * Math.exp(al * x);
@@ -249,7 +252,7 @@ For $\sigma^2>0$, $\bar\mu$ rises more slowly than $\mu_0$ and tends to the fini
       viz(v) {
         const sc = v.select('standard', cOpts(CTRY), 'SWE');
         const sy = v.slider('standard year', 0, LTY.length - 1, 4, { int: true, fmt: (i) => String(LTY[Math.round(i)]) });
-        const tc = v.select('target', cOpts(CTRY), 'NGA');
+        const tc = v.select('target', cOpts(CTRY), 'MEX');
         const ty = v.slider('target year', 0, LTY.length - 1, 4, { int: true, fmt: (i) => String(LTY[Math.round(i)]) });
         const sa = v.slider('$\\alpha$', -1.5, 1.5, 0, { step: 0.005 });
         const sb = v.slider('$\\beta$', 0.4, 1.6, 1, { step: 0.005 });
@@ -323,7 +326,6 @@ Here $a_x$ is the average age profile, $k_t$ a single **mortality index** for th
           s.dots(Z[ti].map((z, i) => [MID22[i], z]), { r: 4, color: 'accent' });
           const bm = Math.max(...lc.b) * 1.2;
           b.setView([0, 105], [Math.min(0, Math.min(...lc.b) * 1.2), bm]);
-          b.bars(lc.b, { x0: 0, dx: 1, color: 'purple', alpha: 0 });
           lc.b.forEach((bx, i) => { const w = i === 0 ? 1 : i === 1 ? 4 : i === 21 ? 5 : 5, x0 = AGE22[i]; b.rect(x0 + 0.3, 0, x0 + w - 0.3, bx, { fill: 'purple', fillAlpha: 0.5, color: 'purple' }); });
           b.hline(0, { color: 'muted' });
           const kmin = Math.min(...lc.k), kmax = Math.max(...lc.k), kT = lc.k[T - 1];
@@ -336,7 +338,7 @@ Here $a_x$ is the average age profile, $k_t$ a single **mortality index** for th
           kk.dot(yr.value, lc.k[ti], { r: 5, color: 'gold' });
           const e0 = (k) => lt22(lc.a.map((a, i) => Math.exp(a + lc.b[i] * k))).e0;
           const obs = lt22(mxOf(co.value, 2023)).e0;
-          R = { share: lc.share, mu: dr.mu, sd: dr.sd, e0fit: e0(kT), obs, e0f: e0(kT + dr.mu * h), h, yrs: 2023 + h, lo: e0(kT + dr.mu * h - 1.2816 * dr.sd * Math.sqrt(h)), hi: e0(kT + dr.mu * h + 1.2816 * dr.sd * Math.sqrt(h)) };
+          R = { share: lc.share, mu: dr.mu, sd: dr.sd, e0fit: e0(kT), obs, e0f: e0(kT + dr.mu * h), h, yrs: 2023 + h, lo: Math.min(e0(kT + dr.mu * h - 1.2816 * dr.sd * Math.sqrt(h)), e0(kT + dr.mu * h + 1.2816 * dr.sd * Math.sqrt(h))), hi: Math.max(e0(kT + dr.mu * h - 1.2816 * dr.sd * Math.sqrt(h)), e0(kT + dr.mu * h + 1.2816 * dr.sd * Math.sqrt(h))) };
         });
         v.legend([['accent', 'observed'], ['muted', '$a_x$', { dash: true }], ['orange', 'fit $a_x + b_x k_t$'], ['purple', '$b_x$']]);
         v.readout(() => `${CNAME[co.value]}: the first component explains ${v.fix(100 * R.share, 1)}% of the variance of centred log rates; drift of $k_t$ $= ${v.fix(R.mu, 3)}$ per year, standard deviation of steps ${v.fix(R.sd, 3)}\n$e_0$ 2023: observed (this table) ${v.fix(R.obs, 1)}, from the fitted index ${v.fix(R.e0fit, 1)}; forecast for ${R.yrs}: ${v.fix(R.e0f, 1)} (80% range ${v.fix(R.lo, 1)}–${v.fix(R.hi, 1)})`);
@@ -347,13 +349,13 @@ Here $a_x$ is the average age profile, $k_t$ a single **mortality index** for th
       num: '3.7',
       kind: 'Phenomenon',
       name: 'Record life expectancy rises linearly (Oeppen–Vaupel)',
-      statement: String.raw`The highest national life expectancy at birth in each year (the "best-practice" or record value) has increased almost on a straight line for about 160 years. Oeppen and Vaupel (2002) found, for the record female life expectancy since 1840, a linear trend of slope 0.243 years per year (about three months per year; $r^2=0.992$) and a slightly lower slope of 0.222 for men. The record has been held in turn by different countries (Sweden, Norway, New Zealand, Iceland, Japan, and others), and every published ceiling on life expectancy was exceeded, usually within a few years of publication.`,
+      statement: String.raw`The highest national life expectancy at birth in each year (the "best-practice" or record value) has increased almost on a straight line for about 160 years. Oeppen and Vaupel (2002) found, for the record female life expectancy since 1840, a linear trend of slope 0.243 years per year (about three months per year) and a slightly lower slope of 0.222 for men. The record has been held in turn by different countries (Sweden, Norway, New Zealand, Iceland, Japan, and others), and every published ceiling on life expectancy was exceeded, usually within a few years of publication.`,
       idea: String.raw`The linearity belongs to the frontier, not to any one country: countries lag, catch up and overtake, and the record passes between them, so the envelope is smoother than any single trajectory (look at the individual national lines). Declines in mortality at successive ages (infections first, later cardiovascular disease and old-age mortality) have kept the envelope moving at a similar speed. This is why forecasters who treated one country's recent slowdown as a ceiling were repeatedly wrong. Life expectancy is the area under the survival curve (2.4) and the period and cohort versions differ (2.7); the record is a period measure.`,
       caption: String.raw`Gold: the highest both-sexes life expectancy among countries of at least one million people, each year since 1840 (Our World in Data compilation of Human Mortality Database, Zijdeman et al. and UN data). Drag the two sliders to refit the line to any window and extrapolate; orange marks the female-only UN record since 1950. Switch on a country to see it fall behind the frontier. Choose one of the published limits to see where it sits.`,
       deps: ['demo-2.7'],
       refs: ['PHG ch. 3'],
       tags: ['life expectancy', 'forecasting', 'frontier'],
-      scope: String.raw`This reconstruction uses both-sexes values from the Our World in Data compilation for countries and territories of at least one million inhabitants (record holders include Hong Kong in recent years); the 0.243 and 0.222 slopes and $r^2$ quoted from Oeppen and Vaupel refer to their own female and male record series, which are not reproduced here. The published limits are quoted from a table by Vaupel and von Kistowski (Ageing Horizons, issue 3, Oxford Institute of Ageing) derived from the Oeppen–Vaupel supplements.`,
+      scope: String.raw`This reconstruction uses both-sexes values from the Our World in Data compilation for countries and territories of at least one million inhabitants (record holders include Hong Kong in recent years); the 0.243 and 0.222 slopes quoted from Oeppen and Vaupel refer to their own female and male record series (a different data set and period), which are not reproduced here. The published limits are quoted from a table by Vaupel and von Kistowski (Ageing Horizons, issue 3, Oxford Institute of Ageing) derived from the Oeppen–Vaupel supplements.`,
       credit: 'Jim Oeppen and James W. Vaupel, 2002',
       links: { doi: 'https://doi.org/10.1126/science.1069675' },
       viz(v) {
@@ -369,7 +371,7 @@ Here $a_x$ is the average age profile, $k_t$ a single **mortality index** for th
         const hi = v.slider('fit to year', 1900, 2023, 2023, { int: true });
         const ext = v.slider('extrapolate to', 2023, 2100, 2060, { int: true });
         const ct = v.select('compare with', [{ value: 'none', label: 'no country' }, { value: 'Sweden', label: 'Sweden' }, { value: 'Japan', label: 'Japan' }, { value: 'United States', label: 'USA' }, { value: 'France', label: 'France' }], 'none');
-        const lm = v.select('published limit', [{ value: '-1', label: 'none' }].concat(LIM.map((l, i) => ({ value: String(i), label: `${l.who} ${l.pub}` }))), '-1');
+        const lm = v.slider('published limit (0 = none)', 0, LIM.length, 0, { int: true, fmt: (i) => (Math.round(i) === 0 ? 'none' : `${LIM[Math.round(i) - 1].who} ${LIM[Math.round(i) - 1].pub}`) });
         const fem = v.toggle('female record since 1950', true);
         const s = v.stage({ x: [1840, 2100], y: [40, 100], axes: 'box', gutter: true, xlabel: 'year', ylabel: 'life expectancy at birth', height: 400, title: 'The record life expectancy' });
         let R = null;
@@ -382,7 +384,7 @@ Here $a_x$ is the average age profile, $k_t$ a single **mortality index** for th
           if (ct.value !== 'none') { const tr = TRAJ[ct.value]; s.path(tr.map((e, i) => (e == null ? null : [1840 + i, e])), { color: 'purple', width: 2 }); }
           s.path(yrs.map((y, i) => [y, REC_BOTH[i]]), { color: 'gold', width: 3 });
           if (fem.value) s.path(REC_FEM.map((e, i) => [1950 + i, e]), { color: 'orange', width: 2.5 });
-          const sel = +lm.value;
+          const sel = lm.value - 1;
           LIM.forEach((l, i) => { if (sel < 0 || i === sel) { s.hline(l.lim, { color: 'red', alpha: sel < 0 ? 0.0 : 0.6, dash: true }); if (sel < 0) { s.segment([Math.min(l.pub, l.ex), l.lim], [Math.max(l.pub, l.ex), l.lim], { color: l.sx === 'f' ? 'purple' : 'red', width: 2 }); } s.dot(l.pub, l.lim, { r: 5, color: 'red', hollow: true }); s.dot(l.ex, l.lim, { r: 5, color: 'green' }); } });
           let sx = null;
           if (sel >= 0) {
