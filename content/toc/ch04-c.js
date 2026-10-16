@@ -52,23 +52,23 @@ export default {
           const mach = (n) => (n < t ? acc(n) : acc(t + ((n - t) % c)));
           const tg = TARGET[mode.value], L = (n) => (tg ? tg(n) : mach(n));
           const P = pen(ls, v), cw = Math.min(20, (P.W - 40) / N), x0 = Math.round((P.W - N * cw) / 2 + 0), y1 = 50, y2 = 128;
-          P.sans('n ∈ S  (a^n accepted)', x0, y1 - 18, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
-          P.sans(`n + c = n + ${c}  ∈ S`, x0, y2 - 18, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
+          P.sans('n ∈ S   (a^n accepted)', x0, y1 - 34, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
+          P.sans(`n + c = n + ${c}  ∈ S`, x0, y2 - 14, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
           let bad = 0, firstBad = -1, wrong = 0, firstWrong = -1;
           for (let n = 0; n < N; n++) {
             const inT = n < t, a = L(n), b = n + c < N ? L(n + c) : null, ok = b === a;
-            P.box(x0 + n * cw, y1, cw - 1.5, cw - 1.5, { r: 3, fill: a ? 'green' : 'faint', alpha: a ? 0.7 : 0.25, stroke: inT ? 'blue' : 'orange', width: 1.4 });
-            if (n % 5 === 0 || n < 3) P.text(String(n), x0 + n * cw + cw / 2 - 1, y1 - 6 + 0, { size: 9.5, color: 'faint', baseline: 'bottom' });
+            P.box(x0 + n * cw, y1, cw - 1.5, cw - 1.5, { r: 2, fill: a ? 'green' : 'faint', alpha: a ? 0.7 : 0.25, stroke: inT ? 'blue' : 'orange', width: 1.4 });
+            if (n % 5 === 0 || n < 3) P.text(String(n), x0 + n * cw + cw / 2 - 1, y1 - 4, { size: 9.5, color: 'faint', baseline: 'bottom' });
             if (b !== null) {
               const mis = n >= t && !ok; if (mis) { bad++; if (firstBad < 0) firstBad = n; }
-              P.box(x0 + n * cw, y2, cw - 1.5, cw - 1.5, { r: 3, fill: b ? 'green' : 'faint', alpha: b ? 0.7 : 0.25, stroke: mis ? 'red' : n >= t ? 'orange' : 'faint', width: mis ? 2.6 : 1.2 });
+              P.box(x0 + n * cw, y2, cw - 1.5, cw - 1.5, { r: 2, fill: b ? 'green' : 'faint', alpha: b ? 0.7 : 0.25, stroke: mis ? 'red' : n >= t ? 'orange' : 'faint', width: mis ? 2.6 : 1.2 });
             }
             if (tg && n >= 0 && mach(n) !== L(n)) { wrong++; if (firstWrong < 0) firstWrong = n; P.text('×', x0 + n * cw + cw / 2 - 1, y1 + cw + 8, { size: 12, weight: 700, color: 'red' }); }
           }
           // brackets for the tail and the first periods
-          P.line(x0, y1 + cw + 22, x0 + t * cw - 2, y1 + cw + 22, { color: 'blue', width: 3 }); P.sans(`tail t = ${t}`, x0 + (t * cw) / 2, y1 + cw + 37, { size: 11.5, weight: 700, color: 'blue' });
+          P.line(x0, y1 + cw + 22, x0 + t * cw - 2, y1 + cw + 22, { color: 'blue', width: 3 }); if (t > 0) P.sans(`tail t = ${t}`, x0, y1 + cw + 40, { align: 'left', size: 11.5, weight: 700, color: 'blue' });
           for (let k = 0; t + (k + 1) * c <= N && k < 8; k++) { const xa = x0 + (t + k * c) * cw; P.line(xa + 1, y1 + cw + 22, xa + c * cw - 3, y1 + cw + 22, { color: k % 2 ? 'orange' : 'gold', width: 3 }); }
-          P.sans(`period c = ${c}`, x0 + (t + c / 2) * cw, y1 + cw + 37, { size: 11.5, weight: 700, color: 'orange' });
+          P.sans(`period c = ${c}`, x0 + (t + c / 2) * cw + (t > 0 ? 30 : 0), y1 + cw + 40, { align: t > 0 ? 'left' : 'center', size: 11.5, weight: 700, color: 'orange' });
           P.line(x0 + t * cw - 1, y1 - 2, x0 + t * cw - 1, y2 + cw + 4, { color: 'muted', dash: true });
           if (tg) P.sans('red ×: the lasso machine and the language differ at this length', x0, y2 + cw + 28, { align: 'left', size: 11.5, color: 'red' });
           // largest t+c that fits the language, searched over t + c <= 20
@@ -131,7 +131,7 @@ export default {
         showKeys();
         const iS = v.slider('cut boundary $i$', 0, 9, 1, { int: true }), jS = v.slider('cut boundary $j$', 1, 9, 4, { int: true });
         v.button('find an equal pair', () => { const R = simulate(MACH[key], w); outer: for (let i = 0; i <= w.length; i++) for (let j = i + 1; j <= w.length; j++) if (seqKey(R.seq[i]) === seqKey(R.seq[j]) && R.seq[i].length) { iS.set(i); jS.set(j); break outer; } });
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 470, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 440, full: true });
         const seqKey = (q) => q.map((e) => e[0] + (e[1] > 0 ? '>' : '<')).join(' ');
         function simulate(M, str) {
           const n = str.length, tape = [LT, ...str, RT], trace = [{ p: 0, q: M.start }], seq = Array.from({ length: n + 1 }, () => []);
@@ -155,7 +155,7 @@ export default {
           const iV = Math.min(iS.value, n), jV = Math.max(Math.min(jS.value, n), Math.min(iV + 1, n));
           if (iV !== iS.value) iS.set(iV); if (jV !== jS.value) jS.set(jV);
           const R = simulate(M, str), P = pen(s, v), cells = n + 2, cw = Math.min(54, (P.W - 70) / cells), x0 = 46, rows = R.trace.length;
-          const rh = Math.min(15, (P.H - 220) / Math.max(rows, 1)), y0 = 62;
+          const rh = Math.min(24, (P.H - 230) / Math.max(rows, 1)), y0 = 62;
           const bx = (b) => x0 + (b + 1) * cw;
           const eq = seqKey(R.seq[iV]) === seqKey(R.seq[jV]);
           // shading between the two chosen boundaries
@@ -178,7 +178,7 @@ export default {
           const cut = str.slice(0, iV) + str.slice(jV), dbl = str.slice(0, jV) + str.slice(iV, jV) + str.slice(jV);
           const Rc = simulate(M, cut), Rd = simulate(M, dbl);
           const ys = P.H - 38;
-          const line = (lab, ww, RR, y) => { P.sans(`${lab}`, 8, y, { align: 'left', size: 11.5, color: 'muted', weight: 600 }); P.text(ww === '' ? 'ε' : ww, 118, y, { align: 'left', size: 13 }); P.sans(verdict(RR), P.W - 12, y, { align: 'right', size: 13, weight: 700, color: RR.acc ? 'green' : 'red' }); };
+          const line = (lab, ww, RR, y) => { P.sans(`${lab}`, 8, y, { align: 'left', size: 11, color: 'muted', weight: 600 }); P.text(ww === '' ? 'ε' : ww, 250, y, { align: 'left', size: 13 }); P.sans(verdict(RR), P.W - 12, y, { align: 'right', size: 13, weight: 700, color: RR.acc ? 'green' : 'red' }); };
           line('w', str, R, ys - 14); line(`w with cells ${iV + 1}…${jV} deleted`, cut, Rc, ys + 6); line(`w with cells ${iV + 1}…${jV} doubled`, dbl, Rd, ys + 26);
           info = { eq, iV, jV, same: R.acc === Rc.acc && R.acc === Rd.acc, R, n };
         });
@@ -206,9 +206,9 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/B%C3%BCchi_automaton' },
       viz(v) {
         const AUT = {
-          inf: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'infinitely many a' }),
-          fin: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q0', b: ['q0', 'q1'] }, q1: { b: 'q1' } }, {}, { name: 'finitely many a' }),
-          both: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 1], ['q1', 7.5, 3.5, 0]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'a and b both infinitely often' }),
+          inf: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'infinitely many a', loops: { q0: 270, q1: 90 } }),
+          fin: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q0', b: ['q0', 'q1'] }, q1: { b: 'q1' } }, {}, { name: 'finitely many a', loops: { q0: 270, q1: 90 } }),
+          both: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 1], ['q1', 7.5, 3.5, 0]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'a and b both infinitely often', loops: { q0: 270, q1: 90 } }),
         };
         const sel = v.select('automaton', [{ value: 'inf', label: 'infinitely many a (deterministic)' }, { value: 'fin', label: 'finitely many a (needs a guess)' }, { value: 'both', label: 'a and b infinitely often' }], 'inf', { onChange: () => { N = AUT[sel.value](); G.sync(N); } });
         let u = 'b', w2 = 'ab', which = 'u';
@@ -357,7 +357,8 @@ export default {
           // product graph
           const colX = (id) => 0.9 + (S.st.findIndex((s) => s.id === id)) * (8.2 / Math.max(n - 1, 1)), rowY = (m) => (m === 'm0' ? 3.4 : 1.2);
           const nodes = C.nodes.map((id) => { const [s, m] = id.split('|'); return { id, x: colX(s), y: rowY(m), label: `$${s.slice(1)},${m.slice(1)}$` }; });
-          const edges = []; for (const a of C.nodes) for (const b of C.succ[a]) edges.push({ from: a, to: b, directed: true });
+          const edges = []; const ci = (id) => S.st.findIndex((x) => x.id === id.split('|')[0]);
+          for (const a of C.nodes) for (const b of C.succ[a]) { const d = Math.abs(ci(a) - ci(b)); edges.push({ from: a, to: b, directed: true, ...(d > 1 && a.split('|')[1] === b.split('|')[1] ? { bend: 14 + 10 * d } : {}) }); }
           PG.set({ nodes, edges });
           const hlE = (e) => lasso && lasso.stem.concat(lasso.cycle).some((x, i, arr) => i + 1 < arr.length && x === e.from && arr[i + 1] === e.to);
           PG.draw({

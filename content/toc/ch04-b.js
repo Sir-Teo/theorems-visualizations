@@ -112,7 +112,7 @@ Start with the partition $\{F,Q\setminus F\}$. Repeatedly split every block into
           if ((ph === 'sig' || ph === 'split') && f.r <= last) { const seen = {}; for (const s of D.states) { (seen[old.cls[s.id]] ||= new Set()).add(R[f.r].cls[s.id]); } for (const b in seen) if (seen[b].size > 1) splitting.add(+b); }
           if (ph === 'done') {
             ts.setView([0, 10], [0, 7]);
-            Q = layoutBFS(quotient(reachableD(D), R[last].cls), 10, 7);
+            Q = layoutBFS(quotient(reachableD(D), R[last].cls), 10, 7, 1.7);
             G2.sync(Q);
             drawDFA(v, ts, G2, Q, { fill: (id) => PAL[Q.states.findIndex((s) => s.id === id) % PAL.length] });
             ts.corner('quotient machine', 'tr', { color: 'muted', weight: 700, size: 13 });
