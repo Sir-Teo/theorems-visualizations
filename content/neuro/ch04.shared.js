@@ -114,19 +114,20 @@ export function hinesSolve(par, gc, d, b, V) {
  * relative to the leak reversal (so V is the deviation from rest). Returns Float64Array (mV).
  */
 export function treeSteady(tr, I, gL) {
-  const n = tr.n, d = new Float64Array(n), b = new Float64Array(n), V = new Float64Array(n);
-  for (let i = 0; i < n; i++) { d[i] = (Array.isArray(gL) || gL.length ? gL[i] : gL) * tr.area[i] * 1e3; b[i] = I[i]; }
+  const n = tr.n, d = new Float64Array(n), b = new Float64Array(n), V = new Float64Array(n), g = arr(gL, n);
+  for (let i = 0; i < n; i++) { d[i] = g[i] * tr.area[i] * 1e3; b[i] = I[i]; }
   for (let i = 1; i < n; i++) { d[i] += tr.gc[i]; d[tr.par[i]] += tr.gc[i]; }
   hinesSolve(tr.par, tr.gc, d, b, V);
   return V;
 }
-const arr = (x, n) => (typeof x === 'number' ? new Float64Array(n).fill(x) : Float64Array.from(x));
+function arr(x, n) { return typeof x === 'number' ? new Float64Array(n).fill(x) : Float64Array.from(x); }
+const _unused = (x, n) => (typeof x === 'number' ? new Float64Array(n).fill(x) : Float64Array.from(x));
 /**
  * Time-stepping engine for a compartment tree with leak, optional Hodgkin–Huxley Na/K channels and conductance synapses.
  * Voltage is advanced implicitly (conductances frozen at the old gate values), the gates by exponential Euler with the new voltage.
  * prm: dt (ms), tEnd, cm (µF/cm², number|array), gL (mS/cm²), gNa, gK (mS/cm², number|array, default 0), V0 (mV, −65), T (°C, 6.3),
  *      EL (leak reversal; default chosen so V0 is an equilibrium), ENa, EK,
- *      stim(t, I) adds injected current (nA) to the array I, syn: [{node, gmax (µS), t0, tau (ms), E (mV)}] (alpha conductances),
+ *      stim(t, I) adds injected current (nA) to the array I, syn: [{node, gmax (µS), t0, tau (ms), E (mV)}] (alpha conductances) or {nmda: true, tauR, tauD, mg (mM)} (peak conductance gmax, Mg-blocked),
  *      rec: node indices to record, every: record every k steps, stopWhen(t, V) → true to end early.
  * Returns {t, V: [Float32Array per recorded node], frames?} (frames: full-V snapshots when prm.frames = step count).
  */
@@ -163,8 +164,14 @@ export function treeSim(tr, prm) {
       b[i] = (C[i] / dt) * V[i] + gl * EL[i] + gn * ENa + gk * EK + Inj[i];
     }
     for (const s of syn) {
-      const u = (t + dt - s.t0) / s.tau;
-      if (u > 0) { const g = s.gmax * u * Math.exp(1 - u); d[s.node] += g; b[s.node] += g * (s.E ?? 0); }
+      const x = t + dt - s.t0;
+      if (x <= 0) continue;
+      let g;
+      if (s.nmda) { // two-exponential NMDA conductance with the Jahr–Stevens magnesium block B(V) = 1/(1 + [Mg]/3.57 · e^{−0.062 V})
+        const k = s.tauD / s.tauR, tp = (s.tauD * s.tauR * Math.log(k)) / (s.tauD - s.tauR), nrm = Math.exp(-tp / s.tauD) - Math.exp(-tp / s.tauR);
+        g = (s.gmax * (Math.exp(-x / s.tauD) - Math.exp(-x / s.tauR))) / nrm / (1 + ((s.mg ?? 1) / 3.57) * Math.exp(-0.062 * V[s.node]));
+      } else { const u = x / s.tau; g = s.gmax * u * Math.exp(1 - u); }
+      d[s.node] += g; b[s.node] += g * (s.E ?? 0);
     }
     hinesSolve(tr.par, tr.gc, d, b, Vn);
     for (let i = 0; i < n; i++) {
@@ -187,7 +194,7 @@ export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x
   const segs = [{ parent: -1, len: N * dx, dia: d }], tr = buildTree(segs, { dxMax: dx, Ra });
   const i1 = Math.round((x1 * 1e4) / dx), i2 = Math.round((x2 * 1e4) / dx);
   let t1 = null, t2 = null;
-  const stim = (t, I) => { if (t < 0.5) for (let i = 0; i < 6; i++) I[i] = 300 * tr.area[i] * 1e3 / 1e3 * 1e0; };
+  const stim = (t, I) => { if (t < 0.5) for (let i = 0; i < 10; i++) I[i] = 500 * tr.area[i] * 1e3; };
   const r = treeSim(tr, {
     dt: 0.02, tEnd: 60, cm: 1, gL: p.gL, gNa: p.gNa, gK: p.gK, ENa: p.ENa, EK: p.EK, T, stim, rec: [i1, i2], frames,
     stopWhen: (t, V) => { if (t1 == null && V[i1] > 0) t1 = t; if (t2 == null && V[i2] > 0) t2 = t; return t2 != null && !frames; },
@@ -213,15 +220,15 @@ export function buildMyelinated(D, { g = 0.65, ratio = 100, nNodes = 12, mInt = 
 }
 /** Speed (m/s) of the impulse on a myelinated axon between nodes 3 and nNodes−3 (index), plus the simulation. */
 export function myelinatedSpeed(D, opt = {}) {
-  const { T = 18.5, p = HH } = opt, M = buildMyelinated(D, opt), { tr, isNode, nb } = M;
+  const { T = 18.5, p = HH, nodeFac = 10 } = opt, M = buildMyelinated(D, opt), { tr, isNode, nb } = M;
   const n = tr.n, nodeIdx = []; for (let i = 0; i < n; i++) if (isNode[i]) nodeIdx.push(i);
   const cm = new Float64Array(n), gL = new Float64Array(n), gNa = new Float64Array(n), gK = new Float64Array(n);
   for (let i = 0; i < n; i++) {
-    if (isNode[i]) { cm[i] = 1; gL[i] = p.gL; gNa[i] = p.gNa; gK[i] = p.gK; } else { cm[i] = 1 / nb; gL[i] = p.gL / nb; }
+    if (isNode[i]) { cm[i] = 1; gL[i] = p.gL; gNa[i] = p.gNa * nodeFac; gK[i] = p.gK * nodeFac; } else { cm[i] = 1 / nb; gL[i] = p.gL / nb; }
   }
   const ka = 3, kb = nodeIdx.length - 3, ia = nodeIdx[ka], ib = nodeIdx[kb];
   let ta = null, tb = null;
-  const stim = (t, I) => { if (t < 0.4) I[nodeIdx[0]] = 600 * tr.area[nodeIdx[0]] * 1e3 * 1e-3 * 1e3 * 1e-3; };
+  const stim = (t, I) => { if (t < 0.3) I[nodeIdx[0]] = 4000 * (tr.area[nodeIdx[0]] + (tr.area[nodeIdx[0] + 1] * 3) / nb) * 1e3; };
   const r = treeSim(tr, {
     dt: opt.dt ?? 0.005, tEnd: opt.tEnd ?? 8, cm, gL, gNa, gK, ENa: p.ENa, EK: p.EK, T, stim, rec: nodeIdx, frames: opt.frames || 0, every: 2,
     stopWhen: (t, V) => { if (ta == null && V[ia] > 0) ta = t; if (tb == null && V[ib] > 0) tb = t; return tb != null && !opt.frames; },

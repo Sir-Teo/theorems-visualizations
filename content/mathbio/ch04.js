@@ -133,7 +133,7 @@ In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
       viz(v) {
         const a = v.slider('$a$ (entry 1,2)', 0, 2, 1, { step: 0.05 }), d = v.slider('$d$ (self-loop)', 0, 1.5, 0, { step: 0.05 }), e = v.slider('$e$ (entry 3,2)', 0, 1, 0.6, { step: 0.05 });
         const C = v.stage({ x: [-3.6, 3.6], y: [-3, 3], equal: true, height: 320, axes: true, title: 'eigenvalues in the plane', minWidth: 280 });
-        const G = v.stage({ x: [0, 60], y: [0, 4], height: 320, axes: 'box', gutter: true, xlabel: 'k', ylabel: '‖Aᵏ‖ to the power 1/k', title: 'norm growth rate', minWidth: 260 });
+        const G = v.stage({ x: [0, 60], y: [0, 4], height: 320, axes: 'box', gutter: true, xlabel: 'k', ylabel: '$\\|A^k\\|^{1/k}$', title: 'norm growth rate', minWidth: 260 });
         let info = null;
         v.render(() => {
           const A = [[d.value, a.value, 3], [0.5, 0, 0], [0, e.value, 0]];

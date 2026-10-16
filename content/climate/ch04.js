@@ -149,6 +149,7 @@ export default {
           sA.path([[d, 0], ...z.map((zz, i) => [d * ampU[i], zz])], { color: 'muted', width: 2.2, dash: true });
           sA.path([[d, 0], ...z.map((zz, i) => [d * ampP[i], zz])], { color: 'red', width: 2.8 });
           sA.dot(d, 0, { color: 'gold', r: 5 });
+          sB.setView([0, 4], [0, Math.max(dU, dP, 1) * 1.25]);
           sB.rect(0.55, 0, 1.45, Math.max(0, dU), { fill: 'muted', fillAlpha: 0.6, stroke: false }); sB.text(v.fix(dU, 2), 1, Math.max(0, dU), { size: 11, color: 'ink', align: 'center', baseline: 'bottom', dy: -3 });
           sB.rect(2.15, 0, 3.05, Math.max(0, dP), { fill: 'red', fillAlpha: 0.65, stroke: false }); sB.text(v.fix(dP, 2), 2.6, Math.max(0, dP), { size: 11, color: 'ink', align: 'center', baseline: 'bottom', dy: -3 });
           const a = -(dP - dU) / d;

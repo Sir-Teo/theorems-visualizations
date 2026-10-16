@@ -8,11 +8,11 @@ export const rep = (x, n) => 1 / (1 + Math.pow(Math.max(x, 0), n));
 /** Steady states of the toggle  u' = a1/(1+v^b) − u,  v' = a2/(1+u^g) − v  (all in units of K, rate 1).
  *  Optional signed `ind`: ind > 0 is an inducer that inactivates u (v's promoter sees u/(1+ind)), ind < 0 one that inactivates v (u's promoter sees v/(1+|ind|)). Roots of G(v) − v on [0, a2] (G = v-nullcline composed with u-nullcline); the loop gain at a root is
  *  b·g·[v^b/(1+v^b)]·[u^g/(1+u^g)]; the root is stable iff gain < 1 (eigenvalues −1 ± √gain). Returns [{u, v, gain, stable}] by v. */
-export function toggleRoots(a1, a2, b, g, ind = 0) {
+export function toggleRoots(a1, a2, b, g, ind = 0, N = 400) {
   const iu = 1 + Math.max(ind, 0), iv = 1 + Math.max(-ind, 0);
   const G = (v) => a2 * rep((a1 * rep(v / iv, b)) / iu, g);
   const h = (v) => G(v) - v;
-  const N = 400, out = [];
+  const out = [];
   let vp = 0, hp = h(0);
   for (let i = 1; i <= N; i++) {
     // geometric grid on [1e-4, a2] for resolution near 0, with 0 first
@@ -80,4 +80,27 @@ export function gk2(r1, r2, Km) {
   let lo = 0, hi = 1;
   for (let i = 0; i < 70; i++) { const x1 = (lo + hi) / 2, p = parts(x1); if (p[0] + p[1] + p[2] > 1) hi = x1; else lo = x1; }
   return parts((lo + hi) / 2);
+}
+
+/** Reduced lac-operon model (illustrative, not fitted). Permease P and internal inducer X, time in units of 1/(dilution rate):
+ *    P' = α (ε + X^n)/(1 + X^n) − P,     X' = κ (φ + P) · e/(1+e) − X,
+ *  e = external inducer / K_transport. At steady state X solves X = κσ(φ + α·D(X)), σ = e/(1+e), D(X) = (ε+X^n)/(1+X^n).
+ *  Returns the roots X (ascending) with stability from the slope of the right side (stable iff slope < 1). */
+export const lacD = (X, n, eps) => (eps + Math.pow(X, n)) / (1 + Math.pow(X, n));
+export function lacRoots(e, p, N = 400) {
+  const s = e / (1 + e), top = p.kap * s * (p.phi + p.al) * 1.05 + 1e-9;
+  const h = (X) => p.kap * s * (p.phi + p.al * lacD(X, p.n, p.eps)) - X;
+  const out = []; let xp = 0, hp = h(0);
+  for (let i = 1; i <= N; i++) {
+    const X = (top * i) / N, hv = h(X);
+    if (hp * hv <= 0 && hp !== hv) {
+      let lo = xp, hi = X, hl = hp;
+      for (let k = 0; k < 50; k++) { const m = (lo + hi) / 2, hm = h(m); if (hl * hm <= 0) hi = m; else { lo = m; hl = hm; } }
+      const x = (lo + hi) / 2, d = 1e-6 * (1 + x);
+      const slope = (p.kap * s * p.al * (lacD(x + d, p.n, p.eps) - lacD(x - d, p.n, p.eps))) / (2 * d);
+      out.push({ X: x, stable: slope < 1 });
+    }
+    xp = X; hp = hv;
+  }
+  return out;
 }

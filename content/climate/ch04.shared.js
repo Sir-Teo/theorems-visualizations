@@ -58,14 +58,17 @@ export function tridiag(a, b, c, d) {
 export function cloudOLR(T, Ts, co2, q, pc, ec, c) {
   const tau = opticalDepths(T, { ...BASE, co2, q }, GRID);
   const clear = lwFrom(T, Ts, tau);
-  let k = 0; for (let i = 0; i < GRID.N; i++) if (GRID.pm[i] >= pc) k = i;
+  const pm = GRID.pm; let k = 0; for (let i = 0; i < GRID.N - 1; i++) if (pm[i] >= pc) k = i;
+  const w = pc >= pm[0] ? 0 : clampW(Math.log(pm[k] / pc) / Math.log(pm[k] / pm[k + 1]));
   const add = -Math.log(Math.max(1e-6, 1 - Math.min(ec, 0.999999))) / 1.66;
-  const t2 = tau.map((r, i) => (i === k ? r.map((x) => x + add) : r));
+  // the cloud's absorption is shared between the two layers around its top (so a moving cloud changes the flux smoothly)
+  const t2 = tau.map((r, i) => (i === k ? r.map((x) => x + add * (1 - w)) : i === k + 1 ? r.map((x) => x + add * w) : r));
   const cloudy = lwFrom(T, Ts, t2);
   return { clear, cloudy, all: (1 - c) * clear + c * cloudy };
 }
 function lwFrom(T, Ts, tau) { return longwave(T, Ts, tau, BASE, GRID).olr; }
 
+const clampW = (x) => Math.min(1, Math.max(0, x));
 /** Interpolated lookup of the temperature (K) of a column profile at pressure p (hPa), linear in ln p. */
 export function tAtP(T, p) {
   const pm = GRID.pm;

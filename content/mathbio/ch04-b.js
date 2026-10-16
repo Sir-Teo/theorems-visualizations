@@ -22,11 +22,11 @@ The approximation $r\approx\ln R_0/T$ is accurate when reproduction is concentra
       tags: ['growth rate', 'approximation'],
       refs: ['Edelstein-Keshet ch. 1'],
       viz(v) {
-        const w = v.slider('reproductive window width (sd, classes)', 0.3, 4, 1, { step: 0.05 });
+        const w = v.slider('reproductive window width (sd, classes)', 0.3, 4, 2.2, { step: 0.05 });
         const corr = v.toggle('variance correction', false);
         let seed = 3;
         v.button('Resample', () => { seed++; });
-        const S = v.stage({ x: [-0.6, 0.8], y: [-0.6, 0.8], equal: true, height: 400, axes: 'box', gutter: true, xlabel: 'ln R₀ / T', ylabel: 'exact r', title: 'estimate against exact r', minWidth: 300 });
+        const S = v.stage({ x: [-0.6, 0.8], y: [-0.6, 0.8], height: 400, axes: 'box', gutter: true, xlabel: 'ln R₀ / T', ylabel: 'exact r', title: 'estimate against exact r', minWidth: 300 });
         let cache = { key: '' }, pts = [];
         function gen() {
           const key = w.value + '|' + seed; if (cache.key === key) return;
@@ -46,7 +46,8 @@ The approximation $r\approx\ln R_0/T$ is accurate when reproduction is concentra
         let st = null;
         v.render(() => {
           gen();
-          const lo = -0.6, hi = 0.8;
+          let lo = Math.min(...pts.map((p) => Math.min(p.ap, p.rex, p.r2))), hi = Math.max(...pts.map((p) => Math.max(p.ap, p.rex, p.r2)));
+          const pad = 0.05 * (hi - lo); lo -= pad; hi += pad; S.setView([lo, hi], [lo, hi]);
           S.line(lo, lo, hi, hi, { color: 'green', dash: true, width: 1.5 });
           S.dots(pts.map((p) => [p.ap, p.rex]), { r: 3, color: 'accent', alpha: 0.7 });
           if (corr.value) S.dots(pts.map((p) => [p.r2, p.rex]), { r: 3, color: 'orange', alpha: 0.8 });
@@ -107,8 +108,8 @@ and the **elasticity** (proportional sensitivity) is
 $$e_{ij}=\frac{a_{ij}}{\lambda}\frac{\partial\lambda}{\partial a_{ij}}=\frac{\partial\ln\lambda}{\partial\ln a_{ij}},\qquad e_{ij}\ge0,\quad\sum_{i,j}e_{ij}=1 .$$
 So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ percent, and the elasticities partition the whole of the growth-rate response among the matrix entries.`,
       idea: String.raw`Differentiate $A\mathbf u=\lambda\mathbf u$ and multiply by $\mathbf v^{\mathsf T}$: the term with $\mathrm d\mathbf u$ cancels because $\mathbf v^{\mathsf T}A=\lambda\mathbf v^{\mathsf T}$, leaving $\mathrm d\lambda\,(\mathbf v\cdot\mathbf u)=\mathbf v^{\mathsf T}(\mathrm dA)\mathbf u$. Taking $\mathrm dA=\mathrm da_{ij}E_{ij}$ gives the sensitivity. Euler's theorem for the degree-one homogeneous function $\lambda(sA)=s\lambda(A)$ gives $\sum a_{ij}\partial\lambda/\partial a_{ij}=\lambda$, which is why the elasticities sum to one. The left eigenvector (reproductive value, 4.9) and right eigenvector (stable distribution) thus decide where management has leverage.`,
-      scope: String.raw`First-order, local statement: it is exact only as the change tends to zero; a 20% change in survival can make the linear prediction visibly wrong. Entries that are structurally zero have no sensitivity of interest. Biologically coupled entries (survival that appears in several positions) change together, as in the right panel.`,
-      caption: String.raw`The matrix is the seven-stage loggerhead sea-turtle model of Crouse, Crowder and Caswell (1987), with entries copied from a secondary transcription (see the item's note), so treat the numbers as the published model's, not as new data. Left: the elasticity $e_{ij}$ of each nonzero entry (row = destination stage, column = source stage). Right: the percentage change in $\lambda$ when one thing is raised by the chosen percentage — all fecundities, or the survival (stasis and growth together, capped at 1) of one stage. Raising survival of the juvenile and subadult stages beats raising egg and hatchling output, the paper's conservation conclusion.`,
+      scope: String.raw`First-order, local statement: it is exact only as the change tends to zero; a 20% change in survival can make the linear prediction visibly wrong. Entries that are structurally zero have no sensitivity of interest. Biologically coupled entries (survival that appears in several positions) change together, as in the right panel. The matrix is the seven-stage loggerhead model of Crouse, Crowder & Caswell (Ecology 68, 1987), entered from a secondary transcription (H. Stevens, Introduction to Ecology) that quotes $\lambda=0.945$, which the code reproduces; it has not been checked against the paper's own table.`,
+      caption: String.raw`The matrix is the seven-stage loggerhead sea-turtle model of Crouse, Crowder and Caswell (1987), with entries copied from a secondary transcription, so treat the numbers as the published model's, not as new data (the dominant eigenvalue reproduces the value $0.945$ quoted there). Left: the elasticity $e_{ij}$ of each nonzero entry (row = destination stage, column = source stage). Right: the percentage change in $\lambda$ when one thing is raised by the chosen percentage — all fecundities, or the survival (stasis and growth together, capped at 1) of one stage. Raising fecundity barely moves $\lambda$ (it moves it exactly as much as hatchling survival, since both enter the same loop), while a few percent more survival of any later stage moves it several times more: why such analyses argued for protecting later stages rather than nests.`,
       deps: ['mathbio-4.9'],
       tags: ['elasticity', 'sensitivity'],
       refs: ['Edelstein-Keshet ch. 1'],
@@ -116,7 +117,7 @@ So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ perc
       viz(v) {
         const pct = v.slider('proportional increase (%)', 1, 30, 10, { int: true });
         const NAMES = ['fecundities', ...TURTLE_STAGES.map((n, i) => 'surv. ' + (i + 1))];
-        const H = v.stage({ x: [0, 7], y: [0, 7], equal: true, height: 380, axes: false, title: 'elasticity eᵢⱼ (row = to, column = from)', minWidth: 300 });
+        const H = v.stage({ x: [-0.6, 7], y: [0, 7.6], equal: true, height: 380, axes: false, title: 'elasticity eᵢⱼ (row = to, column = from)', minWidth: 300 });
         const B = v.stage({ x: [0.4, 8.6], y: [0, 5], height: 380, axes: 'box', gutter: true, xlabel: 'what is raised: F = fecundities, 1–7 = survival of stage', ylabel: '% change in λ', title: 'effect on λ of raising one component', minWidth: 300, xticks: [[1, 'F'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5'], [7, '6'], [8, '7']] });
         const A0 = turtleMatrix(), E0 = domEig(A0, 6000), lam0 = E0.lam;
         const vu = dotv(E0.w, E0.u);
@@ -131,7 +132,7 @@ So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ perc
             H.rect(j, 6 - i, j + 1, 7 - i, { color: 'grid', stroke: true, fill: false, alpha: 0.5 });
             if (A0[i][j] > 0) H.text(El[i][j].toFixed(3), j + 0.5, 6.5 - i, { align: 'center', baseline: 'middle', size: 11, color: 'ink' });
           }
-          for (let k = 0; k < 7; k++) { H.text(String(k + 1), k + 0.5, 7.25, { align: 'center', size: 11, color: 'muted' }); H.text(String(k + 1), -0.25, 6.5 - k, { align: 'center', baseline: 'middle', size: 11, color: 'muted' }); }
+          for (let k = 0; k < 7; k++) { H.text(String(k + 1), k + 0.5, 7.25, { align: 'center', size: 11, color: 'muted' }); H.text(String(k + 1), -0.3, 6.5 - k, { align: 'center', baseline: 'middle', size: 11, color: 'muted' }); }
           const f = 1 + pct.value / 100, out = [];
           out.push(100 * (domEig(turtleMatrix([1, 1, 1, 1, 1, 1, 1], f), 6000).lam / lam0 - 1));
           for (let k = 0; k < 7; k++) { const sc = [1, 1, 1, 1, 1, 1, 1]; sc[k] = f; out.push(100 * (domEig(turtleMatrix(sc, 1), 6000).lam / lam0 - 1)); }
@@ -154,7 +155,7 @@ $$A=\begin{pmatrix}P_1&F_2&F_3&\cdots\\ G_1&P_2&0&\\ 0&G_2&P_3&\\ &&\ddots&\ddot
 where $P_j$ is the probability of staying in stage $j$, $G_j$ of moving on to stage $j+1$ (with $P_j+G_j\le1$), and $F_j$ the fecundity. Such an $A$ is nonnegative, and when irreducible and primitive (4.3) it has a dominant eigenvalue $\lambda$, a stable stage distribution $\mathbf u$ and reproductive values $\mathbf v$, exactly as a Leslie matrix does. Leslie matrices are the special case $P_j=0$.`,
       idea: String.raw`The life-cycle graph, with a node per stage and an arrow for every positive entry, encodes the matrix; paths in the graph are the ways an individual can eventually reproduce, and cycles through the reproducing stage give the Euler–Lotka-type equation $1=\sum_{\text{cycles}}(\text{gain}\cdot\lambda^{-\text{length}})$. Because stasis loops $P_j$ are allowed, an individual can spend several census intervals in one stage, which is why stage models work for organisms whose age is hard to determine, such as trees, corals or turtles.`,
       scope: String.raw`The model assumes that all individuals in a stage are identical and that the next stage is reached with a fixed probability each step, which makes the time spent in a stage geometrically distributed. Real stage durations are often less variable, so very different durations can hide behind the same matrix.`,
-      caption: String.raw`A four-stage life cycle (the entries are illustrative, not data). Arrow thickness shows the entry: curved top arrows are fecundities from stages 3 and 4 back to stage 1, loops are stasis, straight arrows are growth. Change the sliders to see the matrix, the dominant eigenvalue $\lambda$, the stable stage distribution (bars) and the reproductive values (gold dots, scaled to the largest). Growth is capped so that $P_j+G_j\le1$.`,
+      caption: String.raw`A four-stage life cycle (the entries are illustrative, not data). Arrow thickness shows the entry: arcs over the top are fecundities from stages 4 and 3 back to stage 1, the loops below the nodes are stasis, straight arrows are growth. Change the sliders to see the matrix, the dominant eigenvalue $\lambda$, the stable stage distribution (bars) and the reproductive values (gold dots, scaled to the largest). Growth is capped so that $P_j+G_j\le1$.`,
       deps: ['mathbio-4.2'],
       tags: ['stage structure', 'life cycle'],
       refs: ['Edelstein-Keshet ch. 1'],
@@ -163,7 +164,7 @@ where $P_j$ is the probability of staying in stage $j$, $G_j$ of moving on to st
         const P2 = v.slider('$P_2$ (stay)', 0, 0.95, 0.45, { step: 0.01 }), P3 = v.slider('$P_3$', 0, 0.95, 0.6, { step: 0.01 }), P4 = v.slider('$P_4$', 0, 0.98, 0.8, { step: 0.01 });
         const G1 = v.slider('$G_1$ (advance)', 0, 0.9, 0.35, { step: 0.01 }), G2 = v.slider('$G_2$', 0, 0.9, 0.35, { step: 0.01 }), G3 = v.slider('$G_3$', 0, 0.9, 0.25, { step: 0.01 });
         const F4 = v.slider('$F_4$ (fecundity)', 0, 8, 3, { step: 0.05 }), F3 = v.slider('$F_3$', 0, 4, 0.5, { step: 0.05 });
-        const S = v.stage({ x: [0.3, 4.7], y: [-1.0, 2.4], equal: true, height: 340, axes: false, title: 'life-cycle graph', minWidth: 320 });
+        const S = v.stage({ x: [0.3, 4.7], y: [-1.2, 2.4], equal: true, height: 340, axes: false, title: 'life-cycle graph', minWidth: 320 });
         const D = v.stage({ x: [0.4, 4.6], y: [0, 1.1], height: 340, axes: 'box', gutter: true, xlabel: 'stage', ylabel: 'share / relative value', title: 'stable stage distribution', minWidth: 260, xticks: [[1, '1'], [2, '2'], [3, '3'], [4, '4']] });
         const P1 = 0.3, NAMES = ['small', 'medium', 'large', 'adult'];
         let st = null;
@@ -173,12 +174,17 @@ where $P_j$ is the probability of staying in stage $j$, $G_j$ of moving on to st
           const E = domEig(A);
           const px = [1, 2, 3, 4], col = 'accent', wd = (q) => 1.5 + 5 * Math.min(1, q);
           // growth arrows
-          for (let i = 0; i < 3; i++) { S.arrow(px[i] + 0.2, 0, px[i + 1] - 0.2, 0, { color: 'purple', width: wd(g[i]) }); S.text('G' + (i + 1) + '=' + v.fix(g[i], 2), px[i] + 0.5, -0.22, { align: 'center', size: 11, color: 'muted' }); }
-          // stasis loops
-          [P1, P2.value, P3.value, P4.value].forEach((q, i) => { S.curve((t) => [px[i] + 0.17 * Math.sin(t), 0.2 + 0.2 + 0.2 * Math.cos(t)], 0.6, 2 * Math.PI - 0.6, { color: 'teal', width: wd(q) }); S.text(v.fix(q, 2), px[i], 0.85, { align: 'center', size: 11, color: 'muted' }); });
+          for (let i = 0; i < 3; i++) { S.arrow(px[i] + 0.2, 0, px[i + 1] - 0.2, 0, { color: 'purple', width: wd(g[i]) }); S.text('G' + (i + 1) + '=' + v.fix(g[i], 2), px[i] + 0.5, 0.2, { align: 'center', size: 11, color: 'muted' }); }
+          // stasis loops (below the nodes)
+          [P1, P2.value, P3.value, P4.value].forEach((q, i) => { S.curve((t) => [px[i] + 0.17 * Math.sin(t), -0.5 + 0.17 * Math.cos(t)], 0, 2 * Math.PI, { color: 'teal', width: wd(q) }); S.text('P' + (i + 1) + '=' + v.fix(q, 2), px[i] + 0.3, -0.5, { align: 'left', size: 11, color: 'muted', baseline: 'middle' }); });
           // fecundity arcs back to stage 1
-          [[4, F4.value, 1.9], [3, F3.value, 1.3]].forEach(([from, f, h]) => { S.curve((t) => [from - (from - 1) * t, 0.25 + h * Math.sin(Math.PI * t) * 0.8], 0, 1, { color: 'orange', width: wd(f / 3) }); S.arrow(1.15, 0.25 + h * 0.8 * Math.sin(Math.PI * 0.95) + 0.02, 1.02, 0.28, { color: 'orange', width: 2 }); S.text('F' + from + '=' + v.fix(f, 2), (from + 1) / 2, 0.25 + h * 0.8 + 0.12, { align: 'center', size: 11, color: 'orange' }); });
-          px.forEach((x, i) => { S.dot(x, 0, { r: 20, color: col }); S.text(String(i + 1), x, 0, { align: 'center', baseline: 'middle', size: 14, color: 'panel' }); S.text(NAMES[i], x, -0.55, { align: 'center', size: 11, color: 'muted' }); });
+          [[4, F4.value, 1.9, 2.5], [3, F3.value, 1.1, 2]].forEach(([from, f, h, lx]) => {
+            const pt = (t) => [from - (from - 1) * t, 0.3 + h * 0.8 * Math.sin(Math.PI * t)];
+            S.curve(pt, 0, 1, { color: 'orange', width: wd(f / 3) });
+            const [x0, y0] = pt(0.96), [x1, y1] = pt(1); S.arrow(x0, y0, x1, y1, { color: 'orange', width: 2 });
+            S.text('F' + from + '=' + v.fix(f, 2), lx, 0.3 + h * 0.8 + (from === 4 ? 0.14 : -0.16), { align: 'center', size: 11, color: 'orange' });
+          });
+          px.forEach((x, i) => { S.dot(x, 0, { r: 20, color: col }); S.text(String(i + 1), x, 0, { align: 'center', baseline: 'middle', size: 14, color: 'panel' }); S.text(NAMES[i], x, -0.95, { align: 'center', size: 11, color: 'muted' }); });
           const w = E.w, wm = Math.max(...w);
           D.bars(E.u, { x0: 1, color: 'accent' });
           D.dots(w.map((q, i) => [i + 1, q / wm]), { r: 6, color: 'gold' });
@@ -241,7 +247,7 @@ Momentum is the factor by which a growing population keeps growing after fertili
       statement: String.raw`In continuous age, let $B(t)$ be the birth rate of females, $\ell(a)$ the survivorship to age $a$ and $m(a)$ the maternity function, and put $\varphi(a)=\ell(a)m(a)$. Births at time $t$ come from those born earlier and still reproducing, plus a forcing term $G(t)$ for the part of reproduction that comes from the initial population:
 $$B(t)=G(t)+\int_0^{t}B(t-a)\,\varphi(a)\,da .$$
 The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a)\,da=1$ (the continuous Euler–Lotka equation, 4.6) governs the long run: if $\varphi$ is not supported on a lattice, $B(t)e^{-rt}\to\dfrac{\int_0^\infty G(s)e^{-rs}\,ds}{\int_0^\infty a\,e^{-ra}\varphi(a)\,da}$.`,
-      idea: String.raw`Multiplying by $e^{-rt}$ turns the equation into a renewal equation for $b(t)=B(t)e^{-rt}$ whose kernel $e^{-ra}\varphi(a)$ is a probability density, because $r$ solves the characteristic equation. The renewal theorem (fa-9.13, in the form of 11.3 of the stochastic collection) says that such a process settles to the constant $\int g/\text{mean}$. The other (complex) roots of the characteristic equation give damped oscillations in $b(t)$: these are the "echoes" of the initial birth pulse, which persist longer when reproduction is concentrated at one age.`,
+      idea: String.raw`Multiplying by $e^{-rt}$ turns the equation into a renewal equation for $b(t)=B(t)e^{-rt}$ whose kernel $e^{-ra}\varphi(a)$ is a probability density, because $r$ solves the characteristic equation. The renewal theorem (fa-9.13; Blackwell's version is stoch-11.3) says that such a process settles to the constant $\int g/\text{mean}$. The other (complex) roots of the characteristic equation give damped oscillations in $b(t)$: these are the "echoes" of the initial birth pulse, which persist longer when reproduction is concentrated at one age.`,
       scope: String.raw`Density-independent, one sex, time-invariant rates. The convergence needs an aperiodic (non-lattice) kernel, as in the Gamma-shaped maternity function used below; it takes the form of a pure undamped oscillation if all reproduction happens at exactly one age.`,
       caption: String.raw`The maternity function $\varphi(a)=R_0\times\mathrm{Gamma}(\text{shape }k,\text{ mean }5)$ density (an illustrative choice) is integrated against the births, with a single pulse of founders at $t\approx0.5$ as forcing. Left: $B(t)$. Right: $B(t)e^{-rt}$, which converges to the constant predicted by the formula (green). A large shape $k$ (reproduction concentrated at age 5) gives long-lasting echoes of the founding pulse; a small $k$ damps them in a generation or two.`,
       deps: ['mathbio-4.6', 'fa-9.13', 'stoch-11.3'],
@@ -252,7 +258,7 @@ The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a
         const K = v.slider('shape $k$ of $\\varphi$', 2, 80, 14, { int: true });
         const h = 0.1, NT = 400, J = 180;
         const A = v.stage({ x: [0, 40], y: [0, 5], height: 320, axes: 'box', gutter: true, xlabel: 'time t', ylabel: 'births B(t)', title: 'birth rate', minWidth: 280 });
-        const C = v.stage({ x: [0, 40], y: [0, 2], height: 320, axes: 'box', gutter: true, xlabel: 'time t', ylabel: 'B(t) e^{−rt}', title: 'normalised births', minWidth: 280 });
+        const C = v.stage({ x: [0, 40], y: [0, 2], height: 320, axes: 'box', gutter: true, xlabel: 'time t', ylabel: '$B(t)e^{-rt}$', title: 'normalised births', minWidth: 280 });
         let cache = { key: '' };
         function solve() {
           const key = R0.value + '|' + K.value; if (cache.key === key) return cache;
@@ -280,7 +286,7 @@ The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a
           C.hline(S.binf, { color: 'green', dash: true, width: 1.5 });
           st = S;
         });
-        v.legend([['accent', 'B(t)'], ['orange', 'B(t) e^{−rt}'], ['green', 'predicted limit', { dash: true }]]);
+        v.legend([['accent', 'B(t)'], ['orange', '$B(t)e^{-rt}$'], ['green', 'predicted limit', { dash: true }]]);
         v.readout(() => `Characteristic root $r=${v.fix(st.r, 4)}$ per unit time ($R_0=${v.fix(R0.value, 2)}$, so $r$ is ${st.r > 0 ? 'positive' : st.r < 0 ? 'negative' : 'zero'}). Predicted limit of $B e^{-rt}$: $${v.fix(st.binf, 4)}$; at $t=40$: $${v.fix(st.b[400], 4)}$.`);
       },
     },
@@ -295,7 +301,7 @@ $$\frac{\partial n}{\partial t}+\frac{\partial n}{\partial a}=-\mu(a)\,n,\qquad 
 Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t$, $n(a,t)=n_0(a-t)\,\ell(a)/\ell(a-t)$, and for $a<t$, $n(a,t)=B(t-a)\ell(a)$ with $B(t)=n(0,t)$ the birth rate, where $\ell(a)=e^{-\int_0^a\mu}$. Substituting the second form into the boundary condition gives Lotka's renewal equation (4.13), and solutions grow like $e^{rt}$ with the age profile tending to $e^{-ra}\ell(a)$, where $r$ solves $\int\beta(a)\ell(a)e^{-ra}da=1$.`,
       idea: String.raw`The left side is the derivative of $n$ along the characteristic lines of slope one, because everyone ages at unit speed; the right side is pure death. The only coupling between ages is the boundary condition at $a=0$, which feeds newborns from all fertile ages. Solving along characteristics reduces the PDE to the renewal equation for $B(t)$, so everything proved about the latter (4.13) transfers, and the continuous analogue of the stable age distribution appears.`,
       scope: String.raw`Linear, density-independent, one sex, with $\mu,\beta$ independent of time. The version with $\mu$ or $\beta$ depending on total population (Gurtin–MacCamy) is nonlinear and has equilibria and bifurcations.`,
-      caption: String.raw`Numerical solution on a grid (upwind along characteristics, step 0.1) with mortality $\mu(a)=0.05+0.0005a^3$ and a bump of fertility around age 5 (made-up shapes). Left: the age profile at the current time (blue) against the stable profile $e^{-ra}\ell(a)$ (green, same total). Right: the whole solution as a heat map over age (horizontal) and time (vertical), scaled by $e^{-rt}$ so that long-run behaviour is a time-independent pattern; the white lines are characteristics and the gold line the current time. Choose the initial age profile and fertility level.`,
+      caption: String.raw`Numerical solution on a grid (upwind along characteristics, step 0.1) with mortality $\mu(a)=0.05+0.0005a^3$ and a bump of fertility around age 5 (made-up shapes). Left: the age profile at the current time (blue) against the stable profile $e^{-ra}\ell(a)$ (green, same total). Right: the whole solution as a heat map over age (horizontal) and time (vertical), scaled by $e^{-rt}$ so that long-run behaviour is a time-independent pattern; the grey lines are characteristics and the gold line the current time. Choose the initial age profile and fertility level.`,
       deps: ['mathbio-4.13'],
       tags: ['age structure', 'PDE'],
       refs: ['Murray I ch. 1'],
@@ -306,7 +312,7 @@ Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t
         const h = 0.1, NA = 120, NT = 300, TMAX = 30;
         const mu = (a) => 0.05 + 0.0005 * a * a * a, beta = (a, b) => b * Math.exp(-((a - 5) ** 2) / (2 * 1.2 * 1.2));
         const P = v.stage({ x: [0, 12], y: [0, 0.5], height: 320, axes: 'box', gutter: true, xlabel: 'age a', ylabel: 'density n(a,t)', title: 'age profile', minWidth: 280 });
-        const H = v.stage({ x: [0, 12], y: [0, TMAX], height: 320, axes: 'box', gutter: true, xlabel: 'age a', ylabel: 'time t', title: 'n(a,t) e^{−rt}', minWidth: 280 });
+        const H = v.stage({ x: [0, 12], y: [0, TMAX], height: 320, axes: 'box', gutter: true, xlabel: 'age a', ylabel: 'time t', title: '$n(a,t)\\,e^{-rt}$', minWidth: 280 });
         let cache = { key: '' };
         function solve() {
           const key = init.value + '|' + bsl.value; if (cache.key === key) return cache;
@@ -337,13 +343,13 @@ Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t
           P.setView([0, 12], [0, mx]);
           P.path(Array.from({ length: NA + 1 }, (_, i) => [i * h, cur[i]]), { color: 'accent', width: 2.2 });
           P.fn((a) => { const i = Math.min(NA, Math.round(a / h)); return S.stable[i] * tot; }, { color: 'green', dash: true, width: 1.5, domain: [0, 12], n: 120 });
-          H.heat((a, tt) => { const i = Math.min(NA, Math.max(0, Math.round(a / h))), kk = Math.min(NT, Math.max(0, Math.round(tt / h))); return S.snaps[kk][i] * Math.exp(-S.r * kk * h); }, { range: [0, S.mxs], cmap: 'theme', res: 3, key: S.key });
+          H.heat((a, tt) => { const i = Math.min(NA, Math.max(0, Math.round(a / h))), kk = Math.min(NT, Math.max(0, Math.round(tt / h))); return Math.sqrt(S.snaps[kk][i] * Math.exp(-S.r * kk * h) / S.mxs); }, { range: [0, 1], cmap: 'theme', res: 3, key: S.key });
           for (let c = -10; c <= 12; c += 2) H.line(Math.max(0, c), Math.max(0, -c), Math.min(12, c + TMAX), Math.min(TMAX, 12 - c), { color: 'ink', alpha: 0.25, width: 1 });
           H.hline(k * h, { color: 'gold', width: 2.5 });
           const k5 = Math.max(0, NT - 50);
           st = { r: S.r, tot, t: k * h, growth: Math.log(S.Bs[NT] / S.Bs[k5]) / (50 * h) };
         }, { period: TMAX, still: 12 });
-        v.legend([['accent', 'n(a,t)'], ['green', 'stable profile e^{−ra} ℓ(a)', { dash: true }], ['gold', 'current time']]);
+        v.legend([['accent', 'n(a,t)'], ['green', '$e^{-ra}\\ell(a)$ (stable profile)', { dash: true }], ['gold', 'current time']]);
         v.readout(() => `$t=${v.fix(st.t, 1)}$, total population $${v.fix(st.tot, 3)}$ (started at 1). Euler–Lotka root $r=${v.fix(st.r, 4)}$; growth rate of births over the last 5 time units of the run: $${v.fix(st.growth, 4)}$.`);
       },
     },

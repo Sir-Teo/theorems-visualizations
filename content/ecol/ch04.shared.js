@@ -129,3 +129,40 @@ export function lvComp(p, x0, y0, T, n = 400) {
   }
   return { t, x: X, y: Y };
 }
+
+/**
+ * Janzen–Connell forest on an L×L torus: one tree per cell, S species. Each generation a fraction `mort` of trees dies; each
+ * vacated cell is refilled by a seedling whose species is drawn with weight  seed_s · exp(-gamma · cons_s),
+ * where seed_s = Σ exp(-d/lam) over adults of species s within Chebyshev radius R (seed rain) and
+ * cons_s = Σ exp(-(d/rc)²) over the same adults (conspecific crowding; the enemy effect). gamma = 0 is the neutral forest.
+ */
+export function jcInit(L, S, rng) {
+  const g = new Int16Array(L * L);
+  for (let i = 0; i < g.length; i++) g[i] = Math.floor(rng() * S);
+  return { L, S, g, rng, gen: 0 };
+}
+export function jcRichness(st) { const seen = new Uint8Array(st.S); let n = 0; for (const s of st.g) if (!seen[s]) { seen[s] = 1; n++; } return n; }
+export function jcStep(st, o) {
+  const { L, S, g, rng } = st, R = o.R || 6, lam = o.lam || 1.5, rc = o.rc || 2.5, gamma = o.gamma, mort = o.mort || 0.1;
+  const dead = [];
+  for (let i = 0; i < g.length; i++) if (rng() < mort) { dead.push(i); g[i] = -1; }
+  const seed = new Float64Array(S), cons = new Float64Array(S);
+  for (const i of dead) {
+    const x = i % L, y = (i - x) / L;
+    seed.fill(0); cons.fill(0);
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const s = g[((y + dy + L) % L) * L + ((x + dx + L) % L)];
+      if (s < 0) continue;
+      const d = Math.hypot(dx, dy);
+      if (d === 0) continue;
+      seed[s] += Math.exp(-d / lam);
+      cons[s] += Math.exp(-((d / rc) ** 2));
+    }
+    let tot = 0;
+    for (let s = 0; s < S; s++) { seed[s] *= Math.exp(-gamma * cons[s]); tot += seed[s]; }
+    let pick;
+    if (tot <= 0) { pick = Math.floor(rng() * S); } else { let u = rng() * tot; pick = 0; while (pick < S - 1 && u > seed[pick]) { u -= seed[pick]; pick++; } }
+    g[i] = pick;
+  }
+  st.gen++;
+}
