@@ -115,7 +115,8 @@ export function drawTree(s, P, o = {}) {
     const sorted = ns.slice().sort((a, b) => a.x - b.x || a.y - b.y);
     for (let i = 0; i + 1 < sorted.length; i++) {
       const a = sorted[i], b = sorted[i + 1], pc = pcol(a.p);
-      if (a.y === b.y) s.line(a.x, a.y, b.x, b.y, { color: pc, width: 5, alpha: 0.35, dash: [6, 5] });
+      if (a.y === b.y && P.nodes.some((m) => m !== a && m !== b && m.y === a.y && m.x > a.x && m.x < b.x)) s.path([[a.x, a.y], [(a.x + b.x) / 2, a.y + 0.3], [b.x, b.y]], { color: pc, width: 4, alpha: 0.4, dash: [6, 5] });
+      else if (a.y === b.y) s.line(a.x, a.y, b.x, b.y, { color: pc, width: 5, alpha: 0.35, dash: [6, 5] });
       else s.path([[a.x, a.y], [Math.min(a.x, b.x) - 0.28, (a.y + b.y) / 2], [b.x, b.y]], { color: pc, width: 4, alpha: 0.4, dash: [6, 5] });
     }
   });

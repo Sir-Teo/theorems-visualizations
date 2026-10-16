@@ -19,7 +19,7 @@ export default {
 $$x_j^{(k+1)}=\frac{x_j^{(k)}}{\sum_ia_{ij}}\sum_i a_{ij}\,\frac{y_i}{(Ax^{(k)})_i}$$
 keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood image; after every update $\sum_j\big(\sum_ia_{ij}\big)x_j=\sum_iy_i$ (the counts are conserved). **OSEM** applies the same update using only one subset $S_m$ of the bins (e.g. every $S$-th projection angle) at a time, so one pass over all subsets costs one MLEM iteration but advances about $S$ times as far, at the price of no longer guaranteeing monotone convergence.`,
       idea: String.raw`The update is a multiplicative gradient step: the ratio $y_i/(Ax)_i$ says how much each bin's prediction is too low or too high, back-projecting the ratio (as in imaging-3.6, now a ratio rather than a sum) tells each pixel how to scale, and normalising by the sensitivity $\sum_ia_{ij}$ makes the step exactly the expectation–maximisation update for Poisson data. Because the ML solution for noisy counts fits the noise (the true image has a *lower* likelihood than the ML image), the iteration is stopped early or smoothed: the error against the truth falls, reaches a minimum and then rises as noise is amplified. Subsets trade the guarantee for speed, with limit cycles at high iteration counts.`,
-      caption: String.raw`Choose the **total counts** (few counts = noisy data) and the number of **subsets** $S$ (1 is MLEM). Slide the **iteration** number: left, the true image; middle, the current estimate. The two curves show the log-likelihood (MLEM in blue, OSEM in orange, dashed the value at the true image) and the error against the truth — likelihood rises forever while the error has a minimum, after which the picture gets noisier. OSEM reaches a given likelihood in about $1/S$ as many passes.`,
+      caption: String.raw`Choose the **total counts** (few counts = noisy data) and the number of **subsets** $S$ (1 is MLEM). Slide the **iteration** number: left, the true image; middle, the current estimate. The two curves show how far the log-likelihood is below its best value (log axis; MLEM in blue, OSEM in orange, dashed the value at the true image) and the error against the truth — the likelihood keeps rising while the error has a minimum, after which the picture gets noisier. OSEM reaches a given likelihood in about $1/S$ as many passes.`,
       deps: ['imaging-1.7', 'imaging-3.11'],
       tags: ['MLEM', 'OSEM', 'Poisson'],
       refs: ['Prince–Links ch. 9'],
@@ -35,7 +35,7 @@ keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood ima
         const nf = noiseField(v.M, rng32(31), sys.rows.length);
         const A = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'True image', minWidth: 200 });
         const B = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'MLEM / OSEM estimate', minWidth: 200 });
-        const C = v.stage({ x: [0, IT], y: [-1, 0.1], axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: 'log-likelihood (relative)', title: 'Likelihood', minWidth: 230 });
+        const C = v.stage({ x: [0, IT], y: [0.01, 1e5], ylog: true, axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: 'shortfall from best $\\ell$', title: 'Log-likelihood', minWidth: 230 });
         const D = v.stage({ x: [0, IT], y: [0, 1], axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: 'RMS error / mean', title: 'Error against the truth', minWidth: 230 });
         const cnt = v.slider('total counts', 3000, 300000, 30000, { log: true, sig: 2, int: true });
         const sub = v.select('subsets $S$', [{ value: 2, label: '2' }, { value: 4, label: '4' }, { value: 8, label: '8' }], 4);
@@ -60,8 +60,8 @@ keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood ima
           const S = Number(sub.value), R = solve(cnt.value, S), k = it.value, bg = R.scale;
           showImage(A, R.S.tr, N, N, { lo: 0, hi: 3 * bg, id: 'tr', smooth: true }); frame(A, N, N);
           showImage(B, R.S.imgs[k], N, N, { lo: 0, hi: 3 * bg, id: 'est', smooth: true, extra: `${cnt.value}|${S}|${k}` }); frame(B, N, N);
-          const lmax = Math.max(...R.M.ll, ...R.S.ll), l0 = R.M.ll[0], rel = (l) => (l - lmax) / (lmax - l0);
-          C.setView([0, IT], [-1.05, 0.12]);
+          const lmax = Math.max(...R.M.ll, ...R.S.ll), l0 = R.M.ll[0], rel = (l) => Math.max(lmax - l, 0.01);
+          C.setView([0, IT], [0.01, (lmax - l0) * 2]);
           C.path(R.M.ll.map((l, i) => [i, rel(l)]), { color: 'accent', width: 2.2 });
           C.path(R.S.ll.map((l, i) => [i, rel(l)]), { color: 'orange', width: 2.2 });
           C.hline(rel(R.llTrue), { color: 'ink', dash: true, width: 1.2 });
@@ -97,7 +97,7 @@ for a coincidence timing resolution $\Delta\tau$ (FWHM). For example $\Delta\tau
         const A = v.stage({ x: [-45, 45], y: [-45, 45], equal: true, axes: false, height: 320, title: 'Annihilation point and its timing blur', minWidth: 260 });
         const B = v.stage({ x: [0, NG], y: [0, NG], equal: true, axes: false, height: 300, title: 'Back-projection, no timing', minWidth: 200 });
         const C = v.stage({ x: [0, NG], y: [0, NG], equal: true, axes: false, height: 300, title: 'Back-projection with timing', minWidth: 200 });
-        const G = v.stage({ x: [20, 1000], y: [1, 8], xlog: true, axes: 'box', gutter: true, height: 300, xlabel: 'timing resolution FWHM (ps)', ylabel: 'gain $\\sqrt{D/\\Delta x}$', title: 'Approximate SNR gain', minWidth: 230 });
+        const G = v.stage({ x: [20, 1000], y: [1, 10], xlog: true, axes: 'box', gutter: true, height: 300, xlabel: 'timing resolution FWHM (ps)', ylabel: 'gain $\\sqrt{D/\\Delta x}$', title: 'Approximate SNR gain', minWidth: 230 });
         const dd = v.slider('object diameter $D$ (cm)', 12, 40, 30, { step: 1, int: true });
         const tr = v.slider('timing resolution (ps)', 30, 1000, 300, { log: true, sig: 2, int: true });
         const ang = v.slider('LOR direction (°)', 0, 179, 35, { step: 1, int: true });
@@ -180,7 +180,7 @@ is, once the reversible compartment has equilibrated with plasma ($t\ge t^*$), a
       verify: true,
       viz(v) {
         const FR = [0.25, 0.75, 1.25, 1.75, 2.5, 3.5, 4.5, 6, 8, 10, 13, 16, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90];
-        const A = v.stage({ x: [0, 90], y: [0, 70], axes: 'box', gutter: true, height: 330, xlabel: 'time (min)', ylabel: 'concentration (kBq/mL)', title: 'Plasma input and tissue curve', minWidth: 280 });
+        const A = v.stage({ x: [0, 90], y: [0, 50], axes: 'box', gutter: true, height: 330, xlabel: 'time (min)', ylabel: 'concentration (kBq/mL)', title: 'Plasma input and tissue curve', minWidth: 280 });
         const B = v.stage({ x: [0, 80], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'normalised time $\\int_0^tC_p\\,d\\tau\\,/\\,C_p(t)$ (min)', ylabel: '$C_T/C_p$', title: 'Patlak plot', minWidth: 280 });
         const K1 = v.slider('$K_1$ (mL/g/min)', 0.04, 0.3, 0.1, { step: 0.005 });
         const k2 = v.slider('$k_2$ (1/min)', 0.04, 0.4, 0.13, { step: 0.005 });
