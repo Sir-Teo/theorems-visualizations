@@ -263,7 +263,7 @@ export const TM_LIB = [
   { id: 'bb2', name: '2-state champion', nst: 2, table: [[[1, 1, 'R'], [1, 1, 'L']], [[0, 1, 'L'], [2, 1, 'R']]], note: 'four 1s, halts after 6 steps' },
   { id: 'bb3', name: '3-state, six 1s', nst: 3, table: [[[1, 1, 'R'], [3, 1, 'R']], [[2, 0, 'R'], [1, 1, 'R']], [[2, 1, 'L'], [0, 1, 'L']]], note: 'six 1s, halts after 14 steps' },
   { id: 'right', name: 'run right forever', nst: 1, table: [[[0, 1, 'R'], [0, 1, 'R']]], note: 'never halts' },
-  { id: 'pingpong', name: 'ping-pong', nst: 2, table: [[[1, 1, 'R'], [1, 1, 'R']], [[0, 1, 'L'], [0, 1, 'L']]], note: 'never halts (revisits the same two configurations)' },
+  { id: 'pingpong', name: 'ping-pong', nst: 2, table: [[[1, 1, 'R'], [1, 1, 'R']], [[0, 1, 'L'], [0, 1, 'L']]], note: 'never halts, it cycles between two configurations' },
 ];
 /** Direct simulation: snapshots [{q, tape: Map, head}] until halting or maxSteps. */
 export function tmSim(m, maxSteps = 200) {
@@ -351,7 +351,7 @@ export function drawDiamond(v, s, o) {
     void dy;
   };
   const seq = (arr, side, col, labels) => {
-    const all = [top, ...arr, ...(bot ? [bot] : [])];
+    const all = [top, ...arr, ...(bot && !bot.missing ? [bot] : [])];
     for (let i = 0; i + 1 < all.length; i++) arrow(all[i], all[i + 1], col, labels ? labels[i] : '', side);
   };
   seq(L1, -1, o.leftColor || 'accent', o.leftLabels);

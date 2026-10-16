@@ -105,11 +105,18 @@ export function coverage(T) {
   let unc = 0; for (let i = 0; i < N; i++) if (!covered[i]) unc++;
   return { covered, unc };
 }
-/** Sophisticated outcome of an amendment agenda that votes the points of `order` one against the survivor so far. */
+/**
+ * Sophisticated outcome of the amendment agenda order[0], order[1], ...: the first two alternatives are voted, the winner
+ * meets the third, and so on. Voters look ahead: with b_j the outcome reached when order[j] is the survivor facing the rest
+ * of the agenda, the outcome for any survivor w is w played in turn against b_last, ..., b_{j}, where "played" means that a
+ * strict majority decides which outcome is kept.
+ */
 export function sophisticated(T, order) {
-  let s = order[order.length - 1];
-  for (let j = order.length - 2; j >= 0; j--) if (T.has(order[j], s)) s = order[j];
-  return s;
+  const N = order.length, b = new Array(N);
+  const pick = (x, y) => (x === y || T.has(x, y) ? x : y);
+  const run = (a, from) => { let w = a; for (let k = N - 1; k >= from; k--) w = pick(w, b[k]); return w; };
+  for (let j = N - 1; j >= 1; j--) b[j] = run(order[j], j + 1);
+  return run(order[0], 1);
 }
 
 // ================================================================== chains of majority-preferred moves (McKelvey)
@@ -160,5 +167,34 @@ export function gridMedian(w) {
 }
 export const gridMean = (w) => sum(Array.from(w, (p, i) => p * binX(w.length, i)));
 
+/** Cumulative distribution function (linear within bins) of a binned density on [LINE.lo, LINE.hi]. */
+export function cdfOf(w) {
+  const n = w.length, c = new Float64Array(n + 1);
+  for (let i = 0; i < n; i++) c[i + 1] = c[i] + w[i];
+  return (x) => { const t = clamp((x - LINE.lo) / (LINE.hi - LINE.lo), 0, 1) * n, i = Math.min(n - 1, Math.floor(t)); return c[i] + (c[i + 1] - c[i]) * (t - i); };
+}
+/** Votes (as shares of the electorate) of two parties at xa, xb: each voter backs the nearer party unless it is farther than d (then abstains). */
+export function votes2(F, xa, xb, d) {
+  const lo = LINE.lo, hi = LINE.hi;
+  if (Math.abs(xa - xb) < 1e-12) { const v = Math.max(0, F(Math.min(hi, xa + d)) - F(Math.max(lo, xa - d))); return [v / 2, v / 2]; }
+  const mid = (xa + xb) / 2;
+  let a0, a1, b0, b1;
+  if (xa < xb) { a0 = Math.max(lo, xa - d); a1 = Math.min(mid, xa + d); b0 = Math.max(mid, xb - d); b1 = Math.min(hi, xb + d); }
+  else { b0 = Math.max(lo, xb - d); b1 = Math.min(mid, xb + d); a0 = Math.max(mid, xa - d); a1 = Math.min(hi, xa + d); }
+  return [Math.max(0, F(a1) - F(a0)), Math.max(0, F(b1) - F(b0))];
+}
+/** Votes of any number of parties at positions P under binned density w with alienation threshold d (ties split). Returns { vt, ab, who }. */
+export function tallyBins(P, w, d) {
+  const N = w.length, vt = P.map(() => 0), who = new Int8Array(N); let ab = 0;
+  for (let i = 0; i < N; i++) {
+    const x = binX(N, i); let bd = 1e9, ties = [];
+    P.forEach((p, j) => { const dd = Math.abs(x - p); if (dd < bd - 1e-12) { bd = dd; ties = [j]; } else if (Math.abs(dd - bd) <= 1e-12) ties.push(j); });
+    if (bd > d) { ab += w[i]; who[i] = -1; continue; }
+    ties.forEach((j) => { vt[j] += w[i] / ties.length; }); who[i] = ties[0];
+  }
+  return { vt, ab, who };
+}
+/** Inverse of the standard normal distribution function (bisection). */
+export function PhiInv(p) { let a = -8, b = 8; for (let k = 0; k < 60; k++) { const m = (a + b) / 2; if (Phi(m) < p) a = m; else b = m; } return (a + b) / 2; }
 export const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 export { range, sum };

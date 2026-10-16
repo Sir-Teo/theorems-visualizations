@@ -28,11 +28,12 @@ function drawBars(v, s, rows, o = {}) {
 
 /** Rows of combinator (or mixed) terms: the redex of each row is shaded; the row k is highlighted. */
 function drawTraceCL(v, s, run, k, o = {}) {
-  const rowH = o.rowH || 30, top = 12, size_ = o.size || 16;
-  const rows = Math.max(1, Math.floor((s.H - top - 8) / rowH)), first = Math.max(0, k - rows + 1);
-  for (let i = first; i <= k; i++) {
+  const rowH = o.rowH || 30, top = 12, size_ = o.size || 16, total = run.states.length;
+  const rows = Math.max(1, Math.floor((s.H - top - 8) / rowH));
+  const first = o.all ? Math.max(0, Math.min(k - Math.floor(rows / 2), total - rows)) : Math.max(0, k - rows + 1), last = o.all ? Math.min(total - 1, first + rows - 1) : k;
+  for (let i = first; i <= last; i++) {
     const y = top + (i - first) * rowH + rowH / 2, cur = i === k, p = i < run.paths.length ? run.paths[i] : null;
-    const lay = layoutCL(run.states[i], { style: (nd, path) => (p !== null && (path === p || path.startsWith(p + '.')) ? 'orange' : undefined) });
+    const lay = layoutCL(run.states[i], { style: (nd, path) => (cur && p !== null && (path === p || path.startsWith(p + '.')) ? 'orange' : undefined) });
     if (cur) { s.ctx.save(); s.ctx.fillStyle = v.color('gold', 0.14); rrect(s.ctx, 4, y - rowH / 2 + 2, s.W - 8, rowH - 4, 6); s.ctx.fill(); s.ctx.restore(); }
     s.textPx(String(i), 30, y, { size: 12.5, color: cur ? 'ink' : 'muted', weight: 700, align: 'right', halo: false });
     drawLine(v, s, lay, 44, y, { size: cur ? size_ : size_ - 1, maxW: s.W - 60, weight: cur ? 600 : 500, color: cur ? 'ink' : 'muted' });
@@ -200,7 +201,7 @@ export default {
           const R = cur; if (!R) return '';
           const m = R.m, done = R.status === 'done', within = done && R.steps <= bud.value;
           const txt = within ? `**normal form reached after ${R.steps} β-steps** (it is $\\mathsf{true}$), so the machine halts: a certificate` : done ? `the normal form $\\mathsf{true}$ needs ${R.steps} β-steps, more than the budget: the semi-decider has no answer yet` : `no normal form within ${R.steps} β-steps${R.sizes[R.sizes.length - 1] > 6000 ? ' (the term outgrew the page’s size limit)' : ''}: the term keeps rebuilding the recursion, and no budget will ever turn this into a “no”`;
-          return `Machine “${m.name}” (${m.note}); compiled term of size ${R.sizes[0]} nodes. Budget ${bud.value}: ${txt}. The query “$R_M =_\\beta \\mathsf{true}$?” has the same answer as “does $M$ halt?”, and no algorithm answers either for all $M$.`;
+          return `Machine “${m.name}”: ${m.note}; compiled term of size ${R.sizes[0]} nodes. Budget ${bud.value}: ${txt}. The query “$R_M =_\\beta \\mathsf{true}$?” has the same answer as “does $M$ halt?”, and no algorithm answers either for all $M$.`;
         });
       },
     },
@@ -233,7 +234,7 @@ export default {
           const Lt = layoutG(mkTree(t, ''));
           const under = (path) => p !== null && (path === p || path.startsWith(p + '.'));
           drawTreePx(v, sTree, Lt, { labelOf: (nd) => nd.n.label, dy: 52, fill: (nd) => (under(nd.n.path) ? 'orange' : nd.n.node.t === 'a' ? 'accent' : nd.n.node.t === 'c' ? 'green' : 'purple'), size: 13 });
-          drawTraceCL(v, sTrace, run, k);
+          drawTraceCL(v, sTrace, run, k, { all: true });
           sTrace.textPx(k === run.paths.length ? (run.status === 'done' ? 'normal form' : 'stopped (size limit)') : `step ${k} of ${run.paths.length}${run.status === 'cap' ? '+' : ''}`, sTrace.W - 10, sTrace.H - 10, { size: 11.5, color: 'muted', align: 'right', weight: 700 });
           // comparison table
           const [ls, rs] = PAIRS[pair.value], Lp = parseCL(ls).ast, Rp = parseCL(rs).ast;
@@ -265,7 +266,8 @@ export default {
       caption: String.raw`Type a $\lambda$-term (or pick one) and drag “binders eliminated” to watch the abstractions disappear one by one, innermost first. The plot compares the size of the result with and without the $\eta$-shortcut for the family $\lambda x_1\ldots x_n.\,x_n\,x_{n-1}\cdots x_1$, measured by the page’s own translator. The bottom line applies the $\lambda$-term and its translation to the same fresh variables and compares their normal forms.`,
       scope: String.raw`This is the simplest (Curry-style) translation, with only the three clauses and the optional $\eta$-rule; better algorithms (with extra combinators B, C or the optimizations of Turner) produce smaller output and are not shown. The growth numbers in the plot are measurements of this translator, not a stated theorem.`,
       deps: ['pl-3.8'], refs: ['Pierce §5.2'], tags: ['combinators', 'compilation'],
-      credit: 'Idea from Schönfinkel (1924) and Curry (1930); the variant with optimizations: D. A. Turner, J. Symbolic Logic 44 (1979)',
+      credit: 'Bracket abstraction comes from the early combinatory logic of Schönfinkel and Curry (who first gave the algorithm was not verified); optimized variant: D. A. Turner, J. Symbolic Logic 44 (1979)',
+      verify: true,
       viz(v) {
         const sTr = pxStage(v, { height: 230, full: true, title: 'Eliminating the binders, innermost first' });
         const sPl = v.stage({ x: [1, 8], y: [0, 100], axes: 'box', gutter: true, height: 250, minWidth: 340, weight: 1.2, xlabel: 'number n of abstractions', ylabel: 'leaves in the result', title: 'Size of the translation of λx₁…xₙ. xₙ … x₂ x₁' });
@@ -285,7 +287,7 @@ export default {
         v.render(() => {
           if (f.err || !info) { drawParseError(v, sTr, f.src, f.err || { error: 'not a term', pos: 0, len: 1 }); return; }
           const st = info.r.states, k = Math.min(kS.value, st.length - 1);
-          drawTraceCL(v, sTr, { states: st, paths: [] }, k, { rowH: 34, size: 17 });
+          drawTraceCL(v, sTr, { states: st, paths: [] }, k, { rowH: 34, size: 17, all: true });
           sTr.textPx(k === st.length - 1 ? 'no λ left: a combinator term' : `${k} of ${st.length - 1} binders eliminated`, sTr.W - 10, sTr.H - 10, { size: 11.5, color: 'muted', align: 'right', weight: 700 });
           sPl.setView([0.7, 8.3], [0, Math.max(...G0.map((q) => q[1])) * 1.1]);
           sPl.path(G0, { color: 'accent', width: 2 }); sPl.dots(G0, { color: 'accent', r: 4 });
