@@ -99,12 +99,12 @@ export function makeLoop({ init, step, h, n0 = 160, tol = 0.05, maxPts = 7000, d
   L.fresh = (s) => { const y = init(s - Math.floor(s)); for (let k = 0; k < L.steps; k++) step(y, h); return y; };
   L.refine = (budget = 400) => {
     let added = 0;
-    for (let pass = 0; pass < 6 && added < budget; pass++) {
+    for (let pass = 0; pass < 40 && added < budget; pass++) {
       const S2 = [], Y2 = []; let ins = 0; const n = L.S.length;
       for (let i = 0; i < n; i++) {
         S2.push(L.S[i]); Y2.push(L.Y[i]);
         const j = (i + 1) % n, sj = j ? L.S[j] : L.S[0] + 1;
-        if (L.S.length + ins < maxPts && added + ins < budget && sj - L.S[i] > 1e-9 && dist(L.Y[i], L.Y[j]) > tol) { const sm = (L.S[i] + sj) / 2; S2.push(sm < 1 ? sm : sm - 1); Y2.push(L.fresh(sm)); ins++; }
+        if (L.S.length + ins < maxPts && added + ins < budget && sj - L.S[i] > 1e-14 && dist(L.Y[i], L.Y[j]) > tol) { const sm = (L.S[i] + sj) / 2; S2.push(sm < 1 ? sm : sm - 1); Y2.push(L.fresh(sm)); ins++; }
       }
       if (!ins) break;
       // keep parameters sorted (a wrapped insert after the last point belongs at the front)

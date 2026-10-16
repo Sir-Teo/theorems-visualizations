@@ -503,6 +503,7 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
           sP.dots(Cv.pr.map(([q, p]) => [q, toSI(g, p)]), { r: 4, color: 'accent' });
           sP.vline(d, { color: 'gold', width: 1.3, dash: [4, 3] }); sP.dot(d, toSI(g, exactP(g, d)), { r: 6, color: 'gold' });
           sP.setLabels('d (µm)', g === '1d' ? 'force (N)' : 'pressure (Pa)');
+          sP.setTitle(g === '1d' ? 'force (N) against separation' : 'pressure (Pa) against separation');
           let pdev = 0; for (const [q, p] of Cv.pr) pdev = Math.max(pdev, Math.abs(p / exactP(g, q) - 1));
           st = { g, d, L, rnow, P: toSI(g, exactP(g, d)), pdev };
         });

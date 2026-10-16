@@ -584,11 +584,39 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
           cache = { key, P, N, cw, cl, pl, irv: I.win, bo, ro, mm, spoil, mono: el.value === 'fl' ? null : monoSearch(P), abst: el.value === 'fl' ? null : abstainSearch(P) };
           return cache;
         };
-        const I = v.icons(Mt, { order: 'group', maxCell: 12, region: [0.52, 0.02, 0.99, 0.84], hover: true, tween: 0 });
+        const I = v.icons(Mt, { order: 'group', maxCell: 12, region: [0.4, 0.06, 0.99, 0.8], hover: true, tween: 0 });
+        function drawFlorida() {
+          const c = Sk.ctx, W = Sk.width, H = Sk.height, X = E.fl, fk = (x) => x.toLocaleString('en-US');
+          const rowsF = [['Bush', FL.bush, 'red'], ['Gore', FL.gore, 'blue'], ['Nader', FL.nader, 'green'], ['Buchanan', FL.buch, 'purple'], ['Browne', FL.browne, 'teal'], ['six others', FL.other, 'muted']];
+          txt(v, c, 'certified first choices (plurality)', 12, 14, { size: 11, weight: 700, color: 'muted', align: 'left' });
+          const x0 = 86, x1 = W - 90, rh = 17;
+          rowsF.forEach(([lab, n, col], i) => {
+            const Y = 32 + i * rh, L = Math.max(2, ((x1 - x0) * n) / FL.bush);
+            txt(v, c, lab, x0 - 8, Y, { size: 11, weight: 600, align: 'right' });
+            rr(c, x0, Y - 6, L, 12, 3); c.fillStyle = v.color(col, 0.7); c.fill();
+            txt(v, c, fk(n), x0 + L + 6, Y, { size: 11, weight: 700, align: 'left', halo: true });
+          });
+          // zoomed finish: Bush and Gore after the minor-party ballots transfer (model)
+          const g = Math.round(FL.nader * pN.value), b = Math.round(FL.buch * pR.value), cB = Math.round(FL.browne * pR.value);
+          const tr = { 0: [[FL.nader - g, 'green'], [b, 'purple'], [cB, 'teal']], 1: [[g, 'green'], [FL.buch - b, 'purple'], [FL.browne - cB, 'teal']] };
+          const fin = [FL.bush + sum(tr[0].map((t) => t[0])), FL.gore + sum(tr[1].map((t) => t[0]))];
+          const lo = 2895000, hi = Math.max(...fin) + 15000, top = 32 + 6 * rh + 26, Xz = (val) => x0 + ((x1 - x0) * (val - lo)) / (hi - lo);
+          txt(v, c, `head to head once minor-party ballots transfer (model) — axis zoomed to ${fk(lo)}…${fk(hi)}`, 12, top - 8, { size: 11, weight: 700, color: 'muted', align: 'left' });
+          [[0, 'Bush', 'red'], [1, 'Gore', 'blue']].forEach(([k, lab, col], i) => {
+            const Y = top + 22 + i * 44; let at = k === 0 ? FL.bush : FL.gore;
+            txt(v, c, lab, x0 - 8, Y, { size: 12, weight: 700, align: 'right', color: col });
+            rr(c, x0, Y - 9, Xz(at) - x0, 18, 3); c.fillStyle = v.color(col, 0.55); c.fill();
+            tr[k].forEach(([n, cc]) => { const a = Xz(at), bb = Xz(at + n); c.fillStyle = v.color(cc, 0.85); c.fillRect(a, Y - 9, Math.max(0, bb - a), 18); at += n; });
+            txt(v, c, fk(fin[k]) + (fin[k] > fin[1 - k] ? ' wins' : ''), Xz(fin[k]) + 6, Y, { size: 11.5, weight: 800, align: 'left', color: fin[k] > fin[1 - k] ? 'green' : 'ink', halo: true });
+          });
+          const Y0 = top + 22 + 88;
+          c.save(); c.strokeStyle = v.color('ink', 0.6); c.setLineDash([3, 3]); c.beginPath(); c.moveTo(Xz(FL.bush), top + 8); c.lineTo(Xz(FL.bush), Y0 - 18); c.stroke(); c.restore();
+          txt(v, c, `certified: Bush ahead by ${FL.bush - FL.gore}`, Xz(FL.bush), Y0 - 6, { size: 10.5, weight: 700, color: 'muted', align: 'center', halo: true });
+        }
         v.render(() => {
           const X = cur(), A = analysis(), P = A.P, m = P.m, nm = (x) => X.names[x], sh = (x) => X.short[x];
           // ---- Sankey
-          drawIRV(v, Sk, P, [96, 34, Sk.width - 132, Sk.height - 10], { lab: nm, col: (x) => X.col[x], big: true });
+          if (el.value === 'fl') drawFlorida(); else drawIRV(v, Sk, P, [96, 34, Sk.width - 132, Sk.height - 10], { lab: nm, col: (x) => X.col[x], big: true });
           // ---- tournament (the main three candidates)
           const tc = Tn.ctx, TW = Tn.width, TH = Tn.height, cand = el.value === 'fl' ? [0, 1, 2] : [0, 1, 2];
           const pos = [[TW / 2, 62], [TW * 0.8, TH - 80], [TW * 0.2, TH - 80]];
@@ -596,7 +624,7 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
           cand.forEach((x, k) => txt(v, tc, nm(x) + (x === A.cw ? ' · Condorcet winner' : x === A.cl ? ' · Condorcet loser' : ''), pos[k][0], pos[k][1] + (k === 0 ? -33 : 34), { size: 10.5, weight: 700, color: x === A.cw ? 'green' : x === A.cl ? 'red' : 'muted', halo: true }));
           // ---- rules table
           const c = Mt.ctx, W = Mt.width, H = Mt.height, rows = [['plurality', A.pl], ['top-two runoff', A.ro], ['instant runoff', A.irv], ['Borda (2-1-0)', A.bo], ['minimax (Condorcet)', A.mm]];
-          const half = el.value === 'fl' ? W * 0.5 : W * 0.36, rh = Math.min(30, (H - 24) / rows.length);
+          const half = W * 0.36, rh = Math.min(30, (H - 24) / rows.length);
           rows.forEach(([lab, w], i) => {
             const Y = 18 + (i + 0.5) * rh;
             if (i % 2 === 0) { c.fillStyle = v.color('muted', 0.05); c.fillRect(8, Y - rh / 2, half - 16, rh); }
@@ -609,7 +637,7 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
             const u = 537, gN = Math.round(FL.nader / u), gB = Math.round(FL.buch / u), gR = Math.round(FL.browne / u), gO = Math.round(FL.other / u);
             I.set({ n: gN + gB + gR + gO, groups: [{ n: gN, color: 'green', label: 'Nader' }, { n: gB, color: 'purple', label: 'Buchanan' }, { n: gR, color: 'teal', label: 'Browne' }, { n: gO, color: 'muted', label: 'six others' }] });
             I.draw();
-            txt(v, c, `minor-party votes, one square = 537 votes (Bush’s margin): Nader alone ${FL.nader.toLocaleString('en-US')} = ${(FL.nader / u).toFixed(0)} margins`, W * 0.755, H - 14, { size: 10.5, weight: 700, color: 'muted' });
+            txt(v, c, `minor-party votes: one dot = 537 votes, Bush’s margin · Nader alone = ${(FL.nader / u).toFixed(0)} margins`, W * 0.695, 12, { size: 10.5, weight: 700, color: 'muted' });
           } else {
             I.set({ n: 0, groups: [] });
             const x0 = W * 0.39, L = (i) => (P.blocs[i].r.length === 1 ? `${sh(P.blocs[i].r[0])}-only` : P.blocs[i].r.map(sh).join('>'));

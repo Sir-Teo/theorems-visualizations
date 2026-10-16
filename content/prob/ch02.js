@@ -784,7 +784,7 @@ The converse fails: $E(XY)=EX\,EY$ (uncorrelated variables) does not imply indep
       deps: ['prob-2.1.12', 'prob-2.1.10'],
       tags: ['independence', 'expectation'],
       viz(v) {
-        const cS = v.slider('shared factor $c$', 0, 0.9, 0, { step: 0.05 });
+        const cS = v.slider('shared factor $c$', 0, 0.9, 0.5, { step: 0.05 });
         const aS = v.slider('$a$', 0.02, 0.24, 0.12, { step: 0.01 }), bS = v.slider('$b$', 0.02, 0.24, 0.2, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [10, 20000], xlog: true, y: [0, 6], height: 320, weight: 1.35, axes: 'box', gutter: true, xlabel: '$n$', title: 'running average of $X_1X_2X_3$' });
@@ -854,7 +854,7 @@ where $dG(y)$ means integration against the law of $Y$. The right-hand side is t
             const r = v.rng(11), xs = Array.from({ length: 4000 }, () => F.s(r) + G.s(r)).sort((a, b) => a - b);
             emp = []; xs.forEach((x, i) => { emp.push([x, i / 4000], [x, (i + 1) / 4000]); });
           }
-          if (v.playing) { zc = -1 + 6.5 * ((t % 9) / 9); hz.set(zc, conv(F.F, G, zc)); } else zc = hz.x;
+          if (v.playing) { zc = -0.5 + 6 * (((t + 2.5) % 9) / 9); hz.set(zc, conv(F.F, G, zc)); } else zc = hz.x;
           const z = zc, Fz = (y) => F.F(z - y);
           if (G.atoms) {
             for (const [y, p] of G.atoms) { L.line(y, 0, y, p, { color: 'orange', width: 3 }); L.dot(y, p, { r: 4.5, color: 'orange' }); L.line(y, 0, y, p * Fz(y), { color: 'green', width: 9, alpha: 0.6 }); }
@@ -965,7 +965,8 @@ When $Y$ also has a density $g$ this reads $h(x)=\int f(x-y)\,g(y)\,dy$.`,
           for (let j = 0; j < 6000; j++) { if (ex) { let s = 0; for (let i = 0; i < k; i++) s += sampleExp(r, lam); smp.push(s); } else smp.push(GA.sample(r) + GB.sample(r)); }
           const Hs = densityOn(smp, linEdges(0, xmax, 60));
           let peak = 0; for (const p of numPts) peak = Math.max(peak, p[1]);
-          const ymax = Math.min(Math.max(peak, ...Hs.density) * 1.15, 4 * peak + 0.1);
+          let ppk = 0; for (const P of parts) for (const q of toPts(P)) if (q[0] > 0.3 / lam) ppk = Math.max(ppk, q[1]);
+          const ymax = Math.max(peak, ppk, ...Hs.density) * 1.12;
           S.setView([0, xmax], [0, ymax]);
           S.hist(Hs, { density: true, color: 'gold', fillAlpha: 0.28 });
           for (const P of parts) S.path(toPts(P), { color: P.col, width: 1.4, dash: P.dash ? [4, 4] : null });
@@ -977,7 +978,7 @@ When $Y$ also has a density $g$ this reads $h(x)=\int f(x-y)\,g(y)\,dy$.`,
           v.legend(ex ? [['muted', 'previous sum', { dash: true }], ['orange', 'exponential$(\\lambda)$'], ['accent', 'numerical convolution'], ['green', `gamma$(${k},\\lambda)$ formula`, { dash: true }], ['gold', '6000 seeded sums', { area: true }]]
             : [['teal', 'gamma$(\\alpha,\\lambda)$'], ['purple', 'gamma$(\\beta,\\lambda)$'], ['accent', 'numerical convolution'], ['green', 'gamma$(\\alpha+\\beta,\\lambda)$', { dash: true }], ['gold', '6000 seeded sums', { area: true }]]);
         });
-        v.readout(() => st && `Largest gap between the numerical convolution and the gamma$(${fr(st.k, 1)},${fr(st.lam, 2)})$ density: $${fr(st.sup, 4)}$ (peak height $${fr(st.peak, 3)}$; grid step $0.02/\\lambda$). Mean $${fr(st.k / st.lam, 3)}$, variance $${fr(st.k / st.lam / st.lam, 3)}$.`);
+        v.readout(() => st && `Largest gap between the numerical convolution and the gamma$(${fr(st.k, 1)},${fr(st.lam, 2)})$ density: $${st.sup < 1e-4 ? v.sci(st.sup, 2) : fr(st.sup, 4)}$ (peak height $${fr(st.peak, 3)}$; grid step $0.02/\\lambda$). Mean $${fr(st.k / st.lam, 3)}$, variance $${fr(st.k / st.lam / st.lam, 3)}$.`);
       },
     },
     {
@@ -1023,7 +1024,7 @@ When $Y$ also has a density $g$ this reads $h(x)=\int f(x-y)\,g(y)\,dy$.`,
           st = { area, hz0, ms, vs, gap, r, vtrue: a + b + 2 * c };
           v.legend([['accent', 'slice / slice areas'], ['green', 'completed square; normal$(\\mu+\\nu,a+b)$', { dash: true }], ['gold', '$z$']]);
         });
-        v.readout(() => st && `At $z$: slice area $${fr(st.area, 4)}$ vs normal$(\\mu+\\nu,a+b)$ density $${fr(st.hz0, 4)}$` + (st.r === 0 ? `; slice centre $${fr(st.ms, 3)}$, variance $ab/(a+b)=${fr(st.vs, 3)}$. Largest gap over $z$: $${fr(st.gap, 5)}$.` : `. With $\\rho=${fr(st.r, 2)}$ the sum is normal with variance $${fr(st.vtrue, 3)}$, so the gap reaches $${fr(st.gap, 4)}$.`));
+        v.readout(() => st && `At $z$: slice area $${fr(st.area, 4)}$ vs normal$(\\mu+\\nu,a+b)$ density $${fr(st.hz0, 4)}$` + (st.r === 0 ? `; slice centre $${fr(st.ms, 3)}$, variance $ab/(a+b)=${fr(st.vs, 3)}$. Largest gap over $z$: $${v.sci(st.gap, 2)}$.` : `. With $\\rho=${fr(st.r, 2)}$ the sum is normal with variance $${fr(st.vtrue, 3)}$, so the gap reaches $${fr(st.gap, 4)}$.`));
       },
     },
     {

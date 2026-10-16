@@ -592,8 +592,7 @@ export default {
         });
         v.legend([['blue', '8 × 7 × … (descending)'], ['orange', '1 × 2 × … (ascending)'], ['gold', 'paper’s medians'], ['green', 'true value'], ['red', 'your estimate']]);
         v.readout(() => {
-          const k = kS.value, g = gS.value, d = 8 * 7 * 6 * 5 * 4 * 3 * 2 / [1, 8, 56, 336, 1680, 6720][0], m = (s) => { let p = 1; for (let i = 0; i < k; i++) p *= s[i]; return p * Math.pow(g, 8 - k); };
-          void d;
+          const k = kS.value, g = gS.value, m = (s) => { let p = 1; for (let i = 0; i < k; i++) p *= s[i]; return p * Math.pow(g, 8 - k); };
           const md = m([8, 7, 6, 5, 4, 3, 2, 1]), ma = m([1, 2, 3, 4, 5, 6, 7, 8]);
           return `Your estimate ${num(Math.round(est.value))} is ${v.fix(40320 / est.value, 1)}× below the true value. Model with $k = ${k}$, growth ${v.fix(g, 1)}: descending ${num(Math.round(md))}, ascending ${num(Math.round(ma))} (paper: 2,250 and 512; ratio ${v.fix(2250 / 512, 1)}, model ratio ${v.fix(md / ma, 1)}). Both orders underestimate because the extrapolation is insufficient; the order matters because the anchor, the partial product, differs.`;
         });

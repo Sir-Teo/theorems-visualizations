@@ -77,7 +77,7 @@ Power is conserved by the transformer, so the transmitted fraction becomes $T=4z
           sc.text('cochlear fluid', 9.8, 2.85, { align: 'right', color: 'blue', size: 12 });
           const hd = Math.min(2.7, 0.62 * Math.sqrt(A)), hf = 0.62; // half-heights: drum and footplate (√area)
           sc.rect(2.6, -hd, 2.85, hd, { fill: 'ink', fillAlpha: 0.7, stroke: false });
-          sc.text('eardrum', 2.72, -hd - 0.3, { align: 'center', color: 'ink', size: 11.5 });
+          sc.text('eardrum', 2.72, Math.min(2.85, hd + 0.3), { align: 'center', color: 'ink', size: 11.5 });
           if (on.value) {
             // lever: pivot near the footplate end; arm lengths in ratio ℓ
             const px = 5.1, a1 = 1.25 * L / Math.max(1, L) + 0.8, a2 = a1 / L;
@@ -170,7 +170,7 @@ where $x$ is the fractional distance from the apex. It spans 20 Hz to 20.7 kHz a
           const r1 = 0.55, r2 = W2 ? M.clamp(0.55 * f2 / f1, 0.3, 1.6) : 0, p1 = TAU * r1 * t, p2 = TAU * r2 * t;
           const Emax = Math.max(...E) || 1;
           // ---- membrane
-          for (const f of [16000, 8000, 4000, 2000, 1000, 500, 250, 125, 63]) {
+          for (const f of [16000, 8000, 4000, 2000, 1000, 500, 250, 125]) {
             const x = placeOf(f); bm.vline(x, { color: 'grid', width: 1 });
             bm.text(f >= 1000 ? `${f / 1000}k` : String(f), x, 1.42, { align: 'center', color: 'muted', size: 10.5 });
           }
@@ -291,15 +291,16 @@ The law holds for partials that are **resolved**, each falling in its own audito
             const pts = []; for (let j = 0; j < E.length; j++) pts.push([(2 * j) / (E.length - 1), y0 + (E[j] - d.mean) * k]);
             fb.path(pts, { color: 'accent', width: 1.6, alpha: 0.9 });
             fb.text(`${v.fix(fc, 0)} Hz`, 0, y0 + 0.36, { align: 'left', color: 'muted', size: 10, dx: 2 });
-            const md = dB(d.mx / Math.max(d.mn, 1e-6));
-            fb.text(`${md > 40 ? '>40' : v.fix(md, 1)} dB`, 2, y0 + 0.36, { align: 'right', color: md > 6 ? 'red' : 'green', size: 10, dx: -2 });
+            const sw = (D) => Math.min(40, dB(D.mx / Math.max(D.mn, 1e-6))), md = sw(d), mc = sw(depth(envOf(fc, 'cos', 120))), ch = Math.abs(md - mc) > 3;
+            fb.text(recipe.value === 'cos' ? `swing ${v.fix(md, 1)} dB` : `swing ${v.fix(md, 1)} dB (cosine ${v.fix(mc, 1)})`, 2, y0 + 0.36, { align: 'right', color: recipe.value === 'cos' ? 'muted' : ch ? 'red' : 'green', size: 10, dx: -2 });
           });
         });
-        v.legend([['accent', 'waveform / filter envelopes'], ['orange', 'auditory filter shapes'], ['green', 'flat envelope (≤ 6 dB swing)'], ['red', 'pulsing envelope']]);
+        v.legend([['accent', 'waveform / filter envelopes'], ['orange', 'auditory filter shapes'], ['green', 'envelope swing as in cosine phase (±3 dB)'], ['red', 'swing changed by the phases']]);
         v.readout(() => {
           const w = wave(), w0 = wave('cos'); let pk = 0, pk0 = 0; for (let i = 0; i < 800; i++) { pk = Math.max(pk, Math.abs(w(i / 800))); pk0 = Math.max(pk0, Math.abs(w0(i / 800))); }
-          const rms = Math.sqrt(NH / 2), cs = chans(), md = (rc) => M.mean(cs.map((fc) => { const d = depth(envOf(fc, rc, 120)); return Math.min(40, dB(d.mx / Math.max(d.mn, 1e-6))); }));
-          return `spectrum: identical (every partial at the same amplitude, change 0.0 dB) · crest factor of the waveform ${v.fix(pk / rms, 2)} (cosine phase ${v.fix(pk0 / rms, 2)}) · mean envelope swing across the filters ${v.fix(md(recipe.value), 1)} dB (cosine phase ${v.fix(md('cos'), 1)} dB) → ${reg.value === 'low' ? 'resolved harmonics: the filter outputs barely change, and the phases are close to inaudible' : 'unresolved harmonics: the filter envelopes depend on the phases, and so does the sound'}`;
+          const rms = Math.sqrt(NH / 2), cs = chans(), sw = (fc, rc) => { const d = depth(envOf(fc, rc, 120)); return Math.min(40, dB(d.mx / Math.max(d.mn, 1e-6))); };
+          const diffs = cs.map((fc) => Math.abs(sw(fc, recipe.value) - sw(fc, 'cos'))), nCh = diffs.filter((d) => d > 3).length;
+          return `spectrum: identical (every partial at the same amplitude, change 0.0 dB) · crest factor of the waveform ${v.fix(pk / rms, 2)} (cosine phase ${v.fix(pk0 / rms, 2)}) · envelope swing changed by more than 3 dB in ${nCh} of ${NCH} filters (mean change ${v.fix(M.mean(diffs), 1)} dB) → ${recipe.value === 'cos' ? 'choose another phase recipe to compare' : nCh <= 3 ? 'the filter outputs hardly notice the phases: they are close to inaudible' : 'the filter envelopes depend on the phases, and so does the sound'}`;
         });
       },
     },
@@ -329,7 +330,7 @@ The critical band is the frequency scale of masking (5.5), roughness (5.7), loud
         const rel = v.slider('tone level re threshold', -15, 15, 0, { step: 1, fmt: (x) => `${x > 0 ? '+' : ''}${x} dB` });
         const band = (fc, W) => [Math.max(20, fc - W / 2), fc + W / 2];
         const thr = (fc, W) => { const [a, b] = band(fc, W); return 10 * Math.log10(M.integrate((f) => roex(f, fc), a, b, 400)) + Kdb; }; // dB re N0 (per Hz)
-        const sp = v.stage({ x: [100, 10000], y: [-0.05, 1.25], xlog: true, height: 230, axes: 'box', gutter: true, xticks: fTicks(100, 10000), yticks: [], xlabel: 'frequency (Hz)', weight: 1.1, title: 'tone, noise band and auditory filter' });
+        const sp = v.stage({ x: [0, 2000], y: [-0.05, 1.3], height: 230, axes: 'box', gutter: true, yticks: [], xlabel: 'frequency (Hz)', weight: 1.1, title: 'tone, noise band and auditory filter' });
         const th = v.stage({ x: [10, 4000], y: [-12, 34], xlog: true, height: 230, axes: 'box', gutter: true, xticks: fTicks(10, 4000, [10, 20, 50, 100, 200, 500, 1000, 2000]), xlabel: 'noise bandwidth $W$ (Hz)', ylabel: 'threshold (dB re $N_0$)', weight: 1, title: 'masked threshold against bandwidth' });
         const st = v.stage({ x: [50, 16000], y: [0, 2], xlog: true, height: 120, axes: 'box', gutter: { l: 70, b: 28 }, xticks: fTicks(50, 16000), yticks: [[1.5, 'Bark'], [0.5, 'ERB']], full: true, title: 'the critical-band scales: 24 Bark bands, and bands one ERB wide' });
         // pulsed tone in band-limited noise, by inverse FFT (seeded phases), relative levels exact
@@ -348,13 +349,14 @@ The critical band is the frequency scale of masking (5.5), roughness (5.7), loud
         v.soundButton('Listen', (snd) => snd.samples(synth(), SR, { gain: 0.9, normalize: false }));
         v.render(() => {
           const fc = fcS.value, W = wS.value, [a, b] = band(fc, W), E = erb(fc), T = thr(fc, W), plateau = 10 * Math.log10(E) + Kdb;
-          // spectrum panel
+          // spectrum panel (linear, zoomed to the band or the filter)
+          const R = Math.max(0.62 * W, 2.4 * E); sp.setView([Math.max(0, fc - R), fc + R], [-0.05, 1.3]);
           sp.rect(a, 0, b, 0.6, { fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 1 });
           sp.fn((f) => roex(f, fc), { color: 'orange', width: 2, n: 500 });
           sp.vband(fc - E / 2, fc + E / 2, { color: 'green', alpha: 0.08 });
           sp.line(fc, 0, fc, 1.12, { color: 'accent', width: 3 });
           sp.text(`tone ${fc} Hz`, fc, 1.18, { color: 'accent', size: 11.5, align: 'center' });
-          sp.text(`noise, W = ${v.fix(W, 0)} Hz`, Math.min(b, 6000), 0.66, { color: 'gold', size: 11, align: 'left', dx: 4 });
+          sp.text(`noise, W = ${v.fix(W, 0)} Hz`, b, 0.66, { color: 'gold', size: 11, align: b > fc + 0.6 * R ? 'right' : 'left', dx: b > fc + 0.6 * R ? -4 : 4 });
           sp.corner(`1 ERB = ${v.fix(E, 0)} Hz (green)`, 'tl', { color: 'green', size: 11, plate: true });
           // threshold curve
           th.fn((w) => thr(fc, w), { color: 'accent', width: 2.4, n: 200 });
@@ -364,7 +366,7 @@ The critical band is the frequency scale of masking (5.5), roughness (5.7), loud
           th.text(`ERB ${v.fix(E, 0)} Hz`, E, -10.5, { color: 'green', size: 11, align: 'left', dx: 4 });
           th.vline(cbw(fc), { color: 'purple', width: 1.2, dash: [2, 3] });
           th.text(`CB ${v.fix(cbw(fc), 0)}`, cbw(fc), 31, { color: 'purple', size: 10.5, align: 'left', dx: 4 });
-          th.text('+3 dB per doubling', 14, 10 * Math.log10(14) + Kdb + 3.5, { color: 'muted', size: 10.5, align: 'left' });
+          th.text('+3 dB per doubling', 14, 10 * Math.log10(14) + Kdb - 5, { color: 'muted', size: 10.5, align: 'left' });
           th.dot(W, T, { r: 6, color: 'gold' });
           th.dot(W, T + rel.value, { r: 4, color: 'accent', hollow: true });
           // scales strip
@@ -377,7 +379,7 @@ The critical band is the frequency scale of masking (5.5), roughness (5.7), loud
             const f0 = erbNumberInv(e), f1 = erbNumberInv(e + 1); if (f1 < 50 || f0 > 16000) continue;
             st.rect(Math.max(50, f0), 0.1, Math.min(16000, f1), 0.9, { fill: e % 2 ? 'green' : 'teal', fillAlpha: 0.22, color: 'panel', width: 1 });
           }
-          st.vline(fc, { color: 'accent', width: 2 });
+          st.vline(fc, { color: 'accent', width: 2, alpha: 0.55 });
         });
         v.legend([['accent', 'tone / threshold curve'], ['gold', 'noise band'], ['orange', 'auditory filter (roex)'], ['green', '1 ERB'], ['purple', 'Zwicker critical band', { dash: true }]]);
         v.readout(() => {
@@ -431,7 +433,7 @@ Masking also extends in time (a few milliseconds before a masker and up to about
         v.render(() => {
           if (showC.value) for (const P of [20, 40, 60, 80]) { s.fn((f) => phonToSpl(f, P), { color: 'muted', width: 1, alpha: 0.35, n: 200 }); s.text(`${P} phon`, 40, phonToSpl(40, P), { color: 'muted', size: 10, align: 'left', dy: -6 }); }
           s.fn(thresholdQuiet, { color: 'ink', width: 1.6, dash: [6, 4], n: 300 });
-          s.text('threshold in quiet (ISO 226)', 9000, thresholdQuiet(9000) - 6, { color: 'ink', size: 10.5, align: 'right' });
+          s.text('threshold in quiet (ISO 226)', 3000, thresholdQuiet(3000) + 9, { color: 'ink', size: 10.5, align: 'center' });
           s.between(total, () => -10, 30, 12500, { fill: 'red', fillAlpha: 0.13, n: 400 });
           s.fn(total, { color: 'red', width: 2.4, n: 400 });
           s.line(mk.x, -10, mk.x, mk.y, { color: 'orange', width: 3 });
@@ -487,7 +489,7 @@ a tone at the mean frequency inside the slowly varying envelope $2|\cos\pi\Delta
           const qx = 1 + a * Math.cos(th), qy = a * Math.sin(th);
           ps.arrow(1, 0, qx, qy, { color: 'orange', width: 2.4 });
           ps.arrow(0, 0, qx, qy, { color: 'green', width: 3 });
-          ps.text(`|sum| = ${v.fix(Math.hypot(qx, qy), 2)}`, 0, -2.0, { align: 'center', color: 'green', size: 12, weight: 600 });
+          ps.corner(`|sum| = ${v.fix(Math.hypot(qx, qy), 2)}`, 'tl', { color: 'green', weight: 600, plate: true });
           // zoom
           const w = (ms) => { const u = tt + ms / 1000; return Math.cos(TAU * f * u) + a * Math.cos(TAU * (f + d) * u); };
           zm.fn((ms) => env(tt + ms / 1000), { color: 'green', width: 1.4, dash: [5, 3] });

@@ -72,7 +72,7 @@ export default {
 $$(\varphi, \lambda) \mapsto \big(x(\varphi, \lambda),\ y(\varphi, \lambda)\big),$$
 usually continuous, injective and differentiable (pma-9.11) on its domain, so that it can be inverted and its local distortion measured. It need not be defined on the whole sphere: cylindrical maps are cut along a meridian (and Mercator's cannot reach the poles), azimuthal maps are centred on a point and the gnomonic covers less than a hemisphere. The *aspect* (where the map is centred) and a *scale* $R$ (map length per radian) complete the description; examples on the unit sphere are $x = \lambda,\ y = \ln\tan(\pi/4 + \varphi/2)$ (Mercator) and, centred on the North Pole, $x = r\sin\lambda,\ y = -r\cos\lambda$ with $r = 2\tan\tfrac{c}{2}$ (stereographic) where $c = 90^\circ - \varphi$.`,
       idea: String.raw`Every printed or digital map is such a function composed with a scale and a choice of centre. Many are defined geometrically — light projected from a point onto a plane, cylinder or cone — but most modern ones are simply formulas chosen for a property (angles, areas, distances from a centre, a pleasing look). The graticule of meridians and parallels is the quickest picture of a projection: it is the image of the coordinate grid. Where the function is not continuous (the seam) or not defined (a cut-off cap), the map tears the sphere; chapter 3.2 shows some tearing or stretching is unavoidable.`,
-      caption: String.raw`Choose a projection and drag $P$ on the globe (or rotate the globe). The coloured 6° patch around $P$ and its image show how the function carries a small region; the red seam or cap on the globe marks where this map is cut or undefined. The readout evaluates the projection's formula by hand and compares it with the map's own value.`,
+      caption: String.raw`Choose a projection and drag $P$ on the globe (or rotate the globe). The chequered patch around $P$ (6° cells) and its image show how the function carries a small region; the red seam or cap on the globe marks where this map is cut or undefined. The readout evaluates the projection's formula by hand and compares it with the map's own value. (On the whole-sphere azimuthal maps the South Pole becomes the rim, so Antarctica is left off.)`,
       deps: ['geog-1.2', 'pma-9.11'],
       refs: ['Snyder §1'],
       tags: ['map projections'],
@@ -84,6 +84,7 @@ usually continuous, injective and differentiable (pma-9.11) on its domain, so th
         const G2 = v.globe(sB, { projection: 'mercator', center: [0, 0], graticule: 15, drag: false });
         const P = G1.handle(28, 47, { label: 'P', color: 'accent' }); G2.handle(P);
         let last = '';
+        const NOANT = [...new Set(v.geo('land').map((q) => q.name))].filter((n) => n !== 'Antarctica');
         const mollT = (f) => { let t = 2 * f; for (let i = 0; i < 50; i++) { const dt = (t + Math.sin(t) - Math.PI * Math.sin(f)) / (1 + Math.cos(t) + 1e-15); t -= dt; if (Math.abs(dt) < 1e-14) break; } return t / 2; };
         function mine(name, lon, lat) {
           const l = lon * D2R, f = lat * D2R, c = Math.PI / 2 - f;
@@ -105,7 +106,7 @@ usually continuous, injective and differentiable (pma-9.11) on its domain, so th
           if (name !== last) { last = name; G2.set({ projection: name, center: AZ.has(name) ? [0, 90] : [0, 0] }); }
           const az = AZ.has(name), clip = { stereographic: 110, gnomonic: 60, lambert: 179.5, azimuthalEquidistant: 179.5 }[name];
           for (const G of [G1, G2]) {
-            G.draw();
+            G.draw(G === G2 && az && clip > 179 ? { land: NOANT } : {});
             const d = 6, f0 = clamp(P.lat - 12, -84, 72);
             for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) G.polygon([cellRing(P.lon - 12 + i * d, f0 + j * d, d, d)], { fill: (i + j) % 2 ? 'orange' : 'accent', fillAlpha: 0.55, color: 'ink', width: 0.6, alpha: 0.6 });
           }
@@ -117,13 +118,13 @@ usually continuous, injective and differentiable (pma-9.11) on its domain, so th
           }
           sA.corner('the sphere', 'tl', { color: 'muted', weight: 600 });
           sB.corner(`${LABEL[name]}${az ? ' (centred on the North Pole)' : ''}`, 'tl', { color: 'muted', weight: 600, plate: true });
-          v.legend([['red', az ? (clip < 179 ? 'not on this map' : 'centre of the map') : 'seam (cut)', az ? { area: true } : { dash: true }], ['accent', '6° patch around P', { area: true }]]);
+          v.legend([['red', az ? (clip < 179 ? 'not on this map' : 'centre of the map') : 'seam (cut)', az ? (clip < 179 ? { area: true } : { dot: true }) : { dash: true }], ['accent', 'patch of 6° cells around P', { area: true }]]);
         });
         v.readout(() => {
           const name = pj.value, M = mine(name, P.lon, P.lat), k = G2.project(P.lon, P.lat);
           const head = `$P = (\\varphi, \\lambda) = (${P.lat.toFixed(2)}^\\circ, ${P.lon.toFixed(2)}^\\circ)$. ${LABEL[name]}: $${M.tex}$.`;
           if (!k) return `${head} **$P$ is outside this map's domain.**`;
-          const by = M.xy ? ` By hand: $(${M.xy[0].toFixed(4)}, ${M.xy[1].toFixed(4)})$; the map: $(${k[0].toFixed(4)}, ${k[1].toFixed(4)})$ (difference ${v.sci(Math.hypot(M.xy[0] - k[0], M.xy[1] - k[1]) + 1e-17, 1)}).` : ` The map gives $(x, y) = (${k[0].toFixed(4)}, ${k[1].toFixed(4)})$.`;
+          const by = M.xy ? ` By hand: $(${M.xy[0].toFixed(4)}, ${M.xy[1].toFixed(4)})$; the map: $(${k[0].toFixed(4)}, ${k[1].toFixed(4)})$ (difference $${v.sci(Math.hypot(M.xy[0] - k[0], M.xy[1] - k[1]) + 1e-17, 1)}$).` : ` The map gives $(x, y) = (${k[0].toFixed(4)}, ${k[1].toFixed(4)})$.`;
           return `${head}${by} On a map of scale 1 : 50 million these are ${comma((k[0] * R_MEAN * 1e5) / 5e7, 1)} cm and ${comma((k[1] * R_MEAN * 1e5) / 5e7, 1)} cm from the origin.`;
         });
       },

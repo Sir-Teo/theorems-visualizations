@@ -537,7 +537,7 @@ Every vertex receives $1\le d[u]<f[u]\le 2n$, and the $2n$ timestamps are distin
           G.draw(dfsView(f));
           const I = ids(G), n = I.length, W = st.width, Hh = st.height, x0 = 44, x1 = W - 16, top = 56, rowH = Math.min(26, (Hh - top - 26) / Math.max(n, 1));
           const X = (t) => x0 + ((x1 - x0) * t) / (2 * n + 1);
-          strip(st, f.stack.map((u, i) => ({ label: G.lab(u), color: 'orange', fill: i === f.stack.length - 1 ? 'gold' : null })), 10, 8, { title: 'stack (top →)', titleW: 96, w: 28, h: 24, maxW: W - 20, empty: 'empty — between searches' });
+          strip(st, f.stack.map((u, i) => ({ label: G.lab(u), color: 'orange', fill: i === f.stack.length - 1 ? 'orange' : null })), 10, 8, { title: 'stack (top →)', titleW: 96, w: 28, h: 24, maxW: W - 20, empty: 'empty — between searches' });
           for (let t = 1; t <= 2 * n; t++) { L(st, X(t), top - 4, X(t), top + n * rowH, { color: 'grid', width: 1 }); if (n <= 12 || t % 2 === 0) T(st, t, X(t), top + n * rowH + 10, { align: 'center', size: 10.5, color: t === f.time ? 'ink' : 'muted', weight: t === f.time ? 800 : 500 }); }
           I.forEach((u, k) => {
             const Y = top + k * rowH + rowH / 2, d = f.d[K(u)], fi = f.f[K(u)];

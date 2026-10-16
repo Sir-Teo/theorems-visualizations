@@ -87,7 +87,7 @@ be the empirical distribution function. Then $\sup_x|F_n(x)-F(x)|\to0$ almost su
           }
           const n = nS.value, xs = cache.xs.slice(0, n), s = xs.slice().sort((a, b) => a - b);
           L.setView(Lw.x, [-0.03, 1.03]);
-          for (let j = 1; j < 8; j++) L.vline(Lw.Q(j / 8), { color: 'faint', width: 1 });
+          for (let j = 1; j < 8; j++) L.vline(Lw.Q(j / 8), { color: 'muted', width: 1, alpha: 0.35, dash: [3, 3] });
           L.fn(Lw.F, { color: 'ink', width: 2.2, n: 800 });
           const pts = [[Lw.x[0] - 1, 0]]; s.forEach((x, i) => { pts.push([x, i / n], [x, (i + 1) / n]); }); pts.push([Lw.x[1] + 1, 1]);
           L.path(pts, { color: 'accent', width: 1.8 });
@@ -144,7 +144,7 @@ the **entropy** of the distribution.`,
           L.hband(H - 0.05, H + 0.05, { color: 'green', alpha: 0.13 });
           L.hline(H, { color: 'green', width: 2, dash: [7, 4] });
           L.hline(Math.log(6), { color: 'muted', width: 1, dash: [3, 3] });
-          L.text('log 6', 1.3, Math.log(6), { color: 'muted', size: 11, baseline: 'bottom', dy: -2 });
+          L.text('log 6', 7000, Math.log(6), { color: 'muted', size: 11, align: 'right', baseline: 'bottom', dy: -3, plate: true });
           cache.paths.forEach((pp) => L.path(grid.map((g, k) => [g, pp[k]]), { color: 'accent', width: 1.1, alpha: 0.6 }));
           const vals = cache2.vals, lo = Math.min(...lp), hi = Math.max(...lp);
           const spread = th === 1 ? 0.05 : Math.max(0.1, Math.max(...vals) - Math.min(...vals));

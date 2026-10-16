@@ -352,7 +352,7 @@ with equality at the output $y$ for which $\bar K$ is exactly the long-run cost-
         const KS = v.slider('plant size $\\bar K$', 0.5, 5, 1.4, { step: 0.05 });
         const s = v.stage({ x: [0, 14], y: [0, 7], height: 360, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'input space ($w = r = 10$)', weight: 1.1 });
         const c = v.stage({ x: [0, 10], y: [0, 200], height: 360, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'total cost', title: 'short-run and long-run total cost' });
-        const gp = v.stage({ x: [0, 10], y: [0, 30], height: 170, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'c_s − c', full: true, title: 'the short-run premium $c_s(y; \\bar K) - c(y) \\ge 0$' });
+        const gp = v.stage({ x: [0, 10], y: [0, 30], height: 170, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'premium', full: true, title: 'the short-run premium $c_s(y; \\bar K) - c(y) \\ge 0$' });
         v.legend([['purple', 'isoquant for y'], ['orange', 'short run: K = K̄', { dash: true }], ['green', 'long run: expansion path'], ['ink', 'long-run cost c(y)'], ['orange', 'short-run cost c_s(y; K̄)', { dash: true }]]);
         const lr = {}; const LR = (y) => { const k = y.toFixed(3); return lr[k] || (lr[k] = cminNum(T, w, r, y)); };
         const Ls = (y, K) => { let hi = 1; while (f(hi, K) < y && hi < 1e6) hi *= 2; let lo = 0; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m, K) < y) lo = m; else hi = m; } return (lo + hi) / 2; };
