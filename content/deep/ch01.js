@@ -89,7 +89,7 @@ The **pre-activation** $z$ is an affine function of the input, so the neuron is 
           info = { w, b, nw, z, a, ok, dist: z / nw };
         });
         v.legend([['ink', 'boundary $z=0$'], ['ink', '$z=\\pm1$', { dash: true }], ['purple', 'class 0', { dot: true }], ['green', 'class 1 (want $z\\ge0$)', { dot: true }], ['red', 'wrong side', { dot: true }]]);
-        v.readout(() => info && String.raw`$w=(${mnus(info.w[0].toFixed(2))},\,${mnus(info.w[1].toFixed(2))})$, $b=${mnus(info.b.toFixed(2))}$ · gap between $z=0$ and $z=1$: $1/\lVert w\rVert=${(1 / info.nw).toFixed(3)}$ · probe: $z=${mnus(info.z.toFixed(3))}$ $=\lVert w\rVert\times$ (signed distance ${mnus(info.dist.toFixed(3))}$), $a=${mnus(info.a.toFixed(3))}$ · **${info.ok} of 12** points on the correct side`);
+        v.readout(() => info && String.raw`$w=(${mnus(info.w[0].toFixed(2))},\,${mnus(info.w[1].toFixed(2))})$, $b=${mnus(info.b.toFixed(2))}$ · gap between $z=0$ and $z=1$: $1/\lVert w\rVert=${(1 / info.nw).toFixed(3)}$ · probe: $z=${mnus(info.z.toFixed(3))}$ $=\lVert w\rVert\times$ (signed distance ${mnus(info.dist.toFixed(3))}), $a=${mnus(info.a.toFixed(3))}$ · **${info.ok} of 12** points on the correct side`);
       },
     },
     // ───────────────────────────────────────────────────────────── 1.2
@@ -112,10 +112,10 @@ Sigmoid and tanh are smooth, bounded and **saturate**: their derivatives decay l
       viz(v) {
         const sS = v.slider('spread $s$ of the pre-activations', 0, 2, 0.6, { step: 0.05 });
         const more = v.toggle('also leaky ReLU, softplus, GELU', false);
-        const sA = v.stage({ x: [-6, 6], y: [-1.3, 3], height: 250, axes: 'box', gutter: true, xlabel: '$z$', title: 'activation $\\phi(z)$' });
+        const sA = v.stage({ x: [-6, 6], y: [-1.6, 3], height: 250, axes: 'box', gutter: true, xlabel: '$z$', title: 'activation $\\phi(z)$' });
         const sD = v.stage({ x: [-6, 6], y: [-0.1, 1.15], height: 250, axes: 'box', gutter: true, xlabel: '$z$', title: "derivative $\\phi'(z)$" });
         const sC = v.stage({ x: [1, 30], y: [1e-16, 3], ylog: true, height: 250, full: true, axes: 'box', gutter: true, xlabel: 'depth $L$', title: "gradient factor through a chain: $\\prod_{\\ell\\le L}\\phi'(z_\\ell)$" });
-        const H = sA.handle(0, -1.3, { color: 'gold', label: '$\\mu$', labelPos: 'ne', constrain: (x) => [clamp(x, -5.5, 5.5), -1.3] });
+        const H = sA.handle(0.8, -1.38, { color: 'gold', label: '$\\mu$', labelPos: 'ne', constrain: (x) => [clamp(x, -5.5, 5.5), -1.38] });
         const xi = (() => { const r = rand(5), o = []; for (let i = 0; i < 30; i++) o.push(r.normal()); return o; })();
         const base = [['sigmoid', 'accent'], ['tanh', 'green'], ['relu', 'orange']], extra = [['leaky', 'purple'], ['softplus', 'teal'], ['gelu', 'pink']];
         const NAME = { sigmoid: 'sigmoid', tanh: 'tanh', relu: 'ReLU', leaky: 'leaky ReLU', softplus: 'softplus', gelu: 'GELU' };
@@ -225,7 +225,7 @@ which gives $f=0,1,1,0$ on the four points. The hidden layer maps the inputs to 
         const modeS = v.select('model', [{ value: 'lin', label: 'one layer (a line)' }, { value: 'hand', label: 'two ReLU units, by hand' }, { value: 'train', label: 'two tanh units, trained' }], 'lin');
         const seedS = v.slider('seed', 1, 12, 2, { int: true });
         const sL = v.stage({ x: [-0.6, 1.6], y: [-0.6, 1.6], equal: true, height: 340, axes: 'box', gutter: true, xlabel: '$x_1$', ylabel: '$x_2$', title: 'input space' });
-        const sR = v.stage({ x: [0, 180], y: [-0.2, 3.2], height: 340, axes: 'box', gutter: true, title: 'right panel' });
+        const sR = v.stage({ x: [0, 180], y: [-0.2, 3.2], height: 340, axes: 'box', gutter: true, xlabel: ' ', ylabel: ' ', title: 'right panel' });
         const tR = titler(sR);
         const PTS = [[0, 0, 0], [1, 1, 0], [0, 1, 1], [1, 0, 1]];
         const A = sL.handle(-0.4, 0.75, { color: 'ink', r: 6 }), B = sL.handle(1.4, 0.1, { color: 'ink', r: 6 });
@@ -236,7 +236,7 @@ which gives $f=0,1,1,0$ on the four points. The hidden layer maps the inputs to 
         const hand = (x) => { const h1 = Math.max(0, x[0] + x[1]), h2 = Math.max(0, x[0] + x[1] - 1); return [h1, h2, h1 - 2 * h2]; };
         const mist = (n, b) => PTS.reduce((s, [x, y, c]) => s + (((n[0] * x + n[1] * y + b >= 0) ? 1 : 0) !== c ? 1 : 0), 0);
         const bestAt = (th) => { const n = [Math.cos(th), Math.sin(th)], pr = PTS.map(([x, y]) => n[0] * x + n[1] * y).sort((a, b) => a - b), cuts = [pr[0] - 1, ...pr.slice(0, 3).map((p, i) => (p + pr[i + 1]) / 2), pr[3] + 1]; let best = 4; for (const c of cuts) { best = Math.min(best, mist(n, -c), mist([-n[0], -n[1]], c)); } return best; };
-        const bestCurve = []; for (let i = 0; i <= 360; i++) { const th = (Math.PI * i) / 360; bestCurve.push([(180 * i) / 360, bestAt(th)]); }
+        const bestCurve = []; for (let i = 0; i < 360; i++) { const th = (Math.PI * (i + 0.5)) / 360; bestCurve.push([(180 * (i + 0.5)) / 360, bestAt(th)]); }
         let info = null;
         v.animate((t) => {
           const mode = modeS.value; seedS.el.hidden = mode !== 'train';
@@ -304,7 +304,7 @@ with $W^{(\ell)}\in\R^{n_\ell\times n_{\ell-1}}$; the $n_\ell$ are the **widths*
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Multilayer_perceptron' },
       viz(v) {
         const kS = v.slider('folding layers $k$', 1, 5, 2, { int: true });
-        const sG = v.stage({ x: [0, 1], y: [0, 1], height: 220, axes: 'box', gutter: true, xlabel: '$x$', title: 'first network $g$ (fold)' });
+        const sG = v.stage({ x: [0, 1], y: [-0.08, 1.08], height: 220, axes: 'box', gutter: true, xlabel: '$x$', title: 'first network $g(x)=g(0)+s_1x+(s_2-s_1)\\,\\mathrm{ReLU}(x-p)$' });
         const sH = v.stage({ x: [0, 1], y: [-0.1, 1.1], height: 220, axes: 'box', gutter: true, xlabel: '$u$', title: 'second network $h$' });
         const sC = v.stage({ x: [0, 1], y: [-0.1, 1.1], height: 250, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'composite $h\\circ g\\circ\\cdots\\circ g$ ($k$ copies of $g$)' });
         const G0 = sG.handle(0, 0, { color: 'accent', constrain: (x, y) => [0, clamp(y, 0, 1)] });
@@ -316,7 +316,6 @@ with $W^{(\ell)}\in\R^{n_\ell\times n_{\ell-1}}$; the $n_\ell$ are the **widths*
           const g = plSimplify([[0, G0.y], [GA.x, GA.y], [1, G1.y]]);
           const hk = HK.map((h) => [h.x, h.y]).sort((a, b) => a[0] - b[0]); const h = plSimplify(hk);
           sG.path(g, { color: 'accent', width: 3 }); sG.line(0, 0, 1, 1, { color: 'faint', width: 1, dash: [4, 4] });
-          sG.text('2 ReLU units: $g(x)=g(0)+s_1x+(s_2-s_1)\\,\\mathrm{ReLU}(x-p)$', 0.5, 0.06, { align: 'center', size: 11, color: 'muted' });
           for (let i = 0; i < hk.length - 1; i++) sH.line(hk[i][0], hk[i][1], hk[i + 1][0], hk[i + 1][1], { color: CYC[i + 1], width: 3.2 });
           // composite
           let gk = g; for (let k = 1; k < kS.value; k++) gk = plCompose(g, gk);

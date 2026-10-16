@@ -242,7 +242,7 @@ On a **logarithmic** axis of *years before present*, equal lengths mean equal *f
             if (k < 4) s.rect(xOf(k, next), y - 0.05, X1, y + 0.05, { fill: 'accent', fillAlpha: 0.22, stroke: false });
             // title and zoom factor (left)
             s.text(B.name, X0 - 0.012, y + 0.06, { align: 'right', size: 12.5, weight: 650, color: 'ink' });
-            s.text(B.zoom, X0 - 0.012, y - 0.11, { align: 'right', size: 11, color: 'muted' });
+            s.text(k === 0 ? `1 day ≈ ${yrShort(T / 365, 3)}` : B.zoom, X0 - 0.012, y - 0.11, { align: 'right', size: 11, color: 'muted' });
             // ticks
             for (const [tau, lab, mid] of B.ticks()) {
               const x = xOf(k, tau);
@@ -306,7 +306,7 @@ If some daughter was present initially, the **isochron** method recovers it: for
         const tAge = v.slider('true age', 10, 4.6e9, SYS.u235.def, { log: true, fmt: (x) => yrShort(x, 3) });
         const iso = v.select('isochron rock', [{ value: 'closed', label: 'closed system' }, { value: 'reset', label: 'Sr re-mixed at half the age' }, { value: 'uneq', label: 'unequal initial ⁸⁷Sr/⁸⁶Sr' }], 'closed');
         const A = v.stage({ x: [-0.4, 24.4], y: [-0.4, 24.4], equal: true, axes: false, height: 300, weight: 0.82, title: 'a sample of 576 atoms' });
-        const B = v.stage({ x: [10, 1e11], y: [0, 1.05], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.18, xlabel: 'age (years)', ylabel: 'fraction of parent left' });
+        const B = v.stage({ x: [10, 1e11], y: [0, 1.08], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.18, xlabel: 'age (years)', ylabel: 'fraction of parent left' });
         const C = v.stage({ x: [0, 3.3], y: [0.7, 0.9], axes: 'box', gutter: true, height: 270, full: true, xlabel: '⁸⁷Rb/⁸⁶Sr (now)', ylabel: '⁸⁷Sr/⁸⁶Sr (now)', title: 'Rb–Sr isochron of six minerals from one rock' });
         // atoms: exponential lifetimes in units of the mean life, and a branch draw
         const r = v.rng(7), N = 576, life = [], branch = [];
@@ -350,7 +350,7 @@ If some daughter was present initially, the **isochron** method recovers it: for
           for (const [k, o] of Object.entries(SYS)) if (k !== sys.value) B.fn((t) => Math.exp(-(LN2 / o.half) * t), { color: 'gray', width: 1.2, alpha: 0.45, n: 300 });
           const lo = Math.max(10, 0.01 * S.half), hi = Math.min(1e11, 10 * S.half);
           B.vband(lo, hi, { color: 'green', alpha: 0.07 });
-          B.text('usable range ≈ 0.01–10 half-lives', Math.sqrt(lo * hi), 0.05, { align: 'center', size: 11, color: 'green' });
+          B.text('usable range ≈ 0.01–10 half-lives', Math.sqrt(lo * hi), 1.045, { align: 'center', size: 10.5, color: 'green' });
           B.fn((t) => Math.exp(-lam * t), { color: 'accent', width: 2.6, n: 400 });
           B.fn((t) => S.br * (1 - Math.exp(-lam * t)), { color: 'orange', width: 2, dash: [6, 4], n: 400 });
           B.vline(tAge.value, { color: 'gold', width: 1.6 });

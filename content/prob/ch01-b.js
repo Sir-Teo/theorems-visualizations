@@ -382,7 +382,7 @@ For $(S,\mathcal S)=(\R,\mathcal R)$ one may take $\mathcal A=\{(-\infty,x]:x\in
         const mode = v.select('$B$', [{ value: 'ray', label: '$(-\\infty,x]$' }, { value: 'int', label: '$(a,b]$' }, { value: 'comp', label: '$(a,b]^c$' }], 'ray');
         const Y = [-0.95, 2.6];
         const s = v.stage({ x: [0, 1], y: Y, height: 340, axes: 'box', gutter: true, xlabel: '$\\omega$', weight: 1.5 });
-        const sC = v.stage({ x: [0, 1], y: Y, height: 340, axes: 'box', gutter: { l: 8, r: 26, t: 10, b: 24 }, ticks: false, weight: 1, minWidth: 220, title: 'values of $X$ on each cell' });
+        const sC = v.stage({ x: [0, 1], y: Y, height: 340, axes: 'box', gutter: { l: 34, r: 26, t: 10, b: 24 }, xticks: [], weight: 1, minWidth: 220, title: 'values of $X$ on each cell' });
         const hx = s.handle(0.985, 1.3, { color: 'gold', r: 6, label: 'x', labelPos: 'w', constrain: (x, y) => [0.985, v.M.clamp(y, 0, 2.5)] });
         const ha = s.handle(0.985, 0.8, { color: 'gold', r: 6, label: 'a', labelPos: 'w', constrain: (x, y) => [0.985, v.M.clamp(Math.min(y, hb.y - 0.05), 0, 2.5)] });
         const hb = s.handle(0.985, 1.7, { color: 'gold', r: 6, label: 'b', labelPos: 'w', constrain: (x, y) => [0.985, v.M.clamp(Math.max(y, ha.y + 0.05), 0, 2.5)] });
@@ -395,7 +395,7 @@ For $(S,\mathcal S)=(\R,\mathcal R)$ one may take $\mathcal A=\{(-\infty,x]:x\in
           const inB = md === 'ray' ? (y) => y <= hx.y : md === 'int' ? (y) => y > ha.y && y <= hb.y : (y) => !(y > ha.y && y <= hb.y);
           for (let j = 0; j < N; j++) if (j % 2 === 0) s.vband(j / N, (j + 1) / N, { color: 'muted', alpha: 0.08 });
           // B on the value axis
-          if (md === 'ray') s.hband(Y[0] < 0 ? 0 : Y[0], hx.y, { color: 'gold', alpha: 0.14 });
+          if (md === 'ray') s.hband(-0.1, hx.y, { color: 'gold', alpha: 0.14 });
           else if (md === 'int') s.hband(ha.y, hb.y, { color: 'gold', alpha: 0.14 });
           else { s.hband(0, ha.y, { color: 'gold', alpha: 0.14 }); s.hband(hb.y, 2.6, { color: 'gold', alpha: 0.14 }); }
           s.fn(f, { domain: [0, 0.99999], color: 'ink', width: 2.4, n: 900 });
@@ -410,6 +410,7 @@ For $(S,\mathcal S)=(\R,\mathcal R)$ one may take $\mathcal A=\{(-\infty,x]:x\in
           s.text(md === 'int' ? 'X⁻¹(B) = {X ≤ b} ∖ {X ≤ a}' : 'X⁻¹(B)', 0.01, -0.72, { size: 10.5, color: ok ? 'green' : 'red', dy: -10 });
           if (!ok) for (let j = 0; j < N; j++) { const c0 = j / N, c1 = (j + 1) / N, cov = P.reduce((t, [p, q]) => t + Math.max(0, Math.min(q, c1) - Math.max(p, c0)), 0); if (cov > 1e-9 && cov < 1 / N - 1e-9) s.rect(c0, Y[0], c1, -0.55, { fill: 'red', fillAlpha: 0.1, hatch: 'red', hatchAlpha: 0.35, stroke: false }); }
           // columns: the value set of X on each cell
+          if (md === 'ray') sC.hband(Y[0], hx.y, { color: 'gold', alpha: 0.12 }); else if (md === 'int') sC.hband(ha.y, hb.y, { color: 'gold', alpha: 0.12 }); else { sC.hband(Y[0], ha.y, { color: 'gold', alpha: 0.12 }); sC.hband(hb.y, Y[1], { color: 'gold', alpha: 0.12 }); }
           const R = ranges(f, m), cut = (t) => R.some(([lo, hi]) => lo <= t && t < hi - 1e-12);
           R.forEach(([lo, hi], j) => {
             const x = (j + 0.5) / N, col = ATOMS[j % ATOMS.length];
@@ -658,7 +659,7 @@ as maps into the extended line $\R^*=[-\infty,\infty]$ with its Borel sets. Cons
         const mid = (w) => 0.35 * Math.sin(2 * Math.PI * w), wob = (w) => (w > 0.2 && w < 0.7 ? 0.45 * Math.sin((Math.PI * (w - 0.2)) / 0.5) : 0);
         const X = (n, w) => mid(w) + (n % 2 ? -1 : 1) * wob(w) + 0.8 * Math.pow(n, -0.6) * Math.sin(2.7 * n + 7 * w);
         const s = v.stage({ x: [0, 1], y: [-1.45, 1.6], height: 300, axes: 'box', gutter: true, xlabel: '$\\omega$', full: true });
-        const sR = v.stage({ x: [0, 1], y: [0, 1], height: 170, axes: false, full: true });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], height: 170, axes: false, gutter: { l: 42, r: 12, t: 4, b: 4 }, full: true });
         const G = 400, ws = Array.from({ length: G + 1 }, (_, i) => i / G), MMAX = 500;
         let cache = {};
         const env = (n) => { if (cache[n]) return cache[n]; const sup = [], inf = []; ws.forEach((w) => { let hi = -Infinity, lo = Infinity; for (let m = n; m <= MMAX; m++) { const y = X(m, w); if (y > hi) hi = y; if (y < lo) lo = y; } sup.push([w, hi]); inf.push([w, lo]); }); return (cache[n] = { sup, inf }); };
@@ -712,10 +713,10 @@ as maps into the extended line $\R^*=[-\infty,\infty]$ with its Borel sets. Cons
       tags: ['convergence'],
       viz(v) {
         const mode = v.select('$X_n(\\omega)$', [{ value: 'bin', label: 'fraction of 1s in the first $n$ binary digits' }, { value: 'pow', label: '$\\omega^n$' }, { value: 'tw', label: 'typewriter' }], 'bin');
-        const eS = v.slider('$\\eps$', 0.01, 0.3, 0.08, { step: 0.005 });
+        const eS = v.slider('$\\eps$', 0.01, 0.3, 0.04, { step: 0.005 });
         const NS = v.slider('horizon $N$', 50, 4000, 1000, { log: true, int: true });
         const s = v.stage({ x: [1, 4000], xlog: true, y: [-0.05, 1.05], height: 320, axes: 'box', gutter: true, xlabel: '$n$', full: true });
-        const sO = v.stage({ x: [0, 1], y: [0, 1], height: 90, axes: false, full: true });
+        const sO = v.stage({ x: [0, 1], y: [0, 1], height: 90, axes: false, gutter: { l: 42, r: 12, t: 4, b: 4 }, full: true });
         const r = v.rng(1909), K = 60, NM = 4000;
         const paths = Array.from({ length: K }, () => { const bits = new Uint8Array(NM); let w = 0; for (let i = 0; i < NM; i++) { bits[i] = r() < 0.5 ? 1 : 0; if (i < 50) w += bits[i] * 2 ** -(i + 1); } const avg = new Float32Array(NM + 1); let c = 0; for (let i = 0; i < NM; i++) { c += bits[i]; avg[i + 1] = c / (i + 1); } return { w, avg }; });
         const idx = Array.from(new Set(Array.from({ length: 260 }, (_, i) => Math.round(Math.pow(NM, i / 259))))).filter((n) => n >= 1);

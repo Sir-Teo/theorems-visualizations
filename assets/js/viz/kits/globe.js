@@ -315,9 +315,9 @@ class Globe {
     return this._P;
   }
   get projection() { return this.P.name; }
-  set projection(n) { this._name = n; this.rt.invalidate(); }
+  set projection(n) { if (n === this._name) return; this._name = n; if (!this.rt._inFrame) this.rt.invalidate(); }
   get center() { return this._center.slice(); }
-  set center(c) { const [l, f] = LL(c); this._center = [mod(l + 180, 360) - 180, clamp(f, -90, 90)]; this.rt.invalidate(); }
+  set center(c) { const [l, f] = LL(c); const c2 = [mod(l + 180, 360) - 180, clamp(f, -90, 90)]; if (this._center && c2[0] === this._center[0] && c2[1] === this._center[1]) return; this._center = c2; if (!this.rt._inFrame) this.rt.invalidate(); } // safe to set every frame
   /** Change several settings at once: {projection, center, roll, clip, zoom}. Cheap; fine inside render. */
   set(o = {}) {
     if (o.projection != null) this._name = o.projection; if (o.center) this.center = o.center; if (o.roll != null) this._roll = o.roll;

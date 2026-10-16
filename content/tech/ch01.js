@@ -437,5 +437,100 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
         });
       },
     },
+    // ------------------------------------------------------------------ 1.3
+    {
+      num: '1.3',
+      kind: 'Invention',
+      name: 'Control of fire',
+      credit: 'Homo erectus or later hominins; fire use by c. 1 million years ago, fire-making by c. 400,000 years ago',
+      statement: String.raw`Hominins learned first to keep and use fire, and much later to make it at will. The earliest secure evidence of fire inside an inhabited site is burned bone and plant ash in Acheulean layers of Wonderwerk Cave, South Africa, about 1.0 million years old (Berna et al. 2012). Older claims, such as reddened sediment at Koobi Fora, Kenya (about 1.5 million years), are **contested** because wildfires leave similar traces. Burned seeds, wood and flint at Gesher Benot Ya'aqov, Israel, show repeated fire use about 790,000 years ago (Goren-Inbar et al. 2004), and hearths become common in Europe only after about 400,000 years ago (Roebroeks & Villa 2011). The oldest evidence of **making** fire is at Barnham, England, about 400,000 years ago: heated sediments, fire-cracked hand axes and pyrite, a mineral that throws sparks when struck with flint, brought to a site where it does not occur naturally (Davis et al. 2025).
+
+A fire burns where three things meet, the **fire triangle**: fuel, oxygen and enough heat. It sustains itself only when the heat released by burning exceeds the heat lost to the surroundings at the fire's own temperature. Wood ignites at about 250 °C by glowing and at roughly 300–365 °C with a flame when the heating is slow; reported values span 200–500 °C depending on the heating and the wood (Babrauskas 2002). Water in the wood must be boiled off first and lowers the heat available.`,
+      idea: String.raw`Burning is a chemical reaction whose rate rises steeply with temperature (Arrhenius): heat release $G(T)$ climbs from almost nothing to a plateau set by how fast air can bring oxygen in. Heat losses $L(T)$, by convection and radiation, rise smoothly. The curves cross three times (Semenov's picture of thermal runaway, kin-4.12). The cold crossing and the hot crossing are stable; the middle one is the **ignition point**. Heat a patch of fuel past it, with an ember, a friction drill or a spark on tinder, and the fire runs away to the hot state; stop short and it dies back.
+
+Each side of the triangle moves a curve. Fine, dry fuel (tinder) reacts faster, lowering the ignition point. Air sets the plateau: smother a fire and the hot crossing disappears. Moisture costs about 2.4 MJ per kilogram of water against roughly 19 MJ per kilogram of dry wood, and while the water boils the fuel is pinned near 100 °C. Keeping fire gave warmth, light, protection and cooked food. Cooking makes food easier to chew and digest, and Wrangham's hypothesis that it shaped human evolution is debated.`,
+      caption: String.raw`**Left:** heat release $G$ (orange) against heat loss $L$ (blue) as functions of the fire's temperature, in kW per m² of fuel bed. Where orange is above blue the fire heats itself. **Drag the gold handle** to set how hot your ember or spark makes the fuel. Past the red ignition point the fire runs away to the green burning state (middle panel); below it the fire dies. Change the fuel, the air supply and the wood's moisture and watch the triangle (bottom left) lose a side. Wet wood stalls near 100 °C while its water boils off.`,
+      deps: ['kin-4.12'],
+      see: ['pchem-2.14', 'energy-3.1', 'ecol-9.7', 'bighist-4.1'],
+      refs: ['Cardwell', 'Berna et al. 2012, PNAS 109:E1215', 'Davis et al. 2025, Nature (doi 10.1038/s41586-025-09855-6)', 'Babrauskas 2002, J. Fire Prot. Eng. 12:163'],
+      tags: ['prehistory', 'combustion'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Control_of_fire_by_early_humans' },
+      viz(v) {
+        const SIG = 5.67e-8, T0 = 293, TH = 650, ER = 12000, GMAX = 150, CAP = 5, LV = 2260, BETA = 0.06;
+        const A = v.stage({ x: [0, 1300], y: [0, 180], axes: 'box', gutter: true, height: 290, weight: 1.35, minWidth: 400, xlabel: 'temperature (°C)', ylabel: 'kW per m²', title: 'heat released and heat lost' });
+        const B = v.stage({ x: [0, 150], y: [0, 1300], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 300, xlabel: 'time (s)', ylabel: 'temperature (°C)', title: 'what the fire does' });
+        const C = v.stage({ x: [-1.25, 1.25], y: [-0.95, 1.2], equal: true, axes: false, height: 190, weight: 0.6, minWidth: 220, title: 'the fire triangle' });
+        const D = evidenceStage(v, [2e6, 3e4], { height: 190, weight: 1.6, minWidth: 420, title: 'fire in the archaeological record (years ago, log scale)' });
+        const fuelSel = v.select('fuel', [{ value: 3, label: 'dry grass tinder' }, { value: 1, label: 'kindling' }, { value: 0.3, label: 'thick logs' }], 1);
+        const airS = v.slider('air supply (draft)', 0, 1, 0.8, { step: 0.01 });
+        const wetS = v.slider('moisture in the wood', 0, 0.7, 0.15, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
+        const hS = A.handle(380, 4, { color: 'gold', label: 'spark / ember', labelPos: 'n', constrain: (x) => [clamp(x, 20, 1250), 4] });
+        const lhv = () => (18.7 * (1 - wetS.value) - 2.44 * wetS.value) / 18.7; // lower heating value relative to dry wood
+        const G = (Tc) => { const T = Tc + 273, d = Math.max(airS.value, 1e-4), x = (fuelSel.value / d) * Math.exp(ER * (1 / TH - 1 / T)); return Math.max(0, GMAX * airS.value * lhv() * x / (1 + x)); };
+        const L = (Tc) => { const T = Tc + 273; return 0.015 * (T - T0) + (0.6 * SIG * (T ** 4 - T0 ** 4)) / 1000; };
+        function crossings() {
+          const out = []; let prev = G(21) - L(21);
+          for (let T = 22; T <= 1300; T += 1) { const d = G(T) - L(T); if (d * prev < 0 || (d === 0 && prev !== 0)) out.push({ T: T - 0.5, stable: d < prev }); prev = d; }
+          return out;
+        }
+        function run(Tstart) { // C dT/dt = G − L − evaporation; water boils off at 100 °C
+          const w = wetS.value, pts = []; let T = Tstart, W = (3 * w) / (1 - w), t = 0; const dt = 0.05;
+          pts.push([0, T]);
+          for (let k = 0; k < 3000; k++) {
+            const ev = T > 100 && W > 0 ? BETA * W * (T - 100) + 2 * W : 0;
+            let dT = (G(T) - L(T) - ev) / CAP;
+            if (W > 0 && T > 100) W = Math.max(0, W - (ev * dt) / LV * 40);
+            T = clamp(T + dT * dt, 20, 1400); t += dt;
+            if (k % 10 === 9) pts.push([t, T]);
+          }
+          return pts;
+        }
+        v.render(() => {
+          const X = crossings(), ign = X.find((c) => !c.stable), burn = [...X].reverse().find((c) => c.stable && c.T > 150);
+          // ---- A
+          A.vband(250, 365, { color: 'red', alpha: 0.08 });
+          A.text('wood ignites', 307, 172, { size: 10.5, color: 'red', align: 'center' });
+          A.fn(G, { color: 'orange', width: 2.6, domain: [20, 1300] });
+          A.fn(L, { color: 'blue', width: 2.2, domain: [20, 1300] });
+          A.clip(() => { A.between((T) => Math.max(G(T), L(T)), L, 20, 1300, { fill: 'green', fillAlpha: 0.16 }); });
+          if (ign) { A.dot(ign.T, L(ign.T), { r: 5.5, color: 'red', hollow: true }); A.text(`ignition ${Math.round(ign.T)} °C`, ign.T + 18, L(ign.T) + 14, { size: 11.5, color: 'red', align: 'left' }); }
+          if (burn) { A.dot(burn.T, L(burn.T), { r: 6, color: 'green' }); A.text(`burning ${Math.round(burn.T)} °C`, burn.T - 12, L(burn.T) + 14, { size: 11.5, color: 'green', align: 'right', weight: 700 }); }
+          A.text('G: heat released', 1290, Math.min(170, G(1290) + 9), { size: 11.5, color: 'orange', align: 'right' });
+          A.text('L: heat lost', 1290, Math.min(176, L(1290)) - 10, { size: 11.5, color: 'blue', align: 'right', baseline: 'top' });
+          A.line(hS.x, 0, hS.x, 180, { color: 'gold', width: 1, dash: [4, 4] });
+          // ---- B
+          const pts = run(hS.x), Tend = pts[pts.length - 1][1], lit = Tend > 150;
+          B.hline(100, { color: 'faint', dash: [3, 4] }); B.text('water boils', 148, 108, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
+          if (ign) { B.hline(ign.T, { color: 'red', dash: [5, 4], width: 1 }); B.text('ignition point', 148, ign.T + 8, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' }); }
+          B.path(pts, { color: lit ? 'orange' : 'blue', width: 2.6 });
+          B.text(lit ? 'the fire takes hold' : 'the fire dies', 75, lit ? Math.min(1240, Tend + 40) : Math.max(60, Tend + 60), { size: 12.5, color: lit ? 'orange' : 'blue', align: 'center', weight: 700 });
+          // ---- C: the triangle
+          const P = [[0, 1.0], [-0.95, -0.65], [0.95, -0.65]], sides = [[P[1], P[2], 'fuel', fuelSel.value / 3, 0, -0.84], [P[0], P[1], 'oxygen', airS.value, -0.82, 0.32], [P[2], P[0], 'heat', clamp(hS.x / 600, 0, 1), 0.82, 0.32]];
+          for (const [p, q, lab, val, lx, ly] of sides) {
+            C.line(p[0], p[1], q[0], q[1], { color: val > 0.05 ? 'orange' : 'faint', width: 2 + 8 * val, alpha: 0.35 + 0.65 * val });
+            C.text(lab, lx, ly, { size: 12, color: 'ink', align: 'center' });
+          }
+          if (lit) { const fl = [[0, 0.45], [-0.2, -0.25], [0, -0.38], [0.2, -0.25]]; C.poly(fl, { fill: 'orange', fillAlpha: 0.8, stroke: false }); C.poly([[0, 0.12], [-0.09, -0.24], [0, -0.32], [0.09, -0.24]], { fill: 'gold', fillAlpha: 0.95, stroke: false }); }
+          else C.text('out', 0, -0.1, { size: 14, color: 'muted', align: 'center', weight: 700 });
+          // ---- D
+          drawEvidence(v, D, [
+            { ago: 1.5e6, label: 'Koobi Fora', contested: true },
+            { ago: 1.0e6, label: 'Wonderwerk Cave' },
+            { ago: 7.9e5, label: 'Gesher Benot Ya‘aqov' },
+            { ago: 4.0e5, label: 'Barnham: fire-making', color: 'orange' },
+            { ago: [3e5, 4e5], label: 'hearths common in Europe' },
+            { ago: 5e4, label: 'Neanderthal strike-a-lights' },
+          ], { lanes: 3, laneH: 0.22 });
+        });
+        v.legend([['orange', 'heat released $G(T)$'], ['blue', 'heat lost $L(T)$'], ['green', 'fire heats itself', { area: true }], ['red', 'wood ignition range (250–365 °C)', { area: true }]]);
+        v.readout(() => {
+          const X = crossings(), ign = X.find((c) => !c.stable), burn = [...X].reverse().find((c) => c.stable && c.T > 150);
+          const pts = run(hS.x), lit = pts[pts.length - 1][1] > 150;
+          const heat = `${v.fix(18.7 * lhv(), 1)} MJ per kg of wood (dry wood 18.7)`;
+          if (!burn) return `**no self-sustaining fire** with this fuel and air: the loss curve stays above the release curve at every temperature · heat available ${heat}`;
+          return `ignition point **${Math.round(ign.T)} °C**, burning state **${Math.round(burn.T)} °C** · start at ${Math.round(hS.x)} °C → **${lit ? 'the fire takes hold' : 'it dies back'}** · heat available ${heat}`;
+        });
+      },
+    },
   ],
 };

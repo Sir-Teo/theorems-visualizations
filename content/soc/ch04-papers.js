@@ -286,7 +286,7 @@ The model explains a "scale-free" (soc-4.9, soc-4.10) tail with exponent 3 only;
         const model = v.select('model', [{ value: 'BA', label: 'growth + preference' }, { value: 'A', label: 'model A: no preference' }, { value: 'B', label: 'model B: no growth' }], 'BA', { onChange: () => v.restart() });
         const mS = v.slider('links per newcomer m', 1, 5, 2, { int: true, step: 1, onChange: () => v.restart() });
         const G = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 330, full: true, title: 'a network growing' });
-        const P = v.stage({ x: [1, 3000], y: [1e-9, 1], xlog: true, ylog: true, axes: 'box', height: 320, weight: 1.1, xlabel: 'degree k', ylabel: 'P(k)', title: 'degree distribution, 150,000 vertices' });
+        const P = v.stage({ x: [1, 3000], y: [1e-9, 5], xlog: true, ylog: true, axes: 'box', height: 320, weight: 1.1, xlabel: 'degree k', ylabel: 'P(k)', title: 'degree distribution, 150,000 vertices' });
         const K = v.stage({ x: [5, 150000], y: [1, 3000], xlog: true, ylog: true, axes: 'box', height: 320, weight: 0.9, minWidth: 250, xlabel: 'time t (vertices added)', ylabel: 'degree kᵢ(t)', title: 'rich get richer (Fig. 2C)' });
         const cache = {};
         const big = (mo, m) => { const key = mo + m; if (!cache[key]) { const g = baGrow(150000, m, mo, 1999, [5, 95]); cache[key] = { ...g, D: degDist(g.deg, 3 * m) }; } return cache[key]; };
@@ -339,7 +339,7 @@ The model explains a "scale-free" (soc-4.9, soc-4.10) tail with exponent 3 only;
           P.fn((k) => 2 * m * m / k ** 3, { color: 'ink', width: 1.4, dash: [6, 4], domain: [m, 3000] });
           if (model.value === 'BA') P.fn((k) => (2 * m * (m + 1)) / (k * (k + 1) * (k + 2)), { color: 'green', width: 2, domain: [m, 3000] });
           P.dots(D.pts.map((p) => [p[0], p[1]]), { r: 4.5, color: model.value === 'BA' ? 'accent' : model.value === 'A' ? 'orange' : 'purple' });
-          P.text('slope −3', 300, 2 * m * m / 300 ** 3, { dy: -12, size: 11.5, weight: 700, color: 'ink', align: 'left' });
+          P.text('slope −3', 30, 2 * m * m / 30 ** 3, { dx: 8, dy: -10, size: 11.5, weight: 700, color: 'ink', align: 'left' });
           // ---- Fig. 2C
           if (model.value !== 'B') {
             B.rec.forEach((r, i) => { P; K.path(r, { color: i ? 'teal' : 'red', width: 2.4 }); });

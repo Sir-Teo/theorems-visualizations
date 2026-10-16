@@ -165,7 +165,7 @@ Two consequences shape classical singing:
         const orch = v.toggle('orchestra (illustrative)', false);
         // chart coordinates: x = −log2(F2/1000) (front vowels on the left), y = −log2(F1/1000) (close vowels on top)
         const pos = ([F1, F2]) => [-Math.log2(F2 / 1000), -Math.log2(F1 / 1000)];
-        const ch = v.stage({ x: [-1.62, 0.42], y: [-0.25, 2.12], height: 300, axes: 'box', weight: 0.85, minWidth: 260, xticks: [2500, 2000, 1500, 1000, 800].map((f) => [-Math.log2(f / 1000), String(f)]), yticks: [250, 300, 400, 500, 600, 800, 1000].map((f) => [-Math.log2(f / 1000), String(f)]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)', title: 'the vowel chart' });
+        const ch = v.stage({ x: [-1.8, 0.42], y: [-0.25, 2.12], height: 300, axes: 'box', weight: 0.85, minWidth: 260, xticks: [2500, 2000, 1500, 1000, 800].map((f) => [-Math.log2(f / 1000), String(f)]), yticks: [250, 300, 400, 500, 600, 800, 1000].map((f) => [-Math.log2(f / 1000), String(f)]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)', title: 'the vowel chart' });
         const sp = v.stage({ x: [-250, 5000], y: [-76, 8], height: 300, axes: 'box', xlabel: 'frequency (Hz)', weight: 1.4, xticks: [500, 1000, 2000, 3000, 4000], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'harmonics under the vocal-tract envelope' });
         const h = ch.handle(...pos([730, 1090]), { color: 'gold', constrain: (x, y) => [M.clamp(x, -1.55, 0.35), M.clamp(y, -0.2, 1.9)] });
         const F12 = () => [1000 * 2 ** -h.y, 1000 * 2 ** -h.x];
