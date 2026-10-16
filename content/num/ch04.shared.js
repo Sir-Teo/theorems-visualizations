@@ -87,7 +87,8 @@ export function remez(f, n, { iters = 12, init = 'cheb', M = 1500 } = {}) {
   }
   return hist;
 }
-export const bestErr = (f, n, o) => { const H = remez(f, n, o); return H[H.length - 1].emax; };
+/** Best sup error E*_n(f): the smallest max-error seen, accepted only if it is within 0.1% of the level |h| (else NaN). */
+export const bestErr = (f, n, o) => { const H = remez(f, n, o); let b = H[0]; for (const s of H) if (s.emax < b.emax) b = s; return (b.emax - Math.abs(b.h)) < 1e-3 * b.emax ? b.emax : NaN; };
 
 /** Padé approximant [L/M] from Taylor coefficients c (c.length >= L+M+1): returns {p, q} (ascending coefficients, q[0]=1) or null. */
 export function pade(c, L, M) {
@@ -148,4 +149,32 @@ export function rationalExpBest(n, svd, c = 3, NT = 700) {
   }
   const r = (x) => { const t = (x - c) / (x + c); return ev(pc, t) / ev(qc, t); };
   return { E, r, n, c, pc, qc };
+}
+
+/** Chebyshev series coefficients of f (cached by key), from the degree-N interpolant: reliable for k well below N. */
+const _coefCache = new Map();
+export function seriesCoef(key, f, N = 1000) { if (!_coefCache.has(key)) _coefCache.set(key, chebCoef(f, N)); return _coefCache.get(key); }
+
+/**
+ * Carathéodory–Fejér near-best approximation of degree n (Gutknecht–Trefethen construction): takes the dominant eigenpair (λ, u) of the
+ * Hankel matrix [a_{n+1+i+j}], builds the CF error curve λ cos((n+1)θ + 2 arg u(e^{iθ})), and keeps the degree-≤n Chebyshev
+ * coefficients of f minus that curve. `eigSym` is v.M.eigSym. Returns {lam, p (function), coef}.
+ */
+export function cfApprox(a, n, eigSym, K = 50) {
+  const H = []; for (let i = 0; i < K; i++) { H.push([]); for (let j = 0; j < K; j++) { const k = n + 1 + i + j; H[i].push(k < a.length ? a[k] : 0); } }
+  const e = eigSym(H); let bi = 0; e.values.forEach((x, i) => { if (Math.abs(x) > Math.abs(e.values[bi])) bi = i; });
+  const lam = e.values[bi], u = e.vectors.map((r) => r[bi]), N = 512, ev = [];
+  for (let j = 0; j <= N; j++) {
+    const th = Math.PI * j / N; let re = 0, im = 0; for (let k = 0; k < K; k++) { re += u[k] * Math.cos(k * th); im += u[k] * Math.sin(k * th); }
+    ev.push(lam * Math.cos((n + 1) * th + 2 * Math.atan2(im, re)));
+  }
+  const ec = chebCoeffs(ev.slice().reverse());
+  const coef = a.slice(0, n + 1).map((x, k) => x - ec[k]);
+  return { lam, coef, p: (x) => clenshaw(coef, x), err: (x) => { const th = Math.acos(Math.max(-1, Math.min(1, x))); let re = 0, im = 0; for (let k = 0; k < K; k++) { re += u[k] * Math.cos(k * th); im += u[k] * Math.sin(k * th); } return lam * Math.cos((n + 1) * th + 2 * Math.atan2(im, re)); } };
+}
+
+/** Newman's rational approximation to |x| of type (n,n): r(x) = x (p(x) - p(-x)) / (p(x) + p(-x)), p(x) = prod_{k<n} (x + a^k), a = exp(-1/sqrt n). */
+export function newmanAbs(n) {
+  const a = Math.exp(-1 / Math.sqrt(n)), P = (x) => { let p = 1; for (let k = 0; k < n; k++) p *= x + Math.pow(a, k); return p; };
+  return (x) => { const p1 = P(x), p2 = P(-x); return x * (p1 - p2) / (p1 + p2); };
 }

@@ -6,6 +6,7 @@
 
 import { clamp, sum, H, h2, KL, commas, hashStr, LET } from './ch03.shared.js';
 export * from './ch03.shared.js';
+export { resizeP, viewPad, legender, titler } from './ch01.shared.js';
 
 export const log2 = Math.log2;
 export const pw2 = (x) => Math.pow(2, x);

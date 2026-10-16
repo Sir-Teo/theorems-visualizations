@@ -88,7 +88,7 @@ It is the expected value of $f(S_n/n)$ where $S_n\sim\mathrm{Bin}(n,x)$. For con
         };
         const NS = []; for (let n = 1; n <= 400; n = Math.max(n + 1, Math.round(n * 1.25))) NS.push(n);
         let info = {};
-        v.legend([['ink', '$f$'], ['accent', '$B_nf$'], ['green', 'Chebyshev interpolant error'], ['accent', 'Bernstein error'], ['muted', 'slope $-1$', { dash: true }]]);
+        v.legend([['ink', '$f$'], ['accent', '$B_nf$ and its error'], ['green', 'Chebyshev interpolant error'], ['muted', 'slope $-1$', { dash: true }]]);
         v.render(() => {
           H.forEach((h) => { h.visible = sel.value === 'draw'; });
           let f;
@@ -225,8 +225,8 @@ It is the expected value of $f(S_n/n)$ where $S_n\sim\mathrm{Bin}(n,x)$. For con
       num: '4.5',
       kind: 'Phenomenon',
       name: 'Gibbs phenomenon for polynomial approximation',
-      statement: String.raw`Let $f$ have a jump discontinuity in the interior of $[-1,1]$ and be smooth elsewhere. Then neither the truncated Chebyshev series nor the Chebyshev interpolant $p_n$ converges uniformly: near the jump, $p_n$ overshoots by a fixed fraction of the jump height that does not shrink as $n\to\infty$ — for the truncated series, by $\frac1\pi\int_0^\pi\frac{\sin t}t\,dt-\frac12\approx0.0895$ of the jump (about $9\%$) — while the region of the overshoot narrows like $1/n$ and away from the jump the convergence is pointwise. For a smooth step ($\tanh$) the overshoot dies out once $n$ resolves the transition.`,
-      idea: String.raw`With $x=\cos\theta$ the Chebyshev series of $f$ is the cosine (Fourier) series of $f(\cos\theta)$, which has a jump at $\theta_0=\arccos x_0$; near the jump the partial sums behave like the Fourier partial sums of a step, i.e. the sine integral $\mathrm{Si}$, whose maximum $\mathrm{Si}(\pi)$ gives the 9%. Convergence in sup norm fails because the limit is discontinuous (4.1), so some defect must stay; Gibbs shows what it looks like. Interpolation at Chebyshev points behaves similarly.`,
+      statement: String.raw`Let $f$ have a jump discontinuity in the interior of $[-1,1]$ and be smooth elsewhere. Then neither the truncated Chebyshev series nor the Chebyshev interpolant $p_n$ converges uniformly: near the jump, they overshoot by a fixed fraction of the jump height that does not shrink as $n\to\infty$ — for the truncated series, by $\frac1\pi\int_0^\pi\frac{\sin t}t\,dt-\frac12\approx0.0895$ of the jump (about $9\%$) — while the region of the overshoot narrows like $1/n$ and away from the jump the convergence is pointwise. For a smooth step ($\tanh$) the overshoot dies out once $n$ resolves the transition.`,
+      idea: String.raw`With $x=\cos\theta$ the Chebyshev series of $f$ is the cosine (Fourier) series of $f(\cos\theta)$, which has a jump at $\theta_0=\arccos x_0$; near the jump the partial sums behave like the Fourier partial sums of a step, i.e. the sine integral $\mathrm{Si}$, whose maximum $\mathrm{Si}(\pi)$ gives the 9%. Convergence in sup norm fails because the limit is discontinuous (4.1), so some defect must stay; Gibbs shows what it looks like. Interpolation at Chebyshev points behaves similarly, with a somewhat larger overshoot (about 14% in the numerical experiment below).`,
       caption: String.raw`Choose the step and slide the degree $n$. Top: $p_n$ and a zoom on the jump (windows shrink like $1/n$) with the lines $1$ and $1.179$ ($=1+2\cdot0.0895$ for a unit step of height $2$). Right: overshoot, as a fraction of the jump, against $n$ for the truncated series and the interpolant — both settle at a constant instead of tending to $0$.`,
       deps: ['num-4.3', 'sig-4.4'],
       refs: ['Trefethen ATAP ch. 9'],
@@ -261,6 +261,7 @@ It is the expected value of $f(S_n/n)$ where $S_n\sim\mathrm{Bin}(n,x)$. For con
           const stepPt = S.c0;
           s.fn(S.f, { color: 'ink', width: 1.2, n: 600 });
           s.fn(pI, { color: 'accent', width: 1.8, n: 800 });
+          z.setView([-Math.min(0.3, 9 / n), Math.min(0.3, 9 / n)], [0.7, 1.35]);
           z.fn((x) => S.f(stepPt + x), { color: 'ink', width: 1.2, n: 800 });
           z.fn((x) => S.ser(n, stepPt + x), { color: 'orange', width: 1.6, n: 800 });
           z.fn((x) => pI(stepPt + x), { color: 'accent', width: 1.8, n: 800 });

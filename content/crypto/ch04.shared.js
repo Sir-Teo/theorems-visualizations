@@ -2,6 +2,7 @@
 // Re-exports chapter 3 (and through it chapters 2 and 1); adds real DES, AES-128, ChaCha20 and RC4 implementations
 // (checked against the published test vectors in the comments), LFSR/Berlekamp–Massey tools and 4-bit S-box analysis.
 export * from './ch03.shared.js';
+export { dur, sciText, supInt, AGE_UNIVERSE_S } from './ch01.shared.js';
 
 export const hx = (x, w = 2) => (x >>> 0).toString(16).toUpperCase().padStart(w, '0');
 export const popcnt = (x) => { let c = 0; x >>>= 0; while (x) { c += x & 1; x >>>= 1; } return c; };
@@ -151,3 +152,12 @@ export const invS = (S) => { const o = new Array(16); S.forEach((y, x) => { o[y]
 export const ddt = (S) => { const T = Array.from({ length: 16 }, () => new Array(16).fill(0)); for (let a = 0; a < 16; a++) for (let x = 0; x < 16; x++) T[a][S[x] ^ S[x ^ a]]++; return T; };
 /** Linear approximation table (counts − 8): LAT[a][b] = #{x : a·x = b·S(x)} − 8. */
 export const lat = (S) => { const T = Array.from({ length: 16 }, () => new Array(16).fill(0)); for (let a = 0; a < 16; a++) for (let b = 0; b < 16; b++) { let c = 0; for (let x = 0; x < 16; x++) if ((popcnt(a & x) ^ popcnt(b & S[x])) & 1) c++; T[a][b] = 8 - c; } return T; };
+
+// ------------------------------------------------------------------ 8-bit toy block cipher (feistel8 from chapter 3) and its inverse
+import { feistel8, mix2 as _mix2 } from './ch03.shared.js';
+export function feistel8inv(k, y) {
+  let l = y >> 4, r = y & 15;
+  for (let i = 3; i >= 0; i--) { const f = _mix2(k, (i << 4) | l) & 15; const l2 = r ^ f; r = l; l = l2; }
+  return (l << 4) | r;
+}
+export { feistel8 };

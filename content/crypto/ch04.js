@@ -105,60 +105,62 @@ export default {
       num: '4.2',
       kind: 'Model',
       name: 'RC4 and ChaCha20',
-      statement: String.raw`**RC4** keeps a permutation $S$ of $\{0,\dots,255\}$ and two indices; its key schedule shuffles $S$ by the key, and each output byte is $S[S[i]+S[j]]$ after a swap. It is *not* a pseudorandom generator: the second output byte is $0$ with probability about $2/256$ instead of $1/256$ (Mantin–Shamir), so $\Theta(256)$ streams under random keys already distinguish it from random. **ChaCha20** is a 256-bit-key stream cipher whose block function runs 20 rounds of the *quarter round* on a $4\times4$ array of 32-bit words, $a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll16;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll12;\ a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll8;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll7$, then adds the input state to the result; the keystream is the sequence of blocks for counters $1,2,\dots$ No such bias is known for the full cipher, and it is standardised in RFC 8439.`,
-      idea: String.raw`RC4's weakness is structural: in the first round $S$ is still almost the identity, and the output byte equals $S[S[1]+S[S[1]]]$-style expressions whose value is $0$ whenever $S[2]=0$, which (after the key schedule) is correlated with the key-independent start of the walk; the net effect is the factor-two excess at $z_2=0$. Later, better biases were found, and in 2015 RFC 7465 forbade RC4 in TLS. ChaCha20 relies on "add, rotate, xor" — three operations that are individually cheap and, in combination, non-linear (the carries of the additions) and diffusing: after a few rounds every output bit depends on every input bit and the empirical bias disappears, as the plot shows round by round. This is evidence, not a proof: security of both ciphers rests on the absence of known attacks.`,
-      caption: String.raw`Left: histogram of the **second** keystream byte over many random keys (slider for the number of keys, select the cipher; for ChaCha also choose the number of rounds). The dashed line is the uniform expectation; for RC4 the bar at $0$ is about twice as tall. Right: the chi-square statistic of that histogram (255 degrees of freedom; a uniform source gives $255\pm23$) for ChaCha with $1,\dots,20$ rounds, compared with RC4 — the statistic is huge for the first rounds and falls to noise level well before round 20.`,
-      scope: String.raw`Second-byte bias: Mantin & Shamir, *A practical attack on broadcast RC4* (FSE 2001). This is a measurement on the *second* byte only, for random 16-byte keys and (ChaCha) a fixed counter and nonce with random 256-bit keys; round-reduced ChaCha is shown only to illustrate diffusion, not as a security analysis of ChaCha.`,
+      statement: String.raw`**RC4** keeps a permutation $S$ of $\{0,\dots,255\}$ and two indices; its key schedule shuffles $S$ by the key, and each output byte is $S[S[i]+S[j]]$ after a swap. It is *not* a pseudorandom generator: the second output byte is $0$ with probability about $2/256$ instead of $1/256$ (Mantin–Shamir), so a few hundred streams under random keys already distinguish it from random. **ChaCha20** is a 256-bit-key stream cipher whose block function runs 20 rounds of the *quarter round* on a $4\times4$ array of 32-bit words, $a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll16;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll12;\ a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll8;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll7$ (alternately on the four columns and the four diagonals), then adds the input state to the result; the keystream is the sequence of blocks for counters $1,2,\dots$ No such bias is known for the full cipher, and it is standardised in RFC 8439.`,
+      idea: String.raw`Mantin and Shamir's argument for RC4: if the permutation entry $S[2]$ is $0$ at the start of the second output step and $S[1]\ne2$, the output byte is $0$ with certainty; since $S[2]=0$ happens with probability about $1/256$ after the key schedule, this adds about $1/256$ to the uniform $1/256$. (Later work found further biases, and RFC 7465 (2015) forbids RC4 in TLS.) ChaCha20 relies on "add, rotate, xor": individually cheap, and together non-linear (the carries of the additions) and diffusing. The right-hand plot measures the diffusion directly: flip one bit of the block counter and count how many of the 512 state bits differ after $r$ rounds; the fraction reaches the ideal $\tfrac12$ after three or four rounds, leaving the remaining rounds as a security margin. That is evidence of mixing, not a proof of security: the security of both ciphers rests on the absence of known attacks.`,
+      caption: String.raw`**Left:** histogram of the *second* keystream byte over many random keys (choose the cipher and the number of keys). The dashed line is the uniform expectation; for RC4 the bar at $0$ is about twice as tall, for ChaCha20 nothing stands out (the readout gives the excess at $0$ in standard deviations of a uniform source). **Right:** diffusion in ChaCha: the average number of the 512 state words' bits that change when one counter bit is flipped, after $r$ rounds ($r=1,\dots,20$); the gold dot follows the slider.`,
+      scope: String.raw`Second-byte bias: Mantin & Shamir, *A practical attack on broadcast RC4* (FSE 2001). Measurements here: random 16-byte keys for RC4; random 256-bit keys with fixed counter and nonce for ChaCha20. The diffusion plot is an illustration of the round function, not a security analysis.`,
       deps: ['crypto-4.1'],
       tags: ['RC4', 'ChaCha', 'bias'],
       refs: ['Katz–Lindell §7.1.4', 'Katz–Lindell §7.1.5'],
       credit: 'RC4: R. Rivest, 1987 (source posted anonymously in 1994); bias: Mantin & Shamir, 2001. ChaCha: D. J. Bernstein, 2008 (variant of Salsa20, 2005); RFC 8439 (2018)',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/RC4', rfc: 'https://www.rfc-editor.org/rfc/rfc8439' },
       viz(v) {
         const sH = v.stage({ x: [0, 256], y: [0, 4], axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'value of the second keystream byte', ylabel: 'count ÷ expected' });
-        const sC = v.stage({ x: [0.5, 20.5], y: [30, 3e5], ylog: true, axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'ChaCha rounds', ylabel: 'χ² of the histogram' });
-        const cip = v.select('Cipher', ['RC4', 'ChaCha'], 'RC4');
-        const rS = v.slider('ChaCha rounds', 1, 20, 20, { step: 1, int: true });
+        const sC = v.stage({ x: [0, 20.5], y: [0, 270], axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'ChaCha rounds r', ylabel: 'state bits changed (of 512)' });
+        const cip = v.select('Cipher (left)', ['RC4', 'ChaCha20'], 'RC4');
         const nS = v.select('Number of keys', [{ value: 4096, label: '4 096' }, { value: 16384, label: '16 384' }, { value: 65536, label: '65 536' }], 16384);
+        const rS = v.slider('rounds $r$ (right)', 1, 20, 4, { step: 1, int: true });
         let seed = 1; v.button('Resample', () => { seed += 1; });
         let key = '', D = null;
         const chi = (h, N) => { let c = 0; const e = N / 256; for (let i = 0; i < 256; i++) c += (h[i] - e) ** 2 / e; return c; };
+        const rnd = (r) => (Math.floor(r() * 65536) * 65536 + Math.floor(r() * 65536)) >>> 0;
+        const rnd1 = (s, rd) => { if (rd % 2 === 1) { quarter(s, 0, 4, 8, 12); quarter(s, 1, 5, 9, 13); quarter(s, 2, 6, 10, 14); quarter(s, 3, 7, 11, 15); } else { quarter(s, 0, 5, 10, 15); quarter(s, 1, 6, 11, 12); quarter(s, 2, 7, 8, 13); quarter(s, 3, 4, 9, 14); } };
         v.render(() => {
-          rS.el.hidden = cip.value !== 'ChaCha';
           const N = nS.value, kk = N + ',' + seed;
           if (kk !== key) {
             key = kk; const r = v.rng(seed * 6007 + 11);
-            const hr = new Uint32Array(256), hc = Array.from({ length: 21 }, () => new Uint32Array(256));
-            const kb = new Array(16), nonce = [0x09000000, 0x4a000000, 0], kw = new Array(8), s = new Uint32Array(16);
+            const hr = new Uint32Array(256), hc = new Uint32Array(256), kb = new Array(16), kw = new Array(8), nonce = [0x09000000, 0x4a000000, 0];
+            const av = new Float64Array(21), s = new Uint32Array(16), s2 = new Uint32Array(16), NA = 1000;
             for (let t = 0; t < N; t++) {
               for (let i = 0; i < 16; i++) kb[i] = Math.floor(r() * 256);
               hr[rc4(kb, 2)[1]]++;
-              for (let i = 0; i < 8; i++) kw[i] = (Math.floor(r() * 65536) * 65536 + Math.floor(r() * 65536)) >>> 0;
-              const init = chachaInit(kw, 1, nonce); s.set(init);
-              for (let rd = 1; rd <= 20; rd++) {
-                if (rd % 2 === 1) { quarter(s, 0, 4, 8, 12); quarter(s, 1, 5, 9, 13); quarter(s, 2, 6, 10, 14); quarter(s, 3, 7, 11, 15); }
-                else { quarter(s, 0, 5, 10, 15); quarter(s, 1, 6, 11, 12); quarter(s, 2, 7, 8, 13); quarter(s, 3, 4, 9, 14); }
-                hc[rd][((s[0] + init[0]) >>> 8) & 255]++;
+              for (let i = 0; i < 8; i++) kw[i] = rnd(r);
+              const init = chachaInit(kw, 1 + (rnd(r) & 0xffff0), nonce);
+              const w = Uint32Array.from(init); for (let rd = 1; rd <= 20; rd++) rnd1(w, rd);
+              hc[((w[0] + init[0]) >>> 8) & 255]++;
+              if (t < NA) {
+                s.set(init); s2.set(init); s2[12] ^= 1 << Math.floor(r() * 4);
+                for (let rd = 1; rd <= 20; rd++) { rnd1(s, rd); rnd1(s2, rd); let c = 0; for (let i = 0; i < 16; i++) c += popcnt(s[i] ^ s2[i]); av[rd] += c / NA; }
               }
             }
-            D = { hr, hc, chiR: chi(hr, N), chiC: hc.map((h, i) => (i ? chi(h, N) : 0)) };
+            D = { hr, hc, chiR: chi(hr, N), chiC: chi(hc, N), av };
           }
-          const rc = cip.value === 'RC4', h = rc ? D.hr : D.hc[rS.value], e = N / 256;
-          sH.setView([0, 256], [0, Math.max(2.4, rc ? 2.6 : 1.6)]);
+          const rc = cip.value === 'RC4', h = rc ? D.hr : D.hc, e = N / 256;
+          sH.setView([0, 256], [0, 2.6]);
           sH.hline(1, { color: 'muted', width: 1.4, dash: true });
           for (let i = 0; i < 256; i++) sH.rect(i + 0.1, 0, i + 0.9, h[i] / e, { fill: i === 0 ? 'red' : (rc ? 'accent' : 'teal'), fillAlpha: i === 0 ? 0.8 : 0.55, color: i === 0 ? 'red' : (rc ? 'accent' : 'teal'), width: 0.6 });
-          sH.text(`value 0: ${h[0]} (expected ${v.fix(e, 0)})`, 255, sH.bounds ? 2.35 : 2.35, { size: 11.5, color: 'red', align: 'right', weight: 700 });
-          sC.hband(180, 330, { color: 'green', alpha: 0.12 });
-          sC.text('uniform source: χ² ≈ 255 ± 23', 20, 255 * 1.35, { size: 11.5, color: 'green', align: 'right', weight: 600 });
-          sC.path(Array.from({ length: 20 }, (_, i) => [i + 1, Math.max(31, D.chiC[i + 1])]), { color: 'teal', width: 2.4 });
-          for (let i = 1; i <= 20; i++) sC.dot(i, Math.max(31, D.chiC[i]), { r: i === rS.value && !rc ? 7 : 3.5, color: i === rS.value && !rc ? 'gold' : 'teal' });
-          sC.hline(D.chiR, { color: 'red', width: 2, dash: true });
-          sC.text(`RC4: χ² = ${Math.round(D.chiR)}`, 20, D.chiR * 1.35, { size: 11.5, color: 'red', align: 'right', weight: 700 });
+          sH.text(`value 0: ${h[0]} (uniform: ${v.fix(e, 0)})`, 255, 2.4, { size: 11.5, color: 'red', align: 'right', weight: 700 });
+          sC.hline(256, { color: 'green', width: 1.8, dash: true });
+          sC.text('ideal 256 (half of 512)', 20, 240, { size: 11.5, color: 'green', align: 'right', weight: 600 });
+          sC.path(Array.from({ length: 20 }, (_, i) => [i + 1, D.av[i + 1]]), { color: 'teal', width: 2.4 });
+          for (let i = 1; i <= 20; i++) sC.dot(i, D.av[i], { r: i === rS.value ? 7 : 3.5, color: i === rS.value ? 'gold' : 'teal' });
         });
-        v.legend([['accent', 'RC4 counts'], ['teal', 'ChaCha counts / χ²'], ['red', 'RC4 value 0 / χ²']]);
+        v.legend([['accent', 'RC4 counts'], ['teal', 'ChaCha counts / diffusion'], ['red', 'value 0']]);
         v.readout(() => {
-          const rc = cip.value === 'RC4', N = nS.value, h = rc ? D.hr : D.hc[rS.value], e = N / 256, c = rc ? D.chiR : D.chiC[rS.value];
-          return String.raw`${rc ? 'RC4' : 'ChaCha with ' + rS.value + ' rounds'}, ${N} random keys: the second byte was $0$ in ${h[0]} of them, $${v.fix(h[0] / e, 2)}\times$ the uniform expectation ($\Pr\approx${v.fix(h[0] / N * 256, 2)}/256$); $\chi^2=${Math.round(c)}$ against $255\pm23$ for a uniform source` + (c > 330 ? '. **Distinguished from random.**' : '. Not distinguishable at this sample size.');
+          const rc = cip.value === 'RC4', N = nS.value, h = rc ? D.hr : D.hc, e = N / 256, r = rS.value;
+          return String.raw`${rc ? 'RC4' : 'ChaCha20'}, ${N} random keys: the second byte was $0$ in ${h[0]} of them, $${v.fix(h[0] / e, 2)}\times$ the uniform expectation; that is $${v.fix((h[0] - e) / Math.sqrt(e * (1 - 1 / 256)), 1)}$ standard deviations from the uniform expectation` + (Math.abs(h[0] - e) > 4 * Math.sqrt(e) ? '. **Distinguished from random.**' : '. Not distinguishable at this sample size.') + '\n' +
+            String.raw`ChaCha: after $r=${r}$ round${r > 1 ? 's' : ''}, flipping one counter bit changed $${v.fix(D.av[r], 1)}$ of the 512 state bits (${v.fix(D.av[r] / 5.12, 0)}%).`;
         });
       },
     },
@@ -228,7 +230,7 @@ export default {
                   const tj = PERM(j), changedNext = ((a[i + 1] ^ c[i + 1]) >> tj) & 1, col = changedNext ? 'red' : 'green';
                   P.line(x0 + (15 - j + 0.5) * cs, y + 21, x0 + (15 - tj + 0.5) * cs, y + rh - 2, { color: col, width: changedNext ? 1.4 : 0.7, alpha: changedNext ? 0.9 : 0.35 });
                 }
-              } else P.text('last round: no permutation; a final key is XORed in', W / 2, y + rh - 4, { size: 10.5, color: 'muted', halo: false });
+              } else P.text('last round: no permutation; a final key is XORed in', W / 2, y + rh + 30, { size: 10.5, color: 'muted', halo: false });
             }
           }
           P.text(`input bit ${b} flipped`, W / 2, H - 8, { size: 11.5, color: 'red', weight: 600, halo: false });

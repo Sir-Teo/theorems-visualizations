@@ -46,6 +46,8 @@ export function pickIn(lo, hi, { loIn = false, hiIn = false, dyadic = false } = 
     let pmin = -Infinity, pmax = Infinity;
     if (lo) pmin = loIn ? ceilDiv(lo.p * q, lo.q) : floorDiv(lo.p * q, lo.q) + 1;
     if (hi) pmax = hiIn ? floorDiv(hi.p * q, hi.q) : ceilDiv(hi.p * q, hi.q) - 1;
+    if (lo && loIn && lo.p * q === pmin * lo.q) pmin++;     // never take an end of the carrier, which would
+    if (hi && hiIn && hi.p * q === pmax * hi.q) pmax--;     // use up a distinguished point
     if (pmin > pmax) continue;
     let p;
     if (lo && hi) { const mid = (frVal(lo) + frVal(hi)) / 2 * q; p = Math.min(pmax, Math.max(pmin, Math.round(mid))); }
@@ -73,7 +75,7 @@ export function backForth(steps, { mode = 'bf', closed = false } = {}) {
       const lo = lower ? lower.b : lowB, hi = upper ? upper.b : highB;
       const loIn = lower ? false : closed, hiIn = upper ? false : closed;
       const b = pickIn(lo, hi, { loIn, hiIn, dyadic: true });
-      if (!b) { stuck = { t, dir: 'forth', elem: a, why: `no dyadic rational lies ${lower ? 'above ' + frStr(lower.b) : ''}${!lower && upper ? 'below ' + frStr(upper.b) + ' (the smallest point of the target)' : ''}${lower && upper ? ' and below ' + frStr(upper.b) : ''}${lower && !upper ? '' : ''}` }; break; }
+      if (!b) { stuck = { t, dir: 'forth', elem: a, why: !lower && upper ? `nothing in the target lies below ${frStr(upper.b)}` : lower && !upper ? `nothing in the target lies above ${frStr(lower.b)}` : 'no point of the target fits' }; break; }
       pairs.push({ a, b, t, dir: 'forth' }); usedA.add(frKey(a)); usedB.add(frKey(b));
     } else {
       const b = B.find((x) => !usedB.has(frKey(x)));
@@ -149,8 +151,8 @@ export function mkLit(a, b, eq = true) {
     return { t: 'c', v: x.v, n: n - x.k, eq };
   }
   const m = Math.min(a.k, b.k), ka = a.k - m, kb = b.k - m;
-  if (ka >= kb) return { t: 'v', u: b.v, c: ka - kb, w: a.v, eq };   // b.v + c = a.v
-  return { t: 'v', u: a.v, c: kb - ka, w: b.v, eq };                   // a.v + c = b.v
+  if (ka >= kb) return { t: 'v', u: a.v, c: ka - kb, w: b.v, eq };     // a.v + c = b.v
+  return { t: 'v', u: b.v, c: kb - ka, w: a.v, eq };                   // b.v + c = a.v
 }
 const litKey = (l) => (l.t === 'c' ? `c:${l.v}:${l.n}:${l.eq}` : `v:${l.u}:${l.c}:${l.w}:${l.eq}`);
 const negLit = (l) => ({ ...l, eq: !l.eq });
@@ -438,19 +440,19 @@ export function lStr(a, digits = 3) {
 export const THEORIES = [
   { id: 'set', name: 'Infinite sets', tex: String.raw`\text{infinite sets},\ \{=\}`, c0: true, cu: true, dims: ['cardinality'],
     n0: '1', nu: '1', why0: 'a bijection between two countable sets is an isomorphism', whyu: 'a bijection between two sets of size κ is an isomorphism' },
-  { id: 'dlo', name: 'Dense linear orders without endpoints', tex: String.raw`\mathrm{DLO}`, c0: true, cu: false, dims: [],
+  { id: 'dlo', name: 'Dense orders without endpoints', tex: String.raw`\mathrm{DLO}`, c0: true, cu: false, dims: [],
     n0: '1', nu: 'many', why0: 'back-and-forth (5.5): any two countable ones are isomorphic',
     wit0: '', witu: 'ℵ₁ copies of ℚ laid end to end has no countable cofinal sequence; the same order followed by one more copy of ℚ does — both have size ℵ₁ (and for κ = 2^ℵ₀: ℝ versus ℝ minus a point)' },
   { id: 'qvs', name: 'Non-trivial ℚ-vector spaces', tex: String.raw`\mathbb{Q}\text{-vector spaces}\ (\neq 0)`, c0: false, cu: true, dims: ['dimension d'],
     n0: 'ℵ₀', nu: '1', wit0: 'dimension 1 (ℚ itself) versus dimension 2 (ℚ²): both countable, not isomorphic', whyu: 'size κ forces dimension exactly κ, and equal dimension means isomorphic' },
-  { id: 'acf', name: 'Algebraically closed fields of fixed characteristic', tex: String.raw`\mathrm{ACF}_p`, c0: false, cu: true, dims: ['transcendence degree d'],
+  { id: 'acf', name: 'Algebraically closed fields, fixed char.', tex: String.raw`\mathrm{ACF}_p`, c0: false, cu: true, dims: ['transcendence degree d'],
     n0: 'ℵ₀', nu: '1', wit0: 'transcendence degree 0 (the algebraic closure of the prime field) versus degree 1 (the algebraic closure of F(t))', whyu: 'size κ forces transcendence degree exactly κ, and equal degree means isomorphic (Steinitz)' },
-  { id: 'eq', name: 'Equivalence relation, infinitely many classes, all infinite', tex: String.raw`E:\ \infty\text{ classes, each infinite}`, c0: true, cu: false, dims: ['number of classes c', 'class size s'],
+  { id: 'eq', name: 'Equivalence relation, ∞ classes, all ∞', tex: String.raw`E:\ \infty\text{ classes, each infinite}`, c0: true, cu: false, dims: ['number of classes c', 'class size s'],
     n0: '1', nu: '≥ 2', why0: 'countably many classes, each countably infinite: match classes, then elements', witu: 'ℵ₁ classes of size ℵ₀ versus ℵ₀ classes of size ℵ₁ (both of size ℵ₁)' },
   { id: 'succ', name: '(ℕ, 0, S): zero and successor', tex: String.raw`(\mathbb{N},0,S)`, c0: false, cu: true, dims: ['number of ℤ-chains d'],
     n0: 'ℵ₀', nu: '1', wit0: 'ℕ alone versus ℕ plus one copy of ℤ', whyu: 'a model is ℕ plus d copies of ℤ; size κ forces d = κ' },
   { id: 'rcf', name: 'Real closed ordered fields', tex: String.raw`\mathrm{RCF}`, c0: false, cu: false, dims: [],
     n0: 'ℵ₀', nu: 'many', wit0: 'the real algebraic numbers versus the real closure of ℚ(t) with t larger than every rational', witu: 'for κ = 2^ℵ₀: ℝ (Archimedean) versus the real closure of ℝ(t) with t infinitely large; other sizes use other pairs' },
-  { id: 'rado', name: 'The random graph (Rado graph) theory', tex: String.raw`\mathrm{Th}(\text{Rado graph})`, c0: true, cu: false, dims: [],
+  { id: 'rado', name: 'The random graph (Rado)', tex: String.raw`\mathrm{Th}(\text{Rado graph})`, c0: true, cu: false, dims: [],
     n0: '1', nu: 'many', why0: 'back-and-forth again: the extension property determines the countable model', witu: 'many non-isomorphic models of each uncountable size (the theory is unstable, so Shelah’s classification applies); no pair is drawn here', verify: true },
 ];
