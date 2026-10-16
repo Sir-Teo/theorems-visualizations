@@ -280,3 +280,27 @@ export function surfaceName({ chi, orientable, circles }) {
   if (k === 1 && circles === 1) return 'Möbius band';
   return `${base} with ${circles} holes`;
 }
+
+// ------------------------------------------------------------------ 5. drawing the glued square
+/**
+ * Draw the edges of the unit square on a 2D stage with the arrow labels of a gluing: the x-edges (left/right) in red with
+ * single arrowheads, the y-edges (bottom/top) in teal with double arrowheads; a flipped pair points opposite ways; free
+ * edges are plain. `o`: {x0, y0, size} place the square (default the unit square), `width`.
+ */
+export function drawGlueSquare(s, kind, o = {}) {
+  const G = GLUE[kind], x0 = o.x0 ?? 0, y0 = o.y0 ?? 0, S = o.size ?? 1, w = o.width ?? 3;
+  const P = (u, v) => [x0 + S * u, y0 + S * v];
+  const edge = (a, b, col, heads) => {
+    s.line(...P(...a), ...P(...b), { color: col, width: w });
+    if (!heads) return;
+    for (let k = 0; k < heads; k++) {
+      const t = 0.5 + (k - (heads - 1) / 2) * 0.09, m = [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])], d = [(b[0] - a[0]) * 0.001, (b[1] - a[1]) * 0.001];
+      s.arrow(...P(m[0] - d[0], m[1] - d[1]), ...P(m[0] + d[0] * 40, m[1] + d[1] * 40), { color: col, width: w, head: 12 });
+    }
+  };
+  // left edge goes up; right edge goes up ('same') or down ('flip')
+  edge([0, 0], [0, 1], G.x ? 'red' : 'muted', G.x ? 1 : 0);
+  if (G.x === 'flip') edge([1, 1], [1, 0], 'red', 1); else edge([1, 0], [1, 1], G.x ? 'red' : 'muted', G.x ? 1 : 0);
+  edge([0, 0], [1, 0], G.y ? 'teal' : 'muted', G.y ? 2 : 0);
+  if (G.y === 'flip') edge([1, 1], [0, 1], 'teal', 2); else edge([0, 1], [1, 1], G.y ? 'teal' : 'muted', G.y ? 2 : 0);
+}

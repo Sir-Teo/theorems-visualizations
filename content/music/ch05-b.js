@@ -93,13 +93,13 @@ for the limen in Hz at $d'=1$, with $d$ the duration and $L$ the sensation level
         v.render(() => {
           const f = fS.value, sl = slS.value;
           // staircase
-          st.hline(100, { color: 'faint', width: 1, dash: [4, 4] }); st.text('a semitone', 51, 100, { align: 'right', color: 'muted', size: 10.5, dy: -8 });
+          st.hline(100, { color: 'faint', width: 1, dash: [4, 4] }); st.text('a semitone', 1, 100, { align: 'left', color: 'muted', size: 10.5, dy: -8 });
           const ref = centsOf(f, dlf707(f, DUR, sl)); st.hline(ref, { color: 'accent', width: 1.4, dash: [6, 4] }); st.text('model', 51, ref, { align: 'right', color: 'accent', size: 10.5, dy: -8 });
           if (track.length) st.path(track.map((t) => [t.n, t.d]), { color: 'muted', width: 1.2 });
           for (const t of track) { if (t.rev) st.dot(t.n, t.d, { r: 7, hollow: true, color: 'ink' }); st.dot(t.n, t.d, { r: 3.5, color: t.ok ? 'green' : 'red' }); }
           const e = estimate(); if (e) { st.hline(e, { color: 'gold', width: 2 }); st.text(`estimate ${v.fix(e, 1)} ¢`, 1, e, { align: 'left', color: 'gold', size: 11, dy: -9, weight: 600 }); }
           st.dot(track.length + 1, cur, { r: 5, color: 'gold', hollow: true });
-          st.corner(msg, 'tr', { color: sim ? 'muted' : 'ink', plate: true, size: 11.5 });
+          st.corner(sim ? 'simulated listener' : msg, 'tr', { color: sim ? 'muted' : 'ink', plate: true, size: 11.5 });
           // JND curve
           jn.between((x) => centsOf(x, dlf707(x, DUR, 20)), (x) => centsOf(x, dlf707(x, DUR, 60)), 150, 10000, { fill: 'accent', fillAlpha: 0.12 });
           jn.fn((x) => centsOf(x, dlf707(x, DUR, sl)), { color: 'accent', width: 2.4 });
@@ -110,7 +110,7 @@ for the limen in Hz at $d'=1$, with $d$ the duration and $L$ the sensation level
         v.legend([['green', 'correct'], ['red', 'wrong'], ['gold', 'estimate (mean of the last 6 reversals)'], ['accent', 'Micheyl et al. (2012) fit, 70.7% point']]);
         v.readout(() => {
           const f = fS.value, sl = slS.value, dl = dlf707(f, DUR, sl), e = estimate();
-          return `${f} Hz, 300 ms tones, assumed ${sl} dB SL: model JND ${v.fix(dl, 2)} Hz = ${v.fix(centsOf(f, dl), 1)} ¢ (Weber fraction ${v.fix((100 * dl) / f, 2)}%) · current Δ ${v.fix(cur, 1)} ¢ = ${v.fix(f * (2 ** (cur / 1200) - 1), 2)} Hz · ${track.length} trials, ${reversals().length} reversals${e ? ` · ${sim ? 'simulated' : 'your'} estimate ${v.fix(e, 1)} ¢ = ${v.fix(f * (2 ** (e / 1200) - 1), 2)} Hz` : ' · an estimate appears after 4 reversals'}`;
+          return `${sim ? msg + ' · ' : ''}${f} Hz, 300 ms tones, assumed ${sl} dB SL: model JND ${v.fix(dl, 2)} Hz = ${v.fix(centsOf(f, dl), 1)} ¢ (Weber fraction ${v.fix((100 * dl) / f, 2)}%) · current Δ ${v.fix(cur, 1)} ¢ = ${v.fix(f * (2 ** (cur / 1200) - 1), 2)} Hz · ${track.length} trials, ${reversals().length} reversals${e ? ` · ${sim ? 'simulated' : 'your'} estimate ${v.fix(e, 1)} ¢ = ${v.fix(f * (2 ** (e / 1200) - 1), 2)} Hz` : ' · an estimate appears after 4 reversals'}`;
         });
       },
     },
@@ -137,7 +137,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
         const order = v.select('turns by', [{ value: 1, label: 'semitones' }, { value: 7, label: 'fifths' }], 1);
         let sel = 60;
         const ph = playhead(v);
-        const s3 = v.stage3d({ range: 2.3, height: 360, yaw: 0.5, pitch: 0.32, axes: false, labels: null, weight: 1.2, minWidth: 300, title: 'the pitch helix (drag to rotate)' });
+        const s3 = v.stage3d({ range: 2.05, height: 360, yaw: 0.5, pitch: 0.32, axes: false, labels: null, weight: 1.2, minWidth: 300, title: 'the pitch helix (drag to rotate)' });
         const kb = v.stage({ x: [LO - 0.5, HI + 0.5], y: [0, 1], height: 360, axes: false, weight: 1, minWidth: 260, title: 'C2 to C7 (click a key)' });
         const pos = (m) => {
           const c = M.mod(m * order.value, 12) / 12, R = 1.3 * (1 - unw.value), h = ((m - 66) / 12) * 0.62 * (1 - flat.value);
@@ -145,7 +145,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
         };
         const play = (m) => { sel = m; v.sound().samples(pluck(M.midiToFreq(m), 0.8), SR, { gain: 0.8 }); ph.start(0.8, m); };
         // keyboard laid out vertically: one row per octave (bottom = C2), 12 columns
-        const keyAt = (x, y) => { const oct = Math.floor(y * 5.04), col = Math.floor(((x - LO + 0.5) / (HI - LO + 1)) * 12); const m = LO + 12 * oct + col; return m >= LO && m <= HI && oct >= 0 && oct <= 5 ? m : null; };
+        const keyAt = (x, y) => { const oct = Math.floor(y * 6.05), col = Math.floor(((x - LO + 0.5) / (HI - LO + 1)) * 12); const m = LO + 12 * oct + col; return m >= LO && m <= HI && oct >= 0 && oct <= 5 ? m : null; };
         kb.onClick((x, y) => { const m = keyAt(x, y); if (m != null) play(m); });
         v.soundButton('Octaves C2 → C6', (snd) => { snd.samples(join([36, 48, 60, 72, 84].map((m) => pluck(M.midiToFreq(m), 0.55)), 0.08), SR, { gain: 0.8 }); ph.start(5 * 0.63, 'oct'); });
         v.soundButton('chromatic C4 → C5', (snd) => { snd.samples(join(M.range(13).map((k) => pluck(M.midiToFreq(60 + k), 0.3)), 0.03), SR, { gain: 0.8 }); ph.start(13 * 0.33, 'chrom'); });
@@ -160,15 +160,15 @@ so that notes an octave apart lie directly above one another. Projecting onto th
             const p = pos(m), same = M.mod(m, 12) === pc, isC = M.mod(m, 12) === 0;
             s3.dot(p, { r: m === cur ? 7 : same ? 5 : 3, color: m === cur ? 'red' : same ? 'accent' : isC ? 'gold' : 'muted' });
           }
-          const ps = M.range(LO, HI + 1).filter((m) => M.mod(m, 12) === pc).map(pos);
+          const ps = M.range(HI - LO + 1, LO).filter((m) => M.mod(m, 12) === pc).map(pos);
           if (ps.length > 1) s3.path(ps, { color: 'accent', width: 2, alpha: 0.7 });
           // chroma circle labels at the base
-          for (let k = 0; k < 12; k++) { const p = pos(LO + k); const lab = NOTE[M.mod((LO + k) * order.value, 12)]; s3.text(lab, [p[0] * 1.25 + 0.0001, p[1] * 1.25, pos(LO)[2] - 0.35], { color: M.mod((LO + k) * order.value, 12) === pc ? 'accent' : 'muted', size: 11 }); }
+          for (let k = 0; k < 12; k++) { const p = pos(LO + k); const lab = NOTE[M.mod((LO + k) * order.value, 12)]; s3.text(lab, [p[0] * 1.18 + 0.0001, p[1] * 1.18, pos(LO)[2] - 0.3], { color: M.mod((LO + k) * order.value, 12) === pc ? 'accent' : 'muted', size: 11 }); }
           s3.text(`${M.noteName(cur)}`, [pos(cur)[0] * 1.15, pos(cur)[1] * 1.15, pos(cur)[2] + 0.18], { color: 'red', size: 12.5 });
           // keyboard grid
           for (let oct = 0; oct <= 5; oct++) for (let col = 0; col < 12; col++) {
             const m = LO + 12 * oct + col; if (m > HI) continue;
-            const x0 = LO - 0.5 + ((HI - LO + 1) * col) / 12, x1 = LO - 0.5 + ((HI - LO + 1) * (col + 1)) / 12, y0 = oct / 5.04, y1 = (oct + 0.9) / 5.04, black = [1, 3, 6, 8, 10].includes(col);
+            const x0 = LO - 0.5 + ((HI - LO + 1) * col) / 12, x1 = LO - 0.5 + ((HI - LO + 1) * (col + 1)) / 12, y0 = oct / 6.05, y1 = (oct + 0.9) / 6.05, black = [1, 3, 6, 8, 10].includes(col);
             kb.rect(x0 + 0.15, y0, x1 - 0.15, y1, { fill: m === cur ? 'red' : col === pc ? 'accent' : black ? 'ink' : 'panel', fillAlpha: m === cur ? 0.85 : col === pc ? 0.35 : black ? 0.75 : 1, color: 'muted', width: 1, radius: 3 });
             if (col === 0) kb.text(`C${oct + 2}`, (x0 + x1) / 2, (y0 + y1) / 2, { align: 'center', color: m === cur ? 'panel' : 'ink', size: 10.5 });
           }
@@ -177,7 +177,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
         v.legend([['red', 'the note played'], ['accent', 'same chroma, other octaves'], ['gold', 'the C notes']]);
         v.readout(() => {
           const m = sel, f = M.midiToFreq(m), h = Math.log2(f / M.midiToFreq(LO));
-          return `${M.noteName(m)} = ${v.fix(f, 2)} Hz · height $\\log_2(f/f_{\\mathrm{C2}}) = ${v.fix(h, 3)}$ octaves · chroma ${NOTE[M.mod(m, 12)]} (angle ${v.fix(M.mod(m * order.value, 12) * 30, 0)}°) · octave relatives on this helix: ${M.range(LO, HI + 1).filter((k) => M.mod(k - m, 12) === 0).map((k) => M.noteName(k)).join(', ')} · flatten ${v.fix(100 * flat.value, 0)}%: ${flat.value > 0.95 ? 'only chroma is left' : unw.value > 0.95 ? 'only height is left' : 'both dimensions shown'}`;
+          return `${M.noteName(m)} = ${v.fix(f, 2)} Hz · height $\\log_2(f/f_{\\mathrm{C2}}) = ${v.fix(h, 3)}$ octaves · chroma ${NOTE[M.mod(m, 12)]} (angle ${v.fix(M.mod(m * order.value, 12) * 30, 0)}°) · octave relatives on this helix: ${M.range(HI - LO + 1, LO).filter((k) => M.mod(k - m, 12) === 0).map((k) => M.noteName(k)).join(', ')} · flatten ${v.fix(100 * flat.value, 0)}%: ${flat.value > 0.95 ? 'only chroma is left' : unw.value > 0.95 ? 'only height is left' : 'both dimensions shown'}`;
         });
       },
     },
@@ -239,8 +239,10 @@ so that notes an octave apart lie directly above one another. Projecting onto th
           const a = Math.PI / 2 - TAU * u; cc.arrow(0, 0, 0.9 * Math.cos(a), 0.9 * Math.sin(a), { color: 'red', width: 2.6 });
           // height chart over 3 loops
           const tl = Math.min(3, loops), stepsF = (x) => (mode.value === 'scale' ? Math.floor(x * 12) / 12 : x);
-          hh.fn((x) => stepsF(x), { domain: [0, tl], color: 'red', width: 2.2, n: 600 });
-          hh.fn((x) => centroid(M.mod(x, 1)) - centroid(0), { domain: [0, tl], color: 'green', width: 2.2, n: 600 });
+          hh.fn((x) => stepsF(x), { domain: [0, 3], color: 'red', width: 1.2, alpha: 0.3, n: 600 });
+          hh.fn((x) => centroid(M.mod(x, 1)) - centroid(0), { domain: [0, 3], color: 'green', width: 1.2, alpha: 0.3, n: 600 });
+          hh.fn((x) => stepsF(x), { domain: [0, tl], color: 'red', width: 2.6, n: 600 });
+          hh.fn((x) => centroid(M.mod(x, 1)) - centroid(0), { domain: [0, tl], color: 'green', width: 2.6, n: 600 });
           hh.dot(tl, stepsF(tl), { r: 4, color: 'red' });
           hh.text('chroma steps climbed', 0.08, 3.05, { align: 'left', color: 'red', size: 11 });
           hh.text('centroid (height cue)', 2.9, -0.32, { align: 'right', color: 'green', size: 11 });
@@ -316,10 +318,10 @@ Both cues are the same for every source on a **cone of confusion** around the in
           s.text('L', -1.4, 0, { align: 'center', color: 'accent', size: 12, weight: 700 }); s.text('R', 1.4, 0, { align: 'center', color: 'red', size: 12, weight: 700 });
           const sx = Math.sin(phi), sy = Math.cos(phi);
           // wavefronts (perpendicular to the source direction) passing the near ear
-          for (const d of [0.6, 1.4, 2.2]) { const cx = d * sx, cy = d * sy; s.line(cx - 1.1 * sy, cy + 1.1 * sx, cx + 1.1 * sy, cy - 1.1 * sx, { color: 'gold', width: 1, alpha: 0.5 }); }
+          for (const d of [1.5, 2.1, 2.7]) { const cx = d * sx, cy = d * sy; s.line(cx - 1.1 * sy, cy + 1.1 * sx, cx + 1.1 * sy, cy - 1.1 * sx, { color: 'gold', width: 1, alpha: 0.5 }); }
           // near-ear ray and far-ear wrapped path
           const ne = [side, 0], fe = [-side, 0];
-          s.line(src.x, src.y, ne[0], ne[1], { color: 'gold', width: 1.8 });
+          s.line(ne[0] + 3 * sx, ne[1] + 3 * sy, ne[0], ne[1], { color: 'gold', width: 1.8 });
           // the grazing ray touches the head where the radius is perpendicular to the source direction, on the far ear's side
           let tan = [sy, -sx]; if (tan[0] * side > 0) tan = [-sy, sx];
           s.line(tan[0] + 3 * sx, tan[1] + 3 * sy, tan[0], tan[1], { color: 'orange', width: 1.8, alpha: 0.85 });
@@ -404,7 +406,7 @@ Both cues are the same for every source on a **cone of confusion** around the in
           pl.between((x) => TCB(x), (x) => FB(x), 50, 200, { fill: 'purple', fillAlpha: 0.08 });
           pl.between((x) => FB(x), () => 0, 50, 200, { fill: 'green', fillAlpha: 0.1 });
           pl.fn(TCB, { color: 'red', width: 2 }); pl.fn(FB, { color: 'green', width: 2 });
-          pl.text('temporal coherence boundary', 190, Math.min(15.3, TCB(190)), { color: 'red', size: 11, align: 'right', dy: 12 });
+          pl.text('temporal coherence boundary', 125, TCB(125), { color: 'red', size: 11, align: 'center', dy: -12 });
           pl.text('fission boundary', 190, FB(190), { color: 'green', size: 11, align: 'right', dy: -9 });
           pl.text('always two streams', 60, 14.5, { color: 'red', size: 11, align: 'left' });
           pl.text('always one stream', 60, 1.1, { color: 'green', size: 11, align: 'left' });
@@ -567,7 +569,8 @@ These are among the grouping principles of **auditory scene analysis**, the proc
           for (let k = 1; k <= NH; k++) { const d = (100 * (fOf(k) - k * F0)) / (k * F0), out = Math.abs(d) > 2; sv.line(k, 0, k, d, { color: out ? 'red' : 'accent', width: 3 }); sv.dot(k, d, { r: 5, color: out ? 'red' : 'accent' }); }
           sv.text('±2% (illustrative)', NH + 0.6, 2.6, { align: 'right', color: 'green', size: 10.5 });
           // waveform drift
-          const w = (u, t) => { let y = 0; for (let k = 1; k <= NH; k++) y += Math.sin(TAU * fOf(k) * (u / F0 + t)); return y / 6; };
+          const w0 = (u, t) => { let y = 0; for (let k = 1; k <= NH; k++) y += Math.sin(TAU * fOf(k) * (u / F0 + t)); return y; };
+          let pk = 1e-9; for (let i = 0; i < 400; i++) pk = Math.max(pk, Math.abs(w0(i / 400, 0))); const w = (u, t) => w0(u, t) / pk;
           const tl = df > 0.01 ? 0.5 / df : 0;
           wv.hline(0, { color: 'faint', width: 1 });
           wv.fn((u) => w(u, 0), { color: 'accent', width: 1.8, n: 800 });

@@ -687,6 +687,15 @@ export function qr(A, { thin = false } = {}) {
 }
 const signFix = (v) => { let j = 0; for (let i = 1; i < v.length; i++) if (Math.abs(v[i]) > Math.abs(v[j]) + 1e-12) j = i; return v[j] < 0 ? v.map((x) => -x) : v; };
 /** Cholesky factor of a symmetric positive-definite matrix: lower-triangular L with L Lᵀ = A (null if A is not positive definite). */
+/** Complete elliptic integrals with parameter m = k² (0 ≤ m < 1) by the arithmetic–geometric mean:
+ *  ellipK(m) = ∫₀^{π/2} dθ/√(1 − m sin²θ), ellipE(m) = ∫₀^{π/2} √(1 − m sin²θ) dθ. (Pendulum period T = 4K(sin²(θ₀/2))/ω₀.) */
+export function ellipK(m) { if (m >= 1) return Infinity; let a = 1, b = Math.sqrt(1 - m); for (let i = 0; i < 40 && Math.abs(a - b) > 1e-15 * a; i++) [a, b] = [(a + b) / 2, Math.sqrt(a * b)]; return Math.PI / (2 * a); }
+export function ellipE(m) {
+  if (m >= 1) return 1; if (m === 0) return Math.PI / 2;
+  let a = 1, b = Math.sqrt(1 - m), c = Math.sqrt(m), sum = c * c / 2, p = 0.5;
+  for (let i = 0; i < 40 && Math.abs(c) > 1e-15; i++) { const an = (a + b) / 2; c = (a - b) / 2; b = Math.sqrt(a * b); a = an; p *= 2; sum += p * c * c; }
+  return (Math.PI / (2 * a)) * (1 - sum);
+}
 export function cholesky(A) {
   const n = A.length, L = Array.from({ length: n }, () => new Array(n).fill(0));
   for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {

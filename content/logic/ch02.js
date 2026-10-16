@@ -243,7 +243,7 @@ Equivalently, they form the smallest set of strings that contains the letters an
               P.text(tokStr(t), i, D + 1.15, { align: 'center', size: 15, math: t.t === 'var', weight: i === R.main ? 700 : 500, color: bad ? 'red' : i === R.main ? 'gold' : 'ink' });
             });
             if (R.strict.error && R.strict.at >= m) P.text('⟵ ends too early', m - 0.4, D + 1.15, { align: 'left', size: 11, color: 'red' });
-            P.text('depth', -0.8, D + 0.45, { align: 'right', size: 10.5, color: 'muted' });
+            P.text('depth', -1.8, D + 0.5, { align: 'left', size: 10.5, color: 'muted' });
           } else {
             A.setTitle('reading 1 (the one you typed)'); P.setTitle('another reading of the same symbols');
             const list = R.read.list;
@@ -557,7 +557,7 @@ For finite $\Sigma$ all of these can be decided with a truth table. An assignmen
           let verdict;
           if (ce >= 0) verdict = `**Σ ⊭ τ**: countermodel ${vars.map((x, j) => `$${x}=${TF(rowVal(ce, j, n))}$`).join(', ')} (${counter.filter(Boolean).length} red row${counter.filter(Boolean).length > 1 ? 's' : ''}).`;
           else verdict = `**Σ ⊨ τ** ✓: ${premSat ? `all ${allP.filter(Boolean).length} rows satisfying Σ satisfy τ` : 'no row satisfies Σ, so Σ implies everything'}.`;
-          const proof = res.refuted ? `Resolution reaches $\\square$ in ${res.proof.filter((i) => res.clauses[i].parents).length} steps, and every resolvent follows from its parents ✓: the syntactic and semantic verdicts agree.` : `Resolution saturates without $\\square$, and the semantic verdict agrees.`;
+          const proof = res.refuted ? `Resolution reaches $\\square$ in ${res.proof.filter((i) => res.clauses[i].parents).length} step${res.proof.filter((i) => res.clauses[i].parents).length === 1 ? '' : 's'}, and every resolvent follows from its parents ✓: the syntactic and semantic verdicts agree.` : `Resolution saturates without $\\square$, and the semantic verdict agrees.`;
           return `${verdict} ${proof} Alone, ${kind}.`;
         });
       },
@@ -689,7 +689,8 @@ The canonical forms can be exponentially large. For example, every DNF for $p_1\
           for (let i = 0; i < R; i++) for (let j = 0; j < n; j++) {
             if (rowVal(i, j, n)) continue; const up = i - (1 << (n - 1 - j)); // flip letter j from F to T
             const [x1, y1] = pos.get(i), [x2, y2] = pos.get(up), bad = col[i] && !col[up];
-            if (bad) s.arrow(x1, y1, x2, y2, { color: 'red', width: 3, head: 9 }); else s.line(x1, y1, x2, y2, { color: 'faint', width: 1.5 });
+            const a = 0.34 / (y2 - y1), X1 = x1 + (x2 - x1) * a, Y1 = y1 + (y2 - y1) * a, X2 = x2 - (x2 - x1) * a, Y2 = y2 - (y2 - y1) * a;
+            if (bad) s.arrow(X1, Y1, X2, Y2, { color: 'red', width: 3, head: 10 }); else s.line(X1, Y1, X2, Y2, { color: 'faint', width: 1.5 });
           }
           for (let i = 0; i < R; i++) {
             const [x, y] = pos.get(i), lab = info.vars.map((_, j) => TF(rowVal(i, j, n))).join('');
@@ -708,7 +709,8 @@ The canonical forms can be exponentially large. For example, every DNF for $p_1\
             }
           }
           const list = [...name.values()].sort((x, y) => x.length - y.length), cols = list.length > 9 ? 3 : 2, rows = Math.ceil(list.length / cols);
-          list.forEach((t, i) => s.text(t.replace(/^\((.*)\)$/, '$1'), 0.6 + (i % cols) * (9 / cols), 5.4 - Math.floor(i / cols) * (5 / Math.max(rows, 5)), { align: 'left', size: list.length > 9 ? 11.5 : 13.5, math: true, color: 'green' }));
+          list.forEach((t, i) => s.text(t.replace(/^\((.*)\)$/, '$1'), 0.8 + (i % cols) * (9 / cols), 5.3 - Math.floor(i / cols) * Math.min(1, 4.4 / Math.max(rows, 1)), { align: 'left', size: list.length > 9 ? 12 : 15, math: true, color: 'green' }));
+          s.text(`target ${toStr(F.ast)}: not reachable`, 5, 0.85, { align: 'center', size: 13, math: true, color: 'red' });
           s.text(`${list.length} functions, all monotone; the target is not among them`, 5, 0.25, { align: 'center', size: 12, weight: 600, color: 'red' });
         };
         v.render(() => {

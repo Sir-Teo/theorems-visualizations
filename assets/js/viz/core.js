@@ -175,7 +175,7 @@ class Stage {
   /** Replace the custom ticks (same format as the xticks/yticks options; null = automatic). */
   setTicks(xticks, yticks) { const k = (t) => JSON.stringify(t ?? null); let ch = false; if (xticks !== undefined && k(xticks) !== k(this.o.xticks)) { this.o.xticks = xticks; ch = true; } if (yticks !== undefined && k(yticks) !== k(this.o.yticks)) { this.o.yticks = yticks; ch = true; } if (ch) this.rt.invalidate(); return this; }
   /** Change the axis labels (undefined = keep, null = none), e.g. per mode. */
-  setLabels(xlabel, ylabel) { let ch = false; if (xlabel !== undefined && xlabel !== this.o.xlabel) { this.o.xlabel = xlabel; ch = true; } if (ylabel !== undefined && ylabel !== this.o.ylabel) { this.o.ylabel = ylabel; ch = true; } if (ch) this.rt.invalidate(); return this; }
+  setLabels(xlabel, ylabel) { let ch = false; if (xlabel !== undefined && xlabel !== this.o.xlabel) { this.o.xlabel = xlabel; ch = true; } if (ylabel !== undefined && ylabel !== this.o.ylabel) { this.o.ylabel = ylabel; ch = true; } if (ch) { if (this.o.gutter) this._fit(); if (!this.rt._inFrame) this.rt.invalidate(); } return this; } // a gutter re-reserves room for a newly added label
   resize() {
     const W = Math.max(120, Math.round(this.box.clientWidth || this.el.clientWidth || 300));
     const o = this.o;

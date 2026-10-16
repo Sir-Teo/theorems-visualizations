@@ -141,7 +141,7 @@ $$P(|Z_n|\ge\eps)\le\eps^{-p}\,E|Z_n|^p .$$`,
           const X = f === 'norm' ? [-3, 3] : [-0.12 * n - 1, 1.12 * n + 0.5];
           L.setView(X, [0, 2.2]);
           if (f === 'norm') { const s = 1 / Math.sqrt(n), pk = 1 / (s * Math.sqrt(2 * Math.PI)), sc = 1.6 / pk; L.fn((z) => (sc * Math.exp(-z * z / (2 * s * s))) / (s * Math.sqrt(2 * Math.PI)), { color: 'muted', width: 1.6, fill: 'muted', fillAlpha: 0.18, n: 500 }); L.text(`density × ${fr(sc, 2)}`, X[1] - 0.05 * (X[1] - X[0]), 2.05, { align: 'right', size: 10.5, color: 'muted' }); }
-          else { L.line(0, 0, 0, 1.6 * (1 - 1 / n), { color: 'muted', width: 6, alpha: 0.6 }); L.line(n, 0, n, Math.max(0.06, 1.6 / n), { color: 'muted', width: 6, alpha: 0.6 }); L.text(`mass 1/n at z = ${n}`, n, Math.max(0.06, 1.6 / n) + 0.12, { align: 'right', size: 10.5, color: 'muted' }); }
+          else { L.line(0, 0, 0, 1.6 * (1 - 1 / n), { color: 'muted', width: 6, alpha: 0.6 }); L.line(n, 0, n, Math.max(0.06, 1.6 / n), { color: 'muted', width: 6, alpha: 0.6 }); L.text(`mass 1/n at z = ${n}`, n, Math.max(0.06, 1.6 / n) + 0.12, { align: 'right', size: 10.5, color: 'muted' }); L.text(`there |z|ᵖ/εᵖ = ${(n ** p / e ** p).toPrecision(3)} ≫ 1`, n, 1.25, { align: 'right', size: 11, color: 'orange' }); L.arrow(n - 0.02 * n, 1.38, n, 2.15, { color: 'orange', width: 1.4, head: 7 }); }
           L.fn((z) => (Math.abs(z) >= e ? 1 : 0), { color: 'red', width: 2.2, n: 1200 });
           L.fn((z) => Math.abs(z) ** p / e ** p, { color: 'orange', width: 2.2, n: 800 });
           // right panel
@@ -249,7 +249,7 @@ $$E(S_n/n-\mu)^2\le\frac Cn,\qquad P(|S_n/n-\mu|>\eps)\le\frac{C}{n\eps^2}.$$`,
           st = { lag, D, crit: 1.36 * Math.sqrt(2 / 150) };
           v.legend(COL.map((c, b) => [c, `block ${b + 1}`, { area: true }]));
         });
-        v.readout(() => st && `Lag-1 correlation $${fr(st.lag, 3)}$ (noise level about $\\pm0.08$). Largest Kolmogorov–Smirnov distance between block 1 and another block: $${fr(st.D, 3)}$ (5% noise level $${fr(st.crit, 3)}$).` + (Math.abs(st.lag) > 0.15 ? ' **Not independent.**' : '') + (st.D > st.crit * 1.15 ? ' **Not identically distributed.**' : ''));
+        v.readout(() => st && `Lag-1 correlation $${fr(st.lag, 3)}$ (noise level about $\\pm0.08$). Largest Kolmogorov–Smirnov distance between block 1 and another block: $${fr(st.D, 3)}$ (5% noise level $${fr(st.crit, 3)}$).` + (Math.abs(st.lag) > 0.15 ? ' **Not independent**: each value predicts the next' + (st.D > st.crit ? ', and so the blocks wander more than i.i.d. noise allows.' : '.') : st.D > st.crit * 1.15 ? ' **Not identically distributed.**' : ' Consistent with i.i.d.'));
       },
     },
     {
@@ -272,13 +272,13 @@ be its Bernstein polynomial of degree $n$. Then $\sup_{x\in[0,1]}|f_n(x)-f(x)|\t
         const pre = v.select('$f$', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'wave', { onChange: (k) => { F = Float64Array.from({ length: K + 1 }, (_, i) => PRE[k].f(i / K)); ver++; } });
         F = Float64Array.from({ length: K + 1 }, (_, i) => PRE.wave.f(i / K));
         const nS = v.slider('$n$', 1, 400, 12, { log: true, int: true });
-        const L = v.stage({ x: [0, 1], y: [-0.3, 1], height: 330, weight: 1.35, axes: 'box', gutter: true, xlabel: '$x$', title: '$f$, $f_n$ and the weights at $x$ — drag to draw $f$' });
+        const L = v.stage({ x: [0, 1], y: [-0.75, 1], height: 340, weight: 1.35, axes: 'box', gutter: true, xlabel: '$x$', title: '$f$, $f_n$ and the weights at $x$ — drag to draw $f$' });
         const R = v.stage({ x: [1, 400], xlog: true, y: [1e-3, 1], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: '$\\sup|f_n-f|$ and the proof’s bound' });
-        const hx = L.handle(0.3, -0.3, { color: 'gold', label: 'x', labelPos: 'e', constrain: (x) => [clampN(x, 0, 1), L.yr[0]] });
+        const hx = L.handle(0.3, -0.75, { color: 'gold', label: 'x', labelPos: 'e', constrain: (x) => [clampN(x, 0, 1), L.yr[0]] });
         let lastX = null;
         L.onDrag((x, y, phase) => {
           if (hx.dragging) return;
-          const i0 = Math.round(clampN(x, 0, 1) * K), y0 = clampN(y, -0.25, 0.98);
+          const i0 = Math.round(clampN(x, 0, 1) * K), y0 = clampN(y, -0.45, 0.98);
           const from = phase === 'start' || lastX == null ? i0 : lastX;
           for (let i = Math.min(from, i0); i <= Math.max(from, i0); i++) F[i] = y0;
           for (let i = Math.max(0, i0 - 3); i <= Math.min(K, i0 + 3); i++) if (i < Math.min(from, i0) || i > Math.max(from, i0)) F[i] = 0.6 * F[i] + 0.4 * y0;
@@ -300,7 +300,7 @@ be its Bernstein polynomial of degree $n$. Then $\sup_{x\in[0,1]}|f_n(x)-f(x)|\t
           L.fn((t) => bern(n, t), { color: 'accent', width: 2.6, n: 300 });
           const w = Array.from({ length: n + 1 }, (_, m) => (x <= 0 ? +(m === 0) : x >= 1 ? +(m === n) : Math.exp(lbinom(M, n, m) + m * Math.log(x) + (n - m) * Math.log(1 - x))));
           const wmax = Math.max(...w), bw = Math.min(0.012, 0.6 / (n + 1));
-          w.forEach((p, m) => { L.rect(m / n - bw, -0.3, m / n + bw, -0.3 + (0.22 * p) / wmax, { fill: 'orange', fillAlpha: 0.7, stroke: false }); if (n <= 60) L.dot(m / n, fAt(m / n), { r: 1.5 + 6 * Math.sqrt(p / wmax), color: 'orange', alpha: 0.8 }); });
+          w.forEach((p, m) => { L.rect(m / n - bw, -0.75, m / n + bw, -0.75 + (0.25 * p) / wmax, { fill: 'orange', fillAlpha: 0.7, stroke: false }); if (n <= 60) L.dot(m / n, fAt(m / n), { r: 1.5 + 6 * Math.sqrt(p / wmax), color: 'orange', alpha: 0.8 }); });
           const fn = bern(n, x);
           L.vline(x, { color: 'gold', dash: [4, 4], width: 1.2 });
           L.dot(x, fn, { r: 5.5, color: 'accent' }); L.dot(x, fAt(x), { r: 4, color: 'ink', hollow: true });
@@ -367,10 +367,10 @@ No independence is assumed. A typical use is a row sum $S_n=X_{n,1}+\dots+X_{n,n
       deps: ['prob-2.2.2'],
       tags: ['law of large numbers'],
       viz(v) {
-        const aS = v.slider('normalizer $b_n=n^\\alpha$, $\\alpha=$', 0.25, 1, 0.75, { step: 0.01 });
+        const aS = v.slider('normalizer $b_n=n^\\alpha$, $\\alpha=$', 0.25, 1, 0.65, { step: 0.01 });
         const cS = v.slider('balls per box $c$', 0.2, 3, 1, { step: 0.05 });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const L = v.stage({ x: [-3, 3], y: [0, 1], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$(N_n-\\mu_n)/b_n$', title: 'centred and scaled empty-box counts' });
+        const L = v.stage({ x: [-2, 2], y: [0, 1], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$(N_n-\\mu_n)/b_n$', title: 'centred and scaled empty-box counts' });
         const R = v.stage({ x: [10, 1e5], xlog: true, y: [0.01, 30], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: '$\\sigma_n/b_n$ (exact)' });
         const NS = [30, 300, 3000], COL = ['purple', 'orange', 'accent'];
         const mom = (n, r) => { const q1 = (1 - 1 / n) ** r, q2 = (1 - 2 / n) ** r; return { mu: n * q1, var: n * (n - 1) * q2 + n * q1 - n * n * q1 * q1 }; };
@@ -381,7 +381,7 @@ No independence is assumed. A typical use is a row sum $S_n=X_{n,1}+\dots+X_{n,n
             const r = v.rng(seed * 13 + 3);
             cache = { key, N: NS.map((n) => { const rr = Math.round(c * n), box = new Uint8Array(n), out = []; for (let k = 0; k < 400; k++) { box.fill(0); for (let b = 0; b < rr; b++) box[Math.floor(r() * n)] = 1; let e = 0; for (let i = 0; i < n; i++) if (!box[i]) e++; out.push(e); } return out; }) };
           }
-          let ym = 0; const Hs = NS.map((n, i) => { const { mu } = mom(n, Math.round(c * n)); const h = densityOn(cache.N[i].map((x) => (x - mu) / n ** a), linEdges(-3, 3, 60)); ym = Math.max(ym, ...h.density); return h; });
+          let ym = 0; const Hs = NS.map((n, i) => { const { mu } = mom(n, Math.round(c * n)); const h = densityOn(cache.N[i].map((x) => (x - mu) / n ** a), linEdges(-2, 2, 100)); ym = Math.max(ym, ...h.density); return h; });
           L.setView(null, [0, Math.min(ym * 1.12, 40)]);
           Hs.forEach((h, i) => L.hist(h, { density: true, color: COL[i], fillAlpha: 0.15, width: 1.8 }));
           L.vline(0, { color: 'green', width: 1.6, dash: [5, 4] });
@@ -429,7 +429,7 @@ For $n=365$ birthdays this predicts about $365\log365\approx2153$ draws.`,
           const T = run.T, mNow = Math.min(T, Math.round(T * Math.min(1, (t % 10) / 8)));
           // coupons grid
           const cols = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / cols), cw = 1 / Math.max(cols, rows), gap = cw * 0.12;
-          for (let i = 0; i < n; i++) { const cx = (i % cols) * cw, cy = 1 - (Math.floor(i / cols) + 1) * cw; const g = run.got[i] > 0 && run.got[i] <= mNow; A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { fill: g ? v.ramp(0.35 + 0.65 * (run.got[i] / T), 'gold') : 'faint', fillAlpha: g ? 1 : 0.35, stroke: false }); }
+          for (let i = 0; i < n; i++) { const cx = (i % cols) * cw, cy = 1 - (Math.floor(i / cols) + 1) * cw; const g = run.got[i] > 0 && run.got[i] <= mNow; if (g) A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { fill: v.ramp(0.45 + 0.55 * (run.got[i] / T), run.got[i] > 0.5 * T ? 'red' : 'gold'), fillAlpha: 1, stroke: false }); else A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { color: 'faint', width: 1.2, fill: false }); }
           // progress
           B.setView([0, T * 1.05], [0, n * 1.05]);
           B.fn((m) => n * (1 - (1 - 1 / n) ** m), { color: 'green', width: 2, dash: [6, 4] });
@@ -444,7 +444,7 @@ For $n=365$ birthdays this predicts about $365\log365\approx2153$ draws.`,
           C.vline(1, { color: 'green', width: 2, dash: [6, 4] }); C.vline(Hn / Math.log(n), { color: 'orange', width: 2 });
           const mean = hist.reduce((a, b) => a + b, 0) / hist.length, sd = Math.sqrt(hist.reduce((a, b) => a + (b - mean) ** 2, 0) / hist.length);
           st = { n, T, mNow, k: cv[cv.length - 1][1], mean, sd, ET: n * Hn, nl: n * Math.log(n) };
-          v.legend([['gold', 'collected (later = darker)'], ['green', 'expected count; limit 1', { dash: true }], ['orange', '$ET_n/(n\\log n)$'], ['red', '$T_n$', { dot: true }]]);
+          v.legend([['gold', 'collected (red: in the second half of the run)', { area: true }], ['green', 'expected count; limit 1', { dash: true }], ['orange', '$ET_n/(n\\log n)$'], ['red', '$T_n$', { dot: true }]]);
         }, { period: 10, still: 9 });
         v.readout(() => st && `This run: ${st.k} of ${st.n} types after $${st.mNow}$ draws; complete at $T_n=${st.T}$ ($n\\log n=${fr(st.nl, 0)}$, $ET_n=${fr(st.ET, 0)}$). Over 600 runs: $T_n/(n\\log n)$ has mean $${fr(st.mean, 3)}$ and standard deviation $${fr(st.sd, 3)}$, which shrinks like $1/\\log n$.`);
       },
@@ -518,7 +518,7 @@ Then with $S_n=X_{n,1}+\dots+X_{n,n}$ and $a_n=\sum_{k=1}^nE\bar X_{n,k}$, we ha
         const A = v.stage({ x: [0, 2000], y: [-1.6, 1.6], height: 300, axes: 'box', gutter: true, xlabel: '$k$', title: 'one row, $X_{n,k}/b_n$', minWidth: 220 });
         const B = v.stage({ x: [0.3, 4], y: [0.2, 2], height: 300, axes: 'box', gutter: true, xlabel: 'tail index $\\alpha$', ylabel: '$\\beta$', title: 'where (i) and (ii) hold', minWidth: 220 });
         const C = v.stage({ x: [10, 1e6], xlog: true, y: [1e-3, 1e3], ylog: true, height: 300, axes: 'box', gutter: true, xlabel: '$n$', title: 'conditions (i), (ii)', minWidth: 220 });
-        const H = B.handle(1.6, 0.85, { color: 'gold', constrain: (x, y) => [clampN(x, 0.35, 3.95), clampN(y, 0.25, 1.95)] });
+        const H = B.handle(1.35, 0.82, { color: 'gold', constrain: (x, y) => [clampN(x, 0.35, 3.95), clampN(y, 0.25, 1.95)] });
         const c1 = (n, a, b) => Math.min(1e9, n * Math.min(1, n ** (-a * b)));
         const c2 = (n, a, b) => { const bn = n ** b, m2 = Math.abs(a - 2) < 1e-6 ? 2 * Math.log(bn) : (a / (2 - a)) * (bn ** (2 - a) - 1); return (n * m2) / (bn * bn); };
         let st = null;
@@ -578,7 +578,7 @@ and put $S_n=X_1+\dots+X_n$ and $\mu_n=E\bigl(X_11\{|X_1|\le n\}\bigr)$. Then $S
             const r = v.rng(seed * 101 + law.value.length);
             cache[key] = NS.map((n) => { const out = []; for (let j = 0; j < 200; j++) { let s = 0; for (let i = 0; i < n; i++) s += D.s(r); out.push(s / n - D.mu(n)); } return out; });
           }
-          let ym = 0; const Hs = cache[key].map((xs) => { const h = densityOn(xs, linEdges(-4, 4, 64)); ym = Math.max(ym, ...h.density); return h; });
+          let ym = 0; const Hs = cache[key].map((xs) => { const h = densityOn(xs, linEdges(-4, 4, 40)); ym = Math.max(ym, ...h.density); return h; });
           R.setView(null, [0, ym * 1.15]);
           Hs.forEach((h, i) => R.hist(h, { density: true, color: COL[i], fillAlpha: 0.12, width: 1.8 }));
           R.vline(0, { color: 'green', dash: [5, 4], width: 1.6 });
@@ -690,7 +690,7 @@ both sides being finite or infinite together.`,
 $$\frac{S_n}{n\log_2n}\to1\quad\text{in probability},$$
 so a fair entry fee for $n$ plays is about $\log_2n$ per play: $10$ per play for $n=1024$ games.`,
       idea: String.raw`Apply Theorem 2.2.11 with $b_n=2^{m(n)}$, where $m(n)=\log_2n+K(n)$ and $K(n)\to\infty$ slowly. Then $nP(X\ge b_n)=2^{1-K(n)}\to0$, which is (i). The truncated second moment is $E\bar X^2=\sum_{j\le m(n)}2^j\le2b_n$, so (ii) is at most $2n/b_n=2^{1-K(n)}\to0$. The truncated mean is $E\bar X=m(n)$, so $a_n=n\,m(n)$. If $K(n)\le\log_2\log_2n$, then $a_n\sim n\log_2n$ and $b_n\le n\log_2n$, which gives the result. The paradox is resolved by normalizing by $n\log n$, not $n$.`,
-      caption: String.raw`Left: 12 seeded players, each playing $2^{18}$ games, with their total winnings divided by $n\log_2n$ (log scale in $n$). Big jackpots make upward jumps that are slowly diluted. Switch the normalization to $n$: the average payout per game grows without bound, like $\log_2n$. Right: the histogram of $S_n/(n\log_2n)$ over 400 seeded repetitions for $n=2^6,2^{10},2^{14}$; the bulk moves toward $1$ and tightens slowly, with a long right tail.`,
+      caption: String.raw`Left: 8 seeded players, each playing $2^{18}$ games, with their total winnings divided by $n\log_2n$ (log scale in $n$). Big jackpots make upward jumps that are slowly diluted. Switch the normalization to $n$: the average payout per game grows without bound, like $\log_2n$. Right: the histogram of $S_n/(n\log_2n)$ over 400 seeded repetitions for $n=2^6,2^{10},2^{14}$; the bulk moves toward $1$ and tightens slowly, with a long right tail.`,
       deps: ['prob-2.2.11'],
       see: ['behav-1.1', 'phil-5.7'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/St._Petersburg_paradox' },
@@ -699,19 +699,19 @@ so a fair entry fee for $n$ plays is about $\log_2n$ per play: $10$ per play for
         const norm = v.select('divide $S_n$ by', [{ value: 'nl', label: '$n\\log_2 n$' }, { value: 'n', label: '$n$' }], 'nl');
         let seed = 1; v.button('Resample', () => { seed++; });
         const N = 2 ** 18;
-        const L = v.stage({ x: [2, N], xlog: true, y: [0, 3], height: 330, weight: 1.3, axes: 'box', gutter: true, xlabel: '$n$ (games)', title: 'running winnings, 12 players' });
+        const L = v.stage({ x: [2, N], xlog: true, y: [0, 4], height: 330, weight: 1.3, axes: 'box', gutter: true, xlabel: '$n$ (games)', title: 'running winnings, 8 players' });
         const R = v.stage({ x: [0, 3], y: [0, 3], height: 330, axes: 'box', gutter: true, xlabel: '$S_n/(n\\log_2 n)$', title: 'law of $S_n/(n\\log_2n)$' });
         const NS = [2 ** 6, 2 ** 10, 2 ** 14], COL = ['purple', 'orange', 'accent'];
         let cache = null, st = null;
         v.render(() => {
           if (!cache || cache.seed !== seed) {
             const r = v.rng(seed * 83 + 1), paths = [];
-            for (let p = 0; p < 12; p++) { let S = 0, next = 2; const raw = []; for (let n = 1; n <= N; n++) { S += sampleStPete(r); if (n >= next || n === N) { raw.push([n, S]); next = Math.ceil(next * 1.06); } } paths.push(raw); }
+            for (let p = 0; p < 8; p++) { let S = 0, next = 2; const raw = []; for (let n = 1; n <= N; n++) { S += sampleStPete(r); if (n >= next || n === N) { raw.push([n, S]); next = Math.ceil(next * 1.06); } } paths.push(raw); }
             const hs = NS.map((n) => Array.from({ length: 400 }, () => { let S = 0; for (let i = 0; i < n; i++) S += sampleStPete(r); return S / (n * Math.log2(n)); }));
             cache = { seed, paths, hs };
           }
           const nl = norm.value === 'nl';
-          L.setView(null, nl ? [0, 3] : [0, 40]);
+          L.setView(null, nl ? [0, 4] : [0, 40]);
           if (nl) { L.hband(0.75, 1.25, { color: 'green', alpha: 0.14 }); L.hline(1, { color: 'green', width: 1.8 }); }
           else L.fn((n) => Math.log2(n), { color: 'green', width: 2, dash: [6, 4] });
           cache.paths.forEach((P, i) => L.path(P.map(([n, S]) => [n, nl ? S / (n * Math.log2(n)) : S / n]), { color: i % 3 ? 'accent' : 'teal', width: 1.2, alpha: 0.8 }));
@@ -724,7 +724,7 @@ so a fair entry fee for $n$ plays is about $\log_2n$ per play: $10$ per play for
           st = { med, ends, nl };
           v.legend(nl ? [['accent', '$S_n/(n\\log_2n)$ per player'], ['green', 'limit $1$'], ...NS.map((n, i) => [COL[i], `$n=2^{${Math.log2(n)}}$`, { area: true }])] : [['accent', '$S_n/n$ per player'], ['green', '$\\log_2 n$', { dash: true }]]);
         });
-        v.readout(() => st && `Medians of $S_n/(n\\log_2n)$: $${st.med.map((x) => fr(x, 3)).join(',\\ ')}$ for $n=2^6,2^{10},2^{14}$; the 12 players end at $n=2^{18}$ between $${fr(Math.min(...st.ends), 2)}$ and $${fr(Math.max(...st.ends), 2)}$. Fair fee for $1024$ games: $\\log_2 1024=10$ per game.`);
+        v.readout(() => st && `Medians of $S_n/(n\\log_2n)$: $${st.med.map((x) => fr(x, 3)).join(',\\ ')}$ for $n=2^6,2^{10},2^{14}$; the 8 players end at $n=2^{18}$ between $${fr(Math.min(...st.ends), 2)}$ and $${fr(Math.max(...st.ends), 2)}$. Fair fee for $1024$ games: $\\log_2 1024=10$ per game.`);
       },
     },
   ],

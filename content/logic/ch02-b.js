@@ -611,6 +611,7 @@ The hypothesis that branching is finite cannot be dropped. A root with children 
           drawStrip(-4.1, (c, r) => (R.glued.length ? R.glued[c][r] : null), R.colourable ? 'compactness: always keep an extendable colouring' : `no ${k}-colouring of the 40-column piece exists`, null);
           // survivors plot
           const xs = Array.from({ length: 16 }, (_, c) => c + 1);
+          P.setView([1, 16], [1, Math.max(100, ...R.counts.slice(0, 16)) * 4]);
           P.path(xs.map((x) => [x, R.counts[x - 1] || null]), { color: 'muted', width: 2 }); P.dots(xs.filter((x) => R.counts[x - 1] > 0).map((x) => [x, R.counts[x - 1]]), { color: 'muted', r: 2.6 });
           P.path(xs.map((x) => [x, R.extCounts[x - 1] || null]), { color: 'green', width: 2.4 }); P.dots(xs.filter((x) => R.extCounts[x - 1] > 0).map((x) => [x, R.extCounts[x - 1]]), { color: 'green', r: 2.8 });
           P.vline(C, { color: 'gold', width: 1.4, dash: [4, 3] });
@@ -624,8 +625,8 @@ The hypothesis that branching is finite cannot be dropped. A root with children 
           const big = cnt > 1e6 ? v.sci(cnt, 3) : String(Math.round(cnt));
           if (!R.colourable) { const z = R.survivors.findIndex((y) => y === 0); return `The first ${z + 1} column${z ? 's' : ''} already have **no** proper ${k}-colouring, so neither does $G$: the hypothesis of the theorem fails.`; }
           const ec = R.extCounts[C - 1], dead = Math.round(cnt - ec);
-          const deadMax = Math.max(...R.counts.slice(0, 16).map((x, c) => x - R.extCounts[c]));
-          return `The ${C}-column piece has $${big}$ proper ${k}-colourings; ${dead ? `**${dead}** of them are dead ends that cannot be continued 40 columns` : 'all of them extend 40 columns'}${!dead && deadMax > 0 ? ` (smaller pieces have up to ${Math.round(deadMax)} dead ends)` : ''}. Greedy ${R.stuck ? `got stuck at column ${R.stuck[0]}` : 'survived this time'}. Of the ${R.survivors[0]} colourings of column 0, **${R.survivors[L - 1]}** extend all the way, and choosing only extendable colourings never gets stuck.`;
+          const deads = R.counts.slice(0, 16).map((x, c) => x - R.extCounts[c]), cMax = deads.indexOf(Math.max(...deads)), deadMax = deads[cMax];
+          return `The ${C}-column piece has $${big}$ proper ${k}-colourings; ${dead ? `**${dead}** of them are dead ends that cannot be continued 40 columns` : 'all of them extend 40 columns'}${!dead && deadMax > 0 ? ` (the ${cMax + 1}-column piece has ${Math.round(deadMax)} dead ends)` : ''}. Greedy ${R.stuck ? `got stuck at column ${R.stuck[0]}` : 'survived this time'}. Of the ${R.survivors[0]} colourings of column 0, **${R.survivors[L - 1]}** extend all the way, and choosing only extendable colourings never gets stuck.`;
         });
       },
     },

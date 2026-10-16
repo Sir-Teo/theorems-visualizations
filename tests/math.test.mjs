@@ -512,5 +512,14 @@ test('cholesky and genEig', () => {
   close((2 * a[0] - a[1]) - G.values[0] * a[0], 0, 1e-12);
 });
 
+test('complete elliptic integrals', () => {
+  ok(Math.abs(M.ellipK(0) - Math.PI / 2) < 1e-14 && Math.abs(M.ellipE(0) - Math.PI / 2) < 1e-14);
+  ok(Math.abs(M.ellipK(0.5) - 1.854074677301372) < 1e-13);
+  ok(Math.abs(M.ellipE(0.5) - 1.350643881047675) < 1e-13);
+  ok(Math.abs(M.ellipK(0.99) - 3.695637362989875) < 1e-12);
+  // Legendre's relation at m = 1/2: 2EK − K² = π/2
+  const K = M.ellipK(0.5), E = M.ellipE(0.5); ok(Math.abs(2 * E * K - K * K - Math.PI / 2) < 1e-13);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);
