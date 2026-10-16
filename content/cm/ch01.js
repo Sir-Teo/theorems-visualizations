@@ -55,7 +55,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
           const occ = [], emp = [];
           for (let i = 0; i < S.length; i++) {
             const p = S[i]; if (d === 3 && p[2] !== 0) continue;
-            if (Math.abs(p[0]) > half || Math.abs(p[1]) > half) continue;
+            if (Math.abs(p[0]) > half - 0.45 || Math.abs(p[1]) > half - 0.45) continue;
             (i < m ? occ : emp).push([p[0], d === 1 ? 0 : p[1]]);
           }
           sL.dots(emp, { r: Math.max(1.2, r * 0.55), color: 'faint' });
@@ -64,7 +64,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
           else sL.circle(0, 0, rThy, { color: 'green', width: 1.8, dash: [5, 4] });
           sL.tex(String.raw`k_F`, rThy * 0.72, d === 1 ? 0.35 * half : rThy * 0.72 + 0.6, { color: 'green', size: 14 });
           // density of states from the grid
-          const Emax = Math.min(2.4 * eF + 2, (RMAX[d] - 1) ** 2), nb = d === 1 ? 20 : 24, w = Emax / nb, cnt = new Array(nb).fill(0);
+          const Emax = Math.min(2.4 * eF + 2, (RMAX[d] - 1) ** 2), nb = 10, w = Emax / nb, cnt = new Array(nb).fill(0);
           for (const p of S) { if (p[3] >= Emax) break; cnt[Math.floor(p[3] / w)]++; }
           const bars = cnt.map((c) => (2 * c) / w), thy = (E) => d * VOL[d] * Math.pow(E, d / 2 - 1);
           let top = 0; for (let i = 1; i < nb; i++) top = Math.max(top, bars[i], thy((i + 0.5) * w));
@@ -75,7 +75,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
           sR.vline(eF, { color: 'green', width: 1.8, dash: [5, 4] }); sR.tex('E_F', eF, top * 1.06, { color: 'green', dx: 8, size: 14 });
           st = { d, N, rF, rThy, eF };
         });
-        v.legend([['accent', 'filled k points'], ['faint', 'empty'], ['green', 'Fermi radius from n', { dash: true }], ['ink', 'g ∝ E^{(d−2)/2}']]);
+        v.legend([['accent', 'filled k points'], ['faint', 'empty'], ['green', 'Fermi radius from n', { dash: true }], ['ink', '$g\\propto E^{(d-2)/2}$']]);
         v.readout(() => {
           if (!st) return '';
           const n = METALS[metal.value] * 1e28, kF = Math.cbrt(3 * Math.PI ** 2 * n), EF = (C.hbar * kF) ** 2 / (2 * C.me), vF = (C.hbar * kF) / C.me;
@@ -107,7 +107,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
         const rep = v.toggle('repeated-zone scheme', false, { onChange: () => { fold.el.hidden = rep.value; } });
         const chk = v.toggle('real-space ring check', true);
         const sA = v.stage({ x: [-3, 3], y: [0, 10], height: 340, axes: 'box', gutter: true, full: true, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', xticks: [-3, -2, -1, 0, 1, 2, 3] });
-        const sZ = v.stage({ x: [-3, 3], y: [0, 1], height: 96, axes: false, full: true });
+        const sZ = v.stage({ x: [-3, 3], y: [-0.32, 1], height: 112, axes: false, full: true });
         let cacheK = '', cache = null, ringK = '', ring = null;
         const compute = () => {
           const key = model.value + U.value + V0.value; if (key === cacheK) return cache;
@@ -159,7 +159,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
             sZ.rect(a, 0.38, b2, 0.9, { fill: c2, fillAlpha: 0.12, color: c2 }); sZ.text(Math.abs(a) === 1 || Math.abs(b2) === 1 ? '2nd zone' : '3rd zone', (a + b2) / 2, 0.64, { align: 'center', size: 11.5, color: c2 });
           }
           for (const g of [-2, 0, 2]) sZ.dot(g, 0.16, { r: 4, color: 'ink' });
-          sZ.text('G = 0', 0, 0.02, { align: 'center', size: 10.5, color: 'muted' }); sZ.text('G = 2 (2π/a)', 2, 0.02, { align: 'center', size: 10.5, color: 'muted' }); sZ.text('G = −2', -2, 0.02, { align: 'center', size: 10.5, color: 'muted' });
+          sZ.text('G = 0', 0, -0.12, { align: 'center', size: 10.5, color: 'muted' }); sZ.text('G = 2 (in π/a units)', 2, -0.12, { align: 'center', size: 10.5, color: 'muted' }); sZ.text('G = −2', -2, -0.12, { align: 'center', size: 10.5, color: 'muted' });
           if (!rep.value && f > 0.02) { sZ.arrow(1.5, 0.3, 1.5 - 2 * f, 0.3, { color: 'orange', width: 2 }); sZ.arrow(-1.5, 0.3, -1.5 + 2 * f, 0.3, { color: 'orange', width: 2 }); }
           // an example: band 2 at extended k = 1.5
           const i2 = 40, e2 = bands[1][i2]; // k_red = 0.5 → k_ext = 2 − 0.5 = 1.5

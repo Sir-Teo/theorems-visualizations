@@ -58,10 +58,18 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
           let rmax = 40;
           if (key === 'cd') rmax = Math.max(4, 2.2 * (s / n) ** (1 / (1 - a)));
           if (key === 'hd') rmax = Math.max(8, 3 * 3 * 1.6);
-          if (key === 'ces') { const D = n - s * a * a; rmax = D > 0 ? 1.637 * ((2 * s * a + Math.sqrt(4 * s * s * a * a + 4 * s * D)) / (2 * D)) ** 2 : 60; }
+          if (key === 'ces') { const D = n - s * a * a; rmax = D > 0 ? 1.6 * ((2 * s * a + Math.sqrt(4 * s * s * a * a + 4 * s * D)) / (2 * D)) ** 2 : 60; }
           if (key === 'multi') rmax = 50;
           rmax = Math.min(rmax, 2000);
-          for (let i = 1; i <= 2000; i++) { const r0 = (rmax * (i - 1)) / 2000, r1 = (rmax * i) / 2000; if (g(r0 + 1e-9) * g(r1) < 0 || (g(r1) === 0 && i < 2000)) xs.push(M.bisect(g, r0 + 1e-9, r1)); }
+          { // roots of g on a grid: sign changes between consecutive samples, treating an exact zero at a grid point as a root once
+            const NG = 2000, gv = []; for (let i = 0; i <= NG; i++) gv.push(g(Math.max((rmax * i) / NG, 1e-9)));
+            const sg = (x) => (x > 0 ? 1 : x < 0 ? -1 : 0);
+            for (let i = 1; i <= NG; i++) {
+              const a0 = sg(gv[i - 1]), b0 = sg(gv[i]);
+              if (a0 * b0 < 0) xs.push(M.bisect(g, (rmax * (i - 1)) / NG + 1e-9, (rmax * i) / NG));
+              else if (b0 === 0 && i < NG && a0 !== 0) xs.push((rmax * i) / NG);
+            }
+          }
           const ymax = Math.max(s * F(rmax, a), n * rmax) * 1.08;
           P.setView([0, rmax], [0, ymax]);
           P.fn((r) => s * F(r, a), { color: 'green', width: 2.6, domain: [0, rmax], n: 400 });

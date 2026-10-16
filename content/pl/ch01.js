@@ -260,6 +260,7 @@ export default {
       deps: ['toc-5.2'], refs: ['Pierce §3.2'], tags: ['syntax', 'parsing', 'trees'],
       credit: 'McCarthy, 1962 (abstract syntax)',
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const strip = pxStage(v, { height: 74, full: true, title: 'Concrete text' });
         const sP = pxStage(v, { height: 340, minWidth: 300, title: 'Parse tree (concrete syntax)' });
         const sA = pxStage(v, { height: 340, minWidth: 300, title: 'Abstract syntax tree' });
@@ -268,12 +269,10 @@ export default {
         const assoc = v.select('Operators associate', [{ value: 'left', label: 'to the left' }, { value: 'right', label: 'to the right' }], 'left', { onChange: () => { sel = null; } });
         const xs = v.slider('x', 0, 9, 3, { step: 1, int: true });
         const ys = v.slider('y', 0, 9, 2, { step: 1, int: true });
+        const stepper = v.slider('reading', 1, 12, 1, { step: 1, int: true, onChange: () => { ambK = stepper.value - 1; } });
         let R = null;
         const reparse = () => { sel = null; ambK = 0; R = infix(f.src, assoc.value); };
         const f = field(v, 'expression', '10 - 4 - (x + 1) * y', (s) => { const r = infix(s, 'left'); return r.ast ? { ast: true } : r; }, { width: 320, onChange: reparse });
-        v.select('Examples', [{ value: 'a', label: '10 − 4 − 3' }, { value: 'b', label: '1 + 2 * 3' }, { value: 'c', label: '((x))' }, { value: 'd', label: '(1 + 2) * (3 - y)' }], '', {
-          onChange: () => {},
-        });
         const ex = { a: '10 - 4 - 3', b: '1 + 2 * 3', c: '((x))', d: '(1 + 2) * (3 - y)' };
         const exSel = v.select('Try', [{ value: 'a', label: '10 − 4 − 3' }, { value: 'b', label: '1 + 2 * 3' }, { value: 'c', label: '((x))' }, { value: 'd', label: '(1+2)*(3−y)' }], 'a', { onChange: () => f.set(ex[exSel.value]) });
         reparse();
@@ -328,15 +327,14 @@ export default {
           const known = [...vars].every((q) => q in env);
           val = known ? ` · value at $x={${env.x}},\\ y={${env.y}}$: **${astEval(R.ast, env)}**` : ` · (variables other than x, y have no value here)`;
           if (!amb) {
-            v.readout(() => `${R.toks.length} tokens · parse tree **${nParse}** nodes · abstract tree **${nAst}** nodes · **${R.dropped}** pair${R.dropped === 1 ? '' : 's'} of parentheses and every $E,T,F$ node disappear${val}`);
+            ro = (`${R.toks.length} tokens · parse tree **${nParse}** nodes · abstract tree **${nAst}** nodes · **${R.dropped}** pair${R.dropped === 1 ? '' : 's'} of parentheses and every $E,T,F$ node disappear${val}`);
           } else {
             const same = astKey(pick) === astKey(R.ast);
             const vp = known ? astEval(pick, env) : null, vc = known ? astEval(R.ast, env) : null;
-            v.readout(() => `The ambiguous grammar gives **${all.length}${all.length >= 40 ? '+' : ''}** abstract trees for these ${R.toks.length} tokens; the ${assoc.value === 'left' ? 'left' : 'right'}-associative convention picks reading **${convIdx + 1}**. Shown: reading ${Math.min(ambK, all.length - 1) + 1} — ${same ? '**the convention’s pick**' : 'a different tree'}${known ? `, value ${vp}${vp === vc ? ' (same as the convention)' : ` versus ${vc} for the convention — the meaning depends on the tree`}` : ''}`);
+            ro = (`The ambiguous grammar gives **${all.length}${all.length >= 40 ? '+' : ''}** abstract trees for these ${R.toks.length} tokens; the ${assoc.value === 'left' ? 'left' : 'right'}-associative convention picks reading **${convIdx + 1}**. Shown: reading ${Math.min(ambK, all.length - 1) + 1} — ${same ? '**the convention’s pick**' : 'a different tree'}${known ? `, value ${vp}${vp === vc ? ' (same as the convention)' : ` versus ${vc} for the convention — the meaning depends on the tree`}` : ''}`);
           }
-          amb ? stepper.el.hidden = false : stepper.el.hidden = true;
+          stepper.el.hidden = !amb;
         });
-        const stepper = v.slider('reading', 1, 12, 1, { step: 1, int: true, onChange: () => { ambK = stepper.value - 1; } });
         v.legend([['accent', 'non-terminal', { dot: true }], ['orange', 'parenthesis (vanishes)', { dot: true }], ['green', 'AST operator', { dot: true }], ['gold', 'selected subtree', { dot: true }]]);
       },
     },
@@ -349,6 +347,7 @@ export default {
       deps: ['pl-1.1'], refs: ['Pierce §3.3', 'Pierce §2.4'], tags: ['induction', 'proof'],
       credit: 'Burstall, 1969 (named structural induction)',
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const sT = pxStage(v, { height: 330, minWidth: 320, title: 'The term and the induction' });
         const sR = pxStage(v, { height: 330, minWidth: 300, title: 'The case being proved' });
         const prop = v.select('Property', Object.entries(PROPS).map(([value, p]) => ({ value, label: p.name })), 'consts', { onChange: () => S.reset({ at: 'start' }) });
@@ -386,7 +385,6 @@ export default {
             noteColor: (nd) => (fr.ok.get(nodeOf(nd)) ? 'green' : 'red'),
           });
           // right: the induction principle's case rule, instantiated
-          sR.text('Induction principle', 12, 20, { size: 12.5, weight: 700, color: 'muted' });
           sR.textPx('Induction principle: one case per constructor', 12, 22, { size: 12.5, weight: 700, color: 'muted', halo: false });
           const op = fr.node ? fr.node.op : null;
           const lines = ['true', 'false', 'zero', 'succ', 'pred', 'iszero', 'if'];
@@ -405,7 +403,7 @@ export default {
             sR.textPx(fr.h ? `${fr.lhs} ${P.cmp} ${fr.rhs}   ✓` : `${fr.lhs} ${P.cmp} ${fr.rhs}   ✗`, 14, sR.H - 22, { size: 15, weight: 700, color: fr.h ? 'green' : 'red', halo: false });
           }
           const ce = counterexample(P, 7), total = [1, 2, 3, 4, 5, 6, 7].reduce((a, n) => a + countTerms(n), 0);
-          v.readout(() => `Exhaustive sanity check: ${ce ? `$P$ fails — smallest counterexample **${str(ce)}** (size ${size(ce)})` : `$P$ holds for all **${total.toLocaleString('en-US')}** terms of size ≤ 7`}. A finite check is evidence; the induction above is the proof.`);
+          ro = (`Exhaustive sanity check: ${ce ? `$P$ fails — smallest counterexample **${str(ce)}** (size ${size(ce)})` : `$P$ holds for all **${total.toLocaleString('en-US')}** terms of size ≤ 7`}. A finite check is evidence; the induction above is the proof.`);
         });
       },
     },
@@ -417,8 +415,9 @@ export default {
       caption: String.raw`Pick a judgment kind, type its terms, choose a rule in the palette and **click an open goal (orange, dashed)** to apply it: its premises appear above the line. A rule of the wrong shape is refused with the reason. “Solve” runs proof search; a false goal such as \`0 nv\` for a non-numeral has no derivation. For $nv$ the height of the tree is the stage at which the term enters the inductive set.`,
       deps: ['pl-1.1'], refs: ['Pierce §3.5'], tags: ['inference rules', 'derivations', 'induction'],
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const sD = pxStage(v, { height: 380, full: true, title: 'Derivation tree (root at the bottom; premises stack above the line)' });
-        const kindSel = v.select('Judgment', [{ value: 'nv', label: 't nv' }, { value: 'val', label: 't value' }, { value: 'step', label: 't → t′' }, { value: 'big', label: 't ⇓ v' }], 'step', { onChange: () => { rebuildRules(); resetGoal(); } });
+        const kindSel = v.select('Judgment', [{ value: 'nv', label: 't nv' }, { value: 'val', label: 't value' }, { value: 'step', label: 't → t′' }, { value: 'big', label: 't ⇓ v' }], 'step', { onChange: () => { rebuildRules(); f.set(DEF[kindSel.value]); } });
         const DEF = { nv: 'succ succ 0', val: 'succ 0', step: 'if iszero 0 then pred 2 else 0 -> if true then pred 2 else 0', big: 'pred (if true then 2 else 0)' };
         const parseGoal = (s) => {
           const k = kindSel.value;
@@ -446,7 +445,6 @@ export default {
           const g = f.ast; root = g && g.k === k ? newNode(g) : null; hist = []; msg = ''; info = null;
         }
         const startKind = () => { const k = kindSel.value; f.set(DEF[k]); };
-        kindSel.el.addEventListener?.('click', () => {});
         v.button('Example for this judgment', () => { startKind(); });
         v.button('Undo', () => { if (hist.length) { root = hist.pop(); msg = ''; } });
         v.button('Solve', () => { if (!root) return; hist.push(cloneD(root)); autoSolve(root); msg = ''; });
@@ -462,7 +460,7 @@ export default {
           n.rule = rule; n.open = false; n.kids = a.pre.map(newNode); msg = `✓ ${rule} applied; ${a.pre.length ? `${a.pre.length} premise${a.pre.length > 1 ? 's' : ''} to derive.` : 'an axiom — no premises.'}`; msgBad = false;
         });
         v.render(() => {
-          if (f.err) { drawParseError(v, sD, f.src, f.err); v.readout(() => 'Fix the goal to continue.'); return; }
+          if (f.err) { drawParseError(v, sD, f.src, f.err); ro = ('Fix the goal to continue.'); return; }
           if (!root || root.g.k !== kindSel.value || jStr(root.g) !== jStr(f.ast)) { if (f.ast.k === kindSel.value) resetGoal(); }
           if (!root) { sD.textPx('This text is not a judgment of the selected kind — press “Example for this judgment”.', sD.W / 2, sD.H / 2, { align: 'center', size: 14, color: 'muted' }); return; }
           const opens = openNodes(root);
@@ -471,7 +469,7 @@ export default {
           const g = root.g, ok = derivable(g);
           const done = !opens.length;
           const stage = g.k === 'nv' && ok ? ` · $t$ enters the inductive set at **stage ${numOf(g.t) + 1}** ($\\mathrm{NV}_{${numOf(g.t) + 1}}$), equal to the height of its derivation` : '';
-          v.readout(() => (done ? `Derivation complete: **${dCount(root)}** rule applications, height **${dHeight(root)}** — so the judgment is **true**${stage}.` : `${opens.length} open goal${opens.length > 1 ? 's' : ''}.${ok ? '' : ' **This judgment has no derivation at all** (it is false): every rule you try will fail somewhere.'} Selected rule: **${pickers[kindSel.value].value}**.`));
+          ro = ((done ? `Derivation complete: **${dCount(root)}** rule applications, height **${dHeight(root)}** — so the judgment is **true**${stage}.` : `${opens.length} open goal${opens.length > 1 ? 's' : ''}.${ok ? '' : ' **This judgment has no derivation at all** (it is false): every rule you try will fail somewhere.'} Selected rule: **${pickers[kindSel.value].value}**.`));
         });
       },
     },
@@ -484,6 +482,7 @@ export default {
       deps: ['pl-1.3'], refs: ['Pierce §3.5'], tags: ['small-step', 'reduction'],
       credit: 'Plotkin, 1981 (structural operational semantics)',
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const sT = pxStage(v, { height: 340, minWidth: 320, title: 'Term and abstract tree' });
         const sD = pxStage(v, { height: 340, minWidth: 320, title: 'Derivation of this step' });
         const sTr = pxStage(v, { height: 100, full: true, title: 'Evaluation so far' });
@@ -523,7 +522,7 @@ export default {
             x += pw + 14;
           }
           if (from > 0) sTr.textPx(`… ${from} earlier step${from > 1 ? 's' : ''}`, 14, 84, { size: 11, color: 'muted', halo: false });
-          v.readout(() => (fr.step ? `Step ${fr.i + 1}: **${fr.step.axiom}** fires${fr.step.rule !== fr.step.axiom ? ` under the congruence rule${fr.step.deriv.kids.length ? 's' : ''} ${(() => { const cs = []; let d = fr.step.deriv; while (d.kids.length) { cs.push(d.rule); d = d.kids[0]; } return cs.join(', '); })()}` : ''}. Result: **${str(fr.step.to)}**` : `After ${fr.i} step${fr.i === 1 ? '' : 's'}: **${str(fr.t)}** — ${fr.status === 'value' ? 'a value' : fr.status === 'stuck' ? 'a stuck normal form' : 'still running'}.`));
+          ro = ((fr.step ? `Step ${fr.i + 1}: **${fr.step.axiom}** fires${fr.step.rule !== fr.step.axiom ? ` under the congruence rule${fr.step.deriv.kids.length ? 's' : ''} ${(() => { const cs = []; let d = fr.step.deriv; while (d.kids.length) { cs.push(d.rule); d = d.kids[0]; } return cs.join(', '); })()}` : ''}. Result: **${str(fr.step.to)}**` : `After ${fr.i} step${fr.i === 1 ? '' : 's'}: **${str(fr.t)}** — ${fr.status === 'value' ? 'a value' : fr.status === 'stuck' ? 'a stuck normal form' : 'still running'}.`));
         });
         v.legend([['green', 'if-rules'], ['orange', 'pred'], ['purple', 'iszero'], ['accent', 'congruence'], ['gold', 'redex subtree', { dot: true }]]);
       },
@@ -536,6 +535,7 @@ export default {
       caption: String.raw`Type a term: every subterm where some rule can fire gets a ring, one colour per successor, and the successors are listed. Then add one of our two **extra rules** (illustrative, in the spirit of Pierce's exercises) and watch two different successors appear. The matrix shows, over all terms up to size 6, which pairs of rules ever compete — empty off the diagonal exactly when evaluation is deterministic.`,
       deps: ['pl-1.4', 'pl-1.2'], refs: ['Pierce §3.5'], tags: ['determinacy', 'small-step'],
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const sT = pxStage(v, { height: 330, minWidth: 320, title: 'Where can a rule fire?' });
         const sM = pxStage(v, { height: 330, minWidth: 320, title: 'Rule pairs that compete (all terms of size ≤ 6)' });
         const extra = v.select('Extra rules', [{ value: 'none', label: 'none (Pierce)' }, { value: 'f1', label: '+ E-Funny1' }, { value: 'f2', label: '+ E-Funny2' }, { value: 'both', label: 'both' }], 'none', {});
@@ -553,7 +553,7 @@ export default {
             drawTreePx(v, sT, L, { region: [0, 8, sT.W, sT.H - 6], ring: (nd) => { const b = bySucc(nd); return b.length ? PAL[b[0][1] % PAL.length] : null; }, fill: (nd) => { const b = bySucc(nd); return b.length ? PAL[b[0][1] % PAL.length] : null; },
               note: (nd) => bySucc(nd).map(([, i]) => `#${i + 1}`).join(' ') });
             const distinct = new Set(all.map((s) => str(s.to))).size;
-            v.readout(() => `${all.length === 0 ? `**No rule applies**: ${isVal(t) ? 'a value' : 'a stuck term'}.` : `**${all.length}** rule derivation${all.length > 1 ? 's' : ''} apply — ${distinct === 1 ? 'one successor' : `**${distinct} different successors**: determinacy fails`}:`}\n${all.map((s, i) => `${i + 1}. ${s.axiom}${s.rule !== s.axiom ? ' (under ' + s.rule + ')' : ''} → ${str(s.to)}`).join('\n')}`);
+            ro = (`${all.length === 0 ? `**No rule applies**: ${isVal(t) ? 'a value' : 'a stuck term'}.` : `**${all.length}** rule derivation${all.length > 1 ? 's' : ''} apply — ${distinct === 1 ? 'one successor' : `**${distinct} different successors**: determinacy fails`}:`}\n${all.map((s, i) => `${i + 1}. ${s.axiom}${s.rule !== s.axiom ? ' (under ' + s.rule + ')' : ''} → ${str(s.to)}`).join('\n')}`);
           }
           // conflict matrix
           const c = conflicts(R, 6);
@@ -584,6 +584,7 @@ export default {
       caption: String.raw`Edit a term: the badge says value / can step / stuck, and for a stuck term the offending operator is ringed red. The bar chart sorts *all* terms of each size into the three classes (exhaustive enumeration — pick the largest size to see about 10⁵ terms); click an example to load it. Note that values are rare and that most normal forms among larger terms are stuck.`,
       deps: ['pl-1.4'], refs: ['Pierce §3.5'], tags: ['values', 'normal forms', 'stuck'],
       viz(v) {
+        let ro = ""; v.readout(() => ro);
         const sT = pxStage(v, { height: 320, minWidth: 320, title: 'Classify a term' });
         const sB = v.stage({ x: [0.4, 8.6], y: [0, 1], height: 320, minWidth: 320, axes: 'box', gutter: true, xlabel: 'term size (nodes)', ylabel: 'share of all terms', title: 'All terms of each size', xticks: [1, 2, 3, 4, 5, 6, 7, 8] });
         const f = field(v, 'term', PRESETS_NB.stuck, parseNB, { width: 340 });
@@ -601,7 +602,7 @@ export default {
             sT.textPx(`${str(t).length > 46 ? str(t).slice(0, 44) + '…' : str(t)}`, 12, 20, { size: 14, weight: 600, halo: false });
             sT.textPx(word.toUpperCase(), sT.W - 12, 20, { size: 14, weight: 800, color: col, align: 'right', halo: false });
             sT.textPx(`value? ${isVal(t) ? 'yes' : 'no'}    can step? ${step1(t) ? 'yes' : 'no'}`, 12, 38, { size: 12, color: 'muted', halo: false });
-            v.readout(() => `**${str(t)}** is ${c === 'value' ? 'a **value** (and so a normal form).' : c === 'steps' ? `not a value and **can step** (to ${str(step1(t))}); it is not a normal form.` : `a **stuck term**: a normal form that is not a value${bl ? ` — culprit: **${str(bl)}**, where ${bl.op === 'if' ? 'the condition is not a boolean' : `${bl.op} is applied to a non-number`}` : ''}.`}`);
+            ro = (`**${str(t)}** is ${c === 'value' ? 'a **value** (and so a normal form).' : c === 'steps' ? `not a value and **can step** (to ${str(step1(t))}); it is not a normal form.` : `a **stuck term**: a normal form that is not a value${bl ? ` — culprit: **${str(bl)}**, where ${bl.op === 'if' ? 'the condition is not a boolean' : `${bl.op} is applied to a non-number`}` : ''}.`}`);
           }
           const rows = classCounts(N.value);
           exBoxes = [];

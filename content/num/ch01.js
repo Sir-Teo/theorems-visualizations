@@ -174,28 +174,28 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           E.forEach((e, k) => {
             const col = e.rel >= 1 ? 'red' : e.rel > 1e-3 ? 'gold' : 'green';
             s1.dot(e.s, e.rel, { r: 6, color: col });
-            s1.text(e.n, e.s, e.rel, { size: 10.5, align: k > 5 ? 'right' : 'left', dx: k > 5 ? -9 : 9, dy: -10, color: 'ink' });
+            s1.text(e.n, e.s, e.rel, { size: 10.5, align: 'center', dy: k % 2 ? 15 : -13, color: 'ink' });
           });
           const { w, h, Y } = px(s2), left = 112, top = 34, rh = (h - top - 26) / E.length, bw = w - left - 62;
-          for (let d = 0; d <= 16; d += 4) {
-            const x = left + (d / 16) * bw;
+          for (let d = 0; d <= 20; d += 5) {
+            const x = left + (d / 20) * bw;
             s2.line(x, Y(top - 6), x, Y(h - 24), { color: 'grid', width: 1 });
             s2.text(String(d), x, Y(h - 10), { align: 'center', size: 10.5, color: 'muted' });
           }
           E.forEach((e, k) => {
-            const d = clamp(-Math.log10(e.rel), 0, 16), y = top + k * rh;
+            const d = clamp(-Math.log10(e.rel), 0, 20), y = top + k * rh;
             s2.text(e.n, left - 8, Y(y + rh / 2), { align: 'right', baseline: 'middle', size: 11.5, color: 'ink' });
-            if (d > 0.02) s2.rect(left, Y(y + rh - 5), left + (d / 16) * bw, Y(y + 5), { fill: d < 1 ? 'red' : d < 3 ? 'gold' : 'green', fillAlpha: 0.55, color: d < 1 ? 'red' : d < 3 ? 'gold' : 'green', radius: 3 });
-            s2.text(d < 0.05 ? '0 digits' : `${d.toFixed(1)}`, left + (d / 16) * bw + 6, Y(y + rh / 2), { baseline: 'middle', size: 11, color: 'muted' });
+            if (d > 0.02) s2.rect(left, Y(y + rh - 5), left + (d / 20) * bw, Y(y + 5), { fill: d < 1 ? 'red' : d < 3 ? 'gold' : 'green', fillAlpha: 0.55, color: d < 1 ? 'red' : d < 3 ? 'gold' : 'green', radius: 3 });
+            s2.text(d < 0.05 ? '0 digits' : `${d.toFixed(1)}`, left + (d / 20) * bw + 6, Y(y + rh / 2), { baseline: 'middle', size: 11, color: 'muted' });
           });
         });
         v.legend([['red', 'no digit correct'], ['gold', 'a few digits'], ['green', 'many digits'], ['muted', 'the error level', { dash: true }]]);
         v.readout(() => {
-          const E = errs(), mx = E.reduce((a, b) => (b.rel > a.rel ? b : a)), mn = E.reduce((a, b) => (b.rel < a.rel ? b : a));
+          const E = errs(), mx = E.reduce((a, b) => (b.rel > a.rel ? b : a)), mn = E.reduce((a, b) => (b.rel < a.rel ? b : a)), pos = E.filter((e) => e.abs > 0), mxa = Math.max(...E.map((e) => e.abs));
           if (mode.value === 'abs') return `Every object is off by $\\varepsilon=${tsci(sa.value, 3)}$ m. Relative error: **${sci(mx.rel, 2)}** for the ${mx.n} (hopeless) down to **${sci(mn.rel, 2)}** for the ${mn.n} (about ${Math.floor(-Math.log10(mn.rel))} digits).`;
           if (mode.value === 'rel') return `Every object is off by ${sci(sr.value, 2)} of its size, i.e. about ${Math.max(0, Math.floor(-Math.log10(sr.value)))} correct digits each; absolute errors range from ${sci(E[0].abs, 2)} m (atom) to ${sci(E[7].abs, 2)} m (galaxy).`;
           const F = FORMATS[mode.value];
-          return `Storing each size in ${F.name}: relative errors between ${sci(mn.rel, 2)} and ${sci(mx.rel, 2)}, all $\\le u=${tsci(F.u, 3)}$, while the absolute errors span ${sci(E[0].abs, 2)} m to ${sci(E[7].abs, 2)} m. Floating point controls relative error.`;
+          return `Storing each size in ${F.name}: the relative error is at most **${sci(mx.rel, 2)}** (the largest, for the ${mx.n}), never above $u=${tsci(F.u, 3)}$, while the absolute errors range from ${sci(Math.min(...pos.map((e) => e.abs)), 2)} m up to ${sci(mxa, 2)} m. Floating point controls relative error${E.some((e) => e.abs === 0) ? ' (a size that happens to be a dyadic rational, like the Milky Way figure here, is stored exactly)' : ''}.`;
         });
       },
     },
@@ -251,10 +251,10 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
             sL.text(fl.toPrecision(17), 0, 0.27, { align: same ? 'center' : 'left', dx: same ? 0 : 4, size: 10.5, color: 'accent', halo: false });
             const pe = pos(exact);
             sL.dot(clamp(pe, -3.8, 3.8), 0.5, { r: 6, color: 'gold' });
-            sL.text('exact a+b', clamp(pe, -3, 3), 0.63, { align: 'center', size: 11, color: 'gold', weight: 700 });
+            sL.text('exact a+b', clamp(pe, -3, 3), 0.62, { align: 'center', size: 11, color: 'gold', weight: 700 });
             if (cR) {
               const pc = pos(cR);
-              if (Math.abs(pc) < 3.8) { sL.dot(pc, 0.5, { r: 5, color: 'red', hollow: true }); sL.text('decimal c', clamp(pc, -3, 3), 0.78, { align: 'center', size: 11, color: 'red', weight: 700 }); }
+              if (Math.abs(pc) < 3.8) { sL.dot(pc, 0.5, { r: 5, color: 'red', hollow: true }); sL.text('decimal c', clamp(pc, -3, 3), 0.72, { align: 'center', size: 11, color: 'red', weight: 700 }); }
               if (Number.isFinite(cf) && Math.abs(cf - fl) / g < 3.5 && cf !== fl) {
                 const pf = (cf - fl) / g; sL.text('fl(c)', pf, 0.36, { align: pf < 0 ? 'right' : 'left', dx: pf < 0 ? -4 : 4, size: 11, color: 'red', weight: 700 }); sL.text(cf.toPrecision(17), pf, 0.27, { align: pf < 0 ? 'right' : 'left', dx: pf < 0 ? -4 : 4, size: 10.5, color: 'red', halo: false });
               }
@@ -317,7 +317,7 @@ Leading digits cancel and the result keeps only the noisy trailing digits. For $
         const lx = v.slider('$x$', 1e-10, 0.5, 1e-5, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
         const sV = v.stage({ x: [1e-10, 0.5], y: [-0.1, 2.3], xlog: true, axes: 'box', gutter: true, height: 290, minWidth: 300, xlabel: 'x', ylabel: 'computed value', title: 'what the computer returns' });
         const sE = v.stage({ x: [1e-10, 0.5], y: [1e-18, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, minWidth: 300, xlabel: 'x', ylabel: 'relative error', title: 'relative error against a series' });
-        const sB = v.stage({ axes: false, height: 200, full: true, title: 'the bits being subtracted' });
+        const sB = v.stage({ axes: false, height: 180, full: true, title: 'the bits being subtracted' });
         const cache = new Map();
         const curves = () => {
           const key = fn.value + prec.value; if (cache.has(key)) return cache.get(key);
@@ -492,7 +492,7 @@ For $n$ terms its error satisfies $|\hat s-s|\le\big(2u+O(nu^2)\big)\sum|x_i|$, 
         let data = null;
         const build = () => {
           const xs = new Float64Array(N); let m = 0n;
-          if (kind.value === 'tenth') { xs.fill(0.1); m = decomp(0.1).m; } else { const r = v.rng(5); for (let i = 0; i < N; i++) xs[i] = Math.floor(r() * 2 ** 53) / 2 ** 53; }
+          if (kind.value === 'tenth') { xs.fill(0.1); m = decomp(0.1).m; } else { const r = v.rng(5); for (let i = 0; i < N; i++) xs[i] = (Math.floor(r() * 2 ** 26) * 2 ** 27 + Math.floor(r() * 2 ** 27)) / 2 ** 53; }
           const pref = kind.value === 'rand' ? (() => { const hi = new Float64Array(N + 1), lo = new Float64Array(N + 1); let H = 0, L = 0; for (let i = 0; i < N; i++) { const k = xs[i] * 2 ** 53, kh = Math.floor(k / 2 ** 26); H += kh; L += k - kh * 2 ** 26; hi[i + 1] = H; lo[i + 1] = L; } return { hi, lo }; })() : null;
           const exactAt = (n) => (kind.value === 'tenth' ? { n: BigInt(n) * m, e: -56 } : { n: (BigInt(pref.hi[n]) << 26n) + BigInt(pref.lo[n]), e: -53 });
           // sampled curves
