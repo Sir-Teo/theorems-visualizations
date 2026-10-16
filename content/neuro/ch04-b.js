@@ -45,13 +45,13 @@ at every branch point, and all terminal branches end in the same way (all sealed
         const ld = v.slider('daughters $\\ell_d$', 0.1, 1.2, 0.5, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} λ` });
         v.button('rule: set $d_2$', () => { const t = Math.pow(d0.value, 1.5) - Math.pow(d1.value, 1.5); if (t > 0) d2.set(clamp(Math.pow(t, 2 / 3), 0.4, 5)); });
         v.button('equal daughters', () => { const q = d0.value * rule; d1.set(q); d2.set(q); });
-        const sT = v.stage({ x: [-80, 1250], y: [-560, 560], equal: true, axes: false, height: 300, weight: 1.15, title: 'tree drawn to scale, coloured by steady voltage' });
+        const sT = v.stage({ x: [-80, 900], y: [-300, 300], equal: true, axes: false, height: 300, weight: 1.15, title: 'tree drawn to scale, coloured by steady voltage' });
         const sV = v.stage({ x: [0, 1.5], y: [0, 1], axes: 'box', gutter: true, xlabel: 'electrical distance from the base  $\\sum x/\\lambda$', ylabel: 'voltage (mV for 0.1 nA)', height: 300, weight: 1 });
         let st = null;
         const lam = (d) => lambdaUm(d, RM, RA);
         const solveTree = (dp, da, db, lP, lD) => {
           const L0 = lP * lam(dp), La = lD * lam(da), Lb = lD * lam(db);
-          const dx = Math.min(lam(dp), lam(da), lam(db)) / 22;
+          const dx = Math.min(lam(dp), lam(da), lam(db)) / 40;
           const tr = buildTree([{ parent: -1, len: L0, dia: dp }, { parent: 0, len: La, dia: da }, { parent: 0, len: Lb, dia: db }], { dxMax: dx, Ra: RA });
           const I = new Float64Array(tr.n); I[0] = 0.1;
           return { tr, V: treeSteady(tr, I, 1000 / RM), L0, La, Lb };
@@ -60,7 +60,7 @@ at every branch point, and all terminal branches end in the same way (all sealed
           const dp = d0.value, da = d1.value, db = d2.value, lP = lp.value, lD = ld.value;
           const T = solveTree(dp, da, db, lP, lD), tr = T.tr, V = T.V;
           // equivalent cylinder
-          const Lc = (lP + lD) * lam(dp), cyl = buildTree([{ parent: -1, len: Lc, dia: dp }], { dxMax: lam(dp) / 22, Ra: RA });
+          const Lc = (lP + lD) * lam(dp), cyl = buildTree([{ parent: -1, len: Lc, dia: dp }], { dxMax: Math.min(lam(dp), lam(da), lam(db)) / 40, Ra: RA });
           const Ic = new Float64Array(cyl.n); Ic[0] = 0.1;
           const Vc = treeSteady(cyl, Ic, 1000 / RM);
           // electrical coordinates along both paths
@@ -87,13 +87,15 @@ at every branch point, and all terminal branches end in the same way (all sealed
             for (let j = 0; j < m; j++) { const i = tr.first[k] + j, f0 = j / m, f1 = (j + 1) / m; sT.line(T.L0 + f0 * len * Math.cos(ang), f0 * len * Math.sin(ang), T.L0 + f1 * len * Math.cos(ang), f1 * len * Math.sin(ang), { color: col(V[i]), width: wpx(k === 1 ? da : db) }); }
           };
           br(1, a1, T.La); br(2, a2, T.Lb);
+          const xm = T.L0 + Math.max(T.La, T.Lb) * Math.cos(a1), ym = Math.max(T.La, T.Lb) * Math.sin(a1);
+          sT.setView([-0.08 * xm, xm * 1.05], [-ym * 1.1, ym * 1.1]);
           sT.dot(0, 0, { r: 5, color: 'red', label: 'I', labelPos: 'nw' });
           const rho = (Math.pow(da, 1.5) + Math.pow(db, 1.5)) / Math.pow(dp, 1.5);
           let dev = 0; for (const p of [...p1, ...p2]) { let j = 0, best = 1e9; for (let q = 0; q < pc.length; q++) { const e = Math.abs(pc[q][0] - p[0]); if (e < best) { best = e; j = q; } } dev = Math.max(dev, Math.abs(p[1] - pc[j][1])); }
           // closed form for the input conductance (µS)
           const Gp = gInf(dp, RM, RA), Gd = (d) => gInf(d, RM, RA) * Math.tanh(lD), GL = Gd(da) + Gd(db), t = Math.tanh(lP);
           const Gin = Gp * (GL + Gp * t) / (Gp + GL * t), Gcyl = Gp * Math.tanh(lP + lD);
-          st = { rho, Rt: V[0] / 0.1, Rc: Vc[0] / 0.1, dev: dev / Vc[0], Rth: 1e3 / Gin, Rcth: 1e3 / Gcyl };
+          st = { rho, Rt: V[0] / 0.1, Rc: Vc[0] / 0.1, dev: dev / Vc[0], Rth: 1 / Gin, Rcth: 1 / Gcyl };
         });
         v.legend([['accent', 'path through daughter 1'], ['orange', 'path through daughter 2'], ['ink', 'equivalent cylinder', { dash: true }]]);
         v.readout(() => {
@@ -114,7 +116,7 @@ at every branch point, and all terminal branches end in the same way (all sealed
 $$C_i\dot V_i=-g_i(V_i-E_i)-I^{\rm chan}_i(V_i,t)+\sum_{j\sim i}g_{ij}\,(V_j-V_i)+I^{\rm inj}_i(t).$$
 For a tree the coupling matrix is tree-structured, so an implicit time step costs only $O(n)$ operations (Hines elimination). As the compartments shrink the solution converges to that of the cable equation on the branched structure (neuro-4.1).`,
       idea: String.raw`The cable equation is a partial differential equation on a graph; discretising space gives the circuit of neuro-4.1 on each branch, and at branch points the compartment joins its parent and its daughters. Each cylinder is an equivalent-circuit piece, so Kirchhoff's current law at every node gives the ODE above; the resulting linear system has a sparse structure that follows the tree, which is why realistic reconstructions with thousands of compartments simulate quickly. Rall and Shepherd built the first such model (olfactory bulb) in the 1960s; modern simulators (NEURON, GENESIS, Arbor) are built on the same idea.`,
-      caption: String.raw`A synthetic branching neuron (soma plus four dendritic trees, daughter diameters obeying the 3/2 rule of neuro-4.5; it is generated by a rule, not reconstructed from a real cell). Click anywhere on a dendrite to place a brief current pulse (red dot); the colours show the spreading voltage, with a square-root scale so that attenuated signals remain visible. The current is scaled so that the peak at the injection site is 10 mV. Bottom right: the voltage at the injection site and at the soma. Left of it: the somatic peak as the compartments are made shorter; it converges.`,
+      caption: String.raw`A synthetic branching neuron (soma plus four dendritic trees, daughter diameters obeying the 3/2 rule of neuro-4.5; it is generated by a rule, not reconstructed from a real cell). Click anywhere on a dendrite to place a 3 ms current pulse (red ring); the colours show the spreading voltage, with a square-root scale so that attenuated signals remain visible. The current is scaled so that the peak at the injection site is 10 mV. Bottom left: the voltage at the injection site (red) and the soma (blue, multiplied so that its peak also reaches 10). Bottom right: the somatic peak as the compartments are made shorter; it converges.`,
       scope: String.raw`Passive membrane ($R_m=20\,\mathrm{k\Omega\,cm^2}$, $R_a=100\,\Omega$ cm, $C_m=1\,\mu$F/cm²) on a synthetic tree; the voltage-gated channels that real compartmental models add are used in items 4.7–4.10.`,
       deps: ['neuro-4.1'],
       see: ['neuro-4.5', 'neuro-4.9', 'neuro-4.10'],
@@ -127,7 +129,8 @@ For a tree the coupling matrix is tree-structured, so an implicit time step cost
         const segs = syntheticNeuron(7, { nPrim: 4, depth: 3, d0: 3.2 });
         const dxs = v.slider('compartment length', 5, 200, 25, { log: true, fmt: (x) => `${v.fmt(x, 2)} µm` });
         const amp = v.select('colour scale', [{ value: 'sqrt', label: 'square root' }, { value: 'lin', label: 'linear' }], 'sqrt');
-        const sM = v.stage({ x: [-520, 520], y: [-470, 470], equal: true, axes: false, height: 400, weight: 1.3, title: 'click a dendrite to inject current' });
+        const ext = segs.reduce((a, q) => [Math.min(a[0], q.x0, q.x1), Math.max(a[1], q.x0, q.x1), Math.min(a[2], q.y0, q.y1), Math.max(a[3], q.y0, q.y1)], [0, 0, 0, 0]);
+        const sM = v.stage({ x: [ext[0] - 30, ext[1] + 30], y: [ext[2] - 30, ext[3] + 30], equal: true, axes: false, height: 380, full: true, title: 'click a dendrite to inject current' });
         const sV = v.stage({ x: [0, 40], y: [0, 10.5], axes: 'box', gutter: true, xlabel: 'time (ms)', ylabel: 'V (mV)', height: 200, weight: 1, minWidth: 280 });
         const sC = v.stage({ x: [1, 3000], y: [0, 1], xlog: true, axes: 'box', gutter: true, xlabel: 'number of compartments', ylabel: 'soma peak (mV)', height: 200, weight: 0.9, minWidth: 260 });
         // geometry of the compartments (positions along each segment's straight line)
@@ -153,7 +156,7 @@ For a tree the coupling matrix is tree-structured, so an implicit time step cost
         const run = (dx, node) => {
           const key = dx.toFixed(2) + '|' + node; if (sims[key]) return sims[key];
           const { tr } = build(dx);
-          const r = treeSim(tr, { dt: 0.05, tEnd: 40, cm: 1, gL: 1000 / RM, EL: -65, V0: -65, stim: (t, I) => { if (t > 1 && t <= 2) I[node] = 0.01; }, rec: [node, 0], frames: 8 });
+          const r = treeSim(tr, { dt: 0.05, tEnd: 40, cm: 1, gL: 1000 / RM, EL: -65, V0: -65, stim: (t, I) => { if (t > 1 && t <= 4) I[node] = 0.01; }, rec: [node, 0], frames: 8 });
           const pk = Math.max(...r.V[0].map((x) => x + 65)), k = 10 / pk;
           const fr = r.frames.map((f) => Float32Array.from(f, (x) => (x + 65) * k));
           return (sims[key] = { r, k, fr, ft: r.ft, tr, soma: r.V[1].map((x) => (x + 65) * k), loc: r.V[0].map((x) => (x + 65) * k), t: r.t });
@@ -192,7 +195,9 @@ For a tree the coupling matrix is tree-structured, so an implicit time step cost
           sM.dot(siteXY[0], siteXY[1], { r: 6, color: 'red', hollow: true });
           sM.text('soma', 20, -22, { size: 11, color: 'muted', align: 'left' });
           sV.path(S.t.map((x, i) => [x, S.loc[i]]), { color: 'red', width: 2 });
-          sV.path(S.t.map((x, i) => [x, S.soma[i]]), { color: 'accent', width: 2.2 });
+          const ks = 10 / Math.max(1e-9, Math.max(...S.soma));
+          sV.path(S.t.map((x, i) => [x, S.soma[i] * ks]), { color: 'accent', width: 2.2 });
+          sV.corner(`soma trace multiplied by ${v.fmt(ks, 3)}`, 'tr', { color: 'accent' });
           sV.vline(S.ft[fi], { color: 'faint', width: 1.2 });
           const cv = convergence(b, siteXY);
           sC.path(cv, { color: 'muted', width: 1.4 }); sC.dots(cv, { r: 4, color: 'accent' });
@@ -200,7 +205,7 @@ For a tree the coupling matrix is tree-structured, so an implicit time step cost
           const top = Math.max(...cv.map((p) => p[1]));
           sC.setView([1, 3000], [0, Math.max(0.1, top * 1.25)]);
           st = { n: tr.n, pk: Math.max(...S.soma), cv, dist: Math.hypot(siteXY[0], siteXY[1]) };
-        }, { period: 8, still: 2 });
+        }, { period: 8, still: 0.9 });
         v.legend([['red', 'injection site'], ['accent', 'soma']]);
         v.readout(() => {
           if (!st) return '';
@@ -256,7 +261,7 @@ For a tree the coupling matrix is tree-structured, so an implicit time step cost
           sB.dots(S, { r: 5, color: 'accent' });
           sB.dot(d, M.speed, { r: 8, color: 'gold' });
           sB.vline(476, { color: 'muted', dash: [2, 4] });
-          sB.text('squid giant axon ≈ 0.5 mm', 500, 1.1, { size: 10.5, color: 'muted', align: 'left' });
+          sB.text('squid giant axon ≈ 0.5 mm', 440, 1.1, { size: 10.5, color: 'muted', align: 'right' });
           st = { speed: M.speed, d, slope, c, pred: c * Math.sqrt(d) };
         }, { period: 6, still: 3 });
         v.legend([['accent', 'simulated speed', { dot: true }], ['green', 'best $\\theta=c\\sqrt d$ fit'], ['faint', 'slope 1 (myelinated)', { dash: true }], ['gold', 'current $d$', { dot: true }]]);

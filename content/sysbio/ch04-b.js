@@ -95,7 +95,7 @@ export default {
               ukey = uk; ucurve = [];
               for (let i = 0; i <= 40; i++) { const s = (3 * i) / 40; const tr = run(1e-9, LAM.kap, 0, s, [3.5, 0.5, 0], 80, 800, 800); ucurve.push([s, tr[tr.length - 1][1], tr[tr.length - 1][2]]); }
             }
-            S1.setView([0, 100], [0, 9]); S1.setLabels('time after infection-free growth (UV from t = 20)', 'level');
+            S1.setView([0, 100], [0, 9]); S1.setLabels('time (UV applied from t = 20)', 'level');
             utr = run(1e-9, LAM.kap, 0, 0, [3.5, 0.5, 0], 20, 200, 4).map((r) => [r[0], r[1], r[2]]);
             const last = utr[utr.length - 1];
             const after = integrate(lamF(1e-9, LAM.kap, 0, UV.value), [last[1], last[2], 0], 80, 800, 4).map((r) => [r[0] + 20, r[1], r[2]]);
@@ -171,8 +171,8 @@ export default {
           S2.dot(marble[k][0] - marble[k][1], Math.min(7.8, prof[Math.min(27, Math.max(0, Math.floor(((marble[k][0] - marble[k][1] + 2.8) / 5.6) * 28)))][1]), { r: 7, color: 'gold' });
           cur = { n: at.length, x: marble[k][0], y: marble[k][1], fate: Math.abs(marble[k][0] - marble[k][1]) < 0.4 ? 'progenitor' : marble[k][0] > marble[k][1] ? 'fate x' : 'fate y' };
         }, { period: 10, still: 9.9 });
-        v.legend([['gold', 'noisy marble', { dot: true }], ['ink', 'fixed points of the circuit', { dot: true }]]);
-        v.readout(() => (cur ? `${cur.n} attractor${cur.n === 1 ? '' : 's'} of the noise-free circuit (hollow dots; saddles also appear in the list when the relaxation stalls) · marble at (${v.fix(cur.x, 2)}, ${v.fix(cur.y, 2)}) → **${cur.fate}**` : ''));
+        v.legend([['gold', 'noisy marble', { dot: true }], ['ink', 'attractors of the noise-free circuit', { dot: true }]]);
+        v.readout(() => (cur ? `${cur.n} attractor${cur.n === 1 ? '' : 's'} of the noise-free circuit (white dots) · marble at (${v.fix(cur.x, 2)}, ${v.fix(cur.y, 2)}) → **${cur.fate}**` : ''));
       },
     },
     // ───────────────────────────────────────────────────────────── 4.8
@@ -251,7 +251,7 @@ which for $K_d\to0$ becomes **threshold-linear**: $A_{\rm free}=\max(0,\,A_T-I_T
           const half1 = (() => { let lo = 1e-6, hi = 1e6; for (let i = 0; i < 70; i++) { const m = Math.sqrt(lo * hi); if (R[2](m) / mx[2] < 0.5) lo = m; else hi = m; } return Math.sqrt(lo * hi); })();
           S1.fn((s) => s / (half1 + s), { color: 'muted', dash: true, width: 1.8 });
           S2.bars(nh.map((x) => Math.min(x, 5.9)), { x0: 1, dx: 1, color: (val, i) => col[i] });
-          S2.hline(1, { color: 'muted', dash: true }); S2.hline(4.5, { color: 'red', dash: true, alpha: 0.7 }); S2.text('4–5: Huang & Ferrell', 3.55, 4.75, { size: 10, color: 'red', align: 'right' });
+          S2.hline(1, { color: 'muted', dash: true }); S2.hline(4.5, { color: 'red', dash: true, alpha: 0.7 }); S2.text('Huang & Ferrell: 4–5', 0.5, 4.75, { size: 10, color: 'red', align: 'left' });
           info = { nh, nm };
         });
         v.legend([['orange', 'level 1: MAPKKK'], ['accent', 'level 2: MAPKK'], ['green', 'level 3: MAPK'], ['muted', 'Hill n = 1', { dash: true }]]);
