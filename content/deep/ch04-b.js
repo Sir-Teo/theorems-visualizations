@@ -59,6 +59,8 @@ export default {
           sW.dot(0, 0, { r: 5, color: 'red', label: 'saddle', labelPos: 'ne' });
           const col = (r) => (r.fin < 1e-3 ? 'accent' : !isFinite(r.fin) || r.fin > 1e3 ? 'red' : 'gold');
           sW.clip(() => { for (const r of runs) { sW.path(r.tr, { color: col(r), width: 1.2, alpha: 0.8 }); sW.dot(r.tr[0][0], r.tr[0][1], { r: 2.6, color: 'ink' }); } });
+          const xmax = clamp(Math.max(...runs.map((r) => (r.hit != null && r.hit >= 0 ? r.hit : T))) * 1.15, 100, T);
+          sL.setView([0, xmax], [-8.5, 0.7]);
           for (const r of runs) sL.path(r.loss.map((l, t) => [t, lg(l, -9)]), { color: col(r), width: 1.2, alpha: 0.8 });
           const done = runs.filter((r) => r.fin < 1e-3).length, hits = runs.map((r) => r.hit).filter((h) => h != null && h >= 0).sort((a, b) => a - b);
           info = { done, M, median: hits.length ? hits[Math.floor(hits.length / 2)] : null, stuck: runs.filter((r) => r.fin >= 1e-3 && isFinite(r.fin) && r.fin < 1e3).length, bad: runs.filter((r) => !isFinite(r.fin) || r.fin > 1e3).length };
@@ -75,7 +77,7 @@ export default {
       name: 'Edge of stability',
       statement: String.raw`Train a neural network by **full-batch** gradient descent with a fixed step $\eta$ and track the **sharpness** $\lambda_{\max}(\nabla^2L(\theta_k))$. Cohen et al. (2021) observed on standard architectures and losses that (i) *progressive sharpening*: the sharpness keeps rising during training until it reaches $2/\eta$; (ii) at that value it stops and **hovers just at or above $2/\eta$**, the threshold of local stability (4.2), instead of the descent lemma's regime $\lambda_{\max}<2/\eta$; and (iii) the training loss still falls over long times, but non-monotonically, with short spikes. Classical analyses, which assume $\eta\lambda_{\max}<2$ throughout, do not describe this regime.`,
       idea: String.raw`Below the threshold gradient descent is a stable contraction in every Hessian direction and, in a neural network, descent tends to move toward regions where the curvature along the path grows. Once $\lambda_{\max}$ reaches $2/\eta$ the corresponding direction starts to oscillate with growing amplitude (4.2); the oscillation moves the iterate along the cubic and higher terms of the loss in a way that pushes the sharpness back down, a self-stabilizing feedback. The loss then decreases only on average. Why sharpening occurs at all, and the dynamics of the self-stabilization, are the subject of ongoing theory (e.g. Damian, Nichani and Lee 2023); here the effect is demonstrated, not proved.`,
-      caption: String.raw`A tanh network (1-24-24-1, 1 273 parameters) fits 12 points of a curve by full-batch gradient descent with squared error. The sharpness is the top eigenvalue of the true Hessian, found by power iteration with Hessian–vector products. Choose a step size: for $\eta=0.05$ the sharpness is still rising at the end; for $\eta=0.16$ and $0.22$ it climbs to the dashed line $2/\eta$ and stays there while the loss spikes. Drag the step slider to replay and see the fit.`,
+      caption: String.raw`A tanh network (1-24-24-1, 673 parameters) fits 12 points of a curve by full-batch gradient descent with squared error. The sharpness is the top eigenvalue of the true Hessian, found by power iteration with Hessian–vector products. Choose a step size: for $\eta=0.05$ the sharpness is still rising at the end; for $\eta=0.16$ and $0.22$ it climbs to the dashed line $2/\eta$ and stays there while the loss spikes. Drag the step slider to replay and see the fit.`,
       deps: ['deep-4.2', 'opt-7.4'],
       refs: ['Prince §20.3'],
       tags: ['sharpness', 'full-batch training', 'learning rate'],
@@ -136,16 +138,16 @@ export default {
       name: 'Sharp and flat minima',
       statement: String.raw`A minimum $\theta^\star$ of the training loss is **flat** if the loss stays low in a large neighbourhood and **sharp** if it rises steeply nearby. Standard measures are the largest Hessian eigenvalue $\lambda_{\max}(\nabla^2L(\theta^\star))$, the trace, or the loss increase $\max_{\|\delta\|\le r}L(\theta^\star+\delta)-L(\theta^\star)$. The hypothesis (Hochreiter–Schmidhuber 1997; Keskar et al. 2017) is that flat minima generalize better and that small-batch SGD finds flatter minima than large-batch training. Caveat (Dinh et al. 2017): sharpness is **not invariant under reparametrization**. If a rescaling of the weights leaves the function the network computes unchanged, then it leaves the training and test errors unchanged but can make $\lambda_{\max}$ arbitrarily large, so any claim linking sharpness to generalization must fix the parametrization.`,
       idea: String.raw`Why flatness could matter: a minimum that tolerates perturbations of the weights tolerates the mismatch between the training and test losses, and flat regions can be described with fewer bits of precision (a minimum-description-length argument). Why SGD might favour flat minima: gradient noise scales as $\eta/B$, and sharp minima are unstable against large noise, so the noise kicks the iterate out of them. And why the concept is subtle: for a ReLU or linear layer pair $(a,b)\mapsto(\alpha a,b/\alpha)$ the function is unchanged while the curvature in some directions scales with $\alpha^2$ (the chain rule applied to a product of weights, as in 4.8).`,
-      caption: String.raw`**Left:** the same small tanh classifier (2-24-24-2, 100 noisy "moons" points) trained 2 000 steps with SGD at $\eta=0.1$ and batch size 4, 16 or the full 100 (real runs, a few seconds at first load). Curves: mean loss along eight random directions of relative size $\alpha\|\theta\|$, plus the measured top Hessian eigenvalue and test accuracy on 600 fresh points. **Right:** the model $f(x)=ab\,x$ fitted to $y=x$; every point $(a,1/a)$ of the valley $ab=1$ computes the same function, yet $\lambda_{\max}=a^2+b^2$ grows as you drag along the valley.`,
+      caption: String.raw`**Left:** the same small tanh classifier (2-24-24-2, 100 noisy "moons" points) trained 2 000 steps with SGD at $\eta=0.1$ and batch size 4, 16 or the full 100 (real runs, computed at first load). Curves: mean loss along eight random directions of relative size $\alpha\|\theta\|$, plus the measured top Hessian eigenvalue and test accuracy on 600 fresh points. **Right:** the model $f(x)=ab\,x$ fitted to $y=x$; every point $(a,1/a)$ of the valley $ab=1$ computes the same function, yet $\lambda_{\max}=a^2+b^2$ grows as you drag along the valley.`,
       deps: ['opt-7.10', 'deep-4.8'],
       refs: ['Prince §20.4'],
       tags: ['sharpness', 'generalization', 'batch size'],
       credit: 'Hochreiter & Schmidhuber, 1997; Keskar et al., 2017; Dinh et al., 2017',
-      scope: String.raw`The relation between flatness and generalization is correlational and parametrization-dependent; in this toy comparison the batch-size ordering of sharpness is what the runs show, but it is not a test of the generalization claim.`,
+      scope: String.raw`The relation between flatness and generalization is correlational and parametrization-dependent; in this toy comparison the runs differ little in sharpness and the smaller batches have not finished fitting, so it illustrates the measurement, not the generalization claim.`,
       links: { doi: 'https://doi.org/10.1162/neco.1997.9.1.1', arxiv: 'https://arxiv.org/abs/1609.04836' },
       viz(v) {
         const BS = [{ b: 4, color: 'teal', name: 'batch 4' }, { b: 16, color: 'orange', name: 'batch 16' }, { b: 0, color: 'red', name: 'full batch (100)' }];
-        const sA = v.stage({ x: [-0.5, 0.5], y: [0, 3], height: 330, axes: 'box', gutter: true, xlabel: 'relative perturbation $\\alpha$ ($\\theta+\\alpha\\|\\theta\\|\\,d$)', ylabel: 'mean loss', weight: 1.1, minWidth: 290, title: 'loss along random directions' });
+        const sA = v.stage({ x: [-1.5, 1.5], y: [0, 2], height: 330, axes: 'box', gutter: true, xlabel: 'relative perturbation $\\alpha$ ($\\theta+\\alpha\\|\\theta\\|\\,d$)', ylabel: 'mean loss', weight: 1.1, minWidth: 290, title: 'loss along random directions' });
         const sB = v.stage({ x: [0, 3], y: [0, 3], equal: true, height: 330, axes: 'box', gutter: true, xlabel: '$a$', ylabel: '$b$', weight: 0.9, minWidth: 250, title: '$L(a,b)=\\tfrac12(ab-1)^2$' });
         const data = toyData('moons', 100, { noise: 0.3, seed: 1 }), test = toyData('moons', 600, { noise: 0.3, seed: 99 });
         const sizes = [2, 24, 24, 2];
@@ -154,7 +156,7 @@ export default {
           const net = makeNet(sizes, { act: 'tanh', seed: 5 }); makeTrainer(net, data, { head: 'ce', opt: 'sgd', mom: 0, lr: 0.1, batch: B.b, seed: 1 }).step(2000);
           const L0 = lossGrad(net, data.X, data.Y, 'ce', null, { noGrad: true }), p0 = getParams(net), nrm = Math.hypot(...p0), r = rand(77), probe = makeNet(sizes, { act: 'tanh', seed: 5 });
           const dirs = Array.from({ length: 8 }, () => { const z = Float64Array.from(p0, () => r.normal()); const zn = Math.hypot(...z); return z.map((x) => (x / zn) * nrm); });
-          const al = Array.from({ length: 41 }, (_, i) => -0.5 + i / 40), curve = al.map((a) => { let s = 0; for (const d of dirs) { setParams(probe, p0.map((x, i) => x + a * d[i])); s += lossGrad(probe, data.X, data.Y, 'ce', null, { noGrad: true }); } return [a, s / dirs.length]; });
+          const al = Array.from({ length: 61 }, (_, i) => -1.5 + i / 20), curve = al.map((a) => { let s = 0; for (const d of dirs) { setParams(probe, p0.map((x, i) => x + a * d[i])); s += lossGrad(probe, data.X, data.Y, 'ce', null, { noGrad: true }); } return [a, s / dirs.length]; });
           const lam = sharpness(net, data, 'ce', {}, 40);
           return { curve, L0, lam, acc: accuracy(net, test) };
         }));
@@ -167,7 +169,7 @@ export default {
           sB.contour(f, [0.02, 0.05, 0.12, 0.25, 0.5, 1, 2], { color: 'muted', width: 0.8, alpha: 0.55, res: 140 });
           sB.curve((t) => [t, 1 / t], 0.34, 2.95, { color: 'green', width: 2.4, n: 150 });
           sB.dot(al.x, al.y, { r: 6, color: 'gold' });
-          sB.text(`(a,b) = (${al.x.toFixed(2)}, ${al.y.toFixed(2)})`, al.x, al.y, { dx: 12, dy: -14, size: 12, plate: true });
+          sB.text(`(a,b) = (${al.x.toFixed(2)}, ${al.y.toFixed(2)})`, al.x, al.y, { dx: -12, dy: -16, size: 12, plate: true, align: 'right' });
           info = { R, lam: al.x * al.x + al.y * al.y };
         });
         v.legend([['teal', 'batch 4'], ['orange', 'batch 16'], ['red', 'full batch'], ['green', 'valley $ab=1$ (same function)']]);

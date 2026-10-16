@@ -59,10 +59,10 @@ const MAKE = {
     const G = permGroup(even, even.map(cycTex)); G.plain = even.map((p, i) => (i === G.e ? 'id' : cycText(p).replace(/ /g, '')));
     const a = idxOf(G, (i) => even[i].join() === fromCycles(4, [[1, 2, 3]]).join()), b = idxOf(G, (i) => even[i].join() === fromCycles(4, [[1, 2], [3, 4]]).join());
     // four triangles g⟨a⟩: the one through the identity in the middle, the others hung on the b-edges of e, a, a²
-    const a2 = G.T[a][a], pos = new Array(G.n), tri = (g, c, a0) => { let x = g; for (let k = 0; k < 3; k++) { pos[x] = [c[0] + 0.3 * Math.cos(a0 + (TAU * k) / 3), c[1] + 0.3 * Math.sin(a0 + (TAU * k) / 3)]; x = G.T[x][a]; } };
+    const a2 = G.T[a][a], pos = new Array(G.n), tri = (g, c, a0, tr = 0.27) => { let x = g; for (let k = 0; k < 3; k++) { pos[x] = [c[0] + tr * Math.cos(a0 + (TAU * k) / 3), c[1] + tr * Math.sin(a0 + (TAU * k) / 3)]; x = G.T[x][a]; } };
     const dirs = [Math.PI / 2, Math.PI / 2 + TAU / 3, Math.PI / 2 + (2 * TAU) / 3];
-    tri(G.e, [0, 0], Math.PI / 2);
-    [G.e, a, a2].forEach((g, k) => { const x = G.T[g][b], c = [0.84 * Math.cos(dirs[k]), 0.84 * Math.sin(dirs[k])]; tri(x, c, dirs[k] + Math.PI); });
+    tri(G.e, [0, 0], Math.PI / 2, 0.24);
+    [G.e, a, a2].forEach((g, k) => { const x = G.T[g][b], c = [1.0 * Math.cos(dirs[k]), 1.0 * Math.sin(dirs[k])]; tri(x, c, dirs[k] + Math.PI); });
     return { G, tex: 'A_4', menu: '$A_4$', pos, gens: [a, b], def: [b] };
   },
   U15: () => { const G = units(15); G.plain = G.L; return { G, tex: 'U(15)', menu: '$U(15)$', pos: ringLayout(G, G.vals.indexOf(2), G.vals.indexOf(14)), gens: [G.vals.indexOf(2), G.vals.indexOf(14)], def: [G.vals.indexOf(4)] }; },
@@ -132,7 +132,7 @@ export function useLab(v, keys, o = {}) {
 // ------------------------------------------------------------------ drawing a Cayley graph
 export const nodeR = (n) => (n <= 8 ? 17 : n <= 12 ? 15 : n <= 16 ? 13 : 11);
 /** A stage for a Cayley graph (equal axes, no axes). */
-export const cgStage = (v, o = {}) => v.stage({ x: [-1.38, 1.38], y: [-1.32, 1.32], equal: true, axes: false, height: o.height ?? 360, weight: o.weight ?? 1.5, minWidth: o.minWidth ?? 280 });
+export const cgStage = (v, o = {}) => v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: o.height ?? 360, weight: o.weight ?? 1.5, minWidth: o.minWidth ?? 280 });
 /**
  * Draw the Cayley graph of A. o: fill(i) → colour or null (hollow), alpha(i), ring(i) → colour or null, label(i), edges (false to hide),
  * dim(i) → true to fade, size.

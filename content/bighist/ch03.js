@@ -22,7 +22,7 @@
 //     367 kb, 57 genes); Anderson et al., Nature 290: 457 (1981) (human mtDNA 16,569 bp, 37 genes); Rath et al., NAR 49: D1541
 //     (2021) (MitoCarta3.0, 1,136 human genes); Spang et al., Nature 521: 173 (2015); Imachi et al., Nature 577: 519 (2020).
 
-import { clamp, pow10, textW } from './ch03.shared.js';
+import { clamp } from './ch03.shared.js';
 
 export default {
   collection: 'bighist',

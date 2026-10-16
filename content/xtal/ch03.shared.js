@@ -8,7 +8,7 @@
 
 export * from './ch01.shared.js';
 import { SG } from './ch03.sgdata.js';
-import { clamp, dot, cross } from './ch01.shared.js';
+import { clamp, dot, cross, comb, deg } from './ch01.shared.js';
 export { SG };
 
 // ------------------------------------------------------------------ 3x3 matrices
@@ -400,3 +400,121 @@ export function pgTileAt(x, y) {
 }
 /** TeX for a Hermann–Mauguin symbol (roman type, bars over the rotoinversion digits). */
 export const hmMath = (hm) => `\\mathrm{${hm.replace(/-(\d)/g, '\\bar{$1}')}}`;
+
+// ------------------------------------------------------------------ centred lattices, primitive cells and the Bravais type of a lattice
+export const CENTRING = {
+  P: [], A: [[0, 0.5, 0.5]], B: [[0.5, 0, 0.5]], C: [[0.5, 0.5, 0]], I: [[0.5, 0.5, 0.5]],
+  F: [[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]], R: [[2 / 3, 1 / 3, 1 / 3], [1 / 3, 2 / 3, 2 / 3]],
+};
+const D6 = 6;
+/** Rows of an integer matrix reduced to a basis of the lattice they generate (Euclid on the columns). */
+function integerBasis(gens) {
+  const rows = gens.map((g) => g.slice()), basis = [];
+  for (let c = 0; c < 3; c++) {
+    for (;;) {
+      const nz = rows.filter((r) => r[c] !== 0);
+      if (nz.length <= 1) break;
+      nz.sort((p, q) => Math.abs(p[c]) - Math.abs(q[c]));
+      const piv = nz[0];
+      for (const r of nz.slice(1)) { const m = Math.trunc(r[c] / piv[c]); for (let k = 0; k < 3; k++) r[k] -= m * piv[k]; }
+    }
+    const i = rows.findIndex((r) => r[c] !== 0);
+    if (i >= 0) basis.push(rows.splice(i, 1)[0]);
+  }
+  return basis;
+}
+/**
+ * A reduced primitive basis of the centred lattice with conventional cell V (rows): returns {coef, B} where coef are integer vectors in units 1/6 of the
+ * conventional axes (so coef/6 are fractional coordinates) and B the Cartesian rows.  Vectors are shortened until no combination of the others lowers the length.
+ */
+export function primitiveBasis(V, centring) {
+  const gens = [[D6, 0, 0], [0, D6, 0], [0, 0, D6]];
+  for (const t of CENTRING[centring]) gens.push(t.map((x) => Math.round(x * D6)));
+  let coef = integerBasis(gens);
+  const cart = (c) => comb(c.map((x) => x / D6), V), len2 = (c) => { const r = cart(c); return dot(r, r); };
+  for (let it = 0; it < 60; it++) {
+    let changed = false;
+    for (let i = 0; i < 3; i++) {
+      for (const s of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0, 0]]) {
+        const j = (i + 1) % 3, k = (i + 2) % 3, cj = coef[j], ck = coef[k];
+        const cand = coef[i].map((x, q) => x + s[0] * cj[q] + (s[1] || 0) * ck[q]);
+        if (len2(cand) < len2(coef[i]) - 1e-9) { coef[i] = cand; changed = true; }
+      }
+    }
+    if (!changed) break;
+  }
+  coef.sort((p, q) => len2(p) - len2(q));
+  return { coef, B: coef.map(cart) };
+}
+const SYS_ORDER_NAME = { 2: 'triclinic', 4: 'monoclinic', 8: 'orthorhombic', 16: 'tetragonal', 12: 'rhombohedral', 24: 'hexagonal', 48: 'cubic' };
+const PEARSON = { triclinic: 'a', monoclinic: 'm', orthorhombic: 'o', tetragonal: 't', hexagonal: 'h', rhombohedral: 'h', cubic: 'c' };
+/**
+ * Bravais type of the lattice with a reduced primitive basis B (Cartesian rows): the point symmetry is found by counting integer matrices (latticeSymmetry);
+ * its order names the lattice system; then every triple of short lattice vectors with that system's metric (orthogonality, equal edges, 120°) is a candidate
+ * conventional cell, and the triple of smallest volume fixes the centring (P, C, I, F, or R for the rhombohedral lattice).
+ * Returns {order, system, centring, pearson, cell: rows, params: [a, b, c, α, β, γ], index, axes}.
+ */
+export function bravaisType(B) {
+  const G = gram(B), Ms = latticeSymmetry(G, 2), order = Ms.length, system = SYS_ORDER_NAME[order] || 'unknown';
+  const vecs = [];
+  for (let x = -2; x <= 2; x++) for (let y = -2; y <= 2; y++) for (let z = -2; z <= 2; z++) {
+    if (!(x || y || z)) continue;
+    if ((x || y || z) && (x < 0 || (x === 0 && (y < 0 || (y === 0 && z < 0))))) continue; // one of ±v
+    const r = comb([x, y, z], B);
+    vecs.push({ x: [x, y, z], r, n2: dot(r, r) });
+  }
+  vecs.sort((p, q) => p.n2 - q.n2);
+  const V = vecs.slice(0, 74), n = V.length, sc = G[0][0] || 1, eps = 1e-6 * Math.max(...V.map((t) => t.n2).slice(0, 5)) + 1e-9;
+  void sc;
+  const d = V.map((p) => V.map((q) => dot(p.r, q.r)));
+  const eq = (a, b) => Math.abs(a - b) < eps * 4;
+  const idx = (i, j, k) => Math.abs(Math.round(det3([V[i].x, V[j].x, V[k].x])));
+  let best = null;
+  const consider = (i, j, k) => {
+    const ix = idx(i, j, k);
+    if (!ix || ix > 4 || ix === 3 && system !== 'hexagonal') return;
+    if (!best || ix < best.ix || (ix === best.ix && V[i].n2 + V[j].n2 + V[k].n2 < best.sum - 1e-9)) best = { i, j, k, ix, sum: V[i].n2 + V[j].n2 + V[k].n2 };
+  };
+  const sys = system;
+  if (sys === 'triclinic') consider(V.findIndex((t) => t.x.join() === '1,0,0'), V.findIndex((t) => t.x.join() === '0,1,0'), V.findIndex((t) => t.x.join() === '0,0,1'));
+  for (let i = 0; i < n && sys !== 'triclinic'; i++) for (let j = 0; j < n; j++) {
+    if (j === i) continue;
+    if (sys === 'monoclinic') { if (!eq(d[i][j], 0)) continue; for (let k = 0; k < n; k++) if (k !== i && k !== j && eq(d[j][k], 0)) consider(i, j, k); continue; }
+    if (sys === 'orthorhombic') { if (!eq(d[i][j], 0)) continue; for (let k = 0; k < n; k++) if (k !== i && k !== j && eq(d[i][k], 0) && eq(d[j][k], 0)) consider(i, j, k); continue; }
+    if (sys === 'tetragonal' || sys === 'cubic') {
+      if (!eq(d[i][j], 0) || !eq(V[i].n2, V[j].n2)) continue;
+      for (let k = 0; k < n; k++) if (k !== i && k !== j && eq(d[i][k], 0) && eq(d[j][k], 0) && (sys === 'tetragonal' || eq(V[k].n2, V[i].n2))) consider(i, j, k);
+      continue;
+    }
+    if (sys === 'hexagonal') {
+      if (!eq(V[i].n2, V[j].n2) || !eq(Math.abs(d[i][j]) * 2, V[i].n2)) continue;
+      for (let k = 0; k < n; k++) if (k !== i && k !== j && eq(d[i][k], 0) && eq(d[j][k], 0)) consider(i, j, k);
+      continue;
+    }
+    if (sys === 'rhombohedral') {
+      if (!eq(V[i].n2, V[j].n2)) continue;
+      for (let k = 0; k < n; k++) if (k !== i && k !== j && eq(V[k].n2, V[i].n2) && eq(d[i][j], d[i][k]) && eq(d[i][j], d[j][k])) consider(i, j, k);
+    }
+  }
+  if (!best) return { order, system, centring: '?', pearson: '?', cell: null, params: null, index: 0, axes: [] };
+  const T = [V[best.i], V[best.j], V[best.k]], cell = T.map((t) => t.r);
+  // centring: fractional coordinates of the primitive basis vectors in the cell T, reduced mod 1
+  const M = T.map((t) => t.x), inv = M3inv(M);
+  const frac = inv.map((f) => f.map((x) => ((x % 1) + 1) % 1).map((x) => (x > 1 - 1e-9 ? 0 : x)));
+  const tr = frac.filter((f) => f.some((x) => x > 1e-9));
+  const has = (t) => tr.some((f) => f.every((x, i) => Math.abs(x - t[i]) < 1e-6));
+  let centring = 'P';
+  if (best.ix === 2) centring = has([0.5, 0.5, 0.5]) ? 'I' : 'C';
+  else if (best.ix === 4) centring = 'F';
+  else if (best.ix === 3) centring = 'R';
+  if (sys === 'rhombohedral') centring = 'R';
+  if (sys === 'hexagonal' && centring !== 'P') centring = 'P';
+  const L = cell.map((r) => Math.hypot(...r)), ang = (p, q) => deg(Math.acos(clamp(dot(cell[p], cell[q]) / (L[p] * L[q]), -1, 1)));
+  const params = [L[0], L[1], L[2], ang(1, 2), ang(0, 2), ang(0, 1)];
+  const pearson = PEARSON[sys] + (sys === 'rhombohedral' ? 'R' : sys === 'triclinic' ? 'P' : sys === 'monoclinic' && centring !== 'P' ? 'C' : sys === 'orthorhombic' && centring === 'C' ? 'C' : centring);
+  return { order, system, centring: sys === 'monoclinic' && centring !== 'P' ? 'C' : centring, pearson, cell, params, index: best.ix, axes: latticeAxes(Ms, B), Ms };
+}
+function M3inv(M) {
+  const c = [cross(M[1], M[2]), cross(M[2], M[0]), cross(M[0], M[1])], d = dot(M[0], c[0]);
+  return [0, 1, 2].map((i) => [0, 1, 2].map((j) => c[j][i] / d));
+}

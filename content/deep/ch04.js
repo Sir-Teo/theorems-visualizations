@@ -24,7 +24,7 @@ export default {
 $$\theta^{(i)}_{k}=(1-\eta\lambda_i)^k\,\theta^{(i)}_0 .$$
 Hence $\theta_k\to0$ for every start if and only if $\eta<2/\lambda_1$, i.e. the learning rate is below **two over the largest curvature**. At $\eta=2/\lambda_1$ the top coordinate flips sign forever with constant size, and for $\eta>2/\lambda_1$ it oscillates with geometrically growing amplitude. For a general smooth loss the same threshold governs the linearization at a minimum: it is stable only if $\eta\,\lambda_{\max}(\nabla^2 f)<2$.`,
       idea: String.raw`The update is the linear map $\theta\mapsto(I-\eta A)\theta$, whose eigenvalues are $1-\eta\lambda_i$; powers of a diagonalizable matrix go to zero exactly when all eigenvalues have modulus below 1, and $|1-\eta\lambda|<1\iff0<\eta\lambda<2$. The slowest direction has the smallest curvature, so the best fixed step, $\eta=2/(\lambda_1+\lambda_d)$, balances $|1-\eta\lambda_1|=|1-\eta\lambda_d|$ and leaves the rate $(\kappa-1)/(\kappa+1)$ with $\kappa=\lambda_1/\lambda_d$. Near a minimum of a smooth loss the Taylor expansion (pma-5.15) reduces the dynamics to this quadratic one.`,
-      caption: String.raw`Gradient descent on $f=\tfrac12(Lx^2+0.4\,y^2)$ from $(1,1)$. Left: contours and the iterates. Right: $\log_{10}|x_k|$ and $\log_{10}|y_k|$ against the step $k$, with the dashed lines of slope $\log_{10}|1-\eta L|$ and $\log_{10}|1-0.4\eta|$ that the theorem predicts. Raise $\eta$ past the red marker $2/L$ (shown in the readout) and watch the steep coordinate stop contracting, then blow up while the flat one is still fine.`,
+      caption: String.raw`Gradient descent on $f=\tfrac12(Lx^2+0.4\,y^2)$ from $(1,1)$. Left: contours and the iterates. Right: $\log_{10}|x_k|$ and $\log_{10}|y_k|$ against the step $k$, with the dashed lines of slope $\log_{10}|1-\eta L|$ and $\log_{10}|1-0.4\eta|$ that the theorem predicts. Raise $\eta$ past $2/L$ (given in the readout) and watch the steep coordinate stop contracting, then blow up while the flat one is still fine.`,
       deps: ['opt-7.4'],
       refs: ['Goodfellow §4.3'],
       tags: ['learning rate', 'curvature', 'stability'],
@@ -52,7 +52,6 @@ Hence $\theta_k\to0$ for every start if and only if $\eta<2/\lambda_1$, i.e. the
           const hi = clamp(Math.max(2, ...X.map((x) => lg(Math.abs(x)))), 2, 9);
           sR.setView([0, K], [-9, hi + 1]);
           sR.setTicks(undefined, log10Ticks(-9, hi + 1, hi > 6 ? 3 : 2));
-          sR.hline(0, { color: 'faint', dash: true });
           sR.path(X.map((x, k) => [k, lg(Math.abs(x), -12)]), { color: ok ? 'accent' : 'red', width: 2 });
           sR.path(Y.map((y, k) => [k, lg(Math.abs(y), -12)]), { color: 'orange', width: 2 });
           sR.line(0, 0, K, K * Math.log10(Math.max(1e-12, Math.abs(rx))), { color: ok ? 'accent' : 'red', dash: true, width: 1.2 });
@@ -73,7 +72,7 @@ Hence $\theta_k\to0$ for every start if and only if $\eta<2/\lambda_1$, i.e. the
 $$\theta_{k+1}=\theta_k-\eta\nabla f(\theta_k)+\beta\,(\theta_k-\theta_{k-1}),$$
 equivalently a velocity $u_{k+1}=\beta u_k-\eta\nabla f(\theta_k)$, $\theta_{k+1}=\theta_k+u_{k+1}$. On a quadratic with curvatures in $[\mu,L]$ and $\kappa=L/\mu$, plain gradient descent with its best step contracts the error by $\frac{\kappa-1}{\kappa+1}$ per step, while the heavy ball with $\eta=\frac{4}{(\sqrt L+\sqrt\mu)^2}$ and $\beta=\bigl(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\bigr)^2$ achieves $\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$: the number of steps to a given accuracy drops from order $\kappa$ to order $\sqrt\kappa$.`,
       idea: String.raw`On each eigen-direction of a quadratic the recursion is a two-term linear recurrence whose characteristic roots depend on $\eta\lambda$ and $\beta$. When $\beta$ is large enough the roots are complex with modulus exactly $\sqrt\beta$, independent of the curvature, so every direction decays at the same rate; Polyak's choice makes this hold across the whole spectrum $[\mu,L]$. Intuitively the velocity averages successive gradients: components that flip sign (across the valley) cancel, components that keep their sign (along its floor) add up. The guarantee is for quadratics; for general convex functions Nesterov's variant is the one with a worst-case $\sqrt\kappa$ rate (see opt-7.9).`,
-      caption: String.raw`The valley $f=\tfrac12(\kappa x^2+y^2)$ (axes not to scale: the true ellipse is $\sqrt\kappa$ times longer than wide). Red: gradient descent with its best step $2/(\kappa+1)$; blue: heavy ball. Raise $\kappa$ and compare the steps needed to reduce the loss by $10^{8}$ (readout and right panel). Switch off the tuned parameters to explore your own $\eta,\beta$: too little momentum behaves like plain descent, too much overshoots and rings.`,
+      caption: String.raw`The valley $f=\tfrac12(\kappa x^2+y^2)$ (from $(0.3,1)$; first 40 steps; the true ellipse is $\sqrt\kappa$ times longer than wide). Red: gradient descent with its best step $2/(\kappa+1)$; blue: heavy ball. Raise $\kappa$ and compare the steps needed to reduce the loss by $10^{8}$ (readout and right panel). Switch off the tuned parameters to explore your own $\eta,\beta$: too little momentum behaves like plain descent, too much overshoots and rings.`,
       deps: ['opt-7.4', 'opt-7.10'],
       see: ['opt-7.9'],
       refs: ['Prince §6.3', 'Goodfellow §8.3'],
@@ -86,12 +85,12 @@ equivalently a velocity $u_{k+1}=\beta u_k-\eta\nabla f(\theta_k)$, $\theta_{k+1
         const tuned = v.toggle('Polyak-tuned $\\eta,\\beta$', true);
         const eS = v.slider('step $\\eta\\kappa$ (units of $1/L$)', 0.05, 2, 1, { step: 0.01 });
         const bS = v.slider('momentum $\\beta$', 0, 0.99, 0.8, { step: 0.01 });
-        const sL = v.stage({ x: [-1, 1], y: [-1, 1], height: 330, axes: 'box', gutter: true, xlabel: '$x$ (steep, curvature $\\kappa$)', ylabel: '$y$ (flat, curvature 1)', weight: 0.9, minWidth: 260, title: 'paths in the valley (aspect exaggerated)' });
+        const sL = v.stage({ x: [-0.4, 0.4], y: [-0.25, 1.1], height: 330, axes: 'box', gutter: true, xlabel: '$x$ (steep, curvature $\\kappa$)', ylabel: '$y$ (flat, curvature 1)', weight: 0.9, minWidth: 260, title: 'paths in the valley (aspect exaggerated)' });
         const sR = v.stage({ x: [0, 300], y: [-9.5, 0.7], height: 330, axes: 'box', gutter: true, xlabel: 'step $k$', ylabel: '$\\log_{10}(f/f_0)$', weight: 1, minWidth: 300, title: 'loss against steps' });
         sR.setTicks(undefined, log10Ticks(-9, 0, 2));
-        const NMAX = 300, TOL = 1e-8, CAP = 400000;
+        const NMAX = 300, TOL = 1e-8, CAP = 400000, X0 = 0.3;
         const run = (k, mom, eta, beta) => {
-          let x = 1, y = 1, px = 1, py = 1; const f0 = 0.5 * (k + 1), pts = [[1, 1]], loss = [1]; let hit = null;
+          let x = X0, y = 1, px = X0, py = 1; const f0 = 0.5 * (k * X0 * X0 + 1), pts = [[X0, 1]], loss = [1]; let hit = null;
           for (let t = 1; t <= CAP; t++) {
             const nx = x - eta * k * x + beta * (x - px), ny = y - eta * y + beta * (y - py); px = x; py = y; x = nx; y = ny;
             const fr = 0.5 * (k * x * x + y * y) / f0;
@@ -109,10 +108,10 @@ equivalently a velocity $u_{k+1}=\beta u_k-\eta\nabla f(\theta_k)$, $\theta_{k+1
           const etaHB = tuned.value ? 4 / (sk + 1) ** 2 : (eS.value / k), betaHB = tuned.value ? ((sk - 1) / (sk + 1)) ** 2 : bS.value;
           eS.el.hidden = bS.el.hidden = tuned.value;
           const g = run(k, false, etaGD, 0), h = run(k, true, etaHB, betaHB);
-          sL.contour((x, y) => 0.5 * (k * x * x + y * y), levels(0.5 * (k * 0.7 * 0.7 + 1), 8), { color: 'muted', width: 0.8, alpha: 0.5, res: 140 });
+          sL.contour((x, y) => 0.5 * (k * x * x + y * y), levels(0.5 * (k * 0.35 * 0.35 + 1), 8), { color: 'muted', width: 0.8, alpha: 0.5, res: 140 });
           const cl = (P) => P.filter((p) => isFinite(p[0]) && Math.abs(p[0]) < 4 && Math.abs(p[1]) < 4);
-          sL.clip(() => { sL.path(cl(g.pts.slice(0, 120)), { color: 'red', width: 1.3 }); sL.path(cl(h.pts.slice(0, 120)), { color: 'accent', width: 1.6 }); });
-          sL.dot(1, 1, { r: 5, color: 'gold', label: '$\\theta_0$', labelPos: 'ne' });
+          sL.clip(() => { sL.path(cl(g.pts.slice(0, 40)), { color: 'red', width: 1.3 }); sL.path(cl(h.pts.slice(0, 40)), { color: 'accent', width: 1.6 }); });
+          sL.dot(X0, 1, { r: 5, color: 'gold', label: '$\\theta_0$', labelPos: 'ne' });
           sL.dot(0, 0, { r: 3.5, color: 'green' });
           const ln = (arr) => arr.map((x, i) => [i, lg(x, -12)]);
           sR.hline(-8, { color: 'faint', dash: true });
@@ -124,7 +123,7 @@ equivalently a velocity $u_{k+1}=\beta u_k-\eta\nabla f(\theta_k)$, $\theta_{k+1
         const fmtN = (x) => (x == null ? '—' : x === Infinity ? 'diverges' : x >= 400000 ? '> 400 000' : Math.round(x).toLocaleString('en').replace(/,/g, ' '));
         v.readout(() => info && String.raw`$\kappa=${v.fmt(info.k, 3)}$ · steps to reduce the loss by $10^{8}$: **gradient descent ${fmtN(info.g)}**, **heavy ball ${fmtN(info.h)}**` +
           (info.h && info.g && isFinite(info.h) && info.g < 400000 ? ` (${v.fix(info.g / info.h, 1)}× fewer)` : '') + `\n` +
-          String.raw`heavy ball uses $\eta=${v.fix(info.etaHB * info.k, 2)}/L$, $\beta=${v.fix(info.betaHB, 3)}$ · rough prediction from the rates: ${fmtN(info.predG)} versus ${fmtN(info.predH)} (order $\kappa$ against $\sqrt\kappa$)`);
+          String.raw`heavy ball uses $\eta=${v.fix(info.etaHB * info.k, 2)}/L$, $\beta=${v.fix(info.betaHB, 3)}$ · asymptotic-rate estimate ${fmtN(info.predG)} versus ${fmtN(info.predH)} (it ignores the start-up transient; order $\kappa$ against $\sqrt\kappa$)`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.5
@@ -186,11 +185,11 @@ Each coordinate thus gets its own effective learning rate, of order $\eta/\sqrt{
           sF.hline(-8, { color: 'faint', dash: true });
           const E = R[which.value === 'ada' ? 'ada' : which.value === 'rms' ? 'rms' : 'adam'].re;
           sE.path(E.map((r, i) => [i + 1, lg(r[0], -12)]), { color: 'orange', width: 2 });
-          sE.path(E.map((r, i) => [i + 1, lg(r[1], -12)]), { color: 'blue', width: 2 });
+          sE.path(E.map((r, i) => [i + 1, lg(r[1], -12)]), { color: 'pink', width: 2 });
           sE.hline(Math.log10(0.9 / a), { color: 'red', dash: true, width: 1 });
           info = { first: R.adamNo.first, firstC: R.adamYes.first, eta, fx: R.gd.f[N], fa: R.ada.f[N], fr: R.rms.f[N], fd: R.adam.f[N] };
         });
-        v.legend([['red', 'gradient descent'], ['teal', 'AdaGrad'], ['purple', 'RMSProp'], ['accent', 'Adam'], ['orange', 'rate for $x$ (steep)'], ['blue', 'rate for $y$ (flat)']]);
+        v.legend([['red', 'gradient descent'], ['teal', 'AdaGrad'], ['purple', 'RMSProp'], ['accent', 'Adam'], ['orange', 'rate for $x$ (steep)'], ['pink', 'rate for $y$ (flat)']]);
         v.readout(() => info && String.raw`after 100 steps, $f/f_0$: GD $${v.sci(info.fx, 2)}$, AdaGrad $${v.sci(info.fa, 2)}$, RMSProp $${v.sci(info.fr, 2)}$, Adam $${v.sci(info.fd, 2)}$` + `\n` +
           String.raw`Adam's first step has length **${v.fix(info.firstC, 3)}** with correction ($\approx\eta=${v.fix(info.eta, 3)}$ per coordinate, so $\sqrt2\,\eta=${v.fix(Math.SQRT2 * info.eta, 3)}$) and **${v.fix(info.first, 3)}** without ($\approx\sqrt2\cdot3.16\,\eta$); the red dashed line in the right panel is GD's single rate $0.9/a$`);
       },
@@ -210,7 +209,7 @@ Each coordinate thus gets its own effective learning rate, of order $\eta/\sqrt{
       scope: String.raw`A heuristic supported by random-field theory and experiments on small networks; a rigorous statement for realistic networks is not known, and the Gaussian model ignores the structure of real Hessians.`,
       links: { doi: 'https://doi.org/10.1103/PhysRevLett.98.150201', arxiv: 'https://arxiv.org/abs/1406.2572' },
       viz(v) {
-        const shift = v.slider('shift $s$ (how low the critical point lies)', 0, 2.2, 0.6, { step: 0.05 });
+        const shift = v.slider('shift $s$', 0, 2.2, 0.6, { step: 0.05 });
         const dlt = v.slider('start offset $\\delta$ from the saddle', 1e-8, 0.1, 1e-4, { log: true, sig: 1 });
         const seed = { v: 1 }; v.button('resample', () => { seed.v++; });
         const NS = 600, DMAX = 14;
@@ -274,7 +273,7 @@ Each coordinate thus gets its own effective learning rate, of order $\eta/\sqrt{
       links: { doi: 'https://doi.org/10.1007/s10107-019-01374-3', arxiv: 'https://arxiv.org/abs/1602.04915' },
       viz(v) {
         const nS = v.slider('number of random starts $N$', 20, 1200, 300, { int: true, log: true, sig: 2 });
-        const kS = v.slider('step $k$', 0, 150, 0, { int: true });
+        const kS = v.slider('step $k$', 0, 150, 12, { int: true });
         const seed = { v: 1 }, eta = 0.2, R = 1.4;
         v.button('resample', () => { seed.v++; });
         const s = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 400, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', full: false, title: 'where gradient descent ends, by starting point' });
