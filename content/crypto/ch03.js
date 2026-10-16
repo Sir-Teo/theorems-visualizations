@@ -117,7 +117,7 @@ export default {
             res.push({ o, never, cross });
             if (!never && cross < 4e8) s.dot(cross * 1.0, g(cross), { r: 5, color: o.col });
           });
-          s.text(`challenge n^−${c}`, 4e8, -c * log2(4e8) + 9, { size: 11.5, color: 'ink', align: 'right', weight: 600 });
+          s.text(`challenge n^−${c}`, 4e8, -c * log2(4e8) + 18, { size: 11.5, color: 'ink', align: 'right', weight: 600 });
           info = { c, d, res };
         });
         v.legend(F.map((o) => [o.col, o.lab]).concat([['ink', 'challenge $n^{-c}$', { dash: true }]]));

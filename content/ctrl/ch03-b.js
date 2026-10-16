@@ -226,7 +226,7 @@ The prototype is the van der Pol oscillator $\ddot x-\mu(1-x^2)\dot x+x=0$, $\mu
       viz(v) {
         const mu = v.slider('nonlinearity $\\mu$', 0.1, 5, 1, { log: true, sig: 2 });
         const ph = v.stage({ x: [-3.4, 3.4], y: [-7, 7], axes: true, height: 400, xlabel: 'x', ylabel: 'ẋ' });
-        const pl = v.stage({ x: [0, 5], y: [0, 9], axes: 'box', gutter: true, xlabel: 'μ', ylabel: 'period', height: 400, weight: 0.8 });
+        const pl = v.stage({ x: [0, 5], y: [0, 12], axes: 'box', gutter: true, xlabel: 'μ', ylabel: 'period', height: 400, weight: 0.8 });
         const hi = ph.handle(0.3, 0.2, { color: 'orange', label: 'inside', labelPos: 'ne' });
         const ho = ph.handle(-3, 5, { color: 'gold', label: 'outside', labelPos: 'ne' });
         const F = (m) => (x, y) => [y, m * (1 - x * x) * y - x];
@@ -288,7 +288,7 @@ The prototype is the van der Pol oscillator $\ddot x-\mu(1-x^2)\dot x+x=0$, $\mu
         const bS = v.slider('cubic coefficient $b$', 0.5, 3, 1, { step: 0.05 });
         const sp = v.stage({ x: [-3.2, 2], y: [-3, 3], equal: true, axes: true, height: 340, xlabel: 'Re s', ylabel: 'Im s', title: 'roots of $(s+1)^3+k$' });
         const tm = v.stage({ x: [0, T], y: [-2, 2], axes: 'box', gutter: true, xlabel: 't', ylabel: 'y(t)', height: 340 });
-        const bf = v.stage({ x: [4, 14], y: [0, 2], axes: 'box', gutter: true, xlabel: 'gain k', ylabel: 'oscillation amplitude', height: 340 });
+        const bf = v.stage({ x: [4, 14], y: [0, 3], axes: 'box', gutter: true, xlabel: 'gain k', ylabel: 'oscillation amplitude', height: 340 });
         const run = (k, b, Tt, record) => {
           const f = (x) => { const y = x[2], u = -(k * y - b * y * y * y); return [-x[0] + u, -x[1] + x[0], -x[2] + x[1]]; };
           let x = [0, 0, 0.05]; const ys = [], n = Math.round(Tt / h);
@@ -337,7 +337,7 @@ The prototype is the van der Pol oscillator $\ddot x-\mu(1-x^2)\dot x+x=0$, $\mu
 
 If $A$ is Hurwitz the system is BIBO stable, but **not conversely**: the poles of $G$ are among the eigenvalues of $A$ and a mode that is **uncontrollable or unobservable** is cancelled in $G$. For a *minimal* realisation (controllable and observable) the poles of $G$ are exactly the eigenvalues of $A$, and BIBO stability is equivalent to internal asymptotic stability.`,
       idea: String.raw`BIBO stability is a statement about the input–output map, whose kernel is the impulse response $h=Ce^{At}B$ (sig-3.6: a convolution system is BIBO stable iff $\int|h|<\infty$). The eigenvalues of $A$ (ctrl-3.3) enter $h$ only through the modes that both the input excites and the output sees; a unstable mode that the output does not see leaves no trace in $G$ (ctrl-2.7 computes $G$ from the state-space data) although the state grows without limit. Any small coupling of that mode into the output makes it visible and the output blows up.`,
-      caption: String.raw`The plant has $A=\mathrm{diag}(-1,+1)$, $B=(1,1)^\top$ and output $y=x_1+c\,x_2$. With $c=0$ the unstable mode $x_2$ is **unobservable**: the transfer function is $1/(s+1)$, the output stays bounded for the bounded input you choose, yet the state $x_2$ grows like $e^t$ (note the log axis). Slide $c$ slightly away from $0$: the output now contains $c\,x_2$ and escapes, however small $c$ is. The picture is the case for checking internal stability before trusting an input–output test.`,
+      caption: String.raw`The plant has $A=\mathrm{diag}(-1,+1)$, $B=(1,1)^\top$ and output $y=x_1+c\,x_2$. With $c=0$ the unstable mode $x_2$ is **unobservable**: the transfer function is $1/(s+1)$, the output stays bounded for the bounded input you choose, yet the state $x_2$ grows like $e^t$ (note the log axis). Slide $c$ slightly away from $0$: the output now contains $c\,x_2$ and escapes, however small $c$ is. The lesson: an input–output test alone cannot certify internal stability.`,
       deps: ['ctrl-3.3', 'sig-3.6', 'ctrl-2.7'],
       refs: ['Åström–Murray §6.3'],
       tags: ['bibo', 'internal stability'],

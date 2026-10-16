@@ -162,5 +162,5 @@ export const SHAPES = {
   bean: { name: 'bean (not convex)', f: (t) => [1.55 * Math.cos(t) + 0.05, 1.0 * Math.sin(t) - 0.42 * Math.cos(t) * Math.cos(t) + 0.2 + 0.05 * Math.cos(2 * t)] },
   figure8: { name: 'figure eight', f: (t) => [1.6 * Math.sin(t), 0.95 * Math.sin(2 * t)] },
   limacon: { name: 'limaçon with a loop', f: (t) => { const r = 0.5 + Math.cos(t); return [1.15 * r * Math.cos(t) - 0.35, 1.15 * r * Math.sin(t)]; } },
-  star: { name: 'five-fold rosette', f: (t) => [(1.3 + 0.3 * Math.cos(4 * t)) * Math.cos(t), (1.3 + 0.3 * Math.cos(4 * t)) * Math.sin(t)] },
+  rosette: { name: 'three-lobed rosette', f: (t) => [(1.3 + 0.3 * Math.cos(3 * t)) * Math.cos(t), (1.3 + 0.3 * Math.cos(3 * t)) * Math.sin(t)] },
 };
