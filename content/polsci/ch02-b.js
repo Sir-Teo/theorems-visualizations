@@ -502,5 +502,145 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────── 2.13
+    {
+      num: '2.13',
+      kind: 'Event',
+      name: 'Real elections that went wrong',
+      statement: String.raw`The paradoxes of this chapter occur in real elections.
+
+- **Florida, US presidential election, 7 November 2000.** Certified result: Bush 2,912,790, Gore 2,912,253, Nader 97,488, Buchanan 17,484, Browne 16,415, six others 6,676. Bush won Florida, and with it the Electoral College, by 537 votes under plurality. Ballots recorded only first choices, so whether Nader was a spoiler depends on his voters’ unrecorded preferences between Gore and Bush: if they leaned to Gore by more than about 0.6% net (beyond what Buchanan’s and Browne’s voters gave Bush), Gore was the Condorcet winner.
+- **Burlington, Vermont, mayoral election, 3 March 2009 (IRV).** Kiss beat Wright 4,313–4,061 in the final round after Montroll was eliminated, yet Montroll beat Kiss 4,064–3,476 and Wright 4,597–3,664: IRV eliminated the Condorcet winner. The result was also non-monotonic: had about 740 more voters ranked Kiss first, Kiss would have lost.
+- **Alaska, US House special general election, 16 August 2022 (IRV).** Peltola beat Palin in the final round (official count 91,266–86,026) after Begich was eliminated, but on the cast-vote record Begich beat Peltola 88,126–79,486 and Palin 101,438–63,666. Begich was the Condorcet winner, Palin the Condorcet loser and a spoiler, and the election had both a monotonicity failure and a no-show paradox.`,
+      idea: String.raw`In Florida plurality turned a near-tie between two large candidates into a lottery decided by small parties (polsci-2.3): Nader’s 97,488 votes were 181 times Bush’s margin. In Burlington and Alaska IRV squeezed out a centrist: Montroll and Begich were nearly everyone’s second choice but too few voters’ first, so they were eliminated before the head-to-head contests they would have won (polsci-1.4). The same elimination step produced the non-monotonicity of polsci-2.5 and the no-show paradox of polsci-2.6: in Alaska, raising Peltola on about 4,900 Palin-only ballots — or keeping home that many voters who ranked Palin, Begich, Peltola — pushes Palin below Begich, and Begich then wins the final. The three-candidate profiles here are not invented: Alaska’s is the tally of the cast-vote record published by Clelland, and Burlington’s is the unique one consistent with the official round counts and the published pairwise tallies.`,
+      caption: String.raw`Choose an election. Left: the IRV count, recomputed from the ballot profile. Right: the head-to-head majorities, with the Condorcet winner ringed green and the IRV winner gold. Below, five rules run on the same ballots and the paradoxes are searched live: the smallest monotonicity failure and the smallest no-show group. Florida’s ballots recorded only first choices, so its preferences between Gore and Bush are a model: slide the share of Nader voters who prefer Gore, and of Buchanan and Browne voters who prefer Bush, and watch where the Condorcet winner flips. Each icon in the Florida panel is 537 votes, Bush’s margin.`,
+      deps: ['polsci-2.3', 'polsci-2.5', 'polsci-2.6', 'polsci-1.4'],
+      see: ['polsci-1.12'],
+      refs: ['Saari ch. 1', 'FEC, Federal Elections 2000 (Florida certified results)', 'Wikipedia: 2009 Burlington mayoral election (official rounds and tournament matrix)', 'Clelland (2023), Ranked choice voting and the center squeeze in the Alaska 2022 special election, arXiv:2303.00108, Table 6', 'Alaska Division of Elections, 2022 Special General Election summary'],
+      tags: ['elections', 'spoiler effect', 'instant runoff'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/2022_Alaska%27s_at-large_congressional_district_special_election' },
+      viz(v) {
+        const Sk = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 420, weight: 1.4, title: 'instant-runoff count' });
+        const Tn = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 300, title: 'head to head' });
+        const Mt = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: 'five rules, and the paradoxes found in these ballots' });
+        const el = v.select('election', [{ value: 'ak', label: 'Alaska 2022' }, { value: 'bur', label: 'Burlington 2009' }, { value: 'fl', label: 'Florida 2000' }], 'ak', { onChange: () => sync() });
+        const pN = v.slider('Nader voters preferring Gore (model)', 0, 1, 0.55, { step: 0.005, fmt: (x) => `${(100 * x).toFixed(1)}%` });
+        const pR = v.slider('Buchanan + Browne voters preferring Bush (model)', 0, 1, 0.6, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
+        const mk = (list) => ({ m: 3, blocs: list.map(([n, r]) => ({ n, r })) });
+        const E = {
+          // Alaska: Clelland (2023), Table 6 — valid ranked votes in the cast-vote record (0 Begich, 1 Palin, 2 Peltola)
+          ak: { P: mk([[11179, [0]], [27258, [0, 1, 2]], [15572, [0, 2, 1]], [21139, [1]], [34117, [1, 0, 2]], [3683, [1, 2, 0]], [23647, [2]], [47429, [2, 0, 1]], [4727, [2, 1, 0]]]),
+            names: ['Begich', 'Palin', 'Peltola'], short: ['Be', 'Pa', 'Pe'], col: ['orange', 'red', 'blue'],
+            note: 'cast-vote record (Clelland 2023, Table 6); official count: Peltola 75,799, Palin 58,973, Begich 53,810 in round 1; Peltola 91,266 – Palin 86,026 in the final' },
+          // Burlington: reconstructed from the official round-2/3 counts and Wikipedia’s tournament matrix (0 Kiss, 1 Montroll, 2 Wright)
+          bur: { P: mk([[2043, [0, 1, 2]], [370, [0, 2, 1]], [568, [0]], [1332, [1, 0, 2]], [767, [1, 2, 0]], [455, [1]], [1510, [2, 1, 0]], [495, [2, 0, 1]], [1289, [2]]]),
+            names: ['Kiss', 'Montroll', 'Wright'], short: ['K', 'M', 'W'], col: ['purple', 'blue', 'orange'],
+            note: 'ballots after Smith, Simpson and write-ins were eliminated (151 more ranked none of the three); reconstructed from the official rounds and pairwise tallies' },
+          fl: { names: ['Bush', 'Gore', 'Nader', 'Buchanan', 'Browne'], short: ['Bu', 'G', 'N', 'Bc', 'Br'], col: ['red', 'blue', 'green', 'purple', 'teal'],
+            note: 'certified first choices; preferences between Gore and Bush of minor-party voters are modelled by the sliders' },
+        };
+        const FL = { bush: 2912790, gore: 2912253, nader: 97488, buch: 17484, browne: 16415, other: 6676 };
+        const flProfile = () => {
+          const g = Math.round(FL.nader * pN.value), b = Math.round((FL.buch) * pR.value), c = Math.round(FL.browne * pR.value);
+          return { m: 5, blocs: [{ n: FL.bush, r: [0, 1] }, { n: FL.gore, r: [1, 0] }, { n: g, r: [2, 1, 0] }, { n: FL.nader - g, r: [2, 0, 1] }, { n: b, r: [3, 0, 1] }, { n: FL.buch - b, r: [3, 1, 0] }, { n: c, r: [4, 0, 1] }, { n: FL.browne - c, r: [4, 1, 0] }] };
+        };
+        const cur = () => E[el.value], prof = () => (el.value === 'fl' ? flProfile() : cur().P);
+        function sync() { const fl = el.value === 'fl'; pN.el.hidden = pR.el.hidden = !fl; cache = null; }
+        // ---- live paradox searches (coarse scan, then refine; elimination ties are not counted)
+        const tieFree = (P) => { let alive = range(P.m); for (;;) { const t = tops(P, alive), cont = sum(alive.map((x) => t[x])), mx = Math.max(...alive.map((x) => t[x])); if (alive.length === 1 || mx > cont / 2) return true; const mn = Math.min(...alive.map((x) => t[x])); if (alive.filter((x) => t[x] === mn).length > 1) return false; alive = alive.filter((x) => t[x] !== mn); } };
+        function monoSearch(P) {
+          const w = irvW(P), D = range(P.blocs.length).filter((i) => P.blocs[i].r[0] !== w); let bestM = null;
+          const make = (i, j, k) => { const Q = cloneP(P), a = Math.min(k, P.blocs[i].n), b = k - a; Q.blocs[i].n -= a; Q.blocs.push({ n: a, r: raise(P.blocs[i].r, w) }); if (b) { Q.blocs[j].n -= b; Q.blocs.push({ n: b, r: raise(P.blocs[j].r, w) }); } return { Q, a, b }; };
+          const bad = (Q) => irvW(Q) !== w && tieFree(Q);
+          for (const i of D) for (const j of D) {
+            const tot = P.blocs[i].n + (i === j ? 0 : P.blocs[j].n), st = Math.max(1, Math.ceil(tot / 300));
+            for (let k = st; k <= tot; k += st) {
+              if (bestM && k - st >= bestM.k) break;
+              if (bad(make(i, j, k).Q)) { let kk = k; while (kk > 1 && bad(make(i, j, kk - 1).Q)) kk--; const r = make(i, j, kk); if (!bestM || kk < bestM.k) bestM = { i, j, k: kk, a: r.a, b: r.b, w2: irvW(r.Q) }; break; }
+            }
+          }
+          return bestM;
+        }
+        function abstainSearch(P) {
+          const w = irvW(P); let bestM = null;
+          P.blocs.forEach((bl, i) => {
+            const pos = (c) => { const p = bl.r.indexOf(c); return p < 0 ? 99 : p; }, st = Math.max(1, Math.ceil(bl.n / 300));
+            const bad = (k) => { const Q = cloneP(P); Q.blocs[i].n -= k; const w2 = irvW(Q); return w2 !== w && pos(w2) < pos(w) && tieFree(Q); };
+            for (let k = st; k <= bl.n; k += st) { if (bestM && k - st >= bestM.k) break; if (bad(k)) { let kk = k; while (kk > 1 && bad(kk - 1)) kk--; if (!bestM || kk < bestM.k) { const Q = cloneP(P); Q.blocs[i].n -= kk; bestM = { i, k: kk, w2: irvW(Q) }; } break; } }
+          });
+          return bestM;
+        }
+        let cache = null;
+        const analysis = () => {
+          const key = `${el.value}|${pN.value}|${pR.value}`;
+          if (cache && cache.key === key) return cache;
+          const P = prof(), N = pairwiseT(P), cw = cwOf(N), m = P.m, C = range(m);
+          const cl = C.find((x) => C.every((y) => y === x || N[y][x] > N[x][y])) ?? -1;
+          const pl = best(tops(P), C)[0], I = irvRun(P), bo = best(positional(P, [2, 1, 0, 0, 0]), C)[0];
+          const t1 = tops(P), top2 = C.slice().sort((a, b) => t1[b] - t1[a]).slice(0, 2), ro = N[top2[0]][top2[1]] >= N[top2[1]][top2[0]] ? top2[0] : top2[1];
+          const mm = C.reduce((a, x) => (Math.max(...C.filter((y) => y !== x).map((y) => N[y][x])) < Math.max(...C.filter((y) => y !== a).map((y) => N[y][a])) ? x : a), 0);
+          const spoil = C.filter((x) => x !== I.win).map((x) => { const Q = { m, blocs: P.blocs.map((b) => ({ n: b.n, r: b.r.filter((c) => c !== x) })) }; return { x, w: irvW(Q) }; }).filter((s) => s.w !== I.win);
+          cache = { key, P, N, cw, cl, pl, irv: I.win, bo, ro, mm, spoil, mono: el.value === 'fl' ? null : monoSearch(P), abst: el.value === 'fl' ? null : abstainSearch(P) };
+          return cache;
+        };
+        const I = v.icons(Mt, { order: 'group', maxCell: 12, region: [0.52, 0.02, 0.99, 0.84], hover: true, tween: 0 });
+        v.render(() => {
+          const X = cur(), A = analysis(), P = A.P, m = P.m, nm = (x) => X.names[x], sh = (x) => X.short[x];
+          // ---- Sankey
+          drawIRV(v, Sk, P, [96, 34, Sk.width - 132, Sk.height - 10], { lab: nm, col: (x) => X.col[x], big: true });
+          // ---- tournament (the main three candidates)
+          const tc = Tn.ctx, TW = Tn.width, TH = Tn.height, cand = el.value === 'fl' ? [0, 1, 2] : [0, 1, 2];
+          const pos = [[TW / 2, 62], [TW * 0.8, TH - 80], [TW * 0.2, TH - 80]];
+          drawTourney(v, tc, A.N, cand, pos, { r: 21, labels: sh, col: (x) => X.col[x], label: (a, b, p, q) => `${fmtK(p)}–${fmtK(q)}`, ring: (x) => (x === A.cw ? 'green' : x === A.irv ? 'gold' : null), size: 10 });
+          cand.forEach((x, k) => txt(v, tc, nm(x) + (x === A.cw ? ' · Condorcet winner' : x === A.cl ? ' · Condorcet loser' : ''), pos[k][0], pos[k][1] + (k === 0 ? -33 : 34), { size: 10.5, weight: 700, color: x === A.cw ? 'green' : x === A.cl ? 'red' : 'muted', halo: true }));
+          // ---- rules table
+          const c = Mt.ctx, W = Mt.width, H = Mt.height, rows = [['plurality', A.pl], ['top-two runoff', A.ro], ['instant runoff', A.irv], ['Borda (2-1-0)', A.bo], ['minimax (Condorcet)', A.mm]];
+          const half = el.value === 'fl' ? W * 0.5 : W * 0.36, rh = Math.min(30, (H - 24) / rows.length);
+          rows.forEach(([lab, w], i) => {
+            const Y = 18 + (i + 0.5) * rh;
+            if (i % 2 === 0) { c.fillStyle = v.color('muted', 0.05); c.fillRect(8, Y - rh / 2, half - 16, rh); }
+            txt(v, c, lab, 18, Y, { size: 11.5, weight: 600, align: 'left' });
+            chip(v, c, half - 120, Y, w, { r: 10, label: sh(w), color: X.col[w], ring: w === A.cw ? 'green' : null });
+            txt(v, c, nm(w), half - 104, Y, { size: 11.5, weight: 700, align: 'left', color: X.col[w] });
+          });
+          if (el.value === 'fl') {
+            // icons: each one is 537 votes, the certified margin
+            const u = 537, gN = Math.round(FL.nader / u), gB = Math.round(FL.buch / u), gR = Math.round(FL.browne / u), gO = Math.round(FL.other / u);
+            I.set({ n: gN + gB + gR + gO, groups: [{ n: gN, color: 'green', label: 'Nader' }, { n: gB, color: 'purple', label: 'Buchanan' }, { n: gR, color: 'teal', label: 'Browne' }, { n: gO, color: 'muted', label: 'six others' }] });
+            I.draw();
+            txt(v, c, `minor-party votes, one square = 537 votes (Bush’s margin): Nader alone ${FL.nader.toLocaleString('en-US')} = ${(FL.nader / u).toFixed(0)} margins`, W * 0.755, H - 14, { size: 10.5, weight: 700, color: 'muted' });
+          } else {
+            I.set({ n: 0, groups: [] });
+            const x0 = W * 0.39, L = (i) => (P.blocs[i].r.length === 1 ? `${sh(P.blocs[i].r[0])}-only` : P.blocs[i].r.map(sh).join('>'));
+            const lines = [];
+            if (A.cw >= 0 && A.cw !== A.irv) lines.push([`Condorcet winner eliminated: ${nm(A.cw)} beats ${range(m).filter((y) => y !== A.cw).map((y) => `${nm(y)} ${fmtK(A.N[A.cw][y])}–${fmtK(A.N[y][A.cw])}`).join(' and ')}.`, 'green']);
+            if (A.mono) { const mv = `${fmtK(A.mono.a)} ${L(A.mono.i)}` + (A.mono.b ? ` + ${fmtK(A.mono.b)} ${L(A.mono.j)}` : ''); lines.push([`Non-monotonic: move ${nm(A.irv)} to the top of ${fmtK(A.mono.k)} ballots (${mv}) and ${nm(A.mono.w2)} wins instead.`, 'red']); }
+            if (A.abst) lines.push([`No-show: if ${fmtK(A.abst.k)} voters ranking ${L(A.abst.i)} had stayed home, ${nm(A.abst.w2)} — whom they prefer to ${nm(A.irv)} — would have won.`, 'orange']);
+            else lines.push(['No-show: no group of identical ballots could have helped itself by abstaining.', 'muted']);
+            A.spoil.forEach((s) => lines.push([`Spoiler: without ${nm(s.x)} on the ballot, ${nm(s.w)} wins.`, 'purple']));
+            lines.forEach(([t, col], i) => {
+              const Y = 22 + i * 38; c.fillStyle = v.color(col, 0.9); c.beginPath(); c.arc(x0, Y + 6, 4, 0, 7); c.fill();
+              // wrap to two lines
+              c.save(); c.font = '600 12px Inter, system-ui, sans-serif'; const words = t.split(' '); let line = '', yy = Y; const maxW = W - x0 - 24;
+              for (const wd of words) { const tst = line ? line + ' ' + wd : wd; if (c.measureText(tst).width > maxW && line) { txt(v, c, line, x0 + 12, yy + 6, { size: 12, weight: 600, align: 'left' }); line = wd; yy += 16; } else line = tst; }
+              txt(v, c, line, x0 + 12, yy + 6, { size: 12, weight: 600, align: 'left' }); c.restore();
+            });
+          }
+          txt(v, c, X.note, 12, H - 12, { size: 10, weight: 500, color: 'faint', align: 'left' });
+        });
+        v.legend([['green', 'Condorcet winner', { dot: true }], ['gold', 'IRV winner', { dot: true }]]);
+        v.readout(() => {
+          const A = analysis(), X = cur(), nm = (x) => X.names[x], N = A.N;
+          if (el.value === 'fl') {
+            const net = Math.round(FL.nader * (2 * pN.value - 1)) - Math.round((FL.buch + FL.browne) * (2 * pR.value - 1)), need = FL.bush - FL.gore;
+            return `Certified plurality result: Bush ${FL.bush.toLocaleString('en-US')}, Gore ${FL.gore.toLocaleString('en-US')} — Bush by **${need}**. In the model, Gore against Bush head to head: ${fmtK(N[1][0])}–${fmtK(N[0][1])} (minor-party net to Gore ${net >= 0 ? '+' : '−'}${fmtK(Math.abs(net))}), so the Condorcet winner is **${nm(A.cw >= 0 ? A.cw : 0)}** and IRV elects **${nm(A.irv)}**. Gore wins head to head as soon as the net exceeds ${need} votes — for instance, with Buchanan’s and Browne’s voters split evenly, if just ${(50 + (100 * (need + 1)) / (2 * FL.nader)).toFixed(2)}% of Nader’s voters prefer Gore.`;
+          }
+          const T = (x, y) => `${nm(x)} ${fmtK(N[x][y])}–${fmtK(N[y][x])} ${nm(y)}`;
+          return `${el.value === 'ak' ? 'Alaska 2022' : 'Burlington 2009'}: IRV elects **${nm(A.irv)}**; plurality ${nm(A.pl)}, Borda ${nm(A.bo)}, minimax ${nm(A.mm)}. Head to head: ${T(0, 1)}, ${T(0, 2)}, ${T(1, 2)}. Condorcet winner **${A.cw >= 0 ? nm(A.cw) : 'none'}**${A.cl >= 0 ? `, Condorcet loser ${nm(A.cl)}` : ''}.` + (A.mono ? ` Smallest monotonicity failure: ${fmtK(A.mono.k)} ballots.` : '') + (A.abst ? ` Smallest no-show group: ${fmtK(A.abst.k)} voters.` : '');
+        });
+        sync();
+      },
+    },
   ],
 };

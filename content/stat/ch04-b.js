@@ -204,11 +204,13 @@ with equality only if $\delta$ is already a function of $T$. More generally $E_\
           const all = sortNum(Y.concat(imp)); let lo = Math.min(qSorted(all, 0.002), tau), hi = Math.max(qSorted(all, 0.995), tau);
           const pd = 0.06 * (hi - lo || 1); lo -= pd; hi += pd;
           const B1 = binned(Y, lo, hi, 60), B2 = binned(imp, lo, hi, 60);
-          sB.setView([lo, hi], [0, Math.max(B1.max, Math.min(B2.max, 4 * B1.max + 1)) * 1.15 || 1]);
+          const yTop = Math.min(Math.max(B1.max, B2.max), 1.6 * Math.max(B2.max, 1e-9)) * 1.15 || 1;
+          sB.setView([lo, hi], [0, yTop]);
           sB.hist(B1, { density: true, color: 'orange', fillAlpha: 0.3, width: 1.4 });
+          B1.density.forEach((d, i) => { if (d > yTop) sB.text(`${pct(B1.counts[i] / B1.N, 0)} ↑`, (B1.edges[i] + B1.edges[i + 1]) / 2, yTop, { color: 'orange', size: 11.5, weight: 700, align: 'center', dy: 10, baseline: 'top', plate: true }); });
           sB.hist(B2, { density: true, color: cond === 'T' ? 'green' : 'red', fillAlpha: 0.35, width: 1.6 });
           sB.vline(tau, { color: 'ink', width: 2 });
-          sB.text('target', tau, sB.bounds.y[1], { color: 'ink', size: 12, dx: 6, dy: 8, baseline: 'top', align: 'left', plate: true });
+          sB.text('target', tau, sB.bounds.y[1], { color: 'ink', size: 12, dx: 6, dy: 34, baseline: 'top', align: 'left', plate: true });
           v.legend([['orange', 'crude ' + g.crude, { area: true }], [cond === 'T' ? 'green' : 'red', cond === 'T' ? `$E[\\delta\\mid T]=${g.rbTex}$` : '$E[\\delta\\mid X_2]$ (not a statistic)', { area: true }], ['ink', 'target $\\tau(\\theta)$']]);
           const [vc, vr] = exVar(k, n, t);
           info = { k, g, n, t, cond, tau, mc: mean(Y), mi: mean(imp), vcs: varN(Y), vis: varN(imp), vc, vr, N: D.length, members, colX };
@@ -279,8 +281,8 @@ Examples: in $N(\mu,\sigma^2)$, $\bar X$ and $S^2$ are the UMVUEs of $\mu$ and $
             sL.fn(g, { domain: [x0, x1], color: 'green', width: 3 });
             const NB = m === 'pois' ? null : 16, cols = new Map();
             for (const d of D) { const kk = m === 'pois' ? d.T : Math.floor(((d.T - x0) / (x1 - x0)) * NB); if (kk < 0 || (NB && kk >= NB)) continue; const c = cols.get(kk) || { c: 0, x: 0, s: [0, 0, 0] }; c.c++; c.x += d.T; for (let j = 0; j < 3; j++) c.s[j] += d.d[j]; cols.set(kk, c); }
-            const off = (x1 - x0) * 0.008;
-            for (const c of cols.values()) if (c.c >= 12) sp.st.forEach(([, col], j) => sL.dot(c.x / c.c + (j - 1) * off * (m === 'pois' ? 12 : 1), c.s[j] / c.c, { r: 3.6, color: col }));
+            const off = m === 'pois' ? 0.12 : (x1 - x0) * 0.008;
+            for (const c of cols.values()) if (c.c >= (m === 'pois' ? 60 : 12)) sp.st.forEach(([, col], j) => sL.dot(c.x / c.c + (j - 1) * off, c.s[j] / c.c, { r: 3.6, color: col }));
           }
           // right: rows of starters plus the landing distribution
           const rows = m === 'unif' ? 3 : 4;

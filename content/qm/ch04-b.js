@@ -316,7 +316,7 @@ A quantum $\hbar\omega_j$ of vibration is a **phonon** of wave number $k_j=j\pi/
           for (let j = 0; j < N; j++) {
             for (let n = 0; om[j] * (n + 0.5) <= Emax; n++) {
               const E = om[j] * (n + 0.5), on = n === nq[j];
-              sL.line(j + 1 - 0.32, E, j + 1 + 0.32, E, { color: on ? 'gold' : 'muted', width: on ? 3.4 : 1, alpha: on ? 1 : 0.6 });
+              sL.line(j + 1 - 0.32, E, j + 1 + 0.32, E, { color: on ? (n ? 'gold' : 'accent') : 'muted', width: on ? (n ? 3.4 : 2.2) : 1, alpha: on ? 1 : 0.6 });
             }
             if (nq[j]) sL.text(`n=${nq[j]}`, j + 1, om[j] * (nq[j] + 0.5), { size: 10.5, color: 'ink', align: 'center', dy: -10, weight: 600 });
           }
@@ -326,8 +326,8 @@ A quantum $\hbar\omega_j$ of vibration is a **phonon** of wave number $k_j=j\pi/
           let E = 0, Z = 0, np = 0; for (let j = 0; j < N; j++) { E += om[j] * (nq[j] + 0.5); Z += om[j] / 2; np += nq[j]; }
           st = { E, Z, np, s0: s0[4], sg: sg[4] };
         }, { period: 40, still: 3 });
-        v.legend([['gold', 'occupied level $n_j$'], ['accent', 'probability cloud of each atom', { area: true }], ['ink', 'zero-point spread ±√⟨u²⟩₀'], ['orange', 'ω(k)']]);
-        v.readout(() => st && `${st.np} phonon${st.np === 1 ? '' : 's'} · $E = \\sum_j\\hbar\\omega_j(n_j+\\tfrac12) = ${v.fix(st.E, 4)}\\,\\hbar\\omega_0$, of which zero-point $\\tfrac12\\sum_j\\hbar\\omega_j = ${v.fix(st.Z, 4)}$ · middle atom: $\\sqrt{\\langle u^2\\rangle} = ${v.fix(st.sg, 3)}$ vs zero-point ${v.fix(st.s0, 3)}$ ($\\sqrt{\\hbar/m\\omega_0}$ units) · normal-mode frequencies from diagonalizing the spring matrix agree with $2\\sin\\frac{j\\pi}{2(N+1)}$ to $${v.sci(Math.max(edev, 1e-16), 1)}$.`);
+        v.legend([['gold', 'occupied level $n_j>0$'], ['accent', 'mode in its ground state'], ['accent', 'probability cloud of each atom', { area: true }], ['ink', 'zero-point spread ±√⟨u²⟩₀'], ['orange', 'ω(k)']]);
+        v.readout(() => st && `${st.np} phonon${st.np === 1 ? '' : 's'} · $E = \\sum_j\\hbar\\omega_j(n_j+\\tfrac12) = ${v.fix(st.E, 4)}\\,\\hbar\\omega_0$, of which zero-point $\\tfrac12\\sum_j\\hbar\\omega_j = ${v.fix(st.Z, 4)}\\,\\hbar\\omega_0$ · middle atom: rms displacement ${v.fix(st.sg, 3)} against ${v.fix(st.s0, 3)} from zero-point motion alone (unit $\\sqrt{\\hbar/m\\omega_0}$) · mode frequencies from diagonalizing the spring matrix match $2\\omega_0\\sin\\frac{j\\pi}{2(N+1)}$ to $${v.sci(Math.max(edev, 1e-16), 1)}$.`);
       },
     },
     // ------------------------------------------------------------------ 4.12
@@ -380,14 +380,15 @@ The number states $|n\rangle$ contain $n$ **photons** of energy $\hbar\omega$ ea
           const P = Array.from(c.re, (q, n) => q * q + c.im[n] ** 2);
           let nbar = 0; P.forEach((q, n) => { nbar += n * q; });
           const Emax = Math.max(...mean.map((m) => Math.abs(m[1])));
-          return (D = { key, c, tab, mean, pmax, P, nbar, Emax });
+          let ext = 0; for (const p of tab) for (let i = 0; i < NXQ; i++) if (p[i] > 2e-3 * pmax) ext = Math.max(ext, Math.abs(XQ[i]) * Math.SQRT2);
+          return (D = { key, c, tab, mean, pmax, P, nbar, Emax, ext });
         };
         let st = null;
         v.animate((t) => {
           const D = data(), th = (t * SPD) % TH, p = distAt(D.c, th);
           let m = 0, m2 = 0; for (let i = 0; i < NXQ; i++) { m += p[i] * XQ[i]; m2 += p[i] * XQ[i] * XQ[i]; } m *= dXQ; m2 *= dXQ;
           const Em = Math.SQRT2 * m, dE = Math.SQRT2 * Math.sqrt(Math.max(0, m2 - m * m));
-          const ylim = Math.max(3.2, D.Emax + 2.6 * Math.sqrt(2 * D.nbar + 1) * 0.75);
+          const ylim = Math.max(3.2, D.ext * 1.06);
           // cavity
           sA.setView([-0.08, 1.08], [-ylim, ylim]);
           for (const X of [-0.04, 1]) sA.rect(X, -ylim * 0.95, X + 0.04, ylim * 0.95, { fill: 'muted', fillAlpha: 0.4, hatch: 'muted', hatchAlpha: 0.45, stroke: false });
@@ -470,7 +471,7 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
           if (C[g]) return C[g];
           const ratio = []; for (let k = 0; k <= 50; k++) { const L = 1.5 * (100 / 1.5) ** (k / 50); ratio.push([L, dE(g, 1, L) / exactE(g, 1)]); }
           // pressure from a central difference of the regulated energy at fixed cutoff Λ = 30/d (units µm)
-          const pr = []; for (let k = 0; k <= 16; k++) { const d = 0.1 * 100 ** (k / 16), L = 30 / d, h = 0.01 * d; pr.push([d, -(dE(g, d + h, L) - dE(g, d - h, L)) / (2 * h)]); }
+          const pr = []; for (let k = 0; k <= 16; k++) { const d = 0.1 * 100 ** (k / 16), L = 30 / d, h = 0.01 * d; pr.push([d, (dE(g, d + h, L) - dE(g, d - h, L)) / (2 * h)]); } // dE/dd > 0: the energy rises with separation, so the plates attract
           return (C[g] = { ratio, pr });
         };
         const toSI = (g, p) => p * HC * (g === '1d' ? 1e12 : 1e24); // 1/µm² → N (1D), 1/µm⁴ → Pa
@@ -491,13 +492,13 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
           sM.line(0, 0, 8, 8, { color: 'muted', width: 1.6, dash: [6, 4] });
           sM.path(stair.slice(1), { color: 'accent', width: 2.2 });
           sM.text('free space: kd/π', 5.6, 6.3, { size: 11, color: 'muted', align: 'right', plate: true });
-          sM.text('between plates', 6.2, 5.2, { size: 11, color: 'accent', align: 'left', plate: true });
+          sM.text('between plates', 4.4, 2.6, { size: 11, color: 'accent', align: 'left', plate: true });
           // ratio vs cutoff
           sR.hline(1, { color: 'green', width: 1.4, dash: [5, 4] });
           sR.path(Cv.ratio, { color: 'accent', width: 2.2 });
           const rnow = dE(g, 1, L) / exactE(g, 1); sR.dot(L, rnow, { r: 5.5, color: 'gold' });
           // pressure
-          if (g === '1d') sP.setView([0.1, 10], [1e-10, 1e-5]); else sP.setView([0.1, 10], [1e-5, 1e5]);
+          if (g === '1d') sP.setView([0.1, 10], [1e-17, 1e-12]); else sP.setView([0.1, 10], [1e-12, 1e2]);
           sP.fn((q) => toSI(g, exactP(g, q)), { color: 'red', width: 2 });
           sP.dots(Cv.pr.map(([q, p]) => [q, toSI(g, p)]), { r: 4, color: 'accent' });
           sP.vline(d, { color: 'gold', width: 1.3, dash: [4, 3] }); sP.dot(d, toSI(g, exactP(g, d)), { r: 6, color: 'gold' });

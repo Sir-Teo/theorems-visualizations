@@ -167,7 +167,7 @@ and the **technical rate of substitution** $TRS$ is the amount of capital that c
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'isoquant map: levels $y = 1, 2, \\dots, 9$', weight: 1.2 });
         const e = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], height: 380, axes: 'box', gutter: true, xlabel: 'ln TRS', ylabel: 'ln(K/L)', title: 'along the bold isoquant: slope $= \\sigma$' });
         v.legend([['purple', 'isoquants'], ['orange', 'tangent: slope $-TRS$'], ['gold', 'input bundle'], ['teal', '$\\ln(K/L)$ against $\\ln TRS$']]);
-        const H = s.handle(3.5, 5, { color: 'gold', r: 7, label: 'x', constrain: (x, y) => [clamp(x, 0.3, 9.7), clamp(y, 0.3, 9.7)] });
+        const H = s.handle(3.5, 5, { color: 'gold', r: 7, label: 'x', labelPos: 'nw', constrain: (x, y) => [clamp(x, 0.3, 9.7), clamp(y, 0.3, 9.7)] });
         let st = {};
         v.render(() => {
           sg.el.hidden = fam.value !== 'ces';
@@ -182,7 +182,7 @@ and the **technical rate of substitution** $TRS$ is the amount of capital that c
           const th = Math.atan2(K, L), R = 80, dth = 1e-3;
           const P = (t) => { const r = rayLevel(T.f, y, t, R, 70); return r == null ? null : [r * Math.cos(t), r * Math.sin(t)]; };
           const A = P(th - dth), B = P(th + dth), slope = A && B && Math.abs(B[0] - A[0]) > 1e-12 ? (B[1] - A[1]) / (B[0] - A[0]) : NaN;
-          s.text(`y = ${v.fix(y, 2)}`, L, K, { dx: 12, dy: -14, ...LBL, color: 'purple', align: 'left' });
+          s.text(`y = ${v.fix(y, 2)}`, L, K, { dx: 12, dy: 16, ...LBL, color: 'purple', align: 'left', plate: true });
           // ln(K/L) vs ln TRS
           const sig = T.sigma;
           if (fam.value === 'leon') {
@@ -193,7 +193,10 @@ and the **technical rate of substitution** $TRS$ is the amount of capital that c
             e.text('TRS = a/b at every ratio: σ = ∞', Math.log(al / (1 - al)), 1.9, { dx: 8, color: 'teal', ...LBL, align: 'left', plate: true });
           } else {
             const cv = []; for (let i = 1; i < 120; i++) { const q = P((Math.PI / 2) * (i / 120)); if (!q) continue; const mm = T.mp(q[0], q[1]); cv.push([Math.log(mm[0] / mm[1]), Math.log(q[1] / q[0])]); }
+            e.clip(() => e.line(-2.5, Math.log(K / L) - 2.5 - Math.log(trs), 2.5, Math.log(K / L) + 2.5 - Math.log(trs), { color: 'muted', width: 1.2, dash: [5, 4] }));
             e.clip(() => e.path(cv, { color: 'teal', width: 2.6 }));
+            e.text('dashed: slope 1 (Cobb–Douglas)', -2.4, -2.3, { size: 11, color: 'muted', align: 'left' });
+            e.corner(`slope σ = ${v.fix(sig, 2)}`, 'tl', { color: 'teal', weight: 700 });
           }
           const lt = Math.log(trs), lr = Math.log(K / L);
           if (isFinite(lt)) e.dot(clamp(lt, -2.5, 2.5), clamp(lr, -2.5, 2.5), { r: 6, color: 'gold' });
@@ -270,7 +273,7 @@ If $f$ is homogeneous of degree $k$, $f(tL, tK) = t^k f(L, K)$, returns are cons
           const kind = Math.abs(ratio - 1) < 1e-3 ? 'constant' : (ratio > 1) === (t > 1) ? 'increasing' : 'decreasing';
           const gp = gaps.slice(0, 4).map((z) => v.fix(z, 2)).join(', ');
           const hom = k != null ? ` Homogeneous of degree $k = ${v.fix(k, 2)}$: $t^k f(x) = ${f3(t ** k * y0)}$.` : ` Elasticity of scale at $x$: ${f3(e)} (${e > 1.0005 ? 'increasing' : e < 0.9995 ? 'decreasing' : 'constant'} returns here).`;
-          return `$f(x) = ${f3(y0)}$ and $f(t\\,x) = ${f3(yt)}$ against $t\\,f(x) = ${f3(t * y0)}$: ratio ${f3(ratio)}, **${kind} returns** over this stretch.${hom} Distances along the ray between successive isoquants: ${gp}${gaps.length > 4 ? ', …' : ''}.`;
+          return `$f(x) = ${f3(y0)}$ and $f(t\\,x) = ${f3(yt)}$ against $t\\,f(x) = ${f3(t * y0)}$: ratio ${f3(ratio)}, **${kind} returns** over this stretch.${hom} Distances along the ray between successive isoquants: ${gp}${gaps.length > 4 ? ', …' : '.'}`;
         });
       },
     },
@@ -287,13 +290,13 @@ In particular, with constant returns ($k = 1$), paying each input its marginal p
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Homogeneous_function#Euler%27s_theorem' },
       viz(v) {
         const fam = v.select('technology', [{ value: 'hom', label: 'homogeneous: Cobb–Douglas' }, { value: 'non', label: 'non-homogeneous' }], 'hom');
-        const kS = v.slider('degree $k = a + b$', 0.5, 1.5, 1, { step: 0.01 });
+        const kS = v.slider('degree $k = a + b$', 0.5, 1.5, 1.2, { step: 0.01 });
         const shS = v.slider('labour share of the exponents $a/k$', 0.15, 0.85, 0.6, { step: 0.01 });
         const NON = tech('hom', { S: scaleFn('U', { ys: 4, e1: 0.4 }), a: 0.6 });
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 360, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'isoquants and the bundle', weight: 1.1 });
-        const b = v.stage({ x: [0, 4], y: [0, 10], height: 360, axes: 'box', gutter: true, ylabel: 'units of output', xticks: [[1, 'L·MP_L + K·MP_K'], [2.2, 'output y'], [3.3, 'k·y']], title: 'paying each input its marginal product' });
+        const b = v.stage({ x: [0, 4], y: [0, 10], height: 360, axes: 'box', gutter: true, ylabel: 'units of output', xticks: [[1, 'paid to L and K'], [2.2, 'output y'], [3.3, 'k·y']], title: 'paying each input its marginal product' });
         v.legend([['blue', '$L\\cdot MP_L$', { area: true }], ['orange', '$K\\cdot MP_K$', { area: true }], ['purple', 'output $y$', { area: true }], ['green', 'residual left over', { area: true }], ['red', 'shortfall', { area: true }]]);
-        const H = s.handle(4, 3, { color: 'gold', r: 7, label: 'x', constrain: (x, y) => [clamp(x, 0.4, 9.6), clamp(y, 0.4, 9.6)] });
+        const H = s.handle(4, 3, { color: 'gold', r: 7, label: 'x', labelPos: 'nw', constrain: (x, y) => [clamp(x, 0.4, 9.6), clamp(y, 0.4, 9.6)] });
         let st = {};
         v.render(() => {
           const homo = fam.value === 'hom';
@@ -305,7 +308,7 @@ In particular, with constant returns ($k = 1$), paying each input its marginal p
           for (const q of levels) drawIsoq(s, T, q, { color: v.color('purple', 0.45), width: 1.2 });
           drawIsoq(s, T, y, { color: 'purple', width: 2.6 });
           s.clip(() => s.line(0, 0, 10 * L, 10 * K, { color: 'muted', width: 1, dash: [4, 4] }));
-          s.text(`y = ${v.fix(y, 2)}`, L, K, { dx: 10, dy: -14, ...LBL, color: 'purple', align: 'left' });
+          s.text(`y = ${v.fix(y, 2)}`, L, K, { dx: 12, dy: 16, ...LBL, color: 'purple', align: 'left', plate: true });
           // bars
           const top = Math.max(sum, y, homo ? k * y : sum) * 1.22 + 0.2;
           b.setView([0, 4], [0, top]);
@@ -325,7 +328,7 @@ In particular, with constant returns ($k = 1$), paying each input its marginal p
           const { homo, k, y, pL, pK, sum } = st, f3 = (q) => v.fix(q, 4);
           const cmp = Math.abs(sum - y) < 1e-4 ? 'exactly exhausts the output' : sum > y ? `exceeds output by ${f3(sum - y)}: marginal-product pay is **not feasible**` : `leaves a residual of ${f3(y - sum)}`;
           if (!homo) return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$ and $y = ${f3(y)}$: ratio ${v.fix(sum / y, 4)}. This technology is not homogeneous: drag the bundle along a ray and the ratio (the elasticity of scale) changes, from above 1 near the origin to below 1 far out, so Euler's identity holds with no constant $k$, and the stack ${cmp}.`;
-          return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$; $k\\,y = ${v.fix(k, 2)} \\times ${f3(y)} = ${f3(k * y)}$ (difference ${v.sci(Math.abs(sum - k * y) || 0, 2)}). Paying marginal products ${cmp}. Labour's share of output is $a/k \\cdot k = ${v.fix(pL / y, 3)}$ = its exponent.`;
+          return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$; $k\\,y = ${v.fix(k, 2)} \\times ${f3(y)} = ${f3(k * y)}$ (difference $${v.sci(Math.abs(sum - k * y) || 1e-16, 2)}$). Paying marginal products ${cmp}. Labour's payment as a share of output, $L\\,MP_L/y = ${v.fix(pL / y, 3)}$, is its exponent $a$.`;
         });
       },
     },
@@ -342,18 +345,21 @@ with equality at the output $y$ for which $\bar K$ is exactly the long-run cost-
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Long_run_and_short_run' },
       viz(v) {
         const w = 10, r = 10;
-        const f = (L, K) => (L <= 0 || K <= 0 ? 0 : 1.1 * L ** 0.35 * K ** 0.45 + 0.3 * L);
+        const f = (L, K) => (L <= 0 || K <= 0 ? 0 : 1.6 * (0.5 / L + 0.5 / K) ** -0.6 + 0.5 * L);
         const T = { f, kinks: [], mp: (L, K) => mpNum({ f }, L, K) };
         const run = v.select('the firm is in the', [{ value: 'short', label: 'short run: K fixed' }, { value: 'long', label: 'long run: K adjustable' }], 'short');
-        const yS = v.slider('output $y$', 0.5, 9.5, 6.5, { step: 0.05 });
-        const KS = v.slider('plant size $\\bar K$', 1, 10, 3, { step: 0.05 });
-        const s = v.stage({ x: [0, 16], y: [0, 12], height: 360, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'input space ($w = r = 10$)', weight: 1.1 });
-        const c = v.stage({ x: [0, 10], y: [0, 260], height: 360, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'total cost', title: 'short-run and long-run total cost' });
+        const yS = v.slider('output $y$', 0.5, 9.5, 8, { step: 0.05 });
+        const KS = v.slider('plant size $\\bar K$', 0.5, 5, 1.4, { step: 0.05 });
+        const s = v.stage({ x: [0, 14], y: [0, 7], height: 360, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'input space ($w = r = 10$)', weight: 1.1 });
+        const c = v.stage({ x: [0, 10], y: [0, 200], height: 360, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'total cost', title: 'short-run and long-run total cost' });
+        const gp = v.stage({ x: [0, 10], y: [0, 30], height: 170, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'c_s − c', full: true, title: 'the short-run premium $c_s(y; \\bar K) - c(y) \\ge 0$' });
         v.legend([['purple', 'isoquant for y'], ['orange', 'short run: K = K̄', { dash: true }], ['green', 'long run: expansion path'], ['ink', 'long-run cost c(y)'], ['orange', 'short-run cost c_s(y; K̄)', { dash: true }]]);
         const lr = {}; const LR = (y) => { const k = y.toFixed(3); return lr[k] || (lr[k] = cminNum(T, w, r, y)); };
         const Ls = (y, K) => { let hi = 1; while (f(hi, K) < y && hi < 1e6) hi *= 2; let lo = 0; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m, K) < y) lo = m; else hi = m; } return (lo + hi) / 2; };
         const tab = []; for (let i = 1; i <= 120; i++) { const y = (12 * i) / 120, q = cminNum(T, w, r, y); tab.push({ y, x: q.x, c: q.c }); }
         const path = tab.map((q) => q.x), lcost = [[0, 0], ...tab.map((q) => [q.y, q.c])];
+        /** long-run cost by linear interpolation in the table */
+        const lrc = (q) => { if (q <= tab[0].y) return (q / tab[0].y) * tab[0].c; for (let i = 1; i < tab.length; i++) if (tab[i].y >= q) { const a = tab[i - 1], b = tab[i]; return a.c + ((q - a.y) / (b.y - a.y)) * (b.c - a.c); } return NaN; };
         /** output at which the long-run capital equals K (interpolated in the table) */
         const yOfK = (K) => { if (K <= tab[0].x[1]) return tab[0].y * (K / tab[0].x[1]); for (let i = 1; i < tab.length; i++) if (tab[i].x[1] >= K) { const a = tab[i - 1], b = tab[i]; return a.y + ((K - a.x[1]) / (b.x[1] - a.x[1])) * (b.y - a.y); } return tab[tab.length - 1].y; };
         let st = {};
@@ -371,7 +377,7 @@ with equality at the output $y$ for which $\bar K$ is exactly the long-run cost-
           s.dot(B.x[0], B.x[1], { r: sr ? 5 : 7, color: 'green', label: 'long run', labelPos: 'nw', math: false });
           s.dot(Ld, Kb, { r: sr ? 7 : 5, color: 'orange', label: 'short run', labelPos: Ld > B.x[0] ? 'se' : 'sw', math: false });
           // cost curves
-          const ymax = 10, cmax = 260;
+          const ymax = 10, cmax = 200;
           c.clip(() => c.path(lcost, { color: 'ink', width: 2.8 }));
           c.clip(() => c.fn((q) => w * Ls(q, Kb) + r * Kb, { domain: [0.001, ymax], color: 'orange', width: 2.4, dash: [7, 4], n: 160 }));
           c.line(y, 0, y, Math.max(cs, B.c), GUIDE);
@@ -379,8 +385,14 @@ with equality at the output $y$ for which $\bar K$ is exactly the long-run cost-
           c.dot(y, B.c, { r: sr ? 4.5 : 6.5, color: 'green' }); if (cs < cmax) c.dot(y, cs, { r: sr ? 6.5 : 4.5, color: 'orange' });
           const cT = LR(yT).c;
           c.dot(yT, cT, { r: 4.5, color: 'ink', hollow: true, label: 'touch', labelPos: 'nw', math: false });
-          c.text(`fixed cost rK̄ = ${v.fix(r * Kb, 0)}`, 0.2, r * Kb, { dy: -8, size: 11, color: 'orange', align: 'left' });
+          c.text(`fixed cost rK̄ = ${v.fix(r * Kb, 0)}`, 9.8, r * Kb, { dy: -8, size: 11, color: 'orange', align: 'right' });
           c.hline(r * Kb, { color: v.color('orange', 0.5), width: 1, dash: [3, 3] });
+          const prem = (q) => w * Ls(q, Kb) + r * Kb - lrc(q);
+          const pmax = Math.max(10, Math.ceil(Math.max(prem(0.2), prem(9.8)) / 10) * 10);
+          gp.setView([0, 10], [0, pmax]);
+          gp.fn(prem, { domain: [0.1, 10], color: 'red', width: 2.4, fill: 'red', fillAlpha: 0.12, n: 140 });
+          gp.dot(yT, 0, { r: 5, color: 'ink', hollow: true, label: `zero at y = ${v.fix(yT, 2)}`, labelPos: 'ne', math: false });
+          gp.line(y, 0, y, cs - B.c, { color: 'red', width: 3 }); gp.dot(y, cs - B.c, { r: 5, color: 'red' });
           st = { y, Kb, B, Ld, cs, yT, sr };
         });
         v.readout(() => {
@@ -431,8 +443,8 @@ the last unit of money buys the same extra output in either input. With non-conv
           // crossings of the isocost line with the isoquant
           const X = []; for (let i = 1; i < cost.length; i++) { const a = cost[i - 1], b = cost[i]; if ((a[1] - C) * (b[1] - C) < 0) { const t = (C - a[1]) / (b[1] - a[1]); X.push([a[0] + t * (b[0] - a[0]), a[2] + t * (b[2] - a[2])]); } }
           if (cheap.length > 1) {
-            s.clip(() => s.path(pts.filter((p) => w * p[0] + r * p[1] <= C), { color: 'gold', width: 6, alpha: 0.45 }));
-            g.clip(() => g.path(cheap.map((q) => [q[0], q[1]]), { color: 'gold', width: 7, alpha: 0.45 }));
+            s.clip(() => s.path(pts.filter((p) => w * p[0] + r * p[1] <= C), { color: 'gold', width: 11, alpha: 0.5 }));
+            g.clip(() => g.path(cheap.map((q) => [q[0], q[1]]), { color: 'gold', width: 11, alpha: 0.5 }));
           }
           isocost(s, w, r, C, { fill: true, width: 2.6 });
           isocost(s, w, r, opt.c, { color: 'green', width: 1.4, dash: [5, 4] });
@@ -442,7 +454,7 @@ the last unit of money buys the same extra output in either input. With non-conv
           const m = T.mp(opt.x[0], opt.x[1]), trs = m[0] / m[1];
           const near = Math.abs(C - opt.c) / opt.c < 0.004;
           const status = near ? 'tangent: cheapest way to make y' : C > opt.c ? 'cuts the isoquant: slide further in' : 'cannot reach the isoquant';
-          s.corner(`C = ${v.fix(C, 1)} · ${status}`, 'tr', { color: near ? 'green' : C > opt.c ? 'gold' : 'red', weight: 700 });
+          s.corner(`C = ${v.fix(C, 1)} · ${status}`, 'tr', { color: near ? 'green' : C > opt.c ? 'gold' : 'red', weight: 700, plate: true });
           // right panel
           g.clip(() => g.path(cost.map((q) => [q[0], q[1]]), { color: 'purple', width: 2.6 }));
           g.hline(C, { color: 'accent', width: 2, dash: [6, 4] });
@@ -481,13 +493,12 @@ so cost rises like $y^{1/k}$: proportionally under constant returns, faster unde
           irs: { label: 'CD, $k = 1.4$', T: tech('cd', { a: 0.7, b: 0.7 }) },
           ces: { label: 'CES, $\\sigma = 3$, $k = 1$', T: tech('ces', { al: 0.4, s: 3 }) },
         };
-        const fam = v.select('technology', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'crs');
+        const fam = v.select('technology', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'drs');
         const view = v.select('right panel', [{ value: 'cy', label: 'cost against output' }, { value: 'dw', label: 'demands against the wage' }], 'cy');
         const yS = v.slider('output $y$', 0.5, 8, 4, { step: 0.05 });
         const wS = v.slider('wage $w$ (rental $r = 6$)', 2, 20, 10, { step: 0.1 });
         const s = v.stage({ x: [0, 12], y: [0, 12], height: 360, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'capital K', title: 'the expansion path', weight: 1.1 });
         const g = v.stage({ x: [0, 8], y: [0, 120], height: 360, axes: 'box', gutter: true, xlabel: 'output y', ylabel: 'cost', title: 'the cost function' });
-        v.legend([['purple', 'isoquant for y'], ['accent', 'cheapest isocost line'], ['green', 'expansion path / cost-minimizing bundle'], ['blue', 'conditional labour demand L(w, r, y)'], ['orange', 'conditional capital demand K(w, r, y)']]);
         let st = {};
         v.render(() => {
           const T = FAM[fam.value].T, y = yS.value, w = wS.value, o = T.cmin(w, r, y), num = cminNum(T, w, r, y);
@@ -501,6 +512,8 @@ so cost rises like $y^{1/k}$: proportionally under constant returns, faster unde
           isocost(s, w, r, o.c, { fill: true });
           s.dot(o.x[0], o.x[1], { r: 7, color: 'green' });
           s.text(`c = ${v.fix(o.c, 1)}`, o.x[0], o.x[1], { dx: 12, dy: -12, ...LBL, color: 'green', align: 'left', plate: true });
+          const LG = [['purple', 'isoquant for y'], ['accent', 'cheapest isocost line'], ['green', 'expansion path / cost-minimizing bundle']];
+          v.legend(view.value === 'cy' ? [...LG, ['ink', 'cost function'], ['muted', 'ray through the point (proportional cost)', { dash: true }]] : [...LG, ['blue', 'conditional labour demand L(w, r, y)'], ['orange', 'conditional capital demand K(w, r, y)']]);
           if (view.value === 'cy') {
             const cmax = Math.max(60, Math.ceil(T.cmin(w, r, 8).c / 20) * 20 + 10);
             g.setView([0, 8], [0, cmax]); g.setLabels('output y', 'cost c(w, r, y)'); g.setTitle('the cost function against output');

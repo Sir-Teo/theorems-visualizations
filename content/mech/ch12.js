@@ -340,7 +340,7 @@ $\theta$ is cyclic, $p_\theta = mr^2\dot\theta$ is the angular momentum, and the
           sR.contour(Hr, [Hr(q.r, q.pr)], { color: 'accent', width: 2, res: 160 });
           series(sR, B.rec.map((z) => z.r), B.rec.map((z) => z.pr), i, { color: 'gold', width: 1, alpha: 0.5 });
           sR.dot(q.r, q.pr, { r: 6, color: 'gold' });
-          sR.corner(`p_θ = ${v.fix(q.L, 4)}`, 'tr', { color: 'ink', plate: true });
+          sR.corner(`pθ = ${v.fix(q.L, 4)}`, 'tr', { color: 'ink', plate: true });
           // conservation strip
           const meas = m === 'side' ? B.rec.map((z) => z.dL) : B.rec.map((z) => z.dH), pred = m === 'side' ? B.rec.map((z) => z.dLp) : B.rec.map((z) => z.dHt);
           let a = 0.05; for (const z of meas) a = Math.max(a, Math.abs(z)); a *= 1.15;

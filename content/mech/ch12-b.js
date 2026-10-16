@@ -274,22 +274,22 @@ More generally, a flow $\dot x = f(x)$ changes volumes at the rate $\frac{d}{dt}
       viz(v) {
         const rS = v.slider('radius of the disc', 0.15, 0.6, 0.38, { step: 0.01, onChange: () => v.restart() });
         const gS = v.slider('friction $\\gamma$', 0, 0.3, 0, { step: 0.005, onChange: () => v.restart() });
-        const TT = 36, DT = 0.02, NP = 2500;
+        const TT = 24, DT = 0.02, NP = 2500;
         const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.8, 2.8], axes: 'box', gutter: true, height: 380, weight: 1.5, xlabel: 'q', ylabel: 'p', xticks: piTicks(-Math.PI, Math.PI) });
-        const sA = v.stage({ x: [0, TT], y: [0.02, 60], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 't', title: 'area and perimeter ÷ initial (log scale)' });
+        const sA = v.stage({ x: [0, TT], y: [0.1, 300], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 't', title: 'area and perimeter ÷ initial (log scale)' });
         const hc = sP.handle(-0.6, 1.85, { color: 'ink', r: 7, constrain: (x, y) => [clamp(x, -2.8, 2.8), clamp(y, -2.2, 2.2)] });
         hc.onDrag = () => v.restart();
         const sim = v.sim(() => {
           const R = rS.value, g = gS.value, cx = hc.x, cy = hc.y, r = v.rng(11), q = new Float64Array(NP), p = new Float64Array(NP);
           for (let k = 0; k < NP; k++) { const a = TAU * r(), rr = R * Math.sqrt(r()); q[k] = cx + rr * Math.cos(a); p[k] = cy + rr * Math.sin(a); }
-          const L = makeLoop({ init: (s) => [cx + R * Math.cos(TAU * s), cy + R * Math.sin(TAU * s)], step: (y, h) => pendStep(y, h, g), h: DT, n0: 200, tol: 0.045, maxPts: 9000 });
+          const L = makeLoop({ init: (s) => [cx + R * Math.cos(TAU * s), cy + R * Math.sin(TAU * s)], step: (y, h) => pendStep(y, h, g), h: DT, n0: 240, tol: 0.06, maxPts: 24000 });
           const A0 = shoelace(L.Y), P0 = perimeter(L.Y);
           return { q, p, L, g, A0, Adisc: Math.PI * R * R, P0, hist: [[0, 1, 1]], n: 0 };
         }, (st, dt) => {
           const y = [0, 0];
           for (let k = 0; k < NP; k++) { y[0] = st.q[k]; y[1] = st.p[k]; pendStep(y, dt, st.g); st.q[k] = y[0]; st.p[k] = y[1]; }
           st.L.advance(); st.n++;
-          if (st.n % 5 === 0) { st.L.refine(600); st.hist.push([st.n * dt, shoelace(st.L.Y) / st.A0, perimeter(st.L.Y) / st.P0]); }
+          if (st.n % 5 === 0) { st.L.refine(2500); if (!st.L.capped) st.hist.push([st.n * dt, shoelace(st.L.Y) / st.A0, perimeter(st.L.Y) / st.P0]); }
         }, { dt: DT });
         let cur = null;
         v.animate((tt) => {
@@ -307,7 +307,7 @@ More generally, a flow $\dot x = f(x)$ changes volumes at the rate $\frac{d}{dt}
           sA.path(st.hist.map((h) => [h[0], h[1]]), { color: 'accent', width: 2.6 });
           sA.vline(t, { color: 'gold' });
           cur = { st, t };
-        }, { period: TT / 3 + 1.5, still: 9 });
+        }, { period: TT / 3 + 1.5, still: 7.5 });
         v.legend([['gold', 'sample states'], ['accent', 'boundary polygon / its area'], ['purple', 'perimeter'], ['red', 'separatrix; $e^{-\\gamma t}$ prediction', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
@@ -464,7 +464,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
         const s = v.stage({ x: PRE.ruth.x, y: PRE.ruth.y, equal: true, axes: 'box', gutter: true, height: 420, xlabel: 'x', ylabel: 'y' });
         const hp = s.handle(-1, 1.2, { color: 'gold', r: 7, label: 'probe', labelPos: 'ne' });
         const cache = memo(); let cur = null;
-        const rays = () => cache(pre.value, () => {
+        const rays = () => cache(pre.value + '|' + s.bounds.x, () => {
           const P = PRE[pre.value], out = [], dt = 0.01;
           for (let i = 0; i < P.n; i++) {
             let y, W;
@@ -479,7 +479,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
             }
             out.push(pts);
           }
-          let wmin = Infinity, wmax = -Infinity; for (const r of out) for (const z of r) { if (z[0] < P.x[0] || z[0] > P.x[1] || z[1] < P.y[0] || z[1] > P.y[1]) continue; wmin = Math.min(wmin, z[2]); wmax = Math.max(wmax, z[2]); }
+          const bx = s.bounds.x, by = s.bounds.y; let wmin = Infinity, wmax = -Infinity; for (const r of out) for (const z of r) { if (z[0] < bx[0] || z[0] > bx[1] || z[1] < by[0] || z[1] > by[1]) continue; wmin = Math.min(wmin, z[2]); wmax = Math.max(wmax, z[2]); }
           const levels = []; for (let c = Math.ceil(wmin / P.dW) * P.dW; c < wmax; c += P.dW) levels.push(c);
           // crossing of each ray with each level
           const cross = levels.map((c) => out.map((r) => { for (let k = 1; k < r.length; k++) if (r[k - 1][2] < c && r[k][2] >= c) { const f = (c - r[k - 1][2]) / (r[k][2] - r[k - 1][2]), A = r[k - 1], B = r[k]; return [A[0] + f * (B[0] - A[0]), A[1] + f * (B[1] - A[1]), A[3] + f * (B[3] - A[3]), A[4] + f * (B[4] - A[4])]; } return null; }));
@@ -518,7 +518,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
         });
         v.readout(() => {
           if (!cur) return 'move the probe near a wavefront';
-          return String.raw`at the probe’s wavefront ($W = ${v.fix(cur.W, 2)}$): angle between the ray and the wavefront = ${v.fix(cur.ang, 2)}° · $|\nabla W| = |p| = ${v.fix(cur.spd, 4)}$ against $\sqrt{2m(E - U)} = ${v.fix(Math.sqrt(2 * (cur.E - cur.Uv)), 4)}$ (the eikonal equation) · ${cur.nlev} wavefronts, spaced by equal steps of $W$`;
+          return String.raw`at the probe’s wavefront ($W = ${v.fix(cur.W, 2)}$): angle between the ray and the wavefront = ${v.fix(cur.ang, 2)}° (a right angle, up to the spacing of the ray fan) · $|\nabla W| = |p| = ${v.fix(cur.spd, 4)}$ against $\sqrt{2m(E - U)} = ${v.fix(Math.sqrt(2 * (cur.E - cur.Uv)), 4)}$ (the eikonal equation) · ${cur.nlev} wavefronts, spaced by equal steps of $W$`;
         });
       },
     },

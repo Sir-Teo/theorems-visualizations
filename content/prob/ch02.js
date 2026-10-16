@@ -1,5 +1,5 @@
 // Probability: Theory and Examples (Durrett) — Chapter 2: Laws of Large Numbers. Part A: §2.1 Independence
-import { clampN, cornerIn, simpson, PHI, PhiN, sampleExp, logInts, convolveGrid, densityOn, linEdges, popcount, setName, hasseLayout, piViolation, lambdaViolation, lambdaRounds, sigmaGen } from './ch02.shared.js';
+import { clampN, cornerIn, simpson, PHI, PhiN, sampleExp, runningMeans, logInts, convolveGrid, densityOn, linEdges, popcount, setName, hasseLayout, piViolation, lambdaViolation, lambdaRounds, sigmaGen } from './ch02.shared.js';
 
 // ---------- helpers local to §2.1 ----------
 /** Ring of pixel radius r around a data point (dots only give filled/hollow markers of one width). */
@@ -498,7 +498,7 @@ A collection that is both is a σ-field. The rays $\{(-\infty,x]:x\in\R\}$ form 
           if (ev) for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) if ((ev[0] >> i) & 1 && (ev[1] >> j) & 1) L.rect(i + 0.55, j + 0.55, i + 1.45, j + 1.45, { color: 'purple', width: 2, radius: 4 });
           for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) {
             const dev = P[i][j] - px[i] * py[j];
-            L.dot(i + 1, j + 1, { r: 3 + 40 * Math.sqrt(P[i][j]) / 2, color: Math.abs(dev) < 1e-12 ? 'accent' : dev > 0 ? 'red' : 'blue', alpha: 0.75 });
+            L.dot(i + 1, j + 1, { r: 3 + 40 * Math.sqrt(P[i][j]) / 2, color: Math.abs(dev) < 1e-12 ? 'green' : dev > 0 ? 'red' : 'blue', alpha: 0.75 });
           }
           const cdf = (x, y) => { let s = 0; for (let i = 0; i < Math.min(x, 5); i++) for (let j = 0; j < Math.min(y, 5); j++) s += P[i][j]; return s; };
           const Fx = (x) => px.slice(0, x).reduce((u, w) => u + w, 0), Fy = (y) => py.slice(0, y).reduce((u, w) => u + w, 0);
@@ -510,7 +510,7 @@ A collection that is both is a σ-field. The rays $\{(-\infty,x]:x\in\R\}$ form 
           let rmx = 0; for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) rmx = Math.max(rmx, Math.abs(D(i, j)) / 1000);
           let evd = null; if (ev) { let pc = 0, pd = 0, pcd = 0; for (let i = 0; i < 5; i++) { if ((ev[0] >> i) & 1) pc += px[i]; if ((ev[1] >> i) & 1) pd += py[i]; for (let j = 0; j < 5; j++) if ((ev[0] >> i) & 1 && (ev[1] >> j) & 1) pcd += P[i][j]; } evd = { C: ev[0], D: ev[1], g: pcd - pc * pd }; }
           st = { mx, rmx, evd, ray: D(sel[0], sel[1]) / 1000 };
-          v.legend([['red', 'cell above product', { dot: true }], ['blue', 'below', { dot: true }], ['accent', 'equal', { dot: true }], ['purple', 'random $C\\times D$']]);
+          v.legend([['red', 'cell above product', { dot: true }], ['blue', 'below', { dot: true }], ['green', 'equal', { dot: true }], ['purple', 'random $C\\times D$']]);
         });
         const set = (m) => `\\{${[1, 2, 3, 4, 5].filter((k) => (m >> (k - 1)) & 1).join(',')}\\}`;
         v.readout(() => st && `Largest ray gap: $${fr(st.rmx, 4)}$; largest gap over all $32\\times32$ pairs from $\\sigma(X)\\times\\sigma(Y)$: $${fr(st.mx, 4)}$.` + (st.evd ? ` Random events $C=${set(st.evd.C)}$, $D=${set(st.evd.D)}$: gap $${fr(st.evd.g, 4)}$.` : '') + (st.rmx < 1e-12 ? ' Rays pass, so everything passes.' : ''));
@@ -614,6 +614,531 @@ That is, the joint distribution function factors into the product of the margina
           v.legend([['gold', 'heads', { area: true }], ['green', 'block event occurs', { area: true }]]);
         });
         v.readout(() => st && (st.ok ? `All product checks pass: the block events are independent` + (!st.link ? '.' : st.cross ? ', although the link crosses blocks: for this event and $p$ the dependence happens to cancel. Try another event or $p$.' : ' (the link stays inside one block, so the block σ-fields $\\mathcal G_i$ are still independent).') : `A check fails: the link joins coins in **different** blocks, so the six coins are no longer independent and Theorem 2.1.9 does not apply.`));
+      },
+    },
+    {
+      num: '2.1.10',
+      kind: 'Theorem',
+      name: 'Functions of disjoint blocks are independent',
+      statement: String.raw`Let $X_{i,j}$, $1\le i\le n$, $1\le j\le m(i)$, be independent random variables and let $f_i:\R^{m(i)}\to\R$ be measurable. Then the variables
+$$Y_i=f_i(X_{i,1},\dots,X_{i,m(i)}),\qquad 1\le i\le n,$$
+are independent. For example, if $X_1,\dots,X_n$ are independent then $X_1$ and $X_2\cdots X_n$ are independent, and $S_n-S_m$ is independent of every event determined by $X_1,\dots,X_m$.`,
+      idea: String.raw`Put $\mathcal F_{i,j}=\sigma(X_{i,j})$ and $\mathcal G_i=\sigma\bigl(\bigcup_j\mathcal F_{i,j}\bigr)$. Each $Y_i$ is $\mathcal G_i$-measurable, and Theorem 2.1.9 makes the $\mathcal G_i$ independent. Variables measurable with respect to independent σ-fields are independent (the $n$-variable form of Theorem 2.1.1(ii)). Disjointness of the blocks is essential: a shared coordinate links the two functions, sometimes in a way that correlation cannot detect.`,
+      caption: String.raw`Four independent uniforms on $(0,1)$. Left: $2000$ seeded pairs $\bigl(f(X_1,X_2),g(\cdot,\cdot)\bigr)$. Right: the histogram of $g$ given that $f$ lies in its lowest third (teal) and in its highest third (orange). For disjoint blocks the two conditional histograms agree up to noise: the value of $f$ tells nothing about $g$. Let $g$ share $X_2$, or both coordinates, and they separate. With $f=X_1+X_2$, $g=X_1-X_2$ ("share both") the correlation is $0$, yet the cloud is a diamond and the conditional laws are plainly different.`,
+      deps: ['prob-2.1.9', 'prob-1.3.5'],
+      tags: ['independence'],
+      viz(v) {
+        const M = v.M;
+        const FF = { sum: { label: '$X_1+X_2$', f: (a, b) => a + b, r: [0, 2] }, max: { label: '$\\max(X_1,X_2)$', f: Math.max, r: [0, 1] }, prod: { label: '$X_1X_2$', f: (a, b) => a * b, r: [0, 1] } };
+        const GG = { diff: { label: '$X_3-X_4$', f: (a, b) => a - b, r: [-1, 1] }, min: { label: '$\\min(X_3,X_4)$', f: Math.min, r: [0, 1] }, dist: { label: '$|X_3-X_4|$', f: (a, b) => Math.abs(a - b), r: [0, 1] } };
+        const fs = v.select('$f=$', Object.entries(FF).map(([value, o]) => ({ value, label: o.label })), 'sum');
+        const gs = v.select('$g=$', Object.entries(GG).map(([value, o]) => ({ value, label: o.label })), 'diff');
+        const sh = v.select('$g$ reads', [{ value: 0, label: '$X_3,X_4$ (disjoint)' }, { value: 1, label: '$X_2,X_4$' }, { value: 2, label: '$X_1,X_2$' }], 0);
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const L = v.stage({ x: [0, 2], y: [-1, 1], height: 320, axes: 'box', gutter: true, xlabel: '$f$', ylabel: '$g$', title: 'pairs $(f,g)$' });
+        const R = v.stage({ x: [-1, 1], y: [0, 2], height: 320, axes: 'box', gutter: true, xlabel: '$g$', title: 'law of $g$ given $f$ low / high' });
+        let cache = null, st = null;
+        v.render(() => {
+          const N = 2000;
+          if (!cache || cache.seed !== seed) { const r = v.rng(seed * 101 + 9); cache = { seed, U: Array.from({ length: N }, () => [r(), r(), r(), r()]) }; }
+          const F = FF[fs.value], G = GG[gs.value], mode = +sh.value;
+          const pts = cache.U.map((u) => { const fv = F.f(u[0], u[1]); const gv = mode === 0 ? G.f(u[2], u[3]) : mode === 1 ? G.f(u[1], u[3]) : G.f(u[0], u[1]); return [fv, gv]; });
+          L.setView(F.r, G.r); R.setView(G.r, null);
+          const fsrt = pts.map((p) => p[0]).sort((a, b) => a - b), q1 = fsrt[Math.floor(N / 3)], q2 = fsrt[Math.floor((2 * N) / 3)];
+          L.vband(F.r[0], q1, { color: 'teal', alpha: 0.1 }); L.vband(q2, F.r[1], { color: 'orange', alpha: 0.1 });
+          L.dots(pts, { r: 1.6, color: 'accent', alpha: 0.45 });
+          const lo = pts.filter((p) => p[0] <= q1).map((p) => p[1]), hi = pts.filter((p) => p[0] >= q2).map((p) => p[1]);
+          const E = linEdges(G.r[0], G.r[1], 16), Hl = densityOn(lo, E), Hh = densityOn(hi, E);
+          const ym = Math.max(...Hl.density, ...Hh.density) * 1.2; R.setView(null, [0, ym]);
+          R.hist(Hl, { density: true, color: 'teal', fillAlpha: 0.25 }); R.hist(Hh, { density: true, color: 'orange', fillAlpha: 0.2 });
+          // two-sample Kolmogorov–Smirnov distance
+          const a = lo.slice().sort((x, y) => x - y), b = hi.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0;
+          while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); }
+          const crit = 1.36 * Math.sqrt((a.length + b.length) / (a.length * b.length));
+          st = { r: M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).r, D, crit, mode };
+          v.legend([['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in lowest third', { area: true }], ['orange', '$g$ given $f$ in highest third', { area: true }]]);
+        });
+        v.readout(() => st && `Sample correlation $${fr(st.r, 3)}$. Distance between the two conditional laws (Kolmogorov–Smirnov) $D=${fr(st.D, 3)}$; noise alone exceeds $${fr(st.crit, 3)}$ only $5\\%$ of the time.` + (st.D > st.crit ? ' **Dependent**' + (Math.abs(st.r) < 0.05 ? ', even though uncorrelated.' : '.') : ' Consistent with independence.'));
+      },
+    },
+    {
+      num: '2.1.11',
+      kind: 'Theorem',
+      name: 'Independence means the joint law is a product measure',
+      statement: String.raw`If $X_1,\dots,X_n$ are independent and $X_i$ has distribution $\mu_i$, then the random vector $(X_1,\dots,X_n)$ has distribution $\mu_1\times\dots\times\mu_n$. Conversely, a vector whose law is a product measure has independent coordinates.`,
+      idea: String.raw`On a box, $P\bigl((X_1,\dots,X_n)\in A_1\times\dots\times A_n\bigr)=\prod_iP(X_i\in A_i)=\prod_i\mu_i(A_i)$, which is the product measure of the box. Boxes form a π-system generating $\mathcal R^n$, so the π–λ theorem (Theorem 2.1.6) forces two probability measures that agree on boxes to agree everywhere. The converse reads the same identity backwards.`,
+      caption: String.raw`Seeded samples of $(X,Y)$ binned on a $12\times12$ grid. Left: the joint histogram. Middle: the outer product of the two marginal histograms, which is what the product measure predicts. Right: standardized residuals $(\text{observed}-\text{expected})/\sqrt{\text{expected}}$. For the independent pair the residuals are pure noise at every sample size, and the $\chi^2$ statistic stays near its degrees of freedom. With the Gaussian copula, or with $Y=0.8X^2+\text{noise}$ (uncorrelated with $X$), a pattern grows with $n$ and $\chi^2$ explodes.`,
+      deps: ['prob-2.1.6', 'prob-1.7.1'],
+      tags: ['independence', 'product measure'],
+      viz(v) {
+        const M = v.M;
+        const law = v.select('law', [{ value: 'ind', label: 'independent' }, { value: 'cop', label: 'Gaussian copula $\\rho$' }, { value: 'sq', label: '$Y=0.8X^2+$noise' }], 'sq');
+        const rho = v.slider('$\\rho$', -0.9, 0.9, 0.4, { step: 0.05 });
+        const nS = v.slider('$n$', 200, 50000, 5000, { log: true, int: true });
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const opt = (t) => ({ x: [-3, 3], y: [0, 4.8], height: 290, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', title: t, minWidth: 220 });
+        const A = v.stage(opt('joint histogram')), B = v.stage(opt('product of marginals')), C = v.stage(opt('standardized residual'));
+        const K = 12, ex = linEdges(-3, 3, K), ey = linEdges(0, 4.8, K);
+        let cache = null, st = null;
+        v.render(() => {
+          rho.el.hidden = law.value !== 'cop';
+          const key = `${law.value}|${rho.value}|${seed}`;
+          if (!cache || cache.key !== key) {
+            const r = v.rng(seed * 7 + 2), p = rho.value, q = Math.sqrt(1 - p * p), pts = [];
+            for (let i = 0; i < 50000; i++) {
+              const z1 = r.normal(), z2 = r.normal();
+              if (law.value === 'ind') pts.push([z1, sampleExp(r)]);
+              else if (law.value === 'cop') pts.push([z1, -Math.log(Math.max(1e-300, 1 - PhiN(M, p * z1 + q * z2)))]);
+              else pts.push([z1, 0.8 * z1 * z1 + 0.4 * sampleExp(r)]);
+            }
+            cache = { key, pts };
+          }
+          const n = Math.round(nS.value), O = Array.from({ length: K }, () => new Array(K).fill(0)); let tot = 0;
+          for (let k = 0; k < n; k++) { const [x, y] = cache.pts[k]; const i = Math.floor(((x + 3) / 6) * K), j = Math.floor((y / 4.8) * K); if (i >= 0 && i < K && j >= 0 && j < K) { O[i][j]++; tot++; } }
+          const rs = O.map((row) => row.reduce((a, b) => a + b, 0)), cs = O[0].map((_, j) => O.reduce((a, row) => a + row[j], 0));
+          const Ex = (i, j) => (rs[i] * cs[j]) / tot;
+          let mx = 0; for (let i = 0; i < K; i++) for (let j = 0; j < K; j++) mx = Math.max(mx, O[i][j], Ex(i, j));
+          let chi = 0, df = 0;
+          for (let i = 0; i < K; i++) for (let j = 0; j < K; j++) {
+            const e = Ex(i, j), z = e > 0 ? (O[i][j] - e) / Math.sqrt(e) : 0;
+            A.rect(ex[i], ey[j], ex[i + 1], ey[j + 1], { fill: v.ramp(Math.sqrt(O[i][j] / mx), 'accent'), fillAlpha: 1, stroke: false });
+            B.rect(ex[i], ey[j], ex[i + 1], ey[j + 1], { fill: v.ramp(Math.sqrt(e / mx), 'accent'), fillAlpha: 1, stroke: false });
+            if (e > 0) C.rect(ex[i], ey[j], ex[i + 1], ey[j + 1], { fill: v.diverge(clampN(z / 4, -1, 1), 'blue', 'red'), fillAlpha: 1, stroke: false });
+            if (e >= 1) { chi += (O[i][j] - e) ** 2 / e; df++; }
+          }
+          const dof = Math.max(1, (rs.filter((x) => x > 0).length - 1) * (cs.filter((x) => x > 0).length - 1));
+          const pval = M.gammaQ(dof / 2, chi / 2);
+          st = { chi, dof, pval, tot, n };
+          v.legend([['accent', 'counts (darker = more)', { area: true }], ['red', 'more than the product predicts', { area: true }], ['blue', 'fewer', { area: true }]]);
+        });
+        v.readout(() => st && `$n=${st.n}$ ($${st.tot}$ in the window): $\\chi^2=${fr(st.chi, 1)}$ on $${st.dof}$ degrees of freedom, p-value $${st.pval < 1e-300 ? '<10^{-300}' : st.pval < 1e-4 ? v.sci(st.pval, 2) : fr(st.pval, 3)}$` + (st.pval < 0.01 ? ' — the joint law is **not** the product of its marginals.' : ' — consistent with a product measure.'));
+      },
+    },
+    {
+      num: '2.1.12',
+      kind: 'Theorem',
+      name: 'Expectation of h(X, Y) for independent X, Y',
+      statement: String.raw`Let $X$ and $Y$ be independent with distributions $\mu$ and $\nu$. If $h:\R^2\to\R$ is measurable and either $h\ge0$ or $E|h(X,Y)|<\infty$, then
+$$Eh(X,Y)=\iint h(x,y)\,\mu(dx)\,\nu(dy).$$
+In particular, if $f,g$ are measurable with $f,g\ge0$, or with $E|f(X)|,E|g(Y)|<\infty$, then $E\,f(X)g(Y)=Ef(X)\cdot Eg(Y)$.`,
+      idea: String.raw`By Theorem 2.1.11 the law of $(X,Y)$ is $\mu\times\nu$. The change-of-variables formula (Theorem 1.6.9) turns $Eh(X,Y)$ into $\int h\,d(\mu\times\nu)$, and Fubini's theorem (Theorem 1.7.2) evaluates that as an iterated integral, in either order. For $h=f(x)g(y)$ the inner integral is $g(y)\,Ef(X)$, which leaves $Ef(X)\,Eg(Y)$. The integrable case follows by applying the nonnegative case to $|f|$ and $|g|$.`,
+      caption: String.raw`$X$ is exponential with mean $1$ and $Y$ is uniform on $(0,2)$. Left: the function $h$ as a heat map, with $300$ seeded pairs. The gold handle picks a horizontal slice $y$. Right: the inner integral $y\mapsto\int h(x,y)\,\mu(dx)$; averaging it over $\nu$ (the shaded area divided by $2$) gives $Eh(X,Y)$. The readout compares both iterated integrals with a Monte Carlo mean of $20000$ pairs. Turn on "dependent": $Y=2(1-e^{-X})$ is still uniform on $(0,2)$, but the Monte Carlo mean moves away from the iterated integral, which knows only the marginals.`,
+      deps: ['prob-2.1.11', 'prob-1.7.2', 'prob-1.6.9'],
+      tags: ['independence', 'expectation'],
+      viz(v) {
+        const HS = {
+          ind: { label: '$1\\{x+y\\le2\\}$', h: (x, y) => (x + y <= 2 ? 1 : 0) },
+          absd: { label: '$|x-y|$', h: (x, y) => Math.abs(x - y) },
+          max: { label: '$\\max(x,y)$', h: Math.max },
+          cos: { label: '$\\cos(2x+y)$', h: (x, y) => Math.cos(2 * x + y) },
+        };
+        const hs = v.select('$h=$', Object.entries(HS).map(([value, o]) => ({ value, label: o.label })), 'absd');
+        const dep = v.toggle('dependent: $Y=2(1-e^{-X})$', false);
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const L = v.stage({ x: [0, 5], y: [0, 2], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', title: '$h(x,y)$ and seeded pairs' });
+        const R = v.stage({ x: [0, 2], y: [0, 2], height: 320, axes: 'box', gutter: true, xlabel: '$y$', title: 'inner integral $\\int h(x,y)\\,e^{-x}dx$' });
+        const hy = L.handle(4.85, 0.7, { color: 'gold', constrain: (x, y) => [4.85, clampN(y, 0.01, 1.99)] });
+        const cache = {}; let st = null, mc = null;
+        const inner = (h, y) => { let s = 0; const n = 3000, H = 30 / n; for (let i = 0; i < n; i++) { const x = (i + 0.5) * H; s += h(x, y) * Math.exp(-x) * H; } return s; };
+        v.render(() => {
+          const H = HS[hs.value].h;
+          if (!cache[hs.value]) {
+            const ys = Array.from({ length: 101 }, (_, i) => (2 * i) / 100), g = ys.map((y) => inner(H, y));
+            let I1 = 0; for (let i = 0; i < 400; i++) I1 += inner(H, ((i + 0.5) * 2) / 400) / 400; // ∫∫ dx then dy (ν has density 1/2)
+            let I2 = 0; const nx = 1500; for (let i = 0; i < nx; i++) { const x = ((i + 0.5) * 25) / nx; let k = 0; for (let j = 0; j < 200; j++) k += H(x, ((j + 0.5) * 2) / 200) / 200; I2 += k * Math.exp(-x) * (25 / nx); }
+            let lo = Infinity, hi = -Infinity; for (let i = 0; i <= 50; i++) for (let j = 0; j <= 20; j++) { const z = H(i / 10, j / 10); lo = Math.min(lo, z); hi = Math.max(hi, z); }
+            cache[hs.value] = { ys, g, I1, I2, lo, hi };
+          }
+          const c = cache[hs.value];
+          const mkey = `${hs.value}|${dep.value}|${seed}`;
+          if (!mc || mc.key !== mkey) {
+            const r = v.rng(seed * 19 + 4); let s = 0, s2 = 0; const pts = [];
+            for (let i = 0; i < 20000; i++) { const x = sampleExp(r), y = dep.value ? 2 * (1 - Math.exp(-x)) : 2 * r(); const z = H(x, y); s += z; s2 += z * z; if (i < 300) pts.push([x, y]); }
+            const m = s / 20000; mc = { key: mkey, m, se: Math.sqrt((s2 / 20000 - m * m) / 20000), pts };
+          }
+          L.raster((x, y) => v.ramp(0.15 + 0.7 * (H(x, y) - c.lo) / (c.hi - c.lo || 1), 'teal'), { key: hs.value, res: 3 });
+          L.hline(hy.y, { color: 'gold', width: 2, dash: [6, 4] });
+          L.dots(mc.pts, { r: 2.2, color: dep.value ? 'red' : 'ink', alpha: 0.7 });
+          const gmin = Math.min(0, ...c.g), gmax = Math.max(...c.g, 0.1);
+          R.setView(null, [gmin - 0.08 * (gmax - gmin), gmax + 0.12 * (gmax - gmin)]);
+          R.between((y) => c.g[Math.round(y * 50)], () => 0, 0, 2, { fill: 'green', fillAlpha: 0.2, n: 100 });
+          R.path(c.ys.map((y, i) => [y, c.g[i]]), { color: 'green', width: 2.4 });
+          R.hline(c.I1, { color: 'accent', dash: [6, 4], width: 1.6 });
+          R.text('average = Eh', 1.98, c.I1 + 0.04 * (gmax - gmin), { align: 'right', size: 11, color: 'accent', baseline: 'bottom' });
+          const gy = inner(H, hy.y); R.dot(hy.y, gy, { r: 5.5, color: 'gold' });
+          st = { I1: c.I1, I2: c.I2, m: mc.m, se: mc.se, y: hy.y, gy, dep: dep.value };
+          v.legend([['teal', '$h$ (darker = larger)', { area: true }], [dep.value ? 'red' : 'ink', 'seeded pairs', { dot: true }], ['green', 'inner integral'], ['accent', 'its $\\nu$-average', { dash: true }]]);
+        });
+        v.readout(() => st && `$\\int\\!\\bigl(\\int h\\,d\\mu\\bigr)d\\nu=${fr(st.I1, 4)}$, $\\ \\int\\!\\bigl(\\int h\\,d\\nu\\bigr)d\\mu=${fr(st.I2, 4)}$; Monte Carlo $Eh(X,Y)\\approx${fr(st.m, 4)}\\pm${fr(2 * st.se, 4)}$` + (st.dep ? ' — off, because the pairs are not independent.' : (Math.abs(st.m - st.I1) < 3 * st.se + 2e-3 ? ' — agreement.' : '.')) + ` Slice $y=${fr(st.y, 2)}$: inner integral $${fr(st.gy, 4)}$.`);
+      },
+    },
+    {
+      num: '2.1.13',
+      kind: 'Theorem',
+      name: 'Expectations of independent products factor',
+      statement: String.raw`If $X_1,\dots,X_n$ are independent and either (a) $X_i\ge0$ for all $i$, or (b) $E|X_i|<\infty$ for all $i$, then the expectation of the product exists and
+$$E\Bigl(\prod_{i=1}^nX_i\Bigr)=\prod_{i=1}^nEX_i.$$
+The converse fails: $E(XY)=EX\,EY$ (uncorrelated variables) does not imply independence.`,
+      idea: String.raw`By Theorem 2.1.10, $X_1$ and $X_2\cdots X_n$ are independent. Theorem 2.1.12 with $f=g=|\cdot|$ gives $E|X_1\cdots X_n|=E|X_1|\,E|X_2\cdots X_n|$, and induction shows this is $\prod_iE|X_i|<\infty$. Then Theorem 2.1.12 with $f(x)=x$, $g(y)=y$ splits off one factor at a time. For the converse, a symmetric table with $XY\equiv0$ has $E(XY)=0=EX\,EY$ but $P(X=1,Y=1)=0<P(X=1)P(Y=1)$.`,
+      caption: String.raw`Left: running averages of $X_1X_2X_3$ along 10 seeded paths. The $X_i$ are normal with means $1,2,1.5$ and standard deviations $1,1.5,1$, so $EX_1\,EX_2\,EX_3=3$ (green). The slider $c$ mixes a **shared** normal factor into all three. At $c=0$ the paths settle on $3$. For $c>0$ they settle on the true $E(X_1X_2X_3)$ (red), which is larger: dependence breaks the identity. Right: Durrett's Example 2.1.14. Drag $a$ and $b$. Since $XY\equiv0$, $E(XY)=0=EX\,EY$, yet the corner cell is $0$ while the product of its marginals is $ab$.`,
+      deps: ['prob-2.1.12', 'prob-2.1.10'],
+      tags: ['independence', 'expectation'],
+      viz(v) {
+        const cS = v.slider('shared factor $c$', 0, 0.9, 0, { step: 0.05 });
+        const aS = v.slider('$a$', 0.02, 0.24, 0.12, { step: 0.01 }), bS = v.slider('$b$', 0.02, 0.24, 0.2, { step: 0.01 });
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const L = v.stage({ x: [10, 20000], xlog: true, y: [0, 6], height: 320, weight: 1.35, axes: 'box', gutter: true, xlabel: '$n$', title: 'running average of $X_1X_2X_3$' });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'uncorrelated, not independent' });
+        const T = v.table(R, { rows: 3, cols: 3, maxCell: 62, size: 14, rowLabels: ['X=1', 'X=0', 'X=−1'], colLabels: ['Y=1', 'Y=0', 'Y=−1'], cornerLabel: '' });
+        const m = [1, 2, 1.5], s = [1, 1.5, 1];
+        let cache = null, st = null;
+        v.render(() => {
+          const c = cS.value, key = `${c}|${seed}`;
+          if (!cache || cache.key !== key) {
+            const r = v.rng(seed * 23 + 1), paths = [], sc = Math.sqrt(c), sq = Math.sqrt(1 - c);
+            for (let p = 0; p < 10; p++) { const xs = new Float64Array(20000); for (let k = 0; k < 20000; k++) { const z0 = r.normal(); let pr = 1; for (let i = 0; i < 3; i++) pr *= m[i] + s[i] * (sc * z0 + sq * r.normal()); xs[k] = pr; } paths.push(runningMeans(xs)); }
+            cache = { key, paths };
+          }
+          const truth = m[0] * m[1] * m[2] + c * (m[0] * s[1] * s[2] + m[1] * s[0] * s[2] + m[2] * s[0] * s[1]);
+          L.setView(null, [0, Math.max(6, truth + 2.5)]);
+          L.hline(3, { color: 'green', width: 2.2, dash: [7, 4] });
+          if (c > 0) L.hline(truth, { color: 'red', width: 2.2, dash: [3, 3] });
+          cache.paths.forEach((P, i) => L.path(P, { color: i % 2 ? 'accent' : 'teal', width: 1.3, alpha: 0.75 }));
+          const a = aS.value, b = bS.value, cc = 1 - 2 * a - 2 * b;
+          const P = [[0, a, 0], [b, cc, b], [0, a, 0]], px = P.map((rw) => rw[0] + rw[1] + rw[2]), py = [0, 1, 2].map((j) => P[0][j] + P[1][j] + P[2][j]);
+          T.draw({ value: (i, j) => P[i][j].toFixed(2), sub: (i, j) => (px[i] * py[j]).toFixed(3), fill: (i, j) => (Math.abs(P[i][j] - px[i] * py[j]) < 1e-12 ? ['green', 0.25] : ['red', 0.25]), highlight: [[0, 0, 'red']] });
+          const ends = cache.paths.map((P) => P[P.length - 1][1]);
+          st = { truth, c, mean: ends.reduce((u, w) => u + w, 0) / ends.length, a, b };
+          v.legend([['green', '$EX_1\\,EX_2\\,EX_3=3$', { dash: true }], ['red', 'true $E(X_1X_2X_3)$', { dash: true }], ['accent', 'running averages']]);
+        });
+        v.readout(() => st && `Average of the 10 paths at $n=20000$: $${fr(st.mean, 3)}$; $E(X_1X_2X_3)=${fr(st.truth, 3)}$` + (st.c === 0 ? ' $=EX_1EX_2EX_3$.' : ` $\\ne EX_1EX_2EX_3=3$.`) + ` Table: $E(XY)=0=EX\\cdot EY$, but $P(X=1,Y=1)=0\\ne ab=${fr(st.a * st.b, 4)}$ (small numbers: products of marginals).`);
+      },
+    },
+    {
+      num: '2.1.15',
+      kind: 'Theorem',
+      name: 'The law of a sum is a convolution',
+      statement: String.raw`If $X$ and $Y$ are independent with distribution functions $F(x)=P(X\le x)$ and $G(y)=P(Y\le y)$, then
+$$P(X+Y\le z)=\int F(z-y)\,dG(y),$$
+where $dG(y)$ means integration against the law of $Y$. The right-hand side is the **convolution** $F*G(z)$.`,
+      idea: String.raw`Apply Theorem 2.1.12 to $h(x,y)=1\{x+y\le z\}$. For fixed $y$ the inner integral is $\mu\bigl((-\infty,z-y]\bigr)=F(z-y)$, and integrating over $y$ against $\nu$ gives the formula. The half-plane $\{x+y\le z\}$ is sliced into vertical-in-$x$ pieces, one for each value of $Y$.`,
+      caption: String.raw`Watch $z$ sweep, or pause and drag the gold point. Left: the integrand as a function of $y$. The black curve is $F(z-y)$; the orange curve (or stems, for an atomic $Y$) is the law $dG$ of $Y$; the green shading is their product. Its total, $\int F(z-y)\,dG(y)$, is one point of the curve on the right. Right: that convolution (blue) against the empirical distribution function of $4000$ seeded sums $X+Y$ (gold steps). Atoms of $Y$ show up as kinks that move with $z$.`,
+      deps: ['prob-2.1.12'],
+      see: ['rca-8.13'],
+      tags: ['independence', 'convolution'],
+      viz(v) {
+        const M = v.M;
+        const FX = {
+          exp: { label: 'exponential', F: (x) => (x <= 0 ? 0 : 1 - Math.exp(-x)), s: (r) => sampleExp(r) },
+          norm: { label: 'normal', F: (x) => PhiN(M, x / 0.6), s: (r) => 0.6 * r.normal() },
+          unif: { label: 'uniform', F: (x) => clampN(x, 0, 1), s: (r) => r() },
+        };
+        const GY = {
+          unif: { label: 'uniform(0,2)', dens: (y) => (y >= 0 && y <= 2 ? 0.5 : 0), sup: [0, 2], s: (r) => 2 * r() },
+          atoms: { label: 'atoms 0, 1, 2.5', atoms: [[0, 0.5], [1, 0.3], [2.5, 0.2]], s: (r) => { const u = r(); return u < 0.5 ? 0 : u < 0.8 ? 1 : 2.5; } },
+          exp: { label: 'exponential(2)', dens: (y) => (y >= 0 ? 2 * Math.exp(-2 * y) : 0), sup: [0, 9], s: (r) => sampleExp(r, 2) },
+        };
+        const fx = v.select('$X$', Object.entries(FX).map(([value, o]) => ({ value, label: o.label })), 'exp');
+        const gy = v.select('$Y$', Object.entries(GY).map(([value, o]) => ({ value, label: o.label })), 'atoms');
+        const L = v.stage({ x: [-1, 4], y: [0, 1.15], height: 320, axes: 'box', gutter: true, xlabel: '$y$', title: 'integrand: $F(z-y)$ against $dG(y)$' });
+        const R = v.stage({ x: [-1.5, 6], y: [0, 1.05], height: 320, axes: 'box', gutter: true, xlabel: '$z$', title: '$P(X+Y\\le z)=F*G(z)$' });
+        let curve = null, emp = null, zc = 1.6;
+        const conv = (F, G, z) => (G.atoms ? G.atoms.reduce((s, [y, p]) => s + p * F(z - y), 0) : simpson((y) => F(z - y) * G.dens(y), G.sup[0], G.sup[1], 600));
+        const hz = R.handle(1.6, 0.5, { color: 'gold', constrain: (x) => { const z = clampN(x, -1.4, 5.9); return [z, curve ? conv(FX[fx.value].F, GY[gy.value], z) : 0.5]; } });
+        hz.onDrag = () => { v.pause(); };
+        let st = null;
+        v.animate((t) => {
+          const F = FX[fx.value], G = GY[gy.value], key = fx.value + gy.value;
+          if (!curve || curve.key !== key) {
+            curve = { key, pts: Array.from({ length: 241 }, (_, i) => { const z = -1.5 + (7.5 * i) / 240; return [z, conv(F.F, G, z)]; }) };
+            const r = v.rng(11), xs = Array.from({ length: 4000 }, () => F.s(r) + G.s(r)).sort((a, b) => a - b);
+            emp = []; xs.forEach((x, i) => { emp.push([x, i / 4000], [x, (i + 1) / 4000]); });
+          }
+          if (v.playing) { zc = -1 + 6.5 * ((t % 9) / 9); hz.set(zc, conv(F.F, G, zc)); } else zc = hz.x;
+          const z = zc, Fz = (y) => F.F(z - y);
+          if (G.atoms) {
+            for (const [y, p] of G.atoms) { L.line(y, 0, y, p, { color: 'orange', width: 3 }); L.dot(y, p, { r: 4.5, color: 'orange' }); L.line(y, 0, y, p * Fz(y), { color: 'green', width: 9, alpha: 0.6 }); }
+          } else {
+            const gm = Math.max(...Array.from({ length: 50 }, (_, i) => G.dens(G.sup[0] + (i / 49) * (Math.min(G.sup[1], 4) - G.sup[0]))));
+            const sc = 1 / gm;
+            L.between((y) => G.dens(y) * sc * Fz(y), () => 0, -1, 4, { fill: 'green', fillAlpha: 0.35, n: 400 });
+            L.fn((y) => G.dens(y) * sc, { color: 'orange', width: 2.2, n: 400 });
+            L.text(`density × ${fr(sc, 1)}`, 3.95, 1.1, { align: 'right', size: 10.5, color: 'orange' });
+          }
+          L.fn(Fz, { color: 'ink', width: 2.2, n: 400 });
+          L.vline(z, { color: 'gold', dash: [4, 4], width: 1.4 });
+          L.text('y = z', z + 0.05, 1.1, { size: 10.5, color: 'gold' });
+          R.path(emp, { color: 'gold', width: 1.6 });
+          R.path(curve.pts, { color: 'accent', width: 2.4 });
+          const val = conv(F.F, G, z);
+          R.line(z, 0, z, val, { color: 'green', width: 2, dash: [4, 3] });
+          let e = 0; for (const [x, q] of emp) if (x <= z) e = q;
+          st = { z, val, e };
+          v.legend([['ink', '$F(z-y)$'], ['orange', '$dG(y)$'], ['green', 'product', { area: true }], ['accent', '$F*G$'], ['gold', 'empirical, 4000 sums']]);
+        }, { period: 9, still: 3.8 });
+        v.readout(() => st && `$z=${fr(st.z, 2)}$: $\\int F(z-y)\\,dG(y)=${fr(st.val, 4)}$; fraction of the $4000$ seeded sums $\\le z$: $${fr(st.e, 4)}$.`);
+      },
+    },
+    {
+      num: '2.1.16',
+      kind: 'Theorem',
+      name: 'Convolution with a density gives a density',
+      statement: String.raw`Suppose $X$ has density $f$, $Y$ has distribution function $G$, and $X,Y$ are independent. Then $X+Y$ has density
+$$h(x)=\int f(x-y)\,dG(y).$$
+When $Y$ also has a density $g$ this reads $h(x)=\int f(x-y)\,g(y)\,dy$.`,
+      idea: String.raw`Write $F(z-y)=\int_{-\infty}^zf(x-y)\,dx$ inside Theorem 2.1.15 and swap the two integrals by Fubini's theorem (everything is nonnegative). This gives $P(X+Y\le z)=\int_{-\infty}^z\bigl(\int f(x-y)\,dG(y)\bigr)dx$. Smoothness belongs to the sum as soon as one summand has it: adding an independent continuous variable spreads every atom of $Y$ into a copy of $f$.`,
+      caption: String.raw`Left: $Y$ is a discrete law with three atoms. Drag their tops to move them and change their weights (normalized to total $1$). Right: the density $h(x)=\sum_kP(Y=y_k)\,f(x-y_k)$ of $X+Y$ (blue), its three pieces (dashed) and the histogram of $5000$ seeded sums. $Y$ has no density at all, yet $X+Y$ has one. Narrow the width of $f$ and the pieces separate, but the sum never has an atom.`,
+      deps: ['prob-2.1.15', 'prob-1.7.2'],
+      see: ['rca-8.14'],
+      tags: ['convolution'],
+      viz(v) {
+        const FS = {
+          unif: { label: 'uniform', f: (x, w) => (Math.abs(x) <= w / 2 ? 1 / w : 0), s: (r, w) => w * (r() - 0.5) },
+          tri: { label: 'triangular', f: (x, w) => Math.max(0, (1 - Math.abs(x) / w) / w), s: (r, w) => w * (r() - r()) },
+          norm: { label: 'normal', f: (x, w) => PHI(x / (w / 2)) / (w / 2), s: (r, w) => (w / 2) * r.normal() },
+        };
+        const fsel = v.select('$f$', Object.entries(FS).map(([value, o]) => ({ value, label: o.label })), 'unif');
+        const wS = v.slider('width of $f$', 0.2, 3, 1.4, { step: 0.05 });
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const L = v.stage({ x: [-1, 5], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: '$y$', title: 'law of $Y$: drag the atoms' });
+        const R = v.stage({ x: [-2.5, 6.5], y: [0, 0.8], height: 300, weight: 1.4, axes: 'box', gutter: true, xlabel: '$x$', title: 'density of $X+Y$' });
+        const H = [[0, 0.5], [1.6, 0.3], [3.4, 0.6]].map(([x, y], k) => L.handle(x, y, { color: ['accent', 'purple', 'teal'][k], constrain: (a, b) => [clampN(a, -0.8, 4.8), clampN(b, 0.05, 0.95)] }));
+        let st = null;
+        v.render(() => {
+          const F = FS[fsel.value], w = wS.value, tot = H.reduce((s, h) => s + h.y, 0), at = H.map((h) => [h.x, h.y / tot]);
+          at.forEach(([y, p], k) => { const col = ['accent', 'purple', 'teal'][k]; L.line(y, 0, y, H[k].y, { color: col, width: 3 }); L.text(fr(p, 2), y, H[k].y + 0.06, { align: 'center', size: 11, color: col }); });
+          const h = (x) => at.reduce((s, [y, p]) => s + p * F.f(x - y, w), 0);
+          const r = v.rng(seed * 41 + 3), cum = [at[0][1], at[0][1] + at[1][1]];
+          const xs = Array.from({ length: 5000 }, () => { const u = r(); const k = u < cum[0] ? 0 : u < cum[1] ? 1 : 2; return at[k][0] + F.s(r, w); });
+          const Hs = densityOn(xs, linEdges(-2.5, 6.5, 72));
+          let peak = 0; for (let i = 0; i <= 300; i++) peak = Math.max(peak, h(-2.5 + (9 * i) / 300));
+          R.setView(null, [0, Math.max(peak, ...Hs.density) * 1.15]);
+          R.hist(Hs, { density: true, color: 'gold', fillAlpha: 0.3 });
+          at.forEach(([y, p], k) => R.fn((x) => p * F.f(x - y, w), { color: ['accent', 'purple', 'teal'][k], dash: [5, 4], width: 1.4, n: 500 }));
+          R.fn(h, { color: 'accent', width: 2.6, n: 900 });
+          const integral = simpson(h, -8, 12, 4000);
+          let l1 = 0; Hs.density.forEach((d, i) => { const c = (Hs.edges[i] + Hs.edges[i + 1]) / 2; l1 += Math.abs(d - h(c)) * (Hs.edges[1] - Hs.edges[0]); });
+          st = { integral, l1, p: at.map((a) => a[1]) };
+          v.legend([['accent', '$h=\\int f(\\cdot-y)\\,dG(y)$'], ['gold', '5000 seeded sums', { area: true }]]);
+        });
+        v.readout(() => st && `$\\int h=${fr(st.integral, 4)}$; histogram vs $h$: $L^1$ distance $${fr(st.l1, 3)}$ (sampling noise). $P(Y=y_k)=${st.p.map((p) => fr(p, 2)).join(', ')}$, but $P(X+Y=x)=0$ for every $x$.`);
+      },
+    },
+    {
+      num: '2.1.18',
+      kind: 'Theorem',
+      name: 'Sums of independent gammas are gamma',
+      statement: String.raw`Let the gamma$(\alpha,\lambda)$ law have density $\lambda^\alpha x^{\alpha-1}e^{-\lambda x}/\Gamma(\alpha)$ on $x\ge0$. If $X$ is gamma$(\alpha,\lambda)$ and $Y$ is gamma$(\beta,\lambda)$, independent, then $X+Y$ is gamma$(\alpha+\beta,\lambda)$. In particular the sum of $n$ independent exponential$(\lambda)$ variables is gamma$(n,\lambda)$.`,
+      idea: String.raw`By Theorem 2.1.16 the density of $X+Y$ is $\frac{\lambda^{\alpha+\beta}e^{-\lambda x}}{\Gamma(\alpha)\Gamma(\beta)}\int_0^x(x-y)^{\alpha-1}y^{\beta-1}dy$, and the substitution $y=xu$ turns the integral into $x^{\alpha+\beta-1}B(\alpha,\beta)$. So the density has the gamma$(\alpha+\beta,\lambda)$ shape. Only one constant makes it integrate to $1$, which forces $B(\alpha,\beta)=\Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$. An exponential$(\lambda)$ is gamma$(1,\lambda)$, and induction gives the second statement.`,
+      caption: String.raw`"Add exponentials": slide $n$ to add one more exponential$(\lambda)$. The previous sum's density (grey) is convolved **numerically** with the exponential density (thin orange). The result (blue) lies on the gamma$(n,\lambda)$ formula (green dashed) and on the histogram of $6000$ seeded sums. "Two gammas": choose $\alpha$ and $\beta$; the two summand densities are drawn thin. The readout reports the largest gap between the numerical convolution and the formula.`,
+      deps: ['prob-2.1.16'],
+      tags: ['convolution', 'distributions'],
+      viz(v) {
+        const M = v.M;
+        const mode = v.select('mode', [{ value: 'exp', label: 'add exponentials' }, { value: 'gam', label: 'two gammas' }], 'exp');
+        const nS = v.slider('$n$', 1, 12, 4, { int: true });
+        const aS = v.slider('$\\alpha$', 0.5, 6, 1.5, { step: 0.1 }), bS = v.slider('$\\beta$', 0.5, 6, 2.5, { step: 0.1 });
+        const lS = v.slider('$\\lambda$', 0.5, 3, 1, { step: 0.05 });
+        let seed = 1; v.button('Resample', () => { seed++; });
+        const S = v.stage({ x: [0, 10], y: [0, 0.6], height: 330, axes: 'box', gutter: true, xlabel: '$x$', title: 'density of the sum' });
+        const dx = 0.02, NG = 2000; // grid in units of 1/λ
+        const cellMass = (a) => Float64Array.from({ length: NG }, (_, i) => M.gammaP(a, (i + 1) * dx) - M.gammaP(a, i * dx));
+        const E1 = cellMass(1), chain = [null, { m: E1, off: 0.5 }];
+        const getChain = (n) => { while (chain.length <= n) { const prev = chain[chain.length - 1], c = convolveGrid(prev.m, E1, 1); chain.push({ m: c.ys.slice(0, NG), off: prev.off + 0.5 }); } return chain[n]; };
+        const gpdf = (a, x) => (x <= 0 ? 0 : Math.exp((a - 1) * Math.log(x) - x - M.lgamma(a)));
+        let gcache = null, st = null;
+        v.render(() => {
+          const ex = mode.value === 'exp', lam = lS.value;
+          nS.el.hidden = !ex; aS.el.hidden = ex; bS.el.hidden = ex;
+          let num, k, parts;
+          if (ex) { const n = nS.value; const c = getChain(n); num = { m: c.m, off: c.off }; k = n; parts = n > 1 ? [{ m: getChain(n - 1).m, off: getChain(n - 1).off, col: 'muted', dash: true }] : []; }
+          else {
+            const a = aS.value, b = bS.value, key = `${a}|${b}`;
+            if (!gcache || gcache.key !== key) { const A = cellMass(a), B = cellMass(b), c = convolveGrid(A, B, 1); gcache = { key, A, B, m: c.ys.slice(0, NG) }; }
+            num = { m: gcache.m, off: 1 }; k = a + b; parts = [{ m: gcache.A, off: 0.5, col: 'teal' }, { m: gcache.B, off: 0.5, col: 'purple' }];
+          }
+          const xmax = (k + 4.5 * Math.sqrt(k) + 2) / lam;
+          const toPts = (P) => { const out = []; for (let i = 0; i < NG; i++) { const x = (i + P.off) * dx / lam; if (x > xmax) break; out.push([x, (P.m[i] / dx) * lam]); } return out; };
+          const numPts = toPts(num);
+          const r = v.rng(seed * 3 + 5), smp = [];
+          const GA = M.dist.gamma(aS.value, 1 / lam), GB = M.dist.gamma(bS.value, 1 / lam);
+          for (let j = 0; j < 6000; j++) { if (ex) { let s = 0; for (let i = 0; i < k; i++) s += sampleExp(r, lam); smp.push(s); } else smp.push(GA.sample(r) + GB.sample(r)); }
+          const Hs = densityOn(smp, linEdges(0, xmax, 60));
+          let peak = 0; for (const p of numPts) peak = Math.max(peak, p[1]);
+          const ymax = Math.min(Math.max(peak, ...Hs.density) * 1.15, 4 * peak + 0.1);
+          S.setView([0, xmax], [0, ymax]);
+          S.hist(Hs, { density: true, color: 'gold', fillAlpha: 0.28 });
+          for (const P of parts) S.path(toPts(P), { color: P.col, width: 1.4, dash: P.dash ? [4, 4] : null });
+          if (ex) S.fn((x) => lam * Math.exp(-lam * x), { color: 'orange', width: 1.2, alpha: 0.7 });
+          S.path(numPts, { color: 'accent', width: 3 });
+          S.fn((x) => lam * gpdf(k, lam * x), { color: 'green', width: 2, dash: [7, 4], n: 500 });
+          let sup = 0; for (const [x, y] of numPts) if (x > 0.05 / lam) sup = Math.max(sup, Math.abs(y - lam * gpdf(k, lam * x)));
+          st = { sup, k, lam, peak, ex };
+          v.legend(ex ? [['muted', 'previous sum', { dash: true }], ['orange', 'exponential$(\\lambda)$'], ['accent', 'numerical convolution'], ['green', `gamma$(${k},\\lambda)$ formula`, { dash: true }], ['gold', '6000 seeded sums', { area: true }]]
+            : [['teal', 'gamma$(\\alpha,\\lambda)$'], ['purple', 'gamma$(\\beta,\\lambda)$'], ['accent', 'numerical convolution'], ['green', 'gamma$(\\alpha+\\beta,\\lambda)$', { dash: true }], ['gold', '6000 seeded sums', { area: true }]]);
+        });
+        v.readout(() => st && `Largest gap between the numerical convolution and the gamma$(${fr(st.k, 1)},${fr(st.lam, 2)})$ density: $${fr(st.sup, 4)}$ (peak height $${fr(st.peak, 3)}$; grid step $0.02/\\lambda$). Mean $${fr(st.k / st.lam, 3)}$, variance $${fr(st.k / st.lam / st.lam, 3)}$.`);
+      },
+    },
+    {
+      num: '2.1.20',
+      kind: 'Theorem',
+      name: 'Sums of independent normals are normal',
+      statement: String.raw`Write normal$(\mu,a)$ for the normal law with mean $\mu$ and **variance** $a$, density $(2\pi a)^{-1/2}e^{-(x-\mu)^2/2a}$. If $X$ is normal$(\mu,a)$ and $Y$ is normal$(\nu,b)$, independent, then $X+Y$ is normal$(\mu+\nu,a+b)$.`,
+      idea: String.raw`Shift to $\mu=\nu=0$ and use Theorem 2.1.16: $f_{X+Y}(z)\propto\int e^{-x^2/2a}e^{-(z-x)^2/2b}\,dx$. Completing the square in $x$ shows the integrand is a Gaussian bump in $x$ with centre $az/(a+b)$ and variance $ab/(a+b)$, times $e^{-z^2/2(a+b)}$. The bump integrates to $\sqrt{2\pi ab/(a+b)}$, which leaves exactly the normal$(0,a+b)$ density. Geometrically, slicing a product of Gaussians along the line $x+y=z$ gives a Gaussian slice whose area is Gaussian in $z$.`,
+      caption: String.raw`Left: contours of the joint density of $(X,Y)$ and the line $x+y=z$; drag $z$ on the right-hand panel. Middle: the joint density along that line, as a function of $x$ (shaded). The dashed curve is the Gaussian from the completed square: centre $\mu+a(z-\mu-\nu)/(a+b)$, variance $ab/(a+b)$, scaled to total mass normal$(\mu+\nu,a+b)$ at $z$. It covers the slice exactly. Right: the slice areas (blue) on the normal$(\mu+\nu,a+b)$ density (green dashed). Make $X,Y$ correlated: the slices stay Gaussian, but their areas follow variance $a+b+2\rho\sqrt{ab}$, not $a+b$.`,
+      deps: ['prob-2.1.16', 'prob-1.2.5'],
+      tags: ['convolution', 'normal'],
+      viz(v) {
+        const mu = v.slider('$\\mu$', -2, 2, -0.5, { step: 0.1 }), aS = v.slider('$a$', 0.2, 4, 1.5, { step: 0.05 });
+        const nu = v.slider('$\\nu$', -2, 2, 1, { step: 0.1 }), bS = v.slider('$b$', 0.2, 4, 0.6, { step: 0.05 });
+        const rho = v.slider('correlation $\\rho$ (0 = independent)', -0.8, 0.8, 0, { step: 0.05 });
+        const P1 = v.stage({ x: [-5, 5], y: [-5, 5], equal: true, height: 300, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', title: 'joint density, line $x+y=z$', minWidth: 230 });
+        const P2 = v.stage({ x: [-5, 5], y: [0, 0.2], height: 300, axes: 'box', gutter: true, xlabel: '$x$', title: 'slice $x\\mapsto f(x,z-x)$', minWidth: 230 });
+        const P3 = v.stage({ x: [-6, 6], y: [0, 0.4], height: 300, axes: 'box', gutter: true, xlabel: '$z$', title: 'density of $X+Y$', minWidth: 230 });
+        const hz = P3.handle(1.3, 0, { color: 'gold', label: 'z', constrain: (x) => [clampN(x, -5.8, 5.8), P3.yr[0]] });
+        let st = null;
+        v.render(() => {
+          const m1 = mu.value, m2 = nu.value, a = aS.value, b = bS.value, r = rho.value, c = r * Math.sqrt(a * b), det = a * b - c * c;
+          const f = (x, y) => { const u = x - m1, w = y - m2; return Math.exp(-(b * u * u - 2 * c * u * w + a * w * w) / (2 * det)) / (2 * Math.PI * Math.sqrt(det)); };
+          const z = hz.x;
+          const pk = f(m1, m2);
+          P1.contour(f, [0.1, 0.3, 0.55, 0.8].map((t) => t * pk), { color: 'accent', width: 1.6 });
+          P1.line(z + 5, -5, z - 5, 5, { color: 'gold', width: 2.4 });
+          P1.dot(m1, m2, { r: 3, color: 'accent' });
+          const slice = (x) => f(x, z - x), area = simpson(slice, -15, 15, 600);
+          const nd = (x, m, s2) => Math.exp(-((x - m) ** 2) / (2 * s2)) / Math.sqrt(2 * Math.PI * s2);
+          const ms = m1 + (a * (z - m1 - m2)) / (a + b), vs = (a * b) / (a + b), hz0 = nd(z, m1 + m2, a + b);
+          let smax = 0; for (let i = 0; i <= 200; i++) smax = Math.max(smax, slice(-5 + i / 20), r === 0 ? hz0 * nd(-5 + i / 20, ms, vs) : 0);
+          P2.setView(null, [0, Math.max(0.02, smax * 1.2)]);
+          P2.fn(slice, { color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.2, n: 400 });
+          if (r === 0) P2.fn((x) => hz0 * nd(x, ms, vs), { color: 'green', width: 2, dash: [6, 4], n: 400 });
+          P2.vline(ms, { color: 'muted', dash: [3, 3], width: 1 });
+          const zs = Array.from({ length: 121 }, (_, i) => -6 + i / 10), hs = zs.map((zz) => simpson((x) => f(x, zz - x), -15, 15, 300));
+          const ymax = Math.max(...hs, nd(m1 + m2, m1 + m2, a + b)) * 1.15; P3.setView(null, [0, ymax]); hz.y = 0;
+          P3.fn((x) => nd(x, m1 + m2, a + b), { color: 'green', width: 2.2, dash: [7, 4], n: 400 });
+          P3.path(zs.map((zz, i) => [zz, hs[i]]), { color: 'accent', width: 2.4 });
+          P3.line(z, 0, z, area, { color: 'gold', width: 1.6, dash: [4, 3] }); P3.dot(z, area, { r: 5, color: 'gold' });
+          let gap = 0; zs.forEach((zz, i) => { gap = Math.max(gap, Math.abs(hs[i] - nd(zz, m1 + m2, a + b))); });
+          st = { area, hz0, ms, vs, gap, r, vtrue: a + b + 2 * c };
+          v.legend([['accent', 'slice / slice areas'], ['green', 'completed square; normal$(\\mu+\\nu,a+b)$', { dash: true }], ['gold', '$z$']]);
+        });
+        v.readout(() => st && `At $z$: slice area $${fr(st.area, 4)}$ vs normal$(\\mu+\\nu,a+b)$ density $${fr(st.hz0, 4)}$` + (st.r === 0 ? `; slice centre $${fr(st.ms, 3)}$, variance $ab/(a+b)=${fr(st.vs, 3)}$. Largest gap over $z$: $${fr(st.gap, 5)}$.` : `. With $\\rho=${fr(st.r, 2)}$ the sum is normal with variance $${fr(st.vtrue, 3)}$, so the gap reaches $${fr(st.gap, 4)}$.`));
+      },
+    },
+    {
+      num: '2.1.21',
+      kind: 'Theorem',
+      name: 'Kolmogorov’s extension theorem',
+      credit: 'Kolmogorov, 1933',
+      statement: String.raw`Let $\mu_n$ be probability measures on $(\R^n,\mathcal R^n)$ that are **consistent**:
+$$\mu_{n+1}\bigl((a_1,b_1]\times\dots\times(a_n,b_n]\times\R\bigr)=\mu_n\bigl((a_1,b_1]\times\dots\times(a_n,b_n]\bigr).$$
+Then there is a unique probability measure $P$ on the sequence space $(\R^\N,\mathcal R^\N)$, with its product σ-field, such that $P(\omega:\omega_i\in(a_i,b_i],\,1\le i\le n)=\mu_n\bigl((a_1,b_1]\times\dots\times(a_n,b_n]\bigr)$ for all $n$ and all $a_i<b_i$. In particular an infinite sequence of independent variables with any prescribed laws exists.`,
+      idea: String.raw`Consistency makes the finite-dimensional sets carry a well-defined, finitely additive set function. The work is countable additivity, which is proved by approximating each finite-dimensional set from inside by compact sets and using a diagonal argument (Theorem A.3.1). Carathéodory's extension (Theorem 1.1.11) then produces $P$, and the π–λ theorem gives uniqueness. For independent variables take $\mu_n=\mu_1\times\dots\times\mu_n$, which is consistent.`,
+      caption: String.raw`A family $\mu_n$ on binary strings of length $n$. Row $n$ cuts $[0,1]$ into $2^n$ pieces, in dictionary order, with widths $\mu_n(\text{string})$; the colour is the last digit (blue $0$, orange $1$). Consistency says each piece of row $n$ splits exactly into its two children in row $n+1$, so all the boundaries line up. Then the rows are the distribution function of $\sum\omega_i2^{-i}$ at finer and finer resolution, and the limit law exists (right: its distribution function, with $2000$ seeded sequences drawn digit by digit). The "even parity" family is inconsistent. Its boundaries tear apart (red), and no $P$ exists.`,
+      deps: ['prob-1.1.11'],
+      see: ['prob-10.3.1'],
+      tags: ['construction', 'product measure'],
+      viz(v) {
+        const M = v.M;
+        const FAM = {
+          iid: { label: 'i.i.d. Bernoulli($p$)', mu: (w, p) => w.reduce((s, b) => s * (b ? p : 1 - p), 1) },
+          mk: { label: 'Markov (stay $p$)', mu: (w, p) => w.reduce((s, b, i) => (i ? s * (b === w[i - 1] ? p : 1 - p) : 0.5), 1) },
+          pol: { label: 'Pólya urn', mu: (w) => { const o = w.reduce((s, b) => s + b, 0), z = w.length - o; return Math.exp(M.lgamma(o + 1) + M.lgamma(z + 1) - M.lgamma(w.length + 2)); } },
+          bad: { label: 'even parity (inconsistent)', mu: (w) => (w.reduce((s, b) => s + b, 0) % 2 ? 0 : 2 ** -(w.length - 1)) },
+        };
+        const fam = v.select('family', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'pol');
+        const pS = v.slider('$p$', 0.05, 0.95, 0.7, { step: 0.01 });
+        const dS = v.slider('rows', 2, 9, 7, { int: true });
+        const L = v.stage({ x: [-0.1, 1], y: [0, 7], height: 330, weight: 1.5, axes: false, title: 'row $n$: $[0,1]$ cut into widths $\\mu_n(\\omega_1\\cdots\\omega_n)$' });
+        const R = v.stage({ x: [0, 1], y: [0, 1.05], height: 330, axes: 'box', gutter: true, xlabel: '$\\sum\\omega_i2^{-i}$', title: 'the extension $P$' });
+        let st = null;
+        v.render(() => {
+          const F = FAM[fam.value], p = pS.value, n = dS.value;
+          pS.el.hidden = fam.value === 'pol' || fam.value === 'bad';
+          L.setView(null, [0, n + 0.3]);
+          const rows = [];
+          for (let k = 1; k <= n; k++) { const ms = []; for (let c = 0; c < 2 ** k; c++) { const w = []; for (let i = k - 1; i >= 0; i--) w.push((c >> i) & 1); ms.push(F.mu(w, p)); } rows.push(ms); }
+          let firstBad = 0, err = 0;
+          rows.forEach((ms, k) => {
+            const y = n - k - 0.35; let x = 0; const W = ms.length;
+            L.text(`n=${k + 1}`, -0.012, y + 0.3, { align: 'right', size: 11, color: 'muted' });
+            ms.forEach((m, c) => { if (m > 0) L.rect(x, y, x + m, y + 0.62, { fill: c & 1 ? 'orange' : 'accent', fillAlpha: (c >> 1) & 1 ? 0.42 : 0.68, stroke: L.X(x + m) - L.X(x) > 3, color: 'panel', width: 1 }); x += m; });
+            if (k < rows.length - 1) {
+              const ch = rows[k + 1]; let xa = 0, xb = 0;
+              for (let c = 0; c < W; c++) {
+                xa += ms[c]; xb += ch[2 * c] + ch[2 * c + 1];
+                const e = Math.abs(xa - xb); err = Math.max(err, Math.abs(ms[c] - ch[2 * c] - ch[2 * c + 1]));
+                if (e > 1e-9) { L.line(xa, y, xb, y - 0.38, { color: 'red', width: 1.8 }); if (!firstBad) firstBad = k + 1; }
+              }
+            }
+          });
+          // right panel: the limit law through its CDF at the finest row, and seeded sequences
+          if (!firstBad) {
+            const fin = rows[rows.length - 1], pts = [[0, 0]]; let cdf = 0; fin.forEach((m, c) => { cdf += m; pts.push([(c + 1) / fin.length, cdf]); });
+            const r = v.rng(7 + n), xs = [];
+            for (let j = 0; j < 2000; j++) {
+              const w = []; let val = 0;
+              for (let i = 0; i < 24; i++) { const m0 = i ? F.mu(w, p) : 1; w.push(1); const m1 = F.mu(w, p); w.pop(); const b = r() < (m0 > 0 ? m1 / m0 : 0.5) ? 1 : 0; w.push(b); val += b * 2 ** -(i + 1); }
+              xs.push(val);
+            }
+            xs.sort((a, b) => a - b); const emp = xs.map((x, i) => [x, (i + 1) / 2000]);
+            R.path(emp, { color: 'gold', width: 3, alpha: 0.6 });
+            R.path(pts, { color: 'green', width: 1.8 });
+            st = { ok: true, err, n };
+          } else {
+            cornerIn(R, `no extension: row ${firstBad + 1} does not project onto row ${firstBad}`, 'tl', { color: 'red' });
+            st = { ok: false, err, firstBad };
+          }
+          v.legend([['accent', 'last digit 0', { area: true }], ['orange', 'last digit 1', { area: true }], ['red', 'torn boundary'], ['green', 'distribution function from row $n$'], ['gold', '2000 seeded sequences']]);
+        });
+        v.readout(() => st && (st.ok ? `Consistent: $\\max|\\mu_{k+1}(w0)+\\mu_{k+1}(w1)-\\mu_k(w)|=${fr(st.err, 12)}$ over all rows, so the sequence measure $P$ exists. The empirical law of $2000$ sequences drawn digit by digit follows its distribution function.` : `Inconsistent: the children of a string carry total mass different from the string (largest discrepancy $${fr(st.err, 4)}$, first at row ${st.firstBad}). No measure on sequences has these marginals.`));
+      },
+    },
+    {
+      num: '2.1.22',
+      kind: 'Theorem',
+      name: 'Borel subsets of complete separable metric spaces are nice',
+      statement: String.raw`A measurable space $(S,\mathcal S)$ is **nice** if there is a one-to-one map $\varphi:S\to\R$ such that $\varphi$ and $\varphi^{-1}$ are both measurable. If $S$ is a Borel subset of a complete separable metric space and $\mathcal S$ is the collection of its Borel subsets, then $(S,\mathcal S)$ is nice. Kolmogorov's extension theorem therefore holds for sequences with values in such spaces.`,
+      idea: String.raw`First take $S=[0,1)^\N$. Expand every coordinate in binary and **interleave** the digits along anti-diagonals into a single binary expansion, $\varphi_0(x)=.x_{11}x_{12}x_{21}x_{13}x_{22}x_{31}\dots$. Each digit of the output is a measurable function of the input and conversely. For a general space, make the metric bounded by $1$, pick a countable dense set $q_1,q_2,\dots$, and embed $x\mapsto(d(x,q_1),d(x,q_2),\dots)\in[0,1)^\N$, which is continuous and one-to-one. Then compose. The map is far from continuous, but measurability is all the theorem needs.`,
+      caption: String.raw`The two-dimensional case: $\varphi(x,y)=.x_1y_1x_2y_2x_3y_3\dots$ maps the square one-to-one into $[0,1]$. Left: a seeded cloud, coloured by its image $\varphi$ (the colour bar runs along $[0,1]$). The orange path visits the dyadic cells in the order $\varphi$ gives them; it is the level-$k$ Z-order curve. Drag the gold point and read its binary digits below. Right: the image law on $[0,1]$. Every point is decoded back by splitting the digits again, and the readout gives the largest recovery error. Neighbours in the square can land far apart.`,
+      deps: ['prob-2.1.21'],
+      tags: ['construction'],
+      viz(v) {
+        const M = v.M;
+        const shp = v.select('cloud', [{ value: 'blob', label: 'blob' }, { value: 'ring', label: 'ring' }, { value: 'unif', label: 'uniform' }], 'ring');
+        const kS = v.slider('Z-curve level $k$', 1, 5, 3, { int: true });
+        const L = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 330, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', title: 'the square, coloured by $\\varphi$' });
+        const R = v.stage({ x: [0, 1], y: [0, 4], height: 330, weight: 1.2, axes: 'box', gutter: true, xlabel: '$\\varphi(x,y)$', title: 'image law on $[0,1]$' });
+        const hp = L.handle(0.62, 0.37, { color: 'gold', constrain: (x, y) => [clampN(x, 0, 0.9999), clampN(y, 0, 0.9999)] });
+        const B = 26, S2 = 2 ** B, S4 = 2 ** (2 * B);
+        const enc = (x, y) => { const X = Math.floor(x * S2), Y = Math.floor(y * S2); let z = 0; for (let i = B - 1; i >= 0; i--) z = z * 4 + 2 * ((X >>> i) & 1) + ((Y >>> i) & 1); return z / S4; };
+        const dec = (f) => { let Z = Math.round(f * S4), X = 0, Y = 0, pw = 1; for (let i = 0; i < B; i++) { const d = Z % 4; Z = (Z - d) / 4; X += (d >> 1) * pw; Y += (d & 1) * pw; pw *= 2; } return [X / S2, Y / S2]; };
+        const bits = (x, k) => { let s = '.'; for (let i = 0; i < k; i++) { x *= 2; const b = Math.floor(x); s += b; x -= b; } return s; };
+        let st = null;
+        v.render(() => {
+          const r = v.rng(31), pts = [];
+          for (let i = 0; i < 700; i++) {
+            if (shp.value === 'blob') pts.push([clampN(0.35 + 0.1 * r.normal(), 0, 0.9999), clampN(0.6 + 0.1 * r.normal(), 0, 0.9999)]);
+            else if (shp.value === 'ring') { const t = 2 * Math.PI * r(), rr = 0.32 + 0.03 * r.normal(); pts.push([0.5 + rr * Math.cos(t), 0.5 + rr * Math.sin(t)]); }
+            else pts.push([r(), r()]);
+          }
+          const k = kS.value, nC = 2 ** k, path = [];
+          for (let z = 0; z < nC * nC; z++) { let X = 0, Y = 0; for (let i = 0; i < k; i++) { const d = (z >> (2 * (k - 1 - i))) & 3; X = 2 * X + (d >> 1); Y = 2 * Y + (d & 1); } path.push([(X + 0.5) / nC, (Y + 0.5) / nC]); }
+          for (let i = 1; i < nC; i++) { L.vline(i / nC, { color: 'grid', width: 1 }); L.hline(i / nC, { color: 'grid', width: 1 }); }
+          L.path(path, { color: 'orange', width: 1.6, alpha: 0.8 });
+          let err = 0; const phis = [];
+          for (const [x, y] of pts) { const f = enc(x, y); phis.push(f); const [a, b] = dec(f); err = Math.max(err, Math.abs(a - x), Math.abs(b - y)); L.dot(x, y, { r: 2.6, color: M.cmap(f, 'viridis') }); }
+          const Hs = densityOn(phis, linEdges(0, 1, 64));
+          R.setView(null, [0, Math.max(...Hs.density) * 1.15]);
+          for (let i = 0; i < 64; i++) R.rect(i / 64, 0, (i + 1) / 64, Hs.density[i], { fill: M.cmap((i + 0.5) / 64, 'viridis'), fillAlpha: 0.85, stroke: false });
+          const fp = enc(hp.x, hp.y);
+          R.vline(fp, { color: 'gold', width: 2.4 }); R.dot(fp, 0, { r: 5, color: 'gold' });
+          L.dot(hp.x, hp.y, { r: 5, color: 'gold' });
+          st = { err, x: hp.x, y: hp.y, fp, bx: bits(hp.x, 8), by: bits(hp.y, 8), bf: bits(fp, 16) };
+          v.legend([['orange', `Z-order curve, level ${k}`], ['gold', 'your point and its image']]);
+        });
+        v.readout(() => st && `$x=${st.bx}\\ldots_2$, $y=${st.by}\\ldots_2$ $\\Rightarrow$ $\\varphi=${st.bf.replace(/(\d\d)/g, '$1\\,')}\\ldots_2$ (digits taken alternately). Decoding all $700$ points: largest error $${v.sci(st.err, 2)}$ $\\le2^{-26}$ (the $26$ binary digits kept per coordinate).`);
       },
     },
   ],

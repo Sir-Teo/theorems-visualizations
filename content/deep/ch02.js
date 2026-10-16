@@ -134,7 +134,7 @@ are dense in $C(K)$ with the sup norm: for every continuous $f$ and $\eps>0$ som
           info = { N, sup, rms, tg, last: C[C.length - 1] };
         });
         v.legend([['accent', 'RMS error'], ['red', 'sup error'], ['gold', 'current $N$', { dot: true }]]);
-        v.readout(() => info && String.raw`$N=${info.N}$ units (${3 * info.N + 1} parameters, output weights by least squares on a $30\times30$ grid): sup error ${info.sup.toFixed(4)}, RMS error ${info.rms.toFixed(4)} on a $71\times71$ grid` + (info.tg === 'disc' ? ` · at $N=256$ the sup error is still ${info.last[1].toFixed(3)} $\approx\tfrac12\times$ jump $=0.5$: **no continuous $g$ can do better than half the jump**` : ` · at $N=256$: sup ${info.last[1].toFixed(4)}`));
+        v.readout(() => info && String.raw`$N=${info.N}$ units (${3 * info.N + 1} parameters, output weights by least squares on a $30\times30$ grid): sup error ${info.sup.toFixed(4)}, RMS error ${info.rms.toFixed(4)} on a $71\times71$ grid` + (info.tg === 'disc' ? ` · at $N=256$ the sup error is still ${info.last[1].toFixed(3)} $\\ge\\tfrac12\\times$ jump $=0.5$: **no continuous $g$ can do better than half the jump**` : ` · at $N=256$: sup ${info.last[1].toFixed(4)}`));
       },
     },
     // ───────────────────────────────────────────────────────────── 2.3

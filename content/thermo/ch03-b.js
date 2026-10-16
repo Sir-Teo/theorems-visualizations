@@ -289,7 +289,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
       tags: ['stability', 'convexity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Thermodynamic_stability' },
       viz(v) {
-        const mode = v.select('picture', [{ value: 'S', label: 'entropy S(U), concave?' }, { value: 'F', label: 'van der Waals F(v), convex?' }], 'F', { onChange: () => hd.set(mode.value === 'S' ? 2.0 : 0.15, 0) });
+        const mode = v.select('picture', [{ value: 'S', label: 'entropy S(U), concave?' }, { value: 'F', label: 'van der Waals F(v), convex?' }], 'F', { onChange: () => hd.set(mode.value === 'S' ? 2.32 : 0.15, 0) });
         const del = v.slider('split $\\delta$', 0.01, 0.6, 0.18, { step: 0.005, fmt: (x) => v.fix(x, 3) });
         const Tsl = v.slider('$T$ (van der Waals)', 240, 320, 270, { step: 1, fmt: (x) => x + ' K' });
         const sa = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'F', weight: 1.1 });
@@ -331,7 +331,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           // second panel: slope of the relation
           let curv;
           if (S) {
-            const dS = (u) => (Stoy(u + 1e-4) - Stoy(u - 1e-4)) / 2e-4, dH = (u) => (hull(u + 1e-3) - hull(u - 1e-3)) / 2e-3;
+            const dS = (u) => (Stoy(u + 1e-4) - Stoy(u - 1e-4)) / 2e-4, dH = (u) => (hull(u + 1e-3) - hull(u - 1e-3)) / 2e-3 - tilt;
             const ds = xs.map(dS);
             sb.setView(X, [Math.min(...ds) - 0.2, Math.max(...ds) + 0.2]);
             sb.setTitle('$1/T = dS/dU$: must decrease'); sb.setLabels('U', '1/T');
@@ -492,7 +492,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
 $$S_{\text{conf}}(L) = nR\Big[\ln 2 - \tfrac{1+x}2\ln(1+x) - \tfrac{1-x}2\ln(1-x)\Big],$$
 and with the identity $dU = T\,dS + f\,dL$ the tension is $f = -T(\partial S/\partial L)_T = \dfrac{nRT}{L_{\max}}\operatorname{artanh} x$, proportional to $T$ at fixed length. Hence (a) stretching **adiabatically** warms the band, $C\ln(T_2/T_1) = S_{\text{conf}}(L_1) - S_{\text{conf}}(L_2)$; (b) heating it under a **fixed load** makes it **contract**, $x = \tanh\!\big(fL_{\max}/nRT\big)$; and the Maxwell relation $(\partial S/\partial L)_T = -(\partial f/\partial T)_L$ links the two.`,
       idea: String.raw`The tension of rubber is entropic, like the pressure of an ideal gas: a stretched chain has fewer arrangements, so it pulls back to recover entropy, and the pull grows with temperature. From $F = U - TS$ with $U$ independent of $L$, $f = (\partial F/\partial L)_T = -T(\partial S/\partial L)_T$. In an adiabatic stretch the total entropy is fixed, so the configurational entropy lost must reappear as vibrational entropy — the band warms (you can feel it with your lip). Under fixed load, warming increases $T$ in $f = (nRT/L_{\max})\operatorname{artanh} x$, so $x$ must fall: the Gough–Joule effect, the opposite of ordinary thermal expansion. The Maxwell relation from $F(T, L)$ (3.12) says the same thing in one line.`,
-      caption: String.raw`The chain on top is drawn with the number of forward and backward segments set by the current length. **Adiabatic stretch**: drag the length; the band starts at 300 K and its temperature rises as the configurational entropy (blue bar) turns into vibrational entropy (orange bar) at constant total. **Heating under load**: hang a fixed tension and drag the temperature; the band shortens. The middle panel shows tension–length isotherms (tension ∝ $T$), the right panel the path in the plane you are exploring. The readout checks the Maxwell relation by finite differences. Model values: $n$ = 0.01 mol of segments, $L_{\max}$ = 50 cm, $C$ = 2 J/K (about a gram of rubber).`,
+      caption: String.raw`The chain on top is drawn with the number of forward and backward segments set by the current length. **Adiabatic stretch**: drag the length; the band starts at 300 K and its temperature rises as the configurational entropy (blue bar) turns into vibrational entropy (orange bar) at constant total. **Heating under load**: hang a fixed tension and drag the temperature; the band shortens. The middle panel shows tension–length isotherms (tension ∝ $T$), the right panel the path in the plane you are exploring. The readout checks the Maxwell relation by finite differences. Model values: $n$ = 0.002 mol of segments, $L_{\max}$ = 50 cm, $C$ = 0.5 J/K (a fraction of a gram of rubber); the chain is drawn with 24 representative segments.`,
       deps: ['thermo-3.12'],
       refs: ['Callen ch. 3', 'Kittel & Kroemer, Thermal Physics ch. 3'],
       tags: ['rubber elasticity', 'entropic force'],
@@ -500,17 +500,18 @@ and with the identity $dU = T\,dS + f\,dL$ the tension is $f = -T(\partial S/\pa
       scope: String.raw`Ideal rubber: energy independent of length, segments freely jointed, far from crystallization (which real rubber shows beyond several hundred per cent strain). Real bands warm by a few kelvin on fast large stretches, in line with the model's magnitude.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rubber_elasticity' },
       viz(v) {
-        const n = 0.01, LM = 0.5, C = 2, Tst = 300;
+        const n = 0.002, LM = 0.5, C = 0.5, Tst = 300;
         const mode = v.select('experiment', [{ value: 'ad', label: 'adiabatic stretch' }, { value: 'ld', label: 'heating under a fixed load' }], 'ad');
         const xS = v.slider('length $L$', 0, 45, 30, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' cm' });
-        const fS = v.slider('load $f$', 0.05, 0.6, 0.3, { step: 0.01, fmt: (x) => v.fix(x, 2) + ' N' });
+        const fS = v.slider('load $f$', 1, 12, 5, { step: 0.1, fmt: (x) => v.fix(x, 1) + ' N' });
         const TS = v.slider('temperature', 250, 400, 300, { step: 1, fmt: (x) => x + ' K' });
-        const sch = v.stage({ x: [-1, 52], y: [-3, 5], height: 150, axes: false, full: true, title: 'the chain' });
+        const sch = v.stage({ x: [-1, 52], y: [-3, 5], height: 170, axes: false, full: true, title: 'the chain' });
         const sf = v.stage({ x: [0, 50], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'L (cm)', ylabel: 'f (N)', weight: 1, title: 'tension–length isotherms' });
-        const sp = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: 'box', gutter: true, weight: 1 });
+        const sp = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'L (cm)', weight: 1 });
         const Sc = (x) => (x <= -1 || x >= 1 ? -Infinity : n * R * (Math.LN2 - (1 + x) / 2 * Math.log1p(x) - (1 - x) / 2 * Math.log1p(-x)));
         const ften = (T, L) => n * R * T / LM * Math.atanh(clamp(L / LM, -0.999999, 0.999999));
         const Stot = (T, L) => Sc(L / LM) + C * Math.log(T / Tst);
+        const PERM = v.rng(11).shuffle(Array.from({ length: 24 }, (_, i) => i));
         let st = null;
         v.render(() => {
           const ad = mode.value === 'ad';
@@ -519,19 +520,20 @@ and with the identity $dU = T\,dS + f\,dL$ the tension is $f = -T(\partial S/\pa
           if (ad) { Lm = xS.value / 100; T = Tst * Math.exp((Sc(0) - Sc(Lm / LM)) / C); }
           else { T = TS.value; Lm = LM * Math.tanh(fS.value * LM / (n * R * T)); }
           const x = Lm / LM;
-          // chain: N segments, forward count set by x, deterministic shuffle
-          const N = 50, nf = Math.round(N * (1 + x) / 2), order = Array.from({ length: N }, (_, i) => i).sort((a, b) => Math.sin(a * 12.9898) * 43758 % 1 - Math.sin(b * 12.9898) * 43758 % 1);
-          const fwd = new Set(order.slice(0, nf)), seg = 1;
-          let px = 0, py = 0; const pts = [[0, 0]];
-          for (let i = 0; i < N; i++) { px += (fwd.has(i) ? 1 : -1) * seg * 0.95; py = (i % 2 ? 0.35 : -0.35) + Math.sin(i * 1.7) * 0.6; pts.push([px, py]); }
-          const span = Math.max(1, px), sx = Math.min(1, 50 / (N * 0.95)), shift = 0;
-          sch.rect(-1, -2.4, 0, 3, { fill: 'muted', fillAlpha: 0.7, stroke: false });
-          sch.path(pts.map(([a, b]) => [a + shift, b * 1.5]), { color: 'ink', width: 1.6 });
-          sch.dots(pts.map(([a, b]) => [a + shift, b * 1.5]), { r: 2.4, color: 'teal' });
-          sch.arrow(px, 0, px + 3.5, 0, { color: 'orange', width: 2.4 });
-          sch.text(`L = ${v.fix(Lm * 100, 1)} cm · ${nf} of ${N} segments forward · T = ${v.fix(T, 2)} K`, 51.5, 4.2, { align: 'right', size: 12, weight: 650, color: 'ink' });
+          // chain: N segments of length L_max/N (drawn in cm, so the end sits at the real length), zigzagging down the panel
+          const N = 24, seg = LM * 100 / N, nf = Math.round(N * (1 + x) / 2);
+          const rank = PERM;
+          const fwd = new Set(rank.slice(0, nf));
+          let px = 0; const pts = [[0, 4]];
+          for (let i = 0; i < N; i++) { px += (fwd.has(i) ? 1 : -1) * seg; pts.push([px, 4 - 6.4 * (i + 1) / N]); }
+          sch.rect(-1, -2.8, 0, 4.6, { fill: 'muted', fillAlpha: 0.7, stroke: false });
+          sch.vline(nf * seg - (N - nf) * seg, { color: 'orange', width: 1, dash: [4, 4] });
+          sch.path(pts, { color: 'ink', width: 1.8 });
+          sch.dots(pts, { r: 3, color: 'teal' });
+          sch.arrow(px, pts[N][1], px + 3.5, pts[N][1], { color: 'orange', width: 2.4 });
+          sch.text(`L = ${v.fix(Lm * 100, 1)} cm · ${nf} of ${N} segments forward · T = ${v.fix(T, 2)} K`, 51.5, 4.45, { align: 'right', size: 12, weight: 650, color: 'ink', plate: true });
           // isotherms
-          const fmax = Math.max(0.7, ften(400, 0.46));
+          const fmax = ften(400, 0.47);
           sf.setView([0, 50], [0, fmax]);
           for (const Ti of [250, 300, 350, 400]) { sf.fn((Lc) => ften(Ti, Lc / 100), { color: 'faint', width: 1.3, domain: [0, 49] }); sf.text(`${Ti} K`, 47, ften(Ti, 0.47), { size: 10.5, color: 'muted', align: 'right', dx: -4, dy: -6 }); }
           sf.fn((Lc) => ften(T, Lc / 100), { color: 'red', width: 2.2, domain: [0, 49] });
@@ -540,15 +542,15 @@ and with the identity $dU = T\,dS + f\,dL$ the tension is $f = -T(\partial S/\pa
           sf.dot(Lm * 100, ften(T, Lm), { r: 6, color: 'gold' });
           // right panel
           if (ad) {
-            sp.setTitle('entropy budget at constant total S'); sp.setLabels(null, 'J/K'); sp.setTicks([[0.25, 'S_conf − S_conf(0)'], [0.75, 'C ln(T/300 K)']], null);
-            const a = Sc(x) - Sc(0), b = C * Math.log(T / Tst), m = Math.max(0.03, Math.abs(a), Math.abs(b)) * 1.3;
+            sp.setTitle('entropy budget at constant total S'); sp.setLabels(null, 'J/K'); sp.setTicks([[0.25, 'configurational'], [0.75, 'vibrational']], null);
+            const a = Sc(x) - Sc(0), b = C * Math.log(T / Tst), m = Math.max(0.002, Math.abs(a), Math.abs(b)) * 1.4;
             sp.setView([0, 1], [-m, m]); sp.hline(0, { color: 'muted', width: 1 });
             bar(sp, 0.25, a, 0.15, 'blue'); bar(sp, 0.75, b, 0.15, 'orange');
             sp.text(v.fix(a, 4), 0.25, a, { dy: 14, align: 'center', size: 11, plate: true }); sp.text(v.fix(b, 4), 0.75, b, { dy: -10, align: 'center', size: 11, plate: true });
           } else {
             sp.setTitle('length against temperature at fixed load'); sp.setLabels('T (K)', 'L (cm)'); sp.setTicks(null, null);
             sp.setView([250, 400], [0, 50]);
-            for (const fl of [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]) sp.fn((TT) => 100 * LM * Math.tanh(fl * LM / (n * R * TT)), { color: fl === fS.value ? 'orange' : 'faint', width: 1.2, domain: [250, 400] });
+            for (const fl of [2, 4, 6, 8, 10, 12]) sp.fn((TT) => 100 * LM * Math.tanh(fl * LM / (n * R * TT)), { color: fl === fS.value ? 'orange' : 'faint', width: 1.2, domain: [250, 400] });
             sp.fn((TT) => 100 * LM * Math.tanh(fS.value * LM / (n * R * TT)), { color: 'orange', width: 2.6, domain: [250, 400] });
             sp.dot(T, Lm * 100, { r: 6, color: 'gold' });
             sp.text('heating shortens the band', 395, 3, { align: 'right', size: 11, color: 'muted' });

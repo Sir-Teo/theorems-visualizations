@@ -1,6 +1,7 @@
 // Algorithms — Chapter 8: Graph search (items 8.11–8.20; 8.1–8.10 in ch08.js)
 import { K, COMP, KIND_COL, clamp, plural, ids, nodesAt, DFS_CODE, dfsTrace, dfsView, isAnc, LOW_CODE, lowTrace, TARJAN_CODE, tarjanTrace, closure, sccBrute, countComps, countTopo, blob, strip, arcPx } from './ch08.shared.js';
 
+const TC = ['blue', 'teal', 'green', 'pink', 'red'];
 const R = (s, X0, Y0, X1, Y1, st) => s.rect(s.invX(X0), s.invY(Y1), s.invX(X1), s.invY(Y0), st);
 const T = (s, str, X, Y, st) => s.textPx(String(str), X, Y, st);
 
@@ -255,7 +256,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
       viz(v) {
         const tog = v.toggle('edge Algorithms → Data str. (makes a cycle)', false, { onChange: (x) => { const e = G.edges.find((q) => q.from === 'alg' && q.to === 'ds'); if (x && !e) G.addEdge('alg', 'ds', { bend: 22 }); if (!x && e) G.removeEdge(e); S.reset({ at: 'end' }); } });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320 });
-        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true });
+        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
         const G = v.graph(s, { directed: true, shape: 'box', fontSize: 12, notePos: 's', nodes: N814.map(([id, label]) => ({ id, label })), edges: E814.map(([a, b]) => [a, b]), layout: 'layered', rankdir: 'right' });
         const S = v.steps({ frames: () => G.topoSort().events.map((e) => (e.type === 'done' && e.cycle ? { ...e, note: `Stuck: the queue is empty but ${G.nodes.length - e.order.length} courses are left, each with a prerequisite among the leftovers. Following prerequisites backwards must eventually repeat a course, which closes a cycle.` } : e)), code: KAHN_CODE, codeTitle: 'Kahn(G)', codePos: 'below', speed: 2, start: 9, still: 9 });
         let info = {};
@@ -264,8 +265,8 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
           const left = f.type === 'done' && f.cycle ? new Set(ids(G).filter((x) => !f.order.includes(x)).map(K)) : new Set();
           G.draw({ ...f.view, edgeColor: (e) => (left.has(K(e.from)) && left.has(K(e.to)) ? 'red' : f.removed.includes(e) ? 'faint' : f.view.edgeColor(e)), edgeWidth: (e) => (e === f.edge ? 3.4 : left.has(K(e.from)) && left.has(K(e.to)) ? 2.6 : null) });
           const W = sq.width;
-          strip(sq, f.queue.map((id) => ({ label: G.lab(id), color: 'orange' })), 12, 12, { title: 'sources (queue)', titleW: 118, w: 84, h: 26, gap: 5, size: 11.5, maxW: W - 24, empty: 'empty' });
-          strip(sq, f.order.map((id, i) => ({ label: `${i + 1}. ${G.lab(id)}`, fill: K(id) === K(f.node) && f.type === 'pop' ? 'gold' : 'accent' })), 12, 62, { title: 'output', titleW: 118, w: 92, h: 26, gap: 5, size: 11, maxW: W - 24, empty: '—' });
+          strip(sq, f.queue.map((id) => ({ label: G.lab(id), color: 'orange' })), 12, 44, { title: 'sources (queue)', titleW: 118, w: 84, h: 26, gap: 5, size: 11.5, maxW: W - 24, empty: 'empty' });
+          strip(sq, f.order.map((id, i) => ({ label: `${i + 1}. ${G.lab(id)}`, fill: K(id) === K(f.node) && f.type === 'pop' ? 'gold' : 'accent' })), 12, 130, { title: 'output', titleW: 118, w: 92, h: 26, gap: 5, size: 11, maxW: W - 24, empty: '—' });
           info = { f, left };
         });
         v.legend([['gold', 'output now', { dot: true }], ['accent', 'output', { dot: true }], ['orange', 'source waiting in the queue', { dot: true }], ['red', 'left over: on or behind a cycle', { dot: true }]]);
@@ -375,7 +376,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
       viz(v) {
         const wrong = v.toggle('pass 2 in increasing f order (breaks it)', false, { onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320 });
-        const sl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 84, full: true });
+        const sl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
         const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P815, { c: { notePos: 's' }, e: { notePos: 's' }, f: { notePos: 'w' }, h: { notePos: 's' }, j: { notePos: 'e' }, k: { notePos: 'e' }, l: { notePos: 's' }, m: { notePos: 's' } }), edges: E815.map(([a, b]) => [a, b]) });
         const GR = v.graph(s, { directed: true, layout: 'none', nodes: G.nodes, edges: [], draggable: false });
         G.onChange = () => S.reset({ at: 'end' });
@@ -409,7 +410,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
           const L = f.L || [], W = sl.width;
           const rootsSeen = []; if (f.phase === 2) for (const x of f.p2roots) if (f.root[K(x)] != null && !rootsSeen.includes(K(f.root[K(x)]))) rootsSeen.push(K(f.root[K(x)]));
           strip(sl, (wrong.value && f.phase >= 1.5 ? L.slice().reverse() : L).map((x) => { const k = f.phase === 2 && f.root[K(x)] != null ? rootsSeen.indexOf(K(f.root[K(x)])) : -1; return { label: G.lab(x), note: f.fin[K(x)] ?? '', color: k >= 0 ? COMP[k % COMP.length] : 'accent', fill: k >= 0 ? COMP[k % COMP.length] : null }; }),
-            12, 14, { title: f.phase >= 1.5 ? (wrong.value ? 'increasing f' : 'decreasing f') : 'finished so far', titleW: 104, w: 30, h: 26, maxW: W - 24, empty: 'nothing finished yet' });
+            12, 74, { title: f.phase >= 1.5 ? (wrong.value ? 'increasing f' : 'decreasing f') : 'finished so far', titleW: 104, w: 30, h: 26, maxW: W - 24, empty: 'nothing finished yet' });
           let trees = null, ok = null;
           if (f.type === 'done' && f.phase === 2) {
             const br = sccBrute(G), groups = new Map(); for (const x of ids(G)) { const r = K(f.root[K(x)]); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(x); }
@@ -498,14 +499,14 @@ Keeping the edges on a stack and popping them at each case of (b) yields the blo
       credit: 'Tarjan, 1972',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320 });
-        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true });
+        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
         const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P819, { c: { notePos: 's' }, e: { notePos: 's' }, h: { notePos: 's' }, i: { notePos: 's' }, j: { notePos: 's' }, k: { notePos: 's' } }), edges: E819.map(([a, b]) => [a, b]) });
         G.onChange = () => S.reset({ at: 'end' });
         const S = v.steps({ frames: () => tarjanTrace(G).events, code: TARJAN_CODE, codeTitle: 'Tarjan(G)', codePos: 'below', speed: 2, start: 20, still: 20 });
         let info = {};
         v.render(() => {
           const f = S.frame; if (!f.d) return;
-          const onS = new Set(f.S.map(K)), call = new Set((f.call || []).map(K)), cur = f.type !== 'done' && f.type !== 'init' ? K(f.u) : null, cc = (x) => COMP[f.compOf[K(x)] % COMP.length];
+          const onS = new Set(f.S.map(K)), call = new Set((f.call || []).map(K)), cur = f.type !== 'done' && f.type !== 'init' ? K(f.u) : null, cc = (x) => TC[f.compOf[K(x)] % COMP.length];
           G.draw({
             nodeFill: (id) => (K(id) === cur ? 'gold' : f.compOf[K(id)] != null ? cc(id) : null),
             nodeColor: (id) => (onS.has(K(id)) ? (call.has(K(id)) ? 'orange' : 'purple') : null),
@@ -514,10 +515,10 @@ Keeping the edges on a stack and popping them at each case of (b) yields the blo
             edgeWidth: (e) => (e === f.edge ? 3.8 : f.compOf[K(e.from)] != null && f.compOf[K(e.from)] === f.compOf[K(e.to)] ? 2.6 : null),
           });
           const W = sq.width;
-          strip(sq, f.S.map((x) => ({ label: G.lab(x), color: call.has(K(x)) ? 'orange' : 'purple', note: `${f.d[K(x)]}/${f.low[K(x)]}` })), 12, 10, { title: 'stack S', titleW: 90, w: 30, h: 26, maxW: W - 24, empty: 'empty' });
-          T(sq, 'popped', 12, 84, { size: 12, weight: 600, color: 'muted' });
-          let X = 102; f.comps.forEach((c, k) => { const txt = `#${k + 1} {${c.map((x) => G.lab(x)).join(' ')}}`, w = 14 + 7.4 * txt.length; if (X + w > W - 8) return; R(sq, X, 72, X + w, 96, { fill: COMP[k % COMP.length], fillAlpha: 0.85, color: COMP[k % COMP.length], radius: 5 }); T(sq, txt, X + w / 2, 84.5, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false }); X += w + 6; });
-          if (!f.comps.length) T(sq, 'none yet', 102, 84, { size: 12, color: 'faint' });
+          strip(sq, f.S.map((x) => ({ label: G.lab(x), color: call.has(K(x)) ? 'orange' : 'purple', note: `${f.d[K(x)]}/${f.low[K(x)]}` })), 12, 40, { title: 'stack S', titleW: 90, w: 30, h: 26, maxW: W - 24, empty: 'empty' });
+          T(sq, 'popped', 12, 134, { size: 12, weight: 600, color: 'muted' });
+          let X = 102; f.comps.forEach((c, k) => { const txt = `#${k + 1} {${c.map((x) => G.lab(x)).join(' ')}}`, w = 14 + 7.4 * txt.length; if (X + w > W - 8) return; R(sq, X, 122, X + w, 146, { fill: TC[k % COMP.length], fillAlpha: 0.85, color: TC[k % COMP.length], radius: 5 }); T(sq, txt, X + w / 2, 134.5, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false }); X += w + 6; });
+          if (!f.comps.length) T(sq, 'none yet', 102, 134, { size: 12, color: 'faint' });
           if (f.type === 'done') {
             const br = sccBrute(G), same = br.comps.length === f.comps.length && f.comps.every((c) => c.every((x) => br.compOf[K(x)] === br.compOf[K(c[0])]));
             const revTopo = G.edges.every((e) => f.compOf[K(e.from)] >= f.compOf[K(e.to)]);
@@ -548,8 +549,8 @@ Keeping the edges on a stack and popping them at each case of (b) yields the blo
       credit: 'Euler, 1736 (Königsberg bridges); Hierholzer, 1873',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6.2], axes: false, equal: true, height: 320 });
-        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 104, full: true });
-        const G = v.graph(s, { layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true }, nodes: nodesAt(P820, { d: { notePos: 's' }, h: { notePos: 'e' } }), edges: E820.map(([a, b]) => [a, b]) });
+        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
+        const G = v.graph(s, { layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true }, nodes: nodesAt(P820, { a: { notePos: 'w' }, c: { notePos: 's' }, d: { notePos: 's' }, h: { notePos: 'e' } }), edges: E820.map(([a, b]) => [a, b]) });
         const odd = () => ids(G).filter((x) => G.degree(x) % 2 === 1);
         const startV = () => { const o = odd(); if (o.length === 2) return o[0]; const withE = ids(G).find((x) => G.degree(x) > 0); return withE ?? ids(G)[0]; };
         G.onChange = () => S.reset({ at: 'end' });
@@ -569,8 +570,8 @@ Keeping the edges on a stack and popping them at each case of (b) yields the blo
             edgeLabel: (e) => (pos.has(e) ? pos.get(e) : null),
           });
           const W = sq.width;
-          strip(sq, f.stack.map((x, i) => ({ label: G.lab(x), color: 'orange', fill: i === f.stack.length - 1 ? 'gold' : null })), 12, 10, { title: 'stack S', titleW: 84, w: 26, h: 24, gap: 3, maxW: W - 24, empty: 'empty' });
-          strip(sq, f.tour.map((x) => ({ label: G.lab(x), color: 'green', fill: 'green' })), 12, 60, { title: 'tour T', titleW: 84, w: 26, h: 24, gap: 3, maxW: W - 24, empty: 'empty' });
+          strip(sq, f.stack.map((x, i) => ({ label: G.lab(x), color: 'orange', fill: i === f.stack.length - 1 ? 'gold' : null })), 12, 50, { title: 'stack S', titleW: 84, w: 28, h: 28, gap: 3, maxW: W - 24, empty: 'empty' });
+          strip(sq, f.tour.map((x) => ({ label: G.lab(x), color: 'green', fill: 'green' })), 12, 120, { title: 'tour T', titleW: 84, w: 28, h: 28, gap: 3, maxW: W - 24, empty: 'empty' });
           let check = null;
           if (f.done) {
             const usedAll = G.edges.every((e) => f.used.has(e)), consec = pos.size === G.edges.length;
@@ -584,7 +585,7 @@ Keeping the edges on a stack and popping them at each case of (b) yields the blo
           const parity = o.length ? `odd-degree vertices: {${o.map((x) => G.lab(x)).join(', ')}}` : 'every degree is even';
           if (!check) return `${parity} · ${G.edges.length - f.used.size} of ${G.edges.length} edges still unused`;
           const comps = countComps({ nodes: G.nodes.filter((n) => G.degree(n.id) > 0), edges: G.edges, isDirected: () => false }), conn = comps <= 1;
-          if (check.usedAll && check.consec) return `${parity} · the walk ${check.tour.map((x) => G.lab(x)).join('')} uses all ${G.edges.length} edges once each ✓ and is ${check.closed ? '**closed: an Euler tour** ✓' : `**open: an Euler path** from ${G.lab(check.tour[0])} to ${G.lab(check.tour[check.tour.length - 1])}`}${!check.closed && o.length !== 2 ? ' ✗' : ''}`;
+          if (check.usedAll && check.consec) return `${parity} · the walk ${check.tour.map((x) => G.lab(x)).join(' ')} uses all ${G.edges.length} edges once each ✓ and is ${check.closed ? '**closed: an Euler tour** ✓' : `**open: an Euler path** from ${G.lab(check.tour[0])} to ${G.lab(check.tour[check.tour.length - 1])}`}${!check.closed && o.length !== 2 ? ' ✗' : ''}`;
           return `${parity}${conn ? '' : ' and the edges are not connected'} · the walk covers only ${check.len} of ${G.edges.length} edges: ${o.length > 2 ? `more than two odd vertices — **no Euler path exists** ✓` : conn ? '✗' : 'no single walk can cover them ✓'}`;
         });
       },

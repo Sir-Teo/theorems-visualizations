@@ -616,7 +616,7 @@ The canonical forms can be exponentially large. For example, every DNF for $p_1\
           P.path(NS.map((x, i) => [x, dist[i]]), { color: 'red', width: 2.2 }); P.dots(NS.map((x, i) => [x, dist[i]]), { color: 'red', r: 3 });
           P.path(NS.map((x, i) => [x, tse[i]]), { color: 'accent', width: 2.2 }); P.dots(NS.map((x, i) => [x, tse[i]]), { color: 'accent', r: 3 });
           P.path(NS.map((x, i) => [x, par[i]]), { color: 'purple', width: 2.2 }); P.dots(NS.map((x, i) => [x, par[i]]), { color: 'purple', r: 3 });
-          P.dot(n, Math.max(1, dnf.length), { r: 6, color: 'gold' }); P.dot(n, Math.max(1, cnf.length), { r: 6, color: 'gold', hollow: true, width: 2.4 });
+          P.dot(n, Math.max(1, cnf.length), { r: 8, color: 'gold', hollow: true, width: 2.4 }); P.dot(n, Math.max(1, dnf.length), { r: 4.5, color: 'gold' });
         });
         v.legend([['red', 'CNF of ⋁(xᵢ∧yᵢ) by distribution'], ['accent', 'Tseitin CNF of the same'], ['purple', 'DNF terms of parity'], ['gold', 'your G: DNF terms (●), CNF clauses (○)', { dot: true }]]);
         v.readout(() => {

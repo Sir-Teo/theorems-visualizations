@@ -82,7 +82,7 @@ Evaluated at a wrong value $\theta'\ne\theta$ its mean is $n\,E_\theta s(X,\thet
           sL.vline(t1, { color: 'accent', width: 1.4, alpha: 0.6 });
           C.slice().reverse().forEach((c, kk) => {
             const last = kk === C.length - 1;
-            sL.path(c.g.map(([t, y]) => [t, Number.isFinite(y) ? y : null]), { color: last ? 'accent' : 'muted', width: last ? 2.6 : 1.1, alpha: last ? 1 : 0.45 });
+            sL.path(c.g.map(([t, y]) => (Number.isFinite(y) ? [t, y] : null)), { color: last ? 'accent' : 'muted', width: last ? 2.6 : 1.1, alpha: last ? 1 : 0.45 });
             const y1 = sumOver(c.xs, F.ll, t1) - c.m, sl = sumOver(c.xs, F.s, t1);
             if (Number.isFinite(y1) && Number.isFinite(sl)) {
               const dx = 30 / Math.hypot(ppx, sl * ppy);
@@ -107,6 +107,7 @@ Evaluated at a wrong value $\theta'\ne\theta$ its mean is $n\,E_\theta s(X,\thet
           sR.vline(0, { color: 'ink', width: 1.8 });
           if (sc.length) sR.vline(mo.mean, { color: 'gold', width: 2.6 });
           if (Number.isFinite(ex)) sR.vline(ex, { color: 'green', width: 2, dash: [6, 4] });
+          if (sc.length && mo.sd < 1e-9) sR.text(`every sample: −n/θ′ = ${v.fix(mo.mean, 3)}`, mo.mean, sR.bounds.y[1] * 0.92, { color: 'gold', size: 12, weight: 700, align: 'left', dx: 8, plate: true });
           if (!sc.length) sR.corner('every sample has a point above θ′: ℓ(θ′) = −∞', 'tl', { color: 'red' });
           v.legend([['accent', 'one log-likelihood and its tangent (black)'], ['gold', 'tangents of the others · simulated scores'], ['green', 'truth · exact mean of the score', { dash: true }], ['ink', 'zero' + (exactPdf ? ' · exact density' : '')]]);
           info = { n, t0, t1, mo, N: sc.length, undef, ex, I: F.I(t0) };
@@ -602,7 +603,7 @@ in the sense that the difference is positive semidefinite; for an unbiased estim
         v.readout(() => {
           if (!info) return '';
           const { n, par, inv, cxx, inside, loss, rho, bias } = info;
-          return String.raw`$n=${n}$: simulated $\operatorname{Var}\hat\alpha=${v.fix(cxx, 4)}$ vs bound $[\{nI\}^{-1}]_{\alpha\alpha}=${v.fix(inv[0], 4)}$ (ratio ${v.fix(cxx / inv[0], 3)}; bias of $\hat\alpha$ ${v.fix(bias, 3)}) · ${pct(inside / 1000, 1)} of the fits inside the green ellipse (about 86% expected for large $n$) · correlation in the information ${v.fix(rho, 3)} · **not knowing the ${par === 'rate' ? 'rate' : 'mean'} multiplies the bound for $\alpha$ by $1/(1-\rho^2)=${v.fix(loss, 3)}$**` + (par === 'mean' ? ' — orthogonal: the ellipse has no tilt, and the cost is only in $\\psi\'(\\alpha)-1/\\alpha<\\psi\'(\\alpha)$ for $\\alpha$ itself' : '');
+          return String.raw`$n=${n}$: simulated $\operatorname{Var}\hat\alpha=${v.fix(cxx, 4)}$ vs bound $[\{nI\}^{-1}]_{\alpha\alpha}=${v.fix(inv[0], 4)}$ (ratio ${v.fix(cxx / inv[0], 3)}; bias of $\hat\alpha$ ${v.fix(bias, 3)}) · ${pct(inside / 1000, 1)} of the fits inside the green ellipse (about 86% expected for large $n$) · correlation in the information ${v.fix(rho, 3)} · **not knowing the ${par === 'rate' ? 'rate' : 'mean'} multiplies the bound for $\alpha$ by $1/(1-\rho^2)=${v.fix(loss, 3)}$**` + (par === 'mean' ? ' — orthogonal: the ellipse has no tilt and knowing $\\mu$ would not help; the bound for $\\alpha$ is the same number as in the (shape, rate) picture, because it does not depend on how the nuisance parameter is named' : '');
         });
       },
     },

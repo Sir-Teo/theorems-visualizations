@@ -265,7 +265,7 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
         const sL = v.stage({ x: [0, 1], y: [-0.05, 1.05], height: 320, axes: 'box', gutter: true, xlabel: '$x$', ylabel: ' ', title: 'left' });
         const sR = v.stage({ x: [0.8, 160], y: [1e-3, 1], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: ' ', ylabel: ' ', title: 'right' });
         const tL = titler(sL), tR = titler(sR);
-        const MH = [[0.2, 0.6], [0.45, -0.8], [0.62, 0.5], [0.85, -0.3]].map(([x, m], i) => sL.handle(x, m, { color: m > 0 ? 'accent' : 'red', r: 6, constrain: (px, py) => [clamp(px, 0, 1), clamp(py, -1, 1)] }));
+        const MH = [[0.2, 0.6], [0.45, -0.8], [0.62, 0.5], [0.85, -0.15]].map(([x, m], i) => sL.handle(x, m, { color: m > 0 ? 'accent' : 'red', r: 6, constrain: (px, py) => [clamp(px, 0, 1), clamp(py, -1, 1)] }));
         const bC = v.button('cancel the masses', () => { MH[1].set(MH[0].x, -MH[0].y); MH[3].set(MH[2].x, -MH[2].y); });
         const bR = v.button('random masses', () => { const r = rand(hashStr('cy' + Math.round(MH[0].x * 1e4))); MH.forEach((h) => h.set(r(), r() * 2 - 1)); });
         const stair = (f, N, lam, exact) => { const xs = Array.from({ length: N + 1 }, (_, k) => k / N); return (x) => { let s = f(0); for (let k = 1; k <= N; k++) { const t = (xs[k - 1] + xs[k]) / 2, h = f(xs[k]) - f(xs[k - 1]); s += h * (exact ? (x >= t ? 1 : 0) : sigm(lam * N * (x - t))); } return s; }; };
@@ -293,8 +293,8 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
             info = { disc, N, e, lam, needS: need(2), needL: need(3) };
             v.legend([['muted', 'target'], ['accent', 'staircase of sigmoids'], ['muted', 'perfect steps (λ → ∞)', { dash: true }], ['green', 'same sigmoids, least-squares heights']]);
           } else {
-            sL.setView([0, 1], [-1.1, 1.1]); sR.setScale({ xlog: false, ylog: false, x: [-0.15, 1.15], y: [-60, 60] }); sL.setLabels('$x$', 'mass'); sR.setLabels('shift $t$', 'steepness $\\lambda$');
-            tL('a signed measure $\\mu$ and $t\\mapsto\\mu((t,1])$'); tR('$I(\\lambda,t)=\\int\\sigma(\\lambda(x-t))\\,d\\mu(x)$');
+            sL.setView([0, 1], [-1.1, 1.3]); sR.setScale({ xlog: false, ylog: false, x: [-0.15, 1.15], y: [-60, 66] }); sL.setLabels('$x$', 'mass'); sR.setLabels('shift $t$', '$\\lambda$');
+            tL('a signed measure $\\mu$ and $t\\mapsto\\mu((t,1])$'); tR('$I(\\lambda,t)=\\int\\sigma(\\lambda(x-t))\\,d\\mu(x)$ over shift $t$ and steepness $\\lambda$');
             const ms = MH.map((h) => [h.x, h.y]);
             sL.hline(0, { color: 'faint', width: 1 });
             ms.forEach(([x, m]) => sL.line(x, 0, x, m, { color: m >= 0 ? 'accent' : 'red', width: 3 }));
@@ -314,7 +314,7 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
         v.readout(() => {
           if (!info) return '';
           if (!info.disc) return String.raw`$N=${info.N}$ sigmoids with $\lambda=${info.lam.toFixed(1)}$ per cell: sup error ${info.e.toFixed(4)} · error $0.05$ first reached at $N=${info.needS}$ (staircase) and $N=${info.needL}$ (least-squares heights) · Cybenko (1989): *some* finite $N$ exists for every $\varepsilon$, no bound given; today: $N=O(C_f^2/\varepsilon^2)$ for targets with finite Barron constant (Barron 1993), and $N\sim\omega_f^{-1}(\varepsilon)$ for this 1D construction`;
-          return String.raw`$\max|I(\lambda,t)|=${info.mx.toFixed(4)}$ at $t=${info.at[0].toFixed(2)},\ \lambda=${info.at[1].toFixed(0)}$ · total variation of $\mu$: ${info.tot.toFixed(3)}, total mass $\mu([0,1])=${mnus(info.net.toFixed(3))}$ · ` + (info.mx < 1e-9 ? '**$I\\equiv0$ and $\\mu=0$**: the only measure annihilating every sigmoid' : '**$I\\not\\equiv0$**: $\\sigma$ discriminates this $\\mu\\neq0$');
+          return String.raw`$\max|I(\lambda,t)|=${info.mx.toFixed(4)}$ at $t=${info.at[0].toFixed(2)},\ \lambda=${info.at[1].toFixed(0)}$ · total variation of $\mu$: ${info.tot.toFixed(3)}, total mass $\mu([0,1])=${mnus((Math.abs(info.net) < 5e-4 ? 0 : info.net).toFixed(3))}$ · ` + (info.mx < 1e-9 ? '**$I\\equiv0$ and $\\mu=0$**: the only measure annihilating every sigmoid' : '**$I\\not\\equiv0$**: $\\sigma$ discriminates this $\\mu\\neq0$');
         });
       },
     },

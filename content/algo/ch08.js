@@ -288,11 +288,11 @@ Whatever rule the bag uses to choose, the search marks exactly the vertices reac
       viz(v) {
         const bagSel = v.select('bag', [{ value: 'stack', label: 'stack' }, { value: 'queue', label: 'queue' }, { value: 'pq', label: 'priority queue (weight)' }], 'queue', { onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 300 });
-        const sb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
-        const s3 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true });
+        const s3 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 240, full: true });
+        const sb = s3;
         const G = v.graph(s, { weights: true, layout: 'none', editable: { editWeight: true, minWeight: 1, maxWeight: 9 }, nodes: nodesAt(P83), edges: E83.map(([a, b, w]) => [a, b, w]) });
         G.onChange = () => S.reset({ at: 'keep' });
-        const S = v.steps({ frames: () => wfs(G, 's', bagSel.value), code: WFS_CODE, codeTitle: 'WhateverFirst(G, s)', codePos: 'below', speed: 2, start: 'end', still: 9 });
+        const S = v.steps({ frames: () => wfs(G, 's', bagSel.value), code: WFS_CODE, codeTitle: 'WhateverFirst(G, s)', codePos: 'below', speed: 2, start: 9, still: 9 });
         const nextIdx = (bag, kind) => { if (!bag.length) return -1; if (kind === 'stack') return bag.length - 1; if (kind === 'queue') return 0; let k = 0; bag.forEach((it, i) => { if (it.w < bag[k].w || (it.w === bag[k].w && it.seq < bag[k].seq)) k = i; }); return k; };
         let info = {};
         v.render(() => {
@@ -314,12 +314,12 @@ Whatever rule the bag uses to choose, the search marks exactly the vertices reac
           const stats = {};
           ['stack', 'queue', 'pq'].forEach((b, j) => {
             const F = b === kind ? S.frames : wfs(G, 's', b), last = F[F.length - 1], te = new Set(Object.values(last.pe).filter(Boolean)), st = treeStats(G, 's', last.pe); stats[b] = st;
-            const PX0 = (j * W) / 3 + 14, PW = W / 3 - 28, PY0 = 30, PH = H - 42, sc = Math.min(PW / (x1 - x0 || 1), PH / (y1 - y0 || 1));
+            const PX0 = (j * W) / 3 + 14, PW = W / 3 - 28, PY0 = 96, PH = H - 106, sc = Math.min(PW / (x1 - x0 || 1), PH / (y1 - y0 || 1));
             const mx = (x) => PX0 + (PW - sc * (x1 - x0)) / 2 + sc * (x - x0), my = (y) => PY0 + (PH - sc * (y1 - y0)) / 2 + sc * (y1 - y);
-            if (b === kind) R(s3, (j * W) / 3 + 4, 2, ((j + 1) * W) / 3 - 4, H - 2, { color: 'gold', width: 1.6, fill: 'gold', fillAlpha: 0.05, radius: 8 });
+            if (b === kind) R(s3, (j * W) / 3 + 4, 66, ((j + 1) * W) / 3 - 4, H - 2, { color: 'gold', width: 1.6, fill: 'gold', fillAlpha: 0.05, radius: 8 });
             for (const e of G.edges) { const a = G.node(e.from), c = G.node(e.to); L(s3, mx(a.x), my(a.y), mx(c.x), my(c.y), te.has(e) ? { color: 'green', width: 3 } : { color: 'faint', width: 1 }); }
             for (const nd of G.nodes) s3.dot(s3.invX(mx(nd.x)), s3.invY(my(nd.y)), { r: nd.id === 's' ? 5 : 3.6, color: nd.id === 's' ? 'ink' : 'accent' });
-            T(s3, `${BAGS[b]}: depth ${st.depth}, weight ${st.weight}`, (j * W) / 3 + W / 6, 16, { align: 'center', size: 12, weight: 700, color: b === kind ? 'ink' : 'muted' });
+            T(s3, `${BAGS[b]}: depth ${st.depth}, weight ${st.weight}`, (j * W) / 3 + W / 6, 80, { align: 'center', size: 12, weight: 700, color: b === kind ? 'ink' : 'muted' });
           });
           info = { stats, f, kind, mst: G.mst().weight, ecc: Math.max(...Object.values(relaxDist(G, 's')).filter((x) => x < Infinity)) };
         });

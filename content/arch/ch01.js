@@ -410,7 +410,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             const [u, w, th] = a.mode, sc = 1.2 / Math.max(1e-9, Math.hypot(u, w + th * 5, th * 10));
             const pt = (x) => [x + sc * u, sc * (w + th * x)];
             s.poly([pt(0).map((q, i) => q + (i ? -0.1 : 0)), pt(10).map((q, i) => q + (i ? -0.1 : 0)), pt(10).map((q, i) => q + (i ? 0.1 : 0)), pt(0).map((q, i) => q + (i ? 0.1 : 0))], { fill: 'red', fillAlpha: 0.12, color: 'red', dash: [5, 4], width: 1.2 });
-            s.text('free to move like this', 5 + sc * u, sc * (w + th * 5) + 0.45, { align: 'center', size: 11.5, weight: 650, color: 'red' });
+            { const g0 = pt(1.2), up = g0[1] >= 0; s.text('free to move like this', g0[0], g0[1] + (up ? 0.5 : -0.5), { align: 'left', size: 11.5, weight: 650, color: 'red' }); }
           }
           s.rect(0, -0.12, 10, 0.12, { fill: 'gray', fillAlpha: 0.35, color: 'ink', width: 1.5 });
           sel.forEach((sc, k) => { const t = sc.value; if (t === 'pin' || t === 'roller') drawSupport(v, s, XS[k], -0.13, t); if (t === 'fixed') drawSupport(v, s, XS[k], 0, k === 0 ? 'wallL' : k === 2 ? 'wallR' : 'fixed'); });
