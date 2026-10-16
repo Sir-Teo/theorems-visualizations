@@ -37,7 +37,7 @@ Example: for a Poisson$(\lambda)$ sample, $\bar X$ has variance $\lambda/n$, whi
         const bT = v.toggle('add the biased $\\tfrac{n}{n+1}\\bar X$ (MSE)', false);
         const sL = v.stage({ x: [0, LMAX], y: [0, 1], axes: 'box', gutter: true, height: 360, weight: 1.2, xlabel: '$\\lambda$', ylabel: 'variance (MSE)', title: 'risk of unbiased estimators across the parameter' });
         const sR = v.stage({ x: [0, 1], y: [0.3, 4.7], axes: 'box', gutter: { l: 80 }, height: 360, weight: 0.8, minWidth: 230, xlabel: 'estimate', title: 'estimates at the handle' });
-        const H = sL.handle(2.5, 0, { color: 'gold', label: '$\\lambda$', labelPos: 'n', constrain: (x) => [clamp(x, 0.15, LMAX - 0.1), sL.bounds.y[0]] });
+        const H = sL.handle(2.5, 0, { color: 'gold', label: '$\\lambda$', labelPos: 'n', constrain: (x) => [clamp(x, 0.15, LMAX - 0.1), 0] });
         const EST = [
           { k: 'mean', lab: 'X̄', col: 'accent', f: (n, l) => l / n },
           { k: 's2', lab: 'S²', col: 'teal', f: (n, l) => l / n + (2 * l * l) / (n - 1) },
@@ -54,7 +54,7 @@ Example: for a Poisson$(\lambda)$ sample, $\bar X$ has variance $\lambda/n$, whi
         v.render(() => {
           const n = nS.value, l = +H.x.toFixed(2), ests = EST.filter((e) => !e.biased || bT.value);
           const top = Math.min(EST[1].f(n, LMAX), Math.max(EST[2].f(n, LMAX), EST[1].f(n, (n - 1) ** 2 / (2 * n)) * 2.2)) * 1.05;
-          sL.setView([0, LMAX], [0, top]); H.set(H.x, 0);
+          sL.setView([0, LMAX], [0, top]);
           for (const e of ests) sL.fn((x) => e.f(n, x), { domain: [0, LMAX], color: e.col, width: e.k === 'mean' ? 3.4 : 2.2, dash: e.biased ? [7, 4] : undefined });
           const ls = (n - 1) ** 2 / (2 * n);
           if (ls < LMAX) { sL.dot(ls, ls, { r: 5, hollow: true, color: 'ink', width: 2 }); sL.text('S² and X₁ cross', ls, ls, { color: 'ink', size: 11.5, dx: 8, dy: -10, align: 'left', plate: true }); }
@@ -458,7 +458,7 @@ a polynomial in $p$ of degree at most $n$. Conversely every polynomial of degree
         const nS = v.slider('number of trials $n$', 1, NMAX, 4, { int: true, onChange: () => reset() });
         const sL = v.stage({ x: [-0.6, 4.6], y: [-4, 30], axes: 'box', gutter: true, height: 330, weight: 0.85, minWidth: 230, xlabel: 'count $k$', ylabel: '$\\delta(k)$', title: 'the estimator: drag its values' });
         const sR = v.stage({ x: [0, 1], y: [0, 30], axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: '$p$', ylabel: '$E_p\\,\\delta(X)$', title: 'its expectation, a polynomial, against the target' });
-        for (let k = 0; k <= NMAX; k++) H.push(sL.handle(k, 0, { color: 'accent', r: 7, constrain: (x, y) => { const g = TG[tgS.value]; return [Math.round(clamp(x, 0, nS.value)) === k ? k : k, clamp(y, g.yr[0] + 0.02 * (g.yr[1] - g.yr[0]), g.yr[1] - 0.02 * (g.yr[1] - g.yr[0]))]; } }));
+        for (let k = 0; k <= NMAX; k++) H.push(sL.handle(k, 0, { color: 'accent', r: 7, constrain: (x, y) => { const g = TG[tgS.value]; return [k, clamp(y, g.yr[0] + 0.02 * (g.yr[1] - g.yr[0]), g.yr[1] - 0.02 * (g.yr[1] - g.yr[0]))]; } }));
         const bern = (k, n, p) => Math.exp(lchoose(n, k) + (k ? k * Math.log(p) : 0) + (n - k ? (n - k) * Math.log(1 - p) : 0));
         const Ed = (p, n) => { if (p <= 0) return H[0].y; if (p >= 1) return H[n].y; let s = 0; for (let k = 0; k <= n; k++) s += H[k].y * bern(k, n, p); return s; };
         v.button('Fit', () => {

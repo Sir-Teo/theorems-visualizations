@@ -86,21 +86,22 @@ because within each region of the first $\ell-1$ layers the $n_\ell$ units of la
       credit: 'Hanin & Sellke, 2017; Lu, Pu, Wang, Hu & Wang, 2017; Johnson, 2019',
       statement: String.raw`ReLU networks of **width $d+1$** and unbounded depth are dense in $C(K)$ for every compact $K\subset\R^d$ (Hanin & Sellke; for the scalar-output case the minimal width is exactly $d+1$). Width $d$ is not enough: for a network of width at most $d$ with ReLU (indeed any continuous monotone) activation, every connected component of every level set $\{x:f(x)=c\}$ is unbounded (Johnson), so such networks cannot uniformly approximate a function with an isolated strict maximum, such as a bump $e^{-\lVert x\rVert^2}$, however deep they are. Depth can thus replace width, but only above a threshold set by the input dimension.`,
       idea: String.raw`With $d+1$ units per layer, $d$ of them can carry a copy of the input forward (ReLU is the identity on positive inputs after a shift) while the remaining unit computes and accumulates one piece of a max–min (or sum) representation of a piecewise-linear approximant, layer after layer; any continuous function is a uniform limit of such approximants (2.1, 2.2). With only $d$ units, the first layer maps $\R^d$ to $\R^d$ by an affine map followed by ReLU, which either collapses a direction or is a monotone injection on a cone; Johnson shows that the composite's level sets inherit unbounded components from this, so bounded "islands" are impossible.`,
-      caption: String.raw`Two ReLU networks of the chosen depth are trained live by Adam on the bump $e^{-3\lVert x\rVert^2}$ (thin grey circles: its level sets). Left: width $3=d+1$ — its level sets close up around the peak. Middle: width $2=d$ — however long it trains, its contours run off the edge of the window: the readout checks every component of $\{f\ge\tfrac12\max f\}$ and finds none bounded. Bottom: the training error of both (log scale). Change the depth or seed to restart.`,
+      caption: String.raw`For each width, three seeded ReLU networks of the chosen depth are trained live by Adam (the best of the three is shown; deep narrow nets often get stuck with dead units, the thin curves below) on the bump $e^{-3\lVert x\rVert^2}$ (thin grey circles: its level sets). Left: width $3=d+1$ — its level sets close up around the peak. Right: width $2=d$ — however long it trains, its contours run off the edge of the window: the readout checks every component of $\{f\ge\tfrac12\max f\}$ and finds none bounded. Bottom: the training error of both (log scale). Change the depth or seed to restart.`,
       deps: ['deep-2.2'],
       refs: ['Prince §4.5'],
       tags: ['width', 'depth', 'universal approximation'],
       viz(v) {
         const dS = v.slider('hidden layers', 2, 8, 4, { int: true });
-        const sdS = v.slider('seed', 1, 6, 1, { int: true });
+        const sdS = v.slider('seed group', 1, 6, 1, { int: true });
         const tgt = (x, y) => Math.exp(-3 * (x * x + y * y));
         const X = [], Y = []; for (let i = 0; i < 15; i++) for (let j = 0; j < 15; j++) { const x = -1 + (2 * i) / 14, y = -1 + (2 * j) / 14; X.push([x, y]); Y.push(tgt(x, y)); }
         const data = { X, Y };
         const sA = v.stage({ x: [-1, 1], y: [-1, 1], height: 290, axes: 'box', gutter: true, minWidth: 240, title: 'width 3 $=d+1$' });
         const sB = v.stage({ x: [-1, 1], y: [-1, 1], height: 290, axes: 'box', gutter: true, minWidth: 240, title: 'width 2 $=d$' });
         const sC = v.stage({ x: [0, 4000], y: [1e-3, 0.5], ylog: true, height: 200, full: true, axes: 'box', gutter: true, xlabel: 'Adam step', title: 'training RMS error' });
-        const mk = () => { const L = dS.value, s = sdS.value; const one = (w) => { const net = makeNet([2, ...Array(L).fill(w), 1], { act: 'relu', seed: hashStr('narrow|' + w + '|' + L + '|' + s), bias: 0.3 }); return makeTrainer(net, data, { head: 'mse', lr: (it) => 0.01 * Math.max(0.1, 1 - it / 3600) }); }; return { A: one(3), B: one(2), key: L + '|' + s }; };
-        const S = v.sim(mk, (st) => { if (st.A.iter < 4000) { st.A.step(4); st.B.step(4); } }, { dt: 1 / 30 });
+        const mk = () => { const L = dS.value, s = sdS.value; const one = (w, r) => { const net = makeNet([2, ...Array(L).fill(w), 1], { act: 'relu', seed: hashStr('narrow|' + w + '|' + L + '|' + s + '|' + r) }); net.b.forEach((b) => b.fill(0.1)); return makeTrainer(net, data, { head: 'mse', lr: (it) => 0.01 * Math.max(0.1, 1 - it / 3600) }); }; return { A: [0, 1, 2].map((r) => one(3, r)), B: [0, 1, 2].map((r) => one(2, r)) }; };
+        const best = (Ts) => Ts.reduce((a, b) => (b.loss < a.loss ? b : a));
+        const S = v.sim(mk, (st) => { if (st.A[0].iter < 4000) for (const T of [...st.A, ...st.B]) T.step(4); }, { dt: 1 / 30 });
         let lastKey = dS.value + '|' + sdS.value;
         /** components of {f ≥ c} on a grid: [count, how many touch the window edge] */
         const comps = (f, c, N = 70) => { const G = []; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) G.push(f(-1 + (2 * i) / (N - 1), -1 + (2 * j) / (N - 1)) >= c); const seen = new Uint8Array(N * N); let n = 0, edge = 0; for (let s = 0; s < N * N; s++) { if (!G[s] || seen[s]) continue; n++; let touch = false; const st = [s]; seen[s] = 1; while (st.length) { const q = st.pop(), i = Math.floor(q / N), j = q % N; if (i === 0 || j === 0 || i === N - 1 || j === N - 1) touch = true; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const a = i + di, b = j + dj; if (a < 0 || b < 0 || a >= N || b >= N) continue; const r = a * N + b; if (G[r] && !seen[r]) { seen[r] = 1; st.push(r); } } } if (touch) edge++; } return [n, edge]; };
@@ -109,7 +110,7 @@ because within each region of the first $\ell-1$ layers the $n_\ell$ units of la
           const k = dS.value + '|' + sdS.value; if (k !== lastKey) { lastKey = k; S.reset(); v.restart(); }
           const st = S.advance(t);
           const res = {};
-          for (const [s, T, name] of [[sA, st.A, 'A'], [sB, st.B, 'B']]) {
+          for (const [s, T, name] of [[sA, best(st.A), 'A'], [sB, best(st.B), 'B']]) {
             const f = (x, y) => forward(T.net, [x, y])[0];
             s.heat(f, { cmap: 'theme', color: name === 'A' ? 'accent' : 'orange', range: [0, 1], res: 4, key: name + T.iter + k });
             s.contour(tgt, [0.25, 0.5, 0.75], { color: 'muted', width: 1, res: 60 });
@@ -119,8 +120,8 @@ because within each region of the first $\ell-1$ layers the $n_\ell$ units of la
             res[name] = { rmse: Math.sqrt(T.loss), n, edge, bounded: n - edge };
             note(s, `RMS ${Math.sqrt(T.loss).toFixed(3)}`, 'tl');
           }
-          for (const [T, c] of [[st.A, 'accent'], [st.B, 'orange']]) { const pts = []; for (let i = 0; i < T.hist.length; i += 8) pts.push([i, Math.sqrt(T.hist[i])]); sC.path(pts, { color: c, width: 2.2 }); }
-          info = { ...res, it: st.A.iter };
+          for (const [Ts, c] of [[st.A, 'accent'], [st.B, 'orange']]) { const bt = best(Ts); for (const T of Ts) { const pts = []; for (let i = 0; i < T.hist.length; i += 8) pts.push([i, Math.sqrt(T.hist[i])]); sC.path(pts, { color: c, width: T === bt ? 2.6 : 1, alpha: T === bt ? 1 : 0.45 }); } }
+          info = { ...res, it: st.A[0].iter };
         }, { period: 36, once: true, still: 34 });
         v.legend([['accent', 'width 3'], ['orange', 'width 2'], ['ink', 'network level sets at ¼, ½, ¾ of its max'], ['muted', 'target level sets']]);
         v.readout(() => info && String.raw`step ${info.it} · width 3: RMS error ${info.A.rmse.toFixed(4)}, $\{f\ge\tfrac12\max\}$ has ${info.A.n} component${info.A.n === 1 ? '' : 's'}, **${info.A.bounded} bounded** · width 2: RMS error ${info.B.rmse.toFixed(4)}, ${info.B.n} component${info.B.n === 1 ? '' : 's'}, **${info.B.bounded} bounded**` + (info.B.bounded === 0 ? ' — every one runs off the window, as Johnson\'s theorem forces' : ''));
