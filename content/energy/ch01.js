@@ -255,39 +255,40 @@ Published medians span almost four orders of magnitude, from several hundred W/m
         const ctry = v.select('country', NAMES.map((n) => ({ value: n, label: n.replace('United Kingdom', 'UK').replace('United States', 'USA') })), 'United Kingdom');
         const share = v.slider('share of primary energy supplied', 0.05, 1, 1, { step: 0.05, fmt: (x) => v.fix(100 * x, 0) + ' %' });
         const s1 = v.stage({ x: [0.04, 6000], y: [-0.2, 9.2], xlog: true, axes: 'box', gutter: true, height: 430, weight: 1, minWidth: 300, xlabel: 'median power density (W/m²)', yticks: [], xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [100, '100'], [1000, '1000']] });
-        const s2 = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 430, weight: 1.15, minWidth: 320 });
+        const s2 = v.stage({ x: [-1, 3], y: [-1, 1], axes: false, height: 430, weight: 1.25, minWidth: 330 });
         const geo = () => { const c = C[ctry.value]; const P = c[3] * 1e12 / 8766, A = c[5] * 1e6; return { P, A, km2: c[5], d: P / A, name: ctry.value, year: c[2] }; };
         const need = (g, rho) => share.value * g.P / rho / 1e6; // km²
+        const short = (n) => (n === 'United Kingdom' ? 'UK' : n === 'United States' ? 'USA' : n);
         v.render(() => {
           const g = geo();
           SRC.forEach(([name, rho, col], i) => {
-            const y = 8 - i;
+            const y = 8 - i, lab = `${name}  ${rho >= 10 ? v.fix(rho, 0) : rho >= 1 ? v.fix(rho, 1) : v.fix(rho, 2)}`;
             s1.rect(0.04, y - 0.34, rho, y + 0.34, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
-            s1.textPx(`${name}  ${rho >= 10 ? v.fix(rho, 0) : rho >= 1 ? v.fix(rho, 1) : v.fix(rho, 2)}`, s1.X(rho) + 7, s1.Y(y), { size: 11.5, weight: 600, color: 'ink', align: 'left' });
+            const inside = s1.X(rho) - s1.X(0.04) > textW(s1, lab, 11.5, 600) + 24;
+            s1.textPx(lab, inside ? s1.X(0.04) + 8 : s1.X(rho) + 7, s1.Y(y), { size: 11.5, weight: 600, color: 'ink', align: 'left', halo: !inside });
           });
           s1.vline(g.d, { color: 'gold', width: 2.2, dash: true });
-          s1.textPx(`${g.name === 'United Kingdom' ? 'UK' : g.name === 'United States' ? 'USA' : g.name} demand ${v.fix(g.d, 2)} W/m²`, s1.X(g.d) + 6, s1.Y(-0.2) - 12, { size: 11.5, weight: 700, color: 'gold', align: 'left', plate: true });
-          // squares, concentric, in km
-          const half = Math.sqrt(g.km2) * 0.85;
-          s2.setView([-half, half], [-half, half]);
+          const lt = `${short(g.name)} demand ${v.fix(g.d, 2)} W/m²`, lx = clamp(s1.X(g.d) + 6, 4, s1.W - textW(s1, lt, 11.5, 700) - 16);
+          s1.textPx(lt, lx, s1.Y(8.9), { size: 11.5, weight: 700, color: 'gold', align: 'left', plate: true });
+          // concentric squares (km) on the left, key on the right
+          const half = Math.sqrt(g.km2) * 0.85, sq = clamp(s2.W - 250, 190, s2.H), kmpx = (2 * half) / sq;
+          s2.setView([-half, -half + s2.W * kmpx], [-half, -half + s2.H * kmpx]);
           const sides = SRC.map(([name, rho, col]) => ({ name, col, a: need(g, rho), s: Math.sqrt(need(g, rho)) })).sort((p, q) => q.s - p.s);
-          s2.clip(() => {
-            for (const q of sides) s2.rect(-q.s / 2, -q.s / 2, q.s / 2, q.s / 2, { fill: q.col, fillAlpha: 0.13, color: q.col, width: 1.8 });
-          });
+          s2.clip(() => { for (const q of sides) s2.rect(-q.s / 2, -q.s / 2, q.s / 2, q.s / 2, { fill: q.col, fillAlpha: 0.07, color: q.col, width: 2 }); }, [-half, half], [-half, half]);
           const cs = Math.sqrt(g.km2);
-          s2.rect(-cs / 2, -cs / 2, cs / 2, cs / 2, { color: 'ink', width: 2.2, dash: true, stroke: true });
-          s2.text(`${g.name}: ${grp(g.km2)} km²`, -half * 0.97, half * 0.93, { size: 12, weight: 700, color: 'ink', align: 'left' });
-          let yPx = s2.Y(half) + 38;
-          for (const q of sides) {
-            const inside = q.s / 2 < half * 0.98, mult = q.a / g.km2;
-            const txt = `${q.name}: ${q.a >= 100 ? grp(q.a) : v.fix(q.a, 1)} km²  (${mult >= 10 ? v.fix(mult, 0) : mult >= 1 ? v.fix(mult, 1) : v.fix(100 * mult, mult < 0.01 ? 2 : 1) + ' %'}${mult >= 1 ? '× the country' : ' of the country'})`;
-            const x = inside ? s2.X(-q.s / 2) + 6 : s2.X(-half) + 8, top = inside ? s2.Y(q.s / 2) + 11 : 0;
-            yPx = Math.max(yPx + 0, top, yPx);
-            s2.textPx(txt, s2.W - 10, yPx + 14, { size: 11, weight: 600, color: q.col === 'gold' ? 'gold' : q.col, align: 'right' });
-            yPx += 15;
-          }
+          s2.rect(-cs / 2, -cs / 2, cs / 2, cs / 2, { color: 'ink', width: 2.4, dash: true });
+          s2.textPx(`${short(g.name)} land: ${grp(g.km2)} km²`, s2.X(0), s2.Y(cs / 2) - 10, { size: 11.5, weight: 700, color: 'ink', align: 'center' });
+          // key
+          const x0 = sq + 18, rowH = Math.min(46, (s2.H - 20) / sides.length);
+          sides.forEach((q, i) => {
+            const y = 14 + i * rowH, mult = q.a / g.km2;
+            const pct = mult >= 1 ? `${mult >= 10 ? v.fix(mult, 0) : v.fix(mult, 1)}× the whole country` : `${v.fix(100 * mult, mult < 0.01 ? 2 : mult < 0.1 ? 1 : 0)}% of the country`;
+            s2.ctx.save(); s2.ctx.fillStyle = v.color(q.col, 0.6); s2.ctx.strokeStyle = v.color(q.col); s2.ctx.lineWidth = 1.6; s2.ctx.fillRect(x0, y + 2, 14, 14); s2.ctx.strokeRect(x0, y + 2, 14, 14); s2.ctx.restore();
+            s2.textPx(`${q.name}: ${q.a >= 100 ? grp(q.a) : v.fix(q.a, 1)} km²`, x0 + 22, y + 5, { size: 11.5, weight: 650, color: 'ink', align: 'left' });
+            s2.textPx(pct, x0 + 22, y + 20, { size: 11, color: mult >= 1 ? 'red' : 'muted', align: 'left' });
+          });
         });
-        v.legend([['gold', 'average demand density', { dash: true }], ['ink', 'country (same area)', { dash: true }]]);
+        v.legend([['gold', 'country’s average demand density', { dash: true }], ['ink', 'the country’s land (dashed square)', { dash: true }]]);
         v.readout(() => {
           const g = geo(), nm = (n) => SRC.find((s) => s[0] === n);
           const pv = need(g, nm('Solar PV (utility)')[1]), wd = need(g, nm('Onshore wind')[1]), nu = need(g, nm('Nuclear')[1]);
