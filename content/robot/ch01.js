@@ -133,7 +133,7 @@ It counts correctly when the joint constraints are independent; for special, ove
       caption: String.raw`Pick a mechanism and drag the dots; the arms really move because the joint equations are solved by Newton steps on the constraint manifold. The right panel is the ledger: $3(N-1)$ coordinates, minus $2$ per pin (and per slider), ends at Grübler's number (blue); the green line is the mobility found numerically from the rank of the constraint Jacobian. The two agree for every mechanism but the doubled parallelogram, where the formula gives $0$ and the linkage moves.`,
       deps: ['robot-1.1'],
       refs: ['Lynch–Park §2.2'],
-      credit: 'Chebyshev (1850s); M. Grübler, 1883; K. Kutzbach, early 20th century',
+      credit: 'Chebyshev (mid-19th century); M. Grübler, 1883; K. Kutzbach, early 20th century',
       tags: ['mobility', 'linkages'],
       viz(v) {
         const M = v.M;

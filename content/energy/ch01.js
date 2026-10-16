@@ -421,5 +421,89 @@ Of each unit of energy delivered, the fraction $1/\text{EROI}$ is spent on getti
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.6
+    {
+      num: '1.6', kind: 'Method', name: 'Levelised cost of energy and discounting',
+      statement: String.raw`The **levelised cost of energy** (LCOE) of a plant is the constant price per unit of energy at which its discounted revenues exactly equal its discounted costs over its life, so that the investor earns the discount rate $r$ and no more. With construction cost $C$ (per kW) at time 0, annual operating costs $O_t$ (fixed and variable O&M, fuel) and annual energy $E_t$ for $t = 1,\dots,N$,
+$$\text{LCOE} = \frac{C + \sum_{t=1}^{N} O_t/(1+r)^t}{\sum_{t=1}^{N} E_t/(1+r)^t}.$$
+For constant costs and output this reduces to the annuity form
+$$\text{LCOE} = \frac{\text{CRF}\cdot C + \text{FOM}}{8.76\,\text{CF}} + \text{VOM} + h\,p_{\text{fuel}}, \qquad \text{CRF} = \frac{r(1+r)^N}{(1+r)^N - 1},$$
+with fixed O&M in \$/kW-yr, capacity factor CF, variable O&M in \$/MWh, heat rate $h$ and fuel price $p_{\text{fuel}}$. Capital-heavy technologies (solar, wind, nuclear) are the ones whose LCOE is most sensitive to the discount rate; fuel-burning plants are sensitive to the fuel price instead.`,
+      idea: String.raw`A kilowatt-hour sold in year 30 is worth less to an investor than one sold in year 1, so both costs and energy are weighted by $(1+r)^{-t}$; setting discounted revenue equal to discounted cost and solving for the price gives the formula. The capital recovery factor CRF is the share of the construction cost that has to be repaid every year, and it rises with $r$: for a 30-year plant it is 3.3% at $r=0$, 8.1% at $r=7\%$ and 10.1% at $r=9\%$. A plant that is mostly capital (nuclear: about 80% of its cost) therefore becomes much more expensive when money is expensive, while a gas plant (mostly fuel) barely notices. LCOE is a convenient single number but hides *when* energy is produced: a kWh at 3 a.m. and one at the evening peak are valued the same.`,
+      caption: String.raw`Choose a technology (its capital cost, O&M, heat rate and capacity factor are the EIA/Sargent & Lundy reference values; the capacity factor is the US 2025 average) and change any input. The left chart shows the discounted cash flows year by year: the red bar is the construction cost, the stacked bars are each year's discounted revenue at the break-even price, split into running costs and margin, and the gold line is the cumulative net present value, which reaches exactly zero at the end of life. The right chart sweeps the discount rate for all six technologies with their reference inputs.`,
+      deps: ['energy-1.4'],
+      refs: ['Tester ch. 5'],
+      tags: ['LCOE', 'discounting', 'economics'],
+      scope: String.raw`This is a plant-level, constant-dollar LCOE with end-of-year cash flows and no taxes, subsidies, inflation, degradation or system integration costs. Capital costs are EIA/Sargent & Lundy overnight estimates for 2023 US dollars, with the interest during construction added from the construction-time slider; the gas and nuclear fuel prices ($3.5 and $0.5 per MMBtu) and the construction times are illustrative round numbers, and offshore wind's 40% capacity factor is illustrative. Real projects differ widely by site and country.`,
+      viz(v) {
+        // [label, capex $/kW, FOM $/kW-yr, VOM $/MWh, heat rate Btu/kWh, fuel $/MMBtu, CF, build years, colour, Lazard 2025 range $/MWh]
+        const T = {
+          sun: ['Solar PV (tracking)', 1502, 20.23, 0, 0, 0, 0.244, 1, 'gold', '38–78'],
+          wind: ['Onshore wind', 1489, 33.06, 0, 0, 0, 0.342, 2, 'teal', '37–86'],
+          off: ['Offshore wind', 3689, 154, 0, 0, 0, 0.40, 3, 'accent', '72–140'],
+          gas: ['Gas combined cycle', 921, 15.51, 3.33, 6226, 3.5, 0.584, 3, 'orange', '48–109'],
+          coal: ['Coal (USC)', 4103, 61.6, 6.4, 8638, 2.49, 0.487, 4, 'ink', '71–173'],
+          nuc: ['Nuclear (AP1000)', 7861, 156.2, 2.52, 10608, 0.5, 0.91, 6, 'purple', '141–220'],
+        };
+        const sel = v.select('technology', Object.entries(T).map(([k, t]) => ({ value: k, label: t[0].replace(' (tracking)', '').replace(' (USC)', '').replace(' (AP1000)', '').replace('Gas combined cycle', 'gas CC') })), 'sun', { onChange: (k) => load(k) });
+        const cap = v.slider('capital cost ($/kW)', 500, 12000, 1502, { step: 10, fmt: (x) => grp(x) });
+        const fom = v.slider('fixed O&M ($/kW-yr)', 0, 300, 20.23, { step: 0.5, fmt: (x) => v.fix(x, 1) });
+        const vom = v.slider('variable O&M ($/MWh)', 0, 20, 0, { step: 0.1, fmt: (x) => v.fix(x, 1) });
+        const hr = v.slider('heat rate (Btu/kWh)', 0, 14000, 0, { step: 50, fmt: (x) => grp(x) });
+        const fuel = v.slider('fuel ($/MMBtu)', 0, 12, 0, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const cf = v.slider('capacity factor', 0.05, 0.95, 0.244, { step: 0.005, fmt: (x) => v.fix(100 * x, 1) + ' %' });
+        const N = v.slider('lifetime (years)', 10, 60, 30, { step: 1, int: true, fmt: (x) => String(x) });
+        const rr = v.slider('discount rate', 0, 0.15, 0.07, { step: 0.0025, fmt: (x) => v.fix(100 * x, 2) + ' %' });
+        const cons = v.slider('construction time (years)', 0, 10, 1, { step: 0.5, fmt: (x) => v.fix(x, 1) });
+        function load(k) { const t = T[k]; cap.set(t[1]); fom.set(t[2]); vom.set(t[3]); hr.set(t[4]); fuel.set(t[5]); cf.set(t[6]); cons.set(t[7]); }
+        const sA = v.stage({ x: [-1.2, 31], y: [-1500, 1500], axes: 'box', gutter: true, height: 340, weight: 1.15, minWidth: 340, xlabel: 'year of operation', ylabel: 'present value ($ per kW of capacity)' });
+        const sB = v.stage({ x: [0, 0.12], y: [0, 270], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: 'discount rate', ylabel: 'LCOE ($/MWh)', xticks: [[0, '0'], [0.02, '2%'], [0.04, '4%'], [0.06, '6%'], [0.08, '8%'], [0.1, '10%'], [0.12, '12%']] });
+        const short = (n) => n.replace(' (tracking)', '').replace(' (USC)', '').replace(' (AP1000)', '');
+        const crf = (r, n) => (r === 0 ? 1 / n : r * (1 + r) ** n / ((1 + r) ** n - 1));
+        const calc = (p) => { // p = {C, F, V, H, P, cf, n, r, T} → components in $/MWh
+          const Ce = p.C * (1 + p.r) ** (p.T / 2), mwh = 8.76 * p.cf;
+          const capc = crf(p.r, p.n) * Ce / mwh, fo = p.F / mwh, vo = p.V, fu = p.H / 1000 * p.P;
+          return { cap: capc, fom: fo, vom: vo, fuel: fu, tot: capc + fo + vo + fu, Ce, mwh };
+        };
+        const cur = () => ({ C: cap.value, F: fom.value, V: vom.value, H: hr.value, P: fuel.value, cf: cf.value, n: N.value, r: rr.value, T: cons.value });
+        const preset = (t, r) => ({ C: t[1], F: t[2], V: t[3], H: t[4], P: t[5], cf: t[6], n: 30, r, T: t[7] });
+        v.render(() => {
+          const p = cur(), c = calc(p), L = c.tot, n = p.n;
+          sA.setView([-1.2, n + 1.2], [-1.12 * c.Ce, Math.max(0.28 * c.Ce, 2.2 * L * c.mwh / (1 + p.r))]);
+          // year 0: construction cost (with interest during construction)
+          sA.rect(-0.38, -c.Ce, 0.38, 0, { fill: 'red', fillAlpha: 0.55, color: 'red', width: 1.2 });
+          const bw = Math.min(0.42, 18 / n * 0.04 + 0.2);
+          let cum = -c.Ce; const pts = [[0, cum]];
+          for (let t = 1; t <= n; t++) {
+            const d = (1 + p.r) ** -t, rev = L * c.mwh * d, o1 = c.fom * c.mwh * d, o2 = c.vom * c.mwh * d, o3 = c.fuel * c.mwh * d;
+            let y = 0; for (const [h, col] of [[o1, 'teal'], [o2, 'green'], [o3, 'orange'], [rev - o1 - o2 - o3, 'accent']]) { sA.rect(t - bw, y, t + bw, y + h, { fill: col, fillAlpha: 0.62, color: col, width: 0.6 }); y += h; }
+            cum += rev - o1 - o2 - o3 - o3 * 0; pts.push([t, cum]);
+          }
+          sA.path(pts, { color: 'gold', width: 2.6 }); sA.hline(0, { color: 'ink', width: 1 });
+          sA.dot(n, pts[pts.length - 1][1], { r: 5, color: 'gold' });
+          sA.textPx('construction', sA.X(0) + 14, sA.Y(-c.Ce) - 10, { size: 11, weight: 650, color: 'red', align: 'left' });
+          sA.textPx('cumulative net present value → 0 at the end of life', sA.X(n) - 8, sA.Y(-0.7 * c.Ce), { size: 11, weight: 650, color: 'gold', align: 'right' });
+          // sweep of discount rate for all presets
+          sB.vline(p.r, { color: 'ink', width: 1.2, dash: true });
+          const ends = [];
+          for (const [k, t] of Object.entries(T)) {
+            const pts2 = []; for (let i = 0; i <= 60; i++) { const r = 0.12 * i / 60; pts2.push([r, calc(preset(t, r)).tot]); }
+            const on = sel.value === k;
+            sB.path(pts2, { color: t[8], width: on ? 3 : 1.8, alpha: on ? 1 : 0.7 });
+            ends.push({ y: sB.Y(pts2[pts2.length - 1][1]) - 8, name: short(t[0]), col: t[8], on });
+          }
+          ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 13);
+          for (const e of ends) sB.textPx(e.name, sB.X(0.12) - 4, e.y, { size: 10.5, weight: e.on ? 700 : 550, color: e.col, align: 'right' });
+          sB.dot(p.r, L, { r: 6.5, color: 'ink', label: `${v.fix(L, 0)} $/MWh`, labelPos: 'nw' });
+          v.legend([['red', 'construction cost', { area: true }], ['teal', 'fixed O&M', { area: true }], ['green', 'variable O&M', { area: true }], ['orange', 'fuel', { area: true }], ['accent', 'margin that repays the capital', { area: true }]]);
+        });
+        v.readout(() => {
+          const p = cur(), c = calc(p), t = T[sel.value];
+          const lo = calc({ ...p, r: 0.03 }).tot, hi = calc({ ...p, r: 0.10 }).tot;
+          return `**LCOE ${v.fix(c.tot, 1)} \\$/MWh** = capital ${v.fix(c.cap, 1)} (${v.fix(100 * c.cap / c.tot, 0)}%) + fixed O&M ${v.fix(c.fom, 1)} + variable O&M ${v.fix(c.vom, 1)} + fuel ${v.fix(c.fuel, 1)}. Energy per kW per year: ${v.fix(c.mwh, 2)} MWh; CRF = ${v.fix(100 * crf(p.r, p.n), 2)}% of the ${grp(c.Ce)} \\$/kW construction cost every year.\nAt a 3% discount rate the same plant costs ${v.fix(lo, 0)} \\$/MWh, at 10% ${v.fix(hi, 0)} (a factor ${v.fix(hi / lo, 2)}). For comparison, Lazard's 2025 unsubsidised range for ${short(t[0]).toLowerCase()} is ${t[9]} \\$/MWh.`;
+        });
+        load('sun');
+      },
+    },
   ],
 };
