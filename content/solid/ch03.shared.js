@@ -51,14 +51,14 @@ export function drawElem(v, s, c, h, ang, sx, sy, t, k, opts = {}) {
       const out = [f[0] + d[0] * L, f[1] + d[1] * L];
       if (q >= 0) arr(P(f[0], f[1]), P(out[0], out[1]), colN(q)); else arr(P(out[0], out[1]), P(f[0], f[1]), colN(q));
     }
-    if (labels) { const e = ax === 0 ? [h + L + 0.28, 0] : [0, h + L + 0.3]; const pp = P(e[0], e[1]); s.tex(names[ax], pp[0], pp[1], { size: 13, color: colN(q) }); }
+    if (labels && names[ax]) { const e = ax === 0 ? [h + L + 0.3, 0] : [0, h + L + 0.3]; const pp = P(e[0], e[1]); s.tex(names[ax], pp[0], pp[1], { size: 13, color: colN(q) }); }
   }
   // shear arrows: on +x' face points +y' for t>0; +y' face points -x'; -x' face -y'; -y' face +x'
   if (Math.abs(t) * k >= thresh) {
     const L = Math.min(Math.abs(t) * k, 1.9 * h), sg = Math.sign(t), o = 0.17 * h;
     const faces = [[[h + o, 0], [0, sg]], [[0, h + o], [-sg, 0]], [[-h - o, 0], [0, -sg]], [[0, -h - o], [sg, 0]]];
     for (const [f, d] of faces) arr(P(f[0] - d[0] * L / 2, f[1] - d[1] * L / 2), P(f[0] + d[0] * L / 2, f[1] + d[1] * L / 2), 'orange');
-    if (labels) { const pp = P(h + o + 0.34, L / 2 + 0.1); s.tex(names[2], pp[0], pp[1], { size: 13, color: 'orange' }); }
+    if (labels && names[2]) { const pp = P(h + o + 0.55, L / 2 + 0.2); s.tex(names[2], pp[0], pp[1], { size: 13, color: 'orange' }); }
   }
   if (axes) {
     const a0 = P(h * 1.0, 0), a1 = P(h * 1.0 + 0.0, 0);

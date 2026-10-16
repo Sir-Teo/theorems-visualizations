@@ -138,20 +138,22 @@ and $\sigma_{y'}$ is the same with $\theta+90^\circ$. All three are sinusoids of
           drawElem(v, A, [0, 0], h, a, q.sx, q.sy, q.t, k);
           A.path([[-h, -h], [h, -h], [h, h], [-h, h]], { close: true, color: 'faint', width: 1.2, dash: [5, 4] });
           primeAxes(A, [-2.9, -2.6], a, 0.7);
+          const mm = Math.max(60, (Math.abs(g.c) + g.R) * 1.3); M.setView([-mm, mm], [-0.75 * mm, 0.75 * mm]);
+          const out = (P, d) => { const dx = P[0] - g.c, dy = P[1], r = Math.hypot(dx, dy) || 1; return [P[0] + (d * mm * dx) / r, P[1] + (d * mm * dy) / r]; };
           M.circle(g.c, 0, g.R, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.06 });
           const X = [sx.value, tx.value], Y = [sy.value, -tx.value];
           M.line(X[0], X[1], Y[0], Y[1], { color: 'muted', width: 1.4, dash: [4, 4] });
-          M.dot(X[0], X[1], { r: 5, color: 'ink' }); M.tex('X', X[0] + 10, X[1] + 10, { size: 13, color: 'ink' });
-          M.dot(Y[0], Y[1], { r: 5, color: 'ink' }); M.tex('Y', Y[0] - 10, Y[1] - 10, { size: 13, color: 'ink' });
-          M.dot(g.c, 0, { r: 3.5, color: 'muted' }); M.tex('C', g.c + 8, -11, { size: 12, color: 'muted' });
+          M.dot(X[0], X[1], { r: 5, color: 'ink' }); { const o = out(X, 0.07); M.tex('X', o[0], o[1], { size: 13, color: 'ink' }); }
+          M.dot(Y[0], Y[1], { r: 5, color: 'ink' }); { const o = out(Y, 0.07); M.tex('Y', o[0], o[1], { size: 13, color: 'ink' }); }
+          M.dot(g.c, 0, { r: 3.5, color: 'muted' }); M.tex('C', g.c + 0.04 * mm, 0.06 * mm, { size: 12, color: 'muted' });
           M.dot(p.s1, 0, { r: 5.5, color: 'red' }); M.dot(p.s2, 0, { r: 5.5, color: 'red' });
-          M.tex(String.raw`\sigma_1`, p.s1 + 4, 14, { size: 13, color: 'red' }); M.tex(String.raw`\sigma_2`, p.s2 - 4, 14, { size: 13, color: 'red' });
+          M.tex(String.raw`\sigma_1`, p.s1 + 0.04 * mm, -0.13 * mm, { size: 13, color: 'red' }); M.tex(String.raw`\sigma_2`, p.s2 - 0.04 * mm, -0.13 * mm, { size: 13, color: 'red' });
           // current point: handle position follows θ
           const phi = g.phi0 - 2 * a, P1 = [g.c + g.R * Math.cos(phi), g.R * Math.sin(phi)], P2 = [g.c - g.R * Math.cos(phi), -g.R * Math.sin(phi)];
           H.set(P1[0], P1[1]);
           M.line(P1[0], P1[1], P2[0], P2[1], { color: 'gold', width: 1.8 });
           M.dot(P2[0], P2[1], { r: 6, color: 'gold', hollow: true });
-          M.tex("Y′", P2[0] - 12, P2[1] - 10, { size: 13, color: 'gold' }); M.tex("X′", P1[0] + 12, P1[1] + 10, { size: 13, color: 'gold' });
+          { const o1 = out(P1, 0.08), o2 = out(P2, 0.08); M.tex("Y′", o2[0], o2[1], { size: 13, color: 'gold' }); M.tex("X′", o1[0], o1[1], { size: 13, color: 'gold' }); }
           const arc = []; const r0 = Math.max(10, g.R * 0.35);
           for (let i = 0; i <= 30; i++) { const f = g.phi0 + ((phi - g.phi0) * i) / 30; arc.push([g.c + r0 * Math.cos(f), r0 * Math.sin(f)]); }
           if (g.R > 1e-6) M.path(arc, { color: 'orange', width: 2, dash: [4, 3] });
@@ -181,24 +183,25 @@ and it acts on planes turned $45^\circ$ from the principal planes. On those plan
         const sx = v.slider('$\\sigma_x$ (MPa)', -100, 100, 70, { step: 1 });
         const sy = v.slider('$\\sigma_y$', -100, 100, 10, { step: 1 });
         const tx = v.slider('$\\tau_{xy}$', -100, 100, 30, { step: 1 });
-        const A = v.stage({ x: [-5, 5], y: [-2.6, 2.6], equal: true, axes: false, height: 300, title: 'principal element and maximum-shear element' });
-        const M = v.stage({ x: [-210, 210], y: [-150, 150], equal: true, axes: true, height: 300, title: 'Mohr’s circle', xlabel: 'σ', ylabel: 'τ' });
-        const G = v.stage({ x: [-90, 90], y: [-150, 150], axes: 'box', gutter: true, height: 300, xlabel: 'rotation θ from the x axis (°)', ylabel: 'τx′y′ (MPa)', xticks: [-90, -45, 0, 45, 90], title: 'τx′y′(θ)' });
-        const k = 0.011, h = 0.85;
+        const A = v.stage({ x: [-5.2, 5.2], y: [-2.3, 2.3], equal: true, axes: false, height: 250, full: true, title: 'principal element (left) and maximum-shear element (right)' });
+        const M = v.stage({ x: [-210, 210], y: [-150, 150], equal: true, axes: true, height: 320, title: 'Mohr’s circle', xlabel: 'σ', ylabel: 'τ' });
+        const G = v.stage({ x: [-90, 90], y: [-150, 150], axes: 'box', gutter: true, height: 320, xlabel: 'rotation θ from the x axis (°)', ylabel: 'τx′y′ (MPa)', xticks: [-90, -45, 0, 45, 90], title: 'τx′y′(θ)' });
+        const k = 0.012, h = 0.85;
         v.render(() => {
           const p = prin2(sx.value, sy.value, tx.value), R = p.R, thp = p.thp, ths = thp + Math.PI / 4;
           const q1 = tr2(sx.value, sy.value, tx.value, thp), q2 = tr2(sx.value, sy.value, tx.value, ths);
           drawElem(v, A, [-2.6, 0], h, thp, q1.sx, q1.sy, 0, k, { names: [String.raw`\sigma_1`, String.raw`\sigma_2`, ''] });
-          drawElem(v, A, [2.6, 0], h, ths, q2.sx, q2.sy, q2.t, k, { names: [String.raw`\sigma_{\rm avg}`, String.raw`\sigma_{\rm avg}`, String.raw`\tau_{\max}`] });
-          A.text(`turned ${num(deg(thp), 1)}° from x`, -2.6, -2.15, { size: 11.5, color: 'muted', align: 'center' });
-          A.text(`+45° → ${num(deg(ths), 1)}°`, 2.6, -2.15, { size: 11.5, color: 'muted', align: 'center' });
+          drawElem(v, A, [2.6, 0], h, ths, q2.sx, q2.sy, q2.t, k, { names: ['', '', String.raw`\tau_{\max}`] });
+          A.text(`turned ${num(deg(thp), 1)}° from x`, -2.6, -1.95, { size: 11.5, color: 'muted', align: 'center' });
+          A.text(`+45° → ${num(deg(ths), 1)}°: σavg = ${num(p.c, 1)} on all four faces`, 2.6, -1.95, { size: 11.5, color: 'muted', align: 'center' });
+          const mm = Math.max(60, (Math.abs(p.c) + R) * 1.35); M.setView([-mm, mm], [-0.75 * mm, 0.75 * mm]);
           M.circle(p.c, 0, R, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.06 });
           M.line(p.s2, 0, p.s1, 0, { color: 'muted', width: 1.2, dash: [4, 4] });
           M.dot(p.s1, 0, { r: 5.5, color: 'red' }); M.dot(p.s2, 0, { r: 5.5, color: 'red' });
-          M.tex(String.raw`\sigma_1`, p.s1 + 5, 14, { size: 13, color: 'red' }); M.tex(String.raw`\sigma_2`, p.s2 - 5, 14, { size: 13, color: 'red' });
+          M.tex(String.raw`\sigma_1`, p.s1 + 0.05 * mm, -0.09 * mm, { size: 13, color: 'red' }); M.tex(String.raw`\sigma_2`, p.s2 - 0.05 * mm, -0.09 * mm, { size: 13, color: 'red' });
           M.dot(p.c, R, { r: 6, color: 'orange' }); M.dot(p.c, -R, { r: 6, color: 'orange' });
           M.line(p.c, 0, p.c, R, { color: 'orange', width: 2 });
-          M.tex(String.raw`\tau_{\max}=R`, p.c + 8, R * 0.5 + 6, { size: 13, color: 'orange', align: 'left' });
+          M.tex(String.raw`\tau_{\max}=R`, p.c + 0.17 * mm, R * 0.5, { size: 13, color: 'orange' });
           M.dot(p.c, 0, { r: 3.5, color: 'muted' });
           G.fn((d) => tr2(sx.value, sy.value, tx.value, rad(d)).t, { color: 'orange', width: 2.4, domain: [-90, 90], n: 181 });
           G.hline(R, { color: 'orange', width: 1.2, dash: [5, 4] }); G.hline(-R, { color: 'orange', width: 1.2, dash: [5, 4] });
@@ -240,6 +243,7 @@ and it acts on planes turned $45^\circ$ from the principal planes. On those plan
         const st = (n, S) => { const sn = S[0] * n[0] ** 2 + S[1] * n[1] ** 2 + S[2] * n[2] ** 2; return [sn, Math.sqrt(Math.max(0, S[0] ** 2 * n[0] ** 2 + S[1] ** 2 * n[1] ** 2 + S[2] ** 2 * n[2] ** 2 - sn * sn))]; };
         v.render(() => {
           const S = sorted(), c = M.ctx;
+          { const ctr = (S[0] + S[2]) / 2, sp = Math.max(40, S[0] - S[2]), w = Math.max(sp * 0.75, 50); M.setView([ctr - w, ctr + w], [-0.8 * w, 0.8 * w]); B.setView([0, 4], [0, Math.max(30, (S[0] - S[2]) / 2 * 1.35)]); }
           c.save(); c.fillStyle = v.color('muted', 0.35);
           for (const n of cloud) { const [a, b] = st(n, S); c.fillRect(M.X(a) - 1, M.Y(b) - 1, 2, 2); }
           c.restore();
@@ -249,7 +253,7 @@ and it acts on planes turned $45^\circ$ from the principal planes. On those plan
           // n is given in the frame (axis 1, axis 2, axis 3) ← indices 0, 1, 2 of the sorted stresses
           const [sn, tt] = st(n, S);
           M.dot(sn, tt, { r: 7, color: 'gold' }); M.line(sn, tt, sn, 0, { color: 'gold', width: 1, dash: [2, 3] });
-          for (const [x, l] of [[S[0], '1'], [S[1], '2'], [S[2], '3']]) { M.dot(x, 0, { r: 4.5, color: 'red' }); M.tex(String.raw`\sigma_${l}`, x, -13, { size: 12.5, color: 'red' }); }
+          for (const [x, l] of [[S[0], '1'], [S[1], '2'], [S[2], '3']]) { M.dot(x, 0, { r: 4.5, color: 'red' }); M.tex(String.raw`\sigma_${l}`, x, -0.1 * Math.max(40, S[0] - S[2]), { size: 12.5, color: 'red' }); }
           M.line((S[0] + S[2]) / 2, 0, (S[0] + S[2]) / 2, (S[0] - S[2]) / 2, { color: 'accent', width: 1.4, dash: [4, 3] });
           const t23 = (S[1] - S[2]) / 2, t12 = (S[0] - S[1]) / 2, t13 = (S[0] - S[2]) / 2;
           B.rect(0.15, 0, 0.85, t23, { fill: 'teal', fillAlpha: 0.5, color: 'teal' }); B.rect(1.15, 0, 1.85, t12, { fill: 'purple', fillAlpha: 0.5, color: 'purple' }); B.rect(2.15, 0, 2.85, t13, { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 2.5 });
@@ -297,7 +301,7 @@ the coefficients of the characteristic polynomial $\sigma^3-I_1\sigma^2+I_2\sigm
         const cols = ['accent', 'purple', 'teal', 'orange', 'gold', 'pink'], nm = ['σxx', 'σyy', 'σzz', 'σxy', 'σyz', 'σzx'];
         const A = v.stage({ x: [0, 360], y: [-160, 160], axes: 'box', gutter: true, height: 320, xlabel: 'spin angle ψ (°)', ylabel: 'component (MPa)', xticks: [0, 90, 180, 270, 360], title: 'components change' });
         const B = v.stage({ x: [0, 360], y: [-160, 160], axes: 'box', gutter: true, height: 320, xlabel: 'spin angle ψ (°)', ylabel: 'stress (MPa)', xticks: [0, 90, 180, 270, 360], title: 'invariants do not' });
-        const C = v.stage({ x: [-3.4, 3.4], y: [-2.5, 2.5], equal: true, axes: false, height: 320, title: 'hydrostatic + deviatoric' });
+        const C = v.stage({ x: [-3.4, 3.4], y: [-2.2, 2.2], equal: true, axes: false, height: 320, title: 'hydrostatic + deviatoric' });
         A.onDrag((x) => psi.set(Math.round(Math.max(0, Math.min(360, x))))); B.onDrag((x) => psi.set(Math.round(Math.max(0, Math.min(360, x)))));
         v.render(() => {
           const t0 = rad(psi.value);
@@ -347,7 +351,7 @@ so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and princ
         const load = v.slider('tip shear traction $p$ (MPa)', 1, 20, 8, { step: 0.5 });
         const al = v.slider('rosette angle $\\alpha$ (°)', -90, 90, 0, { step: 1 });
         const noise = v.slider('gauge error (µε)', 0, 60, 0, { step: 1 });
-        const P = v.stage({ x: [-20, 420], y: [-30, 230], equal: true, axes: false, height: 330, title: 'cantilever plate with a rosette' });
+        const P = v.stage({ x: [-20, 445], y: [-30, 230], equal: true, axes: false, height: 330, title: 'cantilever plate with a rosette' });
         const M = v.stage({ x: [-1200, 1200], y: [-900, 900], equal: true, axes: true, height: 330, title: 'Mohr’s circle of strain', xlabel: 'ε (µε)', ylabel: 'γ/2 (µε)' });
         const Hd = P.handle(250, 100, { color: 'ink', r: 8, constrain: { x: [20, 380], y: [20, 180] } });
         const eps = (x, y) => { // strain at the element centre containing (x,y) for unit load, then scaled
@@ -369,7 +373,7 @@ so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and princ
           return { E, a, dirs, R, ex, ey, gam, pr, pt, thpR: a + pr.thp, thpT: pt.thp };
         };
         v.render(() => {
-          const sc = base.vm.reduce((m, z) => Math.max(m, z), 0) * load.value;
+          const sorted = Float64Array.from(base.vm).sort(), sc = sorted[Math.floor(sorted.length * 0.9)] * load.value; // colour scale: 90th percentile (the clamp corners are stress singularities)
           for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) {
             const t = (base.vm[i * ny + j] * load.value) / (sc || 1), col = v.ramp(Math.min(1, t), 'accent', 'panel'), c = P.ctx;
             c.fillStyle = `rgb(${col[0] | 0},${col[1] | 0},${col[2] | 0})`;
@@ -378,20 +382,17 @@ so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and princ
           }
           P.path([[0, 0], [W, 0], [W, Hh], [0, Hh]], { close: true, color: 'ink', width: 2, fill: false });
           P.line(0, -4, 0, Hh + 4, { color: 'ink', width: 4 });
-          P.arrow(W + 18, Hh * 0.9, W + 18, Hh * 0.9 - 70, { color: 'orange', width: 3, head: 9, alpha: 0 });
-          P.arrow(W - 40, Hh + 22, W - 40, Hh + 2, { color: 'orange', width: 3, head: 9, alpha: 0 });
-          P.arrow(W + 2, Hh * 0.5 + 40, W + 2, Hh * 0.5 + 8, { color: 'orange', width: 3, head: 9 });
-          P.text('p', W + 14, Hh * 0.5 + 24, { size: 12, color: 'orange', math: true });
+          P.arrow(W + 8, Hh * 0.5 + 40, W + 8, Hh * 0.5 + 6, { color: 'orange', width: 3, head: 9 });
+          P.text('p', W + 24, Hh * 0.5 + 22, { size: 12, color: 'orange', math: true });
           const s = state(), labs = ['a', 'b', 'c'], cols = ['accent', 'purple', 'teal'];
           s.dirs.forEach((d, i) => { const ex = Math.cos(d), ey = Math.sin(d); P.line(Hd.x - 24 * ex, Hd.y - 24 * ey, Hd.x + 24 * ex, Hd.y + 24 * ey, { color: cols[i], width: 4.5 }); P.text(labs[i], Hd.x + 36 * ex, Hd.y + 36 * ey, { size: 12.5, color: cols[i], weight: 700, align: 'center', baseline: 'middle' }); });
           const g = s.pt.c, Rt = s.pt.R, Rr = s.pr.R, cr = s.pr.c;
           // Mohr stage: auto-fit to the data
-          const m = Math.max(Math.abs(g) + Rt, Math.abs(cr) + Rr, 300) * 1.15; M.setView([-m, m], [-m * 0.75, m * 0.75]);
+          const m = Math.max(Math.abs(g) + Rt, Math.abs(cr) + Rr, 60) * 1.3; M.setView([-m, m], [-m * 0.75, m * 0.75]);
           M.circle(g, 0, Rt, { color: 'green', width: 2.4, dash: [6, 4], fill: false });
           M.circle(cr, 0, Rr, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.07 });
-          s.R.forEach((r, i) => { M.vline(r, { color: cols[i], width: 1.2, dash: [3, 4] }); });
-          s.R.forEach((r, i) => { M.dot(r, 0, { r: 5, color: cols[i] }); M.tex(labs[i], r, -m * 0.07, { size: 12.5, color: cols[i] }); });
-          M.dot(s.pr.s1, 0, { r: 5.5, color: 'red' }); M.dot(s.pr.s2, 0, { r: 5.5, color: 'red' });
+          s.R.forEach((r, i) => { M.dot(r, 0, { r: 5, color: cols[i] }); M.tex(labs[i], r, m * (0.07 + 0.07 * i), { size: 12.5, color: cols[i] }); M.line(r, 0, r, m * (0.04 + 0.07 * i), { color: cols[i], width: 1, dash: [2, 2] }); });
+          M.dot(s.pr.s1, 0, { r: 5.5, color: 'red', hollow: true }); M.dot(s.pr.s2, 0, { r: 5.5, color: 'red', hollow: true });
           void sc;
         });
         v.readout(() => {
@@ -420,7 +421,7 @@ and a sphere of the same $r$ and $t$ carries $\sigma=\dfrac{pr}{2t}$ in every ta
         const r = v.slider('mean radius $r$ (mm)', 50, 1000, 400, { step: 10 });
         const t = v.slider('wall thickness $t$ (mm)', 1, 120, 10, { step: 1 });
         const A = v.stage({ x: [-3.3, 3.3], y: [-3.3, 3.3], equal: true, axes: false, height: 340, title: 'cut along the axis: half a ring' });
-        const B = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, axes: false, height: 340, title: 'cut across the cylinder' });
+        const B = v.stage({ x: [-4.8, 3.6], y: [-3, 3], equal: true, axes: false, height: 340, title: 'cut across the cylinder' });
         const C = v.stage({ x: [0, 3.4], y: [0, 1], axes: 'box', gutter: true, height: 340, title: 'stress for the same p, r, t', xticks: [[0.5, 'hoop'], [1.4, 'axial'], [2.3, 'sphere']], ylabel: 'σ / (pr/t)' });
         const sig = () => ({ h: (p.value * r.value) / t.value, a: (p.value * r.value) / (2 * t.value), s: (p.value * r.value) / (2 * t.value) });
         v.render(() => {
@@ -431,24 +432,21 @@ and a sphere of the same $r$ and $t$ carries $\sigma=\dfrac{pr}{2t}$ in every ta
           A.path(ring, { close: true, color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.2 });
           for (let i = 1; i < 8; i++) { const a = (Math.PI * i) / 8, x = (ri - 0.05) * Math.cos(a), y = (ri - 0.05) * Math.sin(a); A.arrow(x * 0.62, y * 0.62, x, y, { color: 'orange', width: 2.2, head: 7 }); }
           A.text('p', 0, 0.9, { size: 14, color: 'orange', math: true, align: 'center' });
-          for (const sg of [-1, 1]) { const x = sg * R; A.arrow(x, 0.05, x, -1.0, { color: 'accent', width: 3.5, head: 10 }); A.tex(String.raw`\sigma_h t L`, x + sg * 0.55, -0.55, { size: 13, color: 'accent' }); }
+          for (const sg of [-1, 1]) { const x = sg * R; A.arrow(x, 0.05, x, -1.0, { color: 'accent', width: 3.5, head: 10 }); A.tex(String.raw`\sigma_h t L`, x, -1.3, { size: 13, color: 'accent' }); }
           A.line(-ro - 0.3, 0, ro + 0.3, 0, { color: 'muted', width: 1, dash: [4, 4] });
           A.measure(-ri, -2.1, ri, -2.1, '2r');
           A.text('2σh·t·L = p·2r·L', 0, 2.95, { size: 12.5, color: 'ink', align: 'center' });
           // B: side view of a cylinder, cut across at x=0: end cap pressure vs ring
-          const L1 = -3.7, L2 = 1.2, hh = 1.7, w = Math.max(0.12, Math.min(0.5, 2.5 * t.value / r.value));
-          B.path([[L1, -hh], [L2, -hh], [L2, hh], [L1, hh]], { close: true, color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.12 });
-          B.rect(L2 - w, -hh, L2, hh, { fill: 'accent', fillAlpha: 0.25, color: 'ink', width: 1.5 });
+          const L1 = -3.4, L2 = 3.0, hh = 1.7, w = Math.max(0.12, Math.min(0.5, 2.5 * t.value / r.value));
+          B.path([[L1, -hh], [L2, -hh], [L2, hh], [L1, hh]], { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.1 });
+          B.rect(L2 - w, -hh, L2, hh, { fill: 'accent', fillAlpha: 0.3, color: 'ink', width: 1.5 });
           B.rect(L1, hh - w, L2, hh, { fill: 'accent', fillAlpha: 0.3, color: 'ink', width: 0 }); B.rect(L1, -hh, L2, -hh + w, { fill: 'accent', fillAlpha: 0.3, color: 'ink', width: 0 });
-          for (let i = -2; i <= 2; i++) B.arrow(L2 - w - 0.05, i * 0.6, L2 - w - 0.95, i * 0.6, { color: 'orange', width: 2.4, head: 7, alpha: 0 });
-          for (let i = -2; i <= 2; i++) B.arrow(L2 - w - 0.95, i * 0.6, L2 - w - 0.05, i * 0.6, { color: 'orange', width: 2.4, head: 7 });
-          B.arrow(L2 + 0.05, 0, L2 + 1.9, 0, { color: 'muted', width: 0, head: 0, alpha: 0 });
-          B.arrow(L1 + 0.1, hh * 0.95, L1 - 0.1, hh * 0.95, { color: 'muted', width: 0, head: 0, alpha: 0 });
-          B.line(L2 - 1.5, -hh - 0.25, L2 - 1.5, hh + 0.25, { color: 'muted', width: 1, dash: [4, 4], alpha: 0 });
-          B.text('p·πr²', L2 - w - 1.3, 0.75, { size: 13, color: 'orange', align: 'center' });
-          B.arrow(L1 + 1.3, hh - w / 2, L1 + 0.5, hh - w / 2, { color: 'accent', width: 0, head: 0, alpha: 0 });
-          B.text('σa·2πrt', L1 + 1.0, hh + 0.45, { size: 12.5, color: 'accent', align: 'center' });
-          B.text('end cap', L2 - w / 2, -hh - 0.45, { size: 11.5, color: 'muted', align: 'center' });
+          B.line(L1, -hh - 0.3, L1, hh + 0.3, { color: 'muted', width: 1.4, dash: [5, 4] });
+          for (let i = -2; i <= 2; i++) B.arrow(L2 - w - 1.1, i * 0.6, L2 - w - 0.05, i * 0.6, { color: 'orange', width: 2.4, head: 7 });
+          for (const sg of [-1, 1]) B.arrow(L1 + 0.02, sg * (hh - w / 2), L1 - 0.95, sg * (hh - w / 2), { color: 'accent', width: 3.4, head: 9 });
+          B.text('p·πr² on the end cap', L2 - w - 1.7, -hh - 0.55, { size: 12.5, color: 'orange', align: 'center' });
+          B.text('σa·2πrt (wall ring)', L1 + 0.1, hh + 0.55, { size: 12.5, color: 'accent', align: 'left' });
+          B.text('cut', L1, -hh - 0.55, { size: 11.5, color: 'muted', align: 'center' });
           const s = sig();
           const mx = s.h;
           [[0.1, 0.9, s.h, 'accent'], [1.0, 1.8, s.a, 'teal'], [1.9, 2.7, s.s, 'purple']].forEach(([x0, x1, val, col]) => { C.rect(x0, 0, x1, val / mx, { fill: col, fillAlpha: 0.5, color: col }); C.text(`${num(val, val < 10 ? 2 : 1)}`, (x0 + x1) / 2, val / mx + 0.05, { size: 12, align: 'center' }); });
@@ -492,7 +490,6 @@ with compressive radial stress equal to the applied pressure on each surface, $\
         v.render(() => {
           const s = sol();
           G.setView([1, Math.max(1.5, s.ro * 1.02)], [Math.min(-110, -pi.value * 1.1), Math.max(120, s.st(1) * 1.12)]);
-          G.vband(s.ro, 10, { color: 'faint', alpha: 0.05 });
           G.fn(s.st, { color: 'orange', width: 2.6, domain: [1, s.ro], n: 80 });
           G.fn(s.sr, { color: 'accent', width: 2.6, domain: [1, s.ro], n: 80 });
           const thin = ((pi.value - po.value) * ((1 + s.ro) / 2)) / (s.ro - 1);
@@ -502,7 +499,7 @@ with compressive radial stress equal to the applied pressure on each surface, $\
           G.dot(1, s.sr(1), { r: 6, color: 'accent' }); G.dot(s.ro, s.sr(s.ro), { r: 6, color: 'accent' });
           R.fn(thinRatio, { color: 'orange', width: 2.6, domain: [1.02, 5], n: 120 }); R.hline(1, { color: 'muted', width: 1.2, dash: [5, 4] });
           R.dot(k.value, thinRatio(k.value), { r: 7, color: 'gold' });
-          R.text('thin-wall exact', 3.2, 1.08, { size: 12, color: 'muted' });
+          R.text('thin-wall value = 1', 3.4, 0.9, { size: 12, color: 'muted' });
         });
         v.readout(() => {
           const s = sol(), n = 4000; let I = 0;
@@ -535,7 +532,7 @@ with compressive radial stress equal to the applied pressure on each surface, $\
         const S = v.stage({ x: [-3.3, 3.3], y: [-3.3, 3.3], equal: true, axes: false, height: 340, title: 'base cross-section (wind from the left)' });
         const M = v.stage({ x: [-80, 80], y: [-60, 60], equal: true, axes: true, height: 340, title: 'Mohr’s circle at the chosen point', xlabel: 'σ (MPa)', ylabel: 'τ (MPa)' });
         const Rg = 2.3;
-        const H = S.handle(0, Rg, { color: 'ink', r: 8, constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [(Rg * x) / r, (Rg * y) / r]; } });
+        const H = S.handle(Rg, 0, { color: 'ink', r: 8, constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [(Rg * x) / r, (Rg * y) / r]; } });
         const geo = () => { const Ro = D.value / 2, Ri = Math.max(1, Ro - tw.value), Rm = (Ro + Ri) / 2, A = Math.PI * (Ro * Ro - Ri * Ri), I = (Math.PI / 4) * (Ro ** 4 - Ri ** 4), J = 2 * I; return { Ro, Ri, Rm, A, I, J }; };
         const at = (psi) => { // MPa (N, mm): kN → 1e3 N, kN·m → 1e6 N·mm
           const g = geo(), N = -Wt.value * 1e3, Mb = P.value * 1e3 * hh.value * 1e3, T0 = Tq.value * 1e6;
@@ -554,29 +551,28 @@ with compressive radial stress equal to the applied pressure on each surface, $\
             ctx.moveTo(S.X(ro * Math.cos(a0)), S.Y(ro * Math.sin(a0))); ctx.lineTo(S.X(ro * Math.cos(a1)), S.Y(ro * Math.sin(a1))); ctx.lineTo(S.X(ri * Math.cos(a1)), S.Y(ri * Math.sin(a1))); ctx.lineTo(S.X(ri * Math.cos(a0)), S.Y(ri * Math.sin(a0))); ctx.closePath(); ctx.fill();
           }
           S.circle(0, 0, ro, { color: 'ink', width: 1.8, fill: false }); S.circle(0, 0, ri, { color: 'ink', width: 1.8, fill: false });
-          S.arrow(-3.25, 0, -2.95, 0, { color: 'muted', width: 0, head: 0, alpha: 0 });
-          S.arrow(-3.2, 0.9, -2.9, 0.9, { color: 'muted', width: 0, head: 0, alpha: 0 });
-          for (const yy of [-0.6, 0, 0.6]) S.arrow(-3.25, yy, -2.95, yy, { color: 'accent', width: 2.2, head: 7, alpha: 0 });
+          for (const yy of [-0.7, 0, 0.7]) S.arrow(-3.25, yy, -2.95, yy, { color: 'muted', width: 2.2, head: 7 });
+          S.text('wind', -3.1, 1.15, { size: 11.5, color: 'muted', align: 'center' });
           const cp = crt.psi, cx = Rg * Math.cos(cp), cy = Rg * Math.sin(cp);
           S.path([[cx, cy + 0.16], [cx + 0.16, cy], [cx, cy - 0.16], [cx - 0.16, cy]], { close: true, color: 'ink', width: 2, fill: 'ink', fillAlpha: 0.9 });
           const psi = Math.atan2(H.y, H.x), q = at(psi);
-          // element at the chosen point, drawn in the centre of the section (axis z′ is the vertical axis of the post)
-          const kk = 0.011, h = 0.5;
-          S.tex(String.raw`\sigma_z=${num(q.sz, 1)}`, 0, 0.78, { size: 12.5, color: q.sz >= 0 ? 'accent' : 'red' }); S.tex(String.raw`\tau=${num(q.tau, 1)}`, 0, -0.78, { size: 12.5, color: 'orange' });
-          void kk; void h;
+          // element at the chosen point: z (axis of the post) points up, s is the tangent to the ring
+          const mq = Math.max(1, Math.abs(crt.q.sz), Math.abs(crt.q.tau)), kk = 0.85 / mq, h = 0.5;
+          drawElem(v, S, [0, 0], h, Math.PI / 2, q.sz, 0, q.tau, kk, { names: [String.raw`\sigma_z`, '', String.raw`\tau`], thresh: 0.01 });
+          S.text('element at the dot (z up)', 0, -1.75, { size: 11.5, color: 'muted', align: 'center' });
           // Mohr
-          const c = q.p.c, Rr = q.p.R, m = Math.max(40, Math.abs(c) + Rr, Rr * 1.4) * 1.25; M.setView([-m, m], [-m * 0.75, m * 0.75]);
+          const c = q.p.c, Rr = q.p.R, m = Math.max(10, Math.abs(crt.q.p.c) + crt.q.p.R, Math.abs(c) + Rr) * 1.3; M.setView([-m, m], [-m * 0.75, m * 0.75]);
           M.circle(c, 0, Rr, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.07 });
           M.line(q.sz, q.tau, 0, -q.tau, { color: 'muted', width: 1.3, dash: [4, 4] });
           M.dot(q.sz, q.tau, { r: 6.5, color: 'gold' }); M.dot(0, -q.tau, { r: 6.5, color: 'gold', hollow: true });
-          M.tex('z', q.sz + m * 0.07, q.tau + m * 0.07, { size: 13, color: 'gold' }); M.tex('s', -m * 0.06, -q.tau - m * 0.08, { size: 13, color: 'gold' });
+          M.tex('z', q.sz + m * 0.07, q.tau + m * 0.07, { size: 13, color: 'gold' }); M.tex('s', m * 0.07, -q.tau - m * 0.06, { size: 13, color: 'gold' });
           M.dot(q.p.s1, 0, { r: 5, color: 'red' }); M.dot(q.p.s2, 0, { r: 5, color: 'red' });
           M.tex(String.raw`\sigma_1`, q.p.s1 + m * 0.05, m * 0.1, { size: 13, color: 'red' }); M.tex(String.raw`\sigma_2`, q.p.s2 - m * 0.05, m * 0.1, { size: 13, color: 'red' });
           M.dot(c, Rr, { r: 4.5, color: 'orange' });
         });
         v.readout(() => {
           const psi = Math.atan2(H.y, H.x), q = at(psi), c = crit(), d = deg(psi);
-          return `Point at ${num(((d % 360) + 360) % 360, 0)}° (0° = downwind side): axial $${num(q.sN, 2)}$ + bending $${num(q.sB, 2)}$ = $\\sigma_z=${num(q.sz, 2)}$ MPa; torsion $${num(q.tT, 2)}$ + transverse shear $${num(q.tV, 2)}$ = $\\tau=${num(q.tau, 2)}$ MPa. · Principal stresses ${num(q.p.s1, 1)}, ${num(q.p.s2, 1)} MPa; $\\tau_{\\max}=${num(q.p.R, 1)}$ MPa. · Critical point (largest $\\tau_{\\max}$) at ${num(((deg(c.psi) % 360) + 360) % 360, 0)}°: ${num(c.v, 1)} MPa.`;
+          return `Point at ${num(((d % 360) + 360) % 360, 0)}° (0° = downwind side): axial $${num(q.sN, 2)}$ + bending $${num(q.sB, 2)}$ = $\\sigma_z=${num(q.sz, 2)}$ MPa; torsion $${num(q.tT, 2)}$ + transverse shear $${num(q.tV, 2)}$ = $\\tau=${num(q.tau, 2)}$ MPa. · Principal stresses ${num(q.p.s1, 1)}, ${num(q.p.s2, 1)} MPa; $\\tau_{\\max}=${num(q.p.R, 1)}$ MPa. · Critical point (largest $\\tau_{\\max}$) at ${num(Math.round(((deg(c.psi) % 360) + 360) % 360) % 360, 0)}°: ${num(c.v, 1)} MPa.`;
         });
       },
     },

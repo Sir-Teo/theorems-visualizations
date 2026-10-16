@@ -43,7 +43,7 @@ and hence $\operatorname{Var}(X_q-X_m)=\sum_j\operatorname{Var}(\text{increment}
         let seed = 1; v.button('Resample', () => { seed++; });
         const NP = 4000, S0 = 5;
         const P = v.stage({ x: [-6, 6], y: [-6, 6], equal: true, axes: true, height: 340, xlabel: '$A$', ylabel: '$B$', title: 'increments $A$ (first window) and $B$ (second)', weight: 1.15 });
-        const Bs = v.stage({ x: [0, 5], y: [0, 10], axes: 'box', gutter: true, height: 340, xticks: [], title: 'variances add', weight: 0.9 });
+        const Bs = v.stage({ x: [0, 5], y: [0, 10], axes: 'box', gutter: true, height: 340, xticks: [], title: 'variances ($V_A=\\mathrm{Var}A$, …)', weight: 0.9 });
         let cache = null, st = null;
         v.render(() => {
           const h = hS.value, key = `${proc.value}|${h}|${seed}`;
@@ -71,7 +71,7 @@ and hence $\operatorname{Var}(X_q-X_m)=\sum_j\operatorname{Var}(\text{increment}
           P.dots(Array.from(a, (x, i) => [x, b[i]]).filter(([x, y]) => Math.abs(x) < lim && Math.abs(y) < lim), { r: 2, color: 'accent', alpha: 0.28 });
           const vals = [va, vb, va + vb, vs], top = Math.max(...vals) * 1.25;
           Bs.setView([0, 5], [0, top]);
-          vals.forEach((val, i) => { Bs.bars([val], { x0: i + 1, color: ['accent', 'orange', 'green', 'purple'][i] }); Bs.tex(['\\mathrm{Var}A', '\\mathrm{Var}B', '\\mathrm{Var}A{+}\\mathrm{Var}B', '\\mathrm{Var}(A{+}B)'][i], i + 1, val, { dy: -14, align: 'center', size: 13 }); });
+          vals.forEach((val, i) => { Bs.bars([val], { x0: i + 1, color: ['accent', 'orange', 'green', 'purple'][i] }); Bs.tex(['V_A', 'V_B', 'V_A{+}V_B', 'V_{A+B}'][i], i + 1, val, { dy: -14, align: 'center', size: 14 }); });
           st = { corr, corrAbs, va, vb, vs, se: 1 / Math.sqrt(NP) };
         });
         v.readout(() => st && `Empirical correlation of $A,B$: $${fr(st.corr, 3)}$ (noise level $\\pm${fr(2 * st.se, 3)}$). Correlation of $|A|,|B|$: $${fr(st.corrAbs, 3)}$.\n$\\mathrm{Var}A+\\mathrm{Var}B=${fr(st.va + st.vb, 3)}$ against $\\mathrm{Var}(A+B)=${fr(st.vs, 3)}$.`);
@@ -192,7 +192,7 @@ It records the total conditional variance of the steps; $E X_n^2=EX_0^2+EA_n$.`,
 $$E\Big(\sup_{m\ge0}X_m^2\Big)\le4\,EA_\infty .$$
 (So $\sup_m|X_m|$ is in $L^2$ whenever $EA_\infty<\infty$.)`,
       idea: String.raw`Apply Doob's $L^p$ maximal inequality (4.4.4 with $p=2$, constant $(2/1)^2=4$) to the nonnegative submartingale $|X_m|$: $E\max_{m\le n}X_m^2\le4EX_n^2$. By the definition of the increasing process (4.5.1a), $EX_n^2=EA_n$. Let $n\to\infty$ and use monotone convergence on both sides.`,
-      caption: String.raw`Left: for the chosen step-size rule, Monte Carlo estimates (4000 paths) of $E\max_{m\le n}X_m^2$ (blue) and $4EA_n$ (orange) as functions of the horizon $n$, with $EX_n^2=EA_n$ (green) underneath; the blue curve is squeezed between the green and orange. Right: the same three numbers at the horizon $n$ you choose, for all four schedules. The constant $4$ is not attained by these processes: blue is about $1.4$–$2\times$ green, because the sup of a martingale at a fixed horizon is only about as large as the endpoint's scale.`,
+      caption: String.raw`Left: for the chosen step-size rule, Monte Carlo estimates (4000 paths) of $E\max_{m\le n}X_m^2$ (blue) and $4EA_n$ (orange) as functions of the horizon $n$, with $EX_n^2=EA_n$ (green) underneath; the blue curve is squeezed between the green and orange. Right: the ratio $E\max X_m^2/EA_n$ at the horizon $n$ you choose, for all four schedules, between the lines $1$ (green) and $4$ (orange, Doob's constant). Every schedule stays well under $4$ at these horizons.`,
       deps: ['prob-4.4.4', 'prob-4.5.1a'],
       tags: ['martingales', 'maximal inequalities'],
       viz(v) {
@@ -201,7 +201,7 @@ $$E\Big(\sup_{m\ge0}X_m^2\Big)\le4\,EA_\infty .$$
         let seed = 1; v.button('Resample', () => { seed++; });
         const NP = 4000;
         const L = v.stage({ x: [0, 400], y: [0, 10], axes: 'box', gutter: true, height: 320, xlabel: 'horizon $n$', title: 'moments against the horizon', weight: 1.25 });
-        const Bs = v.stage({ x: [0, 13], y: [0, 10], axes: 'box', gutter: true, height: 320, xticks: [], title: 'all four schedules at horizon $n$', weight: 1.1 });
+        const Bs = v.stage({ x: [0, 13], y: [0, 10], axes: 'box', gutter: true, height: 320, xticks: [], title: '$E\\max X_m^2\\,/\\,EA_n$ for the four schedules', weight: 1.1 });
         const KINDS = ['const', 'poly', 'adapt', 'coin'];
         let cache = null, st = null;
         v.render(() => {
@@ -223,11 +223,11 @@ $$E\Big(\sup_{m\ge0}X_m^2\Big)\le4\,EA_\infty .$$
           L.path(pts(o.ea.subarray(0, n + 1).map((x) => 4 * x), 2), { color: 'orange', width: 2.2 });
           L.path(pts(o.sup.subarray(0, n + 1), 2), { color: 'accent', width: 2.4 });
           L.path(pts(o.ex2.subarray(0, n + 1), 2), { color: 'green', width: 1.8 });
-          let top = 0; KINDS.forEach((k) => { top = Math.max(top, 4 * cache.out[k].ea[n]); });
-          Bs.setView([0, 13], [0, top * 1.2]);
+          Bs.setView([0, 13], [0, 4.6]);
+          Bs.hline(4, { color: 'orange', width: 2, dash: [6, 4] }); Bs.hline(1, { color: 'green', width: 1.6, dash: [6, 4] });
           KINDS.forEach((k, j) => {
-            const c = cache.out[k]; const x0 = 1 + 3 * j;
-            Bs.bars([c.sup[n]], { x0, color: 'accent' }); Bs.bars([4 * c.ea[n]], { x0: x0 + 1, color: 'orange' });
+            const c = cache.out[k], rr = c.sup[n] / c.ea[n], x0 = 1 + 3 * j;
+            Bs.bars([rr], { x0: x0 + 0.5, color: 'accent' });
             Bs.tex(['\\sigma{=}1', 'n^{-3/4}', '\\tfrac1{1+|X|}', '\\text{coin}'][j], x0 + 0.5, 0, { dy: 14, align: 'center', size: 12 });
           });
           st = { n, sup: o.sup[n], ea: o.ea[n], ex2: o.ex2[n] };
@@ -247,7 +247,7 @@ $$E\Big(\sup_{m\ge0}X_m^2\Big)\le4\,EA_\infty .$$
       deps: ['prob-4.5.1', 'prob-4.2.9'],
       tags: ['martingales', 'convergence'],
       viz(v) {
-        const sch = v.select('step sizes', [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'coin', label: 'coin: $1/n$ or $n^{-0.4}$' }, { value: 'band', label: 'band: freeze near $0$' }], 'coin');
+        const sch = v.select('step sizes', [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'coin', label: 'coin: $1/n$ or $n^{-0.4}$' }, { value: 'band', label: 'band: freeze near $0$' }], 'band');
         let seed = 1; v.button('Resample', () => { seed++; });
         const N = 5000, NP = 300, H = N >> 1;
         const P = v.stage({ x: [0, N], y: [-12, 12], axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: 'paths $X_n$', weight: 1.3 });

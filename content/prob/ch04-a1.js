@@ -81,7 +81,7 @@ $$E(X-Y)^2=E\big(X-E(X\mid\mathcal F)\big)^2+E\big(E(X\mid\mathcal F)-Y\big)^2 .
           let a2 = 0, b2 = 0, c2 = 0; for (let i = 0; i < GN; i++) { a2 += (X[i] - E[i]) ** 2 / GN; b2 += (E[i] - Y[i]) ** 2 / GN; c2 += (X[i] - Y[i]) ** 2 / GN; }
           const a = Math.sqrt(a2), b = Math.sqrt(b2), sc = 1 / Math.max(1.3, a + 0.2, b);
           T.line(0, 0, 1.4, 0, { color: 'muted', width: 6, alpha: 0.25 });
-          T.text('$L^2(\\mathcal F)$', 1.28, -0.1, { size: 13, color: 'muted' });
+          T.text('$L^2(\\mathcal F)$', 1.45, -0.12, { size: 13, color: 'muted', align: 'right' });
           T.line(0, 0, 0, a * sc, { color: 'red', width: 3 }); T.line(0, 0, b * sc, 0, { color: 'orange', width: 3 }); T.line(0, a * sc, b * sc, 0, { color: 'accent', width: 2.4, dash: [6, 4] });
           T.line(0.07, 0, 0.07, 0.07, { color: 'ink', width: 1 }); T.line(0, 0.07, 0.07, 0.07, { color: 'ink', width: 1 });
           T.dot(0, a * sc, { r: 6, color: 'accent', label: '$X$', labelPos: 'nw' }); T.dot(0, 0, { r: 6, color: 'green', label: '$E(X\\mid\\mathcal F)$', labelPos: 'sw' }); T.dot(b * sc, 0, { r: 6, color: 'orange', label: '$Y$', labelPos: 'se' });
@@ -238,7 +238,7 @@ So the conditional law is a kernel in the *value* $y$ of $Y$, not merely a funct
         const mode = v.select('kernel', [{ value: 'true', label: '$\\mu(y,\\cdot)$' }, { value: 'marg', label: 'marginal of $X$ (ignores $y$)' }], 'true');
         const nS = v.slider('$n$', 200, 4000, 1500, { log: true, int: true });
         const mean = (y) => Math.sin(1.5 * y), sd = (y) => 0.3 + 0.2 * Math.abs(y);
-        const K = v.stage({ x: [-3.2, 3.2], y: [-2.15, 1.75], axes: 'box', gutter: true, height: 340, xlabel: '$x$ (ridges are shifted by $y$)', title: 'kernel densities $\\mu(y,\\cdot)$' });
+        const K = v.stage({ x: [-3.2, 3.2], y: [-2.15, 1.75], axes: 'box', gutter: true, height: 340, yticks: [], xlabel: '$x$ (ridges are shifted by $y$)', title: 'kernel densities $\\mu(y,\\cdot)$' });
         const A = v.stage({ x: [-3, 3], y: [-3, 3], axes: 'box', gutter: true, height: 340, xlabel: '$Y$', ylabel: '$X$', title: 'joint sample $(Y,X)$', minWidth: 240 });
         const B = v.stage({ x: [-3, 3], y: [-3, 3], axes: 'box', gutter: true, height: 340, xlabel: '$Y$', ylabel: "$X'\\sim\\mu(Y,\\cdot)$", title: 'rebuilt from the kernel', minWidth: 240 });
         const r = v.rng(5), Y = [], Z = [], U = []; for (let i = 0; i < 4000; i++) { Y.push(r.normal()); Z.push(r.normal()); U.push(r.normal()); }
