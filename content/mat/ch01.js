@@ -36,19 +36,19 @@ export default {
         v.button('◀ previous', () => step(-1));
         v.button('next ▶', () => step(1));
         const sP = v.stage({ x: [0.8, 2.6], y: [-1.25, 1.0], axes: 'box', gutter: true, height: 440, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U(r) / ε', title: 'pair potential, reduced by its well depth' });
-        const sM = v.stage({ x: [0.014, 14], y: [18, 6500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, weight: 1.6, xlabel: 'cohesive energy per atom  E_coh (eV)', ylabel: 'melting point  T_m (K)', title: 'measured: bond energy against melting point' });
+        const sM = v.stage({ x: [0.014, 14], y: [18, 6500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, weight: 1.6, xlabel: 'cohesive energy per atom  $E_{\\rm coh}$ (eV)', ylabel: 'melting point  $T_m$ (K)', title: 'measured: bond energy against melting point' });
         sM.onClick((x, y) => {
           let best = -1, bd = 0.2;
           MELT.forEach((e, i) => { if (flt.value !== 'all' && e.cls !== flt.value) return; const d = Math.hypot(Math.log10(x / e.ecoh), Math.log10(y / e.tm)); if (d < bd) { bd = d; best = i; } });
           if (best >= 0) sel = best;
         });
-        const KEEP = new Set(['Li', 'K', 'Pb', 'Zn', 'Al', 'Cu', 'Ag', 'Au', 'Fe', 'Ni', 'Ti', 'Cr', 'Mo', 'Nb', 'W', 'Ir']);
+        const KEEP = new Set(['Li', 'K', 'Pb', 'Zn', 'Al', 'Cu', 'Fe', 'Mo', 'W', 'Ir']);
         const ratio = (e) => e.ecoh / (KB * e.tm);
         const med = Object.fromEntries(cls.map((c) => [c, median(MELT.filter((e) => e.cls === c).map(ratio))]));
         v.render(() => {
           const e = MELT[sel], c = e.cls, eps = (2 * e.ecoh) / zOf(e), kT = (KB * e.tm) / eps;
           sP.hband(-1, -1 + kT, { color: 'gold', alpha: 0.22, edges: false });
-          sP.text(`k_B T_m = ${kT.toFixed(2)} ε`, 2.57, -1 + kT / 2, { size: 11, color: 'ink', align: 'right', baseline: 'middle' });
+          sP.tex(String.raw`k_BT_m=${kT.toFixed(2)}\,\varepsilon`, 2.5, -1 + kT / 2, { size: 13, color: 'ink', align: 'right' });
           sP.hline(0, { color: 'faint' });
           for (const k of cls) sP.fn(CLASS_POT[k].f, { domain: [k === 'metal' ? 0.82 : 0.8, 2.6], color: CLASSES[k].color, width: k === c ? 3.4 : 1.6, alpha: k === c ? 1 : 0.5 });
           sP.vline(1, { color: 'faint', dash: true });
@@ -67,7 +67,7 @@ export default {
           });
           items.sort((p, q) => (q.weight === 700) - (p.weight === 700));
           placeLabels(v, sM, items);
-          v.legend([...cls.map((k) => [CLASSES[k].color, CLASSES[k].name]), ['muted', 'E_coh = 30 k_BT_m', { dash: [5, 4] }], ['muted', 'E_coh = 12 k_BT_m', { dash: [5, 4] }]]);
+          v.legend([...cls.map((k) => [CLASSES[k].color, CLASSES[k].name]), ['muted', '$E_{\\rm coh}=30\\,k_BT_m$', { dash: [5, 4] }], ['muted', '$E_{\\rm coh}=12\\,k_BT_m$', { dash: [5, 4] }]]);
         });
         v.readout(() => {
           const e = MELT[sel], eps = (2 * e.ecoh) / zOf(e);
@@ -102,7 +102,7 @@ export default {
         const H = s1.handle(n, 0, { color: 'gold', r: 9, label: 'pull', labelPos: 'n', constrain: (x) => [clamp(x, n - 0.6, 12.8), 0] });
         const sU = v.stage({ x: [0.75, 3.0], y: [-1.5, 0.8], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U / ε', title: 'where the bonds sit on the well' });
         const sF = v.stage({ x: [0, 0.6], y: [-0.05, 1.3], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'chain strain  e = Δ / (n r₀)', ylabel: 'tension F (nN)', title: 'force against extension' });
-        const sE = v.stage({ x: [0.8, 500], y: [2, 2000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, full: true, xlabel: 'cohesive energy density  E_coh / Ω  (GPa)', ylabel: 'Young’s modulus E (GPa, polycrystal)', title: 'real elements: stiffness follows bond-energy density' });
+        const sE = v.stage({ x: [0.8, 500], y: [2, 2000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, full: true, xlabel: 'cohesive energy density  $E_{\\rm coh}/\\Omega$  (GPa)', ylabel: 'Young’s modulus E (GPa, polycrystal)', title: 'real elements: stiffness follows bond-energy density' });
         // chain mechanics in reduced units: ξ = r/r₀ − 1, f = F / F_max = 4u(1−u), u = e^{−βξ}
         const fOf = (xi, b) => { const u = Math.exp(-b * xi); return 4 * u * (1 - u); };
         function chain(D, b) {
@@ -164,7 +164,7 @@ export default {
           sE.fn((x) => fit.at(x), { color: 'muted', width: 1.4, dash: [6, 4] });
           sE.fn((x) => 3.2 * x, { color: 'faint', width: 1.2, dash: [2, 3] });
           placeLabels(v, sE, items.sort((p, q) => (q.weight === 700) - (p.weight === 700)));
-          v.legend([[CLASSES.metal.color, 'metals'], [CLASSES.covalent.color, 'covalent (Si, Ge, C)'], ['gold', 'selected'], ['muted', 'fitted power law', { dash: [6, 4] }], ['faint', 'E = 3 E_coh/Ω', { dash: [2, 3] }]]);
+          v.legend([[CLASSES.metal.color, 'metals'], [CLASSES.covalent.color, 'covalent (Si, Ge, C)'], ['gold', 'selected'], ['muted', 'fitted power law', { dash: [6, 4] }], ['faint', '$E=3E_{\\rm coh}/\\Omega$', { dash: [2, 3] }]]);
         });
         v.readout(() => {
           const b = beta.value, ep = eps.value, R0 = r0.value, D = H.x - n, st = chain(D, b);
@@ -279,7 +279,7 @@ export default {
       name: 'Polymorphism and allotropy of iron',
       statement: String.raw`Many elements and compounds can crystallise in more than one structure, called **polymorphs** (allotropes for an element), each stable in its own range of temperature and pressure. At atmospheric pressure iron is body-centred cubic (bcc, ferrite, $\alpha$) below $912{}^\circ$C, face-centred cubic (fcc, austenite, $\gamma$) from $912$ to $1394{}^\circ$C, and bcc again ($\delta$) up to its melting point at $1538{}^\circ$C. At each transformation the atoms rearrange abruptly, so the density and the length of a heated bar change in a step on top of the smooth thermal expansion: heating through $912{}^\circ$C **shortens** the bar by about $0.3\,\%$, because the fcc arrangement uses the volume more efficiently (packing fraction $0.74$ against $0.68$). The magnetic change at the Curie temperature ($771{}^\circ$C) is not a change of structure and gives no step.`,
       idea: String.raw`At fixed temperature the structure with the lowest Gibbs energy wins, and the free energies of bcc and fcc iron cross at $912{}^\circ$C: fcc has a higher entropy and a smaller volume per atom. Dilatometry measures the sum of two effects: the smooth expansion of the lattice, $\alpha\approx14\times10^{-6}\,{\rm K^{-1}}$ for bcc and $23\times10^{-6}\,{\rm K^{-1}}$ for fcc, and the discontinuity in atomic volume at the transition. Because the length of a bar scales as the cube root of the atomic volume, the step in length is about one third of the step in volume. The model curve is built from the measured lattice parameters of the two phases.`,
-      caption: String.raw`Drag the temperature (or use the buttons) and watch the cell change between bcc and fcc while the dilatometer trace grows. The coloured bands mark the three stability ranges; the gold dot sits at the current temperature. Note the step down at $912{}^\circ$C, the nearly invisible step at $1394{}^\circ$C, and no step at the Curie point.`,
+      caption: String.raw`Drag the temperature (or use the buttons) and watch the cell change between bcc and fcc while the dilatometer trace grows. The coloured bands mark the three stability ranges; the gold dot sits at the current temperature. Note the step down at $912{}^\circ$C, the much smaller step at $1394{}^\circ$C, and no step at the Curie point.`,
       deps: ['xtal-1.6'],
       refs: ['Callister §3.6'],
       tags: ['allotropy', 'iron', 'dilatometry'],
