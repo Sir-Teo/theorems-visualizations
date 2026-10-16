@@ -69,22 +69,26 @@ export function hhRun(o = {}) {
   return R;
 }
 
-// ------------------------------------------------------------------ Li–Rinzel calcium oscillator (Keener & Sneyd §7.5; Li & Rinzel 1994)
-// c = cytosolic Ca²⁺ (µM), h = IP₃-receptor inactivation, p = IP₃ (µM). Total Ca fixed: c₀ = c + c₁·c_ER.
-export const LR = { v1: 6, v2: 0.11, v3: 0.9, k3: 0.1, d1: 0.13, d2: 1.049, d3: 0.9434, d5: 0.08234, a2: 0.2, c0: 2, c1: 0.185 };
-export function lrRHS(c, h, p, P = LR) {
-  const ce = (P.c0 - c) / P.c1;
-  const minf = p / (p + P.d1), ninf = c / (c + P.d5);
-  const Q2 = P.d2 * (p + P.d1) / (p + P.d3), hinf = Q2 / (Q2 + c), tau = 1 / (P.a2 * (Q2 + c));
-  const Jipr = P.v1 * (minf * ninf * h) ** 3 * (ce - c), Jleak = P.v2 * (ce - c), Jser = P.v3 * c * c / (P.k3 * P.k3 + c * c);
-  return { dc: Jipr + Jleak - Jser, dh: (hinf - h) / tau, Jipr, Jleak, Jser, hinf, ninf, minf, Q2 };
+// ------------------------------------------------------------------ Goldbeter–Dupont–Berridge CICR model (1990)
+// Z = cytosolic Ca²⁺ (µM), Y = Ca²⁺ in the IP₃-sensitive store (µM), β = degree of receptor stimulation (0…1).
+// Release v3 is activated by cytosolic Ca²⁺ (the CICR feedback, steep: power 4) and depends on store content Y.
+export const GDB = { v0: 1, v1: 7.3, VM2: 65, VM3: 500, K2: 1, KR: 2, KA: 0.9, kf: 1, k: 10 };
+export function gdbRHS(Z, Y, beta, P = GDB) {
+  const v2 = (P.VM2 * Z * Z) / (P.K2 * P.K2 + Z * Z);
+  const v3 = P.VM3 * ((Y * Y) / (P.KR * P.KR + Y * Y)) * (Z ** 4 / (P.KA ** 4 + Z ** 4));
+  const inflow = P.v0 + P.v1 * beta;
+  return { dZ: inflow - v2 + v3 + P.kf * Y - P.k * Z, dY: v2 - v3 - P.kf * Y, v2, v3, inflow };
 }
-/** Integrate (c, h) for tEnd seconds. o: {p, c0, h0, dt, tEnd, P}. */
-export function lrRun(o) {
-  const P = o.P || LR, dt = o.dt ?? 0.01, N = Math.round((o.tEnd ?? 200) / dt);
-  const f = (y) => { const r = lrRHS(y[0], y[1], o.p, P); return [r.dc, r.dh]; };
-  let y = [o.c0 ?? 0.1, o.h0 ?? 0.8]; const R = { t: [], c: [], h: [] };
-  for (let k = 0; k <= N; k++) { R.t.push(k * dt); R.c.push(y[0]); R.h.push(y[1]); if (k < N) y = rk4(f, y, k * dt, dt); }
+/** Integrate for tEnd seconds. o: {beta, Z0, Y0, dt, tEnd, every}. Returns {t, Z, Y, v3}. */
+export function gdbRun(o) {
+  const dt = o.dt ?? 0.004, N = Math.round((o.tEnd ?? 40) / dt), every = o.every ?? 5;
+  const P = o.P || GDB, bt = (t) => (typeof o.beta === 'function' ? o.beta(t) : o.beta);
+  const f = (y, t) => { const r = gdbRHS(y[0], y[1], bt(t), P); return [r.dZ, r.dY]; };
+  let y = [o.Z0 ?? 0.1, o.Y0 ?? 1]; const R = { t: [], Z: [], Y: [], v3: [] };
+  for (let k = 0; k <= N; k++) {
+    if (k % every === 0) { R.t.push(k * dt); R.Z.push(y[0]); R.Y.push(y[1]); R.v3.push(gdbRHS(y[0], y[1], bt(k * dt), P).v3); }
+    if (k < N) y = rk4(f, y, k * dt, dt);
+  }
   return R;
 }
 
@@ -159,4 +163,62 @@ export function flowDots(s, pts, phase, gap, st = {}) {
   const out = [];
   for (let u = ((phase % gap) + gap) % gap; u < L - 0.02; u += gap) out.push(at1(u));
   s.dots(out, { r: st.r ?? 2.4, color: st.color || 'gold', alpha: st.alpha });
+}
+
+// ------------------------------------------------------------------ reduced sinoatrial cell
+// A Morris–Lecar-type cell (calcium-like inward current ICa, delayed-rectifier-like IK, leak) with a funny current If
+// (slowly activating on hyperpolarization, reversal −25 mV), time-dilated so that the cycle is ~0.8 s. Tuned (random search over
+// a Morris–Lecar parameter family) so that the cell is quiescent without If and fires with it: it is a caricature, not a SAN fit.
+// Units: mV, ms, mS/cm². sym ∈ [0,1] shifts If activation to less negative V (cAMP) and raises gCa; vag ∈ [0,1] shifts it the other way
+// (and adds a small IK,ACh).
+export const SA = (() => {
+  const k = 2.2;
+  return { C: 20 * k, gCa: 2.74, ECa: 50, gK: 11.26, EK: -85, gL: 0.794, EL: -49.83, V1: -30.5, V2: 8, V3: -20.4, V4: 12, phi: 0.0056 / k,
+    gf: 1.66, Ef: -25, Vy: -63.86, ky: 7.17, ty: 274.7 * k, dsym: 14, dvag: 3, gACh: 0.005, sCa: 0.3 };
+})();
+export function saCur(V, w, y, sym, vag, fScale = 1, P = SA) {
+  const minf = 0.5 * (1 + Math.tanh((V - P.V1) / P.V2));
+  const If = P.gf * fScale * y * (V - P.Ef), ICa = P.gCa * (1 + P.sCa * sym) * minf * (V - P.ECa), IK = P.gK * w * (V - P.EK) + vag * P.gACh * (V - P.EK), IL = P.gL * (V - P.EL);
+  return { If, ICa, IK, IL };
+}
+/** o: {tEnd (ms), dt, sym, vag, fScale}; returns {t, V, w, y, If, ICa, IK} and the voltage after discarding a settling period `skip`. */
+export function saRun(o = {}) {
+  const P = SA, dt = o.dt ?? 1, N = Math.round((o.tEnd ?? 4000) / dt), skip = o.skip ?? 0;
+  const sym = typeof o.sym === 'function' ? o.sym : () => o.sym ?? 0, vag = typeof o.vag === 'function' ? o.vag : () => o.vag ?? 0, fS = o.fScale ?? 1;
+  const f = (y, t) => {
+    const [V, w, yf] = y, s = sym(t), g = vag(t), c = saCur(V, w, yf, s, g, fS);
+    const winf = 0.5 * (1 + Math.tanh((V - P.V3) / P.V4)), tw = 1 / Math.cosh((V - P.V3) / (2 * P.V4));
+    const yinf = 1 / (1 + Math.exp((V - (P.Vy + s * P.dsym - g * P.dvag)) / P.ky));
+    return [-(c.If + c.ICa + c.IK + c.IL) / P.C, (P.phi * (winf - w)) / tw, (yinf - yf) / P.ty];
+  };
+  let y = o.y0 ? o.y0.slice() : [-60, 0, 0.3]; const R = { t: [], V: [], w: [], y: [], If: [], ICa: [], IK: [] };
+  for (let k = 0; k <= N; k++) {
+    const t = k * dt;
+    if (t >= skip) { const c = saCur(y[0], y[1], y[2], sym(t), vag(t), fS); R.t.push(t - skip); R.V.push(y[0]); R.w.push(y[1]); R.y.push(y[2]); R.If.push(c.If); R.ICa.push(c.ICa); R.IK.push(c.IK); }
+    if (k < N) y = rk4(f, y, t, dt);
+  }
+  return R;
+}
+
+// ------------------------------------------------------------------ excitation–contraction coupling chain (a cascade of first-order stages)
+// Sarcolemmal spike (Hodgkin–Huxley kinetics at 20 °C as a stand-in) → DHPR voltage sensor s → RyR release flux → cytosolic Ca²⁺ (µM)
+// with SERCA-like uptake → troponin occupancy (steep, Hill n = 3, K = 3 µM) → force (fraction of maximum). Time constants are
+// round numbers chosen to give a fast twitch (spike 2 ms, Ca²⁺ peak ~5 ms later, force peak ~25 ms): a teaching cascade, not a fit.
+export const EC = { Jmax: 22, kp: 0.08, K: 3, nH: 3, tauS: 0.8, tauT: 5, tauF: 9, C0: 0.05 };
+/** variant: 'normal' | 'sensor' (DHPR blocked) | 'ryr' (RyR blocked) | 'tnc' (troponin cannot bind Ca²⁺). */
+export function ecRun(variant = 'normal', tEnd = 80, dt = 0.02) {
+  const hh = hhRun({ tEnd, dt, Tc: 20, stim: (t) => (t >= 2 && t < 3 ? 20 : 0) });
+  const rel = variant === 'ryr' ? 0 : 1, sensor = variant === 'sensor' ? 0 : 1, tnc = variant === 'tnc' ? 0.08 : 1;
+  const R = { t: hh.t, V: hh.V, s: [], C: [], T: [], F: [] };
+  let s = 0, C = EC.C0, T = 0, F = 0;
+  for (let k = 0; k < hh.t.length; k++) {
+    const V = hh.V[k], sinf = sensor / (1 + Math.exp(-(V + 30) / 6));
+    R.s.push(s); R.C.push(C); R.T.push(T); R.F.push(F);
+    const Tinf = (tnc * C ** EC.nH) / (C ** EC.nH + EC.K ** EC.nH);
+    s += (dt * (sinf - s)) / EC.tauS;
+    C += dt * (rel * EC.Jmax * s - EC.kp * (C - EC.C0));
+    T += (dt * (Tinf - T)) / EC.tauT;
+    F += (dt * (T - F)) / EC.tauF;
+  }
+  return R;
 }
