@@ -19,26 +19,28 @@ export default {
       name: 'Recurrent values of a random walk form a closed subgroup',
       statement: String.raw`Let $S_n=X_1+\dots+X_n$ be a random walk in $\R^d$. Call $x$ a **possible value** if for every $\eps>0$ the walk enters $\{\|y-x\|<\eps\}$ with positive probability, and a **recurrent value** if $P(\|S_n-x\|<\eps\ \text{i.o.})=1$ for every $\eps>0$. Let $U$ be the set of possible and $V$ the set of recurrent values. Then $V$ is either empty or a closed subgroup of $\R^d$, and in the second case $V=U$.`,
       idea: String.raw`A recurrent value is certainly possible, so $V\subset U$. Closedness is a $2\eps$-argument. For the group property take $y\in V$ and $x\in U$: the walk gets near $x$ with positive probability, and since the later steps are independent of that event, a recurrent $y$ forces a return near $y-x$ again and again; with $x\in V$ too this gives $y-x\in V$. Taking $x=y$ gives $0\in V$, and then every possible value is recurrent.`,
-      caption: String.raw`A seeded walk of $60\,000$ steps; the curve counts the visits of the **second half** of the walk to the window $(x-\eps,x+\eps)$. Step set $\{\pm1,\pm\sqrt2\}$: every $x$ is visited ($V=\R$). $\{\pm2,\pm3\}$: visits only at integers ($V=\Z$). $\{\pm2,\pm4\}$: only at even integers. With a drift nothing near the origin is ever revisited: $V=\emptyset$.`,
+      caption: String.raw`Sixty seeded walks of $10\,000$ steps each; the curve counts the visits of the **second half** of the walks (added up) to the window $(x-\eps,x+\eps)$. Step set $\{\pm1,\pm\sqrt2\}$: every $x$ is visited ($V=\R$). $\{\pm2,\pm3\}$: visits only at integers ($V=\Z$). $\{\pm2,\pm4\}$: only at even integers. With a drift nothing near the origin is ever revisited: $V=\emptyset$.`,
       deps: ['prob-5.3.1a'],
       tags: ['random walk', 'recurrence'],
-      scope: String.raw`Finitely many steps and one seed prove nothing: the picture shows the window counts of one long run, which approximate the dichotomy $V=\R,\ \Z,\ 2\Z$ or $\emptyset$.`,
+      scope: String.raw`Finitely many steps and walks prove nothing: the picture shows the window counts of one seeded sample, which approximate the dichotomy $V=\R,\ \Z,\ 2\Z$ or $\emptyset$.`,
       viz(v) {
         const mode = v.select('step set', [{ value: 'R', label: '$\\pm1,\\pm\\sqrt2$' }, { value: 'Z', label: '$\\pm2,\\pm3$' }, { value: '2Z', label: '$\\pm2,\\pm4$' }, { value: 'drift', label: 'drift' }], 'R');
         const eS = v.slider('window $\\varepsilon$', 0.1, 0.5, 0.25, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const N = 60000, X = 5, BW = 0.02, LO = -X - 1, NB = Math.round((2 * (X + 1)) / BW);
-        const A = v.stage({ x: [-X, X], y: [0, 30], axes: 'box', gutter: true, height: 320, xlabel: '$x$', ylabel: 'visits in $n>N/2$', title: 'visits of the second half to $(x-\\varepsilon,x+\\varepsilon)$' });
+        const N = 10000, M = 60, X = 5, BW = 0.02, LO = -X - 1, NB = Math.round((2 * (X + 1)) / BW);
+        const A = v.stage({ x: [-X, X], y: [0, 30], axes: 'box', gutter: true, height: 320, xlabel: '$x$', ylabel: 'visits in $n>N/2$', title: 'visits of 60 walks (second half) to $(x-\\varepsilon,x+\\varepsilon)$' });
         let cache = null, st = null;
         v.render(() => {
           const key = `${mode.value}|${seed}`;
           if (!cache || cache.key !== key) {
             const r = v.rng(seed * 31 + mode.value.length * 7 + 3), h = new Float64Array(NB + 1);
             const steps = { R: [1, -1, SQ2, -SQ2], Z: [2, -2, 3, -3], '2Z': [2, -2, 4, -4] }[mode.value];
-            let S = 0;
-            for (let n = 1; n <= N; n++) {
-              S += mode.value === 'drift' ? (r() < 0.6 ? 1 : -1) : steps[Math.floor(r() * 4)];
-              if (n > N / 2) { const b = Math.floor((S - LO) / BW); if (b >= 0 && b < NB) h[b + 1]++; }
+            for (let w = 0; w < M; w++) {
+              let S = 0;
+              for (let n = 1; n <= N; n++) {
+                S += mode.value === 'drift' ? (r() < 0.6 ? 1 : -1) : steps[Math.floor(r() * 4)];
+                if (n > N / 2) { const b = Math.floor((S - LO) / BW); if (b >= 0 && b < NB) h[b + 1]++; }
+              }
             }
             for (let i = 1; i <= NB; i++) h[i] += h[i - 1];
             cache = { key, h };
@@ -246,7 +248,7 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
           A.setView([-m * e - 0.2, m * e + 0.2], [-m * e - 0.2, m * e + 0.2]);
           for (let a = 0; a < K; a++) for (let b = 0; b < K; b++) {
             const c = cells[a * K + b], x0 = -m * e + a * e, y0 = -m * e + b * e;
-            A.rect(x0, y0, x0 + e, y0 + e, { fill: v.ramp(clampN(c / (center * 1.05), 0, 1), 'accent'), fillAlpha: 0.9, color: 'panel', width: 0.8 });
+            A.rect(x0, y0, x0 + e, y0 + e, { fill: v.ramp(clampN(c / (mx * 1.05), 0, 1), 'accent'), fillAlpha: 0.9, color: 'panel', width: 0.8 });
             if (e * 40 > 26) A.text(c.toFixed(1), x0 + e / 2, y0 + e / 2, { size: 10, color: 'ink', align: 'center', baseline: 'middle' });
           }
           A.rect(-e, -e, e, e, { fill: false, color: 'red', width: 2.5 });
@@ -314,7 +316,7 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
         let seed = 1; v.button('Resample', () => { seed++; });
         const N = 20000, M = 300, CK = 70;
         const checks = Array.from({ length: CK }, (_, i) => Math.round(10 ** (1 + (i * (Math.log10(N) - 1)) / (CK - 1))));
-        const A = v.stage({ x: [0, N], y: [-6, 6], axes: 'box', gutter: true, height: 320, xlabel: '$n$', ylabel: 'arsinh $S_n$', title: 'five paths (signed-log scale)' });
+        const A = v.stage({ x: [0, N], y: [-13, 13], axes: 'box', gutter: true, height: 320, xlabel: '$n$', ylabel: 'arsinh $S_n$', title: 'five paths (signed-log scale)' });
         const B = v.stage({ x: [10, N], y: [1e-3, 100], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: 'median $|S_n/n|$' });
         let cache = null, st = null;
         v.render(() => {

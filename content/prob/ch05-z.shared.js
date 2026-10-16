@@ -4,8 +4,16 @@
 // laws and total variation, and the AR(1) chain X' = aX + N(0,1) as the running example of a Harris chain (with an
 // explicit minorization on an interval A and its discretization to a K x K matrix, split into the kernels v and pbar).
 
-export { PHI, clampN } from './ch04-z.shared.js';
-import { PHI } from './ch04-z.shared.js';
+export { clampN } from './ch04-z.shared.js';
+
+/** Standard normal CDF (erf by Taylor series for |z| < 3, Laplace continued fraction for the tails; ~1e-15). */
+export function PHI(x) {
+  if (x === Infinity) return 1; if (x === -Infinity) return 0;
+  const z = Math.abs(x) / Math.SQRT2; let r;
+  if (z < 3) { let t = z, sum = z; for (let n = 1; n < 80; n++) { t *= -z * z / n; sum += t / (2 * n + 1); } r = 0.5 * (1 - (2 / Math.sqrt(Math.PI)) * sum); }
+  else { let f = 0; for (let k = 60; k >= 1; k--) f = k / 2 / (z + f); r = 0.5 * Math.exp(-z * z) / Math.sqrt(Math.PI) / (z + f); }
+  return x >= 0 ? 1 - r : r;
+}
 
 export const CLS = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];
 export const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };

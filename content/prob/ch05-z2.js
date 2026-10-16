@@ -212,11 +212,12 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
           R = { path, regs, cReg, cC, nr, nc, eps: mn.eps, N }; return R;
         };
         v.render(() => {
-          const { path, regs, cReg, cC, N } = get(); const mx = Math.max(10, ...path.map((p) => Math.abs(p[1]))), ym = Math.max(5, ...cReg.map((p) => p[1]), ...cC.map((p) => p[1]));
+          const { path, regs, cReg, cC, N } = get(); const mx = Math.max(6, ...path.map((p) => Math.abs(p[1]))), ym = Math.max(5, ...cReg.map((p) => p[1]), ...cC.map((p) => p[1]));
           P.setView([0, N], [-Math.min(mx, 1e4) * 1.05, Math.min(mx, 1e4) * 1.05]);
           P.hband(-1, 1, { color: 'orange', alpha: 0.25 });
           P.path(path, { color: 'accent', width: 1.2 });
-          regs.forEach((n) => P.vline(n, { color: 'gold', width: 0.8, alpha: 0.35 }));
+          const vy = Math.min(mx, 1e4) * 1.05;
+          regs.forEach((n) => P.line(n, -vy, n, -vy * 0.85, { color: 'gold', width: 1, alpha: 0.7 }));
           C.setView([0, N], [0, ym * 1.1]);
           C.path(cReg, { color: 'gold', width: 2.4 }); C.path(cC, { color: 'accent', width: 2 });
         });

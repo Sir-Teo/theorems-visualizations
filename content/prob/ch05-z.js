@@ -164,7 +164,7 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
         const mode = v.select('chain', [{ value: 'ap', label: 'aperiodic' }, { value: 'per', label: 'period 2' }], 'ap');
         const nS = v.slider('$n$', 0, 30, 6, { int: true });
         let seed = 1; v.button('New coupled run', () => { seed++; });
-        const L = v.stage({ x: [0, 30], y: [1e-3, 1.2], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`distance to $\pi$` });
+        const L = v.stage({ x: [0, 30], y: [1e-4, 1.2], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`distance to $\pi$` });
         const R = v.stage({ x: [0, 30], y: [-0.5, 5.5], height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`a coupled pair $(X_n,Y_n)$` });
         const NS = 6, NM = 30;
         const AP = [[0.2, 0.5, 0.3, 0, 0, 0], [0, 0.1, 0.4, 0.5, 0, 0], [0.3, 0, 0, 0.3, 0.4, 0], [0, 0, 0.5, 0, 0.2, 0.3], [0.4, 0, 0, 0.3, 0.3, 0], [0.5, 0, 0, 0, 0.2, 0.3]];
@@ -188,9 +188,9 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
         };
         v.render(() => {
           const c = build(mode.value), n = nS.value;
-          L.path(c.tv.map((t, i) => [i, Math.max(1e-3, t)]), { color: 'green', width: 2.2 });
-          L.path(c.tail.map((t, i) => [i, Math.max(1e-3, t)]), { color: 'orange', width: 2.2 });
-          c.tv.forEach((t, i) => L.dot(i, Math.max(1e-3, t), { color: 'green', r: 2.5 }));
+          L.path(c.tv.map((t, i) => [i, Math.max(1e-4, t)]), { color: 'green', width: 2.2 });
+          L.path(c.tail.map((t, i) => [i, Math.max(1e-4, t)]), { color: 'orange', width: 2.2 });
+          c.tv.forEach((t, i) => L.dot(i, Math.max(1e-4, t), { color: 'green', r: 2.5 }));
           L.vline(n, { color: 'gold', width: 1.4, dash: true });
           const q = pair();
           R.path(q.X.map((s, i) => [i, s]), { color: 'accent', width: 2 });
@@ -273,7 +273,7 @@ while $p^n(x,y)=0$ whenever $n\not\equiv r\pmod d$. In particular $p^n(x,y)$ has
         };
         v.render(() => {
           const c = get(), y = Math.min(yS.value, c.n - 1), r = c.cls[y], lim = c.d * c.pi[y];
-          S.setView([0, 60], [0, Math.max(0.3, 1.25 * lim, ...c.seq.map((m) => m[y]))]);
+          S.setView([0, 60], [0, Math.max(0.3, 1.25 * lim, 1.1 * Math.max(...c.seq.map((m) => m[y])))]);
           S.hline(lim, { color: 'green', width: 2, dash: [8, 5] });
           const pts = c.seq.map((m, n) => [n, m[y]]);
           S.path(pts, { color: 'faint', width: 1 });
@@ -370,7 +370,7 @@ while $p^n(x,y)=0$ whenever $n\not\equiv r\pmod d$. In particular $p^n(x,y)$ has
         let seed = 1; v.button('New walks', () => { seed++; });
         const W = v.stage({ x: [0, 80], y: [-14, 14], height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`coupled walks $S_n$` });
         const T = v.stage({ x: [0, 80], y: [0, 1.05], height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: 'total variation distance', weight: 0.8, minWidth: 260 });
-        const tvAt = (x, y, n) => { const dd = y - x; if (((dd % 2) + 2) % 2) return 1; let s = 0; for (let k = 0; k <= n; k++) { const a = Math.exp(logChoose(n, k) - n * Math.LN2), j = k - dd / 2; const b = j >= 0 && j <= n ? Math.exp(logChoose(n, j) - n * Math.LN2) : 0; s += Math.abs(a - b); } return Math.min(1, s / 2); };
+        const tvAt = (x, y, n) => { const dd = y - x; if (((dd % 2) + 2) % 2) return 1; const h2 = dd / 2; let s = 0; for (let k = Math.min(0, h2); k <= n + Math.max(0, h2); k++) { const a = k >= 0 && k <= n ? Math.exp(logChoose(n, k) - n * Math.LN2) : 0, j = k - h2; const b = j >= 0 && j <= n ? Math.exp(logChoose(n, j) - n * Math.LN2) : 0; s += Math.abs(a - b); } return Math.min(1, s / 2); };
         v.render(() => {
           const r = v.rng(seed * 23 + 5); let a = xS.value, b = yS.value, met = -1; const A = [a], B = [b];
           for (let n = 1; n <= 80; n++) { const sa = r() < 0.5 ? 1 : -1; a += sa; if (met >= 0) b = a; else { b += r() < 0.5 ? 1 : -1; if (a === b) met = n; } A.push(a); B.push(b); }
