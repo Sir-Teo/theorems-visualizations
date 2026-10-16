@@ -92,13 +92,13 @@ logistic growth with scaled capacity $q$ (set by the foliage of the forest) and 
       statement: String.raw`For $\dot u=F(u;q)$ a **saddle-node bifurcation** occurs at $(u_c,q_c)$ when $F=0$ and $\partial_uF=0$ but $\partial_qF\neq0$ and $\partial_u^2F\neq0$: two equilibria, one stable and one unstable, merge and vanish as $q$ passes $q_c$. In the budworm model the equilibrium curve is S-shaped with two such folds $q_A<q_B$. If $q$ is varied slowly the population stays on its current branch: it jumps up to the outbreak branch only when $q$ exceeds $q_B$, and falls back only when $q$ drops below the lower value $q_A$. The state therefore depends on the history of $q$, not on $q$ alone: **hysteresis**.`,
       idea: String.raw`Between $q_A$ and $q_B$ two different stable states coexist (1.10). A stable branch is followed adiabatically until it ceases to exist at a fold, where $\partial_uF=0$ and the stable direction disappears; the state then relaxes quickly to the only remaining attractor. The jump up and the jump down happen at different folds, which opens the loop. Recovery from an outbreak therefore requires lowering $q$ far below the value at which the outbreak began (via, for example, forest thinning).`,
       scope: String.raw`Adiabatic parameter sweep: the loop gets wider if $q$ changes faster than the population relaxes. Needs $r$ in the range with three equilibria.`,
-      caption: String.raw`Watch $q$ rise from $3$ to $18$ and fall back (orange up, teal down). The trace sticks to its branch, jumps at the fold $q_B$ and returns at $q_A\ne q_B$. Shorten the sweep time and the jumps are delayed past the folds; lengthen it and they approach them.`,
+      caption: String.raw`Watch $q$ rise from $3$ to $18$ and fall back (orange up, teal down). The trace sticks to its branch, jumps up only beyond the fold $q_B$ and returns only below $q_A\ne q_B$. Shorten the sweep time and the jumps are delayed further past the folds (a very fast sweep never jumps at all); lengthen it and they approach the folds.`,
       deps: ['mathbio-1.10', 'ode-8.3'],
       tags: ['hysteresis', 'saddle-node'],
       refs: ['Murray I ch. 1'],
       viz(v) {
         const r = v.slider('$r$', 0.5, 0.64, 0.55, { step: 0.005 });
-        const P = v.slider('sweep time', 40, 3000, 800, { log: true, sig: 2 });
+        const P = v.slider('sweep time', 40, 4000, 2000, { log: true, sig: 2 });
         const QLO = 3, QHI = 18, DT = 0.1;
         const L = v.stage({ x: [0, QHI + 1], y: [0, 16], axes: 'box', gutter: true, height: 340, weight: 1.15, minWidth: 300, xlabel: 'q', ylabel: 'u', title: 'population against forest capacity $q$' });
         const T = v.stage({ x: [0, 1], y: [0, 16], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 280, xlabel: 'time (fraction of sweep)', ylabel: 'u', title: 'population through the sweep' });
@@ -169,7 +169,7 @@ logistic growth with scaled capacity $q$ (set by the foliage of the forest) and 
         const TM = 40;
         const A = v.stage({ x: [0, 110], y: [-2, 16], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 280, xlabel: 'N', ylabel: 'growth, harvest', title: 'growth and harvest curves' });
         const B = v.stage({ x: [0, TM], y: [0, 120], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 280, xlabel: 't (years)', ylabel: 'N(t)', title: 'the stock through time' });
-        const H = B.handle(0, 70, { color: 'gold', label: '$N_0$', labelPos: 'ne', constrain: (x, y) => [0, v.M.clamp(y, 1, 115)] });
+        const H = B.handle(0, 35, { color: 'gold', label: '$N_0$', labelPos: 'ne', constrain: (x, y) => [0, v.M.clamp(y, 1, 115)] });
         let eq = [], tail = '', yieldv = 0;
         v.legend([['accent', 'growth $rN(1-N/K)$'], ['red', 'harvest'], ['green', 'stable', { dot: true }], ['gold', 'stock', { dash: false }]]);
         v.render(() => {
@@ -305,7 +305,7 @@ $$\frac{dN}{dt}=rN(t)\Bigl(1-\frac{N(t-\tau)}{K}\Bigr).$$
 A history $N(t)$ on $[-\tau,0]$ is needed to start it. $N=K$ remains an equilibrium. The qualitative behaviour depends only on $r\tau$: for $r\tau<1/e$ solutions approach $K$ monotonically, for $1/e<r\tau<\pi/2$ they oscillate with decaying amplitude, and for $r\tau>\pi/2$ they settle onto sustained oscillations (a limit cycle) of period a little over $4\tau$.`,
       idea: String.raw`Growth responds to what the crowd was, not what it is: after a rise the stock overshoots $K$ because the brake lags, then undershoots when the lagged brake is still on. Setting $N=K(1+u)$ and linearizing gives $\dot u(t)=-r\,u(t-\tau)$, whose exponential solutions $e^{\lambda t}$ satisfy $\lambda=-re^{-\lambda\tau}$; the three regimes are the three kinds of root (1.16).`,
       scope: String.raw`Delay differential equation with constant initial history (here $N\equiv N_0$ on $[-\tau,0]$); the thresholds $1/e$ and $\pi/2$ are exact for the linearization and give the amplitude regime for the full equation.`,
-      caption: String.raw`Set $r$ and the delay $\tau$ and read the product $r\tau$. Left: the population. Right: the delay portrait $N(t)$ against $N(t-\tau)$, in which an approach to $K$ spirals into the point $(K,K)$ and a sustained oscillation is a closed loop. Cross $r\tau=1/e\approx0.37$ and $\pi/2\approx1.57$.`,
+      caption: String.raw`Set $r$ and the delay $\tau$ and read the product $r\tau$. Left: the population. Right: the delay portrait $N(t)$ against $N(t-\tau)$ (grey: the transient, blue: the last 60% of the run), in which an approach to $K$ spirals into the point $(K,K)$ and a sustained oscillation is a closed loop. Cross $r\tau=1/e\approx0.37$ and $\pi/2\approx1.57$.`,
       deps: ['mathbio-1.4'],
       tags: ['delay equation', 'oscillations'],
       refs: ['Murray I ch. 1'],
@@ -321,16 +321,16 @@ A history $N(t)$ on $[-\tau,0]$ is needed to start it. $N=K$ remains an equilibr
         v.render(() => {
           const rv = r.value, m = Math.max(1, Math.round(tau.value / h)), T = m * h;
           const X = ddeRun((x, xd) => rv * x * (1 - xd), N0.value, m, h, Math.round(TM / h));
-          const pts = [], ph = [];
+          const pts = [], ph = [], pre = [];
           for (let i = m; i < X.length; i += 5) pts.push([(i - m) * h, X[i]]);
           const start = Math.round(0.4 * X.length);
-          for (let i = Math.max(start, m); i < X.length; i += 3) ph.push([X[i - m], X[i]]);
+          for (let i = m; i < X.length; i += 3) (i < start ? pre : ph).push([X[i - m], X[i]]);
           const hi = Math.max(1.1, ...pts.map((p) => p[1])) * 1.05;
           A.setView([0, TM], [0, hi]); B.setView([0, hi], [0, hi]);
           A.hline(1, { color: 'green', dash: [6, 4] });
           A.path(pts, { color: 'accent', width: 2.4 });
           B.line(0, 1, hi, 1, { color: 'faint', dash: true }); B.line(1, 0, 1, hi, { color: 'faint', dash: true });
-          B.path(ph, { color: 'accent', width: 1.6, alpha: 0.9 });
+          B.path(pre, { color: 'muted', width: 1.4, alpha: 0.7 }); B.path(ph, { color: 'accent', width: 2.2 });
           B.dot(1, 1, { r: 5, color: 'green' });
           const tail = X.slice(X.length - Math.round(15 / h)), amp = (Math.max(...tail) - Math.min(...tail)) / 2;
           rep = { x: rv * T, amp };
@@ -345,16 +345,16 @@ A history $N(t)$ on $[-\tau,0]$ is needed to start it. $N=K$ remains an equilibr
       name: 'Delay-induced oscillations: Hopf at rτ = π/2',
       statement: String.raw`Linearize Hutchinson's equation about $N=K$: $\dot u(t)=-r\,u(t-\tau)$. Solutions $e^{\lambda t}$ require $\lambda=-re^{-\lambda\tau}$, equivalently $w e^{w}=-r\tau$ with $w=\lambda\tau$, so $\lambda=W_k(-r\tau)/\tau$ with infinitely many roots (the branches of the Lambert $W$ function). For $r\tau<1/e$ all roots are real and negative; for $1/e<r\tau<\pi/2$ the leading roots are a complex pair with negative real part; at $r\tau=\pi/2$ that pair is $\lambda=\pm ir$ on the imaginary axis; for $r\tau>\pi/2$ it has positive real part. At $r\tau=\pi/2$ a **Hopf bifurcation** occurs: $K$ loses stability and a stable periodic solution of period near $2\pi/r=4\tau$ is born.`,
       idea: String.raw`Substitute $\lambda=i\omega$, $\omega>0$: $i\omega=-re^{-i\omega\tau}=-r\cos\omega\tau+ir\sin\omega\tau$, so $\cos\omega\tau=0$ and $\omega=r\sin\omega\tau$; the smallest solution is $\omega\tau=\pi/2$ and $\omega=r$, hence $r\tau=\pi/2$. A root crossing the imaginary axis transversally (the derivative $d\,\mathrm{Re}\lambda/d\tau>0$ there; see the complex-analytic argument in rca-10.43) is exactly the situation of the Hopf theorem.`,
-      caption: String.raw`Left: the roots $w=\lambda\tau$ in the complex plane (leading pair gold; the gold curve is their path as $r\tau$ grows; red region = unstable). Slide $r\tau$ through $\pi/2\approx1.571$ and the pair crosses the imaginary axis. Right: a simulation of the full nonlinear equation ($r=1$, $\tau=r\tau$), with the growth/decay rate measured from successive swings of $N-K$ checked against $\mathrm{Re}\,\lambda$.`,
+      caption: String.raw`Left: the roots $w=\lambda\tau$ in the complex plane (leading pair gold; the gold curve is their path as $r\tau$ grows; red region = unstable). Slide $r\tau$ through $\pi/2\approx1.571$ and the pair crosses the imaginary axis. Right: a simulation of the full nonlinear equation ($r=1$, $\tau=r\tau$), showing the heights of successive swings of $N-K$ on a log scale (start: $0.3\%$ perturbation). While swings are small (below the dashed line) they lie on a straight line whose slope is $\mathrm{Re}\,\lambda$ (gold); beyond $r\tau=\pi/2$ they grow until the nonlinearity saturates them in a limit cycle.`,
       deps: ['mathbio-1.15', 'rca-10.43'],
       tags: ['Hopf bifurcation', 'delay equation'],
       refs: ['Murray I ch. 1'],
       viz(v) {
         const x = v.slider('$r\\tau$', 0.05, 3, 1.2, { step: 0.01 });
         const A = v.stage({ x: [-4, 2], y: [-13, 13], axes: true, height: 340, weight: 1, minWidth: 280, title: 'roots $w=\\lambda\\tau$ of $we^w=-r\\tau$' });
-        const B = v.stage({ x: [0, 80], y: [-0.4, 0.4], axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 300, xlabel: 't', ylabel: 'N − K', title: 'simulation of the nonlinear equation ($K=1$, $r=1$)' });
+        const B = v.stage({ x: [0, 120], y: [1e-8, 3], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 300, xlabel: 't', ylabel: '|N − K| at its swings', title: 'swings of the nonlinear equation (log scale, $r=1$, $K=1$)' });
         let rep = {}, locus = null;
-        v.legend([['gold', 'leading pair', { dot: true }], ['muted', 'other roots', { dot: true }], ['red', 'unstable half-plane', { area: true }]]);
+        v.legend([['gold', 'leading pair / predicted slope', { dot: true }], ['muted', 'other roots', { dot: true }], ['accent', 'swings of $|N-K|$', { dot: true }], ['red', 'unstable half-plane', { area: true }]]);
         v.render(() => {
           const h = 0.01, m = Math.max(1, Math.round(x.value / h)), xv = m * h;
           if (!locus) { locus = [[], []]; for (let q = 0.02; q <= 3.0001; q += 0.02) { const L = lambertRoots(q, 0).filter((w) => w[1] >= 0).sort((a, b) => b[0] - a[0])[0]; locus[0].push([L[0], L[1]]); locus[1].push([L[0], -L[1]]); } }
@@ -364,16 +364,21 @@ A history $N(t)$ on $[-\tau,0]$ is needed to start it. $N=K$ remains an equilibr
           ro.forEach((w, i) => A.dot(w[0], w[1], { r: i < 2 && Math.abs(w[1]) < 3 ? 7 : 4.5, color: i < 2 && Math.abs(w[1]) < 3 ? 'gold' : 'muted' }));
           A.text('Re w', 1.95, 0, { align: 'right', dy: -10, color: 'muted', size: 12 }); A.text('Im w', 0, 12.4, { align: 'left', dx: 8, color: 'muted', size: 12 });
           // nonlinear simulation, r = 1, tau = xv
-          const u0 = 0.003, X = ddeRun((y, yd) => y * (1 - yd), 1 + u0, m, h, Math.round(80 / h));
-          const pts = []; for (let i = m; i < X.length; i += 10) pts.push([(i - m) * h, X[i] - 1]);
-          B.hline(0, { color: 'green', dash: [6, 4] });
-          B.path(pts, { color: 'accent', width: 2.4 });
-          // measured rate from successive extrema while |u| is small
+          const u0 = 0.003, TT = 120, X = ddeRun((y, yd) => y * (1 - yd), 1 + u0, m, h, Math.round(TT / h));
+          // extrema of u = N - K: their heights follow exp(Re(lambda) t) while the oscillation is small
           const ex = [];
-          for (let i = m + 1; i < X.length - 1; i++) { const a = X[i - 1] - 1, b = X[i] - 1, c = X[i + 1] - 1; if (Math.abs(b) > 1e-12 && Math.abs(b) < 0.06 && ((b > a && b > c) || (b < a && b < c))) ex.push([(i - m) * h, Math.abs(b)]); }
+          for (let i = m + 1; i < X.length - 1; i++) { const a = X[i - 1] - 1, b = X[i] - 1, c = X[i + 1] - 1; if (Math.abs(b) > 1e-9 && ((b > a && b > c) || (b < a && b < c))) ex.push([(i - m) * h, Math.abs(b)]); }
+          const win = ex.filter((e, k) => k >= 2 && e[1] < 0.06);
+          B.dots(ex.map((e) => [e[0], e[1]]), { r: 3.5, color: 'accent' });
           let meas = NaN;
-          const use = ex.slice(2);
-          if (use.length >= 2) { let num = 0, cnt = 0; for (let k = 0; k + 1 < use.length && k < 6; k++) { num += Math.log(use[k + 1][1] / use[k][1]) / (use[k + 1][0] - use[k][0]); cnt++; } meas = num / cnt; }
+          if (win.length >= 2) {
+            let num = 0, cnt = 0;
+            for (let k = 0; k + 1 < win.length && k < 8; k++) { num += Math.log(win[k + 1][1] / win[k][1]) / (win[k + 1][0] - win[k][0]); cnt++; }
+            meas = num / cnt;
+          }
+          const lead0 = lambertRoots(xv, 2)[0], predRate = lead0[0] / xv;
+          if (win.length) { const [t0, y0] = win[0], t1 = win[Math.min(win.length - 1, 12)][0]; B.line(t0, y0, t1, y0 * Math.exp(predRate * (t1 - t0)), { color: 'gold', width: 2.6 }); }
+          B.hline(0.06, { color: 'faint', dash: [4, 4] });
           const lead = ro[0], pred = lead[0] / xv;
           rep = { xv, lead, pred, meas, cross: Math.abs(xv - Math.PI / 2) };
         });
@@ -407,7 +412,7 @@ The production term is a decreasing function of the delayed level (for $n>1$ it 
         const peaks = (X, from, to) => { const out = []; for (let i = from + 1; i < to - 1; i++) if (X[i] > X[i - 1] && X[i] >= X[i + 1] && X[i] > 0.01) out.push(X[i]); return out; };
         const buildDiag = () => {
           const cols = [];
-          for (let t = 2; t <= 30.001; t += 0.25) { const o = run(t, 1000, 1000); const pk = peaks(o.X, o.off, o.X.length); cols.push([t, pk.slice(-40)]); }
+          for (let t = 2; t <= 30.001; t += 0.25) { const o = run(t, 1000, 1000); let pk = peaks(o.X, o.off, o.X.length); if (!pk.length) pk = [o.X[o.X.length - 1]]; cols.push([t, pk.slice(-40)]); }
           return cols;
         };
         v.render(() => {

@@ -89,7 +89,7 @@ export default {
             for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) edges.push({ from: i, to: j });
             for (let i = 5; i < 9; i++) nodes.push({ id: i, x: 0.9 + 0.75 * (i - 4), y: -0.6 });
             edges.push({ from: 3, to: 5 }); for (let i = 5; i < 8; i++) edges.push({ from: i, to: i + 1 });
-            G.set({ nodes, edges, layout: 'fit', r: 13 });
+            G.set({ nodes, edges, layout: 'none', r: 13 }); G.layout('fit');
           }
           reset();
         }
@@ -252,10 +252,10 @@ $$\pi_i=\pi_0\prod_{k=1}^{i}\frac{p_{k-1}}{q_k}.$$`,
         const st0 = v.select('start', [{ value: 'left', label: 'all in left' }, { value: 'half', label: 'half and half' }], 'left', { onChange: () => reset() });
         const rate = v.slider('moves per second', 1, 400, 30, { log: true, int: true });
         v.button('reset', () => reset());
-        const s1 = v.stage({ x: [0, 10], y: [0, 5.2], axes: false, height: 300, title: 'two urns' });
-        const s2 = v.stage({ x: [0, 300], y: [0, 40], axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'balls in the left urn', title: 'left urn count $L_n$' });
-        const s3 = v.stage({ x: [-0.7, 40.7], y: [0, 0.5], axes: 'box', gutter: true, height: 300, xlabel: '$k$ = balls in the left urn', ylabel: 'frequency', title: 'occupation vs binomial' });
-        const s4 = v.stage({ x: [-0.3, 1.9], y: [-0.3, 1.9], axes: false, equal: true, height: 300, title: 'first three balls: cube $\\{0,1\\}^3$' });
+        const s1 = v.stage({ x: [0, 10], y: [0, 5.2], axes: false, height: 280, title: 'two urns', minWidth: 190 });
+        const s2 = v.stage({ x: [0, 300], y: [0, 40], axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'balls in the left urn', title: 'left urn count $L_n$', minWidth: 190 });
+        const s3 = v.stage({ x: [-0.7, 40.7], y: [0, 0.5], axes: 'box', gutter: true, height: 300, xlabel: '$k$ = balls in the left urn', ylabel: 'frequency', title: 'occupation vs binomial', minWidth: 190 });
+        const s4 = v.stage({ x: [-0.3, 1.9], y: [-0.3, 1.9], axes: false, equal: true, height: 300, title: 'first three balls: cube $\\{0,1\\}^3$', minWidth: 190 });
         const clk = makeClock();
         let N, bits, L, hist, cnt, steps, R, last;
         function reset() {

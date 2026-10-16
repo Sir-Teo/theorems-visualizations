@@ -128,7 +128,8 @@ export function makeClock() {
     reset() { acc = 0; last = null; this.restarted = false; },
     due(t, rate) {
       this.restarted = false;
-      if (last === null) last = t;
+      if (last === null) last = this.started ? t : 0;
+      this.started = true;
       if (t < last - 1e-9) { this.restarted = true; acc = 0; last = t; }
       const dt = Math.min(t - last, 15); last = t; acc += dt * rate;
       const n = Math.min(Math.floor(acc), 6000); acc -= n; if (acc > 1) acc = 0;

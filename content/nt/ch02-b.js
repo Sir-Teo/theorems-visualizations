@@ -352,7 +352,7 @@ with the convention $\binom ab=0$ for $b>a$. In particular $\binom nk\not\equiv0
 $$v_p\binom nk=\#\{\text{carries in }k+(n-k)\text{ in base }p\}=\frac{s_p(k)+s_p(n-k)-s_p(n)}{p-1}.$$
 In particular $p\nmid\binom nk$ iff the addition has no carry (consistent with Lucas's theorem).`,
       idea: String.raw`Combine Legendre's formula (2.15) with the digit-sum form: $v_p\binom nk=v_p(n!)-v_p(k!)-v_p((n-k)!)=\dfrac{s_p(k)+s_p(n-k)-s_p(n)}{p-1}$. Adding two numbers in base $p$, each carry replaces $p$ in one column by $1$ in the next, so it lowers the digit sum by $p-1$: $s_p(a+b)=s_p(a)+s_p(b)-(p-1)\cdot\#\text{carries}$. Equating the two expressions proves the claim.`,
-      caption: String.raw`Left: the addition $k+(n-k)=n$ written in base $p$; red arrows are carries. Right: the valuation $v_p\binom nk$ for all $n\le 64$ (darker = higher power; white = $0$). The selected entry (click to move it) has exactly as many carries as its colour says. The valuation is computed independently by Legendre's formula, not from the carries.`,
+      caption: String.raw`Left: the addition $k+(n-k)=n$ written in base $p$; red arrows are carries. Right: the valuation $v_p\binom nk$ for all $n\le 64$ (stronger colour = higher power; pale green = $0$). The selected entry (click to move it) has exactly as many carries as its colour says. The valuation is computed independently by Legendre's formula, not from the carries.`,
       deps: ['nt-2.15', 'comb-1.6'],
       refs: ['Hardy–Wright §6.2'],
       tags: ['binomial', 'carries', 'valuation'],
