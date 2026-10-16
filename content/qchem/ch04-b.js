@@ -21,6 +21,7 @@ export default {
       see: ['qm-11.4'],
       refs: ['McQuarrie ch. 8'],
       tags: ['degenerate perturbation theory', 'mixing', 'square box'],
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perturbation_theory_(quantum_mechanics)#Degenerate_energy_levels' },
       viz(v) {
         const M = v.M, N = 6, LMAX = 60, nS = N * N;
@@ -83,6 +84,7 @@ The same holds for a trial function that makes $\langle H\rangle$ stationary wit
       see: ['qm-11.7', 'qchem-4.6'],
       refs: ['Szabo–Ostlund ch. 1'],
       tags: ['Hellmann–Feynman', 'forces', 'derivative of energy'],
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hellmann%E2%80%93Feynman_theorem' },
       viz(v) {
         const M = v.M;
@@ -139,7 +141,7 @@ The same holds for a trial function that makes $\langle H\rangle$ stationary wit
       num: '4.9',
       kind: 'Theorem',
       name: 'Quantum virial theorem',
-      credit: 'Fock, 1930 (Z. Phys. 63, 855), after the classical theorem of Clausius, 1870; scaling proof as in the later literature',
+      credit: 'Fock, 1930 (Z. Phys. 63, 855); the classical theorem is Clausius, 1870',
       statement: String.raw`For a stationary state of $H=T+V(\mathbf r)$ with kinetic energy $T=\mathbf p^2/2m$,
 $$2\langle T\rangle=\langle\mathbf r\cdot\nabla V\rangle .$$
 For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\rangle=\tfrac s2\langle V\rangle$, so $E=\tfrac{s+2}{2}\langle V\rangle=\tfrac{s+2}{s}\langle T\rangle$: for the Coulomb potential ($s=-1$) $\langle T\rangle=-E$, $\langle V\rangle=2E$ and $\langle V\rangle/\langle T\rangle=-2$; for the oscillator ($s=2$) $\langle T\rangle=\langle V\rangle=E/2$.`,
@@ -150,6 +152,7 @@ For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\ra
       see: ['mech-8.16', 'qchem-4.3'],
       refs: ['McQuarrie ch. 8'],
       tags: ['virial theorem', 'kinetic and potential energy', 'scaling'],
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Virial_theorem' },
       viz(v) {
         const M = v.M;

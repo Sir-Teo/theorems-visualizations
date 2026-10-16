@@ -48,6 +48,7 @@ with equality exactly when $\psi$ is a ground state. More generally $E[\psi]\ge 
       see: ['qm-12.1', 'fa-12.13'],
       refs: ['McQuarrie ch. 8', 'Szabo–Ostlund ch. 1'],
       tags: ['variational principle', 'upper bound', 'trial function'],
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Variational_method_(quantum_mechanics)' },
       viz(v) {
         const fam = v.select('trial family', [
@@ -104,6 +105,7 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
       see: ['qm-12.2', 'qm-12.3'],
       refs: ['McQuarrie ch. 8', 'Szabo–Ostlund ch. 1'],
       tags: ['Rayleigh–Ritz', 'secular determinant', 'basis expansion'],
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rayleigh%E2%80%93Ritz_method' },
       viz(v) {
         const M = v.M, NB = 14;
@@ -168,7 +170,7 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
       statement: String.raw`Take for the two electrons of a helium-like ion of nuclear charge $Z$ the product of two hydrogenic $1s$ functions with a common adjustable exponent $\zeta$, $\psi=\frac{\zeta^3}{\pi}e^{-\zeta(r_1+r_2)}$. Then, in hartree,
 $$E(\zeta)=\underbrace{\zeta^2}_{\langle T\rangle}\;\underbrace{-\,2Z\zeta}_{\langle V_{ne}\rangle}\;+\;\underbrace{\tfrac58\zeta}_{\langle 1/r_{12}\rangle},$$
 minimal at $\zeta^*=Z-\tfrac5{16}$ with $E(\zeta^*)=-(Z-\tfrac5{16})^2$. For helium, $\zeta^*=\tfrac{27}{16}=1.6875$ and $E=-2.8477$ hartree, $1.9\,\%$ above the exact non-relativistic energy $-2.9037$. Each electron screens the nucleus from the other by $\tfrac5{16}$ of a unit charge.`,
-      scope: String.raw`A product of orbitals cannot describe the electrons avoiding each other (correlation); the remaining error, about $0.055$ hartree, is $1.5$ eV, and the Hartree–Fock limit (3.x, 7.x) is only a little better than this single-parameter result. The same trial function does not bind H$^-$.`,
+      scope: String.raw`A product of orbitals cannot describe the electrons avoiding each other (correlation); the remaining error, about $0.055$ hartree, is $1.5$ eV, and the Hartree–Fock limit (7.2) is only a little better than this single-parameter result. The same trial function does not bind H$^-$.`,
       idea: String.raw`Without repulsion the two electrons would each be a hydrogenic $1s$ electron with $\zeta=Z$ and $E=-Z^2$ ($-4$ hartree, $-108.8$ eV for helium); the repulsion integral $\langle1/r_{12}\rangle=\tfrac58\zeta$ is positive and grows with $\zeta$, so the best compromise lets the electrons spread out a little, i.e. lowers $\zeta$ below $Z$. Minimising the parabola gives the screening $\tfrac5{16}$. At the minimum $\langle T\rangle=-E$ and $\langle V\rangle=2E$, the virial theorem (4.9) in action, and by the variational principle (4.1) the result can never be below the exact energy.`,
       caption: String.raw`Choose the nuclear charge $Z$ and drag $\zeta$. Left: the three terms of $E(\zeta)$ and their sum, with the exact energy (dashed green) and the unscreened value $\zeta=Z$ (grey dot). Right: the radial density of one electron for your $\zeta$ and for $\zeta=Z$: with the charge screened the cloud is a little bigger. Notice that the minimum sits at $\zeta=Z-5/16$ for every $Z$, that for $Z=1$ the minimum lies *above* the energy of an H atom plus a free electron ($-0.5$), so this trial function wrongly predicts H$^-$ unbound, and that the percentage error shrinks with $Z$.`,
       deps: ['qchem-4.1', 'qchem-3.3', 'qm-12.4'],
