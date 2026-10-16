@@ -437,10 +437,10 @@ $$x = R\lambda,\qquad y = R\sin\varphi$$
       tags: ['map projections', 'area', 'equal-area'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/On_the_Sphere_and_Cylinder' },
       viz(v) {
-        const s3 = v.stage3d({ range: 1.45, height: 330, yaw: -0.55, pitch: 0.32, persp: 0 });
-        const sX = v.stage({ x: [-1.3, 1.5], y: [-1.18, 1.18], equal: true, axes: false, height: 330 });
-        const sB = v.stage({ x: [-3.25, 3.25], y: [-1.1, 1.1], equal: true, axes: false, height: 290, weight: 1.75 });
-        const sC = v.stage({ x: [0.4, 3.6], y: [0, 4], axes: 'box', gutter: true, height: 290, weight: 0.75, ylabel: 'area (unit sphere)', xticks: [[1, 'zone'], [2, 'band'], [3, 'map']] });
+        const s3 = v.stage3d({ range: 1.45, height: 330, yaw: -0.55, pitch: 0.32, persp: 0, minWidth: 300 });
+        const sX = v.stage({ x: [-1.3, 1.5], y: [-1.18, 1.18], equal: true, axes: false, height: 330, minWidth: 300 });
+        const sB = v.stage({ x: [-3.25, 3.25], y: [-1.1, 1.1], equal: true, axes: false, height: 270, weight: 1.75, minWidth: 500 });
+        const sC = v.stage({ x: [0.4, 3.6], y: [0, 4], axes: 'box', gutter: true, height: 270, weight: 0.75, ylabel: 'area (unit sphere)', xticks: [[1, 'zone'], [2, 'band'], [3, 'map']] });
         const slabs = v.toggle('ten slabs of equal height', false);
         const XH = 1.3;
         const H2 = sX.handle(XH, 0.78, { color: 'accent', label: 'z₂', labelPos: 'e', constrain: (x, y) => [XH, clamp(y, -1, 1)] });
@@ -508,7 +508,7 @@ $$x = R\lambda,\qquad y = R\sin\varphi$$
             sC.setView([0.4, 3.6], [0, Math.max(0.5, ba * 1.25)]);
             sC.bars([za, ba, ba], { x0: 1, dx: 1, color: (q, i) => ['accent', 'orange', 'green'][i] });
           }
-          v.legend(eq ? [['accent', 'slabs of height 0.2R (alternating)', { area: true }], ['teal', '', { area: true }], ['green', 'one tenth of the sphere, 0.4π', { dash: true }]]
+          v.legend(eq ? [['accent', 'slabs of height 0.2R', { area: true }], ['teal', 'alternate slabs', { area: true }], ['green', 'one tenth of the sphere, 0.4π', { dash: true }]]
             : [['accent', 'zone of the sphere / its image', { area: true }], ['orange', 'band of the cylinder', { area: true }], ['green', 'indicatrices (all of area 1)', { area: true }]]);
         });
         v.readout(() => {
@@ -604,16 +604,16 @@ all with $hk = 1$. Lambert's (1772) has $\varphi_s = 0$, Behrmann's (1910) $30^\
 $$k = \frac{k_0}{\sqrt{1 - \cos^2\varphi\,\sin^2(\lambda - \lambda_0)}} = k_0\cosh\frac{x}{k_0R},$$
 which depends only on the distance $x$ from the central meridian (about 0.4% at 5° of longitude on the equator). Gauss (1822) and Krüger (1912) gave the ellipsoidal version. The **Universal Transverse Mercator (UTM)** system divides the Earth from 80° S to 84° N into **60 zones, each 6° of longitude wide** (zone 1 is 180°–174° W), and maps each with its own transverse Mercator on the WGS84 ellipsoid, with **scale factor $k_0 = 0.9996$** on the central meridian, a false easting of 500 000 m and, in the southern hemisphere, a false northing of 10 000 000 m. The scale is exactly 1 about 180 km either side of the central meridian and stays within 1 part in 1000 of 1 throughout a zone (up to 1.0010 at the zone edges on the equator). Norway and Svalbard have widened zones.`,
       idea: String.raw`Rotating the sphere so that the central meridian becomes the "equator" and applying Mercator (geog-4.2) gives a conformal map whose scale $\sec$ of the angular distance from that meridian is close to 1 in a narrow strip: at 3° the excess is only $\sec 3^\circ - 1 \approx 0.0014$. Multiplying the whole map by $k_0 = 0.9996$ spreads the error evenly: the scale is $0.9996$ on the central meridian, 1 on two lines about 180 km away (where $\cosh(x/R) = 1/0.9996$) and about $1.0010$ at the edge of a zone on the equator, so grid distances are true to within 1:1000 everywhere. A local rectangular grid in metres, valid over a whole zone, is what surveyors and soldiers needed.`,
-      caption: String.raw`Drag $P$ on either map, or click a zone on the strip. Left: the transverse Mercator for $P$'s zone, its 6° strip shaded, neighbouring zone boundaries curving away, the lines of exact scale (green, dashed) and Tissot circles that grow away from the central meridian. Right: the UTM point scale across the zone at $P$'s latitude. The readout gives $P$'s UTM coordinates computed by Krüger's series on WGS84, checked against a published example.`,
+      caption: String.raw`Drag $P$ on either map, or click a zone on the strip. Left: the transverse Mercator for $P$'s zone, its 6° strip shaded, neighbouring zone boundaries curving away, the lines of exact scale (green, dashed) and Tissot circles that grow away from the central meridian. Right: the 60 zones from 80° S to 84° N; below, the UTM point scale across the zone at $P$'s latitude. The readout gives $P$'s UTM coordinates computed by Krüger's series on WGS84, checked against a published example.`,
       deps: ['geog-4.2'],
       see: ['geog-3.8'],
       refs: ['Snyder §8'],
       tags: ['map projections', 'conformal maps', 'grids'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system', tm: 'https://en.wikipedia.org/wiki/Transverse_Mercator_projection' },
       viz(v) {
-        const sA = v.stage({ height: 360, weight: 1.05 });
-        const sC = v.stage({ x: [-520, 520], y: [0.9993, 1.0016], axes: 'box', gutter: true, height: 360, xlabel: 'distance east of the central meridian (km)', ylabel: 'UTM point scale k', yticks: [0.9994, 0.9996, 0.9998, 1, 1.0002, 1.0004, 1.0006, 1.0008, 1.001, 1.0012, 1.0014] });
-        const sB = v.stage({ height: 210, full: true });
+        const sA = v.stage({ height: 400, weight: 0.85 });
+        const sB = v.stage({ height: 400, weight: 1.3 });
+        const sC = v.stage({ x: [-520, 520], y: [0.9993, 1.0016], axes: 'box', gutter: true, height: 240, full: true, xlabel: 'distance east of the central meridian (km)', ylabel: 'UTM point scale k', yticks: [0.9994, 0.9996, 0.9998, 1, 1.0002, 1.0006, 1.001, 1.0014].map((y) => [y, y === 1 ? '1' : y.toFixed(4)]) });
         const G = v.globe(sA, { projection: 'transverseMercator', center: [9, 0], graticule: 15, zoom: 1.75, drag: false });
         const G2 = v.globe(sB, { projection: 'equirectangular', center: [0, 0], graticule: 30, drag: false });
         const P = G.handle(10.75, 59.91, { label: 'P', color: 'accent' }); G2.handle(P);
@@ -640,7 +640,7 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
             const x0 = (-180 + 6 * (i - 1)) * D2R, x1 = x0 + 6 * D2R;
             if (i === z) sB.rect(x0, -80 * D2R, x1, 84 * D2R, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.2 });
             else if (i % 2) sB.rect(x0, -80 * D2R, x1, 84 * D2R, { fill: 'purple', fillAlpha: 0.07, stroke: false });
-            if (i % 3 === 1 || i === z) sB.text(String(i), (x0 + x1) / 2, -85.5 * D2R, { size: i === z ? 12 : 10, color: i === z ? 'accent' : 'muted', weight: i === z ? 700 : 500 });
+            if ((i % 3 === 1 && Math.abs(i - z) > 1) || i === z) sB.text(String(i), (x0 + x1) / 2, -85.5 * D2R, { size: i === z ? 12 : 10, color: i === z ? 'accent' : 'muted', weight: i === z ? 700 : 500 });
           }
           sB.line(-PI, 84 * D2R, PI, 84 * D2R, { color: 'purple', width: 1, dash: [3, 3] }); sB.line(-PI, -80 * D2R, PI, -80 * D2R, { color: 'purple', width: 1, dash: [3, 3] });
           // scale across the zone at P's latitude
@@ -653,14 +653,14 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
           sC.path(pts, { color: 'accent', width: 2.6 });
           const up = utmXY(P.lat, P.lon, c0); sC.dot((up.E - 500000) / 1000, up.k, { r: 6, color: 'accent', label: 'P', labelPos: 'n' });
           for (const sg of [1, -1]) { const xk = sg * Math.acosh(1 / 0.9996) * 0.9996 * R_MEAN; sC.dot(xk, 1, { r: 4, color: 'green' }); }
-          sC.text('zone edge', e3, 1.0014, { size: 11, color: 'accent', align: 'right', dx: -4 });
+          for (const xe of [w3, e3]) sC.text('zone edge', xe, 1.00135, { size: 11, color: 'accent', align: xe > 0 ? 'right' : 'left', dx: xe > 0 ? -4 : 4, plate: true });
           v.legend([['accent', 'P’s zone (6°)', { area: true }], ['green', 'scale exactly 1', { dash: true }], ['purple', 'other zone boundaries'], ['red', 'Tissot circles (conformal)', { area: true }]]);
         });
         v.readout(() => {
           const z = utmZone(P.lat, P.lon), c0 = zoneCM(z), u = utmXY(P.lat, P.lon, c0);
           const ksph = 0.9996 / Math.sqrt(1 - (Math.cos(P.lat * D2R) * Math.sin((P.lon - c0) * D2R)) ** 2);
           const ppm = (u.k - 1) * 1e6;
-          return `$P = (${P.lat.toFixed(4)}^\\circ, ${P.lon.toFixed(4)}^\\circ)$ → **zone ${z}${P.lat >= 0 ? 'N' : 'S'}, E ${comma(u.E)} m, N ${comma(u.N)} m**. Point scale $k = ${u.k.toFixed(6)}$ (spherical formula: ${ksph.toFixed(6)}): grid distances here are ${ppm >= 0 ? 'longer' : 'shorter'} than ground distances by ${Math.abs(ppm).toFixed(0)} parts per million (${(Math.abs(ppm) / 10).toFixed(1)} cm per km). Check: the CN Tower (43°38′33.24″ N, 79°23′13.7″ W) comes out as 17N ${comma(cn.E)} / ${comma(cn.N)}; the published value is 17N 630084 / 4833438.`;
+          return `$P = (${P.lat.toFixed(4)}^\\circ, ${P.lon.toFixed(4)}^\\circ)$ → **zone ${z}${P.lat >= 0 ? 'N' : 'S'}, E ${comma(Math.floor(u.E))} m, N ${comma(Math.floor(u.N))} m** (truncated to the metre, as UTM references are). Point scale $k = ${u.k.toFixed(6)}$ (spherical formula: ${ksph.toFixed(6)}): grid distances here are ${ppm >= 0 ? 'longer' : 'shorter'} than ground distances by ${Math.abs(ppm).toFixed(0)} parts per million (${(Math.abs(ppm) / 10).toFixed(1)} cm per km). Check: the CN Tower (43°38′33.24″ N, 79°23′13.7″ W) comes out as 17N ${comma(Math.floor(cn.E))} / ${comma(Math.floor(cn.N))}; the published value is 17N 630084 / 4833438.`;
         });
       },
     },

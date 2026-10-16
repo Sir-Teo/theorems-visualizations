@@ -37,7 +37,7 @@ export default {
         const shock = v.select('demand shock', [{ value: 'up', label: 'demand rises 50%' }, { value: 'down', label: 'demand falls 35%' }], 'up', { onChange: () => v.restart() });
         const cap = v.slider('entry / exit capacity (firms per period)', 1, 25, 6, { int: true, onChange: () => v.restart() });
         const myo = v.toggle('myopic entry (react to today’s profit only)', false, { onChange: () => v.restart() });
-        const PERIODS = 36, DT = 0.32, SHOCK = 3, N0 = 100;
+        const PERIODS = 30, DT = 0.32, SHOCK = 3, N0 = 100;
         const D0 = (p) => 15 * Math.max(0, 60 - p);
         const m = v.stage({ x: [0, 1300], y: [0, 50], height: 300, axes: 'box', gutter: true, xlabel: 'market output Q', ylabel: 'price', title: 'the market', weight: 1.15 });
         const f = v.stage({ x: [0, 9], y: [0, 50], height: 300, axes: 'box', gutter: true, xlabel: 'output of one firm q', ylabel: 'price, cost', title: 'a typical firm', weight: 0.85 });
@@ -97,7 +97,7 @@ export default {
           ts.dot(k, c.p, { r: 6, color: 'gold' });
           plateText(ts, 'demand shock', SHOCK - 0.3, 37, { align: 'left', color: 'muted' });
           st = { c, k, P };
-        }, { period: PERIODS * DT + 1.5, once: true, still: PERIODS * DT + 1.5 });
+        }, { period: PERIODS * DT + 1.5, once: true, still: 6.5 * DT });
         v.readout(() => {
           const { c, k, P } = st, f2 = (x) => v.fix(x, 2);
           const last = P[P.length - 1], next = eqm(c.N + 1, c.D);

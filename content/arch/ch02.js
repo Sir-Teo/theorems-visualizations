@@ -633,7 +633,7 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
           drawSupport(v, s, -L, 0, 'roller'); drawSupport(v, s, L, 0, 'roller');
           s.rect(patch.x - 30, 2.5, patch.x + 30, 2.5 + qS.value / 25, { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1 });
           // labels: the outermost stays on each side
-          const outer = stays.filter((e) => e.k === n - 1), lab = outer.map((e) => { const a = sol.nodes[e.i], c = sol.nodes[e.j]; return { x: (a.x * 0.7 + c.x * 0.3), y: (a.y * 0.7 + c.y * 0.3), text: `${MN(internal(e, 0).N, 2)}`, color: 'red', weight: 650, r: 2, prefer: [e.side, -1] }; });
+          const outer = stays.filter((e) => e.k === n - 1), lab = outer.map((e) => { const a = sol.nodes[e.i], c = sol.nodes[e.j]; return { x: (a.x * 0.7 + c.x * 0.3), y: (a.y * 0.7 + c.y * 0.3), text: `outer stay ${MN(internal(e, 0).N, 2)}`, color: "red", weight: 650, r: 2, prefer: [e.side, -1] }; });
           const iMid = deck.findIndex((e) => sol.nodes[e.j].x === 0);
           lab.push({ x: -L / 4, y: 0, text: `deck compression up to ${MN(Dmax, 2)}`, color: 'blue', weight: 650, r: 3, prefer: [0, 2] });
           placeLabels(v, s, lab);

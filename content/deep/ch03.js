@@ -122,7 +122,7 @@ in topological order. One pass costs a small constant times the cost of evaluati
         const sP = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 250, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', minWidth: 230, title: 'point $p$ and seed $u$' });
         const sL = v.stage({ x: [-1.5, 1.5], y: [-2, 2], height: 250, axes: 'box', gutter: true, xlabel: '$t$', minWidth: 260, title: '$t\\mapsto f(p+tu)$ and its tangent' });
         const sG = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, full: true, title: 'dual numbers (value, tangent) flowing forward' });
-        const Hp = sP.handle(0.8, 0.6, { color: 'gold', r: 7, onDrag: null });
+        const Hp = sP.handle(0.8, 0.6, { color: 'gold', r: 7 });
         const Hu = sP.handle(1.6, 1.3, { color: 'orange', r: 6 });
         Hp.onDrag = () => S.reset({ at: 'keep' }); Hu.onDrag = () => S.reset({ at: 'keep' });
         const CG = graphView(v, sG);
@@ -292,7 +292,7 @@ where $c$ is a small constant **independent of $n$** ($c\le 4$ in Griewank's sta
         const sR = v.stage({ x: [0.4, 4.6], y: [0.5, 3e6], ylog: true, height: 340, axes: 'box', gutter: true, weight: 0.75, minWidth: 220, xticks: [[1, 'f'], [2, 'reverse'], [3, 'fwd mode'], [4, 'fin. diff.']], title: 'cost ÷ cost of $f$' });
         const M_IN = 4;
         /** Layer sizes with about n parameters. */
-        const sizes = (arch, n) => { if (arch === 'wide') { const h = Math.max(1, Math.round((n - 1) / (M_IN + 2))); return [M_IN, h, 1]; } const w = Math.max(1, Math.round((-7 + Math.sqrt(49 + 20 * Math.max(0, n - 4 * 1))) / 10)); return [M_IN, w, w, w, w, w, w, 1]; };
+        const sizes = (arch, n) => { if (arch === 'wide') { const h = Math.max(1, Math.round((n - 1) / (M_IN + 2))); return [M_IN, h, 1]; } const w = Math.max(1, Math.round((-11 + Math.sqrt(121 + 20 * Math.max(0, n - 1))) / 10)); return [M_IN, w, w, w, w, w, w, 1]; };
         /** Run the loss, its reverse-mode gradient, one forward-mode tangent pass; count every arithmetic operation. */
         const measure = (sz, check = false) => {
           const L = sz.length - 1, r = rand(hashStr('cg|' + sz.join(','))), W = [], b = [];

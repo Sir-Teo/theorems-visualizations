@@ -45,7 +45,7 @@ function drawWaterPT(v, s, o = {}) {
     s.text('ice', 225, 1e6, { size: 13, weight: 700, color: PHASE.solid, align: 'center' });
     s.text('liquid', 420, 5e7, { size: 13, weight: 700, color: PHASE.liquid, align: 'center' });
     s.text('vapour', 520, 30, { size: 13, weight: 700, color: PHASE.gas, align: 'center' });
-    s.text('supercritical', 680, 2e8, { size: 11.5, weight: 650, color: PHASE.fluid, align: 'center' });
+    s.text('fluid', (W.Tc + T1) / 2, 3e8, { size: 11.5, weight: 650, color: PHASE.fluid, align: 'center' });
   }
 }
 const PT_TICKS = [[1, '1 Pa'], [100, '100 Pa'], [1e4, '10 kPa'], [1e6, '1 MPa'], [1e8, '100 MPa']];
@@ -296,7 +296,7 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           sp.hline(p, { color: 'gold', width: 2 });
           if (c) { sp.line(c.vl, c.p, c.vg, c.p, { color: 'green', width: 1.6, dash: [5, 4] }); sp.dot(c.vl, c.p, { r: 3.5, color: 'green' }); sp.dot(c.vg, c.p, { r: 3.5, color: 'green' }); }
           for (const x of r) sp.dot(x, p, { r: 3.2, color: 'gold' });
-          sp.dot(1, 1, { r: 4, color: 'red', hollow: true });
+          sp.dot(1, 1, { r: 4, color: 'red', hollow: true }); sp.text('critical point', 1, 1, { dx: 8, size: 10.5, color: 'red', align: 'left' });
           // areas
           const A = (x0, x1) => (8 * T / 3) * Math.log((3 * x1 - 1) / (3 * x0 - 1)) + 3 * (1 / x1 - 1 / x0) - p * (x1 - x0);
           const below = r.length === 3 ? -A(r[0], r[1]) : 0, above = r.length === 3 ? A(r[1], r[2]) : 0;
@@ -308,8 +308,9 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           const pts = []; for (let i = 0; i <= 600; i++) { const x = 0.38 * (4.5 / 0.38) ** (i / 600); if (x > 0.345) { const P = vdwP(T, x); if (P > 0.15 && P < 1.15) pts.push([P, vdwG(T, x), x]); } }
           const gref = c ? vdwG(T, c.vl) : 0;
           const G = pts.map(([P, g, x]) => [P, g - gref, x]);
-          const gs = G.map((q) => q[1]); const glo = Math.min(...gs), ghi = Math.max(...gs);
-          sg.setView([Math.max(0.15, p - 0.45), Math.min(1.12, p + 0.45)], [Math.max(glo, -0.9), Math.min(ghi, 0.9)]);
+          const x0 = Math.max(0.15, pLo - 0.1), x1 = Math.min(1.12, pHi + 0.1);
+          const gs = G.filter((q) => q[0] >= x0 && q[0] <= x1).map((q) => q[1]); const glo = Math.min(...gs), ghi = Math.max(...gs), gp = 0.08 * (ghi - glo);
+          sg.setView([x0, x1], [glo - gp, ghi + gp]);
           const brL = G.filter((q) => q[2] < spn[0]), brM = G.filter((q) => q[2] >= spn[0] && q[2] <= spn[1]), brG = G.filter((q) => q[2] > spn[1]);
           sg.path(brL.map((q) => [q[0], q[1]]), { color: PHASE.liquid, width: 2.6 });
           sg.path(brG.map((q) => [q[0], q[1]]), { color: PHASE.gas, width: 2.6 });
@@ -318,7 +319,8 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           let gl = NaN, gg = NaN;
           if (r.length === 3) { gl = vdwG(T, r[0]) - gref; gg = vdwG(T, r[2]) - gref; sg.dot(p, gl, { r: 4.5, color: PHASE.liquid }); sg.dot(p, gg, { r: 4.5, color: PHASE.gas }); sg.dot(p, vdwG(T, r[1]) - gref, { r: 3.5, color: 'red' }); }
           if (c) { sg.dot(c.p, 0, { r: 5.5, color: 'green' }); sg.text('branches cross: coexistence', c.p, 0, { dx: 8, dy: 14, size: 11, color: 'green', align: 'left', plate: true }); }
-          sg.text('liquid', brL.length ? brL[Math.floor(brL.length * 0.2)][0] : 0, brL.length ? brL[Math.floor(brL.length * 0.2)][1] : 0, { dx: 6, dy: -8, size: 11, color: PHASE.liquid, align: 'left' });
+          { const q = brG.filter((q) => q[0] >= x0 && q[0] <= x1); if (q.length) sg.text('vapour', q[Math.floor(q.length * 0.15)][0], q[Math.floor(q.length * 0.15)][1], { dx: 8, size: 11, color: PHASE.gas, align: 'left' }); }
+          sg.text('liquid', brL.length ? brL[Math.floor(brL.length * 0.8)][0] : 0, brL.length ? brL[Math.floor(brL.length * 0.8)][1] : 0, { dx: -6, dy: -10, size: 11, color: PHASE.liquid, align: 'left' });
           const ar = interp(CSAT.Ar, 0, 1, T);
           st = { T, p, above, below, gl, gg, c, ar };
         });
@@ -342,7 +344,7 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
       tags: ['phase diagram', 'phase coexistence'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phase_diagram' },
       viz(v) {
-        const s = v.stage({ x: [190, 720], y: [0.1, 3e9], ylog: true, height: 380, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'P', yticks: PT_TICKS.concat([[1e9, '1 GPa']]), weight: 1.25, title: 'water: IAPWS coexistence curves' });
+        const s = v.stage({ x: [190, 720], y: [0.1, 3e9], ylog: true, height: 380, axes: 'box', gutter: { l: 64 }, xlabel: 'T (K)', ylabel: 'P', yticks: PT_TICKS.concat([[1e9, '1 GPa']]), weight: 1.25, title: 'water: IAPWS coexistence curves' });
         const sm = v.stage({ x: [190, 720], y: [-400, 400], height: 380, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'μ − μ_liquid (kJ/kg)', weight: 1, title: 'Gibbs energies at the chosen pressure' });
         const h = s.handle(300, 101325, { color: 'gold', label: 'state', constrain: { x: [195, 715], y: [0.15, 2.8e9] } });
         // simple model, per kg, all phases equal at the triple point
@@ -364,7 +366,7 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           sm.fn(d(muI), { color: PHASE.solid, width: 2.6, domain: [190, 720] });
           sm.fn(d(muG), { color: PHASE.gas, width: 2.6, domain: [190, 720] });
           // lower envelope shading
-          sm.fn((T_) => Math.min(0, d(muI)(T_), d(muG)(T_)), { color: 'ink', width: 1, alpha: 0.5, fill: 'gold', fillAlpha: 0.1, base: -400, domain: [190, 720] });
+          sm.fn((T_) => Math.min(0, d(muI)(T_), d(muG)(T_)), { color: 'gold', width: 9, alpha: 0.35, domain: [190, 720] });
           sm.vline(T, { color: 'gold', width: 1.2 });
           // predicted crossings
           const cross = (f) => { const g = (T_) => f(T_, P) - muL(T_, P); const out = []; let prev = g(190); for (let T_ = 191; T_ <= 720; T_ += 1) { const c = g(T_); if (c * prev < 0) out.push(bisect(g, T_ - 1, T_, 40)); prev = c; } return out; };
@@ -376,8 +378,9 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           for (const [tt, col] of [[realB, PHASE.gas], [realM, PHASE.solid], [realS, PHASE.solid]]) if (isFinite(tt)) { sm.line(tt, -400, tt, -340, { color: col, width: 3 }); }
           for (const tt of tm) sm.dot(tt, 0, { r: 4, color: PHASE.solid });
           for (const tt of tb) sm.dot(tt, 0, { r: 4, color: PHASE.gas });
-          sm.text('ice', 200, clamp(d(muI)(200), -380, 380), { dx: 4, dy: -9, size: 11.5, color: PHASE.solid, weight: 650, align: 'left' });
-          sm.text('vapour', 700, clamp(d(muG)(700), -380, 380), { dx: -4, dy: -9, size: 11.5, color: PHASE.gas, weight: 650, align: 'right' });
+          const at = (f, y) => { const g = (T_) => f(T_) - y; for (let T_ = 192; T_ < 718; T_ += 2) if (g(T_) * g(T_ + 2) <= 0) return bisect(g, T_, T_ + 2, 30); return NaN; };
+          { const ti = at(d(muI), 250); if (isFinite(ti)) sm.text('ice', ti, 250, { dx: -8, size: 11.5, color: PHASE.solid, weight: 650, align: 'right' }); }
+          { const tg = at(d(muG), -250); if (isFinite(tg)) sm.text('vapour', tg, -250, { dx: 8, size: 11.5, color: PHASE.gas, weight: 650, align: 'left' }); }
           sm.text('liquid', 460, 0, { dy: -9, size: 11.5, color: PHASE.liquid, weight: 650, align: 'center' });
           const mus = { solid: muI(T, P), liquid: muL(T, P), gas: muG(T, P) };
           st = { T, P, ph, mus, tm, tb, tsub, realB, realM, realS };

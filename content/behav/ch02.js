@@ -54,10 +54,10 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Reference_dependence' },
       viz(v) {
         const ex = v.select('example', [{ value: 'ab', label: 'Anthony and Betty' }, { value: 'jj', label: 'Jack and Jill' }], 'ab');
-        const rS = v.slider('utility of wealth: curvature $\\rho$ ($\\rho=1$: Bernoulli’s log)', 0, 3, 1, { step: 0.05 });
+        const rS = v.slider('utility of wealth: curvature $\\rho$ ($\\rho=1$: Bernoulli’s log)', 0, 3, 1.5, { step: 0.05 });
         const aS = v.slider('value function: curvature $\\alpha$', 0.3, 1, 0.6, { step: 0.01 });
         const lS = v.slider('value function: loss aversion $\\lambda$', 1, 4, 2.25, { step: 0.05 });
-        const C = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 196, full: true });
+        const C = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 180, full: true });
         const U = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: 'final wealth w (millions)', ylabel: 'u(w)', title: 'utility of final wealth (Bernoulli)' });
         const Vs = v.stage({ x: [-5, 5], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'change from the reference point (millions)', ylabel: 'v(x)', title: 'value of gains and losses' });
         const ans = { ab0: null, ab1: null, jj: null };
@@ -130,9 +130,9 @@ export default {
             Vs.dot(1.5, gA, { r: 5, color: 'blue', hollow: true, width: 2 });
             Vs.dot(1, val(1), { r: 6, color: 'blue', label: 'Anthony: sure +1', labelPos: 'nw' });
             Vs.dot(-1.5, gB, { r: 5, color: 'red', hollow: true, width: 2 });
-            Vs.dot(-2, val(-2), { r: 6, color: 'red', label: 'Betty: sure −2', labelPos: 'w' });
-            Vs.text(gA > val(1) ? 'gamble ≻ sure' : 'sure ≻ gamble', 1.5, gA, { dx: 9, dy: -12, size: 11, weight: 700, color: 'blue' });
-            Vs.text(gB > val(-2) ? 'gamble ≻ sure' : 'sure ≻ gamble', -1.5, gB, { dx: 9, dy: 2, size: 11, weight: 700, color: 'red' });
+            Vs.dot(-2, val(-2), { r: 6, color: 'red', label: 'Betty: sure −2', labelPos: 'se' });
+            Vs.text(gA > val(1) ? 'Anthony: gamble ≻ sure' : 'Anthony: sure ≻ gamble', 1.5, gA, { dx: 4, dy: 22, size: 11, weight: 700, color: 'blue' });
+            Vs.text(gB > val(-2) ? 'Betty: gamble ≻ sure' : 'Betty: sure ≻ gamble', -1.5, gB, { dx: -12, dy: -2, align: 'right', size: 11, weight: 700, color: 'red' });
           } else {
             Vs.line(4, 0, 4, val(4), { color: 'blue', width: 5, alpha: 0.5 });
             Vs.line(-4, 0, -4, val(-4), { color: 'red', width: 5, alpha: 0.5 });
@@ -265,7 +265,7 @@ with median estimates $\alpha=\beta=0.88$ and $\lambda=2.25$. A prospect paying 
         const LISTS = [
           { key: 'g', title: ['Gamble: 50% win $1,000,', 'otherwise nothing'], rows: [100, 200, 300, 350, 400, 450, 500, 600, 700], top: 'gamble', bot: 'sure', row: (x) => `win ${usdC(x)} for sure`, color: 'blue' },
           { key: 'l', title: ['Gamble: 50% lose $1,000,', 'otherwise nothing'], rows: [200, 300, 350, 400, 450, 500, 550, 600, 800], top: 'sure', bot: 'gamble', row: (x) => `lose ${usdC(x)} for sure`, color: 'red' },
-          { key: 'm', title: ['Nothing, or a 50–50 gamble:', 'lose $500 or win the row amount'], rows: [500, 600, 750, 900, 1000, 1100, 1250, 1500, 2000], top: 'reject', bot: 'accept', row: (x) => `lose $500 / win ${usdC(x)}`, color: 'purple' },
+          { key: 'm', title: ['Nothing, or a 50–50 gamble:', 'lose $500 or win the row amount'], rows: [500, 600, 750, 900, 1000, 1100, 1250, 1500, 2000], top: 'reject', bot: 'accept', color: 'purple' },
         ];
         const wt = v.toggle('probability weights from TK92 (w⁺(.5) = .42, w⁻(.5) = .45)', false);
         const sw = { g: null, l: null, m: null };
@@ -282,7 +282,8 @@ with median estimates $\alpha=\beta=0.88$ and $\lambda=2.25$. A prospect paying 
         S.onClick((x, y) => {
           LISTS.forEach((L, c) => {
             const [x0, x1] = COLX[c]; if (x < x0 || x > x1) return;
-            L.rows.forEach((_, i) => { if (Math.abs(y - rowY(i)) < 0.49) { const left = x < (x0 + x1) / 2; sw[L.key] = (L.key === 'l' ? left : !left) ? i : i + 1; if (L.key === 'l') sw[L.key] = left ? i + 1 : i; } });
+            // the left half of every row is the list's top option: clicking it there means rows 0..i take it
+            L.rows.forEach((_, i) => { if (Math.abs(y - rowY(i)) < 0.49) sw[L.key] = x < (x0 + x1) / 2 ? i + 1 : i; });
           });
         });
         const Vs = v.stage({ x: [-1100, 2100], y: [-3, 1.6], axes: 'box', gutter: true, height: 330, full: true, xlabel: 'gain or loss (dollars)', ylabel: 'v(x) / v(1000)', title: 'the value function your choices imply' });
@@ -300,9 +301,8 @@ with median estimates $\alpha=\beta=0.88$ and $\lambda=2.25$. A prospect paying 
             L.rows.forEach((amt, i) => {
               const yc = rowY(i);
               // which side is chosen in row i?
-              let side = null;
-              if (s != null) { const topOpt = i < s; side = L.key === 'g' ? (topOpt ? 'L' : 'R') : L.key === 'l' ? (topOpt ? 'L' : 'R') : (topOpt ? 'L' : 'R'); }
-              const lab = L.key === 'g' ? [L.title[0].replace('Gamble: ', '').replace(',', ''), usdC(amt) + ' for sure'] : L.key === 'l' ? [usdC(-amt) + ' for sure', '50% lose $1,000'] : ['nothing', `−$500 / +${usdC(amt)}`];
+              const side = s == null ? null : i < s ? 'L' : 'R';
+              const lab = L.key === 'g' ? ['50%: win $1,000', usdC(amt) + ' for sure'] : L.key === 'l' ? [usdC(-amt) + ' for sure', '50%: lose $1,000'] : ['nothing', `win ${usdC(amt)} / lose 500`];
               [[x0, xm - 0.3, 'L'], [xm + 0.3, x1, 'R']].forEach(([a, b, sd], k) => {
                 const on = side === sd;
                 S.rect(a, yc - 0.42, b, yc + 0.42, { fill: on ? L.color : 'grid', fillAlpha: on ? 0.22 : 0.35, color: on ? L.color : 'faint', width: on ? 1.6 : 0.8, radius: 5 });
@@ -434,7 +434,7 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
         const CELL = { hg: [14, 21, 56, 35.5], hl: [57.5, 21, 99.5, 35.5], lg: [14, 2, 56, 16.5], ll: [57.5, 2, 99.5, 16.5] };
         C.onClick((x, y) => { for (const k in CELL) { const [L, R] = halves(CELL[k]); if (inside(L, x, y)) ans[k] = 'gamble'; else if (inside(R, x, y)) ans[k] = 'sure'; } });
         const DATA = { hg: [88, 'averse'], lg: [78, 'seeking'], hl: [87, 'seeking'], ll: [80, 'averse'] };
-        v.legend([['blue', 'gains: c/x = w⁺(p)^{1/α}'], ['red', 'losses: |c/x| = w⁻(p)^{1/α}'], ['blue', 'TK92 medians, gains', { dot: true }], ['red', 'TK92 medians, losses', { dot: true }]]);
+        v.legend([['blue', 'gains: $c/x = w^+(p)^{1/\\alpha}$'], ['red', 'losses: $|c/x| = w^-(p)^{1/\\alpha}$'], ['blue', 'TK92 medians, gains', { dot: true }], ['red', 'TK92 medians, losses', { dot: true }]]);
         let st = {};
         v.render(() => {
           const g = gS.value, d = dS.value, a = aS.value, ph = pH.value, pl = pL.value;
@@ -469,7 +469,7 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
             Q.rect(r[0], r[1], r[2], r[3], { fill: seek ? 'orange' : avert ? 'blue' : 'grid', fillAlpha: inten, color: seek ? 'orange' : avert ? 'blue' : 'faint', width: 1.4, radius: 8 });
             const cx = (r[0] + r[2]) / 2;
             Q.text(seek ? 'risk seeking' : avert ? 'risk averse' : 'risk neutral', cx, r[3] - 3.6, { align: 'center', size: 12.5, weight: 800, color: 'ink', halo: false });
-            Q.text(`CE ${usdC(c)} vs EV ${usdC(ev)}`, cx, r[3] - 8, { align: 'center', size: 10.5, color: 'ink', halo: false });
+            Q.text(`CE ${num(c)} · EV ${num(ev)}`, cx, r[3] - 8, { align: 'center', size: 10.5, color: 'ink', halo: false });
             const [dp, dk] = DATA[k];
             Q.text(`1992 data: ${dp}% ${dk}`, cx, r[3] - 12, { align: 'center', size: 10.5, weight: 700, color: 'ink', halo: false });
             if (ans[k]) Q.text(`you: ${ans[k] === 'gamble' ? 'seeking' : 'averse'}`, cx, r[3] - 15.6, { align: 'center', size: 10.5, weight: 700, color: 'accent', halo: false });
@@ -561,7 +561,8 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
           W.rect(bx, by + 0.02, bx + Math.max(0.002, midW * sc), by + 0.07, { fill: 'orange', fillAlpha: 0.7, stroke: false });
           W.text(`${m0} → ${m1}: ${midW.toFixed(3)}`, bx + midW * sc, by + 0.045, { dx: 4, size: 10.5, weight: 700, color: 'orange' });
           // ---- prediction map
-          R.raster((x, y) => { const pt = predict(P, x, y).pat; const c = v.rgb(PATCOL[pt]); return [c[0], c[1], c[2], 0.45 * 255]; }, { res: 3, key: pr.value });
+          const RC = Object.fromEntries(Object.entries(PATCOL).map(([k, c]) => [k, v.ramp(0.42, c)]));
+          R.raster((x, y) => RC[predict(P, x, y).pat], { res: 3, key: pr.value });
           R.vline(1, { color: 'ink', width: 2.4 });
           R.text('expected utility', 0.985, 0.5, { align: 'right', size: 10.5, weight: 700, color: 'ink', plate: true });
           R.dot(0.61, 0.88, { r: 4, color: 'ink', hollow: true });

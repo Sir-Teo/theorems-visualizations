@@ -30,7 +30,7 @@ Under these conditions every agent is a **price taker**: it treats the market pr
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perfect_competition' },
       viz(v) {
         const F = firmAt(6);
-        const Ns = v.slider('number of firms $N$', 1, 10000, 60, { log: true, sig: 2 });
+        const Ns = v.slider('number of firms $N$', 1, 10000, 6, { log: true, sig: 2 });
         const m = v.stage({ x: [0, 720], y: [0, 45], height: 340, axes: 'box', gutter: true, xlabel: 'market output Q', ylabel: 'price', title: 'the market: demand slopes down', weight: 1 });
         const f = v.stage({ x: [0, 12], y: [0, 45], height: 340, axes: 'box', gutter: true, xlabel: 'this firm’s output q', ylabel: 'price', title: 'one firm: the demand left over for it', weight: 1 });
         v.legend([['blue', 'demand (market / residual)'], ['ink', 'flat price line p = 20', { dash: true }], ['purple', 'marginal revenue of the firm', { dash: true }], ['orange', 'marginal cost'], ['green', 'profit-maximizing output'], ['gold', 'P = MC output', { dot: true }]]);
@@ -46,7 +46,7 @@ Under these conditions every agent is a **price taker**: it treats the market pr
           if (px >= 3) m.vband(Qo, Qo + 12, { color: 'gold', alpha: 0.3 }); else m.line(Qo + 6, 0, Qo + 6, 45, { color: 'gold', width: 3, alpha: 0.85 });
           m.dot(6 * N, 20, { r: 6, color: 'ink' });
           plateText(m, `p = 20, Q = ${v.fmt(6 * N, 6)}`, 6 * N, 20, { dx: 10, dy: -14, align: 'left', color: 'ink' });
-          plateText(m, N === 1 ? 'one firm = the whole market' : `one firm’s range: 1/${N} of the axis`, Qo + 12, 41, { align: 'left', dx: 8, color: 'gold' });
+          plateText(m, N === 1 ? 'one firm = the whole market' : `one firm: 1/${N} of the axis`, Qo + 12, 41, { align: 'left', dx: 8, color: 'gold' });
           // firm
           f.hline(20, { color: 'ink', width: 1.6, dash: [6, 4] });
           f.fn(F.C.MC, { domain: [0.01, 12], color: 'orange', width: 2.6, n: 240 });
@@ -214,7 +214,7 @@ It is the part of the marginal cost curve above the shutdown point, together wit
           const Kb = KS.value, F = firmAt(Kb), C = F.C;
           const p = 2 + (PMAX - 2) * clamp(t / (PER - 1.5), 0, 1);
           const key = Kb.toFixed(3);
-          const pts = cache[key] || (cache[key] = Array.from({ length: 77 }, (_, i) => { const pk = 2 + i * 0.5, b = F.best(pk); return [b.q, pk, b.pi]; }));
+          const pts = cache[key] || (cache[key] = Array.from({ length: 39 }, (_, i) => { const pk = 2 + i, b = F.best(pk); return [b.q, pk, b.pi]; }));
           // producer surplus area
           const qs = F.supply(p);
           if (qs > 0) {
@@ -232,7 +232,7 @@ It is the part of the marginal cost curve above the shutdown point, together wit
             s.path(sample((pk) => pk, F.pShut, p, 60).map(([, pk]) => [F.qMC(pk), pk]), { color: 'green', width: 5 });
             s.dot(0, F.pShut, { r: 5, color: 'green', hollow: true }); s.dot(F.qShut, F.pShut, { r: 5, color: 'green' });
           }
-          for (const [q, pk] of pts) if (pk <= p + 1e-9) s.dot(q, pk, { r: 3.2, color: 'gold' });
+          for (const [q, pk] of pts) if (pk <= p + 1e-9) s.dot(q, pk, { r: 3.6, color: 'gold' });
           priceLine(s, p, `p = ${v.fix(p, 1)}`, { width: 1.6 });
           s.dot(qs, p, { r: 7, color: 'gold' });
           plateText(s, `shutdown point (${v.fix(F.qShut, 2)}, ${v.fix(F.pShut, 2)})`, F.qShut, F.pShut, { dx: -12, dy: 16, color: 'teal', align: 'right' });
@@ -240,7 +240,7 @@ It is the part of the marginal cost curve above the shutdown point, together wit
           const pi = (q) => p * q - C.TC(q), b = F.best(p), inner = argmax(pi, F.mMC.x, X, 200, 60);
           g.hline(0, { color: 'muted', width: 1 });
           g.hline(-C.FC, { color: 'muted', width: 1.4, dash: [5, 4] });
-          plateText(g, `shut down: −F = ${v.fix(-C.FC, 0)}`, 0.2, -C.FC, { dy: -14, size: 11, color: 'muted', align: 'left' });
+          plateText(g, `shut down: −F = ${v.fix(-C.FC, 0)}`, X - 0.2, -C.FC, { dy: 15, size: 11, color: 'muted', align: 'right' });
           g.fn(pi, { domain: [0, X], color: 'ink', width: 2.6 });
           g.dot(inner.x, inner.f, { r: 6.5, color: inner.f >= -C.FC ? 'green' : 'red', hollow: inner.f < -C.FC });
           plateText(g, inner.f >= -C.FC ? 'best: produce' : 'best interior point loses more than F', inner.x, inner.f, { dy: inner.f > 60 ? 18 : -16, color: inner.f >= -C.FC ? 'green' : 'red', align: 'center' });
