@@ -193,7 +193,7 @@ The first inequality holds because $u$ was the minimum of the queue. The last ho
         const spec = () => ({ directed: true, weights: true, layout: 'none', draggable: false, nodes: nodesAt(P910, { s: { notePos: 'n' }, b: { notePos: 's' }, t: { notePos: 'n' } }), edges: E910.map(([a, b, w]) => [a, b, w]) });
         const G = v.graph(sl, spec()), H = v.graph(sr, spec());
         let run = null, bf = null;
-        const S = v.steps({ frames: () => { run = dijkstra(G, 's'); bf = bellmanFord(H, 's'); return run.frames; }, speed: 1.6, start: 'end', still: 'end' });
+        const S = v.steps({ frames: () => { run = dijkstra(G, 's'); bf = bellmanFord(H, 's'); const F = run.frames; F[F.length - 1] = { ...F[F.length - 1], note: `The heap is empty and Dijkstra stops. Compare its labels with Bellman–Ford's on the right: ${ids(G).some((u) => run.dist[K(u)] !== bf.dist[K(u)]) ? 'the red rings mark wrong distances.' : 'at this weight they agree.'}` }; return F; }, speed: 1.6, start: 'end', still: 'end' });
         v.render(() => {
           const f = S.frame, done = new Set(f.settled), tree = new Set(Object.values(f.prevEdge).filter(Boolean)), I = ids(G).map(K);
           const wrong = new Set(I.filter((u) => run.dist[u] !== bf.dist[u]));

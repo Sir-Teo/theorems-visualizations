@@ -354,8 +354,8 @@ the **predictability horizon**: making the error a thousand times smaller only a
         const sX = v.stage({ x: [-0.9, 0.9], y: [-0.55, 0.95], equal: true, axes: false, height: 330, weight: 1, title: 'the twin orbits in the $(x, y)$ plane' });
         const cache = memo();
         const data = () => cache(`${orb.value}|${d0S.value}`, () => {
-          const d0 = d0S.value, y0 = orb.value === 'chaos' ? -0.2 : 0.2;
-          const a = hhSeed(E, y0, 0), b = hhSeed(E, y0, d0), u = [b[0] - a[0], b[1] - a[1], b[2] - a[2], b[3] - a[3]];
+          const d0 = d0S.value, [y0, q0] = orb.value === 'chaos' ? [-0.2, 0] : [0, 0.3];
+          const a = hhSeed(E, y0, q0), b = hhSeed(E, y0, q0 + d0), u = [b[0] - a[0], b[1] - a[1], b[2] - a[2], b[3] - a[3]];
           const nu = Math.hypot(...u); for (let k = 0; k < 4; k++) u[k] /= nu;
           const n = Math.round(TT / H), t = [0], ls = [Math.log10(Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2], b[3] - a[3]))], lb = [Math.log10(nu)], pa = [[a[0], a[1]]], pb = [[b[0], b[1]]];
           let S = 0; const ref = a.slice();

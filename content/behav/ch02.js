@@ -483,10 +483,10 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
           P.fn((p) => Math.pow(wTK(p, d), 1 / a), { color: 'red', width: 2.4, domain: [0.001, 0.999], n: 300 });
           for (const [x, p, c] of T3) P.dot(p, c / x, { r: 3.8, color: x > 0 ? 'blue' : 'red', alpha: 0.85 });
           P.vline(ph, GUIDE); P.vline(pl, GUIDE);
-          P.text('above: seeking (gains),', 0.03, 0.93, { size: 10.5, color: 'muted' });
-          P.text('averse (losses)', 0.03, 0.87, { size: 10.5, color: 'muted' });
-          P.text('below: averse (gains),', 0.97, 0.12, { size: 10.5, color: 'muted', align: 'right' });
-          P.text('seeking (losses)', 0.97, 0.06, { size: 10.5, color: 'muted', align: 'right' });
+          P.text('above: seeking (gains),', 0.08, 0.93, { size: 10.5, color: 'muted' });
+          P.text('averse (losses)', 0.08, 0.87, { size: 10.5, color: 'muted' });
+          P.text('below: averse (gains),', 0.92, 0.12, { size: 10.5, color: 'muted', align: 'right' });
+          P.text('seeking (losses)', 0.92, 0.06, { size: 10.5, color: 'muted', align: 'right' });
           st = { verdict, n: Object.keys(ans).length };
         });
         v.readout(() => {

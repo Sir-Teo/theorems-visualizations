@@ -380,7 +380,7 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
         const G = v.globe(sA, { projection: 'mercator', center: [-10, 0], graticule: 15, drag: false });
         const GR = v.geo('landmass', 'Greenland'), AF = v.geo('landmass', 'Africa'), C0 = areaCentroid(GR[0]), home = lonlat(C0);
         const CA = lonlat(areaCentroid(AF[0]));
-        const H = G.handle(-28, 2, { label: 'Greenland (copy)', color: 'accent', labelPos: 'e' });
+        const H = G.handle(-28, 2, { color: 'accent', r: 5 });
         v.button('Drop it on the equator', () => H.set(-25, 0));
         v.button('Send it home', () => H.set(home[0], home[1]));
         let last = 'mercator';
@@ -396,7 +396,8 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
           G.polygon(GR, { color: 'accent', width: 1.4, dash: [4, 3] });
           const r = ratios();
           G.polygon(r.R, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1.8 });
-          G.text('Africa', CA, { size: 13, color: 'orange', weight: 700, plate: true });
+          G.text('Africa', [CA[0] + 4, CA[1] - 6], { size: 13, color: 'orange', weight: 700, plate: true });
+          G.text('Greenland (copy)', [H.lon, H.lat], { size: 12.5, color: 'accent', weight: 700, plate: true, dy: Math.abs(H.lat) < 40 ? 30 : -46 });
           if (r.g && r.a) sA.corner(`Greenland : Africa on this map = 1 : ${(r.a / r.g).toFixed(1)}   (true 1 : ${(aArea / gArea).toFixed(1)})`, 'bl', { color: 'ink', weight: 600, plate: true });
           sA.corner(pj.value === 'mercator' ? 'Mercator' : 'Mollweide (equal-area)', 'tl', { color: 'muted', weight: 600, plate: true });
           // area factor
@@ -611,8 +612,8 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
       tags: ['map projections', 'conformal maps', 'grids'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system', tm: 'https://en.wikipedia.org/wiki/Transverse_Mercator_projection' },
       viz(v) {
-        const sA = v.stage({ height: 400, weight: 0.85 });
-        const sB = v.stage({ height: 400, weight: 1.3 });
+        const sA = v.stage({ height: 350, weight: 0.85 });
+        const sB = v.stage({ height: 350, weight: 1.3 });
         const sC = v.stage({ x: [-520, 520], y: [0.9993, 1.0016], axes: 'box', gutter: true, height: 240, full: true, xlabel: 'distance east of the central meridian (km)', ylabel: 'UTM point scale k', yticks: [0.9994, 0.9996, 0.9998, 1, 1.0002, 1.0006, 1.001, 1.0014].map((y) => [y, y === 1 ? '1' : y.toFixed(4)]) });
         const G = v.globe(sA, { projection: 'transverseMercator', center: [9, 0], graticule: 15, zoom: 1.75, drag: false });
         const G2 = v.globe(sB, { projection: 'equirectangular', center: [0, 0], graticule: 30, drag: false });
@@ -640,7 +641,7 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
             const x0 = (-180 + 6 * (i - 1)) * D2R, x1 = x0 + 6 * D2R;
             if (i === z) sB.rect(x0, -80 * D2R, x1, 84 * D2R, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.2 });
             else if (i % 2) sB.rect(x0, -80 * D2R, x1, 84 * D2R, { fill: 'purple', fillAlpha: 0.07, stroke: false });
-            if ((i % 3 === 1 && Math.abs(i - z) > 1) || i === z) sB.text(String(i), (x0 + x1) / 2, -85.5 * D2R, { size: i === z ? 12 : 10, color: i === z ? 'accent' : 'muted', weight: i === z ? 700 : 500 });
+            if ((i % 3 === 1 && Math.abs(i - z) > 2) || i === z) sB.text(String(i), (x0 + x1) / 2, -85.5 * D2R, { size: i === z ? 12 : 10, color: i === z ? 'accent' : 'muted', weight: i === z ? 700 : 500 });
           }
           sB.line(-PI, 84 * D2R, PI, 84 * D2R, { color: 'purple', width: 1, dash: [3, 3] }); sB.line(-PI, -80 * D2R, PI, -80 * D2R, { color: 'purple', width: 1, dash: [3, 3] });
           // scale across the zone at P's latitude

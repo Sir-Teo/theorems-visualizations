@@ -91,12 +91,12 @@ with designated output nodes giving $f(x)$. Ordering the nodes topologically and
           });
           let direct = null;
           const C = v.M.compileExpr(fx.value, VARS); if (C.f) direct = C.f(H.x, H.y);
-          info = { val: val[P.out], N: P.nodes.length, nIn: P.vars.length, m: opCount(P), E: P.nodes.reduce((s, n) => s + n.args.length, 0), depth: Math.max(...d), mT: opCount(Pt), mD: opCount(Pd), direct, share: share.value,
+          info = { val: val[P.out], N: P.nodes.length, nIn: P.nodes.filter((n) => n.op === 'var').length, m: opCount(P), E: P.nodes.reduce((s, n) => s + n.args.length, 0), depth: Math.max(...d), mT: opCount(Pt), mD: opCount(Pd), direct, share: share.value,
             fan: P.nodes.filter((n) => P.nodes.filter((u) => u.args.includes(n.i)).length > 1 && n.op !== 'var').length };
         });
         v.legend([['accent', 'inputs'], ['green', 'output'], ['muted', 'elementary operations']]);
         v.readout(() => info && String.raw`$f(${mnus(H.x.toFixed(2))},${mnus(H.y.toFixed(2))})=${tsci(info.val, 4)}$` + (info.direct != null && isFinite(info.direct) ? ` (formula evaluated directly: $${tsci(info.direct, 4)}$ ${Math.abs(info.direct - info.val) < 1e-12 * (1 + Math.abs(info.val)) ? '✓' : '✗'})` : '') +
-          ` · graph: **${info.N} nodes** (${info.nIn} input${info.nIn === 1 ? '' : 's'} + ${info.m} operations), ${info.E} edges, depth ${info.depth}` +
+          ` · graph: **${info.N} nodes** (${info.nIn} input ${info.share ? 'node' : 'leaf'}${info.nIn === 1 ? '' : info.share ? 's' : 's'} + ${info.m} operations), ${info.E} edges, depth ${info.depth}` +
           ` · the expression tree needs ${info.mT} operations, the DAG ${info.mD}` + (info.mT > info.mD ? ` — sharing saves ${info.mT - info.mD}` : '') + (info.share && info.fan ? ` · ${info.fan} intermediate value${info.fan === 1 ? ' is' : 's are'} used more than once` : ''));
       },
     },
@@ -119,7 +119,8 @@ in topological order. One pass costs a small constant times the cost of evaluati
         const fx = v.input('$f(x,y)=$', PRESETS[0].value, { width: 210, onChange: () => S.reset() });
         v.select('examples', PRESETS, PRESETS[0].value, { onChange: (s) => fx.set(s) });
         const seedS = v.select('seed', [{ value: 'x', label: '$\\partial/\\partial x$' }, { value: 'y', label: '$\\partial/\\partial y$' }, { value: 'u', label: 'direction $u$' }], 'u', { onChange: () => S.reset({ at: 'keep' }) });
-        const sP = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 250, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', minWidth: 230, title: 'point $p$ and seed $u$' });
+        const sP = v.stage({ x: [-4, 4], y: [-2.5, 2.5], equal: true, height: 250, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', minWidth: 230, title: 'point $p$ and seed $u$ (shaded by $f$)' });
+        const heatKey = memo();
         const sL = v.stage({ x: [-1.5, 1.5], y: [-2, 2], height: 250, axes: 'box', gutter: true, xlabel: '$t$', minWidth: 260, title: '$t\\mapsto f(p+tu)$ and its tangent' });
         const sG = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, full: true, title: 'dual numbers (value, tangent) flowing forward' });
         const Hp = sP.handle(0.8, 0.6, { color: 'gold', r: 7 });
@@ -167,7 +168,9 @@ in topological order. One pass costs a small constant times the cost of evaluati
           sP.line(Hp.x - 4 * u0, Hp.y - 4 * u1, Hp.x + 4 * u0, Hp.y + 4 * u1, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.7 });
           sP.arrow(Hp.x, Hp.y, Hp.x + u0, Hp.y + u1, { color: 'orange', width: 2.4 });
           Hu.visible = seedS.value === 'u';
-          sP.contour((x, y) => graphEval(P, { x, y }), 9, { color: 'muted', width: 0.8, alpha: 0.5, res: 70 });
+          const fxy = (x, y) => graphEval(P, { x, y }), Rr = heatKey(fx.value, () => { let M = 0; for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40; j++) { const z = fxy(-4 + i / 5, -2.5 + j / 8); if (isFinite(z)) M = Math.max(M, Math.abs(z)); } return M || 1; });
+          sP.heat(fxy, { range: [-1.6 * Rr, 1.6 * Rr], cmap: 'theme-diverging', res: 3, key: 'h' + fx.value });
+          sP.contour(fxy, [-0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75].map((q) => q * Rr), { color: 'ink', width: 0.8, alpha: 0.35, res: 80 });
           // slice
           const g = (t) => graphEval(P, { x: Hp.x + t * u0, y: Hp.y + t * u1 });
           let lo = Infinity, hi = -Infinity; for (let i = 0; i <= 60; i++) { const z = g(-1.5 + i / 20); if (isFinite(z)) { lo = Math.min(lo, z); hi = Math.max(hi, z); } }
@@ -180,7 +183,7 @@ in topological order. One pass costs a small constant times the cost of evaluati
           info = { f0, s0, fd, ops: c.R.ops, n: P.vars.length || 1, m: opCount(P), done: F.done };
         });
         v.legend([['orange', 'tangents known'], ['gold', 'node being computed'], ['accent', 'slice $f(p+tu)$']]);
-        v.readout(() => info && String.raw`forward mode: $Df(p)\,u=${tsci(info.s0, 6)}$` + ` · central difference ($h=10^{-5}$): $${tsci(info.fd, 6)}$` + ` (gap ${tsci(Math.abs(info.fd - info.s0), 1)})` +
+        v.readout(() => info && String.raw`forward mode: $Df(p)\,u=${tsci(info.s0, 6)}$` + ` · central difference ($h=10^{-5}$): $${tsci(info.fd, 6)}$` + ` (gap $${tsci(Math.abs(info.fd - info.s0), 1)}$)` +
           ` · one dual pass: ${info.ops} arithmetic operations for ${info.m} graph operations · the full gradient needs **${info.n} passes**, one per input — for a loss with $10^6$ parameters, $10^6$ passes`);
       },
     },

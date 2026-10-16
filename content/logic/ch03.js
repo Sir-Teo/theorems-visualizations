@@ -294,7 +294,7 @@ A **sentence** is a formula with no free variables. The truth of a formula in a 
           S.setView([-2.6, W + 0.8], [0, 10]);
           rows.forEach((r) => r.draw(0));
           S.line(-2.4, 4.55, W + 0.6, 4.55, { color: 'grid', width: 1 });
-          if (R.error) S.corner(fld.error, 'br', { color: 'red', size: 11 });
+          if (fld.error) S.corner(fld.error, 'br', { color: 'red', size: 11 });
           // tree of φ′ with variables coloured by binder
           const L = layoutFO(R.out), occ = new Map(occurrences(R.out).map((o) => [o.node.id, o]));
           fitFO(T, L, { minW: 6 });
@@ -649,8 +649,7 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
           const S = definedSet(fld.ast, R.M), Sset = new Set(S), unionOK = R.orb.list.every((o) => o.every((x) => Sset.has(x)) || o.every((x) => !Sset.has(x)));
           const used = R.orb.list.filter((o) => Sset.has(o[0])).length, k = R.orb.list.length;
           const big = (e) => (e > 40 ? `$2^{${e}}$` : (2 ** e).toLocaleString('en'));
-          return `$\\varphi(x)$ defines ${setStr(S.map(R.label))} (${S.length} of ${R.N} elements). ${unionOK ? `It is a union of ${used} orbit${used === 1 ? '' : 's'} ✓.` : '**Not a union of orbits — impossible!**'} The automorphism group has ${k} orbits, so exactly ${big(k)} of the ${big(R.N)} subsets are definable without parameters.${error(fld)}`;
-          function error(f) { return f.error ? ` (Current input: ${f.error}.)` : ''; }
+          return `$\\varphi(x)$ defines ${setStr(S.map(R.label))} (${S.length} of ${R.N} elements). ${unionOK ? `It is a union of ${used} orbit${used === 1 ? '' : 's'} ✓.` : '**Not a union of orbits — impossible!**'} The automorphism group has ${k} orbits, so exactly ${big(k)} of the ${big(R.N)} subsets are definable without parameters.${fld.error ? ` (Current input: ${fld.error}.)` : ''}`;
         });
       },
     },
@@ -710,8 +709,8 @@ $\mathfrak A$ and $\mathfrak B$ are **elementarily equivalent**, $\mathfrak A \e
           const mm = m(), nn = n(), kk = k(), ok = efConsistent(pairs);
           const W0 = Math.min(15, Math.max(mm, nn) - 1);
           G.setView([7.5 - W0 / 2 - 1.6, 7.5 + W0 / 2 + 0.9], [-0.35, 3.7]);
-          G.text(`L${'₀₁₂₃₄₅₆₇₈₉'[0]}`.slice(0, 0) + `L_${mm}`, 7.5 - W0 / 2 - 0.85, yA, { align: 'center', baseline: 'middle', size: 15, math: true, color: 'muted' });
-          G.text(`L_${nn}`, 7.5 - W0 / 2 - 0.85, yB, { align: 'center', baseline: 'middle', size: 15, math: true, color: 'muted' });
+          G.tex(`L_{${mm}}`, 7.5 - W0 / 2 - 0.85, yA, { align: 'center', baseline: 'middle', size: 15, color: 'muted' });
+          G.tex(`L_{${nn}}`, 7.5 - W0 / 2 - 0.85, yB, { align: 'center', baseline: 'middle', size: 15, color: 'muted' });
           G.line(X(0, mm) - 0.3, yA, X(mm - 1, mm) + 0.3, yA, { color: 'grid', width: 2 });
           G.line(X(0, nn) - 0.3, yB, X(nn - 1, nn) + 0.3, yB, { color: 'grid', width: 2 });
           if (mm === nn) for (let i = 0; i < mm; i++) G.line(X(i, mm), yA - 0.25, X(i, nn), yB + 0.25, { color: 'faint', width: 1, dash: [3, 4] });

@@ -9,8 +9,6 @@ import {
 
 /** Mean and spread of a Hermitian A in state ψ: {m, d} with d = ΔA. */
 function spread(A, psi) { const m = expect(A, psi)[0], m2 = expect(mmul(A, A), psi)[0]; return { m, d: Math.sqrt(Math.max(0, m2 - m * m)) }; }
-/** Points on the unit sphere (θ, φ grid). */
-function sphereGrid(nt, np) { const out = []; for (let i = 1; i < nt; i++) { const th = (Math.PI * i) / nt; for (let j = 0; j < np; j++) { const ph = (TAU * j) / np; out.push([Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]); } } return out; }
 
 export default {
   collection: 'qm',
@@ -91,7 +89,7 @@ on every smooth, rapidly decaying $\psi$ (e.g. Schwartz functions, a common dens
 $$\Delta A\,\Delta B\;\ge\;\tfrac12\,\big|\langle\psi|[A,B]|\psi\rangle\big|,$$
 where $\Delta A=\norm{(A-\langle A\rangle)\psi}$. For $A=\hat x$, $B=\hat p$ this is Heisenberg's $\Delta x\,\Delta p\ge\hbar/2$ (qm-2.11). Schrödinger's sharper form adds the covariance: $(\Delta A)^2(\Delta B)^2\ge\big(\tfrac12\langle\{A-\langle A\rangle,B-\langle B\rangle\}\rangle\big)^2+\big(\tfrac1{2}|\langle[A,B]\rangle|\big)^2$. The bound depends on the state: for non-commuting spin components it vanishes on some states, and equality holds only when $(A-\langle A\rangle)\psi$ and $(B-\langle B\rangle)\psi$ are parallel.`,
       idea: String.raw`Put $f=(A-\langle A\rangle)\psi$ and $g=(B-\langle B\rangle)\psi$. Cauchy–Schwarz (ladr-6.14) gives $\norm f^2\norm g^2\ge|\langle f|g\rangle|^2\ge(\mathrm{Im}\langle f|g\rangle)^2$, and since $A,B$ are Hermitian, $\langle f|g\rangle-\langle g|f\rangle=\langle\psi|[A,B]|\psi\rangle$, so $\mathrm{Im}\langle f|g\rangle=\tfrac1{2i}\langle[A,B]\rangle$. Keeping the real part too gives Schrödinger's version. Equality needs $g$ to be a multiple of $f$ — a strong condition that singles out special states.`,
-      caption: String.raw`**Drag the state** on the Bloch sphere (for spin 1 it is the spin coherent state pointing there). The observables are spin components $A=\mathbf a\cdot\mathbf S$ (orange axis) and $B=\mathbf b\cdot\mathbf S$ (purple), with the angle between the axes on the slider. Right: each grey dot is a random state of the chosen spin (Haar-random in $\C^2$ or $\C^3$) plotted at $(\tfrac12|\langle[A,B]\rangle|,\ \Delta A\Delta B)$ — all lie on or above the diagonal; the gold dot is your state. Green on the sphere: the directions where the bound is tight (computed on a grid with the coherent-state formulas). Align the axes and $[A,B]=0$: the bound collapses to 0.`,
+      caption: String.raw`**Drag the state** on the Bloch sphere (for spin 1 it is the spin coherent state pointing there). The observables are spin components $A=\mathbf a\cdot\mathbf S$ (orange axis) and $B=\mathbf b\cdot\mathbf S$ (purple), with the angle between the axes on the slider. Right: each grey dot is a random state of the chosen spin (Haar-random in $\C^2$ or $\C^3$) plotted at $(\tfrac12|\langle[A,B]\rangle|,\ \Delta A\Delta B)$ — all lie on or above the diagonal; the gold dot is your state. Green on the sphere: the directions where the bound is tight — where the covariance $\tfrac12\langle\{A,B\}\rangle-\langle A\rangle\langle B\rangle\propto\mathbf a\cdot\mathbf b-(\mathbf a\cdot\mathbf r)(\mathbf b\cdot\mathbf r)$ of the (coherent) state vanishes. Align the axes and $[A,B]=0$: the bound collapses to 0.`,
       deps: ['qm-5.9', 'ladr-6.14', 'qm-2.11'],
       refs: ['Griffiths §3.5'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Uncertainty_principle#Robertson%E2%80%93Schr%C3%B6dinger_uncertainty_relations' },
@@ -105,7 +103,6 @@ where $\Delta A=\norm{(A-\langle A\rangle)\psi}$. For $A=\hat x$, $B=\hat p$ thi
         const sc = v.scene3(SB, { axes: false, yaw: -0.65, pitch: 0.33 });
         const hs = sc.handle(vnormalize([[0.45, 0], [0.55, 0], [0.7, 0]]).map((z) => z[0]), { color: 'gold', snap: (p) => { const r = Math.hypot(...p) || 1; return p.map((c) => c / r); } });
         const rng = v.rng(21), R2 = Array.from({ length: 500 }, () => randState(rng, 2)), R3 = Array.from({ length: 500 }, () => randState(rng, 3));
-        const grid_ = sphereGrid(48, 96);
         let st = null;
         v.render(() => {
           const s = +spin.value, S = spinOps(s), a = [0, 0, 1], b = [Math.sin(ang.value), 0, Math.cos(ang.value)];
@@ -123,10 +120,13 @@ where $\Delta A=\norm{(A-\langle A\rangle)\psi}$. For $A=\hat x$, $B=\hat p$ thi
           // sphere: axes, tight locus, state
           sc.begin(); sphereOutline(SB, sc); blochFrame(sc, { labels: false });
           const ab = [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-          let ntight = 0;
-          for (const r of grid_) {
-            const al = M.dot(a, r), be = M.dot(b, r), lhs = Math.sqrt(Math.max(0, (1 - al * al) * (1 - be * be))), rhs = Math.abs(M.dot(ab, r));
-            if (lhs - rhs < 0.012 && lhs > 1e-3) { sc.dot(r, { r: 1.8, color: 'green', top: false }); ntight++; }
+          // tight set: (1 − α²)(1 − β²) − ((a×b)·r)² = (a·b − αβ)² = 0, located as sign changes of a·b − αβ on a (θ, φ) grid
+          const ab0 = M.dot(a, b), F = (r) => ab0 - M.dot(a, r) * M.dot(b, r), NT = 90, NP = 180, P3 = (i, j) => { const th = (Math.PI * i) / NT, ph = (TAU * j) / NP; return [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]; };
+          const lerpS = (p, q, fp, fq) => { const t = fp / (fp - fq), m = p.map((c, k) => c + t * (q[k] - c)), l = Math.hypot(...m) || 1; return m.map((c) => c / l); };
+          for (let i = 0; i <= NT; i++) for (let j = 0; j < NP; j++) {
+            const p = P3(i, j), fp = F(p), q = P3(i, j + 1), fq = F(q);
+            if (fp * fq < 0) sc.dot(lerpS(p, q, fp, fq), { r: 1.7, color: 'green', top: false });
+            if (i < NT) { const w = P3(i + 1, j), fw = F(w); if (fp * fw < 0) sc.dot(lerpS(p, w, fp, fw), { r: 1.7, color: 'green', top: false }); }
           }
           sc.arrow([0, 0, 0], a.map((c) => c * 1.3), { color: 'orange', width: 2 }); sc.tex('\\mathbf a', a.map((c) => c * 1.45), { color: 'orange' });
           sc.arrow([0, 0, 0], b.map((c) => c * 1.3), { color: 'purple', width: 2 }); sc.tex('\\mathbf b', b.map((c) => c * 1.45), { color: 'purple' });
