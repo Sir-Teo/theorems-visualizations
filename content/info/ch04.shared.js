@@ -42,10 +42,10 @@ export function canon(l) {
   for (let k = 0; k < order.length; k++) {
     const i = order[k];
     code <<= l[i] - prev; prev = l[i];
-    if (code >= (1 << l[i])) return { words: null, fail: k, order };
+    if (code >= (1 << l[i])) return { words, ok: false, fail: k, order };
     words[i] = code.toString(2).padStart(l[i], '0'); code++;
   }
-  return { words, fail: -1, order };
+  return { words, ok: true, fail: -1, order };
 }
 /** Huffman codewords for weights w. */
 export const huffCode = (w) => canon(huffLens(w)).words;

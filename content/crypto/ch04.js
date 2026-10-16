@@ -78,9 +78,9 @@ export default {
           let ok = 0; for (let i = 0; i < 48; i++) if (pred[i] === b[N + i]) ok++;
           P = pix(sB); W = P.W; const cw = Math.min(14, (W - 20) / 48);
           const xs = (W - 48 * cw) / 2;
-          P.text(`observed (first ${N} bits, last ${Math.min(N, 24)} shown):`, 10, 14, { size: 11.5, color: 'accent', align: 'left', weight: 600, halo: false });
+          P.text(`observed: ${N} bits (last ${Math.min(N, 24)} shown)`, 10, 14, { size: 11.5, color: 'accent', align: 'left', weight: 600, halo: false });
           const sh = Math.min(N, 24);
-          for (let i = 0; i < sh; i++) P.text(String(b[N - sh + i]), 10 + 150 + i * 11, 14, { size: 12, color: 'accent', weight: 600, halo: false, align: 'left' });
+          for (let i = 0; i < sh; i++) P.text(String(b[N - sh + i]), 250 + i * 11, 14, { size: 12, color: 'accent', weight: 600, halo: false, align: 'left' });
           P.text('actual next 48:', xs, 42, { size: 11, color: 'muted', align: 'left', halo: false });
           P.text('predicted:', xs, 76, { size: 11, color: 'muted', align: 'left', halo: false });
           for (let i = 0; i < 48; i++) {
@@ -217,10 +217,6 @@ export default {
               const bit = 15 - j, dd = (d >> bit) & 1;
               P.rect(x0 + j * cs + 1, y, cs - 2, 18, { fill: dd ? 'red' : 'faint', fillAlpha: dd ? 0.55 : 0.1, color: dd ? 'red' : 'muted', width: dd ? 1.6 : 0.8, radius: 3 });
               P.text(String((a[i] >> bit) & 1), x0 + (j + 0.5) * cs, y + 9, { size: 10.5, color: 'ink', halo: false, weight: dd ? 700 : 400 });
-              if (i < rows - 1 && i < R) { // lines to next row
-                const tj = i < R - 1 ? 15 - PERM(bit) : j; const dn = (((a[i + 1] ^ c[i + 1]) >> (15 - tj)) & 1);
-                void dn;
-              }
             }
             if (i < R) {
               for (let g = 0; g < 4; g++) P.rect(x0 + g * 4 * cs - 1, y - 3, 4 * cs + 2, 24, { fill: false, color: 'orange', width: 1.2, radius: 5, dash: true });
@@ -232,7 +228,7 @@ export default {
                   const tj = PERM(j), changedNext = ((a[i + 1] ^ c[i + 1]) >> tj) & 1, col = changedNext ? 'red' : 'green';
                   P.line(x0 + (15 - j + 0.5) * cs, y + 21, x0 + (15 - tj + 0.5) * cs, y + rh - 2, { color: col, width: changedNext ? 1.4 : 0.7, alpha: changedNext ? 0.9 : 0.35 });
                 }
-              } else P.text('+ final key', x0 + 16 * cs + 12, y + rh / 2 + 4, { size: 10.5, color: 'muted', align: 'left', halo: false });
+              } else P.text('last round: no permutation; a final key is XORed in', W / 2, y + rh - 4, { size: 10.5, color: 'muted', halo: false });
             }
           }
           P.text(`input bit ${b} flipped`, W / 2, H - 8, { size: 11.5, color: 'red', weight: 600, halo: false });
@@ -264,8 +260,8 @@ export default {
       credit: 'H. Feistel, 1973 (the construction, used in IBM’s Lucifer); M. Luby & C. Rackoff, SIAM J. Comput. 17 (1988) 373–386',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Feistel_cipher', doi: 'https://doi.org/10.1137/0217022' },
       viz(v) {
-        const sF = v.stage({ x: [0, 16], y: [-0.5, 15.5], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'input nibble x', ylabel: 'F(x)', xticks: [0, 4, 8, 12, 15].map((t) => [t + 0.5, hx(t, 1)]), yticks: [0, 4, 8, 12, 15].map((t) => [t, hx(t, 1)]) });
-        const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const sF = v.stage({ x: [0, 16], y: [-0.5, 17.2], axes: 'box', gutter: true, height: 200, full: true, xlabel: 'input nibble x', ylabel: 'F(x)', xticks: [0, 4, 8, 12, 15].map((t) => [t + 0.5, hx(t, 1)]), yticks: [0, 4, 8, 12, 15].map((t) => [t, hx(t, 1)]) });
+        const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 262, full: true });
         const rS = v.slider('rounds $r$', 1, 8, 4, { step: 1, int: true });
         const pS = v.slider('plaintext', 0, 255, 0x3c, { step: 1, int: true });
         const st = v.select('Round', [{ value: 'f', label: 'Feistel: $R_i=L_{i-1}\\oplus F_i(R_{i-1})$' }, { value: 'x', label: 'no XOR: $R_i=F_i(R_{i-1})$' }], 'f');
@@ -283,7 +279,7 @@ export default {
           const r = rS.value, p = pS.value, mode = st.value;
           for (let i = 0; i < 16; i++) { const dup = F.indexOf(F[i]) !== i || F.lastIndexOf(F[i]) !== i; sF.rect(i + 0.15, -0.5, i + 0.85, F[i] + 0.0001, { fill: dup ? 'red' : 'accent', fillAlpha: 0.35, color: dup ? 'red' : 'accent', width: 1.3 }); sF.text(hx(F[i], 1), i + 0.5, F[i] + 0.9, { size: 11.5, color: dup ? 'red' : 'accent', weight: 700 }); }
           const e = enc(p, r, mode), d = mode === 'f' ? dec(e.out, r) : null;
-          const P = pix(sT), W = P.W, rows = r + 1, rh = Math.min(30, 270 / rows), colx = [W * 0.04, W * 0.54];
+          const P = pix(sT), W = P.W, rows = r + 1, rh = Math.min(30, 200 / rows), colx = [W * 0.04, W * 0.54];
           P.text('encryption  (L,R) → (L,R)', colx[0] + 8, 14, { size: 12, weight: 700, color: 'accent', align: 'left', halo: false });
           P.text(mode === 'f' ? 'decryption: same network, keys reversed' : 'no decryption exists', colx[1] + 8, 14, { size: 12, weight: 700, color: mode === 'f' ? 'green' : 'red', align: 'left', halo: false });
           const draw = (tr, x0, col, label) => tr.forEach(([L, R], i) => {

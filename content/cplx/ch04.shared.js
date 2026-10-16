@@ -4,8 +4,8 @@
 // for Lupanov-style block sharing, parallel-prefix networks, Turing-machine and cellular-automaton tableaux, and CNF
 // restriction for self-reduction. Everything the pictures print is computed by these functions.
 export * from './ch03.shared.js';
-import { runTM, MACHINES } from './ch01.shared.js';
-export { runTM, MACHINES };
+import { runTM, MACHINES, padBits } from './ch01.shared.js';
+export { runTM, MACHINES, padBits };
 
 // ---------------------------------------------------------------------------------------------------------------
 // Circuits. A circuit is {g: [{t, ins, name?}], inputs: [ids], outs: [ids]}; gates are in topological order.
