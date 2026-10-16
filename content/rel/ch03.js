@@ -102,7 +102,7 @@ export default {
       statement: String.raw`Let $O$ and $Q$ be events with $Q$ in the future of $O$ and timelike separated, and let $M$ be an event such that $O\to M$ and $M\to Q$ are both future-directed and timelike. Then
 $$\tau(O,M)+\tau(M,Q)\ \le\ \tau(O,Q),$$
 where $\tau(X,Y)=\sqrt{(\Delta t)^2-|\Delta\mathbf x|^2}$ (units $c=1$), with equality exactly when $M$ lies on the straight segment $OQ$. Consequently, of all timelike worldlines from $O$ to $Q$ the straight one has the **greatest** proper time. (For vectors: $\|A+B\|\ge\|A\|+\|B\|$ for future timelike $A,B$.)`,
-      idea: String.raw`Boost to the frame in which $O\to Q$ is purely temporal, so $\tau(O,Q)=\Delta t$. By rel-3.2 the other two legs are timelike and each $\tau(\cdot)=\sqrt{\Delta t_i^2-\Delta x_i^2}\le\Delta t_i$, with $\Delta t_1+\Delta t_2=\Delta t$ and $\Delta x_1+\Delta x_2=0$; hence the sum of the proper times is at most $\Delta t$, with equality only if both $\Delta x_i=0$. Proper time is invariant (rel-1.9), so this frame costs nothing. The sign flip relative to Euclid arises from the minus in $\eta$.`,
+      idea: String.raw`Boost to the frame in which $O\to Q$ is purely temporal, so $\tau(O,Q)=\Delta t$. The two legs are timelike by hypothesis, so each $\tau(\cdot)=\sqrt{\Delta t_i^2-\Delta x_i^2}\le\Delta t_i$, with $\Delta t_1+\Delta t_2=\Delta t$ and $\Delta x_1+\Delta x_2=0$; hence the sum of the proper times is at most $\Delta t$, with equality only if both $\Delta x_i=0$. Proper time is invariant (rel-1.9), so this frame costs nothing. The sign flip relative to Euclid arises from the minus in $\eta$.`,
       caption: String.raw`**Drag $M$ and $Q$.** Left: the shaded diamond is where $M$ makes two timelike legs; outside it the bent path is not a possible worldline and turns red. Right: slide $M$ horizontally at its height and compare two sums as functions of $x_M$: the Minkowski sum of proper times (blue) has its **maximum** on the straight line, equal to $\tau(O,Q)$, while the Euclidean sum of lengths (red) has its minimum there, the ordinary triangle inequality.`,
       deps: ['rel-3.2', 'rel-1.9'],
       refs: ['Taylor–Wheeler §5.7', 'Carroll ch. 1'],
@@ -196,7 +196,7 @@ It is a four-vector (the quotient of the displacement four-vector $dx^\mu$ by th
       kind: 'Definition',
       name: 'Four-acceleration and proper acceleration',
       statement: String.raw`The **four-acceleration** of a particle is $a^\mu=du^\mu/d\tau$. Differentiating $\eta(u,u)=c^2$ gives $\eta(a,u)=0$: $a$ is always Minkowski-orthogonal to $u$, hence spacelike (or zero). Its magnitude $\alpha=\sqrt{-\eta(a,a)}$ is the **proper acceleration**, the reading of an accelerometer carried by the particle. For motion along $x$ with lab acceleration $dv/dt$ one finds $\alpha=\gamma^3\,dv/dt$ (units $c=1$), and the four-acceleration is $a^\mu=\gamma^4\,(v\,\dot v,\ \dot v)$ in the components $(a^0,a^1)$.`,
-      idea: String.raw`Differentiate the identity $\eta(u,u)=c^2$ along the worldline: $2\eta(u,a)=0$. By rel-3.2, the vectors orthogonal to a timelike $u$ are spacelike, so $a$ is spacelike. In the instantaneous rest frame $u=(c,\mathbf 0)$ and $a^\mu=(0,\mathbf a_{\rm rest})$, where $\mathbf a_{\rm rest}$ is the ordinary acceleration there, which is what an on-board spring balance measures. The factor $\gamma^3$ for the lab acceleration $dv/dt$ comes from time dilation ($d\tau=dt/\gamma$) once and the growth of $\gamma$ along the path ($\dot\gamma=\gamma^3v\dot v$) twice.`,
+      idea: String.raw`Differentiate the identity $\eta(u,u)=c^2$ along the worldline: $2\eta(u,a)=0$. By rel-3.2, the vectors orthogonal to a timelike $u$ are spacelike, so $a$ is spacelike. In the instantaneous rest frame $u=(c,\mathbf 0)$ and $a^\mu=(0,\mathbf a_{\rm rest})$, where $\mathbf a_{\rm rest}$ is the ordinary acceleration there, which is what an on-board spring balance measures. In the lab, $a^1=\gamma\,d(\gamma v)/dt=\gamma^4\dot v$ and $a^0=\gamma\,d\gamma/dt=\gamma^4v\dot v$, so $\sqrt{(a^1)^2-(a^0)^2}=\gamma^4\dot v\sqrt{1-v^2}=\gamma^3\dot v$.`,
       caption: String.raw`The same oscillating trip as in 3.4. Left: **slide the time**; the red arrow is $a$ (drawn at the scale shown in the readout when it is large), always the mirror image of $u$ in the light line, so $\eta(u,a)=0$. Right: the accelerometer reading $\alpha(t)$ (blue) against the lab acceleration $dv/dt$ (grey): at high speed the lab acceleration becomes tiny while the proper acceleration stays large by the factor $\gamma^3$.`,
       deps: ['rel-3.4', 'rel-3.2'],
       refs: ['Schutz §2.3'],
@@ -240,7 +240,7 @@ It is a four-vector (the quotient of the displacement four-vector $dx^\mu$ by th
       statement: String.raw`A particle that starts from rest at the origin and keeps constant proper acceleration $\alpha$ along $x$ has
 $$v=c\tanh\frac{\alpha\tau}{c},\qquad ct=\frac{c^2}{\alpha}\sinh\frac{\alpha\tau}{c},\qquad x=\frac{c^2}{\alpha}\Big(\cosh\frac{\alpha\tau}{c}-1\Big),$$
 so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. Its speed tends to $c$ but never reaches it; its rapidity is $\varphi=\alpha\tau/c$. For $\alpha\tau\ll c$ it reduces to Newton's $x=\tfrac12\alpha t^2$.`,
-      idea: String.raw`Constant magnitude of $a$ (rel-3.5) with $a\perp u$ means $du/d\tau=(\alpha/c)\,\hat e$ where $\hat e$ is the unit spacelike vector orthogonal to $u$; rotating $u$ by a boost of rapidity rate $\alpha/c$ gives $u=c(\cosh\varphi,\sinh\varphi)$ with $\varphi=\alpha\tau/c$ (rel-2.3). Integrating $u=dx/d\tau$ yields the formulas. The two dimensionless features are the hyperbola with its asymptotes $x=\pm ct-\ldots$ and the fact that shipboard time grows only like the logarithm of the Earth-frame distance.`,
+      idea: String.raw`Constant magnitude of $a$ (rel-3.5) with $a\perp u$ means $du/d\tau=(\alpha/c)\,\hat e$ where $\hat e$ is the unit spacelike vector orthogonal to $u$; rotating $u$ by a boost of rapidity rate $\alpha/c$ gives $u=c(\cosh\varphi,\sinh\varphi)$ with $\varphi=\alpha\tau/c$ (rel-2.3). Integrating $u=dx/d\tau$ yields the formulas. The hyperbola has asymptotes $x+c^2/\alpha=\pm ct$, and shipboard time grows only like the logarithm of the Earth-frame distance.`,
       caption: String.raw`**Set the acceleration** (in units of Earth's $g$) **and the ship time.** Left: the hyperbolic worldline, in light-years and years, with a dot per ship year, against Newton's parabola (red dashed); the gold line is the asymptote. Right: speed against ship time, $\tanh$ against Newton's unbounded line. The toggle flips the ship at the midpoint to arrive at rest. The readout works out three trips at the chosen acceleration: round figures, no engine-physics, just the formula.`,
       deps: ['rel-3.5', 'rel-2.3'],
       refs: ['Taylor–Wheeler §2.9', 'Schutz ch. 2'],
@@ -267,13 +267,9 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
           const end = pos(tS.value), X = end[0], Tt = end[1], W = Math.max(X, Tt, 1);
           A.setView([-ct - 0.05 * W, W * 1.05], [-0.1 * W, W * 1.1]);
           A.line(-ct, 0, W * 1.1, W * 1.1 + ct, { color: 'gold', dash: [6, 4], width: 1.2, alpha: 0.6 });
-          A.clip(() => {
-            A.fn((t) => 0.5 * (al * gly) * t * t, { color: 'red', dash: [5, 4], width: 1.4, domain: [0, 1.1 * W] });
-          });
+          A.clip(() => { A.fn((x) => Math.sqrt((2 * Math.max(x, 0)) / (al * gly)), { color: 'red', dash: [5, 4], width: 1.4, domain: [0, 1.1 * W] }); });
           A.curve((s) => P(pos(s)[1], pos(s)[0]), 0, tS.value, { color: 'accent', width: 2.8, n: 160 });
-          // flip the Newtonian parabola axes: A.fn draws y(x) with x across; we want x(t) with t up, so draw it as a curve instead
           for (let k = 1; k <= tS.value; k++) { const p = pos(k); A.dot(p[0], p[1], { r: 3.4, color: 'orange' }); }
-          const sp = (s) => Math.tanh((al * s) / cg * 1) ;
           const spd = (s) => (fl ? Math.tanh(Math.min(s, tS.value - s) / ct) : Math.tanh(s / ct));
           B.setView([0, tS.value], [0, 1.12]);
           B.hline(1, { color: 'gold', dash: [5, 4] });
@@ -281,13 +277,12 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
           B.fn(spd, { color: 'accent', width: 2.8, domain: [0, tS.value] });
           const g1 = Math.cosh(Math.min(fl ? half : tS.value, 1e3) / ct);
           st = { al, ct, X, Tt, g1, v1: spd(tS.value), v: spd(fl ? half : tS.value) };
-          void sp;
         });
         v.legend([['accent', 'relativistic'], ['red', 'Newtonian', { dash: true }], ['gold', 'light / asymptote', { dash: true }], ['orange', 'each ship year', { dot: true }]]);
         v.readout(() => {
           const { al, ct, X, Tt, g1 } = st; if (!ct) return '';
-          const trip = (d) => { const ph = Math.acosh(1 + (d * gly * al) / (2 * 1) ); return [2 * ct * ph, 2 * ct * Math.sinh(ph), Math.cosh(ph)]; };
-          const row = (nm, d) => { const [sh, ea, gm] = trip(d); return String.raw`${nm}: ship time ${v.fix(sh, 1)} yr, Earth-frame time ${v.sci ? ea < 1e4 ? v.fix(ea, 1) : '$' + v.sci(ea, 3) + '$' : v.fix(ea, 1)} yr, peak $\gamma=${v.fix(gm, 0)}$`; };
+          const trip = (d) => { const ph = Math.acosh(1 + (d * gly * al) / 2); return [2 * ct * ph, 2 * ct * Math.sinh(ph), Math.cosh(ph)]; };
+          const row = (nm, d) => { const [sh, ea, gm] = trip(d); return String.raw`${nm}: ship time ${v.fix(sh, 1)} yr, Earth-frame time ${v.fmt(ea, 3)} yr, peak $\gamma=${v.fix(gm, 0)}$`; };
           return String.raw`$\alpha=${v.fix(al, 2)}\,g$ gives $c/\alpha=${v.fix(ct, 3)}$ yr. After $\tau$ the ship has gone ${v.fix(X, 2)} ly in ${v.fix(Tt, 2)} yr of Earth-frame time; $\gamma=${v.fix(g1, 2)}$ (Newton would predict a distance of ${v.fix(0.5 * al * gly * Tt * Tt, 1)} ly).` + '\n' +
             String.raw`Accelerate to the midpoint, flip, decelerate (formula $\tau=\tfrac{2c}{\alpha}\operatorname{arcosh}(1+\alpha d/2c^2)$):` + '\n' +
             row('Proxima Centauri, 4.24 ly', 4.24) + ';\n' + row('a star 100 ly away', 100) + ';\n' + row('Galactic Centre, 26,670 ly', 26670) + '.';
@@ -324,8 +319,8 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
           for (let k = -Math.floor(3 / d); k * d <= 3.5; k++) {
             const te = k * d, h = hit(te, 0);
             A.dot(0, te, { r: 3.2, color: 'ink' });
-            if (h && h.x < 4.4 && h.t < 4) { A.segment([0, te], [h.x, h.t], { color: 'gold', width: 1.1, alpha: 0.8 }); A.dot(h.x, h.t, { r: 3.4, color: 'accent' }); pts.push([te, h.tau]); nr++; }
-            else A.segment([0, te], [Math.min(4.4, 3.4 - te + 0.6), Math.min(4.4, 3.4 - te + 0.6) + te], { color: 'red', width: 1.1, alpha: 0.55, dash: [4, 4] });
+            if (h) { A.clip(() => A.segment([0, te], [h.x, h.t], { color: 'gold', width: 1.1, alpha: 0.8 })); A.dot(h.x, h.t, { r: 3.4, color: 'accent' }); pts.push([te, h.tau]); nr++; }
+            else A.clip(() => A.segment([0, te], [6, 6 + te], { color: 'red', width: 1.1, alpha: 0.55, dash: [4, 4] }));
           }
           const he = hit(E.y, E.x);
           if (he) { A.segment([E.x, E.y], [he.x, he.t], { color: 'purple', width: 2 }); A.dot(he.x, he.t, { r: 6, color: 'purple' }); }
@@ -353,7 +348,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
       name: 'Bell’s spaceship paradox',
       credit: 'Dewan & Beran, 1959; popularised by J. S. Bell, 1976',
       statement: String.raw`Two identical rockets $A$ (behind) and $B$ (ahead) are at rest a distance $L$ apart in a frame $S$, joined by a taut thread of rest length $L$. At a given moment both ignite and follow the same acceleration programme as functions of $S$-time, so that in $S$ their separation is $L$ forever. After the engines stop at the same $S$-time, the rockets are at rest in a frame $S'$ moving with speed $v$ relative to $S$, and their separation there is $\gamma L>L$. The thread, which cannot stretch indefinitely, breaks. The resolution is that length contraction is not about *stress*: the thread is being stretched in its own rest frame.`,
-      idea: String.raw`In $S$ the gap is constant, so the thread is not shortened by contraction as a free rod would be (rel-1.11): a moving *free* object of rest length $L$ would have length $L/\gamma$. The gap $L$ in $S$ is therefore the contracted version of a proper gap $\gamma L$ (contraction applied backwards). Algebraically: the two cut-off events are simultaneous in $S$ but, by the Lorentz transformation (rel-2.1), the front rocket stops $\gamma vL/c^2$ earlier in $S'$, and in the meantime has moved on in $S'$: $x'_B-x'_A=\gamma L$. The relativity of simultaneity (rel-1.6) is what makes the identical programmes not identical in $S'$.`,
+      idea: String.raw`In $S$ the gap is constant, so the thread is not shortened by contraction as a free rod would be (rel-1.11): a moving *free* object of rest length $L$ would have length $L/\gamma$. The gap $L$ in $S$ is therefore the contracted version of a proper gap $\gamma L$ (contraction applied backwards). Algebraically: the two cut-off events are simultaneous in $S$ but, by the Lorentz transformation (rel-2.1), the front rocket stops $\gamma vL/c^2$ earlier in $S'$, and until the rear one stops too it is still moving away: $x'_B-x'_A=L/\gamma+\gamma v^2L/c^2=\gamma L$. The relativity of simultaneity (rel-1.6) is what makes the identical programmes not identical in $S'$.`,
       caption: String.raw`The rear rocket's engine accelerates at $g=1$ (units $c^2/g=1$); **set the rapidity at which both cut their engines**, the natural thread length $L$, and the breaking strain. Left: in $S$ the two worldlines are the same hyperbola shifted by $L$, with the thread (green) at constant length. Right: the same worldlines in the final rest frame $S'$ (hyperbolae turned into curves, then vertical): the gap measured after both have stopped is $\gamma L$, the red part being the stretch. Beyond the breaking strain the thread snaps.`,
       deps: ['rel-3.6', 'rel-1.11', 'rel-1.6'],
       refs: ['Schutz §1.11'],
@@ -407,7 +402,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
       name: 'Born rigid motion',
       credit: 'Born, 1909',
       statement: String.raw`An extended body moves in a **Born-rigid** way if the proper distance between every pair of its neighbouring worldlines, measured in their common instantaneous rest frame, is constant. For a rod accelerated along its length this forces different proper accelerations: if the rear has proper acceleration $\alpha_r=c^2/\rho$, the front, a rest length $L$ ahead, must have $\alpha_f=c^2/(\rho+L)<\alpha_r$. The worldlines are then the nested hyperbolae $x^2-c^2t^2=\rho^2$ and $=(\rho+L)^2$, and all the lines of simultaneity pass through the common origin of the asymptotes. Equal accelerations (3.8) are **not** Born-rigid.`,
-      idea: String.raw`The hyperbolae $x=\rho\cosh\varphi$, $ct=\rho\sinh\varphi$ for different $\rho$ share the same rapidity $\varphi$ on the ray $ct=x\tanh\varphi$ (rel-3.6, rel-2.3), and that ray is the line of simultaneity of the instantaneous rest frame (rel-1.6), so the proper separation of two such points is $\Delta\rho=L$, constant. Rear and front points have the same proper time rate only if the rod is short compared to $\rho$; in general the clocks at different $\rho$ run at the rates $\rho\,d\varphi$, so the front runs fast, as in a gravitational field. Equal accelerations (rel-3.8) break rigidity because the front point's simultaneous event is not on the same ray.`,
+      idea: String.raw`The hyperbolae $x=\rho\cosh\varphi$, $ct=\rho\sinh\varphi$ for different $\rho$ share the same rapidity $\varphi$ on the ray $ct=x\tanh\varphi$ (rel-3.6, rel-2.3), and that ray is the line of simultaneity of the instantaneous rest frame (rel-1.6), so the proper separation of two such points is $\Delta\rho=L$, constant. Clocks at different $\rho$ advance by $\rho\,d\varphi$ while the rod's rapidity advances by $d\varphi$, so the front clock runs fast compared with the rear one, as in a uniform gravitational field. Equal accelerations (rel-3.8) break rigidity because the front point's simultaneous event is not on the same ray.`,
       caption: String.raw`**Choose Born-rigid or equal-acceleration** and move the rapidity slider. Left: the two worldlines of the ends, and the rod at the chosen instant (the green segment is the instantaneous rest frame's line of simultaneity); in the Born case every such segment points back toward the origin $O$, the crossing of the asymptotes. Right: the proper length against rapidity: constant $L$ for Born, growing without bound for equal acceleration (the stretch of 3.8).`,
       deps: ['rel-3.6', 'rel-3.8'],
       refs: ['Schutz §1.11'],
@@ -464,7 +459,7 @@ retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, aft
       deps: ['rel-2.14', 'rel-3.5'],
       refs: ['Taylor–Wheeler ch. L'],
       tags: ['Thomas precession', 'gyroscope', 'Fermi–Walker transport'],
-      scope: String.raw`A torque-free gyroscope on a prescribed circular path in flat spacetime; the geodetic precession of GR (rel-… later chapters) is a different effect that adds to it in gravitational fields.`,
+      scope: String.raw`A torque-free gyroscope on a prescribed circular path in flat spacetime; gravitational (geodetic) precession is a separate effect that adds to it near a mass.`,
       viz(v) {
         const bS = v.slider('speed $\\beta=v/c$', 0.05, 0.95, 0.6, { step: 0.01 });
         const lS = v.slider('laps completed', 0, 6, 1.35, { step: 0.01 });
@@ -586,14 +581,14 @@ retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, aft
           const tr0 = kind === 'em' ? 0 : trace(T0);
           B.hline(0, { color: 'faint' });
           const c00 = [], inv = [];
-          for (let i = 0; i <= 90; i++) { const b = -0.9 + (1.8 * i) / 90; const Tt = xf(boost4(b, 0, 0), T0); c00.push([b, kind === 'em' ? 0.5 * (Tt[0][1] ** 2 + Tt[0][2] ** 2 + Tt[0][3] ** 2) : Tt[0][0]]); inv.push([b, kind === 'em' ? 0.5 * sq(Tt) : trace(Tt)]); }
+          for (let i = 0; i <= 90; i++) { const b = -0.9 + (1.8 * i) / 90; const Tt = xf(boost4(b, 0, 0), T0); c00.push([b, kind === 'em' ? Tt[0][1] ** 2 + Tt[0][2] ** 2 + Tt[0][3] ** 2 : Tt[0][0]]); inv.push([b, kind === 'em' ? 0.5 * sq(Tt) : trace(Tt)]); }
           let mx = 1; for (const [, y] of c00) mx = Math.max(mx, Math.abs(y)); B.setView([-0.9, 0.9], [-0.2 * mx, 1.1 * mx]);
           B.path(c00, { color: 'orange', width: 2.6 }); B.path(inv, { color: 'accent', width: 2.8, dash: [6, 4] });
           const cur = xf(boost4(bx.value, 0, 0), T0);
-          B.dot(bx.value, kind === 'em' ? 0.5 * (cur[0][1] ** 2 + cur[0][2] ** 2 + cur[0][3] ** 2) : cur[0][0], { r: 5.5, color: 'gold' });
+          B.dot(bx.value, kind === 'em' ? cur[0][1] ** 2 + cur[0][2] ** 2 + cur[0][3] ** 2 : cur[0][0], { r: 5.5, color: 'gold' });
           st = { kind, T0, T, tr0, trN: trace(T), sq0: sq(T0), sqN: sq(T), lorentzPres: sq(T) };
         });
-        v.legend([['orange', st.kind === 'em' ? '$|\\mathbf E|^2$ seen by observer (right)' : '$T^{00}$ (right)'], ['accent', 'invariant (right)', { dash: true }]]);
+        v.legend([['orange', 'a component that changes: $T^{00}$, or $E^2$ for the field (right)'], ['accent', 'the invariant: trace, or $B^2-E^2$ (right)', { dash: true }]]);
         v.readout(() => {
           const { kind, T, tr0, trN, sq0, sqN } = st; if (!T) return '';
           if (kind === 'em') {

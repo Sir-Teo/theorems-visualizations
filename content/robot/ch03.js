@@ -25,7 +25,7 @@ export default {
       name: 'Product-of-exponentials formula',
       statement: String.raw`Consider an open chain of $n$ one-degree-of-freedom joints. In the **home configuration** (all joint values $0$) let $M\in SE(3)$ be the pose of the end-effector frame in the fixed frame $\{s\}$, and let $\mathcal S_i=(\omega_i,v_i)\in\R^6$ be the screw axis of joint $i$, also written in $\{s\}$: for a revolute joint $\omega_i$ is the unit vector along the axis and $v_i=-\omega_i\times q_i$ with $q_i$ any point of the axis; for a prismatic joint $\omega_i=0$ and $v_i$ is the unit direction of sliding. Then for joint values $\theta_1,\dots,\theta_n$ the end-effector pose is
 $$T(\theta)=e^{[\mathcal S_1]\theta_1}\,e^{[\mathcal S_2]\theta_2}\cdots e^{[\mathcal S_n]\theta_n}\,M,$$
-where each $e^{[\mathcal S_i]\theta_i}\in SE(3)$ is the screw motion of 2.7/2.8. The joint nearest the base stands leftmost, and the order of the factors matters. Equivalently, with the screw axes $\mathcal B_i=[\mathrm{Ad}_{M^{-1}}]\mathcal S_i$ written in the end-effector frame, $T(\theta)=M\,e^{[\mathcal B_1]\theta_1}\cdots e^{[\mathcal B_n]\theta_n}$.`,
+where each $e^{[\mathcal S_i]\theta_i}\in SE(3)$ is the screw motion of 2.7 and mech-10.19. The joint nearest the base stands leftmost, and the order of the factors matters. Equivalently, with the screw axes $\mathcal B_i=[\mathrm{Ad}_{M^{-1}}]\mathcal S_i$ written in the end-effector frame, $T(\theta)=M\,e^{[\mathcal B_1]\theta_1}\cdots e^{[\mathcal B_n]\theta_n}$.`,
       idea: String.raw`Move only the last joint: the tool turns about the fixed axis $\mathcal S_n$ of the home pose, so $T=e^{[\mathcal S_n]\theta_n}M$. Now let the earlier joints move too. Joint $i$'s axis has been carried by the motion $T_{i-1}=e^{[\mathcal S_1]\theta_1}\cdots e^{[\mathcal S_{i-1}]\theta_{i-1}}$ of everything between it and the base, so its current axis is $\mathrm{Ad}_{T_{i-1}}\mathcal S_i$ (the adjoint of 2.9). Because $e^{[\mathrm{Ad}_T\mathcal S]\theta}=T\,e^{[\mathcal S]\theta}T^{-1}$, turning about the moved axis and then applying $T_{i-1}$ equals applying $T_{i-1}$ first and then turning about the home axis, and the telescoping gives the product above. By Chasles' theorem every rigid motion is a screw motion (mech-10.19), which is why one exponential per joint is enough. No link frames are needed, only $M$ and the $\mathcal S_i$.`,
       caption: String.raw`Move the five joint sliders of this arm (base turn, shoulder, elbow, forearm roll, wrist pitch). The thin dashed lines are the **home** screw axes $\mathcal S_i$, fixed in space; the bold coloured lines are where each joint axis is **now**, namely $\mathrm{Ad}_{T_{i-1}}\mathcal S_i$, carried along by the joints nearer the base. The arm is drawn independently, link by link, and the readout checks that its tool frame equals the product of exponentials. Switch on **reverse the product** to multiply the factors from the other end: the red frame ends up somewhere else, so the order matters.`,
       deps: ['mech-10.19', 'robot-2.6', 'robot-2.7', 'robot-2.9'],
@@ -262,13 +262,6 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
           const Lall = Ls();
           let x = 0, y = 0, a = 0;
           for (let i = 0; i < n; i++) { a += th[i]; x += Lall[i] * Math.cos(a); y += Lall[i] * Math.sin(a); }
-          let T3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
-          for (let i = 0; i < n; i++) {
-            const c = Math.cos(th[i]), s = Math.sin(th[i]);
-            T3 = T3.map((r) => [r[0] * c + r[1] * s, -r[0] * s + r[1] * c, r[2] + r[0] * 0 + r[1] * 0]);
-            const tr = [[1, 0, Lall[i]], [0, 1, 0], [0, 0, 1]];
-            void tr;
-          }
           // SE(2) product written out explicitly
           const R2 = (t) => [[Math.cos(t), -Math.sin(t), 0], [Math.sin(t), Math.cos(t), 0], [0, 0, 1]], Tr = (l) => [[1, 0, l], [0, 1, 0], [0, 0, 1]];
           const m3 = (A, B) => A.map((r) => [0, 1, 2].map((j) => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
@@ -313,7 +306,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
           if (hold.value) {
             const Rw = mm(mt(Rarm), Rref), cb = clamp(Rw[0][0], -1, 1);
             t5 = Math.acos(cb);
-            if (Math.abs(Math.sin(t5)) < 1e-9) { t4 = 0; t6 = Math.atan2(Rw[2][1], Rw[1][1]) * (cb > 0 ? 1 : 1); if (cb < 0) t6 = Math.atan2(Rw[2][1], Rw[1][1]); }
+            if (Math.abs(Math.sin(t5)) < 1e-9) { t4 = 0; t6 = Math.atan2(Rw[2][1], Rw[1][1]); }
             else { t4 = Math.atan2(Rw[1][0], -Rw[2][0]); t6 = Math.atan2(Rw[0][1], Rw[0][2]); }
           }
           const Rw = mm(Rx(t4), mm(Ry(t5), Rx(t6))), R = mm(Rarm, Rw);
@@ -377,7 +370,6 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         const sal = v.slider('twist $\\alpha$ (°)', -180, 180, P[0].al, { step: 1, onChange: (x) => { cur().al = x; } });
         const sd = v.slider('offset $d$', -1, 1, P[0].d, { step: 0.01, onChange: (x) => { cur().d = x; } });
         const sth = v.slider('joint angle $\\theta$ (°)', -180, 180, P[0].th, { step: 1, onChange: (x) => { cur().th = x; } });
-        sel.set = ((orig) => (val, o) => { orig(val, o); })(sel.set);
         let lastSel = '1';
         const SC = v.stage({ x: [-3, 3], y: [-1.8, 2.8], equal: true, axes: false, height: 420, title: 'a serial chain with its frames' });
         const sc = v.scene3(SC, { yaw: -0.8, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
@@ -408,7 +400,6 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
             sc.arrow(p, vadd(p, vsc(mcol(R, 2), 0.32)), { color: 'accent', width: 2.2, head: 7 }); sc.arrow(p, vadd(p, vsc(mcol(R, 0), 0.32)), { color: 'red', width: 2.2, head: 7 });
             sc.dot(p, { color: 'ink', r: 3 }); sc.tex(`\\{${name}\\}`, vadd(p, [0.05, 0.05, -0.2]), { color: 'muted', size: 11.5 });
           }
-          drawFrame(sc, Rof(Fcl[n]), pof(Fcl[n]), 0.0001, { width: 0 });
           sc.dot(pof(Fcl[n]), { color: 'gold', r: 5.5 });
           sc.flush();
           // table
@@ -421,7 +412,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
             const row = modern
               ? (i < n ? [i === 0 ? 0 : P[i - 1].al, i === 0 ? 0 : P[i - 1].a, P[i].d, P[i].th] : [P[n - 1].al, P[n - 1].a, null, null])
               : [P[i].th, P[i].d, P[i].a, P[i].al];
-            const isSel = i + 1 === k || (modern && i === n && false);
+            const isSel = i + 1 === k && (!modern || i < n);
             B.rect(0.1, y - 0.4, 9.9, y + 0.4, { fill: isSel ? 'accent' : 'muted', fillAlpha: isSel ? 0.14 : 0.05, color: isSel ? 'accent' : 'faint', width: isSel ? 1.8 : 1, radius: 4 });
             B.text(modern && i === n ? 'tool' : String(i + 1), cols[0], y, { size: 14, align: 'center', baseline: 'middle', color: modern && i === n ? 'ink' : JC[i] });
             row.forEach((x, j) => {
