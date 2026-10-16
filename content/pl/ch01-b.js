@@ -242,7 +242,7 @@ export default {
         v.render(() => {
           const p = cur(), c = parsed(), vars = ['n', ...varsOf(c).filter((x) => x !== 'n')], fr = S.frame, prev = S.i > 0 ? S.frames[S.i - 1].st : null;
           // operational panel
-          drawProgram(v, sO, fr.c, fr.redex, [0, 8, sO.W * 0.58, sO.H - 8], { lh: 22 });
+          drawProgram(v, sO, fr.c, (cstep(fr.c, fr.st) || {}).redex, [0, 8, sO.W * 0.58, sO.H - 8], { lh: 22 });
           drawStore(v, sO, vars, fr.st, prev, [sO.W * 0.58 + 6, 14, sO.W - 8, sO.H - 40]);
           sO.textPx(`step ${S.i} of ${S.n - 1}`, sO.W - 10, sO.H - 16, { align: 'right', size: 12, color: 'muted', halo: false });
           // denotational panel
@@ -305,7 +305,7 @@ export default {
       deps: ['pl-1.4'], refs: ['Pierce §3.4'], tags: ['imperative', 'store', 'configuration'],
       viz(v) {
         let ro = ''; v.readout(() => ro);
-        const sP = pxStage(v, { height: 330, minWidth: 300, title: 'Program (next redex highlighted)' });
+        const sP = pxStage(v, { height: 330, minWidth: 300, title: 'Program (the next redex is highlighted)' });
         const sM = pxStage(v, { height: 330, minWidth: 300, title: 'Store' });
         const sT = pxStage(v, { height: 300, full: true, title: 'Recent configurations' });
         const EX = {
@@ -322,12 +322,12 @@ export default {
         v.render(() => {
           if (f.err) { drawParseError(v, sP, f.src, f.err); return; }
           const fr = S.frame, vars = varsOf(f.ast), prev = S.i > 0 ? S.frames[S.i - 1].st : null;
-          drawProgram(v, sP, fr.c, fr.redex, [0, 8, sP.W, sP.H - 8], { lh: 26 });
-          if (fr.rule) sP.textPx(IMP_RULES[fr.via || fr.rule] ? '' : '', 10, sP.H - 10, { size: 11, color: 'muted', halo: false });
-          drawStore(v, sM, vars, fr.st, prev, [14, 14, sM.W - 10, sM.H - 70]);
-          if (fr.rule) {
-            wrapText(sM, IMP_RULES[fr.rule], sM.W - 24, 12).forEach((ln, i) => sM.textPx(ln, 14, sM.H - 52 + i * 16, { size: 12, color: 'accent', weight: 600, halo: false }));
-          } else sM.textPx('no rule has fired yet', 14, sM.H - 44, { size: 12, color: 'muted', halo: false });
+          const nx = cstep(fr.c, fr.st); drawProgram(v, sP, fr.c, nx ? nx.redex : null, [0, 8, sP.W, sP.H - 8], { lh: 26 });
+          drawStore(v, sM, vars, fr.st, prev, [14, 14, sM.W - 10, sM.H - 90]);
+          if (nx) {
+            sM.textPx(`next rule: ${nx.rule}`, 14, sM.H - 66, { size: 12, color: 'muted', weight: 700, halo: false });
+            wrapText(sM, IMP_RULES[nx.rule], sM.W - 24, 12).forEach((ln, i) => sM.textPx(ln, 14, sM.H - 52 + i * 16, { size: 12, color: 'accent', weight: 600, halo: false }));
+          } else sM.textPx('skip: no rule applies — the program has halted', 14, sM.H - 44, { size: 12, color: 'green', weight: 700, halo: false });
           const from = Math.max(0, S.i - 7), shown = S.frames.slice(from, S.i + 1);
           T.draw({ rows: shown.length, cols: vars.length + 2, colWeights: [0.55, ...vars.map(() => 0.8), 2.2], colLabels: ['step', ...vars, 'rule'],
             rowLabels: null, value: (i, j) => (j === 0 ? from + i : j <= vars.length ? shown[i].st[vars[j - 1]] ?? 0 : shown[i].rule ? `${shown[i].rule}${shown[i].via ? ' (in seq)' : ''}` : '—'),

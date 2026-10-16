@@ -2,11 +2,12 @@
 import {
   A, mod, clamp, norm, code, shiftC, affineC, affineD, VALID_A, subC, subInv, vigC, isPerm, randomPerm, randomKey, shuffled,
   EN_P, EN_ORDER, EN_SOURCE, EN_N, FACT26, LOG2_FACT26, TOP_BIGRAMS, BI, SUM_P2, GETTYSBURG,
-  counts, total, icOf, icText, crossEnt, climbSubstitution, sciText, dur, AGE_UNIVERSE_S, groups5, rowsOf,
+  LOGB, counts, total, icOf, icText, crossEnt, climbSubstitution, sciText, dur, AGE_UNIVERSE_S, groups5, rowsOf,
   pix, letterRow, tile, dashedBox,
 } from './ch01.shared.js';
 
 const PASSAGE = norm(GETTYSBURG);
+const BI_LOG = (a, b) => LOGB[a][b];
 
 // ---------------------------------------------------------------- 1.1 shared: the five toy schemes
 const log10 = Math.log10;
@@ -52,7 +53,7 @@ export default {
       refs: ['Katz–Lindell §1.2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Symmetric-key_algorithm' },
       viz(v) {
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330 });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290 });
         const scheme = v.select('Scheme', Object.entries(SCHEMES).map(([value, o]) => ({ value, label: o.label })), 'vig');
         const msg = v.input('Message m', 'MEET ME AT DAWN', { width: 250 });
         let ctr = 3; v.button('Gen: new key', () => { ctr++; });
@@ -280,6 +281,245 @@ export default {
           return String.raw`26 keys tried (at most $\log_2 26\approx 4.7$ bits to search). Best-scoring key: **$k = ${R.best.k}$** with ${v.fix(R.best.ce, 2)} bits/letter${hit}.` + '\n' +
             String.raw`Runner-up: $k=${R.second.k}$ at ${v.fix(R.second.ce, 2)}; the gap is ${v.fix(gap, 2)} bits/letter. English itself costs ${v.fix(-EN_P.reduce((a, p) => a + p * Math.log2(p), 0), 2)} bits/letter; a random shift of it costs about ${v.fix(-EN_P.reduce((a, p) => a + (1 / 26) * Math.log2(p), 0), 2)}. Letter model: ${EN_SOURCE}.` +
             (own.value ? '' : '\n' + String.raw`Reading: ciphertext letter $=$ plaintext $+\,${kSl.value}$ (mod 26).`);
+        });
+      },
+    },
+
+    // ================================================================== 1.4
+    {
+      num: '1.4',
+      kind: 'Principle',
+      name: 'Sufficient key-space principle',
+      statement: String.raw`Any secure encryption scheme must have a key space large enough to rule out exhaustive search: an attacker who tries every key, at the fastest rate any adversary could reach, must still need an unaffordable amount of time. With $b$-bit keys a search finds the key after about $2^{b-1}$ trials on average, so at $R$ guesses per second it needs $2^{b-1}/R$ seconds. The principle is a *necessary* condition only: a huge key space does not by itself make a scheme secure (see the monoalphabetic substitution cipher, item 1.5).`,
+      idea: String.raw`Brute force works against every cipher, whatever its design, so the key space is a lower bound on the attacker’s work. The cost is linear in $2^b$, hence exponential in the key length: every added bit doubles the attacker’s time while costing the defender almost nothing, which is why designers pick keys with enough margin ($\ge 128$ bits today) to survive faster hardware, parallel machines and decades of progress.`,
+      caption: String.raw`Each straight line is the average search time against $b$-bit keys for one attacker speed. Drag the point along the gold line (or the slider) to choose $b$, and change the attacker’s speed. The purple point is a real data point: the 56-bit DES key found by EFF’s Deep Crack in 1998.`,
+      deps: ['crypto-1.3'],
+      tags: ['key space', 'brute force'],
+      refs: ['Katz–Lindell §1.3'],
+      scope: String.raw`average time for a uniformly random key and an attacker who can test $R$ keys per second; the speeds shown are illustrative, except Deep Crack (EFF: over $9\times10^{10}$ keys per second, 1998).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Brute-force_attack' },
+      viz(v) {
+        const L2 = Math.log10(2);
+        const yOf = (b, R) => (b - 1) * L2 - Math.log10(R);
+        const secs = [[0, '1 s'], [Math.log10(3600), '1 hour'], [Math.log10(86400), '1 day'], [Math.log10(31557600), '1 year'], [Math.log10(31557600 * 100), '100 years'], [Math.log10(AGE_UNIVERSE_S), 'age of universe']];
+        const s = v.stage({ x: [0, 140], y: [-3, 36], axes: 'box', gutter: { l: 66, r: 10, t: 24, b: 46 }, height: 410, xlabel: 'key length b (bits)', ylabel: 'average search time, log₁₀ of seconds', xticks: [0, 20, 40, 56, 80, 100, 128].map((x) => [x, String(x)]), yticks: [[-3, '10⁻³'], ...secs.slice(0, 4).map((x) => x), [Math.log10(AGE_UNIVERSE_S), '13.8 Gyr'], [25, '10²⁵'], [30, '10³⁰'], [35, '10³⁵']] });
+        const rate = v.slider('Attacker speed $R$ (keys/s)', 1e3, 1e21, 3e11, { log: true, sig: 2, fmt: (x) => sciText(x, 2) });
+        const bSl = v.slider('Key length $b$ (bits)', 1, 140, 56, { int: true, onChange: (b) => hb.set(b, yOf(b, rate.value)) });
+        const hb = s.handle(56, yOf(56, 3e11), { color: 'gold', r: 8, label: 'b', constrain: (x) => { const b = clamp(Math.round(x), 1, 140); return [b, yOf(b, rate.value)]; } });
+        hb.onDrag = () => { bSl.set(Math.round(hb.x)); };
+        const presets = [{ R: 1e9, c: 'blue', name: 'laptop-class, $10^{9}$ keys/s' }, { R: 9e10, c: 'purple', name: 'EFF Deep Crack 1998, $9\\times10^{10}$' }, { R: 1e18, c: 'teal', name: 'a hypothetical $10^{18}$ keys/s' }];
+        const marks = [[4.7, 'shift'], [8.3, 'affine'], [37.6, 'Vigenère-8'], [56, 'DES'], [128, 'AES-128']];
+        v.render(() => {
+          s.clip(() => {
+            secs.forEach(([y, lab], i) => s.hline(y, { color: i === 5 ? 'red' : 'faint', width: i === 5 ? 1.6 : 1, dash: true }));
+          });
+          secs.forEach(([y, lab], i) => s.text(lab, 139, y + 0.9, { size: 10.5, color: i === 5 ? 'red' : 'muted', align: 'right', halo: true }));
+          marks.forEach(([b, lab], i) => { s.vline(b, { color: 'faint', width: 1, dash: true }); s.text(lab, b + 1, 34.2 - (i % 2) * 1.8, { size: 10.5, color: 'muted', align: 'left' }); });
+          presets.forEach((p) => { s.line(1, yOf(1, p.R), 140, yOf(140, p.R), { color: p.c, width: 1.6, alpha: 0.8 }); });
+          s.line(1, yOf(1, rate.value), 140, yOf(140, rate.value), { color: 'gold', width: 3 });
+          s.dot(56, Math.log10(56 * 3600), { r: 6, color: 'purple', hollow: true });
+          s.text('DES key found in 56 h (1998)', 58, Math.log10(56 * 3600) - 1.8, { size: 10.5, color: 'purple', align: 'left' });
+          hb.set(bSl.value, yOf(bSl.value, rate.value));
+        });
+        v.legend([['gold', 'your speed'], ['blue', 'laptop $10^9$/s'], ['purple', 'Deep Crack $9\\times10^{10}$/s'], ['teal', '$10^{18}$/s'], ['red', 'age of the universe', { dash: true }]]);
+        v.readout(() => {
+          const b = bSl.value, T = Math.pow(2, b - 1) / rate.value, ratio = T / AGE_UNIVERSE_S;
+          const deep = Math.pow(2, 55) / 9e10;
+          return String.raw`$b = ${b}$ bits: $2^{${b - 1}}$ trials on average at ${sciText(rate.value, 2)} keys/s $\Rightarrow$ **${dur(T)}**` + (ratio > 1e-3 ? String.raw` (${ratio >= 1 ? sciText(ratio, 2) : v.fix(ratio, 3)} $\times$ the age of the universe, 13.8 Gyr)` : '') + '.\n' +
+            String.raw`Check against history: searching all of DES’s $2^{56}$ keys at $9\times10^{10}$/s would take at most ${dur(2 * deep)}; Deep Crack found the winning key after 56 hours, about ${v.fix(100 * 56 * 3600 / (2 * deep), 0)}% of a full search — a lucky but unremarkable draw.`;
+        });
+      },
+    },
+
+    // ================================================================== 1.5
+    {
+      num: '1.5',
+      kind: 'Model',
+      name: 'Monoalphabetic substitution cipher',
+      statement: String.raw`A **monoalphabetic substitution cipher** has as key a permutation $\pi$ of the alphabet and replaces every plaintext letter $x$ by $\pi(x)$, always the same one. There are $26! \approx 4.03\times 10^{26}$ keys ($\approx 88.4$ bits), far beyond exhaustive search, yet the cipher is insecure: because each letter is renamed consistently, the multiset of letter counts of the ciphertext is exactly that of the plaintext, only moved to other letters. Shift ($26$ keys) and affine ($12\cdot 26 = 312$ keys) ciphers are special cases.`,
+      idea: String.raw`A large key space is necessary (item 1.4) but not sufficient. The cipher leaks the *shape* of the plaintext distribution: the sorted letter frequencies of the ciphertext coincide with those of the plaintext, and so does the index of coincidence $\sum_i n_i(n_i-1)/N(N-1)$. Since English has a very uneven, well-measured shape, the permutation can be read off from the data (item 1.6); the cipher hides *which* letter is frequent, not *that* some letters are.`,
+      caption: String.raw`Choose the key family and press **New key**. The two bar charts are the plaintext and ciphertext letter counts: the same bars, moved by the key (lines trace the six tallest). The right panel sorts both by size: the curves coincide exactly, whatever the key. Edit the text freely.`,
+      deps: ['crypto-1.4'],
+      tags: ['substitution', 'frequencies'],
+      refs: ['Katz–Lindell §1.3'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Substitution_cipher' },
+      viz(v) {
+        const text = GETTYSBURG.slice(0, GETTYSBURG.indexOf('We have come') + 30);
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 372, weight: 1.6, minWidth: 420 });
+        const sr = v.stage({ x: [0.5, 26.5], y: [0, 0.14], axes: 'box', gutter: true, height: 372, weight: 1, minWidth: 300, xlabel: 'rank (1 = most frequent letter)', ylabel: 'relative frequency', yticks: [0, 0.04, 0.08, 0.12].map((y) => [y, String(Math.round(y * 100)) + '%']), xticks: [1, 5, 10, 15, 20, 26].map((x) => [x, String(x)]) });
+        const fam = v.select('Key family', [{ value: 'shift', label: 'shift (26)' }, { value: 'affine', label: 'affine (312)' }, { value: 'perm', label: 'any permutation (26!)' }], 'perm');
+        let ctr = 1; v.button('New key', () => { ctr++; });
+        const inp = v.input('Plaintext', text, { width: 380 });
+        const keyOf = () => {
+          const r = v.rng(ctr * 7919 + 13);
+          if (fam.value === 'shift') { const k = Math.floor(r() * 25) + 1; return [...A].map((_, i) => A[(i + k) % 26]).join(''); }
+          if (fam.value === 'affine') { const a = VALID_A[1 + Math.floor(r() * 11)], b = Math.floor(r() * 26); return [...A].map((_, i) => A[(a * i + b) % 26]).join(''); }
+          return randomPerm(r);
+        };
+        const calc = () => {
+          const key = keyOf(), P = norm(inp.value), C = subC(P, key), cp = counts(P), cc = counts(C);
+          return { key, P, C, cp, cc };
+        };
+        const palette = ['red', 'orange', 'gold', 'green', 'teal', 'purple'];
+        v.render(() => {
+          const X = calc(), P = pix(s), { W } = P, n = X.P.length || 1;
+          const left = 30, cw = (W - 2 * left) / 26;
+          // key table
+          P.text('key π: each plaintext letter (blue) is replaced by the letter below it (orange)', 8, 10, { size: 11, color: 'muted', weight: 600, align: 'left', halo: false });
+          for (let i = 0; i < 26; i++) {
+            const x = left + (i + 0.5) * cw;
+            P.text(A[i], x, 30, { size: 12.5, weight: 700, color: 'blue', align: 'center', halo: false });
+            P.text('↓', x, 41, { size: 8, color: 'faint', align: 'center', halo: false });
+            P.text(X.key[i], x, 54, { size: 12.5, weight: 700, color: 'orange', align: 'center', halo: false });
+          }
+          // histograms
+          const hMax = Math.max(...X.cp, ...X.cc, 1), top1 = 84, bh = 92, top2 = 234;
+          const bars = (cnt, y0, col, lab) => {
+            P.line(left, y0 + bh, W - left, y0 + bh, { color: 'faint', width: 1 });
+            P.text(lab, 8, y0 - 1, { size: 11, color: col, weight: 700, align: 'left', halo: false });
+            for (let i = 0; i < 26; i++) {
+              const h = (cnt[i] / hMax) * (bh - 8), x = left + i * cw;
+              if (h > 0) P.rect(x + 2, y0 + bh - h, cw - 4, h, { fill: col, fillAlpha: 0.5, color: col, width: 1, radius: 2 });
+              P.text(A[i], x + cw / 2, y0 + bh + 11, { size: 10.5, color: col, align: 'center', weight: 600, halo: false });
+            }
+          };
+          bars(X.cp, top1, 'blue', 'plaintext letter counts');
+          bars(X.cc, top2, 'orange', 'ciphertext letter counts');
+          const order = [...Array(26).keys()].sort((a, b) => X.cp[b] - X.cp[a]).slice(0, 6);
+          order.forEach((i, r) => { const j = X.key.charCodeAt(i) - 65; if (X.cp[i]) P.line(left + (i + 0.5) * cw, top1 + bh + 20, left + (j + 0.5) * cw, top2 - 6, { color: palette[r], width: 2, alpha: 0.9 }); });
+          // sorted curves
+          sr.setView([0.5, 26.5], [0, Math.max(0.14, Math.max(...X.cp) / n * 1.1)]);
+          const sp = X.cp.slice().sort((a, b) => b - a).map((c) => c / n), sc = X.cc.slice().sort((a, b) => b - a).map((c) => c / n);
+          const en = EN_P.slice().sort((a, b) => b - a);
+          sr.path(en.map((y, i) => [i + 1, y]), { color: 'muted', width: 1.6, dash: true });
+          sr.path(sp.map((y, i) => [i + 1, y]), { color: 'blue', width: 4, alpha: 0.5 });
+          sr.path(sc.map((y, i) => [i + 1, y]), { color: 'orange', width: 1.8 });
+          sr.dots(sc.map((y, i) => [i + 1, y]), { r: 3, color: 'orange' });
+        });
+        v.legend([['blue', 'plaintext, sorted'], ['orange', 'ciphertext, sorted'], ['muted', 'English corpus, sorted', { dash: true }]]);
+        v.readout(() => {
+          const X = calc(), n = X.P.length;
+          if (n < 10) return 'Type at least ten letters.';
+          const same = X.cp.slice().sort((a, b) => b - a).every((c, i) => c === X.cc.slice().sort((a, b) => b - a)[i]);
+          const nk = fam.value === 'shift' ? 25 : fam.value === 'affine' ? 311 : null;
+          const T = (nk ? nk : Number(FACT26)) / 1e9;
+          return String.raw`Key family: ${nk ? `${nk + 1} keys` : '$26!\\approx 4.03\\times10^{26}$ keys'}; searching them at $10^9$ keys/s takes ${dur(T)}.` + '\n' +
+            String.raw`Sorted counts of ciphertext = sorted counts of plaintext: **${same ? '✓ identical' : '✗'}**. Index of coincidence: plaintext $${v.fix(icOf(X.cp), 4)}$, ciphertext $${v.fix(icOf(X.cc), 4)}$ (uniform random text: $1/26 = 0.0385$; English corpus $\sum p_i^2 = ${v.fix(SUM_P2, 4)}$, ${EN_SOURCE}).`;
+        });
+      },
+    },
+
+    // ================================================================== 1.6
+    {
+      num: '1.6',
+      kind: 'Method',
+      name: 'Frequency analysis',
+      statement: String.raw`**Frequency analysis** breaks a monoalphabetic substitution cipher using the statistics of the plaintext language. Count the ciphertext letters; the most frequent ones stand for the most frequent English letters ($\mathrm{E},\mathrm{T},\mathrm{A},\mathrm{O},\mathrm{I},\mathrm{N},\dots$); refine the guess with pairs of letters (digrams such as TH, HE, IN, ER) and with the words that start to appear, until the whole permutation is determined. It succeeds when the ciphertext is long enough that the counts are close to the language’s true frequencies.`,
+      idea: String.raw`The cipher renames letters but keeps every statistic of the text (item 1.5), so counts alone give a first, partly wrong assignment, and each correct letter makes its neighbours’ identity predictable through digram statistics. Scoring a candidate key by the log-likelihood of the decryption under a bigram model of English (here estimated from billions of letters) turns the hand method into hill-climbing: swap two letters of the key, keep the swap if the text becomes more English.`,
+      caption: String.raw`Bars: ciphertext letters by frequency, with the English letter for that rank underneath. Click a ciphertext letter, then click the plaintext letter you think it stands for; the text below fills in. **Rank match** assigns by frequency alone, **Hill-climb** runs the bigram search. Paste any substitution ciphertext into the field.`,
+      deps: ['crypto-1.5'],
+      tags: ['cryptanalysis', 'frequencies'],
+      refs: ['Katz–Lindell §1.3'],
+      credit: 'Al-Kindi, 9th century (A Manuscript on Deciphering Cryptographic Messages)',
+      scope: String.raw`needs a ciphertext of a few hundred letters; with fewer, the counts differ too much from the language’s.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Frequency_analysis' },
+      viz(v) {
+        const sA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 266, full: true });
+        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 236, full: true });
+        const sC = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 168, full: true });
+        const PLAIN = PASSAGE.slice(0, 420);
+        let seed = 5, puzzle = null;
+        const mk = () => { const r = v.rng(seed * 101 + 3), key = randomPerm(r); puzzle = { key, plain: PLAIN, cipher: subC(PLAIN, key), dec: subInv(key) }; return groups5(puzzle.cipher); };
+        let guess = Array(26).fill(-1), sel = -1;
+        const inp = v.input('Ciphertext', mk(), { width: 360, onChange: () => { guess = Array(26).fill(-1); sel = -1; } });
+        v.button('New puzzle', () => { seed++; inp.set(mk()); guess = Array(26).fill(-1); sel = -1; });
+        v.button('Rank match', () => { const c = counts(norm(inp.value)), by = [...Array(26).keys()].sort((a, b) => c[b] - c[a]); guess = Array(26).fill(-1); by.forEach((ci, i) => { if (c[ci]) guess[ci] = code(EN_ORDER[i]); }); });
+        v.button('Hill-climb', () => { const ct = norm(inp.value); if (ct.length < 30) return; const res = climbSubstitution(ct, v.rng(99 + seed), { restarts: 8, iters: 6000 }); const c = counts(ct); guess = res.dec.map((p, ci) => (c[ci] ? p : -1)); });
+        v.button('Clear', () => { guess = Array(26).fill(-1); sel = -1; });
+        const info = () => {
+          const ct = norm(inp.value), c = counts(ct), by = [...Array(26).keys()].sort((a, b) => c[b] - c[a] || a - b);
+          const truth = puzzle && ct === puzzle.cipher ? puzzle.dec : null;
+          return { ct, c, by, truth, n: ct.length };
+        };
+        const place = (ci, p) => { for (let j = 0; j < 26; j++) if (guess[j] === p) guess[j] = -1; guess[ci] = p; };
+        const L = { left: 14, cw: 0 };
+        sA.onClick((x, y) => {
+          const P = pix(sA), [px, py] = P.at(x, y), I = info(), cw = (P.W - 28) / 26, i = Math.floor((px - 14) / cw);
+          if (i < 0 || i > 25) return;
+          if (py < 196) { sel = I.by[i]; }
+          else if (py > 214 && py < 250 && sel >= 0) { place(sel, i); }
+        });
+        v.render(() => {
+          const I = info(), P = pix(sA), { W } = P, cw = (W - 28) / 26, n = Math.max(1, I.n), hMax = Math.max(...I.c, 1) / n;
+          // bars sorted by frequency rank
+          const top = 20, bh = 112;
+          P.line(14, top + bh, W - 14, top + bh, { color: 'faint', width: 1 });
+          P.text('ciphertext letters by frequency (bars) · English frequency at the same rank (dots)', 14, 9, { size: 11, weight: 600, color: 'muted', align: 'left', halo: false });
+          I.by.forEach((ci, r) => {
+            const x = 14 + r * cw, f = I.c[ci] / n, h = (f / Math.max(hMax, EN_P[code(EN_ORDER[0])])) * (bh - 8);
+            const isSel = ci === sel;
+            P.rect(x + 2, top + bh - h, cw - 4, Math.max(h, 0), { fill: isSel ? 'gold' : 'orange', fillAlpha: isSel ? 0.7 : 0.45, color: isSel ? 'gold' : 'orange', width: 1, radius: 2 });
+            const eh = (EN_P[code(EN_ORDER[r])] / Math.max(hMax, EN_P[code(EN_ORDER[0])])) * (bh - 8);
+            P.dot(x + cw / 2, top + bh - eh, { r: 3, color: 'blue' });
+            P.text(A[ci], x + cw / 2, top + bh + 14, { size: 13, weight: 700, color: isSel ? 'gold' : 'orange', align: 'center', halo: false });
+            P.text(EN_ORDER[r], x + cw / 2, top + bh + 31, { size: 10.5, weight: 600, color: 'muted', align: 'center', halo: false });
+            const g = guess[ci];
+            const okc = I.truth ? (g === code(I.truth[ci]) ? 'green' : 'red') : 'green';
+            P.text(g >= 0 ? A[g].toLowerCase() : '·', x + cw / 2, top + bh + 50, { size: 14, weight: 700, color: g >= 0 ? okc : 'faint', align: 'center', halo: false });
+          });
+          P.text('cipher', 2, top + bh + 14, { size: 9.5, color: 'orange', weight: 700, align: 'left', halo: false });
+          P.text('English', 2, top + bh + 31, { size: 9.5, color: 'muted', weight: 700, align: 'left', halo: false });
+          P.text('your key', 2, top + bh + 50, { size: 9.5, color: 'green', weight: 700, align: 'left', halo: false });
+          // plaintext strip
+          P.text(sel >= 0 ? `assign a plaintext letter to ciphertext letter ${A[sel]}:` : 'click a ciphertext letter above, then choose its plaintext letter:', 14, 216, { size: 11, color: 'muted', weight: 600, align: 'left', halo: false });
+          const used = new Set(guess.filter((x) => x >= 0));
+          for (let i = 0; i < 26; i++) {
+            const x = 14 + i * cw, isU = used.has(i), cur = sel >= 0 && guess[sel] === i;
+            P.rect(x + 1.5, 224, cw - 3, 30, { fill: cur ? 'green' : 'accent', fillAlpha: cur ? 0.35 : isU ? 0.04 : 0.12, color: cur ? 'green' : 'faint', width: 1.2, radius: 5 });
+            P.text(A[i], x + cw / 2, 239, { size: 13, weight: 700, color: isU ? 'faint' : 'blue', align: 'center', halo: false });
+          }
+        });
+        v.render(() => {
+          const I = info(), P = pix(sB), { W } = P, cw = 10.2, per = Math.max(16, Math.floor((W - 28) / cw)), rows = Math.min(5, Math.ceil(I.n / per));
+          const shown = I.ct.slice(0, per * rows);
+          rowsOf(shown, per).forEach((r, k) => {
+            const y = 20 + k * 44;
+            letterRow(P, r, 14, y, cw, () => 'muted', { size: 12.5, weight: 600 });
+            for (let i = 0; i < r.length; i++) {
+              const ci = code(r[i]), g = guess[ci];
+              const col = g < 0 ? 'faint' : I.truth ? (g === code(I.truth[ci]) ? 'green' : 'red') : 'green';
+              P.text(g >= 0 ? A[g].toLowerCase() : '·', 14 + (i + 0.5) * cw, y + 18, { size: 14, weight: 700, color: col, align: 'center', halo: false });
+            }
+          });
+          if (I.n > shown.length) P.text(`… ${I.n - shown.length} more letters`, 14, 20 + rows * 44, { size: 11, color: 'muted', align: 'left', halo: false });
+        });
+        v.render(() => {
+          const I = info(), P = pix(sC), { W } = P, N = Math.max(1, I.n - 1);
+          const dg = {}; for (let i = 0; i + 1 < I.ct.length; i++) { const k = I.ct.substr(i, 2); dg[k] = (dg[k] || 0) + 1; }
+          const top = Object.entries(dg).sort((a, b) => b[1] - a[1]).slice(0, 8), biTot = TOP_BIGRAMS.reduce((s, x) => s + x[1], 0);
+          const colW = W / 2 - 14;
+          P.text('most common ciphertext digrams → what your key reads', 14, 12, { size: 11, weight: 700, color: 'orange', align: 'left', halo: false });
+          P.text('most common English digrams (' + EN_SOURCE.split(',')[0] + ')', W / 2 + 6, 12, { size: 11, weight: 700, color: 'blue', align: 'left', halo: false });
+          top.forEach(([d, k], i) => {
+            const y = 34 + i * 16, g = [...d].map((ch) => (guess[code(ch)] >= 0 ? A[guess[code(ch)]].toLowerCase() : '·')).join('');
+            P.text(d, 20, y, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
+            P.rect(54, y - 5, Math.max(2, (k / top[0][1]) * (colW - 150)), 10, { fill: 'orange', fillAlpha: 0.35, stroke: false, radius: 2 });
+            P.text(`${v.fix(100 * k / N, 1)}%`, 60 + (k / top[0][1]) * (colW - 150), y, { size: 10.5, color: 'muted', align: 'left', halo: false });
+            P.text('→ ' + g, colW - 70, y, { size: 13, weight: 700, color: 'green', align: 'left', halo: false });
+            const [e, ek] = TOP_BIGRAMS[i];
+            P.text(e, W / 2 + 12, y, { size: 12.5, weight: 700, color: 'blue', align: 'left', halo: false });
+            P.rect(W / 2 + 46, y - 5, (ek / TOP_BIGRAMS[0][1]) * (colW - 110), 10, { fill: 'blue', fillAlpha: 0.35, stroke: false, radius: 2 });
+            P.text(`${v.fix(100 * ek / biTot, 2)}%`, W / 2 + 52 + (ek / TOP_BIGRAMS[0][1]) * (colW - 110), y, { size: 10.5, color: 'muted', align: 'left', halo: false });
+          });
+        });
+        v.readout(() => {
+          const I = info(); if (I.n < 20) return 'Paste at least 20 letters of ciphertext.';
+          const assigned = guess.filter((g, ci) => g >= 0 && I.c[ci]).length, present = I.c.filter((x) => x).length;
+          let acc = '', ce = '';
+          if (I.truth) { let ok = 0, tot = 0; I.ct.split('').forEach((ch) => { tot++; if (guess[code(ch)] === code(I.truth[code(ch)])) ok++; }); acc = assigned ? ` Against the true plaintext: **${v.fix(100 * ok / tot, 1)}%** of the letters are right.` : ''; }
+          const dec = [...I.ct].map((ch) => guess[code(ch)]), pairs = []; for (let i = 1; i < dec.length; i++) if (dec[i - 1] >= 0 && dec[i] >= 0) pairs.push(-BI_LOG(dec[i - 1], dec[i]));
+          if (pairs.length > 30) ce = ` On the ${pairs.length} decoded letter pairs the bigram model reads **${v.fix(pairs.reduce((a, b) => a + b, 0) / pairs.length, 2)}** bits/letter (English: about 3.3, random letters: 4.7+).`;
+          return `${assigned} of the ${present} ciphertext letters assigned.${acc}${ce}`;
         });
       },
     },

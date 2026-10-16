@@ -104,7 +104,7 @@ export default {
         const L = v.stage({ x: [0, 8], y: [-4, 0], height: 340, weight: 1.2, axes: 'box', gutter: true, xlabel: '$\\log_{10}n$', ylabel: '$\\log_{10}\\eps$', title: '$|h_n(\\eps)-g(0)|$' });
         const R = v.stage({ x: [1, 1e8], xlog: true, y: [1e-3, 1.5], ylog: true, height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: 'error along the paths' });
         // thresholds N_m: g(1/m) e^{−n/m²} ≤ 1/m  ⇔  n ≥ m² log(m g(1/m))
-        const Nm = []; for (let m = 1; m <= 400; m++) { const t = m * g(1 / m); Nm.push(t <= 1 ? 1 : Math.ceil(m * m * Math.log(t))); }
+        const Nm = []; for (let m = 1; m <= 4000; m++) { const t = m * g(1 / m); Nm.push(t <= 1 ? 1 : Math.ceil(m * m * Math.log(t))); }
         for (let m = 1; m < Nm.length; m++) Nm[m] = Math.max(Nm[m], Nm[m - 1]);
         const epsDiag = (n) => { let m = 1; while (m < Nm.length && Nm[m] <= n) m++; return 1 / m; };
         let st = null;
@@ -116,7 +116,7 @@ export default {
           for (let i = 0; i <= 400; i++) { const lx = (8 * i) / 400, n = 10 ** lx, ed = epsDiag(n), ef = Math.min(1, c / Math.sqrt(n)); stair.push([lx, Math.log10(ed)]); fast.push([lx, Math.log10(ef)]); e1.push([n, Math.max(1e-3, err(n, ed))]); e2.push([n, Math.max(1e-3, err(n, ef))]); }
           L.path(stair, { color: 'gold', width: 2.6 });
           L.path(fast, { color: 'red', width: 2.2, dash: [6, 4] });
-          L.colorbar([-3.2, 0], (u) => v.ramp(u), { pos: 'right', length: 0.45, label: 'log₁₀ error' });
+          L.colorbar([-3.2, 0], (u) => v.ramp(u), { pos: 'left', length: 0.4, label: 'log₁₀ error' });
           R.path(e1, { color: 'gold', width: 2.4 });
           R.path(e2, { color: 'red', width: 2, dash: [6, 4] });
           R.hline(Math.exp(-c * c), { color: 'muted', width: 1, dash: [2, 3] });
@@ -278,7 +278,7 @@ whose right side converges to $Y_1+\dots+Y_k$ with i.i.d. $Y_j\sim Y$, while $Z_
           p12: { label: 'Pareto $\\alpha=1.2$, skewed', a: 1.2, th: 0.8 },
           expo: { label: 'exponential (normal limit)', a: 2 },
         };
-        const law = v.select('steps', Object.keys(LAWS).map((k) => ({ value: k, label: LAWS[k].label })), 'p15');
+        const law = v.select('steps', Object.keys(LAWS).map((k) => ({ value: k, label: LAWS[k].label })), 'p07');
         const kS = v.slider('$k$ blocks', 2, 6, 3, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const n = 200;
@@ -439,7 +439,7 @@ whose right side converges to $Y_1+\dots+Y_k$ with i.i.d. $Y_j\sim Y$, while $Z_
           v.legend([['accent', 'law of $S_n$ / $k$-fold block sum'], ['orange', 'one block of $n/k$ entries', { area: true }], ['green', '$Z$; $k$-th root of $Z$', { dot: true }]]);
           st = { n, k, tvZ: tvd(Yk, Z), tvSplit: tvd(Yconv, Yk), tvRoot: tvd(Y, Zk) };
         });
-        v.readout(() => st && `Row length $n=${st.n}$: $\\|S_n-Z\\|=${v.fix(st.tvZ, 4)}$. Block split: $\\|Y^{*${st.k}}-S_n\\|=${v.sci(st.tvSplit + 1e-17, 1)}$ (an identity), and the block law is $${v.fix(st.tvRoot, 4)}$ from the ${st.k}-th root of $Z$.`);
+        v.readout(() => st && `Row length $n=${st.n}$: $\\|S_n-Z\\|=${v.fix(st.tvZ, 4)}$. Block split: $\\|Y^{*${st.k}}-S_n\\|=${v.sci(st.tvSplit + 1e-17, 1)}$ (an identity), and the block law is $${v.fix(st.tvRoot, 4)}$ from the root of order ${st.k} of $Z$.`);
       },
     },
     {
@@ -621,7 +621,7 @@ for a finite measure $\nu$ (the **canonical measure**), where the integrand is r
       name: 'Tightness gives convergent subsequences in ℝᵈ',
       statement: String.raw`A sequence of probability measures $\mu_n$ on $\R^d$ is **tight** if for every $\eps>0$ there is $M$ with $\liminf_n\mu_n([-M,M]^d)\ge1-\eps$. Every tight sequence has a weakly convergent subsequence.`,
       idea: String.raw`Diagonalize over the countable set $\Q^d$ as in Helly's theorem (3.2.12): find a subsequence with $F_{n(k)}(q)\to G(q)$ for every rational point $q$, and put $F(x)=\inf\{G(q):q>x\}$. Rectangle increments of $F_n$ are nonnegative and stay so in the limit, so $F$ is a distribution function except possibly for its total mass, and tightness guarantees that no mass escapes to infinity.`,
-      caption: String.raw`Two families of Gaussian clouds (400 seeded points shown for your $n$). *Tight*: the centre goes round the unit circle, $m_n=(\cos n,\sin n)$, and the ellipse turns by $n$ radians; the family never settles, but along the subsequence of $n$ with $n\bmod2\pi\to0$ (gold dots: $44, 333, 710,\dots$) it converges. *Escaping*: the centre spirals out. Drag the corner of the box $[-M,M]^2$. Right: $\mu_n([-M,M]^2)$ for all $n\le400$ in both families.`,
+      caption: String.raw`Two families of Gaussian clouds (400 seeded points shown for your $n$). *Tight*: the centre goes round the unit circle, $m_n=(\cos n,\sin n)$, and the ellipse turns by $n$ radians; the family never settles, but along the subsequence of $n$ with $n\bmod2\pi\to0$ (gold dots: $44, 333, 377,\dots$) it converges. *Escaping*: the centre spirals out. Drag the corner of the box $[-M,M]^2$. Right: $\mu_n([-M,M]^2)$ for all $n\le400$ in both families.`,
       deps: ['prob-3.2.12', 'prob-3.10.1'],
       tags: ['tightness', 'multivariate'],
       viz(v) {
@@ -638,8 +638,7 @@ for a finite measure $\nu$ (the **canonical measure**), where the integrand is r
         v.render(() => {
           const md = mode.value, n = nS.value, Mv = Hm.x;
           const view = md === 'tight' ? 2.6 : 12; S.setView([-view, view], [-view, view]);
-          const traj = []; for (let k = 1; k <= Math.min(400, n); k++) traj.push(mean(md, k));
-          S.path(traj, { color: 'faint', width: 1 });
+          for (let k = 1; k <= Math.min(400, n); k++) { const [x, y] = mean(md, k); S.dot(x, y, { r: 1.6, color: 'muted', alpha: 0.5 }); }
           sub.filter((k) => k <= 400).forEach((k) => { const [x, y] = mean(md, k); S.dot(x, y, { r: 4, color: 'gold' }); });
           for (let i = 0; i < 400; i++) { const [x, y] = pt(md, n, Z[i]); S.dot(x, y, { r: 2, color: 'accent', alpha: 0.5 }); }
           S.rect(-Mv, -Mv, Mv, Mv, { color: 'red', width: 1.8 });
@@ -706,7 +705,7 @@ $$\mu(A)=\lim_{T\to\infty}(2\pi)^{-d}\int_{[-T,T]^d}\prod_{j=1}^d\psi_j(t_j)\,\v
       deps: ['prob-3.3.17', 'prob-3.10.3', 'prob-3.10.4'],
       tags: ['characteristic functions', 'multivariate'],
       viz(v) {
-        const nS = v.slider('$n$', 1, 100, 3, { int: true, log: true });
+        const nS = v.slider('$n$', 1, 100, 5, { int: true, log: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const S3 = v.stage3d({ range: 4.6, height: 360, yaw: -0.6, pitch: 0.5, labels: ['t₁', 't₂', 'Re φ'] });
         const P = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, height: 360, axes: true, title: 'samples of $X_n$' });

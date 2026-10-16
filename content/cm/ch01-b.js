@@ -25,7 +25,7 @@ export default {
         const M = v.M, NG = 160;
         const nS = v.slider('electrons per site $n$', 0.04, 1.96, 0.8, { step: 0.01 });
         const tpS = v.slider("diagonal hopping $t'/t$", -0.4, 0.4, 0, { step: 0.01 });
-        const sA = v.stage({ x: [-PI, PI], y: [-PI, PI], equal: true, height: 400, axes: 'box', gutter: true, weight: 1, xlabel: 'kₓ', ylabel: 'k_y', title: 'Brillouin zone: occupied states and Fermi surface', xticks: [[-PI, '−π'], [0, '0'], [PI, 'π']], yticks: [[-PI, '−π'], [0, '0'], [PI, 'π']] });
+        const sA = v.stage({ x: [-PI, PI], y: [-PI, PI], equal: true, height: 400, axes: 'box', gutter: true, weight: 1, xlabel: '$k_x$', ylabel: '$k_y$', title: 'Brillouin zone: occupied states and Fermi surface', xticks: [[-PI, '−π'], [0, '0'], [PI, 'π']], yticks: [[-PI, '−π'], [0, '0'], [PI, 'π']] });
         const sB = v.stage({ x: [0, 2], y: [-4.6, 4.6], height: 400, axes: 'box', gutter: true, weight: 1, xlabel: 'electrons per site n', ylabel: 'μ / t', title: 'chemical potential against filling' });
         const E = (kx, ky, tp) => -2 * (Math.cos(kx) + Math.cos(ky)) - 4 * tp * Math.cos(kx) * Math.cos(ky);
         let sortKey = '', sorted = null;
@@ -79,7 +79,7 @@ export default {
         const probe = v.slider('probe energy $E$', -4, 4, -1.5, { step: 0.01 });
         function sync() { tpS.el.hidden = model.value !== '2'; }
         sync();
-        const sL = v.stage({ x: [-PI, PI], y: [-PI, PI], equal: true, height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'kₓ', ylabel: 'k_y', title: 'band $E(\\mathbf k)$' });
+        const sL = v.stage({ x: [-PI, PI], y: [-PI, PI], equal: true, height: 360, axes: 'box', gutter: true, weight: 1, xlabel: '$k_x$', ylabel: '$k_y$', title: 'band $E(\\mathbf k)$' });
         const sR = v.stage({ x: [-4, 4], y: [0, 0.4], height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'E / t', ylabel: 'g(E)', title: 'density of states $g(E)$' });
         const NX = (d) => (d === 1 ? resS.value * 10 : d === 2 ? resS.value : Math.round(resS.value / 4) + 2);
         const energies = (d, N, tp) => {
@@ -115,12 +115,12 @@ export default {
           sR.hist({ edges: Array.from({ length: nb + 1 }, (_, i) => lo + i * w), counts: Array.from(bars) }, { color: 'accent', fillAlpha: 0.3 });
           if (d === 1 || Math.abs(tp) < 1e-9 && d === 2) sR.fn(g, { domain: [lo + 0.002, hi - 0.002], color: 'ink', width: 2, n: 600 });
           else sR.fn(g, { domain: [lo + 0.002, hi - 0.002], color: 'ink', width: 2, n: 400 });
-          for (const [e, lab] of crit) { sR.vline(e, { color: 'red', width: 1.2, dash: [4, 4] }); sR.text(lab, e, top * 0.96, { size: 10.5, color: 'red', align: 'center', dy: 0 }); }
+          for (const [e, lab] of crit) { sR.vline(e, { color: 'red', width: 1.2, dash: [4, 4] }); sR.text(lab, e, top * 0.96, { size: 10.5, color: 'red', align: e <= lo + 1e-9 ? 'left' : e >= hi - 1e-9 ? 'right' : 'center', dx: e <= lo + 1e-9 ? 4 : e >= hi - 1e-9 ? -4 : 0 }); }
           const pe = M.clamp(probe.value, lo, hi);
           sR.vline(pe, { color: 'orange', width: 2.6 });
           // left panel
           if (d === 2) {
-            sL.setView([-PI, PI], [-PI, PI]); sL.setLabels('kₓ', 'k_y');
+            sL.setView([-PI, PI], [-PI, PI]); sL.setLabels('$k_x$', '$k_y$');
             sL.heat((x, y) => E2(x, y, tp), { cmap: 'theme', color: 'accent', range: [lo, hi], res: 3, key: 'e2|' + tp.toFixed(3) });
             sL.contour((x, y) => E2(x, y, tp), 10, { color: 'muted', width: 1, alpha: 0.3, res: 90 });
             sL.contour((x, y) => E2(x, y, tp), [pe], { color: 'orange', width: 3.4, res: 200 });
@@ -151,7 +151,7 @@ export default {
         v.legend([['accent', 'histogram of band energies', { area: true }], ['ink', 'exact $g(E)$ / fine-grid reference'], ['orange', 'probe energy'], ['red', 'critical points', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
-          return `${st.count.toLocaleString('en')} $k$-points ($N=${st.N}$ per axis) · at the probe energy: histogram $g=${v.fix(st.gbin, 4)}$, reference $g=${Number.isFinite(st.gexact) ? v.fix(st.gexact, 4) : '0'}$ (states per cell per spin per $t$)` + (st.d === 2 ? ` · $\\max|\\nabla E|$ at $\\Gamma,X,M$ = ${st.gradMax.toExponential(1)}$ (zero, as a critical point needs).` : '.');
+          return `${st.count.toLocaleString('en')} $k$-points ($N=${st.N}$ per axis) · at the probe energy: histogram $g=${v.fix(st.gbin, 4)}$, reference $g=${Number.isFinite(st.gexact) ? v.fix(st.gexact, 4) : '0'}$ (states per cell per spin per $t$)` + (st.d === 2 ? ` · $\\max|\\nabla E|$ at $\\Gamma,X,M$: $${st.gradMax < 1e-7 ? '<10^{-7}' : v.sci(st.gradMax, 1)}$ (zero, as a critical point needs).` : '.');
         });
       },
     },
@@ -177,14 +177,14 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
         const aS = v.slider('twist $\\alpha$', 0, 8, 3, { step: 0.05 }); aS.el.hidden = true;
         const uS = v.slider('potential strength $U$', 0.2, 1.6, 0.8, { step: 0.01 });
         const rnd = v.rng(7), RPH = ks.map(() => rnd() * TAU);
-        const sW = v.stage({ x: [-6, 6], y: [-0.4, 2.6], height: 340, axes: 'box', gutter: true, full: true, xlabel: 'x / a', ylabel: 'a^{1/2} w(x)', title: 'Wannier function $w_0(x)$ and its neighbour' });
+        const sW = v.stage({ x: [-6, 6], y: [-0.4, 2.6], height: 340, axes: 'box', gutter: true, full: true, xlabel: 'x / a', ylabel: '$a^{1/2}w$', title: 'Wannier function $w_0(x)$ and its neighbour' });
         const sG = v.stage({ x: [-1, 1], y: [-PI, PI], height: 220, axes: 'box', gutter: true, weight: 1, xlabel: 'k  (π/a)', ylabel: 'θ(k)', title: 'phase gauge $\\theta(k)$ applied to $\\psi_k$', yticks: [[-PI, '−π'], [0, '0'], [PI, 'π']] });
-        const sD = v.stage({ x: [-NC / 2, NC / 2], y: [0, 1], height: 220, axes: 'box', gutter: true, weight: 1, xlabel: 'x / a', ylabel: '|w|²  (log scale)', title: 'tails of $|w_0|^2$ on the whole ring', ylog: false });
+        const sD = v.stage({ x: [-NC / 2, NC / 2], y: [0, 1], height: 220, axes: 'box', gutter: true, weight: 1, xlabel: 'x / a', ylabel: '$\\log_{10}|w|^2$', title: 'tails of $|w_0|^2$ on the whole ring', ylog: false });
         let cacheKey = '', data = null;
         const theta = (k, j) => (gauge.value === 'smooth' ? 0 : gauge.value === 'twist' ? aS.value * Math.sin(PI * k) : RPH[j]);
         const build = () => {
           const key = [gauge.value, aS.value.toFixed(2), uS.value.toFixed(3)].join('|'); if (key === cacheKey) return data;
-          const bl = ks.map((k) => nfeSolve(M, [uS.value], k).C[0]), N = 6, nx = XS.length;
+          const bl = ks.map((k) => nfeSolve(M, [-uS.value], k).C[0]), N = 6, nx = XS.length;
           // gauge: component m = 0 real and positive (eigSym only fixes the largest component, which flips beyond |k| = 1/2 at the edge)
           bl.forEach((c, j) => { const s = c[N] < 0 ? -1 : 1; for (let m = 0; m < c.length; m++) c[m] *= s; });
           const psi = ks.map((k, j) => { const re = new Float64Array(nx), im = new Float64Array(nx), th = theta(k, j), cr = Math.cos(th), ci = Math.sin(th); for (let i = 0; i < nx; i++) { const b = blochAt(bl[j], N, k, XS[i]); re[i] = b.re * cr - b.im * ci; im[i] = b.re * ci + b.im * cr; } return { re, im }; });
@@ -199,13 +199,13 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
           const D = build(), nx = XS.length;
           const sc = 1 / Math.max(...Array.from(D.w0.re, (r, i) => Math.hypot(r, D.w0.im[i]))) * 0 + 1;
           const pk = Math.max(...Array.from(D.w0.re, (r, i) => Math.hypot(r, D.w0.im[i])));
-          sW.setView([-6, 6], [-0.35 * pk, 1.25 * pk]);
+          sW.setView([-6, 6], [-0.55 * pk, 1.2 * pk]);
           sW.hline(0, { color: 'grid' });
           sW.path(XS.map((x, i) => [x, D.w1.re[i]]), { color: 'orange', width: 1.8, dash: [5, 4] });
           sW.path(XS.map((x, i) => [x, D.w0.im[i]]), { color: 'purple', width: 1.3, alpha: 0.8 });
           sW.poly([[XS[0], 0], ...XS.map((x, i) => [x, Math.hypot(D.w0.re[i], D.w0.im[i])]), [XS[nx - 1], 0]], { fill: 'accent', fillAlpha: 0.14, stroke: false });
           sW.path(XS.map((x, i) => [x, D.w0.re[i]]), { color: 'accent', width: 2.6 });
-          for (let n = -6; n <= 6; n++) sW.dot(n, -0.2 * pk, { r: 3.5, color: 'muted' });
+          for (let n = -6; n <= 6; n++) sW.dot(n, -0.42 * pk, { r: 3.5, color: 'muted' });
           // gauge phases
           sG.path(lin(-1, 1, 201).map((k) => [k, gauge.value === 'smooth' ? 0 : gauge.value === 'twist' ? ((aS.value * Math.sin(PI * k) + PI) % TAU + TAU) % TAU - PI : NaN]), { color: 'purple', width: 2.4 });
           if (gauge.value === 'random') sG.dots(ks.map((k, j) => [k, RPH[j] - PI]), { r: 4, color: 'purple' });
@@ -220,7 +220,7 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
         v.legend([['accent', 'Re $w_0$ (area: $|w_0|$)'], ['purple', 'Im $w_0$'], ['orange', 'Re $w_1$ (next cell)', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
-          return `$\\int|w_0|^2=${v.fix(st.self, 4)}$ · overlap with the neighbour $|\\langle w_0|w_1\\rangle|=${st.ov.toExponential(1)}$ · spread $\\sqrt{\\langle x^2\\rangle-\\langle x\\rangle^2}=$ **${v.fix(st.spread, 2)}** cells (a ring of 21 cells would give ${v.fix(NC / Math.sqrt(12), 2)} if completely spread out).`;
+          return `$\\int|w_0|^2=${v.fix(st.self, 4)}$ · overlap with the neighbour $|\\langle w_0|w_1\\rangle|=${v.sci(Math.max(st.ov, 1e-17), 1)}$ · spread $\\sqrt{\\langle x^2\\rangle-\\langle x\\rangle^2}=$ **${v.fix(st.spread, 2)}** cells (a ring of 21 cells would give ${v.fix(NC / Math.sqrt(12), 2)} if completely spread out).`;
         });
       },
     },
@@ -245,7 +245,7 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
         const nS = v.slider('cells $N$', 4, 24, 12, { int: true });
         const sE = v.stage({ x: [0, 1], y: [-3.4, 3.4], height: 330, axes: 'box', gutter: true, weight: 1, xlabel: 'level index', ylabel: 'E', title: 'levels of the open chain' });
         const sC = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, axes: true, weight: 0.85, title: 'bulk $h(k)=v+we^{ik}$ in the complex plane' });
-        const sP = v.stage({ x: [0, 1], y: [0, 1], height: 230, axes: 'box', gutter: true, full: true, xlabel: 'site j', ylabel: '|ψ_j|²', title: 'the two states closest to $E=0$ (end-localized combinations)' });
+        const sP = v.stage({ x: [0, 1], y: [0, 1], height: 230, axes: 'box', gutter: true, full: true, xlabel: 'site j', ylabel: '$|\\psi_j|^2$', title: 'the two states closest to $E=0$ (end-localized combinations)' });
         let st = null;
         v.render(() => {
           const vv = vS.value, ww = wS.value, N = nS.value, L = 2 * N, H = Array.from({ length: L }, () => new Array(L).fill(0));
@@ -257,7 +257,7 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
           sE.hline(0, { color: 'grid' });
           const mid = idx.map((_, j) => j).sort((a, b) => Math.abs(En[a]) - Math.abs(En[b])).slice(0, 2);
           En.forEach((E, j) => sE.dot(j, E, { r: mid.includes(j) && Math.abs(E) < gapBulk * 0.5 && gapBulk > 1e-6 ? 6 : 3.6, color: mid.includes(j) && Math.abs(E) < gapBulk * 0.5 ? 'gold' : 'accent' }));
-          sE.text('bulk band', L - 1, top * 1.02, { size: 11, color: 'muted', align: 'right' });
+          sE.text('bulk bands (shaded)', 0, top * 1.07, { size: 11, color: 'muted', align: 'left' });
           // winding
           const pts = lin(0, TAU, 181).map((k) => [vv + ww * Math.cos(k), ww * Math.sin(k)]);
           let tot = 0; for (let i = 0; i < pts.length - 1; i++) { let d = Math.atan2(pts[i + 1][1], pts[i + 1][0]) - Math.atan2(pts[i][1], pts[i][0]); while (d > PI) d -= TAU; while (d < -PI) d += TAU; tot += d; }
@@ -280,10 +280,10 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
           const edge = En[mid[0]], edge2 = En[mid[1]];
           st = { W, gapBulk, E1: edge, E2: edge2, nEdge: En.filter((E) => Math.abs(E) < gapBulk * 0.5).length };
         });
-        v.legend([['accent', 'state A'], ['orange', 'state B'], ['green', 'winding 1'], ['red', 'winding 0']]);
+        v.legend([['accent', 'combination $(\\psi_1+\\psi_2)/\\sqrt2$ or its mirror'], ['orange', 'the other combination'], ['green', 'winding 1'], ['red', 'winding 0']]);
         v.readout(() => {
           if (!st) return '';
-          return `bulk gap $2|v-w|=${v.fix(2 * st.gapBulk, 3)}$ · winding number of $h(k)$ about the origin: **${st.W}** (${vS.value < wS.value ? '$v<w$' : '$v>w$'}) · states inside the gap: **${st.nEdge}** (energies $${st.E1.toExponential(1)}$, $${st.E2.toExponential(1)}$) — the count equals $2\\times$winding.`;
+          return `bulk gap $2|v-w|=${v.fix(2 * st.gapBulk, 3)}$ · winding number of $h(k)$ about the origin: **${st.W}** (${vS.value < wS.value ? '$v<w$' : '$v>w$'}) · states inside the gap: **${st.nEdge}** (energies $${v.sci(st.E1, 2)}$ and $${v.sci(st.E2, 2)}$) — the count equals $2\\times$winding.`;
         });
       },
     },
@@ -309,9 +309,9 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
         const wS = v.slider('disorder $W/t$', 0, 6, 2, { step: 0.05 });
         const nS = v.slider('eigenstate (by energy)', 1, L, 45, { int: true });
         v.button('Resample', () => { seed += 1; draw(seed); cacheKey = ''; });
-        const sA = v.stage({ x: [0, L + 1], y: [0, 1], height: 250, axes: 'box', gutter: true, weight: 1, xlabel: 'site j', ylabel: '|ψ_j|²', title: 'selected eigenstate' });
-        const sB = v.stage({ x: [0, L + 1], y: [-12, 0], height: 250, axes: 'box', gutter: true, weight: 1, xlabel: 'site j', ylabel: 'log₁₀|ψ_j|²', title: 'logarithm: exponential tails' });
-        const sX = v.stage({ x: [0, 6], y: [0, 3.2], height: 260, axes: 'box', gutter: true, full: true, xlabel: 'disorder W / t', ylabel: 'log₁₀ ξ (sites)', title: 'localization length against disorder', xticks: [0, 1, 2, 3, 4, 5, 6], yticks: [[0, '1'], [1, '10'], [2, '100'], [3, '1000']] });
+        const sA = v.stage({ x: [0, L + 1], y: [0, 1], height: 250, axes: 'box', gutter: true, weight: 1, xlabel: 'site j', ylabel: '$|\\psi_j|^2$', title: 'selected eigenstate' });
+        const sB = v.stage({ x: [0, L + 1], y: [-12, 0], height: 250, axes: 'box', gutter: true, weight: 1, xlabel: 'site j', ylabel: '$\\log_{10}|\\psi_j|^2$', title: 'logarithm: exponential tails' });
+        const sX = v.stage({ x: [0, 6], y: [0, 3.2], height: 260, axes: 'box', gutter: true, full: true, xlabel: 'disorder W / t', ylabel: 'ξ (sites, log scale)', title: 'localization length against disorder', xticks: [0, 1, 2, 3, 4, 5, 6], yticks: [[0, '1'], [1, '10'], [2, '100'], [3, '1000']] });
         let cacheKey = '', eig = null;
         const lyap = (E, W) => { let a = 1, b = 0, s = 0; for (let n = 0; n < NLONG; n++) { const c = (W * long[n] - E) * a - b; b = a; a = c; const m = Math.hypot(a, b); if (m > 1e100 || m < 1e-100 || (n & 63) === 0) { s += Math.log(m); a /= m; b /= m; } } return s / NLONG; };
         let st = null;

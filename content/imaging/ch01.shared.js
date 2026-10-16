@@ -29,9 +29,13 @@ export function showImage(s, data, W, H, o = {}) {
   const lo = o.lo ?? 0, hi = o.hi ?? 1, sm = o.smooth, g = o.gamma ?? 1;
   const at = (i, j) => data[clamp(j, 0, H - 1) * W + clamp(i, 0, W - 1)];
   s.raster((x, y) => {
-    if (x < 0 || x >= W || y < 0 || y >= H) return null;
     let val;
-    if (sm) {
+    if (o.win) { // window [x0, x1, y0, y1] of the stage that the whole image covers (nearest pixel)
+      const [x0, x1, y0, y1] = o.win, fi = Math.floor(((x - x0) / (x1 - x0)) * W), fj = H - 1 - Math.floor(((y - y0) / (y1 - y0)) * H);
+      if (fi < 0 || fi >= W || fj < 0 || fj >= H) return null;
+      val = data[fj * W + fi];
+    } else if (x < 0 || x >= W || y < 0 || y >= H) return null;
+    else if (sm) {
       const u = x - 0.5, w = H - y - 0.5, i = Math.floor(u), j = Math.floor(w), a = u - i, b = w - j;
       val = (1 - b) * ((1 - a) * at(i, j) + a * at(i + 1, j)) + b * ((1 - a) * at(i, j + 1) + a * at(i + 1, j + 1));
     } else val = data[(H - 1 - Math.floor(y)) * W + Math.floor(x)];
@@ -39,10 +43,10 @@ export function showImage(s, data, W, H, o = {}) {
     if (g !== 1) t = Math.pow(t, g);
     const c = Math.round(255 * t);
     return [c, c, c];
-  }, { res: 1, id: o.id || 'img', key: `${idOf(data)}|${lo}|${hi}|${sm ? 1 : 0}|${g}|${o.extra || ''}`, rect: o.rect });
+  }, { res: 1, id: o.id || 'img', key: `${idOf(data)}|${lo}|${hi}|${sm ? 1 : 0}|${g}|${o.win || ''}|${o.extra || ''}`, rect: o.rect });
 }
 /** Frame around an image drawn in the muted colour. */
-export function frame(s, W, H) { s.rect(0, 0, W, H, { color: 'muted', width: 1, fill: false, stroke: true, alpha: 0.7 }); }
+export function frame(s, W, H) { s.rect(0, 0, W, H, { color: 'muted', width: 1, alpha: 0.7 }); }
 
 // ---------------------------------------------------------------- point spread functions (odd square kernels, sum 1)
 /**
@@ -74,6 +78,14 @@ export function psfKernel(type, w, ang = 0) {
   if (s <= 0) a[c * K + c] = s = 1;
   for (let i = 0; i < a.length; i++) a[i] /= s;
   return { K, a, c };
+}
+
+const pc = new Map();
+/** Memoised psfKernel (width rounded to 0.05 px). */
+export function psfC(type, w, ang = 0) {
+  const key = `${type}|${Math.round(w * 20)}|${Math.round(ang)}`;
+  if (!pc.has(key)) { if (pc.size > 400) pc.clear(); pc.set(key, psfKernel(type, Math.round(w * 20) / 20, ang)); }
+  return pc.get(key);
 }
 
 // ---------------------------------------------------------------- convolution

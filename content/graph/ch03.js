@@ -177,7 +177,7 @@ export default {
           const I = info(G), list = mode.value === 'c' ? I.cyc : I.bonds, fk = focus ? I.H.eix.get(focus) : null;
           const L = list.filter((x) => fk == null || x.E[fk]).sort((a, b) => popc32(a.E) - popc32(b.E));
           if (!L.length) return [{ I, none: true, note: 'No such set through the chosen edge (a bridge lies on no cycle).' }];
-          return L.map((x, i) => { const bl = [...blocksOf(I, x.E)]; return { I, x, bl, note: `${mode.value === 'c' ? 'Cycle' : 'Bond'} ${i + 1} of ${L.length}: ${popc32(x.E)} edges, all in block B${bl[0] + 1}${bl.length === 1 ? ' ✓' : ' ✗'}` }; });
+          return L.map((x, i) => { const bl = [...blocksOf(I, x.E)]; return { I, x, bl, note: `${mode.value === 'c' ? 'Cycle' : 'Bond'} ${i + 1} of ${L.length}: ${popc32(x.E)} edge${popc32(x.E) === 1 ? '' : 's'}, all in block B${bl[0] + 1}${bl.length === 1 ? ' ✓' : ' ✗'}` }; });
         }
         const popc32 = (E) => E.reduce((a, b) => a + b, 0);
         const S = v.steps({ frames, speed: 1.4, counter: 'set', still: 3 });
@@ -239,8 +239,8 @@ export default {
           G.draw({ ...st(cE, 'accent'), nodeRing: (id) => (H.at(id) === c.cutv ? 'red' : null) });
           const side = (id) => c.Bd && (c.Bd.side >> H.at(id)) & 1;
           G2.draw({ ...st(bE, 'red'), edgeDash: (e) => { const k = H2.eix.get(e); return !!(bE && bE[k]) && k !== c.ke && k !== c.kf; }, nodeFill: (id) => (c.Bd && side(id) ? 'purple' : null), nodeColor: (id) => (c.Bd && !side(id) ? 'purple' : null), nodeRing: (id) => (H.at(id) === c.cutv ? 'red' : null) });
-          if (!c.C) s1.corner(c.cutv != null ? `no common cycle — cutvertex ${vname(G, H, c.cutv)} separates them` : 'no common cycle', 'bl', { color: 'red', weight: 700, size: 12.5 });
-          if (!c.Bd) s2.corner('no common bond', 'bl', { color: 'red', weight: 700, size: 12.5 });
+          s1.setTitle(c.C ? 'a cycle through $e$ and $f$' : c.cutv != null ? `no common cycle — cutvertex ${vname(G, H, c.cutv)} separates them` : 'no common cycle');
+          s2.setTitle(c.Bd ? 'a bond through $e$ and $f$' : 'no common bond');
         });
         v.legend([['gold', '$e$'], ['orange', '$f$'], ['accent', 'cycle'], ['red', 'bond', { dash: true }], ['purple', 'sides of the bond', { dot: true }]]);
         v.readout(() => {
@@ -388,11 +388,12 @@ export default {
           G.draw({ edgeColor: (f) => (f === e ? 'red' : null), edgeWidth: (f) => (f === e ? 4 : null), edgeDash: (f) => f === e,
             nodeFill: (id) => (xs.has(K(id)) ? null : X.length && c.CG.k > 1 ? PALETTE[c.CG.comp[c.H.at(id)] % PALETTE.length] : null),
             nodeColor: (id) => (c.sup.has(K(id)) ? 'orange' : null), nodeRing: (id) => (xs.has(K(id)) ? 'red' : null), dim: X });
-          R.draw({ edgeColor: (f) => (c.xe.includes(f.mg) ? 'red' : f.mg.path.length > 2 ? 'orange' : null), edgeWidth: (f) => (c.xe.includes(f.mg) || f.mg.path.length > 2 ? 3.5 : null), edgeDash: (f) => c.xe.includes(f.mg),
+          const pk = (f) => f.path.map(K).join('>'), xeK = new Set(c.xe.map(pk)), isX = (f) => xeK.has(pk(f.mg));
+          R.draw({ edgeColor: (f) => (isX(f) ? 'red' : f.mg.path.length > 2 ? 'orange' : null), edgeWidth: (f) => (isX(f) || f.mg.path.length > 2 ? 3.5 : null), edgeDash: (f) => isX(f),
             nodeFill: (id) => (c.xv.some((x) => K(x) === K(id)) ? null : X.length && c.CD.k > 1 ? PALETTE[c.CD.comp[c.Hd.at(id)] % PALETTE.length] : null), dim: c.xv, nodeRing: (id) => (c.xv.some((x) => K(x) === K(id)) ? 'red' : null) });
-          if (X.length) s.corner(c.CG.k > 1 ? `{${X.map((x) => G.lab(x)).join(', ')}} separates G` : `{${X.map((x) => G.lab(x)).join(', ')}} does not separate G`, 'bl', { color: c.CG.k > 1 ? 'red' : 'green', weight: 700, size: 12.5 });
+          s.setTitle(X.length ? `$G$ — {${X.map((x) => G.lab(x)).join(', ')}} ${c.CG.k > 1 ? '**separates** $G$ ✗' : 'does not separate $G$ ✓'}` : '$G$ — click vertices to test a separator');
           const f = mgFlaws(c.D.M);
-          t.corner(c.three.ok ? '3-connected' : f.par ? `${f.par} pair${f.par > 1 ? 's' : ''} of parallel edges` : c.three.small ? 'too small' : `separator {${c.three.sep.map((i) => G.lab(c.D.M.ids[i])).join(', ')}}`, 'tl', { color: c.three.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+          t.setTitle(`$G\\,\\dot-\\,e$ — ${c.three.ok ? '3-connected ✓' : f.par ? `${f.par} pair${f.par > 1 ? 's' : ''} of parallel edges ✗` : c.three.small ? 'too small ✗' : `separator {${c.three.sep.map((i) => G.lab(c.D.M.ids[i])).join(', ')}} ✗`}`);
         });
         v.legend([['red', '$e$ / deleted $x_i\'$', { dash: true }], ['orange', 'suppressed end; merged edge'], ['red', 'tested separator', { dot: true }]]);
         v.readout(() => {
@@ -445,9 +446,9 @@ export default {
             nodeFill: (id) => (T4 && T4.branch.includes(H.at(id)) ? 'gold' : null),
           });
           if (e0) { const D = delSuppress(I.M, k); showMG(R, G, D.M, ''); const th = mgIs3(D.M); R.draw({ edgeColor: (f) => (f.mg.path.length > 2 ? 'orange' : null), edgeWidth: (f) => (f.mg.path.length > 2 ? 3.5 : null) });
-            t.corner(th.ok ? '3-connected' : mgFlaws(D.M).par ? 'parallel edges' : 'not 3-connected', 'tl', { color: th.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+            t.setTitle(`$G\\,\\dot-\\,e$ — ${th.ok ? '3-connected ✓' : mgFlaws(D.M).par ? 'parallel edges ✗' : 'not 3-connected ✗'}`);
             const a = G.node(e0.from), b = G.node(e0.to); s.text('e', (a.x + b.x) / 2, (a.y + b.y) / 2, { dx: 9, dy: -9, color: 'ink', size: 14, math: true });
-          } else { showMG(R, G, I.M, ''); R.draw({}); t.corner('no deletable edge', 'tl', { color: 'red', weight: 700, size: 12.5 }); }
+          } else { showMG(R, G, I.M, ''); R.draw({}); t.setTitle('$G\\,\\dot-\\,e$ — no deletable edge'); }
         });
         v.legend([['green', '$G\\,\\dot-\\,e$ 3-connected'], ['red', 'not', { dash: true }], ['accent', '$C$'], ['orange', '$P$'], ['purple', '$Q$']]);
         v.readout(() => {
@@ -528,7 +529,7 @@ export default {
         const info = cacheBy((G) => { const H = ix(G), M = toMG(H); return { H, M, res: H.E.map((_, k) => { const c = contractMG(M, k); return { c, t: mgIs3(c.M) }; }), three: is3(H) }; });
         v.render(() => {
           const I = info(G), { H } = I; if (sel && !G.edges.includes(sel)) sel = null;
-          const k = sel ? H.eix.get(sel) : I.res.findIndex((r) => !r.t.ok), e0 = k >= 0 ? H.E[k][2] : null;
+          const bad = I.res.findIndex((r) => !r.t.ok), k = sel ? H.eix.get(sel) : bad >= 0 ? bad : H.m ? 0 : -1, e0 = k >= 0 ? H.E[k][2] : null;
           let T = new Set(), CG = null;
           if (e0) {
             const r = I.res[k], c = r.c; showMG(R, G, c.M, 'c');
@@ -538,7 +539,7 @@ export default {
             // position the merged vertex at the midpoint of e
             const a = G.node(e0.from), b = G.node(e0.to), m = R.node(c.kept); if (m) { m.x = (a.x + b.x) / 2; m.y = (a.y + b.y) / 2; m.label = G.lab(e0.from) + G.lab(e0.to); }
             R.draw({ nodeFill: (id) => (K(id) === vxy ? 'gold' : CG ? null : null), nodeRing: (id) => (sepIds.some((x) => K(x) === K(id)) ? 'red' : null) });
-            t.corner(r.t.ok ? '3-connected' : r.t.small ? 'only 3 vertices' : `2-separator {${sepIds.map((id) => (K(id) === vxy ? 'merged vertex' : G.lab(id))).join(', ')}}`, 'tl', { color: r.t.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+            t.setTitle(`$G/e$ — ${r.t.ok ? '3-connected ✓' : r.t.small ? 'only 3 vertices ✗' : `2-separator {${sepIds.map((id) => (K(id) === vxy ? '$v_{xy}$' : G.lab(id))).join(', ')}} ✗`}`);
           }
           G.draw({
             edgeColor: (e) => (I.res[H.eix.get(e)].t.ok ? 'green' : 'red'), edgeWidth: (e) => (e === e0 ? 6 : 3), edgeDash: (e) => !I.res[H.eix.get(e)].t.ok,

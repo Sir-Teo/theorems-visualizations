@@ -210,7 +210,7 @@ function conflicts(R, maxSize) {
     const ss = stepsOf(t, R); if (ss.length < 2) continue;
     let diff = false;
     for (let i = 0; i < ss.length; i++) for (let j = i + 1; j < ss.length; j++) if (!eqT(ss[i].to, ss[j].to)) {
-      diff = true; const k = [ss[i].axiom, ss[j].axiom].sort().join('|'); pairs.set(k, (pairs.get(k) || 0) + 1);
+      diff = true; const k = [ss[i].rule, ss[j].rule].sort().join('|'); pairs.set(k, (pairs.get(k) || 0) + 1);
     }
     if (diff) { multi++; if (!first) first = t; }
   }
@@ -362,7 +362,7 @@ export default {
             ok.set(n, h && ihs); done.add(n);
             const lhs = P.lhs(n), rhs = P.rhs(n);
             let note;
-            if (!ks.length) note = h ? `**${caseName(n.op)}.** $P$ holds directly: ${P.text.replace('t', NB_LABEL[n.op])} reads ${lhs} ${P.cmp} ${rhs}. ✓` : `**${caseName(n.op)}.** Here $P$ must hold outright, but ${lhs} ${P.cmp} ${rhs} is **false**. The base case fails, so no induction can prove this property.`;
+            if (!ks.length) note = h ? `**${caseName(n.op)}.** $P$ holds directly: ${P.text.replaceAll('(t)', `(${NB_LABEL[n.op]})`)} reads ${lhs} ${P.cmp} ${rhs}. ✓` : `**${caseName(n.op)}.** Here $P$ must hold outright, but ${lhs} ${P.cmp} ${rhs} is **false**. The base case fails, so no induction can prove this property.`;
             else if (!ihs) note = `**${caseName(n.op)}.** The induction hypothesis is not available for every child, so this node cannot be proved.`;
             else note = h ? `**${caseName(n.op)}.** Assume $P$ for ${ks.length === 1 ? 'the child' : 'all three children'} (green). Then for this node ${lhs} ${P.cmp} ${rhs}. ✓` : `**${caseName(n.op)}.** The hypothesis holds for the children, yet for this node ${lhs} ${P.cmp} ${rhs} is **false**: the inductive step fails, so the proof breaks here.`;
             fr.push({ t, node: n, done: new Set(done), ok: new Map(ok), kind: ks.length ? 'step' : 'base', h, note, lhs, rhs });

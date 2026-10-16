@@ -106,7 +106,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
         const fold = v.slider('fold into the first zone', 0, 1, 0, { step: 0.01 });
         const rep = v.toggle('repeated-zone scheme', false, { onChange: () => { fold.el.hidden = rep.value; } });
         const chk = v.toggle('real-space ring check', true);
-        const sA = v.stage({ x: [-3, 3], y: [0, 10], height: 340, axes: 'box', gutter: true, full: true, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', xticks: [-3, -2, -1, 0, 1, 2, 3] });
+        const sA = v.stage({ x: [-3, 3], y: [0, 10], height: 340, axes: 'box', gutter: true, full: true, xlabel: '$k$  (units of $\\pi/a$)', ylabel: '$E/E_1$', xticks: [-3, -2, -1, 0, 1, 2, 3] });
         const sZ = v.stage({ x: [-3, 3], y: [-0.32, 1], height: 112, axes: false, full: true });
         let cacheK = '', cache = null, ringK = '', ring = null;
         const compute = () => {
@@ -195,7 +195,7 @@ so a **gap** $E_g=2|U_{\mathbf G}|$ opens exactly on the plane, and each Fourier
         const U1 = v.slider('first harmonic $U_1$', 0, 1.2, 0.4, { step: 0.01 });
         const U2 = v.slider('second harmonic $U_2$', 0, 0.8, 0.2, { step: 0.01 });
         const free = v.toggle('free-electron parabolas', true);
-        const sA = v.stage({ x: [-1, 1], y: [0, 10], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', title: 'bands in the reduced zone', xticks: [-1, -0.5, 0, 0.5, 1] });
+        const sA = v.stage({ x: [-1, 1], y: [0, 10], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: '$k$  (units of $\\pi/a$)', ylabel: '$E/E_1$', title: 'bands in the reduced zone', xticks: [-1, -0.5, 0, 0.5, 1] });
         const sB = v.stage({ x: [0, 1.2], y: [0, 2.6], height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'U₁', ylabel: 'gap at k = π/a', title: 'first gap against $2|U_1|$' });
         let sweepKey = '', sweep = null;
         let st = null;
@@ -247,7 +247,7 @@ so a **gap** $E_g=2|U_{\mathbf G}|$ opens exactly on the plane, and each Fourier
         const kS = v.slider('crystal momentum $k$  ($\\pi/a$)', 0.05, 1, 1, { step: 0.01 });
         const rep = v.toggle('repulsive centres (flip the sign of $U_1$)', false);
         const sA = v.stage({ x: [-1.5, 1.5], y: [0, 3.3], height: 340, axes: 'box', gutter: true, weight: 1.3, xlabel: 'x / a', ylabel: '|ψ|²', title: 'charge density of the two states at $k$' });
-        const sB = v.stage({ x: [0.2, 1.8], y: [0, 3.6], height: 340, axes: 'box', gutter: true, weight: 1, xlabel: 'k  (units of π/a, extended zone)', ylabel: 'E / E₁', title: 'energy near the zone boundary' });
+        const sB = v.stage({ x: [0.2, 1.8], y: [0, 3.6], height: 340, axes: 'box', gutter: true, weight: 1, xlabel: 'k  (units of π/a, extended zone)', ylabel: '$E/E_1$', title: 'energy near the zone boundary' });
         const kk = lin(0.2, 1, 41);
         let st = null;
         v.render(() => {
@@ -377,7 +377,7 @@ They touch, with $f=0$, only at the corners $K$ and $K'$ of the hexagonal Brillo
         const zS = v.slider('electrons per cell $Z$', 1, 6, 2, { int: true });
         const U = v.slider('potential strength $U$', 0, 1.5, 0.5, { step: 0.01 });
         const extra = v.toggle('add one more electron', false);
-        const sA = v.stage({ x: [-1.08, 1.08], y: [-0.5, 10.5], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', title: 'allowed $k$ of a ring of $N$ cells', xticks: [-1, -0.5, 0, 0.5, 1] });
+        const sA = v.stage({ x: [-1.08, 1.08], y: [-0.5, 10.5], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: '$k$  (units of $\\pi/a$)', ylabel: '$E/E_1$', title: 'allowed $k$ of a ring of $N$ cells', xticks: [-1, -0.5, 0, 0.5, 1] });
         const sB = v.stage({ x: [0, 1], y: [0, NB + 0.4], height: 360, axes: false, weight: 0.8, title: 'how full is each band?' });
         const cacheE = new Map();
         const bandE = (k, u) => { const key = u.toFixed(3) + '|' + k.toFixed(5); if (!cacheE.has(key)) { if (cacheE.size > 3000) cacheE.clear(); cacheE.set(key, nfeSolve(M, [u], k).E.slice(0, NB)); } return cacheE.get(key); };
