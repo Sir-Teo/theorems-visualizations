@@ -191,6 +191,18 @@ function strobePeriod(pts, tol = 2e-4) {
   return 0;
 }
 
+// ── 13.16: the Malkus waterwheel = Lorenz system  x' = σ(y − x), y' = ρx − y − xz, z' = xy − bz ─────────────────
+function lorenzRun(sig, rho, b, T, h, every, y0 = [1, 1, 1]) {
+  const f = (x, y, z) => [sig * (y - x), rho * x - y - x * z, x * y - b * z]; let [x, y, z] = y0; const out = [];
+  const n = Math.round(T / h);
+  for (let i = 0; i < n; i++) {
+    const k1 = f(x, y, z), k2 = f(x + (h / 2) * k1[0], y + (h / 2) * k1[1], z + (h / 2) * k1[2]), k3 = f(x + (h / 2) * k2[0], y + (h / 2) * k2[1], z + (h / 2) * k2[2]), k4 = f(x + h * k3[0], y + h * k3[1], z + h * k3[2]);
+    x += (h / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); y += (h / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); z += (h / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+    if (i % every === 0) out.push([x, y, z]);
+  }
+  return out;
+}
+
 export default {
   collection: 'mech',
   chapter: 13,
@@ -646,6 +658,111 @@ and the widths of the forks shrink by the factor $\alpha = 2.502907875\ldots$ Th
           const { dl, dp } = cur, R = logR.R, d = logR.d, al = -d[d.length - 2] / d[d.length - 1];
           const pt = TH.th.length ? `pendulum thresholds γₙ = ${TH.th.map((x) => v.fix(x, 6)).join(', ')}` : 'pendulum thresholds: computing';
           return String.raw`${pt}` + (dp.length ? String.raw` → $\delta_1 = ${v.fix(dp[0], 3)}$${dp[1] ? String.raw`, $\delta_2 = ${v.fix(dp[1], 3)}$` : ''}` : '') + String.raw` · logistic map: $R_\infty \approx ${v.fix(R[R.length - 1], 7)}$, $\delta_{${dl.length}} = ${v.fix(dl[dl.length - 1], 5)}$, fork-width ratio $\alpha \approx ${v.fix(al, 4)}$ (Feigenbaum: $\delta = 4.669202$, $\alpha = 2.502908$)`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 13.16
+    {
+      num: '13.16',
+      kind: 'Phenomenon',
+      name: 'Malkus waterwheel and the Lorenz attractor',
+      statement: String.raw`A wheel tilted in a vertical plane carries leaky cups around its rim. Water pours in at the top, leaks out of every cup at a rate proportional to its content, and the wheel is braked by friction. Let $\omega$ be the angular velocity and expand the mass per unit angle in the lab frame as $m(\theta, t) = a_0 + a_1\sin\theta + b_1\cos\theta + \cdots$, with $\theta$ measured from the top. Then the first harmonics decouple and obey
+$$I\dot\omega = -\nu\omega + \pi g r\,a_1,\qquad \dot a_1 = \omega b_1 - Ka_1,\qquad \dot b_1 = -\omega a_1 - Kb_1 + q_1 .$$
+After rescaling, $x \propto \omega$, $y \propto a_1$ (the horizontal offset of the centre of mass), $z = \rho - (\text{const})\,b_1$, these are exactly the **Lorenz equations**
+$$\dot x = \sigma(y - x),\qquad \dot y = \rho x - y - xz,\qquad \dot z = xy - bz,$$
+with $b = 1$, $\sigma = \nu/(IK)$ and $\rho$ proportional to the inflow. For small inflow the wheel stays at rest ($\rho < 1$). Above that it turns steadily one way or the other, and for $\rho > \rho_H = \sigma(\sigma + b + 3)/(\sigma - b - 1)$ steady rotation is unstable, and the wheel speeds up, slows down and reverses direction at irregular times, forever. The orbit then lies on the **Lorenz attractor**, a strange attractor of zero volume (the flow contracts volume at the rate $\sigma + b + 1$) whose fractal dimension is slightly above 2. With Lorenz’s 1963 values $\sigma = 10$, $b = 8/3$, $\rho = 28$, the dimension is about 2.06 and the largest Lyapunov exponent about 0.9.`,
+      scope: String.raw`The truncation to the first Fourier harmonics is exact for this idealised wheel (the higher harmonics decay on their own); Lorenz derived the same equations as a severe truncation of thermal convection.`,
+      idea: String.raw`If the wheel turns a little faster, cups spend less time under the inflow and the heavy side moves further round before it empties. The resulting torque can overshoot and reverse the rotation: a delayed feedback that is unstable once the inflow is large enough (a subcritical Hopf bifurcation at $\rho_H$). The divergence of the Lorenz field is the constant $-(\sigma + 1 + b)$, so volumes contract exponentially (13.12) while orbits stay in a bounded region; the unstable fixed points stretch neighbouring orbits apart (13.4). The attractor therefore has zero volume but is not a surface: it is a Cantor set of sheets. Box counting estimates its dimension from the number of boxes $N(\varepsilon)$ of size $\varepsilon$ needed to cover it, $N \sim \varepsilon^{-D}$; the correlation sum, the fraction of pairs of points closer than $r$, scales like $r^{D_2}$ and converges faster from a finite sample.`,
+      caption: String.raw`**Waterwheel** ($b = 1$, $\sigma = 10$): water pours in at the top, and each cup shows how full it is, computed from the mass distribution $a_0 + a_1\sin\theta + b_1\cos\theta$. Right: angular velocity against the depth of the centre of mass, tracing the butterfly, and below it $\omega(t)$, with reversals marked. Lower $\rho$ below $\rho_H$ and the wheel settles into steady rotation; raise it and it reverses erratically. **Lorenz attractor**: the classic $b = 8/3$ attractor, which you can rotate. Below it the measured box-counting and correlation sums on log–log axes, whose slopes estimate the fractal dimension. The box count bends at small boxes because 150 000 points cannot fill them, which is why the correlation estimate is more reliable.`,
+      deps: ['mech-13.12', 'mech-13.4'],
+      see: ['ode-10.2', 'ode-10.6'],
+      refs: ['Goldstein §11.9'],
+      tags: ['Lorenz attractor', 'waterwheel', 'fractal dimension'],
+      credit: 'Lorenz, 1963; Malkus & Howard, c. 1970',
+      viz(v) {
+        const view = v.select('view', [{ value: 'wheel', label: 'the waterwheel ($b = 1$)' }, { value: 'dim', label: 'Lorenz attractor and its dimension ($b = 8/3$)' }], 'wheel');
+        const rS = v.slider('inflow, as the Rayleigh number $\\rho$', 0.5, 40, 28, { step: 0.1 });
+        const SIG = 10, TT = 40, H = 0.004, EV = 3, NCUP = 12;
+        const sW = v.stage({ x: [-1.45, 1.45], y: [-1.35, 1.6], equal: true, axes: false, height: 330, weight: 0.85, title: 'the wheel' });
+        const sB = v.stage({ x: [-25, 25], y: [-30, 30], axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: 'angular velocity ω (scaled)', ylabel: 'depth of the centre of mass (scaled)' });
+        const sT = v.stage({ x: [0, TT], y: [-25, 25], axes: 'box', gutter: true, height: 170, full: true, xlabel: 't (units of 1/K)', ylabel: 'ω' });
+        const s3 = v.stage3d({ range: 31, height: 330, yaw: -0.5, pitch: 0.25, axes: false, full: true, title: 'the Lorenz attractor ($\\sigma = 10$, $b = 8/3$)' });
+        const sN = v.stage({ x: [0.15, 30], y: [1, 2e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 260, xlabel: 'box size ε', ylabel: 'boxes N(ε)', title: 'box counting: slope = −D' });
+        const sC = v.stage({ x: [0.05, 40], y: [1e-6, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 260, xlabel: 'r', ylabel: 'C(r)', title: 'correlation sum: slope = D₂' });
+        const wc = memo(), dc = memo();
+        const wheel = () => wc(rS.value, () => {
+          const rho = rS.value, b = 1, tr = lorenzRun(SIG, rho, b, 30, H, 1000, [0.5, 0.3, rho * 0.6]).pop(), P = lorenzRun(SIG, rho, b, TT, H, EV, tr);
+          let ang = 0; const th = [0]; for (let i = 1; i < P.length; i++) { ang += P[i][0] * H * EV * 0.35; th.push(ang); }
+          let amax = 1e-9; for (const p of P) amax = Math.max(amax, Math.hypot(p[1], rho - p[2])); const a0 = amax * 1.04;
+          const rev = []; for (let i = 1; i < P.length; i++) if (P[i - 1][0] * P[i][0] < 0) rev.push(i * H * EV);
+          let xm = 1; for (const p of P) xm = Math.max(xm, Math.abs(p[0])); let zl = Infinity, zh = -Infinity; for (const p of P) { zl = Math.min(zl, p[2] - rho); zh = Math.max(zh, p[2] - rho); }
+          return { P, th, a0, rev, rho, xm, zl, zh, rhoH: (SIG * (SIG + b + 3)) / (SIG - b - 1) };
+        });
+        const dims = () => dc(rS.value, () => {
+          const rho = rS.value, b = 8 / 3, start = lorenzRun(SIG, rho, b, 40, 0.005, 8000, [1, 1, 20]).pop(), N = 150000, P = lorenzRun(SIG, rho, b, N * 0.02, 0.005, 4, start);
+          // largest Lyapunov exponent from a renormalised twin
+          let A = start.slice(), B = [start[0] + 1e-8, start[1], start[2]], S = 0; const d0 = 1e-8;
+          for (let k = 0; k < 400; k++) { A = lorenzRun(SIG, rho, b, 0.25, 0.005, 1e9, A).length ? lorenzRun(SIG, rho, b, 0.25, 0.005, 50, A).pop() : A; B = lorenzRun(SIG, rho, b, 0.25, 0.005, 50, B).pop(); const d = Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); S += Math.log(d / d0); B = [A[0] + ((B[0] - A[0]) * d0) / d, A[1] + ((B[1] - A[1]) * d0) / d, A[2] + ((B[2] - A[2]) * d0) / d]; }
+          const box = []; for (let e = 24; e >= 0.2; e /= Math.SQRT2) { const set = new Set(); for (const p of P) set.add(Math.floor((p[0] + 60) / e) * 1e8 + Math.floor((p[1] + 60) / e) * 1e4 + Math.floor((p[2] + 10) / e)); box.push([e, set.size]); }
+          const M = 1600, idx = Array.from({ length: M }, (_, i) => Math.floor((i * P.length) / M)), bins = new Float64Array(64);
+          for (let i = 0; i < M; i++) for (let j = i + 1; j < M; j++) { const a = P[idx[i]], c = P[idx[j]], d = Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2]); const k = Math.floor(Math.log2(Math.max(d, 1e-9)) * 4 + 24); bins[clamp(k, 0, 63)]++; }
+          const tot = (M * (M - 1)) / 2, cor = []; let cum = 0; for (let k = 0; k < 64; k++) { cum += bins[k]; const r = 2 ** ((k + 1 - 24) / 4); if (r >= 0.05 && r <= 40 && cum > 0) cor.push([r, cum / tot]); }
+          const fb = box.filter((q) => q[0] >= 0.7 && q[0] <= 6), fc = cor.filter((q) => q[0] >= 0.5 && q[0] <= 3.5);
+          const lb = fitLine(fb.map((q) => Math.log(q[0])), fb.map((q) => Math.log(q[1]))), lc = fitLine(fc.map((q) => Math.log(q[0])), fc.map((q) => Math.log(q[1])));
+          return { P, box, cor, Db: -lb.slope, Dc: lc.slope, lb, lc, lam: S / (400 * 0.25), rho };
+        });
+        let cur = null;
+        v.animate((tt) => {
+          const wh = view.value === 'wheel';
+          for (const s of [sW, sB, sT]) s.el.style.display = wh ? '' : 'none';
+          for (const s of [s3, sN, sC]) s.el.style.display = wh ? 'none' : '';
+          if (wh) {
+            const D = wheel(), tau = (1.6 * tt) % TT, i = Math.min(D.P.length - 1, Math.round(tau / (H * EV))), p = D.P[i], rho = D.rho, a1 = p[1], b1 = rho - p[2];
+            // the wheel: inflow, rim, cups with their water
+            sW.rect(-0.07, 1.12, 0.07, 1.6, { fill: 'blue', fillAlpha: 0.35, stroke: false });
+            sW.circle(0, 0, 1, { color: 'ink', width: 2 }); sW.dot(0, 0, { r: 4, color: 'ink' });
+            for (let k = 0; k < NCUP; k++) {
+              const th = D.th[i] + (TAU * k) / NCUP, cx = -Math.sin(th), cy = Math.cos(th), m = clamp((D.a0 + a1 * Math.sin(th) + b1 * Math.cos(th)) / (2 * D.a0), 0, 1);
+              sW.line(0, 0, cx, cy, { color: 'faint', width: 1 });
+              sW.rect(cx - 0.11, cy - 0.15, cx + 0.11, cy + 0.05, { color: 'ink', width: 1.4, fill: 'panel', fillAlpha: 1 });
+              if (m > 0.005) sW.rect(cx - 0.1, cy - 0.14, cx + 0.1, cy - 0.14 + 0.18 * m, { fill: 'blue', fillAlpha: 0.75, stroke: false });
+            }
+            const xcm = -Math.PI * a1, ycm = Math.PI * b1, sc = 0.9 / (Math.PI * D.a0); sW.dot(xcm * sc, ycm * sc, { r: 5.5, color: 'red' });
+            sW.corner(p[0] > 0.5 ? 'turning ↺' : p[0] < -0.5 ? 'turning ↻' : 'nearly still', 'tl', { color: 'ink', plate: true });
+            // butterfly: ω against depth of the centre of mass (∝ z − ρ)
+            sB.setView([-1.15 * D.xm, 1.15 * D.xm], [D.zl - 0.1 * (D.zh - D.zl + 1), D.zh + 0.1 * (D.zh - D.zl + 1)]);
+            sB.path(D.P.slice(0, i + 1).map((q) => [q[0], q[2] - rho]), { color: 'accent', width: 1, alpha: 0.6 });
+            sB.dot(p[0], p[2] - rho, { r: 5, color: 'red' });
+            sT.setView([0, TT], [-1.15 * D.xm, 1.15 * D.xm]);
+            sT.hline(0, { color: 'faint', width: 1 });
+            sT.path(D.P.map((q, k) => [k * H * EV, q[0]]), { color: 'accent', width: 1.5 });
+            for (const r of D.rev) sT.vline(r, { color: 'orange', width: 1, alpha: 0.5 });
+            sT.vline(tau, { color: 'red', width: 1.4 });
+            cur = { wh, D, tau };
+          } else {
+            const D = dims();
+            const step = Math.max(1, Math.floor(D.P.length / 3500)), pts = []; for (let k = 0; k < D.P.length; k += step) pts.push([D.P[k][0], D.P[k][1], D.P[k][2] - 25]);
+            s3.path(pts, { color: 'accent', width: 0.8, alpha: 0.55 });
+            sN.path(D.box, { color: 'accent', width: 1.4 }); sN.dots(D.box, { r: 3.5, color: 'accent' });
+            sN.fn((e) => Math.exp(D.lb.intercept + D.lb.slope * Math.log(e)), { color: 'red', width: 1.4, dash: [6, 4], domain: [0.5, 9] });
+            sN.vband(0.7, 6, { color: 'red', alpha: 0.05 });
+            sC.path(D.cor, { color: 'purple', width: 1.4 }); sC.dots(D.cor, { r: 3, color: 'purple' });
+            sC.fn((r) => Math.exp(D.lc.intercept + D.lc.slope * Math.log(r)), { color: 'red', width: 1.4, dash: [6, 4], domain: [0.3, 6] });
+            sC.vband(0.5, 3.5, { color: 'red', alpha: 0.05 });
+            cur = { wh, D };
+          }
+        }, { period: TT / 1.6, still: 14 });
+        v.legend([['blue', 'water'], ['red', 'centre of mass / now / fitted slope'], ['accent', 'orbit, $\\omega(t)$, box counts'], ['orange', 'reversals of the wheel'], ['purple', 'correlation sum']]);
+        v.readout(() => {
+          if (!cur) return '';
+          if (cur.wh) {
+            const { D } = cur, rho = D.rho;
+            const regime = rho < 1 ? 'below 1: the wheel stays at rest' : rho < D.rhoH ? 'between 1 and $\\rho_H$: after a transient the wheel turns steadily' : 'above $\\rho_H$: steady rotation is unstable and the wheel reverses at irregular times';
+            return String.raw`$\rho = ${v.fix(rho, 1)}$, Hopf threshold $\rho_H = \sigma(\sigma + b + 3)/(\sigma - b - 1) = ${v.fix(D.rhoH, 2)}$ for $\sigma = 10$, $b = 1$ — ${regime} · reversals in this window: ${D.rev.length}`;
+          }
+          const { D } = cur;
+          return String.raw`$\rho = ${v.fix(D.rho, 1)}$ · dimension estimates from ${D.P.length.toLocaleString('en')} points: box counting ${v.fix(D.Db, 2)} (biased low at small boxes), correlation $D_2 = ${v.fix(D.Dc, 2)}$ · largest Lyapunov exponent ${v.fix(D.lam, 2)} · volume contraction rate $\sigma + b + 1 = ${v.fix(SIG + 1 + 8 / 3, 3)}$` + (D.rho < 24.74 ? ' · below $\\rho_H \\approx 24.74$ the orbit settles on a fixed point (dimension 0)' : '');
         });
       },
     },

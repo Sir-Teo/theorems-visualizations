@@ -222,15 +222,15 @@ export default {
           return { I, ke, kf, C, Bd, same, cutv };
         };
         v.render(() => {
-          const c = calc(), { H, BL } = c.I, cE = c.C ? c.C.E : null, bE = c.Bd ? c.Bd.E : null;
+          const c = calc(), { H, BL } = c.I, cE = c.C ? c.C.E : null, bE = c.Bd ? c.Bd.E : null, H2 = ix(G2);
           const st = (E, color) => ({
-            edgeColor: (e) => { const k = H.eix.get(e) ?? ix(G2).eix.get(e); return k === c.ke ? 'gold' : k === c.kf ? 'orange' : E && E[k] ? color : null; },
-            edgeWidth: (e) => { const k = H.eix.get(e) ?? ix(G2).eix.get(e); return k === c.ke || k === c.kf ? 5.5 : E && E[k] ? 4 : null; },
+            edgeColor: (e) => { const k = H.eix.get(e) ?? H2.eix.get(e); return k === c.ke ? 'gold' : k === c.kf ? 'orange' : E && E[k] ? color : null; },
+            edgeWidth: (e) => { const k = H.eix.get(e) ?? H2.eix.get(e); return k === c.ke || k === c.kf ? 5.5 : E && E[k] ? 4 : null; },
           });
           drawBlocks(v, s1, G, H, BL, { alpha: 0.1 }); drawBlocks(v, s2, G, H, BL, { alpha: 0.1 });
           G.draw({ ...st(cE, 'accent'), nodeRing: (id) => (H.at(id) === c.cutv ? 'red' : null) });
           const side = (id) => c.Bd && (c.Bd.side >> H.at(id)) & 1;
-          G2.draw({ ...st(bE, 'red'), edgeDash: (e) => { const k = ix(G2).eix.get(e); return !!(bE && bE[k]) && k !== c.ke && k !== c.kf; }, nodeFill: (id) => (c.Bd && side(id) ? 'purple' : null), nodeColor: (id) => (c.Bd && !side(id) ? 'purple' : null), nodeRing: (id) => (H.at(id) === c.cutv ? 'red' : null) });
+          G2.draw({ ...st(bE, 'red'), edgeDash: (e) => { const k = H2.eix.get(e); return !!(bE && bE[k]) && k !== c.ke && k !== c.kf; }, nodeFill: (id) => (c.Bd && side(id) ? 'purple' : null), nodeColor: (id) => (c.Bd && !side(id) ? 'purple' : null), nodeRing: (id) => (H.at(id) === c.cutv ? 'red' : null) });
           if (!c.C) s1.corner(c.cutv != null ? `no common cycle — cutvertex ${vname(G, H, c.cutv)} separates them` : 'no common cycle', 'bl', { color: 'red', weight: 700, size: 12.5 });
           if (!c.Bd) s2.corner('no common bond', 'bl', { color: 'red', weight: 700, size: 12.5 });
         });
@@ -292,14 +292,16 @@ export default {
         const G = v.graph(s, { ...spec(), r: 12, editable: true });
         const T = v.graph(t, { nodes: [], edges: [], r: 12, draggable: false, fontSize: 11.5 });
         let hist = [], merged = null;
-        const snap = () => G.edges.map((e) => [e.from, e.to]);
+        const snap = () => ({ nodes: G.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: G.edges.map((e) => [e.from, e.to]) });
+        let last = snap();
         G.onChange = (kind, obj) => {
+          if (kind === 'move') return;
+          hist.push(last); last = snap();
           if (kind === 'add-edge') { const H = ix(G), BL = blocks(H), k = H.eix.get(obj); merged = k != null ? BL.blocks[BL.edgeBlock[k]].V.map((u) => H.ids[u]) : null; }
           else merged = null;
         };
-        G.onClick = ({ node, edge, alt }) => { if (node || edge || alt) hist.push(snap()); return false; };
-        v.button('Undo', () => { const h = hist.pop(); if (h) { G.set({ nodes: G.nodes, edges: h }); merged = null; } });
-        v.button('Reset', () => { load(G, spec()); hist = []; merged = null; });
+        v.button('Undo', () => { const h = hist.pop(); if (h) { G.set(h); last = snap(); merged = null; } });
+        v.button('Reset', () => { load(G, spec()); hist = []; last = snap(); merged = null; });
         const info = cacheBy((G) => { const H = ix(G), BL = blocks(H); return { H, BL, BG: blockGraph(H, BL) }; });
         /** Path in the block graph between the blocks of u and w (node indices of BG), and the blocks on it. */
         const bgPath = (I, u, w) => {

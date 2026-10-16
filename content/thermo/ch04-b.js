@@ -623,8 +623,9 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
             for (let t = 1.2; t <= 3.4000001; t += 0.001) { T.push(t); Gs.push(f(t)); }
             Tc = 2 / Math.log(1 + Math.SQRT2); units = { T: 'J/k', G: 'J', S: 'k', C: 'k', gs: 1 };
           }
-          const S = deriv(T, Gs).map((x) => -x), C = deriv(T, S).map((x, i) => T[i] * x);
-          return (MODELS[k] = { T, Gs, S, C, br, Tc, units });
+          const S0 = deriv(T, Gs).map((x) => -x), C0 = deriv(T, S0).map((x, i) => T[i] * x);
+          const cut = (a) => a.slice(3, a.length - 3);   // drop the one-sided differences at the ends
+          return (MODELS[k] = { T: cut(T), Gs: cut(Gs), S: cut(S0), C: cut(C0), br, Tc, units });
         };
         let info = null;
         v.render(() => {
@@ -643,7 +644,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           sG.setLabels(undefined, `G (${units.G})`); sS.setLabels(undefined, `S (${units.S})`); sC.setLabels(undefined, `C (${units.C})`);
           for (const [f, col] of br) sG.fn((t) => f(t) * units.gs, { color: col, width: 1.4, dash: [5, 4], domain: [T0, T1] });
           sG.path(T.map((t, k) => [t, g[k]]), { color: 'ink', width: 2.6 });
-          if (model.value === 'ice') { sG.text('water', T1, br[0][0](T1) * units.gs, { dx: -4, dy: -9, size: 11, color: PHASE.liquid, align: 'right' }); sG.text('ice', T0, br[1][0](T0) * units.gs, { dx: 4, dy: -9, size: 11, color: PHASE.solid, align: 'left' }); }
+          if (model.value === 'ice') { sG.text('water', T1, br[0][0](T1) * units.gs, { dx: -4, dy: -9, size: 11, color: PHASE.liquid, align: 'right' }); sG.text('ice', T0, br[1][0](T0) * units.gs, { dx: 6, dy: 14, size: 11, color: PHASE.solid, align: 'left' }); }
           // S, with the jump drawn as a gap
           const jumpAt = model.value === 'ice' ? Tc : null;
           const segS = (lo, hi) => T.map((t, k) => (t >= lo && t <= hi ? [t, S[k]] : null)).filter(Boolean);
@@ -654,12 +655,12 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
             const segC = (lo, hi) => T.map((t, k) => (t >= lo && t <= hi ? [t, C[k]] : null)).filter(Boolean);
             sC.path(segC(T0, jumpAt - 0.1), { color: 'green', width: 2.6 }); sC.path(segC(jumpAt + 0.1, T1), { color: 'green', width: 2.6 });
             sC.arrow(jumpAt, 80, jumpAt, ch * 0.98, { color: 'red', width: 2.4, head: 9 });
-            sC.text(`δ-function: area L = ${v.fix(W.Lf * W.M / 1e3, 2)} kJ/mol`, jumpAt, ch * 0.9, { dx: 6, size: 11, color: 'red', align: 'left', plate: true });
+            sC.text(`δ-function, area L = ${v.fix(W.Lf * W.M / 1e3, 2)} kJ/mol`, jumpAt, ch * 0.9, { dx: -8, size: 11, color: 'red', align: 'right', plate: true });
           } else sC.path(T.map((t, k) => [t, Math.min(C[k], ch * 1.5)]), { color: 'green', width: 2.6 });
           sG.dot(Tcur, g[i], { r: 4.5, color: 'gold' }); sS.dot(Tcur, S[i], { r: 4.5, color: 'gold' }); sC.dot(Tcur, Math.min(C[i], ch), { r: 4.5, color: 'gold' });
           // diagnostics
           const k0 = T.findIndex((t) => t >= Tc);
-          const dS = S[Math.min(T.length - 1, k0 + 4)] - S[Math.max(0, k0 - 4)];
+          const dS = S[Math.min(T.length - 1, k0 + 2)] - S[Math.max(0, k0 - 2)];
           const Cbelow = C[Math.max(0, k0 - 6)], Cabove = C[Math.min(T.length - 1, k0 + 6)];
           let isTest = null;
           if (model.value === 'is') {

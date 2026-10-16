@@ -475,16 +475,17 @@ Glassworking happens in a viscosity window. A glass can be gathered and blown be
         // network sketch: perturbed triangular lattice of Si, bridges to neighbours
         const net = (() => { // jittered honeycomb: every 'Si' has three bridges, as in Zachariasen's 2D drawing
           const r = v.rng(5), si = [], br = [];
-          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const x = 0.1 + i * 0.1, y = 0.12 + j * 0.095 + (((i + j) % 2) ? 0.028 : 0); si.push([x + r.uniform(-0.018, 0.018), y + r.uniform(-0.015, 0.015)]); }
-          const id = (i, j) => j * 9 + i;
-          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { if (i < 8) br.push([id(i, j), id(i + 1, j), r()]); if (j < 8 && (i + j) % 2 === 0) br.push([id(i, j), id(i, j + 1), r()]); }
+          const NX = 7, NY = 8;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { const x = 0.11 + i * 0.13, y = 0.06 + j * 0.115 + (((i + j) % 2) ? 0.04 : 0); si.push([x + r.uniform(-0.018, 0.018), y + r.uniform(-0.014, 0.014)]); }
+          const id = (i, j) => j * NX + i;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { if (i < NX - 1) br.push([id(i, j), id(i + 1, j), r()]); if (j < NY - 1 && (i + j) % 2 === 0) br.push([id(i, j), id(i, j + 1), r()]); }
           return { si, br };
         })();
         v.render(() => {
           const g = comp(), Tf = furn.x;
           // ---- A
           A.hband(3, 6.6, { color: 'green', alpha: 0.1 });
-          A.text('working window', 1250, 4.8, { size: 11, color: 'green', align: 'center', baseline: 'middle', plate: true });
+          A.text('working window', 1400, 4.8, { size: 11, color: 'green', align: 'center', baseline: 'middle', plate: true });
           A.hline(12, { color: 'muted', width: 1, dash: [4, 3] }); A.text('annealing point 10¹²', 1790, 12.25, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
           A.fn(silica, { color: 'muted', width: 2, domain: [900, 1800] });
           A.text('fused silica', 1700, silica(1700) + 0.5, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
