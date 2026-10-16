@@ -64,7 +64,7 @@ Then $S(n)$ is true for every integer $n\ge n_0$.`,
         };
         v.animate((t) => {
           const L = layout(), { c, n0, xs } = L;
-          s.setView([0.2, xs[NMAX] + 1.6], [-0.75, 2.3]);
+          s.setView([Math.min(0.2, xs[n0] - 1.25), xs[NMAX] + 1.6], [-0.75, 2.3]);
           s.line(0.3, 0, xs[NMAX] + 1.5, 0, { color: 'muted', width: 1.5 });
           for (let k = 1; k <= NMAX; k++) {
             const x = xs[k], active = k >= n0, truth = c.S(k);
@@ -243,7 +243,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
         };
         v.animate((t) => {
           const I = info(), { lo, mem } = I;
-          s.setView([lo - 1.5, 40.5], [-0.9, 2.2]);
+          s.setView([lo - 1.5, 41.2], [-0.9, 2.2]);
           numberLine(v, s, lo, 40, 0, { every: 5 });
           s.corner(Z.value ? 'universe: ℤ' : 'universe: ℕ = {1, 2, 3, …}', 'bl', { size: 11.5 });
           for (let n = lo; n <= 40; n++) if (I.f(n)) s.dot(n, 0.75, { r: 5, color: 'accent' });
@@ -296,7 +296,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
           for (let n = 1; n <= 6; n++) s.dot(n, 0, { r: 5, color: 'ink' });
           const shown = Math.min(5, Math.floor(t / 0.55));
           for (let n = 1; n <= shown; n++) hop(v, s, n, n + 1, 0, 26, { color: 'accent', width: 2 });
-          s.text('1 ∈ S', 1, 0.95, { align: 'center', size: 11.5, weight: 700, color: 'accent', dy: -2 });
+          s.text('1 ∈ S', 1, 0.7, { align: 'center', size: 11.5, weight: 700, color: 'accent', dy: -2 });
           if (shown >= 1) s.text('n ∈ S ⇒ n+1 ∈ S', 3.5, 1.45, { align: 'center', size: 11.5, weight: 700, color: 'accent' });
           // magnifier of (0, 1)
           z.rect(0, -0.32, 1, 0.32, { fill: Q ? 'red' : 'faint', fillAlpha: 0.08, stroke: false });

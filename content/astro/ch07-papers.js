@@ -5,8 +5,10 @@
 //   (articles.adsabs.harvard.edu/pdf/1912HarCi.173....1L): Harvard number, maximum and minimum photographic
 //   magnitude (provisional scale), epoch (J.D. − 2,410,000) and period (days) of 25 variables in the SMC, with the
 //   residuals Res. M and Res. m from the two straight lines of her Figure 2. Checked programmatically: max − Res. M and
-//   min − Res. m lie on two straight lines in log P (rms 0.05 mag), whose slopes (≈ −2.1 mag per dex, i.e. log P up
-//   0.48 per magnitude) match the text.
+//   min − Res. m lie on two straight lines in log P (rms 0.03 mag, i.e. rounding), whose slopes (≈ −2.05 mag per dex,
+//   i.e. log P up 0.48–0.49 per magnitude) match the text. One printed residual is inconsistent: H 1374 (min 15.2,
+//   Res. m −0.3) sits 0.6 mag off her minimum line, so the sign is probably a misprint; it is left out when her line
+//   is recovered.
 // - δ Cephei (calibrator): P = 5.366 d (GCVS); mean V ≈ 3.95, B − V ≈ 0.66, so mean blue (photographic-like)
 //   magnitude ≈ 4.6 (approximate); HST parallax 3.66 ± 0.15 mas, 273 pc (Benedict et al. 2002, AJ 124, 1695);
 //   Gaia EDR3 3.56 ± 0.15 mas (SIMBAD, queried 2026-10).
@@ -59,7 +61,7 @@ In modern terms this is the Cepheid period–luminosity (Leavitt) law (astro-7.1
         const fMax = fitLine(M, lp, LEAV.map((r) => r[1])), fMin = fitLine(M, lp, LEAV.map((r) => r[2]));
         const fMean = fitLine(M, lp, LEAV.map((r) => (r[1] + r[2]) / 2));
         // Leavitt's printed lines: the points max − ResM (min − Resm) lie on her lines
-        const lMax = fitLine(M, lp, LEAV.map((r) => r[1] - r[5])), lMin = fitLine(M, lp, LEAV.map((r) => r[2] - r[6]));
+        const lMax = fitLine(M, lp, LEAV.map((r) => r[1] - r[5])), lMin = (() => { const k = LEAV.map((r, i) => i).filter((i) => LEAV[i][0] !== 1374); return fitLine(M, k.map((i) => lp[i]), k.map((i) => LEAV[i][2] - LEAV[i][6])); })();
         const yt = [11, 12, 13, 14, 15, 16].map((m) => [-m, String(m)]);
         const s = v.stage({ x: [-0.05, 2.25], y: [-16.8, -10.6], axes: 'box', gutter: true, height: 360, weight: 1.35, hover: true, yticks: yt, xlabel: 'log₁₀ period (days)', ylabel: 'photographic magnitude (brighter ↑)', title: 'Leavitt’s 25 Cepheids in the SMC' });
         const c = v.stage({ x: [0, 2.25], y: [-7, 0], axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 250, yticks: [-1, -2, -3, -4, -5, -6].map((m) => [m, String(m)]), xlabel: 'log₁₀ period (days)', ylabel: 'absolute magnitude (brighter ↑)', title: 'calibrated with δ Cephei' });

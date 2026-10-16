@@ -645,7 +645,7 @@ are independent. For example, if $X_1,\dots,X_n$ are independent then $X_1$ and 
           const pts = cache.U.map((u) => { const fv = F.f(u[0], u[1]); const gv = mode === 0 ? G.f(u[2], u[3]) : mode === 1 ? G.f(u[1], u[3]) : G.f(u[0], u[1]); return [fv, gv]; });
           L.setView(F.r, G.r); R.setView(G.r, null);
           const fsrt = pts.map((p) => p[0]).sort((a, b) => a - b), q1 = fsrt[Math.floor(N / 3)], q2 = fsrt[Math.floor((2 * N) / 3)];
-          const ks = (a, b) => { a = a.slice().sort((x, y) => x - y); b = b.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0; while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); } return { D, crit: 1.36 * Math.sqrt((a.length + b.length) / (a.length * b.length)) }; };
+          const ks = (a, b) => { a = a.slice().sort((x, y) => x - y); b = b.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0; while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); } return { D, crit: 1.48 * Math.sqrt((a.length + b.length) / (a.length * b.length)) }; }; // 2.5% level each: about 5% for the pair
           // two splits of f: lowest vs highest third, and middle vs outer thirds; show whichever separates g more
           const low = pts.filter((p) => p[0] <= q1).map((p) => p[1]), high = pts.filter((p) => p[0] >= q2).map((p) => p[1]);
           const mid = pts.filter((p) => p[0] > q1 && p[0] < q2).map((p) => p[1]), out = pts.filter((p) => p[0] <= q1 || p[0] >= q2).map((p) => p[1]);
@@ -661,7 +661,7 @@ are independent. For example, if $X_1,\dots,X_n$ are independent then $X_1$ and 
           st = { r: M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).r, D: T.D, crit: T.crit, mode, which: useMid ? 'middle vs outer thirds of $f$' : 'lowest vs highest third of $f$' };
           v.legend(useMid ? [['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in its outer thirds', { area: true }], ['orange', '$g$ given $f$ in its middle third', { area: true }]] : [['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in its lowest third', { area: true }], ['orange', '$g$ given $f$ in its highest third', { area: true }]]);
         });
-        v.readout(() => st && `Sample correlation $${fr(st.r, 3)}$. Distance between the conditional laws of $g$ (${st.which}, Kolmogorov–Smirnov): $D=${fr(st.D, 3)}$; noise alone exceeds $${fr(st.crit, 3)}$ only $5\\%$ of the time.` + (st.D > st.crit ? ' **Dependent**' + (Math.abs(st.r) < 0.05 ? ', even though uncorrelated.' : '.') : ' Consistent with independence.'));
+        v.readout(() => st && `Sample correlation $${fr(st.r, 3)}$. Distance between the conditional laws of $g$ (${st.which}, Kolmogorov–Smirnov): $D=${fr(st.D, 3)}$; noise alone exceeds $${fr(st.crit, 3)}$ on either split only about $5\\%$ of the time.` + (st.D > st.crit ? ' **Dependent**' + (Math.abs(st.r) < 0.05 ? ', even though uncorrelated.' : '.') : ' Consistent with independence.'));
       },
     },
     {

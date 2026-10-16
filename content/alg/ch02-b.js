@@ -70,14 +70,14 @@ Moreover the greatest common divisor of $a$ and $b$ is unique. (In fact $\gcd(a,
         const R = 7;
         const s = v.stage({ x: [-R - 0.9, R + 0.9], y: [-R - 0.9, R + 0.9], equal: true, axes: false, height: 360 });
         const t = v.stage({ x: [-1, 41], y: [-1.3, 1.6], axes: false, height: 120, full: true });
-        const P = s.handle(-2, 5, { color: 'gold', r: 8, constrain: (x, y) => [clamp(Math.round(x), -R, R), clamp(Math.round(y), -R, R)] });
+        const P = s.handle(1, -2, { color: 'gold', r: 8, constrain: (x, y) => [clamp(Math.round(x), -R, R), clamp(Math.round(y), -R, R)] });
         v.render(() => {
           const a = A.value, b = Bs.value, d = gcd(a, b), M = Math.max(...[-1, 1].flatMap((i) => [-1, 1].map((j) => Math.abs(a * i * R + b * j * R))));
           s.line(-R - 0.6, 0, R + 0.6, 0, { color: 'faint', width: 1 }); s.line(0, -R - 0.6, 0, R + 0.6, { color: 'faint', width: 1 });
           s.text('r', R + 0.75, 0, { size: 14, math: true, color: 'muted' }); s.text('s', 0, R + 0.75, { size: 14, math: true, color: 'muted', align: 'center' });
           s.clip(() => {
-            for (let k = -6; k <= 6; k++) {
-              const c = k * d, col = k === 1 ? 'gold' : k === 0 ? 'muted' : 'faint';
+            for (const k of [0, 1]) {
+              const c = k * d, col = k === 1 ? 'gold' : 'muted';
               s.line(-R - 1, (c + a * (R + 1)) / b, R + 1, (c - a * (R + 1)) / b, { color: col, width: k === 1 ? 2.2 : 1, alpha: k === 1 || k === 0 ? 0.9 : 0.55 });
             }
           }, [-R - 0.7, R + 0.7], [-R - 0.7, R + 0.7]);
@@ -117,7 +117,7 @@ Moreover the greatest common divisor of $a$ and $b$ is unique. (In fact $\gcd(a,
       tags: ['bezout', 'coprime'],
       viz(v) {
         const A = v.slider('$a$', 1, 12, 7, { int: true, onChange: () => S.reset({ at: 'end' }) }), Bs = v.slider('$b$', 1, 12, 5, { int: true, onChange: () => S.reset({ at: 'end' }) });
-        const s = v.stage({ x: [-13, 13], y: [-2, 2], axes: false, height: 230, full: true });
+        const s = v.stage({ x: [-13, 13], y: [-1.6, 1.6], axes: false, height: 200, full: true });
         const walk = () => {
           const a = A.value, b = Bs.value, fr = [{ pos: 0, r: 0, s: 0, hops: [], note: 'The frog starts at $0$.' }];
           let pos = 0, r = 0, q = 0; const hops = [];
@@ -135,15 +135,15 @@ Moreover the greatest common divisor of $a$ and $b$ is unique. (In fact $\gcd(a,
           const a = A.value, b = Bs.value, g = gcd(a, b), f = S.frame, lo = -b - 1, hi = a + 1;
           s.setView([Math.min(-6, lo) - 0.8, Math.max(6, hi) + 0.8], [-2, 2]);
           numberLine(v, s, Math.min(-6, lo), Math.max(6, hi), 0, { every: 5 });
-          for (let x = Math.min(-6, lo); x <= Math.max(6, hi); x++) if (x % g === 0) s.line(x, -0.22, x, 0.22, { color: 'green', width: 2.6 });
+          for (let x = Math.min(-6, lo); x <= Math.max(6, hi); x++) if (x % g === 0) s.line(x, -0.1, x, 0.1, { color: 'green', width: 3 });
           s.dot(1, 0, { r: 9, hollow: true, color: 'green' });
-          s.text('target 1', 1, 0, { dy: 30, align: 'center', size: 11, weight: 700, color: 'green' });
+          s.text('target 1', 1, 0, { dy: 46, align: 'center', size: 11, weight: 700, color: 'green' });
           const H = f.hops || [];
           H.forEach(([x0, x1], i) => { const last = i === H.length - 1, up = x1 > x0; hop(v, s, x0, x1, 0, up ? 30 : -30, { color: up ? 'blue' : 'orange', width: last ? 3 : 1.6, alpha: last ? 1 : 0.45 }); });
           const visited = new Set([0, ...H.map((h) => h[1])]);
           for (const x of visited) s.dot(x, 0, { r: 4, color: 'ink' });
           s.dot(f.pos ?? 0, 0, { r: 8, color: 'gold' });
-          s.text('frog', f.pos ?? 0, 0, { dy: -18, align: 'center', size: 11.5, weight: 800, color: 'gold' });
+          s.text('frog', f.pos ?? 0, 0, { dy: -42, align: 'center', size: 11.5, weight: 800, color: 'gold' });
           s.corner(`position = ${f.r ?? 0}·${a} − ${f.s ?? 0}·${b} = ${sub(f.pos ?? 0)}`, 'tl', { size: 13, weight: 700, color: 'ink' });
         });
         v.legend([['blue', '+a hop'], ['orange', '−b hop'], ['green', 'multiples of gcd(a, b)']]);
@@ -174,8 +174,8 @@ The remainders strictly decrease, so the process stops, and the last nonzero rem
         const pre = v.select('example', [{ value: 'j', label: '2415, 945' }, { value: 'f', label: '89, 55' }, { value: 'e', label: '1071, 462' }, { value: 'c', label: '64, 27' }], 'j', { onChange: (k) => { A.set(PRE[k][0]); Bs.set(PRE[k][1]); S.reset({ at: 'end' }); } });
         const A = v.slider('$a$', 1, 3000, 2415, { int: true, onChange: () => S.reset({ at: 'end' }) }), Bs = v.slider('$b$', 1, 3000, 945, { int: true, onChange: () => S.reset({ at: 'end' }) });
         void pre;
-        const s = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 330, weight: 1.15 });
-        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1 });
+        const s = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 300, weight: 1.15 });
+        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
         const T = v.table(t, { rows: 4, cols: 7, maxCell: 34, square: false, cellAspect: 1.55, size: 12.5, margin: 6, colLabels: ['$a$', '$b$', '$q$', '$r$', '$s$', '$t$', '$as+bt$'], colWeights: [1, 1, 0.7, 1, 0.8, 0.8, 1.2] });
         const run = () => { const a = Math.max(A.value, Bs.value), b = Math.min(A.value, Bs.value); return { a, b, ...euclid(a, b) }; };
         const S = v.steps({
@@ -234,16 +234,16 @@ The remainders strictly decrease, so the process stops, and the last nonzero rem
       refs: ['Judson §2.2'],
       tags: ['primes'],
       viz(v) {
-        let wi = 0;
-        const N = v.slider('$n$', 2, 60, 12, { int: true, onChange: () => { wi = 0; } });
+        let wi = -1;
+        const N = v.slider('$n$', 2, 60, 12, { int: true, onChange: () => { wi = -1; } });
         v.button('Next rectangle', () => { wi++; });
         const s = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 300, weight: 1.25 });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
         const T = v.table(t, { rows: 6, cols: 10, maxCell: 36, size: 12.5, margin: 6 });
-        t.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) { const n = c.i * 10 + c.j + 1; if (n >= 2) { N.set(n); wi = 0; } } });
+        t.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) { const n = c.i * 10 + c.j + 1; if (n >= 2) { N.set(n); wi = -1; } } });
         const shapes = (n) => divisors(n).filter((d) => d * d <= n).map((d) => [d, n / d]);
         v.render(() => {
-          const n = N.value, sh = shapes(n), [r, c] = sh[wi % sh.length], cell = Math.min(0.9 / c, 0.62 / r);
+          const n = N.value, sh = shapes(n), [r, c] = sh[((wi % sh.length) + sh.length) % sh.length], cell = Math.min(0.9 / c, 0.62 / r);
           const W = cell * c, H = cell * r, x0 = 0.5 - W / 2, y0 = 0.52 - H / 2;
           s.rect(x0 - cell * 0.15, y0 - cell * 0.15, x0 + W + cell * 0.15, y0 + H + cell * 0.15, { radius: 8, color: r === 1 ? (isPrime(n) ? 'accent' : 'muted') : 'orange', width: 1.6, fill: r === 1 ? 'accent' : 'orange', fillAlpha: 0.06 });
           const rad = Math.max(2, Math.min(11, cell * s.scale * 0.36));
@@ -325,7 +325,7 @@ The remainders strictly decrease, so the process stops, and the last nonzero rem
         v.button('Add the new prime', () => { if (prod() > LIM) return; const { f } = facts(); const nw = f.find((p) => !list.includes(p)); if (nw) list.push(nw); });
         v.button('Start from {2}', () => { list = [B(2)]; });
         v.button('Clear', () => { list = []; });
-        const s = v.stage({ x: [0, 16], y: [0, 4.4], axes: false, height: 300, full: true });
+        const s = v.stage({ x: [0, 16], y: [0, 4.4], axes: false, height: 265, full: true });
         const chipX = (i) => 0.75 + i * 1.03;
         s.onClick((x, y) => { if (y < 3.3 || y > 4.25) return; const i = Math.round((x - 0.75) / 1.03); if (i < 0 || i >= PAL.length) return; const p = B(PAL[i]), k = list.indexOf(p); if (k >= 0) list.splice(k, 1); else list.push(p); });
         v.render(() => {
@@ -334,7 +334,7 @@ The remainders strictly decrease, so the process stops, and the last nonzero rem
           PAL.forEach((p, i) => { const on = list.includes(B(p)); tile(v, s, chipX(i), 3.75, p, { color: on ? 'accent' : 'muted', fillAlpha: on ? 0.5 : 0.06, w: 32 }); if (on) s.text('rem 1', chipX(i), 3.75, { dy: 22, align: 'center', size: 9.5, color: 'accent', weight: 700 }); });
           if (big.length) { s.text('also on the list:', 0.25, 2.85, { size: 11, color: 'muted' }); let x = 2.4; for (const p of big) { const w = (14 + 7.6 * String(p).length) / s.scale; tile(v, s, x + w / 2, 2.85, String(p), { color: 'accent', fillAlpha: 0.5 }); x += w + 0.2; } }
           const ptxt = list.length ? (list.length > 9 ? `${list.slice(0, 4).join('·')} ⋯ ${list[list.length - 1]}` : list.join(' · ')) : '(empty product)';
-          s.text(`N = ${ptxt} + 1 = ${group(N)}`, 0.25, 2.2, { size: 14, weight: 700, color: 'ink' });
+          s.text(`N = ${ptxt} + 1 = ${group(N)}`, 0.25, 2.25, { size: 14, weight: 700, color: 'ink' });
           s.text('N mod p = 1 for every listed p, so no listed prime divides N.', 0.25, 1.7, { size: 11.5, color: 'muted' });
           s.text('N =', 0.25, 1.0, { size: 14, weight: 700 });
           const fresh = f.filter((p) => !list.includes(p)), least = fresh[0];
@@ -378,10 +378,10 @@ The remainders strictly decrease, so the process stops, and the last nonzero rem
         v.render(() => {
           const Ts = trees(), Ls = Ts.map((T) => ms(leaves(T))), same = Ls[0].join(',') === Ls[1].join(',');
           Ts.forEach((T, side) => {
-            const s = st[side], d = Math.max(1, depth(T)), dy = Math.min(1.3, 4.6 / d);
+            const s = st[side], d = Math.max(1, depth(T)), dy = Math.min(1.15, 4.35 / d);
             laid[side] = layoutTree(T, 0.05, 0.95, 0, dy);
             drawTree(v, s, T, { hint: true, leafColor: same ? 'green' : 'red' });
-            s.text(Ls[side].join(' · '), 0.5, -5.1, { align: 'center', size: 13.5, weight: 800, color: same ? 'green' : 'red' });
+            s.text(Ls[side].join(' · '), 0.5, -5.15, { align: 'center', size: 13.5, weight: 800, color: same ? 'green' : 'red' });
             s.corner(side === 0 ? 'tree 1' : 'tree 2', 'tl', { size: 11.5 });
           });
         });

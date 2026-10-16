@@ -164,10 +164,10 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
       tags: ['ancient', 'c. 3500 BCE', 'friction'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wheel_and_axle' },
       viz(v) {
-        const A = v.stage({ x: [0, 12], y: [-0.4, 4.6], equal: true, axes: false, height: 300, weight: 1.5, minWidth: 380, title: 'drag a load at constant speed' });
+        const A = v.stage({ x: [0, 12], y: [-0.75, 4.75], equal: true, axes: false, height: 300, weight: 1.5, minWidth: 380, title: 'drag a load at constant speed' });
         const B = v.stage({ x: [-1.25, 1.25], y: [-1.3, 1.25], equal: true, axes: false, height: 300, weight: 0.85, minWidth: 250, title: 'where a wheel’s resistance comes from' });
-        const C = v.stage({ x: [0, 1], y: [0, 4], axes: false, height: 150, weight: 1, minWidth: 320, title: 'pulling force' });
-        const D = yearStage(v, [-4700, -1500], { height: 150, weight: 1.3, minWidth: 380, title: 'dated evidence: the first wheels' });
+        const C = v.stage({ x: [0, 1], y: [0, 4], axes: false, height: 190, weight: 1, minWidth: 320, title: 'pulling force' });
+        const D = yearStage(v, [-4700, -1500], { height: 190, weight: 1.3, minWidth: 380, title: 'dated evidence: the first wheels' });
         const surf = v.select('ground', [{ value: 'road', label: 'paved road' }, { value: 'earth', label: 'packed earth' }, { value: 'sand', label: 'dry sand' }], 'earth');
         const load = v.slider('load (tonnes)', 0.2, 20, 2, { log: true });
         const grease = v.toggle('greased axle', true);
@@ -175,8 +175,9 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
         // illustrative coefficients (see readout)
         const MU = { road: 0.4, earth: 0.45, sand: 0.5 }, Z = { road: 0.0001, earth: 0.002, sand: 0.03 };
         const r = 0.04; // axle radius (m)
-        const wheelH = A.handle(9.4, 0.5 + 0.6, { color: 'gold', label: 'wheel', labelPos: 'e', constrain: (x, y) => [9.4, clamp(y, 0.15 + 0.6, 0.95 + 0.6)] });
-        const D_of = () => 2 * (wheelH.y - 0.6); // wheel diameter from the handle (m): the handle sits on the rim top, 0.6 is the lane base
+        const LANE_C = 0.6, LANE_S = 3.55;
+        const wheelH = A.handle(10.2, LANE_C + 1.0, { color: 'gold', label: 'wheel size', labelPos: 'e', constrain: (x, y) => [10.2, clamp(y, LANE_C + 0.3, LANE_C + 1.8)] });
+        const D_of = () => wheelH.y - LANE_C; // wheel diameter (m): the handle marks the top of the rim
         const forces = () => {
           const W = load.value * 1000 * G, s = surf.value, Dm = D_of();
           const muS = s === 'sand' && wet.value ? 0.25 : MU[s];
@@ -188,7 +189,7 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
           const F = forces(), s = surf.value;
           wet.el.hidden = s !== 'sand';
           // ---- A: two lanes
-          const laneS = 2.5, laneC = 0.6;
+          const laneS = LANE_S, laneC = LANE_C;
           for (const y0 of [laneS, laneC]) {
             A.rect(0, y0 - 0.25, 12, y0, { fill: s === 'sand' ? 'gold' : s === 'earth' ? 'orange' : 'muted', fillAlpha: s === 'road' ? 0.25 : 0.2, stroke: false });
             A.line(0, y0, 12, y0, { color: 'muted', width: 1.4 });
@@ -210,14 +211,13 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
             for (let k = 0; k < 6; k++) { const a = (k * Math.PI) / 3; A.line(cx, cy, cx + R * Math.cos(a), cy + R * Math.sin(a), { color: 'ink', width: 1, alpha: 0.6 }); }
             A.circle(cx, cy, 0.06, { fill: 'ink', fillAlpha: 1 });
           }
-          wheelH.set(9.4, cy + R);
           // ropes and pull arrows (length ∝ force on a log-ish scale)
           const arrowLen = (f) => 0.6 + 1.6 * Math.log10(1 + f / 500);
           const pull = (x, y, f, col) => { const L = arrowLen(f); A.line(x, y, x - 1.1, y, { color: 'muted', width: 1.2 }); A.arrow(x - 1.1, y, x - 1.1 - L, y, { color: col, width: 3 }); A.text(`${v.fmt(f / 1000, 3)} kN`, x - 1.1 - L / 2, y + 0.28, { size: 12, color: col, align: 'center', weight: 700 }); };
           pull(6.1, laneS + 0.15, F.sled, 'red');
           pull(7.4, cy + 0.12, F.cart, 'green');
           A.text('sledge', 11.9, laneS + 0.55, { size: 12, color: 'ink', align: 'right', weight: 600 });
-          A.text(`cart, wheels ${v.fix(Dm, 2)} m`, 11.9, laneC + Dm + 0.95, { size: 12, color: 'ink', align: 'right', weight: 600 });
+          A.text(`cart, wheels ${v.fix(Dm, 2)} m across`, 11.9, laneC - 0.48, { size: 12, color: 'ink', align: 'right', weight: 600 });
           A.text(`μ = ${v.fix(F.muS, 2)}`, 7.2, laneS - 0.48, { size: 11, color: 'muted', align: 'center' });
           // ---- B: close-up of a wheel
           const Rb = 0.95, rb = 0.16, zb = s === 'sand' ? 0.16 : s === 'earth' ? 0.06 : 0.015;
@@ -257,7 +257,7 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
             { t: [-3340, -3030], label: 'Ljubljana wheel and axle', color: 'green' },
             { t: -3100, label: 'potter’s wheel, Ur' },
             { t: -1880, label: 'Djehutihotep: sledge on wetted sand', color: 'blue' },
-          ], { lanes: 3, ticks: [-4500, -4000, -3500, -3000, -2500, -2000] });
+          ], { lanes: 4, ticks: [-4500, -4000, -3500, -3000, -2500, -2000] });
         });
         v.legend([['red', 'sledge (sliding friction)'], ['green', 'wheeled cart (axle friction + rolling)'], ['orange', 'axle and its friction']]);
         v.readout(() => {
