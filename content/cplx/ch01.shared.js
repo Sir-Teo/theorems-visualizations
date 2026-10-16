@@ -51,8 +51,8 @@ export function parseTM(text, start = 'q0') {
   return { rules, start, states: [...states].filter((s) => s !== 'acc' && s !== 'rej') };
 }
 /**
- * Run machine m on input string x. Options: maxSteps, fence (halt with status 'fence' if the head leaves cells
- * [0, fence-1] counted from the first input cell... fence is the number of cells allowed, starting at cell 0),
+ * Run machine m on input string x. Options: maxSteps, fence (number of cells allowed, the first being cell fenceLo, default 0;
+ * the run stops with status 'fence' if the head leaves them),
  * trace (record configurations for the first `trace` steps), loopCheck (detect repeated configurations).
  * Returns {status: 'acc'|'rej'|'loop'|'timeout'|'fence', steps, lo, hi, pos: head positions (if posTrace), trace}.
  */
@@ -67,7 +67,7 @@ export function runTM(m, x, o = {}) {
   let status = null;
   while (true) {
     if (q === 'acc' || q === 'rej') { status = q; break; }
-    if (o.fence != null && (h < 0 || h >= o.fence)) { status = 'fence'; break; }
+    if (o.fence != null) { const lowB = o.fenceLo ?? 0; if (h < lowB || h >= lowB + o.fence) { status = 'fence'; break; } }
     if (steps >= maxSteps) { status = 'timeout'; break; }
     if (seen) { const k = keyOf(); if (seen.has(k)) { status = 'loop'; break; } seen.add(k); }
     const s = tape.get(h) ?? BLANK;

@@ -521,7 +521,7 @@ Standard weights are a coding problem: with one pan, a set of $n$ weights can ma
         // steelyard geometry (data units = dm): fulcrum at 0, hooks at a = 0.8 (light) / 0.35 (heavy), beam weight 1.2 kg at c = 1.0 on the long side, counterpoise 1 kg
         const wC = 1, Mb = 1.2, cB = 1.0;
         let cpx = 3;
-        const cp = A.handle(3, 0.3, { color: 'gold', label: 'counterpoise', labelPos: 'n', constrain: (x, y) => { cpx = clamp(x, 1.0, 5.4); return [cpx, y]; } });
+        const cp = A.handle(3, 0.3, { color: 'gold', label: 'counterpoise', labelPos: 'n', constrain: (x, y) => { cpx = clamp(x, 1.0, 5.4); return [cpx, 0.3]; } });
         v.render(() => {
           const m = mode.value; cp.visible = m === 'sy'; set.el.hidden = m !== 'bal'; load.el.hidden = m !== 'bal'; heavy.el.hidden = m !== 'sy';
           if (m === 'bal') {
@@ -594,7 +594,7 @@ Standard weights are a coding problem: with one pan, a set of $n$ weights can ma
         v.legend([['orange', 'load'], ['accent', 'weights / light hook'], ['purple', 'weights on the load pan / heavy hook'], ['gold', 'counterpoise', { dot: true }]]);
         v.readout(() => {
           if (mode.value === 'bal') { const W = load.value, s = SETS[set.value], sol = solve(set.value, W), n = s.w.length; return `load ${W} units (${v.fix(W * UNIT, 1)} g with the Harappan unit of ${UNIT} g) · ${sol.ok ? `**${sol.right.length + sol.left.length} weights** used` : '**not possible with this set**'} · ${n} weights can make at most ${s.two ? `$(3^{${n}}-1)/2 = ${(3 ** n - 1) / 2}$` : `$2^{${n}}-1 = ${2 ** n - 1}$`} loads`; }
-          const a = heavy.value ? 0.35 : 0.8, x = cp.x, W = (wC * x + Mb * cB) / a;
+          const a = heavy.value ? 0.35 : 0.8, x = cpx, W = (wC * x + Mb * cB) / a;
           return `moments: $W a = w x + M_b c$ with $w$ = ${wC} kg, $M_b$ = ${Mb} kg at $c$ = ${cB} dm, hook $a$ = ${a} dm → counterpoise at ${v.fix(x, 2)} dm balances **${v.fix(W, 2)} kg**, ${v.fix(W / wC, 1)} times its own weight · graduations every ${v.fix(a / wC, 2)} dm per kg, evenly spaced (illustrative dimensions)`;
         });
       },

@@ -120,7 +120,7 @@ The **ERM** learning paradigm outputs a predictor with the smallest empirical ri
           info = { m, mine, best: E.mist, LD: disagree(h, HID, d), LDe: disagree(E.R, HID, d) };
         });
         v.legend([['green', 'tasty', { dot: true }], ['pink', 'not tasty', { dot: true }], ['red', 'mistake of your rectangle', { dot: true }], ['purple', 'hidden rule', { dash: true }]]);
-        v.readout(() => info && String.raw`Your rectangle: $L_S(h)=${info.mine}/${info.m}=${pr(info.mine / info.m)}$ ${info.mine === info.best ? '— **it is an ERM output**' : String.raw`(an ERM output has only $${info.best}/${info.m}$ mistakes: no rectangle does better)`}. Its true error is $${pr(info.LD)}$, the ERM rectangle shown by the button has true error $${pr(info.LDe)}$ — minimizing the empirical risk does not minimize the true one, only estimate it.`);
+        v.readout(() => info && String.raw`Your rectangle: $L_S(h)=${info.mine}/${info.m}=${pr(info.mine / info.m)}$ ${info.mine === info.best ? '— **it is an ERM output**' : String.raw`(an ERM output has only $${info.best}/${info.m}$ mistakes: no rectangle does better)`}. Its true error is $${pr(info.LD)}$, the ERM rectangle shown by the button has true error $${pr(info.LDe)}$ — ERM minimizes the empirical risk, which only estimates the true error.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 2.1c
@@ -140,7 +140,7 @@ has $L_S(h_S)=0$, so it is an ERM output. But if $\mathcal D$ is the uniform dis
       scope: String.raw`Needs a continuous domain (or at least one where most instances are never seen again); on a small finite domain a memorizer eventually sees everything.`,
       verify: true,
       viz(v) {
-        const s = square(v, { height: 380, title: 'the memorizer h_S' });
+        const s = square(v, { height: 380, title: 'the memorizer $h_S$' });
         const sC = v.stage({ x: [1, 400], xlog: true, y: [0, 0.8], axes: 'box', gutter: true, height: 380, xlabel: 'sample size $m$', ylabel: 'true error', title: 'true error against sample size' });
         const mS = v.slider('sample size $m$', 1, 200, 20, { int: true });
         const spread = v.slider('spread of $\\mathcal D$', 0.1, 1.2, 1.2, { step: 0.05 });
@@ -174,7 +174,7 @@ has $L_S(h_S)=0$, so it is an ERM output. But if $\mathcal D$ is the uniform dis
           sC.path(grid.map((g, i) => [g, cv[i]]), { color: 'accent', width: 2.8 }); sC.dots(grid.map((g, i) => [g, cv[i]]), { r: 3.6, color: 'accent' });
           sC.vline(clamp(n, 1, 400), { color: 'gold', width: 1.6, dash: true });
           sC.text('memorizer: $\\mathcal D(f=1)$', 1.3, PD, { color: 'red', dy: -10, size: 12.5 }); sC.text('training error of both: 0', 1.3, 0, { color: 'green', dy: -10, size: 12 });
-          sC.text('tightest rectangle', 10, 0.2 * PD + 0.07, { color: 'accent', size: 12.5 });
+          sC.text('tightest rectangle', 45, 0.1, { color: 'accent', size: 12.5 });
           // measured error of the memorizer on fresh papayas
           const r2 = rand(901), T = 3000; let wrong = 0;
           for (let i = 0; i < T; i++) { const p = d.draw(r2); if (inShape(t, p[0], p[1])) wrong++; }
@@ -271,7 +271,7 @@ restricts the empirical risk minimization to it. The choice of $\mathcal H$ is a
           info = { B: B.err, mist: trainErr(h, S), m, LD: disagree(h, tg, d), mean: mean(R.out), maxTrain: R.maxTrain, tg: tgS.value };
         });
         v.legend([['purple', 'labelling rule', {}], ['green', 'best rectangle in $\\mathcal H$', { dash: true }], ['accent', 'ERM output']]);
-        v.readout(() => info && String.raw`$\min_{h\in\mathcal H}L_{\mathcal D,f}(h)=${pr(info.B)}$ ` + (info.tg === 'rect' ? String.raw`(realizable: $0$ up to the grid resolution). ERM training mistakes on this sample: $${info.mist}$; the largest over 100 samples: $${info.maxTrain}$ — always $0$, as the assumption predicts. ` : String.raw`(not realizable: no rectangle is perfect). ERM training mistakes here: $${info.mist}$ (largest over 100 samples: $${info.maxTrain}$). `) + String.raw`True error of this ERM output $${pr(info.LD)}$, average over 100 samples $${pr(info.mean)}$.`);
+        v.readout(() => info && String.raw`$\min_{h\in\mathcal H}L_{\mathcal D,f}(h)=${pr(Math.max(0, info.B))}$ ` + (info.tg === 'rect' ? String.raw`(realizable: $0$ up to the grid resolution). ERM training mistakes on this sample: $${info.mist}$; the largest over 100 samples: $${info.maxTrain}$ — always $0$, as the assumption predicts. ` : String.raw`(not realizable: no rectangle is perfect). ERM training mistakes here: $${info.mist}$ (largest over 100 samples: $${info.maxTrain}$). `) + String.raw`True error of this ERM output $${pr(info.LD)}$, average over 100 samples $${pr(info.mean)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 2.1e
@@ -290,8 +290,8 @@ restricts the empirical risk minimization to it. The choice of $\mathcal H$ is a
       viz(v) {
         const s = square(v, { height: 380, title: 'one training sample and its tightest box' });
         const sH = v.stage({ x: [0, 0.3], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'true error of the learned box', ylabel: 'training sets (of 2000)', yticks: [], title: 'errors over many training sets' });
-        const mS = v.slider('sample size $m$', 5, 200, 40, { int: true });
-        const eS = v.slider('accuracy $\\varepsilon$', 0.01, 0.25, 0.08, { step: 0.005 });
+        const mS = v.slider('sample size $m$', 5, 200, 100, { int: true });
+        const eS = v.slider('accuracy $\\varepsilon$', 0.01, 0.25, 0.1, { step: 0.005 });
         const drift = v.toggle('drift: training papayas come from a shifted distribution', false);
         let seed = 1; v.button('Another sample', () => { seed++; });
         const dTest = makeDens(0.5, 0.5, 0.45), dDrift = makeDens(0.3, 0.3, 0.45), reps = memo();
@@ -334,7 +334,7 @@ with equality when the $A_i$ are pairwise disjoint (up to null sets).`,
       verify: false,
       viz(v) {
         const s = square(v, { height: 380, title: 'events in the unit square' });
-        const sB = v.stage({ x: [0, 3.2], y: [0, 1], axes: 'box', gutter: true, height: 380, xticks: [], ylabel: 'probability mass', title: 'sum of the masses versus mass of the union' });
+        const sB = v.stage({ x: [0, 3.2], y: [0, 1], axes: 'box', gutter: true, height: 380, xticks: [[0.7, '$\\sum_i\\mathcal D(A_i)$'], [2.1, '$\\mathcal D(\\bigcup A_i)$']], ylabel: 'probability mass', title: 'sum of the masses versus mass of the union' });
         const nS = v.slider('number of events $n$', 2, 6, 4, { int: true });
         const rS = v.slider('radius', 0.06, 0.32, 0.2, { step: 0.01 });
         const COL = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];
@@ -364,7 +364,6 @@ with equality when the $A_i$ are pairwise disjoint (up to null sets).`,
           sB.rect(1.7, 0, 2.5, C.uni, { fill: 'ink', fillAlpha: 0.55, stroke: false });
           if (C.sum > C.uni + 1e-9) sB.rect(1.7, C.uni, 2.5, C.sum, { fill: 'red', fillAlpha: 0.25, color: 'red', hatch: true, width: 1.4 });
           sB.hline(C.sum, { color: 'muted', dash: true, width: 1 });
-          sB.text('$\\sum_i\\mathcal D(A_i)$', 0.7, 0, { align: 'center', baseline: 'top', dy: 6, size: 13 }); sB.text('$\\mathcal D(\\bigcup A_i)$', 2.1, 0, { align: 'center', baseline: 'top', dy: 6, size: 13 });
           sB.setView([0, 3.2], [0, Math.max(0.25, C.sum * 1.12)]);
           info = { sum: C.sum, uni: C.uni, bonf: C.sum - C.pairs };
         });

@@ -32,7 +32,7 @@ export default {
       name: 'The low interval limit',
       statement: String.raw`The same interval sounds rougher the lower it is played. A major or minor third that is smooth around middle C becomes thick and muddy two octaves lower, while a fifth stays clear further down and an octave further still. For each interval there is a register below which its roughness climbs steeply, and that register is lower the more consonant the interval: arrangers' rules of thumb ("low interval limits") keep thirds out of the deep bass and voice low chords in open fifths and octaves. Published tables of the limits differ from source to source.`,
       idea: String.raw`An interval of fixed ratio has partials separated by a fixed number of cents, that is by a frequency difference proportional to register; the critical band is about 100 Hz wide below 500 Hz and so is wide in cents in the bass (5.4). Lower an interval and more pairs of neighbouring partials fall within a fraction of a critical band of each other, the region of maximal roughness of the Plomp–Levelt curve (6.3). For a third the first partials already crowd together near the bottom of the keyboard; for an octave the closest neighbours are a whole fundamental apart, which stays outside a critical band to a much lower register. Plomp and Levelt computed exactly this (their Fig. 12, 6.14) and remarked that it matches the musical practice of avoiding thirds at low frequencies.`,
-      caption: String.raw`Top: drag the gold key to move the interval up and down the keyboard (both notes light up). Bottom: dissonance of the interval against the pitch of its lower note for five intervals of 6-partial harmonic tones (yours in bold); the red line marks where your interval becomes rougher than on C6 by 2.5 units, an illustrative threshold. The readout names the closest pair of partials and compares their spacing with the critical band. Play the interval, or a descent through four octaves.`,
+      caption: String.raw`Top: drag the gold key to move the interval up and down the keyboard (both notes light up). Bottom: dissonance of the interval against the pitch of its lower note for five intervals of 6-partial harmonic tones (yours in bold); the red line marks where your interval becomes rougher than on C6 by 2.5 units, an illustrative threshold. The readout names the roughest pair of partials and compares their spacing with the critical band. Play the interval, or a descent through four octaves.`,
       deps: ['music-6.3'],
       see: ['music-6.14', 'music-5.4', 'music-6.10'],
       refs: ['Sethares ch. 5'],
@@ -73,9 +73,9 @@ export default {
         v.legend(IV.map((x) => [x.col, x.name]));
         v.readout(() => {
           const iv = IV[ivS.value], m = km, A = at(SP, mfreq(m)), B = at(SP, mfreq(m + iv.n));
-          let best = null; for (const [fa] of A) for (const [fb] of B) { const df = Math.abs(fb - fa); if (df > 0.5 && (!best || df < best.df)) best = { df, fa, fb }; }
+          let best = null; for (const [fa, aa] of A) for (const [fb, ab] of B) { const r = pl(fa, fb, aa, ab); if (!best || r > best.r) best = { r, df: Math.abs(fb - fa), fa, fb }; }
           const cb = cbw((best.fa + best.fb) / 2);
-          return `${iv.name} on ${mname(m)} (${v.fix(mfreq(m), 1)} Hz) · dissonance ${v.fix(d(m, iv.n), 2)} (in the treble, on C6: ${v.fix(d(84, iv.n), 2)}) · closest partials ${v.fix(best.fa, 0)} and ${v.fix(best.fb, 0)} Hz, ${v.fix(best.df, 1)} Hz apart = ${v.fix(best.df / cb, 2)} of a critical band (maximal roughness near 0.25)`;
+          return `${iv.name} on ${mname(m)} (${v.fix(mfreq(m), 1)} Hz) · dissonance ${v.fix(d(m, iv.n), 2)} (in the treble, on C6: ${v.fix(d(84, iv.n), 2)}) · roughest pair of partials ${v.fix(best.fa, 0)} and ${v.fix(best.fb, 0)} Hz, ${v.fix(best.df, 1)} Hz apart = ${v.fix(best.df / cb, 2)} of a critical band (the Plomp–Levelt maximum is near 0.25)`;
         });
       },
     },

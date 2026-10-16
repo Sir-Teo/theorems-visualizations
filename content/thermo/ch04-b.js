@@ -656,7 +656,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
             const segC = (lo, hi) => T.map((t, k) => (t >= lo && t <= hi ? [t, C[k]] : null)).filter(Boolean);
             sC.path(segC(T0, jumpAt - 0.1), { color: 'green', width: 2.6 }); sC.path(segC(jumpAt + 0.1, T1), { color: 'green', width: 2.6 });
             sC.arrow(jumpAt, 80, jumpAt, ch * 0.98, { color: 'red', width: 2.4, head: 9 });
-            sC.text(`δ spike, area L = ${v.fix(W.Lf * W.M / 1e3, 2)} kJ/mol`, jumpAt, ch * 0.9, { dx: 6, size: 10.5, color: 'red', align: 'left', plate: true });
+            sC.text('δ spike at Tm', T0, ch * 0.9, { dx: 8, size: 10.5, color: 'red', align: 'left' }); sC.text(`area L = ${v.fix(W.Lf * W.M / 1e3, 2)} kJ/mol`, T0, ch * 0.79, { dx: 8, size: 10.5, color: 'red', align: 'left' });
           } else sC.path(T.map((t, k) => [t, Math.min(C[k], ch * 1.5)]), { color: 'green', width: 2.6 });
           sG.dot(Tcur, g[i], { r: 4.5, color: 'gold' }); sS.dot(Tcur, S[i], { r: 4.5, color: 'gold' }); sC.dot(Tcur, Math.min(C[i], ch), { r: 4.5, color: 'gold' });
           // diagnostics

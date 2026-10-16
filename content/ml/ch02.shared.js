@@ -155,8 +155,8 @@ export function drawShape(s, h, o = {}) {
 export function drawSample2(s, S, h, upto = S.m, r = 4.2) {
   const pos = [], neg = [], bad = [];
   for (let i = 0; i < upto; i++) { (S.L[i] ? pos : neg).push([S.X[i], S.Y[i]]); if (h && h.t !== 'finite' && (inShape(h, S.X[i], S.Y[i]) ? 1 : 0) !== S.L[i]) bad.push([S.X[i], S.Y[i]]); }
+  for (const p of bad) s.circle(p[0], p[1], 0.017, { color: 'red', width: 2.2, fill: false });
   s.dots(neg, { r, color: 'pink', alpha: 0.95 }); s.dots(pos, { r, color: 'green', alpha: 0.95 });
-  for (const p of bad) s.dot(p[0], p[1], { r: r + 4, hollow: true, color: 'red' });
 }
 /** A density-and-disagreement raster for the papaya square: orange tint where mass is, red where h and t disagree. */
 export function paintSquare(v, s, d, h, t, key, res = 4) {
