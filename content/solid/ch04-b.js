@@ -112,8 +112,8 @@ export default {
         v.render(() => {
           const m = SN[mat.value], S = Sa.value;
           A.fn((N) => snStress(m, N), { color: m.color, width: 3, domain: [1e3, 1e9], n: 400 });
-          if (m.limit) { A.hline(m.Se, { color: 'muted', width: 1, dash: [5, 4] }); A.text(`endurance limit S_e = ${m.Se} MPa`, 3e3, m.Se + 14, { size: 12, color: 'muted', align: 'left' }); }
-          else { A.dot(m.Nk, m.Se, { r: 4, color: 'muted', hollow: true }); A.text('strength at 5·10⁸ cycles', 1.5e8, m.Se + 38, { size: 12, color: 'muted', align: 'right' }); }
+          if (m.limit) { A.hline(m.Se, { color: 'muted', width: 1, dash: [5, 4] }); A.text(`endurance limit S_e = ${m.Se} MPa`, 8e8, m.Se + 14, { size: 12, color: 'muted', align: 'right' }); }
+          else { A.dot(m.Nk, m.Se, { r: 4, color: 'muted', hollow: true }); A.text('strength at 5·10⁸ cycles', 4e8, m.Se - 28, { size: 12, color: 'muted', align: 'right' }); }
           A.hline(S, { color: 'gold', width: 1.2, dash: [4, 4] });
           const t = tests(m, S);
           t.out.forEach((o, i) => {

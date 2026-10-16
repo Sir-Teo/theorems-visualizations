@@ -214,7 +214,7 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
           B.arrow(0, 2.9, 0, 2.05, { color: 'accent', width: 3 }); B.arrow(0, -2.9, 0, -2.05, { color: 'accent', width: 3 });
           B.arrow(-2.2, 0, -1.05, 0, { color: 'orange', width: 2 }); B.arrow(2.2, 0, 1.05, 0, { color: 'orange', width: 2 });
           B.tex(String.raw`\sigma_1=${num(s1, 0)}`, 1.2, 2.9, { size: 12, color: 'accent', align: 'left' }); B.tex(String.raw`\sigma_3=${s3}`, 2.2, -0.45, { size: 12, color: 'orange', align: 'right' });
-          B.tex(String.raw`45^\circ+\varphi/2=${num(45 + phi.value / 2, 1)}^\circ`, -2.9, 1.3, { size: 12, color: 'red', align: 'left' });
+          B.tex(String.raw`45^\circ+\varphi/2=${num(45 + phi.value / 2, 1)}^\circ`, -1.2, 1.3, { size: 12, color: 'red', align: 'right' });
         });
         v.readout(() => {
           const ph = rad(phi.value), c = cc.value, rows = [];
