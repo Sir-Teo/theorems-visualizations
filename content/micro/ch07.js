@@ -29,7 +29,7 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Production_function' },
       viz(v) {
         const FAM = {
-          s: { label: 'S-shaped (variable returns)', T: tech('hom', { S: scaleFn('U', { e1: 0.22, ys: 7 }), a: 0.5 }) },
+          s: { label: 'S-shaped (variable returns)', T: tech('hom', { S: scaleFn('U', { e1: 0.22, ys: 9 }), a: 0.5 }) },
           cd: { label: 'Cobb–Douglas $\\sqrt{LK}$', T: tech('cd', { A: 1, a: 0.5, b: 0.5 }) },
         };
         const fam = v.select('technology', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 's');
@@ -47,10 +47,10 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
           const MP = T.mp(L, K)[0], AP = y / L;
           const pk = fam.value === 's' ? argmax((x) => f(x) / x, 0.05, LM, 200) : null;
           // 3D surface
-          const X3 = (x) => (2 * x) / LM - 1, Y3 = (k) => (2 * k) / KM - 1, Z = (q) => -0.7 + (1.45 * q) / YM, Z0 = -0.7;
+          const ZM = T.zm || (T.zm = T.f(LM, KM)), X3 = (x) => (2 * x) / LM - 1, Y3 = (k) => (2 * k) / KM - 1, Z = (q) => -0.7 + (1.45 * q) / ZM, Z0 = -0.7;
           floor3(S3, Z0);
-          S3.surface((a, b) => [X3(a), Y3(b), Z(Math.min(T.f(a, b), YM))], [0.05, LM], [0.05, KM], { n: 22, colorFn: (a, b) => v.M.cmap(0.12 + (0.8 * Math.min(T.f(a, b), YM)) / YM, 'viridis'), alpha: 0.7 });
-          const sl = []; for (let i = 0; i <= 70; i++) { const a = 0.05 + ((LM - 0.05) * i) / 70; sl.push([X3(a), Y3(K), Z(Math.min(f(a), YM)) + 0.012]); }
+          S3.surface((a, b) => [X3(a), Y3(b), Z(T.f(a, b))], [0.05, LM], [0.05, KM], { n: 22, colorFn: (a, b) => v.M.cmap(0.12 + (0.8 * T.f(a, b)) / ZM, 'viridis'), alpha: 0.7 });
+          const sl = []; for (let i = 0; i <= 70; i++) { const a = 0.05 + ((LM - 0.05) * i) / 70; sl.push([X3(a), Y3(K), Z(f(a)) + 0.012]); }
           S3.path(sl, { color: 'accent', width: 3.4, bias: -3 });
           S3.line([X3(0), Y3(K), Z0], [X3(LM), Y3(K), Z0], { color: 'accent', width: 1.3, dash: true });
           S3.line([X3(L), Y3(K), Z0], [X3(L), Y3(K), Z(y)], { color: 'gold', width: 1.3, dash: true });
@@ -61,13 +61,13 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
           tp.clip(() => tp.line(0, 0, LM, AP * LM, { color: 'teal', width: 2.2 }));
           slopeLine(tp, L, y, MP, 70, { color: 'orange', width: 2.6 });
           tp.line(L, 0, L, y, GUIDE);
-          tp.corner(`$MP_L = ${v.fix(MP, 3)}$ · $AP_L = ${v.fix(AP, 3)}$`, 'tl');
+          tp.corner(`tangent slope $MP_L = ${v.fix(MP, 3)}$,  ray slope $AP_L = ${v.fix(AP, 3)}$`, 'tl');
           // MP and AP
           const top = fam.value === 's' ? 2.6 : 2.6;
           mp.setView([0, LM], [0, top]);
           mp.fn((x) => T.mp(x, K)[0], { domain: [0.02, LM], color: 'orange', width: 2.6 });
           mp.fn((x) => f(x) / x, { domain: [0.02, LM], color: 'teal', width: 2.6 });
-          if (pk) { mp.line(pk.x, 0, pk.x, pk.f, { color: 'green', width: 1.2, dash: [4, 3] }); mp.dot(pk.x, pk.f, { r: 6, color: 'green', label: `AP peak, L = ${v.fix(pk.x, 2)}`, labelPos: 'ne', math: false }); }
+          if (pk) { mp.line(pk.x, 0, pk.x, pk.f, { color: 'green', width: 1.2, dash: [4, 3] }); mp.dot(pk.x, pk.f, { r: 6, color: 'green', label: `AP peak, L = ${v.fix(pk.x, 2)}`, labelPos: 'nw', math: false }); }
           mp.line(L, 0, L, top, GUIDE);
           mp.dot(L, Math.min(MP, top), { r: 5, color: 'orange' }); mp.dot(L, AP, { r: 5, color: 'teal' });
           st = { T, K, L, y, MP, AP, pk, num: (f(L + 1e-4) - f(L - 1e-4)) / 2e-4 };
@@ -117,11 +117,16 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
           if (grow) plateText(s, `every cook adds ${v.fix(mp[0], 2)} meals/hour`, NMAX / 2 + 0.5, top * 0.92, { color: 'accent', align: 'center' });
           // total output
           const tot = []; for (let i = 0; i <= NMAX; i++) tot.push([i, out(i)]);
-          const tmax = Math.max(160, Math.ceil(out(NMAX) / 40) * 40 + 20);
+          const tmax = Math.ceil((Math.max(out(NMAX), grow ? 0 : M * K0) * 1.18) / 10) * 10;
           t.setView([0, NMAX + 0.5], [0, tmax]);
           t.path(tot, { color: v.color('accent', 0.35), width: 1.5 });
+          for (let i = 1; i <= N; i++) {
+            const col = !grow && peak && i > peak ? 'orange' : grow ? 'accent' : 'green';
+            t.rect(i - 1, out(i - 1), i, out(i), { fill: col, fillAlpha: 0.3, stroke: false });
+            t.line(i, out(i - 1), i, out(i), { color: col, width: 4 });
+            t.line(i - 1, out(i - 1), i, out(i - 1), { color: 'muted', width: 1, dash: [3, 3] });
+          }
           t.path(tot.slice(0, N + 1), { color: 'accent', width: 2.6 });
-          for (let i = 1; i <= N; i++) t.line(i, out(i - 1), i, out(i), { color: !grow && peak && i > peak ? 'orange' : grow ? 'accent' : 'green', width: 4, alpha: 0.75 });
           t.dots(tot.slice(1, N + 1), { r: 3.5, color: 'accent' });
           if (!grow) t.hline(M * K0, { color: 'muted', width: 1, dash: [4, 4] });
           if (!grow) t.text(`capacity ${M * K0} meals/hour`, 0.3, M * K0, { dy: -8, size: 11, color: 'muted', align: 'left' });

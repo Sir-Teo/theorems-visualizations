@@ -453,12 +453,13 @@ export function drawTree(s, L, opts = {}) {
   for (const nd of L.nodes) for (const c of nd.kids) s.line(nd.x, nd.y, c.x, c.y, { color: (opts.edgeColor && opts.edgeColor(c)) || 'muted', width: 1.6 });
   for (const nd of L.nodes) {
     const f = opts.fill ? opts.fill(nd) : null;
-    if (f) s.dot(nd.x, nd.y, { r, color: f });
-    else s.dot(nd.x, nd.y, { r, color: 'muted', hollow: true, width: 1.6 });
     const ring = opts.ring && opts.ring(nd);
-    if (ring) s.dot(nd.x, nd.y, { r: r + 3.5, color: ring, hollow: true, width: 2.4 });
+    if (ring) { s.dot(nd.x, nd.y, { r: r + 4.5, color: ring, ring: false }); s.dot(nd.x, nd.y, { r: r + 1, color: 'panel', ring: false }); }
+    s.dot(nd.x, nd.y, { r, color: 'panel', ring: false });
+    if (f) { s.dot(nd.x, nd.y, { r, color: f, alpha: 0.2, ring: false }); s.dot(nd.x, nd.y, { r, color: f, hollow: true, width: 2.2, alpha: 1 }); }
+    else s.dot(nd.x, nd.y, { r, color: 'muted', hollow: true, width: 1.6 });
     const leafy = nd.e.op === 'var';
-    s.text(nodeLabel(nd.e), nd.x, nd.y, { align: 'center', baseline: 'middle', size: leafy ? 14 : 15, math: leafy, weight: leafy ? 400 : 600, color: (opts.labelColor && opts.labelColor(nd)) || (f ? 'panel' : 'ink') });
+    s.text(nodeLabel(nd.e), nd.x, nd.y, { align: 'center', baseline: 'middle', size: leafy ? 14 : 15, math: leafy, weight: leafy ? 400 : 600, color: (opts.labelColor && opts.labelColor(nd)) || 'ink' });
     const note = opts.note && opts.note(nd);
     if (note != null && note !== '') s.text(String(note), nd.x, nd.y, { dx: r + 4, dy: -r + 2, align: 'left', baseline: 'middle', size: 11, weight: 600, color: (opts.noteColor && opts.noteColor(nd)) || 'accent' });
   }

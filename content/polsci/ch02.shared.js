@@ -162,7 +162,7 @@ export function drawTourney(v, c, N, cand, pos, o = {}) {
     const lab = o.label ? o.label(cand[w], cand[l], pw, pl) : `${fmtK(pw)}–${fmtK(pl)}`;
     if (lab) pill(v, c, lab, M.mx, M.my, { color: a === b ? 'muted' : col === 'muted' ? 'ink' : col });
   }
-  cand.forEach((x, k) => chip(v, c, pos[k][0], pos[k][1], x, { r, ring: o.ring?.(x), label: o.labels?.(x), alpha: o.alpha?.(x) ?? 1 }));
+  cand.forEach((x, k) => chip(v, c, pos[k][0], pos[k][1], x, { r, ring: o.ring?.(x), label: o.labels?.(x), alpha: o.alpha?.(x) ?? 1, color: o.col?.(x) }));
 }
 /** Text on a rounded halo pill. */
 export function pill(v, c, s, X, Y, o = {}) {

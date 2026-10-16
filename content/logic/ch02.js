@@ -191,7 +191,7 @@ Equivalently, they form the smallest set of strings that contains the letters an
 
 **Unique readability.** Every formula is exactly one of: a sentence letter; $(\neg\alpha)$ for a unique formula $\alpha$; or $(\alpha \mathbin{\square} \beta)$ for a unique binary connective $\square$ and unique formulas $\alpha, \beta$. So each formula has exactly one parse tree.`,
       idea: String.raw`The key lemma is about parentheses. Every formula has as many left as right parentheses, and every proper initial segment of a compound formula has strictly more left than right ones. Both facts follow by induction on formulas (logic-2.2). Suppose $(\alpha\mathbin{\square}\beta) = (\gamma\mathbin{\square'}\delta)$ with $\alpha \ne \gamma$. Then one of $\alpha$, $\gamma$ is a proper initial segment of the other. It would have more $($ than $)$, but it is itself a formula and so is balanced. Hence $\alpha=\gamma$, and then $\square=\square'$ and $\beta=\delta$. Without parentheses the lemma has nothing to work with, and a string such as $p\land q\to r$ can be read in more than one way.`,
-      caption: String.raw`Type a formula in Enderton's fully parenthesised syntax (ASCII also works: \`~ & | -> <->\`). Left: its parse tree. Right: the parenthesis depth after each symbol. On every proper initial segment it stays $\ge 1$, and the main connective (gold) is the only binary connective at depth 1. Delete a parenthesis and the parser reports where the string stops being a formula. Switch to **parentheses erased**: the same symbols now have several readings, counted exactly by dynamic programming. Two of them are drawn side by side, and the readout gives an assignment on which they disagree. Press **another reading** to see the next one.`,
+      caption: String.raw`Type a formula in Enderton's fully parenthesised syntax (ASCII also works: ~ & | -> <->). Left: its parse tree. Right: the parenthesis depth after each symbol. On every proper initial segment it stays $\ge 1$, and the main connective (gold) is the only binary connective at depth 1. Delete a parenthesis and the parser reports where the string stops being a formula. Switch to **parentheses erased**: the same symbols now have several readings, counted exactly by dynamic programming. Two of them are drawn side by side, and the readout gives an assignment on which they disagree. Press **another reading** to see the next one.`,
       deps: [],
       refs: ['Enderton §1.1', 'Enderton §1.3'],
       tags: ['syntax', 'parsing'],
@@ -232,9 +232,9 @@ Equivalently, they form the smallest set of strings that contains the letters an
             }
             // depth profile
             const m = R.toks.length, D = Math.max(2, ...R.prof);
-            P.setView([-0.9, Math.max(m, 6) - 0.1], [-1.2, D + 1.9]);
+            P.setView([-1.9, Math.max(m, 6) - 0.1], [-1.2, D + 1.9]);
             P.line(-0.6, 0, m - 0.4, 0, { color: 'faint', width: 1 });
-            for (let k = 1; k <= D; k++) P.text(String(k), -0.75, k, { align: 'right', size: 10, color: 'muted' });
+            for (let k = 1; k <= D; k++) P.text(String(k), -0.8, k, { align: 'right', size: 10.5, color: 'muted' });
             R.toks.forEach((t, i) => {
               const bad = (R.prof[i] <= 0 && i < m - 1 && m > 1 && t.t !== 'var') || R.prof[i] < 0 || (R.strict.error && R.strict.at === i);
               const col = bad ? 'red' : i === R.main ? 'gold' : t.t === '(' || t.t === ')' ? 'accent' : 'muted';
@@ -243,7 +243,7 @@ Equivalently, they form the smallest set of strings that contains the letters an
               P.text(tokStr(t), i, D + 1.15, { align: 'center', size: 15, math: t.t === 'var', weight: i === R.main ? 700 : 500, color: bad ? 'red' : i === R.main ? 'gold' : 'ink' });
             });
             if (R.strict.error && R.strict.at >= m) P.text('⟵ ends too early', m - 0.4, D + 1.15, { align: 'left', size: 11, color: 'red' });
-            P.text('depth', -0.75, D + 0.5, { align: 'right', size: 10, color: 'muted' });
+            P.text('depth', -0.8, D + 0.45, { align: 'right', size: 10.5, color: 'muted' });
           } else {
             A.setTitle('reading 1 (the one you typed)'); P.setTitle('another reading of the same symbols');
             const list = R.read.list;
@@ -357,10 +357,10 @@ Equivalently, they form the smallest set of strings that contains the letters an
           if (F.error) T.corner(F.error, 'tl', { color: 'red' });
           // official string strip
           const toks = offData.toks, n = toks.length, sp = cur ? offData.span.get(cur) : null;
-          strip.setView([-1, Math.max(n, 20)], [0, 1]);
+          strip.setView([-1, Math.max(n, 20) + 2.6], [0, 1]);
           if (sp) strip.rect(sp[0] - 0.5, 0.18, sp[1] - 0.5, 0.82, { fill: 'gold', fillAlpha: 0.22, color: 'gold', width: 1.2, radius: 5 });
           toks.forEach((t, i) => strip.text(t, i, 0.5, { align: 'center', size: n > 34 ? 12 : 14.5, math: /^[a-z]/.test(t), color: sp && i >= sp[0] && i < sp[1] ? 'ink' : 'muted' }));
-          strip.text(`${n} symbols`, Math.max(n, 20) - 0.2, 0.5, { align: 'right', size: 10.5, color: 'muted' });
+          strip.text(`${n} symbols`, Math.max(n, 20) + 2.4, 0.5, { align: 'right', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
           const fails = order.filter((e) => !oks.get(e));
@@ -389,14 +389,14 @@ and $\bar v(\alpha\leftrightarrow\beta)=T \iff \bar v(\alpha)=\bar v(\beta)$. Th
         const F = formulaField(v, 'formula', '(p → q) ∧ (¬q ∨ r)', { width: 230, maxLetters: 4, onChange: () => { S.reset(null, { at: 'end' }); } });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.85, title: 'parse tree under the current row' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.15, title: 'truth table' });
-        const TT = v.table(B, { rows: 4, cols: 3, square: false, maxCell: 26, cellAspect: 3, size: 13, labelSize: 12 });
+        const TT = v.table(B, { rows: 4, cols: 3, square: false, maxCell: 26, cellAspect: 3, size: 13, labelSize: 11.5 });
         let row = 0, prevRow = -1;
         const S = v.steps({ frames: () => { const n = lettersOf(F.ast).length; return Array.from({ length: (1 << n) + 1 }, (_, k) => ({ k, note: k ? `row ${k} filled` : 'empty table' })); }, start: 'end', speed: 3, still: 'end', note: false, onChange: (f) => { if (f.k > 0) { prevRow = row; row = f.k - 1; } } });
         let Lc = null, Last = null;
         const cols = () => {
           const vars = lettersOf(F.ast), subs = [], seen = new Set();
           for (const e of postorder(F.ast)) { if (e.op === 'var' || e.op === 'const') continue; const k = toStr(e); if (!seen.has(k)) { seen.add(k); subs.push(e); } }
-          return { vars, subs: subs.length > 6 ? subs.slice(-6) : subs };
+          return { vars, subs: subs.length > 5 ? subs.slice(-5) : subs };
         };
         A.onClick((x, y) => {
           if (!Lc) return;
@@ -418,9 +418,9 @@ and $\bar v(\alpha\leftrightarrow\beta)=T \iff \bar v(\alpha)=\bar v(\beta)$. Th
           if (F.error) A.corner(F.error, 'bl', { color: 'red', size: 11 });
           else A.corner('click a letter to flip it', 'bl', { size: 11 });
           const filled = S.frame.k ?? (1 << n);
-          const cw = [...vars.map(() => 0.55), ...subs.map((e) => Math.min(3.2, 0.7 + toStr(e).length * 0.13))];
+          const cw = [...vars.map(() => 0.55), ...subs.map((e) => Math.min(4, 0.6 + toStr(e).length * 0.16))];
           TT.draw({
-            rows: 1 << n, cols: n + subs.length, colWeights: cw, cellAspect: Math.min(4.5, Math.max(1.4, 0.55 * cw.reduce((a, b) => a + b, 0) / (n + subs.length) * 2.2)),
+            rows: 1 << n, cols: n + subs.length, colWeights: cw, cellAspect: 12,
             colLabels: [...vars.map((x) => `$${x}$`), ...subs.map((e) => `$${toTex(e)}$`)],
             value: (i, j) => (i >= filled ? null : j < n ? rowVal(i, j, n) : evaluate(subs[j - n], rowEnv(i, vars))),
             textColor: (i, j) => (j < n ? 'ink' : evaluate(subs[j - n], rowEnv(i, vars)) ? 'green' : 'red'),
@@ -428,6 +428,7 @@ and $\bar v(\alpha\leftrightarrow\beta)=T \iff \bar v(\alpha)=\bar v(\beta)$. Th
             fill: (i, j) => (j === n + subs.length - 1 && i < filled ? [evaluate(subs[j - n], rowEnv(i, vars)) ? 'green' : 'red', 0.16] : j < n ? ['faint', 0.12] : null),
             activeRow: row, activeColor: 'gold',
           });
+          TT.box(row, 0, row, n + subs.length - 1, { color: 'gold', width: 2.5 });
         });
         v.readout(() => {
           const vars = lettersOf(F.ast), col = table(F.ast, vars), t = col.reduce((a, b) => a + b, 0);

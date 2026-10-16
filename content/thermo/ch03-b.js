@@ -282,7 +282,7 @@ and also $\kappa_T - \kappa_S = TV\alpha^2/C_P$, so $C_P/C_V = \kappa_T/\kappa_S
 $$S(U + \Delta U, V + \Delta V) + S(U - \Delta U, V - \Delta V) \le 2S(U, V).$$
 Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and $S_{UU}S_{VV} - S_{UV}^2 \ge 0$, equivalently $C_V \ge 0$ and $\kappa_T \ge 0$. In the transformed potentials: $F$ is convex in $V$ and concave in $T$; $G$ is concave in both $T$ and $P$. Where a model's relation violates concavity, the system splits into two phases, and the true equilibrium relation is the **concave hull** (for $S$) or **convex hull** (for $F$) — straight segments joining coexisting phases.`,
       idea: String.raw`If the chord between $(U - \Delta U)$ and $(U + \Delta U)$ passed above $S(U)$, transferring $\Delta U$ from one half to the other would raise the total entropy, and by the maximum principle (3.4, 2.10) the uniform state would not be equilibrium. Concavity of a smooth function (rca 3.1 on convex functions) is equivalent to the second-derivative conditions; translated through $T$ and $P$ they read $C_V > 0$ and $\kappa_T > 0$. The Legendre transform (3.7) turns concavity of $S$ (convexity of $U$) into the stated properties of $F$ and $G$. The hull construction is the same as Maxwell's equal-area rule for the van der Waals loop (4.3).`,
-      caption: String.raw`**Drag the state** along the curve and widen the split $\delta$. The two halves sit at the ends of the chord (dots); their average, the chord's midpoint, is compared with the uniform state. **Entropy picture** (a model $S(U)$ with a convex stretch, dimensionless): where the curve is concave, splitting lowers the total entropy and the system returns to uniformity; on the convex stretch splitting *raises* it — the uniform state is unstable. The dashed concave hull is the true equilibrium entropy. **Van der Waals** (CO₂ below its critical temperature): stability now needs $F(v)$ convex. The left curve is drawn as $F(v) + P_{\text{co}}v$, tilted by the slope of the common tangent — a linear term changes neither convexity nor the outcome of a split — so the double well shows plainly. On the stretch where $F$ is not convex, the pressure rises with volume ($\kappa_T < 0$, red on the right) and the fluid separates into liquid and gas along the common tangent, whose slope gives the flat coexistence pressure.`,
+      caption: String.raw`**Drag the state** along the curve and widen the split $\delta$. The two halves sit at the ends of the chord (dots); their average, the chord's midpoint, is compared with the uniform state. **Entropy picture** (a model $S(U)$ with a convex stretch, dimensionless, drawn tilted by the slope $1/T_{\text{co}}$ of its common tangent): where the curve is concave, splitting lowers the total entropy and the system returns to uniformity; on the convex stretch splitting *raises* it — the uniform state is unstable. The dashed concave hull is the true equilibrium entropy. **Van der Waals** (CO₂ below its critical temperature): stability now needs $F(v)$ convex. The left curve is drawn as $F(v) + P_{\text{co}}v$, tilted by the slope of the common tangent — a linear term changes neither convexity nor the outcome of a split — so the double well shows plainly. On the stretch where $F$ is not convex, the pressure rises with volume ($\kappa_T < 0$, red on the right) and the fluid separates into liquid and gas along the common tangent, whose slope gives the flat coexistence pressure.`,
       deps: ['thermo-3.4', 'rca-3.1'],
       see: ['thermo-3.7', 'thermo-4.3', 'pchem-7.7'],
       refs: ['Callen ch. 8', 'Kardar §1.9'],
@@ -295,7 +295,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
         const sa = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'F', weight: 1.1 });
         const sb = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'P (bar)', weight: 1 });
         const CO2 = vdw('CO2');
-        const Stoy = (u) => 2.2 * Math.log(u) + 0.9 * Math.exp(-((u - 2) ** 2) / 0.12);
+        const Stoy = (u) => 2.2 * Math.log(u) + 0.3 * Math.exp(-((u - 2) ** 2) / 0.08);
         const hd = sa.handle(0.15, 0, { color: 'gold', label: 'state', constrain: (x) => [x, curveY(x)] });
         let curveY = (x) => 0;
         let st = null;
@@ -307,7 +307,8 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           const f0 = (vL) => CO2.f(T, vL * L) / KJ;
           let tilt = 0;
           if (!S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(f0(x)); } const h0 = hullFn(xs0, ys0, false); tilt = h0.segs.length ? -(h0.segs[0][3] - h0.segs[0][2]) / (h0.segs[0][1] - h0.segs[0][0]) : CO2.P(T, hd.x * L) * L / KJ; }
-          const f = S ? Stoy : (vL) => f0(vL) + tilt * vL;
+          if (S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(Stoy(x)); } const h0 = hullFn(xs0, ys0, true); const sg = h0.segs.find((q) => q[1] - q[0] < 1.5); tilt = sg ? -(sg[3] - sg[2]) / (sg[1] - sg[0]) : 0; }
+          const f = S ? (u) => Stoy(u) + tilt * u : (vL) => f0(vL) + tilt * vL;
           curveY = f;
           const xs = [], ys = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs.push(x); ys.push(f(x)); }
           const hull = hullFn(xs, ys, S);
@@ -315,8 +316,8 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           hd.set(x0, f(x0));
           const lo = Math.min(...ys), hi = Math.max(...ys);
           sa.setView(X, [lo - 0.06 * (hi - lo), hi + 0.08 * (hi - lo)]);
-          sa.setTitle(S ? 'entropy $S(U)$ — must be concave' : `$F(v) + P_{\\text{co}}v$ at ${T} K — must be convex`);
-          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S' : 'F + P_co v (kJ/mol)');
+          sa.setTitle(S ? '$S(U) - U/T_{\\text{co}}$ — must be concave' : `$F(v) + P_{\\text{co}}v$ at ${T} K — must be convex`);
+          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S − U/T_co' : 'F + P_co v (kJ/mol)');
           for (const [a, b] of hull.segs) sa.vband(a, b, { color: 'red', alpha: 0.07 });
           sa.fn(f, { color: 'ink', width: 2.4, domain: X, n: 400 });
           sa.fn(hull, { color: 'green', width: 2, dash: [7, 5], domain: X, n: 400 });
@@ -386,7 +387,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
         };
         const which = v.select('model', Object.entries(MODELS).map(([value, o]) => ({ value, label: o.label })), 'ice');
         const tS = v.slider('$T/\\theta$', 0.01, 1.5, 0.3, { log: true, fmt: (x) => v.fix(x, 3) });
-        const sa = v.stage({ x: [0, 1.5], y: [-2, 8], height: 330, axes: 'box', gutter: true, xlabel: 'T/θ', ylabel: 'S/R', weight: 1, title: 'entropy per mole' });
+        const sa = v.stage({ x: [0, 1.5], y: [-1.2, 6], height: 330, axes: 'box', gutter: true, xlabel: 'T/θ', ylabel: 'S/R', weight: 1, title: 'entropy per mole' });
         const sb = v.stage({ x: [0.01, 1.5], y: [1e-6, 5], xlog: true, ylog: true, height: 330, axes: 'box', gutter: true, xlabel: 'T/θ', ylabel: 'C/R', weight: 1, title: 'heat capacity (log–log)' });
         let st = null;
         v.render(() => {
@@ -408,7 +409,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
           sa.text('R ln(3/2): Pauling', 1.48, Math.log(1.5), { align: 'right', dy: 10, size: 10.5, color: 'orange' });
           sa.text('R ln 2', 1.48, Math.log(2), { align: 'right', dy: -9, size: 10.5, color: 'purple' });
           if (k === 'ice') sa.rect(0.0, 3.4 / R - 0.21 / R, 0.08, 3.4 / R + 0.21 / R, { fill: 'ink', fillAlpha: 0.15, color: 'ink', width: 1 });
-          if (k === 'ice') sa.text('measured, 1936', 0.09, 3.4 / R, { dy: 14, size: 10.5, color: 'ink' });
+          if (k === 'ice') sa.text('measured, 1936', 0.09, 3.4 / R, { dx: 4, dy: -12, size: 10.5, color: 'ink', plate: true });
           st = { S, C, t, k, S0: m.S(0.01) };
         });
         v.readout(() => {

@@ -475,7 +475,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
               y = rk4((t, z) => { const g = P.dU(z[0], z[1]); return [z[2], z[3], -g[0], -g[1]]; }, 0, y, dt);
               W += (y[2] * y[2] + y[3] * y[3]) * dt;
               pts.push([y[0], y[1], W, y[2], y[3]]);
-              if (y[0] < P.x[0] - 1 || y[0] > P.x[1] + 1 || y[1] < P.y[0] - 1 || y[1] > P.y[1] + 1) break;
+              if ((y[0] < P.x[0] - 2.5 && y[2] < 0) || y[0] > P.x[1] + 1.5 || y[1] < P.y[0] - 1.5 || y[1] > P.y[1] + 1.5) break;
             }
             out.push(pts);
           }

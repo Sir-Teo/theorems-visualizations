@@ -47,7 +47,7 @@ const E814 = [['prog', 'ds'], ['disc', 'ds'], ['disc', 'prob'], ['calc', 'la'], 
 const KAHN_CODE = ['compute indeg[v] for every vertex v', 'Q ← vertices with indeg 0              ▷ the current sources', 'while Q is not empty:', '  u ← dequeue(Q);  output u', '  for each edge u → v:', '    indeg[v] ← indeg[v] − 1', '    if indeg[v] = 0:  enqueue(Q, v)', 'if fewer than n vertices were output:  a cycle remains'];
 
 // ---------------------------------------------------------------- 8.15 / 8.16 / 8.17 a digraph with clustered components
-const P815 = { a: [0.8, 4.6], b: [2.6, 5.4], c: [2.3, 3.4], d: [4.6, 5.3], e: [4.9, 3.6], f: [2.0, 1.0], g: [3.9, 1.6], h: [3.4, 0.4], i: [7.0, 4.4], j: [8.9, 5.3], k: [9.0, 3.4], l: [7.2, 1.2], m: [9.2, 0.8] };
+const P815 = { a: [0.8, 4.6], b: [2.6, 5.4], c: [2.3, 3.4], d: [4.6, 5.3], e: [4.9, 3.6], f: [2.0, 1.2], g: [3.9, 1.8], h: [3.4, 0.7], i: [7.0, 4.4], j: [8.9, 5.3], k: [9.0, 3.4], l: [7.2, 1.2], m: [9.2, 1.0] };
 const E815 = [['a', 'b'], ['b', 'c'], ['c', 'a'], ['b', 'd'], ['d', 'e'], ['e', 'd'], ['c', 'f'], ['f', 'g'], ['g', 'h'], ['h', 'f'], ['e', 'i'], ['g', 'e'], ['i', 'j'], ['j', 'k'], ['k', 'i'], ['g', 'l'], ['l', 'm'], ['k', 'm'], ['d', 'j']];
 const KOS_CODE = ['run DFS(G), recording finishing times f        ▷ pass 1', 'L ← the vertices by decreasing f', 'for each u in L:', '  if u is unvisited:  Visit(Gᴿ, u)   ▷ pass 2, edges reversed', '  every vertex this visit reaches forms one component'];
 
@@ -376,7 +376,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
         const wrong = v.toggle('pass 2 in increasing f order (breaks it)', false, { onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320 });
         const sl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 84, full: true });
-        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P815, { f: { notePos: 'w' }, h: { notePos: 's' }, l: { notePos: 's' }, m: { notePos: 's' } }), edges: E815.map(([a, b]) => [a, b]) });
+        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P815, { c: { notePos: 's' }, e: { notePos: 's' }, f: { notePos: 'w' }, h: { notePos: 's' }, j: { notePos: 'e' }, k: { notePos: 'e' }, l: { notePos: 's' }, m: { notePos: 's' } }), edges: E815.map(([a, b]) => [a, b]) });
         const GR = v.graph(s, { directed: true, layout: 'none', nodes: G.nodes, edges: [], draggable: false });
         G.onChange = () => S.reset({ at: 'end' });
         const frames = () => {
@@ -385,7 +385,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
           const p2 = dfsTrace(G, { rev: true, roots });
           const F = p1.events.filter((e) => e.type !== 'done').map((e) => ({ ...e, phase: 1, line: 1, L: e.post.slice().reverse(), fin: p1.f }));
           F.push({ ...p1.events[p1.events.length - 1], phase: 1.5, line: 2, L, fin: p1.f, note: `Pass 1 done. Sort by decreasing finishing time: ${L.map((x) => G.lab(x)).join(' ')}${wrong.value ? ' — but pass 2 will (wrongly) take them in increasing order' : ''}.` });
-          for (const e of p2.events) if (e.type !== 'init') F.push({ ...e, phase: 2, line: e.type === 'start' ? [3, 4] : e.type === 'done' ? 5 : 4, L, fin: p1.f, p2roots: roots, note: e.type === 'start' ? `Next root in the list that is still unvisited: **${G.lab(e.u)}**. Start a new tree in $G^{\\mathsf R}$ — a new component.` : e.type === 'done' ? 'Pass 2 done: each tree is one strongly connected component.' : e.note });
+          for (const e of p2.events) if (e.type !== 'init') F.push({ ...e, phase: 2, line: e.type === 'start' ? [3, 4] : e.type === 'done' ? 5 : 4, L, fin: p1.f, p2roots: roots, note: e.type === 'start' ? `Next root in the list that is still unvisited: **${G.lab(e.u)}**. Start a new tree in $G^{\\mathsf R}$ — a new component.` : e.type === 'done' ? (wrong.value ? 'Pass 2 done. With the roots in the wrong order, compare the trees with the true components in the readout.' : 'Pass 2 done: each tree is one strongly connected component.') : e.note });
           return F;
         };
         const S = v.steps({ frames, code: KOS_CODE, codeTitle: 'Kosaraju–Sharir(G)', codePos: 'below', speed: 2.5, start: 'end', still: 'end' });
