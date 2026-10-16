@@ -347,20 +347,19 @@ export function synchronize(adj, root, d, kind, pulses) {
  */
 export function diffuse(adj, root, { p = 0.7, depth = 5, job = 0.7, seed = 4, delay = (a, b, c) => 0.4 + 0.8 * hash01(seed, a, b, c), mode = 'ds' } = {}) {
   const nodes = [...adj.keys()], pending = new Map(nodes.map((u) => [u, 0])), deficit = new Map(nodes.map((u) => [u, 0])), par = new Map(nodes.map((u) => [u, null]));
-  const engaged = new Set([root]), q = [], msgs = [], cnt = new Map(), series = [], sendCnt = new Map(), eng = [];
+  const engaged = new Set([root]), q = [], msgs = [], cnt = new Map(), jobs = [], eng = [{ u: root, t0: 0, t1: null, par: null }];
   let k = 0, declared = null, trueEnd = 0, nWork = 0;
   const push = (e) => { e.k = k++; q.push(e); q.sort((a, b) => a.t - b.t || a.k - b.k); };
-  const transit = () => msgs.filter((m) => m.kind === 'work' && !m.done).length;
   const send = (t, a, b, kind, extra = {}) => {
     const key = `${a}>${b}`, c = (cnt.get(key) || 0) + 1; cnt.set(key, c);
     const m = { from: a, to: b, ts: t, tr: t + delay(+a, +b, c), kind, ...extra }; msgs.push(m); push({ t: m.tr, type: 'recv', m });
     if (kind === 'work') { deficit.set(a, deficit.get(a) + 1); nWork++; }
   };
-  const startJob = (t, u, gen) => { pending.set(u, pending.get(u) + 1); push({ t: t + job * (0.6 + 0.8 * hash01(seed, +u, gen, nWork)), type: 'jobEnd', u, gen }); };
+  const startJob = (t, u, gen) => { pending.set(u, pending.get(u) + 1); const te = t + job * (0.6 + 0.8 * hash01(seed, +u, gen, nWork)); jobs.push({ u, t0: t, t1: te }); push({ t: te, type: 'jobEnd', u, gen }); };
   const check = (t, u) => {
     if (pending.get(u) > 0 || deficit.get(u) > 0 || !engaged.has(u)) return;
     if (u === root) { if (mode === 'ds' && declared == null) declared = t; return; }
-    const pa = par.get(u); engaged.delete(u); par.set(u, null); send(t, u, pa, 'ack', { tree: true });
+    const pa = par.get(u); engaged.delete(u); for (let i = eng.length - 1; i >= 0; i--) if (eng[i].u === u && eng[i].t1 == null) { eng[i].t1 = t; break; } par.set(u, null); send(t, u, pa, 'ack', { tree: true });
   };
   startJob(0, root, 0);
   let guard = 0;
@@ -369,7 +368,7 @@ export function diffuse(adj, root, { p = 0.7, depth = 5, job = 0.7, seed = 4, de
     if (e.type === 'recv') {
       const m = e.m; m.done = true;
       if (m.kind === 'work') {
-        if (!engaged.has(m.to)) { engaged.add(m.to); par.set(m.to, m.from); m.adopt = true; } else send(t, m.to, m.from, 'ack');
+        if (!engaged.has(m.to)) { engaged.add(m.to); par.set(m.to, m.from); m.adopt = true; eng.push({ u: m.to, t0: t, t1: null, par: m.from }); } else send(t, m.to, m.from, 'ack');
         startJob(t, m.to, m.gen); trueEnd = Math.max(trueEnd, t);
       } else { deficit.set(m.to, deficit.get(m.to) - 1); check(t, m.to); }
     } else {
@@ -382,5 +381,5 @@ export function diffuse(adj, root, { p = 0.7, depth = 5, job = 0.7, seed = 4, de
       check(t, u);
     }
   }
-  return { msgs, declared, trueEnd, nWork, end: Math.max(...msgs.map((m) => m.tr), trueEnd) };
+  return { msgs, jobs, eng, declared, trueEnd, nWork, end: Math.max(...msgs.map((m) => m.tr), trueEnd) };
 }

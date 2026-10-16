@@ -14,8 +14,8 @@ function tropopause(T) {
   return z[Math.min(top, z.length - 1)];
 }
 /** Radiative heating rate (K/day) of each layer from a column state (longwave only) and the shortwave profile. */
-function heatingRates(T, Ts, q, o3) {
-  const L = longwave(T, Ts, opticalDepths(T, { q, o3 }), {});
+function heatingRates(T, Ts, q, o3, co2 = 280) {
+  const L = longwave(T, Ts, opticalDepths(T, { q, o3, co2 }), {});
   return T.map((_, i) => ((L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1])) / CAP[i]) * 86400);
 }
 
@@ -61,7 +61,7 @@ export default {
         const cv = v.toggle('convective adjustment', true, { onChange: () => change() });
         const gam = v.slider('critical lapse rate $\\Gamma_c$ (K/km)', 3, 9.8, 6.5, { step: 0.1, onChange: () => change() });
         const sA = v.stage({ x: [150, 360], y: [0, 50], axes: 'box', gutter: true, height: 400, weight: 1.1, minWidth: 270, xlabel: 'temperature (K)', ylabel: 'height (km)', title: 'temperature profile' });
-        const sB = v.stage({ x: [-8, 4], y: [0, 50], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 250, xlabel: 'radiative heating (K/day)', ylabel: 'height (km)', title: 'net radiative heating' });
+        const sB = v.stage({ x: [-20, 20], y: [0, 50], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 250, xlabel: 'radiative heating (K/day)', ylabel: 'height (km)', title: 'net radiative heating' });
         const sC = v.stage({ x: [0, 1400], y: [250, 340], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'integration steps', ylabel: 'surface T (K)', title: 'approach to equilibrium' });
         let R = null, trace = [], marks = [], base = [], phase = 'radiative', ctrl = null, ref = null, rad = null;
         const opts = (noConv) => ({ asr: ASR_RCE, o3: O3, sw: SW, co2: +co2.value, gamma: gam.value, noConvect: noConv, fixedQ: hum.value === 'abs' ? Q288 : hum.value === 'dry' ? Q288.map(() => 4e-6) : undefined, maxSteps: 1300 });
@@ -75,7 +75,7 @@ export default {
           base = trace.slice(); marks.push({ i: base.length, label: radFirst ? 'radiative equilibrium' : 'new settings' });
           phase = radFirst ? 'radiative' : 'run';
           run.start(rceJob(opts(radFirst || !cv.value), from), (st) => {
-            done(st);
+            trace = base.concat(run.job.hist); done(st);
             if (phase === 'radiative' && cv.value) { base = trace.slice(); marks.push({ i: base.length, label: 'convection on' }); phase = 'run'; return rceJob(opts(false), st); }
             return null;
           });
@@ -85,7 +85,7 @@ export default {
         begin(null, true);
         v.render(() => {
           const j = run.job, st = j.st, T = st.T, Ts = st.Ts, z = heights(T), o = opts(!cv.value && phase !== 'radiative' ? true : phase === 'radiative');
-          const q = o.fixedQ || humidity(T), L = longwave(T, Ts, opticalDepths(T, { q, o3: O3 }), {});
+          const q = o.fixedQ || humidity(T), L = longwave(T, Ts, opticalDepths(T, { q, o3: O3, co2: +co2.value }), {});
           const hr = T.map((_, i) => ((L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1])) / CAP[i]) * 86400);
           const sw = SW.map((w, i) => (w / CAP[i]) * 86400);
           if (rad) { const zr = heights(rad.T); sA.path(rad.T.map((t, i) => [t, zr[i]]), { color: 'red', width: 1.6, dash: [5, 4], alpha: phase === 'radiative' ? 0 : 1 }); }
@@ -94,8 +94,8 @@ export default {
           sA.dot(Ts, 0, { color: 'gold', r: 6.5, label: `${fx(v, Ts, 1)} K`, labelPos: 'ne' });
           const zt = tropopause(T); if (!(phase === 'radiative') && cv.value) { sA.hline(zt, { color: 'green', dash: [6, 4], width: 1.3 }); sA.text(`tropopause ${fx(v, zt, 1)} km`, 355, zt, { color: 'green', size: 11.5, align: 'right', baseline: 'bottom', dy: -3 }); }
           sB.vline(0, { color: 'faint' });
-          sB.path(hr.map((x, i) => [Math.max(-8, Math.min(4, x)), z[i]]), { color: 'purple', width: 2.4 });
-          sB.path(sw.map((x, i) => [Math.max(-8, Math.min(4, x)), z[i]]), { color: 'orange', width: 2, dash: [5, 4] });
+          sB.path(hr.map((x, i) => [Math.max(-20, Math.min(20, x)), z[i]]), { color: 'purple', width: 2.4 });
+          sB.path(sw.map((x, i) => [Math.max(-20, Math.min(20, x)), z[i]]), { color: 'orange', width: 2, dash: [5, 4] });
           // trace
           const tr = trace.length ? trace : j.hist;
           sC.setView([0, Math.max(300, tr.length + 60)], null);
@@ -127,7 +127,7 @@ export default {
         const Tsel = v.slider('surface temperature $T_s$ (K)', 240, 450, 300, { step: 1 });
         const sA = v.stage({ x: [240, 450], y: [150, 340], axes: 'box', gutter: true, height: 360, weight: 1.15, minWidth: 290, xlabel: 'surface temperature (K)', ylabel: 'outgoing radiation (W/m²)', title: 'OLR of a saturated column' });
         const sB = v.stage({ x: [180, 450], y: [1, 1e4], ylog: true, axes: 'box', gutter: true, height: 360, weight: 0.9, minWidth: 250, xlabel: 'temperature (K)', ylabel: 'pressure (hPa)', title: 'the saturated column' });
-        const sC = v.stage({ x: [240, 450], y: [0, 3], axes: 'box', gutter: true, height: 360, weight: 0.8, minWidth: 240, xlabel: 'surface temperature (K)', ylabel: 'water in the air (km of ocean)', title: 'atmospheric water' });
+        const sC = v.stage({ x: [240, 450], y: [0.01, 5000], ylog: true, axes: 'box', gutter: true, height: 360, weight: 0.8, minWidth: 240, xlabel: 'surface temperature (K)', ylabel: 'water in the air (m of ocean)', title: 'atmospheric water' });
         const memo = new Map();
         const col = (Ts) => { const k = Math.round(Ts); if (!memo.has(k)) { const c = saturatedColumn(k); const L = longwave(c.T, k, opticalDepths(c.T, { q: c.q, co2: 0, cont: 8 }, c.grid), {}, c.grid); let w = 0; c.q.forEach((x, i) => { w += (x * c.grid.dp[i] * 100) / G0; }); memo.set(k, { c, olr: L.olr, water: w / 1000 }); } return memo.get(k); };
         const curve = []; for (let t = 240; t <= 450; t += 5) curve.push([t, col(t).olr]);
@@ -139,8 +139,8 @@ export default {
           handle.set(Ts, cur.olr);
           sA.path(curve, { color: 'ink', width: 2.8 });
           sA.fn((t) => SIG * t ** 4, { domain: [240, 450], color: 'faint', width: 1 });
-          sA.hline(asr, { color: 'gold', width: 2.2 }); sA.text(`absorbed sunlight ${fx(v, asr, 0)}`, 243, asr, { color: 'gold', size: 12, align: 'left', baseline: 'bottom', dy: -4, weight: 600 });
-          sA.hline(282, { color: 'muted', dash: [6, 4], width: 1.2 }); sA.text('Simpson–Nakajima ≈ 282', 447, 282, { color: 'muted', size: 11, align: 'right', baseline: 'top', dy: 4 });
+          sA.hline(asr, { color: 'gold', width: 2.2 }); sA.text(`absorbed sunlight ${fx(v, asr, 0)}`, 447, asr, { color: 'gold', size: 12, align: 'right', baseline: 'top', dy: 4, weight: 600 });
+          sA.hline(282, { color: 'muted', dash: [6, 4], width: 1.2 }); sA.text('Simpson–Nakajima ≈ 282', 243, 282, { color: 'muted', size: 11, align: 'left', baseline: 'bottom', dy: -3 });
           // equilibria
           const eq = []; for (let i = 0; i < curve.length - 1; i++) { const a = curve[i][1] - asr, b = curve[i + 1][1] - asr; if (a * b <= 0 && a !== b) { const t = curve[i][0] + (5 * -a) / (b - a); eq.push({ t, stable: b > a }); } }
           for (const e of eq) sA.dot(e.t, asr, { color: 'green', r: 6.5, hollow: !e.stable });
@@ -148,15 +148,15 @@ export default {
           if (runaway) sA.text('no equilibrium: runaway', 345, asr + 10, { color: 'red', size: 13, weight: 700, align: 'center' });
           // column
           const c = cur.c;
-          sB.path(c.T.map((t, i) => [t, c.grid.pm[i]]).concat([[Ts, c.ps]]), { color: 'accent', width: 2.6 });
+          sB.path([[Ts, c.ps]].concat(c.T.map((t, i) => [t, c.grid.pm[i]])), { color: 'accent', width: 2.6 });
           sB.setView(null, [1, Math.max(1100, c.ps * 1.3)]);
           sB.dot(Ts, c.ps, { color: 'gold', r: 6 });
-          sB.text(`surface ${fx(v, c.ps, 0)} hPa`, 445, c.ps, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -4 });
+          sB.text(`surface ${fx(v, c.ps, 0)} hPa`, 445, c.ps * 0.55, { size: 11, color: 'muted', align: 'right', baseline: 'top' });
           // water
-          const wd = []; for (let t = 240; t <= 450; t += 5) wd.push([t, col(t).water * 1e-3 * 1 / 1]);
+          const wd = []; for (let t = 240; t <= 450; t += 5) wd.push([t, col(t).water]);
           sC.path(wd, { color: 'teal', width: 2.6 });
-          sC.hline(2.7, { color: 'blue', dash: [5, 4] }); sC.text('Earth’s oceans 2.7 km', 243, 2.7, { size: 11, color: 'blue', align: 'left', baseline: 'bottom', dy: -3 });
-          sC.dot(Ts, cur.water * 1e-3, { color: 'gold', r: 6 });
+          sC.hline(2700, { color: 'blue', dash: [5, 4] }); sC.text('Earth’s oceans 2.7 km', 243, 2700, { size: 11, color: 'blue', align: 'left', baseline: 'bottom', dy: -3 });
+          sC.dot(Ts, cur.water, { color: 'gold', r: 6 });
           R = { Ts, olr: cur.olr, asr, eq, runaway, ps: c.ps, water: cur.water, lim: Math.max(...curve.slice(0, 33).map((p) => p[1])) };
         });
         v.legend([['ink', 'OLR of the column'], ['gold', 'absorbed sunlight'], ['green', 'equilibrium (filled = stable)', { dot: true }], ['faint', '$\\sigma T_s^4$']]);
