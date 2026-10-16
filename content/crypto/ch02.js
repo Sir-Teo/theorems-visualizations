@@ -316,7 +316,6 @@ export default {
         const cyclic = (n) => Array.from({ length: n }, (_, k) => Array.from({ length: n }, (_, m) => (k + m) % n));
         const reset = () => { tab = cyclic(nSel.value); bias.set(1 / nSel.value); };
         reset();
-        nSel.el.addEventListener?.('click', () => {});
         let lastN = nSel.value;
         const sync = () => { if (lastN !== nSel.value) { lastN = nSel.value; reset(); } };
         v.button('Cyclic table', () => { reset(); });
@@ -357,6 +356,280 @@ export default {
       },
     },
 
-//__MORE__
+    // ================================================================== 2.6
+    {
+      num: '2.6',
+      kind: 'Theorem',
+      name: 'Entropy bound: H(K) ≥ H(M)',
+      statement: String.raw`Let $M$ be a message and $K$ an independent key, and $C=\mathsf{Enc}_K(M)$ with $M$ recoverable from $(K,C)$. Then the information the ciphertext leaks about the message is at least the amount by which the message’s entropy exceeds the key’s: $$I(M;C)\;\ge\;H(M)-H(K).$$ In particular, if the scheme leaks nothing, $I(M;C)=0$ (perfect secrecy), then $H(K)\ge H(M)$: the key must carry at least as much entropy as the message.`,
+      idea: String.raw`By correctness $H(M\mid K,C)=0$, so $H(M\mid C)\le H(M,K\mid C)=H(K\mid C)+H(M\mid K,C)=H(K\mid C)\le H(K)$, the last step being “conditioning reduces entropy”. Hence $I(M;C)=H(M)-H(M\mid C)\ge H(M)-H(K)$. Perfect secrecy makes $H(M\mid C)=H(M)$, which fits under $H(K)$ only if $H(K)\ge H(M)$. Uniform messages on $\mathcal M$ recover 2.4.`,
+      caption: String.raw`The message lives in $\mathbb Z_8$ and the scheme is $c=m+k\bmod 8$. Drag the prior skew (lowering $H(M)$), the number of keys and the key skew (lowering $H(K)$). On the left the five entropies as bars, with the guaranteed lower bound on the leakage marked on the green bar; on the right 300 random configurations plotted by $H(M)-H(K)$ against leakage — none can fall under the red line.`,
+      deps: ['crypto-2.4', 'info-2.7'],
+      tags: ['entropy', 'mutual information'],
+      refs: ['Boneh–Shoup ch. 2'],
+      credit: 'Claude Shannon, 1949',
+      viz(v) {
+        const sB = v.stage({ x: [0, 6], y: [0, 3.6], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1, ylabel: 'bits', xticks: [[1, 'H(M)'], [2, 'H(K)'], [3, 'H(C)'], [4, 'H(M|C)'], [5, 'I(M;C)']], yticks: [0, 1, 2, 3].map((y) => [y, String(y)]) });
+        const sS = v.stage({ x: [-3, 3], y: [0, 3.2], axes: 'box', gutter: true, height: 340, minWidth: 300, weight: 1, xlabel: 'H(M) − H(K)', ylabel: 'leakage I(M;C)', title: '300 random schemes' });
+        const tS = v.slider('Prior skew', 0, 1.5, 0.3, { step: 0.01 });
+        const kS = v.slider('Number of keys $|\\mathcal K|$', 1, 8, 8, { int: true });
+        const sS2 = v.slider('Key skew', 0, 3, 0, { step: 0.01 });
+        const analyse = (t, K, s) => {
+          const pm = normalize(Array.from({ length: 8 }, (_, m) => Math.exp(-t * m)));
+          const pk = normalize(Array.from({ length: K }, (_, k) => Math.exp(-s * k)));
+          const J = Array.from({ length: 8 }, () => new Array(8).fill(0));
+          for (let m = 0; m < 8; m++) for (let k = 0; k < K; k++) J[m][(m + k) % 8] += pm[m] * pk[k];
+          const pc = Array.from({ length: 8 }, (_, c) => J.reduce((a, row) => a + row[c], 0));
+          const HM = ent(pm), HK = ent(pk), HC = ent(pc), HMC = ent(J.flat());
+          return { HM, HK, HC, HMC, HMgC: HMC - HC, I: HM + HC - HMC };
+        };
+        const pts = (() => { const r = v.rng(2718); return Array.from({ length: 300 }, () => { const K = 1 + Math.floor(r() * 8), t = r() * 1.5, s = r() < 0.3 ? 0 : r() * 3; const a = analyse(t, K, s); return [a.HM - a.HK, a.I]; }); })();
+        let cur = null;
+        v.render(() => {
+          const a = analyse(tS.value, kS.value, sS2.value); cur = a;
+          const vals = [a.HM, a.HK, a.HC, a.HMgC, a.I], cols = ['accent', 'gold', 'purple', 'teal', 'green'];
+          sB.bars(vals, { x0: 1, dx: 1, color: (x, i) => cols[i], fillAlpha: 0.5, barWidth: 0.6 });
+          vals.forEach((x, i) => sB.text(v.fix(x, 2), i + 1, x + 0.12, { size: 11.5, weight: 700, color: cols[i] }));
+          sB.hline(a.HM, { color: 'accent', width: 1.4, dash: true });
+          const lb = Math.max(0, a.HM - a.HK);
+          sB.line(4.6, lb, 5.4, lb, { color: 'red', width: 3 });
+          sB.text('bound', 5.5, lb + 0.02, { size: 11, color: 'red', align: 'left', weight: 700 });
+          // scatter
+          sS.poly([[0, 0], [3, 0], [3, 3]], { fill: 'red', fillAlpha: 0.1, hatch: true, color: 'red', width: 0.01 });
+          sS.path([[-3, 0], [0, 0], [3, 3]], { color: 'red', width: 2.2 });
+          sS.text('impossible', 2.1, 0.55, { size: 11.5, color: 'red', weight: 700 });
+          sS.dots(pts, { r: 2.6, color: 'accent', alpha: 0.55 });
+          sS.dot(a.HM - a.HK, a.I, { r: 7, color: 'gold' });
+        });
+        v.legend([['red', 'bound $I\\ge\\max(0,H(M)-H(K))$'], ['accent', 'random schemes', { dot: true }], ['gold', 'your scheme', { dot: true }]]);
+        v.readout(() => {
+          const a = cur;
+          return String.raw`$H(M)=${v.fix(a.HM, 3)}$, $H(K)=${v.fix(a.HK, 3)}$, $H(C)=${v.fix(a.HC, 3)}$ bits; $H(M\mid C)=${v.fix(a.HMgC, 3)}$ and leakage $I(M;C)=${v.fix(a.I, 3)}$.` + '\n' +
+            String.raw`Bound: $I(M;C)=${v.fix(a.I, 3)}\ \ge\ H(M)-H(K)=${v.fix(a.HM - a.HK, 3)}$ — ${a.I >= a.HM - a.HK - 1e-9 ? 'holds' : '**violated (bug)**'}. ` + (a.I < 1e-9 ? 'Zero leakage: perfect secrecy, and indeed $H(K)\\ge H(M)$.' : a.HK < a.HM - 1e-9 ? 'The key carries less entropy than the message, so some of the message must leak.' : 'The key is rich enough, but this key law is not uniform enough to hide the message.');
+        });
+      },
+    },
+
+    // ================================================================== 2.7
+    {
+      num: '2.7',
+      kind: 'Phenomenon',
+      name: 'The two-time pad',
+      statement: String.raw`If the same one-time pad $k$ encrypts two messages, $c_1=m_1\oplus k$ and $c_2=m_2\oplus k$, then $c_1\oplus c_2=m_1\oplus m_2$: the key cancels. Each ciphertext alone is still uniformly random, but the pair reveals the XOR of the two plaintexts, and for natural-language or image data that is enough to recover both (the redundancy of each plaintext lets an attacker peel them apart). The pad is “one-time” in the strictest sense: the perfect-secrecy guarantee covers a single message only.`,
+      idea: String.raw`Perfect secrecy (2.3) is a statement about one ciphertext: given $(m,c)$ the key is $m\oplus c$, so a second ciphertext under the same key is *not* independent of the first. The attacker never needs the key; XORing the ciphertexts removes it and leaves $m_1\oplus m_2$, whose structure (two overlaid images, two English texts) is easy to read. This is how reused pads were exposed in practice.`,
+      caption: String.raw`Two pictures are encrypted with a pad. The top row is what the senders had; the bottom row is what Eve sees. Slide *reuse* from 0% (a fresh pad for the second picture, so $c_1\oplus c_2$ is pure noise) to 100% (the same pad throughout) and watch the overlay emerge in the reused part. Change the first message and press *New pad*.`,
+      deps: ['crypto-2.3'],
+      tags: ['key reuse', 'one-time pad'],
+      refs: ['Katz–Lindell §2.2'],
+      scope: String.raw`Applies to any stream or XOR cipher that reuses its keystream (a pad, a stream cipher with a repeated nonce, WEP-style IV collisions); the pictures here are illustrative bitmaps, not real data.`,
+      viz(v) {
+        const GW = 72, GH = 36, N = GW * GH;
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 320 });
+        const txt = v.input('Message 1 (≤ 6 letters)', 'ATTACK', { width: 110 });
+        const reuse = v.slider('Pad reuse', 0, 1, 1, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
+        let seed = 1; v.button('New pad', () => { seed++; });
+        const smile = smileyBitmap(GW, GH);
+        let cache = null, info = null;
+        v.render(() => {
+          const P = pix(s), { W } = P, t = norm(txt.value).slice(0, 6) || 'A';
+          const p1 = textBitmap(t, GW, GH, 2), p2 = smile;
+          const r = v.rng(seed * 977), k1 = randBits(r, N), kf = randBits(r, N), nre = Math.round(reuse.value * N);
+          const k2 = new Uint8Array(N); for (let i = 0; i < N; i++) k2[i] = i < nre ? k1[i] : kf[i];
+          const c1 = xorBits(p1, k1), c2 = xorBits(p2, k2), d = xorBits(c1, c2), truth = xorBits(p1, p2);
+          const cols = W >= 560 ? 3 : 2, gap = 10, pw = Math.min((W - gap * (cols + 1)) / cols, 260), ph = pw * GH / GW, rowH = ph + 26;
+          const panels = [['plaintext 1', p1, 'accent'], ['plaintext 2', p2, 'orange'], ['pad $k$ (first message)', k1, 'muted'], ['$c_1 = m_1\\oplus k$', c1, 'ink'], ['$c_2 = m_2\\oplus k$', c2, 'ink'], ['$c_1\\oplus c_2$ — what Eve computes', d, 'red']];
+          const x00 = (W - (cols * pw + (cols - 1) * gap)) / 2;
+          panels.forEach(([lab, b, col], i) => {
+            const cx = i % cols, cy = Math.floor(i / cols), x = x00 + cx * (pw + gap), y = 22 + cy * rowH;
+            P.rect(x, y, pw, ph, { fill: 'panel', color: i === 5 ? 'red' : 'faint', width: i === 5 ? 2 : 1, radius: 3 });
+            paintBits(s, v.color(col === 'muted' ? 'muted' : col), b, GW, GH, x, y, pw);
+            P.text(lab.replace(/\$/g, ''), x, y - 9, { size: 11, color: i < 3 ? col : 'ink', weight: 700, align: 'left', halo: false });
+          });
+          let agree = 0, agreeR = 0, agreeF = 0;
+          for (let i = 0; i < N; i++) { const a = d[i] === truth[i]; if (a) agree++; if (i < nre) { if (a) agreeR++; } else if (a) agreeF++; }
+          let ones = 0; for (let i = 0; i < N; i++) ones += c1[i];
+          info = { agree, agreeR, agreeF, nre, ones };
+        });
+        v.readout(() => `$c_1$ alone: ${v.fix(100 * info.ones / N, 1)}% ones — indistinguishable from noise. $c_1\\oplus c_2$ equals $m_1\\oplus m_2$ on **${info.agreeR}** of the ${info.nre} reused pixels (exactly all of them) and on ${info.agreeF} of the ${N - info.nre} fresh-pad pixels (${N - info.nre ? v.fix(100 * info.agreeF / (N - info.nre), 1) : '–'}%, i.e. chance level).`);
+      },
+    },
+
+    // ================================================================== 2.8
+    {
+      num: '2.8',
+      kind: 'Definition',
+      name: 'Statistical distance',
+      statement: String.raw`For two probability distributions $P,Q$ on a finite set $\Omega$, the **statistical (total variation) distance** is $$\Delta(P,Q)=\max_{S\subseteq\Omega}\bigl|P(S)-Q(S)\bigr|=\tfrac12\sum_{\omega\in\Omega}|P(\omega)-Q(\omega)|.$$ It lies in $[0,1]$, equals $0$ iff $P=Q$ and $1$ iff the supports are disjoint. For any test (distinguisher) $D:\Omega\to\{0,1\}$ the advantage $|\Pr_P[D=1]-\Pr_Q[D=1]|$ is at most $\Delta(P,Q)$, with equality for $D=\mathbf 1_S$, $S=\{\omega:P(\omega)>Q(\omega)\}$.`,
+      idea: String.raw`Let $S^\ast=\{P>Q\}$. Because both sums equal one, the total surplus of $P$ over $Q$ on $S^\ast$ equals the total deficit elsewhere, so $\sum|P-Q|=2\,(P(S^\ast)-Q(S^\ast))$, which gives the half-sum formula. Any other set $S$ gains by including points of $S^\ast$ and loses by including points outside it, so $S^\ast$ is optimal. Perfect secrecy (2.1, 2.2) says $\Delta(C_{m},C_{m'})=0$ for all messages.`,
+      caption: String.raw`Drag the bar tops of $P$ (blue) and $Q$ (orange) — they are renormalised to total mass $1$ — or choose a preset. Click bins in the top panel to build your own distinguisher $S$ (gold band). Below, the signed difference $P-Q$: the green area (where $P>Q$) equals the red area, and either equals $\Delta$. No choice of $S$ beats the optimal one.`,
+      deps: ['crypto-2.1'],
+      tags: ['total variation', 'distinguisher'],
+      refs: ['Boneh–Shoup ch. 2'],
+      viz(v) {
+        const n = 8;
+        const sT = v.stage({ x: [0.3, n + 0.7], y: [0, 0.5], axes: 'box', gutter: true, height: 300, minWidth: 320, ylabel: 'probability', xlabel: 'outcome ω  (click to put it in $S$)', xticks: Array.from({ length: n }, (_, i) => [i + 1, String(i + 1)]) });
+        const sD = v.stage({ x: [0.3, n + 0.7], y: [-0.2, 0.2], axes: 'box', gutter: true, height: 300, minWidth: 320, ylabel: '$P-Q$', xlabel: 'outcome ω', xticks: Array.from({ length: n }, (_, i) => [i + 1, String(i + 1)]) });
+        const binom = (m, p) => Array.from({ length: n }, (_, k) => v.M.binom(m, k) * p ** k * (1 - p) ** (m - k));
+        const PRE = {
+          bin: [binom(7, 0.5), binom(7, 0.65)],
+          die: [Array(n).fill(1 / n), [0.2, 0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1]],
+          near: [binom(7, 0.5), binom(7, 0.52)],
+          disj: [[0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0], [0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25]],
+          same: [binom(7, 0.5), binom(7, 0.5)],
+        };
+        let wP = PRE.bin[0].slice(), wQ = PRE.bin[1].slice(), S = Array.from({ length: n }, (_, i) => i >= 4);
+        const preset = v.select('Preset', [{ value: 'bin', label: 'Binomials' }, { value: 'die', label: 'Fair vs loaded die' }, { value: 'near', label: 'Nearly equal' }, { value: 'disj', label: 'Disjoint' }, { value: 'same', label: 'Identical' }], 'bin', { onChange: (k) => { wP = PRE[k][0].slice(); wQ = PRE[k][1].slice(); } });
+        const hP = Array.from({ length: n }, (_, i) => { const h = sT.handle(i + 1 - 0.2, wP[i], { color: 'blue', r: 6, constrain: { x: [i + 0.8, i + 0.8], y: [0.0, 1] } }); h.onDrag = () => { wP[i] = Math.max(0, h.y); }; return h; });
+        const hQ = Array.from({ length: n }, (_, i) => { const h = sT.handle(i + 1 + 0.2, wQ[i], { color: 'orange', r: 6, constrain: { x: [i + 1.2, i + 1.2], y: [0.0, 1] } }); h.onDrag = () => { wQ[i] = Math.max(0, h.y); }; return h; });
+        sT.onClick((x) => { const i = Math.round(x) - 1; if (i >= 0 && i < n) S[i] = !S[i]; });
+        let info = null;
+        v.render(() => {
+          const p = normalize(wP.map((x) => x + 1e-12)), q = normalize(wQ.map((x) => x + 1e-12));
+          const mx = Math.max(...p, ...q), top = [0.3, 0.5, 0.75, 1].find((t) => t >= mx * 1.1) || 1;
+          sT.setView([0.3, n + 0.7], [0, top]);
+          hP.forEach((h, i) => h.set(i + 0.8, p[i])); hQ.forEach((h, i) => h.set(i + 1.2, q[i]));
+          S.forEach((on, i) => { if (on) sT.vband(i + 0.5, i + 1.5, { color: 'gold', alpha: 0.2 }); });
+          p.forEach((x, i) => { sT.rect(i + 0.62, 0, i + 0.98, x, { fill: 'blue', fillAlpha: 0.5, color: 'blue', width: 1 }); sT.rect(i + 1.02, 0, i + 1.38, q[i], { fill: 'orange', fillAlpha: 0.5, color: 'orange', width: 1 }); });
+          const d = p.map((x, i) => x - q[i]), dm = Math.max(0.1, ...d.map(Math.abs)) * 1.25;
+          sD.setView([0.3, n + 0.7], [-dm, dm]);
+          S.forEach((on, i) => { if (on) sD.vband(i + 0.5, i + 1.5, { color: 'gold', alpha: 0.2 }); });
+          d.forEach((x, i) => sD.rect(i + 0.65, 0, i + 1.35, x, { fill: x >= 0 ? 'green' : 'red', fillAlpha: 0.5, color: x >= 0 ? 'green' : 'red', width: 1 }));
+          sD.hline(0, { color: 'muted', width: 1 });
+          d.forEach((x, i) => { if (Math.abs(x) > dm * 0.12) sD.text(v.fix(x, 3), i + 1, x + Math.sign(x) * dm * 0.08, { size: 10.5, color: x > 0 ? 'green' : 'red', weight: 700 }); });
+          const delta = 0.5 * d.reduce((a, x) => a + Math.abs(x), 0);
+          const yours = S.reduce((a, on, i) => a + (on ? d[i] : 0), 0);
+          let best = 0; for (let mask = 0; mask < 1 << n; mask++) { let t = 0; for (let i = 0; i < n; i++) if (mask >> i & 1) t += d[i]; best = Math.max(best, Math.abs(t)); }
+          const pos = d.reduce((a, x) => a + Math.max(0, x), 0);
+          info = { delta, yours, best, pos };
+        });
+        v.legend([['blue', '$P$'], ['orange', '$Q$'], ['gold', 'your set $S$', { area: true }]]);
+        v.readout(() => `$\\Delta(P,Q)=\\tfrac12\\sum|P-Q| = ${v.fix(info.delta, 4)}$; the green area is $${v.fix(info.pos, 4)}$ — the same number. Your distinguisher $S$ has advantage $|P(S)-Q(S)|=${v.fix(Math.abs(info.yours), 4)}$ ≤ Δ. Brute force over all $2^8$ sets: the best has advantage $${v.fix(info.best, 4)}$ = Δ.`);
+      },
+    },
+
+    // ================================================================== 2.9
+    {
+      num: '2.9',
+      kind: 'Concept',
+      name: 'Secret splitting by XOR',
+      statement: String.raw`To share a secret $s\in\{0,1\}^\ell$ among $n$ parties, choose shares $s_1,\dots,s_{n-1}$ independently and uniformly at random and set $s_n=s\oplus s_1\oplus\cdots\oplus s_{n-1}$. All $n$ shares together give back $s=s_1\oplus\cdots\oplus s_n$. Any set of at most $n-1$ shares is uniformly distributed on $(\{0,1\}^\ell)^{n-1}$, independent of $s$: it carries no information about the secret, in the perfect-secrecy sense. (An $n$-out-of-$n$ scheme; see threshold schemes for $t$-out-of-$n$.)`,
+      idea: String.raw`Missing share $s_j$ is itself $s\oplus(\text{XOR of the others})$. Whatever the other shares are, $s_j$ is a one-time-pad encryption of $s$ under the uniform key $\bigoplus_{i\neq j}s_i$; by 2.3 its distribution is the same for every secret, and the other $n-2$ shares are uniform and independent of everything. So any $n-1$ shares have the same law for every $s$.`,
+      caption: String.raw`Type a secret and choose $n$. Click shares to “collect” them; the XOR of the collected ones is shown bottom right. With all $n$ the secret appears; with one share missing — whichever it is — the result is fresh noise, and the agreement with the secret stays near 50% (the readout gives the z-score). *Reshare* draws new random shares for the same secret.`,
+      deps: ['crypto-2.3'],
+      tags: ['secret sharing', 'xor'],
+      refs: ['Katz–Lindell §15.3'],
+      viz(v) {
+        const GW = 72, GH = 20, N = GW * GH;
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 320 });
+        const secret = v.input('Secret (≤ 6 letters)', 'SECRET', { width: 110 });
+        const nS = v.slider('Shares $n$', 2, 5, 4, { int: true });
+        let seed = 1; v.button('Reshare', () => { seed++; });
+        let got = null, lastN = 0, geo = [];
+        v.button('Collect all', () => { got = got.map(() => true); });
+        v.button('Clear', () => { got = got.map(() => false); });
+        let info = null;
+        v.render(() => {
+          const n = nS.value; if (lastN !== n) { lastN = n; got = Array.from({ length: n }, (_, i) => i < n - 1); }
+          const P = pix(s), { W } = P, sec = textBitmap(norm(secret.value).slice(0, 6) || 'A', GW, GH, 2);
+          const r = v.rng(seed * 313 + n), sh = Array.from({ length: n - 1 }, () => randBits(r, N));
+          let last = sec.slice(); sh.forEach((b) => { last = xorBits(last, b); }); sh.push(last);
+          let res = new Uint8Array(N); sh.forEach((b, i) => { if (got[i]) res = xorBits(res, b); });
+          const gap = 10, perRow = W >= 560 ? n : Math.min(n, 3), rowsN = Math.ceil(n / perRow), pw = Math.min((W - gap * (perRow + 1)) / perRow, 200), ph = pw * GH / GW;
+          geo = [];
+          sh.forEach((b, i) => {
+            const cx = i % perRow, cy = Math.floor(i / perRow), x0 = (W - (perRow * pw + (perRow - 1) * gap)) / 2 + cx * (pw + gap), y = 24 + cy * (ph + 26);
+            geo.push([x0, y, pw, ph]);
+            const on = got[i];
+            P.rect(x0, y, pw, ph, { fill: on ? 'green' : 'panel', fillAlpha: on ? 0.1 : 1, color: on ? 'green' : 'faint', width: on ? 2.4 : 1, radius: 3, dash: !on });
+            paintBits(s, v.color(on ? 'ink' : 'faint'), b, GW, GH, x0, y, pw);
+            P.text(`share ${i + 1}${on ? ' ✓' : ''}`, x0, y - 9, { size: 11, weight: 700, color: on ? 'green' : 'muted', align: 'left', halo: false });
+          });
+          const y2 = 24 + rowsN * (ph + 26) + 12, bw = Math.min((W - 3 * gap) / 2, 330), bh = bw * GH / GW;
+          const xa = (W - 2 * bw - gap) / 2, xb = xa + bw + gap;
+          P.rect(xa, y2, bw, bh, { fill: 'panel', color: 'accent', width: 1.6, radius: 3 }); paintBits(s, v.color('accent'), sec, GW, GH, xa, y2, bw);
+          P.text('the secret', xa, y2 - 9, { size: 11.5, weight: 700, color: 'accent', align: 'left', halo: false });
+          const cnt = got.filter(Boolean).length, full = cnt === n;
+          P.rect(xb, y2, bw, bh, { fill: 'panel', color: full ? 'green' : 'red', width: 2, radius: 3 }); paintBits(s, v.color('ink'), res, GW, GH, xb, y2, bw);
+          P.text(`XOR of the ${cnt} collected share${cnt === 1 ? '' : 's'}`, xb, y2 - 9, { size: 11.5, weight: 700, color: full ? 'green' : 'red', align: 'left', halo: false });
+          let agree = 0, ones = 0; for (let i = 0; i < N; i++) { if (res[i] === sec[i]) agree++; ones += res[i]; }
+          info = { n, cnt, full, agree, ones, z: (agree - N / 2) / (Math.sqrt(N) / 2), all: sec.reduce((a, b) => a + b, 0) };
+        });
+        s.onClick((x, y) => { const px = s.X(x), py = s.Y(y); geo.forEach(([x0, y0, w, h], i) => { if (px >= x0 && px <= x0 + w && py >= y0 && py <= y0 + h) got[i] = !got[i]; }); });
+        v.readout(() => info.full ? `All ${info.n} shares: the XOR equals the secret on **${info.agree} of ${N}** pixels — exact recovery.` : `${info.cnt} of ${info.n} shares collected: the XOR agrees with the secret on ${info.agree} of ${N} pixels (z = ${v.fix(info.z, 2)}, chance is ${N / 2} ± ${v.fix(Math.sqrt(N) / 2, 0)}) and has ${v.fix(100 * info.ones / N, 1)}% ones — uniform noise. The collected shares have exactly the same law whatever the secret was.`);
+      },
+    },
+
+    // ================================================================== 2.10
+    {
+      num: '2.10',
+      kind: 'Paper',
+      name: 'Communication Theory of Secrecy Systems',
+      paper: { authors: 'C. E. Shannon', year: 1949, title: 'Communication Theory of Secrecy Systems', venue: 'Bell System Technical Journal 28 (4): 656–715', doi: '10.1002/j.1538-7305.1949.tb00928.x' },
+      introduces: ['crypto-2.1', 'crypto-2.3', 'crypto-2.4', 'crypto-2.5', 'crypto-1.10'],
+      credit: 'C. E. Shannon, 1949 (written up from a classified Bell Labs report of 1945)',
+      statement: String.raw`Shannon turned cryptography into a mathematical theory by treating a cipher as a family of invertible maps indexed by a random key, and the enemy’s knowledge as probabilities. He defines **perfect secrecy** — the posterior over messages equals the prior after seeing the cryptogram — shows that the **one-time pad** achieves it and that any perfect system needs at least as much key as message (in entropy), and measures imperfect systems by the **equivocation** $H(K\mid C^n)$ of the key given $n$ letters of cryptogram, which falls to nearly zero around the **unicity distance** $U\approx H(K)/D$, where $D$ is the redundancy of the language.`,
+      idea: String.raw`Before 1949 cipher security meant “nobody has broken it yet”. Shannon, building on his information theory, asked what an unlimited adversary could ever learn. If the plaintext language has redundancy $D$ bits per letter, each cryptogram letter removes about $D$ bits from the key’s uncertainty, so a key with $H(K)$ bits is pinned down after $H(K)/D$ letters, and a one-time pad whose key grows with the message never is. The paper introduced perfect secrecy, equivocation, unicity distance and the pad’s optimality, and linked them to redundancy, the same quantity data compression exploits.`,
+      caption: String.raw`Left: the key equivocation $H(K\mid c_1\dots c_n)/H(K)$ for Vigenère keys of 1–3 letters, computed exactly under a bigram model of English on Gettysburg-Address windows (curves for $L=1,2,3$; Shannon’s straight-line estimate dashed); the one-time pad stays at 1. Right: choose the cipher and how many cryptogram letters Eve has seen, and test six equally sensible 12-letter messages — which could still have produced the cryptogram? The language model is the corpus bigram table of chapter 1, not Shannon’s own digram tables.`,
+      deps: ['info-1.2', 'crypto-1.7'],
+      tags: ['shannon', 'unicity distance', 'equivocation'],
+      refs: [],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Communication_Theory_of_Secrecy_Systems' },
+      viz(v) {
+        const PH = ['ATTACKATDAWN', 'HOLDTHELINES', 'ABORTMISSION', 'SURRENDERNOW', 'COMEHOMESOON', 'SENDMOREFOOD'];
+        const NX = 16, D = LOG2_26 - H2;
+        const sL = v.stage({ x: [0, NX], y: [0, 1.08], axes: 'box', gutter: true, height: 360, minWidth: 320, weight: 1, xlabel: 'cryptogram letters seen, n', ylabel: 'H(K | c₁…cₙ) / H(K)', title: 'Key equivocation', yticks: [0, 0.25, 0.5, 0.75, 1].map((y) => [y, String(y)]) });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 330, weight: 1.1, title: 'Which messages are still possible?' });
+        const cip = v.select('Cipher', [{ value: 1, label: 'Vigenère L=1' }, { value: 2, label: 'L=2' }, { value: 3, label: 'L=3' }, { value: 0, label: 'One-time pad' }], 3);
+        const nS = v.slider('Letters seen $n$', 0, 12, 4, { int: true });
+        const tru = v.select('True message', PH.map((_, i) => ({ value: i, label: String(i + 1) })), 0);
+        const curves = {};
+        const curveFor = (L) => {
+          if (curves[L]) return curves[L];
+          const W = 4, H = new Float64Array(NX + 1);
+          for (let w = 0; w < W; w++) {
+            const o = (97 * w + 40) % (PASSAGE.length - 30), ct = vigC(PASSAGE.slice(o, o + NX), randomKey(v.rng(500 + 13 * w + L), L));
+            const e = equivocation([...ct].map(code), L, NX).H; for (let i = 0; i <= NX; i++) H[i] += e[i] / W / (L * LOG2_26);
+          }
+          return (curves[L] = H);
+        };
+        let info = null;
+        v.render(() => {
+          const L = cip.value, n = nS.value, cols = { 1: 'blue', 2: 'orange', 3: 'purple' };
+          sL.hline(1, { color: 'green', width: L === 0 ? 3.4 : 1.8 }); sL.text('one-time pad', NX * 0.98, 1.035, { size: 11, color: 'green', align: 'right', weight: 700 });
+          [1, 2, 3].forEach((l) => {
+            const H = curveFor(l), sel = l === L;
+            sL.path(Array.from(H, (y, i) => [i, y]), { color: cols[l], width: sel ? 3.4 : 1.4, alpha: sel || L === 0 ? 1 : 0.6 });
+            sL.path(Array.from({ length: NX + 1 }, (_, i) => [i, Math.max(0, 1 - i * D / (l * LOG2_26))]), { color: cols[l], width: 1.2, dash: true, alpha: sel ? 0.9 : 0.4 });
+            const U = l * LOG2_26 / D; if (U < NX) sL.dot(U, 0, { r: 4.5, color: cols[l] });
+          });
+          sL.vline(n, { color: 'gold', width: 2 });
+          // right panel
+          const P = pix(sR), { W, H: HH } = P, len = 12;
+          const key = L === 0 ? randomKey(v.rng(77), len) : randomKey(v.rng(900 + L), L), Lp = L === 0 ? len : L;
+          const ct = vigC(PH[tru.value], key), cc = [...ct].map(code);
+          P.text('cryptogram seen:', 10, 14, { size: 11.5, weight: 700, color: 'orange', align: 'left', halo: false });
+          const cw = clamp((W - 150) / 12, 9, 15);
+          letterRow(P, ct.slice(0, n) + '·'.repeat(len - n), 120, 14, cw, (i) => (i < n ? 'orange' : 'faint'), { size: 13 });
+          let possible = 0; const rowH = (HH - 50) / 6;
+          PH.forEach((ph, j) => {
+            const y = 48 + j * rowH, ks = [...ph].map((ch, i) => mod(cc[i] - code(ch), 26));
+            let bad = -1; for (let i = Lp; i < n; i++) if (ks[i] !== ks[i - Lp]) { bad = i; break; }
+            const ok = bad < 0; if (ok) possible++;
+            P.rect(6, y - 8, W - 12, rowH - 6, { fill: ok ? 'green' : 'red', fillAlpha: 0.06, color: ok ? 'green' : 'faint', width: ok ? 1.6 : 1, radius: 6 });
+            P.text(String(j + 1), 16, y + 6, { size: 12, weight: 700, color: ok ? 'green' : 'muted', halo: false });
+            letterRow(P, ph.slice(0, n) + '·'.repeat(len - n), 28, y + 2, cw, (i) => (i < n ? 'ink' : 'faint'), { size: 13 });
+            letterRow(P, [...Array(len)].map((_, i) => (i < n ? A[ks[i]] : '·')).join(''), 28, y + 20, cw, (i) => (i < n ? (bad >= 0 && i >= bad ? 'red' : 'gold') : 'faint'), { size: 12, weight: 500 });
+            P.text(ok ? (j === tru.value ? '✓ true message' : '✓ possible') : '✗ key not periodic', 28 + len * cw + 12, y + 9, { size: 11.5, weight: 700, color: ok ? 'green' : 'red', align: 'left', halo: false });
+          });
+          info = { L, n, possible, Lp };
+        });
+        v.legend([['blue', 'L = 1'], ['orange', 'L = 2'], ['purple', 'L = 3'], ['green', 'one-time pad'], ['muted', 'Shannon: 1 − nD/H(K)', { dash: true }]]);
+        v.readout(() => {
+          const { L, n, possible } = info, HK = (L || 12) * LOG2_26;
+          const cur = L ? `$H(K)=${L}\\log_2 26=${v.fix(HK, 1)}$ bits; with $D=\\log_2 26-h=${v.fix(D, 2)}$ bits/letter (bigram model) the unicity distance is $U=H(K)/D\\approx ${v.fix(HK / D, 1)}$ letters` : `The pad key has $H(K)=12\\log_2 26 = ${v.fix(HK, 1)}$ bits, as long as the message, so the equivocation stays at 1 for ever ($U=\\infty$)`;
+          return `Eve has seen $n=${n}$ letters: **${possible} of 6** candidate messages are still consistent with the cryptogram (a candidate survives iff the key stream it implies is periodic with period ${info.Lp}).\n${cur}. Shannon’s 1949 estimate for a simple substitution cipher, $\\log_2 26!/D$ with $D\\approx3.2$, is $${v.fix(LOG2_FACT26 / 3.2, 1)}$ letters (quoted from memory); this model’s $D$ is smaller, so its $U$ is larger.`;
+        });
+      },
+    },
   ],
 };

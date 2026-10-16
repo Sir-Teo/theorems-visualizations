@@ -51,7 +51,7 @@ export default {
           lower.forEach((i, k) => s.text(String(k + 1), pts[i][0], -1.0, { size: 11, align: 'center', color: 'green' }));
           const ok = lower.length === n && lower.every((i, k) => k === 0 || pts[lower[k - 1]][0] < pts[i][0]);
           info = { n, ranked, ok, rec: lower.length };
-          B.fn((x) => lg2fact(Math.round(x)), { domain: [1, 32], color: 'green', width: 2.5, n: 32 });
+          B.fn((x) => v.M.lgamma(x + 1) / Math.LN2, { domain: [1, 32], color: 'green', width: 2.5, n: 64 });
           B.fn((x) => x * Math.log2(x), { domain: [1, 32], color: 'orange', width: 2, dash: true });
           B.vline(n, { color: 'gold', width: 1.5 });
           B.dot(n, lg2fact(n), { r: 6, color: 'gold' });
@@ -66,15 +66,16 @@ export default {
       num: '2.9', kind: 'Algorithm', name: 'Chan’s output-sensitive algorithm',
       statement: String.raw`Chan's algorithm computes the hull of $n$ planar points with $h$ hull vertices in $O(n\log h)$ time. Guess $m\ge h$ (start with $m=4$ and square it each round: $m=2^{2^t}$). Split the points into $\lceil n/m\rceil$ groups of at most $m$ points and compute each group's hull by Graham's scan, $O(n\log m)$ in total. Then gift-wrap for at most $m$ steps, finding each next vertex as the best tangent point over all group hulls, each tangent found by binary search in $O(\log m)$; so a round costs $O\bigl((n/m)\,m\log m\bigr)=O(n\log m)$. If the wrap returns to its start within $m$ steps the hull is complete; otherwise $h>m$ and the next round begins.`,
       idea: String.raw`Gift wrapping (2.5) costs $O(n)$ per hull vertex, Graham's scan (2.6) $O(n\log n)$ overall; Chan runs Graham on small groups so that Jarvis's per-step cost drops from $n$ to $(n/m)\log m$ — the tangent from the current vertex to a convex polygon is a binary search. With a guess $m<h$ the wrap is cut off after $m$ steps, wasting only $O(n\log m)$. The guesses $2^{2^t}$ make round $t$ cost $O(n2^t)$, a geometric sum dominated by the last round with $2^{2^t}\ge h$, i.e. $2^t<2\log_2h$, giving $O(n\log h)$.`,
-      caption: String.raw`Colours are groups with their small hulls. Each wrap step draws the best tangent from the current vertex (gold ring) to every group hull (thin coloured lines), and the winning one in green. A round that does not close within $m$ steps is aborted (red) and $m$ is squared. The bars compare the modelled cost of the three algorithms for this input: with few hull vertices Chan wins by a wide margin; with all points on a circle ($h=n$) it is no better than Graham. The tangents are computed by a linear scan of each group hull, the cost model charges $\lceil\log_2|{\rm hull}|\rceil+1$ per tangent as binary search would.`,
+      caption: String.raw`Colours are groups with their small hulls. Each wrap step draws the best tangent from the current vertex (gold ring) to every group hull (thin coloured lines), and the winning one in green. A round that does not close within $m$ steps is aborted (red) and $m$ is squared. The log–log panel plots, for this $n$, the modelled cost of Jarvis, Graham and Chan against the hull size $h$ (the gold marker is the current input): Jarvis grows linearly in $h$, Graham ignores $h$, and Chan tracks the lower of the two up to a constant factor — about $n\log h$ — never much worse than either (with these constants it overtakes neither outright at small $n$; the point is the growth rate). The tangents are computed by a linear scan of each group hull, the cost model charges $\lceil\log_2|{\rm hull}|\rceil+1$ per tangent as binary search would.`,
       credit: 'T. M. Chan, 1996',
       deps: ['cg-2.5', 'cg-2.6'], refs: ['de Berg §1.4'], tags: ['hull', 'output-sensitive', 'algorithm'],
       viz(v) {
         const s = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.2], equal: true, axes: false, height: 400, minWidth: 340 });
-        const dist = v.select('points', [{ value: 'triangle', label: 'in a triangle' }, { value: 'disc', label: 'in a disc' }, { value: 'circle', label: 'on a circle' }], 'disc', { onChange: () => regen() });
-        const nsl = v.slider('$n$', 12, 80, 40, { int: true, onChange: () => regen() });
+        const dist = v.select('points', [{ value: 'few', label: 'few vertices (h = 6)' }, { value: 'disc', label: 'in a disc' }, { value: 'circle', label: 'on a circle' }], 'disc', { onChange: () => regen() });
+        const nsl = v.slider('$n$', 20, 300, 60, { int: true, onChange: () => regen() });
         let seed = 9, P = [], S, CH;
-        const mk = () => genPts(v.rng(seed), dist.value, nsl.value, 0, 0, 1).map(([x, y]) => (dist.value === 'triangle' ? [x * 0.9, y * 0.9] : [x, y]));
+        const few = (r, n, h) => { const P = Array.from({ length: h }, (_, k) => [Math.cos((2 * Math.PI * k) / h), Math.sin((2 * Math.PI * k) / h)]); return P.concat(genPts(r, 'disc', n - h, 0, 0, 0.92 * Math.cos(Math.PI / h))); };
+        const mk = () => (dist.value === 'few' ? few(v.rng(seed), nsl.value, 6) : genPts(v.rng(seed), dist.value, nsl.value, 0, 0, 1));
         const regen = () => { P = mk(); if (S) S.reset(); };
         v.button('resample', () => { seed++; regen(); });
         P = mk();
@@ -104,7 +105,14 @@ export default {
         }
         const build = () => { CH = chan(P); return CH.fr; };
         S = v.steps({ frames: build, code: ['m ← 4', 'repeat', '  split P into groups of m points; hull of each group (Graham)', '  p ← leftmost point', '  for step ← 1 … m:  p ← best tangent point over all group hulls', '  if p is back at the start:  return the hull', '  m ← m²   (guess was too small)'], codeTitle: 'Chan', speed: 2.5, still: 6 });
-        const C = v.stage({ x: [0.3, 3.7], y: [0, 100], axes: 'box', gutter: true, ylabel: 'modelled cost', xticks: [[1, 'Jarvis'], [2, 'Graham'], [3, 'Chan']], height: 400, minWidth: 250, title: 'total cost on this input' });
+        const C = v.stage({ x: [3, 300], y: [100, 1e6], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'hull size h', ylabel: 'modelled cost', title: 'cost against h for this n (h points on a circle, the rest inside)', height: 400, minWidth: 260 });
+        const curves = new Map();
+        const curve = (n) => {
+          if (curves.has(n)) return curves.get(n);
+          const hs = [3, 4, 6, 9, 13, 20, 30, 45, 70, 100, 150, 220, 300].filter((h) => h <= n);
+          const rows = hs.map((h) => { const Q = few(v.rng(77 + h), n, h); return { h, jar: jarvis(Q).tests, gra: n * Math.ceil(Math.log2(n)), chan: chan(Q).cost }; });
+          curves.set(n, rows); return rows;
+        };
         v.render(() => {
           const f = S.frame; if (!CH) return;
           const gi = new Map(); (f.groups || []).forEach((g, k) => g.forEach((i) => gi.set(i, k)));
@@ -116,11 +124,16 @@ export default {
           if (f.hull) f.hull.forEach((i) => s.dot(P[i][0], P[i][1], { r: 5.5, color: f.kind === 'fail' ? 'red' : 'ink' }));
           if (f.cur != null) s.dot(P[f.cur][0], P[f.cur][1], { r: 9, color: 'gold', hollow: true });
           s.corner(f.kind === 'fail' ? `m = ${f.m} too small` : f.kind === 'groups' ? `m = ${f.m}` : `m = ${f.m}, step ${f.step}`, 'bl', { color: f.kind === 'fail' ? 'red' : 'ink' });
-          const fin = CH.fr[CH.fr.length - 1].cost, vals = [(P.length - 2) * CH.h, CH.graham, fin];
-          C.setView([0.3, 3.7], [0, Math.max(...vals) * 1.12]);
-          C.bars(vals, { x0: 1, color: (x, i) => ['orange', 'purple', 'green'][i] });
-          vals.forEach((x, i) => C.text(String(Math.round(x)), i + 1, x, { dy: -10, align: 'center', size: 11 }));
+          const rows = curve(P.length), n = P.length;
+          C.setView([3, Math.max(8, n)], [Math.min(100, 2 * n), Math.max(...rows.map((r) => Math.max(r.jar, r.chan, r.gra))) * 1.4]);
+          C.path(rows.map((r) => [r.h, r.jar]), { color: 'orange', width: 2.5 });
+          C.path(rows.map((r) => [r.h, r.gra]), { color: 'purple', width: 2.5 });
+          C.path(rows.map((r) => [r.h, r.chan]), { color: 'green', width: 2.5 });
+          rows.forEach((r) => { C.dot(r.h, r.jar, { r: 3, color: 'orange' }); C.dot(r.h, r.chan, { r: 3, color: 'green' }); });
+          C.vline(Math.max(3, CH.h), { color: 'gold', width: 1.5 });
+          C.dot(Math.max(3, CH.h), CH.fr[CH.fr.length - 1].cost, { r: 7, color: 'gold' });
         });
+        v.legend([['orange', 'Jarvis (n−2)h'], ['purple', 'Graham n⌈log₂ n⌉'], ['green', 'Chan (modelled)'], ['gold', 'this input']]);
         v.readout(() => `$n=${P.length}$, hull size $h=${CH ? CH.h : 0}$; rounds used: ${CH ? CH.fr[CH.fr.length - 1].t : 0} (final $m=${CH ? CH.fr[CH.fr.length - 1].m : 0}\\ge h$).\ncost so far ${S.frame.cost ?? 0}; totals — Jarvis $(n-2)h=${(P.length - 2) * (CH ? CH.h : 0)}$, Graham $n\\lceil\\log_2n\\rceil=${CH ? CH.graham : 0}$, Chan $=${CH ? CH.fr[CH.fr.length - 1].cost : 0}$ against $n\\log_2h\\approx${CH ? Math.round(P.length * Math.log2(Math.max(2, CH.h))) : 0}$.`);
       },
     },
@@ -137,7 +150,7 @@ export default {
         const NS = [8, 16, 32, 64, 128, 256, 512, 1024];
         const shape = v.select('region', [{ value: 'square', label: 'square' }, { value: 'triangle', label: 'triangle' }, { value: 'disc', label: 'disc' }], 'square');
         const nsl = v.slider('$n$ in the sample', 8, 1024, 60, { int: true, log: true });
-        const scale = v.select('horizontal scale', [{ value: 'ln', label: 'ln n' }, { value: 'cbrt', label: 'n^{1/3}' }], 'ln');
+        const scale = v.select('horizontal scale', [{ value: 'ln', label: '$\\ln n$' }, { value: 'cbrt', label: '$n^{1/3}$' }], 'ln');
         const trials = v.select('trials per $n$', [{ value: 40, label: '40' }, { value: 200, label: '200' }], 40);
         let seed = 1;
         v.button('resample', () => { seed++; });
@@ -170,7 +183,6 @@ export default {
           G.path([[xs[0], F.ic + F.slope * xs[0]], [xs[xs.length - 1], F.ic + F.slope * xs[xs.length - 1]]], { color: 'faint', width: 1.5 });
           if (scale.value === 'ln' && sh !== 'disc') { const r = sh === 'square' ? 4 : 3, sl = (2 * r) / 3, x1 = xs[xs.length - 1], y1 = ys[ys.length - 1]; G.path([[xs[0], y1 + sl * (xs[0] - x1)], [x1, y1]], { color: 'orange', width: 2, dash: true }); }
           D.forEach((d, i) => { G.segment([xs[i], d.mean - d.se], [xs[i], d.mean + d.se], { color: 'accent', width: 1.5 }); G.dot(xs[i], d.mean, { r: 5, color: 'accent' }); });
-          G.dot(tf(n), (() => { const k = D.findIndex((d) => d.n >= n); return k < 0 ? ys[ys.length - 1] : ys[k]; })(), { r: 0.1, color: 'gold' });
           info = { F, F2, F3, sh, D };
         });
         v.legend([['accent', 'mean over trials ± SE'], ['faint', 'least-squares line'], ['orange', 'predicted slope 2r/3 (polygons)']]);
@@ -204,7 +216,7 @@ export default {
               vars: { facets: f.facets.length, work: f.work } };
           });
         };
-        S = v.steps({ frames: build, code: ['start with a tetrahedron on 4 points; build the conflict graph', 'for each remaining point p in random order', '  F ← facets visible from p  (conflict list of p)', '  if F is empty:  discard p  (inside)', '  delete F;  horizon H ← boundary edges of F', '  for each e in H:  add facet (e, p), conflicts from the two old facets at e'], codeTitle: 'Incremental hull', speed: 1.5, still: 7, codeWidth: 300 });
+        S = v.steps({ frames: build, code: ['tetrahedron on 4 points + conflicts', 'for each remaining point p:', '  F ← facets visible from p', '  if F is empty:  discard p', '  delete F;  H ← horizon of F', '  for e in H:  add facet (e, p)'], codeTitle: 'Incremental hull', speed: 1.5, still: 7 });
         const A = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420, minWidth: 340 });
         const sc = v.scene3(A, { yaw: -0.7, pitch: 0.4, axes: false });
         const B = v.stage({ x: [0, 31], y: [0, 14], axes: 'box', gutter: true, xlabel: 'waiting point', ylabel: 'facets it sees', height: 420, minWidth: 250, title: 'conflict list sizes' });
@@ -229,7 +241,7 @@ export default {
       num: '2.12', kind: 'Theorem', name: 'Convex polytopes in 3D have linear complexity',
       statement: String.raw`A convex polytope in $\R^3$ with $V$ vertices, $E$ edges and $F$ faces satisfies **Euler's relation** $V-E+F=2$ and hence $E\le 3V-6$ and $F\le 2V-4$ (for $V\ge3$). So the number of faces and edges is $O(V)$ — the complexity of the hull of $n$ points in space is $O(n)$, not $O(n^2)$ or worse. Equality holds exactly for simplicial polytopes (all faces triangles); and since every vertex has degree at least $3$, also $E\ge\tfrac32V$ and $F\ge\tfrac12V+2$.`,
       idea: String.raw`Euler's formula $V-E+F=2$ holds for any polyhedral surface homeomorphic to a sphere (top-10.9). Each face has at least 3 edges and each edge borders exactly two faces, so $2E\ge3F$; substituting $F\le\tfrac23E$ into Euler gives $E\le3V-6$ and then $F\le2V-4$. Each vertex lies on at least 3 edges and each edge has 2 ends, so $2E\ge3V$. Triangulating every face changes neither $V$ nor the validity of the formula, which is why the incremental algorithm (2.11) always creates only triangles.`,
-      caption: String.raw`Pick a family and its size. Left: the polytope (drag to rotate); its counts $V,E,F$ are tallied from its actual faces, never assumed. Right: all convex polytopes live in the wedge $\tfrac32V\le E\le3V-6$ (or $\tfrac12V+2\le F\le2V-4$): random hulls (dots) sit on the upper line, prisms (diamonds) on the lower line, bipyramids on the upper again. The gold marker is the polytope on the left.`,
+      caption: String.raw`Pick a family and its size. Left: the polytope (drag to rotate); its counts $V,E,F$ are tallied from its actual faces, never assumed. Right: all convex polytopes live in the wedge $\tfrac32V\le E\le3V-6$ (or $\tfrac12V+2\le F\le2V-4$): random hulls (dots) sit on the upper line, prisms (orange dots) on the lower line, bipyramids on the upper again. The gold marker is the polytope on the left.`,
       scope: String.raw`Convex (more generally sphere-like) polyhedra. For polyhedra with holes (a torus) $V-E+F=0$, and the linear bounds can fail to be tight.`,
       credit: 'L. Euler, 1758',
       deps: ['cg-2.11', 'top-10.9'], refs: ['de Berg §11.1'], tags: ['Euler formula', 'polytope', '3D'],
@@ -269,7 +281,7 @@ export default {
           const up = Y === 'E' ? (V) => 3 * V - 6 : (V) => 2 * V - 4, lo = Y === 'E' ? (V) => 1.5 * V : (V) => V / 2 + 2;
           W.between(lo, up, 4, 82, { fill: 'green', fillAlpha: 0.1 });
           W.fn(up, { domain: [4, 82], color: 'green', width: 2.2 }); W.fn(lo, { domain: [4, 82], color: 'orange', width: 2.2 });
-          W.text(Y === 'E' ? 'E = 3V − 6' : 'F = 2V − 4', 40, up(40), { dx: -8, dy: -26, color: 'green', size: 12, align: 'right' }); W.text(Y === 'E' ? 'E = 3V/2' : 'F = V/2 + 2', 70, lo(70), { dy: 14, color: 'orange', size: 12, align: 'right' });
+          W.text(Y === 'E' ? 'E = 3V − 6' : 'F = 2V − 4', 40, up(40), { dx: -8, dy: -26, color: 'green', size: 12, align: 'right' }); W.text(Y === 'E' ? 'E = 3V/2' : 'F = V/2 + 2', 70, lo(70), { dy: 26, color: 'orange', size: 12, align: 'right' });
           cloud.forEach((c) => W.dot(c.V, Y === 'E' ? c.E : c.F, { r: 3.5, color: 'blue', alpha: 0.8 }));
           fams.forEach((c) => W.dot(c.V, Y === 'E' ? c.E : c.F, { r: 3, color: c.t === 'prism' ? 'orange' : 'purple', alpha: 0.8 }));
           W.dot(cnt.V, yv, { r: 8, color: 'gold' });

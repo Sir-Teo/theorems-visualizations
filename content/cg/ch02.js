@@ -115,18 +115,18 @@ export default {
           const hI = hi(I), hJ = hi(J);
           drawGroup(s, hI, 'blue'); drawGroup(s, hJ, 'red');
           pts.forEach((p, i) => s.dot(p[0], p[1], { r: 5, color: lam[i] > 0 ? 'blue' : lam[i] < 0 ? 'red' : 'muted' }));
-          s.dot(rx, ry, { r: 8, color: 'gold', label: 'Radon point', labelPos: 's' });
+          s.dot(rx, ry, { r: 8, color: 'gold', label: 'Radon point', labelPos: 'e' });
           info = { I, J, lam, big, inI: inConvex(hI, [rx, ry], 1e-7), inJ: inConvex(hJ, [rx, ry], 1e-7), gap: Math.hypot(rx - sx, ry - sy), rx, ry, n,
             res: Math.hypot(...[0, 1].map((c) => pts.reduce((a, p, i) => a + lam[i] * p[c], 0))), sum: lam.reduce((a, b) => a + b, 0) };
         });
         v.readout(() => info.none ? `$${info.n}$ points = only $d+1$ in the plane: the vectors $(p_i,1)$ are independent, no affine dependence exists, and no partition has intersecting hulls (move the points anywhere — the three hulls $\\{p_i\\}$ and $\\operatorname{conv}\\{p_j,p_k\\}$ stay apart unless collinear).`
-          : `partition $\\{${info.I.map((i) => i + 1)}\\}\\ |\\ \\{${info.J.map((i) => i + 1)}\\}$ from $\\lambda=(${info.lam.map((x) => f2(x / Math.abs(info.big))).join(',\\,')})$ \n$\\sum\\lambda_i p_i$ has norm $${v.sci(info.res, 2)}$, $\\sum\\lambda_i=${v.sci(Math.abs(info.sum), 2)}$; Radon point $=(${f2(info.rx)},${f2(info.ry)})$ lies in both hulls: ${info.inI && info.inJ ? '**yes**' : 'no'} (two expressions differ by $${v.sci(info.gap, 2)}$).`);
+          : `partition $\\{${info.I.map((i) => i + 1)}\\}\\ |\\ \\{${info.J.map((i) => i + 1)}\\}$ from $\\lambda=(${info.lam.map((x) => f2(x / Math.abs(info.big))).join(',\\,')})$ \n$\\sum\\lambda_i p_i$ has norm $${v.sci(info.res, 2)}$, $\\sum\\lambda_i=${v.sci(Math.abs(info.sum), 2)}$; Radon point $=(${f2(info.rx)},${f2(info.ry)})$ lies in both hulls: ${info.inI && info.inJ ? '**yes**' : 'no'} (the two expressions agree to $${v.sci(info.gap, 1)}$).`);
       },
     },
     // ================================================================== 2.4
     {
       num: '2.4', kind: 'Theorem', name: 'Helly’s theorem',
-      statement: String.raw`Let $C_1,\dots,C_m$ be convex sets in $\R^d$, $m\ge d+1$ (finitely many, or compact if infinitely many). If every $d+1$ of them have a common point, then all of them have a common point. In the plane, $d=3$ pairs do not suffice but every **three** sets meeting does. The convexity hypothesis cannot be dropped.`,
+      statement: String.raw`Let $C_1,\dots,C_m$ be convex sets in $\R^d$, $m\ge d+1$ (finitely many, or compact if infinitely many). If every $d+1$ of them have a common point, then all of them have a common point. In the plane ($d=2$) pairs do not suffice, but every **three** sets meeting does. The convexity hypothesis cannot be dropped.`,
       idea: String.raw`Induct on $m$, the case $m=d+1$ being trivial. For $m\ge d+2$ the induction hypothesis gives, for each $i$, a point $x_i$ lying in all sets except possibly $C_i$. The $m\ge d+2$ points $x_i$ have a Radon partition (2.3), $\{1..m\}=I\sqcup J$ with a point $x\in\operatorname{conv}\{x_i\}_I\cap\operatorname{conv}\{x_j\}_J$. Each $x_i$ with $i\in I$ lies in every $C_j$, $j\in J$, so by convexity $x$ lies in every $C_j$, $j\in J$; symmetrically $x\in C_i$ for $i\in I$. Hence $x\in\bigcap C_k$.`,
       caption: String.raw`**Convex blobs**: drag the six ellipses (and shrink them with the size slider); the green region is their common intersection. As long as every triple meets, a green region exists; once a single triple stops meeting, the readout names it and the intersection is gone. **Non-convex**: set $C_i$ is the union of the three discs around the points $v_j$, $j\neq i$. Every three of the four sets share a disc, yet no point lies in all four — drag the points or grow the radius until the discs overlap and convexity (hypothesis) is replaced by accident. Sampled on a grid of cell $0.09$.`,
       credit: 'E. Helly, 1913 (published 1923)',
@@ -138,7 +138,7 @@ export default {
         const size = v.slider('size', 0.5, 1.6, 1, { step: 0.02 });
         const rad = v.slider('disc radius', 0.4, 2.4, 0.85, { step: 0.02 });
         // convex family: ellipses
-        const E = [[3.3, 3.6, 2.6, 1.6, 0.5], [5.2, 4.7, 2.3, 1.3, -0.6], [6.6, 3.3, 2.5, 1.5, 0.2], [4.9, 2.2, 2.6, 1.1, 0.0], [4.2, 3.9, 1.9, 1.9, 0], [5.8, 3.9, 1.7, 1.2, 1.2]];
+        const E = [[3.9, 3.4, 5.2, 3.0, 0.5], [5.2, 4.4, 4.6, 2.8, -0.6], [6.2, 3.4, 5.0, 3.0, 0.2], [5.0, 2.6, 5.2, 2.6, 0.0], [4.4, 3.8, 4.0, 3.8, 0], [5.8, 3.8, 3.6, 2.6, 1.2]];
         const EH = E.map(([x, y], i) => s.handle(x, y, { color: SET[i], r: 6, label: 'C' + (i + 1), labelPos: 'n' }));
         const VH = [[2.2, 1.3], [7.8, 1.5], [7.4, 5.6], [2.6, 5.4]].map(([x, y], i) => s.handle(x, y, { color: 'accent', r: 6, label: 'v' + (i + 1), labelPos: 'n' }));
         const sync = () => { const c = fam.value === 'convex'; cnt.el.hidden = !c; size.el.hidden = !c; rad.el.hidden = c; EH.forEach((h) => { h.visible = c; }); VH.forEach((h) => { h.visible = !c; }); };
@@ -148,7 +148,7 @@ export default {
           if (fam.value === 'convex') {
             for (let i = 0; i < cnt.value; i++) {
               const [, , a, b, th] = E[i], dx = x - EH[i].x, dy = y - EH[i].y, c = Math.cos(th), sn = Math.sin(th);
-              const u = (dx * c + dy * sn) / (a * 0.5 * size.value), w = (-dx * sn + dy * c) / (b * 0.5 * size.value);
+              const u = (dx * c + dy * sn) / (a * size.value * 0.5), w = (-dx * sn + dy * c) / (b * 0.5 * size.value);
               if (u * u + w * w <= 1) m |= 1 << i;
             }
           } else {
@@ -161,6 +161,7 @@ export default {
         v.render(() => {
           tick++;
           const n = fam.value === 'convex' ? cnt.value : 4, full = (1 << n) - 1;
+          v.legend(SET.slice(0, n).map((c, i) => [c, 'C' + (i + 1)]));
           const tri = [], pr = [];
           for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) { pr.push([1 << a | 1 << b, [a, b]]); for (let c = b + 1; c < n; c++) tri.push([1 << a | 1 << b | 1 << c, [a, b, c]]); }
           const tOK = new Uint8Array(tri.length), pOK = new Uint8Array(pr.length); let all = false, cxs = 0, cys = 0, cn = 0;
@@ -180,14 +181,14 @@ export default {
             }
           } else {
             for (let j = 0; j < 4; j++) s.circle(VH[j].x, VH[j].y, rad.value, { color: 'ink', alpha: 0.35, width: 1 });
-            for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if (j !== i) s.circle(VH[j].x, VH[j].y, rad.value, { color: SET[i], fill: SET[i], fillAlpha: 0.1, stroke: false });
+            for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if (j !== i) s.circle(VH[j].x, VH[j].y, rad.value, { color: SET[i], fill: SET[i], fillAlpha: 0.14, stroke: false });
+            for (let j = 0; j < 4; j++) s.text('in ' + [0, 1, 2, 3].filter((i) => i !== j).map((i) => 'C' + (i + 1)).join(', '), VH[j].x, VH[j].y, { size: 11, dy: 22, align: 'center', color: 'ink' });
           }
           s.raster((x, y) => (mem(x, y) === full ? [...v.rgb('green').slice(0, 3), 0.7] : null), { res: 3, key: 'c' + tick });
           if (all) s.dot(cxs / cn, cys / cn, { r: 5, color: 'gold' });
           const bad = tri.findIndex((_, t) => !tOK[t]);
           stat = { n, T: tri.length, P: pr.length, tOK: tOK.reduce((a, b) => a + b, 0), pOK: pOK.reduce((a, b) => a + b, 0), all, bad: bad >= 0 ? tri[bad][1] : null, area: cn * (10 / GX) * (7 / GY) };
         });
-        v.legend(SET.map((c, i) => [c, 'C' + (i + 1)]).slice(0, 6));
         v.readout(() => `pairs meeting: **${stat.pOK}/${stat.P}**; triples meeting: **${stat.tOK}/${stat.T}**; all ${stat.n} sets share a point: **${stat.all ? 'yes' : 'no'}**` + (stat.all ? ` (area $\\approx${f2(stat.area)}$)` : '') + '.\n' +
           (stat.tOK === stat.T ? (stat.all ? 'Every triple meets and so does the whole family — Helly\'s conclusion.' : '**Every triple meets but the family has no common point: the sets are not all convex — Helly fails.**') : `Triple $\\{${(stat.bad || []).map((i) => i + 1)}\\}$ has no common point, so the hypothesis does not hold${stat.all ? ' (!)' : ' and nothing is promised'}.`));
       },
@@ -430,8 +431,8 @@ export default {
           nodes.forEach((nd) => {
             if (!pos.has(nd.id)) return;
             const cur = f.nid === nd.id;
-            T.dot(X(nd.id), Y(nd.id), { r, color: cur ? 'gold' : seen.has(nd.id) ? 'accent' : 'muted', hollow: !cur && !seen.has(nd.id) });
-            T.text(String(nd.size), X(nd.id), Y(nd.id), { size: Math.max(8, Math.min(12, r)), align: 'center', baseline: 'middle', color: cur || seen.has(nd.id) ? 'panel' : 'ink' });
+            T.dot(X(nd.id), Y(nd.id), { r, color: cur ? 'gold' : seen.has(nd.id) ? 'accent' : 'muted', hollow: true });
+            T.text(String(nd.size), X(nd.id), Y(nd.id), { size: Math.max(8, Math.min(12, r)), align: 'center', baseline: 'middle', color: 'ink' });
           });
         });
         v.readout(() => { const n = P.length, lg = Math.log2(n); return `$n=${n}$; work so far $=${S.frame.work ?? 0}$ of a final $${TR ? TR.work : 0}$   (reference: $n\\log_2n=${Math.round(n * lg)}$, $n^2/2=${Math.round(n * n / 2)}$).` + (alg.value === 'qh' && dist.value === 'arc' ? '\nAdversarial arc: one hull vertex peeled off per level, depth $\\approx n$.' : ''); });
