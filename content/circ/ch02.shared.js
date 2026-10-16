@@ -107,3 +107,24 @@ NETS.grid3 = {
   pos: Array.from({ length: 9 }, (_, i) => [i % 3, 2 - Math.floor(i / 3)]),
   edges: [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]],
 };
+
+// The five-resistor bridge used by 2.1, 2.2 and 2.6: V1 drives T; R1 T→1; R2 T→2; R3 1→0; R4 2→0; R5 1→2 (the "bridge").
+// leak: null | 'T' | '1' | '2' puts one extra resistor RL from that node to ground (drawn at the right-hand side).
+export const BR = { V1: 10, R1: 1000, R2: 2000, R3: 2000, R4: 1000, R5: 1000 };
+export function bridgeParts(vals = BR, leak = null, rl = 500) {
+  const P = [
+    { type: 'V', id: 'V1', name: 'V1', value: vals.V1, at: [0, 3, 0, 0] },
+    { type: 'W', at: [0, 3, 2, 3] }, { type: 'W', at: [2, 3, 5, 3] }, { type: 'W', at: [0, 0, 5, 0] },
+    { type: 'R', id: 'R1', name: 'R1', value: vals.R1, at: [2, 3, 2, 1.5] }, { type: 'R', id: 'R3', name: 'R3', value: vals.R3, at: [2, 1.5, 2, 0] },
+    { type: 'R', id: 'R2', name: 'R2', value: vals.R2, at: [5, 3, 5, 1.5] }, { type: 'R', id: 'R4', name: 'R4', value: vals.R4, at: [5, 1.5, 5, 0] },
+    { type: 'R', id: 'R5', name: 'R5', value: vals.R5, at: [2, 1.5, 5, 1.5], labelSide: -1 }, { type: 'GND', at: [2.5, 0] },
+    { type: 'label', at: [1, 3], text: '$v_T$', dy: -9 }, { type: 'label', at: [2, 1.5], text: '$v_1$', dx: 30, dy: -6 }, { type: 'label', at: [5, 1.5], text: '$v_2$', dx: -30, dy: -6 },
+  ];
+  if (leak) {
+    const y = leak === 'T' ? 3 : 1.5;
+    P.push({ type: 'W', at: [0, 0, 6.3, 0] }, { type: 'W', at: [5, y, 6.3, y] }, { type: 'R', id: 'RL', name: 'leak', value: rl, at: [6.3, y, 6.3, 0], labelSide: 1 });
+  }
+  return P;
+}
+/** Net name of each labelled bridge node: T, 1, 2 and ground '0'. */
+export function bridgeNodes(C) { const t = C.net.termNode; return { T: t.get('R1').a, 1: t.get('R1').b, 2: t.get('R2').b, 0: t.get('R3').b }; }

@@ -84,7 +84,7 @@ and the mean free path is $1/\mu=\mathrm{HVL}/\ln2\approx1.44\,\mathrm{HVL}$. Af
       scope: String.raw`Narrow-beam geometry (only unscattered photons counted) and monoenergetic photons. Real beams are polychromatic and scatter is detected (see beam hardening and scatter). Coefficients here are a model (photoelectric power law plus Klein–Nishina) calibrated to remembered NIST values, good to about 10–30%.`,
       viz(v) {
         const T = v.stage({ x: [0, 5], y: [0.01, 1.15], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'thickness $x$ (cm)', ylabel: 'transmitted fraction $I/I_0$', title: 'Narrow-beam transmission' });
-        const B = v.stage({ x: [0.01, 1000], y: [0, 5.6], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'half-value layer (mm)', ylabel: '', yticks: [], title: 'HVL of five materials at this energy', minWidth: 300 });
+        const B = v.stage({ x: [0.01, 1000], y: [0, 6.0], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'half-value layer (mm)', ylabel: '', yticks: [], title: 'HVL of five materials at this energy', minWidth: 300 });
         const mat = v.select('material', [{ value: 'tissue', label: 'soft tissue' }, { value: 'bone', label: 'bone' }, { value: 'aluminium', label: 'aluminium' }, { value: 'lead', label: 'lead' }], 'tissue');
         const en = v.slider('photon energy (keV)', 20, 150, 60, { step: 1, int: true });
         const lg = v.toggle('log axis', true);
@@ -103,11 +103,11 @@ and the mean free path is $1/\mu=\mathrm{HVL}/\ln2\approx1.44\,\mathrm{HVL}$. Af
           const x = Math.min(nhvl * hvl, 5 * hvl);
           h.set(x, Math.exp(-mm * x));
           T.segment([x, 0.0001], [x, Math.exp(-mm * x)], { color: 'gold', dash: true, width: 1.2 });
-          B.setView([0.01, 1000], [0, 5.6]);
+          B.setView([0.01, 1000], [0, 6.0]);
           list.forEach(([k, name, c], i) => {
             const hv = (Math.LN2 / mu(MATS[k], E)) * 10, y = 5 - i;
-            B.rect(0.01, y - 0.32, Math.max(hv, 0.0101), y + 0.32, { fill: c, fillAlpha: k === mat.value ? 0.75 : 0.35, color: c, width: k === mat.value ? 2 : 1 });
-            B.text(`${name}  ${hv < 1 ? fx(hv, hv < 0.1 ? 3 : 2) : fx(hv, hv < 10 ? 1 : 0)} mm`, 0.014, y + 0.43, { size: 12, color: 'ink', baseline: 'bottom' });
+            B.rect(0.01, y - 0.28, Math.max(hv, 0.0101), y + 0.2, { fill: c, fillAlpha: k === mat.value ? 0.75 : 0.35, color: c, width: k === mat.value ? 2 : 1 });
+            B.text(`${name}  ${hv < 1 ? fx(hv, hv < 0.1 ? 3 : 2) : fx(hv, hv < 10 ? 1 : 0)} mm`, 0.014, y + 0.24, { size: 12, color: 'ink', baseline: 'bottom' });
           });
         });
         v.legend([['accent', 'transmission $e^{-\\mu x}$'], ['gold', 'your thickness']]);
@@ -230,7 +230,7 @@ is then a concave function of the thickness $x$ (it grows more slowly than $\mu 
           // chord profile
           const R = d / 2, pts = [];
           for (let k = -100; k <= 100; k++) { const xx = (k / 100) * R * 0.985, ell = 2 * Math.sqrt(R * R - xx * xx); pts.push([xx, pAt(c, ell) / ell]); }
-          C.setView([-18, 18], [0, Math.max(0.28, slope0 * 1.12)]);
+          const lo = Math.min(...pts.map((q) => q[1])); C.setView([-18, 18], [Math.max(0, lo * 0.8 - 0.02), slope0 * 1.06]);
           C.hline(slope0, { color: 'muted', dash: true, width: 1.3 });
           C.path(pts, { color: 'accent', width: 2.4 });
           C.dot(0, pts[100][1], { color: 'gold', r: 5 });
