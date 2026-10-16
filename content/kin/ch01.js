@@ -137,7 +137,8 @@ The exponents $m,n$ are the **orders** with respect to A and B (integers, halves
           const cols = ['orange', 'green', 'accent'];
           sb.bars(vals, { x0: 0.6, dx: 1.4, color: (_, i) => v.color(cols[i], 0.8) });
           const lbl = ['[A]×2', '[B]×2', 'both ×2'];
-          vals.forEach((y, i) => { const x = 0.6 + 1.4 * i + 0.7; sb.text(lbl[i], x, 0, { size: 11, align: 'center', baseline: 'top', dy: 6, color: 'ink' }); sb.text(v.fmt(y, 3), x, Math.max(y, naive[i]), { size: 12, align: 'center', dy: -16, color: 'ink', weight: 650 });
+          sb.setTicks(lbl.map((t, i) => [0.6 + 1.4 * i + 0.7, t]), null);
+          vals.forEach((y, i) => { const x = 0.6 + 1.4 * i + 0.7; sb.text(v.fmt(y, 3), x, Math.max(y, naive[i]), { size: 12, align: 'center', dy: -16, color: 'ink', weight: 650 });
             sb.dot(x, naive[i], { r: 5, hollow: true, color: 'red' }); });
           info = { v0, m, n, k, fa, fb };
         });
