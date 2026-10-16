@@ -521,5 +521,19 @@ test('complete elliptic integrals', () => {
   const K = M.ellipK(0.5), E = M.ellipE(0.5); ok(Math.abs(2 * E * K - K * K - Math.PI / 2) < 1e-13);
 });
 
+test('eigH and expmC (complex Hermitian, repeated eigenvalues)', () => {
+  // degenerate Hermitian: diag(1,1,3) rotated by a complex unitary — eigC may return non-orthogonal vectors, eigH must not
+  const H = [[2, [0, 1], 0], [[0, -1], 2, 0], [0, 0, 1]], E = M.eigH(H);
+  ok(Math.abs(E.values[0] - 1) < 1e-12 && Math.abs(E.values[1] - 1) < 1e-12 && Math.abs(E.values[2] - 3) < 1e-12);
+  for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) {
+    let re = 0, im = 0; for (let k = 0; k < 3; k++) { re += E.vectors[a].re[k] * E.vectors[b].re[k] + E.vectors[a].im[k] * E.vectors[b].im[k]; im += E.vectors[a].re[k] * E.vectors[b].im[k] - E.vectors[a].im[k] * E.vectors[b].re[k]; }
+    ok(Math.abs(re - (a === b ? 1 : 0)) < 1e-12 && Math.abs(im) < 1e-12, 'orthonormal');
+  }
+  // Pauli Y: exp(−iθY/2) = cos(θ/2) I − i sin(θ/2) Y
+  const th = 0.7; // −iθ/2·Y with Y = [[0,−i],[i,0]] is [[0, −θ/2],[θ/2, 0]]
+  const R = M.expmC([[0, -th / 2], [th / 2, 0]]);
+  ok(Math.abs(R[0][0][0] - Math.cos(th / 2)) < 1e-13 && Math.abs(R[0][1][0] + Math.sin(th / 2)) < 1e-13 && Math.abs(R[1][0][0] - Math.sin(th / 2)) < 1e-13);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

@@ -190,7 +190,7 @@ export const STRUCT = {
   bcc: { name: 'body-centred cubic', cell: [1, 1, 1, 90, 90, 90], basis: [['A', 0, 0, 0], ['A', 0.5, 0.5, 0.5]] },
   fcc: { name: 'face-centred cubic', cell: [1, 1, 1, 90, 90, 90], basis: fcc('A') },
   diamond: { name: 'diamond cubic', cell: [1, 1, 1, 90, 90, 90], basis: [...fcc('A'), ...fcc('A', [0.25, 0.25, 0.25])] },
-  hcp: (ca = Math.sqrt(8 / 3)) => ({ name: 'hexagonal close-packed', cell: [1, 1, ca, 90, 90, 120], basis: [['A', 1 / 3, 2 / 3, 0.25], ['A', 2 / 3, 1 / 3, 0.75]] }),
+  hcp: (ca = Math.sqrt(8 / 3)) => ({ name: 'hexagonal close-packed', cell: [1, 1, ca, 90, 90, 120], basis: [['A', 0, 0, 0], ['A', 1 / 3, 2 / 3, 0.5]] }),
   nacl: { name: 'rock salt (NaCl)', formula: 'NaCl', cell: [5.640, 5.640, 5.640, 90, 90, 90], basis: [...fcc('Na'), ...fcc('Cl', [0.5, 0, 0])], real: 'NaCl, a = 5.64 Å' },
   cscl: { name: 'caesium chloride (CsCl)', formula: 'CsCl', cell: [4.123, 4.123, 4.123, 90, 90, 90], basis: [['Cs', 0, 0, 0], ['Cl', 0.5, 0.5, 0.5]], real: 'CsCl, a = 4.123 Å' },
   c: { name: 'diamond (C)', formula: 'C', cell: [3.567, 3.567, 3.567, 90, 90, 90], basis: [...fcc('C'), ...fcc('C', [0.25, 0.25, 0.25])], real: 'diamond, a = 3.567 Å' },

@@ -274,9 +274,10 @@ export default {
           if (c.none) { G.draw({ nodeFill: fill }); G2.draw({ nodeFill: fill }); return; }
           const pm = pathMap(H, c.paths);
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e) % PC.length] : null), edgeWidth: (e) => (pm.has(e) ? 4.5 : 1.4), nodeFill: fill, nodeLabel: (id) => (K(id) === ab[0] ? 'a' : K(id) === ab[1] ? 'b' : '') });
+          s2.setTitle(mode.value === 'v' ? 'a smallest $a$–$b$ separator' : 'a smallest $a$–$b$ edge cut');
           if (mode.value === 'v') {
             if (c.adj) { G2.draw({ nodeFill: fill, nodeLabel: (id) => (K(id) === ab[0] ? 'a' : K(id) === ab[1] ? 'b' : ''), edgeColor: (e) => ((K(e.from) === ab[0] && K(e.to) === ab[1]) || (K(e.to) === ab[0] && K(e.from) === ab[1]) ? 'red' : null), edgeWidth: (e) => ((K(e.from) === ab[0] && K(e.to) === ab[1]) || (K(e.to) === ab[0] && K(e.from) === ab[1]) ? 4 : null) });
-              s2.corner('a and b are adjacent: no vertex set separates them', 'tl', { color: 'red', weight: 700, size: 12.5, plate: true }); return; }
+              s2.setTitle('$a$ and $b$ are adjacent: no vertex set separates them ✗'); return; }
             const xs = new Set(c.sep), C = comps(H, (u) => !xs.has(u));
             G2.draw({ nodeFill: (id) => { const u = H2.at(id); return xs.has(u) ? null : K(id) === ab[0] || K(id) === ab[1] ? fill(id) : C.comp[u] === C.comp[c.a] ? 'gold' : C.comp[u] === C.comp[c.b] ? 'blue' : 'faint'; },
               nodeLabel: (id) => (K(id) === ab[0] ? 'a' : K(id) === ab[1] ? 'b' : ''), dim: c.sep.map((u) => H.ids[u]), edgeDash: (e) => xs.has(H2.at(e.from)) || xs.has(H2.at(e.to)) });
@@ -361,7 +362,7 @@ export default {
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e) % PC.length] : null), edgeWidth: (e) => (pm.has(e) ? 5 : 1.5), edgeDash: (e) => xs.has(H.at(e.from)) || xs.has(H.at(e.to)),
             nodeFill: (id) => (A.has(K(id)) ? 'blue' : null), dim: [...xs].map((u) => H.ids[u]) });
           for (const u of xs) squareMark(s, G, H.ids[u], v.color('red'), 16, 2.8);
-          s.corner(ok ? `${k} disjoint A-paths` : `no ${k} disjoint A-paths — ${I.tau} vertices meet all A-paths (≤ 2k − 2 = ${2 * k - 2})`, 'tl', { color: ok ? 'green' : 'red', weight: 700, size: 12.5, plate: true });
+          s.setTitle(ok ? `${k} disjoint $A$-paths ✓` : `no ${k} disjoint $A$-paths — ${I.tau} vertices meet all $A$-paths ($\\le 2k-2 = ${2 * k - 2}$)`);
           // chart
           c.vband(0.5, Math.min(6.5, I.nu + 0.5), { color: 'green', alpha: 0.13 });
           if (I.nu >= 1) c.text(`${I.nu >= 6 ? '≥ 6' : ''} k disjoint A-paths`, Math.min(6.5, I.nu + 0.5) / 2 + 0.25, 10.2, { size: 11.5, color: 'green', align: 'center' });
@@ -532,7 +533,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           const lab = (id) => { const i = term.indexOf(K(id)); return i < 0 ? '' : `${i % 2 ? 't' : 's'}${sub(Math.floor(i / 2) + 1)}`; };
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e) % PC.length] : null), edgeWidth: (e) => (pm.has(e) ? 5 : 1.6),
             nodeFill: (id) => { const i = term.indexOf(K(id)); return i < 0 ? null : PC[Math.floor(i / 2) % PC.length]; }, nodeLabel: lab });
-          if (c.r) s.corner(c.r.paths ? `linked: ${c.pairs.length} disjoint path${c.pairs.length > 1 ? 's' : ''}` : c.r.exact ? 'no such disjoint paths exist' : 'search budget exceeded', 'tl', { color: c.r.paths ? 'green' : 'red', weight: 700, size: 13 });
+          s.setTitle(!c.r ? 'place the terminals' : c.r.paths ? `linked: ${c.pairs.length} disjoint path${c.pairs.length > 1 ? 's' : ''} ✓` : c.r.exact ? 'no such disjoint paths exist ✗' : 'search budget exceeded');
         });
         v.legend([['orange', '$s_1 \\dots t_1$'], ['purple', '$s_2 \\dots t_2$'], ['pink', '$s_3 \\dots t_3$']]);
         v.readout(() => {
@@ -564,7 +565,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           if (G._key !== key.split('|').slice(0, 2).join('|')) { G._key = key.split('|').slice(0, 2).join('|'); G.set({ nodes: [...Array(N).keys()].map((i) => ({ id: i, label: '' })), edges: C.E }); G.layout('circle'); }
           const f = C.res.found, H = ix(G), pm = f ? pathMap(H, f.paths) : new Map(), U = new Set(f ? f.U.map((u) => K(H.ids[u])) : []);
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e) % PC.length] : 'faint'), edgeWidth: (e) => (pm.has(e) ? 4 : 1.3), nodeFill: (id) => (U.has(K(id)) ? 'gold' : null), nodeRing: (id) => (U.has(K(id)) ? 'gold' : null) });
-          s.corner(f ? `TK${'⁰¹²³⁴⁵⁶⁷⁸⁹'[+rS.value]} found` : `no TK${'⁰¹²³⁴⁵⁶⁷⁸⁹'[+rS.value]}${C.res.exact ? '' : ' found (search cut short)'}`, 'tl', { color: f ? 'green' : 'red', weight: 700, size: 13 });
+          s.setTitle(f ? `a $TK^${rS.value}$ ✓` : `no $TK^${rS.value}$${C.res.exact ? '' : ' found (search cut short)'}`);
           const sw = sweep(G, rS.value);
           c.path(sw.map(([x, y]) => [x, y]), { color: 'accent', width: 2.4 });
           sw.forEach(([x, y]) => c.dot(x, y, { r: 4, color: 'accent' }));
@@ -684,7 +685,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           const r = v.rng(tseed * 31 + H.n), pick = []; while (pick.length < 4 && H.n >= 4) { const u = Math.floor(r() * H.n); if (!pick.includes(u)) pick.push(u); }
           const lk = pick.length === 4 ? linkPairs(H, [[pick[0], pick[1]], [pick[2], pick[3]]], { budget: 2e5 }) : null, pm = lk && lk.paths ? pathMap(ix(G), lk.paths) : new Map();
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e)] : 'faint'), edgeWidth: (e) => (pm.has(e) ? 4 : 0.6), nodeFill: (id) => { const i = pick.indexOf(+id); return i < 0 ? null : PC[Math.floor(i / 2)]; }, nodeColor: () => 'muted' });
-          s.corner(lk ? (lk.paths ? 'these terminals are linked' : lk.exact ? 'these terminals cannot be linked' : 'search cut short') : 'too few vertices', 'tl', { color: lk && lk.paths ? 'green' : 'red', weight: 700, size: 12.5, plate: true });
+          s.setTitle(lk ? (lk.paths ? 'random terminals: linked ✓' : lk.exact ? 'random terminals: cannot be linked ✗' : 'search cut short') : 'too few vertices');
           c.rect(4, 16, 10.6, 22, { fill: 'green', fillAlpha: 0.1, color: 'green', width: 1 });
           c.text('κ ≥ 4, ε ≥ 16: 2-linked', 10.4, 21.3, { size: 11.5, color: 'green', align: 'right', baseline: 'top' });
           for (const P of lib) c.dot(Math.min(P.kap, 10), Math.min(P.eps, 21.8), { r: 5, color: P.ok ? 'green' : 'red', fill: P.ok ? 'green' : 'red', fillAlpha: 0.5 });
@@ -733,7 +734,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
             nodeFill: (id) => { const i = term.indexOf(+id); return i >= 0 ? PC[Math.floor(i / 2)] : used.has(+id) ? 'gold' : null; },
             nodeLabel: (id) => { const i = term.indexOf(+id); return i < 0 ? '' : `${i % 2 ? 't' : 's'}${sub(Math.floor(i / 2) + 1)}`; } });
           const fail = links.some((l) => l === false);
-          s.corner(fail ? 'some pair has no free common neighbour' : 'pairs linked by paths of length 2', 'tl', { color: fail ? 'red' : 'green', weight: 700, size: 12.5, plate: true });
+          s.setTitle(fail ? 'some pair has no free common neighbour ✗' : 'pairs linked by paths of length 2 ✓');
           // histogram
           const counts = new Array(n + 1).fill(0); M.cn.forEach((x) => counts[x]++); const top = Math.max(...counts);
           c.setView([-0.5, n + 0.5], [0, top * 1.18]);

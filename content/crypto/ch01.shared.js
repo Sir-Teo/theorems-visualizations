@@ -200,6 +200,12 @@ export function makeEnigma(cfg) {
       const l0 = b(0, u), l1 = b(1, l0), l2 = b(2, l1), out = plug[l2];
       return [x, p1, r2, r1, r0, u, l0, l1, l2, out];
     },
+    /** Absolute contact map of rotor i (0 = left … 2 = right) at the current positions: forward (right→left) or backward. */
+    map(i, back = false) {
+      const off = E.pos[i] - rings[i];
+      return Array.from({ length: 26 }, (_, x) => (back ? mod(bw[i][mod(x + off, 26)] - off, 26) : mod(fw[i][mod(x + off, 26)] - off, 26)));
+    },
+    reflMap: () => refl.slice(), plugMap: () => plug.slice(), notch: (i) => notch[i],
     press(x) { E.step(); const tr = E.path(x); return { out: tr[9], trace: tr, pos: E.pos.slice() }; },
     /** Encipher letters (others pass through unchanged and do not step). */
     run(text) { let o = ''; for (const ch of String(text).toUpperCase()) o += ch >= 'A' && ch <= 'Z' && ch.length === 1 ? A[E.press(code(ch)).out] : ch; return o; },
@@ -304,6 +310,10 @@ export function topAt(cipherCodes, L, n, count = 6) {
     const dj = dg[j % L], dp = dg[(j + L - 1) % L];
     for (let k = 0; k < K; k++) { const p = mod(cipherCodes[j] - dj[k], 26); sc[k] += j === 0 ? LOGP[p] : LOGB[mod(cipherCodes[j - 1] - dp[k], 26)][p]; }
   }
+  let m = -Infinity; for (let k = 0; k < K; k++) if (sc[k] > m) m = sc[k];
+  let Z = 0; for (let k = 0; k < K; k++) { const d = sc[k] - m; if (d > -48) Z += Math.pow(2, d); }
   const idx = [...Array(K).keys()]; idx.sort((a, b) => sc[b] - sc[a]);
-  return idx.slice(0, count).map((k) => ({ key: Array.from({ length: L }, (_, i) => A[dg[i][k]]).join(''), score: sc[k] }));
+  return idx.slice(0, count).map((k) => ({ key: Array.from({ length: L }, (_, i) => A[dg[i][k]]).join(''), score: sc[k], post: Math.pow(2, sc[k] - m) / Z }));
 }
+/** 2·3·7 for 42. */
+export const factorStr = (n) => { const o = []; for (let p = 2; n > 1 && p <= n; p++) while (n % p === 0) { o.push(p); n /= p; } return o.join('·'); };

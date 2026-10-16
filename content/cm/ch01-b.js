@@ -203,13 +203,13 @@ The functions $w_n(\mathbf r-\mathbf R)$ for all $\mathbf R$ are orthonormal, ar
           const D = build(), nx = XS.length;
           const sc = 1 / Math.max(...Array.from(D.w0.re, (r, i) => Math.hypot(r, D.w0.im[i]))) * 0 + 1;
           const pk = Math.max(...Array.from(D.w0.re, (r, i) => Math.hypot(r, D.w0.im[i])));
-          sW.setView([-6, 6], [-0.55 * pk, 1.2 * pk]);
+          sW.setView([-6, 6], [-0.85 * pk, 1.15 * pk]);
           sW.hline(0, { color: 'grid' });
           sW.path(XS.map((x, i) => [x, D.w1.re[i]]), { color: 'orange', width: 1.8, dash: [5, 4] });
           sW.path(XS.map((x, i) => [x, D.w0.im[i]]), { color: 'purple', width: 1.3, alpha: 0.8 });
           sW.poly([[XS[0], 0], ...XS.map((x, i) => [x, Math.hypot(D.w0.re[i], D.w0.im[i])]), [XS[nx - 1], 0]], { fill: 'accent', fillAlpha: 0.14, stroke: false });
           sW.path(XS.map((x, i) => [x, D.w0.re[i]]), { color: 'accent', width: 2.6 });
-          for (let n = -6; n <= 6; n++) sW.dot(n, -0.42 * pk, { r: 3.5, color: 'muted' });
+          for (let n = -6; n <= 6; n++) sW.dot(n, -0.74 * pk, { r: 3.5, color: 'muted' });
           // gauge phases
           sG.path(lin(-1, 1, 201).map((k) => [k, gauge.value === 'smooth' ? 0 : gauge.value === 'twist' ? ((aS.value * Math.sin(PI * k) + PI) % TAU + TAU) % TAU - PI : NaN]), { color: 'purple', width: 2.4 });
           if (gauge.value === 'random') sG.dots(ks.map((k, j) => [k, RPH[j] - PI]), { r: 4, color: 'purple' });

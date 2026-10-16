@@ -51,13 +51,14 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
           se.hband(-0.05, 0.05, { color: 'green', alpha: 0.12 });
           se.hline(0, { color: 'faint' });
           se.dot(r, errAt(r), { r: 6, color: 'gold' });
-          info = { r, kp, se: f.se, err: kp / r - 1, e0: errAt(r) };
+          const ok5 = pts.find((q) => Math.abs(q[1]) < 0.05);
+          info = { r, kp, se: f.se, err: kp / r - 1, e0: errAt(r), r5: ok5 ? ok5[0] : NaN };
         });
         v.legend([['accent', '[A]'], ['orange', '[B]'], ['green', "ideal $k'=k[\\mathrm B]_0$", { dash: true }], ['red', 'fitted line, slope $-k\'$'], ['gold', 'noise-free error at this excess', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
-          const { r, kp, se: s, err, e0 } = info;
-          return `$[\\mathrm B]_0/[\\mathrm A]_0=${v.fix(r, 1)}$ · fitted $k'=${v.fix(kp, 3 + (r > 30 ? 0 : 0))}\\pm${v.fix(s, 3)}$ against $k[\\mathrm B]_0=${v.fix(r, 3)}$ → recovered $k=k'/[\\mathrm B]_0=${v.fix(kp / r, 4)}$ (true 1) · error ${v.fix(100 * err, 1)}% with noise, ${v.fix(100 * e0, 1)}% without (inside the ±5% band for excess ≳ ${v.fix(20, 0)})`;
+          const { r, kp, se: s, err, e0, r5 } = info;
+          return `$[\\mathrm B]_0/[\\mathrm A]_0=${v.fix(r, 1)}$ · fitted $k'=${v.fix(kp, 3 + (r > 30 ? 0 : 0))}\\pm${v.fix(s, 3)}$ against $k[\\mathrm B]_0=${v.fix(r, 3)}$ → recovered $k=k'/[\\mathrm B]_0=${v.fix(kp / r, 4)}$ (true 1) · error ${v.fix(100 * err, 1)}% with noise, ${v.fix(100 * e0, 1)}% without (the noise-free error is inside ±5% for excess ≳ ${v.fix(r5, 0)})`;
         });
       },
     },
@@ -120,14 +121,16 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
           // left panel
           const Rsel = ser.value === 'A' ? RA : RB, q = Rsel[clamp(ex.value - 1, 0, Rsel.length - 1)];
           if (real) {
-            s1.setView([0, 1], [0, 1]);
+            s1.setView([0, 1], [0, 1]); s1.setTicks([], []); s1.setLabels(null, null);
             const D = DATA.noh2;
-            s1.text('textbook runs (1280 °C):', 0.02, 0.95, { color: 'muted', size: 12 });
-            [0, 1, 2].forEach((i) => { const y = 0.8 - 0.22 * i, on = i === clamp(ex.value - 1, 0, 2); if (on) s1.rect(0.01, y - 0.09, 0.99, y + 0.09, { fill: 'gold', fillAlpha: 0.15, stroke: false });
-              s1.text(`run ${i + 1}:  [NO]₀=${D.no[i]}  [H₂]₀=${D.h2[i]}  v₀=${sciTxt(D.rate[i])} M/s`, 0.02, y, { size: 12.5, color: 'ink' }); });
-            s1.text('doubling [NO]: rate ×4;  doubling [H₂]: rate ×2', 0.02, 0.12, { size: 12.5, color: 'green', weight: 600 });
+            s1.text('textbook runs (1280 °C), initial rates:', 0.03, 0.94, { color: 'muted', size: 12 });
+            [0, 1, 2].forEach((i) => { const y = 0.72 - 0.25 * i, on = i === clamp(ex.value - 1, 0, 2); if (on) s1.rect(0.01, y - 0.13, 0.99, y + 0.11, { fill: 'gold', fillAlpha: 0.15, stroke: false });
+              s1.text(`run ${i + 1}:  [NO]₀ = ${D.no[i]} M,  [H₂]₀ = ${D.h2[i]} M`, 0.03, y + 0.03, { size: 12, color: 'ink' });
+              s1.text(`v₀ = ${sciTxt(D.rate[i])} M/s`, 0.03, y - 0.07, { size: 12, color: 'ink', weight: 650 }); });
+            s1.text('[NO] ×2 → rate ×4;  [H₂] ×2 → rate ×2', 0.03, 0.06, { size: 12, color: 'green', weight: 600 });
             hl = null;
           } else {
+            s1.setTicks(null, null); s1.setLabels('time (s)', '[P] (M)');
             s1.setView([0, q.tw * 1.05], [Math.min(0, ...q.P) * 1.1, Math.max(...q.P) * 1.3]);
             s1.line(0, q.fit.intercept, q.tw * 1.05, q.fit.intercept + q.fit.slope * q.tw * 1.05, { color: 'red', width: 2 });
             s1.dots(q.ts.map((t, i) => [t, q.P[i]]), { r: 4.5, color: 'ink' });
@@ -169,7 +172,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
           const f = kf.value, b = kb.value, T = 7 / (f + b);
           const traj = (a0) => solve((t, y) => [-f * y[0] + b * (1 - y[0])], [a0], T, 600);
           const S = [traj(h.y), traj(1), traj(0)], cols = ['gold', 'accent', 'orange'];
-          const Aeq = S[0].at(T)[0];
+          const Aeq = solve((t, y) => [-f * y[0] + b * (1 - y[0])], [h.y], 10 * T, 200).at(10 * T)[0];
           sc.setView([0, T], [0, 1.02]);
           sc.hline(b / (f + b), { color: 'green', dash: [6, 4], width: 1.6 });
           sc.text('equilibrium', T * 0.98, b / (f + b), { align: 'right', dy: -8, color: 'green', size: 11 });
@@ -187,7 +190,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
           const x0 = Math.log(Math.abs(h.y - Aeq) + 1e-12);
           sl.line(0, x0, T, x0 - f * T, { color: 'red', width: 2, dash: [2, 4] });
           sl.text('slope $-k_f$', T * 0.3, x0 - f * T * 0.3, { color: 'red', size: 11.5, dx: 8, dy: -10 });
-          const Tl = S[1].at(T)[0];
+          const Tl = Aeq;
           info = { slope: fits[1] ? -fits[1].slope : NaN, f, b, Aeq, K: (1 - Tl) / Tl, tau: 1 / (f + b) };
         });
         v.legend([['gold', 'your start'], ['accent', 'pure A start'], ['orange', 'pure B start'], ['green', 'equilibrium / slope $-(k_f+k_b)$']]);
@@ -242,7 +245,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
           s1.setLabels(`time (${M1.unit})`, w ? 'conductivity ∝ [H⁺]/10⁻⁷ M' : 'fraction B');
           s1.hline(y0, { color: 'muted', dash: [5, 4], width: 1.4 }); s1.hline(yinf, { color: 'green', dash: [5, 4], width: 1.4 });
           s1.text('equilibrium at T₀', T / tu * 0.98, y0, { align: 'right', dy: y0 < yinf ? 14 : -8, size: 11, color: 'muted' });
-          s1.text('new equilibrium at T₁', T / tu * 0.98, yinf, { align: 'right', dy: y0 < yinf ? -8 : 14, size: 11, color: 'green' });
+          s1.text('new equilibrium at T₁', T / tu * 0.02, yinf, { align: 'left', dx: 8, dy: y0 < yinf ? -8 : 14, size: 11, color: 'green' });
           s1.fn((t) => yi + A * Math.exp(-t * tu / tau), { color: 'red', width: 2.2, domain: [0, T / tu] });
           s1.dots(ts.map((t, i) => [t / tu, ys[i]]), { r: 3.6, color: 'ink' });
           s1.vline(0, { color: 'gold', width: 2.5 });
@@ -310,7 +313,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
           const kf = Math.exp(best.x[1]), A = Math.exp(best.x[0]), ok = Math.abs(kf / k - 1) < 0.25 && vis(m, k) > 0.15;
           if (isFinite(kf) && kf > 0) s1.fn((t) => A * Math.exp(-kf * t), { color: ok ? 'red' : 'faint', width: 2, dash: ok ? false : [5, 4], n: 400, domain: [m.td, m.te] });
           s1.vline(1 / k, { color: 'gold', dash: [4, 4], width: 1.4 });
-          s1.text('$1/k$', 1 / k, -0.04, { color: 'gold', size: 12, dx: 4 });
+          s1.text('$1/k$', 1 / k, 0.62, { color: 'gold', size: 12, dx: 6, plate: true });
           // coverage panel
           const keys = Object.keys(METH);
           keys.forEach((key, i) => {
@@ -370,7 +373,8 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
           const Q = [[-(kAB + kAC), kBA, kCA], [kAB, -(kBA + kBC), kCB], [kAC, kBC, -(kCA + kCB)]];
           const Mx = [Q[0], Q[1], [1, 1, 1]], p = v.M.solve(Mx, [0, 0, 1]);
           const Jab = kAB * p[0] - kBA * p[1], Jbc = kBC * p[1] - kCB * p[2], Jca = kCA * p[2] - kAC * p[0];
-          const J = (Jab + Jbc + Jca) / 3, Gam = (kAB * kBC * kCA) / (kBA * kCB * kAC);
+          let J = (Jab + Jbc + Jca) / 3; const Gam = (kAB * kBC * kCA) / (kBA * kCB * kAC);
+          if (Math.abs(J) < 1e-9 * Math.max(kAB * p[0], 1e-12)) J = 0;
           const fl = [[kAB * p[0], kBA * p[1]], [kBC * p[1], kCB * p[2]], [kCA * p[2], kAC * p[0]]];
           const fmax = Math.max(...fl.flat());
           // draw edges: forward arrow offset to one side, reverse to the other
@@ -382,13 +386,13 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
             st.arrow(A1[0], A1[1], B1[0], B1[1], { color: 'accent', width: 1 + 7 * fl[e][0] / fmax, head: 9 });
             st.arrow(A2[0], A2[1], B2[0], B2[1], { color: 'orange', width: 1 + 7 * fl[e][1] / fmax, head: 9 });
           });
-          ['A', 'B', 'C'].forEach((nm, i) => { st.dot(P[i][0], P[i][1], { r: 14 + 34 * p[i], color: 'teal' }); st.text(nm, P[i][0], P[i][1], { size: 15, color: 'ink', weight: 700, align: 'center', baseline: 'middle' }); });
           // circulating dots: speed proportional to the net cycle flux
           const per = 3, u0 = (v.t || 0) * 0.8 * Math.sign(J) * Math.tanh(6 * Math.abs(J) / fmax);
           for (let q = 0; q < 12; q++) {
             const u = (((u0 + q * per / 12) % per) + per) % per, e = Math.floor(u), f = u - e, a = P[e], b = P[(e + 1) % 3];
             if (Math.abs(J) > 1e-3 * fmax) st.dot(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, { r: 3.5, color: 'gold' });
           }
+          ['A', 'B', 'C'].forEach((nm, i) => { st.dot(P[i][0], P[i][1], { r: 14 + 34 * p[i], color: 'teal' }); st.text(nm, P[i][0], P[i][1], { size: 15, color: 'ink', weight: 700, align: 'center', baseline: 'middle' }); });
           st.corner(Math.abs(J) < 1e-3 * fmax ? 'no net circulation' : `net cycle flux J = ${nice(v, J, 3)}`, 'bl', { color: Math.abs(J) < 1e-3 * fmax ? 'green' : 'red', weight: 650, plate: true });
           // ladder
           const d1 = -RT * Math.log(kAB / kBA), d2 = -RT * Math.log(kBC / kCB), d3 = -RT * Math.log(kCA / kAC);
@@ -405,7 +409,7 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
         v.readout(() => {
           if (!info) return '';
           const { Gam, J, p, gap } = info, sig = J * Math.log(Gam);
-          return `$\\Gamma=\\dfrac{k_{AB}k_{BC}k_{CA}}{k_{BA}k_{CB}k_{AC}}=${v.fix(Gam, 4)}$ ${Math.abs(Gam - 1) < 1e-6 ? '(= 1: detailed balance)' : '(≠ 1: **violated**)'} · steady state $p=(${p.map((x) => v.fix(x, 3)).join(', ')})$ · cycle flux $J=${nice(v, J, 3)}$ · entropy production $J\\ln\\Gamma=${nice(v, sig, 3)}\\ \\ (\\ge0)$ · free energy gained per circuit $-RT\\ln\\Gamma=${v.fix(gap, 2)}$ kJ/mol`;
+          return `$\\Gamma=\\dfrac{k_{AB}k_{BC}k_{CA}}{k_{BA}k_{CB}k_{AC}}=${v.fix(Gam, 4)}$ ${Math.abs(Gam - 1) < 1e-6 ? '(= 1: detailed balance)' : '(≠ 1: **violated**)'} · steady state $p=(${p.map((x) => v.fix(x, 3)).join(', ')})$ · cycle flux $J=${nice(v, J, 3)}$ · entropy production $J\\ln\\Gamma=${nice(v, sig, 3)}\\ \\ (\\ge0)$ · free energy gained per circuit $-RT\\ln\\Gamma=${v.fix(gap, 2)}$ kJ/mol`.replace('−0.00 kJ', '0.00 kJ');
         });
       },
     },

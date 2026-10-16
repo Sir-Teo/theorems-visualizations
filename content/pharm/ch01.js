@@ -210,7 +210,7 @@ export default {
           if (est.kz > 0) { const t0 = S.ts[n - 3]; sB.fn((t) => est.c0 * Math.exp(-est.kz * t), { domain: [Math.max(0, t0 - 6), 48], color: 'green', width: 2 }); }
           sB.dots(pos, { r: 4.5, color: 'gold' });
           if (src.value === 'real') THEO.t.forEach((t, i) => { if (!on[i] && t > 0) sB.dot(t, THEO.c[i], { r: 4, color: 'muted', hollow: true }); });
-          sB.text(est.kz > 0 ? `terminal slope: k_z = ${v.fix(est.kz, 3)} /h, t½ = ${v.fix(Math.LN2 / est.kz, 1)} h` : 'no valid terminal slope', 47.5, 15, { size: 11, color: 'green', align: 'right', baseline: 'top' });
+          sB.corner(est.kz > 0 ? `k_z = ${v.fix(est.kz, 3)} /h · t½ = ${v.fix(Math.LN2 / est.kz, 1)} h` : 'no valid terminal slope', 'tr', { color: 'green' });
           // ---- C (convergence)
           let curve = [];
           if (src.value === 'sim') {
@@ -228,7 +228,6 @@ export default {
             for (let m = 3; m <= all.length; m++) { const e = aucEstimate(all.slice(0, m), THEO.c.slice(0, m), meth.value); curve.push([m, e.total / ref]); }
             sC.path(curve, { color: 'accent', width: 2 }); sC.dots(curve, { r: 3.5, color: 'accent' });
           }
-          sC.text('reference = 1', sC.bounds ? sC.bounds.x1 - 0.2 : 39, 1.04, { size: 10.5, color: 'green', align: 'right', baseline: 'bottom' });
           lastInfo = { est, ref, n };
         }, {});
         v.legend([['accent', 'trapezoids (sampled interval)', { area: true }], ['green', 'extrapolated tail', { area: true }], ['muted', src.value === 'real' ? 'fitted Bateman curve' : 'exact curve', { dash: true }], ['gold', 'samples', { dot: true }]]);
@@ -258,17 +257,14 @@ export default {
         ].map(([id, name, lkg]) => ({ id, name, lkg, V: lkg * BODY.kg, Kp: (lkg * BODY.kg - Vp) / VT }));
         const sel = v.select('drug', [...PRE.map((p) => ({ value: p.id, label: p.name })), { value: 'free', label: 'free' }], 'warfarin');
         let prog = false;
-        const Kp = v.slider('tissue : plasma ratio $K_p$', 0.01, 1000, PRE[0].Kp, { log: true, sig: 2, onChange: () => { if (!prog) sel.value = 'free'; } });
+        const Kp = v.slider('tissue : plasma ratio $K_p$', 0.01, 1000, PRE[0].Kp, { log: true, sig: 2, fmt: (x) => sig(x, 2), onChange: () => { if (!prog) sel.value = 'free'; } });
         const dose = v.slider('dose', 10, 1000, 100, { log: true, sig: 2, fmt: (x) => `${Math.round(x)} mg` });
-        sel.set; // (value assigned by onChange below)
         const rng = v.rng(7);
         const N = 200;
         const dotsP = Array.from({ length: N }, () => [rng(), rng()]), dotsT = Array.from({ length: N }, () => [rng(), rng()]);
         const sb = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 290, weight: 1 });
         const sr = v.stage({ x: [1, 3e4], y: [0, 1], xlog: true, axes: 'box', gutter: { l: 12, r: 8, t: 34, b: 38 }, xlabel: 'apparent volume of distribution (L)', height: 290, weight: 1.15, yticks: [] });
         const pick = (id) => PRE.find((p) => p.id === id);
-        const origSet = sel.set.bind(sel);
-        sel.el.addEventListener?.('click', () => {});
         let lastSel = sel.value;
         v.render(() => {
           if (sel.value !== lastSel) { lastSel = sel.value; if (sel.value !== 'free') { prog = true; Kp.set(pick(sel.value).Kp); prog = false; } }
@@ -279,19 +275,18 @@ export default {
           sb.rect(xT0, y0, xT0 + wT, y1, { fill: 'purple', fillAlpha: 0.07, color: 'purple', width: 1.8 });
           sb.dots(dotsP.slice(0, np).map(([a, b]) => [x0 + 0.06 + a * (wP - 0.12), y0 + 0.08 + b * (y1 - y0 - 0.16)]), { r: 2.6, color: 'accent' });
           sb.dots(dotsT.slice(0, nt).map(([a, b]) => [xT0 + 0.1 + a * (wT - 0.2), y0 + 0.08 + b * (y1 - y0 - 0.16)]), { r: 2.6, color: 'purple' });
-          sb.text('plasma', x0 + wP / 2, y1 + 0.2, { size: 11, color: 'accent', align: 'left', baseline: 'bottom', weight: 600, dx: -6 });
-          sb.text('3 L', x0 + wP / 2, y1 + 0.75, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom', dx: -6 });
+          sb.text('plasma, 3 L', 0.15, y1 + 0.2, { size: 11, color: 'accent', align: 'left', baseline: 'bottom', weight: 600 });
           sb.text('tissue water, 39 L', xT0 + wT / 2, y1 + 0.2, { size: 11, color: 'purple', align: 'center', baseline: 'bottom', weight: 600 });
           sb.text(`${v.fix(100 * fp, fp < 0.01 ? 2 : 1)} % of the dose in plasma`, x0, y0 - 0.2, { size: 11, color: 'accent', align: 'left', baseline: 'top' });
           sb.text(`${v.fix(100 * (1 - fp), (1 - fp) > 0.99 ? 2 : 1)} % in tissue`, xT0 + wT, y0 - 0.2, { size: 11, color: 'purple', align: 'right', baseline: 'top' });
           sb.text(`C(plasma) = D/V = ${sig(dose.value / V, 3)} mg/L`, 5, 0.35, { size: 12, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
           // ---- ruler
           const refs = [[BODY.plasma, 'plasma 3 L', 'accent'], [BODY.ecf, 'ECF 14 L', 'teal'], [BODY.tbw, 'body water 42 L', 'green']];
-          refs.forEach(([x, lab, col], i) => { sr.vline(x, { color: col, width: 1.6, dash: [5, 3] }); sr.text(lab, x, 0.97 - 0.07 * i, { size: 10.5, color: col, align: 'left', baseline: 'top', dx: 4 }); });
+          refs.forEach(([x, lab, col], i) => { sr.vline(x, { color: col, width: 1.6, dash: [5, 3] }); sr.text(lab, x, 0.98 - 0.085 * i, { size: 10.5, color: col, align: 'left', baseline: 'top', dx: 4 }); });
           sr.vband(BODY.plasma, BODY.tbw, { color: 'green', alpha: 0.05 });
           const rows = PRE.length;
           PRE.forEach((p, i) => {
-            const y = 0.78 - i * (0.66 / (rows)), chosen = sel.value === p.id;
+            const y = 0.66 - i * (0.54 / rows), chosen = sel.value === p.id;
             sr.dot(p.V, y, { r: chosen ? 6 : 4, color: chosen ? 'gold' : 'faint', hollow: !chosen });
             sr.text(`${p.name} (${p.lkg} L/kg)`, p.V, y, { size: 10.5, color: chosen ? 'ink' : 'muted', align: p.V > 400 ? 'right' : 'left', baseline: 'middle', dx: p.V > 400 ? -9 : 9, weight: chosen ? 700 : 400 });
           });

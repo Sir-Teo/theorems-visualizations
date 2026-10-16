@@ -696,6 +696,48 @@ export function ellipE(m) {
   for (let i = 0; i < 40 && Math.abs(c) > 1e-15; i++) { const an = (a + b) / 2; c = (a - b) / 2; b = Math.sqrt(a * b); a = an; p *= 2; sum += p * c * c; }
   return (Math.PI / (2 * a)) * (1 - sum);
 }
+/** Eigen-decomposition of a complex Hermitian matrix (entries number | Cx | [re, im]) by cyclic complex Jacobi rotations.
+ *  → {values ascending, vectors: [{re, im}] orthonormal even for repeated eigenvalues (eigC does not guarantee that), sweeps}.
+ *  Each vector's phase is fixed: its largest component is real and positive. */
+export function eigH(A0) {
+  const n = A0.length, A = A0.map((r) => r.map((z) => { const c = Cx.of(z); return [c.re, c.im]; }));
+  const V = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => [i === j ? 1 : 0, 0]));
+  for (let i = 0; i < n; i++) A[i][i][1] = 0;
+  const mul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]], abs2 = (a) => a[0] * a[0] + a[1] * a[1];
+  let scale = 1e-300; for (const r of A) for (const z of r) scale = Math.max(scale, Math.sqrt(abs2(z)));
+  let sweeps = 0;
+  for (; sweeps < 60; sweeps++) {
+    let off = 0; for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += abs2(A[p][q]);
+    if (off < 1e-30 * scale * scale * n * n) break;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) {
+      const r = Math.sqrt(abs2(A[p][q])); if (r < 1e-300) continue;
+      const d = [A[p][q][0] / r, -A[p][q][1] / r], dc = [d[0], -d[1]]; // e^{−iφ} makes the (p, q) entry real
+      const th = 0.5 * Math.atan2(2 * r, A[q][q][0] - A[p][p][0]), c = Math.cos(th), sn = Math.sin(th);
+      for (let k = 0; k < n; k++) {
+        const ap = A[k][p], aq = mul(A[k][q], d); A[k][p] = [c * ap[0] - sn * aq[0], c * ap[1] - sn * aq[1]]; A[k][q] = [sn * ap[0] + c * aq[0], sn * ap[1] + c * aq[1]];
+        const vp = V[k][p], vq = mul(V[k][q], d); V[k][p] = [c * vp[0] - sn * vq[0], c * vp[1] - sn * vq[1]]; V[k][q] = [sn * vp[0] + c * vq[0], sn * vp[1] + c * vq[1]];
+      }
+      for (let k = 0; k < n; k++) {
+        const ap = A[p][k], aq = mul(dc, A[q][k]); A[p][k] = [c * ap[0] - sn * aq[0], c * ap[1] - sn * aq[1]]; A[q][k] = [sn * ap[0] + c * aq[0], sn * ap[1] + c * aq[1]];
+      }
+      A[p][q] = [0, 0]; A[q][p] = [0, 0]; A[p][p][1] = 0; A[q][q][1] = 0;
+    }
+  }
+  const idx = Array.from({ length: n }, (_, i) => i).sort((a, b) => A[a][a][0] - A[b][b][0]);
+  const vectors = idx.map((j) => {
+    const v = V.map((r) => r[j]); let m = 0; for (let i = 1; i < n; i++) if (abs2(v[i]) > abs2(v[m]) + 1e-24) m = i;
+    const a = Math.sqrt(abs2(v[m])) || 1, ph = [v[m][0] / a, -v[m][1] / a], w = v.map((z) => mul(z, ph));
+    return { re: w.map((z) => z[0]), im: w.map((z) => z[1]) };
+  });
+  return { values: idx.map((j) => A[j][j][0]), vectors, sweeps };
+}
+/** e^A for a complex matrix (entries number | Cx | [re, im]) through the real 2n×2n embedding [[Re, −Im], [Im, Re]] and expm → matrix of [re, im] pairs. */
+export function expmC(A) {
+  const n = A.length, R = Array.from({ length: 2 * n }, () => new Array(2 * n).fill(0));
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const z = Cx.of(A[i][j]); R[i][j] = z.re; R[i + n][j + n] = z.re; R[i][j + n] = -z.im; R[i + n][j] = z.im; }
+  const E = expm(R);
+  return Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => [E[i][j], E[i + n][j]]));
+}
 export function cholesky(A) {
   const n = A.length, L = Array.from({ length: n }, () => new Array(n).fill(0));
   for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
