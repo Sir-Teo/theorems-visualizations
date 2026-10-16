@@ -162,6 +162,7 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
       refs: ['Lynch–Park §5.4'],
       tags: ['manipulability', 'condition number', 'isotropy'],
       credit: 'Manipulability index: Yoshikawa, 1985; condition number as a measure: Salisbury & Craig, 1982',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
       viz(v) {
         const meas = v.select('measure', [

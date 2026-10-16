@@ -172,5 +172,130 @@ export default {
         v.readout(() => info ? `Bright band: response peaks ${v.fix(100 * info.over, 0)}% of the plateau step above the bright plateau, at x = ${v.fix(info.xb, 2)} (knee at ${v.fix(info.b, 2)}) · dark band: ${v.fix(100 * info.under, 0)}% below the dark plateau, at x = ${v.fix(info.xa, 2)} (knee at ${v.fix(info.a, 2)}) · ramp width ${v.fix(info.b - info.a, 2)} vs surround width ${v.fix(sc.value * sr.value, 2)}` : '');
       },
     },
+    // ------------------------------------------------------------------ 4.9
+    {
+      num: '4.9',
+      kind: 'Phenomenon',
+      name: 'The Hermann grid and its wavy-line refutation',
+      statement: String.raw`In a grid of black squares separated by white streets, faint dark smudges appear at the street intersections that you are not looking at (they vanish when you fixate one). The standard account (Baumgartner, 1960) is that a ganglion cell with a centre–surround field sitting on an intersection has more of its inhibitory surround lit (four streets) than a cell on a street (two), so it responds less. But when the straight streets are replaced by gently **wavy** or bent ones, the smudges disappear, although a linear centre–surround model still predicts a dip at the intersections. This argues that the receptive-field account is, at best, incomplete, and that straightness of the grid lines matters.`,
+      idea: String.raw`The centre–surround model is a linear filter, so the response at any point is a fixed weighted sum of the image near it; computing it for the straight grid does give lower values at the intersections than on the streets. The model's response to a bent grid also contains dips at the (now curved) crossings, but nothing in a filter of the model's kind makes the percept depend on whether the streets are straight, and the percept does. Geier and colleagues therefore proposed that the illusion arises from the straightness of the lines' edges (a property that requires orientation-selective cortical processing), not from retinal centre–surround cells alone. This item is deliberately a *test* of the model against an observation: the model's output is computed here; what you see is your own data.`,
+      caption: String.raw`**Left:** the grid; fixate a point in the middle of a block of squares and look for grey smudges at the nearby crossings. Increase the *waviness* and see whether they vanish. **Right:** the output of a centre–surround model on the same picture (bright = strong response): the intersections show dips. The readout compares the model's response at the crossings with the middle of the streets, for the straight grid and for the grid as drawn. The model is a plain difference of Gaussians, with no orientation selectivity; "what the observers see" comes only from you and from the cited study.`,
+      deps: ['psych-4.7'],
+      refs: ['Goldstein ch. 3'],
+      tags: ['Hermann grid', 'illusion', 'receptive field'],
+      credit: 'Ludimar Hermann, 1870; Baumgartner, 1960 (centre–surround account, unconfirmed); Geier, Bernáth, Hudák & Séra, 2008, Perception 37: 651–665 (straightness)',
+      scope: String.raw`How strong the illusion is depends on the width of the streets relative to the distance and on the size of the area of central vision viewed; and the question of which mechanism produces it is still debated.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Grid_illusion', geier: 'https://geier.hu/Hermann/index.html' },
+      verify: true,
+      viz(v) {
+        const wst = v.slider('street width', 0.2, 1, 0.5, { step: 0.01 });
+        const amp = v.slider('waviness (amplitude)', 0, 0.5, 0, { step: 0.01 });
+        const sc = v.slider('model centre width $\\sigma_c$', 0.05, 0.4, 0.1, { step: 0.005 });
+        const n = 120, P = 2.5, u = 10 / n, LAM = 1.7;
+        const left = v.stage({ x: [0, 10], y: [0, 10], equal: true, axes: false, height: 330, weight: 1, minWidth: 290, title: 'the grid' });
+        const right = v.stage({ x: [0, 10], y: [0, 10], equal: true, axes: false, height: 330, weight: 1, minWidth: 290, title: 'model response (difference of Gaussians)' });
+        const make = (w, A) => {
+          const a = new Float64Array(n * n);
+          for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+            const x = (i + 0.5) * u, y = (j + 0.5) * u;
+            const dx = ((((x - A * Math.sin((2 * Math.PI * y) / LAM)) % P) + P) % P) - P / 2, dy = ((((y - A * Math.sin((2 * Math.PI * x) / LAM)) % P) + P) % P) - P / 2;
+            a[j * n + i] = Math.abs(dx) < w / 2 || Math.abs(dy) < w / 2 ? 1 : 0.04;
+          }
+          return a;
+        };
+        const respOf = (I, s) => { const c = blur2(I, n, n, s / u), b = blur2(I, n, n, (4 * s) / u); return Float64Array.from(c, (x, i) => x - b[i]); };
+        const at = (R, x, y) => R[Math.min(n - 1, Math.max(0, Math.floor(y / u))) * n + Math.min(n - 1, Math.max(0, Math.floor(x / u)))];
+        function dip(R, A) {
+          let di = 0, ds = 0, c = 0;
+          for (let k = 0; k < 4; k++) for (let m = 0; m < 4; m++) {
+            let x = k * P + P / 2 + P, y = m * P + P / 2 + P; // intersection (streets are centred at P/2 + kP)
+            x = k * P + P / 2; y = m * P + P / 2;
+            for (let t = 0; t < 25; t++) { x = k * P + P / 2 + A * Math.sin((2 * Math.PI * y) / LAM); y = m * P + P / 2 + A * Math.sin((2 * Math.PI * x) / LAM); }
+            if (x < 1.2 || x > 8.8 || y < 1.2 || y > 8.8) continue;
+            const yy = y + P / 2, xx = k * P + P / 2 + A * Math.sin((2 * Math.PI * yy) / LAM);
+            if (yy > 8.8) continue;
+            di += at(R, x, y); ds += at(R, xx, yy); c++;
+          }
+          return c ? { di: di / c, ds: ds / c, dip: 1 - di / ds } : { di: 0, ds: 1, dip: 0 };
+        }
+        let info = null;
+        v.render(() => {
+          const w = wst.value, A = amp.value, s = sc.value;
+          const I = make(w, A), R = respOf(I, s);
+          const key = `${w}|${A}|${s}`;
+          left.raster((x, y) => { const g = I[Math.min(n - 1, Math.floor(y / u)) * n + Math.min(n - 1, Math.floor(x / u))]; return [...grey(g), 1]; }, { res: 2, key: 'L' + key });
+          let lo = 1e9, hi = -1e9; for (let i = 0; i < R.length; i++) { lo = Math.min(lo, R[i]); hi = Math.max(hi, R[i]); }
+          right.raster((x, y) => { const r = at(R, x, y); const t = (r - lo) / Math.max(1e-6, hi - lo); return [...grey(0.1 + 0.85 * t), 1]; }, { res: 2, key: 'R' + key });
+          left.dot(5, 5, { r: 4, color: 'red' });
+          const d1 = dip(R, A), d0 = A === 0 ? d1 : dip(respOf(make(w, 0), s), 0);
+          info = { d1, d0 };
+        });
+        v.readout(() => info ? `Model response at the crossings relative to mid-street: ${v.fix(100 * (1 - info.d0.dip), 0)}% for the straight grid (a dip of ${v.fix(100 * info.d0.dip, 0)}%) and ${v.fix(100 * (1 - info.d1.dip), 0)}% for the grid as drawn (dip ${v.fix(100 * info.d1.dip, 0)}%). The reported percept of smudges is a separate matter: look at the left panel with waviness 0, then raise it.` : '');
+      },
+    },
+    // ------------------------------------------------------------------ 4.10
+    {
+      num: '4.10',
+      kind: 'Phenomenon',
+      name: 'White’s illusion: contrast against lateral inhibition',
+      statement: String.raw`Take vertical black and white stripes and replace short stretches of two stripes by grey bars of the **same** luminance, one lying in a black stripe and one in a white stripe. The bar in the **black** stripe looks **lighter** than the one in the white stripe. This is the *reverse* of what centre–surround inhibition predicts for the pattern as drawn: a bar in a black stripe has white stripes along its long sides, so a cell centred on it receives a lot of inhibitory light and should signal *darker*. By contrast, grey squares on a plain black and white background (simultaneous contrast) look as the model predicts, with the square on black lighter. So a purely local contrast account cannot be the whole story of lightness.`,
+      idea: String.raw`Lateral inhibition (4.7) turns the image into a map of local contrasts; here the map contradicts the percept. Proposed repairs include multiscale filters whose coarse channels show contrast and fine channels assimilation (Blakeslee & McCourt's oriented difference-of-Gaussians model, 1999), and accounts in terms of grouping (the bar belongs with the stripe it lies in) or of framework anchoring (4.12). The effect depends on how much of the target's border touches the contrasting stripes, and reverses for the shorter bars used in some variants.`,
+      caption: String.raw`**Left:** White's pattern (or the plain simultaneous-contrast *control*), with a **probe** square beside each grey bar. Both bars have the grey level set by *bar luminance*. Adjust the two **match** sliders until each probe looks the same grey as the bar beside it: the difference between your two settings is the size of the illusion for you (nulling it). **Right:** the output of a difference-of-Gaussians model with the scale you choose; the readout says which bar the model calls lighter. The model is plain centre–surround, one scale; real outcomes differ by observer and viewing conditions, and no data from experiments are shown.`,
+      deps: ['psych-4.7', 'art-6.3'],
+      refs: ['Goldstein ch. 9'],
+      tags: ['White illusion', 'lightness', 'illusion'],
+      credit: 'Michael White, 1979, Perception 8: 413–416; multiscale account: Blakeslee & McCourt, 1999, Vision Res. 39: 4361–4377 (volume and pages unconfirmed)',
+      scope: String.raw`The size and even the direction of the effect change with the stripe width, bar length and viewing distance; the model comparison assumes the bars' long sides are longer than the receptive-field surround.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/White%27s_illusion' },
+      verify: true,
+      viz(v) {
+        const pat = v.select('Pattern', [{ value: 'white', label: 'White’s stripes' }, { value: 'ctrl', label: 'control: plain background' }], 'white');
+        const tg = v.slider('bar luminance', 0.25, 0.75, 0.5, { step: 0.01 });
+        const sc = v.slider('model scale $\\sigma_c$', 0.05, 0.4, 0.12, { step: 0.005 });
+        const mA = v.slider('your match for the upper bar (in the white stripe)', 0, 1, 0.5, { step: 0.005 });
+        const mB = v.slider('your match for the lower bar (in the black stripe)', 0, 1, 0.5, { step: 0.005 });
+        const nx = 200, ny = 120, u = 0.05;
+        const A = [3, 0.9, 4, 2.9], B = [6, 3.1, 7, 5.1], AC = [3, 1.4, 4, 2.4], BC = [6, 3.6, 7, 4.6];
+        const img = v.stage({ x: [0, 13.4], y: [0, 6], equal: true, axes: false, height: 330, weight: 1.35, minWidth: 340, title: 'stimulus and probes' });
+        const mod = v.stage({ x: [0, 10], y: [0, 6], equal: true, axes: false, height: 250, weight: 1, minWidth: 280, title: 'model response' });
+        const build = (p, T) => {
+          const a = new Float64Array(nx * ny);
+          const bar = p === 'white' ? [A, B] : [AC, BC];
+          for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+            const x = (i + 0.5) * u, y = (j + 0.5) * u; let g;
+            if (p === 'white') g = Math.floor(x) % 2 === 0 ? 0.04 : 1; else g = x < 5 ? 1 : 0.04;
+            for (const r of bar) if (x >= r[0] && x < r[2] && y >= r[1] && y < r[3]) g = T;
+            a[j * nx + i] = g;
+          }
+          return a;
+        };
+        let info = null;
+        v.legend([['ink', 'stimulus'], ['gold', 'probe (your match)']]);
+        v.render(() => {
+          const p = pat.value, T = tg.value, I = build(p, T), s = sc.value / u;
+          const c = blur2(I, nx, ny, s), b = blur2(I, nx, ny, 4 * s), R = Float64Array.from(c, (x, i) => x - b[i]);
+          const key = `${p}|${T}|${sc.value}`;
+          img.raster((x, y) => { if (x > 10) return null; return [...grey(I[Math.min(ny - 1, Math.floor(y / u)) * nx + Math.min(nx - 1, Math.floor(x / u))]), 1]; }, { res: 2, key: 'I' + key });
+          img.rect(10, 0, 13.4, 6, { fill: grey(0.5), fillAlpha: 1, stroke: false });
+          const rA = p === 'white' ? A : AC, rB = p === 'white' ? B : BC;
+          const sw = (r, m, lab) => { img.rect(10.7, r[1] + 0.3, 12.7, r[3] - 0.3, { fill: grey(m), fillAlpha: 1, color: 'gold', width: 1.6 }); };
+          sw(rA, mA.value, 'A'); sw(rB, mB.value, 'B');
+          img.text('A', (rA[0] + rA[2]) / 2 + 0.0, rA[3] + 0.3, { align: 'center', size: 12, color: 'gold', weight: 700 });
+          img.text('B', (rB[0] + rB[2]) / 2, rB[3] + 0.3, { align: 'center', size: 12, color: 'gold', weight: 700 });
+          const samp = (r) => { const cx = (r[0] + r[2]) / 2, cy = (r[1] + r[3]) / 2; let a = 0, k = 0; for (let dy = -0.3; dy <= 0.3; dy += 0.05) for (let dx = -0.3; dx <= 0.3; dx += 0.05) { const i = Math.floor((cx + dx) / u), j = Math.floor((cy + dy) / u); a += R[j * nx + i]; k++; } return a / k; };
+          const ra = samp(rA), rb = samp(rB);
+          let lo = 1e9, hi = -1e9; for (let i = 0; i < R.length; i++) { lo = Math.min(lo, R[i]); hi = Math.max(hi, R[i]); }
+          mod.raster((x, y) => { const t = (R[Math.min(ny - 1, Math.floor(y / u)) * nx + Math.min(nx - 1, Math.floor(x / u))] - lo) / Math.max(1e-6, hi - lo); return [...grey(0.05 + 0.9 * t), 1]; }, { res: 2, key: 'M' + key });
+          for (const [r, l] of [[rA, 'A'], [rB, 'B']]) { mod.rect(r[0], r[1], r[2], r[3], { color: 'gold', width: 1.4, stroke: true, fillAlpha: 0 }); mod.text(l, (r[0] + r[2]) / 2, r[3] + 0.3, { align: 'center', color: 'gold', size: 12, weight: 700 }); }
+          info = { ra, rb, p };
+        });
+        v.readout(() => {
+          if (!info) return '';
+          const model = info.ra > info.rb ? 'A (upper bar)' : 'B (lower bar)';
+          const seen = info.p === 'white' ? 'B (the bar in the black stripe)' : 'B (the square on black)';
+          return `Model output at the bar centres: A ${v.fix(info.ra, 3)}, B ${v.fix(info.rb, 3)} → the model calls **${model}** lighter · what most viewers report: **${seen}** lighter · your two matches differ by ${v.fix(mB.value - mA.value, 3)} (positive = B matched lighter than A)`;
+        });
+      },
+    },
   ],
 };
