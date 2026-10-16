@@ -14,7 +14,7 @@ export function leakChain(L) {
     [0.5, 0, 0, 0, 0, 0.5],
   ];
 }
-export const LEAK_POS = [[2.2, 3.2], [4.2, 5.2], [4.2, 1.0], [7.4, 1.0], [9.2, 3.2], [1.0, 5.4]];
+export const LEAK_POS = [[2.2, 3.2], [4.2, 5.2], [4.2, 1.0], [7.4, 1.0], [8.8, 3.4], [1.4, 5.4]];
 
 /** Exact return probability rho_i = P_i(T_i < infinity) for every state (first-step analysis: sum_j p_ij h_j with h = hitting probability of {i}). */
 export function returnProbs(P) {

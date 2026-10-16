@@ -2,7 +2,7 @@
 import { cumRows, nextState, pfmt, edgesOf, STATE_COL, hitProb, leakChain, LEAK_POS, returnProbs, pathOf, uSeq, returnedBy, POLYA_P } from './ch03.shared.js';
 
 /** Graph-kit node specs for the six-state leak chain. */
-const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: ['w', 'n', 's', 's', 's', 'e'][i] }));
+const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: ['w', 'n', 's', 's', 'e', 'w'][i] }));
 const recolor = (rho, i) => (rho[i] > 1 - 1e-9 ? 'green' : 'red');
 
 export default {
@@ -22,7 +22,7 @@ export default {
         const lam = v.slider('leak $\\lambda$ from state 2', 0, 0.5, 0.2, { step: 0.01, onChange: () => rebuild() });
         const Nex = v.slider('excursions per state', 100, 4000, 800, { log: true, int: true, onChange: () => rebuild() });
         let seed = 5; v.button('resample', () => { seed++; rebuild(); });
-        const s1 = v.stage({ x: [-0.4, 10.6], y: [-0.2, 6.2], axes: false, equal: true, height: 300, title: 'the chain', weight: 1.2 });
+        const s1 = v.stage({ x: [-0.4, 11], y: [-0.2, 6.2], axes: false, equal: true, height: 300, title: 'the chain', weight: 1.2 });
         const s2 = v.stage({ x: [-0.7, 5.7], y: [0, 1.1], axes: 'box', gutter: true, height: 300, xlabel: 'state $i$', ylabel: 'return probability', title: 'excursions that came back' });
         const s3 = v.stage({ x: [0, 4000], y: [0.8, 5000], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'visits up to time $n$', title: 'one long run from state 5 (log scale)' });
         const G = v.graph(s1, { directed: true, layout: 'none', draggable: false, r: 16, nodes: leakNodes(), edges: [] });
@@ -390,7 +390,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           for (let e = 0; e < NEX; e++) { let x = 1, t = 1; while (x > 0 && t < CAP) { x += R() < p ? 1 : -1; t++; } times.push(x === 0 ? t : Infinity); }
           const sorted = times.slice().sort((a, b) => a - b);
           surv = []; let k = 0;
-          for (let i = 0; i <= 60; i++) { const n = Math.exp((Math.log(CAP) * i) / 60); while (k < sorted.length && sorted[k] <= n) k++; surv.push([n, Math.max(2e-4, (NEX - k) / NEX)]); }
+          for (let i = 0; i <= 60; i++) { const n = Math.exp((Math.log(CAP) * i) / 60); while (k < sorted.length && sorted[k] <= n) k++; if (NEX - k > 0) surv.push([n, (NEX - k) / NEX]); }
           runMean = []; let sum = 0, cnt = 0;
           for (let e = 0; e < NEX; e++) { if (isFinite(times[e])) { sum += times[e]; cnt++; } if ((e + 1) % 5 === 0 || e < 20) runMean.push([e + 1, cnt ? sum / cnt : 0]); }
           nRet = cnt; mean0 = p < 0.5 ? (2 * q) / (1 - 2 * p) : Infinity;
