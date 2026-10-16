@@ -47,15 +47,15 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
         v.render(() => {
           const D = dS.value, a = arr, n = a.reduce((s, c) => s + (c & 1) + ((c >> 1) & 1), 0), E = energy(a), U = a.reduce((s, c) => s + (c & 1), 0), Dn = n - U;
           const yE = (e) => e * 0.95; const top = Math.max(1.5, D) * 0.95;
-          sD.setView([-0.8, 6.0], [-0.9, top + 1.6]);
+          sD.setView([-0.8, 6.0], [-0.9, top + 1.1]);
           a.forEach((c, o) => {
             const x = XS[o], y = eps(o) * 0.95 + 0.5, hi = o >= 3;
             sD.rect(x, y - 0.32, x + 0.9, y + 0.32, { color: c ? 'ink' : 'muted', fill: c ? 'accent' : false, fillAlpha: 0.1, width: c ? 1.8 : 1 });
             if (c & 1) sD.text('↑', x + 0.3, y, { size: 22, color: 'ink', align: 'center', baseline: 'middle' });
             if (c & 2) sD.text('↓', x + 0.63, y, { size: 22, color: 'ink', align: 'center', baseline: 'middle' });
-            sD.text(o < 3 ? 't₂g' : 'e_g', x + 0.45, y - 0.55, { size: 10, color: 'muted', align: 'center' });
+            sD.text(o < 3 ? 't₂g' : 'eg', x + 0.45, y - 0.55, { size: 10, color: 'muted', align: 'center' });
           });
-          sD.text(`Δ = ${v.fix(D, 2)} eV`, 4.45, 0.5 + 0.5 * D * 0.95 + 0.0, { size: 12, color: 'orange', align: 'center' });
+          sD.text(`Δ = ${v.fix(D, 2)} eV`, 3.35, 0.5 + 0.5 * D * 0.95, { size: 12, color: 'orange', align: 'right', baseline: 'middle' });
           sD.arrow(3.55, 0.5, 3.55, 0.5 + D * 0.95, { color: 'orange', both: true, head: 7 });
           const bb = best(), Eb = energy(bb);
           const key = (x) => x.join(',');
@@ -66,8 +66,8 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
           d.terms.forEach(([nm, e, c]) => { sN.segment([0.3, e], [1.9, e], { color: c, width: 3.5 }); sN.text(`${nm}  ${v.fix(e, 0)}`, 2.0, e, { size: 12, baseline: 'middle', color: 'ink' }); });
           sN.text(d.name, 0.3, ymax * 0.96, { color: 'muted', size: 12 });
           // the J levels of 3P, magnified inset as text
-          d.J.forEach(([j, e], i) => sN.text(`J = ${j}: ${v.fix(e, 1)} cm⁻¹`, 0.3, ymax * (0.34 - 0.05 * i), { size: 11, color: 'accent' }));
-          sN.text('levels of ³P (rule 3):', 0.3, ymax * 0.4, { size: 11, color: 'muted' });
+          d.J.forEach(([j, e], i) => sN.text(`J = ${j}: ${v.fix(e, 1)} cm⁻¹`, 0.3, ymax * (0.2 - 0.05 * i), { size: 11, color: 'accent' }));
+          sN.text('levels of ³P (rule 3):', 0.3, ymax * 0.26, { size: 11, color: 'muted' });
         });
         v.legend([['accent', 'occupied orbital (click to change)']]);
         v.readout(() => { if (!st) return ''; const d = NIST[el.value]; return `$d^{${st.n}}$: your arrangement has model energy ${v.fix(st.E, 2)} eV, total spin $S=${v.fix(st.S, 1)}$; lowest arrangement ${v.fix(st.Eb, 2)} eV with $S=${v.fix(st.Sb, 1)}$ ${st.same ? '— you have the ground arrangement' : `— yours is ${v.fix(st.E - st.Eb, 2)} eV higher`}.\nmeasured ${d.name}: $^3P$ (rule 1: triplet lowest) < $^1D$ < $^1S$ (rule 2: larger $L$ lower, $^1D$ before $^1S$); $^3P$ ${d.half} (rule 3). Energies from NIST ASD, 1 eV = ${v.fix(CM_EV, 0)} cm⁻¹.`; });
