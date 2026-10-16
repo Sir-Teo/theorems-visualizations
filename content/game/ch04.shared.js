@@ -51,7 +51,7 @@ export function pureStrategies(P, p) {
 }
 /** Strategy label such as "L,r" (action labels in info-set order; only reachable-irrelevant choices included). */
 export function stratName(P, p, s) {
-  return infoSets(P, p).map((I) => I.nodes[0].kids[s[I.key]].a).join('');
+  return infoSets(P, p).map((I) => I.nodes[0].kids[s[I.key]].a).join(' ');
 }
 /** Expected payoff pair when each player uses a behaviour strategy beta[key] = probability vector (pure map allowed via asBeh). */
 export function playBeh(P, beh) {

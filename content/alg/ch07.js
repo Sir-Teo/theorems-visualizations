@@ -157,7 +157,7 @@ export default {
         const len = v.select('Text length', [{ value: 'short', label: 'short (12 letters)' }, { value: 'medium', label: 'medium (53)' }, { value: 'long', label: 'long (207)' }], 'long');
         const key = v.slider('True key $k$ (secret)', 0, 25, 11, { int: true });
         const g = v.slider('Guess $g$', 0, 25, 0, { int: true });
-        const s = v.stage({ x: [0, 26], y: [0, 15], axes: 'box', gutter: true, height: 300, ylabel: '% of letters', xticks: abcTicks, title: 'letter frequencies, ciphertext slid left by $g$' });
+        const s = v.stage({ x: [0, 26], y: [0, 18], axes: 'box', gutter: true, height: 300, ylabel: '% of letters', xticks: abcTicks, title: 'letter frequencies, ciphertext slid left by $g$' });
         const t = v.stage({ x: [0, 26], y: [0, 1.1], axes: 'box', gutter: true, height: 300, ylabel: 'match score', xlabel: 'guess $g$', title: 'correlation with English for every shift', xticks: [[0.5, '0'], [5.5, '5'], [10.5, '10'], [15.5, '15'], [20.5, '20'], [25.5, '25']] });
         let st = null;
         const calc = () => {
@@ -203,7 +203,7 @@ export default {
         const a = v.slider('Multiplier $a$', 0, 25, 7, { int: true });
         const b = v.slider('Shift $b$', 0, 25, 3, { int: true });
         const msg = v.input('Message', 'AFFINE CODES', { width: 220 });
-        const s = v.stage({ x: [-0.2, 26.2], y: [-0.9, 1.9], axes: false, height: 300 });
+        const s = v.stage({ x: [-0.2, 26.2], y: [-0.8, 1.8], axes: false, height: 280 });
         let info = null;
         v.render(() => {
           const A = a.value, B = b.value, hit = Array(26).fill(0);
@@ -211,7 +211,7 @@ export default {
           info = { hit, perm: hit.every((h) => h === 1), image: hit.filter((h) => h > 0).length };
           for (let p = 0; p < 26; p++) {
             const c = m26(A * p + B), bad = hit[c] > 1;
-            s.line(p + 0.5, 1.15, c + 0.5, 0.2, { color: bad ? 'red' : 'green', width: 1.6, alpha: 0.8 });
+            s.line(p + 0.5, 1.27, c + 0.5, 0.08, { color: bad ? 'red' : 'green', width: 1.6, alpha: 0.8 });
             s.text(ABC[p], p + 0.5, 1.4, { size: 12, color: 'accent', align: 'center', baseline: 'middle' });
           }
           for (let c = 0; c < 26; c++) s.text(ABC[c], c + 0.5, -0.05, { size: 12, color: hit[c] > 1 ? 'red' : hit[c] === 0 ? 'faint' : 'orange', align: 'center', baseline: 'middle' });

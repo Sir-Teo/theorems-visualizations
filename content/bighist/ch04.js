@@ -25,16 +25,16 @@ import { clamp } from './ch04.shared.js';
 // ── 4.1 helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 // [name, age from Ma, age to Ma, cm3 low, cm3 high, colour, label x, label y]  (rounded, indicative)
 const HOMININS = [
-  ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 600, 'center'],
-  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.85, 650, 'center'],
+  ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 595, 'center'],
+  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.7, 685, 'center'],
   ['P. boisei', 2.3, 1.2, 480, 550, 'purple', -1.45, 440, 'center'],
-  ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.75, 750, 'right'],
+  ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.75, 765, 'right'],
   ['H. erectus', 1.9, 0.1, 550, 1100, 'accent', -1.0, 800, 'center'],
   ['H. heidelbergensis', 0.7, 0.2, 1100, 1400, 'pink', 0.05, 1260, 'left'],
   ['H. neanderthalensis', 0.43, 0.04, 1200, 1750, 'red', 0.05, 1680, 'left'],
   ['H. sapiens', 0.3, 0, 1100, 1750, 'green', 0.05, 1470, 'left'],
 ];
-const BIPED = [[-4.4, 'Ardipithecus', 205], [-3.66, 'Laetoli footprints', 165], [-3.2, '“Lucy”', 205]];
+const BIPED = [[-4.4, 'Ardipithecus', 150], [-3.66, 'Laetoli footprints', 215], [-3.2, '“Lucy”', 150]];
 const kleiber = (kg) => 3.4 * kg ** 0.75;       // basal metabolic rate, W
 const brainW = (cc) => 0.0119 * cc;             // W, scaled from about 16 W at 1,350 cm3
 
@@ -101,7 +101,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Human_evolution', doi: 'https://doi.org/10.1086/204350' },
       verify: true,
       viz(v) {
-        const A = v.stage({ x: [-4.7, 1.9], y: [120, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
+        const A = v.stage({ x: [-4.7, 1.9], y: [0, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
         const B = v.stage({ x: [0, 5], y: [0, 125], axes: 'box', gutter: true, height: 380, weight: 1, ylabel: 'resting power (W)', xticks: [[0.5, 'chimp-like'], [1.5, 'A. afarensis'], [2.5, 'H. erectus'], [3.5, 'H. sapiens'], [4.5, 'yours']], title: 'energy budget of the brain' });
         const PRE = { 'chimp-like': [400, 45], 'A. afarensis': [450, 40], 'H. erectus': [900, 55], 'H. sapiens': [1350, 65] };
         let cc, kg;
@@ -119,8 +119,8 @@ export default {
           }
           A.fn((t) => Math.exp(as + bs * t), { domain: [-2.1, 0], color: 'ink', width: 1.6, dash: [5, 4] });
           A.hline(400, { color: 'faint', width: 1, dash: [2, 3] });
-          for (const [t, lab, ty] of BIPED) { A.dot(t, 240, { r: 4.5, color: 'ink' }); A.text(lab, t, ty, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
-          A.text('first evidence of upright walking', -4.65, 300, { size: 10, color: 'muted', align: 'left' });
+          for (const [t] of BIPED) A.dot(t, 120, { r: 4.5, color: 'ink' });
+          A.text('● upright walking: Ardipithecus 4.4 · Laetoli 3.7 · “Lucy” 3.2 Ma', -4.65, 40, { size: 10, color: 'muted', align: 'left' });
           // energy stage
           const bars = [...Object.entries(PRE).map(([k, [c, m]], i) => [i + 0.5, c, m]), [4.5, cc.value, kg.value]];
           for (const [x, c, m] of bars) {
@@ -161,7 +161,7 @@ export default {
         const lat = v.slider('latitude (°N)', 30, 80, 65, { step: 1 });
         const tauG = v.slider('ice growth τ (kyr)', 10, 150, 30, { step: 1 });
         const tauM = v.slider('ice melt τ (kyr)', 2, 40, 10, { step: 1 });
-        const A = v.stage({ x: [-800, 0], y: [0, 4.6], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', title: 'orbital elements (caricature)', yticks: [] });
+        const A = v.stage({ x: [-800, 0], y: [0, 5.2], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', title: 'orbital elements (caricature)', yticks: [] });
         const B = v.stage({ x: [-800, 0], y: [-2.6, 2.6], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', ylabel: 'normalised', title: 'summer insolation and ice volume' });
         const C = v.stage({ x: [0, 0.075], y: [0, 1.05], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'period (kyr)', ylabel: 'power (relative)', xticks: [[0.01, '100'], [1 / 41, '41'], [1 / 21, '21']], title: 'periodograms (2,000 kyr run)' });
         let cache = null, cacheKey = '';
@@ -181,12 +181,12 @@ export default {
         v.render(() => {
           const R = run(), ts = [];
           for (let t = -800; t <= 0; t += 2) ts.push(t);
-          if (tg[0].value) A.path(ts.map((t) => [t, 3.55 + (0.55 * (eccT(t) - 0.028)) / 0.02]), { color: 'purple', width: 2 });
-          if (tg[1].value) A.path(ts.map((t) => [t, 2.1 + ((oblT(t) - 23.34) / 1.2) * 0.55]), { color: 'orange', width: 2 });
-          if (tg[2].value) A.path(ts.map((t) => [t, 0.9 + eccT(t) * Math.sin(varpiT(t)) * 8]), { color: 'teal', width: 1.6 });
-          A.text('eccentricity', -795, 4.35, { size: 10.5, color: 'purple', align: 'left' });
-          A.text('tilt (22.1°–24.5°)', -795, 2.75, { size: 10.5, color: 'orange', align: 'left' });
-          A.text('precession index e sin ϖ', -795, 1.6, { size: 10.5, color: 'teal', align: 'left' });
+          if (tg[0].value) A.path(ts.map((t) => [t, 4.2 + (0.55 * (eccT(t) - 0.028)) / 0.02]), { color: 'purple', width: 2 });
+          if (tg[1].value) A.path(ts.map((t) => [t, 2.8 + ((oblT(t) - 23.34) / 1.2) * 0.5]), { color: 'orange', width: 2 });
+          if (tg[2].value) A.path(ts.map((t) => [t, 1.0 + eccT(t) * Math.sin(varpiT(t)) * 8]), { color: 'teal', width: 1.6 });
+          A.text('eccentricity', -795, 4.95, { size: 10.5, color: 'purple', align: 'left' });
+          A.text('tilt (22.1°–24.5°)', -795, 3.5, { size: 10.5, color: 'orange', align: 'left' });
+          A.text('precession index e sin ϖ', -795, 1.75, { size: 10.5, color: 'teal', align: 'left' });
           const N = R.Q.length - 1;
           B.path(ts.map((t) => [t, R.x[N + t]]), { color: 'orange', width: 1.6 });
           B.path(ts.map((t) => [t, R.ice[N + t]]), { color: 'accent', width: 2.6 });
