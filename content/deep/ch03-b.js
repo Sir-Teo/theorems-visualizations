@@ -449,7 +449,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
           (X) => { if (X.kind === 'sym') { for (let k = 0; k < 40 && X.st.sweep < 6000; k++) symSweep(X.st); } else { for (let k = 0; k < 4 && X.st.epoch < 1500; k++) famEpoch(X.st); if (X.st.epoch % 20 === 0) X.st.acc.push([X.st.epoch, X.st.test.filter((i) => famCorrect(X.st, i)).length, TRIPLES.map((_, i) => i).filter((i) => !X.st.test.includes(i) && famCorrect(X.st, i)).length]); } }, { dt: 1 / 60 });
         let key = modeS.value + '|' + seedS.value, info = null, legendMode = null;
         v.animate((t) => {
-          const k = modeS.value + '|' + seedS.value; if (k !== key) { key = k; S.reset(); v.restart(); }
+          const k = modeS.value + '|' + seedS.value; if (k !== key) { key = k; S.reset(); if (v.playing) v.restart(); }
           unitS.el.hidden = modeS.value !== 'fam';
           if (legendMode !== modeS.value) { legendMode = modeS.value; v.legend(legendMode === 'sym' ? [['accent', 'positive weight · error'], ['orange', 'negative weight'], ['purple', 'paper', { dash: true }], ['green', 'converged here']] : [['accent', 'male (ring) · loss'], ['pink', 'female (ring)'], ['purple', 'activity of the chosen person unit (fill: pale 0 → dark 1)']]); }
           S.advance(t); const X = S.state;

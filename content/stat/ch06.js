@@ -253,5 +253,243 @@ increasing in $\theta$, equal to $\alpha$ at $\theta_0$, and steeper as $n$ grow
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 6.4
+    {
+      num: '6.4',
+      kind: 'Theorem',
+      name: 'Neyman–Pearson lemma',
+      credit: 'J. Neyman & E. S. Pearson, 1933',
+      statement: String.raw`Test a simple null $H_0:\theta=\theta_0$ against a simple alternative $H_1:\theta=\theta_1$, where the data $X$ have density (or mass function) $f_0$ or $f_1$. For $k\ge0$ let $R_k=\{x: f_1(x)>k\,f_0(x)\}$ be the **likelihood-ratio region**, and suppose its size is $\alpha=P_0(X\in R_k)$ (randomize on the boundary $\{f_1=kf_0\}$ if needed to reach exactly $\alpha$). Then
+
+(a) **(sufficiency)** $R_k$ is a **most powerful** level-$\alpha$ test: every region $R$ with $P_0(X\in R)\le\alpha$ has $P_1(X\in R)\le P_1(X\in R_k)$;
+
+(b) **(necessity)** every most powerful level-$\alpha$ test agrees with a likelihood-ratio test except on $\{f_1=kf_0\}$ and a null set, and has size exactly $\alpha$ unless it has power 1.`,
+      idea: String.raw`Think of each small piece of the sample space as an item with a cost $f_0\,dx$ (type I error spent) and a value $f_1\,dx$ (power earned): the best region with a budget $\alpha$ buys the pieces with the highest value per cost, $f_1/f_0$, first. Formally, for any $R$ of size at most $\alpha$,
+$$P_1(R_k)-P_1(R)=\int(\mathbf 1_{R_k}-\mathbf 1_R)(f_1-kf_0)\,dx+k\big(P_0(R_k)-P_0(R)\big)\ge0,$$
+because the integrand is nonnegative pointwise ($\mathbf 1_{R_k}-\mathbf 1_R$ and $f_1-kf_0$ have the same sign) and the last bracket is at least $0$. The likelihood ratio is a Radon–Nikodym derivative (rca-6.10), which is what makes the lemma work in any sample space.`,
+      caption: String.raw`Two observations $(x_1,x_2)$, i.i.d. normal with mean $0$ under $H_0$ and mean $\theta_1$ (the purple handle) under $H_1$; the plane is cut into 400 cells (edge cells hold the tails), shaded by the log-likelihood ratio. **Paint** a rejection region by dragging across cells (gold); the presets fill a shape of size close to the target $\alpha$. The green outline is the likelihood-ratio region of exactly the same size, a half-plane perpendicular to $\theta_1$. Right: power against size; the green curve is the Neyman–Pearson frontier, and your region (gold) can touch it but never rise above it.`,
+      deps: ['stat-6.3', 'rca-6.10'],
+      see: ['stat-6.21', 'stat-6.5'],
+      refs: ['Casella–Berger §8.3', 'Wasserman §10.10'],
+      tags: ['Neyman–Pearson', 'likelihood ratio', 'most powerful test'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma' },
+      viz(v) {
+        const G = 20, A = 3, w = (2 * A) / G;
+        const edges = Array.from({ length: G + 1 }, (_, i) => (i === 0 ? -Infinity : i === G ? Infinity : -A + i * w));
+        const aS = v.slider('target size for presets', 0.01, 0.3, 0.05, { step: 0.005 });
+        const s = v.stage({ x: [-A, A], y: [-A, A], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.05, xlabel: '$x_1$', ylabel: '$x_2$', title: 'the sample space, 400 cells: paint a rejection region' });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 380, weight: 0.95, minWidth: 250, xlabel: 'size $\\alpha=P_0(R)$', ylabel: 'power $P_1(R)$', title: 'power against size' });
+        const h1 = s.handle(1.2, 0.8, { color: TC.h1, label: '$\\theta_1$', labelPos: 'ne', constrain: (x, y) => [clamp(x, -2, 2), clamp(y, -2, 2)] });
+        const R = new Uint8Array(G * G);
+        const cellOf = (x, y) => { const i = clamp(Math.floor((x + A) / w), 0, G - 1), j = clamp(Math.floor((y + A) / w), 0, G - 1); return j * G + i; };
+        let paintVal = 1;
+        s.onDrag((x, y, ph) => { const c = cellOf(x, y); if (ph === 'start') paintVal = R[c] ? 0 : 1; if (ph !== 'end') R[c] = paintVal; });
+        const mc = memo();
+        const masses = (a, b) => mc(a.toFixed(3) + '|' + b.toFixed(3), () => {
+          const p0 = new Float64Array(G * G), p1 = new Float64Array(G * G), m0 = [], m1x = [], m1y = [];
+          for (let i = 0; i < G; i++) { m0.push(Phi(edges[i + 1]) - Phi(edges[i])); m1x.push(Phi(edges[i + 1] - a) - Phi(edges[i] - a)); m1y.push(Phi(edges[i + 1] - b) - Phi(edges[i] - b)); }
+          for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) { p0[j * G + i] = m0[i] * m0[j]; p1[j * G + i] = m1x[i] * m1y[j]; }
+          const order = Array.from({ length: G * G }, (_, c) => c).sort((c, d) => p1[d] / p0[d] - p1[c] / p0[c]);
+          const cum = [[0, 0]]; let s0 = 0, s1 = 0; for (const c of order) { s0 += p0[c]; s1 += p1[c]; cum.push([s0, s1]); }
+          return { p0, p1, order, cum };
+        });
+        // NP power at size a: whole cells in LR order, the last one randomized
+        const npAt = (M, a) => { const C = M.cum; for (let i = 1; i < C.length; i++) if (C[i][0] >= a - 1e-15) { const f = (a - C[i - 1][0]) / (C[i][0] - C[i - 1][0]); return { pow: C[i - 1][1] + f * (C[i][1] - C[i - 1][1]), m: i - 1, f }; } return { pow: 1, m: C.length - 1, f: 0 }; };
+        const fillBy = (score) => { const M = masses(h1.x, h1.y), idx = Array.from({ length: G * G }, (_, c) => c).sort((c, d) => score(d) - score(c)); R.fill(0); let a = 0; for (const c of idx) { if (a + M.p0[c] > aS.value + 0.004) continue; R[c] = 1; a += M.p0[c]; if (a >= aS.value - 0.002) break; } };
+        const ctr = (c) => [-A + ((c % G) + 0.5) * w, -A + (Math.floor(c / G) + 0.5) * w];
+        v.button('Disc around θ₁', () => fillBy((c) => { const [x, y] = ctr(c); return -Math.hypot(x - h1.x, y - h1.y); }));
+        v.button('Two tails of x₁', () => fillBy((c) => Math.abs(ctr(c)[0])));
+        v.button('Square in the middle', () => fillBy((c) => -Math.max(...ctr(c).map(Math.abs))));
+        v.button('Random cells', () => { const r = v.rng(hashStr('np' + Date.now())); fillBy(() => r()); });
+        v.button('Clear', () => R.fill(0));
+        fillBy((c) => { const [x, y] = ctr(c); return -Math.hypot(x - 1.2, y - 0.8); });
+        let st = null;
+        v.render(() => {
+          const a = h1.x, b = h1.y, M = masses(a, b);
+          // cells shaded by the log-likelihood ratio (at the cell centre)
+          const L = (x, y) => a * x + b * y - (a * a + b * b) / 2;
+          for (let c = 0; c < G * G; c++) {
+            const [x, y] = ctr(c), l = L(x, y), t = clamp(l / 4, -1, 1);
+            s.rect(x - w / 2, y - w / 2, x + w / 2, y + w / 2, { fill: t > 0 ? TC.h1 : TC.h0, fillAlpha: 0.04 + 0.22 * Math.abs(t), stroke: false });
+          }
+          let sz = 0, pw = 0;
+          for (let c = 0; c < G * G; c++) if (R[c]) { const [x, y] = ctr(c); sz += M.p0[c]; pw += M.p1[c]; s.rect(x - w / 2, y - w / 2, x + w / 2, y + w / 2, { fill: TC.sim, fillAlpha: 0.75, color: TC.sim, width: 0.6 }); }
+          // the LR region of the same size: outline its cells
+          const N = npAt(M, sz);
+          for (let i = 0; i < N.m + (N.f > 0 ? 1 : 0); i++) { const c = M.order[i], [x, y] = ctr(c); s.rect(x - w / 2, y - w / 2, x + w / 2, y + w / 2, { color: 'green', width: i === N.m ? 1 : 2, dash: i === N.m ? [3, 3] : undefined, fill: false }); }
+          s.contour((x, y) => Math.hypot(x, y), [1, 2], { color: TC.h0, width: 1.4, alpha: 0.7 });
+          s.contour((x, y) => Math.hypot(x - a, y - b), [1, 2], { color: TC.h1, width: 1.4, alpha: 0.7 });
+          s.dot(0, 0, { r: 4, color: TC.h0 }); s.text('$\\theta_0$', 0, 0, { color: TC.h0, size: 13, dx: -8, dy: 10, align: 'right' });
+          s.arrow(0, 0, a, b, { color: TC.h1, width: 1.4, alpha: 0.7 });
+          // right: frontier and the painted point
+          sR.fn((x) => x, { domain: [0, 1], color: 'faint', width: 1, dash: [4, 4] });
+          sR.path(M.cum, { color: 'green', width: 2.8 });
+          if (sz > 0) {
+            sR.line(sz, pw, sz, N.pow, { color: 'green', width: 1.6, dash: [3, 3] });
+            sR.dot(sz, N.pow, { r: 5, color: 'green' });
+            sR.dot(sz, pw, { r: 6, color: TC.sim });
+            tag(sR, `yours: ${v.fix(pw, 3)}`, sz, pw, { color: 'ink', align: 'left', dx: 10, dy: 14, size: 11 });
+            tag(sR, `LR: ${v.fix(N.pow, 3)}`, sz, N.pow, { color: 'green', align: 'left', dx: 10, dy: -12, size: 11 });
+          }
+          sR.text('random guessing', 0.62, 0.62, { color: 'muted', size: 10.5, dy: 12, dx: 4, align: 'left' });
+          v.legend([[TC.sim, 'your region', { area: true }], ['green', 'likelihood-ratio region of the same size'], [TC.h0, '$H_0$ density contours'], [TC.h1, '$H_1$ density contours'], ['green', 'Neyman–Pearson frontier']]);
+          st = { sz, pw, np: N.pow, cells: R.reduce((x, y) => x + y, 0), a, b };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { sz, pw, np, cells, a, b } = st;
+          if (!cells) return 'paint some cells (drag on the left panel) or press a preset';
+          const gap = np - pw;
+          return String.raw`your region: ${cells} cells, size $\alpha=${v.fix(sz, 4)}$, power ${v.fix(pw, 4)} · likelihood-ratio region of the same size ($\{\theta_1\cdot x>k\}$, $\theta_1=(${v.fix(a, 2)},${v.fix(b, 2)})$): power **${v.fix(np, 4)}** · difference ${v.fix(gap, 4)} ${gap > -1e-9 ? '≥ 0 ✓' : '✗'}` + (gap < 0.003 ? ' · your region is (almost) the likelihood-ratio region' : ' · every cell outside the half-plane buys less power per unit of α');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.5
+    {
+      num: '6.5',
+      kind: 'Concept',
+      name: 'ROC curve',
+      statement: String.raw`For a family of tests "reject when $T(X)>t$" indexed by the threshold $t$, the **receiver operating characteristic (ROC) curve** plots power $P_1(T>t)$ against size $P_0(T>t)$ as $t$ runs from $+\infty$ to $-\infty$; it climbs from $(0,0)$ to $(1,1)$. The diagonal is the ROC of a coin flip. By the Neyman–Pearson lemma (stat-6.4) the ROC curve of the likelihood ratio $f_1(X)/f_0(X)$ lies on or above the ROC curve of every other statistic at every size, and it is concave. The **area under the curve** (AUC) equals $P(T_1>T_0)$ for independent $T_0\sim P_0$, $T_1\sim P_1$ (the Mann–Whitney probability).`,
+      idea: String.raw`Each point of an ROC curve is a test; the curve is a menu of $(\alpha,1-\beta)$ trade-offs that one statistic offers. Neyman–Pearson says the likelihood-ratio menu dominates every other, so ROC curves turn "which statistic is better?" into a picture with a clear answer when the curves do not cross. The AUC identity follows by writing the area as $\int P_1(T>t)\,dP_0(t)$.`,
+      caption: String.raw`Data: $n$ observations from the null law centred at $0$ or the alternative centred at $\mu$. Left: null (blue) and alternative (purple) histograms of the likelihood-ratio statistic over 4,000 simulated data sets each; drag the threshold. Right: ROC curves of the likelihood ratio (green, thick), the sample mean, the median and the first observation alone; the dot is the current threshold. For **normal** data the mean *is* the likelihood-ratio statistic and its exact ROC (black dashes) sits on the green curve; the median lies below. For **Laplace** data the likelihood ratio is $\sum(|x_i|-|x_i-\mu|)$: now the mean falls below and the median comes close.`,
+      deps: ['stat-6.4'],
+      see: ['stat-6.21'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['ROC curve', 'power', 'likelihood ratio'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Receiver_operating_characteristic' },
+      viz(v) {
+        const lawS = v.select('data', [{ value: 'normal', label: 'normal' }, { value: 'laplace', label: 'Laplace' }], 'normal');
+        const nS = v.slider('sample size $n$', 1, 25, 5, { int: true });
+        const mS = v.slider('effect $\\mu$', 0.1, 1.5, 0.6, { step: 0.05 });
+        const sL = v.stage({ x: [-2, 2], y: [0, 1], axes: 'box', gutter: true, height: 350, weight: 1, xlabel: 'likelihood-ratio statistic', ylabel: 'density', title: 'the likelihood-ratio statistic under $H_0$ and $H_1$' });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 350, weight: 1, xlabel: 'size $P_0(T>t)$', ylabel: 'power $P_1(T>t)$', title: 'ROC curves of four statistics' });
+        const hT = sL.handle(0.5, 0.03, { color: TC.alpha, label: '$t$', labelPos: 'ne', constrain: 'x' });
+        const NR = 4000, med = (a) => { const s = Float64Array.from(a).sort(), n = s.length; return n % 2 ? s[(n - 1) >> 1] : 0.5 * (s[n / 2 - 1] + s[n / 2]); };
+        const mc = memo();
+        const sim = (law, n, mu) => mc([law, n, mu].join('|'), () => {
+          const r = v.rng(hashStr(`t6.5|${law}|${n}|${mu}`)), out = { 0: [], 1: [] };
+          for (const h of [0, 1]) {
+            const LR = new Float64Array(NR), MN = new Float64Array(NR), MD = new Float64Array(NR), X1 = new Float64Array(NR), xs = new Float64Array(n);
+            for (let k = 0; k < NR; k++) {
+              let lr = 0, sm = 0;
+              for (let i = 0; i < n; i++) { const x = (h ? mu : 0) + (law === 'normal' ? r.normal() : rlaplace(r)); xs[i] = x; sm += x; lr += law === 'normal' ? x : Math.abs(x) - Math.abs(x - mu); }
+              LR[k] = lr / n; MN[k] = sm / n; MD[k] = med(xs); X1[k] = xs[0];
+            }
+            out[h] = { LR, MN, MD, X1 };
+          }
+          // empirical ROC of each statistic and its AUC
+          const roc = (a0, a1) => {
+            const s0 = Float64Array.from(a0).sort(), s1 = Float64Array.from(a1).sort(), pts = [[0, 0]];
+            const ts = Float64Array.from([...s0, ...s1]).sort(); let auc = 0, px = 0, py = 0;
+            for (let i = ts.length - 1; i >= 0; i -= 20) {
+              const t = ts[i], fx = 1 - upperIdx(s0, t) / NR, fy = 1 - upperIdx(s1, t) / NR;
+              auc += (fx - px) * (fy + py) / 2; px = fx; py = fy; pts.push([fx, fy]);
+            }
+            auc += (1 - px) * (1 + py) / 2; pts.push([1, 1]);
+            return { pts, auc, s0, s1 };
+          };
+          const keys = ['LR', 'MN', 'MD', 'X1'], R = {};
+          for (const k of keys) R[k] = roc(out[0][k], out[1][k]);
+          return { out, R };
+        });
+        function upperIdx(s, t) { let lo = 0, hi = s.length; while (lo < hi) { const m = (lo + hi) >> 1; if (s[m] <= t) lo = m + 1; else hi = m; } return lo; }
+        const COL = { LR: 'green', MN: TC.h0, MD: 'orange', X1: 'muted' }, NAME = { LR: 'likelihood ratio', MN: 'mean', MD: 'median', X1: 'first observation' };
+        let last = '', st = null;
+        v.render(() => {
+          const law = lawS.value, n = nS.value, mu = mS.value, S = sim(law, n, mu), L0 = S.out[0].LR, L1 = S.out[1].LR;
+          const key = [law, n, mu].join('|');
+          const sd = law === 'normal' ? 1 / Math.sqrt(n) : Math.sqrt(2 / n) * Math.min(1, mu);
+          const lo = law === 'normal' ? -3.2 * sd : -mu, hi = law === 'normal' ? mu + 3.2 * sd : mu;
+          const B0 = binned(L0, lo, hi, 40), B1 = binned(L1, lo, hi, 40), top = Math.max(B0.max, B1.max) * 1.15;
+          sL.setView([lo, hi], [0, top]);
+          if (key !== last) { last = key; hT.set(law === 'normal' ? mu / 2 + 0.6 * sd : 0.5 * (lo + hi) + 0.3 * (hi - lo) * 0.3, top * 0.04); }
+          const t = hT.x; hT.set(t, top * 0.04);
+          sL.vband(t, hi, { color: TC.alpha, alpha: 0.08 });
+          sL.hist(B0, { density: true, color: TC.h0, fillAlpha: 0.22, width: 1.4 });
+          sL.hist(B1, { density: true, color: TC.h1, fillAlpha: 0.22, width: 1.4 });
+          if (law === 'normal') { sL.fn((x) => Math.sqrt(n) * phi(x * Math.sqrt(n)), { domain: [lo, hi], color: TC.h0, width: 1.6, dash: [5, 4] }); sL.fn((x) => Math.sqrt(n) * phi((x - mu) * Math.sqrt(n)), { domain: [lo, hi], color: TC.h1, width: 1.6, dash: [5, 4] }); }
+          sL.vline(t, { color: TC.alpha, width: 1.8, dash: [5, 4] });
+          const fx = 1 - upperIdx(S.R.LR.s0, t) / NR, fy = 1 - upperIdx(S.R.LR.s1, t) / NR;
+          tag(sL, `size ${v.fix(fx, 3)} · power ${v.fix(fy, 3)}`, t, top * 0.93, { align: t > 0.5 * (lo + hi) ? 'right' : 'left', dx: t > 0.5 * (lo + hi) ? -8 : 8, size: 11 });
+          // right
+          sR.fn((x) => x, { domain: [0, 1], color: 'faint', width: 1, dash: [4, 4] });
+          for (const k of ['X1', 'MD', 'MN', 'LR']) { if (law === 'normal' && k === 'MN') continue; sR.path(S.R[k].pts, { color: COL[k], width: k === 'LR' ? 3.2 : 2 }); }
+          if (law === 'normal') sR.fn((a) => Q(zq(Math.max(1e-9, a)) - Math.sqrt(n) * mu), { domain: [0.0005, 1], color: 'ink', width: 1.6, dash: [5, 4], n: 200 });
+          sR.dot(fx, fy, { r: 5.5, color: TC.alpha });
+          v.legend([...['LR', 'MN', 'MD', 'X1'].filter((k) => !(law === 'normal' && k === 'MN')).map((k) => [COL[k], `${law === 'normal' && k === 'LR' ? 'mean = likelihood ratio' : NAME[k]} (AUC ${v.fix(S.R[k].auc, 3)})`]), ...(law === 'normal' ? [['ink', 'exact ROC of the mean', { dash: true }]] : [])]);
+          st = { law, n, mu, S, fx, fy };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { law, n, mu, S } = st, A = (k) => v.fix(S.R[k].auc, 3);
+          if (law === 'normal') return String.raw`normal, $n=${n}$, $\mu=${mu}$: the likelihood ratio is increasing in $\bar x$, so the mean is optimal · AUC: mean ${A('LR')} (exact $\Phi(\sqrt n\mu/\sqrt2)=${v.fix(Phi((Math.sqrt(n) * mu) / Math.SQRT2), 3)}$), median ${A('MD')}, first observation ${A('X1')} (exact $\Phi(\mu/\sqrt2)=${v.fix(Phi(mu / Math.SQRT2), 3)}$) · no curve rises above the green one ✓`;
+          return String.raw`Laplace, $n=${n}$, $\mu=${mu}$: AUC likelihood ratio **${A('LR')}**, median ${A('MD')}, mean ${A('MN')}, first observation ${A('X1')} · for heavy-ish tails the mean wastes information; the likelihood ratio still dominates every other statistic (up to simulation noise) ✓`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.6
+    {
+      num: '6.6',
+      kind: 'Definition',
+      name: 'Monotone likelihood ratio',
+      statement: String.raw`A family of densities (or mass functions) $\{g(t\mid\theta):\theta\in\Theta\subset\R\}$ for a real statistic $T$ has a **monotone likelihood ratio (MLR)** in $t$ if for every $\theta_2>\theta_1$ the ratio $g(t\mid\theta_2)/g(t\mid\theta_1)$ is a nondecreasing function of $t$ on $\{t: g(t\mid\theta_1)>0\text{ or }g(t\mid\theta_2)>0\}$ (with $c/0=\infty$). Every one-parameter exponential family $g(t\mid\theta)=h(t)c(\theta)e^{w(\theta)t}$ with $w$ nondecreasing has MLR in $t$ (stat-1.17): the ratio is $\frac{c(\theta_2)}{c(\theta_1)}e^{(w(\theta_2)-w(\theta_1))t}$. So do the normal, Poisson, binomial and exponential families in their natural statistics, and $\mathrm{Uniform}(0,\theta)$ in $\max X_i$. The Cauchy location family does not.`,
+      idea: String.raw`MLR says that larger values of $T$ are always relatively more likely under larger $\theta$, whichever two parameter values are compared. That is exactly what makes "reject for large $T$" the likelihood-ratio test against every alternative above the null at once (stat-6.7). For exponential families the log ratio is linear in $t$, so monotone; for the Cauchy, both tails are so heavy that far from the centres the two densities become proportional again and the ratio returns to 1.`,
+      caption: String.raw`Pick a family and two parameter values $\theta_1<\theta_2$ (sliders). Left: the two densities. Right: the log-likelihood ratio $\log\{f(x\mid\theta_2)/f(x\mid\theta_1)\}$ as a function of $x$, green where it increases and red where it decreases; for exponential families it is a straight line in the natural statistic. Choose **Cauchy**: the curve rises and falls back to 0 at both ends, so no ordering of $x$ is uniformly "more extreme".`,
+      deps: ['stat-6.4', 'stat-1.17'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['monotone likelihood ratio', 'exponential family'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Monotone_likelihood_ratio' },
+      viz(v) {
+        const FAM = {
+          normal: { lab: 'normal location', t1: 0, t2: 1.5, rng: [-2, 3], xr: [-4, 6], pdf: (x, t) => phi(x - t), disc: false },
+          expo: { lab: 'exponential (mean θ)', t1: 1, t2: 2.5, rng: [0.3, 4], xr: [0, 10], pdf: (x, t) => (x < 0 ? 0 : Math.exp(-x / t) / t), disc: false },
+          poisson: { lab: 'Poisson', t1: 2, t2: 5, rng: [0.5, 10], xr: [-0.5, 16.5], pdf: (x, t) => (x < 0 || x !== Math.round(x) ? 0 : Math.exp(x * Math.log(t) - t - lfact(x))), disc: true },
+          unif: { lab: 'uniform on (0, θ)', t1: 1.5, t2: 3, rng: [0.5, 4], xr: [-0.2, 4.5], pdf: (x, t) => (x >= 0 && x <= t ? 1 / t : 0), disc: false },
+          cauchy: { lab: 'Cauchy location', t1: 0, t2: 2, rng: [-2, 4], xr: [-8, 10], pdf: (x, t) => 1 / (Math.PI * (1 + (x - t) ** 2)), disc: false },
+        };
+        const famS = v.select('family', Object.entries(FAM).map(([k, f]) => ({ value: k, label: f.lab.split(' (')[0] })), 'normal', { onChange: (k) => { const F = FAM[k]; t1S.set(F.t1); t2S.set(F.t2); } });
+        const t1S = v.slider('$\\theta_1$', -2, 10, 0, { step: 0.05 });
+        const t2S = v.slider('$\\theta_2$', -2, 10, 1.5, { step: 0.05 });
+        const sL = v.stage({ x: [-4, 6], y: [0, 0.45], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '$x$', ylabel: 'density', title: '$f(x\\mid\\theta_1)$ and $f(x\\mid\\theta_2)$' });
+        const sR = v.stage({ x: [-4, 6], y: [-4, 4], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '$x$', ylabel: '$\\log\\frac{f(x\\mid\\theta_2)}{f(x\\mid\\theta_1)}$', title: 'the log-likelihood ratio in $x$' });
+        let st = null;
+        v.render(() => {
+          const k = famS.value, F = FAM[k];
+          let a = clamp(t1S.value, F.rng[0], F.rng[1]), b = clamp(t2S.value, F.rng[0], F.rng[1]);
+          if (b <= a) b = Math.min(F.rng[1], a + 0.05);
+          const [x0, x1] = F.xr, ymax = Math.max(...Array.from({ length: 200 }, (_, i) => Math.max(F.pdf(F.disc ? Math.round(x0 + (i / 199) * (x1 - x0)) : x0 + (i / 199) * (x1 - x0), a), F.pdf(F.disc ? Math.round(x0 + (i / 199) * (x1 - x0)) : x0 + (i / 199) * (x1 - x0), b)))) * 1.15;
+          sL.setView(F.xr, [0, ymax]);
+          if (F.disc) for (let x = 0; x <= x1; x++) { sL.rect(x - 0.38, 0, x, F.pdf(x, a), { fill: TC.h0, fillAlpha: 0.45, color: TC.h0, width: 1 }); sL.rect(x, 0, x + 0.38, F.pdf(x, b), { fill: TC.h1, fillAlpha: 0.45, color: TC.h1, width: 1 }); }
+          else { sL.fn((x) => F.pdf(x, a), { domain: F.xr, color: TC.h0, width: 2.6, n: 400, fill: TC.h0, fillAlpha: 0.08 }); sL.fn((x) => F.pdf(x, b), { domain: F.xr, color: TC.h1, width: 2.6, n: 400, fill: TC.h1, fillAlpha: 0.08 }); }
+          // log ratio
+          const lr = (x) => Math.log(F.pdf(x, b)) - Math.log(F.pdf(x, a));
+          const xs = F.disc ? Array.from({ length: x1 + 1 }, (_, i) => i) : Array.from({ length: 500 }, (_, i) => x0 + ((i + 0.5) / 500) * (x1 - x0));
+          const pts = xs.map((x) => [x, lr(x)]).filter((p) => Number.isFinite(p[1]) || p[1] === Infinity);
+          const fin = pts.filter((p) => Number.isFinite(p[1])).map((p) => p[1]);
+          const lo = Math.min(...fin), hi = Math.max(...fin), pad = Math.max(0.5, 0.15 * (hi - lo));
+          sR.setView(F.xr, [Math.min(-0.5, lo - pad), Math.max(0.5, hi + pad)]);
+          sR.hline(0, { color: 'muted', width: 1, dash: [3, 3] });
+          let down = 0, maxDrop = 0, xm = null;
+          for (let i = 1; i < pts.length; i++) {
+            const [xa, ya] = pts[i - 1], [xb, yb] = pts[i];
+            if (!Number.isFinite(ya) || !Number.isFinite(yb)) continue;
+            const dec = yb < ya - 1e-12; if (dec) { down += 1; maxDrop += ya - yb; if (xm == null) xm = xa; }
+            if (F.disc) sR.line(xa, ya, xb, yb, { color: dec ? 'red' : 'green', width: 1.4, alpha: 0.5 });
+            else sR.line(xa, ya, xb, yb, { color: dec ? 'red' : 'green', width: 3 });
+          }
+          if (F.disc) sR.dots(pts.filter((p) => Number.isFinite(p[1])), { r: 4, color: 'green' });
+          if (k === 'unif') { const yt = sR.bounds.y[1]; sR.arrow(a + 0.04, Math.log(a / b), a + 0.04, yt - 0.1 * (yt - Math.log(a / b)), { color: 'green', width: 2.4 }); sR.line(a + 0.04, yt - 0.1 * (yt - Math.log(a / b)), b, yt - 0.1 * (yt - Math.log(a / b)), { color: 'green', width: 3 }); tag(sR, '+∞: only θ₂ allows x here', 0.5 * (a + b), yt - 0.1 * (yt - Math.log(a / b)), { color: 'green', dy: 14, size: 11 }); }
+          if (k === 'cauchy') { const xpk = pts.reduce((m, p) => (p[1] > m[1] ? p : m), [0, -Infinity]), xmn = pts.reduce((m, p) => (p[1] < m[1] ? p : m), [0, Infinity]); sR.dot(xpk[0], xpk[1], { r: 4.5, color: 'red' }); sR.dot(xmn[0], xmn[1], { r: 4.5, color: 'red' }); tag(sR, 'ratio → 1 in both tails', x1 - 0.2, 0, { color: 'red', align: 'right', dy: -14, size: 11 }); }
+          v.legend([[TC.h0, `$\\theta_1=${v.fix(a, 2)}$`], [TC.h1, `$\\theta_2=${v.fix(b, 2)}$`], ['green', 'log ratio increasing'], ['red', 'decreasing']]);
+          st = { k, a, b, down, maxDrop, xm, F };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { k, a, b, down, maxDrop, xm } = st;
+          const form = { normal: String.raw`$\log\frac{f_2}{f_1}=(\theta_2-\theta_1)x-\frac{\theta_2^2-\theta_1^2}2$: a line with slope ${v.fix(b - a, 2)} > 0`, expo: String.raw`$\log\frac{f_2}{f_1}=\big(\frac1{\theta_1}-\frac1{\theta_2}\big)x+\log\frac{\theta_1}{\theta_2}$: slope ${v.fix(1 / a - 1 / b, 3)} > 0`, poisson: String.raw`$\log\frac{f_2}{f_1}=x\log\frac{\theta_2}{\theta_1}-(\theta_2-\theta_1)$: slope ${v.fix(Math.log(b / a), 3)} > 0 in $x$`, unif: String.raw`ratio $=\theta_1/\theta_2$ on $[0,\theta_1]$, $+\infty$ on $(\theta_1,\theta_2]$: nondecreasing in $x$ (and in $\max X_i$ for samples)`, cauchy: String.raw`$\frac{f_2}{f_1}=\frac{1+(x-\theta_1)^2}{1+(x-\theta_2)^2}\to1$ as $x\to\pm\infty$` }[k];
+          return `${form} · ` + (down === 0 ? '**monotone likelihood ratio ✓**' : `**not monotone ✗**: the log ratio decreases by a total of ${v.fix(maxDrop, 2)}, starting near x = ${v.fix(xm, 2)}, so a large x is not uniformly evidence for a larger θ`);
+        });
+      },
+    },
   ],
 };

@@ -702,7 +702,7 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
           const D = data();
           const sh = coord.value === 'shear', Y = (th, p) => (sh ? p - D.pC(th) : p);
           sP.setView([0, TAU], sh ? [-D.hw, D.hw] : D.view);
-          sP.setLabels('θ', sh ? 'p − p_C(θ)' : 'p');
+          sP.setLabels('θ', sh ? '$p - p_C(\\theta)$' : 'p');
           for (const b of D.bg) { const ys = sh ? b.ys.map((p, i) => p - D.pC(b.xs[i])) : b.ys; fastDots(v, sP, b.xs, ys, b.xs.length, 'muted', { alpha: 0.5, size: 1.5 }); }
           if (!sh) sP.hline(D.p0, { color: 'ink', dash: [5, 5], width: 1, alpha: 0.6 });
           sP.path(D.IMG.map((z) => z && [z[0], Y(z[0], z[1])]), { color: 'purple', width: 2.4 });

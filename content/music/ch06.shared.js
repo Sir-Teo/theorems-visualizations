@@ -1,7 +1,7 @@
 // Music Theory & Acoustics — Chapter 6 shared helpers (consonance and dissonance).
 // Plain named exports, imported by ch06.js and ch06-b.js. Sound and ear helpers of chapters 4–5 are re-exported.
 
-export { TAU, SR, noteOf, playhead, finish, join, partials, loopVoice } from './ch04.shared.js';
+export { TAU, SR, noteOf, playhead, finish, join, partials, loopVoice, sharc } from './ch04.shared.js';
 export { cbw, erb, tones } from './ch05.shared.js';
 import { TAU, SR, partials, finish } from './ch04.shared.js';
 import { cbw } from './ch05.shared.js';
@@ -240,6 +240,19 @@ export function mixBuf(notes, dur = 1.4, o = {}) {
 export function seqBuf(chords, dur = 0.9, gap = 0.12, o = {}) {
   const parts = chords.map((ch) => mixBuf(ch, dur, o)), g = Math.round(gap * SR), out = new Float32Array(parts.reduce((s, b) => s + b.length + g, 0));
   let off = 0; for (const b of parts) { out.set(b, off); off += b.length + g; }
+  return out;
+}
+
+/** A seamless loop of the partials [[f, a], …]: each frequency is rounded to a multiple of 1/secs Hz so the buffer holds whole cycles. */
+export function loopParts(P, secs = 2) {
+  const n = Math.round(secs * SR), out = new Float32Array(n);
+  for (const [f0, a] of P) {
+    if (!a || !(f0 > 0) || f0 > SR * 0.45) continue;
+    const f = Math.round(f0 * secs) / secs, w = (TAU * f) / SR, ph = (f0 * 7.31) % TAU;
+    for (let i = 0; i < n; i++) out[i] += a * Math.sin(w * i + ph);
+  }
+  let m = 0; for (let i = 0; i < n; i++) m = Math.max(m, Math.abs(out[i]));
+  if (m > 0) for (let i = 0; i < n; i++) out[i] *= 0.7 / m;
   return out;
 }
 

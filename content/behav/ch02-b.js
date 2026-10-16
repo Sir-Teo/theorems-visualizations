@@ -93,7 +93,7 @@ export default {
       statement: String.raw`Replacing every gain in a pair of prospects by the equal loss reverses the preference between them: **risk aversion for gains turns into risk seeking for losses**. In Kahneman and Tversky's (1979) Table I, 80% of 95 respondents preferred 3,000 for sure to an 80% chance of 4,000, but 92% preferred an 80% chance of losing 4,000 to a sure loss of 3,000; 86% of 66 preferred a 90% chance of 3,000 to a 45% chance of 6,000, while 92% preferred a 45% chance of losing 6,000 to a 90% chance of losing 3,000. Even the certainty effect reflects: with tiny probabilities (.002 against .001) the majority took the larger gain and the smaller loss. Since the reflected prospects have the same variance, these choices also refute the idea that people dislike variance as such.`,
       scope: String.raw`Observed in hypothetical and real-money choices for moderate stakes; reflection is a tendency, not a law (it is imperfect within individuals, and loss aversion makes mixed prospects behave differently). Risk seeking for losses weakens when the losses are large relative to wealth.`,
       idea: String.raw`The value function (behav-2.3) is concave above the reference point and convex below it, and close to a mirror image of itself (scaled by $\lambda$). A concave branch makes a sure gain worth more than a gamble with the same mean; the mirrored convex branch makes a sure loss hurt more than a gamble with the same mean. Probability weighting (behav-2.4) is roughly the same for gains and losses, so the weighting term reflects too, which is why the certainty effect and its reverse at small probabilities appear on both sides. Framing a choice as gains or as losses therefore flips it (behav-3.3).`,
-      caption: String.raw`Answer the four gain problems on the left and their mirror images on the right (click an option). Below left: for each pair, the share of the 1979 respondents who chose the option with the smaller amount, for gains (blue) and losses (red), joined by an arrow; your own choices are the rings at 0% or 100%. Below right: the value function and, dashed, its losses branch reflected into the gains quadrant and divided by $\lambda$; when $\alpha=\beta$ the two coincide, which is the reflection effect in one picture. The dots mark the outcomes of the problem you last clicked.`,
+      caption: String.raw`Answer the four gain problems on the left and their mirror images on the right (click an option). Below left: for each pair, the share of the 1979 respondents who chose the option with the smaller amount, for gains (blue) and losses (red), joined by an arrow; your own choices are the rings at 0% or 100%. Below right: the value function and, dashed, its losses branch reflected into the gains quadrant and divided by $\lambda$; when $\alpha=\beta$ the two coincide, which is the reflection effect in one picture. The dots mark the outcomes of the problem you last clicked, and a dashed purple frame marks the option the model predicts with the sliders' parameters.`,
       deps: ['behav-2.3'], refs: ['Kahneman ch. 26'], tags: ['prospect theory', 'risk', 'framing'],
       see: ['behav-2.13', 'behav-3.3'],
       credit: 'Kahneman & Tversky, 1979',
@@ -108,13 +108,13 @@ export default {
         const bS = v.slider('value curvature $\\beta$ (losses)', 0.3, 1, 0.88, { step: 0.01 });
         const gS = v.slider('probability weighting $\\gamma$ (both)', 0.3, 1, 0.65, { step: 0.01 });
         const C = v.stage({ x: [0, 100], y: [0, 42], axes: false, height: 250, full: true, title: 'choose one option in each problem' });
-        const D = v.stage({ x: [-6, 100], y: [0.3, 4.7], axes: false, height: 290, title: 'share choosing the smaller amount (1979)' });
-        const Vs = v.stage({ x: [0, 6.5], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: '|outcome| (thousands)', ylabel: 'value', title: 'the losses branch, reflected' });
+        const D = v.stage({ x: [-6, 103], y: [-0.1, 4.7], axes: false, height: 290, title: 'share choosing the smaller amount (1979)' });
+        const Vs = v.stage({ x: [-6.5, 6.5], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'outcome (thousands)', ylabel: 'v(x)', title: 'the value function and its mirror image' });
         const ans = {}; let last = 0;
         const rowY = (i) => 34 - i * 9.6, cell = (i, side) => side === 'g' ? [8, rowY(i) - 3.8, 52.5, rowY(i) + 3.8] : [55, rowY(i) - 3.8, 99.5, rowY(i) + 3.8];
         C.onClick((x, y) => { PAIRS.forEach((P, i) => ['g', 'l'].forEach((sd) => { const [L, R] = halves(cell(i, sd), 1); if (inside(L, x, y)) { ans[P.id + sd] = 'S'; last = i; } else if (inside(R, x, y)) { ans[P.id + sd] = 'R'; last = i; } })); });
         const desc = (L, sgn) => L.map(([x, p]) => `${sgn < 0 ? 'lose ' : ''}${num(x)}${p >= 1 ? ' for sure' : ` w.p. ${String(p).replace(/^0/, '')}`}`)[0];
-        v.legend([['blue', 'gains', { dot: true }], ['red', 'losses (reflected)', { dot: true }], ['accent', 'your choices', { dot: true }]]);
+        v.legend([['blue', 'gains', { dot: true }], ['red', 'losses', { dot: true }], ['muted', 'your choices: rings at 0% or 100%', { dot: true }], ['red', 'losses branch reflected: $-v(-x)/\\lambda$', { dash: true }], ['purple', 'option predicted by the model', { dash: true }]]);
         let st = {};
         v.render(() => {
           const a = aS.value, b = bS.value, g = gS.value, par = { a, b, l: 2.25, g, d: g };
@@ -135,7 +135,6 @@ export default {
               });
             });
           });
-          C.text('dashed purple frame: the option prospect theory predicts with the sliders’ parameters', 99.5, 1.2, { align: 'right', size: 10.5, color: 'purple' });
           // ---- dumbbells
           D.line(0, 0.45, 100, 0.45, { color: 'muted', width: 1 });
           for (const t of [0, 25, 50, 75, 100]) { D.line(t, 0.45, t, 0.38, { color: 'muted', width: 1 }); D.text(`${t}%`, t, 0.38, { dy: 9, align: 'center', size: 10.5, color: 'muted' }); }
@@ -150,17 +149,23 @@ export default {
             D.text(`${P.l}%`, P.l, y, { dy: -13, align: 'center', size: 10.5, weight: 700, color: 'red' });
             for (const sd of ['g', 'l']) { const c = ans[P.id + sd]; if (c) D.dot(c === 'S' ? 100 : 0, y + (sd === 'g' ? 0.18 : -0.18), { r: 6, hollow: true, width: 2.2, color: sd === 'g' ? 'blue' : 'red' }); }
           });
-          // ---- reflected value function
-          const vg = (x) => Math.pow(x, a), vl = (x) => Math.pow(x, b); // −v(−x)/λ
-          const top = Math.max(vg(6.5), vl(6.5)) * 1.08;
-          Vs.setView([0, 6.5], [0, top]);
-          Vs.fn(vg, { color: 'blue', width: 2.6, domain: [0, 6.5] });
-          Vs.fn(vl, { color: 'red', width: 2, dash: [7, 4], domain: [0, 6.5] });
-          Vs.line(0, 0, 6.5, 6.5 * (vg(6.5) / 6.5), { color: 'faint', width: 1, dash: [3, 4] });
+          // ---- value function and its point reflection
+          const lam = 2.25, vf = (x) => vPT(x, a, lam, b);
+          const top = Math.pow(6.5, Math.max(a, b)) * 1.15, bot = -lam * Math.pow(6.5, b) * 1.05;
+          Vs.setView([-6.5, 6.5], [bot, top]);
+          Vs.hline(0, { color: 'muted', width: 1 }); Vs.vline(0, { color: 'muted', width: 1 });
+          Vs.fn((x) => (x >= 0 ? vf(x) : NaN), { color: 'blue', width: 2.6, domain: [0, 6.5] });
+          Vs.fn((x) => (x <= 0 ? vf(x) : NaN), { color: 'red', width: 2.6, domain: [-6.5, 0] });
+          Vs.fn((x) => -vf(-x) / lam, { color: 'red', width: 1.8, dash: [7, 4], domain: [0, 6.5] });
           const P = PAIRS[last];
-          for (const [x] of [...P.S, ...P.R]) { const X = x / 1000; Vs.dot(X, vg(X), { r: 5, color: 'blue' }); Vs.dot(X, vl(X), { r: 4, color: 'red', hollow: true, width: 2 }); }
-          Vs.text(`Problem ${P.id}`, 0.2, top * 0.92, { size: 11.5, weight: 700, color: 'ink' });
-          Vs.text(Math.abs(a - b) < 0.005 ? 'α = β: perfect mirror' : `α = ${a.toFixed(2)}, β = ${b.toFixed(2)}`, 0.2, top * 0.84, { size: 11, color: 'muted' });
+          for (const [x] of [...P.S, ...P.R]) {
+            const X = x / 1000;
+            Vs.line(X, 0, X, vf(X), GUIDE); Vs.line(-X, 0, -X, vf(-X), GUIDE);
+            Vs.dot(X, vf(X), { r: 5, color: 'blue' }); Vs.dot(-X, vf(-X), { r: 5, color: 'red' });
+            Vs.dot(X, -vf(-X) / lam, { r: 4, color: 'red', hollow: true, width: 2 });
+          }
+          Vs.text(`Problem ${P.id}: outcomes ±${[...new Set([...P.S, ...P.R].map(([x]) => num(x)))].join(', ±')}`, -6.3, top * 0.86, { size: 11, weight: 700, color: 'ink' });
+          Vs.text(Math.abs(a - b) < 0.005 ? 'α = β: the dashed mirror lies on the gains curve' : `α ≠ β: the mirror separates`, -6.3, top * 0.86 - 0.12 * (top - bot), { size: 10.5, color: 'muted' });
           st = { agreeG, agreeL };
         });
         v.readout(() => {
@@ -191,13 +196,13 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         const nS = v.slider('number of slices $n$ in $B$', 1, 20, 10, { int: true });
         const eS = v.slider('shortfall $\\varepsilon$ (dollars)', 0.5, 5, 2, { step: 0.1 });
         const gS = v.slider('weighting $\\gamma$', 0.3, 1, 0.61, { step: 0.01 });
-        const C = v.stage({ x: [0, 100], y: [0, 15], axes: false, height: 104, full: true, title: 'which would you rather have?' });
+        const C = v.stage({ x: [0, 100], y: [0, 15], axes: false, height: 84, full: true, title: 'which would you rather have?' });
         const S = v.stage({ x: [94.5, 100.6], y: [0, 0.2], axes: 'box', gutter: true, height: 300, xlabel: 'outcome (dollars; both pay 0 otherwise)', ylabel: 'probability / weight', title: 'outcomes and decision weights' });
         const F = v.stage({ x: [94.5, 100.6], y: [0, 0.32], axes: 'box', gutter: true, height: 300, xlabel: 'x (dollars)', ylabel: 'P(X ≥ x)', title: 'decumulative distributions' });
         let pick = null;
         const RA = [1, 1, 49, 13], RB = [51, 1, 99, 13];
         C.onClick((x, y) => { if (inside(RA, x, y)) pick = 'A'; else if (inside(RB, x, y)) pick = 'B'; });
-        v.legend([['blue', 'A: probability / weight'], ['orange', 'B: probability / weight'], ['faint', 'stated probability', { dash: true }]]);
+        v.legend([['blue', 'A: probability / weight'], ['orange', 'B: probability / weight'], ['ink', 'stated probability (tick)']]);
         let st = {};
         v.render(() => {
           const n = nS.value, e = eS.value, g = gS.value, par = { a: 0.88, b: 0.88, l: 2.25, g, d: 0.69 };
@@ -211,28 +216,31 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           const VA = cum ? cptValue(A, par) : optValue(A, par), VB = cum ? cptValue(B, par) : optValue(B, par);
           const sumB = wB.filter((o) => o.x > 0).reduce((s, o) => s + o.pi, 0), sumA = wA.filter((o) => o.x > 0).reduce((s, o) => s + o.pi, 0);
           // ---- stems and weights
-          const ymax = Math.max(0.2, sumA * 1.25, ...wB.map((o) => o.pi * 1.25));
-          S.setView([94.5, 100.6], [0, ymax]);
+          const ymax = Math.max(0.2, sumA * 1.25, ...wB.map((o) => o.pi * 1.25)), xl = 100 - 1.5 * e - 0.4;
+          S.setView([xl, 100.6], [0, ymax]); F.setView([xl, 100.6], [0, 0.32]);
           const bw = Math.min(0.12, (0.8 * e) / Math.max(1, n));
           for (const o of wB) if (o.x > 0) {
             S.rect(o.x - bw / 2, 0, o.x + bw / 2, o.pi, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
-            S.line(o.x, 0, o.x, o.p, { color: 'faint', width: 2, dash: [3, 2] });
+            S.line(o.x - bw / 2, o.p, o.x + bw / 2, o.p, { color: 'ink', width: 1.6 });
           }
-          S.rect(100 - 0.06, 0, 100 + 0.06, sumA, { fill: 'blue', fillAlpha: 0.55, color: 'blue', width: 1 });
-          S.line(100, 0, 100, 0.1, { color: 'faint', width: 2, dash: [3, 2] });
+          const bA = Math.max(0.05, bw) / 2;
+          S.rect(100 - bA, 0, 100 + bA, sumA, { fill: 'blue', fillAlpha: 0.55, color: 'blue', width: 1 });
+          S.line(100 - 1.6 * bA, 0.1, 100 + 1.6 * bA, 0.1, { color: 'ink', width: 2, dash: [3, 2] });
+          S.text('p = 0.1', 100 - 1.6 * bA, 0.1, { dx: -4, align: 'right', size: 10.5, color: 'muted' });
           S.text(`A: weight ${sumA.toFixed(3)}`, 100, sumA, { dx: -6, dy: -10, align: 'right', size: 11, weight: 700, color: 'blue' });
-          S.text(`B: total weight ${sumB.toFixed(3)}`, 94.7, ymax * 0.93, { size: 11.5, weight: 700, color: 'orange' });
-          S.text(cum ? 'weights telescope: Σ = w(0.1)' : `n · w(0.1/n) = ${n} × ${wTK(0.1 / n, g).toFixed(3)}`, 94.7, ymax * 0.85, { size: 11, color: 'muted' });
+          S.text(`B: total weight ${sumB.toFixed(3)}`, xl + 0.03 * (100.6 - xl), ymax * 0.93, { size: 11.5, weight: 700, color: 'orange' });
+          S.text(cum ? 'weights telescope: Σ = w(0.1)' : `n · w(0.1/n) = ${n} × ${wTK(0.1 / n, g).toFixed(3)}`, xl + 0.03 * (100.6 - xl), ymax * 0.85, { size: 11, color: 'muted' });
           // ---- decumulative distributions (and their weighted versions)
           const decA = (x) => (x <= 100 ? 0.1 : 0), decB = (x) => B.filter(([y, p]) => y >= x && y > 0).reduce((s, [, p]) => s + p, 0);
-          F.fn(decA, { color: 'blue', width: 2.4, domain: [94.5, 100.6], n: 800 });
-          F.fn(decB, { color: 'orange', width: 2.4, domain: [94.5, 100.6], n: 800 });
+          const tx = xl + 0.03 * (100.6 - xl);
+          F.fn(decA, { color: 'blue', width: 2.4, domain: [xl, 100.6], n: 800 });
+          F.fn(decB, { color: 'orange', width: 2.4, domain: [xl, 100.6], n: 800 });
           if (cum) {
-            F.fn((x) => wTK(decA(x), g), { color: 'blue', width: 1.4, dash: [6, 4], domain: [94.5, 100.6], n: 800 });
-            F.fn((x) => wTK(decB(x), g), { color: 'orange', width: 1.4, dash: [6, 4], domain: [94.5, 100.6], n: 800 });
-            F.text('dashed: w applied to P(X ≥ x)', 94.7, 0.29, { size: 11, color: 'muted' });
-          } else F.text('original rule: w applied slice by slice', 94.7, 0.29, { size: 11, color: 'muted' });
-          F.text('B never above A: A dominates', 94.7, 0.26, { size: 11, weight: 700, color: 'green' });
+            F.fn((x) => wTK(decA(x), g), { color: 'blue', width: 1.4, dash: [6, 4], domain: [xl, 100.6], n: 800 });
+            F.fn((x) => wTK(decB(x), g), { color: 'orange', width: 1.4, dash: [6, 4], domain: [xl, 100.6], n: 800 });
+            F.text('dashed: w applied to P(X ≥ x)', tx, 0.29, { size: 11, color: 'muted' });
+          } else F.text('original rule: w applied slice by slice', tx, 0.29, { size: 11, color: 'muted' });
+          F.text('B never above A: A dominates', tx, 0.26, { size: 11, weight: 700, color: 'green' });
           st = { VA, VB, sumA, sumB, cum, n };
         });
         v.readout(() => {
@@ -268,9 +276,9 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         v.render(() => {
           let wtp, wta, label;
           if (ds.value === 'sim') {
-            // values lognormal around a $3 median (KKT's median bids were $2.25–2.75); owners ask r × their value
+            // values lognormal around a $2.60 median (KKT's median bids were $2.25–2.75); owners ask r × their value
             const rr = v.rng(seed), z = () => { let s = 0; for (let k = 0; k < 12; k++) s += rr(); return s - 6; };
-            const vals = Array.from({ length: 44 }, () => clamp(3 * Math.exp(0.55 * z()), 0.25, 30));
+            const vals = Array.from({ length: 44 }, () => clamp(2.6 * Math.exp(0.5 * z()), 0.25, 30));
             wta = vals.slice(0, 22).map((x) => clamp(rS.value * x, 0, 30)); wtp = vals.slice(22);
             label = 'simulated';
           } else { wtp = PZ[ds.value].wtp; wta = PZ[ds.value].wta; label = ds.value === 'rep' ? 'replication of KKT' : 'with training, anonymity'; }
@@ -285,16 +293,22 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
             style: (i) => (i < nS ? (sellers.has(i) ? { color: 'green' } : { color: 'orange', alpha: 0.85 }) : (buyers.has(i - nS) ? { color: 'green' } : { color: 'blue', alpha: 0.45 })),
             block: (i) => (i < nS ? 0 : 1), blockLabels: (bk, c) => (bk === 0 ? `owners (${c}): ${k} sell` : `non-owners (${c}): ${k} buy`),
           });
-          IC.draw({ label: false });
+          IC.draw();
           // ---- supply and demand steps
           const qmax = Math.max(nS, nB) + 1, pmax = Math.max(10, ...s.slice(0, Math.min(s.length, 25)).map((x) => x * 1.05), ...b.map((x) => x * 1.05));
-          SD.setView([0, qmax], [0, Math.min(16, pmax)]);
+          const ptop = Math.min(12, pmax);
+          SD.setView([0, qmax], [0, ptop]);
           const step = (arr) => { const pts = []; arr.forEach((y, j) => { pts.push([j, y], [j + 1, y]); }); return pts; };
           SD.path(step(s), { color: 'orange', width: 2.4 });
           SD.path(step(b), { color: 'blue', width: 2.4 });
           if (k > 0) { SD.vband(0, k, { color: 'green', alpha: 0.1 }); SD.vline(k, { color: 'green', width: 1.6 }); SD.text(`${k} trade${k === 1 ? '' : 's'}`, k, 0, { dx: 5, dy: -10, size: 11.5, weight: 700, color: 'green' }); }
           const vstar = Math.min(nS, nB) / 2;
-          SD.vline(vstar, GUIDE); SD.text(`no endowment effect: ≈ ${vstar}`, vstar, Math.min(16, pmax) * 0.96, { dx: 5, size: 10.5, color: 'muted' });
+          SD.vline(vstar, GUIDE); SD.text(`no endowment effect: ≈ ${vstar}`, vstar, ptop * 0.96, { dx: 5, size: 10.5, color: 'muted' });
+          if (ds.value === 'sim') {
+            SD.line(0, 5.25, 0.9, 5.25, { color: 'orange', width: 3 }); SD.line(0, 2.25, 0.9, 2.25, { color: 'blue', width: 3 });
+            SD.text('KKT median ask 5.25', 1.1, 5.25, { size: 10, color: 'orange', weight: 700, plate: true });
+            SD.text('KKT median bid 2.25', 1.1, 2.25, { dy: 1, size: 10, color: 'blue', weight: 700, plate: true });
+          }
           if (myA.value > 0) { SD.hline(myA.value, { color: 'orange', width: 1, dash: [2, 3] }); SD.text('your ask', qmax, myA.value, { dx: -4, dy: -8, align: 'right', size: 10.5, color: 'orange', weight: 700 }); }
           if (myB.value > 0) { SD.hline(myB.value, { color: 'blue', width: 1, dash: [2, 3] }); SD.text('your bid', qmax, myB.value, { dx: -4, dy: 11, align: 'right', size: 10.5, color: 'blue', weight: 700 }); }
           st = { k, vstar, mA: median(wta), mB: median(wtp), meA: mean(wta), meB: mean(wtp), label, price, sim: ds.value === 'sim' };
@@ -323,7 +337,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         const fr = v.select('frame', [{ value: 'N', label: 'neutral' }, { value: 'A', label: 'you hold A' }, { value: 'B', label: 'you hold B' }, { value: 'C', label: 'you hold C' }, { value: 'D', label: 'you hold D' }], 'C');
         const tb = v.select('cases shown on the right', [{ value: 'all', label: 'all 66' }, { value: '2', label: 'pairs' }, { value: '3', label: 'triples' }, { value: '4', label: 'quads' }], 'all');
         const C = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 214, full: true });
-        const B = v.stage({ x: [0, 100], y: [0, 10.5], axes: false, height: 300, title: 'investment question: share choosing each option' });
+        const B = v.stage({ x: [0, 100], y: [-0.6, 10.4], axes: false, height: 300, title: 'investment question: share choosing each option' });
         const Sc = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'share when neutral', ylabel: 'share', title: 'all cases (Tables 1a–1c)' });
         const ans = {};
         const R = { A: [1, 15, 49.5, 29], B: [50.5, 15, 99, 29], C: [1, 1, 49.5, 14], D: [50.5, 1, 99, 14] };
@@ -341,17 +355,17 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
             if (f === q.k) C.rect(R[q.k][0], R[q.k][1], R[q.k][2], R[q.k][3], { color: 'orange', width: 2, radius: 9, dash: [5, 3] });
           }
           // ---- grouped bars
-          const x0 = 26, x1 = 92;
+          const x0 = 25, x1 = 82, MX = 0.6, SHORT = { A: 'moderate risk', B: 'high risk', C: 'T-bills', D: 'municipal bonds' };
           B.line(x0, 0.3, x1, 0.3, { color: 'muted', width: 1 });
-          for (const t of [0, 0.25, 0.5]) { const xx = x0 + (x1 - x0) * t / 0.5; B.line(xx, 0.3, xx, 0.15, { color: 'muted', width: 1 }); B.text(pct(t), xx, 0.15, { dy: 9, align: 'center', size: 10.5, color: 'muted' }); }
+          for (const t of [0, 0.2, 0.4, 0.6]) { const xx = x0 + ((x1 - x0) * t) / MX; B.line(xx, 0.3, xx, 0.15, { color: 'muted', width: 1 }); B.text(pct(t), xx, 0.15, { dy: 9, align: 'center', size: 10.5, color: 'muted' }); }
           SZQ.forEach((q, i) => {
             const yb = 9.7 - i * 2.35;
-            B.text(`${q.k}  ${q.name}`, x0, yb - 0.75, { dx: -8, align: 'right', size: 11.5, weight: 600 });
+            B.text(`${q.k}: ${SHORT[q.k]}`, x0, yb - 0.85, { dx: -8, align: 'right', size: 11.5, weight: 600 });
             const role = f === 'N' ? 1 : f === q.k ? 0 : 2;
             [['orange', 0], ['faint', 1], ['blue', 2]].forEach(([col, j]) => {
               const [c, n] = q.n[j], sh = c / n, y = yb - 0.3 - j * 0.55;
-              B.rect(x0, y - 0.22, x0 + ((x1 - x0) * sh) / 0.5, y + 0.22, { fill: col, fillAlpha: j === 1 ? 0.9 : 0.7, color: role === j ? 'ink' : col, width: role === j ? 2 : 1 });
-              B.text(`${pct(sh)} (${c}/${n})`, x0 + ((x1 - x0) * sh) / 0.5, y, { dx: 5, size: 10, weight: role === j ? 700 : 500, color: role === j ? 'ink' : 'muted' });
+              B.rect(x0, y - 0.22, x0 + ((x1 - x0) * sh) / MX, y + 0.22, { fill: col, fillAlpha: j === 1 ? 0.9 : 0.7, color: role === j ? 'ink' : col, width: role === j ? 2 : 1 });
+              B.text(`${pct(sh)} (${c}/${n})`, x0 + ((x1 - x0) * sh) / MX, y, { dx: 5, size: 10, weight: role === j ? 700 : 500, color: role === j ? 'ink' : 'muted' });
             });
           });
           // ---- scatter
@@ -375,7 +389,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           const frames = Object.keys(ans);
           const held = frames.filter((f) => f !== 'N' && ans[f] === f).length, nsq = frames.filter((f) => f !== 'N').length;
           const you = frames.length === 0 ? 'Choose a portfolio first, then switch the frame and choose again.' : `Your choices: ${frames.map((f) => `${f === 'N' ? 'neutral' : 'holding ' + f} → **${ans[f]}**`).join(', ')}.${nsq ? ` You kept the status quo in ${held} of ${nsq} framed versions.` : ''}`;
-          return `${you} In the data, an option's share as status quo exceeds its share as an alternative in ${nUp} of the ${nPts} cases shown. With 4 options the fitted model gives an option with a 25% neutral share 38% as status quo and 21% as an alternative.`;
+          return `${you} In the data, an option's share as status quo exceeds its share as an alternative in ${nUp} of the ${nPts} cases shown. The fitted lines give an option with a 25% neutral share 38% as status quo and 21% as an alternative.`;
         });
       },
     },
@@ -408,13 +422,13 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         v.button('next day', () => step());
         v.button('next 5 days', () => { for (let k = 0; k < 5; k++) step(); });
         v.button('new portfolio', () => { seed++; fresh(); });
-        const P = v.stage({ x: [0, 40], y: [-0.3, 0.3], axes: 'box', gutter: { l: 52, b: 40, t: 12, r: 92 }, height: 320, full: true, xlabel: 'trading day', ylabel: 'gain since purchase', title: 'your portfolio: click a label to sell that stock today' });
+        const P = v.stage({ x: [0, 40], y: [-0.3, 0.3], axes: 'box', gutter: true, height: 320, full: true, xlabel: 'trading day', ylabel: 'gain since purchase', title: 'your portfolio: click a label to sell that stock today' });
         const Bc = v.stage({ x: [0, 100], y: [0, 10], axes: false, height: 250, full: true, title: 'proportion of gains realized (PGR) and of losses realized (PLR)' });
         P.onClick((x, y) => {
-          if (x < S.day - 0.5) return;
+          if (x < S.day + 0.5) return;
           let best = -1, bd = 1e9;
-          for (let i = 0; i < K; i++) { const d = Math.abs(P.Y(S.px[i] / S.ref[i] - 1) - P.Y(y)); if (d < bd) { bd = d; best = i; } }
-          if (best >= 0 && bd < 22) sell(best);
+          for (const L of labPos) { const d = Math.abs(L.y - P.Y(y)); if (d < bd) { bd = d; best = L.i; } }
+          if (best >= 0 && bd < 12) sell(best);
         });
         // simulated investors on random portfolios (same price process)
         const simulate = (kind, a) => {
@@ -445,13 +459,15 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         };
         let cacheA = null, simPT = null; const simRnd = simulate('rnd', 1);
         v.legend([['green', 'gain since purchase'], ['red', 'loss since purchase'], ['green', 'PGR', { dot: true }], ['red', 'PLR', { dot: true }]]);
-        let st = {};
+        let st = {}, labPos = [];
         v.render(() => {
           if (cacheA !== aS.value) { cacheA = aS.value; simPT = simulate('pt', cacheA); }
-          const d0 = Math.max(0, S.day - 36);
+          const d0 = Math.max(0, S.day - 30), d1 = Math.max(d0 + 22, S.day + 8);
           let lo = -0.12, hi = 0.12;
           for (let i = 0; i < K; i++) for (const [d, g] of S.path[i]) if (d >= d0) { lo = Math.min(lo, g); hi = Math.max(hi, g); }
-          P.setView([d0, d0 + 40], [lo - 0.03, hi + 0.03]);
+          P.setView([d0, d1], [lo - 0.03, hi + 0.03]);
+          const yt = []; for (let t = Math.ceil((lo - 0.03) / 0.05) * 0.05; t <= hi + 0.03; t += 0.05) yt.push([t, `${Math.round(100 * t)}%`]);
+          P.setTicks(null, yt);
           P.hline(0, { color: 'muted', width: 1.2, dash: [5, 4] });
           for (const [d] of S.sold) if (d >= d0) P.vline(d, { color: 'faint', width: 1 });
           for (let i = 0; i < K; i++) {
@@ -464,15 +480,16 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           for (let i = 0; i < K; i++) { const g = S.px[i] / S.ref[i] - 1; labs.push({ i, g, y: P.Y(g) }); }
           labs.sort((p, q) => p.y - q.y);
           for (let j = 1; j < labs.length; j++) if (labs[j].y - labs[j - 1].y < 19) labs[j].y = labs[j - 1].y + 19;
-          const xL = P.X(d0 + 40) + 6;
+          const xL = P.X(S.day) + 26;
           ctx.save(); ctx.font = '600 11.5px system-ui, sans-serif'; ctx.textBaseline = 'middle';
           for (const L of labs) {
             ctx.fillStyle = v.color(L.g >= 0 ? 'green' : 'red', 0.15); ctx.strokeStyle = v.color(L.g >= 0 ? 'green' : 'red');
             ctx.beginPath(); ctx.roundRect ? ctx.roundRect(xL, L.y - 8.5, 80, 17, 5) : ctx.rect(xL, L.y - 8.5, 80, 17); ctx.fill(); ctx.stroke();
             ctx.fillStyle = v.color('ink'); ctx.fillText(`sell #${L.i + 1} ${L.g >= 0 ? '+' : '−'}${Math.abs(100 * L.g).toFixed(1)}%`, xL + 6, L.y);
-            ctx.strokeStyle = v.color('faint'); ctx.beginPath(); ctx.moveTo(P.X(S.day) + 4, P.Y(L.g)); ctx.lineTo(xL, L.y); ctx.stroke();
+            ctx.strokeStyle = v.color('faint'); ctx.beginPath(); ctx.moveTo(P.X(S.day) + 5, P.Y(L.g)); ctx.lineTo(xL, L.y); ctx.stroke();
           }
           ctx.restore();
+          labPos = labs;
           // ---- bars
           const rate = (T) => ({ pgr: T.RG / Math.max(1, T.RG + T.PG), plr: T.RL / Math.max(1, T.RL + T.PL), n: T.RG + T.RL });
           const you = rate(S.tal), pt = rate(simPT), rnd = rate(simRnd);
