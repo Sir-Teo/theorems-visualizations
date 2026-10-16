@@ -211,7 +211,6 @@ export default {
       refs: [],
       tags: ['history', 'radiative-convective equilibrium', 'water vapour feedback'],
       credit: 'Syukuro Manabe & Richard T. Wetherald, 1967',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Syukuro_Manabe' },
       viz(v) {
         const pair = v.select('CO₂ change', [{ value: '150', label: '150 → 300 ppm' }, { value: '300', label: '300 → 600 ppm (the paper)' }, { value: '600', label: '600 → 1200 ppm' }], '300', { onChange: () => start() });
@@ -276,15 +275,14 @@ export default {
       introduces: [],
       statement: String.raw`Chlorofluoromethanes (CFC-11, CFCl₃, and CFC-12, CF₂Cl₂), released from aerosol cans, refrigerators and foams, are chemically inert in the lower atmosphere: they are not removed by rain, oxidation or sunlight and therefore accumulate for decades. The paper argues that their only sink is **photolysis by short-wave ultraviolet in the stratosphere**, which frees chlorine atoms; each Cl atom then catalyses the destruction of ozone,
 $$\mathrm{Cl} + \mathrm{O_3} \to \mathrm{ClO} + \mathrm{O_2},\qquad \mathrm{ClO} + \mathrm{O} \to \mathrm{Cl} + \mathrm{O_2},$$
-net $\mathrm{O_3} + \mathrm{O} \to 2\,\mathrm{O_2}$, and is regenerated, so one atom destroys many thousands of ozone molecules before being tied up as HCl. The authors estimated atmospheric lifetimes of 40–150 years for CFCl₃ and 60–100 years for CF₂Cl₂ and concluded that continued release would deplete stratospheric ozone appreciably (they cautioned about biological effects of the extra ultraviolet).`,
-      scope: String.raw`The paper's lifetimes were a first estimate from the stratospheric photolysis rates (sources of uncertainty included the vertical mixing); the viz uses a one-box lifetime model and a linear ozone-loss law calibrated to the observed 1990s loss, with an illustrative reconstruction of the emissions (not the AFEAS industry data).`,
+net $\mathrm{O_3} + \mathrm{O} \to 2\,\mathrm{O_2}$, and is regenerated, so one atom destroys many thousands of ozone molecules before being tied up as HCl. The authors estimated atmospheric lifetimes in the range 40–150 years for both CFCl₃ and CF₂Cl₂ (with bounds of at least 10 and 30 years from the known stratospheric photolysis) and concluded that continued release would deplete stratospheric ozone appreciably (they cautioned about biological effects of the extra ultraviolet).`,
+      scope: String.raw`The paper's 40–150 year range was a first estimate from the stratospheric photolysis rates (sources of uncertainty included the vertical mixing); the viz uses a one-box lifetime model and a linear ozone-loss law calibrated to the observed 1990s loss, with an illustrative reconstruction of the emissions (not the AFEAS industry data).`,
       idea: String.raw`Rowland and Molina asked where the CFCs go and found no sink below the stratosphere, so the atmospheric content is nearly the cumulative emission, with a lifetime set by how fast the air mixes up into the region where ultraviolet below 220 nm reaches them. Combining this with the known chlorine chemistry of the stratosphere (the catalytic cycles had been proposed for NOₓ by Crutzen and Johnston), they saw that the chain length — thousands of cycles per chlorine atom — turns the tiny number of freed atoms into a large ozone loss. The photochemistry of ozone is the subject of 2.13; the kinetics of the chain is the radical-chain kinetics of the kin collection.`,
       caption: String.raw`Top left: the catalytic cycle — click *play* to watch one chlorine atom (gold) hop between O₃ and O and leave a trail of O₂, and the counter of destroyed ozone molecules. Choose the emission scenario (the real history with the Montreal Protocol, emissions frozen at 1974, or growth of 5%/yr), the lifetimes (default today's accepted values) and the chain length. Middle: the CFC mixing ratios; right: the stratospheric chlorine they carry and the ozone loss it implies.`,
       deps: ['kin-7.6', 'climate-2.13'],
       refs: [],
       tags: ['history', 'ozone', 'CFC'],
       credit: 'Mario Molina & F. Sherwood Rowland, 1974',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mario_J._Molina' },
       viz(v) {
         const scn = v.select('emissions after 1974', [{ value: 'actual', label: 'actual (Montreal Protocol)' }, { value: 'frozen', label: 'frozen at 1974' }, { value: 'grow', label: 'grow 5% per year' }], 'actual');
@@ -330,7 +328,7 @@ net $\mathrm{O_3} + \mathrm{O} \to 2\,\mathrm{O_2}$, and is regenerated, so one 
           R = { c11: run[i74].c11, c12: run[i74].c12, l95: loss[i95], lmax: loss[imax], tmax: run[imax].t, l2050: loss[run.findIndex((r) => r.t === 2050)], s: scn.value };
         });
         v.legend([['accent', 'CFC-11'], ['orange', 'CFC-12'], ['red', 'ozone loss']]);
-        v.readout(() => R && String.raw`1974: CFC-11 ${fx(v, R.c11, 0)} ppt and CFC-12 ${fx(v, R.c12, 0)} ppt (observed about 100 and 190) · lifetimes ${t11.value} and ${t12.value} years — the paper estimated 40–150 and 60–100 years, today's accepted values are 52 and 102 · ozone loss in 1995 **${fx(v, R.l95, 1)} %**, largest **${fx(v, R.lmax, 1)} %** in ${R.tmax}, ${fx(v, R.l2050, 1)} % in 2050`);
+        v.readout(() => R && String.raw`1974: CFC-11 ${fx(v, R.c11, 0)} ppt and CFC-12 ${fx(v, R.c12, 0)} ppt (modern reconstructions of the observed air: about 100 and 190; the 1973 measurements quoted in the paper were about 60 and 100 ppt) · lifetimes ${t11.value} and ${t12.value} years — the paper estimated 40–150 years for both, today's accepted values are 52 and 102 · ozone loss in 1995 **${fx(v, R.l95, 1)} %**, largest **${fx(v, R.lmax, 1)} %** in ${R.tmax}, ${fx(v, R.l2050, 1)} % in 2050`);
       },
     },
   ],
