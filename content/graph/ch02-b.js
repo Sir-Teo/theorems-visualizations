@@ -173,8 +173,8 @@ export default {
         function frames() {
           const n = nS.value, r = v.rng(seed * 1009 + n), pts = []; for (let x = 0; x < n; x++) pts.push(x, x, x);
           for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
-          let E = []; for (let i = 0; i < pts.length; i += 2) E.push({ a: pts[i], b: pts[i + 1], id: i / 2 });
-          const E0 = E.map((e) => ({ ...e })), cycRound = new Map();
+          let E = []; for (let i = 0; i < pts.length; i += 2) E.push({ a: pts[i], b: pts[i + 1], id: i / 2, eids: [i / 2] });
+          const E0 = E.map((e) => ({ ...e })), cycRound = new Map(), edgeRound = new Map(); // original vertices / edges → index of the cycle using them
           const P = ringPts(n, 1); let nid = E.length;
           const alive = new Set([...Array(n).keys()]), F = [], hist = [{ n, lb: n }];
           const deg = (x) => E.reduce((c, e) => c + (e.a === x) + (e.b === x), 0);
@@ -191,7 +191,8 @@ export default {
               const vs = g.cycle.map((u) => H.ids[u]), es = new Set(); for (let i = 0; i < vs.length; i++) { const a = vs[i], b = vs[(i + 1) % vs.length]; const e = E.find((x) => !es.has(x.id) && ekey(x.a, x.b) === ekey(a, b)); if (e) es.add(e.id); }
               C = { vs, es };
             }
-            const before = alive.size; found++; C.vs.forEach((x) => cycRound.set(x, found - 1));
+            const before = alive.size; found++;
+            for (const e of E) if (C.es.has(e.id)) for (const oid of e.eids) { edgeRound.set(oid, found - 1); const o = E0[oid]; cycRound.set(o.a, found - 1); cycRound.set(o.b, found - 1); }
             snap({ cyc: C, note: `Round ${round + 1}: a shortest cycle has length ${C.vs.length} (≤ $2\\log_2|H| = ${(2 * log2(before)).toFixed(1)}$). Delete it.` });
             for (const x of C.vs) alive.delete(x); E = E.filter((e) => alive.has(e.a) && alive.has(e.b));
             for (let ch = true, g2 = 0; ch && g2 < 10 * n; g2++) {
@@ -201,22 +202,22 @@ export default {
                 if (d <= 1) { alive.delete(x); E = E.filter((e) => e.a !== x && e.b !== x); ch = true; }
                 else if (d === 2) {
                   const inc = E.filter((e) => e.a === x || e.b === x);
-                  if (inc.length === 1) { alive.delete(x); E = E.filter((e) => e !== inc[0]); cycRound.set(x, found + bonus); bonus++; ch = true; continue; } // an isolated loop: a cycle on its own
-                  const ends = inc.map((e) => (e.a === x ? e.b : e.a)); alive.delete(x); E = E.filter((e) => !inc.includes(e)); E.push({ a: ends[0], b: ends[1], id: nid++ }); ch = true;
+                  if (inc.length === 1) { alive.delete(x); for (const oid of inc[0].eids) { edgeRound.set(oid, found + bonus); const o = E0[oid]; cycRound.set(o.a, found + bonus); cycRound.set(o.b, found + bonus); } E = E.filter((e) => e !== inc[0]); bonus++; ch = true; continue; } // an isolated loop: a cycle on its own
+                  const ends = inc.map((e) => (e.a === x ? e.b : e.a)); alive.delete(x); E = E.filter((e) => !inc.includes(e)); E.push({ a: ends[0], b: ends[1], id: nid++, eids: inc[0].eids.concat(inc[1].eids) }); ch = true;
                 }
               }
             }
             hist.push({ n: alive.size, lb: Math.max(0, before - 2 * C.vs.length) });
             snap({ note: `Remove vertices of degree ≤ 1 and suppress those of degree 2: a cubic multigraph on ${alive.size} vertices remains (proof: ≥ ${Math.max(0, before - 2 * C.vs.length)}).`, found: found + bonus });
           }
-          F.push({ ...F[F.length - 1], alive: new Set([...Array(n).keys()]), E: E0, cycRound, cyc: null, done: true, found: found + bonus, note: `Done (vertices coloured by the cycle that took them): ${found + bonus} disjoint cycles found${bonus ? ` (${bonus} of them were left over as isolated loops)` : ''}.` });
+          F.push({ ...F[F.length - 1], alive: new Set([...Array(n).keys()]), E: E0, cycRound, edgeRound, cyc: null, done: true, found: found + bonus, note: `Done — the cycles found, traced back to the original multigraph through the suppressed vertices: ${found + bonus} disjoint cycles found${bonus ? ` (${bonus} of them were left over as isolated loops)` : ''}.` });
           return F;
         }
         const S = v.steps({ frames, speed: 1.2, start: 'end', still: 'end' });
         v.render(() => {
           const f = S.frame; if (!f.alive) return;
           G.set({ nodes: [...f.alive].map((x) => ({ id: x, x: f.P[x][0], y: f.P[x][1], label: '' })), edges: f.E.map((e) => ({ from: e.a, to: e.b, cid: e.id })), layout: 'none' });
-          if (f.done) G.draw({ nodeFill: (id) => (f.cycRound.has(id) ? PALETTE[f.cycRound.get(id) % 8] : 'faint'), edgeColor: (e) => (f.cycRound.has(e.from) && f.cycRound.get(e.from) === f.cycRound.get(e.to) ? PALETTE[f.cycRound.get(e.from) % 8] : 'faint'), edgeWidth: (e) => (f.cycRound.has(e.from) && f.cycRound.get(e.from) === f.cycRound.get(e.to) ? 3 : 1.2) });
+          if (f.done) G.draw({ nodeFill: (id) => (f.cycRound.has(id) ? PALETTE[f.cycRound.get(id) % 8] : 'faint'), edgeColor: (e) => (f.edgeRound.has(e.cid) ? PALETTE[f.edgeRound.get(e.cid) % 8] : 'faint'), edgeWidth: (e) => (f.edgeRound.has(e.cid) ? 3 : 1.1) });
           else G.draw({ nodeFill: (id) => (f.cyc && f.cyc.vs.includes(id) ? 'gold' : 'accent'), edgeColor: (e) => (f.cyc && f.cyc.es.has(e.cid) ? 'gold' : null), edgeWidth: (e) => (f.cyc && f.cyc.es.has(e.cid) ? 4 : 1.5) });
           if (!f.alive.size) s.text('(empty)', 0, 0, { align: 'center', color: 'muted' });
           const n0 = nS.value; p.setView([-0.6, Math.max(4, f.hist.length) - 0.4], [0, n0 + 4]);

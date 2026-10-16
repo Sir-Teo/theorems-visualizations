@@ -93,9 +93,10 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
           const nmax = isFinite(P) ? Math.min(P + Math.max(4, Math.round(P * 0.15)), 700) : 90;
           const home = new Float64Array(nmax + 1); let src = new Int32Array(N * N); for (let k = 0; k < N * N; k++) src[k] = k;
           home[0] = 1;
-          for (let n = 1; n <= nmax; n++) { src = pushForward(src, A, N); let c = 0; for (let k = 0; k < N * N; k++) if (src[k] === k) c++; home[n] = c / (N * N); }
+          let lost = 0;
+          for (let n = 1; n <= nmax; n++) { src = pushForward(src, A, N); let c = 0, l = 0; for (let k = 0; k < N * N; k++) { if (src[k] === k) c++; else if (src[k] < 0) l++; } home[n] = c / (N * N); lost = l / (N * N); }
           const pic = new Uint8Array(N * N); for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) pic[i * N + j] = face(i, j, N);
-          return { N, A, P, det, bij, nmax, home, pic };
+          return { N, A, P, det, bij, nmax, home, pic, lost };
         });
         let cur = { n: -1, src: null, key: '' };
         const srcAt = (G, n) => {
@@ -161,15 +162,14 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
           if (state.grid) {
             const { G, n } = state, A = G.A;
             const per = isFinite(G.P) ? String.raw`$A^{${G.P}} \equiv I \pmod{${G.N}}$: the picture returns after **${G.P} steps**` : String.raw`no power of $A$ is the identity mod ${G.N}`;
-            const bij = G.bij ? String.raw`$\det A = ${G.det}$ is invertible mod ${G.N}, so the map permutes the pixels` : String.raw`$\det A = ${G.det}$ shares a factor with ${G.N}: pixels collide and ${v.fix(100 * (1 - G.home.length && 1) * 0 + 100 * lostFrac(G), 0)}% of the grid is soon empty, so the picture can never come back`;
+            const bij = G.bij ? String.raw`$\det A = ${G.det}$ is invertible mod ${G.N}, so the map permutes the pixels` : String.raw`$\det A = ${G.det}$ shares a factor with ${G.N}: pixels collide and after ${G.nmax} steps ${v.fix(100 * G.lost, 0)}% of the grid is empty, so the picture can never come back`;
             return String.raw`$A = \begin{pmatrix}${A[0]}&${A[1]}\\${A[2]}&${A[3]}\end{pmatrix}$, step $n = ${n}$, pixels in place now: ${v.fix(100 * G.home[n], 1)}% · ${bij} · ${per}`;
           }
-          const { D, e } = state, j = EPS.findIndex((r) => r >= e), cnt = (() => { let c = 0; for (let k = 1; k <= D.n; k++) if (D.dmin[k] < e) c++; return c; })();
+          const { D, e } = state, cnt = (() => { let c = 0; for (let k = 1; k <= D.n; k++) if (D.dmin[k] < e) c++; return c; })();
           let first = 0; for (let k = 1; k <= D.n; k++) if (D.dmin[k] < e) { first = k; break; }
           if (fric.value) return String.raw`dissipative map (Jacobian $0.45 < 1$): returns within $\varepsilon = ${v.fix(e, 3)}$ in ${D.n.toLocaleString('en')} steps: **${cnt}** — the orbit has collapsed onto a set of zero area, which the start point is not on`;
-          return String.raw`returns within $\varepsilon = ${v.fix(e, 3)}$ in ${D.n.toLocaleString('en')} steps: ${cnt}, first after ${first} steps · mean return time ${cnt ? v.fix(D.n / cnt, 1) : '∞'}, Kac’s lemma $1/(\pi\varepsilon^2) = ${v.fix(1 / (Math.PI * e * e), 1)}$` + (j >= 0 ? '' : '');
+          return String.raw`returns within $\varepsilon = ${v.fix(e, 3)}$ in ${D.n.toLocaleString('en')} steps: ${cnt}, first after ${first} steps · mean return time ${cnt ? v.fix(D.n / cnt, 1) : '∞'}, Kac’s lemma $1/(\pi\varepsilon^2) = ${v.fix(1 / (Math.PI * e * e), 1)}$`;
         });
-        function lostFrac(G) { const src = srcAt(G, Math.min(G.nmax, 12)); let c = 0; for (let k = 0; k < src.length; k++) if (src[k] < 0) c++; return c / src.length; }
       },
     },
   ],

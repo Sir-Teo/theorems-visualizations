@@ -106,12 +106,12 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
       viz(v) {
         const panel = v.select('right panel', [{ value: 'poly', label: 'force polygon' }, { value: 'net', label: 'cable net (force densities)' }], 'poly');
         const lenS = v.slider('cable length / chord', 1.005, 1.4, 1.08, { step: 0.001 });
-        const rise = v.slider('corner rise (m)', 0, 3, 1.5, { step: 0.05 });
+        const rise = v.slider('corner rise (m)', 0, 3, 2.2, { step: 0.05 });
         const qr = v.slider('q₁ / q₂', 0.25, 4, 1, { log: true });
         const pn = v.slider('node load (kN)', 0, 40, 10, { step: 0.5 });
         const S = v.stage({ x: [-1.2, 21.2], y: [-9, 3], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
         const F = v.stage({ x: [-5.6, 5.6], y: [-5.4, 5.4], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'force polygon' });
-        const sc = v.scene3(F, { yaw: -0.65, pitch: 0.5, axes: false, hint: false, lim: 4 });
+        const sc = v.scene3(F, { yaw: -0.45, pitch: 0.22, axes: false, hint: false, lim: 4 });
         const LS = 20;
         const X = [3.4, 7.6, 12.2, 16.6], P = [20, 35, 15, 30];
         let last = null;

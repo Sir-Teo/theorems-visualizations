@@ -866,12 +866,10 @@ export function relEditor(v, s, { n = 4, edges = [], radius = 1, center = [0, 0]
   E.toggle = (a, b) => { const ex = G.edges.find((e) => e.from === a && e.to === b); if (ex) G.removeEdge(ex); else G.addEdge(a, b); if (E.onChange) E.onChange(); };
   E.adj = () => { const m = range(E.n).map(() => new Array(E.n).fill(0)); for (const e of G.edges) if (e.from < E.n && e.to < E.n) m[e.from][e.to] = 1; return m; };
   E.edgeList = () => G.edges.map((e) => [e.from, e.to]);
-  E.setN = (k, { relayout = false } = {}) => {
-    const old = relayout ? [] : G.nodes.map((m) => ({ id: m.id, x: m.x, y: m.y }));
+  E.setN = (k) => {
     const es = G.edges.filter((e) => e.from < k && e.to < k).map((e) => ({ from: e.from, to: e.to }));
     E.n = k; E.sel = null;
-    G.set({ nodes: mkNodes(k, old.filter((o) => o.id < Math.min(k, n + 99))), edges: es });
-    if (relayout) G.nodes.forEach((m, i) => { [m.x, m.y] = pos(i, k); });
+    G.set({ nodes: mkNodes(k), edges: es });
   };
   E.set = (es, k = E.n) => { E.n = k; E.sel = null; G.set({ nodes: mkNodes(k), edges: es.map(([a, b]) => ({ from: a, to: b })) }); };
   E.relayout = () => { G.nodes.forEach((m, i) => { [m.x, m.y] = pos(i, E.n); }); };
@@ -881,3 +879,27 @@ export function relEditor(v, s, { n = 4, edges = [], radius = 1, center = [0, 0]
 
 /** Plain-text name of an element list, e.g. {0, 2, 3}. */
 export const setStr = (xs, label = String) => (xs.length ? `{${xs.map(label).join(', ')}}` : '∅');
+
+/**
+ * A text field holding a first-order formula (or term). Keeps the last input that parsed and passed `check`;
+ * `error` describes the current input when it does not.
+ */
+export function foField(v, label, def, { sig = null, width = 280, term = false, check = null, onChange = null } = {}) {
+  let ast = null, kind = null, error = null, src = def, fresh = false;
+  const update = (s) => {
+    src = s;
+    const r = parseFO(s, typeof sig === 'function' ? sig() : sig, { term });
+    if (!r.ast) { error = `${r.error} (character ${r.pos + 1})`; fresh = false; return; }
+    const c = check ? check(r.ast, r.kind) : null;
+    if (c) { error = c; fresh = false; return; }
+    ast = r.ast; kind = r.kind; error = null; fresh = true;
+  };
+  update(def);
+  const ctl = v.input(label, def, { width, onChange: (s) => { update(s); if (onChange) onChange(); } });
+  return {
+    ctl,
+    get ast() { return ast; }, get kind() { return kind; }, get error() { return error; }, get src() { return src; }, get ok() { return fresh; },
+    set(s) { ctl.set(s); update(s); if (onChange) onChange(); },
+    reparse() { update(src); },
+  };
+}
