@@ -68,7 +68,7 @@ export default {
           if (!cur) return '';
           const { B, ns } = cur, r = rS.value, cf = v.M.convergents ? v.M.convergents(r).slice(0, 6).map((c) => `${c[0]}/${c[1]}`).join(', ') : '';
           const shell = B.eps ? String.raw` · amplitude of oscillator 1 wanders between ${v.fix(B.rlo, 3)} and ${v.fix(B.rhi, 3)}: no torus` : String.raw` · amplitude of oscillator 1 constant (${v.fix(B.rlo, 4)}–${v.fix(B.rhi, 4)})`;
-          return String.raw`$\omega_2/\omega_1 = ${v.fix(r, 4)}$` + (cf ? ` (continued-fraction convergents ${cf})` : '') + ` · section: ${ns.length} crossings at ${B.distinct} distinct points · the full run visits ${v.fix(100 * B.cover, 1)}% of the cells of the square` + shell;
+          return String.raw`$\omega_2/\omega_1 = ${v.fix(r, 4)}$` + (cf ? ` (continued-fraction convergents ${cf})` : '') + ` · section so far: ${ns.length} crossings at ${new Set(ns.map((z) => Math.round(z[0] * 300) + ',' + Math.round(z[1] * 300))).size} distinct points (full run: ${B.distinct} of ${B.sec.length}) · the full run visits ${v.fix(100 * B.cover, 1)}% of the cells of the square` + shell;
         });
       },
     },

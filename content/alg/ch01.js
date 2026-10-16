@@ -161,7 +161,7 @@ export default {
 (1) $(A\cup B)'=A'\cap B'$;
 (2) $(A\cap B)'=A'\cup B'$.`,
       idea: String.raw`Prove each equality by two inclusions. If $x\in(A\cup B)'$ then $x$ lies neither in $A$ nor in $B$, so $x\in A'$ and $x\in B'$; conversely, an element of $A'\cap B'$ is in neither set, hence not in their union. Law (2) follows the same way, or from (1) applied to $A'$ and $B'$ after complementing both sides (using $X''=X$). In words: "not (in $A$ or in $B$)" is "not in $A$ and not in $B$" — complement turns unions into intersections and back.`,
-      caption: String.raw`Step through the construction: shade $A\cup B$, complement it, then hatch $A'$ (blue) and $B'$ (red) — the cross-hatched region is the shaded one from step 2. Drag the four sample points anywhere; the table follows each one through every column. Switch on the **false version** ($A'\cup B'$ on the right) and the rows that break it turn red.`,
+      caption: String.raw`Step through the construction: shade $A\cup B$, complement it, then hatch $A'$ (blue) and $B'$ (red) — the region carrying both hatchings, filled green, is the shaded one from step 2. Drag the four sample points anywhere; the table follows each one through every column. Switch on the **false version** ($A'\cup B'$ on the right) and the rows that break it turn red.`,
       deps: ['alg-1.1a'],
       refs: ['Judson §1.2'],
       tags: ['sets', 'logic'],

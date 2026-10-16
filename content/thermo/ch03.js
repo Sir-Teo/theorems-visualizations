@@ -537,7 +537,7 @@ with equality for a reversible process. The energy $U$ is not the relevant budge
           if (rev) sp.between(Pb, () => 0, V1, V2, { fill: 'orange', fillAlpha: 0.35 });
           else { sp.rect(V1, 0, V2, P2, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1.4 }); sp.line(V1, Pb(V1), V1, P2, { color: 'red', width: 1.6, dash: [4, 3] }); sp.text('pressure drops suddenly', V1, (Pb(V1) + P2) / 2, { dx: 8, size: 11, color: 'red' }); }
           sp.dot(V1, Pb(V1), { r: 5, color: 'accent', label: 'start', labelPos: 'ne' });
-          sp.text(`isotherm ${T} K`, 4.1, Pb(4.1), { align: 'right', dy: -10, size: 11, color: 'ink' });
+          sp.text(`isotherm ${T} K`, 1.0, Pb(1.0), { dx: 8, dy: -6, size: 11, color: 'ink', plate: true });
           const dF = M.f(T, v2) - M.f(T, v1), dU = M.u(T, v2) - M.u(T, v1), dS = M.s(T, v2) - M.s(T, v1), Q = dU + W;
           const vals = [W, -dF, -dU, Q, T * dS].map((x) => x / KJ), lo = Math.min(0, ...vals), hi = Math.max(...vals);
           sb.setView([-0.6, 4.6], [lo - 0.1 * (hi - lo), hi * 1.15]);
@@ -585,25 +585,24 @@ with equality for a reversible process. For an electrochemical cell transferring
         const cell = v.select('cell', Object.entries(CELLS).map(([value, o]) => ({ value, label: o.label })), 'fcl', { onChange: () => { const c = CELLS[cell.value]; Tsl.set(c.range[0] < 300 ? 298.15 : 800); } });
         const Tsl = v.slider('temperature', 273.15, 1273.15, 298.15, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' K' });
         const load = v.slider('operating voltage / reversible', 0.3, 1, 1, { step: 0.01, fmt: (x) => Math.round(x * 100) + ' %' });
-        const sf = v.stage({ x: [0, 10], y: [0, 6], height: 330, equal: true, axes: false, weight: 1.15, title: 'where the reaction enthalpy goes (per mole)' });
+        const sf = v.stage({ x: [0, 11], y: [0, 6], height: 330, equal: true, axes: false, weight: 1.15, title: 'where the reaction enthalpy goes (per mole)' });
         const se = v.stage({ x: [273, 373], y: [0.9, 1.3], height: 330, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'E (V)', weight: 1, title: 'reversible cell voltage $E = -\\Delta G/nF$' });
         let st = null;
         v.render(() => {
           const c = CELLS[cell.value], T = clamp(Tsl.value, c.range[0], c.range[1]);
           const dG = c.dH - T * c.dS, E = -dG / (c.n * FARADAY), Wel = -dG * load.value, Qout = -c.dH - Wel;
-          // energy flow: fuel block → device → work and heat (widths ∝ energy)
-          const scale = 70 / (-c.dH);    // px per J
-          reservoir(sf, 0.2, 2.2, 2.4, 3.8, 'blue', 'reactants', `−ΔH = ${v.fix(-c.dH / KJ, 1)} kJ`);
-          sf.rect(4.1, 2.0, 5.9, 4.0, { fill: 'panel', fillAlpha: 1, color: 'ink', width: 2, radius: 8 });
-          sf.text('cell', 5, 3.25, { align: 'center', size: 13, weight: 700 }); sf.text(`n = ${c.n} e⁻`, 5, 2.7, { align: 'center', size: 11, color: 'muted' });
-          band(v, sf, [[2.4, 3], [4.1, 3]], -c.dH * scale, 'blue', { head: false, alpha: 0.5 });
-          band(v, sf, [[5.9, 3.3], [7.2, 3.3], [7.2, 4.6], [8.1, 4.6]], Math.max(0, Wel) * scale, 'orange');
-          if (c.dS > 0) band(v, sf, [[9.6, 1.2], [5.5, 1.2], [5.5, 2.0]], T * c.dS * scale, 'red');
-          if (Qout > 0) band(v, sf, [[5.9, 2.6], [7.2, 2.6], [7.2, 1.3], [8.1, 1.3]], Qout * scale, 'red');
-          sf.text('electrical work', 8.25, 5.05, { size: 11.5, weight: 650, color: 'orange' }); sf.text(`${v.fix(Wel / KJ, 1)} kJ`, 8.25, 4.6, { size: 11.5, color: 'ink' });
-          sf.text(c.dS > 0 ? 'heat out (net)' : 'heat out', 8.25, 1.75, { size: 11.5, weight: 650, color: 'red' }); sf.text(`${v.fix(Qout / KJ, 1)} kJ`, 8.25, 1.3, { size: 11.5, color: 'ink' });
-          sf.tex(c.eq, 5, 5.5, { align: 'center', size: 15 });
-          sf.text(`of which −TΔS = ${v.fix(-T * c.dS / KJ, 1)} kJ must leave even reversibly`, 5, 0.45, { align: 'center', size: 11.5, color: 'muted' });
+          // energy flow: reactants → cell → work and heat (band widths ∝ energy)
+          const scale = 54 / (-c.dH);    // px per J
+          reservoir(sf, 0.2, 2.2, 2.6, 3.8, 'blue', 'reactants', `−ΔH = ${v.fix(-c.dH / KJ, 1)} kJ`);
+          band(v, sf, [[2.6, 3], [4.3, 3]], -c.dH * scale, 'blue', { head: false, alpha: 0.5 });
+          sf.rect(4.3, 1.8, 6.1, 4.2, { fill: 'panel', fillAlpha: 1, color: 'ink', width: 2, radius: 8 });
+          sf.text('cell', 5.2, 3.25, { align: 'center', size: 13, weight: 700 }); sf.text(`n = ${c.n} e⁻`, 5.2, 2.7, { align: 'center', size: 11, color: 'muted' });
+          band(v, sf, [[6.1, 3.7], [8.0, 3.7]], Math.max(0, Wel) * scale, 'orange');
+          if (Qout > 0) band(v, sf, [[6.1, 2.3], [7.0, 2.3], [7.0, 1.4], [8.0, 1.4]], Qout * scale, 'red');
+          sf.text('electrical work', 8.2, 3.95, { size: 11.5, weight: 650, color: 'orange' }); sf.text(`${v.fix(Wel / KJ, 1)} kJ`, 8.2, 3.45, { size: 11.5, color: 'ink' });
+          sf.text('heat out', 8.2, 1.65, { size: 11.5, weight: 650, color: 'red' }); sf.text(`${v.fix(Qout / KJ, 1)} kJ`, 8.2, 1.15, { size: 11.5, color: 'ink' });
+          sf.tex(c.eq, 5.5, 5.3, { align: 'center', size: 15 });
+          sf.text(`of which −TΔS = ${v.fix(-T * c.dS / KJ, 1)} kJ must leave even reversibly`, 5.5, 0.35, { align: 'center', size: 11.5, color: 'muted' });
           // E(T)
           const [Ta, Tb] = c.range, Ef = (t) => -(c.dH - t * c.dS) / (c.n * FARADAY);
           const ea = Ef(Ta), eb = Ef(Tb), elo = Math.min(ea, eb), ehi = Math.max(ea, eb), pad = Math.max(0.02, 0.2 * (ehi - elo));

@@ -517,11 +517,11 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             loop.forEach(([x, y], k) => { if (k > 0 && k < 14) S.dot(x, y, { r: 6, color: 'gray', alpha: 0.7 }); });
             // bars: the weights on the two slopes differ, the pulls along the slopes (weight × sin α = h) agree
             const sc = 6.6 / Math.max(L1, L2), y0 = -4.2;
-            const bars = [[-3.6, L1, 'blue', 'weight on left slope'], [-1.6, h, 'green', 'pull along it'], [1.6, L2, 'teal', 'weight on right slope'], [3.6, h, 'green', 'pull along it']];
+            const bars = [[-3.6, L1, 'blue', 'left weight'], [-1.6, h, 'green', 'its pull'], [1.6, L2, 'teal', 'right weight'], [3.6, h, 'green', 'its pull']];
             for (const [x, val, c, lab] of bars) {
               Fd.rect(x - 0.65, y0, x + 0.65, y0 + val * sc, { fill: c, fillAlpha: 0.45, color: c, width: 1.2 });
               Fd.text(val.toFixed(2), x, y0 + val * sc, { dy: -9, align: 'center', size: 11.5, weight: 700, color: c });
-              Fd.text(lab, x, y0, { dy: 10, align: 'center', size: 9.5, color: 'ink' });
+              Fd.text(lab, x, y0, { dy: 10, align: 'center', size: 10.5, color: 'ink' });
             }
             Fd.hline(y0 + h * sc, { color: 'green', dash: [4, 4], width: 1 });
             S.text('the hanging loop is symmetric and cancels', 0, -4.35, { align: 'center', size: 11, color: 'muted' });
