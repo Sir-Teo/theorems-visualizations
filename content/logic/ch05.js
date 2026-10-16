@@ -197,7 +197,7 @@ export default {
       deps: ['logic-5.1', 'logic-1.2'],
       refs: ['Enderton §2.6', 'Kunen Ch. IV'],
       tags: ['countability', 'relativity of cardinality'],
-      credit: 'Skolem, 1922 (published 1923)',
+      credit: 'Skolem, 1922',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Skolem%27s_paradox' },
       viz(v) {
         const fam = v.select('list of reals', Object.entries(FAMS).map(([value, f]) => ({ value, label: f.label })), 'par', { onChange: () => { extra = []; } });
@@ -309,7 +309,7 @@ export default {
         v.render(() => {
           const R = backForth(steps.value, { mode: mode.value, closed: tgt.value === 'closed' });
           const P = R.pairs;
-          if (tgt.value === 'closed') { s.hline(0, { color: 'red', dash: true, alpha: 0.5 }); s.hline(1, { color: 'red', dash: true, alpha: 0.5 }); s.text('least point of the target', -5.9, 0.03, { size: 10.5, color: 'red', align: 'left' }); }
+          if (tgt.value === 'closed') { s.hline(0, { color: 'red', dash: true, alpha: 0.5 }); s.hline(1, { color: 'red', dash: true, alpha: 0.5 }); s.text('least point of the target', -5.3, 0.035, { size: 10.5, color: 'red', align: 'left' }); }
           // strips of the first elements
           const firstA = R.A.slice(0, 30), firstB = R.B.slice(0, 30);
           for (const a of firstA) { const x = frVal(a); if (Math.abs(x) <= 6) s.line(x, -0.045, x, -0.015, { color: R.usedA.has(frKey(a)) ? 'green' : 'faint', width: 2 }); }
