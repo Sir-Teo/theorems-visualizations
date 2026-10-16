@@ -110,7 +110,7 @@ export default {
           sL.text('mitral closes', cs[0][0] + 2, cs[0][1] - 9, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
           sL.text('aortic opens', cs[1][0] + 4, cs[1][1], { size: 10.5, color: 'muted', align: 'left' });
           sL.text('aortic closes', cs[2][0] + 4, cs[2][1] + 7, { size: 10.5, color: 'muted', align: 'left' });
-          sL.text('mitral opens', cs[3][0] - 2, cs[3][1] + 18, { size: 10.5, color: 'muted', align: 'right' });
+          sL.text('mitral opens', cs[3][0] + 3, cs[3][1] + 16, { size: 10.5, color: 'muted', align: 'left' });
           sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
           const i = beatIdx(R, tc);
           sL.dot(R.V[i], R.P[i], { r: 7, color: 'gold' });
@@ -137,14 +137,14 @@ export default {
       see: ['physio-3.11'],
       refs: ['Guyton–Hall', 'Keener–Sneyd ch. 11'],
       tags: ['Starling law', 'heart'],
-      credit: 'Otto Frank (isolated frog-heart experiments, 1890s) and Ernest H. Starling (heart–lung preparation, 1914; the name "law of the heart" is from his 1918 Linacre lecture)',
+      credit: 'Otto Frank (isolated frog hearts, 1895) and Ernest H. Starling (heart–lung preparation, 1914; the name "law of the heart" is from his Linacre lecture, delivered 1915 and published 1918)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Frank%E2%80%93Starling_law' },
       viz(v) {
         const pv = v.slider('filling pressure (venous side)', 2, 22, 10, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} mmHg` });
         const con = v.select('contractility', [{ value: 1.3, label: 'failing' }, { value: 2.8, label: 'normal' }, { value: 4.5, label: 'increased' }], 2.8);
         const sL = v.stage({ x: [30, 170], y: [0, 170], height: 330, axes: 'box', gutter: true, xlabel: 'ventricular volume (mL)', ylabel: 'ventricular pressure (mmHg)', weight: 1.2 });
         const sS = v.stage({ x: [0, 28], y: [0, 100], height: 330, axes: 'box', gutter: true, xlabel: 'end-diastolic pressure (mmHg)', ylabel: 'stroke volume (mL)', weight: 1 });
-        const curve = (Ees) => { const out = []; for (let p = 2; p <= 22.01; p += 1) { const R = heartBeat({ Pv: p, Ees }); out.push([R.EDP, R.SV]); } return out; };
+        const curve = (Ees) => { const out = []; for (let p = 2; p <= 22.01; p += 2) { const R = heartBeat({ Pv: p, Ees }); out.push([R.EDP, R.SV]); } return out; };
         const curves = { 1.3: curve(1.3), 2.8: curve(2.8), 4.5: curve(4.5) };
         let R = null;
         v.render(() => {
