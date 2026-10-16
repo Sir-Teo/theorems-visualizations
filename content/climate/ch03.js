@@ -77,7 +77,7 @@ export default {
           const a = [['temp.', -0.6], ['H₂O', 0.22], ['clouds', 0.45], ['albedo', 0.11]];
           bar(5.2, 0, 3.75, 'gold', 'AR6 SARF', '3.75', { hatch: true, alpha: 0.5 });
           let run = 3.75; a.forEach(([nm, d], i) => { bar(6.4 + i * 1.1, run, run + d, d < 0 ? 'orange' : 'green', nm, (d > 0 ? '+' : '−') + Math.abs(d).toFixed(2), { alpha: 0.6 }); run += d; });
-          bar(11.2, 0, 3.93, 'gold', 'AR6 ERF', null, { alpha: 0.85 }); sC.text('3.93', 11.2, 3.5, { size: 11, color: 'ink', align: 'center' }); sC.line(11.2, 3.93 - 0.47, 11.2, 3.93 + 0.47, { color: 'ink', width: 1.5 }); sC.text('± 0.47', 11.2, 4.5, { size: 10.5, color: 'ink', align: 'center', baseline: 'bottom' });
+          bar(11.2, 0, 3.93, 'gold', 'AR6 ERF', null, { alpha: 0.85 }); sC.text('3.93', 11.2, 2.0, { size: 11, color: 'ink', align: 'center' }); sC.line(11.2, 3.93 - 0.47, 11.2, 3.93 + 0.47, { color: 'ink', width: 1.5 }); sC.text('± 0.47', 11.2, 4.5, { size: 10.5, color: 'ink', align: 'center', baseline: 'bottom' });
           R = { toa: dI(N), trop: dI(ctrl.kt), adj, c: 280 * kk.value, cut: top.value ? 3 : 0 };
         });
         v.legend([['muted', 'control (280 ppm)'], ['blue', 'instantaneous'], ['red', 'stratosphere adjusted'], ['gold', 'AR6 (assessed)', { area: true }]]);
@@ -159,9 +159,9 @@ AR6, doubled CO₂ from 278 ppm: SARF 3.75, tropospheric adjustments −0.60 + 0
         // τ (yr), a (W m⁻² ppb⁻¹), M (g/mol), AR6 GWP-20/100/500
         const G = {
           CH4: { n: 'methane', tau: 11.8, a: 5.7e-4, M: 16.043, g: [82.5, 29.8, 10.0], col: 'orange' },
-          N2O: { n: 'nitrous oxide', tau: 109, a: 2.8e-3, M: 44.013, g: [273, 273, 130], col: 'purple' },
-          HFC: { n: 'HFC-134a', tau: 14.0, a: 1.67e-1, M: 102.03, g: [4144, 1526, 436], col: 'teal' },
-          CFC: { n: 'CFC-11', tau: 52.0, a: 2.91e-1, M: 137.37, g: [8321, 6226, 2093], col: 'pink' },
+          N2O: { n: 'nitrous oxide', tau: 109, a: 2.8e-3, M: 44.013, g: [273, 273, 130], col: 'orange' },
+          HFC: { n: 'HFC-134a', tau: 14.0, a: 1.67e-1, M: 102.03, g: [4144, 1526, 436], col: 'orange' },
+          CFC: { n: 'CFC-11', tau: 52.0, a: 2.91e-1, M: 137.37, g: [8321, 6226, 2093], col: 'orange' },
         };
         const gas = v.select('gas', [{ value: 'CH4', label: 'CH₄' }, { value: 'N2O', label: 'N₂O' }, { value: 'HFC', label: 'HFC-134a' }, { value: 'CFC', label: 'CFC-11' }], 'CH4');
         const H = v.slider('horizon $H$ (years)', 5, 500, 100, { log: true, sig: 2 });
@@ -179,9 +179,10 @@ AR6, doubled CO₂ from 278 ppm: SARF 3.75, tropospheric adjustments −0.60 + 0
         let R = null;
         v.render(() => {
           const g = G[gas.value], ak = g.a / kgppb(g.M), rel = ak / aco2;
+          sA.setView([0, 300], [1e-3, Math.max(1e3, 10 ** Math.ceil(Math.log10(rel * 2)))]);
           sA.fn((t) => irf(t), { color: 'muted', width: 2.4 });
           sA.fn((t) => rel * Math.exp(-t / g.tau), { color: g.col, width: 2.6 });
-          sA.vline(Math.min(H.value, 300), { color: 'gold', dash: [5, 4] }); sA.text('$H$', Math.min(H.value, 300), 1e3, { size: 12, color: 'gold', align: 'center', baseline: 'top', dy: 4 });
+          sA.vline(Math.min(H.value, 300), { color: 'gold', dash: [5, 4] }); sA.text('$H$', Math.min(H.value, 300), Math.max(1e3, 10 ** Math.ceil(Math.log10(rel * 2))), { size: 12, color: 'gold', align: 'center', baseline: 'top', dy: 4 });
           const top = Math.max(2 * g.g[0], 5); sB.setView([5, 500], [0, top * 1.1]);
           sB.fn((h) => gwp(g, h, ox.value && gas.value === 'CH4'), { color: g.col, width: 2.6, n: 90 });
           g.g.forEach((val, i) => { const h = [20, 100, 500][i]; sB.dot(h, val, { color: 'ink', r: 5, hollow: true }); sB.text(String(val), h, val, { size: 11, color: 'ink', align: i === 2 ? 'right' : 'center', baseline: 'bottom', dy: -6, dx: i === 2 ? -4 : 0 }); });
