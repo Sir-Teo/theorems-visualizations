@@ -225,7 +225,7 @@ Either way each of the three candidates wins under one of the three agendas. If 
       credit: 'Donald G. Saari, 1989–2000',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Positional_voting' },
       viz(v) {
-        const Lc = v.stage({ x: [0, 1], y: [0, 46], axes: 'box', gutter: true, height: 250, full: true, xlabel: 'weight s of a second place', ylabel: 'voters needed', xticks: [[0, '0 plurality'], [0.25, '¼'], [0.5, '½ Borda'], [0.75, '¾'], [1, '1 veto']], title: 'smallest electorate in which the rule $w_s$ reverses every pairwise majority' });
+        const Lc = v.stage({ x: [0, 1], y: [0, 46], axes: 'box', gutter: true, height: 250, full: true, xlabel: 'weight s of a second place', ylabel: 'voters needed', xticks: [[0, '0 plurality'], [0.25, '¼'], [0.5, '½ Borda'], [0.75, '¾'], [1, '1']], title: 'smallest electorate in which the rule $w_s$ reverses every pairwise majority' });
         const Rp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 320, title: 'the profile in Saari’s representation triangle' });
         const Ot = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 320, title: 'outcomes: the procedure line from plurality to anti-plurality' });
         const sS = v.slider('$s$', 0, 1, 0.2, { step: 0.0025 });

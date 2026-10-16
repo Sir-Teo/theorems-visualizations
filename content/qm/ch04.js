@@ -209,7 +209,7 @@ For the oscillator $a$ is the lowering operator 4.2, and (a) is its whole spectr
         const alg = v.select('algebra', [{ value: 'b', label: 'bosons $[a,a^\\dagger]=1$' }, { value: 'f', label: 'fermions $\\{b,b^\\dagger\\}=1$' }], 'b', { onChange: () => { Ns.el.hidden = alg.value === 'f'; v.restart(); } });
         Ns = v.slider('truncation size $N$', 2, 9, 6, { int: true, onChange: () => v.restart() });
         const sM = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: false, weight: 1, equal: true, title: 'the commutator of the truncated matrices' });
-        const sL = v.stage({ x: [-1.25, 1.6], y: [0, 9.6], height: 330, axes: 'box', gutter: true, weight: 1, ylabel: 'E / ħω', xticks: [], title: 'the ladder, built one $a^\\dagger$ at a time' });
+        const sL = v.stage({ x: [-1.25, 2.05], y: [0, 9.6], height: 330, axes: 'box', gutter: true, weight: 1, ylabel: 'E / ħω', xticks: [], title: 'the ladder, built one $a^\\dagger$ at a time' });
         const mats = (N, ferm) => {
           if (ferm) {
             const b = [[0, 1], [0, 0]], bd = M.transpose(b), bdb = M.matMul(bd, b);
@@ -235,19 +235,20 @@ For the oscillator $a$ is the lowering operator 4.2, and (a) is its whole spectr
             textColor: (q) => (Math.abs(q) < 1e-12 ? 'faint' : q > 0 ? 'ink' : 'red'),
           });
           // ladder
-          const top = ferm ? 2.6 : N + 0.6; sL.setView([-1.25, 1.6], [0, top]);
+          const top = ferm ? 2.6 : N + 0.6; sL.setView([-1.25, 2.05], [0, top]);
           const Ed = D.H.map((r, i) => r[i]), ev = M.eigSym(D.H).values.slice().sort((p, q) => p - q);
-          for (let k = 0; k < N; k++) sL.line(-0.9, k + 0.5, 0.9, k + 0.5, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 });
+          for (let k = 0; k < N; k++) { const bad = !ferm && k === N - 1, x0 = bad ? 0.95 : -0.9, x1 = bad ? 1.5 : 0.45; sL.line(x0, k + 0.5, x1, k + 0.5, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 }); }
           for (let k = 0; k < nb; k++) {
-            const bad = !ferm && k === N - 1, E = Ed[k];
-            sL.line(-0.9, E, 0.9, E, { color: bad ? 'red' : 'accent', width: 3 });
-            sL.text(`|${k}⟩`, -1.15, E, { size: 12, color: bad ? 'red' : 'ink', baseline: 'middle' });
-            sL.text(v.fix(E, 2), 0.95, E, { size: 11, color: bad ? 'red' : 'muted', baseline: 'middle' });
-            if (k > 0) sL.arrow(-0.45, Ed[k - 1] + 0.06, -0.45, E - 0.06, { color: 'green', width: 1.6, head: 6 });
+            const bad = !ferm && k === N - 1, E = Ed[k], x0 = bad ? 0.95 : -0.9, x1 = bad ? 1.5 : 0.45;
+            sL.line(x0, E, x1, E, { color: bad ? 'red' : 'accent', width: 3 });
+            if (!bad) sL.text(`|${k}⟩`, x0 - 0.06, E, { size: 12, color: 'ink', baseline: 'middle', align: 'right' });
+            sL.text(bad ? `${v.fix(E, 2)}  |${k}⟩` : v.fix(E, 2), x1 + 0.05, E, { size: bad ? 12 : 11, color: bad ? 'red' : 'muted', baseline: 'middle' });
+            if (k > 0 && !bad) sL.arrow(-0.45, Ed[k - 1] + 0.06, -0.45, E - 0.06, { color: 'green', width: 1.6, head: 6 });
+            if (bad) { sL.line(0.95, Ed[k - 1], 1.22, Ed[k - 1], { color: 'green', width: 1.6 }); sL.arrow(1.22, Ed[k - 1], 1.22, E + 0.08, { color: 'green', width: 1.6, head: 6 }); }
           }
           if (nb >= 2) sL.text('a†', -0.36, (Ed[0] + Ed[1]) / 2, { size: 12, color: 'green', baseline: 'middle', math: true });
-          if (ferm && nb >= 2) { sL.text('b† b† = 0: no third rung', 0.05, 2.15, { size: 12, color: 'red', align: 'center', plate: true }); }
-          if (!ferm && nb === N) sL.text(`should be ${v.fix(N - 0.5, 1)}`, 0.0, Ed[N - 1] - 0.42, { size: 11, color: 'red', align: 'center', plate: true });
+          if (ferm && nb >= 2) { sL.text('b† b† = 0: no third rung', 0.3, 2.15, { size: 12, color: 'red', align: 'center', plate: true }); }
+          if (!ferm && nb === N) sL.text(`should be ${v.fix(N - 0.5, 1)}`, 1.15, N - 0.5 + 0.32, { size: 11, color: 'red', align: 'center', plate: true });
           let tr = 0; for (let i = 0; i < N; i++) tr += D.C[i][i];
           st = { ferm, N, ev, tr, nb };
         }, { period: 11 * STEP, still: 10 * STEP });
@@ -315,7 +316,7 @@ Every state satisfies $\langle H\rangle\ge\tfrac12\hbar\omega$, with equality on
           sR.hline(0.5, { color: 'green', width: 1.3, dash: [5, 4] });
           const kq = FAM[fam.value].k, dmin = Math.pow(kq, 0.25), Emin = Math.sqrt(kq) + sh;
           sR.dot(dmin, Emin, { r: 4.5, color: 'green' }); sR.text(`min ${v.fix(Emin, 4)}`, dmin, Emin, { size: 11, color: 'green', align: 'center', dy: -16, plate: true });
-          sR.text('kinetic ∝ 1/Δx²', 0.36, top - 0.3, { size: 11, color: 'orange' }); sR.text('potential ∝ Δx²', 2.25, Math.min(top - 0.3, 2.3), { size: 11, color: 'purple', align: 'right' });
+          sR.text('kinetic ∝ 1/Δx²', 0.36, top - 0.3, { size: 11, color: 'orange' }); sR.text('potential ∝ Δx²', 1.6, Math.min(top - 0.3, 2.6), { size: 11, color: 'purple', align: 'right' });
           // numerical check
           const mo = moments(G.x, P.re, P.im), T = 0.5 * (mo.sp * mo.sp + mo.mp * mo.mp), V = 0.5 * (mo.sx * mo.sx + mo.mx * mo.mx);
           st = { d, E, T, V, mo, Emin, dmin };

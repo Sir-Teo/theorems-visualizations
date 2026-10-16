@@ -450,7 +450,7 @@ class Stage {
     if (!pts || pts.length < 2) return this;
     const c = this.ctx; c.beginPath(); let pen = false;
     for (const p of pts) {
-      if (!p || !isFinite(p[0]) || !isFinite(p[1]) || (this.lx && !(p[0] > 0)) || (this.ly && !(p[1] > 0))) { pen = false; continue; }
+      if (!p || !Number.isFinite(p[0]) || !Number.isFinite(p[1]) || (this.lx && !(p[0] > 0)) || (this.ly && !(p[1] > 0))) { pen = false; continue; }
       const X = this.X(p[0]), Y = this.Y(p[1]);
       if (pen) c.lineTo(X, Y); else { c.moveTo(X, Y); pen = true; }
     }

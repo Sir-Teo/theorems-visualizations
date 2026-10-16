@@ -40,7 +40,7 @@ Every equilibrium property — equation of state, heat capacities, compressibili
         const model = v.select('1 mol of argon as', [{ value: 'ideal', label: 'ideal gas' }, { value: 'vdw', label: 'van der Waals fluid' }], 'ideal');
         const U0 = 0.4, U1 = 8, V0 = 0.5, V1 = 40;
         const sm = v.stage({ x: [U0, U1], y: [V0, V1], ylog: true, height: 350, axes: 'box', gutter: true, xlabel: 'U (kJ)', ylabel: 'V (L)', weight: 1.05, title: 'entropy $S(U, V)$ of 1 mol (J/K)' });
-        const s3 = v.stage3d({ range: 1.65, height: 350, yaw: -0.95, pitch: 0.38, labels: ['U', 'ln V', 'S'], title: 'the surface and its tangent plane at the state' });
+        const s3 = v.stage3d({ range: 1.55, axisLength: 1.2, height: 350, yaw: -0.7, pitch: 0.5, labels: ['U', 'ln V', 'S'], title: 'the surface and its tangent plane at the state' });
         const h = sm.handle(3.4, 22.4, { color: 'gold', label: 'state', constrain: { x: [0.7, 7.7], y: [0.7, 36] } });
         let st = null;
         v.render(() => {
@@ -159,7 +159,7 @@ Equivalently $dS = \tfrac1T\,dU + \tfrac PT\,dV - \tfrac{\mu}{T}\,dN$. The ident
         const model = v.select('argon as', [{ value: 'ideal', label: 'ideal gas' }, { value: 'vdw', label: 'van der Waals' }], 'ideal');
         const dN = v.slider('$dN$ (mol)', -0.1, 0.1, 0.03, { step: 0.005, fmt: (x) => v.fix(x, 3) });
         const S0 = 125, S1 = 175, V0 = 2, V1 = 50;
-        const sp = v.stage({ x: [S0, S1], y: [V0, V1], height: 320, axes: 'box', gutter: true, xlabel: 'S (J/K)', ylabel: 'V (L)', weight: 1.1, title: 'energy $U(S, V)$ of 1 mol (kJ)' });
+        const sp = v.stage({ x: [S0, S1], y: [V0, V1], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'S (J/K)', ylabel: 'V (L)', weight: 1.1, title: 'energy $U(S, V)$ of 1 mol (kJ)' });
         const sb = v.stage({ x: [-0.6, 4.6], y: [-1, 1], height: 320, axes: 'box', gutter: true, ylabel: 'kJ', weight: 1, title: '$T\\,dS - P\\,dV + \\mu\\,dN$ against $\\Delta U$', xticks: [[0, 'T dS'], [1, '−P dV'], [2, 'μ dN'], [3, 'sum'], [4, 'ΔU']] });
         const se = v.stage({ x: [1e-4, 1], y: [1e-8, 10], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'step size (fraction of A→B)', ylabel: '|mismatch| (kJ)', weight: 0.9, title: 'the error is second order' });
         const A = sp.handle(150, 22.4, { color: 'accent', label: 'A', constrain: { x: [S0 + 2, S1 - 2], y: [V0 + 1, V1 - 1] } });
@@ -171,7 +171,7 @@ Equivalently $dS = \tfrac1T\,dU + \tfrac PT\,dV - \tfrac{\mu}{T}\,dN$. The ident
           const Uf = (S, V, n) => { const vv = V / n; if (vv <= M.b) return NaN; const T = Math.exp((S / n - M.s(1, vv)) / M.cv); return n * M.u(T, vv); };
           const Uk = (S, VL) => Uf(S, VL * L, 1) / KJ;
           sp.heat((S, VL) => Math.log10(Uk(S, VL)), { range: [-0.6, 1.6], cmap: 'theme', color: 'orange', res: 3, key: 'U' + model.value });
-          sp.contour(Uk, [0.5, 1, 2, 4, 8, 16], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x + ' kJ', res: 70 });
+          sp.contour(Uk, [0.5, 1, 2, 4], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x + ' kJ', res: 70 });
           sp.arrow(A.x, A.y, B.x, B.y, { color: 'ink', width: 1.8 });
           const x0 = [A.x, A.y * L, 1], d = [B.x - A.x, (B.y - A.y) * L, dN.value];
           const Tm = dpart(Uf, x0, 0, 1e-4), Pm = -dpart(Uf, x0, 1, 1e-5 * x0[1]), mum = dpart(Uf, x0, 2, 1e-5);
@@ -193,7 +193,7 @@ Equivalently $dS = \tfrac1T\,dU + \tfrac PT\,dV - \tfrac{\mu}{T}\,dN$. The ident
           for (const k of ks) { const e = Math.abs(exact(k) - lin(k)) / KJ; if (e > 0) pts.push([k, e]); }
           const e1 = pts.length ? pts[0][1] : 1e-3;
           se.fn((k) => e1 * k * k, { color: 'faint', width: 1.4, dash: [6, 4] });
-          se.text('slope 2', 3e-3, e1 * 9e-6, { size: 11, color: 'muted', dy: -8 });
+          se.text('slope 2', 3e-3, e1 * 9e-6, { size: 11, color: 'muted', dx: -14, dy: -12, align: 'right' });
           se.path(pts, { color: 'green', width: 1.6 }); se.dots(pts, { r: 3.5, color: 'green' });
           se.dot(1, e1, { r: 5, color: 'gold' });
           st = { Tm, Pm, mum, sum, dU, e1 };
@@ -270,7 +270,7 @@ Away from equilibrium the entropy increases as energy flows toward the colder si
           sm.path(path.slice(0, k + 1), { color: 'gold', width: 2.6 });
           sm.dot(cur[0], cur[1], { r: 6, color: 'gold' });
           const end = path[path.length - 1];
-          if (u >= 1) sm.dot(end[0], end[1], { r: 8, color: 'green', hollow: true, label: 'maximum', labelPos: 'e' });
+          if (u >= 1) sm.dot(end[0], end[1], { r: 8, color: 'green', hollow: true, label: 'maximum', labelPos: 'nw' });
           // chambers
           const q = vars(cur[0], cur[1]), [a, b] = both(cur[0], cur[1]), xw = q.V1 / VT, rp = tRamp(v);
           const tc = (T) => pick(rp, (T - 50) / 300);
@@ -386,9 +386,9 @@ with molar (or per-particle) entropy $s = S/N$ and volume $v = V/N$. Hence the i
         v.render(() => {
           const M = vdw('CO2', model.value === 'ideal');
           const mu = (T, PB) => { const vv = M.vOf(T, PB * BAR); return M.g(T, vv); };
-          sm.heat((T, PB) => mu(T, PB) / KJ, { range: [-60, -25], cmap: 'theme', color: 'purple', res: 4, key: 'mu' + model.value });
-          sm.contour((T, PB) => mu(T, PB) / KJ, [-56, -52, -48, -44, -40, -36, -32, -28], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x.toFixed(0), res: 60 });
-          if (model.value === 'vdw') sm.text(`critical point ${v.fix(M.Tc, 0)} K, ${v.fix(M.Pc / BAR, 0)} bar (off the left edge)`, T0 + 4, 165, { size: 11, color: 'muted', plate: true });
+          sm.heat((T, PB) => mu(T, PB) / KJ, { range: [-62, -18], cmap: 'theme', color: 'purple', res: 4, key: 'mu' + model.value });
+          sm.contour((T, PB) => mu(T, PB) / KJ, [-52, -48, -44, -40, -36, -32, -28, -24], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x.toFixed(0), res: 60 });
+          if (model.value === 'vdw') sm.text(`critical point ${v.fix(M.Tc, 0)} K, ${v.fix(M.Pc / BAR, 0)} bar (off the left edge)`, T1 - 4, 1.35, { size: 11, color: 'muted', plate: true, align: 'right' });
           const r = route.value, a = [A.x, A.y], b = [B.x, B.y];
           const at = (u) => {
             if (r === 'line') return [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];

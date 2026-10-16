@@ -47,7 +47,7 @@ export default {
 In an anharmonic potential none of this survives: $\langle x\rangle$ departs from the classical orbit and the packet spreads and shears.`,
       scope: String.raw`Exact for quadratic Hamiltonians (oscillators, free particles, uniform fields). In other potentials a narrow packet follows the classical orbit only until it has spread over the region where the force varies (the Ehrenfest time).`,
       idea: String.raw`Ehrenfest's theorem (qm-2.9) gives $\frac{d}{dt}\langle x\rangle=\langle p\rangle/m$, $\frac{d}{dt}\langle p\rangle=-\langle V'(x)\rangle$; for $V'=m\omega^2x$ the average of the force is the force at the average, so the means obey Hamilton's equations exactly (mech-4.5). The quantum flow of a quadratic Hamiltonian is a rigid rotation of phase space (4.6 is the quarter turn), which carries the Gaussian Wigner function of $|\alpha\rangle$ along without deforming it. With $\lambda x^4$ added, $\langle V'(x)\rangle\neq V'(\langle x\rangle)$ and different energies circulate at different rates, so the blob shears into a spiral.`,
-      caption: String.raw`The phase plane shows the state's **Wigner function** $W(x,p)$ (blue positive, red negative) or its **Husimi function** $Q$, computed at every frame from $\Psi(x,t)$, which is evolved by the split-step Fourier method. Green: the path of $(\langle x\rangle,\langle p\rangle)$; red: a classical particle started at the same point; black ellipse: the $1\sigma$ contour from the computed covariance. **Drag the gold start point**. With $\lambda=0$ the blob circles rigidly on the classical orbit and $\Delta x\,\Delta p$ (right) sits at $\tfrac12$. **Raise the anharmonicity $\lambda$**: the blob shears into a spiral, negative fringes appear in $W$, $\Delta x\Delta p$ grows, and $\langle x\rangle$ (bottom) falls away from the classical curve.`,
+      caption: String.raw`The phase plane shows the state's **Wigner function** $W(x,p)$ (blue positive, red negative) or its **Husimi function** $Q$, computed at every frame from $\Psi(x,t)$, which is evolved by the split-step Fourier method. Green: the path of $(\langle x\rangle,\langle p\rangle)$; red: a classical particle started at the same point; black ellipse: the $1\sigma$ contour from the computed covariance. **Drag the gold start point**. With $\lambda=0$ the blob circles rigidly on the classical orbit and the uncertainty $\sqrt{\det\Sigma}$ (right; it equals $\Delta x\Delta p$ when $x$ and $p$ are uncorrelated) sits at $\tfrac12$. **Raise the anharmonicity $\lambda$**: the blob shears into a spiral, negative fringes appear in $W$, the uncertainty grows, and $\langle x\rangle$ (bottom) falls away from the classical curve.`,
       deps: ['qm-4.7', 'qm-2.9', 'mech-4.5'],
       see: ['qm-6.12', 'qm-4.6'],
       refs: ['Sakurai ch. 2'],
@@ -56,10 +56,10 @@ In an anharmonic potential none of this survives: $\langle x\rangle$ departs fro
       viz(v) {
         const M = v.M, G = oscGrid(512, 20), x = G.x, DT = 0.01, PER = 4 * TAU, NH = 50, phi = hermiteFns(x, NH);
         let sim = null;
-        const lam = v.slider('anharmonicity $\\lambda$ in $V=\\tfrac12x^2+\\lambda x^4$', 0, 0.05, 0.03, { step: 0.001, onChange: () => sim.reset() });
+        const lam = v.slider('anharmonicity $\\lambda$ in $V=\\tfrac12x^2+\\lambda x^4$', 0, 0.05, 0, { step: 0.001, onChange: () => sim.reset() });
         const view = v.select('phase-space picture', [{ value: 'W', label: 'Wigner $W$' }, { value: 'Q', label: 'Husimi $Q$' }], 'W');
         const sP = v.stage({ x: [-4.6, 4.6], y: [-4.6, 4.6], height: 380, axes: 'box', gutter: true, equal: true, weight: 1.1, xlabel: 'x', ylabel: 'p', title: 'phase space at time $t$' });
-        const sU = v.stage({ x: [0, PER], y: [0, 2.2], height: 380, axes: 'box', gutter: true, weight: 1, xlabel: 't', ylabel: 'Δx·Δp', title: 'uncertainty product $\\Delta x\\,\\Delta p$' });
+        const sU = v.stage({ x: [0, PER], y: [0, 2.2], height: 380, axes: 'box', gutter: true, weight: 1, xlabel: 't', ylabel: '√det Σ', title: 'uncertainty $\\sqrt{\\det\\Sigma}=\\sqrt{\\Delta x^2\\Delta p^2-C_{xp}^2}\\ge\\frac12$' });
         const sX = v.stage({ x: [0, PER], y: [-4, 4], height: 150, axes: 'box', gutter: true, full: true, xlabel: 't', ylabel: '⟨x⟩', title: '$\\langle x\\rangle(t)$ (green) against the classical $x(t)$ (red dashes)' });
         const hS = sP.handle(2.6, 0.8, { color: 'gold', r: 7, label: 'start', labelPos: 'ne', onDrag: () => sim.reset(), constrain: (X, Y) => { const r = Math.hypot(X, Y), k = r > 3.4 ? 3.4 / r : 1; return [X * k, Y * k]; } });
         let stepper = null, sl = null;
@@ -162,7 +162,7 @@ so one quadrature is **quieter than the vacuum** at the cost of the other. Under
           sP.path(ellipsePts(cv.mx, cv.mp, cv.sxx, cv.spp, cv.sxp, 1), { color: 'ink', width: 1.6 });
           // Δx(t), Δp(t)
           const ymax = Math.max(1.2, Math.exp(r) / Math.SQRT2 * 1.12); sT.setView([0, PER], [0, ymax]);
-          sT.hline(Math.SQRT1_2, { color: 'green', width: 1.3, dash: [5, 4] }); sT.text('vacuum 1/√2', 0.1, Math.SQRT1_2, { size: 10.5, color: 'green', dy: -9, plate: true });
+          sT.hline(Math.SQRT1_2, { color: 'green', width: 1.3, dash: [5, 4] }); sT.text('vacuum 1/√2', PER * 0.995, Math.SQRT1_2, { size: 10.5, color: 'green', dy: 11, align: 'right', plate: true });
           sT.path(S.tr.map((q) => [q[0], q[2]]), { color: 'purple', width: 1.8 });
           sT.path(S.tr.map((q) => [q[0], q[1]]), { color: 'orange', width: 2.4 });
           sT.vline(S.T, { color: 'gold', width: 1.2 }); sT.dot(S.T, Math.sqrt(cv.sxx), { r: 5, color: 'orange' });
@@ -180,7 +180,7 @@ so one quadrature is **quieter than the vacuum** at the cost of the other. Under
           const mins = []; for (let k = 1; k < S.tr.length - 1; k++) if (S.tr[k][1] < S.tr[k - 1][1] && S.tr[k][1] <= S.tr[k + 1][1]) mins.push(S.tr[k][0]);
           let mean = 0; P.forEach((q, k) => { mean += k * q; });
           st = { S, cv, dxmin: Math.min(...S.tr.map((q) => q[1])), per: mins.length >= 2 ? (mins[mins.length - 1] - mins[0]) / (mins.length - 1) : NaN, fdev, sv, mean, Wmin: Wd.min };
-        }, { period: PER, still: 2.4 });
+        }, { period: PER, still: 7.7 });
         v.legend([['orange', 'Δx'], ['purple', 'Δp'], ['green', 'vacuum', { dash: true }], ['ink', '$1\\sigma$ ellipse'], ['accent', 'P(n) (projection)', { area: true }], ['orange', 'squeezed-vacuum formula', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
@@ -327,7 +327,7 @@ A quantum $\hbar\omega_j$ of vibration is a **phonon** of wave number $k_j=j\pi/
           st = { E, Z, np, s0: s0[4], sg: sg[4] };
         }, { period: 40, still: 3 });
         v.legend([['gold', 'occupied level $n_j>0$'], ['accent', 'mode in its ground state'], ['accent', 'probability cloud of each atom', { area: true }], ['ink', 'zero-point spread ±√⟨u²⟩₀'], ['orange', 'ω(k)']]);
-        v.readout(() => st && `${st.np} phonon${st.np === 1 ? '' : 's'} · $E = \\sum_j\\hbar\\omega_j(n_j+\\tfrac12) = ${v.fix(st.E, 4)}\\,\\hbar\\omega_0$, of which zero-point $\\tfrac12\\sum_j\\hbar\\omega_j = ${v.fix(st.Z, 4)}\\,\\hbar\\omega_0$ · middle atom: rms displacement ${v.fix(st.sg, 3)} against ${v.fix(st.s0, 3)} from zero-point motion alone (unit $\\sqrt{\\hbar/m\\omega_0}$) · mode frequencies from diagonalizing the spring matrix match $2\\omega_0\\sin\\frac{j\\pi}{2(N+1)}$ to $${v.sci(Math.max(edev, 1e-16), 1)}$.`);
+        v.readout(() => st && `${st.np} phonon${st.np === 1 ? '' : 's'} · $E = \\sum_j\\hbar\\omega_j(n_j+\\tfrac12) = ${v.fix(st.E, 4)}\\,\\hbar\\omega_0$, of which zero-point $\\tfrac12\\sum_j\\hbar\\omega_j = ${v.fix(st.Z, 4)}\\,\\hbar\\omega_0$ · middle atom: spread ${v.fix(st.sg, 3)} against ${v.fix(st.s0, 3)} from zero-point motion alone (unit $\\sqrt{\\hbar/m\\omega_0}$)${mode.value === 'coh' ? ' — coherent states keep the vacuum spread while the mean swings' : ''} · mode frequencies from diagonalizing the spring matrix match $2\\omega_0\\sin\\frac{j\\pi}{2(N+1)}$ to $${v.sci(Math.max(edev, 1e-16), 1)}$.`);
       },
     },
     // ------------------------------------------------------------------ 4.12

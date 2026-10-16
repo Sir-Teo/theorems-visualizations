@@ -507,7 +507,7 @@ $$\frac1{a_n}\sum_{m=1}^nx_m\to0.$$`,
       viz(v) {
         const cS = v.select('$c_n=x_n/a_n$', [{ value: 'alt', label: '$(-1)^n/\\sqrt n$' }, { value: 'rand', label: '$\\pm1/n$ random' }, { value: 'harm', label: '$1/n$ (diverges)' }], 'alt');
         const pS = v.slider('$p$ in $a_n=n^p$', 0, 1.5, 1, { step: 0.05 });
-        const NMAX = 100000, grid = logGrid(1, NMAX, 220);
+        const NMAX = 100000, grid = [...new Set(logGrid(1, NMAX, 220).map((g) => 2 * Math.ceil(g / 2)))]; // even n: no aliasing of the alternating series
         const L = v.stage({ x: [1, NMAX], y: [-1.5, 1.5], xlog: true, height: 300, axes: 'box', gutter: true, xlabel: '$n$', title: '$b_n=\\sum_{m\\le n}x_m/a_m$' });
         const R = v.stage({ x: [1, NMAX], y: [-1.5, 1.5], xlog: true, height: 300, axes: 'box', gutter: true, xlabel: '$n$', title: '$\\frac1{a_n}\\sum_{m\\le n}x_m$' });
         let st = null;
@@ -582,7 +582,7 @@ $$\frac1{a_n}\sum_{m=1}^nx_m\to0.$$`,
       statement: String.raw`Let $X_1,X_2,\dots$ be i.i.d. with $EX_i=0$ and $EX_i^2=\sigma^2<\infty$. Then for every $\eps>0$
 $$\frac{S_n}{\sqrt n\,(\log n)^{1/2+\eps}}\to0\quad\text{a.s.}$$`,
       idea: String.raw`Put $a_n=\sqrt n(\log n)^{1/2+\eps}$ for $n\ge2$ (and $a_1>0$). Then $\sum_n\operatorname{var}(X_n/a_n)=\sigma^2\big(a_1^{-2}+\sum_{n\ge2}\frac1{n(\log n)^{1+2\eps}}\big)<\infty$, so $\sum X_n/a_n$ converges a.s. by Theorem 2.5.6, and Kronecker's lemma (2.5.9) gives $S_n/a_n\to0$. The truth is sharper: the law of the iterated logarithm puts $\limsup S_n/\sqrt{2n\log\log n}=\sigma$.`,
-      caption: String.raw`Left: 12 seeded $\pm1$ walks up to $n=2^{17}$ (log scale in $n$) with three envelopes: $\pm\sqrt n$, which the walks keep crossing; $\pm\sqrt{2n\log\log n}$, the exact law-of-the-iterated-logarithm size; and $\pm\sqrt n(\log n)^{1/2+\eps}$, which they eventually never touch. Right: the ratios $|S_n|/(\sqrt n(\log n)^{1/2+\eps})$, drifting to $0$ (slowly, like a power of $1/\log n$).`,
+      caption: String.raw`Left: 12 seeded $\pm1$ walks up to $n=2^{17}$ (log scale in $n$), divided by $\sqrt n$, against three envelopes (also divided by $\sqrt n$): $\pm\sqrt n$, which the walks keep crossing; $\pm\sqrt{2n\log\log n}$, the exact law-of-the-iterated-logarithm size; and $\pm\sqrt n(\log n)^{1/2+\eps}$, which they eventually never touch. Right: the ratios $|S_n|/(\sqrt n(\log n)^{1/2+\eps})$, drifting to $0$ (slowly, like a power of $1/\log n$).`,
       deps: ['prob-2.5.6', 'prob-2.5.9'],
       see: ['prob-8.5.1'],
       tags: ['law of large numbers', 'rates'],
@@ -590,20 +590,21 @@ $$\frac{S_n}{\sqrt n\,(\log n)^{1/2+\eps}}\to0\quad\text{a.s.}$$`,
         const eS = v.slider('$\\eps$', 0.02, 0.6, 0.1, { step: 0.02 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const NMAX = 2 ** 17, grid = logGrid(3, NMAX, 260);
-        const L = v.stage({ x: [3, NMAX], y: [-1500, 1500], xlog: true, height: 330, weight: 1.35, axes: 'box', gutter: true, xlabel: '$n$', title: 'walks and envelopes' });
+        const L = v.stage({ x: [3, NMAX], y: [-4, 4], xlog: true, height: 330, weight: 1.35, axes: 'box', gutter: true, xlabel: '$n$', title: '$S_n/\\sqrt n$ and the envelopes divided by $\\sqrt n$' });
         const R = v.stage({ x: [3, NMAX], y: [0, 1.2], xlog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: '$|S_n|/(\\sqrt n(\\log n)^{1/2+\\eps})$' });
         let cache = null, st = null;
         v.render(() => {
           const eps = eS.value;
           if (!cache || cache.seed !== seed) { const r = v.rng(seed * 89 + 4), paths = []; for (let p = 0; p < 12; p++) paths.push(partial(() => sgn(r), grid)); cache = { seed, paths }; }
-          const env = (n) => Math.sqrt(n) * Math.log(n) ** (0.5 + eps), lil = (n) => Math.sqrt(2 * n * Math.log(Math.log(n)));
-          const top = env(NMAX) * 1.08; L.setView(null, [-top, top]);
-          L.between((n) => env(n), (n) => -env(n), 3, NMAX, { fill: 'green', fillAlpha: 0.09 });
-          [[env, 'green', 2.2, null], [lil, 'orange', 1.8, [6, 4]], [Math.sqrt, 'muted', 1.4, [3, 3]]].forEach(([f, c, w, d]) => { L.fn(f, { color: c, width: w, dash: d }); L.fn((n) => -f(n), { color: c, width: w, dash: d }); });
-          cache.paths.forEach((pp) => L.path(grid.map((g, k) => [g, pp[k]]), { color: 'accent', width: 1, alpha: 0.6 }));
+          const env = (n) => Math.sqrt(n) * Math.log(n) ** (0.5 + eps);
+          const e1 = (n) => Math.log(n) ** (0.5 + eps), e2 = (n) => Math.sqrt(2 * Math.log(Math.log(n))), e3 = () => 1;
+          const top = e1(NMAX) * 1.08; L.setView(null, [-top, top]);
+          L.between((n) => e1(n), (n) => -e1(n), 3, NMAX, { fill: 'green', fillAlpha: 0.09 });
+          [[e1, 'green', 2.2, null], [e2, 'orange', 1.8, [6, 4]], [e3, 'muted', 1.4, [3, 3]]].forEach(([f, c, w, d]) => { L.fn(f, { domain: [3, NMAX], color: c, width: w, dash: d }); L.fn((n) => -f(n), { domain: [3, NMAX], color: c, width: w, dash: d }); });
+          cache.paths.forEach((pp) => L.path(grid.map((g, k) => [g, pp[k] / Math.sqrt(g)]), { color: 'accent', width: 1, alpha: 0.6 }));
           cache.paths.forEach((pp) => R.path(grid.map((g, k) => [g, Math.abs(pp[k]) / env(g)]), { color: 'accent', width: 1, alpha: 0.55 }));
           R.hline(0, { color: 'green', width: 1.8, dash: [6, 4] });
-          v.legend([['accent', '$S_n$'], ['muted', '$\\pm\\sqrt n$', { dash: true }], ['orange', '$\\pm\\sqrt{2n\\log\\log n}$', { dash: true }], ['green', '$\\pm\\sqrt n(\\log n)^{1/2+\\eps}$']]);
+          v.legend([['accent', '$S_n/\\sqrt n$'], ['muted', '$\\pm1$', { dash: true }], ['orange', '$\\pm\\sqrt{2\\log\\log n}$', { dash: true }], ['green', '$\\pm(\\log n)^{1/2+\\eps}$']]);
           const half = grid.map((g, k) => [g, k]).filter(([g]) => g >= NMAX / 2);
           let crossS = 0, maxR = 0;
           cache.paths.forEach((pp) => { if (half.some(([g, k]) => Math.abs(pp[k]) > Math.sqrt(g))) crossS++; half.forEach(([g, k]) => (maxR = Math.max(maxR, Math.abs(pp[k]) / env(g)))); });
@@ -635,7 +636,7 @@ $$\frac{S_n}{n^{1/p}}\to0\quad\text{a.s.}$$`,
           if (!cache || cache.key !== key) { const r = v.rng(seed * 67 + 8), paths = []; for (let i = 0; i < 15; i++) paths.push(partial(() => sgn(r) * (1 - r()) ** (-1 / a), grid)); cache = { key, paths }; }
           const vals = cache.paths.map((pp) => grid.map((g, k) => pp[k] / g ** (1 / p)));
           const late = vals.map((vv) => Math.max(...vv.slice(-40).map(Math.abs)));
-          const ext = clampN(Math.max(...vals.map((vv) => Math.max(...vv.slice(20).map(Math.abs)))) * 1.1, 1, 200);
+          const ext = clampN(Math.max(...vals.map((vv) => Math.max(...vv.slice(90).map(Math.abs)))) * 1.15, 1, 200);
           S.setView(null, [-ext, ext]);
           S.hline(0, { color: 'muted', width: 1 });
           const ok = p < a;

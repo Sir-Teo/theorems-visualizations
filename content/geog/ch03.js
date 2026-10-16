@@ -263,7 +263,7 @@ for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on 
 $$h = \frac{1}{R}\sqrt{x_\varphi^2 + y_\varphi^2},\qquad k = \frac{1}{R\cos\varphi}\sqrt{x_\lambda^2 + y_\lambda^2},$$
 where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between the images of the meridian and the parallel is given by $\cos\theta' = (x_\varphi x_\lambda + y_\varphi y_\lambda)/(R^2 h k\cos\varphi)$. For example the plate carrée has $h = 1$, $k = \sec\varphi$; Mercator has $h = k = \sec\varphi$; the polar stereographic has $h = k = \sec^2(c/2)$ with $c = 90^\circ - \varphi$.`,
       idea: String.raw`A small step $R\,d\varphi$ north moves the map point by $(x_\varphi, y_\varphi)\,d\varphi$, and a small step $R\cos\varphi\,d\lambda$ east (the parallel has radius $R\cos\varphi$, 1.2) moves it by $(x_\lambda, y_\lambda)\,d\lambda$; dividing lengths gives $h$ and $k$. They are the lengths of the two columns of the derivative matrix in the orthonormal east–north frame. When $\theta' = 90^\circ$ — on all cylindrical, conic and polar azimuthal maps — $h$ and $k$ are the extreme scales at the point; otherwise (Mollweide, Robinson away from the central meridian) the extremes lie in other directions, which is what Tissot's indicatrix (3.4) captures.`,
-      caption: String.raw`Choose a projection and drag the probe. At the probe, a 16° meridian arc (purple) and a 16° parallel arc (orange) are drawn on the map, next to a bar of true length 16° at the map's nominal scale (bottom left). The right panel plots $h$ and $k$ along the probe's meridian, computed by finite differences of the projection (solid) and from the closed formulas where they exist (dashed).`,
+      caption: String.raw`Choose a projection and drag the probe. At the probe, a 24° meridian arc (purple) and a 24° parallel arc (orange) are drawn on the map, next to a bar of true length 24° at the map's nominal scale (bottom left). The right panel plots $h$ and $k$ along the probe's meridian, computed by finite differences of the projection (solid) and from the closed formulas where they exist (dashed).`,
       deps: ['geog-3.1', 'pma-9.17'],
       refs: ['Snyder §4'],
       tags: ['map projections', 'distortion'],
@@ -273,7 +273,7 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
         const sA = v.stage({ height: 350, weight: 1.25 });
         const sB = v.stage({ x: [-90, 90], y: [0, 4], axes: 'box', gutter: true, height: 350, xlabel: 'latitude φ (°) along the probe’s meridian', ylabel: 'scale factor' });
         const G = v.globe(sA, { projection: 'mollweide', center: [0, 0], graticule: 15, drag: false });
-        const P = G.handle(95, 50, { label: 'probe', color: 'ink' });
+        const P = G.handle(95, 50, { label: 'probe', color: 'ink', r: 5 });
         const ANALYTIC = {
           equirectangular: (f) => [1, 1 / Math.cos(f * D2R)],
           mercator: (f) => [1 / Math.cos(f * D2R), 1 / Math.cos(f * D2R)],
@@ -282,7 +282,7 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           azimuthalEquidistant: (f) => { const c = (90 - f) * D2R; return [1, c / Math.sin(c)]; },
         };
         let last = '';
-        const DEL = 8;
+        const DEL = 12;
         v.render(() => {
           const name = pj.value;
           if (name !== last) { last = name; G.set({ projection: name, center: AZ.has(name) ? [0, 90] : [0, 0] }); }
@@ -291,16 +291,18 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           const p = [P.lon, P.lat], J = jacobian(pr, p);
           const mer = [], par = [];
           for (let i = -20; i <= 20; i++) { mer.push([p[0], clamp(p[1] + (DEL * i) / 20, -89.9, 89.9)]); par.push([p[0] + (DEL * i) / 20 / Math.cos(p[1] * D2R), p[1]]); }
-          G.path(mer, { geodesic: false, color: 'purple', width: 4.5 });
-          G.path(par, { geodesic: false, color: 'orange', width: 4.5 });
+          G.path(mer, { geodesic: false, color: 'purple', width: 6 });
+          G.path(par, { geodesic: false, color: 'orange', width: 6 });
           // reference bar of true length 2·DEL at nominal scale
           const [x0, x1] = sA.xr, [y0] = sA.yr, L = 2 * DEL * D2R, bx = x0 + (x1 - x0) * 0.05, by = y0 + (sA.yr[1] - y0) * 0.06;
           sA.line(bx, by, bx + L, by, { color: 'ink', width: 4 });
-          sA.text('16° at true scale', bx + L + 0.04, by, { size: 11, color: 'ink', baseline: 'middle' });
+          sA.text('24° at true scale', bx + L, by, { size: 11, color: 'ink', baseline: 'middle', dx: 8 });
           sA.corner(LABEL[name] + (AZ.has(name) ? ' (polar)' : ''), 'tl', { color: 'muted', weight: 600, plate: true });
           // h, k along the meridian
           const fLo = name === 'stereographic' ? -19 : AZ.has(name) ? -85 : -85, fHi = 85, H = [], K = [];
           for (let f = fLo; f <= fHi; f += 0.5) { const j = jacobian(pr, [p[0], f]); if (j) { H.push([f, j.h]); K.push([f, j.k]); } else { H.push(null); K.push(null); } }
+          const top = Math.min(4, Math.max(1.6, ...H.concat(K).filter(Boolean).map((q) => q[1])) * 1.08);
+          sB.setView([-90, 90], [0, top]);
           sB.hline(1, { color: 'green', width: 1, dash: [2, 3] });
           sB.path(K, { color: 'orange', width: 2.6 });
           sB.path(H, { color: 'purple', width: 2.6 });
@@ -337,11 +339,11 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
       viz(v) {
         const NAMES = ['robinson', 'mollweide', 'mercator', 'equirectangular', 'lambert', 'stereographic', 'orthographic'];
         const pj = v.select('projection', NAMES.map((n) => ({ value: n, label: LABEL[n] })), 'robinson');
-        const rad = v.slider('probe circle radius', 0.5, 25, 10, { step: 0.5, fmt: (x) => x.toFixed(1) + '°' });
+        const rad = v.slider('probe circle radius', 0.5, 25, 14, { step: 0.5, fmt: (x) => x.toFixed(1) + '°' });
         const sA = v.stage({ height: 340, weight: 1.35 });
         const sB = v.stage({ x: [-2.5, 2.5], y: [-1.35, 1.35], equal: true, axes: false, height: 340, title: 'the derivative at the probe' });
         const G = v.globe(sA, { projection: 'robinson', center: [0, 0], graticule: 30, drag: false });
-        const P = G.handle(110, 52, { label: 'probe', color: 'ink' });
+        const P = G.handle(110, 52, { label: 'probe', color: 'ink', r: 5 });
         let last = '';
         function deviation(p, J, r) { // true image of the geodesic circle vs the linear ellipse, relative to a·r
           let worst = 0;
@@ -415,7 +417,7 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
         const sA = v.stage({ height: 340, weight: 1.35 });
         const sB = v.stage({ x: [0, 180], y: [0, 180], axes: 'box', gutter: true, height: 340, xlabel: 'angle on the globe γ (°)', ylabel: 'angle on the map γ′ (°)', xticks: [0, 45, 90, 135, 180], yticks: [0, 45, 90, 135, 180] });
         const G = v.globe(sA, { projection: 'equirectangular', center: [0, 0], graticule: 15, drag: false });
-        const X = G.handle(30, 58, { label: 'X', color: 'ink' });
+        const X = G.handle(30, 58, { label: 'X', color: 'ink', r: 5 });
         let last = '';
         const mapAngle = (p, ba, bb) => {
           const c = G.project(p[0], p[1]), qa = v.geo('destination', p, ba, 0.01), qb = v.geo('destination', p, bb, 0.01), A = G.project(qa[0], qa[1]), B = G.project(qb[0], qb[1]);
@@ -432,7 +434,7 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           const road = (b, col) => G.path([v.geo('destination', p, b + 180, 22), p, v.geo('destination', p, b, 22)], { color: col, width: 3 });
           road(b1.value, 'accent'); road(b1.value + gam.value, 'orange');
           // the angle wedge on the map
-          const arc = []; for (let i = 0; i <= 20; i++) arc.push(v.geo('destination', p, b1.value + (gam.value * i) / 20, 5));
+          const arc = []; for (let i = 0; i <= 20; i++) arc.push(v.geo('destination', p, b1.value + (gam.value * i) / 20, 8));
           G.path(arc, { geodesic: false, color: 'ink', width: 1.6 });
           sA.corner(LABEL[name] + (CONF.has(name) ? ' — conformal' : ' — not conformal'), 'tl', { color: CONF.has(name) ? 'green' : 'red', weight: 600, plate: true });
           // sweep
@@ -467,7 +469,7 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
         const EQ = new Set(['lambert', 'mollweide']);
         const pj = v.select('projection', NAMES.map((n) => ({ value: n, label: LABEL[n] + (EQ.has(n) ? ' ✓' : '') })), 'mollweide');
         const sA = v.stage({ height: 340, weight: 1.35 });
-        const sB = v.stage({ x: [-85, 85], y: [0.2, 30], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'latitude (°) on the central meridian', ylabel: 'area factor ab' });
+        const sB = v.stage({ x: [-85, 85], y: [0.2, 40], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'latitude (°) on the central meridian', ylabel: 'area factor ab' });
         const G = v.globe(sA, { projection: 'mollweide', center: [0, 0], graticule: 30, drag: false });
         const AUS = v.geo('landmass', 'Australia'), C0 = ringCentroid(AUS[0]);
         const H = G.handle(20, 52, { label: 'Australia (copy)', color: 'purple' });
@@ -486,11 +488,11 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           G.polygon(R, { fill: 'purple', fillAlpha: 0.35, color: 'purple', width: 1.6 });
           sA.corner(LABEL[name] + (EQ.has(name) ? ' — equal-area' : ' — not equal-area'), 'tl', { color: EQ.has(name) ? 'green' : 'red', weight: 600, plate: true });
           // area factor on the central meridian
-          const pts = []; for (let f = -84; f <= 84; f += 1) { const T = G.distortion([0.0001, f]); pts.push(T ? [f, clamp(T.area, 0.21, 29)] : null); }
+          const pts = []; for (let f = -80; f <= 80; f += 1) { const T = G.distortion([0.0001, f]); pts.push(T ? [f, clamp(T.area, 0.21, 39)] : null); }
           sB.hline(1, { color: 'green', width: 1.4, dash: [6, 4] });
           sB.path(pts, { color: EQ.has(name) ? 'green' : 'red', width: 2.6 });
           const ma = mapArea((l, f) => G.project(l, f), R[0]), ta = Math.abs(v.geo('sphericalArea', R[0]));
-          if (ma) sB.dot(H.lat, clamp(ma / ta, 0.21, 29), { r: 6, color: 'purple' });
+          if (ma) sB.dot(H.lat, clamp(ma / ta, 0.21, 39), { r: 6, color: 'purple' });
           v.legend([['green', 'area kept (±2%)', { area: true }], ['red', 'enlarged', { area: true }], ['blue', 'shrunk', { area: true }], ['purple', "Australia's measured ratio", { dot: true }]]);
         });
         v.readout(() => {
@@ -543,12 +545,12 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           // land: fill rings that project whole, stroke the rest with breaks
           for (const poly of LANDS) for (const ring of poly.rings) {
             const pts = []; let ok = true, prev = null;
-            for (const q of ring) { const m = F.fwd(q[0], q[1]); if (!m || (prev && Math.abs(q[0] - prev[0]) > 180)) { pts.push(null); ok = false; } if (m) pts.push(m); prev = q; }
+            for (const q of ring) { const m = F.fwd(q[0], q[1]); if (!m || (F.f === 'cyl' && prev && Math.abs(q[0] - prev[0]) > 180)) { pts.push(null); ok = false; } if (m) pts.push(m); prev = q; }
             if (ok) sA.poly(pts, { fill: 'gold', fillAlpha: 0.26, color: 'gold', width: 0.9, alpha: 0.85 });
             else sA.path(pts, { color: 'gold', width: 0.9, alpha: 0.85 });
           }
           // indicatrices
-          const r0 = 5 * D2R;
+          const r0 = 3 * D2R;
           for (let lat = F.f === 'cyl' ? -75 : -30; lat <= 75; lat += 15) for (let l = -165; l < 180; l += 30) {
             const c = F.fwd(l, lat); if (!c) continue; const [h, k] = F.hk(lat);
             const ux = F.f === 'cyl' ? [1, 0] : [Math.cos(l * D2R), Math.sin(l * D2R)], uy = F.f === 'cyl' ? [0, 1] : [-Math.sin(l * D2R), Math.cos(l * D2R)];
@@ -559,12 +561,12 @@ where subscripts are partial derivatives (pma-9.17). The angle $\theta'$ between
           // (h, k) plane
           sB.path([[0.2, 0.2], [5, 5]], { color: 'blue', width: 2, dash: [6, 4] });
           sB.path([[0.2, 5], [5, 0.2]], { color: 'orange', width: 2, dash: [6, 4] });
-          sB.text('conformal: h = k', 3.6, 3.6, { size: 11.5, color: 'blue', weight: 600, align: 'right', dy: -10 });
+          sB.text('conformal: h = k', 0.23, 0.3, { size: 11.5, color: 'blue', weight: 600, align: 'left' });
           sB.text('equal-area: hk = 1', 0.3, 3.4, { size: 11.5, color: 'orange', weight: 600, align: 'left' });
           const lo = F.f === 'cyl' ? 0 : -30, hi = F.f === 'cyl' ? 80 : 89.5, cur = [];
           for (let lat = lo; lat <= hi; lat += 0.5) cur.push(F.hk(lat));
           sB.path(cur, { color: 'red', width: 2.6 });
-          for (let lat = Math.ceil(lo / 15) * 15; lat <= 75; lat += 15) { const q = F.hk(lat); sB.dot(q[0], q[1], { r: 4, color: 'red', label: `${lat}°`, labelPos: 'se', math: false, labelColor: 'muted' }); }
+          for (let lat = Math.ceil(lo / 15) * 15; lat <= 75; lat += 15) { const q = F.hk(lat); sB.dot(q[0], q[1], { r: 4, color: 'red', label: Math.abs(Math.log(q[0])) + Math.abs(Math.log(q[1])) > 0.25 ? `${lat}°` : undefined, labelPos: 'w', math: false, labelColor: 'muted' }); }
           sB.dot(1, 1, { r: 7, color: 'green', label: 'isometry', labelPos: 'nw', math: false, labelColor: 'green' });
           v.legend([['red', 'scales (h, k) along the latitudes'], ['blue', 'conformal', { dash: true }], ['orange', 'equal-area', { dash: true }], ['green', 'isometry (1, 1)', { dot: true }]]);
         });

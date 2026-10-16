@@ -81,10 +81,10 @@ export default {
           const c = cS.value, a = aS.value, r = reservation(L, H, c), show = rev.value || acc != null;
           const iS = stopAt(a), iO = stopAt(r);
           const W0 = Math.max(0, Math.max(k, show ? Math.max(iS, iO) + 1 : 0) - 20);
-          A.setView([W0 + 0.3, W0 + 20.7], [150, 250]);
+          A.setView([W0 - 0.3, W0 + 20.7], [150, 250]);
           if (show) {
             A.hline(r, { color: 'green', width: 2 }); A.text(`r* = ${v.fix(r, 1)}`, W0 + 20.7, r, { dx: -4, dy: -9, align: 'right', size: 11.5, weight: 700, color: 'green' });
-            A.hline(a, { color: 'orange', width: 2, dash: [6, 4] }); A.text(`a = ${a}`, W0 + 0.3, a, { dx: 6, dy: a > r - 6 && a < r + 6 ? 11 : -9, size: 11.5, weight: 700, color: 'orange' });
+            A.hline(a, { color: 'orange', width: 2, dash: [6, 4] }); A.text(`a = ${a}`, W0 + 20.7, a, { dx: -4, dy: a > r - 6 && a < r + 6 ? 11 : a < r ? 11 : -9, align: 'right', size: 11.5, weight: 700, color: 'orange' });
           }
           const upto = show ? Math.max(k, iS + 1, iO + 1) : k;
           for (let i = 0; i < Math.min(upto, offers.length); i++) {
@@ -92,10 +92,10 @@ export default {
             A.line(x, 150, x, offers[i], { color: seen ? 'gold' : 'faint', width: 1, alpha: 0.5 });
             A.dot(x, offers[i], { r: seen ? 5 : 3.5, color: i === acc ? 'accent' : seen ? 'gold' : 'muted', hollow: !seen });
           }
-          if (acc == null && k < offers.length) A.text('?', k + 1, 200, { align: 'center', size: 18, weight: 700, color: 'muted' });
+          if (acc == null && k < offers.length && !show) A.text('?', k + 1, 200, { align: 'center', size: 18, weight: 700, color: 'muted' });
           if (show) {
             A.dot(iO + 1, offers[iO], { r: 10, hollow: true, color: 'green', width: 2.2 }); A.text('optimizer stops', iO + 1, offers[iO], { dy: -18, align: 'center', size: 10.5, weight: 700, color: 'green' });
-            A.dot(iS + 1, offers[iS], { r: 13, hollow: true, color: 'orange', width: 2 }); A.text('satisficer stops', iS + 1, offers[iS], { dy: iS === iO ? -32 : 20, align: 'center', size: 10.5, weight: 700, color: 'orange' });
+            A.dot(iS + 1, offers[iS], { r: 13, hollow: true, color: 'orange', width: 2 }); A.text('satisficer stops', iS + 1, offers[iS], { dx: 16, dy: iS === iO ? 16 : 0, size: 10.5, weight: 700, color: 'orange', plate: true });
           }
           if (acc != null) A.text('sold', acc + 1, offers[acc], { dy: 20, align: 'center', size: 11, weight: 700, color: 'accent' });
           // expected payoff curve
@@ -335,7 +335,7 @@ export default {
         const pl = v.slider('recall probability, less famous names', 0.1, 0.9, 8.4 / 20, { step: 0.005 });
         const Q = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 290, title: 'is the letter more often 1st or 3rd?' });
         const Cn = v.stage({ x: [0, 1], y: [0, 6], axes: false, height: 290, weight: 1.35, title: 'share of the letter’s occurrences in each position' });
-        const F = v.stage({ x: [-20.5, 20.5], y: [0, 0.14], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'famous names recalled − less famous names recalled', ylabel: 'probability', title: 'the famous-names study as recall-based judgment (19 famous vs 20 less famous names)' });
+        const F = v.stage({ x: [-12.5, 17.5], y: [0, 0.14], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'famous names recalled − less famous names recalled', ylabel: 'probability', title: 'the famous-names study as recall-based judgment (19 famous vs 20 less famous names)' });
         const ans = {};
         Q.onClick((x, y) => { const i = Math.floor((5.6 - y) / 1.1); if (i >= 0 && i < 5 && x > 2.2) ans[LET[i]] = x < 6 ? 'first' : 'third'; });
         let st = {};
@@ -369,7 +369,7 @@ export default {
           const pd = new Map(); let win = 0, tie = 0, ymax = 0;
           for (let i = 0; i <= 19; i++) for (let j = 0; j <= 20; j++) { const d = i - j, p = pa[i] * pb[j]; pd.set(d, (pd.get(d) || 0) + p); if (d > 0) win += p; else if (d === 0) tie += p; }
           for (const p of pd.values()) ymax = Math.max(ymax, p);
-          F.setView([-20.5, 20.5], [0, Math.max(0.1, ymax * 1.25)]);
+          F.setView([-12.5, 17.5], [0, Math.max(0.1, ymax * 1.25)]);
           for (const [d, p] of pd) F.rect(d - 0.4, 0, d + 0.4, p, { fill: d > 0 ? 'purple' : d === 0 ? 'muted' : 'teal', fillAlpha: 0.7, stroke: false });
           F.vline(0, GUIDE);
           F.text('famous sex judged more numerous →', 1, Math.max(0.1, ymax * 1.25), { dy: 12, size: 11.5, weight: 700, color: 'purple' });

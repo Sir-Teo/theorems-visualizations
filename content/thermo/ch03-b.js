@@ -196,8 +196,10 @@ Examples: the adiabatic coefficient $(\partial T/\partial P)_s = Tv\alpha/c_P$, 
           for (let i = 1; i <= f.k; i++) sw.line(0.02, 0.88 - i * 0.235 + 0.11, 0.98, 0.88 - i * 0.235 + 0.11, { color: 'grid', width: 1 });
           // map
           const val = (T, PB) => direct(k, T, PB * BAR) * t.scale;
-          const sc = k === 'J' ? 20 : 0.5;
-          sm.heat((T, PB) => slog(val(T, PB), sc * 0.2), { range: [-0.9, 0.9], cmap: 'theme-diverging', neg: k === 'JT' ? 'red' : 'blue', pos: k === 'JT' ? 'blue' : 'red', res: 4, key: 'm' + k });
+          const [x0c, rc] = k === 'J' ? [0.5, 3.6] : [0.1, 0.9];
+          sm.heat((T, PB) => slog(val(T, PB), x0c), { range: [-rc, rc], cmap: 'theme-diverging', neg: k === 'JT' ? 'red' : 'blue', pos: k === 'JT' ? 'blue' : 'red', res: 4, key: 'm' + k });
+          if (k === 'ad') sm.corner('red: positive everywhere — adiabatic compression heats', 'tl', { color: 'red', plate: true });
+          if (k === 'J') sm.corner('blue: negative everywhere — free expansion cools', 'tl', { color: 'blue', plate: true });
           if (k === 'JT') {
             sm.contour((T, PB) => val(T, PB), [0], { color: 'green', width: 2.6, res: 80 });
             sm.vline(621, { color: 'ink', dash: [5, 4], width: 1.3 });
@@ -290,13 +292,13 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
       tags: ['stability', 'convexity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Thermodynamic_stability' },
       viz(v) {
-        const mode = v.select('picture', [{ value: 'S', label: 'entropy S(U), concave?' }, { value: 'F', label: 'van der Waals F(v), convex?' }], 'F', { onChange: () => hd.set(mode.value === 'S' ? 2.32 : 0.15, 0) });
+        const mode = v.select('picture', [{ value: 'S', label: 'entropy S(U), concave?' }, { value: 'F', label: 'van der Waals F(v), convex?' }], 'F', { onChange: () => hd.set(mode.value === 'S' ? 1.9 : 0.15, 0) });
         const del = v.slider('split $\\delta$', 0.01, 0.6, 0.18, { step: 0.005, fmt: (x) => v.fix(x, 3) });
         const Tsl = v.slider('$T$ (van der Waals)', 240, 320, 270, { step: 1, fmt: (x) => x + ' K' });
         const sa = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'F', weight: 1.1 });
         const sb = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'P (bar)', weight: 1 });
         const CO2 = vdw('CO2');
-        const Stoy = (u) => 2.2 * Math.log(u) + 0.3 * Math.exp(-((u - 2) ** 2) / 0.08);
+        const Stoy = (u) => 2.2 * Math.log(u) + 0.25 * Math.tanh((u - 2) / 0.12);
         const hd = sa.handle(0.15, 0, { color: 'gold', label: 'state', constrain: (x) => [x, curveY(x)] });
         let curveY = (x) => 0;
         let st = null;
@@ -308,7 +310,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           const f0 = (vL) => CO2.f(T, vL * L) / KJ;
           let tilt = 0;
           if (!S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(f0(x)); } const h0 = hullFn(xs0, ys0, false); tilt = h0.segs.length ? -(h0.segs[0][3] - h0.segs[0][2]) / (h0.segs[0][1] - h0.segs[0][0]) : CO2.P(T, hd.x * L) * L / KJ; }
-          if (S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(Stoy(x)); } const h0 = hullFn(xs0, ys0, true); const sg = h0.segs.find((q) => q[1] - q[0] < 1.5); tilt = sg ? -(sg[3] - sg[2]) / (sg[1] - sg[0]) : 0; }
+          if (S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(Stoy(x)); } const h0 = hullFn(xs0, ys0, true); const sg = h0.segs[0]; tilt = sg ? -(sg[3] - sg[2]) / (sg[1] - sg[0]) : 0; }
           const f = S ? (u) => Stoy(u) + tilt * u : (vL) => f0(vL) + tilt * vL;
           curveY = f;
           const xs = [], ys = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs.push(x); ys.push(f(x)); }
@@ -316,7 +318,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           const d = del.value * (S ? 1 : 0.25), x0 = clamp(hd.x, X[0] + d, X[1] - d);
           hd.set(x0, f(x0));
           let lo = Math.min(...ys), hi = Math.max(...ys);
-          if (!S) { let bar0 = 0; xs.forEach((x, i) => { bar0 = Math.max(bar0, ys[i] - hull(x)); }); if (bar0 > 1e-4) hi = Math.min(hi, lo + 7 * bar0); }
+          if (!S) { let bar0 = 0; xs.forEach((x, i) => { bar0 = Math.max(bar0, ys[i] - hull(x)); }); if (bar0 > 1e-4) hi = Math.min(hi, lo + 3.5 * bar0); }
           sa.setView(X, [lo - 0.06 * (hi - lo), hi + 0.08 * (hi - lo)]);
           sa.setTitle(S ? '$S(U) - U/T_{\\text{co}}$ — must be concave' : `$F(v) + P_{\\text{co}}v$ at ${T} K — must be convex`);
           sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S − U/Tco' : 'F + Pco·v (kJ/mol)');
@@ -459,7 +461,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
         v.render(() => {
           const f = S.frame, L0 = lg.value;
           const xmin = Math.max(1e-6, (f.T || 1e-3) * 0.3);
-          sp.setScale({ xlog: L0, ylog: L0, x: L0 ? [Math.min(1e-3, xmin), 1.5] : [0, 1.1], y: L0 ? [1e-14, 2] : [0, 0.75] });
+          sp.setScale({ xlog: L0, ylog: L0, x: L0 ? [Math.min(1e-3, xmin), 1.5] : [0, 1.1], y: L0 ? [1e-14, 12] : [0, 0.75] });
           const dom = L0 ? [Math.min(1e-3, xmin), 1.5] : [1e-4, 1.1];
           sp.fn((T) => Sof(T, 0), { color: 'blue', width: 2.4, domain: dom, n: 400 });
           sp.fn((T) => Sof(T, B1.value), { color: 'red', width: 2.4, domain: dom, n: 400 });

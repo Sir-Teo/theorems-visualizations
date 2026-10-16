@@ -135,9 +135,9 @@ because within each region of the first $\ell-1$ layers the $n_\ell$ units of la
       credit: 'Yarotsky, 2017',
       statement: String.raw`Let $g_s=T^{\circ s}$ be the $s$-fold tent map (2.6). Then
 $$f_m(x)=x-\sum_{s=1}^m\frac{g_s(x)}{4^s}$$
-is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, and $\sup_{[0,1]}|f_m(x)-x^2|=4^{-(m+1)}$. It is computed by a ReLU network of depth $O(m)$ and constant width, so accuracy $\eps$ costs only $O(\log(1/\eps))$ units — exponentially fewer than the $\eps^{-1/2}$ pieces any shallow network needs. By polarization, $xy=2\bigl(\tfrac{x+y}2\bigr)^2-\tfrac{x^2}2-\tfrac{y^2}2$, so products on $[0,1]^2$ are approximated to $\tfrac32\cdot 4^{-m}$ with three copies; from products come polynomials and, by Taylor expansion, efficient approximation of smooth functions (Yarotsky).`,
+is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, and $\sup_{[0,1]}|f_m(x)-x^2|=4^{-(m+1)}$. It is computed by a ReLU network of depth $O(m)$ and constant width, so accuracy $\eps$ costs only $O(\log(1/\eps))$ units — exponentially fewer than the $\eps^{-1/2}$ pieces any shallow network needs. By polarization, $xy=2\bigl(\tfrac{x+y}2\bigr)^2-\tfrac{x^2}2-\tfrac{y^2}2$, so products on $[0,1]^2$ are approximated to within $2\cdot4^{-(m+1)}=\tfrac12\cdot4^{-m}$ by three copies (the three errors lie in $[0,4^{-(m+1)}]$ and enter with weights $2,-\tfrac12,-\tfrac12$); from products come polynomials and, by Taylor expansion, efficient approximation of smooth functions (Yarotsky).`,
       idea: String.raw`Interpolating $x^2$ on a grid of spacing $h$ leaves an error of $h^2/4$ at each midpoint. Halving the grid adds one new knot in every cell, and the correction needed — the gap between the coarse chord and the fine chord — is a row of identical tents of height $h^2/4$, which is exactly $g_s/4^s$ for $h=2^{-(s-1)}$. Each tent row is one more composition of the tent map, i.e. one more layer, so the error shrinks by $4$ per layer. Depth reuses computation that a shallow network would have to pay for separately in every cell.`,
-      caption: String.raw`**Square**: $x^2$ (grey) and $f_m$ (blue), with the subtracted sawtooth layers $g_s/4^s$ drawn beneath in their own colours. **Product**: the error $|P_m(x,y)-xy|$ over the unit square for the polarization network. Right, on a log scale: the measured sup error against the number of layers $m$ — each layer divides it by exactly $4$ (line: $4^{-(m+1)}$, and the product bound).`,
+      caption: String.raw`**Square**: $x^2$ (grey) and $f_m$ (blue), with the subtracted sawtooth layers $g_s/4^s$ drawn beneath in their own colours. **Product**: the error $|P_m(x,y)-xy|$ over the unit square for the polarization network. Right, on a log scale: the measured sup error against the number of layers $m$ — each layer divides it by exactly $4$ (dashed: $4^{-(m+1)}$, and $\tfrac12 4^{-m}$ for the product).`,
       deps: ['deep-2.6'],
       refs: ['Prince §4.5'],
       tags: ['Yarotsky', 'depth efficiency'],
@@ -149,7 +149,7 @@ is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, an
         const tL = titler(sL);
         const P = (x, y, m) => 2 * yarotsky((x + y) / 2, m) - 0.5 * yarotsky(x, m) - 0.5 * yarotsky(y, m);
         const supSq = (m) => { let e = 0; for (let i = 0; i <= 8192; i++) { const x = i / 8192; e = Math.max(e, Math.abs(yarotsky(x, m) - x * x)); } return e; };
-        const supPr = (m) => { let e = 0; for (let i = 0; i <= 128; i++) for (let j = 0; j <= 128; j++) { const x = i / 128, y = j / 128; e = Math.max(e, Math.abs(P(x, y, m) - x * y)); } return e; };
+        const supPr = (m) => { let e = 0; for (let i = 0; i <= 300; i++) for (let j = 0; j <= 300; j++) { const x = i / 300, y = j / 300; e = Math.max(e, Math.abs(P(x, y, m) - x * y)); } return e; };
         const cs = memo();
         let info = null;
         v.render(() => {
@@ -164,17 +164,17 @@ is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, an
             sL.fn((u) => { const x = u / 0.6; return 0.7 + 0.18 * (yarotsky(x, m) - x * x) * 4 ** (m + 1); }, { color: 'red', width: 1.6, fill: 'red', fillAlpha: 0.15, base: 0.7, n: 3000, domain: [0, 0.6] });
             sL.text(`error × 4${String(m + 1).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join('')} over [0, 1] (squeezed): ${2 ** m} identical arches`, 0.02, 0.98, { size: 11.5, color: 'red', baseline: 'top' });
           } else {
-            sL.setView([0, 1], [0, 1]); tL(`error $|P_m(x,y)-xy|$ (scale: 0 to $4^{-m}$)`);
-            sL.heat((x, y) => Math.abs(P(x, y, m) - x * y), { cmap: 'theme', color: 'red', range: [0, 4 ** -m], res: 3, key: 'p' + m });
+            sL.setView([0, 1], [0, 1]); tL(`error $|P_m(x,y)-xy|$ (colour scale: 0 to $\\tfrac12\\,4^{-m}$)`);
+            sL.heat((x, y) => Math.abs(P(x, y, m) - x * y), { cmap: 'theme', color: 'red', range: [0, 0.5 * 4 ** -m], res: 3, key: 'p' + m });
             sL.contour((x, y) => x * y, [0.1, 0.3, 0.5, 0.7, 0.9], { color: 'ink', width: 1, alpha: 0.5, res: 60 });
           }
-          sR.fn((k) => (prod ? 1.5 * 4 ** -k : 4 ** -(k + 1)), { color: 'muted', width: 1.5, dash: [5, 4] });
+          sR.fn((k) => (prod ? 0.5 * 4 ** -k : 4 ** -(k + 1)), { color: 'muted', width: 1.5, dash: [5, 4] });
           sR.path(C, { color: prod ? 'red' : 'accent', width: 2.2 }); sR.dots(C, { r: 4, color: prod ? 'red' : 'accent' });
           sR.dot(m, C[m][1], { r: 7, color: 'gold' });
           info = { m, e: C[m][1], prod, ratio: m > 0 ? C[m - 1][1] / C[m][1] : null };
         });
-        v.legend([['accent', 'measured sup error ($x^2$)'], ['red', 'measured sup error ($xy$)'], ['muted', '$4^{-(m+1)}$ / $\\tfrac32 4^{-m}$', { dash: true }]]);
-        v.readout(() => info && String.raw`$m=${info.m}$ layers: sup error $=${tsci(info.e, 3)}$` + (info.prod ? ` (bound $\\tfrac32\\cdot4^{-${info.m}}=${tsci(1.5 * 4 ** -info.m, 3)}$)` : ` $=4^{-${info.m + 1}}$ exactly: ${Math.abs(info.e - 4 ** -(info.m + 1)) < 1e-12 ? '✓' : '≈'}`) + (info.ratio ? ` · previous layer / this layer $=${info.ratio.toFixed(3)}$` : '') + ` · a network of depth $${info.m}$ and width 3 ($\\approx${3 * info.m + 1}$ units) versus $2^{${info.m}}=${2 ** info.m}$ pieces for a shallow interpolant of the same accuracy`);
+        v.legend([['accent', 'measured sup error ($x^2$)'], ['red', 'measured sup error ($xy$)'], ['muted', 'bounds $4^{-(m+1)}$ / $\\tfrac12 4^{-m}$', { dash: true }]]);
+        v.readout(() => info && String.raw`$m=${info.m}$ layers: sup error $=${tsci(info.e, 3)}$` + (info.prod ? ` (bound $\\tfrac12\\cdot4^{-${info.m}}=${tsci(0.5 * 4 ** -info.m, 3)}$, attained)` : ` $=4^{-${info.m + 1}}$ exactly: ${Math.abs(info.e - 4 ** -(info.m + 1)) < 1e-12 ? '✓' : '≈'}`) + (info.ratio ? ` · previous layer / this layer $=${info.ratio.toFixed(3)}$` : '') + (info.prod ? ` · three copies of the depth-$${info.m}$ squaring network` : ` · a network of depth $${info.m}$ and width 3 ($\\approx${3 * info.m + 1}$ units) versus $2^{${info.m}}=${2 ** info.m}$ pieces for a shallow interpolant of the same accuracy`));
       },
     },
     // ───────────────────────────────────────────────────────────── 2.10

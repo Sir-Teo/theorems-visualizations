@@ -294,9 +294,9 @@ Equivalently, they form the smallest set of strings that contains the letters an
       refs: ['Enderton §1.4'],
       tags: ['induction', 'recursion'],
       viz(v) {
-        const F = formulaField(v, 'formula', '(p ∧ ¬q) → (r ∨ ¬(p ↔ s))', { width: 240, maxLetters: 6, onChange: () => S.reset() });
-        const qty = v.select('', [{ value: 'par', label: 'parentheses' }, { value: 'let', label: 'letters vs binary' }, { value: 'len', label: 'length vs depth' }], 'par', { onChange: () => S.reset() });
-        const broken = v.toggle('break it', false, { onChange: () => S.reset() });
+        const F = formulaField(v, 'formula', '(p ∧ ¬q) → (r ∨ ¬(p ↔ s))', { width: 240, maxLetters: 6, onChange: () => S.reset(null, { at: 'end' }) });
+        const qty = v.select('', [{ value: 'par', label: 'parentheses' }, { value: 'let', label: 'letters vs binary' }, { value: 'len', label: 'length vs depth' }], 'par', { onChange: () => S.reset(null, { at: 'end' }) });
+        const broken = v.toggle('break it', false, { onChange: () => S.reset(null, { at: 'end' }) });
         const strip = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
         // value of a node from its children's values; returns {val, txt (TeX of the clause), ok}

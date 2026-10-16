@@ -39,7 +39,7 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
         const tp = v.stage({ x: [0, LM], y: [0, YM], height: 330, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'output y', title: 'total product $f(L, \\bar K)$', weight: 1.1 });
         const mp = v.stage({ x: [0, LM], y: [0, 2.6], height: 210, axes: 'box', gutter: true, xlabel: 'labour L', ylabel: 'output per worker', full: true, title: 'marginal product (tangent slope) and average product (ray slope)' });
         v.legend([['accent', 'total product'], ['orange', 'marginal product $MP_L$'], ['teal', 'average product $AP_L$'], ['green', 'peak of $AP_L$: $MP_L = AP_L$']]);
-        const h = tp.handle(4, 4, { color: 'gold', r: 7, constrain: (x) => { const L = clamp(x, 0.15, LM - 0.2); return [L, FAM[fam.value].T.f(L, Kb.value)]; } });
+        const h = tp.handle(7.5, 4, { color: 'gold', r: 7, constrain: (x) => { const L = clamp(x, 0.15, LM - 0.2); return [L, FAM[fam.value].T.f(L, Kb.value)]; } });
         let st = {};
         v.render(() => {
           const T = FAM[fam.value].T, K = Kb.value, f = (L) => T.f(L, K), L = h.x, y = f(L);
@@ -61,13 +61,13 @@ and the **average product** of labour is $AP_L = f(L, K)/L$. Holding capital fix
           tp.clip(() => tp.line(0, 0, LM, AP * LM, { color: 'teal', width: 2.2 }));
           slopeLine(tp, L, y, MP, 70, { color: 'orange', width: 2.6 });
           tp.line(L, 0, L, y, GUIDE);
-          tp.corner(`tangent slope $MP_L = ${v.fix(MP, 3)}$,  ray slope $AP_L = ${v.fix(AP, 3)}$`, 'tl');
+          tp.corner(`tangent slope $MP_L = ${v.fix(MP, 3)}$,  ray slope $AP_L = ${v.fix(AP, 3)}$`, 'br', { plate: true });
           // MP and AP
-          const top = fam.value === 's' ? 2.6 : 2.6;
+          const top = fam.value === 's' ? Math.ceil(argmax((x) => T.mp(x, K)[0], 0.05, LM, 120).f * 13) / 10 : 2.6;
           mp.setView([0, LM], [0, top]);
           mp.fn((x) => T.mp(x, K)[0], { domain: [0.02, LM], color: 'orange', width: 2.6 });
           mp.fn((x) => f(x) / x, { domain: [0.02, LM], color: 'teal', width: 2.6 });
-          if (pk) { mp.line(pk.x, 0, pk.x, pk.f, { color: 'green', width: 1.2, dash: [4, 3] }); mp.dot(pk.x, pk.f, { r: 6, color: 'green', label: `AP peak, L = ${v.fix(pk.x, 2)}`, labelPos: 'nw', math: false }); }
+          if (pk) { mp.line(pk.x, 0, pk.x, pk.f, { color: 'green', width: 1.2, dash: [4, 3] }); mp.dot(pk.x, pk.f, { r: 6, color: 'green' }); plateText(mp, `AP peak, L = ${v.fix(pk.x, 2)}`, pk.x, pk.f, { dx: 10, dy: -16, color: 'green', align: 'left' }); }
           mp.line(L, 0, L, top, GUIDE);
           mp.dot(L, Math.min(MP, top), { r: 5, color: 'orange' }); mp.dot(L, AP, { r: 5, color: 'teal' });
           st = { T, K, L, y, MP, AP, pk, num: (f(L + 1e-4) - f(L - 1e-4)) / 2e-4 };
@@ -328,7 +328,7 @@ In particular, with constant returns ($k = 1$), paying each input its marginal p
           const { homo, k, y, pL, pK, sum } = st, f3 = (q) => v.fix(q, 4);
           const cmp = Math.abs(sum - y) < 1e-4 ? 'exactly exhausts the output' : sum > y ? `exceeds output by ${f3(sum - y)}: marginal-product pay is **not feasible**` : `leaves a residual of ${f3(y - sum)}`;
           if (!homo) return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$ and $y = ${f3(y)}$: ratio ${v.fix(sum / y, 4)}. This technology is not homogeneous: drag the bundle along a ray and the ratio (the elasticity of scale) changes, from above 1 near the origin to below 1 far out, so Euler's identity holds with no constant $k$, and the stack ${cmp}.`;
-          return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$; $k\\,y = ${v.fix(k, 2)} \\times ${f3(y)} = ${f3(k * y)}$ (difference $${v.sci(Math.abs(sum - k * y) || 1e-16, 2)}$). Paying marginal products ${cmp}. Labour's payment as a share of output, $L\\,MP_L/y = ${v.fix(pL / y, 3)}$, is its exponent $a$.`;
+          return `$L\\,MP_L + K\\,MP_K = ${f3(pL)} + ${f3(pK)} = ${f3(sum)}$; $k\\,y = ${v.fix(k, 2)} \\times ${f3(y)} = ${f3(k * y)}$ (difference ${Math.abs(sum - k * y) < 1e-12 ? '$< 10^{-12}$' : `$${v.sci(Math.abs(sum - k * y), 2)}$`}). Paying marginal products ${cmp}. Labour's payment as a share of output, $L\\,MP_L/y = ${v.fix(pL / y, 3)}$, is its exponent $a$.`;
         });
       },
     },
@@ -453,13 +453,13 @@ the last unit of money buys the same extra output in either input. With non-conv
           s.dot(opt.x[0], opt.x[1], { r: 7, color: 'green' });
           const m = T.mp(opt.x[0], opt.x[1]), trs = m[0] / m[1];
           const near = Math.abs(C - opt.c) / opt.c < 0.004;
-          const status = near ? 'tangent: cheapest way to make y' : C > opt.c ? 'cuts the isoquant: slide further in' : 'cannot reach the isoquant';
+          const status = near ? 'touches: cheapest way to make y' : C > opt.c ? (X.length ? 'cuts the isoquant: slide further in' : 'whole visible isoquant is cheaper: slide in') : 'cannot reach the isoquant';
           s.corner(`C = ${v.fix(C, 1)} · ${status}`, 'tr', { color: near ? 'green' : C > opt.c ? 'gold' : 'red', weight: 700, plate: true });
           // right panel
           g.clip(() => g.path(cost.map((q) => [q[0], q[1]]), { color: 'purple', width: 2.6 }));
           g.hline(C, { color: 'accent', width: 2, dash: [6, 4] });
           g.text(`C = ${v.fix(C, 1)}`, 11.8, C, { dy: -8, size: 11.5, color: 'accent', align: 'right', weight: 700 });
-          g.dot(opt.x[0], opt.c, { r: 7, color: 'green', label: `min ${v.fix(opt.c, 2)}`, labelPos: 'n', math: false });
+          g.dot(opt.x[0], opt.c, { r: 7, color: 'green', label: `min ${v.fix(opt.c, 2)}`, labelPos: opt.x[0] < 1.5 ? 'ne' : 'n', math: false });
           for (const q of X) g.dot(q[0], C, { r: 5, color: 'gold' });
           st = { T, w, r, y, C, opt, num, trs, near, k: fam.value };
         });

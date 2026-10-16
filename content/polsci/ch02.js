@@ -536,7 +536,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Participation_criterion' },
       viz(v) {
         const Ic = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 210, full: true, title: 'the electorate' });
-        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 180, full: true, title: 'IRV, round by round' });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 160, full: true, title: 'IRV, round by round' });
         const BASE = { P: mkProfile(3, [[46, 'ABC'], [24, 'BCA'], [30, 'CAB']]), r: [1, 2, 0], g: 8 };
         const P = copyProfile(BASE.P);
         let gr = BASE.r.slice(), seed = 3, msg = '';

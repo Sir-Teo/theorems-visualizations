@@ -295,11 +295,11 @@ export function normClause(c) {
 }
 /**
  * DPLL with unit propagation; branches on the most frequent unassigned variable in the shortest open clauses.
- * Returns {sat, model (array index 1..n of booleans), nodes (decisions), props (unit propagations), steps}.
+ * Returns {sat, model (array index 1..n of booleans), nodes (decisions), props (unit propagations), conflicts (dead ends), work (clause visits)}.
  */
 export function dpll(cls, n, { limit = 2e6 } = {}) {
   const val = new Int8Array(n + 1); // 0 unassigned, 1 true, −1 false
-  let nodes = 0, props = 0, work = 0, aborted = false;
+  let nodes = 0, props = 0, work = 0, conflicts = 0, aborted = false;
   const litVal = (l) => (l > 0 ? val[l] : -val[-l]);
   const trail = [];
   const assign = (l) => { val[Math.abs(l)] = l > 0 ? 1 : -1; trail.push(Math.abs(l)); };
@@ -309,7 +309,7 @@ export function dpll(cls, n, { limit = 2e6 } = {}) {
     for (let changed = true; changed;) {
       changed = false;
       for (const c of cls) {
-        work += c.length;
+        work++;
         let free = 0, last = 0, sat = false;
         for (const l of c) { const x = litVal(l); if (x === 1) { sat = true; break; } if (x === 0) { free++; last = l; } }
         if (sat) continue;
@@ -322,6 +322,7 @@ export function dpll(cls, n, { limit = 2e6 } = {}) {
   const choose = () => {
     let best = 0, bestLen = 1e9; const cnt = new Float64Array(n + 1);
     for (const c of cls) {
+      work++;
       let free = 0, sat = false;
       for (const l of c) { const x = litVal(l); if (x === 1) { sat = true; break; } if (x === 0) free++; }
       if (sat || free === 0) continue;
@@ -335,7 +336,7 @@ export function dpll(cls, n, { limit = 2e6 } = {}) {
   };
   const rec = () => {
     if (work > limit) { aborted = true; return false; }
-    if (!propagate()) return false;
+    if (!propagate()) { conflicts++; return false; }
     const x = choose();
     if (!x) return true;
     for (const l of [x, -x]) {
@@ -349,17 +350,17 @@ export function dpll(cls, n, { limit = 2e6 } = {}) {
     return false;
   };
   const sat = rec();
-  return { sat, aborted, nodes, props, work, model: sat ? Array.from(val, (x) => x === 1) : null };
+  return { sat, aborted, nodes, props, work, conflicts, model: sat ? Array.from(val, (x) => x === 1) : null };
 }
-/** Brute-force check by truth table over integer clauses (for counting rows). */
+/** Brute-force check by truth table over integer clauses: rows scanned and clause checks until a model is found. */
 export function bruteSat(cls, n) {
-  const R = 2 ** n;
+  const R = 2 ** n; let checks = 0;
   for (let m = 0; m < R; m++) {
     let ok = true;
-    for (const c of cls) { let s = false; for (const l of c) { const b = (m >> (Math.abs(l) - 1)) & 1; if ((l > 0) === (b === 1)) { s = true; break; } } if (!s) { ok = false; break; } }
-    if (ok) return { sat: true, rows: m + 1 };
+    for (const c of cls) { checks++; let s = false; for (const l of c) { const b = (m >> (Math.abs(l) - 1)) & 1; if ((l > 0) === (b === 1)) { s = true; break; } } if (!s) { ok = false; break; } }
+    if (ok) return { sat: true, rows: m + 1, checks };
   }
-  return { sat: false, rows: R };
+  return { sat: false, rows: R, checks };
 }
 /**
  * Resolution saturation, level by level, with tautology removal and forward subsumption.
