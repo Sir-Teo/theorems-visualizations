@@ -313,7 +313,7 @@ The rate $n^{-1/2}$ does not depend on $d$, unlike the $n^{-1/d}$ of generic Lip
         const kS = v.slider('depth $k$', 1, 8, 4, { int: true });
         const sT = v.stage({ x: [0, 1], y: [-0.06, 1.1], height: 220, axes: 'box', gutter: true, xlabel: '$x$', weight: 0.8, minWidth: 220, title: 'one layer: tent $T$ (2 units)' });
         const sP = v.stage({ x: [0.5, 8.5], y: [1, 400], ylog: true, height: 220, axes: 'box', gutter: true, xlabel: 'depth $k$', weight: 1.2, title: 'linear pieces, same parameter count $6k+1$' });
-        const sC = v.stage({ x: [0, 1], y: [-0.15, 1.15], height: 260, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'deep sawtooth $T^{\\circ k}$ vs the best shallow network' });
+        const sC = v.stage({ x: [0, 1], y: [-0.15, 1.15], height: 260, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'deep sawtooth $T^{\\circ k}$ vs a least-squares shallow network with the same budget' });
         const A = sT.handle(0.5, 1, { color: 'accent', label: 'apex', labelPos: 'ne', constrain: (x) => [clamp(x, 0.12, 0.88), 1] });
         const X = Array.from({ length: 2001 }, (_, i) => i / 2000);
         let info = null;

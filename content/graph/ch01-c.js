@@ -46,6 +46,7 @@ export default {
         const tw = tweener(v, 0.5); let pend = null;
         function reset() { const Q = named('petersen'); X.set({ nodes: Q.nodes.map((n) => ({ ...n, label: '' })), edges: Q.edges }).layout('fit'); X.nodes.forEach((n) => (n.bs = [n.id])); pend = null; }
         reset();
+        for (const i of [0, 2]) { const a = X.node(i), b = X.node(i + 5); contract(X, i, i + 5, [(a.x * 2 + b.x) / 3, (a.y * 2 + b.y) / 3]); }
         X.onClick = ({ node, edge, alt }) => {
           if (pend) return true;
           if (node && alt) { X.removeNode(node.id); return true; }
@@ -162,7 +163,7 @@ export default {
       num: '1.7.2', kind: 'Corollary', name: 'Minors arise by deleting and contracting edges',
       statement: String.raw`Let $X$ and $Y$ be finite graphs. Then $X$ is a minor of $Y$ if and only if there are graphs $G_0,\dots,G_n$ with $G_0=Y$ and $G_n=X$ such that each $G_{i+1}$ arises from $G_i$ by deleting an edge, contracting an edge, or deleting a vertex.`,
       idea: String.raw`Each single operation produces a minor, and $\preccurlyeq$ is transitive (1.7.1), so the backward direction holds. Forward, by induction on $|Y|+\|Y\|$: given a model of $X$ in $Y$, delete a vertex outside all branch sets, or contract an edge inside a branch set (keeping it connected), or delete an edge that the model does not need — each step lowers $|Y|+\|Y\|$ and keeps a model of $X$.`,
-      caption: String.raw`A model of $X$ in the Petersen graph is played back as single operations: first the vertex outside every branch set is deleted, then edges inside branch sets are contracted (watch the two ends slide together), then unneeded edges are deleted. The chart-free readout tracks $|G_i|+\|G_i\|$, which drops at every step.`,
+      caption: String.raw`A model of $X$ in the Petersen graph is played back as single operations: first the vertex outside every branch set is deleted, then edges inside branch sets are contracted (watch the two ends slide together), then unneeded edges are deleted. The readout tracks $|G_i|+\|G_i\|$, which drops at every step.`,
       deps: ['graph-1.7.1a'], refs: ['Diestel §1.7'], tags: ['minors'],
       viz(v) {
         const target = v.select('$X$ =', [{ value: 'c4', label: '$C^4$' }, { value: 'k4', label: '$K^4$' }], 'c4', { onChange: () => S.reset() });
@@ -229,7 +230,7 @@ export default {
         const TK = []; const SUBV = {}; let ns = 0;
         for (const p of 'abc') for (const q of 'xyz') { const k = ('abc'.indexOf(p) + 'xyz'.indexOf(q)) % 2 ? 1 : 2; let prev = p; for (let i = 1; i <= k; i++) { const id = 's' + ns++, t = i / (k + 1); SUBV[id] = { x: lerp(B[p][0], B[q][0], t), y: lerp(B[p][1], B[q][1], t), owner: i <= k / 2 + 0.01 || k === 1 ? p : q }; TK.push([prev, id]); prev = id; } TK.push([prev, q]); }
         // (ii) IK4 with tree branch sets
-        const P2 = { a1: [3, 6], a2: [5, 6.3], a3: [7, 6], b0: [2, 2.6], b1: [1, 4.2], b2: [3.2, 0.8], b3: [0.8, 1.2], c1: [8, 1.6], c2: [8.8, 3.8], d1: [5, 3.6], d2: [5.9, 2.5] };
+        const P2 = { a1: [3, 5.6], a2: [5, 5.9], a3: [7, 5.6], b0: [2, 2.6], b1: [1, 4.2], b2: [3.2, 0.8], b3: [0.8, 1.2], c1: [8, 1.6], c2: [8.8, 3.8], d1: [5, 3.6], d2: [5.9, 2.5] };
         const T2 = 'a1-a2 a2-a3 b0-b1 b0-b2 b0-b3 c1-c2 d1-d2'.split(' ').map((p) => p.split('-'));
         const X2 = 'a1-b1 a3-c2 a2-d1 b2-c1 b0-d1 c1-d2'.split(' ').map((p) => p.split('-'));
         const TKE = new Set(['a1-a2', 'a2-a3', 'b0-b1', 'b0-b2', 'c1-c2', 'd1-d2', ...X2.map((e) => e.join('-'))]), MED = new Set(['a2', 'b0', 'c1', 'd1']);
@@ -240,7 +241,7 @@ export default {
             const t = ease(tS.value);
             G.set({ nodes: [...Object.entries(B).map(([id, [x, y]]) => ({ id, x, y, r: 14 })), ...Object.entries(SUBV).map(([id, o]) => ({ id, label: '', r: 6, x: lerp(o.x, B[o.owner][0], t), y: lerp(o.y, B[o.owner][1], t) }))], edges: TK.map(([a, b]) => ({ from: a, to: b })) });
             const own = (id) => (B[id] ? id : SUBV[id].owner), C = { a: 'blue', b: 'orange', c: 'green', x: 'purple', y: 'teal', z: 'pink' };
-            if (t > 0.02) for (const id of Object.keys(B)) { const pts = [B[id], ...Object.values(SUBV).filter((o) => o.owner === id).map((o) => [o.x, o.y])]; blob(s, pts, pts.slice(1).map((q) => [B[id], q]), v.color(C[id]), 26, 0.12 + 0.12 * t); }
+            if (t > 0.02) for (const id of Object.keys(B)) { const pts = [B[id], ...Object.values(SUBV).filter((o) => o.owner === id).map((o) => [lerp(o.x, B[id][0], t), lerp(o.y, B[id][1], t)])]; blob(s, pts, pts.slice(1).map((q) => [B[id], q]), v.color(C[id]), 26, 0.12 + 0.12 * t); }
             G.draw({ nodeFill: (id) => C[own(id)], edgeColor: (e) => (own(e.from) === own(e.to) ? C[own(e.from)] : 'muted'), edgeWidth: (e) => (own(e.from) === own(e.to) ? 3.4 : 2), edgeDash: (e) => own(e.from) === own(e.to) });
             last = 'i'; return;
           }

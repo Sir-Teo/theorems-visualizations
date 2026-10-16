@@ -244,7 +244,7 @@ The middle step is associativity — that is where the proof really works. In th
           const G = GR[which.value], n = G.n, A = a % n, B = b % n, L = G.L;
           const xr = [...Array(n).keys()].filter((j) => G.T[A][j] === B), xl = [...Array(n).keys()].filter((i) => G.T[i][A] === B);
           const fmt = (xs) => (xs.length ? xs.map((x) => `$${L[x]}$`).join(', ') : 'none');
-          if (G.inv) { const x1 = G.T[G.inv[A]][B], x2 = G.T[B][G.inv[A]]; return String.raw`$${L[A]}x = ${L[B]}$: $x = a^{-1}b = ${L[G.inv[A]]}\,${L[B]} = ${L[x1]}$ (one solution: ${fmt(xr)}). $x${L[A]} = ${L[B]}$: $x = ba^{-1} = ${L[B]}\,${L[G.inv[A]]} = ${L[x2]}$ (one solution: ${fmt(xl)}).${x1 !== x2 ? ' The two equations have **different** solutions — the group is nonabelian.' : ''}`; }
+          if (G.inv && G.inv.every((x) => x >= 0)) { const x1 = G.T[G.inv[A]][B], x2 = G.T[B][G.inv[A]]; return String.raw`$${L[A]}x = ${L[B]}$: $x = a^{-1}b = ${L[G.inv[A]]}\,${L[B]} = ${L[x1]}$ (one solution: ${fmt(xr)}). $x${L[A]} = ${L[B]}$: $x = ba^{-1} = ${L[B]}\,${L[G.inv[A]]} = ${L[x2]}$ (one solution: ${fmt(xl)}).${x1 !== x2 ? ' The two equations have **different** solutions — the group is nonabelian.' : ''}`; }
           return String.raw`$(\mathbb Z_8, \cdot)$ is not a group: $${L[A]}x = ${L[B]}$ has solutions ${fmt(xr)} — ${xr.length === 1 ? 'here exactly one' : xr.length === 0 ? '**none**' : `**${xr.length}** of them`}. (Only the units $1, 3, 5, 7$ give unique solutions for every $b$.)`;
         });
       },

@@ -347,7 +347,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
 - if $\operatorname{rank} A = 3 = r$, the structure is **statically determinate**: equilibrium alone fixes every reaction;
 - if $\operatorname{rank} A = 3 < r$, it is **indeterminate** to degree $r - 3$: infinitely many sets of reactions balance the load, and the actual one depends on the stiffness of the members (compatibility of deformations).`,
       idea: String.raw`Equilibrium (1.2) is the linear system $A\mathbf R = -\mathbf F$. A solution exists for every load exactly when $A$ has full row rank 3, and it is unique exactly when the columns are independent ($r = 3$). The null space of $A$ is the set of self-balancing reaction patterns, which can be added without disturbing equilibrium. In an indeterminate structure the stiffer path attracts more load: the elastic answer here comes from a beam model in which the beam bends, and it lies somewhere along the family that statics allows. Counting unknowns is not enough, because three rollers in a row give $r = 3$ but cannot resist a sideways push.`,
-      caption: String.raw`Pick a support at each of the three stations and drag the load: its tail sets the size and direction, its tip slides along the beam. The free-body diagram shows each reaction with its value; the readout gives $r$, the rank of $A$ and the verdict. For a mechanism the dashed ghost shows how the beam can move. For an indeterminate beam, drag the **redundant** slider: every setting satisfies ΣF = 0 and ΣM = 0, but only the marked one also satisfies the beam's elasticity.`,
+      caption: String.raw`Pick a support at each of the three stations and drag the load: its tail sets the size and direction, its tip slides along the beam. The free-body diagram shows each reaction with its value; the readout gives $r$, the rank of $A$ and the verdict. For a mechanism the dashed ghost shows how the beam can move. For an indeterminate beam, drag the **redundant** slider: every setting satisfies ΣF = 0 and ΣM = 0, but only the middle setting (0) also satisfies the beam's elasticity, drawn as the dashed deflected shape.`,
       deps: ['arch-1.2'],
       see: ['solid-1.10', 'solid-7.5'],
       refs: ['Allen & Zalewski'],
@@ -397,7 +397,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
           } else if (r >= 0) {
             // mechanism: rigid motions (u, v, θ) allowed by the supports (null space of Aᵀ)
             const C = cols.length ? cols.map((c) => c.slice()) : [[0, 0, 0]];
-            const ns = v.M.nullspace(C); mode = ns[0] || [0, 1, 0];
+            const ns = v.M.nullspace(C); if (!ns.length) mode = [0, 1, 0]; else { const m = [0, 0, 0]; for (const n of ns) for (let q = 0; q < 3; q++) m[q] += n[2] * n[q]; const nm = Math.hypot(...m); mode = nm > 1e-6 ? m.map((q) => q / nm) : ns[0]; } // prefer a mode that rotates
           }
           elastic = rank === 3 && r === 3 ? null : elastic;
           return { r, rank, R, Rel, info, Fx, Fy, lx, cols, mode };
@@ -462,7 +462,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
         const mode = v.select('', [{ value: 'hang', label: 'hanging weight' }, { value: 'stevin', label: 'Stevin’s wreath' }], 'hang', { onChange: () => vis() });
         const Hs = v.slider('sideways push on the knot (kN)', -6, 6, 0, { step: 0.1 });
         const S = v.stage({ x: [-5, 5], y: [-4.6, 3.2], equal: true, axes: false, height: 360, weight: 1.15, title: 'space diagram' });
-        const Fd = v.stage({ x: [-5, 5], y: [-5, 5], equal: true, axes: false, height: 360, weight: 1, title: 'force polygon (to scale)' });
+        const Fd = v.stage({ x: [-5, 5], y: [-5, 5], equal: true, axes: false, height: 360, weight: 1, title: 'forces (to scale)' });
         const W = 10; // kN
         const hA = S.handle(-3.6, 2.4, { color: 'gray', label: 'A' }), hB = S.handle(3.0, 2.4, { color: 'gray', label: 'B' }), K = S.handle(-0.6, 0.2, { color: 'accent' });
         const apex = S.handle(-0.8, 1.4, { color: 'accent', constrain: (x, y) => [Math.max(-2.6, Math.min(2.6, x)), Math.max(0.6, Math.min(2.8, y))] });
@@ -513,18 +513,18 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             for (let k = 0; k < n1; k++) { const t = (k + 0.5) / n1, x = b0[0] + (ap[0] - b0[0]) * t + N1[0] * beadR, y = b0[1] + (ap[1] - b0[1]) * t + N1[1] * beadR; S.dot(x, y, { r: 6, color: 'blue' }); }
             for (let k = 0; k < n2; k++) { const t = (k + 0.5) / n2, x = ap[0] + (b1[0] - ap[0]) * t + N2[0] * beadR, y = ap[1] + (b1[1] - ap[1]) * t + N2[1] * beadR; S.dot(x, y, { r: 6, color: 'teal' }); }
             // hanging loop below (symmetric festoon)
-            const loop = []; for (let k = 0; k <= 14; k++) { const t = k / 14; loop.push([-3 + 6 * t, -1.6 - 2.6 * Math.sin(Math.PI * t)]); }
+            const loop = []; for (let k = 0; k <= 14; k++) { const t = k / 14; loop.push([-3 + 6 * t, -1.6 - 2.3 * Math.sin(Math.PI * t)]); }
             loop.forEach(([x, y], k) => { if (k > 0 && k < 14) S.dot(x, y, { r: 6, color: 'gray', alpha: 0.7 }); });
-            S.text('the hanging loop is symmetric and cancels', 0, -3.9, { align: 'center', size: 11, color: 'muted' });
-            // forces along slopes, per unit bead weight w
-            const w = 1, F1 = w * L1 * (h / L1), F2 = w * L2 * (h / L2);
-            const sc = 1.2;
-            Fd.arrow(-2.4, 0, -2.4, -L1 * sc, { color: 'blue', width: 2.4, head: 8 }); Fd.text(`weight ∝ ${L1.toFixed(2)}`, -2.4, -L1 * sc, { dy: 12, align: 'center', size: 11, color: 'blue' });
-            Fd.arrow(2.4, 0, 2.4, -L2 * sc, { color: 'teal', width: 2.4, head: 8 }); Fd.text(`weight ∝ ${L2.toFixed(2)}`, 2.4, -L2 * sc, { dy: 12, align: 'center', size: 11, color: 'teal' });
-            Fd.rect(-3.4, 2.2, -1.4, 2.2 + F1 * sc, { fill: 'blue', fillAlpha: 0.45, color: 'blue', width: 1 }); Fd.rect(1.4, 2.2, 3.4, 2.2 + F2 * sc, { fill: 'teal', fillAlpha: 0.45, color: 'teal', width: 1 });
-            Fd.text('pull along the slope = weight × sin α', 0, 1.6, { align: 'center', size: 11, color: 'ink' });
-            Fd.text(`${F1.toFixed(2)}`, -2.4, 2.2 + F1 * sc, { dy: -10, align: 'center', size: 11.5, weight: 700, color: 'blue' });
-            Fd.text(`${F2.toFixed(2)}`, 2.4, 2.2 + F2 * sc, { dy: -10, align: 'center', size: 11.5, weight: 700, color: 'teal' });
+            // bars: the weights on the two slopes differ, the pulls along the slopes (weight × sin α = h) agree
+            const sc = 6.6 / Math.max(L1, L2), y0 = -4.2;
+            const bars = [[-3.6, L1, 'blue', 'weight on left slope'], [-1.6, h, 'green', 'pull along it'], [1.6, L2, 'teal', 'weight on right slope'], [3.6, h, 'green', 'pull along it']];
+            for (const [x, val, c, lab] of bars) {
+              Fd.rect(x - 0.65, y0, x + 0.65, y0 + val * sc, { fill: c, fillAlpha: 0.45, color: c, width: 1.2 });
+              Fd.text(val.toFixed(2), x, y0 + val * sc, { dy: -9, align: 'center', size: 11.5, weight: 700, color: c });
+              Fd.text(lab, x, y0, { dy: 10, align: 'center', size: 9.5, color: 'ink' });
+            }
+            Fd.hline(y0 + h * sc, { color: 'green', dash: [4, 4], width: 1 });
+            S.text('the hanging loop is symmetric and cancels', 0, -4.35, { align: 'center', size: 11, color: 'muted' });
           }
           v.legend(mode.value === 'hang' ? [['blue', 'cable A'], ['teal', 'cable B'], ['orange', 'sideways push'], ['red', 'impossible (cable in compression)', { dash: true }]] : [['blue', 'beads on the left slope', { dot: true }], ['teal', 'beads on the right slope', { dot: true }]]);
         });
@@ -538,7 +538,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
           const ang = (p, q) => Math.acos(Math.max(-1, Math.min(1, p[0] * q[0] + p[1] * q[1])));
           const ew = [t.ext[0], t.ext[1]], lw = Math.hypot(...ew), e3 = [ew[0] / lw, ew[1] / lw];
           const lam = [t.Ta / Math.sin(ang(t.eb, e3)), t.Tb / Math.sin(ang(t.ea, e3)), lw / Math.sin(ang(t.ea, t.eb))];
-          return `T_A = **${t.Ta.toFixed(2)} kN**, T_B = **${t.Tb.toFixed(2)} kN** · polygon closure error ${Math.hypot(...res).toExponential(1)} kN · Lami: T/sin(opposite angle) = ${lam.map((x) => x.toFixed(2)).join(' = ')}${t.Ta < 0 || t.Tb < 0 ? ' · **a cable would have to push**: this configuration cannot hang.' : ''}`;
+          return `$T_A$ = **${t.Ta.toFixed(2)} kN**, $T_B$ = **${t.Tb.toFixed(2)} kN** · polygon closure error ${Math.hypot(...res).toExponential(1)} kN · Lami: $T/\\sin(\\text{opposite angle})$ = ${lam.map((x) => x.toFixed(2)).join(' = ')}${t.Ta < 0 || t.Tb < 0 ? ' · **a cable would have to push**: this configuration cannot hang.' : ''}`;
         });
         vis();
       },

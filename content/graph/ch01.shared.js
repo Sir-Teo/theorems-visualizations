@@ -317,7 +317,7 @@ export const NAMED = {
     return { nodes, edges, layout: 'fit' };
   },
   octahedron() {
-    const nodes = ring(3, 1.15, Math.PI / 2).concat(ring(3, 0.45, -Math.PI / 2, 3)), edges = [];
+    const nodes = ring(3, 1.15, Math.PI / 2).concat(ring(3, 0.3, -Math.PI / 2, 3)), edges = [];
     for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) if (j !== i + 3) edges.push([i, j]);
     return { nodes, edges, layout: 'fit' };
   },

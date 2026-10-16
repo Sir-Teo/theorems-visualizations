@@ -114,7 +114,7 @@ function oddCycle(par, lay, e) {
 }
 
 // ---------------------------------------------------------------- 8.7 / 8.8 / 8.10 directed sample graphs
-const P87 = { a: [0.9, 4.9], b: [3.5, 5.2], c: [6.2, 5.0], d: [9.2, 5.1], e: [0.9, 1.1], f: [3.5, 1.0], g: [6.2, 1.2], h: [9.2, 1.4] };
+const P87 = { a: [0.9, 4.4], b: [3.5, 5.4], c: [6.2, 4.4], d: [9.2, 5.1], e: [0.9, 1.1], f: [3.5, 1.0], g: [6.2, 1.2], h: [9.2, 1.4] };
 const E87 = [['a', 'b'], ['a', 'e'], ['a', 'f'], ['b', 'c'], ['b', 'f'], ['c', 'a'], ['c', 'g'], ['g', 'h'], ['h', 'c'], ['e', 'f'], ['d', 'c'], ['d', 'h'], ['f', 'g']];
 const P88 = { a: [1.0, 3.2], b: [3.0, 5.2], c: [3.0, 1.2], d: [5.1, 5.4], e: [5.0, 3.2], f: [5.1, 1.0], g: [7.2, 4.4], h: [7.2, 1.8], i: [9.2, 3.1] };
 const E88 = [['a', 'b'], ['a', 'c'], ['b', 'd'], ['b', 'e'], ['c', 'e'], ['c', 'f'], ['d', 'g'], ['e', 'g'], ['g', 'b'], ['f', 'h'], ['h', 'e'], ['g', 'i'], ['h', 'i']];
@@ -348,12 +348,12 @@ Each vertex is enqueued and dequeued at most once, and each adjacency list is sc
       viz(v) {
         const mode = v.select('click a vertex to', [{ value: 'src', label: 'set the source' }, { value: 'edit', label: 'edit edges' }], 'src');
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320 });
-        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 210, full: true });
+        const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
         const G = v.graph(s, { layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P84), edges: E84.map(([a, b]) => [a, b]) });
         let src = 's';
         G.onClick = ({ node }) => { if (mode.value === 'src') { if (node) { src = node.id; S.reset(); } return true; } return false; };
         G.onChange = () => S.reset({ at: 'end' });
-        const S = v.steps({ frames: () => G.bfs(src).events, code: BFS_CODE, codeTitle: 'BFS(G, s)', codePos: 'below', speed: 3, still: 14 });
+        const S = v.steps({ frames: () => G.bfs(src).events, code: BFS_CODE, codeTitle: 'BFS(G, s)', codePos: 'below', speed: 3, start: 14, still: 14 });
         const lc = (k) => LAYER[k % LAYER.length];
         let info = {};
         v.render(() => {
@@ -531,7 +531,7 @@ Every vertex receives $1\le d[u]<f[u]\le 2n$, and the $2n$ timestamps are distin
         const st = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, full: true });
         const G = v.graph(s, { directed: true, layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true }, nodes: nodesAt(P87, { e: { notePos: 's' }, f: { notePos: 's' }, g: { notePos: 's' }, h: { notePos: 's' } }), edges: E87.map(([a, b]) => [a, b]) });
         G.onChange = () => S.reset();
-        const S = v.steps({ frames: () => dfsTrace(G).events, code: DFS_CODE, codeTitle: 'DFS(G)', codePos: 'below', speed: 1.5, still: 13 });
+        const S = v.steps({ frames: () => dfsTrace(G).events, code: DFS_CODE, codeTitle: 'DFS(G)', codePos: 'below', speed: 1.5, start: 13, still: 13 });
         v.render(() => {
           const f = S.frame; if (!f.color) return;
           G.draw(dfsView(f));
@@ -584,7 +584,7 @@ So writing "$(u$" at time $d[u]$ and "$u)$" at time $f[u]$ produces a well-neste
         const useQ = v.toggle('stamp with a queue (breaks it)', false);
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 290 });
         const st = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true });
-        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P88, { c: { notePos: 's' }, f: { notePos: 's' }, h: { notePos: 's' } }), edges: E88.map(([a, b]) => [a, b]) });
+        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P88, { a: { notePos: 'w' }, c: { notePos: 's' }, f: { notePos: 's' }, h: { notePos: 's' } }), edges: E88.map(([a, b]) => [a, b]) });
         let sel = 'b';
         G.onClick = ({ node }) => { if (mode.value === 'see') { if (node) sel = node.id; return true; } return false; };
         let info = {};

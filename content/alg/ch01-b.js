@@ -139,10 +139,10 @@ then $f$ is **invertible** and we write $g=f^{-1}$. For example, a $2\times2$ ma
           } else {
             // singular: kernel direction and image line
             const ker = Math.hypot(M[0][0], M[0][1]) > 1e-9 ? [-M[0][1], M[0][0]] : Math.hypot(M[1][0], M[1][1]) > 1e-9 ? [-M[1][1], M[1][0]] : null;
-            if (ker) { const L = Math.hypot(ker[0], ker[1]), u = [ker[0] / L, ker[1] / L]; S.line(p.x - 9 * u[0], p.y - 9 * u[1], p.x + 9 * u[0], p.y + 9 * u[1], { color: 'red', width: 2.6 }); S.text('all of this line ↦ T(p)', p.x, p.y, { dx: 12, dy: -16, size: 11.5, color: 'red', weight: 600 }); }
+            if (ker) { const L = Math.hypot(ker[0], ker[1]), u = [ker[0] / L, ker[1] / L]; S.line(p.x - 9 * u[0], p.y - 9 * u[1], p.x + 9 * u[0], p.y + 9 * u[1], { color: 'red', width: 2.6 }); S.text('all of this line ↦ T(p)', p.x, p.y, { dx: 10, dy: 24, size: 11.5, color: 'red', weight: 600 }); }
             const img = Math.hypot(e1[0], e1[1]) > 1e-9 ? e1 : e2;
             if (Math.hypot(img[0], img[1]) > 1e-9) { const L = Math.hypot(img[0], img[1]); T.line(-20 * img[0] / L, -20 * img[1] / L, 20 * img[0] / L, 20 * img[1] / L, { color: 'orange', width: 3, alpha: 0.55 }); }
-            T.text('no preimage', q.x, q.y, { dx: 12, dy: -16, size: 11.5, color: 'red', weight: 600 });
+            T.text('no preimage', q.x, q.y, { dx: 10, dy: 22, size: 11.5, color: 'red', weight: 600 });
           }
         });
         v.readout(() => {
