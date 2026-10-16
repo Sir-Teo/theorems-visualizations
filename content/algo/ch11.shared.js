@@ -298,10 +298,10 @@ export function simplex(c, rows, o = {}) {
 export const netStage = (v, o = {}) => v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320, ...o });
 /** A directed, weighted graph of one of the standard networks (capacities are the edge weights). */
 export function mkNet(v, s, key = 'A', extra = {}) {
-  const N = NETS[key];
+  const N = getNet(key);
   return v.graph(s, { directed: true, weights: true, layout: 'none', nodes: netNodes(N), edges: N.arcs.map((a) => a.slice()), ...extra });
 }
-export function loadNet(G, key) { const N = NETS[key]; G.set({ nodes: netNodes(N), edges: N.arcs.map((a) => a.slice()) }); }
+export function loadNet(G, key) { const N = getNet(key); G.set({ nodes: netNodes(N), edges: N.arcs.map((a) => a.slice()) }); }
 export const netIds = (G) => G.nodes.map((n) => String(n.id));
 /** Draw network G with flow f (an array parallel to G.edges). make(fl) may return extra draw options; fl(e) is the flow on e. */
 export function drawFlow(G, f, make) {
@@ -330,3 +330,35 @@ export function ffDraw(G, R, fr, o = {}) {
     R.draw({ edgeColor: (e) => (pk.has(rkey(e)) && fr.type !== 'done' ? 'orange' : e.fwd ? 'muted' : 'purple'), edgeDash: (e) => !e.fwd, edgeLabel: (e) => num(e.w, 2), edgeWidth: (e) => (pk.has(rkey(e)) && fr.type !== 'done' ? 3.4 : null), nodeColor: S ? (id) => (S.has(String(id)) ? 'teal' : null) : null, nodeFill: S ? (id) => (S.has(String(id)) ? 'teal' : null) : null, ...(o.res || {}) });
   }
 }
+
+/** A random layered network on 7 vertices (s, two middle columns of 2-3 vertices, t); key 'R<seed>' in getNet. */
+export function randNet(seed) {
+  const r = rngOf(seed * 131 + 7), pos = { s: [0.8, 3] }, mid = [];
+  const cols = [[3.3, 3], [6.2, 2]];
+  cols.forEach(([x, k], c) => { for (let i = 0; i < k; i++) { const id = String.fromCharCode(97 + mid.length); pos[id] = [x, k === 1 ? 3 : 5.2 - i * (4.4 / (k - 1))]; mid.push([id, c]); } });
+  pos.t = [9, 3];
+  const A = mid.filter((m) => m[1] === 0).map((m) => m[0]), B = mid.filter((m) => m[1] === 1).map((m) => m[0]), arcs = [];
+  const cap = () => 2 + Math.floor(r() * 9);
+  A.forEach((a) => arcs.push(['s', a, cap()]));
+  A.forEach((a) => B.forEach((b) => { if (r() < 0.65) arcs.push([a, b, cap()]); }));
+  for (let i = 0; i + 1 < A.length; i++) if (r() < 0.5) arcs.push([A[i], A[i + 1], 1 + Math.floor(r() * 4)]);
+  B.forEach((b) => arcs.push([b, 't', cap()]));
+  A.forEach((a) => { if (!arcs.some((x) => x[0] === a && x[1] !== 's' && A.indexOf(x[1]) < 0)) arcs.push([a, B[Math.floor(r() * B.length)], cap()]); });
+  return { name: `random ${seed}`, pos, arcs };
+}
+export function getNet(key) { return NETS[key] || (String(key).startsWith('R') ? randNet(+String(key).slice(1)) : NETS.A); }
+
+// ------------------------------------------------------------------ bipartite pictures
+export const LET = (j) => String.fromCharCode(65 + j);
+/** Node specs of a bipartite drawing: left vertices l0…, right vertices r0…, optionally s and t at the sides. */
+export function bipNodes(nL, nR, withST = false) {
+  const lx = withST ? 3.3 : 2.6, rx = withST ? 6.7 : 7.4, y = (i, n) => (n === 1 ? 3 : 5.3 - i * (4.6 / (n - 1)));
+  const out = [];
+  if (withST) out.push({ id: 's', x: 0.7, y: 3, notePos: 'w' });
+  for (let i = 0; i < nL; i++) out.push({ id: `l${i}`, label: String(i + 1), x: lx, y: y(i, nL) });
+  for (let j = 0; j < nR; j++) out.push({ id: `r${j}`, label: LET(j), x: rx, y: y(j, nR) });
+  if (withST) out.push({ id: 't', x: 9.3, y: 3, notePos: 'e' });
+  return out;
+}
+/** A seeded random bipartite edge list with edge probability p (every pair [l, r]). */
+export function bipRandom(nL, nR, p, seed) { const r = rngOf(seed * 977 + 5), E = []; for (let l = 0; l < nL; l++) for (let j = 0; j < nR; j++) if (r() < p) E.push([l, j]); return E; }

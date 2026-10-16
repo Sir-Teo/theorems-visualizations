@@ -224,7 +224,7 @@ The triplet states are symmetric and the singlet antisymmetric under exchange of
 $$\langle\alpha',j',m'|T^{(k)}_q|\alpha,j,m\rangle=\langle j\,m;k\,q|j'\,m'\rangle\;\frac{\langle\alpha'j'\|T^{(k)}\|\alpha j\rangle}{\sqrt{2j'+1}} :$$
 the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebsch–Gordan coefficient (geometry), while the **reduced matrix element** $\langle\alpha'j'\|T\|\alpha j\rangle$ carries the dynamics and is independent of $m,q,m'$. In particular the matrix element vanishes unless $m'=m+q$ and $|j-k|\le j'\le j+k$.`,
       idea: String.raw`Because $T_q^{(k)}|j,m\rangle$ transforms under rotations exactly like the product $|k,q\rangle|j,m\rangle$ (qm-7.6), it lies in the space $V_k\otimes V_j$ of qm-7.14, and projecting it on $V_{j'}$ gives a multiple of the Clebsch–Gordan state $|j',m'\rangle$ of qm-7.15: the same multiple for every $m,q$, since any rotation moves all of them together. The multiple is the reduced element. All the $m$-dependence of every dipole transition rate is thus computable once and for all.`,
-      caption: String.raw`**Choose the pair of multiplets $(l\to l')$ and the operator** — the components of the unit vector $\hat{\mathbf r}$ (rank 1), of $Y_2^q$ (rank 2), or a *mixture* of the two, which is not a single tensor. The top bars are the angular matrix elements $\langle Y_{l'}^{m'}|T_q|Y_l^m\rangle$ computed by quadrature on the sphere; the middle bars are the Clebsch–Gordan coefficients of the corresponding rank; the bottom dots are their ratio. For a true tensor operator the dots lie on one horizontal line (the reduced element); the mixture breaks it, and parity-forbidden pairs give zero.`,
+      caption: String.raw`**Choose the pair of multiplets $(l\to l')$ and the operator** — the components of the unit vector $\hat{\mathbf r}$ (rank 1), of $Y_2^q$ (rank 2), or a *mixture* of rank 1 and rank 3 ($\hat r_q+0.9\,T^{(3)}_q$), which is not a single tensor. Ranks 1 and 3 have the same parity, so for $1\to2$ both contribute; the rank-2 operator connects only multiplets with $l+l'$ even. The top bars are the angular matrix elements $\langle Y_{l'}^{m'}|T_q|Y_l^m\rangle$ computed by quadrature on the sphere; the middle bars are the Clebsch–Gordan coefficients of rank 1 (or 2 for the second operator); the bottom dots are their ratio. For a true tensor operator the dots lie on one horizontal line (the reduced element); the mixture breaks it (the ratio is taken against the rank-1 coefficients), and parity-forbidden pairs give zero.`,
       deps: ['qm-7.15'],
       refs: ['Griffiths §6.7', 'Sakurai ch. 3'],
       credit: 'Eckart, 1930; Wigner, 1931 (dates to be confirmed)',
@@ -233,9 +233,9 @@ the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebs
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wigner%E2%80%93Eckart_theorem' },
       viz(v) {
         const pairSel = v.select('$(l\\to l\')$', [{ value: '1,2', label: '$1\\to2$' }, { value: '1,0', label: '$1\\to0$' }, { value: '2,3', label: '$2\\to3$' }, { value: '1,1', label: '$1\\to1$' }, { value: '2,2', label: '$2\\to2$' }], '1,2');
-        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $Y_2^q$' }, { value: 'mix', label: 'mixture of ranks 1 and 2' }], '1');
+        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $Y_2^q$' }, { value: 'mix', label: 'mixture of ranks 1 and 3' }], '1');
         const SA = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle Y_{l\'}^{m\'}|T_q|Y_l^m\\rangle$', title: 'matrix elements (by quadrature)', full: true });
-        const SB = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle lm;kq|l\'m\'\\rangle$', title: 'Clebsch–Gordan coefficients of rank $k$', full: true });
+        const SB = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle lm;kq|l\'m\'\\rangle$', title: 'Clebsch–Gordan coefficients of rank $k$ ($k=1$ for the mixture)', full: true });
         const SC = v.stage({ x: [-0.7, 16.7], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 190, ylabel: 'ratio', xlabel: 'index of $(m,q)$', title: 'ratio matrix element / CG', full: true });
         const cache = new Map();
         let st = null;
@@ -244,11 +244,11 @@ the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebs
           const key = `${l}|${lp}|${o}`;
           if (!cache.has(key)) {
             const T = (q) => (th, ph) => {
-              const t1 = ylm(1, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 3)), t2 = Math.abs(q) <= 2 ? ylm(2, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 5)) : [0, 0];
+              const t1 = ylm(1, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 3)), t2 = o === '2' ? (Math.abs(q) <= 2 ? ylm(2, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 5)) : [0, 0]) : (Math.abs(q) <= 3 ? ylm(3, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 7)) : [0, 0]);
               if (o === '1') return t1; if (o === '2') return t2; return [t1[0] + 0.9 * t2[0], t1[1] + 0.9 * t2[1]];
             };
             const rows = [];
-            for (let q = -2; q <= 2; q++) { if (o === '1' && Math.abs(q) > 1) continue; for (let m = -l; m <= l; m++) { const mp = m + q; if (Math.abs(mp) > lp) continue;
+            for (let q = -3; q <= 3; q++) { if ((o === '1' && Math.abs(q) > 1) || (o === '2' && Math.abs(q) > 2)) continue; for (let m = -l; m <= l; m++) { const mp = m + q; if (Math.abs(mp) > lp) continue;
               const f = (th, ph) => { const y = ylm(l, m, th, ph), t = T(q)(th, ph); return [t[0] * y[0] - t[1] * y[1], t[0] * y[1] + t[1] * y[0]]; };
               const me = sphereIP(f, (th, ph) => ylm(lp, mp, th, ph), 36, 72), c = cg(l, m, k, q, lp, mp);
               rows.push({ m, q, mp, me: me[0], im: me[1], c }); } }
@@ -256,17 +256,19 @@ the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebs
           }
           const rows = cache.get(key), mx = Math.max(0.3, ...rows.map((r) => Math.abs(r.me)));
           const mc = Math.max(0.3, ...rows.map((r) => Math.abs(r.c)));
+          const xr = [-0.7, Math.max(rows.length, 3) - 0.3]; SA.setView(xr, [-1.05, 1.05]); SB.setView(xr, [-1.05, 1.05]);
+          { const mm = rows.filter((r) => Math.abs(r.c) > 1e-9).map((r) => r.me / r.c), mu = mm.length ? mm.reduce((a, b) => a + b, 0) / mm.length : 0; SC.setView(xr, [Math.min(-1.5, mu - 1.2), Math.max(1.5, mu + 1.2)]); SC.hline(mu, { color: 'green', width: 1, dash: [4, 4] }); }
           rows.forEach((r, i) => {
             SA.rect(i - 0.35, 0, i + 0.35, r.me / mx, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
             SB.rect(i - 0.35, 0, i + 0.35, r.c / mc, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
             if (Math.abs(r.c) > 1e-9) SC.dot(i, r.me / r.c, { color: 'green', r: 5 });
             SA.text(`${r.m},${r.q}`, i, -0.92, { size: 9.5, align: 'center', color: 'muted' });
           });
-          const xr = [-0.7, Math.max(rows.length, 3) - 0.3]; SA.setView(xr, [-1.05, 1.05]); SB.setView(xr, [-1.05, 1.05]);
+          
           const rat = rows.filter((r) => Math.abs(r.c) > 1e-9).map((r) => r.me / r.c);
           const mean = rat.length ? rat.reduce((a, b) => a + b, 0) / rat.length : 0, spread = rat.length ? Math.max(...rat.map((x) => Math.abs(x - mean))) : 0;
           const maxMe = Math.max(0, ...rows.map((r) => Math.abs(r.me)));
-          SC.hline(mean, { color: 'green', width: 1, dash: [4, 4] }); SC.setView(xr, [Math.min(-1.5, mean - 1.2), Math.max(1.5, mean + 1.2)]);
+          
           st = { n: rows.length, mean, spread, maxMe, l, lp, k, o, imMax: Math.max(0, ...rows.map((r) => Math.abs(r.im))) };
         });
         v.readout(() => st.maxMe < 1e-6 ? `$l=${st.l}\\to l'=${st.lp}$: every matrix element vanishes (parity / triangle selection rule: $|l-k|\\le l'\\le l+k$ fails, or $l+k+l'$ is odd) — no reduced element to compare.` :

@@ -19,7 +19,9 @@ export const rotMask = (m, n) => { n = mod(n); return ((m << n) | (m >> (12 - n)
 export const invMask = (m, n) => { let r = 0; for (let i = 0; i < 12; i++) if (m & (1 << i)) r |= 1 << mod(n - i); return r; };
 export const complement = (S) => { const s = new Set(S); return Array.from({ length: 12 }, (_, i) => i).filter((i) => !s.has(i)); };
 export const key = (S) => S.join(',');
-export const setStr = (S) => (S.length ? S.map((x) => (x === 10 ? 'T' : x === 11 ? 'E' : x)).join(',') : '∅');
+export const setStr = (S) => (S.length ? S.join(',') : '∅');
+/** Same with the conventional T = 10, E = 11 (used for rows). */
+export const teStr = (S, sep = ' ') => S.map((x) => (x === 10 ? 'T' : x === 11 ? 'E' : x)).join(sep);
 export const braceStr = (S) => `{${setStr(S)}}`;
 export const ic = (d) => { d = mod(d); return Math.min(d, 12 - d); };
 
@@ -232,4 +234,32 @@ export function noteHead(s, x, y, o = {}) {
   if (y > 8) for (let l = 10; l <= y + 0.01; l += 2) s.line(x - 0.55, l, x + 0.55, l, { color: 'muted', width: 1.2 });
   s.dot(x, y, { r: o.r ?? 7, color: c, alpha: o.alpha });
   if (o.acc) s.text(o.acc, x - 0.95, y, { size: 19, color: c, align: 'center', baseline: 'middle', weight: 700 });
+}
+
+// ---------------------------------------------------------------- small multiples
+
+/** A miniature clock centred at (cx, cy) of radius r, drawn in data units on an equal-aspect stage. */
+export function mini(s, cx, cy, r, S, o = {}) {
+  s.circle(cx, cy, r, { color: o.border || 'faint', width: o.bw ?? 1.2, fill: o.fill, fillAlpha: o.fillAlpha });
+  const P = norm(S).map((k) => [cx + r * Math.sin((2 * Math.PI * k) / 12), cy + r * Math.cos((2 * Math.PI * k) / 12)]);
+  if (P.length >= 3 && o.poly !== false) s.poly(P, { fill: o.color || 'accent', fillAlpha: 0.12, color: o.color || 'accent', width: 1, alpha: 0.7 });
+  else if (P.length === 2) s.line(P[0][0], P[0][1], P[1][0], P[1][1], { color: o.color || 'accent', width: 1 });
+  P.forEach((p) => s.dot(p[0], p[1], { r: o.dot ?? 3, color: o.color || 'accent' }));
+  if (o.tick) s.dot(cx, cy + r, { r: 1.8, color: 'muted' });
+}
+/** Maximum |f_k| over all subsets of each cardinality: MAXF[card][k]. */
+let _maxf = null;
+export function maxFourier() {
+  if (_maxf) return _maxf;
+  _maxf = Array.from({ length: 13 }, () => new Array(7).fill(0));
+  for (let m = 0; m < 4096; m++) { const S = fromMask(m), c = S.length; for (let k = 1; k <= 6; k++) _maxf[c][k] = Math.max(_maxf[c][k], fmag(S, k)); }
+  return _maxf;
+}
+/** Z-related pairs (same T/I-class-invariant interval vector, different classes), as [[maskA, maskB], …] sorted by cardinality. */
+export function zPairs() {
+  const { ti } = classes(), g = {};
+  ti.forEach((mem) => { const S = fromMask(mem[0]), k = `${S.length}:${icv(S).join('')}`; (g[k] = g[k] || []).push(mem); });
+  const out = [];
+  Object.values(g).filter((a) => a.length > 1).forEach((a) => { for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) out.push([a[i], a[j]]); });
+  return out.sort((p, q) => popc(p[0][0]) - popc(q[0][0]) || key(primeForm(fromMask(p[0][0]))).localeCompare(key(primeForm(fromMask(q[0][0])))));
 }

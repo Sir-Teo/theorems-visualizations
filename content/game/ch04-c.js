@@ -233,8 +233,8 @@ export default {
             const yT = 0.75, yB = -0.866 * (n - 1) - 0.75, k = 0.5 / 0.866;
             B.line(-0.55, yT - 0.12, n - 0.45, yT - 0.12, { color: 'red', width: 6 });
             B.line(0.5 * (n - 1) - 0.55, yB + 0.12, 0.5 * (n - 1) + n - 0.45, yB + 0.12, { color: 'red', width: 6 });
-            B.line(-0.62 - yT * k + 0.45, yT - 0.12 - 0.0, -0.62 - yB * k - 0.1, yB + 0.12, { color: 'blue', width: 6 });
-            B.line(n - 0.38 - yT * k + 0.45, yT - 0.12, n - 0.38 - yB * k - 0.1, yB + 0.12, { color: 'blue', width: 6 });
+            B.line(-0.82 - (yT - 0.12) * k, yT - 0.12, -0.82 - (yB + 0.12) * k, yB + 0.12, { color: 'blue', width: 6 });
+            B.line(n - 0.18 - (yT - 0.12) * k, yT - 0.12, n - 0.18 - (yB + 0.12) * k, yB + 0.12, { color: 'blue', width: 6 });
             const empty = hs.split('').every((c) => c === '.');
             const mv = S.mover(hs), winMoves = [];
             for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
