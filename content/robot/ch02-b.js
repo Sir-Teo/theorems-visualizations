@@ -209,7 +209,7 @@ and it converts twists from the frame $\{b\}$ with pose $T=T_{sb}$ to the frame 
         });
         v.readout(() => {
           if (!st) return '';
-          return `$\\mathcal V_b=(${g3(st.Vb.slice(0, 3))},${g3(st.Vb.slice(3))})$, and $\\mathcal V_s=[\\mathrm{Ad}_T]\\mathcal V_b=(${g3(st.Vs.slice(0, 3))},${g3(st.Vs.slice(3))})$.\nLargest difference between the two velocity fields over the 27 grid points: $${v.sci(st.gap + 1e-17, 2)}$${wrong.value ? ' — **the lever-arm term $[p]R$ is missing, so the frames disagree**' : ' — the same motion'}. Group law: $\\|\\mathrm{Ad}_T\\mathrm{Ad}_{T^{-1}}-I\\|=${v.sci(st.invErr + 1e-17, 2)}$.`;
+          return `$\\mathcal V_b=(${g3(st.Vb.slice(0, 3))},${g3(st.Vb.slice(3))})$, and $\\mathcal V_s=[\\mathrm{Ad}_T]\\mathcal V_b=(${g3(st.Vs.slice(0, 3))},${g3(st.Vs.slice(3))})$.\nLargest difference between the two velocity fields over the 27 grid points: $${st.gap < 1e-6 ? v.sci(st.gap + 1e-17, 2) : fx(st.gap, 3)}$${wrong.value ? ' — **the lever-arm term $[p]R$ is missing, so the frames disagree**' : ' — the same motion'}. Group law: $\\|\\mathrm{Ad}_T\\mathrm{Ad}_{T^{-1}}-I\\|=${v.sci(st.invErr + 1e-17, 2)}$.`;
         });
       },
     },
@@ -275,7 +275,7 @@ and this number is the same in every frame. Hence if $\mathcal V_a=[\mathrm{Ad}_
           const bar = (x, val, col, lab) => { B.rect(x - 0.4, 0, x + 0.4, val, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 }); B.text(lab, x, -mx * 0.93, { size: 11.5, align: 'center', color: 'muted' }); B.text(cn(val, 2), x, val + (val >= 0 ? 1 : -1) * mx * 0.07, { size: 11.5, align: 'center' }); };
           bar(1, Ps[0], 'orange', 'm·ω'); bar(2, Ps[1], 'purple', 'f·v'); bar(3, Ps[0] + Ps[1], 'green', 'sum {s}');
           bar(5.5, Pb[0], 'orange', 'm·ω'); bar(6.5, Pb[1], 'purple', 'f·v'); bar(7.5, Pb[0] + Pb[1], mis.value ? 'red' : 'green', 'sum {b}');
-          B.hline(phys, { color: 'green', dash: true, width: 1.6 }); B.text('physical power f·v_P', 0.1, phys + mx * 0.07, { size: 11.5, color: 'green', align: 'left' });
+          B.hline(phys, { color: 'green', dash: true, width: 1.6 }); B.text('physical power f·v at P', 0.1, phys + mx * 0.07, { size: 11.5, color: 'green', align: 'left' });
           B.text('frame {s}', 2, mx * 1.2, { size: 12.5, color: 'ink', align: 'center' }); B.text('frame {b}', 6.5, mx * 1.2, { size: 12.5, color: 'teal', align: 'center' });
           st = { ms, mb, fb, vs, vb, Ps, Pb, phys, f, vP };
         });

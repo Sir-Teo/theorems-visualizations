@@ -164,7 +164,7 @@ A single snapshot of a network, with its traits, cannot distinguish them: both g
 $$r = \frac{\langle k k'\rangle_E - \langle k\rangle_E^2}{\langle k^2\rangle_E - \langle k\rangle_E^2}, \qquad -1 \le r \le 1,$$
 where $\langle\cdot\rangle_E$ averages over edge ends. It is undefined if all degrees are equal.`,
       idea: String.raw`Averaging over edge ends rather than over nodes weights each node by its degree (the weighting behind the friendship paradox), and $r$ is just the correlation coefficient of the pairs $(k, k')$ on the two ends of each edge. A degree-preserving rewiring keeps every degree and so the denominator fixed, and changes only how the degrees are paired in the numerator: the coefficient can be tuned freely without changing the degree distribution.`,
-      caption: String.raw`Each dot is an edge, plotted twice (once per orientation) as the degrees at its two ends, with a little jitter. Real networks in the dataset are on the left; the model network lets you swap edges (keeping every degree fixed) until the correlation reaches your target.`,
+      caption: String.raw`Each dot is an edge, plotted twice (once per orientation) as the degrees at its two ends, with a little jitter. Choose the karate club or the Les Misérables network, or the model network, which lets you swap edges (keeping every degree fixed) until the correlation reaches your target.`,
       deps: ['soc-2.3'],
       refs: ['Newman ch. 7'],
       tags: ['assortativity', 'degree'],
@@ -213,7 +213,7 @@ where $\langle\cdot\rangle_E$ averages over edge ends. It is undefined if all de
       num: '2.12',
       kind: 'Theorem',
       name: 'Structural balance theorem (Cartwright–Harary)',
-      statement: String.raw`Take a complete graph on $n$ people in which every pair is marked $+$ (friends) or $-$ (enemies). A triangle is **balanced** if it has an even number of $-$ edges (0 or 2: "all friends", or "two people who share an enemy-friend": my friend's friend is my friend, and my enemy's enemy is my friend) and unbalanced if it has 1 or 3. The labelled graph is **balanced** if every triangle is balanced.
+      statement: String.raw`Take a complete graph on $n$ people in which every pair is marked $+$ (friends) or $-$ (enemies). A triangle is **balanced** if it has an even number of $-$ edges (0 or 2: "all three are friends", or "two friends with a common enemy"; the rules "a friend of my friend is my friend" and "an enemy of my enemy is my friend" are exactly these) and unbalanced if it has 1 or 3. The labelled graph is **balanced** if every triangle is balanced.
 
 **Theorem (Cartwright and Harary, 1956).** A signed complete graph is balanced if and only if either everyone is friends with everyone, or the people can be split into two camps, with all pairs within a camp friends and all pairs across enemies.`,
       idea: String.raw`If the split exists, any triangle has either 0 or 2 enemy edges (two people in one camp and one in the other have exactly two cross edges), so it is balanced. Conversely, fix a person $A$ and let $X$ be $A$ together with $A$'s friends and $Y$ the enemies of $A$. Balance of triangles through $A$ forces any two members of $X$ to be friends (otherwise $A, x, x'$ has exactly one enemy edge), any two in $Y$ to be friends (an enemy of an enemy), and each member of $X$ to be an enemy of each member of $Y$.`,
@@ -326,7 +326,7 @@ A model: each shared focus independently gives a chance $q$ of a tie, so that tw
       credit: 'Breiger, 1974; Feld, 1981; Kossinets & Watts, 2006',
       verify: true,
       viz(v) {
-        const s = v.stage({ x: [-1.45, 1.45], y: [-1.15, 1.2], axes: false, equal: true, height: 460, weight: 1.15 });
+        const s = v.stage({ x: [-2.05, 1.45], y: [-1.15, 1.2], axes: false, equal: true, height: 460, weight: 1.15 });
         const p = v.stage({ x: [-0.5, 8.5], y: [0, 1], axes: 'box', gutter: true, xlabel: 'shared events $k$', ylabel: 'P(friends)', height: 460, weight: 0.9 });
         const view = v.select('View', [{ value: 'two', label: 'Women and events' }, { value: 'proj', label: 'Women only' }], 'two');
         const q = v.slider('Chance per shared event $q$', 0, 0.5, 0.2, { step: 0.01 });
@@ -367,7 +367,7 @@ A model: each shared focus independently gives a chance $q$ of a tie, so that tw
           st = { cnt, sim };
         });
         v.legend([['accent', 'simulated frequency'], ['orange', '$1-(1-b)(1-q)^k$']]);
-        v.readout(() => `${SOUTHERN.women[sel]} attended ${att[sel].length} events and shared one with ${shared[sel].filter((x, i) => i !== sel && x > 0).length} of the other 17 women\nNumber of pairs by shared events $k = 0,1,\\dots,${kmax}$: ${st.cnt.join(', ')} (of 153 pairs)\nWith $q = ${q.value.toFixed(2)}$, $b = ${b.value.toFixed(3)}$, a pair with $k = ${kmax}$ shared events is a friend with probability ${v.fix(1 - (1 - b.value) * (1 - q.value) ** kmax, 2)}$, one with $k = 0$ with probability ${v.fix(b.value, 3)}$`);
+        v.readout(() => `${SOUTHERN.women[sel]} attended ${att[sel].length} events and shared one with ${shared[sel].filter((x, i) => i !== sel && x > 0).length} of the other 17 women\nNumber of pairs by shared events $k = 0,1,\\dots,${kmax}$: ${st.cnt.join(', ')} (of 153 pairs)\nWith $q = ${q.value.toFixed(2)}$, $b = ${b.value.toFixed(3)}$, a pair with $k = ${kmax}$ shared events is a friend with probability **${v.fix(1 - (1 - b.value) * (1 - q.value) ** kmax, 2)}**, one with $k = 0$ with probability **${v.fix(b.value, 3)}**`);
       },
     },
 
