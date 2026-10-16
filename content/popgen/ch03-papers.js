@@ -4,13 +4,14 @@
 // - Luria & Delbrück (1943), Genetics 28: 491–511. The PMC scan (PMC1209226) was behind a captcha from this
 //   environment; Tables 1 and 2 were read from scans of the original tables reproduced by S. M. Carr (Memorial University,
 //   mun.ca/biology/scarr/4241smc_Luria_&_Delbruck_Table_1.html and …Table_2.html).
-//   Table 1 (samples from one bulk culture): Exp. 10a, 11a, 3, ten samples each; recomputed means 16.7, 51.4, 3.3 and
-//   variances (n − 1) 15.1, 27.2, 3.6 against printed 16.7, 51.4, 3.3 and 15, 27, 3.8 (small differences: the printed
-//   variances are not exactly the n − 1 sample variance).
-//   Table 2 (series of similar cultures): Exp. 1, 10, 11, 15 (10-cc cultures) and 16, 17, 21a (0.2-cc cultures, the
-//   classic fluctuation test); recomputed means per sample 26.8, 23.8, 62.4, 26.2, 11.35, 30.6, 3.79 against printed
-//   26.8, 23.8, 62, 26.2, 11.35, 30, 3.8. Exp. 21b is left out: its five values sum to a mean of 44.2, printed 48.2,
-//   so one value is probably misread in the reproduction. Bacteria per culture and plated fractions from the same table.
+//   Table 1 (samples from one bulk culture): Exp. 10a, 11a, 3, ten samples each. Table 2 (series of similar cultures):
+//   Exp. 1, 10, 11, 15 (10-cc cultures) and 16, 17, 21a (0.2-cc cultures, the classic fluctuation test).
+//   Check: the recomputed means reproduce the printed ones (16.7, 51.4, 3.3; 26.8, 62.4 vs 62, 26.2, 11.35, 30.6 vs 30,
+//   3.79 vs 3.8) except Exp. 10 (24.0 vs 23.8, so one count there is probably off by 2 and Exp. 10 is not used). The
+//   printed variances are "corrected for sampling" and are not reproduced exactly by the counts (e.g. Exp. 16: raw
+//   sample variance 752 vs printed 694; Exp. 11a: 38.7 vs 27); without the original scan this is left unresolved, and
+//   the viz shows raw sample variances next to the printed values. Exp. 21b is left out (its five values give a mean of
+//   44.2, printed 48.2). Bacteria per culture and plated fractions (sample volume / culture volume) from Table 2.
 // - Stewart, Gordon & Levin (1990), Genetics 124: 175–185: correction m ≈ m_obs (z − 1)/(z ln z) for plating a fraction
 //   z of each culture. Ma, Sandri & Sarkar (1992) recursion for the Luria–Delbrück (Lea–Coulson) distribution.
 

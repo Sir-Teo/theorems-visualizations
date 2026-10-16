@@ -533,7 +533,7 @@ export default {
           F.push({ H, T: Rr.T, D: Rr.D, part: Rr.part, done: true, note: `No edge in two trees starts an exchange chain any more: $E(\\mathcal T)$ is maximal (${size(Rr.T)} edges), and $(V, D)$ has ${Rr.np} component(s).`, line: 5 });
           return F;
         }
-        const S = v.steps({ frames, code: ['T₁ = … = T_k: one spanning tree', 'find a shortest exchange chain e₀ … eₙ, e₀ in two trees', '  for i < n: T_{j(i)} ← T_{j(i)} + e_{i+1} − e_i', '  E(𝒯) has grown by eₙ', 'until no such chain: D, partition P'], codeTitle: 'Lemma 2.4.5, repeated', speed: 1.3, start: 'end', still: 2 });
+        const S = v.steps({ frames, code: ['$T_1 = \\dots = T_k$: one spanning tree', 'find a shortest exchange chain $e_0\\dots e_n$, $e_0$ in two trees', '  for $i < n$: $T_{j(i)} \\leftarrow T_{j(i)} + e_{i+1} - e_i$', '  $E(\\mathcal T)$ has grown by $e_n$', 'until no such chain: $D$, partition $P$'], codeTitle: 'Lemma 2.4.5, repeated', speed: 1.3, start: 'end', still: 2 });
         v.render(() => {
           const f = S.frame; if (!f.T) { G.draw(); return; }
           const H = f.H, cnt = (e) => { const x = H.eix.get(e); return f.T.reduce((c, Tj) => c + (Tj[x] ? 1 : 0), 0); }, first = (e) => { const x = H.eix.get(e); return f.T.findIndex((Tj) => Tj[x]); };
