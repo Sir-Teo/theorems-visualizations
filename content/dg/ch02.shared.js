@@ -93,8 +93,8 @@ export const curveChoices = (keys) => keys.map((k) => ({ value: k, label: CURVES
 // ───────────────────────────────────────────────────────────── drawing (scene3 = v.scene3 on a 2D stage)
 export const FC = { T: 'blue', N: 'orange', B: 'purple' };
 export function scene(v, o = {}) {
-  const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2], equal: true, axes: false, height: o.height ?? 400, weight: o.weight ?? 1.3, minWidth: o.minWidth ?? 300, title: o.title });
-  const sc = v.scene3(S, { yaw: o.yaw ?? -0.7, pitch: o.pitch ?? 0.38, axes: !!o.axes, hint: o.hint ?? true, lim: o.lim ?? 2, axis: o.axis ?? 1.6 });
+  const S = v.stage({ x: [-1.95, 1.95], y: [-1.7, 1.7], equal: true, axes: false, height: o.height ?? 400, weight: o.weight ?? 1.3, minWidth: o.minWidth ?? 300, title: o.title, full: !!o.full });
+  const sc = v.scene3(S, { yaw: o.yaw ?? -0.7, pitch: o.pitch ?? 0.5, axes: !!o.axes, hint: o.hint ?? true, lim: o.lim ?? 2, axis: o.axis ?? 1.6 });
   return { S, sc };
 }
 export function plot(v, o) {

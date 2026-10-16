@@ -15,6 +15,8 @@ export const bp = (x) => fx(x * 1e4, 0) + ' bp';
 export const money = (x, d = 2) => (x < 0 && !isZero(x, d) ? '−' : '') + '$' + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 /** Dollars for rich text and TeX: usd(98.5, 2) → "$\$98.50$". */
 export const usd = (x, d = 2) => `$${x < 0 && !isZero(x, d) ? '-' : ''}\\$${Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })}$`;
+/** Dollar amount safe inside rich text and TeX: dl(98.5, 2) → "\\$98.50" (write it inside $…$ or in plain rich text). */
+export const dl = (x, d = 2) => (x < 0 && !isZero(x, d) ? '-' : '') + '\\$' + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 /** Percent ticks [[x, "5%"], …] from lo to hi in steps of `step` (all in decimals). */
 export function pctTicks(lo, hi, step, d = 0) {
   const out = [];

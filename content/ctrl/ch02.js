@@ -387,7 +387,7 @@ These are the **same equation** under the dictionary $m\leftrightarrow L$, $c\le
           circ.path(Array.from({ length: 41 }, (_, j) => { const a = (j / 40) * 3.5 * TAU; return [3.4 + (1.2 * j) / 40 - 0.15 * Math.sin(a) * 0, 3.0 + 0.22 * Math.abs(Math.sin(a / 2)) * 1.0]; }), { color: 'green', width: 2.2 });
           circ.text(`L = ${v.fix(m, 2)} H`, 4.0, 3.45, { size: 11.5, color: 'green', align: 'center' });
           circ.line(5.0, 1.35, 5.8, 1.35, { color: 'ink', width: 3 }); circ.line(5.0, 1.85, 5.8, 1.85, { color: 'ink', width: 3 });
-          circ.text(`C = ${v.fix(1 / k, 3)} F`, 5.4, 2.25, { size: 11.5, color: 'accent', align: 'center', baseline: 'middle' });
+          circ.text(`C = ${v.fix(1 / k, 3)} F`, 4.9, 2.3, { size: 11.5, color: 'accent', align: 'right', baseline: 'middle' });
           circ.text(`charge q = ${v.fix(s.q[i], 3)} C`, 3.0, 1.6, { size: 12.5, color: 'orange', align: 'center', baseline: 'middle', weight: 600 });
           const loopPts = [[0.6, 2.15], [0.6, 3.0], [5.4, 3.0], [5.4, 1.85]];
           const ph = (s.q[i] * 14) % 0.6;
