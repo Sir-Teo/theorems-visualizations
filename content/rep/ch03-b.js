@@ -106,7 +106,7 @@ export default {
           const [sx, sy] = pos(G, sel); A.dot(sx, sy, { r: r + 5, hollow: true, color: 'gold' });
           T.draw({
             rows: rows.length, cols: k, colLabels: (j) => `$${G.L[G.classes[j].rep]}$`, rowLabels: (i) => `$${rows[i].tex}$`, cornerLabel: `${k}×${rows.length}`,
-            value: (i, j) => ctext(rows[i].vals[j]).replace(/^-0$/, '0'), fill: (i, j) => [ecol(j), 0.16], size: k > 5 ? 11.5 : 13,
+            value: (i, j) => ctext(rows[i].vals[j]).replace(/^-0$/, '0'), fill: (i, j) => [ecol(j), 0.16], size: k > 5 ? 11.5 : 13, labelSize: k > 5 ? 9 : 12.5,
             sub: (i, j) => (i === 0 ? `×${G.classes[j].size}` : ''), subSize: 9.5,
           });
         });
@@ -150,7 +150,7 @@ where $C_G(g)$ is the centraliser of $g$. In words, the columns of the character
           if (sel[0] >= k || sel[1] >= k) sel = [0, 1];
           const exp = (a, b) => (a === b ? G.classes[a].cent : 0);
           T.draw({
-            rows: k, cols: k, rowLabels: (i) => `$${G.L[G.classes[i].rep]}$`, colLabels: (j) => `$${G.L[G.classes[j].rep]}$`, size: k > 5 ? 11.5 : 13,
+            rows: k, cols: k, rowLabels: (i) => `$${G.L[G.classes[i].rep]}$`, colLabels: (j) => `$${G.L[G.classes[j].rep]}$`, size: k > 5 ? 11.5 : 13, labelSize: k > 4 ? 10 : 12.5,
             value: (i, j) => ctext(M[i][j]).replace(/^-0$/, '0'), fill: (i, j) => [cabs(csub(M[i][j], [exp(i, j), 0])) < 1e-9 ? 'green' : 'red', 0.26], highlight: [[sel[0], sel[1], 'accent']],
             sub: (i, j) => (i === j ? `|C|=${G.classes[i].cent}` : ''), subSize: 9,
           });
@@ -192,7 +192,7 @@ is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of 
         v.button('one vertex', () => hs.forEach((h, k) => h.set(k, k === 0 ? 3 : 0)));
         v.button('alternating', () => hs.forEach((h, k) => h.set(k, k % 2 ? -2 : 2)));
         v.button('rotating wave', () => hs.forEach((h, k) => h.set(k, 3 * Math.cos((TAU * k) / 6 + 0.4))));
-        const B = v.stage({ x: [0, 4.8], y: [0, 2.6], equal: true, axes: false, height: 300, weight: 1.5, title: 'projections $P_if$' });
+        const B = v.stage({ x: [0, 5.0], y: [0, 2.8], equal: true, axes: false, height: 300, weight: 1.5, title: 'projections $P_if$' });
         const act = (g, f) => { const out = Array(6).fill(0); G.perms[g].forEach((to, k) => { out[to] = f[k]; }); return out; };
         const proj = (f) => T.rows.map((r) => {
           const out = Array(6).fill(0);
@@ -209,11 +209,11 @@ is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of 
           const M = Math.max(1e-9, ...f.map(Math.abs), 1);
           const names = ['$f$', ...T.rows.map((r) => `$P_{${r.tex}}f$`)];
           all.forEach((vals, p) => {
-            const col = p % 4, rowi = p < 4 ? 1 : 0, cx = 0.6 + col * 1.2 + (p >= 4 ? 0 : 0), cy = 0.65 + rowi * 1.3;
+            const col = p % 4, rowi = p < 4 ? 1 : 0, cx = 0.7 + col * 1.2 + (p >= 4 ? 0 : 0), cy = 0.65 + rowi * 1.3;
             const norm = Math.hypot(...vals), dim = p > 0 && norm < 1e-9;
-            B.poly(hex.map(([x, y]) => [cx + 0.42 * x, cy + 0.42 * y]), { color: dim ? 'faint' : 'muted', width: 1.2, fill: false });
+            B.poly(hex.map(([x, y]) => [cx + 0.38 * x, cy + 0.38 * y]), { color: dim ? 'faint' : 'muted', width: 1.2, fill: false });
             hex.forEach(([x, y], k) => {
-              const val = vals[k], rad = 0.25 * Math.sqrt(Math.abs(val) / M), px = cx + 0.42 * x, py = cy + 0.42 * y;
+              const val = vals[k], rad = 0.19 * Math.sqrt(Math.abs(val) / M), px = cx + 0.38 * x, py = cy + 0.38 * y;
               if (Math.abs(val) > 1e-9) B.circle(px, py, rad, { fill: val > 0 ? 'accent' : 'red', fillAlpha: 0.6, color: val > 0 ? 'accent' : 'red', width: 1 });
               else B.dot(px, py, { r: 2, color: 'faint', fill: 'faint' });
             });
@@ -293,7 +293,7 @@ So the matrix entries of the irreducibles, taken one per isomorphism class, are 
       name: 'Character tables',
       statement: String.raw`The **character table** of a finite group $G$ is the square matrix $\big(\chi_i(C_j)\big)$ whose rows are the irreducible characters $\chi_1=\mathbf 1,\chi_2,\dots,\chi_r$ and whose columns are the conjugacy classes $C_1=\{e\},C_2,\dots,C_r$ (so $r$ is both the number of classes and of irreducibles, 3.10). Its first column lists the degrees $d_i=\chi_i(e)$, with $\sum d_i^2=|G|$, and the class sizes $|C_j|$ are recorded with it, since they are the weights of the orthogonality relations.`,
       idea: String.raw`A table is not just a list of numbers: its rows are orthonormal for the weights $|C_j|/|G|$ (3.5) and its columns are orthogonal with squared length $|C_G(g_j)|$ (3.11). These two sets of relations are strong enough to determine the table from a few of its rows: for instance, when a single row is missing, column orthogonality with the identity column gives $d_r\overline{\chi_r(C_j)}=-\sum_{i<r}d_i\overline{\chi_i(C_j)}$, and $d_r^2=|G|-\sum_{i<r}d_i^2$.`,
-      caption: String.raw`Build the table row by row with the buttons: each new row is checked against the earlier ones (green when it has norm $1$ and is orthogonal to them). The top row records the class sizes. Reveal all but one row (the slider) and press "deduce the last row": its degree comes from $\sum d_i^2=|G|$, and its other entries from column orthogonality with the identity column. The deduced row is drawn in orange and compared with the true one. With two or more rows hidden, this simple deduction no longer determines anything.`,
+      caption: String.raw`Build the table row by row with the buttons: each new row is checked against the earlier ones (green when it has norm $1$ and is orthogonal to them). The top row records the class sizes. Reveal all but one row with "add next row" and press "deduce the last row": its degree comes from $\sum d_i^2=|G|$, and its other entries from column orthogonality with the identity column. The deduced row is drawn in orange and compared with the true one. With two or more rows hidden, this simple deduction no longer determines anything.`,
       deps: ['rep-3.10'],
       refs: ['Fulton–Harris §2.3'],
       see: ['qchem-8.4'],
@@ -305,7 +305,7 @@ So the matrix entries of the irreducibles, taken one per isomorphism class, are 
         v.button('add next row', () => { const n = tableOf(gsel.value).rows.length; given = Math.min(n, given + 1); deduced = false; });
         v.button('reset', () => { given = 1; deduced = false; });
         v.button('deduce the last row', () => { deduced = true; });
-        const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, weight: 1 });
+        const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1 });
         const T = v.table(S, { rows: 3, cols: 3, square: false, maxCell: 62, cellAspect: 1.2, size: 13, labelSize: 12.5, margin: 8 });
         const calc = () => {
           const { G, rows } = tableOf(gsel.value), n = rows.length, gv = Math.min(given, n);
@@ -409,13 +409,13 @@ the average number of fixed points. In terms of the permutation representation $
           const mx = Math.max(...fixCount) * 1.1;
           A.setView([-0.6, perms.length - 0.4], [0, mx]);
           A.setTicks(perms.length <= 16 ? perms.map((_, g) => [g, mode.value === 'cube' ? '' : setup().labels[g]]) : [], null);
-          A.bars(fixCount, { x0: 0, dx: 1, color: (_, g) => (mode.value === 'cube' ? ecol(Math.min(...[0]) + g) : g < n ? 'accent' : 'orange') });
+          A.bars(fixCount, { x0: 0, dx: 1, color: (_, g) => (g < n || mode.value === 'cube' ? 'accent' : 'orange') });
           A.hline(mean, { color: 'green', width: 2.4, dash: [7, 4] });
           A.text(`average ${nm(mean, 2)}`, perms.length - 0.6, mean + mx * 0.03, { align: 'right', baseline: 'bottom', size: 12, color: 'green' });
           // gallery
           if (mode.value === 'cube') {
             B.text(`${orbits.length} orbits of ${total} colourings`, 0.5, 0.55, { align: 'center', size: 20, color: 'ink', weight: 700 });
-            B.text('(each drawn orbit-size is |G| / |stabiliser|)', 0.5, 0.42, { align: 'center', size: 12, color: 'muted' });
+            B.text('orbit sizes (each is |G| divided by the stabiliser order):', 0.5, 0.4, { align: 'center', size: 12, color: 'muted' });
             const sizes = new Map(); orbits.forEach((o) => sizes.set(o.length, (sizes.get(o.length) || 0) + 1));
             B.text([...sizes.entries()].sort((a, b) => a[0] - b[0]).map(([s, c]) => `${c}×size ${s}`).join(', '), 0.5, 0.3, { align: 'center', size: 12, color: 'muted' });
           } else {
@@ -445,7 +445,7 @@ the average number of fixed points. In terms of the permutation representation $
       name: 'Über Gruppencharaktere',
       statement: String.raw`Dedekind’s question was to factor the **group determinant** $\Theta_G(x)=\det\big(x_{gh^{-1}}\big)_{g,h\in G}$, a polynomial of degree $|G|$ in one variable $x_g$ per group element. For an abelian group he had shown that it is a product of linear forms $\sum_gx_g\chi(g)$ over the characters $\chi$ of $G$. Frobenius showed in the general case (in this paper and its companion of the same year on the prime factors of the group determinant) that $\Theta_G$ is a product of irreducible polynomials $\Phi_i$ of degree $d_i$, each occurring $d_i$ times, and that the coefficients of the linear terms of the $\Phi_i$ (at $x=\delta_e$) are numbers $\chi_i(g)$, the **characters**; the orthogonality relations and the other results of this chapter belong to the same circle of 1896–97 work. In modern terms $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ for the $i$-th irreducible representation $\rho_i$ and $\chi_i(g)=\operatorname{tr}\rho_i(g)=\partial\Phi_i/\partial x_g\big|_{x=\delta_e}$.`,
       idea: String.raw`Before 1896 the characters of a non-abelian group were not known to exist. Frobenius took Dedekind’s group determinant as the starting point (their correspondence began in April 1896), found its irreducible factors, and defined the characters from them, without matrices; the representations $\rho_i$ followed in 1897 (after Molin’s work, which Frobenius learned of that year). The paper introduces the characters (3.1), their orthogonality (3.5) and the character table (3.14), and the equality of the number of irreducibles with the number of conjugacy classes (3.10).`,
-      caption: String.raw`Pick a group and a random point $x$ (a number $x_g$ for each element). The left panel shows the $|G|\times|G|$ matrix $(x_{gh^{-1}})$, coloured by value; the table on the right lists the factors $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ built from the irreducible representations (written with matrices known today: this reconstruction is not Frobenius’s own computation) and the product $\prod\Phi_i^{d_i}$, compared with $\det(x_{gh^{-1}})$ computed directly. The last line differentiates each $\Phi_i$ numerically at $x=\delta_e$ in the direction of $g$: the numbers are the character table.`,
+      caption: String.raw`Pick a group and a random point $x$ (a number $x_g$ for each element). The left panel shows the $|G|\times|G|$ matrix $(x_{gh^{-1}})$, coloured by value (for the largest group the elements are numbered in the order of the group); the table on the right lists the factors $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ built from the irreducible representations (written with matrices known today: this reconstruction is not Frobenius’s own computation) and the product $\prod\Phi_i^{d_i}$, compared with $\det(x_{gh^{-1}})$ computed directly. The class columns of the table are obtained by differentiating each $\Phi_i$ numerically at $x=\delta_e$ in the direction of $g$: the numbers are the character table.`,
       deps: ['nt-11.1', 'ladr-9.43'],
       refs: ['Frobenius 1896'],
       paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://archive.org/details/sitzungsberichte1896deutsch' },
@@ -466,7 +466,7 @@ the average number of fixed points. In terms of the permutation representation $
         const calc = () => {
           const key = gsel.value, { G, rows } = tableOf(key), irr = irrepMats(key), r = v.rng(seed);
           const x = G.perms ? G.mul.map(() => 0) : [];
-          for (let g = 0; g < G.n; g++) x[g] = Math.round(r.uniform(-2, 2) * 2) / 2;
+          for (let g = 0; g < G.n; g++) x[g] = Math.round(r.uniform(-1.5, 2.5) * 10) / 10;
           // direct group determinant (complex determinant of a real matrix)
           const M = Array.from({ length: G.n }, (_, g) => Array.from({ length: G.n }, (_, h) => [x[G.mul[g][G.inv[h]]], 0]));
           const direct = cdet(M);
@@ -483,22 +483,22 @@ the average number of fixed points. In terms of the permutation representation $
           const { G, irr, x, M, phis, tab } = calc(), n = G.n;
           const mx = Math.max(...x.map(Math.abs), 1);
           TA.draw({
-            rows: n, cols: n, rowLabels: (i) => `$${G.L[i]}$`, colLabels: (j) => `$${G.L[j]}$`, size: n > 8 ? 10 : 12,
+            rows: n, cols: n, rowLabels: (i) => (n > 8 ? String(i + 1) : `$${G.L[i]}$`), colLabels: (j) => (n > 8 ? String(j + 1) : `$${G.L[j]}$`), size: n > 8 ? 10 : 12,
             value: (i, j) => nm(M[i][j][0], 1).replace('-', '−'),
             fill: (i, j) => [M[i][j][0] >= 0 ? 'accent' : 'red', Math.min(0.55, (Math.abs(M[i][j][0]) / mx) * 0.55)],
           });
           const k = G.classes.length, nr = irr.length;
           TB.draw({
-            rows: nr, cols: 3 + k, rowLabels: (i) => `$${irr[i].tex}$`,
-            colLabels: ['$d_i$', '$\\Phi_i(x)$', '$\\partial\\Phi_i$:', ...G.classes.map((c) => `$${G.L[c.rep]}$`)].slice(0, 3 + k),
-            value: (i, j) => (j === 0 ? String(irr[i].d) : j === 1 ? ctext(phis[i], 2) : j === 2 ? '' : ctext(tab[i][j - 3], 2).replace(/^-0$/, '0')),
-            fill: (i, j) => (j >= 3 ? [ecol(j - 3), 0.16] : j === 1 ? ['accent', 0.14] : null), size: k > 5 ? 10.5 : 12,
+            rows: nr, cols: 2 + k, rowLabels: (i) => `$${irr[i].tex}$`,
+            colLabels: ['$d_i$', '$\\Phi_i(x)$', ...G.classes.map((c) => `$${G.L[c.rep]}$`)],
+            value: (i, j) => (j === 0 ? String(irr[i].d) : j === 1 ? ctext(phis[i], 2) : ctext(tab[i][j - 2], 2).replace(/^-0$/, '0')),
+            fill: (i, j) => (j >= 2 ? [ecol(j - 2), 0.16] : j === 1 ? ['accent', 0.14] : null), size: k > 5 ? 10.5 : 12,
           });
         });
         v.readout(() => {
           const { G, irr, direct, prod, defect, tab, rows } = calc();
           let dev = 0; tab.forEach((r, i) => r.forEach((z, j) => { dev = Math.max(dev, cabs(csub(z, rows[i].vals[j]))); }));
-          return `$\\det(x_{gh^{-1}})=${ctex(direct, 3)}$ (direct, ${G.n}×${G.n}); $\\prod_i\\Phi_i^{d_i}=${ctex(prod, 3)}$ with degrees ${irr.map((r) => `$${r.d}$`).join(', ')} (so $\\sum d_i^2=${irr.reduce((s, r) => s + r.d * r.d, 0)}=|G|$): difference ${nm(cabs(csub(direct, prod)), 9) === '0' ? '$<10^{-9}$' : nm(cabs(csub(direct, prod)), 6)}.\nCharacters read off from the factors differ from the traces by $\\le${nm(dev, 6) === '0' ? '10^{-9}' : v.sci(dev, 1)}; their row/column orthogonality defect is ${v.sci(Math.max(defect, 1e-16), 1)}.`;
+          return `$\\det(x_{gh^{-1}})=${ctex(direct, 3)}$ (direct, ${G.n}×${G.n}); $\\prod_i\\Phi_i^{d_i}=${ctex(prod, 3)}$ with degrees ${irr.map((r) => `$${r.d}$`).join(', ')} (so $\\sum d_i^2=${irr.reduce((s, r) => s + r.d * r.d, 0)}=|G|$): difference $${v.sci(Math.max(cabs(csub(direct, prod)), 1e-12), 1)}$ (relative to size $${nm(cabs(direct), 2)}$).\nThe columns headed by classes are $\\partial\\Phi_i/\\partial x_g$ at $x=\\delta_e$ (numerical): they differ from the traces $\\operatorname{tr}\\rho_i(g)$ by at most $${v.sci(Math.max(dev, 1e-12), 1)}$, and the table they form has orthonormality defect $${v.sci(Math.max(defect, 1e-12), 1)}$.`;
         });
         void matN; void mm; void ctr; void cscale; void cexp; void cm;
       },
