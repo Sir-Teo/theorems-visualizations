@@ -10,7 +10,7 @@ export default {
       num: '10.7', kind: 'Concept', name: 'Third-degree price discrimination',
       statement: String.raw`A monopolist that can identify two groups of buyers (students and adults, domestic and foreign) and prevent resale charges each group its own price. With marginal cost $MC(Q)$ for total output $Q = q_1 + q_2$, profit is maximized when **marginal revenue is equal in the two markets and equal to marginal cost**,
 $$MR_1(q_1) = MR_2(q_2) = MC(q_1 + q_2),$$
-so by the inverse-elasticity rule (10.3) the group with the **less elastic** demand pays the **higher** price: $P_i\,(1 - 1/|\varepsilon_i|) = MC$ for both. Compared with the best single price the firm's profit is never lower; total output can go up or down, and for linear demands it is the same.`,
+so by the inverse-elasticity rule (10.3) the group with the **less elastic** demand pays the **higher** price: $P_i\,(1 - 1/|\varepsilon_i|) = MC$ for both. Compared with the best single price the firm's profit is never lower. Total output can go up or down; with linear demands, constant marginal cost and both markets served it is unchanged.`,
       idea: String.raw`If $MR_1 > MR_2$, shifting a unit of sales from market 2 to market 1 raises revenue at no change in cost, so at an optimum the two marginal revenues are equal, and equal to $MC$ of the total. The elasticity rule (10.3) applied to each market then makes the prices differ exactly when the elasticities do. A single price is one feasible policy of the discriminating firm (set $P_1 = P_2$), so it cannot do better. For linear demands the two markets' quantities move in opposite directions and cancel in the total; welfare falls with discrimination when total output does not rise, since the same output is split inefficiently between buyers who value it differently.`,
       caption: String.raw`Market 1 (left) has demand $P = 16 - q_1$, market 2 (right) has intercept and slope you choose; the horizontal line is the common marginal cost level at the optimum (separate prices) or the single price. **Change the steepness of market 2** and see its price move away from market 1's whenever the elasticities at the optimum differ. The **one price** toggle replaces the two prices by the best uniform one: compare profit, output, and total surplus in the readout.`,
       deps: ['micro-10.3'],
@@ -118,7 +118,7 @@ so by the inverse-elasticity rule (10.3) the group with the **less elastic** dem
       scope: String.raw`A stylized Chamberlinian "large group" model with symmetric firms; the way demand shrinks with $n$ is assumed, not derived from preferences (see Dixit–Stiglitz-type models for that).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Monopolistic_competition' },
       viz(v) {
-        const nS = v.slider('number of varieties $n$', 1, 8, 1, { step: 0.01 });
+        const nS = v.slider('number of varieties $n$', 1, 8, 2, { step: 0.01 });
         const A = 42, c = 2, b = 1, m = 0.5, F = 16;
         const s = mstage(v, { x: [0, 14], y: [0, 44], title: 'one firm\'s demand as rivals enter', height: 380 });
         const G = v.stage({ x: [1, 8], y: [-60, 130], axes: 'box', gutter: true, xlabel: 'number of varieties $n$', ylabel: 'profit per firm', height: 380, title: 'profit and entry', weight: 0.7, minWidth: 240 });
@@ -168,7 +168,7 @@ Reaction curves slope downward (quantities are strategic substitutes), and the e
         const c2S = v.slider('cost $c_2$', 0, 5, 2, { step: 0.05 });
         const a = 12, b = 1;
         const s = v.stage({ x: [0, 12], y: [0, 12], axes: 'box', gutter: true, equal: true, xlabel: 'output of firm 1, $q_1$', ylabel: 'output of firm 2, $q_2$', height: 420, title: 'reaction curves in the output plane' });
-        const B = v.stage({ x: [0.4, 4.6], y: [0, 24], axes: 'box', gutter: true, xticks: [[1, 'firm 1'], [2, 'eq. 1'], [3, 'firm 2'], [4, 'eq. 2']], ylabel: 'profit', height: 420, title: 'profits', weight: 0.6, minWidth: 230 });
+        const B = v.stage({ x: [0.4, 4.6], y: [-12, 24], axes: 'box', gutter: true, xticks: [[1, 'firm 1'], [2, 'eq. 1'], [3, 'firm 2'], [4, 'eq. 2']], ylabel: 'profit', height: 420, title: 'profits', weight: 0.6, minWidth: 230 });
         v.legend([['accent', 'firm 1 reaction line $R_1$'], ['orange', 'firm 2 reaction line $R_2$'], ['purple', 'iso-profit curves of firm 1'], ['green', 'Cournot equilibrium', { dot: true }], ['gold', 'test point', { dot: true }]]);
         const H = s.handle(9, 2, { color: 'gold', r: 9, label: '(q₁, q₂)', labelPos: 'ne', constrain: { x: [0.05, 11.9], y: [0.05, 11.9] } });
         let st = {};
@@ -178,10 +178,10 @@ Reaction curves slope downward (quantities are strategic substitutes), and the e
           const pi1 = (q1, q2) => q1 * (a - b * (q1 + q2) - c1), pi2 = (q1, q2) => q2 * (a - b * (q1 + q2) - c2);
           const q1 = H.x, q2 = H.y;
           s.clip(() => s.contour((x, y) => pi1(x, y), [pi1(q1, q2), pi1(e1, e2)], { color: 'purple', width: 1.8, res: 100 }));
-          s.line(R1(0), 0, R1(12), 12, { color: 'accent', width: 2.6 }); s.line(0, R2(0), 12, R2(12), { color: 'orange', width: 2.6 });
+          s.line(R1(0), 0, 0, a - c1, { color: 'accent', width: 2.6 }); s.line(0, R2(0), a - c2, 0, { color: 'orange', width: 2.6 });
           s.arrow(q1, q2, R1(q2), q2, { color: 'accent', width: 2 }); s.arrow(q1, q2, q1, R2(q1), { color: 'orange', width: 2 });
           s.dot(e1, e2, { r: 8, color: 'green' });
-          tag(s, 'R₁', R1(11), 11, 'accent', { dx: 14 }); tag(s, 'R₂', 11.3, R2(11.3), 'orange', { dy: -14 });
+          tag(s, 'R₁', R1(10), 10, 'accent', { dx: 14 }); tag(s, 'R₂', 0.6, R2(0.6), 'orange', { dy: -14 });
           B.hline(0, { color: 'muted' });
           bar(B, 1, 0.5, 0, pi1(q1, q2), 'accent'); bar(B, 2, 0.5, 0, pi1(e1, e2), 'green'); bar(B, 3, 0.5, 0, pi2(q1, q2), 'orange'); bar(B, 4, 0.5, 0, pi2(e1, e2), 'green');
           st = { e1, e2, p1: pi1(q1, q2), p2: pi2(q1, q2), n1: pi1(e1, e2), n2: pi2(e1, e2), P: a - b * (e1 + e2), q1, q2, qm: (a - Math.min(c1, c2)) / (2 * b) };

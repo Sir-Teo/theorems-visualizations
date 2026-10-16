@@ -117,9 +117,10 @@ function hcSearch(n, d, limit = 300000) {
   const key = `${n}^${d}`; if (hcCache[key]) return hcCache[key];
   const lines = hcLines(n, d), N = n ** d, byMax = Array.from({ length: N }, () => []);
   lines.forEach((l) => byMax[Math.max(...l)].push(l));
-  const col = new Int8Array(N).fill(-1); let steps = 0;
+  const col = new Int8Array(N).fill(-1); let steps = 0, deep = -1, deepCol = null;
   const rec = (i) => {
     if (++steps > limit) return null;
+    if (i > deep) { deep = i; deepCol = Array.from(col); }
     if (i === N) return true;
     for (const c of [0, 1]) {
       col[i] = c;
@@ -128,7 +129,7 @@ function hcSearch(n, d, limit = 300000) {
     col[i] = -1; return false;
   };
   const res = rec(0);
-  return (hcCache[key] = { res, col: res ? Array.from(col) : null, lines, N, steps });
+  return (hcCache[key] = { res, col: res ? Array.from(col) : deepCol, deep, lines, N, steps });
 }
 
 export default {
@@ -142,7 +143,7 @@ export default {
       name: 'Strategy stealing: the first player wins Hex and Chomp',
       statement: String.raw`**Chomp.** On any rectangular board with more than one square, the first player has a winning strategy. **Hex.** On any $n\times n$ board the first player (who moves without any swap rule) has a winning strategy. In both games the proof is non-constructive: it shows that a winning first move exists without saying which one it is.`,
       idea: String.raw`Both games are finite and cannot end in a draw (in Hex because exactly one player connects her sides, a fact equivalent to Brouwer’s theorem), so by Zermelo (game-4.3) one of the players wins with perfect play. Suppose the second player had a winning strategy. In Chomp let the first player eat only the top-right corner square: the second player’s winning reply to that move is also available to the first player as an opening move, because it removes at least the corner — so the first player could have played it at once and won, a contradiction. In Hex let the first player place any stone and then pretend it is not there, following the second player’s winning strategy as if she were second; an extra stone never hurts in Hex. Hence it is the first player who wins.`,
-      caption: String.raw`**Chomp** (poisoned bottom-left square): choose the board size; every square is coloured green if eating it from here wins and red if it loses against best play, and the table on the right counts the winning first moves for every size (never $0$). Switch on “show the stealing argument” to see the argument on the full board. Click to play; the computer answers perfectly. **Hex**: Red (top to bottom) moves first on a small board; every opening is coloured by the exhaustively solved outcome. On $4\times 4$ the table was solved offline.`,
+      caption: String.raw`**Chomp** (poisoned bottom-left square): choose the board size; every square is coloured green if eating it from here wins and red if it loses against best play, and the table on the right gives, for every size, a winning first move as (column, row) with the number of further winning moves, if any, after a plus sign: there is never none. Switch on “show the stealing argument” to see the argument on the full board. Click to play; the computer answers perfectly. **Hex**: Red (top to bottom) moves first on a small board; every opening is coloured by the exhaustively solved outcome. On $4\times 4$ the table was solved offline.`,
       credit: 'Hex: invented by Hein (1942) and independently by Nash (late 1940s), who gave the stealing argument; Chomp: Gale, 1974; Hex and Brouwer: Gale, 1979',
       scope: String.raw`Finite games without draws, where an extra move is never a disadvantage (Chomp: the move set shrinks monotonically; Hex: extra stones only help). Hex with the swap rule is a different game, a win for the second player.`,
       deps: ['game-4.3'],
@@ -152,7 +153,7 @@ export default {
       verify: true,
       viz(v) {
         const B = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 360, weight: 1.15, title: 'the board' });
-        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.85, title: 'winning first moves by board size' });
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.85, title: 'a winning first move (column, row)' });
         const T = v.table(Tb, { rows: 5, cols: 7, square: false, cellAspect: 0.9, maxCell: 50, size: 13, labelSize: 11.5, rowLabels: [2, 3, 4, 5, 6].map((r) => `${r} rows`), colLabels: [2, 3, 4, 5, 6, 7, 8].map((c) => `${c}`), cornerLabel: 'cols' });
         let game = 'chomp', R = 3, C = 5, h = [3, 3, 3, 3, 3], hx = 3, hs = '.'.repeat(9), over = null;
         const mode = v.select('game', [{ value: 'chomp', label: 'Chomp' }, { value: 'hex', label: 'Hex' }], 'chomp', { onChange: (g) => { game = g; reset(); vis(); } });
@@ -211,7 +212,7 @@ export default {
             for (let j = 0; j < C; j++) for (let i = 0; i < h[j]; i++) {
               const x0 = g.x0 + j * g.cs, y0 = g.y0 + i * g.cs, poison = i === 0 && j === 0, w = win.has(`${i},${j}`);
               B.rect(x0 + 1 / 400, y0 + 1 / 400, x0 + g.cs - 1 / 400, y0 + g.cs - 1 / 400, { fill: poison ? 'ink' : w ? 'green' : 'red', fillAlpha: poison ? 0.55 : 0.28, color: 'muted', width: 1 });
-              if (poison) B.text('☠', x0 + g.cs / 2, y0 + g.cs / 2, { align: 'center', baseline: 'middle', size: 20, color: 'panel' });
+              if (poison) B.text('poison', x0 + g.cs / 2, y0 + g.cs / 2, { align: 'center', baseline: 'middle', size: 12, weight: 700, color: 'panel' });
             }
             if (stealInfo) {
               const cx = g.x0 + (C - 1) * g.cs, cy = g.y0 + (R - 1) * g.cs;
@@ -229,10 +230,11 @@ export default {
             B.setView([-1.4, n - 1 + 0.5 * (n - 1) + 1.4], [-0.866 * (n - 1) - 1.2, 1.2]);
             const hex = (r, c, o) => { const [px, py] = hexPos(r, c), rad = 0.577, pts = idx(6).map((k) => [px + rad * Math.cos(Math.PI / 6 + k * Math.PI / 3), py + rad * Math.sin(Math.PI / 6 + k * Math.PI / 3)]); B.poly(pts, o); };
             const topL = hexPos(0, 0), botL = hexPos(n - 1, 0);
-            B.line(topL[0] - 0.5, topL[1] + 0.62, topL[0] + n - 0.5, topL[1] + 0.62, { color: 'red', width: 6 });
-            B.line(botL[0] - 0.5, botL[1] - 0.62, botL[0] + n - 0.5, botL[1] - 0.62, { color: 'red', width: 6 });
-            B.line(topL[0] - 0.55, topL[1] + 0.3, botL[0] - 0.55, botL[1] - 0.3, { color: 'blue', width: 6 });
-            B.line(topL[0] + n - 0.45, topL[1] + 0.3, botL[0] + n - 0.45, botL[1] - 0.3, { color: 'blue', width: 6 });
+            const yT = 0.75, yB = -0.866 * (n - 1) - 0.75, k = 0.5 / 0.866;
+            B.line(-0.55, yT - 0.12, n - 0.45, yT - 0.12, { color: 'red', width: 6 });
+            B.line(0.5 * (n - 1) - 0.55, yB + 0.12, 0.5 * (n - 1) + n - 0.45, yB + 0.12, { color: 'red', width: 6 });
+            B.line(-0.62 - yT * k + 0.45, yT - 0.12 - 0.0, -0.62 - yB * k - 0.1, yB + 0.12, { color: 'blue', width: 6 });
+            B.line(n - 0.38 - yT * k + 0.45, yT - 0.12, n - 0.38 - yB * k - 0.1, yB + 0.12, { color: 'blue', width: 6 });
             const empty = hs.split('').every((c) => c === '.');
             const mv = S.mover(hs), winMoves = [];
             for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
@@ -252,7 +254,7 @@ export default {
           }
           // table of winning-first-move counts
           T.draw({ data: [2, 3, 4, 5, 6].map((r) => [2, 3, 4, 5, 6, 7, 8].map((c) => {
-            const S = chompFor(r, c), full = Array(c).fill(r); return chompMoves(full).filter((m) => S.val(m.h) === -1).length;
+            const S = chompFor(r, c), full = Array(c).fill(r), w = chompMoves(full).filter((m) => S.val(m.h) === -1); return `${w[0].j + 1},${w[0].i + 1}${w.length > 1 ? `+${w.length - 1}` : ''}`;
           })), fill: (i, j) => (game === 'chomp' && i + 2 === R && j + 2 === C ? ['gold', 0.4] : ['green', 0.12]), highlight: game === 'chomp' ? [[R - 2, C - 2, 'gold']] : [] });
         });
         v.readout(() => {
@@ -281,7 +283,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem' },
       verify: true,
       viz(v) {
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.1, title: 'Nim' });
+        const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 340, weight: 1.1, title: 'Nim' });
         const Bb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.9, title: 'binary digits and the nim-sum' });
         let mode = 'nim', heaps = [3, 4, 5], over = null, seed = 1, key = 'kayles';
         const NMAX = 12;
@@ -292,7 +294,7 @@ export default {
         const comp = v.toggle('computer replies', true);
         const bNew = v.button('random position', () => { seed++; const r = v.rng(seed); heaps = idx(r.int(2, 4)).map(() => r.int(1, 7)); over = null; });
         const bRst = v.button('reset', () => { heaps = [3, 4, 5]; over = null; });
-        const vis = () => { [gsel, sa, sb].forEach((c) => { c.el.hidden = mode !== 'sum'; }); [comp, bNew, bRst].forEach((c) => { c.el.hidden = mode !== 'nim'; }); };
+        const vis = () => { [gsel, sa, sb].forEach((c) => { c.el.hidden = mode !== 'sum'; }); comp.el.hidden = mode !== 'nim'; bNew.hidden = bRst.hidden = mode !== 'nim'; };
         vis();
         const xor = (a) => a.reduce((x, y) => x ^ y, 0);
         const cm = () => {
@@ -333,8 +335,8 @@ export default {
             info = { s, heaps: heaps.slice() };
           } else {
             const N = NMAX, g = grundyTable(key, N), a = sa.value, b = sb.value, S = sol(key);
-            A.setView([-0.8, N + 0.8], [0, Math.max(...g) + 1.8]); A.setTitle(`Grundy values of “${GAMES[key].label}”`);
-            g.forEach((gv, n) => { A.rect(n - 0.36, 0, n + 0.36, gv, { fill: n === a || n === b ? 'gold' : 'blue', fillAlpha: n === a || n === b ? 0.55 : 0.28, color: n === a || n === b ? 'gold' : 'blue', width: 1.5 }); A.text(String(gv), n, gv + 0.08, { align: 'center', baseline: 'bottom', size: 12, weight: 700, color: 'ink' }); A.text(String(n), n, -0.0, { align: 'center', baseline: 'top', size: 11, color: 'muted' }); });
+            A.setView([-0.8, N + 0.8], [-0.9, Math.max(...g) + 1.8]); A.setTitle(`Grundy values of “${GAMES[key].label}”`);
+            g.forEach((gv, n) => { A.rect(n - 0.36, 0, n + 0.36, gv, { fill: n === a || n === b ? 'gold' : 'blue', fillAlpha: n === a || n === b ? 0.55 : 0.28, color: n === a || n === b ? 'gold' : 'blue', width: 1.5 }); A.text(String(gv), n, gv + 0.08, { align: 'center', baseline: 'bottom', size: 12, weight: 700, color: 'ink' }); A.text(String(n), n, -0.15, { align: 'center', baseline: 'top', size: 11, color: 'muted' }); });
             Bb.setView([-1.2, N + 1.4], [-1.4, N + 1.2]); Bb.setTitle('sums of two heaps: lost for the mover (brute force)');
             let bad = 0;
             for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) {
@@ -366,7 +368,7 @@ export default {
       name: 'High-dimensional tic-tac-toe: the first player wins',
       statement: String.raw`Play tic-tac-toe on the board $[n]^d=\{1,\dots,n\}^d$ (two players alternately mark empty cells; the first to fill a whole line of $n$ cells, in any row, column, diagonal or higher-dimensional analogue, wins). There are $\frac{(n+2)^d-n^d}{2}$ lines. If $d$ is large enough that every two-colouring of $[n]^d$ contains a monochromatic line, which by the Hales–Jewett theorem happens for all $d\ge d_0(n)$, then the game can never end in a draw, and the first player has a winning strategy.`,
       idea: String.raw`If no full board colouring is free of monochromatic lines, then a completed game always has a winner. So by Zermelo (game-4.3) one of the players can force a win. If the second player could, the first player could steal her strategy (game-4.11): make an arbitrary first move, then answer as the second player would, ignoring the extra cell, and move arbitrarily whenever the strategy calls for the cell she already owns; an extra mark never hurts in a game of line-filling, so she wins too, which is absurd. As for Chomp and Hex, nothing says how to win. The theorem is only about large $d$: in $[3]^2$ the game is a draw, while for $n=3$ a line-free colouring ceases to exist already at $d=3$.`,
-      caption: String.raw`Choose $n$ and $d$ (boards of $d=3,4$ are drawn as arrays of $n\times n$ boards). The program searches for a two-colouring with no monochromatic line (blue/orange cells). If one is found a draw is not excluded; if the exhaustive search says none exists, every play-out has a winner and the stealing argument applies. Click a cell to see all lines through it. The table on the right collects the result for the sizes that fit. “?” means the step budget ran out: no conclusion.`,
+      caption: String.raw`Choose $n$ and $d$ (boards of $d=3,4$ are drawn as arrays of $n\times n$ boards). The program searches for a two-colouring with no monochromatic line (blue/orange cells). If one is found a draw is not excluded; if the exhaustive search says none exists, every play-out has a winner and the stealing argument applies. If none exists, the picture shows the furthest the search ever got and the cell (red) where every colouring creates a line. Click a cell to see all lines through it. The table on the right collects the result for the sizes that fit. “?” means the step budget ran out: no conclusion.`,
       credit: 'Hales & Jewett, 1963 (“Regularity and positional games”); Golomb & Hales, 2002 (survey)',
       scope: String.raw`Lines are the geometric lines of $[n]^d$ (each coordinate constant, increasing or decreasing). “Line-free colouring exists” does not mean a draw is achievable with best play: for $4^3$ such colourings exist, yet the first player is known to win (Patashnik, 1980, by computer).`,
       deps: ['comb-11.9', 'game-4.11'],
@@ -401,8 +403,8 @@ export default {
           const inLine = new Set(through.flat());
           for (let i = 0; i < N; i++) {
             const [px, py] = place(i), c = S.col ? S.col[i] : -1;
-            const col = c === 0 ? 'blue' : c === 1 ? 'orange' : 'muted';
-            B.rect(px + 0.06, py + 0.06, px + 0.94, py + 0.94, { fill: col, fillAlpha: c < 0 ? 0.1 : 0.4, color: i === pick ? 'gold' : inLine.has(i) ? 'purple' : col, width: i === pick ? 3.5 : inLine.has(i) ? 3 : 1 });
+            const col = c === 0 ? 'blue' : c === 1 ? 'orange' : 'muted', stuck = S.res !== true && i === S.deep;
+            B.rect(px + 0.06, py + 0.06, px + 0.94, py + 0.94, { fill: stuck ? 'red' : col, fillAlpha: c < 0 ? (stuck ? 0.35 : 0.08) : S.res === true ? 0.4 : 0.25, color: i === pick ? 'gold' : inLine.has(i) ? 'purple' : stuck ? 'red' : col, width: i === pick ? 3.5 : inLine.has(i) ? 3 : stuck ? 3 : 1 });
           }
           // draw the lines through the picked cell as polylines through cell centres
           through.forEach((l) => B.path(l.map((i) => { const [px, py] = place(i); return [px + 0.5, py + 0.5]; }), { color: 'purple', width: 2, alpha: 0.7 }));

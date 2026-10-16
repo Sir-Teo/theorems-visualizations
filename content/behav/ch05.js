@@ -69,7 +69,7 @@ export default {
       links: { doi: 'https://doi.org/10.2307/2295722' },
       viz(v) {
         const mode = v.select('discount function', [{ value: 'exp', label: 'exponential' }, { value: 'hyp', label: 'hyperbolic' }], 'exp');
-        const r = v.slider('rate $r$ (per day, \\%)', 0, 25, 15, { step: 0.5 });
+        const r = v.slider('rate $r$ (% per day)', 0, 25, 15, { step: 0.5 });
         const g = v.slider('extra wait $g$ (days)', 1, 14, 1, { step: 1, int: true });
         const yy = v.slider('larger reward at $T+g$ (\\$), smaller is \\$100', 101, 160, 110, { step: 1, int: true });
         const T = 30;
@@ -88,8 +88,8 @@ export default {
           B.setView([0, 3], [0, mx * 1.3]);
           B.rect(0.35, 0, 1.25, vs, { fill: 'orange', fillAlpha: 0.6, color: 'orange', width: 1.5 });
           B.rect(1.75, 0, 2.65, vl, { fill: 'blue', fillAlpha: vl > vs ? 0.75 : 0.45, color: 'blue', width: vl > vs ? 3 : 1.5 });
-          B.text('$100 on day 30', 0.8, 0, { dy: 18, align: 'center', size: 12, color: 'orange', weight: 700 });
-          B.text('later reward, day ' + (T + g.value), 2.2, 0, { dy: 18, align: 'center', size: 12, color: 'blue', weight: 700 });
+          B.text('$100 on day 30', 0.8, 0, { dy: -14, align: 'center', size: 12, color: 'orange', weight: 700 });
+          B.text('later, day ' + (T + g.value), 2.2, 0, { dy: -14, align: 'center', size: 12, color: 'blue', weight: 700 });
           B.text(vs.toFixed(1), 0.8, vs, { dy: -10, align: 'center', size: 13, weight: 800, color: 'orange' });
           B.text(vl.toFixed(1), 2.2, vl, { dy: -10, align: 'center', size: 13, weight: 800, color: 'blue' });
         });
@@ -171,7 +171,7 @@ export default {
         const mine = DELAYS.map(() => 0);
         const D = (t) => (mode.value === 'hyp' ? dHyp(k.value, t) : dExp(k.value, t));
         const tSS = 20;
-        const A = v.stage({ x: [0, 25], y: [0, 100], axes: 'box', gutter: true, height: 330, xlabel: 'the clock s (weeks); smaller reward arrives at week 20', ylabel: 'value now of each reward (\\$)', title: 'present values as the rewards draw near' });
+        const A = v.stage({ x: [0, 25], y: [0, 100], axes: 'box', gutter: true, height: 330, xlabel: 'the clock s (weeks); smaller reward arrives at week 20', ylabel: 'value now of each reward ($)', title: 'present values as the rewards draw near' });
         const B = v.stage({ x: [0, DELAYS.length], y: [0, 4], axes: false, height: 330, title: 'your choices at several front-end delays', hover: false });
         const h = A.handle(10, 0, { color: 'gold', r: 8, constrain: (x) => [clamp(x, 0, 24), 0] });
         v.legend([['orange', 'smaller, sooner'], ['blue', 'larger, later']]);
@@ -287,17 +287,20 @@ export default {
           for (let t = 1; t <= S.n; t++) A.text(String(S.c[t]), t, S.c[t], { dy: -10, align: 'center', size: 11.5, weight: 700, color: 'accent' });
           A.dot(S.nAct - 0.14, S.c[S.nAct] * 0.5, { r: 9, color: 'orange' });
           A.dot(S.sAct + 0.14, S.c[S.sAct] * 0.5, { r: 9, color: 'green' });
-          B.setView([0.3, S.n + 0.7], [0.3, S.n + 0.7]);
+          B.setView([0.3, S.n + 0.7], [0, S.n + 1.3]);
+          for (let t = 1; t <= S.n; t++) B.text(String(t), t, S.n + 0.95, { align: 'center', size: 12, weight: 700, color: 'muted' });
+          B.text('week planned for', (S.n + 1) / 2, S.n + 1.2, { align: 'center', size: 11, color: 'muted' });
           for (let t = 1; t <= S.n; t++) {
-            B.text('week ' + t, 0.3, S.n + 1 - t, { dx: 4, size: 11.5, color: 'muted', weight: 700 });
-            B.hline(S.n + 1 - t, { color: 'grid', width: 1 });
-            const yn = S.n + 1 - t + 0.17, ys = S.n + 1 - t - 0.17;
+            const y0 = S.n - t + 1;
+            B.text('in week ' + t, 0.3, y0, { dx: 4, size: 11.5, color: 'muted', weight: 700 });
+            B.hline(y0 - 0.5, { color: 'grid', width: 1 });
+            const yn = y0 + 0.17, ys = y0 - 0.17;
             B.dot(S.naive[t], yn, { r: 6, color: 'orange', hollow: !(S.naive[t] === t) });
             B.dot(S.soph[t], ys, { r: 6, color: 'green', hollow: !(S.soph[t] === t) });
-            if (S.naive[t] !== t) B.arrow(t, yn, S.naive[t] - 0.15, yn, { color: 'orange', head: 7 });
-            if (S.soph[t] !== t) B.arrow(t, ys, S.soph[t] - 0.15, ys, { color: 'green', head: 7 });
+            if (S.naive[t] !== t) B.arrow(t + 0.1, yn, S.naive[t] - 0.15, yn, { color: 'orange', head: 7 });
+            if (S.soph[t] !== t) B.arrow(t + 0.1, ys, S.soph[t] - 0.15, ys, { color: 'green', head: 7 });
           }
-          B.text('mark in the column of the week planned for; filled = act now', S.n / 2 + 0.5, 0.3, { dy: -4, align: 'center', size: 10.5, color: 'muted' });
+          B.text('filled mark = acts that week', (S.n + 1) / 2, 0.15, { align: 'center', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
           const S = solve();

@@ -246,18 +246,18 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
           const spe = [[1, f > 1 ? 0 : 1]]; if (f > 1) spe[0] = [0, 0]; else spe[0] = [1, 1];
           const isSPE = (i, j) => spe.some(([a, b]) => a === i && b === j);
           const play = playBeh(P, asBeh(P, F.S1[sel[0]], F.S2[sel[1]])), end = [...play.leafP.keys()][0], onp = ancestors(end);
-          T.setView([-0.8, 2.6], [-3.0, 0.8]);
+          T.setView([-1.4, 2.7], [-3.0, 0.8]);
           const n2 = P.nodes[2], pathSPE = new Set(bpath(P.root));
           // subgame box
-          T.rect(n2.x - 0.65, -2.8, n2.x + 0.65, n2.y + 0.5, { fill: 'purple', fillAlpha: 0.07, color: 'purple', width: 1.5, dash: true });
-          T.text('subgame', n2.x + 0.6, -2.75, { align: 'right', baseline: 'bottom', size: 11.5, color: 'purple', weight: 700 });
+          T.rect(n2.x - 0.9, -2.8, n2.x + 0.9, n2.y + 0.5, { fill: 'purple', fillAlpha: 0.07, color: 'purple', width: 1.5, dash: true });
+          T.text('subgame', n2.x + 0.85, -2.75, { align: 'right', baseline: 'bottom', size: 11.5, color: 'purple', weight: 700 });
           const threat = sel[1] === 0 && f < 1;
           drawTree(T, P, {
             edgeColor: (e) => (onp.has(e.to) && onp.has(e.from) ? 'gold' : (e.from === n2 && e.a === 'Fight' && ne.some(([a, b]) => b === 0 && a === 0) && f < 1 ? 'red' : null)),
             edgeWidth: (e) => (onp.has(e.to) && onp.has(e.from) ? 4.5 : pathSPE.has(e.to) && pathSPE.has(e.from) ? 3 : 1.6),
             labelColor: (e) => (pathSPE.has(e.to) && pathSPE.has(e.from) ? 'green' : 'ink'), nodeTag: (n) => (isLeaf(n) ? null : n.p === 1 ? 'entrant' : 'incumbent'),
           });
-          if (f < 1) T.text('non-credible threat', n2.x - 0.05, -1.45, { align: 'right', size: 11.5, color: 'red', weight: 700 });
+          if (f < 1) T.text('non-credible threat', n2.x - 0.95, -0.85, { align: 'right', size: 11.5, color: 'red', weight: 700 });
           TB.draw({
             data: F.U, fill: (i, j) => (ne.some(([a, b]) => a === i && b === j) ? (isSPE(i, j) ? ['green', 0.32] : ['red', 0.25]) : null), highlight: [[sel[0], sel[1], 'gold']],
           });

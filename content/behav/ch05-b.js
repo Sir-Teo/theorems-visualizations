@@ -93,10 +93,10 @@ export default {
         const W = 12, BUSY = [4, 8];
         const bz = v.slider('extra cost of a busy week', 0, 3, 1.5, { step: 0.25 });
         const gz = v.slider('crunch cost $g$ per pair of tasks in one week', 0, 3, 1.5, { step: 0.25 });
-        const A = v.stage({ x: [0.5, W + 0.5], y: [0, 4.2], axes: false, height: 320, title: 'a procrastinator does each task in its deadline week', hover: false });
+        const A = v.stage({ x: [0.5, W + 0.5], y: [-0.6, 4.2], axes: false, height: 320, title: 'a procrastinator does each task in its deadline week', hover: false });
         const B = v.stage({ x: [0, 5], y: [0, 10], axes: 'box', gutter: true, height: 320, ylabel: 'total cost of the three tasks', xticks: [[0.5, 'end only'], [1.5, 'even'], [2.5, 'yours'], [3.5, 'best'], [4.5, 'no bias']], title: 'which schedule is cheapest?' });
-        const f1 = A.handle(3, 3.7, { color: 'gold', r: 9, label: 'd₁', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
-        const f2 = A.handle(7, 3.7, { color: 'gold', r: 9, label: 'd₂', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
+        const f1 = A.handle(4, 3.7, { color: 'gold', r: 9, label: 'd₁', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
+        const f2 = A.handle(8, 3.7, { color: 'gold', r: 9, label: 'd₂', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
         const cost = (ds) => {
           const n = {}; ds.forEach((d) => { n[d] = (n[d] || 0) + 1; });
           let tot = 0;
@@ -115,7 +115,7 @@ export default {
             const n = ds.filter((d) => d === t).length;
             for (let j = 0; j < n; j++) A.rect(t - 0.36, 0.55 + 0.9 * j, t + 0.36, 1.35 + 0.9 * j, { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1.3, radius: 5 });
           }
-          A.text('week', 6.5, 0.2, { dy: 32, align: 'center', size: 11.5, color: 'muted' });
+          A.text('week', 6.5, 0.2, { dy: 34, align: 'center', size: 11.5, color: 'muted' });
           const [bc, bd] = best();
           const vals = [[cost([W, W, W]), 'muted'], [cost([4, 8, 12]), 'orange'], [cost(ds), 'accent'], [bc, 'green'], [free(), 'purple']];
           B.setView([0, 5], [0, Math.max(6, ...vals.map((x) => x[0])) * 1.18]);
@@ -158,7 +158,7 @@ export default {
         v.render(() => {
           A.fn(rate, { color: 'blue', width: 2.6 });
           A.hline(rs.value * (sign.value === 'l' ? lossF.value : 1), { color: 'muted', width: 2, dash: true });
-          if (sign.value === 'g') DATA.forEach(([a, X]) => { A.dot(a, Math.log(X / a), { r: 6, color: 'green' }); A.text(a + ' → ' + X, a, Math.log(X / a), { dx: 9, dy: -11, size: 11, color: 'green', weight: 700 }); });
+          if (sign.value === 'g') DATA.forEach(([a, X]) => { A.dot(a, Math.log(X / a), { r: 6, color: 'green' }); A.text(a + ' → ' + X, a, Math.log(X / a), a > 1000 ? { dx: -9, dy: -12, align: 'right', size: 11, color: 'green', weight: 700 } : { dx: 9, dy: -11, size: 11, color: 'green', weight: 700 }); });
           const a = h.x; h.set(a, rate(a));
           const ra = rate(a), rsingle = rs.value * (sign.value === 'l' ? lossF.value : 1);
           B.setView([0, 5], [0.85, Math.max(1.6, Math.exp(Math.max(ra, rsingle) * 5) * 1.05)]);
@@ -171,7 +171,7 @@ export default {
         v.readout(() => {
           const a = h.x, ra = rate(a), rsingle = rs.value * (sign.value === 'l' ? lossF.value : 1), g = sign.value === 'g';
           const X1 = a * Math.exp(ra * t.value), X2 = a * Math.exp(rsingle * t.value);
-          return `${g ? 'Being paid' : 'Paying'} ${usdR(a)} now versus later: after ${t.value} years the indifference amount is **${usdR(X1)}** under the fitted curve (rate ${pct(ra)}) but ${usdR(X2)} under a single rate (${pct(rsingle)}). The data say the rate falls from ${pct(rate(15))} at \\$15 to ${pct(rate(3000))} at \\$3,000; a single-rate model gets the same wrong by up to ${num(Math.abs(Math.log(rate(15) / rate(3000))) / Math.LN2, 1)} doublings.`;
+          return `${g ? 'Being paid' : 'Paying'} ${usdR(a)} now versus later: after ${t.value} year${t.value === 1 ? '' : 's'} the indifference amount is **${usdR(X1)}** under the fitted curve (rate ${pct(ra)}) but ${usdR(X2)} under a single rate (${pct(rsingle)}). The data say the rate falls from ${pct(rate(15))} at \\$15 to ${pct(rate(3000))} at \\$3,000; no single rate can fit both, since the first is ${num(rate(15) / rate(3000), 1)} times the second.`;
         });
       },
     },
@@ -181,7 +181,7 @@ export default {
       statement: String.raw`In Mischel's marshmallow studies at a Stanford nursery school, a child chooses between one treat now and two if she waits alone for the experimenter; the 1972 papers showed that how long children wait depends strongly on the strategies available to them (covering the treat, thinking about something else). Shoda, Mischel and Peake (1990) reported that for the children they could follow up, waiting time at about age 4 correlated with adolescent SAT scores (.57 math, .42 verbal, as quoted by Watts et al.). A conceptual replication in a much larger and more representative sample (Watts, Duncan and Quan 2018; $n=918$ at age 15, children of mothers without a college degree) found a bivariate standardized association of about **0.24** with age-15 achievement, **0.28** at first grade, roughly half the original size, which fell to about **0.05** once family background, early cognitive ability and the home environment were controlled. Most of the association came from waiting at least 20 seconds.`,
       scope: String.raw`The replication used a different task version in a sample of children from less advantaged families, so it is a conceptual rather than a direct replication; it tests the claim that early delay of gratification predicts later achievement as a stand-alone trait, not the finding that strategies matter in the moment. The coefficients are standardized regression coefficients, not Pearson correlations of the original kind.`,
       idea: String.raw`Children who can wait differ from those who cannot in many ways that also predict school success — household resources, early cognitive skills, the reliability of the adults around them — and the original sample (children of Stanford faculty and staff, a small fraction followed up) offered little variation in those. Adding controls to a regression absorbs the shared variance, and the leftover coefficient is what delay of gratification adds. The result is a lesson in omitted-variable bias and in treating a laboratory task as a trait; it does not make self-control irrelevant.`,
-      caption: String.raw`Left: the original correlations (hollow bars) against the replication's standardized coefficient of minutes waited, with 95% intervals, for the outcome you select, at each control level (none, early childhood and family controls, plus concurrent controls). Right: the same regression with waiting time in **groups**, relative to children who waited under 20 seconds; choose the controls. The gradient flattens and most of the gain sits in the first 20 seconds.`,
+      caption: String.raw`Left: the original correlations (grey bars) against the replication's standardized coefficient of minutes waited, with 95% intervals, for the outcome you select, at each control level (none, early childhood and family controls, plus concurrent controls). Right: the same regression with waiting time in **groups**, relative to children who waited under 20 seconds; choose the controls. The gradient flattens and most of the gain sits in the first 20 seconds.`,
       deps: ['behav-5.3'], refs: ['W&K ch. 8'], tags: ['replication', 'self-control'],
       credit: 'Mischel et al., 1972; Shoda, Mischel & Peake, 1990; Watts, Duncan & Quan, 2018',
       links: { doi: 'https://doi.org/10.1177/0956797618761661' },
@@ -239,17 +239,17 @@ export default {
           { name: 'SS', sa: 0, si: 0, nH: 37, pHU: 0.62, nU: 13, pUH: 0.08 },
         ];
         COND.forEach((c) => { c.adv = c.nU / 50; c.imm = (c.nU * (1 - c.pUH) + c.nH * c.pHU) / 50; });
-        const d0 = v.slider('base taste for the unhealthy snack $\\Delta_0$ (logit)', -1, 3, 1.2, { step: 0.05 });
-        const gm = v.slider('effect of hunger on taste $\\gamma$', 0, 3, 1.0, { step: 0.05 });
+        const d0 = v.slider('base taste for the unhealthy snack $\\Delta_0$ (logit)', -1, 3, 1.0, { step: 0.05 });
+        const gm = v.slider('effect of hunger on taste $\\gamma$', 0, 3, 1.9, { step: 0.05 });
         const al = v.slider('projection weight $\\alpha$', 0, 1, 0.4, { step: 0.01 });
-        const ph = v.slider('extra healthiness of advance choices $\\phi$', 0, 2, 0.9, { step: 0.05 });
+        const ph = v.slider('extra healthiness of advance choices $\\phi$', 0, 3, 1.9, { step: 0.05 });
         const fit = v.button('Fit the four parameters', () => {
           const f = (x) => {
             const [a0, g, a, p] = x, aa = clamp(a, 0, 1);
             return COND.reduce((s, c) => s + Math.pow(pAdv(c, a0, g, aa, p) - c.adv, 2) + Math.pow(pImm(c, a0, g) - c.imm, 2), 0);
           };
           const r = v.M.nelderMead(f, [d0.value, gm.value, al.value, ph.value], { step: 0.3, tol: 1e-10, maxIt: 800 });
-          d0.set(clamp(r.x[0], -1, 3)); gm.set(clamp(r.x[1], 0, 3)); al.set(clamp(r.x[2], 0, 1)); ph.set(clamp(r.x[3], 0, 2));
+          d0.set(clamp(r.x[0], -1, 3)); gm.set(clamp(r.x[1], 0, 3)); al.set(clamp(r.x[2], 0, 1)); ph.set(clamp(r.x[3], 0, 3));
         });
         const pImm = (c, a0, g) => logistic(a0 + g * c.si);
         const pAdv = (c, a0, g, a, p) => logistic(a0 - p + g * ((1 - a) * c.si + a * c.sa));
@@ -265,8 +265,8 @@ export default {
             const x = i + 0.5;
             A.rect(x - 0.4, 0, x - 0.02, c.adv, { fill: 'blue', fillAlpha: 0.55, color: 'blue', width: 1.3 });
             A.rect(x + 0.02, 0, x + 0.4, c.imm, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.3 });
-            A.text(Math.round(100 * c.adv) + '%', x - 0.21, c.adv, { dy: -9, align: 'center', size: 11, weight: 700, color: 'blue' });
-            A.text(Math.round(100 * c.imm) + '%', x + 0.21, c.imm, { dy: -9, align: 'center', size: 11, weight: 700, color: 'orange' });
+            A.text(Math.round(100 * c.adv) + '%', x - 0.21, 0, { dy: -12, align: 'center', size: 11, weight: 700, color: 'blue' });
+            A.text(Math.round(100 * c.imm) + '%', x + 0.21, 0, { dy: -12, align: 'center', size: 11, weight: 700, color: 'orange' });
             A.dot(x - 0.21, pAdv(c, d0.value, gm.value, al.value, ph.value), { r: 6, color: 'ink' });
             A.dot(x + 0.21, pImm(c, d0.value, gm.value), { r: 6, color: 'ink' });
           });
