@@ -33,7 +33,8 @@ export function cableSteady(g, xs, q, bcL = 'sealed', bcR = 'sealed') {
   if (bcR === 'sealed') { a[n - 1] = -2 / h2; c[n - 1] = 0; } else { b[n - 1] = 1; a[n - 1] = 0; c[n - 1] = 0; }
   const f = (xs - x[0]) / h, i0 = Math.min(n - 2, Math.max(0, Math.floor(f))), w = Math.min(1, Math.max(0, f - i0));
   d[i0] += (q * (1 - w)) / h; d[i0 + 1] += (q * w) / h;
-  if (bcL === 'sealed') d[0] *= 1; // the half cell at a sealed end is absorbed in the factor 2 of the ghost node
+  if (bcL === 'sealed') d[0] *= 2; // a sealed end node is a half cell: its source density doubles
+  if (bcR === 'sealed') d[n - 1] *= 2;
   if (bcL === 'killed') d[0] = 0;
   if (bcR === 'killed') d[n - 1] = 0;
   return thomas(a, b, c, d);
@@ -42,7 +43,7 @@ export function cableSteady(g, xs, q, bcL = 'sealed', bcR = 'sealed') {
  * Advance V(X, T) by nsteps of size dt: ∂V/∂T = κ V_XX − leak·V (κ = 1 normally, 0 turns diffusion off; leak = 1 or 0).
  * Crank–Nicolson, preceded by two half-size backward-Euler steps when `start` is true (damps the roughness of a δ initial state).
  */
-export function cableEvolve(g, V, dt, nsteps, { bcL = 'sealed', bcR = 'sealed', leak = 1, start = false } = {}) {
+export function cableEvolve(g, V, dt, nsteps, { bcL = 'sealed', bcR = 'sealed', leak = 1, start = false, src = null } = {}) {
   const { N, h } = g, n = N + 1, h2 = h * h;
   let cur = Float64Array.from(V);
   const step = (dtt, th) => {
@@ -50,7 +51,7 @@ export function cableEvolve(g, V, dt, nsteps, { bcL = 'sealed', bcR = 'sealed', 
     for (let i = 0; i < n; i++) {
       const lo = i > 0 ? cur[i - 1] : cur[1], hi = i < N ? cur[i + 1] : cur[N - 1];
       const L = (lo - 2 * cur[i] + hi) / h2 - leak * cur[i];
-      r[i] = cur[i] + (1 - th) * dtt * L;
+      r[i] = cur[i] + (1 - th) * dtt * L + (src ? dtt * src[i] : 0);
       a[i] = -th * dtt / h2; c[i] = -th * dtt / h2; b[i] = 1 + th * dtt * (2 / h2 + leak);
     }
     if (bcL === 'sealed') { c[0] = -2 * th * dtt / h2; a[0] = 0; } else { b[0] = 1; c[0] = 0; a[0] = 0; r[0] = 0; }
@@ -190,14 +191,14 @@ export function treeSim(tr, prm) {
 
 // ---------------------------------------------------------------- uniform and myelinated axons
 /** Uniform unmyelinated axon of diameter d (µm), HH channels at squid densities, T °C: arrival times at x1, x2 (cm) and the speed in m/s. */
-export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x1 = 1, x2 = 2.4, frames = 0, p = HH } = {}) {
+export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x1 = 1, x2 = 2.4, frames = 0, tEnd = 60, p = HH } = {}) {
   const segs = [{ parent: -1, len: N * dx, dia: d }], tr = buildTree(segs, { dxMax: dx, Ra });
   const i1 = Math.round((x1 * 1e4) / dx), i2 = Math.round((x2 * 1e4) / dx);
   let t1 = null, t2 = null;
   const stim = (t, I) => { if (t < 0.5) for (let i = 0; i < 10; i++) I[i] = 500 * tr.area[i] * 1e3; };
   const r = treeSim(tr, {
-    dt: 0.02, tEnd: 60, cm: 1, gL: p.gL, gNa: p.gNa, gK: p.gK, ENa: p.ENa, EK: p.EK, T, stim, rec: [i1, i2], frames,
-    stopWhen: (t, V) => { if (t1 == null && V[i1] > 0) t1 = t; if (t2 == null && V[i2] > 0) t2 = t; return t2 != null && !frames; },
+    dt: 0.02, tEnd, cm: 1, gL: p.gL, gNa: p.gNa, gK: p.gK, ENa: p.ENa, EK: p.EK, T, stim, rec: [i1, i2], frames,
+    stopWhen: (t, V) => { if (t1 == null && V[i1] > 0) t1 = t; if (t2 == null && V[i2] > 0) t2 = t; return !frames && t2 != null; },
   });
   const speed = t1 != null && t2 != null ? ((x2 - x1) * 1e-2) / ((t2 - t1) * 1e-3) : NaN; // m/s
   return { speed, t1, t2, sim: r, tr, dx, i1, i2 };
@@ -206,8 +207,8 @@ export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x
  * Myelinated axon: nNodes nodes of Ranvier (1 µm, HH channels) separated by internodes of length ratio·D, each cut into mInt compartments.
  * The axon (inner) diameter is g·D; the sheath is nb membrane bilayers in series, so the internodal capacitance and leak are divided by nb.
  */
-export function buildMyelinated(D, { g = 0.65, ratio = 100, nNodes = 12, mInt = 3, Ra = 35.4, nodeLen = 1, bilayerNm = 8.5 } = {}) {
-  const d = g * D, sheath = (D - d) / 2, nb = Math.max(1, Math.round((sheath * 1e3) / bilayerNm)), L = ratio * D;
+export function buildMyelinated(D, { g = 0.65, ratio = 100, nNodes = 12, mInt = 3, Ra = 35.4, nodeLen = 1, bilayerNm = 8.5, nbOverride = null } = {}) {
+  const d = g * D, sheath = (D - d) / 2, nb = nbOverride ?? Math.max(1, Math.round((sheath * 1e3) / bilayerNm)), L = ratio * D;
   const segs = []; const kind = [];
   for (let k = 0; k < nNodes; k++) {
     segs.push({ parent: k === 0 ? -1 : segs.length - 1, len: nodeLen, dia: d }); kind.push('node');
@@ -220,7 +221,7 @@ export function buildMyelinated(D, { g = 0.65, ratio = 100, nNodes = 12, mInt = 
 }
 /** Speed (m/s) of the impulse on a myelinated axon between nodes 3 and nNodes−3 (index), plus the simulation. */
 export function myelinatedSpeed(D, opt = {}) {
-  const { T = 18.5, p = HH, nodeFac = 10 } = opt, M = buildMyelinated(D, opt), { tr, isNode, nb } = M;
+  const { T = 18.5, p = HH, nodeFac = 30 } = opt, M = buildMyelinated(D, opt), { tr, isNode, nb } = M;
   const n = tr.n, nodeIdx = []; for (let i = 0; i < n; i++) if (isNode[i]) nodeIdx.push(i);
   const cm = new Float64Array(n), gL = new Float64Array(n), gNa = new Float64Array(n), gK = new Float64Array(n);
   for (let i = 0; i < n; i++) {
