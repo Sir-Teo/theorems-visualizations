@@ -439,7 +439,7 @@ export default {
           B.hline(1, { color: 'green', width: 1.4, dash: [5, 4] }); B.text('today’s Earth–Moon value', 3.95, 1, { dy: -9, align: 'right', size: 10.5, color: 'green' });
           B.rect(0.2, 0, 0.8, Math.min(2.15, ratio), { fill: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', fillAlpha: 0.55, color: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', width: 1.2 });
           B.text(v.fix(ratio, 2), 0.5, Math.min(2.15, ratio), { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
-          const fE = 0.325, fM = (330 / 1737.4) ** 3 * 7 / 3.344; // Earth's core ≈ 32.5% of its mass; Moon: 330 km core of density ≈ 7 g/cm³
+          const fE = 0.325, fM = (330 / 1737.4) ** 3 * 7 / 3.344; // Earth's core ≈ 32.5 ± 0.3% of its mass (Lineweaver; PREM ≈ 32.3%); Moon: 330 km core of density ≈ 7 g/cm³ gives ≈ 1.4%, within published 1–2% (GRAIL upper bound 1.5%, Viswanathan 2019: 1.7%)
           B.rect(1.4, 0, 2.0, fE, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`${(100 * fE).toFixed(0)}% of its mass`, 1.7, fE, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
           B.rect(2.4, 0, 3.0, fM, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`≈ ${(100 * fM).toFixed(1)}%`, 2.7, fM, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
           cur = { I, ratio, LEM };

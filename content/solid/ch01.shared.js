@@ -72,7 +72,7 @@ export const MATS = {
   steel: { id: 'steel', name: 'structural steel S355', short: 'steel S355', E: 210000, nu: 0.30, sy: 355, su: 490, alpha: 12e-6, rho: 7850, color: 'accent',
     src: 'EN 1993-1-1 §3.2.6 and Table 3.1 (t ≤ 40 mm), EN 10025-2', eu: 0.15, ef: 0.26, eL: 0.018, fr: 0.78, Z: 0.55, k: 40, ductile: true },
   al: { id: 'al', name: 'aluminium 6061-T6', short: 'Al 6061-T6', E: 68900, nu: 0.33, sy: 276, su: 310, alpha: 23.6e-6, rho: 2700, color: 'orange',
-    src: 'ASM / MatWeb typical values for 6061-T6', eu: 0.085, ef: 0.12, eL: 0, fr: 0.80, Z: 0.45, k: 9, ductile: true },
+    src: 'ASM / MatWeb typical values for 6061-T6 (typical 276/310 MPa yield/ultimate; ASTM B209/B221 specification minimums are lower, about 240 MPa yield and 260–290 MPa ultimate)', eu: 0.085, ef: 0.12, eL: 0, fr: 0.80, Z: 0.45, k: 9, ductile: true },
   cu: { id: 'cu', name: 'copper C11000 (annealed)', short: 'copper', E: 117000, nu: 0.34, sy: 69, su: 220, alpha: 17e-6, rho: 8940, color: 'teal',
     src: 'Copper Development Association; MakeItFrom / MatWeb (annealed OS050)', eu: 0.32, ef: 0.50, eL: 0, fr: 0.62, Z: 0.70, k: 4, ductile: true },
   cast: { id: 'cast', name: 'grey cast iron (ASTM A48 class 30)', short: 'grey cast iron', E: 100000, nu: 0.26, sy: 207, su: 207, alpha: 11e-6, rho: 7100, color: 'purple',
@@ -80,7 +80,7 @@ export const MATS = {
   conc: { id: 'conc', name: 'concrete C30/37', short: 'concrete C30/37', E: 33000, nu: 0.20, sy: 30, su: 30, alpha: 10e-6, rho: 2400, color: 'gray',
     src: 'EN 1992-1-1 Table 3.1 (Ecm 33 GPa, fck 30 MPa, fctm 2.9 MPa), §3.1.3 (ν = 0.2), §3.1.3(5) (α = 10·10⁻⁶ /K)', fct: 2.9, ductile: false },
   timber: { id: 'timber', name: 'timber C24', short: 'timber C24', E: 11000, nu: 0.37, sy: 14.5, su: 14.5, alpha: 5e-6, rho: 420, color: 'gold',
-    src: 'EN 338 Table 1 (E0,mean 11 GPa, f t,0,k 14.5 MPa, f c,0,k 21 MPa, ρmean 420 kg/m³)', fc: 21, ductile: false },
+    src: 'EN 338 Table 1 (E0,mean 11 GPa, f t,0,k 14.5 MPa, f c,0,k 21 MPa, ρmean 420 kg/m³, checked against a transcription of Table 1 of EN 338:2016; ν ≈ 0.37 and α ≈ 5·10⁻⁶ /K are typical softwood values, not EN 338 data)', fc: 21, ductile: false },
 };
 export const G_of = (m) => m.E / (2 * (1 + m.nu));
 

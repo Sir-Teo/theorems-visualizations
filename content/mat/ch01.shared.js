@@ -5,12 +5,12 @@
 //    "Van der Waals density-functional theory study for bulk solids with BCC, FCC, and diamond structures" (arXiv:1504.01219, Table 3,
 //    "Expt." column, collected from Kittel-type compilations). Ti, Co, Zn: S. Jana, K. Sharma, P. Samal, arXiv:1807.00350 (Table III, Expt.).
 //    Ionic and covalent compounds: Y. Mo, G. Tian, J. Tao, arXiv:1610.00775 (Table IV, Expt.: NaCl 3.31, NaF 3.93, LiF 4.40 eV/atom).
-//    Noble-gas solids: Ar 0.080 and Kr 0.116 eV (UZH solid-state lecture slides), Ne 0.02 eV (UCL lecture notes); Xe 0.17 eV is quoted
-//    from memory (Kittel's table), see the report.
+//    Noble-gas solids: Ar 0.080 and Kr 0.116 eV (UZH solid-state lecture slides), Ne 0.02 eV (UCL lecture notes); Xe 0.17 eV (about 16 kJ/mol = 0.166 eV, Kittel's table) is
+//    not re-verified online; treat it as approximate.
 //  - Melting points, Young's moduli, thermal-expansion coefficients (20 °C), electronegativities: Wikipedia element infoboxes
 //    (WEL/CRC/Arblaster values), densities: Wikipedia "Densities of the elements (data page)". Young's moduli of non-elements: Wikipedia
 //    "Young's modulus" table; engineering ceramics: Japan Fine Ceramics Center property table (alumina 380, Si3N4 300, SiC 430, PSZ 210 GPa).
-//  - Standard atomic weights (IUPAC) are quoted from memory.
+//  - Standard atomic weights (IUPAC abridged values, rounded to 4-5 significant figures) agree with the IUPAC abridged table as commonly tabulated (compared by hand, Oct 2026).
 
 export const KB = 8.617333262e-5; // Boltzmann constant, eV/K
 export const NA = 6.02214076e23;

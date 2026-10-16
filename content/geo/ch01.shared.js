@@ -6,6 +6,7 @@
 // Sources (checked online, 2026-10):
 //  - U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF, NOAA-S/T 76-1562): layer table as reproduced at
 //    https://en.wikipedia.org/wiki/U.S._Standard_Atmosphere : g0 = 9.80665 m/s², R* = 8.31432 J/(mol K), M0 = 28.9644 g/mol,
+//    (cross-checked Oct 2026 against the Julia FlightMechanics, av8n.com and PDAS tables, and S = 110.4 K in the NTRS copy of the report)
 //    P0 = 101325 Pa, T0 = 288.15 K, base geopotential heights 0, 11, 20, 32, 47, 51, 71 km with lapse rates
 //    −6.5, 0, +1.0, +2.8, 0, −2.8, −2.0 K/km and base pressures 101325, 22632.1, 5474.89, 868.019, 110.906, 66.9389, 3.95642 Pa.
 //  - Saturation vapour pressure over liquid water: Murphy & Koop, Q. J. R. Meteorol. Soc. 131, 1539–1565 (2005),

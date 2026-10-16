@@ -487,7 +487,7 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
       deps: ['mat-1.2'],
       refs: ['Callister §6.5'],
       tags: ['Ashby', 'materials selection', 'stiffness'],
-      credit: 'M. F. Ashby, 1990s',
+      credit: 'M. F. Ashby, from 1989 (Materials Selection in Mechanical Design, 1992)',
       scope: String.raw`Stiffness-limited, minimum-mass design only (strength- or cost-limited designs use other indices). Property values are typical ranges for common grades, not design data.`,
       viz(v) {
         // name, class, E range (GPa), ρ range (Mg/m³), label?, density verified?

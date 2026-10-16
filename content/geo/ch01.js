@@ -196,10 +196,9 @@ $\theta$ is conserved by adiabatic, frictionless motion, so it labels air parcel
       deps: ['geo-1.2'],
       refs: ['Pierrehumbert', 'Vallis'],
       tags: ['potential temperature', 'adiabat', 'stability'],
-      credit: 'Introduced to meteorology by von Helmholtz, 1888 ("potential temperature")',
+      credit: 'von Helmholtz, 1888 (as the θ of an adiabatic change); named "potential temperature" by von Bezold, 1888',
       scope: String.raw`Dry (unsaturated) air; for saturated air the moist analogues $\theta_e$ and $\theta_w$ are conserved instead (1.6, 1.7). $p_0 = 1000$ hPa is a convention (some oceanographers use other references).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Potential_temperature' },
-      verify: true,
       viz(v) {
         const SND = {
           n17: { name: 'Norman OK, 20 May 2013 17 UTC', rows: NORMAN_17Z },
