@@ -241,7 +241,7 @@ export const GAL = {
   c7c: () => { const g = GAL.c7(); const A = masksOf(7, g.E); return { P: g.P, E: edgesOf(complementA(A)) }; },
   c5c: () => ({ P: ringP(5), E: edgesOf(complementA(masksOf(5, cycE(5)))) }),
   p5: () => ({ P: Array.from({ length: 5 }, (_, i) => [i - 2, 0.2 * (i % 2)]), E: [[0, 1], [1, 2], [2, 3], [3, 4]] }),
-  k4: () => ({ P: ringP(4), E: edgesOf(complementA(new Array(4).fill(0))) }),
+  k4: () => ({ P: [...ringP(3, 1.2, Math.PI / 2), [0, 0]], E: edgesOf(complementA(new Array(4).fill(0))) }),
   k33: () => ({ P: [[-1, 1], [0, 1], [1, 1], [-1, -1], [0, -1], [1, -1]], E: [0, 1, 2].flatMap((a) => [3, 4, 5].map((b) => [a, b])) }),
   house: () => ({ P: [[-1, 0], [1, 0], [1, -1.8], [-1, -1.8], [0, 1.1]], E: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 4], [1, 4]] }),
   wheel5: () => ({ P: [...ringP(5, 1), [0, 0]], E: [...cycE(5), ...[0, 1, 2, 3, 4].map((i) => [i, 5])] }),
@@ -325,4 +325,22 @@ export function kernelColouring(Gv, L0, q) {
     alive &= ~Kk;
   }
   return alive ? { stuck: true, col, steps } : { col, steps };
+}
+
+/** Spread a plane straight-line drawing: repulsion between vertices, springs along edges, pinned vertices fixed; a step is undone if it creates a crossing. */
+export function relaxPlane(n, E, P0, pinned = [], iters = 160) {
+  const H = ixE(n, E); let P = P0.map((p) => p.slice()), step = 0.02; const pin = new Set(pinned);
+  const sc = Math.sqrt(1 / n) * 1.4;
+  for (let it = 0; it < iters; it++) {
+    const F = P.map(() => [0, 0]);
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      const dx = P[i][0] - P[j][0], dy = P[i][1] - P[j][1], d2 = dx * dx + dy * dy + 1e-6, f = (sc * sc) / d2;
+      F[i][0] += f * dx; F[i][1] += f * dy; F[j][0] -= f * dx; F[j][1] -= f * dy;
+    }
+    for (const [a, b] of E) { const dx = P[b][0] - P[a][0], dy = P[b][1] - P[a][1], d = Math.hypot(dx, dy) + 1e-9, f = (d * d) / (sc * 6); F[a][0] += (f * dx) / d; F[a][1] += (f * dy) / d; F[b][0] -= (f * dx) / d; F[b][1] -= (f * dy) / d; }
+    let Q = P.map((p, i) => (pin.has(i) ? p : [p[0] + step * F[i][0], p[1] + step * F[i][1]]));
+    let tries = 0; while (crossings(H, Q).length && tries++ < 6) { step *= 0.5; Q = P.map((p, i) => (pin.has(i) ? p : [p[0] + step * F[i][0], p[1] + step * F[i][1]])); }
+    if (!crossings(H, Q).length) P = Q; step = Math.min(step * 1.1, 0.05);
+  }
+  return P;
 }

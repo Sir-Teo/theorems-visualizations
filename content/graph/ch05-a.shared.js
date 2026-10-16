@@ -315,9 +315,72 @@ export function hajosRecipe(n, E, k, limit = 400) {
 }
 /** Edge colouring of H with k colours (exact search on the line graph): {status, col (per edge)}. */
 export function edgeColourWith(H, k, budget = 1.5e6) { return colourWith(lineAdj(H), k, budget); }
-import { spread as _spread, triDraw as _triDraw, randomTriangulation as _rt } from './ch04-z.shared.js';
-/** Random plane triangulation with a spread-out straight-line drawing: {n, E, pos}. */
-export function triangulation(n, seed, flips = 12) {
-  const D = _triDraw(_rt(n, rng32(seed), flips));
-  return { ...D, pos: _spread(D.n, D.E, D.pos, 70, [0, 1, 2]) };
+import { randomTriangulation as _rt, triDraw as _triDraw } from './ch04-z.shared.js';
+/**
+ * Random plane triangulation with a well-spread straight-line drawing: {n, E, tri, pos}. Starts from a Tutte drawing, then relaxes it with
+ * Fruchterman–Reingold forces; a move is accepted only if all triangles at the vertex keep their orientation (so the drawing stays plane).
+ */
+export function triangulation(n, seed, flips = 60) {
+  const T = _rt(n, rng32(seed), flips), D = _triDraw(T), P = D.pos.map((p) => [p[0], p[1]]);
+  // normalise the outer triangle 0,1,2 to a fixed equilateral one
+  const A = [-1, -0.8], B = [1, -0.8], C = [0, 0.93], o = [A, B, C];
+  const [p0, p1, p2] = [P[0], P[1], P[2]], det = (p1[0] - p0[0]) * (p2[1] - p0[1]) - (p2[0] - p0[0]) * (p1[1] - p0[1]);
+  const aff = (q) => { const l1 = ((q[0] - p0[0]) * (p2[1] - p0[1]) - (p2[0] - p0[0]) * (q[1] - p0[1])) / det, l2 = ((p1[0] - p0[0]) * (q[1] - p0[1]) - (q[0] - p0[0]) * (p1[1] - p0[1])) / det, l0 = 1 - l1 - l2; return [l0 * A[0] + l1 * B[0] + l2 * C[0], l0 * A[1] + l1 * B[1] + l2 * C[1]]; };
+  const Q = P.map(aff), inc = Array.from({ length: n }, () => []);
+  T.tri.forEach((t, i) => t.forEach((v) => inc[v].push(i)));
+  const area = (t) => { const [a, b, c] = t.map((v) => Q[v]); return (b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]); };
+  const sgn = Math.sign(area(T.tri[0])) || 1;
+  const ang = (t) => { let m = 9; for (let i = 0; i < 3; i++) { const p = Q[t[i]], q = Q[t[(i + 1) % 3]], r = Q[t[(i + 2) % 3]], ux = q[0] - p[0], uy = q[1] - p[1], wx = r[0] - p[0], wy = r[1] - p[1]; m = Math.min(m, Math.acos(Math.max(-1, Math.min(1, (ux * wx + uy * wy) / (Math.hypot(ux, uy) * Math.hypot(wx, wy) + 1e-12))))); } return m; };
+  const worst = (v) => Math.min(...inc[v].map((i) => (sgn * area(T.tri[i]) > 1e-9 ? ang(T.tri[i]) : -1)));
+  const adj = Array.from({ length: n }, () => []); T.E.forEach(([a, b]) => { adj[a].push(b); adj[b].push(a); });
+  const kk = Math.sqrt(3.4 / n);
+  for (let it = 0; it < 400; it++) for (let v = 3; v < n; v++) {
+    let fx = 0, fy = 0;
+    for (let w = 0; w < n; w++) { if (w === v) continue; const dx = Q[v][0] - Q[w][0], dy = Q[v][1] - Q[w][1], d = Math.hypot(dx, dy) + 1e-3; const f = (kk * kk) / d / d; fx += dx * f; fy += dy * f; }
+    for (const w of adj[v]) { const dx = Q[w][0] - Q[v][0], dy = Q[w][1] - Q[v][1], d = Math.hypot(dx, dy); fx += (dx * d) / kk; fy += (dy * d) / kk; }
+    const fl = Math.hypot(fx, fy) || 1, step = Math.min(0.08, fl * 0.08) / fl, old = Q[v], w0 = worst(v);
+    for (let s = 1, t = 0; t < 6; t++, s /= 2) { Q[v] = [old[0] + fx * step * s, old[1] + fy * step * s]; const w1 = worst(v); if (w1 > 0 && w1 >= Math.min(w0, 0.25)) break; Q[v] = old; }
+  }
+  return { ...T, pos: Q };
+}
+
+/** Frames of the five-colour proof on a plane triangulation D = {n, E, pos}: peel vertices of degree ≤ 5, re-insert with Kempe swaps. */
+export function fiveFrames(D, pickSeed) {
+          const n = D.n, adj = Array.from({ length: n }, () => new Set()); D.E.forEach(([a, b]) => { adj[a].add(b); adj[b].add(a); });
+          const live = new Array(n).fill(true), order = [], frames = [], blank = new Array(n).fill(-1);
+          const deg = (u) => [...adj[u]].filter((w) => live[w]).length;
+          for (let t = 0; t < n; t++) {
+            let u = -1; for (let w = 0; w < n; w++) if (live[w] && deg(w) <= 5 && (u < 0 || deg(w) > deg(u))) u = w; // any vertex of degree ≤ 5 will do; prefer degree 5
+            frames.push({ live: live.slice(), col: blank, cur: u, nb: [], chain: [], note: `Remove ${u + 1}: it has degree ${deg(u)} ≤ 5 in the remaining planar graph.` });
+            order.push(u); live[u] = false;
+          }
+          const col = blank.slice(), alive = new Array(n).fill(false); let swaps = 0;
+          const A = (u) => [...adj[u]].filter((w) => alive[w]);
+          for (let i = n - 1; i >= 0; i--) {
+            const u = order[i], nb = A(u), used = new Set(nb.map((w) => col[w]));
+            alive[u] = true;
+            if (used.size < 5) {
+              const fr = [0, 1, 2, 3, 4].filter((x) => !used.has(x)), c = fr[(u * 7 + pickSeed) % fr.length]; col[u] = c;
+              frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [], note: `Re-insert ${u + 1}: its ${nb.length} neighbours show ${used.size} colour${used.size === 1 ? '' : 's'}, so colour ${colName(c)} is free.` });
+            } else {
+              nb.sort((a, b) => Math.atan2(D.pos[a][1] - D.pos[u][1], D.pos[a][0] - D.pos[u][0]) - Math.atan2(D.pos[b][1] - D.pos[u][1], D.pos[b][0] - D.pos[u][0]));
+              frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [], note: `Re-insert ${u + 1}: five neighbours carry all five colours. Look at Kempe chains.` });
+              const adjL = adj.map((S0) => [...S0].filter((w) => alive[w]));
+              let done = false;
+              for (const [p, q] of [[0, 2], [1, 3]]) {
+                const a = nb[p], b = nb[q], ca = col[a], cb = col[b], Kc = kempe(adjL, col, a, ca, cb);
+                if (!Kc.has(b)) {
+                  frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `The ${colName(ca)}/${colName(cb)}-chain from ${a + 1} does not reach ${b + 1}.` });
+                  for (const w of Kc) col[w] = col[w] === ca ? cb : ca;
+                  col[u] = ca; swaps++; done = true;
+                  frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `Swap ${colName(ca)} and ${colName(cb)} on the chain: ${colName(ca)} is now free at ${u + 1}.` });
+                  break;
+                }
+                frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `The ${colName(ca)}/${colName(cb)}-chain from ${a + 1} reaches ${b + 1}; with ${u + 1} it closes a curve, so the other pair of colours is cut apart.` });
+              }
+              if (!done) col[u] = 5;
+            }
+          }
+          frames.push({ live: alive.slice(), col: col.slice(), cur: -1, nb: [], chain: [], note: `Done: ${n} vertices coloured with ${Math.max(...col) + 1} colours after ${swaps} Kempe swap${swaps === 1 ? '' : 's'}.` });
+  return { D, frames, swaps, edges: D.E };
 }

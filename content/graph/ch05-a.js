@@ -2,7 +2,7 @@
 // The chapter title and summary come from the syllabus (part A2 = ch05-a2.js; §§5.4–5.6 are written elsewhere).
 import {
   K, ix, named, wheel, gstage, cacheBy, loadSpec, COL, colName, rng32, shuffled, nbrs, conflicts, colourWith, chromatic, greedyColour, degeneracy,
-  kempe, triangles, edgeColourWith, maxDeg, crown, grotzsch, gnm, triFreePlanar, planarSpec, isPlanar, randomTriangulation, triangulation, TAU,
+  kempe, fiveFrames, triangles, edgeColourWith, maxDeg, crown, grotzsch, gnm, triFreePlanar, planarSpec, isPlanar, randomTriangulation, triangulation, TAU,
 } from './ch05-a.shared.js';
 
 // ---------- local helpers ----------
@@ -157,7 +157,7 @@ export default {
         let seed = 11;
         const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 11 });
         let cur = { key: '' }, hist = { key: '', p: [0, 0, 0] };
-        const mkTri = (n, sd, light) => (light ? { n, E: randomTriangulation(n, rng32(sd), 12).E } : triangulation(n, sd));
+        const mkTri = (n, sd, light) => (light ? { n, E: randomTriangulation(n, rng32(sd), 60).E } : triangulation(n, sd));
         function refresh() {
           const key = nS.value + ':' + seed; if (cur.key === key) return;
           const D = mkTri(nS.value, seed), H = ix({ nodes: Array.from({ length: D.n }, (_, i) => ({ id: i })), edges: D.E });
@@ -203,46 +203,7 @@ export default {
         const nS = v.slider('vertices $n$', 6, 20, 14, { int: true, onChange: () => rebuild() });
         let seed = 1, swapsInfo = 0;
         const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 12, draggable: false });
-        function build() {
-          const D = triangulation(nS.value, seed * 31 + nS.value);
-          const n = D.n, adj = Array.from({ length: n }, () => new Set()); D.E.forEach(([a, b]) => { adj[a].add(b); adj[b].add(a); });
-          const live = new Array(n).fill(true), order = [], frames = [], blank = new Array(n).fill(-1);
-          const deg = (u) => [...adj[u]].filter((w) => live[w]).length;
-          for (let t = 0; t < n; t++) {
-            let u = -1; for (let w = 0; w < n; w++) if (live[w] && (u < 0 || deg(w) < deg(u))) u = w;
-            frames.push({ live: live.slice(), col: blank, cur: u, nb: [], chain: [], note: `Remove ${u + 1}: it has degree ${deg(u)} ≤ 5 in the remaining planar graph.` });
-            order.push(u); live[u] = false;
-          }
-          const col = blank.slice(), alive = new Array(n).fill(false); let swaps = 0;
-          const A = (u) => [...adj[u]].filter((w) => alive[w]);
-          for (let i = n - 1; i >= 0; i--) {
-            const u = order[i], nb = A(u), used = new Set(nb.map((w) => col[w]));
-            alive[u] = true;
-            if (used.size < 5) {
-              let c = 0; while (used.has(c)) c++; col[u] = c;
-              frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [], note: `Re-insert ${u + 1}: its ${nb.length} neighbours show ${used.size} colour${used.size === 1 ? '' : 's'}, so colour ${colName(c)} is free.` });
-            } else {
-              nb.sort((a, b) => Math.atan2(D.pos[a][1] - D.pos[u][1], D.pos[a][0] - D.pos[u][0]) - Math.atan2(D.pos[b][1] - D.pos[u][1], D.pos[b][0] - D.pos[u][0]));
-              frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [], note: `Re-insert ${u + 1}: five neighbours carry all five colours. Look at Kempe chains.` });
-              const adjL = adj.map((S0) => [...S0].filter((w) => alive[w]));
-              let done = false;
-              for (const [p, q] of [[0, 2], [1, 3]]) {
-                const a = nb[p], b = nb[q], ca = col[a], cb = col[b], Kc = kempe(adjL, col, a, ca, cb);
-                if (!Kc.has(b)) {
-                  frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `The ${colName(ca)}/${colName(cb)}-chain from ${a + 1} does not reach ${b + 1}.` });
-                  for (const w of Kc) col[w] = col[w] === ca ? cb : ca;
-                  col[u] = ca; swaps++; done = true;
-                  frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `Swap ${colName(ca)} and ${colName(cb)} on the chain: ${colName(ca)} is now free at ${u + 1}.` });
-                  break;
-                }
-                frames.push({ live: alive.slice(), col: col.slice(), cur: u, nb, chain: [...Kc], note: `The ${colName(ca)}/${colName(cb)}-chain from ${a + 1} reaches ${b + 1}; with ${u + 1} it closes a curve, so the other pair of colours is cut apart.` });
-              }
-              if (!done) col[u] = 5;
-            }
-          }
-          frames.push({ live: alive.slice(), col: col.slice(), cur: -1, nb: [], chain: [], note: `Done: ${n} vertices coloured with ${Math.max(...col) + 1} colours after ${swaps} Kempe swap${swaps === 1 ? '' : 's'}.` });
-          return { D, frames, swaps, edges: D.E };
-        }
+        function build() { return fiveFrames(triangulation(nS.value, seed * 31 + nS.value), seed); }
         let B = build(); for (let t = 0; t < 300 && B.swaps === 0; t++) { seed++; B = build(); } swapsInfo = B.swaps;
         loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' });
         const S = v.steps({ frames: B.frames, start: 'end', still: 'end', speed: 1.3, codePos: 'below', code: ['peel: repeatedly remove a vertex v of degree ≤ 5', 'recolour back in reverse order:', '  if the neighbours of v miss a colour: use it', '  else (5 neighbours, 5 colours): take a Kempe chain', '    n₁→n₃ if it avoids n₃, else n₂→n₄; swap its colours', '  and give v the colour that is now free'], codeTitle: 'Five-colouring proof' });
