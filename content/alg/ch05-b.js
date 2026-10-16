@@ -14,7 +14,8 @@ function arrangements(n, layers) { const rows = [idp(n)]; for (const p of layers
 function segX(a, b, c, d) {
   const o = (p, q, r) => (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
   const d1 = o(c, d, a), d2 = o(c, d, b), d3 = o(a, b, c), d4 = o(a, b, d);
-  if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) { const t = d1 / (d1 - d2); return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]; }
+  // half-open signs: a sample point lying exactly on the other wire is counted once
+  if ((d1 > 0) !== (d2 > 0) && (d3 > 0) !== (d4 > 0)) { const t = d1 / (d1 - d2); return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]; }
   return null;
 }
 /** Chips (rounded boxes with transposition labels) laid out in rows from (x0, y0); returns the next y. */
@@ -110,13 +111,14 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
           s.text(`inversions of σ: ${inv}`, 5.55, -0.42, { align: 'right', size: 11, color: 'muted' });
           // the two factorizations
           const a = A();
-          c.text(`A — from the cycles: ${a.length} (${a.length % 2 ? 'odd' : 'even'})`, 0.15, 5.75, { align: 'left', size: 12, weight: 700, color: 'blue' });
-          let y = chips(c, a, 0.15, 5.5, { color: () => 'blue', per: 8, w: 0.64 });
-          c.text(`B — another way: ${B.length} (${B.length % 2 ? 'odd' : 'even'})`, 0.15, y - 0.12, { align: 'left', size: 12, weight: 700, color: 'orange' });
-          y = chips(c, B, 0.15, y - 0.37, { color: () => 'orange', per: 8, w: 0.64 });
+          c.text(`A — from the cycles: ${a.length} (${a.length % 2 ? 'odd' : 'even'})`, 0.15, 5.78, { align: 'left', size: 12, weight: 700, color: 'blue' });
+          let y = chips(c, a, 0.15, 5.45, { color: () => 'blue', per: 8, w: 0.68, h: 0.55, size: 12.5 });
+          c.text(`B — another way: ${B.length} (${B.length % 2 ? 'odd' : 'even'})`, 0.15, y - 0.3, { align: 'left', size: 12, weight: 700, color: 'orange' });
+          y = chips(c, B, 0.15, y - 0.6, { color: () => 'orange', per: 8, w: 0.68, h: 0.55, size: 12.5 });
           const chain = B.concat(a.slice().reverse());
-          c.text(`B · A⁻¹ = id: ${chain.length} factors (even ${chain.length % 2 ? '✗' : '✓'})`, 0.15, y - 0.12, { align: 'left', size: 12, weight: 700, color: 'green' });
-          chips(c, chain, 0.15, y - 0.37, { color: (k) => (k < B.length ? 'orange' : 'blue'), per: 8, w: 0.64, size: 10.5, h: 0.36 });
+          c.text(`B · A⁻¹ = id: ${chain.length} factors (even ${chain.length % 2 ? '✗' : '✓'})`, 0.15, y - 0.3, { align: 'left', size: 12, weight: 700, color: 'green' });
+          y = chips(c, chain, 0.15, y - 0.6, { color: (k) => (k < B.length ? 'orange' : 'blue'), per: 8, w: 0.68, size: 12, h: 0.5 });
+          c.text('B · A⁻¹ = σσ⁻¹: read A backwards, each factor undoes itself', 0.15, Math.max(0.25, y - 0.3), { align: 'left', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
           const X = crossings(curves()).length, inv = inversions(sig).length, a = A(), pa = productOf(a, n), pb = productOf(B, n), id = productOf(B.concat(a.slice().reverse()), n);
@@ -131,7 +133,7 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
       name: 'Even and odd permutations; the alternating group Aₙ',
       statement: String.raw`A permutation is **even** if it is a product of an even number of transpositions and **odd** if it is a product of an odd number; by Theorem 5.15 every permutation is exactly one of the two. The set of even permutations in $S_n$ is the **alternating group on $n$ letters**, $A_n$. (Equivalently: a cycle of length $k$ has the parity of $k-1$, so $\sigma$ is even exactly when it has an even number of cycles of even length.)`,
       idea: String.raw`Parity multiplies like signs: if $\sigma$ uses $a$ transpositions and $\tau$ uses $b$, then $\sigma\tau$ uses $a+b$, so even·even and odd·odd are even while mixed products are odd. Sorting the elements of $S_n$ with the evens first therefore turns its Cayley table into four blocks — the even block is closed under products, which is why $A_n$ will be a subgroup (5.16). For $n=4$ the twelve even permutations are the identity, the three products of two disjoint transpositions, and the eight 3-cycles.`,
-      caption: String.raw`The full Cayley table of $S_3$ or $S_4$, each cell coloured by the parity of the product (blue even, orange odd). With *evens first* off, the elements are in dictionary order and the colours look scattered; switch it on and the table falls into four blocks, the top-left one being $A_n$. Click a cell to read the product.`,
+      caption: String.raw`The full Cayley table of $S_3$ or $S_4$, each cell coloured by the parity of the product (blue even, orange odd). With *evens first* off, the elements are in dictionary order and the colours look scattered; switch it on and the table falls into four blocks, the top-left one being $A_n$. Black dots mark products equal to the identity: the inverse of an even permutation is even. Click a cell to read the product.`,
       deps: ['alg-5.15'],
       refs: ['Judson §5.1'],
       tags: ['parity', 'alternating group'],
@@ -142,7 +144,7 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, weight: 1.7 });
         const b = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, weight: 0.8, minWidth: 210 });
         const T = v.table(s, { rows: 6, cols: 6, maxCell: 60, minCell: 10, size: 12, margin: 6 });
-        const B2 = v.table(b, { rows: 2, cols: 2, maxCell: 70, size: 13, region: [0, 0.35, 1, 0.95] });
+        const B2 = v.table(b, { rows: 2, cols: 2, maxCell: 70, size: 13, region: [0, 0.3, 1, 0.92] });
         const data = (n, sorted) => { let P = allPerms(n); if (sorted) P = P.filter((p) => sign(p) > 0).concat(P.filter((p) => sign(p) < 0)); return P; };
         s.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.j >= 0) sel = [h.i, h.j]; });
         v.render(() => {
@@ -163,13 +165,14 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
               s.rect(cx0, cy0 + (cy1 - cy0) * 0.1, cx1, cy1 - (cy1 - cy0) * 0.25, { fill: PCOL[par(P[k])], fillAlpha: 0.8, stroke: false });
             }
           }
+          for (let i = 0; i < m; i++) for (let j = 0; j < m; j++) if (isId(compose(P[i], P[j]))) s.dot(...T.cellCenter(i, j), { r: small ? 0 : 2.6, color: 'ink' });
           if (srt.value) { const h = m / 2; T.box(0, 0, h - 1, h - 1, { color: 'green', width: 3 }); }
           // the parity rule
           const cnt = { ee: 0, eo: 0, oe: 0, oo: 0 };
           for (const p of P) for (const q of P) cnt[par(p)[0] + par(q)[0]] += par(compose(p, q)) === (par(p) === par(q) ? 'even' : 'odd') ? 1 : 0;
           B2.draw({ rows: 2, cols: 2, rowLabels: ['even', 'odd'], colLabels: ['even', 'odd'], cornerLabel: '$\\circ$', rowLabelColor: (i) => (i ? 'orange' : 'blue'), colLabelColor: (j) => (j ? 'orange' : 'blue'),
             value: (i, j) => ((i + j) % 2 ? 'odd' : 'even'), fill: (i, j) => [(i + j) % 2 ? 'orange' : 'blue', 0.45], sub: (i, j) => `${[cnt.ee, cnt.eo, cnt.oe, cnt.oo][2 * i + j]}✓` });
-          b.text('parity of a product', 0.5, 0.25, { align: 'center', size: 12, weight: 700 });
+          b.text('parity of a product', 0.5, 0.24, { align: 'center', size: 12, weight: 700 });
           b.text('(each cell checked on every pair)', 0.5, 0.17, { align: 'center', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
@@ -246,15 +249,15 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
       tags: ['alternating group', 'counting', 'bijection'],
       viz(v) {
         const N = v.select('$n$', [{ value: 3, label: '$S_3$' }, { value: 4, label: '$S_4$' }], 4);
-        const SG = { t12: [[1, 2]], t23: [[2, 3]], t34: [[3, 4]], c123: [[1, 2, 3]] };
-        const which = v.select('$\\sigma$', [{ value: 't12', label: '$(1\\,2)$' }, { value: 't23', label: '$(2\\,3)$' }, { value: 't34', label: '$(3\\,4)$' }, { value: 'c123', label: '$(1\\,2\\,3)$ (even)' }], 't12');
+        const SG = { t12: [[1, 2]], t23: [[2, 3]], c123: [[1, 2, 3]] };
+        const which = v.select('$\\sigma$', [{ value: 't12', label: '$(1\\,2)$' }, { value: 't23', label: '$(2\\,3)$' }, { value: 't1n', label: '$(1\\,n)$' }, { value: 'c123', label: '$(1\\,2\\,3)$ (even)' }], 't12');
         let pick = null;
-        const s = v.stage({ x: [0, 10], y: [0, 13], axes: false, height: 460, full: true });
+        const s = v.stage({ x: [0, 10], y: [0, 13.35], axes: false, height: 470, full: true });
         const lists = (n) => { const P = allPerms(n); return [P.filter((p) => sign(p) > 0), P.filter((p) => sign(p) < 0)]; };
         const tile = (n, side, k) => { const m = fact(n) / 2, h = 12.2 / m; return [side === 0 ? 1.0 : 6.4, 12.6 - (k + 0.5) * h, h]; };
         s.onClick((x, y) => { const n = +N.value, m = fact(n) / 2; for (const side of [0, 1]) for (let k = 0; k < m; k++) { const [x0, yc, h] = tile(n, side, k); if (x >= x0 && x <= x0 + 2.6 && Math.abs(y - yc) < h / 2) { pick = [side, k]; return; } } pick = null; });
         v.render(() => {
-          const n = +N.value, sg = fromCycles(n, which.value === 't34' && n === 3 ? [[1, 3]] : SG[which.value]), [E, O] = lists(n), m = E.length;
+          const n = +N.value, sg = fromCycles(n, which.value === 't1n' ? [[1, n]] : SG[which.value]), [E, O] = lists(n), m = E.length;
           const all = [E, O], find = (p) => { for (const side of [0, 1]) { const k = all[side].findIndex((q) => same(q, p)); if (k >= 0) return [side, k]; } return null; };
           const hitCount = [new Array(m).fill(0), new Array(m).fill(0)];
           const pairs = E.map((t, k) => { const img = find(compose(sg, t)); hitCount[img[0]][img[1]]++; return [k, img]; });
@@ -271,12 +274,12 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
             s.text(cycText(p), x0 + 0.12, yc, { align: 'left', size: n === 3 ? 13 : 11.5, weight: 700, halo: false });
             s.text(oneLine(p), x0 + 2.5, yc, { align: 'right', size: n === 3 ? 12 : 10, color: 'muted', halo: false });
           }
-          s.text(`even: ${m}`, 2.3, 12.85, { align: 'center', size: 13, weight: 700, color: 'blue' });
-          s.text(`odd: ${m}`, 7.7, 12.85, { align: 'center', size: 13, weight: 700, color: 'orange' });
-          s.text(`τ ↦ ${cycText(sg)} τ`, 5.0, 12.85, { align: 'center', size: 12.5, weight: 700, color: 'ink' });
+          s.text(`even: ${m}`, 2.3, 13.0, { align: 'center', size: 13, weight: 700, color: 'blue' });
+          s.text(`odd: ${m}`, 7.7, 13.0, { align: 'center', size: 13, weight: 700, color: 'orange' });
+          s.text(`τ ↦ ${cycText(sg)} τ`, 5.0, 13.0, { align: 'center', size: 12.5, weight: 700, color: 'ink' });
         });
         v.readout(() => {
-          const n = +N.value, sg = fromCycles(n, which.value === 't34' && n === 3 ? [[1, 3]] : SG[which.value]), [E, O] = lists(n);
+          const n = +N.value, sg = fromCycles(n, which.value === 't1n' ? [[1, n]] : SG[which.value]), [E, O] = lists(n);
           const imgs = E.map((t) => compose(sg, t)), allOdd = imgs.every((p) => sign(p) < 0), inj = new Set(imgs.map(pkey)).size === E.length;
           const onto = allOdd && O.every((q) => imgs.some((p) => same(p, q)));
           const tab = [2, 3, 4, 5, 6, 7].map((k) => { const P = allPerms(k), e = P.filter((p) => sign(p) > 0).length; return `${k}: ${e}/${P.length - e}`; }).join(', ');
@@ -312,8 +315,8 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
           for (let k = 0; k < n; k++) { const ax = axisOf(G.mat[n + k]); const d = Math.abs(x * ax[1] - y * ax[0]); if (d < bd) { bd = d; best = n + k; } }
           if (best >= 0) go(best);
         });
-        const rowY = (k, n) => 0.9 - (k * 0.84) / Math.max(n - 1, 1);
-        L.onClick((x, y) => { const n = G.m; for (let k = 0; k < n; k++) if (Math.abs(y - rowY(k, n)) < 0.42 / n) { const tgt = x < 0.5 ? k : n + k; go(G.T[tgt][G.inv[g]]); return; } });
+        const rowY = (k, n) => 0.93 - ((k + 0.5) * 0.9) / n;
+        L.onClick((x, y) => { const n = G.m; for (let k = 0; k < n; k++) if (Math.abs(y - rowY(k, n)) < 0.45 / n) { const tgt = x < 0.5 ? k : n + k; go(G.T[tgt][G.inv[g]]); return; } });
         v.animate((tt) => {
           const n = G.m, u = anim ? clamp(tt / 0.8, 0, 1) : 1;
           const M = anim && u < 1 ? mm(partial(G.mat[anim.m], u), G.mat[anim.from]) : G.mat[g];
@@ -324,12 +327,14 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
           // the list
           for (let k = 0; k < n; k++) for (const half of [0, 1]) {
             const j = half * n + k, y = rowY(k, n), x0 = half ? 0.51 : 0.01, on = seen.has(j), cur = j === g;
-            L.rect(x0, y - 0.38 / n, x0 + 0.48, y + 0.38 / n, { radius: 5, fill: cur ? 'gold' : half ? 'orange' : 'blue', fillAlpha: cur ? 0.35 : on ? 0.15 : 0.03, color: cur ? 'gold' : on ? (half ? 'orange' : 'blue') : 'faint', width: cur ? 2 : 1 });
+            L.rect(x0, y - 0.36 / n, x0 + 0.48, y + 0.36 / n, { radius: 5, fill: cur ? 'gold' : half ? 'orange' : 'blue', fillAlpha: cur ? 0.35 : on ? 0.15 : 0.03, color: cur ? 'gold' : on ? (half ? 'orange' : 'blue') : 'faint', width: cur ? 2 : 1 });
             L.text(on ? `$${G.L[j]} = ${cycTex(G.perms[j])}$` : `$${G.L[j]}$`, x0 + 0.03, y, { align: 'left', size: n > 6 ? 10 : 11.5, color: on ? 'ink' : 'muted' });
           }
-          L.text('rotations', 0.25, 0.985, { align: 'center', size: 11, weight: 700, color: 'blue' });
-          L.text('reflections', 0.75, 0.985, { align: 'center', size: 11, weight: 700, color: 'orange' });
+          L.text('rotations', 0.25, 0.97, { align: 'center', size: 11, weight: 700, color: 'blue' });
+          L.text('reflections', 0.75, 0.97, { align: 'center', size: 11, weight: 700, color: 'orange' });
         }, { period: 0.8, once: true, autoplay: false, still: 0.8 });
+        // a few moves already made: r, r, then s
+        for (const m of [1, 1, 5]) { g = G.T[m][g]; seen.add(g); }
         v.readout(() => {
           const n = G.m;
           return String.raw`Current symmetry $${G.L[g]} = ${twoRow(G.perms[g])} = ${cycTex(G.perms[g])}$ — a ${g < n ? `rotation by ${(360 * g) / n}°` : 'reflection'}. Reached ${seen.size} of the ${2 * n} symmetries; $D_${n}$ uses ${2 * n} of the ${fact(n)} permutations in $S_${n}$.`;
@@ -354,7 +359,8 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
         const s = v.stage({ x: [-1.55, 1.55], y: [-1.5, 1.6], equal: true, axes: false, height: 360, weight: 1 });
         const gl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1.25 });
         const snap = (x, y) => { let b = 0, bd = 1e9; G.pos.forEach((p, i) => { const d = Math.hypot(p[0] - x, p[1] - y); if (d < bd) { bd = d; b = i; } }); return [G.pos[b][0] * 1, G.pos[b][1] * 1]; };
-        const h1 = s.handle(...G.pos[2], { color: 'blue', label: '1', constrain: snap, r: 9 }), h2 = s.handle(...G.pos[1], { color: 'orange', label: '2', constrain: snap, r: 9 });
+        const h1 = s.handle(...G.pos[2], { color: 'blue', constrain: snap, r: 9 }), h2 = s.handle(...G.pos[1], { color: 'orange', constrain: snap, r: 9 });
+        v.legend([['blue', 'top row: 2 goes one step clockwise — rotations rᵏ', { dot: true }], ['orange', 'bottom row: one step counter-clockwise — reflections rᵏs', { dot: true }]]);
         const idxOf = (h) => { let b = 0, bd = 1e9; G.pos.forEach((p, i) => { const d = Math.hypot(p[0] - h.x, p[1] - h.y); if (d < bd) { bd = d; b = i; } }); return b; };
         const cell = (n, j) => { const col = j % n, row = j >= n ? 1 : 0, w = 1 / n; return [w * (col + 0.5), row ? 0.27 : 0.7, w]; };
         gl.onClick((x, y) => { const n = G.m; for (let j = 0; j < 2 * n; j++) { const [cx, cy, w] = cell(n, j); if (Math.abs(x - cx) < w / 2 && Math.abs(y - cy) < 0.2) { const p = G.perms[j]; h1.set(...G.pos[p[0]]); h2.set(...G.pos[p[1]]); } } });
@@ -368,6 +374,7 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
             if (a !== b) { s.line(...G.pos[a], ...G.pos[b], { color: 'red', width: 3.5, dash: [8, 5] }); s.text(`edge 12 would have length ${v.fix(L1, 2)} (it is ${v.fix(L0, 2)})`, 0, -1.42, { align: 'center', size: 11.5, color: 'red', weight: 700 }); }
             else s.text('two vertices cannot share a corner', 0, -1.42, { align: 'center', size: 11.5, color: 'red', weight: 700 });
             for (const q of [(a + 1) % n, (a + n - 1) % n]) s.dot(...G.pos[q], { r: 15, hollow: true, color: 'green', width: 2.4 });
+            [[a, '1', 'blue'], [b, '2', 'orange']].forEach(([q, t, col], k) => s.text(t, G.pos[q][0] * 1.22, G.pos[q][1] * 1.22 + (a === b ? 0.12 * (k ? -1 : 1) : 0), { align: 'center', size: 15, weight: 700, color: col }));
           }
           s.corner(ok ? `rigid motion ${dlabel(j, n)} ✓` : 'not a rigid motion ✗', 'tl', { size: 13, weight: 700, color: ok ? 'green' : 'red', plate: true });
           // gallery
@@ -380,8 +387,6 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
             gl.text(dlabel(k, n), cx, cy - 0.165, { align: 'center', size: 10.5, color: 'muted' });
           }
           for (let col = 0; col < n; col++) gl.text(`1→${col + 1}`, (col + 0.5) / n, 0.96, { align: 'center', size: 10.5, weight: 700, color: 'muted' });
-          gl.text('2 → next clockwise', 0.01, 0.5 + 0.005, { align: 'left', size: 10, color: 'blue' });
-          gl.text('2 → next counter-clockwise', 0.01, 0.06, { align: 'left', size: 10, color: 'orange' });
         });
         v.readout(() => {
           const n = G.m, a = idxOf(h1), b = idxOf(h2), d = ((b - a) % n + n) % n, ok = d === 1 || d === n - 1;
@@ -423,7 +428,7 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
         v.button('Fill table', () => { const n = 2 * G.m; for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) filled.add(`${a},${b}`); });
         const s = v.stage({ x: [-1.5, 1.5], y: [-1.55, 1.55], equal: true, axes: false, height: 380 });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380 });
-        const T = v.table(t, { rows: 12, cols: 12, maxCell: 34, minCell: 12, size: 10, margin: 4, labelSize: 10 });
+        const T = v.table(t, { rows: 12, cols: 12, maxCell: 34, minCell: 12, size: 10, margin: 4, labelSize: 10, region: [0, 0.07, 1, 1] });
         t.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.j >= 0) { filled.add(`${h.i},${h.j}`); word = []; run([h.i], h.j); g = G.T[h.i][h.j]; last = String.raw`${G.L[h.i]}\cdot ${G.L[h.j]} = ${G.L[g]}`; } });
         v.animate((tt) => {
           const n = G.m, DUR = 0.75;
@@ -444,10 +449,11 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
             value: (i, j) => (filled.has(`${i},${j}`) ? `$${G.L[G.T[i][j]]}$` : null),
             fill: (i, j) => (filled.has(`${i},${j}`) ? [G.T[i][j] < n ? 'blue' : 'orange', G.T[i][j] === g ? 0.5 : 0.2] : null),
           });
-          t.corner(`${filled.size} of ${4 * n * n} filled`, 'bl', { size: 11, color: 'muted' });
+          t.text(`${filled.size} of ${4 * n * n} products filled in — the rows of r and s already determine the rest`, 0.5, 0.03, { align: 'center', size: 11, color: 'muted' });
         }, { period: 2.4, once: true, autoplay: false, still: 2.4 });
-        // start with a short word already acted out
+        // start with a short word already acted out, and the rows of the generators r and s filled in
         press('r'); press('r'); press('s');
+        for (let b = 0; b < 2 * G.m; b++) { filled.add(`1,${b}`); filled.add(`${G.m},${b}`); }
         v.readout(() => {
           const n = G.m;
           return String.raw`Word (letters in the order pressed, so it is written right to left): $${word.length ? word.slice().reverse().join('') : '1'}$. Last step: $${last || '1'}$. Current element $${G.L[g]} = ${cycTex(G.perms[g])}$. Orders: $|r| = ${n}$, $|s| = 2$, and $srs = ${G.L[G.T[n][G.T[1][n]]]} = r^{-1}$ ${G.T[n][G.T[1][n]] === n - 1 ? '✓' : '✗'}.`;
@@ -482,8 +488,8 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
           if (Math.hypot(...axis) < 1e-6) { if (ang < 1e-6) { R = GR[k]; return; } const B = [0, 1, 2].map((i) => [0, 1, 2].map((j) => (D[i][j] + (i === j ? 1 : 0)) / 2)); axis = B.reduce((best, col, j) => { const c = [B[0][j], B[1][j], B[2][j]]; return Math.hypot(...c) > Math.hypot(...best) ? c : best; }, [0, 0, 0]); }
           anim = { R0: R, axis, ang }; R = GR[k]; seen.add(k); v.t = 0; v.play();
         };
-        const s = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 380 });
-        const sc = v.scene3(s, { yaw: -0.62, pitch: 0.42, axis: 1.9, labels: ['x', 'y', 'z'] });
+        const s = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 380 });
+        const sc = v.scene3(s, { yaw: -0.62, pitch: 0.42, axis: 2.0, labels: ['x', 'y', 'z'] });
         const g = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1.15 });
         // the grid: columns by the location of p, rows by the location of q among its possibilities
         const layout = (md) => {
@@ -522,7 +528,7 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
           g.text(`${cols} places for the gold ${md} × ${rows} turns`, 0.5, 0.975, { align: 'center', size: 11.5, weight: 700, color: 'ink' });
         }, { period: 0.7, once: true, autoplay: false, still: 0.7 });
         // a few positions found already
-        [[0, 0, 1], [1, 0, 0], [0, 0, 1]].forEach((a) => { R = mat3(round3(rot3(a, Math.PI / 2)), R); seen.add(idx.get(mkey(R))); });
+        [[0, 0, 1], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 0, 1]].forEach((a) => { R = mat3(round3(rot3(a, Math.PI / 2)), R); seen.add(idx.get(mkey(R))); });
         v.readout(() => {
           const det = (A) => A[0][0] * (A[1][1] * A[2][2] - A[1][2] * A[2][1]) - A[0][1] * (A[1][0] * A[2][2] - A[1][2] * A[2][0]) + A[0][2] * (A[1][0] * A[2][1] - A[1][1] * A[2][0]);
           const md = mode.value, { cols, rows } = MODES[md];
@@ -563,18 +569,20 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
         v.animate((tt) => {
           const u = anim ? clamp(tt / 0.8, 0, 1) : 1, Rd = anim && u < 1 ? mat3(rot3(anim.axis, anim.ang * u), anim.R0) : R;
           sc.begin();
+          const labs = [];
           CUBE_F.forEach(([f]) => sc.poly(f.map((i) => ap3(Rd, CUBE_V[i])), { fill: 'muted', fillAlpha: 0.05, color: 'muted', width: 1.2, alpha: 0.6 }));
           if (act.value === 'diag') DIAG.forEach((d, j) => {
             const a = ap3(Rd, d), b = ap3(Rd, d.map((c) => -c));
             sc.line(a, b, { color: DC[j], width: 3.4 }, 12);
             sc.dot(a, { r: 10, color: DC[j] }); sc.dot(b, { r: 10, color: DC[j] });
-            const A2 = sc.P(a), B2 = sc.P(b);
-            s.text(String(j + 1), A2[0], A2[1], { align: 'center', size: 11.5, weight: 700, color: 'panel', halo: false }); s.text(String(j + 1), B2[0], B2[1], { align: 'center', size: 11.5, weight: 700, color: 'panel', halo: false });
+            labs.push([sc.P(a), j], [sc.P(b), j]);
           });
           else FAX.forEach((d, j) => { const a = ap3(Rd, d.map((c) => c * 1.35)), b = ap3(Rd, d.map((c) => -c * 1.35)); sc.line(a, b, { color: DC[j], width: 3.4 }, 12); sc.dot(a, { r: 9, color: DC[j] }); sc.dot(b, { r: 9, color: DC[j] }); });
           const ax = anim && u < 1 ? anim.axis : axisNow(), L = Math.hypot(...ax);
           sc.line(ax.map((c) => (-2 * c) / L), ax.map((c) => (2 * c) / L), { color: 'gold', width: 2.2, dash: [7, 5] });
           sc.flush();
+          for (const [[x, y], j] of labs) s.text(String(j + 1), x, y, { align: 'center', size: 11.5, weight: 700, color: 'panel', halo: false });
+          v.legend(act.value === 'diag' ? [['gold', 'current', { dot: true }], ['blue', 'transposition', { dot: true }], ['teal', 'double transposition', { dot: true }], ['orange', '3-cycle', { dot: true }], ['purple', '4-cycle', { dot: true }]] : [['gold', 'current', { dot: true }]]);
           // the S4 (or S3) tiles
           const m = act.value === 'diag' ? 4 : 3, P = allPerms(m), cols = m === 4 ? 6 : 3, rows = P.length / cols, cur = permOf(R);
           const mult = new Map(); for (const A of GR) { const k = pkey(permOf(A)); mult.set(k, (mult.get(k) || 0) + 1); }
@@ -586,7 +594,6 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
             t.text(m === 4 ? oneLine(p) : `${mult.get(pkey(p)) || 0} rotations`, cx, cy - h * 0.22, { align: 'center', size: 10, color: on ? 'muted' : 'faint', halo: false });
           });
           t.text(m === 4 ? `realised ${[...seen].filter((k) => k.split(',').length === 4).length} of 24 permutations of the diagonals` : 'each permutation of the 3 axes comes from 4 rotations', 0.5, 0.9, { align: 'center', size: 12, weight: 700 });
-          if (m === 4) t.text('colour = cycle type: transposition · double transposition · 3-cycle · 4-cycle', 0.5, 0.86, { align: 'center', size: 9.5, color: 'muted' });
         }, { period: 0.8, once: true, autoplay: false, still: 0.8 });
         // open with one edge half-turn and one face quarter-turn already made
         turnBy(AXES.face[2], Math.PI / 2); turnBy(AXES.edge[0], Math.PI);
