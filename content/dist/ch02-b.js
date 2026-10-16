@@ -46,7 +46,7 @@ export default {
             sR.circle(x, y, N > 24 ? 0.1 : 0.14, { fill: fin && w ? 'green' : c ? (w ? 'accent' : 'orange') : 'panel', fillAlpha: c ? 0.65 : 1, color: c ? (fin && w ? 'green' : 'accent') : 'faint', width: 2 });
             if (draws.has(i)) sR.text(String(draws.get(i)), x * 0.8, y * 0.8, { align: 'center', baseline: 'middle', size: 11, color: w ? 'accent' : 'muted' });
           }
-          sR.text(R ? `round ${r + 1}: ${R.cands.length} candidates draw, ${R.winners.length} hold the maximum` : `leader elected after ${run.rounds.length} rounds`, 0, 0, { align: 'center', size: 12, color: 'ink' });
+          sR.setTitle(R ? `round ${r + 1}: ${R.cands.length} candidates draw, ${R.winners.length} hold the maximum` : `leader elected after ${run.rounds.length} rounds`);
           const top = Math.max(0.1, ...hist.cnt.map((c) => c / 3000), ...law.pmf.slice(1, 15)) * 1.15;
           sH.setView([0, 14], [0, top]);
           sH.bars(hist.cnt.slice(1, 14).map((c) => c / 3000), { x0: 1, color: 'accent', alpha: 0.5 });
@@ -70,9 +70,9 @@ export default {
         const sG = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 360, title: 'graph', weight: 1.25, minWidth: 300 });
         const sP = v.stage({ x: [2.5, 10.5], y: [0, 12], axes: 'box', gutter: true, xlabel: 'log₂ n', ylabel: 'rounds', height: 360, title: 'rounds against log n', weight: 1, minWidth: 260 });
         let seed = 1; v.button('new priorities', () => { seed++; S.reset({ at: 'start' }); });
-        const rg = mulberry32(11), pos = range(14).map((i) => ({ id: i, x: 0.8 + 8.4 * hash01(5, i, 1), y: 0.6 + 4.8 * hash01(5, i, 2) }));
-        const edges0 = []; for (let i = 0; i < 14; i++) for (let j = i + 1; j < 14; j++) { const d = Math.hypot(pos[i].x - pos[j].x, pos[i].y - pos[j].y); if (d < 2.6) edges0.push([i, j]); }
-        const G = v.graph(sG, { editable: true, directed: false, layout: 'none', r: 14, fontSize: 12, notePos: 's', nodes: pos, edges: edges0, onChange: () => S.reset({ at: 'start' }) });
+        const pos = range(14).map((i) => i);
+        const edges0 = []; { const r0 = mulberry32(21); for (let i = 0; i < 14; i++) for (let j = i + 1; j < 14; j++) if (r0() < 0.2 || j === i + 1 && r0() < 0.6) edges0.push([i, j]); }
+        const G = v.graph(sG, { editable: true, directed: false, layout: 'force', seed: 4, r: 14, fontSize: 12, notePos: 's', nodes: pos, edges: edges0, onChange: () => S.reset({ at: 'start' }) });
         let last = null;
         const build = () => {
           const adj = new Map(G.nodes.map((n) => [n.id, []]));
@@ -88,7 +88,7 @@ export default {
           last = { adj, res, I };
           return frames;
         };
-        const S = v.steps({ frames: build, codeTitle: 'Luby(G)', code: ['active ← V; I ← ∅', 'while active ≠ ∅: every v ∈ active draws r(v) ∈ (0,1)', '  I ← I ∪ {v : r(v) < r(w) for all active neighbours w};  remove I and N(I) from active', 'return I'], speed: 0.9 });
+        const S = v.steps({ frames: build, still: 3, codeTitle: 'Luby(G)', code: ['active ← V; I ← ∅', 'while active ≠ ∅: every v ∈ active draws r(v) ∈ (0,1)', '  I ← I ∪ {v : r(v) < r(w) for all active neighbours w};  remove I and N(I) from active', 'return I'], speed: 0.9 });
         const cache = new Map();
         const scal = () => {
           if (cache.size) return cache;
@@ -128,7 +128,7 @@ export default {
       credit: 'Cole & Vishkin, 1986',
       scope: String.raw`Oriented ring (every process knows which neighbour is its successor), unique identifiers, synchronous rounds. Reducing 6 colours to 3 takes a few more rounds that are not drawn here.`,
       viz(v) {
-        const sR = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], axes: false, equal: true, height: 360, title: 'ring (colour of each process)', weight: 1, minWidth: 280 });
+        const sR = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], axes: false, equal: true, height: 360, title: 'ring (colours appear once all are below 6)', weight: 1, minWidth: 280 });
         const sT = v.stage({ x: [-1.2, 32], y: [-0.3, 9.6], axes: false, height: 360, title: 'colours in binary (bit 0 at the left)', weight: 1.1, minWidth: 300 });
         const n = v.slider('processes $n$', 5, 40, 20, { step: 1, int: true });
         const b = v.slider('identifier bits $b$', 6, 30, 16, { step: 1, int: true });
@@ -147,7 +147,7 @@ export default {
           col.forEach((c, i) => {
             const [x, y] = ringXY(i, N, 1.3), cc = small ? PAL[c % PAL.length] : 'faint';
             sR.circle(x, y, N > 24 ? 0.09 : 0.12, { fill: cc, fillAlpha: small ? 0.7 : 0.4, color: small ? cc : 'muted', width: 1.6 });
-            if (N <= 24) sR.text(String(c), x * 0.82, y * 0.82, { align: 'center', baseline: 'middle', size: small ? 11 : 9, color: 'ink' });
+            if (small) sR.text(String(c), x, y, { align: 'center', baseline: 'middle', size: 11, color: 'ink' });
           });
           const rows = Math.min(9, N), L = Math.max(...col.slice(0, rows).map(bitsOf), 3), nextIdx = R[r + 1] ? R[r + 1].idx : null, cw = Math.min(1, 30 / Math.max(L, 8));
           for (let i = 0; i < rows; i++) {
@@ -185,11 +185,12 @@ export default {
         v.button('new network', () => { seed++; setup(); S.reset({ at: 'start' }); });
         let nodes, edges, G;
         const setup = () => {
-          const r = mulberry32(seed * 271), N = 12, pts = range(N).map((i) => ({ id: i, x: 0.8 + 8.4 * r(), y: 0.7 + 5.0 * r() }));
+          const r = mulberry32(seed * 271), N = 11, pts = [];
+          for (let g = 0; pts.length < N && g < 5000; g++) { const x = 0.8 + 8.4 * r(), y = 0.7 + 5.0 * r(); if (pts.every((q) => Math.hypot(q.x - x, q.y - y) > 1.5)) pts.push({ id: pts.length, x, y }); }
           const pairs = []; for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) pairs.push({ a: i, b: j, d: Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) });
           pairs.sort((p, q) => p.d - q.d);
           const mst = kruskal(range(N), pairs.map((p) => ({ a: p.a, b: p.b, w: p.d }))), inM = new Set(mst.map((e) => ekey(e.a, e.b)));
-          const chosen = pairs.filter((p) => inM.has(ekey(p.a, p.b)) || p.d < 2.5);
+          const chosen = pairs.filter((p) => inM.has(ekey(p.a, p.b)) || p.d < 2.3);
           edges = chosen.map((p, k) => ({ a: p.a, b: p.b, w: k + 1 })); nodes = pts;
           if (G) G.set({ nodes: pts.map((p) => ({ ...p })), edges: edges.map((e) => [e.a, e.b, e.w]) });
         };
@@ -198,7 +199,7 @@ export default {
         let run = null;
         const S = v.steps({
           frames: () => (run = ghs(range(nodes.length), edges)).frames,
-          codeTitle: 'GHS (fragment level)', speed: 0.8, codePos: 'below',
+          codeTitle: 'GHS (fragment level)', speed: 0.8, still: 4, codePos: 'below',
           code: ['every process is a fragment of level 0', 'repeat: every fragment finds its minimum-weight outgoing edge e (to fragment F′)', '  level(F) < level(F′): F is absorbed into F′ (keeps level(F′))', '  level(F) = level(F′) and F′ chose the same e: merge, new level = level + 1', '  otherwise: wait', 'until one fragment remains: its edges are the MST'],
         });
         const fid = new Map(); let nextf = 0;

@@ -159,8 +159,8 @@ export default {
       deps: ['dist-1.7'], refs: ['Lynch §3.2'], tags: ['symmetry', 'leader election', 'impossibility'],
       scope: String.raw`Deterministic processes with identical programs and initial states on a symmetric network; it breaks as soon as identifiers, randomness or an asymmetric network are available.`,
       viz(v) {
-        const sR = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], axes: false, equal: true, height: 340, title: 'ring at round r', weight: 1, minWidth: 280 });
-        const sG = v.stage({ x: [-0.5, 12.5], y: [-0.5, 12.5], axes: false, height: 340, title: 'states, one row per round', weight: 1, minWidth: 260 });
+        const sR = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], axes: false, equal: true, height: 340, title: 'ring at round r (number = identifier, colour = whole state)', weight: 1, minWidth: 280 });
+        const sG = v.stage({ x: [-0.5, 12.5], y: [-1.2, 12.5], axes: false, height: 340, title: 'states, one row per round', weight: 1, minWidth: 260 });
         const n = v.slider('processes $n$', 3, 12, 8, { step: 1, int: true });
         const per = v.slider('id period $p$', 1, 12, 1, { step: 1, int: true });
         const rule = v.select('rule', [{ value: 'max', label: 'max-flood' }, { value: 'mix', label: 'hash mixing' }], 'max');
@@ -190,21 +190,19 @@ export default {
             sR.text(String(s[0]), x, y, { align: 'center', baseline: 'middle', size: 12, color: 'ink' });
             if (lead[i]) sR.text('leader', x * 1.38, y * 1.38, { align: 'center', size: 11, color: 'ink', halo: true });
           });
-          sR.text('number = identifier, colour = whole state', 0, 0, { align: 'center', size: 11, color: 'muted' });
-          const cw = 11 / Math.max(N, 1);
+                    const cw = 11 / Math.max(N, 1);
           for (let rr = 0; rr <= 11; rr++) for (let i = 0; i < N; i++) {
             const y0 = 11 - rr, c = colOf(S.rows[rr][i]);
             sG.rect(i * cw, y0, (i + 1) * cw - 0.04 * cw, y0 + 0.9, { fill: c, fillAlpha: rr <= r ? 0.7 : 0.18, color: c, stroke: false });
           }
           sG.rect(0, 11 - r, N * cw, 11 - r + 0.9, { color: 'ink', width: 2 });
-          sG.text('round 0 at the top', 11.9, 11.4, { align: 'right', size: 10.5, color: 'muted' });
+          sG.text('round 0 at the top, round 11 at the bottom', 5.5, -0.7, { align: 'center', size: 11, color: 'muted' });
         });
         v.readout(() => {
           const S = states(), r = rd.value, lead = decide(S, r), cnt = lead.filter(Boolean).length;
-          const sym = S.p < S.N && S.rows.every((rw) => rw.every((s, i) => s[0] === rw[(i + S.N / (S.N / S.p) * 1) % S.N][0] || true));
           let inv = true; if (S.p < S.N) for (const rw of S.rows) for (let i = 0; i < S.N; i++) { const j = (i + S.p) % S.N; if (rw[i][0] !== rw[j][0] || rw[i][1] !== rw[j][1]) inv = false; }
           const msg = S.p === S.N ? 'identifiers all distinct: no symmetry to preserve' : `ids repeat with period $${S.p}$: states stay invariant under rotation by $${S.p}$ in all 12 rounds ${inv ? '✓' : '✗'}`;
-          return `round $${r}$: leaders **${cnt}** (of $${S.N}$)${per.value !== S.p && S.N % per.value ? ` · period ${per.value} does not divide ${S.N}: ids are distinct` : ''}\n${msg}${S.p < S.N ? ` · leaders come in groups of $${S.p}$ at least: exactly one is impossible` : (cnt === 1 ? ' · exactly one leader ✓' : '')}${sym ? '' : ''}`;
+          return `round $${r}$: leaders **${cnt}** (of $${S.N}$)${per.value !== S.p && S.N % per.value ? ` · period ${per.value} does not divide ${S.N}: ids are distinct` : ''}\n${msg}${S.p < S.N ? ` · leaders come in groups of $${S.p}$ at least: exactly one is impossible` : (cnt === 1 ? ' · exactly one leader ✓' : '')}`;
         });
       },
     },
@@ -324,11 +322,11 @@ export default {
         const kind = v.select('ring', [{ value: 'bitrev', label: 'bit-reversal' }, { value: 'random', label: 'random' }, { value: 'increasing', label: 'increasing' }], 'bitrev');
         const rs = v.slider('radius $r$', 1, 31, 3, { step: 1, int: true });
         const cache = new Map();
-        const all = () => {
-          const k = `${kind.value}|${n.value}`; if (cache.has(k)) return cache.get(k);
-          const ids = ringIds(n.value, kind.value, 5), out = [], Rmax = Math.floor((n.value - 1) / 2);
+        const all = (nv = n.value, kd = kind.value) => {
+          const k = `${kd}|${nv}`; if (cache.has(k)) return cache.get(k);
+          const ids = ringIds(nv, kd, 5), out = [], Rmax = Math.floor((nv - 1) / 2);
           for (let r = 1; r <= Rmax; r++) out.push(orderClasses(ids, r));
-          const o = { ids, cl: out, Rmax, h: hs(ids).total, l: lcrCount(ids) }; cache.set(k, o); return o;
+          const o = { ids, cl: out, Rmax, h: hs(ids).total, l: lcrCount(ids), sum: out.reduce((a, c) => a + c.minSize, 0) }; cache.set(k, o); return o;
         };
         v.render(() => {
           const A = all(), N = n.value, r = Math.min(rs.value, A.Rmax), C = A.cl[r - 1];
@@ -340,19 +338,17 @@ export default {
           });
           sR.text(`window: ${2 * r + 1} consecutive identifiers`, 0, 0.1, { align: 'center', size: 12, color: 'muted' });
           sR.text(`${C.groups.length} classes, smallest ${C.minSize}`, 0, -0.15, { align: 'center', size: 12, color: 'ink' });
-          const top = N * 1.15; sB.setView([0, Math.max(10, A.Rmax + 1)], [0, top]);
+          let cum0 = 0; A.cl.forEach((c) => { cum0 += c.minSize; }); const top = cum0 * 1.1 + 2; sB.setView([0, Math.max(10, A.Rmax + 1)], [0, top]);
           let cum = 0;
           const cumPts = A.cl.map((c, i) => { cum += c.minSize; return [i + 1, cum]; });
           sB.bars(A.cl.map((c) => c.minSize), { x0: 1, color: (val, i) => (i + 1 === r ? 'gold' : 'accent') });
           sB.path(cumPts, { color: 'green', width: 2.4 });
-          sB.hline(A.h, { color: 'purple', dash: true }); sB.hline(A.l, { color: 'red', dash: true });
-          sB.text(`HS sends ${A.h}`, A.Rmax * 0.98 + 1, A.h + top * 0.02, { align: 'right', size: 11, color: 'purple' });
-          sB.text(`LCR sends ${A.l}`, A.Rmax * 0.98 + 1, A.l + top * 0.02, { align: 'right', size: 11, color: 'red' });
         });
-        v.legend([['accent', 'smallest class at radius r'], ['green', 'accumulated Σ'], ['purple', 'HS on this ring', { dash: true }], ['red', 'LCR on this ring', { dash: true }]]);
+        v.legend([['accent', 'smallest class at radius r'], ['green', 'accumulated Σ']]);
         v.readout(() => {
-          const A = all(), N = n.value, r = Math.min(rs.value, A.Rmax), m = A.cl[r - 1].minSize, tot = A.cl.reduce((s, c) => s + c.minSize, 0), ref = N / (2 * r + 1);
-          return `radius $${r}$: smallest class $m(${r})=${m}$ vs $n/(2r+1)=${v.fix(ref, 1)}$ ${m >= Math.floor(ref) ? '≥' : '<'} · accumulated $\\sum_{r\\le ${A.Rmax}} m(r)=${tot}$ (the argument forces about this many messages, order $\\tfrac n2\\ln n=${v.fix(N / 2 * Math.log(N), 0)}$)\nactual counts on this ring: HS $${A.h}$ ${A.h >= tot ? '≥' : '<'} forced sum ${A.h >= tot ? '✓' : '✗'}, LCR $${A.l}$`;
+          const A = all(), N = n.value, r = Math.min(rs.value, A.Rmax), m = A.cl[r - 1].minSize, tot = A.sum, fl = Math.floor(N / (2 * r + 1));
+          const sums = [16, 32, 64].map((x) => `$n=${x}$: ${all(x).sum} (${v.fix(all(x).sum / x, 2)}$n$)`).join(' · ');
+          return `radius $${r}$: smallest class $m(${r})=${m}$ vs $\\lfloor n/(2r+1)\\rfloor=${fl}$ ${m >= fl ? '✓' : '✗ (the class bound fails for this ring)'} · accumulated $\\sum_{r\\le ${A.Rmax}} m(r)=${tot}$\nthis ring type, Σ for each size: ${sums}${kind.value === 'bitrev' ? ' — it grows faster than $n$, like $n\\log n$' : ''}\nactual messages on this ring: HS $${A.h}$ ${A.h >= tot ? '≥' : '<'} Σ ${A.h >= tot ? '✓' : '✗'}, LCR $${A.l}$`;
         });
       },
     },
