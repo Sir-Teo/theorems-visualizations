@@ -85,7 +85,7 @@ For a solution the same holds for the minimum, so a solution never exceeds the l
 $$\max_Q|u_1-u_2|\le\max_\Gamma|\text{difference of the data}|,$$
 and for homogeneous Dirichlet data the energy $E(t)=\int_0^\ell(u_1-u_2)^2\,dx$ is nonincreasing, $E'(t)=-2k\int_0^\ell(u_1-u_2)_x^2\,dx\le 0$.`,
       idea: String.raw`The difference $D=u_1-u_2$ again solves the heat equation (it is linear), so the weak maximum principle (3.1) applied to $D$ and to $-D$ bounds $|D|$ on $Q$ by its values on the parabolic boundary; if the data coincide, $D\equiv0$. This is uniqueness and, in the sup norm, stability with constant $1$ (data in $\varepsilon$, solutions in $\varepsilon$). The energy method gives the same in $L^2$: differentiate $\int D^2$, use $D_t=kD_{xx}$ and integrate by parts; the boundary terms vanish for $D=0$ at the ends, leaving $-2k\int D_x^2$.`,
-      caption: String.raw`Two initial temperatures differ by a perturbation of sup-size exactly $\varepsilon$ (a bump you can drag, a ripple of chosen frequency, or noise); the ends are held at $0$. Slide time: the top panel shows both solutions, the middle one their difference $D$ inside the band $\pm\varepsilon$. On the right the sup norm of $D$ (blue, divided by $\varepsilon$) and the energy $\int D^2$ (orange, divided by its initial value) both fall. High-frequency ripples die fastest, at rate $k n^2\pi^2$. The readout compares the finite-difference slope of $E$ with $-2k\int D_x^2$.`,
+      caption: String.raw`Two initial temperatures differ by a perturbation of sup-size exactly $\varepsilon$ (a bump you can drag, a ripple of chosen frequency, or noise); the ends are held at $0$. Slide time: the left panel shows both solutions, the middle one their difference $D$ inside the band $\pm\varepsilon$. On the right the sup norm of $D$ (blue, divided by $\varepsilon$) and the energy $\int D^2$ (orange, divided by its initial value) both fall. High-frequency ripples die fastest, at rate $k n^2\pi^2$. The readout compares the finite-difference slope of $E$ with $-2k\int D_x^2$.`,
       deps: ['pde-3.1'],
       refs: ['Strauss §2.3'],
       tags: ['uniqueness', 'stability', 'energy'],
@@ -154,7 +154,7 @@ and for homogeneous Dirichlet data the energy $E(t)=\int_0^\ell(u_1-u_2)^2\,dx$ 
         });
         v.legend([['accent', '$\\max|D|/\\varepsilon$'], ['orange', '$E(t)/E(0)$']]);
         v.readout(() => st && st.info && `$\\varepsilon=${v.fix(eS.value, 2)}$ · $\\max_x|D(x,t)|=${v.fix(st.info.sup, 4)}$, and its maximum over all $t$ is $${v.fix(st.info.maxSup, 4)}\\le\\varepsilon$ ✓\n` +
-          `$E(t)=${v.sci(st.info.E, 3)}$ · $E'(t)=${v.sci(Math.abs(st.info.Ep), 3)}\\cdot(-1)$ versus $-2k\\!\\int D_x^2=${v.sci(Math.abs(st.info.rhs), 3)}\\cdot(-1)$`);
+          `$E(t)=${v.sci(st.info.E, 3)}$ · $E'(t)=-${v.sci(Math.abs(st.info.Ep), 3)}$ versus $-2k\\!\\int D_x^2=-${v.sci(Math.abs(st.info.rhs), 3)}$`);
       },
     },
     // ------------------------------------------------------------------ 3.3
@@ -193,15 +193,15 @@ It solves the heat equation for $t>0$, is positive, satisfies $\int_{\R}\Phi(x,t
           P2.path(ts.map((x) => [x, 0.45 * Math.pow(x, -0.5)]), { color: 'muted', width: 1, dash: [5, 4] });
           P2.path(ts.map((x) => [x, 0.55 * Math.pow(x, 0.5)]), { color: 'muted', width: 1, dash: [5, 4] });
           P2.dot(t, h, { color: 'accent', r: 5 }); P2.dot(t, sg, { color: 'orange', r: 5 });
-          P2.text('height ∝ t^{−1/2}', 0.014, 2.0, { color: 'accent', size: 12, align: 'left' });
-          P2.text('width σ ∝ t^{1/2}', 0.014, 0.25, { color: 'orange', size: 12, align: 'left' });
+          P2.text('height ∝ t^(−1/2)', 0.3, 2.1, { color: 'accent', size: 12, align: 'left' });
+          P2.text('width σ ∝ t^(1/2)', 0.012, 0.42, { color: 'orange', size: 12, align: 'left' });
           for (const tt2 of [0.02, 0.05, 0.15, 0.5, 1.5, 4]) P3.fn((xi) => Math.sqrt(tt2) * G(Math.sqrt(tt2) * xi, tt2, k), { color: 'faint', width: 3.5 });
           P3.fn((xi) => Math.sqrt(t) * G(Math.sqrt(t) * xi, t, k), { color: 'gold', width: 1.8 });
           const L = 14 * sg, area = M.integrate((x) => G(x, t, k), -L, L, 800);
           info = { t, h, sg, area };
         }, { period: 9, still: 3 });
         v.legend([['accent', 'height $(4\\pi kt)^{-1/2}$'], ['orange', 'width $\\sqrt{2kt}$'], ['gold', 'current profile']]);
-        v.readout(() => info && `$t=${v.fix(info.t, 3)}$ · $\\int\\Phi\\,dx=${v.fix(info.area, 6)}$ · height $=${v.fix(info.h, 3)}$ · $\\sigma=${v.fix(info.sg, 3)}$ · height$\\times\\sigma=${v.fix(info.h * info.sg, 5)}\\ (=1/(2\\sqrt\\pi)=${v.fix(1 / (2 * Math.sqrt(Math.PI)), 5)})$`);
+        v.readout(() => info && `$t=${v.fix(info.t, 3)}$ · $\\int\\Phi\\,dx=${v.fix(info.area, 6)}$ · height $=${v.fix(info.h, 3)}$ · $\\sigma=${v.fix(info.sg, 3)}$ · height$\\times\\sigma=${v.fix(info.h * info.sg, 5)}\\ (=1/\\sqrt{2\\pi}=${v.fix(1 / Math.sqrt(2 * Math.PI), 5)})$`);
       },
     },
     // ------------------------------------------------------------------ 3.4
@@ -322,7 +322,7 @@ On a circle with $g=\sum c_ne^{inx}$ the same fact reads $u=\sum c_ne^{-kn^2t}e^
           const c0 = [], c1 = [], env = [];
           for (let n = 1; n <= NM; n++) {
             const c = Math.hypot(a[n], b[n]);
-            c0.push([n, Math.max(1e-14, c)]); c1.push([n, Math.max(1e-14, c * Math.exp(-k * n * n * t))]); env.push([n, Math.exp(-k * n * n * t)]);
+            if (c > 1e-12) c0.push([n, c]); if (c * Math.exp(-k * n * n * t) > 1e-13) c1.push([n, c * Math.exp(-k * n * n * t)]); env.push([n, Math.exp(-k * n * n * t)]);
           }
           P2.path(env, { color: 'orange', width: 1.8, dash: [5, 4] });
           P2.dots(c0, { color: 'muted', r: 2.4 });
