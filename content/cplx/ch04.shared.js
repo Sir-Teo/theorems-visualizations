@@ -183,7 +183,7 @@ export function drawC(s, C, lay, o = {}) {
     const col = o.nodeColor ? o.nodeColor(i, G, v) : (v == null ? (G.t === 'in' ? 'accent' : 'muted') : v ? 'green' : (G.t === 'in' ? 'accent' : 'muted'));
     if (G.t === 'in') {
       s.dot(x, y, { r: r - 1, color: v ? 'green' : 'accent', hollow: !v, width: 2.2 });
-      s.text(G.name ?? '', x, y, { align: 'center', baseline: 'middle', size: 10, color: v ? 'panel' : 'ink' });
+      s.text(G.name ?? '', x, y, { align: 'center', baseline: 'middle', size: (G.name ?? '').length > 2 ? 8 : 10, color: v ? 'panel' : 'ink' });
     } else {
       s.dot(x, y, { r, color: col, hollow: true, width: o.sel === i ? 3.4 : 2.2 });
       s.text(GLYPH[G.t] + (G.ins.length > 2 && G.t !== 'not' ? '' : ''), x, y, { align: 'center', baseline: 'middle', size: 13, color: 'ink' });

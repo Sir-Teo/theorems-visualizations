@@ -94,11 +94,11 @@ export default {
       scope: String.raw`Asynchronous shared memory with atomic single-writer multi-reader registers, any number of crashes (wait-freedom). The sequence numbers grow without bound; the pictures show one scanner and three updaters.`,
       credit: 'Afek, Attiya, Dolev, Gafni, Merritt & Shavit, 1993', links: { doi: 'https://doi.org/10.1145/153724.153741' },
       viz(v) {
-        const algo = v.select('scan', [{ value: 'naive', label: 'double collect only' }, { value: 'full', label: 'with embedded views' }], 'naive', { onChange: () => { sched.length = 0; } });
-        const sched = [];
+        const algo = v.select('scan', [{ value: 'naive', label: 'double collect only' }, { value: 'full', label: 'with embedded views' }], 'naive');
+        const sched = range(120).map((k) => k % 4);
         const lab = ['S', 'U1', 'U2', 'U3'];
         range(4).forEach((p) => v.button(`step ${lab[p]}`, () => sched.push(p)));
-        v.button('adversary ×120', () => { for (let k = 0; k < 120; k++) sched.push(k % 4)); });
+        v.button('adversary ×120', () => { for (let k = 0; k < 120; k++) sched.push(k % 4); });
         v.button('random ×40', () => { const base = sched.length; for (let k = 0; k < 40; k++) sched.push(Math.floor(hash01(base, k, 7) * 4)); });
         v.button('reset', () => { sched.length = 0; });
         const s = v.stage({ x: [-2.2, 40], y: [-0.7, 4.3], axes: false, height: 330, full: true, title: 'registers over time (one column per step) and the scans' });
@@ -166,7 +166,7 @@ export default {
           bad.hidden = wb.value;
           const { R, ok } = lin(seed); cur = { R, ok };
           drawLanes(s, 5, 16, { names: range(5).map((i) => `P${i}`), deadAt: range(5).map((i) => (i >= 5 - crash.value ? 0.02 : null)) });
-          R.msgs.forEach((m) => drawMsg(s, 5, m, { color: m.kind === 'Q' || m.kind === 'W' ? 'accent' : 'green', width: 1.1, label: false }));
+          R.msgs.forEach((m) => drawMsg(s, 5, m, { color: m.kind === 'Q' || m.kind === 'W' ? 'accent' : 'green', width: 0.9, label: false }));
           R.ops.forEach((o) => {
             if (o.p >= 5 - crash.value) return;
             const y = ly(o.p, 5), pend = o.e == null;
@@ -200,8 +200,8 @@ export default {
         init();
         v.button('make them as disjoint as possible', init);
         const sA = v.stage({ x: [-0.8, 9.2], y: [-1.6, 2.2], axes: false, height: 250, weight: 1.15, minWidth: 340, title: 'replicas: who answered the write and who answers the read' });
-        const sB = v.stage({ x: [-0.8, 10.2], y: [-0.7, 2.0], axes: false, height: 250, weight: 1, minWidth: 300, title: 'the resulting history' });
-        const sC = v.stage({ x: [0.5, 9.5], y: [-0.7, 8.5], axes: false, height: 250, full: true, title: 'n > 2f: possible (green) or impossible (red)' });
+        const sB = v.stage({ x: [-2.4, 10.2], y: [-0.7, 2.0], axes: false, height: 250, weight: 1, minWidth: 300, title: 'the resulting history' });
+        const sC = v.stage({ x: [0.5, 9.5], y: [-1.4, 8.8], axes: false, height: 270, full: true, title: 'n > 2f: possible (green) or impossible (red)' });
         sA.onClick((x) => {
           const i = Math.round(x); if (i < 0 || i >= nS.value) return;
           const L = mode.value === 'w' ? W : Rq, q = qn();
@@ -221,24 +221,23 @@ export default {
             sA.text(`${val(i)}`, i, 0.5, { align: 'center', size: 13, color: 'ink', halo: false });
             sA.text(`P${i}`, i, -0.35, { align: 'center', size: 12, color: 'muted' });
           }
-          sA.text(`each operation waits for n − f = ${q} replies; write quorum ${W.length}/${q}, read quorum ${Rq.length}/${q}`, 0, 1.6, { align: 'left', size: 12, color: 'muted' });
+          sA.text(`waits for n − f = ${q} replies (write ${W.length}/${q}, read ${Rq.length}/${q})`, -0.6, 1.7, { align: 'left', size: 11.5, color: 'muted' });
           const inter = W.filter((i) => Rq.includes(i)), full = W.length === q && Rq.length === q;
           const ret = Rq.length ? Math.max(...Rq.map(val)) : 0;
           const ops = [op(0, 'w', 1, 0.5, 3), op(1, 'r', ret, 4, 6)];
           const ok = checkHistory(ops, 'lin').ok;
-          sB.setView([-0.8, 10.2], [-0.7, 1.9]);
-          drawHistory(sB, ops, 2, 10, { names: ['writer', 'reader'], color: (k) => (k === 1 && !ok ? 'red' : null) });
+          sB.setView([-2.4, 10.2], [-0.7, 1.9]);
+          drawHistory(sB, ops, 2, 10, { names: ['writer', 'reader'], color: (k) => (k === 1 ? (ok ? 'orange' : 'red') : 'accent') });
           sB.corner(ok ? 'linearizable' : 'not linearizable', 'tr', { color: ok ? 'green' : 'red', weight: 700, plate: true });
-          sC.setView([0.5, 9.5], [-0.7, 8.5]);
+          sC.setView([0.5, 9.5], [-1.4, 8.8]);
           for (let nn = 1; nn <= 9; nn++) for (let ff = 0; ff <= 8; ff++) {
             if (ff >= nn) continue;
             const good = nn > 2 * ff, cur = nn === n && ff === f;
             sC.rect(nn - 0.45, ff - 0.45, nn + 0.45, ff + 0.45, { fill: good ? 'green' : 'red', fillAlpha: good ? 0.3 : 0.28, color: cur ? 'ink' : good ? 'green' : 'red', width: cur ? 3 : 0.8, radius: 2 });
           }
-          for (let nn = 1; nn <= 9; nn++) sC.text(String(nn), nn, -0.65, { align: 'center', size: 11, color: 'muted' });
-          sC.text('n (processes)', 5, 8.2, { align: 'center', size: 11, color: 'muted' });
-          sC.text('f', 0.75, 4, { align: 'center', size: 11, color: 'muted' });
-          info = { n, f, q, inter, full, ret, ok };
+          for (let nn = 1; nn <= 9; nn++) sC.text(String(nn), nn, -0.95, { align: 'center', size: 11, color: 'muted' });
+          sC.text('n (processes), f (crashes tolerated) up the side', 5, 8.5, { align: 'center', size: 11, color: 'muted' });
+                    info = { n, f, q, inter, full, ret, ok };
         });
         v.readout(() => {
           const I = info; if (!I) return '';

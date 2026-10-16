@@ -49,7 +49,7 @@ function drawNet(s, n, x0, y0, w, h, vin, env) {
   if (n.k === 'c' || n.k === 'k') {
     const closed = n.k === 'k' ? n.closed : (env[n.v] ? 1 : 0) !== (n.neg ? 1 : 0);
     const out = vin && closed;
-    const L = x0 + w * 0.5 - 0.22 * Math.min(w, 1.4), R = x0 + w * 0.5 + 0.22 * Math.min(w, 1.4);
+    const hl = Math.min(0.55, w * 0.22), L = x0 + w * 0.5 - hl, R = x0 + w * 0.5 + hl;
     s.line(x0, cy, L, cy, { color: vin ? 'orange' : 'muted', width: vin ? 3 : 1.6 });
     s.line(R, cy, x0 + w, cy, { color: out ? 'orange' : 'muted', width: out ? 3 : 1.6 });
     // the contact blade: closed = flat, open = lifted
@@ -91,7 +91,7 @@ export default {
       name: 'Karp–Lipton theorem',
       statement: String.raw`If $\mathrm{NP}\subseteq\mathrm{P/poly}$ (equivalently, SAT has polynomial-size circuits), then the polynomial hierarchy collapses to its second level: $\mathrm{PH}=\Sigma_2^{\mathsf p}=\Pi_2^{\mathsf p}$. Karp and Lipton obtained a collapse to a low level; the second-level form quoted here is credited to Sipser.`,
       idea: String.raw`Take $L\in\Pi_2^{\mathsf p}$: $x\in L\iff\forall u\,\exists v\;\psi(x,u,v)$. For each $u$ the inner statement asks whether the formula $\varphi_{x,u}(v)=\psi(x,u,v)$ is satisfiable. If SAT has small circuits, a Σ₂ machine can **guess** a circuit $C$ for SAT at the right length and then check, for all $u$, that $C$ accepts $\varphi_{x,u}$. A guessed $C$ may be wrong, so the machine does not trust its answers: it uses the standard **self-reduction** (fix $v_1$, ask $C$ whether the rest is satisfiable, …) to extract an assignment $v$ and verifies $\psi(x,u,v)=1$ directly. Acceptance therefore always implies a real witness, and an honest $C$ makes it accept. This is the sentence $\exists C\,\forall u\,[\dots]$, i.e. $\Pi_2\subseteq\Sigma_2$, and by 3.6 the hierarchy collapses.`,
-      caption: String.raw`A random 3-CNF on 8 variables stands in for $\varphi_{x,u}$. **Step** through the self-reduction: the oracle $C$ is queried on the formula with $x_1,\dots,x_{i}$ fixed. Choose a perfect $C$, one that errs on a fraction $\rho$ of formulas (red rows: its answer differs from the truth), or one that always says SAT. The last step checks the extracted assignment against every clause. Right: 200 random formulas through the same verifier. The bar “UNSAT formulas accepted” is **always 0**: a bad $C$ can only cost completeness (honest bars turn into rejects), never soundness.`,
+      caption: String.raw`A random 3-CNF on 8 variables stands in for $\varphi_{x,u}$. **Step** through the self-reduction: the oracle $C$ is queried on the formula with $x_1,\dots,x_{i}$ fixed. Choose a perfect $C$, one that errs on a fraction $\rho$ of formulas (red rows: its answer differs from the truth), or one that always says SAT. The last step checks the extracted assignment against every clause. Right: 200 random formulas through the same verifier. The bar “UNSAT ✓” (an unsatisfiable formula accepted) is **always 0**: a bad $C$ can only cost completeness (honest bars turn into rejects), never soundness.`,
       deps: ['cplx-4.4', 'cplx-3.6', 'cplx-3.4'],
       refs: ['Arora–Barak ch. 6'],
       credit: 'Karp & Lipton, 1980 (collapse of PH from NP ⊆ P/poly; the Σ₂ version credited to M. Sipser)',
@@ -102,7 +102,7 @@ export default {
         const NV = 8; let seed = 11, model = null; const trial = new Map();
         const mS = v.slider('clauses $m$', 12, 40, 30, { int: true, onChange: () => refresh() });
         const mode = v.select('circuit $C$', [{ value: 'honest', label: 'perfect' }, { value: 'liar', label: 'errs on a fraction ρ' }, { value: 'yes', label: 'always says SAT' }], 'liar', { onChange: () => refresh() });
-        const rho = v.slider('error rate $\\rho$', 0, 0.5, 0.2, { step: 0.05, onChange: () => refresh() });
+        const rho = v.slider('error rate $\\rho$', 0, 0.5, 0.05, { step: 0.05, onChange: () => refresh() });
         v.button('New formula', () => { seed += 1; refresh(); });
         const mk = (sd, cl) => {
           const truth = (c) => dpll(NV, c).model !== null;
@@ -129,9 +129,9 @@ export default {
         const refresh = () => { trial.clear(); model = mk(seed, randomCNF(v.rng(seed), NV, mS.value, 3)); if (S) S.reset(model.frames, { at: 'start' }); };
         let S = null;
         model = mk(seed, randomCNF(v.rng(seed), NV, mS.value, 3));
-        S = v.steps({ frames: () => model.frames, still: 12, speed: 1.2, note: false });
+        S = v.steps({ frames: () => model.frames, still: 9, speed: 1.2, note: false });
         const A = v.stage({ x: [0, 20], y: [0, 12], axes: false, height: 330, weight: 1.5, minWidth: 330, title: 'self-reduction against the circuit C' });
-        const B = v.stage({ x: [0, 4], y: [0, 215], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, ylabel: 'formulas (of 200)', title: 'the verifier over 200 random formulas' });
+        const B = v.stage({ x: [0, 4], y: [0, 215], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, ylabel: 'formulas (of 200)', xticks: [[0.5, 'SAT ✓'], [1.5, 'SAT ✗'], [2.5, 'UNSAT ✓'], [3.5, 'UNSAT ✗']], title: 'truth, and whether the verifier accepted (✓) or rejected (✗)' });
         const stats = () => {
           const key = `${mode.value}|${rho.value}|${mS.value}|${seed}`;
           if (!trial.has(key)) {
@@ -162,7 +162,6 @@ export default {
           st.forEach((c, i) => {
             B.rect(i + 0.12, 0, i + 0.88, c, { fill: col[i], fillAlpha: 0.6, color: col[i], width: 1.4 });
             B.text(String(c), i + 0.5, c + 3, { align: 'center', size: 13, weight: 700 });
-            B.text(lab[i], i + 0.5, 0, { align: 'center', size: 9, color: 'muted', dy: 14, baseline: 'top' });
           });
         });
         v.readout(() => {
@@ -216,7 +215,7 @@ export default {
           const total = (T - 1) * W, idx = Math.floor(((time % 12) / 12) * total), t = 1 + Math.floor(idx / W), j = idx % W;
           for (const dj of [-1, 0, 1]) A.rect(x0 + (((j + dj) % W + W) % W) * cw, y0 - t * ch, x0 + ((((j + dj) % W + W) % W) + 1) * cw, y0 - (t - 1) * ch, { color: 'orange', width: 2.2, stroke: true });
           A.rect(x0 + j * cw, y0 - (t + 1) * ch, x0 + (j + 1) * cw, y0 - t * ch, { color: 'gold', width: 3, stroke: true });
-          A.text(`∀ sweep: checking window (t=${t}, j=${j}) ${badSet.has(`${t},${j}`) ? '✗ violated' : '✓'}`, 0.5, 0.0, { size: 11, color: badSet.has(`${t},${j}`) ? 'red' : 'muted', align: 'center', baseline: 'bottom' });
+          A.text(`∀ sweep: checking window (t=${t}, j=${j}) ${badSet.has(`${t},${j}`) ? '✗ violated' : '✓'}`, 0.5, 0.03, { size: 11, color: badSet.has(`${t},${j}`) ? 'red' : 'muted', align: 'center', baseline: 'bottom' });
         }, { period: 12, still: 3 });
         v.readout(() => {
           const bad = violations(), W = guess[0].length, T = guess.length - 1;
@@ -243,7 +242,7 @@ export default {
         const design = v.select('wiring', [{ value: 'chain', label: 'chain' }, { value: 'tree', label: 'balanced tree' }, { value: 'flat', label: 'unbounded fan-in' }], 'tree');
         const nS = v.slider('inputs $n$', 2, 32, 12, { int: true });
         const A = v.stage({ x: [-0.02, 1.02], y: [-0.02, 1.02], axes: false, height: 380, weight: 1.5, minWidth: 320, title: 'the circuit (inputs on top)' });
-        const B = v.stage({ x: [2, 64], y: [1, 80], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 250, xlabel: 'n', ylabel: 'depth', title: 'depth of each wiring' });
+        const B = v.stage({ x: [2, 64], y: [0.8, 80], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 250, xlabel: 'n', ylabel: 'depth', title: 'depth of each wiring' });
         v.legend([['red', 'chain  n−1'], ['accent', 'tree  ⌈log₂ n⌉'], ['green', 'unbounded fan-in  1']]);
         const build = (n) => {
           const C = newC(), ins = []; for (let i = 0; i < n; i++) ins.push(addIn(C, `x${i + 1}`));
@@ -339,7 +338,7 @@ export default {
       name: 'Circuit value problem is P-complete',
       statement: String.raw`The **circuit value problem** (CVP) takes a Boolean circuit $C$ and an input $x$ and asks whether $C(x)=1$. CVP is in P (evaluate the gates in topological order) and is **P-complete under log-space reductions**: every $L\in\mathrm P$ reduces to CVP by a function computable in logarithmic space. Consequently CVP $\in$ NC would imply $\mathrm P=\mathrm{NC}$ (and CVP $\in$ L would give $\mathrm P=\mathrm L$).`,
       idea: String.raw`By 4.5, a polynomial-time machine's run on $x$ is a tableau of identical local gadgets, so the circuit $C_x$ with $x$ hard-wired has constant value equal to the machine's answer. What remains is to see that the *map* $x\mapsto(C_x,\,\text{input})$ needs only $O(\log n)$ space: the circuit is so regular that the description of gate number $g$ — its type, its two parents — is a simple function of the counters $(t,j)$ written in binary, and a log-space transducer simply counts through all $(t,j)$ and prints each description. Hence P-complete problems are "inherently sequential" unless P = NC: the layer-after-layer dependency of a tableau is not known to be avoidable.`,
-      caption: String.raw`A circuit grown from a sequential computation: $w$ wires by $T$ layers, each gate combining the two wires above it (types and wiring fixed by $(t,j)$ alone). **Step** the evaluation layer by layer: a layer can only be evaluated once the one before it is known, so the number of rounds equals the depth $T$ — the “parallel time” of this instance. **Click a gate** to see how the transducer prints its description from the two counters. Right: for CVP instances the depth grows linearly with the number of gates, while a balanced formula of the same size has depth $\log_2$ of it; whether the first kind can always be re-wired shallowly is the P versus NC question.`,
+      caption: String.raw`A circuit grown from a sequential computation: $w$ wires by $T$ layers, each gate combining the two wires above it (types and wiring fixed by $(t,j)$ alone; the last wire wraps around to the first). **Step** the evaluation layer by layer: a layer can only be evaluated once the one before it is known, so the number of rounds equals the depth $T$ — the “parallel time” of this instance. **Click a gate** to see how the transducer prints its description from the two counters. Right: for CVP instances the depth grows linearly with the number of gates, while a balanced formula of the same size has depth $\log_2$ of it; whether the first kind can always be re-wired shallowly is the P versus NC question.`,
       deps: ['cplx-4.5', 'toc-14.11'],
       refs: ['Arora–Barak ch. 6'],
       credit: 'Richard E. Ladner, 1975 (“The circuit value problem is log space complete for P”, SIGACT News 7(1): 18–20)',
@@ -373,14 +372,14 @@ export default {
             const done = t <= cur;
             A.line(j, t, j, t - 1, { color: done ? 'muted' : 'grid', width: 1.2 }); A.line(j, t, (j + 1) % w, t - 1, { color: done ? 'muted' : 'grid', width: 1.2 });
           }
+          A.dot(0, T, { r: 15, color: 'gold', hollow: true, width: 3.4 });
+          if (sel) A.dot(sel[1], sel[0], { r: 16, color: 'red', hollow: true, width: 2.8 });
           for (let t = 0; t <= T; t++) for (let j = 0; j < w; j++) {
             const done = t <= cur, x = val[t][j];
             A.dot(j, t, { r: t === 0 ? 8 : 10, color: done ? (x ? 'green' : 'muted') : 'grid', hollow: !done || !x, width: 2.2 });
             if (t > 0) A.text(GL[op(t, j)], j, t, { align: 'center', baseline: 'middle', size: 12, color: done ? 'ink' : 'muted' });
             else A.text(String(x), j, t, { align: 'center', baseline: 'middle', size: 11, color: 'ink' });
           }
-          A.dot(0, T, { r: 14, color: 'gold', hollow: true, width: 3 });
-          if (sel) A.dot(sel[1], sel[0], { r: 15, color: 'red', hollow: true, width: 2.6 });
           const g = [], f = []; for (let m = 4; m <= 4000; m *= 1.15) { g.push([m, Math.max(1, m / wS.value)]); f.push([m, Math.max(1, Math.log2(m))]); }
           B.path(g, { color: 'red', width: 2.4 }); B.path(f, { color: 'green', width: 2.4 });
           B.dot(w * T, T, { r: 6, color: 'gold' });
@@ -435,7 +434,7 @@ export default {
         rebuild();
         S = v.steps({ frames: () => ev, still: 9, speed: 3, note: false, counter: 'step' });
         const T = v.stage({ x: [0, 1], y: [-0.1, 1.05], axes: false, height: 380, weight: 1.3, minWidth: 300, title: 'NC¹ ⊆ L: depth-first evaluation with a short stack' });
-        const M = v.stage({ x: [-1.4, 8.2], y: [-1.4, 8.4], axes: false, equal: true, height: 380, weight: 1, minWidth: 280, title: 'NL ⊆ NC²: reachability by squaring' });
+        const M = v.stage({ x: [-1.4, 8.2], y: [-1.4, 9.1], axes: false, equal: true, height: 380, weight: 1, minWidth: 280, title: 'NL ⊆ NC²: reachability by squaring' });
         M.onClick((px, py) => { const j = Math.floor(px), i = 7 - Math.floor(py); if (i >= 0 && i < N && j >= 0 && j < N && i !== j) A0[i][j] ^= 1; });
         const closure = (k) => { let P = A0.map((r, i) => r.map((x, j) => (i === j ? 1 : x))); for (let q = 0; q < k; q++) P = P.map((_, i) => P[i].map((__, j) => { for (let m = 0; m < N; m++) if (P[i][m] && P[m][j]) return 1; return 0; })); return P; };
         const pos = (k) => { const l = Math.floor(Math.log2(k)), i = k - 2 ** l; return [(i + 0.5) / 2 ** l, 1 - l / (tree.d + 0.35) * 0.95]; };
@@ -505,8 +504,7 @@ export default {
           const info = parse();
           if (!info.ok) { A.text(`cannot read the formula: ${info.error}`, 7, 4.5, { align: 'center', color: 'red', size: 14 }); return; }
           const env = { x: tx.value ? 1 : 0, y: ty.value ? 1 : 0, z: tz.value ? 1 : 0 }, [w, h] = dims(info.net);
-          const W = 13, scaleW = Math.min(1.9, W / w), bw = w * scaleW, bh = Math.min(7.4, Math.max(1.6, h * 1.5)), y0 = 4.5 - bh / 2 - 0.6;
-          A.line(-0.9, 4.5 - 0.6 + 0, -0.9 + 0.7, 4.5 - 0.6, { color: 'orange', width: 3 });
+          const W = 13, scaleW = Math.min(4.2, W / w), bw = w * scaleW, bh = Math.min(7.4, Math.max(1.6, h * 1.5)), y0 = 4.5 - bh / 2 - 0.6;
           const cyBox = y0 + bh / 2;
           A.line(-0.9, cyBox, 0.3, cyBox, { color: 'orange', width: 3 });
           A.dot(-0.9, cyBox, { r: 5, color: 'ink', label: '+', labelPos: 'w' });
