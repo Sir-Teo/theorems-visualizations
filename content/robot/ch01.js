@@ -396,7 +396,7 @@ It counts correctly when the joint constraints are independent; for special, ove
         const len = v.slider('roll length $s$', 0.3, 1.4, 0.9, { step: 0.01 });
         const cyc = v.slider('cycles', 1, 8, 4, { int: true });
         const L = v.stage({ x: [-4.6, 4.6], y: [-3.2, 3.2], equal: true, axes: false, height: 380, title: 'the table, seen from above' });
-        const S = v.stage3d({ range: 2.2, height: 380, yaw: -0.8, pitch: 0.4, axes: false, title: 'configuration space $(x,y,\\varphi)$' });
+        const S = v.stage3d({ range: 2.3, height: 380, yaw: -0.8, pitch: 0.4, axes: false, title: 'configuration space $(x,y,\\varphi)$' });
         const START = [-3.1, -1.4, 0.5];
         const G = L.handle(2.4, 1.3, { color: 'orange', r: 8 });
         const GH = L.handle(2.4 + 1.3 * Math.cos(0.4), 1.3 + 1.3 * Math.sin(0.4), { color: 'orange', r: 6 });
@@ -442,6 +442,7 @@ It counts correctly when the joint constraints are independent; for special, ove
         v.animate((t) => {
           const wheel = kind.value === 'wheel', trt = plan.value === 'trt';
           ang.el.hidden = len.el.hidden = cyc.el.hidden = trt; GH.visible = G.visible = trt;
+          START.splice(0, 3, ...(trt ? [-3.1, -1.4, 0.5] : [0.4, -2.1, 0.5]));
           P = build();
           const sNow = M.smoothstep(Math.min(1, (t % 7) / 5.5));
           const q = poseAt(P, sNow);
@@ -458,7 +459,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           // 3D configuration space
           const cs = (p) => [p[0] / 2.4, p[1] / 2.4, ((p[2] + Math.PI * 4) % (TAU * 3) - Math.PI * 3) / 1.9];
           void cs;
-          const k = (p) => [p[0] / 2.2, p[1] / 2.2, (p[2] - START[2]) / 1.7];
+          const k = (p) => [p[0] / 1.7, p[1] / 1.7, (p[2] - START[2]) / 1.2];
           const f1 = [Math.cos(q[2]), Math.sin(q[2]), 0], f2 = [0, 0, 1];
           const dF = (fn, i) => { const h = 1e-5, a = q.slice(), b = q.slice(); a[i] += h; b[i] -= h; return fn(a).map((x, j) => (x - fn(b)[j]) / (2 * h)); };
           const F1 = wheel ? (qq) => [Math.cos(qq[2]), Math.sin(qq[2]), 0] : () => [Math.cos(START[2]), Math.sin(START[2]), 0], F2 = () => [0, 0, 1];
@@ -466,8 +467,8 @@ It counts correctly when the joint constraints are independent; for special, ove
           const br = dF(F1, 2).map((x) => -x);          // [f1, f2] = Df2·f1 − Df1·f2 = −∂f1/∂φ
           const rk2 = M.rank([fv, f2, [0, 0, 0]].map((r) => r.slice()), 1e-9), rk3 = M.rank([fv, f2, br], 1e-9);
           void f1; void rk2;
-          const o = k(q), sx = 1 / 2.2, sp = 1.2;
-          const e1 = [fv[0] * sx * sp, fv[1] * sx * sp, 0], e2 = [0, 0, sp / 1.7];
+          const o = k(q), sx = 1 / 1.7, sp = 1.2;
+          const e1 = [fv[0] * sx * sp, fv[1] * sx * sp, 0], e2 = [0, 0, sp / 1.2];
           const pl = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [o[0] + a * e1[0] * 1.3 + b * e2[0] * 0.8, o[1] + a * e1[1] * 1.3 + b * e2[1] * 0.8, o[2] + a * e1[2] * 1.3 + b * e2[2] * 0.8]);
           S.poly(pl, { fill: 'green', fillAlpha: 0.22, color: 'green', width: 1.4 });
           if (Math.hypot(...br) > 1e-9) S.arrow(o, [o[0] + br[0] * sx * 2.4, o[1] + br[1] * sx * 2.4, o[2]], { color: 'red', width: 3 });
@@ -475,7 +476,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           S.path(P.pts.filter((_, i) => P.ts[i] <= sNow * P.total + 1e-9).map(k), { color: 'gold', width: 3 });
           S.dot(k(START), { color: 'muted', r: 5 }); S.dot(o, { color: 'accent', r: 6.5 });
           if (trt) { const gh = Math.atan2(GH.y - G.y, GH.x - G.x); S.dot(k([G.x, G.y, START[2] + angDiff(gh, START[2])]), { color: 'orange', r: 6, label: 'goal' }); }
-          if (!wheel) { const a = START[2], n = [-Math.sin(a), Math.cos(a)], c0 = n[0] * START[0] + n[1] * START[1]; void c0; const d = [Math.cos(a), Math.sin(a)]; const pp = (s, z) => [(START[0] + d[0] * s) / 2.2, (START[1] + d[1] * s) / 2.2, z]; S.poly([pp(-4.5, -1.5), pp(4.5, -1.5), pp(4.5, 1.5), pp(-4.5, 1.5)], { fill: 'green', fillAlpha: 0.08, color: 'green', width: 1, alpha: 0.5 }); }
+          if (!wheel) { const a = START[2], n = [-Math.sin(a), Math.cos(a)], c0 = n[0] * START[0] + n[1] * START[1]; void c0; const d = [Math.cos(a), Math.sin(a)]; const pp = (s, z) => [(START[0] + d[0] * s) / 1.7, (START[1] + d[1] * s) / 1.7, z]; S.poly([pp(-4.5, -1.5), pp(4.5, -1.5), pp(4.5, 1.5), pp(-4.5, 1.5)], { fill: 'green', fillAlpha: 0.08, color: 'green', width: 1, alpha: 0.5 }); }
           const net = [end[0] - START[0], end[1] - START[1]];
           st = { start: START, wheel, trt, rk3, miss, maxSlip: P.maxSlip, net, end, cyc: cyc.value, a: ang.value, s: len.value, q };
         }, { period: 7, still: 6.2 });

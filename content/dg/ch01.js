@@ -421,7 +421,7 @@ Any other unit-speed curve with the same curvature function is obtained from thi
       deps: ['dg-1.4', 'pma-6.21'],
       refs: ['Pressley Ch. 2'],
       tags: ['curvature', 'rigid motion', 'integration'],
-      credit: 'Euler (intrinsic equation of a plane curve); modern form: Bonnet',
+      credit: 'Euler (describing a plane curve by curvature as a function of arc length, 18th c.); the term "intrinsic equation": Whewell, 1849; modern form for space curves: Bonnet, 1848 (attributions as commonly given, not traced to a primary source here)',
       verify: true,
       viz(v) {
         const L = 10, xs = [0, 2, 4, 6, 8, 10];
