@@ -48,37 +48,39 @@ $$E_n=\Big(n+\tfrac12\Big)\hbar\omega,\qquad n=0,1,2,\dots,$$
 with eigenfunctions $\psi_n(x)=\big(\tfrac{m\omega}{\pi\hbar}\big)^{1/4}\frac{1}{\sqrt{2^nn!}}H_n(\xi)\,e^{-\xi^2/2}$, $\xi=x\sqrt{m\omega/\hbar}$ ($H_n$ the Hermite polynomials). The natural units are the length $\sqrt{\hbar/m\omega}$ and the energy $\hbar\omega$. Equal spacing is special to the parabola: an anharmonic well (quartic, Morse, …) has level spacings that change with $n$.`,
       scope: String.raw`Exact for an ideal parabolic potential. Real systems — molecular vibrations, atoms in traps, crystal lattices, field modes — are harmonic only near the bottom of their wells; at higher energies the anharmonic terms bend the ladder (molecular levels crowd together toward dissociation).`,
       idea: String.raw`Expanding any smooth potential about a minimum gives $V(x_0)+\tfrac12V''(x_0)(x-x_0)^2+\dots$, so small oscillations are always harmonic (mech-4.2) — which is why this one model describes molecules, phonons and photons. Classically every orbit has the same period $2\pi/\omega$, whatever its amplitude; by the correspondence principle the level spacing near energy $E$ is $\hbar\cdot 2\pi/T_{\rm cl}(E)$, so an amplitude-independent period means an energy-independent spacing. The exact spectrum follows by algebra from the ladder operators (4.2, 4.3) or by solving the eigenvalue equation (3.1) with a power series that must terminate.`,
-      caption: String.raw`Left: the levels computed numerically (finite differences) for the well shown, each eigenfunction drawn at its energy; green ticks at the left mark the harmonic ladder $n+\tfrac12$. Right: the spacings $E_{n+1}-E_n$ (dots) plotted at their mean energy, against the classical prediction $2\pi\hbar/T_{\rm cl}(E)$ (curve) computed from the period of a classical orbit. **Drag the morph slider** to bend the parabola into a quartic (stiffer walls: spacings grow) or a Morse well (soft outer wall: spacings shrink toward dissociation). Only the parabola keeps them all equal — and only there is the classical period independent of the energy.`,
+      caption: String.raw`Left: the levels computed numerically (finite differences) for the well shown, each eigenfunction drawn at its energy; green ticks at the left mark the harmonic ladder $n+\tfrac12$. Right: the spacings $E_{n+1}-E_n$ (dots) plotted at their mean energy, against the classical prediction $2\pi\hbar/T_{\rm cl}(E)$ (curve) computed from the period of a classical orbit. **Drag the anharmonicity slider** to bend the parabola into a Morse well (soft outer wall: spacings shrink toward dissociation, matching the exact Morse formula) or add a quartic term (stiffer walls: spacings grow); both keep the same curvature at the bottom. Only the parabola keeps them all equal — and only there is the classical period independent of the energy.`,
       deps: ['qm-3.1', 'mech-4.2'],
       see: ['qm-3.18', 'mech-4.5'],
       refs: ['Griffiths §2.3', 'Hall ch. 11'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator' },
       tags: ['harmonic oscillator', 'energy levels', 'anharmonicity'],
       viz(v) {
-        const M = v.M, K = 10, D = 8, AM = 0.25;
+        const M = v.M, K = 10;
+        // both families keep the curvature V''(0) = 1, so the bottom of every well is the same parabola
         const TG = {
-          morse: { V: (x) => D * (1 - Math.exp(-AM * x)) ** 2, dom: [-6, 16], view: [-5, 13] },
-          quartic: { V: (x) => x ** 4 / 8, dom: [-7.5, 7.5], view: [-6, 6] },
+          morse: { V: (s) => (s === 0 ? (x) => 0.5 * x * x : (x) => { const D = 8 / s, a = 1 / Math.sqrt(2 * D); return D * (1 - Math.exp(-a * x)) ** 2; }), dom: [-6, 20] },
+          quartic: { V: (s) => (x) => 0.5 * x * x + (s * x ** 4) / 10, dom: [-7.5, 7.5] },
         };
-        const tg = v.select('morph toward', [{ value: 'morse', label: 'Morse well' }, { value: 'quartic', label: 'quartic $x^4/8$' }], 'morse');
-        const sm = v.slider('morph $s$ (0 = parabola)', 0, 1, 0.5, { step: 0.01 });
-        const sL = v.stage({ x: [-5, 13], y: [0, 10], height: 360, axes: 'box', gutter: { r: 4 }, weight: 1.45, xlabel: 'x', ylabel: 'E / ħω', title: '$V_s=(1-s)\\tfrac12x^2+s\\,V_{\\rm target}$ and its levels' });
+        const tg = v.select('morph toward', [{ value: 'morse', label: 'Morse $D(1-e^{-ax})^2$, $D=8/s$' }, { value: 'quartic', label: 'quartic: $+\\,s\\,x^4/10$' }], 'morse');
+        const sm = v.slider('anharmonicity $s$ (0 = parabola)', 0, 1, 0.7, { step: 0.01 });
+        const sL = v.stage({ x: [-5, 13], y: [0, 10], height: 360, axes: 'box', gutter: { r: 4 }, weight: 1.45, xlabel: 'x', ylabel: 'E / ħω', title: 'the well and its first ten levels' });
         const sR = v.stage({ x: [0, 10], y: [0, 2], height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'E / ħω', ylabel: 'spacing / ħω', title: 'level spacing vs $2\\pi\\hbar/T_{\\rm cl}(E)$' });
         let S = null;
         const solve = () => {
           const key = `${tg.value}|${sm.value}`; if (S && S.key === key) return S;
-          const T = TG[tg.value], s = sm.value, Vf = (x) => (1 - s) * 0.5 * x * x + s * T.V(x);
+          const T = TG[tg.value], s = sm.value, Vf = T.V(s);
           const R = M.schrodinger1D(Vf, T.dom, { n: 2600, k: K }), x = R.x, Vg = Float64Array.from(x, Vf);
           // classical: A(E) on a fine grid, ω_cl = 2π dE/dA
           const xf = Float64Array.from({ length: 12001 }, (_, i) => T.dom[0] + ((T.dom[1] - T.dom[0]) * i) / 12000), Vff = Float64Array.from(xf, Vf);
           const Etop = R.E[K - 1] + 0.4, cl = [];
           for (let k = 1; k <= 120; k++) { const E = (Etop * k) / 120, h = 0.06, dA = action(xf, Vff, E + h) - action(xf, Vff, E - h); if (dA > 0) cl.push([E, (TAU * 2 * h) / dA]); }
           const sp = []; for (let n = 0; n < K - 1; n++) sp.push([(R.E[n] + R.E[n + 1]) / 2, R.E[n + 1] - R.E[n]]);
-          return (S = { key, x, Vg, E: R.E, psi: R.psi, cl, sp, s, tg: tg.value, Etop });
+          let ia = 0, ib = x.length - 1; while (ia < ib && Vg[ia] > Etop + 1.5) ia++; while (ib > ia && Vg[ib] > Etop + 1.5) ib--;
+          return (S = { key, x, Vg, E: R.E, psi: R.psi, cl, sp, s, tg: tg.value, Etop, view: [x[ia], x[ib]] });
         };
         let st = null;
         v.render(() => {
-          const S = solve(), col = phaseLUT(v), T = TG[S.tg];
+          const S = solve(), col = phaseLUT(v), T = { view: [S.view[0] - 0.08 * (S.view[1] - S.view[0]), S.view[1] + 0.3 * (S.view[1] - S.view[0])] };
           sL.setView(T.view, [0, S.Etop + 0.35]);
           let pmax = 0; for (const p of S.psi) for (const y of p) pmax = Math.max(pmax, Math.abs(y));
           levelDiagram(sL, { x: S.x, V: S.Vg, E: S.E, psi: S.psi, col, amp: 0.42 / pmax, label: (i) => `E${sub(i)} = ${v.fix(S.E[i], 3)}` });
@@ -92,7 +94,7 @@ with eigenfunctions $\psi_n(x)=\big(\tfrac{m\omega}{\pi\hbar}\big)^{1/4}\frac{1}
           for (const [E, d] of S.sp) sR.line(E, 0, E, d, { color: 'accent', width: 1, alpha: 0.35 });
           sR.dots(S.sp, { r: 4.5, color: 'accent' });
           let dev = 0; for (let n = 0; n < K; n++) dev = Math.max(dev, Math.abs(S.E[n] - (n + 0.5)));
-          let mdev = 0; if (S.tg === 'morse' && S.s === 1) for (let n = 0; n < K; n++) mdev = Math.max(mdev, Math.abs(S.E[n] - ((n + 0.5) - (n + 0.5) ** 2 / (4 * D))));
+          let mdev = 0; const D = 8 / S.s; if (S.tg === 'morse' && S.s > 0) for (let n = 0; n < K; n++) mdev = Math.max(mdev, Math.abs(S.E[n] - ((n + 0.5) - (n + 0.5) ** 2 / (4 * D))));
           const dmin = Math.min(...S.sp.map((p) => p[1])), dmax = Math.max(...S.sp.map((p) => p[1]));
           st = { S, dev, mdev, dmin, dmax };
         });
@@ -102,8 +104,8 @@ with eigenfunctions $\psi_n(x)=\big(\tfrac{m\omega}{\pi\hbar}\big)^{1/4}\frac{1}
           const { S } = st;
           const head = `spacings range from **${v.fix(st.dmin, 4)}** to **${v.fix(st.dmax, 4)}** $\\hbar\\omega$`;
           if (S.s === 0) return `Parabola: ${head} — equal to grid accuracy; $\\max_n|E_n-(n+\\tfrac12)\\hbar\\omega| = ${v.sci(st.dev, 1)}$ over the first ${K} levels (finite-difference error $\\propto h^2$).`;
-          if (S.tg === 'morse' && S.s === 1) return `Morse well $D(1-e^{-ax})^2$, $D=8$, $a=\\tfrac14$: ${head}, shrinking toward the dissociation energy $D$. Exact Morse levels $(n+\\tfrac12)-(n+\\tfrac12)^2/4D$ agree to $${v.sci(Math.max(st.mdev, 1e-12), 1)}$.`;
-          return `$s = ${v.fix(S.s, 2)}$: ${head} — ${S.tg === 'quartic' ? 'stiffer walls, shorter classical period at high energy, wider spacings' : 'softer outer wall, longer period at high energy, narrower spacings'}; the dots track $2\\pi\\hbar/T_{\\rm cl}$, the correspondence principle at work.`;
+          if (S.tg === 'morse') return `Morse well, $D = ${v.fix(8 / S.s, 2)}\\,\\hbar\\omega$, $a = 1/\\sqrt{2D}$: ${head}, shrinking toward the dissociation energy $D$ — the dots track $2\\pi\\hbar/T_{\\rm cl}$ (correspondence principle). Exact Morse levels $(n+\\tfrac12)-(n+\\tfrac12)^2/4D$ agree to $${v.sci(Math.max(st.mdev, 1e-12), 1)}$.`;
+          return `$V = \\tfrac12x^2 + ${v.fix(S.s / 10, 3)}\\,x^4$: ${head} — stiffer walls, shorter classical period at high energy, wider spacings; the dots track $2\\pi\\hbar/T_{\\rm cl}$, the correspondence principle at work.`;
         });
       },
     },

@@ -547,7 +547,7 @@ peaks at $s\Delta=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$.`,
           for (let i = 0; i < n; i++) { const t = i / SR, c = (CMAX * t) / SW; p2 += (TAU * f1 * 2 ** (c / 1200)) / SR; out[i] = 0.3 * (Math.sin(TAU * f1 * t) + Math.sin(p2)); }
           snd.samples(finish(out, 0.6, SR, 0.05, 0.2), SR, { gain: 0.9 }); ph.start(SW, 'sweep');
         });
-        const pl = v.stage({ x: [0, CMAX], y: [0, 1.12], height: 250, axes: 'box', gutter: true, xticks: [[0, '0'], [100, '100'], [200, '200'], [300, '300'], [400, '400'], [500, '500'], [600, '600'], [700, '700 ¢']], yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval between the tones (cents)', ylabel: 'roughness', full: true, title: 'Plomp–Levelt roughness of two pure tones' });
+        const pl = v.stage({ x: [0, CMAX], y: [0, 1.2], height: 260, axes: 'box', gutter: true, xticks: [[0, '0'], [100, '100 m2'], [200, '200 M2'], [300, '300 m3'], [400, '400 M3'], [500, '500 P4'], [600, '600'], [700, '700 P5']], yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval between the tones (cents)', ylabel: 'roughness', full: true, title: 'Plomp–Levelt roughness of two pure tones' });
         const wv = v.stage({ x: [0, 0.25], y: [-2.3, 2.3], height: 170, axes: 'box', gutter: true, xlabel: 'time (s)', yticks: [], weight: 1, title: 'the waveform' });
         const ex = v.stage({ x: [-6, 6], y: [0, 1.15], height: 170, axes: 'box', gutter: true, xlabel: 'place relative to $f_1$ (mm, toward apex →)', yticks: [], weight: 1, title: 'excitation on the basilar membrane' });
         const cents = () => (ph.tag === 'sweep' && ph.t != null ? Math.min(CMAX, (CMAX * ph.t) / SW) : cS.value);
@@ -559,13 +559,12 @@ peaks at $s\Delta=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$.`,
           const cAt = (hz) => 1200 * Math.log2(1 + hz / f1), cb = cbw(f1 * 2 ** (CMAX / 2400));
           const cBeat = cAt(15), cCB = Math.min(CMAX, 1200 * Math.log2((f1 + cbw(f1)) / f1));
           pl.vband(0, cBeat, { color: 'teal', alpha: 0.12 }); pl.vband(cBeat, cCB, { color: 'red', alpha: 0.08 }); pl.vband(cCB, CMAX, { color: 'green', alpha: 0.06 });
-          pl.text('beats', cBeat / 2, 1.07, { align: 'center', color: 'teal', size: 11 });
-          pl.text('roughness', (cBeat + cCB) / 2, 1.07, { align: 'center', color: 'red', size: 11 });
-          if (cCB < CMAX - 60) pl.text('two smooth tones', (cCB + CMAX) / 2, 1.07, { align: 'center', color: 'green', size: 11 });
+          pl.text('beats', cBeat / 2, 1.14, { align: 'center', color: 'teal', size: 11 });
+          pl.text('roughness', (cBeat + cCB) / 2, 1.14, { align: 'center', color: 'red', size: 11 });
+          if (cCB < CMAX - 60) pl.text('two smooth tones', (cCB + CMAX) / 2, 1.14, { align: 'center', color: 'green', size: 11 });
           for (const fb of BASES) { const sel = fb === f1; pl.fn((x) => rough(fb, x), { color: sel ? 'accent' : 'muted', width: sel ? 2.6 : 1.2, alpha: sel ? 1 : 0.5, n: 400 }); if (!sel) { let xm = 0, ym = 0; for (let x = 1; x < CMAX; x += 2) { const y = rough(fb, x); if (y > ym) { ym = y; xm = x; } } pl.text(`${fb}`, xm, ym, { color: 'muted', size: 10, align: 'center', dy: -8 }); } }
           pl.dot(c, rough(f1, c), { r: 6, color: 'gold' });
           pl.vline(c, { color: 'gold', width: 1, alpha: 0.6 });
-          for (const [cc, nm] of [[100, 'm2'], [200, 'M2'], [300, 'm3'], [400, 'M3'], [500, 'P4'], [700, 'P5']]) pl.text(nm, cc, 0.04, { align: 'center', color: 'muted', size: 10, dy: -2 });
           // waveform
           wv.fn((t) => Math.sin(TAU * f1 * t) + Math.sin(TAU * b * t), { color: 'accent', width: 1, n: 1600 });
           wv.fn((t) => 2 * Math.abs(Math.cos(Math.PI * d * t)), { color: 'green', width: 1.6, n: 400 });
@@ -651,9 +650,9 @@ They are generated inside the cochlea by its nonlinear response, and can be reco
           }
           // frequency diagram
           fd.vband(1, 1.3, { color: 'red', alpha: 0.07 });
-          fd.text('2f₁−f₂ typically audible', 1.15, 3650, { align: 'center', color: 'red', size: 10.5 });
-          const lines = [[(r) => f1, 'accent', 'f₁'], [(r) => f1 * r, 'accent', 'f₂'], [(r) => f1 * (r - 1), 'purple', 'f₂−f₁'], [(r) => f1 * (2 - r), 'red', '2f₁−f₂'], [(r) => f1 * (2 * r - 1), 'orange', '2f₂−f₁']];
-          for (const [g, col, nm] of lines) { fd.fn(g, { color: col, width: col === 'red' ? 2.6 : 1.8, domain: [1, 1.9] }); const yy = g(1.88); if (yy < 3700) fd.text(nm, 1.88, yy, { align: 'right', color: col, size: 10.5, dy: -8 }); }
+          fd.text('2f₁−f₂ audible', 1.01, 3600, { align: 'left', color: 'red', size: 10.5 });
+          const lines = [[(r) => f1, 'accent', 'f₁', 1.45], [(r) => f1 * r, 'accent', 'f₂', 1.88], [(r) => f1 * (r - 1), 'purple', 'f₂−f₁', 1.65], [(r) => f1 * (2 - r), 'red', '2f₁−f₂', 1.8], [(r) => f1 * (2 * r - 1), 'orange', '2f₂−f₁', 1.88]];
+          for (const [g, col, nm, xl] of lines) { fd.fn(g, { color: col, width: col === 'red' ? 2.6 : 1.8, domain: [1, 1.9] }); const yy = g(xl); if (yy < 3700) fd.text(nm, xl, yy, { align: 'right', color: col, size: 10.5, dy: -9, plate: true }); }
           fd.vline(f2 / f1, { color: 'gold', width: 1.6 });
           for (const [g, col] of lines) fd.dot(f2 / f1, g(f2 / f1), { r: 4, color: col });
         });

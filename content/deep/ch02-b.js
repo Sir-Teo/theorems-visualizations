@@ -52,7 +52,7 @@ because within each region of the first $\ell-1$ layers the $n_\ell$ units of la
           sL.setView(win[0], win[1]);
           const key = [fold, W, D, seed].join('|');
           const net = nets(key, () => (fold ? foldNet(D) : makeNet([2, ...Array(D).fill(W), 1], { act: 'relu', seed: hashStr('lr|' + key), bias: 0.5 })));
-          const cols = regionColors(v), lay = CYC.map((c) => v.rgb(c)), e = 2.4 / sL.scale, ey = 2.4 / Math.abs(sL.Y(0) - sL.Y(1));
+          const cols = [0.12, 0.2, 0.28].flatMap((k) => ['purple', 'teal', 'pink', 'gold', 'gray', 'green'].map((c) => v.ramp(k, c))), lay = CYC.map((c) => v.rgb(c)), e = 2.4 / sL.scale, ey = 2.4 / Math.abs(sL.Y(0) - sL.Y(1));
           sL.raster((x, y) => {
             const l = firstDiffLayer(net, [x, y], [x + e, y]) || firstDiffLayer(net, [x, y], [x, y + ey]);
             if (l) { const c = lay[(l - 1) % lay.length]; return [c[0], c[1], c[2], 255]; }

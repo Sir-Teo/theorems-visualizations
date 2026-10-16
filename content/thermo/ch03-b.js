@@ -120,7 +120,8 @@ They hold for every substance whose potentials are twice continuously differenti
           const ga = (vL, T) => slog(fa(T, vL), x0), gb = (vL, T) => slog(fb(T, vL), x0);
           sa.heat(ga, { ...opt, res: 4, key: 'a' + k }); sb.heat(gb, { ...opt, res: 4, key: 'b' + k });
           const lv = Array.from({ length: 7 }, (_, i) => lerp(opt.range[0], opt.range[1], (i + 0.5) / 7));
-          sa.contour(ga, lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 }); sb.contour(gb, lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 });
+          const stab = (g) => (vL, T) => (pdiff(M.P, Vv.V, Vv.T, T, vL * L) < 0 ? g(vL, T) : NaN);
+          sa.contour(stab(ga), lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 }); sb.contour(stab(gb), lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 });
           const spin = (vL, T) => pdiff(M.P, Vv.V, Vv.T, T, vL * L);
           for (const s of [sa, sb]) {
             s.contour(spin, [0], { color: 'ink', width: 1.4, alpha: 0.7, res: 70 });
@@ -314,10 +315,11 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           const hull = hullFn(xs, ys, S);
           const d = del.value * (S ? 1 : 0.25), x0 = clamp(hd.x, X[0] + d, X[1] - d);
           hd.set(x0, f(x0));
-          const lo = Math.min(...ys), hi = Math.max(...ys);
+          let lo = Math.min(...ys), hi = Math.max(...ys);
+          if (!S) { let bar0 = 0; xs.forEach((x, i) => { bar0 = Math.max(bar0, ys[i] - hull(x)); }); if (bar0 > 1e-4) hi = Math.min(hi, lo + 7 * bar0); }
           sa.setView(X, [lo - 0.06 * (hi - lo), hi + 0.08 * (hi - lo)]);
           sa.setTitle(S ? '$S(U) - U/T_{\\text{co}}$ — must be concave' : `$F(v) + P_{\\text{co}}v$ at ${T} K — must be convex`);
-          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S − U/T_co' : 'F + P_co v (kJ/mol)');
+          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S − U/Tco' : 'F + Pco·v (kJ/mol)');
           for (const [a, b] of hull.segs) sa.vband(a, b, { color: 'red', alpha: 0.07 });
           sa.fn(f, { color: 'ink', width: 2.4, domain: X, n: 400 });
           sa.fn(hull, { color: 'green', width: 2, dash: [7, 5], domain: X, n: 400 });

@@ -172,7 +172,7 @@ the **entropy** of the distribution.`,
 $$\mathcal T=\bigcap_{n\ge1}\mathcal F_n'.$$
 Its events are those whose occurrence is not changed by altering any finite number of the $X_i$. Examples, with $S_n=X_1+\dots+X_n$: $\{X_n\in B_n\text{ i.o.}\}$, $\{\lim_nS_n\text{ exists}\}$, $\{\limsup_nS_n/c_n>x\}$ when $c_n\to\infty$. Not tail: $\{S_{10}>0\}$, and in general $\{\limsup S_n>0\}$.`,
       idea: String.raw`An event belongs to $\mathcal F_n'$ when it can be decided from $X_n,X_{n+1},\dots$ alone; it belongs to $\mathcal T$ when this holds for every $n$. Changing $X_1,\dots,X_k$ shifts every later partial sum by the same constant, which is invisible to anything divided by $c_n\to\infty$, or to convergence, but not to the sign of $S_n$ itself.`,
-      caption: String.raw`Top: the first 60 coin values of $\omega$ (upper row) and of $\omega'$, which agrees with $\omega$ except that its first $k$ coins are resampled (orange). Bottom: the walks $S_n(\omega)$ and $S_n(\omega')$ run parallel from time $k$ on, a constant apart. The readout evaluates a few events on both (tail events through finite proxies at the horizon $n=4000$): the tail events always agree, the others need not.`,
+      caption: String.raw`Top: the first 60 coin values of $\omega$ (upper row) and of $\omega'$, which agrees with $\omega$ except that its first $k$ coins are resampled (orange). Bottom: the walks $S_n(\omega)$ and $S_n(\omega')$ run parallel from time $k$ on, a constant apart. The readout evaluates a few events on both, with $N=4000$. The tail events are judged by proxies that read only $X_n$ for $n\ge N/2$, as a tail event must be decidable from the far future, so they always agree; the others need not, and $\{S_n>0\text{ i.o.}\}$ can flip because the shift moves the walk across $0$.`,
       deps: ['prob-1.3.1a'],
       tags: ['zero-one laws', 'sigma-fields'],
       viz(v) {
@@ -198,14 +198,16 @@ Its events are those whose occurrence is not changed by altering any finite numb
           B.path(S2.map((s, i) => [i, s]), { color: 'orange', width: 1.4 });
           const c = S2[N] - S[N];
           const ev = (A) => [A(S, X), A(S2, Y)];
-          const lim = (SS) => Math.abs(SS[N] / N) < 0.05;
-          const ls = (SS) => { let m = -Infinity; for (let n = N / 2; n <= N; n++) m = Math.max(m, SS[n] / Math.sqrt(n)); return m > 1; };
-          st = { k, c, e10: ev((SS) => SS[10] > 0), e1: ev((SS, XX) => XX[0] > 0), elim: ev(lim), els: ev(ls), epos: ev((SS) => { for (let n = N / 2; n <= N; n++) if (SS[n] > 0) return true; return false; }) };
+          const H2 = N / 2;
+          const lim = (SS) => Math.abs((SS[N] - SS[H2]) / N) < 0.05;
+          const io = (SS, XX) => XX.slice(H2).some((x) => x > 0);
+          const ser = (SS, XX) => { let t = 0, m = 0; for (let n = H2; n < N; n++) { t += XX[n] / (n + 1); m = Math.max(m, Math.abs(t)); } return m < 0.05; };
+          st = { k, c, e10: ev((SS) => SS[10] > 0), e1: ev((SS, XX) => XX[0] > 0), elim: ev(lim), eio: ev(io), eser: ev(ser), epos: ev((SS) => { for (let n = H2; n <= N; n++) if (SS[n] > 0) return true; return false; }) };
           v.legend([['accent', '$\\omega$'], ['orange', '$\\omega\'$ (first $k$ coins resampled)']]);
         });
         const yn = (b) => (b ? '\\text{yes}' : '\\text{no}');
         const row = (name, e, tail) => `${name}: $${yn(e[0])}$ / $${yn(e[1])}$${e[0] === e[1] ? '' : ' (differ)'}${tail ? ' — tail' : ''}`;
-        v.readout(() => st && `After time $k=${st.k}$ the walks differ by the constant $${st.c}$. Event: $\\omega$ / $\\omega'$\n` + [row('$\\{S_{10}>0\\}$', st.e10, false), row('$\\{X_1=+1\\}$', st.e1, false), row('$\\{S_n/n\\to0\\}$ (proxy $|S_N/N|<0.05$)', st.elim, true), row('$\\{\\limsup S_n/\\sqrt n>1\\}$ (proxy on $[N/2,N]$)', st.els, true), row('$\\{S_n>0$ i.o.$\\}$ (proxy on $[N/2,N]$)', st.epos, false)].join('\n'));
+        v.readout(() => st && `After time $k=${st.k}$ the walks differ by the constant $${st.c}$. Event: $\\omega$ / $\\omega'$\n` + [row('$\\{S_{10}>0\\}$', st.e10, false), row('$\\{X_1=+1\\}$', st.e1, false), row('$\\{S_n>0$ i.o.$\\}$ (some $S_n>0$, $n\\in[N/2,N]$)', st.epos, false), row('$\\{X_n=+1$ i.o.$\\}$ (some $X_n=+1$, $n\\in[N/2,N]$)', st.eio, true), row('$\\{S_n/n\\to0\\}$ ($|S_N-S_{N/2}|/N<0.05$)', st.elim, true), row('$\\{\\sum X_n/n$ converges$\\}$ (tail moves $<0.05$ on $[N/2,N]$)', st.eser, true)].join('\n'));
       },
     },
     {

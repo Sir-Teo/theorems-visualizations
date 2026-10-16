@@ -612,7 +612,7 @@ holds, so the Poisson bracket makes the smooth functions a Lie algebra. **Poisso
       credit: 'Laplace, 1799; Pauli, 1926 (SO(4) and hydrogen); Fock, 1935',
       viz(v) {
         const eS = v.slider('eccentricity of the starting orbit', 0, 0.75, 0.35, { step: 0.01 });
-        const epS = v.slider('extra $1/r^3$ force $\\varepsilon$', 0, 0.2, 0, { step: 0.002 });
+        const epS = v.slider('extra $1/r^3$ force $\\varepsilon$', 0, 0.2, 0.05, { step: 0.002 });
         const sS = v.slider('flow parameter $s$ of $A_y$', -1.2, 1.2, 0.45, { step: 0.01 });
         const sO = v.stage({ x: [-2.1, 1.7], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'orbit and $\\mathbf A$' });
         const sF = v.stage({ x: [-2.1, 2.1], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'orbits swept by the flow of $A_y$' });

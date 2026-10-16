@@ -546,7 +546,7 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
           return { m: 5, blocs: [{ n: FL.bush, r: [0, 1] }, { n: FL.gore, r: [1, 0] }, { n: g, r: [2, 1, 0] }, { n: FL.nader - g, r: [2, 0, 1] }, { n: b, r: [3, 0, 1] }, { n: FL.buch - b, r: [3, 1, 0] }, { n: c, r: [4, 0, 1] }, { n: FL.browne - c, r: [4, 1, 0] }] };
         };
         const cur = () => E[el.value], prof = () => (el.value === 'fl' ? flProfile() : cur().P);
-        function sync() { const fl = el.value === 'fl'; pN.el.hidden = pR.el.hidden = !fl; cache = null; }
+        function sync() { const fl = el.value === 'fl'; pN.el.hidden = pR.el.hidden = !fl; cache = null; Sk.setTitle(fl ? 'certified count, and the head-to-head under the model' : 'instant-runoff count'); }
         // ---- live paradox searches (coarse scan, then refine; elimination ties are not counted)
         const tieFree = (P) => { let alive = range(P.m); for (;;) { const t = tops(P, alive), cont = sum(alive.map((x) => t[x])), mx = Math.max(...alive.map((x) => t[x])); if (alive.length === 1 || mx > cont / 2) return true; const mn = Math.min(...alive.map((x) => t[x])); if (alive.filter((x) => t[x] === mn).length > 1) return false; alive = alive.filter((x) => t[x] !== mn); } };
         function monoSearch(P) {
@@ -601,7 +601,7 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
           const tr = { 0: [[FL.nader - g, 'green'], [b, 'purple'], [cB, 'teal']], 1: [[g, 'green'], [FL.buch - b, 'purple'], [FL.browne - cB, 'teal']] };
           const fin = [FL.bush + sum(tr[0].map((t) => t[0])), FL.gore + sum(tr[1].map((t) => t[0]))];
           const lo = 2895000, hi = Math.max(...fin) + 15000, top = 32 + 6 * rh + 26, Xz = (val) => x0 + ((x1 - x0) * (val - lo)) / (hi - lo);
-          txt(v, c, `head to head once minor-party ballots transfer (model) — axis zoomed to ${fk(lo)}…${fk(hi)}`, 12, top - 8, { size: 11, weight: 700, color: 'muted', align: 'left' });
+          txt(v, c, `Bush vs Gore after the transfers (model) · axis from ${fk(lo)}`, 12, top - 8, { size: 11, weight: 700, color: 'muted', align: 'left' });
           [[0, 'Bush', 'red'], [1, 'Gore', 'blue']].forEach(([k, lab, col], i) => {
             const Y = top + 22 + i * 44; let at = k === 0 ? FL.bush : FL.gore;
             txt(v, c, lab, x0 - 8, Y, { size: 12, weight: 700, align: 'right', color: col });
@@ -619,9 +619,13 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
           if (el.value === 'fl') drawFlorida(); else drawIRV(v, Sk, P, [96, 34, Sk.width - 132, Sk.height - 10], { lab: nm, col: (x) => X.col[x], big: true });
           // ---- tournament (the main three candidates)
           const tc = Tn.ctx, TW = Tn.width, TH = Tn.height, cand = el.value === 'fl' ? [0, 1, 2] : [0, 1, 2];
-          const pos = [[TW / 2, 62], [TW * 0.8, TH - 80], [TW * 0.2, TH - 80]];
+          const pos = [[TW / 2, 70], [TW * 0.86, TH - 90], [TW * 0.14, TH - 90]];
           drawTourney(v, tc, A.N, cand, pos, { r: 21, labels: sh, col: (x) => X.col[x], label: (a, b, p, q) => `${fmtK(p)}–${fmtK(q)}`, ring: (x) => (x === A.cw ? 'green' : x === A.irv ? 'gold' : null), size: 10 });
-          cand.forEach((x, k) => txt(v, tc, nm(x) + (x === A.cw ? ' · Condorcet winner' : x === A.cl ? ' · Condorcet loser' : ''), pos[k][0], pos[k][1] + (k === 0 ? -33 : 34), { size: 10.5, weight: 700, color: x === A.cw ? 'green' : x === A.cl ? 'red' : 'muted', halo: true }));
+          cand.forEach((x, k) => {
+            const col = x === A.cw ? 'green' : x === A.cl ? 'red' : 'muted', dy = k === 0 ? -33 : 34, X0 = clamp(pos[k][0], 64, TW - 64);
+            txt(v, tc, nm(x), X0, pos[k][1] + dy, { size: 11, weight: 700, color: col, halo: true });
+            if (x === A.cw || x === A.cl) txt(v, tc, x === A.cw ? 'Condorcet winner' : 'Condorcet loser', X0, pos[k][1] + dy + (k === 0 ? -14 : 14), { size: 10, weight: 600, color: col, halo: true });
+          });
           // ---- rules table
           const c = Mt.ctx, W = Mt.width, H = Mt.height, rows = [['plurality', A.pl], ['top-two runoff', A.ro], ['instant runoff', A.irv], ['Borda (2-1-0)', A.bo], ['minimax (Condorcet)', A.mm]];
           const half = W * 0.36, rh = Math.min(30, (H - 24) / rows.length);
