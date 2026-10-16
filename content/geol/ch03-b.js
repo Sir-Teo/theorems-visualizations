@@ -43,7 +43,7 @@ export default {
         const hidden = [-37, 60], rng = v.rng(11);
         const idx = [8, 18, 28, 38, 48, 60, 70, 80, 90];
         const sites = idx.map((i) => rp[Math.min(i, rp.length - 1)]);
-        const azs = sites.map((p) => mod360(bearing(hidden, p) - 90) + 3 * rng.normal());
+        const azs = sites.map((p) => velAt(p, hidden, 1).az + 3 * rng.normal());
         const best = fitPole(sites, azs, [0, 60]);
         const s = v.stage({ height: 430, full: true });
         const G = v.globe(s, { projection: 'orthographic', center: [-15, 10], graticule: 30 });
@@ -59,7 +59,7 @@ export default {
           G.path(rp, { color: 'blue', width: 2.2, geodesic: false, alpha: 0.7 });
           res = [];
           sites.forEach((p, i) => {
-            const d = angDist(p, pole), az = mod360(bearing(pole, p) - 90); // small-circle direction about E (counter-clockwise sense)
+            const d = angDist(p, pole), az = velAt(p, pole, 1).az; // small-circle direction about E
             const e = azDiff180(az, azs[i]); res.push(e);
             G.smallCircle(pole, d, { color: 'purple', width: 0.8, alpha: 0.3 });
             const a = dest(p, azs[i], 4), b = dest(p, azs[i] + 180, 4); G.path([a, b], { color: 'gold', width: 4 });

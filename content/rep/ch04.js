@@ -37,13 +37,14 @@ export default {
           const L = els(), N = L.length, N2 = ms.value * ns.value;
           if (sel[0] >= N || sel[1] >= N) sel = [0, Math.min(1, N - 1)];
           T.draw({
-            rows: N, cols: N, rowLabels: (i) => (N <= 12 ? `(${L[i]})` : ''), colLabels: (j) => (N <= 12 ? `(${L[j]})` : ''), cornerLabel: N <= 12 ? '$\\chi_{a,b}\\backslash(x,y)$' : '',
+            rows: N, cols: N, rowLabels: (i) => (N <= 12 ? `(${L[i]})` : ''), colLabels: (j) => (N <= 12 ? `(${L[j]})` : ''), cornerLabel: '',
             value: (i, j) => (N <= 12 ? String(expo(L[i], L[j])) : null),
             fill: (i, j) => v.M.hsl2rgb(expo(L[i], L[j]) / N2, 0.62, 0.58),
-            highlight: sel.map((r, k) => null).filter(Boolean),
             activeRow: sel[1],
             activeColor: 'ink',
           });
+          T.box(sel[0], 0, sel[0], N - 1, { color: 'accent', width: 3 });
+          T.box(sel[1], 0, sel[1], N - 1, { color: 'orange', width: 3 });
         });
         v.readout(() => {
           const L = els(), N = L.length, N2 = ms.value * ns.value, [r1, r2] = sel;
@@ -79,7 +80,7 @@ with class sizes $1,2,3$ and $1^2+1^2+2^2=6$.`,
         const A = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 340, weight: 0.85, title: 'the symmetry' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.1 });
         const T = v.table(B, { rows: 4, cols: 3, square: false, maxCell: 70, cellAspect: 1.15, size: 15, labelSize: 13, margin: 8 });
-        const val = (r, c) => { const g = G.classes[c].rep; return r === 0 ? 1 : r === 1 ? (G.isRef(g) ? -1 : 1) : G.mat[g][0][0] + G.mat[g][1][1]; };
+        const val = (r, c) => { const g = G.classes[c].rep; return r === 0 ? 1 : r === 1 ? (G.isRef(g) ? -1 : 1) : Math.round((G.mat[g][0][0] + G.mat[g][1][1]) * 1e9) / 1e9 + 0; };
         const trow = (r) => G.classes.map((_, c) => [val(r, c), 0]);
         const norm = (r) => { let ok = cabs(csub(ip(G, trow(r), trow(r)), [1, 0])) < 1e-9; for (let j = 0; j < r; j++) ok = ok && cabs(ip(G, trow(r), trow(j))) < 1e-9; return ok; };
         v.render(() => {
@@ -130,7 +131,7 @@ Check: $4+4\cdot\frac{n-2}2=2n$ for even $n$ and $2+4\cdot\frac{n-1}2=2n$ for od
           if (sel.k > top) sel.k = 1;
           if (sel.j >= m) sel.j = 1;
           const th = (TAU * sel.j) / m, thk = sel.k * th;
-          drawMoved(A, [[1, 0], [0, 1]], G.pos, { col: 'muted', dash: true, F: false, fill: false, R: 1.25 });
+          drawMoved(A, [[1, 0], [0, 1]], G.pos, { col: 'muted', dash: true, fill: false, R: 1.25, fa: 0.08 });
           drawMoved(A, [[Math.cos(th), -Math.sin(th)], [Math.sin(th), Math.cos(th)]], G.pos, { col: 'orange', dash: true, F: false, fill: false, R: 1.25, width: 1.8 });
           drawMoved(A, [[Math.cos(thk), -Math.sin(thk)], [Math.sin(thk), Math.cos(thk)]], G.pos, { col: 'accent', R: 1.25, fa: 0.4, fill: false });
           A.corner(`$E_{${sel.k}}(r^{${sel.j}})$: turn by $${sel.k}\\cdot${sel.j}\\cdot360^\\circ/${m}$`, 'tl', { plate: true, size: 12 });
@@ -155,7 +156,7 @@ Check: $4+4\cdot\frac{n-2}2=2n$ for even $n$ and $2+4\cdot\frac{n-1}2=2n$ for od
       kind: 'Proposition',
       name: 'D₄ and Q₈ share a character table',
       statement: String.raw`The dihedral group $D_4$ (symmetries of a square) and the quaternion group $Q_8=\{\pm1,\pm i,\pm j,\pm k\}$ are not isomorphic, yet after a suitable matching of their five conjugacy classes (and of their five irreducibles) they have exactly the same character table: four linear characters, taking values $\pm1$ on the classes, and one 2-dimensional character $(2,-2,0,0,0)$. So the character table does not determine the group. They are told apart, for instance, by the number of elements of order $2$: five in $D_4$, only one in $Q_8$.`,
-      idea: String.raw`Both groups have order $8$, five classes (the centre $\{1,z\}$ and three pairs or a pair of rotations/reflections), and quotient by the centre to $\mathbb Z/2\times\mathbb Z/2$, which is where the four linear characters come from; the rest is forced by $\sum d_i^2=8$ and orthogonality (4.3 for $D_4$). The two groups differ in how the 2-dimensional representation sits: in $D_4$ it is real (the square in the plane), in $Q_8$ it is quaternionic (4.9, 4.10).`,
+      idea: String.raw`Both groups have order $8$, five classes (two central elements and three classes of size $2$), and quotient by the centre to $\mathbb Z/2\times\mathbb Z/2$, which is where the four linear characters come from; the rest is forced by $\sum d_i^2=8$ and orthogonality (4.3 for $D_4$). The two groups differ in how the 2-dimensional representation sits: in $D_4$ it is real (the square in the plane), in $Q_8$ it is quaternionic (4.9, 4.10).`,
       caption: String.raw`Left and right, the two tables with the class matching found automatically (we test all $4!$ ways of matching the non-trivial columns until class sizes and rows agree). Choose a matched class to highlight its column in both tables and list its elements with their orders. The bars count elements of each order: the tables agree, the groups do not.`,
       deps: ['rep-4.3'],
       refs: ['Fulton–Harris §2.3'],
@@ -220,7 +221,7 @@ Check: $4+4\cdot\frac{n-2}2=2n$ for even $n$ and $2+4\cdot\frac{n-1}2=2n$ for od
         let which = 0;
         const csel = v.select('class of rotations', info.map((c, k) => ({ value: k, label: c.deg === 0 ? '$e$' : `${c.deg}° (${c.size})${c.deg === 120 ? (c.i === rep0.i ? ' a' : ' b') : ''}` })), 1, { onChange: () => { which = 0; } });
         v.button('next element of the class', () => { which = (which + 1) % info[csel.value].size; });
-        const turn = v.slider('turn', 0, 1, 1, { step: 0.01 });
+        const turn = v.slider('turn', 0, 1, 0.6, { step: 0.01 });
         const Sx = v.stage({ x: [-2.1, 2.1], y: [-2.0, 2.0], equal: true, axes: false, height: 340, weight: 1.05 });
         const sc = v.scene3(Sx, { yaw: 0.7, pitch: 0.35, axis: 0, lim: 1.5, axes: false, hint: true });
         const Sc = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 220, weight: 0.7, title: 'value of $\\chi_\\omega$' });
@@ -294,7 +295,7 @@ where $\chi_3$ is the character of the rotation representation, $\chi_3(g)=1+2\c
         let which = 0;
         const csel = v.select('class', order.map((o, i) => ({ value: i, label: ['$e$', 'face half-turn', 'quarter-turn', 'third-turn', 'edge half-turn'][i] })), 2, { onChange: () => { which = 0; } });
         v.button('next element of the class', () => { which = (which + 1) % G.classes[order[csel.value].cl].size; });
-        const turn = v.slider('turn', 0, 1, 1, { step: 0.01 });
+        const turn = v.slider('turn', 0, 1, 0.6, { step: 0.01 });
         const nrows = v.slider('rows derived', 1, 5, 5, { int: true });
         const faceAx = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
         const same = (a, b) => cube.same(a, b) || cube.same(a, b.map((t) => -t));

@@ -100,8 +100,8 @@ export function poleMisfit(pole, sites, azs, sense) {
   let s = 0;
   for (let i = 0; i < sites.length; i++) {
     const d = angDist(sites[i], pole); if (d < 1e-3 || d > 179.999) { s += 45 * 45; continue; }
-    // direction of motion about the pole: perpendicular to the great circle from the pole (sense −1: counter-clockwise, +1: clockwise)
-    const az = mod360(bearing(pole, sites[i]) + 90 * (sense || 1));
+    // direction of motion about the pole (tangent to the small circle through the site); sense −1: counter-clockwise, +1: clockwise
+    const az = velAt(sites[i], pole, sense ? -sense : 1).az;
     const e = sense ? azDiff(az, azs[i]) : azDiff180(az, azs[i]); s += e * e;
   }
   return Math.sqrt(s / sites.length);
