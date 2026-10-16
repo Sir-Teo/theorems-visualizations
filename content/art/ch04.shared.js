@@ -76,7 +76,7 @@ export function cctNearest(x, y) {
   return { T: 1e6 / m, duv: (vv > P[bi].v ? 1 : -1) * Math.sqrt(bd), i: bi };
 }
 /** McCamy's (1992) approximation of the CCT from (x, y). */
-export const cctMcCamy = (x, y) => { const n = (x - 0.3320) / (0.1858 - y); return -449 * n ** 3 + 3525 * n ** 2 - 6823.3 * n + 5520.33; };
+export const cctMcCamy = (x, y) => { const n = (x - 0.3320) / (y - 0.1858); return -449 * n ** 3 + 3525 * n ** 2 - 6823.3 * n + 5520.33; };
 
 // ---------------------------------------------------------------- sRGB
 export const srgbDec = (c) => { const u = c / 255; return u <= 0.04045 ? u / 12.92 : Math.pow((u + 0.055) / 1.055, 2.4); };

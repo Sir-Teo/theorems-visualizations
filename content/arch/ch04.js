@@ -328,11 +328,11 @@ $$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\var
         const spread = v.slider('outward spread of the base (cm), R = 10 m', 0, 12, 4, { step: 0.5 });
         const showMin = v.toggle('show the thinnest dome that stands (with its hinges)', false);
         const A = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 0.95, minWidth: 260, title: 'plan: cracks rise from the base' });
-        const B = v.stage({ x: [-1.3, 1.3], y: [-0.15, 1.15], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 300, title: 'one gore and its opposite, as an arch' });
+        const B = v.stage({ x: [-13, 13], y: [-1.5, 11.5], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 300, title: 'one gore and its opposite, as an arch' });
         let M = null;
         const model = () => {
-          const e = end.value, N = 24, mid = sphereMid(1, e, N), dth = (2 * Math.PI) / ng;
-          const mk = (t) => domeSlice(mid, t, { gamma: 1, dtheta: dth });
+          const e = end.value, N = 24, mid = sphereMid(R0, e, N), dth = (2 * Math.PI) / ng.value;
+          const mk = (t) => domeSlice(mid, t * R0, { gamma: GAM, dtheta: dth });
           const g = mk(tr.value), c = centralLine(g, []), fit = bestFit(mk, () => [], {}, 0.002, 0.4, 26);
           const P = profile({ type: 'sphere', R: 1, phi1: e, n: 300 }), mem = membrane(P, 1), zero = hoopZero(P, mem.Ntheta);
           return { g, c, fit, zero, mk, dth };
@@ -340,28 +340,29 @@ $$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\var
         v.render(() => {
           const m = M = model(), Gs = showMin.value && m.fit ? m.fit.g : m.g, u = showMin.value && m.fit ? m.fit.u : m.c ? m.c.u : m.fit ? m.fit.u : [0, 0, 0];
           // plan
-          const rc = m.zero !== null ? Math.sin(m.zero) : 1, ow = (20 * 2 * Math.PI * (spread.value / 100)) / (ng * R0);
+          const rc = m.zero !== null ? Math.sin(m.zero) : 1, ow = (20 * 2 * Math.PI * (spread.value / 100)) / (ng.value * R0);
           A.circle(0, 0, 1, { color: 'ink', fill: 'muted', fillAlpha: 0.08, width: 1.6 });
           A.circle(0, 0, rc, { color: 'green', width: 1.2, dash: [4, 4] });
-          for (let k = 0; k < ng; k++) {
+          for (let k = 0; k < ng.value; k++) {
             const th = (2 * Math.PI * (k + 0.5)) / ng, c = Math.cos(th), s = Math.sin(th);
-            A.poly([[rc * c, rc * s], [c - ow * 0.5 * -s, s - ow * 0.5 * c], [c + ow * 0.5 * -s, s + ow * 0.5 * c]], { fill: 'red', fillAlpha: 0.6, color: 'red', width: 1 });
+            A.poly([[rc * c, rc * s], [c + ow * 0.5 * s, s - ow * 0.5 * c], [c - ow * 0.5 * s, s + ow * 0.5 * c]], { fill: 'red', fillAlpha: 0.6, color: 'red', width: 1.2 });
+            A.line(rc * c, rc * s, c, s, { color: 'red', width: 1.6 });
           }
           A.text(m.zero !== null ? `no cracks above φ = ${f2(deg(m.zero), 1)}°` : 'no tension: no cracks', 0, 0, { size: 12, color: 'green', align: 'center' });
           // gore as an arch
           const e = end.value, zb = Math.cos(e * D2R);
           Gs.blocks.forEach((b, i) => {
-            const phi = deg(Math.atan2(Math.abs(b.cx), b.cy + zb)), tens = m.zero !== null && phi > deg(m.zero);
+            const phi = deg(Math.atan2(Math.abs(b.cx), b.cy + R0 * zb)), tens = m.zero !== null && phi > deg(m.zero);
             B.poly(b.poly, { fill: tens ? 'red' : 'accent', fillAlpha: 0.13 + (i % 2) * 0.07, color: 'ink', width: 0.8, alpha: 0.8 });
           });
           const tl = thrustLine(Gs, [], u);
           drawThrust(v, B, tl, { color: 'green', bad: 'orange', width: 2.6 });
           if (showMin.value && m.fit) for (const h of hinges(m.fit.g, [], m.fit.u, {}, 1e-6)) { const J = m.fit.g.joints[h.j], p = h.side === 'a' ? J.a : J.b; B.dot(p[0], p[1], { r: 5, color: 'red' }); }
-          B.line(-1.2, 0, 1.2, 0, { color: 'faint', dash: [3, 4], width: 1 });
+          B.line(-12, 0, 12, 0, { color: 'faint', dash: [3, 4], width: 1 });
           v.legend([['green', 'thrust line (inside)'], ['orange', 'thrust line (outside)'], ['red', 'cracked zone / hinges'], ['accent', 'uncracked zone', { area: true }]]);
         });
         v.readout(() => {
-          const m = M, ok = !!m.c, Hk = ((showMin.value && m.fit ? m.fit.u : m.c ? m.c.u : m.fit.u)[0]) * GAM * R0 ** 3, Ttot = (Hk * ng) / (2 * Math.PI);
+          const m = M, ok = !!m.c, Hk = (showMin.value && m.fit ? m.fit.u : m.c ? m.c.u : m.fit.u)[0], Ttot = (Hk * ng.value) / (2 * Math.PI);
           return `Thickness $t/R=${f2(showMin.value && m.fit ? m.fit.t : tr.value, 3)}$: ${showMin.value ? 'this is the **thinnest** dome with a thrust line' : ok ? 'the gore **stands**' : '**no thrust line fits**: the gores would fall'}; smallest thickness $t_{\\min}/R=${f2(m.fit ? m.fit.t : NaN, 4)}$ (mean radius). Thrust of one gore at the crown ${f2(Hk, 1)} kN (R = 10 m, 22 kN/m³), so a ring tie at the base must carry $T=nH/2\\pi=${f2(Ttot, 0)}$ kN to stop the cracks from opening. The membrane hoop tension ends at $\\varphi=${m.zero !== null ? f2(deg(m.zero), 1) : '—'}^\\circ$.`;
         });
       },

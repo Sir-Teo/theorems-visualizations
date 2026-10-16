@@ -35,7 +35,7 @@ export default {
         v.button('Mid-transition', preset(21, 0.95, 0.4, 0.9, 12, 0.2));
         v.button('Late marriage, contraception', preset(29, 0.8, 0.7, 0.95, 3, 0.4));
         const TF = 15.3;
-        const s = v.stage({ x: [0, 5], y: [0, 16], axes: 'box', gutter: true, ylabel: 'births per woman', height: 380, title: 'From total fecundity to the TFR', xticks: [[0.5, 'TF'], [1.5, '×Cm'], [2.5, '×Cc'], [3.5, '×Ci'], [4.5, '−abort.']] });
+        const s = v.stage({ x: [0, 5], y: [0, 17.5], axes: 'box', gutter: true, ylabel: 'births per woman', height: 380, title: 'From total fecundity to the TFR', xticks: [[0.5, 'TF'], [1.5, '×Cm'], [2.5, '×Cc'], [3.5, '×Ci'], [4.5, '−abort.']] });
         const t = v.stage({ x: [12.5, 52.5], y: [0, 1], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'share married / weight', height: 380, title: 'Where the marriage index comes from' });
         let R = null;
         v.render(() => {
@@ -70,7 +70,7 @@ export default {
       name: 'Natural versus controlled fertility (Coale–Trussell)',
       statement: String.raw`In a population practising no deliberate limitation, marital fertility follows a characteristic age pattern $n(a)$ (**natural fertility**) that falls with age through declining fecundity. Coale and Trussell's model writes observed marital fertility at age $a$ as $r(a) = M\,n(a)\,\exp\bigl(m\,v(a)\bigr)$. The parameter $M$ scales the overall level relative to the standard; $v(a)$ is a standard pattern of departure from natural fertility that becomes more negative with age, because couples who control by **stopping** once they reach a desired family size cut fertility most at older ages; $m$ measures how far the population has gone in that direction ($m = 0$ is natural fertility). Taking logs, $\ln\bigl(r(a)/n(a)\bigr) = \ln M + m\,v(a)$ is a straight line in $v$, so $M$ and $m$ are read off a regression.`,
       idea: String.raw`Without parity-dependent control, the chance of a birth depends mostly on a woman's age, so schedules from different natural-fertility populations are close to one shape up to a scale factor. Birth control that responds to the number of children already born (stopping) removes births mainly at older ages, where women are further along in their families, and so tilts the schedule; the log ratio to natural fertility declines roughly in a pattern that is the same across populations, which is what the standard $v(a)$ encodes. The point of the model is that a single number, $m$, measures the degree of control from the age pattern alone, using no data on contraception.`,
-      caption: String.raw`Choose a country and year. The model is fitted to the age-specific rates of ages 20–49 (blue bars) by a straight line of $\ln(r/n)$ against $v$ (right panel). The dashed curve is natural fertility at the fitted level, $M\,n(a)$, and the solid curve is the fit with control. Switch to **manual** to set $M$ and $m$ yourself and see how stopping bends the older ages down. Because these are rates for all women (not marital rates), a population where many women are unmarried shows a low $M$.`,
+      caption: String.raw`Choose a country and year. The model is fitted to the age-specific rates of ages 20–49 (blue bars) by a straight line of $\ln(r/n)$ against $v$ (right panel). The dashed curve is natural fertility at the fitted level, $M\,n(a)$, and the solid curve is the fit with control. Compare China in 1990 (strong stopping, $m$ about 2) with Nigeria in 1990 ($m$ near 0, natural fertility). Switch to **manual** to set $M$ and $m$ yourself and see how stopping bends the older ages down. Because these are rates for all women (not marital rates), a population where many women are unmarried shows a low $M$.`,
       deps: ['demo-4.1'],
       refs: ['PHG ch. 9'],
       tags: ['natural fertility', 'fertility control'],
@@ -79,7 +79,7 @@ export default {
       scope: String.raw`The model form $r(a)=M\,n(a)\,e^{m v(a)}$ is the published one. The standard patterns used here are **reconstructions**: $n(a)$ is taken proportional to the Hutterite marital schedule (the 1920s benchmark of Coale's indices, 4.9) and $v(a)$ is a stylised decreasing pattern of about the right size, not the published Coale–Trussell tables. So $M$ and $m$ computed here are illustrative and are not comparable with published estimates. They are fitted to overall age-specific rates (WPP 2024) rather than the marital fertility the model describes.`,
       links: { doi: 'https://doi.org/10.2307/2733910' },
       viz(v) {
-        const co = v.select('country', cOpts(), 'NGA');
+        const co = v.select('country', cOpts(), 'CHN');
         const yr = v.slider('year', FY0, FY1, 1990, { int: true });
         const man = v.toggle('manual M and m', false);
         const Ms = v.slider('M', 0.1, 1.2, 0.7, { step: 0.01 });
@@ -104,7 +104,7 @@ export default {
           s.dots(AG6.map((a, i) => [a, M * NAT[i] * Math.exp(mm * VST[i]) * 1000]), { r: 4, color: 'green' });
           t.hline(0, { color: 'muted', alpha: 0.5 });
           t.line(-1.9, Math.log(M) + mm * -1.9, 0.1, Math.log(M) + mm * 0.1, { color: 'green', width: 2.4 });
-          pts.forEach((p) => t.dot(p.v, p.y, { color: 'accent', r: 5, label: (p.a - 2.5) + '–' + (p.a + 1.5), labelPos: 'n' }));
+          pts.forEach((p) => t.dot(p.v, p.y, { color: 'accent', r: 5, label: (p.a - 2.5) + '–' + (p.a + 1.5), labelPos: pts.indexOf(p) % 2 ? 's' : 'n' }));
           R = { M, mm, r2, nat: 5 * M * sum(NAT) , obs: 5 * sum(f.slice(2, 8)), ctl: 5 * sum(AG6.map((a, i) => M * NAT[i] * Math.exp(mm * VST[i]))) };
         });
         v.legend([['accent', 'observed rates', { area: true }], ['muted', 'natural fertility M·n(a)', { dash: true }], ['green', 'with control']]);
@@ -217,9 +217,9 @@ export default {
       num: '4.11',
       kind: 'Phenomenon',
       name: 'Human sex ratios from birth to old age',
-      statement: String.raw`More boys than girls are born, about **105 boys per 100 girls** in most populations (the sex ratio at birth, SRB). Because male mortality is higher at nearly every age, the ratio of males to females falls with age, passing 100 somewhere in the reproductive years or later depending on the mortality level, and ends far below 100 at the oldest ages, where women are a large majority. For a cohort closed to migration, the males per female at age $x$ is $\mathrm{SRB}\cdot\ell^m(x)/\ell^f(x)$, the birth ratio times the ratio of the two survivorship functions. Fisher's argument explains why the birth ratio sits close to equality in the first place: it is the evolutionary equilibrium of parental investment (see popgen 11.1).`,
+      statement: String.raw`More boys than girls are born, about **105 boys per 100 girls** in most populations (the sex ratio at birth, SRB). Because male mortality is higher at nearly every age, the ratio of males to females falls with age, passing 100 at an age that depends on the mortality level (a little before 40 in Russia, but around the early fifties in Japan), and ends far below 100 at the oldest ages, where women are a large majority. For a cohort closed to migration, the males per female at age $x$ is $\mathrm{SRB}\cdot\ell^m(x)/\ell^f(x)$, the birth ratio times the ratio of the two survivorship functions. Fisher's argument explains why the birth ratio sits close to equality in the first place: it is the evolutionary equilibrium of parental investment (see popgen 11.1).`,
       idea: String.raw`Fisher's argument balances parental investment in the two sexes up to the end of parental care, not the numbers at birth, and boys' higher mortality in childhood means a modest surplus of boys at birth is consistent with near-equal numbers of sons and daughters reaching adulthood. After that the survival ratio $\ell^m/\ell^f$ keeps falling, so the sex ratio crosses 100 and declines to well below 50 men per 100 women past 90. The picture needs only the male and female survivorship columns of the life table of 2.3 and one number for the SRB.`,
-      caption: String.raw`Left: males per 100 females by age for a birth cohort, from the sex-specific life tables of the chosen year (blue) and a comparison year (orange), with 100 marked. Right: the male–female population pyramid of the stationary population implied by the same tables. Use the SRB slider to override the UN estimate and see that it shifts the curve proportionally at every age; compare a high-mortality life table (1950) with a low-mortality one (2023): the crossing age rises and the old-age deficit of men deepens.`,
+      caption: String.raw`Left: males per 100 females by age for a birth cohort, from the sex-specific life tables of the chosen year (blue) and a comparison year (orange), with 100 marked. Right: the male–female population pyramid of the stationary population implied by the same tables. Use the SRB slider to override the UN estimate and see that it shifts the curve proportionally at every age; compare Japan in 2023 with 1950, or Russia, where male mortality is far above female mortality, and watch how early the curve crosses 100 and how deep the old-age deficit of men is.`,
       deps: ['demo-4.3', 'popgen-11.1'],
       refs: ['K&C: Understanding Population Characteristics'],
       tags: ['sex ratio', 'mortality differentials'],
@@ -227,13 +227,13 @@ export default {
       scope: String.raw`Cohort calculation from UN WPP 2024 abridged life tables (tables for 1950, 1970, 1990, 2010 and 2023 in our data): it applies the period survivorship of that year to a closed cohort, so it describes the sex ratio of a stationary population, not of an actual age structure, which migration, wars and changing mortality alter.`,
       links: { data: 'https://population.un.org/wpp/' },
       viz(v) {
-        const co = v.select('country', cOpts(), 'RUS');
+        const co = v.select('country', cOpts(), 'JPN');
         const yr = v.select('life table year', SEXY.map((y) => ({ value: String(y), label: String(y) })), '2023');
         const yr2 = v.select('compare with', SEXY.map((y) => ({ value: String(y), label: String(y) })), '1950');
         const un = v.toggle('use UN estimate of SRB', true);
         const sl = v.slider('boys per 100 girls at birth', 100, 112, 105, { step: 0.1 });
         const s = v.stage({ x: [0, 100], y: [0, 120], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'men per 100 women', height: 360, title: 'Sex ratio of a birth cohort' });
-        const t = v.stage({ x: [-4, 4], y: [0, 100], axes: 'box', gutter: true, xlabel: 'share of population per year of age (%, men left, women right)', ylabel: 'age', height: 360, title: 'Stationary population' });
+        const t = v.stage({ x: [-1.4, 1.4], y: [0, 100], axes: 'box', gutter: true, xlabel: '% of population per year of age (men left, women right)', ylabel: 'age', height: 360, title: 'Stationary population' });
         const ratio = (c, y, srb) => { const lm = lxSex(c, 'm', y), lf = lxSex(c, 'f', y); return (a) => { const i = AGE22.findIndex((x, j) => a < (AGE22[j + 1] ?? 1e9)); const j = Math.min(i, 20); const w = (a - AGE22[j]) / (AGE22[j + 1] - AGE22[j]); const m = lm[j] * (1 - w) + lm[j + 1] * w, f = lf[j] * (1 - w) + lf[j + 1] * w; return (100 * srb * m) / f; }; };
         let R = null;
         v.render(() => {
@@ -275,7 +275,7 @@ export default {
       scope: String.raw`UN WPP 2024 estimates of the sex ratio at birth and of births (medium variant, 1950–2023), which are themselves model-based for many countries. "Missing female births" here is a simple calculation against the norm you choose (counting only years above it); it is a different quantity from Sen's or Coale's "missing women" (excess female mortality) and from published estimates of the national imbalances, which use fitted reference levels and uncertainty bounds.`,
       links: { doi: 'https://doi.org/10.1073/pnas.1812593116' },
       viz(v) {
-        const list = ['CHN', 'IND', 'KOR', 'ARM', 'AZE', 'GEO', 'VNM', 'ALB', 'NGA', 'USA', 'BRA', 'FRA', 'JPN', 'SWE', 'MEX', 'RUS'];
+        const list = ['CHN', 'IND', 'KOR', 'ARM', 'AZE', 'GEO', 'VNM', 'ALB', 'NGA', 'USA', 'BRA', 'FRA'];
         const co = v.select('country', list.map((c) => ({ value: c, label: SRBNAME[c] })), 'CHN');
         const norm = v.slider('norm: boys per 100 girls', 103, 108, 105, { step: 0.1 });
         const upto = v.slider('count through year', 1960, FY1, FY1, { int: true });

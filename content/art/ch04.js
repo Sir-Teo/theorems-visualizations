@@ -349,8 +349,8 @@ which forget the overall intensity and keep the colour quality. The monochromati
           const c = spdXYZ(f, 1), [x, y] = xyOf(c), dm = dominant(x, y);
           D.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink', label: 'E', labelPos: 'sw' });
           if (dm.l) { const hl = dm.purple ? null : LOCUS[Math.round(dm.l) - 420]; if (hl) D.line(1 / 3, 1 / 3, hl[1], hl[2], { color: 'ink', dash: [4, 4], width: 1 }); }
-          D.dot(x, y, { r: 7, color: rgbOf(c.map((u) => u / c[1] * 0.6)), label: '', });
-          D.dot(x, y, { r: 7.5, hollow: true, color: 'ink' });
+          D.dot(x, y, { r: 9, color: 'ink' });
+          D.dot(x, y, { r: 6.5, color: rgbOf(c.map((u) => u / c[1] * 0.6)) });
           const g = (l) => f(l) / Math.max(1e-9, 10 * br.value);
           let m = 0; for (let l = 380; l <= 780; l += 2) m = Math.max(m, f(l));
           Sx.setView([380, 780], [0, Math.max(1.1, m * 1.1)]);

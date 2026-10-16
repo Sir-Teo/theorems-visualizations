@@ -92,7 +92,7 @@ export default {
       statement: String.raw`The chromaticities of black bodies at temperatures from about 1000 K to infinity trace a smooth curve in the chromaticity diagram, the **Planckian locus**, running from deep red through orange and white to blue. For a light whose chromaticity is near it, the **correlated colour temperature** (CCT) is the temperature of the black body whose chromaticity is closest, measured in the CIE 1960 $(u,v)$ plane, where
 $$u=\frac{4x}{-2x+12y+3},\qquad v=\frac{6y}{-2x+12y+3},$$
 and the lines of constant CCT (isotherms) are the normals to the locus. The signed distance $\Delta_{uv}$ from the locus says how far the light is from a true black body.`,
-      idea: String.raw`The black-body spectrum depends on one parameter, $T$ (art-3.10), so its chromaticities form a curve (art-4.7); a general white light is described by two numbers, and CCT is the projection onto that curve. The projection is done in $(u,v)$ because that plane is more perceptually uniform than $(x,y)$ (a rough forerunner of art-5.5): the nearest point there is the black body that looks most like the light. McCamy’s cubic in $n=(x-0.3320)/(0.1858-y)$ is a quick empirical approximation of the same number near daylight.`,
+      idea: String.raw`The black-body spectrum depends on one parameter, $T$ (art-3.10), so its chromaticities form a curve (art-4.7); a general white light is described by two numbers, and CCT is the projection onto that curve. The projection is done in $(u,v)$ because that plane is more perceptually uniform than $(x,y)$ (a rough forerunner of art-5.5): the nearest point there is the black body that looks most like the light. McCamy’s cubic in $n=(x-0.3320)/(y-0.1858)$ is a quick empirical approximation of the same number near daylight.`,
       caption: String.raw`Drag the white point (or pick a preset). The curve is the Planckian locus with the isotherms drawn in $(u,v)$ and mapped back to $(x,y)$, where they are no longer perpendicular. The readout gives the CCT from the nearest point, the signed distance $\Delta_{uv}$ (above the locus is positive), and McCamy’s approximation for comparison. Move far above or below the curve and the CCT loses its meaning.`,
       deps: ['art-4.7', 'art-3.10'],
       refs: ['Fairchild ch. 3'],
@@ -103,7 +103,7 @@ and the lines of constant CCT (isotherms) are the normals to the locus. The sign
         const PRE = { A: [0.4476, 0.4074, 'illuminant A (2856 K)'], D65: [0.3127, 0.3290, 'daylight D65'], D50: [0.3457, 0.3585, 'daylight D50'], cand: null };
         const sel = v.select('preset', [{ value: 'A', label: 'illuminant A' }, { value: 'D50', label: 'D50' }, { value: 'D65', label: 'D65' }, { value: 'free', label: 'free' }], 'D65', { onChange: (val) => { if (PRE[val]) { W.set(PRE[val][0], PRE[val][1]); } } });
         const D = v.stage({ x: [0.1, 0.7], y: [0.1, 0.65], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 440, weight: 1.3, title: 'the Planckian locus and isotherms' });
-        const W = D.handle(0.3127, 0.329, { color: 'ink', r: 8, label: 'light', constrain: (x, y) => clampLocus(x, y) });
+        const W = D.handle(0.3127, 0.329, { color: 'ink', r: 8, label: '', constrain: (x, y) => clampLocus(x, y) });
         const U = v.stage({ x: [0.15, 0.35], y: [0.2, 0.4], equal: true, axes: 'box', gutter: true, xlabel: '$u$', ylabel: '$v$', height: 440, weight: 0.9, minWidth: 260, title: 'the same in the $(u,v)$ plane' });
         const ISO = [1500, 2000, 2500, 3000, 4000, 5000, 6500, 10000, 20000];
         const tabAt = (T) => { const m = 1e6 / T; let i = Math.round((m - 40) / 4); i = Math.max(1, Math.min(PLANCK_TABLE.length - 2, i)); return i; };
@@ -161,7 +161,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
           SRGB.forEach(([x, y], i) => D.dot(x, y, { r: 4, color: ['red', 'green', 'accent'][i] }));
           D.dot(0.3127, 0.329, { r: 4, hollow: true, color: 'ink', label: 'D65', labelPos: 'se' });
           const code = [rs.value, gs.value, bs.value], lin = code.map(srgbDec), X = mv3(SRGB_M, lin), [x, y] = xyOf(X);
-          D.dot(x, y, { r: 7, color: code.map((u) => u), label: '' }); D.dot(x, y, { r: 7.5, hollow: true, color: 'ink' });
+          D.dot(x, y, { r: 9, color: 'ink' }); D.dot(x, y, { r: 6.5, color: code });
           C.fn((c) => srgbDec(c), { color: 'ink', width: 2, domain: [0, 255] });
           C.fn((c) => Math.pow(c / 255, 2.2), { color: 'muted', width: 1.2, dash: true, domain: [0, 255] });
           code.forEach((c, i) => { C.dot(c, srgbDec(c), { r: 5, color: ['red', 'green', 'accent'][i] }); C.line(c, 0, c, srgbDec(c), { color: ['red', 'green', 'accent'][i], dash: [3, 3], width: 1 }); });
@@ -173,8 +173,8 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
             G.rect(k / N, 0.1, (k + 1) / N + 0.002, 1.1, { fill: c2, stroke: false, fillAlpha: 1 });
           }
           const m1 = [0, 1, 2].map((i) => (A[i] + B[i]) / 2), m2 = [0, 1, 2].map((i) => srgbEnc((srgbDec(A[i]) + srgbDec(B[i])) / 2));
-          G.text('midpoint of codes', 0.5, 2.28, { size: 10.5, color: 'ink', align: 'center', baseline: 'bottom', plate: true });
-          G.text('midpoint of light', 0.5, 0.06, { size: 10.5, color: 'ink', align: 'center', baseline: 'top', plate: true });
+          G.text('interpolating code values', 0.5, 1.75, { size: 11, color: 'ink', align: 'center', baseline: 'middle', plate: true });
+          G.text('interpolating linear light', 0.5, 0.6, { size: 11, color: 'ink', align: 'center', baseline: 'middle', plate: true });
           info = { code, lin, X, x, y, m1, m2, Y1: mv3(SRGB_M, m1.map(srgbDec))[1], Y2: mv3(SRGB_M, m2.map(srgbDec))[1] };
         });
         v.legend([['ink', 'sRGB curve'], ['muted', 'power law $u=C^{2.2}$ (dashed)']]);
@@ -252,7 +252,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
       verify: true,
       viz(v) {
-        const lum = v.slider('light level (cd/m² on the white card)', 1e-4, 1e3, 100, { log: true });
+        const lum = v.slider('light level (cd/m² on the white card)', 1e-4, 1e3, 0.05, { log: true });
         const A = v.stage({ x: [380, 720], y: [0, 1.12], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'luminous efficiency', height: 300, weight: 1.3, title: 'weighting of the spectrum' });
         const B = v.stage({ x: [0, 3], y: [0, 2.3], axes: false, height: 300, weight: 0.9, minWidth: 250, title: 'three flowers under daylight' });
         const day = (l) => planck(l, 6500);
@@ -308,14 +308,15 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         const hB = v.slider('hue of $B$', 0, 360, 240, { step: 1 }), sB = v.slider('saturation of $B$', 0.1, 1, 0.7, { step: 0.01 }), yB = v.slider('intensity of $B$', 0.05, 1, 0.5, { step: 0.005 });
         const cAmt = v.slider('third light $C$: intensity (added to both fields)', 0, 1, 0, { step: 0.01 }), hC = v.slider('hue of $C$', 0, 360, 130, { step: 1 });
         const pt = (h, s) => { const b = boundaryAt(h); return [1 / 3 + (b[0] - 1 / 3) * s, 1 / 3 + (b[1] - 1 / 3) * s]; };
-        v.button('Balance', () => {
+        const balance = () => {
           hA.set((hB.value + 180) % 360);
           const B = pt(hB.value, sB.value), A = pt(hA.value, sA.value), rB = Math.hypot(B[0] - 1 / 3, B[1] - 1 / 3), rA = Math.hypot(A[0] - 1 / 3, A[1] - 1 / 3);
           // Y_A/y_A * rA = Y_B/y_B * rB
           yA.set(Math.max(0.05, Math.min(1, (yB.value / B[1]) * rB * A[1] / rA)));
-        });
+        };
+        v.button('Balance', balance); balance();
         const D = v.stage({ x: [0, 0.8], y: [0, 0.9], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 400, weight: 1.2, title: 'two lights and their mixture' });
-        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 200, weight: 0.8, minWidth: 240, title: 'mixture of $A$ and $B$ (left), white (right)' });
+        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'mixture of $A$ and $B$ (left), white (right)' });
         let info = {};
         v.render(() => {
           drawChromaticity(D, v, { fade: 0.4 });
@@ -360,43 +361,41 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         const tgt = v.select('match', [{ value: 'white', label: 'white' }, { value: 'band', label: 'a spectral colour' }], 'band');
         const lam = v.slider('spectral colour (nm)', 430, 680, 495, { step: 1 });
         const am = ['red slit', 'green slit', 'blue slit'].map((nm, i) => v.slider(nm, -2, 3, [0.6, 0.3, 0.3][i], { step: 0.005 }));
-        const target = () => (tgt.value === 'white' ? EW.slice() : cmf(lam.value).map((u) => u * (EW[1] / Math.max(0.08, cmf(lam.value)[1])) * 0.35));
-        const solve = () => { const a = P.amounts(target()); am.forEach((s, i) => s.set(Math.max(-2, Math.min(3, a[i] / EW[0] * 3 * 1)))); };
+        const target = () => { if (tgt.value === 'white') return EW.slice(); const c = cmf(lam.value), s = c[0] + c[1] + c[2]; return c.map((u) => (u / s) * (EW[0] + EW[1] + EW[2]) * 0.4); };
+        const solve = () => { const a = P.amounts(target()); am.forEach((s, i) => s.set(Math.max(-2, Math.min(3, a[i])))); };
         v.button('Match', solve); solve();
         const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 180, weight: 1, title: 'target (left) and recombined slits (right)' });
-        const T = v.stage({ x: [-0.1, 1.1], y: [-0.1, 1.0], equal: true, axes: false, height: 330, weight: 1, minWidth: 260, title: 'Maxwell’s colour triangle' });
-        const A = v.stage({ x: [430, 680], y: [-0.5, 2], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'amount of each slit', height: 330, weight: 1.2, title: 'colour-mixture curves (rebuilt)' });
+        const T = v.stage({ x: [-0.3, 1.3], y: [-0.25, 1.1], equal: true, axes: false, height: 330, weight: 1, minWidth: 260, title: 'Maxwell’s colour triangle' });
+        const A = v.stage({ x: [430, 680], y: [-0.8, 2.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'amount of each slit', height: 330, weight: 1.2, title: 'colour-mixture curves (rebuilt)' });
         const V3 = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]];
         const tri = (a) => { const s = a[0] + a[1] + a[2] || 1, f = a.map((u) => u / s); return [f[0] * V3[0][0] + f[1] * V3[1][0] + f[2] * V3[2][0], f[0] * V3[0][1] + f[1] * V3[1][1] + f[2] * V3[2][1]]; };
         let info = {};
         v.render(() => {
           lam.el.hidden = tgt.value === 'white';
-          const t = target(), mix = [0, 0, 0], tt = t.slice();
-          [0, 1, 2].forEach((i) => { const a = am[i].value / 3 * EW[0], p = P.prim(i); for (let k = 0; k < 3; k++) { if (a >= 0) mix[k] += a * p[k] / EW[0]; else tt[k] += -a * p[k] / EW[0]; } });
+          const t = target();
           // express in the same units: P columns are scaled to EW, a is in units of the white amount
           const mixC = [0, 0, 0], tC = t.slice();
-          [0, 1, 2].forEach((i) => { const a = am[i].value / 3, p = P.prim(i); for (let k = 0; k < 3; k++) { if (a >= 0) mixC[k] += a * p[k]; else tC[k] += -a * p[k]; } });
+          [0, 1, 2].forEach((i) => { const a = am[i].value, p = P.prim(i); for (let k = 0; k < 3; k++) { if (a >= 0) mixC[k] += a * p[k]; else tC[k] += -a * p[k]; } });
           const sc = 0.55 / (((tC[1] + mixC[1]) / 2) || 1);
           F.rect(0, 0, 1, 1, { fill: rgbOf(tC.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
           F.rect(1, 0, 2, 1, { fill: rgbOf(mixC.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
           const d = Math.hypot(...toLMS(tC.map((u, k) => u - mixC[k]))) / Math.hypot(...toLMS(tC));
           // triangle
           T.poly(V3, { color: 'ink', width: 1.4, fill: 'accent', fillAlpha: 0.06 });
-          ['red', 'green', 'blue'].forEach((nm, i) => T.text(['630', '518', '465'][i], V3[i][0] + (i === 0 ? -0.07 : i === 1 ? 0.07 : 0), V3[i][1] + (i === 2 ? 0.06 : -0.06), { size: 10.5, color: 'muted', align: 'center' }));
+          ['red', 'green', 'blue'].forEach((nm, i) => T.text(['630', '518', '465'][i], V3[i][0] + (i === 0 ? -0.08 : i === 1 ? 0.08 : 0), V3[i][1] + (i === 2 ? 0.07 : -0.07), { size: 10.5, color: 'muted', align: 'center' }));
           const sp = []; for (let l = 430; l <= 680; l += 2) sp.push(tri(P.cmf(l)));
           T.path(sp, { color: 'ink', width: 1.5 });
           for (const l of [440, 480, 500, 520, 540, 580, 620, 660]) { const q = tri(P.cmf(l)); T.dot(q[0], q[1], { r: 2.6, color: 'ink' }); T.text(`${l}`, q[0] - 0.02, q[1] + 0.03, { size: 9, color: 'muted', align: 'right' }); }
           const w = tri(P.amounts(EW)); T.dot(w[0], w[1], { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'ne' });
           const q = tri(P.amounts(t)); T.dot(q[0], q[1], { r: 6, color: 'gold' });
           const cols = ['red', 'green', 'accent'];
-          let hi = 0; for (let l = 430; l <= 680; l += 4) hi = Math.max(hi, ...P.cmf(l).map((u) => u * EW[0] / 3));
-          for (let i = 0; i < 3; i++) A.fn((l) => P.cmf(l)[i] * EW[0] / 3, { color: cols[i], width: 2, domain: [430, 680] });
+                    for (let i = 0; i < 3; i++) A.fn((l) => P.cmf(l)[i] * EW[0], { color: cols[i], width: 2, domain: [430, 680] });
           A.hline(0, { color: 'ink', width: 0.8, alpha: 0.6 });
           if (tgt.value === 'band') A.vline(lam.value, { color: 'gold', dash: [4, 4], width: 1.4 });
-          info = { d, neg: am.some((s) => s.value < -0.001), a: P.amounts(t).map((u) => (u / EW[0]) * 3) };
+          info = { d, neg: am.some((s) => s.value < -0.001), a: P.amounts(t) };
         });
         v.legend([['red', 'red slit'], ['green', 'green slit'], ['accent', 'blue slit']]);
-        v.readout(() => `slit amounts needed for this target: $(${fmt3(v, info.a)})$ (relative to the amount that matches equal-energy white) · residual of your setting ${v.fix(100 * info.d, 2)}%${info.neg ? ' · a negative amount: that slit’s light is added to the target' : ''}\n${tgt.value === 'band' && lam.value > 440 && lam.value < 530 ? 'the red amount is negative here: the spectral colour is more saturated than any mixture of the three slits (it lies outside Maxwell’s triangle)' : ''}`);
+        v.readout(() => `slit amounts needed for this target: $(${fmt3(v, info.a)})$ (equal-energy white needs $(1,1,1)$) · residual of your setting ${v.fix(100 * info.d, 2)}%${info.neg ? ' · a negative amount: that slit’s light is added to the target' : ''}\n${tgt.value === 'band' && lam.value > 440 && lam.value < 530 ? 'the red amount is negative here: the spectral colour is more saturated than any mixture of the three slits (it lies outside Maxwell’s triangle)' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 4.16
@@ -429,7 +428,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
           const cols = [0, 1, 2].map((j) => xyOf([P[0][j], P[1][j], P[2][j]]));
           Dg.poly(cols, { color: 'ink', width: 1.6, fill: 'accent', fillAlpha: 0.08 });
           Dg.line(0, 0, 1, 0, { color: 'orange', width: 1.2, dash: [4, 4] });
-          Dg.text('alychne (zero luminance) when $t=1$', 0.5, -0.04, { size: 10, color: 'orange', align: 'center' });
+          Dg.text('alychne $y=0$ (zero luminance)', 0.6, -0.1, { size: 10.5, color: 'orange', align: 'center' });
           cols.forEach(([x, y], i) => Dg.dot(x, y, { r: 5, color: ['red', 'green', 'accent'][i], label: t.value < 0.02 ? ['R 700', 'G 546.1', 'B 435.8'][i] : t.value > 0.98 ? ['X', 'Y', 'Z'][i] : '', labelPos: 'ne' }));
           Dg.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink' });
           const g = (l) => mv3(Pi, cmf(l));
