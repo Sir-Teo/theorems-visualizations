@@ -245,9 +245,9 @@ About a quarter of the holders at each step let the chain die, so the observed l
             F.rect(r - 0.38, n - c - dr, r + 0.38, n - c, { fill: 'red', fillAlpha: 0.6, stroke: false });
             F.rect(r - 0.38, n - c, r + 0.38, n, { fill: 'green', fillAlpha: 0.85, stroke: false });
           });
-          const q = tmHazards(), alive = [296]; let h = 296 * (1 - d); for (let r = 1; r <= 14; r++) { alive.push(h + (r >= 2 ? h * 0 : 0)); h *= (1 - q[r]) * (1 - d); }
-          // chains reaching remove r in the model: holders at r plus completions arriving at r
-          const reach = [296]; let hold = 296; for (let r = 1; r <= 14; r++) { const comp = r >= 2 ? hold * q[r - 1] * (r - 1 >= 1 ? 1 : 0) : 0; const prev = hold; hold = r === 1 ? prev * (1 - d) : prev * (1 - q[r - 1]) * (1 - d); reach.push(hold + comp); }
+          // chains reaching remove r: holders at r − 1 who forward, plus those who deliver to the target at r
+          const q = tmHazards(), reach = [296]; let hold = 296;
+          for (let r = 1; r <= 14; r++) { const qq = q[r - 1] || 0; reach.push(hold * (1 - qq) * (1 - d) + hold * qq); hold *= (1 - qq) * (1 - d); }
           F.path(reach.map((n, r) => [r, n]), { color: 'gold', width: 2.6 }); F.dots(reach.map((n, r) => [r, n]), { r: 3.2, color: 'gold' });
           F.text('217 sent on', 1, 217, { dx: 8, dy: -4, size: 11, weight: 600, align: 'left' });
           st = { d, mod, md, m0, tot: mod.reduce((a, b) => a + b, 0) };

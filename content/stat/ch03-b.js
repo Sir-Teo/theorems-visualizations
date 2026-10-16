@@ -308,7 +308,7 @@ If $\nabla^2\ell$ is Lipschitz and negative definite at a maximum $\hat\theta$, 
             tL('Cauchy log-likelihood $\\ell(\\mu,\\sigma)$ of 8 points');
             viewPad(sL, [-2.5, 9.5], [0, 5], { left: 30 });
             const lm = l2(th2[0], th2[1]);
-            sL.heat((m, s) => 0.62 * Math.max(0, Math.min(1, (l2(m, s) - lm + 40) / 40)), { range: [0, 1], cmap: 'theme', res: 3, key: 'nr2d' });
+            sL.heat((m, s) => 0.4 * Math.max(0, Math.min(1, (l2(m, s) - lm + 40) / 40)), { range: [0, 1], cmap: 'theme', res: 3, key: 'nr2d' });
             sL.axes();
             sL.contour((m, s) => l2(m, s), [0.5, 2, 4.5, 8, 12.5, 18, 24.5, 32].map((c) => lm - c), { color: 'ink', alpha: 0.35, width: 1, res: 110 });
             for (const x of XS) sL.line(x, 0, x, 0.12, { color: 'ink', width: 2 });
@@ -336,7 +336,7 @@ If $\nabla^2\ell$ is Lipschitz and negative definite at a maximum $\hat\theta$, 
             }
           });
           // right: errors on a log scale
-          viewPad(sR, [0, Math.max(5, K)], [1e-14, 100], { left: 40, noY: true });
+          viewPad(sR, [0, Math.max(5, K) + 0.5], [1e-14, 100], { left: 40, noY: true });
           sR.hline(1e-12, { color: 'faint', width: 1, dash: [3, 3] });
           const digits = {};
           for (const me of meths) {
@@ -531,7 +531,7 @@ with equality at $\theta=\theta_t$, and the gap $\ell(\theta)-B_t(\theta)$ equal
         v.render(() => {
           const f = S.frame; if (!f.th) return;
           viewPad(sL, [-2.5, 5.5], [-2.5, 5.5], { left: 30 });
-          sL.heat((a, b) => 0.6 * Math.max(0, Math.min(1, (ll(a, b) - lmax + 180) / 180)), { range: [0, 1], cmap: 'theme', res: 3, key: 'emb' });
+          sL.heat((a, b) => 0.42 * Math.max(0, Math.min(1, (ll(a, b) - lmax + 180) / 180)), { range: [0, 1], cmap: 'theme', res: 3, key: 'emb' });
           sL.axes();
           sL.contour(ll, [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144].map((c) => lmax - c), { color: 'ink', alpha: 0.32, width: 1, res: 110 });
           sL.line(-2.5, -2.5, 5.5, 5.5, { color: 'muted', width: 1, dash: [4, 4] });

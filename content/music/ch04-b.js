@@ -599,7 +599,7 @@ The model predicts that changing one feature (brightening a spectrum, sharpening
         // normalise each axis over the original tones
         const ax = ['lat', 'cen', 'flux'], rng = {}; ax.forEach((a) => { const xs = KEYS.map((k) => base[k][a]); rng[a] = [Math.min(...xs), Math.max(...xs)]; });
         const nz = (F) => ax.map((a) => (2 * (F[a] - rng[a][0])) / (rng[a][1] - rng[a][0] || 1) - 1);
-        const s3 = v.stage3d({ range: 1.75, height: 340, yaw: -0.75, pitch: 0.38, labels: null, weight: 1.15, minWidth: 300, title: 'timbre space (drag to rotate)' });
+        const s3 = v.stage3d({ range: 1.75, height: 340, yaw: -0.75, pitch: 0.38, labels: null, axes: false, weight: 1.15, minWidth: 300, title: 'timbre space (drag to rotate)' });
         const s2 = v.stage({ x: [-1.35, 1.35], y: [-1.35, 1.4], height: 340, axes: 'box', xticks: [], yticks: [], xlabel: 'log attack time →', ylabel: 'brightness →', weight: 1, minWidth: 280, title: 'attack against brightness (click a tone)' });
         s2.onClick((x, y) => { let best = null, bd = 0.25; for (const k of KEYS) { const [a, b] = nz(feat(k)); const d = Math.hypot(a - x, b - y); if (d < bd) { bd = d; best = k; } } if (best) { selS.set(best); tiltS.set(ed[best].tilt); attS.set(ed[best].att * 1000); fluxS.set(ed[best].flux); } });
         const near = (k) => { const p = nz(feat(k)); return KEYS.filter((q) => q !== k).map((q) => [q, Math.hypot(...nz(feat(q)).map((x, i) => x - p[i]))]).sort((a, b) => a[1] - b[1]); };
@@ -622,10 +622,14 @@ The model predicts that changing one feature (brightening a spectrum, sharpening
           }
           // ---- 2-D plane
           s2.hline(0, { color: 'faint', width: 1 }); s2.vline(0, { color: 'faint', width: 1 });
+          const placed = [], OFF = { e: [0.28, 0], w: [-0.28, 0], n: [0, 0.13], s: [0, -0.13], ne: [0.22, 0.1], se: [0.22, -0.1], nw: [-0.22, 0.1], sw: [-0.22, -0.1] };
           for (const k of KEYS) {
             const p = nz(feat(k)), on = k === sel;
+            let lp = p[0] > 0.6 ? 'w' : 'e';
+            for (const c of [lp, lp === 'e' ? 'w' : 'e', 'n', 's', 'ne', 'se', 'nw', 'sw']) { const q = [p[0] + OFF[c][0], p[1] + OFF[c][1]]; if (q[0] < 1.3 && q[0] > -1.3 && placed.every((r) => Math.abs(r[0] - q[0]) > 0.42 || Math.abs(r[1] - q[1]) > 0.12)) { lp = c; break; } }
+            placed.push([p[0] + OFF[lp][0], p[1] + OFF[lp][1]]);
             if (on) { const o = nz(base[k]); if (Math.hypot(o[0] - p[0], o[1] - p[1]) > 0.02) { s2.dot(o[0], o[1], { r: 5, color: 'muted', hollow: true }); s2.arrow(o[0], o[1], p[0], p[1], { color: 'gold', width: 1.8, head: 8 }); } }
-            s2.dot(p[0], p[1], { r: on ? 7 : 5, color: on ? 'gold' : FAM[k], label: SHORT[k], labelPos: p[0] > 0.6 ? 'w' : 'e' });
+            s2.dot(p[0], p[1], { r: on ? 7 : 5, color: on ? 'gold' : FAM[k], label: SHORT[k], labelPos: lp });
           }
         });
         v.legend([['accent', 'woodwinds'], ['orange', 'brass'], ['green', 'strings'], ['gold', 'selected tone, and its path when edited']]);
