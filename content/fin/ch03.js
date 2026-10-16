@@ -248,7 +248,7 @@ Scope: a one-factor description; residual uncorrelation is an assumption, approx
         const share = v.slider('systematic share of a stock\'s variance', 0.05, 0.95, 0.4, { step: 0.01, fmt: (x) => pct(x, 0) });
         const pick = v.select('scatter for', [{ value: '10', label: 'EW avg.' }, ...IND_NAMES.map((nm, i) => ({ value: String(i), label: nm }))], '4');
         const L = v.stage({ x: [0.3, 9.1], y: [0, 1.05], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 240, xlabel: 'stocks in the portfolio (n)', ylabel: 'variance relative to one stock', xticks: [1, 2, 3, 4, 5, 6, 7, 8].map((i) => [i, String(2 ** (i - 1))]), yticks: pctTicks(0, 1, 0.25), title: 'model: equally weighted stocks' });
-        const Mi = v.stage({ x: [0.3, 11.7], y: [0, 400], axes: 'box', gutter: true, height: 330, weight: 1.9, minWidth: 340, xlabel: 'industry portfolio', ylabel: 'variance (%² per year)', xticks: [...IND_NAMES.map((nm, i) => [i + 1, nm.slice(0, 3)]), [11, 'EW']], title: 'real: systematic and idiosyncratic variance' });
+        const Mi = v.stage({ x: [0.3, 11.7], y: [0, 400], axes: 'box', gutter: true, height: 330, weight: 1.9, minWidth: 340, xlabel: 'industry portfolio', ylabel: 'variance (%² per year)', xticks: [...IND_NAMES.map((nm, i) => [i + 1, nm.slice(0, 3)]), [11, 'EW']], title: 'real: systematic and idiosyncratic variance (number above a bar: R²)' });
         const Sc = v.stage({ x: [-25, 20], y: [-25, 25], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 240, xlabel: 'market excess return (% a month)', ylabel: 'industry excess return (% a month)', title: 'regression on the market' });
         const mk = D.mkt, ew = new Float64Array(n);
         for (let i = 0; i < n; i++) { let s = 0; for (let k = 0; k < 10; k++) s += D.ind[k][i]; ew[i] = s / 10; }
@@ -269,7 +269,7 @@ Scope: a one-factor description; residual uncorrelation is an assumption, approx
             const x = k + 1;
             Mi.rect(x - 0.36, 0, x + 0.36, f.sys, { fill: 'blue', fillAlpha: 0.75, stroke: false });
             Mi.rect(x - 0.36, f.sys, x + 0.36, f.sys + f.idio, { fill: 'orange', fillAlpha: 0.85, stroke: false });
-            Mi.text('R²=' + fx(f.f.r2, 2), x, f.sys + f.idio, { dy: -8, size: 9.5, color: 'ink', weight: 600, plate: true });
+            Mi.text(fx(f.f.r2, 2), x, f.sys + f.idio, { dy: -8, size: 10, color: 'ink', weight: 600, plate: true });
           });
           const k = +pick.value === 10 ? 10 : +pick.value, f = fits[k];
           const pts = []; for (let i = 0; i < n; i += 1) pts.push([100 * mk[i], 100 * f.y[i]]);

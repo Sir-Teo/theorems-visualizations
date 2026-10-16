@@ -2,7 +2,7 @@
 import { clamp, pc, fx, ols, sgn, rkPath, at, rows, US_PWT, XS_PWT } from './ch03.shared.js';
 
 const US = rows(US_PWT, 6); // year, y, k, K/Y, labour share, irr
-const XS = rows(XS_PWT.flat(), 9); // code, name, y60, y19, s, n, hc60, hc19, oecd
+const XS = rows(XS_PWT.flat(), 10); // code, name, y60, y19, s, n, hc60, hc19, oecd, irr
 
 /** Cobb–Douglas steady state k* = (sA/(n+δ))^{1/(1−α)} of k' = sAk^α − (n+δ)k. */
 const kStar = (s, A, a, nd) => (s * A / nd) ** (1 / (1 - a));

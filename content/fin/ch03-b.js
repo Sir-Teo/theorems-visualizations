@@ -6,7 +6,7 @@
 // 45(1):31–42 (1989); Chamberlain, J. Economic Theory 29(1):185–201 (1983). Real pictures (3.7-style frontiers, 3.12, 3.13) use the
 // monthly returns of Kenneth R. French's ten industry portfolios, the market and the T-bill rate (1963-07 … 2026-08; see ch04.shared.js).
 // 3.8–3.11, 3.14 and the simulation panel of 3.13 are models (the five-industry inputs are in-sample estimates; the utility models are stylised).
-import { clamp, pct, fx, sg, pctTicks, data, marketTotal, mean, sdev, solveLin, matVec, dot, quad, frontierConsts, frontierSd, frontierWeights, tangency, minVarLong, longFrontier, universe, covOf, gmv, mvLong, rng, idxOf, IND_NAMES, IND_LONG } from './ch03.shared.js';
+import { clamp, pct, fx, sg, pctTicks, data, marketTotal, mean, sdev, solveLin, matVec, dot, quad, frontierConsts, frontierSd, frontierWeights, tangency, minVarLong, longFrontier, universe, covOf, gmv, mvLong, rng, fanLabels, idxOf, IND_NAMES, IND_LONG } from './ch03.shared.js';
 
 const ptk = (lo, hi, step) => pctTicks(Math.ceil(lo / step - 1e-9) * step, hi, step);
 const sq = (x) => x * x;
@@ -294,16 +294,17 @@ Scope: a meaningful summary of performance only when return distributions are we
           const i0 = Math.max(0, idxOf(y0.value, 1)), i1 = Math.min(N, i0 + 12 * len.value), T = i1 - i0;
           const stats = names.map((nm, k) => { const s = ser(k), ex = new Float64Array(T); for (let i = 0; i < T; i++) ex[i] = s[i0 + i] - D.rf[i0 + i]; const m = mean(ex), sd = sdev(ex); return { nm, k, m: 12 * m, sd: Math.sqrt(12) * sd, sr: (Math.sqrt(12) * m) / sd, ex }; });
           const xs = Math.max(...stats.map((s) => s.sd), 0.1) * 1.15, ys = Math.max(...stats.map((s) => s.m), 0.05) * 1.2, ym = Math.min(0, ...stats.map((s) => s.m)) * 1.3;
-          A.setView([0, xs], [ym, ys]); A.setTicks(ptk(0, xs, 0.05), ptk(ym, ys, 0.05));
+          A.setView([0, xs], [ym, ys]); A.setTicks(ptk(0, xs, 0.05), ptk(ym, ys, 0.02));
           A.hline(0, { color: 'ink', width: 1 });
           const c = stats[+sel.value];
           A.line(0, 0, xs, (c.m / c.sd) * xs, { color: 'green', width: 1.6, dash: [6, 4] });
-          stats.forEach((s) => { A.dot(s.sd, s.m, { r: s.k === c.k ? 7 : 4.5, color: s.k === c.k ? 'green' : s.k === 0 ? 'accent' : 'ink' }); A.text(s.nm, s.sd, s.m, { dx: 7, dy: -3, align: 'left', size: 10.5, color: s.k === c.k ? 'green' : 'muted', weight: 600 }); });
+          stats.forEach((s) => A.dot(s.sd, s.m, { r: s.k === c.k ? 7 : 4.5, color: s.k === c.k ? 'green' : s.k === 0 ? 'accent' : 'ink' }));
+          fanLabels(A, stats.map((s) => ({ x: s.sd, y: s.m, text: s.nm, color: s.k === c.k ? v.color('green') : v.color('muted') })), { w: 44, h: 12, leader: v.color('faint') });
           const L = lev.value, lx = new Float64Array(T); for (let i = 0; i < T; i++) lx[i] = L * c.ex[i];
           const lm = 12 * mean(lx), lsd = Math.sqrt(12) * sdev(lx), lsr = lsd > 0 ? (Math.sqrt(12) * mean(lx)) / sdev(lx) : NaN;
-          A.dot(lsd, lm, { r: 6.5, color: 'gold' }); A.text('$L$ = ' + fx(L, 2), lsd, lm, { dx: 9, dy: 16, align: 'left', size: 11.5, color: 'gold', weight: 700, plate: true });
+          A.dot(lsd, lm, { r: 6.5, color: 'gold' }); A.text('$L$ = ' + fx(L, 2), lsd, lm, { dx: 10, dy: -14, align: 'left', size: 11.5, color: 'gold', weight: 700, plate: true });
           const rk = [...stats].sort((a, b) => b.sr - a.sr), top = Math.max(0.3, rk[0].sr) * 1.2, bot = Math.min(0, rk[rk.length - 1].sr) - 0.05;
-          B.setView([0.4, 11.6], [bot, top]); B.setTicks(rk.map((s, i) => [i + 1, s.nm.slice(0, 5)]), null);
+          B.setView([0.4, 11.9], [bot, top]); B.setTicks(rk.map((s, i) => [i + 1, s.k === 0 ? 'Mkt' : s.nm.slice(0, 3)]), null);
           rk.forEach((s, i) => { B.rect(i + 0.64, 0, i + 1.36, s.sr, { fill: s.k === c.k ? 'green' : s.k === 0 ? 'accent' : 'muted', fillAlpha: 0.8, stroke: false }); B.text(fx(s.sr, 2), i + 1, Math.max(s.sr, 0), { dy: -8, size: 10, color: 'ink', weight: 600 }); });
           B.hline(0, { color: 'ink', width: 1 });
           st = { c, lsr, rk, i0, i1, L };
@@ -418,8 +419,9 @@ Scope: single period; the first case needs returns where the quadratic utility i
         v.render(() => {
           const m = mu.value, s = sig.value, g = skew.value, aa = a.value;
           const k = 4 / (g * g), rk = Math.sqrt(k), gam = Math.abs(g) < 1e-6 ? null : M.dist.gamma(k, 1);
-          P.setView([m - 4.2 * s, m + 4.2 * s], [0, 0.9 / s]); P.setTicks(null, null);
+          
           const nrm = M.dist.normal(m, s), pdfS = (x) => (!gam ? nrm.pdf(x) : g > 0 ? (rk / s) * gam.pdf(k + ((x - m) * rk) / s) : (rk / s) * gam.pdf(k - ((x - m) * rk) / s));
+          { let pk = nrm.pdf(m); for (let q = 0; q <= 200; q++) pk = Math.max(pk, pdfS(m - 4 * s + (8 * s * q) / 200)); P.setView([m - 4.2 * s, m + 4.2 * s], [0, pk * 1.12]); P.setTicks(null, null); }
           P.fn((x) => nrm.pdf(x), { color: 'accent', width: 2.6, fill: true, fillAlpha: 0.12 });
           if (gam) P.fn(pdfS, { color: 'orange', width: 2.6 });
           P.vline(m, { color: 'faint', width: 1.2, dash: [4, 3] });

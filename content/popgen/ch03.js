@@ -43,8 +43,10 @@ Whatever the start, $p_t\to p^*$ geometrically, with time scale $1/(\mu+\nu)$ ge
           L.vline(1 / (mu + nu), { color: 'gold', dash: true, width: 1.5 });
           L.fn(f, { domain: [1, 1e7], n: 400, color: 'accent', width: 2.8 });
           L.dot(t, f(t), { r: 5.5, color: 'gold' });
-          const dm = Math.max(mu, nu) * 1.15;
+          const dm = Math.max(mu, nu) * 1.15, unit = 10 ** Math.floor(Math.log10(dm));
           R.setView([0, 1], [-dm, dm]);
+          R.setLabels(undefined, `change per generation Δp (units of ${pow10(Math.round(Math.log10(unit)))})`);
+          R.setTicks(undefined, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter((k) => Math.abs(k * unit) < dm).map((k) => [k * unit, String(k)]));
           R.hline(0, { color: 'muted', width: 1 });
           R.line(0, nu, 1, -mu, { color: 'accent', width: 2.8 });
           R.dot(ps, 0, { r: 5, color: 'green', label: 'p*', labelPos: 'ne' });
@@ -101,8 +103,8 @@ It is U-shaped, piling up near $0$ and $1$, when both $4Nu<1$ and $4Nv<1$, and h
           dens.forEach((d, j) => Hs.rect(j / B, 0, (j + 1) / B, Math.min(top, d), { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1 }));
           Hs.clip(() => Hs.fn((x) => D.pdf(clamp(x, 1e-4, 1 - 1e-4)), { domain: [0.004, 0.996], n: 300, color: 'green', width: 2.6 }));
           Hs.vline(a / (a + b), { color: 'green', dash: true, width: 1.2 });
-          const shape = a < 1 && b < 1 ? 'U-shaped (both rates below 1)' : a > 1 && b > 1 ? 'hump-shaped (both above 1)' : 'mixed: J-shaped or skewed';
-          Lp.corner(shape, 'tl', { color: 'ink', weight: 700, size: 12 });
+          const shape = a < 1 && b < 1 ? 'U-shaped' : a > 1 && b > 1 ? 'hump-shaped' : 'mixed (J-shaped or skewed)';
+          Hs.setTitle(`Time at each frequency: ${shape}`);
           info = { a, b, m: S.m, vr: S.vr, tm: a / (a + b), tv: ((a / (a + b)) * (b / (a + b))) / (a + b + 1) };
         });
         v.legend([['accent', 'simulated run', { area: true }], ['green', 'Wright’s Beta density $p^{4Nv-1}(1-p)^{4Nu-1}$']]);
@@ -138,11 +140,11 @@ It is U-shaped, piling up near $0$ and $1$, when both $4Nu<1$ and $4Nv<1$, and h
           const N = NS.value, n = 2 * N, th = thS.value, mu = Math.min(0.3, th / (2 * n));
           const H = run(`${N}|${th}|${seed}`, () => {
             const r = v.rng(seed * 77 + N), ids = { n: 1 }; let al = [[0, n]];
-            const hist = [al.map((a) => a.slice())], K = [1]; let born = 0, lost = 0;
+            const hist = [al.map((a) => a.slice())], K = [1]; let lost = 0;
             for (let g = 1; g <= G; g++) {
               const nx = iamStep(r, al, n, mu, ids); const alive = new Set(nx.map((a) => a[0]));
               for (const a of al) if (!alive.has(a[0])) lost++;
-              born += ids.n - 1 - born > 0 ? 0 : 0; al = nx; hist.push(al.map((a) => a.slice())); K.push(al.length);
+              al = nx; hist.push(al.map((a) => a.slice())); K.push(al.length);
             }
             return { hist, K, ids: ids.n - 1, lost };
           });

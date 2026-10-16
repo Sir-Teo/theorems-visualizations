@@ -33,9 +33,9 @@ export default {
       num: '2.6',
       kind: 'Phenomenon',
       name: 'Post-inhibitory rebound (anode break excitation)',
-      statement: String.raw`If the Hodgkin–Huxley membrane is held hyperpolarized by an injected current for long enough and the current is then switched off, the membrane may fire a spike with no depolarizing stimulus at all: this is **post-inhibitory rebound** (in the older literature, **anode break excitation**, because the break of an anodal, hyperpolarizing current excites). The effect needs a hyperpolarization that is both strong enough and long enough (a boundary in the plane of duration and amplitude), and it disappears if the sodium inactivation $h$ is prevented from changing during the hyperpolarization.`,
-      idea: String.raw`At rest about 40 % of the sodium channels are inactivated ($h_\infty(-65\text{ mV})\approx 0.6$). Hyperpolarization raises $h_\infty$ toward 1 and lowers $n_\infty$ (neuro-2.1, neuro-2.2), with time constants of several milliseconds, so after a few milliseconds more sodium channels are available and fewer potassium channels are open. When the current is released, $V$ climbs back toward rest through the voltage range where $m$ is already opening, while $h$ and $n$ are still in their altered state and relax only slowly (neuro-1.7): the net current is inward for a moment and the regenerative loop of neuro-2.3 fires a spike. Secondary accounts credit the Hodgkin–Huxley model with explaining this old observation; the picture here is the model's own computation.`,
-      caption: String.raw`Drag the handle in the map to choose the duration and strength of a hyperpolarizing current applied at $t=2$ ms. Left: $V(t)$ and the gates; $h$ climbs during the hyperpolarization and $n$ falls. Right: every point of the map is a separate simulation (green: a rebound spike occurs, grey: none). Now freeze $h$ at its resting value, or freeze $n$ (a model without that slow change): the green region shrinks or vanishes, which shows which variable does the work.`,
+      statement: String.raw`If the Hodgkin–Huxley membrane is held hyperpolarized by an injected current for long enough and the current is then switched off, the membrane may fire a spike with no depolarizing stimulus at all: this is **post-inhibitory rebound** (in the older literature, **anode break excitation**, because the break of an anodal, hyperpolarizing current excites). The effect needs a hyperpolarization that is both strong enough and long enough (a boundary in the plane of duration and amplitude), and it needs the slow gates to move: in this model it disappears if the potassium gate $n$ is prevented from changing during the hyperpolarization, while freezing the sodium inactivation $h$ alone changes the picture little.`,
+      idea: String.raw`At rest about 40 % of the sodium channels are inactivated ($h_\infty(-65\text{ mV})\approx 0.6$) and about a third of the potassium gates are open ($n_\infty\approx 0.32$). Hyperpolarization raises $h_\infty$ toward 1 and lowers $n_\infty$ (neuro-2.1, neuro-2.2), with time constants of several milliseconds, so after a few milliseconds more sodium channels are available and fewer potassium channels are open. When the current is released, $V$ climbs back toward rest through the voltage range where $m$ is already opening, while $h$ and $n$ are still in their altered state and relax only slowly (neuro-1.7): the net current is inward for a moment and the regenerative loop of neuro-2.3 fires a spike. The freezing experiment on this page shows that in the model the lowered potassium conductance is the indispensable part, and de-inactivation of sodium alone is not required, which is more than the textbook phrase \"de-inactivated sodium channels\" suggests. Secondary accounts credit the Hodgkin–Huxley model with explaining this old observation; the picture here is the model's own computation.`,
+      caption: String.raw`Drag the handle in the map to choose the duration and strength of a hyperpolarizing current applied at $t=2$ ms. Top: $V(t)$ and the gates; $h$ climbs during the hyperpolarization and $n$ falls. Map below: every point is a separate simulation (green: a rebound spike occurs, grey: none). Now freeze $h$ at its resting value, or freeze $n$ (a model without that slow change). With $h$ frozen the green region changes little (the spike is even larger, since nothing inactivates the sodium channels); with $n$ frozen, or with both frozen, no rebound is left anywhere in this map, which shows which variable does the work in this model.`,
       scope: String.raw`Space-clamped Hodgkin–Huxley membrane at 6.3 °C, with currents applied from rest. Many real neurons show much stronger rebound because of additional currents (T-type calcium, $I_h$), which this four-variable model does not contain.`,
       deps: ['neuro-2.3'],
       see: ['neuro-2.2', 'neuro-2.4'],
@@ -44,10 +44,10 @@ export default {
       credit: 'Model of A. L. Hodgkin and A. F. Huxley, 1952',
       viz(v) {
         const frz = v.select('which slow variable is allowed to move', [{ value: '', label: 'both $h$ and $n$ (full model)' }, { value: 'h', label: '$h$ frozen' }, { value: 'n', label: '$n$ frozen' }, { value: 'hn', label: 'both frozen' }], '');
-        const DUR = [1, 40], AMP = [0, 15], t0 = 2;
+        const DUR = [1, 40], AMP = [0, 8], t0 = 2;
         const sA = v.stage({ x: [0, 70], y: [-100, 60], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 230, weight: 1.1, minWidth: 320 });
-        const sG = v.stage({ x: [0, 70], y: [0, 1], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'gates', height: 190, weight: 1.1, minWidth: 320 });
-        const sM = v.stage({ x: DUR, y: [-15.5, 0.5], axes: 'box', gutter: true, xlabel: 'hyperpolarization duration (ms)', ylabel: 'current (µA/cm²)', height: 430, weight: 1, minWidth: 300 });
+        const sG = v.stage({ x: [0, 70], y: [0, 1], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'gates', height: 230, weight: 1.1, minWidth: 320 });
+        const sM = v.stage({ x: DUR, y: [-8.2, 0.2], axes: 'box', gutter: true, xlabel: 'hyperpolarization duration (ms)', ylabel: 'current (µA/cm²)', height: 430, weight: 1, minWidth: 300 });
         const params = (fz) => ({ ...HH, freeze: fz });
         const response = (d, a, fz, rec) => {
           const f = (t) => (t >= t0 && t < t0 + d ? -a : 0), o = { T: 6.3, tEnd: d + 40, dt: 0.04, p: params(fz) };
@@ -56,19 +56,19 @@ export default {
         const maps = {};
         const grid = () => {
           const fz = frz.value; if (maps[fz]) return maps[fz];
-          const nx = 20, ny = 15, cells = [];
+          const nx = 20, ny = 16, cells = [];
           for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) {
             const d = DUR[0] + ((DUR[1] - DUR[0]) * (i + 0.5)) / nx, a = ((j + 0.5) * AMP[1]) / ny;
             const r = response(d, a, fz, false); cells.push({ d, a, spike: r.spikes.length > 0 });
           }
           return (maps[fz] = { cells, nx, ny });
         };
-        const h = sM.handle(20, -8, { color: 'gold', r: 8, constrain: (x, y) => [clamp(x, 1, 40), clamp(y, -15, -0.2)] });
+        const h = sM.handle(20, -4, { color: 'gold', r: 8, constrain: (x, y) => [clamp(x, 1, 40), clamp(y, -8, -0.2)] });
         v.render(() => {
           const G = grid(), d = h.x, a = -h.y, fz = frz.value;
           const wx = (DUR[1] - DUR[0]) / G.nx, wy = AMP[1] / G.ny;
           for (const c of G.cells) sM.rect(c.d - wx / 2, -(c.a + wy / 2), c.d + wx / 2, -(c.a - wy / 2), { fill: c.spike ? 'green' : 'muted', fillAlpha: c.spike ? 0.6 : 0.16, stroke: false });
-          sM.text('rebound spike', 28, -1.3, { size: 11, color: 'green', align: 'left' });
+          sM.text('no spike', 30, -0.9, { size: 11, color: 'muted', align: 'left' }); sM.text('rebound spike', 24, -6.5, { size: 11, color: 'ink', align: 'left' });
           const o = response(d, a, fz, true), sp = spikeTimes(o.t, o.V, 0);
           trace(sA, o.t, o.V, { color: 'accent', width: 2.4 });
           sA.rect(t0, -100, t0 + d, -95, { fill: 'gold', fillAlpha: 0.7, stroke: false });
@@ -93,9 +93,9 @@ export default {
       kind: 'Phenomenon',
       name: 'Repetitive firing and the Hodgkin–Huxley f–I curve',
       statement: String.raw`Held under a constant injected current $I$ the Hodgkin–Huxley model fires periodically once $I$ exceeds a critical value. Its firing rate does not start at zero: on a slow upward ramp the rate jumps from zero to a non-zero minimum at the critical current, and on a ramp back down the neuron keeps firing to a lower current than the one where it started, so that the $f$–$I$ curve has a **bistable** window in which both rest and repetitive firing are stable. At large current the spikes shrink and firing stops altogether (depolarization block). Hodgkin (1948) distinguished axons whose repetitive response can be arbitrarily slow (class 1) from those that start at a minimum frequency (class 2); the Hodgkin–Huxley model is of the second kind (type II).`,
-      idea: String.raw`The gates $h$ and $n$ respond slowly (neuro-2.3), so rest is stable for a range of currents, while a limit cycle born in a subcritical Hopf bifurcation can coexist with it. The rate on that cycle is set by the time $n$ and $h$ need to recover after each spike (neuro-2.5), which is about 18 ms at 6.3 °C, hence the minimum rate near 54 Hz. At the other end of the window the rest state itself loses stability, giving the abrupt jump on the upward ramp. The transition type is analysed in neuro-3.4 (Hopf, type II) and contrasted with neuro-3.5 (saddle-node on an invariant circle, type I).`,
+      idea: String.raw`The gates $h$ and $n$ respond slowly (neuro-2.3), so rest is stable for a range of currents, while a limit cycle born in a subcritical Hopf bifurcation can coexist with it. The rate on that cycle is set by the time $n$ and $h$ need to recover after each spike (neuro-2.5), which is about 17 ms at 6.3 °C, hence a minimum rate near 58 Hz in this model. At the other end of the window the rest state itself loses stability, giving the abrupt jump on the upward ramp. The transition type is analysed in neuro-3.4 (Hopf, type II) and contrasted with neuro-3.5 (saddle-node on an invariant circle, type I).`,
       caption: String.raw`Left: the firing rate (inverse of the last interspike interval) against constant current, computed by slowly ramping the current up from rest (blue), down from the spiking state (orange), and for a sudden step from rest (green circles); drag the handle along the axis to choose $I$. Right: the voltage at that current, starting from rest or from the spiking state: in the bistable window the same current gives silence or spiking depending on the history. Choose the 0–150 range to see depolarization block. At 18.5 °C every rate is about 3.5 times faster, but the shape is the same.`,
-      scope: String.raw`Space-clamped Hodgkin–Huxley membrane under constant current. The numbers (onset near 54 Hz, bistable window between about 6.4 and 9.9 µA/cm² at 6.3 °C) are those of this model at the stated temperature and settle times (300 ms per current), not measurements; in a real axon, sustained firing at these currents is also limited by ion accumulation.`,
+      scope: String.raw`Space-clamped Hodgkin–Huxley membrane under constant current. The numbers (onset near 58 Hz; on a slow current ramp the bistable window runs from about 7 up to about 10 µA/cm² at 6.3 °C, while a sudden step from rest already fires from about 6.5) are those of this model at the stated temperature and settle times (300 ms per current), not measurements; in a real axon, sustained firing at these currents is also limited by ion accumulation.`,
       deps: ['neuro-2.3'],
       see: ['neuro-2.8', 'neuro-3.4'],
       refs: ['Gerstner §4.4'],
@@ -158,7 +158,7 @@ export default {
       name: 'Connor–Stevens A-current and type I firing',
       statement: String.raw`Adding a fast, transient potassium **A-current** $I_A = \bar g_A\, a^3 b\,(V-E_A)$, with its own activation $a$ and a slow inactivation $b$, to the sodium and delayed-rectifier currents of the Hodgkin–Huxley kind gives the **Connor–Stevens model**. Its $f$–$I$ curve starts continuously from zero frequency at the critical current (**type I**), unlike the Hodgkin–Huxley neuron, and near that current the first spike appears only after a long latency. Removing the A-current ($\bar g_A\to 0$) restores a non-zero minimum frequency (type II).`,
       idea: String.raw`After each spike the A-current is activated by the voltage and, because $b$ inactivates slowly, it adds an extra outward current that delays the next spike as the membrane climbs toward threshold. Near the critical input this delay can be arbitrarily long, so the rate can be arbitrarily low and the transition becomes a saddle-node on an invariant circle rather than a Hopf bifurcation (neuro-3.5, neuro-3.4). Connor and Stevens fitted their current to voltage-clamp records of an isolated gastropod neurone and used it to predict repetitive firing from the clamp data (neuro-1.5), the first such quantitative prediction after Hodgkin and Huxley.`,
-      caption: String.raw`Choose the A-conductance. Left: firing rate against current step for your $\bar g_A$ (blue) and for $\bar g_A=0$ (red): the blue curve starts at zero, the red one at a high rate. Middle: latency to the first spike against current, on log axes; with the A-current it grows to hundreds of milliseconds near threshold. Drag the handle to pick the current. Right: the voltage trace (blue; red for $\bar g_A=0$) and the A-current $\bar g_A a^3 b$ along the blue trace.`,
+      caption: String.raw`Choose the A-conductance. Left: firing rate against current step for your $\bar g_A$ (blue) and for $\bar g_A=0$ (red): the blue curve starts at zero, the red one at a high rate. Top right: latency to the first spike against current, on log axes; with the A-current it grows to more than 100 ms near threshold, while without it the first spike comes after about 3 ms. Drag the handle to pick the current. Bottom: the voltage trace (blue; red for $\bar g_A=0$) and the A-current conductance $\bar g_A a^3 b$ along the blue trace.`,
       scope: String.raw`Single-compartment model with the parameter set quoted on this page (rates multiplied by 3.8, a temperature factor); not checked against the original 1971 tables (verify). Voltages are in the convention of that parameter set (rest near −68 mV). The leak reversal is re-tuned so that rest stays fixed when $\bar g_A$ is varied, and the rates come from 600 ms runs, so rates below roughly 2 Hz read as zero.`,
       deps: ['neuro-2.3', 'neuro-2.7'],
       see: ['neuro-3.5', 'neuro-3.4', 'neuro-1.5'],
@@ -168,22 +168,22 @@ export default {
       verify: true,
       viz(v) {
         const gsel = v.select('A-conductance $\\bar g_A$', [0, 15, 30, 47.7].map((g) => ({ value: g, label: `${g}` })), 47.7);
-        const IG = []; for (let I = 6; I <= 16.01; I += 0.5) IG.push(I);
-        const sA = v.stage({ x: [6, 16], y: [0, 120], axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'rate (Hz)', height: 260, weight: 1, minWidth: 280 });
-        const sL = v.stage({ x: [6, 16], y: [10, 1000], ylog: true, axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'first-spike latency (ms)', height: 260, weight: 1, minWidth: 280 });
+        const IG = []; for (let I = 7; I <= 14.01; I += 0.5) IG.push(I);
+        const sA = v.stage({ x: [7, 14], y: [0, 120], axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'rate (Hz)', height: 260, weight: 1, minWidth: 280 });
+        const sL = v.stage({ x: [7, 14], y: [1, 1000], ylog: true, axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'first-spike latency (ms)', height: 260, weight: 1, minWidth: 280 });
         const sV = v.stage({ x: [0, 400], y: [-90, 50], axes: 'box', gutter: true, xlabel: 't (ms, step at 20)', ylabel: 'V (mV)', height: 200, weight: 1.4, minWidth: 320 });
         const sI = v.stage({ x: [0, 400], y: [0, 50], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'gA a³b (mS/cm²)', height: 200, weight: 1, minWidth: 280 });
         const cache = {};
         const curve = (g) => {
           if (cache[g]) return cache[g];
-          const pts = IG.map((I) => { const sp = csSpikes(I, g, { tEnd: 620, dt: 0.1 }); const n = sp.length; return { I, f: n >= 2 ? 1000 / (sp[n - 1] - sp[n - 2]) : 0, lat: n ? sp[0] - 20 : NaN, n }; });
+          const pts = IG.map((I) => { const sp = csSpikes(I, g, { tEnd: 620, dt: 0.05 }); const n = sp.length; return { I, f: n >= 2 ? 1000 / (sp[n - 1] - sp[n - 2]) : 0, lat: n ? sp[0] - 20 : NaN, n }; });
           return (cache[g] = pts);
         };
-        const h = sA.handle(11, 0, { color: 'gold', r: 8, constrain: 'x' });
+        const h = sA.handle(10, 0, { color: 'gold', r: 8, constrain: 'x' });
         v.render(() => {
-          const g = gsel.value, cg = curve(g), c0 = curve(0), I = clamp(h.x, 6, 16); h.set(I, 0);
+          const g = gsel.value, cg = curve(g), c0 = curve(0), I = clamp(h.x, 7, 14); h.set(I, 0);
           let fm = 20; for (const p of cg.concat(c0)) fm = Math.max(fm, p.f);
-          sA.setView([6, 16], [0, fm * 1.12]);
+          sA.setView([7, 14], [0, fm * 1.12]);
           sA.path(c0.map((p) => [p.I, p.f]), { color: 'red', width: 2.2 }); sA.dots(c0.map((p) => [p.I, p.f]), { r: 2.5, color: 'red' });
           sA.path(cg.map((p) => [p.I, p.f]), { color: 'accent', width: 2.6 }); sA.dots(cg.map((p) => [p.I, p.f]), { r: 2.5, color: 'accent' });
           sA.vline(I, { color: 'gold', dash: [4, 3] });
@@ -193,16 +193,18 @@ export default {
           const o = csRun(I, g, { tEnd: 400, t0: 20, dt: 0.05, every: 8 }), o0 = csRun(I, 0, { tEnd: 400, t0: 20, dt: 0.05, every: 8 });
           trace(sV, o0.t, o0.V, { color: 'red', width: 1.4, alpha: 0.7 });
           trace(sV, o.t, o.V, { color: 'accent', width: 2.2 });
+          sI.setView([0, 400], [0, Math.max(5, ...o.a) * 1.15]);
           trace(sI, o.t, o.a, { color: 'purple', width: 2.2 });
           h._o = o; h._o0 = o0; h._I = I;
         });
         v.legend([['accent', 'chosen $\\bar g_A$'], ['red', '$\\bar g_A=0$'], ['purple', 'A-current conductance']]);
+        const low = (g) => { const a = (cache[g] || []).filter((p) => p.f > 0).map((p) => p.f); return a.length ? v.fix(Math.min(...a), 1) + ' Hz' : 'none'; };
         v.readout(() => {
-          const o = h._o, o0 = h._o0, I = h._I ?? 11; if (!o) return '';
+          const o = h._o, o0 = h._o0, I = h._I ?? 10; if (!o) return '';
           const lat = (r) => (r.spikes.length ? v.fix(r.spikes[0] - 20, 0) + ' ms' : 'no spike');
           const rt = (r) => { const n = r.spikes.length; return n >= 2 ? v.fix(1000 / (r.spikes[n - 1] - r.spikes[n - 2]), 1) + ' Hz' : '0'; };
           return String.raw`at $I=${v.fix(I, 1)}$ µA/cm²: with $\bar g_A = ${gsel.value}$: first spike after ${lat(o)}, rate ${rt(o)} · with $\bar g_A = 0$: first spike after ${lat(o0)}, rate ${rt(o0)}` + '\n' +
-            String.raw`lowest nonzero rate on the grid (0.5 µA/cm² steps, 600 ms): ${v.fix(Math.min(...(cache[gsel.value] || []).filter((p) => p.f > 0).map((p) => p.f)), 1)} Hz with the A-current, ${v.fix(Math.min(...(cache[0] || []).filter((p) => p.f > 0).map((p) => p.f)), 1)} Hz without`;
+            String.raw`lowest nonzero rate on the grid (0.5 µA/cm² steps, 600 ms): ${low(gsel.value)} with the A-current, ${low(0)} without`;
         });
       },
     },
@@ -228,7 +230,7 @@ export default {
         let seed = 1; v.button('new runs', () => { seed++; });
         const sV = v.stage({ x: [0, 200], y: [-90, 55], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 200, weight: 1.3, minWidth: 340 });
         const sR = v.stage({ x: [0, 200], y: [0.3, 7.7], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'run', height: 200, weight: 1.3, minWidth: 340, yticks: [[1, 'det.'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5'], [7, '6']] });
-        const sH = v.stage({ x: [1.5, 6], y: [0, 1], axes: 'box', gutter: true, xlabel: 'first-spike latency after pulse (ms)', ylabel: 'fraction of trials', height: 420, weight: 1, minWidth: 280 });
+        const sH = v.stage({ x: [0, 8], y: [0, 1], axes: 'box', gutter: true, xlabel: 'first-spike latency after pulse onset (ms)', ylabel: 'fraction of trials', height: 420, weight: 1, minWidth: 280 });
         const NR = 6, NT = 40, PUL = pulse(2, 1, 9);
         let key = '', C = null;
         const get = () => {
@@ -236,10 +238,9 @@ export default {
           const A = As.value, NNa = Math.round(60 * A), NK = Math.round(18 * A), I = Is.value;
           const det = hhSim(() => I, { tEnd: 200, dt: 0.05, every: 4 });
           const runs = Array.from({ length: NR }, (_, r) => hhStochastic(() => I, { NNa, NK, tEnd: 200, dt: 0.025, every: 8, rng: v.rng(seed * 1000 + r) }));
-          const lats = [], fails = 0;
-          let miss = 0;
-          for (let t = 0; t < NT; t++) { const o = hhStochastic(PUL, { NNa, NK, tEnd: 12, dt: 0.025, every: 8, rng: v.rng(seed * 7919 + 100 + t) }); const s = o.spikes.find((x) => x > 1.5); if (s) lats.push(s); else miss++; }
-          const dl = hhRun(PUL, { tEnd: 12, dt: 0.04 }).spikes[0];
+          const lats = []; let miss = 0;
+          for (let t = 0; t < NT; t++) { const o = hhStochastic(PUL, { NNa, NK, tEnd: 12, dt: 0.025, every: 8, rng: v.rng(seed * 7919 + 100 + t) }); const s = o.spikes.find((x) => x > 2); if (s) lats.push(s - 2); else miss++; }
+          const dl = hhRun(PUL, { tEnd: 12, dt: 0.04 }).spikes[0] - 2;
           C = { A, NNa, NK, det, runs, lats, miss, dl, I };
           return C;
         };
@@ -250,11 +251,11 @@ export default {
           sR.hline(1.5, { color: 'grid' });
           D.runs.forEach((r, i) => sR.dots(r.spikes.map((t) => [t, i + 2]), { r: 3.2, color: 'accent' }));
           sR.dots(spikeTimes(D.det.t, D.det.V, 0).map((t) => [t, 1]), { r: 3.2, color: 'ink' });
-          const bins = 18, ed = 1.5 + 0, w = (6 - 1.5) / bins, cnt = new Array(bins).fill(0);
-          for (const l of D.lats) { const b = Math.floor((l - 1.5) / w); if (b >= 0 && b < bins) cnt[b]++; }
+          const bins = 20, w = 8 / bins, cnt = new Array(bins).fill(0);
+          for (const l of D.lats) { const b = Math.floor(l / w); if (b >= 0 && b < bins) cnt[b]++; }
           const fr = cnt.map((c) => c / NT), fm = Math.max(0.2, ...fr);
-          sH.setView([1.5, 6], [0, fm * 1.2]);
-          sH.bars(fr, { x0: 1.5 + w / 2, dx: w, color: 'accent' });
+          sH.setView([0, 8], [0, fm * 1.2]);
+          sH.bars(fr, { x0: w / 2, dx: w, color: 'accent' });
           if (D.dl) sH.vline(D.dl, { color: 'ink', dash: [5, 4], width: 1.6 });
           sH.text('deterministic', D.dl || 3, fm * 1.12, { size: 10.5, color: 'ink', align: 'left', dx: 5 });
         });
