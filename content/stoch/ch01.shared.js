@@ -122,10 +122,10 @@ export const WEATHER = { names: ['Sun', 'Cloud', 'Rain'], P: [[0.7, 0.2, 0.1], [
 
 /** Fixed-rate event clock for animations: due(t, rate) = number of hops owed since the last frame. */
 export function makeClock() {
-  let last = null, acc = 0;
+  let last = 0, acc = 0;
   return {
     restarted: false,
-    reset() { acc = 0; last = null; },
+    reset() { acc = 0; last = null; this.restarted = false; },
     due(t, rate) {
       this.restarted = false;
       if (last === null) last = t;

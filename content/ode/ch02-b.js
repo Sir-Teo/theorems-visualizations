@@ -228,7 +228,7 @@ $$|f(t,x)|\le a+b|x|\qquad\text{for all }(t,x)$$
 $$|x(t)|\le\Big(|x_0|+\frac ab\Big)e^{b|t-t_0|}-\frac ab .$$
 Superlinear growth gives no such conclusion: $\dot x=|x|^p$, $p>1$, blows up in finite time from every $x_0>0$.`,
       idea: String.raw`From the integral equation (2.2), $|x(t)|\le|x_0|+\int_{t_0}^t(a+b|x|)\,ds$; Grönwall (2.5) applied to $u=a+b|x|$ gives the exponential bound, so the solution stays in a compact set on every bounded time interval. By the escape lemma (2.11) a solution with finite $\omega$ would have to leave every compact set, which is impossible: hence $\omega=\infty$. With $|x|^p$, $p>1$, no linear bound holds and the lemma allows escape.`,
-      caption: String.raw`Drag $p$ in $\dot x=x^p$ ($x_0=1$, logarithmic height). For $p\le1$ the solution stays under the exponential envelope $(x_0+1)e^t-1$ (green) which comes from $|f|\le1+|x|$. For $p>1$ the right panel shows the growth bound failing and the solution leaves the envelope and escapes at the exact time $T^*=x_0^{1-p}/(p-1)$ (red line).`,
+      caption: String.raw`Drag $p$ in $\dot x=x^p$ (logarithmic height; $x_0$ is also a slider). For $p\le1$ the solution stays under the exponential envelope $(x_0+1)e^t-1$ (green) which comes from $|f|\le1+|x|$. For $p>1$ the right panel shows the growth bound failing and the solution leaves the envelope and escapes at the exact time $T^*=x_0^{1-p}/(p-1)$ (red line).`,
       deps: ['ode-2.11', 'ode-2.5'],
       refs: ['Teschl §2.6'],
       tags: ['global existence', 'growth'],
@@ -274,12 +274,12 @@ Superlinear growth gives no such conclusion: $\dot x=|x|^p$, $p>1$, blows up in 
 $$\dot\alpha\le f(t,\alpha),\qquad \dot\beta\ge f(t,\beta)\qquad\text{on }[t_0,t_1]$$
 (a *sub-solution* and a *super-solution*) and $\alpha(t_0)\le x(t_0)\le\beta(t_0)$. Then $\alpha(t)\le x(t)\le\beta(t)$ on $[t_0,t_1]$. The solution is trapped in the corridor between them.`,
       idea: String.raw`Suppose $x(t_2)<\alpha(t_2)$ somewhere. Let $\sigma$ be the last time before $t_2$ with $x=\alpha$; on $(\sigma,t_2]$ the difference $d=x-\alpha$ is negative with $d(\sigma)=0$ and satisfies $\dot d\ge f(t,x)-f(t,\alpha)\ge-L|d|$ by the Lipschitz bound, so $\dot d\ge Ld$ (as $d<0$), and Grönwall (2.5) applied to $-d$ forces $d\equiv0$ — a contradiction. In essence, a curve that is sub-solution on top of a solution cannot cross it from below because the field pushes it back. Uniqueness (2.4) is what the Lipschitz estimate encodes.`,
-      caption: String.raw`Five handles each shape a lower curve $\alpha$ (green when $\dot\alpha\le f(t,\alpha)$ holds, red where it fails) and an upper curve $\beta$ (green when $\dot\beta\ge f$). The ink curve is the solution from the black handle at $t=0$. While both barriers are green and enclose $x_0$, the solution stays in the shaded corridor; drag a barrier so that it turns red and the solution can slip through.`,
+      caption: String.raw`Seven handles each shape a lower curve $\alpha$ (green when $\dot\alpha\le f(t,\alpha)$ holds, red where it fails) and an upper curve $\beta$ (green when $\dot\beta\ge f$). The ink curve is the solution from the black handle at $t=0$. While both barriers are green and enclose $x_0$, the solution stays in the shaded corridor; drag a barrier so that it turns red and the solution can slip through.`,
       deps: ['ode-2.4'],
       refs: ['Teschl §1.5'],
       tags: ['comparison', 'barriers'],
       viz(v) {
-        const T = 5, ts = [0, 1.25, 2.5, 3.75, 5], m = 0.35;
+        const T = 5, ts = [0, 0.833, 1.667, 2.5, 3.333, 4.167, 5];
         const FS = {
           decay: { label: '$\\sin 2t-x$', f: (t, x) => Math.sin(2 * t) - x, x0: 0.3, Y: [-1.6, 1.6] },
           logi: { label: '$x(1-x)+0.4\\sin 3t$', f: (t, x) => x * (1 - x) + 0.4 * Math.sin(3 * t), x0: 0.4, Y: [-0.8, 2] },
@@ -288,12 +288,21 @@ $$\dot\alpha\le f(t,\alpha),\qquad \dot\beta\ge f(t,\beta)\qquad\text{on }[t_0,t
         const s = v.stage({ x: [0, T], y: [-1.6, 1.6], axes: 'box', gutter: true, height: 380, xlabel: 't', ylabel: 'x', title: 'sub-solution, super-solution and the trapped solution' });
         const A = ts.map((t) => s.handle(t, 0, { color: 'teal', r: 7, constrain: (x, y) => [t, Math.max(-2.5, Math.min(3.5, y))] }));
         const B = ts.map((t) => s.handle(t, 0, { color: 'purple', r: 7, constrain: (x, y) => [t, Math.max(-2.5, Math.min(3.5, y))] }));
-        const X0 = s.handle(0, 0.3, { color: 'ink', r: 8, label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, Math.max(-2.5, Math.min(3.5, y))] });
+        const X0 = s.handle(0, 0.3, { color: 'ink', r: 8, label: '$x_0$', labelPos: 'ne', constrain: (x, y) => [0, Math.max(-2.5, Math.min(3.5, y))] });
         let cur = '', hold = false;
+        const viol = (g, sgn) => {
+          const E = FS[which.value], d = 1e-4; let bad = 0;
+          for (let i = 0; i <= 300; i++) { const t = (T * i) / 300, y = g(t), dy = (g(Math.min(T, t + d)) - g(Math.max(0, t - d))) / (Math.min(T, t + d) - Math.max(0, t - d)); if (sgn * (dy - E.f(t, y)) > 1e-9) bad++; }
+          return bad;
+        };
         const reset = () => {
-          const E = FS[which.value], lo = scalarFlow((t, x) => E.f(t, x) - m, 0, E.x0 - 0.3, T, 600), hi = scalarFlow((t, x) => E.f(t, x) + m, 0, E.x0 + 0.3, T, 600);
-          ts.forEach((t, i) => { A[i].set(t, sampleAt(lo, t)); B[i].set(t, sampleAt(hi, t)); });
-          X0.set(0, E.x0);
+          const E = FS[which.value];
+          for (const m of [0.3, 0.45, 0.6, 0.8, 1.0]) {
+            const lo = scalarFlow((t, x) => E.f(t, x) - m, 0, E.x0 - 0.3, T, 600), hi = scalarFlow((t, x) => E.f(t, x) + m, 0, E.x0 + 0.3, T, 600);
+            ts.forEach((t, i) => { A[i].set(t, sampleAt(lo, t)); B[i].set(t, sampleAt(hi, t)); });
+            X0.set(0, E.x0);
+            if (viol(spline(ts, A.map((h) => h.y)), 1) === 0 && viol(spline(ts, B.map((h) => h.y)), -1) === 0) break;
+          }
         };
         v.button('Reset valid barriers', reset);
         v.legend([['teal', 'sub-solution $\\alpha$'], ['purple', 'super-solution $\\beta$'], ['ink', 'solution $x$'], ['red', 'inequality violated'], ['orange', 'corridor']]);
@@ -391,7 +400,7 @@ uniformly on $[t_0,T]$, where $\varphi_1=\partial_\varepsilon\varphi|_{0}$ solve
       name: 'Solutions cannot cross (uniqueness in the phase space)',
       statement: String.raw`Let $f:U\to\R^n$ be locally Lipschitz on an open $U\subset\R^n$ and consider the autonomous system $\dot x=f(x)$. Through every point of $U$ passes exactly one orbit (the image of the maximal solution): two orbits are either disjoint or identical, and an orbit that returns to a point is periodic or a fixed point. Distinct orbits therefore never cross and never merge in finite time. Without the Lipschitz condition this fails: for $\dot x=1,\ \dot y=3|y|^{2/3}$ the two solutions $y\equiv0$ and $y=(x-c)_+^3$ pass through the same point $(c,0)$ and then separate.`,
       idea: String.raw`If two solutions $\varphi,\psi$ of the autonomous system meet, $\varphi(s)=\psi(u)$, then $t\mapsto\psi(t-s+u)$ is also a solution through the point $\varphi(s)$ at time $s$; by uniqueness (2.4) it equals $\varphi$ near $s$, and by continuation (2.11) everywhere. So the two orbits coincide up to a time shift. Autonomy is essential: for non-autonomous systems the *graphs in $(t,x)$* cannot cross, but orbits in $x$-space can.`,
-      caption: String.raw`Drag the two start points in the phase plane (the whole orbits are drawn, forward and backward). On the right the coordinate $x(t)$ of each solution *does* cross as a function of time, yet the points $(x,y)$ never coincide at the same time and, the readout shows, the orbits stay a positive distance apart. Drag one start point onto the other's orbit and they become the same orbit. Switch to the non-Lipschitz field: the orbit through the gold point runs into the line $y=0$ and can continue along it or along any cubic $(x-c)^3$ — non-uniqueness.`,
+      caption: String.raw`Drag the two start points in the phase plane (the whole orbits are drawn, forward and backward). On the right the coordinate $x(t)$ of each solution *does* cross as a function of time, yet the points $(x,y)$ never coincide at the same time and, the readout shows, the orbits stay a positive distance apart. Drag one start point onto the other's orbit and they become the same orbit. Switch to the non-Lipschitz field: the orbit through $A$ runs into the line $y=0$ and can continue along it or along any cubic $(x-c)^3$ — non-uniqueness.`,
       deps: ['ode-2.4'],
       refs: ['Strogatz §6.2'],
       tags: ['uniqueness', 'phase space'],
@@ -402,7 +411,7 @@ uniformly on $[t_0,T]$, where $\varphi_1=\partial_\varepsilon\varphi|_{0}$ solve
         const sr = v.stage({ x: [0, 8], y: [-4, 4], axes: 'box', gutter: true, height: 360, xlabel: 't', ylabel: 'x(t)', title: 'the first coordinates as functions of time', weight: 1, minWidth: 250 });
         const A = s.handle(1.2, 0.4, { color: 'accent', label: 'A', labelPos: 'nw' });
         const B = s.handle(-0.8, 0.9, { color: 'purple', label: 'B', labelPos: 'ne' });
-        v.legend([['accent', 'orbit through A'], ['purple', 'orbit through B'], ['red', 'branch point', { dot: true }]]);
+        v.legend([['accent', 'orbit through A'], ['purple', 'orbit through B'], ['red', 'crossing of $x_A,x_B$ / branch point', { dot: true }]]);
         let lastSys = '', info = null;
         v.render(() => {
           const S = FS[which.value];
@@ -439,7 +448,7 @@ uniformly on $[t_0,T]$, where $\varphi_1=\partial_\varepsilon\varphi|_{0}$ solve
         });
         v.readout(() => {
           if (!info) return '';
-          if (info.branch) return `The solution through the gold point is $y=(x-c)^3$ with $c=${v.fix(info.ca, 3)}$; it reaches $y=0$ at the red point, where $f(y)=3|y|^{2/3}$ is not Lipschitz. There the solution $y\\equiv0$ also passes, and so does $(x-c')_+^3$ for every $c'\\ge c$: several orbits through one point, residual of the ODE for each $<${v.sci(Math.max(info.res, 1e-9), 1)}$.`;
+          if (info.branch) return `The solution through $A$ is $y=(x-c)^3$ with $c=${v.fix(info.ca, 3)}$; it reaches $y=0$ at the red point, where $f(y)=3|y|^{2/3}$ is not Lipschitz. There the solution $y\\equiv0$ also passes, and so does $(x-c')_+^3$ for every $c'\\ge c$: several orbits through one point, residual of the ODE for each $<${v.sci(Math.max(info.res, 1e-9), 1)}$.`;
           const { dmin, ncross, dy } = info;
           return `Smallest distance between the two orbits (sampled): $${v.fix(dmin, 3)}$${dmin < 0.06 ? ' — the same orbit, shifted in time' : ' — they never meet'}. The curves $x_A(t),x_B(t)$ cross ${ncross} time${ncross === 1 ? '' : 's'}${dy != null ? `; at the first crossing the $y$-coordinates still differ by $${v.fix(dy, 3)}$, so the points are not the same` : ''}.`;
         });

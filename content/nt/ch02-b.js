@@ -15,7 +15,7 @@ export default {
 $$\sum_{d\mid n}\varphi(d)=n .$$
 More precisely, among the $n$ fractions $\tfrac1n,\tfrac2n,\dots,\tfrac nn$, exactly $\varphi(d)$ have reduced denominator $d$, for each divisor $d$ of $n$ (and no other denominators occur).`,
       idea: String.raw`Reduce $k/n$ to lowest terms $a/d$: then $d\mid n$ and $1\le a\le d$ with $\gcd(a,d)=1$. Conversely each divisor $d$ and each $a$ coprime to $d$ gives exactly one $k=an/d$. So the fractions with denominator $d$ are in bijection with a reduced residue system modulo $d$ and there are $\varphi(d)$ of them. Every one of the $n$ fractions has exactly one reduced denominator, so the groups partition the $n$ fractions.`,
-      caption: String.raw`The $n$ fractions $k/n$ sit at the angles $2\pi k/n$ on the circle, each coloured by its reduced denominator. The bar chart gives, for every divisor $d$ of $n$, the number of points of that colour (bar) next to $\varphi(d)$ (white marker) — they coincide, and the bars stack up to exactly $n$.`,
+      caption: String.raw`The $n$ fractions $k/n$ sit at the angles $2\pi k/n$ on the circle, each coloured by its reduced denominator. The bar chart gives, for every divisor $d$ of $n$, the number of points of that colour (bar) next to $\varphi(d)$ (ring marker) — they coincide, and the bars stack up to exactly $n$.`,
       deps: ['nt-2.7'],
       refs: ['Apostol §2.3'],
       tags: ['totient', 'fractions'],
@@ -24,7 +24,7 @@ More precisely, among the $n$ fractions $\tfrac1n,\tfrac2n,\dots,\tfrac nn$, exa
       viz(v) {
         const N = v.slider('$n$', 1, 120, 30, { int: true });
         const C = v.stage({ x: [-1.7, 1.7], y: [-1.6, 1.6], equal: true, axes: false, height: 380, title: 'the fractions $k/n$ on the circle, coloured by reduced denominator' });
-        const B = v.stage({ x: [-1, 20], y: [0, 40], axes: 'box', gutter: true, height: 380, xlabel: 'divisor $d$ of $n$', ylabel: 'count', title: 'fractions with reduced denominator $d$ — bar — versus $\\varphi(d)$ — marker' });
+        const B = v.stage({ x: [-1, 20], y: [0, 40], axes: 'box', gutter: true, height: 380, xlabel: 'divisor $d$ of $n$', ylabel: 'count', title: 'fractions with reduced denominator $d$ — bars versus $\\varphi(d)$ rings' });
         let info = {};
         v.render(() => {
           const n = N.value, ds = divisors(n), idx = new Map(ds.map((d, i) => [d, i]));
@@ -127,7 +127,7 @@ Conversely, if $n>1$ and $(n-1)!\equiv-1\pmod n$, then $n$ is prime; so $n$ is p
           for (let x = 0; x < m; x++) { const y = ev(x, m); if (y === 0) roots.push(x); }
           S.hline(0, { color: 'green', width: 1.2, alpha: 0.5 });
           for (let x = 0; x < m; x++) { const y = ev(x, m); S.dot(x, y, { r: m <= 30 ? 4.5 : 3, color: y === 0 ? 'green' : 'blue' }); }
-          for (const x of roots) { S.dot(x, 0, { r: 10, hollow: true, color: 'green', width: 2.4 }); if (m <= 40) S.text(String(x), x, -0.1, { align: 'center', baseline: 'top', size: 11, color: 'green', weight: 650, dy: 14 }); }
+          for (const x of roots) { S.dot(x, 0, { r: 10, hollow: true, color: 'green', width: 2.4 }); if (m <= 40) S.text(String(x), x, 0, { align: 'center', baseline: 'bottom', size: 11.5, color: 'green', weight: 700, dy: -15 }); }
           let deg = -1; for (let j = 0; j < 5; j++) if (mod(C[j].value, m) !== 0) { deg = 4 - j; break; }
           info = { m, roots, deg };
         });
@@ -168,7 +168,7 @@ Hence every simple root mod $p$ lifts uniquely to roots mod $p^2,p^3,\dots$ (a $
         const FSEL = v.select('polynomial', FS.map((q) => ({ value: q.k, label: q.label })), 'a');
         const PSEL = v.select('prime $p$', [2, 3, 5, 7].map((q) => ({ value: q, label: String(q) })), 7);
         const KS = v.slider('levels $k$', 1, 6, 4, { int: true });
-        const S = v.stage({ x: [-0.02, 1.02], y: [0, 7], axes: false, height: 400, full: true, title: 'solutions of $f(r)\\equiv0 \\pmod{p^k}$, level by level' });
+        const S = v.stage({ x: [-0.02, 1.02], y: [0, 7], axes: false, height: 340, full: true, title: 'solutions of $f(r)\\equiv0 \\pmod{p^k}$, level by level' });
         let info = {};
         v.render(() => {
           const F = FS.find((q) => q.k === FSEL.value), p = PSEL.value;
@@ -223,7 +223,7 @@ In particular: $N\equiv\sum a_i\pmod 9$ and $\pmod 3$ (as $10\equiv1$); $N\equiv
       viz(v) {
         const IN = v.input('number $N$', '3141592653589793', { width: 260, placeholder: 'digits' });
         const D = v.select('divisor $d$', [3, 7, 9, 11, 13, 37, 101].map((k) => ({ value: k, label: String(k) })), 7);
-        const S = v.stage({ x: [-1, 24], y: [-3, 3], axes: false, height: 340, full: true, title: 'digits $a_i$, weights $w_i=10^i \\bmod d$, contributions $a_iw_i$ (most significant digit on the left)' });
+        const S = v.stage({ x: [-1, 24], y: [-3, 3], axes: false, height: 300, full: true, title: 'digits $a_i$, weights $w_i=10^i \\bmod d$, contributions $a_iw_i$ (most significant digit on the left)' });
         let info = {};
         const sym = (w, d) => (w > d / 2 ? w - d : w);
         v.render(() => {
@@ -231,7 +231,7 @@ In particular: $N\equiv\sum a_i\pmod 9$ and $\pmod 3$ (as $10\equiv1$); $N\equiv
           const d = D.value, L = txt.length, digs = txt.split('').map(Number);
           const ws = []; for (let i = 0, w = 1 % d; i < L; i++, w = (w * 10) % d) ws.push(sym(w, d));
           const cons = digs.map((a, j) => a * ws[L - 1 - j]), maxc = Math.max(1, ...cons.map(Math.abs));
-          S.setView([-1.3, L + 0.3], [-3.6, 3.4]);
+          S.setView([-1.9, L + 0.3], [-1.6, 3.9]);
           const cw = S.width / (L + 1.6);
           for (let j = 0; j < L; j++) {
             const i = L - 1 - j, x = j + 0.5;
@@ -240,12 +240,12 @@ In particular: $N\equiv\sum a_i\pmod 9$ and $\pmod 3$ (as $10\equiv1$); $N\equiv
             S.text(`10^${i}`.replace(/\^(\d+)/, (_, e) => [...e].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('')), x, 3.25, { align: 'center', baseline: 'bottom', size: Math.min(10, cw * 0.4), color: 'faint' });
             S.rect(x - 0.45, 0.8, x + 0.45, 1.8, { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 1.2 });
             S.text(v.fmt(ws[i]), x, 1.3, { align: 'center', baseline: 'middle', size: Math.min(16, cw * 0.55), color: 'orange', weight: 650 });
-            const h = (cons[j] / maxc) * 1.6;
+            const h = (cons[j] / maxc) * 0.62;
             S.rect(x - 0.32, h >= 0 ? 0 : h, x + 0.32, h >= 0 ? h : 0, { fill: cons[j] >= 0 ? 'teal' : 'red', fillAlpha: 0.55, color: cons[j] >= 0 ? 'teal' : 'red', width: 1 });
             if (cw >= 22) S.text(v.fmt(cons[j]), x, h >= 0 ? h + 0.12 : h - 0.12, { align: 'center', baseline: h >= 0 ? 'bottom' : 'top', size: Math.min(11, cw * 0.4), color: 'muted' });
           }
           S.line(0, 0, L, 0, { color: 'muted', width: 1 });
-          S.text('digit $a_i$', -0.2, 2.6, { align: 'right', size: 11, color: 'muted' }); S.text('weight $w_i$', -0.2, 1.3, { align: 'right', size: 11, color: 'muted' }); S.text('$a_iw_i$', -0.2, 0.0, { align: 'right', size: 11, color: 'muted' });
+          S.text('$a_i$', -0.15, 2.6, { align: 'right', size: 13, color: 'muted' }); S.text('$w_i$', -0.15, 1.3, { align: 'right', size: 13, color: 'orange' }); S.text('$a_iw_i$', -0.15, 0.0, { align: 'right', size: 13, color: 'teal' });
           let rem = 0; for (const a of digs) rem = (rem * 10 + a) % d;
           const tot = cons.reduce((s, x) => s + x, 0);
           let per = 0; { let w = 1 % d; do { w = (w * 10) % d; per++; } while (w !== 1 % d && per < 200); if (gcd(10, d) !== 1) per = 0; }
@@ -279,13 +279,13 @@ where $s_p(n)$ is the sum of the base-$p$ digits of $n$. Consequently $n!=\prod_
         let info = {};
         v.render(() => {
           const n = N.value, p = P.value, top = Math.max(2, Math.floor(Math.log(n) / Math.log(p)) + 0.001) + 0.8;
-          S.setView([0, n + 1], [0, Math.ceil(top) + 0.5]);
+          S.setView([0, n * 1.18 + 4], [0, Math.ceil(top) + 0.5]);
           let tot = 0, layers = [];
           for (let k = 1; p ** k <= n; k++) {
             let c = 0;
             for (let m = p ** k; m <= n; m += p ** k) { c++; S.rect(m - 0.42, k - 1 + 0.06, m + 0.42, k - 0.06, { fill: pcol(k - 1), fillAlpha: 0.7, stroke: false }); }
             layers.push(c); tot += c;
-            S.text(`k=${k}: ${c}`, n + 0.5, k - 0.5, { align: 'right', baseline: 'middle', size: 12, weight: 650, color: pcol(k - 1), dx: -4 });
+            S.text(`k=${k}: ${c}`, n + 2 + n * 0.01, k - 0.5, { align: 'left', baseline: 'middle', size: 12, weight: 650, color: pcol(k - 1) });
           }
           let f = 1n; for (let m = 2n; m <= BigInt(n); m++) f *= m;
           let e = 0, bp = BigInt(p); while (f % bp === 0n) { f /= bp; e++; }
@@ -363,7 +363,7 @@ In particular $p\nmid\binom nk$ iff the addition has no carry (consistent with L
         const NN = v.slider('$n$', 1, 63, 45, { int: true });
         const KK = v.slider('$k$', 0, 63, 17, { int: true });
         const A = v.stage({ x: [-9, 3], y: [-1, 6], axes: false, height: 360, title: 'adding $k$ and $n-k$ in base $p$' });
-        const H = v.stage({ x: [-4, 66], y: [-2, 66], axes: false, height: 360, title: '$v_p\\binom nk$ for $0\\le k\\le n\\le 63$ — click to choose $(n,k)$' });
+        const H = v.stage({ x: [-4, 66], y: [-5, 66], axes: false, height: 360, title: '$v_p\\binom nk$ for $0\\le k\\le n\\le 63$ — click to choose $(n,k)$' });
         H.onClick((x, y) => { const n = Math.round(y), k = Math.round(x); if (n >= 1 && n <= 63 && k >= 0 && k <= n) { NN.set(n); KK.set(k); } });
         const vf = (n, p) => { let s = 0; for (let q = p; q <= n; q *= p) s += Math.floor(n / q); return s; };
         const sup = '⁰¹²³⁴⁵⁶⁷⁸⁹';
@@ -396,8 +396,8 @@ In particular $p\nmid\binom nk$ iff the addition has no carry (consistent with L
             const vv = val(nn, kk); ctx.fillStyle = vv === 0 ? v.color('green', 0.18) : v.rgb ? `rgb(${v.ramp(0.25 + 0.75 * vv / vmax, 'accent').map((c) => Math.round(c)).join(',')})` : 'blue';
             ctx.fillRect(H.X(kk - 0.5) + 0.2, H.Y(nn + 0.5) + 0.2, cw - 0.4, chh - 0.4);
           }
-          H.rect(k - 0.5, n - 0.5, k + 0.5, n + 0.5, { color: 'ink', width: 2.4 });
-          H.text('$k$', 32, -1.4, { align: 'center', size: 12, color: 'muted' }); H.text('$n$', -3.2, 32, { align: 'center', size: 12, color: 'muted' });
+          H.rect(k - 0.5, n - 0.5, k + 0.5, n + 0.5, { color: 'ink', width: 3.2 });
+          H.text('$k$', 32, -3, { align: 'center', size: 12, color: 'muted' }); H.text('$n$', -3.2, 32, { align: 'center', size: 12, color: 'muted' });
           let carryCount = carries.reduce((s, c) => s + c, 0);
           info = { p, n, k, m, carryCount, vv: val(n, k), dk, dm, dn };
         });
@@ -414,7 +414,7 @@ In particular $p\nmid\binom nk$ iff the addition has no carry (consistent with L
       name: 'Wolstenholme’s theorem',
       statement: String.raw`For every prime $p\ge5$,
 $$1+\frac12+\cdots+\frac1{p-1}=\frac AB\ \text{ with } p^2\mid A,\qquad\text{and}\qquad\binom{2p-1}{p-1}\equiv1\pmod{p^3}.$$
-(The first is a statement about the numerator of the harmonic number $H_{p-1}$ in lowest terms; the second is equivalent to it.) Both fail for $p=2,3$, and — unlike Fermat's little theorem — no composite $n$ is known for which $n^2$ divides the numerator of $H_{n-1}$. Primes with $p^3\mid A$ (equivalently $\binom{2p-1}{p-1}\equiv1 \pmod{p^4}$) are called *Wolstenholme primes*; only $16843$ and $2124679$ are known.`,
+(The first is a statement about the numerator of the harmonic number $H_{p-1}$ in lowest terms; the second is equivalent to it.) Both fail for $p=2,3$. Primes with $p^3\mid A$ (equivalently $\binom{2p-1}{p-1}\equiv1 \pmod{p^4}$) are called *Wolstenholme primes*; only $16843$ and $2124679$ are known.`,
       idea: String.raw`Let $f(x)=\prod_{k=1}^{p-1}(x-k)=\sum_j(-1)^js_jx^{p-1-j}$, so $s_{p-2}=(p-1)!\,H_{p-1}$. Modulo $p$, $f\equiv x^{p-1}-1$ (Fermat; 2.12), hence $p\mid s_j$ for $1\le j\le p-2$. Evaluate at $x=p$: $f(p)=(p-1)!$ gives, after cancelling, $s_{p-2}=p^{p-2}-s_1p^{p-3}+\cdots+s_{p-3}\,p$. Every term is divisible by $p^2$ once $p\ge5$ (the last because $p\mid s_{p-3}$), so $p^2\mid s_{p-2}$, and $(p-1)!$ is a unit. For the binomial, $\binom{2p-1}{p-1}=\prod_{k<p}(1+\tfrac pk)\equiv1+pH_{p-1}+p^2e_2\pmod{p^3}$ with $e_2\equiv0\pmod p$.`,
       caption: String.raw`For every $n\le120$ the top panel plots $\kappa(n)$ = the largest $e$ with $n^e\mid A_n$ (numerator of $H_{n-1}$), computed with exact big-integer fractions; the lower panel does the same for $\binom{2n-1}{n-1}-1$. Primes $\ge5$ (green) reach $2$ and $3$ respectively; $p=2,3$ (orange) fall short; composites (grey) never come close. Use the slider to read the actual numbers for one $n$.`,
       deps: ['nt-2.11'],
