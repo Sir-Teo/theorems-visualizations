@@ -111,12 +111,14 @@ Start with the partition $\{F,Q\setminus F\}$. Repeatedly split every block into
           const splitting = new Set();
           if ((ph === 'sig' || ph === 'split') && f.r <= last) { const seen = {}; for (const s of D.states) { (seen[old.cls[s.id]] ||= new Set()).add(R[f.r].cls[s.id]); } for (const b in seen) if (seen[b].size > 1) splitting.add(+b); }
           if (ph === 'done') {
+            ts.setView([0, 10], [0, 7]);
             Q = layoutBFS(quotient(reachableD(D), R[last].cls), 10, 7);
             G2.sync(Q);
             drawDFA(v, ts, G2, Q, { fill: (id) => PAL[Q.states.findIndex((s) => s.id === id) % PAL.length] });
             ts.corner('quotient machine', 'tr', { color: 'muted', weight: 700, size: 13 });
             ts.setTitle('merged blocks');
           } else {
+            ts.setView([0, 1], [0, 1]);
             ts.setTitle(ph === 'init' ? 'blocks' : 'signatures');
             const rows = D.states.map((s) => s.id), showSig = ph === 'sig' || ph === 'split', showNew = ph === 'split';
             const cols = 1 + (showSig ? D.alpha.length : 0) + (showNew ? 1 : 0);
@@ -185,7 +187,7 @@ Start with the partition $\{F,Q\setminus F\}$. Repeatedly split every block into
           const C = getChain(), k = S.frame.k ?? 0, X = C.M[k];
           G.sync(X);
           drawNFA(v, gs, G, X, { fill: (id) => (id === X.start ? 'gold' : null) });
-          gs.corner(['DFA $M$', 'NFA $M^R$', 'DFA', 'NFA', 'DFA'][k], 'tr', { color: 'muted', weight: 700, size: 13 });
+          gs.corner(['DFA $M$', 'NFA $M^R$', 'DFA', 'NFA', 'DFA'][k], 'tl', { color: 'muted', weight: 700, size: 13 });
           bs.setView([-0.6, 4.6], [0, Math.max(10, Math.max(...C.counts) * 1.15)]);
           bs.bars(C.counts, { x0: 0, dx: 1, color: (val, i) => (i === k ? 'gold' : i < k ? (i % 2 ? 'purple' : 'accent') : 'faint') });
           C.counts.forEach((c, i) => bs.text(String(c), i, c + 0.35, { align: 'center', size: 13, weight: 700, color: i <= k ? 'ink' : 'faint' }));
@@ -220,9 +222,9 @@ satisfies the conclusion of the pumping lemma with $p=1$ (every $w\in L$, $w\ne\
         const which = v.select('language', [{ value: 'L', label: 'the pumpable $L$' }, { value: 'L0', label: 'variant $L_0=\\{a^ib^jc^j : i\\ge0\\}$' }], 'L');
         const pS = v.slider('pumping length $p$', 1, 6, 3, { int: true });
         const nS = v.slider('strings up to length', 5, 9, 8, { int: true });
-        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 240, full: true });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, full: true });
         const ms = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, weight: 1, minWidth: 340 });
-        const T = v.table(ms, { rows: 7, cols: 7, square: false, maxCell: 36, cellAspect: 1.15, size: 12, labelSize: 12, margin: 8 });
+        const T = v.table(ms, { rows: 6, cols: 6, square: false, maxCell: 36, cellAspect: 1.15, size: 12, labelSize: 12, margin: 8 });
         const info = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, weight: 0.8, minWidth: 220 });
         const SUF = upTo(ABC, 8);
         const sep = (mem, x, y) => { for (const z of SUF) if (mem(x + z) !== mem(y + z)) return z; return null; };
@@ -242,28 +244,32 @@ satisfies the conclusion of the pumping lemma with $p=1$ (every $w\in L$, $w\ne\
           let bad = 0, firstBad = null;
           const cells = words.map((w) => { const sp = pumpOK(mem, w, p); if (!sp) { bad++; firstBad ||= w; } return { w, sp }; });
           P.sans(`strings of the language with |w| ≥ p = ${p}, up to length ${n}: ${words.length}`, 12, 14, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
-          const cw = Math.max(5, Math.min(16, (P.W - 24) / Math.ceil(words.length / Math.max(1, Math.floor((P.H - 44) / 16))) - 2)), per = Math.max(1, Math.floor((P.H - 44) / (cw + 2)));
-          cells.forEach((c, i) => { const col = Math.floor(i / per), row = i % per; P.box(12 + col * (cw + 2), 30 + row * (cw + 2), cw, cw, { r: 2, fill: c.sp ? 'green' : 'red', alpha: c.sp ? 0.5 : 0.8, stroke: false }); });
+          const rowsK = n + 1, rh = Math.min(22, (P.H - 40) / rowsK), cw = Math.min(16, rh - 3);
+          for (let k = 0; k <= n; k++) {
+            P.sans(`${k}`, 14, 36 + k * rh + rh / 2, { align: 'left', size: 10.5, color: 'faint' });
+            let x = 34; const here = upTo(ABC, n).filter((w) => w.length === k && mem(w));
+            here.forEach((w) => { const c = cells.find((q) => q.w === w); const small = w.length < p; P.box(x, 34 + k * rh, cw + 2, rh - 3, { r: 2, fill: small ? 'faint' : c.sp ? 'green' : 'red', alpha: small ? 0.25 : c.sp ? 0.5 : 0.8, stroke: false }); x += cw + 5; });
+          }
           // Myhill–Nerode
-          const labels = [0, 1, 2, 3, 4, 5, 6].map((j) => 'a' + 'b'.repeat(j));
+          const labels = [0, 1, 2, 3, 4, 5].map((j) => 'a' + 'b'.repeat(j)), J = [0, 1, 2, 3, 4, 5];
           const M = labels.map((x) => labels.map((y) => (x === y ? '≡' : sep(MEM[which.value], x, y))));
           T.draw({
-            rows: 7, cols: 7, cornerLabel: '$x\\backslash y$',
-            rowLabels: labels.map((u) => `$${tex(u)}$`), colLabels: labels.map((u) => `$${tex(u)}$`),
-            value: (i, j) => (i === j ? '' : M[i][j] === null ? 'none' : `$${M[i][j] ? tex(M[i][j]) : '\\varepsilon'}$`),
+            rows: 6, cols: 6, cornerLabel: '$x\\backslash y$',
+            rowLabels: J.map((j) => `$ab^{${j}}$`), colLabels: J.map((j) => `$ab^{${j}}$`),
+            value: (i, j) => (i === j ? '' : M[i][j] === null ? 'none' : M[i][j] === '' ? '$\\varepsilon$' : /^c+$/.test(M[i][j]) ? `$c^{${M[i][j].length}}$` : `$${tex(M[i][j])}$`),
             fill: (i, j) => (i === j ? ['faint', 0.3] : M[i][j] === null ? ['red', 0.4] : ['green', 0.22]),
             size: 11,
           });
           const Q = pen(info, v);
-          Q.sans('why the cells are green', 12, 16, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
+          Q.sans('summary', 12, 16, { align: 'left', size: 12.5, weight: 700, color: 'muted' });
           const first = which.value === 'L' ? 'split = first letter' : 'splits found by search';
           Q.sans(bad ? `${bad} of ${words.length} strings cannot be pumped` : `all ${words.length} strings pumped`, 12, 44, { align: 'left', size: 14, weight: 700, color: bad ? 'red' : 'green' });
           Q.sans(bad ? `first failure: ${firstBad || 'ε'}` : `by ${first}`, 12, 66, { align: 'left', size: 12, color: 'muted' });
           Q.sans('table: shortest suffix z with', 12, 112, { align: 'left', size: 11.5, color: 'muted' });
           Q.sans('(x z ∈ L) ≠ (y z ∈ L)', 12, 130, { align: 'left', size: 11.5, color: 'muted' });
-          Q.sans('every entry is filled: 7 prefixes,', 12, 160, { align: 'left', size: 11.5, color: 'muted' });
-          Q.sans('7 different classes — and so on', 12, 178, { align: 'left', size: 11.5, color: 'muted' });
-          Q.sans('for all j, ∞ many classes.', 12, 196, { align: 'left', size: 11.5, color: 'muted' });
+          Q.sans('no entry is “none”: the prefixes', 12, 160, { align: 'left', size: 11.5, color: 'muted' });
+          Q.sans('ab⁰, ab¹, ab², … lie in different', 12, 178, { align: 'left', size: 11.5, color: 'muted' });
+          Q.sans('classes, so there are infinitely many.', 12, 196, { align: 'left', size: 11.5, color: 'muted' });
           res = { bad, words: words.length, firstBad };
         });
         v.legend([['green', 'string can be pumped for this p', { dot: true }], ['red', 'every admissible split fails', { dot: true }]]);

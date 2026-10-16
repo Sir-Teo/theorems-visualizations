@@ -84,7 +84,8 @@ export default {
           const k = fsel.value, F = FN[k];
           if (last !== k) { last = k; A.setView(F.xr, F.yr); H0.set(F.x0, 0); }
           const L = Ls.value, M = Ms.value, c = Array.from({ length: L + M + 3 }, (_, j) => F.c(j));
-          const P = pade(c, L, M);
+          let P = pade(c, L, M), Le = L, Me = M;
+          while (!P && Me > 0 && Le > 0) { Le--; Me--; P = pade(c, Le, Me); }
           const tay = (x) => polyEvalAsc(c.slice(0, L + M + 1), x);
           A.fn(F.f, { color: 'ink', width: 2, n: 500 }); A.clip(() => A.fn(tay, { color: 'red', width: 1.6, dash: true, n: 500 }));
           if (P) A.clip(() => A.fn((x) => polyEvalAsc(P.p, x) / polyEvalAsc(P.q, x), { color: 'accent', width: 2.2, n: 800 }));
@@ -98,10 +99,10 @@ export default {
           }
           H0.set(H0.x, F.f(H0.x));
           const x0 = H0.x, ft = F.f(x0), ep = P ? polyEvalAsc(P.p, x0) / polyEvalAsc(P.q, x0) : NaN;
-          info = { P, x0, et: Math.abs(tay(x0) - ft), ep: Math.abs(ep - ft), L, M, R: F.R };
+          info = { P, x0, et: Math.abs(tay(x0) - ft), ep: Math.abs(ep - ft), L, M, Le, Me, R: F.R };
         });
         v.readout(() => info.P
-          ? `at $x_0=${v.fix(info.x0, 2)}$ (radius of convergence of the series: ${Number.isFinite(info.R) ? info.R : '$\\infty$'}): Taylor polynomial error $${v.sci(info.et + 1e-30, 2)}$, Padé $[${info.L}/${info.M}]$ error $${v.sci(info.ep + 1e-30, 2)}$`
+          ? `at $x_0=${v.fix(info.x0, 2)}$ (radius of convergence of the series: ${Number.isFinite(info.R) ? info.R : '$\\infty$'}): Taylor polynomial error $${v.sci(info.et + 1e-30, 2)}$, Padé $[${info.L}/${info.M}]$ error $${v.sci(info.ep + 1e-30, 2)}$` + (info.Le !== info.L || info.Me !== info.M ? `\n(the system for $[${info.L}/${info.M}]$ is singular — a degenerate block of the Padé table — so the equivalent $[${info.Le}/${info.Me}]$ approximant is shown)` : '')
           : `the Padé system for $[${info.L}/${info.M}]$ is singular for this function (it sits inside a degenerate block of the Padé table): change $L$ or $M$`);
       },
     },
@@ -112,7 +113,7 @@ export default {
       name: 'Spurious poles (Froissart doublets)',
       statement: String.raw`When a rational approximation is computed from slightly inexact data — Taylor coefficients contaminated by rounding or noise of size $\delta$ — and the requested degree exceeds what the data can support, the computed $r=p/q$ acquires **Froissart doublets**: pole–zero pairs that nearly cancel, at essentially random places (typically near the circle $|z|=1$ for Taylor data). They do not affect $r$ much away from them, but they are poles of $r$, ruin pole-location and convergence statements, and mean that Padé approximants of a *fixed* function need not converge pointwise as the degree grows. Truncating the singular values of the Toeplitz system at the noise level (robust Padé) removes them.`,
       idea: String.raw`Noise in $c_k$ looks like the Taylor series of a random function with radius of convergence $1$, singular everywhere on $|z|=1$; to fit it the denominator places poles near the circle, each matched by a zero whose residue is tiny — nothing is gained by it, but exact arithmetic would not have produced it. The linear system $\sum q_jc_{L+i-j}=0$ is numerically rank deficient by exactly the number of spurious pairs, so discarding singular values below $\delta$ reduces the type to the one the data justify.`,
-      caption: String.raw`The data are the Taylor coefficients of a function with four poles (green) plus noise of size $\delta$. Raise the degree $m$ ($L=M=m$) or the noise: in the naive computation (red ×, blue ○) pole–zero pairs appear near $|z|=1$ — highlighted by lines joining each close pair — while the true poles stay put. Switch to *robust* to see the doublets vanish. *Resample* draws new noise.`,
+      caption: String.raw`The data are the Taylor coefficients of a function with four poles (green) plus noise of size $\delta$. Raise the degree $m$ ($L=M=m$) or the noise: in the naive computation (red ×, blue ○) pole–zero pairs appear (a red pole sitting inside a blue zero ring, often near $|z|=1$) while the four true poles stay put; the readout counts them. Switch to *robust* to see the doublets vanish. *Resample* draws new noise.`,
       deps: ['num-4.16'],
       refs: ['Trefethen ATAP ch. 26', 'Trefethen ATAP ch. 27'],
       credit: 'Froissart, 1969; robust Padé: Gonnet, Güttel & Trefethen, 2013',

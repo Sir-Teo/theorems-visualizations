@@ -379,7 +379,7 @@ and therefore $\dfrac1n\mathbb E\,K(X^n\mid n)\longrightarrow H(p)$. The expecte
           info = { n: text.length, T: T.length, shown, hr: cache.hr, ends: cache.curves.map((p) => p[p.length - 1][1]), cur, list: T.slice(0, shown).map((t) => `(${t.d},${t.l},${t.ch === undefined ? '∅' : t.ch === ' ' ? '␣' : t.ch})`) };
         });
         v.legend([['red', '$W=32$'], ['orange', '$W=256$'], ['teal', '$W=2048$'], ['accent', '$W=16384$'], ['green', 'entropy rate']]);
-        v.readout(() => `Text: ${info.n} symbols → ${info.T} triples (distance, length, next symbol); emitted so far: ${info.list.slice(-8).join(' ') || 'none'}` + (info.cur ? `. Next phrase: copy ${info.cur.l} symbol${info.cur.l === 1 ? '' : 's'} from ${info.cur.d} back, then “${info.cur.ch === ' ' ? '␣' : info.cur.ch}”.` : '.') + `\nBinary Markov sample, $n=60000$, rate with $W=32,256,2048,16384$: $${info.ends.map((x) => v.fix(x, 2)).join(',\;')}$ bits per symbol against the entropy rate $${v.fix(info.hr, 3)}$: the larger the window, the closer, but the overhead of the pointers shrinks only like $1/\\log W$.`);
+        v.readout(() => `Text: ${info.n} symbols → ${info.T} triples (distance, length, next symbol); emitted so far: ${info.list.slice(-8).join(' ') || 'none'}` + (info.cur ? `. Next phrase: copy ${info.cur.l} symbol${info.cur.l === 1 ? '' : 's'} from ${info.cur.d} back, then “${info.cur.ch === ' ' ? '␣' : info.cur.ch}”.` : '.') + `\nBinary Markov sample, $n=60000$, rate with $W=32,256,2048,16384$: $${info.ends.map((x) => v.fix(x, 2)).join(', ')}$ bits per symbol against the entropy rate $${v.fix(info.hr, 3)}$: the larger the window, the closer, but the overhead of the pointers shrinks only like $1/\\log W$.`);
       },
     },
   ],

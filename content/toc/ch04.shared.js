@@ -109,9 +109,10 @@ export function layoutBFS(D, W = 10, H = 7, m = 1.15) {
   const L = layers.length;
   layers.forEach((col, i) => col.forEach((s, j) => {
     s.x = L === 1 ? W / 2 : m + (i * (W - 2 * m)) / (L - 1);
-    s.y = col.length === 1 ? H / 2 : m + (j * (H - 2 * m)) / (col.length - 1);
-    if (col.length > 1 && i % 2) s.y = H - s.y + (j % 2 ? 0 : 0);
+    const my = Math.max(m, H * 0.2);
+    s.y = col.length === 1 ? H / 2 : my + (j * (H - 2 * my)) / (col.length - 1);
   }));
+  if (D.alpha.some((c) => (D.delta[D.start]?.[c] || []).includes(D.start))) D.loops = { ...(D.loops || {}), [D.start]: 90 };
   return D;
 }
 /** Evenly spaced on an ellipse, state 0 at the left. */

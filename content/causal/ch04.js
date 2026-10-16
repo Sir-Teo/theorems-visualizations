@@ -91,7 +91,7 @@ the observational factorization with the factors of the intervened variables del
         const sgr = v.stage({ x: [0, 10], y: [0.2, 5.6], equal: true, axes: false, height: 270, title: 'graph (arrows into X cut)', minWidth: 250 });
         const sc = v.stage({ x: [-0.6, 7.6], y: [0, 0.3], axes: 'box', gutter: true, height: 270, xlabel: 'cell of the truncated joint: (Z M Y)', ylabel: 'product of factors', title: 'the truncated joint', minWidth: 300 });
         const sr = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', gutter: true, height: 270, ylabel: String.raw`$P(Y{=}1)$`, title: 'three ways to get an answer', minWidth: 250 });
-        sr.setTicks([[1, 'formula'], [2, 'experiment'], [3, 'P(Y|X=x)']], [[0, '0'], [0.25, '.25'], [0.5, '.5'], [0.75, '.75'], [1, '1']]);
+        sr.setTicks([[1, 'formula'], [2, 'simulated'], [3, 'seen']], [[0, '0'], [0.25, '.25'], [0.5, '.5'], [0.75, '.75'], [1, '1']]);
         const G = makeDag(v, sgr, { names, pos, edges: DAGS.conf.e, draggable: false, r: 17 });
         let info = {};
         v.render(() => {
@@ -205,7 +205,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
         const lam = v.slider('mix shift of the first group toward the second’s', 0, 1, 0, { step: 0.01 });
         const sb = v.stage({ x: [-0.6, 8], y: [-0.16, 1.05], axes: 'box', gutter: true, height: 320, ylabel: 'rate', title: 'rate by stratum, and pooled', minWidth: 360 });
         const sgr = v.stage({ x: [0, 10], y: [0, 6.2], equal: true, axes: false, height: 320, title: 'the causal story', minWidth: 260 });
-        const G = makeDag(v, sgr, { names: ['a', 'b', 'c'], pos: [[5, 4.9], [1.6, 1.3], [8.4, 1.3]], edges: [[0, 1], [0, 2], [1, 2]], draggable: false, r: 17, labelPos: 's' });
+        const G = makeDag(v, sgr, { names: ['a', 'b', 'c'], pos: [[5, 4.9], [1.6, 1.3], [8.4, 1.3]], edges: [[0, 1], [0, 2], [1, 2]], draggable: false, r: 17 });
         let info = {};
         v.render(() => {
           const D = DATA[ds.value], K = D.st.length, l = lam.value;
@@ -227,7 +227,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
           [0, 1].forEach((g) => bar(xo, g, pool[g], nn[g].reduce((a, c) => a + c, 0), true));
           sb.vline((xs[K - 1] + xo) / 2, { color: 'faint', dash: true, width: 1 });
           const wins = r[0].filter((x, k) => x > r[1][k]).length;
-          G.set({ nodes: D.nodes.map((c, i) => ({ id: i, label: c, x: D.gpos[i][0], y: D.gpos[i][1] })), edges: D.ge.map(([a, b]) => ({ from: a, to: b })), directed: true, layout: 'none' });
+          G.set({ nodes: D.nodes.map((c, i) => ({ id: i, label: c, x: D.gpos[i][0], y: D.gpos[i][1] })), edges: D.ge.map(([a, b]) => ({ from: a, to: b })), directed: true, layout: 'none', shape: 'box' });
           G.draw({ nodeColor: (id) => (id === 2 ? 'green' : id === 1 && ds.value === 'kidney' ? 'orange' : 'accent') });
           info = { D, r, pool, wins, K, stdz, shares: [sh(0), sh(1)] };
         });
