@@ -60,7 +60,8 @@ form the **Cauchy stress tensor**: $\sigma_{ii}$ are normal stresses (positive i
               S.arrow(A[0], A[1], B[0], B[1], { color: col, width: 3, head: 10 });
               const dv = D3(d), L = Math.hypot(dv[0], dv[1]) || 1;
               const outer = i === j ? (q >= 0 ? B : A) : (q >= 0 ? B : A), sg = i === j ? 1 : (q >= 0 ? 1 : -1);
-              S.tex(String.raw`\sigma_{${nm[i]}${nm[j]}}`, outer[0] + sg * (dv[0] / L) * 0.3, outer[1] + sg * (dv[1] / L) * 0.3 + (i !== j ? 0.04 : 0), { size: 13, color: col });
+              const off = Math.abs(dv[0]) > Math.abs(dv[1]) ? 0.5 : 0.32, ex = i !== j && j === 2 ? 0.28 : 0;
+              S.tex(String.raw`\sigma_{${nm[i]}${nm[j]}}`, outer[0] + sg * (dv[0] / L) * off + ex, outer[1] + sg * (dv[1] / L) * off + (i !== j ? 0.04 : 0) - (ex ? 0.12 : 0), { size: 13, color: col });
             }
           }
           S.arrow(1.7, -1.5, 2.45, -1.5, { color: 'muted', width: 1.4, head: 7 }); S.text('x', 2.62, -1.5, { size: 12, color: 'muted', math: true, align: 'center' });
@@ -94,7 +95,7 @@ It is linear in $\mathbf n$: the normal stress on the plane is $\sigma_n=\mathbf
         const sy = v.slider('$\\sigma_y$', -100, 100, -20, { step: 1 });
         const tx = v.slider('$\\tau_{xy}$', -100, 100, 40, { step: 1 });
         const A = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 340, title: 'free-body wedge' });
-        const B = v.stage({ x: [-130, 130], y: [-130, 130], equal: true, axes: true, height: 340, title: 'traction t = σn', xlabel: 'traction tx (MPa)', ylabel: 'ty (MPa)' });
+        const B = v.stage({ x: [-130, 130], y: [-130, 130], equal: true, axes: true, height: 340, title: 'traction t = σn', xlabel: 'tx', ylabel: 'ty' });
         const C = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 340, title: 'forces close a triangle' });
         const R = 2.5;
         const H = A.handle(R * Math.cos(0.6), R * Math.sin(0.6), { color: 'accent', r: 8, label: 'n', labelPos: 'ne', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [(R * x) / r, (R * y) / r]; } });
@@ -158,7 +159,7 @@ It is linear in $\mathbf n$: the normal stress on the plane is $\sigma_n=\mathbf
 $$\sigma_{xy}=\sigma_{yx},\qquad \sigma_{yz}=\sigma_{zy},\qquad \sigma_{zx}=\sigma_{xz},$$
 that is, $\boldsymbol\sigma=\boldsymbol\sigma^{\mathsf T}$. This is the balance of angular momentum for the material element, and it leaves six independent components. (Materials that carry body couples or couple stresses, such as some polar or micropolar models, are outside the statement.)`,
       idea: String.raw`Take moments about the centre of a small element of side $h$ (and thickness 1). The unequal shear forces on its faces give a net torque $(\sigma_{xy}-\sigma_{yx})h^2$, while its moment of inertia is $\rho h^4/6$ (the mass is $\rho h^2$ and the polar radius of gyration squared is $h^2/6$). The angular acceleration is therefore $6(\sigma_{xy}-\sigma_{yx})/(\rho h^2)$, which grows without limit as $h\to0$. For the angular acceleration to stay finite at a point, the difference must be zero. This is the continuum analogue of mech-2.9, balance of torque.`,
-      caption: String.raw`The small square is released with the shear stresses you set on its faces (the arrows turn with it). Make $\sigma_{xy}\neq\sigma_{yx}$ and the animation shows it spinning up to $90^\circ$ in the time $T$ printed in the readout; shrink the size $h$ and $T$ collapses (right plot, log-log: $\alpha\propto h^{-2}$). Press "make equal" and the spinning stops, for every size. Material density is that of steel.`,
+      caption: String.raw`The small square is released with the shear stresses you set on its faces (the arrows and the marked line turn with it). Make $\sigma_{xy}\neq\sigma_{yx}$ and the animation shows it spinning up to $90^\circ$ in the time $T$ printed in the readout; shrink the size $h$ and $T$ collapses (right plot, log-log: $\alpha\propto h^{-2}$). Press "make equal" and the spinning stops, for every size. Material density is that of steel.`,
       deps: ['solid-2.1', 'mech-2.9'],
       refs: ['Timoshenko–Goodier ch. 1'],
       tags: ['stress', 'angular momentum'],
@@ -182,8 +183,10 @@ that is, $\boldsymbol\sigma=\boldsymbol\sigma^{\mathsf T}$. This is the balance 
           const arr = (p, dir, q, col) => { if (q < 1) return; const A = R([p[0] - (dir[0] * k * q) / 2, p[1] - (dir[1] * k * q) / 2]), B = R([p[0] + (dir[0] * k * q) / 2, p[1] + (dir[1] * k * q) / 2]); S.arrow(A[0], A[1], B[0], B[1], { color: col, width: 3.2, head: 10 }); };
           arr([1.28, 0], [0, 1], a.value, 'orange'); arr([-1.28, 0], [0, -1], a.value, 'orange');
           arr([0, 1.28], [-1, 0], b.value, 'purple'); arr([0, -1.28], [1, 0], b.value, 'purple');
-          S.tex(String.raw`\sigma_{xy}`, 2.05 * cs - 0.0 * sn, 2.05 * sn + 0.1, { size: 13, color: 'orange' });
-          S.tex(String.raw`\sigma_{yx}`, -0.45 * 0 - 0.0, 1.9 * cs + 0, { size: 13, color: 'purple' });
+          const lx = R([2.0, 0.0]), ly = R([0.0, 1.95]);
+          S.tex(String.raw`\sigma_{xy}`, lx[0], lx[1], { size: 13, color: 'orange' });
+          S.tex(String.raw`\sigma_{yx}`, ly[0], ly[1], { size: 13, color: 'purple' });
+          const m0 = R([0.9, 0]); S.line(0, 0, m0[0], m0[1], { color: 'ink', width: 2 }); S.dot(m0[0], m0[1], { r: 5, color: 'ink' });
           if (d !== 0) {
             const aa = []; for (let i = 0; i <= 24; i++) { const q = (-0.4 + 0.8 * i / 24) * Math.sign(d) * 2.2 + (d > 0 ? 0 : 0); aa.push([0.55 * Math.cos(q), 0.55 * Math.sin(q)]); }
             S.path(aa, { color: 'red', width: 2, alpha: 0.9 });

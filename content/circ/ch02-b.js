@@ -169,7 +169,7 @@ export default {
       refs: ['Agarwal–Lang §3.3'],
       tags: ['uniqueness', 'positive definite'],
       viz(v) {
-        const s = v.stage({ x: [-0.72, 0.72], y: [-0.62, 0.62], equal: true, axes: false, height: 350, weight: 1, title: 'ground (click) and source (shift-click)' });
+        const s = v.stage({ x: [-0.78, 0.78], y: [-0.68, 0.68], equal: true, axes: false, height: 370, weight: 1, title: 'ground (click) and source (shift-click); node values in volts' });
         const se = v.stage({ x: [0, 9], y: [-1, 5], axes: 'box', gutter: true, height: 350, weight: 0.9, xlabel: 'eigenvalue index', ylabel: 'eigenvalue of $\\mathbf G$ (mS)', title: 'spectrum of the reduced matrix' });
         const sel = v.select('network', ['bridge', 'ladder', 'grid3', 'k4'].map((k) => ({ value: k, label: NETS[k].label })), 'grid3');
         const gs = {}; for (const k of ['bridge', 'ladder', 'grid3', 'k4']) gs[k] = NETS[k].edges.map((_, i) => 1 + 0.5 * ((i * 7) % 4));
@@ -208,10 +208,11 @@ export default {
           });
           P.forEach((p, i) => {
             const fl = floating.includes(i);
-            const col = i === ground ? 'ink' : phi ? v.diverge(0.5 + 0.5 * phi[i] / vmax, 'blue', 'red') : fl ? 'faint' : 'muted';
-            s.dot(p[0], p[1], { r: 12, color: col, hollow: false, label: i === ground ? `${net.names[i]} (gnd)` : phi ? `${net.names[i]}  ${v.fix(phi[i], 2)} V` : `${net.names[i]} ?`, labelPos: 'ne' });
+            const col = i === ground ? 'ink' : phi ? v.ramp(Math.max(0, Math.min(1, phi[i] / vmax)), 'orange') : fl ? 'faint' : 'muted';
+            s.dot(p[0], p[1], { r: 17, color: col, label: net.names[i], labelPos: 'nw' });
+            s.text(i === ground ? 'gnd' : phi ? v.fix(phi[i], 2) : '?', p[0], p[1], { size: 11, color: i === ground ? 'panel' : 'ink' });
           });
-          s.dot(P[sNode][0], P[sNode][1], { r: 17, color: 'gold', hollow: true });
+          s.dot(P[sNode][0], P[sNode][1], { r: 22, color: 'gold', hollow: true });
           se.setView([0, Math.max(m, 4) + 1], [Math.min(-0.5, lmin * 1.3 - 0.2), Math.max(2, lmax * 1.12)]);
           ev.forEach((x, k) => { const bad = x <= tol; se.rect(k + 0.65, 0, k + 1.35, x, { fill: bad ? 'red' : 'green', fillAlpha: 0.4, color: bad ? 'red' : 'green', width: 1.5 }); });
           se.hline(0, { color: 'ink', width: 1.5 });
@@ -307,14 +308,14 @@ export default {
       refs: ['Horowitz–Hill ch. 1'],
       tags: ['bridge', 'measurement'],
       viz(v) {
-        const s = v.stage({ x: [-0.9, 5.9], y: [-0.7, 3.9], equal: true, axes: false, height: 320, weight: 1.15, title: 'the bridge; $R_5$ is the galvanometer' });
-        const sd = v.stage({ x: [-1.3, 1.3], y: [-0.15, 1.2], equal: true, axes: false, height: 320, weight: 0.8, title: 'galvanometer (full scale ±100 µA)' });
-        const sp = v.stage({ x: [100, 1e5], y: [-1, 1], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1, xlabel: '$R_4$ (Ω)', ylabel: '$I_g$ (mA)', title: 'wide range' });
-        const sz = v.stage({ x: [3600, 4400], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: '$R_4$ (Ω), ±10 % around balance', ylabel: '$I_g$ (µA)', title: 'near balance' });
-        const vals = { V1: 10, R1: 1000, R2: 2000, R3: 2000, R4: 3000, R5: 1000 };
+        const s = v.stage({ x: [-0.9, 5.9], y: [-0.7, 3.9], equal: true, axes: false, height: 320, weight: 1.4, minWidth: 700, title: 'the bridge; $R_5$ is the galvanometer' });
+        const sd = v.stage({ x: [-1.3, 1.3], y: [-0.15, 1.2], equal: true, axes: false, height: 320, weight: 0.8, minWidth: 700, title: 'galvanometer (full scale ±100 µA)' });
+        const sp = v.stage({ x: [100, 1e5], y: [-1, 1], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 700, xlabel: '$R_4$ (Ω)', ylabel: '$I_g$ (mA)', title: 'wide range' });
+        const sz = v.stage({ x: [3600, 4400], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 700, xlabel: '$R_4$ (Ω), ±10 % around balance', ylabel: '$I_g$ (µA)', title: 'near balance' });
+        const vals = { V1: 10, R1: 1000, R2: 2000, R3: 2000, R4: 3700, R5: 1000 };
         const C = v.circuit(s, bridgeParts(vals));
         const lg = { log: true, sig: 3, fmt: (x) => sI(x, 'Ω', 3) };
-        const R4 = v.slider('$R_4$', 100, 1e5, 3000, lg), R1 = v.slider('$R_1$', 100, 1e4, 1000, lg), R2 = v.slider('$R_2$', 100, 1e4, 2000, lg), R3 = v.slider('$R_3$', 100, 1e4, 2000, lg);
+        const R4 = v.slider('$R_4$', 100, 1e5, 3700, lg), R1 = v.slider('$R_1$', 100, 1e4, 1000, lg), R2 = v.slider('$R_2$', 100, 1e4, 2000, lg), R3 = v.slider('$R_3$', 100, 1e4, 2000, lg);
         const Rg = v.slider('$R_g$ (meter)', 50, 1e5, 1000, lg);
         const Ig = (r1, r2, r3, r4, rg, V = 10) => { const vth = V * (r3 / (r1 + r3) - r4 / (r2 + r4)), rth = r1 * r3 / (r1 + r3) + r2 * r4 / (r2 + r4); return vth / (rth + rg); };
         let info = null;
@@ -331,7 +332,8 @@ export default {
           sd.text(`${v.fix(ig * 1e6, 1)} µA`, 0, 0.3, { size: 14, color: Math.abs(ig) < 1e-9 ? 'green' : 'ink', plate: true });
           if (sat) sd.text('off scale', 0, 0.55, { size: 12, color: 'red' });
           // plots
-          sp.setView([100, 1e5], [-Math.max(0.2, Math.abs(Ig(r1, r2, r3, 100, rg)), Math.abs(Ig(r1, r2, r3, 1e5, rg))) * 1.15, Math.max(0.2, Math.abs(Ig(r1, r2, r3, 100, rg)), Math.abs(Ig(r1, r2, r3, 1e5, rg))) * 1.15]);
+          const ymax = Math.max(0.02, Math.abs(Ig(r1, r2, r3, Math.max(100, bal / 8), rg)), Math.abs(Ig(r1, r2, r3, Math.min(1e5, bal * 8), rg))) * 1e3 * 1.15;
+          sp.setView([100, 1e5], [-ymax, ymax]);
           sp.hline(0, { color: 'muted', width: 1.2 });
           sp.fn((x) => Ig(r1, r2, r3, x, rg) * 1e3, { color: 'accent', width: 2.6, n: 220 });
           sp.vline(bal, { color: 'green', width: 1.5, dash: true });

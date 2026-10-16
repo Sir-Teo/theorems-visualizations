@@ -80,9 +80,9 @@ The four-digit NACA family builds a section from one camber parabola pair and on
         const t = v.slider('max thickness t (% of chord)', 3, 24, 12, { step: 0.5 });
         const al = v.slider('angle of attack α (°)', -6, 16, 6, { step: 0.1 });
         const con = v.toggle('show the construction', true);
-        const A = v.stage({ x: [-0.2, 1.2], y: [-0.3, 0.3], equal: true, axes: false, height: 330, full: true });
-        const B = v.stage({ x: [0, 1], y: [-0.02, 0.2], axes: 'box', gutter: true, height: 240, minWidth: 270, xlabel: 'x/c', ylabel: 'y/c', title: 'camber and half-thickness' });
-        const C = v.stage({ x: [0, 1], y: [-0.35, 0.35], axes: 'box', gutter: true, height: 240, minWidth: 270, xlabel: 'x/c', ylabel: 'dy_c/dx', title: 'camber-line slope' });
+        const A = v.stage({ x: [-0.2, 1.2], y: [-0.2, 0.22], equal: true, axes: false, height: 270, full: true });
+        const B = v.stage({ x: [0, 1], y: [-0.02, 0.2], axes: 'box', gutter: true, height: 240, minWidth: 270, xlabel: 'x/c', ylabel: '$y/c$', title: 'camber and half-thickness' });
+        const C = v.stage({ x: [0, 1], y: [-0.35, 0.35], axes: 'box', gutter: true, height: 240, minWidth: 270, xlabel: 'x/c', ylabel: '$\\mathrm{d}y_c/\\mathrm{d}x$', title: 'camber-line slope' });
         const h = A.handle(0.4, 0.02, { color: 'orange', r: 7, label: 'max camber', labelPos: 'n', constrain: { x: [0.1, 0.9], y: [0, 0.09] } });
         h.onDrag = () => { p.set(Math.round(h.x * 100)); m.set(Math.round(h.y * 1000) / 10); };
         let last = {};
@@ -90,13 +90,13 @@ The four-digit NACA family builds a section from one camber parabola pair and on
           const M = m.value / 100, P = p.value / 100, T = t.value / 100, a = al.value * DEG;
           h.set(P, M);
           const pts = naca4(M, P, T, 80), d = [Math.cos(a), -Math.sin(a)], nrm = [Math.sin(a), Math.cos(a)];
-          for (let k = -2; k <= 2; k++) { const cx = -0.1 + 0.11 * k * nrm[0], cy = 0.11 * k * nrm[1] + 0.0; A.arrow(cx - 0.11 * d[0], cy - 0.11 * d[1], cx + 0.11 * d[0], cy + 0.11 * d[1], { color: 'gold', width: 1.6, head: 6 }); }
-          A.tex(String.raw`V_\infty`, -0.1, 0.27, { color: 'muted', size: 15, align: 'center' });
+          for (let k = -2; k <= 2; k++) { const cx = -0.1 + 0.075 * k * nrm[0], cy = 0.075 * k * nrm[1]; A.arrow(cx - 0.1 * d[0], cy - 0.1 * d[1], cx + 0.1 * d[0], cy + 0.1 * d[1], { color: 'gold', width: 1.6, head: 6 }); }
+          A.tex(String.raw`V_\infty`, -0.1, 0.2, { color: 'muted', size: 15, align: 'center' });
           A.line(-0.2, 0, 1.08, 0, { color: 'muted', dash: true, width: 1.2 });
-          A.line(0, 0, -0.2 * d[0], -0.2 * d[1], { color: 'gold', dash: true, width: 1.2 });
-          const arc = []; for (let k = 0; k <= 24; k++) { const th = Math.PI - a * k / 24; arc.push([0.13 * Math.cos(th), 0.13 * Math.sin(th)]); }
+          A.line(0, 0, -0.25 * d[0], -0.25 * d[1], { color: 'gold', dash: true, width: 1.2 });
+          const arc = []; for (let k = 0; k <= 24; k++) { const th = Math.PI - a * k / 24; arc.push([0.2 * Math.cos(th), 0.2 * Math.sin(th)]); }
           A.path(arc, { color: 'gold', width: 2 });
-          A.tex(String.raw`\alpha`, -0.185, 0.045 + (a > 0 ? 0 : -0.09), { color: 'gold', size: 15 });
+          A.tex(String.raw`\alpha`, -0.235, 0.2 * Math.sin(Math.PI - a / 2) + 0.025, { color: 'gold', size: 15 });
           A.poly(pts, { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 2 });
           const cam = camberLine(M, P, 80);
           A.path(cam, { color: 'orange', width: 2.2 });
@@ -110,8 +110,6 @@ The four-digit NACA family builds a section from one camber parabola pair and on
             A.dot(r, 0, { r: 2.5, color: 'muted' });
           }
           A.tex(String.raw`c`, 0.5, -0.045, { color: 'muted', size: 14, align: 'center' });
-          A.tex(String.raw`\text{chord line}`, 1.1, 0.03, { color: 'muted', size: 12, align: 'center' });
-          A.tex(String.raw`\text{mean camber line}`, 0.62, nacaCamber(0.62, M, P)[0] + 0.012, { color: 'orange', size: 12, align: 'center', baseline: 'bottom' });
           B.fn((x) => nacaT(x, T), { color: 'accent', width: 2.2 });
           B.fn((x) => nacaCamber(x, M, P)[0], { color: 'orange', width: 2.2 });
           B.vline(0.3, { color: 'faint', dash: true }); B.dot(0.3, nacaT(0.3, T), { color: 'accent', r: 4, label: 'max thickness at 0.3c', labelPos: 'ne' });
@@ -147,7 +145,7 @@ where the zero-lift angle $\alpha_{L0}$ is zero for a symmetric section and nega
         const reSel = v.select('Reynolds number', [{ value: 'r18', label: '1.8×10⁶' }, { value: 'r05', label: '0.5×10⁶' }], 'r18');
         const cam = v.slider('camber m (% of chord, p = 40 %)', 0, 6, 0, { step: 0.1 });
         const al = v.slider('angle of attack α (°)', -4, 26, 8, { step: 0.1 });
-        const A = v.stage({ x: [-4, 26], y: [-0.6, 1.9], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'α (°)', ylabel: 'c_l', title: 'lift curve' });
+        const A = v.stage({ x: [-4, 26], y: [-0.6, 1.9], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'α (°)', ylabel: '$c_l$', title: 'lift curve' });
         const B = v.stage({ x: [-0.25, 1.25], y: [-0.38, 0.38], equal: true, axes: false, height: 340, minWidth: 280, title: 'the flow over the section' });
         const C = v.stage({ x: [-4, 26], y: [0, 1.05], axes: 'box', gutter: true, height: 220, minWidth: 300, xlabel: 'α (°)', ylabel: 'f', title: 'attached fraction of the chord' });
         const hnd = A.handle(8, 0.9, { color: 'gold', r: 8, constrain: (x) => [clamp(x, -4, 26), 0] });
@@ -197,8 +195,8 @@ where the zero-lift angle $\alpha_{L0}$ is zero for a symmetric section and nega
         v.legend([['muted', 'measured, NACA 0012', { dot: true }], ['accent', 'separation model'], ['faint', 'thin-airfoil theory', { dash: true }], ['purple', 'panel method (attached)', { dash: true }]]);
         v.readout(() => {
           const { cur, best, aL, T, panel0 } = info, meas = clTab(T, al.value), tmax = T.reduce((q, r) => (r[1] > q[1] ? r : q), [0, 0]);
-          return `At $\\alpha = ${fx(al.value, 1)}^\\circ$: model $c_l = ${fx(cur.cl, 2)}$ with the flow attached over ${fx(cur.f * 100, 0)}\\% of the chord; measured symmetric section $c_l = ${fx(meas, 2)}$ (read off the figure, $\\pm0.03$). Thin-airfoil theory: $2\\pi(\\alpha-\\alpha_{L0}) = ${fx(2 * Math.PI * (al.value - aL) * DEG, 2)}$ with $\\alpha_{L0} = ${fx(aL, 2)}^\\circ$.\n`
-            + `Model maximum $c_{l,\\max} = ${fx(best[0], 2)}$ at $\\alpha = ${fx(best[1], 1)}^\\circ$; measured maximum ${fx(tmax[1], 2)} at ${fx(tmax[0], 1)}$°. Slope: $2\\pi = 6.28$ per radian, attached panel method (12 % thick) ${fx(panel0, 2)} per radian, fitted real-flow slope ${fx(KIRCH.r18.a, 1)}.`;
+          return `At $\\alpha = ${fx(al.value, 1)}^\\circ$: model $c_l = ${fx(cur.cl, 2)}$ with the flow attached over ${fx(cur.f * 100, 0)} percent of the chord; measured symmetric section $c_l = ${fx(meas, 2)}$ (read off the figure, $\\pm0.03$). Thin-airfoil theory: $2\\pi(\\alpha-\\alpha_{L0}) = ${fx(2 * Math.PI * (al.value - aL) * DEG, 2)}$ with $\\alpha_{L0} = ${fx(aL, 2)}^\\circ$.\n`
+            + `Model maximum $c_{l,\\max} = ${fx(best[0], 2)}$ at $\\alpha = ${fx(best[1], 1)}^\\circ$; measured maximum ${fx(tmax[1], 2)} at ${fx(tmax[0], 1)}$°. Slope per radian: $2\\pi = 6.28$, attached panel method (12 % thick) ${fx(panel0, 2)} per radian, fitted real-flow slope ${fx(KIRCH.r18.a, 1)}.`;
         });
       },
     },
@@ -221,9 +219,9 @@ $$c_l \approx \int_0^1 \big(C_{p,l} - C_{p,u}\big)\,\mathrm{d}\!\left(\frac{x}{c
         const al = v.slider('angle of attack α (°)', -4, 14, 6, { step: 0.1 });
         const m = v.slider('camber m (% of chord)', 0, 6, 2, { step: 0.1 });
         const t = v.slider('thickness t (% of chord)', 6, 24, 12, { step: 0.5 });
-        const A = v.stage({ x: [0, 1], y: [-1.5, 4], axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'x/c', ylabel: '−C_p', title: 'pressure coefficient (suction up)' });
+        const A = v.stage({ x: [0, 1], y: [-1.5, 4], axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'x/c', ylabel: '$-C_p$', title: 'pressure coefficient (suction up)' });
         const B = v.stage({ x: [-0.15, 1.15], y: [-0.3, 0.3], equal: true, axes: false, height: 330, minWidth: 280, title: 'surface pressure' });
-        const D = v.stage({ x: [-4, 14], y: [0, 4], axes: 'box', gutter: true, height: 210, minWidth: 320, xlabel: 'α (°)', ylabel: '−C_p,min', title: 'peak suction against angle of attack' });
+        const D = v.stage({ x: [-4, 14], y: [0, 4], axes: 'box', gutter: true, height: 210, minWidth: 320, xlabel: 'α (°)', ylabel: '$-C_{p,\\min}$', title: 'peak suction against angle of attack' });
         const probe = A.handle(0.3, 0, { color: 'gold', r: 7, constrain: (x) => [clamp(x, 0.004, 0.996), 0] });
         let info = {};
         v.render(() => {
@@ -252,10 +250,10 @@ $$c_l \approx \int_0^1 \big(C_{p,l} - C_{p,u}\big)\,\mathrm{d}\!\left(\frac{x}{c
             }
           }
           B.dot(px, interp(up.x, pts.slice(md.N / 2, md.N).map((q) => q[1]), px), { r: 5, color: 'gold' });
-          B.tex(String.raw`V_\infty`, -0.1, 0.12, { color: 'muted', size: 14 }); B.arrow(-0.14, 0.04, -0.03, 0.04 - 0.11 * Math.tan(al.value * DEG) * 0, { color: 'muted', width: 1.4, head: 5 });
+          B.tex(String.raw`V_\infty`, -0.08, 0.1, { color: 'muted', size: 14 }); B.arrow(-0.14, 0.04, -0.03, 0.04 - 0.11 * Math.tan(al.value * DEG), { color: 'gold', width: 1.6, head: 5 });
           // peak suction vs alpha
           const pk = (a2) => { const s2 = panelSolve(md, a2 * DEG); return -Math.min(...s2.cp); };
-          D.fn((x) => pk(x), { color: 'accent', width: 2.2, n: 60 });
+          const pkv = []; for (let k = 0; k <= 36; k++) pkv.push([-4 + k * 0.5, pk(-4 + k * 0.5)]); D.setView([-4, 14], [0, Math.max(...pkv.map((q) => q[1])) * 1.08]); D.path(pkv, { color: 'accent', width: 2.2 });
           D.dot(al.value, -Math.min(...sol.cp), { r: 4.5, color: 'gold' });
           info = { sol, up, lo, cu, cl_, px, is, md, area: 0 };
           let ar = 0; for (let i = 0; i < md.N; i++) ar += -sol.cp[i] * md.ny[i] * md.L[i];
@@ -265,7 +263,7 @@ $$c_l \approx \int_0^1 \big(C_{p,l} - C_{p,u}\big)\,\mathrm{d}\!\left(\frac{x}{c
           const { sol, cu, cl_, px, md, area, is } = info, Vu = Math.sqrt(Math.max(0, 1 - cu)), Vl = Math.sqrt(Math.max(0, 1 - cl_));
           const th = thinAirfoil(nacaSlope(m.value / 100, 0.4));
           return `Probe at $x/c = ${fx(px, 2)}$: upper $V/V_\\infty = ${fx(Vu, 3)}$, $C_p = 1-(V/V_\\infty)^2 = ${fx(cu, 3)}$; lower $V/V_\\infty = ${fx(Vl, 3)}$, $C_p = ${fx(cl_, 3)}$ · peak suction $C_{p,\\min} = ${fx(Math.min(...sol.cp), 2)}$ · stagnation point at $x/c = ${fx(md.cx[is], 3)}$ ($C_p = ${fx(sol.cp[is], 3)}$)\n`
-            + `Lift from the area between the curves: $\\oint -C_p\\,\\mathrm{d}x = ${fx(area, 3)}$; from the full pressure integral $c_l = ${fx(sol.cl, 3)}$; thin-airfoil theory $2\\pi(\\alpha-\\alpha_{L0}) = ${fx(2 * Math.PI * (al.value * DEG - th.alphaL0), 3)}$ (thickness raises the slope a few percent).`
+            + `Lift from the area between the curves: $\\oint -C_p\\,\\mathrm{d}x = ${fx(area, 3)}$; from the full pressure integral $c_l = ${fx(sol.cl, 3)}$; thin-airfoil theory $2\\pi(\\alpha-\\alpha_{L0}) = ${fx(2 * Math.PI * (al.value * DEG - th.alphaL0), 3)}$ (a thick section's slope exceeds $2\\pi$).`
             + (al.value > 12 ? '\nBeyond about 12° a real section of this thickness stalls; this attached-flow solution no longer applies.' : '');
         });
       },
@@ -287,10 +285,10 @@ and moves along the chord as the angle of attack changes, running off to infinit
       viz(v) {
         const m = v.slider('camber m (% of chord)', 0, 6, 3, { step: 0.1 });
         const al = v.slider('angle of attack α (°)', -3, 12, 4, { step: 0.1 });
-        const A = v.stage({ x: [-0.15, 1.2], y: [-0.28, 0.4], equal: true, axes: false, height: 320, minWidth: 320, title: 'force, centre of pressure, aerodynamic centre' });
-        const B = v.stage({ x: [-3, 12], y: [-0.4, 0.4], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'α (°)', ylabel: 'c_m about x₀', title: 'moment about different points' });
-        const C = v.stage({ x: [-3, 12], y: [-0.5, 1.5], axes: 'box', gutter: true, height: 230, minWidth: 300, xlabel: 'α (°)', ylabel: 'x_cp / c', title: 'centre of pressure' });
-        const ref = A.handle(0.5, 0, { color: 'gold', r: 8, label: 'x₀', labelPos: 's', constrain: (x) => [clamp(x, 0, 1), 0] });
+        const A = v.stage({ x: [-0.15, 1.2], y: [-0.2, 0.45], equal: true, axes: false, height: 320, minWidth: 320, title: 'force, centre of pressure, aerodynamic centre' });
+        const B = v.stage({ x: [-6, 12], y: [-0.4, 0.4], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'α (°)', ylabel: '$c_m$ about $x_0$', title: 'moment about different points' });
+        const C = v.stage({ x: [-6, 12], y: [-0.5, 1.5], axes: 'box', gutter: true, height: 230, minWidth: 300, xlabel: 'α (°)', ylabel: '$x_{cp}/c$', title: 'centre of pressure' });
+        const ref = A.handle(0.5, 0, { color: 'gold', r: 8, label: 'x₀', labelPos: 'e', constrain: (x) => [clamp(x, 0, 1), 0] });
         let info = {};
         v.render(() => {
           const fo = foil(m.value / 100, 0.4, 0.12), md = fo.model, a = al.value * DEG;
@@ -306,11 +304,11 @@ and moves along the chord as the angle of attack changes, running off to infinit
           ref.set(x0, 0);
           A.dot(qx, qy, { r: 6, color: 'green', label: 'aerodynamic centre', labelPos: 's' });
           if (Math.abs(cur.cl) > 0.02 && xcp > -0.1 && xcp < 1.1) {
-            A.dot(rx, ry, { r: 5.5, color: 'red', label: 'centre of pressure', labelPos: 'n' });
+            A.dot(rx, ry, { r: 5.5, color: 'red', label: 'centre of pressure', labelPos: 'ne' });
             const L = 0.3 * cur.cl; A.arrow(rx, ry, rx, ry + L, { color: 'green', width: 3, head: 8 });
           } else A.text(Math.abs(cur.cl) <= 0.02 ? 'c_l ≈ 0: the centre of pressure is far away' : `centre of pressure off the chord: x_cp/c = ${fx(xcp, 2)}`, 0.5, 0.33, { color: 'red', size: 11.5, align: 'center' });
           // moment curves
-          const rows = []; for (let k = 0; k <= 30; k++) rows.push(row(-3 + k * 0.5));
+          const rows = []; for (let k = 0; k <= 36; k++) rows.push(row(-6 + k * 0.5));
           B.hline(0, { color: 'grid' });
           B.path(rows.map((r) => [r.a, cmx(r, 0)]), { color: 'purple', width: 1.8 });
           B.path(rows.map((r) => [r.a, cmx(r, 0.5)]), { color: 'teal', width: 1.8 });
@@ -354,8 +352,8 @@ and moves along the chord as the angle of attack changes, running off to infinit
         const mu = v.slider('camber μ', 0, 0.12, 0.05, { step: 0.005 });
         const nsel = v.select('trailing edge', [{ value: '2', label: 'cusp (Joukowski)' }, { value: '1.9', label: 'angle 18°' }, { value: '1.8', label: 'angle 36°' }], '1.9');
         const A = v.stage({ x: [-0.1, 1.1], y: [-0.28, 0.28], equal: true, axes: false, height: 300, minWidth: 300, title: 'panels on the section' });
-        const B = v.stage({ x: [0, 1], y: [-1.5, 3], axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'x/c', ylabel: '−C_p', title: 'surface pressure' });
-        const C = v.stage({ x: [8, 256], y: [1e-4, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 240, minWidth: 300, xlabel: 'number of panels N', ylabel: '|Δc_l|/c_l', title: 'convergence of the lift coefficient' });
+        const B = v.stage({ x: [0, 1], y: [-1.5, 3], axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'x/c', ylabel: '$-C_p$', title: 'surface pressure' });
+        const C = v.stage({ x: [8, 256], y: [1e-4, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 240, minWidth: 300, xlabel: 'number of panels N', ylabel: '$|\\Delta c_l|/c_l$', title: 'convergence of the lift coefficient' });
         const store = new Map();
         const getExact = (e, c, n) => { const k = `${e}|${c}|${n}`; let o = store.get(k); if (!o) { o = { J: karmanTrefftz(e, c, n, 200), models: new Map() }; o.surf = o.J.surface(900); store.set(k, o); if (store.size > 12) store.delete(store.keys().next().value); } return o; };
         const modelN = (o, N) => { let md = o.models.get(N); if (!md) { md = panelModel(karmanTrefftz(o.e, o.c, o.n, N).pts); o.models.set(N, md); } return md; };
@@ -368,11 +366,12 @@ and moves along the chord as the angle of attack changes, running off to infinit
           const upper = [], lower = []; // the surface is sampled TE -> lower -> LE -> upper -> TE
           const half = o.surf.length >> 1;
           let iLE = 0; o.surf.forEach((q, i) => { if (q.p[0] < o.surf[iLE].p[0]) iLE = i; });
-          const cpEx = o.surf.map((q) => [q.p[0], -(1 - ex.speedAt(q.th) ** 2)]);
+          const cpEx = o.surf.map((q) => { const y = -(1 - ex.speedAt(q.th) ** 2); return Number.isFinite(y) ? [q.p[0], y] : null; });
           B.path(cpEx.slice(iLE), { color: 'accent', width: 2 }); B.path(cpEx.slice(0, iLE + 1), { color: 'orange', width: 2 });
+          const cpOk = cpEx.filter(Boolean);
           const dots = []; for (let i = 0; i < md.N; i++) dots.push([md.cx[i], -sol.cp[i]]);
           B.dots(dots, { r: 3, color: 'ink' });
-          const ymax = Math.max(1.3, ...cpEx.map((q) => q[1])) + 0.3, ymin = Math.min(-1.2, ...cpEx.map((q) => q[1])) - 0.2; B.setView([0, 1], [ymin, ymax]);
+          const ymax = Math.max(1.3, ...cpOk.map((q) => q[1])) + 0.3, ymin = Math.min(-1.2, ...cpOk.map((q) => q[1])) - 0.2; B.setView([0, 1], [ymin, ymax]);
           // panels
           A.poly(J.pts.slice(0, -1), { fill: 'ink', fillAlpha: 0.06, stroke: false });
           for (let i = 0; i < md.N; i++) { A.path([J.pts[i], J.pts[i + 1]], { color: i % 2 ? 'accent' : 'orange', width: 2.4 }); A.dot(md.cx[i], md.cy[i], { r: md.N > 60 ? 1.2 : 2.4, color: 'ink' }); }
@@ -417,7 +416,7 @@ and moves along the chord as the angle of attack changes, running off to infinit
         const wl = v.slider('wing loading W/S (N/m²)', 500, 7000, 3000, { step: 50, log: true });
         const al = v.slider('angle of attack α (°)', -6, 28, 10, { step: 0.1 });
         const A = v.stage({ x: [-0.15, 1.45], y: [-0.28, 0.2], equal: true, axes: false, height: 290, full: true });
-        const B = v.stage({ x: [-8, 28], y: [-0.6, 3.4], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'α (°)', ylabel: 'c_l', title: 'lift curve' });
+        const B = v.stage({ x: [-8, 28], y: [-0.6, 3.4], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'α (°)', ylabel: '$c_l$', title: 'lift curve' });
         const C = v.stage({ x: [500, 7000], y: [0, 100], xlog: true, axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'wing loading W/S (N/m²)', ylabel: 'stall speed (m/s)', title: 'stall speed' });
         const hnd = B.handle(10, 1, { color: 'gold', r: 8, constrain: (x) => [clamp(x, -6, 28), 0] });
         let sync = false; hnd.onDrag = () => { if (sync) return; sync = true; al.set(Math.round(clamp(hnd.x, -6, 28) * 10) / 10); sync = false; };
@@ -426,12 +425,12 @@ and moves along the chord as the angle of attack changes, running off to infinit
           const slope = (x) => (x > 1 - ff ? -dd * DEG : 0), aL = thinAirfoil(slope).alphaL0 / DEG * et;
           const P = { ...KIRCH.r18, aL0: aL, A1: KIRCH.r18.A1 + (sl ? SLAT : 0) };
           const cl = (a) => kirchCl(a, P).cl * (1 + fw);
-          let best = [-9, 0]; for (let a = -6; a <= 40; a += 0.05) { const c = cl(a); if (c > best[0]) best = [c, a]; }
+          let best = [-9, 0]; for (let a = aL; a <= aL + P.A1 + 6; a += 0.05) { const c = cl(a); if (c > best[0]) best = [c, a]; }
           return { P, cl, aL, best, f: (a) => kirchCl(a, P).f };
         };
         const foilDraw = (dd, ff, sl, fw) => {
           const pts = naca4(0, 0, 0.12, 70), xh = 1 - ff, n = 70, rot = (x, y, a) => [xh + (x - xh) * Math.cos(a) + y * Math.sin(a), -(x - xh) * Math.sin(a) + y * Math.cos(a)];
-          const yU = (x) => nacaT(x, 0.12), a = -dd * DEG, shift = fw;
+          const yU = (x) => nacaT(x, 0.12), a = dd * DEG, shift = fw;
           const fl = []; const flapUp = []; for (let k = 0; k <= 30; k++) { const x = xh + (1 - xh) * k / 30; flapUp.push([x, yU(x)]); }
           const flapLo = flapUp.map(([x, y]) => [x, -y]).reverse();
           const flap = [[xh, yU(xh)], ...flapUp, ...flapLo, [xh, -yU(xh)]].map(([x, y]) => { const [rx, ry] = rot(x, y, a); return [rx + shift, ry - 0.0 - 0.01 * (dd > 0 ? Math.sin(Math.min(1, fw * 6) * Math.PI / 2) : 0)]; });
@@ -485,7 +484,7 @@ and moves along the chord as the angle of attack changes, running off to infinit
       name: 'Airfoil drag: friction and pressure drag',
       statement: String.raw`In potential flow the drag on a section is zero (d'Alembert). In real flow the section drag coefficient is the sum of **skin-friction drag**, the streamwise component of the wall shear, and **pressure (form) drag**, the net pressure force that remains because the boundary layer displaces the flow and, when it separates, because the pressure behind the separation point does not recover. The friction part falls with Reynolds number, $c_f\propto Re^{-1/2}$ in laminar and $\propto Re^{-1/5}$ in turbulent flow, and jumps up when transition moves forward and the layer becomes turbulent; the pressure part grows with thickness and angle of attack and rises steeply when the flow separates. For a smooth, moderately thick section at small $\alpha$ the total is about $c_d\approx0.005$–$0.01$.`,
       idea: String.raw`The boundary layer is computed from the inviscid surface speed: Thwaites' integral method for the laminar layer, Michel's criterion (or a trip location) to switch to turbulence, and Head's entrainment method for the turbulent layer, whose shape factor $H$ rises in an adverse pressure gradient (separation near $H\approx2.4$). At the trailing edge the momentum thickness $\theta$ is the momentum lost from the stream, and the Squire–Young formula $c_d = 2\theta\,(U_{TE}/V_\infty)^{(H+5)/2}$ turns it into the total drag; subtracting the integral of the wall shear leaves the pressure drag.`,
-      caption: String.raw`Slide the Reynolds number and the transition behaviour. In the left panel the drag falls along the laminar and turbulent flat-plate lines and steps up between them as the transition point moves; the pressure part (red) grows with angle of attack and thickness. The middle panel colours the surface by boundary-layer state (laminar, turbulent, separated) and the right panel plots the wall shear, which jumps up at transition. Squares are measured drag coefficients of a NACA 0012 at this angle of attack (read off the figure).`,
+      caption: String.raw`Slide the Reynolds number and the transition behaviour. In the left panel the drag falls along the laminar and turbulent flat-plate lines and steps up between them as the transition point moves; the pressure part (red) grows with angle of attack and thickness. The middle panel colours the surface by boundary-layer state (laminar, turbulent, separated) and the right panel plots the wall shear, which jumps up at transition. Open circles are measured drag coefficients of a NACA 0012 at this angle of attack (read off the figure).`,
       deps: ['fluid-8.1', 'fluid-8.6', 'aero-1.4'],
       refs: ['Anderson ch. 4', 'Anderson ch. 5'],
       tags: ['drag', 'boundary layer'],
@@ -496,9 +495,9 @@ and moves along the chord as the angle of attack changes, running off to infinit
         const tr = v.select('transition', [{ value: 'nat', label: 'natural' }, { value: 'trip', label: 'tripped at 5 %' }, { value: 'mid', label: 'at 50 %' }, { value: 'lam', label: 'delayed' }], 'nat');
         const al = v.slider('angle of attack α (°)', -2, 14, 2, { step: 0.1 });
         const t = v.slider('thickness t (% of chord)', 6, 24, 12, { step: 0.5 });
-        const A = v.stage({ x: [1e5, 1e8], y: [1e-3, 5e-2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'Reynolds number', ylabel: 'c_d', title: 'section drag against Reynolds number' });
+        const A = v.stage({ x: [1e5, 1e8], y: [2e-4, 5e-2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'Reynolds number', ylabel: '$c_d$', title: 'section drag against Reynolds number' });
         const B = v.stage({ x: [-0.1, 1.1], y: [-0.25, 0.25], equal: true, axes: false, height: 330, minWidth: 280, title: 'state of the boundary layer' });
-        const C = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, height: 230, minWidth: 320, xlabel: 'x/c', ylabel: '1000·τ_w/q', title: 'wall shear, upper (solid) and lower (dashed)' });
+        const C = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, height: 230, minWidth: 320, xlabel: 'x/c', ylabel: '$1000\\,\\tau_w/q$', title: 'wall shear, upper (solid) and lower (dashed)' });
         const xtrOf = (k) => (k === 'nat' ? null : k === 'trip' ? 0.05 : k === 'mid' ? 0.5 : 1.01);
         let info = {};
         v.render(() => {
@@ -510,8 +509,8 @@ and moves along the chord as the angle of attack changes, running off to infinit
           for (let k = 0; k <= 36; k++) { const Re = 10 ** (5 + 3 * k / 36), b = run(Re); R.push(Re); tot.push([Re, b.cd]); fr.push([Re, b.cdf]); pr.push([Re, Math.max(b.cdp, 1e-5)]); }
           A.fn((x) => 2 * 1.328 / Math.sqrt(x), { color: 'faint', width: 1.3, dash: true });
           A.fn((x) => 2 * 0.455 / Math.log10(x) ** 2.58, { color: 'faint', width: 1.3, dash: true });
-          A.text('flat plate, laminar', 2.2e5, 2 * 1.328 / Math.sqrt(2.2e5) * 1.2, { color: 'muted', size: 10.5, align: 'left' });
-          A.text('flat plate, turbulent', 2e7, 2 * 0.455 / Math.log10(2e7) ** 2.58 * 1.25, { color: 'muted', size: 10.5, align: 'left' });
+          A.text('flat plate, laminar', 1.5e6, 2 * 1.328 / Math.sqrt(1.5e6) * 0.7, { color: 'muted', size: 10.5, align: 'left' });
+          A.text('flat plate, turbulent', 1.5e6, 2 * 0.455 / Math.log10(1.5e6) ** 2.58 * 1.3, { color: 'muted', size: 10.5, align: 'left' });
           A.path(fr, { color: 'orange', width: 2 }); A.path(pr, { color: 'red', width: 2 }); A.path(tot, { color: 'accent', width: 2.8 });
           const T = [[1.8e6, CRITZOS_18], [0.5e6, CRITZOS_05]];
           for (const [Re, tab] of T) if (al.value <= 12) A.dot(Re, cdTab(tab, al.value), { r: 4.5, color: 'ink', hollow: true });

@@ -158,13 +158,13 @@ Plane strain is plane stress with $E\to E/(1-\nu^2)$ and $\nu\to\nu/(1-\nu)$.`,
           draw(R, pe, 0.95, sz);
           // rigid walls at the two ends (hatched), drawn as a bar behind the front face
           const wz = 1.35, W0 = [[-0.92, -0.72], [0.92, -0.72], [0.92, 0.72], [-0.92, 0.72]].map(([x, y]) => P3([x, y, wz], [0.1, 0]));
-          R.path(W0, { close: true, color: 'muted', width: 1.6, fill: 'muted', fillAlpha: 0.06, hatch: true, hatchAlpha: 0.5 });
+          R.path(W0, { close: true, color: 'muted', width: 1.6, fill: 'muted', fillAlpha: 0.06, hatch: true, hatchAlpha: 0.3 });
           R.text('rigid wall', W0[1][0] - 0.1, W0[0][1] - 0.12, { size: 10.5, color: 'muted', align: 'right' });
           R.text(`σz = ν(σx+σy) = ${num(sz, 0)} MPa,  εz = 0`, 0, -1.4, { size: 11, color: 'muted', align: 'center' });
         });
         v.readout(() => {
           const { ps, pe, sz } = resp(), n = nu.value;
-          return `Plane stress: $E\\varepsilon_x=${num(ps[0], 1)}$, $E\\varepsilon_y=${num(ps[1], 1)}$, $E\\varepsilon_z=${num(ps[2], 1)}$ MPa, $\\sigma_z=0$. · Plane strain: $E\\varepsilon_x=${num(pe[0], 1)}$, $E\\varepsilon_y=${num(pe[1], 1)}$, $\\varepsilon_z=0$, $\\sigma_z=${num(sz, 1)}$ MPa. · Stiffening factor $(1-\\nu^2)$ on the in-plane strain at $\\nu=${num(n, 2)}$ (for $\\sigma_y=0$ the in-plane strain $\\varepsilon_x$ is smaller by ${num(n * n * 100, 1)}\\,\\%$ — ${n === 0 ? 'identical at ν = 0' : 'a stiffer slice'}).`;
+          return `Plane stress: $E\\varepsilon_x=${num(ps[0], 1)}$, $E\\varepsilon_y=${num(ps[1], 1)}$, $E\\varepsilon_z=${num(ps[2], 1)}$ MPa, $\\sigma_z=0$. · Plane strain: $E\\varepsilon_x=${num(pe[0], 1)}$, $E\\varepsilon_y=${num(pe[1], 1)}$, $\\varepsilon_z=0$, $\\sigma_z=${num(sz, 1)}$ MPa. · Stiffening factor $(1-\\nu^2)$ on the in-plane strain at $\\nu=${num(n, 2)}$ (for $\\sigma_y=0$ the in-plane strain $\\varepsilon_x$ is smaller by ${num(n * n * 100, 1)} % — ${n === 0 ? 'identical at ν = 0' : 'a stiffer slice'}).`;
         });
       },
     },

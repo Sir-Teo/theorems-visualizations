@@ -121,8 +121,8 @@ export function bridgeParts(vals = BR, leak = null, rl = 500) {
     { type: 'label', at: [1, 3], text: '$v_T$', dy: -9 }, { type: 'label', at: [2, 1.5], text: '$v_1$', dx: 30, dy: -6 }, { type: 'label', at: [5, 1.5], text: '$v_2$', dx: -30, dy: -6 },
   ];
   if (leak) {
-    const y = leak === 'T' ? 3 : 1.5;
-    P.push({ type: 'W', at: [0, 0, 6.3, 0] }, { type: 'W', at: [5, y, 6.3, y] }, { type: 'R', id: 'RL', name: 'leak', value: rl, at: [6.3, y, 6.3, 0], labelSide: 1 });
+    const x = leak === '1' ? 1 : 6.3, y = leak === 'T' ? 3 : 1.5, xs = leak === '1' ? 2 : 5;
+    P.push({ type: 'W', at: [0, 0, 6.3, 0] }, { type: 'W', at: [xs, y, x, y] }, { type: 'R', id: 'RL', name: 'stray', value: rl, at: [x, y, x, 0], labelSide: leak === '1' ? 1 : -1 });
   }
   return P;
 }

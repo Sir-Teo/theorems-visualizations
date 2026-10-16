@@ -71,8 +71,8 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { sum, all, stray } = info;
-          const head = `Node $${NODE_TEX[nodeSel.value]}$: $\\sum i_{\\text{in}} = ${v.fix(z0(sum, 1e-15) * 1e3, 6)}$ mA over the ${stray ? 'metered' : ''} branches shown`;
-          return stray ? `${head} — the tally is off by exactly the stray current ($${v.fix(stray.i * 1e3, 4)}$ mA): charge is not piling up, the sum just omits a branch.\nWith the stray path included the sum is $${v.fix(z0(sum + stray.i, 1e-15) * 1e3, 6)}$ mA.`
+          const head = `Node $${NODE_TEX[nodeSel.value]}$: $\\sum i_{\\text{in}} = ${v.fix(z0(sum, 1e-9) * 1e3, 6)}$ mA over the ${stray ? 'metered' : ''} branches shown`;
+          return stray ? `${head} — the tally is off by exactly the stray current ($${v.fix(stray.i * 1e3, 4)}$ mA): charge is not piling up, the sum just omits a branch.\nWith the stray path included the sum is $${v.fix(z0(sum + stray.i, 1e-9) * 1e3, 6)}$ mA.`
             : `${head}.\nAt all four nodes the largest $|\\sum i|$ is $${v.sci(all + 1e-20, 1)}$ A, rounding error of the solver.`;
         });
       },
