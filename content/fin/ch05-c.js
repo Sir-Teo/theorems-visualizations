@@ -74,7 +74,7 @@ Scope: a theorem about the *set of solutions* of a linear expectational differen
           }
           st = { f, ret: sum / M, r, crashAt, Bn: B, exp: reg.value === 'burst' ? 1 / (1 - pi.value) : null };
         });
-        v.readout(() => `Fundamental value ${v.fix(st.f, 1)}. Mean one-period gross return of a share (dividend + resale) over 20,000 draws: **${v.fix(st.ret, 4)}**, required $1+r=${v.fix(1 + st.r, 4)}$ ✓ — the pricing equation holds for every bubble process with $\\mathrm E_t B_{t+1}=(1+r)B_t$.\n${reg.value === 'cert' ? 'Bubble certain: after 50 periods it is ' + v.fix(rr.value * 0 + 20 * Math.pow(1 + st.r, 50) * (B0.value / 20), 0) + ' (transversality violated: $(1+r)^{-T}p_T\\not\\to 0$).' : reg.value === 'burst' ? `The bubble survives each period with probability ${pct(pi.value, 0)} (expected life ${v.fix(st.exp, 1)} periods) and then grows ${pct((1 + st.r) / pi.value - 1, 1)} per period instead of ${pct(st.r, 1)}; ${st.crashAt >= 0 && st.crashAt <= 50 ? 'on this history it burst in period ' + st.crashAt + '.' : 'on this history it survived all 50 periods.'}` : 'Finite horizon: backward induction gives $B_T=0$, so $B_{T-1}=0$, …, $B_0=0$; the price is the fundamental value.'}`);
+        v.readout(() => `Fundamental value ${v.fix(st.f, 1)}. Mean one-period gross return of a share (dividend + resale) over 20,000 draws: **${v.fix(st.ret, 4)}**, required $1+r=${v.fix(1 + st.r, 4)}$ ✓ — the pricing equation holds for every bubble process with $\\mathrm E_t B_{t+1}=(1+r)B_t$.\n${reg.value === 'cert' ? 'Bubble certain: after 50 periods it is ' + v.fix(B0.value * Math.pow(1 + st.r, 50), 0) + ' (transversality violated: $(1+r)^{-T}p_T\\not\\to 0$).' : reg.value === 'burst' ? `The bubble survives each period with probability ${pct(pi.value, 0)} (expected life ${v.fix(st.exp, 1)} periods) and then grows ${pct((1 + st.r) / pi.value - 1, 1)} per period instead of ${pct(st.r, 1)}; ${st.crashAt >= 0 && st.crashAt <= 50 ? 'on this history it burst in period ' + st.crashAt + '.' : 'on this history it survived all 50 periods.'}` : 'Finite horizon: backward induction gives $B_T=0$, so $B_{T-1}=0$, …, $B_0=0$; the price is the fundamental value.'}`);
       },
     },
     // ------------------------------------------------------------------ 5.12
@@ -106,7 +106,7 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
         const A = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'trading period', ylabel: 'price ($ per share)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'one parameter set, several sessions (model)' });
         const B = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'trading period', ylabel: 'mean price ($)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'experience shrinks the bubble' });
         const sim = (b, k, nz, sd) => {
-          const R = rng(sd), p = []; let p1 = 1.9, p2 = 1.9;
+          const R = rng(sd), p = []; let p1 = 1.9, p2 = 1.6;
           for (let t = 1; t <= T; t++) {
             const w = Math.min(1, k + (1 - k) * Math.pow(t / T, 6) * 0.5);
             let x = p1 + b * (p1 - p2) + w * (FV(t) - p1) + nz / 100 * R.normal();
@@ -124,10 +124,10 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
           A.path(main.map((y, t) => [t + 1, y]), { color: 'accent', width: 2.8 }); A.dots(main.map((y, t) => [t + 1, y]), { r: 3.4, color: 'accent' });
           B.path(stairs, { color: 'green', width: 2.2 });
           const cols = ['red', 'orange', 'teal'], names = ['inexperienced', 'once experienced', 'twice experienced'];
-          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 }); B.text(names[k], 15.6, avg[T - 1] + 0.0, { dx: 0, dy: -10 - k * 0, align: 'right', size: 11, color: cols[k], weight: 700 }); });
+          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 }); B.text(names[k], [10, 8, 5][k], avg[[10, 8, 5][k] - 1], { dy: -12, align: 'center', size: 11, color: cols[k], weight: 700 }); });
           const mm = meas(main); let pk = 0, pf = 0; main.forEach((y, t) => { if (y > pk) { pk = y; pf = FV(t + 1); } }); m = { ...mm, pk, pf };
         });
-        v.readout(() => `Session shown in bold: mean relative deviation from fundamental value **RD = ${sg(m.rd, 2)}**, relative absolute deviation **RAD = ${v.fix(m.rad, 2)}** (both divided by the mean fundamental value 1.92 dollars); peak price $${v.fix(m.pk, 2)} against a fundamental value of $${v.fix(m.pf, 2)} in that period. A market that follows the staircase would have RD = RAD = 0.\nModel parameters, not estimates: the presets are chosen to mimic the qualitative pattern (bubble, then smaller bubbles with experience), not fitted to the 1988 data.`);
+        v.readout(() => `Session shown in bold: mean relative deviation from fundamental value **RD = ${sg(m.rd, 2)}**, relative absolute deviation **RAD = ${v.fix(m.rad, 2)}** (both divided by the mean fundamental value 1.92 dollars); peak price \\$${v.fix(m.pk, 2)} against a fundamental value of \\$${v.fix(m.pf, 2)} in that period. A market that follows the staircase would have RD = RAD = 0.\nModel parameters, not estimates: the presets are chosen to mimic the qualitative pattern (bubble, then smaller bubbles with experience), not fitted to the 1988 data.`);
       },
     },
     // ------------------------------------------------------------------ 5.13
@@ -142,7 +142,7 @@ $$C=\int (x-K)^+\,p(x,T)\,dx=(S-K)\,\Phi(d)+\sigma\sqrt T\,\varphi(d),\qquad d=\
 
 Scope: arithmetic Brownian motion without drift or interest, prices that can go negative; the framework of fin-5.2.`,
       idea: String.raw`Before 1900 the study of markets was descriptive; Bachelier gave speculation a mathematical theory five years before Einstein's and Smoluchowski's work on Brownian motion, using the central limit theorem and the diffusion (heat) equation (pde-1.x) to describe the probabilities of price changes, and reasoning that a fair market has no predictable gains. His work was largely ignored for decades (it was brought back to economists' attention by Savage and Samuelson in the 1950s and 1960s, and is now seen as the origin of mathematical finance); the later Black–Scholes model (fin-9.3) differs mainly by using geometric Brownian motion and discounting. The thesis introduced the random-walk model of prices (fin-5.2), option valuation by expected payoff, and the connection between probability and the heat equation that underlies fin-9.2.`,
-      caption: String.raw`**Left**: 60 simulated price paths (a fair game with daily standard deviation $\sigma$) from today's price 100 with Bachelier's $\pm\sigma\sqrt t$ envelope; move the **time** slider and watch the histogram of prices across paths at that date fill out the Gaussian curve with variance $\sigma^2t$. **Right**: the call payoff and the Gaussian density of the final price; the option's value is the area under payoff × density. Move the **strike** $K$: the closed form, the numerical integral and the average over 4000 simulated paths agree. The readout also checks his reflection principle. (Simulation of Bachelier's model with illustrative parameters; the thesis's own tables are not reproduced.)`,
+      caption: String.raw`**Left**: 60 simulated price paths (a fair game with daily standard deviation $\sigma$) from today's price 100 with Bachelier's $\pm\sigma\sqrt t$ envelope; move the **time** slider and watch the histogram of prices across paths at that date fill out the Gaussian curve with variance $\sigma^2t$. **Right**: the call payoff and the Gaussian density of the final price; the option's value is the shaded area under payoff × density. Move the **strike** $K$: the closed form, the numerical integral and the average over 4000 simulated paths agree. The readout also checks his reflection principle. (Simulation of Bachelier's model with illustrative parameters; the thesis's own tables are not reproduced.)`,
       deps: ['prob-3.4.1', 'fin-5.2'],
       refs: [],
       tags: ['Brownian motion', 'option pricing', 'heat equation'],
@@ -180,12 +180,12 @@ Scope: arithmetic Brownian motion without drift or interest, prices that can go 
           let mc = 0, hit = 0, above = 0; for (let i = 0; i < NP; i++) { mc += Math.max(ends[i][t0] - k, 0); let mx = -1e9; for (let t = 0; t <= t0; t++) if (ends[i][t] > mx) mx = ends[i][t]; if (mx >= k) hit++; if (ends[i][t0] >= k) above++; } mc /= NP;
           B.setView([80, 125], [0, Math.max(0.12, 1.15 * normPdf(0, 0, sd), 0)]);
           B.fn((x) => normPdf(x, S0, sd), { domain: [80, 125], color: 'red', width: 2.2, n: 300 });
-          B.fn((x) => normPdf(x, S0, sd) * Math.max(x - k, 0) / Math.max(1, sd), { domain: [k, 125], color: 'accent', fill: true, fillAlpha: 0.3, width: 1.5, n: 200 });
+          B.fn((x) => normPdf(x, S0, sd) * Math.max(x - k, 0), { domain: [k, 125], color: 'accent', fill: true, fillAlpha: 0.3, width: 1.5, n: 200 });
           B.vline(k, { color: 'orange', width: 2 }); B.vline(S0, { color: 'faint', dash: true });
-          B.text('density of the price at t', 118, normPdf(118, S0, sd), { dx: 0, dy: -12, align: 'right', size: 11, color: 'red', weight: 700 });
+          B.text('density of the price at t', 82, 0.012, { align: 'left', size: 11, color: 'red', weight: 700 });
           st = { closed, num, mc, hit: hit / NP, above: above / NP, sd, k };
         });
-        v.readout(() => `At $t=${tt.value}$: spread of the price $\\sigma\\sqrt t=${v.fix(st.sd, 2)}$ (Gaussian, variance $\\sigma^2 t$). Call with strike ${v.fix(st.k, 1)} expiring then: closed form **${v.fix(st.closed, 3)}**, numerical integral ${v.fix(st.num, 3)}, mean of 4000 simulated payoffs ${v.fix(st.mc, 3)}.\nReflection principle: P(price reached ${v.fix(st.k, 1)} by day ${tt.value}) = ${pct(st.hit, 1)} in simulation, and 2 × P(price above it at the end) = ${pct(2 * st.above, 1)} for $K\\ge100$. At the money, $C=0.399\\,\\sigma\\sqrt T$.`);
+        v.readout(() => `At $t=${tt.value}$: spread of the price $\\sigma\\sqrt t=${v.fix(st.sd, 2)}$ (Gaussian, variance $\\sigma^2 t$). Call with strike ${v.fix(st.k, 1)} expiring then: closed form **${v.fix(st.closed, 3)}**, numerical integral ${v.fix(st.num, 3)}, mean of 4000 simulated payoffs ${v.fix(st.mc, 3)}.\nReflection principle: P(price reached ${v.fix(st.k, 1)} by day ${tt.value}) = ${pct(st.hit, 1)} in simulation, and 2 × P(price above it at the end) = ${pct(2 * st.above, 1)} for $K\\ge100$ (the simulation checks the path only once a day, so it misses some excursions and sits a little below). At the money, $C=0.399\\,\\sigma\\sqrt T$.`);
       },
     },
     // ------------------------------------------------------------------ 5.14

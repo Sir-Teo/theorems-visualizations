@@ -70,7 +70,7 @@ Success in such markets is therefore partly a property of the history: a cumulat
         let st = null;
         v.render(() => {
           const beta = bS.value, n = nS.value, soc = sim(beta, n), ind = sim(0, n);
-          const mx = Math.max(0.1, ...soc.flat(), ...ind.flat()) * 1.1;
+          const mx = Math.max(0.05, ...soc.flat(), ...ind.flat()) * 1.1;
           for (const [S, wl] of [[L, soc], [Rr, ind]]) {
             S.setView([0.1, 0.9], [0, mx]);
             S.path(q.map((x, i) => [x, a[i] / asum]).map(([x, y]) => [x + 0.25 - 0.25, y]), { color: 'ink', width: 1.6, dash: [6, 4] });
@@ -102,7 +102,7 @@ The best song's rank across the 8 social worlds: ${Math.min(...st.rb)} to ${Math
 
 **Gabaix (1999)** showed that the two are linked: if cities grow proportionally *and* have a **lower reflecting barrier** (very small cities cannot shrink without bound), the stationary size distribution is a power law with $\zeta=1$ when cities' mean relative growth is the same (zero in relative terms). Zipf's law is thus a property of the *process* (random multiplicative growth with a floor), not of any particular city.`,
       idea: String.raw`Write $x=\ln S$. Proportional growth gives a random walk with variance $\sigma^2$ per step and drift $\mu-\sigma^2/2$ for mean relative growth $\mu$. A walk with negative drift confined above a barrier settles to an exponential law $P(x>y)\propto e^{-\zeta y}$ with $\zeta=2\,|\text{drift}|/\sigma^2$; in the variable $S=e^x$ this is the power law $P(S>s)\propto s^{-\zeta}$. If the mean *relative* growth of every city is zero (they all grow with the economy), the drift is $-\sigma^2/2$, so $\zeta=1$. Without the barrier the walk spreads without limit, giving the lognormal. The Pareto/Zipf form is the same one that preferential attachment (4.9) produces by another route.`,
-      caption: String.raw`**Left**: a model: 2000 cities of equal size grow by random factors for $T$ steps (each step multiplies by $e^{\sigma z-\sigma^2/2}$, mean 1); with the barrier on, none may fall below its starting size. The rank–size curve straightens towards slope $-1$ (dashed line); with the barrier off it keeps bending (lognormal). **Right**: the 30 largest US cities (2020 census): size against rank on the same axes.`,
+      caption: String.raw`**Left**: a model: 2000 cities of equal size grow by random factors for $T$ steps (each step multiplies by $e^{\sigma z-\sigma^2/2}$, mean 1); with the barrier on, none may fall below its starting size. The rank–size curve straightens towards slope $-1$ (dashed line, drawn through the 10th city); with the barrier off it keeps bending (lognormal). **Right**: the 30 largest US cities (2020 census): size against rank on the same axes.`,
       scope: String.raw`Real city-size distributions fit Zipf's law only approximately (the exponent depends on how a "city" is defined and on the country; the largest cities are often off the line) and the barrier is a modelling assumption that critics find artificial (cities can disappear, and the mean growth need not be equal across sizes). The simulation is a model; the US figures are census counts for the 30 largest cities by the 2025 estimate.`,
       deps: ['soc-4.7', 'geog-9.9'],
       refs: ['Newman ch. 10'],
@@ -128,7 +128,7 @@ The best song's rank across the 8 social worlds: ${Math.min(...st.rb)} to ${Math
           A.setView([1, N], [0.5, Math.max(30, top * 2)]);
           const pts = []; for (let r = 1; r <= N; r += (r < 20 ? 1 : Math.ceil(r * 0.03))) pts.push([r, arr[r - 1]]);
           A.path(pts, { color: 'accent', width: 2.4 });
-          A.fn((r) => top / r, { color: 'ink', width: 1.5, dash: [6, 4], domain: [1, N] });
+          A.fn((r) => (arr[9] * 10) / r, { color: 'ink', width: 1.5, dash: [6, 4], domain: [1, N] });
           B.fn((r) => usSizes[0] / r, { color: 'ink', width: 1.5, dash: [6, 4], domain: [1, 40] });
           B.dots(usSizes.map((p, i) => [i + 1, p]), { r: 4, color: 'accent' });
           [0, 1, 2, 9].forEach((i) => B.text(US[i][0], i + 1, usSizes[i], { dx: 8, dy: -8, size: 10.5, color: 'muted', align: 'left' }));
@@ -252,7 +252,7 @@ Chris Anderson's *The Long Tail* (Wired, 2004, book 2006) argued that digital di
         v.readout(() => {
           if (!st) return '';
           const { a, S, N, tail, head, top1 } = st;
-          const fm = (x) => (x >= 1e6 ? `${(x / 1e6).toPrecision(2)} million` : x >= 1e3 ? `${(x / 1e3).toPrecision(2)} thousand` : String(Math.round(x)));
+          const fm = (x) => (x >= 1e6 ? `${(x / 1e6).toFixed(1)} million` : x >= 1e3 ? `${Math.round(x / 1e3)} thousand` : String(Math.round(x)));
           return String.raw`$\alpha=${v.fix(a, 2)}$, shelf ${fm(S)} of ${fm(N)} titles → the shelf serves **${v.fix(100 * head, 1)}%** of demand and **${v.fix(100 * tail, 1)}%** lies in the tail · the top 1% of titles take ${v.fix(100 * top1, 0)}% of demand
 Reported: niche books ≈ 39% of Amazon's 2000 sales (extrapolated power-law fit, Brynjolfsson et al.); Rhapsody streams: top 1% ≈ 32% of plays (Elberse)`;
         });
