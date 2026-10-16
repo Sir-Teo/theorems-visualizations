@@ -101,7 +101,7 @@ export default {
       name: 'Light as an electromagnetic wave',
       statement: String.raw`Maxwell’s equations in empty space admit transverse waves of electric and magnetic field travelling at the speed $c=1/\sqrt{\mu_0\varepsilon_0}\approx 2.998\times10^{8}$ m/s, and **light is such a wave**. Every wave of this kind obeys $c=\lambda f$ and carries photon energy $E=hf=hc/\lambda$ in the quantum description. The visible colours are one narrow band, roughly $380$–$750$ nm, of a spectrum that stretches continuously from radio waves ($\lambda\gtrsim1$ m) through microwaves, infrared, visible and ultraviolet light to X-rays and gamma rays ($\lambda\lesssim10$ pm); the names are conventions, and nothing changes physically at their borders.`,
       idea: String.raw`Maxwell found (1865) that the speed of his field disturbances equals the measured speed of light, and concluded that light is electromagnetic; Hertz produced and measured radio waves with the same properties in 1887–88. The plane-wave solutions of em-11.2 give a wave of any wavelength, so the differences between a radio wave and a gamma ray are differences in $\lambda$ (and hence in how matter responds, and in photon energy), not in kind. The frequency of a wave never changes; $\lambda$ and speed change together when it enters matter (4.3).`,
-      caption: String.raw`Drag the wavelength slider over eighteen decades (or jump to examples): the vertical line moves across the spectrum, and the readout gives frequency and photon energy from $f=c/\lambda$ and $E=hc/\lambda$. The lower strip magnifies the visible band, coloured by wavelength; outside it the cursor line is grey. Band borders are conventional and differ between textbooks.`,
+      caption: String.raw`Drag the wavelength slider over eighteen decades (or jump to examples): the vertical line moves across the spectrum, and the readout gives frequency and photon energy from $f=c/\lambda$ and $E=hc/\lambda$. The lower strip magnifies the visible band, coloured by wavelength; outside it the lower panel says so. Band borders are conventional and differ between textbooks.`,
       deps: ['em-11.2', 'waves-1.4'],
       refs: ['Hecht ch. 3'],
       tags: ['electromagnetic spectrum', 'light'],
@@ -114,7 +114,7 @@ export default {
           [1e-14, 1e-11, 'gamma rays', 'pink'], [1e-11, 1e-8, 'X-rays', 'purple'], [1e-8, 3.8e-7, 'ultraviolet', 'blue'],
           [3.8e-7, 7.5e-7, 'visible', 'green'], [7.5e-7, 1e-3, 'infrared', 'red'], [1e-3, 1, 'microwaves', 'orange'], [1, 1e4, 'radio waves', 'teal'],
         ];
-        const lS = v.slider('wavelength $\\lambda$ (m)', 1e-14, 1e4, 5.5e-7, { log: true, sig: 3 });
+        const lS = v.slider('wavelength $\\lambda$ (m)', 1e-14, 1e4, 5.5e-7, { log: true, sig: 3, fmt: (x) => x.toExponential(1) });
         const jump = [['FM radio, 100 MHz', 3], ['microwave oven, 2.45 GHz', C.c / 2.45e9], ['thermal infrared, 10 µm', 1e-5], ['green light', 5.5e-7], ['medical X-ray, 0.1 nm', 1e-10], ['gamma ray, 1 pm', 1e-12]];
         for (const [nm, x] of jump) v.button(nm, () => lS.set(x));
         const S = v.stage({ x: [1e-14, 1e4], xlog: true, y: [0, 1], axes: 'box', gutter: true, xlabel: 'wavelength (m)', yticks: [], height: 190, full: true, title: 'the electromagnetic spectrum' });
@@ -124,7 +124,7 @@ export default {
           const lam = lS.value, f = C.c / lam, E = (C.h * f) / C.e;
           bands.forEach(([a, b, name, col], i) => {
             S.vband(a, b, { color: col, alpha: 0.18 });
-            S.text(name, Math.sqrt(a * b), i % 2 ? 0.36 : 0.62, { size: 12, color: 'muted', align: 'center' });
+            S.text(name, name === 'visible' ? 5.3e-7 : Math.sqrt(a * b), name === 'visible' ? 0.78 : i % 2 ? 0.3 : 0.55, { size: 12, color: 'muted', align: 'center' });
           });
           for (let k = 0; k < 40; k++) { const a = 3.8e-7 * Math.pow(7.5 / 3.8, k / 40), b = 3.8e-7 * Math.pow(7.5 / 3.8, (k + 1) / 40); S.vband(a, b, { color: M.wavelengthRGB(a * 1e9 * 1.0), alpha: 0.9 }); }
           S.vline(lam, { color: 'ink', width: 2 });
@@ -155,7 +155,7 @@ and in a medium of index $n$ one gets $I=\tfrac12 n c\varepsilon_0E_0^2$. The fl
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Irradiance' },
       viz(v) {
         const M = v.M, C = M.CONST;
-        const tS = v.slider('detector response time $\\tau$ (optical periods)', 0.05, 20, 2.5, { log: true, sig: 2 });
+        const tS = v.slider('detector response time $\\tau$ (optical periods)', 0.05, 20, 0.8, { log: true, sig: 2 });
         const eS = v.slider('field amplitude $E_0$ (V/m)', 1, 5000, 100, { log: true, sig: 2 });
         const A = v.stage({ x: [0, 10], y: [-1.25, 1.25], axes: 'box', gutter: true, xlabel: 'time (optical periods)', yticks: [-1, 0, 0.5, 1], height: 260, full: true, title: 'field, flux, and what the detector reports' });
         const B = v.stage({ x: [0.05, 50], xlog: true, y: [0, 1.05], axes: 'box', gutter: true, xlabel: 'response time τ (optical periods)', ylabel: 'ripple / mean', height: 170, full: true });
@@ -219,7 +219,7 @@ It is the distance light would travel in vacuum in the time it takes to traverse
           if (Math.abs(xc - c0) > 0.05) S2.dot(xc, 0, { r: 5, color: 'gold', hollow: true });
           info = { n, L, lag: c0 - xc, inside: xc > A0 && xc < A0 + L };
         }, { period: TT, still: 11.5 });
-        v.readout(() => (info ? `slab: $\\lambda=\\lambda_0/n=${v.fix(1 / info.n, 3)}\\,\\lambda_0$, it holds $nL/\\lambda_0=${v.fix(info.n * info.L, 2)}$ wavelengths · $\\mathrm{OPL}=nL=${v.fix(info.n * info.L, 2)}\\,\\lambda_0$ against a geometric length $L=${v.fix(info.L, 2)}\\,\\lambda_0$ · the pulse is now ${v.fix(Math.max(0, info.lag), 2)}$ behind its vacuum twin (hollow dot), at most $(n-1)L=${v.fix((info.n - 1) * info.L, 2)}$` : ''));
+        v.readout(() => (info ? `slab: $\\lambda=\\lambda_0/n=${v.fix(1 / info.n, 3)}\\,\\lambda_0$, it holds $nL/\\lambda_0=${v.fix(info.n * info.L, 2)}$ wavelengths · $\\mathrm{OPL}=nL=${v.fix(info.n * info.L, 2)}\\,\\lambda_0$ against a geometric length $L=${v.fix(info.L, 2)}\\,\\lambda_0$ · the pulse is now $${v.fix(Math.max(0, info.lag), 2)}\\,\\lambda_0$ behind its vacuum twin (hollow dot), at most $(n-1)L=${v.fix((info.n - 1) * info.L, 2)}\\,\\lambda_0$` : ''));
       },
     },
     // ------------------------------------------------------------------ 4.4
@@ -242,7 +242,7 @@ It is the distance light would travel in vacuum in the time it takes to traverse
         const nS = v.slider('number of source points $N$', 3, 60, 9, { int: true });
         const rS = v.slider('time: wavelet radius $r=vt$', 0.05, 5, 1.6, { step: 0.05 });
         const aS = v.slider('slit half-width $a$', 0.4, 2.5, 1.0, { step: 0.05 });
-        const S = v.stage({ x: [-4.5, 4.5], y: [-1.2, 6.2], equal: true, axes: false, height: 460, title: 'Huygens’ construction' });
+        const S = v.stage({ x: [-4.5, 4.5], y: [-0.6, 5.6], equal: true, axes: false, height: 440, title: 'Huygens’ construction' });
         let info = null;
         v.render(() => {
           aS.el.hidden = shape.value !== 'slit';
@@ -376,7 +376,7 @@ The reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\t
         v.readout(() => {
           if (!st) return '';
           const f = st.f, r0 = ((st.n1 - st.n2) / (st.n1 + st.n2)) ** 2;
-          return `$R_s=${v.fix(f.Rs, 4)}$, $T_s=${v.fix(f.Ts, 4)}$, sum $=${v.fix(f.Rs + f.Ts, 6)}$ · $R_p=${v.fix(f.Rp, 4)}$, $T_p=${v.fix(f.Rp * 0 + f.Tp, 4)}$, sum $=${v.fix(f.Rp + f.Tp, 6)}$\nnormal incidence: $((n_1-n_2)/(n_1+n_2))^2=${v.fix(r0, 4)}$ · amplitudes now $r_s=${v.fix(f.rs[0], 3)}${f.tir ? '' : ''}$, $r_p=${v.fix(f.rp[0], 3)}$${f.tir ? ' (complex beyond the critical angle: $|r|=1$)' : ''}`;
+          return `$R_s=${v.fix(f.Rs, 4)}$, $T_s=${v.fix(f.Ts, 4)}$, sum $=${v.fix(f.Rs + f.Ts, 6)}$ · $R_p=${v.fix(f.Rp, 4)}$, $T_p=${v.fix(f.Tp, 4)}$, sum $=${v.fix(f.Rp + f.Tp, 6)}$\nnormal incidence: $((n_1-n_2)/(n_1+n_2))^2=${v.fix(r0, 4)}$ · amplitudes now $r_s=${v.fix(f.rs[0], 3)}$, $r_p=${v.fix(f.rp[0], 3)}$${f.tir ? ' (complex beyond the critical angle: $|r|=1$)' : ''}`;
         });
       },
     },

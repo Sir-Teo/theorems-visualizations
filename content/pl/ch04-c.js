@@ -30,8 +30,8 @@ Hence a closed well-typed term never gets stuck: if $\vdash t:T$ and $t\to^{*}t'
       caption: String.raw`Choose a closed program and watch it run (call by value). Each row re-derives the type of the current term and shows what progress promises: a value, or the rule that fires. The slider picks a step; when it is a $\beta$-step the panel below shows the three typing facts of the substitution lemma doing the work. The two ill-typed examples are the ones that get stuck, and are not covered by the theorem.`,
       deps: ['pl-4.9', 'pl-4.5'], refs: ['Pierce §9.3'], tags: ['type safety', 'substitution'],
       viz(v) {
-        const sT = pxStage(v, { height: 300, full: true, title: 'Call-by-value evaluation with types re-derived at every step' });
-        const sL = pxStage(v, { height: 124, full: true, title: 'The substitution lemma at the selected step' });
+        const sT = pxStage(v, { height: 250, full: true, title: 'Call-by-value evaluation with types re-derived at every step' });
+        const sL = pxStage(v, { height: 100, full: true, title: 'The substitution lemma at the selected step' });
         const EX = ['(λf:Nat->Nat. f (f 0)) (λx:Nat. succ x)', '(λb:Bool. λn:Nat. if b then n else 0) true 5', '(λx:Nat. if iszero x then 1 else pred x) ((λy:Nat. succ y) 2)', '(λx:Nat. succ x) true', 'succ (λx:Nat. x)'];
         const f = tmField(v, 'program', EX[0], () => v.invalidate());
         const exB = v.select('Examples', ['twice', 'curried', 'nested', 'ill-typed 1', 'ill-typed 2'].map((l, i) => ({ value: String(i), label: l })), '0', { onChange: () => f.set(EX[+exB.value]) });
@@ -78,7 +78,7 @@ Hence a closed well-typed term never gets stuck: if $\vdash t:T$ and $t\to^{*}t'
         v.readout(() => {
           if (!run) return '';
           if (!T0) return `This program is **ill typed**, so the theorem does not apply to it; it ${run.status === 'stuck' ? 'indeed gets stuck' : 'happens not to get stuck'}.`;
-          const types = run.terms.map(typeOf), drift = types.some((x) => !x || !tyEq(x, T0));
+          const types = run.terms.map((u) => typeOf(u)), drift = types.some((x) => !x || !tyEq(x, T0));
           return `$${dTex('⊢ t : ' + tyStr(T0))}$. Over $${run.steps.length}$ step${run.steps.length === 1 ? '' : 's'} the type ${drift ? '**changed**' : 'never changed (preservation)'}; every term before the last could step (progress); the run ends ${run.status === 'value' ? 'in a **value**' : '**stuck**'}.`;
         });
       },
@@ -143,7 +143,7 @@ Hence a closed well-typed term never gets stuck: if $\vdash t:T$ and $t\to^{*}t'
       deps: ['pl-4.7'], refs: ['Pierce §9.5'], tags: ['erasure', 'run time'],
       scope: String.raw`The correspondence is for evaluation without type-dependent operations. The $\mathtt{default}[T]$ construct is an illustration of ours, not part of the standard calculus.`,
       viz(v) {
-        const s = pxStage(v, { height: 340, full: true, title: 'The typed run and the erased run, in step' });
+        const s = pxStage(v, { height: 270, full: true, title: 'The typed run and the erased run, in step' });
         const EX = ['(λf:Nat->Nat. f (f 0)) (λx:Nat. succ x)', '(λx:Bool. if x then 1 else 0) (iszero 0)', '(λf:Nat->Nat->Nat. f 1 2) (λa:Nat. λb:Nat. succ a)', '(λn:Nat. succ n) default[Nat]'];
         const f = tmField(v, 'program', EX[0], () => v.invalidate());
         const exB = v.select('Examples', ['twice', 'if', 'curried', 'default[T]'].map((l, i) => ({ value: String(i), label: l })), '0', { onChange: () => f.set(EX[+exB.value]) });
@@ -186,8 +186,8 @@ Hence a closed well-typed term never gets stuck: if $\vdash t:T$ and $t\to^{*}t'
       caption: String.raw`Type an untyped term (annotations optional). The left panel lists the equations between types that the typing rules generate, solved in order by unification: each is solved (green) until one fails (red). The right panel draws the offending type. When it is an equation $T=T\to S$, the slider unrolls it $k$ times; the tree never closes. Typable terms get their finite principal type instead.`,
       deps: ['pl-4.11', 'pl-2.8'], refs: ['Pierce §9.3'], tags: ['recursion', 'type inference'],
       viz(v) {
-        const sC = pxStage(v, { height: 280, hover: false, title: 'Type equations, solved in order' });
-        const sT = pxStage(v, { height: 280, title: 'The type that would be needed' });
+        const sC = pxStage(v, { height: 230, hover: false, title: 'Type equations, solved in order' });
+        const sT = pxStage(v, { height: 230, title: 'The type that would be needed' });
         const EX = ['λx. x x', '(λx. x x) (λx. x x)', 'λf. λx. f (f x)', 'λx. λy. x', 'λx. x (x 0)', 'λx. x x x'];
         const f = tmField(v, 'term', EX[0], () => v.invalidate(), 340);
         const exB = v.select('Examples', ['x x', 'Ω', 'twice', 'K', 'x (x 0)', 'x x x'].map((l, i) => ({ value: String(i), label: l })), '0', { onChange: () => f.set(EX[+exB.value]) });

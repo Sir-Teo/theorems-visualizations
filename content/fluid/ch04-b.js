@@ -73,7 +73,7 @@ The distribution is symmetric front to back and top to bottom.`,
         const wake = v.toggle('wake model: rear half held at a base pressure', false);
         const cpb = v.slider('base pressure $C_{p,b}$', -1.6, 0, -0.6, { step: 0.05 });
         const s = v.stage({ x: [-3.6, 3.6], y: [-2.2, 2.2], equal: true, axes: false, height: 380, weight: 1.35, title: 'flow past an ellipse' });
-        const q = v.stage({ x: [0, 360], y: [-4.2, 1.5], axes: 'box', gutter: true, height: 380, weight: 0.95, xlabel: 'position round the ellipse $\\varphi$ (degrees; $180^\\circ$ = nose)', ylabel: '$C_p$', title: 'surface pressure coefficient', xticks: [0, 90, 180, 270, 360] });
+        const q = v.stage({ x: [0, 360], y: [-4.2, 1.5], axes: 'box', gutter: true, height: 380, weight: 0.95, xlabel: 'position $\\varphi$ round the ellipse (deg)', ylabel: '$C_p$', title: 'surface pressure coefficient', xticks: [0, 90, 180, 270, 360] });
         let lines = [], key = '';
         let info = {};
         v.render(() => {
@@ -153,6 +153,8 @@ The circle $r=a$ is still a streamline, so this is again a flow past a cylinder,
           q.hline(0, { color: 'muted', alpha: 0.6 });
           q.fn((d) => 1 - 4 * Math.sin(deg(d)) ** 2, { domain: [0, 360], color: 'muted', width: 1.6, dash: true });
           q.path(cps, { color: 'accent', width: 2.6 });
+          let cmin = 0; for (const p of cps) cmin = Math.min(cmin, p[1]);
+          q.setView([0, 360], [Math.min(-4, 1.15 * cmin), 2]);
           info = { G, Fy, Fx, Lref };
         }, { period: 6, still: 0.5 });
         v.legend([['accent', '$C_p$ with circulation'], ['muted', 'no circulation', { dash: true }]]);
@@ -234,7 +236,7 @@ at right angles to the stream (on the side where the circulation adds to the str
           { n: 'egg', o: { zeta0: [-0.12, 0.12], c: 1, round: 0.4 } },
           { n: 'cambered', o: { zeta0: [-0.1, 0.38], c: 1, round: 0.12 } },
         ];
-        const S = SH.map((sh) => v.stage({ x: [-2.6, 2.6], y: [-1.95, 1.95], equal: true, axes: false, height: 250, weight: 1, minWidth: 240, title: sh.n }));
+        const S = SH.map((sh) => v.stage({ x: [-2.6, 2.6], y: [-1.95, 1.95], equal: true, axes: false, height: 230, weight: 1, minWidth: 175, title: sh.n }));
         const keys = SH.map(() => ''), lines = SH.map(() => []);
         let info = [];
         v.render(() => {
@@ -248,7 +250,7 @@ at right angles to the stream (on the side where the circulation adds to the str
             const len = 0.45 * U.value * G.value;
             const nx = -Math.sin(al0), ny = Math.cos(al0);
             s.arrow(0, 0, nx * len, ny * len, { color: 'gold', width: 4, head: 10 });
-            s.text(`L = ${v.fix(Lf, 3)}`, 0.2 + nx * len * 0.5, ny * len * 0.5 - 0.15, { color: 'gold', align: 'left', size: 12 });
+            s.text(`L = ${v.fix(Lf, 2)}`, nx * len + 0.12, ny * len + 0.1, { color: 'gold', align: 'left', size: 12 });
             return { Lf, D };
           });
         });
