@@ -158,9 +158,10 @@ export function subgroupTest(G, H) {
 }
 /** Positions for drawing a subgroup lattice in [x0,x1]×[y0,y1]: rows by order (bottom = trivial subgroup). */
 export function latticeLayout(subs, [x0, x1], [y0, y1]) {
-  const orders = [...new Set(subs.map((H) => H.length))].sort((a, b) => a - b), pos = [];
+  const omega = (k) => { let c = 0; for (let p = 2; k > 1; p++) while (k % p === 0) { k /= p; c++; } return c; }; // rows by number of prime factors of |H|
+  const orders = [...new Set(subs.map((H) => omega(H.length)))].sort((a, b) => a - b), pos = [];
   orders.forEach((o, r) => {
-    const row = subs.map((H, i) => [H, i]).filter(([H]) => H.length === o), y = orders.length === 1 ? (y0 + y1) / 2 : y0 + ((y1 - y0) * r) / (orders.length - 1);
+    const row = subs.map((H, i) => [H, i]).filter(([H]) => omega(H.length) === o).sort((A, B) => A[0].length - B[0].length), y = orders.length === 1 ? (y0 + y1) / 2 : y0 + ((y1 - y0) * r) / (orders.length - 1);
     row.forEach(([, i], k) => { pos[i] = [row.length === 1 ? (x0 + x1) / 2 : x0 + ((x1 - x0) * (k + 0.5)) / row.length, y]; });
   });
   return pos;

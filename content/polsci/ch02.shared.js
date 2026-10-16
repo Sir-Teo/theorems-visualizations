@@ -158,7 +158,7 @@ export function drawTourney(v, c, N, cand, pos, o = {}) {
     if (a === b) {
       c.save(); c.strokeStyle = v.color('faint'); c.lineWidth = 1.6; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(...pos[i]); c.lineTo(...pos[j]); c.stroke(); c.restore();
       M = { mx: (pos[i][0] + pos[j][0]) / 2, my: (pos[i][1] + pos[j][1]) / 2 };
-    } else M = arrowPx(v, c, pos[w][0], pos[w][1], pos[l][0], pos[l][1], { color: col, width: wd, t0: r + 3, t1: r + 4, head: 11, bend: o.bend ?? 0 });
+    } else M = arrowPx(v, c, pos[w][0], pos[w][1], pos[l][0], pos[l][1], { color: col, width: wd, t0: r + 3, t1: r + 4, head: 11, bend: typeof o.bend === 'function' ? o.bend(cand[w], cand[l]) : o.bend ?? 0 });
     const lab = o.label ? o.label(cand[w], cand[l], pw, pl) : `${fmtK(pw)}–${fmtK(pl)}`;
     if (lab) pill(v, c, lab, M.mx, M.my, { color: a === b ? 'muted' : col === 'muted' ? 'ink' : col });
   }

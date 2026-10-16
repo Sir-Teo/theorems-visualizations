@@ -271,5 +271,94 @@ Going from one plant in a thousand to 95% takes about $9.8/s$ years for small $s
         });
       },
     },
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9',
+      kind: 'Invention',
+      name: 'Spinning and the loom',
+      credit: 'Twisted cord by c. 45,000 years ago; loom weights from the Early Neolithic, 7th–6th millennium BCE',
+      statement: String.raw`**Spinning** twists short fibres into a continuous yarn: twist makes the fibres press on one another, so friction holds them together under tension. Twisting two yarns together the opposite way (plying) gives a balanced cord that does not kink. **Weaving** interlaces two sets of yarns at right angles: the *warp*, held taut on a loom, and the *weft*, passed through the *shed*, the gap opened by lifting some warp threads and not others. Which warp threads rise on each pass, the lifting sequence, fixes the weave: alternate threads give **plain weave**, a lift that steps over by one thread each pass gives a diagonal **twill**, and lifts spread out so that no two neighbouring threads interlace together give a smooth-faced **satin**.
+
+The oldest evidence of twisted cord is a three-ply fragment of inner-bark fibre on a stone tool from Abri du Maras, France, made by Neanderthals 41,000–52,000 years ago (Hardy et al. 2020). Twisted, partly dyed wild flax fibres at Dzudzuana Cave, Georgia, date to about 36,000–31,000 calibrated years ago (Kvavadze et al. 2009). Impressions of plain-woven and twined fabrics in fired clay from Pavlov I and Dolní Věstonice, Czech Republic, are about 26,000 years old (Adovasio, Soffer & Klíma 1996). Clay loom weights show that the **warp-weighted loom**, with its warp hanging from a beam and tensioned by weights, was in use in the Early Neolithic, in the 7th–6th millennia BCE, between Anatolia and central Europe. Spindle whorls, which give a hand spindle the momentum to keep twisting, become common in the same period, as people grew flax and kept sheep.`,
+      idea: String.raw`A fibre wound in a helix at angle $\alpha$ around a yarn of diameter $d$ with $T$ turns per unit length satisfies $\tan\alpha = \pi d T$, by unrolling one turn of the helix into a right triangle. The radial pressure that grips the fibres grows with twist, so a yarn gets stronger as twist is added. Each fibre, though, then pulls at an angle and contributes only about $\cos^2\alpha$ of its stiffness along the yarn, so past an optimum more twist weakens the yarn.
+
+A weave is a binary matrix: entry $(i,j)$ says whether warp $j$ lies over weft $i$. With a straight threading (warp $j$ on shaft $j \bmod n$) the matrix is generated entirely by the loom's lifting plan, so a handful of shafts gives every periodic pattern up to that repeat. The pattern controls the cloth. Frequent interlacing (plain weave) makes a firm, stable fabric. Long floats (satin) make a smooth, supple fabric that snags easily. With threads of two colours, the same weave produces striking colour-and-weave effects, such as houndstooth from a 2/2 twill with four dark and four light threads. The idea that a lifting plan generates the pattern runs from this loom to the Jacquard loom's punched cards.`,
+      caption: String.raw`Pick a **weave** and a **colour order**, or **click the lifting plan** (right of the draft) to raise or lower a shaft on a given pass and invent your own. The threading (top) is a straight draw, and the drawdown (centre) is computed from the two. The close-up shows warp (vertical) and weft (horizontal) passing over and under each other. The readout reports the repeat, the longest float and how often the threads interlace. **Bottom left:** the spun yarn, with fibres at the helix angle $\tan\alpha=\pi d T$ set by the twist slider.`,
+      deps: ['tech-1.6', 'tech-1.8'],
+      see: ['tech-8.6'],
+      refs: ['Usher, “Textile machinery”', 'Hardy et al. 2020, Sci. Rep. 10:4889', 'Kvavadze et al. 2009, Science 325:1359', 'Adovasio, Soffer & Klíma 1996, Antiquity 70:526'],
+      tags: ['prehistory', 'textiles', 'patterns'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Warp-weighted_loom' },
+      viz(v) {
+        const N = 16, D2R = Math.PI / 180;
+        const PRE = {
+          plain: { label: 'plain', S: 2, lift: (r, k) => (r + k) % 2 === 0 },
+          twill22: { label: '2/2 twill', S: 4, lift: (r, k) => (k - r + 8) % 4 < 2 },
+          twill31: { label: '3/1 twill', S: 4, lift: (r, k) => (k - r + 8) % 4 < 3 },
+          satin: { label: '5-end satin', S: 5, lift: (r, k) => k === (2 * r) % 5 },
+        };
+        const A = v.stage({ x: [-0.6, 22.8], y: [-1.4, 22.4], equal: true, axes: false, height: 360, weight: 1.15, minWidth: 360, title: 'weaving draft: threading, lifting plan, drawdown' });
+        const B = v.stage({ x: [0, 8], y: [0, 8], equal: true, axes: false, height: 360, weight: 1, minWidth: 320, title: 'close-up: over and under' });
+        const C = v.stage({ x: [-2.3, 2.3], y: [-0.95, 0.95], equal: true, axes: false, height: 170, weight: 0.9, minWidth: 300, title: 'spun yarn' });
+        const D = evidenceStage(v, [6e4, 6e3], { height: 170, weight: 1.3, minWidth: 400, title: 'cord, cloth and loom (years ago, log scale)' });
+        let S = 4, lift = [];
+        const load = (k) => { const p = PRE[k]; S = p.S; lift = Array.from({ length: S }, (_, r) => Array.from({ length: S }, (_, kk) => p.lift(r, kk))); };
+        const weave = v.select('weave', Object.entries(PRE).map(([k, p]) => ({ value: k, label: p.label })), 'twill22', { onChange: load });
+        const colSel = v.select('colour order', [{ value: 0, label: 'one colour' }, { value: 1, label: '1 dark : 1 light' }, { value: 2, label: '2 : 2' }, { value: 4, label: '4 : 4' }], 4);
+        const twS = v.slider('twist (yarn 1.2 mm thick)', 0.5, 8, 1.5, { step: 0.1, fmt: (x) => `${x.toFixed(1)} turns/cm` });
+        load('twill22');
+        const up = (r, c) => lift[r % S][c % S]; // is warp c over weft r?
+        const dark = (i) => colSel.value > 0 && Math.floor(i / colSel.value) % 2 === 0;
+        A.onClick((x, y) => {
+          const k = Math.floor(x - 16.6), r = Math.floor(15.5 - y + 0.5);
+          if (k >= 0 && k < S && r >= 0 && r < N) { const rr = r % S; lift[rr][k] = !lift[rr][k]; }
+        });
+        function stats() {
+          let maxWarp = 0, maxWeft = 0, inter = 0, tot = 0, warpUp = 0; const dead = [];
+          for (let r = 0; r < S; r++) { const row = lift[r]; if (row.every((b) => b) || row.every((b) => !b)) dead.push(r + 1); }
+          for (let c = 0; c < S; c++) { let run = 0, best = 0; for (let r = 0; r < 2 * S; r++) { if (up(r, c)) { run++; best = Math.max(best, run); } else run = 0; if (up(r, c) !== up(r + 1, c)) inter++; tot++; } maxWarp = Math.max(maxWarp, Math.min(best, S)); }
+          for (let r = 0; r < S; r++) { let run = 0, best = 0; for (let c = 0; c < 2 * S; c++) { if (!up(r, c)) { run++; best = Math.max(best, run); } else run = 0; if (up(r, c) !== up(r, c + 1)) inter++; tot++; if (c < S && up(r, c)) warpUp++; } maxWeft = Math.max(maxWeft, Math.min(best, S)); }
+          return { maxWarp, maxWeft, inter: inter / tot, warpFace: warpUp / (S * S), dead };
+        }
+        v.render(() => {
+          // ---- A: the draft
+          for (let c = 0; c < N; c++) for (let k = 0; k < S; k++) { const x = 15 - c, y = 16.6 + k; A.rect(x, y, x + 1, y + 1, { fill: c % S === k ? 'ink' : 'panel', fillAlpha: c % S === k ? 0.8 : 1, color: 'faint', width: 0.6 }); }
+          for (let r = 0; r < N; r++) for (let k = 0; k < S; k++) { const x = 16.6 + k, y = 15 - r; A.rect(x, y, x + 1, y + 1, { fill: lift[r % S][k] ? 'accent' : 'panel', fillAlpha: lift[r % S][k] ? (r < S ? 0.9 : 0.4) : 1, color: 'faint', width: 0.6 }); }
+          for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+            const x = 15 - c, y = 15 - r, wu = up(r, c), dk = wu ? dark(c) : dark(r);
+            const fill = colSel.value === 0 ? (wu ? 'ink' : 'panel') : dk ? 'purple' : 'gold';
+            A.rect(x, y, x + 1, y + 1, { fill, fillAlpha: colSel.value === 0 ? (wu ? 0.75 : 1) : 0.85, color: 'faint', width: 0.4 });
+          }
+          A.rect(16 - S, 16 - S, 16, 16, { color: 'red', width: 1.8 });
+          A.text('threading', 8, 17.1 + S, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
+          A.text('lifting plan', 16.6 + S / 2, 16.9, { size: 11, color: 'accent', align: 'center', baseline: 'bottom' });
+          A.text('drawdown', 8, -0.15, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
+          // ---- B: close-up of 8 × 8 crossings
+          const wcol = (c) => (colSel.value === 0 ? 'orange' : dark(c) ? 'purple' : 'gold'), fcol = (r) => (colSel.value === 0 ? 'accent' : dark(r) ? 'purple' : 'gold');
+          for (let c = 0; c < 8; c++) B.rect(7 - c + 0.18, 0, 7 - c + 0.82, 8, { fill: wcol(c), fillAlpha: 0.5, color: wcol(c), width: 1 });
+          for (let r = 0; r < 8; r++) B.rect(0, 7 - r + 0.18, 8, 7 - r + 0.82, { fill: fcol(r), fillAlpha: 0.85, color: 'ink', width: 0.8 });
+          for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if (up(r, c)) { const x = 7 - c, y = 7 - r; B.rect(x + 0.18, y + 0.05, x + 0.82, y + 0.95, { fill: wcol(c), fillAlpha: 1, color: 'ink', width: 0.8 }); B.line(x + 0.5, y + 0.15, x + 0.5, y + 0.85, { color: 'panel', width: 1, alpha: 0.5 }); }
+          // ---- C: yarn helix
+          const T = twS.value, d = 0.12, alpha = Math.atan(Math.PI * d * T); // d in cm
+          const Rv = 0.6, pitch = (2 * Math.PI * Rv) / Math.tan(alpha);
+          C.rect(-2.2, -Rv, 2.2, Rv, { fill: 'gold', fillAlpha: 0.25, stroke: false, radius: 6 });
+          C.clip(() => { for (let x0 = -2.2 - 2 * pitch; x0 < 2.2; x0 += pitch / 5) C.curve((t) => [x0 + (pitch * t) / (2 * Math.PI), Rv * Math.cos(t)], 0, Math.PI, { color: 'orange', width: 1.4 }); }, [-2.2, 2.2], [-Rv, Rv]);
+          C.text(`helix angle α = ${v.fix(alpha / D2R, 0)}° · cos²α = ${v.fix(Math.cos(alpha) ** 2, 2)}`, 0, -0.82, { size: 11.5, color: 'ink', align: 'center', weight: 700 });
+          // ---- D
+          drawEvidence(v, D, [
+            { ago: [4.1e4, 5.2e4], label: 'Abri du Maras cord' },
+            { ago: [3.1e4, 3.6e4], label: 'Dzudzuana flax' },
+            { ago: 2.6e4, label: 'Pavlov woven impressions' },
+            { ago: [7.5e3, 9e3], label: 'loom weights', color: 'orange' },
+          ], { lanes: 3, laneH: 0.24, ticks: [5e4, 2e4, 1e4] });
+        });
+        v.legend([['accent', 'shaft lifted on that pass'], ['red', 'one repeat of the pattern']]);
+        v.readout(() => {
+          const st = stats();
+          const name = { plain: 'plain weave', twill22: '2/2 twill', twill31: '3/1 twill', satin: 'satin' }[weave.value];
+          return `${S} shafts, repeat ${S} × ${S} · longest float: warp over ${st.maxWarp}, weft over ${st.maxWeft} · threads change sides at **${Math.round(100 * st.inter)}%** of crossings (plain weave: 100%) · warp shows on ${Math.round(100 * st.warpFace)}% of the face${st.dead.length ? ` · **pass ${st.dead.join(', ')} never interlaces: that weft would lie loose**` : ''}${colSel.value === 4 && weave.value === 'twill22' ? ' · 4 : 4 colours on a 2/2 twill: houndstooth' : ''} (started from ${name})`;
+        });
+      },
+    },
   ],
 };

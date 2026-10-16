@@ -495,7 +495,7 @@ Each side of the triangle moves a curve. Fine, dry fuel (tinder) reacts faster, 
           A.clip(() => { A.between((T) => Math.max(G(T), L(T)), L, 20, 1300, { fill: 'green', fillAlpha: 0.16 }); });
           if (ign) { A.dot(ign.T, L(ign.T), { r: 5.5, color: 'red', hollow: true }); A.text(`ignition ${Math.round(ign.T)} °C`, ign.T - 14, L(ign.T) + 16, { size: 11.5, color: 'red', align: 'right', plate: true }); }
           if (burn) { A.dot(burn.T, L(burn.T), { r: 6, color: 'green' }); A.text(`burning ${Math.round(burn.T)} °C`, burn.T - 12, L(burn.T) + 14, { size: 11.5, color: 'green', align: 'right', weight: 700 }); }
-          A.text('G: heat released', 760, Math.min(170, G(760) + 10), { size: 11.5, color: 'orange', align: 'center' });
+          A.text('G: heat released', 560, Math.min(170, G(560) + 10), { size: 11.5, color: 'orange', align: 'center' });
           A.text('L: heat lost', 1290, Math.min(176, L(1290)) - 10, { size: 11.5, color: 'blue', align: 'right', baseline: 'top' });
           A.line(hS.x, 0, hS.x, 150, { color: 'gold', width: 1, dash: [4, 4] });
           A.text(`your ember: ${Math.round(hS.x)} °C`, hS.x + 6, 150, { size: 11, color: 'gold', align: 'left', weight: 700 });

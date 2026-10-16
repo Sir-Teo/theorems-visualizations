@@ -277,14 +277,14 @@ More generally, a flow $\dot x = f(x)$ changes volumes at the rate $\frac{d}{dt}
         const TT = 36, DT = 0.02, NP = 2500;
         const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.8, 2.8], axes: 'box', gutter: true, height: 380, weight: 1.5, xlabel: 'q', ylabel: 'p', xticks: piTicks(-Math.PI, Math.PI) });
         const sA = v.stage({ x: [0, TT], y: [0.02, 60], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 't', title: 'area and perimeter ÷ initial (log scale)' });
-        const hc = sP.handle(-1.2, 0.9, { color: 'ink', r: 7, constrain: (x, y) => [clamp(x, -2.8, 2.8), clamp(y, -2.2, 2.2)] });
+        const hc = sP.handle(-0.6, 1.85, { color: 'ink', r: 7, constrain: (x, y) => [clamp(x, -2.8, 2.8), clamp(y, -2.2, 2.2)] });
         hc.onDrag = () => v.restart();
         const sim = v.sim(() => {
           const R = rS.value, g = gS.value, cx = hc.x, cy = hc.y, r = v.rng(11), q = new Float64Array(NP), p = new Float64Array(NP);
           for (let k = 0; k < NP; k++) { const a = TAU * r(), rr = R * Math.sqrt(r()); q[k] = cx + rr * Math.cos(a); p[k] = cy + rr * Math.sin(a); }
           const L = makeLoop({ init: (s) => [cx + R * Math.cos(TAU * s), cy + R * Math.sin(TAU * s)], step: (y, h) => pendStep(y, h, g), h: DT, n0: 200, tol: 0.045, maxPts: 9000 });
           const A0 = shoelace(L.Y), P0 = perimeter(L.Y);
-          return { q, p, L, g, A0: Math.PI * R * R, Apoly0: A0, P0, hist: [[0, A0 / (Math.PI * R * R), 1]], n: 0 };
+          return { q, p, L, g, A0, Adisc: Math.PI * R * R, P0, hist: [[0, 1, 1]], n: 0 };
         }, (st, dt) => {
           const y = [0, 0];
           for (let k = 0; k < NP; k++) { y[0] = st.q[k]; y[1] = st.p[k]; pendStep(y, dt, st.g); st.q[k] = y[0]; st.p[k] = y[1]; }
@@ -294,10 +294,11 @@ More generally, a flow $\dot x = f(x)$ changes volumes at the rate $\frac{d}{dt}
         let cur = null;
         v.animate((tt) => {
           const st = sim.advance(Math.min(3 * tt, TT)), t = st.n * DT;
-          drawCyl(sP, st.L.Y, { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 1.3 });
           sP.contour(pendH, [1], { color: 'red', width: 1.2, alpha: 0.6, res: 140 });
+          drawCyl(sP, st.L.Y, { fill: 'accent', fillAlpha: 0.14, stroke: false });
           const pts = []; for (let k = 0; k < NP; k++) pts.push([wrap(st.q[k]), st.p[k]]);
-          sP.dots(pts, { r: 1.2, color: 'gold', alpha: 0.85 });
+          sP.dots(pts, { r: 1.1, color: 'gold', alpha: 0.75 });
+          drawCyl(sP, st.L.Y, { fill: false, color: 'accent', width: 1.2 });
           sP.corner(`t = ${v.fix(t, 1)}`, 'tr', { color: 'ink', plate: true });
           // area and perimeter
           sA.hline(1, { color: 'faint', width: 1 });
@@ -312,7 +313,7 @@ More generally, a flow $\dot x = f(x)$ changes volumes at the rate $\frac{d}{dt}
           if (!cur) return '';
           const { st, t } = cur, A = shoelace(st.L.Y);
           const pred = st.A0 * Math.exp(-st.g * t);
-          return String.raw`area of the disc $\pi r^2 = ${v.fix(st.A0, 5)}$ (initial polygon ${v.fix(st.Apoly0, 5)}) · now: ${v.fix(A, 5)}` + (st.g > 0 ? String.raw`, predicted $\pi r^2 e^{-\gamma t} = ${v.fix(pred, 5)}$` : ` (ratio ${v.fix(A / st.A0, 5)})`) + ` · perimeter ×${v.fix(perimeter(st.L.Y) / st.P0, 1)} · boundary states: ${st.L.S.length}` + (st.L.capped ? ' (refinement capped)' : '');
+          return String.raw`area of the boundary polygon: initially ${v.fix(st.A0, 5)} (disc $\pi r^2 = ${v.fix(st.Adisc, 5)}$), now ${v.fix(A, 5)}` + (st.g > 0 ? String.raw`, predicted $A_0e^{-\gamma t} = ${v.fix(pred, 5)}$` : ` (ratio ${v.fix(A / st.A0, 6)})`) + ` · perimeter ×${v.fix(perimeter(st.L.Y) / st.P0, 1)} · boundary states: ${st.L.S.length}` + (st.L.capped ? ' (refinement capped)' : '');
         });
       },
     },
@@ -346,7 +347,7 @@ By Stokes’ theorem (pma-10.33) this says the sum of the oriented areas of the 
             let a = acc(y); y[1] += 0.5 * h * a[0]; y[3] += 0.5 * h * a[1]; y[0] += h * y[1]; y[2] += h * y[3]; a = acc(y); y[1] += 0.5 * h * a[0]; y[3] += 0.5 * h * a[1];
             if (g) { y[1] *= Math.exp(-g * h / 2); y[3] *= Math.exp(-g * h / 2); }
           };
-          const L = makeLoop({ init: (s) => [0.9 + 0.55 * Math.cos(TAU * s), 0.55 * Math.sin(TAU * s), 0, 0], step, h: DT, n0: 160, tol: 0.05, maxPts: 6000, dist: (a, c) => Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2], a[3] - c[3]) });
+          const L = makeLoop({ init: (s) => [0.9 + 0.55 * Math.cos(TAU * s), -0.55 * Math.sin(TAU * s), 0, 0], step, h: DT, n0: 160, tol: 0.05, maxPts: 6000, dist: (a, c) => Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2], a[3] - c[3]) });
           const area = () => [-shoelace(L.Y, 0, 1), -shoelace(L.Y, 2, 3)]; // ∮p dq = −(shoelace in (q, p))
           const a0 = area();
           return { L, area, I0: a0[0] + a0[1], hist: [[0, ...a0]], n: 0, g };
@@ -389,11 +390,11 @@ is symplectic, time-reversible and second order. It is the composition of the ex
       tags: ['numerical integration', 'symplectic integrator', 'energy drift'],
       credit: 'Störmer, 1907; Verlet, 1967; de Vogelaere, 1956; Ruth, 1983',
       viz(v) {
-        const nS = v.slider('steps per period', 20, 1000, 100, { log: true, int: true });
-        const eS = v.slider('eccentricity', 0, 0.8, 0.5, { step: 0.01 });
+        const nS = v.slider('steps per period', 20, 1000, 150, { log: true, int: true });
+        const eS = v.slider('eccentricity', 0, 0.8, 0.4, { step: 0.01 });
         const pS = v.slider('number of periods', 10, 1000, 1000, { log: true, int: true });
-        const sO = v.stage({ x: [-2.3, 0.9], y: [-1.3, 1.3], equal: true, axes: false, height: 340, title: 'the last two orbits of each method' });
-        const sE = v.stage({ x: [0, 1000], y: [1e-12, 10], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, xlabel: 'time (periods)', title: 'energy error $|\\Delta E/E|$' });
+        const sO = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 340, title: 'the last two orbits of each method' });
+        const sE = v.stage({ x: [0.25, 1000], y: [1e-12, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, xlabel: 'time (periods)', title: 'energy error $|\\Delta E/E|$ (log–log)' });
         const METHODS = [{ k: 'euler', lab: 'explicit Euler', col: 'red' }, { k: 'seuler', lab: 'symplectic Euler', col: 'teal' }, { k: 'rk4', lab: 'RK4', col: 'orange' }, { k: 'leap', lab: 'leapfrog', col: 'blue' }];
         const cache = memo(); let cur = null;
         const run = () => cache([nS.value, eS.value, pS.value].join('|'), () => {
@@ -401,9 +402,9 @@ is symplectic, time-reversible and second order. It is the composition of the ex
           const E = (y) => 0.5 * (y[2] * y[2] + y[3] * y[3]) - 1 / Math.hypot(y[0], y[1]), E0 = E(y0), L0 = y0[0] * y0[3];
           const acc = (x, y) => { const r = Math.hypot(x, y), k = -1 / (r * r * r); return [k * x, k * y]; };
           const F = (y) => { const a = acc(y[0], y[1]); return [y[2], y[3], a[0], a[1]]; };
-          const NB = 400, bin = Math.max(1, Math.floor(steps / NB));
+          const n0 = Math.max(1, Math.round(N / 4)), fac = Math.pow(steps / n0, 1 / 300);
           return METHODS.map((M) => {
-            let y = y0.slice(); const err = [], tail = [], keep = 2 * N; let mx = 0, dead = false, Lmax = 0;
+            let y = y0.slice(), next = n0; const err = [], tail = [], keep = 2 * N; let mx = 0, dead = false, Lmax = 0;
             for (let n = 1; n <= steps; n++) {
               if (M.k === 'euler') { const f = F(y); for (let i = 0; i < 4; i++) y[i] += h * f[i]; }
               else if (M.k === 'seuler') { const a = acc(y[0], y[1]); y[2] += h * a[0]; y[3] += h * a[1]; y[0] += h * y[2]; y[1] += h * y[3]; }
@@ -412,7 +413,7 @@ is symplectic, time-reversible and second order. It is the composition of the ex
               const de = Math.abs((E(y) - E0) / E0); mx = Math.max(mx, de);
               if (M.k === 'leap') Lmax = Math.max(Lmax, Math.abs(y[0] * y[3] - y[1] * y[2] - L0));
               tail.push([y[0], y[1]]); if (tail.length > keep) tail.shift();
-              if (n % bin === 0) { err.push([n / N, Math.max(mx, 1e-16)]); mx = 0; }
+              if (n >= next) { err.push([n / N, Math.max(mx, 1e-16)]); mx = 0; next = Math.max(next + 1, Math.round(next * fac)); }
               if (!(de < 2) || Math.hypot(y[0], y[1]) < 1e-3) { dead = n / N; err.push([n / N, Math.max(de, 1e-16)]); break; }
             }
             return { ...M, err, tail, dead, final: err.length ? err[err.length - 1][1] : 0, Lmax };
@@ -420,7 +421,7 @@ is symplectic, time-reversible and second order. It is the composition of the ex
         });
         v.render(() => {
           const R = run(), e = eS.value, P = pS.value;
-          sE.setView([0, P], [1e-12, 10]);
+          sE.setView([0.25, P], [1e-12, 10]);
           const a = 1, b = Math.sqrt(1 - e * e);
           sO.curve((t) => [a * Math.cos(t) - a * e, b * Math.sin(t)], 0, TAU, { color: 'ink', width: 1.2, dash: [4, 4], n: 200 });
           for (const M of R) {
@@ -456,19 +457,19 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
       viz(v) {
         const PRE = {
           proj: { lab: 'projectiles from a point', x: [-2.3, 2.3], y: [-2.2, 0.85], U: (x, y) => y, dU: (x, y) => [0, 1], E: 0.5, n: 121, dW: 0.16, T: 3 },
-          ruth: { lab: 'Rutherford scattering', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => 0.25 / Math.hypot(x, y), dU: (x, y) => { const r = Math.hypot(x, y), k = -0.25 / (r * r * r); return [k * x, k * y]; }, E: 0.5, n: 141, dW: 0.3, T: 7.5 },
-          lens: { lab: 'focusing well', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => -0.32 * Math.exp(-(x * x + y * y) / 0.6), dU: (x, y) => { const g = 0.32 * Math.exp(-(x * x + y * y) / 0.6) / 0.3; return [g * x, g * y]; }, E: 0.5, n: 141, dW: 0.3, T: 7.5 },
+          ruth: { lab: 'Rutherford scattering', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => 0.25 / Math.hypot(x, y), dU: (x, y) => { const r = Math.hypot(x, y), k = -0.25 / (r * r * r); return [k * x, k * y]; }, E: 0.5, n: 161, dW: 0.3, T: 9.5 },
+          lens: { lab: 'focusing well', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => -0.32 * Math.exp(-(x * x + y * y) / 0.6), dU: (x, y) => { const g = 0.32 * Math.exp(-(x * x + y * y) / 0.6) / 0.3; return [g * x, g * y]; }, E: 0.5, n: 161, dW: 0.3, T: 9.5 },
         };
-        const pre = v.select('situation', Object.entries(PRE).map(([value, P]) => ({ value, label: P.lab })), 'ruth', { onChange: (k) => { s.setView(PRE[k].x, PRE[k].y); hp.set(...(k === 'proj' ? [1, -0.5] : [1.2, 0.8])); } });
+        const pre = v.select('situation', Object.entries(PRE).map(([value, P]) => ({ value, label: P.lab })), 'ruth', { onChange: (k) => { s.setView(PRE[k].x, PRE[k].y); hp.set(...(k === 'proj' ? [1, -0.5] : [-1, 1.2])); } });
         const s = v.stage({ x: PRE.ruth.x, y: PRE.ruth.y, equal: true, axes: 'box', gutter: true, height: 420, xlabel: 'x', ylabel: 'y' });
-        const hp = s.handle(1.2, 0.8, { color: 'gold', r: 7, label: 'probe', labelPos: 'ne' });
+        const hp = s.handle(-1, 1.2, { color: 'gold', r: 7, label: 'probe', labelPos: 'ne' });
         const cache = memo(); let cur = null;
         const rays = () => cache(pre.value, () => {
           const P = PRE[pre.value], out = [], dt = 0.01;
           for (let i = 0; i < P.n; i++) {
             let y, W;
             if (pre.value === 'proj') { const a = (TAU * (i + 0.5)) / P.n, sp = Math.sqrt(2 * P.E); y = [0, 0, sp * Math.cos(a), sp * Math.sin(a)]; W = 0; }
-            else { const b = -2.4 + (4.8 * i) / (P.n - 1), x0 = -3.2, sp = Math.sqrt(2 * (P.E - P.U(x0, b))); y = [x0, b, sp, 0]; W = sp * x0; }
+            else { const b = -2.4 + (4.8 * i) / (P.n - 1), x0 = -4.9, sp = Math.sqrt(2 * (P.E - P.U(x0, b))); y = [x0, b, sp, 0]; W = sp * x0; }
             const pts = [[y[0], y[1], W, y[2], y[3]]];
             for (let k = 0; k < P.T / dt; k++) {
               y = rk4((t, z) => { const g = P.dU(z[0], z[1]); return [z[2], z[3], -g[0], -g[1]]; }, 0, y, dt);
@@ -486,6 +487,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
         });
         v.render(() => {
           const D = rays(), P = D.P;
+          v.legend([['purple', 'wavefronts $W = $ const'], ['muted', 'rays (trajectories)'], ['blue', 'ray direction $\\nabla W$'], ['ink', 'wavefront tangent']].concat(pre.value === 'proj' ? [['red', 'envelope of the projectiles (caustic)', { dash: true }]] : []));
           if (pre.value === 'ruth') s.dot(0, 0, { r: 6, color: 'red', label: '+', labelPos: 'ne' });
           if (pre.value === 'lens') s.circle(0, 0, 0.55, { fill: 'teal', fillAlpha: 0.1, color: 'teal', width: 1, dash: [3, 3] });
           for (const r of D.out) s.path(r.map((z) => [z[0], z[1]]), { color: 'muted', width: 0.8, alpha: 0.4 });
@@ -498,7 +500,12 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
           if (pre.value === 'proj') { s.fn((x) => 0.5 - 0.5 * x * x, { color: 'red', width: 1.4, dash: [6, 4] }); s.dot(0, 0, { r: 5, color: 'ink' }); }
           // probe: nearest wavefront point with neighbours on both sides
           let best = null;
-          D.cross.forEach((row, li) => row.forEach((z, i) => { if (!z || i === 0 || i === row.length - 1 || !row[i - 1] || !row[i + 1]) return; const d = Math.hypot(z[0] - hp.x, z[1] - hp.y); if (!best || d < best.d) best = { d, z, li, i }; }));
+          D.cross.forEach((row, li) => row.forEach((z, i) => {
+            if (!z || i === 0 || i === row.length - 1 || !row[i - 1] || !row[i + 1]) return;
+            const da = Math.hypot(z[0] - row[i - 1][0], z[1] - row[i - 1][1]), db = Math.hypot(z[0] - row[i + 1][0], z[1] - row[i + 1][1]);
+            if (da > 0.15 || db > 0.15 || da > 2.5 * db || db > 2.5 * da) return; // skip folds, where neighbouring rays belong to different sheets
+            const d = Math.hypot(z[0] - hp.x, z[1] - hp.y); if (!best || d < best.d) best = { d, z, li, i };
+          }));
           if (best) {
             const row = D.cross[best.li], a = row[best.i - 1], b = row[best.i + 1], t = [b[0] - a[0], b[1] - a[1]], r = [best.z[2], best.z[3]];
             const ang = Math.acos(clamp(Math.abs(t[0] * r[0] + t[1] * r[1]) / (Math.hypot(...t) * Math.hypot(...r)), 0, 1)) / DEG;
@@ -509,7 +516,6 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
             cur = { ang, W: D.levels[best.li], spd: Math.hypot(...r), Uv: P.U(best.z[0], best.z[1]), E: P.E, nlev: D.levels.length };
           } else cur = null;
         });
-        v.legend([['purple', 'wavefronts $W = $ const'], ['muted', 'rays (trajectories)'], ['blue', 'ray direction $\\nabla W$'], ['ink', 'wavefront tangent'], ['red', 'envelope of the projectiles', { dash: true }]]);
         v.readout(() => {
           if (!cur) return 'move the probe near a wavefront';
           return String.raw`at the probe’s wavefront ($W = ${v.fix(cur.W, 2)}$): angle between the ray and the wavefront = ${v.fix(cur.ang, 2)}° · $|\nabla W| = |p| = ${v.fix(cur.spd, 4)}$ against $\sqrt{2m(E - U)} = ${v.fix(Math.sqrt(2 * (cur.E - cur.Uv)), 4)}$ (the eikonal equation) · ${cur.nlev} wavefronts, spaced by equal steps of $W$`;
@@ -535,7 +541,7 @@ every orbit becomes uniform rotation, and the frequency is the slope of $E(J)$. 
         const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.9, 2.9], axes: 'box', gutter: true, height: 330, weight: 1.25, xlabel: 'q', ylabel: 'p', xticks: piTicks(-Math.PI, Math.PI), title: 'phase plane: area $= 2\\pi J$' });
         const sA = v.stage({ x: [0, TAU], y: [0, 3.2], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'θ', ylabel: 'J', xticks: piTicks(0, TAU), title: 'action–angle plane' });
         const sE = v.stage({ x: [0, 3.2], y: [-1.05, 3.2], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'J', ylabel: 'E', title: 'energy against action: the slope is the frequency' });
-        const hp = sP.handle(0, 1.35, { color: 'ink', r: 7, constrain: (x, y) => [0, clamp(y, 0.08, 2.75)] });
+        const hp = sP.handle(0, 1.9, { color: 'ink', r: 7, constrain: (x, y) => [0, clamp(y, 0.08, 2.75)] });
         const cache = memo(); let cur = null;
         const orbit = () => cache(hp.y.toFixed(5), () => {
           const E = pendH(0, hp.y), I = pendInfo(E), y = [0, hp.y], dt = 0.002, pts = [[0, hp.y]], ts = [0];
@@ -575,7 +581,7 @@ every orbit becomes uniform rotation, and the frequency is the slope of $E(J)$. 
           const sl = I.kind === 'rotation' ? (pendInfo(O.E + 1e-4).J - pendInfo(O.E - 1e-4).J) : pendInfo(O.E + 1e-4).J - pendInfo(O.E - 1e-4).J, dEdJ = 2e-4 / sl;
           sE.line(J - 0.6, O.E - 0.6 * dEdJ, J + 0.6, O.E + 0.6 * dEdJ, { color: 'orange', width: 1.8, dash: [6, 4] });
           sE.dot(J, O.E, { r: 6, color: 'gold' });
-          sE.text('libration', 1.2, -0.25, { color: 'blue', size: 12 }); sE.text('rotation (per turn)', 2.2, 2.45, { color: 'teal', size: 12 });
+          sE.text('libration', 1.2, -0.25, { color: 'blue', size: 12 }); sE.text('rotation (per turn)', 2.3, 1.75, { color: 'teal', size: 12 });
           cur = { O, J, dEdJ, w };
         }, { period: 60, still: 3 });
         v.legend([['accent', 'orbit and its area $2\\pi J$'], ['gold', 'points equally spaced in $\\theta$'], ['blue', '$E(J)$, libration'], ['teal', '$E(J)$, rotation'], ['orange', 'tangent: slope $dE/dJ$', { dash: true }], ['red', 'separatrix', { dash: true }]]);

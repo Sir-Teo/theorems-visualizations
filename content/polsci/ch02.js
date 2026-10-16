@@ -34,7 +34,7 @@ function irvRows(v, c, P, x0, y0, w, rowH, o = {}) {
     let X = x0 + lab;
     const bw = (w - lab - 6) / P.m;
     range(P.m).forEach((cand) => {
-      const alive = Rd.alive.includes(cand), val = Rd.counts[cand], h = rowH - 10, L = alive ? (val / mx) * (bw - 26) : 0;
+      const alive = Rd.alive.includes(cand), val = Rd.counts[cand], h = rowH - 10, L = alive ? (val / mx) * (bw - 62) : 0;
       chip(v, c, X + 9, Y + rowH / 2 - 2, cand, { r: 8, alpha: alive ? 1 : 0.25, strike: !alive, ring: k === I.rounds.length - 1 && I.win.includes(cand) ? 'gold' : null });
       if (alive) {
         rr(c, X + 20, Y + 4, Math.max(2, L), h - 4, 3); c.fillStyle = v.color(CC[cand], Rd.out === cand ? 0.25 : 0.6); c.fill();
@@ -459,7 +459,7 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         const Bf = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 330, title: 'IRV count: the ballots as cast' });
         const Af = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 330, title: 'after k voters raise the winner' });
         const St = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 74, full: true, title: 'winner for every k' });
-        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, title: 'ballots' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true, title: 'ballots' });
         const BASE = mkProfile(3, [[39, 'ABC'], [35, 'BCA'], [26, 'CAB']]);
         const P = copyProfile(BASE);
         let F = null, donor = -1, msg = '', seed = 1;
@@ -516,6 +516,166 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
           s += w2 !== w ? ` **Non-monotonic:** ${L(w)} gained ${k} first preferences and lost the election.` : ' Still the same winner.';
           if (F) s += ` Smallest failing move from this profile: ${F.k} voters of the bloc ${rkStr(P.blocs[F.i].r)}.`; else s += ' (No bloc’s move makes the winner lose in this profile.)';
           return s + (msg ? ` (${msg}.)` : '');
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 2.6
+    {
+      num: '2.6',
+      kind: 'Paradox',
+      name: 'The no-show paradox',
+      statement: String.raw`A voting rule satisfies **participation** if adding voters who rank $x$ above $y$ can never change the winner from $x$ to $y$ — so turning out never hurts. Instant-runoff voting violates it. With 46 voters ranking $A \succ B \succ C$, 24 ranking $B \succ C \succ A$ and 30 ranking $C \succ A \succ B$, IRV eliminates $B$, whose ballots go to $C$, and $C$ wins $54$–$46$. Now let 8 more voters with ranking $B \succ C \succ A$ turn out. $B$ rises to 32, $C$ (30) is eliminated instead, its ballots go to $A$, and $A$ wins $76$–$32$. The newcomers prefer $C$ to $A$: by voting sincerely they turned their second choice into their last, and they would have done better by staying home.`,
+      idea: String.raw`The newcomers’ first preferences do not help their favourite win — $B$ is too weak — but they change which of the other two candidates is eliminated. Without them $B$ goes first and the final is $C$ against $A$, which $C$ wins with $B$’s transfers. With them $C$ goes first and the final is $A$ against $B$, which $A$ wins with $C$’s transfers. The newcomers’ ballots never reach $C$, so their second preference goes unused. It is the same mechanism as non-monotonicity (polsci-2.5): one count decided by first preferences changes who survives. Positional rules such as plurality and Borda satisfy participation (each new ballot adds points to candidates in the newcomers’ own order), but Moulin showed that every Condorcet method fails it once there are four candidates (polsci-2.7).`,
+      caption: String.raw`One icon per voter, coloured by first choice; the ringed icons are the group. Toggle *the group votes* and watch them walk between the polling station and home, while the two IRV counts below show the result either way. With the group at the polls, their second choice C loses to their last choice A. Slide the group size; the readout lists the sizes that backfire. *Search* draws random electorates and groups until it finds a new no-show paradox.`,
+      deps: ['polsci-1.4'],
+      see: ['polsci-2.5', 'polsci-2.7'],
+      refs: ['T&P ch. 7', 'Fishburn & Brams (1983), Paradoxes of preferential voting'],
+      tags: ['instant runoff', 'participation', 'no-show paradox'],
+      credit: 'Fishburn & Brams, 1983',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Participation_criterion' },
+      viz(v) {
+        const Ic = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 210, full: true, title: 'the electorate' });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 180, full: true, title: 'IRV, round by round' });
+        const BASE = { P: mkProfile(3, [[46, 'ABC'], [24, 'BCA'], [30, 'CAB']]), r: [1, 2, 0], g: 8 };
+        const P = copyProfile(BASE.P);
+        let gr = BASE.r.slice(), seed = 3, msg = '';
+        const gS = v.slider('group size', 0, 30, BASE.g, { int: true });
+        const votes = v.toggle('the group votes', true);
+        v.button('Search', () => {
+          for (let tries = 1; tries < 40000; tries++) {
+            const r = v.rng(seed++), m = r() < 0.6 ? 3 : 4, Q = tidy(randomProfile(r, m, 3 + Math.floor(r() * 3), 3, 30));
+            if (Q.blocs.length < 3 || total(Q) > 110) continue;
+            const f = noShowFail(Q, irvW, 25);
+            if (f) { setProfile(P, Q); gr = f.r.slice(); gS.set(f.g); msg = `found after ${tries} random electorates`; return; }
+          }
+        });
+        v.button('Classic example', () => { setProfile(P, BASE.P); gr = BASE.r.slice(); gS.set(BASE.g); msg = ''; });
+        const I = v.icons(Ic, { order: 'index', shape: 'auto', maxCell: 30, tween: 700 });
+        const withG = () => addGroup(P, gr, gS.value);
+        v.render(() => {
+          const n0 = total(P), g = gS.value;
+          const groups = P.blocs.map((b) => ({ n: b.n, color: CC[b.r[0]], label: `${rkStr(b.r)}` }));
+          groups.push({ n: g, color: CC[gr[0]], label: `the group: ${rkStr(gr)}`, ring: 'gold' });
+          I.set({ n: n0 + g, groups, block: (i) => (i >= n0 && !votes.value ? 1 : 0), blockLabels: (k, cnt) => (k === 0 ? `at the polls (${cnt})` : `stays home (${cnt})`) });
+          I.draw(); I.legend();
+          // ---- the two counts
+          const c = R.ctx, W = R.width, H = R.height, half = W / 2;
+          const wA = irvW(P), wB = irvW(withG());
+          [[P, 'if the group stays home', wA], [withG(), `if the group of ${g} votes ${rkStr(gr)}`, wB]].forEach(([Q, title, w], j) => {
+            const x0 = j * half + 12, on = (j === 1) === votes.value;
+            rr(c, j * half + 4, 4, half - 8, H - 8, 8); c.fillStyle = v.color(on ? 'accent' : 'muted', on ? 0.08 : 0.03); c.fill();
+            if (on) { c.strokeStyle = v.color('accent'); c.lineWidth = 1.4; c.stroke(); }
+            txt(v, c, title, x0 + 4, 20, { size: 11.5, weight: 700, align: 'left', color: on ? 'accent' : 'ink' });
+            const rows = irvRows(v, c, Q, x0 + 4, 34, half - 28, Math.min(34, (H - 80) / Q.m));
+            const k = gr.indexOf(w);
+            txt(v, c, `winner ${LET[w]} — the group’s ${ord(k)} choice`, x0 + 4, 40 + rows.h + 10, { size: 11.5, weight: 700, color: k === 0 ? 'green' : k === Q.m - 1 ? 'red' : 'orange', align: 'left' });
+          });
+        });
+        v.readout(() => {
+          const g = gS.value, wA = irvW(P), wB = irvW(withG()), kA = gr.indexOf(wA), kB = gr.indexOf(wB), L = (x) => LET[x];
+          let s = `The group (${g} voters, ballot ${rkStr(gr)}): staying home elects **${L(wA)}** (their ${ord(kA)} choice), voting elects **${L(wB)}** (their ${ord(kB)} choice).`;
+          if (kB > kA) s += ` **No-show paradox:** by voting sincerely the group made the result worse for itself.`;
+          else if (kB < kA) s += ' Here voting helps them.';
+          else s += ' Their votes change nothing.';
+          const bad = range(31).filter((h) => gr.indexOf(irvW(addGroup(P, gr, h))) > kA);
+          if (bad.length) s += ` Group sizes from 0 to 30 that backfire: ${bad[0]}${bad.length > 1 ? `–${bad[bad.length - 1]}` : ''}${bad.length !== bad[bad.length - 1] - bad[0] + 1 ? ' (not all in between)' : ''}.`;
+          return s + (msg ? ` (${msg}.)` : '');
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 2.7
+    {
+      num: '2.7',
+      kind: 'Theorem',
+      name: 'Moulin: Condorcet methods must violate participation',
+      statement: String.raw`**Moulin’s theorem.** With at least four candidates, every Condorcet-consistent voting rule (one that elects the Condorcet winner whenever there is one) violates participation: for some profile there is a group of voters with a common ranking whose arrival changes the winner from a candidate they prefer to one they like less. Moulin (1988) proved it for $m \ge 4$ candidates and at least $25$ voters; Brandt, Geist and Peters (2017) lowered the number of voters to $12$, and showed by constructing a rule that $12$ is the least possible for four candidates. So Copeland, minimax, Kemeny, ranked pairs, Schulze, Black’s rule and every other Condorcet method all have no-show paradoxes. Rules that are not Condorcet-consistent can escape: every positional rule, Borda included, satisfies participation.`,
+      idea: String.raw`Participation constrains how the winner may change as ballots are added; Condorcet consistency pins down the winner on every profile with a Condorcet winner. Moulin’s proof starts from a profile with a majority cycle and adds groups of identical voters, one at a time, until a Condorcet winner appears. Each group is chosen so that, by participation, it must not lose relative to the previous winner; following the chain around the cycle, participation forces some candidate to win at a stage where Condorcet consistency forces a different one. The search below does not follow the proof: it samples four-candidate electorates without a Condorcet winner, tries every group ranking and size, then shrinks any counterexample it finds. For Borda it never succeeds, because each added ballot only adds points in the group’s own order (polsci-1.10).`,
+      caption: String.raw`Pick a rule. The page searches random four-candidate electorates and every possible group until it finds a group whose turnout backfires, then trims voters while the paradox persists. Left and right: the majority tournament and the winner (gold ring) without and with the group, whose ranking is shown underneath. The ballots are below, the group in gold; edit them, and the panels recompute. *Search again* finds a different example. Try *Borda*: the search comes back empty-handed.`,
+      deps: ['polsci-2.6', 'polsci-1.6', 'polsci-1.11'],
+      see: ['polsci-3.6'],
+      refs: ['T&P ch. 7', 'Moulin (1988), Condorcet’s principle implies the no show paradox', 'Brandt, Geist & Peters (2017), Optimal bounds for the no-show paradox via SAT solving'],
+      tags: ['participation', 'Condorcet methods', 'no-show paradox'],
+      credit: 'Hervé Moulin, 1988; bound of 12 voters: Brandt, Geist & Peters, 2017',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Participation_criterion' },
+      viz(v) {
+        const G0 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 300, title: 'without the group' });
+        const G1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 300, title: 'with the group' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, title: 'ballots — the last row (gold) is the group' });
+        const PG = { m: 4, blocs: [] };
+        let seed = 1, info = { found: false, tries: 0, ms: 0 };
+        const ruleOf = () => RULES.find((r) => r.id === rule.value);
+        const without = () => ({ m: 4, blocs: PG.blocs.slice(0, -1) });
+        const grp = () => PG.blocs[PG.blocs.length - 1];
+        // a winner that does not depend on tie-breaking: no pairwise ties, and the same winner when the letters are reversed
+        const flip = (P) => ({ m: P.m, blocs: P.blocs.map((b) => ({ n: b.n, r: b.r.map((c) => P.m - 1 - c) })) });
+        const solid = (P, F) => { const N = pairwiseT(P); for (let x = 0; x < P.m; x++) for (let y = x + 1; y < P.m; y++) if (N[x][y] === N[y][x]) return -1; const w = F(P); return P.m - 1 - F(flip(P)) === w ? w : -1; };
+        const para = (P, r, g, F) => { const w0 = solid(P, F), w1 = solid(addGroup(P, r, g), F); return w0 >= 0 && w1 >= 0 && w0 !== w1 && r.indexOf(w0) < r.indexOf(w1); };
+        function shrink(Q, r, g, F) {
+          let changed = true;
+          while (changed) {
+            changed = false;
+            if (g > 1 && para(Q, r, g - 1, F)) { g--; changed = true; }
+            for (let i = 0; i < Q.blocs.length; i++) {
+              const T = cloneP(Q); T.blocs[i].n--; const T2 = tidy(T);
+              if (para(T2, r, g, F)) { Q = T2; changed = true; break; }
+            }
+          }
+          return { Q, g };
+        }
+        function search(fresh) {
+          const R = ruleOf(); if (fresh) seed = 1;
+          const t0 = Date.now(); let tries = 0;
+          while (Date.now() - t0 < 900) {
+            tries++;
+            const r = v.rng(seed++), Q = tidy(randomProfile(r, 4, 2 + Math.floor(r() * 4), 2, 12));
+            if (Q.blocs.length < 2 || (cwOf(pairwiseT(Q)) >= 0 && r() < 0.85)) continue;
+            let f = null;
+            if (solid(Q, R.win) >= 0) for (const rr2 of perms(4)) { for (let g = 1; g <= 12 && !f; g++) if (para(Q, rr2, g, R.win)) f = { r: rr2, g }; if (f) break; }
+            if (f) {
+              const sm = shrink(Q, f.r, f.g, R.win);
+              PG.blocs = sm.Q.blocs.map((b) => ({ n: b.n, r: b.r.slice() })).concat([{ n: sm.g, r: f.r.slice() }]);
+              info = { found: true, tries, ms: Date.now() - t0 };
+              return;
+            }
+          }
+          info = { found: false, tries, ms: Date.now() - t0 };
+        }
+        const rule = v.select('rule', RULES.map((r) => ({ value: r.id, label: r.label })), 'minimax', { onChange: () => search(true) });
+        v.button('Search again', () => search(false));
+        search(true);
+        const ed = blocEditor(v, E, PG, { max: 14, rank: true, rowMax: 30, barColor: (b, i) => (i === PG.blocs.length - 1 ? 'gold' : null), tag: (b) => (b === grp() ? { text: 'the group', color: 'gold' } : null) });
+        const panel = (S, P, title) => {
+          const c = S.ctx, W = S.width, H = S.height, F = ruleOf().win, w = F(P), N = pairwiseT(P), cw = cwOf(N), g = grp();
+          const pos = ring(4, W / 2, H / 2 - 12, Math.min(W * 0.3, H * 0.3), Math.PI / 4);
+          drawTourney(v, c, N, [0, 1, 2, 3], pos, {
+            r: 17, label: (a, b, p, q) => `+${p - q}`, bend: (a, b) => ((a + b) % 2 === 0 ? 46 : 0),
+            ring: (x) => (x === w ? 'gold' : null), color: (a) => (a === cw ? 'green' : null),
+          });
+          txt(v, c, `${total(P)} voters · ${ruleOf().label} elects ${LET[w]}${cw >= 0 ? ` (Condorcet winner ${LET[cw]})` : ' · no Condorcet winner'}`, W / 2, 14, { size: 11, weight: 600, color: 'muted' });
+          // the group's ranking, with the winner marked
+          const y = H - 22, k = g.r.indexOf(w), x0 = W / 2 - 1.5 * 34 - 40;
+          txt(v, c, 'group ranks', x0 - 8, y, { size: 10.5, weight: 600, color: 'muted', align: 'right' });
+          g.r.forEach((cand, j) => chip(v, c, x0 + 20 + j * 34, y, cand, { r: 10, ring: cand === w ? 'gold' : null, alpha: cand === w ? 1 : 0.55 }));
+          txt(v, c, `→ ${ord(k)} choice`, x0 + 20 + 4 * 34 - 6, y, { size: 11, weight: 700, color: k <= 1 ? 'green' : 'red', align: 'left' });
+          return w;
+        };
+        v.render(() => {
+          ed.draw();
+          if (PG.blocs.length < 2) return;
+          panel(G0, without(), 'without');
+          panel(G1, PG, 'with');
+        });
+        v.legend([['gold', 'winner under the chosen rule', { dot: true }], ['green', 'Condorcet winner’s arrows']]);
+        v.readout(() => {
+          const R = ruleOf();
+          if (!PG.blocs.length) return 'Searching…';
+          const g = grp(), F = R.win, w0 = F(without()), w1 = F(PG), L = (x) => LET[x];
+          let s = info.found ? `**${R.label}**: counterexample found after ${fmtK(info.tries)} random electorates (${info.ms} ms) and trimmed to ${total(without())} voters plus a group of ${g.n}. ` : `**${R.label}**: no counterexample in ${fmtK(info.tries)} random electorates and all their groups${R.cond ? ' — press *Search again*' : ' — as expected: positional rules satisfy participation'}. Showing the last example found. `;
+          s += `Without the group ${L(w0)} wins; when the ${g.n} voter${g.n > 1 ? 's' : ''} ranking ${rkStr(g.r)} turn out, ${L(w1)} wins`;
+          s += g.r.indexOf(w1) > g.r.indexOf(w0) ? ` — **worse for them** (${ord(g.r.indexOf(w0))} → ${ord(g.r.indexOf(w1))} choice): they should have stayed home.` : '.';
+          return s;
         });
       },
     },

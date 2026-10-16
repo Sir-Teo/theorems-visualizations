@@ -183,7 +183,7 @@ The loads are not expected to peak together, so codes combine them with **load f
         const roof = v.select('roof', [{ value: 'slab', label: 'concrete slab' }, { value: 'deck', label: 'light steel deck' }], 'slab');
         const pg = v.slider('ground snow (kPa)', 0, 4, 1.0, { step: 0.05 });
         const V = v.slider('wind speed (m/s)', 0, 60, 30, { step: 1 });
-        const A = v.stage({ x: [-3.6, 12.2], y: [-1.5, 12.6], equal: true, axes: false, height: 400, weight: 1.05, title: 'the frame and its loads' });
+        const A = v.stage({ x: [-3.6, 12.2], y: [-2.5, 12.4], equal: true, axes: false, height: 400, weight: 1.05, title: 'the frame and its loads' });
         const B = v.stage({ x: [0.3, 6.7], y: [-200, 800], axes: 'box', gutter: { l: 48 }, height: 400, weight: 1, ylabel: 'vertical reaction at column base (kN)', xticks: [[1, '1'], [2, '2'], [3, '3a'], [4, '3b'], [5, '4'], [6, '5']], title: 'load combinations (ASCE 7)' });
         const BW = 6, H1 = 4, LSP = 8;
         const nodes = [{ x: 0, y: 0 }, { x: LSP, y: 0 }, { x: 0, y: H1 }, { x: LSP, y: H1 }, { x: 0, y: 2 * H1 }, { x: LSP, y: 2 * H1 }];
@@ -223,23 +223,35 @@ The loads are not expected to peak together, so codes combine them with **load f
           A.line(0, H1, LSP, H1, { color: 'ink', width: 5 }); A.line(0, 2 * H1, LSP, 2 * H1, { color: 'ink', width: 5 });
           drawSupport(v, A, 0, 0, 'fixed'); drawSupport(v, A, LSP, 0, 'fixed');
           // stacked load bands (0.17 m per kPa)
-          const k = 0.17, band = (y0, comps) => { let y = y0 + 0.12; for (const [val, c, lab] of comps) { if (val <= 0) continue; const h = val * k; A.rect(0, y, LSP, y + h, { fill: c, fillAlpha: 0.32, color: c, width: 1 }); for (let x = 0.5; x < LSP; x += 1) A.arrow(x, y + h, x, y, { color: c, width: 1, head: 4, alpha: 0.8 }); if (h > 0.25) A.text(`${lab} ${val.toFixed(2)} kPa`, LSP + 0.15, y + h / 2, { size: 10.5, color: c }); y += h; } };
+          const k = 0.17, band = (y0, comps) => {
+            let y = y0 + 0.12; const thin = [];
+            for (const [val, c, lab] of comps) {
+              if (val <= 0) continue; const h = val * k;
+              A.rect(0, y, LSP, y + h, { fill: c, fillAlpha: 0.32, color: c, width: 1 });
+              for (let x = 0.5; x < LSP; x += 1) A.arrow(x, y + h, x, y, { color: c, width: 1, head: 4, alpha: 0.8 });
+              if (h * A.sy >= 12) A.text(`${lab} ${val.toFixed(2)} kPa`, LSP / 2, y + h / 2, { align: 'center', size: 10.5, weight: 600, color: c, plate: true }); else thin.push(`${lab} ${val.toFixed(2)} kPa`);
+              y += h;
+            }
+            if (thin.length) A.text(thin.join(' + '), LSP, y + 0.05, { align: 'right', baseline: 'bottom', size: 10.5, weight: 600, color: 'ink' });
+            return y;
+          };
           band(H1, [[P.Df, 'gray', 'D'], [P.L, 'blue', 'L']]);
-          band(2 * H1, [[P.Dr, 'gray', 'D'], [P.S >= P.Lr ? P.S : P.Lr, P.S >= P.Lr ? 'teal' : 'blue', P.S >= P.Lr ? 'S' : 'Lr']]);
+          const roofTop = band(2 * H1, [[P.Dr, 'gray', 'D'], [P.S >= P.Lr ? P.S : P.Lr, P.S >= P.Lr ? 'teal' : 'blue', P.S >= P.Lr ? 'S' : 'Lr']]);
           // wind
           if (P.q > 0) {
             const wl = 0.8 * P.q * 1.6, wr = 0.5 * P.q * 1.6;
             for (let y = 0.5; y < 2 * H1; y += 1) { A.arrow(-0.25 - wl, y, -0.25, y, { color: 'orange', width: 1.4, head: 5 }); A.arrow(LSP + 0.25, y, LSP + 0.25 + wr, y, { color: 'orange', width: 1.4, head: 5, alpha: 0.7 }); }
-            const ur = 0.9 * P.q * 1.6; for (let x = 1; x < LSP; x += 2) A.arrow(x, 2 * H1 + 2.3, x, 2 * H1 + 2.3 + ur, { color: 'orange', width: 1.4, head: 5 });
+            const ur = 0.9 * P.q * 1.6; for (let x = 1; x < LSP; x += 2) A.arrow(x, roofTop + 0.5, x, roofTop + 0.5 + ur, { color: 'orange', width: 1.4, head: 5 });
+            A.text('roof suction', LSP - 0.6, roofTop + 0.55 + ur / 2, { size: 10.5, color: 'orange', align: 'left', dx: 0 });
             A.text(`wind q = ${(P.q * 1000).toFixed(0)} Pa`, -0.3, 2 * H1 + 0.8, { align: 'right', size: 10.5, color: 'orange' });
           }
           // reactions (governing combination)
           for (const [nI, x] of [[0, 0], [1, LSP]]) {
-            const Ry = g.R[nI][1], len = Math.min(2.2, Math.abs(Ry) / 300);
-            A.arrow(x, Ry > 0 ? -1.35 : -0.25, x, Ry > 0 ? -1.35 + len : -0.25 - len, { color: Ry > 0 ? 'green' : 'red', width: 2.2, head: 7 });
-            A.text(kN(Ry), x + (nI ? 0.3 : -0.3), -1.0, { align: nI ? 'left' : 'right', size: 11, weight: 650, color: Ry > 0 ? 'green' : 'red' });
+            const Ry = g.R[nI][1], len = Math.max(0.3, Math.min(1.9, Math.abs(Ry) / 300));
+            if (Ry > 0) A.arrow(x, -0.4 - len, x, -0.4, { color: 'green', width: 2.4, head: 8 }); else A.arrow(x, -0.4, x, -0.4 - len, { color: 'red', width: 2.4, head: 8 });
+            A.text(kN(Ry), x + (nI ? 0.3 : -0.3), -0.4 - len / 2, { align: nI ? 'left' : 'right', size: 11, weight: 650, color: Ry > 0 ? 'green' : 'red' });
           }
-          A.text(`reactions for combination ${['1', '2', '3a', '3b', '4', '5'][gov]}`, LSP / 2, -1.25, { align: 'center', size: 10.5, color: 'muted' });
+          A.text(`reactions for combination ${['1', '2', '3a', '3b', '4', '5'][gov]}`, LSP / 2, -1.5, { align: 'center', size: 10.5, color: 'muted' });
           // chart
           const all = combo.flatMap((c) => [c.R[0][1], c.R[1][1]]), lo = Math.min(-50, ...all) * 1.15, hi = Math.max(100, ...all) * 1.15;
           B.setView([0.3, 6.7], [lo, hi]);
@@ -273,8 +285,8 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
       credit: 'Archimedes (the lever); Varignon, 1687 (moments)',
       tags: ['equilibrium', 'statics'],
       viz(v) {
-        const s = v.stage({ x: [-0.8, 10.8], y: [-3.6, 5.4], equal: true, axes: false, height: 360, weight: 1.6, title: 'free-body diagram of the beam' });
-        const mb = v.stage({ x: [0.3, 6.7], y: [-100, 100], axes: 'box', gutter: { l: 46 }, height: 360, weight: 0.9, minWidth: 230, ylabel: 'moment about O (kN·m)', xticks: [], title: 'moments about O' });
+        const s = v.stage({ x: [-0.8, 10.8], y: [-5.4, 5.4], equal: true, axes: false, height: 420, weight: 1.6, title: 'free-body diagram of the beam (arrows to one scale)' });
+        const mb = v.stage({ x: [0.3, 6.7], y: [-100, 100], axes: 'box', gutter: { l: 46 }, height: 420, weight: 0.9, minWidth: 230, ylabel: 'moment about O (kN·m)', xticks: [], title: 'moments about O' });
         const naive = v.toggle('equal shares (wrong reactions)', false);
         const SC = 10; // kN per unit of arrow length
         const LC = ['orange', 'purple', 'pink'];
@@ -282,7 +294,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
         P.forEach((h) => { h.constrain = (x, y) => [Math.max(0, Math.min(10, x)), Math.max(0.4, Math.min(5, y))]; });
         const SA = s.handle(1.0, -0.45, { color: 'gray', constrain: (x) => [Math.max(0, Math.min(10, x)), -0.45] });
         const SB = s.handle(9.0, -0.45, { color: 'gray', constrain: (x) => [Math.max(0, Math.min(10, x)), -0.45] });
-        const O = s.handle(4.0, -2.4, { color: 'accent', label: 'O' });
+        const O = s.handle(4.0, -4.6, { color: 'accent', label: 'O' });
         const solve = () => {
           const loads = P.map((h) => ({ x: h.x, F: -h.y * SC }));
           const xa = Math.min(SA.x, SB.x), xb = Math.max(SA.x, SB.x), W = -loads.reduce((a, l) => a + l.F, 0);
@@ -306,7 +318,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             s.text(`${nm.replace('_', '')} = ${R.toFixed(1)} kN`, x, -0.9 - len, { dy: 12, align: 'center', size: 11, weight: 650, color: ok ? 'green' : 'red' });
           }
           // moment arms from O
-          for (const f of forces) { if (!isFinite(f.F)) continue; s.line(O.x, O.y, f.x, O.y, { color: f.c, width: 1.2, dash: [3, 3], alpha: 0.8 }); s.line(f.x, O.y, f.x, Math.min(O.y, 0) + (O.y > 0 ? 0 : 0), { color: f.c, width: 0.8, alpha: 0.35, dash: [1, 3] }); }
+          for (const f of forces) { if (!isFinite(f.F)) continue; s.line(O.x, O.y, f.x, O.y, { color: f.c, width: 1.3, dash: [4, 3], alpha: 0.85 }); s.line(f.x, O.y, f.x, 0, { color: f.c, width: 1, alpha: 0.4, dash: [1, 3] }); }
           // moment bars
           const ms = forces.map((f) => (f.x - O.x) * f.F), tot = ms.reduce((a, m) => a + (isFinite(m) ? m : 0), 0);
           const mx = Math.max(20, ...ms.map((m) => Math.abs(m) || 0), Math.abs(tot)) * 1.2;
@@ -321,7 +333,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
         v.readout(() => {
           const { forces, Ra, Rb, W } = solve(), sF = forces.reduce((a, f) => a + (isFinite(f.F) ? f.F : 0), 0), sM = forces.reduce((a, f) => a + (isFinite(f.F) ? (f.x - O.x) * f.F : 0), 0);
           const lift = !naive.value && (Ra < 0 || Rb < 0) ? ` · **${Ra < 0 ? 'A' : 'B'} must pull down**: a beam merely resting on its bearings would tip over there.` : '';
-          return `Total load ${W.toFixed(1)} kN · R_A = ${isFinite(Ra) ? Ra.toFixed(1) : '—'} kN, R_B = ${isFinite(Rb) ? Rb.toFixed(1) : '—'} kN · ΣF_y = **${r1(sF)}** kN · ΣM about O (${O.x.toFixed(1)}, ${O.y.toFixed(1)}) = **${r1(sM)}** kN·m${lift}`;
+          return `Total load ${W.toFixed(1)} kN · $R_A$ = ${isFinite(Ra) ? Ra.toFixed(1) : '—'} kN, $R_B$ = ${isFinite(Rb) ? Rb.toFixed(1) : '—'} kN · $\\Sigma F_y$ = **${r1(sF)}** kN · ΣM about O (${O.x.toFixed(1)}, ${O.y.toFixed(1)}) = **${r1(sM)}** kN·m${lift}`;
         });
       },
     },
@@ -335,7 +347,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
 - if $\operatorname{rank} A = 3 = r$, the structure is **statically determinate**: equilibrium alone fixes every reaction;
 - if $\operatorname{rank} A = 3 < r$, it is **indeterminate** to degree $r - 3$: infinitely many sets of reactions balance the load, and the actual one depends on the stiffness of the members (compatibility of deformations).`,
       idea: String.raw`Equilibrium (1.2) is the linear system $A\mathbf R = -\mathbf F$. A solution exists for every load exactly when $A$ has full row rank 3, and it is unique exactly when the columns are independent ($r = 3$). The null space of $A$ is the set of self-balancing reaction patterns, which can be added without disturbing equilibrium. In an indeterminate structure the stiffer path attracts more load: the elastic answer here comes from a beam model in which the beam bends, and it lies somewhere along the family that statics allows. Counting unknowns is not enough, because three rollers in a row give $r = 3$ but cannot resist a sideways push.`,
-      caption: String.raw`Pick a support at each of the three stations and drag the load (its tail sets both size and direction). The free-body diagram shows each reaction with its value; the readout gives $r$, the rank of $A$ and the verdict. For a mechanism the dashed ghost shows how the beam can move. For an indeterminate beam, drag the **redundant** slider: every setting satisfies ΣF = 0 and ΣM = 0, but only the marked one also satisfies the beam's elasticity.`,
+      caption: String.raw`Pick a support at each of the three stations and drag the load: its tail sets the size and direction, its tip slides along the beam. The free-body diagram shows each reaction with its value; the readout gives $r$, the rank of $A$ and the verdict. For a mechanism the dashed ghost shows how the beam can move. For an indeterminate beam, drag the **redundant** slider: every setting satisfies ΣF = 0 and ΣM = 0, but only the marked one also satisfies the beam's elasticity.`,
       deps: ['arch-1.2'],
       see: ['solid-1.10', 'solid-7.5'],
       refs: ['Allen & Zalewski'],
@@ -344,10 +356,11 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
         const OPTS = [{ value: 'none', label: 'none' }, { value: 'roller', label: 'roller' }, { value: 'pin', label: 'pin' }, { value: 'fixed', label: 'fixed' }];
         const sel = [v.select('left', OPTS, 'pin'), v.select('middle', OPTS, 'none'), v.select('right', OPTS, 'roller')];
         const red = v.slider('redundant (statics alone cannot fix it)', -1, 1, 0, { step: 0.01 });
-        const s = v.stage({ x: [-1.2, 11.2], y: [-3.3, 4.4], equal: true, axes: false, height: 340, full: true });
+        const s = v.stage({ x: [-1.2, 11.2], y: [-4.4, 4.4], equal: true, axes: false, height: 380, full: true });
         const XS = [0, 5, 10];
-        const P = s.handle(3.2, 3.2, { color: 'orange', constrain: (x, y) => [Math.max(0.3, Math.min(9.7, x)), Math.max(0.5, Math.min(4.2, y))] });
-        const LOADX = () => Math.max(0.3, Math.min(9.7, P.x));
+        const P = s.handle(2.1, 3.0, { color: 'orange', constrain: (x, y) => [Math.max(-1, Math.min(11, x)), Math.max(0.6, Math.min(3.8, y))] });
+        const T = s.handle(3.2, 0.16, { color: 'orange', r: 6, constrain: (x) => [Math.max(0.3, Math.min(9.7, x)), 0.16] });
+        const LOADX = () => T.x;
         let elastic = null;
         function analyse() {
           // load: from the handle (tail) to the beam at x = P.x; magnitude 12 kN per unit length
@@ -410,7 +423,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             a.info.forEach((inf, j) => { (comps[inf.k] ||= {})[inf.comp] = a.R[j]; });
             for (const k in comps) {
               const x = XS[k], c = comps[k], rx = c.x || 0, ry = c.y || 0, sc = 1 / 12, L = Math.hypot(rx, ry);
-              if (L > 0.05) { const y0 = -0.95; s.arrow(x - rx * sc, y0 - ry * sc, x, y0 + (ry >= 0 ? 0 : 0), { color: 'green', width: 2.4, head: 8 }); s.text(`${L.toFixed(1)} kN`, x - rx * sc, y0 - ry * sc, { dy: ry >= 0 ? 12 : -12, align: 'center', size: 10.5, weight: 650, color: 'green' }); }
+              if (L > 0.05) { const y0 = -0.95, sc2 = 1 / 16; s.arrow(x - rx * sc2, y0 - ry * sc2, x, y0, { color: 'green', width: 2.4, head: 8 }); s.text(`${L.toFixed(1)} kN`, x - rx * sc2, y0 - ry * sc2, { dx: 8, dy: ry >= 0 ? 8 : -8, align: 'left', size: 10.5, weight: 650, color: 'green' }); }
               if (c.m != null && Math.abs(c.m) > 0.05) { momentArrow(v, s, x, 0, c.m, 'green', 22); s.text(`${Math.abs(c.m).toFixed(1)} kN·m`, x, 0.95, { align: 'center', size: 10.5, weight: 650, color: 'green' }); }
             }
             if (elastic && a.r > 3) { // elastic deflected shape (exaggerated)
@@ -426,7 +439,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
           const a = analyse();
           if (a.rank < 3) return `r = ${a.r}, rank ${a.rank} < 3: **mechanism**${a.r >= 3 ? ' — enough unknowns, but they cannot resist every load (counting is not enough)' : ''}. The load can only be balanced if it happens to point along a direction the supports resist.`;
           const sF = [0, 1].map((row) => a.R.reduce((acc, val, j) => acc + val * a.cols[j][row], 0) + (row ? a.Fy : a.Fx)), sM = a.R.reduce((acc, val, j) => acc + val * a.cols[j][2], 0) + a.lx * a.Fy;
-          const base = `r = ${a.r}, rank 3 · ΣF_x = ${r1(sF[0])}, ΣF_y = ${r1(sF[1])} kN, ΣM = ${r1(sM)} kN·m`;
+          const base = `r = ${a.r}, rank 3 · $\\Sigma F_x$ = ${r1(sF[0])}, $\\Sigma F_y$ = ${r1(sF[1])} kN, $\\Sigma M$ = ${r1(sM)} kN·m`;
           if (a.r === 3) return `${base} · **determinate**: these reactions are the only ones possible.`;
           const dev = Math.abs(a.cUse - a.cEl) < 1e-6;
           return `${base} · **indeterminate**: a whole family balances the load; ${dev ? 'this one is the **elastic** solution (the beam bends compatibly with every support).' : 'this one is in equilibrium but would force the beam to break away from a support — move the slider back to the marked middle.'}`;
@@ -476,14 +489,15 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
             if (t) {
               S.text(`${t.Ta.toFixed(1)} kN`, (K.x + hA.x) / 2, (K.y + hA.y) / 2, { dx: -8, align: 'right', size: 11, weight: 650, color: t.Ta < 0 ? 'red' : 'blue' });
               S.text(`${t.Tb.toFixed(1)} kN`, (K.x + hB.x) / 2, (K.y + hB.y) / 2, { dx: 8, size: 11, weight: 650, color: t.Tb < 0 ? 'red' : 'teal' });
-              // polygon: W down, H, Ta, Tb back to start
-              const sc = 3.4 / Math.max(W, Math.abs(t.Ta), Math.abs(t.Tb), 1) * (Math.max(W, Math.abs(t.Ta), Math.abs(t.Tb)) > 30 ? 1 : 1);
-              let p = [0, 3.2 * Math.min(1, 10 / Math.max(10, Math.abs(t.Ta), Math.abs(t.Tb)))], start = p.slice();
-              const seg = (vec, c, lab) => { const q = [p[0] + vec[0] * sc, p[1] + vec[1] * sc]; Fd.arrow(p[0], p[1], q[0], q[1], { color: c, width: 2.6, head: 9 }); Fd.text(lab, (p[0] + q[0]) / 2, (p[1] + q[1]) / 2, { dx: 9, size: 11.5, weight: 650, color: c }); p = q; };
-              seg([0, -W], 'ink', 'W');
-              if (Math.abs(Hs.value) > 0.05) seg([Hs.value, 0], 'orange', 'H');
-              seg([t.ea[0] * t.Ta, t.ea[1] * t.Ta], t.Ta < 0 ? 'red' : 'blue', 'T_A'.replace('_', ''));
-              seg([t.eb[0] * t.Tb, t.eb[1] * t.Tb], t.Tb < 0 ? 'red' : 'teal', 'T_B'.replace('_', ''));
+              // polygon: W, H, T_A, T_B nose to tail, then fitted into the panel
+              const vecs = [[[0, -W], 'ink', 'W']];
+              if (Math.abs(Hs.value) > 0.05) vecs.push([[Hs.value, 0], 'orange', 'H']);
+              vecs.push([[t.ea[0] * t.Ta, t.ea[1] * t.Ta], t.Ta < 0 ? 'red' : 'blue', 'TA'], [[t.eb[0] * t.Tb, t.eb[1] * t.Tb], t.Tb < 0 ? 'red' : 'teal', 'TB']);
+              const vs = [[0, 0]]; for (const [vec] of vecs) { const q = vs[vs.length - 1]; vs.push([q[0] + vec[0], q[1] + vec[1]]); }
+              const xs = vs.map((q) => q[0]), ys = vs.map((q) => q[1]), span = Math.max(1e-9, Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+              const sc = 7.2 / span, cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2, P2 = (q) => [(q[0] - cx) * sc, (q[1] - cy) * sc + 0.4];
+              vecs.forEach(([, c, lab], k) => { const p0 = P2(vs[k]), p1 = P2(vs[k + 1]); Fd.arrow(p0[0], p0[1], p1[0], p1[1], { color: c, width: 2.6, head: 9 }); Fd.text(lab, (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, { dx: 9, size: 11.5, weight: 650, color: c }); });
+              const start = P2(vs[0]);
               Fd.dot(start[0], start[1], { r: 4, color: 'green' });
               Fd.text(ok ? 'closes: equilibrium' : 'closes only with a pushing cable', 0, -4.6, { align: 'center', size: 12, weight: 700, color: ok ? 'green' : 'red' });
             }
@@ -619,9 +633,9 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
             const seg = (j) => { const dx = poly[j + 1][0] - poly[j][0], dy = poly[j + 1][1] - poly[j][1], L = Math.hypot(dx, dy), T = Math.hypot(st.H, (pts[j] - pole.y) * SC) * Math.sign(st.H); return [T * dx / L, T * dy / L]; };
             const a = seg(k), b = seg(k + 1), f = [b[0] - a[0], b[1] - a[1] - l.P]; worst = Math.max(worst, Math.hypot(...f));
           });
-          const sag = Math.max(...poly.map((p) => Math.abs(p[1])));
+          const end = poly[poly.length - 1], sag = Math.max(...poly.map((p) => Math.abs(p[1] - (end[1] * p[0]) / LX)));
           const Tmax = Math.max(...pts.map((p) => Math.hypot(st.H, (p - pole.y) * SC)));
-          return `${st.H > 0 ? 'Tension' : 'Compression'}: thrust H = **${Math.abs(st.H).toFixed(1)} kN**, largest segment force ${Tmax.toFixed(1)} kN, ${st.H > 0 ? 'sag' : 'rise'} ${sag.toFixed(2)} m (H × ${st.H > 0 ? 'sag' : 'rise'} = ${(Math.abs(st.H) * sag).toFixed(1)} kN·m = the largest beam moment of the same loads) · worst node imbalance ${worst.toExponential(1)} kN.`;
+          return `${st.H > 0 ? 'Tension' : 'Compression'}: thrust H = **${Math.abs(st.H).toFixed(1)} kN**, largest segment force ${Tmax.toFixed(1)} kN, depth from the closing line ${sag.toFixed(2)} m, and H × depth = ${(Math.abs(st.H) * sag).toFixed(1)} kN·m equals the largest bending moment of a simple beam with the same loads · worst node imbalance ${worst.toExponential(1)} kN.`;
         });
       },
     },
