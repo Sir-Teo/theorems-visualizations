@@ -406,7 +406,7 @@ Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
           st = { A, a, b, tailEnd: tail[tail.length - 1][1], aliveEnd: alive[T][1], EXN };
         });
         v.legend([['blue', '$EX_{N\\wedge n}$'], ['red', '$E(|X_n|;N>n)$'], ['muted', '$P(N>n)$'], ['green', '$EX_N$', { dash: true }]]);
-        v.readout(() => st && (st.A ? `Exit $(-${st.a},${st.b})$: $P(N>400)=${v.fix(st.aliveEnd, 4)}$, tail term $${v.fix(st.tailEnd, 4)}\\to0$, so $EX_N=EX_0=0$ (indeed $-a\\cdot\\frac{b}{a+b}+b\\cdot\\frac{a}{a+b}=0$).` : `Hit $+${st.b}$: $X_N=${st.b}$ a.s., $EX_N=${st.b}\\ne0$, and the tail term at $n=400$ is $${v.fix(st.tailEnd, 3)}$, still near $${st.b}$ (it tends to $${st.b}$ as $n\\to\\infty$): the hypothesis fails.`));
+        v.readout(() => st && (st.A ? `Exit $(-${st.a},${st.b})$: $P(N>400)=${v.fix(st.aliveEnd, 4)}$, tail term $${v.fix(st.tailEnd, 4)}\\to0$, so $EX_N=EX_0=0$ (indeed $-a\\cdot\\frac{b}{a+b}+b\\cdot\\frac{a}{a+b}=0$).` : `Hit $+${st.b}$: $X_N=${st.b}$ a.s., $EX_N=${st.b}\\ne0$, and the tail term at $n=400$ is $${v.fix(st.tailEnd, 3)}$ and climbs slowly towards $${st.b}$, not to $0$: the hypothesis fails.`));
       },
     },
   ],

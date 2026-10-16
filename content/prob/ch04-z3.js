@@ -57,8 +57,8 @@ For a UI martingale all three are equal: $EX_0=EX_N=EX_\infty$.`,
             ['$EX_0$', '$EX_N$', '$EX_\\infty$'].forEach((t, i) => R.tex(t.slice(1, -1), i + 1, lo, { size: 14, dy: -14 }));
             st = { dy: true, EY, m, se, pInf: nInf / G };
           } else {
-            const T = 2000, K = 3000; let s = 0, s2 = 0, hit = 0;
-            L.setView([0, 120], [-30, 3]);
+            const T = 2000, K = 20000; let s = 0, s2 = 0, hit = 0;
+            L.setView([0, 120], [-40, 3]);
             for (let j = 0; j < K; j++) { let x = 0, n = 0; const pts = j < 8 ? [[0, 0]] : null; while (x < 1 && n < T) { x += r() < 0.5 ? 1 : -1; n++; if (pts && n <= 120) pts.push([n, x]); } if (x >= 1) hit++; s += x; s2 += x * x; if (pts) { L.path(pts, { color: COLS[j], width: 1.3 }); if (x >= 1 && n <= 120) L.dot(n, 1, { color: COLS[j], r: 4 }); } }
             L.hline(1, { color: 'green', dash: [5, 4] });
             const m = s / K, se = Math.sqrt(Math.max(0, s2 / K - m * m) / K);
@@ -82,7 +82,7 @@ $$EX_N\ \le\ EX_0 .$$`,
       deps: ['prob-4.2.12', 'prob-4.4.1', 'prob-1.6.5'],
       tags: ['optional stopping'],
       viz(v) {
-        const qS = v.slider('$q$', 0.3, 0.5, 0.5, { step: 0.01 });
+        const qS = v.slider('$q$', 0.3, 0.5, 0.42, { step: 0.01 });
         const rule = v.select('rule', [{ value: 'fix', label: '$N=n_0$' }, { value: 'hit', label: 'first $X_n\\ge2^m$' }, { value: 'inf', label: '$N=\\infty$' }], 'hit');
         const mS = v.slider('$n_0$ or $m$', 1, 10, 5, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });

@@ -423,7 +423,7 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
           st = { d, nA, p: post(pool.S[N]), rho };
         });
         v.legend([['green', 'event $A$ occurs'], ['red', '$A$ fails'], ['gold', 'Monte Carlo estimate']]);
-        v.readout(() => st && `$\\rho=${v.fix(st.rho, 3)}$. ${st.nA} of 10 displayed paths belong to $A$. At $n=300$ the first path has $P(A|\\mathcal F_n)=${v.fix(st.p, 4)}$: close to $0$ or $1$, as the 0-1 law says.`);
+        v.readout(() => st && `$\\rho=${v.fix(st.rho, 3)}$. ${st.nA} of 10 displayed paths belong to $A$. At $n=300$ the first path has $P(A|\\mathcal F_n)=${v.fix(st.p, 4)}$; the 0-1 law says every path's value is headed to $0$ or $1$.`);
       },
     },
     {

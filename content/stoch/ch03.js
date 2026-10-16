@@ -2,7 +2,7 @@
 import { cumRows, nextState, pfmt, edgesOf, STATE_COL, hitProb, leakChain, LEAK_POS, returnProbs, pathOf, uSeq, returnedBy, POLYA_P } from './ch03.shared.js';
 
 /** Graph-kit node specs for the six-state leak chain. */
-const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: ['w', 'n', 's', 's', 'e', 'w'][i] }));
+const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: ['w', 'n', 's', 's', 'e', 'e'][i] }));
 const recolor = (rho, i) => (rho[i] > 1 - 1e-9 ? 'green' : 'red');
 
 export default {
