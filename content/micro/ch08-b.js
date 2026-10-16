@@ -41,8 +41,8 @@ export default {
         const D0 = (p) => 15 * Math.max(0, 60 - p);
         const m = v.stage({ x: [0, 1300], y: [0, 50], height: 300, axes: 'box', gutter: true, xlabel: 'market output Q', ylabel: 'price', title: 'the market', weight: 1.15 });
         const f = v.stage({ x: [0, 9], y: [0, 50], height: 300, axes: 'box', gutter: true, xlabel: 'output of one firm q', ylabel: 'price, cost', title: 'a typical firm', weight: 0.85 });
-        const d = v.stage({ x: [0, 20], y: [0, 9], height: 230, axes: false, title: 'the industry', weight: 0.9 });
-        const ts = v.stage({ x: [0, PERIODS], y: [0, 40], height: 230, axes: 'box', gutter: true, xlabel: 'period', ylabel: 'price', title: 'price period by period', weight: 1.1 });
+        const d = v.stage({ x: [0, 25], y: [0, 9.6], height: 300, axes: false, title: 'the industry, one dot per firm', weight: 1 });
+        const ts = v.stage({ x: [0, PERIODS], y: [0, 40], height: 220, axes: 'box', gutter: true, xlabel: 'period', ylabel: 'price', title: 'price period by period', full: true });
         v.legend([['blue', 'demand (old dashed)'], ['orange', 'short-run supply N·q(p)'], ['green', 'long-run price: min AC', { dash: true }], ['gold', 'entrants / equilibrium'], ['red', 'losing firms']]);
         const cache = {};
         const path = () => {
@@ -72,23 +72,23 @@ export default {
           srSupply(m, c.N, 48, { color: 'orange', width: 2.8 });
           m.dot(c.Q, c.p, { r: 7, color: 'gold' });
           plateText(m, `p = ${v.fix(c.p, 2)}`, c.Q, c.p, { dx: 12, dy: -14, align: 'left', color: 'ink' });
-          plateText(m, 'long run: min AC = 20', 1290, F6.pBE, { dy: 14, align: 'right', color: 'green' });
+          plateText(m, 'long run: min AC = 20', 20, F6.pBE, { dy: -14, align: 'left', color: 'green' });
           // firm
           drawCosts(f, F6, 9);
           if (c.q > 0) profitRect(f, c.q, c.p, F6.C.AC(c.q));
           priceLine(f, c.p, `p = ${v.fix(c.p, 2)}`);
           if (c.q > 0) f.dot(c.q, c.p, { r: 6, color: 'gold' });
           f.dot(F6.qBE, F6.pBE, { r: 6, color: 'accent', hollow: true });
-          // industry dots: 20 per row
+          // industry dots: 25 per row
           const shown = Math.max(c.N, c.N + c.n);
           for (let i = 0; i < shown; i++) {
-            const x = (i % 20) + 0.5, y = 8.5 - Math.floor(i / 20);
+            const x = (i % 25) + 0.5, y = 9.1 - 0.95 * Math.floor(i / 25);
             const leaving = c.n < 0 && i >= c.N + c.n, entered = k > 0 && prev.n > 0 && i >= c.N - prev.n && i < c.N, future = i >= c.N;
             if (future) { d.dot(x, y, { r: 4.5, color: 'gold', hollow: true, alpha: 0.6 }); continue; }
             d.dot(x, y, { r: 5, color: entered ? 'gold' : c.pi < -1e-6 ? 'red' : c.pi > 1e-6 ? 'green' : 'teal' });
             if (leaving) { d.line(x - 0.35, y - 0.35, x + 0.35, y + 0.35, { color: 'ink', width: 1.6 }); d.line(x - 0.35, y + 0.35, x + 0.35, y - 0.35, { color: 'ink', width: 1.6 }); }
           }
-          d.text(`N = ${c.N} firms · period ${k}${k === SHOCK ? ' (shock)' : ''}`, 10, 0.35, { size: 12, weight: 700, color: 'ink', align: 'center' });
+          d.text(`N = ${c.N} firms · period ${k}${k === SHOCK ? ' (shock)' : ''}`, 12.5, 0.3, { size: 12, weight: 700, color: 'ink', align: 'center' });
           // time series
           ts.hline(F6.pBE, { color: 'green', width: 1.4, dash: [6, 4] });
           ts.vline(SHOCK - 0.5, { color: 'muted', width: 1, dash: [3, 3] });
@@ -225,7 +225,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           const { eqs, g } = st, f1 = (x) => v.fix(x, 1);
           const rows = eqs.map((e) => `${e.k + 1}: $Q = ${v.fix(e.Q, 0)}$, $N = ${v.fix(e.N, 0)}$, $w = ${v.fix(e.w, 2)}$, $p = ${v.fix(e.p, 2)}$`).join(' · ');
           const kind = Math.abs(g) < 0.005 ? '**constant-cost** industry: every equilibrium at the same price, long-run supply is flat' : g > 0 ? '**increasing-cost** industry: expansion bids up the wage and long-run supply rises' : '**decreasing-cost** industry: expansion lowers the wage and long-run supply falls';
-          return `$\\gamma = ${fx(g, 2)}$ — a ${kind}. ${rows}. Long-run price elasticity of supply: $1/(\\gamma/2) ${Math.abs(g) < 0.005 ? '= \\infty' : `= ${f1(2 / g)}`}$.`;
+          return `$\\gamma = ${fx(g, 2)}$: ${g > 0.005 ? 'an' : 'a'} ${kind}.\n${rows}.\n Long-run price elasticity of supply: $1/(\\gamma/2) ${Math.abs(g) < 0.005 ? '= \\infty' : `= ${f1(2 / g)}`}$.`;
         });
       },
     },
@@ -274,7 +274,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           priceLine(s, p, `p = ${v.fix(p, 2)}`, { color: 'gold' });
           const Q = Ssum(p);
           s.dot(Q, p, { r: 6, color: 'gold' });
-          if (marg + 1 < NF) plateText(s, `next farm enters at p = ${v.fix(pEnter[marg + 1], 2)}`, Ssum(pEnter[marg + 1] - 1e-6), pEnter[marg + 1], { dx: 10, align: 'left', color: 'muted' });
+          if (marg + 1 < NF) s.dot(Ssum(pEnter[marg + 1] + 1e-6), pEnter[marg + 1], { r: 5, color: 'muted', hollow: true });
           // bars
           const rents = [];
           let top = 100;
@@ -293,7 +293,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
               b.text('out', x, 0, { dy: -10, size: 10.5, color: 'red', align: 'center' });
             }
           });
-          if (marg >= 0) plateText(b, 'marginal farm', marg + 1, rents[marg].surplus, { dy: -28, color: 'gold', align: 'center' });
+          if (marg >= 0) b.text('marginal', marg + 1, 0, { dy: 13, size: 10.5, weight: 700, color: 'gold', align: 'center' });
           const total = rents.reduce((a, o) => a + (o.on ? o.rent : 0), 0);
           const area = simpson((x) => Ssum(x), 0.01, p, 1200);
           const chk = Math.max(...rents.map((o, i) => Math.abs(o.q - qi(i, p)) * (o.on ? 1 : 0)));
@@ -303,7 +303,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           const { p, Q, marg, rents, total, area, n, chk } = st, f2 = (x) => v.fix(x, 2);
           if (marg < 0) return `At $p = ${f2(p)}$ no farm covers its costs: even the best land (entry price ${f2(pEnter[0])}) stays idle.`;
           const h = 0.01, dRent = (A.reduce((a, _, i) => { const r = (pp) => (pp >= pEnter[i] ? (pp * pp * A[i] ** 2) / (4 * w) - FARM : 0); return a + r(p + h) - r(p - h); }, 0)) / (2 * h);
-          return `$p = ${f2(p)}$: ${n} farm${n > 1 ? 's' : ''} in production, market output $Q = ${f2(Q)}$. Marginal farm (A = ${v.fix(A[marg], 1)}): rent ${f2(rents[marg].rent)}${marg + 1 < NF ? `; the next farm would lose ${f2(-rents[marg + 1].rent)}` : ''}. Sum of rents ${f2(total)}; area left of the supply curve ${f2(area)}. A price rise of 1 raises total rent by $${f2(dRent)} \\approx Q$ and farmers' economic profit by 0. (Outputs found by search match $q = pA^2/2w$ to ${v.sci(chk + 1e-16, 1)}.)`;
+          return `$p = ${f2(p)}$: ${n} farm${n > 1 ? 's' : ''} in production, market output $Q = ${f2(Q)}$. Marginal farm (A = ${v.fix(A[marg], 1)}): rent ${f2(rents[marg].rent)}${marg + 1 < NF ? `; the next farm would lose ${f2(-rents[marg + 1].rent)}` : ''}. Sum of rents ${f2(total)}; area left of the supply curve ${f2(area)}. A price rise of 1 raises total rent by $${f2(dRent)} \\approx Q$ and farmers' economic profit by 0. (Outputs found by search match $q = pA^2/2w$ to $${v.sci(chk + 1e-16, 1)}$.)`;
         });
       },
     },
@@ -319,7 +319,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Long_run_and_short_run' },
       viz(v) {
         const N0 = 20, D0 = (p) => 3 * Math.max(0, 60 - p);
-        const shock = v.select('demand', [{ value: 'up', label: 'rises 40%' }, { value: 'down', label: 'falls 30%' }], 'up', { onChange: () => S.reset(frames(), { at: 'end' }) });
+        const shock = v.select('demand', [{ value: 'up', label: 'rises 40%' }, { value: 'down', label: 'falls 30%' }], 'up', { onChange: () => S.reset(frames(), { at: 3 }) });
         const frames = () => {
           const mult = shock.value === 'up' ? 1.4 : 0.7, D1 = (p) => mult * D0(p), out = [];
           const e0 = eqm(N0, D0);
@@ -333,10 +333,10 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
             e = eqm(N, D1);
             out.push({ N, D: D1, e, line: 3, note: `${shock.value === 'up' ? 'A firm enters' : 'A firm exits'}: ${N} firms, price ${v.fix(e.p, 2)}, profit per firm ${fx(e.pi, 2)}.` });
           }
-          out[out.length - 1] = { ...out[out.length - 1], line: 4, note: `New long-run equilibrium: ${N} firms (${N > N0 ? '+' : ''}${N - N0}), price ${v.fix(e.p, 2)} = min AC again, output per firm ${v.fix(e.q, 2)} as before.` };
+          out[out.length - 1] = { ...out[out.length - 1], line: 4, note: `New long-run equilibrium: ${N} firms (${N > N0 ? '+' : '−'}${Math.abs(N - N0)}), price ${v.fix(e.p, 2)} = min AC again, output per firm ${v.fix(e.q, 2)} as before.` };
           return out;
         };
-        const S = v.steps({ frames: frames(), speed: 1.4, start: 'end', still: 'end', codePos: 'below', code: ['start in long-run equilibrium: p = min AC', 'demand shifts: price moves along short-run supply N·q(p)', 'while one more firm would profit (or incumbents lose): one enters (exits)', 'stop: price back at min AC, all the change is in N'] });
+        const S = v.steps({ frames: frames(), speed: 1.4, start: 3, still: 3, codePos: 'below', code: ['start in long-run equilibrium: p = min AC', 'demand shifts: price moves along short-run supply N·q(p)', 'while one more firm would profit (or incumbents lose): one enters (exits)', 'stop: price back at min AC, all the change is in N'] });
         const m = v.stage({ x: [0, 260], y: [0, 50], height: 320, axes: 'box', gutter: true, xlabel: 'market output Q', ylabel: 'price', title: 'the market', weight: 1.2 });
         const f = v.stage({ x: [0, 9], y: [0, 50], height: 320, axes: 'box', gutter: true, xlabel: 'output of one firm q', ylabel: 'price, cost', title: 'one firm', weight: 0.9 });
         const ts = v.stage({ x: [-0.5, 12.5], y: [0, 50], height: 320, axes: 'box', gutter: true, xlabel: 'step', ylabel: 'price', title: 'price, step by step', weight: 0.8, minWidth: 200 });
@@ -350,7 +350,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           if (i >= 1) m.fn((Q) => 60 - Q / (3 * mult), { domain: [0, 180 * mult], color: 'blue', width: 2.8 });
           if (fr.N !== N0) srSupply(m, N0, 48, { color: 'orange', width: 1.4, alpha: 0.4 });
           srSupply(m, fr.N, 48, { color: 'orange', width: 2.8 });
-          m.text(`N = ${fr.N}`, fr.N * F6.qMC(46), 46, { dx: 6, size: 11.5, weight: 700, color: 'orange', align: 'left' });
+          m.text(`N = ${fr.N}`, fr.N * F6.qMC(46), 46, { dx: -8, size: 11.5, weight: 700, color: 'orange', align: 'right' });
           const pts = all.slice(0, i + 1).map((o) => [o.e.Q, o.e.p]);
           m.path(pts, { color: 'gold', width: 1.2, dash: [3, 3] }); m.dots(pts, { r: 3, color: 'gold' });
           m.dot(fr.e.Q, fr.e.p, { r: 7, color: 'gold' });
@@ -374,7 +374,7 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           const fr = S.frame, all = S.frames; if (!fr || !fr.e) return '';
           const e1 = all[1].e, eL = all[all.length - 1].e, NL = all[all.length - 1].N, f2 = (x) => v.fix(x, 2);
           const eSR = ((e1.Q - all[0].e.Q) / all[0].e.Q) / ((e1.p - all[0].e.p) / all[0].e.p);
-          return `Step ${S.i}: $N = ${fr.N}$, $p = ${f2(fr.e.p)}$, $Q = ${f2(fr.e.Q)}$, output per firm ${f2(fr.e.q)}, profit per firm ${fx(fr.e.pi, 2)}. Short-run response: price ${f2(all[0].e.p)} → ${f2(e1.p)} (arc supply elasticity ${v.fix(eSR, 2)}); long run: price ${f2(eL.p)} with ${NL} firms, so long-run supply is flat at min AC = ${f2(F6.pBE)}.`;
+          return `Step ${S.i + 1}: $N = ${fr.N}$, $p = ${f2(fr.e.p)}$, $Q = ${f2(fr.e.Q)}$, output per firm ${f2(fr.e.q)}, profit per firm ${fx(fr.e.pi, 2)}. Short-run response: price ${f2(all[0].e.p)} → ${f2(e1.p)} (arc supply elasticity ${v.fix(eSR, 2)}); long run: price ${f2(eL.p)} with ${NL} firms, so long-run supply is flat at min AC = ${f2(F6.pBE)}.`;
         });
       },
     },

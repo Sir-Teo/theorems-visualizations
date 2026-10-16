@@ -229,7 +229,8 @@ class Stage {
   }
   /** Change the visible window (data coordinates). */
   setView(x, y) {
-    const same = (a, b) => !a || (Math.abs(a[0] - b[0]) < 1e-12 && Math.abs(a[1] - b[1]) < 1e-12);
+    const close = (u, v) => Math.abs(u - v) <= 1e-12 * Math.max(1e-300, Math.abs(u), Math.abs(v)); // relative, so tiny log-axis limits still update
+    const same = (a, b) => !a || (close(a[0], b[0]) && close(a[1], b[1]));
     if (same(x, this.view.x) && same(y, this.view.y)) return;
     if (x) this.view.x = [...x]; if (y) this.view.y = [...y]; this._fit(); this.rt.invalidate();
   }
@@ -544,9 +545,9 @@ class Stage {
     c.beginPath(); if (r > 0 && c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); this._paint(st); return this;
   }
   /** Vertical strip a ≤ x ≤ b across the whole view (e.g. a δ-neighbourhood). */
-  vband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(this._px(a), 0, this._px(b) - this._px(a), this.H); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.vline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.vline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
+  vband(a, b, st = {}) { const c = this.ctx; c.beginPath(); const m = this.o.gutter ? this._m : { t: 0, b: 0 }; c.rect(this._px(a), m.t, this._px(b) - this._px(a), this.H - m.t - m.b); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.vline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.vline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
   /** Horizontal strip a ≤ y ≤ b (e.g. an ε-band). */
-  hband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(0, this._py(b), this.W, this._py(a) - this._py(b)); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.hline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.hline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
+  hband(a, b, st = {}) { const c = this.ctx; c.beginPath(); const m = this.o.gutter ? this._m : { l: 0, r: 0 }; c.rect(m.l, this._py(b), this.W - m.l - m.r, this._py(a) - this._py(b)); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.hline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.hline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
   vline(x, st = {}) { const [lo, hi] = this._far('y'); return this.line(x, lo, x, hi, { width: 1.2, ...st }); }
   hline(y, st = {}) { const [lo, hi] = this._far('x'); return this.line(lo, y, hi, y, { width: 1.2, ...st }); }
   /** Arrow from (x1,y1) to (x2,y2). st.head = head size px; st.both for double-headed. */

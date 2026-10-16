@@ -360,7 +360,7 @@ is a homeomorphism of $\{0,1\}^{\N}$ onto the middle-thirds Cantor set $C\subset
 
 The cylinder, Möbius band and torus embed in $\R^3$; the Klein bottle and $\R P^2$ do not, though they can be drawn with self-intersections (immersions).`,
       idea: String.raw`Each picture in $\R^3$ is the image of a continuous map of the square that is injective except on the identified boundary points, so by 2.13 it descends to a continuous bijection from the quotient — a homeomorphism once compactness is available (later). The arrow pattern decides everything: a flipped pair reverses orientation, so a walker who crosses it comes back mirror-reversed — that is non-orientability, and it is detected combinatorially by trying to orient the triangles of the glued grid consistently. The Euler characteristic $V-E+F$ of the glued grid is $0$ for the cylinder, band, torus and Klein bottle and $1$ for $\R P^2$.`,
-      caption: String.raw`Pick a gluing and slide **fold**: the square is rolled by curvature, bent and (for the band and the Klein bottle) twisted until the arrows meet; for $\R P^2$ the square becomes a hemisphere that is pushed onto a cross-cap. Drag the walker's start and change its heading and distance: it re-enters through the partner edge — mirrored (red flag) across a flipped pair — and its path is drawn on the surface too. The readout classifies the glued grid by counting.`,
+      caption: String.raw`Pick a gluing and slide **fold**: the square is rolled by curvature, bent and (for the band and the Klein bottle) twisted until the arrows meet; for $\R P^2$ the square becomes a hemisphere that is pushed onto a cross-cap. Drag the walker's start and change its heading and distance: it re-enters through the partner edge — mirrored (red flag) across a flipped pair; a free edge simply reflects it — and its path is drawn on the surface too. The readout classifies the glued grid by counting.`,
       deps: ['top-2.12'],
       refs: ['Munkres §22', 'Hatcher Ch. 0'],
       tags: ['quotient', 'surfaces'],
@@ -472,14 +472,14 @@ For example $D^2/\partial D^2\cong S^2$, $C S^1\cong D^2$, $S S^1\cong S^2$, and
             const o = { x0: -1, y0: -1, size: 2 };
             D.rect(-1, -1, 1, 1, { fill: 'blue', fillAlpha: 0.12, stroke: false });
             for (let k = 1; k < 8; k++) { D.line(-1 + k / 4, -1, -1 + k / 4, 1, { color: 'blue', width: 0.8, alpha: 0.4 }); D.line(-1, -1 + k / 4, 1, -1 + k / 4, { color: 'blue', width: 0.8, alpha: 0.4 }); }
-            if (c === 'pinch') { drawGlueSquare(D, 'tor', o); D.line(-1, -1, -1, 1, { color: 'red', width: 5 }); D.line(1, -1, 1, 1, { color: 'red', width: 5 }); D.text('u', 0, -1.15, { math: true, size: 14, color: 'muted', align: 'center' }); }
-            else { drawGlueSquare(D, 'cyl', o); D.line(-1, 1, 1, 1, { color: 'red', width: 5 }); if (c === 'susp') D.line(-1, -1, 1, -1, { color: 'red', width: 5 }); D.text('height', -1.08, 0, { size: 11, color: 'muted', align: 'right' }); }
+            if (c === 'pinch') { drawGlueSquare(D, 'tor', o); D.line(-1, -1, -1, 1, { color: 'red', width: 5 }); D.line(1, -1, 1, 1, { color: 'red', width: 5 }); D.text('the red edges (one meridian circle) are A', -1, 1.14, { size: 10.5, color: 'muted' }); }
+            else { drawGlueSquare(D, 'cyl', { ...o, xColor: 'teal' }); D.line(-1, 1, 1, 1, { color: 'red', width: 5 }); if (c === 'susp') D.line(-1, -1, 1, -1, { color: 'red', width: 5 }); D.text('↑ height,  angle →  (the teal edges are glued)', -1, 1.14, { size: 10.5, color: 'muted' }); }
           }
           // keep the picture in frame
-          if (c !== 'wedge') { const F0 = surf(c, t); let ext = 0; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) ext = Math.max(ext, ...F0(i / 8, j / 8).map(Math.abs)); S.zoom = Math.min(1.6, 1.3 / Math.max(ext, 0.4)); } else S.zoom = 1;
+          if (c !== 'wedge') { const F0 = surf(c, t); let ext = 0; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) ext = Math.max(ext, ...F0(i / 8, j / 8).map(Math.abs)); S.zoom = Math.min(1.6, 1.3 / Math.max(ext, 0.4)); } else S.zoom = 0.82;
           if (c === 'wedge') {
-            const off = 0.9 + 0.15 * (1 - t) * 3; // the circles slide together until the two marked points meet
-            const C1 = (s) => [-off + 0.9 * Math.cos(TAU * s), 0, 0.9 * Math.sin(TAU * s)], C2 = (s) => [off - 0.9 * Math.cos(TAU * s), 0, 0.9 * Math.sin(TAU * s)];
+            const off = 0.62 + 0.5 * (1 - t); // the circles slide together until the two marked points meet
+            const C1 = (s) => [-off + 0.62 * Math.cos(TAU * s), 0, 0.62 * Math.sin(TAU * s)], C2 = (s) => [off - 0.62 * Math.cos(TAU * s), 0, 0.62 * Math.sin(TAU * s)];
             S.curve(C1, 0, 1, { color: 'blue', width: 3.5, n: 120 }); S.curve(C2, 0, 1, { color: 'purple', width: 3.5, n: 120 });
             S.dot(C1(0), { r: 6, color: 'red' }); S.dot(C2(0), { r: 6, color: 'red' });
             if (t > 0.999) S.text('one point', [0, 0, -0.35], { color: 'red', size: 12 });

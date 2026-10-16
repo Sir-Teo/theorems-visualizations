@@ -87,22 +87,35 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
           return (Math.floor(u * 8) + Math.floor(w * 8)) % 2 ? 0 : 5;
         };
         const gridCache = memo();
+        const modinv = (a, N) => { a = ((a % N) + N) % N; for (let x = 1; x < N; x++) if ((a * x) % N === 1) return x; return 0; };
+        const matMul = (X, Y, N) => [(X[0] * Y[0] + X[1] * Y[2]) % N, (X[0] * Y[1] + X[1] * Y[3]) % N, (X[2] * Y[0] + X[3] * Y[2]) % N, (X[2] * Y[1] + X[3] * Y[3]) % N];
+        const matPow = (A, n, N) => { let R = [1 % N, 0, 0, 1 % N], B = A.map((x) => x % N); while (n > 0) { if (n & 1) R = matMul(R, B, N); B = matMul(B, B, N); n >>= 1; } return R; };
         const gridData = () => gridCache(`${Ns.value}|${mapS.value}`, () => {
-          const N = Ns.value, A = MATS[mapS.value], P = matOrder(A, N);
-          const det = A[0] * A[3] - A[1] * A[2], bij = gcd(det, N) === 1;
-          const nmax = isFinite(P) ? Math.min(P + Math.max(4, Math.round(P * 0.15)), 700) : 90;
-          const home = new Float64Array(nmax + 1); let src = new Int32Array(N * N); for (let k = 0; k < N * N; k++) src[k] = k;
-          home[0] = 1;
-          let lost = 0;
-          for (let n = 1; n <= nmax; n++) { src = pushForward(src, A, N); let c = 0, l = 0; for (let k = 0; k < N * N; k++) { if (src[k] === k) c++; else if (src[k] < 0) l++; } home[n] = c / (N * N); lost = l / (N * N); }
+          const N = Ns.value, A = MATS[mapS.value], det = A[0] * A[3] - A[1] * A[2], bij = gcd(det, N) === 1;
+          const P = bij ? matOrder(A, N, 60000) : Infinity;
+          const nmax = bij ? Math.min(P + Math.max(4, Math.round(P * 0.15)), 1500) : 90;
+          const home = new Float64Array(nmax + 1); home[0] = 1; let lost = 0;
+          if (bij) {
+            let An = [1, 0, 0, 1];
+            for (let n = 1; n <= nmax; n++) { An = matMul(An, A, N); let c = 0; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if ((An[0] * i + An[1] * j) % N === i && (An[2] * i + An[3] * j) % N === j) c++; home[n] = c / (N * N); }
+          } else {
+            let src = new Int32Array(N * N); for (let k = 0; k < N * N; k++) src[k] = k;
+            for (let n = 1; n <= nmax; n++) { src = pushForward(src, A, N); let c = 0, l = 0; for (let k = 0; k < N * N; k++) { if (src[k] === k) c++; else if (src[k] < 0) l++; } home[n] = c / (N * N); lost = l / (N * N); }
+          }
           const pic = new Uint8Array(N * N); for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) pic[i * N + j] = face(i, j, N);
           return { N, A, P, det, bij, nmax, home, pic, lost };
         });
         let cur = { n: -1, src: null, key: '' };
         const srcAt = (G, n) => {
-          const key = `${G.N}|${G.A}`;
-          if (cur.key !== key || n < cur.n) { cur = { key, n: 0, src: new Int32Array(G.N * G.N) }; for (let k = 0; k < G.N * G.N; k++) cur.src[k] = k; }
-          while (cur.n < n) { cur.src = pushForward(cur.src, G.A, G.N); cur.n++; }
+          const key = `${G.N}|${G.A}`, N = G.N;
+          if (G.bij) { // the picture after n steps shows, at pixel y, the original pixel A^{-n} y
+            if (cur.key === key && cur.n === n) return cur.src;
+            const B = matPow(G.A, n, N), di = modinv(B[0] * B[3] - B[1] * B[2], N), I = [(di * B[3]) % N, (di * (N - B[1])) % N, (di * (N - B[2])) % N, (di * B[0]) % N];
+            const src = new Int32Array(N * N); for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) src[i * N + j] = ((I[0] * i + I[1] * j) % N) * N + ((I[2] * i + I[3] * j) % N);
+            cur = { key, n, src }; return src;
+          }
+          if (cur.key !== key || n < cur.n) { cur = { key, n: 0, src: new Int32Array(N * N) }; for (let k = 0; k < N * N; k++) cur.src[k] = k; }
+          while (cur.n < n) { cur.src = pushForward(cur.src, G.A, N); cur.n++; }
           return cur.src;
         };
         function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; }
@@ -127,15 +140,16 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
           Ns.el.hidden = mapS.el.hidden = !grid; epsS.el.hidden = fric.el.hidden = grid; h0.visible = !grid;
           if (grid) {
             const G = gridData(), P = isFinite(G.P) ? G.P : G.nmax; rate = Math.max(2.5, P / 9);
-            const cyc = P + Math.ceil(rate * 2.5), n = Math.min(Math.floor(tt * rate) % cyc, P, G.nmax), src = srcAt(G, n);
+            const cyc = P + Math.ceil(rate * 2.5), n = Math.min(Math.floor(tt * rate) % cyc, P), src = srcAt(G, n);
             const pal = [v.ramp(0.12, 'blue'), v.rgb('gold'), v.rgb('ink'), v.rgb('orange'), v.rgb('panel'), v.ramp(0.3, 'blue')];
             const N = G.N;
             sA.setTitle(`the picture after n = ${n} step${n === 1 ? '' : 's'}`);
-            sA.raster((x, y) => { const i = Math.min(N - 1, Math.floor(x * N)), j = Math.min(N - 1, Math.floor(y * N)), s = src[i * N + j]; return s < 0 ? pal[4] : pal[G.pic[s]]; }, { key: `${N}|${G.A}|${n}|${v.color('panel')}`, res: 1 });
+            sA.raster((x, y) => { const i = Math.min(N - 1, Math.floor(x * N)), j = Math.min(N - 1, Math.floor(y * N)), s = src[i * N + j]; return s < 0 ? pal[4] : pal[G.pic[s]]; }, { key: `${N}|${G.A}|${n}|${v.color('panel')}`, res: 1, rect: [0, 0, 1, 1] });
             sA.rect(0, 0, 1, 1, { color: 'muted', width: 1, fill: false });
-            sB.setScale({ xlog: false, ylog: false, x: [0, G.nmax], y: [0, 1.05] }); sB.setLabels('step n', 'fraction of pixels back home');
-            sB.bars(Array.from(G.home).slice(1), { x0: 1, dx: 1, color: (val, i) => (val > 0.999 ? 'green' : 'accent') });
-            if (isFinite(G.P) && G.P <= G.nmax) sB.text(`period ${G.P}`, G.P, 1.0, { color: 'green', align: G.P > G.nmax * 0.7 ? 'right' : 'left', dx: G.P > G.nmax * 0.7 ? -6 : 6, size: 12.5, baseline: 'top' });
+            const xmax = isFinite(G.P) ? Math.max(G.nmax, Math.round(G.P * 1.15) + 4) : G.nmax; sB.setScale({ xlog: false, ylog: false, x: [0, xmax], y: [0, 1.05] }); sB.setLabels('step n', 'fraction of pixels back home');
+            if (G.nmax <= 300) sB.bars(Array.from(G.home).slice(1), { x0: 1, dx: 1, color: (val) => (val > 0.999 ? 'green' : 'accent') });
+            else { sB.path(Array.from(G.home).map((h, k) => [k, h]), { color: 'accent', width: 1.2 }); for (let k = 1; k <= G.nmax; k++) if (G.home[k] > 0.999) sB.line(k, 0, k, 1, { color: 'green', width: 2.5 }); }
+            if (isFinite(G.P)) { sB.line(G.P, 0, G.P, 1, { color: 'green', width: 3 }); sB.text(`period ${G.P}`, G.P, 1.0, { color: 'green', align: 'right', dx: -7, size: 12.5, baseline: 'top' }); }
             sB.vline(n, { color: 'gold', width: 2 });
             state = { grid, G, n };
           } else {
@@ -161,7 +175,7 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
           if (!state) return '';
           if (state.grid) {
             const { G, n } = state, A = G.A;
-            const per = isFinite(G.P) ? String.raw`$A^{${G.P}} \equiv I \pmod{${G.N}}$: the picture returns after **${G.P} steps**` : String.raw`no power of $A$ is the identity mod ${G.N}`;
+            const per = isFinite(G.P) ? String.raw`$A^{${G.P}} \equiv I \pmod{${G.N}}$: the picture returns after **${G.P} steps**` : G.bij ? 'the period exceeds 60 000 steps' : String.raw`no power of $A$ is the identity mod ${G.N}`;
             const bij = G.bij ? String.raw`$\det A = ${G.det}$ is invertible mod ${G.N}, so the map permutes the pixels` : String.raw`$\det A = ${G.det}$ shares a factor with ${G.N}: pixels collide and after ${G.nmax} steps ${v.fix(100 * G.lost, 0)}% of the grid is empty, so the picture can never come back`;
             return String.raw`$A = \begin{pmatrix}${A[0]}&${A[1]}\\${A[2]}&${A[3]}\end{pmatrix}$, step $n = ${n}$, pixels in place now: ${v.fix(100 * G.home[n], 1)}% · ${bij} · ${per}`;
           }

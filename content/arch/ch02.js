@@ -106,10 +106,10 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
       viz(v) {
         const panel = v.select('right panel', [{ value: 'poly', label: 'force polygon' }, { value: 'net', label: 'cable net (force densities)' }], 'poly');
         const lenS = v.slider('cable length / chord', 1.005, 1.4, 1.08, { step: 0.001 });
-        const rise = v.slider('corner rise (m)', 0, 3, 2.2, { step: 0.05 });
+        const rise = v.slider('corner rise (m)', 0, 4, 2.4, { step: 0.05 });
         const qr = v.slider('q₁ / q₂', 0.25, 4, 1, { log: true });
         const pn = v.slider('node load (kN)', 0, 40, 10, { step: 0.5 });
-        const S = v.stage({ x: [-1.2, 21.2], y: [-9, 3], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
+        const S = v.stage({ x: [-1.2, 21.2], y: [-8.6, 2.2], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
         const F = v.stage({ x: [-5.6, 5.6], y: [-5.4, 5.4], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'force polygon' });
         const sc = v.scene3(F, { yaw: -0.45, pitch: 0.22, axes: false, hint: false, lim: 4 });
         const LS = 20;
@@ -135,7 +135,7 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
         const edges = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { if (i + 1 < NG) edges.push([idx(i, j), idx(i + 1, j), 1]); if (j + 1 < NG) edges.push([idx(i, j), idx(i, j + 1), 2]); }
         function solveNet() {
           const q0 = 40, q = (fam) => (fam === 1 ? q0 * qr.value : q0), h = (NG - 1) / 2;
-          const P0 = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { const x = i - h, y = j - h; P0.push([x, y, isB(i, j) ? (rise.value * x * y) / (h * h) : 0]); }
+          const P0 = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { const x = 1.12 * (i - h), y = 1.12 * (j - h); P0.push([x, y, isB(i, j) ? (rise.value * (i - h) * (j - h)) / (h * h) : 0]); }
           const free = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) if (!isB(i, j)) free.push(idx(i, j));
           const fi = new Map(free.map((n, k) => [n, k])), nf = free.length;
           const A = Array.from({ length: nf }, () => new Array(nf).fill(0)), R = Array.from({ length: nf }, () => [0, 0, -pn.value]);

@@ -46,10 +46,9 @@ Under these conditions every agent is a **price taker**: it treats the market pr
           if (px >= 3) m.vband(Qo, Qo + 12, { color: 'gold', alpha: 0.3 }); else m.line(Qo + 6, 0, Qo + 6, 45, { color: 'gold', width: 3, alpha: 0.85 });
           m.dot(6 * N, 20, { r: 6, color: 'ink' });
           plateText(m, `p = 20, Q = ${v.fmt(6 * N, 6)}`, 6 * N, 20, { dx: 10, dy: -14, align: 'left', color: 'ink' });
-          plateText(m, N === 1 ? 'one firm = the whole market' : `one firm’s range: 1/${N} of the axis`, Qo + 6, 41, { align: N > 3 ? 'right' : 'left', dx: N > 3 ? -8 : 8, color: 'gold' });
+          plateText(m, N === 1 ? 'one firm = the whole market' : `one firm’s range: 1/${N} of the axis`, Qo + 12, 41, { align: 'left', dx: 8, color: 'gold' });
           // firm
           f.hline(20, { color: 'ink', width: 1.6, dash: [6, 4] });
-          f.fn(F.C.AC, { domain: [0.5, 12], color: 'accent', width: 1.6, alpha: 0.45 });
           f.fn(F.C.MC, { domain: [0.01, 12], color: 'orange', width: 2.6, n: 240 });
           f.fn(MR, { domain: [0, 12], color: 'purple', width: 2, dash: [6, 4] });
           f.fn(pr, { domain: [0, 12], color: 'blue', width: 3 });
@@ -79,17 +78,17 @@ Under these conditions every agent is a **price taker**: it treats the market pr
 $$p = MC(q^*) \qquad\text{(first-order condition)}, \qquad MC'(q^*) \ge 0 \qquad\text{(second-order condition)}:$$
 price equals marginal cost on a **non-falling** part of the marginal cost curve. A crossing of $p$ and $MC$ where $MC$ is falling is a local **minimum** of profit. Profit itself is the rectangle $\pi = (p - AC(q^*))\,q^*$ between the price line and average cost. Whether producing beats shutting down is a separate comparison (8.3).`,
       idea: String.raw`Selling one more unit adds $p$ to revenue (the firm is a price taker, 8.1) and $MC(q)$ to cost, so $\pi'(q) = p - MC(q)$. While $p > MC$ an extra unit adds to profit, while $p < MC$ it subtracts, so at an interior maximum $\pi'(q^*) = 0$ (Fermat, Rudin 5.8). The second derivative is $\pi'' = -MC'$; at a crossing on the falling branch $\pi'' > 0$, profit has a valley there, not a peak: the firm should expand through it until rising marginal cost catches up with the price again.`,
-      caption: String.raw`**Drag the gold point along the price line** to choose an output. Top: the cost curves of chapter 7's technology (short run, capital fixed); the rectangle between the price and average cost at the chosen output is the profit (green) or loss (red). Bottom: profit as a function of output, with the tangent whose slope is $p - MC(q)$. Profit peaks at the crossing on **rising** marginal cost (green dot) and has a local minimum at the crossing on **falling** marginal cost (red ring). Move the price and the plant size: the maximum always sits where $p = MC$ with $MC$ rising.`,
+      caption: String.raw`**Drag the gold point along the price line** to choose an output. Top: the short-run cost curves (capital fixed) of a homothetic technology like chapter 7's, whose total cost is a cubic in output; the rectangle between the price and average cost at the chosen output is the profit (green) or loss (red). Bottom: profit as a function of output, with the tangent whose slope is $p - MC(q)$. Profit peaks at the crossing on **rising** marginal cost (green dot) and has a local minimum at the crossing on **falling** marginal cost (red ring). Move the price and the plant size: the maximum always sits where $p = MC$ with $MC$ rising.`,
       deps: ['micro-8.1', 'micro-7.11', 'pma-5.8'], refs: ['Varian Ch. 20', 'Mankiw Ch. 14'], tags: ['competition', 'optimization'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Profit_maximization' },
       viz(v) {
-        const pS = v.slider('price $p$', 4, 40, 23, { step: 0.1 });
+        const pS = v.slider('price $p$', 4, 40, 25, { step: 0.1 });
         const KS = v.slider('plant size $\\bar K$ (fixed cost $10\\bar K$)', 3, 9, 4, { step: 0.1 });
         const X = 9;
         const s = v.stage({ x: [0, X], y: [0, 50], height: 330, axes: 'box', gutter: true, xlabel: 'output q', ylabel: 'price, cost per unit', title: 'price, marginal and average cost; profit = rectangle', full: true });
         const g = v.stage({ x: [0, X], y: [-100, 50], height: 230, axes: 'box', gutter: true, xlabel: 'output q', ylabel: 'profit', title: 'profit $\\pi(q) = pq - TC(q)$ and its slope $p - MC(q)$', full: true });
         v.legend([['ink', 'price line p = MR'], ['orange', 'MC'], ['accent', 'AC'], ['teal', 'AVC'], ['green', 'profit (rectangle), maximum'], ['red', 'loss, local minimum of profit']]);
-        const H = s.handle(4, 23, { color: 'gold', r: 8, constrain: (x) => [clamp(x, 0.05, X - 0.05), pS.value] });
+        const H = s.handle(5.2, 25, { color: 'gold', r: 8, constrain: (x) => [clamp(x, 0.05, X - 0.05), pS.value] });
         let st = {};
         v.render(() => {
           const F = firmAt(KS.value), C = F.C, p = pS.value, q = clamp(H.x, 0.05, X - 0.05);
@@ -107,10 +106,10 @@ price equals marginal cost on a **non-falling** part of the marginal cost curve.
           const pi = (x) => p * x - C.TC(x);
           let lo = Infinity, hi = -Infinity; for (let i = 0; i <= 90; i++) { const y = pi((X * i) / 90); lo = Math.min(lo, y); hi = Math.max(hi, y); }
           const pad = 0.12 * (hi - lo + 20);
-          g.setView([0, X], [Math.max(lo - pad, -400), hi + pad]);
+          g.setView([0, X], [Math.max(lo - pad, -400), hi + 2.2 * pad]);
           g.hline(0, { color: 'muted', width: 1 });
           g.hline(-C.FC, { color: 'muted', width: 1, dash: [4, 4] });
-          g.text(`−F = ${v.fix(-C.FC, 0)} (q = 0)`, X - 0.1, -C.FC, { dy: 12, size: 11, color: 'muted', align: 'right' });
+          g.text(`−F = ${v.fix(-C.FC, 0)}: profit at q = 0`, qHi > 0 ? qHi : X / 2, -C.FC, { dy: 13, size: 11, color: 'muted', align: 'center' });
           g.fn(pi, { domain: [0, X], color: 'ink', width: 2.8 });
           slopeLine(g, q, pi(q), p - C.MC(q), 70, { color: 'gold', width: 2 });
           g.dot(q, pi(q), { r: 6, color: 'gold' });
@@ -144,7 +143,7 @@ and shuts down ($q = 0$, profit $-F$) if $p < \min AVC$. Between the **shutdown 
         const X = 9;
         const s = v.stage({ x: [0, X], y: [0, 40], height: 360, axes: 'box', gutter: true, xlabel: 'output q', ylabel: 'price, cost per unit', title: 'where does revenue go?', weight: 1.45 });
         const b = v.stage({ x: [0, 3], y: [-80, 80], height: 360, axes: 'box', gutter: true, ylabel: 'profit', xticks: [[1, 'produce'], [2, 'shut down']], title: 'produce or shut down?', weight: 0.6, minWidth: 200 });
-        v.legend([['teal', 'variable cost', { area: true }], ['muted', 'fixed cost covered', { area: true }], ['green', 'profit', { area: true }], ['red', 'loss beyond F covered', { area: true }], ['orange', 'MC'], ['accent', 'AC'], ['teal', 'AVC']]);
+        v.legend([['teal', 'variable cost', { area: true }], ['muted', 'fixed cost covered', { area: true }], ['green', 'profit', { area: true }], ['red', 'loss: fixed cost not covered', { area: true }], ['orange', 'MC'], ['accent', 'AC'], ['teal', 'AVC']]);
         let st = {};
         v.render(() => {
           const F = firmAt(6), C = F.C, p = pS.value, sk = sunk.value;
@@ -167,7 +166,7 @@ and shuts down ($q = 0$, profit $-F$) if $p < \min AVC$. Between the **shutdown 
           drawCosts(s, F, X);
           priceLine(s, p, `p = ${v.fix(p, 2)}`);
           s.dot(F.qShut, F.pShut, { r: 7, color: 'teal', hollow: true }); plateText(s, `shutdown point: min AVC = ${v.fix(F.pShut, 2)}`, F.qShut, F.pShut, { dx: -12, dy: 14, color: 'teal', align: 'right' });
-          s.dot(F.qBE, F.pBE, { r: 7, color: 'accent', hollow: true }); plateText(s, `break-even: min AC = ${v.fix(F.pBE, 2)}`, F.qBE, F.pBE, { dx: 12, dy: 14, color: 'accent', align: 'left' });
+          s.dot(F.qBE, F.pBE, { r: 7, color: 'accent', hollow: true }); plateText(s, `break-even: min AC = ${v.fix(F.pBE, 2)}`, F.qBE, F.pBE, { dx: -12, dy: -16, color: 'accent', align: 'right' });
           if (produce) s.dot(q, p, { r: 6.5, color: 'green' });
           else plateText(s, 'q = 0: shut down', 0.3, p, { dy: -14, color: 'red', align: 'left' });
           // bars
@@ -236,12 +235,12 @@ It is the part of the marginal cost curve above the shutdown point, together wit
           for (const [q, pk] of pts) if (pk <= p + 1e-9) s.dot(q, pk, { r: 3.2, color: 'gold' });
           priceLine(s, p, `p = ${v.fix(p, 1)}`, { width: 1.6 });
           s.dot(qs, p, { r: 7, color: 'gold' });
-          plateText(s, `shutdown point (${v.fix(F.qShut, 2)}, ${v.fix(F.pShut, 2)})`, F.qShut, F.pShut, { dx: 12, dy: 12, color: 'teal', align: 'left' });
+          plateText(s, `shutdown point (${v.fix(F.qShut, 2)}, ${v.fix(F.pShut, 2)})`, F.qShut, F.pShut, { dx: -12, dy: 16, color: 'teal', align: 'right' });
           // profit vs output
-          const pi = (q) => p * q - C.TC(q), b = F.best(p), inner = argmax(pi, 1e-3, X, 200, 60);
+          const pi = (q) => p * q - C.TC(q), b = F.best(p), inner = argmax(pi, F.mMC.x, X, 200, 60);
           g.hline(0, { color: 'muted', width: 1 });
           g.hline(-C.FC, { color: 'muted', width: 1.4, dash: [5, 4] });
-          g.text(`shut down: −F = ${v.fix(-C.FC, 0)}`, X - 0.1, -C.FC, { dy: 12, size: 11, color: 'muted', align: 'right' });
+          plateText(g, `shut down: −F = ${v.fix(-C.FC, 0)}`, 0.2, -C.FC, { dy: -14, size: 11, color: 'muted', align: 'left' });
           g.fn(pi, { domain: [0, X], color: 'ink', width: 2.6 });
           g.dot(inner.x, inner.f, { r: 6.5, color: inner.f >= -C.FC ? 'green' : 'red', hollow: inner.f < -C.FC });
           plateText(g, inner.f >= -C.FC ? 'best: produce' : 'best interior point loses more than F', inner.x, inner.f, { dy: inner.f > 60 ? 18 : -16, color: inner.f >= -C.FC ? 'green' : 'red', align: 'center' });
@@ -308,6 +307,7 @@ the slope of profit in the output price is the supply, and its slope in an input
           const dC = (fR + fL) / 2, plan = md === 'p' ? q : -(q > 0 ? C.VC(q) / w : 0);
           slopeLine(g, xv, yv, kink ? fR : dC, 80, { color: 'orange', width: 2.2 });
           if (kink) slopeLine(g, xv, yv, fL, 80, { color: 'orange', width: 1.6, dash: [5, 4] });
+          { const sl = kink ? fR : dC, dx = md === 'p' ? 6 : -6, x1 = clamp(xv + dx, 0.3, 39.7); g.line(xv, yv, x1, yv, { color: 'orange', width: 1.4 }); g.line(x1, yv, x1, yv + (x1 - xv) * sl, { color: 'orange', width: 1.4 }); }
           g.dot(xv, yv, { r: 6.5, color: 'green' });
           plateText(g, `slope ${fx(kink ? fR : dC, 3)}`, xv, yv, { dx: md === 'p' ? -12 : 12, dy: -16, color: 'orange', align: md === 'p' ? 'right' : 'left' });
           // bars
@@ -321,8 +321,8 @@ the slope of profit in the output price is the supply, and its slope in an input
         v.readout(() => {
           const { md, p, w, q, yv, dC, fR, fL, kink, plan, L } = st, f4 = (x) => fx(x, 4);
           if (kink) return `At this ${md === 'p' ? 'price' : 'wage'} the firm is exactly at its **shutdown point**: producing ${v.fix(q, 2)} and producing nothing earn the same profit ${fx(yv, 2)}. The profit function has a kink, with slope ${f4(fL)} on the left and ${f4(fR)} on the right — the two optimal ${md === 'p' ? 'outputs' : 'labour demands (with a minus sign)'}. Hotelling's lemma holds on each side.`;
-          if (md === 'p') return `$p = ${v.fix(p, 2)}$, $w = ${v.fix(w, 2)}$: maximum profit $\\pi = ${fx(yv, 3)}$. Slope measured by re-optimizing at $p \\pm 0.001$: $\\partial\\pi/\\partial p = ${f4(dC)}$; optimal output $q^* = ${f4(plan)}$ (difference ${v.sci(Math.abs(dC - plan), 1)}). ${q === 0 ? 'Below the shutdown price the firm produces nothing, and $\\pi = -F$ is flat.' : 'Raising the price by 1 raises profit by about the current output.'}`;
-          return `$p = ${v.fix(p, 2)}$, $w = ${v.fix(w, 2)}$: maximum profit $\\pi = ${fx(yv, 3)}$. Measured slope $\\partial\\pi/\\partial w = ${f4(dC)}$; labour hired $L^* = ${f4(L)}$, so $-L^* = ${f4(plan)}$ (difference ${v.sci(Math.abs(dC - plan), 1)}). ${q === 0 ? 'At this wage the firm has shut down and hires nobody: $\\pi$ is flat.' : 'A wage rise of 1 costs the firm about one unit per worker it employs.'}`;
+          if (md === 'p') return `$p = ${v.fix(p, 2)}$, $w = ${v.fix(w, 2)}$: maximum profit $\\pi = ${fx(yv, 3)}$. Slope measured by re-optimizing at $p \\pm 0.001$: $\\partial\\pi/\\partial p = ${f4(dC)}$; optimal output $q^* = ${f4(plan)}$ (difference $${v.sci(Math.abs(dC - plan), 1)}$). ${q === 0 ? 'Below the shutdown price the firm produces nothing, and $\\pi = -F$ is flat.' : 'Raising the price by 1 raises profit by about the current output.'}`;
+          return `$p = ${v.fix(p, 2)}$, $w = ${v.fix(w, 2)}$: maximum profit $\\pi = ${fx(yv, 3)}$. Measured slope $\\partial\\pi/\\partial w = ${f4(dC)}$; labour hired $L^* = ${f4(L)}$, so $-L^* = ${f4(plan)}$ (difference $${v.sci(Math.abs(dC - plan), 1)}$). ${q === 0 ? 'At this wage the firm has shut down and hires nobody: $\\pi$ is flat.' : 'A wage rise of 1 costs the firm about one unit per worker it employs.'}`;
         });
       },
     },
@@ -347,12 +347,12 @@ Consequently supply never falls when the price rises: $(p_2 - p_1)(q^*(p_2) - q^
         const plans = () => (kind.value === 'disc' ? DISC : Array.from({ length: 19 }, (_, i) => { const qq = i * 0.5; return [qq, qq > 0 ? C.TC(qq) : C.FC]; }));
         const piOf = (p) => (kind.value === 'disc' ? Math.max(...DISC.map(([a, c]) => p * a - c)) : F.profit(p));
         const qOf = (p) => (kind.value === 'disc' ? DISC.reduce((bst, pl) => (p * pl[0] - pl[1] > p * bst[0] - bst[1] + 1e-12 ? pl : bst), DISC[0])[0] : F.supply(p));
-        const A = g.handle(12, 0, { color: 'gold', r: 7, constrain: (x) => { const p = clamp(x, 0.5, PMAX - 0.5); return [p, piOf(p)]; } });
-        const B = g.handle(34, 0, { color: 'gold', r: 7, constrain: (x) => { const p = clamp(x, 0.5, PMAX - 0.5); return [p, piOf(p)]; } });
+        const A = g.handle(5, 0, { color: 'gold', r: 7, constrain: (x) => { const p = clamp(x, 0.5, PMAX - 0.5); return [p, piOf(p)]; } });
+        const B = g.handle(30, 0, { color: 'gold', r: 7, constrain: (x) => { const p = clamp(x, 0.5, PMAX - 0.5); return [p, piOf(p)]; } });
         let st = {};
         v.render(() => {
           const P = plans();
-          for (const [a, c] of P) g.fn((p) => p * a - c, { domain: [0, PMAX], color: v.color('purple', 0.35), width: 1.1 });
+          for (const [a, c] of P) g.fn((p) => p * a - c, { domain: [0, PMAX], color: v.color('purple', P.length < 8 ? 0.6 : 0.35), width: P.length < 8 ? 1.6 : 1.1 });
           const env = sample(piOf, 0, PMAX, 360);
           g.path(env, { color: 'ink', width: 3.2 });
           const p1 = clamp(A.x, 0.5, PMAX - 0.5), p2 = clamp(B.x, 0.5, PMAX - 0.5);

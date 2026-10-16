@@ -55,7 +55,7 @@ export function curveLabel(s, f, txt, col, xr, st = {}) {
   const [y0, y1] = s.bounds.y, [x0] = s.bounds.x;
   for (let k = 0; k <= 60; k++) {
     const x = xr - ((xr - x0) * k) / 60, y = f(x);
-    if (isFinite(y) && y > y0 + 0.04 * (y1 - y0) && y < y1 - 0.06 * (y1 - y0)) { s.text(txt, x, y, { dx: 6, dy: -8, size: 11.5, weight: 700, color: col, align: 'left', ...st }); return; }
+    if (isFinite(y) && y > y0 + 0.04 * (y1 - y0) && y < y1 - 0.06 * (y1 - y0)) { s.text(txt, x, y, { dx: -4, dy: -10, size: 11.5, weight: 700, color: col, align: 'right', ...st }); return; }
   }
 }
 
@@ -157,7 +157,7 @@ export function drawCosts(s, F, X, o = {}) {
   if (lab) {
     const xr = X * 0.97;
     if (o.ac !== false) curveLabel(s, C.AC, 'AC', 'accent', xr);
-    if (o.avc !== false) curveLabel(s, C.AVC, 'AVC', 'teal', xr, { dy: 12 });
+    if (o.avc !== false) curveLabel(s, C.AVC, 'AVC', 'teal', xr, { dx: 4, dy: 13 });
     if (o.mc !== false) curveLabel(s, C.MC, 'MC', 'orange', xr, { dx: -8, dy: 0, align: 'right' });
   }
 }
