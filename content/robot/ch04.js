@@ -49,7 +49,7 @@ the screw axis of joint $i$ **as it currently lies in space**. The **body Jacobi
         const rinit = [0.6, 0.5, -0.4, 0.5];
         const rs = rinit.map((x, i) => v.slider(`rate $\\dot\\theta_${i + 1}$`, -1, 1, x, { step: 0.05 }));
         const which = v.select('Jacobian shown', [{ value: 's', label: 'space $J_s$' }, { value: 'b', label: 'body $J_b$' }], 's');
-        const SG = v.stage({ x: [-2.8, 2.8], y: [-1.8, 2.8], equal: true, axes: false, height: 430, title: 'joint axes and the columns of the Jacobian' });
+        const SG = v.stage({ x: [-2.0, 2.0], y: [-0.9, 2.6], equal: true, axes: false, height: 430, title: 'joint axes and the columns of the Jacobian' });
         const sc = v.scene3(SG, { yaw: -0.85, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
         let st = null;
         const K = 0.7;
@@ -104,7 +104,7 @@ the screw axis of joint $i$ **as it currently lies in space**. The **body Jacobi
 $$\tau=J(\theta)^{\mathsf T}\,\mathcal F .$$
 In particular, if $J$ loses rank, there are wrenches $\mathcal F\neq0$ in the left null space of $J$ with $\tau=0$: the arm resists them with no joint effort at all. Friction, gravity and inertia are ignored (they are added to $\tau$ separately).`,
       idea: String.raw`Virtual work. Give the joints a tiny displacement $\delta\theta$; the end-effector moves by the twist $J\,\delta\theta$. For the arm to stay in equilibrium the work done by the joints, $\tau\cdot\delta\theta$, must equal the work done against the load, $\mathcal F\cdot(J\delta\theta)=(J^{\mathsf T}\mathcal F)\cdot\delta\theta$ (the power pairing of 2.10 and d'Alembert's principle, mech-6.4). This holds for every $\delta\theta$, hence $\tau=J^{\mathsf T}\mathcal F$. So motion and force are governed by the same matrix: $J$ maps rates to velocities, $J^{\mathsf T}$ maps wrenches to torques.`,
-      caption: String.raw`Drag the gold handle to push on the tool with a force $F$ (orange arrow) and use the slider $m$ for a pure moment on the tool; set the arm with the joint sliders. The bars show the joint torques needed to hold the load, $\tau=J^{\mathsf T}(m,F_x,F_y)$. The dashed arm is a **virtual displacement** $\delta\theta$ of size $\varepsilon$: the readout compares the work of the load, $F\cdot\delta x+m\,\delta\phi$, with $\tau\cdot\delta\theta$; they agree to first order and the gap shrinks as you make $\varepsilon$ smaller. Straighten the $2$R arm and push along it: the torques vanish.`,
+      caption: String.raw`Drag the gold handle to push on the tool with a force $F$ (orange arrow) and use the slider $m$ for a pure moment on the tool; set the arm with the joint sliders. The bars show the joint torques needed to hold the load, $\tau=J^{\mathsf T}(m,F_x,F_y)$. The dashed arm is a **virtual displacement** $\delta\theta$ of size $\varepsilon$ (along $\tau$, or in a fixed direction, as you choose): the readout compares the work of the load, $F\cdot\delta x+m\,\delta\phi$, with $\tau\cdot\delta\theta$; they agree to first order and the gap shrinks as you make $\varepsilon$ smaller. Straighten the $2$R arm and push along it: the torques vanish.`,
       deps: ['robot-4.1', 'robot-2.10', 'mech-6.4'],
       refs: ['Lynch–Park §5.2'],
       tags: ['statics', 'virtual work', 'Jacobian transpose'],
@@ -113,15 +113,16 @@ In particular, if $J$ loses rank, there are wrenches $\mathcal F\neq0$ in the le
         const mode = v.select('arm', [{ value: '2', label: '2R' }, { value: '3', label: '3R' }], '3');
         const t1 = v.slider('$\\theta_1$ (°)', -180, 180, 40, { step: 1 }), t2 = v.slider('$\\theta_2$ (°)', -170, 170, 70, { step: 1 }), t3 = v.slider('$\\theta_3$ (°)', -170, 170, -50, { step: 1 });
         const mom = v.slider('tip moment $m$', -1, 1, 0, { step: 0.05 });
-        const eps = v.slider('virtual displacement $\\varepsilon$ (rad)', 0.005, 0.4, 0.15, { log: true, sig: 2 });
-        const A = v.stage({ x: [-3.3, 3.3], y: [-2.6, 3.0], equal: true, axes: false, height: 400, title: 'the arm, a tip force, and a virtual displacement' });
+        const eps = v.slider('virtual displacement $\\varepsilon$ (rad)', 0.005, 0.4, 0.1, { log: true, sig: 2 });
+        const along = v.toggle('displace along $\\tau$ (otherwise in a fixed direction)', true);
+        const A = v.stage({ x: [-3.6, 3.6], y: [-3.0, 3.7], equal: true, axes: false, height: 400, title: 'the arm, a tip force, and a virtual displacement' });
         const B = v.stage({ x: [0.4, 3.6], y: [-6, 6], axes: 'box', gutter: true, xticks: [[1, 'τ₁'], [2, 'τ₂'], [3, 'τ₃']], ylabel: 'torque', height: 400, minWidth: 240, title: 'joint torques τ = Jᵀ F' });
         const L = [1.2, 0.9, 0.7];
         let F = [0.8, 0.9], tipNow = [1, 1];
         const hF = A.handle(1, 1, { color: 'orange', r: 8, label: 'F' });
         hF.constrain = (x, y) => {
           let fxv = x - tipNow[0], fyv = y - tipNow[1]; const n = Math.hypot(fxv, fyv);
-          if (n > 1.6) { fxv *= 1.6 / n; fyv *= 1.6 / n; }
+          if (n > 1.3) { fxv *= 1.3 / n; fyv *= 1.3 / n; }
           F = [fxv, fyv]; return [tipNow[0] + fxv, tipNow[1] + fyv];
         };
         let st = null;
@@ -136,7 +137,7 @@ In particular, if $J$ loses rank, there are wrenches $\mathcal F\neq0$ in the le
           const Jf = [new Array(n).fill(1), J[0], J[1]];
           const tau = th.map((_, j) => W[0] * Jf[0][j] + W[1] * Jf[1][j] + W[2] * Jf[2][j]);
           // virtual displacement
-          const dir = (n === 3 ? [0.62, -0.55, 0.56] : [0.78, -0.63]).map((x) => x * eps.value);
+          const nt = Math.hypot(...tau), base = along.value && nt > 1e-6 ? tau.map((x) => x / nt) : (n === 3 ? [0.62, -0.55, 0.56] : [0.78, -0.63]), dir = base.map((x) => x * eps.value);
           const th2 = th.map((q, i) => q + dir[i]), fk2 = planarFK(Ls, th2);
           const dx = [fk2.tip[0] - fk.tip[0], fk2.tip[1] - fk.tip[1]], dphi = fk2.phi - fk.phi;
           const workLoad = F[0] * dx[0] + F[1] * dx[1] + mom.value * dphi, workJoint = tau.reduce((s, t, i) => s + t * dir[i], 0);
@@ -160,7 +161,7 @@ In particular, if $J$ loses rank, there are wrenches $\mathcal F\neq0$ in the le
         v.readout(() => {
           if (!st) return '';
           const rel = Math.abs(st.workLoad - st.workJoint) / Math.max(1e-9, Math.abs(st.workJoint), Math.abs(st.workLoad));
-          return `$\\tau=J^{\\mathsf T}\\mathcal F=(${st.tau.map((x) => cn(x, 2)).join(',\\;')})$ for $F=${g3(F)}$, $m=${cn(mom.value, 2)}$.\nVirtual work for $\\delta\\theta$ of size $\\varepsilon=${fx(eps.value, 3)}$: load $${cn(st.workLoad, 4)}$, joints $\\tau\\cdot\\delta\\theta=${cn(st.workJoint, 4)}$ (relative gap $${v.sci(rel + 1e-17, 1)}$, shrinking like $\\varepsilon$).${st.sing ? ' **Singular posture:** a force along the arm needs no torque.' : ''}`;
+          return `$\\tau=J^{\\mathsf T}\\mathcal F=(${st.tau.map((x) => cn(x, 2)).join(',\\;')})$ for $F=${g3(F)}$, $m=${cn(mom.value, 2)}$.\nVirtual work for $\\delta\\theta$ of size $\\varepsilon=${fx(eps.value, 3)}$: load $${cn(st.workLoad, 4)}$, joints $\\tau\\cdot\\delta\\theta=${cn(st.workJoint, 4)}$ (relative gap $${v.sci(rel + 1e-17, 1)}$, shrinking in proportion to $\\varepsilon$).${st.sing ? ' **Singular posture:** a force along the arm needs no torque.' : ''}`;
         });
       },
     },
@@ -182,7 +183,7 @@ so the singularities are the stretched ($\theta_2=0$) and folded ($\theta_2=\pi$
         const l1 = 1.3, l2 = 1.0;
         const s1 = v.slider('$\\theta_1$ (°)', -180, 180, 35, { step: 1 }), s2 = v.slider('$\\theta_2$ (°)', -175, 175, 70, { step: 1 });
         const psi = v.slider('desired tool direction $\\psi$ (°)', -180, 180, 20, { step: 1 });
-        const A = v.stage({ x: [-3.0, 3.0], y: [-2.2, 3.0], equal: true, axes: false, height: 380, title: 'a 2R arm and its Jacobian columns' });
+        const A = v.stage({ x: [-3.2, 3.2], y: [-2.0, 2.9], equal: true, axes: false, height: 360, full: true, title: 'a 2R arm and its Jacobian columns' });
         const B = v.stage({ x: [-180, 180], y: [-1.6, 1.6], axes: 'box', gutter: true, xlabel: 'θ₂ (°)', ylabel: 'det J / (ℓ₁ℓ₂)', xticks: [-180, -90, 0, 90, 180], height: 240, minWidth: 250, title: 'determinant of J' });
         const C = v.stage({ x: [-180, 180], y: [0, 8], axes: 'box', gutter: true, xlabel: 'θ₂ (°)', ylabel: '‖θ̇‖ needed', xticks: [-180, -90, 0, 90, 180], height: 240, minWidth: 250, title: 'joint speed to move at unit speed in direction ψ' });
         const hT = A.handle(1, 1, { color: 'gold', r: 8, label: 'tool' });
@@ -242,7 +243,7 @@ so the singularities are the stretched ($\theta_2=0$) and folded ($\theta_2=\pi$
       name: 'Wrist, elbow and shoulder singularities',
       statement: String.raw`For a six-axis arm with a spherical wrist (3.4), driving the tool along a prescribed path with fixed orientation requires joint rates $\dot\theta=J^{-1}\mathcal V$, and these become unbounded as the path approaches a singularity of $J$. There are three classic kinds: (a) **wrist singularity**: $\sin\theta_5=0$, the wrist axes 4 and 6 become collinear and only $\theta_4\pm\theta_6$ matters, so $\dot\theta_4,\dot\theta_6$ grow like $1/\sin\theta_5$; (b) **elbow singularity**: the elbow is fully stretched ($\theta_3=0$ here) and the wrist centre sits on the boundary of the reachable sphere, where $\dot\theta_3\sim 1/\sqrt{\text{distance to full stretch}}$; (c) **shoulder singularity**: the wrist centre lies on the axis of joint 1, so $\theta_1$ is undetermined and $\dot\theta_1\sim 1/(\text{distance from the axis})$. Passing *through* the singular point is impossible at finite joint speed; passing near it demands large speeds, and in practice controllers slow the tool or stop with an error.`,
       idea: String.raw`At a singularity the Jacobian drops rank (4.3), so some tool direction cannot be produced and the joint-rate vector that produces a nearby direction is the inverse of a small singular value. In the wrist case the rank deficit is explicit: when axes 4 and 6 coincide, the two columns are equal, and the tool orientation depends only on $\theta_4+\theta_6$; a small miss of size $d$ forces the pair to swing through a half turn in a time proportional to $d$. For the elbow, $\cos\theta_3=(D^2-\ell_1^2-\ell_2^2)/(2\ell_1\ell_2)$ is flat at the stretched posture, so $\theta_3\propto\sqrt{\text{distance}}$. For the shoulder, $\theta_1=\operatorname{atan2}(y,x)$ of the wrist centre turns through $180^\circ$ as it passes the axis at distance $d$.`,
-      caption: String.raw`Choose a **singularity type** and a **miss distance** $d$ (a small $d$ means the straight-line tool path comes close to the singularity). The tool moves along its path at constant speed; the chart plots every joint's speed on a log scale against the position $s$ along the path, computed from the exact inverse kinematics by following the solution continuously. Drag $s$ along the path and watch the arm. Shrink $d$: the spike grows like $1/d$ (shoulder, wrist) or $1/\sqrt d$ (elbow).`,
+      caption: String.raw`Choose a **singularity type** and a **miss distance** $d$ (a small $d$ means the straight-line tool path comes close to the singularity). The tool moves along its path at constant speed; the chart plots every joint's speed on a log scale against the position $s$ along the path, computed from the exact inverse kinematics by following the solution continuously. Drag $s$ along the path and watch the arm. Shrink $d$: the spikes grow like $1/d$ (shoulder, wrist) or $1/\sqrt d$ (elbow). Two joints often spike together, so one curve hides another: $\theta_1$ and $\theta_6$ for the shoulder, $\theta_4$ and $\theta_6$ for the wrist.`,
       deps: ['robot-4.3', 'robot-3.4'],
       refs: ['Lynch–Park §5.3'],
       tags: ['singularity', 'six-axis arm', 'inverse kinematics'],
@@ -254,9 +255,9 @@ so the singularities are the stretched ($\theta_2=0$) and folded ($\theta_2=\pi$
         });
         const dsl = v.slider('miss distance $d$ (m; rad for the wrist)', 0.003, 0.4, 0.03, { log: true, sig: 2 });
         const s = v.slider('position along the path $s$', 0, 1, 0.5, { step: 0.001 });
-        const SG = v.stage({ x: [-2.8, 2.8], y: [-1.7, 2.9], equal: true, axes: false, height: 400, title: 'the arm on its path' });
+        const SG = v.stage({ x: [-2.0, 2.0], y: [-0.9, 2.5], equal: true, axes: false, height: 400, title: 'the arm on its path (green: the tool path)' });
         const sc = v.scene3(SG, { yaw: -0.85, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
-        const PL = v.stage({ x: [0, 1], y: [0.01, 400], ylog: true, axes: 'box', gutter: true, xlabel: 'position along the path s', ylabel: 'joint speed (rad/s)', height: 400, minWidth: 300, title: 'joint speeds along the path' });
+        const PL = v.stage({ x: [0, 1], y: [0.01, 300], ylog: true, axes: 'box', gutter: true, xlabel: 'position along the path s', ylabel: 'joint speed (rad/s)', height: 400, minWidth: 300, title: 'joint speeds along the path' });
         const NS = 1500;
         let cache = null;
         const forearm = (r, z) => { const c3 = (r * r + z * z - LU * LU - LF * LF) / (2 * LU * LF), t3 = -Math.acos(clamp(c3, -1, 1)); return Math.atan2(z, r) - Math.atan2(LF * Math.sin(t3), LU + LF * Math.cos(t3)) + t3; };
@@ -294,7 +295,7 @@ so the singularities are the stretched ($\theta_2=0$) and folded ($\theta_2=\pi$
             const pts = []; for (let i = 0; i <= NS; i += 2) { const sp = C.sp[i]; pts.push(sp ? [i / NS, Math.max(sp[j], 0.006)] : null); }
             PL.path(pts, { color: JC[j], width: 2 });
           }
-          PL.vline(s.value, { color: 'gold', width: 1.5 });
+          PL.vline(s.value, { color: 'ink', width: 1.5, alpha: 0.55 });
           sc.begin();
           const floor = []; for (let i = 0; i < 40; i++) { const t = (TAU * i) / 40; floor.push([0.4 * Math.cos(t), 0.4 * Math.sin(t), 0]); }
           sc.path(floor, { color: 'muted', width: 2, close: true, top: false });

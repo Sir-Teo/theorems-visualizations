@@ -38,3 +38,12 @@ export function eng(x, d = 2) {
   const m = x / Math.pow(10, 3 * e);
   return `${Number(m.toPrecision(d)).toString()} ${p[e + 5]}`.trim();
 }
+
+/** TeX version of eng with a unit made of letters, e.g. engTex(3.9e4, 3, 'Hz') → "39\,\mathrm{kHz}" (for use inside $…$). */
+export function engTex(x, d = 3, unit = '') {
+  if (x === 0) return `0\\,\\mathrm{${unit}}`;
+  const p = ['f', 'p', 'n', '\\mu', 'm', '', 'k', 'M', 'G'], e = Math.max(-5, Math.min(3, Math.floor(Math.log10(Math.abs(x)) / 3 + 1e-9)));
+  const m = Number((x / Math.pow(10, 3 * e)).toPrecision(d)).toString();
+  const pre = p[e + 5];
+  return pre === '\\mu' ? `${m}\\,\\mu\\mathrm{${unit}}` : `${m}\\,\\mathrm{${pre}${unit}}`;
+}

@@ -78,10 +78,10 @@ export default {
         let info = null;
         v.render(() => {
           const V0 = Vth.value, R = Rth.value, q = loadDiode(V0, R, IsV, 1, 300);
-          const xmax = V0 + 0.3, imax = (V0 / R) * 1e3;
-          s.setView([-0.2, Math.max(xmax, 1.2)], [-0.12 * imax, imax * 1.18]);
+          const xmax = Math.min(V0 + 0.1, 1.1), imax = (V0 / R) * 1e3;
+          s.setView([-0.2, xmax], [-0.12 * imax, imax * 1.18]);
           s.clip(() => {
-            s.fn((x) => shock(x, IsV, 1, 300) * 1e3, { domain: [-0.2, Math.max(xmax, 1.2)], color: 'accent', width: 2.6 });
+            s.fn((x) => shock(x, IsV, 1, 300) * 1e3, { domain: [-0.2, xmax], color: 'accent', width: 2.6 });
             s.line(0, imax, V0, 0, { color: 'ink', width: 2 });
             let x = v0.value;
             for (let k = 0; k < nIt.value; k++) {
@@ -93,7 +93,7 @@ export default {
               x = clamp(xn, -0.2, 3);
             }
           });
-          s.dot(q.v, q.i * 1e3, { color: 'gold', r: 7, label: 'Q', labelPos: 'ne' });
+          s.dot(q.v, q.i * 1e3, { color: 'gold', r: 7, label: 'Q', labelPos: 'nw' });
           C.part('V1').value = V0; C.part('R1').value = R;
           const res = C.dc(); C.draw({ result: res, vmax: 5 });
           info = { q, vSim: res.V(C.net.termNode.get('D1').a), iSim: res.I('D1') };
