@@ -51,7 +51,6 @@ export default {
             fill: (i, j) => (chk.err[i][j] <= 1e-9 ? ['green', 0.22] : ['red', 0.5]),
             highlight: [[g, h, 'accent']],
           });
-          sB.corner(`row $g$, column $h$: entry $gh$`, 'tl', { size: 11 });
         });
         v.legend([['muted', 'figure at rest', { dash: true }], ['orange', '$\\rho(h)$ applied'], ['accent', '$\\rho(g)\\rho(h)$ applied'], ['green', '$\\rho(gh)$', { dash: true }]]);
         v.readout(() => {
@@ -102,9 +101,9 @@ export default {
           return { a, G, g, act, mats };
         };
         v.render(() => {
-          const { a, G, g, act, mats } = cur(), X = a.X, N = a.nm;
+          const { a, G, g, act, mats } = cur(), X = a.X, N = a.nm, bead = N[0].length > 3 ? 27 : 20;
           const lab = (x) => N[x];
-          for (let x = 0; x < X; x++) sA.dot(...a.pos[x], { r: X > 4 ? 14 : 20, hollow: true, color: 'faint' });
+          for (let x = 0; x < X; x++) sA.dot(...a.pos[x], { r: X > 4 ? 14 : bead, hollow: true, color: 'faint' });
           for (let x = 0; x < X; x++) {
             const y = act(g, x), p = a.pos[x], q = a.pos[y];
             if (y === x) { sA.circle(p[0], p[1] + 0.0, X > 4 ? 0.21 : 0.3, { color: ecol(x), width: 1.4, alpha: 0.55 }); continue; }
@@ -113,8 +112,8 @@ export default {
           }
           for (let x = 0; x < X; x++) {
             const q = a.pos[act(g, x)];
-            sA.dot(q[0], q[1], { r: X > 4 ? 12 : 17, color: ecol(x), fill: ecol(x) });
-            sA.text(lab(x), q[0], q[1], { align: 'center', baseline: 'middle', size: X > 4 ? 11 : 15, weight: 700, color: 'panel' });
+            sA.dot(q[0], q[1], { r: X > 4 ? 12 : bead - 3, color: ecol(x), fill: ecol(x) });
+            sA.text(lab(x), q[0], q[1], { align: 'center', baseline: 'middle', size: X > 4 ? 11 : (N[x].length > 3 ? 13 : 15), weight: 700, color: 'panel' });
           }
           sA.corner(`$g=${G.L[g]}$ sends the bead in slot $x$ to slot $g\\cdot x$`, 'tl', { plate: true, size: 12 });
           T.draw({

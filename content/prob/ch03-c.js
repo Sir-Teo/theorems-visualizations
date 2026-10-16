@@ -462,7 +462,7 @@ Finite variance is sufficient but not necessary. (Durrett states this without pr
 $$P_n\big(m:\ g(m)-\log\log n\le x\sqrt{\log\log n}\big)\to P(\chi\le x),$$
 so a typical integer of size $n$ has about $\log\log n+\chi\sqrt{\log\log n}$ prime factors.`,
       idea: String.raw`Divisibility by distinct primes behaves like independent events: the density of multiples of $pq$ is $1/pq$. So $g$ is modelled by $\sum_{p\le n}X_p$ with independent $X_p\sim$ Bernoulli$(1/p)$, whose mean and variance are $\log\log n+O(1)$ by Mertens' estimate $\sum_{p\le n}1/p=\log\log n+O(1)$; Lindeberg–Feller (3.4.10) makes the model normal. To transfer this to the integers, drop the primes above $\alpha_n=n^{1/\log\log n}$ (they matter little, Lemma 3.4.15's spirit) and compare moments: products of few small primes divide a uniform integer with probability within $1/n$ of the model, and the method of moments (3.3.26) concludes.`,
-      caption: String.raw`Drag $N$ up to $2\times10^6$ (prime factors counted exactly by a sieve). Left: the frequencies of $g(m)$ for $m\le N$ (bars), the independent-primes model $\sum_{p\le N}X_p$ computed exactly (orange dots) and the normal curve with mean and variance $\log\log N$ (green). Right: the Kolmogorov distance of the standardized count to $\Phi$ as $N$ grows; the convergence is famously slow, since $\log\log(2\times10^6)\approx2.68$.`,
+      caption: String.raw`Drag $N$ up to $2\times10^6$ (prime factors counted exactly by a sieve). Left: the frequencies of $g(m)$ for $m\le N$ (accent bars) against the normal curve with mean and variance $\log\log N$ (green). The orange bars count only the primes $p\le\alpha_N=N^{1/\log\log N}$, as in the proof, and the orange dots are the independent model $\sum_{p\le\alpha_N}X_p$ computed exactly: these two agree closely, which is the heart of the moment comparison. Right: the Kolmogorov distance of the standardized $g$ to $\Phi$; the convergence is famously slow, since $\log\log(2\times10^6)\approx2.68$.`,
       deps: ['prob-3.4.10', 'prob-3.3.26', 'prob-3.4.15'],
       see: ['nt-10.16'],
       tags: ['central limit theorem', 'number theory'],
@@ -470,9 +470,9 @@ so a typical integer of size $n$ has about $\log\log n+\chi\sqrt{\log\log n}$ pr
         const M = v.M;
         const NMAX = 2000000;
         const nS = v.slider('$N$', 100, NMAX, 100000, { log: true, int: true });
-        const L = v.stage({ x: [-0.5, 9.5], y: [0, 0.5], height: 320, weight: 1.15, axes: 'box', gutter: true, xlabel: '$k$ = number of distinct prime factors', title: 'distribution of $g(m)$, $m\\le N$' });
-        const R = v.stage({ x: [100, NMAX], xlog: true, y: [0, 0.35], height: 320, axes: 'box', gutter: true, xlabel: '$N$', title: 'distance to the normal law' });
-        let pre = null, st = null;
+        const L = v.stage({ x: [-0.6, 8.6], y: [0, 0.5], height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: '$k$ = number of distinct prime factors', title: 'distribution of $g(m)$, $m\\le N$' });
+        const R = v.stage({ x: [100, NMAX], xlog: true, y: [0, 0.4], height: 320, axes: 'box', gutter: true, xlabel: '$N$', title: 'distance of $(g-\\log\\log N)/\\sqrt{\\log\\log N}$ to $\\Phi$' });
+        let pre = null, cur = null, st = null;
         const prep = () => {
           const w = new Uint8Array(NMAX + 1), comp = new Uint8Array(NMAX + 1), primes = [];
           for (let p = 2; p <= NMAX; p++) { if (comp[p]) continue; primes.push(p); for (let q = p; q <= NMAX; q += p) { w[q]++; if (q > p) comp[q] = 1; } }
@@ -483,27 +483,37 @@ so a typical integer of size $n$ has about $\log\log n+\chi\sqrt{\log\log n}$ pr
           }
           return { w, primes, ks };
         };
+        const mom = (fr) => { let a = 0, b = 0; fr.forEach((f, k) => { a += k * f; b += k * k * f; }); return [a, b - a * a]; };
         v.render(() => {
           if (!pre) pre = prep();
-          const N = nS.value, counts = new Float64Array(16); for (let m = 1; m <= N; m++) counts[pre.w[m]]++;
-          const fr = Array.from(counts, (c) => c / N);
-          // independent model: Poisson-binomial over primes ≤ N
-          let dp = new Float64Array(16); dp[0] = 1; let mean = 0, vr = 0;
-          for (const p of pre.primes) { if (p > N) break; const q = 1 / p; mean += q; vr += q * (1 - q); for (let k = 15; k >= 1; k--) dp[k] = dp[k] * (1 - q) + dp[k - 1] * q; dp[0] *= 1 - q; }
-          const ll = Math.log(Math.log(N)), top = Math.max(...fr, ...dp) * 1.18; L.setView(null, [0, top]);
-          L.bars(fr.slice(0, 10), { x0: 0, color: 'accent', fillAlpha: 0.55, barWidth: 0.72 });
-          L.fn((x) => PHI((x - ll) / Math.sqrt(ll)) / Math.sqrt(ll), { domain: [-0.5, 9.5], color: 'green', width: 2.2 });
-          for (let k = 0; k < 10; k++) L.dot(k, dp[k], { r: 4.5, color: 'orange' });
+          const N = nS.value, ll = Math.log(Math.log(N)), alpha = Math.pow(N, 1 / ll);
+          if (!cur || cur.N !== N) {
+            const counts = new Float64Array(16); for (let m = 1; m <= N; m++) counts[pre.w[m]]++;
+            const g = new Uint8Array(N + 1), small = pre.primes.filter((p) => p <= alpha);
+            for (const p of small) for (let q = p; q <= N; q += p) g[q]++;
+            const cg = new Float64Array(16); for (let m = 1; m <= N; m++) cg[g[m]]++;
+            const dp = new Float64Array(16); dp[0] = 1; let mean = 0, vr = 0;
+            for (const p of small) { const q = 1 / p; mean += q; vr += q * (1 - q); for (let k = 15; k >= 1; k--) dp[k] = dp[k] * (1 - q) + dp[k - 1] * q; dp[0] *= 1 - q; }
+            cur = { N, fr: Array.from(counts, (c) => c / N), fg: Array.from(cg, (c) => c / N), dp, mean, vr, np: small.length };
+          }
+          const top = Math.max(...cur.fr, ...cur.fg, ...cur.dp) * 1.15; L.setView(null, [0, top]);
+          for (let k = 0; k <= 8; k++) {
+            if (cur.fr[k] > 0) L.rect(k - 0.36, 0, k - 0.02, cur.fr[k], { fill: 'accent', fillAlpha: 0.6, stroke: false });
+            if (cur.fg[k] > 0) L.rect(k + 0.02, 0, k + 0.36, cur.fg[k], { color: 'orange', fill: 'orange', fillAlpha: 0.12, width: 1.6 });
+            L.dot(k + 0.19, cur.dp[k], { r: 4, color: 'orange' });
+          }
+          L.fn((x) => PHI((x - ll) / Math.sqrt(ll)) / Math.sqrt(ll), { domain: [-0.6, 8.6], color: 'green', width: 2.2 });
           L.vline(ll, { color: 'green', width: 1, dash: [4, 4] });
+          const last = pre.ks[pre.ks.length - 1], c0 = last[1] * Math.sqrt(Math.log(Math.log(last[0])));
+          R.fn((x) => c0 / Math.sqrt(Math.log(Math.log(x))), { domain: [100, NMAX], color: 'muted', width: 1.2, dash: [5, 4] });
           R.path(pre.ks, { color: 'accent', width: 2.2 });
-          R.fn((x) => 0.33 / Math.sqrt(Math.log(Math.log(x))), { domain: [100, NMAX], color: 'muted', width: 1.2, dash: [5, 4] });
-          const cur = pre.ks.reduce((b, p) => (Math.abs(Math.log(p[0] / N)) < Math.abs(Math.log(b[0] / N)) ? p : b));
-          R.vline(N, { color: 'gold', width: 1.2, dash: [3, 3] });
-          v.legend([['accent', 'frequency of $g(m)=k$'], ['orange', 'model $\\sum_{p\\le N}X_p$', { dot: true }], ['green', 'normal, mean & variance $\\log\\log N$'], ['muted', '$\\propto(\\log\\log N)^{-1/2}$', { dash: true }]]);
-          let em = 0, e2 = 0; fr.forEach((f, k) => { em += k * f; e2 += k * k * f; });
-          st = { N, ll, em, ev: e2 - em * em, mean, vr, d: cur[1] };
+          const near = pre.ks.reduce((b, p) => (Math.abs(Math.log(p[0] / N)) < Math.abs(Math.log(b[0] / N)) ? p : b));
+          R.vline(N, { color: 'gold', width: 1.2, dash: [3, 3] }); R.dot(near[0], near[1], { r: 4.5, color: 'gold' });
+          v.legend([['accent', 'frequency of $g(m)=k$', { area: true }], ['orange', 'primes $\\le\\alpha_N$ only; model $\\sum_{p\\le\\alpha_N}X_p$ (dots)', { area: true }], ['green', 'normal, mean & variance $\\log\\log N$'], ['muted', '$\\propto(\\log\\log N)^{-1/2}$', { dash: true }]]);
+          const [em, ev] = mom(cur.fr), [gm, gv] = mom(cur.fg);
+          st = { N, ll, em, ev, gm, gv, mean: cur.mean, vr: cur.vr, alpha, d: near[1] };
         });
-        v.readout(() => st && `$N=${st.N}$: $\\log\\log N=${v.fix(st.ll, 3)}$; average of $g$ $=${v.fix(st.em, 3)}$, variance $${v.fix(st.ev, 3)}$; the model has mean $\\sum_{p\\le N}1/p=${v.fix(st.mean, 3)}$ and variance $${v.fix(st.vr, 3)}$ (they differ from $\\log\\log N$ by $O(1)$). Kolmogorov distance to $\\Phi$ near this $N$: $${v.fix(st.d, 3)}$.`);
+        v.readout(() => st && `$N=${st.N}$, $\\log\\log N=${v.fix(st.ll, 3)}$. All primes: mean of $g$ $=${v.fix(st.em, 3)}$, variance $${v.fix(st.ev, 3)}$. Primes $\\le\\alpha_N=${v.fix(st.alpha, 1)}$: mean $${v.fix(st.gm, 3)}$, variance $${v.fix(st.gv, 3)}$; model: $${v.fix(st.mean, 3)}$, $${v.fix(st.vr, 3)}$. Kolmogorov distance to $\\Phi$: $${v.fix(st.d, 3)}$.`);
       },
     },
     // ======================================================================== §3.4.4 rates of convergence
@@ -785,7 +795,7 @@ $$\sup_{x\in\mathcal L_n}\Big|\frac{\sqrt n}{h}\,p_n(x)-n(x)\Big|\to0.$$`,
           const p0 = cache.pts[0];
           R.fn((m) => p0[1] / Math.sqrt(m), { color: 'muted', width: 1.2, dash: [6, 4] });
           R.fn((m) => p0[1] / m, { color: 'muted', width: 1.2, dash: [2, 3] });
-          R.path(cache.pts, { color: sc === S.h ? 'accent' : 'red', width: 2.2 });
+          R.path(cache.pts, { color: divH.value ? 'accent' : 'red', width: 2.2 });
           R.dot(n, Math.max(1e-6, e), { r: 5, color: 'gold' });
           v.legend([['accent', divH.value ? '$\\frac{\\sqrt n}{h}P(S_n/\\sqrt n=x)$' : '$\\sqrt n\\,P(S_n/\\sqrt n=x)$'], ['green', '$n(x)$, variance $\\sigma^2$'], ['muted', 'slopes $n^{-1/2}$, $n^{-1}$', { dash: true }]]);
           st = { n, e, h: S.h, s2: s * s, div: divH.value };

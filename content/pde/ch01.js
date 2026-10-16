@@ -20,6 +20,7 @@ export default {
       refs: ['Strauss §1.1'],
       tags: ['order', 'linearity', 'superposition'],
       viz(v) {
+        const M = v.M;
         const PDES = {
           transport: { label: '$u_t+2u_x$', tex: 'u_t+2u_x=0', order: 1, F: (d) => d.ut + 2 * d.ux, u1: 'sin(x - 2t)', u2: 'exp(-(x - 2t)^2)' },
           wave: { label: '$u_{tt}-u_{xx}$', tex: 'u_{tt}-u_{xx}=0', order: 2, F: (d) => d.utt - d.uxx, u1: 'sin(x) cos(t)', u2: 'exp(-(x + t)^2)' },

@@ -61,7 +61,7 @@ Scope: a single-period model in which means and covariances are known and invest
         const T = v.stage({ x: [-0.08, 1.08], y: [-0.08, 1.08], equal: true, axes: false, height: 360, weight: 1, minWidth: 260, title: 'the three-security diagram' });
         const R = v.stage({ x: [0, 32], y: [0, 16], axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 260, xlabel: 'risk σ (% per year)', ylabel: 'expected return E (% per year)', title: 'the E–V frontier' });
         const sec = [R.handle(14, 5, { color: 'blue', label: '1' }), R.handle(22, 9, { color: 'orange', label: '2' }), R.handle(30, 13, { color: 'purple', label: '3' })];
-        const port = T.handle(0.55, 0.15, { color: 'gold', label: 'portfolio', constrain: (x, y) => { x = Math.max(0, x); y = Math.max(0, y); const s = x + y; return s > 1 ? [x / s, y / s] : [x, y]; } });
+        const port = T.handle(0.3, 0.42, { color: 'gold', label: 'portfolio', constrain: (x, y) => { x = Math.max(0, x); y = Math.max(0, y); const s = x + y; return s > 1 ? [x / s, y / s] : [x, y]; } });
         const tri = (x) => [x[0], x[1]];
         let st = null;
         v.render(() => {
@@ -82,9 +82,10 @@ Scope: a single-period model in which means and covariances are known and invest
           // ---- triangle: isovariance contours and isomean lines (in X1, X2)
           const P = (X1, X2) => [X1, X2, 1 - X1 - X2];
           const vmax = Math.max(...sd) ** 2;
+          let sdMin = Infinity; for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40 - i; j++) sdMin = Math.min(sdMin, Math.sqrt(pv(P(i / 40, j / 40), S)));
           T.poly([[0, 0], [1, 0], [0, 1]], { fill: 'faint', fillAlpha: 0.12, color: 'muted', width: 1.4 });
           T.clip(() => {
-            T.contour((x, y) => (x < -0.002 || y < -0.002 || x + y > 1.002 ? NaN : Math.sqrt(pv(P(x, y), S))), [0.4, 0.55, 0.7, 0.85, 1].map((f) => f * Math.sqrt(vmax) * 0.9), { color: 'accent', width: 1.2, res: 90 });
+            T.contour((x, y) => (x < -0.002 || y < -0.002 || x + y > 1.002 ? NaN : Math.sqrt(pv(P(x, y), S))), [1, 2, 3, 4, 5, 6, 7].map((k) => sdMin + ((Math.sqrt(vmax) - sdMin) * (k / 7) ** 1.6)), { color: 'accent', width: 1.2, res: 90 });
             const levels = [0, 1, 2, 3, 4, 5, 6].map((k) => Math.min(...mu) + ((Math.max(...mu) - Math.min(...mu)) * k) / 6);
             T.contour((x, y) => (x < -0.002 || y < -0.002 || x + y > 1.002 ? NaN : pm(P(x, y), mu)), levels, { color: 'muted', width: 1, res: 60 });
           }, [-0.08, 1.08], [-0.08, 1.08]);

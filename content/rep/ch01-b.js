@@ -74,7 +74,9 @@ export default {
           } else {
             sB.setView([0.35, mats.length + 0.65], [0, 1.02]); sB.setLabels(null, 'defect'); sB.setTicks(mats.map((_, g) => [g + 1, String(g + 1)]), null);
             const key = `${sel.value}${what.value}`;
-            sA.heat((x, y) => (x * x + y * y > 1 ? NaN : defect(mats, dirOf(rep, x, y))), { range: [0, 1], cmap: 'viridis', res: 130, key });
+            const cm = (t) => v.M.cmap(Math.sqrt(Math.max(0, Math.min(1, t))), 'viridis');
+            sA.raster((x, y) => (x * x + y * y > 1 ? null : cm(defect(mats, dirOf(rep, x, y)))), { res: 150, key });
+            sA.colorbar([0, 1], cm, { pos: 'right', label: 'defect', length: 150 });
             sA.circle(0, 0, 1, { color: 'ink', width: 1.4, alpha: 0.5 });
             [['x', 1, 0], ['y', 0, 1]].forEach(([l, x, y]) => { sA.dot(x, y, { r: 3, color: 'ink' }); sA.text(l, x * 1.12, y * 1.12, { math: true, size: 14, color: 'muted', align: 'center', baseline: 'middle' }); });
             sA.text('z', 0.07, -0.07, { math: true, size: 13, color: 'panel' }); sA.dot(0, 0, { r: 2.5, color: 'panel' });
@@ -141,7 +143,7 @@ export default {
             if (label) t2.forEach((q, k) => sc.tex(`\\mathrm{${'ABC'[k]}}`, vadd(q, [0.08, 0.1, 0.12]), { color: col, size: 14 }));
           };
           prism(eye(3), 'muted', true, false, 0.03);
-          prism(M, 'accent', false, true, 0.09);
+          prism(M, 'purple', false, true, 0.09);
           // components of v and of g·v
           sc.line(comp[0], p, { color: 'faint', width: 1, dash: true }, 1); sc.line(comp[1], p, { color: 'faint', width: 1, dash: true }, 1);
           sc.arrow([0, 0, 0], comp[0], { color: 'blue', width: 2.4 }); sc.arrow([0, 0, 0], comp[1], { color: 'green', width: 2.4 });
@@ -162,7 +164,7 @@ export default {
           if (tilt.value === 0) { T.box(0, 0, 1, 1, { color: 'blue', width: 2.5 }); T.box(2, 2, 2, 2, { color: 'green', width: 2.5 }); }
           tb.corner(tilt.value === 0 ? `$\\rho(${G.L[g]})$ in the adapted basis: blocks $\\rho_V\\oplus\\rho_W$` : `same $\\rho(${G.L[g]})$ in a tilted basis`, 'tl', { size: 11.5 });
         });
-        v.legend([['blue', '$v_V$ and $\\rho(g)v_V$ in $V$ (dashed)'], ['green', '$v_W$ in $W$'], ['gold', '$\\rho(g)v$'], ['accent', 'prism moved by $g$']]);
+        v.legend([['blue', '$v_V$ and $\\rho(g)v_V$ in $V$ (dashed)'], ['green', '$v_W$ in $W$'], ['gold', '$\\rho(g)v$'], ['purple', 'prism moved by $g$']]);
         v.readout(() => {
           const g = gsel.value, M = big(g), p = hv.p;
           const comp = [[p[0], p[1], 0], [0, 0, p[2]]], lhs = mv(M, p), rhs = vadd(mv(M, comp[0]), mv(M, comp[1]));
@@ -192,9 +194,9 @@ export default {
         const ss = v.select('$\\sigma$ on $W$', opts(), 'std', { onChange: () => reset() });
         const cs = v.select('construction', [{ value: 'tensor', label: '$V\\otimes W$' }, { value: 'dual', label: '$V^{*}$' }, { value: 'hom', label: '$\\operatorname{Hom}(V,W)$' }], 'tensor', { onChange: () => reset() });
         const gs = v.select('element $g$', G.L.map((l, i) => ({ value: i, label: `$${l}$` })), 1);
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, title: '$X$' });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, title: 'the moved array' });
-        const C = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.15, title: 'matrix of $g$ on the long vector' });
+        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1, title: '$X$' });
+        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1, title: 'the moved array' });
+        const C = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1.15, title: 'matrix of $g$ on the long vector' });
         const dims = () => { const p = R[rs.value].dim, q = R[ss.value].dim; return cs.value === 'tensor' ? [p, q] : cs.value === 'dual' ? [p, 1] : [q, p]; };
         let X = [];
         const reset = () => { const [m, n] = dims(); X = Array.from({ length: m }, (_, i) => Array.from({ length: n }, (_, j) => ((i * 2 + j * 3 + 1) % 5) - 2)); };
@@ -212,8 +214,8 @@ export default {
         const heatv = (x) => 0.5 + 0.5 * Math.max(-1, Math.min(1, x / 3));
         v.render(() => {
           const { act, K, m, n } = maps(), g = gs.value, Y = act(g, X), kx = unvec(mv(K[g], vec(X)), m, n);
-          TA.draw({ rows: m, cols: n, value: (i, j) => X[i][j], heat: (i, j) => heatv(X[i][j]), cmap: 'diverging', format: 2 });
-          TB.draw({ rows: m, cols: n, value: (i, j) => (Math.abs(Y[i][j]) < 1e-9 ? 0 : Y[i][j]), heat: (i, j) => heatv(Y[i][j]), cmap: 'diverging', format: 2 });
+          TA.draw({ rows: m, cols: n, value: (i, j) => X[i][j], heat: (i, j) => heatv(X[i][j]), cmap: 'diverging' });
+          TB.draw({ rows: m, cols: n, value: (i, j) => (Math.abs(Y[i][j]) < 1e-9 ? 0 : Y[i][j]), heat: (i, j) => heatv(Y[i][j]), cmap: 'diverging' });
           const N = m * n;
           TC.draw({ rows: N, cols: N, value: (i, j) => (Math.abs(K[g][i][j]) < 1e-9 ? '0' : nmc(K[g][i][j], 2)), size: N > 2 ? 11.5 : 14, heat: (i, j) => heatv(K[g][i][j] * 2), cmap: 'diverging', textColor: (i, j) => (Math.abs(K[g][i][j]) < 1e-9 ? 'faint' : 'ink') });
           A.corner(`${m}×${n} array — click a cell to edit`, 'bl', { size: 11 });
@@ -273,6 +275,7 @@ export default {
           for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) cols.push(vec(madd(msc(E(i, j), r2), msc(E(j, i), -r2))));
           return tp(cols); // columns = basis vectors
         };
+        const basisLabels = (n) => { const L = []; for (let i = 0; i < n; i++) L.push(`S${i + 1}${i + 1}`); for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) L.push(`S${i + 1}${j + 1}`); for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) L.push(`A${i + 1}${j + 1}`); return L; };
         const compute = () => {
           const r = REP[rs.value], n = r.n, g = r.G === D3 ? g3.value : g4.value, M = r.mats[g];
           const S = msc(madd(X, tp(X)), 0.5), Al = msc(msub(X, tp(X)), 0.5), act = (Y) => mm(mm(M, Y), tp(M));
@@ -283,14 +286,14 @@ export default {
         v.render(() => {
           const { n, g, S, Al, gX, gS, gA, Kd, ns, r } = compute();
           const arrs = [X, S, Al, gX, gS, gA];
-          TS.forEach((T, k) => { const Y = arrs[k]; T.draw({ rows: n, cols: n, value: (i, j) => (Math.abs(Y[i][j]) < 1e-9 ? 0 : Y[i][j]), heat: (i, j) => heatv(Y[i][j]), cmap: 'diverging', format: 2, size: n > 2 ? 12 : 14, maxCell: 54 }); });
+          TS.forEach((T, k) => { const Y = arrs[k]; T.draw({ rows: n, cols: n, value: (i, j) => (Math.abs(Y[i][j]) < 1e-9 ? 0 : Y[i][j]), heat: (i, j) => heatv(Y[i][j]), cmap: 'diverging', size: n > 2 ? 12 : 14, maxCell: 54 }); });
           const lab = ['X', 'S=\\tfrac12(X+X^{\\mathsf T})', 'A=\\tfrac12(X-X^{\\mathsf T})', '\\rho X\\rho^{\\mathsf T}', '\\rho S\\rho^{\\mathsf T}', '\\rho A\\rho^{\\mathsf T}'];
           lab.forEach((l, k) => A.tex(l, 0.18 + (k % 3) * 0.32, k < 3 ? 0.95 : 0.47, { size: 13, align: 'center' }));
           A.text('=', 0.34, 0.71, { size: 20, align: 'center', baseline: 'middle', color: 'muted' }); A.text('+', 0.66, 0.71, { size: 20, align: 'center', baseline: 'middle', color: 'muted' });
           A.text('=', 0.34, 0.23, { size: 20, align: 'center', baseline: 'middle', color: 'muted' }); A.text('+', 0.66, 0.23, { size: 20, align: 'center', baseline: 'middle', color: 'muted' });
           A.corner(`click a cell of $X$ · $g=${r.G.L[g]}$ acts below`, 'bl', { size: 11 });
-          const N = n * n;
-          TQ.draw({ rows: N, cols: N, value: (i, j) => (Math.abs(Kd[i][j]) < 1e-9 ? '0' : nmc(Kd[i][j], 1)), size: N > 4 ? 10 : 12, heat: (i, j) => heatv(Kd[i][j] * 2), cmap: 'diverging', textColor: (i, j) => (Math.abs(Kd[i][j]) < 1e-9 ? 'faint' : 'ink'), rowLabels: (i) => (i < ns ? 'S' : 'A'), colLabels: (j) => (j < ns ? 'S' : 'A'), labelSize: 11 });
+          const N = n * n, bl = basisLabels(n);
+          TQ.draw({ rows: N, cols: N, value: (i, j) => (Math.abs(Kd[i][j]) < 1e-9 ? '0' : nmc(Kd[i][j], 1)), size: N > 4 ? 10 : 12, heat: (i, j) => heatv(Kd[i][j] * 2), cmap: 'diverging', textColor: (i, j) => (Math.abs(Kd[i][j]) < 1e-9 ? 'faint' : 'ink'), rowLabels: (i) => bl[i], colLabels: (j) => bl[j], labelSize: 10.5 });
           TQ.box(0, 0, ns - 1, ns - 1, { color: 'blue', width: 2.6 }); TQ.box(ns, ns, N - 1, N - 1, { color: 'green', width: 2.6 });
           B.corner(`$\\rho(${r.G.L[g]})\\otimes\\rho(${r.G.L[g]})$ in the basis (symmetric | alternating)`, 'tl', { size: 11 });
         });

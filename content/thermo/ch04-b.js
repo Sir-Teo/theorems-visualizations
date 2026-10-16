@@ -418,7 +418,7 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
       viz(v) {
         const mol = v.slider('molality m', 0, 2, 0.5, { step: 0.01, fmt: (x) => v.fix(x, 2) + ' mol/kg' });
         const sol = v.select('solute', [{ value: '1', label: 'sucrose (i = 1)' }, { value: '2', label: 'NaCl (ideal i = 2)' }], '1');
-        const su = v.stage({ x: [0, 10], y: [0, 10], height: 330, axes: false, weight: 0.8, minWidth: 200, title: 'osmosis' });
+        const su = v.stage({ x: [0, 10], y: [-0.8, 10.2], height: 330, axes: false, weight: 0.8, minWidth: 200, title: 'osmosis' });
         const sf = v.stage({ x: [-8, 2], y: [-120, 60], height: 330, axes: 'box', gutter: true, xlabel: 't (°C)', ylabel: 'μ − μ*liquid (J/mol)', weight: 1, title: 'near freezing' });
         const sbp = v.stage({ x: [99, 103], y: [-120, 60], height: 330, axes: 'box', gutter: true, xlabel: 't (°C)', ylabel: null, weight: 1, title: 'near boiling' });
         const Mw = W.M, Tf = 273.15, Tb = 373.124, Hf = W.Lf * Mw, Hv = satW(Tb).L * Mw, Sf = Hf / Tf, Sv = Hv / Tb;
@@ -437,12 +437,12 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
           for (const [x0, x1] of [[1, 4], [6, 9]]) { su.line(x0, 0.3, x0, 9.2, { color: 'ink', width: 2 }); su.line(x1, 1, x1, 9.2, { color: 'ink', width: 2 }); }
           su.line(1, 0.3, 9, 0.3, { color: 'ink', width: 2 }); su.line(4, 1, 6, 1, { color: 'ink', width: 2 });
           su.line(5, 0.3, 5, 1, { color: 'gold', width: 4, dash: [3, 2] });
-          su.text('membrane', 5, 1.15, { size: 10.5, align: 'center', color: 'gold', baseline: 'bottom' });
+          su.text('membrane', 5, -0.35, { size: 10.5, align: 'center', color: 'gold' });
           su.text('pure water', 2.5, 9.6, { size: 11, align: 'center', color: PHASE.liquid, weight: 650 });
           su.text('solution', 7.5, 9.6, { size: 11, align: 'center', color: 'purple', weight: 650 });
           const R2 = v.rng(9);
           for (let k = 0; k < 18; k++) su.dot(6.3 + R2() * 2.4, 1.2 + R2() * (base + dh / 2 - 1.4), { r: 3, color: 'purple', alpha: 0.85 });
-          if (hEq > 0) { su.measure(9.4, base - dh / 2, 9.4, base + dh / 2, '', { color: 'ink' }); su.text(`h = ${hNow >= 10 ? v.fix(hNow, 0) : v.fix(hNow, 1)} m`, 9.6, base, { size: 11, align: 'left', color: 'ink', plate: true }); }
+          if (hEq > 0) { su.measure(9.5, base - dh / 2, 9.5, base + dh / 2, null, { color: 'ink' }); su.text(`h = ${hNow >= 10 ? v.fix(hNow, 0) : v.fix(hNow, 2)} m (height not to scale)`, 5, 8.6, { size: 11, align: 'center', color: 'ink', plate: true }); }
           const ph = (t * 0.9) % 1; if (hNow < hEq * 0.97) su.arrow(4.4 + ph * 0.4, 0.65, 5.6 + ph * 0.4, 0.65, { color: PHASE.liquid, width: 2, head: 7 });
           // μ diagrams (per mole of water)
           const draw = (s, Tc, Sx, col, name, sign) => {
@@ -451,8 +451,11 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
             s.fn((tc) => sign * Sx * (tc + 273.15 - Tc), { color: col, width: 2.4 });
             s.text('pure water', s === sf ? -7.8 : 99.1, 0, { dy: -8, size: 11, color: PHASE.liquid, align: 'left' });
             s.text('solution: RT ln x', s === sf ? -7.8 : 99.1, R * Tc * lnx, { dy: 13, size: 11, color: 'purple', align: 'left' });
-            s.text(name, s === sf ? 1.5 : 102.6, sign * Sx * ((s === sf ? 1.5 : 102.6) + 273.15 - Tc), { dx: -4, dy: sign > 0 ? 14 : -8, size: 11, color: col, align: 'right' });
+            const tl = Tc - 273.15 - sign * 100 / Sx;
+            s.text(name, tl, -100, { dx: 8, size: 11.5, weight: 650, color: col, align: 'left' });
           };
+          const ylo = Math.min(-120, 1.35 * R * Tf * lnx);
+          sf.setView([Math.min(-8, -1.25 * (Tf - Tf / (1 - R * lnx / Sf))), 2], [ylo, 60]); sbp.setView([99, 103], [ylo, 60]);
           draw(sf, Tf, Sf, PHASE.solid, 'ice', 1);
           draw(sbp, Tb, Sv, PHASE.gas, 'vapour', -1);
           // exact crossings (constant ΔH): ΔS (T − T*) = ± R T ln x

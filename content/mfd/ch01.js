@@ -28,7 +28,7 @@ export default {
         const atlas = v.select('atlas', [{ value: 'ang', label: 'two angle charts' }, { value: 'graph', label: 'four graph charts' }], 'ang');
         const cut = v.slider('cut $c$ of chart $B$', 0.5, 5.8, PI, { step: 0.01 });
         const pair = v.select('transition', [{ value: '0', label: 'top → right' }, { value: '1', label: 'top → left' }, { value: '2', label: 'top → bottom' }, { value: '3', label: 'right → top' }], '0');
-        const L = v.stage({ x: [-1.8, 1.8], y: [-1.62, 1.62], equal: true, axes: false, height: 380, title: 'the circle and its chart domains' });
+        const L = v.stage({ x: [-1.9, 1.9], y: [-1.7, 1.7], equal: true, axes: false, height: 380, title: 'the circle and its chart domains' });
         const R = v.stage({ x: [0, TAU], y: [-TAU, TAU], axes: 'box', gutter: true, height: 380, xlabel: 'coordinate in chart 1', ylabel: 'coordinate in chart 2', title: 'transition map', weight: 1.1 });
         const P = L.handle(Math.cos(1.0), Math.sin(1.0), { color: 'gold', label: 'p', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; } });
         const GR = [
@@ -60,7 +60,7 @@ export default {
             flush();
             for (let k = 0; k < N; k++) { const a = c.dom(th(k)), b = c.dom(th((k + 1) % N)); if (a !== b) { const t = a ? th(k) + 0.5 * TAU / N : th(k) + 0.5 * TAU / N; L.dot(r * Math.cos(t), r * Math.sin(t), { r: 4.5, hollow: true, color: col }); } }
             const mid = c === ci ? PI * 0.5 + 0.7 : -PI * 0.5 - 0.5;
-            L.text(c.name === 'A' ? 'chart A' : c.name === 'B' ? 'chart B' : c.name, (r + 0.19) * Math.cos(c === ci ? 2.2 : -0.9), (r + 0.19) * Math.sin(c === ci ? 2.2 : -0.9), { size: 12, color: col, align: 'center', weight: 600 });
+            L.text(c.name.length === 1 ? 'chart ' + c.name : c.name, 1.5 * Math.cos(c === ci ? 2.5 : -0.9), 1.5 * Math.sin(c === ci ? 2.5 : -0.9), { size: 12.5, color: col, align: 'center', weight: 600 });
           });
           // overlap pieces
           const ov = (t) => ci.dom(t) && cj.dom(t);
@@ -126,10 +126,10 @@ export default {
         const fsel = v.select('test function $f$', [{ value: 'p', label: '$f=p$' }, { value: 'p2', label: '$f=p^2$' }, { value: 'p3', label: '$f=p^3$' }, { value: 'cr', label: '$f=\\sqrt[3]{p}$' }], 'p');
         const hsl = v.slider('step $h$', 1e-8, 1, 0.01, { log: true, sig: 2 });
         const A = v.stage({ x: [-2.1, 2.1], y: [-0.55, 0.55], axes: false, height: 190, full: true, title: 'the manifold $\\mathbb R$ with two coordinate grids' });
-        const T = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: 'transition maps', weight: 0.9 });
-        const Q = v.stage({ x: [1e-8, 1], y: [1e-3, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, title: 'difference quotient at 0', xlabel: 'h', ylabel: '|ψ(h) − ψ(0)| / h', weight: 1 });
-        const Fu = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: '$f$ in the chart $u$', weight: 0.9 });
-        const Fw = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: '$f$ in the chart $w=p^3$', weight: 0.9 });
+        const T = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: 'transition maps', weight: 1, minWidth: 220 });
+        const Q = v.stage({ x: [1e-8, 1], y: [1e-17, 1e6], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, title: 'difference quotient at 0', xlabel: 'h', ylabel: '|ψ(h) − ψ(0)| / h', weight: 1, minWidth: 220 });
+        const Fu = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: '$f$ in the chart $u$', weight: 1, minWidth: 220 });
+        const Fw = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: true, height: 300, title: '$f$ in the chart $w=p^3$', weight: 1, minWidth: 220 });
         const P = A.handle(0.7, 0, { color: 'gold', label: 'p', constrain: (x) => [clamp(x, -2.0, 2.0), 0] });
         const FN = { p: (x) => x, p2: (x) => x * x, p3: (x) => x * x * x, cr: (x) => Math.cbrt(x) };
         const dq = (f, h) => Math.abs(f(h) - f(0)) / h; // one-sided at 0
@@ -146,7 +146,7 @@ export default {
           T.line(-2, -2, 2, 2, { color: 'faint', width: 1, dash: [3, 4] });
           T.fn(Math.cbrt, { color: 'red', width: 2.8 });
           T.fn((x) => x * x * x, { color: 'green', width: 2.8 });
-          T.text('w ↦ ∛w', 1.65, 1.1, { size: 12, color: 'red', weight: 600 }); T.text('u ↦ u³', 1.0, -1.5, { size: 12, color: 'green', weight: 600 });
+          T.text('w ↦ ∛w', 1.0, 1.45, { size: 12, color: 'red', weight: 600, plate: true }); T.text('u ↦ u³', 1.25, -1.2, { size: 12, color: 'green', weight: 600, plate: true });
           T.dot(p * p * p, p, { r: 6, color: 'red' }); T.dot(p, p * p * p, { r: 6, color: 'green' });
           // difference quotients
           const hs = []; for (let k = 0; k <= 160; k++) hs.push(Math.pow(10, -8 + (8 * k) / 160));
@@ -154,7 +154,7 @@ export default {
           Q.path(hs.map((h) => [h, dq((x) => x * x * x, h)]), { color: 'green', width: 2.8 });
           Q.vline(hsl.value, { color: 'gold', width: 1.5 });
           Q.dot(hsl.value, dq(Math.cbrt, hsl.value), { r: 5, color: 'red' }); Q.dot(hsl.value, dq((x) => x * x * x, hsl.value), { r: 5, color: 'green' });
-          Q.tex('h^{-2/3}', 3e-6, 1.2e4, { color: 'red', size: 14 }); Q.tex('h^{2}', 3e-6, 8e-3, { color: 'green', size: 14 });
+          Q.tex('h^{-2/3}', 1e-5, 1e5, { color: 'red', size: 14 }); Q.tex('h^{2}', 1e-4, 1e-8, { color: 'green', size: 14 });
           // f in both charts
           const fu = f, fw = (w) => f(Math.cbrt(w));
           Fu.fn(fu, { color: 'accent', width: 2.8 }); Fw.fn(fw, { color: 'orange', width: 2.8 });
@@ -184,7 +184,7 @@ export default {
       viz(v) {
         const CN = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: true, height: 340, title: 'chart $N$ (from the north pole)' });
         const CS = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: true, height: 340, title: 'chart $S$ (from the south pole)' });
-        const S3 = v.stage3d({ range: 1.75, height: 380, yaw: -0.7, pitch: 0.4, axes: false, full: true });
+        const S3 = v.stage3d({ range: 1.5, height: 400, yaw: -0.7, pitch: 0.4, axes: false, full: true });
         const H = CN.handle(0.9, 0.55, { color: 'gold', label: 'u', constrain: (x, y) => { const r = Math.hypot(x, y); return r > 2.5 ? [(2.5 * x) / r, (2.5 * y) / r] : [x, y]; } });
         const rings = [0.35, 0.6, 1, 1.6, 2.4], rays = 16;
         const ringCol = ['purple', 'teal', 'green', 'orange', 'red'];
@@ -204,10 +204,10 @@ export default {
           rings.forEach((R, k) => S3.curve((a) => stNinv([R * Math.cos(a), R * Math.sin(a)]).map((c) => c * 1.004), 0, TAU, { n: 120, color: ringCol[k], width: R === 1 ? 2.4 : 1.4 }));
           for (let k = 0; k < rays; k++) { const a = (TAU * k) / rays; S3.curve((t) => stNinv([t * Math.cos(a), t * Math.sin(a)]).map((c) => c * 1.004), 0, 12, { n: 60, color: 'muted', width: 0.8, alpha: 0.6 }); }
           // equatorial plane square and projection lines
-          S3.poly([[-1.75, -1.75, 0], [1.75, -1.75, 0], [1.75, 1.75, 0], [-1.75, 1.75, 0]], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 0.8 });
+          S3.poly([[-1.45, -1.45, 0], [1.45, -1.45, 0], [1.45, 1.45, 0], [-1.45, 1.45, 0]], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 0.8 });
           const p = stNinv(u), N = [0, 0, 1], Sp = [0, 0, -1];
           S3.dot(N, { r: 5, color: 'accent', label: 'N' }); S3.dot(Sp, { r: 5, color: 'orange', label: 'S' });
-          const clipP = (q) => { const m = Math.max(Math.abs(q[0]), Math.abs(q[1]), 1); return [q[0] / m * 1.74, q[1] / m * 1.74, 0]; };
+          const clipP = (q) => { const m = Math.max(Math.abs(q[0]), Math.abs(q[1]), 1); return [q[0] / m * 1.44, q[1] / m * 1.44, 0]; };
           S3.line(N, clipP([u[0], u[1]]), { color: 'accent', width: 1.8 });
           const us = r > 1e-9 ? [u[0] / (r * r), u[1] / (r * r)] : null;
           if (us) S3.line(Sp, clipP(us), { color: 'orange', width: 1.8 });
@@ -246,8 +246,8 @@ export default {
       refs: ['Lee SM Ch. 1'],
       tags: ['projective space', 'atlas'],
       viz(v) {
-        const D = v.stage({ x: [-1.28, 1.28], y: [-1.28, 1.28], equal: true, axes: false, height: 330, title: 'the projective plane: disc with antipodal rim', weight: 0.9 });
-        const S = v.stage3d({ range: 1.9, height: 330, yaw: -0.8, pitch: 0.35, axes: false, weight: 1.2, title: 'a line through the origin' });
+        const D = v.stage({ x: [-1.28, 1.28], y: [-1.28, 1.28], equal: true, axes: false, height: 330, title: 'the projective plane: disc with antipodal rim', weight: 1, minWidth: 420 });
+        const S = v.stage3d({ range: 1.7, height: 330, yaw: -0.8, pitch: 0.35, axes: false, weight: 1.2, minWidth: 420, title: 'a line through the origin' });
         const cx = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $x$: $(y/x,\\ z/x)$', weight: 0.8, minWidth: 220 });
         const cy = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $y$: $(x/y,\\ z/y)$', weight: 0.8, minWidth: 220 });
         const cz = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $z$: $(x/z,\\ y/z)$', weight: 0.8, minWidth: 220 });
@@ -279,8 +279,8 @@ export default {
             s.dot(0, 0, { r: 2.5, color: 'faint' });
             if (Math.abs(w) < 1e-9) { coords.push(null); s.text('not in this chart', 0, 0.6, { size: 12, color: 'red', align: 'center' }); return; }
             const c = [p[idx[i][0]] / w, p[idx[i][1]] / w]; coords.push(c);
-            const out = Math.max(Math.abs(c[0]), Math.abs(c[1])) > 2.9;
-            if (out) { const m = Math.hypot(...c); s.arrow(0, 0, (c[0] / m) * 2.8, (c[1] / m) * 2.8, { color: 'red', width: 2 }); s.text('→ ∞', (c[0] / m) * 2.35, (c[1] / m) * 2.35 + 0.3, { size: 12, color: 'red', align: 'center' }); }
+            const out = Math.max(Math.abs(c[0]), Math.abs(c[1])) > 2.6;
+            if (out) { const m = Math.hypot(...c); s.arrow(0, 0, (c[0] / m) * 2.5, (c[1] / m) * 2.5, { color: 'red', width: 2 }); s.text('→ ∞', (c[0] / m) * 2.1, (c[1] / m) * 2.1 + 0.3, { size: 12, color: 'red', align: 'center' }); }
             else s.dot(c[0], c[1], { r: 7, color: col[i] });
           });
           // transition z -> x:  (a,b) -> (b/a, 1/a)
@@ -295,7 +295,7 @@ export default {
           const { p, coords, err } = st;
           let s = `$[x:y:z]=[${f(p[0])}:${f(p[1])}:${f(p[2])}]$. `;
           s += ['x', 'y', 'z'].map((n, i) => (coords[i] ? `chart $${n}$: $(${f(coords[i][0])},${f(coords[i][1])})$` : `chart $${n}$: undefined ($${n}=0$)`)).join('; ') + '.';
-          s += Number.isFinite(err) ? `\nTransition $z\\to x$: $(a,b)\\mapsto(b/a,\\,1/a)$ reproduces the chart-$x$ coordinates to $${v.sci(err, 1)}$.` : '\nThe point lies outside chart $x$ or chart $z$, so that transition is not defined here.';
+          s += Number.isFinite(err) ? `\nTransition $z\\to x$: $(a,b)\\mapsto(b/a,\\,1/a)$ reproduces the chart-$x$ coordinates ${err < 1e-12 ? 'to round-off ($<10^{-12}$)' : `to $${v.sci(err, 1)}$`}.` : '\nThe point lies outside chart $x$ or chart $z$, so that transition is not defined here.';
           return s;
         });
       },
@@ -314,8 +314,8 @@ export default {
       viz(v) {
         const M = v.M;
         const chartSel = v.select('graph patch over', [{ value: '2', label: '$xy$-plane (chart $z$)' }, { value: '0', label: '$yz$-plane (chart $x$)' }, { value: '1', label: '$xz$-plane (chart $y$)' }], '2');
-        const S = v.stage({ x: [-1.9, 1.9], y: [-1.65, 1.65], equal: true, axes: false, height: 400, full: true });
-        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.5, lim: 1.3, labels: ['x', 'y', 'z'] });
+        const S = v.stage({ x: [-1.6, 1.6], y: [-1.3, 1.3], equal: true, axes: false, height: 400, full: true });
+        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.25, lim: 1.3, labels: ['x', 'y', 'z'] });
         const cs = [0, 1, 2].map((i) => v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 230, minWidth: 220, weight: 0.8, title: ['chart over $yz$: $x=cy+dz$', 'chart over $xz$: $y=ex+fz$', 'chart over $xy$: $z=ax+by$'][i] }));
         const Hn = sc.handle(M.normalize([0.35, 0.3, 0.85]), { color: 'gold', label: 'n', snap: (q) => M.normalize(q), lim: 1.3 });
         const col = ['accent', 'orange', 'green'];
@@ -345,8 +345,8 @@ export default {
           cs.forEach((s, i) => {
             const c = co[i];
             if (!c) { s.text('plane contains this axis:', 0, 0.9, { size: 12, color: 'red', align: 'center' }); s.text('not in this chart', 0, 0.4, { size: 12, color: 'red', align: 'center' }); return; }
-            const out = Math.max(Math.abs(c[0]), Math.abs(c[1])) > 2.9;
-            if (out) { const m = Math.hypot(...c); s.arrow(0, 0, (c[0] / m) * 2.8, (c[1] / m) * 2.8, { color: 'red', width: 2 }); s.text('→ ∞', (c[0] / m) * 2.3, (c[1] / m) * 2.3 + 0.35, { size: 12, color: 'red', align: 'center' }); }
+            const out = Math.max(Math.abs(c[0]), Math.abs(c[1])) > 2.6;
+            if (out) { const m = Math.hypot(...c); s.arrow(0, 0, (c[0] / m) * 2.5, (c[1] / m) * 2.5, { color: 'red', width: 2 }); s.text('→ ∞', (c[0] / m) * 2.1, (c[1] / m) * 2.1 + 0.35, { size: 12, color: 'red', align: 'center' }); }
             else s.dot(c[0], c[1], { r: 7, color: col[i] });
           });
           // transition: chart over xy (a,b) -> chart over yz (c,d) = (-b/a, 1/a)
@@ -364,7 +364,7 @@ export default {
           const names = ['(c,d)', '(e,f)', '(a,b)'];
           const parts = [2, 0, 1].map((i) => (st.co[i] ? `$${names[i]}=(${f(st.co[i][0])},${f(st.co[i][1])})$` : `$${names[i]}$ undefined`));
           let s = `Chart coordinates of $W$ — over $xy$: ${parts[0]}; over $yz$: ${parts[1]}; over $xz$: ${parts[2]}.`;
-          if (Number.isFinite(st.err)) s += `\nTransition $(a,b)\\mapsto(-b/a,\\,1/a)$ matches the $yz$-chart coordinates to $${v.sci(st.err, 1)}$; the graph $z=ax+by$ lies in $W$ (residual $${v.sci(st.res, 1)}$).`;
+          if (Number.isFinite(st.err)) s += `\nTransition $(a,b)\\mapsto(-b/a,\\,1/a)$ matches the $yz$-chart coordinates ${st.err < 1e-12 ? 'to round-off ($<10^{-12}$)' : `to $${v.sci(st.err, 1)}$`}; the graph $z=ax+by$ lies in $W$ (residual ${st.res < 1e-12 ? '$<10^{-12}$' : `$${v.sci(st.res, 1)}$`}).`;
           else s += '\nThe plane contains the $z$-axis (or the $x$-axis): one of the two charts is undefined here.';
           return s;
         });
@@ -386,7 +386,7 @@ export default {
         const Q = v.stage({ x: [0, TAU], y: [0, TAU], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 't₁ (chart A of the first circle)', ylabel: 't₂', title: 'the overlap with the chart $A\\times A$', weight: 1,
           xticks: [[0, '0'], [PI, 'π'], [TAU, '2π']], yticks: [[0, '0'], [PI, 'π'], [TAU, '2π']] });
         const T = v.stage3d({ range: 1.75, height: 380, yaw: -0.8, pitch: 0.7, axes: false, weight: 1.15 });
-        const H = Q.handle(1.1, 4.4, { color: 'gold', label: 'p', constrain: (x, y) => [clamp(x, 0.05, TAU - 0.05), clamp(y, 0.05, TAU - 0.05)] });
+        const H = Q.handle(1.1, 2.3, { color: 'gold', label: 'p', constrain: (x, y) => [clamp(x, 0.05, TAU - 0.05), clamp(y, 0.05, TAU - 0.05)] });
         const cutOf = (c) => (c === 'A' ? 0 : PI); // B misses θ = π
         const palette = ['green', 'orange', 'purple', 'pink'];
         const coord = (c, th) => (c === 'A' ? wrap(th) : wrap(th + PI) - PI);
@@ -400,7 +400,7 @@ export default {
             const x0 = cuts1[i], x1 = cuts1[i + 1], y0 = cuts2[j], y1 = cuts2[j + 1], pc = pieceOf((x0 + x1) / 2, (y0 + y1) / 2);
             Q.rect(x0, y0, x1, y1, { fill: palette[pc], fillAlpha: 0.22, color: palette[pc], width: 1 });
             const s1 = c1 === 'B' && x0 >= PI ? '−2π' : '', s2 = c2 === 'B' && y0 >= PI ? '−2π' : '';
-            Q.text(`(t₁${s1 ? ' ' + s1 : ''}, t₂${s2 ? ' ' + s2 : ''})`, (x0 + x1) / 2, (y0 + y1) / 2, { size: 12, color: 'ink', align: 'center', plate: true });
+            Q.text(`(t₁${s1 ? ' ' + s1 : ''}, t₂${s2 ? ' ' + s2 : ''})`, x0 + 0.12, y1 - 0.3, { size: 12, color: 'ink', align: 'left', plate: true });
           }
           if (c1 === 'B') Q.vline(PI, { color: 'red', width: 2, dash: [5, 4] });
           if (c2 === 'B') Q.hline(PI, { color: 'red', width: 2, dash: [5, 4] });
@@ -425,7 +425,7 @@ export default {
         v.readout(() => {
           const [c1, c2] = sel.value.split(''), t1 = H.x, t2 = H.y;
           const s1 = coord(c1, t1), s2 = coord(c2, t2);
-          const f = (x) => minus(v.fix(x, 3));
+          const f = (x) => minus(v.fix(Math.abs(x) < 5e-4 ? 0 : x, 3));
           return `$p=(t_1,t_2)=(${f(t1)},${f(t2)})$ in $A\\times A$ and $(${f(s1)},${f(s2)})$ in $${c1}\\times ${c2}$: the transition map is a translation by $(${f(s1 - t1)},${f(s2 - t2)})$ on this piece, its Jacobian is the identity matrix.\nThe $n$-torus $T^n$ has dimension $n$ and $2^n$ product charts (here $n=2$: 4); every transition map is a coordinatewise product of circle transition maps, hence smooth.`;
         });
       },

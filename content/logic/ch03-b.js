@@ -297,7 +297,7 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
         const pair = v.select('pair', [{ value: 'NZ', label: 'ℕ ⊆ ℤ' }, { value: 'EZ', label: '2ℤ ⊆ ℤ' }, { value: 'QR', label: 'ℚ ⊆ ℝ' }], 'NZ', { onChange: () => { ha.set(PAIRS[pair.value].snap(ha.x), yA); hb.set(PAIRS[pair.value].snap(hb.x), yA); } });
         const fld = foField(v, 'φ(a, b)', EX[0], { width: 280, sig: { name: 'the language of orders', rels: { '<': 2 }, funcs: {}, consts: [] }, check: (a) => (freeVars(a).some((x) => x !== 'a' && x !== 'b') ? 'only a and b may be free' : qrank(a) > 3 ? 'keep the quantifier rank at most 3 here' : null) });
         v.button('next example', () => { exI = (exI + 1) % EX.length; fld.set(EX[exI]); });
-        const S = v.stage({ x: [-6.6, 6.6], y: [-0.75, 2.45], axes: false, height: 250, full: true });
+        const S = v.stage({ x: [-6.6, 6.6], y: [-0.98, 2.45], axes: false, height: 266, full: true });
         const yB = 1.6, yA = 0.05;
         const ha = S.handle(0, yA, { color: 'gold', label: 'a', labelPos: 'n', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
         const hb = S.handle(3, yA, { color: 'gold', label: 'b', labelPos: 'n', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
