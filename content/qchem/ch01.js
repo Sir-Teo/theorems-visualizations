@@ -562,7 +562,7 @@ so each level is $(2J+1)$-fold degenerate. The magnitude of the angular momentum
           } else s3.text('J = 0: spherical, no rotation axis', [0, 0, -1.9], { color: 'muted' });
           s3.end();
           // ladder
-          const top = B * (JM - 1) * JM * 1.06; sE.setView([0, 12], [0, top]); let lastY = 1e9;
+          const top = B * (JM - 1) * JM * 1.06; sE.setView([0, 12], [-0.05 * top, top]); let lastY = 1e9;
           for (let j = 0; j < JM; j++) {
             const e = B * j * (j + 1), hi = j === J;
             sE.line(0.4, e, 4.2, e, { color: hi ? 'ink' : 'muted', width: hi ? 3 : 1.8, alpha: hi ? 1 : 0.65 });

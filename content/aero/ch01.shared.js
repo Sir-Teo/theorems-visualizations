@@ -249,23 +249,36 @@ export function skinFriction(model, Vt, Re, xtr) {
   return { cf, stag: is };
 }
 
-// ── Dimensional analysis: Buckingham pi by the null space of the dimension matrix ───────────────────────────────────────
+/** Mach number whose pitot impact pressure at static pressure p equals qc (bisection). */
+export function machFromQc(qc, p) {
+  let lo = 0, hi = 8;
+  for (let i = 0; i < 70; i++) { const m = (lo + hi) / 2; if (impactPressure(m, p) < qc) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+/** True airspeed (m/s) that reads calibrated airspeed cas (m/s) at geometric altitude z (m). */
+export function tasFromCas(cas, z) {
+  const qc = impactPressure(cas / A0, P0), at = atmo(z);
+  return machFromQc(qc, at.p) * at.a;
+}
+
+// ── Dimensional analysis: Buckingham pi by the method of repeating variables ───────────────────────────────────────────
 /** Exponents of [M, L, T] for each named variable. */
 export const DIMS = {
-  L: { name: 'L', unit: 'force', e: [1, 1, -2] }, D: { name: 'D', unit: 'force', e: [1, 1, -2] },
-  rho: { name: '\\rho', unit: 'density', e: [1, -3, 0] }, V: { name: 'V', unit: 'speed', e: [0, 1, -1] },
-  S: { name: 'S', unit: 'area', e: [0, 2, 0] }, c: { name: 'c', unit: 'length', e: [0, 1, 0] },
-  mu: { name: '\\mu', unit: 'viscosity', e: [1, -1, -1] }, a: { name: 'a', unit: 'speed', e: [0, 1, -1] },
-  Mom: { name: 'M_{\\rm ac}', unit: 'moment', e: [1, 2, -2] },
+  L: { tex: 'L', e: [1, 1, -2] }, D: { tex: 'D', e: [1, 1, -2] },
+  rho: { tex: '\\rho', e: [1, -3, 0] }, V: { tex: 'V', e: [0, 1, -1] },
+  S: { tex: 'S', e: [0, 2, 0] }, c: { tex: 'c', e: [0, 1, 0] },
+  mu: { tex: '\\mu', e: [1, -1, -1] }, a: { tex: 'a', e: [0, 1, -1] },
+  Mom: { tex: 'M_{\\mathrm{ac}}', e: [1, 2, -2] },
 };
-/** Smallest-integer exponent vectors spanning the null space of the dimension matrix (rows M, L, T). */
-export function piGroups(names, M) {
-  const A = [0, 1, 2].map((r) => names.map((n) => DIMS[n].e[r]));
-  const ns = M.nullspace(A);
-  return ns.map((vec) => {
-    const mx = Math.max(...vec.map(Math.abs)); let w = vec.map((x) => x / mx);
-    for (let k = 1; k <= 12; k++) { const t = w.map((x) => x * k); if (t.every((x) => Math.abs(x - Math.round(x)) < 1e-6)) { w = t.map(Math.round); break; } }
-    const lead = w.find((x) => x !== 0); if (names[0] && w[0] < 0 && lead < 0) w = w.map((x) => -x);
-    return w;
-  });
+/** For each variable in `others`, the exponents (x_1..x_3) such that w * prod(rep_k^x_k) is dimensionless (linear solve with the dimension matrix of the repeating variables). */
+export function piGroups(M, rep, others) {
+  const A = [0, 1, 2].map((r) => rep.map((n) => DIMS[n].e[r]));
+  return others.map((w) => { const x = M.solve(A, DIMS[w].e.map((q) => -q)); return { w, rep: rep.map((n, k) => [n, Math.round(x[k] * 2) / 2 + 0]) }; });
+}
+const fracExp = (x) => (Number.isInteger(x) ? String(x) : `${x * 2}/2`);
+/** TeX of a product with positive exponents on top and negative below. */
+export function texProduct(parts) {
+  const f = (list) => list.map(([n, e]) => `${DIMS[n].tex}${Math.abs(e) === 1 ? '' : `^{${fracExp(Math.abs(e))}}`}`).join('\\,') || '1';
+  const top = parts.filter(([, e]) => e > 0), bot = parts.filter(([, e]) => e < 0);
+  return bot.length ? `\\dfrac{${f(top)}}{${f(bot)}}` : f(top);
 }

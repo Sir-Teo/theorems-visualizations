@@ -47,7 +47,7 @@ export default {
           sp.text('load line $i = v/R$', xm * 0.02, ym * 0.95, { size: 12, color: 'ink', align: 'left', plate: true });
           sp.vline(VA, { color: 'accent', width: 3 }); sp.hline(IA * 1e3, { color: 'orange', width: 3 });
           sp.text('ideal voltage source: $v = V_s$', VA, ym * 0.04, { size: 12, color: 'accent', align: VA > xm * 0.6 ? 'right' : 'left', dx: VA > xm * 0.6 ? -6 : 6, baseline: 'bottom' });
-          sp.text('ideal current source: $i = I_s$', xm * 0.99, IA * 1e3, { size: 12, color: 'orange', align: 'right', baseline: 'bottom', dy: -5 });
+          sp.text('ideal current source: $i = I_s$', xm * 0.02, IA * 1e3, { size: 12, color: 'orange', align: 'left', baseline: 'bottom', dy: -5 });
           sp.dot(S.vA, S.iA * 1e3, { r: 7, color: 'accent' }); sp.dot(S.vB, S.iB * 1e3, { r: 9, color: 'orange', hollow: true });
         });
         v.legend([['accent', 'voltage-source operating point'], ['orange', 'current-source operating point'], ['ink', 'load line']]);
@@ -312,7 +312,7 @@ export default {
             // node positions = centroid of the terminals attached
             const pos = new Map(); for (const p of C.parts) { const T = C.net.terminals(p), m = C.net.termNode.get(p.id); if (!['R', 'C', 'L', 'V', 'I', 'SW', 'D'].includes(p.type)) continue; for (const [pin, name] of [['a', m.a], ['b', m.b]]) { const t = T.find((q) => q.pin === pin); const o = pos.get(name) || [0, 0, 0]; o[0] += t.x; o[1] += t.y; o[2]++; pos.set(name, o); } }
             const nodes = info.names.map((id, i) => ({ id, label: id === '0' ? '0' : `${i}`, x: pos.get(id)[0] / pos.get(id)[2], y: pos.get(id)[1] / pos.get(id)[2], color: PAL[i % PAL.length] }));
-            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('force', { seed: 3 });
+            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('force', { seed: 3, restarts: 60, iterations: 500 });
           }
           const L = Math.min(Math.max(1, info.loops.length), 4); li.el.hidden = info.loops.length < 2; const sel2 = clamp(li.value, 1, L) - 1, lp = info.loops[sel2];
           C.draw({ colors: false, dots: false, probes: false });

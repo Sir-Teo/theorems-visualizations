@@ -223,12 +223,13 @@ export function oceanGrid(P, dz, zmax) {
   return { z, T, S };
 }
 /** Squared buoyancy frequency N² (s⁻²) at the mid-points of a gridded profile, from the density σ(S, T) at the surface reference
-    pressure: N² = −(g/ρ) dρ/dz.  Reliable in the upper ~1 km (compressibility is neglected). */
+    pressure: N² = (g/ρ) dρ/d(depth).  Reliable in the upper ~1 km (compressibility and the in-situ vs potential temperature difference are neglected). */
 export function bruntVaisala2(G) {
   const rho = G.T.map((t, i) => rho0(G.S[i], t)), n = new Array(G.z.length).fill(0);
-  for (let i = 1; i < G.z.length - 1; i++) n[i] = -G0 / rho[i] * (rho[i + 1] - rho[i - 1]) / (G.z[i + 1] - G.z[i - 1]);
+  for (let i = 1; i < G.z.length - 1; i++) n[i] = G0 / rho[i] * (rho[i + 1] - rho[i - 1]) / (G.z[i + 1] - G.z[i - 1]); // z is depth, positive downward
   n[0] = n[1]; n[n.length - 1] = n[n.length - 2];
-  return { rho, N2: n };
+  const sm = n.map((_, i) => { let a = 0, c = 0; for (let k = Math.max(0, i - 3); k <= Math.min(n.length - 1, i + 3); k++) { a += n[k]; c++; } return a / c; }); // 35 m running mean: the input is piecewise linear
+  return { rho, N2: sm };
 }
 /** Mix temperature and salinity uniformly (equal weights, Boussinesq) over the top h metres of a gridded profile. */
 export function slabMix(G, h) {
