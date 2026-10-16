@@ -81,7 +81,7 @@ does not change with time, $D\Gamma/Dt=0$, however much the loop is stretched, f
       statement: String.raw`In an inviscid, barotropic fluid with conservative body forces, a flow that is irrotational at one instant ($\boldsymbol\omega=\mathbf 0$ everywhere) is irrotational at all later instants, and a flow started from rest is irrotational for all time. The motion is then determined by a velocity potential. Vorticity cannot be created inside such a fluid: it can only enter from outside, through viscous boundary layers, non-conservative forces or density gradients that are not parallel to the pressure gradient.`,
       idea: String.raw`If $\boldsymbol\omega=\mathbf 0$ then the circulation round every loop is zero (Stokes' theorem, 1.11). By Kelvin's theorem (3.1) the circulation round the same material loop stays zero at every later time, so the flux of vorticity through every small material surface stays zero, and therefore $\boldsymbol\omega=\mathbf 0$ there too. The vorticity equation (3.3) gives the same answer pointwise: all its terms are proportional to $\boldsymbol\omega$ when the fluid is barotropic and inviscid, so $\boldsymbol\omega\equiv\mathbf 0$ solves it.`,
       caption: String.raw`A uniform stream is switched on from rest past a fixed circular cylinder, and paddle wheels (a red spoke marks each wheel) are carried along. Each wheel turns at half the local vorticity, which is evaluated here by differencing the velocity field: the right panel shows the angle of every wheel, and all stay at zero although the fluid bends round the cylinder. The slider adds a baroclinic torque, a uniform source $s=D\omega/Dt$ of the kind a horizontal density gradient provides, and the wheels start to spin as $\tfrac14 st^2$. In that case the extra velocity is a solid-body rotation, which is an exact solution of the vorticity equation with a uniform source and respects the no-penetration condition at a cylinder centred on the origin.`,
-      deps: ['fluid-3.1'],
+      deps: ['fluid-3.1', 'fluid-1.11'],
       refs: ['Kundu §5.2', 'Acheson ch. 1'],
       tags: ['vorticity', 'irrotational', 'Kelvin'],
       scope: String.raw`Inviscid, barotropic, conservative forces. It fails as soon as viscosity acts at a wall, the fluid is stratified so that $\nabla\rho\times\nabla p\neq\mathbf 0$, or the body force has a curl (for example in a rotating frame viewed from outside it, or with a rotational stirring force).`,
@@ -192,7 +192,7 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
       refs: ['Kundu §5.2', 'Acheson ch. 5'],
       credit: 'Hermann von Helmholtz, “Über Integrale der hydrodynamischen Gleichungen, welche den Wirbelbewegungen entsprechen”, J. reine angew. Math. 55, 25–55, 1858',
       tags: ['vortex tube', 'Helmholtz', 'Kelvin'],
-      scope: String.raw`Inviscid, barotropic, conservative forces. In this picture the ring is treated as a passive thin tube in a prescribed volume-preserving flow, which is what the theorems say about the transport of vorticity; the measured strength is accurate to the size of the tracer square (about 1–3%).`,
+      scope: String.raw`Inviscid, barotropic, conservative forces. In this picture the ring is treated as a passive thin tube in a prescribed volume-preserving flow, which is what the theorems say about the transport of vorticity; the measured strength is accurate to the size of the tracer square (a few per cent at worst, usually far better).`,
       viz(v) {
         const EPS = 0.01, CAP = 1800, N0 = 120, R = 1.2, DT = 0.025, fl = (p) => abc(p).map((x) => 0.45 * x);
         const sh = v.select('ring', [{ value: 'flat', label: 'flat' }, { value: 'tilt', label: 'tilted' }], 'flat', { onChange: () => { S.reset(); } });
@@ -343,7 +343,7 @@ $$u_\theta=\begin{cases}\dfrac{\Gamma r}{2\pi a^2},&r\le a\ \text{(solid-body ro
 The pressure follows from the radial balance $\partial p/\partial r=\rho u_\theta^2/r$: with $p\to p_\infty$ far away, $p-p_\infty=-\rho\Gamma^2/(8\pi^2r^2)$ outside and $-\rho\big(\Gamma^2/4\pi^2a^2\big)\big(1-r^2/2a^2\big)$ inside, so the pressure is lowest at the axis, lower by $\rho\Gamma^2/(4\pi^2a^2)$. A free surface above the vortex dips by $\Gamma^2/(4\pi^2a^2g)$ at the centre.`,
       idea: String.raw`Any $u_\theta(r)$ is a steady solution of Euler's equation (2.8) provided the pressure supplies the centripetal force, so the Rankine vortex is the simplest swirl with a finite vorticity core. The inside is a rigidly rotating cylinder of fluid; the outside is the field of a line vortex (the Biot–Savart result of 3.5). The two pieces match in velocity at $r=a$ but not in vorticity, which jumps from $\Gamma/\pi a^2$ to zero. Bernoulli's theorem (2.9), applied on the free surface where $p$ is atmospheric, converts the pressure deficit into the depth of the dimple.`,
       caption: String.raw`Left: top view of a vortex in water. Fluid particles (gold) go round faster the nearer they are to the axis in the outer region, but at a constant angular rate inside the core, shown in slow motion. The paddle wheel (red spoke) follows a circular streamline: it spins with the core and stays pointing in one direction outside, even though the water circles the centre. Middle: the velocity profile; drag the handle to change the core radius. Right: the dimple of a free surface above the vortex (water 0.35 m deep). Make $\Gamma$ large or $a$ small and the dimple reaches the floor: an air core forms and the model, which assumes a single connected surface, no longer applies.`,
-      deps: ['fluid-1.9', 'fluid-2.9'],
+      deps: ['fluid-1.9', 'fluid-2.9', 'fluid-3.5'],
       refs: ['Kundu §3.5', 'Acheson ch. 5'],
       tags: ['vortex', 'Rankine', 'free surface'],
       verify: true,
@@ -403,9 +403,9 @@ The pressure follows from the radial balance $\partial p/\partial r=\rho u_\thet
       statement: String.raw`In two-dimensional incompressible Euler flow whose vorticity is concentrated in $N$ points $(x_j,y_j)$ carrying circulations $\Gamma_j$, each vortex is carried by the velocity the others induce:
 $$\dot x_j-i\dot y_j\ \ \text{(complex form)}\ \ =\ \frac1{2\pi i}\sum_{k\neq j}\frac{\Gamma_k}{z_j-z_k}.$$
 The system is Hamiltonian, with $H=-\frac1{4\pi}\sum_{j\neq k}\Gamma_j\Gamma_k\ln|z_j-z_k|$, and $x_j,\,y_j$ conjugate up to the factor $\Gamma_j$. It conserves $H$, the linear impulse $\sum\Gamma_jz_j$ and the angular impulse $\sum\Gamma_j|z_j|^2$. Two vortices circle their centre of vorticity, or translate together if their circulations are equal and opposite; three vortices are integrable; four or more can move chaotically.`,
-      idea: String.raw`Each vortex is a point source of the line-vortex velocity $\Gamma/2\pi r$ (3.5 in two dimensions), and by Kelvin's theorem (3.1) and Helmholtz's theorems (3.4) the vorticity stays on the same fluid particles, so the vortices are simply advected by the field of the others (not by their own: that is singular and has zero mean effect). Writing out the equations shows that $\Gamma_j\dot x_j=\partial H/\partial y_j$ and $\Gamma_j\dot y_j=-\partial H/\partial x_j$, which is Hamilton's form (12.3 of mechanics). Noether's theorem gives the translations and rotation, and with three vortices there are enough independent invariants in involution to integrate; for four there are not.`,
+      idea: String.raw`Each vortex is a point source of the line-vortex velocity $\Gamma/2\pi r$ (3.5 in two dimensions), and by Kelvin's theorem (3.1) and Helmholtz's theorems (3.4) the vorticity stays on the same fluid particles, so the vortices are simply advected by the field of the others (not by their own: that is singular and has zero mean effect). Writing out the equations shows that $\Gamma_j\dot x_j=\partial H/\partial y_j$ and $\Gamma_j\dot y_j=-\partial H/\partial x_j$, which is Hamilton's form (mechanics 12.3). Noether's theorem gives the translations and rotation, and with three vortices there are enough independent invariants in involution to integrate; for four there are not.`,
       caption: String.raw`Choose a preset or click in the left panel to add a vortex (shift-click: opposite sign); the system restarts from $t=0$ each time. Circulations are in units of $2\pi$ (so a unit vortex has speed $1/r$). Watch the trails: two like vortices circle each other, a dipole travels in a straight line, and two dipoles leapfrog. The four identical vortices of the last preset are not integrable: for this arrangement a displacement of $10^{-7}$ in one vortex grows to order one by $t\approx16$ (checked numerically), so the separations never settle into a regular pattern. The right panel plots the distances between vortices, and the readout lists the three invariants as errors of the numerical integration (4th-order Runge–Kutta, step 0.004); they stay tiny except in very close encounters.`,
-      deps: ['fluid-3.5', 'mech-12.3'],
+      deps: ['fluid-3.5', 'fluid-3.4', 'mech-12.3'],
       refs: ['Kundu §5.6', 'Acheson ch. 5'],
       credit: 'Equations of motion: H. von Helmholtz, 1858; Hamiltonian form: G. Kirchhoff, Vorlesungen über mathematische Physik, 1876; integrability of three vortices: W. Gröbli, 1877',
       tags: ['point vortices', 'Hamiltonian', 'chaos'],
@@ -454,7 +454,7 @@ The system is Hamiltonian, with $H=-\frac1{4\pi}\sum_{j\neq k}\Gamma_j\Gamma_k\l
           for (let k = 0; k < m; k++) h.path(st.sep.map((q) => [q[0], q[k + 1]]), { color: cl[k % cl.length], width: 1.6 });
           const I = inv(st), I0 = st.i0;
           info = { t: st.t, n, dH: Math.abs(I.H - I0.H), dP: Math.hypot(I.px - I0.px, I.py - I0.py), dI: Math.abs(I.I - I0.I), H: I.H / TAU, tmax };
-        }, { period: 14, still: 10 });
+        }, { period: 16, still: 12 });
         v.readout(() => `${info.n} vortices, $t=${v.fix(info.t, 1)}$ · invariants (errors since $t=0$): Hamiltonian $${v.sci(info.dH + 1e-16, 1)}$, linear impulse $\\sum\\Gamma\\mathbf x$: $${v.sci(info.dP + 1e-16, 1)}$, angular impulse $\\sum\\Gamma|\\mathbf x|^2$: $${v.sci(info.dI + 1e-16, 1)}$`);
       },
     },
@@ -470,7 +470,7 @@ for a core of radius $a\ll R$ with uniform vorticity (Kelvin's formula). Two coa
       caption: String.raw`The meridian plane of two rings with their common axis horizontal; the rings appear as two pairs of dots (core circles drawn at the true core radius), and faint curves are the streamlines of the pair in the frame moving with their mean speed. Press play: the rear ring (left) contracts and runs through the front one, again and again, and the plot shows the two radii and the gap ($z_2-z_1$; it changes sign at each pass). The impulse in the readout stays constant. Move the rings farther apart or make the circulations unequal and the passes slow down or stop. If the cores touch the model no longer applies (real rings merge or break up); real rings also suffer viscous decay and instabilities not included here.`,
       deps: ['fluid-3.4', 'fluid-3.5'],
       refs: ['Kundu §5.6', 'Acheson ch. 5'],
-      credit: 'Leapfrogging described by H. von Helmholtz, 1858; self-induced speed of a thin ring: Lord Kelvin (the constant 1/4 is for a uniform-vorticity core)',
+      credit: 'Leapfrogging motion conjectured by H. von Helmholtz, 1858; self-induced speed of a thin ring with a uniform-vorticity core (constant 1/4): Lord Kelvin',
       tags: ['vortex rings', 'leapfrogging', 'impulse'],
       scope: String.raw`Axisymmetric, inviscid, thin cores ($a\ll R$, separations well above $a$), uniform core vorticity at all times. Interactions that break the axial symmetry (the Widnall-type instabilities seen in real rings) and viscous spreading are not modelled.`,
       viz(v) {
@@ -539,7 +539,7 @@ for a core of radius $a\ll R$ with uniform vorticity (Kelvin's formula). Two coa
       refs: ['Kundu §5.7'],
       credit: 'Roll-up computation: R. Krasny, “Desingularization of periodic vortex sheet roll-up”, J. Comput. Phys. 65, 292–313, 1986',
       tags: ['vortex sheet', 'Kelvin–Helmholtz', 'roll-up'],
-      scope: String.raw`Two-dimensional inviscid flow. The unregularised sheet is a model that fails (its curvature becomes infinite) at a finite time for analytic perturbations; the second mode uses a smoothed kernel and is a numerical model, whose spiral depends on the smoothing parameter.`,
+      scope: String.raw`Two-dimensional inviscid flow. The unregularised sheet is a model that fails (its curvature becomes infinite) at a finite time for analytic perturbations; the second mode uses a smoothed kernel and is a numerical model, whose spiral depends on the smoothing parameter. The regularisation follows the idea of Krasny's point-vortex computation, but the number of vortices, time units and smoothing values here are my own choices, not a reproduction of his figures.`,
       viz(v) {
         const md = v.select('mode', [{ value: 'row', label: 'row of vortices' }, { value: 'roll', label: 'roll-up' }], 'roll', { onChange: () => { S.reset(); } });
         const ns = v.slider('vortices per unit length $N$', 3, 40, 8, { step: 1, int: true });
