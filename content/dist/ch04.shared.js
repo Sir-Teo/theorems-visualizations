@@ -243,7 +243,7 @@ export function mxSim(v, getSpec, o = {}) {
     const spec = Z.spec, H = Z.hist, steps = H.length - 1;
     const crit = Z.S.pc.map((c, p) => (spec.prog[c].reg === 'C' ? p : -1)).filter((p) => p >= 0);
     const bad = H.filter((h) => h.bad).length;
-    return `After ${steps} steps: ${spec.show(Z.S)}. In the critical section: ${crit.length ? crit.map((p) => 'P' + p).join(', ') : 'nobody'}. ${bad ? `**Mutual exclusion violated in ${bad} steps.**` : 'No violation so far.'}`;
+    return `After ${steps} steps${spec.show(Z.S) ? ': ' + spec.show(Z.S) : ''}. In the critical section: ${crit.length ? crit.map((p) => 'P' + p).join(', ') : 'nobody'}. ${bad ? `**Mutual exclusion violated in ${bad} steps.**` : 'No violation so far.'}`;
   };
   Z.exText = () => {
     const ex = Z.cache.get(Z.spec.id);

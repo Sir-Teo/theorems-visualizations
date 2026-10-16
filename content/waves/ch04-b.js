@@ -344,7 +344,7 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           const rayPts = (th0deg, y0) => {
             const s0 = Math.sin(rad(th0deg)) / n1;
             if (Math.abs(s0) >= 1) return { pts: [[0, y0]], bound: false };
-            const al = Math.asin(s0), slope = Math.tan(al) * 0.55, bound = Math.abs(al) <= amax + 1e-12;
+            const al = Math.asin(s0), slope = Math.abs(Math.tan(al)) * 0.55, bound = Math.abs(al) <= amax + 1e-12;
             const pts = [[0, y0]]; let x = 0, y = y0, dir = Math.sign(al) || 1; // stretched vertical scale
             let leak = null;
             while (x < 16) {
