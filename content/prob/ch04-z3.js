@@ -78,7 +78,7 @@ For a UI martingale all three are equal: $EX_0=EX_N=EX_\infty$.`,
       statement: String.raw`If $X_n\ge0$ is a supermartingale and $N$ is any stopping time (possibly infinite), then, with $X_N=X_\infty=\lim X_n$ on $\{N=\infty\}$,
 $$EX_N\ \le\ EX_0 .$$`,
       idea: String.raw`A nonnegative supermartingale converges a.s. (4.2.12), so $X_N$ is defined. For each $n$, $EX_{N\wedge n}\le EX_0$ since $N\wedge n$ is a bounded stopping time (4.4.1). Fatou's lemma (1.6.5) gives $EX_N=E\lim_nX_{N\wedge n}\le\liminf_nEX_{N\wedge n}\le EX_0$. The inequality can be strict, and no integrability is needed because positivity supplies the one-sided bound.`,
-      caption: String.raw`Product process $X_n=\prod_{i\le n}\xi_i$ with $\xi=2$ w.p. $q$, else $0$: a nonnegative supermartingale when $q\le\frac12$ (a martingale at $q=\frac12$). Rule: stop at a fixed time $n_0$, at the first $X_n\ge2^m$, or never ($N=\infty$, $X_N=X_\infty=0$). Left: eight paths (log scale; $0$ at the floor). Right: $EX_{N\wedge n}=(2q)^{\min(n,m)}$ (blue, exact; gold dots = simulation of 60 000 runs) against $EX_0=1$; the limit $EX_N$ (green) is always $\le1$, and for $N=\infty$ it is $0<1$ even for the *martingale* $q=\frac12$: Fatou strict.`,
+      caption: String.raw`Product process $X_n=\prod_{i\le n}\xi_i$ with $\xi=2$ w.p. $q$, else $0$: a nonnegative supermartingale when $q\le\frac12$ (a martingale at $q=\frac12$). Rule: stop at a fixed time $n_0$, at the first $X_n\ge2^m$, or never ($N=\infty$, $X_N=X_\infty=0$). Left (log scale; $0$ at the floor): one path for each lifetime $k=0,\dots,7$ (the path with lifetime $k$ has probability $q^k(1-q)$), stopped by the rule (dot). Right: $EX_{N\wedge n}=(2q)^{\min(n,m)}$ (blue, exact; gold dots = simulation of 60 000 runs) against $EX_0=1$; the limit $EX_N$ (green) is always $\le1$, and for $N=\infty$ it is $0<1$ even for the *martingale* $q=\frac12$: Fatou strict.`,
       deps: ['prob-4.2.12', 'prob-4.4.1', 'prob-1.6.5'],
       tags: ['optional stopping'],
       viz(v) {
@@ -91,13 +91,10 @@ $$EX_N\ \le\ EX_0 .$$`,
         let st = null;
         v.render(() => {
           const q = qS.value, m = rule.value === 'inf' ? Infinity : mS.value; mS.el.hidden = rule.value === 'inf';
-          const r = v.rng(seed * 71 + 3);
-          // survival run lengths K ~ Geometric: K = number of leading 2s
-          const runLen = () => { let k = 0; while (r() < q && k < 40) k++; return k; };
-          for (let j = 0; j < 8; j++) {
-            const K = runLen(), pts = []; let stopped = false;
+                    for (let j = 0; j < 8; j++) {
+            const K = j, pts = [];
             for (let n = 0; n <= 14; n++) { const alive = n <= K, val = alive ? 2 ** n : 0.5; pts.push([n, val]); if (isFinite(m) && n === m) { L.dot(n, val, { color: COLS[j], r: 4.5 }); break; } }
-            L.path(pts, { color: COLS[j], width: 1.5 });
+            L.path(pts, { color: COLS[j], width: 1.6 });
           }
           if (rule.value === 'hit') L.hline(2 ** m, { color: 'muted', dash: [4, 4] });
           const ex = [], sim = [], K2 = 60000, accs = new Float64Array(15), r2 = v.rng(seed * 5 + 9);

@@ -120,7 +120,6 @@ $$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 
       deps: ['prob-4.6.1a'],
       tags: ['uniform integrability'],
       credit: 'C. de la Vallée-Poussin, 1915',
-      links: { source: 'https://doi.org/10.2307/1988879' },
       verify: true,
       viz(v) {
         const phiS = v.select('$\\varphi$', [{ value: 'pow', label: '$x^p$' }, { value: 'xlog', label: '$x\\ln(1+x)$' }], 'pow');
@@ -146,9 +145,9 @@ $$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 
       kind: 'Theorem',
       name: 'Vitali: L¹ convergence ⇔ UI and convergence in probability',
       statement: String.raw`Let $X_n,X$ be integrable. Then $X_n\to X$ in $L^1$ if and only if $X_n\to X$ in probability and $\{X_n\}$ is uniformly integrable.`,
-      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the first term tends to $0$ by bounded convergence (in probability version, 2.3.4 / 1.6.7), the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability, and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
+      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the first term tends to $0$ by bounded convergence (1.6.7), the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability (2.2.2 with $p=1$), and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
       caption: String.raw`$X_n=n^a\mathbf 1_{(U<1/n)}$ converges to $0$ in probability for every $a$. Left (log–log): $P(|X_n|>\frac12)=1/n$ (gold), $E|X_n|=n^{a-1}$ (accent) and the UI tail $\sup_{m\ge n}E(X_m;X_m>M)$ (red). For $a<1$ the three tend to $0$: $L^1$ convergence. At $a=1$ the mean sticks at $1$ and the tail sticks at $1$: escaping mass. Right: the function $X_n$ for the chosen $n$, a taller and thinner spike as $n$ grows, with area $n^{a-1}$.`,
-      deps: ['prob-4.6.1a', 'prob-1.6.7'],
+      deps: ['prob-4.6.1a', 'prob-1.6.7', 'prob-2.2.2'],
       tags: ['uniform integrability', 'convergence'],
       credit: 'G. Vitali (convergence theorem; the date is not confirmed here)',
       verify: true,
@@ -180,9 +179,9 @@ $$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 
       kind: 'Theorem',
       name: 'Uniformly integrable submartingales converge in L¹',
       statement: String.raw`If $X_n$ is a submartingale and $\{X_n\}$ is uniformly integrable, then $X_n\to X_\infty$ almost surely and in $L^1$. (Conversely, an $L^1$-convergent submartingale is UI.) A martingale bounded in $L^1$ but not UI may still converge almost surely, without converging in $L^1$.`,
-      idea: String.raw`UI gives $\sup_nE|X_n|<\infty$, so the martingale convergence theorem (4.2.11) yields an a.s. limit $X_\infty$; a.s. convergence implies convergence in probability (2.2.2), and Vitali (4.6.3) upgrades this to $L^1$ using UI. Without UI the upgrade fails: the product martingale below has mean $1$ but limit $0$.`,
+      idea: String.raw`UI gives $\sup_nE|X_n|<\infty$, so the martingale convergence theorem (4.2.11) yields an a.s. limit $X_\infty$; a.s. convergence implies convergence in probability, and Vitali (4.6.3) upgrades this to $L^1$ using UI. Without UI the upgrade fails: the product martingale below has mean $1$ but limit $0$.`,
       caption: String.raw`Left: five paths of the UI submartingale $X_n=(E(Y|\mathcal F_n))^+$ on the dyadic filtration for the chosen $Y$; they settle at $Y^+$ (green ticks). Middle (log scale): paths of the product martingale $X_n=2^n\mathbf 1_{(U<2^{-n})}$ (mean $1$): each path sits at $2^n$ for a while, then drops to $0$ for ever (shown at the floor). Right: $E|X_n-X_\infty|$ for both, computed exactly: it decays for the UI one and stays at $1$ for the product martingale.`,
-      deps: ['prob-4.6.3', 'prob-4.2.11', 'prob-2.2.2'],
+      deps: ['prob-4.6.3', 'prob-4.2.11'],
       tags: ['uniform integrability', 'martingales'],
       viz(v) {
         const fS = v.select('$Y$', dfunOpts(['smooth', 'jump', 'rough', 'blow']), 'smooth');

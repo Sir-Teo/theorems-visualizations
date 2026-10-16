@@ -63,7 +63,7 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
       name: 'Backwards martingales converge a.s. and in L¹',
       statement: String.raw`Let $X_{-n}$ be a backwards martingale. Then $X_{-n}\to X_{-\infty}$ almost surely and in $L^1$ as $n\to\infty$.`,
       idea: String.raw`Apply the upcrossing inequality (4.2.10) to the finite stretch $X_{-N},\dots,X_0$, which is an ordinary martingale: the expected number of upcrossings of $[a,b]$ is at most $E(X_0-a)^+/(b-a)$, a bound that does not depend on $N$. Let $N\to\infty$: the number of upcrossings of the whole backward sequence is a.s. finite for every rational $a<b$, so the limit exists a.s. No $L^1$-boundedness hypothesis is needed because $X_{-n}=E(X_0|\mathcal F_{-n})$ is automatically uniformly integrable (4.6.1), and Vitali (4.6.3) upgrades a.s. convergence to $L^1$.`,
-      caption: String.raw`Running means of i.i.d. data, read in backward-martingale time (from sample size $N$ down to $1$). Drag the band $[a,b]$ (orange handles). Top: one sample; a green dot marks each completed upcrossing of the band in time order (large $n$ first). Bottom: the average number of upcrossings over 150 samples as the horizon $N$ grows (log scale): it levels off at a finite value, below the bound $E(X_{-1}-a)^+/(b-a)$ (red), which does not depend on $N$. Contrast the forward case, where upcrossings of a martingale can pile up without a uniform bound.`,
+      caption: String.raw`Running means of i.i.d. data, read in backward-martingale time (from sample size $N$ down to $1$). Drag the band $[a,b]$ (orange handles). Top: the sample (of 150) with the most upcrossings in the window shown; a green dot marks each completed upcrossing of the band in time order (large $n$ first). Bottom: the average number of upcrossings over 150 samples as the horizon $N$ grows (log scale): it levels off at a finite value, below the bound $E(X_{-1}-a)^+/(b-a)$ (red), which does not depend on $N$. Contrast the forward case, where upcrossings of a martingale can pile up without a uniform bound.`,
       deps: ['prob-4.2.10', 'prob-4.6.1', 'prob-4.6.3', 'prob-4.7.1a'],
       tags: ['martingales', 'convergence'],
       viz(v) {
@@ -86,8 +86,9 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
           const W = Math.min(N, 100); ha.set(-W * 0.96, ha.y); hb.set(-W * 0.96, hb.y);
           L.setView([-W, -1], k === 'coin' ? [-1.1, 1.1] : [-0.8, 0.8]);
           L.hband(a, b, { color: 'orange', alpha: 0.15 });
+          let best = 0, bestC = -1; for (let j = 0; j < NS; j++) { const c = upc(data.arr, j * NMAX, W, a, b); if (c > bestC) { bestC = c; best = j; } }
           const pts = [], ups = []; let state = 0;
-          for (let n = W; n >= 1; n--) { const x = data.arr[n - 1]; pts.push([-n, x]); if (state === 0) { if (x <= a) state = 1; } else if (x >= b) { ups.push([-n, x]); state = 0; } }
+          for (let n = W; n >= 1; n--) { const x = data.arr[best * NMAX + n - 1]; pts.push([-n, x]); if (state === 0) { if (x <= a) state = 1; } else if (x >= b) { ups.push([-n, x]); state = 0; } }
           L.path(pts, { color: 'accent', width: 1.6 }); ups.forEach((p) => L.dot(p[0], p[1], { color: 'green', r: 4.5 }));
           const Ns = [10, 14, 20, 30, 45, 70, 100, 150, 220, 330, 500, 750, 1000], avg = Ns.map((M) => { let s = 0; for (let j = 0; j < NS; j++) s += upc(data.arr, j * NMAX, M, a, b); return [M, s / NS]; });
           const Eplus = k === 'norm' ? PHI(a) - a * (1 - PhiN(v.M, a)) : 0.5 * Math.max(0, 1 - a) + 0.5 * Math.max(0, -1 - a);
@@ -99,7 +100,7 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
           st = { ups: ups.length, bound, last: avg[avg.length - 1][1], a, b };
         });
         v.legend([['accent', 'running mean'], ['green', 'upcrossing'], ['red', 'bound $E(X_{-1}-a)^+/(b-a)$', { dash: true }]]);
-        v.readout(() => st && `Band $[${v.fix(st.a, 2)},${v.fix(st.b, 2)}]$: ${st.ups} upcrossings in the sample shown; average at $N=1000$ is $${v.fix(st.last, 3)}$ versus the bound $${v.fix(st.bound, 3)}$.`);
+        v.readout(() => st && `Band $[${v.fix(st.a, 2)},${v.fix(st.b, 2)}]$: ${st.ups} upcrossings in the displayed sample; average at $N=1000$ is $${v.fix(st.last, 3)}$ versus the bound $${v.fix(st.bound, 3)}$.`);
       },
     },
     {
@@ -190,7 +191,7 @@ $$A_n(\varphi)=\frac1{(n)_k}\sum_{i_1,\dots,i_k\ \text{distinct}\le n}\varphi(X_
 equals $E(\varphi(X_1,\dots,X_k)\mid\mathcal E_n)$, where $\mathcal E_n$ is the $\sigma$-field of events invariant under permutations of the first $n$ coordinates. Hence $A_n(\varphi)\to E(\varphi(X_1,\dots,X_k)\mid\mathcal E)$ a.s. and in $L^1$, and for $\varphi=\varphi_1\otimes\dots\otimes\varphi_k$ the limit factors: $\lim A_n(\varphi)=\prod_j\lim A_n(\varphi_j)$.`,
       idea: String.raw`$\mathcal E_n$ decreases to the exchangeable $\sigma$-field $\mathcal E$ (2.5.3a). Given $\mathcal E_n$, every ordered $k$-tuple of distinct indices $\le n$ is equally likely to carry the data, so the conditional expectation of $\varphi(X_1,\dots,X_k)$ is the average over those tuples. Lévy's downward theorem (4.7.3) gives the convergence. For the factorisation, expand the product of two averages: all but $O(1/n)$ of the index pairs are disjoint, so $A_n(\varphi_1)A_n(\varphi_2)-A_n(\varphi_1\otimes\varphi_2)\to0$ (the $\pi$–$\lambda$ theorem 2.1.6 is used to pass from products to the whole class).`,
       caption: String.raw`Pólya's urn (start with $a$ red, $b$ blue; draw, return with an extra ball of the drawn colour) gives an exchangeable 0–1 sequence $X_i=\mathbf 1(\text{red at draw }i)$. With $\varphi_k=x_1\cdots x_k$ the averages are $U^{(k)}_n=\binom{S_n}{k}/\binom nk$. Left: $U^{(1)},U^{(2)},U^{(3)}$ along one sequence. Right: at time $N$ (slider), the pairs $(U^{(1)}_N,U^{(2)}_N)$ (blue) and $(U^{(1)}_N,U^{(3)}_N)$ (orange) over 300 sequences, against the curves $t\mapsto t^2$, $t^3$: the limit factors. The limit $U^{(1)}$ itself is random (Beta$(a,b)$); with $a,b\to\infty$ proportionally it concentrates and one recovers the i.i.d. case.`,
-      deps: ['prob-4.7.3', 'prob-4.1.15', 'prob-2.1.6', 'prob-2.5.3a'],
+      deps: ['prob-4.7.3', 'prob-2.1.6', 'prob-2.5.3a'],
       see: ['prob-4.3.4a'],
       tags: ['exchangeability'],
       viz(v) {
