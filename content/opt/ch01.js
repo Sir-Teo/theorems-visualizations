@@ -289,7 +289,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           const list = locs.map(([x, y]) => `(${v.fix(x, 2)}, ${v.fix(y, 2)})`).join(', ');
           return String.raw`**${nloc}** local minimizer${nloc === 1 ? '' : 's'} on $[-4,4]$: ${list} · global minimum $f^\star=${v.fix(g[1], 3)}$ at $x=${v.fix(g[0], 2)}$` +
             '\n' + String.raw`probe $x=${v.fix(px, 2)}$, $f(x)=${v.fix(fp, 3)}$, $\delta=${v.fix(del, 2)}$: the lowest value within $\delta$ is ${v.fix(bv, 3)} → the $\delta$-test ${ok ? '**passes**' : '**fails**'}` +
-            (probeLocal ? ' · it sits at a local minimizer.' : ok ? ' · it passes for this $\\delta$ but is not a local minimizer: shrink $\\delta$ to see the test fail on a slope... or it lies on a flat stretch.' : '.');
+            (probeLocal ? ' · it sits at a local minimizer.' : ok ? ' · it passes for this $\\delta$ although it is not a local minimizer: it is the lowest point of its neighbourhood only because the neighbourhood is so small or ends at the domain boundary. Shrink or move it.' : '.');
         });
       },
     },
