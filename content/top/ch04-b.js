@@ -57,8 +57,8 @@ export default {
           rects.forEach((r) => rc(r, { color: 'faint', width: 0.8, alpha: 0.6, fill: 'blue', fillAlpha: 0.04 }));
           f.tubes.forEach((t, k) => {
             const c = CYC[k % CYC.length];
-            s.rect(Math.max(t.wl, -0.05), 0, Math.min(t.wr, 1.05), 1, { fill: c, fillAlpha: 0.13, color: c, width: 1.6, dash: [5, 4] });
-            t.ch.forEach((i) => rc(rects[i], { color: c, width: 1.6, fill: c, fillAlpha: 0.1 }));
+            s.rect(Math.max(t.wl, -0.05), 0, Math.min(t.wr, 1.05), 1, { fill: c, fillAlpha: f.stage === 'done' ? 0.05 : 0.13, color: c, width: 1.6, dash: [5, 4] });
+            t.ch.forEach((i) => rc(rects[i], { color: c, width: 1.6, fill: c, fillAlpha: f.stage === 'done' ? 0.04 : 0.1 }));
           });
           if (f.cur && f.stage === 'slice') {
             s.line(f.cur.x, 0, f.cur.x, 1, { color: 'gold', width: 3 });
@@ -139,13 +139,13 @@ export default {
             const y = top - n + 1, col = CYC[(n - 1) % CYC.length];
             if (f === 'A') s.interval(0, 1 / n, y, { color: col, width: 6, r: 4 });
             else if (f === 'C') s.interval(0, 1 / n, y, { color: col, width: 6, r: 4, open: [true, false] });
-            else { s.interval(n, 20, y, { color: col, width: 6, r: 4 }); s.text('$\\infty$', 18.9, y, { size: 12, color: col }); }
+            else { s.line(n, y, 18.2, y, { color: col, width: 6, cap: 'butt' }); s.dot(n, y, { r: 4, color: col }); s.text('$\\to\\infty$', 18.7, y, { size: 12, color: col }); }
             s.text(`$C_{${n}}$`, B ? -0.4 : -0.03, y, { size: 12, color: col, align: B ? 'center' : 'right' });
           }
           const yb = top - K - 0.9;
           if (f === 'A') s.interval(0, 1 / K, yb, { color: 'green', width: 9, r: 5 });
           else if (f === 'C') s.interval(0, 1 / K, yb, { color: 'green', width: 9, r: 5, open: [true, false] });
-          else s.interval(K, 20, yb, { color: 'green', width: 9, r: 5 });
+          else { s.line(K, yb, 18.2, yb, { color: 'green', width: 9, cap: 'butt' }); s.dot(K, yb, { r: 5, color: 'green' }); s.text('$\\to\\infty$', 18.7, yb, { size: 12, color: 'green' }); }
           s.text('$C_1\\cap\\dots\\cap C_k$', B ? 9 : 0.5, yb - 0.9, { size: 12, color: 'green', align: 'center' });
           info = { f, K };
         });
@@ -191,13 +191,13 @@ export default {
         v.render(() => {
           const f = S.frame; if (f.p === undefined) return;
           if (f.q) {
-            s.setView([-0.35, 3.2], [-0.1, 1.05]);
+            s.setView([-0.35, 3.2], [-0.25, 1.05]);
             s.line(0, 0.05, 2, 0.05, { color: 'ink', width: 4, cap: 'butt' });
             s.dot(0, 0.05, { r: 5, color: 'ink' }); s.dot(2, 0.05, { r: 5, color: 'ink' });
             f.A.forEach((a, k) => s.interval(Math.max(a[0], -0.3), a[1], 0.2 + 0.07 * k, { color: 'blue', width: 3.5, r: 2.5, open: [true, true] }));
             for (let n = 1; n <= 9; n++) s.interval(R2 + 1 / n, 3.15, 0.2 + 0.07 * (n - 1) + 0.0, { color: 'faint', width: 3.5, r: 2.5, open: [true, true], alpha: 0.5 });
             if (f.p > 0) s.interval(0, f.p, 0.9, { color: 'green', width: 9, r: 4, open: [false, true] });
-            s.dot(R2, 0.05, { r: 6, hollow: true, color: 'red' }); s.text('$\\sqrt2$', R2, -0.07, { size: 15, color: 'red' });
+            s.dot(R2, 0.05, { r: 6, hollow: true, color: 'red' }); s.text('$\\sqrt2$', R2, -0.1, { size: 15, color: 'red' });
           } else {
             s.setView([-0.1, 1.1], [-0.1, 1.05]);
             s.line(0, 0.05, 1, 0.05, { color: 'ink', width: 4, cap: 'butt' });

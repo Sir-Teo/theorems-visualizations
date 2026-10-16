@@ -35,7 +35,7 @@ Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=
       refs: ['Trefethen–Bau Lec. 20', 'Golub–Van Loan ch. 3'],
       verify: true,
       viz(v) {
-        const kind = v.select('matrix', [{ value: 'tb', label: 'textbook example' }, { value: 'rand', label: 'random' }], 'tb');
+        const kind = v.select('matrix', [{ value: 'tb', label: 'textbook example' }, { value: 'rand', label: 'random' }], 'tb', { onChange: () => S2.reset() });
         let seed = 1;
         v.button('Resample', () => { seed++; kind.value = 'rand'; S2.reset(); });
         const n = 4;
@@ -49,18 +49,18 @@ Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=
         const mk = () => { Acur = getA(); f = luFactor(Acur, { pivot: false, record: true }); return f.steps.filter((s) => s.kind !== 'pivot').map((s, idx, arr) => ({ ...s, line: s.k < 0 ? [] : [2, 3, 4], note: s.k < 0 ? String.raw`The matrix $A$. Step $k$ will clear column $k$ below the diagonal.` : String.raw`Step $k=${s.k + 1}$: pivot $a_{${s.k + 1}${s.k + 1}}$; multipliers $\ell_{i${s.k + 1}}=a_{i${s.k + 1}}/a_{${s.k + 1}${s.k + 1}}$ are stored, then rows $i>${s.k + 1}$ lose $\ell_{i${s.k + 1}}\times$ row ${s.k + 1}.` })); };
         const S2 = v.steps({ frames: mk, still: 3, code: ['for k = 1 … n−1', '  for i = k+1 … n', '    ℓ_ik ← a_ik / a_kk        ▷ store in place of the zero', '    a_i,k+1:n ← a_i,k+1:n − ℓ_ik · a_k,k+1:n', 'return L (below the diagonal) and U (on and above)'] });
         v.render(() => {
-          const fr = S2.frame, W = fr.W, k = fr.k;
+          const fr = S2.frame, W = fr.W, k = fr.k, kf = k === n - 2 ? n - 1 : k;
           if (!W) return;
           T1.draw({
             value: (i, j) => W[i][j],
-            fill: (i, j) => (j <= k && i > j ? ['gold', 0.4] : i <= k ? ['green', 0.14] : i > k && j > k ? ['blue', 0.12] : null),
+            fill: (i, j) => (j <= k && i > j ? ['gold', 0.4] : i <= kf ? ['green', 0.14] : i > k && j > k ? ['blue', 0.12] : null),
             highlight: k >= 0 && k < n - 1 ? [[k, k, 'red']] : [],
             rowLabels: (i) => `row ${i + 1}`, colLabels: (j) => `${j + 1}`,
           });
           const Lc = W.map((r, i) => r.map((x, j) => (i === j ? 1 : j < i && j <= k ? x : 0)));
           const Uc = W.map((r, i) => r.map((x, j) => (j >= i || i > k + 0 ? (j >= i ? x : 0) : 0)));
           TL.draw({ value: (i, j) => Lc[i][j], fill: (i, j) => (j < i && j <= k ? ['gold', 0.4] : null), textColor: (i, j) => (j > i ? 'faint' : null) });
-          TU.draw({ value: (i, j) => Uc[i][j], fill: (i, j) => (j >= i && i <= k ? ['green', 0.14] : j >= i ? ['blue', 0.1] : null), textColor: (i, j) => (j < i ? 'faint' : null) });
+          TU.draw({ value: (i, j) => Uc[i][j], fill: (i, j) => (j >= i && i <= kf ? ['green', 0.14] : j >= i ? ['blue', 0.1] : null), textColor: (i, j) => (j < i ? 'faint' : null) });
         });
         v.readout(() => {
           const fr = S2.frame; if (!fr.W) return '';
@@ -86,7 +86,7 @@ Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=
       refs: ['Trefethen–Bau Lec. 21', 'Higham, Accuracy and Stability §9.1'],
       viz(v) {
         const M = v.M;
-        const eps = v.slider('$\\varepsilon$', 1e-14, 1, 1e-9, { log: true, sig: 2 });
+        const eps = v.slider('$\\varepsilon$', 1e-14, 1, 1e-9, { log: true, sig: 2, fmt: (x) => x.toExponential(1) });
         const pb = v.slider('significand bits $p$', 8, 53, 24, { int: true });
         const solve = (e, p, pivot) => {
           const A = [[e, 1], [1, 1]], b = [1, 2], f = luFactor(A, { pivot, p });
@@ -104,7 +104,7 @@ Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=
           S1.vline(eps.value, { color: 'accent', width: 1.4, dash: true });
           const e = eps.value, xr = solve(e, p, false), xg = solve(e, p, true), xe = exact(e);
           S2.fn((x) => 1 - e * x, { color: 'blue', width: 2 }); S2.fn((x) => 2 - x, { color: 'orange', width: 2 });
-          S2.tex('\\varepsilon x_1+x_2=1', 1.4, 0.55, { color: 'blue', size: 13 }); S2.tex('x_1+x_2=2', 2.0, 0.45, { color: 'orange', size: 13 });
+          S2.tex('\\varepsilon x_1+x_2=1', -0.9, 1.25, { color: 'blue', size: 13 }); S2.tex('x_1+x_2=2', 2.0, 0.35, { color: 'orange', size: 13 });
           S2.dot(xe[0], xe[1], { color: 'ink', hollow: true, r: 9 });
           if (xr) S2.dot(xr[0], xr[1], { color: 'red', r: 6, label: 'no pivoting', labelPos: 'sw' });
           if (xg) S2.dot(xg[0], xg[1], { color: 'green', r: 4, label: 'pivoting', labelPos: 'ne' });
@@ -130,10 +130,9 @@ with $P$ a permutation matrix, $L$ unit lower triangular and $U$ upper triangula
       refs: ['Trefethen–Bau Lec. 21', 'Golub–Van Loan ch. 3'],
       viz(v) {
         const n = 5;
-        const kind = v.select('matrix', [{ value: 'rand', label: 'random' }, { value: 'small', label: 'small pivot' }], 'rand');
+        const kind = v.select('matrix', [{ value: 'rand', label: 'random' }, { value: 'small', label: 'small pivot' }], 'rand', { onChange: () => S3.reset() });
         let seed = 3;
         v.button('Resample', () => { seed++; S3.reset(); });
-        kind.el && kind.el.addEventListener && 0;
         const getA = () => {
           const A = gaussMat(v.rng(seed * 7), n).map((r) => r.map((x) => Math.round(x * 5) / 2));
           if (kind.value === 'small') A[0][0] = 0.02;
@@ -259,16 +258,17 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
         const cache = {};
         const errAt = (m, p) => {
           const k = `${m}/${p}`; if (k in cache) return cache[k];
-          const W = wilkinsonGrowth(m), r = v.rng(m * 31 + 7), xt = Array.from({ length: m }, () => Math.round(r.uniform(-1, 1) * 256) / 256), b = mv(W, xt), f = luFactor(W, { pivot: true, p }), x = luSolveFl(f, b, p);
+          const W = wilkinsonGrowth(m), r = v.rng(m * 31 + 7), xt = Array.from({ length: m }, () => r.uniform(-1, 1)), b = mv(W, xt), f = luFactor(W, { pivot: true, p }), x = luSolveFl(f, b, p);
           return (cache[k] = relErr(x, xt));
         };
         let st = null;
         v.render(() => {
           const m = n.value, p = pb.value, W = wilkinsonGrowth(m), f = luFactor(W, { pivot: true, p });
+          S1.setView([0, m + 2], [-1, m + 1]);
           const bars = f.U.map((row, i) => Math.log2(Math.max(1e-9, Math.abs(row[m - 1]))));
           S1.bars(bars.map((b) => Math.max(b, 0.001)), { x0: 1, dx: 1, color: 'orange' });
           S1.path([[0, 0], [m + 1, m]], { color: 'muted', width: 1, dash: true });
-          S1.text('= i − 1', m * 0.6, m * 0.6 + 4, { color: 'muted', size: 12 });
+          S1.text('log₂|u_in| = i − 1', m * 0.1, m * 0.8 + 0.5, { color: 'muted', size: 12 });
           const pts = []; for (let k = 3; k <= 60; k++) pts.push([k, Math.max(1e-17, errAt(k, p))]);
           S2.path([[2, 2 ** 1 * 2 ** -p], [60, 2 ** 59 * 2 ** -p]], { color: 'purple', width: 1.6, dash: true });
           S2.hline(1, { color: 'red', width: 1, dash: true });
@@ -285,11 +285,11 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
       num: '4.6',
       kind: 'Phenomenon',
       name: 'Gaussian elimination is stable in practice',
-      statement: String.raw`Although the growth factor of partial pivoting can reach $2^{n-1}$ (4.5), in numerical practice it essentially never does. For random matrices with independent standard normal entries the observed growth factor is small and increases slowly with $n$ — empirically about like $n^{2/3}$ (Trefethen & Schreiber, 1990) — for example a few units for $n=10$ and about $10$–$20$ for $n=100$ to $1000$; matrices with $\rho$ of exponential size have been constructed only artificially (Wilkinson's, and later extremal examples), and in decades of use no genuine large-scale problem is known to have been spoiled by it. Why such matrices are so rare is not fully understood; this is one of the "mysteries of Gaussian elimination".`,
-      idea: String.raw`There is no complete theorem. A heuristic: large growth needs a very particular sign and magnitude pattern in many entries *at once*, so that the multipliers stay near $-1$ and the pivoting never intervenes, and the set of such matrices has tiny measure; perturbing $W_n$ by a small random matrix destroys the growth, as the screenshot of 4.4 shows. Trefethen and Schreiber gave a statistical model of the pivoting process that fits the $n^{2/3}$ law; Higham & Higham (1989) showed that large growth is attainable for every $n$ (they construct real matrices with $\rho\ge n/2$) but only for special matrices. I quote the exponent from memory of the literature, hence the flag.`,
+      statement: String.raw`Although the growth factor of partial pivoting can reach $2^{n-1}$ (4.5), in numerical practice it essentially never does. For random matrices with independent standard normal entries the observed growth factor is small and grows slowly with $n$ — a few units for $n=10$ to $100$, about like a low power of $n$ (Trefethen & Schreiber, 1990, report roughly $n^{2/3}$ for the typical size; the exponent fitted to the experiment below, over a modest range of $n$, is shown in the readout). Matrices with $\rho$ of exponential size are known only as constructions such as Wilkinson's, and no genuine large-scale problem is known to have been spoiled by such growth. Why they are so rare is not fully understood: this is one of the "mysteries of Gaussian elimination".`,
+      idea: String.raw`There is no complete theorem. A heuristic: large growth needs a very particular sign and magnitude pattern in many entries *at once*, so that the multipliers stay near $-1$ and the pivoting never intervenes; the set of such matrices has tiny measure, and a small random perturbation of $W_n$ destroys the growth (try it: add noise to the matrix of 4.5 and rerun). Trefethen and Schreiber gave statistical models of the pivoting process together with extensive experiments. The specific exponent $2/3$ is quoted from a secondary source (and from memory), hence the flag; the picture itself is my own simulation, in double precision.`,
       caption: String.raw`Left: histogram of $\rho$ for many random Gaussian $n\times n$ matrices (choose $n$), computed in double precision with partial pivoting, with the median marked. Right: median (blue) and 95th percentile (orange) of $\rho$ against $n$ on log–log axes, with the reference lines $n^{1/2}$, $n^{2/3}$ and the worst case $2^{n-1}$, which immediately leaves the picture. Resample to see how little the statistics move.`,
       deps: ['nla-4.5'],
-      credit: 'L. N. Trefethen & R. S. Schreiber, 1990; N. J. Higham & D. J. Higham, 1989',
+      credit: 'L. N. Trefethen & R. S. Schreiber, 1990',
       links: { doi: 'https://doi.org/10.1137/0611023' },
       tags: ['growth-factor', 'random-matrices'],
       refs: ['Trefethen–Bau Lec. 22', 'Trefethen & Schreiber, SIMAX 11 (1990) 335–360'],
@@ -298,7 +298,7 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
         const nsel = v.select('matrix size', [8, 16, 32, 64].map((k) => ({ value: k, label: `$n=${k}$` })), 32);
         let seed = 1;
         v.button('Resample', () => { seed++; });
-        const S1 = v.stage({ x: [0, 40], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'growth factor ρ', ylabel: 'frequency', title: 'distribution of ρ', minWidth: 300 });
+        const S1 = v.stage({ x: [0, 40], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'growth factor ρ', ylabel: 'number of matrices', title: 'distribution of ρ', minWidth: 300 });
         const S2 = v.stage({ x: [6, 160], y: [1, 1e3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'n', ylabel: 'ρ', title: 'growth against size', minWidth: 300 });
         const cache = {};
         const sample = (n, sd) => {
@@ -312,8 +312,9 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
         v.render(() => {
           const n = nsel.value, d = sample(n, seed), md = median(d), hi = Math.max(8, Math.ceil(quant(d, 0.995) * 1.15));
           S1.setView([0, hi], [0, 1]);
-          const h = v.M.histogram(d, { bins: 28, range: [0, hi] }), mx = Math.max(...h.density);
-          S1.hist({ edges: h.edges, counts: h.counts.map((c) => c / mx) }, { color: 'accent', fillAlpha: 0.35 });
+          const h = v.M.histogram(d, { bins: 28, range: [0, hi] }), mx = Math.max(...h.counts);
+          S1.setView([0, hi], [0, mx * 1.15]);
+          S1.hist({ edges: h.edges, counts: h.counts }, { color: 'accent', fillAlpha: 0.35 });
           S1.vline(md, { color: 'orange', width: 2 });
           const meds = [], p95 = [];
           for (const m of SIZES) { const dd = sample(m, seed); meds.push([m, median(dd)]); p95.push([m, quant(dd, 0.95)]); }

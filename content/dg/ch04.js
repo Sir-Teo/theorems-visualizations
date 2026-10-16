@@ -167,7 +167,7 @@ export default {
           }
           S3.dot([0, 0, 0], { r: 4, color: 'red', bias: -0.5 });
           S2.contour((a, b) => fn.sec(a, b), [cv], { color: 'accent', width: 3, res: 140 });
-          S2.contour((a, b) => fn.sec(a, b), [0], { color: 'red', width: 1.5, dash: true, res: 140 });
+          S2.contour((a, b) => fn.sec(a, b), [0], { color: 'red', width: 1.5, dash: [5, 4], res: 140 });
           info = { gmin, n: tris.length, cv };
         });
         v.legend([['accent', 'level set $F=c$'], ['green', '$\\nabla F/|\\nabla F|$'], ['red', 'critical level / critical point']]);
@@ -260,7 +260,7 @@ export default {
         const FUN = {
           height: { name: 'height $z$', f: (p) => p[2], lo: -1, hi: 1 },
           dist: { name: '$|p-a|^2$', f: (p) => (p[0] - 1) ** 2 + p[1] ** 2 + p[2] ** 2, lo: 0, hi: 4 },
-          trig: { name: '$\\sin 3x\\cdot y$', f: (p) => Math.sin(3 * p[0]) * p[1], lo: -1, hi: 1 },
+          trig: { name: '$\\sin 2x\\cdot y$', f: (p) => Math.sin(2 * p[0]) * p[1], lo: -1, hi: 1 },
           abs: { name: '$|z|$', f: (p) => Math.abs(p[2]), lo: 0, hi: 1 },
           lon: { name: 'longitude', f: (p) => Math.atan2(p[1], p[0]), lo: -PI, hi: PI },
         };
@@ -272,11 +272,11 @@ export default {
         const q = A.handle(0.5, 0.45, { color: 'gold', label: 'q', constrain: { x: [-PI + 0.02, PI - 0.02], y: [-1.5, 1.5] } });
         const hmap = (u, w) => { const p = X(u, w); return [Math.atan2(p[2], p[0]), Math.asin(clamp(-p[1], -1, 1))]; };
         const kink = (f, G) => (a, b) => {
-          const e = 0.02, c = f(G(a, b));
+          const e = 0.12, c = f(G(a, b));
           const s1 = Math.abs(f(G(a + e, b)) + f(G(a - e, b)) - 2 * c) / e, s2 = Math.abs(f(G(a, b + e)) + f(G(a, b - e)) - 2 * c) / e;
           return Math.max(s1, s2);
         };
-        const THR = 0.5;
+        const THR = 0.8;
         const scan = {};
         function scanFor(k) {
           if (scan[k]) return scan[k];
@@ -300,7 +300,7 @@ export default {
         });
         v.readout(() => {
           if (!info) return '';
-          const pc = (x) => v.fix(100 * x, 1) + '\\%', sm = (r) => (r < 0.002 ? 'smooth everywhere in this chart' : `**not smooth** on about ${pc(r)} of this chart (red)`);
+          const pc = (x) => v.fix(100 * x, 1) + '%', sm = (r) => (r < 0.002 ? 'smooth everywhere in this chart' : `**not smooth** on about ${pc(r)} of this chart (red)`);
           return `$f(q)=${v.fix(info.val, 3)}$. In the chart $\\mathbf x$: ${sm(info.sc.x)}; in the chart $\\mathbf y$: ${sm(info.sc.y)}. ${info.sc.x < 0.002 && info.sc.y < 0.002 ? '$f\\circ\\mathbf x$ and $f\\circ\\mathbf y$ are both smooth, as 4.4 guarantees for a smooth $f$.' : 'A red set in *either* chart means $f$ is not a smooth function on $S$.'}`;
         });
       },

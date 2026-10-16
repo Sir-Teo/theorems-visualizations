@@ -57,7 +57,7 @@ export function fracTex(x) {
 // ------------------------------------------------------------------ BigInt sequences
 export const bigFact = (n) => { let r = 1n; for (let i = 2n; i <= BigInt(n); i++) r *= i; return r; };
 export function catalanBig(N) { const c = [1n]; for (let n = 0; n < N; n++) c.push((c[n] * BigInt(2 * (2 * n + 1))) / BigInt(n + 2)); return c; }
-export function motzkinBig(N) { const m = [1n, 1n]; for (let n = 1; n < N; n++) m.push((BigInt(2 * n + 3) * m[n] + BigInt(3 * n) * m[n - 1]) / BigInt(n + 2)); return m; }
+export function motzkinBig(N) { const m = [1n, 1n]; for (let n = 2; n <= N; n++) m.push((BigInt(2 * n + 1) * m[n - 1] + BigInt(3 * (n - 1)) * m[n - 2]) / BigInt(n + 2)); return m; }
 export function fibBig(N) { const f = [0n, 1n]; for (let i = 2; i <= N; i++) f.push(f[i - 1] + f[i - 2]); return f; }
 /** Number of partitions p(0..N) by Euler's pentagonal recurrence. */
 export function partitionsBig(N) {

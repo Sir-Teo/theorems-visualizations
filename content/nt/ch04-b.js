@@ -254,11 +254,11 @@ until $n=1$; the answer is $s$ (or $0$ if the gcd was $>1$). The number of round
           frs.forEach((fr, k) => { if (k < 1) return; const on = k <= S.i; Bs.rect(k - 1 - 0.35 + 0.5, 0, k - 1 + 0.35 + 0.5, fr.e, { fill: 'blue', fillAlpha: on ? 0.55 : 0.12, color: 'blue', width: 1 }); });
           Bs.hline(f.Sx - 1, { color: 'faint', dash: true });
           const shown = frs.slice(1, S.i + 1), h = Math.min(0.12, 0.8 / 9);
-          L.text('step     M    c     t     R    R² = a·t', 0.03, 0.95, { size: 12, color: 'muted', weight: 700 });
+          ['step', 'M', 'c', 't', 'R', 'R² = a·t'].forEach((h, j) => L.text(h, [0.06, 0.2, 0.35, 0.5, 0.65, 0.8][j], 0.95, { size: 12, color: 'muted', weight: 700 }));
           shown.slice(-8).forEach((fr, k) => { const y = 0.83 - k * h; const idx = frs.indexOf(fr) - 1; const last = fr === f;
             L.text(`${idx}`, 0.06, y, { size: 12.5, color: last ? 'ink' : 'muted', weight: last ? 700 : 500 });
             [fr.M, fr.c, fr.t, fr.R].forEach((val, j) => L.text(String(val), 0.2 + j * 0.15, y, { size: 12.5, color: last ? 'ink' : 'muted', weight: last ? 700 : 500 }));
-            L.text(fr.inv ? '✓' : '✗', 0.9, y, { size: 13, color: fr.inv ? 'green' : 'red', weight: 700 }); });
+            L.text(fr.inv ? '✓' : '✗', 0.82, y, { size: 13, color: fr.inv ? 'green' : 'red', weight: 700 }); });
           info = { p: f.p, a: f.a, R: f.R, fin: f.final, Q: f.Q, Sx: f.Sx, rounds: frs.length - 3 };
         });
         v.readout(() => info.bad ? `$a=${info.a}$ is **not** a square modulo $${info.p}$ (Euler: $a^{(p-1)/2}\\equiv-1$): there is nothing to compute.` : `$p=${info.p}$, $p-1=${info.Q}\\cdot2^{${info.Sx}}$, $a=${info.a}$: ${info.fin ? `root $R=${info.R}$, $R^2\\equiv${(info.R * info.R) % info.p}$ ${(info.R * info.R) % info.p === info.a ? '= a ✓' : '≠ a ✗'}; ` : ''}the loop needs at most $S=${info.Sx}$ rounds (this input uses ${Math.max(0, info.rounds)}).`);

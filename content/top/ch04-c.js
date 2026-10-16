@@ -71,7 +71,7 @@ export default {
       num: '4.14',
       kind: 'Theorem',
       name: 'Compact Hausdorff spaces without isolated points are uncountable',
-      statement: String.raw`Let $X$ be a nonempty compact Hausdorff space with no isolated points. Then $X$ is uncountable. In particular every nonempty compact Hausdorff space with no isolated points, such as the Cantor set or $[0,1]$, has the cardinality of the continuum or at least is uncountable; and every nonempty perfect compact subset of $\R$ is uncountable.`,
+      statement: String.raw`Let $X$ be a nonempty compact Hausdorff space with no isolated points. Then $X$ is uncountable. In particular $[0,1]$, the Cantor set and every nonempty compact subset of $\R$ without isolated points are uncountable.`,
       idea: String.raw`Given any sequence $x_1,x_2,\dots$ in $X$, build nonempty closed neighbourhoods $\overline U_1\supset\overline U_2\supset\cdots$ with $x_n\notin\overline U_n$: since $x_n$ is not isolated, $U_{n-1}$ contains a point other than $x_n$, and by regularity (compact Hausdorff spaces are regular; 5.10) a small closed neighbourhood of that point avoids $x_n$. By the finite intersection property (4.9) $\bigcap\overline U_n\ne\varnothing$, and any point $y$ of this intersection differs from every $x_n$. So no sequence lists $X$: Cantor's diagonal argument, with nested closed sets in place of digits.`,
       caption: String.raw`The space is the Cantor set. A list $x_1,x_2,\dots$ of its points is given (random points, or the endpoints of the removed intervals in order). At step $n$ the current basic interval $I_{n-1}$ splits into two children; the one **not** containing $x_n$ becomes $I_n$. Raise $n$: the intervals nest, the point they pin down (its ternary digits are shown) avoids every $x_k$ so far. “New list” redraws the random list; the construction works for any list.`,
       credit: String.raw`Cantor, 1874 (uncountability of $\R$); the nested-interval proof is Cantor's 1874 argument`,
@@ -117,7 +117,7 @@ export default {
           B.line(right[0], 0.55, right[1], 0.55, { color: pick ? 'green' : 'muted', width: 7, cap: 'butt' });
           B.text('middle third removed', (left[1] + right[0]) / 2, 0.55, { size: 11, color: 'muted', align: 'center', dy: -16 });
           B.text(`$I_{${n - 1}}$`, (zl + zh) / 2, 0.9, { size: 14, color: 'ink' });
-          if (x >= zl - 0.04 * w && x <= zh + 0.04 * w) { B.dot(x, 0.55, { r: 6, color: 'red' }); B.text(`$x_{${n}}$`, x, 0.2, { size: 14, color: 'red' }); } else B.text(`$x_{${n}}$ lies outside $I_{${n - 1}}$ (take either child)`, (zl + zh) / 2, 0.15, { size: 12, color: 'red' });
+          if (x >= zl - 0.04 * w && x <= zh + 0.04 * w) { B.dot(x, 0.55, { r: 6, color: 'red' }); B.text(`$x_{${n}}$`, x, 0.2, { size: 14, color: 'red' }); } else B.text(`$x_{${n}}$ is outside $I_{${n - 1}}$: either child works`, (zl + zh) / 2, 0.15, { size: 11, color: 'red' });
           const y = (lo + hi) / 2;
           info = { n, y, bits, miss: xs.slice(0, n).every((q) => Math.abs(q - y) > 1e-12), w: hi - lo };
         });
@@ -174,7 +174,7 @@ export default {
           const cnt = I.length, last = I[cnt - 1], c = (a + b) / 2;
           info = { cnt, c, last, edge: !e.closed && a <= 1e-12, id: ex.value, k, w: b - a, tail: e.x(last) };
         });
-        v.legend([['muted', 'terms of the sequence', { dot: true }], ['gold', 'terms in the current window', { dot: true }], ['blue', 'windows']]);
+        v.legend([['muted', 'terms of the sequence', { dot: true }], ['gold', 'terms in the current window', { dot: true }], ['accent', 'nested windows (one colour per halving)']]);
         v.readout(() => {
           if (!info) return '';
           const { cnt, c, edge, id, k, w, tail } = info;
@@ -204,7 +204,7 @@ export default {
           O: { name: '$(0,1)$', c: 0, l: 0, q: 0, m: 1, why: 'the sequence $1/(n+1)$ has no limit in $(0,1)$, the set $\\{1/(n+1)\\}$ has no limit point there, and the cover by $(1/n,1)$ has no finite subcover.' },
           R: { name: '$\\R$', c: 0, l: 0, q: 0, m: 1, why: 'the sequence $n$ has no convergent subsequence; $\\mathbb N$ is an infinite set without limit point; $(-n,n)$ is a cover without finite subcover.' },
           N: { name: '$\\mathbb N$ discrete', c: 0, l: 0, q: 0, m: 1, why: 'the points $\\{n\\}$ are open and cover $\\mathbb N$ with no finite subcover; $\\mathbb N$ itself is an infinite set with no limit point.' },
-          W: { name: '$[0,\\omega_1)$', c: 0, l: 1, q: 1, m: 0, why: 'the countable ordinals: every countable set is bounded, so its supremum is a limit; but the open sets $[0,\\alpha)$ cover it with no finite subcover. Not first countable at $\\omega_1$-like limit points of the sets $[0,\\alpha)$ — the space is not metrizable.' },
+          W: { name: '$[0,\\omega_1)$', c: 0, l: 1, q: 1, m: 0, why: 'the countable ordinals: every countable set is bounded, so its supremum is a limit; but the open sets $[0,\\alpha)$ cover it with no finite subcover. The space is not metrizable.' },
           P: { name: '$[0,1]^{[0,1]}$', c: 1, l: 1, q: 0, m: 0, why: 'compact by Tychonoff (6.8); the sequence of binary-digit coordinate functions $f_n(t)=n\\text{th binary digit of }t$ has no pointwise convergent subsequence (6.10).' },
         };
         const sel = v.select('space', Object.entries(EX).map(([k, e]) => ({ value: k, label: e.name })), 'I');
@@ -222,7 +222,7 @@ export default {
           const arrows = [['C', 'LP', true], ['S', 'LP', true], ['LP', 'C', false], ['LP', 'S', false]];
           const bad = [];
           arrows.forEach(([f, t, always], i) => {
-            const [x1, y1] = box[f], [x2, y2] = box[t], off = (f === 'LP' ? 1 : -1) * 0.2, side = (f === 'C' || t === 'C') ? -1 : 1;
+            const [x1, y1] = box[f], [x2, y2] = box[t], off = 0.22, side = 1;
             const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), nx = (-dy / L) * off * side, ny = (dx / L) * off * side;
             const sx = x1 + dx * 0.34 + nx, sy = y1 + dy * 0.34 + ny, ex = x1 + dx * 0.66 + nx, ey = y1 + dy * 0.66 + ny;
             const violated = val[f] && !val[t], holds = !val[f] || val[t];
@@ -254,7 +254,7 @@ export default {
         const nn = v.slider('terms $q_1,\\dots,q_n$', 1, 8, 4, { int: true });
         const kk = v.slider('restricted coordinates $k$', 1, 7, 3, { int: true });
         const L = v.stage({ x: [-3, 3], y: [-1.2, 1.2], axes: false, height: 260, title: 'the line' });
-        const W = v.stage({ x: [0.3, 10.7], y: [-3.4, 3.4], axes: false, height: 300, title: 'coordinates of $\\R^\\omega$' });
+        const W = v.stage({ x: [0.3, 10.7], y: [-4, 3.5], axes: false, height: 320, title: 'coordinates of $\\R^\\omega$' });
         const hp = L.handle(0.5, 0, { color: 'gold', r: 7, label: 'p', labelPos: 'n', constrain: (x) => [Math.round(clamp(x, -2.2, 2.2) * 50) / 50, 0] });
         let info = null;
         v.render(() => {
@@ -282,9 +282,9 @@ export default {
             for (let i = 1; i <= 10; i++) {
               if (i <= k) { W.line(i, -r, i, r, { color: 'blue', width: 10, cap: 'butt', alpha: 0.6 }); W.dot(i, -r, { r: 3, hollow: true, color: 'blue' }); W.dot(i, r, { r: 3, hollow: true, color: 'blue' }); }
               else { W.line(i, -3.1, i, 3.1, { color: 'orange', width: 10, cap: 'butt', alpha: 0.45 }); W.arrow(i, 2.7, i, 3.3, { color: 'orange', width: 2 }); W.arrow(i, -2.7, i, -3.3, { color: 'orange', width: 2 }); }
-              W.text(`$x_{${i}}$`, i, -3.35, { size: 12, color: 'muted', align: 'center' });
+              W.text(`$x_{${i}}$`, i, -3.7, { size: 12, color: 'muted', align: 'center' });
             }
-            W.text('…', 10.55, 0, { size: 18, color: 'orange' });
+            W.text('· · ·', 10.45, 0, { size: 18, color: 'orange' });
             info = { m, k };
           }
         });
@@ -321,9 +321,9 @@ export default {
         let info = null;
         v.render(() => {
           const r = R.value, n = nn.value;
-          P.rings([[[-4.5, -4.5], [4.5, -4.5], [4.5, 4.5], [-4.5, 4.5]], Array.from({ length: 80 }, (_, i) => [r * Math.cos((TAU * i) / 80), r * Math.sin((TAU * i) / 80)])], { evenodd: true, fill: 'green', fillAlpha: 0.14, stroke: false });
+          P.rings([[[-12, -12], [12, -12], [12, 12], [-12, 12]], Array.from({ length: 80 }, (_, i) => [r * Math.cos((TAU * i) / 80), r * Math.sin((TAU * i) / 80)])], { evenodd: true, fill: 'green', fillAlpha: 0.14, stroke: false });
           P.circle(0, 0, r, { fill: 'blue', fillAlpha: 0.12, color: 'blue', width: 2 });
-          P.text('$K$', 0, 0.3 * r, { size: 16, color: 'blue' }); P.text('$\\infty$-neighbourhood', 3, 3.9, { size: 12, color: 'green' });
+          P.text('$K$', 0, 0.3 * r, { size: 16, color: 'blue' }); P.text('green: neighbourhood of $\\infty$', 0, -4.1, { size: 12, color: 'green', align: 'center' });
           S.surface((u, w) => [Math.sin(u) * Math.cos(w), Math.sin(u) * Math.sin(w), Math.cos(u)], [0, Math.PI], [0, TAU], { n: 26, alpha: 0.2, color: 'accent', wire: true });
           const ring = Array.from({ length: 90 }, (_, i) => sph(r * Math.cos((TAU * i) / 90), r * Math.sin((TAU * i) / 90)));
           S.path(ring, { color: 'green', width: 3, close: true });

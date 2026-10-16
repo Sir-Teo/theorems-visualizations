@@ -181,7 +181,7 @@ export default {
             const p = [hp.x, hp.y];
             if (v.M.pointInPoly(p, K)) { info = { inside: true }; return; }
             const R = separate(p, cap.value);
-            for (const k of R.picks) { const q = pts[k]; s.circle(q[0], q[1], Math.hypot(q[0] - p[0], q[1] - p[1]) / 2, { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 1.2 }); s.dot(q[0], q[1], { r: 2.5, color: 'orange' }); }
+            for (const k of R.picks) { const q = pts[k]; s.circle(q[0], q[1], Math.min(cap.value, Math.hypot(q[0] - p[0], q[1] - p[1]) / 2), { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 1.2 }); s.dot(q[0], q[1], { r: 2.5, color: 'orange' }); }
             s.circle(p[0], p[1], R.vr, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 2.4 });
             info = { m: R.picks.length, vr: R.vr, left: R.left };
           } else {

@@ -195,7 +195,7 @@ Epigraph form moves all nonlinearity into the constraints and gives a linear obj
         const bS = v.slider('budget $b$ in $x^2\\le b$', 0, 9, 2.5, { step: 0.01 });
         const L = v.stage({ x: [-3.2, 3.2], y: [-0.6, 6.4], axes: 'box', gutter: true, grid: true, height: 380, title: 'epigraph form of $\\min_x\\max_kf_k$', xlabel: '$x$', ylabel: '$t$' });
         const R = v.stage({ x: [-3.2, 3.2], y: [-2, 6.4], axes: 'box', gutter: true, grid: true, height: 380, title: 'slack form of $x^2\\le b$', xlabel: '$x$' });
-        const XS = linspace(-3.2, 3.2, 1281);
+        const XS = linspace(-3.2, 3.2, 3201);
         let info = {};
         v.render(() => {
           const fs = PR[sel.value].fs, F = (x) => Math.max(...fs.map((f) => f(x)));
@@ -314,32 +314,33 @@ This is a linear program (opt-4.4). Its optimal value $C(p)=\min_x p^{\mathsf T}
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stigler_diet' },
       verify: true,
       viz(v) {
-        // per 100 g: energy (kcal), protein (g), calcium (mg), vitamin C (mg). Rounded illustrative values; prices invented.
+        // per 100 g: energy (kcal), protein (g), calcium (mg). Rounded illustrative values; prices invented.
         const FOODS = [
-          { n: 'bread', a: [266, 8.9, 151, 0], p: 0.3 },
-          { n: 'milk', a: [61, 3.2, 113, 0], p: 0.12 },
-          { n: 'beans', a: [127, 8.7, 35, 1], p: 0.2 },
-          { n: 'orange', a: [47, 0.9, 40, 53], p: 0.35 },
+          { n: 'bread', a: [266, 8.9, 151], p: 0.3 },
+          { n: 'milk', a: [61, 3.2, 113], p: 0.12 },
+          { n: 'beans', a: [127, 8.7, 35], p: 0.2 },
+          { n: 'orange', a: [47, 0.9, 40], p: 0.35 },
           { n: 'oats', a: [389, 16.9, 54, 0], p: 0.25 },
         ];
-        const NUT = [{ n: 'energy', r: 2000, u: 'kcal' }, { n: 'protein', r: 56, u: 'g' }, { n: 'calcium', r: 1000, u: 'mg' }, { n: 'vitamin C', r: 60, u: 'mg' }];
+        const NUT = [{ n: 'energy', r: 2000, u: 'kcal' }, { n: 'protein', r: 56, u: 'g' }, { n: 'calcium', r: 1000, u: 'mg' }];
+        const CAP = 8; // at most 800 g of any one food
         const opts = FOODS.map((f, i) => ({ value: String(i), label: f.n }));
-        const sa = v.select('food 1 (horizontal)', opts, '3'), sb = v.select('food 2 (vertical)', opts, '1');
-        const pa = v.slider('price of food 1 (\\$ per 100 g)', 0.02, 1.0, FOODS[3].p, { step: 0.005 });
-        const pb = v.slider('price of food 2 (\\$ per 100 g)', 0.02, 1.0, FOODS[1].p, { step: 0.005 });
-        let last = ['3', '1'];
+        const sa = v.select('food 1 (horizontal)', opts, '0'), sb = v.select('food 2 (vertical)', opts, '2');
+        const pa = v.slider('price of food 1 (\\$ per 100 g)', 0.02, 1.0, FOODS[0].p, { step: 0.005 });
+        const pb = v.slider('price of food 2 (\\$ per 100 g)', 0.02, 1.0, FOODS[2].p, { step: 0.005 });
+        let last = ['0', '2'];
         const sync = () => { if (sa.value !== last[0]) { pa.set(FOODS[+sa.value].p); last[0] = sa.value; } if (sb.value !== last[1]) { pb.set(FOODS[+sb.value].p); last[1] = sb.value; } };
-        const S = v.stage({ x: [-0.5, 14], y: [-0.5, 14], equal: true, axes: 'box', gutter: true, height: 380, title: 'feasible amounts (100 g)', xlabel: 'food 1', ylabel: 'food 2' });
-        const B = v.stage({ x: [0, 5], y: [0, 2.2], axes: 'box', gutter: true, height: 380, title: 'nutrients of the optimal diet / requirement', xticks: [[1, 'energy'], [2, 'protein'], [3, 'calcium'], [4, 'vit. C']] });
-        const Cv = v.stage({ x: [0, 1], y: [0, 4], axes: 'box', gutter: true, grid: true, height: 380, title: 'optimal cost vs price of food 1', xlabel: 'price of food 1 (\\$)', ylabel: 'daily cost (\\$)' });
-        const build = (ia, ib) => NUT.map((nu, i) => ({ nx: -FOODS[ia].a[i], ny: -FOODS[ib].a[i], c: -nu.r })).concat([{ nx: -1, ny: 0, c: 0 }, { nx: 0, ny: -1, c: 0 }]);
+        const S = v.stage({ x: [-0.3, 9], y: [-0.3, 9], equal: true, axes: 'box', gutter: true, height: 380, title: 'feasible amounts (100 g)', xlabel: 'food 1', ylabel: 'food 2' });
+        const B = v.stage({ x: [0, 4], y: [0, 2.2], axes: 'box', gutter: true, height: 380, title: 'nutrients of the optimal diet / requirement', xticks: [[1, 'energy'], [2, 'protein'], [3, 'calcium']] });
+        const Cv = v.stage({ x: [0, 1], y: [0, 4], axes: 'box', gutter: true, grid: true, height: 380, title: 'optimal cost vs price of food 1', xlabel: 'price of food 1 ($)', ylabel: 'daily cost ($)' });
+        const build = (ia, ib) => NUT.map((nu, i) => ({ nx: -FOODS[ia].a[i], ny: -FOODS[ib].a[i], c: -nu.r })).concat([{ nx: -1, ny: 0, c: 0 }, { nx: 0, ny: -1, c: 0 }, { nx: 1, ny: 0, c: CAP }, { nx: 0, ny: 1, c: CAP }]);
         let info = {};
         v.render(() => {
           sync();
-          const ia = +sa.value, ib = +sb.value, hs = build(ia, ib), R = 40;
+          const ia = +sa.value, ib = +sb.value, hs = build(ia, ib), R = 20;
           const res = lp2([pa.value, pb.value], hs, R);
           // the box [-R,R]^2 is far outside the window; unbounded polyhedra are fine (cost is positive)
-          S.poly(res.poly.map((p) => [clamp(p[0], -1, 40), clamp(p[1], -1, 40)]), { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.8 });
+          S.poly(res.poly, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.8 });
           const cols = ['blue', 'orange', 'purple', 'teal'];
           NUT.forEach((nu, i) => {
             const a = FOODS[ia].a[i], b = FOODS[ib].a[i];
@@ -354,11 +355,12 @@ This is a linear program (opt-4.4). Its optimal value $C(p)=\min_x p^{\mathsf T}
             for (let k = 1; k <= 5; k++) { const al = res.f * k / 3; const q = [pa.value * al / (nn * nn), pb.value * al / (nn * nn)], t = [-pb.value / nn, pa.value / nn]; S.line(q[0] - 60 * t[0], q[1] - 60 * t[1], q[0] + 60 * t[0], q[1] + 60 * t[1], { color: 'gold', width: k === 3 ? 2.2 : 1, alpha: k === 3 ? 0.95 : 0.4, dash: k === 3 ? undefined : true }); }
             S.dot(res.x[0], res.x[1], { r: 7, color: 'green' });
             const tot = NUT.map((nu, i) => (FOODS[ia].a[i] * res.x[0] + FOODS[ib].a[i] * res.x[1]) / nu.r);
+            B.setView([0, 4], [0, Math.max(1.3, 1.1 * Math.max(...tot))]);
             B.bars(tot, { x0: 1, dx: 1, color: (val) => (Math.abs(val - 1) < 1e-6 ? 'green' : 'accent') });
             B.hline(1, { color: 'red', width: 1.6, dash: true });
           }
           // cost curve
-          Cv.setView([0, 1], [0, Math.max(1, 1.2 * (res.status === 'infeasible' ? 1 : res.f * 3))]);
+          const top = lp2([1, pb.value], hs, R); Cv.setView([0, 1], [0, top.status === 'infeasible' ? 1 : 1.1 * top.f]);
           const cs = [], ks = [];
           let prev = null;
           for (let i = 0; i <= 200; i++) {
@@ -376,7 +378,7 @@ This is a linear program (opt-4.4). Its optimal value $C(p)=\min_x p^{\mathsf T}
         });
         v.readout(() => {
           const { res, ia, ib, ks } = info;
-          if (res.status === 'infeasible') return `Foods ${FOODS[ia].n} and ${FOODS[ib].n} alone cannot supply every nutrient (e.g. vitamin C needs an orange). Pick a different pair.`;
+          if (res.status === 'infeasible') return `Foods ${FOODS[ia].n} and ${FOODS[ib].n} alone cannot supply every nutrient (a food missing from the pair may be the only source of a nutrient). Pick a different pair.`;
           const bind = NUT.filter((nu, i) => Math.abs(FOODS[ia].a[i] * res.x[0] + FOODS[ib].a[i] * res.x[1] - nu.r) < 1e-6 * nu.r).map((nu) => nu.n);
           return `Cheapest diet: **${f3(v, res.x[0] * 100, 0)} g** ${FOODS[ia].n} and **${f3(v, res.x[1] * 100, 0)} g** ${FOODS[ib].n}, cost **\\$${f3(v, res.f, 2)}** per day. Binding: ${bind.join(', ') || 'none (a food is at 0)'}. Kinks in the cost curve (vertex changes): ${ks.length}.`;
         });

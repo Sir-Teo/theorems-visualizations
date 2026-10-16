@@ -90,8 +90,8 @@ In particular $a^{(p-1)/2}\equiv\pm1$ always, the symbol is multiplicative, $\le
         v.render(() => {
           const n = comp.value ? (P.value % 2 ? P.value : P.value + 1) : nearOddPrime(P.value, 3, 61);
           const a = mod(A.value, n) || 1, e = (n - 1) / 2, sq = squaresMod(n);
-          const lim = Math.max(2, Math.ceil(n / 2) + 1);
-          B.setView([0, n], [-lim, lim]); B.setTicks(null, n <= 23 ? [[-1, '−1'], [0, '0'], [1, '1']] : [[-1, '−1'], [1, '1']]);
+          const lim = isPrime(n) ? 2.2 : Math.ceil(n / 2) + 1;
+          B.setView([0, n], [-lim, lim]); B.setTicks(null, isPrime(n) || n <= 23 ? [[-1, '−1'], [0, '0'], [1, '1']] : [[-1, '−1'], [1, '1']]);
           let allPm = true, agree = true;
           for (let b = 1; b < n; b++) {
             if (gcd(b, n) !== 1) continue;
