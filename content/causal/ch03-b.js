@@ -237,7 +237,7 @@ export default {
             crude = slope(D.A, D.Y); const beta = ols(Array.from(D.A, (a, i) => [a, D.L[i]]), D.Y); fix = beta[0];
             g = { nodes: [{ id: 'L', x: 3.2, y: 4.5, label: 'L' }, { id: 'A', x: 0.9, y: 1.2, label: 'A' }, { id: 'Y', x: 5.5, y: 1.2, label: 'Y' }], edges: [{ from: 'L', to: 'A', c: 'red' }, { from: 'L', to: 'Y', c: 'red' }, { from: 'A', to: 'Y', c: 'green' }] };
           } else if (type === 'sel') {
-            const xs = [], ys = [], ws = []; for (let i = 0; i < N; i++) { const p = logistic(3 * (D.C[i] - 1)); if (rng(i * 13 + seed)() < p) { xs.push(D.A[i]); ys.push(D.Y[i]); ws.push(1 / p); } }
+            const xs = [], ys = [], ws = [], ru = rng(seed * 977 + 3); for (let i = 0; i < N; i++) { const p = 0.05 + 0.95 * logistic(3 * D.C[i]); if (ru() < p) { xs.push(D.A[i]); ys.push(D.Y[i]); ws.push(1 / p); } }
             crude = slope(xs, ys); fix = slope(xs, ys, ws);
             g = { nodes: [{ id: 'A', x: 0.9, y: 4.2, label: 'A' }, { id: 'Y', x: 5.5, y: 4.2, label: 'Y' }, { id: 'C', x: 3.2, y: 1.0, label: 'C' }], edges: [{ from: 'A', to: 'Y', c: 'green' }, { from: 'A', to: 'C', c: 'red' }, { from: 'Y', to: 'C', c: 'red' }] };
           } else {

@@ -130,11 +130,11 @@ For a prism of apex angle $A$ the deviation of a ray with incidence angle $i$ is
           S.text('prism 1', 0.4, -0.55 - 1.4, { align: 'center', size: 11, color: 'accent' });
           if (T2) S.text('prism 2', T2[1][0] + 1.2, T2[0][1] + 0.5, { align: 'center', size: 11, color: 'accent' });
           // direction plot
-          P.hline(th0 === 0 ? 0 : 0, { color: 'faint', width: 0 });
-          P.setView([380, 720], [Math.min(...dirs.map((d) => deg(d[1]))) - 1, Math.max(...dirs.map((d) => deg(d[1]))) + 1].map((u, i) => (dirs.length ? u : [-1, 1][i])));
+          const dd = dirs.map((d) => deg(d[1])), dlo = Math.min(...dd, 0), dhi = Math.max(...dd, 0), mid = (dlo + dhi) / 2, hw = Math.max(0.6, (dhi - dlo) / 2 + 0.3);
+          P.setView([380, 720], dirs.length ? [mid - hw, mid + hw] : [-1, 1]);
           P.path(dirs.map((d) => [d[0], deg(d[1])]), { color: 'ink', width: 1.3, alpha: 0.6 });
           for (const d of dirs) P.dot(d[0], deg(d[1]), { r: 5, color: specRGB(d[0], 0.5) });
-          P.text(second.value ? 'with prism 2 all colours leave parallel' : 'violet is bent most', 550, deg(dirs.length ? dirs[Math.floor(dirs.length / 2)][1] : 0), { size: 11, color: 'muted', dy: -16 });
+          P.text(second.value ? 'colours leave parallel again' : 'violet is bent most', 550, mid + hw * 0.8, { size: 11, color: 'muted', align: 'center' });
           // numbers
           const r4 = trace(400, 0), r7 = trace(700, 0), rc = trace(550, 0);
           const dev = (r) => (r ? deg(Math.atan2(r.d[1], r.d[0]) - th0) : NaN);
