@@ -79,7 +79,7 @@ The counterweight does not reduce the work needed to lift the water. It **splits
         const A = v.stage({ x: [-5.6, 3.6], y: [-1.4, 7.0], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 320, title: 'shadoof (metres)' });
         const B = v.stage({ x: [0, 80], y: [-30, 30], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'counterweight (kg)', ylabel: 'operator effort (kg-force)', title: 'effort on each stroke' });
         const T = v.stage({ x: [0, 1], y: [-30, 30], axes: 'box', gutter: true, height: 200, weight: 1, minWidth: 280, xlabel: 'phase of the cycle', ylabel: 'kgf (+ pull down, − push up)', title: 'operator’s force over one cycle', xticks: [[0.2, 'down'], [0.45, 'fill'], [0.7, 'up'], [0.95, 'empty']] });
-        const C = yearStage(v, [-2600, 2050], { height: 200, weight: 1.3, minWidth: 360, title: 'dated evidence: the shadoof' });
+        const C = yearStage(v, [-2600, 2150], { height: 200, weight: 1.3, minWidth: 360, title: 'dated evidence: the shadoof' });
         const cwS = v.slider('counterweight (kg)', 0, 80, 22, { step: 1 });
         const bkS = v.slider('bucket (litres)', 5, 30, 15, { step: 1 });
         const hS = v.slider('lift height (m)', 1, 4.5, 2.2, { step: 0.1 });
@@ -343,11 +343,11 @@ The accuracy is that of the Greek period relation, not of the bronze. 254 sidere
             B.line(0, 0, 0.85 * Math.cos(sunA), 0.85 * Math.sin(sunA), { color: 'gold', width: 4 });
             B.circle(0.85 * Math.cos(sunA), 0.85 * Math.sin(sunA), 0.07, { fill: 'gold', fillAlpha: 1 });
             B.line(0, 0, 0.7 * Math.cos(moonA), 0.7 * Math.sin(moonA), { color: 'accent', width: 3 });
-            // moon phase ball: half lit according to elongation
-            const el = moonA - sunA, mx = 0.7 * Math.cos(moonA), my = 0.7 * Math.sin(moonA);
-            B.circle(mx, my, 0.09, { fill: 'ink', fillAlpha: 0.9, stroke: false });
-            B.curve((s) => [mx + 0.09 * Math.cos(s), my + 0.09 * Math.sin(s)], -Math.PI / 2, Math.PI / 2, { color: 'panel', width: 0, fill: 'panel', fillAlpha: 1 });
-            B.curve((s) => [mx + 0.09 * Math.cos(el) * Math.cos(s), my + 0.09 * Math.sin(s)], -Math.PI / 2, Math.PI / 2, { color: 'muted', width: 1 });
+            // the Moon, with its phase as the lit fraction (elongation from the Sun pointer)
+            const el = moonA - sunA, mx = 0.7 * Math.cos(moonA), my = 0.7 * Math.sin(moonA), lit = (1 - Math.cos(el)) / 2;
+            B.circle(mx, my, 0.085, { fill: 'muted', fillAlpha: 0.5, color: 'ink', width: 1 });
+            B.circle(mx, my, 0.085 * Math.sqrt(lit), { fill: 'gold', fillAlpha: 0.95, stroke: false });
+            B.text(`Moon ${Math.round(100 * lit)}% lit`, 0, -0.52, { size: 11, color: 'accent', align: 'center' });
             B.dot(0.62 * Math.cos(trueA), 0.62 * Math.sin(trueA), { r: 3, color: 'green' });
             B.text(`year ${v.fix(years, 2)}`, 0, -0.35, { size: 12, color: 'ink', align: 'center', weight: 700 });
           } else {
@@ -434,7 +434,7 @@ Ritti, Grewe and Kessener point out that, with the crank and rod, all the elemen
           } else stallAt = null;
           const K = kin(th, r, l);
           // ---- geometry: crank centre at (2.2, 0.6); saw moves along y = 0.6 toward +x
-          const cx = 2.2, cy = 0.6;
+          const cx = 2.95, cy = 0.6;
           // water wheel and gearing (schematic)
           const wa = th * (18 / 40); // wheel turns slower; gear pair 40→18 steps up
           A.rect(-4.2, -2.3, -0.4, -1.5, { fill: 'blue', fillAlpha: 0.25, stroke: false });
@@ -508,7 +508,7 @@ Scope: the model below is frictionless, has no air drag and a rigid beam, so its
       tags: ['medieval', 'energy', 'mechanism'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Trebuchet' },
       viz(v) {
-        const A = v.stage({ x: [-11, 11], y: [-0.8, 15], equal: true, axes: false, height: 330, weight: 1, minWidth: 300, title: 'the machine (metres)' });
+        const A = v.stage({ x: [-16, 14], y: [-0.8, 23], equal: true, axes: false, height: 330, weight: 1, minWidth: 300, title: 'the machine (metres)' });
         const F = v.stage({ x: [-20, 400], y: [0, 160], axes: 'box', gutter: true, height: 330, weight: 1.15, minWidth: 320, xlabel: 'distance (m)', ylabel: 'height (m)', title: 'flight (no air drag)' });
         const R = v.stage({ x: [10, 80], y: [0, 400], axes: 'box', gutter: true, height: 230, weight: 1, minWidth: 300, xlabel: 'launch angle (°)', ylabel: 'range (m)', title: 'range (solid) and efficiency (dashed, right scale 0–100%)' });
         const C = yearStage(v, [-450, 1350], { height: 230, weight: 1.1, minWidth: 340, title: 'dated evidence: trebuchets' });
@@ -570,7 +570,16 @@ Scope: the model below is frictionless, has no air drag and a rigid beam, so its
           const tt = (t * 0.6) % (tEnd + 0.6); // slowed for viewing
           const fr = sim.frames.reduce((best, f) => (f.t <= Math.min(tt, sim.frames[sim.frames.length - 1].t) ? f : best), sim.frames[0]);
           // ---- A: machine
-          ground(A, -11, 11, 0);
+          ground(A, -16, 14, 0);
+          if (r) { // ghost of the machine at the moment of release, and the start of the flight
+            const PR = sim.frames.reduce((best, f) => (f.t <= tRel ? f : best), sim.frames[0]).pts;
+            A.line(PR[0][0], PR[0][1], PR[5][0], PR[5][1], { color: 'muted', width: 3, alpha: 0.35 });
+            A.line(PR[5][0], PR[5][1], r.p[0], r.p[1], { color: 'gold', width: 1, alpha: 0.5, dash: [4, 3] });
+            const fl = []; for (let i = 0; i <= 40; i++) { const tau = i * 0.03; fl.push([r.p[0] + r.vx * tau, r.p[1] + r.vy * tau - 0.5 * G * tau * tau]); }
+            A.path(fl, { color: 'gold', width: 1.2, alpha: 0.6, dash: [5, 4] });
+            A.dot(r.p[0], r.p[1], { r: 4, color: 'gold', hollow: true });
+            A.text(`release at ${relS.value}°`, r.p[0] + 0.3, r.p[1] - 1.3, { size: 11, color: 'gold', align: 'left', plate: true });
+          }
           A.poly([[-2.4, 0], [0, HP], [2.4, 0]], { color: 'orange', width: 4, fill: 'orange', fillAlpha: 0.05 });
           const P = tt < tRel ? fr.pts : sim.frames.reduce((best, f) => (f.t <= tRel ? f : best), sim.frames[0]).pts;
           const nb = 6, beamA = P[0], beamB = P[nb - 1], cw = P[nb], pr = P[nb + 1];
@@ -581,7 +590,7 @@ Scope: the model below is frictionless, has no air drag and a rigid beam, so its
           A.rect(cw[0] - cs, cw[1] - cs, cw[0] + cs, cw[1] + cs, { fill: 'muted', fillAlpha: 0.6, color: 'ink', width: 1.4 });
           A.text(`${v.fmt(cwS.value / 1000, 2)} t`, cw[0], cw[1], { size: 10.5, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
           if (tt < tRel) { A.line(beamB[0], beamB[1], pr[0], pr[1], { color: 'gold', width: 1.6 }); A.dot(pr[0], pr[1], { r: 5 + Math.log10(prS.value), color: 'gold' }); }
-          else if (r) { const tau = tt - tRel, x = r.p[0] + r.vx * tau, y = r.p[1] + r.vy * tau - 0.5 * G * tau * tau; if (y > -0.5 && x < 11) A.dot(x, Math.max(0, y), { r: 5 + Math.log10(prS.value), color: 'gold' }); A.text(`released at ${v.fix(r.sp, 1)} m/s`, 0, 14.2, { size: 12, color: 'gold', align: 'center', weight: 700, plate: true }); }
+          else if (r) { const tau = tt - tRel, x = r.p[0] + r.vx * tau, y = r.p[1] + r.vy * tau - 0.5 * G * tau * tau; if (y > -0.5 && x < 13) A.dot(x, Math.max(0, y), { r: 5 + Math.log10(prS.value), color: 'gold' }); A.corner(`released at ${v.fix(r.sp, 1)} m/s`, 'tr', { size: 12, color: 'gold', weight: 700 }); }
           // ---- F: flight
           const maxR = Math.max(60, ...['fixed', 'hinged'].map((k) => Math.max(0, ...Object.values(S[k].rel).filter(Boolean).map((x) => x.range))));
           F.setView([-10, maxR * 1.08], [0, Math.max(30, maxR * 0.45)]);
@@ -601,14 +610,14 @@ Scope: the model below is frictionless, has no air drag and a rigid beam, so its
             R.path(ptsR, { color: col, width: 2.2 }); R.path(ptsE, { color: col, width: 1.4, dash: [5, 4] });
           }
           if (r) { R.vline(relS.value, { color: 'gold', width: 1.2 }); R.dot(relS.value, r.range, { r: 5, color: 'gold' }); }
-          for (const e of [0.25, 0.5, 0.75, 1]) R.text(`${e * 100}%`, 79.5, e * rmax, { size: 10, color: 'muted', align: 'right', baseline: 'middle' });
+          for (const e of [0.25, 0.5, 0.75]) R.text(`${e * 100}%`, 79.5, e * rmax, { size: 10, color: 'muted', align: 'right', baseline: 'middle' });
           drawYears(v, C, [
             { t: -350, label: 'traction trebuchet, Mozi (China)' },
             { t: 1090, label: 'Salamiya', contested: true },
             { t: 1165, label: 'Zevgminon (Choniates)', contested: true },
             { t: 1187, label: 'al-Tarsusi: first description', color: 'green' },
           ], { lanes: 3, laneH: 0.21, ticks: [-250, 1, 250, 500, 750, 1000, 1250] });
-        }, { period: 1e9, still: 2.2 });
+        }, { period: 1e9, still: 2.6 });
         v.legend([['accent', 'hinged counterweight'], ['orange', 'fixed counterweight'], ['gold', 'projectile and chosen launch angle']]);
         v.readout(() => {
           const S = run(), sim = S[typ.value], r = sim.rel[relS.value], o = S[typ.value === 'fixed' ? 'hinged' : 'fixed'].rel[relS.value];

@@ -33,7 +33,7 @@ export function drawYears(v, s, finds, o = {}) {
     s.text(fmtYear(t), t, yAxis - 0.07, { size: 10.5, color: 'muted', baseline: 'top', align: 'center' });
   }
   ctx.save(); ctx.font = '500 11px Inter, system-ui, sans-serif';
-  const lanes = o.lanes ?? 4, laneH = o.laneH ?? 0.74 / lanes, placed = [];
+  const lanes = o.lanes ?? 4, laneH = o.laneH ?? Math.min(0.2, 0.55 / Math.max(1, lanes - 1)), placed = [];
   const x1min = s.X(from) + 2, x1max = s.X(to) - 2;
   const items = finds.map((f) => {
     const lo = Array.isArray(f.t) ? f.t[0] : f.t, hi = Array.isArray(f.t) ? f.t[1] : f.t;

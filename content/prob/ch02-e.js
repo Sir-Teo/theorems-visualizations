@@ -10,6 +10,15 @@ function cornerIn(S, str, pos = 'tl', st = {}) {
   if (/\$[^$]+\$/.test(str)) return S.texPx(String(str), X, Y, { ...o, rich: true });
   return S.textPx(String(str), X, Y, o);
 }
+/**
+ * Set a log-y window that may reach far below 1e-12. Stage.setView compares windows with an absolute tolerance of 1e-12,
+ * so it silently ignores a change of a tiny lower limit; compare relatively here and refit directly when needed.
+ */
+function setLogY(S, v, lo, hi) {
+  const [a, b] = S.view.y;
+  if (Math.abs(Math.log(lo / a)) < 1e-9 && Math.abs(Math.log(hi / b)) < 1e-9) return;
+  S.view.y = [lo, hi]; S._fit(); v.invalidate();
+}
 /** About m log-spaced distinct integers in [n0, n1]. */
 function logGrid(n0, n1, m = 200) {
   const out = [n0]; const q = Math.pow(n1 / n0, 1 / m);
@@ -724,17 +733,17 @@ and if $a>\mu$ then $a\theta-\kappa(\theta)>0$ for all small $\theta>0$. Hence $
         const aS = v.slider('level $a$ (fraction of the range)', 0.05, 1, 0.4, { step: 0.01 });
         const L = v.stage({ x: [0, 3], y: [-0.2, 0.5], height: 320, axes: 'box', gutter: true, xlabel: '$\\theta$', title: '$g(\\theta)=a\\theta-\\kappa(\\theta)$' });
         const R = v.stage({ x: [0, 1], y: [1e-5, 10], ylog: true, height: 320, weight: 1.1, axes: 'box', gutter: true, xlabel: '$x=S_n/n$', title: 'law of $S_{10}/10$, indicator and majorant' });
-        const H = L.handle(0.5, 0, { color: 'gold', label: 'θ', constrain: (x) => [clampN(x, 0.01, 2.95), 0] });
+        const H = L.handle(0.3, 0, { color: 'gold', label: 'θ', labelPos: 's', constrain: (x) => [clampN(x, 0.01, 2.95), 0] });
         let st = null;
         v.render(() => {
           const Lw = LAWS[law.value], a = Lw.a[0] + aS.value * (Lw.a[1] - Lw.a[0]), tmax = Lw.tmax || 3;
           const g = (t) => a * t - Lw.kap(t), [I, ta] = legendre(Lw.kap, a, tmax);
-          const th = Math.min(H.x, tmax); H.x = th; H.y = g(th);
-          const ys = Array.from({ length: 200 }, (_, i) => g((i / 199) * tmax)).filter(isFinite);
-          L.setView([0, tmax], [Math.min(-0.05, Math.min(...ys)) * 1.1, I * 1.4 + 0.02]);
+          const th = Math.min(H.x, tmax, 0.98 * Math.min(tmax, Math.max(3 * ta, 0.5))); H.x = th; H.y = g(th);
+          const tv = Math.min(tmax, Math.max(3 * ta, 0.5)), ys = Array.from({ length: 200 }, (_, i) => g((i / 199) * tv)).filter(isFinite);
+          L.setView([0, tv], [Math.max(Math.min(-0.05, Math.min(...ys)) * 1.1, -2 * I - 0.05), I * 1.4 + 0.02]);
           L.hline(0, { color: 'muted', width: 1 });
-          L.fn(g, { domain: [0, tmax], color: 'accent', width: 2.4 });
-          L.fn((t) => (a - Lw.mu) * t, { domain: [0, tmax * 0.6], color: 'orange', width: 1.4, dash: [5, 4] });
+          L.fn(g, { domain: [0, tv], color: 'accent', width: 2.4 });
+          L.fn((t) => (a - Lw.mu) * t, { domain: [0, tv * 0.6], color: 'orange', width: 1.4, dash: [5, 4] });
           L.dot(ta, I, { r: 5, color: 'green', label: 'I(a)', labelPos: 'n' });
           // right panel
           const xr = law.value === 'bern' ? [0, 1] : law.value === 'norm' ? [-1.2, Math.max(2, a + 0.5)] : [0, Math.max(3, a + 0.5)];
@@ -782,7 +791,7 @@ where $I(a)=\sup_\theta\big(a\theta-\kappa(\theta)\big)$ is the **rate function*
           const Lw = LAWS[law.value], a = Lw.ar[0] + aS.value * (Lw.ar[1] - Lw.ar[0]), I = Lw.I(a);
           const ex = []; for (let n = 1; n <= NMAX; n++) ex.push([n, Math.exp(Lw.lp(n, a))]);
           const floor = Math.max(1e-300, Math.min(...ex.map((q) => q[1]).filter((x) => x > 0), Math.exp(-NMAX * I)) / 5);
-          L.setView(null, [floor, 1.5]);
+          setLogY(L, v, floor, 1.5);
           L.fn((n) => Math.exp(-n * I), { color: 'muted', width: 1.6, dash: [6, 4] });
           L.path(ex.map(([n, p]) => [n, p > 0 ? p : null]), { color: 'accent', width: 2.4 });
           const key = law.value + a;
@@ -845,7 +854,7 @@ The tilted law has mean $\kappa'(\lambda)$, so choosing $\lambda=\theta_a$ moves
             if (m === ms[j]) { naive.push([m, cn / m]); is.push([m, sw / m]); j++; }
           }
           const lo = Math.min(exact / 30, 1e-3);
-          R.setView(null, [lo, 1]);
+          setLogY(R, v, lo, 1);
           R.hline(exact, { color: 'green', width: 2, dash: [7, 4] });
           R.path(naive.map(([m, p]) => [m, p > 0 ? p : null]), { color: 'red', width: 2 });
           R.path(is.map(([m, p]) => [m, p > 0 ? p : null]), { color: 'gold', width: 2.4 });
@@ -924,7 +933,7 @@ so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. E
         const aS = v.slider('level $a$', 1.6, 5, 3, { step: 0.05 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const n = 20, K = 6000;
-        const L = v.stage({ x: [mu, 5], y: [0, 4.3], height: 330, axes: 'box', gutter: true, xlabel: '$a$', title: 'rate function $I(a)$' });
+        const L = v.stage({ x: [mu, 5], y: [0, 5], height: 330, axes: 'box', gutter: true, xlabel: '$a$', title: 'rate function $I(a)$' });
         const R = v.stage({ x: [0, 1], y: [0, 8], height: 330, axes: 'box', gutter: true, xlabel: 'largest summand $/\\,S_n$', title: 'how the rare event happens ($n=20$)' });
         let cache = null, dotsC = null, st = null;
         const curve = []; for (let i = 0; i <= 120; i++) { const a = mu + (i / 120) * (5 - mu); curve.push([a, rate(a)]); }
@@ -934,7 +943,7 @@ so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. E
           L.path(curve, { color: 'green', width: 2.6 });
           L.fn((x) => x - k1, { domain: [a0, 5], color: 'green', width: 1, alpha: 0.4 });
           L.vline(a0, { color: 'muted', dash: [4, 3], width: 1.2 });
-          L.text('a₀ = 2', a0, 4.05, { color: 'muted', size: 12, dx: 5 });
+          L.text('a₀ = 2', a0, 4.75, { color: 'muted', size: 12, dx: 5 });
           if (!dotsC || dotsC.seed !== seed) {
             const AG = [1.6, 2, 2.5, 3, 3.5, 4, 4.5, 5], r = v.rng(seed * 7 + 2), out = {};
             [20, 60].forEach((nn) => { out[nn] = AG.map((aa) => { const th = thOf(aa), b = 1 - th, lk = kap(th), lw = []; for (let i = 0; i < 3000; i++) { let s2 = 0; for (let j = 0; j < nn; j++) { let x; do { x = (1 - r()) ** -0.5; } while (r() >= Math.exp(-b * (x - 1))); s2 += x; } if (s2 >= nn * aa) lw.push(-th * s2 + nn * lk); } if (!lw.length) return [aa, null]; const m = Math.max(...lw); return [aa, -(m + Math.log(lw.reduce((p, q) => p + Math.exp(q - m), 0) / 3000)) / nn]; }); });

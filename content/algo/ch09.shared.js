@@ -280,6 +280,7 @@ export function heapPic(s, heap, key, X0, Y0, Wd, Ht, o = {}) {
   const bw = Math.min(54, Wd / Math.max(2, 2 ** (levels - 1)) - 6);
   heap.forEach((id, i) => {
     const [X, Y] = P[i], hot = o.hot ? o.hot(id) : null;
+    R(s, X - bw / 2, Y - 11, X + bw / 2, Y + 11, { fill: 'panel', fillAlpha: 1, stroke: false, radius: 9 });
     R(s, X - bw / 2, Y - 11, X + bw / 2, Y + 11, { fill: hot || 'orange', fillAlpha: hot ? 0.85 : 0.14, color: hot || 'orange', width: 1.4, radius: 9 });
     s.textPx(`${lab(id)}:${fmt(key(id))}`, X, Y + 0.5, { align: 'center', size: bw < 40 ? 10 : 11.5, weight: 700, color: hot ? 'panel' : 'ink', halo: false });
   });

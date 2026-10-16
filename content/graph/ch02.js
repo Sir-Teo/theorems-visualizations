@@ -188,11 +188,16 @@ export default {
       viz(v) {
         const PRE = { cube: () => named('cube'), pet: () => named('petersen'), bow: () => ({ nodes: [{ id: 0, x: 0, y: 0 }, { id: 1, x: -1.2, y: 0.7 }, { id: 2, x: -1.2, y: -0.7 }, { id: 3, x: 1.2, y: 0.7 }, { id: 4, x: 1.2, y: -0.7 }], edges: [[0, 1], [0, 2], [1, 2], [0, 3], [0, 4], [3, 4]], layout: 'fit' }) };
         const pre = v.select('', [{ value: 'cube', label: 'cube' }, { value: 'pet', label: 'Petersen' }, { value: 'bow', label: 'bow-tie' }], 'cube', { onChange: () => load() });
-        const mode = v.select('build', [{ value: 'm', label: 'a matching' }, { value: 'f', label: 'a 2-factor' }], 'm', { onChange: () => { F.clear(); flash = null; } });
+        const mode = v.select('build', [{ value: 'm', label: 'a matching' }, { value: 'f', label: 'a 2-factor' }], 'm', { onChange: () => preset() });
         const s = v.stage({ x: [-1.3, 1.3], y: [-1.22, 1.22], axes: false, equal: true, height: 330 });
         const G = v.graph(s, { nodes: [], edges: [], r: 14, editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true } });
         const F = new Set(); let flash = null;
-        function load() { const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: '' })), edges: P.edges }).layout('fit'); F.clear(); flash = null; if (pre.value === 'cube') for (const [a, b] of [[0, 1], [2, 3]]) F.add(G.edge(a, b)); }
+        function load() { const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: '' })), edges: P.edges }).layout('fit'); preset(); }
+        function preset() { // a starting selection: a maximal (greedy) matching, or most of a 2-factor
+          F.clear(); flash = null; const H = ix(G);
+          if (mode.value === 'm') { const used = new Set(); for (const e of [...G.edges].reverse()) if (!used.has(K(e.from)) && !used.has(K(e.to))) { F.add(e); used.add(K(e.from)); used.add(K(e.to)); if (F.size >= 2) break; } }
+          else { const ks = twoFactor(H); if (ks) ks.slice(0, Math.max(0, ks.length - 3)).forEach((k) => F.add(H.E[k][2])); else G.edges.forEach((e) => F.add(e)); }
+        }
         load();
         G.onClick = ({ edge, alt }) => {
           if (!edge || alt) return false;
@@ -729,7 +734,7 @@ export default {
           const toS = (e) => S.has(K(e.from)) !== S.has(K(e.to));
           G.draw({ nodeFill: (id) => (S.has(K(id)) ? 'gold' : null), edgeColor: (e) => (I.br.has(e) ? 'red' : showM.value && I.M.has(e) ? 'green' : toS(e) ? 'orange' : null),
             edgeWidth: (e) => (I.br.has(e) ? 4 : showM.value && I.M.has(e) ? 4.5 : toS(e) ? 2.6 : null) });
-          cs.forEach((c, i) => { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = P.reduce((a, n) => a + n.y, 0) / P.length; s.text(String(cut[i]), cx, cy, { align: 'center', size: 15, weight: 800, color: cut[i] >= 3 ? 'orange' : 'red', plate: true }); });
+          cs.forEach((c, i) => { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = P.reduce((a, n) => a + n.y, 0) / P.length; s.text(String(cut[i]), cx, cy, { dy: c.L.length === 1 ? -25 : 0, align: 'center', size: 15, weight: 800, color: cut[i] >= 3 ? 'orange' : 'red', plate: true }); });
         });
         v.legend([['gold', '$S$', { dot: true }], ['orange', 'odd component and its edges to $S$', { area: true }], ['red', 'bridge'], ['green', '1-factor']]);
         v.readout(() => {
@@ -760,7 +765,7 @@ export default {
         let del = null, S = new Set();
         function load() {
           const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: pre.value === 'tut' ? n.id : String(G.nodes.length >= 0 ? (typeof n.id === 'number' ? n.id + 1 : n.id) : '') })), edges: P.edges }).layout(P.layout === 'none' ? 'fit' : P.layout || 'fit');
-          del = G.nodes[0].id; S = new Set(pre.value === 'tut' ? ['s'] : [K(G.nodes[0].id)]);
+          del = G.nodes[0].id; const v0 = G.nodes[0].id; S = new Set(pre.value === 'tut' ? ['s'] : G.edges.filter((e) => K(e.from) === K(v0) || K(e.to) === K(v0)).map((e) => K(K(e.from) === K(v0) ? e.to : e.from)));
           R.setTitle(mode.value === 'fc' ? 'does $G-v$ have a 1-factor?' : '$G_S$: $S$ against the components of $G-S$');
         }
         load();

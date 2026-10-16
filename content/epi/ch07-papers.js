@@ -88,10 +88,9 @@ The argument is a model, not a measurement: its conclusion depends on the assume
           L.text(`true ${Math.round(1000 * pT)}`, xs < 0.3 ? x0 : (x0 + xs) / 2, y1 + 0.05, { size: 11.5, color: 'green', weight: 700, align: xs < 0.3 ? 'left' : 'center' });
           L.text(`false ${Math.round(1000 * (1 - pT))}`, Math.max((xs + x1) / 2, 0.62), y1 + 0.05, { size: 11.5, color: 'muted', weight: 700 });
           const big = (val) => (val >= 10 ? Math.round(val) : v.fix(val, 1));
-          L.text(`false findings ${big(1000 * c.fp)}`, Math.max((xs + x1) / 2, 0.6), y0 + H * hFP + 0.045, { size: 12, weight: 700, color: 'red', plate: true });
-          L.text(`true findings ${big(1000 * c.tp)}`, xs < 0.45 ? x0 + 0.01 : (x0 + xs) / 2, y0 + H * hTP + 0.045, { size: 12, weight: 700, color: 'green', align: xs < 0.45 ? 'left' : 'center', plate: true });
-          L.text('claimed ↓', x1, y0 - 0.025, { size: 10, color: 'muted', align: 'right' });
-          if (enlarged) L.corner('true sliver widened to be visible', 'tl', { size: 10.5, color: 'muted', dy: 2 });
+          L.text(`false findings ${big(1000 * c.fp)}`, x1 - 0.015, Math.min(y0 + H * hFP + 0.045, y1 - 0.04), { size: 12, weight: 700, color: 'red', align: 'right', plate: true });
+          L.text(`true findings ${big(1000 * c.tp)}`, xs < 0.45 ? x0 + 0.01 : (x0 + xs) / 2, Math.min(y0 + H * hTP + 0.045, y1 - 0.12), { size: 12, weight: 700, color: 'green', align: xs < 0.45 ? 'left' : 'center', plate: true });
+          L.text(enlarged ? 'claimed ↓   (green sliver widened to be visible)' : 'claimed ↓', x1, y0 - 0.025, { size: 10, color: 'muted', align: 'right' });
           // ---- PPV curve
           P.hline(0.5, { color: 'faint', width: 1.2, dash: [4, 4] });
           P.fn((r) => ppvOf(cells(pw.value, r, uu, nn, alpha)), { color: 'accent', width: 2.6 });
@@ -110,7 +109,7 @@ The argument is a model, not a measurement: its conclusion depends on the assume
             B.text(`${k}/${tot} = ${Math.round(100 * f)}%`, 0.04 + 0.9 * f, y, { size: 11, align: 'left', weight: 700, color: 'teal', dx: 2 });
           });
           for (let i = 0; i < REPL.length; i++) { const y = 3 - i, xp = 0.02 + 0.9 * ppv; B.poly([[xp, y - 0.17], [xp - 0.025, y - 0.32], [xp + 0.025, y - 0.32]], { fill: 'gold', fillAlpha: 1, color: 'gold' }); }
-          B.text(`▲ your PPV ${Math.round(100 * ppv)}% (a replication rate of about this size is what the model predicts)`, 0.02, -0.38, { size: 10, color: 'gold', weight: 700, align: 'left' });
+          B.text(`▲ your PPV, ${Math.round(100 * ppv)}%`, 0.02, -0.38, { size: 10, color: 'gold', weight: 700, align: 'left' });
           st = { R, c, ppv, nn, uu };
         });
         v.legend([['green', 'true findings', { area: true }], ['red', 'false findings', { area: true }], ['accent', 'PPV(R) for your settings'], ['orange', 'Table 4 examples', { dot: true }]]);

@@ -41,18 +41,24 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
         const you = v.slider('your mass (kg)', 30, 120, 70, { step: 1 });
         const shortArm = v.slider('short arm (m)', 0.1, 10, 1, { log: true });
         const MB = 3; // beam weight, same units
-        const hA = A.handle(-3, 0, { color: 'accent', label: 'A', labelPos: 'n', constrain: (x) => [clamp(Math.round(x), -10, -1), 0] });
-        const hB = A.handle(4, 0, { color: 'orange', label: 'B', labelPos: 'n', constrain: (x) => [clamp(Math.round(x), 1, 10), 0] });
+        let dAv = 3, dBv = 4; // peg distances; the handles ride on the (tilted) beam
+        const beamPt = (x) => { // beam point at peg x for the current state
+          const m = mode.value, th = m === 'proof' ? 0 : tilt(dAv, dBv, mA.value, mB.value, hS.value), t = -th * D2R, hh = m === 'bal' ? hS.value : 0.35;
+          return [x * Math.cos(t) + hh * Math.sin(t), 2.2 + x * Math.sin(t) - hh * Math.cos(t)];
+        };
+        const hA = A.handle(-3, 1.85, { color: 'accent', label: 'A', labelPos: 'n', constrain: (x) => { dAv = clamp(Math.round(-x), 1, 10); return beamPt(-dAv); } });
+        const hB = A.handle(4, 1.85, { color: 'orange', label: 'B', labelPos: 'n', constrain: (x) => { dBv = clamp(Math.round(x), 1, 10); return beamPt(dBv); } });
         const tilt = (dA, dB, wA, wB, h) => { // equilibrium tilt in degrees (positive: right side down), with ±12° stops
           const tau = wB * dB - wA * dA; if (Math.abs(tau) < 1e-9) return 0;
           if (h < 1e-6) return 12 * Math.sign(tau);
           return clamp(Math.atan(tau / (h * (wA + wB + MB))) / D2R, -12, 12);
         };
         v.render(() => {
-          const m = mode.value, dA = -hA.x, dB = hB.x, wA = mA.value, wB = mB.value, h = hS.value;
+          const m = mode.value, dA = dAv, dB = dBv, wA = mA.value, wB = mB.value, h = hS.value;
+          { const a = beamPt(-dA), b = beamPt(dB); if (!hA.dragging) hA.set(a[0], a[1]); if (!hB.dragging) hB.set(b[0], b[1]); }
           hS.el.hidden = m !== 'bal'; you.el.hidden = m !== 'earth'; shortArm.el.hidden = m !== 'earth';
           const th = m === 'proof' ? 0 : tilt(dA, dB, wA, wB, h), t = -th * D2R; // rotation (CCW positive)
-          const piv = [0, 1.6], hh = m === 'bal' ? h : 0.35;
+          const piv = [0, 2.2], hh = m === 'bal' ? h : 0.35;
           const P = (x) => [piv[0] + x * Math.cos(t) + hh * Math.sin(t), piv[1] + x * Math.sin(t) - hh * Math.cos(t)];
           // fulcrum and beam
           A.poly([[0, piv[1]], [-0.9, -3.0], [0.9, -3.0]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.4 });
@@ -65,9 +71,9 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           for (const sx of [-10.4, 10.4]) A.line(sx, -3.0, sx, piv[1] - hh - 10.4 * Math.sin(12 * D2R) - 0.12, { color: 'faint', width: 3 });
           // hanging loads
           const hang = (x, w, col, lab) => {
-            const q = P(x), top = q[1] - 0.15, size = 0.4 + 0.08 * w, bot = top - 0.4 - size;
+            const q = P(x), top = q[1] - 0.15, size = 0.5 + 0.1 * w, bot = top - 0.6 - size;
             A.line(q[0], q[1], q[0], bot + size, { color: 'muted', width: 1.2 });
-            block(A, q[0], bot, 0.6 + 0.07 * w, size, `${w}`, { color: col, fillAlpha: 0.5 });
+            block(A, q[0], bot, 0.7 + 0.08 * w, size, `${w}`, { color: col, fillAlpha: 0.5, size: 13 });
           };
           if (m !== 'proof') { hang(-dA, wA, 'accent', `d = ${dA}`); hang(dB, wB, 'orange', `d = ${dB}`); }
           if (m === 'bal' || m === 'earth') {
@@ -137,7 +143,7 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
         function sup(e) { return String(e).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join(''); }
         v.legend([['accent', 'load A and its moment', { area: true }], ['orange', 'load B and its moment', { area: true }], ['green', 'balance point']]);
         v.readout(() => {
-          const dA = -hA.x, dB = hB.x, wA = mA.value, wB = mB.value;
+          const dA = dAv, dB = dBv, wA = mA.value, wB = mB.value;
           if (mode.value === 'earth') {
             const ratio = 5.972e24 / you.value, Ll = ratio * shortArm.value, ly = Ll / 9.461e15;
             return `Earth's mass $5.97\\times10^{24}$ kg against your ${you.value} kg: arm ratio $${v.sci(ratio, 3)}$. With a ${v.fmt(shortArm.value, 3)} m short arm the long arm is $${v.sci(Ll, 2)}$ m, about **${v.fmt(ly / 1e6, 3)} million light-years** (Andromeda is 2.5 million). To raise the Earth by 1 cm you would push your end $${v.sci(ratio * 0.01, 2)}$ m, about ${v.fmt(ratio * 0.01 / 9.461e15, 3)} light-years. (Illustrative: it imagines the Earth's mass in surface gravity, as Archimedes' boast does.)`;
@@ -293,7 +299,7 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
         const C = yearStage(v, [-2800, 1700], { height: 150, full: true, title: 'dated evidence: ramps, wedges and the law of the inclined plane' });
         const mode = v.select('machine', [{ value: 'ramp', label: 'ramp' }, { value: 'wedge', label: 'wedge' }, { value: 'stevin', label: 'Stevin’s wreath' }], 'ramp');
         const muS = v.slider('friction coefficient $\\mu$', 0, 0.7, 0.3, { step: 0.01 });
-        const H = 3.2, TOP = 10.8;
+        const H = 4.0, TOP = 10.8;
         const foot = A.handle(4.5, 0, { color: 'accent', label: 'foot', labelPos: 's', constrain: (x) => [clamp(x, 0.2, TOP - 0.6), 0] });
         const shoulder = A.handle(6 + 0.9, 4.7, { color: 'orange', label: 'shoulder', labelPos: 'e', constrain: (x) => [clamp(x, 6.12, 7.6), 4.7] });
         const apex = A.handle(5, 4.2, { color: 'purple', label: 'apex', labelPos: 'n', constrain: (x, y) => [clamp(x, 1.8, 10.2), clamp(y, 2.2, 5.4)] });
@@ -472,7 +478,7 @@ Friction is what makes the screw useful as well as strong. The thread is a wedge
           A.arrow(x0 + 1.6 + 0.4 * RS.value, zTop + 0.35, x0 + 1.6 + 0.4 * RS.value, zTop + 0.95, { color: 'accent', width: 2.4 });
           A.text(`${push} N`, x0 + 1.6 + 0.4 * RS.value, zTop + 1.15, { size: 11.5, color: 'accent', align: 'center', weight: 700 });
           // helix (back half faint, front half solid) with the first turn morphing into the unrolled triangle
-          const u = uS.value, tanl = c.p / (2 * Math.PI * c.r), base = Math.min(5.6, 3.4 / tanl), rise = base * tanl, tx = 2.0, tz = 2.2; // the unrolled turn, drawn at a fixed base (true slope)
+          const u = uS.value, tanl = c.p / (2 * Math.PI * c.r), base = Math.min(4.9, 3.4 / tanl), rise = base * tanl, tx = 1.7, tz = 2.2; // the unrolled turn, drawn at a fixed base (true slope)
           const helix = (s) => { // s in turns from the bottom; projected point and depth sign
             const a = 2 * Math.PI * s; return [x0 + rr * Math.sin(a), z0 + pp * s, Math.cos(a)];
           };
@@ -644,7 +650,7 @@ The Roman **treadwheel crane** is the ancient world's great compound machine: me
       tags: ['ancient', 'work', 'compound machine'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Treadwheel_crane' },
       viz(v) {
-        const A = v.stage({ x: [-6.5, 9.5], y: [-0.8, 13.4], equal: true, axes: false, height: 380, weight: 1.35, minWidth: 360, title: 'treadwheel crane' });
+        const A = v.stage({ x: [-6.5, 10.6], y: [-0.8, 13.4], equal: true, axes: false, height: 380, weight: 1.35, minWidth: 360, title: 'treadwheel crane' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.85, minWidth: 260, title: 'work ledger for this lift (kJ)' });
         const C = yearStage(v, [-400, 1700], { height: 150, full: true, title: 'dated evidence: compound machines and the principle of work' });
         const men = v.slider('men in the wheel', 1, 4, 2, { int: true });
@@ -694,18 +700,17 @@ The Roman **treadwheel crane** is the ancient world's great compound machine: me
             void hd;
           }
           // rope: drum → jib head → tackle → stone
-          const stoneTop = 1.0 + h + 1.0, hookY = stoneTop + 0.4, tackY = hookY + 0.5;
+          const sz = 0.8 + 0.25 * Math.log10(mS.value / 200), stoneTop = 0.02 + h + sz, hookY = stoneTop + 0.4, tackY = hookY + 0.5;
           A.line(cxw + c.r, cyw, head[0] - 0.25, head[1], { color: 'ink', width: 1.4 });
           A.circle(head[0], head[1], 0.28, { color: 'ink', width: 1.4, fill: 'panel', fillAlpha: 0.8 });
           const nn = c.n, spread = 0.13;
           for (let k = 0; k < nn; k++) { const x = head[0] + 0.15 + (k - (nn - 1) / 2) * spread; A.line(x, head[1] - 0.25, x, tackY, { color: 'ink', width: 1.1 }); }
           A.rect(head[0] + 0.15 - 0.4, tackY - 0.25, head[0] + 0.15 + 0.4, tackY + 0.1, { fill: 'muted', fillAlpha: 0.5, color: 'ink', width: 1 });
           A.line(head[0] + 0.15, tackY - 0.25, head[0] + 0.15, hookY - 0.4, { color: 'ink', width: 1.4 });
-          const sz = 0.8 + 0.25 * Math.log10(mS.value / 200);
-          block(A, head[0] + 0.15, 1.0 + h, 1.6 * sz, 1.0 * sz, `${v.fmt(mS.value / 1000, 2)} t`, { color: c.ok ? 'gold' : 'red', fillAlpha: 0.55 });
-          A.rect(head[0] + 1.6, 0, head[0] + 4.6, 1.0 + 0.0, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1 });
-          A.measure(8.9, 1.0, 8.9, 1.0 + h, '');
-          A.text(`${v.fix(h, 1)} m`, 8.8, 1.0 + h / 2, { size: 11.5, color: 'green', align: 'right' });
+          block(A, head[0] + 0.15, 0.02 + h, 1.6 * sz, 1.0 * sz, `${v.fmt(mS.value / 1000, 2)} t`, { color: c.ok ? 'gold' : 'red', fillAlpha: 0.55 });
+          A.rect(head[0] + 1.3, 0, head[0] + 4.6, HL, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1 }); A.text('wall being built', head[0] + 2.95, HL / 2, { size: 11, color: 'muted', align: 'center' });
+          A.measure(9.2, 0.02, 9.2, 0.02 + h, '');
+          A.text(`${v.fix(h, 1)} m`, 9.35, 0.02 + h / 2, { size: 11.5, color: 'green', align: 'left' });
           if (!c.ok) A.text(`too heavy: this crew holds at most ${v.fmt(c.maxLoad, 3)} kg`, 1.5, 6.6, { size: 12.5, color: 'red', align: 'center', weight: 700, plate: true });
           // ---- B: ledger (kJ), with the current lift fraction
           const f = c.ok ? liftT : 0, inp = c.inp * f / 1000, out = c.out * f / 1000;

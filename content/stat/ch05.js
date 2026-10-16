@@ -73,7 +73,7 @@ Then $\hat\theta_n\to\theta_0$ in probability: the MLE is **consistent**. Withou
         let info = null;
         v.render(() => {
           const t0 = +hT.x.toFixed(3), i = iS.value, n = CP[i], S = sim(famS.value, t0), EL = (t) => expLL(F, t0, t);
-          const peak = EL(t0), D = clamp(0.8 * Math.max(peak - EL(F.lo), peak - EL(F.hi)), 0.6, 3);
+          const peak = EL(t0), D = clamp(0.8 * Math.max(peak - EL(F.lo), peak - EL(F.hi)), 1, 3);
           const yb = peak - D, yt = peak + 0.35 * D;
           sL.setView([F.lo, F.hi], [yb, yt]);
           ybot = yb + 0.06 * (yt - yb); if (!hT.dragging) hT.set(hT.x, ybot);
@@ -178,7 +178,7 @@ The numerator is a normalized sum of i.i.d. scores with mean 0 and variance $I(\
           const so = mz(S.id(), () => sortNum(Z));
           const m = moments(Z);
           if (Z.length) sL.vline(m.mean, { color: 'gold', width: 2.2 });
-          if (B.max > 2.6 * phi(0) / sd0) sL.text('spike: √n-scaled values pile up at 0', 0, top * 0.93, { color: 'red', size: 12, weight: 700, align: 'left', dx: 8, plate: true });
+          if (B.max > 2.6 * phi(0) / sd0) sL.text('√n-scaled errors pile up at 0', hi * 0.97, top * 0.93, { color: 'red', size: 12, weight: 700, align: 'right', plate: true });
           // Q–Q plot of the standardized values
           sR.fn((z) => z, { domain: [-3.6, 3.6], color: F.regular ? 'green' : 'red', width: 2.2 });
           sR.dots(qqPoints(so, Math.sqrt(I), 1000), { r: 2, color: 'gold', alpha: 0.8 });
@@ -352,7 +352,7 @@ Then $\sqrt n(T_n-\theta)\to N(0,1)$ for every $\theta\ne0$, but $\sqrt n\,T_n\t
       name: 'Observed information and Wald standard errors',
       statement: String.raw`By stat-5.2 the MLE is approximately $N(\theta_0,1/(nI(\theta_0)))$, but $\theta_0$ is unknown. Two consistent estimates of the information are used: the **expected information at the MLE**, $nI(\hat\theta_n)$, and the **observed information** $J_n=-\ell_n''(\hat\theta_n)$, the curvature of the log-likelihood at its peak. Either gives a **Wald standard error** $\widehat{\mathrm{se}}=1/\sqrt{J_n}$ (or $1/\sqrt{nI(\hat\theta_n)}$), the interval $\hat\theta_n\pm1.96\,\widehat{\mathrm{se}}$ with asymptotic coverage 95%, and the Wald statistic $W=(\hat\theta_n-\theta_0)^2J_n$. In canonical exponential families (such as logistic regression) the two coincide. For a null value $\theta_0$ the Wald statistic has two first-order equivalent companions, the **score statistic** $S=\ell_n'(\theta_0)^2/(nI(\theta_0))$ and the **likelihood-ratio statistic** $\Lambda=2\{\ell_n(\hat\theta_n)-\ell_n(\theta_0)\}$; under $H_0$ all three converge to $\chi^2_1$.`,
       idea: String.raw`Near its peak the log-likelihood is a parabola, $\ell_n(\theta)\approx\ell_n(\hat\theta_n)-\tfrac12J_n(\theta-\hat\theta_n)^2$, so the curvature measures how sharply the data discriminate between parameter values; by the law of large numbers and consistency $J_n/n\to I(\theta_0)$ (stat-4.3), and Slutsky (stat-1.14) lets it replace $nI(\theta_0)$. The three statistics read the same parabola in three ways: horizontally (distance from $\hat\theta$ to $\theta_0$, Wald), vertically (drop in height, likelihood ratio) and by the slope at $\theta_0$ (score). On an exact parabola they agree; they differ by how far the true log-likelihood departs from it. Efron and Hinkley (1978) argued that $J_n$ is the better choice because it tracks the precision of the sample actually observed: Cauchy samples that happen to be informative have high $J_n$ and small errors.`,
-      caption: String.raw`Left: one sample's log-likelihood $\ell(\theta)-\ell(\hat\theta)$ (blue), its parabola with the observed curvature $J_n$ (green, dashed) and, for the Cauchy, the parabola with the expected information $n/2$ (orange, dotted). Drag the null value $\theta_0$ (gold): the Wald distance (teal), likelihood-ratio drop (purple) and score tangent (pink) are drawn. Right, **standard errors**: each of 1,500 samples as a point (observed SE, error $\hat\theta-\theta$); the green wedge is $\pm1.96$ SE, points outside it (red) are misses. For logistic regression the points lie on a curve because $J_n=nI(\hat\beta)$. For the Cauchy, the expected SE (orange line) ignores the sample, while the observed SE stretches with it. Right, **three tests**: histograms of $W,S,\Lambda$ at $\theta_0$ against $\chi^2_1$ (black); move $\theta_0$ off the truth to see their power.`,
+      caption: String.raw`Left: one sample's log-likelihood $\ell(\theta)-\ell(\hat\theta)$ (blue), its parabola with the observed curvature $J_n$ (green, dashed) and, for the Cauchy, the parabola with the expected information $n/2$ (orange, dotted). Drag the null value $\theta_0$ (gold): the Wald distance (teal), likelihood-ratio drop (purple) and score tangent (pink) are drawn. Right, **standard errors**: each of 1,500 samples as a point (observed SE, error $\hat\theta-\theta$); the green wedge is $\pm1.96$ SE, points outside it (red) are misses. For logistic regression the points lie on a curve because $J_n=nI(\hat\beta)$. For the Cauchy, the expected SE (orange line) ignores the sample, while the observed SE stretches with it. Right, **three tests**: histograms of $W,S,\Lambda$ at $\theta_0$ against $\chi^2_1$ (black); switching to this view puts $\theta_0$ at the truth, where all three match $\chi^2_1$; drag it away to see their power.`,
       deps: ['stat-5.2'],
       see: ['stat-6.10', 'stat-6.11', 'stat-8.5'],
       refs: ['Wasserman §9.7'],
@@ -364,7 +364,7 @@ Then $\sqrt n(T_n-\theta)\to N(0,1)$ for every $\theta\ne0$, but $\sqrt n\,T_n\t
           cauchy: { lab: 'Cauchy location', p: '\\theta', t: 0 },
         };
         const modS = v.select('model', [{ value: 'logistic', label: 'logistic regression' }, { value: 'cauchy', label: 'Cauchy location' }], 'logistic', { onChange: () => { home(); } });
-        const viewS = v.select('right panel', [{ value: 'se', label: 'standard errors' }, { value: 'tests', label: 'three tests' }], 'se');
+        const viewS = v.select('right panel', [{ value: 'se', label: 'standard errors' }, { value: 'tests', label: 'three tests' }], 'se', { onChange: (k) => { if (k === 'tests') H0.set(MODELS[modS.value].t, -5.4); } });
         const nS = v.slider('sample size $n$', 10, 300, 40, { int: true, log: true, onChange: () => home() });
         const sL = v.stage({ x: [0, 2], y: [-6, 1], axes: 'box', gutter: true, height: 360, weight: 1.1, xlabel: '$\\beta$', ylabel: '$\\ell(\\theta)-\\ell(\\hat\\theta)$', title: 'one sample: log-likelihood, its parabola, and $\\theta_0$' });
         const sR = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 360, weight: 0.9, minWidth: 250, xlabel: 'observed SE $1/\\sqrt{J_n}$', ylabel: '$\\hat\\theta-\\theta$', title: 'error against standard error, 1,500 samples' });
@@ -417,8 +417,9 @@ Then $\sqrt n(T_n-\theta)\to N(0,1)$ for every $\theta\ne0$, but $\sqrt n\,T_n\t
           sL.vline(t0, { color: 'gold', width: 1.2, dash: [3, 4] });
           sL.line(t0, Math.max(l0, -6), t0, 0, { color: 'purple', width: 3.2 });
           sL.line(d0.th, 0.45, t0, 0.45, { color: 'teal', width: 3.2 });
-          sL.text('Wald', 0.5 * (d0.th + t0), 0.45, { color: 'teal', size: 11.5, dy: -10, weight: 700 });
-          sL.text('LR', t0, Math.max(l0, -5.6) / 2, { color: 'purple', size: 11.5, dx: t0 > d0.th ? 8 : -8, align: t0 > d0.th ? 'left' : 'right', weight: 700, plate: true });
+          const roomy = Math.abs(sL.X(t0) - sL.X(d0.th)) > 34;
+          if (roomy) sL.text('Wald', 0.5 * (d0.th + t0), 0.45, { color: 'teal', size: 11.5, dy: -10, weight: 700 });
+          if (roomy) sL.text('LR', t0, Math.max(l0, -5.6) / 2, { color: 'purple', size: 11.5, dx: t0 > d0.th ? 8 : -8, align: t0 > d0.th ? 'left' : 'right', weight: 700, plate: true });
           const ppx = Math.abs(sL.X(1) - sL.X(0)), ppy = Math.abs(sL.Y(1) - sL.Y(0)), dx = 34 / Math.hypot(ppx, s0 * ppy);
           if (l0 > -6) { sL.line(t0 - dx, l0 - s0 * dx, t0 + dx, l0 + s0 * dx, { color: 'pink', width: 3 }); sL.dot(t0, l0, { r: 3.5, color: 'pink' }); }
           sL.text('−1.92: the 95% likelihood cut', xa + 0.02 * (xb - xa), -1.92, { color: 'muted', size: 10.5, dy: 10, align: 'left' });
@@ -491,7 +492,7 @@ and $g(\hat\theta_n)$ is the MLE of $g(\theta)$ (stat-3.6), asymptotically effic
         const nS = v.slider('sample size $n$', 5, 300, 25, { int: true, log: true });
         const sL = v.stage({ x: [-0.6, 4], y: [0, 2.6], axes: 'box', gutter: true, height: 370, weight: 1.15, xlabel: '$\\hat\\mu$', ylabel: '$\\hat\\sigma$', title: 'joint MLEs and the information ellipse' });
         const sR = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 370, weight: 0.85, minWidth: 240, xlabel: 'coefficient of variation $\\hat\\sigma/\\hat\\mu$', ylabel: 'density', title: 'a derived parameter and its delta-method law' });
-        const hT = sL.handle(2, 0.8, { color: 'green', label: '$(\\mu,\\sigma)$', labelPos: 'ne', constrain: (x, y) => [clamp(x, 0.15, 3.6), clamp(y, 0.3, 1.8)] });
+        const hT = sL.handle(2, 0.8, { color: 'green', constrain: (x, y) => [clamp(x, 0.15, 3.6), clamp(y, 0.3, 1.8)] });
         const REPS = 1500, mc = memo();
         const sim = (mu, sg, n) => mc([mu, sg, n].join('|'), () => {
           const r = v.rng(hashStr(`delta5|${mu}|${sg}|${n}`)), out = [];
