@@ -547,3 +547,65 @@ export function wrapSegs(s, parts, w, size) {
   ctx.restore(); return lines;
 }
 export const okMark = (b) => (b ? '✓' : '✗');
+
+/** KaTeX \mathtt rendering of a plain term string. */
+export const tx = (str) => '\\mathtt{' + str.replace(/λ/g, '\\lambda ').replace(/→/g, '\\to ').replace(/⊢/g, '\\vdash ').replace(/ /g, '\\ ') + '}';
+export const txTy = (T) => tx(tyStr(T));
+
+function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+/** Flow of rounded chips [{text, color, fill, data}] inside region [x0, y0, x1, y1]; returns boxes [{x, y, w, h, chip}] (and {more} = number not shown). */
+export function drawChips(v, s, chips, { region = [0, 0, s.W, s.H], size = 13, gap = 7, rowH = size + 14 } = {}) {
+  const ctx = s.ctx, [x0, y0, x1, y1] = region, boxes = []; let x = x0, y = y0, shown = 0;
+  ctx.save(); ctx.font = s._font({ size, weight: 600 });
+  for (const c of chips) {
+    const w = ctx.measureText(c.text).width + 16;
+    if (x + w > x1 && x > x0) { x = x0; y += rowH; }
+    if (y + rowH > y1 + 2) break;
+    boxes.push({ x, y, w, h: rowH - 5, chip: c }); x += w + gap; shown++;
+  }
+  ctx.restore();
+  for (const b of boxes) {
+    const col = b.chip.color || 'muted';
+    ctx.save(); rrect(ctx, b.x, b.y, b.w, b.h, 8); ctx.fillStyle = v.color(b.chip.fill || col, b.chip.fill ? 0.22 : 0.1); ctx.fill();
+    ctx.strokeStyle = v.color(col, 1); ctx.lineWidth = b.chip.hot ? 2.4 : 1.3; ctx.stroke(); ctx.restore();
+    s.textPx(b.chip.text, b.x + b.w / 2, b.y + b.h / 2, { size, weight: 600, align: 'center', color: b.chip.text_color || 'ink', halo: false });
+  }
+  return { boxes, more: chips.length - shown };
+}
+export const hitChip = (info, px, py) => (info ? info.boxes.find((b) => px >= b.x && px <= b.x + b.w && py >= b.y && py <= b.y + b.h) : null);
+
+/** A 2-row tally table. rows/cols: labels; counts[r][c]; tone[r][c]: colour name; zero[r][c]: true when the cell must be 0 (shown boldly). Returns cell boxes. */
+export function drawTally(v, s, { rows, cols, counts, tone, sel = null, region = [0, 0, s.W, s.H], note = null }) {
+  const [x0, y0, x1, y1] = region, lw = Math.min(150, (x1 - x0) * 0.24), cw = (x1 - x0 - lw) / cols.length, hh = 26, rh = (y1 - y0 - hh) / rows.length;
+  const ctx = s.ctx, cells = [];
+  cols.forEach((c, j) => s.textPx(c, x0 + lw + cw * (j + 0.5), y0 + hh / 2, { size: 12.5, weight: 700, color: 'muted', align: 'center', halo: false }));
+  rows.forEach((r, i) => {
+    const tot = counts[i].reduce((a, b) => a + b, 0);
+    s.textPx(r, x0 + lw - 10, y0 + hh + rh * (i + 0.5), { size: 13, weight: 700, align: 'right', halo: false });
+    cols.forEach((c, j) => {
+      const n = counts[i][j], bx = x0 + lw + cw * j + 4, by = y0 + hh + rh * i + 4, bw = cw - 8, bh = rh - 8, col = tone[i][j] || 'accent';
+      ctx.save(); rrect(ctx, bx, by, bw, bh, 9); ctx.fillStyle = v.color('panel', 1); ctx.fill();
+      rrect(ctx, bx, by, bw * (tot ? n / tot : 0), bh, 9); ctx.fillStyle = v.color(col, 0.2); ctx.fill();
+      rrect(ctx, bx, by, bw, bh, 9); ctx.strokeStyle = v.color(col, sel && sel[0] === i && sel[1] === j ? 1 : 0.7); ctx.lineWidth = sel && sel[0] === i && sel[1] === j ? 3 : 1.4; ctx.stroke(); ctx.restore();
+      s.textPx(String(n), bx + bw / 2, by + bh / 2 - 6, { size: 22, weight: 800, align: 'center', color: n === 0 && tone[i][j] === 'red' ? 'green' : col, halo: false });
+      s.textPx(tot ? Math.round(100 * n / tot) + '% of row' : '', bx + bw / 2, by + bh / 2 + 16, { size: 11, color: 'muted', align: 'center', halo: false });
+      cells.push({ i, j, x: bx, y: by, w: bw, h: bh });
+    });
+  });
+  if (note) s.textPx(note, x1 - 4, y1 + 0, { size: 11, color: 'muted', align: 'right', halo: false });
+  return cells;
+}
+export const hitCell = (cells, px, py) => (cells || []).find((c) => px >= c.x && px <= c.x + c.w && py >= c.y && py <= c.y + c.h);
+
+// ====================================================================== census of all NB terms up to a size
+const censusCache = new Map();
+/** Classify every NB term of at most N nodes: rows 0 = well typed, 1 = ill typed; cols 0 = value, 1 = can step, 2 = stuck (normal form, not a value). */
+export function nbCensus(N, mode = 'std') {
+  const key = N + mode; if (censusCache.has(key)) return censusCache.get(key);
+  const counts = [[0, 0, 0], [0, 0, 0]], ex = [[[], [], []], [[], [], []]];
+  for (let n = 1; n <= N; n++) for (const t of NB.termsOfSize(n)) {
+    const i = nbType(t) ? 0 : 1, j = NB.isVal(t) ? 0 : nbStep(t, mode) ? 1 : 2;
+    counts[i][j]++; if (ex[i][j].length < 14) ex[i][j].push(t);
+  }
+  const r = { counts, ex }; censusCache.set(key, r); return r;
+}

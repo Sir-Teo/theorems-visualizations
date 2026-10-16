@@ -125,7 +125,7 @@ export default {
           },
         };
         let key = 'fl', w = MACH.fl.def;
-        const showKeys = () => { for (const c of ['0', '1', 'a', 'b']) keys[c].el.hidden = !MACH[key].alpha.includes(c); };
+        const showKeys = () => { for (const c of ['0', '1', 'a', 'b']) keys[c].hidden = !MACH[key].alpha.includes(c); };
         const sel = v.select('machine', [{ value: 'fl', label: 'first symbol = last symbol' }, { value: 'third', label: '3rd symbol from the end is 1' }], 'fl', { onChange: (k) => { key = k; w = MACH[k].def; showKeys(); } });
         const keys = keypad(v, ['0', '1', 'a', 'b'], () => w, (x) => { w = x; }, { max: 9 });
         showKeys();
