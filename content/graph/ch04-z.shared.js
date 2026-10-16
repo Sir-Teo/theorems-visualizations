@@ -369,7 +369,7 @@ export function planarPos(H) {
   const add = maximalize(H), E = H.E.map(([a, b]) => [a, b]).concat(add);
   const faces = dmp(H.n, E); if (!faces) return null;
   let o = 0; faces.forEach((f, i) => { if (f.length > faces[o].length) o = i; });
-  return spread(H.n, E, tutte(H.n, E, faces, o), 40);
+  return spread(H.n, E, tutte(H.n, E, faces, o), 40, faces[o]);
 }
 /** Index structure from n and an edge list. */
 export const ixE = (n, E) => ix({ nodes: Array.from({ length: n }, (_, i) => ({ id: i })), edges: E });
@@ -454,7 +454,7 @@ export function contractG(g, a, b) {
  * other and keep a weak pull towards the barycentre of their neighbours; a move is accepted only if no edge crosses
  * another and the set of faces stays the same, so the embedding never changes.
  */
-export function spread(n, E, pos, iters = 80) {
+export function spread(n, E, pos, iters = 80, pinned = []) {
   const H = ixE(n, E), P = pos.map((p) => [p[0], p[1]]), key = (Q) => faceWalks(H, Q).map((f) => f.key).sort().join('#'), k0 = key(P);
   const okMove = (v, np) => {
     const old = P[v]; P[v] = np;
@@ -462,7 +462,9 @@ export function spread(n, E, pos, iters = 80) {
     if (key(P) !== k0) { P[v] = old; return false; }
     return true;
   };
+  const pin = new Set(pinned);
   for (let it = 0; it < iters; it++) for (let v = 0; v < n; v++) {
+    if (pin.has(v)) continue;
     let fx = 0, fy = 0;
     for (let w = 0; w < n; w++) { if (w === v) continue; const dx = P[v][0] - P[w][0], dy = P[v][1] - P[w][1], d2 = dx * dx + dy * dy + 0.01; fx += (0.05 * dx) / d2; fy += (0.05 * dy) / d2; }
     const nb = H.adj[v]; if (nb.length) { let mx = 0, my = 0; for (const [w] of nb) { mx += P[w][0]; my += P[w][1]; } mx /= nb.length; my /= nb.length; fx += 0.1 * (mx - P[v][0]); fy += 0.1 * (my - P[v][1]); }

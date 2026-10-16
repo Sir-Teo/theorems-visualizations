@@ -131,7 +131,7 @@ With many consumers, all of them must share a common MRS equal to the MRT (the e
         const mk = v.toggle('market chooses (with the wedge)', false);
         const R = 10;
         const s = v.stage({ x: [0, 11.5], y: [0, 11.5], equal: true, axes: 'box', gutter: true, height: 400, xlabel: 'good 1', ylabel: 'good 2', title: 'production frontier and indifference curve', weight: 1.1 });
-        const G = v.stage({ x: [0, Math.PI / 2], y: [0, 10], axes: 'box', gutter: true, height: 400, xlabel: 'position on the frontier (more good 1 →)', ylabel: 'utility', title: 'welfare along the frontier', weight: 0.9, minWidth: 260, xticks: [[0, 'all good 2'], [Math.PI / 4, ''], [Math.PI / 2, 'all good 1']] });
+        const G = v.stage({ x: [0, Math.PI / 2], y: [0, 10], axes: 'box', gutter: true, height: 400, xlabel: 'position on the frontier (more good 1 →)', ylabel: 'utility', title: 'welfare along the frontier', weight: 0.9, minWidth: 260, xticks: [[0, 'only 2'], [Math.PI / 4, ''], [Math.PI / 2, 'only 1']] });
         v.legend([['ink', 'production frontier'], ['purple', 'indifference curve'], ['orange', 'MRT tangent'], ['accent', 'MRS tangent'], ['green', 'welfare maximum']]);
         const pt = (ph) => [R * Math.sin(ph), R * Math.cos(ph)];
         const H = s.handle(...pt(0.7), { color: 'gold', r: 9, label: 'x', labelPos: 'ne', constrain: (x, y) => { const ph = clamp(Math.atan2(x, y), 0.03, Math.PI / 2 - 0.03); return pt(ph); } });
@@ -213,7 +213,7 @@ With many consumers, all of them must share a common MRS equal to the MRT (the e
             const p = trade ? R.pw : pa, q = C.produce(p), c = consume(q[0], q[1], p), u0 = c[0] ** th * c[1] ** (1 - th);
             S.fn((x) => (u0 / x ** th) ** (1 / (1 - th)), { domain: [0.05, XM], color: 'purple', width: 2.4 });
             // price line through the production point
-            slopeLine(S, q[0], q[1], p, 130, { color: 'ink', width: 1.8, dash: [6, 4] });
+            slopeLine(S, q[0], q[1], -p, 130, { color: 'ink', width: 1.8, dash: [6, 4] });
             S.dot(q[0], q[1], { r: 7, color: 'orange' });
             S.dot(c[0], c[1], { r: 7, color: 'green' });
             if (trade && Math.hypot(S.X(q[0]) - S.X(c[0]), S.Y(q[1]) - S.Y(c[1])) > 10) { S.line(q[0], q[1], c[0], q[1], { color: 'muted', width: 1.4 }); S.line(c[0], q[1], c[0], c[1], { color: 'muted', width: 1.4 }); }

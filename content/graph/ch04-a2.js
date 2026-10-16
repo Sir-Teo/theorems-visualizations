@@ -16,7 +16,7 @@ function pgPaint(s, F, o = {}) {
   paintFaces(s, F, { colorOf: (i) => (o.colorOf ? o.colorOf(i) : F.faces[i].rlen === 3 ? 'green' : 'orange'), alpha: 0.24, outerAlpha: 0.12 });
 }
 function pgLabels(s, F) {
-  F.faces.forEach((f, i) => { const p = innerPoint(F, i); s.text(String(f.rlen), p[0], p[1], { size: 15, weight: 700, color: f.rlen === 3 ? 'green' : 'red', align: 'center', baseline: 'middle' }); });
+  F.faces.forEach((f, i) => { const p = innerPoint(F, i); if (F.P.some((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) < 0.3)) return; s.text(String(f.rlen), p[0], p[1], { size: 15, weight: 700, color: f.rlen === 3 ? 'green' : 'red', align: 'center', baseline: 'middle' }); });
 }
 /** Saturate a PG with admissible edges; returns the number added. */
 function saturate(pg, limit = 60) { let c = 0; while (c < limit && pgAddOne(pg)) c++; return c; }

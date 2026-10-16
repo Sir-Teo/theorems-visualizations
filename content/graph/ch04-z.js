@@ -25,7 +25,7 @@ const outerOf = (faces) => faces.reduce((b, f, i) => (f.length > faces[b].length
 function embed(N, rng, outer) {
   const faces = dmp(N.n, N.E, rng); if (!faces) return null;
   const o = outer == null ? outerOf(faces) : ((outer % faces.length) + faces.length) % faces.length;
-  return { faces, outer: o, pos: spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60) };
+  return { faces, outer: o, pos: spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60, faces[o]) };
 }
 /** Fill the bounded faces of a crossing-free drawing. */
 function shade(s, F, pos, colOf, alpha = 0.22) {
@@ -147,7 +147,7 @@ export default {
           found = [...m.values()].sort((a, b) => b.n - a.n);
           ns = nonSepKeys(H); three = isKconn(H, 3).ok; sel.set(1); show();
         }
-        function show() { const e = found[Math.min(sel.value, found.length) - 1]; const o = outerOf(e.faces); setG(G, N, spread(N.n, N.E, tutte(N.n, N.E, e.faces, o), 60)); }
+        function show() { const e = found[Math.min(sel.value, found.length) - 1]; const o = outerOf(e.faces); setG(G, N, spread(N.n, N.E, tutte(N.n, N.E, e.faces, o), 60, e.faces[o])); }
         v.button('sample', run);
         sel.el.addEventListener?.('input', show);
         run();
@@ -520,7 +520,7 @@ export default {
         let seed = 1, n, E, pairs, sel = [], H;
         function make(keep) {
           n = nS.value; const r = v.rng(seed * 7001 + 3);
-          const T = triDraw(randomTriangulation(n, r, 8)); E = T.E.slice(); const P0 = spread(n, T.E, T.pos, 60);
+          const T = triDraw(randomTriangulation(n, r, 8)); E = T.E.slice(); const P0 = spread(n, T.E, T.pos, 60, [0, 1, 2]);
           if (cut.value) { const deg = new Int32Array(n); E.forEach(([a, b]) => { deg[a]++; deg[b]++; }); const cand = E.filter(([a, b]) => deg[a] === 3 || deg[b] === 3); const e = cand.length ? cand[Math.floor(r() * cand.length)] : E[0]; E = E.filter((x) => x !== e); }
           H = ixE(n, E); const p = P0;
           G.set({ nodes: H.ids.map((id, i) => ({ id, x: p[i][0], y: p[i][1], label: lab1(i) })), edges: E.map(([a, b]) => [a, b]) }); G.layout('fit');

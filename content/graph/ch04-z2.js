@@ -22,7 +22,7 @@ const toS = (p) => [CX + SC * p[0], CY + SC * p[1]];
 /** Plane setup of a planar 2-connected preset: straight-line drawing (stage coordinates), faces, plane dual. */
 function plane(N, outer) {
   const faces = dmp(N.n, N.E); const o = outer == null ? outerOf(faces) : ((outer % faces.length) + faces.length) % faces.length;
-  const rel = spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60), P = rel.map(toS), H = ixE(N.n, N.E), F = faceWalks(H, P);
+  const rel = spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60, faces[o]), P = rel.map(toS), H = ixE(N.n, N.E), F = faceWalks(H, P);
   const dual = dualOf(H, F.map((f) => f.walk)), oi = F.findIndex((f) => f.area < 0);
   const cen = F.map((f, i) => (i === oi ? null : [f.walk.reduce((a, u) => a + P[u][0], 0) / f.walk.length, f.walk.reduce((a, u) => a + P[u][1], 0) / f.walk.length]));
   const c = [F[oi].walk.reduce((a, u) => a + P[u][0], 0) / F[oi].walk.length, F[oi].walk.reduce((a, u) => a + P[u][1], 0) / F[oi].walk.length];
@@ -133,7 +133,7 @@ export default {
         function make() {
           n = nS.value; let tries = 0;
           do { const r = v.rng(seed * 8191 + 17 + tries); T = triDraw(randomTriangulation(n, r, 4 + Math.floor(r() * 8))); W = schnyder(n, T.E, T.pos); tries++; } while (!W && tries < 20);
-          pos = spread(n, T.E, T.pos, 60); E = T.E;
+          pos = spread(n, T.E, T.pos, 60, [0, 1, 2]); E = T.E;
           const ed = []; for (let u = 0; u < n; u++) for (const [a, b, c] of W.out[u]) if (!(a < 3 && b < 3)) ed.push({ from: a, to: b, c, directed: true });
           for (const [a, b] of [[0, 1], [1, 2], [0, 2]]) ed.push({ from: a, to: b, c: 0, directed: false });
           G.set({ nodes: pos.map((p, i) => { const q = sp(p); return { id: i, x: q[0], y: q[1], label: i < 3 ? ['a₁', 'a₂', 'a₃'][i] : lab1(i) }; }), edges: ed, directed: true }); G.layout('none');
@@ -182,7 +182,7 @@ export default {
         let S;
         function load() { S = plane(NORM(ex.value), out.value === 0 ? null : out.value); setPlane(G, S); }
         load();
-        v.render(() => { shadeFaces(s, S, (i) => PALETTE[i % PALETTE.length], 0.12); if (show.value) drawDual(s, S); G.draw({}); });
+        v.render(() => { shadeFaces(s, S, (i) => PALETTE[i % PALETTE.length], 0.12); if (show.value) drawDual(s, S); G.draw({ edgeColor: () => 'accent', edgeWidth: () => 2.4 }); });
         v.legend([['accent', '$G$', { dash: false }], ['orange', '$G^*$ (dashed circle = unbounded face)', { dash: false }]]);
         v.readout(() => {
           const n = S.H.n, m = S.H.m, f = S.F.length, deg = new Int32Array(f); S.dual.edges.forEach((e) => { deg[e.a]++; deg[e.b]++; });
@@ -221,7 +221,7 @@ export default {
           shadeFaces(s, S, (i) => (find(i) === outRoot ? 'orange' : 'accent'), 0.26);
           drawDual(s, S, { hi: F });
           const inE = new Set([...F].map((k) => HG.E[k][2]));
-          G.draw({ edgeColor: (e) => (inE.has(e) ? 'red' : null), edgeWidth: (e) => (inE.has(e) ? 3.4 : null) });
+          G.draw({ edgeColor: (e) => (inE.has(e) ? 'red' : 'accent'), edgeWidth: (e) => (inE.has(e) ? 3.4 : 2.2) });
         });
         v.legend([['accent', 'faces inside the cycle', { area: true }], ['orange', 'faces outside', { area: true }], ['red', 'cycle $F$ and its dual edges $F^*$', { dash: false }]]);
         v.readout(() => {
@@ -343,15 +343,14 @@ export default {
         }
         load();
         v.render(() => {
-          if (S) { drawDual(s2(), S, {}); }
-          G.draw({});
+          if (S) drawDual(sL, S, {});
+          G.draw({ edgeColor: () => 'accent', edgeWidth: () => 2.2 });
           if (S) { R.draw({ edgeColor: () => 'orange', nodeColor: () => 'orange' }); }
           else {
             const fam = res && (res.basis || res.best) || [], load = new Int32Array(H.m); fam.forEach((c) => c.E.forEach((x, k) => { if (x) load[k]++; }));
             R.draw({ edgeColor: (e) => (load[HR.eix.get(e)] === 2 ? 'orange' : load[HR.eix.get(e)] === 1 ? 'accent' : 'faint'), edgeWidth: (e) => 1.5 + 1.3 * load[HR.eix.get(e)] });
           }
         });
-        function s2() { return sL; }
         v.legend([['orange', 'plane dual / edge in two cycles of the family', { dash: false }], ['accent', 'edge in one cycle of the family', { dash: false }]]);
         v.readout(() => {
           if (S) return `**planar** (${H.n} vertices, ${H.m} edges, ${S.F.length} faces): the plane dual with the pairing $e\\mapsto e^*$ maps all ${test.nc} cycles of $G$ to bonds of $G^*$ ${test.bad ? '✗' : '✓'}, and $G^*$ has ${test.bonds} bonds ${test.bonds === test.nc ? '✓' : '✗'} → an abstract dual exists`;
