@@ -340,13 +340,12 @@ export default {
             textColor: (i, j) => (j === 1 && R[i].got !== R[i].ur ? 'accent' : 'ink'),
             colWeights: [1.2, 1.3, 1.3, 0.4],
           });
-          s.corner(D.lead, 'tl', { color: 'muted' });
         });
         v.readout(() => {
           const r = rule(), ok = R.filter((x) => x.ok).length;
           const side = (sp) => (sp.length ? sp.map(specTeX).join('\\,') : '');
           const tex = `${specTeX(r.A)} \\to ${r.B === '∅' ? '\\varnothing' : r.B[0] === '[' ? specTeX(r.B) : `\\text{[${r.B}]}`} \\ /\\ ${side(r.L)}\\ \\_\\_\\ ${side(r.R)}`;
-          return `$${tex}$\n**${ok} of ${R.length}** forms match the attested pronunciation` + (ok === R.length ? ' — the rule is empirically adequate on this list.' : `; the rule fires at ${R.reduce((a, x) => a + x.n, 0)} sites in total (too many or in the wrong place).`);
+          return `${RULE_DATA[ds.value].lead}\n$${tex}$\n**${ok} of ${R.length}** forms match the attested pronunciation` + (ok === R.length ? ' — the rule is empirically adequate on this list.' : `; the rule fires at ${R.reduce((a, x) => a + x.n, 0)} sites in total (too many or in the wrong place).`);
         });
       },
     },

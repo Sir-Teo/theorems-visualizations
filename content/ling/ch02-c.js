@@ -69,7 +69,7 @@ function turkish(stem, plural, kase) {
   let prev = lastV(); let b = SOFT.has(stem) ? 0 : TV[prev.c].b, soft = SOFT.has(stem);
   const chain = [];
   if (plural) chain.push({ name: '-lAr', pre: 'l', type: 'A', post: 'r' });
-  if (kase === 'gen') chain.push({ name: '-In', pre: '', type: 'I', post: '' });
+  if (kase === 'gen') chain.push({ name: '-In', pre: '', type: 'I', post: 'n' });
   if (kase === 'abl') chain.push({ name: '-dAn', pre: 'd', type: 'A', post: 'n' });
   let last = prev.c, lastRound = TV[prev.c].r;
   const suff = [];

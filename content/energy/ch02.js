@@ -83,7 +83,7 @@ where $h$ is specific enthalpy. For a device that runs in a **cycle** (a heat en
         const flows = () => {
           const m = mode.value;
           if (m === 'cycle') return { ins: [{ lab: 'heat in  Q_h', val: Qh.value, col: 'orange', side: 'L' }], outs: [{ lab: 'work out  W', val: Wc.value, col: 'green', side: 'R' }, { lab: 'heat rejected  Q_c = Q_h − W', val: Qh.value - Wc.value, col: 'accent', side: 'B', derived: true }], note: 'cycle' };
-          if (m === 'turbine') { const fin = md.value * HIN / 1000, fout = md.value * hout.value / 1000; return { ins: [{ lab: `steam in  ṁ·h = ${fx(v, fin, 0)} MW`, val: fin, col: 'orange', side: 'L' }], outs: [{ lab: `exhaust  ṁ·h_out`, val: fout, col: 'accent', side: 'R' }, { lab: 'casing loss', val: loss.value, col: 'red', side: 'B' }, { lab: 'shaft work  W = ṁ(h_in − h_out) − loss', val: fin - fout - loss.value, col: 'green', side: 'T', derived: true }], note: 'turbine' }; }
+          if (m === 'turbine') { const fin = md.value * HIN / 1000, fout = md.value * hout.value / 1000; return { ins: [{ lab: "steam in  ṁ·h_in", val: fin, col: 'orange', side: 'L' }], outs: [{ lab: `exhaust  ṁ·h_out`, val: fout, col: 'accent', side: 'R' }, { lab: 'casing loss', val: loss.value, col: 'red', side: 'B' }, { lab: 'shaft work  W = ṁ(h_in − h_out) − loss', val: fin - fout - loss.value, col: 'green', side: 'T', derived: true }], note: 'turbine' }; }
           const dh = md.value * (HIN - HF) / 1000, fuel = dh / eb.value;
           return { ins: [{ lab: 'fuel  Q', val: fuel, col: 'orange', side: 'L' }, { lab: 'feed water  ṁ·h_f', val: md.value * HF / 1000, col: 'accent', side: 'L' }], outs: [{ lab: 'steam  ṁ·h_s', val: md.value * HIN / 1000, col: 'green', side: 'R' }, { lab: 'stack and wall losses', val: fuel - dh, col: 'red', side: 'B', derived: true }], note: 'boiler' };
         };
@@ -395,6 +395,312 @@ independent of the amount of heat added. Efficiency therefore rises with the com
         });
       },
     },
-//@@ITEMS@@
+    // ───────────────────────────────────────────────────────────────────────────── 2.7
+    {
+      num: '2.7', kind: 'Model', name: 'Diesel cycle',
+      statement: String.raw`The Diesel cycle differs from the Otto cycle in how heat is added: air alone is compressed (ratio $r$), fuel is injected and burns at **constant pressure** until the volume has grown by the cut-off ratio $r_c=V_3/V_2$, and the cycle then continues with adiabatic expansion and constant-volume heat rejection. For a perfect gas
+$$\eta_{\rm Diesel} = 1 - \frac{1}{r^{\gamma-1}}\;\frac{r_c^{\gamma}-1}{\gamma\,(r_c-1)}.$$
+At the same compression ratio and heat input this is lower than the Otto efficiency $1-r^{1-\gamma}$ (the bracket exceeds 1), but because only air is compressed there is no knock and the diesel can use $r\approx 15$–$20$; at equal **peak pressure** the diesel cycle is the more efficient one.`,
+      idea: String.raw`Adding heat while the piston is already moving down means part of the heat is taken in at a lower mean temperature than in the Otto cycle at the same compression ratio, so for equal $r$ the Otto cycle wins; the factor $(r_c^\gamma-1)/[\gamma(r_c-1)]\ge1$ measures the loss. The practical advantage is not thermodynamic ingenuity but a different constraint: a spark-ignition engine is limited by knock of the premixed charge, a compression-ignition engine by peak pressure of the structure, and under a peak-pressure limit the diesel can compress more and add heat later.`,
+      caption: String.raw`Choose what is held equal: the compression ratio (Otto wins), the **peak pressure** (Diesel wins) or each engine at its own realistic compression ratio. Both loops carry the same heat per kilogram of air, drawn on the same $p$–$V$ axes; the readout computes each efficiency from the loop area and compares it with the formulas.`,
+      deps: ['energy-2.6'],
+      refs: ['Tester ch. 17'],
+      tags: ['internal combustion', 'power cycle'],
+      credit: 'Rudolf Diesel, 1892–97',
+      scope: String.raw`Air-standard analysis with $\gamma=1.4$ for both cycles, equal heat input per kilogram of air; real diesel engines have a combustion process that is part constant-volume and part constant-pressure (the dual cycle) and lose heat to the cylinder walls.`,
+      viz(v) {
+        const sA = v.stage({ x: [0, 26], y: [0, 100], axes: 'box', gutter: true, height: 380, xlabel: 'volume $V/V_c$', ylabel: 'pressure $p/p_1$', title: 'Otto and Diesel cycles, same heat input' });
+        const sB = v.stage({ x: [4, 26], y: [0.3, 0.8], axes: 'box', gutter: true, height: 380, xlabel: 'compression ratio $r$', ylabel: 'efficiency', title: 'Efficiency against compression ratio' });
+        const mode = v.select('hold equal', [{ value: 'r', label: 'compression ratio' }, { value: 'p', label: 'peak pressure' }, { value: 'own', label: 'each at its own ratio' }], 'p', { onChange: () => { ro.el.hidden = mode.value !== 'own'; } });
+        const rd = v.slider('Diesel compression ratio', 8, 25, 18, { step: 0.1 });
+        const ro = v.slider('Otto compression ratio', 5, 14, 9, { step: 0.1 }); ro.el.hidden = true;
+        const qS = v.slider('heat added $q/(c_vT_1)$', 2, 10, 5, { step: 0.1 });
+        const solveO = (D, q) => { if (mode.value === 'r') return rd.value; if (mode.value === 'own') return ro.value; let a = 1.5, b = rd.value; for (let i = 0; i < 60; i++) { const m = (a + b) / 2; (m * (m ** (GAM - 1) + q) > D.p3 ? (b = m) : (a = m)); } return (a + b) / 2; };
+        v.legend([['orange', 'Otto'], ['accent', 'Diesel'], ['gold', 'peak pressure', { dot: true }]]);
+        v.render(() => {
+          const q = qS.value, D = dieselCycle(rd.value, q), ro_ = solveO(D, q), O = ottoCycle(ro_, q);
+          sA.setView([0, 26], [0, Math.max(30, 1.12 * Math.max(D.p3, O.p3))]);
+          sA.poly(O.P, { fill: 'orange', fillAlpha: 0.14, color: 'orange', width: 2.6 });
+          sA.poly(D.P, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 2.6 });
+          sA.dot(1, O.p3, { r: 5.5, color: 'orange' }); sA.dot(D.rc, D.p3, { r: 5.5, color: 'accent' });
+          sA.hline(D.p3, { color: 'faint', width: 1, dash: true });
+          sA.text('Otto: heat at constant V', 3.5, O.p3 * 0.8, { color: 'orange', size: 12, align: 'left' });
+          sA.text('Diesel: heat at constant p', D.rc + 2, D.p3 + 4, { color: 'accent', size: 12, align: 'left' });
+          sB.fn((x) => 1 - x ** (1 - GAM), { color: 'orange', width: 2.6 });
+          sB.path(Array.from({ length: 60 }, (_, i) => { const r = lerp(8, 26, i / 59); return [r, dieselCycle(r, q, GAM, 4).eta]; }), { color: 'accent', width: 2.6 });
+          sB.dot(O.P[0][0], O.eta, { r: 6, color: 'orange' }); sB.dot(rd.value, D.eta, { r: 6, color: 'accent' });
+          sB.text('Otto', 6, 1 - 6 ** (1 - GAM) - 0.04, { color: 'orange', size: 12 }); sB.text('Diesel', 14, dieselCycle(14, q, GAM, 4).eta - 0.05, { color: 'accent', size: 12 });
+        });
+        v.readout(() => {
+          const q = qS.value, D = dieselCycle(rd.value, q), ro_ = solveO(D, q), O = ottoCycle(ro_, q);
+          const Q = (r) => q * r / (GAM - 1);
+          const eD = Math.abs(polyArea(D.P)) / Q(rd.value), eO = Math.abs(polyArea(O.P)) / Q(ro_);
+          return `**Otto** $r=${fx(v, ro_, 1)}$: $\\eta = ${pc1(v, eO)}$ (formula ${pc1(v, O.eta)}), peak pressure $${fx(v, O.p3, 0)}\\,p_1$.\n**Diesel** $r=${fx(v, rd.value, 1)}$, cut-off $r_c = ${fx(v, D.rc, 2)}$: $\\eta = ${pc1(v, eD)}$ (formula ${pc1(v, D.eta)}), peak pressure $${fx(v, D.p3, 0)}\\,p_1$.\n${eD > eO ? '**Diesel is more efficient here.**' : '**Otto is more efficient here.**'}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────── 2.8
+    {
+      num: '2.8', kind: 'Theorem', name: 'Curzon–Ahlborn efficiency at maximum power',
+      statement: String.raw`Consider an engine that is internally reversible but exchanges heat with its reservoirs through finite thermal conductances (heat flow $=K\times$ temperature difference, the same $K$ on both sides). The working fluid is then at temperatures $T_h' < T_h$ and $T_c' > T_c$, and Carnot's efficiency applies only between those. The power output as a function of efficiency vanishes both at $\eta=0$ and at the Carnot value, so it has a maximum, at
+$$\eta_{CA} = 1-\sqrt{T_c/T_h},$$
+which is the efficiency at maximum power and depends only on the two reservoir temperatures.`,
+      idea: String.raw`A reversible engine takes infinitely long per cycle, so its power is zero: to deliver power the fluid temperatures must differ from the reservoirs. Put $x = T_c'/T_h' = 1-\eta$ and use reversibility $Q_h/T_h' = Q_c/T_c'$ with $Q_h = K(T_h-T_h')$ and $Q_c = K(T_c'-T_c)$: the fluid temperatures follow, and the power $P = Q_h - Q_c = K\,(xT_h - T_c)(1-x)/(2x)$. Setting $dP/dx=0$ gives $x^2 = T_c/T_h$. Curzon and Ahlborn compared the result with real plants.`,
+      caption: String.raw`Left: the power as a function of efficiency; drag the gold point and see the power fall to zero at the Carnot value on one side and at zero efficiency on the other. Middle: the temperatures the fluid actually works between — the bigger the power, the bigger the drops across the heat exchangers. Right: the real plants of Curzon and Ahlborn's table sit near the $\eta_{CA}$ value, not near the Carnot value.`,
+      deps: ['energy-2.2'],
+      refs: ['Tester ch. 3'],
+      tags: ['finite-time thermodynamics', 'maximum power'],
+      credit: 'Curzon & Ahlborn, 1975 (earlier: Chambadal 1957, Novikov 1957)',
+      scope: String.raw`An endoreversible engine: all irreversibility is in the heat transfer (linear law, equal conductances); friction, heat leaks and other losses are ignored. The agreement with power plants is approximate and, partly, a coincidence of the model.`,
+      viz(v) {
+        const PLANTS = [{ k: 'wt', n: 'coal', full: 'coal plant (West Thurrock)', Th: 565, Tc: 25, obs: 0.36 }, { k: 'ca', n: 'CANDU', full: 'CANDU nuclear (Pickering)', Th: 300, Tc: 25, obs: 0.30 }, { k: 'la', n: 'geothermal', full: 'geothermal (Larderello)', Th: 250, Tc: 80, obs: 0.16 }];
+        const sA = v.stage({ x: [0, 0.7], y: [0, 0.18], axes: 'box', gutter: true, height: 340, xlabel: 'efficiency $\\eta$', ylabel: 'power / $(K\\,T_h)$', title: 'Power against efficiency', minWidth: 300 });
+        const sB = v.stage({ x: [0, 4.4], y: [0, 1200], axes: 'box', gutter: true, height: 340, ylabel: 'T (K)', title: 'Temperatures along the way', xticks: [[0.75, 'source'], [1.75, 'fluid hot'], [2.75, 'fluid cold'], [3.75, 'sink']], minWidth: 300 });
+        const sC = v.stage({ x: [0.4, 3.6], y: [0, 0.7], axes: 'box', gutter: true, height: 340, ylabel: 'efficiency', title: 'Real plants', xticks: PLANTS.map((p, i) => [i + 1, p.n]), minWidth: 300 });
+        const pick = v.select('plant', [{ value: 'custom', label: 'custom' }, ...PLANTS.map((p) => ({ value: p.k, label: p.full }))], 'wt', { onChange: (k) => { const p = PLANTS.find((q) => q.k === k); if (p) { Th.set(p.Th); Tc.set(p.Tc); } } });
+        const Th = v.slider('hot reservoir $T_h$ (°C)', 100, 1000, 565, { step: 5, onChange: () => { pick.value = 'custom'; } });
+        const Tc = v.slider('cold reservoir $T_c$ (°C)', 0, 100, 25, { step: 1, onChange: () => { pick.value = 'custom'; } });
+        const hP = sA.handle(0.3, 0.1, { color: 'gold', r: 8, constrain: (x) => { const t = (Tc.value + K0) / (Th.value + K0); const e = clamp(x, 0.002, 1 - t - 0.002); return [e, Pof(e, t)]; } });
+        const Pof = (e, t) => (1 - e - t) * e / (2 * (1 - e));
+        v.legend([['accent', 'Carnot', { area: true }], ['green', 'Curzon–Ahlborn', { area: true }], ['gold', 'observed (their table)', { area: true }]]);
+        v.render(() => {
+          const TH = Th.value + K0, TC = Tc.value + K0, t = TC / TH, eC = 1 - t, eCA = 1 - Math.sqrt(t);
+          sA.setView([0, Math.max(0.1, eC * 1.12)], [0, Pof(eCA, t) * 1.25 + 1e-4]);
+          sA.fn((e) => Pof(e, t), { domain: [0.0005, eC], color: 'ink', width: 3 });
+          sA.vline(eC, { color: 'accent', width: 2 }); sA.vline(eCA, { color: 'green', width: 2, dash: true });
+          sA.text('Carnot', eC - 0.008, Pof(eCA, t) * 0.5, { color: 'accent', size: 12, align: 'right' }); sA.text('CA', eCA + 0.008, Pof(eCA, t) * 1.12, { color: 'green', size: 12, align: 'left' });
+          sA.dot(eCA, Pof(eCA, t), { r: 5, color: 'green' });
+          hP.set(clamp(hP.x, 0.002, eC - 0.002), Pof(clamp(hP.x, 0.002, eC - 0.002), t));
+          // temperature profile at the handle's efficiency
+          const e = clamp(hP.x, 0.002, eC - 0.002), x = 1 - e, Thp = (TC + x * TH) / (2 * x), Tcp = x * Thp;
+          sB.setView([0, 4.4], [0, TH * 1.15]);
+          [[0, TH, 'orange', 'T_h'], [1, Thp, 'orange', "T_h'"], [2, Tcp, 'accent', "T_c'"], [3, TC, 'accent', 'T_c']].forEach(([i, T, c, lab]) => { sB.rect(i + 0.25, 0, i + 1.25, T, { fill: c, fillAlpha: 0.3, color: c, width: 1.6 }); sB.tex(lab.replace("'", "'"), i + 0.75, T + TH * 0.05, { color: c, size: 15 }); sB.text(`${v.fix(T, 0)} K`, i + 0.75, T / 2, { size: 12, align: 'center', color: 'ink' }); });
+          sB.text('drop', 1.25, (TH + Thp) / 2, { size: 11.5, color: 'red', align: 'center' }); sB.text('drop', 3.25, (TC + Tcp) / 2 + 20, { size: 11.5, color: 'red', align: 'center' });
+          sB.text(`Carnot engine inside: ${v.fix(100 * (1 - Tcp / Thp), 1)}%`, 2.2, TH * 1.08, { size: 12, align: 'center', color: 'muted' });
+          // plants
+          PLANTS.forEach((p, i) => {
+            const a = 1 - (p.Tc + K0) / (p.Th + K0), b = 1 - Math.sqrt((p.Tc + K0) / (p.Th + K0)), sel = pick.value === p.k;
+            [[a, 'accent', -0.26], [b, 'green', 0], [p.obs, 'gold', 0.26]].forEach(([val, c, dx]) => { sC.rect(i + 1 + dx - 0.12, 0, i + 1 + dx + 0.12, val, { fill: c, fillAlpha: sel ? 0.7 : 0.4, color: c, width: 1.2 }); sC.text(v.fix(100 * val, 0), i + 1 + dx, val + 0.03, { size: 11.5, align: 'center' }); });
+          });
+        });
+        v.readout(() => {
+          const TH = Th.value + K0, TC = Tc.value + K0, t = TC / TH, eC = 1 - t, eCA = 1 - Math.sqrt(t);
+          let best = 0, eb = 0; for (let i = 1; i < 4000; i++) { const e = eC * i / 4000, p = Pof(e, t); if (p > best) { best = p; eb = e; } }
+          const e = clamp(hP.x, 0.002, eC - 0.002);
+          return `$\\eta_C = ${pc1(v, eC)}$, $\\eta_{CA} = 1-\\sqrt{T_c/T_h} = ${pc1(v, eCA)}$; the largest power found by scanning is at $\\eta = ${pc1(v, eb)}$.\nAt the gold point: $\\eta = ${pc1(v, e)}$, power $= ${v.fix(Pof(e, t) / best * 100, 0)}\\,\\%$ of the maximum.${pick.value !== 'custom' ? ' Observed efficiencies are from Curzon and Ahlborn\'s table (quoted from memory).' : ''}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────── 2.9
+    {
+      num: '2.9', kind: 'Concept', name: 'Exergy: the useful part of energy',
+      statement: String.raw`**Exergy** is the maximum useful work obtainable from a system or flow as it comes into equilibrium with the environment (temperature $T_0$, pressure $p_0$). Energy is conserved but exergy is destroyed by every irreversible process. For heat $Q$ available at a constant temperature $T$ the exergy is
+$$X_Q = Q\left(1-\frac{T_0}{T}\right),$$
+and for a stream of fluid of mass $m$ and specific heat $c$ cooled from $T$ to $T_0$
+$$X = m c\left[(T-T_0) - T_0\ln\frac{T}{T_0}\right].$$
+Work and electricity are pure exergy; heat at ambient temperature carries none.`,
+      idea: String.raw`The best that can be done with heat at $T$ is to run a reversible (Carnot) engine between $T$ and the environment, which returns the fraction $1-T_0/T$ as work; for a stream whose temperature falls as it gives up heat the Carnot factor is averaged over the cooling, which is why a hot stream is worth less than the same heat from a constant-temperature source. Exergy accounting makes the second law quantitative: **where** an energy conversion is wasteful is where exergy is destroyed, even when no energy is lost.`,
+      caption: String.raw`The bars show one kilowatt-hour of energy in six forms: pale for its energy, solid for its exergy. Change the environment temperature $T_0$ and the way the heat is supplied (constant-temperature source or a cooling stream) and watch low-temperature heat lose nearly all its worth. Right: the exergy fraction as a function of temperature; drag the gold handle.`,
+      deps: ['energy-2.2', 'pchem-3.11'],
+      refs: ['Tester ch. 3'],
+      tags: ['exergy', 'second law'],
+      scope: String.raw`Thermal exergy only: chemical exergy of fuels (close to their heating values) and pressure exergy are not shown. Temperatures in kelvin in the formulas; the environment is taken as an infinite reservoir at $T_0$.`,
+      viz(v) {
+        const SRC = [['electricity', null], ['gas flame, 1500 °C', 1500], ['steam, 600 °C', 600], ['steam, 250 °C', 250], ['hot water, 90 °C', 90], ['radiator, 21 °C', 21]];
+        const sA = v.stage({ x: [0, 1.3], y: [0, SRC.length], axes: false, height: 360, title: 'One kWh of energy, how much of it is exergy?', minWidth: 320 });
+        const sB = v.stage({ x: [0, 1600], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'temperature of the heat (°C)', ylabel: 'exergy / energy', title: 'Exergy fraction against temperature', minWidth: 320 });
+        const T0 = v.slider('environment $T_0$ (°C)', -10, 19, 10, { step: 1 });
+        const how = v.select('heat is supplied', [{ value: 'res', label: 'at a constant temperature' }, { value: 'str', label: 'by a cooling stream' }], 'res');
+        const hT = sB.handle(600, 0.5, { color: 'gold', r: 8, constrain: (x) => { const T = clamp(x, T0.value + 1, 1600); return [T, fr(T)]; } });
+        const fr = (T) => { const a = T0.value + K0, b = T + K0; if (b <= a) return 0; return how.value === 'res' ? 1 - a / b : 1 - a * Math.log(b / a) / (b - a); };
+        v.legend([['accent', 'energy', { area: true }], ['green', 'exergy', { area: true }], ['red', 'anergy (cannot be turned into work)', { area: true }]]);
+        v.render(() => {
+          SRC.forEach(([n, T], i) => {
+            const y = SRC.length - 1 - i, f = T == null ? 1 : fr(T);
+            sA.rect(0, y + 0.18, 1, y + 0.82, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1 });
+            sA.rect(0, y + 0.18, f, y + 0.82, { fill: 'green', fillAlpha: 0.6, color: 'green', width: 1 });
+            sA.text(n, 0.012, y + 0.5, { size: 12.5, weight: 600, baseline: 'middle', align: 'left' });
+            sA.text(`${v.fix(f, 2)} kWh`, 1.02, y + 0.5, { size: 12.5, baseline: 'middle', align: 'left', color: 'green' });
+          });
+          sB.fn(fr, { domain: [T0.value + 0.01, 1600], color: 'green', width: 3 });
+          const other = (T) => { const a = T0.value + K0, b = T + K0; if (b <= a) return 0; return how.value !== 'res' ? 1 - a / b : 1 - a * Math.log(b / a) / (b - a); };
+          sB.fn(other, { domain: [T0.value + 0.01, 1600], color: 'faint', width: 1.8, dash: true });
+          sB.between(fr, () => 1, T0.value + 0.01, 1600, { fill: 'red', fillAlpha: 0.08 });
+          sB.text('anergy', 1250, 0.97 - 0.0, { size: 12, color: 'red' }); sB.vline(T0.value, { color: 'muted', width: 1, dash: true }); sB.text('T₀', T0.value + 25, 0.05, { size: 12, color: 'muted' });
+          sB.text(how.value === 'res' ? 'dashed: cooling stream' : 'dashed: constant-temperature source', 700, 0.14, { size: 11.5, color: 'muted' });
+          hT.set(clamp(hT.x, T0.value + 1, 1600), fr(clamp(hT.x, T0.value + 1, 1600)));
+        });
+        v.readout(() => {
+          const T = hT.x, a = T0.value + K0, b = T + K0, f = fr(T);
+          return `Heat at ${v.fix(T, 0)} °C with the environment at ${v.fix(T0.value, 0)} °C: $X/Q = ${how.value === 'res' ? `1 - T_0/T = 1 - ${v.fix(a, 1)}/${v.fix(b, 1)}` : `1 - T_0\\ln(T/T_0)/(T-T_0)`} = ${v.fix(f, 3)}$.\n1 kWh of this heat can be turned into at most ${v.fix(f, 2)} kWh of work; the other ${v.fix(1 - f, 2)} kWh is anergy. Electricity is 100 % exergy.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────── 2.10
+    {
+      num: '2.10', kind: 'Concept', name: 'Cogeneration (combined heat and power)',
+      statement: String.raw`A cogeneration (CHP) plant uses the heat that a power station would reject, delivering it as steam or hot water for industry or district heating. If $W$ is the electricity and $Q_u$ the useful heat from fuel energy $F$, the **fuel utilisation** is $(W+Q_u)/F$; it can reach 80–90 %, against 35–45 % for electricity alone. But heat is worth less than electricity: the **exergy efficiency** $\bigl[W + Q_u(1-T_0/T_d)\bigr]/F_{\rm ex}$ rises much less, and raising the delivery temperature $T_d$ of the heat lowers the electricity produced.`,
+      idea: String.raw`The condenser of a power station rejects more than half the fuel energy at 30–40 °C, too cold to use. Raising the turbine exhaust pressure so the heat comes out at 90–150 °C makes it useful, at the price of a smaller expansion: the electrical efficiency, roughly a fixed fraction of the Carnot factor $1-T_d/T_h$, falls. Comparing with separate production (a power station plus a boiler) shows fuel saved; weighting heat by its exergy shows how much of that saving is real thermodynamic gain.`,
+      caption: String.raw`Set the temperature at which heat is delivered and the share of the rejected heat that finds a customer. The four bars give the accounting by **energy** (top pair) and by **exergy** (bottom pair) for electricity-only and for CHP: the energy bar fills up, the exergy bar hardly. Right: how the three efficiencies change with delivery temperature.`,
+      deps: ['energy-2.9'],
+      refs: ['Tester ch. 19'],
+      tags: ['cogeneration', 'district heating'],
+      scope: String.raw`A simple back-pressure model: the steam cycle reaches a fixed fraction (0.64, illustrative) of the Carnot efficiency between 540 °C steam and the heat-rejection temperature, the boiler is lossless, fuel exergy equals fuel energy, and the reference for separate production is a 90 % efficient heat boiler.`,
+      viz(v) {
+        const FACT = 0.64;
+        const sA = v.stage({ x: [0, 100], y: [0, 5.0], axes: false, height: 400, title: 'Energy and exergy accounting of 100 units of fuel', minWidth: 340 });
+        const sB = v.stage({ x: [40, 200], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'delivery temperature of the heat (°C)', ylabel: 'fraction of fuel', title: 'Efficiencies against delivery temperature', minWidth: 340 });
+        const Td = v.slider('heat delivery temperature $T_d$ (°C)', 40, 200, 100, { step: 5 });
+        const u = v.slider('share of rejected heat used', 0, 1, 0.9, { step: 0.01 });
+        const Th = v.slider('steam temperature (°C)', 400, 600, 540, { step: 10 });
+        const T0 = 283.15, TC0 = 35;
+        const model = (td, uu) => {
+          const TH = Th.value + K0, eP = FACT * (1 - (TC0 + K0) / TH), eC = FACT * (1 - (td + K0) / TH);
+          const W = eC * 100, Qu = uu * (100 - W), Xh = Qu * (1 - T0 / (td + K0));
+          return { eP, eC, W, Qu, Xh, util: (W + Qu) / 100, ex: (W + Xh) / 100, lossE: 100 - W - Qu, lossX: 100 - W - Xh, sep: eC * 100 / eP + Qu / 0.9 };
+        };
+        v.legend([['green', 'electricity', { area: true }], ['orange', 'useful heat (energy) or its exergy', { area: true }], ['muted', 'rejected', { area: true }], ['red', 'exergy destroyed or lost', { area: true }]]);
+        v.render(() => {
+          const M = model(Td.value, u.value), P = { W: M.eP * 100, Qu: 0, Xh: 0 };
+          const bar = (y, parts) => { let x = 0; for (const [val, col, lab] of parts) { if (val > 0.05) { sA.rect(x, y, x + val, y + 0.62, { fill: col, fillAlpha: 0.55, color: col, width: 1.1 }); if (val > 9) sA.text(`${lab} ${v.fix(val, 0)}`, x + val / 2, y + 0.31, { size: 12, weight: 600, align: 'center', baseline: 'middle' }); } x += val; } };
+          sA.text('energy', 1, 4.7, { size: 12, color: 'muted', align: 'left' }); sA.text('exergy', 1, 2.35, { size: 12, color: 'muted', align: 'left' });
+          bar(3.7, [[P.W, 'green', 'electricity'], [100 - P.W, 'muted', 'rejected']]);
+          bar(2.8, [[M.W, 'green', 'electricity'], [M.Qu, 'orange', 'heat'], [M.lossE, 'muted', 'rejected']]);
+          bar(1.5, [[P.W, 'green', 'electricity'], [100 - P.W, 'red', 'destroyed']]);
+          bar(0.6, [[M.W, 'green', 'electricity'], [M.Xh, 'orange', 'heat'], [M.lossX, 'red', 'destroyed']]);
+          sA.text('electricity only', 1, 3.52, { size: 11.5, color: 'muted', align: 'left' }); sA.text('CHP', 1, 2.62, { size: 11.5, color: 'muted', align: 'left' });
+          sA.text('electricity only', 1, 1.32, { size: 11.5, color: 'muted', align: 'left' }); sA.text('CHP', 1, 0.42, { size: 11.5, color: 'muted', align: 'left' });
+          const xs = Array.from({ length: 60 }, (_, i) => lerp(40, 200, i / 59));
+          sB.path(xs.map((t) => [t, model(t, u.value).eC]), { color: 'green', width: 2.6 }); sB.path(xs.map((t) => [t, model(t, u.value).util]), { color: 'orange', width: 2.6 }); sB.path(xs.map((t) => [t, model(t, u.value).ex]), { color: 'purple', width: 2.6 });
+          sB.hline(M.eP, { color: 'green', width: 1.3, dash: true });
+          sB.dot(Td.value, M.eC, { r: 5.5, color: 'green' }); sB.dot(Td.value, M.util, { r: 5.5, color: 'orange' }); sB.dot(Td.value, M.ex, { r: 5.5, color: 'purple' });
+          sB.text('fuel utilisation', 195, model(195, u.value).util + 0.04, { color: 'orange', size: 12, align: 'right' }); sB.text('exergy efficiency', 195, model(195, u.value).ex + 0.05, { color: 'purple', size: 12, align: 'right' }); sB.text('electrical efficiency', 195, model(195, u.value).eC - 0.06, { color: 'green', size: 12, align: 'right' });
+        });
+        v.readout(() => {
+          const M = model(Td.value, u.value), saving = 1 - 100 / M.sep;
+          return `Electricity only: $\\eta_e = ${pc1(v, M.eP)}$. CHP at ${Td.value} °C: electricity ${pc1(v, M.eC)}, useful heat ${pc1(v, M.Qu / 100)}, so fuel utilisation $= ${pc1(v, M.util)}$ but exergy efficiency only ${pc1(v, M.ex)} (heat at ${Td.value} °C is worth ${v.fix(1 - T0 / (Td.value + K0), 2)} kWh of work per kWh).\nCompared with a power station plus a 90 % boiler making the same outputs, CHP saves ${pc1(v, saving, 0)} of the fuel.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────── 2.11
+    {
+      num: '2.11', kind: 'Model', name: 'Heat pumps and the coefficient of performance',
+      statement: String.raw`A heat pump is a heat engine run backwards: it takes work $W$ to move heat $Q_c$ from a cold place (outdoors, $T_c$) to a warm one (the building, $T_h$), delivering $Q_h = Q_c + W$. Its figure of merit is the **coefficient of performance** $\mathrm{COP} = Q_h/W$. The second law limits it to
+$$\mathrm{COP}\le \mathrm{COP}_{\rm Carnot} = \frac{T_h}{T_h-T_c},$$
+which grows as the temperature lift $T_h-T_c$ shrinks. Real machines reach a fraction $\eta_{II}\approx 0.4$–$0.5$ of it, so a COP of 3–4 is typical, against 1 for resistance heating.`,
+      idea: String.raw`Reverse the Carnot engine: the cycle that takes $Q_c$ at $T_c$ and gives $Q_h$ at $T_h$ with zero entropy production needs $Q_h/T_h = Q_c/T_c$, hence $W = Q_h - Q_c = Q_h(T_h-T_c)/T_h$ and $\mathrm{COP} = Q_h/W = T_h/(T_h-T_c)$. Heat is moved, not made: each unit of work brings several units of heat out of the air, which is why electricity used in a heat pump can beat burning the fuel that made the electricity.`,
+      caption: String.raw`Set the outdoor temperature (drag the gold handle), the temperature at which heat is delivered (underfloor loops need about 35 °C, radiators 55 °C) and the second-law efficiency. The left plot compares the Carnot COP, the realistic COP, resistance heating and the break-even level against a gas boiler; the right panel is the reversed Carnot cycle on a $T$–$S$ diagram: green is the work, and the red strip the work wasted by real machines.`,
+      deps: ['energy-2.2'],
+      refs: ['MacKay App. E', 'Tester ch. 18'],
+      tags: ['heat pump', 'refrigeration'],
+      scope: String.raw`Steady operation at fixed temperatures; real COPs also drop with defrosting and part-load. The second-law efficiency (0.45) and the climate used for the seasonal figure (annual mean 9 °C, swing ±8 K, heating needed below 17 °C) are illustrative assumptions.`,
+      viz(v) {
+        const sA = v.stage({ x: [-20, 20], y: [0, 12], axes: 'box', gutter: true, height: 360, xlabel: 'outdoor temperature (°C)', ylabel: 'COP', title: 'COP against outdoor temperature', minWidth: 330 });
+        const sB = v.stage({ x: [0, 1.6], y: [0, 400], axes: 'box', gutter: true, height: 360, xlabel: 'entropy S (arbitrary units)', ylabel: 'T (K)', title: 'The reversed Carnot cycle', minWidth: 330 });
+        const Ts = v.slider('delivery temperature $T_h$ (°C)', 30, 65, 35, { step: 1 });
+        const e2 = v.slider('second-law efficiency $\\eta_{II}$', 0.25, 0.7, 0.45, { step: 0.01 });
+        const eg = v.slider('grid / power-plant efficiency', 0.3, 0.6, 0.4, { step: 0.01 });
+        const cop = (To, Tsup = Ts.value, e = e2.value) => e * (Tsup + K0) / Math.max(Tsup - To, 1);
+        const carn = (To, Tsup = Ts.value) => (Tsup + K0) / Math.max(Tsup - To, 1);
+        const hO = sA.handle(2, 4, { color: 'gold', r: 8, constrain: (x) => { const t = clamp(x, -20, Math.min(20, Ts.value - 5)); return [t, Math.min(11.8, cop(t))]; } });
+        v.legend([['accent', 'Carnot COP', { dash: true }], ['green', 'realistic COP'], ['red', 'electric resistance, COP = 1'], ['gold', 'break-even with a gas boiler', { dash: true }]]);
+        v.render(() => {
+          const To = clamp(hO.x, -20, Math.min(20, Ts.value - 5));
+          const xs = Array.from({ length: 80 }, (_, i) => lerp(-20, Math.min(20, Ts.value - 3), i / 79));
+          sA.path(xs.map((t) => [t, carn(t)]), { color: 'accent', width: 2, dash: true }); sA.path(xs.map((t) => [t, cop(t)]), { color: 'green', width: 3.2 });
+          sA.hline(1, { color: 'red', width: 2 }); sA.hline(0.9 / eg.value, { color: 'gold', width: 1.8, dash: true });
+          sA.text('gas boiler 90 % ⇔ COP ' + v.fix(0.9 / eg.value, 2), 6, 0.9 / eg.value - 0.5, { size: 11.5, color: 'gold', align: 'left' });
+          sA.band && 0;
+          hO.set(To, Math.min(11.8, cop(To)));
+          // reversed carnot cycle
+          const Th = Ts.value + K0, Tc = To + K0, Qc = Tc * 1, Wc = (Th - Tc) * 1, Wr = Wc / e2.value;
+          sB.setView([0, 1.6], [0, Math.max(400, Th * 1.2)]);
+          sB.poly([[0.3, 0], [1.3, 0], [1.3, Tc], [0.3, Tc]], { fill: 'accent', fillAlpha: 0.22, stroke: false });
+          sB.poly([[0.3, Tc], [1.3, Tc], [1.3, Th], [0.3, Th]], { fill: 'green', fillAlpha: 0.3, color: 'green', width: 2 });
+          const ext = (Wr - Wc) / 1.0; // extra temperature-equivalent height of wasted work, drawn above Th
+          sB.poly([[0.3, Th], [1.3, Th], [1.3, Th + ext], [0.3, Th + ext]], { fill: 'red', fillAlpha: 0.22, hatch: 'red', color: 'red', width: 1.2 });
+          sB.text('heat from outdoors $Q_c = T_c\\Delta S$', 0.8, Tc / 2, { size: 12.5, align: 'center', color: 'accent' });
+          sB.text('ideal work', 0.8, (Th + Tc) / 2, { size: 12.5, align: 'center', color: 'green', weight: 600 });
+          sB.text('extra work of a real machine', 0.8, Th + ext / 2, { size: 11.5, align: 'center', color: 'red', baseline: 'middle' });
+        });
+        v.readout(() => {
+          const To = clamp(hO.x, -20, Math.min(20, Ts.value - 5));
+          // seasonal model
+          let dem = 0, el = 0; for (let d = 0; d < 365; d++) { const T = 9 - 8 * Math.cos(2 * Math.PI * (d - 15) / 365), D = Math.max(0, 17 - T); dem += D; el += D / cop(T); }
+          const scop = dem / el, prim = (dem / 0.9) / (el / eg.value);
+          return `At ${v.fix(To, 0)} °C outside and heat delivered at ${Ts.value} °C: Carnot $\\mathrm{COP} = T_h/(T_h-T_c) = ${v.fix(carn(To), 1)}$, realistic $\\mathrm{COP} = ${v.fix(cop(To), 2)}$ (each kWh of electricity brings ${v.fix(cop(To) - 1, 2)} kWh out of the air).\nOver an illustrative year the seasonal COP is $${v.fix(scop, 2)}$, and the primary fuel needed is ${v.fix(1 / prim, 2)} times that of a gas boiler for the same heat.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────── 2.12
+    {
+      num: '2.12', kind: 'Model', name: 'Stirling cycle',
+      statement: String.raw`The Stirling cycle encloses a fixed mass of gas and has four processes: isothermal expansion at $T_h$ (heat $Q=nRT_h\ln r$ in, work out), constant-volume cooling to $T_c$, isothermal compression at $T_c$, and constant-volume heating back to $T_h$. A **regenerator** stores the heat given up in the cooling stage and returns it in the heating stage. With regenerator effectiveness $\varepsilon$ the heat that must be supplied externally is $nRT_h\ln r + (1-\varepsilon)\,nc_v(T_h-T_c)$ and the efficiency is
+$$\eta = \frac{nR\,(T_h-T_c)\ln r}{nRT_h\ln r + (1-\varepsilon)\,n c_v (T_h-T_c)},$$
+which equals the Carnot value $1-T_c/T_h$ when $\varepsilon=1$.`,
+      idea: String.raw`Without a regenerator the constant-volume stages need heat from the reservoirs at the wrong temperatures, wasting efficiency; the regenerator (a porous matrix the gas flows through) takes the heat of the cooling stroke and hands it back, so only the two isothermal heat exchanges remain with the reservoirs, and those are exactly a Carnot engine's. The enclosed area of the loop on the $p$–$V$ diagram is the net work, $nR(T_h-T_c)\ln r$, whatever the regenerator does.`,
+      caption: String.raw`Left: the loop in the $p$–$V$ plane with a gold marker you can move round with the *phase* slider; middle: the same cycle on a $T$–$S$ diagram, whose enclosed area is again the work; right: the efficiency against regenerator effectiveness, which meets the Carnot line only at $\varepsilon=1$. Change the gas and the compression ratio to see that they do not change the perfect-regenerator result.`,
+      deps: ['energy-2.2'],
+      refs: ['Tester ch. 3'],
+      tags: ['stirling engine', 'regenerator'],
+      credit: 'Robert Stirling, 1816',
+      scope: String.raw`Ideal gas with temperature-independent $c_v$, isothermal heat exchange, no dead volume, no pumping or leakage losses; real Stirling engines achieve a fraction of the ideal figure.`,
+      viz(v) {
+        const sA = v.stage({ x: [0, 7], y: [0, 3], axes: 'box', gutter: true, height: 340, xlabel: 'volume $V$ (relative)', ylabel: 'pressure $p$ (relative)', title: '$p$–$V$ diagram', minWidth: 280 });
+        const sB = v.stage({ x: [0, 4], y: [0, 1300], axes: 'box', gutter: true, height: 340, xlabel: 'entropy $S/nR$', ylabel: 'T (K)', title: '$T$–$S$ diagram', minWidth: 280 });
+        const sC = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'regenerator effectiveness $\\varepsilon$', ylabel: 'efficiency', title: 'Efficiency against regenerator', minWidth: 280 });
+        const rS = v.slider('volume ratio $r = V_{max}/V_{min}$', 1.5, 6, 3, { step: 0.1 });
+        const eS = v.slider('regenerator effectiveness $\\varepsilon$', 0, 1, 0.9, { step: 0.01 });
+        const Th = v.slider('$T_h$ (K)', 400, 1200, 800, { step: 10 });
+        const Tc = v.slider('$T_c$ (K)', 280, 500, 300, { step: 5 });
+        const gas = v.select('gas', [{ value: '1.5', label: 'helium ($c_v=\\tfrac32R$)' }, { value: '2.5', label: 'air/hydrogen ($c_v=\\tfrac52R$)' }], '2.5');
+        const ph = v.slider('phase round the cycle', 0, 1, 0.12, { step: 0.005 });
+        const eta = (r, e, th, tc, cv) => { const l = Math.log(r); return (th - tc) * l / (th * l + (1 - e) * cv * (th - tc)); };
+        const geom = () => {
+          const th = Th.value, tc = Math.min(Tc.value, th - 20), r = rS.value, cv = +gas.value, p0 = 1; // units: nR = 1, V_min = 1
+          const P = [], S = [], n = 40, sc = cv * Math.log(tc);
+          const cvl = (T) => cv * Math.log(T);
+          // A (V=1,T=th) → B (V=r,T=th) → C (V=r,T=tc) → D (V=1,T=tc) → A
+          const seg = [];
+          for (let i = 0; i <= n; i++) { const V = lerp(1, r, i / n); seg.push({ V, T: th, s: cvl(th) + Math.log(V) }); }
+          for (let i = 1; i <= n; i++) { const T = lerp(th, tc, i / n); seg.push({ V: r, T, s: cvl(T) + Math.log(r) }); }
+          for (let i = 1; i <= n; i++) { const V = lerp(r, 1, i / n); seg.push({ V, T: tc, s: cvl(tc) + Math.log(V) }); }
+          for (let i = 1; i < n; i++) { const T = lerp(tc, th, i / n); seg.push({ V: 1, T, s: cvl(T) }); }
+          seg.forEach((o) => { o.p = o.T / o.V; });
+          return { th, tc, r, cv, seg, s0: cvl(tc) };
+        };
+        v.legend([['accent', 'cycle'], ['gold', 'state', { dot: true }], ['green', 'Carnot value', { dash: true }]]);
+        v.render(() => {
+          const G = geom(), { th, tc, r, cv, seg } = G;
+          const pmax = th, pmin = tc / r;
+          sA.setView([0, r * 1.25], [0, pmax * 1.15]);
+          sA.poly(seg.map((o) => [o.V, o.p]), { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 3 });
+          sB.setView([0, Math.log(r) + cv * Math.log(th / tc) + 0.6], [0, th * 1.15]);
+          const ss = seg.map((o) => [o.s - G.s0, o.T]);
+          sB.poly(ss, { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 3 });
+          sA.text('isothermal expansion (hot)', r / 2 + 0.3, th / (r / 2 + 0.3) + th * 0.08, { size: 12, color: 'orange', align: 'left' });
+          sA.text('isothermal compression (cold)', 1.1, tc / 1.1 * 0.3, { size: 12, color: 'teal', align: 'left' });
+          sB.text('regenerator exchanges heat along both vertical sides', Math.log(r) / 2 + cv * Math.log(th / tc) / 2 + 0.3, tc * 0.5, { size: 11.5, color: 'muted', align: 'center' });
+          // marker
+          const k = Math.round(ph.value * (seg.length - 1)), o = seg[Math.min(k, seg.length - 1)];
+          sA.dot(o.V, o.p, { r: 7, color: 'gold' }); sB.dot(o.s - G.s0, o.T, { r: 7, color: 'gold' });
+          // efficiency curve
+          const es = Array.from({ length: 41 }, (_, i) => i / 40);
+          sC.setView([0, 1], [0, Math.min(0.95, 1 - tc / th + 0.12)]);
+          sC.path(es.map((e) => [e, eta(r, e, th, tc, cv)]), { color: 'accent', width: 3 });
+          sC.hline(1 - tc / th, { color: 'green', width: 1.8, dash: true });
+          sC.dot(eS.value, eta(r, eS.value, th, tc, cv), { r: 6, color: 'gold' });
+          sC.text('Carnot', 0.02, 1 - tc / th + 0.02, { size: 12, color: 'green', align: 'left' });
+        });
+        v.readout(() => {
+          const G = geom(), { th, tc, r, cv, seg } = G;
+          const W = Math.abs(polyArea(seg.map((o) => [o.V, o.p]))), Wf = (th - tc) * Math.log(r);
+          const Qiso = th * Math.log(r), Qreg = (1 - eS.value) * cv * (th - tc);
+          const k = Math.round(ph.value * (seg.length - 1)), n = 40, step = k <= n ? 'isothermal expansion: heat flows in from the hot source' : k <= 2 * n ? 'cooling at constant volume: the regenerator absorbs heat' : k <= 3 * n ? 'isothermal compression: heat flows out to the cold sink' : 'heating at constant volume: the regenerator returns the heat';
+          return `Loop area $= ${fx(v, W, 1)}$ in units of $nR\\,\\mathrm{K}$ (formula $(T_h-T_c)\\ln r = ${fx(v, Wf, 1)}$). Heat in: isothermal $${fx(v, Qiso, 0)}$ plus the regenerator's shortfall $${fx(v, Qreg, 0)}$.\n$\\eta = ${pc1(v, W / (Qiso + Qreg))}$ against Carnot ${pc1(v, 1 - tc / th)}$. Now: ${step}.`;
+        });
+      },
+    },
+
   ],
 };

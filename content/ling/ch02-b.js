@@ -26,7 +26,7 @@ const ORDERING = {
 };
 
 // ---------- 2.7 ----------
-const placeOf = (s) => { const f = SEG[s]?.f; return !f ? '' : f.lab === '+' ? 'labial' : f.dor === '+' ? 'dorsal' : f.cor === '+' ? 'coronal' : ''; };
+const placeOf = (s) => { const f = SEG[s]?.f; return !f || f.syl === '+' ? '' : f.lab === '+' ? 'labial' : f.dor === '+' ? 'dorsal' : f.cor === '+' ? 'coronal' : ''; };
 const PROC = {
   nasal: {
     name: 'nasal place assimilation', rule: { A: 'n', B: (t, l, r) => { const f = SEG[r.s].f; return f.lab === '+' ? 'm' : f.dor === '+' ? 'ŋ' : 'n'; }, L: [], R: ['[-son -cont -strid]'] }, rtex: String.raw`\text{n}\to[\alpha\,\text{place}]\ /\ \_\_\ \begin{bmatrix}-\text{son}\\-\text{cont}\end{bmatrix}_{[\alpha\,\text{place}]}`,
@@ -170,11 +170,11 @@ export default {
       name: 'Phonotactics',
       statement: String.raw`**Phonotactics** is the knowledge of which sound sequences are possible in a language. Speakers judge novel words by it: English speakers accept *blick* as a possible word, reject *bnick*, and find *ptak* even worse in English than in Polish. Some missing sequences are **accidental gaps** (no English word happens to be *dwik*, although *dwell* shows the onset is fine) and some are **systematic gaps** (*bn* cannot begin an English word), and the difference is whether a general pattern forbids them.`,
       idea: String.raw`A learner can acquire phonotactics from the lexicon alone by counting what occurs, but raw counts do not separate the two kinds of gap: an unseen cluster in a class that is common (stop + glide) should be less surprising than one in a class that is never seen (stop + nasal). So the model here backs off from clusters to **manner classes**, a feature-level generalisation (2.3, 2.4), and, unlike a bigram model that only looks at adjacent segments, it scores onsets, nuclei and codas as units of the syllable (2.9). The bigram model's blind spot is exactly why *ptak* and *mbik* look acceptable to it: *p t* and *m b* both occur in the middle of words.`,
-      caption: String.raw`Type a word in the simple respelling (a e i o u = æ ɛ ɪ ɑ ʌ; ee oo ay ie ow = i u eɪ aɪ aʊ; sh ch th ng j y r as in IPA; *blik* is *blick*, *bnik* is *bnick*) or choose one. Bars show the **surprisal** $-\log_2 P$ of each unit under the chosen model; the histogram places the word's average surprisal per segment among the 489 words of the lexicon (each scored by a model that has not seen it). Compare the two models on *ptak*, *mbik* and *tlip*. The lexicon is a small hand-written sample, so a few gaps are the model's, not English's.`,
+      caption: String.raw`Type a word in the simple respelling (a e i o u = æ ɛ ɪ ɑ ʌ; ee oo ay ie ow = i u eɪ aɪ aʊ; sh ch th ng j y r as in IPA; *blik* is *blick*, *bnik* is *bnick*) or choose one. Bars show the **surprisal** $-\log_2 P$ of each unit under the chosen model; the histogram places the word's average surprisal per segment among the 486 words of the lexicon (each scored by a model that has not seen it). Compare the two models on *ptak*, *mbik* and *tlip*. The lexicon is a small hand-written sample, so a few gaps are the model's, not English's.`,
       deps: ['ling-2.1'],
       refs: ['Fromkin et al.'],
       tags: ['phonotactics', 'learning'],
-      scope: String.raw`The lexicon is a hand-written sample of common English words (about 490), not a corpus, and the probabilities are add-constant smoothed counts; real phonotactic learners (Hayes and Wilson, 2008) use many more features.`,
+      scope: String.raw`The lexicon is a hand-written sample of common English words (486 words), not a corpus, and the probabilities are add-constant smoothed counts; real phonotactic learners (Hayes and Wilson, 2008) use many more features.`,
       viz(v) {
         const M = trainPhonotactics();
         const inp = v.input('word', 'blik', { width: 150, placeholder: 'respelled' });
