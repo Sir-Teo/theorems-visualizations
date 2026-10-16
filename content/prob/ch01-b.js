@@ -216,9 +216,9 @@ Dividing by $\sqrt{2\pi}$ bounds the standard normal tail $P(Z\ge x)$. Since the
           if (L) sT.text('lower bound ≤ 0 for x ≤ 1', 1.05, 3e-10, { size: 11, color: 'blue' });
           // lower panel
           const md = view.value;
-          if (md !== lastView) { lastView = md; sB.setLabels(md === 'ratio' ? '$x$' : md === 'up' ? '$z$' : '$y$', null); }
+          if (md !== lastView) { lastView = md; sB.setLabels(null, null); }
           if (md === 'ratio') {
-            sB.setView([0.25, 6], [-1, 3]); sB.setTitle('ratios to the exact tail');
+            sB.setView([0.25, 6], [-1, 3]); sB.setTitle('ratios of the bounds to the exact tail, against x');
             sB.hline(1, { color: 'ink', width: 1.4, dash: [4, 4] });
             sB.fn((t) => up(t) / tail(t), { color: 'red', width: 2.2 });
             sB.fn((t) => lo(t) / tail(t), { color: 'blue', width: 2.2 });
@@ -347,7 +347,7 @@ Examples: the point mass at $0$, $F=1_{[0,\infty)}$, is discrete (1.2.8); $F=\su
           sH.setView(null, [0, mx * 1.12]);
           sH.hist(H, { density: true, color: 'purple', fillAlpha: 0.55, outline: k <= 4, gap: 0 });
           sH.hline(1.5 ** k, { color: 'ink', width: 1.2, dash: [5, 4] });
-          sH.text('(3/2)^k', 1.01, 1.5 ** k, { size: 11, align: 'right', baseline: 'bottom', dy: -2 });
+          sH.text('(3/2)ᵏ', 1.01, 1.5 ** k, { size: 11, align: 'right', baseline: 'bottom', dy: -2 });
           let sup = 0; for (let j = 0; j <= 3000; j++) { const x = j / 3000; sup = Math.max(sup, Math.abs(v.M.cantorFn(x, 30) - cantorN(x, n))); }
           info = { n, k, hit: H.counts.filter((c) => c > 0).length, N, mx, sup, removed: 1 - (2 / 3) ** n };
           v.legend([['ink', 'Cantor function $F$'], ['gold', '$F_n$'], ['orange', 'removed intervals', { area: true }], ['purple', 'histogram', { area: true }]]);

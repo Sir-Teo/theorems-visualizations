@@ -13,7 +13,8 @@ function invariants(G) {
   const H = ix(G), d = degrees(H).sort((a, b) => b - a), { g } = girth(H), e = eccs(H);
   let tri = 0; const A = H.adj.map((l) => new Set(l.map(([w]) => w)));
   H.E.forEach(([a, b]) => { for (const w of A[a]) if (w > b && A[b].has(w)) tri++; });
-  return { n: H.n, m: H.m, deg: d.join(''), g, diam: e.diam, tri };
+  const cnt = {}; d.forEach((x) => (cnt[x] = (cnt[x] || 0) + 1));
+  return { n: H.n, m: H.m, deg: Object.keys(cnt).sort((a, b) => b - a).map((x) => `${x}^${cnt[x]}`).join(' '), g, diam: e.diam, tri };
 }
 /** Random graph with girth ≥ t and average degree ≥ d (greedy insertion); returns {n, avg, g}. */
 function greedyGirth(n, t, d, r) {
@@ -84,8 +85,8 @@ export default {
         const L = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.3], axes: false, equal: true, height: 300, title: '$G$ (Petersen graph)' });
         const R = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.3], axes: false, equal: true, height: 300, title: "$G'$" });
         const PET = named('petersen'), LET = 'abcdefghij';
-        const GL = v.graph(L, { nodes: PET.nodes.map((n) => ({ ...n, label: LET[n.id] })), edges: PET.edges, layout: 'fit', r: 13 });
-        const GR = v.graph(R, { nodes: [], edges: [], layout: 'none', r: 13 });
+        const GL = v.graph(L, { nodes: PET.nodes.map((n) => ({ ...n, label: LET[n.id] })), edges: PET.edges, layout: 'fit', r: 13, pad: 30 });
+        const GR = v.graph(R, { nodes: [], edges: [], layout: 'none', r: 13, pad: 30 });
         const cyc = [3, 4, 9, 6, 8, 5, 0, 1, 2], sig = { 7: 9 }; cyc.forEach((u, i) => (sig[u] = i));
         const ringXY = (i) => (i < 9 ? [Math.cos(Math.PI / 2 - (2 * Math.PI * i) / 9), Math.sin(Math.PI / 2 - (2 * Math.PI * i) / 9)] : [0, 0]);
         let phi = new Map(), selL = null, msg = '';
@@ -134,7 +135,7 @@ export default {
           const { img } = status(); let good = 0, bad = 0; for (const e of GL.edges) { const s = img(e.from, e.to); if (s > 0) good++; else if (s < 0) bad++; }
           const IR = invariants(GR), row = (name, a, b) => `${name} ${a} | ${b}${a === b ? '' : ' ✗'}`;
           const verdict = phi.size === 10 && bad === 0 && good === 15 ? ' — **an isomorphism**' : msg ? ` — ${msg}` : '';
-          return `φ maps ${phi.size}/10 vertices · ${good} edges preserved, ${bad} broken${verdict}<br>invariants $G$ | $G'$: ${row('order', IL.n, IR.n)} · ${row('edges', IL.m, IR.m)} · ${row('degrees', IL.deg, IR.deg)} · ${row('girth', IL.g, IR.g)} · ${row('diameter', IL.diam, IR.diam)}`;
+          return `φ maps ${phi.size}/10 vertices · ${good} edges preserved, ${bad} broken${verdict}\n\ninvariants $G$ | $G'$: ${row('order', IL.n, IR.n)} · ${row('edges', IL.m, IR.m)} · ${row('degrees', `$${IL.deg}$`, `$${IR.deg}$`)} · ${row('girth', IL.g, IR.g)} · ${row('diameter', IL.diam, IR.diam)}`;
         });
       },
     },

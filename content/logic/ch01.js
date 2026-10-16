@@ -544,7 +544,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             for (let lev = 1; lev <= 4; lev++) v.M.cantorIntervals(lev).forEach(([a, b]) => ln.rect(a, yC + 0.15 + lev * 0.13, b, yC + 0.2 + lev * 0.13, { fill: 'faint', fillAlpha: 0.6, stroke: false }));
             let c = 0; for (const n of S) c += 2 * 3 ** -(n + 1);
             ln.line(c, yC - 0.3, c, yC + 0.8, { color: 'blue', width: 2 }); ln.dot(c, yC, { r: 6, color: 'blue' });
-            ln.text(`c(S) = 0.${[...Array(10)].map((_, n) => (S.has(n) ? 2 : 0)).join('')}…₃ = ${c.toFixed(6)}`, Math.min(c + 0.02, 0.62), yC - 0.42, { size: 11.5, color: 'blue', weight: 600 });
+            ln.text(`c(S) = 0.${[...Array(10)].map((_, n) => (S.has(n) ? 2 : 0)).join('')}…₃ = ${c.toFixed(6)}`, 0, yC - 0.5, { size: 11.5, color: 'blue', weight: 600 });
             ruler(0, 1, 2.8, 1);
             ln.text('b: [0,1) → 𝒫(ℕ) by binary digits', 0, 2.25, { size: 12, weight: 600, color: 'teal' });
             ln.line(0, 1.15, 1, 1.15, { color: 'ink', width: 1.6 });
