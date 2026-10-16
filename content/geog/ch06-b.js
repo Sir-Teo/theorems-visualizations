@@ -171,9 +171,9 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
             const p = M.F(L * D2R, f * D2R); jacEllipse(s, p[0], p[1], J, 0.2, M.eq ? 'green' : 'orange');
           }
           // scatter
-          const drawPt = (x, y, col, lab, big) => sB.dot(x, y, { color: col, r: big ? 6 : 4, hollow: !big, label: lab, labelPos: 'ne' });
+          const drawPt = (x, y, col, lab, big, pos = 'ne') => sB.dot(x, y, { color: col, r: big ? 6 : 4, hollow: !big, label: lab, labelPos: pos });
           for (const q of REF) drawPt(1, q.w, q.c, q.n, false);
-          for (const kk of Object.keys(MAPS)) drawPt(cutInfo[kk].len, E[kk].shape, kk === k ? 'red' : MAPS[kk].eq ? 'green' : 'orange', MAPS[kk].short, kk === k);
+          for (const kk of Object.keys(MAPS)) drawPt(cutInfo[kk].len, E[kk].shape, kk === k ? 'red' : MAPS[kk].eq ? 'green' : 'orange', MAPS[kk].short, kk === k, kk === 'sinuInt' ? 'se' : 'ne');
           sB.corner('green = equal-area, orange = not', 'br', { color: 'muted' });
           info = { k, M, e: E[k], c: cutInfo[k] };
         });
