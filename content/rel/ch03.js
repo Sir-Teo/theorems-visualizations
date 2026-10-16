@@ -314,7 +314,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
           A.line(-2.5, -2.5, 5, 5, { color: 'red', width: 1.8, alpha: 0.8 }); A.line(-2.5, 2.5, 2.5, -2.5, { color: 'gold', width: 1, alpha: 0.4, dash: [4, 4] });
           A.curve((s) => [Math.cosh(s), Math.sinh(s)], -1.9, 1.9, { color: 'accent', width: 3 });
           A.line(0, -3.2, 0, 4, { color: 'ink', width: 1.4, alpha: 0.6 });
-          A.text('horizon $x=ct$', 3.4, 3.6, { color: 'red', size: 12, align: 'left', dx: 8, dy: 4 });
+          A.text('horizon', 2.2, 2.2, { color: 'red', size: 12, align: 'left', dx: -62, dy: -12 }); A.text('never seen by the rocket', -2.4, 3.5, { color: 'red', size: 12, align: 'left' });
           const d = dS.value; let nr = 0; const pts = [];
           for (let k = -Math.floor(3 / d); k * d <= 3.5; k++) {
             const te = k * d, h = hit(te, 0);
@@ -535,7 +535,7 @@ retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, aft
         v.readout(() => {
           const { b, w0, w1, V0, V1, V0p, V1p, w0p, w1p, val, low } = st; if (w0 === undefined) return '';
           return String.raw`$V^\mu=(${v.fix(V0, 2)},${v.fix(V1, 2)})\to V'^\mu=(${v.fix(V0p, 2)},${v.fix(V1p, 2)})$; ${low ? String.raw`$V_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$ (lowering flips the sign of the space component)` : String.raw`$\omega_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$`}$\to ${low ? "V'_\\mu" : "\\omega'_\\mu"}=(${v.fix(w0p, 2)},${v.fix(w1p, 2)})$ at $v/c=${v.fix(b, 2)}$.` + '\n' +
-            String.raw`${low ? String.raw`$V_\mu V^\mu$` : String.raw`$\omega_\mu V^\mu$`}$=${v.fix(val, 4)}$ in $S$ and $${low ? "V'_\\mu" : "\\omega'_\\mu"}V'^\mu=${v.fix(w0p * V0p + w1p * V1p, 4)}$ in $S'$: the same number.`;
+            String.raw`${low ? String.raw`$V_\mu V^\mu$` : String.raw`$\omega_\mu V^\mu$`}$=${v.fix(val, 4)}$ in $S$ and $${low ? "V'_\\mu" : "\\omega'_\\mu"}\,V'^\mu=${v.fix(w0p * V0p + w1p * V1p, 4)}$ in $S'$: the same number.`;
         });
       },
     },

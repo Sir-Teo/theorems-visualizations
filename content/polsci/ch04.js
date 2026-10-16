@@ -533,7 +533,6 @@ For voters with Euclidean preferences the general result is due to McKelvey; Sch
       tags: ['yolk', 'uncovered set'],
       credit: 'Miller, 1980; Ferejohn, McKelvey & Packel, 1984; McKelvey, 1986',
       scope: String.raw`Euclidean preferences and an odd number of voters in two dimensions; the uncovered set is computed on a finite grid, so its boundary is only approximate.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Uncovered_set' },
       viz(v) {
         const L = 3.2, G = 28;
         const S = v.stage({ x: [-L, L], y: [-L, L], equal: true, axes: false, height: 470, full: true, title: 'ideal points, yolk, uncovered set and sophisticated agenda outcomes' });

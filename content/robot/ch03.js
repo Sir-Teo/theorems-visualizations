@@ -47,9 +47,9 @@ where each $e^{[\mathcal S_i]\theta_i}\in SE(3)$ is the screw motion of 2.7 and 
           v.slider('wrist pitch $\\theta_5$ (°)', -110, 110, 40, { step: 1 }),
         ];
         const rev = v.toggle('reverse the product (wrong order)', false);
-        const SC = v.stage({ x: [-2.6, 2.6], y: [-1.6, 2.6], equal: true, axes: false, height: 400, title: 'an arm with its screw axes' });
+        const SC = v.stage({ x: [-1.3, 3.1], y: [-0.9, 1.7], equal: true, axes: false, height: 420, title: 'an arm with its screw axes' });
         const sc = v.scene3(SC, { yaw: -0.85, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
-        const B = v.stage({ x: [0, 10], y: [0, 6.6], axes: false, height: 400, title: 'the data of the formula', minWidth: 300 });
+        const B = v.stage({ x: [0, 10], y: [0, 6.6], axes: false, height: 420, title: 'the data of the formula', minWidth: 300 });
         let st = null;
         v.render(() => {
           const th = sl.map((s) => s.value * DEG);
@@ -89,7 +89,7 @@ where each $e^{[\mathcal S_i]\theta_i}\in SE(3)$ is the screw motion of 2.7 and 
             B.text(`(${S[i].slice(3).map((x) => cn(x, 2)).join(', ')})`, 6.6, y, { size: 13.5, align: 'center', baseline: 'middle', color: 'ink' });
             B.text(`${cn(sl[i].value, 0)}°`, 9.3, y, { size: 13.5, align: 'center', baseline: 'middle', color: JC[i] });
           }
-          B.text('T(θ) = e^{[S₁]θ₁} e^{[S₂]θ₂} e^{[S₃]θ₃} e^{[S₄]θ₄} e^{[S₅]θ₅} M', 5.0, 0.55, { size: 13.5, align: 'center', color: 'ink', math: true });
+          B.tex('T(\\theta)=e^{[\\mathcal S_1]\\theta_1}\\cdots e^{[\\mathcal S_5]\\theta_5}\\,M', 5.0, 0.7, { size: 15, align: 'center', color: 'ink' });
           st = { Tp, Tw, err: f4(sub4(Tp, C[5])), wrong: norm3(vsub(pof(Tw), pof(Tp))), wrongR: f4(sub4(Tw, Tp)) };
         });
         v.readout(() => {
@@ -127,9 +127,9 @@ Exactly one of $\theta_i$ (revolute) or $d_i$ (prismatic) is the joint variable.
         const a1 = v.slider('$q_1$ (°)', -180, 180, 35, { step: 1 }), a2 = v.slider('$q_2$ (°)', -150, 150, 40, { step: 1 });
         const a3 = v.slider('elbow arm $q_3$ / SCARA $q_4$ (°)', -150, 150, -60, { step: 1 }), sl = v.slider('SCARA slide $q_3$ (length)', 0, 0.5, 0.15, { step: 0.01 });
         const link = v.select('dissect link', ['1', '2', '3', '4'], '2');
-        const SC = v.stage({ x: [-2.5, 2.5], y: [-1.5, 2.3], equal: true, axes: false, height: 400, title: 'frames attached by the DH rules' });
+        const SC = v.stage({ x: [-1.7, 2.7], y: [-0.9, 1.7], equal: true, axes: false, height: 420, title: 'frames attached by the DH rules' });
         const sc = v.scene3(SC, { yaw: -0.8, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
-        const B = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 400, title: 'the DH table', minWidth: 300 });
+        const B = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 420, title: 'the DH table', minWidth: 300 });
         const frames = (rob, q) => {
           const F = [I4()], rows = [];
           rob.rows.forEach((r, i) => {
@@ -178,7 +178,7 @@ Exactly one of $\theta_i$ (revolute) or $d_i$ (prismatic) is the joint variable.
           // table
           const cols = [1.6, 3.6, 5.6, 7.6, 9.2];
           B.text('link', cols[0], 6.8, { size: 12.5, color: 'muted', align: 'center' });
-          ['θ', 'd', 'a', 'α'].forEach((h, k) => B.text(h + (k === 0 || k === 3 ? ' (°)' : ''), cols[k + 1] - (k === 3 ? 0.1 : 0), 6.8, { size: 13.5, color: 'muted', align: 'center', math: true }));
+          ['\\theta_i\\ (^\\circ)', 'd_i', 'a_i', '\\alpha_i\\ (^\\circ)'].forEach((h, k) => B.tex(h, cols[k + 1], 6.8, { size: 14, color: 'muted', align: 'center' }));
           for (let i = 0; i < n; i++) {
             const y = 5.8 - i * 0.95, r = rows[i], sel = i + 1 === ik, isP = rob.rows[i].t === 'P';
             B.rect(0.15, y - 0.4, 9.85, y + 0.4, { fill: sel ? 'accent' : 'muted', fillAlpha: sel ? 0.14 : 0.05, color: sel ? 'accent' : 'faint', width: sel ? 1.8 : 1, radius: 4 });
@@ -273,7 +273,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         v.readout(() => {
           if (!st) return '';
           const { x, y, phi, n } = st, phiw = ((phi + Math.PI) % TAU + TAU) % TAU - Math.PI;
-          return `Tool $(x,y)=(${cn(x, 3)},${cn(y, 3)})$, heading $\\phi=${cn(phiw / DEG, 1)}^\\circ$, distance $r=${fx(st.r, 3)}\\in[${fx(st.inner, 2)},${fx(st.tot, 2)}]$.\nThe closed form, the $SE(2)$ matrix product $\\prod\\mathrm{Rot}(\\theta_i)\\mathrm{Trans}(\\ell_i,0)$ and the ${n}$-factor product of exponentials agree: largest difference $${v.sci(Math.max(st.e2, st.ePoe) + 1e-17, 2)}$.`;
+          return `Tool $(x,y)=(${cn(x, 3)},${cn(y, 3)})$, heading $\\phi=${cn(phiw / DEG, 1)}^\\circ$, distance $r=${fx(st.r, 3)}\\in[${fx(st.inner, 2)},${fx(st.tot, 2)}]$.\nThe closed form, the $SE(2)$ matrix product $\\prod\\mathrm{Rot}(\\theta_i)\\mathrm{Trans}(\\ell_i,0)$ and the ${n}-factor product of exponentials agree: largest difference $${v.sci(Math.max(st.e2, st.ePoe) + 1e-17, 2)}$.`;
         });
       },
     },
@@ -293,7 +293,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         const s1 = v.slider('base turn $\\theta_1$ (°)', -180, 180, 30, { step: 1 }), s2 = v.slider('shoulder $\\theta_2$ (°)', -20, 110, 50, { step: 1 }), s3 = v.slider('elbow $\\theta_3$ (°)', -140, 140, -70, { step: 1 });
         const s4 = v.slider('wrist roll $\\theta_4$ (°)', -180, 180, 40, { step: 1 }), s5 = v.slider('wrist pitch $\\theta_5$ (°)', -179, 179, 50, { step: 1 }), s6 = v.slider('tool roll $\\theta_6$ (°)', -180, 180, -30, { step: 1 });
         const hold = v.toggle('hold the tool orientation (pointing down) while moving joints 1–3', false);
-        const SC = v.stage({ x: [-2.8, 2.8], y: [-1.7, 2.8], equal: true, axes: false, height: 430, title: 'six joints, the last three meeting at one point' });
+        const SC = v.stage({ x: [-2.8, 2.8], y: [-1.3, 2.4], equal: true, axes: false, height: 430, title: 'six joints, the last three meeting at one point' });
         const sc = v.scene3(SC, { yaw: -0.85, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
         const Rref = Ry(90 * DEG); // tool x-axis pointing straight down
         let st = null;
@@ -338,7 +338,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         v.readout(() => {
           if (!st) return '';
           const d = (x) => cn(x / DEG, 1);
-          return `Wrist centre $W=${g3(st.Wc)}$ — it is fixed by $\\theta_1,\\theta_2,\\theta_3$: changing the wrist angles to a different triple moves it by $${v.sci(st.dW + 1e-17, 1)}$. Tool position $p_W+d\\,Re_x=${g3(st.tool)}$, $\\|R^{\\mathsf T}R-I\\|=${v.sci(st.dRot + 1e-17, 1)}$.\n${st.hold ? `Holding the tool pointing down, the wrist solved for $(\\theta_4,\\theta_5,\\theta_6)=(${d(st.t4)}^\\circ,${d(st.t5)}^\\circ,${d(st.t6)}^\\circ)$ (the sliders are overridden).` : `Wrist angles $(${d(st.t4)}^\\circ,${d(st.t5)}^\\circ,${d(st.t6)}^\\circ)$.`}${st.singular ? ' **Wrist singularity:** axes 4 and 6 coincide, only $\\theta_4+\\theta_6$ matters.' : ''}`;
+          return `Wrist centre $W=${g3(st.Wc)}$ — it is fixed by $\\theta_1,\\theta_2,\\theta_3$: changing the wrist angles to a different triple moves it by $${v.sci(st.dW + 1e-17, 1)}$.\nTool position $p_W+d\\,Re_x=${g3(st.tool)}$, $\\|R^{\\mathsf T}R-I\\|=${v.sci(st.dRot + 1e-17, 1)}$.\n${st.hold ? `Holding the tool pointing down, the wrist solved for $(\\theta_4,\\theta_5,\\theta_6)=(${d(st.t4)}^\\circ,${d(st.t5)}^\\circ,${d(st.t6)}^\\circ)$ (the sliders are overridden).` : `Wrist angles $(${d(st.t4)}^\\circ,${d(st.t5)}^\\circ,${d(st.t6)}^\\circ)$.`}${st.singular ? ' **Wrist singularity:** axes 4 and 6 coincide, only $\\theta_4+\\theta_6$ matters.' : ''}`;
         });
       },
     },
@@ -371,9 +371,9 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
         const sd = v.slider('offset $d$', -1, 1, P[0].d, { step: 0.01, onChange: (x) => { cur().d = x; } });
         const sth = v.slider('joint angle $\\theta$ (°)', -180, 180, P[0].th, { step: 1, onChange: (x) => { cur().th = x; } });
         let lastSel = '1';
-        const SC = v.stage({ x: [-3, 3], y: [-1.8, 2.8], equal: true, axes: false, height: 420, title: 'a serial chain with its frames' });
+        const SC = v.stage({ x: [-1.7, 2.9], y: [-1.0, 1.9], equal: true, axes: false, height: 440, title: 'a serial chain with its frames' });
         const sc = v.scene3(SC, { yaw: -0.8, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
-        const B = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 420, title: 'the link table', minWidth: 300 });
+        const B = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 440, title: 'the link table', minWidth: 300 });
         let st = null;
         v.render(() => {
           const n = nJ.value, k = Math.min(+sel.value, n);
@@ -392,20 +392,19 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
             const Op = pof(Fcl[i - 1]), zp = mcol(Rof(Fcl[i - 1]), 2), Oi = pof(Fcl[i]), foot = vadd(Op, vsc(zp, P[i - 1].d)), hl = i === k;
             sc.line(Op, foot, { color: JC[i - 1], width: hl ? 7 : 5, alpha: hl ? 0.95 : 0.6 }); sc.line(foot, Oi, { color: JC[i - 1], width: hl ? 7 : 5, alpha: hl ? 0.95 : 0.6 });
             sc.line(vadd(Op, vsc(zp, -0.5)), vadd(Op, vsc(zp, 0.5)), { color: JC[i - 1], width: 1.3, dash: true, alpha: 0.6, top: false });
-            sc.tex(`\\text{joint }${i}`, vadd(Op, vsc(zp, 0.62)), { color: JC[i - 1], size: 11.5 });
           }
           const fr = modern ? G.map((T, i) => ({ T, name: i + 1 })).concat([{ T: Tend, name: 't' }]) : Fcl.map((T, i) => ({ T, name: i }));
           for (const { T, name } of fr) {
             const R = Rof(T), p = pof(T);
             sc.arrow(p, vadd(p, vsc(mcol(R, 2), 0.32)), { color: 'accent', width: 2.2, head: 7 }); sc.arrow(p, vadd(p, vsc(mcol(R, 0), 0.32)), { color: 'red', width: 2.2, head: 7 });
-            sc.dot(p, { color: 'ink', r: 3 }); sc.tex(`\\{${name}\\}`, vadd(p, [0.05, 0.05, -0.2]), { color: 'muted', size: 11.5 });
+            sc.dot(p, { color: 'ink', r: 3 }); sc.tex(`\\{${name}\\}`, vadd(p, [0.12, 0, -0.2]), { color: 'ink', size: 11.5 });
           }
           sc.dot(pof(Fcl[n]), { color: 'gold', r: 5.5 });
           sc.flush();
           // table
           const cols = modern ? [0.9, 2.7, 4.5, 6.3, 8.1] : [0.9, 2.7, 4.5, 6.3, 8.1];
-          const heads = modern ? ['link', 'α_{i−1}', 'a_{i−1}', 'd_i', 'θ_i'] : ['link', 'θ_i', 'd_i', 'a_i', 'α_i'];
-          heads.forEach((h, j) => B.text(h, cols[j] + (j ? 0.4 : 0), 6.8, { size: 13.5, color: 'muted', align: 'center', math: j > 0 }));
+          const heads = modern ? ['link', '\\alpha_{i-1}', 'a_{i-1}', 'd_i', '\\theta_i'] : ['link', '\\theta_i', 'd_i', 'a_i', '\\alpha_i'];
+          heads.forEach((h, j) => (j ? B.tex(h, cols[j] + 0.4, 6.8, { size: 14, color: 'muted', align: 'center' }) : B.text(h, cols[j], 6.8, { size: 13, color: 'muted', align: 'center' })));
           for (let i = 0; i <= n; i++) {
             if (!modern && i === n) break;
             const y = 5.85 - i * 0.95;
@@ -423,7 +422,7 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
               B.text(cn(x, deg ? 0 : 2) + (deg ? '°' : ''), cols[j + 1] + 0.4, y, { size: 13.5, align: 'center', baseline: 'middle', color: 'ink' });
             });
           }
-          B.text(modern ? 'Rot(x,α) Trans(x,a) Rot(z,θ) Trans(z,d)' : 'Rot(z,θ) Trans(z,d) Trans(x,a) Rot(x,α)', 5, 0.7, { size: 12.5, color: 'muted', align: 'center', math: true });
+          B.tex(modern ? 'A_i=\\mathrm{Rot}(x,\\alpha_{i-1})\\mathrm{Trans}(x,a_{i-1})\\mathrm{Rot}(z,\\theta_i)\\mathrm{Trans}(z,d_i)' : 'A_i=\\mathrm{Rot}(z,\\theta_i)\\mathrm{Trans}(z,d_i)\\mathrm{Trans}(x,a_i)\\mathrm{Rot}(x,\\alpha_i)', 5, 0.7, { size: 13, color: 'muted', align: 'center' });
           st = { n, errConv: f4(sub4(Tend, Fcl[n])), orth: orthErr(Rof(Fcl[n])), tip: pof(Fcl[n]) };
         });
         v.readout(() => {
