@@ -54,9 +54,9 @@ export default {
           cbrt: { f: (x) => Math.cbrt(x - 0.3), xr: [-1, 2], yr: [-1.4, 1.4], br: [-0.9, 1.8] },
           steep: { f: (x) => Math.tanh(40 * (x - 0.3)), xr: [-1, 2], yr: [-1.5, 1.5], br: [-0.9, 1.8] },
         };
-        let C = CASES.smooth;
-        const sel = v.select('function', [{ value: 'smooth', label: '$\\cos x-x$' }, { value: 'convex', label: '$x^9-0.1$' }, { value: 'cbrt', label: '$\\sqrt[3]{x-0.3}$' }, { value: 'steep', label: '$\\tanh 40(x-0.3)$' }], 'smooth', { onChange: (k) => { C = CASES[k]; s.setView(C.xr, C.yr); ha.set(C.br[0], 0); hb.set(C.br[1], 0); } });
-        const n = v.slider('evaluations', 1, 40, 12, { int: true });
+        let C = CASES.convex;
+        const sel = v.select('function', [{ value: 'smooth', label: '$\\cos x-x$' }, { value: 'convex', label: '$x^9-0.1$' }, { value: 'cbrt', label: '$\\sqrt[3]{x-0.3}$' }, { value: 'steep', label: '$\\tanh 40(x-0.3)$' }], 'convex', { onChange: (k) => { C = CASES[k]; s.setView(C.xr, C.yr); ha.set(C.br[0], 0); hb.set(C.br[1], 0); } });
+        const n = v.slider('evaluations', 1, 40, 14, { int: true });
         const s = v.stage({ x: C.xr, y: C.yr, axes: 'box', gutter: true, xlabel: 'x', height: 320, title: 'hybrid steps' });
         const e = v.stage({ x: [0, 40], y: [-16, 1], axes: 'box', gutter: true, xlabel: 'function evaluations', ylabel: 'log₁₀ error', height: 320, title: 'error of the best iterate' });
         const ha = s.handle(C.br[0], 0, { color: 'orange', label: 'a', constrain: 'x' });
@@ -158,8 +158,8 @@ On a convex $D$, $L=\sup_D\|g'(x)\|$ (the operator norm of the Jacobian) is a va
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Banach_fixed-point_theorem' },
       viz(v) {
         const c = v.slider('scale $c$', 0.3, 3.2, 1, { step: 0.01 });
-        const k = v.slider('iterations $k$', 0, 14, 3, { int: true });
-        const s = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', height: 420, title: 'a grid of starts under $g^k$' });
+        const k = v.slider('iterations $k$', 0, 14, 1, { int: true });
+        const s = v.stage({ x: [-2.5, 2.5], y: [-2.4, 2.4], equal: true, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', height: 420, title: 'a grid of starts under $g^k$' });
         const co = Math.cos(35 * Math.PI / 180), si = Math.sin(35 * Math.PI / 180), T = [0.3, -0.2];
         const gmap = (C) => ([x, y]) => [C * (0.3 * (co * x - si * y) + 0.25 * Math.sin(y)) + T[0], C * (0.3 * (si * x + co * y) + 0.25 * Math.cos(x)) + T[1]];
         const Jac = (C, [x, y]) => [[C * 0.3 * co, C * (-0.3 * si + 0.25 * Math.cos(y))], [C * (0.3 * si - 0.25 * Math.sin(x)), C * 0.3 * co]];
@@ -253,7 +253,7 @@ then $F$ has a root $x^*$ with $\|x^*-x_0\|\le r=\dfrac{1-\sqrt{1-2h}}{\beta K}$
         const S = SYS.hyp, K = S.K;
         const hOf = (p) => { const Ji = inv2(S.J(p)); if (!Ji) return Infinity; const F = S.F(p), beta = norm2(Ji), eta = nrm([Ji[0][0] * F[0] + Ji[0][1] * F[1], Ji[1][0] * F[0] + Ji[1][1] * F[1]]); return beta * K * eta; };
         const s = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', height: 440, title: 'starts that pass the Kantorovich test' });
-        const h0 = s.handle(2.0, 0.9, { color: 'gold', label: 'x₀' });
+        const h0 = s.handle(2.1, 0.6, { color: 'gold', label: 'x₀' });
         v.legend([['green', 'region $h\\le\\frac12$'], ['orange', 'ball of radius $r$'], ['gold', 'Newton iterates'], ['green', 'roots', { dot: true }]]);
         let info = {};
         v.render(() => {
@@ -337,20 +337,20 @@ Under Newton-type hypotheses and a good enough start and $B_0$, the iteration co
       name: 'Damped Newton and line search',
       statement: String.raw`Far from a root the full Newton step $s_k=-J(x_k)^{-1}F(x_k)$ may increase $\|F\|$ or fly off. **Damped Newton** takes $x_{k+1}=x_k+\alpha_ks_k$ with $\alpha_k=2^{-j}$, the first $j=0,1,2,\dots$ for which the merit function $\varphi=\tfrac12\|F\|^2$ decreases sufficiently: $\varphi(x_k+\alpha s_k)\le(1-2c\alpha)\varphi(x_k)$ with a small $c$ (here $10^{-4}$). Since $s_k$ is a descent direction for $\varphi$, such an $\alpha$ always exists unless $F(x_k)=0$ or $J$ is singular, and near a root $\alpha=1$ is accepted, so quadratic convergence is kept.`,
       idea: String.raw`The Newton step is the minimiser of the linear model of $F$, and $\nabla\varphi=J^{\mathsf T}F$ gives $\nabla\varphi^{\mathsf T}s=-\|F\|^2<0$, so $s$ points downhill in $\varphi$: a short enough step must reduce $\varphi$ (this is the derivative at $\alpha=0$). Halving until the Armijo test passes is the cheapest way to find one. Once $x_k$ is inside the region of 2.5/2.14 the full step already passes the test, so damping costs nothing there. What damping cannot cure is a singular Jacobian: the iterates can stall in a local minimum of $\varphi$.`,
-      caption: String.raw`The colours are $\log_{10}\|F\|$. Red path: full Newton steps from the handle; green path: damped steps. Use the slider to inspect the trial steps taken at iteration $j$ of the damped method: dots along the Newton direction at $\alpha=1,\frac12,\frac14,\dots$ — red rings are rejected, the green dot is accepted. Drag the start to find places where full Newton wanders for many steps.`,
+      caption: String.raw`The colours are $\log_{10}\|F\|$. Red path: full Newton steps from the handle; green path: damped steps. Use the slider to inspect the trial steps taken at iteration $j$ of the damped method: dots along the Newton direction at $\alpha=1,\frac12,\frac14,\dots$ — red rings are rejected, the gold dot is accepted. Drag the start to find places where full Newton wanders for many steps.`,
       deps: ['num-2.13'],
       refs: ['Süli–Mayers ch. 4'],
       scope: String.raw`Globalisation by backtracking on $\tfrac12\|F\|^2$ can stall at a point with $J^{\mathsf T}F=0$ and $F\ne0$ (a local minimum of the merit function that is not a root).`,
       tags: ['Newton', 'line search', 'globalisation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Backtracking_line_search' },
       viz(v) {
-        let S = SYS.hyp;
-        const sel = v.select('system', SYSOPTS, 'hyp', { onChange: (k) => { S = SYS[k]; s.setView(S.view[0], S.view[1]); h.set(...START[k]); } });
-        const START = { hyp: [-0.35, 0.25], sine: [1.1, -2.1] };
+        let S = SYS.sine;
+        const sel = v.select('system', SYSOPTS, 'sine', { onChange: (k) => { S = SYS[k]; s.setView(S.view[0], S.view[1]); h.set(...START[k]); } });
+        const START = { hyp: [-0.35, 0.25], sine: [-0.7, 0.5] };
         const j = v.slider('inspect step $j$', 0, 8, 0, { int: true });
         const s = v.stage({ x: S.view[0], y: S.view[1], equal: true, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', height: 430, title: 'full versus damped Newton' });
         const e = v.stage({ x: [0, 25], y: [-16, 3], axes: 'box', gutter: true, xlabel: 'iteration', ylabel: 'log₁₀‖F‖', height: 430, title: 'residual' });
-        const h = s.handle(START.hyp[0], START.hyp[1], { color: 'ink', label: 'x₀' });
+        const h = s.handle(START.sine[0], START.sine[1], { color: 'ink', label: 'x₀' });
         v.legend([['red', 'full Newton'], ['green', 'damped Newton'], ['red', 'rejected trial', { dot: true }], ['gold', 'accepted trial', { dot: true }]]);
         let info = {};
         v.render(() => {
@@ -381,7 +381,7 @@ Under Newton-type hypotheses and a good enough start and $B_0$, the iteration co
       name: 'Homotopy continuation',
       statement: String.raw`To solve a hard system $F(x)=0$, connect it to an easy system $G(x)=0$ with known roots by a **homotopy** $H(x,t)=(1-t)G(x)+tF(x)$, and follow each solution curve of $H(x,t)=0$ from $t=0$ to $t=1$ by a predictor–corrector method: predict with the tangent $dx/dt=-H_x^{-1}H_t$, correct with Newton's method (2.13) in $x$ at fixed $t$. Where $H_x$ becomes singular the curve has a turning point in $t$; parametrising the curve by arclength instead of $t$ passes through it.`,
       idea: String.raw`By the implicit function theorem each solution of $H(x,t)=0$ with $H_x$ invertible continues as a smooth curve $x(t)$, whose derivative is exactly the tangent used as predictor; Newton then only has to fix a small error, so the iteration is robust where Newton from a distant start is not. The curve $\{H=0\}$ in the $(x,t)$ plane is a one-dimensional manifold, and a fold is only a fold of its *projection* onto the $t$-axis: following it as a curve in $(x,t)$ (pseudo-arclength) goes straight through. This is a numerical use of the ODE $dx/dt=-H_x^{-1}H_t$ (ode-2.8).`,
-      caption: String.raw`Here $G(x)=x^3-x$ (roots $-1,0,1$), $F(x)=x^3-3x+c$, $H=x^3-(1+2t)x+tc$. The grey curve is the true solution set $H=0$; the coloured paths are tracked from the three starts. Slide $c$ above $2$: $F$ has only one real root, so two of the tracked paths meet at a fold. With **natural** parameter $t$ the path stops at the fold (red cross); with **arclength** it turns back and returns to $t=0$ — the real path cannot reach $t=1$ there; in the complex plane it continues.`,
+      caption: String.raw`Here $G(x)=x^3-x$ (roots $-1,0,1$), $F(x)=x^3-3x+c$, $H=x^3-(1+2t)x+tc$. The grey curve is the true solution set $H=0$; the coloured paths are tracked from the three starts. Slide $c$ above $2$: $F$ has only one real root, so two of the tracked paths meet at a fold. With **natural** parameter $t$ the path stops at the fold (red dot); with **arclength** it turns back and returns to $t=0$ — the real path cannot reach $t=1$ there; in the complex plane it continues.`,
       deps: ['num-2.13', 'ode-2.8'],
       refs: ['Süli–Mayers ch. 4'],
       scope: String.raw`Real paths only; to find all roots of a polynomial system, practical solvers follow complex paths with a random complex constant $\gamma$ in $H=(1-t)\gamma G+tF$, which avoids folds with probability one.`,
@@ -391,11 +391,11 @@ Under Newton-type hypotheses and a good enough start and $B_0$, the iteration co
         const c = v.slider('constant $c$', -3, 3, 2.4, { step: 0.01 });
         const arc = v.toggle('pseudo-arclength', true);
         const s = v.stage({ x: [0, 1], y: [-2.6, 2.6], axes: 'box', gutter: true, xlabel: 't', ylabel: 'x', height: 420, title: 'solution curves of $H(x,t)=0$', full: true });
-        v.legend([['grid', 'all real solutions'], ['accent', 'path from $-1$'], ['orange', 'path from $0$'], ['teal', 'path from $1$'], ['red', 'fold', { dot: true }]]);
+        v.legend([['muted', 'all real solutions'], ['accent', 'path from $-1$'], ['orange', 'path from $0$'], ['teal', 'path from $1$'], ['red', 'fold', { dot: true }]]);
         let report = [];
         v.render(() => {
           const C = c.value, H = (t, x) => x ** 3 - (1 + 2 * t) * x + t * C, Hx = (t, x) => 3 * x * x - (1 + 2 * t), Ht = (t, x) => -2 * x + C;
-          s.contour((t, x) => H(t, x), [0], { color: 'grid', width: 3, res: 160 });
+          s.contour((t, x) => H(t, x), [0], { color: 'muted', width: 6, alpha: 0.25, res: 160 });
           const cols = ['accent', 'orange', 'teal']; report = [];
           [-1, 0, 1].forEach((x0, idx) => {
             let t = 0, x = x0, dir = 1; const pts = [[t, x]], folds = []; let status = '';
@@ -423,13 +423,13 @@ Under Newton-type hypotheses and a good enough start and $B_0$, the iteration co
               }
               status = t >= 1 - 1e-9 ? `reaches $t=1$ at $x=${v.fix(x, 4)}$` : `**turns back** and returns to $t=0$ at $x=${v.fix(x, 3)}$ (another start)`;
             }
-            s.path(pts, { color: cols[idx], width: 2.4 }); s.dots(pts.filter((_, i) => i % 20 === 0), { color: cols[idx], r: 2 });
+            s.path(pts, { color: cols[idx], width: [2.4, 5, 1.8][idx] }); s.dots(pts.filter((_, i) => i % 20 === 0), { color: cols[idx], r: 2 });
             folds.forEach(([ft, fx]) => s.dot(ft, fx, { color: 'red', r: 6 }));
             s.dot(0, x0, { color: cols[idx], r: 5 });
             report.push(status);
           });
         });
-        v.readout(() => `$F(x)=x^3-3x+c$ has ${Math.abs(c.value) < 2 ? 'three' : 'one'} real root(s) ($|c|${Math.abs(c.value) < 2 ? '<' : '>'}2)\n` + ['$-1$', '$0$', '$+1$'].map((nm, i) => `path from ${nm}: ${report[i]}`).join('; '));
+        v.readout(() => `$F(x)=x^3-3x+c$ has ${Math.abs(c.value) < 2 ? 'three' : 'one'} real root(s) ($|c|${Math.abs(c.value) < 2 ? '<' : '>'}2$)\n` + ['$-1$', '$0$', '$+1$'].map((nm, i) => `path from ${nm}: ${report[i]}`).join('; '));
       },
     },
     // ------------------------------------------------------------------ 2.18

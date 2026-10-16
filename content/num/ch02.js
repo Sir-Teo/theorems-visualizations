@@ -114,7 +114,7 @@ For $p=1$ one also needs $C<1$ (linear convergence with rate $C$); $p=2$ is quad
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rate_of_convergence' },
       viz(v) {
         const R = Math.SQRT2, f = (x) => x * x - 2;
-        const x0 = v.slider('start $x_0$', 1.1, 3, 2, { step: 0.01 });
+        const x0 = v.slider('start $x_0$', 1.1, 3, 1.3, { step: 0.01 });
         const cc = v.slider('$c$ in $g$', 3.5, 9, 6, { step: 0.05 });
         const s = v.stage({ x: [1e-16, 1], y: [1e-16, 1], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'eₙ', ylabel: 'eₙ₊₁', height: 420, title: 'error in step $n{+}1$ against error in step $n$' });
         const COL = { bis: 'purple', fix: 'teal', sec: 'gold', new: 'accent' };
@@ -136,8 +136,8 @@ For $p=1$ one also needs $C<1$ (linear convergence with rate $C$); $p=2$ is quad
             orders[key] = lastOrder(E, 1e-15);
           }
         });
-        const o = (k) => (orders[k] === null || orders[k] === undefined ? '—' : v.fix(orders[k], 2));
-        v.readout(() => `estimated order from the last three errors: bisection ${o('bis')} (erratic; its bound halves), fixed point ${o('fix')}, secant ${o('sec')}, Newton ${o('new')}\n$g'(\\sqrt2)=1-2\\sqrt2/c=${v.fix(1 - 2 * R / cc.value, 3)}$; ratios $e_{n+1}/e_n^p$ settle at the asymptotic constant $C$ (Newton: $1/(2\\sqrt2)=0.354$).`);
+        const o = (k) => (k === 'bis' ? 'undefined (non-monotone; the bound halves)' : orders[k] === null || orders[k] === undefined ? '—' : v.fix(orders[k], 2));
+        v.readout(() => `estimated order from the last three errors: bisection ${o('bis')}, fixed point ${o('fix')}, secant ${o('sec')}, Newton ${o('new')}\n$g'(\\sqrt2)=1-2\\sqrt2/c=${v.fix(1 - 2 * R / cc.value, 3)}$; ratios $e_{n+1}/e_n^p$ settle at the asymptotic constant $C$ (Newton: $1/(2\\sqrt2)=0.354$).`);
       },
     },
     // ------------------------------------------------------------------ 2.4
@@ -158,7 +158,7 @@ It is the fixed-point iteration for $g(x)=x-f(x)/f'(x)$, and $g'(x^*)=0$ at a si
       viz(v) {
         let F = FUN.cosx;
         const sel = v.select('function', FUNOPTS, 'cosx', { onChange: (k) => { F = FUN[k]; s.setView(F.xr, F.yr); h.set(F.x0, 0); } });
-        const n = v.slider('steps', 0, 8, 3, { int: true });
+        const n = v.slider('steps', 0, 8, 5, { int: true });
         const s = v.stage({ x: F.xr, y: F.yr, axes: 'box', gutter: true, xlabel: 'x', height: 320, title: 'tangent steps' });
         const d = v.stage({ x: [-0.5, 8.5], y: [0, 17], axes: 'box', gutter: true, xlabel: 'step n', ylabel: 'correct digits', height: 320, title: 'digits of accuracy' });
         const h = s.handle(F.x0, 0, { color: 'gold', label: 'x₀', constrain: 'x' });
@@ -170,7 +170,7 @@ It is the fixed-point iteration for $g(x)=x-f(x)/f'(x)$, and $g'(x^*)=0$ at a si
             s.segment([xs[k], 0], [xs[k], F.f(xs[k])], { color: 'faint', dash: true });
             s.segment([xs[k], F.f(xs[k])], [xs[k + 1], 0], { color: 'gold', width: 1.8 });
           }
-          xs.forEach((x, k) => s.dot(x, 0, { color: k === 0 ? 'gold' : 'orange', r: 3.5, label: k > 0 && k < 5 ? `x${'₀₁₂₃₄₅₆₇₈'[k]}` : undefined, labelPos: 'n' }));
+          xs.forEach((x, k) => s.dot(x, 0, { color: k === 0 ? 'gold' : 'orange', r: 3.5, label: k > 0 && k < 3 ? `x${'₀₁₂₃₄₅₆₇₈'[k]}` : undefined, labelPos: 'n' }));
           s.dot(F.root, 0, { color: 'green', hollow: true, r: 6 });
           const dig = xs.map((x) => clamp(-lg(Math.abs(x - F.root)), 0, 16.5));
           d.bars(dig, { x0: 0, color: (val, i) => (val > 15.5 ? 'green' : 'accent') });
@@ -195,11 +195,11 @@ $$|x_{n+1}-x^*|\le K\,|x_n-x^*|^2,\qquad \frac{x_{n+1}-x^*}{(x_n-x^*)^2}\longrig
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Newton%27s_method#Proof_of_quadratic_convergence_for_Newton\'s_iterative_method' },
       viz(v) {
         let F = FUN.cosx;
-        const sel = v.select('function', FUNOPTS, 'cosx', { onChange: (k) => { F = FUN[k]; s.setView(F.xr, F.yr); h.set(F.x0, 0); } });
+        const sel = v.select('function', FUNOPTS, 'cosx', { onChange: (k) => { F = FUN[k]; s.setView(F.xr, F.yr); h.set(F.root + 0.4, 0); } });
         const n = v.slider('steps', 1, 6, 4, { int: true });
         const s = v.stage({ x: F.xr, y: F.yr, axes: 'box', gutter: true, xlabel: 'x', height: 320, title: 'guaranteed region' });
         const q = v.stage({ x: [-0.5, 6.5], y: [0, 1], axes: 'box', gutter: true, xlabel: 'step n', ylabel: 'eₙ₊₁ / eₙ²', height: 320, title: 'quadratic error constant' });
-        const h = s.handle(F.x0, 0, { color: 'gold', label: 'x₀', constrain: 'x' });
+        const h = s.handle(F.root + 0.4, 0, { color: 'gold', label: 'x₀', constrain: 'x' });
         let info = {};
         v.legend([['green', 'guaranteed interval'], ['gold', '$e_{n+1}/e_n^2$'], ['green', '$f\'\'/2f\'$ at $x^*$', { dash: true }], ['red', 'bound $K$', { dash: true }]]);
         v.render(() => {
@@ -390,7 +390,7 @@ the zero of the chord through the last two points of the graph. No derivative is
       viz(v) {
         let F = FUN.cosx;
         const sel = v.select('function', FUNOPTS, 'cosx', { onChange: (k) => { F = FUN[k]; s.setView(F.xr, F.yr); h0.set(F.x0, 0); h1.set(F.x0 - 0.5, 0); } });
-        const n = v.slider('steps', 0, 9, 4, { int: true });
+        const n = v.slider('steps', 0, 9, 6, { int: true });
         const s = v.stage({ x: F.xr, y: F.yr, axes: 'box', gutter: true, xlabel: 'x', height: 320, title: 'chords' });
         const e = v.stage({ x: [0, 10], y: [-16, 1], axes: 'box', gutter: true, xlabel: 'n', ylabel: 'log₁₀ error', height: 320, title: 'secant versus Newton' });
         const h0 = s.handle(F.x0, 0, { color: 'orange', label: 'x₀', constrain: 'x' });
