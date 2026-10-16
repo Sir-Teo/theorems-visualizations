@@ -346,7 +346,7 @@ export default {
         const PRE = { k5: () => ({ ...named('complete', 5), A: [0, 1, 2, 3, 4] }), pet: () => ({ ...named('petersen'), A: [0, 1, 2, 3, 4] }), grid: () => ({ ...GRID(), A: ['a', 'e', 'k', 'o', 'c', 'm', 'h'] }) };
         const pre = v.select('', [{ value: 'k5', label: '$K^5$, $A = V$' }, { value: 'pet', label: 'Petersen, $A$ = outer cycle' }, { value: 'grid', label: 'triangulated grid' }], 'k5', { onChange: () => reload() });
         const kS = v.slider('$k$', 1, 6, 3, { int: true });
-        const s = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.2], axes: false, equal: true, height: 320, weight: 1.35 });
+        const s = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.45], axes: false, equal: true, height: 320, weight: 1.35 });
         const c = v.stage({ x: [0.5, 6.5], y: [0, 11], axes: 'box', gutter: true, height: 320, xlabel: '$k$', ylabel: 'vertices', xticks: [1, 2, 3, 4, 5, 6], yticks: [0, 2, 4, 6, 8, 10] });
         const G = v.graph(s, { nodes: [], edges: [], r: 12 });
         const A = new Set();
@@ -385,7 +385,7 @@ export default {
 $$M_H(G):=\min_{X,F}\Big(|X|+\sum_{C\in\mathcal C_F}\big\lfloor\tfrac12|\partial C|\big\rfloor\Big).$$
 Then $G$ contains $M_H(G)$ independent $H$-paths.`,
       idea: String.raw`$M_H(G)$ is an upper bound: independent $H$-paths have disjoint interiors in $G-H$; each one that avoids $X$ must use an edge of $F$, hence pass through some $C\in\mathcal C_F$, entering and leaving it through two vertices of $\partial C$ — so at most $\lfloor\frac12|\partial C|\rfloor$ of them can use $C$. Mader's theorem says this bound is always attained, a common generalisation of Menger's theorem and of Tutte's 1-factor theorem (Diestel states it without proof; the shortest known proof is in Schrijver's book).`,
-      caption: String.raw`$H$ sits in the shaded strip. A largest set of independent $H$-paths is drawn (they may share ends in $H$, never inner vertices). **show X, F** displays a minimising choice in Mader's formula, found by brute force over all $X$ and $F$: $X$ boxed in red, $F$ red dashed, each component $C$ shaded purple with the vertices of $\partial C$ ringed. The two numbers agree on every graph — try **random G** for new examples.`,
+      caption: String.raw`$H$ sits in the shaded strip. A largest set of independent $H$-paths is drawn (they may share ends in $H$, never inner vertices). **show X, F** displays a minimising choice in Mader's formula, found by brute force over all $X$ and $F$: $X$ boxed in red, $F$ red dashed, each component $C$ with $|\partial C|\ge2$ shaded purple and the vertices of $\partial C$ ringed (smaller components contribute 0). The two numbers agree on every graph — try **random G** for new examples.`,
       deps: ['graph-3.3.1', 'graph-1.3.1a'], refs: ['Diestel §3.4'], tags: ['H-paths', 'Mader'],
       viz(v) {
         const pre = v.select('', [{ value: 'ex', label: 'example' }, { value: 'k3', label: '$H = K^3$ with two copies' }, { value: 'rnd', label: 'random G' }], 'ex', { onChange: () => build() });
@@ -393,8 +393,8 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
         const s = gstage(v, { height: 340, x: [0, 10], y: [-0.3, 6.4] });
         const G = v.graph(s, { nodes: [], edges: [], r: 12, draggable: true });
         let seed = 1, Hids = [];
-        const EXM = () => F({ h1: [1.4, 0.6], h2: [3.8, 0.6], h3: [6.2, 0.6], h4: [8.6, 0.6], x: [5.0, 3.0], y1: [1.6, 3.2], y2: [2.8, 5.2], z1: [7.2, 5.2], z2: [8.4, 3.2], w: [5.0, 5.6] },
-          'x h1,x h2,x h3,x h4,y1 h1,y1 h2,y1 y2,y2 w,y2 h3,z1 w,z1 z2,z2 h4,z2 h3,w x'.split(',').map((p) => p.split(' ')));
+        const EXM = () => F({ h1: [1.4, 0.6], h2: [3.8, 0.6], h3: [6.2, 0.6], h4: [8.6, 0.6], p: [1.1, 3.4], q: [2.3, 5.5], r: [3.5, 3.6], x: [5.6, 3.2], y1: [7.2, 5.2], y2: [8.7, 3.4] },
+          'p h1,q h2,r h3,p q,q r,p r,x h2,x h3,x h4,x r,y1 y2,y1 h3,y2 h4,y1 x,x h1'.split(',').map((p) => p.split(' ')));
         const EXK3 = () => F({ h0: [3.6, 0.7], h1: [5.0, 1.7], h2: [6.4, 0.7], u0: [0.9, 3.4], u1: [2.2, 5.6], u2: [3.4, 3.6], w0: [6.6, 3.6], w1: [7.8, 5.6], w2: [9.1, 3.4] },
           'h0 h1,h1 h2,h0 h2,u0 u1,u1 u2,u0 u2,w0 w1,w1 w2,w0 w2,u0 h0,u1 h1,u2 h2,w0 h0,w1 h1,w2 h2'.split(',').map((p) => p.split(' ')));
         const RND = () => {
@@ -418,7 +418,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           s.text('H', 9.45, 1.2, { size: 15, color: 'muted', weight: 700, math: true, align: 'right', baseline: 'top' });
           const paths = I.best.P.map((P) => [P.h1, ...P.vs, P.h2]), pm = pathMap(Hx, paths);
           const md = I.md, X = new Set(show.value ? bitsOf(md.X) : []), Fs = new Set(show.value ? md.F : []), dC = new Set();
-          if (show.value) md.parts.forEach((p) => { bitsOf(p.dC).forEach((u) => dC.add(u)); if (popc(p.C) > 1) blob(s, bitsOf(p.C).map((u) => { const n = G.node(Hx.ids[u]); return [n.x, n.y]; }), md.F.filter((k) => (p.C >> Hx.E[k][0]) & 1).map((k) => { const [a, b] = Hx.E[k]; const A = G.node(Hx.ids[a]), B = G.node(Hx.ids[b]); return [[A.x, A.y], [B.x, B.y]]; }), v.color('purple'), 34, 0.16); });
+          if (show.value) md.parts.filter((p) => popc(p.dC) >= 2).forEach((p) => { bitsOf(p.dC).forEach((u) => dC.add(u)); if (popc(p.C) > 1) blob(s, bitsOf(p.C).map((u) => { const n = G.node(Hx.ids[u]); return [n.x, n.y]; }), md.F.filter((k) => (p.C >> Hx.E[k][0]) & 1).map((k) => { const [a, b] = Hx.E[k]; const A = G.node(Hx.ids[a]), B = G.node(Hx.ids[b]); return [[A.x, A.y], [B.x, B.y]]; }), v.color('purple'), 34, 0.16); });
           G.draw({ edgeColor: (e) => (Fs.has(Hx.eix.get(e)) ? 'red' : pm.has(e) ? PC[pm.get(e) % PC.length] : null), edgeWidth: (e) => (pm.has(e) ? 4.5 : Fs.has(Hx.eix.get(e)) ? 3 : 1.5), edgeDash: (e) => Fs.has(Hx.eix.get(e)),
             nodeFill: (id) => (Hids.includes(K(id)) ? 'muted' : null), nodeRing: (id) => (dC.has(Hx.at(id)) ? 'purple' : null) });
           for (const u of X) squareMark(s, G, Hx.ids[u], v.color('red'), 16, 2.8);
@@ -426,7 +426,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
         v.legend([['orange', 'independent $H$-paths'], ['red', '$X$ (boxed), $F$', { dash: true }], ['purple', 'components $C$; $\\partial C$ ringed', { area: true }]]);
         v.readout(() => {
           const I = info(G), md = I.md, terms = md.parts.filter((p) => popc(p.dC) >= 2).map((p) => `\\lfloor ${popc(p.dC)}/2\\rfloor`);
-          return `**${I.best.val} independent $H$-paths** · $M_H(G) = |X| + \\sum\\lfloor\\frac12|\\partial C|\\rfloor = ${popc(md.X)}${terms.length ? ' + ' + terms.join(' + ') : ''} = ${md.val}$ ${md.val === I.best.val ? '✓ equal' : '✗'}`;
+          return `**${I.best.val} independent $H$-paths** · $M_H(G) = |X| + \\sum\\lfloor\\frac12|\\partial C|\\rfloor = ${popc(md.X)} + ${terms.length ? terms.join(' + ') : '0'} = ${md.val}$ ${md.val === I.best.val ? '✓ equal' : '✗'} (only components with $|\\partial C|\\ge2$ shown)`;
         });
       },
     },
@@ -453,13 +453,17 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
         inst.push(ex28(1, 1), ex28(1, 2), ex28(2, 1));
         const r = v.rng(7);
         for (let t = 0; t < 34; t++) {
-          const nH = 2 + Math.floor(r() * 3), nY = 4 + Math.floor(r() * 4), P = {}, E = [];
+          const cl = t % 2 === 1, nH = cl ? 3 + Math.floor(r() * 2) : 2 + Math.floor(r() * 3), nY = cl ? 5 + Math.floor(r() * 3) : 4 + Math.floor(r() * 4), P = {}, E = [];
           for (let i = 0; i < nH; i++) P['h' + i] = [1.5 + (7 * i) / Math.max(1, nH - 1), 0.6];
           for (let j = 0; j < nY; j++) { const a = Math.PI * (0.92 - (0.84 * j) / Math.max(1, nY - 1)); P['y' + j] = [5 + 4.1 * Math.cos(a), 1.9 + 3.6 * Math.sin(a)]; }
-          for (let j = 0; j < nY; j++) for (let l = j + 1; l < nY; l++) if (r() < 0.35) E.push(['y' + j, 'y' + l]);
-          for (let j = 0; j < nY; j++) for (let i = 0; i < nH; i++) if (r() < 0.4) E.push(['y' + j, 'h' + i]);
+          // every second instance is made of small dense clusters (which create the gap between the two bounds)
+          // clustered: G − H splits into cliques, each vertex joined to one vertex of H (distinct within a clique where possible)
+          const cut = cl ? 3 + Math.floor(r() * Math.max(1, nY - 5)) : -1, same = (j, l) => !cl || (j < cut) === (l < cut);
+          for (let j = 0; j < nY; j++) for (let l = j + 1; l < nY; l++) if (r() < (cl ? (same(j, l) ? 1 : 0.08) : 0.35)) E.push(['y' + j, 'y' + l]);
+          if (cl) for (let j = 0; j < nY; j++) E.push(['y' + j, 'h' + ((j < cut ? j : j - cut) % nH)]);
+          else for (let j = 0; j < nY; j++) for (let i = 0; i < nH; i++) if (r() < 0.4) E.push(['y' + j, 'h' + i]);
           if (nH > 1 && r() < 0.5) E.push(['h0', 'h1']);
-          inst.push({ spec: F(P, E), ex: false, label: `random: $|H| = ${nH}$, $|G-H| = ${nY}$` });
+          inst.push({ spec: F(P, E), ex: false, label: `random${cl ? ' (clustered)' : ''}: $|H| = ${nH}$, $|G-H| = ${nY}$` });
         }
         for (const I of inst) {
           const Hx = ixOf(0, []); void Hx;
@@ -471,7 +475,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
         c.onClick((x, y) => { let b = -1, bd = Infinity; inst.forEach((I, i) => { const d = Math.hypot(I.kap - x, I.nu - y); if (d < bd) { bd = d; b = i; } }); if (bd < 0.7) { const at = inst.filter((I) => I.kap === inst[b].kap && I.nu === inst[b].nu); const cur = at.indexOf(inst[sel]); sel = inst.indexOf(at[(cur + 1) % at.length]); } });
         v.render(() => {
           const I = inst[sel];
-          if (G._sel !== sel) { G._sel = sel; load(G, I.spec); }
+          if (G._sel !== sel) { G._sel = sel; load(G, { ...I.spec, nodes: I.spec.nodes.map((n) => ({ ...n, label: '' })) }); }
           const H2 = ix(G), paths = I.best.P.map((P) => [P.h1, ...P.vs, P.h2].map((u) => H2.at(I.H2.ids[u]))), pm = pathMap(H2, paths), X = new Set(I.X.map((u) => K(I.H2.ids[u])));
           s.rect(0.3, -0.15, 9.7, 1.55, { fill: 'muted', fillAlpha: 0.12, color: 'muted', width: 1, radius: 14 });
           s.text('H', 9.45, 1.3, { size: 15, color: 'muted', weight: 700, math: true, align: 'right', baseline: 'top' });
@@ -585,7 +589,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           U.forEach((u, i) => { const a = Math.PI / 2 - (Math.PI / 3) * i; P[u] = [cx + R * 1.25 * Math.cos(a), cy + R * Math.sin(a)]; });
           const sid = (i, j) => 's' + Math.min(i, j) + Math.max(i, j);
           for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) {
-            const d = Math.min(j - i, 6 - (j - i)), t = d === 3 ? [0.34, 0.5, 0.66][i] : 0.5, [x1, y1] = P[U[i]], [x2, y2] = P[U[j]];
+            const d = Math.min(j - i, 6 - (j - i)), t = d === 3 ? [0.5, 0.38, 0.38][i] : 0.5, [x1, y1] = P[U[i]], [x2, y2] = P[U[j]];
             P[sid(i, j)] = [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
             E.push([U[i], sid(i, j)], [sid(i, j), U[j]]); Kset.add(U[i] + '|' + sid(i, j)); Kset.add(sid(i, j) + '|' + U[j]);
           }
@@ -682,7 +686,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
           G.draw({ edgeColor: (e) => (pm.has(e) ? PC[pm.get(e)] : 'faint'), edgeWidth: (e) => (pm.has(e) ? 4 : 0.6), nodeFill: (id) => { const i = pick.indexOf(+id); return i < 0 ? null : PC[Math.floor(i / 2)]; }, nodeColor: () => 'muted' });
           s.corner(lk ? (lk.paths ? 'these terminals are linked' : lk.exact ? 'these terminals cannot be linked' : 'search cut short') : 'too few vertices', 'tl', { color: lk && lk.paths ? 'green' : 'red', weight: 700, size: 12.5, plate: true });
           c.rect(4, 16, 10.6, 22, { fill: 'green', fillAlpha: 0.1, color: 'green', width: 1 });
-          c.text('κ ≥ 4, ε ≥ 16: k-linked', 10.4, 21.3, { size: 11.5, color: 'green', align: 'right', baseline: 'top' });
+          c.text('κ ≥ 4, ε ≥ 16: 2-linked', 10.4, 21.3, { size: 11.5, color: 'green', align: 'right', baseline: 'top' });
           for (const P of lib) c.dot(Math.min(P.kap, 10), Math.min(P.eps, 21.8), { r: 5, color: P.ok ? 'green' : 'red', fill: P.ok ? 'green' : 'red', fillAlpha: 0.5 });
           c.dot(Math.min(C.kap, 10), Math.min(C.eps, 21.8), { r: 10, hollow: true, color: 'ink' });
         });
@@ -702,7 +706,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
       viz(v) {
         const kk = 2;
         const nS = v.slider('$|C|$', 10, 16, 14, { int: true }), dS = v.slider('$\\delta$', 4, 15, 11, { int: true });
-        const s = v.stage({ x: [-1.25, 1.25], y: [-1.2, 1.2], axes: false, equal: true, height: 320 });
+        const s = v.stage({ x: [-1.25, 1.25], y: [-1.18, 1.42], axes: false, equal: true, height: 320 });
         const c = v.stage({ x: [-0.5, 16.5], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'common neighbours $|N(u)\\cap N(v)|$', ylabel: 'pairs $\\{u, v\\}$' });
         const G = v.graph(s, { nodes: [], edges: [], r: 11 });
         let term = [0, 7, 3, 10];
@@ -740,7 +744,7 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
         v.legend([['red', 'needed: $3k$', { dash: true }], ['green', 'guaranteed: $2\\delta - |C|$'], ['gold', 'linking common neighbours', { dot: true }]]);
         v.readout(() => {
           const M = make(G, `${nS.value}|${Math.min(dS.value, nS.value - 1)}`), mn = Math.min(...M.cn), ok = 2 * M.delta >= M.n + 3 * kk;
-          return `$|C| = ${M.n}$, $\\delta(C) = ${M.delta}$, $k = ${kk}$ · $2\\delta(C) = ${2 * M.delta}$ ${ok ? '\\ge' : '<'} $|C| + 3k = ${M.n + 3 * kk}$ · fewest common neighbours of a pair: ${mn} ${mn >= 3 * kk ? `≥ 3k = ${3 * kk} ✓` : `< 3k = ${3 * kk}`}${ok ? ` (guaranteed ≥ ${2 * M.delta - M.n})` : ''}`;
+          return `$|C| = ${M.n}$, $\\delta(C) = ${M.delta}$, $k = ${kk}$ · $2\\delta(C) = ${2 * M.delta} ${ok ? '\\ge' : '<'} |C| + 3k = ${M.n + 3 * kk}$ · fewest common neighbours of a pair: ${mn} ${mn >= 3 * kk ? `≥ 3k = ${3 * kk} ✓` : `< 3k = ${3 * kk}`}${ok ? ` (guaranteed ≥ ${2 * M.delta - M.n})` : ''}`;
         });
       },
     },

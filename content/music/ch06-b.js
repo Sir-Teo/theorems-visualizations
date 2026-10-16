@@ -14,11 +14,12 @@ function keyX(m, lo) {
   return lo + (oct * 7 + whites.indexOf(pc - 1) + 1) * W;
 }
 /** Draw a piano keyboard from MIDI lo (a C) to hi on stage s (y in [0, 1]); `lit` = {midi: colour}. */
-function keyboard(s, lo, hi, lit = {}) {
-  const W = 12 / 7;
-  for (let m = lo; m <= hi; m++) if (!isBlack(m)) { const x = keyX(m, lo); s.rect(x - W / 2, 0, x + W / 2, 1, { fill: lit[m] || 'panel', fillAlpha: lit[m] ? 0.6 : 1, color: 'muted', width: 1 }); }
-  for (let m = lo; m <= hi; m++) if (isBlack(m)) { const x = keyX(m, lo); s.rect(x - 0.3 * W, 0.38, x + 0.3 * W, 1, { fill: lit[m] || 'ink', fillAlpha: lit[m] ? 0.95 : 0.85, color: 'ink', width: 1 }); }
-  for (let m = lo; m <= hi; m++) if (m % 12 === 0) s.text(mname(m), keyX(m, lo), 0.1, { color: 'muted', size: 10, align: 'center' });
+function keyboard(v, s, lo, hi, lit = {}) {
+  const W = 12 / 7, p = v.rgb('panel'), dark = 0.3 * p[0] + 0.59 * p[1] + 0.11 * p[2] < 128;
+  const ivory = dark ? 'ink' : 'panel', ebony = dark ? 'panel' : 'ink'; // physical key colours in either theme
+  for (let m = lo; m <= hi; m++) if (!isBlack(m)) { const x = keyX(m, lo); s.rect(x - W / 2, 0, x + W / 2, 1, { fill: lit[m] || ivory, fillAlpha: lit[m] ? 0.75 : dark ? 0.85 : 1, color: 'muted', width: 1 }); }
+  for (let m = lo; m <= hi; m++) if (isBlack(m)) { const x = keyX(m, lo); s.rect(x - 0.3 * W, 0.38, x + 0.3 * W, 1, { fill: lit[m] || ebony, fillAlpha: lit[m] ? 0.95 : dark ? 1 : 0.85, color: 'muted', width: 1 }); }
+  for (let m = lo; m <= hi; m++) if (m % 12 === 0) s.text(mname(m), keyX(m, lo), 0.1, { color: 'muted', size: 10, align: 'center', plate: dark });
 }
 
 export default {
@@ -61,7 +62,7 @@ export default {
         v.soundButton('descend four octaves', (snd) => { const n = IV[ivS.value].n; snd.samples(seqBuf([72, 60, 48, 36].map((m) => [[SP, mfreq(m)], [SP, mfreq(m + n)]]), 1.1, 0.15), SR, { gain: 0.9 }); });
         v.render(() => {
           const iv = IV[ivS.value], m = km;
-          keyboard(kb, LO, HI, { [m]: 'gold', [m + iv.n]: 'gold' });
+          keyboard(v, kb, LO, HI, { [m]: 'gold', [m + iv.n]: 'gold' });
           IV.forEach((x, i) => { if (i !== ivS.value) cv.path(curves[i], { color: x.col, width: 1.2, alpha: 0.5 }); });
           cv.path(curves[ivS.value], { color: iv.col, width: 2.8 });
           const L = limit[ivS.value];

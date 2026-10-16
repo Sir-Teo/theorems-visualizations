@@ -428,15 +428,16 @@ export function hPaths(H, Hm) {
     let best = { val: upper, X: 0, F: [], parts: [] };
     for (let X = Y; ; X = (X - 1) & Y) {
       const xs = popc(X);
-      if (xs < best.val) {
+      if (xs <= best.val) {
         const alive = Y & ~X, Ein = []; H.E.forEach(([a, b], k) => { if ((alive >> a) & 1 && (alive >> b) & 1) Ein.push(k); });
         if (Ein.length <= 16) for (let f = 0; f < 1 << Ein.length; f++) {
           const Fs = new Set(Ein.filter((_, i) => (f >> i) & 1));
           if (!killed(X, Fs)) continue;
           const AF = new Array(H.n).fill(0); for (const k of Fs) { const [a, b] = H.E[k]; AF[a] |= 1 << b; AF[b] |= 1 << a; }
           let val = xs; const parts = [];
-          for (const C of compMasks(AF, alive)) { let d = 0; for (const v of bitsOf(C)) if (Am[v] & all & ~X & ~C) d |= 1 << v; parts.push({ C, dC: d }); val += Math.floor(popc(d) / 2); if (val >= best.val) break; }
-          if (val < best.val) best = { val, X, F: [...Fs], parts };
+          for (const C of compMasks(AF, alive)) { let d = 0; for (const v of bitsOf(C)) if (Am[v] & all & ~X & ~C) d |= 1 << v; parts.push({ C, dC: d }); val += Math.floor(popc(d) / 2); if (val > best.val) break; }
+          // ties: prefer a smaller X (then the F-part of the formula is visible)
+          if (val < best.val || (val === best.val && (best.parts.length === 0 || xs < popc(best.X)))) best = { val, X, F: [...Fs], parts };
         }
       }
       if (X === 0) break;

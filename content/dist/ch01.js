@@ -157,7 +157,7 @@ export default {
       viz(v) {
         const T = 5, N = 4, KIND = ['ok', 'crash', 'omit', 'byz'], NAME = { ok: '', crash: ' crash', omit: ' omission', byz: ' Byzantine' };
         const s = v.stage({ x: [-0.7, 8.0], y: [-0.6, 4.1], axes: false, height: 330, full: true });
-        const fault = ['ok', 'ok', 'ok', 'ok'], ct = [0.75, 2.7, 2.7, 2.7], drops = new Set();
+        const fault = ['byz', 'ok', 'ok', 'ok'], ct = [0.75, 2.7, 2.7, 2.7], drops = new Set();
         const fl = (i) => (fault[i] === 'crash' ? 'crash' : fault[i]);
         const build = () => {
           const msgs = [], r1 = {}, r2 = { 1: {}, 2: {}, 3: {} };

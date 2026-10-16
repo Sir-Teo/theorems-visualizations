@@ -209,7 +209,7 @@ $$\|\mu_1\times\mu_2-\nu_1\times\nu_2\|\le\|\mu_1-\nu_1\|+\|\mu_2-\nu_2\|.$$`,
         const a1 = v.slider('$a_1$', 0.2, 5, 1.5, { step: 0.05 }), b1 = v.slider('$b_1$', 0.2, 5, 2.2, { step: 0.05 });
         const a2 = v.slider('$a_2$', 0.2, 5, 3, { step: 0.05 }), b2 = v.slider('$b_2$', 0.2, 5, 2.5, { step: 0.05 });
         const K = 9;
-        const G = v.stage({ x: [-0.9, 13.4], y: [-0.9, 13.1], equal: true, height: 400, weight: 1.3, axes: false, title: 'signed differences on $\\{0,\\dots,9\\}^2$' });
+        const G = v.stage({ x: [-0.9, 13.4], y: [-1.5, 13.1], equal: true, height: 400, weight: 1.3, axes: false, title: 'signed differences on $\\{0,\\dots,9\\}^2$' });
         const B = v.stage({ x: [0, 3], y: [0, 1], height: 400, axes: 'box', gutter: true, title: 'distances', xticks: [[0.75, 'marginals'], [2.25, 'product']] });
         let st = null;
         v.render(() => {

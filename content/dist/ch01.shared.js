@@ -156,3 +156,113 @@ export const PROPS = {
 const EXT = [['g', '.'], ['.'], ['r', 'g'], ['.', 'g'], ['g']];
 /** Can the finite prefix still be extended to an infinite word satisfying P?  (Tested against a family of tail loops that is complete for these properties.) */
 export const extendable = (P, prefix) => EXT.some((tail) => P.sat(prefix, tail));
+
+// ----------------------------------------------------------------------------- alternating bit protocol (1.9)
+/**
+ * Discrete-event run of sender/receiver over FIFO channels that lose and duplicate (seeded; `forced` = set of message keys to lose).
+ * mode 'abp' (alternating bit), 'nobit' (no sequence bit), 'noretx' (no retransmission).
+ * Returns {msgs, timeouts, delivs, delivered, end, nFrames, nAcks, rtx, viol}.
+ */
+export function runABP({ K, loss, dup, d, tmo, forced, mode, seed }) {
+  const q = []; let qk = 0;
+  const push = (t, type, data) => { q.push({ t, type, data, k: qk++ }); q.sort((a, b) => a.t - b.t || a.k - b.k); };
+  const msgs = [], timeouts = [], delivs = [], cnt = { D: 0, A: 0 }, last = { D: 0, A: 0 };
+  let i = 0, sb = 0, rb = 0, timer = 0, delivered = [], rtx = 0, viol = 0, nFrames = 0, nAcks = 0, end = 0;
+  const send = (t, kind, payload, label) => {
+    const c = cnt[kind]++, baseKey = `${kind}${c}`, lost = forced.has(baseKey) || hash01(seed, kind === 'D' ? 1 : 2, c, 1) < loss;
+    const dl = d * (0.8 + 0.4 * hash01(seed, kind === 'D' ? 3 : 4, c));
+    let tr = Math.max(t + dl, last[kind] + 0.03);
+    const m = { kind, from: kind === 'D' ? 0 : 1, to: kind === 'D' ? 1 : 0, ts: t, tr, lost, baseKey, payload, label };
+    msgs.push(m); if (!lost) { last[kind] = tr; push(tr, 'arrive', m); if (hash01(seed, kind === 'D' ? 5 : 6, c, 9) < dup) { const m2 = { ...m, tr: tr + 0.45 * dl + 0.05, dup: true }; msgs.push(m2); last[kind] = m2.tr; push(m2.tr, 'arrive', m2); } }
+  };
+  const frame = (t) => { nFrames++; send(t, 'D', { bit: mode === 'abp' ? sb : null, m: i }, mode === 'abp' ? `m${i + 1}·${sb}` : `m${i + 1}`); if (mode !== 'noretx') push(t + tmo, 'timeout', { id: ++timer }); };
+  const check = () => { if (mode === 'abp' && !(i <= delivered.length && delivered.length <= i + 1 && sb === i % 2 && rb === delivered.length % 2)) viol++; };
+  frame(0);
+  while (q.length) {
+    const e = q.shift(), t = e.t; if (t > 60) break; end = Math.max(end, t);
+    if (e.type === 'timeout') { if (e.data.id === timer && i < K) { rtx++; timeouts.push(t); frame(t); } }
+    else if (e.data.kind === 'D') {
+      const { bit, m } = e.data.payload; nAcks++;
+      if (mode === 'abp') { if (bit === rb) { delivered.push(m); delivs.push({ t, m, dupe: false }); rb ^= 1; } send(t, 'A', { bit }, `ack ${bit}`); }
+      else { delivered.push(m); delivs.push({ t, m, dupe: delivered.filter((x) => x === m).length > 1 }); send(t, 'A', {}, 'ack'); }
+    } else if (i < K) {
+      if (mode === 'abp') { if (e.data.payload.bit === sb) { i++; sb ^= 1; if (i < K) frame(t); } }
+      else { i++; if (i < K) frame(t); }
+    }
+    check();
+  }
+  return { msgs, timeouts, delivs, delivered, end, nFrames, nAcks, rtx, viol };
+}
+
+// ----------------------------------------------------------------------------- Cerf–Kahn: window protocol across a fragmenting gateway (1.10)
+/**
+ * One message of N bytes, cut into segments of size S; sender window w over sequence numbers mod n; gateway fragments to pieces <= m;
+ * the receiver follows the paper's three rules.  Each byte carries its own true index, so reassembling a stale copy shows as garbage.
+ * Returns {frames, R, corrupt, done}; a frame is a full snapshot for the step player.
+ */
+export function runTCP({ N, S, m, w, n, loss, seed }, noFrames) {
+  const segs = []; for (let lo = 0; lo < N; lo += S) segs.push([lo, Math.min(N, lo + S)]);
+  const q = []; let qk = 0, uid = 0, t = 0, la = 0, nxt = 0, R = 0, corrupt = 0, timer = 0, flight = [];
+  const buf = new Array(N).fill(null), frames = [];
+  const push = (tt, type, d) => { q.push({ t: tt, type, d, k: qk++ }); q.sort((a, b) => a.t - b.t || a.k - b.k); };
+  const snap = (note, line) => { if (!noFrames) frames.push({ t, note, line, la, next: segs[nxt - 1] ? segs[nxt - 1][1] : 0, R, buf: buf.slice(), corrupt, flight: flight.map((x) => ({ ...x })) }); };
+  const RTO = 9, lbl = (p) => `SEQ ${p.seq} CT ${p.ct}${p.es ? ' ES' : ''}${p.em ? ' EM' : ''}`;
+  const drop = (id) => { flight = flight.filter((x) => x.id !== id); };
+  const sendSeg = (j) => {
+    const [lo, hi] = segs[j], p = { id: ++uid, lo, hi, seq: lo % n, ct: hi - lo, es: true, em: j === segs.length - 1 };
+    flight.push({ id: p.id, link: 'A', label: lbl(p) }); push(t + 1, 'gate', p); return p;
+  };
+  const pump = () => {
+    const sent = [];
+    while (nxt < segs.length && segs[nxt][1] <= la + w) { const p = sendSeg(nxt); nxt++; sent.push(p); }
+    if (sent.length) { timer++; push(t + RTO, 'timeout', { id: timer }); snap(`Send ${sent.map((p) => `[${lbl(p)}]`).join(' ')} — bytes inside the window L … L+w−1.`, 1); }
+  };
+  pump();
+  let guard = 0;
+  while (q.length && guard++ < 4000) {
+    const e = q.shift(); t = e.t; if (t > 300) break;
+    if (e.type === 'timeout') {
+      if (e.d.id !== timer || la >= N) continue;
+      const out = []; for (let j = 0; j < nxt; j++) if (segs[j][1] > la) out.push(sendSeg(j));
+      timer++; push(t + RTO, 'timeout', { id: timer }); snap(`Timeout: retransmit the unacknowledged bytes — ${out.map((p) => `[${lbl(p)}]`).join(' ')}.`, 2);
+    } else if (e.type === 'gate') {
+      const p = e.d; drop(p.id); const pieces = [];
+      for (let lo = p.lo; lo < p.hi; lo += m) { const hi = Math.min(p.hi, lo + m); pieces.push({ id: ++uid, lo, hi, seq: lo % n, ct: hi - lo, es: hi === p.hi, em: hi === p.hi && p.em }); }
+      pieces.forEach((pc, qi) => {
+        const lost = hash01(seed, pc.id, 11) < loss; pc.lost = lost;
+        flight.push({ id: pc.id, link: 'B', label: lbl(pc), lost });
+        if (lost) push(t + 0.6, 'lose', pc); else push(t + 1 + 0.2 * qi, 'recv', pc);
+      });
+      snap(pieces.length > 1 ? `The gateway splits [${lbl(p)}] into ${pieces.length} pieces for network B: ${pieces.map((x) => `[${lbl(x)}]`).join(' ')} — SEQ and CT rewritten; only the last piece keeps ES${p.em ? ' and EM' : ''}.` : `The gateway forwards [${lbl(p)}] unchanged.`, 4);
+    } else if (e.type === 'lose') { drop(e.d.id); snap(`Piece [${lbl(e.d)}] is lost in network B.`, 4); }
+    else if (e.type === 'recv') {
+      const p = e.d; drop(p.id);
+      const off = (((p.seq - (R % n)) % n) + n) % n; let how, line;
+      if (off < w) {
+        for (let b = 0; b < p.ct; b++) { const idx = R + off + b; if (idx < N) buf[idx] = p.lo + b; }
+        if (off === 0) { how = 'its SEQ is the left edge: accept'; line = 5; } else { how = `its SEQ is ${off} bytes inside the window: keep it`; line = 6; }
+        const R0 = R; while (R < N && buf[R] != null) { if (buf[R] !== R) corrupt++; R++; }
+        if (R > R0) how += `, the edge advances to ${R}`;
+      } else { how = 'its SEQ lies outside the window: discard'; line = 7; }
+      const stale = p.hi <= R && off < w && off > 0 && p.lo < R;
+      const ack = { id: ++uid, seq: R % n }, lost = hash01(seed, ack.id, 13) < loss;
+      flight.push({ id: ack.id, link: 'ACK', label: `ACK ${ack.seq}`, lost });
+      if (lost) push(t + 0.6, 'lose', { ...ack, ack: true, label: `ACK ${ack.seq}` }); else push(t + 2, 'ack', ack);
+      snap(`Receiver gets [${lbl(p)}]: ${how}${stale ? ' — a stale retransmission read as NEW data!' : ''}. ACK ${ack.seq} (next expected).`, line);
+    } else if (e.type === 'ack') {
+      drop(e.d.id); const adv = (((e.d.seq - (la % n)) % n) + n) % n, out = nxt > 0 ? segs[nxt - 1][1] - la : 0;
+      if (adv > 0 && adv <= out) { la += adv; timer++; push(t + RTO, 'timeout', { id: timer }); snap(`ACK ${e.d.seq} arrives: the left edge moves ${adv} byte${adv === 1 ? '' : 's'} to L = ${la}.`, 3); pump(); }
+      else snap(`ACK ${e.d.seq} arrives: nothing new acknowledged (L stays ${la}).`, 3);
+    }
+  }
+  if (!noFrames) { snap(R >= N && la >= N ? (corrupt ? `Done, but ${corrupt} reassembled byte(s) are wrong.` : 'Done: the message is reassembled exactly.') : 'No more events: the transfer did not complete.', 5); }
+  return { frames, R, corrupt, done: R >= N && la >= N };
+}
+const mcCache = new Map();
+/** Over `runs` loss patterns: how many runs reassemble garbage or never finish. */
+export function monteCarloTCP(p, runs) {
+  const key = JSON.stringify([p.N, p.S, p.m, p.w, p.n, p.loss, runs]); if (mcCache.has(key)) return mcCache.get(key);
+  let corrupt = 0, stall = 0;
+  for (let s = 1; s <= runs; s++) { const r = runTCP({ ...p, seed: 100 + s }, true); if (r.corrupt) corrupt++; else if (!r.done) stall++; }
+  const out = { corrupt, stall, bad: corrupt + stall }; mcCache.set(key, out); return out;
+}

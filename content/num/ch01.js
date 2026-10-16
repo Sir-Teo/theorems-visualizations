@@ -446,7 +446,7 @@ using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (t
             [['exact', E], ['textbook', dig(a, nd)], ['stable', dig(bb, nd)]].forEach(([lab, D], k) => {
               const yy = y0 + 14 + k * (ch + 5);
               sD.text(lab, left - 10, Y(yy + ch / 2), { align: 'right', baseline: 'middle', size: 11.5, color: lab === 'textbook' ? 'red' : lab === 'stable' ? 'green' : 'ink' });
-              const xv = lab === 'textbook' ? a : bb, rel = Math.abs(xv - Math.sign(xv) * Math.abs(ratioNum(exact, two))) / Math.abs(ratioNum(exact, two));
+              const xv = lab === 'textbook' ? a : bb, ev = ratioNum(exact, two), rel = Math.abs(xv - ev) / Math.abs(ev);
               const good = lab === 'exact' ? nd : clamp(Math.floor(-Math.log10(Math.max(rel, 1e-300)) + 1e-9), 0, nd);
               for (let i = 0; i < nd; i++) {
                 const col = lab === 'exact' ? 'accent' : i < good ? 'green' : 'red', x0 = left + i * cw;
