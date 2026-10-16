@@ -447,7 +447,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
         const tL = titler(sL), tR = titler(sR);
         const S = v.sim(() => (modeS.value === 'sym' ? { kind: 'sym', st: symInit(seedS.value) } : { kind: 'fam', st: famInit(seedS.value) }),
           (X) => { if (X.kind === 'sym') { for (let k = 0; k < 40 && X.st.sweep < 6000; k++) symSweep(X.st); } else { for (let k = 0; k < 4 && X.st.epoch < 1500; k++) famEpoch(X.st); if (X.st.epoch % 20 === 0) X.st.acc.push([X.st.epoch, X.st.test.filter((i) => famCorrect(X.st, i)).length, TRIPLES.map((_, i) => i).filter((i) => !X.st.test.includes(i) && famCorrect(X.st, i)).length]); } }, { dt: 1 / 60 });
-        let key = '', info = null, legendMode = null;
+        let key = modeS.value + '|' + seedS.value, info = null, legendMode = null;
         v.animate((t) => {
           const k = modeS.value + '|' + seedS.value; if (k !== key) { key = k; S.reset(); v.restart(); }
           unitS.el.hidden = modeS.value !== 'fam';
@@ -462,7 +462,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
             for (let j = 0; j < 2; j++) { const w = st.W2[j], tt = Math.min(1, Math.abs(w) / wmax); sL.line(H[j][0], H[j][1], O[0], O[1], { color: w >= 0 ? 'accent' : 'orange', width: 0.5 + 5 * tt, alpha: 0.3 + 0.65 * tt }); }
             for (let i = 0; i < 6; i++) { sL.dot(inX(i), 0.14, { r: 11, color: 'panel' }); sL.dot(inX(i), 0.14, { r: 11, hollow: true, color: 'ink', width: 1.4 }); sL.text(String(i + 1), inX(i), 0.14, { align: 'center', size: 11, color: 'muted' }); }
             for (let j = 0; j < 2; j++) {
-              for (let i = 0; i < 6; i++) { const w = st.W1[j][i], px = inX(i) + (H[j][0] - inX(i)) * 0.3, py = 0.14 + (H[j][1] - 0.14) * 0.3 + (j ? -0.025 : 0.025); sL.text(mnus(w.toFixed(1)), px, py, { align: 'center', size: 10.5, color: w >= 0 ? 'accent' : 'orange', weight: 600, plate: true }); }
+              for (let i = 0; i < 6; i++) { const w = st.W1[j][i], fr = j ? 0.56 : 0.2, px = inX(i) + (H[j][0] - inX(i)) * fr, py = 0.14 + (H[j][1] - 0.14) * fr; sL.text(mnus(w.toFixed(1)), px, py, { align: 'center', size: 10.5, color: w >= 0 ? 'accent' : 'orange', weight: 600, plate: true }); }
               sL.dot(H[j][0], H[j][1], { r: 16, color: 'panel' }); sL.dot(H[j][0], H[j][1], { r: 16, hollow: true, color: 'ink', width: 1.6 }); sL.text(mnus(st.W1[j][6].toFixed(1)), H[j][0], H[j][1], { align: 'center', size: 10.5, color: 'muted' });
               sL.text(mnus(st.W2[j].toFixed(1)), (H[j][0] + O[0]) / 2, (H[j][1] + O[1]) / 2, { dx: j ? 14 : -14, align: 'center', size: 10.5, color: st.W2[j] >= 0 ? 'accent' : 'orange', weight: 600, plate: true });
             }

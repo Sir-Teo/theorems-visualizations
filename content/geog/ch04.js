@@ -670,7 +670,7 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
       num: '4.8',
       kind: 'Model',
       name: 'Web Mercator',
-      credit: 'Google Maps, 2005; EPSG:3857, 2008',
+      credit: 'Google Maps, 2005 (adopted as a web-mapping standard); EPSG code 3857',
       statement: String.raw`**Web Mercator** (EPSG:3857, "Pseudo-Mercator") takes WGS84 geodetic coordinates $(\varphi, \lambda)$ and applies the *spherical* Mercator formulas with the equatorial radius $a = 6\,378\,137$ m:
 $$x = a\lambda,\qquad y = a\ln\tan\Big(\frac{\pi}{4} + \frac{\varphi}{2}\Big),$$
 instead of the ellipsoidal Mercator $y = a\big[\operatorname{artanh}(\sin\varphi) - e\operatorname{artanh}(e\sin\varphi)\big]$. The world is cut off at $|y| = \pi a$, i.e. at latitude $\arctan(\sinh\pi) \approx 85.0511^\circ$, so that it is a square, divided at zoom level $z$ into $2^z \times 2^z$ tiles of 256 × 256 pixels. Because spherical formulas are applied to ellipsoidal latitudes, the map is **not exactly conformal** (angles err by up to about 0.4°, largest at the equator), and its northings differ from true Mercator northings by up to about 43 km; mixing the two up displaces positions by up to about 21 km on the ground. The U.S. National Geospatial-Intelligence Agency warned in 2014 that such mix-ups can cause errors "up to 40,000 meters".`,

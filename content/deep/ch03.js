@@ -165,12 +165,12 @@ in topological order. One pass costs a small constant times the cost of evaluati
           });
           // input plane
           const [u0, u1] = c.u;
-          sP.line(Hp.x - 4 * u0, Hp.y - 4 * u1, Hp.x + 4 * u0, Hp.y + 4 * u1, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.7 });
-          sP.arrow(Hp.x, Hp.y, Hp.x + u0, Hp.y + u1, { color: 'orange', width: 2.4 });
           Hu.visible = seedS.value === 'u';
           const fxy = (x, y) => graphEval(P, { x, y }), Rr = heatKey(fx.value, () => { let M = 0; for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40; j++) { const z = fxy(-4 + i / 5, -2.5 + j / 8); if (isFinite(z)) M = Math.max(M, Math.abs(z)); } return M || 1; });
           sP.heat(fxy, { range: [-1.6 * Rr, 1.6 * Rr], cmap: 'theme-diverging', res: 3, key: 'h' + fx.value });
           sP.contour(fxy, [-0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75].map((q) => q * Rr), { color: 'ink', width: 0.8, alpha: 0.35, res: 80 });
+          sP.line(Hp.x - 4 * u0, Hp.y - 4 * u1, Hp.x + 4 * u0, Hp.y + 4 * u1, { color: 'orange', width: 1.4, dash: [4, 4], alpha: 0.7 });
+          sP.arrow(Hp.x, Hp.y, Hp.x + u0, Hp.y + u1, { color: 'orange', width: 2.4 });
           // slice
           const g = (t) => graphEval(P, { x: Hp.x + t * u0, y: Hp.y + t * u1 });
           let lo = Infinity, hi = -Infinity; for (let i = 0; i <= 60; i++) { const z = g(-1.5 + i / 20); if (isFinite(z)) { lo = Math.min(lo, z); hi = Math.max(hi, z); } }
@@ -239,7 +239,7 @@ so that when all users of $v_j$ have been visited, $\bar v_j=\partial f/\partial
           const c = cur(), P = c.P, F = S.frame;
           for (const k of V4) SL[k].el.hidden = !!P.vars && !P.vars.includes(k);
           if (P.error) { errMsg(sG, P.error); info = null; return; }
-          CG.sync(P, fx.value, (n) => nodeSym(n) + ' −0.000\nv̄ −0.000');
+          CG.sync(P, fx.value, (n) => nodeSym(n) + '\n−0.000\nv̄ −0.000');
           const order = P.nodes.filter((n) => n.op !== 'var').map((n) => n.i), rank = new Map(order.map((i, t) => [i, t + 1]));
           const fwdK = F.ph === 'f' ? F.k : 1e9, known = (i) => P.nodes[i].op === 'var' || (rank.get(i) ?? 1e9) <= fwdK;
           // adjoints accumulated after F.j backward events
@@ -247,7 +247,7 @@ so that when all users of $v_j$ have been visited, $\bar v_j=\partial f/\partial
           if (nb >= 0) { adj[P.out] = 1; touched.add(P.out); for (let t = 0; t < nb; t++) for (const q of c.R.events[t].contrib) { adj[q.from] += q.contrib; touched.add(q.from); } }
           const act = F.active, ev = F.ph === 'b' && act != null ? c.R.events[F.j - 1] : null;
           CG.G.draw({
-            nodeLabel: (id) => { const n = P.nodes[id]; const top = nodeSym(n) + (known(id) ? ' ' + f3(c.R.val[id]) : ''); return touched.has(id) ? top + '\nv̄ ' + f3(adj[id]) : top; },
+            nodeLabel: (id) => { const n = P.nodes[id]; const top = nodeSym(n) + (known(id) ? '\n' + f3(c.R.val[id]) : ''); return touched.has(id) ? top + '\nv̄ ' + f3(adj[id]) : top; },
             nodeFill: (id) => (id === act ? (F.ph === 'f' ? 'gold' : 'orange') : null),
             nodeColor: (id) => (touched.has(id) ? 'orange' : P.nodes[id].op === 'var' ? 'accent' : known(id) ? 'accent' : null),
             edgeColor: (e) => (ev && e.to === act ? 'orange' : F.ph === 'f' && e.to === act ? 'gold' : null),
@@ -269,7 +269,7 @@ so that when all users of $v_j$ have been visited, $\bar v_j=\partial f/\partial
           info = { names, g, fd, done: F.ph === 'done', fops: opCount(P), bops: c.R.ops - opCount(P), f: c.R.val[P.out] };
         });
         v.legend([['accent', 'value stored'], ['orange', 'adjoint $\\bar v=\\partial f/\\partial v$'], ['ink', 'finite difference', { dot: true }]]);
-        v.readout(() => info && (info.done ? String.raw`$f=${tsci(info.f, 4)}$ · backprop gradient ` + info.names.map((nm, k) => `$\\partial_${nm}f=${tsci(info.g[k], 5)}$`).join(', ') + ` · central differences ` + info.names.map((nm, k) => `$${tsci(info.fd[k], 5)}$`).join(', ') + ` · max gap ${tsci(Math.max(...info.g.map((x, k) => Math.abs(x - info.fd[k]))), 1)}` +
+        v.readout(() => info && (info.done ? String.raw`$f=${tsci(info.f, 4)}$ · backprop gradient ` + info.names.map((nm, k) => `$\\partial_${nm}f=${tsci(info.g[k], 5)}$`).join(', ') + ` · central differences ` + info.names.map((nm, k) => `$${tsci(info.fd[k], 5)}$`).join(', ') + ` · max gap $${tsci(Math.max(...info.g.map((x, k) => Math.abs(x - info.fd[k]))), 1)}$` +
           ` · cost: forward ${info.fops} operations, backward ${info.bops} — **all ${info.names.length} partials in one backward pass**` : 'Step to the end to see the full gradient. Forward values are stored because the backward pass needs them in the local derivatives.'));
       },
     },

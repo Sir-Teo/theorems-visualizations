@@ -448,9 +448,9 @@ At low energy the motion is close to the two normal modes of 11.6, and nearly al
       viz(v) {
         const dS = v.slider('difference in $\\theta_2$ at release, $\\delta$ (rad)', 1e-10, 1e-3, 1e-6, { log: true, fmt: (x) => sciText(v, x) });
         const TT = 40, H = 0.005, REC = 4, G = 84;
-        const sR = v.stage({ x: [-2.25, 2.25], y: [-2.25, 2.25], equal: true, axes: false, height: 330, weight: 1, title: 'the twins in real space' });
-        const sM = v.stage({ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI], equal: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'θ₁ at release', ylabel: 'θ₂ at release', xticks: piTicks(-Math.PI, Math.PI), yticks: piTicks(-Math.PI, Math.PI), title: 'time to the first flip' });
-        const sS = v.stage({ x: [0, TT], y: [-11, 1.5], axes: 'box', gutter: true, height: 190, weight: 1.6, xlabel: 't  (units of √(l/g))', ylabel: 'log₁₀ separation' });
+        const sR = v.stage({ x: [-2.25, 2.25], y: [-2.25, 2.25], equal: true, axes: false, height: 330, weight: 1, minWidth: 360, title: 'the twins in real space' });
+        const sM = v.stage({ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI], equal: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'θ₁ at release', ylabel: 'θ₂ at release', xticks: piTicks(-Math.PI, Math.PI), yticks: piTicks(-Math.PI, Math.PI), minWidth: 360, title: 'time to the first flip' });
+        const sS = v.stage({ x: [0, TT], y: [-11, 1.5], axes: 'box', gutter: true, height: 190, weight: 1.6, minWidth: 400, xlabel: 't  (units of √(l/g))', ylabel: 'log₁₀ separation' });
         const sE = v.stage({ x: [0, TT], y: [-1e-4, 1e-4], axes: 'box', gutter: true, height: 190, weight: 1, xlabel: 't', ylabel: 'energy error' });
         const hp = sM.handle(110 * DEG, 125 * DEG, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -Math.PI + 0.01, Math.PI - 0.01)] });
         // fractal flip-time map, computed progressively (RK4, step 0.05)
@@ -490,15 +490,16 @@ At low energy the motion is close to the two normal modes of 11.6, and nearly al
           // flip map
           const ramp = (f) => (f < 0 ? v.rgb('faint') : !isFinite(f) ? v.ramp(0.04, 'accent') : f !== f ? v.rgb('panel') : v.ramp(clamp(1 - Math.log(f / 1.5) / Math.log(TF / 1.5), 0.08, 1), 'accent'));
           sM.raster((x, y) => { const c = Math.floor(((x + Math.PI) / TAU) * G), r = Math.floor(((y + Math.PI) / TAU) * G); return c < 0 || r < 0 || c >= G || r >= G ? null : ramp(flip[r * G + c]); }, { key: `flip${row}|${v.color('panel')}`, res: 2, rect: [-Math.PI, -Math.PI, Math.PI, Math.PI] });
-          sM.contour((a, b) => 2 * Math.cos(a) + Math.cos(b), [1], { color: 'ink', width: 1, alpha: 0.5, res: 90 });
+          sM.clip(() => sM.contour((a, b) => 2 * Math.cos(a) + Math.cos(b), [1], { color: 'ink', width: 1, alpha: 0.5, res: 90 }), [-Math.PI, Math.PI], [-Math.PI, Math.PI]);
           if (row < G) sM.corner(`computing… ${Math.round((100 * row) / G)}%`, 'tl', { color: 'ink', plate: true });
           // separation and energy error
           sS.hline(Math.log10(2 * Math.PI), { color: 'muted', dash: [4, 4], width: 1 });
           sS.path(D.t.slice(0, i + 1).map((x, k) => [x, D.lsep[k]]), { color: 'purple', width: 2 });
           if (D.fit && tau > D.t[Math.min(D.t.length - 1, Math.round(D.t.length * 0.1))]) sS.fn((x) => D.fit.intercept + D.fit.slope * x, { color: 'red', width: 1.3, dash: [5, 4], domain: [0, TT] });
-          const em = Math.max(1e-9, D.emax) * 1.25; sE.setView([0, TT], [-em, em]);
+          const ex = Math.floor(Math.log10(Math.max(1e-12, D.emax))), sc = 10 ** -ex, em = Math.max(1e-9, D.emax) * sc * 1.25;
+          sE.setView([0, TT], [-em, em]); sE.setLabels('t', `energy error (× 10${v.M.pow10Text(ex).slice(2)})`);
           sE.hline(0, { color: 'faint', width: 1 });
-          sE.path(D.t.slice(0, i + 1).map((x, k) => [x, D.dE[k]]), { color: 'green', width: 1.4 });
+          sE.path(D.t.slice(0, i + 1).map((x, k) => [x, D.dE[k] * sc]), { color: 'green', width: 1.4 });
           cur = { D, i, flipHere: flip[Math.min(G - 1, Math.floor(((hp.y + Math.PI) / TAU) * G)) * G + Math.min(G - 1, Math.floor(((hp.x + Math.PI) / TAU) * G))] };
         }, { period: TT / 2.2 + 2, still: 14 });
         v.legend([['blue', 'pendulum A'], ['red', 'pendulum B (lower arm $+\\delta$)'], ['purple', 'log₁₀ of their separation in phase space'], ['red', 'exponential fit', { dash: true }], ['green', 'energy error of A (implicit midpoint)']]);
@@ -558,7 +559,7 @@ This **standard map** preserves area (its Jacobian determinant is 1) and twists:
           for (const o of P) fastDots(v, sP, o.xs, o.ys, NI, o.L > 0.04 ? 'red' : 'blue', { alpha: o.L > 0.04 ? 0.5 : 0.75, size: 1.5 });
           fastDots(v, sP, M.xs, M.ys, 3000, 'gold', { alpha: 0.95, size: 2.2 });
           sP.dot(mine[0], mine[1], { r: 5, color: 'gold' });
-          const top = Math.max(1, Df.last * 1.25, 0.5 * K * K * ND * 0.15);
+          const top = Math.max(1, Df.last * 1.3, 0.05 * 0.5 * K * K * ND);
           sD.setView([0, ND], [0, top]);
           if (K > 0) sD.fn((n) => 0.5 * K * K * n, { color: 'muted', width: 1.4, dash: [6, 4] });
           sD.path(Df.msd, { color: 'purple', width: 2.4 });
@@ -569,7 +570,7 @@ This **standard map** preserves area (its Jacobian determinant is 1) and twists:
           if (!cur) return '';
           const { P, M, Df, K } = cur, nc = P.filter((o) => o.L > 0.04).length;
           const ratio = K > 0 ? Df.D / (0.5 * K * K) : NaN;
-          return String.raw`$K = ${v.fix(K, 3)}$ · chaotic seeds: ${nc} of ${P.length} · your orbit’s Lyapunov exponent ${v.fix(M.L, 3)} per kick · momentum spread after ${ND} kicks: ${v.fix(Df.last, 2)}; growth rate $D = ${v.fix(Df.D, 3)}$` + (K > 0 ? String.raw` (${v.fix(ratio, 2)} × $K^2/2$)` : '') + (Df.last < 2 * Math.PI * Math.PI / 4 && Math.abs(Df.D) < 0.02 * Math.max(1, K * K) ? ' → **bounded**: invariant circles block the way' : ' → **diffusing**: no invariant circle spans the cylinder');
+          return String.raw`$K = ${v.fix(K, 3)}$ · chaotic seeds: ${nc} of ${P.length} · your orbit’s Lyapunov exponent ${v.fix(Math.abs(M.L) < 5e-4 ? 0 : M.L, 3)} per kick · momentum spread after ${ND} kicks: ${v.fix(Df.last, 2)}; growth rate $D = ${v.fix(Df.D, 3)}$` + (K > 0 ? String.raw` (${v.fix(ratio, 2)} × $K^2/2$)` : '') + (Df.last < 2 * Math.PI * Math.PI / 4 && Math.abs(Df.D) < 0.02 * Math.max(1, K * K) ? ' → **bounded**: invariant circles block the way' : ' → **diffusing**: no invariant circle spans the cylinder');
         });
       },
     },
@@ -680,20 +681,22 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
             for (let k = 0; k < 50; k++) { const mm = (a + b) / 2, fm = dpf(mm); if (fm > 0 === fa > 0) { a = mm; fa = fm; } else b = mm; }
             const th = (a + b) / 2, pc = pAt(th), tr = stdOrbit(K, th, pc, q).tr; fixed.push({ th, p: pc, tr, ell: Math.abs(tr) < 2 });
           }
+          let cmin = Infinity, cmax = -Infinity, amp = 0; for (let i = 0; i <= NT; i++) if (C[i]) { cmin = Math.min(cmin, C[i][1], IMG[i][1]); cmax = Math.max(cmax, C[i][1], IMG[i][1]); amp = Math.max(amp, Math.abs(DP[i])); }
+          const pad = 0.1 + 5 * Math.sqrt(amp), view = isFinite(cmin) ? [cmin - pad, cmax + pad] : [p0 - W, p0 + W];
           let area = 0, absA = 0; for (let i = 0; i < NT; i++) if (isFinite(DP[i]) && isFinite(DP[i + 1])) { const a = 0.5 * (DP[i] + DP[i + 1]) * (TAU / NT); area += a; absA += Math.abs(a); }
           // background orbits through the strip
-          const bg = [];
-          for (let k = 0; k < 26; k++) {
-            let th = k % 2 ? Math.PI / q : 0.013, p = p0 - W + (2 * W * (k + 0.5)) / 26; const xs = new Float32Array(700), ys = new Float32Array(700);
+          const bg = [], e0 = fixed.find((f) => f.ell), th0 = e0 ? e0.th : Math.PI / q;
+          for (let k = 0; k < 34; k++) {
+            let th = k < 26 ? th0 : (TAU * (k - 26)) / 8 + 0.3, p = k < 26 ? view[0] + ((view[1] - view[0]) * (k + 0.5)) / 26 : p0; const xs = new Float32Array(700), ys = new Float32Array(700);
             for (let i = 0; i < 700; i++) { p += K * Math.sin(th); th = wrap0(th + p); xs[i] = th; ys[i] = p - TAU * Math.floor((p - p0 + Math.PI) / TAU); }
             bg.push({ xs, ys });
           }
-          return { m, q, K, p0, W, C, IMG, DP, fixed, area, absA, bg };
+          return { m, q, K, p0, W, C, IMG, DP, fixed, area, absA, bg, view };
         });
         let cur = null;
         v.render(() => {
           const D = data();
-          sP.setView([0, TAU], [D.p0 - D.W, D.p0 + D.W]);
+          sP.setView([0, TAU], D.view);
           for (const b of D.bg) fastDots(v, sP, b.xs, b.ys, 700, 'muted', { alpha: 0.45, size: 1.4 });
           sP.hline(D.p0, { color: 'ink', dash: [5, 5], width: 1, alpha: 0.6 });
           sP.path(D.IMG, { color: 'purple', width: 2.4 });
@@ -715,7 +718,7 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
           if (!cur) return '';
           const { D } = cur, ne = D.fixed.filter((f) => f.ell).length, nh = D.fixed.length - ne;
           if (D.K === 0) return String.raw`$K = 0$: every point of the circle $p = 2\pi m/q$ is fixed by $T^q$, so $C$ and its image coincide with it`;
-          return String.raw`fixed points of $T^{${D.q}}$ found: **${ne} elliptic** and **${nh} hyperbolic** (Poincaré–Birkhoff: $q = ${D.q}$ of each) · signed area between $C$ and $T^q(C)$: ${sci(v, D.area)} out of ${sci(v, D.absA)} in total (area preservation) · traces $\operatorname{tr}DT^q$: ${D.fixed.slice(0, 4).map((f) => v.fix(f.tr, 3)).join(', ')}${D.fixed.length > 4 ? ', …' : ''}`;
+          return String.raw`fixed points of $T^{${D.q}}$ found: **${ne} elliptic** and **${nh} hyperbolic** (Poincaré–Birkhoff: $q = ${D.q}$ of each) · signed area between $C$ and $T^q(C)$: $${sci(v, D.area)}$, against $${sci(v, D.absA)}$ for the total shaded area (area preservation) · traces of $DT^q$ at the fixed points: ${D.fixed.slice(0, 4).map((f) => v.fix(f.tr, 3)).join(', ')}${D.fixed.length > 4 ? ', …' : ''} (elliptic when $|\operatorname{tr}| < 2$)`;
         });
       },
     },

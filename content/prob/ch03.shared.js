@@ -109,8 +109,18 @@ export const LAWS = {
 export const lawOpts = (keys) => keys.map((k) => ({ value: k, label: LAWS[k].label }));
 /** Empirical characteristic function of samples xs at t. */
 export function empPhi(xs, t) { let c = 0, s = 0; for (const x of xs) { c += Math.cos(t * x); s += Math.sin(t * x); } return [c / xs.length, s / xs.length]; }
-/** Standard normal distribution function without passing M around (Abramowitz–Stegun 7.1.26 is not enough here, so use erfc via M). */
-export const Phi = (M, z) => PhiN(M, z);
+/** Sine integral Si(z) = ∫₀^z sin(u)/u du: Simpson table (step 0.02) with cubic Hermite interpolation, asymptotic series beyond 400. */
+const SI_H = 0.02, SI_N = 20000; let SI = null;
+const sinc = (u) => (u === 0 ? 1 : Math.sin(u) / u);
+export function Si(z) {
+  const sg = z < 0 ? -1 : 1; z = Math.abs(z);
+  if (z < 1e-9) return sg * z;
+  if (z >= SI_H * SI_N) { const z2 = z * z; return sg * (Math.PI / 2 - (Math.cos(z) / z) * (1 - 2 / z2 + 24 / (z2 * z2)) - (Math.sin(z) / z2) * (1 - 6 / z2)); }
+  if (!SI) { SI = new Float64Array(SI_N + 1); for (let i = 1; i <= SI_N; i++) { const a = (i - 1) * SI_H; SI[i] = SI[i - 1] + (SI_H / 6) * (sinc(a) + 4 * sinc(a + SI_H / 2) + sinc(a + SI_H)); } }
+  const i = Math.floor(z / SI_H), t = z / SI_H - i, t2 = t * t, t3 = t2 * t;
+  const m0 = sinc(i * SI_H) * SI_H, m1 = sinc((i + 1) * SI_H) * SI_H;
+  return sg * ((2 * t3 - 3 * t2 + 1) * SI[i] + (t3 - 2 * t2 + t) * m0 + (-2 * t3 + 3 * t2) * SI[i + 1] + (t3 - t2) * m1);
+}
 
 /** Ring of pixel radius r around a data point. */
 export function ringPx(v, S, x, y, r, color, width = 2, dash = null) {

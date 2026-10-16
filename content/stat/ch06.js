@@ -41,7 +41,7 @@ Example: for $X_1,\dots,X_n$ i.i.d. $N(\mu,1)$ and $H_0:\mu=0$, the statistic $Z
         const sL = v.stage({ x: [-2.6, 2.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 0.95, minWidth: 250, xlabel: '$x$', yticks: [], title: 'the data: 16 draws and their mean $\\bar x$' });
         const sR = v.stage({ x: [-4.2, 4.2], y: [0, 0.46], axes: 'box', gutter: true, height: 320, weight: 1.05, xlabel: '$z=\\sqrt n\\,\\bar x$', ylabel: 'null density', title: 'null distribution of $Z$ and the rejection region' });
         const hy = 0.03;
-        const hM = sL.handle(0.35, 0.1, { color: TC.h0, label: '$\\bar x$', labelPos: 'n', constrain: (x) => [clamp(x, -1.6, 1.6), 0.1] });
+        const hM = sL.handle(0.35, 0.07, { color: TC.h0, label: '$\\bar x$', labelPos: 'e', constrain: (x) => [clamp(x, -1.6, 1.6), 0.07] });
         const hC = sR.handle(1.645, hy, { color: TC.alpha, label: '$c$', labelPos: 'ne', constrain: (x) => [clamp(x, -3.8, 3.8), hy] });
         const mc = memo();
         const base = () => mc(seed, () => { const r = v.rng(hashStr('t6.1|' + seed)), e = Array.from({ length: n }, () => r.normal()), m = mean(e); return { e: e.map((x) => x - m), jit: e.map(() => 0.28 + 0.55 * r()) }; });
@@ -59,10 +59,10 @@ Example: for $X_1,\dots,X_n$ i.i.d. $N(\mu,1)$ and $H_0:\mu=0$, the statistic $Z
           else if (alt === 'lt') sL.vband(-2.6, xc, { color: TC.alpha, alpha: 0.1 });
           else { sL.vband(xc, 2.6, { color: TC.alpha, alpha: 0.1 }); sL.vband(-2.6, -xc, { color: TC.alpha, alpha: 0.1 }); }
           sL.vline(0, { color: 'muted', width: 1.2, dash: [4, 4] });
-          sL.text('$\\mu_0=0$', 0, 0.95, { color: 'muted', size: 12, dx: 4, align: 'left' });
+          sL.text('$\\mu_0=0$', 0, 0.2, { color: 'muted', size: 12, dx: -5, align: 'right' });
           sL.dots(B.e.map((e, i) => [xb + e, B.jit[i]]), { r: 4, color: TC.sim, alpha: 0.85 });
           sL.vline(xb, { color: TC.h0, width: 2.4 });
-          sL.text(reject ? '$\\bar x$ is in the red band: reject' : '$\\bar x$ is outside the band: retain', 0, 0.2, { color: reject ? TC.alpha : 'green', size: 12, weight: 700, plate: true });
+          sL.text(reject ? 'x̄ is in the red band: reject' : 'x̄ is outside the band: retain', -2.5, 0.95, { color: reject ? TC.alpha : 'green', size: 12, weight: 700, plate: true, align: 'left' });
           // right: null density, region, observed z
           const f = phi, L = -4.2, U = 4.2;
           if (alt === 'gt') area(sR, f, c, U, TC.alpha);
@@ -111,7 +111,7 @@ The **size** of the test is its largest type I error probability, $\sup_{\theta\
         const pS = v.slider('alternative $p_1$', 0.5, 0.95, 0.75, { step: 0.01 });
         const lvS = v.slider('level $\\alpha$', 0.01, 0.2, 0.05, { step: 0.005, onChange: () => { if (modeS.value === 'bin') hC.set(kLevel() - 0.5, hy()); } });
         const sL = v.stage({ x: [-3.5, 6.5], y: [0, 0.46], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'statistic', ylabel: 'density', title: 'two sampling distributions and one cutoff' });
-        const sR = v.stage({ x: [-3.5, 6.5], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 0.9, minWidth: 250, xlabel: 'statistic', yticks: [[0.75, '$H_0$ true'], [0.25, '$H_1$ true']], title: '1,000 simulated decisions' });
+        const sR = v.stage({ x: [-3.5, 6.5], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 0.9, minWidth: 250, xlabel: 'statistic', yticks: [[0.75, 'H₀ true'], [0.25, 'H₁ true']], title: '1,000 simulated decisions' });
         const tL = titler(sL), leg = legender(v);
         const hy = () => (modeS.value === 'z' ? 0.02 : 0.012);
         const hC = sL.handle(1.645, 0.02, { color: TC.alpha, label: '$c$', labelPos: 'ne', constrain: (x) => (modeS.value === 'z' ? [clamp(x, -3, 6), 0.02] : [clamp(Math.round(x - 0.5) + 0.5, 0.5, 20.5), 0.012]) });
@@ -141,12 +141,11 @@ The **size** of the test is its largest type I error probability, $\sup_{\theta\
             sL.fn((x) => phi(x - d), { domain: [-3.5, 6.5], color: TC.h1, width: 2.6, n: 300 });
             sL.vline(c, { color: TC.alpha, width: 1.6, dash: [5, 4] });
             al = Q(c); be = Phi(c - d);
-            tag(sL, `α = ${v.fix(al, 3)}`, c + 0.25, 0.3, { color: TC.alpha, align: 'left' });
-            tag(sL, `β = ${v.fix(be, 3)}`, c - 0.25, 0.38, { color: TC.beta, align: 'right' });
-            sL.text('$H_0$', 0, 0.41, { color: TC.h0, size: 14, dy: -4 }); sL.text('$H_1$', d, 0.41, { color: TC.h1, size: 14, dy: -4, dx: d < 0.6 ? 18 : 0 });
+            tag(sL, `α = ${v.fix(al, 3)}`, c, 0.445, { color: TC.alpha, align: 'left', dx: 6 });
+            tag(sL, `β = ${v.fix(be, 3)}`, c, 0.445, { color: TC.beta, align: 'right', dx: -6 });
+            sL.text('$H_0$', 0, 0.4, { color: TC.h0, size: 14, dx: -14, dy: -4, align: 'right' }); sL.text('$H_1$', d, 0.4, { color: TC.h1, size: 14, dx: 14, dy: -4, align: 'left' });
             fp = S.a.filter((x) => x >= c).length; fn = S.b.filter((x) => x < c).length;
-            sR.setTicks(null, [[0.75, '$H_0$ true'], [0.25, '$H_1$ true']]);
-          } else {
+                      } else {
             const p1 = pS.value, k = Math.round(hC.x + 0.5); c = k;
             sL.setView([-0.5, 20.5], [0, 0.3]); sR.setView([-0.5, 20.5], [0, 1]); tL('null Bin(20, 0.5) and alternative Bin(20, $p_1$)');
             for (let x = 0; x <= NB; x++) {
@@ -225,7 +224,7 @@ increasing in $\theta$, equal to $\alpha$ at $\theta_0$, and steeper as $n$ grow
           const n = nS.value, a = +aS.value, sim0 = sim(n, a), t = hT.x;
           s.hband(0, a, { color: TC.alpha, alpha: 0.1 });
           s.vband(-0.5, 0, { color: TC.h0, alpha: 0.05 });
-          s.text('$\\Theta_0$', -0.25, 0.93, { color: TC.h0, size: 14 }); s.text('$\\Theta_1$', 0.75, 0.93, { color: TC.h1, size: 14 });
+          s.text('$\\Theta_0$ (null)', -0.25, 0.5, { color: TC.h0, size: 14 }); s.text('$\\Theta_1$ (alternative)', 1.3, 0.3, { color: TC.h1, size: 14 });
           if (n >= 4) s.fn((x) => pw(x, n / 4, a), { domain: [-0.5, 1.5], color: TC.h0, width: 1.3, alpha: 0.35, dash: [4, 4] });
           s.fn((x) => pw(x, 4 * n, a), { domain: [-0.5, 1.5], color: TC.h0, width: 1.3, alpha: 0.35, dash: [4, 4] });
           if (sgn.value) s.fn((x) => signPw(x, n, a), { domain: [-0.5, 1.5], color: 'orange', width: 2.4, n: 160 });
