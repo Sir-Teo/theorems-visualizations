@@ -25,7 +25,7 @@ export default {
       idea: String.raw`The grammar is the whole language: there are no numbers, no booleans and no loops, only functions and the act of applying one function to another (a function with several arguments is a function returning a function, “currying”). The conventions are about reading a flat string as a tree and nothing more; the tree is the term. The first mistake to avoid is reading $\lambda x.\,x\,x$ as $(\lambda x.\,x)\,x$, the second is reading $f\,x\,y$ as $f\,(x\,y)$. This is the inductive-definition pattern of Chapter 1 (syntax as a least set, structural induction on terms) applied to a language with binders.`,
       caption: String.raw`Type any term (λ or backslash, names are single lower-case letters, optionally with digits or primes) or pick an example. Hover over a node of the tree to see which part of the text it stands for; switch between the conventions and full parenthesisation and watch the parentheses reappear. The words True, Plus, … and the digits are shorthands for terms that we define later.`,
       deps: ['pl-1.1'], refs: ['Pierce §5.1'], tags: ['syntax', 'binding'],
-      credit: 'Alonzo Church, 1932–1936 (the λ-calculus); Curry-style left-associated application is the standard modern convention',
+      credit: 'Alonzo Church, 1930s (the λ-calculus)',
       viz(v) {
         const sTxt = pxStage(v, { height: 92, full: true, title: 'The term as text' });
         const sTree = pxStage(v, { height: 340, full: true, hover: true, title: 'The term as a tree' });
@@ -257,7 +257,7 @@ export default {
           const rs = reds.filter((p) => lay0.spans.has(p));
           const p = ptr(sT);
           hovR = null;
-          if (p && info) { const c = info.reds.filter((r) => p.x >= r.x0 && p.x <= r.x1).sort((a, b) => (a.x1 - a.x0) - (b.x1 - b.x0))[0]; if (c) hovR = c.p; }
+          if (p && info) { const c = info.reds.filter((r) => p.x >= r.x0 && p.x <= r.x1).sort((a, b) => (a.x1 - a.x0) - (b.x1 - b.x0))[0]; if (c && reds.includes(c.p)) hovR = c.p; }
           const hpart = (path) => (hovR !== null && (path === cat(hovR, 'f') || path.startsWith(cat(hovR, 'f') + '.')) ? 'orange' : hovR !== null && (path === cat(hovR, 'a') || path.startsWith(cat(hovR, 'a') + '.')) ? 'accent' : undefined);
           const lay = layoutTerm(t, { ...NICE, style: (nd, path) => (hovR === null ? undefined : hpart(path)) });
           const yT = 56;
@@ -394,7 +394,7 @@ export default {
       idea: String.raw`In a calculus whose only objects are functions, a datum is represented by its behaviour: a boolean is the choice it makes, a pair is the way it hands its two components to whatever consumer is applied to it. Conditional is then application, and the connectives are programs that route the two selectors: $\mathsf{and}\,p\,q$ is “$p$ ? $q$ : $p$”, written $p\,q\,p$. Each law is a two- or three-step β-computation (2.4); no new primitive is needed.`,
       caption: String.raw`Type any expression in True/False/If/And/Or/Not/Xor/Pair/Fst/Snd (free letters such as a, b are allowed) and drag “step” through its normal-order reduction; the contracted redex is shaded. The table on the right is computed by actually reducing the chosen connective on all four inputs, with the number of β-steps in each cell.`,
       deps: ['pl-2.4'], refs: ['Pierce §5.2'], tags: ['encoding', 'data'],
-      credit: 'Alonzo Church, 1930s; pairs as in Church’s and Kleene’s work',
+      credit: 'Alonzo Church, 1930s',
       viz(v) {
         const sT = pxStage(v, { height: 250, minWidth: 380, weight: 1.4, title: 'Normal-order reduction trace' });
         const sB = pxStage(v, { height: 250, minWidth: 260, title: 'Truth table, by reduction' });

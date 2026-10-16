@@ -31,7 +31,7 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
       deps: ['rep-1.1', 'rca-4.1', 'ladr-6.2'],
       refs: ['Serre §1.3', 'Fulton–Harris §1.2'],
       tags: ['inner product', 'averaging'],
-      credit: 'Hurwitz (1897) averaged over compact groups; the finite-group form is due to Maschke (1899) and Frobenius–Schur',
+      credit: 'Averaging over a group goes back to Hurwitz (1897, compact groups) and Maschke (1899, finite groups)',
       viz(v) {
         const GS = skewedGroups();
         const gs = v.select('group', [{ value: 'C3', label: '$\\mathbb Z/3$' }, { value: 'S3', label: '$S_3$' }, { value: 'D4', label: '$D_4$' }], 'S3');
@@ -516,11 +516,12 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
         const nn = v.slider('order $n$ of the rotation group', 2, 12, 4, { step: 1, int: true });
         const fld = v.select('field', [{ value: 'R', label: '$\\mathbb R$' }, { value: 'C', label: '$\\mathbb C$' }], 'R');
         const A = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: true, height: 380, weight: 1, title: 'a real line $\\ell$ and its images' });
-        const B = v.stage({ x: [0, 13], y: [0, 1.1], axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'order $n$', ylabel: 'least invariance defect of a real line', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => [x, String(x)]), title: 'invariant real lines?' });
+        const B = v.stage({ x: [0, 13], y: [0, 1.4], axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'order $n$', ylabel: 'least invariance defect of a real line', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => [x, String(x)]), title: 'invariant real lines?' });
         const ang = 0.6, hd = A.handle(1.5 * Math.cos(ang), 1.5 * Math.sin(ang), { color: 'ink', label: 'ℓ', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [(1.5 * x) / r, (1.5 * y) / r]; } });
         const best = (n) => Math.max(...Array.from({ length: n }, (_, k) => Math.abs(Math.sin((TAU * k) / n)))); // same for every direction
         v.render(() => {
           const n = nn.value, th = Math.atan2(hd.y, hd.x);
+          hd.visible = fld.value === 'R';
           if (fld.value === 'R') {
             for (let k = 0; k < n; k++) { const t = th + (TAU * k) / n; A.line(-1.7 * Math.cos(t), -1.7 * Math.sin(t), 1.7 * Math.cos(t), 1.7 * Math.sin(t), { color: ecol(k), width: k ? 1.8 : 2.8, alpha: k ? 0.8 : 1 }); }
             A.corner(n === 2 ? 'every line is invariant: $\\rho(1)=-I$' : 'no line is invariant', 'tl', { plate: true });
@@ -535,9 +536,8 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
             }
             A.corner('eigenvalues $\\omega^k$ on $L_+$ (filled blue), $\\bar\\omega^{k}$ on $L_-$ (hollow red)', 'tl', { plate: true });
           }
-          for (let m = 2; m <= 12; m++) B.bars([0], {});
           for (let m = 2; m <= 12; m++) B.rect(m - 0.35, 0, m + 0.35, best(m), { fill: m === n ? 'accent' : 'muted', fillAlpha: m === n ? 0.7 : 0.3, color: m === n ? 'accent' : 'muted' });
-          B.text(fld.value === 'C' ? 'over $\\mathbb C$ the defect is $0$ for every $n$: the lines $L_\\pm$ are invariant' : 'over $\\mathbb R$: zero only at $n=2$', 6.5, 0.07, { align: 'center', size: 12, color: 'ink' });
+          B.corner(fld.value === 'C' ? 'over $\\mathbb C$ the lines $L_\\pm$ are invariant for every $n$ (defect $0$)' : 'over $\\mathbb R$: zero only at $n=2$', 'tl', { plate: true, size: 12 });
         });
         v.readout(() => {
           const n = nn.value, w = TAU / n, c = Math.cos(w);
@@ -564,7 +564,7 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
       viz(v) {
         const GS = skewedGroups();
         const gs = v.select('group', [{ value: 'C3', label: '$\\mathbb Z/3$' }, { value: 'S3', label: '$S_3$' }, { value: 'D4', label: '$D_4$' }], 'S3');
-        const kk = v.slider('skew of the given basis', 0, 1.6, 1, { step: 0.05 });
+        const kk = v.slider('skew of the given basis', 0, 1.6, 0.6, { step: 0.05 });
         const tt = v.slider('blend $t$: given basis → Gram–Schmidt basis', 0, 1, 0, { step: 0.01 });
         const A = v.stage({ x: [-2.5, 2.5], y: [-2.2, 2.2], equal: true, axes: true, height: 420, weight: 1.25, title: 'the group acting on one letter $F$' });
         const B = v.stage({ x: [0, 1], y: [0, 1.3], axes: 'box', gutter: true, height: 420, weight: 0.85, xlabel: 'blend $t$', ylabel: '$\\max_g\\|\\rho(g)^{\\mathsf T}\\rho(g)-I\\|$', title: 'distance from orthogonal' });
@@ -591,7 +591,7 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
           A.arrow(0, 0, e1[0], e1[1], { color: 'ink', width: 2.2 }); A.arrow(0, 0, e2[0], e2[1], { color: 'ink', width: 2.2 });
           A.tex('f_1', e1[0] + 0.1, e1[1] - 0.2, { size: 14 }); A.tex('f_2', e2[0] + 0.12, e2[1] + 0.05, { size: 14 });
           const pts = []; for (let k = 0; k <= 50; k++) { const s = k / 50; pts.push([s, defect(calc(s).rho)]); }
-          B.path(pts, { color: 'accent', width: 2.4 }); B.dot(t, defect(rho), { r: 7, color: 'accent', fill: 'accent' });
+          B.setView([0, 1], [0, Math.max(1, pts[0][1] * 1.08)]); B.path(pts, { color: 'accent', width: 2.4 }); B.dot(t, defect(rho), { r: 7, color: 'accent', fill: 'accent' });
           B.hline(0, { color: 'green', width: 1.5 });
         });
         v.legend([['green', 'averaged unit ball', { dash: true }], ['ink', 'Gram–Schmidt basis $f_1,f_2$'], ['orange', 'copies of $F$ under $\\rho(g)$']]);

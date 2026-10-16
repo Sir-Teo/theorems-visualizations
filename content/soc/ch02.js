@@ -271,5 +271,245 @@ The **clustering coefficient** of node $A$ is the fraction of pairs of $A$'s nei
         v.readout(() => `Your graph: ${v.fix(st.tr.T, 0)} triangle(s), ${st.tr.P} connected triples → transitivity $C = ${v.fix(st.tr.transitivity, 3)}$ (edge density $\\rho = ${v.fix(st.rho, 3)}$)\nAt the selected node: degree ${st.kf}, **${st.ops}** open triad(s)${isFinite(st.cf) ? `, local clustering $C_A = ${v.fix(st.cf, 2)}$` : ''}`);
       },
     },
+
+    // ------------------------------------------------------------------ 2.6
+    {
+      num: '2.6',
+      kind: 'Theorem',
+      name: 'Strong triadic closure makes local bridges weak',
+      statement: String.raw`Label each tie of a network **strong** or **weak**. Say a node $A$ satisfies the **strong triadic closure property** if, whenever $A$ has strong ties to both $B$ and $C$, the people $B$ and $C$ are joined by some tie (strong or weak). A **local bridge** is an edge $AB$ whose endpoints have no common neighbour (deleting it would raise their distance above 2).
+
+**Theorem.** If a node $A$ satisfies strong triadic closure and has strong ties to at least two people, then every local bridge at $A$ is weak. Equivalently: in a network where every node satisfies strong triadic closure, a strong tie can be a local bridge only when neither endpoint has another strong tie.`,
+      idea: String.raw`Suppose the local bridge $AB$ were strong and $A$ had another strong tie $AC$. Strong triadic closure at $A$ would then force a tie between $B$ and $C$, so $C$ would be a common neighbour of $A$ and $B$, and $AB$ would not be a local bridge: a contradiction. The argument uses only the definition of local bridge and one application of the property.`,
+      caption: String.raw`Click edges to switch them between strong (thick) and weak (thin dashed). Red dashed lines show the missing closing tie of each violated triad. Try to make a bridge between the two clusters strong without breaking the property: the counted labellings below show it cannot be done.`,
+      deps: ['soc-2.5'],
+      refs: ['E&K §3.2'],
+      tags: ['bridges', 'weak ties'],
+      credit: 'Easley & Kleinberg formalisation of Granovetter, 1973',
+      viz(v) {
+        const s = v.stage({ x: [-1.3, 1.3], y: [-1.0, 1.0], axes: false, equal: true, height: 400 });
+        const pts = { A: [-0.35, 0.1], B: [-0.9, 0.55], C: [-0.9, -0.4], D: [-1.2, 0.08], E: [0.35, 0.1], F: [0.9, 0.55], G: [0.9, -0.4], H: [1.2, 0.08], I: [-0.35, 0.8] };
+        const ids = Object.keys(pts);
+        const E0 = [['A', 'B'], ['A', 'C'], ['B', 'C'], ['B', 'D'], ['C', 'D'], ['E', 'F'], ['E', 'G'], ['F', 'G'], ['F', 'H'], ['G', 'H'], ['A', 'E'], ['A', 'I']];
+        const G = v.graph(s, { nodes: ids.map((id) => ({ id, x: pts[id][0], y: pts[id][1] })), edges: E0.map(([a, b]) => ({ from: a, to: b, strong: ['AB', 'AC', 'BC', 'EF', 'EG', 'FG'].includes(a + b) })), layout: 'none', r: 14 });
+        const idx = (id) => ids.indexOf(id);
+        const g = mkGraph(ids.length, E0.map(([a, b]) => [idx(a), idx(b)]));
+        const bridge = E0.map(([a, b]) => !g.adj[idx(a)].some((x) => g.adj[idx(b)].includes(x)));
+        const viol = (lab) => { const out = []; for (let a = 0; a < g.n; a++) { const st = []; E0.forEach(([x, y], k) => { if (lab[k]) { if (idx(x) === a) st.push(idx(y)); if (idx(y) === a) st.push(idx(x)); } }); for (let i = 0; i < st.length; i++) for (let j = i + 1; j < st.length; j++) if (!g.adj[st[i]].includes(st[j])) out.push([a, st[i], st[j]]); } return out; };
+        const strongDeg = (lab, a) => E0.reduce((c, [x, y], k) => c + (lab[k] && (idx(x) === a || idx(y) === a) ? 1 : 0), 0);
+        // all 2^12 labellings: those with strong triadic closure everywhere, and among them any strong local bridge at a node with another strong tie
+        let ok = 0, bad = 0;
+        for (let mask = 0; mask < 1 << E0.length; mask++) {
+          const lab = E0.map((_, k) => (mask >> k) & 1);
+          if (viol(lab).length) continue; ok++;
+          E0.forEach(([x, y], k) => { if (lab[k] && bridge[k] && (strongDeg(lab, idx(x)) >= 2 || strongDeg(lab, idx(y)) >= 2)) bad++; });
+        }
+        const lab = () => G.edges.map((e) => !!e.strong);
+        G.onClick = ({ edge }) => { if (edge) edge.strong = !edge.strong; return true; };
+        v.button('All weak', () => G.edges.forEach((e) => { e.strong = false; }));
+        v.button('All strong', () => G.edges.forEach((e) => { e.strong = true; }));
+        v.button('Repair: weaken offenders', () => {
+          for (let it = 0; it < 30; it++) {
+            const l = lab(), V = viol(l); if (!V.length) break;
+            const [a, b, c] = V[0]; const pick = (x) => G.edges.findIndex((e) => e.strong && ((idx(e.from) === a && idx(e.to) === x) || (idx(e.to) === a && idx(e.from) === x)));
+            const kb = pick(b), kc = pick(c); const k = bridge[kb] ? kb : bridge[kc] ? kc : kb; G.edges[k].strong = false;
+          }
+        });
+        let st = {};
+        v.render(() => {
+          const l = lab(), V = viol(l), bad_ = new Set(V.map((x) => x[0]));
+          G.draw({
+            edgeColor: (e) => (e.strong ? 'accent' : 'muted'),
+            edgeWidth: (e) => (e.strong ? 5 : 1.6),
+            edgeDash: (e) => (e.strong ? null : [5, 4]),
+            edgeLabel: (e) => { const k = G.edges.indexOf(e); return bridge[k] ? 'bridge' : null; },
+            edgeLabelColor: (e) => 'orange',
+            nodeRing: (id) => { const a = idx(id); return strongDeg(l, a) >= 2 ? (bad_.has(a) ? 'red' : 'green') : null; },
+          });
+          for (const [a, b, c] of V) s.line(pts[ids[b]][0], pts[ids[b]][1], pts[ids[c]][0], pts[ids[c]][1], { color: 'red', dash: [5, 4], width: 2.5 });
+          const strongBridges = E0.map((_, k) => k).filter((k) => l[k] && bridge[k]);
+          const strongBridgeAtMulti = strongBridges.filter((k) => strongDeg(l, idx(E0[k][0])) >= 2 || strongDeg(l, idx(E0[k][1])) >= 2);
+          st = { V, strongBridges, strongBridgeAtMulti, ns: l.filter(Boolean).length };
+        });
+        v.legend([['accent', 'strong tie'], ['muted', 'weak tie', { dash: true }], ['orange', 'local bridge'], ['red', 'missing closing tie', { dash: true }]]);
+        v.readout(() => `${st.ns} strong ties · **${st.V.length}** violated triad${st.V.length === 1 ? '' : 's'} ${st.V.length ? '(strong triadic closure fails)' : '(strong triadic closure holds everywhere)'}\nStrong local bridges at a node with another strong tie: **${st.strongBridgeAtMulti.length}**${st.V.length ? ' (only possible because the property is violated)' : ' — as the theorem says'}\nAll $2^{12} = 4096$ labellings checked: **${ok}** satisfy strong triadic closure, and among them **${bad}** contain a strong local bridge at a node with another strong tie`);
+      },
+    },
+
+    // ------------------------------------------------------------------ 2.7
+    {
+      num: '2.7',
+      kind: 'Phenomenon',
+      name: 'The strength of weak ties (Granovetter)',
+      statement: String.raw`In a social network made of tightly knit groups, the acquaintances you see rarely tend to provide **new** information (job leads, news, ideas) more often than the close friends you see often. Close friends move in the same circles and already know what you know; weak ties are the ones that reach into other circles, and they are often the only routes between circles.
+
+Granovetter's job-mobility survey found that people who got their jobs through a contact usually saw that contact only occasionally or rarely. Large-scale network data on mobile-phone calls fit the structural half of the claim: removing the weak ties disconnects the network far sooner than removing the strong ones.`,
+      scope: String.raw`An empirical regularity about information that is not already common knowledge, in networks where strong ties are mostly within groups. It says nothing about emotional support or influence, where strong ties matter more, and the later experimental literature finds that the most useful ties for job leads are moderately, not extremely, weak.`,
+      idea: String.raw`By strong triadic closure (2.6), a strong tie tends to sit inside a cluster of mutual friends, so what one end knows the other end's friends probably know as well. Bridges between clusters are weak ties, so information that has to cross from one cluster to another must travel over them. The model here makes both effects visible: strong ties are only inside groups, weak ties are the few links between groups.`,
+      caption: String.raw`Six groups of eight, strong ties inside, a few weak ties between. In **Spread** mode, an item of news starts at one person and passes along each tie with a probability that is lower for weak ties; the right panel averages 120 runs. In **Delete ties** mode remove ties weak-first, strong-first or at random, and watch the largest connected piece.`,
+      deps: ['soc-2.6'],
+      refs: ['E&K §3.2', 'E&K §3.3'],
+      tags: ['weak ties', 'information'],
+      credit: 'Granovetter, 1973; Onnela et al., 2007 (phone-call network)',
+      viz(v) {
+        const s = v.stage({ x: [-1.25, 1.25], y: [-1.1, 1.1], axes: false, equal: true, height: 400, weight: 1.15 });
+        const p = v.stage({ x: [0, 25], y: [0, 1], axes: 'box', gutter: true, xlabel: 'time step', ylabel: 'share informed', height: 400, weight: 1 });
+        const mode = v.select('Mode', [{ value: 'spread', label: 'Spread' }, { value: 'delete', label: 'Delete ties' }], 'spread');
+        const W = v.slider('Weak ties between groups', 0, 30, 10, { int: true });
+        const ratio = v.slider('Weak-tie contact rate relative to strong', 0, 1, 0.3, { step: 0.05 });
+        const T = v.slider('Time step $t$', 0, 25, 6, { int: true });
+        const order = v.select('Delete first', [{ value: 'weak', label: 'weak ties' }, { value: 'strong', label: 'strong ties' }, { value: 'random', label: 'random' }], 'weak');
+        const frac = v.slider('Fraction of ties deleted', 0, 1, 0.3, { step: 0.02 });
+        const K = 6, M = 8, QS = 0.4;
+        const nodePos = [], comm = [];
+        for (let c = 0; c < K; c++) for (let i = 0; i < M; i++) {
+          const a = Math.PI / 2 - 2 * Math.PI * c / K, ca = [0.78 * Math.cos(a), 0.78 * Math.sin(a)], b = 2 * Math.PI * i / M + a;
+          nodePos.push([ca[0] + 0.3 * Math.cos(b), ca[1] + 0.3 * Math.sin(b)]); comm.push(c);
+        }
+        let key = null, net = null;
+        function build(w) {
+          const R = rng32(41), E = [];
+          for (let c = 0; c < K; c++) {
+            for (let i = 0; i < M; i++) E.push([c * M + i, c * M + (i + 1) % M, 1]);
+            for (let i = 0; i < M; i++) for (let j = i + 2; j < M; j++) if (!(i === 0 && j === M - 1) && R() < 0.45) E.push([c * M + i, c * M + j, 1]);
+          }
+          const seen = new Set(); let tries = 0, added = 0;
+          while (added < w && tries++ < 5000) {
+            const a = Math.floor(R() * K * M), b = Math.floor(R() * K * M);
+            if (comm[a] === comm[b]) continue; const k = Math.min(a, b) * 99 + Math.max(a, b); if (seen.has(k)) continue; seen.add(k); E.push([a, b, 0]); added++;
+          }
+          const g = mkGraph(K * M, E.map(([a, b]) => [a, b]));
+          return { g, E, weakIdx: E.map((e, k) => k).filter((k) => !E[k][2]), strongIdx: E.map((e, k) => k).filter((k) => E[k][2]) };
+        }
+        // one SI run with per-tie transmission probability; returns {at[], via[]}
+        function run(net, qw, seed, tMax) {
+          const R = rng32(seed), at = new Array(net.g.n).fill(-1), viaWeak = new Array(net.g.n).fill(false); at[0] = 0;
+          for (let t = 1; t <= tMax; t++) for (let k = 0; k < net.E.length; k++) {
+            const [a, b, st] = net.E[k]; const q = st ? QS : qw; const r1 = R();
+            let src = -1, dst = -1;
+            if (at[a] >= 0 && at[a] < t && at[b] < 0) { src = a; dst = b; } else if (at[b] >= 0 && at[b] < t && at[a] < 0) { src = b; dst = a; }
+            if (src >= 0 && r1 < q) { at[dst] = t; viaWeak[dst] = !st; }
+          }
+          return { at, viaWeak };
+        }
+        const curves = {};
+        function ensure() {
+          const k = `${W.value}|${ratio.value}`;
+          if (k === key) return; key = k; net = build(W.value);
+          const mk = (qw) => { const c = new Array(26).fill(0); let wk = 0, tot = 0; for (let r = 0; r < 120; r++) { const o = run(net, qw, 1000 + r, 25); for (let i = 1; i < o.at.length; i++) if (o.at[i] >= 0) { for (let t = o.at[i]; t <= 25; t++) c[t]++; tot++; if (o.viaWeak[i]) wk++; } c[0] += 1; } return { c: c.map((x) => x / (120 * K * M)), wk, tot }; };
+          curves.as = mk(ratio.value * QS); curves.full = mk(QS); curves.none = mk(0);
+          curves.one = run(net, ratio.value * QS, 1000, 25);
+          // deletion curves
+          const nE = net.E.length, grid = Array.from({ length: 41 }, (_, i) => i / 40);
+          const giant = (removedSet) => { const comps = components(net.g, null, null); return 0; };
+          const gc = (ord) => grid.map((f) => { const del = new Set(ord.slice(0, Math.round(f * nE))); const E2 = net.E.filter((_, k) => !del.has(k)); return components(mkGraph(net.g.n, E2.map(([a, b]) => [a, b])))[0].length / net.g.n; });
+          const R = rng32(5), sh = (a) => shuffle(a.slice(), R);
+          const avg = (mkOrd) => { const acc = new Array(41).fill(0); for (let r = 0; r < 20; r++) gc(mkOrd()).forEach((x, i) => { acc[i] += x / 20; }); return acc; };
+          curves.del = { weak: avg(() => [...sh(net.weakIdx), ...sh(net.strongIdx)]), strong: avg(() => [...sh(net.strongIdx), ...sh(net.weakIdx)]), random: avg(() => sh(net.E.map((_, k) => k))), grid };
+          curves.delOrd = [sh(net.weakIdx), sh(net.strongIdx), sh(net.E.map((_, k) => k))];
+        }
+        let st = {};
+        v.render(() => {
+          ensure();
+          const spread = mode.value === 'spread';
+          T.el.hidden = !spread; ratio.el.hidden = !spread; order.el.hidden = spread; frac.el.hidden = spread;
+          let delSet = new Set();
+          if (!spread) {
+            const nE = net.E.length, n = Math.round(frac.value * nE), w = net.weakIdx, sg = net.strongIdx;
+            const rnd = (a) => { const R = rng32(77); return shuffle(a.slice(), R); };
+            const ord = order.value === 'weak' ? [...rnd(w), ...rnd(sg)] : order.value === 'strong' ? [...rnd(sg), ...rnd(w)] : rnd(net.E.map((_, k) => k));
+            delSet = new Set(ord.slice(0, n));
+          }
+          const comps = !spread ? components(mkGraph(net.g.n, net.E.filter((_, k) => !delSet.has(k)).map(([a, b]) => [a, b]))) : null;
+          const cid = new Array(net.g.n).fill(0); if (comps) comps.forEach((c, k) => c.forEach((i) => { cid[i] = k; }));
+          const one = curves.one;
+          net.E.forEach(([a, b, strong], k) => {
+            const dead = delSet.has(k);
+            const informed = spread && one.at[a] >= 0 && one.at[b] >= 0 && one.at[a] <= T.value && one.at[b] <= T.value;
+            s.line(nodePos[a][0], nodePos[a][1], nodePos[b][0], nodePos[b][1], { color: dead ? 'faint' : strong ? (informed ? 'gold' : 'accent') : informed ? 'gold' : 'orange', width: strong ? 2.2 : 2.6, alpha: dead ? 0.25 : strong ? 0.85 : 1, dash: dead ? [3, 4] : strong ? undefined : [6, 4] });
+          });
+          for (let i = 0; i < net.g.n; i++) {
+            const inf = spread && one.at[i] >= 0 && one.at[i] <= T.value;
+            const col = spread ? (inf ? 'gold' : 'faint') : CYC[cid[i] % CYC.length];
+            s.dot(nodePos[i][0], nodePos[i][1], { color: col, r: i === 0 ? 8 : 5.5, hollow: spread && !inf });
+          }
+          s.dot(nodePos[0][0], nodePos[0][1], { color: 'red', r: 3, label: spread ? 'source' : '', labelPos: 'n' });
+          if (spread) {
+            p.setScale({ x: [0, 25], y: [0, 1] }); p.setLabels('time step', 'share informed');
+            const line = (c, col, w) => p.path(c.map((y, t) => [t, y]), { color: col, width: w });
+            line(curves.none.c, 'red', 2); line(curves.full.c, 'green', 2); line(curves.as.c, 'accent', 3);
+            p.vline(T.value, { color: 'gold', dash: [4, 3] });
+          } else {
+            p.setScale({ x: [0, 1], y: [0, 1] }); p.setLabels('fraction of ties deleted', 'largest piece / all');
+            const d = curves.del; const line = (c, col, w) => p.path(c.map((y, i) => [d.grid[i], y]), { color: col, width: w });
+            line(d.random, 'muted', 2); line(d.strong, 'green', 2.4); line(d.weak, 'red', 2.4);
+            p.vline(frac.value, { color: 'gold', dash: [4, 3] });
+          }
+          const inf = one.at.filter((x) => x >= 0 && x <= T.value).length;
+          st = { spread, inf, gsize: comps ? comps[0].length : 0, ncomp: comps ? comps.length : 0, nDel: delSet.size, nE: net.E.length, weakN: net.weakIdx.length };
+        });
+        v.legend([['accent', 'strong tie (inside a group)'], ['orange', 'weak tie (between groups)', { dash: true }], ['gold', 'informed']]);
+        v.readout(() => {
+          if (st.spread) return `${st.inf} of 48 informed at $t = ${T.value}$ in the drawn run · averages over 120 runs: weak ties at the chosen rate (blue) vs no weak ties at all (red, confined to the starting group) vs weak ties as active as strong ones (green)\nShare of people first informed over a weak tie: **${v.fix(100 * curves.as.wk / Math.max(1, curves.as.tot), 0)}%** although weak ties are only ${v.fix(100 * st.weakN / st.nE, 0)}% of all ties`;
+          return `${st.nDel} of ${st.nE} ties deleted (${order.value === 'weak' ? 'weak first' : order.value === 'strong' ? 'strong first' : 'at random'}): largest connected piece has **${st.gsize}** of 48 people, ${st.ncomp} pieces\nCurves: deleting weak ties first (red) isolates the groups with only ${st.weakN} deletions; deleting strong ones (green) barely matters`;
+        });
+      },
+    },
+
+    // ------------------------------------------------------------------ 2.8
+    {
+      num: '2.8',
+      kind: 'Concept',
+      name: 'Structural holes and betweenness',
+      statement: String.raw`A **structural hole** is a gap between two groups that have no direct ties to one another; a person who spans the gap is a **broker**. Two measures capture brokerage.
+
+**Betweenness** of a node $v$ is $b(v) = \sum_{s \ne v \ne t} \sigma_{st}(v)/\sigma_{st}$, the (pair-counted) share of shortest paths between other pairs that pass through $v$ (here $\sigma_{st}$ is the number of shortest $s$–$t$ paths and $\sigma_{st}(v)$ those through $v$). **Burt's constraint** $c_i = \sum_{j}\bigl(p_{ij} + \sum_{q} p_{iq}p_{qj}\bigr)^2$, where $p_{ij}$ is the share of $i$'s effort given to $j$, is small when one's contacts are not tied to one another, that is, when one spans many holes.`,
+      idea: String.raw`If two clusters connect only through $v$, every shortest path between them passes through $v$, so $b(v)$ is large and removing $v$ disconnects the clusters. Constraint measures the same position from the inside: a person whose contacts all know each other is constrained, while one with unconnected contacts controls the flow between them. Brandes' algorithm computes all betweenness values with one breadth-first search per node, and gives exactly the sums above.`,
+      caption: String.raw`Node size shows the chosen measure (large = more betweenness, or lower constraint = more brokerage). Click a person to remove or restore them and see which pieces fall apart. In the karate club, the instructor and the president are the brokers.`,
+      deps: ['soc-2.7'],
+      refs: ['E&K §3.5', 'E&K §3.6'],
+      tags: ['brokerage', 'centrality'],
+      credit: 'Freeman (betweenness), 1977; Burt (structural holes), 1992',
+      viz(v) {
+        const s = v.stage({ x: [-1.25, 1.25], y: [-1.05, 1.05], axes: false, equal: true, height: 410 });
+        const sel = v.select('Network', [{ value: 'brokers', label: 'Two groups + broker' }, { value: 'karate', label: 'Karate club' }], 'brokers', { onChange: load });
+        const meas = v.select('Size by', [{ value: 'b', label: 'Betweenness' }, { value: 'c', label: 'Burt constraint (low = broker)' }], 'b');
+        const bro = (() => {
+          const E = []; for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) { E.push([i, j]); E.push([6 + i, 6 + j]); }
+          E.push([12, 0], [12, 6]);
+          const pos = []; for (let i = 0; i < 6; i++) pos.push([-0.95 + 0.45 * Math.cos(2 * Math.PI * i / 6 + 0.5), 0.45 * Math.sin(2 * Math.PI * i / 6 + 0.5)]);
+          for (let i = 0; i < 6; i++) pos.push([0.95 + 0.45 * Math.cos(2 * Math.PI * i / 6 + Math.PI + 0.5), 0.45 * Math.sin(2 * Math.PI * i / 6 + Math.PI + 0.5)]);
+          pos.push([0, 0]);
+          // put the attachment points on the facing sides
+          pos[0] = [-0.5, 0.0]; pos[6] = [0.5, 0.0];
+          return { g: mkGraph(13, E), pos, labels: Array.from({ length: 13 }, (_, i) => (i === 12 ? 'B' : '')), title: 'Two cliques of six joined only through a broker B' };
+        })();
+        let net = bro, removed = new Set();
+        const G = v.graph(s, { nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), layout: 'fit', r: 12, autoRadius: false });
+        function load() { net = sel.value === 'karate' ? getNet('karate') : bro; removed = new Set(); G.set({ nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), r: 12, autoRadius: false }).layout('fit'); }
+        G.onClick = ({ node }) => { if (node) { if (removed.has(node.id)) removed.delete(node.id); else removed.add(node.id); } return true; };
+        v.button('Restore everyone', () => { removed = new Set(); });
+        let st = {};
+        v.render(() => {
+          const g = net.g, b = betweenness(g, removed), c = burtConstraint(g);
+          const live = [...Array(g.n).keys()].filter((i) => !removed.has(i));
+          const bm = Math.max(1e-9, ...live.map((i) => b[i])), cmin = Math.min(...live.map((i) => c[i]).filter(isFinite)), cmax = Math.max(...live.map((i) => c[i]).filter(isFinite));
+          const rad = (i) => (meas.value === 'b' ? 5 + 17 * Math.sqrt(b[i] / bm) : 5 + 17 * Math.sqrt(Math.max(0, (cmax - c[i]) / Math.max(1e-9, cmax - cmin))));
+          G.nodes.forEach((n) => { n.r = rad(n.id); });
+          const top = live.reduce((a, i) => (b[i] > b[a] ? i : a), live[0]);
+          const comps = components(g, removed);
+          const cid = new Array(g.n).fill(-1); comps.forEach((cc, k) => cc.forEach((i) => { cid[i] = k; }));
+          G.draw({
+            nodeColor: (id) => (removed.has(id) ? 'faint' : CYC[cid[id] % CYC.length]),
+            nodeFill: (id) => (id === top ? 'gold' : null),
+            nodeLabel: (id) => (net.g.n < 20 ? net.labels[id] : ''),
+            dim: [...removed],
+          });
+          st = { b, c, top, comps, topList: [...live].sort((x, y) => b[y] - b[x]).slice(0, 3), n: g.n };
+        });
+        v.legend([['gold', 'highest betweenness', { dot: true }], ['accent', 'largest piece', { dot: true }], ['orange', 'other pieces', { dot: true }]]);
+        v.readout(() => `${net.title}\nBetweenness ranking: ${st.topList.map((i) => `${net.labels[i] || i + 1} (${v.fix(st.b[i], 1)})`).join(' > ')} · Burt constraint of the top person: ${v.fix(st.c[st.top], 3)} (median ${v.fix(v.M.median(st.c.filter(isFinite)), 3)})\nPieces after removals: **${st.comps.length}** (sizes ${st.comps.map((c) => c.length).join(', ')})`);
+      },
+    },
   ],
 };

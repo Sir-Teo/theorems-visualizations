@@ -92,22 +92,23 @@ Head-on ($\theta=0$) this is $f_0\sqrt{(1+\beta)/(1-\beta)}$, directly away ($\t
         let st = {};
         v.animate((tt) => {
           const b = bS.value, th = (aS.value * Math.PI) / 180, g = gam(b), te = g * T0;
-          const dir = [Math.cos(th), Math.sin(th)];
-          const pos = (t) => [S0[0] + b * t * dir[0], S0[1] + b * t * dir[1]];
+          const dir = [Math.cos(th), Math.sin(th)], PRE = 4; tt += PRE;
+          const pos = (t) => [S0[0] + b * (t - PRE) * dir[0], S0[1] + b * (t - PRE) * dir[1]];
           A.clip(() => {
             for (let k = 0; k * te <= tt; k++) {
               const tk = k * te, p = pos(tk), r = tt - tk;
               A.circle(p[0], p[1], r, { color: 'accent', width: 1.2, alpha: Math.max(0.15, 1 - r / 12) });
             }
           });
-          A.path(Array.from({ length: 41 }, (_, i) => pos((tt * i) / 40)), { color: 'orange', width: 1.5, alpha: 0.6 });
+          A.path(Array.from({ length: 41 }, (_, i) => pos((tt * i) / 40 + 0)), { color: 'orange', width: 1.5, alpha: 0.6 });
           const p = pos(tt);
           A.arrow(p[0], p[1], p[0] + 1.2 * dir[0], p[1] + 1.2 * dir[1], { color: 'orange', width: 2.4, head: 9 });
           A.dot(p[0], p[1], { r: 6, color: 'orange', label: 'source', labelPos: 'sw' }); A.dot(O[0], O[1], { r: 6.5, color: 'green', label: 'O', labelPos: 'ne' });
           // measured frequency from two successive crests (k = 0, 1)
+          const k0 = Math.floor(PRE / te);
           const arr = (k) => k * te + Math.hypot(O[0] - pos(k * te)[0], O[1] - pos(k * te)[1]);
-          const meas = T0 / (arr(1) - arr(0));
-          const pm = pos(0.5 * te), n = [O[0] - pm[0], O[1] - pm[1]], nn = Math.hypot(n[0], n[1]);
+          const meas = T0 / (arr(k0 + 1) - arr(k0));
+          const pm = pos((k0 + 0.5) * te), n = [O[0] - pm[0], O[1] - pm[1]], nn = Math.hypot(n[0], n[1]);
           const cosT = (n[0] * dir[0] + n[1] * dir[1]) / nn, thetaEff = Math.acos(cosT);
           const pred = 1 / (g * (1 - b * cosT));
           st = { b, g, meas, pred, thetaEff, cosT };
@@ -119,7 +120,7 @@ Head-on ($\theta=0$) this is $f_0\sqrt{(1+\beta)/(1-\beta)}$, directly away ($\t
           const xe = (thetaEff * 180) / Math.PI;
           B.dot(xe, pred, { r: 6.5, color: 'green' });
           B.dot(0, Math.sqrt((1 + b) / (1 - b)), { r: 4.5, color: 'ink' });
-        }, { period: 10, still: 4.5 });
+        }, { period: 7, still: 3 });
         v.legend([['accent', 'relativistic'], ['muted', 'classical (no $\\gamma$)', { dash: true }], ['green', 'the drawn crests', { dot: true }], ['red', 'emitted at $90^\\circ$: $f_0/\\gamma$', { dot: true }]]);
         v.readout(() => {
           const { b, g, meas, pred, thetaEff } = st; if (!g) return '';
@@ -137,7 +138,7 @@ Head-on ($\theta=0$) this is $f_0\sqrt{(1+\beta)/(1-\beta)}$, directly away ($\t
 $$\cos\theta'=\frac{\cos\theta+\beta}{1+\beta\cos\theta}.$$
 Directions are thrown forward, so an observer moving at speed $\beta c$ sees the stars crowd into a cone about the direction of travel; and a source that emits isotropically in its own frame beams into the forward direction when seen from the laboratory, half of its light falling inside the cone $\cos\theta=\beta$ whose half-angle is about $1/\gamma$ for $\beta\to1$ (the headlight effect). The law holds for all inertial frames and is the same transformation law as velocity addition applied to a ray of speed $c$.`,
       idea: String.raw`A photon has velocity $c(\cos\theta,\sin\theta)$ in $S$; the velocity-addition formulas of 2.4 give its components in $S'$, with the transverse component picking up the factor $1/\gamma(1+\beta\cos\theta)$, and the speed stays $c$. The longitudinal part $(\cos\theta+\beta)/(1+\beta\cos\theta)$ is exactly the composition of the rapidity of the frame and of the ray, so rays with $\theta$ near $\pi$ (from behind) are pushed through the equator into the forward hemisphere.`,
-      caption: String.raw`Stars (or rays) are drawn on a disc centred on the direction of travel, radius = angle from that direction. **Raise $v/c$:** the right-hand sky is the left one pushed towards the centre, and the gold ring (the equator $\theta=90^\circ$) shrinks to the cone $\cos\theta'=\beta$. Switch to the *headlight* reading to see the isotropic lamp beam up in the laboratory.`,
+      caption: String.raw`Stars (or rays) are drawn on a disc whose centre is the direction of travel, radius = angle from that direction. **Raise $v/c$:** the right-hand sky is the left one pushed towards the centre, and the gold ring (the equator $\theta=90^\circ$) shrinks to the cone $\cos\theta'=\beta$. Switch to the *headlight* reading to see the isotropic lamp beam up in the laboratory.`,
       deps: ['rel-2.4'],
       refs: ['Taylor–Wheeler ch. L'],
       tags: ['aberration', 'headlight effect', 'relativistic beaming'],
@@ -154,7 +155,7 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
           const b = bS.value, g = gam(b), lamp = mode.value === 'lamp';
           const f = (th) => Math.acos(Math.max(-1, Math.min(1, (Math.cos(th) + b) / (1 + b * Math.cos(th)))));
           A.setTitle(lamp ? 'lamp frame: emitted equally in all directions' : 'rest frame: stars spread over the sky');
-          Bs.setTitle(lamp ? `laboratory: lamp moving at $v/c=${v.fix(b, 2)}$` : `moving observer, $v/c=${v.fix(b, 2)}$: stars crowd forward`);
+          Bs.setTitle(lamp ? `laboratory: lamp moving at $v/c=${v.fix(b, 2)}$` : `moving observer, $v/c=${v.fix(b, 2)}$`);
           const sc = 3.3 / Math.PI;
           for (const [S, map] of [[A, (th) => th], [Bs, f]]) {
             S.polarGrid({ rings: [Math.PI / 6 * sc, Math.PI / 3 * sc, Math.PI / 2 * sc, 2 * Math.PI / 3 * sc, 5 * Math.PI / 6 * sc, Math.PI * sc], spokes: 0, rmax: Math.PI * sc, angles: false, labels: false });
@@ -166,7 +167,7 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
               S.dot(r * Math.cos(ph), r * Math.sin(ph), { r: 2.1, color: t < 0.5 ? 'accent' : 'orange' });
             }
             S.dot(0, 0, { r: 3, color: 'ink' });
-            S.text(lamp ? 'forward' : 'direction of travel', 0, 0, { dy: -10, size: 10, color: 'ink', align: 'center' });
+            
           }
           C.line(0, 0, 180, 180, { color: 'faint', dash: true });
           C.fn((x) => (f((x * Math.PI) / 180) * 180) / Math.PI, { color: 'accent', width: 2.4 });
@@ -192,7 +193,7 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
       credit: 'Penrose, 1959; Terrell, 1959',
       statement: String.raw`A photograph of a fast-moving object is not a snapshot of its Lorentz-contracted shape: light from different points of the object left at different times, from different positions. For an object of small angular size, all rays reaching the camera nearly parallel, the effects of length contraction and of light-travel time combine so that the image is exactly that of the object at rest, **rotated** through the angle $\arcsin\beta$ about the axis perpendicular to both the motion and the line of sight. A moving sphere therefore still photographs as a perfect circle, and a moving cube shows its trailing face with widths $1/\gamma$ for the face towards the camera and $\beta$ for the side face.`,
       idea: String.raw`Points at greater distance from the camera emitted earlier, and by then (in the camera frame) the object was displaced backwards by $\beta c\,\Delta t$. For parallel rays this displacement exactly undoes the contraction of the depth direction in a way that looks like a rotation: the face's width in the image is $1/\gamma=\cos\varphi$ while the side face, normally invisible, appears with width $\beta=\sin\varphi$, where $\sin\varphi=\beta$. The calculation here solves $t+|{\bf P}(t)-{\bf C}|=0$ for each corner and projects it.`,
-      caption: String.raw`A cube moving to the right past a pinhole camera; the picture is built honestly by finding, for every corner, the moment its light left so that it reaches the camera at $t=0$. **Raise $v/c$:** the cube turns, showing a side face, while the contracted *snapshot* (dashed) would show nothing of the sort. **Move the camera back** (distance $D$) so that the rays become parallel and the widths of the faces approach $1/\gamma$ and $\beta$. The right panel looks down on the scene: arrows show how far each corner moved between emission and the instant of the photograph.`,
+      caption: String.raw`A cube moving to the right past a pinhole camera; the picture is built honestly by finding, for every corner, the moment its light left so that it reaches the camera at $t=0$. **Raise $v/c$:** the cube turns, showing a side face, while the contracted *snapshot* (dashed) would show nothing of the sort. **Move the camera back** (distance $D$) so that the rays become parallel and the widths of the faces approach $1/\gamma$ and $\beta$. The right panel looks down on the scene: the dashed square is the contracted cube, the blue one marks where the light actually left from (the cube is placed so that its centre's light leaves from $X_0$), and the red arrows show the difference at each corner.`,
       deps: ['rel-2.10', 'rel-1.11'],
       refs: ['Taylor–Wheeler ch. L'],
       tags: ['Terrell rotation', 'length contraction', 'imaging'],
@@ -218,8 +219,9 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
           const b = bS.value, g = gam(b), D = dS.value, X0 = xS.value;
           // lab position at emission and the image of a corner (sx, sy, sz) of a unit cube
           const emit = (sx, sy, sz, t0) => {
-            const a = sx * 0.5 / g, w = X0 + a, y = sy * 0.5, z = sz * 0.5;
-            if (t0 !== undefined) return { x: w, y, z, t: 0 };
+            const a = sx * 0.5 / g, y = sy * 0.5, z = sz * 0.5;
+            if (t0 !== undefined) return { x: X0 + a, y, z, t: 0 };
+            const w = X0 + b * Math.sqrt(X0 * X0 + D * D) + a;
             const R2 = w * w + y * y + (z + D) ** 2;
             const te = (b * w - Math.sqrt(b * b * w * w + (1 - b * b) * R2)) / (1 - b * b);
             return { x: w + b * te, y, z, t: te };
@@ -249,14 +251,14 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
           const snapFp = fp(true), emFp = fp(false);
           Bv.poly(snapFp, { fill: false, color: 'ink', width: 1.4, dash: [5, 4] });
           Bv.poly(emFp, { fill: 'accent', fillAlpha: 0.15, color: 'accent', width: 1.6 });
-          for (let i = 0; i < 4; i++) { Bv.arrow(emFp[i][0], emFp[i][1], snapFp[i][0], snapFp[i][1], { color: 'red', width: 1, head: 5, alpha: 0.7 }); }
-          for (const c of emFp) { Bv.line(c[0], c[1], c[0] * 0.02 * 0, c[1] - 1.4, { color: 'gold', width: 1, alpha: 0.5, dash: [2, 3] }); }
+          for (let i = 0; i < 4; i++) { Bv.arrow(snapFp[i][0], snapFp[i][1], emFp[i][0], emFp[i][1], { color: 'red', width: 1.4, head: 6, alpha: 0.9 }); }
+          for (const c of emFp) { Bv.line(c[0], c[1], c[0], c[1] - 1.4, { color: 'gold', width: 1, alpha: 0.5, dash: [2, 3] }); }
           Bv.arrow(0, -1.45, 0, -1.65, { color: 'gold', width: 2, head: 7 }); Bv.text('to the camera', 0.1, -1.55, { size: 10.5, color: 'gold', dx: 8 });
           Bv.text('motion →', 2.7, 1.5, { align: 'right', size: 11, color: 'ink' });
           const front = info.find((k) => k.key === '2,-1'), lead = info.find((k) => k.key === '0,1'), trail = info.find((k) => k.key === '0,-1');
           st = { b, g, front: front && front.w, side: (lead && lead.w) || (trail && trail.w) || 0, which: lead ? 'leading' : trail ? 'trailing' : 'no' };
         });
-        v.legend([['accent', 'where the light left from'], ['ink', 'contracted snapshot (what a simultaneous photo of all points would give)', { dash: true }], ['red', 'motion since emission']]);
+        v.legend([['accent', 'where the light left from'], ['ink', 'contracted snapshot', { dash: true }], ['red', 'shift of each corner from the contracted shape']]);
         v.readout(() => {
           const { b, g, front, side, which } = st; if (!g) return '';
           const phi = (Math.asin(b) * 180) / Math.PI;
@@ -304,7 +306,7 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
               if (loop) S.poly([pt(Ev.O), pt(Ev.A), pt(Ev.B)], { fill: 'red', fillAlpha: 0.12, stroke: false });
               S.path([pt(Ev.O), pt(Ev.A)], { color: 'accent', width: 3 }); S.path([pt(Ev.A), pt(Ev.B)], { color: loop ? 'red' : 'green', width: 3 });
             });
-            for (const [k, c] of [['O', 'ink'], ['A', 'purple'], ['B', loop ? 'red' : 'green']]) { const p = pt(Ev[k]); S.dot(p[0], p[1], { r: 5.5, color: c, label: k === 'O' ? 'O: sent' : k === 'A' ? 'A: received, reply sent' : 'B: reply arrives', labelPos: k === 'B' ? 'sw' : k === 'O' ? 'se' : 'ne' }); }
+            for (const [k, c] of [['O', 'ink'], ['A', 'purple'], ['B', loop ? 'red' : 'green']]) { const p = pt(Ev[k]); S.dot(p[0], p[1], { r: 5.5, color: c, label: k, labelPos: k === 'B' ? 'sw' : k === 'O' ? 'se' : 'ne' }); }
           }
           C.hline(0, { color: 'muted', dash: true });
           C.fn((bb) => Math.max(-2, Math.min(2, tB(u, bb, xA))), { color: 'accent', width: 2.2, domain: [0, 0.99] });
@@ -312,7 +314,7 @@ Directions are thrown forward, so an observer moving at speed $\beta c$ sees the
           C.dot(b, Math.max(-2, Math.min(2, tb)), { r: 6.5, color: loop ? 'red' : 'green' });
           st = { u, b, bc, tb, tA, loop, tp, xp };
         });
-        v.legend([['accent', 'message'], ['orange', 'station'], ['green', 'reply (before: red)'], ['gold', 'light', { dash: true }]]);
+        v.legend([['ink', '$O$ message sent; $A$ received and reply sent; $B$ reply arrives', { dot: true }], ['accent', 'message'], ['orange', 'station'], ['green', 'reply (before: red)'], ['gold', 'light', { dash: true }]]);
         v.readout(() => {
           const { u, b, bc, tb, tA, loop, tp, xp } = st; if (!u) return '';
           return String.raw`Message speed $u=${v.fix(u, 2)}c$ (arrives at $ct_A=${v.fix(tA, 3)}$ in the sender's frame; in the station's frame the same message leaves at $ct'=0$ and arrives at $ct'_A=${v.fix(tp, 3)}$, i.e. ${tp < 0 ? 'before its own emission' : 'after the emission'}). Station speed $\beta=${v.fix(b, 2)}$: the reply gets back at $ct_B=${v.fix(tb, 3)}$ — ${loop ? '**before the message was sent**' : 'after the message was sent, no loop'}. Threshold $\beta_c=2u/(1+u^2)=${v.fix(bc, 3)}$ (here $\beta\,(u+1/u)=${v.fix(b * (u + 1 / u), 3)}$ against 2).`;
@@ -408,7 +410,7 @@ For perpendicular boosts $\cos\epsilon=\dfrac{(1+\gamma_1+\gamma_2+\gamma_1\gamm
           const L = mm(boost4(be1, 0, 0), boost4(be2 * Math.cos(al), be2 * Math.sin(al), 0));
           const gg = L[0][0], u = [L[1][0] / gg, L[2][0] / gg], eps = rotAngle(L);
           const kk = Math.sqrt(((g1 + 1) * (g2 + 1)) / ((g1 - 1) * (g2 - 1)));
-          const epsF = 2 * Math.atan2(Math.sin(al), kk + Math.cos(al));
+          const epsF = -2 * Math.atan2(Math.sin(al), kk + Math.cos(al)); // sign: turning clockwise when the second boost is counter-clockwise from the first
           // axes
           const c = Math.cos(eps), s = Math.sin(eps);
           A.circle(0, 0, 1, { color: 'faint', width: 1 });
@@ -417,7 +419,6 @@ For perpendicular boosts $\cos\epsilon=\dfrac{(1+\gamma_1+\gamma_2+\gamma_1\gamm
           A.arrow(0, 0, c, s, { color: 'red', width: 2.6, head: 8 }); A.arrow(0, 0, -s, c, { color: 'orange', width: 2.6, head: 8 });
           A.text("$x''$", 1.1 * c, 1.1 * s, { color: 'red' }); A.text("$y''$", -1.12 * s, 1.12 * c, { color: 'orange' });
           A.curve((t) => [0.55 * Math.cos(t * eps), 0.55 * Math.sin(t * eps)], 0, 1, { color: 'gold', width: 2.4 });
-          A.arrow(0, 0, 0.0001, 0.0001, { color: 'ink' });
           A.text(`ε = ${v.fix((eps * 180) / Math.PI, 2)}°`, 0.15, -0.35, { size: 12, color: 'gold', align: 'left' });
           // velocity loop
           B.circle(0, 0, 1, { color: 'ink', width: 1.4 }); B.text('$c$', 0.72, 0.78, { color: 'muted' });
