@@ -85,7 +85,7 @@ The order of the quantifiers is the point: the tolerance $\varepsilon$ is chosen
         v.readout(() => {
           const r = res; if (!r) return '';
           const d = r.none ? `\\text{no }\\delta>${v.sci(FL, 2)}\\text{ works}` : `\\delta\\approx${v.fix(r.delta, 3)}`;
-          return `${SYS[sysS.value].t}: for $\\varepsilon=${v.fix(eS.value, 2)}$, ${d}` + (r.none ? ' (unstable, or $\\varepsilon$ too large)' : '') + '\n' +
+          return `${SYS[sysS.value].t}: for $\\varepsilon=${v.fix(eS.value, 2)}$: $${d}$` + (r.none ? ' (unstable, or $\\varepsilon$ too large; the orange orbits are from the smallest radius tried)' : '') + '\n' +
             `handle: $|x(0)|=${v.fix(Math.hypot(h0.x, h0.y), 3)}$ is ${r.inside ? '**inside** the $\\delta$-ball, so the orbit must stay in the $\\varepsilon$-ball' : 'outside the $\\delta$-ball'}; the orbit ${r.exits ? '**leaves** the $\\varepsilon$-ball' : 'stays in the $\\varepsilon$-ball'}`;
         });
       },
