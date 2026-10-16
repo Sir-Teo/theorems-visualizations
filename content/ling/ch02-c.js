@@ -103,7 +103,7 @@ const OT_RANK = {
   faith: { name: 'faithful', r: ['MAX', 'DEP', 'ONSET', 'NOCODA', '*COMPLEX'], lead: 'Faithfulness outranks the markedness constraints: the input surfaces unchanged (as in English).' },
   epen: { name: 'epenthesising', r: ['*COMPLEX', 'NOCODA', 'MAX', 'DEP', 'ONSET'], lead: 'Markedness outranks MAX and MAX outranks DEP: vowels are inserted rather than sounds deleted (as in Japanese loanwords).' },
   del: { name: 'deleting', r: ['*COMPLEX', 'NOCODA', 'ONSET', 'DEP', 'MAX'], lead: 'DEP outranks MAX: the grammar would rather lose a sound than insert one.' },
-  glot: { name: 'onset-driven', r: ['ONSET', '*COMPLEX', 'NOCODA', 'MAX', 'DEP'], lead: 'ONSET is on top: a consonant (here a glottal stop) is inserted before a bare vowel, as in German.' },
+  glot: { name: 'onset-driven', r: ['ONSET', '*COMPLEX', 'NOCODA', 'MAX', 'DEP'], lead: 'ONSET is on top: a consonant (here a glottal stop) is inserted before a bare vowel, as German does before a stressed vowel-initial syllable.' },
 };
 function otEval(cands, rank) {
   let alive = cands.map((_, i) => i); const fatal = new Array(cands.length).fill(-1);
@@ -264,7 +264,7 @@ export default {
       deps: ['ling-2.3'],
       refs: ['Fromkin et al.'],
       tags: ['harmony', 'autosegmental'],
-      scope: String.raw`Turkish only; the simple rule holds for native stems and suffixes, with systematic exceptions (loanwords with front l, some stems). The forms were checked against the pattern from memory, not a dictionary.`,
+      scope: String.raw`Turkish only; the simple rule holds for native stems and suffixes, with systematic exceptions (loanwords with front l, some stems). The forms follow standard descriptions of Turkish harmony.`,
       viz(v) {
         const stemSel = v.select('Stem', TURK.map((t) => ({ value: t, label: t })), 'kol');
         const pl = v.toggle('plural -lAr', true);

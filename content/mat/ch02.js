@@ -58,8 +58,8 @@ function implicitStep(c, D, dt, dx, bl, br) {
 }
 
 // ── diffusion data (D0 in m²/s, Q in kJ/mol) ─────────────────────────────────────────────────────────────────────────
-// Metals and interstitials: D0 and Q as tabulated in Callister's table of diffusion data (recalled from memory, see the report).
-// Dopants in silicon: Fair/Sze-type intrinsic values (cm²/s converted), also recalled from memory.
+// Metals and interstitials: D0 and Q as tabulated in Callister's table of diffusion data (checked against Callister's Table 5.2; C in α-Fe is the older-edition value, newer editions give 1.1e-6 m²/s and 87.4 kJ/mol).
+// Dopants in silicon: Fair/Sze-type intrinsic values (cm²/s converted), D0 = 0.76, 3.85, 22.9 cm²/s and Q = 3.46, 3.66, 4.1 eV for B, P, As (Fair/Sze).
 const DIFF = [
   { id: 'C-a', label: 'C in α-Fe (bcc)', D0: 6.2e-7, Q: 80, mech: 'int' },
   { id: 'C-g', label: 'C in γ-Fe (fcc)', D0: 2.3e-5, Q: 148, mech: 'int' },
@@ -522,7 +522,7 @@ export default {
       refs: ['Callister §5.5'],
       credit: 'S. Arrhenius, 1889; first applied to solid-state diffusion by Dushman and Langmuir, 1922',
       tags: ['Arrhenius', 'diffusion', 'activation energy'],
-      scope: String.raw`Holds for a single, thermally activated mechanism over a modest range of temperature; the curve bends when a second mechanism (grain-boundary, 2.10) takes over, or at a phase transformation (the $\alpha$/$\gamma$ switch of iron). $D_0$ and $Q$ are the tabulated textbook values (recalled, see the report).`,
+      scope: String.raw`Holds for a single, thermally activated mechanism over a modest range of temperature; the curve bends when a second mechanism (grain-boundary, 2.10) takes over, or at a phase transformation (the $\alpha$/$\gamma$ switch of iron). $D_0$ and $Q$ are the tabulated textbook values (Callister Table 5.2; Fair/Sze for the dopants).`,
       viz(v) {
         const s = v.stage({ x: [0.6, 2.6], y: [1e-30, 1e-6], ylog: true, axes: 'box', gutter: true, height: 420, hover: true, xlabel: '1000 / T  (K⁻¹)      ← hotter', ylabel: '$D$ (m²/s)', title: 'diffusivity of each species', xticks: [[0.6, '0.6'], [0.8, '0.8'], [1, '1.0'], [1.25, '1.25'], [1.5, '1.5'], [2, '2.0'], [2.5, '2.5']] });
         let cur = DIFF.findIndex((d) => d.id === 'C-g');

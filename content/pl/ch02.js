@@ -217,7 +217,7 @@ export default {
       idea: String.raw`Computation is nothing but the repeated contraction of redexes, each time substituting the argument for the parameter (2.3). Because redexes can be nested or disjoint, the order is a choice, and the graph of reachable terms records all choices. The diamond that appears when one contracts two disjoint redexes in either order is the seed of confluence (Church–Rosser); here we only observe that the graph can have several branches, merge again, or contain loops.`,
       caption: String.raw`Orange underlines mark the redexes of the current term; hover to see its two halves and a preview of the result, click to contract it. Each term you visit becomes a node of the reduction graph below (gold = your path, green = normal form). Switch on “reveal all reachable terms” to see the full graph, and click a node to jump to it.`,
       deps: ['pl-2.3'], refs: ['Pierce §5.1'], tags: ['reduction', 'operational semantics'],
-      credit: 'Alonzo Church, 1936 (λ-conversion); the name “β” is Church’s',
+      credit: 'Alonzo Church, 1936 (λ-conversion); the names α, β, η for the rules are later (origin not verified)',
       viz(v) {
         const sT = pxStage(v, { height: 150, full: true, hover: true, title: 'Click a redex to contract it' });
         const sG = pxStage(v, { height: 290, full: true, hover: true, title: 'Reduction graph' });

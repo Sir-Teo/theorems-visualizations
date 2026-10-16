@@ -222,7 +222,7 @@ Equivalently $f=\bigl(Z(T_1)/Z(T_2)\bigr)^{1/(T_2-T_1)}-1$: the forward rate is 
       deps: ['fin-2.8'],
       refs: ['Luenberger: Term Structure', 'BKM ch. 15'],
       tags: ['forward rates', 'forecasting'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Expectations_hypotheses' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Term_structure_of_interest_rates' },
       viz(v) {
         const HOR = {
           '1y': { h: 12, label: '1-year rate in 1 year (from 1y and 2y yields)', fwd: (r) => { const a = r[1] / 100, b = r[2] / 100; return 100 * ((1 + b) ** 2 / (1 + a) - 1); }, real: (r) => r[1] },
@@ -268,7 +268,7 @@ Equivalently $f=\bigl(Z(T_1)/Z(T_2)\bigr)^{1/(T_2-T_1)}-1$: the forward rate is 
       statement: String.raw`In the **Vasicek model** the instantaneous short rate follows the mean-reverting diffusion
 $$dr_t=a\,(b-r_t)\,dt+\sigma\,dW_t ,$$
 with speed $a>0$, long-run mean $b$ and volatility $\sigma$. Then $r_t$ is Gaussian with $E[r_t]=b+(r_0-b)e^{-at}$ and $\operatorname{Var}r_t=\sigma^2(1-e^{-2at})/(2a)$. If bonds are priced by $P(0,T)=E\bigl[e^{-\int_0^Tr_u\,du}\bigr]$ (risk-neutral expectation under the model dynamics), then
-$$P(0,T)=e^{-B(T)\,r_0-(T-B(T))\,y_\infty+\sigma^2B(T)^2/4a},\quad B(T)=\frac{1-e^{-aT}}{a},\quad y_\infty=b-\frac{\sigma^2}{2a^2},$$
+$$P(0,T)=e^{-B(T)\,r_0-(T-B(T))\,y_\infty-\sigma^2B(T)^2/4a},\quad B(T)=\frac{1-e^{-aT}}{a},\quad y_\infty=b-\frac{\sigma^2}{2a^2},$$
 and the yield curve $y(T)=-\ln P(0,T)/T$ rises, falls or is humped according to where $r_0$ lies relative to $y_\infty$ and how large $\sigma$ is. The model allows negative interest rates, and it has one source of randomness, so all yields are perfectly correlated.`,
       scope: String.raw`The closed form assumes constant parameters and that $a,b,\sigma$ already describe the pricing (risk-neutral) dynamics; real-world and risk-neutral values differ by a risk premium. Rates can go negative with probability $\Phi(-E[r_t]/\mathrm{sd}\,r_t)$.`,
       idea: String.raw`The short rate is an Ornstein–Uhlenbeck process (stoch 13.15): it is pulled toward $b$ at speed $a$ and shaken by Brownian noise, so it is Gaussian with the mean and variance above. The bond price is the expectation of $e^{-\int r}$; the integral $\int_0^Tr\,du$ is also Gaussian, and $E[e^{-X}]=e^{-E X+\frac12\mathrm{Var}X}$ for Gaussian $X$ gives the closed form. The curve starts at $r_0$ for $T\to0$ and tends to $y_\infty<b$ for large $T$ (the convexity term $\sigma^2/2a^2$ pulls long yields below the mean); in between it is humped when $r_0$ sits just below $y_\infty$.`,

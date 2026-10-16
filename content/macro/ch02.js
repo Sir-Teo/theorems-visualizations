@@ -81,7 +81,7 @@ Scope: competitive factor markets and a one-sector technology; for a CES technol
       idea: String.raw`Differentiate: $\partial Y/\partial L=(1-\alpha)AK^{\alpha}L^{-\alpha}=(1-\alpha)Y/L$, so $wL=(1-\alpha)Y$, and similarly $rK=\alpha Y$ — the factor-share exponents *are* the shares, because the exponent of a power function is the elasticity of the output. The two payments add to $Y$ because the exponents add to one (the Cobb–Douglas form of constant returns, macro-2.1). The U.S. data show a share near 0.6–0.65 for decades and a fall after about 2000, which is why Cobb–Douglas is a good first model but not the final word.`,
       caption: String.raw`**Left:** the labour share as a function of the capital–labour ratio $K/L$ (log axis). With $\sigma=1$ it is the flat green line at $1-\alpha$ whatever $K$ and $L$ are; move **$\sigma$** away from 1 (a CES technology) and the share tilts with the capital–labour ratio, so constancy fails. The dot is the economy at the chosen $K$ and $L$. **Middle:** how the pie is cut under marginal-product pay. **Right:** the U.S. labour share of GDP from the Penn World Table, with the horizontal line at $1-\alpha$.`,
       deps: ['macro-2.1'], refs: ['Mankiw ch. 3'], tags: ['distribution', 'production'],
-      credit: 'Douglas, 1934–1976 (the constancy of labour’s share)',
+      credit: 'Cobb & Douglas, 1928; Douglas, 1934 and 1976 (stable labour share)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Labor_share' },
       viz(v) {
         const al = v.slider('capital weight $\\alpha$', 0.15, 0.6, 0.35, { step: 0.01 });

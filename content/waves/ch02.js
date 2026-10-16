@@ -238,7 +238,7 @@ where $A_n$ is the amplitude of mode $n$, and every $E_n$ is **separately consta
       idea: String.raw`Kinetic energy is $\tfrac12\mu\int u_t^2\,dx$ and potential energy (from stretching, 1.7) is $\tfrac12T\int u_x^2\,dx$. Substituting the mode expansion, the orthogonality of $\sin(n\pi x/L)$ and of $\cos(n\pi x/L)$ on $[0,L]$ kills every cross term, leaving a sum of independent harmonic oscillators with energies $E_n$. Each oscillator conserves its own energy because the modes do not couple in a linear system (2.2). The picture is the same one used for the energy of coupled oscillators in mechanics: normal coordinates diagonalise the energy. Real nonlinearity couples the modes and lets them exchange energy, as in the famous Fermi–Pasta–Ulam–Tsingou computation.`,
       caption: String.raw`A chain of 32 beads, a discretised string with fixed ends (its modes are exact discrete sines, with slightly lower frequencies for high $n$). Pluck it or start it in mode 1. The bars give the energy $E_k$ of each mode and the lines below follow $E_1,\dots,E_5$ and the rest as time passes: with the nonlinearity $\beta=0$ they are perfectly flat and their sum is the total energy. Raise $\beta$ (a cubic stiffening of every spring) and the mode energies start to leak into each other, the total staying constant. For $\beta>0$ started in mode 1, energy flows into modes 3 and 5 and comes back, the recurrence that surprised Fermi, Pasta, Ulam and Tsingou in 1955.`,
       deps: ['waves-2.3', 'waves-1.7'],
-      see: ['mech-11.6', 'pde-4.3'],
+      see: ['mech-11.6', 'mech-11.4'],
       refs: ['Crawford ch. 2'],
       tags: ['energy', 'normal modes', 'nonlinearity'],
       credit: 'Energy bookkeeping of modes: standard; the nonlinear chain: Fermi, Pasta, Ulam and Tsingou, 1955',
@@ -347,11 +347,11 @@ $m,n=1,2,\dots$ The nodal set is a grid of $m-1$ lines parallel to one side and 
       idea: String.raw`Separation of variables $u=X(x)Y(y)T(t)$ (pde-5.6) splits the two-dimensional wave equation into one-dimensional problems for $X$ and $Y$, each a fixed string whose solutions are sines (2.2), and the eigenvalue of $-\nabla^2$ is the sum $\pi^2(m^2/a^2+n^2/b^2)$. The two directions are independent, so a mode is a product of two string modes. When two different products share the same eigenvalue, the eigenspace is two-dimensional and any combination oscillates at that one frequency, so the nodal lines of a mode are not fixed by the frequency alone; they depend on the combination. Generic aspect ratios have no degeneracies.`,
       caption: String.raw`Pick $m$ and $n$ by sliders or by clicking a point of the lattice (right), and change the aspect ratio $a/b$. Red and blue are the two signs of the displacement and the black curves are nodal lines. The lattice shows each frequency in units of the lowest, $\omega_{11}$, and marks degenerate pairs in green. Press **square** and choose $m\neq n$: a mixing slider appears, and sliding it turns the grid of nodal lines into diagonals and curves while the frequency never changes. Motion is slowed, with relative rates correct.`,
       deps: ['waves-2.2', 'rca-11.3', 'pde-5.6'],
-      see: ['pde-5.7', 'music-2.10'],
+      see: ['music-3.6', 'pde-5.6'],
       refs: ['Crawford ch. 7'],
       tags: ['membrane', 'normal modes', 'degeneracy'],
       scope: String.raw`Ideal membrane with small transverse displacements, uniform tension and fixed edges; the rectangle is the one shape where the modes are products of sines. Real drumheads also feel air loading and stiffness.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Vibrations_of_a_circular_membrane' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Vibration_of_a_circular_membrane' },
       viz(v) {
         const M = v.M, MM = 6;
         const mS = v.slider('$m$ (variations along $x$)', 1, MM, 2, { int: true });

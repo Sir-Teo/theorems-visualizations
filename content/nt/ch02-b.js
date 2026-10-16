@@ -103,7 +103,7 @@ Conversely, if $n>1$ and $(n-1)!\equiv-1\pmod n$, then $n$ is prime; so $n$ is p
       deps: ['nt-2.3', 'ladr-4.6'],
       refs: ['Hardy–Wright §7.4', 'Apostol §5.5'],
       tags: ['polynomial', 'roots', 'field'],
-      credit: 'Lagrange, 1768',
+      credit: 'Lagrange, c. 1770',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Polynomial_congruence' },
       viz(v) {
         const PRE = [
@@ -155,7 +155,7 @@ Hence every simple root mod $p$ lifts uniquely to roots mod $p^2,p^3,\dots$ (a $
       deps: ['nt-2.12'],
       refs: ['Apostol §5.9', 'Hardy–Wright §8.3'],
       tags: ['hensel', 'p-adic', 'lifting'],
-      credit: 'Hensel, 1897 (Gauss, Newton’s method modulo $p$)',
+      credit: 'Named for Hensel (p-adic numbers, 1897); the lifting step is Newton’s method modulo p^k',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hensel%27s_lemma' },
       viz(v) {
         const FS = [

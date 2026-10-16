@@ -886,7 +886,7 @@ For a steady flow only the flux term remains, and the force on a solid body in t
       refs: ['Kundu §4.4'],
       credit: 'Popularised by R. P. Feynman (Surely You’re Joking, Mr. Feynman!, 1985)',
       tags: ['angular momentum', 'sprinkler', 'paradox'],
-      scope: String.raw`Idealised: steady flow rate $\dot m$, rigid rotor of moment of inertia $I$ (water inside the arms included), viscous bearing friction $c\,\Omega$. The torque model for the reverse case with $\kappa>0$ is a thought experiment; reported experiments find only a very small motion.`,
+      scope: String.raw`Idealised: steady flow rate $\dot m$, rigid rotor of moment of inertia $I$ (water inside the arms included), viscous bearing friction $c\,\Omega$. The torque model for the reverse case with $\kappa>0$ is a thought experiment; careful experiments find little or no steady rotation of a real reverse sprinkler.`,
       viz(v) {
         const L = 1, VR = 2, I = 1.2;
         const mode = v.select('flow', [{ value: 'out', label: 'pumped out (forward)' }, { value: 'in', label: 'sucked in (reverse)' }], 'out');

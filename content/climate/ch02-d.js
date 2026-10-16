@@ -37,20 +37,22 @@ function solveBox(n, I, eps, hc, U, o = {}) {
   return T;
 }
 
-// ── Tyndall's table (recalled; see the item): relative absorption of the gases at one atmosphere, dry air = 1 ───────
+// ── Tyndall's table: absorption of the gases at a tension of one atmosphere (30 inches), dry air = 1 ───────────────
+// Source: Tyndall, Heat Considered as a Mode of Motion, Lecture X (30-inch table, summarising his 1859-62 memoirs); the
+// 970 for olefiant gas is also quoted in his Fourth Memoir (Phil. Trans. 1864) as the 1861 result. Chlorine (not clearly legible
+// in the copy checked) is left out. NB the "7260 / 7950" numbers sometimes quoted belong to his separate 1-inch-tension table.
 const GASES = [
   { id: 'air', short: 'air', name: 'dry air', R: 1, col: 'muted' },
   { id: 'O2', short: 'O₂', name: 'oxygen', R: 1, col: 'muted' },
   { id: 'N2', short: 'N₂', name: 'nitrogen', R: 1, col: 'muted' },
   { id: 'H2', short: 'H₂', name: 'hydrogen', R: 1, col: 'muted' },
-  { id: 'Cl', short: 'Cl₂', name: 'chlorine', R: 60, col: 'teal' },
-  { id: 'CO', short: 'CO', name: 'carbonic oxide', R: 750, col: 'orange' },
-  { id: 'CO2', short: 'CO₂', name: 'carbonic acid (CO₂)', R: 972, col: 'accent' },
-  { id: 'HCl', short: 'HCl', name: 'hydrochloric acid', R: 1005, col: 'purple' },
-  { id: 'N2O', short: 'N₂O', name: 'nitrous oxide', R: 1860, col: 'pink' },
-  { id: 'H2S', short: 'H₂S', name: 'sulphuretted hydrogen', R: 2100, col: 'gold' },
-  { id: 'C2H4', short: 'C₂H₄', name: 'olefiant gas (ethylene)', R: 6030, col: 'red' },
-  { id: 'NH3', short: 'NH₃', name: 'ammonia', R: 7260, col: 'green' },
+  { id: 'HCl', short: 'HCl', name: 'hydrochloric acid', R: 62, col: 'purple' },
+  { id: 'CO', short: 'CO', name: 'carbonic oxide', R: 90, col: 'orange' },
+  { id: 'CO2', short: 'CO₂', name: 'carbonic acid (CO₂)', R: 90, col: 'accent' },
+  { id: 'N2O', short: 'N₂O', name: 'nitrous oxide', R: 355, col: 'pink' },
+  { id: 'H2S', short: 'H₂S', name: 'sulphuretted hydrogen', R: 390, col: 'gold' },
+  { id: 'C2H4', short: 'C₂H₄', name: 'olefiant gas (ethylene)', R: 970, col: 'red' },
+  { id: 'NH3', short: 'NH₃', name: 'ammonia', R: 1195, col: 'green' },
 ];
 
 // ── CFC emission reconstruction (illustrative, kt/yr) for the Molina–Rowland item ─────────────────────────────────
@@ -142,23 +144,22 @@ export default {
       name: 'On the absorption and radiation of heat by gases and vapours',
       paper: { authors: 'John Tyndall', year: 1861, title: 'On the Absorption and Radiation of Heat by Gases and Vapours, and on the Physical Connexion of Radiation, Absorption, and Conduction', venue: 'Philosophical Transactions of the Royal Society of London 151: 1–36', doi: '10.1098/rstl.1861.0001' },
       introduces: ['climate-2.3'],
-      statement: String.raw`Tyndall passed radiant heat from a hot source through a long brass tube filled in turn with different gases and measured, with a thermopile and a sensitive galvanometer, how much was absorbed. His findings: the main constituents of the air — oxygen, nitrogen, hydrogen — and dry air itself are almost perfectly transparent to radiant heat; **compound gases** such as carbonic acid (CO₂), carbonic oxide, nitrous oxide, olefiant gas (ethylene) and ammonia absorb it hundreds to thousands of times more strongly; and the aqueous vapour of the air is the strongest absorber of all in the atmosphere itself. The absorption depends on the gas, grows with the pressure (and so with the amount of gas in the path), and is the same, wavelength by wavelength, as the gas's power to radiate. From this Tyndall concluded that variations of the atmosphere's water vapour and carbonic acid could change the climate.`,
-      scope: String.raw`The relative values are for the pure gases at one atmosphere in his tube and a hot (non-solar, near 100 °C) source, from the table of the 1861 paper as recalled here, and *not re-checked against the original*: the ranking and the orders of magnitude are what matter. The conversion from his relative numbers to the fraction of heat absorbed in the viz is an illustrative calibration of ours.`,
-      idea: String.raw`Earlier workers (Melloni, Fourier's successors) had shown that different solids and liquids absorb radiant heat differently, but nobody had measured gases, whose absorption is tiny over short paths. Tyndall made the path long (about 33 inches), compensated the apparatus by a second thermopile so that the galvanometer stayed at zero until the gas was admitted, and so reduced the experimental uncertainty enough to see that the *simple* diatomic gases do not absorb but *complex* molecules do. That is exactly the molecular explanation of 2.3: a vibrating dipole is needed. He did not have it; it came with quantum theory.`,
-      caption: String.raw`Choose a gas on the chart (bars on a log axis: Tyndall's relative absorption at one atmosphere, air = 1) and set the pressure in the tube in inches of mercury. The galvanometer needle shows the deflection that results; the dashed curve in the right panel is the absorption of the chosen gas against pressure, with the other gases for comparison. Weak absorbers need a long path (high pressure); a strong one, ammonia or olefiant gas, takes up most of the beam at once.`,
+      statement: String.raw`Tyndall passed radiant heat from a hot source through a long polished tube (4 feet, brass in the 1861 work) filled in turn with different gases and measured, with a thermopile and a sensitive galvanometer, how much was absorbed. His findings: the main constituents of the air — oxygen, nitrogen, hydrogen — and dry air itself are almost perfectly transparent to radiant heat; **compound gases** such as carbonic acid (CO₂), carbonic oxide, nitrous oxide, olefiant gas (ethylene) and ammonia absorb it tens to about a thousand times more strongly at one atmosphere (olefiant gas 970 times the air, ammonia at least 1195 times, in his published table); and the aqueous vapour of the air absorbs far more than the dry air and carbonic acid (he found on one day an absorption at least thirteen times that of the dry air). The absorption depends on the gas, grows with the pressure (and so with the amount of gas in the path), and is the same, wavelength by wavelength, as the gas's power to radiate. From this Tyndall concluded that variations of the atmosphere's water vapour and carbonic acid could change the climate.`,
+      scope: String.raw`The relative values are Tyndall's published figures for the pure gases at a tension of one atmosphere (30 inches of mercury) in his long tube, with a hot non-solar source (a cube of oil near 250 °C), as tabulated in his *Heat Considered as a Mode of Motion* (Lecture X; the 970 for olefiant gas is the number his 1864 Fourth Memoir quotes for the 1861 inquiry). The 1861 paper itself reports its results mostly as galvanometer deflections at several tensions, so the exact figures are quoted from his later summary. The values often seen elsewhere (carbonic oxide 750, nitrous oxide 1860, ammonia 7260, olefiant gas 7950) belong to his separate table for a tension of only one inch; chlorine and the other vapours are omitted. The ranking and the orders of magnitude are what matter. The conversion from his relative numbers to the fraction of heat absorbed in the viz is an illustrative calibration of ours.`,
+      idea: String.raw`Earlier workers (Melloni, Fourier's successors) had shown that different solids and liquids absorb radiant heat differently, but nobody had measured gases, whose absorption is tiny over short paths. Tyndall made the path long (a tube 4 feet long), balanced the thermopile against the radiation of a second, compensating cube so that the galvanometer stood near zero until the gas was admitted, and so reduced the experimental uncertainty enough to see that the *simple* diatomic gases do not absorb but *complex* molecules do. That is exactly the molecular explanation of 2.3: a vibrating dipole is needed. He did not have it; it came with quantum theory.`,
+      caption: String.raw`Choose a gas on the chart (bars on a log axis: Tyndall's relative absorption at one atmosphere, air = 1) and set the pressure in the tube in inches of mercury. The galvanometer needle shows the deflection that results; the dashed curve in the right panel is the absorption of the chosen gas against pressure, with the other gases for comparison. Weak absorbers need a long path (high pressure); a strong one, ammonia or olefiant gas, reaches a sizeable absorption at a few inches (the conversion from Tyndall's ratios to a fraction absorbed is our illustrative calibration).`,
       deps: ['thermo-9.1', 'climate-1.4', 'climate-2.14'],
       refs: [],
       tags: ['history', 'infrared absorption', 'Tyndall'],
       credit: 'John Tyndall, 1859–61',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/John_Tyndall' },
       viz(v) {
         const gsel = v.select('gas', GASES.map((g) => ({ value: g.id, label: g.short })), 'CO2');
         const pr = v.slider('pressure of the gas in the tube (inches of mercury)', 0.5, 30, 30, { step: 0.5 });
         const sA = v.stage({ x: [0, 12], y: [0, 6], axes: false, height: 230, full: true, title: 'the apparatus: source, tube, thermopile and galvanometer' });
-        const sB = v.stage({ x: [-0.5, GASES.length - 0.5], y: [0.5, 2e4], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.35, minWidth: 320, xlabel: 'gas', ylabel: 'relative absorption (dry air = 1)', title: 'Tyndall’s table (click a bar)', xticks: GASES.map((g, i) => [i, g.id.replace('2', '₂').replace('3', '₃').replace('4', '₄')]) });
+        const sB = v.stage({ x: [-0.5, GASES.length - 0.5], y: [0.5, 4000], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.35, minWidth: 320, xlabel: 'gas', ylabel: 'relative absorption (dry air = 1)', title: 'Tyndall’s table (click a bar)', xticks: GASES.map((g, i) => [i, g.id.replace('2', '₂').replace('3', '₃').replace('4', '₄')]) });
         const sC = v.stage({ x: [0, 30], y: [0, 0.4], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 250, xlabel: 'pressure (inches of mercury)', ylabel: 'fraction of the heat absorbed', title: 'absorption against pressure' });
-        const KAPPA = 5e-5 / 30; // fraction ≈ 1 − exp(−κ R p): olefiant gas at 30 in absorbs ≈ 26 %
+        const KAPPA = 0.3 / (970 * 30); // fraction ≈ 1 − exp(−κ R p): olefiant gas at 30 in absorbs ≈ 26 % (illustrative calibration)
         const frac = (g, p) => 1 - Math.exp(-KAPPA * g.R * p);
         sB.onClick((x) => { const i = Math.round(x); if (i >= 0 && i < GASES.length) gsel.set(GASES[i].id, { fire: true }); });
         let R = null;
@@ -167,7 +168,7 @@ export default {
           // apparatus
           sA.rect(0.4, 2.3, 2.1, 3.7, { fill: 'red', fillAlpha: 0.5, color: 'red', width: 1.5 }); sA.text('hot source', 1.25, 4.1, { size: 11.5, color: 'red', align: 'center', baseline: 'bottom' });
           sA.rect(2.5, 2.5, 8.0, 3.5, { fill: g.col, fillAlpha: Math.min(0.55, 0.1 + 0.5 * (p / 30) * (g.R > 5 ? 1 : 0.1)), color: 'ink', width: 1.6 });
-          sA.text(`brass tube (33 in): ${g.name}, ${fx(v, p, 1)} in Hg`, 5.25, 3.9, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom' });
+          sA.text(`tube (4 ft): ${g.name}, ${fx(v, p, 1)} in Hg`, 5.25, 3.9, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom' });
           for (let k = 0; k < 4; k++) { const x0 = 2.6 + k * 1.9, y = 3.0 + (k - 1.5) * 0.18; sA.arrow(x0, y, x0 + 1.5, y, { color: 'orange', width: 3.2 * (1 - a * (x0 - 2.5) / 5.5), head: 6, alpha: Math.max(0.15, 1 - a * (x0 - 2.5) / 5.5) }); }
           sA.rect(8.2, 2.3, 9.2, 3.7, { fill: 'accent', fillAlpha: 0.4, color: 'accent', width: 1.5 }); sA.text('thermopile', 8.7, 4.1, { size: 11.5, color: 'accent', align: 'center', baseline: 'bottom' });
           // galvanometer needle: deflection from the absorbed fraction (zero deflection with the evacuated tube); full scale at 30 % absorbed
@@ -182,12 +183,12 @@ export default {
           GASES.forEach((q, i) => sB.text(`${q.R}`, i, q.R, { size: 10.5, color: 'ink', align: 'center', baseline: 'bottom', dy: -3 }));
           sB.hline(1, { color: 'faint' });
           // pressure curves
-          for (const q of GASES.filter((q2) => ['CO2', 'C2H4', 'NH3', 'CO', 'Cl'].includes(q2.id))) {
+          for (const q of GASES.filter((q2) => ['CO2', 'C2H4', 'NH3', 'CO', 'N2O'].includes(q2.id))) {
             const pts = []; for (let x = 0; x <= 30; x += 1) pts.push([x, frac(q, x)]);
             sC.path(pts, { color: q.col, width: q.id === g.id ? 3.2 : 1.3, alpha: q.id === g.id ? 1 : 0.6 });
             sC.text(q.id.replace('2', '₂').replace('4', '₄').replace('3', '₃'), 30, frac(q, 30), { size: 10.5, color: q.col, align: 'right', baseline: 'bottom', dy: -3 });
           }
-          if (!['CO2', 'C2H4', 'NH3', 'CO', 'Cl'].includes(g.id)) sC.path([[0, 0], [30, a * 30 / p]], { color: g.col, width: 3 });
+          if (!['CO2', 'C2H4', 'NH3', 'CO', 'N2O'].includes(g.id)) sC.path([[0, 0], [30, a * 30 / p]], { color: g.col, width: 3 });
           sC.dot(p, a, { color: 'gold', r: 7 });
           R = { g, p, a };
         });

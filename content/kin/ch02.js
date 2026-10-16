@@ -59,8 +59,8 @@ The **activation energy** $E_a$ (J/mol) and the **pre-exponential factor** $A$ (
       num: '2.2', kind: 'Paradox', name: 'The “doubling every 10 °C” rule of thumb',
       statement: String.raw`A common rule says that a reaction's rate roughly doubles for every 10 °C rise. If $k=Ae^{-E_a/RT}$, the factor gained per 10 K is
 $$Q_{10}(T,E_a)\;=\;\frac{k(T+10)}{k(T)}\;=\;\exp\!\Big[\frac{E_a}{R}\Big(\frac1T-\frac1{T+10}\Big)\Big]\;\approx\;\exp\!\Big[\frac{10\,E_a}{RT^2}\Big].$$
-$Q_{10}=2$ needs $E_a\approx RT(T+10)\ln 2/10$, about 52 kJ/mol near 300 K. It is not a law: $Q_{10}$ grows with $E_a$ and falls steeply with $T$, so the rule fails for high barriers (enzyme denaturation, $Q_{10}$ of order 100 or more) and for hot systems (flames, where it is close to 1).`,
-      idea: String.raw`The Arrhenius law makes $\ln Q_{10}$ proportional to $E_a/T^2$. Fix $E_a$ and the factor drops as $T^{-2}$; fix $T$ and it rises exponentially with $E_a$. The rule of thumb is just the coincidence that typical activation energies of solution reactions, 40–60 kJ/mol, sit near the 52 kJ/mol that gives 2 at room temperature.`,
+$Q_{10}=2$ needs $E_a\approx RT(T+10)\ln 2/10$, about 53 kJ/mol near 300 K. It is not a law: $Q_{10}$ grows with $E_a$ and falls steeply with $T$, so the rule fails for high barriers (enzyme denaturation, $Q_{10}$ of order 100 or more) and for hot systems (flames, where it is close to 1).`,
+      idea: String.raw`The Arrhenius law makes $\ln Q_{10}$ proportional to $E_a/T^2$. Fix $E_a$ and the factor drops as $T^{-2}$; fix $T$ and it rises exponentially with $E_a$. The rule of thumb is just the coincidence that typical activation energies of solution reactions, 40–60 kJ/mol, sit near the 53 kJ/mol that gives 2 at room temperature.`,
       caption: String.raw`Left: $Q_{10}$ against $E_a$ at your temperature (blue) and at three reference temperatures (grey); the shaded band marks factors between 2 and 3. Right: $Q_{10}$ against $T$ for your $E_a$. Try the presets, then slide $E_a$ and $T$ to find where the rule holds.`,
       deps: ['kin-2.1'],
       refs: ['Houston'],

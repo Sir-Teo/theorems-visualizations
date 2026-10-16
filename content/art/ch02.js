@@ -371,7 +371,7 @@ with the factor depending on how the blurs are combined and measured (Rayleigh's
       num: '2.5',
       kind: 'Invention',
       name: 'The lens camera: image formation and focus',
-      credit: 'Lens-fitted camera obscura: Barbaro, 1568',
+      credit: 'Lens in the camera obscura: Cardano, 1550; Barbaro, 1568 (lens with diaphragm)',
       statement: String.raw`Fit a thin convex lens of focal length $f$ in the hole of the camera obscura. A point at distance $u$ in front of the lens is brought to a sharp point at distance $v$ behind it, where
 $$\frac1u+\frac1v=\frac1f,$$
 and the image has magnification $m=-v/u$ (inverted). The image is sharp only on the one screen distance $v$; with the screen at another distance $s$ each point becomes a disc of diameter $A\,|s-v|/v$, for a lens of diameter $A$. A lens of diameter $A$ gathers about $(A/w)^2$ times the light of a pinhole of width $w$ and gives a sharper picture than a pinhole of comparable brightness.

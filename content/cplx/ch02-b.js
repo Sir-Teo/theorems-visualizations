@@ -203,7 +203,7 @@ const allStrings = (L) => { const out = []; for (let l = 1; l <= L; l++) for (le
 const srank = (s) => (1 << s.length) - 1 + parseInt(s, 2);
 
 // ---------------------------------------------------------------------------------------------------------------
-// Karp's 1972 tree of 21 NP-complete problems (the edges of his Figure 3) and a few executable reductions.
+// Karp's 1972 tree of 21 NP-complete problems (the edges of his reduction tree; checked against the reduction list in Karp 1972 as tabulated on Wikipedia) and a few executable reductions.
 const KN = [
   ['SAT', 'SATISFIABILITY'], ['CLIQUE', 'CLIQUE'], ['IP', '0–1 INTEGER PROG.'], ['3SAT', '3-SAT'], ['SP', 'SET PACKING'], ['NC', 'NODE COVER'], ['CHR', 'CHROMATIC NO.'],
   ['SC', 'SET COVERING'], ['FNS', 'FEEDBACK NODE SET'], ['DHC', 'DIR. HAM. CIRCUIT'], ['CC', 'CLIQUE COVER'], ['EC', 'EXACT COVER'], ['FAS', 'FEEDBACK ARC SET'],
@@ -211,7 +211,7 @@ const KN = [
 ];
 const KE = [
   ['SAT', 'CLIQUE'], ['SAT', 'IP'], ['SAT', '3SAT'], ['CLIQUE', 'SP'], ['CLIQUE', 'NC'], ['NC', 'SC'], ['NC', 'FNS'], ['NC', 'DHC'], ['3SAT', 'CHR'], ['CHR', 'CC'], ['CHR', 'EC'],
-  ['FNS', 'FAS'], ['DHC', 'UHC'], ['EC', 'HS'], ['EC', 'ST'], ['EC', '3DM'], ['EC', 'KN'], ['KN', 'JS'], ['KN', 'PA'], ['PA', 'MC'],
+  ['NC', 'FAS'], ['DHC', 'UHC'], ['EC', 'HS'], ['EC', 'ST'], ['EC', '3DM'], ['EC', 'KN'], ['KN', 'JS'], ['KN', 'PA'], ['PA', 'MC'],
 ];
 const KLIVE = new Set(['SAT>CLIQUE', 'CLIQUE>NC', 'NC>SC', 'SAT>IP', 'EC>KN', 'KN>PA', 'PA>MC']);
 const KTEXT = {
@@ -222,7 +222,7 @@ const KTEXT = {
   '3SAT>CHR': 'A triangle fixes three colours (true, false, base); each variable is an edge between its two literal vertices joined to base; each clause becomes an OR-gadget that can be 3-coloured iff one input is "true" (compare 3-COLOUR, toc-13.12).',
   'CHR>CC': 'A proper colouring of $G$ partitions the vertices into independent sets; in the complement graph these are cliques. So $G$ is $k$-colourable iff $\\bar G$ can be covered by $k$ cliques.',
   'CHR>EC': 'Karp encodes a colouring by choosing one colour per vertex and checking edges: elements are vertices, edges and colour-vertex pairs, and sets are the possible choices (a larger gadget, not drawn here).',
-  'FNS>FAS': 'Split every vertex $v$ into $v^-\\to v^+$: all arcs into $v$ now enter $v^-$, all arcs out of $v$ leave $v^+$. Deleting the inner arc $v^-v^+$ is the same as deleting the vertex $v$.',
+  'NC>FAS': 'Split every vertex $v$ into an inner arc $v^-\\to v^+$ and, for each edge $\\{u,v\\}$, add the arcs $u^+\\to v^-$ and $v^+\\to u^-$. Every cycle alternates inner arcs and edge arcs and corresponds to a closed walk in $G$; deleting the inner arcs of a vertex cover breaks all of them, and a feedback arc set can be converted into such a set of inner arcs (Karp 1972; the same splitting turns FEEDBACK NODE SET into FEEDBACK ARC SET).',
   'DHC>UHC': 'Replace every directed vertex by a path $v^-\\!-v^0\\!-v^+$, entering through $v^-$ and leaving through $v^+$; a directed Hamiltonian circuit then corresponds to an undirected one.',
   'EC>HS': 'Transpose the incidence matrix: for each element $u$ take the set $T_u$ of indices of sets containing $u$. An exact cover is a set of indices meeting every $T_u$ in exactly one element.',
   'EC>ST': 'Build a bipartite-like graph with a root joined to one vertex per set and each set vertex joined to its elements; a Steiner tree spanning the root and all elements with a bounded number of set vertices is a cover (Karp 1972).',
@@ -244,7 +244,7 @@ export default {
       caption: String.raw`Click vertices (graph instance) or set chips (greedy-trap instance) to build a cover. The **matrix** on the right is the incidence matrix: in *set cover* view a row is a set and you need its columns to cover every column; flip to *hitting set* view and the same matrix is transposed — rows are now the sets to hit and columns the elements you pick. The counter compares your size with the **optimum** (found by exhaustive search) and with what **greedy** returns; on the trap instance greedy takes 3 sets while 2 suffice.`,
       deps: ['toc-13.7'],
       refs: ['Arora–Barak ch. 2'],
-      credit: 'Karp, 1972; greedy ln n bound: Johnson 1974, Lovász 1975',
+      credit: 'Karp, 1972; greedy ln n bound: Johnson 1974, Stein 1974, Lovász 1975',
       tags: ['set cover', 'hitting set', 'duality'],
       viz(v) {
         const inst = v.select('instance', [{ value: 'g', label: 'graph (vertex cover)' }, { value: 't', label: 'greedy trap' }], 'g');
@@ -709,8 +709,8 @@ export default {
       paper: { authors: 'Richard M. Karp', year: 1972, title: 'Reducibility Among Combinatorial Problems', venue: 'in R. E. Miller and J. W. Thatcher (eds.), Complexity of Computer Computations, Plenum Press: 85–103', doi: '10.1007/978-1-4684-2001-2_9' },
       introduces: ['toc-13.1', 'toc-13.6', 'toc-13.7', 'toc-13.9', 'toc-13.10', 'toc-13.11', 'cplx-2.1', 'cplx-2.3', 'cplx-2.6', 'cplx-2.7', 'cplx-2.8'],
       statement: String.raw`Karp took Cook's 1971 theorem — SATISFIABILITY is complete for NP under polynomial-time Turing reductions — and showed, using many-one polynomial-time reductions ("polynomial-time transformations"), that **21 classical combinatorial and graph problems** are equivalent to it: CLIQUE, NODE COVER, SET PACKING and SET COVERING, 0–1 INTEGER PROGRAMMING, FEEDBACK NODE/ARC SET, directed and undirected HAMILTON CIRCUIT, 3-SAT, CHROMATIC NUMBER, CLIQUE COVER, EXACT COVER, HITTING SET, STEINER TREE, 3-D MATCHING, KNAPSACK, JOB SEQUENCING, PARTITION and MAX CUT. If any one has a polynomial-time algorithm, all do (P = NP). Each problem is tied to SAT by a chain of reductions drawn as a tree.`,
-      idea: String.raw`Before 1972 the only known NP-complete problem was SAT (Cook, and independently Levin). Karp's paper changed the subject: it introduced the *polynomial-time many-one reduction* as the working tool, the notion of **NP-completeness** that came to be named after it (the term itself, and the name "Karp reduction", are later), and the **gadget technique** — encode choices and constraints of one problem as local structures of another. The tree shows how small the toolbox is: complement a graph (CLIQUE ↔ NODE COVER ↔ independent set), transpose an incidence matrix (SET COVER ↔ HITTING SET), write sets as digits of numbers (EXACT COVER → KNAPSACK), add balancing numbers (KNAPSACK → PARTITION), take products of weights (PARTITION → MAX CUT). Within a year the list grew to hundreds (Garey & Johnson's 1979 catalogue lists over 300 problems).`,
-      caption: String.raw`**Recreation of Karp's Figure: the tree of 21 problems** (read left to right; each arrow is a polynomial-time reduction). Click an **arrow** (or the node it points to). The seven *highlighted* arrows are executed on a concrete small instance below the tree: the left half shows an instance of the source problem, the right half the instance produced by the reduction, and the readout solves both sides by exhaustive search or DPLL and confirms that the answers agree and that a solution maps across — click variables, vertices, sets or numbers to build your own candidate solution on one side and watch it transform. The other arrows show the idea of the construction in words. The tree is reconstructed from memory of Karp's Figure 3, with the details of each reduction written afresh.`,
+      idea: String.raw`Before 1972 the only known NP-complete problem was SAT (Cook, and independently Levin). Karp's paper changed the subject: it introduced the *polynomial-time many-one reduction* as the working tool, the notion of **NP-completeness** that came to be named after it (the term itself, and the name "Karp reduction", are later), and the **gadget technique** — encode choices and constraints of one problem as local structures of another. The tree shows how small the toolbox is: complement a graph (CLIQUE ↔ NODE COVER ↔ independent set), transpose an incidence matrix (SET COVER ↔ HITTING SET), write sets as digits of numbers (EXACT COVER → KNAPSACK), add balancing numbers (KNAPSACK → PARTITION), take products of weights (PARTITION → MAX CUT). The list then grew quickly (Garey & Johnson's 1979 book lists about 300 NP-complete problems in its catalogue).`,
+      caption: String.raw`**Recreation of Karp's Figure: the tree of 21 problems** (read left to right; each arrow is a polynomial-time reduction). Click an **arrow** (or the node it points to). The seven *highlighted* arrows are executed on a concrete small instance below the tree: the left half shows an instance of the source problem, the right half the instance produced by the reduction, and the readout solves both sides by exhaustive search or DPLL and confirms that the answers agree and that a solution maps across — click variables, vertices, sets or numbers to build your own candidate solution on one side and watch it transform. The other arrows show the idea of the construction in words. The tree is the reduction tree of Karp's paper (parent and child of every arrow checked against a published listing), with the details of each reduction written afresh.`,
       deps: ['toc-13.4'],
       refs: [],
       credit: 'Karp, 1972; Cook, 1971; Levin, 1973',
@@ -881,7 +881,7 @@ export default {
           }
         });
         v.legend([['accent', 'executed reduction'], ['muted', 'described only'], ['gold', 'selected']]);
-        v.readout(() => `${info}\nKarp (1972): **21** problems shown NP-complete from Cook's SAT; the Garey–Johnson catalogue (1979) lists over **300**, and every one of Karp's 21 is still NP-complete today.`);
+        v.readout(() => `${info}\nKarp (1972): **21** problems shown NP-complete from Cook's SAT; the Garey–Johnson catalogue (1979) lists about **300**, and every one of Karp's 21 is still NP-complete today.`);
       },
     },
   ],

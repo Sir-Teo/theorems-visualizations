@@ -55,7 +55,7 @@ which is the statement $\mathrm d\Delta_rH^\circ/\mathrm dT = \Delta_rC_p^\circ$
       refs: ['Atkins Focus 2', 'M–S ch. 19'],
       tags: ['Kirchhoff', 'heat capacity'],
       credit: 'Gustav Kirchhoff, 1858',
-      scope: String.raw`No phase change between $T_1$ and $T_2$ for any species (otherwise add the transition enthalpies). The heat capacities are empirical fits $a + bT + c/T^2$ valid from 298 K to roughly 2000 K, with coefficients quoted from memory of the standard tables.`,
+      scope: String.raw`No phase change between $T_1$ and $T_2$ for any species (otherwise add the transition enthalpies). The heat capacities are empirical fits $a + bT + c/T^2$ with coefficients from Atkins' tables (CO₂, H₂, N₂, NH₃, O₂ as in Atkins' Table 2B.1; CO, H₂O and CH₄ as in older editions). They track NIST-JANAF values within a few percent from 298 K to about 1500 K for most species, but the CH₄ fit is only good to about 1000 K (about 10% high at 1500 K, 25% high at 2000 K) and is plotted beyond that for illustration only.`,
       viz(v) {
         const rx = v.select('reaction', Object.keys(KR).map((k) => ({ value: k, label: KR[k].name })), 'nh3');
         const Ts = v.slider('temperature $T$', 298.15, 2000, 1000, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
@@ -231,7 +231,7 @@ so $T_\text{ad}$ is the root of an equation built from the reaction enthalpy at 
       deps: ['pchem-2.11'],
       refs: ['Atkins Focus 2'],
       tags: ['combustion', 'adiabatic flame', 'enthalpy balance'],
-      scope: String.raw`Complete combustion of methane to CO₂ and H₂O(g) (lean or stoichiometric mixtures only), constant pressure, no heat loss, ideal gases, no dissociation. Real flames are cooler by a few hundred kelvin at stoichiometry because CO₂ and H₂O dissociate, and the polynomial fits are intended for 298–2000 K and are extrapolated beyond.`,
+      scope: String.raw`Complete combustion of methane to CO₂ and H₂O(g) (lean or stoichiometric mixtures only), constant pressure, no heat loss, ideal gases, no dissociation. Real flames are cooler by a few hundred kelvin at stoichiometry because CO₂ and H₂O dissociate, and the polynomial fits are intended for 298–2000 K (CO₂, H₂O, N₂, O₂ track NIST-JANAF to a few percent there; the CH₄ fit, which matters only for the reactant stream, is poorer above about 1000 K) and are extrapolated beyond.`,
       viz(v) {
         const lam = v.slider('excess-air factor $\\lambda$', 1, 4, 1, { step: 0.01 });
         const xO = v.slider('O₂ in the oxidant', 0.21, 0.5, 0.21, { step: 0.01, fmt: (x) => `${(100 * x).toFixed(0)} %` });

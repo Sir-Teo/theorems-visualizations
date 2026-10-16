@@ -4,7 +4,7 @@
 // - All populations except the two historical data sets are simulated from fixed seeds.
 // - Darwin's Zea mays differences (item 2.12) are typed from memory of the table in Fisher's Design of Experiments, ch. III
 //   (differences of cross- minus self-fertilized plants, eighths of an inch): they are checked by their sum (314) and by the paired
-//   t statistic they give (2.148 on 14 d.f.), both of which agree with the textbook values remembered, but not against the book itself.
+//   t statistic they give (2.148 on 14 d.f.), t = 2.148 on 14 d.f. and the first six differences (6.125, -8.375, 1, 2, 0.75, 2.875 in) were confirmed against the HistData/agridat Zea mays data; the other nine differences are confirmed only through the sum and t.
 // - Neyman 1923 and Fisher 1935: bibliographic data are those of the syllabus; the content of the papers is described from secondary
 //   knowledge and the statistics are recomputed here by exact enumeration, not copied from the papers.
 import {

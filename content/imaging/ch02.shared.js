@@ -3,9 +3,9 @@
 // filtration and transmission of a spectrum through layers, and small image / Poisson helpers.
 //
 // The attenuation data are a MODEL, not a table: Compton is the exact Klein–Nishina cross-section times the electron
-// density; photoelectric is a power law in 1/E with the Z-dependence fitted to a few remembered NIST XCOM values
-// (water, cortical bone, aluminium, iodine, lead), with a K-edge jump for heavy elements. Coherent scatter, L edges and
-// pair production are left out; accuracy is a few tens of percent between 15 and 150 keV, which is what the pictures need.
+// density; photoelectric is a power law in 1/E with the Z-dependence fitted to NIST XCOM / X-ray mass attenuation table values
+// (water, cortical bone, aluminium, copper, iodine, lead, ...); checked against NIST at 10-150 keV, with a K-edge jump for heavy elements. Coherent scatter, L edges and
+// pair production are left out; coherent scatter is omitted. Against NIST mu/rho (which includes coherent scatter) the model is within ~10% for water, bone, aluminium and the K-edge metals from 20 to 150 keV, within about 15% for Cu, Mo and Rh above their edges, and poor (factor 1.7-4) for Pb and W below ~15 keV (L edges).
 
 export const TAU = 2 * Math.PI;
 export const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
@@ -29,17 +29,17 @@ export function sigmaKN(E) {
   return 0.75 * SIGMA_T * (((1 + k) / (k * k)) * ((2 * (1 + k)) / (1 + 2 * k) - l / k) + l / (2 * k) - (1 + 3 * k) / ((1 + 2 * k) ** 2));
 }
 const LIGHT = { H: [1, 1.008], C: [6, 12.011], N: [7, 14.007], O: [8, 15.999], Na: [11, 22.99], Mg: [12, 24.305], Al: [13, 26.982], Si: [14, 28.086], P: [15, 30.974], S: [16, 32.06], Cl: [17, 35.45], K: [19, 39.098], Ca: [20, 40.078] };
-// heavy elements: Z, A, K-edge (keV), mass attenuation just above the edge (cm²/g; scaled from remembered NIST values)
+// heavy elements: Z, A, K-edge (keV), mass attenuation just above the edge (cm²/g; read from the NIST XCOM / X-ray mass attenuation tables, physics.nist.gov/PhysRefData/XrayMassCoef), optional edge-jump ratio
 const HEAVY = {
-  Cu: [29, 63.546, 8.979, 230], Mo: [42, 95.95, 20.0, 72], Rh: [45, 102.91, 23.22, 59], I: [53, 126.9, 33.169, 34], Ba: [56, 137.33, 37.441, 28],
-  Gd: [64, 157.25, 50.239, 19], W: [74, 183.84, 69.525, 12], Pb: [82, 207.2, 88.005, 8.9],
+  Cu: [29, 63.546, 8.979, 278], Mo: [42, 95.95, 20.0, 80], Rh: [45, 102.91, 23.22, 64], I: [53, 126.9, 33.169, 34], Ba: [56, 137.33, 37.441, 28],
+  Gd: [64, 157.25, 50.239, 19], W: [74, 183.84, 69.525, 11.3], Pb: [82, 207.2, 88.005, 7.7, 4.0],
 };
 const JUMP = 5.5, NH = 2.7;
 /** Photoelectric terms for an element: [w-independent] {P, n, Ek, J} with tau/rho = P E^-n (E<Ek) or J*P E^-n (E>=Ek). */
 function elementTerm(sym) {
   if (LIGHT[sym]) { const [Z, A] = LIGHT[sym]; return { Z, A, P: (10.2 * Z ** 4.34) / A, n: 3, Ek: 0, J: 1 }; }
-  const [Z, A, Ek, muk] = HEAVY[sym];
-  return { Z, A, P: (muk * Ek ** NH) / JUMP, n: NH, Ek, J: JUMP };
+  const [Z, A, Ek, muk, jump = JUMP] = HEAVY[sym];
+  return { Z, A, P: (muk * Ek ** NH) / jump, n: NH, Ek, J: jump };
 }
 /** A material: mass fractions, density (g/cm³). */
 export function material(name, frac, rho) {

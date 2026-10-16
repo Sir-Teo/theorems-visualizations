@@ -14,8 +14,8 @@ function fisher(y1, y2, r, be, th) {
 const gauss = (r) => r.normal();
 
 // Cobb & Douglas (1928), Table I: indexes of the American manufacturing sector, 1899 = 100: fixed capital C, employed labour L, product P.
-// Typed from memory of the table, not from the paper: the endpoints (1922: 431, 161, 240) match the syllabus, and the regression below reproduces the
-// published fit P = 1.01 L^0.75 C^0.25 (a check, see the readout); individual intermediate years may still be off by a unit or two.
+// Checked year by year against a published reproduction of the table (Knill, Harvard Math handout data03: all 24 rows identical); endpoints 1922: 431, 161, 240.
+// The regression below reproduces the published fit P = 1.01 L^0.75 C^0.25 (a check, see the readout).
 const CD = {
   C: [100, 107, 114, 122, 131, 138, 149, 163, 176, 185, 198, 208, 216, 226, 236, 244, 266, 298, 335, 366, 387, 407, 417, 431],
   L: [100, 105, 110, 118, 123, 116, 125, 133, 138, 121, 140, 144, 145, 152, 154, 149, 154, 182, 196, 200, 193, 193, 147, 161],
@@ -145,7 +145,7 @@ Scope: no bequests, no uncertainty, perfect capital markets, a stationary profil
       caption: String.raw`**Left:** earnings $y$ (gold), flat consumption $c$ (blue) and wealth (green) by age; green shading marks saving, red dissaving. Drag **retirement age** and **life expectancy** (longer retirement means more saving to fund it) and the **pension**. **Right:** the economy-wide saving rate as a function of population growth: at $n=0$ it is exactly zero; it is positive for moderate growth, and negative for a shrinking population (many retirees) or very fast growth (many young borrowers). The dot follows the **population growth** slider.`,
       deps: ['macro-2.8', 'demo-5.2'], refs: ['Mankiw ch. 20'], tags: ['consumption', 'saving', 'demography'],
       credit: 'Franco Modigliani & Richard Brumberg, 1954; Albert Ando & Modigliani, 1963',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Modigliani%E2%80%93Brumberg_life-cycle_hypothesis' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Life-cycle_hypothesis' },
       viz(v) {
         const Rt = v.slider('retirement age', 55, 75, 65, { step: 1, int: true });
         const Dt = v.slider('age at death', 70, 100, 85, { step: 1, int: true });
@@ -255,11 +255,11 @@ $$c_{t+1}=c_t+\varepsilon_{t+1},\qquad \mathbb E_t\,\varepsilon_{t+1}=0,$$
 and no variable known at date $t$ — in particular lagged income or its growth — helps to predict the change in consumption. The only news is the innovation $\varepsilon_{t+1}$, the revision of permanent income. With CRRA utility the same holds for $\Delta\ln c$ up to a constant and a small variance term.
 
 Scope: rational expectations, no binding liquidity constraints, a representative consumer. A regression of $\Delta c_t$ on $\Delta y_{t-1}$ is Hall's test; a significantly positive coefficient is called **excess sensitivity** (macro-2.13).`,
-      idea: String.raw`Under the Euler equation the best forecast of tomorrow's consumption is today's, because the household has already set its level to use all the information it has — including the predictable part of income. So any variable known at $t$, such as last quarter's income growth, has zero coefficient in the regression of $\Delta c_{t+1}$. Hall (1978) ran exactly this test on U.S. data and found that lagged income did not matter, while a stock-price index did (a sign of news arriving). Later work with longer samples finds a positive coefficient on income growth, around 0.2–0.5 for the share of "rule-of-thumb" consumers (Campbell and Mankiw, 1989).`,
+      idea: String.raw`Under the Euler equation the best forecast of tomorrow's consumption is today's, because the household has already set its level to use all the information it has — including the predictable part of income. So any variable known at $t$, such as last quarter's income growth, has zero coefficient in the regression of $\Delta c_{t+1}$. Hall (1978) ran exactly this test on U.S. data and found that lagged income did not matter, while a stock-price index did (a sign of news arriving). Later work with longer samples finds a positive coefficient on income growth, of roughly 0.4–0.5 for U.S. data (lower in some other countries) for the share of "rule-of-thumb" consumers (Campbell and Mankiw, 1989).`,
       caption: String.raw`Choose **simulation** or **U.S. data**. In the simulation, income growth is predictable (positive autocorrelation) and a share $\lambda$ of households simply spend their income; the PIH consumers (share $1-\lambda$) follow the random walk. **Top:** the series; **bottom:** the regression of $\Delta\ln c_t$ on $\Delta\ln y_{t-1}$. With $\lambda=0$ the fitted slope is zero up to sampling error (resample to see it scatter around zero); raise $\lambda$ and it appears. The U.S. data (real personal consumption and real disposable income, quarterly 1947–2026) are regressed honestly in the browser.`,
       deps: ['macro-2.11'], refs: ['Romer ch. 8', 'Mankiw ch. 20'], tags: ['consumption', 'rational expectations', 'martingale'],
       credit: 'Robert E. Hall, 1978',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Random_walk_hypothesis' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Random_walk_model_of_consumption' },
       viz(v) {
         const src = v.select('source', [{ value: 'sim', label: 'simulation' }, { value: 'us', label: 'U.S. data 1947–2026' }], 'sim');
         const lam = v.slider('share of rule-of-thumb consumers $\\lambda$', 0, 1, 0, { step: 0.05 });
@@ -336,7 +336,7 @@ Scope: stylised mixture model, with the parameters (population shares, extent of
         });
         v.readout(() => {
           const { h, p, b, u, at2 } = st;
-          return `Spent in the quarter of receipt: **${pc(at2, 0)}** of the rebate (${pc(u * pihQ, 1)} from unconstrained, ${pc(h, 0)} from hand-to-mouth, ${pc(p * (1 - b), 0)} from present-biased). The permanent-income model predicts only ${pc(pihQ, 1)} and, above all, **no jump** at receipt, since the money was announced two quarters earlier. Empirical estimates for U.S. rebates (shaded band) lie around 20–40% of the rebate on non-durable goods within the quarter; the band is a rough summary from memory of the literature, not a table value.`;
+          return `Spent in the quarter of receipt: **${pc(at2, 0)}** of the rebate (${pc(u * pihQ, 1)} from unconstrained, ${pc(h, 0)} from hand-to-mouth, ${pc(p * (1 - b), 0)} from present-biased). The permanent-income model predicts only ${pc(pihQ, 1)} and, above all, **no jump** at receipt, since the money was announced two quarters earlier. Empirical estimates for U.S. rebates (shaded band) are roughly 20–40% of the rebate spent on non-durable goods within the quarter of receipt for 2001 (Johnson, Parker and Souleles) and somewhat lower, about 12–30%, for 2008 (Parker and co-authors); the shaded band is the 2001 range, and spending on durables raises the totals considerably.`;
         });
       },
     },
@@ -350,8 +350,8 @@ $$P=1.01\,L^{3/4}\,C^{1/4},$$
 with the labour exponent close to labour's share of the product in the national data, so that the exponents could be read as the factors' marginal-productivity shares. In modern terms: output elasticities of $0.75$ for labour and $0.25$ for capital, together summing to one.
 
 Scope: a single time series of one sector over 24 years, in which capital, labour and output all trend upwards together (so the fit is dominated by common trends); it is not evidence on the production function's form beyond that.`,
-      idea: String.raw`Economists had long argued that each factor earns its marginal product, and Wicksell and others had written down functions with exactly this form, but no one had measured one. Douglas, with the mathematician Cobb, fitted $\log P-\log L$ on $\log C-\log L$ and found a slope near $1/4$ and a good fit; their idea was that the same exponent was the share of labour in national income (macro-2.2), so a function with constant exponents "explains" the stability of factor shares. The paper introduced the **Cobb–Douglas** form (macro-2.1) that became the workhorse of growth and macroeconomics, and also the practice of testing a production function against data. Its limits were noted at once (no price data, spurious trends, aggregation), and the later question of why the share fell below $0.75$ is the subject of macro-2.2.`,
-      caption: String.raw`**Left:** the indexes of capital (orange), labour (purple) and product (blue) for 1899–1922, with the fitted $P^*=b\,L^{k}C^{1-k}$ in green; the product index and the fit track each other. Drag the **labour exponent** $k$ away from $3/4$ and the fit worsens; the **right** panel plots the root-mean-square log error against $k$, with its minimum near the paper's value. Choose whether the constant $b$ is the paper's 1.01 or refitted for each $k$. The table of the three series was typed from memory of the paper's Table I (see readout check).`,
+      idea: String.raw`Economists had long argued that each factor earns its marginal product, and Wicksell and earlier writers had used functions of this form, but no one had measured one. Douglas, with the mathematician Cobb, fitted $\log P-\log L$ on $\log C-\log L$ and found a slope near $1/4$ and a good fit; their idea was that the same exponent was the share of labour in national income (macro-2.2), so a function with constant exponents "explains" the stability of factor shares. The paper introduced the **Cobb–Douglas** form (macro-2.1) that became the workhorse of growth and macroeconomics, and also the practice of testing a production function against data. Its limits were noted at once (no price data, spurious trends, aggregation), and the later question of why the share fell below $0.75$ is the subject of macro-2.2.`,
+      caption: String.raw`**Left:** the indexes of capital (orange), labour (purple) and product (blue) for 1899–1922, with the fitted $P^*=b\,L^{k}C^{1-k}$ in green; the product index and the fit track each other. Drag the **labour exponent** $k$ away from $3/4$ and the fit worsens; the **right** panel plots the root-mean-square log error against $k$, with its minimum near the paper's value. Choose whether the constant $b$ is the paper's 1.01 or refitted for each $k$. The three series are the 1899–1922 indexes of the paper's table, as reproduced in textbooks and course handouts.`,
       deps: ['micro-7.1', 'micro-7.5'], refs: [], tags: ['production', 'history', 'econometrics'],
       credit: 'Charles W. Cobb & Paul H. Douglas, 1928',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function' },

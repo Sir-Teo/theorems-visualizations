@@ -162,7 +162,7 @@ export default {
       deps: ['crypto-2.1'],
       tags: ['one-time pad', 'xor'],
       refs: ['Katz–Lindell §2.2'],
-      credit: 'Vernam 1917; Shannon 1949 (proof)',
+      credit: 'G. Vernam, 1917–1919 (cipher invented 1917; patent filed 1918); Shannon 1949 (proof)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/One-time_pad' },
       viz(v) {
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 470, minWidth: 320 });

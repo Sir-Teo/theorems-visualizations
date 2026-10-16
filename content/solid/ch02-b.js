@@ -3,7 +3,7 @@
 // Computed pictures only: 2.7/2.9 use the closed-form isotropic Hooke's law, 2.8 the textbook modulus conversions, 2.10 the exact
 // kinematics of a pin-jointed (rigid-rib) lattice, 2.11 a bilinear-quadrilateral finite-element solution (plateFE in ch02.shared.js),
 // 2.12 exact derivatives of polynomial Airy functions. Material values used as markers (ν of steel 0.30, aluminium 0.33, concrete 0.2,
-// rubber ≈ 0.5, cork ≈ 0) are typical textbook values quoted from memory, not from one checked table. Deformations are exaggerated and
+// rubber ≈ 0.5, cork ≈ 0) are typical textbook values (steel 0.27–0.30, aluminium 0.33, concrete 0.1–0.2), not from one table. Deformations are exaggerated and
 // captions say so.
 
 import { num, pmat, P3, drawBox, plateFE } from './ch02.shared.js';
@@ -76,7 +76,7 @@ and conversely $E=\dfrac{9KG}{3K+G}$, $\nu=\dfrac{3K-2G}{2(3K+G)}$, with $\dfrac
       deps: ['solid-2.7'],
       refs: ['Gere–Goodno §3.6'],
       tags: ['moduli', 'poisson'],
-      credit: 'G. Lamé, 1850s (shear and bulk modulus, Lamé constants)',
+      credit: 'G. Lamé, 1850s (Lamé constants)',
       viz(v) {
         const nu = v.slider('Poisson ratio $\\nu$', -0.95, 0.495, 0.3, { step: 0.005 });
         const Eg = v.slider('Young’s modulus $E$ (GPa)', 0.01, 400, 210, { log: true });

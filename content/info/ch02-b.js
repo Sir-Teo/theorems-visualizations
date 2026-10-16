@@ -337,7 +337,7 @@ In bits the bound reads $D(p\|q)\ge\frac{2}{\ln 2}\delta^2$. Small divergence th
       deps: ['info-2.2', 'info-2.10'],
       refs: ['Cover–Thomas §11.6'],
       tags: ['Pinsker', 'total variation'],
-      credit: 'Pinsker, 1960 (the sharp constant: Csiszár and Kullback, 1967)',
+      credit: 'Pinsker, 1960 (the sharp constant, independently: Csiszár and Kullback, 1967)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pinsker%27s_inequality' },
       viz(v) {
         const unit = v.select('units of $D$', [{ value: 'nats', label: 'nats' }, { value: 'bits', label: 'bits' }], 'nats');

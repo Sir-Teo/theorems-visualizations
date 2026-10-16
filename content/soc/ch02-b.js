@@ -1,11 +1,11 @@
 // Networks & Collective Behavior — Chapter 2, part b: homophily, influence, assortativity, balance, Dunbar, foci, the 1973 paper (2.9–2.16).
 //
-// Dunbar items: the 1992 regression log10 N = 0.093 + 3.389 log10 CR and the human neocortex ratio 4.1 are quoted from memory
-// (they reproduce the commonly quoted prediction of about 148). The interval figures (1992: 100–230; 2021 reanalysis: 4–520
-// Bayesian, 2–336 generalised least squares) were checked against the Wikipedia summary of Lindenfors, Wartel & Lind (2021).
+// Dunbar items: the 1992 regression log10 N = 0.093 + 3.389 log10 CR and the human neocortex ratio 4.1 match the standard published values (they reproduce the
+// commonly quoted prediction of about 148). The interval figures (1992: 100–230; 2021 reanalysis: 4–520
+// Bayesian, 2–336 generalised least squares) were checked against the abstract of Lindenfors, Wartel & Lind (2021).
 // The primate scatter drawn on 2.13 is SIMULATED around that line; it is not Dunbar's data table.
-// Granovetter (1973) percentages are as given in the chapter syllabus (16.7 / 55.6 / 27.8 %); the counts 9, 30, 15 of 54 are
-// inferred from them (they reproduce all three percentages), not read from the paper.
+// Granovetter (1973) percentages 16.7 / 55.6 / 27.8 % (N = 54 who found jobs via contacts; 282 respondents in Newton, MA) were confirmed against secondary summaries; the counts 9, 30, 15 of 54 are
+// inferred from them (they reproduce all three percentages).
 import {
   getNet, KARATE, SOUTHERN, mkGraph, rng32, shuffle, deg, assortativity, barabasi, relax, circlePos, normLayout, layoutOf, CYC,
 } from './ch02.shared.js';
@@ -429,7 +429,7 @@ A model: each shared focus independently gives a chance $q$ of a tie, so that tw
       name: 'The Strength of Weak Ties',
       paper: { authors: 'Mark S. Granovetter', year: 1973, title: 'The Strength of Weak Ties', venue: 'American Journal of Sociology 78 (6): 1360–1380', doi: '10.1086/225469' },
       introduces: ['soc-2.6', 'soc-2.7'],
-      statement: String.raw`Granovetter argued that the strength of a tie (a mix of time, emotional intensity, intimacy and reciprocal services) can be treated as a variable, and that if a person $A$ has strong ties to $B$ and $C$, then there is a high chance of at least a weak tie between $B$ and $C$: the "forbidden triad" of two strong ties without a third tie is rare. A consequence is that a tie that is the only bridge between two clusters cannot be strong. The paper then argues that weak ties are therefore the channels through which information and influence reach a group from beyond it, and offers as evidence a study of how professional, technical and managerial workers in a Boston suburb found their jobs: most who used a personal contact saw that contact only occasionally or rarely.`,
+      statement: String.raw`Granovetter argued that the strength of a tie (a mix of time, emotional intensity, intimacy and reciprocal services) can be treated as a variable, and that if a person $A$ has strong ties to $B$ and $C$, then there is a high chance of at least a weak tie between $B$ and $C$: the "forbidden triad" of two strong ties without a third tie is rare. A consequence is that a tie that is the only bridge between two clusters cannot be strong. The paper then argues that weak ties are therefore the channels through which information and influence reach a group from beyond it, and offers as evidence a study of how professional, technical and managerial workers in Newton, Massachusetts (a Boston suburb) found their jobs: most who used a personal contact saw that contact only occasionally or rarely.`,
       idea: String.raw`Before the paper, network studies concentrated on the cohesion of strong-tie groups, and weak ties were treated as marginal. Granovetter turned this around: a strong-tie cluster is redundant internally (everyone knows what everyone knows), so what spreads between clusters travels on bridges, and bridges are (by the forbidden-triad argument, 2.6) weak ties. The paper introduced the forbidden triad and the bridge argument, the idea that weak ties are the connectors, and the job-search evidence. Its central argument is verbal; later work (the strong triadic closure theorem, large phone-call networks, and a 2022 field experiment on a professional networking site) made it precise and tested it.`,
       caption: String.raw`Left: the forbidden triad. $A$ is strongly tied to $B$ and $C$; choose the tie between $B$ and $C$ to see when the triad is forbidden and when a bridge could be strong. Right: the job-contact data of the paper, as the syllabus quotes it; choose where "strong" begins and see how much of the new information arrives over weak ties.`,
       deps: ['soc-2.5'],

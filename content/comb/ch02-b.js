@@ -29,7 +29,7 @@ export default {
       num: '2.7',
       kind: 'Definition',
       name: 'Descents and Eulerian numbers',
-      credit: 'Euler, 1755 (the numbers); MacMahon later named the statistics',
+      credit: 'Euler, 1755 (the numbers); MacMahon, 1913 (the major index)',
       statement: String.raw`A **descent** of a permutation $w=w_1\cdots w_n$ is a position $i$ with $w_i>w_{i+1}$; $\operatorname{des}(w)$ is their number, $0\le \operatorname{des}(w)\le n-1$. The **Eulerian number** $A(n,k)$ is the number of permutations of $[n]$ with exactly $k$ descents. They satisfy $A(n,k)=(k+1)\,A(n-1,k)+(n-k)\,A(n-1,k-1)$, the symmetry $A(n,k)=A(n,n-1-k)$, and $\sum_k A(n,k)=n!$. (An *ascent* is a position with $w_i<w_{i+1}$.)`,
       idea: String.raw`Insert $n$ into a permutation of $[n-1]$ in one of the $n$ gaps. Inserting into a descent gap, or at the very end, leaves the number of descents unchanged; inserting into an ascent gap or at the very front adds one. A permutation with $k$ descents has $k$ descent gaps plus the end gap, $k+1$ unchanged-count choices, and $n-1-k$ ascent gaps plus the front, $n-k$ count-raising choices — hence the recurrence. The symmetry comes from complementing every entry ($w_i\mapsto n+1-w_i$), which turns descents into ascents (1.1: a bijection preserves counts).`,
       caption: String.raw`Left: a permutation as a mountain range — descents are the red downhill segments. Click two points to swap their heights (or use the buttons). Right: the Eulerian triangle, filled by actually tallying every permutation of each size up to $n$; the gold cell is where your permutation lives. Notice the mirror symmetry and that each entry is built from its two parents by the weights $(k+1)$ and $(n-k)$.`,

@@ -185,7 +185,7 @@ where $w(\cdot,\cdot\,;s)$ solves the *homogeneous* wave equation for $t>s$ with
       caption: String.raw`A force acts on the string in the region you control: drag the orange handle (position $x_s$ and switch-on time $t_1$), and set its width and duration. Drag the green point $P$: its backward triangle (green) collects the force it overlaps, and the right panel shows the response $u(x,t_0)$ at the time of $P$ by three methods: the exact double integral (blue), a finite-difference solution of the PDE (gold dots), and the Duhamel sum of $N$ discrete kicks (orange; faint curves are the individual kicks). With few kicks the sum is a staircase of plateaus; as $N$ grows it converges to the exact response.`,
       deps: ['pde-2.2'],
       refs: ['Strauss §3.4', 'Evans §2.4'],
-      credit: 'Duhamel, 1838',
+      credit: 'Duhamel, 1833 (first for the heat equation; here applied to the wave equation)',
       tags: ['source term', 'Duhamel principle', 'superposition'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Duhamel%27s_principle' },
       viz(v) {

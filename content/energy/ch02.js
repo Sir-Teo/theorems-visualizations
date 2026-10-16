@@ -9,8 +9,7 @@
 //     ultra-supercritical coal ≈ 45 %, combined cycle ≈ 60 %, geothermal binary ≈ 12 %, ocean thermal ≈ 3 %), plotted against the working fluid's peak
 //     temperature; they are illustrative, not a data set.
 //   2.8 Curzon & Ahlborn, Am. J. Phys. 43, 22–24 (1975): the observed efficiencies of three plants in their comparison (West Thurrock
-//     coal 565 °C / 25 °C, 36 %; Pickering CANDU 300 °C / 25 °C, 30 %; Larderello geothermal 250 °C / 80 °C, 16 %) are quoted from
-//     memory of their table; the Carnot and Curzon–Ahlborn values are computed here from the temperatures.
+//     coal 565 °C / 25 °C, 36 %; Pickering CANDU 300 °C / 25 °C, 30 %; Larderello geothermal 250 °C / 80 °C, 16 %) agree with the table as reproduced in secondary sources (Wikipedia, Endoreversible thermodynamics: West Thurrock 0.36, CANDU 0.30, Larderello 0.16; the 'Pickering' label for the CANDU plant is from memory of the paper); the Carnot and Curzon–Ahlborn values are computed here from the temperatures.
 //   2.10 The "second-law factor" 0.64 of the CHP model, the 540 °C steam temperature and 90 % boiler efficiency are illustrative assumptions.
 //   2.11 The second-law efficiency 0.45 of the heat pump and the climate of the seasonal estimate (mean 9 °C, amplitude 8 K) are ILLUSTRATIVE.
 //   2.6 Knock-limited compression ratios (8, 10, 12 for regular, premium and high-octane petrol) and the 30–35 % brake efficiency of

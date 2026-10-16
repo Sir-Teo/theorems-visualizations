@@ -31,7 +31,7 @@ is again an inner product, and it is **$G$-invariant**: $\langle\rho(h)x,\rho(h)
       deps: ['rep-1.1', 'rca-4.1', 'ladr-6.2'],
       refs: ['Serre §1.3', 'Fulton–Harris §1.2'],
       tags: ['inner product', 'averaging'],
-      credit: 'Averaging over a group goes back to Hurwitz (1897, compact groups) and Maschke (1899, finite groups)',
+      credit: 'Averaging over a group goes back to Hurwitz (1897, invariant integration over SO(n) and SU(n)) and Maschke (1899, finite groups)',
       viz(v) {
         const GS = skewedGroups();
         const gs = v.select('group', [{ value: 'C3', label: '$\\mathbb Z/3$' }, { value: 'S3', label: '$S_3$' }, { value: 'D4', label: '$D_4$' }], 'S3');
