@@ -433,24 +433,25 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
       credit: 'Rumelhart, Hinton & Williams, 1986',
       statement: String.raw`The paper showed that multilayer networks of logistic units can be trained by gradient descent on the squared error $E=\tfrac12\sum_{c}\sum_j(y_{j,c}-d_{j,c})^2$, with the gradient computed by propagating error derivatives backwards through the layers — the **back-propagation** procedure, used with the momentum update $\Delta w(t)=-\varepsilon\,\partial E/\partial w+\alpha\,\Delta w(t-1)$. Its point was representational: the **hidden units** come to encode features of the task that are not present in the input or output. Two experiments: (i) detecting **mirror symmetry** of 6-bit inputs with only two hidden units, where the learned weights are antisymmetric about the centre with magnitudes in the ratio $1:2:4$, so that each hidden unit is silent exactly on symmetric inputs; (ii) the **family trees** task — 104 relationship facts (*person* — *relationship* — *person*) about two isomorphic families — where a network with small bottleneck layers learns distributed codes for people that capture nationality, generation and branch of the family, and generalises to held-out facts. The authors noted that gradient descent can get stuck in poor local minima, though this was rare in their tasks.`,
       idea: String.raw`Before 1986, the perceptron learning rule could train only a single layer of adjustable weights, and Minsky and Papert's analysis (1.4) had made the lack of a learning rule for hidden units the field's central obstacle. The chain rule for layered networks had been written down before — in automatic differentiation by Linnainmaa (1970) and for networks by Werbos (1974) — but this paper, with the longer PDP chapter by the same authors, demonstrated on concrete tasks that it discovers useful internal representations, and it made back-propagation the standard way to train neural networks. Modern practice keeps the algorithm (3.3) and changes nearly everything around it: cross-entropy instead of squared error, ReLU instead of logistic units, Adam and mini-batches instead of full-batch momentum.`,
-      caption: String.raw`**Symmetry**: the paper's 6–2–1 network of logistic units, trained live with its own rule ($\varepsilon=0.1$, $\alpha=0.9$, one update per sweep through all 64 patterns) from small random weights (change the seed). Left: the weights (blue positive, orange negative, numbers on the edges); right: the error per sweep, with the paper's 1,425 sweeps marked. Most seeds end in the paper's solution — mirror-image weights in the ratio $1:2:4$; a few find a different symmetric solution. **Family trees**: the 24-person network trained with Adam and a softmax output (modern choices, not the paper's) on 100 of the 104 facts; left, both families coloured by the activity of one of the six person-encoding units (choose it with the slider); right, the loss and the four held-out facts.`,
+      caption: String.raw`**Symmetry**: the paper's 6–2–1 network of logistic units, trained live with its own rule ($\varepsilon=0.1$, $\alpha=0.9$, one update per sweep through all 64 patterns) from small random weights (change the seed). Left: the weights (blue positive, orange negative, numbers on the edges); right: the error per sweep, with the paper's 1,425 sweeps marked. Most seeds end in the paper's solution — mirror-image weights in the ratio $1:2:4$ (seed 10 finds a different antisymmetric solution); seeds 3, 5, 9 and 11 stall on a plateau where the network answers *not symmetric* to everything ($E=4$: only 8 of the 64 patterns are symmetric) — the local-minimum problem the paper acknowledges. **Family trees**: the 24-person network trained with Adam and a softmax output (modern choices, not the paper's) on 100 of the 104 facts; left, both families coloured by the activity of one of the six person-encoding units (choose it with the slider); right, the loss and the four held-out facts.`,
       deps: ['deep-3.3', 'deep-1.4'],
       refs: [],
       tags: ['backpropagation', 'history', 'representation learning'],
       links: { doi: 'https://doi.org/10.1038/323533a0' },
       viz(v) {
         const modeS = v.select('experiment', [{ value: 'sym', label: 'symmetry (6–2–1)' }, { value: 'fam', label: 'family trees' }], 'sym');
-        const seedS = v.slider('seed', 1, 12, 3, { int: true });
+        const seedS = v.slider('seed', 1, 12, 2, { int: true });
         const unitS = v.slider('person unit', 1, 6, 1, { int: true });
         const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.15, minWidth: 320, title: 'network' });
         const sR = v.stage({ x: [0, 4000], y: [0.01, 10], ylog: true, height: 340, axes: 'box', gutter: true, xlabel: 'sweeps', weight: 0.85, minWidth: 260, title: 'error' });
         const tL = titler(sL), tR = titler(sR);
         const S = v.sim(() => (modeS.value === 'sym' ? { kind: 'sym', st: symInit(seedS.value) } : { kind: 'fam', st: famInit(seedS.value) }),
           (X) => { if (X.kind === 'sym') { for (let k = 0; k < 40 && X.st.sweep < 6000; k++) symSweep(X.st); } else { for (let k = 0; k < 4 && X.st.epoch < 1500; k++) famEpoch(X.st); if (X.st.epoch % 20 === 0) X.st.acc.push([X.st.epoch, X.st.test.filter((i) => famCorrect(X.st, i)).length, TRIPLES.map((_, i) => i).filter((i) => !X.st.test.includes(i) && famCorrect(X.st, i)).length]); } }, { dt: 1 / 60 });
-        let key = '', info = null;
+        let key = '', info = null, legendMode = null;
         v.animate((t) => {
           const k = modeS.value + '|' + seedS.value; if (k !== key) { key = k; S.reset(); v.restart(); }
           unitS.el.hidden = modeS.value !== 'fam';
+          if (legendMode !== modeS.value) { legendMode = modeS.value; v.legend(legendMode === 'sym' ? [['accent', 'positive weight · error'], ['orange', 'negative weight'], ['purple', 'paper', { dash: true }], ['green', 'converged here']] : [['accent', 'male (ring) · loss'], ['pink', 'female (ring)'], ['purple', 'activity of the chosen person unit (fill: pale 0 → dark 1)']]); }
           S.advance(t); const X = S.state;
           if (X.kind === 'sym') {
             const st = X.st; tL('the 6–2–1 symmetry network'); tR('error $E$ per sweep through the 64 patterns'); sR.setLabels('sweeps', undefined);
@@ -479,15 +480,15 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
             const st = X.st, u = unitS.value - 1; tL(`the two family trees, coloured by person unit ${u + 1}`); tR('training loss (cross-entropy)'); sR.setLabels('epochs', undefined);
             sR.setView([0, 1500], [0.003, 5]);
             const act = new Array(24); for (let p = 0; p < 24; p++) act[p] = sigm(st.P.Ep[p * 6 + u] + st.P.b1[u]);
-            const fx = (fam, x) => 0.04 + (fam ? 0.5 : 0) + (x / 6) * 0.42, fy = (g) => 0.12 + ((g - 1) / 2) * 0.66;
+            const fx = (fam, x) => 0.065 + (fam ? 0.5 : 0) + (x / 6) * 0.37, fy = (g) => 0.1 + ((g - 1) / 2) * 0.68;
             for (let fam = 0; fam < 2; fam++) {
-              sL.text(fam ? 'Italian family' : 'English family', fx(fam, 3), 0.96, { align: 'center', size: 12, color: 'muted', weight: 600 });
-              for (const [a, bq] of [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]) sL.line(fx(fam, TREE_POS[a][0]), fy(4 - TREE_POS[a][1]), fx(fam, TREE_POS[bq][0]), fy(4 - TREE_POS[bq][1]), { color: 'muted', width: 1.4 });
-              for (const [c, [pa, ma]] of Object.entries(PAR)) { const mx = (fx(fam, TREE_POS[pa][0]) + fx(fam, TREE_POS[ma][0])) / 2, my = fy(4 - TREE_POS[pa][1]); sL.line(mx, my, fx(fam, TREE_POS[c][0]), fy(4 - TREE_POS[c][1]), { color: 'faint', width: 1 }); }
+              sL.text(fam ? 'Italian family' : 'English family', fx(fam, 3), 0.97, { align: 'center', size: 12, color: 'muted', weight: 600 });
+              for (const [a, bq] of [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]) sL.line(fx(fam, TREE_POS[a][0]), fy(TREE_POS[a][1]), fx(fam, TREE_POS[bq][0]), fy(TREE_POS[bq][1]), { color: 'muted', width: 1.4 });
+              for (const [c, [pa, ma]] of Object.entries(PAR)) { const mx = (fx(fam, TREE_POS[pa][0]) + fx(fam, TREE_POS[ma][0])) / 2, my = fy(TREE_POS[pa][1]); sL.line(mx, my, fx(fam, TREE_POS[c][0]), fy(TREE_POS[c][1]), { color: 'faint', width: 1 }); }
               for (let p = 0; p < 12; p++) {
-                const x = fx(fam, TREE_POS[p][0]), y = fy(4 - TREE_POS[p][1]), a = act[p + 12 * fam];
-                sL.dot(x, y, { r: 9, color: v.ramp(a, 'purple') }); sL.dot(x, y, { r: 9, hollow: true, color: SEX[p] === 'm' ? 'accent' : 'pink', width: 1.6 });
-                sL.text(NAMES[fam][p], x, y, { dy: p % 2 ? 15 : -15, align: 'center', size: 9.5, color: 'ink' });
+                const x = fx(fam, TREE_POS[p][0]), y = fy(TREE_POS[p][1]), a = act[p + 12 * fam];
+                sL.dot(x, y, { r: 11, color: SEX[p] === 'm' ? 'accent' : 'pink' }); sL.dot(x, y, { r: 8.6, color: v.ramp(0.04 + 0.96 * a, 'purple') });
+                sL.text(NAMES[fam][p], x, y, { dy: p % 2 ? 18 : -18, align: 'center', size: 9.5, color: 'ink' });
               }
             }
             const pts = st.hist.map((L, i) => [i + 1, Math.max(0.003, L)]);
@@ -501,12 +502,11 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
             info = { kind: 'fam', epoch: st.epoch, L: st.hist[st.hist.length - 1] || 0, te: last[1], tr: last[2], test: st.test, nat, gen, br, u, allNat: [0, 1, 2, 3, 4, 5].map((q) => { const a2 = act.map((_, p) => sigm(st.P.Ep[p * 6 + q] + st.P.b1[q])); const m1 = a2.slice(0, 12).reduce((s, x) => s + x, 0) / 12, m2 = a2.slice(12).reduce((s, x) => s + x, 0) / 12; return Math.abs(m1 - m2); }) };
           }
         }, { period: 9, once: true, still: 8.9 });
-        v.legend([['accent', 'positive weight / loss'], ['orange', 'negative weight'], ['purple', 'paper / unit activity']]);
         v.readout(() => {
           if (!info) return '';
           if (info.kind === 'sym') {
             const r = info.ratio.map((q) => q.map((x) => x.toFixed(2)).join(' : '));
-            return `sweep ${info.sweep.toLocaleString('en-US')} · $E=${tsci(info.E, 3)}$ · worst output error ${info.worst.toFixed(3)}` + (info.done != null ? ` · all 64 patterns within 0.3 of target after **${info.done.toLocaleString('en-US')} sweeps** (paper: 1,425)` : '') +
+            return `sweep ${info.sweep.toLocaleString('en-US')} · $E=${tsci(info.E, 3)}$ · worst output error ${info.worst.toFixed(3)}` + (info.done != null ? ` · all 64 patterns within 0.3 of target after **${info.done.toLocaleString('en-US')} sweeps** (paper: 1,425)` : Math.abs(info.E - 4) < 0.05 ? ' · **stuck on the plateau** $E=4$: the output says *not symmetric* for every input — try another seed' : '') +
               ` · hidden-unit weight magnitudes, sorted and scaled: ${r.join(' and ')} (paper: $1:2:4$) · antisymmetry $\\max|w_i+w_{7-i}|/\\max|w|$: ${info.anti.map((x) => x.toFixed(3)).join(', ')}`;
           }
           const tl = info.test.map((i) => `${NAMES[TRIPLES[i][0] >= 12 ? 1 : 0][TRIPLES[i][0] % 12]}'s ${RELS[TRIPLES[i][1]]}`).join(', ');

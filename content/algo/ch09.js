@@ -289,10 +289,10 @@ An edge is **tense** if $d[u]+w<d[v]$, so relaxing it changes something. In any 
       refs: ['CLRS 4e §22.5'],
       tags: ['shortest paths', 'relaxation'],
       viz(v) {
-        const tgt = v.select('target', ['t', 'e', 'd', 'c'], 't', { onChange: () => S.reset() });
-        const rev = v.toggle('path edges in reverse order', false, { onChange: () => S.reset() });
+        const tgt = v.select('target', ['t', 'e', 'd', 'c'], 't', { onChange: () => S.reset({ at: 'end' }) });
+        const rev = v.toggle('path edges in reverse order', false, { onChange: () => S.reset({ at: 'end' }) });
         let seed = 3;
-        v.button('resample', () => { seed++; S.reset(); });
+        v.button('resample', () => { seed++; S.reset({ at: 'end' }); });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 300, weight: 1.45 });
         const ch = v.stage({ x: [0, 20], y: [0, 20], axes: 'box', gutter: true, height: 300, xlabel: 'relaxation step', ylabel: 'estimate d[target]' });
         const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
@@ -336,7 +336,7 @@ An edge is **tense** if $d[u]+w<d[v]$, so relaxing it changes something. In any 
           ch.hline(delta, { color: 'green', width: 1.6, dash: [6, 4] });
           ch.text(`δ(s, ${t}) = ${fmt(delta)}`, N + 0.4, delta, { align: 'right', baseline: 'top', dy: 4, size: 11.5, color: 'green' });
           if (run.inOrderAt != null) { ch.vline(run.inOrderAt, { color: 'accent', width: 1.4, dash: [3, 3] }); ch.text(`#${pe.length} relaxed in order`, run.inOrderAt, lo, { align: 'right', baseline: 'bottom', dx: -5, dy: -5, size: 11, color: 'accent', plate: true }); }
-          ch.text('∞', -1.2, hi, { align: 'center', size: 13, color: 'muted' });
+          ch.text('top edge = ∞', -1.2, hi, { align: 'left', baseline: 'top', dx: 6, dy: 4, size: 11, color: 'muted' });
           const pts = []; F.slice(0, S.i + 1).forEach((fr) => { const y = fr.d[t] === INF ? hi : fr.d[t]; pts.push([fr.i, y]); });
           const stepPts = []; pts.forEach((p, k) => { if (k) stepPts.push([p[0], pts[k - 1][1]]); stepPts.push(p); });
           ch.path(stepPts, { color: 'orange', width: 2.6 });
@@ -350,7 +350,7 @@ An edge is **tense** if $d[u]+w<d[v]$, so relaxing it changes something. In any 
           const after = inOrderAt == null ? null : S.frames.slice(inOrderAt + 1).every((fr) => fr.d[t] === delta);
           const conv = S.frames.every((fr, i) => i === 0 || fr.d[t] <= S.frames[i - 1].d[t]);
           const status = inOrderAt != null ? `the path edges were relaxed in order by step ${inOrderAt + 1}; $d[${t}]$ became exact at step ${exactAt + 1} (no later) ${exactAt <= inOrderAt ? '✓' : '✗'} and stayed exact ${after ? '✓' : '✗'}`
-            : `the path edges were **not** relaxed in order (only #1…#${f.nextIdx - 1} of ${k} so far), and ${exactAt == null ? `$d[${t}]$ never reached $\\delta$ — the lemma's hypothesis is what made it work` : `$d[${t}]$ happened to become exact at step ${exactAt + 1} through other relaxations`}`;
+            : `the path edges were **not** relaxed in order (${f.nextIdx - 1} of ${k} in order so far), and ${exactAt == null ? `$d[${t}]$ never reached $\\delta$ — the lemma's hypothesis is what made it work` : `$d[${t}]$ happened to become exact at step ${exactAt + 1} through other relaxations`}`;
           return `now $d[${t}] = ${tnum(f.d[t])}$, $\\delta(s,${t}) = ${tnum(delta)}$ · ${status} · estimates never increase ${conv ? '✓' : '✗'}`;
         });
       },

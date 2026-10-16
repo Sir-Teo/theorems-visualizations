@@ -44,6 +44,29 @@ function qFTLE(s0, k, T = 400, h = 0.01) {
   return S / T;
 }
 
+// ── 13.5: the double pendulum, equal masses and lengths, m = l = g = 1, canonical (θ₁, θ₂, p₁, p₂) ──────────────
+function dpF(y) {
+  const d = y[0] - y[1], c = Math.cos(d), s = Math.sin(d), D = 1 + s * s;
+  const A = (y[2] * y[3] * s) / D, B = ((y[2] * y[2] + 2 * y[3] * y[3] - 2 * y[2] * y[3] * c) * s * c) / (D * D);
+  return [(y[2] - y[3] * c) / D, (2 * y[3] - y[2] * c) / D, -2 * Math.sin(y[0]) - A + B, -Math.sin(y[1]) + A - B];
+}
+const dpH = (y) => { const d = y[0] - y[1], c = Math.cos(d), D = 1 + Math.sin(d) ** 2; return (y[2] * y[2] + 2 * y[3] * y[3] - 2 * y[2] * y[3] * c) / (2 * D) - 2 * Math.cos(y[0]) - Math.cos(y[1]); };
+/** Implicit midpoint rule y₁ = y₀ + h f((y₀ + y₁)/2) — symplectic for any Hamiltonian — solved by fixed-point iteration. */
+function dpMid(y, h) {
+  const f0 = dpF(y), z = [y[0] + h * f0[0], y[1] + h * f0[1], y[2] + h * f0[2], y[3] + h * f0[3]], m = [0, 0, 0, 0];
+  for (let it = 0; it < 12; it++) {
+    for (let k = 0; k < 4; k++) m[k] = 0.5 * (y[k] + z[k]);
+    const f = dpF(m); let ch = 0;
+    for (let k = 0; k < 4; k++) { const nz = y[k] + h * f[k]; ch = Math.max(ch, Math.abs(nz - z[k])); z[k] = nz; }
+    if (ch < 1e-14) break;
+  }
+  for (let k = 0; k < 4; k++) y[k] = z[k];
+}
+function dpRK4(y, h) {
+  const k1 = dpF(y), y2 = y.map((x, i) => x + 0.5 * h * k1[i]), k2 = dpF(y2), y3 = y.map((x, i) => x + 0.5 * h * k2[i]), k3 = dpF(y3), y4 = y.map((x, i) => x + h * k3[i]), k4 = dpF(y4);
+  for (let i = 0; i < 4; i++) y[i] += (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+}
+
 export default {
   collection: 'mech',
   chapter: 13,
@@ -69,9 +92,9 @@ The theorem says nothing about how long the wait is. For a gas of $10^{23}$ mole
       tags: ['recurrence', 'measure preservation', 'cat map'],
       credit: 'Poincaré, 1890; Kac, 1947',
       viz(v) {
-        const mode = v.select('view', [{ value: 'grid', label: 'picture on an $N\\times N$ grid' }, { value: 'torus', label: 'returns to a disc' }], 'grid', { onChange: () => v.restart() });
+        const mode = v.select('view', [{ value: 'grid', label: 'picture on an $N\\times N$ grid' }, { value: 'torus', label: 'returns to a disc' }], 'grid');
         const Ns = v.slider('grid size $N$', 24, 160, 101, { int: true, onChange: () => v.restart() });
-        const mapS = v.select('map', [{ value: 'cat', label: 'cat map, det 1' }, { value: 'lossy', label: '$(i + j,\\ i + 3j)$, det 2' }], 'cat', { onChange: () => v.restart() });
+        const mapS = v.select('map', [{ value: 'cat', label: 'cat map, det 1' }, { value: 'lossy', label: '$(i + j,\\ i + 3j)$, det 2' }], 'cat');
         const epsS = v.slider('target radius $\\varepsilon$', 0.01, 0.2, 0.04, { log: true });
         const fric = v.toggle('dissipation (break it)', false);
         const sA = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 350, weight: 1, title: 'the picture after $n$ steps' });
@@ -406,6 +429,293 @@ the **predictability horizon**: making the error a thousand times smaller only a
             return String.raw`Lyapunov exponent: slope of the fit ${num(v, lf, 3)}, Benettin over $t = ${TT}$: ${v.fix(D.lamB, 3)} · Lyapunov time $1/\lambda = ${v.fix(1 / lam, 1)}$ · predicted horizon $t_* = \ln(L/\delta_0)/\lambda = ${v.fix(tstar, 0)}$ for $L = ${L}$; measured ${isFinite(D.tHit) ? v.fix(D.tHit, 0) : 'beyond the window'}`;
           }
           return String.raw`regular torus: Benettin estimate ${v.fix(D.lamB, 4)} (it decays like $\ln t / t$ toward 0) · separation grew by a factor ${v.fix(10 ** (D.ls[D.ls.length - 1] - D.ls[0]), 1)} in $t = ${TT}$ · on the log–log plot its growth exponent is ${v.fix(D.pow.slope, 2)} (linear growth = 1)`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 13.5
+    {
+      num: '13.5',
+      kind: 'Phenomenon',
+      name: 'Chaos in the double pendulum',
+      statement: String.raw`A planar double pendulum (two point masses $m$ on massless rods of length $l$) has two degrees of freedom and only one conserved quantity, the energy, so nothing forces its motion onto invariant tori. With equal masses and lengths, in units $m = l = g = 1$,
+$$H = \frac{p_1^2 + 2p_2^2 - 2p_1p_2\cos(\theta_1-\theta_2)}{2\big(1 + \sin^2(\theta_1-\theta_2)\big)} - 2\cos\theta_1 - \cos\theta_2 .$$
+At low energy the motion is close to the two normal modes of 11.6, and nearly all orbits are regular. At high energy most orbits are chaotic, with positive Lyapunov exponent (13.4): two releases from angles that differ by $10^{-6}$ rad track each other for a while, then separate exponentially and end up doing entirely different things. Released from rest at $(\theta_1, \theta_2)$, the pendulum cannot flip either arm over unless $2\cos\theta_1 + \cos\theta_2 \le 1$ (energy). Inside that region the time of the first flip depends on the release angles in a fractal way.`,
+      idea: String.raw`The small-oscillation analysis (11.6) linearises the equations around the bottom, where they separate into two independent modes, so the motion is integrable to first order. The nonlinear terms couple the modes. By KAM (13.7) most tori survive while the coupling is weak, but at high energy resonances overlap and the tori are destroyed. The flow then stretches every small blob of initial conditions exponentially along some directions while preserving its volume (12.13), and a tiny initial difference is amplified until it is as large as the motion itself. Because the system is Hamiltonian, it is integrated here with the implicit midpoint rule, a symplectic method (12.15): its energy error oscillates but does not drift.`,
+      caption: String.raw`Top left: two double pendulums (blue and red), released from rest at angles that differ by $\delta$ in the lower arm, drawn on top of each other with the traces of their lower bobs. Top right: the time of the first flip of either arm, over all release angles (dark means quick, pale means slow; grey cannot flip at all by energy), a fractal map. Drag the handle on the map to choose the release angles. Bottom: the logarithm of the separation of the twins, climbing at a rate set by the Lyapunov exponent, and the energy error of the symplectic integrator, which stays bounded. Pull the handle down to small angles: the twins then stay together.`,
+      deps: ['mech-13.4', 'mech-11.6', 'mech-12.15'],
+      refs: ['Tong §2.5'],
+      tags: ['double pendulum', 'chaos', 'sensitive dependence'],
+      viz(v) {
+        const dS = v.slider('difference in $\\theta_2$ at release, $\\delta$ (rad)', 1e-10, 1e-3, 1e-6, { log: true, fmt: (x) => sciText(v, x) });
+        const TT = 40, H = 0.005, REC = 4, G = 84;
+        const sR = v.stage({ x: [-2.25, 2.25], y: [-2.25, 2.25], equal: true, axes: false, height: 330, weight: 1, title: 'the twins in real space' });
+        const sM = v.stage({ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI], equal: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'θ₁ at release', ylabel: 'θ₂ at release', xticks: piTicks(-Math.PI, Math.PI), yticks: piTicks(-Math.PI, Math.PI), title: 'time to the first flip' });
+        const sS = v.stage({ x: [0, TT], y: [-11, 1.5], axes: 'box', gutter: true, height: 190, weight: 1.6, xlabel: 't  (units of √(l/g))', ylabel: 'log₁₀ separation' });
+        const sE = v.stage({ x: [0, TT], y: [-1e-4, 1e-4], axes: 'box', gutter: true, height: 190, weight: 1, xlabel: 't', ylabel: 'energy error' });
+        const hp = sM.handle(110 * DEG, 125 * DEG, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -Math.PI + 0.01, Math.PI - 0.01)] });
+        // fractal flip-time map, computed progressively (RK4, step 0.05)
+        const flip = new Float32Array(G * G).fill(NaN); let row = 0; const job = progressive(v), TF = 60;
+        const flipTime = (a, b) => {
+          if (2 * Math.cos(a) + Math.cos(b) > 1) return -1;
+          const y = [a, b, 0, 0], h = 0.05;
+          for (let t = 0; t < TF; t += h) { dpRK4(y, h); if (Math.abs(y[0]) > Math.PI || Math.abs(y[1]) > Math.PI) return t + h; }
+          return Infinity;
+        };
+        const cache = memo();
+        const twins = () => cache(`${hp.x}|${hp.y}|${dS.value}`, () => {
+          const a = [hp.x, hp.y, 0, 0], b = [hp.x, hp.y + dS.value, 0, 0], E0 = dpH(a), n = Math.round(TT / H);
+          const t = [0], A = [a.slice()], B = [b.slice()], lsep = [Math.log10(dS.value)], dE = [0];
+          for (let i = 1; i <= n; i++) {
+            dpMid(a, H); dpMid(b, H);
+            if (i % REC === 0) { t.push(i * H); A.push(a.slice()); B.push(b.slice()); lsep.push(Math.log10(Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]))); dE.push(dpH(a) - E0); }
+          }
+          const lo = Math.log10(dS.value) + 1, hi = -1.5, fx = [], fy = [];
+          for (let k = 0; k < t.length; k++) { if (lsep[k] >= hi) break; if (lsep[k] > lo) { fx.push(t[k]); fy.push(lsep[k]); } }
+          const fit = fx.length > 20 ? fitLine(fx, fy) : null;
+          let emax = 0; for (const e of dE) emax = Math.max(emax, Math.abs(e));
+          return { t, A, B, lsep, dE, E0, fit, emax, ok: 2 * Math.cos(hp.x) + Math.cos(hp.y) <= 1 };
+        });
+        let cur = null;
+        v.animate((tt) => {
+          job.run((budget) => { const t0 = now(); while (row < G && now() - t0 < budget) { const b = -Math.PI + ((row + 0.5) * TAU) / G; for (let c = 0; c < G; c++) flip[row * G + c] = flipTime(-Math.PI + ((c + 0.5) * TAU) / G, b); row++; } return row >= G; }, 30);
+          const D = twins(), tau = Math.min(tt * 2.2, TT), i = Math.min(D.t.length - 1, Math.round(tau / (H * REC)));
+          // real space
+          const bob = (y) => { const x1 = Math.sin(y[0]), y1 = -Math.cos(y[0]); return [x1, y1, x1 + Math.sin(y[1]), y1 - Math.cos(y[1])]; };
+          const trail = (S) => { const p = []; for (let k = Math.max(0, i - 120); k <= i; k++) { const q = bob(S[k]); p.push([q[2], q[3]]); } return p; };
+          sR.circle(0, 0, 2, { color: 'faint', width: 1, dash: [3, 4] });
+          sR.path(trail(D.A), { color: 'blue', width: 1.6, alpha: 0.55 }); sR.path(trail(D.B), { color: 'red', width: 1.6, alpha: 0.55 });
+          for (const [S, col] of [[D.B, 'red'], [D.A, 'blue']]) { const q = bob(S[i]); sR.path([[0, 0], [q[0], q[1]], [q[2], q[3]]], { color: col, width: 2.6, alpha: 0.85 }); sR.circle(q[0], q[1], 0.09, { fill: col, fillAlpha: 0.9, color: col }); sR.circle(q[2], q[3], 0.11, { fill: col, fillAlpha: 0.9, color: col }); }
+          sR.dot(0, 0, { r: 3.5, color: 'ink' });
+          sR.corner(`t = ${v.fix(D.t[i], 1)}`, 'tr', { color: 'ink', plate: true });
+          // flip map
+          const ramp = (f) => (f < 0 ? v.rgb('faint') : !isFinite(f) ? v.ramp(0.04, 'accent') : f !== f ? v.rgb('panel') : v.ramp(clamp(1 - Math.log(f / 1.5) / Math.log(TF / 1.5), 0.08, 1), 'accent'));
+          sM.raster((x, y) => { const c = Math.floor(((x + Math.PI) / TAU) * G), r = Math.floor(((y + Math.PI) / TAU) * G); return c < 0 || r < 0 || c >= G || r >= G ? null : ramp(flip[r * G + c]); }, { key: `flip${row}|${v.color('panel')}`, res: 2, rect: [-Math.PI, -Math.PI, Math.PI, Math.PI] });
+          sM.contour((a, b) => 2 * Math.cos(a) + Math.cos(b), [1], { color: 'ink', width: 1, alpha: 0.5, res: 90 });
+          if (row < G) sM.corner(`computing… ${Math.round((100 * row) / G)}%`, 'tl', { color: 'ink', plate: true });
+          // separation and energy error
+          sS.hline(Math.log10(2 * Math.PI), { color: 'muted', dash: [4, 4], width: 1 });
+          sS.path(D.t.slice(0, i + 1).map((x, k) => [x, D.lsep[k]]), { color: 'purple', width: 2 });
+          if (D.fit && tau > D.t[Math.min(D.t.length - 1, Math.round(D.t.length * 0.1))]) sS.fn((x) => D.fit.intercept + D.fit.slope * x, { color: 'red', width: 1.3, dash: [5, 4], domain: [0, TT] });
+          const em = Math.max(1e-9, D.emax) * 1.25; sE.setView([0, TT], [-em, em]);
+          sE.hline(0, { color: 'faint', width: 1 });
+          sE.path(D.t.slice(0, i + 1).map((x, k) => [x, D.dE[k]]), { color: 'green', width: 1.4 });
+          cur = { D, i, flipHere: flip[Math.min(G - 1, Math.floor(((hp.y + Math.PI) / TAU) * G)) * G + Math.min(G - 1, Math.floor(((hp.x + Math.PI) / TAU) * G))] };
+        }, { period: TT / 2.2 + 2, still: 14 });
+        v.legend([['blue', 'pendulum A'], ['red', 'pendulum B (lower arm $+\\delta$)'], ['purple', 'log₁₀ of their separation in phase space'], ['red', 'exponential fit', { dash: true }], ['green', 'energy error of A (implicit midpoint)']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { D, flipHere } = cur, lam = D.fit ? D.fit.slope * Math.LN10 : NaN;
+          const ft = flipHere < 0 ? 'cannot flip (energy too low)' : isFinite(flipHere) ? `first flip at t ≈ ${v.fix(flipHere, 1)}` : flipHere === Infinity ? `no flip before t = 60` : 'flip map still computing';
+          return String.raw`release $(\theta_1, \theta_2) = (${v.fix(hp.x / DEG, 0)}°, ${v.fix(hp.y / DEG, 0)}°)$, energy $E = ${v.fix(D.E0, 3)}$ (bottom $-3$, top $+3$) · ${ft} · ` + (isFinite(lam) && lam > 0.05 ? String.raw`separation grows like $e^{\lambda t}$ with $\lambda \approx ${v.fix(lam, 2)}$: from $\delta$ to order one in $t \approx ${v.fix(Math.log(1 / dS.value) / lam, 0)}$` : String.raw`no exponential growth: the twins stay together (separation now ${sci(v, 10 ** D.lsep[D.lsep.length - 1])})`) + String.raw` · energy error $\le ${sci(v, D.emax)}$ with no drift`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 13.6
+    {
+      num: '13.6',
+      kind: 'Model',
+      name: 'Chirikov standard map (kicked rotor)',
+      statement: String.raw`A rotor (angle $\theta$, angular momentum $p$) that turns freely but receives a kick of strength $K\sin\theta$ at the end of every period obeys, from one kick to the next,
+$$p_{n+1} = p_n + K\sin\theta_n, \qquad \theta_{n+1} = \theta_n + p_{n+1} \qquad (\text{both mod } 2\pi).$$
+This **standard map** preserves area (its Jacobian determinant is 1) and twists: each horizontal circle $p = \text{const}$ rotates by $p$. It is the generic local model of the Poincaré map of a two-degree-of-freedom Hamiltonian system near a resonance, and of particles in accelerators and plasma devices. For $K = 0$ every circle $p = \text{const}$ is invariant. As $K$ grows, rational circles break into island chains and chaotic layers. The last invariant circle that spans the whole angle range disappears at $K_c \approx 0.9716$ (13.7). Beyond $K_c$ nothing blocks $p$ from wandering: chaotic orbits diffuse in momentum without bound, with $\langle(p_n - p_0)^2\rangle \approx Dn$ and $D \approx K^2/2$ for large $K$.`,
+      scope: String.raw`An idealisation of instantaneous periodic kicks; any smooth area-preserving twist map behaves the same way near a resonance.`,
+      idea: String.raw`The map is the composition of two shears, a kick in $p$ that depends on $\theta$ and a drift in $\theta$ that depends on $p$, each of determinant one, so the composition preserves area. It is therefore a canonical transformation (12.10) and a model for Poincaré sections (13.2). For large $K$ successive kicks are nearly uncorrelated, because $\theta$ is scrambled between them, so the momentum performs a random walk with steps of mean square $K^2\langle\sin^2\theta\rangle = K^2/2$. For $K < K_c$ an invariant circle spans the cylinder, and the area-preserving dynamics cannot carry orbits across it.`,
+      caption: String.raw`Left: orbits of 70 seeds on the torus. Orbits that lie on invariant curves or islands are blue; orbits with a positive Lyapunov exponent are red. Click anywhere to follow an orbit of your own (gold). Raise $K$: at $K = 0$ every orbit is a horizontal line; islands appear at every rational height; the red chaotic sea spreads from the separatrices; past $K \approx 1$ no blue curve crosses from left to right. Right: 300 rotors started at $p = 0.1$, with $p$ followed on the unrolled cylinder. Their mean squared momentum change stays bounded while an invariant circle survives and grows linearly, at roughly the random-walk rate $K^2/2$ (dashed), once they are gone.`,
+      deps: ['mech-13.2', 'mech-12.10'],
+      refs: ['Goldstein §11.5', 'Arnold App. 9'],
+      tags: ['standard map', 'kicked rotor', 'area-preserving map'],
+      credit: 'Chirikov, 1969, 1979; Taylor, 1968',
+      viz(v) {
+        const kS = v.slider('kick strength $K$', 0, 3, 0.95, { step: 0.005 });
+        const NI = 650, NR = 300, ND = 400;
+        const sP = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', gutter: true, height: 390, weight: 1.3, xlabel: 'θ', ylabel: 'p', xticks: piTicks(0, TAU), yticks: piTicks(0, TAU), title: 'phase portrait (click to add an orbit)' });
+        const sD = v.stage({ x: [0, ND], y: [0, 10], axes: 'box', gutter: true, height: 390, weight: 1, xlabel: 'kicks n', ylabel: '⟨(p − p₀)²⟩', title: 'momentum spread of 300 rotors' });
+        let mine = [2.2, 4.4];
+        sP.onClick((x, y) => { mine = [x, y]; v.invalidate(); });
+        const seeds = []; for (let k = 0; k < 18; k++) { seeds.push([Math.PI, ((k + 0.5) * TAU) / 18]); seeds.push([0.02, ((k + 0.25) * TAU) / 18]); } for (let k = 0; k < 34; k++) seeds.push([(((k * 0.618034) % 1) * TAU), (((k * 0.414214 + 0.3) % 1) * TAU)]);
+        const orbit = (K, th, p, n) => {
+          const xs = new Float32Array(n), ys = new Float32Array(n); let a = 1, b = 0, c = 0, d = 1, S = 0;
+          for (let i = 0; i < n; i++) {
+            const ck = K * Math.cos(th); const na = (1 + ck) * a + c, nb = (1 + ck) * b + d, nc = ck * a + c, nd = ck * b + d; a = na; b = nb; c = nc; d = nd;
+            const r = Math.hypot(a, c) || 1; S += Math.log(r); a /= r; c /= r; b /= r; d /= r; // follow one tangent column
+            p += K * Math.sin(th); th += p; th = wrap0(th); p = wrap0(p); xs[i] = th; ys[i] = p;
+          }
+          return { xs, ys, L: S / n };
+        };
+        const pc = memo(), dc = memo(), mc = memo();
+        const portrait = () => pc(kS.value, () => seeds.map(([a, b]) => orbit(kS.value, a, b, NI)));
+        const mineO = () => mc(`${kS.value}|${mine}`, () => orbit(kS.value, mine[0], mine[1], 3000));
+        const diffusion = () => dc(kS.value, () => {
+          const K = kS.value, r = v.rng(5), th = new Float64Array(NR), p = new Float64Array(NR), msd = [[0, 0]];
+          for (let j = 0; j < NR; j++) { th[j] = TAU * r(); p[j] = 0.1; }
+          for (let n = 1; n <= ND; n++) { let m = 0; for (let j = 0; j < NR; j++) { p[j] += K * Math.sin(th[j]); th[j] += p[j]; m += (p[j] - 0.1) ** 2; } msd.push([n, m / NR]); }
+          const half = msd.slice(ND / 2), f = fitLine(half.map((q) => q[0]), half.map((q) => q[1]));
+          return { msd, D: f.slope, last: msd[ND][1] };
+        });
+        let cur = null;
+        v.render(() => {
+          const P = portrait(), M = mineO(), Df = diffusion(), K = kS.value;
+          for (const o of P) fastDots(v, sP, o.xs, o.ys, NI, o.L > 0.04 ? 'red' : 'blue', { alpha: o.L > 0.04 ? 0.5 : 0.75, size: 1.5 });
+          fastDots(v, sP, M.xs, M.ys, 3000, 'gold', { alpha: 0.95, size: 2.2 });
+          sP.dot(mine[0], mine[1], { r: 5, color: 'gold' });
+          const top = Math.max(1, Df.last * 1.25, 0.5 * K * K * ND * 0.15);
+          sD.setView([0, ND], [0, top]);
+          if (K > 0) sD.fn((n) => 0.5 * K * K * n, { color: 'muted', width: 1.4, dash: [6, 4] });
+          sD.path(Df.msd, { color: 'purple', width: 2.4 });
+          cur = { P, M, Df, K };
+        });
+        v.legend([['blue', 'regular orbits'], ['red', 'chaotic orbits'], ['gold', 'your orbit'], ['purple', 'measured spread'], ['muted', 'random walk $K^2n/2$', { dash: true }]]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { P, M, Df, K } = cur, nc = P.filter((o) => o.L > 0.04).length;
+          const ratio = K > 0 ? Df.D / (0.5 * K * K) : NaN;
+          return String.raw`$K = ${v.fix(K, 3)}$ · chaotic seeds: ${nc} of ${P.length} · your orbit’s Lyapunov exponent ${v.fix(M.L, 3)} per kick · momentum spread after ${ND} kicks: ${v.fix(Df.last, 2)}; growth rate $D = ${v.fix(Df.D, 3)}$` + (K > 0 ? String.raw` (${v.fix(ratio, 2)} × $K^2/2$)` : '') + (Df.last < 2 * Math.PI * Math.PI / 4 && Math.abs(Df.D) < 0.02 * Math.max(1, K * K) ? ' → **bounded**: invariant circles block the way' : ' → **diffusing**: no invariant circle spans the cylinder');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 13.7
+    {
+      num: '13.7',
+      kind: 'Theorem',
+      name: 'KAM theorem (statement)',
+      statement: String.raw`Let $H(J, \phi) = H_0(J) + \varepsilon H_1(J, \phi)$ be analytic, with $H_0$ integrable in action–angle variables (12.17) and **non-degenerate**: $\det(\partial^2H_0/\partial J^2) \ne 0$, so that the frequencies $\omega(J) = \partial H_0/\partial J$ change with the torus. Call a frequency vector **Diophantine** if $|k\cdot\omega| \ge \gamma/|k|^\tau$ for all integer vectors $k \ne 0$, for some $\gamma > 0$ and $\tau > n - 1$. Then for $\varepsilon$ small enough, every invariant torus of $H_0$ with Diophantine frequencies, and with $\gamma$ not too small compared with $\sqrt\varepsilon$, survives, slightly deformed, as an invariant torus of $H$ carrying quasi-periodic motion with the same frequencies. The surviving tori fill all of phase space except a set whose measure tends to zero as $\varepsilon \to 0$. Tori with rational (resonant) frequency ratios, and those too close to rationals, are destroyed.
+
+For area-preserving twist maps such as the standard map (13.6), the invariant circles with Diophantine rotation numbers survive small $K$. Among them, the golden-mean circle, with rotation number $(\sqrt5-1)/2$, the number worst approximated by rationals, is the most robust. Greene’s residue criterion locates its breakup at $K_c \approx 0.9716$.`,
+      idea: String.raw`Canonical perturbation theory (12.21) tries to remove the angle dependence of $H_1$ by a near-identity canonical transformation, and the Fourier coefficients of the generating function carry denominators $k\cdot\omega(J)$. These vanish on resonant tori, which is why those tori break, and they are small near resonances. Kolmogorov’s idea was to fix a Diophantine frequency, so that the denominators are bounded below, and to replace the series by a Newton iteration: each step squares the error, which beats the growth caused by the small denominators. Greene’s criterion makes the theorem testable: the periodic orbits with rotation numbers $m/n$ that converge to an irrational number have residues $R = (2 - \operatorname{tr}DT^n)/4$ that tend to zero if the torus exists and grow without bound if it has broken.`,
+      caption: String.raw`Left: a band of the standard map’s phase portrait. Gold dots are the points of the periodic orbit whose rotation number is the highest convergent of the chosen irrational ($233/377$ for the golden mean); while the invariant circle survives they sit on a smooth curve. Right: Greene’s residues $|R|$ of the periodic orbits for the successive convergents $1/2, 2/3, 3/5, \dots$, for the elliptic (blue) and hyperbolic (red) family, on a logarithmic scale. Move $K$ slowly through $0.97$: below it the residues plunge to zero (the torus survives), above it they explode (it is broken). The readout locates the crossover by bisection. Switch to $\sqrt2 - 1$: that circle breaks earlier, because its rotation number is better approximated by rationals.`,
+      deps: ['mech-12.18', 'mech-12.21', 'mech-13.6'],
+      refs: ['Goldstein §11.2', 'Arnold App. 8'],
+      tags: ['KAM theorem', 'invariant tori', 'small denominators'],
+      credit: 'Kolmogorov, 1954; Arnold, 1963; Moser, 1962; Greene, 1979',
+      viz(v) {
+        const rS = v.select('rotation number', [{ value: 'gold', label: 'golden mean $(\\sqrt5-1)/2$' }, { value: 'silver', label: '$\\sqrt2 - 1$' }], 'gold');
+        const kS = v.slider('kick strength $K$', 0.3, 1.2, 0.9, { step: 0.0005, decimals: 4 });
+        const sP = v.stage({ x: [0, TAU], y: [1.5, 6.2], axes: 'box', gutter: true, height: 380, weight: 1.25, xlabel: 'θ', ylabel: 'p', xticks: piTicks(0, TAU) });
+        const sR = v.stage({ x: [0.5, 12.5], y: [1e-7, 1e4], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'convergent m/n', ylabel: 'residue |R|' });
+        const LISTS = { gold: FIB, silver: PELL }, OMEGA = { gold: (Math.sqrt(5) - 1) / 2, silver: Math.SQRT2 - 1 };
+        const kcCache = memo(), chCache = memo(), bgCache = memo();
+        const Kc = () => kcCache(rS.value, () => {
+          const L = LISTS[rS.value], n = L.length; let a = 0.85, b = 1.05;
+          for (let it = 0; it < 24; it++) { const K = (a + b) / 2, c = residueChain(K, Math.PI, L); const f = c.length < n ? 1 : Math.abs(c[n - 1].R) - Math.abs(c[n - 2].R); if (f > 0) b = K; else a = K; }
+          return (a + b) / 2;
+        });
+        const chains = () => chCache(`${rS.value}|${kS.value}`, () => ({ ell: residueChain(kS.value, Math.PI, LISTS[rS.value]), hyp: residueChain(kS.value, 0, LISTS[rS.value]) }));
+        const background = () => bgCache(`${rS.value}|${kS.value}`, () => {
+          const K = kS.value, pc = TAU * OMEGA[rS.value], out = [];
+          for (let k = 0; k < 30; k++) {
+            let th = k % 2 ? Math.PI : 0.01, p = pc - 2.4 + (4.8 * (k + 0.5)) / 30; const xs = new Float32Array(500), ys = new Float32Array(500);
+            for (let i = 0; i < 500; i++) { p += K * Math.sin(th); th = wrap0(th + p); xs[i] = th; ys[i] = p - TAU * Math.floor((p - pc + Math.PI) / TAU); }
+            out.push({ xs, ys });
+          }
+          return out;
+        });
+        let cur = null;
+        v.render(() => {
+          const L = LISTS[rS.value], C = chains(), B = background(), kc = Kc(), K = kS.value, pc = TAU * OMEGA[rS.value];
+          sP.setView([0, TAU], [pc - 2.3, pc + 2.3]);
+          sP.setTicks(undefined, null);
+          for (const b of B) fastDots(v, sP, b.xs, b.ys, 500, 'muted', { alpha: 0.5, size: 1.4 });
+          const top = C.ell[C.ell.length - 1];
+          if (top) {
+            const xs = [], ys = []; let th = Math.PI, p = top.p0;
+            for (let i = 0; i < top.n; i++) { xs.push(wrap0(th)); ys.push(p - TAU * Math.floor((p - pc + Math.PI) / TAU)); p += K * Math.sin(th); th += p; }
+            fastDots(v, sP, xs, ys, xs.length, 'gold', { alpha: 1, size: 2.8 });
+          }
+          sP.setTitle(`K = ${v.fix(K, 4)}: the ${top ? `${top.m}/${top.n}` : ''} orbit ${K < kc ? 'traces the surviving circle' : 'is scattered: the circle has broken'}`);
+          // residues
+          sR.setTicks(L.map(([m, n], j) => [j + 1, j % 2 === 0 || L.length < 9 ? `${m}/${n}` : '']), undefined);
+          sR.setView([0.5, L.length + 0.5], [1e-7, 1e4]);
+          sR.hband(1, 1e4, { color: 'red', alpha: 0.06 });
+          sR.hline(0.25, { color: 'muted', dash: [5, 4], width: 1 }); sR.text('|R| = ¼', 0.6, 0.25, { color: 'muted', size: 12, align: 'left', dy: -9 });
+          sR.text('|R| > 1: orbit unstable', L.length + 0.4, 1, { color: 'red', size: 12, align: 'right', dy: -9 });
+          const pts = (arr) => arr.map((o, j) => [j + 1, Math.max(1e-7, Math.abs(o.R))]);
+          sR.path(pts(C.hyp), { color: 'red', width: 1.8 }); sR.dots(pts(C.hyp), { r: 3.5, color: 'red' });
+          sR.path(pts(C.ell), { color: 'blue', width: 2.2 }); sR.dots(pts(C.ell), { r: 4, color: 'blue' });
+          cur = { C, kc, K, L };
+        });
+        v.legend([['gold', 'highest-order periodic orbit'], ['blue', 'residues, elliptic orbits ($\\theta_0 = \\pi$)'], ['red', 'residues, hyperbolic orbits ($\\theta_0 = 0$)'], ['muted', 'other orbits']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { C, kc, K } = cur, e = C.ell, last = e[e.length - 1], prev = e[e.length - 2];
+          const trend = last && prev ? (Math.abs(last.R) < Math.abs(prev.R) ? '**shrinking** → the invariant circle exists' : '**growing** → the invariant circle is broken') : '';
+          return String.raw`last two residues $|R_{${prev?.m}/${prev?.n}}| = ${num(v, Math.abs(prev?.R ?? NaN), 4)}$, $|R_{${last?.m}/${last?.n}}| = ${num(v, Math.abs(last?.R ?? NaN), 4)}$: ${trend} · breakup located by bisection where the last two residues are equal: $K_c \approx ${v.fix(kc, 5)}$` + (rS.value === 'gold' ? ' (Greene: 0.971635)' : ' (lower than the golden circle’s)');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 13.8
+    {
+      num: '13.8',
+      kind: 'Theorem',
+      name: 'Poincaré–Birkhoff theorem: island chains',
+      statement: String.raw`Let $T$ be an area-preserving map of an annulus that twists, rotating its two boundary circles in opposite directions relative to some rotation number between them. Then $T$ has at least two fixed points (Poincaré’s last geometric theorem, proved by Birkhoff). Applied to a perturbed integrable twist map: if an unperturbed invariant circle has rational rotation number $m/q$ (lowest terms), every point on it is fixed by $T^q$. Under a generic small perturbation the circle breaks up, but at least two periodic orbits of period $q$ survive, generically one elliptic and one hyperbolic, giving $q$ points each. Around the elliptic points lie small islands of invariant curves, and through the hyperbolic points pass the separatrices that bound them. The result is a **chain of $q$ islands**, with hyperbolic points between them, exactly where the KAM theorem (13.7) fails.`,
+      idea: String.raw`Twist means that $T^q$ moves points on circles below the resonance backwards in angle and points above it forwards, so on each ray of fixed $\theta$ there is a point that $T^q$ moves purely radially. These points form a closed curve $C$ around the annulus. Its image $T^q(C)$ lies on the same rays, and area preservation forces it to enclose the same area as $C$, so the two curves must cross: the regions where $T^q$ pushes outward and inward have equal area. Each crossing is a fixed point of $T^q$. Crossings come in pairs with alternating index, $+1$ for elliptic and $-1$ for hyperbolic, and each orbit has $q$ points, so there are at least $2q$ crossings.`,
+      caption: String.raw`A strip of the standard map (13.6) around the resonant circle $p = 2\pi m/q$ (dashed). The gold curve $C$ joins the points that $T^q$ moves straight up or down, with no net angular motion; the purple curve is its image $T^q(C)$. They cross exactly at the fixed points of $T^q$: green elliptic points at the centres of the islands, red hyperbolic points between them. Bottom: the radial displacement along $C$, with equal positive and negative areas (area preservation), and its zeros. Change the resonance $m/q$ and the kick strength: there are always $q$ islands and $q$ hyperbolic points.`,
+      deps: ['mech-13.7', 'mech-13.6'],
+      refs: ['Arnold App. 9'],
+      tags: ['Poincaré–Birkhoff', 'island chains', 'resonance'],
+      credit: 'Poincaré, 1912; Birkhoff, 1913',
+      viz(v) {
+        const rS = v.select('resonance $m/q$', ['1/2', '1/3', '2/5', '1/4', '1/5'].map((x) => ({ value: x, label: `$${x}$` })), '1/3');
+        const kS = v.slider('kick strength $K$', 0, 0.8, 0.3, { step: 0.005 });
+        const NT = 480, WID = { 2: 1.45, 3: 0.95, 4: 0.75, 5: 0.6 };
+        const sP = v.stage({ x: [0, TAU], y: [1, 3], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'θ', ylabel: 'p', xticks: piTicks(0, TAU) });
+        const sD = v.stage({ x: [0, TAU], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 170, full: true, xlabel: 'θ along C', ylabel: 'Tᵠ lift', xticks: piTicks(0, TAU) });
+        const cache = memo();
+        const data = () => cache(`${rS.value}|${kS.value}`, () => {
+          const [m, q] = rS.value.split('/').map(Number), K = kS.value, p0 = (TAU * m) / q, W = WID[q];
+          const Tq = (th, p) => { for (let i = 0; i < q; i++) { p += K * Math.sin(th); th += p; } return [th, p]; };
+          const g = (th, p) => Tq(th, p)[0] - th - TAU * m;
+          const C = [], IMG = [], DP = [];
+          for (let i = 0; i <= NT; i++) {
+            const th = (TAU * i) / NT; let a = p0 - W, b = p0 + W, fa = g(th, a), fb = g(th, b);
+            if (fa > 0 === fb > 0) { C.push(null); IMG.push(null); DP.push(NaN); continue; }
+            for (let k = 0; k < 60; k++) { const mm = (a + b) / 2, fm = g(th, mm); if (fm > 0 === fa > 0) { a = mm; fa = fm; } else b = mm; }
+            const pc = (a + b) / 2, im = Tq(th, pc)[1]; C.push([th, pc]); IMG.push([th, im]); DP.push(im - pc);
+          }
+          // zeros of the displacement → fixed points of T^q, classified by the trace of DT^q
+          const fixed = [];
+          for (let i = 0; i < NT; i++) if (isFinite(DP[i]) && isFinite(DP[i + 1]) && DP[i] > 0 !== DP[i + 1] > 0) {
+            let a = (TAU * i) / NT, b = (TAU * (i + 1)) / NT; const pAt = (th) => { let lo = p0 - W, hi = p0 + W, fl = g(th, lo); for (let k = 0; k < 60; k++) { const mm = (lo + hi) / 2, fm = g(th, mm); if (fm > 0 === fl > 0) { lo = mm; fl = fm; } else hi = mm; } return (lo + hi) / 2; };
+            const dpf = (th) => { const pc = pAt(th); return Tq(th, pc)[1] - pc; }; let fa = dpf(a);
+            for (let k = 0; k < 50; k++) { const mm = (a + b) / 2, fm = dpf(mm); if (fm > 0 === fa > 0) { a = mm; fa = fm; } else b = mm; }
+            const th = (a + b) / 2, pc = pAt(th), tr = stdOrbit(K, th, pc, q).tr; fixed.push({ th, p: pc, tr, ell: Math.abs(tr) < 2 });
+          }
+          let area = 0, absA = 0; for (let i = 0; i < NT; i++) if (isFinite(DP[i]) && isFinite(DP[i + 1])) { const a = 0.5 * (DP[i] + DP[i + 1]) * (TAU / NT); area += a; absA += Math.abs(a); }
+          // background orbits through the strip
+          const bg = [];
+          for (let k = 0; k < 26; k++) {
+            let th = k % 2 ? Math.PI / q : 0.013, p = p0 - W + (2 * W * (k + 0.5)) / 26; const xs = new Float32Array(700), ys = new Float32Array(700);
+            for (let i = 0; i < 700; i++) { p += K * Math.sin(th); th = wrap0(th + p); xs[i] = th; ys[i] = p - TAU * Math.floor((p - p0 + Math.PI) / TAU); }
+            bg.push({ xs, ys });
+          }
+          return { m, q, K, p0, W, C, IMG, DP, fixed, area, absA, bg };
+        });
+        let cur = null;
+        v.render(() => {
+          const D = data();
+          sP.setView([0, TAU], [D.p0 - D.W, D.p0 + D.W]);
+          for (const b of D.bg) fastDots(v, sP, b.xs, b.ys, 700, 'muted', { alpha: 0.45, size: 1.4 });
+          sP.hline(D.p0, { color: 'ink', dash: [5, 5], width: 1, alpha: 0.6 });
+          sP.path(D.IMG, { color: 'purple', width: 2.4 });
+          sP.path(D.C, { color: 'gold', width: 2.4 });
+          for (const f of D.fixed) sP.dot(f.th, f.p, { r: 6, color: f.ell ? 'green' : 'red' });
+          let amp = 1e-6; for (const d of D.DP) if (isFinite(d)) amp = Math.max(amp, Math.abs(d));
+          sD.setView([0, TAU], [-1.3 * amp, 1.3 * amp]);
+          sD.setLabels('θ along C', 'radial shift');
+          const pos = D.DP.map((d, i) => [(TAU * i) / D.DP.length * (D.DP.length / (D.DP.length - 1)) * ((D.DP.length - 1) / D.DP.length), d]);
+          sD.between((x) => { const i = Math.round((x / TAU) * NT); return Math.max(0, D.DP[i] ?? 0); }, () => 0, 0, TAU, { fill: 'green', fillAlpha: 0.2 });
+          sD.between(() => 0, (x) => { const i = Math.round((x / TAU) * NT); return Math.min(0, D.DP[i] ?? 0); }, 0, TAU, { fill: 'red', fillAlpha: 0.2 });
+          sD.hline(0, { color: 'muted', width: 1 });
+          sD.path(D.DP.map((d, i) => [(TAU * i) / NT, d]), { color: 'purple', width: 2 });
+          for (const f of D.fixed) sD.dot(f.th, 0, { r: 4.5, color: f.ell ? 'green' : 'red' });
+          cur = { D, pos };
+        });
+        v.legend([['gold', 'curve $C$: moved radially by $T^q$'], ['purple', 'its image $T^q(C)$ / radial shift'], ['green', 'elliptic fixed points (island centres)'], ['red', 'hyperbolic fixed points']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { D } = cur, ne = D.fixed.filter((f) => f.ell).length, nh = D.fixed.length - ne;
+          if (D.K === 0) return String.raw`$K = 0$: every point of the circle $p = 2\pi m/q$ is fixed by $T^q$, so $C$ and its image coincide with it`;
+          return String.raw`fixed points of $T^{${D.q}}$ found: **${ne} elliptic** and **${nh} hyperbolic** (Poincaré–Birkhoff: $q = ${D.q}$ of each) · signed area between $C$ and $T^q(C)$: ${sci(v, D.area)} out of ${sci(v, D.absA)} in total (area preservation) · traces $\operatorname{tr}DT^q$: ${D.fixed.slice(0, 4).map((f) => v.fix(f.tr, 3)).join(', ')}${D.fixed.length > 4 ? ', …' : ''}`;
         });
       },
     },

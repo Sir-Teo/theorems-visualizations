@@ -228,10 +228,11 @@ export function drawBallot(v, c, X, Y, r, o = {}) {
 export function drawRel(v, c, X, Y, S, o = {}) {
   const rad = o.r ?? 10, gap = o.gap ?? 2 * rad + 6, G = groupsOf(S);
   if (G) {
+    const sp = 2 * rad + 13;
     G.forEach((grp, k) => {
-      const w = (grp.length - 1) * (2 * rad + 4);
-      grp.forEach((cand, j) => chip(v, c, X - w / 2 + j * (2 * rad + 4), Y + k * gap, cand, { r: rad, ring: o.ring?.(cand) }));
-      if (grp.length > 1) txt(v, c, '~', X, Y + k * gap + rad + 5, { size: 9, color: 'muted', weight: 700 });
+      const w = (grp.length - 1) * sp;
+      grp.forEach((cand, j) => chip(v, c, X - w / 2 + j * sp, Y + k * gap, cand, { r: rad, ring: o.ring?.(cand) }));
+      for (let j = 1; j < grp.length; j++) txt(v, c, '~', X - w / 2 + (j - 0.5) * sp, Y + k * gap, { size: 13, color: 'muted', weight: 800 });
     });
     return Y + (G.length - 1) * gap;
   }

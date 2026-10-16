@@ -849,12 +849,14 @@ export function drawFO(s, L, opts = {}) {
  */
 export function relEditor(v, s, { n = 4, edges = [], radius = 1, center = [0, 0], start = 90, labels = null, onChange = null, r = 15, fontSize = 13 } = {}) {
   const pos = (i, k) => { const a = (start - (360 * i) / k) * Math.PI / 180; return [center[0] + radius * Math.cos(a), center[1] + radius * Math.sin(a)]; };
-  const mkNodes = (k, old = []) => range(k).map((i) => { const o = old.find((m) => m.id === i); const [x, y] = o && o.x != null ? [o.x, o.y] : pos(i, k); return { id: i, x, y, label: labels ? labels(i) : String(i) }; });
+  const mkNodes = (k, old = []) => range(k).map((i) => { const o = old.find((m) => m.id === i); const [x, y] = o && o.x != null ? [o.x, o.y] : pos(i, k); return { id: i, x, y, label: labels ? labels(i) : String(i), notePos: y < center[1] - 0.2 * radius ? 's' : 'n' }; });
   const E = { n, sel: null, onChange };
   const G = v.graph(s, {
     directed: true, layout: 'none', r, fontSize, editable: { moveNode: true },
     nodes: mkNodes(n), edges: edges.map(([a, b]) => ({ from: a, to: b })),
     onClick: ({ node, edge }) => {
+      if (E.intercept && E.intercept(node, edge)) return true;
+      if (E.locked) return true;
       if (node) {
         if (E.sel == null) E.sel = node.id;
         else { E.toggle(E.sel, node.id); E.sel = null; }

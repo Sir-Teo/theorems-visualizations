@@ -64,8 +64,8 @@ The four conditions are independent: for each one there is a rule satisfying the
       credit: 'Kenneth O. May, 1952',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/May%27s_theorem' },
       viz(v) {
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 330, title: 'verdict for every count of votes · click a cell' });
-        const C = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 330, title: 'May’s conditions · exhaustive search' });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, minWidth: 330, title: 'verdict for every count of votes · click a cell' });
+        const C = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, minWidth: 330, title: 'May’s conditions · exhaustive search' });
         const RULES = {
           majority: { label: 'majority', f: (a, b) => Math.sign(a - b) },
           twothirds: { label: 'two-thirds for x', f: (a, b) => (a > 2 * b ? 1 : a === 2 * b ? 0 : -1) },
@@ -153,23 +153,34 @@ The four conditions are independent: for each one there is a rule satisfying the
           }
           for (const [a, b, a2, b2] of A.pr.slice(0, 30)) { const p = ctr(a, b), q = ctr(a2, b2); arrowPx(v, c, p[0], p[1], q[0], q[1], { color: 'red', width: 1.8, t0: s * 0.22, t1: s * 0.22, head: 7 }); }
           txt(v, c, custom ? 'your rule' : RULES[rS.value].label, W - 12, 16, { size: 12, weight: 700, color: A.maj ? 'green' : 'ink', align: 'right' });
-          if (A.maj) txt(v, c, '= simple majority', W - 12, 32, { size: 11, weight: 650, color: 'green', align: 'right' });
+          if (A.maj && (custom || rS.value !== 'majority')) txt(v, c, '= simple majority', W - 12, 32, { size: 11, weight: 650, color: 'green', align: 'right' });
           // ---- right panel
           const d = C.ctx, CW = C.width;
-          let Y = 22;
-          txt(v, d, `rule for n = ${n} voters`, 14, Y, { size: 11.5, weight: 600, color: 'muted', align: 'left' }); Y += 24;
-          tag(v, d, true, 'decisive: one verdict per cell', 14, Y); Y += 28;
-          tag(v, d, true, 'anonymous: depends on counts only', 14, Y); Y += 28;
-          tag(v, d, A.neu.length === 0, A.neu.length ? `neutral: ${A.neu.length} mirror pair${A.neu.length > 1 ? 's' : ''} wrong` : 'neutral', 14, Y); Y += 28;
-          tag(v, d, A.pr.length === 0, A.pr.length ? `positively responsive: ${A.pr.length} failure${A.pr.length > 1 ? 's' : ''}` : 'positively responsive', 14, Y); Y += 34;
-          hl(v, d, 12, CW - 12, Y - 8, 'grid');
+          let Y = 20;
+          tag(v, d, true, 'decisive: one verdict per cell', 14, Y); Y += 27;
+          tag(v, d, true, 'anonymous: depends on counts only', 14, Y); Y += 27;
+          tag(v, d, A.neu.length === 0, A.neu.length ? `neutral: ${A.neu.length} mirror pair${A.neu.length > 1 ? 's' : ''} wrong` : 'neutral', 14, Y); Y += 27;
+          tag(v, d, A.pr.length === 0, A.pr.length ? `positively responsive: ${A.pr.length} failure${A.pr.length > 1 ? 's' : ''}` : 'positively responsive', 14, Y); Y += 26;
+          hl(v, d, 12, CW - 12, Y - 6, 'grid');
+          // the proof, checked on the current rule
+          const cellsAll = [...F.entries()].map(([k, f]) => [Math.floor(k / 100), k % 100, f]);
+          const diag = cellsAll.filter(([a, b]) => a === b).every(([, , f]) => f === 0);
+          const near = cellsAll.filter(([a, b]) => a - b === 1).every(([, , f]) => f === 1);
+          const allx = cellsAll.filter(([a, b]) => a > b).every(([, , f]) => f === 1);
+          txt(v, d, 'the proof, on this rule:', 14, Y + 8, { size: 11, weight: 650, color: 'muted', align: 'left' });
+          [[diag, 'neutral ⇒ every cell with a = b is a tie'], [near, 'responsive ⇒ cells with a = b + 1 give x'], [allx, 'induction on a − b ⇒ x wherever a > b']].forEach(([ok, s2], k) => {
+            txt(v, d, ok ? '✓' : '✗', 22, Y + 28 + k * 20, { size: 12, weight: 800, color: ok ? 'green' : 'red' });
+            txt(v, d, s2, 36, Y + 28 + k * 20, { size: 11, weight: 600, align: 'left', color: ok ? 'ink' : 'muted' });
+          });
+          Y += 94;
+          hl(v, d, 12, CW - 12, Y - 6, 'grid');
           const S = n <= 6 ? search(n) : null;
           if (S) {
-            txt(v, d, S.full ? `all anonymous rules for n = ${n}: 3^${S.K}` : `all neutral anonymous rules for n = ${n}: 3^${S.K}`, 14, Y + 6, { size: 11.5, weight: 650, align: 'left' });
+            txt(v, d, S.full ? `exhaustive: all 3^${S.K} anonymous rules, n = ${n}` : `exhaustive: all 3^${S.K} neutral anonymous rules, n = ${n}`, 14, Y + 6, { size: 11.5, weight: 650, align: 'left' });
             const rows = S.full
               ? [{ label: 'anonymous rules', n: S.tot, color: 'gray' }, { label: 'neutral', n: S.neu, color: 'accent' }, { label: 'pos. responsive', n: S.pr, color: 'purple' }, { label: 'both', n: S.both, color: 'green' }]
               : [{ label: 'neutral rules', n: S.tot, color: 'accent' }, { label: '+ pos. responsive', n: S.both, color: 'green' }];
-            countBars(v, d, [8, Y + 18, CW - 8, Math.min(C.height - 30, Y + 18 + rows.length * 34)], rows, { rowH: 34, labelW: 118 });
+            countBars(v, d, [8, Y + 16, CW - 8, Math.min(C.height - 28, Y + 16 + rows.length * 30)], rows, { rowH: 30, labelW: 118 });
             txt(v, d, S.both === 1 && S.majOnly ? 'the one survivor is simple majority' : '', 14, C.height - 16, { size: 11.5, weight: 700, color: 'green', align: 'left' });
           } else txt(v, d, 'exhaustive search runs for n ≤ 6', 14, Y + 8, { size: 11, color: 'muted', align: 'left' });
         });
@@ -207,8 +218,8 @@ The four conditions are independent: for each one there is a rule satisfying the
       credit: 'Kenneth J. Arrow, 1950–51',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem' },
       viz(v) {
-        const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 280, title: 'checked on every profile · click a row' });
-        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 420, weight: 1.4, title: 'counterexample' });
+        const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 280, title: 'checked on every profile · click a row' });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 420, weight: 1.4, title: 'counterexample' });
         const scoresRel = (prof, w) => { const s = Array(prof[0].length).fill(0); for (const r of prof) r.forEach((c, k) => { s[c] += w[k]; }); return relFromScores(s); };
         const majRel = (prof) => { const m = prof[0].length, N = range(m).map(() => Array(m).fill(0)); for (const r of prof) for (let i = 0; i < m; i++) for (let j = i + 1; j < m; j++) N[r[i]][r[j]]++; return range(m).map((x) => range(m).map((y) => Math.sign(N[x][y] - N[y][x]))); };
         const RULES = {
@@ -422,22 +433,22 @@ The four conditions are independent: for each one there is a rule satisfying the
           if (!r) { txt(v, e, 'no rule to show', Lt.width / 2, Lt.height / 2, { size: 12, color: 'muted' }); return; }
           const dec = range(1 << n).map((Gm) => { let k = 0; [0, 1, 2].forEach((pk) => { if (decisiveIIA(r, n, Gm, pk, 1, M.main.seen)) k++; if (decisiveIIA(r, n, Gm, pk, -1, M.main.seen)) k++; }); return k; });
           const LW = Lt.width;
-          drawLattice(v, e, [LW * 0.08, 26, LW * 0.6, Lt.height - 26], n, {
+          drawLattice(v, e, [LW * 0.02, 26, LW * 0.5, Lt.height - 26], n, {
             fill: (Gm) => (dec[Gm] === 6 ? ['green', 0.32] : dec[Gm] > 0 ? ['gold', 0.22] : ['muted', 0.04]),
             stroke: (Gm) => (dec[Gm] === 6 ? 'green' : null),
           });
           const cl = classifyIIA(r, n, M.main.seen);
-          txt(v, e, cl.label, LW * 0.64, 40, { size: 12.5, weight: 750, align: 'left', color: cl.kind === 'dictator' ? 'red' : 'ink' });
+          txt(v, e, cl.label, LW * 0.53, 40, { size: 12.5, weight: 750, align: 'left', color: cl.kind === 'dictator' ? 'red' : 'ink' });
           const full = range(1 << n).filter((Gm) => dec[Gm] === 6);
-          txt(v, e, `decisive over all six ordered pairs: ${full.length ? full.map((Gm) => coalName(Gm, n)).join(' ') : 'none'}`, LW * 0.64, 64, { size: 11, weight: 600, align: 'left' });
-          txt(v, e, `decisive over some pairs only: ${range(1 << n).filter((Gm) => dec[Gm] > 0 && dec[Gm] < 6).map((Gm) => coalName(Gm, n)).join(' ') || 'none'}`, LW * 0.64, 84, { size: 11, weight: 600, align: 'left', color: 'muted' });
-          if (cl.kind === 'dictator') txt(v, e, `an ultrafilter: every coalition containing voter ${cl.i + 1}, and no other`, LW * 0.64, 110, { size: 11, weight: 650, align: 'left', color: 'red' });
+          txt(v, e, `decisive over all six ordered pairs: ${full.length ? full.map((Gm) => coalName(Gm, n)).join(' ') : 'none'}`, LW * 0.53, 64, { size: 11, weight: 600, align: 'left' });
+          txt(v, e, `decisive over some pairs only: ${range(1 << n).filter((Gm) => dec[Gm] > 0 && dec[Gm] < 6).map((Gm) => coalName(Gm, n)).join(' ') || 'none'}`, LW * 0.53, 84, { size: 11, weight: 600, align: 'left', color: 'muted' });
+          if (cl.kind === 'dictator') txt(v, e, `exactly the coalitions containing voter ${cl.i + 1}`, LW * 0.53, 110, { size: 11, weight: 650, align: 'left', color: 'red' });
         });
         v.legend([['green', 'decisive on every pair', { dot: true }], ['gold', 'decisive on some pairs', { dot: true }], ['red', 'dictator', { dot: true }]]);
         v.readout(() => {
           if (!iT.value) return 'Without IIA the Borda ranking satisfies (U), (P) and (D) on all 216 profiles of three voters — IIA is what Arrow’s theorem needs to forbid it.';
           const M = model(), last = M.steps[M.steps.length - 1];
-          const conds = [M.o.trans && 'transitive', M.o.pareto && 'Pareto', M.o.nd && 'non-dictatorial'].filter(Boolean).join(', ') || 'no further condition';
+          const cl = [M.o.trans && 'transitive', M.o.pareto && 'Pareto-efficient', M.o.nd && 'non-dictatorial'].filter(Boolean), conds = cl.length ? cl.slice(0, -1).join(', ') + (cl.length > 1 ? ' and ' : '') + cl[cl.length - 1] : 'unconstrained';
           let tail = '';
           if (M.o.trans && M.o.pareto && !M.o.nd && dom.value === 'all') tail = ` Every one of them is a dictatorship (${M.main.dictators} dictators) — **Arrow’s theorem, verified by exhaustion.**`;
           else if (M.o.trans && M.o.pareto && M.o.nd && dom.value === 'all') tail = ' Adding non-dictatorship leaves **none**.';
@@ -495,7 +506,7 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
             return out;
           }
           let G = 7;
-          push({ G, note: String.raw`By **Pareto**, the whole electorate $\{1,2,3\}$ is decisive over every pair (checked on all 216 profiles).` });
+          { const prof = [[0, 1, 2], [2, 0, 1], [0, 2, 1]], S0 = F(prof); push({ G, prof, S: S0, focus: [0, 1], lines: [[S0[0][1] === 1, 'all three prefer A to B; society ranks A ≻ B'], [true, 'Pareto holds on all 216 profiles']], note: String.raw`By **Pareto**, the whole electorate $\{1,2,3\}$ is decisive over every pair (checked on all 216 profiles).` }); }
           let dec = [];
           while (popc(G) > 1) {
             const mem = members(G), G1 = mask([mem[0]]), G2 = G & ~G1, O = 7 & ~G;
@@ -542,10 +553,11 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
             const chain = [['ac', x, y, z], ['cb', x, y, z], ['cb', x, z, y], ['ac', z, y, x], ['ac', y, z, x]];
             for (const st of chain) if (!doStep(...st)) return out;
             G = H;
-            push({ G, dec: dec.slice(), H, note: String.raw`$H = ${coalName(H, n)}$ is decisive over all six ordered pairs; it becomes the new $G$.` });
+            push({ G, dec: dec.slice(), H, lines: [[true, `H = ${coalName(H, n)} is decisive over all 6 ordered pairs`], [true, `H becomes the new G, ${popc(H) > 1 ? 'to be split again' : 'a single voter'}`]], note: String.raw`$H = ${coalName(H, n)}$ is decisive over all six ordered pairs; it becomes the new $G$.` });
           }
-          const i = members(G)[0];
-          push({ G, dec: dec.slice(), H: G, final: true, note: String.raw`A single decisive voter: **voter ${i + 1} is a dictator** — exactly what Arrow’s theorem predicts for a rule satisfying (U), (P) and (I).` });
+          const i = members(G)[0], dprof = range(n).map((j) => (j === i ? [0, 1, 2] : [2, 1, 0])), Sd = F(dprof);
+          const allOk = [[0, 1], [1, 0], [0, 2], [2, 0], [1, 2], [2, 1]].every(([a2, b2]) => !decisiveCx(F, G, a2, b2));
+          push({ G, dec: dec.slice(), H: G, final: true, prof: dprof, S: Sd, focus: null, lines: [[Sd[0][1] === 1 && Sd[1][2] === 1, `voter ${i + 1} alone ranks A > B > C, and society follows`], [allOk, `voter ${i + 1}’s strict preferences prevail in all 216 profiles`]], note: String.raw`A single decisive voter: **voter ${i + 1} is a dictator** — exactly what Arrow’s theorem predicts for a rule satisfying (U), (P) and (I).` });
           return out;
         }
         const S = v.steps({ frames, speed: 0.8, still: 'end' });
@@ -577,22 +589,22 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
           txt(v, c, f.H && !f.final ? `H = ${coalName(f.H, n)}: decisive over ${dcount} of 6` : f.final ? 'the dictator is decisive over all 6' : `G = ${coalName(f.G, n)}: decisive over all 6`, W / 2, 200, { size: 11, weight: 700, color: f.broken ? 'red' : 'ink' });
           // ---- right: profile + verdict + deductions
           const d = R.ctx, RW = R.width;
-          if (!f.prof) { txt(v, d, f.final ? 'proof complete' : 'no profile needed for this step', RW / 2, 60, { size: 12.5, weight: 700, color: f.final ? 'green' : 'muted' }); }
-          else {
-            const roleCol = (i) => (f.H & (1 << i) ? 'gold' : f.G1 & (1 << i) ? 'teal' : f.G2 & (1 << i) ? 'purple' : 'muted');
-            const roleLab = (i) => (f.H & (1 << i) ? 'H' : f.G1 & (1 << i) ? 'G₁' : f.G2 & (1 << i) ? 'G₂' : 'other');
-            txt(v, d, 'voters', 70, 14, { size: 10.5, weight: 600, color: 'muted' });
+          if (f.prof) {
+            const roleCol = (i) => (f.H & (1 << i) && !f.final ? 'gold' : f.final && f.G & (1 << i) ? 'red' : f.G1 & (1 << i) ? 'teal' : f.G2 & (1 << i) ? 'purple' : 'muted');
+            const roleLab = (i) => (f.final ? (f.G & (1 << i) ? '★' : '') : f.H & (1 << i) ? 'H' : f.G1 & (1 << i) ? 'G₁' : f.G2 & (1 << i) ? 'G₂' : f.G === 7 && !f.H ? 'G' : 'other');
+            txt(v, d, 'voters', 71, 14, { size: 10.5, weight: 600, color: 'muted' });
             drawProfile(v, d, 14, 30, f.prof, { r: 11, colW: 38, head: (i) => `${i + 1} ${roleLab(i)}`, headColor: roleCol, ring: (i, cc) => (f.focus && f.focus.includes(cc) ? 'gold' : null) });
-            txt(v, d, 'society', 176, 14, { size: 10.5, weight: 600, color: 'muted' });
-            drawRel(v, d, 176, 41, f.S, { r: 11, ring: (cc) => (f.focus && f.focus.includes(cc) ? 'gold' : null) });
-            f.lines.forEach(([ok, s2], k) => tag(v, d, ok, s2, 226, 30 + k * 28, { size: 11 }));
-            if (f.cx) {
-              const Scx = RULES[rS.value].F(f.cx);
-              txt(v, d, `counterexample: all of H prefer ${LET[f.focus[0]]} to ${LET[f.focus[1]]}, society does not`, RW / 2, 186, { size: 11, weight: 650, color: 'red' });
-              drawProfile(v, d, RW / 2 - 110, 200, f.cx, { r: 9, colW: 32, head: (i) => `${i + 1}`, headColor: (i) => (f.H & (1 << i) ? 'gold' : 'muted'), ring: (i, cc) => (f.focus.includes(cc) ? 'red' : null) });
-              drawRel(v, d, RW / 2 + 40, 222, Scx, { r: 9 });
-            }
+            txt(v, d, 'society', 172, 14, { size: 10.5, weight: 600, color: 'muted' });
+            drawRel(v, d, 172, 53, f.S, { r: 11, ring: (cc) => (f.focus && f.focus.includes(cc) ? 'gold' : null) });
           }
+          if (f.cx) {
+            const Scx = RULES[rS.value].F(f.cx), X0 = Math.max(236, RW - 200);
+            txt(v, d, 'counterexample', X0 + 80, 14, { size: 10.5, weight: 700, color: 'red' });
+            drawProfile(v, d, X0, 30, f.cx, { r: 10, colW: 34, head: (i) => `${i + 1}`, headColor: (i) => (f.H & (1 << i) ? 'gold' : 'muted'), ring: (i, cc) => (f.focus.includes(cc) ? 'red' : null) });
+            drawRel(v, d, X0 + 140, 53, Scx, { r: 10 });
+          }
+          (f.lines || []).forEach(([ok, s2], k) => tag(v, d, ok, s2, 14, 150 + k * 27, { size: 11 }));
+          if (!f.prof && !(f.lines || []).length) txt(v, d, 'no profile needed for this step', RW / 2, 80, { size: 12, color: 'muted' });
           if (f.broken) txt(v, d, `the proof breaks: the rule violates ${f.broken}`, RW / 2, R.height - 16, { size: 12.5, weight: 800, color: 'red' });
           else if (f.final) txt(v, d, `dictator found: voter ${members(f.G)[0] + 1}`, RW / 2, R.height - 16, { size: 12.5, weight: 800, color: 'green' });
         });
@@ -721,8 +733,8 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
       credit: 'Allan Gibbard, 1973; Mark Satterthwaite, 1975',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gibbard%E2%80%93Satterthwaite_theorem' },
       viz(v) {
-        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 360, title: 'ballots' });
-        const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 330, title: 'the most profitable lie' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, minWidth: 360, title: 'ballots' });
+        const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, minWidth: 330, title: 'the most profitable lie' });
         const X = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 180, full: true, title: 'share of all electorates (3 candidates) where some voter can gain by lying — exhaustive' });
         const PRE = { 3: mkProfile(3, [[2, 'ACB'], [2, 'CAB'], [1, 'BAC'], [2, 'BCA']]), 4: mkProfile(4, [[1, 'CADB'], [2, 'ACBD'], [2, 'CDBA'], [3, 'BACD']]) };
         const P = copyProfile(PRE[3]);
@@ -838,8 +850,8 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
       tags: ['strategic voting', 'manipulation', 'simulation'],
       scope: String.raw`Holds for the models simulated here: three candidates, voters with complete strict rankings, sincere voting by everyone outside the coalition, and full information about the ballots. Real electorates also differ in information and coordination, which make manipulation harder than these shares suggest.`,
       viz(v) {
-        const L = v.stage({ x: [3, 120], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 320, minWidth: 360, xlabel: 'voters n', ylabel: 'share manipulable', title: 'coalitional manipulability, 3 candidates' });
-        const Rt = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 340, title: 'one sampled electorate' });
+        const L = v.stage({ x: [2.6, 125], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 370, minWidth: 360, xlabel: 'voters n', ylabel: 'share manipulable', title: 'coalitional manipulability, 3 candidates' });
+        const Rt = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, minWidth: 340, title: 'one sampled electorate' });
         const cult = v.select('electorate', [{ value: 'ic', label: 'impartial culture' }, { value: 'sp', label: '1-D spatial' }], 'ic');
         const NS = [3, 5, 7, 11, 15, 21, 31, 51, 75, 101];
         const nS = v.slider('voters $n$ (sample)', 0, NS.length - 1, 4, { int: true, fmt: (k) => String(NS[k]) });
@@ -902,14 +914,12 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
             const pts = NS.map((n, k) => [n, Rs.out[k][i]]);
             L.path(pts, { color: m.col, width: 2.4 });
             pts.forEach(([n, p]) => { const se = 2 * Math.sqrt((p * (1 - p)) / Rs.T); L.line(n, Math.max(0, p - se), n, Math.min(1, p + se), { color: m.col, width: 1.3, alpha: 0.6 }); L.dot(n, p, { r: 3.5, color: m.col }); });
-            const last = pts[pts.length - 1];
-            L.text(m.label, 104, last[1], { color: m.col, size: 11.5, align: 'left', dx: 4, baseline: 'middle' });
           });
           // sampled electorate
           const r = v.rng(1000 * sampleSeed + k0 * 7 + (cult.value === 'ic' ? 0 : 500)), n = NS[k0], cnt = sample(r, n, cult.value);
           const c = Rt.ctx, W = Rt.width, H = Rt.height;
-          drawRepTriangle(v, Rt, cnt, [8, 0, W - 8, H * 0.58], { pairs: false });
-          let Y = H * 0.62 + 6;
+          drawRepTriangle(v, Rt, cnt, [8, 0, W - 8, H - 132], { pairs: false });
+          let Y = H - 118;
           METH.forEach((m) => {
             const w = m.f(cnt), res = manip(m.id, cnt);
             txt(v, c, m.label, 12, Y, { size: 11.5, weight: 750, color: m.col, align: 'left' });

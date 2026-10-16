@@ -500,7 +500,7 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
           sp.dots(WSAT.filter((r, i) => i % 2 === 0).map((r) => [r[0], r[1] * MPA]), { r: 3, color: 'ink', alpha: 0.75 });
           sp.path(ex, { color: 'green', width: 2.6 });
           if (approx.value) sp.path(ap, { color: 'orange', width: 2.2, dash: [7, 4] });
-          sp.dot(W.Tc, W.Pc, { r: 5, color: 'red' }); sp.text('critical point', W.Tc, W.Pc, { dx: -8, dy: -10, size: 11, color: 'red', align: 'right' });
+          sp.dot(W.Tc, W.Pc, { r: 5, color: 'red' }); sp.text('critical point', W.Tc, W.Pc, { dx: -10, dy: 12, size: 11, color: 'red', align: 'right' });
           sp.dot(W.Tt, W.Pt, { r: 5, color: 'red' }); sp.text('triple point', W.Tt, W.Pt, { dx: 8, dy: 4, size: 11, color: 'red', align: 'left' });
           // errors at the table temperatures
           const err = (path) => WSAT.map((r) => { const P = interp(path, 0, 1, r[0]); return [r[0], 100 * (P / (r[1] * MPA) - 1)]; });
@@ -509,16 +509,16 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
           se.path(eEx, { color: 'green', width: 2.6 }); se.dots(eEx.filter((_, i) => i % 3 === 0), { r: 2.6, color: 'green' });
           if (approx.value) se.path(eAp, { color: 'orange', width: 2.2, dash: [7, 4] });
           se.vline(T0, { color: 'gold', width: 1.2 });
-          const at100 = (path) => 100 * (interp(path, 0, 1, 373.124) / 101325 - 1);
+          const errAt = (path, T) => 100 * (interp(path, 0, 1, T) / psatW(T) - 1);
           const slopeData = (psatW(T0 + 0.01) - psatW(T0 - 0.01)) / 0.02;
           const mxEx = Math.max(...eEx.filter((e) => e[0] < 645).map((e) => Math.abs(e[1])));
-          st = { T0, P0, s0, slopeData, slopeCC: exact(T0), slopeApprox: s0.L * P0 / (Rw * T0 * T0), e100: at100(ex), a100: at100(ap), mxEx, aTc: eAp[eAp.length - 1][1] };
+          st = { T0, P0, s0, slopeData, slopeCC: exact(T0), slopeApprox: s0.L * P0 / (Rw * T0 * T0), e0: errAt(ex, 273.4), a0: errAt(ap, 273.4), e300: errAt(ex, 573.15), a300: errAt(ap, 573.15), mxEx, aTc: eAp[eAp.length - 1][1] };
         });
         v.legend([['ink', 'IAPWS-95 data', { dot: true }], ['green', 'exact: $dP/dT = L/T\\Delta v$'], ['orange', 'ideal vapour, constant $L$', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const { T0, P0, s0, slopeData, slopeCC, slopeApprox, e100, a100, mxEx, aTc } = st;
-          return `start ${v.fix(T0, 1)} K, ${v.fix(P0 / 1e3, 2)} kPa: $L$ = ${v.fix(s0.L / 1e3, 1)} kJ/kg, $\\Delta v$ = ${v.fix(s0.dv, 4)} m³/kg · slope of the data **${v.fix(slopeData, 2)} Pa/K**, $L/T\\Delta v$ = **${v.fix(slopeCC, 2)} Pa/K** (ratio ${v.fix(slopeCC / slopeData, 4)}), ideal-vapour estimate $LP/R_wT^2$ = ${v.fix(slopeApprox, 2)} Pa/K\nerror of the integrated curve at 100 °C: exact ${v.fix(e100, 3)} %${approx.value ? `, approximate ${v.fix(a100, 2)} %` : ''} · largest error of the exact integral below 645 K: ${v.fix(mxEx, 2)} % (5 K table, linear interpolation)${approx.value ? ` · approximation at the critical end: ${v.fix(aTc, 0)} %` : ''}`;
+          const { T0, P0, s0, slopeData, slopeCC, slopeApprox, e0, a0, e300, a300, mxEx, aTc } = st;
+          return `start ${v.fix(T0, 1)} K, ${v.fix(P0 / 1e3, 2)} kPa: $L$ = ${v.fix(s0.L / 1e3, 1)} kJ/kg, $\\Delta v$ = ${v.fix(s0.dv, 4)} m³/kg · slope of the data **${v.fix(slopeData, 2)} Pa/K**, $L/T\\Delta v$ = **${v.fix(slopeCC, 2)} Pa/K** (ratio ${v.fix(slopeCC / slopeData, 4)}), ideal-vapour estimate $LP/R_wT^2$ = ${v.fix(slopeApprox, 2)} Pa/K\nerror of the integrated curves near 0 °C: exact ${v.fix(e0, 3)} %${approx.value ? `, approximate ${v.fix(a0, 1)} %` : ''}; at 300 °C: exact ${v.fix(e300, 3)} %${approx.value ? `, approximate ${v.fix(a300, 1)} %` : ''} · largest error of the exact integral below 645 K: ${v.fix(mxEx, 3)} %${approx.value ? ` · approximation at the critical end: ${v.fix(aTc, 0)} %` : ''}`;
         });
       },
     },
@@ -548,7 +548,7 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
           sp.raster((t, P) => { const T = t + 273.15; if (T < 251.165) return ice; return P * MPA < pmeltIh(T) ? ice : liq; }, { res: 3, key: 'm7' + v.color('panel') });
           sp.curve((u) => { const T = lerp(251.165, 273.16, u); return [T - 273.15, pmeltIh(T) / MPA]; }, 0, 1, { color: PHASE.liquid, width: 3, n: 120 });
           sp.fn((t) => 0.101325 + slope * (t - (Tm - 273.15)), { color: flip.value ? 'red' : 'gold', width: 2, dash: [7, 4] });
-          sp.dot(251.165 - 273.15, 208.566, { r: 4.5, color: 'ink', hollow: true }); sp.text('ice III begins', 251.165 - 273.15, 208.566, { dx: 8, dy: 2, size: 11, color: 'ink', align: 'left', plate: true });
+          sp.dot(251.165 - 273.15, 208.566, { r: 4.5, color: 'ink', hollow: true }); sp.text('ice III begins', 251.165 - 273.15, 208.566, { dx: 12, dy: 2, size: 11, color: 'ink', align: 'left', plate: true });
           sp.text('ice Ih', -20, 40, { size: 14, weight: 700, color: PHASE.solid });
           sp.text('liquid water', -4, 170, { size: 14, weight: 700, color: PHASE.liquid });
           // skater
@@ -566,13 +566,13 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
           sv.arrow(0.35, vi * 1e3, 0.65, vL * 1e3, { color: dv < 0 ? 'green' : 'red', width: 2, head: 8 });
           sv.text(`Δv ${dv < 0 ? '< 0' : '> 0'}`, 0.5, (vi + vL) / 2 * 1e3, { dx: 6, dy: -6, size: 11.5, weight: 650, color: dv < 0 ? 'green' : 'red', align: 'left' });
           const p1 = pmeltIh(272.15) / MPA, p200 = bisect((T_) => pmeltIh(T_) - 200e6, 251.2, 273.16) - 273.15;
-          st = { slope, Psk, tSk, phase, T, P, p1, p200 };
+          st = { slope, slope0: W.Lf / (Tm * (vL - vI)) / MPA, Psk, tSk, phase, T, P, p1, p200 };
         });
         v.legend([[PHASE.liquid, 'IAPWS melting curve'], ['gold', 'Clapeyron line $L/T\\Delta v$', { dash: true }], ['purple', 'pressure under the blade']]);
         v.readout(() => {
           if (!st) return '';
           const { slope, Psk, tSk, phase, T, P, p1, p200 } = st;
-          return `Clapeyron slope at 0 °C: $L/T\\Delta v$ = **${v.fix(slope, 2)} MPa/K** (${v.fix(slope * 10, 1)} bar/K)${flip.value ? ' — hypothetical sign' : ''} · IAPWS: ice at −1 °C melts at ${v.fix(p1, 2)} MPa = ${v.fix(p1 * 1e6 / 101325, 0)} atm; at 200 MPa the melting point is ${v.fix(p200, 2)} °C (the straight line predicts ${v.fix(200 / (-13.46), 2)} °C)\nskater ${mass.value} kg: ${v.fix(Psk, 2)} MPa under the blade → melting point ${v.fix(tSk, 3)} °C (rink ice is kept near −5 °C) · state ${v.fix(T - 273.15, 1)} °C, ${v.fix(P / MPA, 1)} MPa: **${phase}**`;
+          return `Clapeyron slope at 0 °C: $L/T\\Delta v$ = **${v.fix(slope, 2)} MPa/K** (${v.fix(slope * 10, 1)} bar/K)${flip.value ? ' — hypothetical sign' : ''} · IAPWS: ice at −1 °C melts at ${v.fix(p1, 2)} MPa = ${v.fix(p1 * 1e6 / 101325, 0)} atm; at 200 MPa the melting point is ${v.fix(p200, 2)} °C (the straight line predicts ${v.fix(-200 / Math.abs(st.slope0), 2)} °C)\nskater ${mass.value} kg: ${v.fix(Psk, 2)} MPa under the blade → melting point ${v.fix(tSk, 3)} °C (rink ice is kept several degrees below 0 °C) · state ${v.fix(T - 273.15, 1)} °C, ${v.fix(P / MPA, 1)} MPa: **${phase}**`;
         });
       },
     },
@@ -669,7 +669,7 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
           sc.text(`C = ${C} component${C > 1 ? 's' : ''}, P = ${Pn} phase${Pn > 1 ? 's' : ''}`, 5, 9.4, { size: 13, weight: 700, align: 'center' });
           sc.text('unknowns: T, P and C − 1 mole fractions per phase', 0.2, 8.4, { size: 11, color: 'muted', align: 'left' });
           const labs = ['T', 'P']; for (let p = 1; p <= Pn; p++) for (let c = 1; c < C; c++) labs.push(`x${p}`);
-          labs.forEach((l, i) => box(0.3 + (i % 6) * 1.55, 6.9 - Math.floor(i / 6) * 1.25, l, 'accent', i < eq));
+          labs.forEach((l, i) => box(0.3 + (i % 6) * 1.55, 6.9 - Math.floor(i / 6) * 1.25, l, i >= unk - eq ? 'muted' : 'green', i >= unk - eq));
           sc.text('conditions: μᵢ equal in every phase', 0.2, 5.0, { size: 11, color: 'muted', align: 'left' });
           for (let i = 0; i < eq; i++) box(0.3 + (i % 6) * 1.55, 3.5 - Math.floor(i / 6) * 1.25, `μ${C > 1 ? (i % C) + 1 : ''}`, 'red', false);
           if (!eq) sc.text('none (one phase)', 0.4, 4.0, { size: 11.5, color: 'muted', align: 'left' });

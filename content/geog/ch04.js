@@ -172,7 +172,7 @@ so distances along meridians are true everywhere, the parallels $\pm\varphi_1$ a
           for (const sg of sp.value > 0 ? [1, -1] : [0]) s.hline(sg * sp.value * D2R, { color: 'green', width: 1.6, dash: [6, 4] });
           // indicatrices
           const r0 = 4.2 * D2R;
-          for (let f = -75; f <= 75; f += 15) for (let l = -150; l <= 150; l += 30) {
+          for (let f = -75; f <= 75; f += 15) for (let l = -120; l <= 150; l += 30) {
             const k = c1 / Math.cos(f * D2R), col = Math.abs(k - 1) < 0.03 ? 'green' : k > 1 ? 'red' : 'blue';
             ell(s, X(l * D2R), f * D2R, k * r0, r0, col, 0.24);
           }

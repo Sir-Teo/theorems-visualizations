@@ -45,7 +45,7 @@ the minimum-mean-square-error estimate of the state given all past measurements 
 
 Scope: exactly optimal for linear Gaussian models (best linear estimator otherwise) with known $\Phi, H, Q, R$; nonlinear systems need extensions (extended, unscented, particle filters).`,
       idea: String.raw`Wiener (1949) and Kolmogorov had solved optimal filtering for stationary signals in the frequency domain, which required spectral factorisation and an infinite past and did not extend to time-varying or multivariable problems. Kalman recast it in state space (ctrl-12.1, ctrl-2.1), used the geometry of orthogonal projection in a Hilbert space of random variables (sig-13.7, stat-12.3) to show that the best estimate is updated by projecting the new innovation, and obtained a finite-dimensional recursion that a digital computer could run in real time. He also showed that the covariance equation is the same Riccati equation as in optimal control, with time reversed and matrices transposed. Within a few years Schmidt's group at NASA Ames had adapted it (as an extended filter) for Apollo's navigation computer; it is now in every GPS receiver, inertial navigation system, phone and self-driving stack (ctrl-12.3–12.5).`,
-      caption: String.raw`A target moves with random accelerations (illustrative simulation); grey dots are noisy position fixes, the green line the Kalman estimate, the gold ellipse its 2σ uncertainty at the current step, which grows in each **predict** step and shrinks at each **update**. Set the true process noise $q$ and measurement noise $r$; **mistune** the filter's assumed noise to see the estimate lag (too small $q$) or chase the noise (too large). **Right**: the gain for position converges to its steady-state value, from the Riccati recursion, long before the estimate itself settles; the readout compares the error of the raw fixes and of the filter.`,
+      caption: String.raw`A target moves with random accelerations (illustrative simulation); grey dots are noisy position fixes, the green line the Kalman estimate, the gold band its ±2σ uncertainty, wide at the start and settling as the filter learns; the red dot is the newest fix. Set the true process noise $q$ and measurement noise $r$; **mistune** the filter's assumed noise to see the estimate lag (too small $q$) or chase the noise (too large). **Right**: the gain for position converges to its steady-state value, from the Riccati recursion, long before the estimate itself settles; the readout compares the error of the raw fixes and of the filter.`,
       deps: ['ctrl-12.1', 'ctrl-2.1', 'sig-13.7', 'stat-12.3'],
       refs: [],
       tags: ['estimation', 'state space', 'history'],
@@ -57,7 +57,7 @@ Scope: exactly optimal for linear Gaussian models (best linear estimator otherwi
         const mis = v.select('filter assumes', [{ value: '1', label: 'true q' }, { value: '0.01', label: 'q ÷ 100' }, { value: '100', label: 'q × 100' }], '1');
         let seed = 5;
         v.button('New track', () => { seed++; v.restart(); });
-        const s = v.stage({ x: [-40, 40], y: [-30, 30], equal: true, axes: false, height: 380, weight: 1.5, title: 'tracking from noisy fixes (simulation; view follows the target)' });
+        const s = v.stage({ x: [0, 60], y: [-10, 10], axes: 'box', gutter: true, height: 380, weight: 1.5, xlabel: 'step k', ylabel: 'position', title: 'tracking from noisy fixes (simulation, one coordinate)' });
         const g = v.stage({ x: [0, N], y: [0, 1], axes: 'box', gutter: true, height: 380, weight: 0.9, minWidth: 240, xlabel: 'step k', ylabel: 'position gain K', title: 'the gain settles' });
         let cache = null, key = '';
         const run = () => {
@@ -73,18 +73,21 @@ Scope: exactly optimal for linear Gaussian models (best linear estimator otherwi
         v.animate((t) => {
           const { X, Y } = run();
           const k = Math.min(N - 1, Math.floor(t * 12));
-          // follow the target: a window around the current true position, last 40 steps drawn
-          const hw = Math.max(5 * rS.value, 8), cx = X.xs[k], cy = Y.xs[k];
-          s.setView([cx - 1.6 * hw, cx + 1.6 * hw], [cy - hw, cy + hw]);
-          const i0 = Math.max(0, k - 40);
-          s.path(X.xs.slice(i0, k + 1).map((x, i) => [x, Y.xs[i + i0]]), { color: 'ink', width: 2, alpha: 0.8 });
-          for (let i = i0; i <= k; i++) s.dot(X.zs[i], Y.zs[i], { r: 3, color: 'muted', alpha: 0.35 + 0.65 * ((i - i0) / Math.max(1, k - i0)) });
-          s.path(X.est.slice(i0, k + 1).map((x, i) => [x, Y.est[i + i0]]), { color: 'green', width: 2.6 });
-          // 2-sigma ellipse (axes independent here: a circle-ish ellipse)
-          s.curve((a) => [X.est[k] + 2 * X.sd[k] * Math.cos(a), Y.est[k] + 2 * Y.sd[k] * Math.sin(a)], 0, 2 * Math.PI, { color: 'gold', width: 2, fill: 'gold', fillAlpha: 0.15 });
-          s.dot(X.xs[k], Y.xs[k], { r: 5, color: 'ink' });
-          s.dot(X.zs[k], Y.zs[k], { r: 4.5, color: 'red' });
-          s.dot(X.est[k], Y.est[k], { r: 5, color: 'green' });
+          // position against time, last 60 steps, with the filter's ±2σ band
+          const i0 = Math.max(0, k - 60);
+          let lo = Infinity, hi = -Infinity;
+          for (let i = i0; i <= k; i++) { lo = Math.min(lo, X.zs[i], X.xs[i]); hi = Math.max(hi, X.zs[i], X.xs[i]); }
+          const pad = 0.1 * (hi - lo) + 0.5;
+          s.setView([i0, Math.max(i0 + 60, k + 1)], [lo - pad, hi + pad]);
+          const band = [];
+          for (let i = i0; i <= k; i++) band.push([i, X.est[i] + 2 * X.sd[i]]);
+          for (let i = k; i >= i0; i--) band.push([i, X.est[i] - 2 * X.sd[i]]);
+          s.poly(band, { fill: 'gold', fillAlpha: 0.2, stroke: false });
+          s.path(X.xs.slice(i0, k + 1).map((x, i) => [i + i0, x]), { color: 'ink', width: 2 });
+          for (let i = i0; i <= k; i++) s.dot(i, X.zs[i], { r: 3, color: 'muted' });
+          s.path(X.est.slice(i0, k + 1).map((x, i) => [i + i0, x]), { color: 'green', width: 2.6 });
+          s.dot(k, X.zs[k], { r: 5, color: 'red' });
+          s.dot(k, X.est[k], { r: 5, color: 'green' });
           // gain panel
           g.path(X.gain.map((K, i) => [i, K]), { color: 'accent', width: 2.2 });
           g.hline(X.gain[N - 1], { color: 'accent', width: 1, dash: [5, 4] });
@@ -93,7 +96,7 @@ Scope: exactly optimal for linear Gaussian models (best linear estimator otherwi
           const rm = (a, b, n0) => Math.sqrt(a.slice(n0).reduce((s2, x, i) => s2 + (x - b[i + n0]) ** 2, 0) / (a.length - n0));
           st = { k, raw: Math.sqrt((rm(X.zs, X.xs, 10) ** 2 + rm(Y.zs, Y.xs, 10) ** 2) / 2), kf: Math.sqrt((rm(X.est, X.xs, 10) ** 2 + rm(Y.est, Y.xs, 10) ** 2) / 2), Kss: X.gain[N - 1], sd: X.sd[N - 1] };
         }, { period: N / 12 + 2, once: true, still: N / 12 });
-        v.legend([['ink', 'true path'], ['muted', 'measurements', { dot: true }], ['green', 'Kalman estimate'], ['gold', '2σ uncertainty', { area: true }]]);
+        v.legend([['ink', 'true path'], ['muted', 'measurements', { dot: true }], ['green', 'Kalman estimate'], ['gold', '±2σ band', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const tuned = mis.value === '1';

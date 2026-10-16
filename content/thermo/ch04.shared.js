@@ -28,6 +28,17 @@ export function interp(rows, kx, ky, x) {
   const a = rows[lo], b = rows[hi], u = (x - a[kx]) / (b[kx] - a[kx]);
   return a[ky] + (b[ky] - a[ky]) * u;
 }
+/** Cubic (4-point Lagrange) interpolation in a table sorted by column kx; clamped outside the table. */
+export function interp3(rows, kx, ky, x) {
+  const n = rows.length;
+  if (n < 4 || x <= rows[0][kx] || x >= rows[n - 1][kx]) return interp(rows, kx, ky, x);
+  let lo = 0, hi = n - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (rows[m][kx] <= x) lo = m; else hi = m; }
+  const i0 = clamp(lo - 1, 0, n - 4), xs = [0, 1, 2, 3].map((k) => rows[i0 + k][kx]), ys = [0, 1, 2, 3].map((k) => rows[i0 + k][ky]);
+  let out = 0;
+  for (let j = 0; j < 4; j++) { let w = 1; for (let k = 0; k < 4; k++) if (k !== j) w *= (x - xs[k]) / (xs[j] - xs[k]); out += w * ys[j]; }
+  return out;
+}
 /** Root of f on [a, b] by bisection (f(a), f(b) of opposite signs), n halvings. */
 export function bisect(f, a, b, n = 60) {
   let fa = f(a);
@@ -73,16 +84,16 @@ export function psublW(T) {
 /** Triple points of ice phases with liquid (IAPWS R14-08 Table 1). */
 export const ICE_TRIPLES = [['Ih–III', 251.165, 208.566e6], ['III–V', 256.164, 350.1e6], ['V–VI', 273.31, 632.4e6], ['VI–VII', 355, 2216e6]];
 /**
- * Saturated water at T (K) from the IAPWS-95 table WSAT (linear interpolation on the 5 K grid, logarithmic for the vapour
+ * Saturated water at T (K) from the IAPWS-95 table WSAT (cubic interpolation on the 5 K grid, logarithmic for the vapour
  * density; pressure from Wagner–Pruss):
  * {T, P (Pa), rl, rv (kg/m³), hl, hv (J/kg), sl, sv (J/(kg K)), L (J/kg), dv (m³/kg)}.
  */
 let WSATL = null;
 export function satW(T) {
   T = clamp(T, 273.16, 647.0);
-  const g = (k) => interp(WSAT, 0, k, T);
+  const g = (k) => interp3(WSAT, 0, k, T);
   if (!WSATL) WSATL = WSAT.map((r) => [r[0], Math.log(r[5])]);
-  const rl = g(2), rv = Math.exp(interp(WSATL, 0, 1, T)), hl = g(3) * 1e3, hv = g(6) * 1e3, sl = g(4) * 1e3, sv = g(7) * 1e3;
+  const rl = g(2), rv = Math.exp(interp3(WSATL, 0, 1, T)), hl = g(3) * 1e3, hv = g(6) * 1e3, sl = g(4) * 1e3, sv = g(7) * 1e3;
   return { T, P: psatW(T), rl, rv, hl, hv, sl, sv, L: hv - hl, dv: 1 / rv - 1 / rl };
 }
 
