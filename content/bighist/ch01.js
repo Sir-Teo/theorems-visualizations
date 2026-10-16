@@ -409,7 +409,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
         // ---------------- tree rings
         const Y0 = 1690, Y1 = 1990;
         const T1 = v.stage({ x: [Y0, Y1], y: [0, 3.2], axes: false, height: 262, full: true, title: 'ring-width series on a calendar axis' });
-        const T2 = v.stage({ x: [Y0, Y1], y: [-2, 14], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'calendar year of the timber’s outermost ring', ylabel: 't-value' });
+        const T2 = v.stage({ x: [Y0, Y1], y: [-3, 14], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'calendar year of the timber’s outermost ring', ylabel: 't-value' });
         const lenB = v.slider('rings in timber B', 15, 141, 141, { int: true });
         const SIG = 0.15, SEED = 4;
         const sample = (y0, y1, seed) => { const r = v.rng(seed), out = []; for (let y = y0; y <= y1; y++) out.push((RING[y - RING_Y0] / 1000) * Math.exp(SIG * r.normal())); return out; };
@@ -477,7 +477,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           s.text(label, y0 - 1.5, row + h * 0.55, { align: 'right', size: 11.5, weight: 600, color });
         }
         // ---------------- ice core
-        const I1 = v.stage({ x: [0, 1], y: [-3260, 40], axes: false, height: 400, weight: 0.5, minWidth: 200, title: 'EPICA Dome C, 10-kyr bands coloured by temperature' });
+        const I1 = v.stage({ x: [0, 1], y: [-3260, 40], axes: false, height: 400, weight: 0.5, minWidth: 200, title: 'Dome C core, 10-kyr bands' });
         const I2 = v.stage({ x: [-872, 10], y: [-0.13, 2.02], axes: false, height: 400, weight: 1.5, title: 'CO₂ in trapped air and Antarctic temperature' });
         const depthOf = (age) => interp(DEPTH, age, 1, 0), ageOf = (z) => interp(DEPTH, z, 0, 1);
         const hz = I1.handle(0.5, -1500, { color: 'red', constrain: (x, y) => [0.5, Math.max(-3189, Math.min(0, y))] });
@@ -503,7 +503,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
             T1.text(`A ends ${posA}${tA ? ` · t = ${v.fix(tA.t, 1)} (n = ${tA.n})` : ' · no overlap'}${okA ? ' ✓' : ''}`, Math.min(Y1 - 2, posA + 2), series.A.row + 0.75, { align: posA > 1900 ? 'right' : 'left', size: 11, color: okA ? 'green' : 'accent', weight: 600 });
             T1.text(`B ends ${posB}${tB ? ` · t = ${v.fix(tB.t, 1)} (n = ${tB.n})` : ' · no overlap'}${okB ? ' ✓' : ''}`, Math.min(Y1 - 2, posB + 2), series.B.row + 0.75, { align: posB > 1900 ? 'right' : 'left', size: 11, color: okB ? 'green' : 'purple', weight: 600 });
             // t-value scans
-            T2.hband(-2, 3.5, { color: 'gray', alpha: 0.08 });
+            T2.hband(-3, 3.5, { color: 'gray', alpha: 0.08 });
             T2.hline(3.5, { color: 'red', dash: [5, 4], width: 1.2 });
             T2.text('t = 3.5', Y0 + 2, 3.5, { dy: -8, size: 11, color: 'red' });
             for (const [k, col, pos] of [['A', 'accent', posA], ['B', 'purple', posB]]) {
@@ -528,8 +528,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
             const xs = CO2.map((_, k) => -(2 * k + 1));
             for (const c of [180, 220, 260, 300, 340, 380, 420]) { I2.line(-800, yCO2(c), 0, yCO2(c), { color: 'grid', width: 1 }); I2.text(`${c}`, -808, yCO2(c), { align: 'right', size: 10, color: 'muted', halo: false }); }
             for (const t of [-10, -5, 0, 5]) { I2.line(-800, yT(t), 0, yT(t), { color: 'grid', width: 1 }); I2.text(`${t > 0 ? '+' : ''}${t}°`, -808, yT(t), { align: 'right', size: 10, color: 'muted', halo: false }); }
-            for (let a = 0; a <= 800; a += 100) I2.text(`${a}`, -a, -0.03, { align: 'center', baseline: 'top', size: 10, color: 'muted', halo: false });
-            I2.text('ka', -840, -0.03, { baseline: 'top', size: 10, color: 'muted', halo: false });
+            for (let a = 0; a <= 800; a += 100) I2.text(a === 800 ? '800 ka' : `${a}`, -a, -0.03, { align: 'center', baseline: 'top', size: 10, color: 'muted', halo: false });
             I2.path(xs.map((x, k) => [x, yCO2(CO2[k])]), { color: 'orange', width: 1.8 });
             I2.path(xs.map((x, k) => [x, yT(DT[k])]), { color: 'blue', width: 1.6 });
             I2.text('CO₂ (ppm)', -795, 1.96, { size: 11.5, weight: 650, color: 'orange' });
@@ -686,15 +685,13 @@ He proposes it as a single, physical measure of complexity. His estimates rise b
           const P = shown();
           // category guide bands
           for (const p of P) if (p[4] != null) s.line(-Math.log10(p[1]), p[4], -Math.log10(p[1]), p[5], { color: CAT[p[3]][0], width: 7, alpha: 0.18, cap: 'round' });
-          // connect sequences within categories
-          for (const c of Object.keys(CAT)) { const q = P.filter((p) => p[3] === c && !/human b|brain|Earth/.test(p[0])).sort((a, b) => b[1] - a[1]); if (q.length > 1 && c !== 'bio') s.path(q.map((p) => [-Math.log10(p[1]), p[2]]), { color: CAT[c][0], width: 1, alpha: 0.35, dash: [3, 3] }); }
           for (const p of P) s.dot(-Math.log10(p[1]), p[2], { r: p[0] === sel ? 6.5 : 4.8, color: CAT[p[3]][0] });
           const lab = P.map((p) => ({ x: -Math.log10(p[1]), y: p[2], text: p[0], r: p[0] === sel ? 6.5 : 4.8, size: p[0] === sel ? 12 : 10.5, weight: p[0] === sel ? 700 : 500, color: p[0] === sel ? CAT[p[3]][0] : 'ink' }));
-          if (preset.value !== 'none') lab.push({ x: -1.0, y: userPhi(), text: 'your system', r: 6, size: 11, weight: 650, color: 'gold', prefer: [-1, 0] });
+          if (preset.value !== 'none') lab.push({ x: -0.75, y: userPhi(), text: 'your system', r: 6, size: 11, weight: 650, color: 'gold', prefer: [-1, 0] });
           lab.sort((p, q) => (q.text === sel) - (p.text === sel));
           placeLabels(v, s, lab);
           if (den.value === 'built') { const w = D.find((p) => p[0] === 'world society'); s.arrow(-Math.log10(w[1]), w[2] * 0.7, -Math.log10(w[1]), phiOf(w) * 1.6, { color: 'red', width: 1.6, head: 7 }); }
-          if (preset.value !== 'none') s.dot(-1.0, userPhi(), { r: 6, color: 'gold' });
+          if (preset.value !== 'none') s.dot(-0.75, userPhi(), { r: 6, color: 'gold' });
           v.legend([['blue', 'physical', { dot: true }], ['green', 'biological', { dot: true }], ['orange', 'cultural (per person)', { dot: true }], ['purple', 'machines', { dot: true }], ['gold', 'your system', { dot: true }]]);
         });
         v.readout(() => {

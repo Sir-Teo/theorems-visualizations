@@ -269,7 +269,7 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
             const x = cx(i), y = cy(j), th = Math.atan2(y, x);
             const a = 4.7 * (1 - 0.18 * Math.max(0, y) / 8) * (1 + 0.04 * Math.sin(3 * th + 1) + 0.03 * Math.cos(5 * th)), b = 7.9 * (1 + 0.03 * Math.sin(2 * th + 0.4));
             const q = (x / a) ** 2 + (y / b) ** 2;
-            if (q < 1) { const sq = (1 - q) ** 0.6; const md = Math.hypot(x, y) / (Math.hypot(x, y) + 1.5); zt[idx(i, j)] = 1.75 * sq * (1 + 0.16 * md * Math.sin(2 * th + 1)); zb[idx(i, j)] = -1.15 * sq * (1 + 0.16 * md * Math.cos(3 * th)); }
+            if (q < 1) { const sq = (1 - q) ** 0.6; const md = Math.hypot(x, y) / (Math.hypot(x, y) + 1.5); zt[idx(i, j)] = 1.75 * sq * (1 + 0.16 * md * Math.sin(2 * th + 1)); zb[idx(i, j)] = -1.15 * sq * (1 + 0.16 * md * Math.cos(2 * th - 0.5)); }
           }
           ver++; z0t = zt.slice(); z0b = zb.slice(); nRem = [0, 0]; nextFace = 'A'; last = null; msg = ''; stack.length = 0;
         }
