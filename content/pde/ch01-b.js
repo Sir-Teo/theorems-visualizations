@@ -2,6 +2,7 @@
 import { symbol, charDirs } from './ch01.shared.js';
 
 /** Complex helpers for the Cauchy–Kovalevskaya example: F(z) = 1/(1 + z²). */
+const sup10 = (x) => { const e = Math.floor(Math.log10(x)), m = x / 10 ** e, SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' }; return `${m.toFixed(1)}×10${String(e).split('').map((c) => SUP[c]).join('')}`; };
 const cmul = (p, q) => [p[0] * q[0] - p[1] * q[1], p[0] * q[1] + p[1] * q[0]];
 const cdiv = (p, q) => { const d = q[0] * q[0] + q[1] * q[1]; return [(p[0] * q[0] + p[1] * q[1]) / d, (p[1] * q[0] - p[0] * q[1]) / d]; };
 const Fz = (z) => cdiv([1, 0], [1 + (z[0] * z[0] - z[1] * z[1]), 2 * z[0] * z[1]]);
@@ -30,12 +31,12 @@ A problem that fails one of these is **ill posed**. Physical problems are expect
       viz(v) {
         const M = v.M, TAU = 2 * Math.PI, Y = 2.5, NN = 24;
         const PROB = {
-          transport: { label: 'transport $u_t+u_x=0$', ok: true, m: () => 1, ph: (n, t) => -n * t, env: () => 1 },
-          heat: { label: 'heat equation', ok: true, m: (n, t) => Math.exp(-n * n * t), env: (n, t) => Math.exp(-n * n * t) },
-          wave: { label: 'wave equation', ok: true, m: (n, t) => Math.cos(n * t), env: () => 1 },
-          dir: { label: 'Laplace, Dirichlet strip', ok: true, m: (n, t) => Math.sinh(n * (Y - t)) / Math.sinh(n * Y), env: (n, t) => Math.sinh(n * (Y - t)) / Math.sinh(n * Y) },
-          cauchy: { label: 'Laplace, Cauchy data', ok: false, m: (n, t) => Math.min(1e150, Math.cosh(n * t)), env: (n, t) => Math.min(1e150, Math.cosh(n * t)) },
-          back: { label: 'heat, backward in time', ok: false, m: (n, t) => Math.min(1e150, Math.exp(n * n * t)), env: (n, t) => Math.min(1e150, Math.exp(n * n * t)) },
+          transport: { label: 'transport', ok: true, m: () => 1, ph: (n, t) => -n * t, env: () => 1 },
+          heat: { label: 'heat', ok: true, m: (n, t) => Math.exp(-n * n * t), env: (n, t) => Math.exp(-n * n * t) },
+          wave: { label: 'wave', ok: true, m: (n, t) => Math.cos(n * t), env: () => 1 },
+          dir: { label: 'Laplace: Dirichlet data', ok: true, m: (n, t) => Math.sinh(n * (Y - t)) / Math.sinh(n * Y), env: (n, t) => Math.sinh(n * (Y - t)) / Math.sinh(n * Y) },
+          cauchy: { label: 'Laplace: Cauchy data', ok: false, m: (n, t) => Math.min(1e150, Math.cosh(n * t)), env: (n, t) => Math.min(1e150, Math.cosh(n * t)) },
+          back: { label: 'backward heat', ok: false, m: (n, t) => Math.min(1e150, Math.exp(n * n * t)), env: (n, t) => Math.min(1e150, Math.exp(n * n * t)) },
         };
         const COL = { transport: 'teal', heat: 'green', wave: 'blue', dir: 'purple', cauchy: 'red', back: 'orange' };
         const which = v.select('problem', Object.entries(PROB).map(([value, o]) => ({ value, label: o.label })), 'heat');
@@ -60,11 +61,12 @@ A problem that fails one of these is **ill posed**. Physical problems are expect
           const u0 = (x, tt) => evolve(P, base, x, tt, 1), ut = (x) => u0(x, t) + evolve(P, per, x, t, eps);
           let dmax = 0, amax = 0; const pts = [], pts2 = [];
           for (let j = 0; j <= 400; j++) { const x = (TAU * j) / 400, a = u0(x, t), b = ut(x); dmax = Math.max(dmax, Math.abs(b - a)); amax = Math.max(amax, Math.abs(b)); pts.push([x, a]); pts2.push([x, b]); }
-          const R = Math.max(1.5, 1.12 * amax); s.setView([0, TAU], [-R, R]);
+          const R = Math.max(1.5, 1.12 * amax), k = R / 1.5; s.setView([0, TAU], [-1.5, 1.5]);
           s.hline(0, { color: 'faint', width: 1 });
-          s.fn((x) => u0(x, 0), { color: 'muted', width: 1.3, dash: [5, 4], n: 300 });
-          s.path(pts2, { color: 'orange', width: 2.8 }); s.path(pts, { color: 'accent', width: 2.4 });
-          s.corner(R > 2 ? `plot scale ±${v.sci(R, 2).replace(/\\times/g, '×').replace(/[{}^]/g, '')}` : '', 'tl', { color: 'muted' });
+          s.fn((x) => u0(x, 0) / k, { color: 'muted', width: 1.3, dash: [5, 4], n: 300 });
+          s.path(pts2.map(([x, y]) => [x, y / k]), { color: 'orange', width: 2.8 }); s.path(pts.map(([x, y]) => [x, y / k]), { color: 'accent', width: 2.4 });
+          s.setLabels(undefined, k > 1.001 ? `u / ${sup10(k)}` : 'u');
+          s.corner(k > 1.001 ? `plot scale: one unit = ${sup10(k)}` : '', 'tl', { color: 'ink', weight: 600 });
           // amplification panel
           for (const [key, Q] of Object.entries(PROB)) {
             if (Q === P) continue;
@@ -75,10 +77,10 @@ A problem that fails one of these is **ill posed**. Physical problems are expect
           sm.vline(kS.value, { color: 'gold', width: 1.5 });
           let C = 0; for (let n = 1; n <= kS.value; n++) C = Math.max(C, Math.abs(P.env(n, t)));
           sm.dot(kS.value, Math.min(1e8, Math.max(1e-8, C)), { r: 5, color: 'gold' });
-          sm.text('amplification 1', 1.5, 1, { color: 'muted', size: 11, dy: -6 });
+          sm.text('amplification 1', 15, 1, { color: 'ink', size: 11, dy: 8, align: 'center' });
           info = { P, dmax, eps, C, t, amax };
         });
-        v.legend([['muted', 'initial datum', { dash: true }], ['accent', 'solution, exact data'], ['orange', 'solution, perturbed data'], ['gold', 'current $K$']]);
+        v.legend([['muted', 'initial datum', { dash: true }], ['accent', 'solution, exact data'], ['orange', 'solution, perturbed data'], ['gold', 'current $K$'], ...Object.entries(PROB).map(([k, q]) => [COL[k], q.label, { dot: true }])]);
         v.readout(() => {
           if (!info) return '';
           const { P, dmax, eps, C, t } = info, r = dmax / eps;
@@ -165,7 +167,7 @@ Equivalently the symmetric matrix $A=\begin{pmatrix}a&b\\b&c\end{pmatrix}$ has e
         const ex = v.select('example', [{ value: 'tricomi', label: 'Tricomi' }, { value: 'circle', label: 'type changes on a circle' }, { value: 'shear', label: 'a, b, c = 1, x, 0.2' }], 'tricomi', { onChange: (k) => { aI.set(EX[k][0]); bI.set(EX[k][1]); cI.set(EX[k][2]); } });
         const aS = v.slider('$a$', -2, 2, 1, { step: 0.05 }), bS = v.slider('$b$', -2, 2, 0, { step: 0.05 }), cS = v.slider('$c$', -2, 2, -1, { step: 0.05 });
         const aI = v.input('$a(x,y)=$', 'y', { vars: ['x', 'y'], width: 120 }), bI = v.input('$b(x,y)=$', '0', { vars: ['x', 'y'], width: 120 }), cI = v.input('$c(x,y)=$', '1', { vars: ['x', 'y'], width: 120 });
-        const s = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: 'type of the equation and its characteristics', weight: 1.2 });
+        const s = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: 'type of the equation and its characteristics', weight: 1.1 });
         const sq = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, axes: true, ticks: false, title: 'symbol $Q(\\xi,\\eta)=a\\xi^2+2b\\xi\\eta+c\\eta^2=\\pm1$ at the gold point', weight: 1, minWidth: 250 });
         const P = s.handle(0.9, 0.7, { color: 'gold', r: 8, label: 'P', labelPos: 'ne', constrain: { x: [-1.9, 1.9], y: [-1.9, 1.9] } });
         const coef = (x, y) => (md.value === 'const' ? [aS.value, bS.value, cS.value] : [aI.fn ? aI.fn(x, y) : 0, bI.fn ? bI.fn(x, y) : 0, cI.fn ? cI.fn(x, y) : 0]);
@@ -180,7 +182,7 @@ Equivalently the symmetric matrix $A=\begin{pmatrix}a&b\\b&c\end{pmatrix}$ has e
         v.render(() => {
           const isC = md.value === 'const';
           ex.el.hidden = isC; aS.el.hidden = bS.el.hidden = cS.el.hidden = !isC; aI.el.hidden = bI.el.hidden = cI.el.hidden = isC; P.visible = !isC;
-          s.raster((x, y) => { const t = typeAt(x, y); return t ? v.rgb(tyc[t]).slice(0, 3).concat([0.3]) : null; }, { res: 4, key: `${md.value}|${aS.value}|${bS.value}|${cS.value}|${aI.value}|${bI.value}|${cI.value}` });
+          s.raster((x, y) => { const t = typeAt(x, y); return t ? v.rgb(tyc[t]).slice(0, 3).concat([0.3]) : null; }, { res: 4, rect: [-2, -2, 2, 2], key: `${md.value}|${aS.value}|${bS.value}|${cS.value}|${aI.value}|${bI.value}|${cI.value}` });
           s.path([[-2, -2], [2, -2], [2, 2], [-2, 2]], { close: true, color: 'ink', width: 1, alpha: 0.3 });
           const L = 0.26;
           for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) {
@@ -196,7 +198,7 @@ Equivalently the symmetric matrix $A=\begin{pmatrix}a&b\\b&c\end{pmatrix}$ has e
           const Q = (x, y) => a * x * x + 2 * b * x * y + c * y * y;
           sq.contour(Q, [1], { color: 'accent', width: 2.6, res: 240 }); sq.contour(Q, [-1], { color: 'red', width: 2.2, res: 240 });
           for (const d of ds) { const nx = -d[1], ny = d[0]; sq.line(-3 * nx, -3 * ny, 3 * nx, 3 * ny, { color: 'muted', width: 1.4, dash: [6, 4] }); }
-          sq.text('Q = 1', 2.9, -2.7, { color: 'accent', size: 12, align: 'right' }); sq.text('Q = −1', 2.9, -2.35, { color: 'red', size: 12, align: 'right' });
+          sq.text('Q = 1', -2.9, 2.7, { color: 'accent', size: 12 }); sq.text('Q = −1', -2.9, 2.35, { color: 'red', size: 12 });
           info = { a, b, c, sy, ds, at: typeAt(P.x, P.y) };
         });
         v.legend([['orange', 'hyperbolic region', { area: true }], ['accent', 'elliptic region', { area: true }], ['green', 'parabolic', { area: true }], ['ink', 'characteristic directions (two families)']]);
@@ -305,7 +307,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
         const eq = v.select('equation', [{ value: 'lap', label: 'Laplace $u_{xx}+u_{yy}=0$' }, { value: 'wave', label: 'wave $u_{xx}-u_{yy}=0$' }], 'wave');
         const thS = v.slider('angle $\\theta$ of the data line (°)', 0, 180, 20, { step: 1 });
         const nS = v.slider('degree $N$', 2, NMAX, 16, { int: true });
-        const s = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: 'partial sum $S_N$ of the Taylor series', weight: 1.1 });
+        const s = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: 'partial sum $S_N$ (blank where $|S_N|>4$: diverged)', weight: 1.1 });
         const se = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: '$\\log_{10}|S_N-u|$', weight: 1.1, minWidth: 250 });
         const sc = v.stage({ x: [0, NMAX], y: [1e-12, 1e8], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: 'degree N', ylabel: 'max error on circle', title: 'error against degree', weight: 0.9, minWidth: 220 });
         const f = (z) => Fz(z);
@@ -356,7 +358,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
           if (char) { drawLines(s); drawLines(se); s.text('characteristic data line: the recursion divides by 0', 0, 1.5, { align: 'center', color: 'red', size: 13, plate: true }); info = { G, char }; return; }
           const C = coeffs(G), key = `${eq.value}|${thS.value}|${N}`;
           const S = (x, y) => evalN(C, N, x * G.d[0] + y * G.d[1], x * G.nu[0] + y * G.nu[1]);
-          s.heat((x, y) => { const z = S(x, y); return Math.max(-1.5, Math.min(1.5, z)); }, { range: [-1.5, 1.5], cmap: 'theme-diverging', neg: 'blue', pos: 'orange', res: 4, key });
+          s.heat((x, y) => { const z = S(x, y); return Math.abs(z) > 4 ? NaN : Math.max(-1.5, Math.min(1.5, z)); }, { range: [-1.5, 1.5], cmap: 'theme-diverging', neg: 'blue', pos: 'orange', res: 4, key });
           se.heat((x, y) => { const e = Math.abs(S(x, y) - ex(x, y)); return Math.max(-12, Math.min(6, Math.log10(e + 1e-300))); }, { range: [-12, 6], cmap: 'magma', res: 4, key: key + 'e' });
           drawLines(s); drawLines(se);
           for (const st of [s, se]) st.circle(0, 0, 1, { color: 'ink', width: 1.2, alpha: 0.5, dash: [3, 4], fill: false });
@@ -400,7 +402,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
         const cv = v.select('data curve', [{ value: 'line', label: 'segment' }, { value: 'circle', label: 'circle' }, { value: 'parab', label: 'parabola' }, { value: 'wavy', label: 'wavy curve' }], 'line');
         const thS = v.slider('rotation $\\theta$ (°)', 0, 180, 30, { step: 1 });
         const s = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 330, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'y', title: 'data curve and its domain of determinacy', weight: 1.1 });
-        const sq = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 330, axes: 'box', gutter: true, xlabel: 'θ / 180°', ylabel: 'ν^T A ν', title: 'the coefficient of $u_{\\nu\\nu}$', weight: 1, minWidth: 250 });
+        const sq = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 330, axes: 'box', gutter: true, xlabel: 'θ / 180°', ylabel: 'νᵀAν', title: 'the coefficient of $u_{\\nu\\nu}$', weight: 1, minWidth: 250 });
         const curveFn = (name, t) => { // t in [0,1], centred at origin before rotation
           if (name === 'line') return [(2 * t - 1) * LH, 0];
           if (name === 'circle') return [1.2 * Math.cos(2 * Math.PI * t), 1.2 * Math.sin(2 * Math.PI * t)];
@@ -414,7 +416,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
         v.render(() => {
           const A = EQ[eq.value], [a, b, c] = A, th = (thS.value * Math.PI) / 180, name = cv.value, sy = symbol(a, b, c), ds = charDirs(a, b, c), sca = Math.hypot(a, b, c);
           const line = name === 'line';
-          sq.setLabels(line ? 'θ / 180°' : 'position along the curve', 'ν^T A ν');
+          sq.setLabels(line ? 'θ / 180°' : 'position along the curve', 'νᵀAν');
           // determinacy region of a segment (hyperbolic only)
           let area = null;
           if (line && sy.type === 'hyperbolic') {
@@ -428,7 +430,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
           const NP = 160, pts = M.range(NP + 1).map((i) => pt(name, i / NP, th)); const q = []; const chars = [];
           for (let i = 0; i < NP; i++) {
             const tx = pts[i + 1][0] - pts[i][0], ty = pts[i + 1][1] - pts[i][1], qq = qOf(A, tx, ty), t = Math.min(1, Math.abs(qq) / (0.5 * Math.max(sca, 1e-9)));
-            s.line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], { color: v.ramp(1 - t, 'red', 'green'), width: 4.2 });
+            s.line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], { color: v.mix('green', 'red', 1 - t), width: 4.2 });
             q.push([i / NP, qq]); if (i > 0 && q[i - 1][1] * qq < 0) chars.push(pts[i]);
           }
           for (const p of chars) s.dot(p[0], p[1], { r: 6, color: 'red' });
@@ -451,7 +453,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
         v.legend([['green', 'data determine $u_{\\nu\\nu}$'], ['red', 'characteristic points'], ['muted', 'characteristic directions', { dash: true }]]);
         v.readout(() => {
           if (!info) return '';
-          const I = info, angs = I.ds.map((d) => v.fix((((Math.atan2(d[1], d[0]) * 180) / Math.PI) % 180 + 180) % 180, 1) + '^\\circ').join(',\\ ');
+          const I = info, angs = I.ds.map((d) => v.fix((((Math.atan2(d[1], d[0]) * 180) / Math.PI) % 180 + 180) % 180, 1) + '°').join(' and ');
           const head = I.ds.length ? `characteristic directions at ${angs} to the $x$-axis` : 'no real characteristic directions (elliptic): every curve is non-characteristic';
           if (I.name === 'line') {
             const bad = Math.abs(I.qNow) < 0.02 * Math.max(I.sca, 1e-9);

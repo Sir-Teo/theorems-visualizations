@@ -75,7 +75,7 @@ export default {
             sB.setView([0.35, mats.length + 0.65], [0, 1.02]); sB.setLabels(null, 'defect'); sB.setTicks(mats.map((_, g) => [g + 1, String(g + 1)]), null);
             const key = `${sel.value}${what.value}`;
             const cm = (t) => v.M.cmap(Math.sqrt(Math.max(0, Math.min(1, t))), 'viridis');
-            sA.raster((x, y) => (x * x + y * y > 1 ? null : cm(defect(mats, dirOf(rep, x, y)))), { res: 150, key });
+            sA.raster((x, y) => (x * x + y * y > 1 ? null : cm(defect(mats, dirOf(rep, x, y)))), { res: 3, key });
             sA.colorbar([0, 1], cm, { pos: 'right', label: 'defect', length: 150 });
             sA.circle(0, 0, 1, { color: 'ink', width: 1.4, alpha: 0.5 });
             [['x', 1, 0], ['y', 0, 1]].forEach(([l, x, y]) => { sA.dot(x, y, { r: 3, color: 'ink' }); sA.text(l, x * 1.12, y * 1.12, { math: true, size: 14, color: 'muted', align: 'center', baseline: 'middle' }); });

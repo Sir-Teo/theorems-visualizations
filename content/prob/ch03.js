@@ -578,8 +578,8 @@ $$f_{V_{n+1}}(x)=(2n+1)\binom{2n}{n}x^n(1-x)^n,\qquad0<x<1.$$`,
       tags: ['weak convergence', 'compactness'],
       credit: 'Helly, 1912',
       viz(v) {
-        const aS = v.slider('$a$ (mass to $+\\infty$)', 0, 0.4, 0.2, { step: 0.01 });
-        const bS = v.slider('$b$ (mass to $-\\infty$)', 0, 0.4, 0.1, { step: 0.01 });
+        const aS = v.slider('mass $a\\to+\\infty$', 0, 0.4, 0.2, { step: 0.01 });
+        const bS = v.slider('mass $b\\to-\\infty$', 0, 0.4, 0.1, { step: 0.01 });
         const kS = v.slider('stage $k$', 0, 8, 4, { int: true });
         const L = v.stage({ x: [-4, 4], y: [-0.04, 1.06], axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: '$x$', title: 'survivors after stage $k$' });
         const R = v.stage({ x: [1, 20000], xlog: true, y: [-0.6, 8.6], axes: 'box', gutter: true, height: 330, xlabel: 'index $m$', ylabel: 'stage', yticks: [0, 1, 2, 3, 4, 5, 6, 7, 8], title: 'nested subsequences' });

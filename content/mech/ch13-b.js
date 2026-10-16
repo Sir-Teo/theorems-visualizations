@@ -198,7 +198,7 @@ function lorenzRun(sig, rho, b, T, h, every, y0 = [1, 1, 1]) {
   for (let i = 0; i < n; i++) {
     const k1 = f(x, y, z), k2 = f(x + (h / 2) * k1[0], y + (h / 2) * k1[1], z + (h / 2) * k1[2]), k3 = f(x + (h / 2) * k2[0], y + (h / 2) * k2[1], z + (h / 2) * k2[2]), k4 = f(x + h * k3[0], y + h * k3[1], z + h * k3[2]);
     x += (h / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); y += (h / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); z += (h / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
-    if (i % every === 0) out.push([x, y, z]);
+    if ((i + 1) % every === 0) out.push([x, y, z]);
   }
   return out;
 }
@@ -703,7 +703,7 @@ with $b = 1$, $\sigma = \nu/(IK)$ and $\rho$ proportional to the inflow. For sma
           const rho = rS.value, b = 8 / 3, start = lorenzRun(SIG, rho, b, 40, 0.005, 8000, [1, 1, 20]).pop(), N = 150000, P = lorenzRun(SIG, rho, b, N * 0.02, 0.005, 4, start);
           // largest Lyapunov exponent from a renormalised twin
           let A = start.slice(), B = [start[0] + 1e-8, start[1], start[2]], S = 0; const d0 = 1e-8;
-          for (let k = 0; k < 400; k++) { A = lorenzRun(SIG, rho, b, 0.25, 0.005, 1e9, A).length ? lorenzRun(SIG, rho, b, 0.25, 0.005, 50, A).pop() : A; B = lorenzRun(SIG, rho, b, 0.25, 0.005, 50, B).pop(); const d = Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); S += Math.log(d / d0); B = [A[0] + ((B[0] - A[0]) * d0) / d, A[1] + ((B[1] - A[1]) * d0) / d, A[2] + ((B[2] - A[2]) * d0) / d]; }
+          for (let k = 0; k < 400; k++) { A = lorenzRun(SIG, rho, b, 0.25, 0.005, 50, A).pop(); B = lorenzRun(SIG, rho, b, 0.25, 0.005, 50, B).pop(); const d = Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); S += Math.log(d / d0); B = [A[0] + ((B[0] - A[0]) * d0) / d, A[1] + ((B[1] - A[1]) * d0) / d, A[2] + ((B[2] - A[2]) * d0) / d]; }
           const box = []; for (let e = 24; e >= 0.2; e /= Math.SQRT2) { const set = new Set(); for (const p of P) set.add(Math.floor((p[0] + 60) / e) * 1e8 + Math.floor((p[1] + 60) / e) * 1e4 + Math.floor((p[2] + 10) / e)); box.push([e, set.size]); }
           const M = 1600, idx = Array.from({ length: M }, (_, i) => Math.floor((i * P.length) / M)), bins = new Float64Array(64);
           for (let i = 0; i < M; i++) for (let j = i + 1; j < M; j++) { const a = P[idx[i]], c = P[idx[j]], d = Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2]); const k = Math.floor(Math.log2(Math.max(d, 1e-9)) * 4 + 24); bins[clamp(k, 0, 63)]++; }

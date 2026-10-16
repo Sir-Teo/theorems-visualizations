@@ -237,10 +237,10 @@ export function drawRel(v, c, X, Y, S, o = {}) {
     return Y + (G.length - 1) * gap;
   }
   // cycle: triangle
-  const m = S.length, R = rad * 1.9, cy = Y + R * 0.8;
+  const m = S.length, R = rad * 2.5, cy = Y + R * 0.9;
   const pos = range(m).map((k) => [X + R * Math.sin((2 * Math.PI * k) / m), cy - R * Math.cos((2 * Math.PI * k) / m)]);
   for (let x = 0; x < m; x++) for (let y = 0; y < m; y++) if (S[x][y] > 0) arrowPx(v, c, pos[x][0], pos[x][1], pos[y][0], pos[y][1], { color: 'red', width: 1.6, t0: rad + 1, t1: rad + 2, head: 6 });
-  range(m).forEach((k) => chip(v, c, pos[k][0], pos[k][1], k, { r: rad * 0.85 }));
+  range(m).forEach((k) => chip(v, c, pos[k][0], pos[k][1], k, { r: rad * 0.9 }));
   return cy + R;
 }
 /** Compact social relation text with candidate-coloured letters, centred at (X, Y). */

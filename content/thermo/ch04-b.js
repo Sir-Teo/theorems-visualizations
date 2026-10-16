@@ -615,7 +615,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
             br = [[Gl, PHASE.liquid, 'water'], [Gi, PHASE.solid, 'ice']]; Tc = Tm; units = { T: 'K', G: 'kJ/mol', S: 'J/(mol K)', C: 'J/(mol K)', gs: 1e-3 };
           } else if (k === 'mf') {
             const s = (m) => Math.log(2) - ((1 + m) / 2 * Math.log(1 + m) + (1 - m) / 2 * Math.log(Math.max(1e-300, 1 - m)));
-            const mOf = (t) => { if (t >= 1) return 0; let m = 1; for (let i = 0; i < 400; i++) m = Math.tanh(m / t); return m; };
+            const mOf = (t) => (t >= 1 ? 0 : bisect((m) => m - Math.tanh(m / t), 1e-12, 1, 80));
             for (let t = 0.4; t <= 1.6000001; t += 0.0005) { T.push(t); const m = mOf(t); Gs.push(-m * m / 2 - t * s(m)); }
             br = [[(t) => -t * Math.log(2), 'muted', 'm = 0 branch']]; Tc = 1; units = { T: 'J/k', G: 'J', S: 'k', C: 'k', gs: 1 };
           } else {
@@ -661,7 +661,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           // diagnostics
           const k0 = T.findIndex((t) => t >= Tc);
           const dS = S[Math.min(T.length - 1, k0 + 2)] - S[Math.max(0, k0 - 2)];
-          const Cbelow = C[Math.max(0, k0 - 6)], Cabove = C[Math.min(T.length - 1, k0 + 6)];
+          const Cbelow = C[Math.max(0, k0 - 3)], Cabove = C[Math.min(T.length - 1, k0 + 3)];
           let isTest = null;
           if (model.value === 'is') {
             const Cat = (tt) => interp(T.map((t, k) => [t, C[k]]), 0, 1, Tc * (1 - tt));

@@ -275,12 +275,12 @@ The four conditions are independent: for each one there is a rule satisfying the
           if (cur === 'iia') {
             const { p1, p2, S1, S2, x, y } = ex, half = RW / 2;
             [[p1, S1], [p2, S2]].forEach(([p, S], k) => {
-              const X0 = k * half + 18;
-              txt(v, d, k ? 'profile 2' : 'profile 1', X0 + 50, 16, { size: 11, weight: 700, color: 'muted' });
-              drawProfile(v, d, X0, 38, p, { r: 10, colW: 34, ring: (i, cc) => (cc === x || cc === y ? 'gold' : null), alpha: (i, cc) => (cc === x || cc === y ? 1 : 0.45) });
-              social(S, X0 + 150, 38, (cc) => (cc === x || cc === y ? 'gold' : null));
+              const X0 = k * half + 12, sx = X0 + Math.min(140, half - 52);
+              txt(v, d, k ? 'profile 2' : 'profile 1', X0 + 46, 16, { size: 11, weight: 700, color: 'muted' });
+              drawProfile(v, d, X0, 38, p, { r: 10, colW: 31, ring: (i, cc) => (cc === x || cc === y ? 'gold' : null), alpha: (i, cc) => (cc === x || cc === y ? 1 : 0.45) });
+              social(S, sx, 38, (cc) => (cc === x || cc === y ? 'gold' : null));
               const r = S[x][y];
-              txt(v, d, `${LET[x]} ${r > 0 ? '≻' : r < 0 ? '≺' : '~'} ${LET[y]}`, X0 + 150, 160, { size: 14, weight: 800, color: k ? 'red' : 'ink' });
+              txt(v, d, `${LET[x]} ${r > 0 ? '≻' : r < 0 ? '≺' : '~'} ${LET[y]}`, sx, 160, { size: 14, weight: 800, color: k ? 'red' : 'ink' });
             });
             txt(v, d, `every voter ranks ${LET[x]} vs ${LET[y]} the same way in both profiles`, RW / 2, 196, { size: 11.5, weight: 650 });
             txt(v, d, `(only ${LET[3 - x - y]} moved), but society’s verdict on ${LET[x]} vs ${LET[y]} changed`, RW / 2, 214, { size: 11.5, weight: 650, color: 'red' });

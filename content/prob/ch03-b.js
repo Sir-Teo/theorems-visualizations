@@ -110,7 +110,7 @@ where the expectation of a complex variable is taken separately on its real and 
           C.path(ts.filter((t) => t <= 0).map(phi), { color: 'orange', width: 1.4, dash: [5, 4] });
           const a = aS.value, b = bS.value, phiT = (t) => at.reduce((z, [x, p]) => [z[0] + p * Math.cos(t * (a * x + b)), z[1] + p * Math.sin(t * (a * x + b))], [0, 0]);
           C.path(ts.filter((t) => t >= 0).map(phiT), { color: 'green', width: 1.2, alpha: 0.7 });
-          C.dot(1, 0, { r: 5, color: 'ink', label: '$\\varphi(0)=1$', labelPos: 'sw' });
+          C.dot(1, 0, { r: 5, color: 'ink' });
           // (d): modulus of continuity over t ∈ [0, 80] versus E|e^{ihX} − 1|
           const hs = Array.from({ length: 101 }, (_, i) => 0.025 * i), grid = Array.from({ length: 2001 }, (_, i) => (80 * i) / 2000);
           const vals = grid.map(phi), om = (h) => grid.reduce((m, t, i) => Math.max(m, cabs(csub(phi(t + h), vals[i]))), 0);
@@ -183,7 +183,7 @@ where the expectation of a complex variable is taken separately on its real and 
       tags: ['characteristic functions'],
       viz(v) {
         const tS = v.slider('$t$', 0, 8, 1.1, { step: 0.01 });
-        const T = v.stage({ x: [-0.28, 1.28], y: [-0.14, 1.0], equal: true, axes: false, height: 290, title: 'weights $\\lambda_i$' });
+        const T = v.stage({ x: [-0.28, 1.28], y: [-0.3, 1.0], equal: true, axes: false, height: 290, title: 'weights $\\lambda_i$' });
         const C = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: true, xticks: [-0.5, 0.5], yticks: [-0.5, 0.5], height: 290, title: '$\\varphi_i$ and $\\sum\\lambda_i\\varphi_i$' });
         const D = v.stage({ x: [-4, 6], y: [0, 0.9], axes: 'box', gutter: true, height: 290, xlabel: '$x$', title: 'mixture law' });
         const V = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]], COL = ['accent', 'orange', 'purple'], NAMES = ['normal', 'exponential', 'mass at 1.5'];
@@ -196,7 +196,7 @@ where the expectation of a complex variable is taken separately on its real and 
           const lam = bary(hW.x, hW.y).map((l) => Math.max(0, l));
           T.poly(V, { fill: 'grid', fillAlpha: 0.25, color: 'muted', width: 1.2 });
           V.forEach((p, i) => { T.dot(p[0], p[1], { r: 7, color: COL[i] }); T.text(NAMES[i], p[0], p[1], { dy: i === 2 ? -16 : 18, align: 'center', size: 11, color: COL[i] }); });
-          T.text(`λ = (${lam.map((l) => fr(l, 2)).join(', ')})`, 0.5, -0.09, { align: 'center', size: 12, color: 'ink' });
+          T.text(`λ = (${lam.map((l) => fr(l, 2)).join(', ')})`, 0.5, -0.24, { align: 'center', size: 12, color: 'ink' });
           const mix = (t) => phis.reduce((z, f, i) => cadd(z, cscale(f(t), lam[i])), [0, 0]);
           unitCircle(C);
           phis.forEach((f, i) => C.path(curvePts(f, 0, 8, 500), { color: COL[i], width: 1.2, alpha: 0.55 }));
