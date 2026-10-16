@@ -342,7 +342,7 @@ export function drawSegs(v, s, parts, X, Y, o = {}) {
     x += w; i = j;
   }
   x = o.align === 'center' ? X - total / 2 : X;
-  parts.forEach((p, i) => { s.textPx(p.s, x, Y, { size, color: p.color || (p.hi ? 'ink' : o.color || 'ink'), weight: p.hi ? 700 : 500, align: 'left', halo: false }); x += widths[i]; });
+  parts.forEach((p, i) => { s.textPx(p.s, x, Y, { size, color: p.color || (p.hi ? 'ink' : o.color || 'ink'), weight: 500, align: 'left', halo: false }); x += widths[i]; });
   return total;
 }
 export const segWidth = (s, parts, size) => { const ctx = s.ctx; ctx.save(); ctx.font = s._font({ size, weight: 500 }); const w = parts.reduce((a, p) => a + ctx.measureText(p.s).width, 0); ctx.restore(); return w; };
@@ -369,9 +369,9 @@ export function drawTreePx(v, s, L, opts = {}) {
   const measure = () => { ctx.save(); ctx.font = s._font({ size, weight: 700 }); const w = L.nodes.map((nd) => Math.max(26, ctx.measureText(labelOf(nd)).width + 14)); ctx.restore(); return w; };
   let widths = measure(), W = rx1 - rx0 - 16;
   while (W / L.width < Math.max(...widths) + 4 && size > 8.5) { size -= 0.5; widths = measure(); }
-  const dx = Math.min(opts.maxDx || 90, W / L.width), totalW = dx * L.width;
+  const dx = Math.min(opts.maxDx || 100, W / L.width), totalW = dx * L.width;
   const ox = rx0 + (rx1 - rx0 - totalW) / 2 + dx / 2;
-  const dy = Math.min(opts.dy || 54, (ry1 - ry0 - 44) / Math.max(1, L.depth)), oy = ry0 + 24 + Math.max(0, (ry1 - ry0 - 44 - dy * L.depth) / 2);
+  const dy = Math.min(opts.dy || 64, (ry1 - ry0 - 44) / Math.max(1, L.depth)), oy = ry0 + 24 + Math.max(0, (ry1 - ry0 - 44 - dy * L.depth) / 2);
   L.nodes.forEach((nd, i) => { nd.px = ox + nd.x * dx; nd.py = oy + nd.d * dy; nd.pw = widths[i]; nd.ph = size + 11; });
   ctx.save();
   for (const nd of L.nodes) for (const k of nd.kids) {
@@ -423,7 +423,7 @@ export function drawDeriv(v, s, root, opts = {}) {
   lay(root);
   ctx.restore();
   const k = Math.max(0.42, Math.min(1.25, (rx1 - rx0 - 14) / root.w, (ry1 - ry0 - 14) / root.h));
-  const X0 = rx0 + (rx1 - rx0 - root.w * k) / 2, Y1 = Math.min(ry1 - 8, ry0 + (ry1 - ry0 + root.h * k) / 2);
+  const X0 = rx0 + (rx1 - rx0 - root.w * k) / 2, Y1 = opts.anchor === 'top' ? ry0 + 10 + root.h * k : Math.min(ry1 - 8, ry0 + (ry1 - ry0 + root.h * k) / 2);
   const out = [];
   const draw = (n, x, yb) => {
     const cx = x + n.inner / 2, ty = yb - rowH / 2 + 2;
@@ -454,7 +454,7 @@ export function drawDeriv(v, s, root, opts = {}) {
       ctx.strokeStyle = v.color('orange', 1); ctx.lineWidth = 1.4; ctx.stroke(); ctx.restore();
     }
   }
-  return { scale: k, nodes: out.map((o) => o.n) };
+  return { scale: k, nodes: out.map((o) => o.n), bottom: Y1 };
 }
 export function hitDeriv(info, px, py) {
   let best = null;

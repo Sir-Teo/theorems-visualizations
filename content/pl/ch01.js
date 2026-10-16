@@ -108,6 +108,7 @@ const counterexample = (P, maxSize = 7) => {
 };
 
 // ---------- 1.3: judgments, rules and derivation trees ----------
+const FIRST = { nv: 'NV-Succ', val: 'V-Num', step: 'E-If', big: 'B-IfTrue' };
 const J = {
   nv: (t) => ({ k: 'nv', t }), val: (t) => ({ k: 'val', t }), step: (t, u) => ({ k: 'step', t, u }), big: (t, u) => ({ k: 'big', t, u }),
 };
@@ -370,7 +371,7 @@ export default {
           fr.push({ t, node: null, done: new Set(done), ok: new Map(ok), kind: 'end', note: allok ? String.raw`**Q.E.D.** Every node was proved from its children, so $${P.tex}$ for this term — and, the same argument working for any term, for all terms.` : `**The induction does not go through.** At least one case fails, so this attempt proves nothing${prop.value === 'depth' || prop.value === 'strict' ? ' — and indeed $P$ is false in general' : ''}.` });
           return fr;
         };
-        const S = v.steps({ frames, still: 5, speed: 1.1 });
+        const S = v.steps({ frames, start: 5, still: 5, speed: 1.1 });
         void LT;
         v.render(() => {
           if (f.err) { drawParseError(v, sT, f.src, f.err); drawParseError(v, sR, f.src, f.err); return; }
@@ -412,7 +413,7 @@ export default {
       num: '1.3', kind: 'Definition', name: 'Inference rules and derivation trees',
       statement: String.raw`An **inference rule** has premises (judgments) above a line and a conclusion below. A set of rules **inductively defines** a relation or predicate: the judgment $J$ holds exactly when it has a **derivation**, a finite tree whose root is $J$, whose every node is the conclusion of a rule instance, and whose children are the premises of that instance (axioms have none). The set is the *least* one closed under the rules; the height of a derivation is a measure for induction on derivations.`,
       idea: String.raw`Reading rules top-down builds up the set (stage by stage: all conclusions whose premises were already derived); reading them bottom-up is proof search, as here: to derive $J$, choose a rule whose conclusion has the right *shape*, and recursively derive its premises. A rule applied to a judgment of the wrong shape, or whose premises have no derivation, yields no tree at all.`,
-      caption: String.raw`Pick a judgment kind, type its terms, choose a rule in the palette and **click an open goal (orange, dashed)** to apply it: its premises appear above the line. A rule of the wrong shape is refused with the reason. “Solve” runs proof search; a false goal such as \`0 nv\` for a non-numeral has no derivation. For $nv$ the height of the tree is the stage at which the term enters the inductive set.`,
+      caption: String.raw`Pick a judgment kind, type its terms, choose a rule in the palette and **click an open goal (orange, dashed)** to apply it: its premises appear above the line. A rule of the wrong shape is refused with the reason. “Solve” runs proof search; a false goal such as “succ true nv” for a non-numeral has no derivation. For $nv$ the height of the tree is the stage at which the term enters the inductive set.`,
       deps: ['pl-1.1'], refs: ['Pierce §3.5'], tags: ['inference rules', 'derivations', 'induction'],
       viz(v) {
         let ro = ""; v.readout(() => ro);
@@ -431,18 +432,19 @@ export default {
         };
         let root = null, hist = [], msg = '', msgBad = false, info = null;
         const f = field(v, 'goal', DEF.step, (s) => parseGoal(s), { width: 440, onChange: () => resetGoal() });
-        const rulePick = v.select('Rule', RULESETS.step.map((r) => ({ value: r, label: r })), 'E-IfTrue', {});
+        const rulePick = v.select('Rule', RULESETS.step.map((r) => ({ value: r, label: r.replace('-', '\u2011') })), 'E-IfTrue', {});
         function rebuildRules() {
           // the select is rebuilt by hiding: we keep one segmented control per judgment kind
           for (const [k, c] of Object.entries(pickers)) c.el.hidden = k !== kindSel.value;
         }
         const pickers = {};
-        const mkPicker = (k, def) => { pickers[k] = k === 'step' ? rulePick : v.select('Rule', RULESETS[k].map((r) => ({ value: r, label: r })), def, {}); };
+        const mkPicker = (k, def) => { pickers[k] = k === 'step' ? rulePick : v.select('Rule', RULESETS[k].map((r) => ({ value: r, label: r.replace('-', '\u2011') })), def, {}); };
         mkPicker('step'); mkPicker('nv', 'NV-Zero'); mkPicker('val', 'V-Num'); mkPicker('big', 'B-Value');
         function resetGoal() {
           const k = kindSel.value;
           if (f.src === DEF.nv || f.src === DEF.val || f.src === DEF.step || f.src === DEF.big) { /* keep user text unless it is a stock example of another kind */ }
           const g = f.ast; root = g && g.k === k ? newNode(g) : null; hist = []; msg = ''; info = null;
+          if (root && FIRST[k]) { const a = applyRule(FIRST[k], root.g); if (!a.error) { root.rule = FIRST[k]; root.open = false; root.kids = a.pre.map(newNode); } }
         }
         const startKind = () => { const k = kindSel.value; f.set(DEF[k]); };
         v.button('Example for this judgment', () => { startKind(); });
@@ -477,7 +479,7 @@ export default {
     {
       num: '1.4', kind: 'Definition', name: 'Small-step operational semantics',
       statement: String.raw`A **small-step (structural operational) semantics** for the language of booleans and numbers $\mathrm{NB}$ is a binary relation $t\to t'$ on terms ("$t$ takes one step to $t'$"), defined inductively by the rules E-IfTrue, E-IfFalse, E-PredZero, E-PredSucc, E-IszeroZero, E-IszeroSucc (the **computation rules**: they rewrite a **redex**) and the **congruence rules** E-If, E-Succ, E-Pred, E-Iszero, which allow a step inside the evaluated position. An **evaluation** of $t$ is a sequence $t\to t_1\to t_2\to\cdots$.`,
-      idea: String.raw`Computation rules say what the basic operations do; congruence rules fix the *evaluation order* — here the condition of an \`if\` and the argument of a prefix operator are evaluated first, and the branches never. Because each step is derived by a tree of rules, the redex of a step is the place where the derivation bottoms out in a computation rule. The relation is Plotkin's structural operational semantics: meaning defined by induction on syntax, one rewrite at a time.`,
+      idea: String.raw`Computation rules say what the basic operations do; congruence rules fix the *evaluation order* — here the condition of an if and the argument of a prefix operator are evaluated first, and the branches never. Because each step is derived by a tree of rules, the redex of a step is the place where the derivation bottoms out in a computation rule. The relation is Plotkin's structural operational semantics: meaning defined by induction on syntax, one rewrite at a time.`,
       caption: String.raw`Type a term (or pick one) and step through its evaluation. On the left the term, with the redex highlighted in the colour of the rule that fires (congruence rules in blue, computation rules by kind), and its abstract tree with the redex subtree in gold; on the right the derivation of this very step — congruence rules stack above the computation rule that does the work.`,
       deps: ['pl-1.3'], refs: ['Pierce §3.5'], tags: ['small-step', 'reduction'],
       credit: 'Plotkin, 1981 (structural operational semantics)',
@@ -506,8 +508,9 @@ export default {
           const inR = (nd) => { if (!fr.step) return false; for (let q = nd; q; q = q.parent) if (q.n.term === fr.step.redex) return true; return false; };
           drawTreePx(v, sT, L, { region: [0, 50, sT.W, sT.H], fill: (nd) => (inR(nd) ? 'gold' : null), ring: (nd) => (fr.step && nd.n.term === fr.step.redex ? col : null) });
           if (fr.step) {
-            drawDeriv(v, sD, fr.step.deriv, { size: 13, region: [0, 8, sD.W, sD.H - 60], color: (n) => RULE_COLOR[n.rule] || 'ink' });
-            drawRuleSchema(v, sD, fr.step.axiom, RULES, sD.W / 2, sD.H - 48, { color: RULE_COLOR[fr.step.axiom], size: 12 });
+            const di = drawDeriv(v, sD, fr.step.deriv, { size: 14, anchor: 'top', region: [0, 8, sD.W, sD.H - 110], color: (n) => RULE_COLOR[n.rule] || 'ink' });
+            sD.textPx('The computation rule that does the work:', 14, Math.max(di.bottom + 34, 130), { size: 12, weight: 700, color: 'muted', halo: false });
+            drawRuleSchema(v, sD, fr.step.axiom, RULES, sD.W / 2, Math.max(di.bottom + 58, 154), { color: RULE_COLOR[fr.step.axiom], size: 13 });
           } else {
             sD.textPx(fr.status === 'value' ? 'No rule applies: this term is a value.' : fr.status === 'stuck' ? 'No rule applies, yet it is not a value: the term is stuck.' : 'Step limit reached.', sD.W / 2, sD.H / 2, { align: 'center', size: 15, weight: 700, color: fr.status === 'stuck' ? 'red' : 'green' });
           }
@@ -531,7 +534,7 @@ export default {
     {
       num: '1.5', kind: 'Theorem', name: 'Determinacy of one-step evaluation',
       statement: String.raw`If $t\to t'$ and $t\to t''$ then $t'=t''$: every term has at most one successor, so evaluation is a function (partial: it is undefined on normal forms).`,
-      idea: String.raw`By induction on the derivation of $t\to t'$. Look at the last rule used. If it is a computation rule, the *shape* of $t$ ( \`if true …\`, \`pred 0\`, \`pred (succ nv)\`, …) already pins down which rule applies to the root, and no congruence rule can apply there because its premise would be a step of a *value* (a value is a normal form, an easy lemma). If it is a congruence rule, the other derivation must end in the same rule, and the induction hypothesis on the premise finishes. The proof is a check that the left-hand sides of the rules are pairwise disjoint.`,
+      idea: String.raw`By induction on the derivation of $t\to t'$. Look at the last rule used. If it is a computation rule, the *shape* of $t$ ( if true …, pred 0, pred (succ nv), …) already pins down which rule applies to the root, and no congruence rule can apply there because its premise would be a step of a *value* (a value is a normal form, an easy lemma). If it is a congruence rule, the other derivation must end in the same rule, and the induction hypothesis on the premise finishes. The proof is a check that the left-hand sides of the rules are pairwise disjoint.`,
       caption: String.raw`Type a term: every subterm where some rule can fire gets a ring, one colour per successor, and the successors are listed. Then add one of our two **extra rules** (illustrative, in the spirit of Pierce's exercises) and watch two different successors appear. The matrix shows, over all terms up to size 6, which pairs of rules ever compete — empty off the diagonal exactly when evaluation is deterministic.`,
       deps: ['pl-1.4', 'pl-1.2'], refs: ['Pierce §3.5'], tags: ['determinacy', 'small-step'],
       viz(v) {
@@ -558,20 +561,18 @@ export default {
           // conflict matrix
           const c = conflicts(R, 6);
           const names = R;
-          const n = names.length, m = Math.min(sM.W, sM.H) - 70, cell = Math.floor(Math.min(m / n, 26)), X0 = 150, Y0 = 50;
-          sM.ctx.save();
-          names.forEach((a, i) => {
-            sM.textPx(a, X0 - 6, Y0 + i * cell + cell / 2, { align: 'right', size: 10.5, color: RULE_COLOR[a], weight: 600, halo: false });
-            sM.textPx(a, X0 + i * cell + cell / 2, Y0 - 6, { align: 'left', size: 10.5, color: RULE_COLOR[a], weight: 600, halo: false });
-          });
-          sM.ctx.restore();
+          const n = names.length, X0 = 128, Y0 = 44, cell = Math.floor(Math.min((sM.W - X0 - 10) / n, (sM.H - Y0 - 34) / n, 30));
           const ctx = sM.ctx;
+          names.forEach((a, i) => {
+            sM.textPx(`${i + 1} ${a}`, X0 - 6, Y0 + i * cell + cell / 2, { align: 'right', size: 10.5, color: RULE_COLOR[a], weight: 600, halo: false });
+            sM.textPx(String(i + 1), X0 + i * cell + cell / 2, Y0 - 12, { align: 'center', size: 10.5, color: RULE_COLOR[a], weight: 700, halo: false });
+          });
           names.forEach((a, i) => names.forEach((b, j) => {
             const key = [a, b].sort().join('|'), cnt = c.pairs.get(key) || 0, isDiag = i === j;
             ctx.save(); ctx.fillStyle = cnt && !isDiag ? v.color('red', 0.55) : v.color('faint', isDiag ? 0.35 : 0.12); ctx.fillRect(X0 + j * cell + 1, Y0 + i * cell + 1, cell - 2, cell - 2); ctx.restore();
             if (cnt && !isDiag) sM.textPx(cnt > 99 ? '99+' : String(cnt), X0 + j * cell + cell / 2, Y0 + i * cell + cell / 2, { align: 'center', size: 9.5, weight: 700, color: 'ink', halo: false });
           }));
-          sM.textPx(c.multi ? `${c.multi.toLocaleString('en-US')} of ${c.total.toLocaleString('en-US')} terms have two different successors` : `0 of ${c.total.toLocaleString('en-US')} terms have two successors`, 12, sM.H - 14, { size: 12.5, weight: 700, color: c.multi ? 'red' : 'green', halo: false });
+          sM.textPx(c.multi ? `${c.multi.toLocaleString('en-US')} of ${c.total.toLocaleString('en-US')} terms have two different successors` : `0 of ${c.total.toLocaleString('en-US')} terms have two successors`, 12, sM.H - 12, { size: 12.5, weight: 700, color: c.multi ? 'red' : 'green', halo: false });
           void T;
         });
       },
@@ -581,7 +582,7 @@ export default {
       num: '1.6', kind: 'Definition', name: 'Values, normal forms and stuck terms',
       statement: String.raw`A term is a **value** if it is $\mathtt{true}$, $\mathtt{false}$ or a numeric value $nv ::= 0\mid\mathtt{succ}\,nv$ — the possible final answers. A term is a **normal form** if no evaluation rule applies to it, i.e. there is no $t'$ with $t\to t'$. Every value is a normal form; a normal form that is not a value is a **stuck term**: evaluation has halted without producing an answer, as in $\mathtt{succ}\ \mathtt{true}$ or $\mathtt{if}\ 0\ \mathtt{then}\ 1\ \mathtt{else}\ 2$.`,
       idea: String.raw`Values are defined by shape, normal forms by the absence of steps, and the gap between them is exactly what a type system will later rule out. Being stuck is a *meaningful* error: the semantics describes the state a real implementation would crash or misbehave in, so safety can be stated as "well-typed terms never get stuck". A stuck term always has a culprit: an operator applied to an operand of the wrong kind.`,
-      caption: String.raw`Edit a term: the badge says value / can step / stuck, and for a stuck term the offending operator is ringed red. The bar chart sorts *all* terms of each size into the three classes (exhaustive enumeration — pick the largest size to see about 10⁵ terms); click an example to load it. Note that values are rare and that most normal forms among larger terms are stuck.`,
+      caption: String.raw`Edit a term: the badge says value / can step / stuck, and for a stuck term the offending operator is ringed red. The bar chart sorts *all* terms of each size into the three classes (exhaustive enumeration — pick the largest size to see about 10⁵ terms); use “Try” for examples. Note that values are rare and that most normal forms among larger terms are stuck.`,
       deps: ['pl-1.4'], refs: ['Pierce §3.5'], tags: ['values', 'normal forms', 'stuck'],
       viz(v) {
         let ro = ""; v.readout(() => ro);
@@ -590,8 +591,6 @@ export default {
         const f = field(v, 'term', PRESETS_NB.stuck, parseNB, { width: 340 });
         const pre = v.select('Try', [{ value: 'stuck', label: 'succ true' }, { value: 'bad', label: 'inner stuck' }, { value: 'ex1', label: 'steps' }, { value: 'val', label: 'a value' }], 'stuck', { onChange: () => f.set(pre.value === 'val' ? 'succ succ succ 0' : PRESETS_NB[pre.value] === undefined ? 'succ true' : PRESETS_NB[pre.value]) });
         const N = v.slider('largest size shown', 3, 8, 6, { step: 1, int: true });
-        let exBoxes = [];
-        sB.onClick((x, y) => { for (const b of exBoxes) if (x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1) { f.set(str(b.t)); return; } });
         v.render(() => {
           if (f.err) drawParseError(v, sT, f.src, f.err);
           else {
@@ -605,7 +604,6 @@ export default {
             ro = (`**${str(t)}** is ${c === 'value' ? 'a **value** (and so a normal form).' : c === 'steps' ? `not a value and **can step** (to ${str(step1(t))}); it is not a normal form.` : `a **stuck term**: a normal form that is not a value${bl ? ` — culprit: **${str(bl)}**, where ${bl.op === 'if' ? 'the condition is not a boolean' : `${bl.op} is applied to a non-number`}` : ''}.`}`);
           }
           const rows = classCounts(N.value);
-          exBoxes = [];
           sB.setView([0.4, N.value + 0.6], [0, 1]);
           sB.setTicks(Array.from({ length: N.value }, (_, i) => i + 1), null);
           rows.forEach((r) => {
@@ -618,8 +616,6 @@ export default {
             sB.text(tot.toLocaleString('en-US'), r.n, 1.045, { size: 10, align: 'center', color: 'muted' });
             // example chips only for the largest size shown: row of three small buttons
           });
-          const last = rows[rows.length - 1];
-          ['value', 'stuck', 'steps'].forEach((k, i) => { const e = last.ex[k][0]; if (e) { const y = 0.9 - i * 0.12; sB.text(`${CLS[k][1]}: ${str(e).length > 30 ? str(e).slice(0, 28) + '…' : str(e)}`, 0.55, y, { size: 10.5, color: 'ink', weight: 600, plate: true }); exBoxes.push({ x0: 0.4, x1: N.value * 0.5, y0: y - 0.05, y1: y + 0.05, t: e }); } });
           void 0;
         });
         v.legend([['green', 'value'], ['red', 'stuck (normal, not a value)'], ['accent', 'can step']]);
