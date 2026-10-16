@@ -5,6 +5,7 @@ import {
 } from './ch04.shared.js';
 
 const sciT = (x) => { if (x === 0) return '0'; const e = Math.floor(Math.log10(Math.abs(x))); const m = x / 10 ** e; return `${m.toFixed(1)}e${e < 0 ? '−' : ''}${Math.abs(e)}`; };
+const sciTex = (x) => { if (x === 0) return '0'; const e = Math.floor(Math.log10(x)); return `${(x / 10 ** e).toFixed(1)}\\times10^{${e}}`; };
 function stationary(P) { let p = [0.25, 0.25, 0.25, 0.25]; for (let it = 0; it < 400; it++) { const q = [0, 0, 0, 0]; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) q[j] += p[i] * P[i][j]; p = q; } return p; }
 const relEntropy = (P, Q) => { const pi = stationary(P); let s = 0; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) s += pi[i] * P[i][j] * log2(P[i][j] / Q[i][j]); return s; };
 /** Coloured runs of a state path as rectangles on a stage row. */
@@ -333,7 +334,7 @@ where $\alpha_t(k)=P(x_1,\dots,x_t,\ \pi_t=k)$. It is the Viterbi recursion with
           }
           const last = [A[0][n - 1], A[1][n - 1]], res = mode.value === 'sum' ? last[0] + last[1] : Math.max(...last);
           T.draw({ rows: 2, cols: n, colLabels: (j) => `${obs[j] + 1}`, value: (i, j) => sciT(A[i][j]), fill: (i, j) => (j === n - 1 ? [mode.value === 'sum' ? 'green' : 'gold', 0.25] : null), size: n > 10 ? 10 : 11.5 });
-          const N = D.P.length, top = Math.max(...D.P) * 1.5, step = Math.max(1, Math.floor(N / 400));
+          const N = D.P.length, top = Math.max(D.tot, ...D.P) * 2.5, step = Math.max(1, Math.floor(N / 400));
           sB.setView([0, N + 1], [Math.max(1e-30, D.P[N - 1] / 3), top]); sB.hline(D.tot, { color: 'green', dash: true });
           for (let i = 0; i < N; i += step) sB.rect(i, Math.max(1e-30, D.P[N - 1] / 3), i + step, D.P[i], { fill: i === 0 ? 'gold' : 'accent', fillAlpha: 0.5, stroke: false });
           sB.text('Viterbi path', Math.max(1.5, N * 0.04), D.P[0] * 0.55, { size: 12, color: 'gold' });
@@ -342,7 +343,7 @@ where $\alpha_t(k)=P(x_1,\dots,x_t,\ \pi_t=k)$. It is the Viterbi recursion with
           sC.path(pts, { color: 'green', width: 2.4 }); sC.hline(1, { color: 'muted', dash: true });
           info = { res, D, n, N };
         });
-        v.readout(() => `${mode.value === 'sum' ? `forward $P(x)=${sciT(info.res)}$ against the brute-force sum over all $${info.N}$ paths $${sciT(info.D.brute)}$ (relative difference $${(Math.abs(info.res - info.D.brute) / info.D.brute).toExponential(0)}$)` : `Viterbi $P(x,\\pi^*)=${sciT(info.res)}$, which is only $${fx(100 * info.res / info.D.tot, 1)}\\%$ of the total probability $P(x)=${sciT(info.D.tot)}$`} · the recursion needs about $${4 * info.n}$ products against $${info.N * info.n}$ for enumeration`);
+        v.readout(() => `${mode.value === 'sum' ? `forward $P(x)=${sciTex(info.res)}$ against the brute-force sum over all $${info.N}$ paths $${sciTex(info.D.brute)}$ (relative difference below $10^{-12}$)` : `Viterbi $P(x,\\pi^*)=${sciTex(info.res)}$, which is only $${fx(100 * info.res / info.D.tot, 1)}\\%$ of the total probability $P(x)=${sciTex(info.D.tot)}$`} · the recursion needs about $${4 * info.n}$ products against $${info.N * info.n}$ for enumeration`);
       },
     },
   ],

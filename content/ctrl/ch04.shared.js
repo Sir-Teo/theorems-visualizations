@@ -35,23 +35,26 @@ export const zetaOfMp = (m) => { const l = Math.log(m); return -l / Math.sqrt(Ma
 /** Format seconds or a number or "–" for null. */
 export const fx = (x, d = 2) => (x === null || x === undefined || !isFinite(x) ? '–' : String(+x.toFixed(d)).replace('-', '−'));
 /**
- * Delay-differential loop for the plant e^{-θ s}/(τ s + 1) (τ = 0: the pure delay) under integral control ki/s (kind 'I')
- * or proportional control k (kind 'P'): unit-step response by a fixed-step scheme with a history buffer.
- * 'I' (τ = 0): u' = ki (r − y), y(t) = u(t − θ).  'P' (τ > 0): τ y' = −y + k (r − y)(t − θ).
- * Returns y at t = 0, dt, … (T/dt steps).
+ * Unit-step response of the loop "integral controller ki/s around the plant e^{-θ s}/(τ s + 1)" (τ = 0: pure delay),
+ * by a fixed-step scheme with a history buffer: u' = ki (1 − y), y = lag(u(t − θ)). Returns y at t = 0, dt, …, T.
+ * The delay is rounded to a whole number of steps, so near a stability boundary the result is accurate to about dt/θ.
  */
-export function ddeStep(kind, gain, theta, tau, T, dt = 0.01) {
+export function ddeStep(gain, theta, tau, T, dt = 0.01) {
   const N = Math.round(T / dt), d = Math.max(1, Math.round(theta / dt)), y = new Float64Array(N + 1), u = new Float64Array(N + 1);
-  const a = tau > 0 ? 1 - Math.exp(-dt / tau) : 0;
+  const a = tau > 0 ? 1 - Math.exp(-dt / tau) : 1;
   for (let n = 0; n < N; n++) {
-    if (kind === 'I') {
-      const yn = n >= d ? u[n - d] : 0;
-      y[n] = yn; u[n + 1] = u[n] + dt * gain * (1 - yn);
-    } else {
-      const en = n >= d ? 1 - y[n - d] : 0;
-      u[n] = en; y[n + 1] = y[n] + a * (gain * en - y[n]);
-    }
+    const ud = n >= d ? u[n - d] : 0;
+    if (tau > 0) { if (n === 0) y[0] = 0; y[n + 1] = y[n] + a * (ud - y[n]); } else y[n] = ud;
+    u[n + 1] = u[n] + dt * gain * (1 - y[n]);
   }
-  if (kind === 'I') y[N] = N >= d ? u[N - d] : 0;
+  if (!(tau > 0)) y[N] = N >= d ? u[N - d] : 0;
   return y;
+}
+/** Largest stable integral gain of the loop ki e^{-θ s} / (s (τ s + 1)): at the phase crossover ωθ + atan(ωτ) = π/2. */
+export function kiCritical(theta, tau) {
+  if (!(tau > 0)) return Math.PI / (2 * theta);
+  let lo = 0, hi = Math.PI / (2 * theta);
+  for (let i = 0; i < 80; i++) { const m = 0.5 * (lo + hi); if (m * theta + Math.atan(m * tau) < Math.PI / 2) lo = m; else hi = m; }
+  const w = 0.5 * (lo + hi);
+  return w * Math.sqrt(1 + w * w * tau * tau);
 }

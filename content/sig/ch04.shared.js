@@ -26,6 +26,7 @@ export function fcoef(f, K, M = 4096) {
   return { re, im, K };
 }
 
+let SKEW_MEAN = 0; { const M = 4096; for (let j = 0; j < M; j++) { const t = -PI + ((j + 0.5) * TAU) / M; SKEW_MEAN += Math.exp(Math.cos(t) + 0.6 * Math.sin(2 * t)) / M; } }
 /** The classic waveforms (period 2π), with closed-form coefficients c(k) → [re, im] where known. */
 export const WAVES = {
   square: { label: 'square', tex: 'x(t)=\\operatorname{sgn}(\\sin t)', f: (t) => { const u = wrap(t); return u > 0 ? 1 : u < 0 ? -1 : 0; },
@@ -36,7 +37,9 @@ export const WAVES = {
     c: (k) => (k === 0 ? [0, 0] : k % 2 ? [4 / (PI * PI * k * k), 0] : [0, 0]) },
   pulse: { label: 'pulse train', tex: 'x(t)=\\mathbf 1_{|t|<\\pi/4}', f: (t) => (Math.abs(wrap(t)) < PI / 4 ? 1 : 0),
     c: (k) => (k === 0 ? [0.25, 0] : [Math.sin((k * PI) / 4) / (k * PI), 0]) },
-  skew: { label: 'smooth, lopsided', tex: 'x(t)=e^{\\cos t+0.6\\sin 2t}-\\bar x', f: (t) => Math.exp(Math.cos(t) + 0.6 * Math.sin(2 * t)) - 1.55 },
+  skew: { label: 'smooth, lopsided', tex: 'x(t)\\propto e^{\\cos t+0.6\\sin 2t}-\\text{mean}', f: (t) => (Math.exp(Math.cos(t) + 0.6 * Math.sin(2 * t)) - SKEW_MEAN) / 1.8 },
+  mix: { label: 'cos 3t + ½ sin 5t + 0.3', tex: 'x(t)=0.3+\\cos 3t+\\tfrac12\\sin 5t', f: (t) => 0.3 + Math.cos(3 * t) + 0.5 * Math.sin(5 * t),
+    c: (k) => (k === 0 ? [0.3, 0] : k === 3 ? [0.5, 0] : k === 5 ? [0, -0.25] : [0, 0]) },
 };
 for (const [id, W] of Object.entries(WAVES)) W.id = id;
 const _cc = new Map();
@@ -65,6 +68,13 @@ export function partial(c, N, ts, fejer = false) {
     for (let k = 1; k <= n; k++) { const t1 = cs * ct - sn * st; sn = sn * ct + cs * st; cs = t1; s += 2 * (fejer ? 1 - k / (N + 1) : 1) * (c.re[k] * cs - c.im[k] * sn); }
     out[i] = s;
   }
+  return out;
+}
+/** S_0(t), S_1(t), … S_nmax(t) at one point t. */
+export function seqAt(c, nmax, t) {
+  const out = new Float64Array(nmax + 1), ct = Math.cos(t), st = Math.sin(t);
+  let cs = 1, sn = 0, s = c.re[0]; out[0] = s;
+  for (let k = 1; k <= nmax; k++) { const t1 = cs * ct - sn * st; sn = sn * ct + cs * st; cs = t1; s += 2 * (c.re[k] * cs - c.im[k] * sn); out[k] = s; }
   return out;
 }
 /** Zip abscissae and values into [[t, y]] for s.path. */
