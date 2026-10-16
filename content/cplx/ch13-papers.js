@@ -35,25 +35,26 @@ which is close to 1 after $k \approx \frac{\pi}{4}\sqrt N$ iterations, and falls
 
 Scope: a quadratic, not exponential, speed-up for unstructured search, and provably optimal: no quantum algorithm can do better than $\Omega(\sqrt N)$ queries (BBBV 1997), so NP-complete problems are not solved in polynomial time this way.`,
       idea: String.raw`After Shor's factoring algorithm (1994) it was unclear which other problems quantum computers could speed up. Bennett, Bernstein, Brassard and Vazirani had just shown that unstructured search cannot be done in fewer than about $\sqrt N$ queries; Grover found an algorithm that meets this bound. Its two steps are reflections: the oracle reflects the state about the hyperplane orthogonal to the marked state $|w\rangle$, and the "diffusion" operator $2|s\rangle\langle s| - I$ (built from Hadamard gates, qinfo-4.8) reflects it about $|s\rangle$. Two reflections make a rotation by $2\theta$ in the plane spanned by $|w\rangle$ and $|s\rangle$ (qinfo-5.1), so the state turns steadily toward $|w\rangle$ — amplitude amplification. The idea generalises to amplifying any quantum subroutine's success probability, and gives quadratic speed-ups for many search, counting and optimisation problems (cplx-13.4); it was demonstrated on $N = 4$ by NMR in 1998 and on small trapped-ion and superconducting machines since.`,
-      caption: String.raw`**Left**: the amplitudes of all $N$ items as bars (the marked one red; for large $N$ the unmarked items are summarised by one bar, since they stay equal). **Step** applies the oracle (the red bar flips sign) and then the inversion about the mean (dashed line); **Play** runs it. **Middle**: the state as a vector in the plane of $|w\rangle$ and the unmarked superposition, rotating by $2\theta$ per iteration. **Right**: probability of success after $k$ iterations (green) against a classical search that checks one item per query (grey): the quantum curve peaks near $\frac{\pi}{4}\sqrt N$ and then declines. Change $n$ (so $N = 2^n$) and the number $M$ of marked items.`,
+      caption: String.raw`**Left**: the amplitudes of all $N$ items as bars (the marked one red; for large $N$ the unmarked items are summarised by one bar, since they stay equal). Drag **iterations** $k$, or press **Step ½** repeatedly: the first press applies only the oracle (the red bar flips sign), the second the inversion about the mean (dashed line). **Middle**: the state as a vector in the plane of $|w\rangle$ and the unmarked superposition, rotating by $2\theta$ per iteration. **Right**: probability of success after $k$ iterations (green) against a classical search that checks one item per query (grey): the quantum curve peaks near $\frac{\pi}{4}\sqrt N$ and then declines. Change $n$ (so $N = 2^n$) and the number $M$ of marked items.`,
       deps: ['qinfo-5.1', 'qinfo-4.8', 'cplx-13.4'],
       refs: [],
       tags: ['quantum algorithms', 'search', 'amplitude amplification'],
       credit: 'Lov K. Grover, 1996',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Grover%27s_algorithm' },
       viz(v) {
-        const nq = v.slider('qubits n (N = 2ⁿ)', 2, 12, 5, { int: true, onChange: () => { k = 0; half = false; } });
-        const mS = v.slider('marked items M', 1, 8, 1, { int: true, onChange: () => { k = 0; half = false; } });
-        let k = 0, half = false;
-        v.button('Step', () => { if (!half) half = true; else { half = false; k++; } });
-        v.button('Reset', () => { k = 0; half = false; });
+        const nq = v.slider('qubits n (N = 2ⁿ)', 2, 12, 5, { int: true });
+        const mS = v.slider('marked items M', 1, 8, 1, { int: true });
+        const kS = v.slider('iterations k', 0, 60, 2, { int: true, onChange: () => { half = false; } });
+        let half = false;
+        v.button('Step ½', () => { if (!half) half = true; else { half = false; kS.set(kS.value + 1); } });
+        v.button('Reset', () => { kS.set(0); half = false; });
         const A = v.stage({ x: [-1, 33], y: [-1.05, 1.05], axes: 'box', gutter: true, height: 320, weight: 1.3, minWidth: 260, xlabel: 'item', ylabel: 'amplitude', title: 'amplitudes' });
         const G = v.stage({ x: [-0.2, 1.15], y: [-0.2, 1.15], equal: true, axes: false, height: 320, weight: 0.8, minWidth: 220, title: 'two reflections = a rotation' });
         const P = v.stage({ x: [0, 30], y: [0, 1.05], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 240, xlabel: 'iterations k', ylabel: 'P(success)', title: 'success probability' });
         let st = null;
         v.render(() => {
           const N = 2 ** nq.value, M = Math.min(mS.value, N / 2), th = Math.asin(Math.sqrt(M / N)), kopt = Math.floor(Math.PI / (4 * th));
-          const kk = Math.min(k, 4 * kopt + 4);
+          const kk = Math.min(kS.value, 4 * kopt + 4);
           const run = groverRun(N, M, half ? kk + 1 : kk, half);
           const a = run.a;
           // amplitudes
@@ -77,7 +78,7 @@ Scope: a quadratic, not exponential, speed-up for unstructured search, and prova
           const ang = half ? -(2 * kk + 1) * th : (2 * kk + 1) * th;
           G.line(0, 0, 1.08, 0, { color: 'muted', width: 1 }); G.line(0, 0, 0, 1.08, { color: 'muted', width: 1 });
           G.tex(String.raw`|w\rangle`, 0, 1.08, { dx: 6, size: 14, color: 'red', align: 'left' });
-          G.tex(String.raw`|s'\rangle`, 1.08, 0, { dy: 14, size: 14, color: 'accent' });
+          G.tex(String.raw`|s'\rangle`, 1.05, 0, { dy: 16, size: 14, color: 'accent', align: 'right' });
           G.curve((u) => [Math.cos(u), Math.sin(u)], -0.3, Math.PI / 2 + 0.05, { color: 'faint', width: 1 });
           G.arrow(0, 0, Math.cos(th), Math.sin(th), { color: 'muted', width: 1.4, dash: [4, 3] });
           G.tex(String.raw`|s\rangle`, Math.cos(th), Math.sin(th), { dx: 6, size: 13, color: 'muted', align: 'left' });
