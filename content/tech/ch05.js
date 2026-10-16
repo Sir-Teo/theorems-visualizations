@@ -79,7 +79,7 @@ Scope of the picture: ideal Torricelli outflow through a small sharp hole, no vi
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Water_clock' },
       viz(v) {
         const A = v.stage({ x: [-0.9, 0.9], y: [-0.15, 1.15], equal: true, axes: false, height: 340, weight: 1, minWidth: 300, title: 'the vessel' });
-        const B = v.stage({ x: [0, 12], y: [-60, 60], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 320, xlabel: 'true time (hours)', ylabel: 'error of a linear scale (min)', title: 'reading error' });
+        const B = v.stage({ x: [0, 12], y: [-120, 120], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 320, xlabel: 'true time (hours)', ylabel: 'error of a linear scale (min)', title: 'reading error' });
         const pS = v.slider('profile exponent $p$ ($r\\propto h^p$)', 0, 1, 0, { step: 0.01 });
         const tS = v.slider('time elapsed (h)', 0, 12, 4, { step: 0.05 });
         const cH = v.toggle('constant head (Ctesibius)', false);
@@ -238,12 +238,11 @@ Scope of the picture: the declination map is a **model**: a centred dipole whose
           M.vline(PLON, { color: 'faint', width: 1, dash: [3, 4] });
           M.dot(PLON, plat.value, { r: 5, hollow: true, color: 'ink', label: 'pole', labelPos: 'ne' });
           M.axes();
-          drawYears(v, Y, [{ t: 1088, label: 'Shen Kuo: needle, declination' }, { t: [1111, 1117], label: 'Zhu Yu: pilots read it' }, { t: [1187, 1190], label: 'Neckam in Europe' }], { lanes: 3 });
+          drawYears(v, Y, [{ t: 1088, label: 'Shen Kuo: needle, declination' }, { t: [1111, 1117], label: 'Zhu Yu: pilots read it' }, { t: [1187, 1190], label: 'Neckam in Europe' }], { lanes: 3, ticks: [1100, 1150, 1200] });
         }, { period: 10, still: 1.2 });
         v.legend([['red', 'north end of the needle'], ['accent', 'true north', { dash: [3, 3] }], ['green', 'magnetic north (declination)', { dash: [5, 3] }]]);
         v.readout(() => {
           const D = dipoleDecl(place.y, place.x, plat.value, PLON), zeta = +dampS.value, w0 = w0S.value;
-          const Bh = Math.cos(Math.atan(Math.tan(Math.asin(Math.sin(place.y * D2R) * Math.sin(plat.value * D2R) + Math.cos(place.y * D2R) * Math.cos(plat.value * D2R) * Math.cos((place.x - PLON) * D2R)))))
           return `place ${v.fix(place.y, 0)}°, ${v.fix(place.x, 0)}°: model declination **${v.fix(D, 1)}°** (${D >= 0 ? 'east' : 'west'}), so a navigator steering by the needle is off true north by that much\nneedle: small-swing frequency $\\omega_0=${v.fix(w0, 2)}$ rad/s, period ${v.fix(2 * Math.PI / w0, 2)} s${zeta < 1 ? `, ring-down rate $\\zeta\\omega_0=${v.fix(zeta * w0, 2)}$ s$^{-1}$ (amplitude falls by ${v.fix(Math.exp(-zeta * w0 * 2 * Math.PI / (w0 * Math.sqrt(1 - zeta * zeta))), 2)} each swing)` : ', critically damped: no overshoot'}; model, not a measured field`;
         });
       },
@@ -288,7 +287,6 @@ Scope of the picture: a constant-torque model ($I\ddot\theta=-\tau\,\mathrm{sgn}
           A.line(-L * c, -L * s + 0.5, L * c, L * s + 0.5, { color: 'ink', width: 4.5 });
           for (const sg of [-1, 1]) A.rect(sg * xw * c - 0.09, sg * xw * s + 0.5 - 0.09, sg * xw * c + 0.09, sg * xw * s + 0.5 + 0.09, { fill: 'gold', fillAlpha: 0.8, color: 'orange', width: 1.5 });
           A.dot(0, 0.5, { r: 5, color: 'ink' }); A.text('verge', 0.12, 0.5 - 0.12, { size: 10.5, color: 'muted', align: 'left', baseline: 'top' });
-          A.arc && 0;
           // swing plot
           const pts = []; for (let i = 0; i <= 400; i++) { const x = (i / 400) * 8; pts.push([x, bangAngle(x, A0, T) / D2R]); }
           B.hline(0, { color: 'muted', width: 1 }); B.path(pts, { color: 'accent', width: 2.2 }); B.vline(t % 8, { color: 'gold', width: 1.2, dash: [4, 3] });
@@ -314,7 +312,7 @@ Scope of the picture: a constant-torque model ($I\ddot\theta=-\tau\,\mathrm{sgn}
 What the sources support: spring-driven clocks are known from the early 15th century; the fusee was already in use by about 1430, in the Burgundian clock; the date comes from the decoration on the clock and not from a document. The fusee is not a clockmaker's invention but turns up first in the windlass of a crossbow.
 
 Scope of the picture: the spring torque is a model (a linear fall from the full-wound value to 40% of it, plus an adjustable departure); real springs are less simple and are fitted with a stop-work so that only the flat middle part of their range is used.`,
-      idea: String.raw`If the chain pulls with force $F=M/R_b$ (the spring torque $M$ over the barrel radius $R_b$) and the fusee radius at that point is $r$, the train sees the torque $Fr=(M/R_b)\,r$. For this to be constant, $r$ must vary as $1/M$: the profile is a hyperbola in the spring's run-down, flat where the spring is weak. A fusee cut for one spring is right for that spring only: if the real spring bulges away from the ideal, the delivered torque still varies. And since a verge clock's rate varies as the square root of the torque (5.4), a spring that loses a third of its force over the day would otherwise make the clock run perhaps 15% slow, almost 4 hours a day.`,
+      idea: String.raw`If the chain pulls with force $F=M/R_b$ (the spring torque $M$ over the barrel radius $R_b$) and the fusee radius at that point is $r$, the train sees the torque $Fr=(M/R_b)\,r$. For this to be constant, $r$ must vary as $1/M$: the profile is a hyperbola in the spring's run-down, flat where the spring is weak. A fusee cut for one spring is right for that spring only: if the real spring bulges away from the ideal, the delivered torque still varies. And since a verge clock's rate varies as the square root of the torque (5.4), a spring that loses a third of its torque as it runs down would slow a verge clock by about 18%, more than four hours a day, without a fusee.`,
       caption: String.raw`Left: the fusee profile (radius against turns still wound) with the chain's contact point (gold) at the **wind state** you choose. Right: spring torque (orange), fusee radius (grey), and the torque delivered to the clock train (green). Switch the **fusee** off, then on; make the spring depart from the ideal with **departure** and watch the green curve stop being flat.`,
       deps: ['tech-5.4', 'mech-4.1'],
       see: ['tech-5.8', 'mech-4.2'],
@@ -325,13 +323,12 @@ Scope of the picture: the spring torque is a model (a linear fall from the full-
         const P = v.stage({ x: [-1.3, 1.3], y: [0, 1], axes: false, height: 320, weight: 0.8, minWidth: 260, title: 'the fusee cone and its chain' });
         const Q = v.stage({ x: [0, 1], y: [0, 1.6], axes: 'box', gutter: true, height: 320, weight: 1.2, minWidth: 320, xlabel: 'run-down (0 = fully wound, 1 = run down)', ylabel: 'torque (relative)', title: 'torque against run-down' });
         const uS = v.slider('run-down', 0, 1, 0.3, { step: 0.005 });
-        const gS = v.slider('spring departs from the ideal (bulge)', -0.5, 0.5, 0, { step: 0.01 });
+        const gS = v.slider('spring departs from the ideal (bulge)', -0.5, 0.5, 0.25, { step: 0.01 });
         const fS = v.toggle('fusee', true);
         v.render(() => {
           const wound = 1 - uS.value; // fraction still wound
           // cone profile: radius against position along the axis (y); full wind at the top (small end)
-          const prof = []; for (let i = 0; i <= 100; i++) { const y = 0.1 + 0.8 * (i / 100), w = 1 - (i / 100); prof.push(fuseeR(w) * (fS.value ? 1 : 1)); }
-          const rad = (w) => (fS.value ? 0.32 * fuseeR(w) : 0.32 * fuseeR(0.5));
+              const rad = (w) => (fS.value ? 0.32 * fuseeR(w) : 0.32 * fuseeR(0.5));
           const left = [], right = [];
           for (let i = 0; i <= 100; i++) { const w = 1 - i / 100, y = 0.92 - 0.82 * (i / 100); left.push([-rad(w), y]); right.push([rad(w), y]); }
           P.poly([...left, ...right.reverse()], { fill: 'muted', fillAlpha: 0.25, color: 'ink', width: 2 });

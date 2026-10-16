@@ -344,7 +344,7 @@ $$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\var
           A.circle(0, 0, 1, { color: 'ink', fill: 'muted', fillAlpha: 0.08, width: 1.6 });
           A.circle(0, 0, rc, { color: 'green', width: 1.2, dash: [4, 4] });
           for (let k = 0; k < ng.value; k++) {
-            const th = (2 * Math.PI * (k + 0.5)) / ng, c = Math.cos(th), s = Math.sin(th);
+            const th = (2 * Math.PI * (k + 0.5)) / ng.value, c = Math.cos(th), s = Math.sin(th);
             A.poly([[rc * c, rc * s], [c + ow * 0.5 * s, s - ow * 0.5 * c], [c - ow * 0.5 * s, s + ow * 0.5 * c]], { fill: 'red', fillAlpha: 0.6, color: 'red', width: 1.2 });
             A.line(rc * c, rc * s, c, s, { color: 'red', width: 1.6 });
           }

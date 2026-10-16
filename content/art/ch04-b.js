@@ -88,7 +88,7 @@ export default {
       num: '4.10',
       kind: 'Concept',
       name: 'Planckian locus and correlated colour temperature',
-      credit: 'MacAdam, 1937 (uniform chromaticity scale); Judd, 1936; Robertson, 1968; McCamy, 1992',
+      credit: 'MacAdam, 1937 (the (u,v) scale); Robertson, 1968 (isotherms); McCamy, 1992 (approximation)',
       statement: String.raw`The chromaticities of black bodies at temperatures from about 1000 K to infinity trace a smooth curve in the chromaticity diagram, the **Planckian locus**, running from deep red through orange and white to blue. For a light whose chromaticity is near it, the **correlated colour temperature** (CCT) is the temperature of the black body whose chromaticity is closest, measured in the CIE 1960 $(u,v)$ plane, where
 $$u=\frac{4x}{-2x+12y+3},\qquad v=\frac{6y}{-2x+12y+3},$$
 and the lines of constant CCT (isotherms) are the normals to the locus. The signed distance $\Delta_{uv}$ from the locus says how far the light is from a true black body.`,
@@ -219,7 +219,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
           drawChromaticity(D, v, { fade: 0.4 });
           const p = [H.x, H.y], dx = C[0] - p[0], dy = C[1] - p[1], nn = Math.hypot(dx, dy) || 1, ux = dx / nn, uy = dy / nn;
           D.line(p[0] - ux * 3, p[1] - uy * 3, p[0] + ux * 3, p[1] + uy * 3, { color: 'ink', width: 1.4, dash: [5, 4] });
-          if (C[0] > -0.1 && C[0] < 0.9 && C[1] > -0.1 && C[1] < 1) D.dot(C[0], C[1], { r: 5, color: 'orange', label: 'copunctal', labelPos: 'ne' });
+          if (C[0] > -0.1 && C[0] < 0.9 && C[1] > -0.1 && C[1] < 1) D.dot(C[0], C[1], { r: 5, color: 'orange', label: 'copunctal', labelPos: 'nw' });
           // swatches along the line inside the locus
           const pts = []; for (let s = -2; s <= 2; s += 0.004) { const q = [p[0] + ux * s, p[1] + uy * s]; if (q[1] > 0.02 && inLocus(q[0], q[1])) pts.push(q); }
           const K = 8;
@@ -252,7 +252,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
       verify: true,
       viz(v) {
-        const lum = v.slider('light level (cd/m² on the white card)', 1e-4, 1e3, 0.05, { log: true });
+        const lum = v.slider('light level (cd/m² on the white card)', 1e-4, 1e3, 0.05, { log: true, fmt: (x) => (x < 1 ? v.fix(x, x < 0.01 ? 4 : 3) : v.fix(x, 0)) });
         const A = v.stage({ x: [380, 720], y: [0, 1.12], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'luminous efficiency', height: 300, weight: 1.3, title: 'weighting of the spectrum' });
         const B = v.stage({ x: [0, 3], y: [0, 2.3], axes: false, height: 300, weight: 0.9, minWidth: 250, title: 'three flowers under daylight' });
         const day = (l) => planck(l, 6500);
@@ -304,15 +304,15 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Grassmann%27s_laws_(color_science)' },
       verify: true,
       viz(v) {
-        const hA = v.slider('hue of $A$ (angle around white)', 0, 360, 60, { step: 1 }), sA = v.slider('saturation of $A$', 0.1, 1, 0.9, { step: 0.01 }), yA = v.slider('intensity of $A$', 0.05, 1, 0.5, { step: 0.005 });
-        const hB = v.slider('hue of $B$', 0, 360, 240, { step: 1 }), sB = v.slider('saturation of $B$', 0.1, 1, 0.7, { step: 0.01 }), yB = v.slider('intensity of $B$', 0.05, 1, 0.5, { step: 0.005 });
+        const hA = v.slider('hue of $A$ (angle around white)', 0, 360, 60, { step: 1 }), sA = v.slider('saturation of $A$', 0.1, 1, 0.9, { step: 0.01 }), yA = v.slider('intensity of $A$', 0.02, 2, 0.5, { step: 0.005 });
+        const hB = v.slider('hue of $B$', 0, 360, 240, { step: 1 }), sB = v.slider('saturation of $B$', 0.1, 1, 0.7, { step: 0.01 }), yB = v.slider('intensity of $B$', 0.02, 2, 0.2, { step: 0.005 });
         const cAmt = v.slider('third light $C$: intensity (added to both fields)', 0, 1, 0, { step: 0.01 }), hC = v.slider('hue of $C$', 0, 360, 130, { step: 1 });
         const pt = (h, s) => { const b = boundaryAt(h); return [1 / 3 + (b[0] - 1 / 3) * s, 1 / 3 + (b[1] - 1 / 3) * s]; };
         const balance = () => {
           hA.set((hB.value + 180) % 360);
           const B = pt(hB.value, sB.value), A = pt(hA.value, sA.value), rB = Math.hypot(B[0] - 1 / 3, B[1] - 1 / 3), rA = Math.hypot(A[0] - 1 / 3, A[1] - 1 / 3);
           // Y_A/y_A * rA = Y_B/y_B * rB
-          yA.set(Math.max(0.05, Math.min(1, (yB.value / B[1]) * rB * A[1] / rA)));
+          yA.set(Math.max(0.02, Math.min(2, (yB.value / B[1]) * rB * A[1] / rA)));
         };
         v.button('Balance', balance); balance();
         const D = v.stage({ x: [0, 0.8], y: [0, 0.9], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 400, weight: 1.2, title: 'two lights and their mixture' });
@@ -323,7 +323,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
           const A = pt(hA.value, sA.value), B = pt(hB.value, sB.value), C = pt(hC.value, 0.8);
           const XA = xyz(A[0], A[1], yA.value), XB = xyz(B[0], B[1], yB.value), XC = xyz(C[0], C[1], cAmt.value);
           const M = [0, 1, 2].map((k) => XA[k] + XB[k]), [mx, my] = xyOf(M);
-          D.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'sw' });
+          D.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'nw' });
           D.line(A[0], A[1], B[0], B[1], { color: 'ink', width: 1.2, dash: [4, 4] });
           D.dot(A[0], A[1], { r: 7, color: 'red', label: 'A', labelPos: 'ne' }); D.dot(B[0], B[1], { r: 7, color: 'accent', label: 'B', labelPos: 'ne' });
           D.dot(mx, my, { r: 7, color: 'gold', label: 'mixture', labelPos: 'ne' });
@@ -364,7 +364,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         const target = () => { if (tgt.value === 'white') return EW.slice(); const c = cmf(lam.value), s = c[0] + c[1] + c[2]; return c.map((u) => (u / s) * (EW[0] + EW[1] + EW[2]) * 0.4); };
         const solve = () => { const a = P.amounts(target()); am.forEach((s, i) => s.set(Math.max(-2, Math.min(3, a[i])))); };
         v.button('Match', solve); solve();
-        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 180, weight: 1, title: 'target (left) and recombined slits (right)' });
+        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 120, full: true, title: 'target (left) and recombined slits (right)' });
         const T = v.stage({ x: [-0.3, 1.3], y: [-0.25, 1.1], equal: true, axes: false, height: 330, weight: 1, minWidth: 260, title: 'Maxwell’s colour triangle' });
         const A = v.stage({ x: [430, 680], y: [-0.8, 2.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'amount of each slit', height: 330, weight: 1.2, title: 'colour-mixture curves (rebuilt)' });
         const V3 = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]];
@@ -385,7 +385,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
           ['red', 'green', 'blue'].forEach((nm, i) => T.text(['630', '518', '465'][i], V3[i][0] + (i === 0 ? -0.08 : i === 1 ? 0.08 : 0), V3[i][1] + (i === 2 ? 0.07 : -0.07), { size: 10.5, color: 'muted', align: 'center' }));
           const sp = []; for (let l = 430; l <= 680; l += 2) sp.push(tri(P.cmf(l)));
           T.path(sp, { color: 'ink', width: 1.5 });
-          for (const l of [440, 480, 500, 520, 540, 580, 620, 660]) { const q = tri(P.cmf(l)); T.dot(q[0], q[1], { r: 2.6, color: 'ink' }); T.text(`${l}`, q[0] - 0.02, q[1] + 0.03, { size: 9, color: 'muted', align: 'right' }); }
+          for (const l of [440, 480, 500, 520, 540, 580, 610]) { const q = tri(P.cmf(l)); T.dot(q[0], q[1], { r: 2.6, color: 'ink' }); T.text(`${l}`, q[0] - 0.02, q[1] + 0.03, { size: 9, color: 'muted', align: 'right' }); }
           const w = tri(P.amounts(EW)); T.dot(w[0], w[1], { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'ne' });
           const q = tri(P.amounts(t)); T.dot(q[0], q[1], { r: 6, color: 'gold' });
           const cols = ['red', 'green', 'accent'];

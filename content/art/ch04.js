@@ -75,7 +75,8 @@ and these three numbers are everything the cones report about the light. The $L$
       num: '4.2',
       kind: 'Principle',
       name: 'Trichromacy (Young–Helmholtz)',
-      credit: 'Thomas Young, 1802; Helmholtz, 1850s; Maxwell, 1855–60',
+      credit: 'Thomas Young, 1802 (hypothesis); developed by Helmholtz and Maxwell in the 1850s',
+      verify: true,
       statement: String.raw`For a normal observer at photopic levels, any light can be matched in colour by a mixture of three fixed lights (primaries) in suitable amounts, provided that an amount may be negative, meaning that the primary is added to the light being matched. Three primaries suffice, and two never do: the set of colours is three-dimensional, and the primaries must be linearly independent (none matched by a mixture of the other two).`,
       idea: String.raw`Because the eye keeps only the three cone responses (art-4.1), two lights match exactly when their $(L,M,S)$ triples agree. A mixture of primaries has response $a_1\mathbf p_1+a_2\mathbf p_2+a_3\mathbf p_3$ where $\mathbf p_i$ is the cone-response triple of primary $i$, so matching a test with response $\mathbf t$ is the linear system $P\mathbf a=\mathbf t$. It has a unique solution for independent primaries; with only two primaries the system has more equations than unknowns and fails except on a plane of tests.`,
       caption: String.raw`A split field: the test light on the left (a narrow band of the chosen wavelength, with optional white added) and the primaries 700, 546.1 and 435.8 nm on the right. Adjust the three amounts until the halves agree, or press Match. With three primaries you can always get zero residual (sometimes with a negative amount: the field then shows the primary moved to the left, onto the test); reduce the number of primaries to two or one and a good match is no longer possible.`,
@@ -202,12 +203,12 @@ Hence colours form a three-dimensional convex cone: a match is an equality of th
         const cl = v.slider('$C$: wavelength (nm)', 420, 680, 620, { step: 1 });
         const ca = v.slider('$C$: amount', 0, 2, 0.6, { step: 0.01 });
         const k = v.slider('scale factor $k$', 0.2, 3, 1.8, { step: 0.01 });
-        const A = v.stage({ x: [380, 780], y: [0, 2.2], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'power', height: 300, weight: 1.4, title: 'the two spectra after the operation' });
+        const A = v.stage({ x: [380, 780], y: [0, 3.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'power', height: 300, weight: 1.4, title: 'the two spectra after the operation' });
         const Bst = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 300, weight: 0.8, minWidth: 240, title: 'matching field' });
         let info = {};
         v.render(() => {
           const L0 = (l) => 0.5 + 0.5 * gauss(l, cen.value, 90), R0 = (l) => Math.max(0, L0(l) + 0.2 * n(l));
-          const C = (l) => ca.value * 8 * gauss(l, cl.value, 12) / 1;
+          const C = (l) => ca.value * 2 * gauss(l, cl.value, 12);
           const o = op.value;
           const addL = o === 'addB' || o === 'addL', addR = o === 'addB', kl = o === 'scB' || o === 'scL' ? k.value : 1, kr = o === 'scB' ? k.value : 1;
           [ca, cl].forEach((s) => { s.el.hidden = !(o === 'addB' || o === 'addL'); }); k.el.hidden = !(o === 'scB' || o === 'scL');
@@ -230,7 +231,8 @@ Hence colours form a three-dimensional convex cone: a match is an equality of th
       num: '4.5',
       kind: 'Method',
       name: 'Colour-matching functions',
-      credit: 'W. D. Wright, 1928–29, and J. Guild, 1931 (experimental data); CIE RGB primaries 700, 546.1 and 435.8 nm',
+      credit: 'Experiments of W. D. Wright (1928) and J. Guild (1932); CIE RGB primaries 700, 546.1 and 435.8 nm',
+      verify: true,
       statement: String.raw`Fix three primary lights. For each wavelength $\lambda$ let $\bar r(\lambda),\bar g(\lambda),\bar b(\lambda)$ be the amounts of the primaries that match a unit of monochromatic light at $\lambda$ (negative amounts are added to the test). By Grassmann’s laws (art-4.4), the match of any light $S(\lambda)$ then needs the amounts
 $$R=\int S\,\bar r\,d\lambda,\quad G=\int S\,\bar g\,d\lambda,\quad B=\int S\,\bar b\,d\lambda ,$$
 so three functions of $\lambda$ describe every colour match. The functions depend on the chosen primaries by a $3\times3$ linear change.`,
@@ -277,7 +279,7 @@ so three functions of $\lambda$ describe every colour match. The functions depen
       num: '4.6',
       kind: 'Definition',
       name: 'CIE 1931 XYZ tristimulus values',
-      credit: 'Commission Internationale de l’Éclairage, 1931 (Smith, Guild and colleagues)',
+      credit: 'Commission Internationale de l’Éclairage, 1931',
       statement: String.raw`The CIE 1931 standard colorimetric observer is defined by three functions $\bar x,\bar y,\bar z$ of wavelength, obtained from the experimental $\bar r,\bar g,\bar b$ by a fixed linear transformation (art-4.5) chosen so that all three are non-negative and $\bar y(\lambda)$ equals the luminous-efficiency function $V(\lambda)$. The tristimulus values of a light $S(\lambda)$ are
 $$X=\int S\,\bar x\,d\lambda,\quad Y=\int S\,\bar y\,d\lambda,\quad Z=\int S\,\bar z\,d\lambda ,$$
 so $Y$ is the luminance, and the equal-energy stimulus has $X=Y=Z$. Two lights match for the standard observer exactly when their $XYZ$ agree.`,

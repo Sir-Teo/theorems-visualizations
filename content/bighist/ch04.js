@@ -25,14 +25,14 @@ import { clamp } from './ch04.shared.js';
 // ── 4.1 helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 // [name, age from Ma, age to Ma, cm3 low, cm3 high, colour, label x, label y]  (rounded, indicative)
 const HOMININS = [
-  ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 330],
-  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.5, 340],
-  ['P. boisei', 2.3, 1.2, 480, 550, 'purple', -1.75, 440],
-  ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.7, 760],
-  ['H. erectus', 1.9, 0.1, 550, 1100, 'accent', -1.0, 1180],
-  ['H. heidelbergensis', 0.7, 0.2, 1100, 1400, 'pink', -0.45, 1540],
-  ['H. neanderthalensis', 0.43, 0.04, 1200, 1750, 'red', -0.22, 1830],
-  ['H. sapiens', 0.3, 0, 1100, 1750, 'green', -0.45, 1030],
+  ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 600, 'center'],
+  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.5, 650, 'center'],
+  ['P. boisei', 2.3, 1.2, 480, 550, 'purple', -1.45, 440, 'center'],
+  ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.75, 750, 'right'],
+  ['H. erectus', 1.9, 0.1, 550, 1100, 'accent', -1.0, 800, 'center'],
+  ['H. heidelbergensis', 0.7, 0.2, 1100, 1400, 'pink', 0.05, 1260, 'left'],
+  ['H. neanderthalensis', 0.43, 0.04, 1200, 1750, 'red', 0.05, 1680, 'left'],
+  ['H. sapiens', 0.3, 0, 1100, 1750, 'green', 0.05, 1470, 'left'],
 ];
 const BIPED = [[-4.4, 'Ardipithecus'], [-3.66, 'Laetoli footprints'], [-3.2, '“Lucy”']];
 const kleiber = (kg) => 3.4 * kg ** 0.75;       // basal metabolic rate, W
@@ -100,7 +100,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Human_evolution', doi: 'https://doi.org/10.1086/204350' },
       verify: true,
       viz(v) {
-        const A = v.stage({ x: [-4.3, 0], y: [250, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
+        const A = v.stage({ x: [-4.3, 1.1], y: [120, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
         const B = v.stage({ x: [0, 5], y: [0, 125], axes: 'box', gutter: true, height: 380, weight: 1, ylabel: 'resting power (W)', xticks: [[0.5, 'chimp-like'], [1.5, 'A. afarensis'], [2.5, 'H. erectus'], [3.5, 'H. sapiens'], [4.5, 'yours']], title: 'energy budget of the brain' });
         const PRE = { 'chimp-like': [400, 45], 'A. afarensis': [450, 40], 'H. erectus': [900, 55], 'H. sapiens': [1350, 65] };
         let cc, kg;
@@ -112,14 +112,14 @@ export default {
         const n = hom.length, mx = hom.reduce((s, p) => s + p[0], 0) / n, my = hom.reduce((s, p) => s + p[1], 0) / n;
         const bs = hom.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / hom.reduce((s, p) => s + (p[0] - mx) ** 2, 0), as = my - bs * mx;
         v.render(() => {
-          for (const [name, f, t, lo, hi, col, lx, ly] of HOMININS) {
+          for (const [name, f, t, lo, hi, col, lx, ly, al] of HOMININS) {
             A.rect(-f, lo, -t, hi, { fill: col, fillAlpha: 0.22, color: col, width: 1.4, radius: 3 });
-            A.text(name, lx, ly, { size: 10.5, color: col, align: 'center' });
+            A.text(name, lx, ly, { size: 10.5, color: col, align: al });
           }
           A.fn((t) => Math.exp(as + bs * t), { domain: [-2.1, 0], color: 'ink', width: 1.6, dash: [5, 4] });
           A.hline(400, { color: 'faint', width: 1, dash: [2, 3] });
-          for (const [t, lab] of BIPED) { A.dot(t, 285, { r: 4.5, color: 'ink' }); A.text(lab, t, 262, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
-          A.text('first evidence of upright walking', -4.28, 318, { size: 10, color: 'muted', align: 'left' });
+          for (const [t, lab] of BIPED) { A.dot(t, 230, { r: 4.5, color: 'ink' }); A.text(lab, t, 205, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
+          A.text('first evidence of upright walking', -4.28, 290, { size: 10, color: 'muted', align: 'left' });
           // energy stage
           const bars = [...Object.entries(PRE).map(([k, [c, m]], i) => [i + 0.5, c, m]), [4.5, cc.value, kg.value]];
           for (const [x, c, m] of bars) {
@@ -146,7 +146,7 @@ export default {
 
 **Scope.** Orbital forcing is the pacemaker, not the whole mechanism: the response needs ice-sheet, ocean and carbon-cycle feedbacks, and why the 100 kyr cycle dominates the last million years, although it is the weakest forcing, is unsettled.`,
       idea: String.raw`The summer-solstice insolation at latitude $\varphi$ depends on three orbital elements: the tilt $\varepsilon$, the eccentricity $e$ and the precession angle $\varpi$ through the factor $\bigl((1+e\sin\varpi)/(1-e^2)\bigr)^2$ for the Earth–Sun distance. Tilt acts on the whole high-latitude summer, precession acts on the distance, and eccentricity only matters by modulating precession (the precession index is $e\sin\varpi$). A simple ice model makes the pacemaker idea concrete: an ice volume $V$ relaxes toward $-$(summer insolation), growing slowly (time constant $\tau_g$) and melting faster ($\tau_m$), as in Imbrie and Imbrie (1980). The precession of the equinoxes is the slow wobble of the spinning Earth treated in mechanics (mech-10.18).`,
-      caption: String.raw`Top left: the three caricature orbital elements over the last 800 kyr (toggle each; the orbit is a few-term sketch, not the Laskar solution). Top right: summer-solstice insolation at the chosen latitude and the ice volume that results from it (high = more ice). Bottom: the periodogram of each; vertical lines mark 100, 41, 23 and 19 kyr. Change the latitude and the two time constants. The ice-core temperature record is not drawn, only the ideas it tested.`,
+      caption: String.raw`Top left: the three caricature orbital elements over the last 800 kyr (toggle each; the orbit is a few-term sketch, not the Laskar solution). Top right: summer-solstice insolation at the chosen latitude and the ice volume that results from it (high = more ice). Bottom: the periodogram of each; vertical lines mark 100, 41 and 21 kyr (the model's precession is a single 21 kyr line; the real one splits into 23 and 19). Change the latitude and the two time constants. The ice-core temperature record is not drawn, only the ideas it tested.`,
       deps: ['mech-10.18'],
       see: ['bighist-4.3', 'bighist-4.8'],
       refs: ['Christian'],
@@ -160,9 +160,9 @@ export default {
         const lat = v.slider('latitude (°N)', 30, 80, 65, { step: 1 });
         const tauG = v.slider('ice growth τ (kyr)', 10, 150, 30, { step: 1 });
         const tauM = v.slider('ice melt τ (kyr)', 2, 40, 10, { step: 1 });
-        const A = v.stage({ x: [-800, 0], y: [0, 4.2], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', title: 'orbital elements (caricature)', yticks: [] });
+        const A = v.stage({ x: [-800, 0], y: [0, 4.6], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', title: 'orbital elements (caricature)', yticks: [] });
         const B = v.stage({ x: [-800, 0], y: [-2.6, 2.6], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', ylabel: 'normalised', title: 'summer insolation and ice volume' });
-        const C = v.stage({ x: [0, 0.075], y: [0, 1.05], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'period (kyr)', ylabel: 'power (relative)', xticks: [[0.01, '100'], [1 / 41, '41'], [1 / 23, '23'], [1 / 19, '19'], [0.06, '16.7']], title: 'periodograms (2,000 kyr run)' });
+        const C = v.stage({ x: [0, 0.075], y: [0, 1.05], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'period (kyr)', ylabel: 'power (relative)', xticks: [[0.01, '100'], [1 / 41, '41'], [1 / 21, '21']], title: 'periodograms (2,000 kyr run)' });
         let cache = null, cacheKey = '';
         function run() {
           const key = `${lat.value}|${tauG.value}|${tauM.value}`;
@@ -180,20 +180,20 @@ export default {
         v.render(() => {
           const R = run(), ts = [];
           for (let t = -800; t <= 0; t += 2) ts.push(t);
-          if (tg[0].value) A.path(ts.map((t) => [t, 3.45 + (7 * (eccT(t) - 0.028)) / 0.058 * 1.0]), { color: 'purple', width: 2 });
+          if (tg[0].value) A.path(ts.map((t) => [t, 3.55 + (0.55 * (eccT(t) - 0.028)) / 0.02]), { color: 'purple', width: 2 });
           if (tg[1].value) A.path(ts.map((t) => [t, 2.1 + ((oblT(t) - 23.34) / 1.2) * 0.55]), { color: 'orange', width: 2 });
           if (tg[2].value) A.path(ts.map((t) => [t, 0.9 + eccT(t) * Math.sin(varpiT(t)) * 8]), { color: 'teal', width: 1.6 });
-          A.text('eccentricity', -795, 3.95, { size: 10.5, color: 'purple', align: 'left' });
+          A.text('eccentricity', -795, 4.35, { size: 10.5, color: 'purple', align: 'left' });
           A.text('tilt (22.1°–24.5°)', -795, 2.75, { size: 10.5, color: 'orange', align: 'left' });
           A.text('precession index e sin ϖ', -795, 1.6, { size: 10.5, color: 'teal', align: 'left' });
           const N = R.Q.length - 1;
           B.path(ts.map((t) => [t, R.x[N + t]]), { color: 'orange', width: 1.6 });
           B.path(ts.map((t) => [t, R.ice[N + t]]), { color: 'accent', width: 2.6 });
           B.hline(0, { color: 'faint', width: 1, dash: [2, 3] });
-          C.path(R.s1.f.map((f, i) => [f, R.s1.a[i]]).filter((p) => p[0] < 0.075), { color: 'orange', width: 1.8 });
-          C.path(R.s2.f.map((f, i) => [f, R.s2.a[i]]).filter((p) => p[0] < 0.075), { color: 'accent', width: 2.2 });
-          for (const P of [100, 41, 23, 19]) C.vline(1 / P, { color: 'faint', width: 1, dash: [3, 3] });
-          v.legend([['orange', 'insolation (shown ×1)'], ['accent', 'ice volume (model)']]);
+          C.path(R.s1.f.map((f, i) => [f, R.s1.a[i]]).filter((p) => p[0] < 0.075 && p[0] > 0.004), { color: 'orange', width: 1.8 });
+          C.path(R.s2.f.map((f, i) => [f, R.s2.a[i]]).filter((p) => p[0] < 0.075 && p[0] > 0.004), { color: 'accent', width: 2.2 });
+          for (const P of [100, 41, 21]) C.vline(1 / P, { color: 'faint', width: 1, dash: [3, 3] });
+          v.legend([['orange', 'summer insolation (normalised)'], ['accent', 'ice volume (model)']]);
         });
         v.readout(() => {
           const R = run();
@@ -213,7 +213,7 @@ export default {
 
 **Scope.** The dated sites on the map are individual finds and give minimum ages for arrival; older sites and early dispersals that left no lasting descendants are possible. Several ages shown here are contested.`,
       idea: String.raw`The case rests on three independent kinds of evidence. Fossils and artefacts give minimum arrival dates for each region. DNA gives the pattern of diversity, which falls with distance from Africa, and the relatedness of living peoples; molecular clocks (popgen-3.9) date the splits. And the genomes of ancient people, such as the $45\,000$-year-old Ust'-Ishim man in Siberia, show who was where. The fossil dates keep moving back (Misliya, Madjedbebe, White Sands are each the subject of argument), which is why the picture treats every date as a lower bound, and the readout asks how fast a front would have had to travel to cover the distance between two dates.`,
-      caption: String.raw`Drag the time slider back from 320 ka to the present to light up the sites in order of age (colour = region). Toggle the contested ages: with Madjedbebe at 50 ka the Australian route is a shorter, faster one. Rotate the globe by dragging it. The readout gives the great-circle distance from Omo Kibish to the youngest lit site and the average speed implied by two sites you choose.`,
+      caption: String.raw`Move the time slider from 320 ka ago down to the present (0): a site lights up once its age has been reached (colour = region), and the chains of dashed lines join the sites of each region in order. Use the view buttons or drag the globe to turn it. Toggle the contested ages: with Madjedbebe at 50 ka the Australian route is a shorter, faster one. Rotate the globe by dragging it. The readout gives the great-circle distance from Omo Kibish to the youngest lit site and the average speed implied by two sites you choose.`,
       deps: ['bighist-4.1', 'popgen-3.9'],
       see: ['bighist-4.4', 'bighist-4.5', 'bighist-4.2'],
       refs: ['Christian'],
@@ -225,7 +225,8 @@ export default {
       viz(v) {
         const S = v.stage({ height: 400, full: true, title: 'dated sites of Homo sapiens (minimum ages)' });
         const G = v.globe(S, { projection: 'orthographic', center: [60, 25], graticule: 30 });
-        const T = v.slider('time (ka ago)', 0, 320, 320, { step: 1 });
+        const T = v.slider('time (ka ago)', 0, 320, 0, { step: 1 });
+        const view = v.select('view', [{ value: 'old', label: 'Old World' }, { value: 'pac', label: 'Pacific' }, { value: 'am', label: 'Americas' }], 'old', { onChange: (k) => G.set({ center: { old: [60, 25], pac: [140, -5], am: [-85, 15] }[k] }) });
         const tMung = v.toggle('Madjedbebe at 50 ka instead of 65', false);
         const proj = v.select('map', [{ value: 'orthographic', label: 'globe' }, { value: 'equirectangular', label: 'flat' }], 'orthographic', { onChange: (p) => { G.set({ projection: p, center: p === 'orthographic' ? [60, 25] : [30, 10] }); } });
         const A = v.select('from', SITES.map((s) => s[0]), 'Omo Kibish');
@@ -283,7 +284,7 @@ and since $k$ is proportional to the distance travelled, diversity decays roughl
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Serial_founder_effect', doi: 'https://doi.org/10.1073/pnas.0507611102' },
       verify: true,
       viz(v) {
-        const Nf = v.slider('founders per step $N_f$', 2, 200, 25, { step: 1, int: true, log: true });
+        const Nf = v.slider('founders per step $N_f$', 2, 200, 10, { step: 1, int: true, log: true });
         const K = v.slider('steps', 3, 24, 16, { step: 1, int: true });
         const seedBtn = { s: 3 };
         v.button('Resample', () => { seedBtn.s += 1; });
@@ -318,10 +319,11 @@ and since $k$ is proportional to the distance travelled, diversity decays roughl
           A.fn((k) => H0 * (1 - 1 / (2 * Nf.value)) ** k, { domain: [0, K.value], color: 'orange', width: 2, dash: [5, 4] });
           const bins = 10, hist = (arr) => { const c = Array(bins).fill(0); arr.forEach((q) => { c[Math.min(bins - 1, Math.floor(q * bins))]++; }); return c.map((x) => x / arr.length); };
           const h0 = hist(p0), h1 = hist(runs[0].pEnd);
-          h0.forEach((f, i) => { B.rect(i / bins + 0.005, 0, (i + 0.5) / bins, f, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1 }); });
+          h0.forEach((f, i) => { B.rect(i / bins + 0.005, 0, (i + 0.5) / bins, f, { fill: 'teal', fillAlpha: 0.35, color: 'teal', width: 1 }); });
           h1.forEach((f, i) => { B.rect((i + 0.5) / bins, 0, (i + 1) / bins - 0.005, f, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1 }); });
+          A.setView([0, K.value], [0, H0 * 1.15]);
           B.setView([0, 1], [0, Math.max(0.2, Math.min(1, Math.max(...h0, ...h1) * 1.15))]);
-          v.legend([['accent', 'chains (thin) and mean (bold)'], ['orange', '$H_0(1-1/2N_f)^k$', { dash: true }], ['accent', 'start (left bars)'], ['red', 'end (right bars)']]);
+          v.legend([['accent', 'chains (thin) and mean (bold)'], ['orange', '$H_0(1-1/2N_f)^k$', { dash: true }], ['teal', 'start (left bars)'], ['red', 'end (right bars)']]);
           cache.mean = mean;
         });
         v.readout(() => {
