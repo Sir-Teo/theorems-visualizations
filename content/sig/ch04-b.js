@@ -42,6 +42,8 @@ Moreover $E_N\to0$ as $N\to\infty$: the Fourier series converges to $x$ in the m
           const s1 = h.x, s2 = h.y, ts = grid(-PI, PI, 600), base = partial(c, N, ts);
           const hk = (k, t) => 2 * (c.re[k] * Math.cos(k * t) - c.im[k] * Math.sin(k * t));
           const app = Array.from(ts, (t, i) => base[i] + (s1 - 1) * hk(k1, t) + (s2 - 1) * hk(k2, t));
+          const ym = Math.max(1.4, ...app.map(Math.abs)) * 1.05;
+          B.setView(null, [-ym, ym]);
           B.fn(WAVES[id].f, { domain: [-PI, PI], color: 'faint', width: 1.6 });
           B.path(zip(ts, base), { color: 'green', width: 1.8 });
           B.path(zip(ts, app), { color: 'orange', width: 2.2 });
@@ -79,7 +81,7 @@ For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the
           for (let i = 0; i < NN; i++) {
             const t = -PI + (TAU * i) / NN;
             ys[i] = name === 'square' ? (t >= 0 ? 0.8 : -0.8) : name === 'saw' ? (0.8 * t) / PI : name === 'tri' ? 0.8 - (1.6 * Math.abs(t)) / PI
-              : 0.7 * Math.sin(t) + 0.45 * Math.cos(2 * t + 0.6) + 0.25 * Math.sin(3 * t);
+              : 0.7 * Math.sin(t) + 0.45 * Math.cos(2 * t + 0.6) + 0.25 * Math.sin(3 * t) + 0.6 * Math.exp(-(((t - 2) / 0.3) ** 2));
           }
         };
         preset('hand');
@@ -202,7 +204,7 @@ Conversely, fast decay of the $c_k$ forces smoothness. Consequently the error of
         const rs = v.slider('analytic ratio $r$', 0.4, 0.95, 0.8, { step: 0.01 });
         const A = v.stage({ x: [1, 200], y: [1e-8, 1], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'k', ylabel: 'size', height: 300, title: 'coefficient sizes $|c_k|$' });
         const B = v.stage({ x: [1, 200], y: [1e-8, 1], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'N', ylabel: 'RMS', height: 300, title: 'mean-square error of $S_N$ (root)' });
-        const C = v.stage({ x: [-PI, PI], y: [-2.6, 2.6], axes: 'box', gutter: true, xlabel: 't', xticks: PI_TICKS, height: 240, full: true, title: 'the five waveforms, each with unit power (apart from the constant)' });
+        const C = v.stage({ x: [-PI, PI], y: [-2.6, 5.2], axes: 'box', gutter: true, xlabel: 't', xticks: PI_TICKS, height: 260, full: true, title: 'the five waveforms, each with unit power (apart from the constant)' });
         // odd-harmonic family c_k = a_n (jk)^(-n), k odd; normalised so that sum_k |c_k|^2 = 1
         const KMAX = 6000, norm = {};
         for (const n of ORD) { let s = 0; for (let k = 1; k <= KMAX; k += 2) s += 2 * k ** (-2 * n); norm[n] = 1 / Math.sqrt(s); }

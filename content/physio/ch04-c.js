@@ -116,15 +116,15 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       name: 'Oedema from unbalanced Starling forces',
       statement: String.raw`Oedema is an excess of fluid in the interstitial space. The interstitial volume $V$ obeys $\dot V=J_v(V)-J_\text{lymph}(V)$, with the filtration $J_v=K_f[(P_c-P_i(V))-(\pi_c-\pi_i(V))]$ of Starling's law (physio-4.12) and a lymph return that grows with interstitial pressure up to a ceiling. Oedema results when something pushes the filtration beyond what the lymph can remove: a **raised capillary pressure** (venous obstruction, heart failure), a **lowered plasma protein** (liver disease, nephrotic syndrome), a **leakier wall** (a lowered $\sigma$), or a **lymphatic obstruction**. A "safety factor" of several mmHg is provided by the rise of $P_i$ with volume, the washout of interstitial protein and the lymph increase.`,
       idea: String.raw`At steady state the filtration and the lymph flow balance; the stable volume is the intersection of the two curves of flow against volume. As the interstitium swells, $P_i$ rises (reducing filtration), the interstitial protein is diluted (raising the net inward pull) and the lymph increases, all negative feedback; this is why a modest rise in capillary pressure produces no visible swelling. Once the pressure in the tissue becomes positive its compliance rises sharply (the gel loosens and free fluid collects), the feedback weakens, and the curves may no longer cross: the volume then grows without bound until another limit is reached.`,
-      caption: String.raw`**Left:** filtration (red) and lymph flow (blue) against the excess interstitial volume; the filled dot is the steady state (no dot: no equilibrium, runaway oedema). **Right:** the volume over ten days starting from normal. Raise **venous pressure** or lower **plasma protein**, or block the **lymphatics**, and watch the steady state move, then disappear. The readout shows the steady excess volume and the interstitial pressure.`,
-      scope: String.raw`A reconstruction with round-number parameters in the style of the textbook analysis ($K_f$ about 7 mL/min/mmHg for the whole body, $P_i$ about −3 mmHg, a capillary pressure of 17.3 mmHg and plasma oncotic pressure 28 mmHg, a lymph ceiling of 25 times its resting flow); the interstitial pressure–volume curve and the lymph law are schematic. The conclusions are qualitative: which direction each factor pushes, and that there is a threshold. Nothing here is a clinical prediction.`,
+      caption: String.raw`**Left:** filtration (red) and lymph flow (blue) against the excess interstitial volume; the filled dot is the steady state (no dot: no equilibrium, runaway oedema). **Right:** the volume over the first day starting from normal. Raise **venous pressure** or lower **plasma protein**, or block the **lymphatics**, and watch the steady state move, then disappear. The readout shows the steady excess volume and the interstitial pressure.`,
+      scope: String.raw`A reconstruction with round-number parameters in the style of the textbook analysis ($K_f$ about 7 mL/min/mmHg for the whole body, $P_i$ about −3 mmHg, a capillary pressure of 17.3 mmHg and plasma oncotic pressure 28 mmHg, a lymph ceiling of 25 times its resting flow); the plasma volume is not tracked, whereas in a patient the loss of a litre of filtrate would drain it unless the kidney retained salt and water, so the swelling here is faster than in life; the interstitial pressure–volume curve and the lymph law are schematic. The conclusions are qualitative: which direction each factor pushes, and that there is a threshold. Nothing here is a clinical prediction.`,
       deps: ['physio-4.12'],
       see: ['physio-4.20'],
       refs: ['Guyton–Hall'],
       tags: ['oedema', 'lymph', 'Starling'],
       verify: true,
       viz(v) {
-        const sPv = v.slider('rise in venous pressure', 0, 30, 10, { step: 0.5, fmt: (x) => `+${x} mmHg` });
+        const sPv = v.slider('rise in venous pressure', 0, 30, 13, { step: 0.5, fmt: (x) => `+${x} mmHg` });
         const sPi = v.slider('plasma oncotic pressure $\\pi_c$', 8, 28, 28, { step: 0.5, fmt: (x) => `${x} mmHg` });
         const sL = v.slider('lymph function', 0, 1, 1, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
         const sK = v.slider('capillary leakiness (σ lowered)', 0, 0.6, 0, { step: 0.05, fmt: (x) => `σ = ${v.fix(1 - x, 2)}` });
@@ -132,7 +132,7 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
         const Pi = (x) => (x < 1.5 ? -3 + 2 * x : 0.3 * (x - 1.5));
         const piI = (x) => (8 * V0) / (V0 + x);
         const a = v.stage({ x: [0, 15], y: [-25, 60], height: 300, axes: 'box', gutter: true, xlabel: 'excess interstitial volume (L)', ylabel: 'flow (mL/min)', weight: 1 });
-        const b = v.stage({ x: [0, 10], y: [0, 15], height: 300, axes: 'box', gutter: true, xlabel: 'time (days)', ylabel: 'excess volume (L)', weight: 1 });
+        const b = v.stage({ x: [0, 24], y: [0, 15], height: 300, axes: 'box', gutter: true, xlabel: 'time (hours)', ylabel: 'excess volume (L)', weight: 1 });
         let o = null;
         v.render(() => {
           const Pc = PC0 + 0.8 * sPv.value, pc = sPi.value, sg = 1 - sK.value, f = sL.value;
@@ -143,9 +143,10 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
           // steady state: first sign change of Jf − Jl from x = 0
           let xs = null; { let prev = Jf(0) - Jl(0); if (prev <= 0) xs = 0; else for (let x = 0.02; x <= 15 && xs === null; x += 0.02) { const cur = Jf(x) - Jl(x); if (cur <= 0) { let lo = x - 0.02, hi = x; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (Jf(m) - Jl(m) > 0) lo = m; else hi = m; } xs = (lo + hi) / 2; } prev = cur; } }
           if (xs !== null) a.dot(xs, Jf(xs), { r: 8, color: 'green' }); else a.text('no equilibrium: runaway', 7.5, 30, { size: 14, color: 'red', align: 'center', weight: 700 });
+          const o0 = xs;
           // time course (explicit steps of 10 min)
-          const pts = []; let x = 0; const dt = 10, nS = 10 * 144; for (let k = 0; k <= nS; k++) { if (k % 6 === 0) pts.push([k / 144, Math.min(x, 15)]); x = Math.max(0, x + ((Jf(x) - Jl(x)) * dt) / 1000); }
-          b.path(pts, { color: 'purple', width: 2.8 }); b.hline(1.5, { color: 'faint', dash: [4, 4] }); b.text('Pi turns positive', 9.9, 1.8, { size: 11, color: 'muted', align: 'right' });
+          const pts = []; let x = 0; const dt = 10, nS = 24 * 6; for (let k = 0; k <= nS; k++) { if (k % 2 === 0) pts.push([k / 6, Math.min(x, 15)]); x = Math.max(0, x + ((Jf(x) - Jl(x)) * dt) / 1000); }
+          b.path(pts, { color: 'purple', width: 2.8 }); b.hline(1.5, { color: 'faint', dash: [4, 4] }); b.setView([0, 24], [0, o0 === null ? 15 : Math.max(3.5, o0 * 1.4)]); b.text('Pi turns positive', 23.8, 1.5, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -3 });
           if (xs !== null) b.hline(xs, { color: 'green', dash: [5, 4] });
           o = { xs, Pi: xs === null ? null : Pi(xs), Jl0: Jl(0), Jf0: Jf(0), end: pts[pts.length - 1][1] };
         });
@@ -160,7 +161,7 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       name: 'Reynolds number, turbulence and bruits',
       statement: String.raw`The **Reynolds number** $\mathrm{Re}=\rho \bar u D/\mu$ compares inertial to viscous forces. Steady flow in a straight tube is laminar for $\mathrm{Re}$ below about 2000–2300 and turbulent well above that; in between it is unstable. In the body $\mathrm{Re}$ is large only in the aorta and big arteries and in narrowed or abnormal places (a stenosis, a high-output state), where the flow becomes turbulent. Turbulence makes the wall vibrate and is heard through the stethoscope as a **murmur** (in the heart) or a **bruit** (over a vessel); a lowered blood viscosity (anaemia) raises $\mathrm{Re}$ and can produce a flow murmur.`,
       idea: String.raw`Dimensional analysis (the dynamic similarity of fluid-6.5) shows that the character of the flow depends on $\mathrm{Re}$ alone, not on the three variables separately: a thin fast jet and a wide slow vessel behave alike when $\mathrm{Re}$ agrees. Laminar flow keeps its parabolic profile (physio-4.2); beyond the critical value small disturbances grow, the profile flattens, momentum is exchanged across the stream, the wall shear and the pressure drop increase above the Poiseuille values, and the fluctuating pressure at the wall is what the ear picks up. The 2000 figure is an empirical number for steady flow in a smooth straight tube; pulsatile flow, curvature and a rough wall change it.`,
-      caption: String.raw`**Left:** the tube with dye particles (a schematic, not a flow simulation): in laminar flow they move on parallel paths with a parabolic speed profile, and above the critical Reynolds number they get a flat mean profile and random cross-stream motion. **Right:** a map of tube diameter against mean velocity with lines of constant $\mathrm{Re}$; drag the **handle** to choose a vessel, or look at the labelled points. Lower the **viscosity** (as in anaemia) to push the same vessel toward turbulence. The speaker button plays the noise your stethoscope would hear (silent when laminar).`,
+      caption: String.raw`**Left:** the tube with dye particles (a schematic, not a flow simulation): in laminar flow they move on parallel paths with a parabolic speed profile, and above the critical Reynolds number they get a flat mean profile and random cross-stream motion. **Right:** a map of tube diameter against mean velocity with lines of constant $\mathrm{Re}$; drag the **handle** ("you") to choose a vessel, or look at the labelled points. Lower the **viscosity** (as in anaemia) to push the same vessel toward turbulence. The speaker button plays the noise your stethoscope would hear (silent when laminar).`,
       scope: String.raw`The critical value (about 2000) is for steady flow in a long, straight, smooth tube; the pulsatile aorta can stay laminar in part of the cycle at a peak Re above that, and a stenotic jet becomes turbulent downstream of the narrowing. The animation is a cartoon of laminar vs turbulent flow, not a Navier–Stokes solution. The labelled vessel values are rounded orders of magnitude.`,
       deps: ['physio-4.2', 'fluid-6.5'],
       see: ['physio-4.18'],
@@ -176,9 +177,9 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
         v.soundButton('Listen (stethoscope)', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
         const A = v.stage({ x: [0, 10], y: [-1.4, 1.4], height: 260, axes: false, weight: 1.1 });
         const B = v.stage({ x: [0.005, 50], y: [1e-4, 10], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
-        const h = B.handle(14, 0.4, { color: 'gold', label: 'your vessel', labelPos: 'ne', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
+        const h = B.handle(14, 0.4, { color: 'gold', label: 'you', labelPos: 'sw', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
         const P = [
-          { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.5 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.5 }, { n: 'capillary', D: 0.008, u: 0.0004 },
+          { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.45 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.5 }, { n: 'capillary', D: 0.008, u: 0.0004 },
           { n: 'stenotic jet', D: 4, u: 4 },
         ];
         const cur = { Re: 0 };
@@ -207,7 +208,7 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
           B.fn((d) => (Rec * mu * 1e-3) / (RHO_BLOOD * d * 1e-3), { color: 'red', width: 2.4, domain: [0.005, 50] });
           B.text('Re = 1', 0.0075, 1 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
           B.text('Re = 100', 0.0075, 100 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
-          B.text('critical Re', 2.5, (Rec * mu * 1e-3) / (RHO_BLOOD * 2.5e-3) * 1.7, { size: 11, color: 'red', align: 'left', weight: 700 });
+          B.text('critical Re', 1.3, (Rec * mu * 1e-3) / (RHO_BLOOD * 1.3e-3) * 0.55, { size: 11, color: 'red', align: 'left', weight: 700 });
           for (const q of P) { B.dot(q.D, q.u, { r: 4, color: 'ink' }); B.text(q.n, q.D, q.u * (q.dy || 1.7), { size: 10, color: 'muted', align: 'center' }); }
         }, { period: 4, still: 1.7 });
         v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.fix(cur.Re, cur.Re < 10 ? 3 : 0)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'laminar: a quiet vessel' : cur.Re < sCrit.value * 1.2 ? 'transitional' : 'turbulent: expect a murmur / bruit'}\nat the normal viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.fix(cur.Re * sMu.value / 3.5, 0)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fix(cur.Re, 0)}`);

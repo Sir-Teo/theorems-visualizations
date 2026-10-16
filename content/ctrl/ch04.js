@@ -21,7 +21,7 @@ export default {
 (d) the **steady-state error** $e_\infty=1-y_\infty$ for a unit reference.
 Rise time and peak time measure *speed*; overshoot and settling time measure *damping and the quality of the settling*; $e_\infty$ measures *accuracy*.`,
       idea: String.raw`The unit step is the standard test because it is the simplest input that excites every mode of the system at once, and the response to it (sig-3.7) determines the response to any input by superposition. The specifications compress a whole curve into four numbers that a customer can write into a contract. They are *measurements on the curve*, not properties of the transfer function itself: a different tolerance band gives a different $t_s$, and for a high-order system there is no formula, which is why the next results study the second-order case where there is.`,
-      caption: String.raw`Choose a system and drag its parameters. The guide lines on the plot mark each specification as it is defined in the statement: the **gold** points are the 10 % and 90 % crossings (rise time), the **red** peak (overshoot and peak time), the **green** band and its last exit (settling time) and the **orange** gap between the final value and the reference (steady-state error). Hover over the plot to read the curve. For the second-order system the readout also compares the measurements with the textbook formulas; for the loop with proportional control only, no choice of the gain removes the steady-state error.`,
+      caption: String.raw`Choose a system and drag its parameters. The guide lines on the plot mark each specification as it is defined in the statement: the **gold** points are the 10 % and 90 % crossings (rise time), the **red** peak (overshoot and peak time), the **green** band and its last exit (settling time) and the double arrow between the final value and the reference (steady-state error). Hover over the plot to read the curve. For the second-order system the readout also compares the measurements with the textbook formulas; for the loop with proportional control only, no choice of the gain removes the steady-state error.`,
       deps: ['sig-3.7'],
       refs: ['Franklin–Powell §3.4', 'Åström–Murray §6.3'],
       tags: ['step response', 'specifications'],
@@ -55,7 +55,7 @@ Rise time and peak time measure *speed*; overshoot and settling time measure *da
           if (info.tr !== null) {
             const t10 = ((i) => r.t[i])(r.y.findIndex((q) => q >= 0.1 * fin)), t90 = r.t[r.y.findIndex((q) => q >= 0.9 * fin)];
             st.dot(t10, 0.1 * fin, { r: 5, color: 'gold' }); st.dot(t90, 0.9 * fin, { r: 5, color: 'gold' });
-            st.measure(t10, 0.1 * fin, t90, 0.1 * fin, `$t_r=${fx(info.tr, 2)}$`);
+            st.measure(t10, 0.2 * fin, t90, 0.2 * fin, `tr = ${fx(info.tr, 2)} s`);
           }
           if (info.tp !== null) {
             st.dot(info.tp, info.ypeak, { r: 6, color: 'red' });
@@ -63,7 +63,7 @@ Rise time and peak time measure *speed*; overshoot and settling time measure *da
             st.text(`$M_p=${fx(100 * info.Mp, 1)}\\,\\%,\\ t_p=${fx(info.tp, 2)}$`, info.tp, info.ypeak, { size: 12, color: 'red', dx: 10, dy: -8, align: 'left' });
           }
           if (isFinite(info.ts) && info.ts > 0) { st.vline(info.ts, { color: 'green', width: 2, dash: [5, 3] }); st.text(`$t_s=${fx(info.ts, 2)}$`, info.ts, ymax * 0.88, { size: 12, color: 'green', dx: 6, align: 'left' }); }
-          if (Math.abs(1 - fin) > 1e-6) { st.measure(T * 0.93, fin, T * 0.93, 1, `$e_\\infty=${fx(1 - fin, 3)}$`); }
+          if (Math.abs(1 - fin) > 1e-6) { st.measure(T * 0.93, fin, T * 0.93, 1, `e = ${fx(1 - fin, 3)}`); }
           st.text('reference r = 1', T * 0.99, 1, { size: 11, color: 'muted', align: 'right', dy: -8 });
           const p = st.pointer;
           hov = null;
@@ -262,8 +262,8 @@ Meeting all three means placing the poles in the intersection of the three regio
           st.vline(tsS.value, { color: 'accent', width: 1.6, dash: [6, 4] });
                     const i10 = r.y.findIndex((q) => q >= 0.1), t10 = i10 >= 0 ? r.t[i10] : 0;
           st.hline(0.9, { color: 'orange', width: 1, alpha: 0.5 }); st.hline(0.1, { color: 'orange', width: 1, alpha: 0.5 });
-          if (R.info.tr !== null) st.measure(t10, 0.05, t10 + R.info.tr, 0.05, `$t_r=${fx(R.info.tr, 2)}$`);
-          st.measure(t10, 0.2, t10 + trS.value, 0.2, `limit ${trS.value}`);
+          if (R.info.tr !== null) st.measure(t10, 0.3, t10 + R.info.tr, 0.3, `tr = ${fx(R.info.tr, 2)} s`);
+          st.measure(t10, 0.55, t10 + trS.value, 0.55, `tr limit ${trS.value} s`);
           st.clip(() => trace(st, r.t, r.y, { color: R.inside ? 'green' : 'red', width: 3 }));
         });
         v.legend([['orange', '$t_r$: outside circle'], ['purple', '$M_p$: inside wedge'], ['accent', '$t_s$: left of line'], ['green', 'allowed region', { area: true }]]);

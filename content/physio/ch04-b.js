@@ -160,7 +160,7 @@ The jump $Z_cQ$ models the pressure needed to push flow into the proximal aorta,
       links: { doi: 'https://doi.org/10.1002/andp.18782411206' },
       verify: true,
       viz(v) {
-        const sE = v.slider('wall stiffness $E$', 0.2, 2.5, 1.0, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} MPa` });
+        const sE = v.slider('wall stiffness $E$', 0.2, 2.5, 1.8, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} MPa` });
         const sG = v.slider('reflection coefficient $\\Gamma$', 0, 1, 0.6, { step: 0.05 });
         const sL = v.slider('distance to reflector $\\ell$', 0.2, 0.9, 0.6, { step: 0.02, fmt: (x) => `${v.fix(x, 2)} m` });
         const sp = v.stage({ x: [0, 0.9], y: [-0.4, 1.2], height: 230, axes: 'box', gutter: true, xlabel: 'distance along the artery (m)', ylabel: 'pressure (relative)', weight: 1, full: true });

@@ -29,7 +29,7 @@ export function mos(vgs, vds, Vt, k, lam = 0) {
 export const mosRegion = (vgs, vds, Vt) => (vgs <= Vt ? 'cutoff' : vds < vgs - Vt ? 'triode' : 'saturation');
 /** Inverter output for n- and p-channel pair (symmetric thresholds): solves I_n(vin, vo) = I_p(Vdd − vin, Vdd − vo). */
 export function cmosOut(vin, Vdd, Vt, kn, kp, lam = 0.03) {
-  return bisectDec((vo) => mos(vin, vo, Vt, kn, lam) - mos(Vdd - vin, Vdd - vo, Vt, kp, lam), -1e-9, Vdd + 1e-9, 80);
+  return bisectDec((vo) => mos(Vdd - vin, Vdd - vo, Vt, kp, lam) - mos(vin, vo, Vt, kn, lam), -1e-9, Vdd + 1e-9, 80);
 }
 /** Pretty number with SI prefix as plain text, e.g. 2.3e-6 → "2.3 µ". */
 export function eng(x, d = 2) {
