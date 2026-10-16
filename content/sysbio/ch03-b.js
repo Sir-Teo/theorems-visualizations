@@ -73,7 +73,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
       name: 'Why some FFL types are rare',
       statement: String.raw`Of the eight FFL types (3.1), two, the coherent C1 and the incoherent I1, are the commonest in the *E. coli* and yeast transcription networks, and the other six are much rarer. Mangan and Alon asked whether the rare types are rare because they are less useful, and found that some of them have **reduced functionality**: they respond to only one of their two inputs. To test this, treat the two regulatory inputs of $Z$ as two signals: $s_x$ (the activity of $X$) and $s_y$ (the activity of $Y$ relative to its expression, which itself depends on $s_x$). A type is functionally weak in this sense if $Z$ barely changes when one of the two signals is varied.`,
       idea: String.raw`For every type the steady-state output $Z(s_x,s_y)$ is computed from the Hill terms of 1.3 combined by the logic of 1.4, with $Y$ expressed as the Hill function of $s_x$ along the $X\to Y$ edge. The mean absolute slope of $Z$ in each direction measures how much each signal is heard. The step response of the selected type (bottom) shows what its dynamics add. The picture is a sensitivity screen in one model, with one threshold and one cooperativity; it cannot by itself prove why evolution favoured C1 and I1.`,
-      caption: String.raw`Each tile is the steady-state output $Z$ (darker is higher) over the two signals $s_x$ (horizontal) and $s_y$ (vertical), with the mean slopes $\langle|\partial Z/\partial s_x|\rangle$ and $\langle|\partial Z/\partial s_y|\rangle$ below it. Switch the logic between AND, OR and SUM and note how the pattern of tiles changes, then click a tile to see its time response (below). Look for types in which one slope is much smaller than the other.`,
+      caption: String.raw`Each tile is the steady-state output $Z$ (stronger colour is higher) over the two signals $s_x$ (horizontal) and $s_y$ (vertical), with the mean slopes $\langle|\partial Z/\partial s_x|\rangle$ and $\langle|\partial Z/\partial s_y|\rangle$ below it. Switch the logic between AND, OR and SUM and note how the pattern of tiles changes, then click a tile to see its time response (below). Look for types in which one slope is much smaller than the other.`,
       deps: ['sysbio-3.1'],
       refs: ['Alon: The Feed Forward Loop'],
       tags: ['feed-forward loop', 'motifs'],
@@ -157,7 +157,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
           }
           S1.path(t.map((tt, i) => [tt, X[i]]), { color: 'accent', width: 3.5 });
           const cols = ['teal', 'blue', 'purple', 'pink'];
-          K.forEach((k, j) => { S1.hline(k, { color: cols[j], dash: true, width: 1.5 }); S1.text(`K${j + 1}`, T - 0.2, k, { color: cols[j], align: 'right', dy: -8, size: 11 }); });
+          K.forEach((k, j) => { S1.hline(k, { color: cols[j], dash: true, width: 1.5 }); S1.text(`K${j + 1}`, T - 0.2 - (j % 2) * 1.6, k, { color: cols[j], align: 'right', dy: -8, size: 11 }); });
           const on = [], off = [];
           K.forEach((k, j) => {
             const base = rowY[j];
@@ -249,7 +249,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
       scope: String.raw`The layer is random with a fixed seed and an arbitrary rule for the logic (activators combine by AND or OR, any active repressor switches the target off). I did not use RegulonDB or any measured DOR, so the numbers shown (regulon sizes, inputs per target) are properties of this toy network only.`,
       viz(v) {
         const MODE = v.select('structure', [{ value: 'dor', label: 'dense overlapping regulons' }, { value: 'sim', label: 'single-input modules' }], 'dor');
-        const DENS = v.slider('inputs per target (mean)', 1.5, 3.5, 2.5, { step: 0.1 });
+        const DENS = v.slider('inputs per target (mean)', 2, 3.5, 2.5, { step: 0.1 });
         let seed = 7;
         v.button('Resample', () => { seed += 1; });
         const NR = 5, NT = 12, RN = ['R1', 'R2', 'R3', 'R4', 'R5'];
@@ -306,7 +306,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
           }
           const sizes = RN.map((_, i) => net.targets.filter((t) => t.regs.includes(i)).length);
           const multi = net.targets.filter((t) => t.regs.length > 1).length;
-          const logicTxt = tg.sgn.some((s) => s > 0) ? `activators combined by ${tg.sgn.filter((s) => s > 0).length > 1 ? tg.kind : 'a single input'}, any active repressor turns it off` : 'ON unless a repressor is active';
+          const logicTxt = tg.sgn.some((s) => s > 0) ? `${tg.sgn.filter((s) => s > 0).length > 1 ? 'activators combined by ' + tg.kind : 'one activator'}, any active repressor turns it off` : 'ON unless a repressor is active';
           txt = `g${sel + 1}: ${k} input${k > 1 ? 's' : ''}, ${logicTxt}.\nRegulon sizes (targets per regulator): ${RN.map((n, i) => `${n} ${sizes[i]}`).join(', ')}. Targets with two or more regulators: ${multi} of ${NT}.`;
         });
         v.legend([['green', 'activates'], ['red', 'represses'], ['orange', 'selected target', { dot: true }]]);

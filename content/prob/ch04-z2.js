@@ -70,9 +70,9 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
         const kind = v.select('law of $\\xi$', KIND_OPTS.slice(0, 2), 'norm');
         const nS = v.slider('horizon $N$', 20, 1000, 300, { int: true, log: true });
         const NMAX = 1000, NS = 150;
-        const L = v.stage({ x: [-300, -1], y: [-1, 1], height: 300, weight: 1.15, axes: 'box', gutter: true, xlabel: 'time $-n$', title: 'one sample, with the band' });
+        const L = v.stage({ x: [-100, -1], y: [-0.8, 0.8], height: 300, weight: 1.15, axes: 'box', gutter: true, xlabel: 'time $-n$', title: 'one sample (last 100 steps), with the band' });
         const R = v.stage({ x: [10, 1000], xlog: true, y: [0, 2], height: 300, axes: 'box', gutter: true, xlabel: 'horizon $N$', title: 'mean number of upcrossings' });
-        const ha = L.handle(-290, -0.15, { color: 'orange', label: 'a', constrain: 'y' }), hb = L.handle(-290, 0.15, { color: 'orange', label: 'b', constrain: 'y' });
+        const ha = L.handle(-96, -0.1, { color: 'orange', label: 'a', constrain: 'y' }), hb = L.handle(-96, 0.1, { color: 'orange', label: 'b', constrain: 'y' });
         let data = null, st = null;
         const upc = (arr, off, N, a, b) => { let state = 0, c = 0; for (let n = N; n >= 1; n--) { const x = arr[off + n - 1]; if (state === 0) { if (x <= a) state = 1; } else if (x >= b) { c++; state = 0; } } return c; };
         v.render(() => {
@@ -83,11 +83,11 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
             data = { k, arr };
           }
           const a = Math.min(ha.y, hb.y), b = Math.max(ha.y, hb.y), N = nS.value;
-          ha.set(-Math.min(N, 300) * 0.97, ha.y); hb.set(-Math.min(N, 300) * 0.97, hb.y);
-          L.setView([-Math.min(N, 300), -1], [-1, 1]);
+          const W = Math.min(N, 100); ha.set(-W * 0.96, ha.y); hb.set(-W * 0.96, hb.y);
+          L.setView([-W, -1], k === 'coin' ? [-1.1, 1.1] : [-0.8, 0.8]);
           L.hband(a, b, { color: 'orange', alpha: 0.15 });
           const pts = [], ups = []; let state = 0;
-          for (let n = Math.min(N, 300); n >= 1; n--) { const x = data.arr[n - 1]; pts.push([-n, x]); if (state === 0) { if (x <= a) state = 1; } else if (x >= b) { ups.push([-n, x]); state = 0; } }
+          for (let n = W; n >= 1; n--) { const x = data.arr[n - 1]; pts.push([-n, x]); if (state === 0) { if (x <= a) state = 1; } else if (x >= b) { ups.push([-n, x]); state = 0; } }
           L.path(pts, { color: 'accent', width: 1.6 }); ups.forEach((p) => L.dot(p[0], p[1], { color: 'green', r: 4.5 }));
           const Ns = [10, 14, 20, 30, 45, 70, 100, 150, 220, 330, 500, 750, 1000], avg = Ns.map((M) => { let s = 0; for (let j = 0; j < NS; j++) s += upc(data.arr, j * NMAX, M, a, b); return [M, s / NS]; });
           const Eplus = k === 'norm' ? PHI(a) - a * (1 - PhiN(v.M, a)) : 0.5 * Math.max(0, 1 - a) + 0.5 * Math.max(0, -1 - a);
@@ -124,7 +124,7 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
           for (let j = 0; j < 12; j++) {
             const t = th(), pts = []; let s = 0, next = 1;
             for (let i = 1; i <= NN; i++) { s += r() < t ? 1 : 0; if (i >= next) { pts.push([i, s / i]); next = Math.max(next + 1, Math.ceil(next * 1.06)); } }
-            L.path(pts, { color: v.diverge(t, 'blue', 'red'), width: 1.6, alpha: 0.9 });
+            L.path(pts, { color: v.mix('blue', 'red', t), width: 1.8 });
           }
           L.hline(0.5, { color: 'muted', dash: true, width: 1 });
           R.line(0, 0, 1, 1, { color: 'ink', dash: true, width: 1.2 });
@@ -230,7 +230,7 @@ equals $E(\varphi(X_1,\dots,X_k)\mid\mathcal E_n)$, where $\mathcal E_n$ is the 
 $$P(X_1\in A_1,\dots,X_k\in A_k\mid\mathcal E)=\prod_{j=1}^k\mu(A_j)\quad\text{a.s.}$$
 In words, every infinite exchangeable sequence is a mixture of i.i.d. sequences.`,
       idea: String.raw`By the U-statistic lemma (4.7.7), $A_n(\varphi)\to E(\varphi(X_1,..,X_k)|\mathcal E)$ and the limit factors over coordinates. Taking $\varphi_j=\mathbf 1_{A_j}$ identifies $\mu(A)=\lim\frac1n\sum_i\mathbf 1(X_i\in A)$, the limiting empirical measure, which is $\mathcal E$-measurable, and shows that the conditional law of $(X_1,\dots,X_k)$ is the product. The measurability of $\mu$ and the extension from half-lines to all Borel sets use the $\pi$–$\lambda$ theorem and, on $\R$, a countable generating class.`,
-      caption: String.raw`The Pólya urn is the standard exchangeable sequence that is *not* i.i.d. Left: the exact probability of each of the 16 colour patterns of the first four draws, computed from the urn rule; patterns with the same number of reds (same colour) have exactly equal probability, which is exchangeability. Right: the histogram of the limiting red fraction $\theta$ (from 3000 simulated urns of 600 draws) against its Beta$(a,b)$ law. Drag the gold window along $\theta$: among urns with $\theta$ in the window, the first two draws behave like i.i.d. Bernoulli($\theta$), as the readout compares ($P(RR)$ vs $\theta^2$, $P(RB)$ vs $\theta(1-\theta)$), while over all urns they are positively correlated.`,
+      caption: String.raw`The Pólya urn is the standard exchangeable sequence that is *not* i.i.d. Left: the exact probability of each of the 16 colour patterns of the first four draws, computed from the urn rule; patterns with the same number of reds (bars of one colour) have exactly equal probability, which is exchangeability. Right: the histogram of the limiting red fraction $\theta$ (from 3000 simulated urns of 600 draws) against its Beta$(a,b)$ law. Drag the gold window along $\theta$: among urns with $\theta$ in the window, the first two draws behave like i.i.d. Bernoulli($\theta$), as the readout compares ($P(RR)$ vs $\theta^2$, $P(RB)$ vs $\theta(1-\theta)$), while over all urns they are positively correlated.`,
       credit: 'B. de Finetti (0-1 sequences, around 1930); Hewitt & Savage, 1955 (general case)',
       verify: true,
       deps: ['prob-4.7.7', 'prob-4.7.3', 'prob-2.5.3a'],
@@ -374,7 +374,7 @@ Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
       name: 'Optional stopping under E|X_N| < ∞ and a UI tail',
       statement: String.raw`Let $X_n$ be a submartingale and $N$ a stopping time with $P(N<\infty)=1$ (so $X_N$ is defined). If $E|X_N|<\infty$ and $E(|X_n|;N>n)\to0$, then $EX_0\le EX_N$; for a martingale, $EX_N=EX_0$.`,
       idea: String.raw`The stopped process $X_{N\wedge n}$ is a submartingale (4.2.9) so $EX_0\le EX_{N\wedge n}=E(X_N;N\le n)+E(X_n;N>n)$ (4.4.1 for the bounded time $N\wedge n$). As $n\to\infty$ the first term tends to $EX_N$ by dominated convergence ($E|X_N|<\infty$) and the second tends to $0$ by the tail hypothesis. The conditions are exactly what is missing for "hit $+1$": $X_N=1$ but $E(X_n;N>n)\to-1$.`,
-      caption: String.raw`Simple random walk from $0$, exactly computed by dynamic programming over the killed walk. Rule A: stop on leaving $(-a,b)$. Rule B: stop on hitting $+b$ (no lower barrier; $N<\infty$ a.s. but $EN=\infty$). Right: $E X_{N\wedge n}$ (blue) is $0$ for every $n$; the hypothesis term $E(|X_n|;N>n)$ (red) decays to $0$ for A and tends to $b$ for B, where $EX_N=b\ne0=EX_0$. Left: ten sample paths up to the stopping time (squares: stopped at $+b$ or at $-a$).`,
+      caption: String.raw`Simple random walk from $0$, exactly computed by dynamic programming over the killed walk. Rule A: stop on leaving $(-a,b)$. Rule B: stop on hitting $+b$ (no lower barrier; $N<\infty$ a.s. but $EN=\infty$). Right: $E X_{N\wedge n}$ (blue) is $0$ for every $n$; the hypothesis term $E(|X_n|;N>n)$ (red, even $n$) decays to $0$ for A and tends to $b$ for B, where $EX_N=b\ne0=EX_0$. Left: ten sample paths up to the stopping time (squares: stopped at $+b$ or at $-a$).`,
       deps: ['prob-4.6.4', 'prob-4.4.1', 'prob-4.2.9'],
       tags: ['optional stopping'],
       viz(v) {
@@ -396,14 +396,14 @@ Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
             L.path(pts, { color: EXAMPLE_COLS[j % 8], width: 1.4, alpha: 0.9 }); if (hit) L.dot(hit[0], hit[1], { color: hit[1] > 0 ? 'green' : 'red', r: 4 });
           }
           const dp = ruinDP(-a, b, 0, 0.5, T), mean = [], tail = [], alive = [];
-          dp.forEach(({ t, alive: al, cur }) => { let m = 0, ta = 0; for (let i = 0; i < cur.length; i++) { m += (i - a) * cur[i]; if (i > 0 && i < cur.length - 1) ta += Math.abs(i - a) * cur[i]; } mean.push([t, m]); tail.push([t, ta]); alive.push([t, al]); });
+          dp.forEach(({ t, alive: al, cur }) => { let m = 0, ta = 0; for (let i = 0; i < cur.length; i++) { m += (i - a) * cur[i]; if (i > 0 && i < cur.length - 1) ta += Math.abs(i - a) * cur[i]; } mean.push([t, m]); if (t % 2 === 0) tail.push([t, ta]); alive.push([t, al]); });
           const EXN = A ? 0 : b;
           const ymax = Math.max(1.2, b * 1.15, ...tail.map((p) => p[1]));
           R.setView([0, T], [-0.3 * ymax * 0.2, ymax]);
           R.hline(EXN, { color: 'green', width: 1.8, dash: [6, 4] });
           R.path(alive, { color: 'muted', width: 1.4 });
           R.path(mean, { color: 'blue', width: 2.8 }); R.path(tail, { color: 'red', width: 2.6 });
-          st = { A, a, b, tailEnd: tail[T][1], aliveEnd: alive[T][1], EXN };
+          st = { A, a, b, tailEnd: tail[tail.length - 1][1], aliveEnd: alive[T][1], EXN };
         });
         v.legend([['blue', '$EX_{N\\wedge n}$'], ['red', '$E(|X_n|;N>n)$'], ['muted', '$P(N>n)$'], ['green', '$EX_N$', { dash: true }]]);
         v.readout(() => st && (st.A ? `Exit $(-${st.a},${st.b})$: $P(N>400)=${v.fix(st.aliveEnd, 4)}$, tail term $${v.fix(st.tailEnd, 4)}\\to0$, so $EX_N=EX_0=0$ (indeed $-a\\cdot\\frac{b}{a+b}+b\\cdot\\frac{a}{a+b}=0$).` : `Hit $+${st.b}$: $X_N=${st.b}$ a.s., $EX_N=${st.b}\\ne0$, and the tail term at $n=400$ is $${v.fix(st.tailEnd, 3)}$, still near $${st.b}$ (it tends to $${st.b}$ as $n\\to\\infty$): the hypothesis fails.`));

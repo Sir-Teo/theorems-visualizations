@@ -105,7 +105,7 @@ Any such $Y$ is called a *version*. It models the best guess of $X$ when we know
         const snapB = v.toggle('$B\\in\\mathcal F$ (snap $B$ to cell edges)', true);
         const s = v.stage({ x: [0, 1], y: Y_RANGE, axes: 'box', gutter: true, height: 360, xlabel: '$\\omega$', title: '$X_1$ (blue), $X_2$ (red), versions of $E(X_i\\mid\\mathcal F)$' });
         const lane = cutLane(s, [0.3125, 0.5, 0.6875], Ylo + 0.3);
-        const lb = cutLane(s, [0.3125, 0.6875], Ylo + 0.6, { color: 'green' });
+        const lb = cutLane(s, [0.375, 0.6875], Ylo + 0.6, { color: 'green' });
         const base = gridOf(XF.wave.f), bump = gridOf((w) => 1.2 * (Math.exp(-(((w - 0.15) / 0.15) ** 2)) + Math.exp(-(((w - 0.9) / 0.12) ** 2))));
         let st = null;
         v.render(() => {
@@ -216,6 +216,7 @@ Any such $Y$ is called a *version*. It models the best guess of $X$ when we know
             const L = cellMeans(Z, cuts), R = cellMeans(X, cuts).map((x, k) => a.value * x + cellMeans(Y, cuts)[k]);
             drawGrid(s, Z, { color: 'muted', width: 1.4 }); drawGrid(s, X, { color: 'accent', width: 1.2, alpha: 0.5 }); drawGrid(s, Y, { color: 'teal', width: 1.2, alpha: 0.5 });
             drawSteps(s, cuts, L, { color: 'orange', width: 4.5 }); drawSteps(s, cuts, R, { color: 'green', width: 2, dash: [6, 4] });
+            v.legend([['accent', '$X$'], ['teal', '$Y$'], ['muted', '$aX+Y$'], ['orange', '$E(aX+Y\\mid\\mathcal F)$'], ['green', '$aE(X\\mid\\mathcal F)+E(Y\\mid\\mathcal F)$', { dash: [6, 4] }]]);
             st = { t: `$\\max_{\\text{cells}}|E(aX+Y\\mid\\mathcal F)-aE(X\\mid\\mathcal F)-E(Y\\mid\\mathcal F)|=${fx(Math.max(...L.map((x, k) => Math.abs(x - R[k]))), 10)}$ (rounding only).` };
           } else if (m === 'mon') {
             s.setView([0, 1], Y_RANGE); lane.setY(Ylo + 0.3);
@@ -223,6 +224,7 @@ Any such $Y$ is called a *version*. It models the best guess of $X$ when we know
             const L = cellMeans(X, cuts), R = cellMeans(Y, cuts);
             drawGrid(s, X, { color: 'accent', width: 1.8 }); drawGrid(s, Y, { color: 'red', width: 1.6, dash: [5, 4] });
             drawSteps(s, cuts, L, { color: 'orange', width: 4 }); drawSteps(s, cuts, R, { color: 'purple', width: 2.4, dash: [6, 4] });
+            v.legend([['accent', '$X$'], ['red', '$Y$', { dash: [5, 4] }], ['orange', '$E(X\\mid\\mathcal F)$'], ['purple', '$E(Y\\mid\\mathcal F)$', { dash: [6, 4] }]]);
             const ord = sh.value >= 0, kept = L.every((x, k) => x <= R[k] + 1e-12);
             st = { t: `$X\\le Y$ everywhere: **${ord ? 'yes' : 'no'}**. $E(X\\mid\\mathcal F)\\le E(Y\\mid\\mathcal F)$ on every cell: **${kept ? 'yes' : 'no'}**${!ord && kept ? ' (the conclusion can survive a failed hypothesis, but need not)' : ''}.` };
           } else {
@@ -234,6 +236,7 @@ Any such $Y$ is called a *version*. It models the best guess of $X$ when we know
             s.fn((w) => 0.5 / Math.sqrt(w), { color: 'accent', width: 1.4, alpha: 0.5 });
             s.fn((w) => Math.min(0.5 / Math.sqrt(w), n), { color: 'gold', width: 1.6 });
             drawSteps(s, cuts, E, { color: 'green', width: 2.2, dash: [6, 4] }); drawSteps(s, cuts, En, { color: 'orange', width: 4 });
+            v.legend([['accent', '$X$'], ['gold', '$X_n=\\min(X,n)$'], ['orange', '$E(X_n\\mid\\mathcal F)$'], ['green', '$E(X\\mid\\mathcal F)$', { dash: [6, 4] }]]);
             st = { t: `$n=${n}$: largest gap $\\max_k\\big(E(X\\mid\\mathcal F)-E(X_n\\mid\\mathcal F)\\big)=${fx(Math.max(...E.map((x, k) => x - En[k])), 4)}$, shrinking to $0$ as $n\\to\\infty$; $E(X_n)=${fx(F(1), 4)}\\uparrow EX=1$.` };
           }
         });
