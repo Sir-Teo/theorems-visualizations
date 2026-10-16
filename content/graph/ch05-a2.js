@@ -148,56 +148,57 @@ export default {
       num: '5.2.5', kind: 'Theorem', name: 'Erdős: graphs of large girth and large chromatic number', verify: true,
       statement: String.raw`For every $k\ge 1$ and $g\ge3$ there is a graph $G$ with girth greater than $g$ and chromatic number greater than $k$. The proof is probabilistic: the existence is certain but no explicit graph is produced.`,
       idea: String.raw`Take a random graph on $n$ vertices with edge probability $p=n^{\varepsilon-1}$ for a small $\varepsilon<1/g$. The expected number of cycles of length $\le g$ is $\sum_{i\le g}(np)^i/2i=o(n)$, so with positive probability fewer than $n/2$ vertices lie on short cycles. At the same time, the chance of an independent set of size $r=\lceil n/2k\rceil$ is at most $\binom nr(1-p)^{\binom r2}\le (ne^{-p(r-1)/2})^r\to0$. Delete one vertex from each short cycle: at least $n/2$ vertices remain, every independent set has fewer than $n/2k$ vertices, so $\chi>k$.`,
-      caption: String.raw`Right: the two probability bounds of the proof as functions of $\log_{10}n$ for your choice of $k$, $g$ and $\varepsilon=f/g$; the proof starts to work (green zone) only from a huge $n$ on. Left: a small random sample on which the construction is carried out for real (short cycles deleted); at this size the resulting $\chi$ is nowhere near $k$ — that is the honest picture.`,
+      caption: String.raw`Right: the two estimates of the proof against $\log_{10}n$ for your $k$, $g$ and $\varepsilon=f/g$. Orange: the bound on the chance of $\ge n/2$ short cycles; blue: the base $b=ne^{-p(r-1)/2}$ of the bound $b^r$ on an independent set of size $r\approx n/2k$ (it needs $b<1$, and then $b^r$ is tiny). The green zone is where both bounds fall below $\frac12$: only for astronomically large $n$. Left: a small sample (with its own density) on which the construction is run for real; at this size $\chi$ stays small — that is the honest picture.`,
       deps: ['graph-5.1.1a', 'graph-1.3.1b'], refs: ['Diestel §5.2'], see: ['graph-11.2.2', 'comb-12.10'], tags: ['probabilistic method', 'girth', 'colouring'],
       credit: 'Erdős, 1959', scope: String.raw`The curves use the first-moment bounds from the proof (an upper bound on probabilities), not exact values; the sample on the left is a model illustration at a tiny $n$.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Probabilistic_method' },
       viz(v) {
-        const sG = gstage(v, { height: 320, title: 'a sample, short cycles deleted' });
-        const sA = v.stage({ x: [0, 40], y: [-30, 3], axes: 'box', gutter: true, height: 320, xlabel: '$\\log_{10} n$', ylabel: '$\\log_{10}$ of probability bound', title: 'the bounds of the proof' });
+        const sG = gstage(v, { height: 320, title: 'a small sample, short cycles deleted' });
+        const sA = v.stage({ x: [0, 40], y: [-12, 4], axes: 'box', gutter: true, height: 320, xlabel: '$\\log_{10} n$', ylabel: '$\\log_{10}$ of the quantity', title: 'the two estimates of the proof' });
         const kS = v.select('want $\\chi>k$ with $k=$', [2, 3, 4, 5].map((x) => ({ value: String(x), label: String(x) })), '3');
         const gS = v.select('and girth $>g$ with $g=$', [3, 4, 5, 6].map((x) => ({ value: String(x), label: String(x) })), '4');
         const fS = v.slider('$f$ in $\\varepsilon=f/g$', 0.1, 0.9, 0.5, { step: 0.05 });
         const nS = v.slider('sample size $n$', 8, 30, 24, { int: true });
+        const dS = v.slider('sample: average degree', 1.5, 6, 3.5, { step: 0.5 });
         const G = v.graph(sG, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 11, draggable: false });
         let seed = 1, samp = { key: '' }, info = {};
         v.button('Resample', () => { seed++; });
         const LN10 = Math.LN10;
-        const curves = (k, g, eps) => {
-          const c1 = (t) => { let A = 0; for (let i = 3; i <= g; i++) A += Math.pow(10, i * eps * t) / (2 * i); return Math.log10(2 * A) - t; };
-          const c2 = (t) => { const n = Math.pow(10, t), r = Math.ceil(n / (2 * k)), p = Math.pow(n, eps - 1); return (r * (Math.log(n) - (p * (r - 1)) / 2)) / LN10; };
-          return { c1, c2 };
-        };
         v.render(() => {
-          const k = +kS.value, g = +gS.value, eps = fS.value / g, { c1, c2 } = curves(k, g, eps);
-          const half = Math.log10(0.5);
-          sA.fn((t) => Math.max(-30, Math.min(3, c1(t))), { domain: [0.3, 40], color: 'orange', width: 2.5 });
-          sA.fn((t) => Math.max(-30, Math.min(3, c2(t))), { domain: [0.3, 40], color: 'accent', width: 2.5 });
-          sA.hline(half, { color: 'green', dash: true });
-          let tStar = null; for (let t = 0.3; t <= 40; t += 0.02) if (c1(t) < half && c2(t) < half) { tStar = t; break; }
+          const k = +kS.value, g = +gS.value, eps = fS.value / g, half = Math.log10(0.5);
+          // c1: Markov bound 2A/n on P(at least n/2 short cycles), A = sum_{i<=g} (np)^i / 2i = sum n^{eps i}/2i
+          const c1 = (t) => { let A = 0; for (let i = 3; i <= g; i++) A += Math.pow(10, i * eps * t) / (2 * i); return Math.log10(2 * A) - t; };
+          // c2: log10 of b = n e^{-p(r-1)/2}; the bound on P(alpha >= r) is b^r, r = ceil(n/2k)
+          const base = (t) => { const n = Math.pow(10, t), r = Math.ceil(n / (2 * k)), p = Math.pow(n, eps - 1); return { lb: (Math.log(n) - (p * (r - 1)) / 2) / LN10, r }; };
+          const clamp = (y) => Math.max(-12, Math.min(4, y));
+          sA.fn((t) => clamp(c1(t)), { domain: [0.3, 40], color: 'orange', width: 2.5 });
+          sA.fn((t) => clamp(base(t).lb), { domain: [0.3, 40], color: 'accent', width: 2.5 });
+          sA.hline(half, { color: 'green', dash: true }); sA.hline(0, { color: 'muted', dash: true, alpha: 0.5 });
+          let tStar = null;
+          for (let t = 0.3; t <= 40; t += 0.02) { const b = base(t); if (c1(t) < half && b.r * b.lb < half) { tStar = t; break; } }
           if (tStar != null) { sA.vband(tStar, 40, { color: 'green', alpha: 0.12 }); sA.vline(tStar, { color: 'green', width: 2 }); }
-          sA.text('probability bound = ½', 39.5, half + 1, { align: 'right', color: 'green' });
-          const n = nS.value, key = [n, k, g, fS.value, seed].join(':');
+          sA.text('½', 39.5, half + 0.5, { align: 'right', color: 'green' });
+          const n = nS.value, key = [n, k, g, dS.value, seed].join(':');
           if (samp.key !== key) {
-            const r = rng32(seed * 101 + n), p = Math.min(0.9, Math.pow(n, eps - 1)), E = [];
+            const r = rng32(seed * 101 + n), p = Math.min(0.9, dS.value / (n - 1)), E = [];
             for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (r() < p) E.push([i, j]);
             const sp = { nodes: Array.from({ length: n }, (_, i) => ({ id: i, label: String(i + 1), x: Math.cos(Math.PI / 2 - (TAU * i) / n), y: Math.sin(Math.PI / 2 - (TAU * i) / n) })), edges: E, layout: 'fit' };
-            const gone = new Set(); let short = 0, H;
-            for (let it = 0; it < n; it++) { H = ix(sp, { skipNode: (id) => gone.has(id) }); const gi = girth(H); if (gi.g > g) break; if (!it) short = 1; gone.add(H.ids[gi.cycle[0]]); }
+            const gone = new Set(); let H;
+            for (let it = 0; it < n; it++) { H = ix(sp, { skipNode: (id) => gone.has(id) }); const gi = girth(H); if (gi.g > g) break; gone.add(H.ids[gi.cycle[0]]); }
             H = ix(sp, { skipNode: (id) => gone.has(id) });
             loadSpec(G, sp);
-            const idx = new Map(H.ids.map((id, i) => [id, i])), A = H.adj.map((l) => l.reduce((m, [w]) => m | (1 << w), 0));
-            const al = H.n ? alphaMask(A, H.n >= 31 ? -1 : (1 << H.n) - 1) : 0, ch = H.n <= 22 ? chromatic(H) : null;
+            const A = H.adj.map((l) => l.reduce((m, [w]) => m | (1 << w), 0));
+            const al = H.n ? alphaMask(A, (1 << H.n) - 1) : 0, ch = H.n <= 22 ? chromatic(H) : null;
             samp = { key, gone, H, n, m: E.length, p, al, ch, gi: girth(H).g };
           }
           G.draw({ dim: [...samp.gone] });
-          info = { tStar, eps, p: samp.p };
+          info = { tStar, eps };
         });
-        v.legend([['orange', 'bound on $P(\\ge n/2$ short cycles$)$', { dot: true }], ['accent', 'bound on $P(\\alpha\\ge n/2k)$', { dot: true }], ['green', 'zone where both are below ½']]);
+        v.legend([['orange', '$\\frac{2}{n}\\sum_{i\\le g}\\frac{(np)^i}{2i}$: bound on $P(\\ge n/2$ short cycles$)$'], ['accent', '$n\\,e^{-p(r-1)/2}$: base of the bound on $P(\\alpha\\ge r)$, $r=\\lceil n/2k\\rceil$'], ['green', 'both bounds below ½ (green zone)']]);
         v.readout(() => {
           const x = samp, i = info;
           const t = i.tStar == null ? 'beyond $10^{40}$' : `$n\\ge 10^{${v.fix(i.tStar, 1)}}$`;
-          return `the proof works from ${t} on ($\\varepsilon=${v.fix(i.eps, 3)}$)\n` + `sample: $n=${x.n}$, $p=${v.fix(x.p, 3)}$, ${x.m} edges; after deleting ${x.gone.size} vertices: $n'=${x.H.n}$, girth ${x.gi === Infinity ? '$\\infty$' : x.gi}, $\\alpha=${x.al}$, so $\\chi\\ge\\lceil n'/\\alpha\\rceil=${x.al ? Math.ceil(x.H.n / x.al) : '-'}$` + (x.ch ? `, in fact $\\chi=${x.ch.k}$` : '');
+          return `with $p=n^{\\varepsilon-1}$, $\\varepsilon=${v.fix(i.eps, 3)}$, the proof works from ${t} on\n` + `sample (its own density): $n=${x.n}$, ${x.m} edges, ${x.gone.size} vertices deleted to reach girth $>g$: $n'=${x.H.n}$, girth ${x.gi === Infinity ? '$\\infty$' : x.gi}, $\\alpha=${x.al}$, so $\\chi\\ge\\lceil n'/\\alpha\\rceil=${x.al ? Math.ceil(x.H.n / x.al) : '-'}$` + (x.ch ? `, exactly $\\chi=${x.ch.k}$` : '');
         });
       },
     },
@@ -335,10 +336,11 @@ export default {
           const sp = gsel.value === 'rnd' ? bipartite(4 + (seed % 2), 4, 11 + (seed % 3), r) : P[gsel.value][1]();
           sp.nodes.forEach((n, i) => { if (!n.label) n.label = String(i + 1); });
           loadSpec(G, sp); H = ix(G); D = maxDeg(H); F = konigFrames(H, D, nm(G, H));
-          if (S) S.reset(F.frames, { at: 'end' });
+          if (S) S.reset(F.frames, { at: at() });
         }
         load();
-        S = v.steps({ frames: F.frames, start: 'end', still: 'end', speed: 1.4, codePos: 'below', code: ['for each edge xy in turn:', '  if some colour is missing at both x and y: use it', '  else α missing at x, β missing at y:', '    swap α, β on the alternating path from y (it avoids x)', '    colour xy with α'], codeTitle: 'König’s edge colouring' });
+        const at = () => { const i = F.frames.findIndex((f) => /^Swap/.test(f.note)); return i >= 0 ? i : 'end'; };
+        S = v.steps({ frames: F.frames, start: at(), still: at(), speed: 1.4, codePos: 'below', code: ['for each edge xy in turn:', '  if some colour is missing at both x and y: use it', '  else α missing at x, β missing at y:', '    swap α, β on the alternating path from y (it avoids x)', '    colour xy with α'], codeTitle: 'König’s edge colouring' });
         v.button('Another graph', () => { seed++; if (gsel.value !== 'rnd') gsel.set('rnd', { fire: true }); else load(); });
         v.render(() => { const f = S.frame; if (!f.ecol) return; G.draw(edgeStyle(H, f.ecol, { cur: f.cur, hot: new Set(f.path) })); });
         v.readout(() => { const f = S.frame; if (!f.ecol) return ''; const n = f.ecol.filter((c) => c >= 0).length; return `$\\Delta=${D}$ colours · ${n} of ${H.m} edges coloured` + (F.complete ? '' : ' · the full run gets stuck: not bipartite') ; });
@@ -362,10 +364,11 @@ export default {
           const sp = gsel.value === 'rnd' ? connectedGraph(8, 6 + (seed % 5), rng32(seed * 29)) : P[gsel.value][1]();
           sp.nodes.forEach((n, i) => { if (!n.label) n.label = String(i + 1); });
           loadSpec(G, sp); H = ix(G); F = vizingFrames(H, nm(G, H));
-          if (S) S.reset(F.frames, { at: 'end' });
+          if (S) S.reset(F.frames, { at: at() });
         }
         load();
-        S = v.steps({ frames: F.frames, start: 'end', still: 'end', speed: 1.5, codePos: 'below', code: ['for each uncoloured edge x y₀:', '  build a maximal fan y₀ … y_t at x', '  c ← colour missing at x,  d ← colour missing at y_t', '  invert the c/d-path that starts at x', '  find a prefix of the fan ending at y_j with d missing', '  rotate that prefix, colour x y_j with d'], codeTitle: 'Misra–Gries' });
+        const at = () => { let i = F.frames.findIndex((f) => /^Rotate/.test(f.note)); if (i < 0) i = F.frames.findIndex((f) => /^Follow/.test(f.note)); return i >= 0 ? i : 'end'; };
+        S = v.steps({ frames: F.frames, start: at(), still: at(), speed: 1.5, codePos: 'below', code: ['for each uncoloured edge x y₀:', '  build a maximal fan y₀ … y_t at x', '  c ← colour missing at x,  d ← colour missing at y_t', '  invert the c/d-path that starts at x', '  find a prefix of the fan ending at y_j with d missing', '  rotate that prefix, colour x y_j with d'], codeTitle: 'Misra–Gries' });
         v.button('Another random graph', () => { seed++; if (gsel.value !== 'rnd') gsel.set('rnd', { fire: true }); else load(); });
         v.render(() => {
           const f = S.frame; if (!f.ecol) return;
@@ -401,7 +404,7 @@ export default {
             if (two) { const h = n / 2, E = []; for (let b = 0; b < 2; b++) for (let i = 0; i < h; i++) for (let j = i + 1; j < h; j++) E.push([b * h + i, b * h + j]); sp = { nodes: Array.from({ length: n }, (_, i) => { const b = i < h ? 0 : 1, j = i % h, a = Math.PI / 2 - (TAU * j) / h; return { id: i, label: String(i + 1), x: (b ? 1.3 : -1.3) + 0.9 * Math.cos(a), y: 0.9 * Math.sin(a) }; }), edges: E, layout: 'fit' }; }
             else { sp = regularGraph(n, d, rng32(seed * 7 + n * 13 + d), 300); sp.nodes.forEach((x, i) => { x.label = String(i + 1); }); }
             loadSpec(G, sp);
-            const H = ix(sp), cm = comps(H), odd = cm.lists.some((l) => l.length % 2), r = odd ? { status: 'no' } : edgeColourWith(H, d, 2e6);
+            const H = ix(G), cm = comps(H), odd = cm.lists.some((l) => l.length % 2), r = odd ? { status: 'no' } : edgeColourWith(H, d, 2e6);
             B = { key, H, n, d, two, odd, r, thr: 2 * Math.ceil(n / 4) - 1 };
           }
           const { H, r } = B, cls = Math.min(cS.value, B.d), ok = r.status === 'yes';

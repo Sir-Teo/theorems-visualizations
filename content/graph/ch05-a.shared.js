@@ -10,7 +10,7 @@ import { ix, named, ekey, planarEdges } from './ch04-z.shared.js';
 export const TAU = 2 * Math.PI;
 /** Class colours (palette names); `red` is kept for conflicts. */
 export const COL = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold'];
-export const colName = (c) => 'abcdefg'[c] || '?';
+export const colName = (c) => COL[c] || '?';
 /** Small seeded generator (mulberry32), usable outside the viz runtime. */
 export function rng32(seed) {
   let a = (seed * 2654435761) >>> 0 || 1;
@@ -187,21 +187,21 @@ export function konigFrames(H, ncol, nm) {
     const [x, y] = H.E[k], fx = [], fy = [];
     for (let c = 0; c < ncol; c++) { if (at[x][c] < 0) fx.push(c); if (at[y][c] < 0) fy.push(c); }
     const common = fx.find((c) => fy.includes(c));
-    if (common != null) { put(k, common); snap({ cur: k, note: `Edge ${nm(x)}${nm(y)}: colour ${colName(common)} is free at both ends — use it.` }); continue; }
+    if (common != null) { put(k, common); snap({ cur: k, note: `Edge ${nm(x)}–${nm(y)}: colour ${colName(common)} is free at both ends — use it.` }); continue; }
     let done = false, failure = null;
     for (const al of fx) {
       for (const be of fy) {
         const { P, end } = walk(y, al, be);
         if (end === x) { failure = failure || { al, be, P }; continue; }
-        snap({ cur: k, path: P, note: `Edge ${nm(x)}${nm(y)}: ${colName(al)} is free at ${nm(x)}, ${colName(be)} is free at ${nm(y)}, no common free colour. Follow the ${colName(al)}/${colName(be)}-path from ${nm(y)} (${P.length} edge${P.length === 1 ? '' : 's'}); it does not reach ${nm(x)}.` });
+        snap({ cur: k, path: P, note: `Edge ${nm(x)}–${nm(y)}: ${colName(al)} is free at ${nm(x)}, ${colName(be)} is free at ${nm(y)}, no common free colour. Follow the ${colName(al)}/${colName(be)}-path from ${nm(y)} (${P.length} edge${P.length === 1 ? '' : 's'}); it does not reach ${nm(x)}.` });
         const cs = P.map((e) => ecol[e]); P.forEach((e) => put(e, -1)); P.forEach((e, i) => put(e, cs[i] === al ? be : al));
-        snap({ cur: k, path: P, note: `Swap ${colName(al)} and ${colName(be)} on the path: now ${colName(al)} is free at both ends of ${nm(x)}${nm(y)}.` });
-        put(k, al); snap({ cur: k, note: `Colour ${nm(x)}${nm(y)} with ${colName(al)}.` });
+        snap({ cur: k, path: P, note: `Swap ${colName(al)} and ${colName(be)} on the path: now ${colName(al)} is free at both ends of ${nm(x)}–${nm(y)}.` });
+        put(k, al); snap({ cur: k, note: `Colour ${nm(x)}–${nm(y)} with ${colName(al)}.` });
         done = true; break;
       }
       if (done) break;
     }
-    if (!done) { snap({ cur: k, path: failure ? failure.P : [], ok: false, note: `Edge ${nm(x)}${nm(y)}: every alternating path from ${nm(y)} runs into ${nm(x)} — swapping would spoil ${nm(x)}. Only possible in a non-bipartite graph; stop.` }); return { frames, ecol, complete: false }; }
+    if (!done) { snap({ cur: k, path: failure ? failure.P : [], ok: false, note: `Edge ${nm(x)}–${nm(y)}: every alternating path from ${nm(y)} runs into ${nm(x)} — swapping would spoil ${nm(x)}. Only possible in a non-bipartite graph; stop.` }); return { frames, ecol, complete: false }; }
   }
   snap({ note: `All ${H.m} edges coloured with ${ncol} colours.` });
   return { frames, ecol, complete: true };
@@ -227,10 +227,10 @@ export function vizingFrames(H, nm) {
       if (nxt < 0) break; fan.push(nxt);
     }
     const last = fan[fan.length - 1], c = free(u), d = free(last);
-    if (fan.length === 1 && isFree(v0, c)) { put(k0, c); snap({ cur: k0, centre: u, note: `Edge ${nm(u)}${nm(v0)}: colour ${colName(c)} is free at both ends — use it.` }); continue; }
+    if (fan.length === 1 && isFree(v0, c)) { put(k0, c); snap({ cur: k0, centre: u, note: `Edge ${nm(u)}–${nm(v0)}: colour ${colName(c)} is free at both ends — use it.` }); continue; }
     if (isFree(last, c)) { // fan end sees c too: rotate directly
-      snap({ cur: k0, centre: u, fan, note: `Edge ${nm(u)}${nm(v0)}: fan at ${nm(u)} = ${fan.map(nm).join(', ')}. Colour ${colName(c)} is free at ${nm(u)} and at the end ${nm(last)} of the fan.` });
-    } else snap({ cur: k0, centre: u, fan, note: `Edge ${nm(u)}${nm(v0)}: build the fan ${fan.map(nm).join(', ')} at ${nm(u)} (each edge's colour is free at the previous fan vertex). c = ${colName(c)} is free at ${nm(u)}, d = ${colName(d)} is free at ${nm(last)}.` });
+      snap({ cur: k0, centre: u, fan, note: `Edge ${nm(u)}–${nm(v0)}: fan at ${nm(u)} = ${fan.map(nm).join(', ')}. Colour ${colName(c)} is free at ${nm(u)} and at the end ${nm(last)} of the fan.` });
+    } else snap({ cur: k0, centre: u, fan, note: `Edge ${nm(u)}–${nm(v0)}: build the fan ${fan.map(nm).join(', ')} at ${nm(u)} (each edge's colour is free at the previous fan vertex). c = ${colName(c)} is free at ${nm(u)}, d = ${colName(d)} is free at ${nm(last)}.` });
     // invert the c/d path from u
     const path = []; let cur = u, cc = d;
     while (at[cur][cc] >= 0 && path.length <= H.m) { const e = at[cur][cc]; path.push(e); cur = other(e, cur); cc = cc === d ? c : d; }
@@ -251,7 +251,7 @@ export function vizingFrames(H, nm) {
     for (let j = 1; j <= idx; j++) put(edgeTo(u, pre[j]), -1);
     for (let j = 0; j < idx; j++) put(edgeTo(u, pre[j]), cs[j]);
     put(edgeTo(u, pre[idx]), d);
-    snap({ cur: k0, centre: u, fan: pre, note: idx ? `Rotate the fan ${pre.map(nm).join(', ')}: each edge takes the colour of the next one, and the last edge ${nm(u)}${nm(pre[idx])} gets ${colName(d)}.` : `${colName(d)} is free at ${nm(v0)}: colour ${nm(u)}${nm(v0)} with ${colName(d)}.` });
+    snap({ cur: k0, centre: u, fan: pre, note: idx ? `Rotate the fan ${pre.map(nm).join(', ')}: each edge takes the colour of the next one, and the last edge ${nm(u)}–${nm(pre[idx])} gets ${colName(d)}.` : `${colName(d)} is free at ${nm(v0)}: colour ${nm(u)}–${nm(v0)} with ${colName(d)}.` });
   }
   snap({ note: `Done: ${H.m} edges, ${Kc} colours available (Δ + 1 = ${Kc}).` });
   const bad = H.adj.some((l, v) => new Set(l.map(([, k]) => ecol[k])).size !== l.length || l.some(([, k]) => ecol[k] < 0));
@@ -339,7 +339,7 @@ export function triangulation(n, seed, flips = 60) {
     for (let w = 0; w < n; w++) { if (w === v) continue; const dx = Q[v][0] - Q[w][0], dy = Q[v][1] - Q[w][1], d = Math.hypot(dx, dy) + 1e-3; const f = (kk * kk) / d / d; fx += dx * f; fy += dy * f; }
     for (const w of adj[v]) { const dx = Q[w][0] - Q[v][0], dy = Q[w][1] - Q[v][1], d = Math.hypot(dx, dy); fx += (dx * d) / kk; fy += (dy * d) / kk; }
     const fl = Math.hypot(fx, fy) || 1, step = Math.min(0.08, fl * 0.08) / fl, old = Q[v], w0 = worst(v);
-    for (let s = 1, t = 0; t < 6; t++, s /= 2) { Q[v] = [old[0] + fx * step * s, old[1] + fy * step * s]; const w1 = worst(v); if (w1 > 0 && w1 >= Math.min(w0, 0.25)) break; Q[v] = old; }
+    for (let s = 1, t = 0; t < 6; t++, s /= 2) { Q[v] = [old[0] + fx * step * s, old[1] + fy * step * s]; const w1 = worst(v); if (w1 > 0.01 && w1 >= Math.min(0.6 * w0, 0.12)) break; Q[v] = old; }
   }
   return { ...T, pos: Q };
 }

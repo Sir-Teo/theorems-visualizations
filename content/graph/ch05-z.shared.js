@@ -2,7 +2,7 @@
 // shared by ch05-z.js and ch05-z2.js. Re-exports the chapter 1–4 toolbox. Everything works on small graphs given as
 // adjacency bit masks A[v] (n ≤ 24); vertex sets are bit masks; colour lists are bit masks of colour indices.
 export * from './ch04-z.shared.js';
-import { ix, K, popc, bitsOf, compMasks } from './ch04-z.shared.js';
+import { ix, K, popc, bitsOf, compMasks, ixE, crossings } from './ch04-z.shared.js';
 
 export const CP = ['blue', 'orange', 'purple', 'teal', 'pink', 'gold', 'green', 'red'];
 export const bit = (v) => 1 << v;
@@ -327,20 +327,35 @@ export function kernelColouring(Gv, L0, q) {
   return alive ? { stuck: true, col, steps } : { col, steps };
 }
 
-/** Spread a plane straight-line drawing: repulsion between vertices, springs along edges, pinned vertices fixed; a step is undone if it creates a crossing. */
-export function relaxPlane(n, E, P0, pinned = [], iters = 160) {
-  const H = ixE(n, E); let P = P0.map((p) => p.slice()), step = 0.02; const pin = new Set(pinned);
-  const sc = Math.sqrt(1 / n) * 1.4;
-  for (let it = 0; it < iters; it++) {
-    const F = P.map(() => [0, 0]);
-    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
-      const dx = P[i][0] - P[j][0], dy = P[i][1] - P[j][1], d2 = dx * dx + dy * dy + 1e-6, f = (sc * sc) / d2;
-      F[i][0] += f * dx; F[i][1] += f * dy; F[j][0] -= f * dx; F[j][1] -= f * dy;
-    }
-    for (const [a, b] of E) { const dx = P[b][0] - P[a][0], dy = P[b][1] - P[a][1], d = Math.hypot(dx, dy) + 1e-9, f = (d * d) / (sc * 6); F[a][0] += (f * dx) / d; F[a][1] += (f * dy) / d; F[b][0] -= (f * dx) / d; F[b][1] -= (f * dy) / d; }
-    let Q = P.map((p, i) => (pin.has(i) ? p : [p[0] + step * F[i][0], p[1] + step * F[i][1]]));
-    let tries = 0; while (crossings(H, Q).length && tries++ < 6) { step *= 0.5; Q = P.map((p, i) => (pin.has(i) ? p : [p[0] + step * F[i][0], p[1] + step * F[i][1]])); }
-    if (!crossings(H, Q).length) P = Q; step = Math.min(step * 1.1, 0.05);
+// ---------------------------------------------------------------- the path argument (Gyárfás): colouring a connected graph by layers
+/**
+ * Colour the connected graph on S from the root v as in the proof of the local-colourability lemma: colour N(v) with `nbrCol`
+ * (a function mask → {col, used}), give v the next colour, then colour each component H of S ∖ N[v] by recursion on H ∪ {u}
+ * (u a neighbour of v with a neighbour in H), with a fresh palette shared by all components. dep[x] = recursion depth at which x was coloured.
+ */
+export function lemmaColour(A, S, v, nbrCol, dep = null, d = 0) {
+  const n = A.length, col = new Int16Array(n).fill(-1), N = A[v] & S, nc = nbrCol(N), nb = bitsOf(N);
+  for (const u of nb) col[u] = nc.col[u];
+  col[v] = nc.used; const used0 = nc.used + 1;
+  if (dep) for (const u of [v, ...nb]) if (dep[u] < 0) dep[u] = d;
+  let inner = 0;
+  for (const H of compMasks(A, S & ~N & ~(1 << v))) {
+    const u = nb.find((x) => A[x] & H), sub = lemmaColour(A, H | (1 << u), u, nbrCol, dep, d + 1);
+    inner = Math.max(inner, sub.used); for (const h of bitsOf(H)) col[h] = used0 + sub.col[h];
   }
-  return P;
+  return { col, used: used0 + inner };
 }
+/** Neighbourhood colourer for Gyárfás's induction: component by component, from a vertex of maximum degree, recursively. */
+export function gyNbr(A) {
+  const f = (S) => {
+    const col = new Int16Array(A.length).fill(-1); let used = 0;
+    for (const C of compMasks(A, S)) {
+      let r = -1, bd = -1; for (const x of bitsOf(C)) { const d = popc(A[x] & C); if (d > bd) { bd = d; r = x; } }
+      const res = lemmaColour(A, C, r, f); for (const x of bitsOf(C)) col[x] = res.col[x]; used = Math.max(used, res.used);
+    }
+    return { col, used };
+  };
+  return f;
+}
+/** BFS distances from r inside S (−1 if unreachable). */
+export function bfsLayers(A, S, r) { const d = new Int16Array(A.length).fill(-1); d[r] = 0; let fr = 1 << r, seen = fr, k = 0; while (fr) { k++; let nx = 0; for (const x of bitsOf(fr)) nx |= A[x] & S & ~seen; for (const x of bitsOf(nx)) d[x] = k; seen |= nx; fr = nx; } return d; }

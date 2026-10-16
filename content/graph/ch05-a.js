@@ -155,7 +155,7 @@ export default {
         const nS = v.slider('vertices $n$', 4, 22, 12, { int: true });
         const kS = v.select('colours allowed', [{ value: '4', label: '4 colours' }, { value: '3', label: '3 colours' }], '4');
         let seed = 11;
-        const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 11 });
+        const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 10 });
         let cur = { key: '' }, hist = { key: '', p: [0, 0, 0] };
         const mkTri = (n, sd, light) => (light ? { n, E: randomTriangulation(n, rng32(sd), 60).E } : triangulation(n, sd));
         function refresh() {
@@ -195,19 +195,20 @@ export default {
       statement: String.raw`Every planar graph is $5$-colourable.`,
       idea: String.raw`Induct on $|G|$. A planar graph has a vertex $v$ of degree at most $5$ (from $m\le 3n-6$); colour $G-v$ by induction. If the neighbours of $v$ use at most four colours, give $v$ a free one. Otherwise $v$ has five neighbours $n_1,\dots,n_5$ in cyclic order with colours $1,\dots,5$. Look at the Kempe chain of colours $1,3$ containing $n_1$. If it misses $n_3$, swap its two colours and colour $v$ with $1$. If it reaches $n_3$, it together with $v$ forms a closed curve that separates $n_2$ from $n_4$, so the $2,4$-chain from $n_2$ cannot reach $n_4$: swap that one instead. Kempe's argument for four colours breaks because a degree-$5$ vertex lets two chains be unlinked only when only two colours are involved.`,
       caption: String.raw`Step through the proof on a random plane triangulation: first vertices of degree $\le5$ are peeled off, then they are re-inserted in reverse order. When all five colours surround a vertex, the Kempe chain (red ring) is swapped. Use *next example with a swap* to find a graph where this happens.`,
-      deps: ['graph-4.2.10', 'graph-4.4.6', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel §5.1'], tags: ['colouring', 'Kempe chain', 'planar'],
+      deps: ['graph-4.2.10', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel §5.1'], tags: ['colouring', 'Kempe chain', 'planar'],
       credit: 'Heawood, 1890 (repairing Kempe, 1879)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Five_color_theorem' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const nS = v.slider('vertices $n$', 6, 20, 14, { int: true, onChange: () => rebuild() });
         let seed = 1, swapsInfo = 0;
-        const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 12, draggable: false });
+        const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 10, draggable: false });
         function build() { return fiveFrames(triangulation(nS.value, seed * 31 + nS.value), seed); }
         let B = build(); for (let t = 0; t < 300 && B.swaps === 0; t++) { seed++; B = build(); } swapsInfo = B.swaps;
         loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' });
-        const S = v.steps({ frames: B.frames, start: 'end', still: 'end', speed: 1.3, codePos: 'below', code: ['peel: repeatedly remove a vertex v of degree ≤ 5', 'recolour back in reverse order:', '  if the neighbours of v miss a colour: use it', '  else (5 neighbours, 5 colours): take a Kempe chain', '    n₁→n₃ if it avoids n₃, else n₂→n₄; swap its colours', '  and give v the colour that is now free'], codeTitle: 'Five-colouring proof' });
-        function rebuild() { B = build(); swapsInfo = B.swaps; loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' }); S.reset(B.frames, { at: 'end' }); }
+        const swAt = () => { const i = B.frames.findIndex((f) => /^Swap/.test(f.note)); return i >= 0 ? i : 'end'; };
+        const S = v.steps({ frames: B.frames, start: swAt(), still: swAt(), speed: 1.3, codePos: 'below', code: ['peel: repeatedly remove a vertex v of degree ≤ 5', 'recolour back in reverse order:', '  if the neighbours of v miss a colour: use it', '  else (5 neighbours, 5 colours): take a Kempe chain', '    n₁→n₃ if it avoids n₃, else n₂→n₄; swap its colours', '  and give v the colour that is now free'], codeTitle: 'Five-colouring proof' });
+        function rebuild() { B = build(); swapsInfo = B.swaps; loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' }); S.reset(B.frames, { at: swAt() }); }
         v.button('Next example', () => { seed++; rebuild(); });
         v.button('Next example with a Kempe swap', () => { for (let t = 0; t < 300; t++) { seed++; B = build(); if (B.swaps > 0) break; } rebuild(); });
         v.render(() => {
@@ -357,7 +358,7 @@ export default {
           k5t: ['$K^5$ with a tail', () => ({ nodes: [...Array(5).keys()].map((i) => ({ id: i, x: Math.cos(TAU * i / 5), y: Math.sin(TAU * i / 5) })).concat([5, 6, 7, 8].map((i) => ({ id: i, x: 1.8 + (i - 5) * 0.8, y: 0 }))), edges: [...[0, 1, 2, 3, 4].flatMap((a) => [0, 1, 2, 3, 4].filter((b) => b > a).map((b) => [a, b])), [4, 5], [5, 6], [6, 7], [7, 8]], layout: 'fit' })],
           grid: ['grid', () => ({ nodes: [...Array(16).keys()].map((i) => ({ id: i, x: i % 4, y: -Math.floor(i / 4) })), edges: [...Array(16).keys()].flatMap((i) => [(i % 4) < 3 ? [i, i + 1] : null, i < 12 ? [i, i + 4] : null]).filter(Boolean), layout: 'fit' })],
         };
-        const s = gstage(v, { height: 340 });
+        const s = gstage(v, { height: 340, title: 'the graph (numbers: degrees in what is left)' });
         const sb = v.stage({ x: [0, 16], y: [0, 7], axes: 'box', gutter: true, height: 340, xlabel: 'deletion step', ylabel: 'degree at deletion', title: 'smallest degree met' });
         const gsel = v.select('graph', opts(P), 'rnd', { onChange: () => load() });
         const mode = v.select('mode', [{ value: 'peel', label: 'peel' }, { value: 'back', label: 'colour back' }], 'peel');

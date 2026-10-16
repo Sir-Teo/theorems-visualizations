@@ -1,8 +1,8 @@
 // Graph Theory (Diestel) — Chapter 5, part Z1 (§5.4: list colouring, choice number, kernels, Alon, Thomassen, Galvin)
 import {
   K, ix, CP, GAL, gstage, placed, loadSpec, masksOf, masksOfG, outMasks, full, lowBit, popc, bitsOf, listColour, countListColourings,
-  chiOf, isKernel, allKernels, hasKernel, chips, ring, rnd, randList, galvin, kernelColouring, inPoly, faceWalks, ixE, spread,
-  randomTriangulation, triDraw, isKconn, relaxPlane, complementA, edgesOf,
+  chiOf, isKernel, allKernels, hasKernel, chips, ring, rnd, randList, galvin, kernelColouring, inPoly, faceWalks, ixE,
+  isKconn, complementA, edgesOf,
 } from './ch05-z.shared.js';
 
 const binom = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = (r * (n - k + i)) / i; return Math.round(r); };
@@ -42,6 +42,25 @@ function thomassen(Am, P, S, cyc, col, L, ev) {
   thomassen(Am, P, S2, newCyc, col, L2, ev);
   const c = two.find((x) => x !== col[cyc[k - 2]]); col[vk] = c;
   ev.push({ v: vk, c, note: `vertex ${one(vk)} returns: it takes whichever of its two reserved colours its outer neighbour ${one(cyc[k - 2])} did not use` });
+}
+
+/** Random plane triangulation: the Delaunay triangulation of the corners of a triangle and n-3 random points inside it (dart throwing). */
+function delaunay(n, r) {
+  const P = [[-1, -0.58], [1, -0.58], [0, 1.15]];
+  for (let gap = 0.34, tries = 0; P.length < n; tries++) {
+    if (tries > 400) { gap *= 0.8; tries = 0; }
+    const a = r(), b = r() * (1 - a), c = 1 - a - b, q = [a * P[0][0] + b * P[1][0] + c * P[2][0], a * P[0][1] + b * P[1][1] + c * P[2][1]];
+    if (P.every((p) => Math.hypot(p[0] - q[0], p[1] - q[1]) > gap) && Math.min(...[[0, 1], [1, 2], [0, 2]].map(([i, j]) => {
+      const dx = P[j][0] - P[i][0], dy = P[j][1] - P[i][1]; return Math.abs(dx * (q[1] - P[i][1]) - dy * (q[0] - P[i][0])) / Math.hypot(dx, dy); })) > gap * 0.6) P.push(q);
+  }
+  const E = new Set();
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) for (let k = j + 1; k < n; k++) {
+    const [ax, ay] = P[i], [bx, by] = P[j], [cx, cy] = P[k], d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by)); if (Math.abs(d) < 1e-9) continue;
+    const ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d, uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by) * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d, R2 = (ax - ux) ** 2 + (ay - uy) ** 2;
+    let ok = true; for (let m = 0; m < n && ok; m++) if (m !== i && m !== j && m !== k && (P[m][0] - ux) ** 2 + (P[m][1] - uy) ** 2 < R2 - 1e-9) ok = false;
+    if (ok) { E.add(i + ',' + j); E.add(j + ',' + k); E.add(i + ',' + k); }
+  }
+  return { n, E: [...E].map((e) => e.split(',').map(Number)), P };
 }
 
 export default {
@@ -147,13 +166,13 @@ In particular there are bipartite graphs, for which $\chi=2$, with arbitrarily l
       viz(v) {
         const nS = v.slider('vertices', 6, 14, 9, { int: true, onChange: () => build() });
         const qS = v.slider('colours in the palette', 5, 8, 6, { int: true, onChange: () => build() });
-        const rmS = v.slider('outer vertices removed', 0, 2, 0, { int: true, onChange: () => build() });
+        const rmS = v.slider('outer vertices removed', 0, 2, 1, { int: true, onChange: () => build() });
         const s = gstage(v, { height: 380 });
         const G = v.graph(s, { nodes: [], edges: [], r: 13, draggable: false });
         let seed = 3, inst = null;
         const t = v.slider('colours fixed so far', 0, 20, 20, { int: true });
         function build() {
-          const n = nS.value, r = v.rng(seed * 7919 + n), T = triDraw(randomTriangulation(n, r, 8)), P0 = relaxPlane(n, T.E, spread(n, T.E, T.pos, 60, [0, 1, 2]), [0, 1, 2]);
+          const n = nS.value, r = v.rng(seed * 7919 + n), T = delaunay(n, r), P0 = T.P;
           // delete outer vertices (keeping 2-connectivity) to get a longer outer cycle
           let keep = full(n), Am = masksOf(n, T.E), outer = [0, 1, 2];
           for (let rm = 0; rm < rmS.value; rm++) {
