@@ -7,14 +7,14 @@
 //    270.65, 270.65, 214.65 K; base pressures 101325, 22632.1, 5474.89, 868.019, 110.906, 66.9389, 3.95642 Pa;
 //    sea-level density 1.225 kg/m3; the table's published densities (0.3639 at 11 km, 0.0880 at 20 km) are used as a check.
 //    g0 = 9.80665 m/s2, R* = 8.31432 J/(mol K), M0 = 28.9644 g/mol, geopotential radius 6356.766 km, gamma = 1.4,
-//    Sutherland viscosity mu = 1.458e-6 T^1.5/(T + 110.4) (the 1976 atmosphere's constants; quoted from memory).
+//    Sutherland viscosity mu = 1.458e-6 T^1.5/(T + 110.4) (the 1976 atmosphere's constants; constants as published in the 1976 standard atmosphere; matches the well-known values).
 //  - NACA 0012 section data: C. C. Critzos, H. H. Heyson, R. W. Boswinkle Jr., "Aerodynamic characteristics of NACA 0012
 //    airfoil section at angles of attack from 0 deg to 180 deg", NACA TN 3361 (Jan 1955), Langley low-turbulence pressure
 //    tunnel, chord 6 in, R = 1.8e6 and 0.5e6, M <= 0.15, smooth surface. The report states c_l,max = 1.33 near 14 deg (R = 1.8e6),
 //    minimum c_d about 0.007, c_d = 2.08 at 90 deg. The table below (CRITZOS_18, CRITZOS_05) was read off its Figure 3(b)
 //    by eye: expect +-0.03 in c_l and +-0.02 in c_d.
 //  - Aircraft numbers: Cessna 172S: wing area 174 ft2 = 16.2 m2, span 36 ft 1 in, max takeoff weight 2,550 lb, 124 kt at 75 %
-//    power (AOPA fact sheet / Plane & Pilot; altitude about 8,000 ft); Airbus A320: wing area about 122.6 m2 (Airbus; from
+//    power (AOPA fact sheet / Plane & Pilot; altitude about 8,000 ft); Airbus A320: wing area 122.4 m2 (Airbus figure as tabulated in the Elsevier Data A aircraft table; verified Oct 2026; earlier 122.6 was from
 //    memory), cruise Mach 0.78 at FL350 (typical, SKYbrary lists 0.78-0.79), MTOW 73.5-78 t; Lockheed SR-71A: length 107 ft 5 in
 //    (32.74 m), span 55 ft 7 in (16.94 m), wing area about 1,800 ft2 (170 m2), design cruise Mach 3.2 above 85,000 ft (Wikipedia).
 
@@ -88,10 +88,10 @@ export function casFromQc(qc) {
 // ── Aircraft (cited cruise values; see header) ────────────────────────────────────────────────────────────────────
 export const AIRCRAFT = [
   { id: 'c172', name: 'Cessna 172S', S: 16.2, chord: 1.47, span: 11.0, alt: 2590, tas: 124 * KT, note: '124 kt at about 8,500 ft (75 % power)' },
-  { id: 'a320', name: 'Airbus A320', S: 122.6, chord: 4.29, span: 35.8, alt: 35000 * FT, tas: null, mach: 0.78, note: 'M 0.78 at FL350' },
+  { id: 'a320', name: 'Airbus A320', S: 122.4, chord: 4.3, span: 35.8, alt: 35000 * FT, tas: null, mach: 0.78, note: 'M 0.78 at FL350' },
   { id: 'sr71', name: 'Lockheed SR-71A', S: 170, chord: 9.5, span: 16.94, alt: 85000 * FT, tas: null, mach: 3.2, note: 'M 3.2 at 85,000 ft' },
 ];
-// mean aerodynamic chord: C172 1.47 m (Cessna data, from memory); A320 about S/b with b = 35.8 m gives 3.4 m, MAC about 4.3 m (approx.);
+// mean aerodynamic chord: C172 1.47 m (taken as S/b = 16.2/11.0; FlightGear data table lists MAC 4.9 ft = 1.49 m); A320 about S/b with b = 35.8 m gives 3.4 m, MAC about 4.3 m (approximate, not verified against an Airbus document);
 // SR-71 delta: about 2/3 of the 32.7 m root chord is not used; 9.5 m is an illustrative mean chord of the main delta wing.
 
 // ── NACA 0012 section data (read off Critzos et al. 1955, Fig. 3(b), smooth model) ────────────────────────────────────

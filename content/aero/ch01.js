@@ -7,7 +7,7 @@
 //       boundary-layer estimate (Blasius 0.664/sqrt(Re), Schlichting turbulent 0.0592 Re^-0.2). The separated-wake option is an
 //       illustrative dead-air model (constant pressure behind the separation point), not a measurement.
 //   1.3 NACA 0012 data: Critzos, Heyson & Boswinkle, NACA TN 3361 (1955), read off Fig. 3(b), R = 1.8e6 and 0.5e6. Aircraft values:
-//       AOPA / Plane & Pilot (Cessna 172S), SKYbrary / Airbus (A320; wing area 122.6 m2 from memory), Wikipedia (SR-71).
+//       AOPA / Plane & Pilot (Cessna 172S), SKYbrary / Airbus (A320; wing area 122.4 m2 per the Elsevier Data A aircraft table (Airbus figure); mean chord ≈ 4.3 m is approximate and unverified), Wikipedia (SR-71).
 //   1.4 Sutherland-law air viscosity, perfect-gas tunnels; the cryogenic/pressurised envelope is idealised, not any real facility.
 //   1.5 Pitot-tube relations: isentropic stagnation (subsonic) and the Rayleigh pitot formula (supersonic); calibrated airspeed is
 //       defined against standard sea level (a0 = 340.294 m/s, p0 = 101325 Pa). Instrument and position errors are not modelled.
@@ -208,7 +208,7 @@ By the Buckingham $\pi$ theorem they depend only on the dimensionless groups tha
         const CFG = [
           { name: 'tunnel model', S: 0.3, c: 0.3, z: 0, V: [10, 100, 40], color: 'accent' },
           { name: 'Cessna 172 wing', S: 16.2, c: 1.47, z: 2590, V: [20, 90, 62], color: 'orange' },
-          { name: 'A320 wing', S: 122.6, c: 4.29, z: 35000 * FT, V: [100, 300, 231], color: 'teal' },
+          { name: 'A320 wing', S: 122.4, c: 4.3, z: 35000 * FT, V: [100, 300, 231], color: 'teal' },
         ];
         const sl = CFG.map((c) => v.slider(`speed of ${c.name} (m/s)`, c.V[0], c.V[1], c.V[2], { step: 1, log: true }));
         const quantity = v.select('dimensional analysis of', [{ value: 'lift', label: 'lift' }, { value: 'full', label: 'lift with μ and a' }, { value: 'moment', label: 'pitching moment' }], 'lift');
