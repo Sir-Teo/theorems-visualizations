@@ -233,5 +233,209 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
         });
       },
     },
+    // ------------------------------------------------------------------ 1.2
+    {
+      num: '1.2',
+      kind: 'Invention',
+      name: 'The Acheulean hand axe',
+      credit: 'Homo erectus and later hominins, from c. 1.76 million years ago',
+      statement: String.raw`From about 1.76 million years ago hominins in East Africa began to make large **bifacial** tools, chiefly hand axes, shaped by striking flakes alternately from both faces all around the margin of a cobble or a big flake. The oldest are at Kokiselei 4, West Turkana, Kenya (1.76 million years, Lepre et al. 2011) and Konso, Ethiopia (about 1.75 million, Beyene et al. 2013), alongside Oldowan tools. The result has a long continuous cutting edge, a lens-shaped (lenticular) cross-section and, often, a striking bilateral symmetry in plan view. The **Acheulean** tradition (after Saint-Acheul, France) spread across Africa, western Eurasia and South Asia and lasted for well over a million years, the longest-lived tool design in human history.
+
+Unlike an Oldowan flake, a hand axe is imposed on the stone: the maker must plan a sequence of removals in which each blow leaves an edge angle suitable for the next one, from the other face.`,
+      idea: String.raw`Flakes run only where the edge angle is below about 90° (tech-1.1). A rounded cobble has few such places, but every flake removed from one face makes the edge more acute where it ends, so the knapper can turn the piece over and strike from the new platform. Alternating faces walks this sharpening all the way round, thinning the piece into a lens and giving it a long edge relative to its mass.
+
+Symmetry is not forced by the mechanics. It is measured with the *flip test* (Hardaker & Dunn 2005): mirror the outline about its long axis and see how much fails to overlap. Experiments have not found that symmetric hand axes butcher better (Machin et al. 2007). Why their makers pursued symmetry, whether for handling, as a signal of skill or for some other reason, is debated.`,
+      caption: String.raw`**Click near the margin** in the plan view to strike a flake off the chosen face (shift-click: the other face). The margin is coloured by its edge angle: green edges are sharp, orange still flakeable, red too blunt (a blow there only crushes the edge). Watch an edge turn green after a flake comes off the opposite face. Drag the orange handle to move the cross-section, which is shown on the right against the original cobble (dashed). **Auto-knap** runs a scripted biface sequence; **Oldowan chopper** strikes a few flakes from one face at one end. The score row compares symmetry and cutting edge per kilogram.`,
+      deps: ['tech-1.1'],
+      refs: ['Cardwell', 'Lepre et al. 2011, Nature 477:82', 'Beyene et al. 2013, PNAS 110:1584'],
+      tags: ['prehistory', 'c. 1.7 mya', 'symmetry'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Acheulean' },
+      viz(v) {
+        // grid model (cm): every cell holds the heights of the upper face (A) and lower face (B)
+        const NX = 84, NY = 124, X0 = -6.3, Y0 = -9.3, H = 0.15, RHO = 2.6; // 2.6 g/cm³: flint
+        const P = v.stage({ x: [-6.6, 6.6], y: [-9.6, 9.6], equal: true, axes: false, height: 360, weight: 0.9, minWidth: 300, title: 'plan view (cm)' });
+        const Q = v.stage({ x: [-6.6, 6.6], y: [-3.1, 3.1], equal: true, axes: false, height: 360, weight: 1.3, minWidth: 420, title: 'cross-section along the orange line (cm)' });
+        const R = v.stage({ x: [0, 1], y: [0, 3], axes: false, height: 132, full: true });
+        const faceSel = v.select('strike on', [{ value: 'A', label: 'face A (up)' }, { value: 'B', label: 'face B (down)' }, { value: 'alt', label: 'alternate' }], 'alt');
+        const hamSel = v.select('hammer', [{ value: 'hard', label: 'hard stone' }, { value: 'soft', label: 'soft antler' }], 'hard');
+        const depthS = v.slider('blow depth behind the edge', 0.1, 0.6, 0.3, { step: 0.01 });
+        const view = v.toggle('show face B (turn the piece over)', false);
+        const idx = (i, j) => j * NX + i, cx = (i) => X0 + (i + 0.5) * H, cy = (j) => Y0 + (j + 0.5) * H;
+        let zt, zb, z0t, z0b, nRem = [0, 0], nextFace = 'A', last = null, msg = '', ver = 0;
+        const stack = [];
+        function cobble() {
+          zt = new Float32Array(NX * NY); zb = new Float32Array(NX * NY);
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+            const x = cx(i), y = cy(j), th = Math.atan2(y, x);
+            const a = 4.7 * (1 - 0.18 * Math.max(0, y) / 8) * (1 + 0.04 * Math.sin(3 * th + 1) + 0.03 * Math.cos(5 * th)), b = 7.9 * (1 + 0.03 * Math.sin(2 * th + 0.4));
+            const q = (x / a) ** 2 + (y / b) ** 2;
+            if (q < 1) { const sq = Math.sqrt(1 - q); zt[idx(i, j)] = 2.05 * sq * (1 + 0.05 * Math.sin(1.3 * x + 0.7 * y)); zb[idx(i, j)] = -1.3 * sq * (1 + 0.06 * Math.cos(0.9 * x - 1.1 * y)); }
+          }
+          ver++; z0t = zt.slice(); z0b = zb.slice(); nRem = [0, 0]; nextFace = 'A'; last = null; msg = ''; stack.length = 0;
+        }
+        const has = (i, j) => i >= 0 && j >= 0 && i < NX && j < NY && zt[idx(i, j)] - zb[idx(i, j)] > 0.02;
+        const sample = (A, x, y) => { // bilinear, NaN outside the piece
+          const fi = (x - X0) / H - 0.5, fj = (y - Y0) / H - 0.5, i = Math.floor(fi), j = Math.floor(fj);
+          if (!has(i, j) || !has(i + 1, j) || !has(i, j + 1) || !has(i + 1, j + 1)) return NaN;
+          const u = fi - i, w = fj - j;
+          return (1 - u) * (1 - w) * A[idx(i, j)] + u * (1 - w) * A[idx(i + 1, j)] + (1 - u) * w * A[idx(i, j + 1)] + u * w * A[idx(i + 1, j + 1)];
+        };
+        const isMargin = (i, j) => has(i, j) && (!has(i + 1, j) || !has(i - 1, j) || !has(i, j + 1) || !has(i, j - 1));
+        function inward(i, j) { // inward normal from the local centroid of the piece
+          let sx = 0, sy = 0, n = 0;
+          for (let dj = -7; dj <= 7; dj++) for (let di = -7; di <= 7; di++) if (di * di + dj * dj <= 49 && has(i + di, j + dj)) { sx += di; sy += dj; n++; }
+          const L = Math.hypot(sx, sy) || 1; return [sx / L, sy / L];
+        }
+        function edgeAngle(i, j) { // angle between the two faces, from the surfaces 0.25 and 0.9 cm in from the margin
+          const [nx, ny] = inward(i, j), x = cx(i), y = cy(j);
+          const ta = sample(zt, x + 0.25 * nx, y + 0.25 * ny), tb = sample(zt, x + 0.9 * nx, y + 0.9 * ny);
+          const ba = sample(zb, x + 0.25 * nx, y + 0.25 * ny), bb = sample(zb, x + 0.9 * nx, y + 0.9 * ny);
+          if (![ta, tb, ba, bb].every(isFinite)) return 120;
+          return (Math.atan2(tb - ta, 0.65) + Math.atan2(ba - bb, 0.65)) / D2R; // sum of the two faces' slopes
+        }
+        function strike(x, y, face, depth = depthS.value, soft = hamSel.value === 'soft') {
+          // nearest margin cell within 1.3 cm of the click
+          let best = null, bd = 1.3;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (isMargin(i, j)) { const d = Math.hypot(cx(i) - x, cy(j) - y); if (d < bd) { bd = d; best = [i, j]; } }
+          if (!best) { msg = 'click closer to the edge of the piece'; return false; }
+          const [i, j] = best, ang = edgeAngle(i, j), [nx, ny] = inward(i, j), mx = cx(i), my = cy(j);
+          ver++; stack.push([zt.slice(), zb.slice(), nRem.slice(), nextFace]); if (stack.length > 60) stack.shift();
+          if (ang >= 90) { // too blunt: the edge crumbles a little, no flake
+            for (let jj = j - 2; jj <= j + 2; jj++) for (let ii = i - 2; ii <= i + 2; ii++) if (has(ii, jj) && Math.hypot(cx(ii) - mx, cy(jj) - my) < 0.28) { zt[idx(ii, jj)] = 0; zb[idx(ii, jj)] = 0; }
+            last = { x: mx, y: my, face, ok: false }; msg = `edge angle ${Math.round(ang)}° is too blunt: the blow crushes the edge`; return false;
+          }
+          const px = mx + 0.5 * nx, py = my + 0.5 * ny, t0 = sample(zt, px, py), b0 = sample(zb, px, py);
+          if (!isFinite(t0) || !isFinite(b0)) { stack.pop(); msg = 'no platform here'; return false; }
+          const mid = (t0 + b0) / 2, tau = t0 - b0, slope = soft ? 0.13 : 0.24, kap = soft ? 0.09 : 0.16, sgn = face === 'A' ? 1 : -1;
+          const zStart = mid - sgn * depth * tau / 2, tx = -ny, ty = nx;
+          let removed = 0;
+          for (let jj = 0; jj < NY; jj++) for (let ii = 0; ii < NX; ii++) {
+            if (!has(ii, jj)) continue;
+            const dx = cx(ii) - mx, dy = cy(jj) - my, u = dx * nx + dy * ny, w = dx * tx + dy * ty;
+            if (u < -0.6 || Math.abs(w) > 1.0 + 0.7 * Math.max(u, 0) || Math.abs(w) > 3.2) continue;
+            const Sz = zStart + sgn * (Math.max(u, 0) * slope + kap * w * w), k = idx(ii, jj);
+            if (face === 'A' && zt[k] > Sz) { removed += (zt[k] - Math.max(Sz, zb[k])) * H * H; zt[k] = Sz; }
+            if (face === 'B' && zb[k] < Sz) { removed += (Math.min(Sz, zt[k]) - zb[k]) * H * H; zb[k] = Sz; }
+            if (zt[k] - zb[k] <= 0.03) { zt[k] = 0; zb[k] = 0; }
+          }
+          nRem[face === 'A' ? 0 : 1]++; last = { x: mx, y: my, face, ok: true, nx, ny };
+          msg = `flake of ${v.fix(removed * RHO, 0)} g off face ${face} (edge angle was ${Math.round(ang)}°)`; return true;
+        }
+        function metrics() {
+          let m = 0, sx = 0, sy = 0, n = 0;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (has(i, j)) { const k = idx(i, j); m += (zt[k] - zb[k]) * H * H; sx += cx(i); sy += cy(j); n++; }
+          if (!n) return null;
+          const gx = sx / n, gy = sy / n; let sxx = 0, syy = 0, sxy = 0;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (has(i, j)) { const dx = cx(i) - gx, dy = cy(j) - gy; sxx += dx * dx; syy += dy * dy; sxy += dx * dy; }
+          const th = 0.5 * Math.atan2(2 * sxy, sxx - syy), ux = Math.cos(th), uy = Math.sin(th); // long axis
+          let inter = 0, uni = 0;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+            const a = has(i, j), dx = cx(i) - gx, dy = cy(j) - gy, d = dx * ux + dy * uy, rx = gx + 2 * d * ux - dx, ry = gy + 2 * d * uy - dy;
+            const b = has(Math.floor((rx - X0) / H), Math.floor((ry - Y0) / H));
+            if (a && b) inter++; if (a || b) uni++;
+          }
+          let edge = 0, sharp = 0;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (isMargin(i, j)) { edge += H; if (edgeAngle(i, j) < 70) sharp += H; }
+          return { mass: m * RHO / 1000, sym: inter / uni, g: [gx, gy], axis: [ux, uy], edge, sharp, n };
+        }
+        function sectionAt(y) {
+          const top = [], bot = [], top0 = [], bot0 = [];
+          const j = Math.round((y - Y0) / H - 0.5);
+          for (let i = 0; i < NX; i++) { const k = idx(i, j); if (has(i, j)) { top.push([cx(i), zt[k]]); bot.push([cx(i), zb[k]]); } if (z0t[k] - z0b[k] > 0.02) { top0.push([cx(i), z0t[k]]); bot0.push([cx(i), z0b[k]]); } }
+          return { top, bot, top0, bot0 };
+        }
+        const autoPlan = () => {
+          const out = [];
+          for (let pass = 0; pass < 3; pass++) for (let k = 0; k < 18; k++) {
+            const phi = (2 * Math.PI * (k + 0.5 * pass)) / 18;
+            out.push({ phi, face: (k + pass) % 2 ? 'B' : 'A', depth: [0.42, 0.3, 0.2][pass], soft: pass === 2 });
+          }
+          return out;
+        };
+        function strikeDir(phi, face, depth, soft) { // strike the margin in direction phi from the centroid
+          let sx = 0, sy = 0, n = 0;
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (has(i, j)) { sx += cx(i); sy += cy(j); n++; }
+          if (!n) return; const M0 = { g: [sx / n, sy / n] };
+          let x = M0.g[0], y = M0.g[1];
+          for (let r = 0; r < 12; r += 0.05) { const xx = M0.g[0] + r * Math.cos(phi), yy = M0.g[1] + r * Math.sin(phi); if (!has(Math.floor((xx - X0) / H), Math.floor((yy - Y0) / H))) break; x = xx; y = yy; }
+          strike(x, y, face, depth, soft);
+        }
+        // reference: an Oldowan chopper made from the same cobble in the same model
+        function chopper() { cobble(); for (const [phi, d] of [[-1.25, 0.45], [-1.57, 0.45], [-1.9, 0.45], [-1.42, 0.3], [-1.72, 0.3]]) strikeDir(phi, 'A', d, false); }
+        chopper(); const ref = metrics(); cobble();
+        const secH = P.handle(6.1, 0, { color: 'orange', constrain: (x, y) => [6.1, clamp(y, -8.6, 8.6)] });
+        P.onClick((x, y, mod) => {
+          const xx = view.value ? -x : x;
+          let face = faceSel.value === 'alt' ? nextFace : faceSel.value;
+          if (mod.shift) face = face === 'A' ? 'B' : 'A';
+          if (strike(xx, y, face) && faceSel.value === 'alt') nextFace = face === 'A' ? 'B' : 'A';
+          v.invalidate();
+        });
+        v.button('Undo', () => { const st = stack.pop(); if (st) { [zt, zb, nRem, nextFace] = st; ver++; last = null; msg = 'undone'; } });
+        v.button('Auto-knap', () => { cobble(); for (const p of autoPlan()) strikeDir(p.phi, p.face, p.depth, p.soft); msg = 'scripted biface: three passes round the margin, alternating faces, last pass with a soft hammer'; });
+        v.button('Oldowan chopper', () => { chopper(); msg = 'five flakes off one face at one end'; });
+        v.button('New cobble', () => cobble());
+        v.render(() => {
+          const flip = view.value, F = flip ? zb : zt, sg = flip ? -1 : 1, cP = v.rgb('panel'), cM = v.rgb('muted');
+          // plan view: hill-shaded upper (or lower) face
+          P.raster((x, y) => {
+            const xx = flip ? -x : x, i = Math.floor((xx - X0) / H), j = Math.floor((y - Y0) / H);
+            if (!has(i, j)) return null;
+            const k = idx(i, j), gx = has(i + 1, j) && has(i - 1, j) ? (F[idx(i + 1, j)] - F[idx(i - 1, j)]) / (2 * H) : 0, gy = has(i, j + 1) && has(i, j - 1) ? (F[idx(i, j + 1)] - F[idx(i, j - 1)]) / (2 * H) : 0;
+            const nx = -sg * gx * (flip ? -1 : 1), ny = -sg * gy, nz = 1, L = Math.hypot(nx, ny, nz), lit = (nx * -0.55 + ny * 0.6 + nz * 0.58) / L;
+            const z = sg * F[k], t = clamp(0.25 + 0.75 * lit, 0, 1) * (0.8 + 0.1 * z);
+            const u = clamp(1.05 - t, 0.1, 1); return [0, 1, 2].map((q) => Math.round(cP[q] + (cM[q] - cP[q]) * u));
+          }, { key: `${ver}|${flip}`, res: 2 });
+          // margin coloured by edge angle
+          for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (isMargin(i, j)) {
+            const a = edgeAngle(i, j), c = a < 70 ? 'green' : a < 90 ? 'orange' : 'red', x = flip ? -cx(i) : cx(i);
+            P.rect(x - H / 2, cy(j) - H / 2, x + H / 2, cy(j) + H / 2, { fill: c, fillAlpha: 0.95, stroke: false });
+          }
+          const Mt = metrics();
+          if (Mt) {
+            const L = 9; P.line((flip ? -1 : 1) * (Mt.g[0] - L * Mt.axis[0]), Mt.g[1] - L * Mt.axis[1], (flip ? -1 : 1) * (Mt.g[0] + L * Mt.axis[0]), Mt.g[1] + L * Mt.axis[1], { color: 'purple', width: 1.2, dash: [6, 4], alpha: 0.8 });
+          }
+          P.line(-6.6, secH.y, 6.1, secH.y, { color: 'orange', width: 1.4, alpha: 0.9 });
+          if (last) P.dot(flip ? -last.x : last.x, last.y, { r: 4, color: last.ok ? 'accent' : 'red' });
+          P.corner(flip ? 'face B' : 'face A', 'tl', { size: 12, color: 'ink', weight: 700 });
+          // cross-section
+          const sec = sectionAt(secH.y);
+          Q.line(-6.6, 0, 6.6, 0, { color: 'faint', width: 1, dash: [3, 4] });
+          if (sec.top0.length) Q.poly([...sec.top0, ...sec.bot0.slice().reverse()], { color: 'muted', width: 1.2, dash: [5, 4] });
+          if (sec.top.length > 1) {
+            // contiguous runs only
+            Q.poly([...sec.top, ...sec.bot.slice().reverse()], { fill: 'muted', fillAlpha: 0.45, color: 'ink', width: 1.6 });
+            const l = sec.top[0], r = sec.top[sec.top.length - 1];
+            const angAt = (pts, bots, from) => { const k = Math.min(6, pts.length - 1), a = pts[from], b = pts[from === 0 ? k : pts.length - 1 - k], c = bots[from], d = bots[from === 0 ? k : bots.length - 1 - k], dx = Math.abs(b[0] - a[0]) || 1; return (Math.atan2(b[1] - a[1], dx) + Math.atan2(c[1] - d[1], dx)) / D2R; };
+            const aL = angAt(sec.top, sec.bot, 0), aR = angAt(sec.top, sec.bot, sec.top.length - 1);
+            Q.text(`${Math.round(aL)}°`, l[0] - 0.15, 0.05, { size: 12, color: aL < 70 ? 'green' : aL < 90 ? 'orange' : 'red', align: 'right', weight: 700 });
+            Q.text(`${Math.round(aR)}°`, r[0] + 0.15, 0.05, { size: 12, color: aR < 70 ? 'green' : aR < 90 ? 'orange' : 'red', align: 'left', weight: 700 });
+            let tmax = 0; for (let k = 0; k < sec.top.length; k++) tmax = Math.max(tmax, sec.top[k][1] - sec.bot[k][1]);
+            Q.text(`width ${v.fix(r[0] - l[0], 1)} cm · thickness ${v.fix(tmax, 1)} cm`, 0, -2.75, { size: 12, color: 'ink', align: 'center' });
+          } else Q.text('the section line misses the piece', 0, 0, { size: 12, color: 'muted', align: 'center' });
+          Q.text('face A', -6.4, 2.75, { size: 11, color: 'muted', align: 'left' });
+          Q.text('face B', -6.4, -2.75, { size: 11, color: 'muted', align: 'left' });
+          // score row
+          if (Mt) {
+            const rows = [['flip-test symmetry', Mt.sym, ref.sym, (x) => `${Math.round(100 * x)}%`, 1],
+              ['cutting edge per kg', Mt.sharp / Mt.mass, ref.sharp / ref.mass, (x) => `${Math.round(x)} cm/kg`, 160],
+              ['sharp edge (angle < 70°)', Mt.sharp / Mt.edge, ref.sharp / ref.edge, (x) => `${Math.round(100 * x)}% of margin`, 1]];
+            rows.forEach(([lab, val, rv, fmt, max], k) => {
+              const y = 2.5 - k;
+              R.text(lab, 0.01, y, { size: 12, color: 'ink', align: 'left' });
+              R.rect(0.25, y - 0.3, 0.25 + 0.5 * clamp(val / max, 0, 1), y + 0.05, { fill: 'accent', fillAlpha: 0.7, stroke: false });
+              R.rect(0.25, y - 0.05, 0.25 + 0.5 * clamp(rv / max, 0, 1), y + 0.3, { fill: 'orange', fillAlpha: 0.55, stroke: false });
+              R.text(fmt(val), 0.77, y - 0.12, { size: 11.5, color: 'accent', align: 'left', weight: 700 });
+              R.text(`chopper ${fmt(rv)}`, 0.88, y + 0.12, { size: 11, color: 'orange', align: 'left' });
+            });
+          }
+        });
+        v.legend([['green', 'sharp edge (< 70°)'], ['orange', 'flakeable (70–90°)'], ['red', 'too blunt (≥ 90°)'], ['purple', 'long axis (flip test)', { dash: true }]]);
+        v.readout(() => {
+          const Mt = metrics(); if (!Mt) return 'nothing left — press New cobble';
+          return `${msg ? msg + ' · ' : ''}${nRem[0] + nRem[1]} flakes (${nRem[0]} off face A, ${nRem[1]} off face B) · mass **${v.fix(Mt.mass * 1000, 0)} g** · flip-test symmetry **${Math.round(100 * Mt.sym)}%** · sharp edge **${v.fix(Mt.sharp, 0)} cm**, i.e. **${Math.round(Mt.sharp / Mt.mass)} cm per kg** (Oldowan chopper from the same cobble: ${Math.round(ref.sharp / ref.mass)} cm/kg) · next blow: face ${faceSel.value === 'alt' ? nextFace : faceSel.value}`;
+        });
+      },
+    },
   ],
 };

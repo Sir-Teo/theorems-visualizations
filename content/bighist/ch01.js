@@ -305,7 +305,7 @@ If some daughter was present initially, the **isochron** method recovers it: for
         const sys = v.select('', Object.entries(SYS).map(([value, o]) => ({ value, label: o.label })), 'u235', { onChange: (k) => tAge.set(SYS[k].def) });
         const tAge = v.slider('true age', 10, 4.6e9, SYS.u235.def, { log: true, fmt: (x) => yrShort(x, 3) });
         const iso = v.select('isochron rock', [{ value: 'closed', label: 'closed system' }, { value: 'reset', label: 'Sr re-mixed at half the age' }, { value: 'uneq', label: 'unequal initial ⁸⁷Sr/⁸⁶Sr' }], 'closed');
-        const A = v.stage({ x: [0, 24], y: [0, 24], equal: true, axes: false, height: 300, weight: 0.82, title: 'a sample of 576 atoms' });
+        const A = v.stage({ x: [-0.4, 24.4], y: [-0.4, 24.4], equal: true, axes: false, height: 300, weight: 0.82, title: 'a sample of 576 atoms' });
         const B = v.stage({ x: [10, 1e11], y: [0, 1.05], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.18, xlabel: 'age (years)', ylabel: 'fraction of parent left' });
         const C = v.stage({ x: [0, 3.3], y: [0.7, 0.9], axes: 'box', gutter: true, height: 270, full: true, xlabel: '⁸⁷Rb/⁸⁶Sr (now)', ylabel: '⁸⁷Sr/⁸⁶Sr (now)', title: 'Rb–Sr isochron of six minerals from one rock' });
         // atoms: exponential lifetimes in units of the mean life, and a branch draw
@@ -350,7 +350,7 @@ If some daughter was present initially, the **isochron** method recovers it: for
           for (const [k, o] of Object.entries(SYS)) if (k !== sys.value) B.fn((t) => Math.exp(-(LN2 / o.half) * t), { color: 'gray', width: 1.2, alpha: 0.45, n: 300 });
           const lo = Math.max(10, 0.01 * S.half), hi = Math.min(1e11, 10 * S.half);
           B.vband(lo, hi, { color: 'green', alpha: 0.07 });
-          B.text('usable range', Math.sqrt(lo * hi), 1.0, { align: 'center', size: 11, color: 'green' });
+          B.text('usable range ≈ 0.01–10 half-lives', Math.sqrt(lo * hi), 0.05, { align: 'center', size: 11, color: 'green' });
           B.fn((t) => Math.exp(-lam * t), { color: 'accent', width: 2.6, n: 400 });
           B.fn((t) => S.br * (1 - Math.exp(-lam * t)), { color: 'orange', width: 2, dash: [6, 4], n: 400 });
           B.vline(tAge.value, { color: 'gold', width: 1.6 });
@@ -364,10 +364,11 @@ If some daughter was present initially, the **isochron** method recovers it: for
           const yMax = Math.max(...ys, ...pts.map((p) => p.y0)), yMin = Math.min(...ys, ...pts.map((p) => p.y0)), span = Math.max(0.004, yMax - yMin);
           C.setView([0, 3.3], [yMin - span * 0.12, yMax + span * 0.18]);
           C.hline(SR0, { color: 'muted', dash: [5, 4], width: 1 });
-          C.text(`initial ⁸⁷Sr/⁸⁶Sr = ${SR0.toFixed(4)}`, 3.25, SR0, { align: 'right', dy: 9, size: 11, color: 'muted' });
+          C.text(`initial ⁸⁷Sr/⁸⁶Sr = ${SR0.toFixed(4)}`, 2.55, SR0, { align: 'center', dy: 10, size: 11, color: 'muted' });
+          if (iso.value === 'reset') { const tm = tAge.value / 2, yr = SR0 + (MIN.reduce((a, m) => a + m[1], 0) / MIN.length) * (Math.exp(-LRB * tm) - Math.exp(-LRB * tAge.value)); C.hline(yr, { color: 'orange', dash: [5, 4], width: 1.2 }); C.text('Sr re-mixed here at half the age', 2.55, yr, { align: 'center', dy: -9, size: 11, color: 'orange' }); }
           for (const p of pts) { C.arrow(p.x0, p.y0, p.x, p.y, { color: 'faint', width: 1.2, head: 6 }); C.dot(p.x0, p.y0, { r: 3, hollow: true, color: 'muted' }); }
           C.fn((x) => fit.predict(x), { color: 'green', width: 2.2 });
-          pts.forEach((p, i) => C.dot(p.x, p.y, { r: 5, color: 'accent', label: p.name, labelPos: i % 2 ? 'se' : 'nw', labelColor: 'ink', math: false, labelSize: 11 }));
+          pts.forEach((p) => C.dot(p.x, p.y, { r: 5, color: 'accent', label: p.name, labelPos: 'se', labelColor: 'ink', math: false, labelSize: 11 }));
           v.legend([['accent', `parent ${S.P}`, { dot: true }], ['orange', `daughter ${S.D}${S.parentOnly ? ' (not measurable)' : ''}`, { dot: true }], ['gold', 'true age'], ['green', 'age read back from the count']]);
         });
         v.readout(() => {
@@ -378,7 +379,8 @@ If some daughter was present initially, the **isochron** method recovers it: for
           else est = `age = **${yrShort(e.t)} ± ${yrShort(e.sd, 2)}** (true ${yrShort(tAge.value)})`;
           const ratio = S.parentOnly ? `${S.P} left: ${c.P}/${N} of the starting amount` : `${S.D}/${S.P} = ${c.D}/${c.P} = ${c.P ? v.fix(c.D / c.P, 3) : '∞'}`;
           const pts = isoPts(), fit = v.M.linreg(pts.map((p) => p.x), pts.map((p) => p.y)), ti = fit.slope > -1 ? Math.log(1 + fit.slope) / LRB : NaN;
-          const isoTxt = iso.value === 'reset' ? ' — this dates the **re-mixing** (half the true age), not the crystallisation' : iso.value === 'uneq' ? ` — scatter about the line, r² = ${v.fix(fit.r2, 4)}` : '';
+          const unresolved = Math.abs(fit.slope) < 3 * fit.seSlope;
+          const isoTxt = unresolved ? ` — the slope is lost in the measurement noise (±${v.fix(fit.seSlope, 6)}): too young for Rb–Sr` : iso.value === 'reset' ? ' — this dates the **re-mixing** (half the true age), not the crystallisation' : iso.value === 'uneq' ? ` — scatter about the line, r² = ${v.fix(fit.r2, 4)}` : '';
           return `${S.label}, t½ = ${yrShort(S.half)}: ${ratio} → ${est}. · Isochron: slope ${v.fix(fit.slope, 5)} → age ln(1 + slope)/λ = **${isFinite(ti) ? yrShort(ti) : '—'}**, intercept ${v.fix(fit.intercept, 4)}${isoTxt}.`;
         });
       },
