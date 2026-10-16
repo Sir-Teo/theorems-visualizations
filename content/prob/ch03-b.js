@@ -392,7 +392,7 @@ $$f(y)=\frac1{2\pi}\int e^{-ity}\varphi(t)\,dt.$$`,
           if (!cache[k]) { const r = v.rng(23); cache[k] = Array.from({ length: 4000 }, () => P.samp(r)); }
           L.setView(null, { tri: [-0.04, 0.22], cau: [-0.05, 0.42], nor: [-0.05, 0.5], sinc: [-0.1, 0.66], cos: [-0.15, 0.62] }[k]);
           if (P.f) L.hist(cache[k], { bins: 64, range: [-8, 8], density: true, color: 'gold', fillAlpha: 0.3 });
-          else { stems(L, [[-1, 0.5], [1, 0.5]], { scale: 0.9, color: 'gold' }); L.text('atoms ½ at ±1', 1.3, 0.47, { size: 11, color: 'gold' }); }
+          else { stems(L, [[-1, 0.5], [1, 0.5]], { scale: 0.9, color: 'gold' }); L.text('atoms ½ at ±1', 2.2, 0.56, { size: 11, color: 'gold' }); }
           if (P.f) L.fn(P.f, { color: 'ink', width: 1.5, dash: [6, 4], n: 700 });
           L.hline(0, { color: 'grid', width: 1 });
           L.fn((y) => fT(k, T, y), { color: 'green', width: 2.4, n: k === 'cos' || k === 'sinc' ? 1400 : 500 });
@@ -438,8 +438,9 @@ $$f(y)=\frac1{2\pi}\int e^{-ity}\varphi(t)\,dt.$$`,
           const cols = ['accent', 'orange', 'purple', 'teal', 'gold', 'pink'];
           pc.paths.forEach((p, j) => L.path(p, { color: cols[j], width: 1.4 }));
           const peak = nor.value ? Math.max(0.45, Math.sqrt(n) * 0.399 * 1.15) : 0.45;
-          R.setView(null, [0, Math.min(peak, 6)]);
-          R.hist(hc.xs, { bins: 80, range: [-8, 8], density: true, color: nor.value ? 'accent' : 'gold', fillAlpha: 0.4 });
+          R.setView(null, [0, Math.min(peak, 15)]);
+          const hr = nor.value ? Math.min(8, 5 / Math.sqrt(n)) : 8;
+          R.hist(hc.xs, { bins: nor.value ? 60 : 80, range: [-hr, hr], density: true, color: nor.value ? 'accent' : 'gold', fillAlpha: 0.4 });
           R.fn((x) => 1 / (Math.PI * (1 + x * x)), { color: 'green', width: 2.2 });
           const inside = hc.xs.filter((x) => Math.abs(x) <= 1).length / hc.xs.length;
           st = { n, inside, nor: nor.value };

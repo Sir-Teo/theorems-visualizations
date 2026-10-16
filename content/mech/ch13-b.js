@@ -528,7 +528,7 @@ where the dimensionless **drive strength** $\gamma$ is the ratio of the drive to
           const tr = []; let prev = null; for (const z of D.rec) { const w = wrap(z[0]); if (prev !== null && Math.abs(w - prev) > Math.PI) tr.push(null); tr.push([w, z[1]]); prev = w; }
           sS.path(tr, { color: 'accent', width: 1.2, alpha: 0.35 });
           const xs = D.strobe.map((z) => wrap(z[0])), ys = D.strobe.map((z) => z[1]);
-          fastDots(v, sS, xs, ys, xs.length, 'red', { alpha: 0.85, size: D.P ? 7 : 2.2 });
+          if (D.P) sS.dots(D.strobe.slice(-D.P).map((z) => [wrap(z[0]), z[1]]), { r: 5.5, color: 'red' }); else fastDots(v, sS, xs, ys, xs.length, 'red', { alpha: 0.85, size: 2.2 });
           sS.dot(wrap(q), D.rec[i][1], { r: 5, color: 'gold' });
           // pendulum and the drive
           sR.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] });
@@ -547,6 +547,104 @@ where the dimensionless **drive strength** $\gamma$ is the ratio of the drive to
           if (!cur) return '';
           const D = cur, vals = D.P ? D.strobe.slice(-D.P).map((z) => v.fix(wrap(z[0]), 3)).join(', ') : '';
           return String.raw`$\gamma = ${v.fix(D.g, 4)}$ · ` + (D.P ? String.raw`**period ${D.P}**: the stroboscopic angle cycles through ${vals} rad` : '**no period up to 32** in 600 drive cycles: chaotic') + String.raw` · Lyapunov exponent of the stroboscopic map ${v.fix(D.lam, 3)} per cycle ${D.lam > 0.02 ? '(> 0: chaos)' : D.lam > -0.05 ? '(≈ 0: at a bifurcation)' : '(< 0: stable periodic motion)'}` + (D.rolls ? ' · the pendulum rolls over the top' : '');
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 13.14
+    {
+      num: '13.14',
+      kind: 'Phenomenon',
+      name: 'Period doubling and Feigenbaum universality',
+      statement: String.raw`In many dissipative systems with one control parameter $\mu$, a periodic orbit loses stability through a multiplier passing $-1$ and is replaced by an orbit of twice the period. This repeats at parameter values $\mu_1 < \mu_2 < \mu_3 < \cdots$ that converge geometrically to an accumulation point $\mu_\infty$, beyond which the motion is chaotic. **Feigenbaum universality**: for every system whose return map is effectively one-dimensional with a quadratic maximum, the ratios of successive intervals tend to the same number,
+$$\delta = \lim_{n\to\infty}\frac{\mu_n - \mu_{n-1}}{\mu_{n+1} - \mu_n} = 4.669201609\ldots,$$
+and the widths of the forks shrink by the factor $\alpha = 2.502907875\ldots$ The logistic map $x \mapsto rx(1-x)$ (ode-11.3), the driven damped pendulum (13.13), dripping faucets, convection cells and electronic circuits all show the same $\delta$. The superstable parameters $R_n$, where the $2^n$-cycle passes through the maximum of the map, accumulate at the same rate and are easier to compute accurately.`,
+      idea: String.raw`Look at the second iterate $f^2$ near its period-two points at the parameter where they are superstable: rescaled by $-\alpha$, it looks like $f$ itself at an earlier parameter. Period doubling is therefore a renormalisation $\mathcal R f = -\alpha f^2(\cdot/\alpha)$ acting on the space of unimodal maps. This operator has a fixed point $g$, and at that fixed point exactly one eigenvalue is larger than 1, namely $\delta$; the scaling factor $\alpha$ comes from $g$ itself (ode-11.9). Any one-parameter family crosses the stable manifold of $g$ transversally, so near the accumulation point its bifurcation points are spaced by powers of $\delta$, whatever the details of the system. A strongly dissipative flow such as the driven pendulum has a stroboscopic map that is nearly one-dimensional, so it falls in the same universality class.`,
+      caption: String.raw`Top: the bifurcation diagram, computed column by column. For each value of the control parameter the system is run past its transient, starting from the previous column’s state, and the angle at each drive cycle is plotted (pendulum), or the iterates $x_n$ (logistic map). Dashed lines mark the period-doubling thresholds of the pendulum, located precisely by following each periodic orbit with Newton’s method and finding where a Floquet multiplier crosses $-1$, or the superstable parameters $R_n$ of the logistic map, found by Newton’s method. Zoom in to see the cascade repeat in miniature. Bottom: the measured ratios $\delta_n$ for both systems, approaching the same horizontal line $4.6692$.`,
+      deps: ['mech-13.13', 'ode-11.3', 'ode-11.8'],
+      refs: ['Taylor §12.6'],
+      tags: ['period doubling', 'Feigenbaum constant', 'universality'],
+      credit: 'Feigenbaum, 1978; Coullet & Tresser, 1978',
+      viz(v) {
+        const sys = v.select('system', [{ value: 'pend', label: 'driven pendulum' }, { value: 'log', label: 'logistic map' }], 'pend');
+        const win = v.select('window', [{ value: 'full', label: 'whole cascade' }, { value: 'zoom', label: 'zoom on the accumulation' }], 'full');
+        const WIN = { pend: { full: [1.06, 1.087], zoom: [1.0805, 1.0832] }, log: { full: [2.8, 4], zoom: [3.54, 3.574] } }, NCOL = 360, NPT = 48;
+        const sD = v.stage({ x: [1.06, 1.087], y: [-1, 0], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'γ', ylabel: 'φ' });
+        const sF = v.stage({ x: [0.5, 11.5], y: [4.5, 4.9], axes: 'box', gutter: true, height: 200, full: true, xlabel: 'n', ylabel: 'δₙ', title: 'measured ratios of successive intervals' });
+        const job = progressive(v);
+        // pendulum diagram: generator over columns, continuation from column to column
+        const diagrams = {};
+        const pendDiagram = (w) => {
+          const key = w.join('|'); if (diagrams[key]) return diagrams[key];
+          const D = { cols: [], done: false }; diagrams[key] = D;
+          D.gen = (function* () { const y = [-Math.PI / 2, 0]; for (let k = 0; k < 300; k++) ddpPeriod(y, w[0], 50); for (let c = 0; c < NCOL; c++) { const g = w[0] + ((w[1] - w[0]) * (c + 0.5)) / NCOL; for (let k = 0; k < 90; k++) ddpPeriod(y, g, 50); const ys = new Float32Array(NPT); for (let k = 0; k < NPT; k++) { ddpPeriod(y, g, 50); ys[k] = wrap(y[0]); } D.cols.push({ g, ys }); yield; } D.done = true; })();
+          return D;
+        };
+        // Floquet thresholds of the pendulum (generator; yields between Newton solves)
+        const TH = { th: [], done: false };
+        TH.gen = (function* () {
+          let y = [-Math.PI / 2, 0]; for (let k = 0; k < 200; k++) ddpPeriod(y, 1.06, 50);
+          let orb = ddpNewton(y[0], y[1], 1.06, 1), gl = 1.06;
+          for (let k = 0; k < 4 && orb; k++) {
+            const n = 2 ** k, f = (g, o) => { const r = ddpNewton(o.q, o.p, g, n); return r ? { r, v: r.tr + 1 + r.det } : null; };
+            let g = gl, cur = f(g, orb), step = 0.003 / 4.67 ** k, found = false; yield;
+            for (let guard = 0; guard < 200 && cur && !found; guard++) {
+              const g2 = g + step, nx = f(g2, cur.r); yield;
+              if (!nx) { step /= 2; continue; }
+              if (nx.v < 0) {
+                let a = g, b = g2, oa = cur.r; for (let it = 0; it < 44; it++) { const m = (a + b) / 2, fm = f(m, oa); if (fm && fm.v > 0) { a = m; oa = fm.r; } else b = m; if (it % 4 === 0) yield; }
+                const gc = (a + b) / 2; TH.th.push(gc);
+                const gn = gc + (g2 - g) * 0.4; let z = [oa.q + 0.01, oa.p]; for (let kk = 0; kk < 300 + 400 * k; kk++) { ddpPeriod(z, gn, 40); if (kk % 50 === 0) yield; }
+                orb = ddpNewton(z[0], z[1], gn, 2 * n); if (orb && Math.hypot(orb.q - oa.q, orb.p - oa.p) < 1e-6) orb = null; gl = gn; found = true;
+              } else { g = g2; cur = nx; }
+            }
+          }
+          TH.done = true;
+        })();
+        // logistic map: superstable parameters R_n by Newton, diagram computed directly
+        const logR = (() => {
+          const R = [2, 1 + Math.sqrt(5)], D = [];
+          const g = (r, n) => { let x = 0.5, dx = 0; for (let i = 0; i < 2 ** n; i++) { dx = x * (1 - x) + r * (1 - 2 * x) * dx; x = r * x * (1 - x); } return [x - 0.5, dx]; };
+          for (let n = 2; n <= 12; n++) { let r = R[n - 1] + (R[n - 1] - R[n - 2]) / 4.7; for (let it = 0; it < 40; it++) { const [f, df] = g(r, n); const dr = f / df; r -= dr; if (Math.abs(dr) < 1e-15) break; } R.push(r); }
+          for (let n = 1; n < R.length; n++) { let x = 0.5; for (let i = 0; i < 2 ** (n - 1); i++) x = R[n] * x * (1 - x); D.push(x - 0.5); }
+          return { R, d: D };
+        })();
+        const logCache = memo();
+        const logDiagram = (w) => logCache(w.join('|'), () => { const cols = []; for (let c = 0; c < 520; c++) { const r = w[0] + ((w[1] - w[0]) * (c + 0.5)) / 520; let x = 0.5; for (let k = 0; k < 600; k++) x = r * x * (1 - x); const ys = new Float32Array(120); for (let k = 0; k < 120; k++) { x = r * x * (1 - x); ys[k] = x; } cols.push({ g: r, ys }); } return { cols, done: true }; });
+        const deltas = (t) => { const out = []; for (let i = 0; i + 2 < t.length; i++) out.push((t[i + 1] - t[i]) / (t[i + 2] - t[i + 1])); return out; };
+        let cur = null;
+        v.render(() => {
+          const w = WIN[sys.value][win.value], pend = sys.value === 'pend';
+          const D = pend ? pendDiagram(w) : logDiagram(w);
+          job.run((budget) => {
+            const t0 = now();
+            if (pend && !D.done) while (now() - t0 < budget) { if (D.gen.next().done) break; }
+            if (!TH.done) while (now() - t0 < budget) { if (TH.gen.next().done) break; }
+            return (!pend || D.done) && TH.done;
+          }, 28);
+          let lo = Infinity, hi = -Infinity; for (const c of D.cols) for (const y of c.ys) { lo = Math.min(lo, y); hi = Math.max(hi, y); }
+          if (!isFinite(lo)) { lo = -1; hi = 0; } const pad = 0.06 * (hi - lo || 1);
+          sD.setView(w, pend ? [lo - pad, hi + pad] : [win.value === 'full' ? 0 : lo - pad, win.value === 'full' ? 1 : hi + pad]);
+          sD.setLabels(pend ? 'drive strength γ' : 'r', pend ? 'φ at each drive cycle (rad)' : 'xₙ');
+          const xs = [], ys = []; for (const c of D.cols) for (const y of c.ys) { xs.push(c.g); ys.push(y); }
+          fastDots(v, sD, xs, ys, xs.length, 'accent', { alpha: 0.55, size: 1.4 });
+          const marks = pend ? TH.th : logR.R.slice(1);
+          marks.forEach((m, k) => { if (m < w[0] || m > w[1]) return; sD.vline(m, { color: pend ? 'orange' : 'teal', width: 1.1, dash: [4, 4] }); sD.text(pend ? `γ${'₁₂₃₄₅'[k]}` : `R${'₁₂₃₄₅₆₇₈₉'[k] || ''}`, m, sD.bounds.y[1], { color: pend ? 'orange' : 'teal', size: 12, dx: -3, align: 'right', baseline: 'top', dy: 4 }); });
+          if (pend && !D.done) sD.corner(`computing… ${D.cols.length}/${NCOL} columns`, 'br', { color: 'ink', plate: true });
+          // δ_n
+          const dl = deltas(logR.R.slice(1)), dp = deltas(TH.th);
+          sF.hline(4.669201609, { color: 'green', width: 1.6 }); sF.text('δ = 4.6692…', 11.4, 4.669201609, { color: 'green', size: 12, align: 'right', dy: -10 });
+          sF.path(dl.map((d, i) => [i + 1, d]), { color: 'teal', width: 1.6 }); sF.dots(dl.map((d, i) => [i + 1, d]), { r: 4, color: 'teal' });
+          if (dp.length) { sF.path(dp.map((d, i) => [i + 1, d]), { color: 'orange', width: 1.6 }); sF.dots(dp.map((d, i) => [i + 1, d]), { r: 5, color: 'orange' }); }
+          if (!TH.done) sF.corner('locating the pendulum’s thresholds…', 'tl', { color: 'muted' });
+          cur = { dl, dp };
+        });
+        v.legend([['accent', 'bifurcation diagram'], ['orange', 'pendulum: Floquet thresholds γₙ and δₙ', { dash: true }], ['teal', 'logistic map: superstable Rₙ and δₙ', { dash: true }], ['green', 'Feigenbaum’s δ']]);
+        v.readout(() => {
+          if (!cur) return '';
+          const { dl, dp } = cur, R = logR.R, d = logR.d, al = -d[d.length - 2] / d[d.length - 1];
+          const pt = TH.th.length ? `pendulum thresholds γₙ = ${TH.th.map((x) => v.fix(x, 6)).join(', ')}` : 'pendulum thresholds: computing';
+          return String.raw`${pt}` + (dp.length ? String.raw` → $\delta_1 = ${v.fix(dp[0], 3)}$${dp[1] ? String.raw`, $\delta_2 = ${v.fix(dp[1], 3)}$` : ''}` : '') + String.raw` · logistic map: $R_\infty \approx ${v.fix(R[R.length - 1], 7)}$, $\delta_{${dl.length}} = ${v.fix(dl[dl.length - 1], 5)}$, fork-width ratio $\alpha \approx ${v.fix(al, 4)}$ (Feigenbaum: $\delta = 4.669202$, $\alpha = 2.502908$)`;
         });
       },
     },

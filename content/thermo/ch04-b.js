@@ -209,7 +209,7 @@ which vanishes for an ideal gas. Real gases cool on expansion ($\mu_{JT} > 0$) i
         };
         const Ps = []; for (let i = 0; i <= 45; i++) Ps.push(Math.max(0.1, i) * MPA);
         const family = [];
-        for (let T0 = 150; T0 <= 850; T0 += 50) { const h0 = M.h(T0, M.vOf(T0, 0.1 * MPA, 'gas')); family.push(Ps.map((P) => [P / MPA, onH(h0, P).T])); }
+        for (const T0 of [100, 125, 150, 175, 200, 250, 300, 350, 400, 500, 600, 700, 800]) { const h0 = M.h(T0, M.vOf(T0, 0.1 * MPA, 'gas')); family.push(Ps.map((P) => [P / MPA, onH(h0, P).T])); }
         const invV = []; for (let i = 0; i <= 120; i++) { const tr = 0.75 + (6.75 - 0.75) * i / 120, pr = 24 * Math.sqrt(3 * tr) - 12 * tr - 27; invV.push([pr * Pc / MPA, tr * Tc]); }
         const muV = []; for (let T = 85; T <= 900; T += 5) { const vv = M.vOf(T, 0.1 * MPA, 'gas'); muV.push([T, pdiff((T_) => T_, M.P, M.h, T, vv) * MPA]); }
         const satLine = []; for (let i = 0; i <= 60; i++) { const tr = 0.55 + (0.99999 - 0.55) * i / 60, c = vdwCoex(tr); satLine.push([c.p * Pc / MPA, tr * Tc]); }
@@ -218,10 +218,10 @@ which vanishes for an ideal gas. Real gases cool on expansion ($\mu_{JT} > 0$) i
         v.render(() => {
           for (const f of family) sp.path(f, { color: 'faint', width: 1.1 });
           sp.path(invV, { color: 'red', width: 2, dash: [6, 4] });
-          sp.dots(N2INV, { r: 3.2, color: 'red' });
+          sp.dots(N2INV.map(([T, P]) => [P, T]), { r: 3.4, color: 'red' });
           sp.path(satLine, { color: PHASE.liquid, width: 2.2 });
           sp.dot(Pc / MPA, Tc, { r: 4, color: PHASE.liquid });
-          sp.text('liquid–vapour (model)', satLine[30][0], satLine[30][1], { dx: 8, dy: 10, size: 10.5, color: PHASE.liquid, align: 'left', plate: true });
+          sp.text('liquid–vapour (model)', Pc / MPA, Tc, { dx: 8, dy: -2, size: 10.5, color: PHASE.liquid, align: 'left', plate: true });
           sp.text('cools on throttling', 18, 230, { size: 11.5, weight: 650, color: 'blue', align: 'center' });
           sp.text('warms', 30, 760, { size: 11.5, weight: 650, color: 'red', align: 'center' });
           // the throttling path
@@ -241,7 +241,7 @@ which vanishes for an ideal gas. Real gases cool on expansion ($\mu_{JT} > 0$) i
           const muIn = pdiff((T_) => T_, M.P, M.h, Tin, vin) * MPA;
           const vv1 = M.vOf(Tin, 0.1 * MPA, 'gas'), mu1 = Tin > 80 ? pdiff((T_) => T_, M.P, M.h, Tin, vv1) * MPA : NaN, mu1d = interp(N2JT, 0, 1, Tin);
           sj.vline(Tin, { color: 'gold', width: 1.2 });
-          sj.text(`vdW inversion 2a/Rb = ${v.fix(2 * M.a / (R * M.b), 0)} K`, 2 * M.a / (R * M.b), 0, { dx: -6, dy: -10, size: 10.5, color: 'purple', align: 'right' });
+          sj.text(`van der Waals: inverts at 2a/Rb = ${v.fix(2 * M.a / (R * M.b), 0)} K`, 880, 4, { size: 10.5, color: 'purple', align: 'right', plate: true });
           // Linde yield from 300 K
           const P1 = hin.x * MPA, hReal = interp(N2H300, 0, 1, hin.x), yReal = (N2H300[0][1] - hReal) / (N2H300[0][1] - N2SAT1ATM.hl);
           const s1 = satAt(101325), hV300a = M.h(300, M.vOf(300, 101325, 'gas')), hV300 = M.h(300, M.vOf(300, P1, 'gas')), yV = (hV300a - hV300) / (hV300a - s1.hl);
@@ -280,7 +280,7 @@ with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2
         const S = v.sim(() => {
           const r = v.rng(21), x = xs.value, nA = Math.round(N * x), wall = 2 * x;
           const P = []; for (let i = 0; i < N; i++) { const a = i < nA; P.push({ x: a ? r() * wall : wall + r() * (2 - wall), y: r(), a }); }
-          return { P, r, hist: [], wall };
+          return { P, r, hist: [], wall, S: 0 };
         }, (st, h, t) => {
           const on = keep.value || t < 1, step = 0.018;
           for (const p of st.P) {

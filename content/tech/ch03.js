@@ -334,7 +334,7 @@ The furnace must also not get too hot. Hot iron in contact with charcoal absorbs
 A pick from the fortress of Mount Adir in Galilee (12th–11th century BCE) is carburised, quenched and tempered iron, hardness about 38 HRC (Davis et al. 1985). Homer's *Odyssey* (9.391–394) compares the hissing of the Cyclops' eye to a smith dipping an axe in cold water, "for that is the strength of iron".`,
       idea: String.raw`At red heat iron is **austenite**, face-centred cubic, which dissolves carbon. The iron–carbon diagram (mat-6.6) gives the limit: at the carburising temperature, charcoal saturates the surface at the Acm line, about 1.3% carbon at 900 °C. Carbon then diffuses inward, so the case depth grows as $\sqrt{Dt}$ with $D = 2.3\times10^{-5}\,e^{-148\,\mathrm{kJ/mol}/RT}\ \mathrm{m^2/s}$, about a millimetre in ten hours at 900 °C.
 
-Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite** (layers of ferrite and cementite) in proportions given by the lever rule. Cooled fast enough, the carbon has no time to leave and the lattice shears into **martensite**, body-centred and strained by trapped carbon, which is very hard. The transformation starts at $M_s \approx 539 - 423\,C$ (°C, $C$ in wt%, Andrews 1965) and the fraction transformed by room temperature follows the Koistinen–Marburger law $1 - e^{-0.011(M_s - T)}$. Above about 1% carbon $M_s$ falls so low that soft austenite is retained. Without carbon there is nothing to trap: quenching wrought iron does almost nothing.`,
+Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite** (layers of ferrite and cementite) in proportions given by the lever rule. Cooled fast enough, the carbon has no time to leave and the lattice shears into **martensite**, body-centred and strained by trapped carbon, which is very hard. The transformation starts at $M_s \approx 539 - 423\,C$ (°C, $C$ in wt%, Andrews 1965, for steels up to about 0.6% carbon; it keeps falling, to about 100 °C at 1.4%) and the fraction transformed by room temperature follows the Koistinen–Marburger law $1 - e^{-0.011(M_s - T)}$. That is why a carburised blade was hardened from a lower heat, about 800 °C, where the austenite holds only about 1% carbon and the excess stays as hard cementite: quenched straight from the carburising heat, the carbon-rich skin keeps soft retained austenite. Without carbon there is nothing to trap: quenching wrought iron does almost nothing.`,
       caption: String.raw`Set the **carburising time and temperature**, the **quench** and the **tempering** temperature. Top left: the iron–carbon diagram, with the edge's and the core's carbon at the carburising temperature. Top right: the carbon profile across a 6 mm blade, computed from the diffusion equation. Bottom: hardness across the blade after the quench, over the phases (shaded). Set the time to zero and quench in water (soft wrought iron), then carburise and quench without tempering: the edge is glass-hard and brittle.`,
       deps: ['tech-3.3', 'mat-6.6'],
       see: ['mat-6.7', 'mat-2.6'],
@@ -344,8 +344,8 @@ Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite
       viz(v) {
         const A = v.stage({ x: [0, 2.2], y: [500, 1600], axes: 'box', gutter: true, height: 270, weight: 1, minWidth: 320, xlabel: 'carbon (wt %)', ylabel: '°C', title: 'iron–carbon diagram (steel side)' });
         const B = v.stage({ x: [0, 6], y: [0, 1.6], axes: 'box', gutter: true, height: 270, weight: 1, minWidth: 320, xlabel: 'position across the blade (mm)', ylabel: 'carbon (wt %)', title: 'carbon after carburising' });
-        const Cs = v.stage({ x: [0, 6], y: [0, 1000], axes: 'box', gutter: true, height: 270, weight: 1.2, minWidth: 380, xlabel: 'position across the blade (mm)', ylabel: 'hardness (HV)', title: 'hardness after quenching (phases shaded)' });
-        const D = yearStage(v, [-1300, 400], { height: 270, weight: 0.9, minWidth: 300, title: 'dated evidence: steel' });
+        const Cs = v.stage({ x: [0, 6], y: [0, 1000], axes: 'box', gutter: true, height: 270, weight: 1.2, minWidth: 380, xlabel: 'position across the blade (mm)', ylabel: 'hardness (HV)', title: 'hardness after hardening from 800 °C (phase strip on top)' });
+        const D = yearStage(v, [-1400, 500], { height: 270, weight: 0.9, minWidth: 300, title: 'dated evidence: steel' });
         const hours = v.slider('carburising time', 0, 24, 10, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} h` });
         const Tc = v.slider('carburising temperature', 850, 1000, 900, { step: 5, fmt: (x) => `${Math.round(x)} °C` });
         const quench = v.select('cooling', [{ value: 1, label: 'slow (in the hearth)' }, { value: 5, label: 'air' }, { value: 60, label: 'oil' }, { value: 300, label: 'water' }, { value: 800, label: 'brine' }], 300);
@@ -359,14 +359,18 @@ Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite
           return Math.min(Cs0, C0 + (Cs0 - C0) * (erfc(x / l) + erfc((L - x) / l)));
         };
         /** Phases and hardness of steel with carbon c after cooling at `rate` °C/s and tempering (illustrative where noted). */
+        const TH = 800; // hardening: the carburised blade is reheated to about 800 °C and quenched from there
+        const msOf = (c) => (c <= 0.6 ? 539 - 423 * c : 285 - 231 * (c - 0.6)); // Andrews (1965) to 0.6% C; linear to ~100 °C at 1.4% C beyond
         const treat = (c, rate, Tt) => {
-          const logCR = 3.3 - 1.2 * Math.min(c, 0.8); // critical cooling rate (°C/s), illustrative for plain carbon steel
-          const escape = rate <= 1 ? 0 : 1 / (1 + Math.exp(-4 * (Math.log10(rate) - logCR)));
-          const Ms = 539 - 423 * c, fM = Ms > 20 ? escape * (1 - Math.exp(-0.011 * (Ms - 20))) : 0, fA = escape - fM, fP = 1 - escape;
-          const HM = 150 + 790 * (1 - Math.exp(-2.7 * c));
+          const cg = Math.min(c, acm(TH)), cem = c > cg ? (c - cg) / (6.67 - cg) : 0; // austenite carbon at TH; excess carbon stays as cementite
+          const logCR = 3.3 - 1.2 * Math.min(cg, 0.8); // critical cooling rate (°C/s), illustrative for plain carbon steel
+          const escape = rate <= 1 ? 0 : (1 - cem) / (1 + Math.exp(-4 * (Math.log10(rate) - logCR)));
+          const Ms = msOf(cg), fM = Ms > 20 ? escape * (1 - Math.exp(-0.011 * (Ms - 20))) : 0, fA = escape - fM, fP = 1 - escape - (rate > 1 ? cem : 0);
+          const HM = 150 + 790 * (1 - Math.exp(-2.7 * cg));
           const HP = c < 0.76 ? 90 + (c / 0.76) * (rate > 3 ? 190 : 120) : (rate > 3 ? 280 : 210) + ((c - 0.76) / 5.91) * 600; // ferrite + pearlite by the lever rule
           const tf = Tt < 100 ? 0 : clamp((Tt - 150) / 500, 0, 1) ** 0.8, HMt = HM - (HM - Math.max(200, 0.5 * HP + 120)) * tf;
-          return { fM, fA, fP, H: fM * HMt + fA * 250 + fP * HP, Ms, HM: HMt };
+          const cemQ = rate > 1 ? cem : 0;
+          return { fM, fA, fP, fC: cemQ, H: fM * HMt + fA * 250 + fP * HP + cemQ * 800, Ms, HM: HMt };
         };
         v.render(() => {
           const T = Tc.value, rate = +quench.value, Tt = temper.value;
@@ -385,19 +389,21 @@ Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite
           A.hline(T, { color: 'red', width: 1.4, dash: [5, 3] });
           const cE = profile(0), cC = profile(L / 2);
           A.dot(cE, T, { r: 5, color: 'red', label: 'edge', labelPos: 'n' });
-          A.dot(cC, T, { r: 5, color: 'accent', label: 'core', labelPos: 's' });
+          A.dot(cC, T, { r: 5, color: 'accent', label: 'core', labelPos: 'se' });
           // ---- B
           B.fn(profile, { color: 'red', width: 2.4, n: 240, fill: 'red', fillAlpha: 0.12 });
           B.hline(0.76, { color: 'muted', width: 1, dash: [4, 3] }); B.text('eutectoid 0.76%', 3, 0.8, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
           // ---- C: phases (stacked, scaled to the 0–1000 axis) and hardness
           const N = 120, xs = v.M.linspace(0, L, N), res = xs.map((x) => treat(profile(x), rate, Tt));
-          const band = (lo, hi, col) => Cs.poly([...xs.map((x, i) => [x, 1000 * lo(res[i])]), ...xs.map((x, i) => [x, 1000 * hi(res[i])]).reverse()], { fill: col, fillAlpha: 0.13, stroke: false });
-          band(() => 0, (r) => r.fM, 'red'); band((r) => r.fM, (r) => r.fM + r.fA, 'gold'); band((r) => r.fM + r.fA, () => 1, 'accent');
+          // phase strip along the top (each column stacked by phase fraction)
+          const y0 = 905, hS = 90, band = (lo, hi, col) => Cs.poly([...xs.map((x, i) => [x, y0 + hS * lo(res[i])]), ...xs.map((x, i) => [x, y0 + hS * hi(res[i])]).reverse()], { fill: col, fillAlpha: 0.55, stroke: false });
+          band(() => 0, (r) => r.fM, 'red'); band((r) => r.fM, (r) => r.fM + r.fA, 'gold'); band((r) => r.fM + r.fA, (r) => r.fM + r.fA + r.fC, 'purple'); band((r) => r.fM + r.fA + r.fC, () => 1, 'accent');
+          Cs.hline(y0, { color: 'faint', width: 1 });
           Cs.path(xs.map((x, i) => [x, res[i].H]), { color: 'ink', width: 2.6 });
           const e = res[0], brittle = e.fM > 0.5 && e.H > 650 && Tt < 150;
-          Cs.text(`edge ${Math.round(e.H)} HV`, 0.15, Math.min(940, e.H + 40), { size: 11.5, color: brittle ? 'red' : 'ink', align: 'left', weight: 700, plate: true });
-          Cs.text(`core ${Math.round(res[N >> 1].H)} HV`, 3, Math.min(940, res[N >> 1].H + 40), { size: 11.5, color: 'ink', align: 'center', weight: 700, plate: true });
-          if (brittle) Cs.corner('untempered martensite: hard but brittle', 'tr', { color: 'red', weight: 700 });
+          Cs.text(`edge ${Math.round(e.H)} HV`, 0.15, Math.min(850, e.H + 40), { size: 11.5, color: brittle ? 'red' : 'ink', align: 'left', weight: 700, plate: true });
+          Cs.text(`core ${Math.round(res[N >> 1].H)} HV`, 3, Math.min(850, res[N >> 1].H + 40), { size: 11.5, color: 'ink', align: 'center', weight: 700, plate: true });
+          if (brittle) Cs.text('untempered martensite: hard but brittle', 3, 860, { size: 11.5, color: 'red', align: 'center', weight: 700, plate: true });
           // ---- D
           drawYears(v, D, [
             { t: [-1200, -1000], label: 'Mount Adir pick, quenched' },
@@ -408,11 +414,11 @@ Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite
             { t: 200, label: 'crucible steel, India', color: 'green' },
           ], { lanes: 6, laneH: 0.13, ticks: [-1200, -800, -400, 1, 400] });
         });
-        v.legend([['red', 'martensite', { area: true }], ['gold', 'retained austenite', { area: true }], ['accent', 'ferrite + pearlite', { area: true }], ['ink', 'hardness']]);
+        v.legend([['red', 'martensite', { area: true }], ['gold', 'retained austenite', { area: true }], ['purple', 'cementite', { area: true }], ['accent', 'ferrite + pearlite', { area: true }], ['ink', 'hardness']]);
         v.readout(() => {
           const rate = +quench.value, cE = profile(0), e = treat(cE, rate, temper.value), core = treat(profile(L / 2), rate, temper.value);
           const T = Tc.value + K0, Dm = 2.3e-5 * Math.exp(-148000 / (8.314 * T)), depth = Math.sqrt(Dm * hours.value * 3600) * 1000;
-          return `surface carbon ${v.fix(cE, 2)}% (Acm limit at ${Math.round(Tc.value)} °C: ${v.fix(Math.min(acm(Tc.value), 1.6), 2)}%), $\\sqrt{Dt}$ = ${v.fix(depth, 2)} mm with $D = ${v.sci(Dm, 2)}$ m²/s · edge $M_s$ = ${Math.round(e.Ms)} °C, **${Math.round(100 * e.fM)}% martensite**${e.fA > 0.05 ? `, ${Math.round(100 * e.fA)}% retained austenite` : ''} → **${Math.round(e.H)} HV** at the edge, ${Math.round(core.H)} HV in the core · cooling rates and pearlite hardness are illustrative; Ms (Andrews), Koistinen–Marburger and martensite hardness are empirical laws`;
+          return `surface carbon ${v.fix(cE, 2)}% (Acm limit at ${Math.round(Tc.value)} °C: ${v.fix(Math.min(acm(Tc.value), 1.6), 2)}%), $\\sqrt{Dt}$ = ${v.fix(depth, 2)} mm with $D = ${v.sci(Dm, 2)}$ m²/s · hardened from ${TH} °C: edge austenite ${v.fix(Math.min(cE, acm(TH)), 2)}% C, $M_s$ = ${Math.round(e.Ms)} °C, **${Math.round(100 * e.fM)}% martensite**${e.fA > 0.05 ? `, ${Math.round(100 * e.fA)}% retained austenite` : ''} → **${Math.round(e.H)} HV** at the edge, ${Math.round(core.H)} HV in the core · cooling rates and pearlite hardness are illustrative; Ms (Andrews, extended above 0.6% C), Koistinen–Marburger and martensite hardness are empirical laws`;
         });
       },
     },
@@ -437,7 +443,7 @@ Glassworking happens in a viscosity window. A glass can be gathered and blown be
       viz(v) {
         const A = v.stage({ x: [500, 1800], y: [0, 15], axes: 'box', gutter: true, height: 290, weight: 1.25, minWidth: 360, xlabel: 'temperature (°C)', ylabel: 'log₁₀ viscosity (Pa·s)', title: 'viscosity of the melt' });
         const B = v.stage({ x: [0, 150], y: [500, 1350], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 300, xlabel: 'seconds out of the furnace', ylabel: '°C', title: 'a gather cooling in air' });
-        const Cn = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 260, weight: 1, minWidth: 260, title: 'the network (2D sketch)' });
+        const Cn = v.stage({ x: [0, 1], y: [-0.06, 1], equal: true, axes: false, height: 260, weight: 1, minWidth: 260, title: 'the network (2D sketch)' });
         const D = yearStage(v, [-2700, 200], { height: 260, weight: 1.3, minWidth: 360, title: 'dated evidence: glass' });
         const PRE = {
           modern: { label: 'modern soda-lime', na: 11.7, ca: 10.9, al: 0.12, mg: 0, k: 0.08 },
@@ -466,12 +472,19 @@ Glassworking happens in a viscosity window. A glass can be gathered and blown be
           return out;
         };
         // network sketch: perturbed triangular lattice of Si, bridges to neighbours
-        const net = (() => { const r = v.rng(5), si = [], br = []; const nx = 7, ny = 7; for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) si.push([0.09 + i * 0.137 + (j % 2) * 0.068 + r.uniform(-0.025, 0.025), 0.09 + j * 0.135 + r.uniform(-0.025, 0.025)]); for (let a = 0; a < si.length; a++) for (let b = a + 1; b < si.length; b++) { const d = Math.hypot(si[a][0] - si[b][0], si[a][1] - si[b][1]); if (d < 0.19) br.push([a, b, r()]); } return { si, br }; })();
+        const net = (() => { // jittered honeycomb: every 'Si' has three bridges, as in Zachariasen's 2D drawing
+          const r = v.rng(5), si = [], br = [], a = 0.105, h = a * Math.sqrt(3) / 2, base = [];
+          for (let j = 0; j < 6; j++) for (let i = 0; i < 5; i++) { const cx = 0.12 + i * 3 * a / 1.5 * 0.97 + (j % 2) * 0.75 * a * 1.94 / 1.5 * 0.5, cy = 0.12 + j * h * 1.45; base.push([cx, cy]); }
+          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const x = 0.1 + i * 0.1 + ((i + j) % 2 ? 0 : 0) , y = 0.12 + j * 0.095 + (((i + j) % 2) ? 0.028 : 0); si.push([x + r.uniform(-0.018, 0.018), y + r.uniform(-0.015, 0.015)]); }
+          const id = (i, j) => j * 9 + i;
+          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { if (i < 8) br.push([id(i, j), id(i + 1, j), r()]); if (j < 8 && (i + j) % 2 === 0) br.push([id(i, j), id(i, j + 1), r()]); }
+          return { si, br };
+        })();
         v.render(() => {
           const g = comp(), Tf = furn.x;
           // ---- A
           A.hband(3, 6.6, { color: 'green', alpha: 0.1 });
-          A.text('working window', 520, 4.8, { size: 11, color: 'green', align: 'left', baseline: 'middle' });
+          A.text('working window', 1250, 4.8, { size: 11, color: 'green', align: 'center', baseline: 'middle', plate: true });
           A.hline(12, { color: 'muted', width: 1, dash: [4, 3] }); A.text('annealing point 10¹²', 1790, 12.25, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
           A.fn(silica, { color: 'muted', width: 2, domain: [900, 1800] });
           A.text('fused silica', 1700, silica(1700) + 0.5, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
@@ -482,7 +495,7 @@ Glassworking happens in a viscosity window. A glass can be gathered and blown be
           if (ls < 15 && Tf >= 900) A.dot(Tf, ls, { r: 4, color: 'muted' });
           // ---- B: gather cooling from the furnace temperature
           const tw = Tat(g, 3), ts = Tat(g, 6.6), run = cool(Tf);
-          B.hband(ts, tw, { color: 'green', alpha: 0.1 });
+          B.hband(ts, tw, { color: 'green', alpha: 0.06 });
           B.text('workable', 148, Math.min(1330, (ts + tw) / 2), { size: 11, color: 'green', align: 'right', baseline: 'middle' });
           B.path(run, { color: 'red', width: 2.4 });
           const tIn = run.find((p) => p[1] <= tw), tOut = run.find((p) => p[1] <= ts);
