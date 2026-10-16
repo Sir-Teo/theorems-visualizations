@@ -7,7 +7,7 @@ import {
 
 // ---------- local helpers ----------
 const EARC = ['accent', 'orange', 'purple', 'teal', 'pink', 'green', 'red', 'gold'];
-const BLC = ['blue', 'orange', 'purple', 'teal', 'pink', 'green', 'red', 'gold'];
+const BLC = ['blue', 'orange', 'purple', 'teal', 'pink', 'green'];
 /** A connected graph with several blocks of every kind (plus, optionally, an isolated vertex). */
 const BLOCKY = (iso) => {
   const P = { a: [0.7, 4.7], b: [0.7, 1.7], c: [2.5, 3.2], d: [2.2, 5.8], e: [4.1, 3.2], f: [5.5, 5.3], g: [7.0, 3.2], h: [5.5, 1.1], i: [8.4, 5.2], j: [9.2, 2.6], k: [3.7, 0.7], l: [9.3, 0.6] };
@@ -56,6 +56,13 @@ function showMG(R, G, M, key) {
   const k2 = JSON.stringify([M.ids, M.E.map((e) => [e.a, e.b])]) + key;
   if (R._key === k2) return; R._key = k2;
   R.set({ nodes: M.ids.map((id) => { const n = G.node(id); return { id, x: n.x, y: n.y, label: G.lab(id) }; }), edges: M.E.map((e) => ({ from: M.ids[e.a], to: M.ids[e.b], mg: e })) });
+}
+/** A centre (minimum eccentricity) of the largest component of a forest given as kit-style nodes/edges — a good root for layout 'tree'. */
+function treeCenter(nodes, edges) {
+  const H = ix({ nodes, edges }), C = comps(H), L = C.lists.reduce((a, b) => (b.length > a.length ? b : a), C.lists[0] || []);
+  let best = L[0], be = Infinity;
+  for (const u of L) { const d = bfs(H, u).dist, e = Math.max(...L.map((w) => d[w])); if (e < be) { be = e; best = u; } }
+  return H.ids[best];
 }
 /** Is the plain index structure 3-connected? */
 const is3 = (H) => isKconn(H, 3).ok;
@@ -262,8 +269,7 @@ export default {
             T._key = key;
             const nodes = BG.nodes.map((nd, i) => (nd.kind === 'block' ? { id: 'B' + nd.i, label: 'B' + (nd.i + 1), shape: 'box' } : { id: 'c' + nd.i, label: vname(G, H, nd.i) }));
             const edges = BG.edges.map(([p, q]) => [nodes[p].id, nodes[q].id]);
-            const comp0 = comps(ix({ nodes, edges }));
-            T.set({ nodes, edges }); T.layout('tree', { root: nodes[comp0.lists[0].reduce((b, i) => (BG.edges.filter((e) => e.includes(i)).length > BG.edges.filter((e) => e.includes(b)).length ? i : b), comp0.lists[0][0])].id });
+            T.set({ nodes, edges }); T.layout('tree', { root: treeCenter(nodes, edges) });
             if (!T.nodes.some((n) => K(n.id) === K(focus))) focus = null;
           }
           const fb = focus && focus[0] === 'B' ? +focus.slice(1) : null, fc = focus && focus[0] === 'c' ? +focus.slice(1) : null;
@@ -318,13 +324,8 @@ export default {
           if (T._key !== key) {
             T._key = key;
             const nodes = BG.nodes.map((nd) => (nd.kind === 'block' ? { id: 'B' + nd.i, label: 'B' + (nd.i + 1), shape: 'box' } : { id: 'c' + nd.i, label: vname(G, H, nd.i) }));
-            T.set({ nodes, edges: BG.edges.map(([p, q]) => [nodes[p].id, nodes[q].id]) });
-          }
-          // draw the block graph over the geometry of G: a block at the centre of its vertices, a cutvertex where it is
-          for (const n of T.nodes) {
-            const i = +n.id.slice(1);
-            if (n.id[0] === 'c') { const g = G.node(H.ids[i]); n.x = g.x; n.y = g.y; }
-            else { const V = BL.blocks[i].V.map((u) => G.node(H.ids[u])); n.x = V.reduce((a, g) => a + g.x, 0) / V.length; n.y = V.reduce((a, g) => a + g.y, 0) / V.length; }
+            const edges = BG.edges.map(([p, q]) => [nodes[p].id, nodes[q].id]);
+            T.set({ nodes, edges }); T.layout('tree', { root: treeCenter(nodes, edges) });
           }
           let path = null;
           let sel = G._sel, hov = G._hover;
@@ -336,8 +337,8 @@ export default {
           const mB = merged ? BL.blocks.findIndex((B) => B.V.length === merged.length && B.V.every((u) => merged.includes(H.ids[u]))) : -1;
           drawBlocks(v, s, G, H, BL, { color: (i) => (pathBlocks && redB.has(i) ? 'red' : BLC[i % BLC.length]), alpha: 0.2 });
           if (mB >= 0) drawBlocks(v, s, G, H, BL, { only: new Set([mB]), color: () => 'green', alpha: 0.25, w: 44 });
+          if (pathBlocks) { const a = G.node(sel.id), b = G.node(hov.id); s.line(a.x, a.y, b.x, b.y, { color: 'red', dash: [6, 5], width: 2.4 }); }
           G.draw({ nodeFill: (id) => (BL.cut[H.at(id)] ? (pathBlocks && redC.has(H.at(id)) ? 'red' : 'gold') : null) });
-          if (pathBlocks) { const a = G.node(sel.id), b = G.node(hov.id); s.line(a.x, a.y, b.x, b.y, { color: 'red', dash: [6, 5], width: 2 }); }
           T.draw({
             nodeFill: (id) => (id[0] === 'B' ? (pathBlocks && redB.has(+id.slice(1)) ? 'red' : BLC[+id.slice(1) % BLC.length]) : pathBlocks && redC.has(+id.slice(1)) ? 'red' : 'gold'),
             nodeRing: (id) => (id[0] === 'B' && +id.slice(1) === mB ? 'green' : null),

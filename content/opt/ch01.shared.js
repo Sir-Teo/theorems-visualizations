@@ -177,3 +177,23 @@ export function clipHalf(poly, a, b, c) {
   }
   return out;
 }
+
+/** One-slot memo: const m = memo1(); m(key, () => value) recomputes only when the key changes. */
+export function memo1() {
+  let k = null, val; return (key, fn) => { if (key !== k) { k = key; val = fn(); } return val; };
+}
+/** Stationary points of f in a window plus a typical gradient size (median |∇f| on a coarse grid). */
+export function analyze(f, view) {
+  const pts = stationaryPoints(f, view.x, view.y, 44), gs = [], n = 14;
+  for (let j = 0; j <= n; j++) for (let i = 0; i <= n; i++) {
+    const g = gradNum(f, view.x[0] + (i / n) * (view.x[1] - view.x[0]), view.y[0] + (j / n) * (view.y[1] - view.y[0]));
+    const m = Math.hypot(g[0], g[1]); if (Number.isFinite(m)) gs.push(m);
+  }
+  gs.sort((a, b) => a - b);
+  return { pts, gs: gs.length ? Math.max(1e-6, gs[Math.floor(gs.length / 2)]) : 1 };
+}
+export const nearest = (pts, x, y) => pts.reduce((b, p) => (!b || Math.hypot(p.x - x, p.y - y) < Math.hypot(b.x - x, b.y - y) ? p : b), null);
+/** Draw stationary points as coloured rings (min green, max red, saddle purple, degenerate orange). */
+export function drawStat(s, pts, { r = 5 } = {}) {
+  for (const p of pts) s.dot(p.x, p.y, { r, color: CLS[p.cls].color, hollow: true, width: 2.2 });
+}

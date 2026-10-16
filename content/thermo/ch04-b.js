@@ -218,11 +218,11 @@ which vanishes for an ideal gas. Real gases cool on expansion ($\mu_{JT} > 0$) i
         v.render(() => {
           for (const f of family) sp.path(f, { color: 'faint', width: 1.1 });
           sp.path(invV, { color: 'red', width: 2, dash: [6, 4] });
-          sp.dots(N2INV.map(([T, P]) => [P, T]), { r: 3.4, color: 'red' });
+          sp.path(N2INV.map(([T, P]) => [P, T]), { color: 'red', width: 1.2, alpha: 0.7 }); sp.dots(N2INV.map(([T, P]) => [P, T]), { r: 3.4, color: 'red' });
           sp.path(satLine, { color: PHASE.liquid, width: 2.2 });
           sp.dot(Pc / MPA, Tc, { r: 4, color: PHASE.liquid });
           sp.text('liquid–vapour (model)', Pc / MPA, Tc, { dx: 8, dy: -2, size: 10.5, color: PHASE.liquid, align: 'left', plate: true });
-          sp.text('cools on throttling', 18, 230, { size: 11.5, weight: 650, color: 'blue', align: 'center' });
+          sp.text('cools on throttling', 9, 175, { size: 11.5, weight: 650, color: 'blue', align: 'center' });
           sp.text('warms', 30, 760, { size: 11.5, weight: 650, color: 'red', align: 'center' });
           // the throttling path
           const Pin = hin.x * MPA, Tin = hin.y, po = Math.min(Pout.value, hin.x - 0.05) * MPA;
@@ -428,7 +428,7 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
         v.animate((t) => {
           const i = +sol.value, m = mol.value * i, xw = 1 / (1 + m * Mw), lnx = Math.log(xw);
           // osmotic pressure at 25 °C
-          const T = 298.15, Vw = Mw / 997.05, PiEx = -R * T / Vw * lnx, c = m * 997.05 / (1 + m * 0.3423 * (i === 1 ? 1 : 0.17)) / 1, PivH = m * R * T * 997.05;   // c ≈ m ρ for dilute solutions
+          const T = 298.15, Vw = Mw / 997.05, PiEx = -R * T / Vw * lnx, PivH = m * R * T * 997.05;   // van 't Hoff with c ≈ m ρ_water (dilute solutions)
           const hEq = PiEx / (997.05 * 9.81), hNow = hEq * (1 - Math.exp(-t / 1.6));
           // U-tube drawing (scaled to the equilibrium height)
           const scale = hEq > 0 ? 3.2 / Math.max(hEq, 1e-9) : 0, base = 3.6, dh = hNow * scale;

@@ -65,7 +65,7 @@ export default {
       name: 'Arc length',
       statement: String.raw`For a regular curve $\alpha: [a,b] \to \R^2$ the **length** is the supremum of the lengths of inscribed polygons $\sum_i |\alpha(t_i) - \alpha(t_{i-1})|$ over all partitions $a = t_0 < \dots < t_n = b$. For $C^1$ curves this supremum is finite and equals $\int_a^b |\alpha'(t)|\,dt$, and the **arc-length function** $s(t) = \int_a^t |\alpha'(u)|\,du$ is the length of the part of the curve traversed so far. The hypothesis that $\alpha$ is $C^1$ matters: the Koch curve is continuous but its inscribed polygons have unbounded length (it is not **rectifiable**).`,
       idea: String.raw`Each chord is at most the integral of the speed over its subinterval (pma-6.27: $|\int f| \le \int |f|$ for vector-valued $f$), so the polygon lengths are bounded by $\int |\alpha'|$. Refining a partition can only add chord length (triangle inequality), and uniform continuity of $\alpha'$ makes the polygon sums approach the Riemann sums of the speed. For the Koch curve each step replaces every segment by four segments of one third the length, multiplying the polygon length by $4/3$ forever.`,
-      caption: String.raw`Pick a curve and raise the number of polygon vertices $n$. The orange polygon is inscribed at equal parameter steps; its length (gold dots, right) always stays below, and climbs to, the integral of the speed (green line, computed independently by Simpson's rule). For the cycloid arch the exact length is $8$, for the Koch curve the polygon lengths $(4/3)^k$ grow without bound: there is no limit to compare with.`,
+      caption: String.raw`Pick a curve and raise the number of polygon vertices $n$. The orange polygon is inscribed at equal parameter steps; its length (gold dots, right) always stays below, and climbs to, the integral of the speed (green line, computed independently by Simpson's rule). For the cycloid arch the exact length is $8$, for the Koch curve (base length $4$) the polygon lengths grow by the factor $4/3$ at every generation, without bound: there is no limit to compare with.`,
       deps: ['dg-1.1', 'pma-6.27'],
       refs: ['do Carmo §1-3', 'Pressley Ch. 1'],
       tags: ['arc length', 'rectifiable', 'Koch curve'],
@@ -114,7 +114,7 @@ export default {
             S.setView([-2.2, 2.2], [-1.9, 1.9]);
             S.path(pts, { color: 'orange', width: k > 4 ? 1.1 : 2 });
             if (k < 4) S.dots(pts, { r: 3, color: 'gold' });
-            G.setView([-0.4, 6.4], [0, 54]); G.setLabels('generation $k$', '$L_k$');
+            G.setView([-0.4, 6.4], [0, 30]); G.setLabels('generation $k$', '$L_k$');
             const xs = []; for (let i = 0; i <= 6; i++) xs.push([i, polyLen(koch(i), false)]);
             G.path(xs, { color: 'muted', width: 1 }); G.dots(xs, { r: 4, color: 'gold' });
             G.fn((x) => 4 * Math.pow(4 / 3, x), { domain: [0, 6.4], color: 'red', dash: true, width: 1.2 });

@@ -308,8 +308,8 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           const pts = []; for (let i = 0; i <= 600; i++) { const x = 0.38 * (4.5 / 0.38) ** (i / 600); if (x > 0.345) { const P = vdwP(T, x); if (P > 0.15 && P < 1.15) pts.push([P, vdwG(T, x), x]); } }
           const gref = c ? vdwG(T, c.vl) : 0;
           const G = pts.map(([P, g, x]) => [P, g - gref, x]);
-          const x0 = Math.max(0.15, pLo - 0.1), x1 = Math.min(1.12, pHi + 0.1);
-          const gs = G.filter((q) => q[0] >= x0 && q[0] <= x1).map((q) => q[1]); const glo = Math.min(...gs), ghi = Math.max(...gs), gp = 0.08 * (ghi - glo);
+          const x0 = Math.max(0.15, pLo - 0.06), x1 = Math.min(1.12, pHi + 0.06);
+          const gs = G.filter((q) => q[0] >= pLo - 0.03 && q[0] <= pHi + 0.03).map((q) => q[1]); const glo = Math.min(...gs), ghi = Math.max(...gs), gp = 0.08 * (ghi - glo);
           sg.setView([x0, x1], [glo - gp, ghi + gp]);
           const brL = G.filter((q) => q[2] < spn[0]), brM = G.filter((q) => q[2] >= spn[0] && q[2] <= spn[1]), brG = G.filter((q) => q[2] > spn[1]);
           sg.path(brL.map((q) => [q[0], q[1]]), { color: PHASE.liquid, width: 2.6 });
@@ -318,7 +318,7 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           sg.vline(p, { color: 'gold', width: 1.5 });
           let gl = NaN, gg = NaN;
           if (r.length === 3) { gl = vdwG(T, r[0]) - gref; gg = vdwG(T, r[2]) - gref; sg.dot(p, gl, { r: 4.5, color: PHASE.liquid }); sg.dot(p, gg, { r: 4.5, color: PHASE.gas }); sg.dot(p, vdwG(T, r[1]) - gref, { r: 3.5, color: 'red' }); }
-          if (c) { sg.dot(c.p, 0, { r: 5.5, color: 'green' }); sg.text('branches cross: coexistence', c.p, 0, { dx: 8, dy: 14, size: 11, color: 'green', align: 'left', plate: true }); }
+          if (c) { sg.dot(c.p, 0, { r: 5.5, color: 'green' }); sg.text('branches cross: coexistence', c.p, 0, { dx: -8, dy: 16, size: 11, color: 'green', align: 'right', plate: true }); }
           { const q = brG.filter((q) => q[0] >= x0 && q[0] <= x1); if (q.length) sg.text('vapour', q[Math.floor(q.length * 0.15)][0], q[Math.floor(q.length * 0.15)][1], { dx: 8, size: 11, color: PHASE.gas, align: 'left' }); }
           sg.text('liquid', brL.length ? brL[Math.floor(brL.length * 0.8)][0] : 0, brL.length ? brL[Math.floor(brL.length * 0.8)][1] : 0, { dx: -6, dy: -10, size: 11, color: PHASE.liquid, align: 'left' });
           const ar = interp(CSAT.Ar, 0, 1, T);
@@ -385,7 +385,7 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           const mus = { solid: muI(T, P), liquid: muL(T, P), gas: muG(T, P) };
           st = { T, P, ph, mus, tm, tb, tsub, realB, realM, realS };
         });
-        v.legend([[PHASE.solid, 'ice'], [PHASE.liquid, 'liquid'], [PHASE.gas, 'vapour'], [PHASE.fluid, 'supercritical fluid', { area: true }], ['red', 'triple & critical points', { dot: true }]]);
+        v.legend([[PHASE.solid, 'ice'], [PHASE.liquid, 'liquid'], [PHASE.gas, 'vapour'], [PHASE.fluid, 'supercritical fluid', { area: true }], ['red', 'triple & critical points', { dot: true }], ['gold', 'lowest μ: the stable phase', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { T, P, ph, mus, tm, tb, tsub, realB, realM, realS } = st;
@@ -486,7 +486,7 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Clausius%E2%80%93Clapeyron_relation' },
       viz(v) {
         const approx = v.toggle('also integrate the approximate form (ideal vapour, constant L)', true);
-        const sp = v.stage({ x: [273.16, 647.1], y: [400, 3e7], ylog: true, height: 350, axes: 'box', gutter: { l: 56 }, xlabel: 'T (K)', ylabel: 'P (Pa)', weight: 1.2, title: 'vapour pressure of water' });
+        const sp = v.stage({ x: [273.16, 660], y: [400, 8e7], ylog: true, height: 350, axes: 'box', gutter: { l: 56 }, xlabel: 'T (K)', ylabel: 'P (Pa)', weight: 1.2, title: 'vapour pressure of water' });
         const se = v.stage({ x: [273.16, 647.1], y: [-40, 40], height: 350, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'error (%)', weight: 1, title: 'integrated curve against the data' });
         const h = sp.handle(373.15, psatW(373.15), { color: 'gold', label: 'start', constrain: (x) => { const T = clamp(x, 278, 640); return [T, psatW(T)]; } });
         const Rw = R / W.M;
@@ -500,7 +500,7 @@ where $L$ is the latent heat and $\Delta v$ the volume change of the transition 
           sp.dots(WSAT.filter((r, i) => i % 2 === 0).map((r) => [r[0], r[1] * MPA]), { r: 3, color: 'ink', alpha: 0.75 });
           sp.path(ex, { color: 'green', width: 2.6 });
           if (approx.value) sp.path(ap, { color: 'orange', width: 2.2, dash: [7, 4] });
-          sp.dot(W.Tc, W.Pc, { r: 5, color: 'red' }); sp.text('critical point', W.Tc, W.Pc, { dx: -10, dy: 12, size: 11, color: 'red', align: 'right' });
+          sp.dot(W.Tc, W.Pc, { r: 5, color: 'red' }); sp.text('critical point', W.Tc, W.Pc, { dx: -8, dy: -11, size: 11, color: 'red', align: 'right' });
           sp.dot(W.Tt, W.Pt, { r: 5, color: 'red' }); sp.text('triple point', W.Tt, W.Pt, { dx: 8, dy: 4, size: 11, color: 'red', align: 'left' });
           // errors at the table temperatures
           const err = (path) => WSAT.map((r) => { const P = interp(path, 0, 1, r[0]); return [r[0], 100 * (P / (r[1] * MPA) - 1)]; });
@@ -644,7 +644,7 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
             s.text('liquid', 0.3, TA - 6, { size: 13, weight: 700, color: PHASE.liquid, align: 'center' });
             s.text('vapour', 0.6, TB + 6, { size: 13, weight: 700, color: PHASE.gas, align: 'center' });
             s.text('bubble line', 0.62, tBub(0.62, P), { dx: 6, dy: 12, size: 11, color: PHASE.liquid, align: 'left', plate: true });
-            s.text('dew line', 0.4, tDew(0.4, P), { dx: 6, dy: -10, size: 11, color: PHASE.gas, align: 'left', plate: true });
+            s.text('dew line', 0.22, tDew(0.22, P), { dx: 6, dy: -10, size: 11, color: PHASE.gas, align: 'left', plate: true });
             s.dot(1, TA, { r: 4, color: 'ink' }); s.dot(0, TB, { r: 4, color: 'ink' });
             s.text(`benzene boils ${v.fix(TA, 1)} K`, 1, TA, { dx: -8, dy: -12, size: 10.5, align: 'right', color: 'ink', plate: true });
             s.text(`toluene boils ${v.fix(TB, 1)} K`, 0, TB, { dx: 8, dy: 12, size: 10.5, align: 'left', color: 'ink', plate: true });
@@ -658,7 +658,7 @@ For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ 
                 const fl = (yd - z) / (yd - xb);
                 lever = { xb, yd, fl };
                 s.text(`liquid x = ${v.fix(xb, 3)}`, xb, T, { dx: -8, dy: 12, size: 11, color: PHASE.liquid, align: 'right', plate: true });
-                s.text(`vapour y = ${v.fix(yd, 3)}`, yd, T, { dx: 8, dy: -11, size: 11, color: PHASE.gas, align: 'left', plate: true });
+                s.text(`vapour y = ${v.fix(yd, 3)}`, yd, T, { dx: 8, dy: 13, size: 11, color: PHASE.gas, align: 'left', plate: true });
                 info = 'liquid + vapour (tie line)';
               } else info = z <= xb ? 'liquid' : 'vapour';
             } else info = T <= TA ? 'liquid' : 'vapour';

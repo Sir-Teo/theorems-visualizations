@@ -27,10 +27,10 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
       refs: ['Trefethen–Bau Lec. 1'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-3.4, 3.4], y: [-2.7, 2.7], equal: true, axes: false, height: 440, full: true });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 2.6, lim: 1.5 });
+        const S = v.stage({ x: [-2.6, 2.6], y: [-2.05, 2.05], equal: true, axes: false, height: 440, full: true });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.9, lim: 1.5 });
         const CC = ['blue', 'purple', 'teal'], SUB = '₁₂₃';
-        const C0 = [[1, 0.15, 0.1], [-0.25, 1, 0.3], [0.2, -0.35, 1]];
+        const C0 = [[1.2, 0.2, 0.1], [-0.3, 1.1, 0.4], [0.25, -0.45, 1.15]];
         const comb = () => add(scl(H[0].p, 0.6), scl(H[1].p, -0.5));
         const keep = () => { if (mode.value === 'r2') H[2].set(comb()); };
         const mode = v.select('', [{ value: 'full', label: 'three independent columns' }, { value: 'r2', label: 'rank 2: $a_3 = 0.6a_1 - 0.5a_2$' }], 'full', {
@@ -48,13 +48,11 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
           sc.begin();
           if (rank === 2) {
             const { U } = M.svd(A);
-            sc.disc(U.map((r) => r[0]), U.map((r) => r[1]), 2.3, { fill: 'green', color: 'green', fillAlpha: 0.1, grid: true });
+            sc.disc(U.map((r) => r[0]), U.map((r) => r[1]), 1.9, { fill: 'green', color: 'green', fillAlpha: 0.1, grid: true });
           }
           cols.forEach((c, k) => sc.arrow([0, 0, 0], c, { color: CC[k], width: 1.6, alpha: 0.4 }));
           cols.forEach((c, k) => {
             if (Math.hypot(...scl(c, x[k])) > 1e-3) sc.arrow(pts[k], pts[k + 1], { color: CC[k], width: 3.4 });
-            const mid = add(pts[k], scl(c, x[k] / 2));
-            sc.tex(`x_${k + 1}a_${k + 1}`, add(mid, [0.08, 0.08, 0.08]), { color: CC[k], size: 13 });
           });
           sc.line([0, 0, 0], Ax, { color: 'gold', width: 0.8, dash: true });
           sc.arrow([0, 0, 0], Ax, { color: 'gold', width: 4 });
@@ -117,8 +115,8 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
           R.arrow(0, 0, Qu[0], Qu[1], { color: 'gold', width: 2.6 }); R.arrow(0, 0, Qw[0], Qw[1], { color: 'orange', width: 2.6 });
           if (len(Qu) > 0.05 && len(Qw) > 0.05) R.path(arcPts(Qu, Qw, 0.45), { color: 'ink', width: 1.6 });
           R.tex('Qu', Qu[0], Qu[1], { color: 'gold', size: 14, dx: 12, dy: -12 }); R.tex('Qw', Qw[0], Qw[1], { color: 'orange', size: 14, dx: 12, dy: -12 });
-          T.text('Q^T Q', 0.55, 1.42, { math: true, align: 'center', size: 14, color: 'muted' });
-          T.text('Q^T Q − I', 1.65, 1.42, { math: true, align: 'center', size: 14, color: 'muted' });
+          T.tex('Q^{\\top}Q', 0.55, 1.42, { size: 15, color: 'muted' });
+          T.tex('Q^{\\top}Q - I', 1.65, 1.42, { size: 15, color: 'muted' });
           drawTile(T, G, 0.05, 0.3, 1.0, 1.0, { frame: ok ? 'green' : 'red' });
           drawTile(T, Dm, 1.15, 0.3, 1.0, 1.0, { frame: ok ? 'green' : 'red' });
           T.text(ok ? 'columns orthonormal' : 'columns not orthonormal', 1.1, 0.12, { align: 'center', size: 13, color: ok ? 'green' : 'red', weight: 700 });
@@ -159,7 +157,7 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
           if (np > 1e-6) B.path(spherePts(p).map((q) => scl(q, np)), { color: 'gold', width: 1.2, dash: [3, 3] });
           B.arrow(0, 0, x[0], x[1], { color: 'gold', width: 2.6 });
           if (!isNorm) { B.arrow(0, 0, 1, 0, { color: 'red', width: 1.8 }); B.arrow(1, 0, 1, 1, { color: 'red', width: 1.8 }); B.dot(1, 1, { color: 'red', r: 4 }); }
-          B.corner(isNorm ? `‖·‖${p === Infinity ? '∞' : 'ₚ'} is a norm: the ball is convex` : 'p < 1: not convex, not a norm', 'tl', { color: isNorm ? 'muted' : 'red', weight: 700 });
+          B.corner(isNorm ? `‖·‖${p === Infinity ? '∞' : 'ₚ'} is a norm: the ball is convex` : 'p < 1: not convex, not a norm', 'bl', { color: isNorm ? 'muted' : 'red', weight: 700, plate: true });
           // right panel
           F.fn((q) => pnorm(x, q), { color: 'accent', width: 2.4, domain: [0.25, 60], n: 240 });
           F.hline(ni, { color: 'green', dash: [5, 4], width: 1.4 });
@@ -259,7 +257,7 @@ The induced norms $\|\cdot\|_1$ and $\|\cdot\|_\infty$ do **not** have this inva
           E.path(ellPts(Bm), { color: 'orange', width: 2.2, dash: [6, 4] });
           E.arrow(0, 0, H.h1.x, H.h1.y, { color: 'blue', width: 2 }); E.arrow(0, 0, H.h2.x, H.h2.y, { color: 'blue', width: 2 });
           // bars
-          const labs = ['‖·‖₁', '‖·‖₂', '‖·‖_F', '‖·‖∞'], ymax = Math.max(1, ...nA, ...nB) * 1.12, sy = 3.0 / ymax;
+          const labs = ['\\|\\cdot\\|_1', '\\|\\cdot\\|_2', '\\|\\cdot\\|_F', '\\|\\cdot\\|_\\infty'], ymax = Math.max(1, ...nA, ...nB) * 1.12, sy = 3.0 / ymax;
           labs.forEach((lb, i) => {
             const x0 = 0.35 + i * 1.02;
             const inv = i === 1 || i === 2;
@@ -267,7 +265,7 @@ The induced norms $\|\cdot\|_1$ and $\|\cdot\|_\infty$ do **not** have this inva
             Nb.rect(x0 + 0.42, 0.4, x0 + 0.82, 0.4 + nB[i] * sy, { fill: 'orange', fillAlpha: 0.55, stroke: false });
             Nb.text(nmc(nA[i], 2), x0 + 0.2, 0.4 + nA[i] * sy + 0.14, { size: 11, align: 'center', color: 'blue' });
             Nb.text(nmc(nB[i], 2), x0 + 0.62, 0.4 + nB[i] * sy + 0.14, { size: 11, align: 'center', color: 'orange' });
-            Nb.text(lb, x0 + 0.41, 0.17, { size: 12.5, align: 'center', color: inv ? 'green' : 'muted', weight: inv ? 700 : 400 });
+            Nb.tex(lb, x0 + 0.41, 0.17, { size: 14, color: inv ? 'green' : 'muted' });
           });
           Nb.line(0.2, 0.4, 4.3, 0.4, { color: 'faint', width: 1 });
           drawTile(Tl, A, 0.1, 0.5, 1.9, 1.9, { frame: 'blue' });

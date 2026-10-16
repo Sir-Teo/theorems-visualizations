@@ -41,7 +41,7 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model' },
       viz(v) {
         const M = v.M;
-        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'cd', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } } });
+        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'cd', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } if (k === 'ces') aS.set(0.25); if (k === 'cd') aS.set(0.33); } });
         const sS = v.slider('saving rate s', 0.05, 0.6, 0.25, { step: 0.005 });
         const nS = v.slider('labour growth n', 0.005, 0.08, 0.03, { step: 0.001 });
         const aS = v.slider('a (capital exponent / weight)', 0.1, 0.9, 0.33, { step: 0.01 });
@@ -60,7 +60,7 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
           if (key === 'hd') rmax = Math.max(8, 3 * 3 * 1.6);
           if (key === 'ces') { const D = n - s * a * a; rmax = D > 0 ? 1.6 * ((2 * s * a + Math.sqrt(4 * s * s * a * a + 4 * s * D)) / (2 * D)) ** 2 : 60; }
           if (key === 'multi') rmax = 50;
-          rmax = Math.min(rmax, 400);
+          rmax = Math.min(rmax, 2000);
           for (let i = 1; i <= 2000; i++) { const r0 = (rmax * (i - 1)) / 2000, r1 = (rmax * i) / 2000; if (g(r0 + 1e-9) * g(r1) < 0) xs.push(M.bisect(g, r0 + 1e-9, r1)); }
           const ymax = Math.max(s * F(rmax, a), n * rmax) * 1.08;
           P.setView([0, rmax], [0, ymax]);
@@ -72,7 +72,7 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
             const stable = g(r - 1e-3 * rmax) > 0 && g(r + 1e-3 * rmax) < 0;
             P.vline(r, { color: 'faint', width: 1, dash: [3, 3] });
             P.dot(r, n * r, { r: 6, color: stable ? 'gold' : 'ink', hollow: !stable });
-            P.text(stable ? `r* = ${v.fix(r, 2)}` : `unstable ${v.fix(r, 2)}`, r, n * r, { dx: 8, dy: 14, align: 'left', size: 11.5, color: stable ? 'gold' : 'muted', weight: 700 });
+            P.text(stable ? `r* = ${v.fix(r, 2)}` : `unstable ${v.fix(r, 2)}`, r, n * r, { dx: stable ? 8 : -8, dy: stable ? 14 : -12, align: stable ? 'left' : 'right', size: 11.5, color: stable ? 'gold' : 'muted', weight: 700 });
           }
           P.text('s F(r, 1)', rmax * 0.97, s * F(rmax * 0.97, a), { dy: -8, align: 'right', size: 12, color: 'green', weight: 700 });
           P.text('n r', rmax * 0.97, n * rmax * 0.97, { dy: 14, align: 'right', size: 12, color: 'red', weight: 700 });
