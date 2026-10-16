@@ -36,7 +36,9 @@ Scope: this is the "who regulates whom" skeleton; it ignores the signals (small 
         const fflEdges = new Set(), fflNodes = new Set();
         for (const [x, y, z] of ffls) { fflNodes.add(ids[x]); fflNodes.add(ids[y]); fflNodes.add(ids[z]); fflEdges.add(ids[x] + '>' + ids[y]); fflEdges.add(ids[y] + '>' + ids[z]); fflEdges.add(ids[x] + '>' + ids[z]); }
         s.onClick((x, y) => { const h = G.hitNode(x, y); if (h) { sel = h.id; v.invalidate(); } });
+        let laid = false;
         v.render(() => {
+          if (!laid) { laid = true; G.layout('force', { seed: 11, restarts: 8, iterations: 400 }); }
           const outs = new Set(G.edges.filter((e) => e.from === sel && e.to !== sel).map((e) => e.to));
           const ins = new Set(G.edges.filter((e) => e.to === sel && e.from !== sel).map((e) => e.from));
           const dimN = G.nodes.filter((n) => n.id !== sel && !outs.has(n.id) && !ins.has(n.id)).map((n) => n.id);
@@ -110,8 +112,8 @@ At the same $K$ the two curves are mirror images, $\beta_{\rm act}(x) = \beta_{\
           P.dot(x, act(x), { r: 6, color: 'green' });
           P.dot(xm, rep(xm), { r: 6, color: 'red' });
           P.dot(x, rep(x), { r: 5, color: 'red', hollow: true });
-          P.tex(String.raw`\text{activator}`, 0.3, act(0.3) + 0.0, { color: 'green', dy: -14 });
-          P.tex(String.raw`\text{repressor}`, 0.3, rep(0.3), { color: 'red', dy: -14 });
+          P.tex(String.raw`\text{activator}`, 14, act(14), { color: 'green', dy: 18 });
+          P.tex(String.raw`\text{repressor}`, 0.07, rep(0.07), { color: 'red', dy: 18 });
           P.text('x = K', 1, 0.04, { size: 11, color: 'muted', dx: 14, baseline: 'bottom' });
         });
         v.legend([['green', 'activator'], ['red', 'repressor'], ['gold', 'mirror pair x ↔ K²/x', { dash: true }]]);
@@ -207,7 +209,7 @@ Real promoters need not be pure gates: the *lac* promoter of *E. coli*, driven b
         S.onClick((x, y) => { pt = { x, y }; v.invalidate(); });
         v.render(() => {
           const g = gate.value;
-          S.heat((x, y) => F(x, y, g), { range: [0, 1], cmap: 'viridis', res: 110, key: g });
+          S.heat((x, y) => F(x, y, g), { range: [0, 1], cmap: 'viridis', res: 220, key: g });
           S.contour((x, y) => F(x, y, g), [theta.value], { color: 'ink', width: 2.4 });
           S.vline(KX, { color: 'faint', dash: true }); S.hline(KY, { color: 'faint', dash: true });
           S.dot(pt.x, pt.y, { r: 7, color: 'gold' });
@@ -246,7 +248,7 @@ the level relaxes exponentially to the steady state $p_{\rm st}=\beta/\alpha$. T
         const sched = v.select('production', [{ value: 'on', label: 'on from $t=0$' }, { value: 'off', label: 'on, then off' }, { value: 'pulse', label: 'pulsed' }], 'on');
         const lb = v.slider('production rate $\\beta$ (molecules / min)', 0.1, 30, 4, { log: true, sig: 2, step: 0.01 });
         const Td = v.slider('doubling time (min)', 20, 180, 60, { step: 1 });
-        const tcur = v.slider('time cursor $t$ (min)', 0, 1, 0.35, { step: 0.001, fmt: () => '' });
+        const tcur = v.slider('time cursor $t$', 0, 1, 0.35, { step: 0.001, fmt: () => '' });
         const cells = v.toggle('show 6 Gillespie cells', true);
         const B = v.button('new random cells', () => { seed += 1; });
         let seed = 7;
@@ -288,7 +290,7 @@ the level relaxes exponentially to the steady state $p_{\rm st}=\beta/\alpha$. T
         v.legend([['accent', 'ODE solution (exact)'], ['ink', 'RK4', { dot: true }], ['gold', 'Gillespie cells'], ['green', 'production β / steady state'], ['red', 'removal αp']]);
         v.readout(() => {
           const T = Td.value, a = LN2 / T, b = lb.value, pst = b / a;
-          return `$\\alpha=\\ln2/T_{\\rm div}=${v.fix(a, 4)}\\,\\text{min}^{-1}$, steady state $\\beta/\\alpha = ${v.fix(pst, 1)}$ molecules (Poisson spread ±${v.fix(Math.sqrt(pst), 1)}); half-time of approach $\\ln2/\\alpha=${v.fix(T, 0)}$ min. Max |exact − RK4| = ${v.sci(cache.err ?? 0, 2)} molecules. Doubling it: halving $\\beta$ halves the plateau but not the speed.`;
+          return `$\\alpha=\\ln2/T_{\\rm div}=${v.fix(a, 4)}\\,\\text{min}^{-1}$, steady state $\\beta/\\alpha = ${v.fix(pst, 1)}$ molecules (Poisson spread ±${v.fix(Math.sqrt(pst), 1)}); half-time of approach $\\ln2/\\alpha=${v.fix(T, 0)}$ min. Max |exact − RK4| = $${v.sci(cache.err ?? 0, 2)}$ molecules. Halving $\\beta$ halves the plateau but not the speed.`;
         });
       },
     },
@@ -311,7 +313,7 @@ independent of the production rate $\beta$ and of the steady state. If $\alpha$ 
         const dir = v.select('switch', [{ value: 'on', label: 'production ON' }, { value: 'off', label: 'production OFF' }], 'on');
         const delay = v.toggle('upstream gene still rising (breaks the theorem)', false);
         const lu = v.slider('upstream removal rate $\\alpha_u$ (min$^{-1}$)', 0.005, 0.5, 0.03, { log: true, sig: 2, step: 0.001 });
-        const S1 = v.stage({ x: [0, 300], y: [0, 4.4], axes: 'box', gutter: true, height: 320, weight: 1.25, minWidth: 300, xlabel: 'time since switch (min)', ylabel: 'protein level (relative to β₁/α)' });
+        const S1 = v.stage({ x: [0, 300], y: [0, 4.4], axes: 'box', gutter: true, height: 320, weight: 1.25, minWidth: 300, xlabel: 'time since switch (min)', ylabel: 'protein level (β₁ = 1 per min)' });
         const S2 = v.stage({ x: [10, 200], xlog: true, y: [10, 200], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 260, xlabel: 'doubling time (min)', ylabel: 'T½ (min)' });
         const BET = [1, 2, 4], COL = ['blue', 'teal', 'purple'];
         const halfTime = (T, k, mode, useDelay) => {
@@ -337,8 +339,8 @@ independent of the production rate $\beta$ and of the steady state. If $\alpha$ 
           // log-log
           S2.fn((x) => x, { color: 'green', dash: true, width: 2 });
           for (const t of [40, 63.5]) { S2.vline(t, { color: 'faint', dash: true }); }
-          S2.text('40 min (B/r, glucose)', 40, 12, { size: 10, color: 'muted', dx: -4, align: 'right' });
-          S2.text('63.5 min (MG1655, MOPS)', 63.5, 17, { size: 10, color: 'muted', dx: 4, align: 'left' });
+          S2.text('B/r 40 min', 40, 12, { size: 10, color: 'muted', dx: -4, align: 'right' });
+          S2.text('MG1655 63.5 min', 63.5, 12, { size: 10, color: 'muted', dx: 4, align: 'left' });
           const pts = []; for (let j = 0; j <= 10; j++) { const t = 12 * (190 / 12) ** (j / 10); pts.push([t, halfTime(t, 2, mode, d).t]); }
           S2.dots(pts, { r: 4, color: 'gold' });
           S2.dot(T, halfTime(T, 1, mode, d).t, { r: 7, color: 'accent' });

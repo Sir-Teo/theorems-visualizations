@@ -272,7 +272,7 @@ Take $A$ to be any $\mathrm{PSPACE}$-complete language (e.g. TQBF); then $\mathr
             SB.text('Final tally', 5, 6.7, { align: 'center', size: 14, weight: 700 });
             stageInfo.forEach((s, i) => {
               SB.text(`$M_${i + 1}$ at $n_${i + 1}=${s.n}$: ${OUT[i] ? 'accepts' : 'rejects'}`, 0.4, 5.5 - i * 1.25, { size: 13, weight: 600 });
-              SB.text(`${s.plant ? 'string planted' : 'row left empty'} → $1^{${s.n}}\\${s.plant ? 'in' : 'notin'}L_B$ → ${OUT[i] ? 'M says yes, truth no' : 'M says no, truth yes'} ✓`, 0.4, 5.5 - i * 1.25 - 0.55, { size: 12, color: 'green' });
+              SB.text(`${s.plant ? 'string planted' : 'row left empty'} → $1^{${s.n}}${s.plant ? '\\in' : '\\notin'} L_B$ → ${OUT[i] ? 'M says yes, truth no' : 'M says no, truth yes'} ✓`, 0.4, 5.5 - i * 1.25 - 0.55, { size: 12, color: 'green' });
             });
           } else {
             SB.setView([-0.5, C + 0.5], [-2.2, R + 0.5]);

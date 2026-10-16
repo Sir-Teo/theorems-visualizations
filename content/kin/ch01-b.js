@@ -72,6 +72,7 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
       tags: ['initial rates', 'log–log'],
       credit: 'Initial-rate method: van\'t Hoff, 1884',
       viz(v) {
+        const sciTxt = (x) => { const e = Math.floor(Math.log10(x)), m = x / Math.pow(10, e); return `${v.fix(m, 2)}×10${v.M.pow10Text(e).slice(2)}`; };
         const dsel = v.select('data', [{ value: 'virt', label: 'virtual experiments' }, { value: 'real', label: '2NO + 2H₂ at 1280 °C (textbook)' }], 'virt');
         const mT = v.slider('true order in A', 0, 3, 1.5, { step: 0.5 });
         const nT = v.slider('true order in B', 0, 3, 1, { step: 0.5 });
@@ -123,7 +124,7 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
             const D = DATA.noh2;
             s1.text('textbook runs (1280 °C):', 0.02, 0.95, { color: 'muted', size: 12 });
             [0, 1, 2].forEach((i) => { const y = 0.8 - 0.22 * i, on = i === clamp(ex.value - 1, 0, 2); if (on) s1.rect(0.01, y - 0.09, 0.99, y + 0.09, { fill: 'gold', fillAlpha: 0.15, stroke: false });
-              s1.text(`run ${i + 1}:  [NO]₀=${D.no[i]}  [H₂]₀=${D.h2[i]}  v₀=${v.sci(D.rate[i], 3).replace(/\\times/g, '×').replace(/\^\{(-?\d+)\}/, '^$1')}`.replace(/10\^(-?\d+)/, (m, e) => '10' + v.M.pow10Text(+e).slice(2)), 0.02, y, { size: 12.5, color: 'ink' }); });
+              s1.text(`run ${i + 1}:  [NO]₀=${D.no[i]}  [H₂]₀=${D.h2[i]}  v₀=${sciTxt(D.rate[i])} M/s`, 0.02, y, { size: 12.5, color: 'ink' }); });
             s1.text('doubling [NO]: rate ×4;  doubling [H₂]: rate ×2', 0.02, 0.12, { size: 12.5, color: 'green', weight: 600 });
             hl = null;
           } else {
@@ -134,8 +135,6 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
             s1.corner(`window = ${v.fix(win.value * 100, 0)}% conversion`, 'br', { color: 'muted' });
             hl = q;
           }
-          // k estimate
-          const kEst = real ? null : null;
           info = { fA, fB, real, q };
         });
         v.legend([['ink', 'measured initial rates', { dot: true }], ['accent', 'fit vs [A]'], ['orange', 'fit vs [B]']]);
@@ -348,7 +347,7 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
         const names = ['kAB', 'kBA', 'kBC', 'kCB', 'kCA', 'kAC'];
         const labs = ['$k_{AB}$', '$k_{BA}$', '$k_{BC}$', '$k_{CB}$', '$k_{CA}$', '$k_{AC}$'];
         const def = [4, 1, 4, 1, 4, 1];
-        const kS = names.map((n, i) => v.slider(labs[i] + ' (A→B→C→A is "forward")'.slice(0, 0), 0.1, 10, def[i], { log: true }));
+        const kS = names.map((n, i) => v.slider(labs[i], 0.1, 10, def[i], { log: true }));
         const eS = ['A', 'B', 'C'].map((n, i) => v.slider(`well energy $G_${n}$ (kJ/mol)`, -10, 10, [0, 3, -2][i], { step: 0.5 }));
         const bS = ['AB', 'BC', 'CA'].map((n, i) => v.slider(`barrier top $G^\\ddagger_{${n}}$ (kJ/mol)`, 8, 25, [14, 17, 12][i], { step: 0.5 }));
         const RT = 2.4790; // kJ/mol at 298.15 K
@@ -385,7 +384,7 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
           });
           ['A', 'B', 'C'].forEach((nm, i) => { st.dot(P[i][0], P[i][1], { r: 14 + 34 * p[i], color: 'teal' }); st.text(nm, P[i][0], P[i][1], { size: 15, color: 'ink', weight: 700, align: 'center', baseline: 'middle' }); });
           // circulating dots: speed proportional to the net cycle flux
-          const per = 3, u0 = (v.t || 0) * 0.9 * J / (J === 0 ? 1 : Math.max(Math.abs(J), 1e-9)) * Math.tanh(Math.abs(J) * 6) * (J < 0 ? -1 : 1) * 0.5;
+          const per = 3, u0 = (v.t || 0) * 0.8 * Math.sign(J) * Math.tanh(6 * Math.abs(J) / fmax);
           for (let q = 0; q < 12; q++) {
             const u = (((u0 + q * per / 12) % per) + per) % per, e = Math.floor(u), f = u - e, a = P[e], b = P[(e + 1) % 3];
             if (Math.abs(J) > 1e-3 * fmax) st.dot(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, { r: 3.5, color: 'gold' });
@@ -406,7 +405,7 @@ equivalently that $\ln(K)$ is path-independent: the equilibrium constants multip
         v.readout(() => {
           if (!info) return '';
           const { Gam, J, p, gap } = info, sig = J * Math.log(Gam);
-          return `$\\Gamma=\\dfrac{k_{AB}k_{BC}k_{CA}}{k_{BA}k_{CB}k_{AC}}=${v.fix(Gam, 4)}$ ${Math.abs(Gam - 1) < 1e-6 ? '(= 1: detailed balance)' : '(≠ 1: **violated**)'} · steady state $p=(${p.map((x) => v.fix(x, 3)).join(', ')})$ · cycle flux $J=${nice(v, J, 3)}$ · entropy production $J\\ln\\Gamma=${nice(v, sig, 3)}\\ \\ (\\ge0)$ · free energy gained per circuit $-RT\\ln\\Gamma=${v.fix(-gap * -1, 2)}$ kJ/mol`.replace(/-RT\\ln\\Gamma=-?[\d.]+/, `-RT\\ln\\Gamma=${v.fix(-2.479 * Math.log(Gam) * -1 * -1, 2)}`);
+          return `$\\Gamma=\\dfrac{k_{AB}k_{BC}k_{CA}}{k_{BA}k_{CB}k_{AC}}=${v.fix(Gam, 4)}$ ${Math.abs(Gam - 1) < 1e-6 ? '(= 1: detailed balance)' : '(≠ 1: **violated**)'} · steady state $p=(${p.map((x) => v.fix(x, 3)).join(', ')})$ · cycle flux $J=${nice(v, J, 3)}$ · entropy production $J\\ln\\Gamma=${nice(v, sig, 3)}\\ \\ (\\ge0)$ · free energy gained per circuit $-RT\\ln\\Gamma=${v.fix(gap, 2)}$ kJ/mol`;
         });
       },
     },
