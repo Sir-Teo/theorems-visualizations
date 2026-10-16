@@ -85,7 +85,7 @@ export function gridShapes(n = 8) {
 export function luteCurves() {
   const W = (s) => Math.max(0.085, 0.4 * Math.sqrt(Math.max(0, Math.sin(Math.PI * Math.pow(s, 0.78)))));
   const C = [];
-  for (let k = -6; k <= 6; k++) {
+  for (let k = -6; k <= 6; k += 2) {
     const a = (k / 6) * (Math.PI / 2);
     const line = [];
     for (let i = 0; i <= 28; i++) { const s = i / 28; line.push([W(s) * Math.sin(a), s, 0.5 * W(s) * Math.cos(a)]); }
@@ -97,6 +97,9 @@ export function luteCurves() {
     for (let i = 0; i <= 16; i++) { const a = -Math.PI / 2 + (Math.PI * i) / 16; line.push([W(s) * Math.sin(a), s, 0.5 * W(s) * Math.cos(a)]); }
     C.push(line);
   }
+  // rose and bridge on the soundboard
+  const rose = []; for (let i = 0; i <= 24; i++) { const a = (2 * Math.PI * i) / 24; rose.push([0.12 * Math.cos(a), 0.5 + 0.12 * Math.sin(a), 0]); }
+  C.push(rose, [[-0.14, 0.17, 0], [0.14, 0.17, 0]]);
   // neck, strings, pegbox
   C.push([[-0.07, 1.0, 0], [-0.07, 1.6, 0]], [[0.07, 1.0, 0], [0.07, 1.6, 0]]);
   for (const t of [-0.04, 0, 0.04]) C.push([[t * 0.8, 0.2, 0.05], [t * 0.8, 1.6, 0.05]]);
@@ -106,11 +109,11 @@ export function luteCurves() {
 }
 
 /** Place local points: rotate by pitch (about the t axis) and yaw (about vertical), scale, and move to centre c. */
-export function placeLocal(P, c, { yaw = 0, pitch = 0, scale = 1 } = {}) {
+export function placeLocal(P, c, { yaw = 0, pitch = 0, scale = 1, belly = -1 } = {}) {
   const cp = Math.cos(pitch), sp = Math.sin(pitch), cy = Math.cos(yaw), sy = Math.sin(yaw);
   // local (t, s, w): s is along the neck (starts pointing along +z up), w is the bulge towards the viewer (-y)
   const [t, s, w] = P;
-  const x0 = t, y0 = -w, z0 = s; // untilted: neck up, belly toward -y
+  const x0 = t, y0 = belly * w, z0 = s; // untilted: neck up, belly toward -y
   // tilt about the t axis by `pitch`: neck leans away from the viewer
   const y1 = y0 * cp + z0 * sp, z1 = -y0 * sp + z0 * cp;
   return [c[0] + scale * (x0 * cy + y1 * sy), c[1] + scale * (-x0 * sy + y1 * cy), c[2] + scale * z1];
