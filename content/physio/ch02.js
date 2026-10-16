@@ -1,8 +1,7 @@
 // Human Physiology — Chapter 2: Excitable cells and muscle (part a: 2.1–2.6)
-import { clamp, rk4, trace, idxAt, at, peaks, HH, hhRun, GDB, gdbRHS, gdbRun, EC, ecRun, HUX, huxF, huxG, huxSolve, hillV, hillF, hillFopt, flowDots } from './ch02.shared.js';
+import { clamp, trace, idxAt, at, peaks, HH, hhRun, GDB, gdbRHS, gdbRun, ecRun, HUX, huxF, huxG, huxSolve, hillV, hillF, hillFopt } from './ch02.shared.js';
 
 // ---------- helpers for this file ----------
-const rampT = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
 
 /** HH threshold: smallest 1 ms pulse (µA/cm²) that makes the spike overshoot 0 mV; null if none up to 60. */
 function hhThreshold(Tc, gNaScale, gKScale) {
@@ -44,11 +43,16 @@ function sarcHeads(SL) {
   }
   return heads;
 }
-/** Active force (fraction of the plateau) from head counting, with the empirical fall below 1.65 µm. */
+/** Active force (fraction of the plateau): the length of bridge zone reached by exactly one thin filament, with the empirical fall below 1.65 µm. */
 function sarcForce(SL) {
-  const hs = sarcHeads(SL), on = hs.filter((h) => h.st === 'on').length / hs.length;
-  const zdisc = SL >= 1.6 ? 1 : clamp((SL - 1.27) / 0.33, 0, 1);
-  return on * zdisc;
+  const half = SARC.thick / 2, zone = SARC.thick / 2 - SARC.bare / 2, ov = (A, B) => [Math.max(A[0], B[0]), Math.min(A[1], B[1])], len = (A) => Math.max(0, A[1] - A[0]);
+  let on = 0;
+  for (const side of [-1, 1]) {
+    const Zn = side < 0 ? [SL / 2 - half, SL / 2 - SARC.bare / 2] : [SL / 2 + SARC.bare / 2, SL / 2 + half];
+    const own = side < 0 ? [0, SARC.thin] : [SL - SARC.thin, SL], oth = side < 0 ? [SL - SARC.thin, SL] : [0, SARC.thin];
+    const o = ov(Zn, own); on += len(o) - len(ov(o, oth));
+  }
+  return (on / (2 * zone)) * (SL >= 1.6 ? 1 : clamp((SL - 1.27) / 0.33, 0, 1));
 }
 
 export default {
@@ -107,8 +111,8 @@ export default {
           trace(sv, R.t, R.V, { color: 'accent', width: 2.4 });
           trace(sg, R.t, R.gNa, { color: 'orange', width: 2.4 });
           trace(sg, R.t, R.gK, { color: 'purple', width: 2.4 });
-          sg.text('g_Na', 0.4, 38, { size: 12, color: 'orange', align: 'left', weight: 700 });
-          sg.text('g_K', 1.8, 38, { size: 12, color: 'purple', align: 'left', weight: 700 });
+          sg.text('g_Na', 2.35, 33, { size: 12, color: 'orange', align: 'left', weight: 700 });
+          sg.text('g_K', 5.2, 11, { size: 12, color: 'purple', align: 'left', weight: 700 });
         });
         v.legend([['accent', 'membrane voltage'], ['orange', '$g_{\\mathrm{Na}}$'], ['purple', '$g_{\\mathrm K}$'], ['gold', 'time of peak $g_{\\mathrm{Na}}$ (solid), $g_{\\mathrm K}$ (dashed)']]);
         v.readout(() => {
@@ -128,7 +132,7 @@ export default {
 $$\dot Z = v_0 + v_1\beta - v_2(Z) + v_3(Z,Y) + k_f Y - kZ,\qquad \dot Y = v_2(Z) - v_3(Z,Y) - k_f Y,$$
 with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_R^2+Y^2}\frac{Z^4}{K_A^4+Z^4}$, has for intermediate agonist levels $\beta$ no stable rest state: $Z$ spikes periodically. The **frequency** of the spikes rises steeply with $\beta$, while their **amplitude** stays roughly constant, so the cell encodes the dose of agonist as a frequency.`,
       idea: String.raw`CICR supplies the fast positive feedback, the term $Z^4/(K_A^4+Z^4)$, and so makes the cytosol excitable like the sodium channel of 2.1. Recovery comes from the store running down: after a spike the store is depleted (small $Y$, small release), uptake by the pump $v_2$ refills it, and the next spike can fire. A steady influx $v_0 + v_1\beta$ sets how fast the store refills, which is why the period shrinks as $\beta$ grows. This is a relaxation oscillator (a limit cycle of a planar system, mathbio-6.6): a fast variable with a sigmoidal nullcline and a slow variable that resets it. Too little stimulation leaves the system on a low, stable fixed point. Too much gives a high one at which the store is permanently half empty.`,
-      caption: String.raw`**Top**: cytosolic calcium for the chosen stimulus $\beta$. **Left below**: the same trajectory in the $(Z, Y)$ plane with the nullclines $\dot Z = 0$ (orange) and $\dot Y = 0$ (purple). A limit cycle exists when they cross on the unstable middle branch of the orange curve. **Right**: frequency and peak height of the oscillation for every $\beta$ (the white dot is your setting). Sweep $\beta$ from 0.3 to 0.7: the frequency rises several-fold while the peaks barely change. Switch **CICR feedback** off and the oscillations vanish.`,
+      caption: String.raw`**Top**: cytosolic calcium for the chosen stimulus $\beta$. **Left below**: the same trajectory in the $(Z, Y)$ plane with the nullclines $\dot Z = 0$ (orange) and $\dot Y = 0$ (purple). A limit cycle appears when their crossing point is unstable, and the trajectory then circles it. **Right**: frequency and peak height of the oscillation for every $\beta$ (the gold dot is your setting). Sweep $\beta$ from 0.3 to 0.7: the frequency rises several-fold while the peaks barely change. Switch **CICR feedback** off and the oscillations vanish.`,
       scope: String.raw`A deterministic lumped model of one cell (Goldbeter, Dupont & Berridge 1990). Real calcium signals are also spatial: waves, sparks and puffs from clusters of channels, which need a reaction–diffusion description.`,
       deps: ['physio-2.1', 'mathbio-6.6'],
       see: ['physio-2.3', 'mathbio-6.6'],
@@ -139,9 +143,9 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
       viz(v) {
         const beta = v.slider('agonist level $\\beta$', 0, 1, 0.5, { step: 0.01 });
         const cicr = v.toggle('CICR feedback (release activated by Ca²⁺)', true);
-        const st = v.stage({ x: [0, 30], y: [0, 1.6], height: 220, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'cytosolic Ca²⁺ (µM)', full: true });
+        const st = v.stage({ x: [0, 15], y: [0, 1.6], height: 220, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'cytosolic Ca²⁺ (µM)', full: true });
         const sp = v.stage({ x: [0, 1.6], y: [0.3, 2.6], height: 290, axes: 'box', gutter: true, xlabel: 'cytosolic Ca²⁺  Z (µM)', ylabel: 'store Ca²⁺  Y (µM)', weight: 1.1 });
-        const sf = v.stage({ x: [0, 1], y: [0, 150], height: 140, axes: 'box', gutter: true, ylabel: 'spikes / min', weight: 1, minWidth: 220 });
+        const sf = v.stage({ x: [0, 1], y: [0, 170], height: 140, axes: 'box', gutter: true, ylabel: 'spikes / min', weight: 1, minWidth: 220 });
         const sa = v.stage({ x: [0, 1], y: [0, 1.6], height: 140, axes: 'box', gutter: true, xlabel: 'agonist level β', ylabel: 'peak Ca²⁺ (µM)', weight: 1, minWidth: 220 });
         let key = '', R = null;
         const P = () => (cicr.value ? GDB : { ...GDB, VM3: 0 });
@@ -150,7 +154,7 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
           const r = get(), p = P();
           st.hband(0.1, 0.1, { color: 'faint' });
           trace(st, r.t, r.Z, { color: 'accent', width: 2.2 });
-          st.text('resting level ~0.1 µM', 29.7, 0.1, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
+          st.text('resting level ~0.1 µM', 14.85, 0.1, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
           // phase plane
           sp.contour((Z, Y) => gdbRHS(Z, Y, beta.value, p).dZ, [0], { color: 'orange', width: 2, res: 160 });
           sp.contour((Z, Y) => gdbRHS(Z, Y, beta.value, p).dY, [0], { color: 'purple', width: 2, res: 160 });
@@ -166,7 +170,7 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
           const osc = T.filter((q) => q.osc);
           sf.path(osc.map((q) => [q.beta, q.freq]), { color: 'green', width: 2 });
           sa.path(osc.map((q) => [q.beta, q.amp]), { color: 'green', width: 2 });
-          sa.text('steady below and above', 0.5, 0.3, { size: 10.5, color: 'muted', align: 'center' });
+          sa.text('steady outside', 0.82, 0.25, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom' });
           const cur = osc.length ? osc.reduce((a, q) => (Math.abs(q.beta - beta.value) < Math.abs(a.beta - beta.value) ? q : a)) : null;
           if (cicr.value && cur && Math.abs(cur.beta - beta.value) < 0.016) { sf.dot(cur.beta, cur.freq, { r: 5, color: 'gold' }); sa.dot(cur.beta, cur.amp, { r: 5, color: 'gold' }); }
         });
@@ -228,14 +232,14 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
               sc.rect(Math.min(x0, x1), 2.8, Math.max(x0, x1), 4.3, { fill: 'teal', fillAlpha: 0.12 + 0.2 * clamp(C / 9, 0, 1), color: 'teal', width: 1.5, radius: 6 });
               // DHPR on the tubule, RyR foot on the SR
               const open = s > 0.5 && fault.value !== 'ryr';
-              sc.dot(tx + sd * 0.14, 3.55, { r: 4.5, color: fault.value === 'sensor' ? 'red' : s > 0.5 ? 'orange' : 'muted' });
-              sc.dot(tx + sd * 0.25, 3.55, { r: 4.5, color: fault.value === 'ryr' ? 'red' : open ? 'green' : 'muted', hollow: !open });
+              sc.dot(tx + sd * 0.14, 3.95, { r: 4.5, color: fault.value === 'sensor' ? 'red' : s > 0.5 ? 'orange' : 'muted' });
+              sc.dot(tx + sd * 0.25, 3.2, { r: 4.5, color: fault.value === 'ryr' ? 'red' : open ? 'green' : 'muted', hollow: !open });
             }
           }
           sc.text('T-tubule', 3.3, 5.4, { size: 11, color: 'ink', align: 'left', baseline: 'middle' });
           sc.text('SR', 4.4, 4.45, { size: 11, color: 'teal', align: 'left', baseline: 'bottom', weight: 700 });
-          sc.text('DHPR', 1.55, 3.0, { size: 10, color: 'orange', align: 'center' });
-          sc.text('RyR', 4.6, 3.0, { size: 10, color: 'green', align: 'center' });
+          sc.text('DHPR →', 1.75, 3.95, { size: 10, color: 'orange', align: 'right', baseline: 'middle' });
+          sc.text('RyR →', 1.75, 3.2, { size: 10, color: 'green', align: 'right', baseline: 'middle' });
           // myofilaments below
           for (let r = 0; r < 4; r++) {
             const y = 0.55 + r * 0.38, cut = r % 2 ? 0.6 : 0;
@@ -257,7 +261,7 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
             sp.hline(off, { color: 'grid', width: 1 });
             const yy = ys.map((y) => y * 1.05 + off);
             trace(sp, R.t, yy, { color: col, width: 2.2 });
-            sp.text(lab, 79, off + 1.12, { size: 10.5, color: col, align: 'right', baseline: 'bottom' });
+            sp.text(lab, 79, off + 0.8, { size: 10.5, color: col, align: 'right', baseline: 'middle', plate: true });
           }
           sp.vline(T, { color: 'gold', width: 1.4 });
           const frameIdx = idxAt(R.t, T);
@@ -281,8 +285,8 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
 - rising linearly as the length is reduced from $3.6$ to about $2.2\ \mu$m, as more heads meet actin;
 - flat on a plateau near $2.0$–$2.2\ \mu$m, where every head faces a thin filament;
 - falling again below this, because thin filaments from the two halves collide and overlap each other's heads, then because the thick filaments hit the Z-discs.`,
-      idea: String.raw`The reasoning is a count of cross-bridges, the sliding-filament hypothesis of Huxley and Niedergerke and of Huxley and Hanson (1954) put into numbers by Gordon, Huxley and Julian (1966), who measured force in single fibre segments held at a fixed sarcomere length. The picture drawn below does the same counting: each of the 36 head positions on one thick filament is tested for whether it lies within a thin filament that can bind it (green), within two (red, interference), or none (grey). Plot the green fraction against length and the whole curve appears, straight lines meeting at corners that are set by the four lengths of the filaments. The curve does not depend on how force is produced, only on which heads can take part.`,
-      caption: String.raw`Drag the dot on the curve, or the slider, to change the sarcomere length. In the sarcomere drawing (Z-discs at the ends, one thick filament in the middle, thin filaments from either Z-disc) heads are **green** where exactly one thin filament is within reach, **red** where thin filaments from both sides overlap, **grey** where none is. The curve is simply the green fraction of the 36 heads. Stretch the sarcomere beyond $3.6\ \mu$m: no overlap, no force. Shorten it below $2\ \mu$m: the red heads appear.`,
+      idea: String.raw`The reasoning is a count of cross-bridges, the sliding-filament hypothesis of Huxley and Niedergerke and of Huxley and Hanson (1954) put into numbers by Gordon, Huxley and Julian (1966), who measured force in single fibre segments held at a fixed sarcomere length. The picture drawn below does the same counting: each head position on one thick filament is tested for whether it lies within reach of one thin filament (green), of two (red, interference), or of none (grey). Plot the length of green bridge zone against sarcomere length and the whole curve appears, straight lines meeting at corners that are set by the four lengths of the filaments. The curve does not depend on how force is produced, only on which heads can take part.`,
+      caption: String.raw`Drag the dot on the curve, or the slider, to change the sarcomere length. In the sarcomere drawing (Z-discs at the ends, one thick filament in the middle, thin filaments from either Z-disc) heads are **green** where exactly one thin filament is within reach, **red** where thin filaments from both sides overlap, **grey** where none is. The curve is simply the green fraction of the bridge zone. Stretch the sarcomere beyond $3.6\ \mu$m: no overlap, no force. Shorten it below $2\ \mu$m: the red heads appear.`,
       scope: String.raw`Geometric counting for a skeletal sarcomere with the frog filament lengths. The measured plateau starts nearer $2.0$ than the $1.84\ \mu$m of the bare geometry; below $1.65\ \mu$m the fall is steeper than the counting predicts, and the model adds an empirical linear fall to zero at about $1.27\ \mu$m for the thick filaments crumpling against the Z-discs. Cardiac muscle is shorter, stiffer and operates on the ascending limb.`,
       deps: ['physio-2.3'],
       see: ['physio-2.5', 'physio-3.4'],
@@ -293,13 +297,14 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
       viz(v) {
         const SL = v.slider('sarcomere length', 1.2, 3.9, 2.2, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} µm` });
         const ss = v.stage({ x: [-0.15, 3.95], y: [-1.15, 1.15], height: 215, axes: false, full: true });
-        const sc = v.stage({ x: [1, 4], y: [0, 1.15], height: 260, axes: 'box', gutter: true, xlabel: 'sarcomere length (µm)', ylabel: 'active force (fraction of plateau)', full: true, xticks: [1, 1.5, 2, 2.5, 3, 3.5, 4] });
+        const sc = v.stage({ x: [1, 4], y: [0, 1.25], height: 260, axes: 'box', gutter: true, xlabel: 'sarcomere length (µm)', ylabel: 'active force (fraction of plateau)', full: true, xticks: [1, 1.5, 2, 2.5, 3, 3.5, 4] });
         const h = sc.handle(2.2, 1, { color: 'accent', r: 8, constrain: (x) => { const L = clamp(x, 1.2, 3.9); return [L, sarcForce(L)]; } });
         h.onDrag = () => SL.set(clamp(h.x, 1.2, 3.9));
         const curve = []; for (let L = 1.0; L <= 4.0001; L += 0.01) curve.push([L, sarcForce(L)]);
         v.render(() => {
           const L = SL.value, hs = sarcHeads(L), F = sarcForce(L);
           h.set(L, F);
+          ss.setView([-0.2, Math.max(L + 0.2, 2.6)], [-1.15, 1.15]);
           // sarcomere
           ss.rect(-0.02, -1.0, 0.02, 1.0, { fill: 'ink', fillAlpha: 0.7, stroke: false });
           ss.rect(L - 0.02, -1.0, L + 0.02, 1.0, { fill: 'ink', fillAlpha: 0.7, stroke: false });
@@ -312,25 +317,25 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
           ss.line(c - 0.8, 0, c + 0.8, 0, { color: 'ink', width: 9, alpha: 0.28 });
           ss.line(c - 0.08, 0, c + 0.08, 0, { color: 'ink', width: 9, alpha: 0.55 });
           const col = { on: 'green', two: 'red', free: 'faint', jam: 'orange' };
-          for (const hd of hs) {
-            const dir = hd.side;
-            ss.line(hd.x, 0, hd.x + dir * 0.035, dir === -1 ? -0.3 : 0.3, { color: col[hd.st], width: 2.2 });
-          }
-          ss.text('thick filament', c, -0.62, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
+          hs.forEach((hd, i) => {
+            const up = i % 2 ? 1 : -1;
+            ss.line(hd.x, 0, hd.x + hd.side * 0.04, up * 0.3, { color: col[hd.st], width: 2.2 });
+          });
+          ss.text('thick filament (bare zone dark)', c, -0.98, { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' });
           ss.text('thin filaments', 0.5, 0.82, { size: 10.5, color: 'accent', align: 'center', baseline: 'bottom', dy: 10 });
           // curve
           sc.hband(0.98, 1.02, { color: 'green', alpha: 0.0 });
           sc.vline(2.0, { color: 'faint', dash: [3, 4], width: 1 }); sc.vline(2.2, { color: 'faint', dash: [3, 4], width: 1 });
           sc.path(curve, { color: 'ink', width: 2.2 });
           sc.fn((x) => sarcForce(x), { domain: [1, L], fill: true, fillAlpha: 0.12, color: 'accent', width: 0 });
-          sc.dot(2.1, 1.07, { r: 0, label: 'plateau', labelPos: 'n' });
+          sc.text('plateau', 2.1, 1.08, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
           sc.text('no overlap', 3.9, 0.06, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
-          sc.text('heads collide with opposite thin filaments', 1.62, 0.22, { size: 10, color: 'red', align: 'left', baseline: 'bottom' });
+          sc.text('red heads: thin filaments overlap', 1.62, 0.12, { size: 10.5, color: 'red', align: 'left', baseline: 'bottom' });
         });
         v.legend([['green', 'head within reach of one thin filament'], ['red', 'two thin filaments (interference)'], ['faint', 'no thin filament in reach'], ['orange', 'thick filament pushed into the Z-disc']]);
         v.readout(() => {
           const L = SL.value, hs = sarcHeads(L), n = (s) => hs.filter((x) => x.st === s).length;
-          return `$L = ${v.fix(L, 2)}\\ \\mu$m: ${n('on')} of ${hs.length} heads active (green), ${n('two')} doubly covered, ${n('free')} unreached → force $= ${v.fix(sarcForce(L), 2)}$ of the plateau. Zero overlap at $L = ${v.fix(2 * SARC.thin + SARC.thick, 2)}\\ \\mu$m (Gordon et al. measured 3.65 μm).`;
+          return `$L = ${v.fix(L, 2)}\\ \\mu$m: of the ${hs.length} drawn heads ${n('on')} are green, ${n('two')} red, ${n('free')} grey → force $= ${v.fix(sarcForce(L), 2)}$ of the plateau. Zero overlap at $L = ${v.fix(2 * SARC.thin + SARC.thick, 2)}\\ \\mu$m (Gordon et al. measured 3.65 μm).`;
         });
       },
     },
@@ -344,7 +349,7 @@ with uptake $v_2 \propto Z^2/(K_2^2+Z^2)$ and release $v_3 \propto \frac{Y^2}{K_
 $$(F + a)(v + b) = (F_0 + a)\,b,$$
 where $F_0$ is the isometric force (the load at which $v = 0$), $v_{\max} = bF_0/a$ is the speed at zero load, and $a$ (a force) and $b$ (a speed) are constants of the muscle. The ratio $a/F_0$ measures the curvature: about $0.25$ for fast skeletal muscle, smaller (more strongly curved) in slow muscle. The mechanical power $P = Fv$ is zero at both ends and has a single maximum, at $F^* = F_0\bigl(\sqrt{\alpha(1+\alpha)} - \alpha\bigr)$ with $\alpha = a/F_0$, which is about a third of $F_0$ for $\alpha = 0.25$.`,
       idea: String.raw`Hill found the form empirically, from the heat released in a shortening muscle (physio-2.12): the extra energy rate $(F + a)v$ is proportional to the force deficit, $b(F_0 - F)$, and the hyperbola is a rearrangement of that. The shape means a muscle is a poor machine at both extremes: it produces no power when loaded to the maximum and none when unloaded. Cross-bridge kinetics (2.6) reproduces the shape, so $a$ and $b$ are traced back to the rates of attachment and detachment. The maximum of $Fv$ is found by setting $d(Fv)/dF = 0$ on the hyperbola, an algebraic exercise that yields the formula above.`,
-      caption: String.raw`**Drag the dot** along the force–velocity curve (left) to choose the load. The sketch (centre) hangs that load on a muscle fixed at the top, and the muscle shortens at the corresponding speed. The power curve (right) shows the load at which the work rate is largest. Change $a/F_0$ to bend the curve: the smaller it is, the more concave the curve and the lower the peak power, which always lies at the same point on the curve for a given curvature. $F_0$ is the force scale, and $v_{\max}$ is in muscle lengths per second.`,
+      caption: String.raw`**Drag the dot** along the force–velocity curve (left) to choose the load. The sketch (centre) hangs that load on a muscle fixed at the top, and the muscle shortens at the corresponding speed. The power curve (right) shows the load at which the work rate is largest. Change $a/F_0$ to bend the curve: the smaller it is, the more strongly curved the force–velocity relation and the lower the peak power relative to $F_0 v_{\max}$. The best load $F^*/F_0$ moves with the curvature (0.31 at $a/F_0 = 0.25$). $F_0$ is the force scale, and $v_{\max}$ is in muscle lengths per second.`,
       scope: String.raw`Holds for shortening (positive $v$) of an actively tetanized skeletal muscle at fixed temperature, between roughly $0.02F_0$ and $0.8F_0$ (fits are poorest at the extremes). For lengthening muscle the force rises above $F_0$ along a different branch.`,
       deps: ['physio-2.4'],
       see: ['physio-2.12', 'physio-2.6'],
@@ -357,7 +362,7 @@ where $F_0$ is the isometric force (the load at which $v = 0$), $v_{\max} = bF_0
         const vm = v.slider('$v_{\\max}$', 1, 10, 4, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} L₀/s` });
         const sf = v.stage({ x: [0, 1.1], y: [0, 10.5], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'shortening speed v (L₀/s)', weight: 1.1 });
         const sm = v.stage({ x: [0, 4], y: [0, 6.4], height: 300, axes: false, weight: 0.65, minWidth: 190 });
-        const sp = v.stage({ x: [0, 1.1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'power  F v / (F₀ v_max)', weight: 1, minWidth: 220 });
+        const sp = v.stage({ x: [0, 1.1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'load F / F₀', ylabel: 'power  F·v  (units of F₀·v_max)', weight: 1, minWidth: 220 });
         const bOf = () => al.value * vm.value;
         const h = sf.handle(0.5, 1, { color: 'gold', r: 8, constrain: (x) => { const F = clamp(x, 0.005, 1); return [F, hillV(F, al.value, bOf())]; } });
         const load = { F: 0.5 };
@@ -382,15 +387,13 @@ where $F_0$ is the isometric force (the load at which $v = 0$), $v_{\max} = bF_0
           sp.dot(F, Pw / pn, { r: 7, color: 'gold' });
           // muscle with weight: loops
           const loopT = 2.4, tau = (t % loopT) * 0.9, shorten = Math.min(0.3, (vel * tau) / 1);
-          const yTop = 5.8, Lm = 3.2 * (1 - shorten), yBot = yTop - Lm, w = 0.55 + 0.9 * F;
+          const yTop = 5.8, Lm = 3.2 * (1 - shorten), yBot = yTop - Lm, w = 1.5, hgt = 0.45 + 0.9 * F;
           sm.rect(0.8, yTop, 3.2, yTop + 0.35, { fill: 'ink', fillAlpha: 0.5, stroke: false });
           sm.rect(2 - 0.32, yBot, 2 + 0.32, yTop, { fill: 'red', fillAlpha: 0.2, color: 'red', width: 2, radius: 8 });
           for (let k = 1; k < 7; k++) sm.line(2 - 0.32, yBot + (Lm * k) / 7, 2 + 0.32, yBot + (Lm * k) / 7, { color: 'red', width: 1, alpha: 0.3 });
           sm.line(2, yBot, 2, yBot - 0.35, { color: 'ink', width: 1.5 });
-          sm.rect(2 - w / 2, yBot - 0.35 - w, 2 + w / 2, yBot - 0.35, { fill: 'ink', fillAlpha: 0.35, color: 'ink', width: 1.8, radius: 3 });
-          sm.text(`load ${v.fix(F, 2)} F₀`, 2, yBot - 0.35 - w / 2, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
-          sm.dot(0.4, yTop - 3.2, { r: 0 });
-          sm.line(0.45, yTop - 3.2, 0.45, yTop - 3.2 * (1 - 0.3), { color: 'faint', width: 1.2, dash: [3, 3] });
+          sm.rect(2 - w / 2, yBot - 0.35 - hgt, 2 + w / 2, yBot - 0.35, { fill: 'ink', fillAlpha: 0.35, color: 'ink', width: 1.8, radius: 3 });
+          sm.text(`load ${v.fix(F, 2)} F₀`, 2, yBot - 0.35 - hgt / 2, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
           sm.text('muscle length', 0.5, 0.5, { size: 10.5, color: 'muted', align: 'left' });
           sm.text(`${v.fix(100 * (1 - shorten), 0)} % of L₀`, 0.5, 0.18, { size: 10.5, color: 'red', align: 'left', weight: 600 });
           tt = tau;
@@ -412,7 +415,7 @@ where $F_0$ is the isometric force (the load at which $v = 0$), $v_{\max} = bF_0
 $$\frac{\partial n}{\partial t} - w\frac{\partial n}{\partial x} = f(x)\,(1-n) - g(x)\,n.$$
 Huxley's rates are $f = f_1 x$ for $0 < x \le 1$ and zero elsewhere, $g = g_1 x$ for $x > 0$ and a large constant $g_2$ for $x < 0$ (heads that are being dragged backwards are detached quickly). The force is $F = \int x\,n(x)\,dx$ (each attached head acts as a linear spring). In the steady state the equation is an ordinary differential equation in $x$, and solving it for each sliding speed $w$ gives a force–velocity curve that falls from the isometric force $F_0$ at $w = 0$ to zero at $v_{\max}$, close to Hill's hyperbola (2.5).`,
       idea: String.raw`At rest ($w = 0$) the attached fraction is $f/(f+g)$ for $x>0$ and zero for $x<0$, so every pulling head contributes. Sliding adds an advection term. Heads that attach near $x = 1$ are carried through the zone towards $x = 0$ and then to negative $x$ before they can detach: the faster the sliding, the less time each head spends attached on the pulling side, and the more of them arrive at $x<0$ where they push the wrong way. At $v_{\max}$ the pulling and dragging contributions cancel. The model thus derives the shape of Hill's curve from the kinetics of single bridges, the first successful molecular theory of contraction. Huxley's later extension (1971) added the second attached state needed for the rapid transients.`,
-      caption: String.raw`**Top left**: the steady distribution $n(x)$ of attached heads (green pulls, red drags) at the sliding speed $w$ you choose. **Top right**: the attachment and detachment rate functions. **Bottom**: the force–velocity curve built from this equation (solid) with the best Hill hyperbola through it (dashed). Raise $w$ and watch the green area shrink and the red tail grow until the net force vanishes. Lower the drag rate $g_2$ and the curve bends away from a hyperbola, the reason the original rates were chosen as they were.`,
+      caption: String.raw`**Top left**: the steady distribution $n(x)$ of attached heads (green pulls, red drags) at the sliding speed $w$ you choose. **Top right**: the attachment and detachment rate functions. **Bottom**: the force–velocity curve built from this equation (solid) with the best Hill hyperbola through it (dashed). Raise $w$ (the slider is in units of $v_{\max}$) and watch the green area shrink and the red tail grow until the net force vanishes at $w = v_{\max}$; beyond it the dragging heads win. The drag rate $g_2$ sets the speed scale: doubling it doubles $v_{\max}$ and straightens or bends the curve ($a/F_0$ falls as $g_2$ grows). The hyperbola follows the Huxley curve to within about 1 % of $F_0$ but is not exactly it.`,
       scope: String.raw`Steady-state model with linear springs and two bridge states; rate constants are those fitted by Huxley (1957) to frog muscle at 0 °C. Real muscle also has a series elasticity, a second force-generating step and ATP turnover, none of which are modelled here.`,
       deps: ['physio-2.5'],
       see: ['physio-2.5', 'physio-2.12'],
@@ -421,30 +424,31 @@ Huxley's rates are $f = f_1 x$ for $0 < x \le 1$ and zero elsewhere, $g = g_1 x$
       credit: 'A. F. Huxley, 1957',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Crossbridge' },
       viz(v) {
-        const w = v.slider('sliding speed $w$', 0, 135, 25, { step: 1, fmt: (x) => `${v.fix(x, 0)} h/s` });
+        const wf = v.slider('sliding speed $w / v_{\\max}$', 0, 1.25, 0.22, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const g2 = v.slider('drag detachment $g_2$', 50, 400, 209, { step: 1, fmt: (x) => `${v.fix(x, 0)} s⁻¹` });
         const f1 = v.slider('attachment $f_1$', 15, 90, 43.3, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} s⁻¹` });
         const showHill = v.toggle('overlay best Hill hyperbola', true);
         const sn = v.stage({ x: [-2.5, 1.3], y: [0, 1.05], height: 250, axes: 'box', gutter: true, xlabel: 'head displacement x / h', ylabel: 'attached fraction n(x)', weight: 1.2 });
         const sr = v.stage({ x: [-2.5, 1.3], y: [0, 400], height: 250, axes: 'box', gutter: true, xlabel: 'x / h', ylabel: 'rate (s⁻¹)', weight: 0.9, minWidth: 240 });
-        const sf = v.stage({ x: [0, 135], y: [-0.15, 1.1], height: 300, axes: 'box', gutter: true, xlabel: 'sliding speed w (h/s)', ylabel: 'force F / F₀', full: true });
+        const sf = v.stage({ x: [0, 135], y: [-0.25, 1.1], height: 300, axes: 'box', gutter: true, xlabel: 'sliding speed w (h/s)', ylabel: 'force F / F₀', full: true });
         let key = '', C = null;
         const P = () => ({ f1: f1.value, g1: HUX.g1, g2: g2.value });
         const curve = () => {
           const k = `${g2.value}|${f1.value}`;
           if (k !== key) {
             key = k; const p = P(), F0 = huxSolve(0, p).F, pts = [];
-            for (let ww = 0; ww <= 135.01; ww += 3) { const r = huxSolve(ww, p, -2.5, 300); pts.push([ww, r.F / F0]); }
-            // zero crossing
-            let lo = 0, hi = 400; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (huxSolve(m, p, -2.5, 300).F > 0) lo = m; else hi = m; }
-            const vmax = (lo + hi) / 2; let best = { a: 0.2, e: Infinity };
-            for (let a = 0.02; a < 3; a += 0.01) { let e = 0; for (const [ww, F] of pts) { if (ww >= vmax || F <= 0) continue; const Fh = hillF(ww, a, a * vmax); e += (Fh - F) ** 2; } if (e < best.e) best = { a, e }; }
+            let lo = 0, hi = 800; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (huxSolve(m, p, -2.5, 300).F > 0) lo = m; else hi = m; }
+            const vmax = (lo + hi) / 2;
+            for (let i = 0; i <= 52; i++) { const ww = (i / 40) * vmax, r = huxSolve(ww, p, -2.5, 300); pts.push([ww, r.F / F0]); }
+            let best = { a: 0.2, e: Infinity };
+            for (let a = 0.02; a < 4; a += 0.01) { let e = 0; for (const [ww, F] of pts) { if (ww >= vmax || F <= 0) continue; const Fh = hillF(ww, a, a * vmax); e += (Fh - F) ** 2; } if (e < best.e) best = { a, e }; }
             C = { pts, F0, vmax, a: best.a, err: Math.sqrt(best.e / Math.max(1, pts.length)) };
           }
           return C;
         };
         v.render(() => {
-          const p = P(), c = curve(), r = huxSolve(w.value, p), r0 = huxSolve(0, p);
+          const p = P(), c = curve(), wv = wf.value * c.vmax, r = huxSolve(wv, p), r0 = huxSolve(0, p);
+          sf.setView([0, 1.3 * c.vmax], [-0.25, 1.1]);
           // distribution
           const pos = [[0, 0]], neg = [];
           for (let i = 0; i < r.x.length; i++) { if (r.x[i] >= 0) pos.push([r.x[i], r.n[i]]); else neg.push([r.x[i], r.n[i]]); }
@@ -465,13 +469,13 @@ Huxley's rates are $f = f_1 x$ for $0 < x \le 1$ and zero elsewhere, $g = g_1 x$
           sf.path(c.pts, { color: 'accent', width: 2.4 });
           if (showHill.value) sf.fn((ww) => hillF(ww, c.a, c.a * c.vmax), { domain: [0, c.vmax * 0.995], color: 'ink', width: 1.6, dash: [6, 4] });
           sf.vline(c.vmax, { color: 'faint', dash: [3, 4], width: 1 });
-          sf.dot(w.value, r.F / c.F0, { r: 7, color: 'gold' });
-          sf.text(`v_max = ${v.fix(c.vmax, 0)} h/s`, c.vmax - 2, 0.55, { size: 10.5, color: 'muted', align: 'right' });
+          sf.dot(wv, r.F / c.F0, { r: 7, color: 'gold' });
+          sf.text(`v_max = ${v.fix(c.vmax, 0)} h/s`, c.vmax * 0.985, 0.55, { size: 10.5, color: 'muted', align: 'right' });
         });
         v.legend([['green', 'pulling heads $(x>0)$'], ['red', 'dragging heads $(x<0)$'], ['accent', 'Huxley force–velocity'], ['ink', 'Hill hyperbola (best fit)', { dash: true }]]);
         v.readout(() => {
-          const p = P(), c = curve(), r = huxSolve(w.value, p);
-          return `$w = ${v.fix(w.value, 0)}\\ h/\\mathrm s$: $F/F_0 = ${v.fix(r.F / c.F0, 3)}$, attached heads ${v.fix(100 * r.B / huxSolve(0, p).B, 0)} % of the isometric number · $v_{\\max} = ${v.fix(c.vmax, 0)}\\ h/\\mathrm s$ · best Hill fit $a/F_0 = ${v.fix(c.a, 2)}$ (rms deviation ${v.fix(c.err, 3)} of $F_0$)`;
+          const p = P(), c = curve(), wv = wf.value * c.vmax, r = huxSolve(wv, p);
+          return `$w = ${v.fix(wv, 0)}\\ h/\\mathrm s$: $F/F_0 = ${v.fix(r.F / c.F0, 3)}$, attached heads ${v.fix(100 * r.B / huxSolve(0, p).B, 0)} % of the isometric number · $v_{\\max} = ${v.fix(c.vmax, 0)}\\ h/\\mathrm s$ · best Hill fit $a/F_0 = ${v.fix(c.a, 2)}$ (rms deviation ${v.fix(c.err, 3)} of $F_0$)`;
         });
       },
     },

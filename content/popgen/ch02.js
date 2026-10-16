@@ -384,7 +384,7 @@ Equivalently, the probability that two gene copies drawn in generation $t$ are i
 $$\frac{\mathbb E[H_T]}{H_0}=\prod_{t=1}^{T}\Bigl(1-\frac1{2N_t}\Bigr)\;\approx\;\exp\Bigl(-\sum_t\frac1{2N_t}\Bigr),$$
 so over $T$ generations the effective size is (approximately) the **harmonic mean** $N_e=T\big/\sum_{t}N_t^{-1}$, which is never larger than the arithmetic mean and is dominated by the smallest sizes.`,
       idea: String.raw`Each generation multiplies the heterozygosity by $1-1/2N_t$ (2.3), so the factors multiply and the loss rates $1/2N_t$ add. The loss rate of a size-$N$ generation is inversely proportional to $N$, so a single generation of size $10$ among generations of size $10^4$ costs as much diversity as $10^3$ big generations. Defining $N_e$ as the constant size with the same total loss, $T/N_e=\sum 1/N_t$, is the harmonic mean; its comparison with the arithmetic mean is the AM–HM inequality (a consequence of the AM–GM inequality).`,
-      caption: String.raw`Draw a population-size history (top-left) with a bottleneck: choose its size and length, or switch to cycling or growing populations. The bar chart marks the arithmetic mean (red) and harmonic mean (green). Right: 400 simulated populations following the history lose heterozygosity as the green curve ($N_e=$ harmonic mean), not the red one.`,
+      caption: String.raw`Draw a population-size history (top-left) with a bottleneck: choose its size and length, or switch to cycling or growing populations. The bar chart marks the arithmetic mean (red) and harmonic mean (green). Right: 1000 simulated populations following the history (blue) lose heterozygosity exactly as the product $\prod(1-1/2N_t)$ says (thin black); the straight lines are constant-size populations of the harmonic-mean size (green) and of the arithmetic-mean size (red). Only the green one ends where the real history ends.`,
       deps: ['popgen-2.6', 'rca-3.3a'],
       refs: ['Ewens §3.7'],
       credit: 'Sewall Wright, 1938',
@@ -413,7 +413,7 @@ so over $T$ generations the effective size is (approximately) the **harmonic mea
           N.forEach((x, t) => L.rect(t + 1 - 0.4, 1, t + 1 + 0.4, x, { fill: 'accent', fillAlpha: 0.4, color: 'accent', width: 1 }));
           L.hline(am, { color: 'red', width: 2, dash: true }); L.hline(hm, { color: 'green', width: 2.5 });
           const D = sim(N.join(','), () => {
-            const r = v.rng(77), R = 400, mean = new Float64Array(T + 1);
+            const r = v.rng(77), R = 1000, mean = new Float64Array(T + 1);
             for (let i = 0; i < R; i++) {
               let n = 2 * N[0], kk = Math.round(n / 2);
               for (let t = 0; t <= T; t++) { const p = kk / n; mean[t] += 2 * p * (1 - p); if (t < T) { const n2 = 2 * N[t]; const f = kk / n; kk = binom(r, n2, f); n = n2; } }
@@ -423,12 +423,13 @@ so over $T$ generations the effective size is (approximately) the **harmonic mea
           const exact = (t) => { let a = 1; for (let i = 0; i < Math.floor(t); i++) a *= 1 - 1 / (2 * N[i]); return a; };
           Rg.setView([0, T], [Math.max(1e-3, Math.min(Math.exp(-T / (2 * hm)), D[T] || 1) * 0.6), 1.15]);
           Rg.fn((t) => Math.exp(-t / (2 * hm)), { domain: [0, T], n: 100, color: 'green', width: 3 });
+          Rg.fn(exact, { domain: [0, T], n: 61, color: 'ink', width: 1.5 });
           Rg.fn((t) => Math.exp(-t / (2 * am)), { domain: [0, T], n: 100, color: 'red', width: 2, dash: true });
           Rg.path(Array.from({ length: T + 1 }, (_, t) => [t, Math.max(D[t], 1e-6)]), { color: 'accent', width: 2 });
           Rg.dots(Array.from({ length: Math.floor(T / 3) + 1 }, (_, i) => [i * 3, Math.max(D[i * 3], 1e-6)]), { r: 3, color: 'accent' });
           info = { am, hm, ex: exact(T), simT: D[T], thH: Math.exp(-T / (2 * hm)), thA: Math.exp(-T / (2 * am)) };
         });
-        v.legend([['accent', 'simulated heterozygosity'], ['green', 'harmonic mean $N_e$'], ['red', 'arithmetic mean', { dash: true }]]);
+        v.legend([['accent', 'simulated heterozygosity'], ['ink', 'exact product'], ['green', 'constant size = harmonic mean'], ['red', 'constant size = arithmetic mean', { dash: true }]]);
         v.readout(() => `Arithmetic mean $${v.fix(info.am, 0)}$, harmonic mean $N_e=${v.fix(info.hm, 1)}$.\nAfter ${60} generations $H/H_0$: exact product ${v.fix(info.ex, 3)}, simulation ${v.fix(info.simT, 3)}, harmonic-mean prediction ${v.fix(info.thH, 3)}, arithmetic-mean prediction ${v.fix(info.thA, 3)}.`);
       },
     },

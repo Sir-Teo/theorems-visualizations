@@ -202,6 +202,34 @@ const hInv = (P, y) => (traceB(P, y).origin === 'A' ? P.finv(y) : P.g(y));
 const allStrings = (L) => { const out = []; for (let l = 1; l <= L; l++) for (let m = 0; m < (1 << l); m++) out.push(m.toString(2).padStart(l, '0')); return out; };
 const srank = (s) => (1 << s.length) - 1 + parseInt(s, 2);
 
+// ---------------------------------------------------------------------------------------------------------------
+// Karp's 1972 tree of 21 NP-complete problems (the edges of his Figure 3) and a few executable reductions.
+const KN = [
+  ['SAT', 'SATISFIABILITY'], ['CLIQUE', 'CLIQUE'], ['IP', '0–1 INTEGER PROG.'], ['3SAT', '3-SAT'], ['SP', 'SET PACKING'], ['NC', 'NODE COVER'], ['CHR', 'CHROMATIC NO.'],
+  ['SC', 'SET COVERING'], ['FNS', 'FEEDBACK NODE SET'], ['DHC', 'DIR. HAM. CIRCUIT'], ['CC', 'CLIQUE COVER'], ['EC', 'EXACT COVER'], ['FAS', 'FEEDBACK ARC SET'],
+  ['UHC', 'UNDIR. HAM. CIRCUIT'], ['HS', 'HITTING SET'], ['ST', 'STEINER TREE'], ['3DM', '3-D MATCHING'], ['KN', 'KNAPSACK'], ['JS', 'JOB SEQUENCING'], ['PA', 'PARTITION'], ['MC', 'MAX CUT'],
+];
+const KE = [
+  ['SAT', 'CLIQUE'], ['SAT', 'IP'], ['SAT', '3SAT'], ['CLIQUE', 'SP'], ['CLIQUE', 'NC'], ['NC', 'SC'], ['NC', 'FNS'], ['NC', 'DHC'], ['3SAT', 'CHR'], ['CHR', 'CC'], ['CHR', 'EC'],
+  ['FNS', 'FAS'], ['DHC', 'UHC'], ['EC', 'HS'], ['EC', 'ST'], ['EC', '3DM'], ['EC', 'KN'], ['KN', 'JS'], ['KN', 'PA'], ['PA', 'MC'],
+];
+const KLIVE = new Set(['SAT>CLIQUE', 'CLIQUE>NC', 'NC>SC', 'SAT>IP', 'EC>KN', 'KN>PA', 'PA>MC']);
+const KTEXT = {
+  'SAT>3SAT': 'Split every long clause with fresh variables: $(\\ell_1\\lor\\ell_2\\lor\\ell_3\\lor\\ell_4)$ becomes $(\\ell_1\\lor\\ell_2\\lor z)(\\bar z\\lor\\ell_3\\lor\\ell_4)$. Satisfiability is preserved in both directions.',
+  'CLIQUE>SP': 'Take the complement graph $\\bar G$ and let $S_v$ be the set of edges of $\\bar G$ at $v$. Two sets are disjoint exactly when $u,v$ are *not* adjacent in $\\bar G$, i.e. adjacent in $G$, so $k$ pairwise disjoint sets = a $k$-clique.',
+  'NC>FNS': 'Replace each undirected edge $\\{u,v\\}$ by the two arcs $u\\to v$ and $v\\to u$. Every 2-cycle must lose a vertex, so a feedback node set is a vertex cover; conversely deleting a vertex cover leaves no arc at all.',
+  'NC>DHC': 'Each edge becomes a small "choose which endpoint covers me" gadget threaded by a Hamiltonian path, and $k$ selector vertices pick which vertices form the cover (Karp 1972; the gadget is not drawn here).',
+  '3SAT>CHR': 'A triangle fixes three colours (true, false, base); each variable is an edge between its two literal vertices joined to base; each clause becomes an OR-gadget that can be 3-coloured iff one input is "true" (compare 3-COLOUR, toc-13.12).',
+  'CHR>CC': 'A proper colouring of $G$ partitions the vertices into independent sets; in the complement graph these are cliques. So $G$ is $k$-colourable iff $\\bar G$ can be covered by $k$ cliques.',
+  'CHR>EC': 'Karp encodes a colouring by choosing one colour per vertex and checking edges: elements are vertices, edges and colour-vertex pairs, and sets are the possible choices (a larger gadget, not drawn here).',
+  'FNS>FAS': 'Split every vertex $v$ into $v^-\\to v^+$: all arcs into $v$ now enter $v^-$, all arcs out of $v$ leave $v^+$. Deleting the inner arc $v^-v^+$ is the same as deleting the vertex $v$.',
+  'DHC>UHC': 'Replace every directed vertex by a path $v^-\\!-v^0\\!-v^+$, entering through $v^-$ and leaving through $v^+$; a directed Hamiltonian circuit then corresponds to an undirected one.',
+  'EC>HS': 'Transpose the incidence matrix: for each element $u$ take the set $T_u$ of indices of sets containing $u$. An exact cover is a set of indices meeting every $T_u$ in exactly one element.',
+  'EC>ST': 'Build a bipartite-like graph with a root joined to one vertex per set and each set vertex joined to its elements; a Steiner tree spanning the root and all elements with a bounded number of set vertices is a cover (Karp 1972).',
+  'EC>3DM': 'Exact cover with three-element sets is a three-dimensional matching problem once elements are coloured by three classes; general sets are padded with dummy elements (see 2.1 for 3SAT $\\le_p$ 3DM).',
+  'KN>JS': 'Karp reduces KNAPSACK to a single-machine scheduling problem with processing times $a_i$, a common deadline and penalties proportional to $a_i$; the construction is in the paper and is not reproduced here.',
+};
+
 export default {
   collection: 'cplx',
   chapter: 2,
@@ -671,6 +699,189 @@ export default {
         });
         v.legend([['blue', 'f: A → B'], ['orange', 'g: B → A'], ['gold', 'selected $x$', { dot: true }], ['green', '$h(x)$', { dot: true }]]);
         v.readout(() => `$x=${ver.x}$ → chain origin in **${ver.org}**, found by **${ver.depth}** backward step${ver.depth === 1 ? '' : 's'} (≤ |x| = ${ver.x.length}, so $h$ is polynomial) → $h(x)=${ver.hx}$ · among the 126 strings of length ≤ 6, ${ver.fcount} use $f$ and ${ver.gcount} use $g^{-1}$\nBrute-force check on all ${ver.cnt} strings of length ≤ 8: $h$ injective **${ver.inj ? 'yes' : 'NO'}**, $h^{-1}(h(x))=x$ **${ver.rt ? 'yes' : 'NO'}**, $h(h^{-1}(y))=y$ **${ver.rt2 ? 'yes' : 'NO'}**.`);
+      },
+    },
+    // ------------------------------------------------------------------ 2.14
+    {
+      num: '2.14',
+      kind: 'Paper',
+      name: 'Reducibility Among Combinatorial Problems',
+      paper: { authors: 'Richard M. Karp', year: 1972, title: 'Reducibility Among Combinatorial Problems', venue: 'in R. E. Miller and J. W. Thatcher (eds.), Complexity of Computer Computations, Plenum Press: 85–103', doi: '10.1007/978-1-4684-2001-2_9' },
+      introduces: ['toc-13.1', 'toc-13.6', 'toc-13.7', 'toc-13.9', 'toc-13.10', 'toc-13.11', 'cplx-2.1', 'cplx-2.3', 'cplx-2.6', 'cplx-2.7', 'cplx-2.8'],
+      statement: String.raw`Karp took Cook's 1971 theorem — SATISFIABILITY is complete for NP under polynomial-time Turing reductions — and showed, using many-one polynomial-time reductions ("polynomial-time transformations"), that **21 classical combinatorial and graph problems** are equivalent to it: CLIQUE, NODE COVER, SET PACKING and SET COVERING, 0–1 INTEGER PROGRAMMING, FEEDBACK NODE/ARC SET, directed and undirected HAMILTON CIRCUIT, 3-SAT, CHROMATIC NUMBER, CLIQUE COVER, EXACT COVER, HITTING SET, STEINER TREE, 3-D MATCHING, KNAPSACK, JOB SEQUENCING, PARTITION and MAX CUT. If any one has a polynomial-time algorithm, all do (P = NP). Each problem is tied to SAT by a chain of reductions drawn as a tree.`,
+      idea: String.raw`Before 1972 the only known NP-complete problem was SAT (Cook, and independently Levin). Karp's paper changed the subject: it introduced the *polynomial-time many-one reduction* as the working tool, the notion of **NP-completeness** that came to be named after it (the term itself, and the name "Karp reduction", are later), and the **gadget technique** — encode choices and constraints of one problem as local structures of another. The tree shows how small the toolbox is: complement a graph (CLIQUE ↔ NODE COVER ↔ independent set), transpose an incidence matrix (SET COVER ↔ HITTING SET), write sets as digits of numbers (EXACT COVER → KNAPSACK), add balancing numbers (KNAPSACK → PARTITION), take products of weights (PARTITION → MAX CUT). Within a year the list grew to hundreds (Garey & Johnson's 1979 catalogue lists over 300 problems).`,
+      caption: String.raw`**Recreation of Karp's Figure: the tree of 21 problems** (read left to right; each arrow is a polynomial-time reduction). Click an **arrow** (or the node it points to). The seven *highlighted* arrows are executed on a concrete small instance below the tree: the left half shows an instance of the source problem, the right half the instance produced by the reduction, and the readout solves both sides by exhaustive search or DPLL and confirms that the answers agree and that a solution maps across — click variables, vertices, sets or numbers to build your own candidate solution on one side and watch it transform. The other arrows show the idea of the construction in words. The tree is reconstructed from memory of Karp's Figure 3, with the details of each reduction written afresh.`,
+      deps: ['toc-13.4'],
+      refs: [],
+      credit: 'Karp, 1972; Cook, 1971; Levin, 1973',
+      tags: ['Karp reductions', 'NP-completeness', 'landmark paper'],
+      viz(v) {
+        // ---- tree layout
+        const kids = {}; KE.forEach(([a, b]) => { (kids[a] = kids[a] || []).push(b); });
+        const pos = {}; let leaf = 0;
+        const place = (id, d) => { const c = kids[id] || []; if (!c.length) { pos[id] = { d, y: leaf++ }; return; } c.forEach((k) => place(k, d + 1)); pos[id] = { d, y: c.reduce((s2, k) => s2 + pos[k].y, 0) / c.length }; };
+        place('SAT', 0);
+        const NL = leaf, name = Object.fromEntries(KN);
+        const T = v.stage({ x: [0, 14.6], y: [-0.7, NL - 0.3], axes: false, height: 400, full: true, title: 'Karp’s tree of 21 NP-complete problems — click an arrow' });
+        const D = v.stage({ x: [0, 20], y: [0, 8], axes: false, height: 330, full: true });
+        const TX = (id) => 0.2 + pos[id].d * 2.05, TY = (id) => NL - 1 - pos[id].y, BW = 1.75;
+        let sel = 'SAT>CLIQUE';
+        const edgeKey = (a, b) => `${a}>${b}`;
+        const segDist = (px, py, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, t = clamp(((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy), 0, 1); return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy)); };
+        T.onClick((x, y) => {
+          let best = null, bd = 0.55;
+          KE.forEach(([a, b]) => { const d = segDist(x, y, TX(a) + BW, TY(a), TX(b), TY(b)); if (d < bd) { bd = d; best = edgeKey(a, b); } });
+          KN.forEach(([id]) => { if (x >= TX(id) && x <= TX(id) + BW && Math.abs(y - TY(id)) < 0.4) { const e = KE.find(([, b]) => b === id); if (e) { best = edgeKey(e[0], e[1]); bd = 0; } } });
+          if (best) sel = best;
+        });
+        // ---- shared instances
+        let seed = 2, F = null, asg = [null, 1, 1, 1];
+        const mkF = () => { for (let t = 0; t < 200; t++) { const r = v.rng(seed * 101 + t); const cl = randomCNF(r, 3, 3, 3); if (allModels(3, cl, 1).length) { F = cl; return; } } };
+        mkF();
+        v.button('New formula', () => { seed++; mkF(); asg = [null, 1, 1, 1]; });
+        const cg = () => { // clique graph
+          const V = [], E = []; F.forEach((c, j) => c.forEach((l, t) => V.push({ id: 3 * j + t, j, t, l })));
+          for (const a of V) for (const b of V) if (a.id < b.id && a.j !== b.j && a.l !== -b.l) E.push([a.id, b.id]);
+          return { V, E };
+        };
+        const EC_SETS = [[1, 2, 3], [3, 4], [4, 5, 6], [1, 2], [5, 6], [2, 5]];
+        const picks = new Set(); const sideN = Array(6).fill(0);
+        const NUMS = { ok: [3, 5, 2, 4, 6, 2], bad: [3, 5, 2, 4, 6, 3] };
+        const numsSel = v.select('numbers for PARTITION → MAX CUT', [{ value: 'ok', label: 'sum 22 (splittable)' }, { value: 'bad', label: 'sum 23 (odd)' }], 'ok');
+        const side7 = Array(6).fill(0);
+        const GE8 = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0], [0, 4], [1, 5], [2, 6]];
+        const nc = new Set();
+        const hit = { lits: [] };
+        D.onClick((x, y) => {
+          if (sel === 'SAT>CLIQUE' || sel === 'SAT>IP') { for (let i = 1; i <= 3; i++) { if (Math.abs(x - (1.2 + (i - 1) * 2.4)) < 1.0 && Math.abs(y - 0.8) < 0.6) asg[i] ^= 1; } }
+          else if (sel === 'NC>SC') { for (let i = 0; i < 8; i++) { const px = 5 + 0.0 + 0, ang = Math.PI / 2 - (2 * Math.PI * i) / 8, X = 4.6 + 2.6 * Math.cos(ang), Y = 4.3 + 2.6 * Math.sin(ang); void px; if (Math.hypot(X - x, Y - y) < 0.55) { if (nc.has(i)) nc.delete(i); else nc.add(i); } } }
+          else if (sel === 'EC>KN') { const i = Math.floor((x - 0.3) / 3.1); if (y < 1.6 && i >= 0 && i < 6) { if (picks.has(i)) picks.delete(i); else picks.add(i); } }
+          else if (sel === 'KN>PA') { const i = Math.floor((y - 0.2) / 1.0), k = 5 - i; if (k >= 0 && k < 6 && i >= 0) sideN[k] ^= 1; }
+          else if (sel === 'PA>MC') { const a = NUMS[numsSel.value]; for (let i = 0; i < 6; i++) { const ang = Math.PI / 2 - (2 * Math.PI * i) / 6; if (Math.hypot(10 + 3 * Math.cos(ang) - x, 4.2 + 3 * Math.sin(ang) - y) < 0.7) side7[i] ^= 1; void a; } }
+        });
+        const subset = (nums, set) => nums.filter((_, i) => set.has(i));
+        let info = '';
+        v.render(() => {
+          // ---- tree
+          KE.forEach(([a, b]) => {
+            const k = edgeKey(a, b), on = k === sel, live = KLIVE.has(k);
+            T.line(TX(a) + BW, TY(a), TX(b), TY(b), { color: on ? 'gold' : live ? 'accent' : 'muted', width: on ? 4 : live ? 2.2 : 1.4, alpha: on ? 1 : 0.85 });
+            T.arrow(TX(a) + BW + (TX(b) - TX(a) - BW) * 0.55, TY(a) + (TY(b) - TY(a)) * 0.55, TX(b), TY(b), { color: on ? 'gold' : live ? 'accent' : 'muted', width: on ? 4 : live ? 2.2 : 1.4 });
+          });
+          const [selA, selB] = sel.split('>');
+          KN.forEach(([id, nm]) => {
+            const x = TX(id), y = TY(id), on = id === selA || id === selB;
+            T.rect(x, y - 0.34, x + BW, y + 0.34, { fill: id === 'SAT' ? 'green' : on ? 'gold' : 'accent', fillAlpha: id === 'SAT' ? 0.3 : on ? 0.35 : 0.1, color: id === 'SAT' ? 'green' : on ? 'gold' : 'accent', width: on ? 2.5 : 1.3, radius: 5 });
+            T.text(nm, x + BW / 2, y, { align: 'center', baseline: 'middle', size: nm.length > 14 ? 7.8 : 9.2, weight: 700, halo: false });
+          });
+          T.corner('blue arrows: executed below · grey arrows: described in words', 'bl', { color: 'muted' });
+          // ---- detail
+          D.setView([0, 20], [0, 8]);
+          const title = `${name[selA]}  →  ${name[selB]}`;
+          D.text(title, 10, 7.65, { align: 'center', size: 14, weight: 800 });
+          D.line(10, 0.2, 10, 7.2, { color: 'faint', width: 1.2, dash: true });
+          D.text('instance of the source problem', 5, 7.15, { align: 'center', size: 11, color: 'muted' }); D.text('instance produced by the reduction', 15, 7.15, { align: 'center', size: 11, color: 'muted' });
+          if (!KLIVE.has(sel)) {
+            const txt = KTEXT[sel] || ''; const words = txt.replace(/\$[^$]*\$/g, (m) => m.replace(/\\\\/g, '\\')).split(' ');
+            D.text('(construction described in words — not executed in this picture)', 10, 6.4, { align: 'center', size: 11.5, color: 'muted' });
+            D.tex(String.raw`\text{see the readout below}`, 10, 4.2, { align: 'center', size: 14, color: 'muted' });
+            info = KTEXT[sel] ? `**${title}.** ${KTEXT[sel]}` : '';
+            void words; return;
+          }
+          const cgr = cg(), nV = cgr.V.length;
+          const vp = (id, off) => [off + 1.4 + 3.2 * cgr.V[id].j, 6.0 - 2.1 * cgr.V[id].t];
+          if (sel === 'SAT>CLIQUE') {
+            const truth = (l) => (l > 0 ? asg[l] === 1 : asg[-l] === 0), chosen = [];
+            F.forEach((c, j) => { const t = c.findIndex(truth); chosen.push(t < 0 ? null : 3 * j + t); });
+            // left: clauses
+            F.forEach((c, j) => { c.forEach((l, t) => { const x = 0.8 + t * 1.55, y = 6.1 - j * 1.45, on = truth(l); D.rect(x, y - 0.42, x + 1.35, y + 0.42, { fill: on ? 'green' : 'faint', fillAlpha: on ? 0.35 : 0.1, color: on ? 'green' : 'muted', width: 1.4, radius: 5 }); D.text(l > 0 ? `x${l}` : `¬x${-l}`, x + 0.68, y, { align: 'center', baseline: 'middle', size: 12.5, weight: 700, halo: false }); }); D.text(`C${j + 1}`, 0.45, 6.1 - j * 1.45, { align: 'right', baseline: 'middle', size: 11, color: 'muted' }); });
+            for (let i = 1; i <= 3; i++) { const x = 1.2 + (i - 1) * 2.4; D.rect(x - 0.9, 0.2, x + 0.9, 1.4, { fill: asg[i] ? 'green' : 'red', fillAlpha: 0.22, color: asg[i] ? 'green' : 'red', width: 1.6, radius: 6 }); D.text(`x${i} = ${asg[i]}`, x, 0.8, { align: 'center', baseline: 'middle', size: 13, weight: 700, halo: false }); }
+            D.text('click a variable to flip it', 7.6, 0.8, { size: 10.5, color: 'muted' });
+            // right: graph
+            cgr.E.forEach(([a, b]) => { const A = vp(a, 10), B = vp(b, 10), both = chosen.includes(a) && chosen.includes(b) && chosen.every((q) => q !== null); D.line(A[0], A[1], B[0], B[1], { color: both ? 'green' : 'muted', width: both ? 3.4 : 1, alpha: both ? 1 : 0.35 }); });
+            cgr.V.forEach((q) => { const P = vp(q.id, 10), on = chosen.includes(q.id); D.dot(P[0], P[1], { r: on ? 11 : 9, color: on ? 'green' : 'accent', hollow: !on }); D.text(q.l > 0 ? `x${q.l}` : `¬x${-q.l}`, P[0], P[1], { align: 'center', baseline: 'middle', size: 8.5, weight: 700, color: on ? 'panel' : 'ink', halo: false }); });
+            const mc = maxClique(nV, cgr.E), sat = allModels(3, F, 1).length > 0, ok = chosen.every((q) => q !== null);
+            // map a clique back to an assignment
+            const back = [null, 1, 1, 1]; for (let q = 0; q < nV; q++) if ((mc.mask >> q) & 1) { const l = cgr.V[q].l; back[Math.abs(l)] = l > 0 ? 1 : 0; }
+            const backOK = mc.size >= F.length && cnfSat(F, back);
+            info = `φ $=${cnfTex(F)}$ · your assignment satisfies φ: **${ok ? 'yes' : 'no'}** → picking one true literal per clause ${ok ? 'gives a triangle (clique of size 3) in the graph' : 'fails: some clause has no true literal, so no clique of size 3 is built from it'} · largest clique (exhaustive): **${mc.size}** — ≥ ${F.length} ⇔ φ satisfiable: **${mc.size >= F.length}** vs **${sat}** ✓${mc.size >= F.length ? ` · reading the clique back gives the assignment ${[1, 2, 3].map((i) => `x${i}=${back[i]}`).join(', ')}, which satisfies φ: **${backOK}**` : ''}`;
+          } else if (sel === 'CLIQUE>NC') {
+            const mc = maxClique(nV, cgr.E), inC = (q) => (mc.mask >> q) & 1, comp = []; for (let a = 0; a < nV; a++) for (let b = a + 1; b < nV; b++) if (!cgr.E.some(([p, q]) => p === a && q === b)) comp.push([a, b]);
+            cgr.E.forEach(([a, b]) => { const A = vp(a, 0), B = vp(b, 0), both = inC(a) && inC(b); D.line(A[0], A[1], B[0], B[1], { color: both ? 'green' : 'muted', width: both ? 3.4 : 1, alpha: both ? 1 : 0.35 }); });
+            cgr.V.forEach((q) => { const P = vp(q.id, 0); D.dot(P[0], P[1], { r: 10, color: inC(q.id) ? 'green' : 'accent', hollow: !inC(q.id) }); D.text(String(q.id + 1), P[0], P[1], { align: 'center', baseline: 'middle', size: 9, weight: 700, color: inC(q.id) ? 'panel' : 'ink', halo: false }); });
+            comp.forEach(([a, b]) => { const A = vp(a, 10), B = vp(b, 10), cov = !inC(a) || !inC(b); D.line(A[0], A[1], B[0], B[1], { color: cov ? 'accent' : 'red', width: 1, alpha: 0.4 }); });
+            cgr.V.forEach((q) => { const P = vp(q.id, 10), cv = !inC(q.id); D.dot(P[0], P[1], { r: 10, color: cv ? 'accent' : 'muted', hollow: !cv }); D.text(String(q.id + 1), P[0], P[1], { align: 'center', baseline: 'middle', size: 9, weight: 700, color: cv ? 'panel' : 'ink', halo: false }); });
+            const mv = minVertexCover(nV, comp), valid = comp.every(([a, b]) => !inC(a) || !inC(b));
+            info = `source: graph $G$ from the formula (9 vertices, ${cgr.E.length} edges), largest clique **${mc.size}** (green) · produced: the complement graph with ${comp.length} edges; the other **${nV - mc.size}** vertices (blue) form a node cover: valid **${valid}** · minimum node cover (exhaustive) **${mv.size}** = ${nV} − ${mc.size} ✓ — a clique of size $k$ ⇔ a node cover of size $|V|-k$.`;
+          } else if (sel === 'NC>SC') {
+            const gp = (i) => [4.6 + 2.6 * Math.cos(Math.PI / 2 - (2 * Math.PI * i) / 8), 4.3 + 2.6 * Math.sin(Math.PI / 2 - (2 * Math.PI * i) / 8)];
+            const covered = GE8.map(([a, b]) => nc.has(a) || nc.has(b));
+            GE8.forEach(([a, b], j) => { const A = gp(a), B = gp(b); D.line(A[0], A[1], B[0], B[1], { color: covered[j] ? 'green' : 'red', width: covered[j] ? 3 : 3, dash: !covered[j] }); });
+            for (let i = 0; i < 8; i++) { const P = gp(i), on = nc.has(i); D.dot(P[0], P[1], { r: 12, color: on ? 'accent' : 'muted', hollow: !on }); D.text(String(i + 1), P[0], P[1], { align: 'center', baseline: 'middle', size: 11, weight: 700, color: on ? 'panel' : 'ink', halo: false }); }
+            D.text('click vertices to choose a node cover', 4.6, 0.55, { align: 'center', size: 11, color: 'muted' });
+            // right: matrix of sets (rows = vertices, cols = edges)
+            const cw = 0.62, x0 = 11.4, y0 = 6.4;
+            GE8.forEach(([a, b], j) => D.text(`${a + 1}${b + 1}`, x0 + j * cw + cw / 2, y0 + 0.15, { align: 'center', size: 8.5, color: covered[j] ? 'green' : 'red', weight: 700, halo: false }));
+            for (let i = 0; i < 8; i++) { const y = y0 - 0.2 - (i + 1) * 0.62; D.text(`S${i + 1}`, x0 - 0.2, y + 0.31, { align: 'right', baseline: 'middle', size: 10, weight: nc.has(i) ? 800 : 500, color: nc.has(i) ? 'accent' : 'muted', halo: false }); GE8.forEach(([a, b], j) => { if (i === a || i === b) D.rect(x0 + j * cw + 0.06, y + 0.04, x0 + (j + 1) * cw - 0.06, y + 0.58, { fill: nc.has(i) ? 'accent' : 'ink', fillAlpha: nc.has(i) ? 0.7 : 0.25, stroke: false }); }); }
+            const mv = minVertexCover(8, GE8); let minSC = 99; for (let m = 0; m < 256; m++) { const cov = new Set(); for (let i = 0; i < 8; i++) if ((m >> i) & 1) GE8.forEach(([a, b], j) => { if (i === a || i === b) cov.add(j); }); if (cov.size === GE8.length) minSC = Math.min(minSC, popc(m)); }
+            info = `universe = the ${GE8.length} edges, set $S_v$ = edges at $v$ · your choice: ${nc.size} vertices cover **${covered.filter(Boolean).length}/${GE8.length}** edges (${covered.every(Boolean) ? 'a node cover = a set cover' : 'not yet'}) · minimum node cover **${mv.size}**, minimum set cover **${minSC}** (exhaustive) — equal ✓`;
+          } else if (sel === 'SAT>IP') {
+            F.forEach((c, j) => {
+              const y = 6.1 - j * 1.45; const termTex = c.map((l) => (l > 0 ? `x_{${l}}` : `(1-x_{${-l}})`)).join('+'); const val = c.map((l) => (l > 0 ? asg[l] : 1 - asg[-l]));
+              D.text(`$${cnfTex([c])}$`, 0.4, y, { baseline: 'middle', size: 14 });
+              D.text(`$${termTex}\\ge 1$`, 10.6, y + 0.35, { baseline: 'middle', size: 13 });
+              const sum = val.reduce((a, b) => a + b, 0);
+              D.text(`$${val.join('+')}=${sum}$ ${sum >= 1 ? '✓' : '✗'}`, 10.6, y - 0.4, { baseline: 'middle', size: 12.5, weight: 700, color: sum >= 1 ? 'green' : 'red' });
+            });
+            for (let i = 1; i <= 3; i++) { const x = 1.2 + (i - 1) * 2.4; D.rect(x - 0.9, 0.2, x + 0.9, 1.4, { fill: asg[i] ? 'green' : 'red', fillAlpha: 0.22, color: asg[i] ? 'green' : 'red', width: 1.6, radius: 6 }); D.text(`x${i} = ${asg[i]}`, x, 0.8, { align: 'center', baseline: 'middle', size: 13, weight: 700, halo: false }); }
+            D.text(`$x=(${asg.slice(1).join(',')})\\in\\{0,1\\}^3$`, 15, 0.8, { align: 'center', size: 13, color: 'muted' });
+            const sat = cnfSat(F, asg), ineq = F.every((c) => c.reduce((s2, l) => s2 + (l > 0 ? asg[l] : 1 - asg[-l]), 0) >= 1);
+            info = `assignment satisfies φ: **${sat}** · satisfies every inequality: **${ineq}** — the two columns always agree ✓ · formula satisfiable: **${allModels(3, F, 1).length > 0}**, 0–1 system feasible: **${(() => { let ok = false; for (let m = 0; m < 8; m++) { const x = [null, m & 1, (m >> 1) & 1, (m >> 2) & 1]; if (F.every((c) => c.reduce((s2, l) => s2 + (l > 0 ? x[l] : 1 - x[-l]), 0) >= 1)) ok = true; } return ok; })()}**`;
+          } else if (sel === 'EC>KN') {
+            const U = [1, 2, 3, 4, 5, 6], cnt = U.map((u) => EC_SETS.filter((S, i) => picks.has(i) && S.includes(u)).length), b = 7;
+            EC_SETS.forEach((S, i) => { const x = 0.3 + i * 3.1 / 2 * 1.0; void x; });
+            EC_SETS.forEach((S, i) => { const x0 = 0.3 + (i % 3) * 3.2, y0 = 5.6 - Math.floor(i / 3) * 1.55, on = picks.has(i); D.rect(x0, y0 - 0.55, x0 + 3.0, y0 + 0.55, { fill: on ? 'accent' : 'faint', fillAlpha: on ? 0.28 : 0.08, color: on ? 'accent' : 'muted', width: on ? 2.4 : 1.2, radius: 6 }); D.text(`S${i + 1} = {${S.join(',')}}`, x0 + 1.5, y0, { align: 'center', baseline: 'middle', size: 12.5, weight: 700, halo: false }); });
+            D.text('click sets to choose them', 0.3, 2.4, { size: 10.5, color: 'muted' });
+            U.forEach((u, k) => { const x = 0.7 + k * 1.5; D.rect(x - 0.5, 0.35, x + 0.5, 1.35, { fill: cnt[k] === 1 ? 'green' : cnt[k] === 0 ? 'faint' : 'red', fillAlpha: cnt[k] === 1 ? 0.4 : cnt[k] === 0 ? 0.1 : 0.35, color: cnt[k] === 1 ? 'green' : cnt[k] === 0 ? 'muted' : 'red', width: 1.4, radius: 5 }); D.text(`${u}: ×${cnt[k]}`, x, 0.85, { align: 'center', baseline: 'middle', size: 11.5, weight: 700, halo: false }); });
+            const nums = EC_SETS.map((S) => S.reduce((s2, u) => s2 + b ** (u - 1), 0)), target = U.reduce((s2, u) => s2 + b ** (u - 1), 0);
+            const digs = (x) => { const d = []; for (let k = 5; k >= 0; k--) d.push(Math.floor(x / b ** k) % b); return d; };
+            D.text(`base ${b} = (number of sets)+1: set $S_i\\mapsto\\sum_{u\\in S_i}${b}^{u-1}$`, 15, 6.7, { align: 'center', size: 11.5 });
+            nums.forEach((nn, i) => { const y = 6.0 - i * 0.62, on = picks.has(i); digs(nn).forEach((dd, k) => D.text(String(dd), 11.1 + k * 0.55, y, { align: 'center', baseline: 'middle', size: 12, color: on ? 'accent' : 'muted', weight: on ? 800 : 500, halo: false })); D.text(`= ${nn}`, 14.7, y, { baseline: 'middle', size: 11, color: on ? 'accent' : 'muted', halo: false }); D.text(`S${i + 1}`, 10.3, y, { align: 'right', baseline: 'middle', size: 10, color: 'muted', halo: false }); });
+            const sum = subset(nums, picks).reduce((a, c) => a + c, 0), sd = digs(sum), ok = sum === target;
+            D.line(10.6, 2.45, 17.6, 2.45, { color: 'ink', width: 1.2 });
+            sd.forEach((dd, k) => D.text(String(dd), 11.1 + k * 0.55, 2.05, { align: 'center', baseline: 'middle', size: 13, weight: 800, color: dd === 1 ? 'green' : 'red', halo: false })); D.text(`= ${sum}`, 14.7, 2.05, { baseline: 'middle', size: 11.5, weight: 700, halo: false }); D.text('sum', 10.3, 2.05, { align: 'right', baseline: 'middle', size: 10, color: 'muted', halo: false });
+            digs(target).forEach((dd, k) => D.text(String(dd), 11.1 + k * 0.55, 1.35, { align: 'center', baseline: 'middle', size: 13, weight: 800, color: 'green', halo: false })); D.text(`= ${target}`, 14.7, 1.35, { baseline: 'middle', size: 11.5, weight: 700, color: 'green', halo: false }); D.text('target', 10.3, 1.35, { align: 'right', baseline: 'middle', size: 10, color: 'muted', halo: false });
+            const dlxr = dlx(EC_SETS.map((S) => S.map((u) => u - 1)), 6, 0, { maxSol: 99 }), ss = subsetSumFind(nums, target);
+            info = `chosen sets cover each element exactly once: **${cnt.every((c) => c === 1)}** · chosen numbers sum to the target $${target}$: **${ok}** (no carries occur: each digit counts how often an element is covered) · exact covers (dancing links): **${dlxr.solutions.length}**; subset of the numbers hitting the target (DP): **${ss ? 'exists' : 'none'}** ✓`;
+          } else if (sel === 'KN>PA') {
+            const nums = EC_SETS.map((S) => S.reduce((s2, u) => s2 + 7 ** (u - 1), 0)), target = 19608, S = nums.reduce((a, b2) => a + b2, 0), p = S + target, q = 2 * S - target;
+            const Ls = sideN.map((s2, i) => (s2 === 0 ? nums[i] : 0)).reduce((a, b2) => a + b2, 0) + p, Rs = sideN.map((s2, i) => (s2 === 1 ? nums[i] : 0)).reduce((a, b2) => a + b2, 0) + q;
+            D.text('numbers from the exact-cover reduction, target $t=19608$', 5, 6.55, { align: 'center', size: 11, color: 'muted' });
+            nums.forEach((nn, i) => { const y = 0.7 + (5 - i) * 1.0, on = sideN[i] === 1; D.rect(0.8 + on * 4.4, y - 0.38, 4.2 + on * 4.4, y + 0.38, { fill: on ? 'orange' : 'accent', fillAlpha: 0.25, color: on ? 'orange' : 'accent', width: 1.5, radius: 5 }); D.text(`a${i + 1} = ${nn}`, 2.5 + on * 4.4, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, halo: false }); });
+            D.text('left pile (with p)', 2.5, 7.0, { align: 'center', size: 10.5, color: 'accent' }); D.text('right pile (with q)', 6.9, 7.0, { align: 'center', size: 10.5, color: 'orange' });
+            D.text(`$p=S+t=${p}$`, 15, 5.7, { align: 'center', size: 13, color: 'orange' }); D.text(`$q=2S-t=${q}$`, 15, 4.9, { align: 'center', size: 13, color: 'purple' });
+            D.text(`$\\text{left}=${Ls}$`, 15, 3.7, { align: 'center', size: 14, weight: 700, color: Ls === Rs ? 'green' : 'ink' }); D.text(`$\\text{right}=${Rs}$`, 15, 2.9, { align: 'center', size: 14, weight: 700, color: Ls === Rs ? 'green' : 'ink' });
+            D.text(Ls === Rs ? 'balanced' : 'not balanced', 15, 1.9, { align: 'center', size: 14, weight: 800, color: Ls === Rs ? 'green' : 'red' });
+            D.text('click a number to move it to the other pile', 5, 0.25, { align: 'center', size: 10.5, color: 'muted' });
+            const allv = [...nums, p, q], P2 = subsetSumFind(allv, 2 * S), SS = subsetSumFind(nums, target);
+            info = `$S=${S}$, so each side must weigh $2S=${2 * S}$ · your piles: ${Ls} vs ${Rs} ${Ls === Rs ? '— balanced; the numbers on $q$’s side then sum to $t$' : ''} · PARTITION of the 8 numbers solvable: **${!!P2}**, SUBSET-SUM with target $t$: **${!!SS}** ✓ (equal answers, as the reduction promises)`;
+          } else if (sel === 'PA>MC') {
+            const a = NUMS[numsSel.value], n = a.length, Sx = a.reduce((s2, x) => s2 + x, 0);
+            const P = (i) => { const ang = Math.PI / 2 - (2 * Math.PI * i) / n; return [10 + 3 * Math.cos(ang), 4.2 + 3 * Math.sin(ang)]; };
+            const A0 = a.map((x, i) => (side7[i] === 0 ? x : 0)).reduce((s2, x) => s2 + x, 0), B0 = Sx - A0;
+            let cut = 0; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const w = a[i] * a[j], c = side7[i] !== side7[j]; if (c) cut += w; const Pi = P(i), Pj = P(j); D.line(Pi[0], Pi[1], Pj[0], Pj[1], { color: c ? 'red' : 'faint', width: c ? 0.5 + w / 4 : 0.6, alpha: c ? 0.8 : 0.4 }); }
+            for (let i = 0; i < n; i++) { const Pi = P(i); D.dot(Pi[0], Pi[1], { r: 14, color: side7[i] ? 'orange' : 'accent' }); D.text(String(a[i]), Pi[0], Pi[1], { align: 'center', baseline: 'middle', size: 13, weight: 800, color: 'panel', halo: false }); }
+            D.text(`numbers $a=(${a.join(', ')})$, $S=${Sx}$`, 3.2, 6.2, { align: 'center', size: 12.5 }); D.text('edge $\\{i,j\\}$ gets weight $a_ia_j$', 3.2, 5.4, { align: 'center', size: 12.5 });
+            D.text(`sums: $${A0}$ | $${B0}$`, 3.2, 3.9, { align: 'center', size: 15, weight: 700, color: A0 === B0 ? 'green' : 'ink' });
+            D.text(`cut weight $=${A0}\\cdot${B0}=${cut}$`, 3.2, 3.0, { align: 'center', size: 14, weight: 700 }); D.text(`threshold $S^2/4=${Sx * Sx / 4}$`, 3.2, 2.2, { align: 'center', size: 13, color: 'green' });
+            D.text('click a vertex to switch its side (blue / orange)', 3.2, 0.8, { align: 'center', size: 10.5, color: 'muted' });
+            let best = 0; for (let m = 0; m < (1 << n); m++) { let w = 0; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (((m >> i) & 1) !== ((m >> j) & 1)) w += a[i] * a[j]; best = Math.max(best, w); }
+            const part = !!subsetSumFind(a, Sx / 2);
+            info = `cut weight = (sum of side 1)·(sum of side 2) $\\le S^2/4$, with equality iff the sums are equal · maximum cut (exhaustive): **${best}** vs $S^2/4=${Sx * Sx / 4}$ → max cut ≥ threshold: **${best >= Sx * Sx / 4}**; PARTITION solvable: **${part}** ✓ (they agree)`;
+          }
+        });
+        v.legend([['accent', 'executed reduction'], ['muted', 'described only'], ['gold', 'selected']]);
+        v.readout(() => `${info}\nKarp (1972): **21** problems shown NP-complete from Cook's SAT; the Garey–Johnson catalogue (1979) lists over **300**, and every one of Karp's 21 is still NP-complete today.`);
       },
     },
   ],
