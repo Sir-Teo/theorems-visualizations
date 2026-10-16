@@ -88,7 +88,7 @@ and for a daughter that is stable and absent at $t=0$, $D(t)=N_0-N(t)$. The deca
           const { t, k, P, n } = info, T = iso.value, lam = LN2 / T;
           const est = k > 0 ? Math.log(1 + k / Math.max(P, 0.5)) / lam : 0;
           return String.raw`At $t=${v.fix(t, 2)}\,T_{1/2}=$ **${fmtYr(t * T)}** (${'$'}T_{1/2}=$ ${fmtYr(T)}): expected survivors $N_02^{-t/T}=${v.fix(n * Math.pow(2, -t), 1)}$, counted $P=${P}$, $D=${k}$.
-Age from the counted ratio, $\ln(1+D/P)/\lambda=$ **${fmtYr(est)}** (true ${fmtYr(t * T)}); the scatter is $\sim\!1/\sqrt{N}\approx${v.fix(100 / Math.sqrt(n), 0)}\%$.`;
+Age from the counted ratio, $\ln(1+D/P)/\lambda=$ **${fmtYr(est)}** (true ${fmtYr(t * T)}); the scatter is $\sim\!1/\sqrt{N}\approx${v.fix(100 / Math.sqrt(n), 0)}%$.`;
         });
       },
     },
@@ -140,8 +140,8 @@ For ${'$'}^{40}$K, which decays to ${'$'}^{40}$Ar only by a branch $\lambda_e$ o
         v.readout(() => {
           const { q, R, t, dt, sg } = st;
           const Tmin = Math.log(2) / q.lam;
-          return String.raw`${q.label}: $D^*/P=${v.sci(R, 3)}$ gives $t=\ln(1+${q.k > 1.001 ? '(\\lambda/\\lambda_e)' : ''}R)/\lambda=$ **${fmtYr(t)}** $\pm$ ${fmtYr(dt)} (${v.fix(100 * dt / t, 1)}\%).
-Half-life of this parent: ${fmtYr(Tmin)}; ${t > Tmin ? 'the sample is older than one half-life' : 'less than one half-life has passed, so the ratio grows nearly linearly with age'}; a ratio error of ${v.fix(sg * 100, 1)}\% costs ${v.fix(100 * dt / t, 1)}\% in age.`;
+          return String.raw`${q.label}: $D^*/P=${v.sci(R, 3)}$ gives $t=\ln(1+${q.k > 1.001 ? '(\\lambda/\\lambda_e)' : ''}R)/\lambda=$ **${fmtYr(t)}** $\pm$ ${fmtYr(dt)} (${v.fix(100 * dt / t, 1)}%).
+Half-life of this parent: ${fmtYr(Tmin)}; ${t > Tmin ? 'the sample is older than one half-life' : 'less than one half-life has passed, so the ratio grows nearly linearly with age'}; a ratio error of ${v.fix(sg * 100, 1)}% costs ${v.fix(100 * dt / t, 1)}% in age.`;
         });
       },
     },
@@ -160,7 +160,7 @@ a straight line (the *isochron*) in the plane of ${'$'}^{87}$Rb/${'$'}^{86}$Sr a
       tags: ['isochron', 'Rb–Sr'],
       scope: String.raw`Needs a closed system for Rb and Sr, a common initial ratio (cogenetic minerals), and enough spread in Rb/Sr.`,
       viz(v) {
-        const MIN = [['apatite', 0.03], ['plagioclase', 0.6], ['whole rock', 4], ['K-feldspar', 11], ['muscovite', 45], ['biotite', 120]];
+        const MIN = [['apatite', 0.05, 'ne'], ['plagioclase', 0.6, 'se'], ['whole rock', 2, 'nw'], ['K-feldspar', 5, 'se'], ['muscovite', 14, 'se'], ['biotite', 30, 'nw']];
         const tsl = v.slider('true age (Ga)', 0.2, 4.5, 1.8, { step: 0.01 });
         const y0s = v.slider('initial $^{87}$Sr/$^{86}$Sr', 0.700, 0.720, 0.705, { step: 0.0005, decimals: 4 });
         const sg = v.slider('analytical error $\\sigma$ (Sr ratio)', 0, 0.05, 0.01, { step: 0.001, decimals: 3 });
@@ -169,32 +169,32 @@ a straight line (the *isochron*) in the plane of ${'$'}^{87}$Rb/${'$'}^{86}$Sr a
         const excl = v.toggle('exclude biotite from fit', false);
         const lam = LAM.Rb87 * 1e9;
         const r = v.rng(11), noise = MIN.map(() => r.normal());
-        const s = v.stage({ x: [0, 135], y: [0.69, 0.9], axes: 'box', gutter: true, xlabel: '$^{87}$Rb/$^{86}$Sr', ylabel: '$^{87}$Sr/$^{86}$Sr', height: 360 });
+        const s = v.stage({ x: [0, 34], y: [0.69, 0.9], axes: 'box', gutter: true, xlabel: '$^{87}$Rb/$^{86}$Sr', ylabel: '$^{87}$Sr/$^{86}$Sr', height: 360 });
         let st = {};
         v.render(() => {
           const T = tsl.value, y0 = y0s.value, sd = sg.value;
           const ev = Math.min(evs.value, T * 0.95);
-          const xwr = 4;
-          const pts = MIN.map(([nm, x], i) => {
+          const xwr = 2;
+          const pts = MIN.map(([nm, x, lp], i) => {
             let y = y0 + x * Math.expm1(lam * T);
             if (dist.value && nm === 'biotite') {
               const rwr = y0 + xwr * Math.expm1(lam * (T - ev));
               y = rwr + x * Math.expm1(lam * ev);
             }
-            return { nm, x, y: y + sd * noise[i] };
+            return { nm, x, lp, y: y + sd * noise[i] };
           });
           const fitpts = excl.value ? pts.filter((p) => p.nm !== 'biotite') : pts;
           const f = v.M.linreg(fitpts.map((p) => p.x), fitpts.map((p) => p.y));
           const ymax = Math.max(...pts.map((p) => p.y)) + 0.01;
-          s.setView([0, 135], [y0 - 0.012, Math.max(y0 + 0.05, ymax + 0.02)]);
+          s.setView([0, 34], [y0 - 0.012, Math.max(y0 + 0.05, ymax + 0.02)]);
           s.hline(y0, { color: 'faint', dash: true });
-          s.line(0, y0, 135, y0 + 135 * Math.expm1(lam * T), { color: 'faint', width: 1 });
-          s.line(0, f.intercept, 135, f.intercept + 135 * f.slope, { color: 'green', width: 2.5 });
+          s.line(0, y0, 34, y0 + 34 * Math.expm1(lam * T), { color: 'faint', width: 1 });
+          s.line(0, f.intercept, 34, f.intercept + 34 * f.slope, { color: 'green', width: 2.5 });
           s.dot(0, f.intercept, { color: 'green', r: 5, hollow: true });
           for (const p of pts) {
             if (sd > 0) s.segment([p.x, p.y - sd], [p.x, p.y + sd], { color: 'muted', width: 1 });
             const bad = dist.value && p.nm === 'biotite';
-            s.dot(p.x, p.y, { color: bad ? 'red' : (excl.value && p.nm === 'biotite' ? 'faint' : 'accent'), r: 5, label: p.nm, labelPos: p.x > 100 ? 'nw' : (p.x < 20 ? 'ne' : 'se') });
+            s.dot(p.x, p.y, { color: bad ? 'red' : (excl.value && p.nm === 'biotite' ? 'faint' : 'accent'), r: 5, label: p.nm, labelPos: p.lp });
           }
           const n = fitpts.length;
           let chi = 0;

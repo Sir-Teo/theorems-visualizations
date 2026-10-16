@@ -33,14 +33,14 @@ function bomb(Q, kl, seed) {
   for (let i = 0; i <= n; i++) {
     const t = i * dt;
     ts.push(t); Ts.push(T + (rng ? 0.0012 * rng.normal() : 0));
-    const rate = t >= T_IGN ? Q / TAU * Math.exp(-(t - T_IGN) / TAU) : 0;
-    T += dt * (rate / CCAL - kl * (T - TJ) + STIR);
+    const heat = t >= T_IGN ? Q * Math.exp(-(t - T_IGN) / TAU) * (1 - Math.exp(-dt / TAU)) : 0;   // exact release in this step (kJ)
+    T += heat / CCAL + dt * (-kl * (T - TJ) + STIR);
   }
   return { ts, Ts };
 }
 function fitLine(ts, Ts, a, b) { const xs = [], ys = []; ts.forEach((t, i) => { if (t >= a && t <= b) { xs.push(t); ys.push(Ts[i]); } }); const n = xs.length; const mx = xs.reduce((s, x) => s + x) / n, my = ys.reduce((s, y) => s + y) / n; let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) ** 2; } const m = sxy / sxx; return { m, c: my - m * mx }; }
 function analyse(sim) {
-  const f = fitLine(sim.ts, sim.Ts, 1, T_IGN - 0.5), a = fitLine(sim.ts, sim.Ts, T_IGN + 7, T_END - 0.5);
+  const f = fitLine(sim.ts, sim.Ts, 1, T_IGN - 0.5), a = fitLine(sim.ts, sim.Ts, T_IGN + 4, T_IGN + 14);
   const fore = (t) => f.m * t + f.c, aft = (t) => a.m * t + a.c;
   const dt = sim.ts[1] - sim.ts[0], i0 = Math.round(T_IGN / dt), i1 = Math.round((T_IGN + 6) / dt);
   // equal-area time: ∫(T − fore) over [ign, t*] = ∫(aft − T) over [t*, ign+6]
@@ -93,8 +93,8 @@ export default {
       viz(v) {
         const sel = v.select('molecule', Object.keys(MOLS).map((k) => ({ value: k, label: `$${MOLS[k].tex}$` })), 'N2');
         const Ts = v.slider('temperature $T$', 10, 5000, 300, { log: true, fmt: (x) => `${x.toFixed(0)} K` });
-        const sc = v.stage({ x: [10, 5000], y: [0, 7], xlog: true, axes: 'box', gutter: true, xlabel: 'T / K', ylabel: 'C_V,m / R', height: 350, title: 'heat capacity against temperature' });
-        const sb = v.stage({ x: [0, 3], y: [0, 7], axes: 'box', gutter: true, ylabel: 'C_V,m / R', height: 350, title: 'what is switched on at this T', xticks: [[0.9, 'equipartition'], [2.1, 'model']] });
+        const sc = v.stage({ x: [10, 5000], y: [0, 7], xlog: true, axes: 'box', gutter: true, xlabel: '$T$ / K', ylabel: '$C_V/R$', height: 350, title: 'heat capacity against temperature' });
+        const sb = v.stage({ x: [0, 3], y: [0, 7], axes: 'box', gutter: true, ylabel: '$C_V/R$', height: 350, title: 'what is switched on at this T', xticks: [[0.9, 'equipartition'], [2.1, 'model']] });
         v.render(() => {
           const m = MOLS[sel.value], T = Ts.value, cl = classical(m);
           const f = (key) => (x) => key === 'tot' ? (() => { const p = parts(m, x); return p.tr + p.rot + p.vib; })() : parts(m, x)[key];
@@ -154,8 +154,8 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
           sp.fn((V) => p1 * V1 / V, { color: 'ink', width: 1.8, dash: [6, 4], domain: [0.8, 40] });
           sp.fn((V) => p1 * (V1 / V) ** g, { color: 'accent', width: 2.6, domain: [V1 / 25, V1 * 1.2] });
           sp.dot(V1, p1, { r: 6, color: 'ink', label: '1', labelPos: 'ne' });
-          sp.tex('T = \\text{const}', 14, p1 * V1 / 14, { color: 'ink', size: 12, dy: -14 });
-          sp.tex('pV^\\gamma = \\text{const}', 3, p1 * (V1 / 3) ** g * 0.55, { color: 'accent', size: 12 });
+          sp.tex('pV = \\text{const}', 9, p1 * V1 / 9 * 0.55, { color: 'ink', size: 12 });
+          sp.tex('pV^\\gamma = \\text{const}', 2.2, p1 * (V1 / 2.2) ** g * 1.6, { color: 'accent', size: 12 });
           // numerical check: integrate C_V dT = −(RT/V) dV from V1 to V2 (RK4 on ln T against ln V)
           const Tnum = v.M.rk4((V, y) => -(R / Cv) * y / V, V1, T1, V2, 200).pop()[1];
           const wAd = Cv * (T2 - T1), wIso = R * T1 * Math.log(r);
@@ -194,7 +194,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
         const hnd = s.handle(T_IGN + 2.5, 25, { color: 'gold', r: 8, constrain: (x) => [Math.min(T_IGN + 5, Math.max(T_IGN, x)), 25.5] });
         v.button('Equal areas', () => { hnd.x = info.tEq; });
         let info = {}, key = '';
-        let sim, an, calib, cal, simB;
+        let sim, an, cal, simB, first = true;
         v.render(() => {
           const sm = SAMPLES[sel.value], m = mass.value, kl = leak.value;
           const k2 = `${sel.value}|${m}|${kl}`;
@@ -206,6 +206,7 @@ Since $\gamma>1$ the adiabat is steeper than the isotherm through the same point
             cal = SAMPLES.benz.u / dTB;   // kJ/K
           }
           const ts = sim.ts, Ts = sim.Ts;
+          if (first) { first = false; hnd.x = an.tEq; }
           const lo = Math.min(...Ts) - 0.2, hi = Math.max(...Ts) + 0.3;
           s.setView([0, T_END], [lo, hi]);
           const tS = hnd.x;

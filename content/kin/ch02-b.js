@@ -17,12 +17,12 @@ export default {
       viz(v) {
         const wS = v.slider('barrier weight $w$', 0.6, 0.95, 0.75, { step: 0.01 });
         const th = v.slider('slice direction $\\theta$ (°)', 0, 180, 40, { step: 1 });
-        const sS = v.slider('position along the path', -1, 1, -0.45, { step: 0.01 });
+        const sS = v.slider('position along the path', -2, 2, -0.8, { step: 0.01 });
         v.button('snap to reaction coordinate', () => th.set(((Math.atan2(cache.E.vectors[0][1], cache.E.vectors[0][0]) * 180 / Math.PI) + 180) % 180));
         v.button('snap to the other eigenvector', () => th.set(((Math.atan2(cache.E.vectors[1][1], cache.E.vectors[1][0]) * 180 / Math.PI) + 180) % 180));
         const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 330, title: 'surface near the saddle', weight: 1.1, minWidth: 250 });
-        const B = v.stage({ x: [-0.6, 0.6], y: [-0.6, 0.6], axes: 'box', gutter: true, height: 330, xlabel: 'distance from the saddle along the slice (Å)', ylabel: 'V − V‡ (eV)', title: 'energy along the slice', weight: 1, minWidth: 250 });
-        const C = v.stage({ x: [-1.5, 1.5], y: [-0.1, 0.5], axes: 'box', gutter: true, height: 330, xlabel: 'path length s (Å, mass-scaled)', ylabel: 'V (eV)', title: 'barrier profile', weight: 1, minWidth: 250 });
+        const B = v.stage({ x: [-0.6, 0.6], y: [-0.6, 0.6], axes: 'box', gutter: true, height: 330, xlabel: 'slice coordinate (Å)', ylabel: 'V − V‡ (eV)', title: 'energy along the slice', weight: 1, minWidth: 250 });
+        const C = v.stage({ x: [-2, 2], y: [-0.1, 0.5], axes: 'box', gutter: true, height: 330, xlabel: 'path length s (Å, mass-scaled)', ylabel: 'V (eV)', title: 'barrier profile', weight: 1, minWidth: 250 });
         let cache = null, key = '';
         const prep = () => {
           if (key === String(wS.value)) return cache; key = String(wS.value);
@@ -56,8 +56,8 @@ export default {
           B.fn((r) => Math.min(0.6, vXY(cx + r * d[0], cy + r * d[1], P) - sd.V), { color: 'gold', width: 2.6, domain: [-0.6, 0.6] });
           B.fn((r) => 0.5 * kap * r * r, { color: 'ink', width: 1.6, dash: [6, 4], domain: [-0.6, 0.6] });
           // profile
-          C.setView([S[0], S[S.length - 1]], [-0.1, Math.max(...V) * 1.25]);
-          C.path(S.map((s, i) => [s, V[i]]), { color: 'accent', width: 2.6 });
+          C.setView([-2, 2], [-0.1, Math.max(...V) * 1.25]);
+          C.path(S.map((s, i) => [s, V[i]]).filter((p) => Math.abs(p[0]) <= 2.05), { color: 'accent', width: 2.6 });
           C.dot(0, sd.V, { r: 5, color: 'ink', label: 'saddle', labelPos: 'n' }); C.dot(S[kk], V[kk], { r: 6, color: 'accent' });
           C.hline(0, { color: 'faint', dash: [3, 4] });
           const nu = Math.sqrt(Math.abs(E.values[0]) / M_EFF) / (2 * Math.PI * 2.99792458e-5);
@@ -109,7 +109,7 @@ export default {
           B.path(FR.map((x, i) => [x, pr[i]]), { color: 'accent', width: 2.6 }); B.dots(FR.map((x, i) => [x, pr[i]]), { r: 4, color: 'accent' });
           B.vline(fv.value, { color: 'gold', dash: [4, 4] });
           const m = (a, b) => { const s = pr.slice(a, b); return s.reduce((p, q) => p + q, 0) / s.length; };
-          info = { x: sd.x, y: sd.y, bar: sd.V, exo: -dD.value, out: tr.outcome, lo: m(0, 3), hi: m(7, 10), E };
+          info = { x: sd.x, y: sd.y, bar: sd.V, exo: dD.value, out: tr.outcome, lo: m(0, 3), hi: m(7, 10), E };
         });
         v.legend([['accent', 'reaction probability (trajectories)'], ['gold', 'trajectory shown'], ['red', 'saddle and its level']]);
         v.readout(() => `saddle at $r_{AB}=${v.fix(info.x, 2)}$, $r_{BC}=${v.fix(info.y, 2)}$ Å (BC bond ${info.y < 0.9 ? 'barely stretched: an **early** barrier' : info.y > 1.05 ? 'much stretched: a **late** barrier' : 'moderately stretched: a central barrier'}); exothermicity $${v.fix(info.exo, 2)}$ eV, barrier $${v.fix(info.bar, 2)}$ eV\nmean reaction probability with mostly translation (first three fractions): $${v.fix(info.lo, 2)}$ · mostly vibration (last three): $${v.fix(info.hi, 2)}$ → **${info.lo > info.hi + 0.1 ? 'translation is more effective' : info.hi > info.lo + 0.1 ? 'vibration is more effective' : 'no strong preference'}** at $E=${v.fix(info.E, 2)}$ eV`);
@@ -120,7 +120,7 @@ export default {
       num: '2.9', kind: 'Method', name: 'Crossed molecular beams',
       statement: String.raw`In a **crossed-beam experiment** two collimated beams of reactants, A and BC, intersect in vacuum so that single reactive collisions occur at known velocities $\mathbf v_A,\mathbf v_B$ and the products are detected as a function of **lab angle** $\Theta$ and speed. Momentum conservation fixes the centre-of-mass velocity $\mathbf v_{cm}=(m_A\mathbf v_A+m_B\mathbf v_B)/(m_A+m_B)$, and energy conservation fixes the product speed in the centre-of-mass frame, $\tfrac12\mu' u'^2=E_{\rm rel}+Q$ (with $\mu'$ the reduced mass of the products). In a **Newton diagram** the allowed lab velocities of a product lie on a circle (the Newton sphere) of that radius around the tip of $\mathbf v_{cm}$; the angular distribution in the centre-of-mass frame, forward-, backward- or symmetric-peaked, reveals the mechanism (stripping, rebound, or a long-lived complex).`,
       idea: String.raw`The lab frame blurs the dynamics, because the centre of mass moves; transforming back to the frame where the total momentum vanishes (adding $\mathbf v_{cm}$) turns each measured lab velocity into a scattering angle and speed. A rebound reaction (head-on at small impact parameters) throws the product back along the direction the reactant came from; stripping (large impact parameters, atom plucked on the fly) leaves it forward. A complex that lives for several rotations forgets the direction and gives a forward–backward symmetric pattern.`,
-      caption: String.raw`Left: the Newton diagram in velocity space for the chosen reaction (masses in u, speeds in m/s): beam velocities, the centre-of-mass velocity, and the circle of possible product velocities, with 2 000 sampled products (their COM angular distribution is drawn from the chosen mechanism). Middle: the centre-of-mass angular distribution; right: what a lab detector sees, the distribution in lab angle. The angular patterns are schematic, but kinematics are exact.`,
+      caption: String.raw`Left: the Newton diagram in velocity space for the chosen reaction (masses in u, speeds in m/s): beam velocities, the centre-of-mass velocity, and the circle of possible product velocities, with 2 000 sampled products (choose AB or C) (their COM angular distribution is drawn from the chosen mechanism). Middle: the centre-of-mass angular distribution; right: what a lab detector sees, the distribution in lab angle. The angular patterns are schematic, but kinematics are exact.`,
       deps: ['kin-2.5'],
       refs: ['Steinfeld et al.'],
       tags: ['molecular beams', 'scattering'],
@@ -133,6 +133,7 @@ export default {
         };
         const rx = v.select('reaction', Object.keys(RX).map((k) => ({ value: k, label: RX[k].name })), 'kch3i', { onChange(k) { mech.set(RX[k].mech); } });
         const mech = v.select('mechanism', [{ value: 'rebound', label: 'rebound' }, { value: 'stripping', label: 'stripping' }, { value: 'complex', label: 'long-lived complex' }, { value: 'iso', label: 'isotropic' }], 'rebound');
+        const prod = v.select('follow product', [{ value: 'AB', label: 'AB' }, { value: 'C', label: 'C' }], 'AB');
         const vA = v.slider('speed of beam A (m/s)', 300, 1500, 900, { step: 10 });
         const vB = v.slider('speed of beam BC (m/s)', 100, 1000, 500, { step: 10 });
         const ang = v.slider('crossing angle (°)', 30, 150, 90, { step: 1 });
@@ -140,7 +141,7 @@ export default {
         const NS = 2000;
         const A = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 340, title: 'Newton diagram (velocity space)', weight: 1.4, minWidth: 300 });
         const B = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 340, title: 'COM angular distribution', weight: 0.8, minWidth: 220 });
-        const C = v.stage({ x: [-180, 180], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'lab angle Θ of the product AB (°, from beam A)', ylabel: 'relative counts', title: 'lab-frame signal', weight: 1, minWidth: 260 });
+        const C = v.stage({ x: [-180, 180], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'lab angle Θ (°, from beam A)', ylabel: 'relative counts', title: 'lab-frame signal', weight: 1, minWidth: 260 });
         const I = (m, th) => { // angular intensity per unit angle (not normalised); th = 0 is forward (along A's COM velocity)
           const w = (t0, s) => { let d = th - t0; d = Math.atan2(Math.sin(d), Math.cos(d)); return Math.exp(-d * d / (2 * s * s)); };
           if (m === 'rebound') return 0.05 + w(Math.PI, 0.55);
@@ -163,17 +164,18 @@ export default {
           const Ep = Erel + Q.value, muP = r.mAB * r.mC / M, gp = Math.sqrt(2 * Ep * 1000 / (muP * 1e-3)), uAB = gp * r.mC / M, uC = gp * r.mAB / M;
           const uA = [VA[0] - vcm[0], VA[1] - vcm[1]], e0 = Math.atan2(uA[1], uA[0]); // forward direction
           const ths = sample(mech.value);
-          const pts = ths.map((t) => [vcm[0] + uAB * Math.cos(e0 + t), vcm[1] + uAB * Math.sin(e0 + t)]);
-          const ext = Math.max(Math.hypot(...VA), Math.hypot(...VB), Math.hypot(vcm[0], vcm[1]) + uAB) * 1.15;
+          const isAB = prod.value === 'AB', uP = isAB ? uAB : uC, off = isAB ? 0 : Math.PI;
+          const pts = ths.map((t) => [vcm[0] + uP * Math.cos(e0 + t + off), vcm[1] + uP * Math.sin(e0 + t + off)]);
+          const ext = Math.max(Math.hypot(...VA), Math.hypot(...VB), Math.hypot(vcm[0], vcm[1]) + uP) * 1.15;
           A.setView([-ext * 0.35, ext * 1.05], [-ext * 0.8, ext * 0.8]);
-          A.circle(vcm[0], vcm[1], uAB, { color: 'ink', width: 1.4, dash: [5, 4], fill: 'purple', fillAlpha: 0.05 });
+          A.circle(vcm[0], vcm[1], uP, { color: 'ink', width: 1.4, dash: [5, 4], fill: 'purple', fillAlpha: 0.05 });
           A.dots(pts, { r: 1.6, color: 'purple', alpha: 0.5 });
           A.arrow(0, 0, VA[0], VA[1], { color: 'accent', width: 2.4, head: 9 }); A.arrow(0, 0, VB[0], VB[1], { color: 'orange', width: 2.4, head: 9 });
           A.arrow(0, 0, vcm[0], vcm[1], { color: 'green', width: 2.8, head: 9 });
           A.arrow(vcm[0], vcm[1], VA[0], VA[1], { color: 'accent', width: 1.2, head: 6, alpha: 0.5, dash: true });
           A.text('A', VA[0], VA[1] - ext * 0.06, { color: 'accent', size: 13, weight: 650, align: 'center' }); A.text('BC', VB[0] + ext * 0.04, VB[1] + ext * 0.04, { color: 'orange', size: 13, weight: 650 });
           A.text('v_cm', vcm[0] * 0.5 + ext * 0.02, vcm[1] * 0.5 - ext * 0.07, { color: 'green', size: 12, weight: 650 });
-          A.text('forward', vcm[0] + uAB * Math.cos(e0) * 1.03, vcm[1] + uAB * Math.sin(e0) * 1.03 + ext * 0.04, { color: 'muted', size: 11, align: 'center' });
+          A.text(isAB ? 'forward' : 'forward partner', vcm[0] + uP * Math.cos(e0 + off) * 1.03, vcm[1] + uP * Math.sin(e0 + off) * 1.03 + ext * 0.04, { color: 'muted', size: 11, align: 'center' });
           // COM polar distribution
           B.polarGrid({ rings: [0.5, 1], spokes: 8, rmax: 1.05, angles: false });
           const mx = Math.max(...Array.from({ length: 360 }, (_, i) => I(mech.value, -Math.PI + 2 * Math.PI * i / 360)));
@@ -184,11 +186,11 @@ export default {
           const H = v.M.histogram(lab, { bins: 36, range: [-180, 180] }), mxh = Math.max(...H.counts, 1);
           C.hist({ edges: H.edges, counts: H.counts.map((c) => c / mxh) }, { color: 'purple', fillAlpha: 0.35 });
           // momentum check
-          const vAB = pts[0], vC = [vcm[0] - (r.mAB / r.mC) * (vAB[0] - vcm[0]), vcm[1] - (r.mAB / r.mC) * (vAB[1] - vcm[1])];
+          const vAB = isAB ? pts[0] : [vcm[0] - (r.mC / r.mAB) * (pts[0][0] - vcm[0]), vcm[1] - (r.mC / r.mAB) * (pts[0][1] - vcm[1])], vC = isAB ? [vcm[0] - (r.mAB / r.mC) * (vAB[0] - vcm[0]), vcm[1] - (r.mAB / r.mC) * (vAB[1] - vcm[1])] : pts[0];
           const P2 = [r.mAB * vAB[0] + r.mC * vC[0], r.mAB * vAB[1] + r.mC * vC[1]], P1 = [M * vcm[0], M * vcm[1]];
           info = { vcm, Erel, Ep, uAB, uC, res: Math.hypot(P2[0] - P1[0], P2[1] - P1[1]) / Math.hypot(...P1), gs };
         });
-        v.legend([['accent', 'beam A'], ['orange', 'beam BC'], ['green', 'centre-of-mass velocity'], ['purple', 'product AB (Newton circle)']]);
+        v.legend([['accent', 'beam A'], ['orange', 'beam BC'], ['green', 'centre-of-mass velocity'], ['purple', 'chosen product (Newton circle)']]);
         v.readout(() => `$|\\mathbf v_{cm}|=${v.fix(Math.hypot(...info.vcm), 0)}$ m/s · relative speed $${v.fix(info.gs, 0)}$ m/s, $E_{\\rm rel}=${v.fix(info.Erel, 1)}$ kJ/mol → product translational energy $E'=E_{\\rm rel}+Q=${v.fix(info.Ep, 1)}$ kJ/mol\nproduct speeds in the COM frame: AB $${v.fix(info.uAB, 0)}$ m/s, C $${v.fix(info.uC, 0)}$ m/s (momentum conservation: $m_{AB}u_{AB}=m_Cu_C$; lab momentum of a sampled pair equals the total to $${v.sci(info.res, 1)}$ relative)`);
       },
     },
@@ -211,7 +213,7 @@ When $k_{-1}\gg k_2$ ($w\to1$) the reactants are in pre-equilibrium with the com
         const Tm = v.slider('temperature marker (K)', 150, 1000, 400, { step: 5 });
         const A1 = 1e9, Am1 = 1e13, A2 = 1e9;
         const kk = (T) => { const k1 = A1 * Math.exp(-E1.value / (R * T)), km = Am1 * Math.exp(-Em1.value / (R * T)), k2 = A2 * Math.exp(-E2.value / (R * T)); return { k1, km, k2, k: k1 * k2 / (km + k2), w: km / (km + k2) }; };
-        const A = v.stage({ x: [1, 6.7], y: [-10, 25], axes: 'box', gutter: true, height: 330, xlabel: '1000 / T  (1/K × 1000)', ylabel: 'ln k_eff', title: 'Arrhenius plot of the composite rate constant', weight: 1.1 });
+        const A = v.stage({ x: [1, 6.7], y: [-10, 25], axes: 'box', gutter: true, height: 330, xlabel: '1000 / T  (1/K × 1000)', ylabel: 'ln k(eff)', title: 'Arrhenius plot of the composite rate constant', weight: 1.1 });
         const B = v.stage({ x: [150, 1000], y: [-80, 80], axes: 'box', gutter: true, height: 330, xlabel: 'T (K)', ylabel: 'apparent Eₐ (kJ/mol)', title: 'local activation energy', weight: 1, minWidth: 260 });
         let info = {};
         v.render(() => {
@@ -240,7 +242,7 @@ When $k_{-1}\gg k_2$ ($w\to1$) the reactants are in pre-equilibrium with the com
     {
       num: '2.11', kind: 'Phenomenon', name: 'Non-Arrhenius behaviour and curved Arrhenius plots',
       statement: String.raw`Over wide temperature ranges $\ln k$ against $1/T$ is generally **curved**, and the apparent activation energy $E_a(T)=-R\,d\ln k/d(1/T)$ depends on $T$. Two common causes: (i) a temperature-dependent prefactor, as in the modified Arrhenius form $k=AT^{n}e^{-E/RT}$, which gives $E_a=E+nRT$ and curves the plot upward at high $T$; (ii) **quantum tunnelling** through the barrier, which adds a transmission factor $\kappa(T)\ge1$ that grows as $T$ falls and bends the plot upward at low $T$ (towards a temperature-independent limit as $T\to0$ where only tunnelling at the bottom of the well contributes).`,
-      idea: String.raw`With $k\propto T^{n}$ the local slope has an extra $nRT$ term, small at low $T$ and growing with $T$ (for $n=1$ this is the $kT/h$ prefactor of transition-state theory, 3.x). Tunnelling is computed here honestly: for a parabolic barrier of height $V_0$ and imaginary frequency $\nu^\ddagger$ the transmission probability at energy $E$ is $P(E)=[1+e^{2\pi(V_0-E)/h\nu^\ddagger}]^{-1}$ (Kemble), and $\kappa(T)$ is its Boltzmann average divided by the classical $e^{-V_0/RT}$, integrated from $E=0$. Light atoms and thin barriers (hydrogen transfer) tunnel most.`,
+      idea: String.raw`With $k\propto T^{n}$ the local slope has an extra $nRT$ term, small at low $T$ and growing with $T$ (for $n=1$ this is the $k_BT/h$ prefactor of transition-state theory, chapter 3). Tunnelling is computed here honestly: for a parabolic barrier of height $V_0$ and imaginary frequency $\nu^\ddagger$ the transmission probability at energy $E$ is $P(E)=[1+e^{2\pi(V_0-E)/h\nu^\ddagger}]^{-1}$ (Kemble), and $\kappa(T)$ is its Boltzmann average divided by the classical $e^{-V_0/RT}$, integrated from $E=0$. Light atoms and thin barriers (hydrogen transfer) tunnel most.`,
       caption: String.raw`The solid curve is $\ln k$ against $1000/T$ for $k=A(T/300)^{n}\kappa(T)e^{-V_0/RT}$ from 100 K to 1000 K; the dashed line is the straight Arrhenius fit over the shaded window, which you can slide. Right: the local activation energy. Switch off tunnelling to isolate the prefactor effect; raise $\nu^\ddagger$ to tunnel more. Notice that an activation energy measured in a narrow window depends on where the window is.`,
       deps: ['kin-2.1'],
       refs: ['Houston'],
@@ -316,7 +318,7 @@ When $k_{-1}\gg k_2$ ($w\to1$) the reactants are in pre-equilibrium with the com
           info = { Efit, pc: pdeg(Tq), true: r.Ea, q: Efit * 1000 / 4.184, f10: Math.exp(Efit / R * (1 / Tq - 1 / (Tq + 10))), Tq };
         });
         v.legend([['accent', 'synthetic data / model', { dot: true }], ['green', 'straight-line fit', { dash: true }]]);
-        v.readout(() => `slope of the fit: $E_a=${v.fix(info.Efit, 1)}$ kJ/mol (the value used to make the data: ${info.true}) · in Arrhenius's notation $q=${v.fix(info.q, 0)}$ cal/mol\nat $t=${Tc.value}$ °C the rate rises by $${v.fix(info.pc, 1)}$ % per degree and by a factor $${v.fix(info.f10, 2)}$ over 10 K (paper: about 10–15 % per degree; the ${info.true === 107 ? 'modern $E_a\\approx107$ kJ/mol gives about 14 % per degree at 25 °C, inside that range' : 'illustrative values give ' + v.fix(info.pc, 1) + ' %'})`);
+        v.readout(() => `slope of the fit: $E_a=${v.fix(info.Efit, 1)}$ kJ/mol (the value used to make the data: ${info.true}) · in Arrhenius's notation $q=${v.fix(info.q, 0)}$ cal/mol\nat $t=${Tc.value}$ °C the fitted rate rises by $${v.fix(info.pc, 1)}$ % per degree and by a factor $${v.fix(info.f10, 2)}$ over 10 K — ${info.pc > 15 ? 'a little above' : info.pc >= 10 ? 'inside' : 'below'} the 10–15 % per degree that Arrhenius quoted for reaction rates near room temperature; a $\\sqrt T$ collision frequency would give only $${v.fix(50 / info.Tq, 2)}$ %`);
       },
     },
   ],
