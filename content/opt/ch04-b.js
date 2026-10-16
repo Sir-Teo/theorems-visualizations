@@ -174,6 +174,7 @@ The robust feasible set is contained in the nominal polyhedron, and the loss in 
       caption: String.raw`Six constraints $a_i^{\mathsf T}x\le1$ with nominal normals $\bar a_i$ and uncertainty balls of radius $\rho$ (so $P_i=\rho I$). Slide $\rho$: the dashed polygon is the nominal feasible set and the shaded region is the robust set $\bar a_i^{\mathsf T}x+\rho\norm x\le1$, which shrinks and loses its corners. The objective is $\max c^{\mathsf T}x$ in direction $\varphi$. Faint lines are 4 random draws of each uncertain constraint. For 2000 random realizations of **all** data, the percentage violated by the nominal optimum (red) and by the robust optimum (green, never) is read out. The coefficients are illustrative.`,
       scope: String.raw`Ball-shaped (ellipsoidal) uncertainty in each constraint row independently, and a worst-case, not probabilistic, guarantee.`,
       credit: 'Ben-Tal & Nemirovski, 1998 (Robust convex optimization, Math. Oper. Res. 23); El Ghaoui & Lebret, 1997 (robust least squares)',
+      verify: true,
       deps: ['opt-4.9'],
       refs: ['Boyd–Vandenberghe §4.4'],
       tags: ['robust optimization', 'second-order cone'],
@@ -288,6 +289,7 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
       refs: ['Boyd–Vandenberghe §4.6'],
       tags: ['semidefinite program', 'LMI', 'spectrahedron'],
       credit: 'Nesterov & Nemirovski, 1988–1994 (interior-point theory); Alizadeh, 1995 (SIAM J. Optim. 5(1), 13–51)',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Semidefinite_programming' },
       viz(v) {
         // each block: {n, F: (x1, x2) => symmetric matrix as rows}
