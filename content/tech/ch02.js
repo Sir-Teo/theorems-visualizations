@@ -288,7 +288,7 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
       tags: ['ancient', 'statics', 'friction'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Inclined_plane' },
       viz(v) {
-        const A = v.stage({ x: [-0.3, 12.3], y: [-0.6, 6.2], equal: true, axes: false, height: 300, weight: 1.35, minWidth: 360 });
+        const A = v.stage({ x: [-0.3, 12.3], y: [-0.7, 5.6], equal: true, axes: false, height: 300, weight: 1.35, minWidth: 360, title: 'machine' });
         const B = v.stage({ x: [0, 90], y: [0, 3], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 280 });
         const C = yearStage(v, [-2800, 1700], { height: 150, full: true, title: 'dated evidence: ramps, wedges and the law of the inclined plane' });
         const mode = v.select('machine', [{ value: 'ramp', label: 'ramp' }, { value: 'wedge', label: 'wedge' }, { value: 'stevin', label: 'Stevin’s wreath' }], 'ramp');
@@ -300,6 +300,7 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
         v.render(() => {
           const m = mode.value, mu = muS.value, phi = Math.atan(mu);
           foot.visible = m === 'ramp'; shoulder.visible = m === 'wedge'; apex.visible = m === 'stevin'; muS.el.hidden = m === 'stevin';
+          A.setTitle(m === 'ramp' ? 'pushing a block up a ramp' : m === 'wedge' ? 'a wedge splitting a log' : 'Stevin’s wreath of beads (1586)');
           if (m === 'ramp') {
             const th = Math.atan2(H, TOP - foot.x), L = Math.hypot(H, TOP - foot.x);
             A.poly([[foot.x, 0], [TOP, 0], [TOP, H]], { fill: 'muted', fillAlpha: 0.3, color: 'muted', width: 1.5 });
@@ -334,7 +335,7 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
             B.dot(d, Math.sin(th) + mu * Math.cos(th), { r: 5, color: 'accent' });
             B.dot(d, 1 + mu / Math.tan(th), { r: 5, color: 'orange' });
             B.text('work / WH', 70, Math.min(2.85, 1 + mu / Math.tan(70 * D2R)) + 0.14, { size: 11.5, color: 'orange', align: 'center' });
-            B.text('force / W', 62, Math.sin(62 * D2R) + mu * Math.cos(62 * D2R) - 0.2, { size: 11.5, color: 'accent', align: 'center' });
+            B.text('force / W', 40, Math.sin(40 * D2R) + mu * Math.cos(40 * D2R) + 0.18, { size: 11.5, color: 'accent', align: 'center' });
             v.legend([['accent', 'push force (dashed: frictionless)'], ['orange', 'work done (dashed: WH)'], ['red', 'friction; self-holding limit tan θ = μ']]);
           } else if (m === 'wedge') {
             const al = Math.atan((shoulder.x - 6) / 4.2); // half-angle: shoulder half-width over wedge length 4.2
@@ -353,7 +354,7 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
             A.arrow(6 - gap(2.0) - 0.05, 2.0, 6 - gap(2.0) - 0.05 - Ls, 2.0, { color: 'green', width: 3 });
             A.arrow(6 + gap(2.0) + 0.05, 2.0, 6 + gap(2.0) + 0.05 + Ls, 2.0, { color: 'green', width: 3 });
             A.text(`${v.fix(side, 2)} F`, 6 + gap(2) + Ls / 2 + 0.2, 2.35, { size: 12, color: 'green', align: 'center', weight: 700, plate: true });
-            A.text(`half-angle ${v.fix(al / D2R, 1)}°`, 6 + hw + 0.25, 4.85, { size: 11.5, color: 'ink', align: 'left' });
+            A.text(`half-angle ${v.fix(al / D2R, 1)}°`, 6 - hw - 0.3, tip[1] + 4.2, { size: 11.5, color: 'ink', align: 'right' });
             const locks = al < phi;
             A.corner(locks ? 'self-locking: the wedge stays in when F is removed' : 'not self-locking: the log squeezes the wedge back out', 'tl', { size: 12, color: locks ? 'green' : 'red', weight: 700 });
             B.setView([1, 45], [0, 10]); B.setLabels('half-angle α (°)', 'side force / F'); B.setTitle('splitting force against wedge angle');
@@ -372,21 +373,21 @@ Stevin's proof uses no forces at all. Hang a closed loop of evenly spaced beads 
             for (let k = 0; k <= n1; k++) { const t = k / (L1 / sp); A.dot(P0[0] + t * (Q[0] - P0[0]), P0[1] + t * (Q[1] - P0[1]), { r: 5.5, color: 'accent' }); }
             for (let k = 1; k <= n2; k++) { const t = k / (L2 / sp); A.dot(Q[0] + t * (P1[0] - Q[0]), Q[1] + t * (P1[1] - Q[1]), { r: 5.5, color: 'orange' }); }
             // the festoon (catenary through the two lower corners)
-            const span = P1[0] - P0[0], sag = 1.45, a = (() => { let lo = 0.3, hi = 50; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (mid * (Math.cosh(span / 2 / mid) - 1) > sag) lo = mid; else hi = mid; } return (lo + hi) / 2; })();
+            const span = P1[0] - P0[0], sag = 1.05, a = (() => { let lo = 0.3, hi = 50; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (mid * (Math.cosh(span / 2 / mid) - 1) > sag) lo = mid; else hi = mid; } return (lo + hi) / 2; })();
             const cat = (x) => P0[1] - sag + a * (Math.cosh((x - (P0[0] + P1[0]) / 2) / a) - 1);
             let acc = 0, prev = [P0[0], cat(P0[0])];
             for (let i = 1; i <= 400; i++) { const x = P0[0] + (span * i) / 400, p = [x, cat(x)]; acc += Math.hypot(p[0] - prev[0], p[1] - prev[1]); if (acc >= sp) { A.dot(p[0], p[1], { r: 5.5, color: 'muted' }); acc = 0; } prev = p; }
-            A.text('symmetric festoon: pulls equally on both ends', 6, -0.35, { size: 11.5, color: 'muted', align: 'center' });
+            A.text('symmetric festoon: pulls equally on both ends', 6, -0.45, { size: 11.5, color: 'muted', align: 'center' });
             const s1 = (Q[1] - P0[1]) / L1, s2 = (Q[1] - P1[1]) / L2;
             A.text(`${n1 + 1} beads`, (P0[0] + Q[0]) / 2 - 0.3, (P0[1] + Q[1]) / 2 + 0.35, { size: 12, color: 'accent', align: 'right', weight: 700, plate: true });
             A.text(`${n2} beads`, (P1[0] + Q[0]) / 2 + 0.3, (P1[1] + Q[1]) / 2 + 0.35, { size: 12, color: 'orange', align: 'left', weight: 700, plate: true });
             A.corner('no perpetual motion ⇒ the two faces balance', 'tl', { size: 12, color: 'green', weight: 700 });
-            B.setView([0, 1], [0, 1.15 * Math.max(L1, L2)]); B.setLabels(null, 'length of beads (units)'); B.setTitle('pull along each face');
+            B.setView([0, 1], [0, 1.25 * Math.max(L1, L2)]); B.setLabels(null, 'length of beads (units)'); B.setTitle('pull along each face');
             B.setTicks([], null);
             const bar = (x0, L, sn, col, lab) => {
               B.rect(x0, 0, x0 + 0.13, L, { fill: col, fillAlpha: 0.25, color: col, width: 1 });
               B.rect(x0 + 0.17, 0, x0 + 0.3, L * sn, { fill: col, fillAlpha: 0.7, stroke: false });
-              B.text(lab, x0 + 0.15, -0.0, { size: 11, color: col, align: 'center', baseline: 'top', dy: 4 });
+              B.text(lab, x0 + 0.15, L, { size: 11.5, color: col, align: 'center', baseline: 'bottom', dy: -4, weight: 700 });
             };
             bar(0.08, L1, s1, 'accent', 'left face'); bar(0.58, L2, s2, 'orange', 'right face');
             B.hline(Q[1] - P0[1], { color: 'green', width: 1.5, dash: [5, 4] });
@@ -445,7 +446,7 @@ Friction is what makes the screw useful as well as strong. The thread is a wedge
         const dS = v.slider('screw diameter (mm)', 40, 200, 110, { step: 1 });
         const RS = v.slider('bar radius $R$ (m)', 0.2, 2, 0.6, { step: 0.05 });
         const muS = v.slider('thread friction $\\mu$', 0, 0.4, 0.15, { step: 0.01 });
-        const uS = v.slider('unroll one turn', 0, 1, 0.65, { step: 0.01 });
+        const uS = v.slider('unroll one turn', 0, 1, 1, { step: 0.01 });
         const push = 200; // N at the bar end
         const calc = () => {
           const p = pS.value / 1000, r = dS.value / 2000, R = RS.value, lam = Math.atan(p / (2 * Math.PI * r)), phi = Math.atan(muS.value);
@@ -471,7 +472,7 @@ Friction is what makes the screw useful as well as strong. The thread is a wedge
           A.arrow(x0 + 1.6 + 0.4 * RS.value, zTop + 0.35, x0 + 1.6 + 0.4 * RS.value, zTop + 0.95, { color: 'accent', width: 2.4 });
           A.text(`${push} N`, x0 + 1.6 + 0.4 * RS.value, zTop + 1.15, { size: 11.5, color: 'accent', align: 'center', weight: 700 });
           // helix (back half faint, front half solid) with the first turn morphing into the unrolled triangle
-          const u = uS.value, base = 2 * Math.PI * rr, tx = 1.8; // triangle placed to the right
+          const u = uS.value, tanl = c.p / (2 * Math.PI * c.r), base = Math.min(5.6, 3.4 / tanl), rise = base * tanl, tx = 2.0, tz = 2.2; // the unrolled turn, drawn at a fixed base (true slope)
           const helix = (s) => { // s in turns from the bottom; projected point and depth sign
             const a = 2 * Math.PI * s; return [x0 + rr * Math.sin(a), z0 + pp * s, Math.cos(a)];
           };
@@ -484,18 +485,18 @@ Friction is what makes the screw useful as well as strong. The thread is a wedge
           if (u > 0) {
             const pts = [];
             for (let k = 0; k <= 80; k++) {
-              const s = k / 80, h = helix(s), flat = [tx + base * s, z0 + pp * s];
+              const s = k / 80, h = helix(s), flat = [tx + base * s, tz + rise * s];
               pts.push([h[0] + u * (flat[0] - h[0]), h[1] + u * (flat[1] - h[1])]);
             }
             A.path(pts, { color: 'gold', width: 2.6 });
             if (u > 0.98) {
-              A.poly([[tx, z0], [tx + base, z0], [tx + base, z0 + pp]], { fill: 'gold', fillAlpha: 0.15, color: 'gold', width: 1.2 });
-              A.text('2πr', tx + base / 2, z0 - 0.25, { size: 12, color: 'ink', align: 'center', math: true });
-              A.text('p', tx + base + 0.15, z0 + pp / 2, { size: 13, color: 'ink', align: 'left', math: true });
-              A.text(`λ = ${v.fix(c.lam / D2R, 1)}°`, tx + 0.9, z0 + 0.22, { size: 12, color: 'gold', align: 'left', weight: 700 });
+              A.poly([[tx, tz], [tx + base, tz], [tx + base, tz + rise]], { fill: 'gold', fillAlpha: 0.15, color: 'gold', width: 1.2 });
+              A.text(`2πr = ${v.fix(2 * Math.PI * c.r * 1000, 0)} mm`, tx + base / 2, tz - 0.3, { size: 12, color: 'ink', align: 'center' });
+              A.text(`p = ${pS.value} mm`, tx + base + 0.12, tz + rise / 2, { size: 12, color: 'ink', align: 'left' });
+              A.text(`λ = ${v.fix(c.lam / D2R, 1)}°`, tx + 1.2, tz + 0.25 + 0.1 * rise, { size: 12, color: 'gold', align: 'left', weight: 700 });
             }
           }
-          A.text('the thread is an inclined plane', tx + base / 2, z0 + pp + 0.7, { size: 11.5, color: 'gold', align: 'center' });
+          A.text('one turn of thread = an inclined plane', tx + base / 2, tz + Math.max(rise, 0) + 0.6, { size: 11.5, color: 'gold', align: 'center' });
           A.arrow(x0, z0 - 0.15, x0, z0 - 0.6, { color: 'green', width: 3 });
           A.text(`${v.fmt(c.F / 1000, 3)} kN`, x0 + 0.15, 0.5 * (z0 - 0.2) + 0.35, { size: 12, color: 'green', align: 'left', weight: 700, plate: true });
           const locks = c.lam <= c.phi;
@@ -547,12 +548,12 @@ Friction at each sheave means the rope leaving a sheave on the load side carries
       viz(v) {
         const A = v.stage({ x: [-3.6, 3.6], y: [-0.4, 10.4], equal: true, axes: false, height: 380, weight: 1.05, minWidth: 300, title: 'block and tackle' });
         const B = v.stage({ x: [0.5, 10.5], y: [0, 10.5], axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 280, xlabel: 'supporting segments n', ylabel: 'mechanical advantage W/T', title: 'advantage against number of segments' });
-        const C = yearStage(v, [-2100, 250], { height: 150, full: true, title: 'dated evidence: pulleys and tackle' });
+        const C = yearStage(v, [-2100, 250], { height: 190, full: true, title: 'dated evidence: pulleys and tackle' });
         const nS = v.slider('supporting segments $n$', 1, 8, 4, { int: true });
         const eS = v.slider('sheave efficiency $e$', 0.8, 1, 0.94, { step: 0.005 });
         const mS = v.slider('load (kg)', 50, 3000, 600, { step: 10 });
         const dir = v.select('motion', [{ value: 'up', label: 'lifting' }, { value: 'down', label: 'lowering' }], 'up');
-        const pullH = A.handle(-3.0, 3.0, { color: 'gold', label: 'pull', labelPos: 'w', constrain: (x, y) => [-3.0, clamp(y, 0.4, 3.0)] });
+        const pullH = A.handle(-2.4, 1.8, { color: 'gold', label: 'pull', labelPos: 'w', constrain: (x, y) => [-2.4, clamp(y, 0.4, 3.0)] });
         const tens = () => {
           const n = nS.value, e = dir.value === 'up' ? eS.value : 1 / eS.value, W = mS.value * G;
           let s = 0; for (let k = 1; k <= n; k++) s += e ** k;
@@ -561,7 +562,7 @@ Friction at each sheave means the rope leaving a sheave on the load side carries
         v.render(() => {
           const t = tens(), n = t.n;
           const pulled = 3.0 - pullH.y, rise = pulled / n;
-          const topY = 9.3, d = Math.min(0.62, 5.2 / (n + 1)), xs = (k) => -2.0 + 0.4 + k * d; // segment k = 0 (pull) … n
+          const topY = 9.3, d = Math.min(0.62, 5.2 / (n + 1)), xs = (k) => -2.4 + k * d; // segment k = 0 (pull) … n
           const rs = d / 2;
           const botY = 4.0 + rise; // moving block sheave centre height
           // ceiling
@@ -611,11 +612,11 @@ Friction at each sheave means the rope leaving a sheave on the load side carries
           drawYears(v, C, [
             { t: [-1991, -1802], label: 'pulleys, Egypt (12th Dynasty)' },
             { t: [-2000, -1700], label: 'pulleys, Mesopotamia' },
-            { t: [-330, -250], label: 'Mechanical Problems: pulleys explained', color: 'purple' },
+            { t: [-330, -250], label: 'Mechanical Problems', color: 'purple' },
             { t: -240, label: 'Archimedes moves a ship (Plutarch)', contested: true },
             { t: -25, label: 'Vitruvius: trispastos, pentaspastos' },
             { t: 100, label: 'Haterii relief: crane with tackle' },
-          ], { lanes: 3, ticks: [-2000, -1500, -1000, -500, 1] });
+          ], { lanes: 4, ticks: [-2000, -1500, -1000, -500, 1] });
         });
         v.legend([['accent', 'rope (thicker, redder = more tension)'], ['green', 'actual advantage'], ['muted', 'ideal advantage n', { dash: true }]]);
         v.readout(() => {
@@ -666,8 +667,7 @@ The Roman **treadwheel crane** is the ancient world's great compound machine: me
         let liftT = 0;
         v.animate((t) => {
           const c = calc();
-          const T = (HL / c.speed); // seconds for the full lift at walking speed (real time would be long; play at 20×)
-          const frac = c.ok ? ((t * 20) % (T + 4)) / T : 0; liftT = clamp(frac, 0, 1);
+          const frac = c.ok ? (t % 13) / 10 : 0; liftT = clamp(frac, 0, 1); // one lift every 13 s of animation (the real lift is much slower: see the readout)
           const h = liftT * HL, ang = (liftT * c.walk) / c.R; // wheel rotation (rad)
           // ---- A: crane geometry (metres)
           ground(A, -6.4, 9.4, 0);
@@ -686,10 +686,11 @@ The Roman **treadwheel crane** is the ancient world's great compound machine: me
             const a = -Math.PI / 2 - BETA + (k - (men.value - 1) / 2) * 0.16, fx = cxw + (c.R - 0.25) * Math.cos(a), fy = cyw + (c.R - 0.25) * Math.sin(a);
             const up = [cxw - fx, cyw - fy], L = Math.hypot(...up), u = [up[0] / L, up[1] / L];
             const hd = [fx + 1.55 * u[0] * 0 + 0, fy + 1.55]; // stand upright
-            A.line(fx, fy, fx, fy + 1.15, { color: 'ink', width: 2.4 });
-            A.circle(fx, fy + 1.4, 0.22, { fill: 'ink', fillAlpha: 1 });
-            A.line(fx, fy + 0.95, fx - 0.35, fy + 0.6 + 0.1 * Math.sin(6 * ang + k), { color: 'ink', width: 2 });
-            A.line(fx, fy, fx + 0.25 * Math.sin(5 * ang + k), fy - 0.02, { color: 'ink', width: 2 });
+            const sw = 0.3 * Math.sin(4 * ang + 2 * k);
+            A.line(fx, fy + 0.85, fx, fy + 1.45, { color: 'ink', width: 2.6 });
+            A.circle(fx, fy + 1.65, 0.2, { fill: 'ink', fillAlpha: 1 });
+            A.line(fx, fy + 0.85, fx + sw, fy, { color: 'ink', width: 2.2 }); A.line(fx, fy + 0.85, fx - sw, fy, { color: 'ink', width: 2.2 });
+            A.line(fx, fy + 1.35, fx + 0.45, fy + 1.0, { color: 'ink', width: 2 });
             void hd;
           }
           // rope: drum → jib head → tackle → stone
@@ -719,7 +720,7 @@ The Roman **treadwheel crane** is the ancient world's great compound machine: me
           B.text(`${v.fmt(inp, 3)}`, 0.27, 0.1 + inp * sc + 0.03, { size: 12, color: 'accent', align: 'center', weight: 700 });
           B.text(`${v.fmt(out + (c.lossT + c.lossJ + c.lossW) * f / 1000, 3)}`, 0.75, 0.1 + inp * sc + 0.03, { size: 12, color: 'green', align: 'center', weight: 700 });
           B.text('=', 0.51, 0.08 + Math.max(0.05, inp * sc / 2), { size: 18, color: 'ink', align: 'center', baseline: 'middle' });
-        }, { period: 1e9, still: 6 });
+        }, { period: 1e9, still: 7 });
         v.render(() => {
           drawYears(v, C, [
             { t: [-330, -250], label: 'Mechanical Problems', color: 'purple' },

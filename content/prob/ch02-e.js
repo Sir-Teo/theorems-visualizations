@@ -51,20 +51,24 @@ const RLAW = {
   par: { label: 'Pareto $\\alpha=3$', mu: 1, m2: 4 / 3, draw: (r) => (2 / 3) * (1 - r()) ** (-1 / 3), F: (x) => (x < 2 / 3 ? 0 : 1 - (2 / 3 / x) ** 3), f: (x) => (x < 2 / 3 ? 0 : 3 * (2 / 3) ** 3 * x ** -4), xmax: 5 },
 };
 const lawOpts = (keys) => keys.map((k) => ({ value: k, label: RLAW[k].label }));
-/** Discretized renewal density u = f + u*f on a grid of step dt over [0, T] (f a density; trapezoid rule). */
-function renewalDensity(f, dt, T) {
-  const n = Math.round(T / dt), fv = new Float64Array(n + 1), u = new Float64Array(n + 1);
-  for (let i = 0; i <= n; i++) fv[i] = f(i * dt);
-  let K = n; while (K > 1 && fv[K] < 1e-12) K--;
-  u[0] = fv[0];
-  for (let i = 1; i <= n; i++) { let s = 0; for (let j = 1; j <= Math.min(i - 1, K); j++) s += fv[j] * u[i - j]; if (i <= K) s += 0.5 * fv[i] * u[0]; u[i] = (fv[i] + s * dt) / (1 - 0.5 * dt * fv[0]); }
-  return u;
+/** Interarrival law discretized onto the lattice dt·{1, 2, …}: p[j] = mass of cell j (mass near 0 moved to cell 1). */
+function pmass(F, dt, n) {
+  const p = new Float64Array(n + 1);
+  for (let j = 1; j <= n; j++) p[j] = F((j + 0.5) * dt) - (j === 1 ? 0 : F((j - 0.5) * dt));
+  return p;
 }
-/** (H * F)(t_i) = ∫_0^t H(t−s) f(s) ds on the grid (trapezoid rule). */
-function convF(H, fv, dt) {
+/** Renewal masses m[k] = U({k·dt}) of the discretized law: m = p + m*p (exact for the lattice law, mass-preserving). */
+function renewalMass(p) {
+  const n = p.length - 1, m = new Float64Array(n + 1);
+  let K = n; while (K > 1 && p[K] < 1e-14) K--;
+  for (let k = 1; k <= n; k++) { let s = p[k]; for (let j = 1; j <= Math.min(k - 1, K); j++) s += p[j] * m[k - j]; m[k] = s; }
+  return m;
+}
+/** (H * F)(k·dt) = Σ_j H((k−j)dt) p[j] for the discretized law. */
+function convP(H, p) {
   const n = H.length - 1, out = new Float64Array(n + 1);
-  let K = fv.length - 1; while (K > 1 && fv[K] < 1e-12) K--;
-  for (let i = 1; i <= n; i++) { let s = 0.5 * H[i] * fv[0]; for (let j = 1; j <= Math.min(i - 1, K); j++) s += H[i - j] * fv[j]; if (i <= K) s += 0.5 * H[0] * fv[i]; out[i] = s * dt; }
+  let K = p.length - 1; while (K > 1 && p[K] < 1e-14) K--;
+  for (let k = 1; k <= n; k++) { let s = 0; for (let j = 1; j <= Math.min(k, K); j++) s += H[k - j] * p[j]; out[k] = s; }
   return out;
 }
 
@@ -255,6 +259,7 @@ $$\frac{EN_t}{t}\to\frac1\mu\quad\text{as }t\to\infty.$$`,
           L.setView(null, [0, top]);
           if (isFinite(Lw.mu)) { L.fn((t) => t / Lw.mu, { color: 'muted', width: 1.5, dash: [6, 4] }); L.fn((t) => t / Lw.mu - 1, { color: 'orange', width: 1.4, dash: [3, 3] }); if (isFinite(Lw.s2)) { const c = (Lw.s2 - Lw.mu ** 2) / (2 * Lw.mu ** 2); L.fn((t) => t / Lw.mu + c, { color: 'green', width: 1.2, dash: [2, 3], domain: [TL / 2, TL] }); } }
           L.path(cache.U, { color: 'accent', width: 2.4 });
+          R.setView(null, [0, clampN(Math.max(...cache.R.map((q) => q[1])) * 1.08, 1.6, 4)]);
           R.hline(isFinite(Lw.mu) ? 1 / Lw.mu : 0, { color: 'green', width: 2, dash: [7, 4] });
           if (isFinite(Lw.mu)) R.fn((t) => 1 / Lw.mu - 1 / t, { color: 'orange', width: 1.4, dash: [3, 3], domain: [1, TMAX] });
           R.path(cache.R, { color: 'accent', width: 2.4 });
@@ -287,7 +292,7 @@ $$\frac{EN_t}{t}\to\frac1\mu\quad\text{as }t\to\infty.$$`,
           let pts = [], mu = 1.5;
           if (k === 'lat') { const u = [1]; for (let i = 1; i <= 40; i++) u.push(0.5 * u[i - 1] + (i >= 2 ? 0.5 * u[i - 2] : 0)); pts = u.slice(1).map((m, i) => [i + 1, m]); }
           else if (k === 'irr') { mu = (1 + Math.SQRT2) / 2; for (let a = 0; a <= 40; a++) for (let b = 0; a + b * Math.SQRT2 <= 40; b++) if (a + b > 0) { const n = a + b; pts.push([a + b * Math.SQRT2, Math.exp(v.M.lgamma(n + 1) - v.M.lgamma(a + 1) - v.M.lgamma(b + 1) - n * Math.LN2)]); } pts.sort((p, q) => p[0] - q[0]); }
-          else { mu = 1; const dt = 0.005, u = renewalDensity((x) => (x >= 0.5 && x <= 1.5 ? 1 : 0), dt, 40); pts = { dens: true, dt, u }; }
+          else { mu = 1; const dt = 0.005, m = renewalMass(pmass((x) => clampN(x - 0.5, 0, 1), dt, Math.round(40 / dt))); pts = { dens: true, dt, u: m.map((x) => x / dt), m }; }
           cache[k] = { pts, mu }; return cache[k];
         };
         let st = null;
@@ -299,7 +304,7 @@ $$\frac{EN_t}{t}\to\frac1\mu\quad\text{as }t\to\infty.$$`,
             const { dt, u } = A.pts;
             T.setView(null, [0, 1.6]); T.path(Array.from(u, (y, i) => [i * dt, y]).filter((p) => p[0] <= TMAXP), { color: 'accent', width: 2 });
             T.hline(1 / mu, { color: 'muted', dash: [5, 4], width: 1 });
-            const cum = new Float64Array(u.length); for (let i = 1; i < u.length; i++) cum[i] = cum[i - 1] + 0.5 * (u[i] + u[i - 1]) * dt;
+            const cum = new Float64Array(u.length); for (let i = 1; i < u.length; i++) cum[i] = cum[i - 1] + A.pts.m[i];
             W = (s) => { const i0 = Math.round(s / dt), i1 = Math.min(u.length - 1, Math.round((s + h) / dt)); return cum[i1] - cum[i0]; };
           } else {
             T.setView(null, [0, 1.05]);
@@ -383,9 +388,8 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
       viz(v) {
         const hSel = v.select('$h$', [{ value: 'tail', label: '$1-F(t)$' }, { value: 'res', label: '$1-F(t+1)$' }, { value: 'box', label: '$1\\{t\\le1\\}$' }], 'res');
         const kS = v.slider('iterations $k$', 0, 25, 4, { int: true });
-        const dt = 0.02, TT = 12, n = Math.round(TT / dt), Lw = RLAW.gam;
-        const fv = Float64Array.from({ length: n + 1 }, (_, i) => Lw.f(i * dt));
-        const u = renewalDensity(Lw.f, dt, TT);
+        const dt = 0.01, TT = 12, n = Math.round(TT / dt), Lw = RLAW.gam;
+        const pv = pmass(Lw.F, dt, n), mU = renewalMass(pv);
         const S = v.stage({ x: [0, TT], y: [0, 1.3], height: 340, full: true, axes: 'box', gutter: true, xlabel: '$t$', title: 'iterates $H_k=h+H_{k-1}*F$ and the solution $h*U_0$' });
         const cache = {};
         let st = null;
@@ -394,8 +398,8 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
           if (!cache[hk]) {
             const h = { tail: (t) => 1 - Lw.F(t), res: (t) => 1 - Lw.F(t + 1), box: (t) => (t <= 1 ? 1 : 0) }[hk];
             const hv = Float64Array.from({ length: n + 1 }, (_, i) => h(i * dt));
-            const its = [hv]; for (let k = 1; k <= 25; k++) { const c = convF(its[k - 1], fv, dt); its.push(hv.map((x, i) => x + c[i])); }
-            const sol = hv.map((x, i) => { let s = 0.5 * (hv[i] * u[0] + hv[0] * u[i]); for (let j = 1; j < i; j++) s += hv[i - j] * u[j]; return x + (i ? s * dt : 0); });
+            const its = [hv]; for (let k = 1; k <= 25; k++) { const c = convP(its[k - 1], pv); its.push(hv.map((x, i) => x + c[i])); }
+            const sol = hv.map((x, i) => { let s = 0; for (let j = 1; j <= i; j++) s += hv[i - j] * mU[j]; return x + s; });
             const lim = { tail: 1, res: simpson((y) => 1 - Lw.F(y), 1, 30, 2000), box: 1 }[hk];
             cache[hk] = { its, sol, lim };
           }
@@ -408,7 +412,7 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
           v.legend([['accent', `$H_{${k}}$ (earlier iterates faint)`], ['ink', '$h*U_0$', { dash: true }], ['green', 'limit $\\frac1\\mu\\int_0^\\infty h$', { dash: true }]]);
           st = { k, err, lim: C.lim, end: C.sol[n] };
         });
-        v.readout(() => st && `$\\sup_{t\\le12}|H_{${st.k}}-h*U_0|=${v.fix(st.err, 4)}$. At $t=12$: $h*U_0=${v.fix(st.end, 4)}$, key renewal limit $\\frac1\\mu\\int_0^\\infty h=${v.fix(st.lim, 4)}$.`);
+        v.readout(() => st && `$\\sup_{t\\le12}|H_{${st.k}}-h*U_0|=${v.fix(st.err, 4)}$. At $t=12$: $h*U_0=${v.fix(st.end, 4)}$, key renewal limit $\\frac1\\mu\\int_0^\\infty h=${v.fix(st.lim, 4)}$ (the grid $\\Delta t=0.01$ costs about $\\Delta t\\,h(0)/2\\mu$).`);
       },
     },
     {
@@ -423,14 +427,14 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
       viz(v) {
         const kS = v.slider('iterations $k$', 0, 30, 6, { int: true });
         const dt = 0.02, TT = 10, n = Math.round(TT / dt), Lw = RLAW.gam;
-        const fv = Float64Array.from({ length: n + 1 }, (_, i) => Lw.f(i * dt));
+        const pv = pmass(Lw.F, dt, n);
         const hv = Float64Array.from({ length: n + 1 }, (_, i) => 1 - Lw.F(i * dt + 1));
         const L = v.stage({ x: [0, TT], y: [-0.2, 3.4], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$t$', title: 'iterates from four starts' });
         const R = v.stage({ x: [0, 30], y: [1e-8, 10], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$k$', title: '$\\sup_{t\\le10}|G_k-H|$' });
         // the solution: iterate long from zero
-        let Hs = new Float64Array(n + 1); for (let k = 0; k < 120; k++) { const c = convF(Hs, fv, dt); Hs = hv.map((x, i) => x + c[i]); }
+        let Hs = new Float64Array(n + 1); for (let k = 0; k < 120; k++) { const c = convP(Hs, pv); Hs = hv.map((x, i) => x + c[i]); }
         const starts = [['zero', 'accent', () => 0], ['3', 'orange', () => 3], ['wave', 'purple', (t) => 1.5 + 1.2 * Math.sin(2 * t)], ['solution', 'green', null]];
-        const runs = starts.map(([name, col, g]) => { let G = g ? Float64Array.from({ length: n + 1 }, (_, i) => g(i * dt)) : Hs.slice(); const its = [G], err = []; for (let k = 0; k <= 30; k++) { let e = 0; G.forEach((y, i) => (e = Math.max(e, Math.abs(y - Hs[i])))); err.push(e); if (k < 30) { const c = convF(G, fv, dt); G = hv.map((x, i) => x + c[i]); its.push(G); } } return { name, col, its, err }; });
+        const runs = starts.map(([name, col, g]) => { let G = g ? Float64Array.from({ length: n + 1 }, (_, i) => g(i * dt)) : Hs.slice(); const its = [G], err = []; for (let k = 0; k <= 30; k++) { let e = 0; G.forEach((y, i) => (e = Math.max(e, Math.abs(y - Hs[i])))); err.push(e); if (k < 30) { const c = convP(G, pv); G = hv.map((x, i) => x + c[i]); its.push(G); } } return { name, col, its, err }; });
         const PT = Array.from({ length: 31 }, (_, k) => (k === 0 ? 1 : v.M.gammaP(2 * k, 2 * TT))); // T_k ~ gamma(2k, 1/2)
         let st = null;
         v.render(() => {
@@ -524,7 +528,7 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
           const xm = Lw.xmax, H1 = v.M.histogram(res.filter((x) => x < xm), { bins: 40, range: [0, xm] }), H2 = v.M.histogram(len.filter((x) => x < xm), { bins: 40, range: [0, xm] });
           const sc = (H) => H.counts.map((c) => c / (P * (xm / 40)));
           const d1 = sc(H1), d2 = sc(H2);
-          const y1 = Math.max(...d1, 1 / Lw.mu) * 1.15, y2 = Math.max(...d2, ...Array.from({ length: 50 }, (_, i) => (((i + 0.5) / 50) * xm * Lw.f(((i + 0.5) / 50) * xm)) / Lw.mu), Lw.f(0.01)) * 1.15;
+          const y1 = Math.max(...d1, 1 / Lw.mu) * 1.15, y2 = Math.max(...d2, ...Array.from({ length: 50 }, (_, i) => (((i + 0.5) / 50) * xm * Lw.f(((i + 0.5) / 50) * xm)) / Lw.mu), ...Array.from({ length: 50 }, (_, i) => Lw.f(((i + 0.5) / 50) * xm))) * 1.15;
           L.setView([0, xm], [0, y1]); R.setView([0, xm], [0, Math.min(y2, 3)]);
           L.hist({ edges: H1.edges, counts: d1 }, { color: 'accent', fillAlpha: 0.35 });
           L.fn((x) => (1 - Lw.F(x)) / Lw.mu, { color: 'green', width: 2.4, n: 400 });

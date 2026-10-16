@@ -91,7 +91,7 @@ where $\{A_n\text{ i.o.}\}=\limsup_n A_n=\bigcap_{m\ge1}\bigcup_{n\ge m}A_n$ is 
           const { rows, mean, EN } = cache;
           rows.forEach((rw, i) => {
             const y = i + 1;
-            if (rw.block != null) { L.line(1, y, Math.max(1.0001, rw.block), y, { color: 'accent', width: 3, alpha: 0.7 }); L.dot(rw.block, y, { r: 3.2, color: 'green', hollow: true }); }
+            if (rw.block != null) { L.line(1, y, Math.max(1.0001, rw.block), y, { color: 'accent', width: 3, alpha: 0.7 }); if (rw.block > 1) L.dot(rw.block, y, { r: 3.2, color: 'green', hollow: true }); }
             else { L.dots(rw.occ.map((n) => [n, y]), { r: 1.7, color: 'accent' }); if (rw.occ.length) L.dot(rw.occ[rw.occ.length - 1], y, { r: 3.4, color: 'green', hollow: true }); }
           });
           const top = Math.max(EN[EN.length - 1], mean[mean.length - 1], 2) * 1.12;
@@ -187,7 +187,7 @@ where $\{A_n\text{ i.o.}\}=\limsup_n A_n=\bigcap_{m\ge1}\bigcup_{n\ge m}A_n$ is 
           v.legend([['faint', '$y_n$', { dot: true }], ['orange', 'starting subsequence', { dot: true }], ['green', 'extracted sub-subsequence', { dot: true }], ['green', 'band $|y_n-y|<1/k$', { area: true }]]);
           st = { pick, k: kLast, ok, conv: r === 0 && Math.abs(yt - YS) < 1e-9 };
         });
-        v.readout(() => st && `Extracted $${st.pick.length}$ terms (${st.pick.slice(0, 7).join(', ')}${st.pick.length > 7 ? ', …' : ''}); the next one would need $|y_n-y|<1/${st.k}$. ` + (st.ok ? 'Every start that succeeds is consistent with $y_n\\to y$.' : 'This start has no sub-subsequence converging to $y$, so by the theorem (contrapositive) $y_n\\not\\to y$.'));
+        v.readout(() => st && `Extracted $${st.pick.length}$ term${st.pick.length === 1 ? '' : 's'} (${st.pick.slice(0, 7).join(', ')}${st.pick.length > 7 ? ', …' : ''}); the next one would need $|y_n-y|<1/${st.k}$. ` + (st.ok ? 'Every start that succeeds is consistent with $y_n\\to y$.' : 'This start has no sub-subsequence converging to $y$, so by the theorem (contrapositive) $y_n\\not\\to y$.'));
       },
     },
     {
@@ -339,7 +339,7 @@ So $P(\bigcup_{n\ge M}A_n)=1$ for every $M$, and intersecting over $M$ gives the
           }
           cache.rows.slice(0, ROWS).forEach((occ, i) => {
             const y = i + 1;
-            if (nest) { L.line(1, y, Math.max(1.0001, occ.last), y, { color: 'accent', width: 3, alpha: 0.7 }); L.dot(occ.last, y, { r: 3.2, color: 'red', hollow: true }); }
+            if (nest) { L.line(1, y, Math.max(1.0001, occ.last), y, { color: 'accent', width: 3, alpha: 0.7 }); if (occ.last > 1) L.dot(occ.last, y, { r: 3.2, color: 'red', hollow: true }); }
             else L.dots(occ.map((n) => [n, y]), { r: 1.9, color: 'accent' });
           });
           L.vline(M, { color: 'orange', width: 1.5, dash: [5, 3] });

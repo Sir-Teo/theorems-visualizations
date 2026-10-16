@@ -407,7 +407,7 @@ The cylinder, Möbius band and torus embed in $\R^3$; the Klein bottle and $\R P
           if (!st || !inv) return '';
           const { W, mir } = st;
           const walk = `The walker crossed ${W.crossings} glued edge${W.crossings === 1 ? '' : 's'}, ${W.flips} of them flipped: it arrives **${mir ? 'mirror-reversed' : 'with its orientation'}**.`;
-          return `${walk} Glued $24\\times24$ grid: $V-E+F=${inv.V}-${inv.E}+${inv.F}=${inv.chi}$, ${inv.circles} boundary circle${inv.circles === 1 ? '' : 's'}, ${inv.orientable ? '**orientable**' : '**non-orientable** (the orientation of the triangles cannot be propagated consistently)'} — a **${surfaceName(inv)}**.${st.t < 0.999 ? ' Slide fold to 1 to close it up.' : ''}`;
+          return `${walk} Glued $24\\times24$ grid: $V-E+F=${inv.V}-${inv.E}+${inv.F}=${inv.chi}$, ${inv.circles} boundary circle${inv.circles === 1 ? '' : 's'}, ${inv.orientable ? '**orientable**' : '**non-orientable** (the orientation of the triangles cannot be propagated consistently)'} — ${/^[aeiou]/i.test(surfaceName(inv)) ? 'an' : 'a'} **${surfaceName(inv)}**.${st.t < 0.999 ? ' Slide fold to 1 to close it up.' : ''}`;
         });
       },
     },
@@ -440,7 +440,8 @@ For example $D^2/\partial D^2\cong S^2$, $C S^1\cong D^2$, $S S^1\cong S^2$, and
         };
         const cs = v.select('construction', Object.entries(CASES).map(([value, o]) => ({ value, label: o.label })), 'disc');
         const tt = v.slider('collapse', 0, 1, 0.7, { step: 0.005 });
-        const S = v.stage3d({ range: 1.55, height: 400, yaw: -0.6, pitch: 0.45, axes: false, full: true });
+        const D = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 380, weight: 0.8, title: 'the space $X$, with $A$ in red' });
+        const S = v.stage3d({ range: 1.5, height: 380, yaw: -0.6, pitch: 0.45, axes: false, weight: 1.2, title: 'collapsing $A$' });
         const n = 24, m = 24;
         let inv = null, ikey = '';
         const surf = (c, t) => {
@@ -459,6 +460,23 @@ For example $D^2/\partial D^2\cong S^2$, $C S^1\cong D^2$, $S S^1\cong S^2$, and
         };
         v.render(() => {
           const c = cs.value, t = tt.value;
+          // the domain picture
+          if (c === 'disc') {
+            for (let k = 1; k <= 4; k++) D.circle(0, 0, k / 4, { color: 'blue', width: 1, alpha: 0.5, fill: k === 4 ? 'blue' : null, fillAlpha: 0.12 });
+            for (let k = 0; k < 12; k++) D.line(0, 0, Math.cos((TAU * k) / 12), Math.sin((TAU * k) / 12), { color: 'blue', width: 1, alpha: 0.5 });
+            D.circle(0, 0, 1, { color: 'red', width: 4 });
+          } else if (c === 'wedge') {
+            D.circle(-0.55, 0, 0.45, { color: 'blue', width: 3 }); D.circle(0.55, 0, 0.45, { color: 'purple', width: 3 });
+            D.dot(-0.1, 0, { r: 6, color: 'red', label: 'x₀', labelPos: 'n' }); D.dot(0.1, 0, { r: 6, color: 'red', label: 'y₀', labelPos: 'n' });
+          } else {
+            const o = { x0: -1, y0: -1, size: 2 };
+            D.rect(-1, -1, 1, 1, { fill: 'blue', fillAlpha: 0.12, stroke: false });
+            for (let k = 1; k < 8; k++) { D.line(-1 + k / 4, -1, -1 + k / 4, 1, { color: 'blue', width: 0.8, alpha: 0.4 }); D.line(-1, -1 + k / 4, 1, -1 + k / 4, { color: 'blue', width: 0.8, alpha: 0.4 }); }
+            if (c === 'pinch') { drawGlueSquare(D, 'tor', o); D.line(-1, -1, -1, 1, { color: 'red', width: 5 }); D.line(1, -1, 1, 1, { color: 'red', width: 5 }); D.text('u', 0, -1.15, { math: true, size: 14, color: 'muted', align: 'center' }); }
+            else { drawGlueSquare(D, 'cyl', o); D.line(-1, 1, 1, 1, { color: 'red', width: 5 }); if (c === 'susp') D.line(-1, -1, 1, -1, { color: 'red', width: 5 }); D.text('height', -1.08, 0, { size: 11, color: 'muted', align: 'right' }); }
+          }
+          // keep the picture in frame
+          if (c !== 'wedge') { const F0 = surf(c, t); let ext = 0; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) ext = Math.max(ext, ...F0(i / 8, j / 8).map(Math.abs)); S.zoom = Math.min(1.6, 1.3 / Math.max(ext, 0.4)); } else S.zoom = 1;
           if (c === 'wedge') {
             const off = 0.9 + 0.15 * (1 - t) * 3; // the circles slide together until the two marked points meet
             const C1 = (s) => [-off + 0.9 * Math.cos(TAU * s), 0, 0.9 * Math.sin(TAU * s)], C2 = (s) => [off - 0.9 * Math.cos(TAU * s), 0, 0.9 * Math.sin(TAU * s)];

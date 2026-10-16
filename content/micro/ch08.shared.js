@@ -65,6 +65,9 @@ export function curveLabel(s, f, txt, col, xr, st = {}) {
  * the amount of the constant-returns index z = L^a K^(1−a) needed to make y; long-run cost is κ(w, r)·Z(y).
  *   'U'    ζ(t) = α t^e1 + (1 − α) t^e2: increasing returns at small scale, decreasing at large scale.
  *   'crs'  ζ(t) = t.
+ *   'cubic' ζ(t) = √((t − β t² + t³)/(2 − β)), 0 < β < √3 (new here): with a = ½ and capital fixed, variable cost
+ *          w Z²/K̄ is a cubic in y, so marginal cost starts at a finite level, falls and rises — the textbook U — and
+ *          long-run average cost 2√(wr)·Z(y)/y is U-shaped with its minimum at y = ys.
  */
 export function scaleFn(kind, P = {}) {
   const ys = P.ys ?? 6;
@@ -72,6 +75,7 @@ export function scaleFn(kind, P = {}) {
   switch (kind) {
     case 'U': { const e1 = P.e1 ?? 1 / 3, e2 = P.e2 ?? 2, al = (e2 - 1) / (e2 - e1); z = (t) => al * t ** e1 + (1 - al) * t ** e2; break; }
     case 'crs': z = (t) => t; break;
+    case 'cubic': { const b = P.beta ?? 1.6; z = (t) => Math.sqrt(Math.max(0, (t - b * t * t + t * t * t) / (2 - b))); break; }
     default: throw new Error('unknown scale function ' + kind);
   }
   const Z = (y) => (y <= 0 ? 0 : ys * z(y / ys));
@@ -89,8 +93,13 @@ export function homTech(S, a = 0.5) {
     srL: (y, K) => (S.Z(y) / K ** (1 - a)) ** (1 / a),
   };
 }
-/** The chapter's standard technology (chapter 7's UTECH): f = H(√(LK)), long-run average cost minimal at y = 6. */
-export const UTECH = () => homTech(scaleFn('U', { ys: 6, e1: 0.25 }), 0.5);
+/**
+ * The chapter's standard technology: f = H(√(LK)) with the 'cubic' scale function, efficient scale y = 6. At w = r = 10
+ * the plant K̄ = 6 is the right one for y = 6, fixed cost is 60, and short-run cost is TC = 60 + 150(t − 1.6t² + t³),
+ * t = y/6: MC starts at 25, bottoms out at y = 3.2, and crosses AVC at its minimum 9 (y = 4.8) and AC at its minimum
+ * 20 (y = 6), which is also the minimum of long-run average cost. Chapter 7's UTECH has the same efficient scale.
+ */
+export const CTECH = (beta = 1.6) => homTech(scaleFn('cubic', { ys: 6, beta }), 0.5);
 
 /**
  * Short-run and long-run cost curves of a homothetic technology at input prices w, r with capital fixed at Kb
@@ -136,4 +145,30 @@ export function clearing(s, N, D, pmax = 200) {
   if (ex(pmax) < 0) return { p: pmax, Q: D(pmax) };
   const p = bisect(ex, 1e-6, pmax, 70) ?? 1e-6;
   return { p, Q: D(p) };
+}
+
+// ------------------------------------------------------------------------------------------------ drawing
+/** The firm's per-unit cost curves on stage s up to output X: AVC teal, AC accent, MC orange (labels at the right). */
+export function drawCosts(s, F, X, o = {}) {
+  const C = F.C, a = o.alpha ?? 1, lab = o.labels !== false;
+  if (o.avc !== false) s.fn(C.AVC, { domain: [0.03, X], color: 'teal', width: o.width ?? 2.4, alpha: a });
+  if (o.ac !== false) s.fn(C.AC, { domain: [0.2, X], color: 'accent', width: o.width ?? 2.6, alpha: a });
+  if (o.mc !== false) s.fn(C.MC, { domain: [0.01, X], color: 'orange', width: (o.width ?? 2.4) + 0.2, alpha: a, n: 240 });
+  if (lab) {
+    const xr = X * 0.97;
+    if (o.ac !== false) curveLabel(s, C.AC, 'AC', 'accent', xr);
+    if (o.avc !== false) curveLabel(s, C.AVC, 'AVC', 'teal', xr, { dy: 12 });
+    if (o.mc !== false) curveLabel(s, C.MC, 'MC', 'orange', xr, { dx: -8, dy: 0, align: 'right' });
+  }
+}
+/** Profit rectangle between the price p and average cost ac over [0, q]: green for a profit, red for a loss. */
+export function profitRect(s, q, p, ac, o = {}) {
+  if (!(q > 0)) return;
+  const gain = p >= ac;
+  s.rect(0, Math.min(p, ac), q, Math.max(p, ac), { fill: gain ? 'green' : 'red', fillAlpha: o.fillAlpha ?? 0.28, color: gain ? 'green' : 'red', width: 1.2, hatch: gain ? false : 'red', hatchAlpha: 0.3 });
+}
+/** Horizontal price line (the firm's perfectly elastic demand) with a label at its right end. */
+export function priceLine(s, p, label = 'P = MR', o = {}) {
+  s.hline(p, { color: o.color ?? 'ink', width: o.width ?? 2, dash: o.dash });
+  if (label) s.text(label, s.bounds.x[1], p, { dx: -6, dy: -9, size: 11.5, weight: 700, color: o.color ?? 'ink', align: 'right', plate: true });
 }

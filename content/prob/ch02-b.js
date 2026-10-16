@@ -476,10 +476,10 @@ Consequently the number of cycles $S_n=\sum_kX_{n,k}$ has $ES_n=\sum_{m=1}^n1/m\
           // statistics over random permutations of 12 (cached)
           if (!stats || stats.seed !== seed) {
             const r = v.rng(seed * 3 + 77), cnt = new Array(12).fill(0); let both = 0;
-            for (let j = 0; j < 20000; j++) { const p = r.shuffle([...Array(12).keys()]); const { close } = cycleOrder(p); close.forEach((c, k) => { cnt[k] += c; }); if (close[9] && close[11]) both++; }
+            for (let j = 0; j < 20000; j++) { const p = r.shuffle([...Array(12).keys()]); const { close } = cycleOrder(p); close.forEach((c, k) => { cnt[k] += c; }); if (close[8] && close[10]) both++; }
             const rb = v.rng(seed * 11 + 5), cyc = [];
             for (let j = 0; j < 200; j++) { const p = rb.shuffle([...Array(10000).keys()]); cyc.push(cycleOrder(p).close.reduce((a, b) => a + b, 0)); }
-            stats = { seed, f: cnt.map((c) => c / 20000), both: both / 20000, f10: cnt[9] / 20000, f12: cnt[11] / 20000, cyc };
+            stats = { seed, f: cnt.map((c) => c / 20000), both: both / 20000, f10: cnt[8] / 20000, f12: cnt[10] / 20000, cyc };
           }
           const p = which.value === 'dur' ? [3, 9, 6, 8, 2, 1, 5, 4, 7].map((x) => x - 1) : v.rng(seed * 19 + 1).shuffle([...Array(12).keys()]);
           const n = p.length; kS.el.hidden = false;
@@ -499,7 +499,7 @@ Consequently the number of cycles $S_n=\sum_kX_{n,k}$ has $ES_n=\sum_{m=1}^n1/m\
           st = { both: stats.both, prod: stats.f10 * stats.f12, cm, csd, Hn: Array.from({ length: 10000 }, (_, i) => 1 / (i + 1)).reduce((a, b) => a + b, 0), cycles: close.reduce((a, b) => a + b, 0), n };
           v.legend([['accent', 'arrow written; data', { area: true }], ['green', 'closes a cycle ($X_{n,k}=1$)'], ['orange', '$1/(n-k+1)$', { dot: true }], ['gold', 'next symbol', { dot: true }]]);
         });
-        v.readout(() => st && `This permutation has ${st.cycles} cycles. Independence check ($n=12$): $P(X_{10}=1,X_{12}=1)\\approx${fr(st.both, 4)}$ vs product $${fr(st.prod, 4)}$ (exact $\\tfrac13\\cdot1=0.3333$). For $n=10^4$ (200 seeded permutations): cycles average $${fr(st.cm, 2)}$ (exact $\\sum1/m=${fr(st.Hn, 2)}$, $\\log n=9.21$), standard deviation $${fr(st.csd, 2)}$.`);
+        v.readout(() => st && `This permutation has ${st.cycles} cycles. Independence check ($n=12$): $P(X_{9}=1,X_{11}=1)\\approx${fr(st.both, 4)}$ vs product of the frequencies $${fr(st.prod, 4)}$ (exact $\\tfrac14\\cdot\\tfrac12=0.125$). For $n=10^4$ (200 seeded permutations): cycles average $${fr(st.cm, 2)}$ (exact $\\sum1/m=${fr(st.Hn, 2)}$, $\\log n=9.21$), standard deviation $${fr(st.csd, 2)}$.`);
       },
     },
     {

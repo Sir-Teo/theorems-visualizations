@@ -183,7 +183,7 @@ function bendTube(a, b, w, t, Lc, phi = 0) {
   const cz = rho * (1 - Math.sin(Math.PI * t) / (Math.PI * t)); // centroid shift keeps the picture centred
   // centreline in the (x, z) plane bending toward −z; normal points to the centre of curvature
   const px = rho * Math.sin(ang), pz = -rho * (1 - Math.cos(ang)) + cz;
-  const nx = -Math.sin(ang), nz = Math.cos(ang); // unit normal (away from the centre)
+  const nx = Math.sin(ang), nz = Math.cos(ang); // unit normal, perpendicular to the tangent (cos ang, −sin ang)
   return [px + B * nx, pz + B * nz, A]; // the closed ring lies in the horizontal plane
 }
 /**

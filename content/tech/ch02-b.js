@@ -78,7 +78,7 @@ The counterweight does not reduce the work needed to lift the water. It **splits
       viz(v) {
         const A = v.stage({ x: [-5.6, 3.6], y: [-1.4, 7.0], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 320, title: 'shadoof (metres)' });
         const B = v.stage({ x: [0, 80], y: [-30, 30], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'counterweight (kg)', ylabel: 'operator effort (kg-force)', title: 'effort on each stroke' });
-        const T = v.stage({ x: [0, 1], y: [-30, 30], axes: 'box', gutter: true, height: 200, weight: 1, minWidth: 280, xlabel: 'phase of the cycle', ylabel: 'force (kgf)', title: 'operator’s force through one cycle (+ pull down, − push up)', xticks: [[0.2, 'down'], [0.45, 'fill'], [0.7, 'up'], [0.95, 'empty']] });
+        const T = v.stage({ x: [0, 1], y: [-30, 30], axes: 'box', gutter: true, height: 200, weight: 1, minWidth: 280, xlabel: 'phase of the cycle', ylabel: 'kgf (+ pull down, − push up)', title: 'operator’s force over one cycle', xticks: [[0.2, 'down'], [0.45, 'fill'], [0.7, 'up'], [0.95, 'empty']] });
         const C = yearStage(v, [-2600, 2050], { height: 200, weight: 1.3, minWidth: 360, title: 'dated evidence: the shadoof' });
         const cwS = v.slider('counterweight (kg)', 0, 80, 22, { step: 1 });
         const bkS = v.slider('bucket (litres)', 5, 30, 15, { step: 1 });
@@ -90,36 +90,37 @@ The counterweight does not reduce the work needed to lift the water. It **splits
         v.animate((t) => {
           const Cw = cwS.value, mw = bkS.value, h = hS.value, e = efforts(Cw, mw);
           const s = ((t / 6) % 1 + 1) % 1; // phase
-          // pole angle: tip height between river and channel
-          const Lr = 1.1, bh = 0.45;
-          const yBot = Lr + bh - 0.25, yTop = h + Lr + bh + 0.1, Hp = (yBot + yTop) / 2 + 0.2;
-          let frac; // 0 = bucket at river, 1 = at channel
+          // geometry: river on the left, bank of height h, post 2 m high on the bank at x = 0
+          const bh = 0.45, Hp = h + 2.0, Lr = h / 2 + 1.625; // rope length chosen so the pole swings symmetrically
+          A.setView([-5.6, 3.6], [-1.3, Math.max(6.2, Hp + 1.6)]);
+          const yBot = Lr + bh - 0.25, yTop = h + Lr + bh + 0.1; // tip heights with the bucket in the river / at the bank top
+          let frac; // 0 = bucket in the river, 1 = at the top
           if (s < 0.4) frac = 1 - s / 0.4; else if (s < 0.5) frac = 0; else if (s < 0.9) frac = (s - 0.5) / 0.4; else frac = 1;
           frac = frac * frac * (3 - 2 * frac);
           const yt = yBot + frac * (yTop - yBot), sn = clamp((Hp - yt) / a, -0.95, 0.95), th = Math.asin(sn);
           const tip = [-a * Math.cos(th), Hp - a * sn], cw = [b * Math.cos(th), Hp + b * sn];
           // river, bank and channel
-          A.rect(-5.6, -1.4, -1.6, 0, { fill: 'blue', fillAlpha: 0.25, stroke: false });
-          A.line(-5.6, 0, -1.6, 0, { color: 'blue', width: 1.5 });
-          A.poly([[-1.6, -1.4], [-1.6, h - 0.05], [-0.9, h - 0.05], [-0.9, h + 0.3], [3.6, h + 0.3], [3.6, -1.4]], { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.2 });
-          A.rect(-2.95, h - 0.05, -1.6, h + 0.25, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });
-          A.rect(-2.9, h, -1.65, h + 0.18, { fill: 'blue', fillAlpha: s >= 0.9 || s < 0.05 ? 0.6 : 0.3, stroke: false });
-          A.text('channel', -2.3, h + 0.5, { size: 11, color: 'ink', align: 'center' });
+          A.rect(-5.6, -1.3, -2.4, 0, { fill: 'blue', fillAlpha: 0.25, stroke: false });
+          A.line(-5.6, 0, -2.4, 0, { color: 'blue', width: 1.5 });
+          A.poly([[-2.4, -1.3], [-2.4, h], [3.6, h], [3.6, -1.3]], { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 1.2 });
+          A.rect(-2.3, h, -1.2, h + 0.3, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });
+          A.rect(-2.25, h + 0.04, -1.25, h + 0.22, { fill: 'blue', fillAlpha: s >= 0.9 || s < 0.05 ? 0.65 : 0.3, stroke: false });
+          A.text('channel', -1.75, h - 0.3, { size: 11, color: 'ink', align: 'center' });
           // post and pole
-          A.line(0, h + 0.3, 0, Hp, { color: 'orange', width: 5 });
+          A.line(0, h, 0, Hp, { color: 'orange', width: 5 });
           A.line(tip[0], tip[1], cw[0], cw[1], { color: 'ink', width: 3.5 });
           A.dot(0, Hp, { r: 4, color: 'ink' });
-          block(A, cw[0], cw[1] - 0.35, 0.35 + Cw / 160, 0.5, `${Cw}`, { color: 'muted', size: 10.5 });
-          // rope, bucket (shifted so it hangs over the river/channel edge)
+          block(A, cw[0], cw[1] - 0.25, 0.35 + Cw / 160, 0.5, `${Cw} kg`, { color: 'muted', size: 10 });
+          // rope and bucket
           const bx = tip[0];
           A.line(bx, tip[1], bx, tip[1] - Lr, { color: 'muted', width: 1.4 });
           const bb = tip[1] - Lr - bh, full = s >= 0.4 && s < 0.95;
           A.poly([[bx - 0.28, bb + bh], [bx + 0.28, bb + bh], [bx + 0.2, bb], [bx - 0.2, bb]], { fill: full ? 'blue' : 'panel', fillAlpha: full ? 0.55 : 0.6, color: 'ink', width: 1.4 });
           // operator force arrow on the rope
           const F = force(s, Cw, mw);
-          if (Math.abs(F) > 0.5) { const L = clamp(Math.abs(F) / 18, 0.3, 1.6); const y0 = tip[1] - Lr * 0.5; A.arrow(bx + 0.35, y0, bx + 0.35, y0 - Math.sign(F) * L, { color: F > 0 ? 'accent' : 'red', width: 2.6 }); A.text(`${v.fix(Math.abs(F), 1)} kgf ${F > 0 ? 'pull' : 'push'}`, bx + 0.5, y0 - Math.sign(F) * L / 2, { size: 11.5, color: F > 0 ? 'accent' : 'red', align: 'left', plate: true }); }
+          if (Math.abs(F) > 0.5) { const L = clamp(Math.abs(F) / 18, 0.3, 1.4); const y0 = tip[1] - Lr * 0.45; A.arrow(bx - 0.3, y0, bx - 0.3, y0 - Math.sign(F) * L, { color: F > 0 ? 'accent' : 'red', width: 2.6 }); A.text(`${v.fix(Math.abs(F), 1)} kgf ${F > 0 ? 'pull' : 'push'}`, bx - 0.45, y0 - Math.sign(F) * L / 2, { size: 11.5, color: F > 0 ? 'accent' : 'red', align: 'right', plate: true }); }
           A.measure(3.3, 0, 3.3, h, '');
-          A.text(`${v.fix(h, 1)} m`, 3.15, h / 2, { size: 11.5, color: 'ink', align: 'right' });
+          A.text(`lift ${v.fix(h, 1)} m`, 3.15, h / 2, { size: 11.5, color: 'ink', align: 'right' });
           A.corner(['pull the empty bucket down', 'fill', 'swing it up full', 'empty into the channel'][s < 0.4 ? 0 : s < 0.5 ? 1 : s < 0.9 ? 2 : 3], 'tl', { size: 12, color: 'ink', weight: 700 });
           // B: efforts against counterweight
           B.hline(0, { color: 'faint', width: 1 });
@@ -142,7 +143,7 @@ The counterweight does not reduce the work needed to lift the water. It **splits
             { t: [-1550, -1290], label: 'Egypt, 18th Dynasty' },
             { t: -1250, label: 'Theban tomb paintings' },
             { t: 1989, label: 'field tests, Chad', color: 'green' },
-          ], { lanes: 3, laneH: 0.21, ticks: [-2500, -2000, -1500, -1000, -500, 1, 500, 1000, 1500, 2000] });
+          ], { lanes: 4, ticks: [-2000, -1000, 1, 1000, 2000] });
         }, { period: 6, still: 3.6 });
         v.legend([['accent', 'pull down on the empty bucket'], ['red', 'push up on the full bucket'], ['green', 'counterweight that equalizes the strokes']]);
         v.readout(() => {
@@ -163,7 +164,7 @@ The counterweight does not reduce the work needed to lift the water. It **splits
 Vitruvius (*De architectura* X.6) gives a recipe: a shaft whose diameter is one sixteenth of its length, eight helical channels laid out so that each blade advances one shaft circumference per turn, built out to an overall diameter of one eighth of the length, and set at the slope of the 3-4-5 triangle (rise 3 for length 5, about 37°). The screw works only below a critical inclination; tilt it too steeply and the pockets spill back.
 
 The device is traditionally credited to Archimedes, and Diodorus describes it watering the Nile Delta. But none of his near-contemporaries who describe it credits him, and Dalley and Oleson (2003) argue that Sennacherib's inscriptions describe bronze water screws at Nineveh around 700 BCE, a reading that is **contested**.`,
-      idea: String.raw`Follow one helical channel round the screw. Its height above the ground is $h(\phi) = \tfrac{p\phi}{2\pi}\sin\theta + r\sin\phi\cos\theta$: a steady climb from the lead $p$ plus a wobble of amplitude $r\cos\theta$ as the channel goes round. If the wobble is large enough the channel has a low point and a high point on every turn, and water collects in each low point up to the level of the next crest below it. Turning the screw moves the low points up the axis, which is the pumping action (tech-2.4). The wobble wins only while $p\tan\theta < 2\pi r$ at the radius where the water could escape. Over the top of the shaft that radius is the shaft's own, so a steeper screw, a longer lead or a thinner shaft eventually leaves no pockets at all. The flow is the number of channels × the pocket volume × the turning rate; the lift is the length times $\sin\theta$.`,
+      idea: String.raw`Follow one helical channel round the screw. Its height above the ground is $h(\phi) = \tfrac{p\phi}{2\pi}\sin\theta + r\sin\phi\cos\theta$: a steady climb from the lead $p$ plus a wobble of amplitude $r\cos\theta$ as the channel goes round. If the wobble is large enough the channel has a low point and a high point on every turn, and water collects in each low point up to the level of the next crest below it. Turning the screw moves the low points up the axis, which is the pumping action (tech-2.4). Water escapes over the top of the shaft on the upper side of the screw and along the casing on the lower side. Once $p\tan\theta$ exceeds $2\pi r_{\text{shaft}}$ the pockets can no longer cover the shaft and shrink quickly, and when $p\tan\theta \ge 2\pi R$ (outer radius) there are none at all: a steeper screw or a longer lead lifts nothing. The flow is the number of channels × the pocket volume × the turning rate; the lift is the length times $\sin\theta$.`,
       caption: String.raw`A working screw in 3D, computed: the blue dots fill the trapped pockets, found by locating the crests of each channel and filling every trough up to its crest. **Drag to rotate** the view. Change the **inclination**, the number of **blades**, the **lead** and the turning rate, or choose Vitruvius's design. The right panel plots the volume lifted per turn against inclination for this geometry: it falls as the screw steepens and reaches zero where the pockets vanish. The 3-4-5 slope is marked.`,
       deps: ['tech-2.4'],
       refs: ['Mokyr ch. 2', 'Vitruvius, De architectura X.6', 'Dalley & Oleson 2003, Technology and Culture 44:1–26', 'Rorres 2000, J. Hydraulic Eng. 126:72'],
@@ -173,7 +174,7 @@ The device is traditionally credited to Archimedes, and Diodorus describes it wa
         const S = v.stage({ x: [-2.7, 2.7], y: [-1.7, 1.9], equal: true, axes: false, height: 360, weight: 1.4, minWidth: 360, title: 'water screw (metres)' });
         const B = v.stage({ x: [5, 70], y: [0, 1], axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 280, xlabel: 'inclination θ (°)', ylabel: 'litres lifted per turn', title: 'volume per turn against inclination' });
         const C = yearStage(v, [-800, 2050], { height: 140, full: true, title: 'dated evidence: the water screw' });
-        const sc = v.scene3(S, { yaw: -1.25, pitch: 0.25, axes: false });
+        const sc = v.scene3(S, { yaw: -0.28, pitch: 0.22, axes: false });
         const preset = v.select('design', [{ value: 'vit', label: 'Vitruvius (8 channels)' }, { value: 'mod', label: 'modern (3 blades)' }, { value: 'own', label: 'custom' }], 'vit', { onChange: (x) => apply(x) });
         const thS = v.slider('inclination θ (°)', 5, 70, 36.87, { step: 0.1, onChange: () => { preset.value = preset.value === 'vit' && Math.abs(thS.value - 36.87) > 0.05 ? 'own' : preset.value; } });
         const nS = v.slider('blades (channels)', 1, 8, 8, { int: true, onChange: () => { preset.value = 'own'; } });
@@ -230,7 +231,7 @@ The device is traditionally credited to Archimedes, and Diodorus describes it wa
           for (let j = 0; j < N; j++) {
             const pts = [];
             for (let u = (-2 * Math.PI * j) / N; u <= (2 * Math.PI * L) / P; u += 0.12) { const s = (P * u) / (2 * Math.PI) + (j * P) / N; if (s < 0 || s > L) continue; pts.push(W(s, Ro, u + psi)); }
-            sc.path(pts, { color: j === 0 ? 'orange' : 'ink', width: j === 0 ? 2 : 1, alpha: j === 0 ? 1 : 0.55 });
+            sc.path(pts, { color: j === 0 ? 'orange' : 'ink', width: j === 0 ? 2.2 : 0.9, alpha: j === 0 ? 1 : 0.4 });
           }
           // water in the pockets
           const st = Math.sin(th), ct = Math.cos(th), dots = [];
@@ -261,13 +262,13 @@ The device is traditionally credited to Archimedes, and Diodorus describes it wa
             { t: -40, label: 'Diodorus: screws in the Nile Delta' },
             { t: -25, label: 'Vitruvius X.6: how to build one', color: 'purple' },
             { t: 1995, label: 'screw turbines (Brada)', color: 'green' },
-          ], { lanes: 2, ticks: [-750, -500, -250, 1, 250, 500, 750, 1000, 1250, 1500, 1750, 2000] });
+          ], { lanes: 3, ticks: [-500, 1, 500, 1000, 1500, 2000] });
         }, { period: 600, still: 2 });
         v.legend([['blue', 'trapped water'], ['orange', 'one blade’s outer edge'], ['purple', 'Vitruvius’s 3-4-5 slope']]);
         v.readout(() => {
           update();
-          const { th, N, P } = geom(), q = (N * vol * rpm.value) / 60, lim = (Math.atan((2 * Math.PI * Ri) / P) / D2R);
-          return `screw 4 m long, outer diameter 0.5 m, shaft 0.25 m (Vitruvian proportions), lead ${v.fix(P, 3)} m, ${N} channel${N > 1 ? 's' : ''} · inclination ${v.fix(thS.value, 1)}° → lift ${v.fix(L * Math.sin(th), 2)} m · pocket ${v.fix(vol * 1000, 2)} L × ${N} per turn × ${rpm.value} turns/min = **${v.fix(q * 1000, 2)} L/s** (${v.fix(q * 3600, 1)} m³/h) · pockets need $p\\tan\\theta < 2\\pi r_{\\text{shaft}}$, i.e. θ below ${v.fix(lim, 1)}°${vol > 1e-6 ? '' : ' — **exceeded**'}`;
+          const { th, N, P } = geom(), q = (N * vol * rpm.value) / 60, lim1 = Math.atan((2 * Math.PI * Ri) / P) / D2R, lim = Math.atan((2 * Math.PI * Ro) / P) / D2R;
+          return `screw 4 m long, outer diameter 0.5 m, shaft 0.25 m (Vitruvian proportions), lead ${v.fix(P, 3)} m, ${N} channel${N > 1 ? 's' : ''} · inclination ${v.fix(thS.value, 1)}° → lift ${v.fix(L * Math.sin(th), 2)} m · pocket ${v.fix(vol * 1000, 2)} L × ${N} per turn × ${rpm.value} turns/min = **${v.fix(q * 1000, 2)} L/s** (${v.fix(q * 3600, 1)} m³/h) · pockets shrink above ${v.fix(lim1, 1)}° ($p\\tan\\theta = 2\\pi r_{\\text{shaft}}$) and vanish at ${v.fix(lim, 1)}° ($p\\tan\\theta = 2\\pi R$)${vol > 1e-6 ? '' : ' — **exceeded**'}`;
         });
       },
     },
@@ -285,7 +286,7 @@ sidereal months per year (254 sidereal months ≈ 19 years), and drives the **Me
       idea: String.raw`A gear is a wheel and axle with teeth (tech-2.2): at the mesh both pitch circles move at the same speed, so $\omega_1 N_1 = \omega_2 N_2$. Compound stages let a designer factor a target ratio into practical tooth counts. The Moon train has to make $254/19 = 2\cdot127/19$, and 127 is prime, so some gear must have 127 teeth. Here it is the large gear d2, fed by the factors 64/38 = 32/19 and 48/24 = 2, which carry the 19.
 
 The accuracy is that of the Greek period relation, not of the bronze. 254 sidereal months are 6939.7 days, 19 tropical years are 6939.6, so the Moon pointer drifts by about 1.3° every 19 years against the real Moon. Change one tooth count and the error becomes a full revolution within a few years.`,
-      caption: String.raw`The gears are drawn with their real tooth counts and turn together. Choose the **Moon** or **Metonic** train; time runs at about half a year per second (pause it and drag the **years** slider to scrub). The dial shows the pointer against the Sun pointer (front) or on the 235-month spiral (back). The lower plot is the drift of the pointer from the true Moon or the true lunar months, over a century. **Break it** by changing the big gear's tooth count by one or two and watch the drift take off.`,
+      caption: String.raw`The gears are drawn with their real tooth counts and turn together. Choose the **Moon** or **Metonic** train; time runs at half a year per second from the **start** year (pause and move the slider to scrub). Gears on one axle are drawn concentric; gears working in different planes overlap, as they do in the mechanism. The dial shows the pointer against the Sun pointer (front) or on the 235-month spiral (back). The lower plot is the drift of the pointer from the true Moon or the true lunar months, over a century. **Break it** by changing the big gear's tooth count by one or two and watch the drift take off.`,
       deps: ['tech-2.2'],
       refs: ['Mokyr ch. 2', 'Freeth et al. 2006, Nature 444:587–591', 'Freeth et al. 2021, Sci. Rep. 11:5821', 'Price, Gears from the Greeks (1974)', 'Spinellis 2008, IEEE Computer 41(5):22–27'],
       tags: ['ancient', 'c. 100 BCE', 'gears'],
@@ -297,7 +298,7 @@ The accuracy is that of the Greek period relation, not of the bronze. 254 sidere
         const C = yearStage(v, [-260, -40], { height: 190, weight: 1.2, minWidth: 340, title: 'dates proposed for the mechanism' });
         const train = v.select('train', [{ value: 'moon', label: 'Moon (254/19)' }, { value: 'met', label: 'Metonic (5/19)' }], 'moon');
         const big = v.slider('break it: teeth on the big gear', 120, 134, 127, { int: true });
-        const yrS = v.slider('years (when paused)', 0, 19, 0, { step: 0.01 });
+        const yrS = v.slider('start at year', 0, 19, 0, { step: 0.01 });
         const YEAR = 365.2422, SID = 27.321661, SYN = 29.530589;
         let years = 0;
         const def = () => train.value === 'moon'
@@ -305,7 +306,7 @@ The accuracy is that of the Greek period relation, not of the bronze. 254 sidere
           : { names: ['b2', 'l1', 'l2', 'm1', 'm2', 'n1'], N: [64, 38, 53, big.value === 127 ? 96 : 96 + (big.value - 127), 15, 53], bigName: 'm1', orig: 96 };
         const ratioOf = (N) => (N[0] / N[1]) * (N[2] / N[3]) * (N[4] / N[5]);
         v.animate((t) => {
-          years = v.playing ? (t * 0.5) % 100 : yrS.value;
+          years = (yrS.value + t * 0.5) % 100; // the slider sets the starting year; playing advances half a year per second
           const d = def(), N = d.N, r = ratioOf(N), moon = train.value === 'moon';
           big.el.querySelector?.('label');
           // ---- A: layout: b at origin, then c/l, then d/m, then e/n
@@ -374,12 +375,12 @@ The accuracy is that of the Greek period relation, not of the bronze. 254 sidere
           if (big.value !== 127) { const orig = moon ? ratioOf([64, 38, 48, 24, 127, 32]) : 5 / 19; P.fn((y) => (orig - ideal) * y * unit, { color: 'green', width: 1.4, dash: [5, 4] }); }
           P.dot(years, drift(years), { r: 5, color: 'gold' });
           drawYears(v, C, [
-            { t: -205, label: 'start date 205 BCE (Carman & Evans)', contested: true },
-            { t: -178, label: 'calibration 178 BCE (Voulgaris et al.)', contested: true },
+            { t: -205, label: '205 BCE (Carman & Evans)', contested: true },
+            { t: -178, label: '178 BCE (Voulgaris et al.)', contested: true },
             { t: [-150, -100], label: 'built 150–100 BCE (Freeth et al. 2006)' },
-            { t: [-100, -70], label: 'shortly before the wreck (Iversen)', contested: true },
+            { t: [-100, -70], label: 'just before the wreck (Iversen)', contested: true },
             { t: [-70, -60], label: 'shipwreck', color: 'green' },
-          ], { lanes: 3, laneH: 0.21, ticks: [-250, -200, -150, -100, -50] });
+          ], { lanes: 4, ticks: [-250, -200, -150, -100, -50] });
         }, { period: 200, still: 7.5 });
         v.legend([['gold', 'b2: turns once a year'], ['accent', 'output pointer'], ['green', 'the real sky (true Moon / true month)'], ['red', 'broken train']]);
         v.readout(() => {
@@ -414,7 +415,7 @@ Ritti, Grewe and Kessener point out that, with the crank and rod, all the elemen
       tags: ['ancient', 'c. 250 CE', 'mechanism'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hierapolis_sawmill' },
       viz(v) {
-        const A = v.stage({ x: [-4.2, 8.4], y: [-2.3, 3.3], equal: true, axes: false, height: 300, full: true, title: 'water-powered stone saw (after the Hierapolis relief)' });
+        const A = v.stage({ x: [-4.2, 8.4], y: [-2.3, 2.5], equal: true, axes: false, height: 300, full: true, title: 'water-powered stone saw (after the Hierapolis relief)' });
         const X = v.stage({ x: [0, 360], y: [-1.2, 1.2], axes: 'box', gutter: true, height: 210, weight: 1, minWidth: 280, xlabel: 'crank angle θ (°)', ylabel: 'saw position / r', title: 'saw position against a pure sine', xticks: [0, 90, 180, 270, 360] });
         const Tq = v.stage({ x: [0, 360], y: [-1.3, 1.3], axes: 'box', gutter: true, height: 210, weight: 1, minWidth: 280, xlabel: 'crank angle θ (°)', ylabel: 'torque / (F r)', title: 'turning effect of a push on the rod', xticks: [0, 90, 180, 270, 360] });
         const C = yearStage(v, [-50, 1650], { height: 210, weight: 1.1, minWidth: 320, title: 'dated evidence: cranks and connecting rods' });
@@ -439,10 +440,10 @@ Ritti, Grewe and Kessener point out that, with the crank and rod, all the elemen
           A.rect(-4.2, -2.3, -0.4, -1.5, { fill: 'blue', fillAlpha: 0.25, stroke: false });
           A.circle(-2.2, 0.0, 1.55, { color: 'orange', width: 2.4, fill: 'orange', fillAlpha: 0.06 });
           for (let k = 0; k < 12; k++) { const a = -wa + (k * Math.PI) / 6; A.line(-2.2 + 1.2 * Math.cos(a), 1.2 * Math.sin(a), -2.2 + 1.75 * Math.cos(a), 1.75 * Math.sin(a), { color: 'orange', width: 3 }); }
-          A.line(-2.2, 0, 0.0, 0, { color: 'muted', width: 3 });
-          gear(A, 0.0, 0, 40, 0.05, -wa, { color: 'gold', fillAlpha: 0.2 });
-          gear(A, 0.0 + 0.05 * (40 + 18) / 2 * Math.cos(0.75), 0.05 * (40 + 18) / 2 * Math.sin(0.75), 18, 0.05, th + 0.2, { color: 'gold', fillAlpha: 0.3 });
-          const g2 = [0.05 * 29 * Math.cos(0.75), 0.05 * 29 * Math.sin(0.75)];
+          A.line(-2.2, 0, 0.45, 0, { color: 'muted', width: 3 });
+          gear(A, 0.45, 0, 40, 0.05, -wa, { color: 'gold', fillAlpha: 0.2 });
+          gear(A, 0.45 + 0.05 * (40 + 18) / 2 * Math.cos(0.75), 0.05 * (40 + 18) / 2 * Math.sin(0.75), 18, 0.05, th + 0.2, { color: 'gold', fillAlpha: 0.3 });
+          const g2 = [0.45 + 0.05 * 29 * Math.cos(0.75), 0.05 * 29 * Math.sin(0.75)];
           A.line(g2[0], g2[1], cx, cy, { color: 'muted', width: 2.5, dash: [5, 4] });
           // crank disc, crank pin, rod
           A.circle(cx, cy, r * 1.25, { color: 'ink', width: 1.4, fill: fly.value ? 'muted' : 'panel', fillAlpha: fly.value ? 0.25 : 0.4 });
@@ -456,7 +457,7 @@ Ritti, Grewe and Kessener point out that, with the crank and rod, all the elemen
           A.rect(xs, cy - 0.35, xs + 0.25, cy + 0.35, { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.4 });
           A.line(xs + 0.25, cy, xs + 2.8, cy, { color: 'ink', width: 2 });
           for (let k = 0; k < 18; k++) { const x = xs + 0.35 + k * 0.135; A.poly([[x, cy - 0.02], [x + 0.07, cy - 0.12], [x + 0.13, cy - 0.02]], { fill: 'ink', fillAlpha: 0.8, stroke: false }); }
-          A.rect(cx + l + 0.4 - 0.2, -2.0, 8.3, cy - 0.12, { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.2 });
+          const bx0 = Math.min(cx + l + r + 0.45, 6.2), depth = 1.6; A.rect(bx0, -2.0, 8.3, cy + 0.5, { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.2 }); A.rect(bx0, cy - 0.06, bx0 + depth, cy + 0.06, { fill: 'ink', fillAlpha: 0.55, stroke: false }); A.text('kerf', bx0 + depth / 2, cy + 0.25, { size: 10.5, color: 'muted', align: 'center' });
           A.text('stone block', 7.2, -1.2, { size: 11.5, color: 'ink', align: 'center' });
           ground(A, -0.4, 8.4, -2.0);
           // dead-centre marks

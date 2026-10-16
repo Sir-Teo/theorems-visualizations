@@ -270,7 +270,7 @@ Its events are those whose occurrence is not changed by altering any finite numb
       viz(v) {
         const op = v.select('operation on the first $n$ steps', [{ value: 'perm', label: 'shuffle them' }, { value: 'set', label: 'set them to $-1$' }], 'perm');
         const nS = v.slider('$n$', 10, 1000, 300, { int: true, log: true });
-        let seed = 2; v.button('Resample', () => { seed++; });
+        let seed = 11; v.button('Resample', () => { seed++; });
         const N = 4000;
         const S = v.stage({ x: [0, N], y: [-100, 100], height: 340, full: true, axes: 'box', gutter: true, xlabel: '$m$', title: 'the walk $S_m$ before (blue) and after (orange) the operation' });
         let st = null;
@@ -289,11 +289,11 @@ Its events are those whose occurrence is not changed by altering any finite numb
           S.path(A.map((s, i) => [i, s]), { color: 'accent', width: 1.3, alpha: op.value === 'perm' ? 0.85 : 1 });
           S.text('window for "i.o."', 3500, -ext * 0.9, { color: 'gold', size: 11, align: 'center' });
           const pos = (SS) => { for (let m = 3000; m <= N; m++) if (SS[m] >= 0) return true; return false; };
-          st = { n, same: A.slice(n).every((x, i) => x === B[n + i]), pa: pos(A), pb: pos(B), la: Math.abs(A[N] / N) < 0.05, lb: Math.abs(B[N] / N) < 0.05, shift: B[N] - A[N] };
+          st = { n, same: A.slice(n).every((x, i) => x === B[n + i]), pa: pos(A), pb: pos(B), la: Math.abs((A[N] - A[N / 2]) / N) < 0.05, lb: Math.abs((B[N] - B[N / 2]) / N) < 0.05, shift: B[N] - A[N] };
           v.legend([['accent', 'original walk'], ['orange', op.value === 'perm' ? 'first $n$ steps shuffled' : 'first $n$ steps set to $-1$'], ['gold', 'window $[3000,4000]$', { area: true }]]);
         });
         const yn = (b) => (b ? 'yes' : 'no');
-        v.readout(() => st && (st.same ? `The two walks coincide from $m=${st.n}$ on.` : `From $m=${st.n}$ on the second walk is shifted by $${st.shift}$.`) + ` "$S_m\\ge0$ i.o." (proxy): ${yn(st.pa)} / ${yn(st.pb)}${st.pa === st.pb ? '' : ' (flipped!)'}. "$S_m/m\\to0$" (proxy): ${yn(st.la)} / ${yn(st.lb)}.`);
+        v.readout(() => st && (st.same ? `The two walks coincide from $m=${st.n}$ on.` : `From $m=${st.n}$ on the second walk is shifted by $${st.shift}$.`) + ` "$S_m\\ge0$ i.o." (proxy): ${yn(st.pa)} / ${yn(st.pb)}${st.pa === st.pb ? '' : ' (flipped!)'}. "$S_m/m\\to0$" (proxy $|S_N-S_{N/2}|/N<0.05$, reading only the second half): ${yn(st.la)} / ${yn(st.lb)}.`);
       },
     },
     {
@@ -375,7 +375,7 @@ The bound is the same as Chebyshev's for $|S_n|$ alone, yet it controls the whol
           }
           const ylim = 4 * sd; L.setView([0, n], [-ylim, ylim]);
           const x = clampN(Hd.y, 0.05 * sd, ylim); Hd.x = n;
-          if (x < ylim) { L.hband(x, ylim, { color: 'red', alpha: 0.07 }); L.hband(-ylim, -x, { color: 'red', alpha: 0.07 }); }
+          if (x < ylim) { L.rect(0, x, n, ylim, { fill: 'red', fillAlpha: 0.07, stroke: false }); L.rect(0, -ylim, n, -x, { fill: 'red', fillAlpha: 0.07, stroke: false }); }
           L.hline(x, { color: 'gold', width: 1.6 }); L.hline(-x, { color: 'gold', width: 1.6 });
           let crossed = 0;
           cache.paths.forEach((pth) => { const i = pth.findIndex((p) => Math.abs(p[1]) >= x); if (i >= 0) crossed++; L.path(pth, { color: i >= 0 ? 'red' : 'accent', width: 1, alpha: i >= 0 ? 0.75 : 0.35 }); if (i >= 0) L.dot(pth[i][0], pth[i][1], { r: 2.6, color: 'red' }); });

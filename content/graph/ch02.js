@@ -169,6 +169,7 @@ function drawGS(GS, H, G, I, o = {}) {
     edgeColor: (e) => (matched(e) ? 'green' : null), edgeWidth: (e) => (matched(e) ? 4.5 : 1.5),
   });
 }
+const CC = ['orange', 'purple', 'teal', 'pink', 'blue'];
 const idxSet = (H, ids) => new Set([...ids].map((id) => H.at(id)).filter((u) => u != null));
 
 export default {
@@ -653,7 +654,7 @@ export default {
           const H = ix(G), Si = idxSet(H, S), cs = compsMinus(H, Si);
           blobs(v, s, G, cs.map((c) => c.L.map((u) => H.ids[u])), (i) => (cs[i].odd ? 'red' : 'blue'), 36, 0.17);
           G.draw({ nodeFill: (id) => (S.has(K(id)) ? 'gold' : null), edgeColor: (e) => (S.has(K(e.from)) || S.has(K(e.to)) ? 'faint' : null), edgeDash: (e) => S.has(K(e.from)) || S.has(K(e.to)) });
-          for (const c of cs) { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = Math.max(...P.map((n) => n.y)); s.text(String(c.L.length), cx, cy, { dy: -24, align: 'center', size: 13, weight: 700, color: c.odd ? 'red' : 'blue' }); }
+          for (const c of cs) { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = P.reduce((a, n) => a + n.y, 0) / P.length; s.text(String(c.L.length), cx, cy, { dy: c.L.length === 1 ? -26 : 0, align: 'center', size: 14, weight: 800, color: c.odd ? 'red' : 'blue', plate: true }); }
         });
         v.legend([['gold', '$S$', { dot: true }], ['red', 'odd component of $G-S$', { area: true }], ['blue', 'even component', { area: true }]]);
         v.readout(() => {
@@ -705,7 +706,7 @@ export default {
       viz(v) {
         let seed = 4;
         const rc = () => { for (let t = 0; t < 60; t++) { const r = v.rng(seed * 97 + t), E = randomCubic(12, r); if (!E) continue; const H = ix({ nodes: [...Array(12).keys()].map((i) => ({ id: i })), edges: E }); if (comps(H).k === 1 && !bridges(H).size) { const P = named('cycle', 12); return { nodes: P.nodes, edges: E, layout: 'force' }; } } return named('prism', 6); };
-        const PRE = { pet: () => ({ g: named('petersen'), S: [0, 2, 7, 9] }), prism: () => ({ g: named('prism', 5), S: [0, 6] }), rand: () => ({ g: rc(), S: [0, 1] }), syl: () => ({ g: sylvester(), S: [0] }) };
+        const PRE = { pet: () => ({ g: named('petersen'), S: [1, 2, 4, 5] }), prism: () => ({ g: named('prism', 5), S: [1, 2, 4, 5] }), rand: () => ({ g: rc(), S: [0, 1] }), syl: () => ({ g: sylvester(), S: [0] }) };
         const pre = v.select('', [{ value: 'pet', label: 'Petersen' }, { value: 'prism', label: 'prism' }, { value: 'rand', label: 'random' }, { value: 'syl', label: 'with bridges' }], 'pet', { onChange: () => load() });
         v.button('New random', () => { seed++; pre.value = 'rand'; load(); });
         const showM = v.toggle('show a 1-factor', false);
@@ -755,7 +756,7 @@ export default {
         const R = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, height: 320, title: 'test' });
         const G = v.graph(L, { nodes: [], edges: [], r: 13 });
         const GS = v.graph(R, { nodes: [], edges: [], r: 13, draggable: false, fontSize: 11.5 });
-        const T = v.table(R, { rows: 1, cols: 1, maxCell: 40, size: 15 });
+        const T = v.table(R, { rows: 1, cols: 1, maxCell: 50, size: 17, region: [0, 1.6, 10, 6.4] });
         let del = null, S = new Set();
         function load() {
           const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: pre.value === 'tut' ? n.id : String(G.nodes.length >= 0 ? (typeof n.id === 'number' ? n.id + 1 : n.id) : '') })), edges: P.edges }).layout(P.layout === 'none' ? 'fit' : P.layout || 'fit');
@@ -776,6 +777,8 @@ export default {
             T.draw({ rows: Math.ceil(n / cols), cols, colLabels: null, value: (i, j) => { const k = i * cols + j; return k < n ? (res[k].ok ? '✓' : '✗') : null; },
               rowLabels: null, sub: (i, j) => { const k = i * cols + j; return k < n ? G.lab(H.ids[k]) : null; }, subSize: 11,
               fill: (i, j) => { const k = i * cols + j; return k < n ? [res[k].ok ? 'green' : 'red', 0.25] : null; }, highlight: [[Math.floor(d / cols), d % cols]], textColor: (i, j) => (res[i * cols + j] && res[i * cols + j].ok ? 'green' : 'red') });
+            R.text(`deleted: ${G.lab(del)} — ${r.ok ? 'the rest has a 1-factor' : 'the rest has none'}`, 5, 1.1, { align: 'center', size: 13.5, weight: 600, color: r.ok ? 'green' : 'red' });
+            R.text('(click a cell or a vertex to test it)', 5, 0.45, { align: 'center', size: 11.5, color: 'muted' });
           } else {
             const H = ix(G), Si = idxSet(H, S), I = gsInfo(H, Si);
             blobs(v, L, G, I.cl.map((Lc) => Lc.map((u) => H.ids[u])), (i) => (I.cl[i].length % 2 ? 'red' : 'blue'), 34, 0.16);
@@ -826,10 +829,10 @@ For any such $S$, $G$ has a 1-factor if and only if $|S|=|\mathcal C_{G-S}|$. Mo
         v.render(() => {
           const X = info(G); if (!X) { L.corner('at most 15 vertices for the brute-force search', 'tl', { color: 'red' }); G.draw(); return; }
           const { H, I, fcs } = X, Sid = new Set([...X.Si].map((u) => K(H.ids[u])));
-          blobs(v, L, G, I.cl.map((Lc) => Lc.map((u) => H.ids[u])), (i) => PALETTE[(i + 1) % 8], 36, 0.17);
+          blobs(v, L, G, I.cl.map((Lc) => Lc.map((u) => H.ids[u])), (i) => CC[i % 5], 36, 0.2);
           G.draw({ nodeFill: (id) => (Sid.has(K(id)) ? 'gold' : null), nodeRing: (id) => { const u = H.at(id); return !Sid.has(K(id)) && ![...X.M0].some((e) => K(e.from) === K(id) || K(e.to) === K(id)) ? 'red' : null; },
             edgeColor: (e) => (X.M0.has(e) ? 'green' : Sid.has(K(e.from)) && Sid.has(K(e.to)) ? 'faint' : null), edgeWidth: (e) => (X.M0.has(e) ? 4.5 : null) });
-          drawGS(GS, H, G, I, { compColor: (j) => PALETTE[(j + 1) % 8] });
+          drawGS(GS, H, G, I, { compColor: (j) => CC[j % 5] });
           I.cl.forEach((Lc, c) => { if (!fcs[c].ok) { const P = Lc.map((u) => G.node(H.ids[u])); L.text('not f.-c.', P[0].x, P[0].y, { dy: -22, color: 'red', size: 11, align: 'center' }); } });
         });
         v.legend([['gold', '$S$', { dot: true }], ['green', 'maximum matching $M_0$ / matching of $S$ in $G_S$'], ['red', 'unmatched by $M_0$', { dot: true }]]);

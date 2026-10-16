@@ -64,8 +64,8 @@ In modern terms this is the Cepheid period–luminosity (Leavitt) law (astro-7.1
         const lMax = fitLine(M, lp, LEAV.map((r) => r[1] - r[5])), lMin = (() => { const k = LEAV.map((r, i) => i).filter((i) => LEAV[i][0] !== 1374); return fitLine(M, k.map((i) => lp[i]), k.map((i) => LEAV[i][2] - LEAV[i][6])); })();
         const yt = [11, 12, 13, 14, 15, 16].map((m) => [-m, String(m)]);
         const s = v.stage({ x: [-0.05, 2.25], y: [-16.8, -10.6], axes: 'box', gutter: true, height: 360, weight: 1.35, hover: true, yticks: yt, xlabel: 'log₁₀ period (days)', ylabel: 'photographic magnitude (brighter ↑)', title: 'Leavitt’s 25 Cepheids in the SMC' });
-        const c = v.stage({ x: [0, 2.25], y: [-7, 0], axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 250, yticks: [-1, -2, -3, -4, -5, -6].map((m) => [m, String(m)]), xlabel: 'log₁₀ period (days)', ylabel: 'absolute magnitude (brighter ↑)', title: 'calibrated with δ Cephei' });
-        const hp = c.handle(1.5, -5, { color: 'gold', label: 'P', constrain: (x) => [M.clamp(x, 0.05, 2.15), 0] });
+        const c = v.stage({ x: [0, 2.25], y: [0, 7], axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 250, yticks: [1, 2, 3, 4, 5, 6].map((m) => [m, '−' + m]), xlabel: 'log₁₀ period (days)', ylabel: 'absolute magnitude (brighter ↑)', title: 'calibrated with δ Cephei' });
+        const hp = c.handle(1.5, 5, { color: 'gold', label: 'P', constrain: (x) => [M.clamp(x, 0.05, 2.15), 0] });
         let st = null;
         v.render(() => {
           const log = xmode.value === 'log';
@@ -91,7 +91,7 @@ In modern terms this is the Cepheid period–luminosity (Leavitt) law (astro-7.1
               s.text(`H ${best[0]}: P = ${best[4]} d, ${best[1]}–${best[2]} mag`, X(best[4]), -best[1], { dx: right ? -10 : 10, dy: -14, align: right ? 'right' : 'left', size: 12, weight: 600, plate: true });
             }
           }
-          s.corner(`fit: max = ${v.fix(fMax.a, 2)} ${v.fix(fMax.b, 2)} log P   (rms ${v.fix(fMax.rms, 2)})`, 'tr', { color: 'blue', size: 11.5, weight: 600 });
+          s.corner(`fit: max = ${v.fix(fMax.a, 2)} ${v.fix(fMax.b, 2)} log P   (rms ${v.fix(fMax.rms, 2)})`, 'br', { color: 'blue', size: 11.5, weight: 600 });
           // ---- calibration: δ Cep sets the zero point of the mean-light line (in the same rough blue band)
           const mu = 5 * Math.log10(dist.value) - 5; // δ Cep distance modulus
           const MdCep = DCEP.mB - mu; // absolute magnitude of δ Cep
@@ -113,7 +113,7 @@ In modern terms this is the Cepheid period–luminosity (Leavitt) law (astro-7.1
           if (!st) return '';
           const perMag = -1 / fMax.b, perMag2 = -1 / fMin.b;
           return `slopes: maxima ${v.fix(fMax.b, 2)}, minima ${v.fix(fMin.b, 2)} mag per dex → log P rises **${v.fix(perMag, 2)}** (max) and **${v.fix(perMag2, 2)}** (min) per magnitude (Leavitt: “about 0.48”); her own lines ${v.fix(lMax.b, 2)} and ${v.fix(lMin.b, 2)}.\n` +
-            `δ Cep at ${Math.round(dist.value)} pc ⇒ $M = ${v.fix(st.MdCep, 2)}$, SMC distance modulus ${v.fix(st.muSMC, 2)} ⇒ **${v.fix(st.dSMC, 1)} kpc** — today 62.4 ± 0.9 kpc (eclipsing binaries, 2020). The gap is Leavitt’s provisional magnitude scale and the mixing of passbands, not the law: the slope and the idea survive intact.`;
+            `δ Cep at ${Math.round(dist.value)} pc ⇒ $M = ${v.fix(st.MdCep, 2)}$, SMC distance modulus ${v.fix(st.muSMC, 2)} ⇒ **${v.fix(st.dSMC, 1)} kpc** — today 62.4 ± 0.9 kpc (eclipsing binaries, 2020). The gap is the zero point of Leavitt’s provisional photographic scale (which the circular itself calls not yet absolute) and the mixing of passbands — about ${v.fix(5 * Math.log10(SMC_TODAY / st.dSMC), 1)} mag — not the law: its slope and the idea survive intact.`;
         });
       },
     },

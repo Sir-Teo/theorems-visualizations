@@ -8,7 +8,7 @@
 //  5. path covers of digraphs and drawing helpers
 import { K, ix, comps, bfs, ekey, blob, PALETTE, named } from './ch01.shared.js';
 export { K, ix, comps, bfs, ekey, blob, PALETTE, named };
-export { degrees, parPath, pathEdges, lambda, randomCubic, emap } from './ch01.shared.js';
+export { degrees, parPath, pathEdges, lambda, randomCubic, emap, girth } from './ch01.shared.js';
 
 const TAU = 2 * Math.PI;
 // ================================================================ 1. layout and editing
