@@ -50,7 +50,8 @@ export default {
           sT.dots(pts, { r: 3.2, color: 'accent' });
           const flow = CL.value * C(th);
           sT.arrow(cx, bot, cx, 0.5, { color: 'orange', width: 1.5 + 0.55 * flow, head: 9 });
-          sT.text(`out: CL·C = ${v.fix(flow, 1)} mg/h`, cx + 0.6, 1.3, { size: 11, color: 'orange', align: 'left', baseline: 'middle' });
+          sT.text(`${v.fix(flow, 1)} mg/h`, cx + 0.7, 1.4, { size: 11, color: 'orange', align: 'left', baseline: 'middle', weight: 600 });
+          sT.text('out', cx + 0.7, 0.8, { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
           sT.text(`V = ${v.fix(V.value, 0)} L`, cx, top + 0.6, { size: 12, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
           sT.text(`t = ${v.fix(th, 1)} h · ${v.fix(100 * Math.exp(-k * th), 0)} % of dose left`, cx, 9.6, { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
           // linear
@@ -58,9 +59,10 @@ export default {
           sL.fn(C, { domain: [0, tMax], color: 'accent', width: 2.2 });
           sL.fn(C, { domain: [0, th], color: 'accent', width: 0, fill: true, fillAlpha: 0.12 });
           sL.dot(th, C(th), { r: 5.5, color: 'gold' });
-          sL.text('$C(0)=D/V$', tMax * 0.02, C0 * 1.02, { size: 11, color: 'muted', align: 'left', baseline: 'bottom' });
+          sL.text('$C(0)=D/V$', tMax * 0.03, C0 * 0.99, { size: 11, color: 'muted', align: 'left', baseline: 'top', dx: 6, dy: 4 });
+          sL.dot(0, C0, { r: 4, color: 'accent', hollow: true });
           sL.vline(t12, { color: 'green', dash: true, alpha: 0.7 });
-          sL.text('$t_{1/2}$', t12, C0 * 1.08, { size: 11, color: 'green', align: 'center', baseline: 'top', dx: 12 });
+          sL.text('$t_{1/2}$', t12, C0 * 0.06, { size: 11, color: 'green', align: 'left', baseline: 'bottom', dx: 5 });
           // semilog
           sS.setView([0, tMax], [C0 * 0.004, C0 * 1.6]);
           sS.fn(C, { domain: [0, tMax], color: 'accent', width: 2.2 });
@@ -102,14 +104,14 @@ export default {
           const Vx = h.x, CLx = h.y, k = CLx / Vx, t12 = halfLife(CLx, Vx), meas = measure(CLx, Vx);
           info = { Vx, CLx, t12, meas };
           sM.heat((x, y) => Math.log10((LN2 * x) / y), { range: [-1.2, 2.6], cmap: 'viridis', res: 3, key: 'th' });
-          for (const c of [0.1, 0.3, 1, 3, 10, 30, 100, 300]) {
+          for (const c of [0.3, 1, 3, 10, 30, 100]) {
             const f = (V) => (LN2 * V) / c;
             sM.line(5, f(5), 500, f(500), { color: 'panel', width: 1, alpha: 0.7 });
             let lx = 7, ly = f(lx);
             if (ly > 40) { ly = 40; lx = (c * ly) / LN2; }
             if (ly < 0.7) { ly = 0.7; lx = (c * ly) / LN2; }
             if (lx > 80 && f(80) < 50 && f(80) > 0.5) { lx = 80; ly = f(80); }
-            if (lx <= 450) sM.text(`${c} h`, lx, ly, { size: 10, color: 'panel', align: 'left', baseline: 'bottom', weight: 600 });
+            if (lx <= 450) sM.text(`${c} h`, lx, ly, { size: 10, color: 'ink', align: 'left', baseline: 'bottom', weight: 600, plate: true });
           }
           sM.dot(V0, CL0, { r: 4, color: 'ink', hollow: true });
           sM.text('start', V0, CL0, { size: 10, color: 'ink', dx: -8, dy: 10, align: 'right' });
@@ -123,7 +125,7 @@ export default {
           sS.dot(t12, D / Vx / 2, { r: 5.5, color: 'green' });
           sS.hline(D / Vx, { color: 'accent', alpha: 0.25, dash: [3, 4] });
           sS.hline(D / Vx / 2, { color: 'green', alpha: 0.4, dash: [3, 4] });
-          sS.text('$C(0)/2$', 0, D / Vx / 2, { size: 10.5, color: 'green', align: 'left', baseline: 'bottom', dx: 4 });
+          sS.text('$C(0)/2$', 0, D / Vx / 2, { size: 10.5, color: 'green', align: 'left', baseline: 'top', dx: 4, dy: 5 });
         });
         v.legend([['accent', 'current drug'], ['muted', 'starting drug', { dash: true }], ['green', 'half-life', { dot: true }]]);
         v.readout(() => `$V=${v.fix(info.Vx, 1)}$ L, $\\mathrm{CL}=${v.fix(info.CLx, 2)}$ L/h: formula $0.693\\,V/\\mathrm{CL}=${v.fix(info.t12, 2)}$ h; half-life measured on the integrated ODE $=${v.fix(info.meas, 2)}$ h. Ratio to the starting drug: $${v.fix(info.t12 / halfLife(CL0, V0), 2)}\\times$.`);
@@ -248,7 +250,7 @@ export default {
           sB.fn(inn, { domain: [0, tMax], color: 'orange', width: 2.2 });
           sB.fn(out, { domain: [0, tMax], color: 'accent', width: 2.2 });
           sB.text('input $R$', tMax * 0.02, R.value, { size: 11, color: 'orange', align: 'left', baseline: 'bottom', dy: -3 });
-          sB.text('elimination CL·C', tMax * 0.98, out(tMax * 0.98) + R.value * 0.04, { size: 11, color: 'accent', align: 'right', baseline: 'bottom' });
+          sB.text('elimination CL·C', Ts * 0.5, out(Ts * 0.5), { size: 11, color: 'accent', align: 'left', baseline: 'top', dx: 8, dy: 8 });
         });
         v.legend([['accent', 'rising during infusion'], ['purple', 'decline after stopping'], ['orange', 'mirror of the rise', { dash: true }], ['green', 'plateau', { dash: true }]]);
         v.readout(() => `$k=${v.fix(info.k, 3)}$ h$^{-1}$, $t_{1/2}=${v.fix(info.t12, 1)}$ h, plateau $C_{ss}=R/\\mathrm{CL}=${v.fix(info.Css, 2)}$ mg/L (independent of $V$). At the stop time ($${v.fix(info.Ts, 1)}$ h) the concentration is $${v.fix(100 * info.Cs / info.Css, 1)}$ % of the plateau. RK4 versus formula: largest difference $${v.sci(info.err + 1e-12, 2)}$ mg/L.`);
@@ -301,7 +303,7 @@ export default {
             if (isFinite(o.Css)) sA.hline(o.Css, { color: COL[i], alpha: 0.35, dash: [4, 4] });
             sA.path(o.S.t.map((t, j) => [t, o.S.c[j]]), { color: COL[i], width: 2.2 });
           });
-          if (mm.value) sA.corner(`$V_{max}=${v.fix(Vmax, 0)}$ mg/h`, 'br', { color: 'red' });
+          if (mm.value) sA.corner(`$V_{max}=${v.fix(Vmax, 0)}$ mg/h`, 'tl', { color: 'red' });
           // right: normalised
           [0.5, 0.9, 0.97].forEach((f) => sB.hline(f, { color: 'faint', dash: [3, 4] }));
           rows.forEach((o, i) => {
@@ -309,9 +311,9 @@ export default {
             sB.path(o.S.t.map((t, j) => [t / t12, o.S.c[j] / o.Css]), { color: COL[i], width: i === 0 ? 4 : 2, alpha: i === 0 ? 0.55 : 1 });
           });
           if (!mm.value) for (const n of [1, Math.log2(10), 5]) sB.dot(n, 1 - Math.pow(2, -n), { r: 5, color: 'green' });
-          sB.text('50 %', 1.1, 0.46, { size: 10.5, color: 'green', align: 'left', baseline: 'top' });
-          sB.text('90 %', 3.32, 0.86, { size: 10.5, color: 'green', align: 'left', baseline: 'top', dx: 6 });
-          sB.text('97 %', 5, 0.93, { size: 10.5, color: 'green', align: 'center', baseline: 'top', dy: 8 });
+          if (!mm.value) sB.text('50 %', 1.1, 0.46, { size: 10.5, color: 'green', align: 'left', baseline: 'top' });
+          if (!mm.value) sB.text('90 %', 3.32, 0.86, { size: 10.5, color: 'green', align: 'left', baseline: 'top', dx: 6 });
+          if (!mm.value) sB.text('97 %', 5, 0.93, { size: 10.5, color: 'green', align: 'center', baseline: 'top', dy: 8 });
         });
         v.legend([['accent', '$R$'], ['orange', '$3R$'], ['purple', '$10R$']]);
         v.readout(() => `$t_{1/2}=${v.fix(info.t12, 1)}$ h. Time to 90 % of the plateau (measured on the ODE): ` + info.rows.map((o) => `$${o.m}R$: ` + (isFinite(o.t90) ? `$${v.fix(o.t90, 1)}$ h $=${v.fix(o.t90 / info.t12, 2)}\\,t_{1/2}$` : 'no plateau')).join(' · ') + (mm.value ? '. Saturated: the times differ.' : `. Predicted: $\\log_2 10=${v.fix(Math.log2(10), 2)}$ half-lives for every rate.`));

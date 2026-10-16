@@ -25,11 +25,11 @@ export default {
       viz(v) {
         const M = v.M;
         const type = v.select('deformation', [{ value: 'core', label: 'core penetration' }, { value: 'pol', label: 'polarizable core' }], 'core');
-        const sS = v.slider('strength $s$', 0, 1, 0.3, { step: 0.005 });
+        const sS = v.slider('strength $s$', 0, 1, 0.08, { step: 0.005 });
         const rS = v.slider('range of the core $\\rho$ ($a_0$)', 0.3, 3, 1, { step: 0.01 });
         const shell = v.select('zoom on shell', [2, 3, 4].map((n) => ({ value: String(n), label: `$n=${n}$` })), '2');
-        const sA = v.stage({ x: [-0.7, 3.7], y: [-14.5, 0.4], height: 340, axes: 'box', gutter: true, weight: 0.9, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E (eV)', title: 'levels $n\\le4$ in the deformed potential' });
-        const sB = v.stage({ x: [-0.6, 3.6], y: [-1, 1], height: 340, axes: 'box', gutter: true, weight: 0.9, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E − E_H (meV)', title: 'zoom on the shell' });
+        const sA = v.stage({ x: [-1.15, 3.7], y: [-14.5, 0.4], height: 340, axes: 'box', gutter: true, weight: 0.9, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E (eV)', title: 'levels $n\\le4$ in the deformed potential' });
+        const sB = v.stage({ x: [-0.6, 3.6], y: [-1, 1], height: 340, axes: 'box', gutter: true, weight: 0.9, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E − E(H) (meV)', title: 'zoom on the shell' });
         const sC = v.stage({ x: [0, 20], y: [0, 0.3], height: 340, axes: 'box', gutter: true, weight: 1.1, xlabel: 'r / a₀', ylabel: 'r²R²', title: 'radial distributions of the shell' });
         let cache = null, ckey = '', st = null;
         const potential = (kind, s, rho) => (kind === 'core'
@@ -43,12 +43,13 @@ export default {
           }
           const P = potential(kind, s, rho), En = (n) => -RY_EV / (n * n);
           const E = (n, l) => cache[l].E[n - l - 1] * HARTREE_EV;
+          sA.setView([-1.15, 3.7], [Math.min(-14.5, E(1, 0) * 1.05 - 0.4), 0.4]);
           // panel A
           for (let n = 1; n <= 4; n++) for (let l = 0; l < n; l++) {
             sA.line(l - 0.34, En(n), l + 0.34, En(n), { color: 'faint', width: 3, alpha: 0.7 });
             sA.line(l - 0.3, E(n, l), l + 0.3, E(n, l), { color: n === N ? 'accent' : 'ink', width: n === N ? 3 : 2 });
           }
-          for (let n = 1; n <= 4; n++) sA.text(`n=${n}`, 3.55, En(n) + (n === 4 ? 0.0 : 0), { size: 10, color: 'muted', align: 'right', baseline: 'bottom' });
+          for (let n = 1; n <= 4; n++) sA.text(`n=${n}`, -1.1, En(n), { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
           // panel B
           const dE = []; let lo = 0, hi = 0;
           for (let l = 0; l < N; l++) {
@@ -83,7 +84,7 @@ export default {
           const hyd = Math.max(...[1, 2, 3].map((n) => Math.max(...Array.from({ length: n }, (_, l) => Math.abs(E(n, l) - En(n))))));
           st = { N, dE, s, hyd, kind };
         });
-        v.legend([['accent', 's'], ['orange', 'p'], ['green', 'd'], ['purple', 'f'], ['ink', 'dashed: pure Coulomb', { dash: true }]]);
+        v.legend([['accent', 's'], ['orange', 'p'], ['green', 'd'], ['purple', 'f'], ['ink', 'dashed: pure Coulomb', { dash: true }], ['muted', 'hollow: first-order theory', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const e = (l) => st.dE[l], parts = st.dE.map(({ l, d, first }) => `$${st.N}${LETTER[l]}$: ${v.fix(d, 2)} meV (first order ${v.fix(first, 2)})`).join(' · ');
@@ -180,9 +181,9 @@ so the splitting grows as $Z^4$ ($\alpha\approx1/137$ is the fine-structure cons
         const En = (n, Z) => -RY_EV * Z * Z / (n * n);
         const fs = (n, Z) => Ed(n, 1.5, Z) - Ed(n, 0.5, Z);
         const lead = (n, Z) => (al * al * Z ** 4 * RY_EV) / (2 * n ** 3);
-        const sA = v.stage({ x: [-0.6, 3.6], y: [-1, 1], height: 340, axes: 'box', gutter: true, weight: 1, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E − E_NR (eV)', title: 'levels of the shell: Dirac shift' });
+        const sA = v.stage({ x: [-0.6, 3.6], y: [-1, 1], height: 340, axes: 'box', gutter: true, weight: 1, xticks: [[0, 's'], [1, 'p'], [2, 'd'], [3, 'f']], ylabel: 'E − E(NR) (eV)', title: 'levels of the shell: Dirac shift' });
         const sB = v.stage({ x: [1, 100], y: [1e-7, 1e5], xlog: true, ylog: true, height: 340, axes: 'box', gutter: true, weight: 1, xlabel: 'nuclear charge Z', ylabel: 'p₃/₂ − p₁/₂ (eV)', title: 'fine-structure splitting against $Z$' });
-        const sV = v.stage({ x: [-3.5, 3.5], y: [-1.45, 1.55], equal: true, height: 340, axes: false, weight: 0.9, title: 'vector model for $l=1$, $s=\\tfrac12$' });
+        const sV = v.stage({ x: [-3.5, 3.5], y: [-1.75, 1.6], equal: true, height: 340, axes: false, weight: 0.9, title: 'vector model for $l=1$, $s=\\tfrac12$' });
         let st = null;
         v.render(() => {
           const Z = Zs.value, n = +nS.value;
@@ -203,13 +204,14 @@ so the splitting grows as $Z^4$ ($\alpha\approx1/137$ is the fine-structure cons
           // panel C
           const l = Math.SQRT2, s = Math.sqrt(0.75);
           [[1.5, -1.9], [0.5, 1.9]].forEach(([j, cx]) => {
-            const J = Math.sqrt(j * (j + 1)), tL = Math.acos((J * J + l * l - s * s) / (2 * J * l)), tS = Math.acos((J * J + s * s - l * l) / (2 * J * s)), cy = -1.15;
+            const J = Math.sqrt(j * (j + 1)), tL = Math.acos((J * J + l * l - s * s) / (2 * J * l)), tS = Math.acos((J * J + s * s - l * l) / (2 * J * s)), cy = -0.55;
             const Lp = [cx - l * Math.sin(tL), cy + l * Math.cos(tL)], Sp = [cx + s * Math.sin(tS), cy + s * Math.cos(tS)];
             sV.arrow(cx, cy, Lp[0], Lp[1], { color: 'accent', width: 3 }); sV.arrow(cx, cy, Sp[0], Sp[1], { color: 'green', width: 3 });
             sV.arrow(cx, cy, cx, cy + J, { color: 'orange', width: 3.5 }); sV.line(Lp[0], Lp[1], cx, cy + J, { color: 'faint', dash: [3, 3] }); sV.line(Sp[0], Sp[1], cx, cy + J, { color: 'faint', dash: [3, 3] });
             sV.tex('\\vec L', Lp[0] - 0.12, Lp[1] + 0.12, { color: 'accent', size: 14 }); sV.tex('\\vec S', Sp[0] + 0.15, Sp[1] + 0.08, { color: 'green', size: 14 }); sV.tex('\\vec J', cx + 0.2, cy + J + 0.12, { color: 'orange', size: 14 });
-            sV.tex(`j=\\tfrac${j === 1.5 ? '32' : '12'},\\ \\vec L\\!\\cdot\\!\\vec S=${j === 1.5 ? '+\\tfrac12' : '-1'}\\hbar^2`, cx, cy - 0.28, { size: 12, color: 'ink' });
-            sV.tex(`\\angle(L,S)=${v.fix(180 * Math.acos((J * J - l * l - s * s) / (2 * l * s)) / Math.PI, 1)}^\\circ`, cx, cy - 0.62, { size: 11, color: 'muted' });
+            sV.text(`j = ${j === 1.5 ? '3/2' : '1/2'}`, cx, cy - 0.4, { size: 13, color: 'ink', align: 'center', math: true });
+            sV.text(`L·S = ${j === 1.5 ? '+½' : '−1'} ħ²`, cx, cy - 0.78, { size: 12, color: 'ink', align: 'center' });
+            sV.text(`angle(L, S) = ${v.fix(180 * Math.acos((J * J - l * l - s * s) / (2 * l * s)) / Math.PI, 1)}°`, cx, cy - 1.12, { size: 11, color: 'muted', align: 'center' });
           });
           st = { Z, n, ex: fs(n, Z), ld: lead(n, Z), E: Ed(n, 0.5, Z) - En(n, Z) };
         });
@@ -217,7 +219,7 @@ so the splitting grows as $Z^4$ ($\alpha\approx1/137$ is the fine-structure cons
         v.readout(() => {
           if (!st) return '';
           const ghz = (e) => (e * C.eV) / C.h / 1e9, cm = (e) => (e * C.eV) / (C.h * C.c * 100);
-          return `$Z=${st.Z}$, $n=${st.n}$: $\\mathrm{p}_{3/2}-\\mathrm{p}_{1/2}$ splitting (Dirac) $=${v.sci(st.ex, 4)}$ eV $=${v.fix(cm(st.ex), 3)}$ cm$^{-1}$ $=${v.fix(ghz(st.ex), 2)}$ GHz; leading law $\\alpha^2Z^4\\mathrm{Ry}/2n^3=${v.sci(st.ld, 4)}$ eV (ratio ${v.fix(st.ex / st.ld, 4)}$). Bare-nucleus ion: ` + (st.Z === 1 && st.n === 2 ? 'for hydrogen 2p this is the measured fine structure ≈ 10.97 GHz (recalled value; the Lamb shift of 2s, about 1.06 GHz, is not in the Dirac formula).' : st.ex > 0.1 ? 'the splitting is now of the size of chemical bond energies (0.1–10 eV).' : `a factor $10^{${Math.round(Math.log10(0.1 / st.ex))}}$ below bond energies.`);
+          return `$Z=${st.Z}$, $n=${st.n}$: $\\mathrm{p}_{3/2}-\\mathrm{p}_{1/2}$ splitting (Dirac) $=${v.sci(st.ex, 4)}$ eV $=${v.fix(cm(st.ex), 3)}$ cm$^{-1}$ $=${v.fix(ghz(st.ex), 2)}$ GHz; leading law $\\alpha^2Z^4\\mathrm{Ry}/2n^3=${v.sci(st.ld, 4)}$ eV (ratio ${v.fix(st.ex / st.ld, 4)}). Bare-nucleus ion: ` + (st.Z === 1 && st.n === 2 ? 'for hydrogen 2p this is the measured fine structure ≈ 10.97 GHz (recalled value; the Lamb shift of 2s, about 1.06 GHz, is not in the Dirac formula).' : st.ex > 0.1 ? 'the splitting is now of the size of chemical bond energies (0.1–10 eV).' : `a factor $10^{${Math.round(Math.log10(0.1 / st.ex))}}$ below bond energies.`);
         });
       },
     },
@@ -268,7 +270,7 @@ Orbitals shrink as $1/Z$, energies deepen as $Z^2$: the ionization energy of the
           st = { Z, n, l, mean, dmax, ie: RY_EV * Z * Z, meas: Z <= 6 ? MEAS[Z - 1] : null, o: orb.value };
         });
         v.legend([['accent', '$Z$ ion'], ['muted', 'hydrogen ($Z=1$)', { dash: true }], ['gold', 'measured', { dot: true }]]);
-        v.readout(() => st && `**${ION[st.Z - 1]}** ($Z=${st.Z}$), orbital ${st.o}: $\\langle r\\rangle=${v.fix(st.mean, 4)}\\,a_0$ (hydrogen value ${v.fix(0.5 * (3 * st.n * st.n - st.l * (st.l + 1)), 3)}, divided by $Z$: ${v.fix((0.5 * (3 * st.n * st.n - st.l * (st.l + 1))) / st.Z, 4)}) = ${v.fix((st.mean * A0_PM), 1)} pm. Ionization energy $Z^2\\cdot13.606=${v.fix(st.ie, 2)}$ eV` + (st.meas ? `; measured ${v.fix(st.meas, 2)} eV (difference ${v.fix((100 * (st.ie - st.meas)) / st.meas, 3)} %: reduced mass lowers it, relativity raises it)` : '; no measured value tabulated here') + `. Maximum of $|P_Z(r/Z)/Z-P_1(r)|$ over $r$ (scaling law): ${v.sci(Math.max(st.dmax, 1e-16), 1)}$.`);
+        v.readout(() => st && `**${ION[st.Z - 1]}** ($Z=${st.Z}$), orbital ${st.o}: $\\langle r\\rangle=${v.fix(st.mean, 4)}\\,a_0$ (hydrogen value ${v.fix(0.5 * (3 * st.n * st.n - st.l * (st.l + 1)), 3)}, divided by $Z$: ${v.fix((0.5 * (3 * st.n * st.n - st.l * (st.l + 1))) / st.Z, 4)}) = ${v.fix((st.mean * A0_PM), 1)} pm. Ionization energy $Z^2\\cdot13.606=${v.fix(st.ie, 2)}$ eV` + (st.meas ? `; measured ${v.fix(st.meas, 2)} eV (difference ${v.fix((100 * (st.ie - st.meas)) / st.meas, 3)} %: reduced mass lowers it, relativity raises it)` : '; no measured value tabulated here') + `. Maximum of $|P_Z(r/Z)/Z-P_1(r)|$ over $r$ (scaling law): $${v.sci(Math.max(st.dmax, 1e-16), 1)}$.`);
       },
     },
     // ------------------------------------------------------------------ 2.10
@@ -325,6 +327,7 @@ giving the **anomalous Zeeman** patterns (e.g. 6 and 4 components for the sodium
           const lv = levels(B, zeta, sp), lines = [];
           if (!sp) lv.forEach((q) => lines.push({ x: q.E, pi: q.mj === 0 ? 1 : 0, sg: q.mj === 0 ? 0 : 1 }));
           else lv.forEach((q) => { for (const ms of [0.5, -0.5]) { const pi = q.c[`0,${ms}`] || 0, sg = (q.c[`1,${ms}`] || 0) + (q.c[`-1,${ms}`] || 0); if (pi + sg > 1e-9) lines.push({ x: q.E - 2 * ms * muB * B, pi, sg }); } });
+          const xm = Math.max(14, 1.3 * Math.max(...lines.map((q) => Math.abs(q.x)))); sS.setView([-xm, xm], [0, 1.15]);
           lines.forEach((q) => { const h = q.pi + q.sg; sS.line(q.x, 0, q.x, q.sg, { color: 'accent', width: 3.5 }); sS.line(q.x, q.sg, q.x, h, { color: 'red', width: 3.5 }); });
           if (!sp) sS.text('normal triplet', 0, 1.1, { size: 11, color: 'muted', align: 'center' });
           // Landé check

@@ -83,7 +83,7 @@ giving $\psi_{nlm}=R_{nl}(r)Y_l^m(\theta,\varphi)$ with $n-l-1$ radial and $l$ a
           st = { n, l, m, NR, NY, E, res: res / mx, nodes: nodes.length };
         });
         v.legend([['accent', 'positive'], ['orange', 'negative'], ['red', 'radial nodes', { dot: true }]]);
-        v.readout(() => st && `Orbital $${orbTeX(st.n, st.l, st.m)}$ (a real combination of $\\pm m$): radial nodes **${st.nodes}** (rule $n-l-1=${st.n - st.l - 1}$), angular nodal surfaces $l=${st.l}$, total $n-1=${st.n - 1}$. $\\int R^2r^2dr=${v.fix(st.NR, 5)}$, $\\int|Y|^2d\\Omega=${v.fix(st.NY, 5)}$. Residual of the radial equation with $E=-\\tfrac1{2n^2}=${v.fix(st.E, 5)}$ hartree $=${v.fix(st.E * 27.211386, 3)}$ eV: ${v.sci(st.res, 1)}$ relative to $\\max|R|$.`);
+        v.readout(() => st && `Orbital $${orbTeX(st.n, st.l, st.m)}$ (a real combination of $\\pm m$): radial nodes **${st.nodes}** (rule $n-l-1=${st.n - st.l - 1}$), angular nodal surfaces $l=${st.l}$, total $n-1=${st.n - 1}$. $\\int R^2r^2dr=${v.fix(st.NR, 5)}$, $\\int|Y|^2d\\Omega=${v.fix(st.NY, 5)}$. Residual of the radial equation with $E=-\\tfrac1{2n^2}=${v.fix(st.E, 5)}$ hartree $=${v.fix(st.E * 27.211386, 3)}$ eV: $${v.sci(st.res, 1)}$ relative to $\\max|R|$.`);
       },
     },
     // ------------------------------------------------------------------ 2.2
@@ -110,8 +110,8 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
         const ser = v.select('series: lower level', Object.entries(SERIES).map(([k, nm]) => ({ value: k, label: `${nm} ($n_l=${k}$)` })), '2');
         const nuS = v.slider('upper level $n_u$', 2, 10, 3, { int: true });
         const iso = v.select('nucleus', [{ value: 'inf', label: 'infinite mass' }, { value: 'H', label: '¹H' }, { value: 'D', label: '²H (D)' }], 'H');
-        const sL = v.stage({ x: [0, 10], y: [-14.9, 1.6], height: 340, axes: 'box', gutter: true, weight: 0.85, xticks: [], ylabel: 'E (eV)', title: 'levels $E_n=-13.606/n^2$ eV' });
-        const sS = v.stage({ x: [80, 2400], y: [0, 5.2], xlog: true, height: 340, axes: 'box', gutter: true, weight: 1.3, xlabel: 'wavelength in vacuum (nm)', xticks: [100, 200, 400, 700, 1000, 2000], yticks: [], title: 'lines of the four series' });
+        const sL = v.stage({ x: [0, 11.4], y: [-14.9, 1.6], height: 340, axes: 'box', gutter: true, weight: 0.85, xticks: [], ylabel: 'E (eV)', title: 'levels $E_n=-13.606/n^2$ eV' });
+        const sS = v.stage({ x: [80, 4600], y: [0, 5.2], xlog: true, height: 340, axes: 'box', gutter: true, weight: 1.3, xlabel: 'wavelength in vacuum (nm)', xticks: [100, 200, 400, 700, 1000, 2000, 4000], yticks: [], title: 'lines of the four series' });
         const En = (n) => -RY_EV / (n * n);
         const lam = (nl, nu, f) => 1e9 / (Rinf * f * (1 / (nl * nl) - 1 / (nu * nu)));
         const colOf = (nm) => (nm >= 380 && nm <= 780 ? M.wavelengthRGB(nm) : 'muted');
@@ -130,7 +130,7 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
           for (let n = 1; n <= 10; n++) {
             const e = En(n), hi = n === lo || n === up;
             sL.line(0.3, e, 9.1, e, { color: hi ? 'ink' : 'muted', width: hi ? 2.8 : 1.5, alpha: hi ? 1 : 0.7 });
-            if (hi || sL.Y(e) < lastY - 13) { sL.text(`n = ${n}`, 9.25, e, { size: 11, color: hi ? 'ink' : 'muted', align: 'left', baseline: 'middle' }); lastY = sL.Y(e); }
+            if (hi || sL.Y(e) < lastY - 13) { sL.text(`n = ${n}`, 9.3, e, { size: 11, color: hi ? 'ink' : 'muted', align: 'left', baseline: 'middle' }); lastY = sL.Y(e); }
           }
           for (let u = lo + 1; u <= 10; u++) {
             const nm = lam(lo, u, f), x = 1 + 0.82 * (u - lo - 1), sel = u === up;
@@ -138,17 +138,17 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
           }
           // spectrum
           for (let k = 380; k < 780; k += 4) sS.rect(k, 0.06, k + 4.4, 0.4, { fill: M.wavelengthRGB(k), fillAlpha: 0.9, stroke: false });
-          sS.text('visible', 780 * 0.97, 0.23, { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
+          sS.text('visible', 530, 0.62, { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
           Object.entries(SERIES).forEach(([k, nm]) => {
             const nl = +k, y = 5 - nl; sS.hline(y, { color: 'faint', alpha: 0.5 });
-            sS.text(nm, 84, y + 0.3, { size: 11, color: 'muted', align: 'left', baseline: 'middle' });
+            sS.text(nm, 84, y + 0.5, { size: 11, color: 'muted', align: 'left', baseline: 'middle' });
             sS.vline(lam(nl, 1e9, f), { color: 'green', width: 1, dash: [4, 3], alpha: nl === lo ? 0.9 : 0.35 });
             for (let u = nl + 1; u <= 14; u++) { const x = lam(nl, u, f), on = nl === lo && u === up; sS.line(x, y - 0.22, x, y + 0.22, { color: colOf(x), width: on ? 3.2 : 2, alpha: on ? 1 : 0.9 }); }
           });
           const xs = lam(lo, up, f); sS.dot(xs, 5 - lo, { r: 9, hollow: true, color: 'gold' });
-          sS.text(`${SERIES[lo]} ${lo}←${up}`, xs, 5 - lo + 0.55, { size: 11, color: 'gold', align: 'center' });
+          sS.text(`${SERIES[lo]} ${lo}←${up}`, xs, 5 - lo + 0.5, { size: 11, color: 'gold', align: 'center' });
           const vac = xs, air = vac / nAir(vac), E = En(up) - En(lo);
-          st = { lo, up, f, vac, air, eV: -E * f, meas: lo === 2 ? BALMER_AIR[up] : null };
+          st = { lo, up, f, vac, air, eV: E * f, meas: lo === 2 ? BALMER_AIR[up] : null };
         });
         v.readout(() => st && `${SERIES[st.lo]} line $n_u=${st.up}\\to n_l=${st.lo}$: $\\tilde\\nu=R_M\\big(\\tfrac1{${st.lo * st.lo}}-\\tfrac1{${st.up * st.up}}\\big)=${v.fix(1e-2 * Rinf * st.f * (1 / st.lo ** 2 - 1 / st.up ** 2), 2)}$ cm$^{-1}$ (with $R_M=${v.fix(1e-2 * Rinf * st.f, 3)}$ cm$^{-1}$) → $\\lambda_{\\rm vac}=${v.fix(st.vac, 3)}$ nm` + (st.vac > 200 ? `, in air ${v.fix(st.air, 3)} nm` : ' (ultraviolet: quoted in vacuum)') + `; photon energy $h\\nu=${v.fix(st.eV, 4)}$ eV $=E_u-E_l$.` + (st.meas ? `\nTabulated air wavelength of this Balmer line: ${st.meas.toFixed(3)} nm; computed minus tabulated: ${v.fix(st.air - st.meas, 3)} nm (isotope shift ¹H − ²H of this line, computed from the reduced masses: ${v.fix(lam(st.lo, st.up, MASS.H) / nAir(lam(st.lo, st.up, MASS.H)) - lam(st.lo, st.up, MASS.D) / nAir(lam(st.lo, st.up, MASS.D)), 3)} nm).` : '') + `\nSeries limit of the ${SERIES[st.lo]} series: ${v.fix(lamLimit(st), 2)} nm.`);
         function lamLimit(s) { return 1e9 / (Rinf * s.f / (s.lo * s.lo)); }
@@ -170,7 +170,7 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
         const lS = v.select('$l$', [0, 1, 2, 3].map((l) => ({ value: String(l), label: `${LETTER[l]} ($l=${l}$)` })), '2', { onChange: () => { if (Math.abs(mS.value) > +lS.value) mS.set(Math.sign(mS.value) * +lS.value); } });
         const mS = v.slider('$m$ (real combination: $>0$ cos, $<0$ sin)', -3, 3, 0, { int: true });
         const s3 = v.stage3d({ range: 1.65, height: 360, weight: 1, axes: false, yaw: -0.7, pitch: 0.4, title: 'polar surface $|Y_l^m|$, coloured by sign' });
-        const sT = v.stage({ x: [-4.3, 3.7], y: [-0.7, 4.05], equal: true, axes: false, height: 360, weight: 1, title: 'all real harmonics up to $l=3$ (cuts through the $z$ axis)' });
+        const sT = v.stage({ x: [-4.3, 3.7], y: [-0.6, 3.95], equal: true, axes: false, height: 360, weight: 1, title: 'all real harmonics up to $l=3$ (cuts through the $z$ axis)' });
         sT.onClick((x, y) => {
           const l = Math.round(3.1 - y), m = Math.round(x);
           if (l >= 0 && l <= 3 && Math.abs(m) <= l) { lS.set(String(l)); mS.set(m); }
@@ -193,15 +193,15 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
               sT.rect(mm - 0.48, cy - 0.48, mm + 0.48, cy + 0.48, { color: sel ? 'accent' : 'faint', width: sel ? 2 : 1, fill: sel ? 'accent' : false, fillAlpha: 0.1, radius: 6 });
               for (const sg of [1, -1]) {
                 let run = [], sign = 0;
-                const flush = () => { if (run.length > 1) sT.poly([[mm, cy], ...run, [mm, cy]], { fill: sign > 0 ? 'accent' : 'orange', fillAlpha: 0.55, color: sign > 0 ? 'accent' : 'orange', width: 1 }); run = []; };
+                const flush = () => { if (run.length > 1) sT.poly([[mm, cy + 0.07], ...run, [mm, cy + 0.07]], { fill: sign > 0 ? 'accent' : 'orange', fillAlpha: 0.55, color: sign > 0 ? 'accent' : 'orange', width: 1 }); run = []; };
                 for (let i = 0; i <= 60; i++) {
-                  const th = (i / 60) * Math.PI, val = realY(ll, mm, th, sg > 0 ? f0 : f0 + Math.PI), r = (0.42 * Math.abs(val)) / mxT;
+                  const th = (i / 60) * Math.PI, val = realY(ll, mm, th, sg > 0 ? f0 : f0 + Math.PI), r = (0.33 * Math.abs(val)) / mxT;
                   const sgn = val >= 0 ? 1 : -1; if (sgn !== sign && run.length) flush(); sign = sgn;
-                  run.push([mm + sg * r * Math.sin(th), cy + r * Math.cos(th)]);
+                  run.push([mm + sg * r * Math.sin(th), cy + 0.07 + r * Math.cos(th)]);
                 }
                 flush();
               }
-              if (mm === 0 || ll <= 2) sT.text(`${REAL_NAMES[ll][mm].replace(/[_{}^]/g, '').replace('x2-y2', 'x²−y²').replace('z2', 'z²')}`, mm, cy - 0.42, { size: 9, color: 'muted', align: 'center' });
+              if (mm === 0 || ll <= 2) sT.text(`${REAL_NAMES[ll][mm].replace(/[_{}^]/g, '').replace('x2-y2', 'x²−y²').replace('z2', 'z²')}`, mm, cy - 0.38, { size: 9, color: 'muted', align: 'center' });
             }
           }
           // checks: norm, overlap, nodes
