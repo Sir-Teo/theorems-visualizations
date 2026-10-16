@@ -226,5 +226,182 @@ Dropping the repulsion $1/r_{12}$ leaves two hydrogen-like electrons with $E^{(0
         v.readout(() => { if (!st) return ''; const { Z, m, nv } = st; const e = (L) => (m.res[L] ? `${nv}${'spd'[L]}: ${v.fix(m.res[L].E, 3)} Eh` : ''); return `${SYM[Z - 1]} (Z=${Z}), ${configText(Z)}. Slater: $Z_{\\rm eff}=Z-s=${v.fix(m.sl, 2)}$` + (st.cr ? `; Clementi–Raimondi ${v.fix(st.cr, 3)}` : '') + `\nmodel orbital energies in the frozen-core potential: ${[0, 1, 2].map(e).filter(Boolean).join(' < ')} — the $s$ electron penetrates the core and is bound more strongly than $p$, then $d$. $\\langle r\\rangle_{${nv}${'spd'[st.l]}}=${v.fix(st.R.r1, 2)}\\,a_0$ where $Z_{\\rm eff}(r)=${v.fix(m.Zr(st.R.r1), 2)}$.`; });
       },
     },
+    // ------------------------------------------------------------------ 3.5
+    {
+      num: '3.5',
+      kind: 'Principle',
+      name: 'Aufbau principle and the Madelung rule',
+      credit: 'Bohr, early 1920s (building-up); Madelung, 1936 (rule)',
+      statement: String.raw`The **Aufbau** (building-up) principle: the ground configuration of an atom is obtained by adding electrons one at a time to the available subshells, lowest first, at most $2(2l+1)$ in each (Pauli). The **Madelung rule** gives the order empirically: subshells fill in order of increasing $n+l$, and for equal $n+l$ in order of increasing $n$,
+$$1s,\;2s,\;2p,\;3s,\;3p,\;4s,\;3d,\;4p,\;5s,\;4d,\;5p,\;6s,\;4f,\;5d,\;6p,\;7s,\;5f,\;6d,\;7p .$$
+The block structure of the periodic table (2, 6, 10, 14 columns for s, p, d, f) is the capacity of the subshells in this order.`,
+      scope: String.raw`A rule of thumb: it predicts the experimental ground configuration of most elements but not of about 20 with $Z\le103$ (Cr, Cu, Nb, Mo, Ru, Rh, Pd, Ag, La, Ce, Gd, Pt, Au, Ac, Th, Pa, U, Np, Cm, Lr; 3.11), and it describes neutral-atom ground states only, not ions (a $\mathrm{Fe^{2+}}$ ion loses its $4s$ electrons first).`,
+      idea: String.raw`In a hydrogen-like atom all subshells of a shell share one energy (2.6); in a many-electron atom penetration and shielding (3.4) lift $p$ above $s$, $d$ above $p$ and $f$ above $d$ of the same $n$, and the lift is large enough that $4s$ (which penetrates the argon core) lies close to or below $3d$. Ordering by $n+l$ summarises the competition between the growing radius $n$ and the rising effective repulsion with $l$. Bohr's building-up picture of the periods dates from the early 1920s; Madelung stated the $n+l$ rule in 1936.`,
+      caption: String.raw`Move the atomic number $Z$ along the table. The ladder shows the subshells in Madelung order (alternate bands share the same $n+l$) with arrows added by Hund's rule; the table highlights the element and shades the filled part, ringing in red every element whose real ground configuration (NIST for $Z\le86$) differs from the Madelung prediction. Flip **Madelung prediction** to see the filling the rule would give; the readout names the subshells that differ.`,
+      deps: ['qchem-3.4', 'qchem-2.6'],
+      see: ['qm-10.9'],
+      refs: ['McQuarrie ch. 9'],
+      tags: ['Aufbau', 'Madelung rule', 'periodic table'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Aufbau_principle' },
+      viz(v) {
+        const zS = v.slider('atomic number $Z$', 1, 103, 26, { int: true });
+        const mad = v.toggle('show the Madelung prediction instead of experiment', false);
+        const sL = v.stage({ x: [-3.1, 7.6], y: [-0.8, 19.2], axes: false, height: 470, weight: 0.8, minWidth: 300, title: 'subshells in Madelung order' });
+        const sT = v.stage({ x: [-0.7, 17.7], y: [-9.7, 0.7], equal: true, axes: false, height: 470, weight: 1.35, title: 'the table: filled up to Z' });
+        const BL = { s: 'accent', p: 'green', d: 'orange', f: 'purple' };
+        let st = null;
+        v.render(() => {
+          const Z = zS.value, occE = groundConfig(Z), occM = madelung(Z), occ = mad.value ? occM : occE;
+          // ladder
+          ORDER.forEach((sub, i) => {
+            const nl = subN(sub) + subL(sub), y = i, nb = 2 * subL(sub) + 1, k = occ[sub] || 0, diff = (occE[sub] || 0) !== (occM[sub] || 0);
+            if (nl % 2 === 0) sL.rect(-3.0, y - 0.5, 7.5, y + 0.5, { fill: 'faint', fillAlpha: 0.1, stroke: false });
+            sL.text(sub, -1.5, y, { color: diff ? 'red' : 'ink', size: 13, align: 'right', baseline: 'middle', math: true });
+            sL.text(`${nl}`, -0.55, y, { color: 'muted', size: 10, align: 'center', baseline: 'middle' });
+            for (let b = 0; b < nb; b++) {
+              const up = k > b, dn = k > nb + b;
+              sL.rect(b * 1 + 0.05, y - 0.38, b * 1 + 0.95, y + 0.38, { color: diff ? 'red' : 'muted', fill: k ? BL[sub[1]] : false, fillAlpha: up ? 0.14 : 0, width: diff ? 1.6 : 1 });
+              if (up) sL.text('↑', b + 0.33, y, { color: 'ink', size: 12, align: 'center', baseline: 'middle' });
+              if (dn) sL.text('↓', b + 0.7, y, { color: 'ink', size: 12, align: 'center', baseline: 'middle' });
+            }
+          });
+          sL.text('n + l', -0.55, 19.0, { color: 'muted', size: 10, align: 'center' });
+          // table
+          for (let z = 1; z <= 103; z++) {
+            const [c, r] = tablePos(z), bl = blockOf(z), ex = !!EXCEPTIONS[z], cur = z === Z;
+            sT.rect(c - 0.46, -r - 0.46, c + 0.46, -r + 0.46, { color: cur ? 'gold' : ex ? 'red' : 'faint', fill: BL[bl], fillAlpha: z <= Z ? 0.5 : 0.1, width: cur ? 3 : ex ? 1.8 : 0.8 });
+            sT.text(SYM[z - 1], c, -r, { size: 11, align: 'center', baseline: 'middle', color: z <= Z ? 'ink' : 'muted' });
+          }
+          sT.text('lanthanides: La–Lu', 1.8, -7.35, { color: 'muted', size: 10, align: 'left' }); sT.text('actinides: Ac–Lr', 1.8, -8.35, { color: 'muted', size: 10, align: 'left' });
+          const dif = ORDER.filter((x) => (occE[x] || 0) !== (occM[x] || 0));
+          st = { Z, dif, nexc: Object.keys(EXCEPTIONS).filter((k) => +k <= Z).length };
+        });
+        v.legend([['accent', 's block'], ['green', 'p block'], ['orange', 'd block'], ['purple', 'f block'], ['red', 'differs from Madelung', { dot: true }]]);
+        v.readout(() => { if (!st) return ''; const { Z, dif } = st; return `**${SYM[Z - 1]}** ($Z=${Z}), block ${blockOf(Z)}: experiment ${configText(Z)} · Madelung ${configText(Z, madelung(Z))}` + (dif.length ? `\n**exception**: ${dif.map((x) => `${x} ${madelung(Z)[x] || 0} → ${groundConfig(Z)[x] || 0}`).join(', ')}.` : '\nthe rule is right for this element.') + ` Exceptions among the first ${Z} elements: ${st.nexc}.`; });
+      },
+    },
+    // ------------------------------------------------------------------ 3.6
+    {
+      num: '3.6',
+      kind: 'Concept',
+      name: 'Exchange energy and the Fermi hole',
+      statement: String.raw`Antisymmetry keeps two electrons of the same spin apart even when they do not interact. If an electron of spin $\sigma$ sits at the origin, the density of other electrons of the same spin at distance $r$ is $n_\sigma\,g_{\sigma\sigma}(r)$ with $g_{\sigma\sigma}\to0$ as $r\to0$: a **Fermi (exchange) hole** surrounds each electron. For the non-interacting uniform electron gas of density $n$ (Fermi wavenumber $k_F=(3\pi^2n)^{1/3}$)
+$$g_{\sigma\sigma}(r)=1-\Big[\frac{3\,j_1(k_Fr)}{k_Fr}\Big]^2,\qquad g_{\sigma,-\sigma}(r)=1,$$
+the hole contains exactly one electron, $n_\sigma\!\int(g_{\sigma\sigma}-1)\,d^3r=-1$, and the Coulomb energy of an electron with its hole is the **exchange energy** $e_x=-\dfrac{3k_F}{4\pi}$ hartree per electron, i.e. $-0.458/r_s$ for $r_s=(3/4\pi n)^{1/3}$ in bohr.`,
+      scope: String.raw`Exact for the uniform gas of non-interacting electrons (a Slater determinant of plane waves). In atoms and molecules the hole has the same size scale but is anisotropic; and real electrons also avoid each other through Coulomb correlation, which this picture leaves out (opposite spins are uncorrelated here).`,
+      idea: String.raw`In a Slater determinant (3.2) two same-spin rows evaluated at the same point are identical, so the pair density has a node at coincidence; integrating the determinant's pair density over all the other electrons shows that the missing density exactly equals one electron. Electrons of opposite spin do not appear in the same determinant row structure, so they are uncorrelated at this level. The hole lowers the energy because each electron's Coulomb repulsion is computed against a cloud that has had its own-spin neighbours removed: this is the exchange energy, which is why parallel spins in different orbitals are stabilised in atoms (Hund, 3.8).`,
+      caption: String.raw`The reference electron (gold) sits at the centre. The map shows $g(r)$, the relative density of a second electron of the chosen spin relation, in a plane through the centre; the right panel plots $g$ along a radius. Change the density through $r_s$: the hole radius is of order $r_s$ (higher density, smaller hole). Same spin: a hole opens, with a first overshoot ring; opposite spin: flat. The readout integrates the hole numerically (it must hold exactly one electron) and the exchange energy.`,
+      deps: ['qchem-3.2'],
+      refs: ['Szabo–Ostlund ch. 2'],
+      tags: ['exchange energy', 'Fermi hole', 'electron gas'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Exchange_interaction' },
+      viz(v) {
+        const M = v.M;
+        const rsS = v.slider('density: Wigner–Seitz radius $r_s$ (a₀)', 1, 6, 2, { step: 0.05 });
+        const rel = v.select('second electron has', [{ value: 'same', label: 'the same spin' }, { value: 'opp', label: 'opposite spin' }], 'same');
+        const sM = v.stage({ x: [-8, 8], y: [-8, 8], equal: true, axes: 'box', gutter: true, height: 360, weight: 1, xlabel: 'x / a₀', ylabel: 'y / a₀', title: 'relative density $g(r)$ around one electron' });
+        const sG = v.stage({ x: [0, 8], y: [0, 1.25], axes: 'box', gutter: true, height: 360, weight: 1, xlabel: 'distance r / a₀', ylabel: 'g(r)', title: 'along a radius' });
+        const j1 = (x) => (x < 1e-3 ? x / 3 : (Math.sin(x) - x * Math.cos(x)) / (x * x));
+        const gSame = (x) => (x < 1e-6 ? 0 : 1 - (3 * j1(x) / x) ** 2);
+        let st = null;
+        v.render(() => {
+          const rs = rsS.value, kF = Math.cbrt((9 * Math.PI) / 4) / rs, same = rel.value === 'same';
+          const g = (r) => (same ? gSame(kF * r) : 1);
+          sM.heat((x, y) => g(Math.hypot(x, y)), { range: [0, 1.15], cmap: 'theme', color: 'accent', res: 3, key: `${rs.toFixed(3)},${rel.value}` });
+          sM.dot(0, 0, { r: 6, color: 'gold' });
+          sM.circle(0, 0, rs, { color: 'ink', dash: true, fill: false });
+          sG.hline(1, { color: 'faint', dash: true });
+          sG.fn(g, { color: 'accent', width: 2.4, domain: [0, 8], n: 500 });
+          sG.fn((r) => 1, { color: 'faint', width: 0.001, fill: 'accent', fillAlpha: 0.13, base: 0 });
+          sG.vline(rs, { color: 'muted', dash: true });
+          // sum rule and exchange energy (same spin), spin density n_sigma = kF^3 / (6 pi^2)
+          const nsig = kF ** 3 / (6 * Math.PI * Math.PI), R = 400 / kF;
+          const hole = nsig * 4 * Math.PI * M.integrate((r) => (gSame(kF * r) - 1) * r * r, 0, R, 60000);
+          const ex = 0.5 * nsig * 4 * Math.PI * M.integrate((r) => (gSame(kF * r) - 1) * r, 0, R, 60000);
+          let rh = 0; for (let r = 0; r < 20; r += 0.01) { if (nsig * 4 * Math.PI * M.integrate((q) => (1 - gSame(kF * q)) * q * q, 0, r, 200) >= 0.5) { rh = r; break; } }
+          st = { rs, kF, hole, ex, exTh: (-3 * kF) / (4 * Math.PI), rh, same };
+        });
+        v.legend([['accent', 'g(r) (shaded: the level 1 of an uncorrelated pair)'], ['ink', 'r = r_s', { dash: true }]]);
+        v.readout(() => st && `$r_s=${v.fix(st.rs, 2)}$, $k_F=${v.fix(st.kF, 3)}\\,a_0^{-1}$. Hole content (same spin): $n_\\sigma\\!\\int(g-1)\\,d^3r=${v.fix(st.hole, 4)}$ — one missing electron. Half of it lies within $${v.fix(st.rh, 2)}\\,a_0=${v.fix(st.rh / st.rs, 2)}\\,r_s$.` + `\nexchange energy per electron from the hole, $\\tfrac12 n_\\sigma\\!\\int(g-1)/r\\,d^3r=${v.fix(st.ex, 4)}$ Eh; closed form $-3k_F/4\\pi=${v.fix(st.exTh, 4)}$ Eh $=-0.458/r_s=${v.fix(-0.4582 / st.rs, 4)}$.` + (st.same ? '' : `\nopposite spins: $g\\equiv1$, no hole, no exchange energy between them.`));
+      },
+    },
+    // ------------------------------------------------------------------ 3.7
+    {
+      num: '3.7',
+      kind: 'Definition',
+      name: 'Russell–Saunders term symbols',
+      credit: 'Russell and Saunders, 1925',
+      statement: String.raw`When spin–orbit coupling is small, the electrons' orbital angular momenta add to a total $\mathbf L$ and their spins to a total $\mathbf S$ (Russell–Saunders or LS coupling), and a configuration splits into **terms** labelled $^{2S+1}L$ with $L=\mathrm S,\mathrm P,\mathrm D,\mathrm F,\mathrm G,\dots$ for $L=0,1,2,3,4,\dots$; each term has $(2S+1)(2L+1)$ states, and spin–orbit coupling splits it further into levels $^{2S+1}L_J$, $J=|L-S|,\dots,L+S$. The terms of a configuration are found by listing its microstates $(M_L,M_S)$, allowed by the Pauli principle, and peeling off rectangles: take the largest $M_S$, then the largest $M_L$ remaining, remove the block $|M_L|\le L,\ |M_S|\le S$ of that term, and repeat.`,
+      scope: String.raw`Valid for light atoms where electron repulsion dominates spin–orbit coupling (roughly $Z$ below about 50 in the ground configurations); for heavy atoms $jj$ coupling is a better starting point. A term symbol labels a configuration's multiplet; the relative energies of the terms need a calculation, Hund's rules (3.8) give only the lowest.`,
+      idea: String.raw`Closed subshells have $L=S=0$ and drop out, so only open subshells matter. The Pauli principle (3.1) removes microstates in which two electrons share $(m_l,m_s)$, which is why $p^2$ has $15$ states instead of $36$ and keeps only $^3P,{}^1D,{}^1S$ and not $^3D$, $^1P$, $^3S$. The counting works because the total angular momentum ladder (addition of angular momenta, qm-7.14) gives each term a full $(M_L,M_S)$ rectangle.`,
+      caption: String.raw`Choose a configuration. The grid counts the microstates at each $(M_L,M_S)$. Move **terms peeled off** to remove one rectangle at a time (the next one is outlined): at the end the grid is empty, so every state has been assigned to a term. For $p^2$ and $p^4$ the right panel shows the measured levels of carbon and oxygen (NIST), in the order Hund's rules predict.`,
+      deps: ['qchem-3.1', 'qchem-2.8', 'qm-7.14'],
+      see: ['qm-7.14'],
+      refs: ['McQuarrie ch. 9'],
+      tags: ['term symbols', 'LS coupling', 'microstates'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Term_symbol' },
+      viz(v) {
+        const CF = { p2: [1, 2, 'p²'], p3: [1, 3, 'p³'], p4: [1, 4, 'p⁴'], d2: [2, 2, 'd²'], d3: [2, 3, 'd³'], f2: [3, 2, 'f²'] };
+        const sel = v.select('configuration', Object.entries(CF).map(([k, c]) => ({ value: k, label: c[2] })), 'p2');
+        const kS = v.slider('terms peeled off', 0, 12, 0, { int: true });
+        const sG = v.stage({ x: [-4, 4], y: [-4, 4], axes: false, height: 400, weight: 1.35, title: 'microstates by $M_L$ (rows) and $M_S$ (columns)' });
+        const sE = v.stage({ x: [0, 4], y: [0, 3], axes: 'box', gutter: true, height: 400, weight: 0.9, xticks: [], ylabel: 'energy above the ground level (cm⁻¹)', title: 'measured levels (NIST)' });
+        const LET = 'SPDFGHIKL';
+        const NIST = { p2: { el: 'carbon C I', lv: [['³P', 0], ['¹D', 10192.657], ['¹S', 21648.030]], fine: [0, 16.4167, 43.4135] }, p4: { el: 'oxygen O I', lv: [['³P', 0], ['¹D', 15867.862], ['¹S', 33792.583]], fine: [0, 158.265, 226.977] } };
+        const cache = {};
+        const build = (key) => {
+          if (cache[key]) return cache[key];
+          const [l, n] = CF[key], orbs = []; for (let m = -l; m <= l; m++) for (const s of [1, -1]) orbs.push([m, s]);
+          const cnt = {}; let total = 0;
+          const rec = (start, left, ML, MS2) => { if (!left) { const k = ML + ',' + MS2; cnt[k] = (cnt[k] || 0) + 1; total++; return; } for (let i = start; i < orbs.length; i++) rec(i + 1, left - 1, ML + orbs[i][0], MS2 + orbs[i][1]); };
+          rec(0, n, 0, 0);
+          const work = { ...cnt }, terms = [];
+          for (;;) {
+            let S2 = -99; for (const k in work) if (work[k] > 0) S2 = Math.max(S2, +k.split(',')[1]);
+            if (S2 < 0 && !Object.values(work).some((x) => x > 0)) break;
+            let L = -99; for (const k in work) { const [a, b] = k.split(',').map(Number); if (work[k] > 0 && b === S2) L = Math.max(L, a); }
+            terms.push({ L, S2 });
+            for (let a = -L; a <= L; a++) for (let b = -S2; b <= S2; b += 2) work[a + ',' + b]--;
+          }
+          let rem = cnt; const snaps = [{ ...cnt }]; const w2 = { ...cnt };
+          for (const t of terms) { for (let a = -t.L; a <= t.L; a++) for (let b = -t.S2; b <= t.S2; b += 2) w2[a + ',' + b]--; snaps.push({ ...w2 }); }
+          return (cache[key] = { l, n, cnt, total, terms, snaps });
+        };
+        const tl = (t) => `^{${t.S2 + 1}}${LET[t.L]}`;
+        let st = null;
+        v.render(() => {
+          const D = build(sel.value), K = Math.min(kS.value, D.terms.length); if (kS.value !== K) kS.set(K);
+          const Lmax = D.n * D.l - 0, rows = Object.keys(D.cnt).map((k) => +k.split(',')[0]), mls = [Math.min(...rows), Math.max(...rows)];
+          const cols = Object.keys(D.cnt).map((k) => +k.split(',')[1]); const ms2 = [Math.min(...cols), Math.max(...cols)];
+          const nR = mls[1] - mls[0] + 1, nC = (ms2[1] - ms2[0]) / 2 + 1;
+          sG.setView([-0.8 - nC / 2, nC / 2 + 0.8], [mls[0] - 1.4, mls[1] + 1.4]);
+          const snap = D.snaps[K];
+          for (let a = mls[0]; a <= mls[1]; a++) { sG.text(`${a}`, -nC / 2 - 0.45, a, { color: 'muted', size: 11, align: 'right', baseline: 'middle' }); }
+          for (let b = ms2[0], i = 0; b <= ms2[1]; b += 2, i++) {
+            const x = -nC / 2 + 0.5 + i; sG.text(b % 2 === 0 ? `${b / 2}` : `${b}/2`, x, mls[0] - 0.95, { color: 'muted', size: 11, align: 'center' });
+            for (let a = mls[0]; a <= mls[1]; a++) {
+              const c0 = D.cnt[a + ',' + b] || 0, c = snap[a + ',' + b] || 0, nxt = D.terms[K];
+              const inNext = nxt && Math.abs(a) <= nxt.L && Math.abs(b) <= nxt.S2;
+              if (c0 > 0) sG.rect(x - 0.45, a - 0.42, x + 0.45, a + 0.42, { color: inNext ? 'orange' : 'faint', width: inNext ? 2.4 : 0.8, fill: c > 0 ? 'accent' : false, fillAlpha: c > 0 ? 0.08 + 0.1 * c : 0 });
+              if (c0 > 0) sG.text(`${c}`, x, a, { size: 13, align: 'center', baseline: 'middle', color: c > 0 ? 'ink' : 'faint' });
+            }
+          }
+          sG.text('$M_S$', 0, mls[0] - 1.35, { color: 'muted', size: 12, align: 'center' }); sG.text('$M_L$', -nC / 2 - 0.5, mls[1] + 1.0, { color: 'muted', size: 12, align: 'right' });
+          // right panel
+          const data = NIST[sel.value];
+          sE.el.style.display = data ? '' : 'none';
+          if (data) {
+            const ymax = data.lv[2][1] * 1.12; sE.setView([0, 4], [-ymax * 0.04, ymax]);
+            data.lv.forEach(([nm, e], i) => { sE.segment([0.5, e], [2.2, e], { color: ['accent', 'orange', 'purple'][i], width: 3 }); sE.text(`$^{${nm[0] === '³' ? 3 : 1}}${nm[1]}$  ${v.fix(e, e > 100 ? 0 : 0)}`, 2.35, e, { size: 12, baseline: 'middle', color: 'ink' }); });
+            sE.text(data.el, 0.5, ymax * 0.95, { color: 'muted', size: 12 });
+          }
+          st = { D, K, data };
+        });
+        v.legend([['orange', 'next term to remove', {}]]);
+        v.readout(() => { if (!st) return ''; const { D, K, data } = st; const found = D.terms.slice(0, K); const left = Object.values(D.snaps[K]).reduce((s, c) => s + c, 0); const all = D.terms.map((t) => `$${tl(t)}$`).join(', ');
+          const dsum = D.terms.reduce((s, t) => s + (t.S2 + 1) * (2 * t.L + 1), 0);
+          return `${D.total} microstates ($\\binom{${2 * (2 * D.l + 1)}}{${D.n}}$). Peeled off: ${found.length ? found.map((t) => `$${tl(t)}$ (${(t.S2 + 1) * (2 * t.L + 1)})`).join(' + ') : 'none yet'} — **${left}** states left.` + (K === D.terms.length ? `\nterms: ${all}; dimensions add to ${dsum} = ${D.total} ✓. Hund's rules: ground term $${tl(D.terms[0])}$ (largest $S$, then largest $L$).` : '') + (data ? `\n${data.el}: levels of $^3P$ at ${data.fine.map((x) => v.fix(x, 1)).join(', ')} cm⁻¹ (J = ${sel.value === 'p2' ? '0, 1, 2' : '2, 1, 0'} listed in order), $^1D$ at ${v.fix(data.lv[1][1], 0)}, $^1S$ at ${v.fix(data.lv[2][1], 0)} cm⁻¹.` : ''); });
+      },
+    },
   ],
 };

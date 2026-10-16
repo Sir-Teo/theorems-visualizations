@@ -153,7 +153,7 @@ export default {
           for (const p of [4, 7, 10, 14, 18, 22]) { const Q = heartBeat({ Pv: p, Ees }); sL.path(Q.loop, { color: 'faint', width: 1.2, alpha: 0.8, close: true }); }
           sL.fn((V) => Ees * (V - HEART.V0), { color: 'orange', dash: [6, 4], width: 1.3, domain: [HEART.V0, 170] });
           sL.fn((V) => HEART.A * (Math.exp(HEART.B * (V - HEART.V0)) - 1), { color: 'blue', dash: [6, 4], width: 1.3, domain: [HEART.V0, 170] });
-          { const Vt = Math.min(150, HEART.V0 + 150 / Ees); sL.text('end-systolic line', Vt, Ees * (Vt - HEART.V0), { size: 10.5, color: 'orange', align: 'left', baseline: 'bottom', dx: 6, dy: -2 }); }
+          { const Vt = HEART.V0 + 70 / Ees; sL.text('end-systolic line', Vt, 70, { size: 10.5, color: 'orange', align: 'left', baseline: 'middle', dx: 8, plate: true }); }
           sL.text('passive filling curve', 168, 28, { size: 10.5, color: 'blue', align: 'right' });
           drawLoop(sL, R);
           sL.dot(R.EDV, R.EDP, { r: 5, color: 'ink' }); sL.dot(R.ESV, R.Pes, { r: 5, color: 'ink' });
@@ -296,8 +296,8 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
           drawLoop(sL, R);
           sL.vline(R.EDV, { color: 'faint', dash: [3, 4], width: 1 }); sL.vline(R.ESV, { color: 'faint', dash: [3, 4], width: 1 });
           sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
-          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 138, { size: 11, color: 'muted', align: 'right', dx: -4 });
-          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 138, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
           const bs = B.SV, b75 = 75;
           sA.rect(0, 0, b75, bs, { fill: 'muted', fillAlpha: 0.1, stroke: true, color: 'muted', dash: [5, 4] });
           sA.rect(0, 0, hr.value, R.SV, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
