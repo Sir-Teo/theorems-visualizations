@@ -121,11 +121,11 @@ export default {
         const CH = v.stage({ x: [-1.3, 1.3], y: [-0.4, 1.0], equal: true, axes: false, height: 320, title: 'a chart into $\\mathbb H^2$', weight: 1, minWidth: 230 });
         const R = 1, rt = 0.45;
         const clampDisc = (x, y) => { const r = Math.hypot(x, y); if (r > 0.95) return [x / r, y / r]; return [x, y]; };
-        const H = PS.handle(0.5, 0.4, { color: 'gold', label: 'p', constrain: (x, y) => {
+        const H = PS.handle(0.7071, 0.7071, { color: 'gold', label: 'p', constrain: (x, y) => {
           if (shape.value === 'mob') { const X = clamp(x, 0.02, TAU - 0.02); let Y = clamp(y, -1, 1); if (Math.abs(Y) > 0.93) Y = Math.sign(Y); return [X, Y]; }
           return clampDisc(x, y);
         } });
-        function reset() { if (shape.value === 'mob') H.set(PI * 0.5, 0.55); else H.set(0.5, 0.4); v.invalidate(); }
+        function reset() { if (shape.value === 'mob') H.set(PI * 0.5, 1); else H.set(0.7071, 0.7071); v.invalidate(); }
         // maps from parameter point q (unrolled) to R^3 and to chart coordinates around p
         const X3 = (q) => {
           if (shape.value === 'disc') return [q[0], q[1], 0];

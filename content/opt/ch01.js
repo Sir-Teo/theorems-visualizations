@@ -118,11 +118,6 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Extreme_value_theorem' },
       viz(v) {
         const AX = [-4.2, 4.2];
-        const sub1 = (a) => { // list of intervals {lo, hi, loC, hiC}
-          const ev = (lo, hi, loC = true, hiC = true) => [{ lo, hi, loC, hiC }];
-          return ev;
-        };
-        void sub1;
         const CASES = {
           exp: { label: '$e^x$ on $\\mathbb R$', f: Math.exp, dom: [-Infinity, Infinity, false, false], inf: 0, arg: null,
             sub: (a) => (a > 0 ? [{ lo: -Infinity, hi: Math.log(a), loC: false, hiC: true }] : []), seq: (k) => -k,
@@ -219,7 +214,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           if (!i1 || !i2) return '';
           const { compact, empty, inf, attained, why, a } = i1;
           let s = String.raw`**1D:** $\alpha=${v.fix(a, 2)}$: ${empty ? 'the sublevel set is empty (below the infimum)' : compact ? 'the sublevel set is **compact** and nonempty, so a minimizer exists' : 'the sublevel set is **not compact**'} · $\inf f=${fx(v, inf, 3)}$, ${attained ? '**attained**' : '**not attained**'} — ${why}.`;
-          s += String.raw`\n**2D:** smallest value found in the window ${fx(v, i2.all.f, 4)} at ${fv(v, [i2.all.x, i2.all.y], 2)} · ${i2.atEdge ? '**on the window edge**: the infimum is approached only far away, so it is probably **not attained**' : 'strictly inside the window, so **attained**'} · the level-$\alpha$ set ${i2.touches ? '**reaches the window edge** (unbounded as far as the window can tell)' : 'stays inside the window (bounded, closed: compact)'}`;
+          s += '\n' + String.raw`**2D:** smallest value found in the window ${fx(v, i2.all.f, 4)} at ${fv(v, [i2.all.x, i2.all.y], 2)} · ${i2.atEdge ? '**on the window edge**: the infimum is approached only far away, so it is probably **not attained**' : 'strictly inside the window, so **attained**'} · the level-$\alpha$ set ${i2.touches ? '**reaches the window edge** (unbounded as far as the window can tell)' : 'stays inside the window (bounded, closed: compact)'}`;
           return s;
         });
       },
@@ -264,7 +259,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           const locs = [];
           for (let i = 0; i < N; i++) {
             const l = i > 0 ? ys[i - 1] : Infinity, r = i < N - 1 ? ys[i + 1] : Infinity;
-            if (ys[i] < l - 1e-13 && ys[i] <= r + 1e-13 && ys[i] < r + 1e-13 + 1) { if (ys[i] <= r) locs.push(i); }
+            if (ys[i] < l - 1e-13 && ys[i] <= r) locs.push(i);
           }
           let gi = 0; for (let i = 1; i < N; i++) if (ys[i] < ys[gi]) gi = i;
           s.hline(0, { color: 'faint', width: 1 });
@@ -293,7 +288,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           const { del, ok, fp, bv, nloc, locs, g, px, probeLocal } = info;
           const list = locs.map(([x, y]) => `(${v.fix(x, 2)}, ${v.fix(y, 2)})`).join(', ');
           return String.raw`**${nloc}** local minimizer${nloc === 1 ? '' : 's'} on $[-4,4]$: ${list} · global minimum $f^\star=${v.fix(g[1], 3)}$ at $x=${v.fix(g[0], 2)}$` +
-            String.raw`\nprobe $x=${v.fix(px, 2)}$, $f(x)=${v.fix(fp, 3)}$, $\delta=${v.fix(del, 2)}$: the lowest value within $\delta$ is ${v.fix(bv, 3)} → the $\delta$-test ${ok ? '**passes**' : '**fails**'}` +
+            '\n' + String.raw`probe $x=${v.fix(px, 2)}$, $f(x)=${v.fix(fp, 3)}$, $\delta=${v.fix(del, 2)}$: the lowest value within $\delta$ is ${v.fix(bv, 3)} → the $\delta$-test ${ok ? '**passes**' : '**fails**'}` +
             (probeLocal ? ' · it sits at a local minimizer.' : ok ? ' · it passes for this $\\delta$ but is not a local minimizer: shrink $\\delta$ to see the test fail on a slope... or it lies on a flat stretch.' : '.');
         });
       },
@@ -370,7 +365,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           let s = String.raw`$f(p)=${fx(v, fp, 3)}$, $\norm{\nabla f(p)}=${gn < 1e-6 ? '0' : v.sci(gn, 3)}$ · of the ${K} sampled directions at $t=${v.fix(t, 3)}$, the theorem predicts ${pred} descent directions and ${act} actually descend (they agree on ${agree})`;
           if (gn < 1e-6) s += String.raw` · **$\nabla f(p)=0$: stationary.** The necessary condition holds but is silent${cls ? ` — the second-order test (opt-1.5) calls this a **${CLS[cls.cls].short}**` : ''}.`;
           else s += String.raw` · $\nabla f(p)\ne0$, so $p$ is **not** a local minimizer: stepping along $-\nabla f$ lowers $f$ to ${fx(v, dm, 3)}.`;
-          s += String.raw`\nStationary points found in the window by Newton's method: ${A.pts.length} (${cnt('min')} minima, ${cnt('max')} maxima, ${cnt('saddle')} saddles${cnt('flat') ? `, ${cnt('flat')} degenerate` : ''}) — every local minimizer is among them, but so are the others.`;
+          s += '\n' + String.raw`Stationary points found in the window by Newton's method: ${A.pts.length} (${cnt('min')} minima, ${cnt('max')} maxima, ${cnt('saddle')} saddles${cnt('flat') ? `, ${cnt('flat')} degenerate` : ''}) — every local minimizer is among them, but so are the others.`;
           return s;
         });
       },
@@ -461,7 +456,7 @@ At a stationary point with an indefinite Hessian (eigenvalues of both signs) $x^
           if (!stat) return s + String.raw` · **$p$ is not stationary**: the circle profile is dominated by the first-order term (a sine wave, dashed model), so the second-order conditions do not apply — press *jump to nearest stationary point*.`;
           s += String.raw` → Hessian test: **${CLS[cls].name}**`;
           if (cls === 'flat') s += ' (inconclusive: $\\nabla^2f$ is only semidefinite)';
-          s += String.raw`\nnumerical probe at $\rho=${v.fix(rho, 3)}$: $f(p+\rho u)-f(p)$ ranges over $[${v.sci(mn, 2)},\,${v.sci(mx, 2)}]$ → **${CLS[probe].name}**. `;
+          s += '\n' + String.raw`numerical probe at $\rho=${v.fix(rho, 3)}$: $f(p+\rho u)-f(p)$ ranges over $[${v.sci(mn, 2)},\,${v.sci(mx, 2)}]$ → **${CLS[probe].name}**. `;
           s += probe === cls ? 'Hessian test and probe **agree** ✓.' : cls === 'flat' ? 'The probe decides what the Hessian could not (the answer may change with a smaller $\\rho$ when higher-order terms are involved).' : 'They differ: shrink $\\rho$ (the quadratic model is only local).';
           s += String.raw` · All stationary points in the window: ${cnt('min')} minima, ${cnt('max')} maxima, ${cnt('saddle')} saddles${cnt('flat') ? `, ${cnt('flat')} degenerate` : ''}.`;
           return s;

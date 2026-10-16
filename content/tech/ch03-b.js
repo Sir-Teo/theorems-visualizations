@@ -176,9 +176,9 @@ with $Z$ the strength of the fibres themselves, $A$ and $P$ the fibre's cross-se
       tags: ['ancient', 'c. 100 CE', 'writing materials'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/History_of_paper' },
       viz(v) {
-        const A = v.stage({ x: [0, 30], y: [0, 30], equal: true, axes: false, height: 300, weight: 1, minWidth: 280, title: 'a 3 cm patch of the sheet' });
-        const B = v.stage({ x: [0, 1], y: [0, 110], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 280, xlabel: 'beating (0 = raw, 1 = well beaten)', ylabel: 'tensile index (N·m/g)', title: 'strength: Page’s equation' });
-        const Cb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1, minWidth: 280, title: 'materials for one book' });
+        const A = v.stage({ x: [0, 30], y: [0, 30], equal: true, axes: false, height: 280, weight: 1, minWidth: 240, title: 'a 3 cm patch of the sheet' });
+        const B = v.stage({ x: [0, 1], y: [0, 110], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 240, xlabel: 'beating (0 = raw, 1 = well beaten)', ylabel: 'tensile index (N·m/g)', title: 'strength: Page’s equation' });
+        const Cb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 280, weight: 1, minWidth: 240, title: 'materials for one book' });
         const D = yearStage(v, [-2800, 1450], { height: 190, full: true, title: 'dated evidence: papyrus, paper and its spread' });
         const FIB = { kozo: { label: 'mulberry bark', L: 10 }, rag: { label: 'linen rags', L: 6 }, wood: { label: 'wood pulp (1840s)', L: 2.5 } };
         const fib = v.select('fibre', Object.entries(FIB).map(([k, f]) => ({ value: k, label: f.label })), 'kozo');
@@ -237,9 +237,9 @@ with $Z$ the strength of the fibres themselves, $A$ and $P$ the fibre's cross-se
           const icons = Math.min(100, Math.ceil(calves / 10));
           for (let i = 0; i < icons; i++) { const cx = 0.07 + (i % 20) * 0.045, cy = 0.82 - Math.floor(i / 20) * 0.065; Cb.poly([[cx - 0.017, cy + 0.02], [cx + 0.017, cy + 0.02], [cx + 0.012, cy - 0.022], [cx - 0.012, cy - 0.022]], { fill: 'red', fillAlpha: 0.45, color: 'red', width: 0.8 }); }
           Cb.text('each mark = 10 skins', 0.04, 0.45, { size: 10.5, color: 'muted', align: 'left' });
-          Cb.text('paper', 0.04, 0.33, { size: 12, color: 'ink', align: 'left', weight: 700 });
-          Cb.text(`${v.fix(paperKg, 1)} kg of paper from ~${v.fix(ragKg, 1)} kg of rags`, 0.96, 0.33, { size: 12, color: 'green', align: 'right', weight: 700 });
-          Cb.rect(0.04, 0.13, 0.04 + 0.92 * Math.min(1, ragKg / 80), 0.23, { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1 });
+          Cb.text('paper', 0.04, 0.36, { size: 12, color: 'ink', align: 'left', weight: 700 });
+          Cb.text(`${v.fix(paperKg, 1)} kg of paper from ~${v.fix(ragKg, 1)} kg of rags`, 0.04, 0.27, { size: 12, color: 'green', align: 'left', weight: 700 });
+          Cb.rect(0.04, 0.11, 0.04 + 0.92 * Math.min(1, ragKg / 80), 0.2, { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1 });
           Cb.text(`${nl} leaves of ${Math.round(w * 100)} × ${v.fix(h * 100, 1)} cm`, 0.5, 0.03, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
           // ---- D
           drawYears(v, D, [

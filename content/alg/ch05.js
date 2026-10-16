@@ -140,11 +140,11 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
       viz(v) {
         const n = 5;
         const CH = [[[1, 2]], [[1, 3]], [[4, 5]], [[1, 2, 3]], [[1, 2], [3, 4]], [[1, 3], [2, 4]], [[1, 2, 3, 4, 5]], [[2, 5], [3, 4]]].map((c) => fromCycles(n, c));
-        let on = new Set([1, 2]);
+        let on = new Set([0, 6]);
         v.button('Clear', () => { on = new Set(); });
         const s = v.stage({ x: [0, 2], y: [0, 4], axes: false, height: 360, weight: 0.8, minWidth: 200 });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1.4 });
-        const T = v.table(t, { rows: 4, cols: 4, maxCell: 40, size: 12.5, margin: 6 });
+        const T = v.table(t, { rows: 4, cols: 4, maxCell: 52, size: 12.5, margin: 6 });
         const chip = (k) => [k % 2, 3 - Math.floor(k / 2)];
         s.onClick((x, y) => { const k = Math.floor(x) + 2 * (3 - Math.floor(y)); if (x >= 0 && x < 2 && y >= 0 && y < 4 && k >= 0 && k < CH.length) { if (on.has(k)) on.delete(k); else on.add(k); } });
         const ORD = { 1: 'muted', 2: 'blue', 3: 'orange', 4: 'green', 5: 'purple', 6: 'teal' };

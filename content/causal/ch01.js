@@ -39,7 +39,7 @@ export default {
         const I = v.icons(s1, { n: 100, shape: 'person', hover: true });
         const R = 8;
         const T = v.table(s2, { rows: R, cols: 5, square: false, cellAspect: 1.55, maxCell: 70, size: 13.5,
-          colLabels: ['$Y^{0}$', '$Y^{1}$', '$Y^1-Y^0$', '$A$', '$Y$ (seen)'], rowLabels: (i) => 'unit ' + (i + 1) });
+          colLabels: ['$Y^{0}$', '$Y^{1}$', '$Y^1-Y^0$', '$A$', '$Y=Y^A$'], rowLabels: (i) => 'unit ' + (i + 1) });
         const cat = (i) => (P.t[i] > HELP ? 0 : P.t[i] < -HELP ? 1 : 2);
         const cnt = [0, 0, 0]; for (let i = 0; i < 100; i++) cnt[cat(i)]++;
         v.render(() => {
@@ -97,7 +97,7 @@ export default {
         const s = v.stage({ x: [0, N + 1], y: [20, 100], axes: 'box', gutter: true, height: 380, xlabel: 'unit (random order)', ylabel: 'outcome: health score', xticks: [], title: 'each bar runs from $Y^0$ to $Y^1$' });
         const obsY = (i) => (A[i] ? P.y1[i] : P.y0[i]);
         const hid = (i) => (ends.value === 'true' ? (A[i] ? P.y0[i] : P.y1[i]) : (A[i] ? P.y1[i] - (ate.value + noise[i]) : P.y0[i] + ate.value + noise[i]));
-        v.legend([['accent', 'observed, treated ($Y^1$)', { dot: true }], ['orange', 'observed, untreated ($Y^0$)', { dot: true }], ['green', 'hidden end'], ['muted', 'effect up'], ['red', 'effect down']]);
+        v.legend([['accent', 'observed, treated ($Y^1$)', { dot: true }], ['orange', 'observed, untreated ($Y^0$)', { dot: true }], ['green', 'hidden end, effect up'], ['red', 'effect down']]);
         v.render(() => {
           for (let i = 0; i < N; i++) {
             const x = i + 1, o = obsY(i), show = ends.value !== 'off', h = show ? hid(i) : null;
@@ -159,7 +159,7 @@ export default {
           rows.forEach(([name, val, col], k) => {
             const y = 4.2 - k * 1.05;
             B.line(-8, y, val, y, { color: col, width: 2, alpha: 0.5 }); B.dot(val, y, { r: 7, color: col });
-            lab(B, name, -7.6, y + 0.42, { align: 'left', color: col, size: 11 }); lab(B, fx(val, 2), val, y - 0.38, { align: 'center', color: col, size: 11 });
+            lab(B, name, -7.6, y + 0.42, { align: 'left', color: col, size: 11 }); lab(B, fx(val, 2), val, y, { align: val >= 0 ? 'left' : 'right', dx: val >= 0 ? 12 : -12, color: col, size: 11.5 });
           });
         });
         v.readout(() => {
@@ -181,17 +181,17 @@ export default {
         const s1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, title: 'if everyone were untreated | treated (100 each)', weight: 1.1 });
         const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 330, equal: true, xlabel: 'risk if untreated  $p_0$', ylabel: 'risk if treated  $p_1$', title: 'pairs of counterfactual risks', weight: 1 });
         const I = v.icons(s1, { n: 200, shape: 'person' });
-        const h = s2.handle(0.3, 0.15, { color: 'accent', label: '$(p_0,p_1)$', labelPos: 'nw', constrain: { x: [0.01, 0.99], y: [0.01, 0.99] } });
-        v.select('preset', [{ value: 'a', label: 'rare, protective' }, { value: 'b', label: 'common, protective' }, { value: 'c', label: 'common, harmful' }, { value: 'd', label: 'null' }], 'a', {
-          onChange: (k) => { const q = { a: [0.03, 0.015], b: [0.6, 0.3], c: [0.4, 0.6], d: [0.35, 0.35] }[k]; h.set(q[0], q[1]); } });
-        v.legend([['red', 'event', { dot: true }], ['muted', 'no event', { dot: true }], ['green', 'risk difference fixed'], ['orange', 'risk ratio fixed'], ['purple', 'odds ratio fixed']]);
+        const h = s2.handle(0.4, 0.2, { color: 'accent', label: '$(p_0,p_1)$', labelPos: 'se', constrain: { x: [0.01, 0.99], y: [0.01, 0.99] } });
+        v.select('preset', [{ value: 'a', label: 'rare, protective' }, { value: 'b', label: 'common, protective' }, { value: 'c', label: 'common, harmful' }, { value: 'd', label: 'null' }], 'b', {
+          onChange: (k) => { const q = { a: [0.04, 0.02], b: [0.6, 0.3], c: [0.4, 0.6], d: [0.35, 0.35] }[k]; h.set(q[0], q[1]); } });
+        v.legend([['red', 'event', { dot: true }], ['muted', 'no event', { dot: true }], ['green', 'risk difference fixed'], ['orange', 'risk ratio fixed'], ['purple', 'odds ratio fixed'], ['ink', 'null: $p_1=p_0$', { dash: true }]]);
         const odds = (p) => p / (1 - p);
         v.render(() => {
           const p0 = h.x, p1 = h.y, k0 = Math.round(100 * p0), k1 = Math.round(100 * p1);
           I.set({ n: 200, shape: 'person', block: (i) => (i < 100 ? 0 : 1), blockLabels: (b, n) => (b ? `treated: ${k1} of 100` : `untreated: ${k0} of 100`),
             style: (i) => { const j = i % 100, k = i < 100 ? k0 : k1; return j < k ? { color: 'red', label: 'event' } : { color: 'muted', alpha: 0.4, label: 'no event' }; } });
           I.draw();
-          s2.line(0, 0, 1, 1, { color: 'ink', width: 1.6, dash: [5, 4] }); lab(s2, 'null: $p_1=p_0$', 0.62, 0.7, { color: 'ink', size: 11, align: 'left', dy: 12, plate: false });
+          s2.line(0, 0, 1, 1, { color: 'ink', width: 1.6, dash: [5, 4] });
           s2.line(0, p1 - p0, 1 - (p1 - p0), 1, { color: 'green', width: 2.2 });
           s2.clip(() => s2.line(0, 0, 1 / Math.max(p1 / p0, 1), (p1 / p0) / Math.max(p1 / p0, 1), { color: 'orange', width: 2.2 }));
           const OR = odds(p1) / odds(p0);
@@ -200,7 +200,7 @@ export default {
         v.readout(() => {
           const p0 = h.x, p1 = h.y, rd = p1 - p0, rr = p1 / p0, OR = (p1 / (1 - p1)) / (p0 / (1 - p0));
           return `$p_0=${fx(p0, 2)},\\ p_1=${fx(p1, 2)}$ — risk difference **$${fx(rd, 3)}$** (${fx(Math.abs(rd) * 1000, 0)} events per 1,000${Math.abs(rd) > 0.005 ? `; NNT $\\approx ${fx(1 / Math.abs(rd), 1)}$` : ''}), risk ratio **$${fx(rr, 2)}$**, odds ratio **$${fx(OR, 2)}$**. ` +
-            (Math.abs(rd) < 0.0005 ? 'All three are at their null values.' : Math.abs(Math.log(OR)) > 1.3 * Math.abs(Math.log(rr)) + 0.05 ? `The odds ratio is far from the risk ratio: the outcome is common.` : 'Rare outcome: the odds ratio is close to the risk ratio.');
+            (Math.abs(rd) < 0.0005 ? 'All three are at their null values.' : Math.abs(Math.log(OR) - Math.log(rr)) > 0.15 ? `The odds ratio is far from the risk ratio (the outcome is common): the same intervention looks bigger on the odds scale.` : 'Rare outcome: the odds ratio is close to the risk ratio.');
         });
       },
     },
@@ -209,24 +209,24 @@ export default {
       num: '1.5', kind: 'Principle', name: 'Consistency and no interference (SUTVA)',
       statement: String.raw`The potential-outcome notation $Y_i^{a}$ is meaningful, and links to data, only under two assumptions. **No interference**: unit $i$'s outcome depends only on its own treatment, not on the treatments of others, so that $Y_i^{a_1,\dots,a_n}=Y_i^{a_i}$. **Consistency** (treatment-variation irrelevance): if unit $i$ actually receives treatment $a$ then its observed outcome is $Y_i=Y_i^{a}$, which requires that there be only one version of "treatment $a$", or that all versions have the same effect. Together, with the absence of hidden versions, they are Rubin's *stable unit treatment value assumption* (SUTVA). When either fails, "the" effect is not defined, and contrasts of observed groups estimate something that depends on how the treatment was allocated.`,
       idea: String.raw`With interference unit $i$ has not two potential outcomes but $2^{n}$, one per allocation of treatment to everyone; the usual causal contrast of $Y^1$ with $Y^0$ no longer names a single number. In an infectious disease, vaccination protects the vaccinated (direct effect) and also their neighbours (spillover); the total effect of vaccinating everyone is larger than the direct effect measured when only a few are vaccinated. Consistency fails when "vaccinated" hides different vaccine lots: the contrast then depends on their mix.`,
-      caption: String.raw`A contact network of 70 people; a random share are vaccinated (filled). Each person's infection risk falls with their own vaccination and with the share of their neighbours vaccinated; red rings mark simulated infections. Turn up **spillover** and compare the naive contrast of the two groups with the direct effect and the total effect of vaccinating everyone. Click a person to count their potential outcomes. Raise **share of weak lots** and the contrast is no longer a property of "vaccination". All risks are model-based and illustrative.`,
+      caption: String.raw`A contact network of 60 people; a random share are vaccinated (filled). Each person's infection risk falls with their own vaccination and with the share of their neighbours vaccinated; red rings mark simulated infections. Turn up **spillover** and compare the naive contrast of the two groups with the direct effect and the total effect of vaccinating everyone. Click a person to count their potential outcomes. Raise **share of weak lots** and the contrast is no longer a property of "vaccination". All risks are model-based and illustrative.`,
       deps: ['causal-1.1'], refs: ['Hernán–Robins §3.4', 'Hernán–Robins §1.2'], tags: ['SUTVA', 'interference', 'consistency'],
       credit: 'Rubin, 1980 (name SUTVA); Cox, 1958 (no interference)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rubin_causal_model#Stable_unit_treatment_value_assumption_(SUTVA)' },
       viz(v) {
-        const N = 70, rr = rng(77);
+        const N = 60, rr = rng(77);
         const nodes = [], u = [];
         for (let i = 0; i < N; i++) { nodes.push({ id: i, x: 0.4 + rr() * 9.2, y: 0.4 + rr() * 5.2 }); u.push(rr()); }
         const edges = [], nb = Array.from({ length: N }, () => []);
-        for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) if (Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) < 1.45) { edges.push([i, j]); nb[i].push(j); nb[j].push(i); }
+        for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) if (Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) < 1.3) { edges.push([i, j]); nb[i].push(j); nb[j].push(i); }
         const q = v.slider('share vaccinated', 0, 1, 0.5, { step: 0.05 });
         const rho = v.slider('spillover (protection by vaccinated neighbours)', 0, 0.9, 0.6, { step: 0.05 });
         const weak = v.slider('share of weak lots among the vaccinated', 0, 1, 0, { step: 0.05 });
         v.button('re-vaccinate', () => { seed++; });
         let seed = 1, sel = 0;
-        const s1 = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 360, title: 'contact network', weight: 1.35 });
-        const s2 = v.stage({ x: [-0.5, 0.1], y: [0, 5], axes: 'box', gutter: true, height: 360, xlabel: 'change in infection risk', yticks: [], title: 'what is being compared', weight: 1 });
-        const G = v.graph(s1, { nodes, edges, directed: false, layout: 'none', draggable: false, r: 7, onClick: ({ node }) => { if (node) sel = node.id; return true; } });
+        const s1 = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 420, title: 'contact network', weight: 1.35 });
+        const s2 = v.stage({ x: [-0.5, 0.1], y: [0, 5], axes: 'box', gutter: true, height: 420, xlabel: 'change in infection risk', yticks: [], title: 'what is being compared', weight: 1 });
+        const G = v.graph(s1, { nodes, edges, directed: false, layout: 'none', draggable: false, r: 6, autoRadius: false, onClick: ({ node }) => { if (node) sel = node.id; return true; } });
         const B = 0.5, E_STRONG = 0.8, E_WEAK = 0.2;
         const get = memo();
         const model = () => get([q.value, rho.value, weak.value, seed].join('|'), () => {
@@ -254,7 +254,7 @@ export default {
           rows.forEach(([name, val, col], k) => {
             const y = 4.3 - k * 1.1; if (!Number.isFinite(val)) return;
             s2.line(0, y, val, y, { color: col, width: 2, alpha: 0.5 }); s2.dot(val, y, { r: 7, color: col });
-            lab(s2, name, -0.49, y + 0.42, { align: 'left', color: col, size: 10.5 }); lab(s2, fx(val, 3), val, y - 0.38, { align: 'center', color: col, size: 11 });
+            lab(s2, name, -0.49, y + 0.42, { align: 'left', color: col, size: 10.5 }); lab(s2, fx(val, 3), val, y, { align: val >= -0.2 ? 'left' : 'right', dx: val >= -0.2 ? 12 : -12, color: col, size: 11.5 });
           });
         });
         v.readout(() => {
@@ -318,7 +318,7 @@ export default {
           if (split.value) {
             s2.hline(ate, { color: 'green', width: 1, dash: [4, 4], alpha: 0.7 });
             C.sd.forEach((d, g) => { s2.dot(4 + g, d, { r: 7, color: 'purple' }); lab(s2, sg(d * 100, 1) + ' pp', 4 + g, d + 0.03, { align: 'center', color: 'purple', size: 10.5 }); });
-          } else lab(s2, 'stratify to compare like with like', 5, 0.2, { align: 'center', color: 'muted', size: 11, plate: false });
+          } else lab(s2, 'stratify →', 5, 0.2, { align: 'center', color: 'muted', size: 11, plate: false });
         });
         v.readout(() => {
           const C = calc();

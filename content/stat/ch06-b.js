@@ -353,5 +353,312 @@ The degrees of freedom are $rc-1$ cells minus $(r-1)+(c-1)$ estimated margins (s
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 6.16
+    {
+      num: '6.16',
+      kind: 'Method',
+      name: 'Fisher’s exact test',
+      credit: 'R. A. Fisher, 1935',
+      statement: String.raw`For a $2\times2$ table with cells $a,b$ (first row) and $c,d$ (second row), condition on both margins. Under the null hypothesis of independence (or of equal proportions in the two rows), the top-left count $A$ then has the **hypergeometric** distribution
+$$P(A=a)=\frac{\binom{a+b}{a}\binom{c+d}{c}}{\binom{n}{a+c}},\qquad n=a+b+c+d,$$
+free of every unknown parameter (stat-2.12). **Fisher's exact test** computes the $p$-value from this distribution: one-sided, $P(A\ge a_{\text{obs}})$; two-sided, the total probability of tables no more probable than the observed one. Its size never exceeds $\alpha$ for any sample size, at the price of being conservative because the distribution is discrete. Example (the lady tasting tea): of 8 cups, 4 have milk poured first; a taster who must name 4 cups as milk-first and has no ability gets all 4 right with probability $1/\binom84=1/70\approx0.014$.`,
+      idea: String.raw`Conditioning on the margins removes the nuisance parameters (the overall proportions), exactly as a sufficient statistic would (stat-2.11): given the margins, every arrangement of the individuals is equally likely under the null, and counting arrangements gives the hypergeometric law. Fisher designed the tea experiment so that randomization alone justifies the test: the cups are assigned at random, so the only probability needed is the one created by the experimenter.`,
+      caption: String.raw`**Tea tasting**: $2m$ cups, $m$ with milk poured first (purple ring, shown when the truth is revealed). Click cups to choose which $m$ you think are milk-first (gold). Right: the hypergeometric distribution of the number of correct milk-first calls by a guesser with no ability, with the $p$-value shaded. A perfect score with 8 cups earns $p=1/70$; with 6 cups the best possible $p$ is $1/20$, so no result could be significant at 1%. **2×2 table**: click (shift-click) cells to edit a table; the exact two-sided $p$-value is compared with the $\chi^2$ approximation, which is poor when counts are small.`,
+      deps: ['stat-6.15', 'stat-2.12'],
+      see: ['stat-2.11'],
+      refs: ['Wasserman §15.1'],
+      tags: ['exact test', 'hypergeometric', 'lady tasting tea'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Fisher%27s_exact_test' },
+      viz(v) {
+        const modeS = v.select('view', [{ value: 'tea', label: 'tea tasting' }, { value: 'tab', label: '2×2 table' }], 'tea');
+        const mS = v.slider('milk-first cups $m$ (of $2m$)', 2, 8, 4, { int: true, onChange: () => pour() });
+        const revS = v.toggle('reveal the truth', true);
+        const bNew = v.button('Pour new cups', () => { seed++; pour(); });
+        const bRnd = v.button('Random guesser', () => { const r = v.rng(hashStr('guess' + seed + '|' + Date.now())); const idx = Array.from({ length: 2 * mS.value }, (_, i) => i); for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; } guess = new Set(idx.slice(0, mS.value)); });
+        const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 1, title: 'the cups (click to choose milk-first)' });
+        const sR = v.stage({ x: [-0.5, 4.5], y: [0, 0.6], axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'correct milk-first calls', ylabel: 'probability', title: 'null distribution (no ability)' });
+        const tL = titler(sL), tR = titler(sR);
+        let seed = 1, truth = new Set(), guess = new Set();
+        const pour = () => { const m = mS.value, r = v.rng(hashStr('tea|' + seed + '|' + m)), idx = Array.from({ length: 2 * m }, (_, i) => i); for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; } truth = new Set(idx.slice(0, m)); guess = new Set(truth); };
+        pour();
+        let tab = [[3, 1], [1, 3]];
+        const T = v.table(sL, { rows: 2, cols: 2, rowLabels: ['milk first', 'tea first'], colLabels: ['called milk', 'called tea'], maxCell: 80, size: 20 });
+        const cupPos = (i) => { const m = mS.value, row = i < m ? 0 : 1, col = i % m; return [(col + 0.5) / m, row ? 0.3 : 0.7]; };
+        sL.onClick((x, y, mod) => {
+          if (modeS.value === 'tab') { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) tab[c.i][c.j] = Math.max(0, tab[c.i][c.j] + (mod.shift ? -1 : 1)); return; }
+          const m = mS.value; let best = -1, bd = 1e9; for (let i = 0; i < 2 * m; i++) { const [cx, cy] = cupPos(i), d = Math.hypot(x - cx, (y - cy) * 0.6); if (d < bd) { bd = d; best = i; } }
+          if (bd < 0.6 / m + 0.05) { if (guess.has(best)) guess.delete(best); else guess.add(best); }
+        });
+        const fisher2 = (t) => {
+          const [[a, b], [c, d]] = t, r1 = a + b, c1 = a + c, n = a + b + c + d, lo = Math.max(0, c1 - (n - r1)), hi = Math.min(r1, c1);
+          const P = []; for (let k = lo; k <= hi; k++) P.push([k, dhyper(k, n, r1, c1)]);
+          const pobs = dhyper(a, n, r1, c1); let two = 0, up = 0; for (const [k, p] of P) { if (p <= pobs * (1 + 1e-7)) two += p; if (k >= a) up += p; }
+          const E = [[(r1 * c1) / n, (r1 * (n - c1)) / n], [((n - r1) * c1) / n, ((n - r1) * (n - c1)) / n]];
+          let x2 = 0; t.forEach((row, i) => row.forEach((o, j) => { if (E[i][j] > 0) x2 += (o - E[i][j]) ** 2 / E[i][j]; }));
+          return { P, lo, hi, two, up, x2, pchi: chiUp(1, x2), E, n, a };
+        };
+        let st = null;
+        v.render(() => {
+          const tea = modeS.value === 'tea', m = mS.value;
+          mS.el.hidden = !tea; revS.el.hidden = !tea; bNew.hidden = !tea; bRnd.hidden = !tea;
+          if (tea) {
+            tL('the cups (click to choose milk-first)');
+            const rc = Math.min(0.38 / m, 0.075), rev = revS.value;
+            let k = 0; for (const i of guess) if (truth.has(i)) k++;
+            for (let i = 0; i < 2 * m; i++) {
+              const [cx, cy] = cupPos(i), g = guess.has(i), t = truth.has(i);
+              sL.circle(cx, cy, rc, { fill: g ? TC.sim : 'panel', fillAlpha: g ? 0.85 : 1, color: rev ? (t ? TC.h1 : TC.h0) : 'muted', width: rev ? 4 : 1.5 });
+              sL.rect(cx + rc * 0.95, cy - rc * 0.35, cx + rc * 1.35, cy + rc * 0.35, { color: rev ? (t ? TC.h1 : TC.h0) : 'muted', width: 2, fill: false, radius: 4 });
+              if (rev && g) sL.text(t ? '✓' : '✗', cx, cy, { color: t ? 'green' : 'red', size: 16, weight: 700, baseline: 'middle' });
+            }
+            sL.text(`${guess.size} of ${m} chosen`, 0.5, 0.06, { color: guess.size === m ? 'muted' : 'red', size: 12, weight: 600 });
+            const N = 2 * m, P = Array.from({ length: m + 1 }, (_, j) => dhyper(j, N, m, m)), ok = guess.size === m;
+            sR.setView([-0.5, m + 0.5], [0, Math.max(...P) * 1.2]); sR.setTicks(Array.from({ length: m + 1 }, (_, j) => j), null);
+            tR(`null distribution: ${N} cups, ${m} milk-first`);
+            let pv = 0; for (let j = 0; j <= m; j++) { const tail = ok && rev && j >= k; if (tail) pv += P[j]; sR.rect(j - 0.36, 0, j + 0.36, P[j], { fill: tail ? TC.alpha : TC.h0, fillAlpha: tail ? 0.7 : 0.35, color: tail ? TC.alpha : TC.h0, width: 1 }); sR.text(`${Math.round(P[j] * Math.exp(lchoose(N, m)))}/${Math.round(Math.exp(lchoose(N, m)))}`, j, P[j], { size: 10.5, color: 'muted', dy: -8 }); }
+            if (ok && rev) sR.vline(k - 0.5, { color: TC.alpha, width: 1.4, dash: [4, 3] });
+            v.legend([[TC.sim, 'called milk-first', { area: true }], ...(rev ? [[TC.h1, 'truly milk-first'], [TC.h0, 'truly tea-first']] : []), [TC.alpha, 'p-value: P(at least this many correct)', { area: true }]]);
+            st = { tea, m, k, ok, rev, pv, best: P[m] };
+          } else {
+            tL('a 2×2 table (click +1, shift-click −1)');
+            const F = fisher2(tab);
+            T.draw({ value: (i, j) => tab[i][j], sub: (i, j) => `E ${v.fix(F.E[i][j], 1)}`, subColor: (i, j) => (F.E[i][j] < 5 ? 'red' : 'muted'), fill: (i, j) => (i === 0 && j === 0 ? [TC.sim, 0.35] : null) });
+            const pm = Math.max(...F.P.map((q) => q[1]));
+            sR.setView([F.lo - 0.6, F.hi + 0.6], [0, pm * 1.2]); sR.setTicks(F.P.length <= 16 ? F.P.map((q) => q[0]) : null, null);
+            tR('hypergeometric law of the top-left cell');
+            const pobs = dhyper(F.a, F.n, tab[0][0] + tab[0][1], tab[0][0] + tab[1][0]);
+            for (const [k, p] of F.P) { const inT = p <= pobs * (1 + 1e-7); sR.rect(k - 0.36, 0, k + 0.36, p, { fill: inT ? TC.alpha : TC.h0, fillAlpha: inT ? 0.65 : 0.35, color: k === F.a ? 'ink' : inT ? TC.alpha : TC.h0, width: k === F.a ? 2.4 : 1 }); }
+            v.legend([[TC.alpha, 'tables no more probable than the observed one (two-sided p)', { area: true }], [TC.h0, 'other tables', { area: true }]]);
+            st = { tea, F };
+          }
+        });
+        v.readout(() => {
+          if (!st) return '';
+          if (st.tea) {
+            const { m, k, ok, rev, pv, best } = st;
+            if (!ok) return `choose exactly ${m} cups as milk-first (now ${guess.size})`;
+            if (!rev) return `${m} cups chosen · reveal the truth to score them · a perfect score would have probability 1/${commas(Math.round(1 / best))} = ${v.fix(best, 4)} for a guesser`;
+            return String.raw`${k} of ${m} milk-first cups identified · exact $p=P(K\ge${k})=${v.fix(pv, 4)}$` + (k === m ? ` = 1/${commas(Math.round(1 / best))}` : '') + (pv <= 0.05 ? ' · significant at 5%' : ' · not significant at 5%') + (best > 0.01 ? ` · with ${2 * m} cups even a perfect score has p = ${v.fix(best, 3)}: the experiment cannot reach 1%` : '');
+          }
+          const { F } = st;
+          return String.raw`$n=${F.n}$ · Fisher exact $p$: two-sided **${v.fix(F.two, 4)}**, one-sided $P(A\ge${F.a})=${v.fix(F.up, 4)}$ · Pearson $X^2=${v.fix(F.x2, 3)}$, $\chi^2_1$ $p$-value ${v.fix(F.pchi, 4)}` + (Math.min(...F.E.flat()) < 5 ? ' · expected counts below 5: the χ² approximation is unreliable (here it is anti-conservative)' : '');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.17
+    {
+      num: '6.17',
+      kind: 'Method',
+      name: 'Power analysis and sample size',
+      statement: String.raw`Before collecting data, choose the level $\alpha$, the smallest effect worth detecting and the power $1-\beta$ wanted against it; then find the smallest sample size whose power function (stat-6.3) reaches $1-\beta$ there. For a one-sided $z$-test of a normal mean with known $\sigma$ and standardized effect $d=(\mu_1-\mu_0)/\sigma$,
+$$n=\Big(\frac{z_\alpha+z_\beta}{d}\Big)^2;$$
+for the two-sided two-sample $t$-test with $n$ per group the power is a noncentral-$t$ probability with noncentrality $d\sqrt{n/2}$ and $2n-2$ degrees of freedom, and $n\approx2(z_{\alpha/2}+z_\beta)^2/d^2$ (so $d=0.5$, $\alpha=0.05$, 80% power needs about 64 per group). An underpowered study is wasteful twice: it usually misses real effects, and the effects it does declare significant are disproportionately false positives or exaggerated.`,
+      idea: String.raw`Power depends on the effect only through the noncentrality $d\sqrt{n/2}$, the expected value of the test statistic, so halving the effect quadruples the required $n$. The base-rate consequence is Bayes' rule with frequencies: among many tested hypotheses of which a fraction $\pi$ are real, significant results come from true effects at rate $\pi(1-\beta)$ and from true nulls at rate $(1-\pi)\alpha$, so the fraction of significant results that are false is $(1-\pi)\alpha/\{(1-\pi)\alpha+\pi(1-\beta)\}$, which is large when power or $\pi$ is low.`,
+      caption: String.raw`Left: the exact power of the two-sided two-sample $t$-test against $n$ per group (blue; the normal approximation dashed), the target (green line) and the solved $n$. Middle: $p$-values from 1,000 simulated studies at that $n$ (each simulated through its sufficient statistics, the mean difference and the pooled variance) when the effect is real (gold, piling up near 0; the share left of $\alpha$ is the realized power) and from 1,000 null studies (blue outline, flat). Bottom: a literature of 1,000 tested hypotheses of which a fraction $\pi$ are real effects, each studied with this design, split by significance: green real effects found, red false positives, orange real effects missed. Lower the target power or $\pi$ and watch the red share of the significant block grow.`,
+      deps: ['stat-6.3'],
+      see: ['stat-7.3', 'stat-6.13'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['power', 'sample size', 'base rate'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sample_size_determination' },
+      viz(v) {
+        const dS = v.slider('effect size $d$', 0.1, 1.5, 0.5, { step: 0.05 });
+        const aS = v.select('$\\alpha$', [{ value: 0.01, label: '0.01' }, { value: 0.05, label: '0.05' }, { value: 0.1, label: '0.10' }], 0.05);
+        const pS = v.slider('target power', 0.2, 0.99, 0.8, { step: 0.01 });
+        const piS = v.slider('share of real effects $\\pi$ (bottom)', 0.02, 0.9, 0.1, { step: 0.01 });
+        const sL = v.stage({ x: [2, 2000], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.05, xlabel: '$n$ per group', ylabel: 'power', title: 'power of the two-sample $t$-test' });
+        const sP = v.stage({ x: [0, 1], y: [0, 5], axes: 'box', gutter: true, height: 300, weight: 0.95, minWidth: 240, xlabel: '$p$-value', ylabel: 'density', title: '$p$-values of 1,000 studies at the solved $n$' });
+        const sI = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, title: '1,000 tested hypotheses, split by the test result' });
+        const I = v.icons(sI, { n: 1000, order: 'group', shape: 'square' });
+        const power = (n, d, a) => { const nu = 2 * n - 2, c = qt(1 - a / 2, nu), del = d * Math.sqrt(n / 2); return nctUp(c, nu, del) + nctUp(c, nu, -del); };
+        const zpow = (n, d, a) => { const z = zq(a / 2), m = d * Math.sqrt(n / 2); return Q(z - m) + Q(z + m); };
+        const mc = memo(), ms = memo();
+        const solve = (d, a, tgt) => mc([d, a, tgt].join('|'), () => { let lo = 2, hi = 2; while (power(hi, d, a) < tgt && hi < 20000) hi *= 2; if (hi >= 20000) return 20000; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (power(m, d, a) >= tgt) hi = m; else lo = m; } return power(lo, d, a) >= tgt ? lo : hi; });
+        const curve = (d, a) => ms(d + '|' + a, () => Array.from({ length: 90 }, (_, i) => { const n = 2 * Math.pow(1000, i / 89); return [n, power(Math.max(2, n), d, a)]; }));
+        const msim = memo();
+        const sims = (n, d) => msim(n + '|' + d, () => {
+          // each study through its sufficient statistics: x̄₁ − x̄₂ ~ N(effect, 2/n), (2n − 2)S²_p ~ χ²_{2n−2}, independent
+          const r = v.rng(hashStr(`t6.17|${n}|${d}`)), nu = 2 * n - 2, C2 = v.M.dist.chi2(nu);
+          const one = (eff) => { const diff = eff + Math.sqrt(2 / n) * r.normal(), sp2 = C2.sample(r) / nu, t = diff / Math.sqrt(sp2 * 2 / n); return 2 * tUp(Math.abs(t), nu); };
+          const p1 = [], p0 = []; for (let k = 0; k < 1000; k++) { p1.push(one(d)); p0.push(one(0)); } return { p1, p0, m: n };
+        });
+        let st = null;
+        v.render(() => {
+          const d = dS.value, a = +aS.value, tgt = pS.value, n = solve(d, a, tgt), pw = power(n, d, a), C = curve(d, a);
+          sL.hline(tgt, { color: 'green', width: 1.4, dash: [5, 4] });
+          sL.fn((x) => zpow(x, d, a), { domain: [2, 2000], color: TC.h0, width: 1.4, dash: [5, 4], n: 200 });
+          sL.path(C, { color: TC.h0, width: 2.8 });
+          if (n <= 2000) { sL.vline(n, { color: TC.sim, width: 1.4, dash: [3, 3] }); sL.dot(n, pw, { r: 5, color: TC.sim }); tag(sL, `n = ${n} per group`, n, 0.08, { align: n > 300 ? 'right' : 'left', dx: n > 300 ? -6 : 6, size: 11 }); }
+          sL.hline(a, { color: TC.alpha, width: 1, dash: [2, 3] });
+          // p-values
+          const S = sims(n, d), B1 = binned(S.p1, 0, 1, 25), B0 = binned(S.p0, 0, 1, 25), top = Math.min(25, Math.max(3, B1.max * 1.1));
+          sP.setView([0, 1], [0, top]);
+          sP.vband(0, a, { color: TC.alpha, alpha: 0.12 });
+          sP.hist(B1, { density: true, color: TC.sim, fillAlpha: 0.4, width: 1.2 });
+          sP.hist(B0, { density: true, color: TC.h0, fillAlpha: 0.05, width: 1.6 });
+          const rp = S.p1.filter((p) => p < a).length / 1000, r0 = S.p0.filter((p) => p < a).length / 1000;
+          tag(sP, `${pct(rp, 1)} of real-effect studies have p < ${a}`, 0.98, top * 0.9, { align: 'right', size: 11 });
+          // literature of 1000 hypotheses
+          const pi = piS.value, R = Math.round(1000 * pi), TP = Math.round(R * pw), FN = R - TP, FP = Math.round((1000 - R) * a);
+          I.set({ groups: [{ n: TP, color: 'green', label: 'real effect, significant' }, { n: FN, color: 'orange', label: 'real effect, missed' }, { n: FP, color: 'red', label: 'no effect, significant (false positive)' }], rest: { color: 'muted', alpha: 0.3, label: 'no effect, not significant' }, block: (i) => (i < TP || (i >= R && i < R + FP) ? 0 : 1), blockLabels: (b, c) => (b === 0 ? `p < ${a}: ${c}` : `p ≥ ${a}: ${c}`) });
+          I.draw();
+          v.legend([[TC.h0, 'exact power (noncentral t)'], [TC.h0, 'normal approximation', { dash: true }], [TC.sim, 'p-values, real effect', { area: true }], [TC.h0, 'p-values, no effect', { area: true }], ['green', 'real, significant', { area: true }], ['red', 'false positive', { area: true }], ['orange', 'real, missed', { area: true }]]);
+          st = { d, a, tgt, n, pw, rp, r0, TP, FP, FN, R, m: S.m, approx: 2 * ((zq(a / 2) + qnorm(tgt)) / d) ** 2 };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { d, a, tgt, n, pw, rp, r0, TP, FP, R, m, approx } = st;
+          return String.raw`$d=${d}$, $\alpha=${a}$, target ${pct(tgt, 0)}: **$n=${commas(n)}$ per group** (exact power ${pct(pw, 1)}; the normal formula $2(z_{\alpha/2}+z_\beta)^2/d^2$ gives ${v.fix(approx, 1)}) · 1,000 simulated studies${m < n ? ` (capped at ${m} per group)` : ''}: realized power **${pct(rp, 1)}** ± ${pct(2 * mcse(pw, 1000), 1)}, null rejection rate ${pct(r0, 1)} · literature with $\pi=${v.fix(R / 1000, 2)}$: ${TP + FP} significant results, of which **${FP} (${pct(FP / Math.max(1, TP + FP), 0)}) are false positives**`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.18
+    {
+      num: '6.18',
+      kind: 'Definition',
+      name: 'Unbiased tests and UMP unbiased tests',
+      statement: String.raw`A test with power function $\beta(\theta)$ is **unbiased** at level $\alpha$ if
+$$\beta(\theta)\le\alpha\ \text{ for }\theta\in\Theta_0\qquad\text{and}\qquad\beta(\theta)\ge\alpha\ \text{ for }\theta\in\Theta_1:$$
+it is never less likely to reject when $H_0$ is false than when it is true. A **uniformly most powerful unbiased (UMPU)** test is unbiased and has power at least that of every other unbiased level-$\alpha$ test at every $\theta\in\Theta_1$. For a two-sided alternative in a one-parameter exponential family no UMP test exists (stat-6.8), but a UMPU test does: it rejects in both tails of the sufficient statistic, with the tail areas chosen so that the power function has a minimum at $\theta_0$ (its derivative vanishes there). For a normal mean this is the equal-tailed $z$-test; for a normal variance (a $\chi^2$ statistic) the UMPU test does **not** have equal tails.`,
+      idea: String.raw`Restricting to unbiased tests rules out the one-sided tests that bought their power on one side by giving up the other, and within the restricted class a best test reappears. Any unbiased test's power function has a minimum at $\theta_0$, so for a smooth power function $\beta'(\theta_0)=0$; for two-tail rejection regions $\{T<a\}\cup\{T>b\}$ of size $\alpha$ this one equation fixes the split. With a symmetric null distribution the split is even; with the skewed $\chi^2$ distribution of $(n-1)S^2/\sigma_0^2$ it is the condition $a\,f(a)=b\,f(b)$, which puts more of $\alpha$ in the lower tail.`,
+      caption: String.raw`Two-sided tests that put a share $\lambda$ of $\alpha=5\%$ in the lower tail and $1-\lambda$ in the upper. Left: the power function of the chosen split (gold) with the other splits faint; red shading marks alternatives where the power falls **below** $\alpha$, i.e. where the test is biased. Right: the smallest power over all parameter values for each split $\lambda$; it equals $\alpha$ (unbiased) at a single split. For the **normal mean** that split is $\lambda=\tfrac12$. Switch to the **normal variance**: the equal-tailed test is biased (it dips below 5% for variances a little above $\sigma_0^2$), and the unbiased split sits elsewhere. Press the button to jump to it.`,
+      deps: ['stat-6.8'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['unbiased test', 'two-sided test', 'power'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Unbiased_test' },
+      viz(v) {
+        const A = 0.05;
+        const modS = v.select('parameter', [{ value: 'mean', label: 'normal mean ($z$)' }, { value: 'var', label: 'normal variance ($\\chi^2$)' }], 'mean');
+        const lS = v.slider('share of α in the lower tail $\\lambda$', 0, 1, 0.25, { step: 0.005 });
+        const nS = v.slider('sample size $n$ (variance test)', 3, 40, 8, { int: true });
+        v.button('Jump to the unbiased split', () => lS.set(lamStar()));
+        const sL = v.stage({ x: [-4, 4], y: [0, 0.3], axes: 'box', gutter: true, height: 340, weight: 1.15, xlabel: '$\\sqrt n(\\mu-\\mu_0)/\\sigma$', ylabel: 'power', title: 'power functions of two-sided tests of size 5%' });
+        const sR = v.stage({ x: [0, 1], y: [0, 0.06], axes: 'box', gutter: true, height: 340, weight: 0.85, minWidth: 240, xlabel: '$\\lambda$', ylabel: '$\\min_\\theta\\beta(\\theta)$', title: 'is the test unbiased?' });
+        const pw = (lam, x) => {
+          if (modS.value === 'mean') { const aL = lam * A, aR = (1 - lam) * A; return (aL > 0 ? Phi(-zq(aL) - x) : 0) + (aR > 0 ? Q(zq(aR) - x) : 0); }
+          const df = nS.value - 1, [a, b] = cuts(df, lam);
+          return chiCdf(df, a / x) + (Number.isFinite(b) ? chiUp(df, b / x) : 0);
+        };
+        const CUT = new Map();
+        function cuts(df, lam) { const k = df + '|' + lam.toFixed(4); if (!CUT.has(k)) { if (CUT.size > 4000) CUT.clear(); CUT.set(k, [lam > 0 ? qchi(df, lam * A) : 0, lam < 1 ? qchi(df, 1 - (1 - lam) * A) : Infinity]); } return CUT.get(k); }
+        const lamStar = () => {
+          if (modS.value === 'mean') return 0.5;
+          const df = nS.value - 1, g = (lam) => { const a = qchi(df, lam * A), b = qchi(df, 1 - (1 - lam) * A); return a * dchi(df, a) - b * dchi(df, b); };
+          let lo = 0.001, hi = 0.999; const glo = g(lo); for (let i = 0; i < 60; i++) { const m = 0.5 * (lo + hi); if (Math.sign(g(m)) === Math.sign(glo)) lo = m; else hi = m; } return 0.5 * (lo + hi);
+        };
+        const mc = memo();
+        const grid = () => (modS.value === 'mean' ? Array.from({ length: 241 }, (_, i) => -4 + i / 30) : Array.from({ length: 241 }, (_, i) => Math.pow(16, i / 240 - 0.5)));
+        const minCurve = () => mc(modS.value + '|' + nS.value, () => { const G = grid(); return Array.from({ length: 101 }, (_, i) => { const lam = i / 100; let m = 1; for (const x of G) m = Math.min(m, pw(lam, x)); return [lam, m]; }); });
+        let st = null;
+        v.render(() => {
+          const mean = modS.value === 'mean', lam = lS.value, ls = lamStar();
+          nS.el.hidden = mean;
+          if (mean) { sL.setScale({ xlog: false, x: [-4, 4], y: [0, 0.6] }); sL.setLabels('$\\sqrt n(\\mu-\\mu_0)/\\sigma$'); }
+          else { sL.setScale({ xlog: true, x: [0.25, 4], y: [0, 0.6] }); sL.setLabels('$\\sigma^2/\\sigma_0^2$'); }
+          const G = grid(), x0 = mean ? 0 : 1, xa = G[0], xb = G[G.length - 1];
+          // zoom on the interesting band
+          let ymax = 0; for (const x of G) ymax = Math.max(ymax, Math.min(0.35, pw(lam, x)));
+          const top = mean ? 0.35 : 0.35;
+          sL.setView([xa, xb], [0, top]);
+          sL.hline(A, { color: TC.alpha, width: 1.2, dash: [5, 4] });
+          sL.vline(x0, { color: 'muted', width: 1, dash: [3, 3] });
+          for (const l of [0, 0.25, 0.5, 0.75, 1]) sL.fn((x) => pw(l, x), { domain: [xa, xb], color: 'muted', width: 1.2, alpha: 0.5, n: 240 });
+          // shade where power < α
+          const below = G.map((x) => [x, pw(lam, x)]);
+          for (let i = 1; i < below.length; i++) { const [x1, y1] = below[i - 1], [x2, y2] = below[i]; if (y1 < A - 1e-6 && y2 < A - 1e-6 && Math.abs(x1 - x0) > 1e-9) sL.poly([[x1, y1], [x2, y2], [x2, A], [x1, A]], { fill: 'red', fillAlpha: 0.45, stroke: false }); }
+          sL.fn((x) => pw(lam, x), { domain: [xa, xb], color: TC.sim, width: 3, n: 400 });
+          let mn = 1, xm = x0; for (const [x, y] of below) if (y < mn) { mn = y; xm = x; }
+          if (mn < A - 1e-4) { sL.dot(xm, mn, { r: 4.5, color: 'red' }); tag(sL, `power ${v.fix(mn, 4)} < α: biased`, xm, mn, { color: 'red', align: 'center', dy: 16, size: 11 }); }
+          tag(sL, 'α = 0.05', xb, A, { color: TC.alpha, align: 'right', dx: -4, dy: -10, size: 10.5 });
+          // right: min power against λ
+          const MC = minCurve();
+          sR.setView([0, 1], [0, 0.06]);
+          sR.hline(A, { color: 'green', width: 1.2, dash: [5, 4] });
+          sR.path(MC, { color: TC.h0, width: 2.6 });
+          sR.vline(ls, { color: 'green', width: 1.4 });
+          sR.dot(ls, A, { r: 5, color: 'green' });
+          sR.dot(lam, Math.max(0, Math.min(...G.map((x) => pw(lam, x)))), { r: 5.5, color: TC.sim });
+          tag(sR, `unbiased: λ* = ${v.fix(ls, 3)}`, ls, A, { color: 'green', align: ls > 0.5 ? 'right' : 'left', dx: ls > 0.5 ? -8 : 8, dy: -12, size: 11 });
+          v.legend([[TC.sim, `power, λ = ${v.fix(lam, 3)}`], ['muted', 'λ = 0, ¼, ½, ¾, 1'], ['red', 'power below α (biased)', { area: true }], [TC.h0, 'smallest power over θ']]);
+          st = { mean, lam, ls, mn, xm };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { mean, lam, ls, mn, xm } = st;
+          const where = mean ? `at $\\sqrt n(\\mu-\\mu_0)/\\sigma=${v.fix(xm, 2)}$` : `at $\\sigma^2/\\sigma_0^2=${v.fix(xm, 3)}$`;
+          let s = `lower tail ${pct(lam * A, 2)}, upper tail ${pct((1 - lam) * A, 2)} · smallest power ${v.fix(mn, 4)} ${where} · ` + (mn >= A - 1e-4 ? '**unbiased** ✓ (power ≥ α everywhere)' : '**biased**: some alternatives are rejected less often than the null itself');
+          s += mean ? ' · for the symmetric z statistic the unbiased (UMPU) test is the equal-tailed one, λ* = ½' : String.raw` · UMPU split for $n=${nS.value}$: $\lambda^*=${v.fix(ls, 3)}$ (solves $a f(a)=b f(b)$ for $\chi^2_{${nS.value - 1}}$), not ½`;
+          return s;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.19
+    {
+      num: '6.19',
+      kind: 'Method',
+      name: 'Welch’s t-test (Behrens–Fisher problem)',
+      credit: 'B. L. Welch, 1947; F. E. Satterthwaite, 1946',
+      statement: String.raw`The **Behrens–Fisher problem**: test $H_0:\mu_1=\mu_2$ from independent normal samples of sizes $n_1,n_2$ with **unequal, unknown** variances $\sigma_1^2,\sigma_2^2$. No exact similar test with a simple form is known. **Welch's test** uses
+$$T_W=\frac{\bar X_1-\bar X_2}{\sqrt{S_1^2/n_1+S_2^2/n_2}},\qquad \hat\nu=\frac{(S_1^2/n_1+S_2^2/n_2)^2}{\frac{(S_1^2/n_1)^2}{n_1-1}+\frac{(S_2^2/n_2)^2}{n_2-1}},$$
+referring $T_W$ to $t_{\hat\nu}$ (Satterthwaite's approximation, matching the first two moments of the variance estimate to a scaled $\chi^2$). Its size stays close to $\alpha$ across variance ratios and sample sizes. The pooled Student test (stat-6.13) is exact only when $\sigma_1=\sigma_2$; with unequal $n$ its size is far above $\alpha$ when the **smaller** group has the larger variance and far below when the larger group does.`,
+      idea: String.raw`The pooled variance weights each sample's variance by its degrees of freedom, but the variance of $\bar X_1-\bar X_2$ is $\sigma_1^2/n_1+\sigma_2^2/n_2$, which weights them by $1/n$. When the small group is the noisy one, pooling dilutes its variance with the quiet large group, the standard error is too small and the test rejects too often; reversed, it is too large and the test is conservative. Welch estimates the right variance directly; the only approximation left is the shape of its distribution, which Satterthwaite's degrees of freedom handle well.`,
+      caption: String.raw`Left: realized size of the nominal 5% pooled $t$-test (red) and of Welch's test (green) against the standard deviation of group 1 (group 2 has SD 1), each point from 3,000 simulated pairs of normal samples with equal means (bars ±2 Monte Carlo SE). Set $n_1<n_2$: the pooled test rejects far too often when group 1 (the small one) is the noisier and almost never when it is the quieter; at $\sigma_1=1$ both are exact. Drag the gold handle: right, the two statistics' histograms at that SD against the $t_{n_1+n_2-2}$ density.`,
+      deps: ['stat-6.13'],
+      refs: ['Casella–Berger §8'],
+      tags: ['Welch test', 'unequal variances', 't-test'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Welch%27s_t-test' },
+      viz(v) {
+        const n1S = v.slider('$n_1$', 3, 60, 8, { int: true });
+        const n2S = v.slider('$n_2$', 3, 60, 32, { int: true });
+        const sL = v.stage({ x: [0.25, 4], y: [0, 0.3], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.1, xlabel: 'SD of group 1, $\\sigma_1$ ($\\sigma_2=1$)', ylabel: 'realized size', title: 'size of nominal 5% tests, equal means' });
+        const sR = v.stage({ x: [-6, 6], y: [0, 0.45], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 240, xlabel: '$t$', ylabel: 'density', title: 'the two statistics at the gold $\\sigma_1$' });
+        const hS = sL.handle(2.5, 0.27, { color: TC.sim, label: '$\\sigma_1$', labelPos: 'e', constrain: (x) => [clamp(x, 0.26, 3.9), 0.27] });
+        const SDs = Array.from({ length: 13 }, (_, i) => 0.25 * Math.pow(16, i / 12)), R = 3000;
+        const runAt = (r, n1, n2, s1, keep) => {
+          const cP = qt(0.975, n1 + n2 - 2);
+          let kp = 0, kw = 0; const TP = keep ? [] : null, TW = keep ? [] : null; const a = new Float64Array(n1), b = new Float64Array(n2);
+          for (let k = 0; k < R; k++) {
+            for (let i = 0; i < n1; i++) a[i] = s1 * r.normal(); for (let i = 0; i < n2; i++) b[i] = r.normal();
+            const t = twoSample(a, b);
+            if (Math.abs(t.tP) > cP) kp++;
+            if (2 * tUp(Math.abs(t.tW), t.nuW) < 0.05) kw++;
+            if (keep) { TP.push(t.tP); TW.push(t.tW); }
+          }
+          return { p: kp / R, w: kw / R, TP, TW };
+        };
+        const mc = memo(), mh = memo();
+        const curves = (n1, n2) => mc(n1 + '|' + n2, () => { const r = v.rng(hashStr(`t6.19|${n1}|${n2}`)); return SDs.map((s) => runAt(r, n1, n2, s, false)); });
+        const at = (n1, n2, s) => mh([n1, n2, s.toFixed(3)].join('|'), () => runAt(v.rng(hashStr(`t6.19h|${n1}|${n2}|${s.toFixed(3)}`)), n1, n2, s, true));
+        let st = null;
+        v.render(() => {
+          const n1 = n1S.value, n2 = n2S.value, C = curves(n1, n2), s1 = +hS.x.toFixed(3);
+          const top = Math.max(0.12, ...C.map((c) => c.p)) * 1.15;
+          sL.setView([0.25, 4], [0, top]); hS.set(hS.x, top * 0.9);
+          sL.hband(0, 0.05, { color: 'green', alpha: 0.06 });
+          sL.hline(0.05, { color: 'green', width: 1.2, dash: [5, 4] });
+          sL.vline(1, { color: 'muted', width: 1, dash: [3, 3] });
+          const e = (p) => 2 * mcse(p, R);
+          sL.path(SDs.map((s, i) => [s, C[i].p]), { color: TC.alpha, width: 2.4 });
+          sL.path(SDs.map((s, i) => [s, C[i].w]), { color: 'green', width: 2.4 });
+          SDs.forEach((s, i) => { for (const [p, c] of [[C[i].p, TC.alpha], [C[i].w, 'green']]) { sL.line(s, Math.max(0, p - e(p)), s, p + e(p), { color: c, width: 1.6 }); sL.dot(s, p, { r: 3.2, color: c }); } });
+          sL.vline(s1, { color: TC.sim, width: 1.2, dash: [3, 3] });
+          // right panel
+          const H = at(n1, n2, s1), df = n1 + n2 - 2, c = qt(0.975, df);
+          const BP = binned(H.TP, -6, 6, 60), BW = binned(H.TW, -6, 6, 60), ytop = Math.max(dt(0, df), BP.max, BW.max) * 1.12;
+          sR.setView([-6, 6], [0, ytop]);
+          area(sR, (x) => dt(x, df), -6, -c, TC.alpha, 0.2); area(sR, (x) => dt(x, df), c, 6, TC.alpha, 0.2);
+          sR.hist(BP, { density: true, color: TC.alpha, fillAlpha: 0.08, width: 1.6 });
+          sR.hist(BW, { density: true, color: 'green', fillAlpha: 0.08, width: 1.6 });
+          sR.fn((x) => dt(x, df), { domain: [-6, 6], color: 'ink', width: 2.2, n: 300 });
+          v.legend([[TC.alpha, 'pooled Student t'], ['green', 'Welch t'], ['ink', `$t_{${df}}$ density`], ['green', 'nominal 5%', { dash: true }]]);
+          const nuBar = (() => { const q1 = s1 * s1 / n1, q2 = 1 / n2; return (q1 + q2) ** 2 / (q1 * q1 / (n1 - 1) + q2 * q2 / (n2 - 1)); })();
+          st = { n1, n2, s1, H, nuBar, C };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { n1, n2, s1, H, nuBar, C } = st, worst = C.reduce((m, c, i) => (Math.abs(c.p - 0.05) > Math.abs(m[0] - 0.05) ? [c.p, SDs[i]] : m), [0.05, 1]), wW = Math.max(...C.map((c) => Math.abs(c.w - 0.05)));
+          return String.raw`$n_1=${n1}$, $n_2=${n2}$, $\sigma_1=${v.fix(s1, 2)}$: realized size pooled **${pct(H.p, 1)}**, Welch **${pct(H.w, 1)}** (± ${pct(2 * mcse(0.05, R), 1)}) · Welch's degrees of freedom here ≈ ${v.fix(nuBar, 1)} (pooled uses ${n1 + n2 - 2}) · across the curve the pooled size ranges up to ${pct(worst[0], 1)} at $\sigma_1=${v.fix(worst[1], 2)}$, while Welch stays within ${pct(wW, 1)} of 5%` + (n1 === n2 ? ' · with equal group sizes pooling is nearly harmless' : '');
+        });
+      },
+    },
   ],
 };
