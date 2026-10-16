@@ -355,5 +355,100 @@ export default {
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.6
+    {
+      num: '3.6',
+      kind: 'Phenomenon',
+      name: 'Hinges and the four-hinge collapse mechanism',
+      statement: String.raw`Load an arch until no thrust line can fit (arch-3.5). At that limit the line of thrust touches the surface of the stone in at least four places, alternately on the extrados and the intrados. At each touching point a hinge forms, the joint opening on the opposite face, and the arch becomes a mechanism: the rigid pieces between the hinges, with the springings fixed, can move with one degree of freedom, like a four-bar linkage. The collapse load can be found either from equilibrium (the largest load for which a thrust line still fits) or from the motion (the load at which the gravity forces do no work in the mechanism); in the limit the two agree. Hinges are not damage but the normal way a masonry arch carries an unusual load; collapse needs the fourth hinge.`,
+      idea: String.raw`Each hinge removes two degrees of freedom from the pieces it joins: three rigid bodies have $3\times 3 = 9$ degrees of freedom, four hinges take away $4\times 2 = 8$, and one remains, a mechanism with a definite motion. In the picture the motion is found by closing the four-bar linkage numerically. Equilibrium says the loads can be carried while a thrust line fits; the principle of virtual work says they cannot be carried by this mechanism once the loads do positive work along it; the safe theorem (arch-3.5) and its upper-bound counterpart (solid-4.10) coincide for the arch, so the two load factors computed here agree to the precision of the discretisation.`,
+      caption: String.raw`Slide the load along the arch (the plot on the right shows the collapse load for every position; the curve is clipped where the arch is nearly rigid against it) and set its size as a share of the collapse load. With **thrust line** the line moves toward the stone's surface as the share rises; at 100% it touches in four places (discs). With **collapse mechanism** the arch moves as a four-bar linkage: drag the motion slider. The readout checks the collapse load found from equilibrium against the one found from virtual work along the mechanism.`,
+      deps: ['arch-3.5'],
+      see: ['arch-3.7', 'solid-4.10'],
+      refs: ['Heyman'],
+      credit: 'Couplet, 1730 (hinge mechanism of the semicircular arch); Heyman, 1966',
+      scope: String.raw`Plane arch, radial joints, Heyman's assumptions (no tension, no crushing, no sliding); small displacements for the virtual-work check.`,
+      tags: ['hinges', 'mechanism', 'collapse'],
+      viz(v) {
+        const N = 24;
+        const tS = v.slider('thickness t / R', 0.12, 0.4, 0.2, { step: 0.005 }), xS = v.slider('load position x / R', -0.95, 0.95, -0.5, { step: 0.01 });
+        const rS = v.slider('load, share of its collapse load', 0, 1.3, 0.8, { step: 0.01 }), mode = v.select('show', [{ value: 'line', label: 'thrust line' }, { value: 'mech', label: 'collapse mechanism' }], 'line');
+        const mS = v.slider('mechanism motion', 0, 1, 0.6, { step: 0.01 });
+        const A = v.stage({ x: [-1.4, 1.4], y: [-0.25, 1.45], equal: true, axes: false, height: 340, weight: 1.6, title: 'the arch' });
+        const B = v.stage({ x: [-1, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'load position x / R', ylabel: 'collapse load / arch weight', title: 'where the arch is weakest' });
+        const curveCache = new Map();
+        const curve = (t) => { const k = t.toFixed(4); if (curveCache.has(k)) return curveCache.get(k); const g = arch({ R: 1, t, N }), pts = []; for (let i = 0; i <= 38; i++) { const x = -0.95 + (1.9 * i) / 38, r = collapseFactor(g, [{ x, P: g.W, var: true, k: blockAt(g, x) }]); if (r) pts.push([x, r.lam]); } if (curveCache.size > 12) curveCache.clear(); curveCache.set(k, pts); return pts; };
+        // four-bar closing
+        function pickHinges(g, hs) {
+          const L = hs.filter((h) => h.side === 'a' || h.side === 'b').sort((a, b) => a.j - b.j || (a.side < b.side ? -1 : 1)), out = [];
+          for (const h of L) { const last = out[out.length - 1]; if (last && last.side === h.side) continue; if (last && last.j === h.j) continue; out.push(h); }
+          return out.length === 4 ? out : null;
+        }
+        function mechanism(g, hz, loadK) {
+          const pt = (h) => (h.side === 'a' ? g.joints[h.j].a : g.joints[h.j].b), P = hz.map(pt), [P1, H2, H3, P4] = P, d23 = Math.hypot(H3[0] - H2[0], H3[1] - H2[1]), a23 = Math.atan2(H3[1] - H2[1], H3[0] - H2[0]);
+          const psiOf = (phi) => {
+            const n = Math.max(1, Math.ceil(Math.abs(phi) / 0.004)); let psi = 0;
+            for (let i = 1; i <= n; i++) {
+              const ph = (phi * i) / n, H2p = rot(H2, P1, ph), f = (ps) => { const q = rot(H3, P4, ps); return Math.hypot(q[0] - H2p[0], q[1] - H2p[1]) - d23; };
+              let lo = psi - 0.02, hi = psi + 0.02, fl = f(lo), fh = f(hi), k = 0;
+              while (fl * fh > 0 && k++ < 14) { lo -= 0.04; hi += 0.04; fl = f(lo); fh = f(hi); }
+              if (fl * fh > 0) return NaN;
+              for (let j = 0; j < 40; j++) { const m = (lo + hi) / 2, fm = f(m); if (fm * fl > 0) { lo = m; fl = fm; } else { hi = m; fh = fm; } } psi = (lo + hi) / 2;
+            }
+            return psi;
+          };
+          const body = (k) => (k >= hz[0].j && k < hz[1].j ? 'A' : k >= hz[1].j && k < hz[2].j ? 'B' : k >= hz[2].j && k < hz[3].j ? 'C' : null);
+          const make = (phi) => {
+            const psi = psiOf(phi), H2p = rot(H2, P1, phi), H3p = rot(H3, P4, psi), thB = Math.atan2(H3p[1] - H2p[1], H3p[0] - H2p[0]) - a23;
+            return { psi, H2p, H3p, tf: (k, p) => { const b = body(k); if (b === 'A') return rot(p, P1, phi); if (b === 'C') return rot(p, P4, psi); if (b === 'B') { const q = rot(p, H2, thB); return [q[0] + H2p[0] - H2[0], q[1] + H2p[1] - H2[1]]; } return p; }, phi, hinges: [P1, H2p, H3p, P4] };
+          };
+          // direction: the one that lowers the weights plus the load
+          const lx = g.blocks[loadK].cx, work = (sg) => { const m = make(sg * 1e-3); if (!Number.isFinite(m.psi)) return NaN; let w = 0; g.blocks.forEach((b, k) => { const q = m.tf(k, [b.cx, b.cy]); w += b.W * (q[1] - b.cy); }); return w; };
+          const w1 = work(1), w2 = work(-1), sg = (Number.isFinite(w1) ? w1 : 1e9) < (Number.isFinite(w2) ? w2 : 1e9) ? 1 : -1;
+          // virtual work load factor (load = lam * arch weight at the extrados point of the load)
+          const m = make(sg * 1e-3), xl = g.blocks[loadK].cx;
+          return { make, sg, d: m, body };
+        }
+        let M = null;
+        v.render(() => {
+          const g = arch({ R: 1, t: tS.value, N }), x = xS.value, k = blockAt(g, x), loadsV = [{ x, P: g.W, var: true, k }], cf = collapseFactor(g, loadsV);
+          const pts = curve(tS.value);
+          const lmin = Math.min(...pts.map((p) => p[1])); B.setView([-1, 1], [0, Math.max(0.5, 3.4 * lmin)]);
+          B.path(pts, { color: 'accent', width: 2.4 });
+          if (!cf) { drawArch(v, A, g); A.corner('this ring cannot stand even unloaded (t/R < 0.1075)', 'tl', { color: 'red' }); M = { g }; return; }
+          B.dot(x, cf.lam, { r: 5.5, color: 'red' });
+          const hs = hinges(g, loadsV, cf.u, {}, 1e-6), four = pickHinges(g, hs), rho = rS.value;
+          const yl = extradosY(g, x);
+          const showMech = mode.value === 'mech' && four; mS.el.hidden = !showMech;
+          let vw = NaN;
+          if (showMech) {
+            const me = mechanism(g, four, k), phi = me.sg * mS.value * 0.16, st = me.make(phi), tfb = (kk, p) => st.tf(kk, p);
+            drawArch(v, A, g, { tfBlock: tfb, fillAlpha: 0.14, blockColor: (kk) => (me.body(kk) ? 'orange' : 'muted') });
+            if (Number.isFinite(st.psi)) { st.hinges.forEach((p) => A.dot(p[0], p[1], { r: 5.5, color: 'red' })); }
+            const q = st.tf(k, [x, yl]); A.arrow(q[0], q[1] + 0.5, q[0], q[1] + 0.03, { color: 'gold', width: 3, head: 9 });
+            // virtual work check
+            const m1 = me.make(me.sg * 1e-3); if (Number.isFinite(m1.psi)) { let w = 0; g.blocks.forEach((b, kk) => { const p = m1.tf(kk, [b.cx, b.cy]); w += b.W * (p[1] - b.cy); }); const pl = m1.tf(k, [x, yl]); vw = -w / (g.W * (pl[1] - yl)); }
+            A.corner('collapse mechanism: three rigid pieces, four hinges', 'tl', { color: 'muted' });
+          } else {
+            drawArch(v, A, g, { fillAlpha: 0.12 });
+            const lam = Math.min(rho, 1) * cf.lam, fixed = [{ x, P: lam * g.W, k }];
+            let u = cf.u, tl;
+            if (rho < 0.999) { const c = centralLine(g, fixed); if (c) u = c.u; tl = thrustLine(g, fixed, c ? c.u : cf.u); } else tl = thrustLine(g, loadsV, cf.u);
+            drawThrust(v, A, tl, { color: 'red', width: 2.6 });
+            for (const h of hs) { const J = g.joints[h.j], p = h.side === 'a' ? J.a : J.b; A.dot(p[0], p[1], { r: rho >= 0.999 ? 6 : 4, color: 'red', hollow: rho < 0.999 }); }
+            const Pl = rho >= 0.999 ? cf.lam : lam; A.arrow(x, yl + 0.1 + 0.9 * Pl, x, yl + 0.03, { color: 'gold', width: 3, head: 9 });
+            A.corner(rho > 1.001 ? 'overloaded: no thrust line fits, the mechanism moves' : rho >= 0.999 ? 'at collapse: the line touches in ' + hs.length + ' places' : 'standing: the line is inside the stone', 'tl', { color: rho > 1.001 ? 'red' : 'muted' });
+          }
+          M = { g, cf, hs, four, vw, x, k };
+        });
+        v.legend([['red', 'thrust line, hinges'], ['gold', 'load'], ['orange', 'moving pieces', { area: true }]]);
+        v.readout(() => {
+          if (!M || !M.cf) return 'This ring is too thin to stand under its own weight.';
+          const { g, cf, hs, four, vw } = M, ang = (h) => { const J = g.joints[h.j], p = h.side === 'a' ? J.a : J.b; return deg(Math.atan2(p[0], p[1] - g.C[1])); };
+          const lst = hs.map((h) => `${h.side === 'a' ? 'intrados' : 'extrados'} at joint ${h.j} (${f2(Math.abs(ang(h)), 0)}° ${ang(h) < 0 ? 'left' : 'right'} of the crown)`).join('; ');
+          return `Collapse load from equilibrium (linear program): **${f2(cf.lam, 3)}** × the arch weight (${f2(cf.lam * g.W, 1)} kN/m), hinges: ${lst || '—'}.\n${four ? `Mechanism with ${four.length} hinges; load factor from virtual work along its motion: **${Number.isFinite(vw) ? f2(vw, 3) : 'switch to "collapse mechanism"'}**.` : `The active set has ${hs.length} touching points, not a four-hinge pattern (a symmetric case, see 3.7).`}`;
+        });
+      },
+    },
   ],
 };

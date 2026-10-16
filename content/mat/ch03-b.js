@@ -46,6 +46,7 @@ function pinch(st) {
     if (X) {
       const loop = [X, ...P.slice(i + 1, j + 1).map((p) => [...p])];
       let ar = 0; for (let k = 0; k < loop.length; k++) { const p = loop[k], q = loop[(k + 1) % loop.length]; ar += p[0] * q[1] - q[0] * p[1]; }
+      if (Math.abs(ar) < 0.1 || loop.length < 6) continue; // ignore grazing contacts of neighbouring nodes
       if (ar > 0) loop.reverse(); // the emitted loop has the Burgers vector of the source, so it expands under the same stress (outward normal on the left)
       st.loops.push(resample(loop, true));
       st.line = resample([...P.slice(0, i + 1).map((p) => [...p]), X, ...P.slice(j + 1).map((p) => [...p])], false);
