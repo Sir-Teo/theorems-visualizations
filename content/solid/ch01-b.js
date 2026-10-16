@@ -358,7 +358,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
         const peak = (sol, x) => { let m = 0; for (let j = 0; j <= 40; j++) { const y = -0.5 + j / 40; m = Math.max(m, Math.abs(sol.sxx(x, y) - 1)); } return m; };
         v.render(() => {
           const sol = get(kind.value);
-          A.heat((x, y) => (x < 0 || x > 4.5 ? NaN : sol.sxx(x, y)), { range: [0.4, 1.6], cmap: 'theme-diverging', res: 220, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
+          A.raster((x, y) => (x < 0 || x > 4.5 || Math.abs(y) > 0.5 ? null : v.diverge(Math.max(-1, Math.min(1, sol.sxx(x, y) - 1)), 'blue', 'red')), { res: 420, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
           A.rect(0, -0.5, 4.5, 0.5, { color: 'ink', width: 1.6, fill: false });
           A.clip(() => A.contour((x, y) => sol.sxx(x, y), [0.95, 1.05], { color: 'ink', width: 1, alpha: 0.5, res: 200 }), [0, 4.5], [-0.5, 0.5]);
           // load arrows at the left end
@@ -370,9 +370,10 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           A.line(MX.x, -0.5, MX.x, 0.5, { color: 'orange', width: 1.6, dash: [4, 3] });
           A.measure(0, -0.65, 1, -0.65, 'W (one width)');
           // profile
+          const prof = (y) => sol.sxx(MX.x, y); const pv = [...Array(81)].map((_, i) => prof(-0.5 + i / 80)), lo = Math.min(0, ...pv) * 1.1, hi = Math.max(1.4, ...pv) * 1.08; B.setView([lo, hi], [-0.5, 0.5]);
           B.vline(1, { color: 'muted', width: 1.2, dash: [4, 3] });
-          const prof = (y) => sol.sxx(MX.x, y); B.path([...Array(81)].map((_, i) => { const y = -0.5 + i / 80; return [prof(y), y]; }), { color: CMAP[kind.value], width: 2.6 });
-          B.text(`x = ${MX.x.toFixed(2)} W`, 1.38, 0.43, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
+          B.path([...Array(81)].map((_, i) => { const y = -0.5 + i / 80; return [prof(y), y]; }), { color: CMAP[kind.value], width: 2.6 });
+          B.text(`x = ${MX.x.toFixed(2)} W`, hi * 0.97, 0.43, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
           // decay
           D.hline(0.05, { color: 'muted', width: 1, dash: [4, 3] }); D.text('5 %', 2.95, 0.05, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
           for (const [k] of KS) { const sl = get(k), act = k === kind.value; D.path([...Array(61)].map((_, i) => { const x = 0.02 + (i * 2.98) / 60; return [x, Math.max(3e-3, peak(sl, x))]; }), { color: CMAP[k], width: act ? 3 : 1.4, alpha: act ? 1 : 0.55 }); }
@@ -446,7 +447,7 @@ so the energy per unit volume is $u = \sigma^2/2E = \tfrac12\sigma\varepsilon$. 
           S.rect(0, -0.5, 10, 0.5, { color: 'muted', width: 1.2, dash: [4, 3], fill: false });
           S.rect(0, -0.5, X, 0.5, { fill: loading ? 'accent' : 'green', fillAlpha: 0.3 + 0.25 * (P / Math.max(Ppk, 1e-9)), color: 'ink', width: 1.8 });
           if (P > 0.02) S.arrow(X, 0, X + 0.3 + 1.4 * (P / Ppk), 0, { color: 'orange', width: 3.5, head: 12 });
-          S.text(`P = ${f3(P)} kN`, X + 0.4, 0.8, { size: 12, weight: 700, color: 'orange', align: 'left' });
+          S.text(`P = ${f3(P)} kN`, X - 0.2, 0.85, { size: 12, weight: 700, color: 'orange', align: 'right' });
           S.text(`δ = ${f3(d)} mm (×${f3(mag * 100)} in the drawing, 1 m = 10 units)`, 5, -1.9, { size: 10.5, color: 'muted', align: 'center' });
           if (!loading && ePerm * L > 0.001) S.line(10 + ePerm * L * mag, -1.0, 10 + ePerm * L * mag, 1.0, { color: 'red', width: 1.6, dash: [3, 3] });
           if (!loading && ePerm * L > 0.001) S.text('permanent set', 10 + ePerm * L * mag, -1.25, { size: 10.5, color: 'red', align: 'center' });
@@ -476,7 +477,7 @@ which is 2 for $h = 0$ and grows like $\sqrt{2h/\delta_{\text{st}}}$ for large d
         const hS = v.slider('drop height h (mm)', 0, 60, 20, { step: 0.5 });
         const mS = v.slider('collar mass (kg)', 100, 1000, 500, { step: 10 });
         const zS = v.slider('damping (fraction of critical)', 0, 0.15, 0, { step: 0.005 });
-        const S = v.stage({ x: [-3.5, 3.5], y: [-0.4, 8.2], equal: true, axes: false, height: 440, weight: 0.8, minWidth: 240, title: 'collar dropped on the flange (slow motion)' });
+        const S = v.stage({ x: [-3.5, 3.5], y: [1.5, 8.2], equal: true, axes: false, height: 440, weight: 0.8, minWidth: 240, title: 'collar dropped on the flange (slow motion)' });
         const TP = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: { l: 52 }, height: 440, weight: 1.15, minWidth: 280, xlabel: 'time (ms)', ylabel: 'rod stress σ (MPa)', title: 'stress in the rod' });
         const FP = v.stage({ x: [1e-2, 1e3], y: [1, 60], xlog: true, ylog: true, axes: 'box', gutter: { l: 52 }, height: 440, weight: 1.0, minWidth: 260, xlabel: 'h / δst', ylabel: 'σmax / σst', title: 'peak stress factor' });
         const E = MATS.steel.E, A = (Math.PI * 20 ** 2) / 4, Lr = 2000, kN_mm = (E * A) / Lr; // N/mm
@@ -536,7 +537,7 @@ which is 2 for $h = 0$ and grows like $\sqrt{2h/\delta_{\text{st}}}$ for large d
           S.rect(-0.55, cyy, 0.55, cyy + 0.6, { fill: 'orange', fillAlpha: 0.65, color: 'ink', width: 1.8 });
           S.text(`${mS.value} kg`, 0, cyy + 0.3, { size: 11, weight: 700, color: 'ink', align: 'center' });
           if (p.h > 0.01) S.measure(1.4, fy + 0.0 + (ts < tf ? 0 : 0) + (cur[2] < 0 ? 0 : 0), 1.4, fy + hDraw, `h = ${f3(p.h)} mm`);
-          S.text(`stretch magnified ×${f3(mag)}`, 0, -0.2, { size: 10.5, color: 'muted', align: 'center' });
+          S.text(`stretch magnified ×${f3(mag)}`, 0, 1.75, { size: 10.5, color: 'muted', align: 'center' });
           void wn; void scale;
         }, { period: 12, still: 3.2 });
         v.readout(() => {

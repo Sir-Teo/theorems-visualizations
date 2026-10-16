@@ -236,5 +236,64 @@ A **Sankey diagram** draws every flow as a band whose width is proportional to t
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.3
+    {
+      num: '1.3', kind: 'Concept', name: 'Power density of energy sources',
+      statement: String.raw`The **power density** of an energy source is the average power it delivers per unit of land (or sea) it occupies, in W/m² (equivalently MW/km²). It converts a country's demand into an area: to supply a power $P$ from a source of density $\rho$ one needs
+$$A = \frac{P}{\rho}.$$
+Published medians span almost four orders of magnitude, from several hundred W/m² for nuclear and gas plants (counting their safety zones, pads and pipelines) through about 9 W/m² for utility-scale solar and 1.5 W/m² for onshore wind, to under 0.1 W/m² for biomass. A country's own **demand density** — its average primary power divided by its land area — is typically between 0.3 and 3 W/m². Where demand density is comparable to a source's supply density, that source would need most of the country.`,
+      idea: String.raw`Concentrated sources (a fuel burned in a small boiler, a chain reaction in a small core) can deliver kilowatts through every square metre of the plant, and the land is dominated by safety zones and mining. Renewable flows are *spread out by nature*: sunlight reaches the ground at roughly a hundred or two watts per square metre on average and a cell turns a fraction of it into electricity; wind turbines must stand several rotor diameters apart or they steal each other's wind (chapter 5); photosynthesis stores well under 1% of the sunlight as biomass. So the land needed scales as $P/\rho$ and is set by physics and engineering, not by how many machines are built. Densities depend strongly on the boundary drawn around a site, which is why the published ranges are wide.`,
+      caption: String.raw`The left panel shows the median power density of each source on a log axis, with the chosen country's average demand density as a gold line. The right panel draws, to scale and **concentrically**, the square of land each source alone would need to supply the chosen share of that country's primary energy, inside a square of the country's own area (dashed). Squares that spill out of the view are labelled with how many times the country they would cover. Change the country and the share: for the Netherlands even wind farms cannot fit.`,
+      deps: ['energy-1.1'],
+      refs: ['MacKay ch. 18'],
+      tags: ['power density', 'land use'],
+      scope: String.raw`Power densities are medians of published studies compiled by Nøland et al. (2022) and depend on the area boundary used (nuclear and gas including safety areas and pipelines; solar PV including the spacing between panels; hydro on reservoir surface). The picture compares the *thermal-equivalent primary energy* of a country with the *electricity* each source would produce, so it overstates the areas for sources that would also replace the losses of fossil heat engines (chapter 1.2). Offshore wind uses sea, not land.`,
+      viz(v) {
+        const SRC = [['Nuclear', 587.17, 'purple'], ['Natural gas', 350.37, 'blue'], ['Solar thermal (CSP)', 14.45, 'orange'], ['Solar PV (utility)', 9.13, 'gold'], ['Geothermal', 5.56, 'red'], ['Hydro (reservoir)', 4.26, 'teal'], ['Offshore wind', 3.84, 'accent'], ['Onshore wind', 1.49, 'green'], ['Biomass', 0.08, 'pink']];
+        const C = Object.fromEntries(COUNTRIES.map((c) => [c[0], c]));
+        const NAMES = ['United Kingdom', 'Germany', 'Netherlands', 'Japan', 'United States', 'China', 'India'];
+        const ctry = v.select('country', NAMES.map((n) => ({ value: n, label: n.replace('United Kingdom', 'UK').replace('United States', 'USA') })), 'United Kingdom');
+        const share = v.slider('share of primary energy supplied', 0.05, 1, 1, { step: 0.05, fmt: (x) => v.fix(100 * x, 0) + ' %' });
+        const s1 = v.stage({ x: [0.04, 6000], y: [-0.2, 9.2], xlog: true, axes: 'box', gutter: true, height: 430, weight: 1, minWidth: 300, xlabel: 'median power density (W/m²)', yticks: [], xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [100, '100'], [1000, '1000']] });
+        const s2 = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 430, weight: 1.15, minWidth: 320 });
+        const geo = () => { const c = C[ctry.value]; const P = c[3] * 1e12 / 8766, A = c[5] * 1e6; return { P, A, km2: c[5], d: P / A, name: ctry.value, year: c[2] }; };
+        const need = (g, rho) => share.value * g.P / rho / 1e6; // km²
+        v.render(() => {
+          const g = geo();
+          SRC.forEach(([name, rho, col], i) => {
+            const y = 8 - i;
+            s1.rect(0.04, y - 0.34, rho, y + 0.34, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
+            s1.textPx(`${name}  ${rho >= 10 ? v.fix(rho, 0) : rho >= 1 ? v.fix(rho, 1) : v.fix(rho, 2)}`, s1.X(rho) + 7, s1.Y(y), { size: 11.5, weight: 600, color: 'ink', align: 'left' });
+          });
+          s1.vline(g.d, { color: 'gold', width: 2.2, dash: true });
+          s1.textPx(`${g.name === 'United Kingdom' ? 'UK' : g.name === 'United States' ? 'USA' : g.name} demand ${v.fix(g.d, 2)} W/m²`, s1.X(g.d) + 6, s1.Y(-0.2) - 12, { size: 11.5, weight: 700, color: 'gold', align: 'left', plate: true });
+          // squares, concentric, in km
+          const half = Math.sqrt(g.km2) * 0.85;
+          s2.setView([-half, half], [-half, half]);
+          const sides = SRC.map(([name, rho, col]) => ({ name, col, a: need(g, rho), s: Math.sqrt(need(g, rho)) })).sort((p, q) => q.s - p.s);
+          s2.clip(() => {
+            for (const q of sides) s2.rect(-q.s / 2, -q.s / 2, q.s / 2, q.s / 2, { fill: q.col, fillAlpha: 0.13, color: q.col, width: 1.8 });
+          });
+          const cs = Math.sqrt(g.km2);
+          s2.rect(-cs / 2, -cs / 2, cs / 2, cs / 2, { color: 'ink', width: 2.2, dash: true, stroke: true });
+          s2.text(`${g.name}: ${grp(g.km2)} km²`, -half * 0.97, half * 0.93, { size: 12, weight: 700, color: 'ink', align: 'left' });
+          let yPx = s2.Y(half) + 38;
+          for (const q of sides) {
+            const inside = q.s / 2 < half * 0.98, mult = q.a / g.km2;
+            const txt = `${q.name}: ${q.a >= 100 ? grp(q.a) : v.fix(q.a, 1)} km²  (${mult >= 10 ? v.fix(mult, 0) : mult >= 1 ? v.fix(mult, 1) : v.fix(100 * mult, mult < 0.01 ? 2 : 1) + ' %'}${mult >= 1 ? '× the country' : ' of the country'})`;
+            const x = inside ? s2.X(-q.s / 2) + 6 : s2.X(-half) + 8, top = inside ? s2.Y(q.s / 2) + 11 : 0;
+            yPx = Math.max(yPx + 0, top, yPx);
+            s2.textPx(txt, s2.W - 10, yPx + 14, { size: 11, weight: 600, color: q.col === 'gold' ? 'gold' : q.col, align: 'right' });
+            yPx += 15;
+          }
+        });
+        v.legend([['gold', 'average demand density', { dash: true }], ['ink', 'country (same area)', { dash: true }]]);
+        v.readout(() => {
+          const g = geo(), nm = (n) => SRC.find((s) => s[0] === n);
+          const pv = need(g, nm('Solar PV (utility)')[1]), wd = need(g, nm('Onshore wind')[1]), nu = need(g, nm('Nuclear')[1]);
+          return `${g.name}, ${g.year}: primary energy ${grp(C[ctry.value][3])} TWh/yr = **${v.fix(g.P / 1e9, 0)} GW** on **${grp(g.km2)} km²** of land, a demand density of **${v.fix(g.d, 2)} W/m²**. Supplying ${v.fix(100 * share.value, 0)}% of it takes ${grp(nu)} km² of nuclear (${v.fix(100 * nu / g.km2, 2)}% of the country), ${grp(pv)} km² of solar PV (${v.fix(100 * pv / g.km2, 1)}%), ${grp(wd)} km² of onshore wind (${v.fix(100 * wd / g.km2, 0)}%).`;
+        });
+      },
+    },
   ],
 };

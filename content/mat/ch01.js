@@ -251,7 +251,7 @@ export default {
           sT.dot(T.value, (m - 1) * 100, { r: 8, color: 'gold' });
           // data scatter
           const items = [];
-          if (pot.value === 'harm') sA.text('harmonic bond: α = 0 for every material', Math.sqrt(3 * 150), Math.sqrt(3 * 150), { size: 13, color: 'muted', align: 'center' });
+          if (pot.value === 'harm') sA.corner('harmonic bond: α = 0 for every material', 'tl', { size: 12, color: 'muted' });
           else {
             const pts = ELEMENTS.filter((e) => e.alpha);
             const pred = (e) => ((3 * KB) / (4 * beff() * ((2 * e.ecoh) / zOf(e)))) * 1e6;
@@ -530,7 +530,7 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
           v.legend([...Object.keys(COL).map((c) => [COL[c], CN[c], { area: true }]), ['green', 'beats the selection line', { dot: true }]]);
         });
         v.readout(() => {
-          const p = +idx.value, Mh = Math.pow(hd.y, 1 / p) / hd.x, name = ['E/ρ', 'E^{1/2}/ρ', 'E^{1/3}/ρ'][p - 1], unit = ['GPa/(Mg/m³) = MN·m/kg', 'GPa^{1/2}/(Mg/m³)', 'GPa^{1/3}/(Mg/m³)'][p - 1];
+          const p = +idx.value, Mh = Math.pow(hd.y, 1 / p) / hd.x, name = ['E/ρ', 'E^{1/2}/ρ', 'E^{1/3}/ρ'][p - 1], unit = ['GPa/(Mg/m³) = MN·m/kg', 'GPa^½/(Mg/m³)', 'GPa^⅓/(Mg/m³)'][p - 1];
           const steel = M[0], rank = [...M].sort((a, b) => Mi(b, p) - Mi(a, p)), top = rank.slice(0, 5).map((m) => `${m.name} ${v.fmt(Mi(m, p), 3)}`).join(', ');
           const m = M.find((q) => q.name === sel);
           return `Line through the handle: $M=${name}=${v.fmt(Mh, 3)}$ ${unit}. Best five of ${M.length}: ${top}. A stiffness-matched part in the best material weighs ${v.fix(Mi(steel, p) / Mi(rank[0], p), 3)} × the steel one.\n**${m.name}**: $E=${m.E[0] === m.E[1] ? m.E[0] : `${m.E[0]}$–$${m.E[1]}`}$ GPa, $\\rho=${m.r[0] === m.r[1] ? m.r[0] : `${m.r[0]}$–$${m.r[1]}`}$ Mg/m³ (${m.ver ? 'density checked' : 'typical density'}) → $M=${v.fmt(Mi(m, p), 3)}$, ${Mi(m, p) > Mh * 1.0005 ? 'above' : 'on or below'} the line.`;
