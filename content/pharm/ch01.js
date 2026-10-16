@@ -1,7 +1,7 @@
 // Pharmacology — Chapter 1: Drug disposition: the basic quantities
 import { BODY, clamp, trapz, trapzLog, logSlope, bateman, rk4, idxAt, trace, memo, sig, box, wire, flowDots } from './ch01.shared.js';
 
-// ---------- Theophylline, subject 1 of the classic data set (Boeckmann, Sheiner & Beal 1992; R: datasets::Theoph) ----------
+// ---------- Theophylline, subject 1 of the classic data set (Boeckmann, Sheiner & Beal 1994; R: datasets::Theoph) ----------
 // 79.6 kg man, 4.02 mg/kg orally (≈ 320 mg); serum theophylline in mg/L. Times in h.
 const THEO = { wt: 79.6, dose: 4.02, t: [0, 0.25, 0.57, 1.12, 2.02, 3.82, 5.1, 7.03, 9.05, 12.12, 24.37], c: [0.74, 2.84, 6.57, 10.5, 9.66, 8.58, 8.36, 7.47, 6.89, 5.94, 3.28] };
 
@@ -137,7 +137,7 @@ export default {
       deps: ['pharm-1.1', 'pma-6.1'],
       refs: ['Rowland–Tozer'],
       tags: ['AUC', 'trapezoidal rule'],
-      credit: 'Data: R. Upton, theophylline kinetics, as printed in Boeckmann, Sheiner & Beal, NONMEM Users Guide Part V (1992)',
+      credit: 'Data: R. Upton, theophylline kinetics, as printed in Boeckmann, Sheiner & Beal, NONMEM Users Guide Part V (1994), as distributed in R datasets::Theoph',
       viz(v) {
         const M = v.M;
         const D = THEO.dose * THEO.wt;

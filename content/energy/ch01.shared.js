@@ -110,7 +110,7 @@ export function sankey(v, s, spec) {
     const ins = L.filter((l) => l.B === n).sort((p, q) => (p.A.y + p.A.h / 2) - (q.A.y + q.A.h / 2));
     y = n.y; for (const l of ins) { l.y1 = y; y += l.v * scale; }
   }
-  const xa = (l) => l.A.x + nodeW, xb = (l) => l.B.x, ptsOf = (l) => { // sampled top and bottom edges
+  const xa = (l) => l.A.x + (l.A.w ?? nodeW), xb = (l) => l.B.x, ptsOf = (l) => { // sampled top and bottom edges
     const x0 = xa(l), x1 = xb(l), top = [], bot = [], T = 28;
     for (let i = 0; i <= T; i++) { const t = i / T, e = t * t * (3 - 2 * t); const x = x0 + (x1 - x0) * t; top.push([x, l.y0 + (l.y1 - l.y0) * e]); bot.push([x, l.y0 + l.w + (l.y1 - l.y0) * e]); }
     return [top, bot];
@@ -127,16 +127,20 @@ export function sankey(v, s, spec) {
     c.fillStyle = v.color(l.color || l.A.color || 'muted', l === hov ? 0.85 : dim); c.fill(); c.restore();
   }
   for (const n of Object.values(N)) {
-    c.save(); c.fillStyle = v.color(n.color || 'muted'); c.fillRect(n.x, n.y, nodeW, n.h); c.restore();
+    const w = n.w ?? nodeW; c.save();
+    if (n.box) { c.fillStyle = v.color(n.color || 'muted', 0.2); c.fillRect(n.x, n.y, w, n.h); c.strokeStyle = v.color(n.color || 'muted'); c.lineWidth = 1.6; c.strokeRect(n.x + 0.8, n.y + 0.8, w - 1.6, n.h - 1.6); }
+    else { c.fillStyle = v.color(n.color || 'muted'); c.fillRect(n.x, n.y, w, n.h); }
+    c.restore();
   }
   const size = spec.size ?? 11.5;
   for (const n of Object.values(N)) {
-    const side = n.lab || (spec.side ? spec.side[n.col] : 'r'); if (side === 'none') continue;
+    const w = n.w ?? nodeW, side = n.lab || (spec.side ? spec.side[n.col] : 'r'); if (side === 'none') continue;
     const txt = typeof n.label === 'function' ? n.label(n) : n.label, val = spec.fmt ? spec.fmt(n.val) : '';
+    if (n.box) { const lines = [...String(txt).split('\n'), val]; lines.forEach((t, i) => s.textPx(t, n.x + w / 2, n.y + n.h / 2 + (i - (lines.length - 1) / 2) * (size + 3), { size, weight: i === lines.length - 1 ? 700 : 600, align: 'center', color: 'ink', halo: false })); continue; }
     if (n.h < 6 && !n.force) continue;
     if (side === 'l') s.textPx(`${txt}  ${val}`, n.x - 6, n.y + n.h / 2, { size, weight: 600, align: 'right', color: 'ink' });
-    else if (side === 'r') s.textPx(`${txt}  ${val}`, n.x + nodeW + 6, n.y + n.h / 2, { size, weight: 600, align: 'left', color: 'ink' });
-    else if (side === 't') s.textPx(`${txt}  ${val}`, n.x + nodeW / 2, n.y - 9, { size, weight: 600, align: 'center', color: 'ink' });
+    else if (side === 'r') s.textPx(`${txt}  ${val}`, n.x + w + 6, n.y + n.h / 2, { size, weight: 600, align: 'left', color: 'ink' });
+    else if (side === 't') s.textPx(`${txt}  ${val}`, n.x + w / 2, n.y - 9, { size, weight: 600, align: 'center', color: 'ink' });
   }
   if (hov && spec.tip) { const t = spec.tip(hov); const w = textW(s, t, 12, 600) + 14, X = clamp(p.px + 12, 4, s.W - w - 4), Y = clamp(p.py - 22, 4, s.H - 24); s.textPx(t, X + 7, Y + 10, { size: 12, weight: 600, align: 'left', color: 'ink', plate: true }); }
   return { nodes: N, links: L, hover: hov };

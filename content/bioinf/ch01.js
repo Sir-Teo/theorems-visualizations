@@ -47,8 +47,8 @@ A **$k$-mer** is a string of length $k$. A string of length $n$ contains $n-k+1$
         const kS = v.slider('$k$', 1, 8, 4, { int: true });
         const pos = v.slider('window position', 0, 199, 12, { int: true });
         const merge = v.toggle('merge reverse complements', false);
-        const sA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 214, full: true });
-        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, title: 'the ten most frequent $k$-mers in the whole sequence' });
+        const sA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 198, full: true });
+        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 236, full: true, title: 'the ten most frequent $k$-mers in the whole sequence' });
         const seqNow = () => cleanDNA(inp.value, 2000) || 'A';
         let cw = 18, off = 0, cols = 30;
         sA.onClick((x, y) => { const n = seqNow(), j = Math.floor((sA.X(x) - 44) / cw) + off - Math.floor(kS.value / 2); if (sA.X(x) > 44) pos.set(clamp(j, 0, Math.max(0, n.length - kS.value))); });
@@ -106,7 +106,7 @@ A **$k$-mer** is a string of length $k$. A string of length $n$ contains $n-k+1$
 
 **Algorithm.** Keep a hash table (dictionary) from $k$-mers to counts. For each of the $n-k+1$ windows of the text, add $1$ to the entry of every word in the window's $d$-neighbourhood (and in its reverse complement's neighbourhood). One pass over the text, expected time $O\!\big(n\,|N_d|\big)$ with $|N_d|=\sum_{i\le d}\binom ki 3^i$, instead of comparing all $4^k$ words with all windows.`,
       idea: String.raw`Counting replaces searching: instead of asking, for each of the $4^k$ candidate words, how many windows are close to it (cost $4^k\,n\,k$), every window announces to all the words it is close to, and a hash table (here an array indexed by the base-4 number of the word) accumulates the votes. A word that gets many votes is far more frequent than chance: in a window of $n$ random letters a given word has expected count $(n-k+1)|N_d|/4^k$, tiny for $k=9$, so a handful of coincident occurrences is a signal — the DnaA boxes where the replication initiator binds.`,
-      caption: String.raw`**Step through the insertions** (▶, or drag the scrubber): a gold cell is the current window, the bars on the right are the hash table's top entries, and the green/orange marks show where the leading word occurs on the forward and reverse strand. The window sits on the first 500 bp of *V. cholerae* chromosome I (NC_002505.1, the origin region): with $k=9$, $d=0$ and reverse complements the DnaA box TGTGGATAA/TTATCCACA comes out on top. The curve below slides the same window along the 10 kb around the origin and plots the top count in each: the origin is the one place it reaches 3. Raise $d$ and low-complexity AT repeats overtake the box — counting finds frequent words, not necessarily meaningful ones.`,
+      caption: String.raw`**Step through the insertions** (▶, or drag the scrubber): a gold cell is the current window, the bars on the right are the hash table's top entries, and the green/orange marks show where the leading word occurs on the forward and reverse strand. The window sits on the first 500 bp of *V. cholerae* chromosome I (NC_002505.1, the origin region): with $k=9$, $d=0$ and reverse complements the DnaA box TGTGGATAA/TTATCCACA comes out on top. The curve below slides the same window along the 10 kb around the origin and plots the top count in each: only **two** places reach 3, the origin and an unrelated repeat 4 kb upstream (AGCAAGTGG), so frequency alone cannot say which is functional, and the readout shows both are very unlikely by chance. Raise $d$ and low-complexity AT repeats overtake the box: counting finds frequent words, not necessarily meaningful ones.`,
       deps: ['bioinf-1.1', 'algo-5.11'],
       refs: ['Compeau–Pevzner ch. 1'],
       credit: 'Sequence: V. cholerae N16961, Heidelberg et al., 2000 (NC_002505.1)',
@@ -130,7 +130,7 @@ A **$k$-mer** is a string of length $k$. A string of length $n$ contains $n-k+1$
         const S = v.steps({
           frames: () => [{ i: -1, line: 1, note: 'The hash table is empty. Every window of the text will vote for the words it is close to.' }, ...Array.from({ length: Math.max(0, win().length - kS.value + 1) }, (_, i) => ({ i, line: [2, 3] }))],
           code: ['table ← empty hash table of counts', 'for each window of Text   (i = 0 … |Text| − k)', '    for each word in the d-neighbourhood of the window', '        (and of its reverse complement):  table[word] += 1', 'report the words with the largest count'],
-          codeTitle: 'FrequentWords(Text, k, d)', codePos: 'below', speed: 30, start: 0, still: 'end',
+          codeTitle: 'FrequentWords(Text, k, d)', codePos: 'below', speed: 30, start: 'end', still: 'end',
         });
         const reset = () => { S.reset(undefined, { at: 'end' }); };
         const fl = (c) => Math.floor(c);
@@ -214,7 +214,7 @@ A **$k$-mer** is a string of length $k$. A string of length $n$ contains $n-k+1$
         const sR = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 320, weight: 0.8, minWidth: 260, title: 'the circular chromosome' });
         const sC = v.stage({ x: [0, 5], y: [-1, 1], axes: 'box', gutter: true, height: 320, weight: 1.35, minWidth: 320, xlabel: 'position (Mb)', ylabel: 'cumulative skew  #G − #C  (thousands)', title: 'cumulative skew' });
         const sL = v.stage({ x: [0, 5], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 170, full: true, xlabel: 'position (Mb)', ylabel: '(G−C)/(G+C)', title: 'windowed skew on the given strand' });
-        let cur = 'ec', hx = 0; const hdl = sC.handle(0, 0, { color: 'gold', r: 8, label: '', constrain: (x) => { const g = get(gs.value), xx = clamp(x, 0, g.len / 1e6); return [xx, g.S[Math.round(xx * 1e6 / g.bin)] / 1000]; } });
+        let cur = '', hx = 0; const hdl = sC.handle(0, 0, { color: 'gold', r: 8, label: '', constrain: (x) => { const g = get(gs.value), xx = clamp(x, 0, g.len / 1e6); return [xx, g.S[Math.round(xx * 1e6 / g.bin)] / 1000]; } });
         hdl.onDrag = () => { hx = hdl.x; };
         const local = (g, i, w) => { const a = clamp(i - w, 0, g.n), b = clamp(i + w, 0, g.n), G = g.cg[b] - g.cg[a], C = g.cc[b] - g.cc[a]; return G + C ? (G - C) / (G + C) : 0; };
         v.render(() => {
@@ -333,7 +333,7 @@ $$|N_d(p)|=\sum_{i=0}^{d}\binom ki\,3^i,\qquad |N_k(p)|=4^k.$$`,
             Q.text(p[i], xx + i * cw2 + cw2 / 2, 26, { size: 15, weight: 750, align: 'center' }); Q.text(o[i], xx + i * cw2 + cw2 / 2, 66, { size: 15, weight: 750, align: 'center' });
             if (bad) Q.text('≠', xx + i * cw2 + cw2 / 2, 46, { size: 13, weight: 800, color: 'red', align: 'center' });
           }
-          Q.text(`$d_H=${hd}$`.replace(/\$/g, ''), xx + k * cw2 + 18, 46, { size: 18, weight: 800, color: hd <= d ? 'green' : 'red' });
+          Q.text(`d_H = ${hd}`, xx + k * cw2 + 18, 46, { size: 18, weight: 800, color: hd <= d ? 'green' : 'red' });
           Q.text(hd <= d ? `inside the ${d}-neighbourhood` : `outside the ${d}-neighbourhood`, xx + k * cw2 + 18, 70, { size: 12, color: hd <= d ? 'green' : 'red' });
           renderState = { cnt, tot, k, d, p, o, hd };
         });
@@ -421,7 +421,7 @@ So $\mathbb E\,T_{ATG}=4^3=64$ but $\mathbb E\,T_{ATA}=4^1+4^3=68$: the self-ove
 $$S(x)=\sum_{j=1}^{L}w_{x_j}(j)=\log_2\frac{\Pr(x\mid\text{motif})}{\Pr(x\mid\text{background})},$$
 the log-likelihood ratio of "binding site" to "random". Windows (on either strand) scoring above a threshold are candidate sites.`,
       idea: String.raw`Under the model that the columns are independent, the probability that the motif generates $x$ is the product of column probabilities, and the same for the background; dividing and taking logs turns the product into a sum, which can be added up in one pass along a genome. The pseudocount keeps one unseen letter from vetoing a window with a score of $-\infty$.`,
-      caption: String.raw`The six cI-repressor operators of phage λ, found in the genome NC_001416.1 (three at OR, three at OL), are aligned in the top panel; switch the matrix between counts, profile and log-odds bits. The middle panel scores **every 17-bp window of the 2.8 kb λ region on both strands**: the six true operators are the peaks. By default each operator is scored with a profile built from the *other five* (leave-one-out), so the peaks are honest predictions, not memorization. Click or drag on the score track to inspect a window below; move the threshold to trade missed sites against false positives, and set the pseudocount to 0 to see zeros veto windows.`,
+      caption: String.raw`The six cI-repressor operators of phage λ, found in the genome NC_001416.1 (three at OR, three at OL), are aligned in the top panel; switch the matrix between counts, profile and log-odds bits. The middle panel scores **every 17-bp window of the 2.8 kb λ region on both strands**: five of the six true operators stand far above the rest. By default each operator is scored with a profile built from the *other five* (leave-one-out), so the peaks are honest predictions, not memorization; OR2, the most divergent operator, drops into the noise, which is exactly what a weak, low-affinity site looks like. Switch leave-one-out off and every site is rewarded for having been in the training set. Click or drag on the score track to inspect a window below; move the threshold to trade missed sites against false positives, and set the pseudocount to 0 to see zeros veto windows.`,
       deps: ['bioinf-1.1'],
       refs: ['Compeau–Pevzner ch. 2', 'Durbin ch. 1'],
       credit: 'Stormo et al., 1982; Staden, 1984',
@@ -433,7 +433,7 @@ the log-likelihood ratio of "binding site" to "random". Windows (on either stran
         const pcS = v.slider('pseudocount $\\beta$', 0, 2, 0.5, { step: 0.1 });
         const loo = v.toggle('leave the scored site out', true);
         const thS = v.slider('threshold (bits)', 0, 24, 12, { step: 0.5 });
-        const sA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, full: true, title: 'six operators aligned: counts, profile, log-odds' });
+        const sA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 322, full: true, title: 'six operators aligned: counts, profile, log-odds' });
         const sB = v.stage({ x: [FROM, FROM + SEG.length], y: [-10, 25], axes: 'box', gutter: true, height: 240, full: true, xlabel: 'phage λ coordinate (NC_001416.1)', ylabel: 'best score (bits)', title: 'score of every 17-bp window, both strands' });
         const sC = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 168, full: true });
         let sel = 37974 - FROM, memoKey = '', scan = null;
@@ -489,7 +489,7 @@ the log-likelihood ratio of "binding site" to "random". Windows (on either stran
             if (!isSite && !SITES.some((s) => Math.abs(s.start - (FROM + i)) < 9)) bestFP = Math.max(bestFP, o.s);
           });
           sB.vband(FROM + sel, FROM + sel + L, { color: 'gold', alpha: 0.35 });
-          const labelled = [['OL', 35591], ['OR', 37951]]; labelled.forEach(([t, p]) => sB.text(t === 'OL' ? 'OL operators' : 'OR operators', p + 20, ymin + 2.5, { size: 11.5, color: 'green', weight: 700, align: 'left' }));
+          sB.text('OL operators', 35591 + 40, ymax - 1.2, { size: 11.5, color: 'green', weight: 700, align: 'left' }); sB.text('OR operators', 37951 - 40, ymax - 1.2, { size: 11.5, color: 'green', weight: 700, align: 'right' });
           // ---- C: inspector
           const Q = pxer(v, sC), o = out[sel], w = SEG.slice(sel, sel + L), al = o.strand === '+' ? w : revcomp(w), Wc = Q.W, cw2 = Math.min(40, (Wc - 110) / L), xx = 100, base = 76;
           Q.text(`window ${commas(FROM + sel)}–${commas(FROM + sel + L - 1)}, ${o.strand === '+' ? 'forward' : 'reverse'} strand (${o.site >= 0 ? SITES[o.site].name + ', a known operator' : 'not a known operator'}): score ${fixed(o.s, 1)} bits`, 10, 10, { size: 12.5, weight: 700, color: o.s >= th ? 'green' : 'ink' });
@@ -501,7 +501,7 @@ the log-likelihood ratio of "binding site" to "random". Windows (on either stran
             Q.rect(xx + j * cw2 + 1, 130, cw2 - 2, 26, BCOL[b], b === cons[j] ? 0.5 : 0.18, 3, b === cons[j] ? null : 'red', 1.4); Q.text(b, xx + j * cw2 + cw2 / 2, 143.5, { size: 13, weight: 750, align: 'center' });
           }
           Q.line(xx, base, xx + L * cw2, base, 'muted', 1);
-          Q.text('log-odds of the letter', xx - 8, base - 20, { size: 10.5, color: 'muted', align: 'right' }); Q.text('window', xx - 8, 143.5, { size: 11, color: 'muted', align: 'right' });
+          Q.text('bits', xx - 8, base - 20, { size: 10.5, color: 'muted', align: 'right' }); Q.text('window', xx - 8, 143.5, { size: 11, color: 'muted', align: 'right' });
           renderState = { tp, fp, bestFP, th, thr: out.filter((q) => q.s >= th).length, minTrue: Math.min(...out.filter((q) => q.site >= 0).map((q) => q.s)) };
         });
         v.legend([['green', 'true operator window', { dot: true }], ['red', 'false positive', { dot: true }], ['orange', 'threshold'], ['gold', 'inspected window', { area: true }]]);
@@ -623,13 +623,13 @@ Median string is solved by trying all $4^k$ patterns: $O(4^k\,k\,t\,n)$ time —
           const span = Math.max(1, best.dmax - best.dmin), isMin = new Set(best.mins);
           for (let c = 0; c < N; c++) {
             let gx = 0, gy = 0; for (let i = 0; i < k; i++) { const dg = (c >> (2 * (k - 1 - i))) & 3; gx = gx * 2 + (dg >> 1); gy = gy * 2 + (dg & 1); }
-            const tt = Math.pow((best.dmax - dist[c]) / span, 2.2); P.c.fillStyle = heatCol(v, tt, 'green'); P.c.fillRect(x0 + gx * cs + (cs > 4 ? 0.5 : 0), y0 + gy * cs + (cs > 4 ? 0.5 : 0), cs - (cs > 4 ? 1 : 0), cs - (cs > 4 ? 1 : 0));
-            if (isMin.has(c)) P.rect(x0 + gx * cs - 1, y0 + gy * cs - 1, cs + 2, cs + 2, null, 1, 0, 'gold', 2);
+            const tt = Math.pow((best.dmax - dist[c]) / span, 3.5); P.c.fillStyle = heatCol(v, tt, 'green'); P.c.fillRect(x0 + gx * cs + (cs > 4 ? 0.5 : 0), y0 + gy * cs + (cs > 4 ? 0.5 : 0), cs - (cs > 4 ? 1 : 0), cs - (cs > 4 ? 1 : 0));
+            if (isMin.has(c)) { P.dot(x0 + gx * cs + cs / 2, y0 + gy * cs + cs / 2, Math.max(8, cs), null, 1, 'gold', 2.6); }
             if (c === sel) P.rect(x0 + gx * cs - 2, y0 + gy * cs - 2, cs + 4, cs + 4, null, 1, 0, 'ink', 2.4);
           }
           P.text('A', x0 + 8, y0 + 12, { size: 13, weight: 800 }); P.text('C', x0 + cs * side - 8, y0 + 12, { size: 13, weight: 800, align: 'right' }); P.text('G', x0 + 8, y0 + cs * side - 12, { size: 13, weight: 800 }); P.text('T', x0 + cs * side - 8, y0 + cs * side - 12, { size: 13, weight: 800, align: 'right' });
           // ---- right: alignments
-          const Q = pxer(v, sA), W = Q.W, pat = decode(sel, k), cw = Math.min(26, (W - 120) / n), xs = 54, rh = Math.min(48, (Q.H - 110) / t);
+          const Q = pxer(v, sA), W = Q.W, pat = decode(sel, k), cw = Math.min(26, (W - 120) / n), xs = 54, rh = Math.min(48, (Q.H - 190) / t);
           const wins = [];
           D.seqs.forEach((s, i) => {
             let b = k + 1, bi = 0; for (let p = 0; p + k <= s.length; p++) { const d = hamming(s.slice(p, p + k), pat); if (d < b) { b = d; bi = p; } }
@@ -643,7 +643,8 @@ Median string is solved by trying all $4^k$ patterns: $O(4^k\,k\,t\,n)$ time —
           });
           const motifs = wins.map((w, i) => D.seqs[i].slice(w.p, w.p + k)), sc = scoreMotifs(motifs, k), dd = wins.reduce((a, w) => a + w.d, 0), y = 14 + t * rh + 6;
           Q.text('pattern', 10, y + 14, { size: 12, color: 'muted' }); drawTiles(Q, pat, xs + 22, y, cw, 26, { bold: true, alpha: 0.5, fs: Math.min(14, cw * 0.75) });
-          Q.text('consensus of the windows', 10, y + 56, { size: 12, color: 'muted' }); drawTiles(Q, consensusOf(motifs, k), xs + 22 + 80, y + 42, cw, 26, { alpha: 0.4, fs: Math.min(13, cw * 0.7) });
+          Q.text('consensus', 10, y + 56, { size: 12, color: 'muted' }); drawTiles(Q, consensusOf(motifs, k), xs + 22, y + 42, cw, 26, { alpha: 0.4, fs: Math.min(13, cw * 0.7) });
+          { const Cn = countMatrix(motifs, k), yy = y + 84; Q.text('column disagreements', 10, yy + 12, { size: 12, color: 'muted' }); for (let j = 0; j < k; j++) { const dis = t - Math.max(Cn[0][j], Cn[1][j], Cn[2][j], Cn[3][j]); Q.rect(xs + 22 + j * cw + 2, yy, cw - 4, 24, dis ? 'red' : 'green', dis ? 0.25 + 0.2 * dis : 0.2, 3); Q.text(dis, xs + 22 + j * cw + cw / 2, yy + 12.5, { size: 13, weight: 800, align: 'center' }); } Q.text(`Score = ${sc}`, xs + 22 + k * cw + 14, yy + 12.5, { size: 14, weight: 800 }); Q.text(`Σ d_H(pattern, window) = ${dd}`, xs + 22 + k * cw + 14, y + 13, { size: 12, color: 'muted' }); }
           Q.text(`▲ planted copy (truth)`, W - 10, Q.H - 12, { size: 11, color: 'green', align: 'right' });
           renderState = { pat, dd, sc, k, t, n };
         });

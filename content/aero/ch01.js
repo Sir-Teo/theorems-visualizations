@@ -120,7 +120,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
         const bl = v.select('boundary layer', [{ value: 'lam', label: 'laminar' }, { value: 'tr', label: 'transition at 30 %' }, { value: 'turb', label: 'turbulent' }], 'tr');
         const sep = v.slider('upper surface separates at x/c =', 0.1, 1, 1, { step: 0.01 });
         const onP = v.toggle('pressure', true), onF = v.toggle('skin friction', true);
-        const A = v.stage({ x: [-0.6, 1.5], y: [-0.28, 0.55], equal: true, axes: false, height: 420, full: true });
+        const A = v.stage({ x: [-0.6, 1.5], y: [-0.2, 0.46], equal: true, axes: false, height: 340, full: true });
         const B = v.stage({ x: [0, 1], y: [-1.5, 4], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '−C_p (up = suction)', title: 'pressure coefficient' });
         const C = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '1000·c_f', title: 'skin friction' });
         let last = {};
@@ -141,7 +141,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
           const rot = (x, y) => [0.25 + (x - 0.25) * ca + y * sa, -(x - 0.25) * sa + y * ca], rv = (x, y) => [x * ca + y * sa, -x * sa + y * ca];
           // free stream
           for (const y of [-0.15, -0.05, 0.05, 0.15]) A.arrow(-0.55, y, -0.35, y, { color: 'muted', width: 1.2, head: 5 });
-          A.text('V∞', -0.45, 0.23, { color: 'muted', size: 11, align: 'center' });
+          A.text('V∞', -0.45, 0.2, { color: 'muted', size: 11, align: 'center' });
           A.poly(model.pts.map(([x, y]) => rot(x, y)), { fill: 'ink', fillAlpha: 0.22, color: 'ink', width: 1.6 });
           if (ks < N) { const [sx, sy] = rot(model.cx[ks], model.cy[ks]); A.dot(sx, sy, { r: 4.5, color: 'red' }); A.text('separation', sx + 0.02, sy + 0.07, { color: 'red', size: 10.5 }); }
           for (const i of pick(model)) {
@@ -152,7 +152,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
             }
             if (onF.value && cf[i] !== 0) { const len = Math.min(0.2, 14 * Math.abs(cf[i])), sgn = Math.sign(cf[i]); if (len > 0.004) A.arrow(px + nx * 0.006, py + ny * 0.006, px + nx * 0.006 + sgn * tx * len, py + ny * 0.006 + sgn * ty * len, { color: 'orange', width: 2, head: 4 }); }
           }
-          const Ls = 0.3 * F.cl, Ds = 20 * 0.3 * F.cd;
+          const Ls = 0.25 * F.cl, Ds = 20 * 0.25 * F.cd;
           A.arrow(0.25, 0, 0.25, Ls, { color: 'green', width: 3.2, head: 9 });
           if (Math.abs(F.cd) > 1e-4) A.arrow(0.25, 0, 0.25 + Ds, 0, { color: 'red', width: 3.2, head: 9 });
           A.tex(String.raw`L`, 0.25, Ls + (Ls >= 0 ? 0.045 : -0.045), { color: 'green', size: 15, align: 'center' });
@@ -426,7 +426,7 @@ $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **M
           A.dot(0, 0, { r: 7, color: 'ink' }); A.arrow(30, 0, 30 + Math.min(500, V * 0.55) , 0, { color: 'ink', width: 2.2, head: 8 });
           A.text(`M = ${fx(M, 2)}`, 40, 60, { color: 'ink', size: 14, weight: 650 });
           B.fn(aT, { color: 'accent', width: 2.4, domain: [180, 400] });
-          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'se' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'ne' });
+          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'se' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'se' });
           B.hline(V, { color: 'red', dash: true, width: 1.3 }); B.text('source speed V', 184, V + 18, { color: 'red', size: 10.5, align: 'left' });
           sync = true; hT.set(Tsl.value, aT(Tsl.value)); sync = false;
           C.curve((z) => [V / atmo(z * 1000).a, z], 0, 28, { n: 140, color: 'accent', width: 2.4 });
