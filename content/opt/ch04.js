@@ -326,7 +326,7 @@ This is a linear program (opt-4.4). Its optimal value $C(p)=\min_x p^{\mathsf T}
         const CAP = 8; // at most 800 g of any one food
         const opts = FOODS.map((f, i) => ({ value: String(i), label: f.n }));
         const sa = v.select('food 1 (horizontal)', opts, '0'), sb = v.select('food 2 (vertical)', opts, '2');
-        const pa = v.slider('price of food 1 (\\$ per 100 g)', 0.02, 1.0, FOODS[0].p, { step: 0.005 });
+        const pa = v.slider('price of food 1 (\\$ per 100 g)', 0.02, 1.0, 0.55, { step: 0.005 });
         const pb = v.slider('price of food 2 (\\$ per 100 g)', 0.02, 1.0, FOODS[2].p, { step: 0.005 });
         let last = ['0', '2'];
         const sync = () => { if (sa.value !== last[0]) { pa.set(FOODS[+sa.value].p); last[0] = sa.value; } if (sb.value !== last[1]) { pb.set(FOODS[+sb.value].p); last[1] = sb.value; } };
