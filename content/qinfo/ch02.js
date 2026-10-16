@@ -297,7 +297,7 @@ which is optimal over all quantum strategies (Tsirelson's bound).`,
       credit: String.raw`inequality: Clauser, Horne, Shimony and Holt, 1969; quantum bound: B. Tsirelson (Cirel'son), 1980; game form: Cleve, Høyer, Toner and Watrous, 2004`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/CHSH_inequality' },
       viz(v) {
-        const C = v.stage({ x: [-1.65, 1.65], y: [-1.65, 1.65], equal: true, axes: false, height: 300, weight: 1, title: 'measurement directions on the Bloch circle' });
+        const C = v.stage({ x: [-1.65, 1.65], y: [-1.65, 1.65], equal: true, axes: false, height: 300, weight: 1, title: 'measurement directions' });
         const W = v.stage({ x: [-0.1, 4.1], y: [-0.2, 1.22], axes: false, height: 300, weight: 1, title: 'winning chance for each question pair' });
         const K = v.stage({ x: [0, 17], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'the 16 deterministic strategies (sorted)', ylabel: 'winning probability', xticks: [], title: 'classical strategies' });
         const strat = v.select('players use', [{ value: 'q', label: 'Bell pair' }, { value: 'c', label: 'best classical' }], 'q');
@@ -324,7 +324,7 @@ which is optimal over all quantum strategies (Tsirelson's bound).`,
           C.polarGrid({ rings: [1], spokes: 8, rmax: 1.1, angles: false });
           for (const [h, col] of [[hA0, 'accent'], [hA1, 'teal'], [hB0, 'orange'], [hB1, 'pink']]) C.arrow(0, 0, h.x, h.y, { color: col, width: 2.4, head: 9 });
           drawGroups(v, W, [{ probs: [win[0][0], win[0][1], win[1][0], win[1][1]], freq: wins.map((w, i) => (plays[i] ? w / plays[i] : 0)), names: ['x=0,y=0', 'x=0,y=1', 'x=1,y=0', 'x=1,y=1'], colors: ['green', 'green', 'green', 'green'] }]);
-          W.hline(0.75, { color: 'red', dash: true, width: 1.3 }); W.text('classical bound 3/4', 4.05, 0.75, { size: 11, color: 'red', align: 'right', baseline: 'bottom', dy: -3 });
+          W.hline(0.75, { color: 'red', dash: true, width: 1.3 }); W.text('dashed: classical bound 3/4', 2, 1.1, { size: 11.5, color: 'red', align: 'center' });
           K.bars(cls.map((c) => c.w), { x0: 1, color: 'blue' });
           K.hline(0.75, { color: 'red', dash: true, width: 1.3 }); K.hline(Math.cos(Math.PI / 8) ** 2, { color: 'green', width: 1.8 });
           K.text('quantum 0.854', 0.4, Math.cos(Math.PI / 8) ** 2, { size: 11, color: 'green', baseline: 'bottom', dy: -3 });
@@ -343,7 +343,7 @@ which is optimal over all quantum strategies (Tsirelson's bound).`,
 $$P(a_0{=}1,b_0{=}1)=0,\qquad P(a_1{=}1,b_0{=}0)=0,\qquad P(a_0{=}0,b_1{=}1)=0 .$$
 In any local hidden-variable model these force $P(a_1{=}1,b_1{=}1)=0$ as well. But there are pure two-qubit states and measurement settings obeying the three conditions for which $P(a_1{=}1,b_1{=}1)>0$; the largest possible value is $\tfrac{5\sqrt5-11}{2}\approx0.0902$, reached by a non-maximally entangled state. Maximally entangled states never show the effect.`,
       idea: String.raw`Suppose a local model assigns every run values for all four observables. If $a_1=b_1=1$ then the second condition forces $b_0=1$ and the third forces $a_0=1$, contradicting the first. So the event can never occur, a logical contradiction with no inequality or averaging needed (unlike Bell's, qm-14.7 and qm-14.2). In quantum mechanics each zero is an orthogonality $\langle a|\langle b|\Psi\rangle=0$; given $|\Psi\rangle$ and Alice's first axis, the other three axes are determined, and the remaining probability is generically non-zero.`,
-      caption: String.raw`Choose the state's Schmidt angle $\varepsilon$ (entanglement) and Alice's first axis $\varphi$; the other three axes are solved so that the three conditions hold exactly (settings panel, real axes drawn as lines). The bars show the four joint probabilities: three zeros and one positive. *Optimise* finds the best $\varphi$. The right-hand curve shows the best achievable probability for each $\varepsilon$: zero for product states and for $\varepsilon=\pi/4$ (maximal entanglement), peaking at about $9.02\%$.`,
+      caption: String.raw`Choose the state's Schmidt angle $\varepsilon$ (entanglement) and Alice's first axis $\varphi$; the other three axes are solved so that the three conditions hold exactly (left panel: real axes drawn as arrows). The bars show the four joint probabilities: three zeros and one positive. *Optimise* finds the best $\varphi$. The right-hand curve shows the best achievable probability for each $\varepsilon$: zero for product states and for $\varepsilon=\pi/4$ (maximal entanglement), peaking at about $9.02\%$.`,
       deps: ['qm-14.7', 'qm-14.2'],
       refs: ['Nielsen–Chuang §2.6'],
       tags: ['nonlocality', 'Bell theorem', 'entanglement'],
@@ -351,12 +351,12 @@ In any local hidden-variable model these force $P(a_1{=}1,b_1{=}1)=0$ as well. B
       credit: String.raw`L. Hardy, 1993 (Phys. Rev. Lett. 71, 1665)`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hardy%27s_paradox' },
       viz(v) {
-        const eps = v.slider('state $\\varepsilon$ ($\\cos\\varepsilon|00\\rangle+\\sin\\varepsilon|11\\rangle$)', 0.02, Math.PI / 2 - 0.02, 0.435, { step: 0.005 });
+        const eps = v.slider('state angle $\\varepsilon$', 0.02, Math.PI / 2 - 0.02, 0.435, { step: 0.005 });
         const phi = v.slider('Alice’s first axis $\\varphi$', 0, Math.PI, 2.17, { step: 0.005 });
-        const Sx = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 290, weight: 0.85, title: 'the four measurement axes' });
-        const Bx = v.stage({ x: [0, 0.105], y: [0, 4.6], axes: false, height: 290, weight: 1.15, title: 'joint probabilities' });
-        const Pf = v.stage({ x: [0, Math.PI], y: [0, 0.105], axes: 'box', gutter: true, height: 290, weight: 0.9, xlabel: 'Alice’s first axis $\\varphi$', ylabel: '$P(a_1{=}1,b_1{=}1)$', title: 'best over the other axes: fixed $\\varepsilon$', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']] });
-        const Pe = v.stage({ x: [0, Math.PI / 2], y: [0, 0.105], axes: 'box', gutter: true, height: 290, weight: 0.9, xlabel: 'state $\\varepsilon$', ylabel: 'largest $P(a_1{=}1,b_1{=}1)$', title: 'versus entanglement', xticks: [[0, '0'], [Math.PI / 4, 'π/4'], [Math.PI / 2, 'π/2']] });
+        const Sx = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 290, weight: 0.7, title: 'the four measurement axes' });
+        const Bx = v.stage({ x: [0, 0.125], y: [-0.1, 4.95], axes: false, height: 290, weight: 1, title: 'joint probabilities' });
+        const Pf = v.stage({ x: [0, Math.PI], y: [0, 0.105], axes: 'box', gutter: true, height: 290, weight: 0.9, xlabel: 'Alice’s first axis $\\varphi$', ylabel: '$P(a_1{=}1,b_1{=}1)$', title: 'as Alice’s first axis turns', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']] });
+        const Pe = v.stage({ x: [0, Math.PI / 2], y: [0, 0.105], axes: 'box', gutter: true, height: 290, weight: 0.9, xlabel: 'state $\\varepsilon$', ylabel: 'largest $P(a_1{=}1,b_1{=}1)$', title: 'the best case versus entanglement', xticks: [[0, '0'], [Math.PI / 4, 'π/4'], [Math.PI / 2, 'π/2']] });
         const perp = (u) => [-u[1], u[0]], dt = (a, b) => a[0] * b[0] + a[1] * b[1], nz = (u) => { const L = Math.hypot(u[0], u[1]) || 1; return [u[0] / L, u[1] / L]; };
         function solve(e, f) {
           const c = Math.cos(e), s = Math.sin(e), M = (u) => [c * u[0], s * u[1]], a0 = [Math.cos(f), Math.sin(f)], a0p = perp(a0);
@@ -375,7 +375,7 @@ In any local hidden-variable model these force $P(a_1{=}1,b_1{=}1)=0$ as well. B
           rows.forEach(([lab, note, k]) => {
             const y = 4 - k - 0.2, p = sol.p[k], col = k === 3 ? 'red' : 'green';
             Bx.text(`${lab}   (${note})`, 0.001, y + 0.62, { size: 11.5, color: k === 3 ? 'red' : 'muted', baseline: 'bottom' });
-            Bx.rect(0, y, 0.1, y + 0.4, { fill: 'grid', fillAlpha: 0.2, color: 'grid', width: 0.6 });
+            Bx.rect(0, y, 0.105, y + 0.4, { fill: 'grid', fillAlpha: 0.2, color: 'grid', width: 0.6 });
             if (p > 1e-9) Bx.rect(0, y, p, y + 0.4, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
             Bx.text(p < 1e-9 ? '0' : `${fix(v, p * 100, 2)}%`, Math.max(p, 0) + 0.002, y + 0.2, { size: 12, color: 'ink', baseline: 'middle' });
           });
@@ -438,11 +438,11 @@ Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B
           const pts = sample(), cu = taus(path(th.value));
           let worst = -1, sat = 0; for (const p of pts) { worst = Math.max(worst, p.ab + p.ac - p.a); if (Math.abs(p.ab + p.ac - p.a) < 1e-6) sat++; }
           stats = { n: pts.length, worst, sat, cu };
-          T1.line(0, 0, 1, 1, { color: 'green', width: 1.6, dash: true }); T1.text('equality', 0.62, 0.58, { size: 11, color: 'green', align: 'right', baseline: 'top', dy: 6, dx: -4 });
+          T1.line(0, 0, 1, 1, { color: 'green', width: 1.6, dash: true }); T1.text('equality line', 0.02, 0.82, { size: 11, color: 'green', align: 'left', plate: true });
           for (const p of pts) T1.dot(p.a, p.ab + p.ac, { color: p.w ? 'orange' : 'accent', r: 2.6 });
           T1.path(ptsPath.map((p) => [p.a, p.ab + p.ac]), { color: 'gold', width: 1.4, alpha: 0.7 });
           T1.dot(cu.a, cu.ab + cu.ac, { color: 'gold', r: 6.5, label: 'GHZ→W' , labelPos: 'se' });
-          T2.line(0, 1, 1, 0, { color: 'red', width: 1.4, dash: true }); T2.text('$\\tau_{AB}+\\tau_{AC}=1$', 0.5, 0.5, { size: 11, color: 'red', dx: 8, dy: 8, align: 'left' });
+          T2.line(0, 1, 1, 0, { color: 'red', width: 1.4, dash: true }); T2.text('$\\tau_{AB}+\\tau_{AC}=1$', 0.62, 0.7, { size: 11, color: 'red', align: 'left', plate: true });
           for (const p of pts) T2.dot(p.ab, p.ac, { color: p.w ? 'orange' : 'accent', r: 2.6 });
           T2.path(ptsPath.map((p) => [p.ab, p.ac]), { color: 'gold', width: 1.4, alpha: 0.7 });
           T2.dot(cu.ab, cu.ac, { color: 'gold', r: 6.5 });
@@ -451,7 +451,7 @@ Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B
           T2.dot(0, 0, { color: 'muted', r: 4, hollow: true, label: 'GHZ', labelPos: 'ne' });
         });
         v.legend([['accent', 'Haar random'], ['orange', 'W class'], ['gold', 'GHZ → W path']]);
-        v.readout(() => `${stats.n} states: largest $\\tau_{AB}+\\tau_{AC}-\\tau_{A(BC)}=${v.sci(Math.max(stats.worst, 1e-16), 2)}$ (never positive: the bound holds), ${stats.sat} on the equality line\ngold state: $\\tau_{AB}=${fix(v, stats.cu.ab)},\\ \\tau_{AC}=${fix(v, stats.cu.ac)},\\ \\tau_{A(BC)}=${fix(v, stats.cu.a)}$, 3-tangle $=${fix(v, stats.cu.a - stats.cu.ab - stats.cu.ac)}$`);
+        v.readout(() => `${stats.n} states: smallest gap $\\tau_{A(BC)}-\\tau_{AB}-\\tau_{AC}=${v.sci(Math.max(-stats.worst, 1e-16), 2)}$ (never negative beyond rounding: the bound holds), ${stats.sat} on the equality line\ngold state: $\\tau_{AB}=${fix(v, stats.cu.ab)},\\ \\tau_{AC}=${fix(v, stats.cu.ac)},\\ \\tau_{A(BC)}=${fix(v, stats.cu.a)}$, 3-tangle $=${fix(v, stats.cu.a - stats.cu.ab - stats.cu.ac)}$`);
       },
     },
   ],

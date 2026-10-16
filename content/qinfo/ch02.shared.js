@@ -50,8 +50,10 @@ export function concurrence(v, rho) {
   const YY = [[0, 0, 0, -1], [0, 0, 1, 0], [0, 1, 0, 0], [-1, 0, 0, 0]];
   const conj = rho.map((r) => r.map(cconj));
   const rt = rho.map((_, i) => rho.map((__, j) => { let s = [0, 0]; for (let k = 0; k < 4; k++) for (let l = 0; l < 4; l++) { const y1 = YY[i][k], y2 = YY[l][j]; if (y1 && y2) s = cadd(s, cscale(conj[k][l], y1 * y2)); } return s; }));
-  const R = rho.map((r, i) => r.map((_, j) => { let s = [0, 0]; for (let k = 0; k < 4; k++) s = cadd(s, cmul(rho[i][k], rt[k][j])); return s; }));
-  const lam = v.M.eigC(R, { vectors: false }).values.map((z) => Math.sqrt(Math.max(0, z.re))).sort((a, b) => b - a);
+  // λ_i² are the eigenvalues of the Hermitian matrix √ρ ρ̃ √ρ (stable even when ρ has repeated zero eigenvalues)
+  const E = v.M.eigH(rho), sq = rho.map((_, i) => rho.map((__, j) => { let z = [0, 0]; for (let k = 0; k < 4; k++) { const w = Math.sqrt(Math.max(0, E.values[k])), a = E.vectors[k]; z = cadd(z, cscale(cmul([a.re[i], a.im[i]], cconj([a.re[j], a.im[j]])), w)); } return z; }));
+  const mm = (A, B) => A.map((r, i) => r.map((_, j) => { let z = [0, 0]; for (let k = 0; k < 4; k++) z = cadd(z, cmul(A[i][k], B[k][j])); return z; }));
+  const Hm = mm(sq, mm(rt, sq)), lam = v.M.eigH(Hm).values.map((x) => Math.sqrt(Math.max(0, x))).sort((a, b) => b - a);
   return Math.max(0, lam[0] - lam[1] - lam[2] - lam[3]);
 }
 /** Haar-random pure state of N levels from a seeded generator. */

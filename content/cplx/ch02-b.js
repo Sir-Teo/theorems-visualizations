@@ -159,7 +159,7 @@ function selfTree(n, cl) {
     sat[id] = models.some((m) => m.startsWith(pre));
     const out = []; let dead = false;
     for (const c of cl) { let sat1 = false; const rest = []; for (const l of c) { const x = Math.abs(l); if (x <= d) { if ((bits[x - 1] === 1) === (l > 0)) { sat1 = true; break; } } else rest.push(l); } if (sat1) continue; if (!rest.length) { dead = true; break; } out.push(rest.sort((a, b) => a - b).join(' ')); }
-    canon[id] = dead ? 'FALSE' : out.sort().join(' | ') || 'TRUE';
+    canon[id] = dead ? `FALSE@${pre}` : out.sort().join(' | ') || `TRUE@${pre}`;
   }
   const hash = canon.map((c) => { if (!c) return 0; let h = 2166136261; for (let i = 0; i < c.length; i++) { h ^= c.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; });
   return { n, N, canon, sat, depth, hash, models: models.length };
@@ -179,6 +179,28 @@ function berman(T, p) {
   })(1);
   return { status, visited, win, distinct: failed.size };
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Berman–Hartmanis: from two length-increasing, polynomial-time invertible maps f: A -> B and g: B -> A build the
+// polynomial-time computable bijection h: A -> B by following chains backwards (the Schroeder–Bernstein construction).
+const PADS = [
+  { name: 'f(x) = 0x,  g(y) = 1y', f: (x) => `0${x}`, finv: (y) => (y.length > 1 && y[0] === '0' ? y.slice(1) : null), g: (y) => `1${y}`, ginv: (x) => (x.length > 1 && x[0] === '1' ? x.slice(1) : null) },
+  { name: 'f(x) = x0,  g(y) = y1', f: (x) => `${x}0`, finv: (y) => (y.length > 1 && y.endsWith('0') ? y.slice(0, -1) : null), g: (y) => `${y}1`, ginv: (x) => (x.length > 1 && x.endsWith('1') ? x.slice(0, -1) : null) },
+  { name: 'f(x) = xx,  g(y) = y0', f: (x) => x + x, finv: (y) => { const h = y.length / 2; return y.length > 1 && y.length % 2 === 0 && y.slice(0, h) === y.slice(h) ? y.slice(0, h) : null; }, g: (y) => `${y}0`, ginv: (x) => (x.length > 1 && x.endsWith('0') ? x.slice(0, -1) : null) },
+];
+/** Trace x in A backwards. Returns {origin: 'A'|'B', back: [strings from x back to the origin]}. */
+function traceA(P, x) {
+  const back = [x];
+  for (;;) { const y = P.ginv(x); if (y === null) return { origin: 'A', back }; back.push(y); const x2 = P.finv(y); if (x2 === null) return { origin: 'B', back }; back.push(x2); x = x2; }
+}
+function traceB(P, y) {
+  const back = [y];
+  for (;;) { const x = P.finv(y); if (x === null) return { origin: 'B', back }; back.push(x); const y2 = P.ginv(x); if (y2 === null) return { origin: 'A', back }; back.push(y2); y = y2; }
+}
+const hMap = (P, x) => (traceA(P, x).origin === 'A' ? P.f(x) : P.ginv(x));
+const hInv = (P, y) => (traceB(P, y).origin === 'A' ? P.finv(y) : P.g(y));
+const allStrings = (L) => { const out = []; for (let l = 1; l <= L; l++) for (let m = 0; m < (1 << l); m++) out.push(m.toString(2).padStart(l, '0')); return out; };
+const srank = (s) => (1 << s.length) - 1 + parseInt(s, 2);
 
 export default {
   collection: 'cplx',
@@ -550,7 +572,7 @@ export default {
       name: 'Mahaney’s theorem: no sparse NP-complete sets unless P = NP',
       statement: String.raw`A set $S\subseteq\{0,1\}^*$ is **sparse** if it contains at most polynomially many strings of each length, $|S\cap\{0,1\}^{n}|\le p(n)$. **Mahaney's theorem:** if some sparse set is NP-complete (under polynomial-time many-one reductions), then P = NP. Equivalently, unless P = NP, every NP-complete language is *dense*: no polynomial-time reduction can squeeze SAT into a polynomially thin set. (Berman, 1978, had proved the unary — "tally" — case first.)`,
       idea: String.raw`Suppose $f$ reduces SAT to a sparse $S$. Search for a satisfying assignment of $\varphi$ by the *self-reduction* (toc-13.14): fix $x_1,x_2,\dots$ one at a time, which yields a binary tree of $2^{n+1}-1$ restricted formulas, and $\varphi$ is satisfiable iff some leaf is. Because $f$ is a reduction, two nodes with the **same image** $f(\varphi_u)=f(\varphi_v)$ are equally satisfiable. A depth-first search that remembers the images of the subtrees it has already refuted can therefore skip any node whose image repeats. All images have polynomial length, and only polynomially many of them can lie in $S$ — but the images of unsatisfiable nodes lie *outside* $S$, which is what the ordered ("left-set") argument of Ogiwara and Watanabe controls in the general sparse case (not drawn here; the picture shows the tally-set case of Berman, where the count is immediate: at most $q(n)$ distinct images exist, so at most $n\,q(n)$ nodes are expanded).`,
-      caption: String.raw`**Illustrative — a hypothetical reduction.** Nobody knows such an $f$ (it would give P = NP), so the picture *simulates* one: every node of the self-reduction tree of a real random 3-CNF is mapped to an image drawn from a pool of $p$ possible values for satisfiable and $p$ for unsatisfiable restrictions, equal restricted formulas getting equal images. The search (always left child first) is **real**: blue nodes are expanded, orange nodes are cut because their image is already known to be fruitless, faint nodes are never reached, green marks the satisfying leaf found. Drag the pool size $p$: with $p$ small only about $n\cdot p$ nodes are ever expanded; as $p$ grows towards the number of distinct formulas — a *dense* target — the pruning disappears and the full tree $2^{n+1}-1$ is explored. The right panel plots expanded nodes against $p$.`,
+      caption: String.raw`**Illustrative — a hypothetical reduction.** Nobody knows such an $f$ (it would give P = NP), so the picture *simulates* one: every node of the self-reduction tree of a real random 3-CNF is mapped to an image drawn from a pool of $p$ possible values for satisfiable and $p$ for unsatisfiable restrictions, equal restricted formulas getting equal images. The search (always left child first) is **real**: blue nodes are expanded, orange nodes are cut because their image is already known to be fruitless, faint nodes are never reached, green marks the satisfying leaf found. Drag the pool size $p$: with $p$ small only about $n\cdot p$ nodes are ever expanded; as $p$ grows towards the number of distinct formulas — a *dense* target — the pruning disappears (only repeats of *identical* restricted formulas remain, which any function must map to the same image) and nearly the whole tree of $2^{n+1}-1$ nodes is explored. The right panel plots expanded nodes against $p$.`,
       deps: ['toc-13.14', 'toc-13.2'],
       refs: ['Arora–Barak ch. 2'],
       credit: 'Mahaney, 1980–82 (Berman, 1978, for tally sets; Ogiwara & Watanabe, 1991, for the left-set proof)',
@@ -567,7 +589,7 @@ export default {
         const make = () => {
           const n = nS.value, k = `${n}:${kind.value}:${seed}`; if (k === key) return; key = k;
           for (let t = 0; t < 400; t++) {
-            const r = v.rng(seed * 1000 + t + n), m = Math.round((kind.value === 'sat' ? 3.4 : 6.5) * n), cl = []; // clause/variable ratio
+            const r = v.rng(seed * 1000 + t + n), m = Math.round((kind.value === 'sat' ? 3.4 : 5.2) * n), cl = []; // clause/variable ratio
             for (let j = 0; j < m; j++) { const vs = []; while (vs.length < 3) { const x = 1 + Math.floor(r() * n); if (!vs.includes(x)) vs.push(x); } cl.push(vs.map((x) => (r() < 0.5 ? x : -x))); }
             const sat = allModels(n, cl, 1).length > 0; if ((kind.value === 'sat') === sat) { F = { n, cl }; break; }
           }
@@ -598,6 +620,57 @@ export default {
           const R = T.last, n = F.n, ans = R.win !== null, truth = T.models > 0, p = Math.round(pS.value);
           return `$n=${n}$, pool $p=${p}$: expanded **${R.visited}** of ${T.N - 1} nodes (${(100 * R.visited / (T.N - 1)).toFixed(0)}%), cut **${R.status.filter((x) => x === 'pruned').length}** subtrees, distinct fruitless images **${R.distinct}** (bound $\\le$ ${p} here) · answer: **${ans ? 'satisfiable' : 'unsatisfiable'}** — ${ans === truth ? 'matches brute force ✓' : '**WRONG**'}`;
         });
+      },
+    },
+    // ------------------------------------------------------------------ 2.13
+    {
+      num: '2.13',
+      kind: 'Hypothesis',
+      name: 'Berman–Hartmanis isomorphism conjecture',
+      statement: String.raw`**Conjecture (Berman–Hartmanis, 1977):** any two NP-complete languages are *polynomial-time isomorphic*: for NP-complete $A,B$ there is a bijection $h:\{0,1\}^*\to\{0,1\}^*$ with $x\in A\iff h(x)\in B$ such that both $h$ and $h^{-1}$ are computable in polynomial time. **Theorem (the supporting half):** if $A\le_p B$ and $B\le_p A$ by reductions $f,g$ that are injective, length-increasing and polynomial-time invertible — which holds for every known natural NP-complete set, because *padding* can always be added — then $A$ and $B$ are $p$-isomorphic. All known natural NP-complete problems are $p$-isomorphic to SAT; the conjecture asserts it for all of them. It would imply P $\ne$ NP (if P = NP, a one-element set would be NP-complete and could not be isomorphic to an infinite one) and that no NP-complete set is sparse, since a $p$-isomorphism preserves density up to a polynomial.`,
+      idea: String.raw`The theorem is the Schröder–Bernstein argument made efficient. Draw $x\in A$ — $f(x)\in B$ — $g(f(x))\in A$ … as a path; because $f,g$ are injective these paths never branch, and because they increase length they never cycle. Every element lies on a chain whose backward end is either in $A$ (not in the range of $g$) or in $B$ (not in the range of $f$). Define $h(x)=f(x)$ on chains starting in $A$ and $h(x)=g^{-1}(x)$ on chains starting in $B$. Following a chain *backwards* shortens the string at every step and invertibility is polynomial, so $h$ is computable in polynomial time; the same rule runs in reverse for $h^{-1}$. The conjecture itself is open; its truth would mean all NP-complete problems are the same problem in different notation.`,
+      caption: String.raw`**Illustrative: the toy pairs $f,g$ below are padding-style maps on bit strings, not actual reductions between SAT and CLIQUE.** Choose a pair of maps and a string $x\in A$ (slider). The top picture is the chain through $x$: blue arrows are $f$ (from the row $A$ to the row $B$), orange arrows are $g$ (back up); the chain's backward end decides which map $h$ uses, and $h(x)$ is the neighbouring node ringed in green. The lower panel plots the rank of $x$ against the rank of $h(x)$ for every string up to length 6 (log scale on the vertical axis): blue points are sent by $f$, orange by $g^{-1}$. The readout verifies by brute force that $h$ is injective and that $h^{-1}(h(x))=x$ for all strings up to length 8.`,
+      deps: ['cplx-2.12'],
+      refs: ['Arora–Barak ch. 2'],
+      credit: 'Berman & Hartmanis, 1977',
+      tags: ['isomorphism', 'padding', 'conjecture'],
+      viz(v) {
+        const psel = v.select('maps', PADS.map((p, i) => ({ value: i, label: p.name })), 0);
+        const A = allStrings(6);
+        const xS = v.slider('string $x\\in A$ (shortlex index)', 0, A.length - 1, 22, { int: true });
+        const s1 = v.stage({ x: [0, 10], y: [0, 4], axes: false, height: 240, full: true, title: 'the chain through $x$' });
+        const s2 = v.stage({ x: [0, 130], y: [1, 600], ylog: true, axes: 'box', gutter: true, height: 260, full: true, xlabel: 'rank of $x$ in $A$ (shortlex)', ylabel: 'rank of $h(x)$', title: '$h$ on all strings of length ≤ 6' });
+        let ver = {};
+        v.render(() => {
+          const P = PADS[psel.value], x = A[xS.value], T = traceA(P, x), org = T.origin;
+          // chain nodes from the origin going forward until length > 11
+          const start = T.back[T.back.length - 1], chain = [start]; let side = org, cur = start;
+          for (let k = 0; k < 14; k++) { const nx = side === 'A' ? P.f(cur) : P.g(cur); if (nx.length > 12) break; chain.push(nx); cur = nx; side = side === 'A' ? 'B' : 'A'; }
+          const sides = chain.map((_, i) => (i % 2 === 0 ? org : org === 'A' ? 'B' : 'A'));
+          const n = chain.length, dx = 8.8 / Math.max(n, 4);
+          s1.text('A', 0.15, 3.1, { size: 16, weight: 800, color: 'accent', halo: false }); s1.text('B', 0.15, 1.0, { size: 16, weight: 800, color: 'orange', halo: false });
+          const px = (i) => 0.9 + i * dx + dx / 2, py = (sd) => (sd === 'A' ? 3.1 : 1.0);
+          for (let i = 0; i + 1 < n; i++) { const fwd = sides[i] === 'A'; s1.arrow(px(i), py(sides[i]) + (fwd ? -0.28 : 0.28), px(i + 1), py(sides[i + 1]) + (fwd ? 0.28 : -0.28), { color: fwd ? 'blue' : 'orange', width: 2.2 }); s1.text(fwd ? 'f' : 'g', (px(i) + px(i + 1)) / 2 + 0.08, 2.05, { size: 12, weight: 700, color: fwd ? 'blue' : 'orange', halo: false }); }
+          const xi = chain.indexOf(x), hx = hMap(P, x), hi = chain.indexOf(hx);
+          chain.forEach((c, i) => {
+            const w = Math.max(0.5, Math.min(dx * 0.92, 0.11 * c.length + 0.4)) / 2, isx = i === xi, ish = i === hi;
+            s1.rect(px(i) - w, py(sides[i]) - 0.28, px(i) + w, py(sides[i]) + 0.28, { fill: sides[i] === 'A' ? 'accent' : 'orange', fillAlpha: 0.18, color: ish ? 'green' : isx ? 'gold' : sides[i] === 'A' ? 'accent' : 'orange', width: isx || ish ? 3.5 : 1.2, radius: 4 });
+            s1.text(c, px(i), py(sides[i]), { align: 'center', baseline: 'middle', size: c.length > 8 ? 9.5 : 11.5, weight: 600, halo: false });
+          });
+          s1.corner(`chain starts in ${org}: h(x) = ${org === 'A' ? 'f(x)' : 'g⁻¹(x)'}`, 'br', { color: 'muted' });
+          // ranks plot
+          const pts = A.map((a) => { const hh = hMap(P, a); return { r: srank(a), q: srank(hh), f: traceA(P, a).origin === 'A' }; });
+          const fp = pts.filter((p) => p.f), gp = pts.filter((p) => !p.f);
+          s2.dots(fp.map((p) => [p.r, Math.max(1, p.q)]), { color: 'blue', r: 3 }); s2.dots(gp.map((p) => [p.r, Math.max(1, p.q)]), { color: 'orange', r: 3 });
+          s2.dot(srank(x), Math.max(1, srank(hx)), { r: 8, color: 'gold', hollow: true });
+          // verification
+          const M = allStrings(8), imgs = new Set(); let inj = true, rt = true;
+          for (const a of M) { const h2 = hMap(P, a); if (imgs.has(h2)) inj = false; imgs.add(h2); if (hInv(P, h2) !== a) rt = false; }
+          let rt2 = true; for (const b of M) { const a = hInv(P, b); if (a === null || hMap(P, a) !== b) rt2 = false; }
+          ver = { x, hx, org, depth: T.back.length - 1, inj, rt, rt2, cnt: M.length, fcount: pts.filter((p) => p.f).length, gcount: pts.filter((p) => !p.f).length };
+        });
+        v.legend([['blue', 'f: A → B'], ['orange', 'g: B → A'], ['gold', 'selected $x$', { dot: true }], ['green', '$h(x)$', { dot: true }]]);
+        v.readout(() => `$x=${ver.x}$ → chain origin in **${ver.org}**, found by **${ver.depth}** backward step${ver.depth === 1 ? '' : 's'} (≤ |x| = ${ver.x.length}, so $h$ is polynomial) → $h(x)=${ver.hx}$ · among the 126 strings of length ≤ 6, ${ver.fcount} use $f$ and ${ver.gcount} use $g^{-1}$\nBrute-force check on all ${ver.cnt} strings of length ≤ 8: $h$ injective **${ver.inj ? 'yes' : 'NO'}**, $h^{-1}(h(x))=x$ **${ver.rt ? 'yes' : 'NO'}**, $h(h^{-1}(y))=y$ **${ver.rt2 ? 'yes' : 'NO'}**.`);
       },
     },
   ],
