@@ -83,7 +83,7 @@ Either way each of the three candidates wins under one of the three agendas. If 
             rr(c, ox + 5, 5, cw - 10, H - 10, 10); c.fillStyle = v.color(good ? 'gold' : 'muted', good ? 0.13 : 0.04); c.fill();
             if (good) { c.strokeStyle = v.color('gold'); c.lineWidth = 2; c.stroke(); }
             txt(v, c, `agenda ${i + 1}`, ox + 16, 22, { size: 11.5, weight: 700, align: 'left' });
-            if (good) txt(v, c, 'the chair picks this', ox + cw - 14, 22, { size: 10.5, weight: 700, color: 'gold', align: 'right' });
+            if (good) txt(v, c, 'chair’s pick', ox + cw - 14, 22, { size: 10.5, weight: 700, color: 'gold', align: 'right' });
             const xs = [ox + cw * 0.2, ox + cw * 0.45, ox + cw * 0.8], n1 = (xs[0] + xs[1]) / 2, n2 = (n1 + xs[2]) / 2;
             const a1 = k >= 1 ? (k === 1 ? tw : 1) : 0, a2 = k >= 2 ? (k === 2 ? tw : 1) : 0;
             const col1 = k >= 1 ? 'ink' : 'faint', col2 = k >= 2 ? 'ink' : 'faint';
@@ -111,6 +111,305 @@ Either way each of the three candidates wins under one of the three agendas. If 
           const R2 = AG.map((ag) => run(N, ag, mode.value === 'sin' ? 'soph' : 'sin'));
           return `${mode.value === 'sin' ? 'Sincere' : 'Sophisticated'} voting: the three agendas elect ${R.map((r) => `**${L(r.fin)}**`).join(', ')}; under ${other} voting they would elect ${R2.map((r) => L(r.fin)).join(', ')}. ` +
             (ok.length ? `To get ${L(f)}, the chair schedules ${ok.join(' or ')}.` : `No agenda elects ${L(f)}: it is beaten by the Condorcet winner, whom every agenda elects.`);
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 2.9
+    {
+      num: '2.9',
+      kind: 'Paradox',
+      name: 'The chair’s paradox',
+      statement: String.raw`Three voters choose one of $A, B, C$ by plurality; if all three vote differently, the chair’s vote decides. Their preferences form a cycle: the chair ranks $A \succ B \succ C$, voter 2 $B \succ C \succ A$, voter 3 $C \succ A \succ B$. The chair seems to hold the most power — with sincere votes her favourite $A$ wins. But if all three vote strategically, eliminating weakly dominated strategies round by round, the only surviving outcome is $C$: the chair’s **last** choice. Having the tie-breaking vote hurts her.`,
+      idea: String.raw`Treat the vote as a game (game-1.7). For the chair, voting $A$ weakly dominates everything else, since her vote wins every three-way split. Voters 2 and 3 never gain by voting for their last choices ($A$ for voter 2, $B$ for voter 3). Once the chair is known to vote $A$, voter 2 compares her remaining options: voting $B$ produces a three-way split that the chair wins with $A$, while voting $C$ can produce $C$. So $C$ weakly dominates $B$ for voter 2. Voter 3 sees it too and votes $C$, and $C$ wins two votes to one. The chair’s strength is common knowledge, so the other two coordinate against her on the candidate she likes least — the one each of them ranks above $A$ or prefers outright.`,
+      caption: String.raw`Each table is one choice of the chair; rows are voter 2’s vote, columns voter 3’s, and each cell shows who wins. Step through the rounds of elimination: dominated votes are struck out and their rows, columns or tables fade. In the last step one cell survives, ringed gold. Click a voter’s card to change their ranking and the elimination is recomputed; with a Condorcet winner the paradox disappears.`,
+      deps: ['polsci-1.2', 'game-1.7'],
+      see: ['polsci-2.8'],
+      refs: ['T&P ch. 3', 'Brams, Paradoxes in Politics (1976)'],
+      tags: ['strategic voting', 'dominated strategies', 'power'],
+      credit: 'Farquharson (1969); named by Brams (1976)',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Chair%27s_paradox' },
+      viz(v) {
+        const Vs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 250, title: 'the voters · click to change a ranking' });
+        const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 520, weight: 2, title: 'who wins · rows: voter 2’s vote, columns: voter 3’s vote' });
+        const R6 = perms(3), pref = [[0, 1, 2], [1, 2, 0], [2, 0, 1]];
+        const outcome = (s) => { for (let x = 0; x < 3; x++) if (s.filter((y) => y === x).length >= 2) return x; return s[0]; };
+        const u = (i, x) => 2 - pref[i].indexOf(x);
+        /** Rounds of simultaneous elimination of weakly dominated votes. */
+        function rounds() {
+          let S = [[0, 1, 2], [0, 1, 2], [0, 1, 2]]; const out = [{ S: S.map((a) => a.slice()), gone: [[], [], []] }];
+          for (let it = 0; it < 6; it++) {
+            const gone = [[], [], []];
+            for (let i = 0; i < 3; i++) {
+              const others = [];
+              for (const a of S[(i + 1) % 3]) for (const b of S[(i + 2) % 3]) others.push([a, b]);
+              const prof = (x, [a, b]) => { const s = [0, 0, 0]; s[i] = x; s[(i + 1) % 3] = a; s[(i + 2) % 3] = b; return s; };
+              for (const x of S[i]) for (const y of S[i]) {
+                if (x === y || gone[i].includes(x)) continue;
+                let ge = true, gt = false;
+                for (const o of others) { const ux = u(i, outcome(prof(x, o))), uy = u(i, outcome(prof(y, o))); if (uy < ux) ge = false; if (uy > ux) gt = true; }
+                if (ge && gt) { gone[i].push(x); break; }
+              }
+            }
+            if (!gone.some((g) => g.length)) break;
+            S = S.map((a, i) => a.filter((x) => !gone[i].includes(x)));
+            out.push({ S: S.map((a) => a.slice()), gone });
+          }
+          return out;
+        }
+        const L = (x) => LET[x];
+        const frames = () => rounds().map((R, k, all) => {
+          let note;
+          if (k === 0) note = 'Every voter may vote for any of the three candidates: 27 combinations.';
+          else note = `Round ${k}: ` + R.gone.map((g, i) => (g.length ? `${i === 0 ? 'the chair' : `voter ${i + 1}`} drops ${g.map(L).join(', ')}` : null)).filter(Boolean).join('; ') + ' (weakly dominated).';
+          if (k === all.length - 1) { const res = [...new Set(survivors(R.S).map(outcome))]; note += ` ${res.length === 1 ? `Only **${L(res[0])}** survives — the chair’s ${ord(pref[0].indexOf(res[0]))} choice.` : `Outcomes left: ${res.map(L).join(', ')}.`}`; }
+          return { k, S: R.S, note };
+        });
+        const survivors = (S) => { const out = []; for (const a of S[0]) for (const b of S[1]) for (const c2 of S[2]) out.push([a, b, c2]); return out; };
+        const S = v.steps({ frames, start: 'end', still: 'end', speed: 0.7, transition: 0.35, counter: 'round' });
+        let cards = [];
+        Vs.onClick((x, y) => { const X = Vs.X(x), Y = Vs.Y(y), i = cards.findIndex((cd) => Y >= cd[0] && Y <= cd[1]); if (i < 0) return; const k = R6.findIndex((r) => r.every((c, j) => c === pref[i][j])); pref[i] = R6[(k + 1) % 6].slice(); S.reset({ at: 'end' }); });
+        const tabs = [0, 1, 2].map((t) => v.table(Ts, { rows: 3, cols: 3, region: [t / 3 + 0.012, 0.02, (t + 1) / 3 - 0.012, 0.86], maxCell: 64, size: 12,
+          rowLabels: (i) => `${L(i)}`, colLabels: (j) => `${L(j)}` }));
+        v.render(() => {
+          const F = S.frame, Sv = F.S || [[0, 1, 2], [0, 1, 2], [0, 1, 2]], final = S.atEnd;
+          // ---- voter cards
+          const c = Vs.ctx, W = Vs.width, H = Vs.height, ch = (H - 16) / 3; cards = [];
+          [0, 1, 2].forEach((i) => {
+            const y0 = 8 + i * ch; cards.push([y0, y0 + ch - 6]);
+            rr(c, 8, y0, W - 16, ch - 8, 10); c.fillStyle = v.color(i === 0 ? 'gold' : 'muted', i === 0 ? 0.12 : 0.05); c.fill(); c.strokeStyle = v.color(i === 0 ? 'gold' : 'faint'); c.lineWidth = 1.2; c.stroke();
+            txt(v, c, i === 0 ? 'voter 1 — the chair (breaks ties)' : `voter ${i + 1}`, 20, y0 + 16, { size: 11.5, weight: 700, align: 'left', color: i === 0 ? 'gold' : 'ink' });
+            pref[i].forEach((cand, j) => { chip(v, c, 30 + j * 30, y0 + 42, cand, { r: 11 }); if (j < 2) txt(v, c, '›', 45 + j * 30, y0 + 42, { size: 13, color: 'faint' }); });
+            txt(v, c, 'votes', 132, y0 + 42, { size: 10.5, weight: 600, color: 'muted', align: 'left' });
+            [0, 1, 2].forEach((x, j) => chip(v, c, 175 + j * 26, y0 + 42, x, { r: 9.5, alpha: Sv[i].includes(x) ? 1 : 0.22, strike: !Sv[i].includes(x) }));
+          });
+          // ---- tables
+          const tc = Ts.ctx;
+          tabs.forEach((T, t) => {
+            const alive = Sv[0].includes(t);
+            T.draw({
+              value: () => '',
+              fill: (i, j) => (alive && Sv[1].includes(i) && Sv[2].includes(j) ? ['green', 0.12] : ['muted', 0.07]),
+              rowLabelColor: (i) => (Sv[1].includes(i) ? CC[i] : 'faint'), colLabelColor: (j) => (Sv[2].includes(j) ? CC[j] : 'faint'),
+            });
+            const g = T.geo;
+            txt(v, tc, `chair votes ${L(t)}`, g.X0 + (g.cw * 3) / 2, g.Y0 - g.lh - 12, { size: 12, weight: 700, color: alive ? CC[t] : 'faint' });
+            for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+              const [x, y] = T.cellCenter(i, j), on = alive && Sv[1].includes(i) && Sv[2].includes(j), w = outcome([t, i, j]);
+              chip(v, tc, Ts.X(x), Ts.Y(y), w, { r: Math.min(12, g.cw * 0.28), alpha: on ? 1 : 0.2, ring: final && on ? 'gold' : null });
+            }
+          });
+        });
+        v.legend([['green', 'votes still in play', { area: true }], ['gold', 'surviving outcome', { dot: true }]]);
+        v.readout(() => {
+          const sincere = outcome(pref.map((p) => p[0])), R = rounds(), last = R[R.length - 1], res = [...new Set(survivors(last.S).map(outcome))];
+          return `Sincere voting (everyone votes for their favourite): **${L(sincere)}** wins, the chair’s ${ord(pref[0].indexOf(sincere))} choice. Sophisticated voting (${R.length - 1} round${R.length === 2 ? '' : 's'} of eliminating weakly dominated votes): ${res.length === 1 ? `**${L(res[0])}** — the chair’s ${ord(pref[0].indexOf(res[0]))} choice` : `outcomes ${res.map(L).join(', ')} remain`}.` + (res.length === 1 && pref[0].indexOf(res[0]) === 2 ? ' The tie-breaking vote leaves the chair with her worst outcome.' : '');
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 2.10
+    {
+      num: '2.10',
+      kind: 'Theorem',
+      name: 'Saari: Borda is the only consistent positional rule',
+      statement: String.raw`For three candidates write every positional rule as $w_s = (1, s, 0)$, $0 \le s \le 1$ (polsci-1.10). Dropping a candidate leaves a two-candidate election, where every positional rule is majority rule. Call a profile a **total reversal** for $w_s$ if $w_s$ ranks $A \succ B \succ C$ while each pairwise majority says the opposite: $C$ beats $B$, $C$ beats $A$ and $B$ beats $A$.
+
+**Theorem (Saari).** For every $s \ne \tfrac12$ total reversals exist. For the Borda count ($s = \tfrac12$) they do not: Borda never ranks the Condorcet winner last nor the Condorcet loser first, and whenever the pairwise majorities form a transitive order, Borda’s top and bottom agree with it. More generally (Saari 1989) Borda is the only positional rule whose rankings of the full set and of its subsets are tied together; for every other rule, any combination of rankings of the subsets can occur.`,
+      idea: String.raw`Saari decomposes profiles into components. A *reversal pair* — two voters with opposite rankings such as $A \succ C \succ B$ and $B \succ C \succ A$ — ties every pairwise vote and gives the middle candidate $2s$ points against $1$ for each of the others. Borda ($2s = 1$) ignores it completely, but any other rule is pushed in one direction: for $s < \tfrac12$ reversal pairs hurt the candidate they put in the middle, for $s > \tfrac12$ they help it. Start from one voter $C \succ B \succ A$, who fixes the pairwise majorities, and add enough reversal pairs to drag the positional ranking to $A \succ B \succ C$: about $1/|1 - 2s|$ of them are needed, so the size of the smallest reversing electorate blows up at $s = \tfrac12$ and Borda is never reversed. That Borda cannot be reversed is the identity $B(x) = \sum_y N(x, y)$ (polsci-2.4): if $C$ beats both rivals, $B(C) > n > B(A)$.`,
+      caption: String.raw`Slide $s$ or click the chart. The chart shows, for each $s$, the fewest voters in a total reversal, found by brute force over all profiles of up to 21 voters (solid steps), and the size of Saari’s construction (dashed), which grows without bound near $s = ½$. Below, the profile realising the reversal at the current $s$. Left: in the representation triangle the pairwise tallies beside the edges say C ≻ B ≻ A. Right: on the procedure line of the outcome triangle the gold dot at $s$ sits in the region A ≻ B ≻ C, while the Borda point B lies in C ≻ B ≻ A.`,
+      deps: ['polsci-1.10', 'polsci-2.4'],
+      see: ['polsci-3.3'],
+      refs: ['Saari, Chaotic Elections!', 'Saari (1989), A dictionary for voting paradoxes', 'Saari, Basic Geometry of Voting (1995)'],
+      tags: ['Borda count', 'scoring rules', 'Saari'],
+      credit: 'Donald G. Saari, 1989–2000',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Positional_voting' },
+      viz(v) {
+        const Lc = v.stage({ x: [0, 1], y: [0, 46], axes: 'box', gutter: true, height: 250, full: true, xlabel: 'weight s of a second place', ylabel: 'voters needed', xticks: [[0, '0 plurality'], [0.25, '¼'], [0.5, '½ Borda'], [0.75, '¾'], [1, '1 veto']], title: 'smallest electorate in which the rule $w_s$ reverses every pairwise majority' });
+        const Rp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 320, title: 'the profile in Saari’s representation triangle' });
+        const Ot = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 320, title: 'outcomes: the procedure line from plurality to anti-plurality' });
+        const sS = v.slider('$s$', 0, 1, 0.2, { step: 0.0025 });
+        const src = v.select('profile', [{ value: 'min', label: 'smallest found' }, { value: 'con', label: 'Saari’s construction' }], 'min');
+        Lc.onClick((x) => sS.set(clamp(Math.round(x * 400) / 400, 0, 1)));
+        const R6 = perms(3), G = 401, NMAX = 21;
+        // ---- brute force: every anonymous profile of ≤ 21 voters with pairwise C ≻ B ≻ A; the s-interval where w_s gives A ≻ B ≻ C
+        const nmin = new Array(G).fill(Infinity), ex = new Array(G).fill(null), cnt = [0, 0, 0, 0, 0, 0];
+        const test = (n) => {
+          const N = (x, y) => { let t = 0; for (let i = 0; i < 6; i++) if (R6[i].indexOf(x) < R6[i].indexOf(y)) t += cnt[i]; return t; };
+          if (!(N(2, 1) > N(1, 2) && N(2, 0) > N(0, 2) && N(1, 0) > N(0, 1))) return;
+          const f = [0, 0, 0], g = [0, 0, 0]; for (let i = 0; i < 6; i++) { f[R6[i][0]] += cnt[i]; g[R6[i][1]] += cnt[i]; }
+          let lo = 0, hi = 1;
+          for (const [a, b] of [[0, 1], [1, 2]]) { const p = f[a] - f[b], q = g[a] - g[b]; if (q === 0) { if (p <= 0) return; } else if (q > 0) lo = Math.max(lo, -p / q + 1e-12); else hi = Math.min(hi, -p / q - 1e-12); }
+          if (lo > hi) return;
+          for (let k = Math.ceil(lo * (G - 1)); k <= Math.floor(hi * (G - 1)); k++) if (n < nmin[k]) { nmin[k] = n; ex[k] = cnt.slice(); }
+        };
+        const rec = (k, left, n) => { if (k === 5) { cnt[5] = left; test(n); return; } for (let x = 0; x <= left; x++) { cnt[k] = x; rec(k + 1, left - x, n); } };
+        for (let n = 1; n <= NMAX; n++) rec(0, n, n);
+        /** Saari’s construction: one voter C ≻ B ≻ A plus reversal pairs (counts in perms(3) order ABC, ACB, BAC, BCA, CAB, CBA). */
+        function cons(s) {
+          if (Math.abs(s - 0.5) < 1e-9) return null;
+          if (s < 0.5) { const y = Math.floor(s / (1 - 2 * s)) + 1, x = y + Math.floor((1 - s) / (1 - 2 * s)) + 1; return [y, x, 0, x, 0, 1 + y]; }
+          const y = Math.floor((1 - s) / (2 * s - 1)) + 1, z = y + Math.floor(s / (2 * s - 1)) + 1; return [y, 0, z, 0, z, 1 + y];
+        }
+        const profile = () => { const s = sS.value, k = Math.round(s * (G - 1)); if (src.value === 'min' && ex[k]) return { c: ex[k], how: 'min' }; const c = cons(s); return c ? { c, how: 'con' } : null; };
+        const scores = (c, s) => { const t = [0, 0, 0]; R6.forEach((r, i) => { t[r[0]] += c[i]; t[r[1]] += s * c[i]; }); return t; };
+        const rankS = (t) => { const o = [0, 1, 2].sort((a, b) => t[b] - t[a] || a - b); let str = LET[o[0]]; for (let k = 1; k < 3; k++) str += (Math.abs(t[o[k]] - t[o[k - 1]]) < 1e-9 ? ' = ' : ' ≻ ') + LET[o[k]]; return str; };
+        v.render(() => {
+          const s = sS.value, YM = 46;
+          // ---- chart
+          Lc.vband(0.4975, 0.5025, { color: 'green', alpha: 0.25 });
+          for (let k = 0; k < G; k++) {
+            if (!isFinite(nmin[k])) continue;
+            const x0 = (k - 0.5) / (G - 1), x1 = (k + 0.5) / (G - 1);
+            Lc.line(Math.max(0, x0), nmin[k], Math.min(1, x1), nmin[k], { color: 'accent', width: 3 });
+          }
+          const pts = []; for (let k = 0; k < G; k++) { const ss = k / (G - 1), c = cons(ss); pts.push(c ? [ss, Math.min(sum(c), YM + 5)] : null); }
+          Lc.clip(() => Lc.path(pts, { color: 'purple', width: 1.8, dash: [5, 4] }));
+          Lc.text('Borda: never reversed', 0.5, YM * 0.9, { size: 11, weight: 700, color: 'green', align: 'center', dy: 0, plate: true });
+          Lc.text(`brute force reaches only ${NMAX} voters`, 0.5, NMAX, { size: 10, weight: 600, color: 'muted', align: 'center', dy: -10 });
+          Lc.line(0.36, NMAX, 0.64, NMAX, { color: 'faint', dash: [2, 3] });
+          Lc.vline(s, { color: 'gold', width: 2 });
+          const P = profile();
+          if (P) Lc.dot(s, sum(P.c), { r: 5, color: 'gold' });
+          // ---- representation triangle
+          if (!P) { txt(v, Rp.ctx, 'At s = ½ (Borda) no profile reverses all three pairwise votes', Rp.width / 2, Rp.height / 2, { size: 12, weight: 600, color: 'green' }); txt(v, Ot.ctx, 'Borda: B(x) = Σ N(x, y) ties it to the majorities', Ot.width / 2, Ot.height / 2, { size: 12, weight: 600, color: 'green' }); return; }
+          drawRepTriangle(v, Rp, P.c, [0, 4, Rp.width, Rp.height - 6]);
+          // ---- outcome triangle, zoomed about its centre
+          const c = Ot.ctx, W = Ot.width, H = Ot.height, D = Math.min(W, H - 24);
+          const V0 = [[0, -0.577], [-0.5, 0.289], [0.5, 0.289]];
+          const at0 = (q) => [q[0] * V0[0][0] + q[1] * V0[1][0] + q[2] * V0[2][0], q[0] * V0[0][1] + q[1] * V0[1][1] + q[2] * V0[2][1]];
+          const q = (ss) => { const t = scores(P.c, ss), T = sum(t) || 1; return t.map((x) => x / T); };
+          const dmax = Math.max(...[0, 0.5, 1, s].map((ss) => Math.hypot(...at0(q(ss)))), 0.01);
+          const z = Math.max(1, Math.min(40, 0.3 / dmax)), sc0 = 0.86 * D, cx = W / 2, cy = 14 + (H - 28) / 2;
+          const Z = (p) => [cx + p[0] * sc0 * z, cy + p[1] * sc0 * z];
+          const mid0 = (a, b) => [(V0[a][0] + V0[b][0]) / 2, (V0[a][1] + V0[b][1]) / 2];
+          const cur = rankS(scores(P.c, s)).replace(/ /g, '');
+          c.save(); c.beginPath(); c.rect(0, 0, W, H); c.clip();
+          R6.forEach((r) => {
+            const p3 = [V0[r[0]], mid0(r[0], r[1]), [0, 0]].map(Z);
+            c.beginPath(); c.moveTo(...p3[0]); c.lineTo(...p3[1]); c.lineTo(...p3[2]); c.closePath();
+            const here = cur === rkStr(r, '≻'), rev = rkStr(r, '') === 'CBA';
+            c.fillStyle = v.color(here ? 'gold' : rev ? 'green' : CC[r[0]], here ? 0.25 : rev ? 0.14 : 0.05); c.fill();
+            const cen = [(V0[r[0]][0] + mid0(r[0], r[1])[0]) / 2, (V0[r[0]][1] + mid0(r[0], r[1])[1]) / 2], L0 = Math.hypot(...cen), R0 = 0.4 * D;
+            const lp = [cx + (cen[0] / L0) * Math.min(R0, L0 * sc0 * z * 0.75), cy + (cen[1] / L0) * Math.min(R0, L0 * sc0 * z * 0.75)];
+            txt(v, c, rkStr(r, '≻'), lp[0], lp[1], { size: 11, weight: 700, color: here ? 'ink' : 'muted', halo: true });
+          });
+          c.setLineDash([4, 4]); c.strokeStyle = v.color('faint'); c.lineWidth = 1.2;
+          for (let k = 0; k < 3; k++) { const A = Z(V0[k]), M = Z(mid0((k + 1) % 3, (k + 2) % 3)); c.beginPath(); c.moveTo(...A); c.lineTo(...M); c.stroke(); }
+          c.setLineDash([]);
+          const a = Z(at0(q(0))), b = Z(at0(q(1)));
+          linePx(v, c, a[0], a[1], b[0], b[1], 'ink', 3);
+          [[0, 'P'], [0.5, 'B'], [1, 'AP']].forEach(([ss, lab]) => {
+            const p2 = Z(at0(q(ss))); c.beginPath(); c.arc(p2[0], p2[1], 4.5, 0, 7); c.fillStyle = v.color(ss === 0.5 ? 'green' : 'panel'); c.fill(); c.strokeStyle = v.color('ink'); c.lineWidth = 1.5; c.stroke();
+            txt(v, c, lab, p2[0] + 8, p2[1] - 10, { size: 11, weight: 800, align: 'left', halo: true, color: ss === 0.5 ? 'green' : 'ink' });
+          });
+          const pc = Z(at0(q(s))); c.beginPath(); c.arc(pc[0], pc[1], 6.5, 0, 7); c.fillStyle = v.color('gold'); c.fill(); c.strokeStyle = v.color('panel'); c.lineWidth = 2; c.stroke();
+          c.restore();
+          V0.forEach((p0, k) => { let p2 = Z(p0); if (!(p2[0] > 14 && p2[0] < W - 14 && p2[1] > 14 && p2[1] < H - 30)) { const d = Math.hypot(...p0); p2 = [cx + (p0[0] / d) * 0.45 * D, cy + (p0[1] / d) * 0.45 * D]; } chip(v, c, p2[0], p2[1], k, { r: 10 }); });
+          txt(v, c, `zoom ×${z.toFixed(0)} about the centre`, W - 8, H - 10, { size: 10, weight: 600, color: 'muted', align: 'right', halo: true });
+        });
+        v.legend([['accent', 'smallest reversal (brute force, ≤ 21 voters)'], ['purple', 'Saari’s construction', { dash: true }], ['gold', 'current s and its ranking region', { dot: true }], ['green', 'Borda point and the pairwise order C ≻ B ≻ A', { area: true }]]);
+        v.readout(() => {
+          const s = sS.value, P = profile();
+          if (!P) return `At $s = ½$ (Borda) a total reversal is impossible: if $C$ beats both rivals, $B(C) = N(C,A) + N(C,B) > n > B(A)$. Every other $s$ admits one.`;
+          const t = scores(P.c, s), n = sum(P.c), bo = scores(P.c, 0.5);
+          const parts = R6.map((r, i) => (P.c[i] ? `${P.c[i]} ${rkStr(r, '')}` : null)).filter(Boolean).join(', ');
+          return `At $s = ${s.toFixed(3)}$: ${n} voters (${parts}) — ${P.how === 'min' ? 'the smallest such electorate found' : 'one voter CBA plus reversal pairs'}. The rule $w_s$ scores ${[0, 1, 2].map((x) => `${LET[x]} ${+t[x].toFixed(3)}`).join(', ')}: **${rankS(t)}**. Pairwise: C beats B, C beats A, B beats A — **every pair reversed**. Borda on the same ballots: ${rankS(bo)}, in line with the majorities.`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 2.11
+    {
+      num: '2.11',
+      kind: 'Paradox',
+      name: 'The Ostrogorski and Anscombe paradoxes',
+      statement: String.raw`Suppose each voter takes a position on several issues and the outcome is decided either by issues or by parties.
+
+**Ostrogorski’s paradox.** If every voter votes for the party that agrees with her on a majority of the issues, a party can win the election although a majority of voters oppose its position on *every* issue. With five voters and three issues: voters 1, 2, 3 agree with party $X$ on two issues each (a different pair each), and voters 4, 5 agree with $Y$ on all three. $X$ wins $3$–$2$, yet each issue goes to $Y$ by $3$–$2$.
+
+**Anscombe’s paradox.** If each issue is decided by its own majority, a majority of voters can be on the losing side of a majority of the issues. In the same table the issue-by-issue outcome is $Y, Y, Y$, and voters 1, 2, 3 — three of five — each lose two of the three issues.`,
+      idea: String.raw`Both paradoxes come from aggregating in two directions — across voters and across issues — in a different order. Majority-of-majorities is not the majority of the whole table: three voters can each give $X$ a narrow 2–1 lead on their own ballots while each issue’s $X$ supporters are a different minority. The cells of the table are what count, and a $5 \times 3$ table with $7$ $X$-cells out of $15$ can still elect $X$. Ostrogorski (1902) used it against party government: a party platform can win without any of its planks having majority support. Anscombe (1976) saw that the same table indicts issue-by-issue majority voting from the other side. Both are relatives of Condorcet’s paradox (polsci-2.1): pairwise sound majorities need not add up.`,
+      caption: String.raw`Click any cell of the table to flip a voter’s position on an issue. The last column is the party each voter supports (the one she agrees with on most issues) and the bottom row each issue’s majority. Right: the votes in each contest, one icon per voter. In *Ostrogorski* mode the party vote is compared with the issue votes; in *Anscombe* mode the column on the right counts the issues each voter loses. Change the numbers of voters and issues, draw a random table, or let the page search for a paradox; the readout gives how often random tables of this size show it.`,
+      deps: ['polsci-2.1'],
+      see: ['polsci-2.12'],
+      refs: ['T&P ch. 7', 'Ostrogorski, Democracy and the Organization of Political Parties (1902)', 'Anscombe (1976), On frustration of the majority by fulfilment of the majority’s will'],
+      tags: ['compound majorities', 'Ostrogorski paradox', 'Anscombe paradox'],
+      credit: 'Moisei Ostrogorski, 1902 (formalised by Rae & Daudt, 1976); G. E. M. Anscombe, 1976',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ostrogorski_paradox' },
+      viz(v) {
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 340, title: 'voters × issues · click a cell to flip it' });
+        const Sb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 380, weight: 1.15, title: 'the votes, one icon per voter' });
+        const mode = v.select('paradox', [{ value: 'ost', label: 'Ostrogorski' }, { value: 'ans', label: 'Anscombe' }], 'ost');
+        const nS = v.slider('voters', 3, 11, 5, { step: 2, int: true, onChange: () => resize() });
+        const kS = v.select('issues', [{ value: 3, label: '3' }, { value: 5, label: '5' }], 3, { onChange: () => resize() });
+        const CLASSIC = [[0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1], [1, 1, 1]];
+        let X = CLASSIC.map((r) => r.slice()), seed = 5, msg = '';
+        const T = v.table(Tb, { rows: 6, cols: 5, maxCell: 50, size: 14, square: false, cellAspect: 1.1 });
+        function resize() { const n = nS.value, k = +kS.value, r = v.rng(seed++); X = range(n).map((i) => range(k).map((j) => (X[i] && X[i][j] != null ? X[i][j] : r() < 0.5 ? 1 : 0))); msg = ''; }
+        const ana = (Xt) => {
+          const n = Xt.length, k = Xt[0].length, party = Xt.map((row) => (sum(row) > k / 2 ? 1 : 0)), issue = range(k).map((j) => (sum(Xt.map((row) => row[j])) > n / 2 ? 1 : 0));
+          const pw = sum(party) > n / 2 ? 1 : 0, iw = sum(issue) > k / 2 ? 1 : 0, lost = Xt.map((row) => sum(row.map((x, j) => (x !== issue[j] ? 1 : 0))));
+          const losers = lost.filter((l) => l > k / 2).length;
+          return { n, k, party, issue, pw, iw, lost, losers, ost: pw !== iw, strong: issue.every((x) => x !== pw), ans: losers > n / 2 };
+        };
+        const isPara = (A) => (mode.value === 'ost' ? A.ost : A.ans);
+        const randomTable = (r, n, k) => range(n).map(() => range(k).map(() => (r() < 0.5 ? 1 : 0)));
+        v.button('Random table', () => { const r = v.rng(seed++); X = randomTable(r, nS.value, +kS.value); msg = ''; });
+        v.button('Find a paradox', () => { for (let t = 1; t < 20000; t++) { const r = v.rng(seed++), Y = randomTable(r, nS.value, +kS.value); if (isPara(ana(Y))) { X = Y; msg = `found after ${t} random tables`; return; } } msg = 'none found'; });
+        v.button('Classic 5 × 3', () => { nS.set(5); kS.set(3); X = CLASSIC.map((r) => r.slice()); msg = ''; });
+        const freq = new Map();
+        const freqOf = (n, k, md) => { const key = `${n}|${k}|${md}`; if (!freq.has(key)) { const r = v.rng(99); let h = 0; const N = 4000; for (let t = 0; t < N; t++) { const A = ana(randomTable(r, n, k)); if (md === 'ost' ? A.ost : A.ans) h++; } freq.set(key, h / N); } return freq.get(key); };
+        Tb.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.j >= 0 && h.i < X.length && h.j < X[0].length) { X[h.i][h.j] = 1 - X[h.i][h.j]; msg = ''; } });
+        const icons = range(6).map(() => v.icons(Sb, { order: 'group', maxCell: 34, tween: 400 }));
+        const yes = () => mode.value === 'ans';
+        const lab = (x) => (yes() ? (x ? 'yes' : 'no') : x ? 'Y' : 'X');
+        const col = (x) => (x ? 'orange' : 'blue');
+        v.render(() => {
+          const A = ana(X), n = A.n, k = A.k, ost = mode.value === 'ost';
+          T.set({ rows: n + 1, cols: k + 1 });
+          T.draw({
+            value: (i, j) => (i < n ? (j < k ? lab(X[i][j]) : ost ? lab(A.party[i]) : `${A.lost[i]} lost`) : j < k ? lab(A.issue[j]) : ost ? `${lab(A.pw)} wins` : `${A.losers} of ${n}`),
+            textColor: (i, j) => (i < n && j === k && !ost ? (A.lost[i] > k / 2 ? 'red' : 'muted') : (i < n ? (j < k ? X[i][j] : A.party[i]) : j < k ? A.issue[j] : A.pw) ? 'orange' : 'blue'),
+            weight: (i, j) => (i === n || j === k ? 800 : 600),
+            fill: (i, j) => {
+              if (i < n && j < k) return [col(X[i][j]), 0.16];
+              if (i === n && j < k) return ost && A.issue[j] !== A.pw ? ['red', 0.14] : [col(A.issue[j]), 0.3];
+              if (i < n && j === k) return ost ? [col(A.party[i]), 0.3] : A.lost[i] > k / 2 ? ['red', 0.14] : null;
+              return [isPara(A) ? 'red' : 'green', 0.18];
+            },
+            rowLabels: (i) => (i < n ? `voter ${i + 1}` : 'majority'),
+            colLabels: (j) => (j < k ? `issue ${j + 1}` : ost ? 'party' : 'issues lost'),
+            highlight: isPara(A) ? [[n, k, 'red']] : [],
+          });
+          // ---- icon scoreboards: the party vote (or the losers) and each issue
+          const contests = [{ title: ost ? 'party vote' : 'voters losing most issues', a: ost ? n - sum(A.party) : n - A.losers, b: ost ? sum(A.party) : A.losers, la: ost ? 'X' : 'win most', lb: ost ? 'Y' : 'lose most', cb: ost ? 'orange' : 'red', ca: ost ? 'blue' : 'green' }]
+            .concat(range(k).map((j) => { const y = sum(X.map((row) => row[j])); return { title: `issue ${j + 1}`, a: n - y, b: y, la: lab(0), lb: lab(1), ca: 'blue', cb: 'orange' }; }));
+          const W = Sb.width, H = Sb.height, cols = contests.length <= 4 ? 2 : 3, rowsN = Math.ceil(contests.length / cols), cw = 1 / cols, rh = 1 / rowsN, c = Sb.ctx;
+          icons.forEach((I, q) => {
+            const C = contests[q];
+            if (!C) { I.set({ n: 0, groups: [] }); return; }
+            const cx = (q % cols) * cw, cy = 1 - Math.floor(q / cols) * rh;
+            I.set({ n: C.a + C.b, groups: [{ n: C.a, color: C.ca, label: C.la }, { n: C.b, color: C.cb, label: C.lb }], region: [cx + 0.02, cy - rh + 0.04, cx + cw - 0.02, cy - 0.16 * rh] });
+            I.draw();
+            const X0 = Sb.X(cx + cw / 2), Y0 = Sb.Y(cy) + 13;
+            txt(v, c, C.title, X0, Y0, { size: 11, weight: 700, color: q === 0 ? 'ink' : 'muted' });
+            const w = C.b > C.a;
+            txt(v, c, `${C.la} ${C.a} – ${C.b} ${C.lb}`, X0, Y0 + 15, { size: 11, weight: 800, color: w ? C.cb : C.ca });
+          });
+        });
+        v.legend([['blue', 'party X / no', { area: true }], ['orange', 'party Y / yes', { area: true }], ['red', 'the paradox', { area: true }]]);
+        v.readout(() => {
+          const A = ana(X), n = A.n, k = A.k, f = freqOf(n, k, mode.value);
+          let s;
+          if (mode.value === 'ost') {
+            s = `Party vote: ${n - sum(A.party)} for X, ${sum(A.party)} for Y → **${A.pw ? 'Y' : 'X'}** wins. Issue majorities: ${A.issue.map((x) => (x ? 'Y' : 'X')).join(', ')} → ${A.iw ? 'Y' : 'X'} wins most issues. `;
+            s += A.strong ? `**Ostrogorski’s paradox (strong form):** the winning party loses every single issue.` : A.ost ? '**Ostrogorski’s paradox:** the winning party loses most issues.' : 'No paradox here.';
+          } else {
+            s = `Issue-by-issue majority: ${A.issue.map((x) => (x ? 'yes' : 'no')).join(', ')}. Issues lost per voter: ${A.lost.join(', ')}. `;
+            s += A.ans ? `**Anscombe’s paradox:** ${A.losers} of ${n} voters — a majority — are on the losing side of most issues.` : `${A.losers} of ${n} voters lose most issues: no paradox.`;
+          }
+          return s + ` Among random ${n} × ${k} tables (each cell X or Y with probability ½), ${(100 * f).toFixed(1)}% show this paradox.` + (msg ? ` (${msg}.)` : '');
         });
       },
     },

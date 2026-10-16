@@ -7,10 +7,10 @@
 const OPS = {
   '¬': 'not', '~': 'not', '!': 'not',
   '∧': 'and', '&': 'and', '/\\': 'and',
-  '∨': 'or', '|': 'or', '\\/': 'or', 'v': null,
+  '∨': 'or', '|': 'or', '\\/': 'or',
   '→': 'imp', '->': 'imp', '=>': 'imp', '⊃': 'imp',
   '↔': 'iff', '<->': 'iff', '<=>': 'iff', '≡': 'iff',
-  '⊕': 'xor', '^': 'xor', '+': 'xor',
+  '⊕': 'xor', '^': 'and', '+': 'xor',
   '↑': 'nand', '↓': 'nor',
 };
 const MULTI = ['<->', '<=>', '->', '=>', '/\\', '\\/'];
@@ -100,10 +100,11 @@ export function parseStrict(src) {
     if (t.t === 'op' && t.v === 'not') { k++; return N(F()); }
     if (t.t === '(') {
       k++;
-      if (toks[k] && toks[k].t === 'op' && toks[k].v === 'not') { k++; const a = F(); if (!toks[k] || toks[k].t !== ')') fail('expected “)” after (¬α'); k++; return N(a); }
+      const negFirst = toks[k] && toks[k].t === 'op' && toks[k].v === 'not';
       const a = F();
       const o = toks[k];
-      if (!o || o.t !== 'op' || o.v === 'not') fail(o && o.t === ')' ? 'a pair of parentheses around a single formula is not allowed' : 'expected a binary connective');
+      if (o && o.t === ')') { if (negFirst && a.op === 'not') { k++; return a; } fail('a pair of parentheses around a single letter or formula is not allowed'); }
+      if (!o || o.t !== 'op' || o.v === 'not') fail('expected a binary connective');
       k++;
       const b = F();
       if (!toks[k] || toks[k].t !== ')') fail(toks[k] && toks[k].t === 'op' ? 'a binary connective needs its own parentheses' : 'expected “)”');
@@ -452,16 +453,14 @@ export function drawTree(s, L, opts = {}) {
   for (const nd of L.nodes) for (const c of nd.kids) s.line(nd.x, nd.y, c.x, c.y, { color: (opts.edgeColor && opts.edgeColor(c)) || 'muted', width: 1.6 });
   for (const nd of L.nodes) {
     const f = opts.fill ? opts.fill(nd) : null;
-    const X = s.X(nd.x), Y = s.Y(nd.y), ctx = s.ctx;
-    s.dot(nd.x, nd.y, { r, color: f || 'muted', fill: f || 'panel', hollow: false });
-    if (!f) s.dot(nd.x, nd.y, { r: r - 1.5, color: 'panel' });
+    if (f) s.dot(nd.x, nd.y, { r, color: f });
+    else s.dot(nd.x, nd.y, { r, color: 'muted', hollow: true, width: 1.6 });
     const ring = opts.ring && opts.ring(nd);
     if (ring) s.dot(nd.x, nd.y, { r: r + 3.5, color: ring, hollow: true, width: 2.4 });
     const leafy = nd.e.op === 'var';
     s.text(nodeLabel(nd.e), nd.x, nd.y, { align: 'center', baseline: 'middle', size: leafy ? 14 : 15, math: leafy, weight: leafy ? 400 : 600, color: (opts.labelColor && opts.labelColor(nd)) || (f ? 'panel' : 'ink') });
     const note = opts.note && opts.note(nd);
     if (note != null && note !== '') s.text(String(note), nd.x, nd.y, { dx: r + 4, dy: -r + 2, align: 'left', baseline: 'middle', size: 11, weight: 600, color: (opts.noteColor && opts.noteColor(nd)) || 'accent' });
-    void X; void Y; void ctx;
   }
 }
 

@@ -196,8 +196,8 @@ export default {
             const m = regionOf(C, x, y), X = s.X(x), Y = s.Y(y);
             if (k === 0) return o.inner(m) ? fillCol : null;
             if (k === 1) return o.lhs(m) ? fillCol : null;
-            const hA = !(m & 1) && (((X + Y) % 10) + 10) % 10 < 2.4, hB = k >= 3 && !(m & 2) && (((X - Y) % 10) + 10) % 10 < 2.4;
-            if (k === 4 && rhsSig[m]) { const base = rhsSig[m] !== lhsSig[m] ? bad : green; return hA ? cA : hB ? cB : base; }
+            const hA = !(m & 1) && (((X + Y) % 12) + 12) % 12 < 3.2, hB = k >= 3 && !(m & 2) && (((X - Y) % 12) + 12) % 12 < 3.2;
+            if (k === 4 && rhsSig[m]) return rhsSig[m] !== lhsSig[m] ? bad : green;
             return hA ? cA : hB ? cB : null;
           }, { key: `${k}|${law.value}|${fake.value}`, id: 'dm' });
           drawVenn(v, s, C, null, { ux: UX, uy: UY });

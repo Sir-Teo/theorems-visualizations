@@ -265,8 +265,8 @@ The loads are not expected to peak together, so codes combine them with **load f
           void up;
         });
         v.readout(() => {
-          const { combo, gov, up } = analyse(), g = combo[gov], u = combo[up], umin = Math.min(u.R[0][1], u.R[1][1]);
-          return `Largest column load: **${kN(Math.max(g.R[0][1], g.R[1][1]))}** in combination ${['1', '2', '3a', '3b', '4', '5'][gov]} (${g.name}). · ${umin < 0 ? `**Uplift ${kN(-umin)}** under combination ${['1', '2', '3a', '3b', '4', '5'][up]} (${u.name}): the column must be anchored down.` : `Smallest column load ${kN(umin)} (${u.name}): no uplift.`} · Equilibrium check (governing): ΣRy = ${kN(g.R[0][1] + g.R[1][1])}.`;
+          const { P, combo, gov, up } = analyse(), g = combo[gov], u = combo[up], umin = Math.min(u.R[0][1], u.R[1][1]), roofNet = 0.9 * P.Dr - 0.9 * P.q;
+          return `Largest column load: **${kN(Math.max(g.R[0][1], g.R[1][1]))}** in combination ${['1', '2', '3a', '3b', '4', '5'][gov]} (${g.name}). · ${umin < 0 ? `**Uplift ${kN(-umin)}** under combination ${['1', '2', '3a', '3b', '4', '5'][up]} (${u.name}): the column must be anchored down.` : `Smallest column load ${kN(umin)} (${u.name}): no uplift.`} · Roof under 0.9D + 1.0W: net ${roofNet >= 0 ? 'downward' : '**upward**'} pressure ${Math.abs(roofNet).toFixed(2)} kPa${roofNet < 0 ? ' — the roof deck must be fastened down' : ''}. · Equilibrium check (governing): ΣRy = ${kN(g.R[0][1] + g.R[1][1])}.`;
         });
       },
     },
@@ -290,7 +290,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
         const naive = v.toggle('equal shares (wrong reactions)', false);
         const SC = 10; // kN per unit of arrow length
         const LC = ['orange', 'purple', 'pink'];
-        const P = [s.handle(2.0, 3.0, { color: 'orange' }), s.handle(5.5, 1.8, { color: 'purple' }), s.handle(8.4, 2.4, { color: 'pink' })];
+        const P = [s.handle(1.8, 4.0, { color: 'orange' }), s.handle(3.6, 2.4, { color: 'purple' }), s.handle(6.2, 1.5, { color: 'pink' })];
         P.forEach((h) => { h.constrain = (x, y) => [Math.max(0, Math.min(10, x)), Math.max(0.4, Math.min(5, y))]; });
         const SA = s.handle(1.0, -0.45, { color: 'gray', constrain: (x) => [Math.max(0, Math.min(10, x)), -0.45] });
         const SB = s.handle(9.0, -0.45, { color: 'gray', constrain: (x) => [Math.max(0, Math.min(10, x)), -0.45] });
@@ -327,7 +327,7 @@ In the plane these are three scalar equations ($\sum F_x = 0$, $\sum F_y = 0$, $
           forces.forEach((f, i) => { const m = ms[i]; if (!isFinite(m)) return; mb.rect(i + 0.65, cum, i + 1.35, cum + m, { fill: f.c, fillAlpha: 0.55, color: f.c, width: 1 }); mb.text(f.name.replace('_', ''), i + 1, cum + m, { align: 'center', baseline: m >= 0 ? 'bottom' : 'top', dy: m >= 0 ? -2 : 2, size: 10, color: 'ink' }); cum += m; });
           const okM = Math.abs(tot) < 1e-6;
           mb.text(okM ? 'ΣM = 0 ✓' : `ΣM = ${tot.toFixed(1)}`, 3.5, mx * 0.88, { align: 'center', size: 12, weight: 700, color: okM ? 'green' : 'red' });
-          if (!okM) { momentArrow(v, s, 5, 1.5, tot > 0 ? 1 : -1, 'red', 26); s.text('unbalanced: the beam rotates', 5, 3.9, { align: 'center', size: 11.5, weight: 650, color: 'red' }); }
+          if (!okM) { momentArrow(v, s, 8.4, 2.4, tot > 0 ? 1 : -1, 'red', 26); s.text('unbalanced: the beam rotates', 8.4, 4.0, { align: 'center', size: 11.5, weight: 650, color: 'red' }); }
           v.legend([['orange', 'loads', { dot: true }], ['green', 'reactions'], ['accent', 'moment arms from O', { dash: true }]]);
         });
         v.readout(() => {
@@ -561,8 +561,8 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
       viz(v) {
         const close = v.toggle('close on the supports', true);
         const arch = v.toggle('flip to an arch', false);
-        const S = v.stage({ x: [-0.8, 12.8], y: [-6.3, 6.3], equal: true, axes: false, height: 380, weight: 1.45, title: 'space diagram (m)' });
-        const Fd = v.stage({ x: [-2.2, 7.6], y: [-0.8, 9.6], equal: true, axes: false, height: 380, weight: 1, minWidth: 240, title: 'force diagram (1 square = 10 kN)' });
+        const S = v.stage({ x: [-0.8, 12.8], y: [-4.9, 4.9], equal: true, axes: false, height: 380, weight: 1.45, title: 'space diagram (m)' });
+        const Fd = v.stage({ x: [-7.4, 7.6], y: [-0.8, 9.6], equal: true, axes: false, height: 380, weight: 1, minWidth: 240, title: 'force diagram (1 square = 10 kN)' });
         const LX = 12, SC = 10; // span (m); kN per force-diagram unit
         const COLS = ['orange', 'purple', 'pink', 'gold'];
         const wx = [2.2, 4.6, 7.8, 10.0].map((x, i) => S.handle(x, 0, { color: COLS[i], constrain: (px) => [Math.max(0.4, Math.min(LX - 0.4, px)), 0] }));
@@ -612,16 +612,16 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
             S.line(x, 0, x, y, { color: COLS[l.i], width: 0.8, dash: [2, 3], alpha: 0.6 });
           });
           S.line(-0.5, 0, LX + 0.5, 0, { color: 'faint', width: 1 });
-          if (comp) S.text('“as hangs the flexible line, so but inverted will stand the rigid arch” (Hooke)', LX / 2, -5.8, { align: 'center', size: 11, color: 'muted' });
+          if (comp) S.text('“as hangs the flexible line, so but inverted will stand the rigid arch” (Hooke)', LX / 2, -4.5, { align: 'center', size: 11, color: 'muted' });
           // force diagram: grid, load line, rays
-          for (let gx = -2; gx <= 7; gx++) Fd.line(gx, -0.5, gx, 9.4, { color: 'grid', width: 1 });
-          for (let gy = 0; gy <= 9; gy++) Fd.line(-2.1, gy, 7.5, gy, { color: 'grid', width: 1 });
+          for (let gx = -7; gx <= 7; gx++) Fd.line(gx, -0.5, gx, 9.4, { color: 'grid', width: 1 });
+          for (let gy = 0; gy <= 9; gy++) Fd.line(-7.3, gy, 7.5, gy, { color: 'grid', width: 1 });
           loads.forEach((l, k) => Fd.line(0, pts[k], 0, pts[k + 1], { color: COLS[l.i], width: 4 }));
           pts.forEach((p, k) => Fd.line(pole.x, pole.y, 0, p, { color: comp ? 'blue' : 'red', width: 1.6, alpha: 0.85 }));
           Fd.line(pole.x, pole.y, 0, st.cY, { color: 'muted', width: 1.2, dash: [5, 4] });
           Fd.dot(0, st.cY, { r: 3.5, color: 'muted' });
-          Fd.text(`R_A = ${st.Ra.toFixed(1)} kN`.replace('_', ''), 0, (pts[0] + st.cY) / 2, { dx: -8, align: 'right', size: 10.5, color: 'green' });
-          Fd.text(`R_B = ${st.Rb.toFixed(1)} kN`.replace('_', ''), 0, st.cY / 2, { dx: -8, align: 'right', size: 10.5, color: 'green' });
+          Fd.text(`RA = ${st.Ra.toFixed(1)} kN`, 0, (pts[0] + st.cY) / 2, { dx: comp ? 8 : -8, align: comp ? 'left' : 'right', size: 10.5, color: 'green' });
+          Fd.text(`RB = ${st.Rb.toFixed(1)} kN`, 0, st.cY / 2, { dx: comp ? 8 : -8, align: comp ? 'left' : 'right', size: 10.5, color: 'green' });
           Fd.text(`H = ${Math.abs(st.H).toFixed(1)} kN`, pole.x / 2, pole.y, { dy: -10, align: 'center', size: 11, weight: 650, color: 'accent' });
           v.legend([[comp ? 'blue' : 'red', comp ? 'arch in compression' : 'string in tension'], ['muted', 'closing line', { dash: true }], ['orange', 'loads (one colour each)']]);
         });
@@ -648,7 +648,7 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
 
 For the same load, span and cross-section, bending stresses are far larger than axial ones, which is why the most efficient structures shape themselves so that loads travel along their axis (cables, arches, trusses, shells).`,
       idea: String.raw`Cut the member and apply equilibrium (1.2) to one piece. A rope or strut can only transmit a force along itself, and the uniform stress $N/A$ follows from spreading it evenly. In a beam the cut face must supply a moment $M$ with no net axial force. If plane sections stay plane (solid-6.3) the strain, and so the stress, varies linearly from one face to the other, and the couple of the two stress wedges equals $M$. Compare a rope with sag $f$ and a beam of depth $d$ carrying the same point load at mid-span: the ratio of the largest stresses is about $6f/d$, so with a sag of a tenth of the span and a beam depth of a twentieth of it, the rope works about twelve times less hard.`,
-      caption: String.raw`Choose a rope, an arch, a column or a plank, all with the same 100 × 200 mm section, and set the load. Colour shows stress, red for tension and blue for compression, on one scale for all four, so the plank glows hottest. For the plank, drag the load and the dashed **cut**: the right panel plots the stress across the depth there, linear through zero. For the column, move the load off-centre: once it leaves the middle third, tension appears on the far face.`,
+      caption: String.raw`Choose a rope, an arch, a column or a plank, all with the same 100 × 200 mm section, and set the load. Colour shows stress, red for tension and blue for compression, each member on its own scale; the readout compares their sizes. For the plank, drag the load and the dashed **cut**: the right panel plots the stress across the depth there, linear through zero. For the column, move the load off-centre: once it leaves the middle third, tension appears on the far face.`,
       deps: ['arch-1.2', 'solid-1.1'],
       see: ['solid-6.1', 'solid-6.4'],
       refs: ['Salvadori'],
@@ -668,9 +668,9 @@ For the same load, span and cross-section, bending stresses are far larger than 
         const Mx = (x) => { const a = hLoad.x, Ra = (P.value * (Lb - a)) / Lb; return x < a ? Ra * x : Ra * x - P.value * (x - a); };
         const sigBeam = (x, y) => (-Mx(x) * y) / I / 1000;                 // y in m (up), MPa
         const sigCol = (y) => (-P.value / Ar - (P.value * (eS.value / 1000) * y) / I) / 1000;
-        const scaleMax = () => { const M = Math.max(...v.M.linspace(0, Lb, 81).map((x) => Math.abs(Mx(x)))); return Math.max(1, (M * (d / 2)) / I / 1000, axial(), Math.abs(sigCol(d / 2)), Math.abs(sigCol(-d / 2))); };
+        const scaleMax = () => { const m = mode.value; if (m === 'beam') { const M = Math.max(...v.M.linspace(0, Lb, 81).map((x) => Math.abs(Mx(x)))); return Math.max(1e-6, (M * (d / 2)) / I / 1000); } if (m === 'col') return Math.max(Math.abs(sigCol(d / 2)), Math.abs(sigCol(-d / 2))); return axial(); };
         v.render(() => {
-          const m = mode.value, smax = Math.max(scaleMax(), 0.5 * (40 * Lb / 4) * (d / 2) / I / 1000 * 0 + 1), col = (sg) => v.diverge(Math.max(-1, Math.min(1, sg / smax)));
+          const m = mode.value, smax = scaleMax(), col = (sg) => v.diverge(Math.max(-1, Math.min(1, sg / smax)));
           let prof = null;
           if (m === 'rope' || m === 'arch') {
             const f = fS.value, s = m === 'rope' ? -1 : 1, base = m === 'rope' ? 1.6 : -1.2, apex = [2, base + s * f], sg = (m === 'rope' ? 1 : -1) * axial();
@@ -689,6 +689,7 @@ For the same load, span and cross-section, bending stresses are far larger than 
             A.text('middle third', 2, -1.85, { align: 'center', size: 10.5, color: 'green' });
             drawSupport(v, A, 2, -1.6, 'fixed');
             A.text('section drawn 3× wider', 3.3, 1.9, { size: 10.5, color: 'muted' });
+            A.text(`e = ${eS.value} mm`, ex, 2.3, { dx: 8, size: 10.5, weight: 650, color: 'orange' });
             prof = (y) => sigCol(y);
           } else {
             A.raster((x, y) => { if (x < 0 || x > Lb || Math.abs(y) > d / 2 * DS) return null; return col(sigBeam(x, y / DS)); }, { res: 2, key: `bm${P.value}|${hLoad.x}|${smax}` });
@@ -705,7 +706,7 @@ For the same load, span and cross-section, bending stresses are far larger than 
             prof = (y) => sigBeam(hCut.x, y);
           }
           // section profile
-          const lim = Math.max(2, smax) * 1.12; B.setView([-lim, lim], [-100, 100]);
+          const lim = smax * 1.25; B.setView([-lim, lim], [-100, 100]);
           for (let k = 0; k < 20; k++) { const y0 = -100 + k * 10, ym = y0 + 5, sg = prof(ym / 1000); B.rect(0, y0 + 0.8, sg, y0 + 9.2, { fill: sg > 0 ? 'red' : 'blue', fillAlpha: 0.55, stroke: false }); }
           B.vline(0, { color: 'muted', width: 1 });
           const top = prof(0.1), bot = prof(-0.1);
@@ -780,7 +781,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
             const r = m[k]; if (!r) continue;
             const cx = Math.log10(gm(m[2])), cy = Math.log10(gm(r)), ax = Math.max(0.035, Math.log10(m[2][1] / m[2][0]) / 2), ay = Math.max(0.05, Math.log10(r[1] / r[0]) / 2), on = m[0] === sel;
             s.curve((t) => [10 ** (cx + ax * Math.cos(t)), 10 ** (cy + ay * Math.sin(t))], 0, 2 * Math.PI, { n: 48, fill: m[1], fillAlpha: on ? 0.55 : 0.28, color: m[1], width: on ? 2.4 : 1.2 });
-            lab.push({ x: 10 ** cx, y: 10 ** cy, text: m[0], r: Math.max(5, ay * s.sy * 0.9), size: on ? 12 : 10.5, weight: on ? 700 : 500, color: on ? m[1] : 'ink' });
+            lab.push({ x: 10 ** cx, y: 10 ** cy, text: m[0], r: Math.max(6, ax * s.sx + 2, ay * s.sy * 0.8), size: on ? 12 : 10.5, weight: on ? 700 : 500, color: on ? m[1] : 'ink' });
           }
           lab.sort((p, q) => (q.text === sel) - (p.text === sel));
           placeLabels(v, s, lab);
@@ -792,7 +793,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
           const k = prop.value, m = MAT.find((q) => q[0] === sel), fmtR = (r, u) => (r ? `${r[0]}–${r[1]} ${u}` : 'none');
           const bl = (r) => (r ? `${((gm(r) * 1e6) / (gm(m[2]) * G) / 1000).toFixed(gm(r) * 1e6 / (gm(m[2]) * G) < 1000 ? 2 : 1)} km` : '—');
           const better = MAT.filter((q) => q[k] && gm(q[k]) / gm(q[2]) > gH.y / gH.x).map((q) => q[0]);
-          return `**${m[0]}**: ρ ${m[2][0]}–${m[2][1]} kg/m³ · tension ${fmtR(m[3], 'MPa')} · compression ${fmtR(m[4], 'MPa')} · E ${fmtR(m[5], 'GPa')} · breaking length in tension ${bl(m[3])}, in compression ${bl(m[4])} · uses: ${m[6]}. · Above the green line (${k === 5 ? 'E' : 'σ'}/ρ > ${(gH.y / gH.x * (k === 5 ? 1e6 : 1e3)).toFixed(k === 5 ? 1 : 0)} ${k === 5 ? 'MJ/kg ×10⁻³' : 'kJ/kg'}): ${better.length ? better.join(', ') : 'none'}.`;
+          return `**${m[0]}**: ρ ${m[2][0]}–${m[2][1]} kg/m³ · tension ${fmtR(m[3], 'MPa')} · compression ${fmtR(m[4], 'MPa')} · E ${fmtR(m[5], 'GPa')} · breaking length in tension ${bl(m[3])}, in compression ${bl(m[4])} · uses: ${m[6]}. · Above the green line (${k === 5 ? 'E' : 'σ'}/ρ > ${(gH.y / gH.x * 1e3).toFixed(0)} ${k === 5 ? 'MJ/kg' : 'kJ/kg'}): ${better.length ? better.join(', ') : 'none'}.`;
         });
       },
     },
@@ -831,7 +832,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
           for (let j = 1; j < 4; j++) for (let i = 0; i < 3; i++) { const key = `b-${i}-${j}`, w = j === 3 ? WR : WF; el.push({ key, i: id(i, j), j: id(i + 1, j), EA: 4.5e6, EI: 9.4e4, q: show.value === 'sel' && key !== selBeam ? 0 : -w, relI: pin, relJ: pin }); }
           const sup = { 0: [1, 1, 1], 1: [1, 1, 1], 2: [1, 1, 1], 3: [1, 1, 1] };
           const sol = frameSolve(nodes, el, sup, {});
-          const total = el.reduce((acc, e) => acc - e.q * 6, 0);
+          const total = el.reduce((acc, e) => acc - (e.q || 0) * 6, 0);
           for (const e of sol.el) {
             const xs = v.M.linspace(0, e.L, 25), F = xs.map((x) => internal(e, x));
             e.Mmax = Math.max(...F.map((f) => Math.abs(f.M))); e.N = internal(e, 0).N;
@@ -853,17 +854,22 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
           const maxN = Math.max(1, ...sol.el.filter((e) => e.key[0] === 'c').map((e) => Math.abs(e.N)));
           for (const e of sol.el) {
             const a = nodes[e.i], b = nodes[e.j], over = e.util > 1 && !mech;
-            if (over) s.line(a.x, a.y, b.x, b.y, { color: 'red', width: 16, alpha: 0.22 });
+            if (over) s.line(a.x, a.y, b.x, b.y, { color: 'pink', width: 16, alpha: 0.3 });
+            if (mech) { s.line(a.x, a.y, b.x, b.y, { color: 'gray', width: e.key[0] === 'c' ? 3 : 2.6, alpha: 0.7 }); continue; }
             if (e.key[0] === 'c') s.line(a.x, a.y, b.x, b.y, { color: e.N < 0 ? 'blue' : 'red', width: 2 + 10 * Math.abs(e.N) / maxN, alpha: 0.8 });
             else {
               s.line(a.x, a.y, b.x, b.y, { color: e.key === selBeam ? 'gold' : 'ink', width: e.key === selBeam ? 4 : 2.6 });
-              if (!mech) { const ms = 1.1 / MCAP; s.path([[a.x, a.y], ...v.M.linspace(0, e.L, 25).map((x) => [a.x + x, a.y - internal(e, x).M * ms]), [b.x, b.y]], { fill: 'purple', fillAlpha: 0.2, color: 'purple', width: 1, close: true }); }
+              if (!mech) { const ms = 0.75 / MCAP; s.path([[a.x, a.y], ...v.M.linspace(0, e.L, 25).map((x) => [a.x + x, a.y - internal(e, x).M * ms]), [b.x, b.y]], { fill: 'purple', fillAlpha: 0.2, color: 'purple', width: 1, close: true }); }
             }
           }
           for (let k = 0; k < 4; k++) drawSupport(v, s, BX[k], 0, 'fixed');
-          if (!mech) for (let k = 0; k < 4; k++) { const Ry = sol.R[k][1]; if (Math.abs(Ry) < 0.5) continue; const len = Math.min(2, Math.abs(Ry) / 450); s.arrow(BX[k], -2.3, BX[k], -2.3 + len, { color: 'green', width: 2.2, head: 7 }); s.text(kN(Ry), BX[k] + 0.3, -1.9, { size: 10.5, weight: 650, color: 'green' }); }
-          if (mech) s.text('MECHANISM: no load path — the frame cannot carry its load', 9, 11.7, { align: 'center', size: 13, weight: 700, color: 'red' });
-          v.legend([['blue', 'column compression (width ∝ force)'], ['purple', 'beam bending moment', { area: true }], ['red', 'over capacity / removed', { area: true }], ['gold', 'selected floor beam'], ['green', 'foundation reactions']]);
+          if (!mech) for (let k = 0; k < 4; k++) { const Ry = sol.R[k][1]; if (Math.abs(Ry) < 0.5) continue; const len = Math.max(0.4, Math.min(1.9, Math.abs(Ry) / 600)); s.arrow(BX[k], -0.45 - len, BX[k], -0.45, { color: 'green', width: 2.2, head: 7 }); s.text(kN(Ry), BX[k] + 0.3, -0.45 - len / 2, { size: 10.5, weight: 650, color: 'green' }); }
+          if (mech) {
+            const maxd = Math.max(1e-12, ...Array.from(sol.d).map(Math.abs).slice(0, 48)), k = 1.6 / maxd;
+            for (const e of sol.el) s.path(v.M.linspace(0, 1, 12).map((xi) => deflected(sol, e, xi, k)), { color: 'red', width: 2, dash: [5, 4] });
+            s.text('MECHANISM: no load path — the dashed shape shows how it collapses', 9, 11.7, { align: 'center', size: 13, weight: 700, color: 'red' });
+          }
+          v.legend([['blue', 'column in compression (width ∝ force)'], ['red', 'column in tension (hanging) / removed'], ['purple', 'beam bending moment', { area: true }], ['pink', 'over capacity', { area: true }], ['gold', 'selected floor beam'], ['green', 'foundation reactions']]);
         });
         v.readout(() => {
           const { sol, total } = analyse();

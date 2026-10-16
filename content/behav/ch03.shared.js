@@ -19,7 +19,7 @@ export const pct = (x, d = 0) => `${(100 * x).toFixed(d)}%`;
 export function card(s, r, { tag, lines = [], chosen = false, dim = false, sub, subColor, size = 12.5 }) {
   const [x0, y0, x1, y1] = r;
   s.rect(x0, y0, x1, y1, { fill: chosen ? 'accent' : 'panel', fillAlpha: chosen ? 0.13 : 1, color: chosen ? 'accent' : 'faint', width: chosen ? 2.6 : 1.2, radius: 9 });
-  const tx = tag ? 38 : 12;
+  const tx = tag ? 26 + 11 * tag.length : 12;
   if (tag) s.text(tag, x0, y1, { dx: 12, dy: 17, size: 17, weight: 800, color: chosen ? 'accent' : dim ? 'faint' : 'muted' });
   lines.forEach((t, i) => s.text(t, x0, y1, { dx: tx, dy: 16 + 17 * i, size, weight: 500, color: dim ? 'muted' : 'ink' }));
   if (sub) s.text(sub, x1, y0, { dx: -10, dy: -11, size: 11.5, align: 'right', color: subColor || (chosen ? 'accent' : 'muted'), weight: 700 });

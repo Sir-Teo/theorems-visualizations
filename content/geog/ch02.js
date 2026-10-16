@@ -157,7 +157,7 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
       name: 'Great circle versus rhumb line',
       statement: String.raw`Between two points on a sphere the great-circle arc (1.3) is never longer than the rhumb line, and strictly shorter unless both lie on one meridian or on the equator. The great circle's bearing changes continuously along the way (except on meridians and the equator), while the rhumb line keeps one bearing. For two points on the same parallel $\varphi$ separated by $\Delta\lambda$, the rhumb line runs along the parallel with length $R\,\Delta\lambda\cos\varphi$, while the great circle has length $2R\arcsin\!\big(\cos\varphi\,\sin\tfrac{\Delta\lambda}{2}\big)$; the saving grows with both $\Delta\lambda$ and $|\varphi|$, toward $1 - 2/\pi \approx 36\%$ for antipodal longitudes near a pole.`,
       idea: String.raw`The great circle is the shortest path (1.3), so it can only win. The size of the win depends on how far the parallel is from being a geodesic: the equator and meridians are great circles, while a parallel at latitude $\varphi$ turns sideways with geodesic curvature $\tan\varphi/R$, so a high-latitude east–west course wastes most. The haversine formula (1.4) gives the great-circle length and the loxodrome formula (2.1) the rhumb length; the great circle's bearing along the way follows from the initial-bearing formula applied at each point. Navigators therefore sailed great circles as a series of short rhumb-line legs, changing course at waypoints.`,
-      caption: String.raw`Drag either port or pick a route. Arrows along each route show the heading at six points: constant on the red rhumb line, turning on the green great circle. The right panel plots heading against distance sailed for both routes. The heat map shows the percentage saving for two points on one parallel, against latitude and longitude difference; the white dot is the east–west equivalent of your route (its mean latitude and longitude gap).`,
+      caption: String.raw`Drag either port or pick a route. At six points along each route a wedge spans the angle from north (black tick) to the heading: identical wedges on the red rhumb line, turning ones on the green great circle. The right panel plots heading against distance sailed for both routes. The heat map shows the percentage saving for two points on one parallel, against latitude and longitude difference; the white dot is the east–west equivalent of your route (its mean latitude and longitude gap).`,
       deps: ['geog-2.1', 'geog-1.4'],
       refs: ['Snyder §5', 'Snyder §7'],
       tags: ['navigation', 'great circles'],
@@ -199,8 +199,10 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
             const q = P.pts[Math.round((i * 120) / 7)], h = v.geo('bearing', q, P.b);
             const r = P.rpts[Math.round((i * (P.rpts.length - 1)) / 7)];
             for (const [p0, hh, col] of [[q, h, 'green'], [r, mod(P.rb, 360), 'red']]) {
-              G.arrow(p0, v.geo('destination', p0, 0, 3.2), { color: 'ink', width: 1.2, alpha: 0.7, head: 5 });
-              G.arrow(p0, v.geo('destination', p0, hh, 4.5), { color: col, width: 2.6, head: 10 });
+              const d = wrap180(hh), wedge = [p0];
+              for (let j = 0; j <= 16; j++) wedge.push(v.geo('destination', p0, (d * j) / 16, 4.6));
+              G.polygon([wedge], { fill: col, fillAlpha: 0.35, color: col, width: 1, geodesic: false });
+              G.path([p0, v.geo('destination', p0, 0, 5.6)], { color: 'ink', width: 1.2, alpha: 0.75 });
             }
           }
           // headings
@@ -324,7 +326,7 @@ The true position adds whatever the log and compass do not see: steering noise, 
           const T = lerp2(S.tr0, t);
           sA.dot(D[0], D[1], { r: 5, color: 'accent', label: 'DR', labelPos: 'nw', math: false });
           sA.dot(T[0], T[1], { r: 5, color: 'gold', label: 'true', labelPos: 'se', math: false });
-          sA.dot(0, 0, { r: 4, color: 'ink', label: 'departure', labelPos: 's', math: false });
+          sA.dot(0, 0, { r: 4, color: 'ink', label: 'departure', labelPos: 'se', math: false });
           // errors against time
           const ts = S.rms.map((r, i) => [i, r]), run0 = S.tr0.map((p, i) => [i, Math.hypot(S.offX[0][i], S.offY[0][i])]);
           const drift = (h) => cs.value * (fix.value ? h - clamp(Math.floor((h - 1e-9) / 12), 0, 2) * 12 : h);
@@ -415,7 +417,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           sB.line(-1.2, 0, 1.2, 0, { color: 'ink', width: 1.4 });
           sB.path(arcPts(0, 0, 1, 0, Math.PI, 90), { color: 'muted', width: 1.2 });
           sB.text('N', -1.08, -0.06, { size: 12, weight: 700, align: 'center', baseline: 'top' }); sB.text('S', 1.08, -0.06, { size: 12, weight: 700, align: 'center', baseline: 'top' });
-          sB.text('zenith', 0, 1.04, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
+          sB.line(0, 0.96, 0, 1.04, { color: 'muted', width: 1 }); sB.text('zenith', 0, 0.93, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
           for (const a of [30, 60]) for (const n of [true, false]) { const q = dome(a, n); sB.line(q[0] * 0.96, q[1] * 0.96, q[0] * 1.04, q[1] * 1.04, { color: 'muted', width: 1 }); }
           // celestial pole + Polaris
           const poleAlt = f, pv = dome(Math.abs(poleAlt), f >= 0);
@@ -439,7 +441,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           const sv2 = dome(hS, !sunSouth);
           sB.line(0, 0, sv2[0], sv2[1], { color: 'gold', width: 1, dash: [3, 3] });
           sB.dot(sv2[0], sv2[1], { r: 9, color: 'gold' });
-          sB.text(`Sun ${hS.toFixed(2)}°`, sv2[0], sv2[1] + 0.1, { size: 11.5, color: 'gold', weight: 600, align: 'center', baseline: 'bottom' });
+          sB.text(`Sun ${hS.toFixed(2)}°`, sv2[0] + (sunSouth ? 0.08 : -0.08), sv2[1] + 0.08, { size: 11.5, color: 'gold', weight: 600, align: sunSouth ? 'left' : 'right', baseline: 'bottom' });
           v.legend([['teal', 'Polaris / celestial pole'], ['gold', 'noon Sun'], ['purple', 'latitude φ at the centre']]);
         });
         v.readout(() => {
@@ -527,7 +529,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
             sA.line(a[0], a[1], b[0], b[1], { color: Math.abs(S.run[k]) < 1 ? 'green' : e > 0 ? 'red' : 'blue', width: 2 + 2.5 * Math.abs(e) });
           }
           sA.line(L[0][0], L[0][1], L[1][0], L[1][1], { color: 'orange', width: 5 });
-          sA.text(`baseline ${Ch.base.toFixed(3)} km`, (L[0][0] + L[1][0]) / 2, (L[0][1] + L[1][1]) / 2, { size: 11.5, color: 'orange', weight: 600, dx: 10, align: 'left' });
+          sA.text(`baseline ${Ch.base.toFixed(3)} km`, L[0][0], L[0][1], { size: 11.5, color: 'orange', weight: 600, dy: 10, baseline: 'top', align: 'left' });
           for (const p of L) sA.dot(p[0], p[1], { r: 3.5, color: 'ink' });
           sA.corner(`a chain of ${n} triangles, ${comma(w)} km long`, 'bl', { color: 'muted' });
           // errors per side
@@ -546,7 +548,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
         v.readout(() => {
           const S = stats(), Ch = S.Ch, n = Ch.tri.length, t0 = Ch.tri[0], last = Ch.truth[n - 1];
           const mm = (ppm) => (Math.abs(ppm * last) / 1e3).toFixed(Math.abs(ppm * last) < 1e4 ? 2 : 1);
-          return `First triangle: angles sum to $180^\\circ + ${(t0.eps / ASEC).toFixed(2)}''$ (the excess; area/$R^2$). After ${n} triangles the last side (${last.toFixed(3)} km) is off by **${S.bias0[n - 1].toFixed(2)} ppm = ${mm(S.bias0[n - 1])} m** with no reduction and **${S.bias1[n - 1].toFixed(3)} ppm** with Legendre's; ${sig.value > 0 ? `noise of ${sig.value.toFixed(2)}″ spreads it over ${S.lo[n - 1].toFixed(1)} … ${S.hi[n - 1].toFixed(1)} ppm (95%).` : 'with perfect angles only the excess matters.'} Doubling the side quadruples the excess.`;
+          return `First triangle: angles sum to $180^\\circ + ${(t0.eps / ASEC).toFixed(2)}''$ (the excess; area/$R^2$). After ${n} triangles the last side (${last.toFixed(3)} km) is off by **${v.fix(S.bias0[n - 1], 2)} ppm = ${mm(S.bias0[n - 1])} m** with no reduction and **${v.fix(S.bias1[n - 1], 3)} ppm** with Legendre's; ${sig.value > 0 ? `noise of ${sig.value.toFixed(2)}″ spreads it over ${v.fix(S.lo[n - 1], 1)} … ${v.fix(S.hi[n - 1], 1)} ppm (95%).` : 'with perfect angles only the excess matters.'} Doubling the side quadruples the excess.`;
         });
       },
     },
@@ -557,7 +559,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
       name: 'Why polar flight routes look curved on maps',
       statement: String.raw`The shortest route between two distant cities at middle latitudes, such as London and Los Angeles, appears on a Mercator world map as a long arc bulging toward the pole, while the straight line between them on the map (a rhumb line, 2.1) is in fact longer. Nothing is wrong with the route: a straight line on a map is a geodesic only if the projection sends great circles to straight lines, which Mercator's does only for meridians and the equator. On the **gnomonic** projection, which maps every great circle to a straight line, the same route is straight and the rhumb line is the curve; on the globe the route is the minor arc of a great circle (1.3).`,
       idea: String.raw`A great circle that is not a meridian or the equator reaches its highest latitude (its *vertex*) between the endpoints, so it must climb toward the pole and come back down. Mercator's map stretches high latitudes by $\sec\varphi$, so the northern detour, which is short on the globe because the meridians converge there, is drawn long and the route looks bent. The gnomonic projection is the central projection from the Earth's centre onto a tangent plane: a great circle lies in a plane through the centre, and that plane meets the tangent plane in a straight line. The map's notion of "straight" is a property of the projection, not of the route.`,
-      caption: String.raw`Drag either airport on any map, or pick a route. Top: Mercator, with the great circle (green) bowing poleward and the straight rhumb line (red). Bottom left: the globe. Bottom right: a gnomonic map centred on the route's midpoint, where the great circle is straight and the rhumb line bends. The readout gives both lengths, the route's highest latitude and whether it crosses Greenland (tested against the coastline).`,
+      caption: String.raw`Drag either airport on any map, or pick a route. Left: Mercator, with the great circle (green) bowing poleward and the straight rhumb line (red). Middle: the globe. Right: a gnomonic map centred on the route's midpoint, where the great circle is straight and the rhumb line bends. The readout gives both lengths, the route's highest latitude and whether it crosses Greenland (tested against the coastline).`,
       deps: ['geog-1.3', 'geog-2.2'],
       see: ['geog-5.1', 'geog-4.3'],
       refs: ['Snyder §7'],
@@ -569,7 +571,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           fra: { a: [8.56, 50.03], b: [140.39, 35.77], label: 'Frankfurt → Tokyo' },
           syd: { a: [151.18, -33.95], b: [-70.79, -33.39], label: 'Sydney → Santiago' },
         };
-        const sM = v.stage({ height: 320, full: true });
+        const sM = v.stage({ height: 330 });
         const sG = v.stage({ height: 330 });
         const sN = v.stage({ height: 330 });
         const GM = v.globe(sM, { projection: 'mercator', center: [-60, 0], graticule: 30, drag: true });

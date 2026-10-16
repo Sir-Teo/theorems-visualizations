@@ -40,7 +40,7 @@ Every equilibrium property — equation of state, heat capacities, compressibili
         const model = v.select('1 mol of argon as', [{ value: 'ideal', label: 'ideal gas' }, { value: 'vdw', label: 'van der Waals fluid' }], 'ideal');
         const U0 = 0.4, U1 = 8, V0 = 0.5, V1 = 40;
         const sm = v.stage({ x: [U0, U1], y: [V0, V1], ylog: true, height: 350, axes: 'box', gutter: true, xlabel: 'U (kJ)', ylabel: 'V (L)', weight: 1.05, title: 'entropy $S(U, V)$ of 1 mol (J/K)' });
-        const s3 = v.stage3d({ range: 1.5, height: 350, yaw: -0.95, pitch: 0.42, labels: ['U', 'ln V', 'S'], title: 'the surface and its tangent plane at the state' });
+        const s3 = v.stage3d({ range: 1.65, height: 350, yaw: -0.95, pitch: 0.38, labels: ['U', 'ln V', 'S'], title: 'the surface and its tangent plane at the state' });
         const h = sm.handle(3.4, 22.4, { color: 'gold', label: 'state', constrain: { x: [0.7, 7.7], y: [0.7, 36] } });
         let st = null;
         v.render(() => {
@@ -81,7 +81,7 @@ Every equilibrium property — equation of state, heat capacities, compressibili
         v.readout(() => {
           if (!st) return '';
           const { T, P, SU, SV, SUU, SVV, SUV, gap, S0 } = st;
-          return `$S$ = ${v.fix(S0, 2)} J/K · measured slopes: $\\partial S/\\partial U$ = ${v.fix(SU * 1e3, 4)} mK⁻¹ → $T = 1/(\\partial S/\\partial U)$ = **${v.fix(1 / SU, 2)} K** (equation of state: ${v.fix(T, 2)} K); $\\partial S/\\partial V$ = ${v.fix(SV / 1e3, 3)} J/(K·L) → $P$ = **${v.fix(SV / SU / BAR, 4)} bar** (equation of state: ${v.fix(P / BAR, 4)} bar)\nconcavity: $S_{UU}$ = ${v.sci(SUU, 2)} < 0, $S_{UU}S_{VV} - S_{UV}^2$ = ${v.sci(SUU * SVV - SUV * SUV, 2)} ${SUU * SVV - SUV * SUV > 0 ? '> 0' : '≤ 0'}; highest point of the surface above its tangent plane: ${v.fix(gap, 4)} J/K ${gap <= 1e-6 ? '(never above — concave)' : ''}`;
+          return `$S$ = ${v.fix(S0, 2)} J/K · measured slopes: $\\partial S/\\partial U$ = ${v.fix(SU * 1e3, 4)} mK⁻¹ → $T = 1/(\\partial S/\\partial U)$ = **${v.fix(1 / SU, 2)} K** (equation of state: ${v.fix(T, 2)} K); $\\partial S/\\partial V$ = ${v.fix(SV / 1e3, 3)} J/(K·L) → $P$ = **${v.fix(SV / SU / BAR, 4)} bar** (equation of state: ${v.fix(P / BAR, 4)} bar)\nconcavity: $S_{UU}$ = $${v.sci(SUU, 2)}$ < 0, $S_{UU}S_{VV} - S_{UV}^2$ = $${v.sci(SUU * SVV - SUV * SUV, 2)}$ ${SUU * SVV - SUV * SUV > 0 ? '> 0' : '≤ 0'}; highest point of the surface above its tangent plane: ${v.fix(gap, 4)} J/K ${gap <= 1e-6 ? '(never above — concave)' : ''}`;
         });
       },
     },
@@ -131,14 +131,14 @@ $T$ is the **temperature**, $P$ the **pressure** and $\mu$ the **chemical potent
           const m = GAS.Ar.M * AMU, lam = HP / Math.sqrt(2 * Math.PI * m * KB * T);
           const muIdeal = -KB * T * Math.log(cur.V * L / (cur.N * NA * lam ** 3)) * NA;
           sU.corner(`T = ${v.fix(T, 1)} K`, 'br', { color: 'red', weight: 650 });
-          sV.corner(`P = ${v.fix(P / BAR, 3)} bar`, 'tr', { color: 'blue', weight: 650 });
+          sV.corner(`P = ${v.fix(P / BAR, 3)} bar`, 'br', { color: 'blue', weight: 650 });
           sN.corner(`μ = ${v.fix(mu / KJ, 2)} kJ/mol`, 'br', { color: 'green', weight: 650 });
           st = { T, P, mu, muIdeal, lam, Teos: M.TofU(cur.U * KJ / cur.N, cur.V * L / cur.N), Peos: M.P(M.TofU(cur.U * KJ / cur.N, cur.V * L / cur.N), cur.V * L / cur.N) };
         });
         v.readout(() => {
           if (!st) return '';
           const { T, P, mu, muIdeal, lam, Teos, Peos } = st;
-          return `state $U$ = ${v.fix(cur.U, 2)} kJ, $V$ = ${v.fix(cur.V, 1)} L, $N$ = ${v.fix(cur.N, 2)} mol · from the slopes: $T$ = **${v.fix(T, 2)} K** (equation of state ${v.fix(Teos, 2)} K), $P$ = **${v.fix(P / BAR, 4)} bar** (${v.fix(Peos / BAR, 4)} bar), $\\mu$ = **${v.fix(mu / KJ, 3)} kJ/mol** = ${v.fix(mu / NA / 1.602176634e-19, 3)} eV per atom\nideal-gas formula $\\mu = -kT\\ln\\big(V/N\\lambda^3\\big)$ with $\\lambda$ = ${v.fix(lam * 1e12, 2)} pm: ${v.fix(muIdeal / KJ, 3)} kJ/mol ${model.value === 'vdw' ? '(differs: the van der Waals attraction lowers μ)' : ''} · $V/N\\lambda^3$ = ${v.sci(cur.V * L / (cur.N * NA * lam ** 3), 2)} ≫ 1, so the gas is classical`;
+          return `state $U$ = ${v.fix(cur.U, 2)} kJ, $V$ = ${v.fix(cur.V, 1)} L, $N$ = ${v.fix(cur.N, 2)} mol · from the slopes: $T$ = **${v.fix(T, 2)} K** (equation of state ${v.fix(Teos, 2)} K), $P$ = **${v.fix(P / BAR, 4)} bar** (${v.fix(Peos / BAR, 4)} bar), $\\mu$ = **${v.fix(mu / KJ, 3)} kJ/mol** = ${v.fix(mu / NA / 1.602176634e-19, 3)} eV per atom\nideal-gas formula $\\mu = -kT\\ln\\big(V/N\\lambda^3\\big)$ with $\\lambda$ = ${v.fix(lam * 1e12, 2)} pm: ${v.fix(muIdeal / KJ, 3)} kJ/mol ${model.value === 'vdw' ? '(differs: the van der Waals attraction lowers μ)' : ''} · $V/N\\lambda^3$ = $${v.sci(cur.V * L / (cur.N * NA * lam ** 3), 2)}$ ≫ 1, so the gas is classical`;
         });
       },
     },
@@ -163,15 +163,15 @@ Equivalently $dS = \tfrac1T\,dU + \tfrac PT\,dV - \tfrac{\mu}{T}\,dN$. The ident
         const sb = v.stage({ x: [-0.6, 4.6], y: [-1, 1], height: 320, axes: 'box', gutter: true, ylabel: 'kJ', weight: 1, title: '$T\\,dS - P\\,dV + \\mu\\,dN$ against $\\Delta U$', xticks: [[0, 'T dS'], [1, '−P dV'], [2, 'μ dN'], [3, 'sum'], [4, 'ΔU']] });
         const se = v.stage({ x: [1e-4, 1], y: [1e-8, 10], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'step size (fraction of A→B)', ylabel: '|mismatch| (kJ)', weight: 0.9, title: 'the error is second order' });
         const A = sp.handle(150, 22.4, { color: 'accent', label: 'A', constrain: { x: [S0 + 2, S1 - 2], y: [V0 + 1, V1 - 1] } });
-        const B = sp.handle(158, 14, { color: 'gold', label: 'B', constrain: { x: [S0 + 2, S1 - 2], y: [V0 + 1, V1 - 1] } });
+        const B = sp.handle(155, 17, { color: 'gold', label: 'B', constrain: { x: [S0 + 2, S1 - 2], y: [V0 + 1, V1 - 1] } });
         let st = null;
         v.render(() => {
           const M = vdw('Ar', model.value === 'ideal');
           // U(S, V, n): invert s(T, v) = s(1 K, v) + cv ln T
           const Uf = (S, V, n) => { const vv = V / n; if (vv <= M.b) return NaN; const T = Math.exp((S / n - M.s(1, vv)) / M.cv); return n * M.u(T, vv); };
           const Uk = (S, VL) => Uf(S, VL * L, 1) / KJ;
-          sp.heat(Uk, { range: [0, 12], cmap: 'theme', color: 'orange', res: 3, key: 'U' + model.value });
-          sp.contour(Uk, [0.5, 1, 2, 3, 4, 6, 8, 10], { color: 'ink', width: 0.8, alpha: 0.35, labels: true, fmt: (x) => x + ' kJ', res: 70 });
+          sp.heat((S, VL) => Math.log10(Uk(S, VL)), { range: [-0.6, 1.6], cmap: 'theme', color: 'orange', res: 3, key: 'U' + model.value });
+          sp.contour(Uk, [0.5, 1, 2, 4, 8, 16], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x + ' kJ', res: 70 });
           sp.arrow(A.x, A.y, B.x, B.y, { color: 'ink', width: 1.8 });
           const x0 = [A.x, A.y * L, 1], d = [B.x - A.x, (B.y - A.y) * L, dN.value];
           const Tm = dpart(Uf, x0, 0, 1e-4), Pm = -dpart(Uf, x0, 1, 1e-5 * x0[1]), mum = dpart(Uf, x0, 2, 1e-5);
@@ -289,7 +289,7 @@ Away from equilibrium the entropy increases as energy flows toward the colder si
         v.readout(() => {
           if (!st) return '';
           const { a, b, S, S0, done } = st;
-          return `$1/T_1 - 1/T_2$ = ${v.sci(1 / a.T - 1 / b.T, 2)} K⁻¹ · $P_1/T_1 - P_2/T_2$ = ${v.sci((a.P / a.T - b.P / b.T) * L, 2)} J/(K·L) · $\\mu_1/T_1 - \\mu_2/T_2$ = ${v.sci(a.mu / a.T - b.mu / b.T, 2)} J/(K·mol) · total entropy gained since release: **${v.fix(S - S0, 3)} J/K** ${done ? '— at the maximum the brackets of the free variables vanish' : '(still climbing)'}`;
+          return `$1/T_1 - 1/T_2$ = $${v.sci(1 / a.T - 1 / b.T, 2)}$ K⁻¹ · $P_1/T_1 - P_2/T_2$ = $${v.sci((a.P / a.T - b.P / b.T) * L, 2)}$ J/(K·L) · $\\mu_1/T_1 - \\mu_2/T_2$ = $${v.sci(a.mu / a.T - b.mu / b.T, 2)}$ J/(K·mol) · total entropy gained since release: **${v.fix(S - S0, 3)} J/K** ${done ? '— at the maximum the brackets of the free variables vanish' : '(still climbing)'}`;
         });
       },
     },
@@ -319,7 +319,7 @@ For several species, $\mu N$ becomes $\sum_j \mu_j N_j$. The relation fails for 
           vdw: { X: [6000, 1.0e-3, 1], S: (U, V, N) => sUVN(Mv, U, V, N), unit: 'kJ', sc: 1e-3 },
           photon: { X: [aRad * 3000 ** 4, 1, 1], S: (U, V) => 4 / 3 * (aRad * V) ** 0.25 * U ** 0.75, unit: 'mJ', sc: 1e3 },
           // toy: an ideal gas whose entropy carries a surface deficit −c R N^(2/3) (N in mol), c chosen to be visible
-          drop: { X: [3718, 22.4e-3, 1], S: (U, V, N) => sUVN(Mi, U, V, N) - 12 * R * N ** (2 / 3), unit: 'kJ', sc: 1e-3 },
+          drop: { X: [3718, 22.4e-3, 1], S: (U, V, N) => sUVN(Mi, U, V, N) - 4 * R * N ** (2 / 3), unit: 'kJ', sc: 1e-3 },
         };
         let st = null;
         v.render(() => {
@@ -329,7 +329,8 @@ For several species, $\mu N$ becomes $\sum_j \mu_j N_j$. The relation fails for 
           const SU = dpart(S, x0, 0, 1e-5 * U), SV = dpart(S, x0, 1, 1e-5 * V), SN = dpart(S, x0, 2, 1e-5 * N);
           const T = 1 / SU, P = SV * T, mu = -SN * T;
           const ys = []; for (let i = 1; i <= 60; i++) ys.push(Sl(3.1 * i / 60));
-          const ymin = Math.min(0, ...ys), ymax = Math.max(...ys, 3.1 * S1);
+          const slope0 = U * SU + V * SV + N * SN;
+          const ymin = Math.min(0, ...ys, S1 - slope0), ymax = Math.max(...ys, 3.1 * S1);
           sl.setView([0, 3.1], [ymin, ymax * 1.08]);
           sl.fn((l) => l * S1, { color: 'ink', dash: [6, 4], width: 1.4, domain: [0, 3.1] });
           const slope = U * SU + V * SV + N * SN; // dS(λX)/dλ at λ = 1, from the measured slopes
@@ -338,7 +339,7 @@ For several species, $\mu N$ becomes $\sum_j \mu_j N_j$. The relation fails for 
           sl.dot(1, S1, { r: 5, color: 'green' });
           sl.dot(lam.value, Sl(lam.value), { r: 6, color: 'gold' });
           sl.dot(0, S1 - slope, { r: 4.5, color: 'green', hollow: true });
-          sl.text(`tangent meets λ = 0 at ${v.fix(S1 - slope, 3)} J/K`, 0.08, S1 - slope, { dy: S1 - slope > ymax * 0.5 ? 14 : -12, size: 11, color: 'green', plate: true });
+          sl.text(`tangent meets λ = 0 at ${v.fix(Math.abs(S1 - slope) < 5e-4 ? 0 : S1 - slope, 3)} J/K`, 0.08, S1 - slope, { dx: 8, dy: -12, size: 11, color: 'green', plate: true });
           // waterfall
           const sc = Md.sc, parts = [T * S1 * sc, -P * V * sc, mu * N * sc], sum = parts[0] + parts[1] + parts[2], Uu = U * sc;
           const tops = [parts[0], parts[0] + parts[1], sum, sum, Uu];
@@ -355,7 +356,7 @@ For several species, $\mu N$ becomes $\sum_j \mu_j N_j$. The relation fails for 
         v.readout(() => {
           if (!st) return '';
           const { T, P, mu, sum, Uu, Sl, ratio, unit } = st;
-          return `measured slopes: $T$ = ${v.fix(T, 2)} K, $P$ = ${v.fmt(P / BAR, 4)} bar, $\\mu$ = ${which.value === 'photon' ? v.sci(mu, 1) + ' J (zero: photons are not conserved)' : v.fix(mu / KJ, 3) + ' kJ/mol'} · $TS - PV + \\mu N$ = **${v.fix(sum, 4)} ${unit}** vs $U$ = **${v.fix(Uu, 4)} ${unit}** · at $\\lambda$ = ${v.fix(lam.value, 2)}: $S(\\lambda X)/\\lambda S(X)$ = ${v.fix(ratio, 5)} ${Math.abs(ratio - 1) < 1e-6 ? '(extensive)' : '(not extensive: Euler fails)'}`;
+          return `measured slopes: $T$ = ${v.fix(T, 2)} K, $P$ = ${v.fmt(P / BAR, 4)} bar, $\\mu$ = ${which.value === 'photon' ? '$' + v.sci(mu, 1) + '$ J (zero: photons are not conserved)' : v.fix(mu / KJ, 3) + ' kJ/mol'} · $TS - PV + \\mu N$ = **${v.fix(sum, 4)} ${unit}** vs $U$ = **${v.fix(Uu, 4)} ${unit}** · at $\\lambda$ = ${v.fix(lam.value, 2)}: $S(\\lambda X)/\\lambda S(X)$ = ${v.fix(ratio, 5)} ${Math.abs(ratio - 1) < 1e-6 ? '(extensive)' : '(not extensive: Euler fails)'}`;
         });
       },
     },
@@ -377,7 +378,7 @@ with molar (or per-particle) entropy $s = S/N$ and volume $v = V/N$. Hence the i
         const model = v.select('CO₂ as', [{ value: 'vdw', label: 'van der Waals' }, { value: 'ideal', label: 'ideal gas' }], 'vdw');
         const route = v.select('route A → B', [{ value: 'line', label: 'straight' }, { value: 'TP', label: 'T first, then P' }, { value: 'PT', label: 'P first, then T' }, { value: 'wig', label: 'wiggly' }], 'wig');
         const T0 = 310, T1 = 560, P0 = 1, P1 = 200;
-        const sm = v.stage({ x: [T0, T1], y: [P0, P1], height: 330, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'P (bar)', weight: 1.1, title: 'chemical potential $\\mu(T, P)$ (kJ/mol)' });
+        const sm = v.stage({ x: [T0, T1], y: [P0, P1], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'P (bar)', weight: 1.1, title: 'chemical potential $\\mu(T, P)$ (kJ/mol)' });
         const sp = v.stage({ x: [0, 1], y: [-1, 1], height: 330, axes: 'box', gutter: true, xlabel: 'fraction of the route', ylabel: 'kJ/mol', weight: 1, title: 'integrating $d\\mu = -s\\,dT + v\\,dP$ along the route' });
         const A = sm.handle(330, 20, { color: 'accent', label: 'A', constrain: { x: [T0 + 5, T1 - 5], y: [P0 + 2, P1 - 3] } });
         const B = sm.handle(520, 150, { color: 'gold', label: 'B', constrain: { x: [T0 + 5, T1 - 5], y: [P0 + 2, P1 - 3] } });
@@ -386,15 +387,15 @@ with molar (or per-particle) entropy $s = S/N$ and volume $v = V/N$. Hence the i
           const M = vdw('CO2', model.value === 'ideal');
           const mu = (T, PB) => { const vv = M.vOf(T, PB * BAR); return M.g(T, vv); };
           sm.heat((T, PB) => mu(T, PB) / KJ, { range: [-60, -25], cmap: 'theme', color: 'purple', res: 4, key: 'mu' + model.value });
-          sm.contour((T, PB) => mu(T, PB) / KJ, [-58, -55, -52, -49, -46, -43, -40, -37, -34, -31, -28], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, res: 60 });
-          if (model.value === 'vdw') sm.text(`critical point ${v.fix(M.Tc, 0)} K, ${v.fix(M.Pc / BAR, 0)} bar (off the left edge)`, T0 + 4, P1 - 8, { size: 11, color: 'muted', plate: true });
+          sm.contour((T, PB) => mu(T, PB) / KJ, [-56, -52, -48, -44, -40, -36, -32, -28], { color: 'ink', width: 0.8, alpha: 0.4, labels: true, fmt: (x) => x.toFixed(0), res: 60 });
+          if (model.value === 'vdw') sm.text(`critical point ${v.fix(M.Tc, 0)} K, ${v.fix(M.Pc / BAR, 0)} bar (off the left edge)`, T0 + 4, 165, { size: 11, color: 'muted', plate: true });
           const r = route.value, a = [A.x, A.y], b = [B.x, B.y];
           const at = (u) => {
             if (r === 'line') return [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];
             if (r === 'TP') return u < 0.5 ? [lerp(a[0], b[0], 2 * u), a[1]] : [b[0], lerp(a[1], b[1], 2 * u - 1)];
             if (r === 'PT') return u < 0.5 ? [a[0], lerp(a[1], b[1], 2 * u)] : [lerp(a[0], b[0], 2 * u - 1), b[1]];
             const wv = Math.sin(3 * Math.PI * u);
-            return [clamp(lerp(a[0], b[0], u) + 70 * wv * (1 - Math.abs(2 * u - 1) ** 6), T0 + 1, T1 - 1), clamp(lerp(a[1], b[1], u) - 45 * wv, P0 + 0.5, P1 - 1)];
+            return [clamp(lerp(a[0], b[0], u) + 60 * wv * (1 - Math.abs(2 * u - 1) ** 6), T0 + 1, T1 - 1), clamp(Math.exp(lerp(Math.log(a[1]), Math.log(b[1]), u) - 0.9 * wv), P0 + 0.1, P1 - 1)];
           };
           const n = 1200, pts = [], run = [[0, 0]], rs = [[0, 0]], rv = [[0, 0]];
           let I = 0, Is = 0, Iv = 0, prev = at(0);
@@ -412,7 +413,6 @@ with molar (or per-particle) entropy $s = S/N$ and volume $v = V/N$. Hence the i
           sp.setView([0, 1], [lo - pad, hi + pad]);
           sp.hline(0, { color: 'muted', width: 1 });
           sp.hline(direct, { color: 'green', width: 1.6, dash: [6, 4] });
-          sp.text('μ(B) − μ(A) from the state function', 0.02, direct, { dy: direct > (lo + hi) / 2 ? 14 : -12, size: 11, color: 'green', plate: true });
           sp.path(rs, { color: 'red', width: 1.8 }); sp.path(rv, { color: 'blue', width: 1.8 }); sp.path(run, { color: 'gold', width: 3 });
           sp.dot(1, I / KJ, { r: 5, color: 'gold' });
           const vA = M.vOf(a[0], a[1] * BAR);
@@ -422,7 +422,7 @@ with molar (or per-particle) entropy $s = S/N$ and volume $v = V/N$. Hence the i
         v.readout(() => {
           if (!st) return '';
           const { I, direct, sA, vA, Z } = st;
-          return `at A: $s$ = ${v.fix(sA, 2)} J/(K·mol), $v$ = ${v.fix(vA / L, 4)} L/mol (compressibility $Pv/RT$ = ${v.fix(Z, 4)}) · route integral of $-s\\,dT + v\\,dP$ = **${v.fix(I, 4)} kJ/mol** · direct $\\mu(B) - \\mu(A)$ = **${v.fix(direct, 4)} kJ/mol** · difference ${v.sci(Math.abs(I - direct), 1)} kJ/mol (discretization only)`;
+          return `at A: $s$ = ${v.fix(sA, 2)} J/(K·mol), $v$ = ${v.fix(vA / L, 4)} L/mol (compressibility $Pv/RT$ = ${v.fix(Z, 4)}) · route integral of $-s\\,dT + v\\,dP$ = **${v.fix(I, 4)} kJ/mol** · direct $\\mu(B) - \\mu(A)$ = **${v.fix(direct, 4)} kJ/mol** · difference $${v.sci(Math.abs(I - direct), 1)}$ kJ/mol (discretization only)`;
         });
       },
     },
@@ -449,7 +449,7 @@ with $dF = -S\,dT - P\,dV + \mu\,dN$, $dH = T\,dS + V\,dP + \mu\,dN$, $dG = -S\,
           bump: { label: 'non-convex', U: (S) => 1 + 0.55 * S * S - 0.3 * S + 1.15 * Math.exp(-((S - 2) ** 2) / 0.18), T: [-0.5, 4] },
         };
         const which = v.select('curve', Object.entries(CURVES).map(([value, o]) => ({ value, label: o.label })), 'bump');
-        const Tsl = v.slider('slope $T$', -0.5, 5, 1.9, { step: 0.01, fmt: (x) => v.fix(x, 2) });
+        const Tsl = v.slider('slope $T$', -0.5, 5, 1.3, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const back = v.toggle('transform back', true);
         const SMAX = 4;
         const sl = v.stage({ x: [0, SMAX], y: [-8, 10], height: 340, axes: 'box', gutter: true, xlabel: 'S', ylabel: 'U', weight: 1.1, title: '$U(S)$ and its tangent lines' });
@@ -480,7 +480,7 @@ with $dF = -S\,dT - P\,dV + \mu\,dN$, $dH = T\,dS + V\,dP + \mu\,dN$, $dG = -S\,
           sl.line(0, F0, SMAX, F0 + T * SMAX, { color: 'gold', width: 2.4 });
           sl.dot(Sst, U(Sst), { r: 5.5, color: 'gold', label: 'S*', labelPos: 'se' });
           sl.dot(0, F0, { r: 6, color: 'orange' });
-          sl.tex('F(T)', 0, F0, { dx: 30, dy: -2, color: 'orange', size: 14 });
+          sl.tex('F(T)', 0, F0, { dx: 28, dy: 16, color: 'orange', size: 14 });
           // F(T)
           sr.fn((t) => Ft(t)[0], { color: 'orange', width: 2.6, domain: [Ta, Tb], n: 300 });
           sr.line(T - 0.6, F0 + 0.6 * Sst, T + 0.6, F0 - 0.6 * Sst, { color: 'ink', width: 1.6 });
