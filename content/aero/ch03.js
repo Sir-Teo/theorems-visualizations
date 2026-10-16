@@ -573,13 +573,13 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
           const phi = (sol.CDi / sol.CL ** 2) / (s0.CDi / s0.CL ** 2);
           // front view
           A.rect(-1.5, -0.03, 1.5, 0.03, { fill: 'muted', fillAlpha: 0.35, hatch: true, stroke: false }); A.line(-1.5, 0, 1.5, 0, { color: 'ink', width: 2 });
-          A.text('ground (mirror plane)', 1.45, 0.1, { color: 'muted', size: 11, align: 'right' });
+          A.text('ground (mirror plane)', 1.45, -0.12, { color: 'muted', size: 11, align: 'right' });
           const sv = Math.PI / 8, G = 1, vs = [[sv, h, G], [-sv, h, -G], [sv, -h, -G], [-sv, -h, G]];
           A.field((x, y) => { if (y < 0) return [0, 0]; let u = 0, w = 0; for (const [vx, vy, g] of vs) { const q = vort(x, y, vx, vy, g * 0.2); u += q[0]; w += q[1]; } const m = Math.hypot(u, w) || 1, cap = Math.min(m, 0.9) / m; return [u * cap, w * cap]; }, { spacing: 34, color: 'faint' });
           A.line(-0.5, h, 0.5, h, { color: 'ink', width: 4 });
           A.line(-0.5, -h, 0.5, -h, { color: 'muted', width: 2.5, dash: true });
           for (const [vx, vy, g] of vs) { const real = vy > 0; A.dot(vx, vy, { r: 8, color: real ? 'accent' : 'muted', hollow: true }); A.tex(g > 0 ? String.raw`\circlearrowleft` : String.raw`\circlearrowright`, vx, vy, { color: real ? 'accent' : 'muted', size: 17, align: 'center', baseline: 'middle' }); }
-          A.measure(1.0, 0, 1.0, h, `h = ${fx(h, 2)} b`);
+          A.measure(-1.0, 0, -1.0, h, `h = ${fx(h, 2)} b`);
           sync = true; hd.set(0, h); sync = false;
           A.text('image wing, opposite circulation', 0, -h - 0.08, { color: 'muted', size: 10.5, align: 'center' });
           // phi curve

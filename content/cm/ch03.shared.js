@@ -50,18 +50,19 @@ export function ljSums(struct, Rc = 11) {
   } else { // ideal hcp: a = 1, c = √(8/3)
     const c = Math.sqrt(8 / 3); basis = [[0, 0, 0], [0.5, Math.sqrt(3) / 6, c / 2]]; a1 = [1, 0, 0]; a2 = [0.5, Math.sqrt(3) / 2, 0]; a3 = [0, 0, c]; vol = (Math.sqrt(3) / 2) * c / 2;
   }
-  d = 1; let s6 = 0, s12 = 0, nn = 0; const M = Math.ceil(Rc * 1.2) + 1;
+  d = 1; let s6 = 0, s12 = 0, nn = 0; const shellMap = new Map(); const M = Math.ceil(Rc * 1.2) + 1;
   for (let i = -M; i <= M; i++) for (let j = -M; j <= M; j++) for (let k = -M; k <= M; k++) {
     const R = [0, 1, 2].map((q) => i * a1[q] + j * a2[q] + k * a3[q]);
     for (let b = 0; b < basis.length; b++) {
       const dx = R[0] + basis[b][0] - basis[0][0], dy = R[1] + basis[b][1] - basis[0][1], dz = R[2] + basis[b][2] - basis[0][2], r2 = dx * dx + dy * dy + dz * dz;
       if (r2 < 1e-9 || r2 > Rc * Rc) continue;
-      const r6 = r2 ** 3; s6 += 1 / r6; s12 += 1 / (r6 * r6); if (r2 < 1.0001) nn++;
+      const r6 = r2 ** 3; s6 += 1 / r6; s12 += 1 / (r6 * r6); if (r2 < 1.0001) nn++; const key = r2.toFixed(4); shellMap.set(key, (shellMap.get(key) || 0) + 1);
     }
   }
   // continuum tail for the r^-6 sum beyond Rc (density 1/vol): ∫ 4πr² r^-6 dr / vol
   s6 += (4 * PI) / (3 * vol * Rc ** 3);
-  return (LJS[struct] = { s6, s12, nn, vol, d });
+  const shells = [...shellMap.entries()].map(([k, c]) => ({ r2: +k, n: c })).sort((a, b) => a.r2 - b.r2).filter((q) => q.r2 < (Rc - 1) ** 2);
+  return (LJS[struct] = { s6, s12, nn, vol, d, shells });
 }
 /** Energy per atom in units of ε as a function of the nearest-neighbour distance r (in units of σ). */
 export const ljEnergy = (S, r) => 2 * (S.s12 / r ** 12 - S.s6 / r ** 6);
