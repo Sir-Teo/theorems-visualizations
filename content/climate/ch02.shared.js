@@ -46,7 +46,7 @@ export function makeGrid(N = 40, ptop = 2) {
   for (let i = 0; i < N; i++) { pm.push(Math.sqrt(e[i] * e[i + 1])); dp.push(e[i] - e[i + 1]); }
   return { N, e, pm, dp };
 }
-export const GRID = makeGrid();
+export const GRID = makeGrid(42, 0.5);
 
 /** Pressure (hPa) → height (km) in the standard-atmosphere-like scale used for labels (H = 7.5 km below, tuned to 6.5 K/km). */
 export function zOfP(p) { return 7.2 * Math.log(PS / p); }
@@ -194,4 +194,58 @@ export function convect(T, w, kk, grid = GRID) {
     }
     if (!changed) break;
   }
+}
+
+/** Heights (km) of the layer mid-points of a temperature profile, by hydrostatic integration z = ∫ R T / g d ln p. */
+export function heights(T, grid = GRID) {
+  const { N, e, pm } = grid, z = []; let acc = 0;
+  for (let i = 0; i < N; i++) { const half = (RD * T[i] / G0) * Math.log(e[i] / pm[i]) * 1e-3; z.push(acc + half); acc += (RD * T[i] / G0) * Math.log(e[i] / e[i + 1]) * 1e-3; }
+  return z;
+}
+/** Height (km) of a pressure level p (hPa) for a profile T (interpolating in ln p). */
+export function zAtP(T, p, grid = GRID) {
+  const z = heights(T, grid), { pm } = grid;
+  if (p >= pm[0]) return z[0] * Math.log(PS / p) / Math.log(PS / pm[0]);
+  for (let i = 0; i < pm.length - 1; i++) if (p <= pm[i] && p >= pm[i + 1]) { const f = Math.log(pm[i] / p) / Math.log(pm[i] / pm[i + 1]); return z[i] + f * (z[i + 1] - z[i]); }
+  return z[z.length - 1];
+}
+/** Ozone mass mixing ratio (kg/kg) of a stratospheric layer peaking near 10 hPa, scaled to `du` Dobson units. */
+export function ozoneProfile(du = 300, grid = GRID) {
+  const { N, pm, dp } = grid, raw = pm.map((p) => Math.exp(-0.5 * ((Math.log(p / 12)) / 1.15) ** 2));
+  let col = 0; for (let i = 0; i < N; i++) col += (raw[i] * dp[i] * 100) / G0; // kg/m² for unit scale
+  const target = du * 2.1415e-5; // 1 DU = 2.14e-5 kg of O₃ per m²
+  return raw.map((r) => (r * target) / col);
+}
+/**
+ * Shortwave (UV and visible) heating by ozone in W m⁻² per layer. `uv` = total solar flux in the absorbing bands
+ * (default 11 W m⁻²); the Hartley/Huggins absorption has k ≈ `kUV` m²/kg so that 300 DU is optically thick.
+ */
+export function ozoneHeating(o3, grid = GRID, uv = 11, kUV = 6e3) {
+  const { N, dp } = grid, out = new Array(N).fill(0); let tauAbove = 0;
+  for (let i = N - 1; i >= 0; i--) { const d = kUV * o3[i] * (dp[i] * 100) / G0; out[i] = uv * (Math.exp(-tauAbove) - Math.exp(-tauAbove - d)); tauAbove += d; }
+  return out;
+}
+
+/**
+ * Grey atmosphere (one infrared band, optical depth τ(p) = τ∞ (p/p_s)² from the top down) in radiative equilibrium,
+ * optionally with convective adjustment to `gamma` K/km. Same numerical scheme as `rce`, with σT⁴ in place of spectra.
+ * Returns {T (layers), Ts, olr, z (km)} for `grid`.
+ */
+export function greyColumn(tauInf, o = {}, grid = GRID) {
+  const { N, e, dp, pm } = grid, asr = o.asr ?? 240, kk = KAPPA_ADIABAT(o.gamma ?? 6.5), conv = o.convect !== false;
+  const dtau = [], tr = []; for (let i = 0; i < N; i++) { dtau.push(tauInf * ((e[i] / PS) ** 2 - (e[i + 1] / PS) ** 2)); tr.push(Math.exp(-DIFF * dtau[i])); }
+  const T = standardT(o.Ts0 ?? 288, 6.5, 200, grid); let Ts = o.Ts0 ?? 288;
+  const dt = 3 * 86400, C = dp.map((d) => (CP * Math.max(d, 10) * 100) / G0), Cs = 4e6;
+  const up = new Float64Array(N + 1), dn = new Float64Array(N + 1), Ce = new Array(N);
+  for (let it = 0; it < (o.iters ?? 1500); it++) {
+    up[0] = SIG * Ts ** 4; for (let i = 0; i < N; i++) up[i + 1] = up[i] * tr[i] + SIG * T[i] ** 4 * (1 - tr[i]);
+    dn[N] = 0; for (let i = N - 1; i >= 0; i--) dn[i] = dn[i + 1] * tr[i] + SIG * T[i] ** 4 * (1 - tr[i]);
+    for (let i = 0; i < N; i++) {
+      const gain = up[i] - dn[i] - (up[i + 1] - dn[i + 1]), S = 8 * SIG * T[i] ** 3 * (1 - tr[i]);
+      Ce[i] = C[i] + S * dt; T[i] += (gain * dt) / Ce[i];
+    }
+    const Cse = Cs + 4 * SIG * Ts ** 3 * dt; Ts += ((asr - (up[0] - dn[0])) * dt) / Cse;
+    if (conv) { if (Ts > T[0]) { const m = (Ts * Cse + T[0] * Ce[0]) / (Cse + Ce[0]); Ts = m; T[0] = m; } convect(T, Ce, kk, grid); }
+  }
+  return { T, Ts, olr: up[N], z: heights(T, grid) };
 }
