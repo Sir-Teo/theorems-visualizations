@@ -226,7 +226,7 @@ Both bounds are sharp: for suitable $b$ and $\delta b$ (or $\delta A$) equality 
           st = { k, maxR, worstR: Math.max(...worst.map((p) => p[1] / p[0])), minR: Math.min(...worst.map((p) => p[1] / p[0])) };
         });
         v.legend([['ink', 'bound  $\\kappa\\rho$'], ['blue', 'random trials'], ['gold', 'extremal choice', { dot: true }]]);
-        v.readout(() => st ? `$\\kappa(A)=${nm(st.k, 1)}$. Largest observed (relative change)/(bound) over 160 random trials: $${nm(st.maxR, 3)}\\le1$; for the extremal choice (gold) the ratio is $${nm(st.minR, 3)}$ to $${nm(st.worstR, 3)}$: the bound is sharp.` : '');
+        v.readout(() => st ? `$\\kappa(A)=${nm(st.k, 1)}$. Largest observed (relative change)/(bound) over 160 random trials: $${nm(st.maxR, 3)}\\le1$; for the extremal choice (gold) the ratio is $${nm(st.minR, 3)}$${Math.abs(st.worstR - st.minR) > 0.01 ? ` to $${nm(st.worstR, 3)}$` : ''}: the bound is sharp.` : '');
       },
     },
     // ------------------------------------------------------------------ 3.4
@@ -284,11 +284,11 @@ Both bounds are sharp: for suitable $b$ and $\delta b$ (or $\delta A$) equality 
           const n = nn.value, x = solve(n, m, p);
           R.hline(0, { color: 'green', width: 2 });
           if (x) {
-            const dev = x.map((t) => t - 1), mx = Math.max(1e-12, ...dev.map(Math.abs)) * 1.25;
+            const raw = x.map((t) => t - 1), big = Math.max(1e-18, ...raw.map(Math.abs)), unit = 10 ** Math.floor(Math.log10(big)), dev = raw.map((t) => t / unit), mx = Math.max(...dev.map(Math.abs)) * 1.25;
             R.setView([0.3, 16.7], [-mx, mx]);
             dev.forEach((d, i) => R.line(i + 1, 0, i + 1, d, { color: 'orange', width: 3 }));
             R.dots(dev.map((d, i) => [i + 1, d]), { color: 'orange', r: 4.5 });
-            R.corner(`vertical scale ±${v.fmt(mx, 2)} (exact value 1)`, 'tr', { color: 'muted' });
+            R.corner(`vertical unit: ${v.M.pow10Text(Math.round(Math.log10(unit)))} (exact value 1)`, 'tr', { color: 'muted' });
           } else { R.setView([0.3, 16.7], [-1, 1]); R.text('Cholesky breaks down: not numerically positive definite', 8.5, 0.3, { align: 'center', color: 'red', size: 13 }); }
           // slope of log κ for n ≥ 6
           const xs = [], ys = [];
@@ -409,7 +409,6 @@ i.e. *each operation returns the exact result of the operation, rounded*. The ax
       idea: String.raw`The axiom is a consequence of correct rounding: the computed value is the floating-point number nearest the exact result of the operation on the given operands, and by 3.6 such a rounding errs by at most the relative amount $\epsilon_{\rm machine}$. Every error analysis in the chapter replaces each flop by $(\text{exact})(1+\varepsilon)$ and bookkeeps the $\varepsilon$'s.`,
       caption: String.raw`Pick an operation and a precision $p$. Each of the $2000$ trials draws two random operands. Top: histogram of $\log_{10}(\text{relative error}/\epsilon_{\rm machine})$ of the computed result against the exact result *of the same operands*; the red line is the axiom's bound $0$, and no trial crosses it. Bottom: the same errors against the position of the exact result inside its binade; the green curve $1/m$ is the largest possible rounding error for a result with mantissa $m$ (half a gap). Now switch on “operands are rounded reals”: the operands are $\mathrm{fl}$ of random reals and the error is measured against the exact result for the *real* operands; for subtraction it is unbounded in units of $\epsilon_{\rm machine}$ (cancellation). The last line shows $(a+b)+c\ne a+(b+c)$ in $p$ bits.`,
       deps: ['nla-3.6'],
-      credit: 'J. H. Wilkinson’s floating-point error analysis, 1950s–1960s (standard model of arithmetic)',
       tags: ['floating-point', 'rounding'],
       refs: ['Trefethen–Bau Lec. 13'],
       viz(v) {
@@ -460,7 +459,7 @@ i.e. *each operation returns the exact result of the operation, rounded*. The ax
       idea: String.raw`The set $\{\tilde x:\ f(\tilde x)=\tilde f(x)\}$ is the set of inputs *explaining* the computed output. Backward stability asks that this set comes within $O(\epsilon_{\rm machine})\|x\|$ of the true data $x$; because the data of a real problem is only known to that accuracy anyway, nothing more can be asked of an algorithm. By 3.1, a backward error $\eta$ translates into a forward error of at most $\kappa\eta$ (3.9). The algorithm below, for the smaller root of $t^2-2bt+c$, shows both outcomes for the *same* well-conditioned problem.`,
       caption: String.raw`Problem: the smaller root $t=b-\sqrt{b^2-c}$ of $t^2-2bt+c$ with $b=1$ and $0<c<1$. The plane is the space of *relative* perturbations $(\eta_b,\eta_c)$ of the data, in units of $\epsilon_{\rm machine}$; the origin is the actual data. The red line is the set of data whose exact root equals the computed $\hat t$; its distance from the origin is the backward error. The green disc has radius $1$ (backward stable = the line crosses a small multiple of it). Algorithm 1 (naive $b-\sqrt{b^2-c}$) loses all accuracy as $c\to0$ though the problem stays well conditioned; algorithm 2 ($c/(b+\sqrt{b^2-c})$) keeps the line near the origin. Bottom: errors against $c$.`,
       deps: ['nla-3.7', 'nla-3.1'],
-      credit: 'Backward error analysis was developed and championed by J. H. Wilkinson (ACM Turing Award 1970), building on earlier work of von Neumann–Goldstine and Turing',
+      credit: 'Backward error analysis was made the standard tool of rounding-error analysis by J. H. Wilkinson (ACM Turing Award 1970; he did not invent the idea but used it most effectively)',
       tags: ['stability', 'backward-error'],
       refs: ['Trefethen–Bau Lec. 14'],
       viz(v) {
@@ -487,10 +486,10 @@ i.e. *each operation returns the exact result of the operation, rounded*. The ax
           const foot = [(bq * rhs) / (nn * nn), (a * rhs) / (nn * nn)], d2 = [a / nn, -bq / nn];
           P.line(foot[0] - 3 * view * d2[0], foot[1] - 3 * view * d2[1], foot[0] + 3 * view * d2[0], foot[1] + 3 * view * d2[1], { color: 'red', width: 2.4 });
           P.circle(0, 0, 1, { fill: 'green', fillAlpha: 0.25, color: 'green', width: 2.6 });
-          P.text('radius 1 (ε)', 0, -0.07 * view, { align: 'center', color: 'green', size: 12 });
+          if (view <= 8) P.text('radius 1 (ε)', 0, -0.07 * view, { align: 'center', color: 'green', size: 12 });
           P.dot(0, 0, { color: 'ink', r: 4 });
           P.dot(foot[0], foot[1], { color: 'red', r: 5 });
-          P.corner(`distance to the red line: ${v.fmt(dist, 3)} ε`, 'tl', { color: 'red', plate: true });
+          P.corner(`distance to the red line: ${v.fmt(dist, 3)} ε${view > 8 ? ' (the green unit disc is a dot at this scale)' : ''}`, 'tl', { color: 'red', plate: true });
           // error curves
           const cs = Array.from({ length: 150 }, (_, i) => -8 + (7.98 * i) / 149);
           const get = (name, key) => cs.map((l) => { const q = run(name, 10 ** l, p); return [l, Math.max(0.11, q[key] / eps)]; });

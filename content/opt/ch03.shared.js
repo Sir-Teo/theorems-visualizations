@@ -138,3 +138,14 @@ export function descend(f, x, y, { iters = 500, box = null } = {}) {
   path.push([x, y]);
   return { x, y, f: fx, path };
 }
+
+/** n contour levels spread over the (sampled) range of f on a window, spaced by quantiles so crowded regions get more lines. */
+export function levelsOf(f, x0, x1, y0, y1, n = 12) {
+  const vals = [];
+  for (let j = 0; j <= 24; j++) for (let i = 0; i <= 32; i++) { const z = f(x0 + ((x1 - x0) * i) / 32, y0 + ((y1 - y0) * j) / 24); if (Number.isFinite(z)) vals.push(z); }
+  vals.sort((a, b) => a - b);
+  if (!vals.length) return [];
+  const out = [];
+  for (let k = 1; k <= n; k++) out.push(vals[Math.min(vals.length - 1, Math.floor((vals.length * k) / (n + 1)))]);
+  return [...new Set(out)];
+}

@@ -5,7 +5,7 @@
 // and envelopes are computed by brute force on a grid and compared with closed forms where those exist.
 import {
   clamp, mulberry, hull, chordTest, chordTest1, chordTest2, grad2, hess2, eigs2, conjugateOnGrid, linspace, pwl,
-  memo, rgbA, descend, d1,
+  memo, rgbA, descend, d1, levelsOf,
 } from './ch03.shared.js';
 
 /** Test functions of one variable on [-3, 3] (y-range about [-1, 7]). */
@@ -117,9 +117,9 @@ the tangent plane at any point is a global underestimator. In particular, if $f$
         v.render(() => {
           const O = FS[sel.value], f = O.f, p = [P.x, P.y], f0 = f(p[0], p[1]), g = grad2(f, p[0], p[1]);
           const gap = (x, y) => f(x, y) - f0 - g[0] * (x - p[0]) - g[1] * (y - p[1]);
-          const sc = 2.2;
-          S.raster((x, y) => { const t = clamp(gap(x, y) / sc, -1, 1); return [...v.diverge(t, 'red', 'blue').map(Math.round), 255 * (0.12 + 0.55 * Math.abs(t))]; }, { res: 3, key: `gap|${sel.value}|${p[0].toFixed(3)}|${p[1].toFixed(3)}` });
-          S.clip(() => S.contour(f, 12, { color: 'ink', alpha: 0.4, width: 1, res: 100 }));
+          const sc = 1.0;
+          S.raster((x, y) => { const t = clamp(gap(x, y) / sc, -1, 1); return [...v.diverge(t, 'red', 'blue').map(Math.round), 255 * (0.1 + 0.6 * Math.sqrt(Math.abs(t)))]; }, { res: 3, key: `gap|${sel.value}|${p[0].toFixed(3)}|${p[1].toFixed(3)}` });
+          S.clip(() => S.contour(f, levelsOf(f, view.x[0], view.x[1], view.y[0], view.y[1], 12), { color: 'ink', alpha: 0.45, width: 1, res: 100 }));
           S.arrow(p[0], p[1], p[0] - 0.5 * g[0] / (Math.hypot(...g) + 1) * 2, p[1] - 0.5 * g[1] / (Math.hypot(...g) + 1) * 2, { color: 'green', width: 2.2 });
           // global gap minimum over the window
           let mn = Infinity, am = null;
@@ -187,8 +187,8 @@ the tangent plane at any point is a global underestimator. In particular, if $f$
             }
             return { frac: tot ? neg / tot : 0, mn, ct: chordTest2(f, [-2, -1.6, 2, 1.6]) };
           });
-          S.raster((x, y) => { const l = lm(x, y); if (!Number.isFinite(l)) return null; const t = clamp(l / 3, -1, 1); return [...v.diverge(t, 'red', 'blue').map(Math.round), 255 * (0.18 + 0.6 * Math.min(1, Math.abs(t) * 1.6))]; }, { res: 4, key: 'lmin|' + key });
-          S.clip(() => S.contour(f, 12, { color: 'ink', alpha: 0.4, width: 1, res: 100 }));
+          S.raster((x, y) => { const l = lm(x, y); if (!Number.isFinite(l)) return null; const t = clamp(l / 2, -1, 1); return [...v.diverge(t, 'red', 'blue').map(Math.round), 255 * (0.15 + 0.6 * Math.sqrt(Math.abs(t)))]; }, { res: 4, key: 'lmin|' + key });
+          S.clip(() => S.contour(f, levelsOf(f, view.x[0], view.x[1], view.y[0], view.y[1], 12), { color: 'ink', alpha: 0.45, width: 1, res: 100 }));
           const H = hess2(f, P.x, P.y, 2e-3), E = eigs2(H), c = [P.x, P.y];
           [[E.l1, E.v1], [E.l2, E.v2]].forEach(([l, w]) => S.arrow(c[0], c[1], c[0] + 0.5 * w[0], c[1] + 0.5 * w[1], { color: l >= 0 ? 'blue' : 'red', width: 2.4 }));
           const f0 = f(c[0], c[1]);
@@ -254,7 +254,7 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
           pts.forEach((p, i) => L.dot(p[0], p[1], { r: 3 + 14 * Math.sqrt(th[i]), color: 'accent', alpha: 0.5 }));
           L.segment([xb, lhs], [xb, rhs], { color: rhs >= lhs ? 'green' : 'red', width: 3.2 });
           L.dot(xb, lhs, { r: 6, color: 'green', label: '$f(\\bar x)$', labelPos: 'se' });
-          L.dot(xb, rhs, { r: 7, color: 'gold', label: '$\\sum\\theta_if(x_i)$', labelPos: 'ne' });
+          L.dot(xb, rhs, { r: 7, color: 'gold', label: '$\\sum\\theta_if(x_i)$', labelPos: 'nw' });
           // rescaling curve
           let lmax = 2; xs.forEach((x) => { const d = x - xb; if (Math.abs(d) > 1e-9) lmax = Math.min(lmax, ((d > 0 ? 3 - xb : xb + 3) / Math.abs(d))); });
           const J = (lam) => xs.reduce((a, x, i) => a + th[i] * F(xb + lam * (x - xb)), 0) - F(xb);
@@ -306,7 +306,7 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
           });
           const cur = mc(sel.value + '|' + a.toFixed(3), () => chordTest((x, y) => f(x, y) <= a, [-3, -2.4, 3, 2.4], { seed: 8 }));
           S.raster((x, y) => (f(x, y) <= a ? rgbA(v, cur.bad ? 'red' : 'accent', 70) : null), { res: 3, key: `sub|${sel.value}|${a.toFixed(3)}|${cur.bad}` });
-          S.clip(() => S.contour(f, 10, { color: 'ink', alpha: 0.25, width: 1, res: 100 }));
+          S.clip(() => S.contour(f, levelsOf(f, -3, 3, -2.4, 2.4, 10), { color: 'ink', alpha: 0.3, width: 1, res: 100 }));
           S.clip(() => S.contour(f, [a], { color: cur.bad ? 'red' : 'accent', width: 2.6, res: 160 }));
           if (cur.worst) S.segment(cur.worst[0], cur.worst[1], { color: 'red', width: 1.4, dash: true });
           R.fn((x) => f(x, 0), { color: 'accent', width: 2.6, n: 300 });
@@ -320,7 +320,7 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
         v.readout(() => {
           const { cur, fl } = info;
           const f3 = fl.fct.bad === 0;
-          return `Sublevel set at $\\alpha$: ${cur.m < 12 ? 'empty or too small to test' : cur.bad === 0 ? '**convex** (no chord leaves it)' : `**not convex**: ${cur.bad} of ${cur.tested} chords leave it`}. Across 12 levels, **${fl.ok}** of ${fl.tot} sublevel sets are convex.\nChord test on $f$ itself: **${fl.fct.bad}** of ${fl.fct.tested} chords above the graph — ${f3 ? '$f$ is convex, so every sublevel set had to pass' : fl.ok === fl.tot ? '$f$ is **not** convex although every sublevel set is: the converse fails' : '$f$ is not convex'}.`;
+          return `Sublevel set at $\\alpha$: ${cur.m < 12 ? 'empty or too small to test' : cur.bad === 0 ? '**convex** (no chord leaves it)' : `**not convex**: ${cur.bad} of ${cur.tested} chords leave it`}. Across 12 levels (${fl.tot} of them non-empty), **${fl.ok}** sublevel sets are convex.\nChord test on $f$ itself: **${fl.fct.bad}** of ${fl.fct.tested} chords above the graph — ${f3 ? '$f$ is convex, so every sublevel set had to pass' : fl.ok === fl.tot ? '$f$ is **not** convex although every sublevel set is: the converse fails' : '$f$ is not convex'}.`;
         });
       },
     },
