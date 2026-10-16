@@ -413,5 +413,92 @@ Either way each of the three candidates wins under one of the three agendas. If 
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────── 2.12
+    {
+      num: '2.12',
+      kind: 'Paradox',
+      name: 'The doctrinal paradox (discursive dilemma)',
+      statement: String.raw`A court of three judges must decide whether a defendant is liable for breach of contract. By doctrine, liability ($C$) holds exactly when there was a valid contract ($P$) **and** it was breached ($Q$): $C \leftrightarrow P \wedge Q$. Judge 1 accepts $P$ and $Q$, judge 2 accepts $P$ but not $Q$, judge 3 accepts $Q$ but not $P$; each applies the doctrine consistently, so only judge 1 finds liability.
+
+- **Premise-based** procedure: majorities accept $P$ (2–1) and $Q$ (2–1), so the court finds the defendant **liable**.
+- **Conclusion-based** procedure: a majority (2–1) rejects $C$, so the court finds the defendant **not liable**.
+
+Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but rejects $C$ — a collectively *inconsistent* set of judgments, although every judge is consistent. The same happens with a disjunctive doctrine $C \leftrightarrow P \vee Q$ and with any number of judges.`,
+      idea: String.raw`Majorities on different propositions are formed by different coalitions: $\{1, 2\}$ carry $P$, $\{1, 3\}$ carry $Q$, but the only judge who accepts both is judge 1. It is Condorcet’s paradox (polsci-2.1) for logically connected propositions instead of rankings: each majority is fine, their combination is not. Kornhauser and Sager posed it for courts; Pettit generalised it to the *discursive dilemma* for any group that must give reasons, and List and Pettit proved that no aggregation rule can be universal, anonymous, systematic and always produce consistent judgments (polsci-3.12, the judgment-aggregation analogue of Arrow). With independent judges who accept each premise with probability $q$, the two procedures disagree with a probability that can be computed exactly, and the chart shows it.`,
+      caption: String.raw`Click a judge’s $P$ or $Q$ cell to change their view. Each judge’s conclusion follows from the doctrine, and the bottom rows give the two procedures’ verdicts: red when they disagree. Switch between the conjunctive and disjunctive doctrine, or add judges. The chart gives the exact probability that the procedures disagree when every judge accepts each premise independently with probability $q$, for several court sizes; the current court is highlighted and the dot is at the chosen $q$.`,
+      deps: ['polsci-2.1'],
+      see: ['polsci-2.11', 'polsci-3.12'],
+      refs: ['T&P ch. 7', 'Kornhauser & Sager (1986), Unpacking the court', 'List & Pettit (2002), Aggregating sets of judgments'],
+      tags: ['judgment aggregation', 'doctrinal paradox', 'discursive dilemma'],
+      credit: 'Kornhauser & Sager, 1986 and 1993; Pettit, 2001; List & Pettit, 2002',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Discursive_dilemma' },
+      viz(v) {
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 340, title: 'judges × propositions · click a premise to flip it' });
+        const Ch = v.stage({ x: [0, 1], y: [0, 0.5], axes: 'box', gutter: true, height: 330, minWidth: 340, xlabel: 'q = chance a judge accepts each premise', ylabel: 'P(procedures disagree)', title: 'how often the two procedures disagree (exact)' });
+        const rule = v.select('doctrine', [{ value: 'and', label: 'C = P and Q' }, { value: 'or', label: 'C = P or Q' }], 'and');
+        const nS = v.slider('judges', 3, 15, 3, { step: 2, int: true, onChange: () => resize() });
+        const qS = v.slider('q', 0, 1, 0.6, { step: 0.01 });
+        let J = [[1, 1], [1, 0], [0, 1]], seed = 4;
+        function resize() { const r = v.rng(seed++), n = nS.value; J = range(n).map((i) => J[i] ? J[i] : [r() < 0.6 ? 1 : 0, r() < 0.6 ? 1 : 0]); }
+        v.button('Random court', () => { const r = v.rng(seed++), q = qS.value; J = range(nS.value).map(() => [r() < q ? 1 : 0, r() < q ? 1 : 0]); });
+        const concl = (p, q) => (rule.value === 'and' ? p && q : p || q) ? 1 : 0;
+        const ana = () => {
+          const n = J.length, mP = sum(J.map((j) => j[0])) > n / 2 ? 1 : 0, mQ = sum(J.map((j) => j[1])) > n / 2 ? 1 : 0, cs = J.map((j) => concl(j[0], j[1]));
+          const mC = sum(cs) > n / 2 ? 1 : 0, prem = concl(mP, mQ);
+          return { n, mP, mQ, cs, mC, prem, clash: mC !== prem, nP: sum(J.map((j) => j[0])), nQ: sum(J.map((j) => j[1])), nC: sum(cs) };
+        };
+        const T = v.table(Tb, { rows: 5, cols: 3, maxCell: 54, size: 14, square: false, cellAspect: 1.5 });
+        Tb.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.i < J.length && h.j >= 0 && h.j < 2) J[h.i][h.j] = 1 - J[h.i][h.j]; });
+        // ---- exact disagreement probability: judges are of four types (P,Q) ∈ {11, 10, 01, 00}
+        const lf = range(40).map((k) => v.M.lgamma(k + 1));
+        function pDis(n, q, md) {
+          const p = [q * q, q * (1 - q), (1 - q) * q, (1 - q) * (1 - q)];
+          let tot = 0;
+          for (let a = 0; a <= n; a++) for (let b = 0; a + b <= n; b++) for (let c = 0; a + b + c <= n; c++) {
+            const d = n - a - b - c, P = a + b > n / 2, Q = a + c > n / 2;
+            const prem = md === 'and' ? P && Q : P || Q, con = md === 'and' ? a > n / 2 : n - d > n / 2;
+            if (prem === con) continue;
+            const lw = lf[n] - lf[a] - lf[b] - lf[c] - lf[d], pr = (k, x) => (k ? k * Math.log(x) : 0);
+            if (p.some((x, i) => x === 0 && [a, b, c, d][i] > 0)) continue;
+            tot += Math.exp(lw + pr(a, p[0]) + pr(b, p[1]) + pr(c, p[2]) + pr(d, p[3]));
+          }
+          return tot;
+        }
+        const NS = [3, 5, 9, 15], cache = new Map();
+        const curve = (n, md) => { const k = `${n}|${md}`; if (!cache.has(k)) cache.set(k, range(101).map((i) => [i / 100, pDis(n, i / 100, md)])); return cache.get(k); };
+        v.render(() => {
+          const A = ana(), n = A.n, yn = (x) => (x ? 'yes' : 'no'), ycol = (x) => (x ? 'green' : 'red');
+          T.set({ rows: n + 2, cols: 3 });
+          T.draw({
+            value: (i, j) => {
+              if (i < n) return yn(j === 0 ? J[i][0] : j === 1 ? J[i][1] : A.cs[i]);
+              if (i === n) return `${yn([A.mP, A.mQ, A.mC][j])} ${[A.nP, A.nQ, A.nC][j]}–${n - [A.nP, A.nQ, A.nC][j]}`;
+              return j < 2 ? yn([A.mP, A.mQ][j]) : `${yn(A.prem)}`;
+            },
+            textColor: (i, j) => ycol(i < n ? (j === 0 ? J[i][0] : j === 1 ? J[i][1] : A.cs[i]) : i === n ? [A.mP, A.mQ, A.mC][j] : j < 2 ? [A.mP, A.mQ][j] : A.prem),
+            fill: (i, j) => (i < n ? (j === 2 ? ['muted', 0.1] : null) : j === 2 ? [A.clash ? 'red' : 'green', 0.2] : ['accent', 0.08]),
+            weight: (i, j) => (i >= n ? 800 : 600),
+            rowLabels: (i) => (i < n ? `judge ${i + 1}` : i === n ? 'majority' : 'premise-based'),
+            colLabels: ['P contract', 'Q breach', rule.value === 'and' ? 'C = P∧Q' : 'C = P∨Q'],
+            highlight: A.clash ? [[n, 2, 'red'], [n + 1, 2, 'red']] : [],
+          });
+          // ---- chart
+          NS.forEach((m) => { const cur = m === n; Ch.path(curve(m, rule.value), { color: cur ? 'accent' : 'muted', width: cur ? 3 : 1.4, alpha: cur ? 1 : 0.7 }); });
+          if (!NS.includes(n)) Ch.path(curve(n, rule.value), { color: 'accent', width: 3 });
+          NS.forEach((m) => { const cv = curve(m, rule.value), top = cv.reduce((a, b) => (b[1] > a[1] ? b : a)); Ch.text(`${m} judges`, top[0], top[1], { dy: -10, size: 10, weight: 700, align: 'center', color: m === n ? 'accent' : 'muted' }); });
+          const pc = pDis(n, qS.value, rule.value);
+          Ch.vline(qS.value, { color: 'gold', width: 1.5, dash: [4, 3] });
+          Ch.dot(qS.value, pc, { r: 6, color: 'gold' });
+        });
+        v.legend([['accent', 'this court’s size'], ['muted', '3, 5, 9 and 15 judges'], ['gold', 'chosen q', { dot: true }]]);
+        v.readout(() => {
+          const A = ana(), n = A.n, yn = (x) => (x ? 'liable' : 'not liable'), pc = pDis(n, qS.value, rule.value);
+          let s = `Premise-based: P ${A.nP}–${n - A.nP}, Q ${A.nQ}–${n - A.nQ} → **${yn(A.prem)}**. Conclusion-based: C ${A.nC}–${n - A.nC} → **${yn(A.mC)}**. `;
+          s += A.clash ? `**The procedures disagree**: majorities accept ${A.mP ? 'P' : '¬P'}, ${A.mQ ? 'Q' : '¬Q'} and ${A.mC ? 'C' : '¬C'}, an inconsistent set under the doctrine, though every judge is consistent. ` : 'They agree here. ';
+          return s + `With ${n} independent judges accepting each premise with probability ${qS.value.toFixed(2)}, they disagree with probability ${(100 * pc).toFixed(1)}%.`;
+        });
+      },
+    },
   ],
 };

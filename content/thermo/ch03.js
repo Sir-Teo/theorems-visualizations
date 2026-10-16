@@ -642,14 +642,15 @@ Each is equivalent to the entropy maximum principle (2.10) for system plus reser
       viz(v) {
         const mode = v.select('setting', [{ value: 'F', label: '(a) free piston, fixed T and V' }, { value: 'G', label: '(b) weighted piston, fixed T and P' }], 'F', { onChange: () => { reset(); } });
         const n2 = v.slider('right side (mol)', 0.2, 2, 0.5, { step: 0.05, fmt: (x) => v.fix(x, 2), onChange: () => reset() });
-        const Tsl = v.slider('$T$', 240, 300, 280, { step: 1, fmt: (x) => x + ' K', onChange: () => reset() });
-        const Pex = v.slider('external $P$', 25, 70, 42, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' bar', onChange: () => reset() });
+        const Tsl = v.slider('$T$', 240, 300, 260, { step: 1, fmt: (x) => x + ' K', onChange: () => reset() });
+        const Pex = v.slider('external $P$', 25, 70, 35, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' bar', onChange: () => reset() });
         const gam = v.slider('friction', 0.1, 3, 0.6, { step: 0.05, fmt: (x) => v.fix(x, 2), onChange: () => reset() });
         const sc = v.stage({ x: [-0.05, 1.05], y: [-0.2, 0.75], height: 300, equal: true, axes: false, weight: 0.9, title: 'the cylinder' });
-        const sf = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: 'box', gutter: true, weight: 1.1 });
+        const sf = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: 'box', gutter: true, xlabel: 'x', ylabel: 'F', weight: 1.1 });
         const Ar = vdw('Ar', true), CO2 = vdw('CO2');
         const VT = 10 * L, TF = 300, AREA = 0.01;   // (a) 10 L cylinder at 300 K; piston area 100 cm²
-        const hd = sf.handle(0.15, 0, { color: 'gold', label: 'start', constrain: (x) => { const r = range(); const xx = clamp(x, r[0] + 0.02 * (r[1] - r[0]), r[1] - 0.02 * (r[1] - r[0])); return [xx, energy(xx)]; }, onDrag: () => reset(false) });
+        let eMin = 0;
+        const hd = sf.handle(0.15, 0, { color: 'gold', label: 'start', constrain: (x) => { const r = range(); const xx = clamp(x, r[0] + 0.02 * (r[1] - r[0]), r[1] - 0.02 * (r[1] - r[0])); return [xx, energy(xx) - eMin]; }, onDrag: () => reset(false) });
         const range = () => mode.value === 'F' ? [0.05, 0.95] : [0.06, 1.2];   // x = V1/VT (a) or V in L (b)
         const energy = (x) => {
           if (mode.value === 'F') { const V1 = x * VT, V2 = VT - V1; return Ar.f(TF, V1) + n2.value * Ar.f(TF, V2 / n2.value); }
@@ -662,7 +663,7 @@ Each is equivalent to the entropy maximum principle (2.10) for system plus reser
         let traj = null;
         const reset = (moveStart = true) => {
           n2.el.hidden = mode.value !== 'F'; Tsl.el.hidden = Pex.el.hidden = mode.value !== 'G';
-          if (moveStart) { const x0 = mode.value === 'F' ? 0.15 : 0.95; hd.set(x0, energy(x0)); }
+          if (moveStart) { const x0 = mode.value === 'F' ? 0.15 : 0.95; hd.set(x0, energy(x0) - eMin); }
           traj = null; v.restart();
         };
         const integrate = () => {
@@ -689,17 +690,18 @@ Each is equivalent to the entropy maximum principle (2.10) for system plus reser
           // energy curve
           const es = []; for (let i = 0; i <= 200; i++) es.push(energy(lerp(r[0], r[1], i / 200)));
           const emin = Math.min(...es), emax = Math.max(energy(hd.x), ...es.slice(10, 190));
-          const top = Math.min(emax, emin + (F ? 4000 : 3000));
-          sf.setView(r, [emin - 0.06 * (top - emin), top + 0.08 * (top - emin)]);
-          sf.setTitle(F ? 'Helmholtz free energy $F(x)$ of both gases (kJ)' : 'Gibbs free energy $G(V) = F + PV$ (kJ)');
-          sf.setLabels(F ? 'piston position x = V₁/V' : 'V (L)', F ? 'F (J, shifted)' : 'G (J, shifted)');
-          sf.fn(energy, { color: 'ink', width: 2.4, domain: r, n: 300 });
+          eMin = emin; if (!hd.dragging) hd.set(hd.x, energy(hd.x) - emin);
+          const top = Math.min(emax, emin + (F ? 4000 : 3000)) - emin;
+          sf.setView(r, [-0.06 * top, top * 1.08]);
+          sf.setTitle(F ? 'Helmholtz free energy $F(x)$ of both gases' : 'Gibbs free energy $G(V) = F + P_{\\text{ext}}V$');
+          sf.setLabels(F ? 'piston position x = V₁/V' : 'V (L)', F ? 'F − F_min (J)' : 'G − G_min (J)');
+          sf.fn((x) => energy(x) - emin, { color: 'ink', width: 2.4, domain: r, n: 300 });
           // local minima
-          for (let i = 1; i < 200; i++) if (es[i] < es[i - 1] && es[i] <= es[i + 1]) { const x = lerp(r[0], r[1], i / 200); sf.vline(x, { color: 'green', dash: [4, 4], width: 1.2 }); sf.dot(x, es[i], { r: 5, color: 'green', hollow: true }); }
-          sf.path(traj.out.slice(0, k + 1).map((p) => [p.x, p.E]), { color: 'gold', width: 1.2, alpha: 0.6 });
-          sf.dot(cur.x, cur.E, { r: 7, color: 'gold' });
+          for (let i = 1; i < 200; i++) if (es[i] < es[i - 1] && es[i] <= es[i + 1]) { const x = lerp(r[0], r[1], i / 200); sf.vline(x, { color: 'green', dash: [4, 4], width: 1.2 }); sf.dot(x, es[i] - emin, { r: 5, color: 'green', hollow: true }); }
+          sf.path(traj.out.slice(0, k + 1).map((p) => [p.x, p.E - emin]), { color: 'gold', width: 1.2, alpha: 0.6 });
+          sf.dot(cur.x, cur.E - emin, { r: 7, color: 'gold' });
           // cylinder
-          sc.rect(0, 0, 1, 0.55, { color: 'ink', width: 2.6 });
+          if (F) sc.rect(0, 0, 1, 0.55, { color: 'ink', width: 2.6 });
           sc.rect(-0.04, -0.1, 1.04, 0, { fill: 'red', fillAlpha: 0.45, color: 'red', width: 1 });
           sc.text(`heat bath ${F ? TF : Tsl.value} K`, 0.5, -0.16, { align: 'center', size: 11.5, color: 'red', weight: 650 });
           if (F) {
@@ -718,15 +720,15 @@ Each is equivalent to the entropy maximum principle (2.10) for system plus reser
             sc.rect(0.4, hgt + 0.04, 0.6, hgt + 0.13, { fill: 'ink', fillAlpha: 0.7, color: 'ink', width: 1 });
             sc.line(0.3, 0, 0.3, 0.7, { color: 'ink', width: 2.6 }); sc.line(0.7, 0, 0.7, 0.7, { color: 'ink', width: 2.6 });
             sc.text(`weight: ${v.fix(Pex.value, 1)} bar`, 0.75, hgt + 0.09, { size: 11.5, color: 'ink' });
-            sc.text(cur.x < 0.2 ? 'liquid-like' : 'gas-like', 0.5, -0.04, { align: 'center', size: 11, color: 'muted', baseline: 'top' });
+            sc.text(cur.x < 0.2 ? 'liquid-like' : 'gas-like', 0.5, hgt / 2, { align: 'center', size: 11.5, color: 'ink', plate: true });
             sc.text(`P = ${v.fix(CO2.P(Tsl.value, cur.x * L) / BAR, 1)} bar`, 0.02, 0.65, { size: 11.5, color: 'teal', weight: 650 });
           }
-          st = { cur, start: traj.out[0], xm: traj.xm, lo: traj.lo, T: F ? TF : Tsl.value, F };
+          st = { cur, start: traj.out[0], xm: traj.xm, lo: traj.lo, T: F ? TF : Tsl.value, F, settled: t > 12 };
         }, { period: 20, still: 15 });
         v.readout(() => {
           if (!st) return '';
           const { cur, start, xm, lo, T, F } = st, name = F ? 'F' : 'G';
-          const local = Math.abs(cur.E - lo) > 1 && Math.abs(cur.K) < 1e-3;
+          const local = st.settled && Math.abs(cur.E - lo) > 1;
           return `$${name}$ + kinetic energy fell by **${v.fix(start.E + start.K - cur.E - cur.K, 1)} J** since the start (never rises) · entropy given to the bath $-\\Delta ${name}/T$ = ${v.fix((start.E - cur.E) / T, 3)} J/K ≥ 0 · global minimum at ${F ? 'x' : 'V'} = ${v.fix(xm, 3)}${F ? ` (ideal gases: $N_1/N$ = ${v.fix(1 / (1 + n2.value), 3)})` : ' L'}${local ? ' · stuck in a **local** minimum: metastable' : ''}`;
         });
       },

@@ -484,7 +484,7 @@ All three frequencies $\partial E/\partial J_i$ are equal: the problem is maxima
         const eS = v.slider('eccentricity (turning points $1 \\mp e$)', 0.05, 0.8, 0.45, { step: 0.01 });
         const aS = v.slider('softening $a$ in $U = -k/\\sqrt{r^2 + a^2}$', 0, 0.8, 0, { step: 0.01 });
         const sO = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 360, title: 'wavefronts of $W_r(r) + L\\varphi$ and orbits' });
-        const sJ = v.stage({ x: [0, 1.6], y: [0, 1.2], axes: 'box', gutter: true, height: 360, xlabel: 'J_φ = L', ylabel: 'J_r', title: 'action plane: curves of constant $E$' });
+        const sJ = v.stage({ x: [0, 1.6], y: [0, 1.2], axes: 'box', gutter: true, height: 360, xlabel: 'Jφ = L', ylabel: 'Jᵣ', title: 'action plane: curves of constant $E$' });
         const U = (r, a) => -1 / Math.sqrt(r * r + a * a);
         const turning = (E, L, a) => {
           const Ue = (r) => U(r, a) + (L * L) / (2 * r * r);
@@ -637,7 +637,7 @@ which is $-2\pi$ for a circle (the bead simply stays put in space) and smaller i
           series(sD, R.al.map((a) => a / TAU), R.s.map((s, k) => (TAU * (s - R.t[k])) / H.L), i, { color: 'blue', width: 2.2 });
           // final shift against duration
           const S = sweep();
-          sF.setView([2, 80], [lo, 0.3]);
+          const lo2 = Math.max(-13, Math.min(lo, ...S.map((z) => z[1] - 0.3))); sF.setView([2, 80], [lo2, 0.3]);
           sF.hline(pred, { color: 'green', width: 1.4, dash: [5, 4] });
           sF.path(S, { color: 'blue', width: 2 }); sF.dots(S, { r: 3.5, color: 'blue' });
           sF.dot(TS.value, B.R.dth, { r: 7, color: 'gold', hollow: true });

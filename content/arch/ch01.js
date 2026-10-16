@@ -866,7 +866,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
           if (!mech) for (let k = 0; k < 4; k++) { const Ry = sol.R[k][1]; if (Math.abs(Ry) < 0.5) continue; const len = Math.max(0.4, Math.min(1.9, Math.abs(Ry) / 600)); s.arrow(BX[k], -0.45 - len, BX[k], -0.45, { color: 'green', width: 2.2, head: 7 }); s.text(kN(Ry), BX[k] + 0.3, -0.45 - len / 2, { size: 10.5, weight: 650, color: 'green' }); }
           if (mech) {
             const maxd = Math.max(1e-12, ...Array.from(sol.d).map(Math.abs).slice(0, 48)), k = 1.6 / maxd;
-            for (const e of sol.el) s.path(v.M.linspace(0, 1, 12).map((xi) => deflected(sol, e, xi, k)), { color: 'red', width: 2, dash: [5, 4] });
+            for (const e of sol.el) { const pts = v.M.linspace(0, 1, 12).map((xi) => deflected(sol, e, xi, k)), a = sol.nodes[e.i], b = sol.nodes[e.j]; const mv = Math.max(...pts.map((p, q) => Math.hypot(p[0] - (a.x + (b.x - a.x) * q / 11), p[1] - (a.y + (b.y - a.y) * q / 11)))); if (mv > 0.08) s.path(pts, { color: 'red', width: 2, dash: [5, 4] }); }
             s.text('MECHANISM: no load path — the dashed shape shows how it collapses', 9, 11.7, { align: 'center', size: 13, weight: 700, color: 'red' });
           }
           v.legend([['blue', 'column in compression (width ∝ force)'], ['red', 'column in tension (hanging) / removed'], ['purple', 'beam bending moment', { area: true }], ['pink', 'over capacity', { area: true }], ['gold', 'selected floor beam'], ['green', 'foundation reactions']]);

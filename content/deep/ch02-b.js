@@ -161,6 +161,8 @@ is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, an
             sL.fn((x) => yarotsky(x, m), { color: 'accent', width: 2 });
             for (let s = 1; s <= m; s++) sL.fn((x) => { let g = x; for (let i = 0; i < s; i++) g = tent(g); return g / 4 ** s; }, { color: CYC[s % CYC.length], width: 1.3, alpha: 0.8, n: 2000 });
             sL.line(0, 0, 1, 1, { color: 'faint', width: 1, dash: [4, 4] });
+            sL.fn((x) => 0.75 + 0.2 * (yarotsky(x, m) - x * x) * 4 ** (m + 1), { color: 'red', width: 1.6, fill: 'red', fillAlpha: 0.15, base: 0.75, n: 3000, domain: [0, 0.62] });
+            sL.text(`error × 4^${m + 1} (rescaled): ${2 ** m} identical arches`, 0.02, 0.98, { size: 11.5, color: 'red', baseline: 'top' });
           } else {
             sL.setView([0, 1], [0, 1]); tL(`error $|P_m(x,y)-xy|$ (scale: 0 to $4^{-m}$)`);
             sL.heat((x, y) => Math.abs(P(x, y, m) - x * y), { cmap: 'theme', color: 'red', range: [0, 4 ** -m], res: 3, key: 'p' + m });
