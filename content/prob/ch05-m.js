@@ -121,6 +121,7 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
       see: ['stoch-3.5', 'stoch-8.6', 'stoch-8.7'],
       tags: ['random walk', 'recurrence'],
       credit: 'G. Pólya, 1921',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Random_walk' },
       viz(v) {
         const dS = v.select('dimension', [{ value: '1', label: '$d=1$' }, { value: '2', label: '$d=2$' }, { value: '3', label: '$d=3$' }], '2');
@@ -308,6 +309,7 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
       deps: ['prob-5.4.6', 'prob-5.4.7', 'prob-2.2.1a'],
       tags: ['random walk', 'recurrence'],
       credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
+      verify: true,
       scope: String.raw`The theorem is a sufficient condition (one-dimensional): the converse fails, since the Cauchy walk is recurrent although $S_n/n$ does not tend to $0$. Counts of returns here use the window $|S_n|<1$ for $20\,000$ steps.`,
       viz(v) {
         const lS = v.select('step law', [

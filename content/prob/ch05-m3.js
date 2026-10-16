@@ -288,6 +288,7 @@ $$\pi(x)=\frac1{E_xT_x},\qquad T_x=\inf\{n\ge1:X_n=x\}.$$`,
       see: ['stoch-4.2'],
       tags: ['stationary measures'],
       credit: 'M. Kac, 1947',
+      verify: true,
       viz(v) {
         const cS = v.select('chain', chainOpts(['gen5', 'bd5', 'wea3']), 'gen5');
         const kS = v.slider('excursions $K$ per state', 20, 5000, 500, { log: true, int: true, sig: 2 });

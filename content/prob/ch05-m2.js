@@ -130,6 +130,7 @@ $$\sup_{0<r<1}\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-r\varphi(y)}\,d
       see: ['prob-5.4.10'],
       tags: ['random walk', 'characteristic functions'],
       credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
+      verify: true,
       scope: String.raw`Integrals are over the unit ball (equivalent to a cube of any fixed size, since the integrand is positive and bounded away from the origin), evaluated by polar quadrature for the lattice walks listed.`,
       viz(v) {
         const wS = v.select('walk', LATTICE_OPTS, 'srw2');
