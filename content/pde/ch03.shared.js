@@ -67,10 +67,10 @@ export function convolveQuad(fun, a, b, x, t, k = 1, n = 600) {
 export function makeHeat(N, x0, x1, k, bc = {}) {
   const h = (x1 - x0) / N, x = new Float64Array(N + 1);
   for (let i = 0; i <= N; i++) x[i] = x0 + i * h;
-  const L = bc.l || 'D', R = bc.r || 'D', gl = bc.gl || (() => 0), gr = bc.gr || (() => 0), th = bc.theta || 1;
-  const H = { N, h, x, u: new Float64Array(N + 1), t: 0, k };
+  const L = bc.l || 'D', R = bc.r || 'D', gl = bc.gl || (() => 0), gr = bc.gr || (() => 0);
+  const H = { N, h, x, u: new Float64Array(N + 1), t: 0, k, theta: bc.theta || 1 };
   H.step = (dt, F) => {
-    const u = H.u, lo = new Float64Array(N + 1), di = new Float64Array(N + 1), up = new Float64Array(N + 1), rhs = new Float64Array(N + 1);
+    const th = H.theta, u = H.u, lo = new Float64Array(N + 1), di = new Float64Array(N + 1), up = new Float64Array(N + 1), rhs = new Float64Array(N + 1);
     const r = (k * dt) / (h * h), t1 = H.t + dt;
     const lap = (i) => {
       const um = i > 0 ? u[i - 1] : u[1], upv = i < N ? u[i + 1] : u[N - 1];
@@ -88,6 +88,11 @@ export function makeHeat(N, x0, x1, k, bc = {}) {
   };
   H.advance = (T, dt, F) => { const n = Math.max(1, Math.ceil((T - H.t) / dt - 1e-9)), d = (T - H.t) / n; for (let i = 0; i < n; i++) H.step(d, F); return H; };
   H.at = (xx) => { const q = (xx - x0) / h, i = Math.max(0, Math.min(N - 1, Math.floor(q))), r = q - i; return H.u[i] * (1 - r) + H.u[i + 1] * r; };
+  /** Advance to time T in steps of about dt with Rannacher start-up (four backward-Euler half steps, then Crank–Nicolson): second order even for discontinuous data. */
+  H.rannacher = (T, dt, F) => {
+    H.theta = 1; for (let i = 0; i < 4 && H.t < T - 1e-12; i++) H.step(Math.min(dt / 2, T - H.t), F);
+    H.theta = 0.5; H.advance(T, dt, F); return H;
+  };
   H.mass = () => { let s = 0; for (let i = 0; i <= N; i++) s += H.u[i] * h * (i === 0 || i === N ? 0.5 : 1); return s; };
   return H;
 }

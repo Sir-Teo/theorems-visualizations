@@ -21,7 +21,7 @@ $$\mathcal A(\omega)=\frac{F}{\sqrt{(\omega_0^2-\omega^2)^2+4\zeta^2\omega_0^2\o
 For $\zeta<1/\sqrt2$ the amplitude has its maximum at $\omega_{\max}=\omega_0\sqrt{1-2\zeta^2}$, with $\mathcal A(\omega_{\max})=F/(2\zeta\omega_0^2\sqrt{1-\zeta^2})$; the peak grows without bound as $\zeta\to0$. For $\zeta=0$ and $\omega=\omega_0$ there is no steady state: the solution from rest is $x=\frac{F}{2\omega_0}\,t\sin\omega_0t$, an oscillation whose amplitude grows linearly.`,
       idea: String.raw`Variation of constants (3.12) writes the response as the convolution of the cosine force with the impulse response $h(t)=e^{-\zeta\omega_0t}\sin(\omega_dt)/\omega_d$; the part that decays is the transient and what survives is the steady state, found fastest by trying $x=\operatorname{Re}\,\mathcal H e^{i\omega t}$ with the transfer function $\mathcal H=1/(\omega_0^2-\omega^2+2i\zeta\omega_0\omega)$, whose modulus is $\mathcal A/F$. The denominator is smallest, relative to its real part, when the driving frequency sits near the natural frequency $\omega_0$; without damping the forcing is a *root* of the characteristic polynomial, and then the particular solution gets a factor $t$, as for Jordan blocks (3.7).`,
       caption: String.raw`Drag the driving frequency $\omega$ along the resonance curve (left; the faint curves show other dampings) and set $\zeta$. The right panel integrates $\ddot x+2\zeta\dot x+x=\cos\omega t$ from rest ($\omega_0=1$): after the transient dies the motion settles inside the dashed band $\pm\mathcal A(\omega)$. Lower the damping and the band at $\omega\approx1$ rises; switch to *undamped* and at $\omega=1$ the amplitude grows like $t/2$ (dashed envelope), while elsewhere you see beats.`,
-      deps: ['ode-3.14', 'ode-3.12'],
+      deps: ['mech-4.7', 'ode-3.12'],
       refs: ['Teschl §3.3'],
       scope: String.raw`Holds for the linear oscillator with constant coefficients and a sinusoidal drive; real structures soften or saturate long before the linear growth shown at $\zeta=0$.`,
       tags: ['resonance', 'forced oscillator'],
@@ -198,7 +198,7 @@ Its eigenvalues $\mu_1,\dots,\mu_n$ (the *Floquet multipliers*) do not depend on
       viz(v) {
         const cd = v.slider('damping $c$', 0, 0.4, 0, { step: 0.01 });
         const s = v.stage({ x: [0, 1.6], y: [0, 1.5], axes: 'box', gutter: true, height: 400, xlabel: 'δ', ylabel: 'ε', title: 'stability chart of $\\ddot y+c\\dot y+(\\delta+\\varepsilon\\cos t)y=0$', weight: 1.2 });
-        const sy = v.stage({ x: [0, 60], y: [-3, 3], axes: 'box', gutter: true, height: 400, xlabel: 't', ylabel: 'y', title: 'the solution from $y(0)=0.1$, $\\dot y(0)=0$', weight: 1, minWidth: 260 });
+        const sy = v.stage({ x: [0, 40], y: [-3, 3], axes: 'box', gutter: true, height: 400, xlabel: 't', ylabel: 'y', title: 'the solution from $y(0)=0.1$, $\\dot y(0)=0$', weight: 1, minWidth: 260 });
         const H = s.handle(0.3, 0.5, { color: 'ink', label: '$(\\delta,\\varepsilon)$', labelPos: 'ne', constrain: { x: [0.01, 1.58], y: [0.01, 1.48] } });
         const T = 2 * Math.PI;
         const growth = (d, e, c) => {
@@ -218,11 +218,11 @@ Its eigenvalues $\mu_1,\dots,\mu_n$ (the *Floquet multipliers*) do not depend on
           for (const n of [1, 2]) { const x = (n * n) / 4; if (x < 1.6) { s.dot(x, 0, { r: 4, color: 'ink' }); s.text(n === 1 ? '1/4' : '1', x, 0.06, { size: 11, color: 'ink', align: 'center' }); } }
           const d = H.x, e = H.y, g = growth(d, e, c);
           const Af = (t) => [[0, 1], [-(d + e * Math.cos(t)), -c]];
-          const tr = flow((t, x) => mvec(Af(t), x), 0, [0.1, 0], 60, 3000).map(([t, x]) => [t, x[0]]);
+          const tr = flow((t, x) => mvec(Af(t), x), 0, [0.1, 0], 40, 2000).map(([t, x]) => [t, x[0]]);
           const mx = Math.max(0.3, ...tr.map((q) => Math.abs(q[1])).filter(isFinite));
-          sy.setView([0, 60], [-Math.min(mx * 1.15, 1e4), Math.min(mx * 1.15, 1e4)]);
-          sy.clip(() => { sy.path(tr, { color: 'accent', width: 1.8 }); if (g > 1e-3) { sy.fn((t) => 0.1 * Math.exp(g * t), { color: 'red', width: 1.2, dash: [5, 4], domain: [0, 60] }); sy.fn((t) => -0.1 * Math.exp(g * t), { color: 'red', width: 1.2, dash: [5, 4], domain: [0, 60] }); } });
-          let late = 0; for (let i = 2400; i < tr.length; i++) late = Math.max(late, Math.abs(tr[i][1]));
+          sy.setView([0, 40], [-Math.min(mx * 1.15, 1e4), Math.min(mx * 1.15, 1e4)]);
+          sy.clip(() => { sy.path(tr, { color: 'accent', width: 1.8 }); if (g > 1e-3) { sy.fn((t) => 0.1 * Math.exp(g * t), { color: 'red', width: 1.2, dash: [5, 4], domain: [0, 40] }); sy.fn((t) => -0.1 * Math.exp(g * t), { color: 'red', width: 1.2, dash: [5, 4], domain: [0, 40] }); } });
+          let late = 0; for (let i = 1500; i < tr.length; i++) late = Math.max(late, Math.abs(tr[i][1]));
           info = { g, late, d, e, pred: Math.abs(d - 0.25) < e / 2 };
         });
         v.readout(() => {
@@ -247,7 +247,7 @@ where $E^s$, $E^c$, $E^u$ are the real parts of the sums of the generalized eige
       tags: ['invariant subspaces', 'stable manifold'],
       viz(v) {
         const lam = v.slider('real eigenvalue $\\lambda$', -1.5, 1.5, -0.7, { step: 0.05 });
-        const alp = v.slider('$\\alpha$ (real part of the pair)', -0.8, 0.8, 0.3, { step: 0.05 });
+        const alp = v.slider('$\\alpha$ (real part of the pair)', -0.8, 0.8, 0, { step: 0.05 });
         const bet = v.slider('$\\beta$ (frequency)', 0.5, 2.5, 1.3, { step: 0.05 });
         const Tm = v.slider('time span $T$', 1, 8, 5, { step: 0.1 });
         const S = v.stage({ x: [-2.4, 2.4], y: [-2.1, 2.1], equal: true, axes: false, height: 440, title: 'invariant subspaces of a $3\\times3$ matrix' });

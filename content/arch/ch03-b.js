@@ -237,7 +237,7 @@ export default {
       tags: ['pointed arch', 'gothic', 'thrust'],
       viz(v) {
         const N = 40, half = N / 2;
-        const xS = v.slider('pointedness ξ = e/(R − e)', 0, 3, 1, { step: 0.05 }), tS = v.slider('thickness t (half-span = 1)', 0.04, 0.3, 0.12, { step: 0.005 }), pS = v.slider('crown load, share of the arch weight', 0, 2, 0.3, { step: 0.01 });
+        const xS = v.slider('pointedness ξ = e/(R − e)', 0, 3, 1, { step: 0.05 }), tS = v.slider('thickness t (half-span = 1)', 0.04, 0.3, 0.12, { step: 0.005 }), pS = v.slider('crown load, share of the arch weight', 0, 2, 0.15, { step: 0.01 });
         const PUB = [[0, 0.10748], [0.1, 0.08856], [0.2, 0.07587], [0.25, 0.0709], [0.33, 0.06399], [0.5, 0.0537], [0.6, 0.04902], [0.8, 0.0418], [1, 0.03964], [1.5, 0.03855], [2, 0.03588], [2.5, 0.03303], [3, 0.03038]];
         const A = v.stage({ x: [-1.4, 1.4], y: [-0.2, 3.1], equal: true, axes: false, height: 340, weight: 1.2, title: 'the arch' });
         const B = v.stage({ x: [0, 3], y: [0, 0.5], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 220, xlabel: 'pointedness ξ', ylabel: 'H / W', title: 'allowed horizontal thrust' });
@@ -280,6 +280,117 @@ export default {
           const f = bestFit((t) => mk(xi, t), () => [], {}, 1e-3, 0.6, 22), pub = PUB.find((p) => Math.abs(p[0] - xi) < 0.011);
           const tmin = f ? f.t / g.R : NaN;
           return `Rise ${f2(g.rise, 2)} for a span of 2; ${rg ? `self-weight thrust from ${f2(rg.Hmin / g.W, 3)} to ${f2(rg.Hmax / g.W, 3)} of the arch weight (${f2(rg.Hmin, 1)} to ${f2(rg.Hmax, 1)} kN/m)` : 'this ring is below the minimum thickness'}. Minimum thickness $t_{\\min}/R = ${f2(tmin, 4)}$${pub ? ` (tabulated: ${pub[1]})` : ''}; largest crown load ${cf ? f2(cf.lam, 2) + ' W = ' + f2(cf.lam * g.W, 1) + ' kN/m' : '—'}.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.12
+    {
+      num: '3.12',
+      kind: 'Method',
+      name: 'Medieval rules of proportion for buttresses',
+      statement: String.raw`Long before the line of thrust was understood, builders sized buttresses by geometric rules: the depth is a fixed fraction of the span, or follows from a construction drawn on the arch itself. In Huerta's survey the Gothic rules give a depth of nearly a quarter of the span and the Renaissance rules between a third and a half; a late-Gothic manuscript on the choir sets the wall at a tenth of the span and the buttress at three times that, three tenths. A geometrical rule of Gothic origin, recorded by Derand (1643) and later called Blondel's rule, divides the intrados of the arch into three equal parts, joins the first division point to the springing, and prolongs that line by its own length: the end point gives the depth of the buttress. All these rules are proportional, so the same ratio serves a span of 10 m or 100 m. Checking them against the thrust-line calculation of arch-3.9 shows how much margin each leaves, and how the construction adapts to a pointed or a flat arch.`,
+      idea: String.raw`A rule that scales with the span is consistent with statics: arch weight, thrust $H$ and buttress weight all scale with the same power of the size, so the line of thrust enters the base at the same fraction of the span however large the building is (Galileo's square-cube argument concerns stresses, which the safe theorem does not use, arch-3.5). The Derand construction makes the depth depend on the arch's shape through the position of the first third-point of the intrados: for a semicircle it is exactly a quarter of the span, a pointed arch gives less, a flatter one more, which follows the trend of the thrust (pointed arches push less, arch-3.11). The calculation below takes the least and the greatest thrust compatible with the ring (arch-3.5) and finds the width at which the line of thrust just reaches the outer toe of a buttress of the chosen height, with the closed formula of arch-3.9.`,
+      caption: String.raw`Choose an arch shape and a buttress height. The picture draws the Derand construction on the intrados (division points, the line from the springing to the first division point and its prolongation to F), the buttress with the depth the selected rule gives, and the line of thrust through arch and buttress. The plot compares the rule widths (horizontal lines) with the width needed against overturning, for the least and the greatest thrust of the arch, as the buttress gets taller. All widths are fractions of the clear span (the intrados). The rule is one reading of a verbal description (see scope); the other two are the proportions quoted in the survey.`,
+      deps: ['arch-3.9'],
+      see: ['arch-3.10', 'arch-3.11'],
+      refs: ['Heyman'],
+      credit: 'Gothic rules (Baccojani 1546 and earlier), Derand 1643, as surveyed by Huerta 2006',
+      scope: String.raw`The Derand construction is read here as: the first third-point of the intrados, by length, is joined to the springing, and the buttress depth is the horizontal distance from the springing to that point (the prolonged line ends at its mirror image, so the depth is the same). This reading gives exactly span/4 for a semicircle, matching "nearly a quarter of the span" for Gothic rules; I did not see Derand's own text. The comparison uses plain rectangular buttresses of the same masonry as the arch, no surcharge, self-weight only.`,
+      verify: true,
+      tags: ['proportion', 'gothic', 'buttress'],
+      viz(v) {
+        const N = 40, S = 5, span = 10;
+        const shape = v.select('arch shape', [{ value: 'round', label: 'round' }, { value: 'equi', label: 'equilateral' }, { value: 'lancet', label: 'lancet' }, { value: 'seg', label: 'segmental 120°' }], 'round');
+        const rule = v.select('rule shown', [{ value: 'derand', label: 'Derand construction' }, { value: 'q', label: 'span / 4' }, { value: 'tenth', label: '3 span / 10' }], 'derand');
+        const tS = v.slider('ring thickness / span', 0.04, 0.16, 0.08, { step: 0.005 }), hS = v.slider('buttress height / span', 0.2, 3, 1, { step: 0.02 }), st = v.select('thrust of the arch', [{ value: 'min', label: 'least' }, { value: 'max', label: 'greatest' }], 'max');
+        const A = v.stage({ x: [-9, 9], y: [-12, 9], equal: true, axes: false, height: 340, weight: 1.5, title: 'the Derand construction and the thrust line' });
+        const B = v.stage({ x: [0, 3], y: [0, 0.6], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'buttress height / span', ylabel: 'width / span', title: 'rules against the width needed' });
+        const mkArch = (k, tr) => (k === 'round' ? arch({ R: S, t: tr * span, N, gamma: GAM }) : k === 'equi' ? arch({ R: 2 * S, e: S, t: tr * span, N, gamma: GAM }) : k === 'lancet' ? arch({ R: 3 * S, e: 2 * S, t: tr * span, N, gamma: GAM }) : arch({ R: S / Math.sin(Math.PI / 3), t: tr * span, N, alpha: Math.PI / 3, gamma: GAM }));
+        const third = (g) => { const P = g.joints.map((J) => J.a), cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])); const tot = cum[cum.length - 1], at = (s) => { let i = 1; while (i < cum.length - 1 && cum[i] < s) i++; const f = (s - cum[i - 1]) / (cum[i] - cum[i - 1]); return [P[i - 1][0] + f * (P[i][0] - P[i - 1][0]), P[i - 1][1] + f * (P[i][1] - P[i - 1][1])]; }; return { C: at(tot / 3), Bp: at((2 * tot) / 3) }; };
+        let M = null;
+        v.render(() => {
+          const g = mkArch(shape.value, tS.value), rg = thrustRange(g, []), SP = g.span, h = hS.value * SP, D = g.joints[0].a, { C, Bp } = third(g);
+          const wD = C[0] - D[0], rules = { derand: wD, q: SP / 4, tenth: (3 * SP) / 10 }, w = rules[rule.value];
+          const need = (u, hh) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], c = V0 * (x0 - D[0]) - H * hh; return (-V0 + Math.sqrt(V0 * V0 - 2 * GAM * hh * c)) / (GAM * hh); };
+          A.setView([-S * 1.9 - 1, S * 1.9 + 1], [-h - 1.5, g.rise + 1.8]);
+          drawArch(v, A, g, { fillAlpha: 0.12 });
+          if (!rg) { A.corner('this ring cannot stand', 'tl', { color: 'red' }); return; }
+          const u = rg[st.value], tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], xo = D[0] - w, xc = D[0] - w / 2, X = (d) => (V0 * x0 + GAM * w * d * xc - H * d) / (V0 + GAM * w * d), ok = X(h) >= xo - 1e-9;
+          const FS = (V0 * (x0 - xo) + (GAM * w * w * h) / 2) / (H * h);
+          for (const sg of [-1, 1]) { A.rect(sg < 0 ? xo : -D[0], -h, sg < 0 ? D[0] : -xo, 0, { fill: 'muted', fillAlpha: 0.2, color: 'ink', width: 1.2 }); }
+          A.line(-S * 1.9, -h, S * 1.9, -h, { color: 'faint', width: 1 });
+          drawThrust(v, A, tl, { color: 'red', width: 2.2 });
+          for (const sg of [-1, 1]) { const pts = [[sg * x0, 0]]; for (let k = 1; k <= 40; k++) { const d = (h * k) / 40; pts.push([sg * X(d), -d]); } A.path(pts, { color: ok ? 'red' : 'orange', width: 2.4 }); }
+          // construction
+          const F = [2 * D[0] - C[0], 2 * D[1] - C[1]];
+          A.line(F[0], F[1], C[0], C[1], { color: 'purple', width: 1.6, dash: [5, 3] }); A.dot(C[0], C[1], { r: 4.5, color: 'purple' }); A.dot(Bp[0], Bp[1], { r: 4.5, color: 'purple' }); A.dot(F[0], F[1], { r: 4.5, color: 'purple' }); A.dot(D[0], D[1], { r: 3.5, color: 'ink' });
+          A.text('C', C[0], C[1], { dx: 9, dy: -8, size: 12, color: 'purple', weight: 650 }); A.text('B', Bp[0], Bp[1], { dx: -9, dy: -8, size: 12, color: 'purple', weight: 650, align: 'right' }); A.text('F', F[0], F[1], { dx: -9, dy: 6, size: 12, color: 'purple', weight: 650, align: 'right' });
+          A.line(D[0], -h - 0.9, D[0] - wD, -h - 0.9, { color: 'purple', width: 2 }); A.line(D[0], -h - 1.3, D[0] - w, -h - 1.3, { color: 'ink', width: 2 });
+          A.corner(ok ? 'the line stays inside the base' : 'the line leaves the base: overturns', 'tl', { color: ok ? 'muted' : 'red' });
+          // plot
+          const hs = Array.from({ length: 60 }, (_, i) => 0.05 + (i / 59) * 2.95), lo = hs.map((x) => [x, need(rg.min, x * SP) / SP]), hi = hs.map((x) => [x, need(rg.max, x * SP) / SP]);
+          B.setView([0, 3], [0, Math.max(0.35, ...hi.map((p) => p[1])) * 1.12]);
+          B.path(lo, { color: 'green', width: 2.2 }); B.path(hi, { color: 'red', width: 2.2 });
+          B.hline(wD / SP, { color: 'purple', width: 1.6 }); B.hline(0.25, { color: 'gold', width: 1.2, dash: [4, 3] }); B.hline(0.3, { color: 'orange', width: 1.2, dash: [4, 3] });
+          B.dot(hS.value, w / SP, { r: 6, color: 'accent' });
+          M = { g, rg, w, wD, FS, ok, h, FSmin: (() => { const uu = rg.min, tl2 = thrustLine(g, [], uu); return (uu[1] * (tl2[0].p[0] - xo) + (GAM * w * w * h) / 2) / (uu[0] * h); })(), need: [need(rg.min, h), need(rg.max, h)], SP };
+        });
+        v.legend([['purple', 'Derand width'], ['gold', 'span/4', { dash: true }], ['orange', '3 span/10', { dash: true }], ['green', 'needed, least thrust'], ['red', 'needed, greatest thrust'], ['accent', 'rule selected (disc)']]);
+        v.readout(() => {
+          if (!M || !M.rg) return '';
+          return `Derand width ${f2(M.wD / M.SP, 3)} of the span of the intrados (a semicircle gives 0.250). Selected rule: ${f2(M.w / M.SP, 3)} of the span; width needed for stability at this height: ${f2(M.need[0] / M.SP, 3)} (least thrust) to ${f2(M.need[1] / M.SP, 3)} (greatest thrust). Factor against overturning with the selected width: ${f2(M.FSmin, 2)} (least thrust) and ${f2(M.FS, 2)} (the thrust shown).`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.13
+    {
+      num: '3.13',
+      kind: 'Paper',
+      name: 'A Description of Helioscopes, and Some Other Instruments',
+      paper: { authors: 'Robert Hooke', year: 1676, title: 'A Description of Helioscopes, and Some Other Instruments', venue: 'London, 1676; the arch is announced as an anagram, deciphered after his death (published 1705): “Ut pendet continuum flexile, sic stabit contiguum rigidum inversum”', url: 'https://archive.org/details/bim_early-english-books-1641-1700_a-description-of-heliosc_hooke-robert_1676' },
+      introduces: ['arch-3.1'],
+      statement: String.raw`In a list of inventions that he intended to publish, appended to this small book of instruments, Hooke named as the second "the true mathematical and mechanical form of all manner of arches for building, with the true butment necessary to each of them", a problem, he wrote, that no architectural writer had attempted, still less solved. He gave the answer only as an anagram, the letters of a Latin sentence set in alphabetical order. The sentence, deciphered after his death, is *ut pendet continuum flexile, sic stabit contiguum rigidum inversum*: as the flexible line hangs, so, inverted, the rigid arch will stand. In modern terms: the shape of a hanging chain turned upside down is the line of thrust of an arch carrying the same weights, so the arch, built along it, is in pure compression.`,
+      idea: String.raw`Before Hooke the arch was designed by rules of proportion (arch-3.12) and by the geometry of the circle or the pointed arch; Galileo had compared the hanging chain with a parabola, and the equation of the chain (the catenary) was found only in 1691, by Leibniz, Huygens and Johann Bernoulli. Hooke's idea is not an equation but a principle: tension and compression are the same equilibrium with opposite sign (arch-1.4, arch-1.5), so any arch with any weights has a hanging chain that is its mirror image, and the mason can draw it with a string. He introduced what arch-3.1 calls Hooke's inversion; it passed to Poleni's analysis of St Peter's dome (1748, arch-4.6), to the funicular models of Gaudí, and to the safe theorem (arch-3.5). With equal links the chain is the catenary, and a ring of constant thickness laid along it carries its own weight with essentially no thickness at all (the picture computes this; the semicircle, by contrast, needs $t/R \ge 0.1075$, arch-3.7).`,
+      caption: String.raw`The paper contains no figure or data for this: what is recreated is the experiment its anagram describes. Left, a chain of 24 equal links hangs from two pins; right, the same curve inverted with 24 voussoirs of constant thickness laid along it. Choose the rise and the thickness, then push part of the arch off the inverted chain with **bump**: the line of thrust can no longer follow the curve, and the thickness the ring then needs rises. Press **decipher** to turn the alphabetised letters of the solution back into Hooke's sentence.`,
+      deps: ['arch-2.1'],
+      refs: [],
+      credit: 'R. Hooke, 1676',
+      scope: String.raw`Modern reconstruction. The letters shown are the alphabetised letters of the deciphered sentence (with u for v, as in 17th-century type); the printed 1676 string is not reproduced because the scan I could read is too corrupt and transcriptions differ in a few letters. The deciphering is reported (secondary sources) as published in 1705 after Hooke's death, which I have not seen.`,
+      verify: true,
+      tags: ['hooke', 'history', 'catenary'],
+      links: { archive: 'https://archive.org/details/bim_early-english-books-1641-1700_a-description-of-heliosc_hooke-robert_1676', wikipedia: 'https://en.wikipedia.org/wiki/Catenary' },
+      viz(v) {
+        const M_ = 24, phrase = 'ut pendet continuum flexile sic stabit contiguum rigidum inversum', letters = phrase.replace(/[^a-z]/g, '').replace(/v/g, 'u').split('').sort().join('');
+        let shown = false;
+        const hS = v.slider('rise of the chain / half-span', 0.2, 1.3, 0.7, { step: 0.01 }), tS = v.slider('thickness of the ring', 0.005, 0.12, 0.05, { step: 0.0025 });
+        const bS = v.slider('bump: push the arch off the chain', -0.2, 0.2, 0, { step: 0.005 }), xS = v.slider('bump position', -0.85, 0.85, -0.4, { step: 0.01 });
+        v.button('decipher the anagram', () => { shown = !shown; });
+        const S = v.stage({ x: [-1.4, 1.4], y: [-1.5, 0.25], equal: true, axes: false, height: 280, title: 'a chain of equal links hangs' });
+        const A = v.stage({ x: [-1.4, 1.4], y: [-0.25, 1.5], equal: true, axes: false, height: 280, title: 'turned over: the arch' });
+        const catA = (h) => { let lo = 0.02, hi = 200; for (let i = 0; i < 80; i++) { const a = Math.sqrt(lo * hi); if (a * (Math.cosh(1 / a) - 1) > h) lo = a; else hi = a; } return Math.sqrt(lo * hi); };
+        let Mo = null;
+        v.render(() => {
+          const h = hS.value, a = catA(h), Sl = a * Math.sinh(1 / a), amp = bS.value, xb = xS.value;
+          const base = Array.from({ length: M_ + 1 }, (_, j) => { const s = -Sl + (2 * Sl * j) / M_, x = a * Math.asinh(s / a); return [x, a * (Math.cosh(1 / a) - Math.cosh(x / a))]; });
+          const pts = base.map(([x, y]) => [x, y + amp * Math.exp(-(((x - xb) / 0.22) ** 2)) * (1 - x * x)]);
+          const mk = (t) => archFromLine(pts, t, GAM), g = mk(tS.value), rg = thrustRange(g, []), c = rg ? centralLine(g, []) : null, fit = bestFit(mk, () => [], {}, 1e-4, 1, 24);
+          const u = c ? c.u : fit ? fit.u : rg ? rg.min : null, tl = u ? thrustLine(g, [], u) : null;
+          const curve = Array.from({ length: 81 }, (_, i) => { const x = -1 + (2 * i) / 80; return [x, a * (Math.cosh(1 / a) - Math.cosh(x / a))]; });
+          S.path(curve.map(([x, y]) => [x, -y]), { color: 'red', width: 2.4 }); base.forEach(([x, y]) => S.dot(x, -y, { r: 3.2, color: 'accent' })); for (const x of [-1, 1]) S.dot(x, 0, { r: 5.5, color: 'ink' });
+          S.text(`catenary: equal links, $y = a\\cosh(x/a)$ with $a = ${f2(a, 3)}$`, 0, -h - 0.25, { size: 12, color: 'muted', align: 'center' });
+          drawArch(v, A, g, { fillAlpha: 0.14 });
+          A.path(curve, { color: 'muted', width: 1.4, dash: [5, 4] });
+          if (tl) drawThrust(v, A, tl, { color: c ? 'red' : 'orange', width: 2.6 });
+          A.corner(c ? 'a line of thrust fits: the arch stands' : 'no line fits: the arch falls', 'tl', { color: c ? 'muted' : 'red' });
+          for (const x of [-1, 1]) A.dot(x, 0, { r: 5.5, color: 'ink' });
+          v.legend([['red', 'chain / line of thrust'], ['muted', 'inverted catenary', { dash: true }], ['accent', 'links']]);
+          Mo = { a, g, rg, c, fit, h };
+        });
+        v.readout(() => {
+          if (!Mo) return '';
+          const { fit, rg, c, g } = Mo;
+          const txt = shown ? `**Ut pendet continuum flexile, sic stabit contiguum rigidum inversum**: “as hangs the flexible line, so, inverted, will the rigid arch stand”.` : `Alphabetised letters of the solution (${letters.length}): ${letters}`;
+          return `${txt}\nWith the ring ${tS.value.toFixed(3)} thick (half-span 1) and the bump ${bS.value.toFixed(3)}: the smallest ring that fits a thrust line is $t_{\\min} ${fit && fit.t < 5e-4 ? '< 0.0005' : '= ' + f2(fit ? fit.t : NaN, 4)}$; ${c ? `the line is ${f2(c.eps, 3)} from the nearest edge at its best.` : 'the ring is too thin: the line leaves the stone.'}${bS.value === 0 ? ' (With no bump the ring follows the chain, and any thickness will do.)' : ''}`;
         });
       },
     },

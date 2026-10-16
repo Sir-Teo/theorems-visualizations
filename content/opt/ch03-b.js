@@ -31,7 +31,7 @@ export default {
           conv: { label: 'convex $e^{x/1.6}$', f: (x) => Math.exp(x / 1.6) },
         };
         const sel = v.select('function $f$', Object.entries(PF).map(([k, o]) => ({ value: k, label: o.label })), 'well');
-        const yS = v.slider('slope $y$', -6, 6, 1.4, { step: 0.01 });
+        const yS = v.slider('slope $y$', -6, 6, 0.3, { step: 0.01 });
         const L = v.stage({ x: [-3.3, 3.3], y: [-5, 7], axes: 'box', gutter: true, grid: true, height: 380, title: '$f$, $f^{**}$ and an affine minorant' });
         const R = v.stage({ x: [-6, 6], y: [-4, 8], axes: 'box', gutter: true, grid: true, height: 380, title: '$f^*(y)$', xlabel: '$y$' });
         let F = PF.well.f;
@@ -330,7 +330,7 @@ export default {
       name: 'Subgradients and the subdifferential',
       statement: String.raw`A vector $g$ is a **subgradient** of $f$ at $x$ if $f(y)\ge f(x)+g^{\mathsf T}(y-x)$ for all $y$ in the domain: the affine function with slope $g$ through $(x,f(x))$ is a global underestimator. The set of all subgradients is the **subdifferential** $\partial f(x)$, a closed convex set. For convex $f$ it is nonempty at every interior point of the domain; it is the single point $\{\nabla f(x)\}$ where $f$ is differentiable, and for $f(x)=|x|$ it is $[-1,1]$ at $0$. Moreover $x$ minimizes $f$ if and only if $0\in\partial f(x)$. For a non-convex $f$ the subdifferential can be empty.`,
       idea: String.raw`For a convex $f$ the epigraph is a convex set (opt-3.1) and $(x,f(x))$ lies on its boundary, so the supporting hyperplane theorem (opt-2.8) gives a non-vertical supporting hyperplane at interior points; its slope is a subgradient. In one variable the set of slopes of supporting lines at $x$ is exactly $[f'_-(x),f'_+(x)]$, the interval between the one-sided derivatives. The minimality test is immediate from the definition: $0\in\partial f(x)$ says $f(y)\ge f(x)$ for all $y$. Smooth first-order conditions (opt-3.2) are the case where the interval shrinks to one point.`,
-      caption: String.raw`Drag $x_0$ along the graph (it snaps to the kinks) and pick a function. The interval of slopes $g$ for which the line through $(x_0,f(x_0))$ stays below the whole graph is computed by brute force on a grid and drawn as a fan of orange lines (the extreme slopes in red); the slider chooses one line inside the fan. **Right:** the set-valued map $x\mapsto\partial f(x)$ for the whole function on the window $(-3,3)$: vertical bars where it is an interval, gaps where it is **empty** (non-convex examples). The points where the bar crosses $g=0$ are exactly the global minimizers.`,
+      caption: String.raw`Drag $x_0$ along the graph (it snaps to the kinks) and pick a function. The interval of slopes $g$ for which the line through $(x_0,f(x_0))$ stays below the whole graph is computed by brute force on a grid and drawn as a fan of orange lines (the extreme slopes in red); the slider chooses one line inside the fan. **Right:** the set-valued map $x\mapsto\partial f(x)$ for the whole function on the window $(-3,3)$: vertical bars where it is an interval, gaps (red dots on the axis) where it is **empty** (non-convex examples). The points where the bar crosses $g=0$ are exactly the global minimizers.`,
       deps: ['opt-3.2', 'opt-2.8'],
       refs: ['Boyd–Vandenberghe ch. 3'],
       tags: ['subgradient', 'subdifferential'],

@@ -230,7 +230,8 @@ For constant $A$, $\Phi(t,s)=e^{(t-s)A}$. The integral is a superposition of fre
       caption: String.raw`Edit the forcing $f(s)$ for the oscillator $\ddot y+2\zeta\omega_0\dot y+\omega_0^2y=f(t)$ ($\omega_0=1$, starting at rest) by dragging the knots. The right panel cuts $f$ into $N$ slices; each slice launches a decaying wave $f(s_j)\Delta s\,h(t-s_j)$ (faint curves, $h$ the impulse response). Their sum (accent) matches the RK4 solution of the ODE (green, dashed) as $N$ grows. Move $t$ to see which slices have been delivered so far.`,
       deps: ['ode-3.10', 'ode-3.3'],
       refs: ['Teschl §3.4'],
-      credit: 'Lagrange (variation of parameters, first used 1766, final form 1808–1810); Duhamel, 1833 (heat equation)',
+      credit: 'Lagrange (variation of parameters, 1766–1810); Duhamel (heat equation, 1830s)',
+      verify: true,
       tags: ['variation of constants', 'impulse response'],
       viz(v) {
         const zeta = v.slider('damping $\\zeta$', 0.05, 1.2, 0.18, { step: 0.01 });
