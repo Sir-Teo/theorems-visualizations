@@ -49,10 +49,10 @@ function iceEdge(T) {
 }
 const ebMean = (T) => T.reduce((s, t) => s + t, 0) / T.length;
 const sunL = (maAgo) => 1 / (1 + 0.4 * (1 - (4570 - maAgo) / 4570));
-const CO2_SWEEP = Array.from({ length: 45 }, (_, i) => 10 ** (-0.5 + (3.5 * i) / 44));
+const CO2_SWEEP = Array.from({ length: 45 }, (_, i) => 10 ** (-0.5 + (5 * i) / 44));
 function ebSweeps(L) {
   const down = [], up = [];
-  let T = Array(EB.n).fill(30); T = ebRelax(T, L, 1000, 200);
+  let T = Array(EB.n).fill(30); T = ebRelax(T, L, 30000, 200);
   for (let i = CO2_SWEEP.length - 1; i >= 0; i--) { T = ebRelax(T, L, CO2_SWEEP[i], 40); down.push([CO2_SWEEP[i], iceEdge(T)]); }
   T = Array(EB.n).fill(-45); T = ebRelax(T, L, 0.3, 200);
   for (let i = 0; i < CO2_SWEEP.length; i++) { T = ebRelax(T, L, CO2_SWEEP[i], 40); up.push([CO2_SWEEP[i], iceEdge(T)]); }
@@ -92,7 +92,7 @@ export default {
       statement: String.raw`The **Snowball Earth** hypothesis (Kirschvink, 1992; Hoffman and others, 1998) holds that in the Cryogenian period (about $720$–$635$ million years ago) glaciers reached sea level in the tropics and the oceans were largely or wholly covered by ice, twice, and perhaps earlier in the Palaeoproterozoic. The evidence is glacial deposits (diamictites, dropstones) that palaeomagnetism places at low latitude, capped by carbonate rocks that suggest a hot, CO$_2$-rich aftermath, and banded iron formations returning in the middle of the ice ages. A variant, the “slushball”, keeps a strip of open water at the equator.
 
 The mechanism proposed is the **ice–albedo feedback**: ice reflects sunlight, so cooling spreads ice, which cools further. Below a critical solar input or CO$_2$ level, a planet can run away to a frozen state, and escape requires an enormous CO$_2$ greenhouse accumulated from volcanoes over millions of years.`,
-      idea: String.raw`Balance incoming and outgoing energy at each latitude $x=\sin\phi$: absorbed sunlight $Q\,S(x)\,(1-\alpha(T))$ equals outgoing infrared $A+BT$ plus transport by diffusion $D\,\partial_x\big((1-x^2)\partial_xT\big)$ (Budyko and Sellers, 1969). The albedo $\alpha$ jumps from about $0.3$ to $0.6$ where $T$ is below about $-10\,^\circ$C. Because $\alpha$ depends on $T$, the same sunlight can support two climates, a warm one with polar ice and a frozen one, and the ice line is unstable once it passes about $30^\circ$: it runs to the equator. The Sun was about 6% fainter 700 Ma ago ($L\approx 1/(1+0.4(1-t/t_0))$), so only a modest fall in CO$_2$ was needed. To thaw the frozen state, the albedo must be overcome by a large greenhouse forcing; full radiative models give a much higher threshold than the simple logarithmic CO$_2$ law used below.`,
+      idea: String.raw`Balance incoming and outgoing energy at each latitude $x=\sin\phi$: absorbed sunlight $Q\,S(x)\,(1-\alpha(T))$ equals outgoing infrared $A+BT$ plus transport by diffusion $D\,\partial_x\big((1-x^2)\partial_xT\big)$ (Budyko and Sellers, 1969). The albedo $\alpha$ jumps from about $0.3$ to $0.6$ where $T$ is below about $-10\,{}^{\circ}\mathrm{C}$. Because $\alpha$ depends on $T$, the same sunlight can support two climates, a warm one with polar ice and a frozen one, and the ice line is unstable once it passes about $30^\circ$: it runs to the equator. The Sun was about 6% fainter 700 Ma ago ($L\approx 1/(1+0.4(1-t/t_0))$), so only a modest fall in CO$_2$ was needed. To thaw the frozen state, the albedo must be overcome by a large greenhouse forcing; full radiative models give a much higher threshold than the simple logarithmic CO$_2$ law used below.`,
       caption: String.raw`A one-dimensional energy balance model (Budyko–Sellers), run live. Left: temperature against latitude and the ice cap; right: the ice-line against CO$_2$ for the Sun's brightness at the time you choose: a **cooling** sweep (blue) and a **warming** sweep (red) follow different branches, the hysteresis loop. Lower the CO$_2$ until the ice reaches the equator, then raise it to thaw it. The dot is your current state; the buttons restart from a warm or a frozen planet.`,
       deps: ['bighist-3.4'],
       see: ['bighist-3.7', 'bighist-3.4'],
@@ -104,13 +104,13 @@ The mechanism proposed is the **ice–albedo feedback**: ice reflects sunlight, 
       verify: true,
       viz(v) {
         const age = v.slider('time (Ma ago)', 0, 1000, 700, { step: 10, int: true });
-        const co2 = v.slider('CO₂ (× pre-industrial)', 0.3, 1000, 1, { log: true, sig: 3 });
+        const co2 = v.slider('CO₂ (× pre-industrial)', 0.3, 30000, 1, { log: true, sig: 3 });
         const T0 = () => { let T = Array(EB.n).fill(25); return ebRelax(T, sunL(age.value), co2.value, 150); };
         let T = ebRelax(Array(EB.n).fill(25), sunL(0), 1, 200);
         v.button('start warm', () => { T = Array(EB.n).fill(25); });
         v.button('start frozen', () => { T = Array(EB.n).fill(-45); });
         const P = v.stage({ x: [0, 90], y: [-60, 40], axes: 'box', gutter: true, height: 320, xlabel: 'latitude (°)', ylabel: 'temperature (°C)', title: 'temperature against latitude' });
-        const H = v.stage({ x: [0.3, 1000], y: [-3, 93], xlog: true, axes: 'box', gutter: true, height: 320, xlabel: 'CO₂ (× pre-industrial)', ylabel: 'ice-edge latitude (°)', title: 'hysteresis: ice line against CO₂' });
+        const H = v.stage({ x: [0.3, 30000], y: [-3, 93], xlog: true, axes: 'box', gutter: true, height: 320, xlabel: 'CO₂ (× pre-industrial)', ylabel: 'ice-edge latitude (°)', title: 'hysteresis: ice line against CO₂' });
         let sweepKey = null, sweeps = null;
         v.render(() => {
           const L = sunL(age.value);
@@ -131,7 +131,7 @@ The mechanism proposed is the **ice–albedo feedback**: ice reflects sunlight, 
         v.readout(() => {
           const L = sunL(age.value), edge = iceEdge(T);
           const dn = sweeps ? sweeps.down.find((p) => p[1] <= 0.5) : null, up = sweeps ? sweeps.up.find((p) => p[1] > 0.5) : null;
-          return `Sun at **${v.fix(100 * L, 1)}%** of today's output; global mean ${v.fix(ebMean(T), 1)} °C; ice edge ${edge >= 89.9 ? 'none' : edge <= 0.1 ? '0° (frozen to the equator)' : v.fix(edge, 0) + '°'}.\nThis model freezes completely when CO₂ falls below ≈ ${dn ? v.fix(dn[0], 1) + '×' : 'the range shown'} and thaws only when it exceeds ≈ ${up ? v.fix(up[0], 0) + '×' : 'the range shown (> 1000×)'} (log forcing, extrapolated; Caldeira & Kasting, 1992: about 0.12 bar).`;
+          return `Sun at **${v.fix(100 * L, 1)}%** of today's output; global mean ${v.fix(ebMean(T), 1)} °C; ice edge ${edge >= 89.9 ? 'none' : edge <= 0.1 ? '0° (frozen to the equator)' : v.fix(edge, 0) + '°'}.\nThis model freezes completely when CO₂ falls below ≈ ${dn ? v.fix(dn[0], 1) + '×' : 'the range shown'} and thaws only when it exceeds ≈ ${up ? v.fix(up[0], 0) + '×' : 'the range shown (> 30,000×)'} (log forcing, extrapolated; Caldeira & Kasting, 1992: about 0.12 bar).`;
         });
       },
     },
@@ -160,14 +160,14 @@ Proposed triggers, which are not exclusive: a rise in oxygen, the evolution of p
         const tauS = v.slider('gate opens (Ma ago)', 500, 580, 540, { step: 1 });
         const wS = v.slider('gate width (Myr)', 2, 60, 12, { step: 1 });
         const rS = v.slider('growth rate (per Myr)', 0.05, 0.6, 0.3, { step: 0.01 });
-        const A = v.stage({ x: [-600, -495], y: [0, 10.5], axes: false, height: 330, title: 'fossil events and proposed trigger windows' });
+        const A = v.stage({ x: [-600, -495], y: [-0.8, 10.5], axes: false, height: 330, title: 'fossil events and proposed trigger windows' });
         const B = v.stage({ x: [-600, -495], y: [0, 1.05], axes: 'box', gutter: true, height: 330, xlabel: 'time (Ma ago, negative)', ylabel: 'diversity / saturation', title: 'toy model: a gate switches growth on' });
         const ev = [[-574, 'Mistaken Point', 6.6], [-546, 'Cloudina', 8.2], [-538.8, 'base of the Cambrian', 9.4], [-521, 'trilobites', 6.6], [-518, 'Chengjiang', 8.2], [-508, 'Burgess Shale', 9.4]];
         const win = [[-800, -540, 'teal', 'oxygenation'], [-550, -500, 'orange', 'predation'], [-850, -600, 'purple', 'gene toolkit']];
         v.render(() => {
           A.line(-600, 1.2, -495, 1.2, { color: 'muted', width: 1.2 });
-          for (let t = -600; t <= -500; t += 20) { A.line(t, 1.0, t, 1.4, { color: 'muted', width: 1 }); A.text(String(-t), t, 0.6, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
-          A.text('Ma ago', -497, 0.1, { size: 10.5, color: 'muted', align: 'right', baseline: 'middle' });
+          for (let t = -580; t <= -500; t += 20) { A.line(t, 1.0, t, 1.4, { color: 'muted', width: 1 }); A.text(String(-t), t, 0.6, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
+          A.text('Ma ago', -497, -0.4, { size: 10.5, color: 'muted', align: 'right', baseline: 'middle' });
           A.vband(-571, -539, { color: 'faint', alpha: 0.1, edges: false }); A.text('Ediacaran biota', -569, 2.3, { size: 10.5, color: 'muted', align: 'left' });
           A.vband(-538.8, -515, { color: 'pink', alpha: 0.15, edges: false }); A.text('the “explosion”', -536.6, 2.3, { size: 10.5, color: 'pink', align: 'left' });
           win.forEach(([a, b, col, lab], k) => { if (!tg[k].value) return; const y = 3.2 + 0.7 * k; A.rect(Math.max(a, -600), y - 0.25, Math.min(b, -495), y + 0.25, { fill: col, fillAlpha: 0.35, color: col, width: 1.2, radius: 3 }); A.text(lab + (a < -600 ? ' ← earlier' : ''), Math.max(a, -600) + 1.5, y, { size: 10, color: 'ink', align: 'left', baseline: 'middle' }); });
@@ -258,7 +258,7 @@ The causes differ: glaciation and sea-level fall (Ordovician), anoxia (Devonian)
       statement: String.raw`About $66$ million years ago an asteroid several kilometres across struck the Yucatán peninsula at Chicxulub, Mexico, making a crater of roughly $180$–$200$ km diameter. Its fall coincides, to within the dating error (about $30{,}000$ years in the best radiometric work), with the Cretaceous–Palaeogene boundary and the extinction of the non-avian dinosaurs, ammonites and about three quarters of species. The boundary clay carries an iridium anomaly, shocked quartz, spherules and soot found worldwide, and the crater itself was recognised and drilled (Hildebrand and others, 1991; drilling of its peak ring in 2016).
 
 The impact was not the only stress of the time (the Deccan Traps erupted around the same epoch), but it is the best-supported trigger of the mass extinction at the boundary.`,
-      idea: String.raw`The kinetic energy of an impactor of diameter $L$, density $\rho$ and speed $v$ is $E=\tfrac12\cdot\tfrac{\pi}{6}\rho L^3v^2$: a $10$ km body at $20$ km/s carries about $3\times10^{23}$ J, roughly $10^{8}$ megatons of TNT. Laboratory-calibrated scaling laws give the size of the crater from the impactor's size, speed, angle and density (Collins, Melosh and Marcus, 2005): the transient crater is $D_{tc}\propto L^{0.78}v^{0.44}g^{-0.22}$, and craters above a few kilometres slump into a wider complex crater. Inverting the scaling for the observed $\sim$180 km crater gives an impactor of 10–15 km, in the range Alvarez and colleagues had inferred in 1980 from iridium alone (3.10). The consequences, in the order they are inferred: blast and tsunamis, a thermal pulse from re-entering ejecta, and then dust, sulfate aerosols and soot cutting light for months to years.`,
+      idea: String.raw`The kinetic energy of an impactor of diameter $L$, density $\rho$ and speed $v$ is $E=\tfrac12\cdot\tfrac{\pi}{6}\rho L^3v^2$: a $10$ km body at $20$ km/s carries about $3\times10^{23}$ J, roughly $10^{8}$ megatons of TNT. Laboratory-calibrated scaling laws give the size of the crater from the impactor's size, speed, angle and density (Collins, Melosh and Marcus, 2005): the transient crater is $D_{tc}\propto L^{0.78}v^{0.44}g^{-0.22}$, and craters above a few kilometres slump into a wider complex crater. Inverting the scaling for the observed $\sim$180 km crater gives an impactor of roughly 12–20 km for plausible speeds and angles, somewhat above the $10\pm4$ km that Alvarez and colleagues had inferred in 1980 from iridium alone (3.10); published estimates of the impactor lie in the range of about 10–15 km. The consequences, in the order they are inferred: blast and tsunamis, a thermal pulse from re-entering ejecta, and then dust, sulfate aerosols and soot cutting light for months to years.`,
       caption: String.raw`Impactor diameter against final crater diameter on log axes, for the speed, angle and density you set. The green band marks the Chicxulub crater (about 180–200 km); the orange band is Alvarez's 1980 estimate for the diameter, $10\pm4$ km. Drag the handle along the curve to choose the impactor, and see the energy and the diameter needed to match the crater. Left: the iridium enhancements found at three boundary sites.`,
       deps: ['bighist-3.8', 'bighist-1.3'],
       see: ['bighist-3.10'],
@@ -272,7 +272,7 @@ The impact was not the only stress of the time (the Deccan Traps erupted around 
         const vS = v.slider('impact speed (km/s)', 12, 35, 20, { step: 0.5 });
         const aS = v.slider('angle from horizontal (°)', 15, 90, 45, { step: 1 });
         const rS = v.slider('impactor density (kg/m³)', 1500, 3500, 2700, { step: 50 });
-        const A = v.stage({ x: [0.3, 3.2], y: [1, 1000], ylog: true, axes: 'box', gutter: true, height: 300, xticks: [[1, 'Gubbio'], [2, 'Stevns Klint'], [3, 'Woodside Creek']], ylabel: 'iridium (× background)', title: 'iridium at the boundary (Alvarez et al. 1980)' });
+        const A = v.stage({ x: [0.3, 3.6], y: [1, 1000], ylog: true, axes: 'box', gutter: true, height: 300, xticks: [[1, 'Gubbio'], [2, 'Stevns Klint'], [3, 'Woodside Ck']], ylabel: 'iridium (× background)', title: 'iridium at the boundary (Alvarez et al. 1980)' });
         const B = v.stage({ x: [1, 30], y: [3, 500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'impactor diameter L (km)', ylabel: 'final crater diameter (km)', title: 'crater scaling (Collins–Melosh–Marcus)' });
         const h = B.handle(11, 100, { color: 'accent', r: 7, label: 'impactor' });
         h.onDrag = () => { h.x = clamp(h.x, 1, 30); };

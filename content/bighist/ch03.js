@@ -52,7 +52,7 @@ export default {
         const src = v.select('carbon source', [{ value: 'ch4', label: 'CH₄ (reducing)' }, { value: 'co2', label: 'CO₂ (neutral)' }], 'ch4');
         const rS = v.slider('H₂ / CO₂ ratio', 0, 4, 0, { step: 0.05 });
         const dS = v.slider('days of sparking', 0, 7, 7, { step: 0.1 });
-        const A = v.stage({ x: [0, 4], y: [3e-4, 10], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'H₂ / CO₂', ylabel: 'amino-acid carbon (% of carbon)', title: 'yield against hydrogen supply' });
+        const A = v.stage({ x: [0, 4.3], y: [3e-4, 10], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'H₂ / CO₂', ylabel: 'amino-acid carbon (% of carbon)', title: 'yield against hydrogen supply' });
         const B = v.stage({ x: [0, 7], y: [0, 5], axes: 'box', gutter: true, height: 300, xlabel: 'days', ylabel: 'amino-acid carbon (%)', title: 'accumulation over a week (model)' });
         const yieldCo2 = (r) => (r >= 2 ? 2 : 10 ** (-3 + 1.651 * r));
         const yieldOf = () => (src.value === 'ch4' ? 2.4 : yieldCo2(rS.value));
@@ -153,7 +153,7 @@ Molecular-clock dating puts LUCA very early. One 2024 analysis, calibrating dupl
       viz(v) {
         const topo = v.select('tree', [{ value: '3', label: 'three domains' }, { value: '2', label: 'two domains' }], '3');
         const unc = v.slider('± uncertainty (Ga)', 0, 0.6, 0.2, { step: 0.01 });
-        const A = v.stage({ x: [-4.8, 0.45], y: [-0.2, 3.5], axes: false, height: 330, full: true, title: 'the tree of life (schematic branching, one dated node)' });
+        const A = v.stage({ x: [-4.8, 0.45], y: [-0.6, 3.5], axes: false, height: 330, full: true, title: 'the tree of life (schematic branching, one dated node)' });
         const h = A.handle(-4.2, 1.75, { color: 'accent', label: 'LUCA', constrain: { x: [-4.5, -3.3], y: [1.75, 1.75] } });
         v.button('Moody et al. 2024: 4.2 Ga', () => h.set(-4.2, 1.75));
         v.button('earlier clock estimates: 3.65 Ga', () => h.set(-3.65, 1.75));
@@ -224,21 +224,21 @@ Molecular-clock dating puts LUCA very early. One 2024 analysis, calibrating dupl
         const sOf = (t, a, b, tc) => { const u = clamp((tc - -t) / 0.5 + 0.5, 0, 1); return a + (b - a) * u * u * (3 - 2 * u); };
         v.render(() => {
           A.rect(-4, 1e-8, -2.45, 1e-3, { fill: 'purple', fillAlpha: 0.22, color: 'purple', width: 1 });
-          A.text('below 10⁻⁵ of present: sulfur signal preserved', -3.95, 6e-6, { size: 10.5, color: 'purple', align: 'left' });
+          A.text('below 10⁻⁵ of present', -3.95, 6e-6, { size: 10.5, color: 'purple', align: 'left' });
           A.rect(-2.3, 1e-2, -0.8, 10, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 1 });
-          A.text('Proterozoic: wide range (verify)', -2.25, 30, { size: 10.5, color: 'accent', align: 'left' });
+          A.text('Proterozoic: wide range', -2.25, 3e-3, { size: 10.5, color: 'accent', align: 'left' });
           A.rect(-0.54, 10, 0, 150, { fill: 'green', fillAlpha: 0.2, color: 'green', width: 1 });
           A.vband(-2.45, -2.31, { color: 'orange', alpha: 0.2, edges: false });
-          A.text('sulfur signal vanishes 2.45–2.31 Ga', -2.4, 2e-7, { size: 10.5, color: 'orange', align: 'left' });
+          A.text('sulfur signal vanishes 2.45–2.31 Ga', -2.4, 150, { size: 10.5, color: 'orange', align: 'left' });
           A.vband(-0.8, -0.54, { color: 'teal', alpha: 0.18, edges: false });
-          A.text('Neoproterozoic rise', -0.78, 2e-7, { size: 10.5, color: 'teal', align: 'right' });
+          A.text('Neoproterozoic rise', -0.82, 3e-7, { size: 10.5, color: 'teal', align: 'right' });
           // toy
           const pts = []; for (let i = 0; i <= 160; i++) { const t = -4 + (4 * i) / 160; pts.push([t, 100 * steady(sOf(t, S0.value, S1.value, tC.value), kS.value)]); }
-          B.path(pts.filter((p) => p[0] <= -1.2), { color: 'accent', width: 2.6 });
+          B.path(pts, { color: 'accent', width: 2.6 });
           B.vline(-tC.value, { color: 'orange', width: 1.5, dash: [4, 3] });
           B.text('transition', -tC.value + 0.05, 2e-7, { size: 10.5, color: 'orange', align: 'left' });
           B.hline(1e-3, { color: 'purple', width: 1, dash: [3, 3] });
-          B.text('10⁻⁵ of present', -3.95, 1.6e-3, { size: 10.5, color: 'purple', align: 'left' });
+          B.text('10⁻⁵ of present', -3.95, 3e-4, { size: 10.5, color: 'purple', align: 'left' });
         });
         v.readout(() => {
           const lo = 100 * steady(S0.value, kS.value), hi = 100 * steady(S1.value, kS.value);
