@@ -158,7 +158,7 @@ independent of the population size. If instead a mutation has selection coeffici
       caption: String.raw`**This is a model, not a data table**: pairs of species are simulated with divergence times drawn between 5 and 200 million years, a true rate $r$ you can set, and, optionally, rate variation between lineages (the coefficient of variation of the rate, $c$). Dots are the sequence differences; the line is the expected value and the band the Poisson 95% range. With $c=0$ about 5% of dots fall outside the band; raise $c$ and the dispersion index rises, the scatter fans out and the band fails. **Resample** draws new pairs.`,
       deps: ['popgen-3.8'],
       refs: ['Gillespie'],
-      credit: 'Émile Zuckerkandl & Linus Pauling, 1962–1965 (the idea); Kimura 1968 (neutral explanation)',
+      credit: 'Émile Zuckerkandl & Linus Pauling, 1965 (the idea); Motoo Kimura, 1968 (neutral explanation)',
       scope: String.raw`Holds when substitutions are neutral or nearly so and the mutation rate per unit time is constant across lineages; generation-time effects, changes in selective constraint and episodic selection make the clock “overdispersed”. No real data are plotted here: the rate $r\approx10^{-3}$ per site per million years is only the order of magnitude of a slowly evolving protein, chosen for illustration.`,
       tags: ['clock', 'substitution', 'neutral theory'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Molecular_clock' },
@@ -325,7 +325,7 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
       kind: 'Paradox',
       name: 'Lewontin’s paradox of variation',
       statement: String.raw`Under the neutral theory the diversity of a species is set by $\theta=4N_e\mu$, so species whose population sizes differ by many orders of magnitude should differ in diversity by a similar number. But the observed levels of genetic diversity vary only over about two to three orders of magnitude, from roughly $10^{-4}$ to $10^{-1}$ differences per site, while census sizes span many more; diversity is largely uncorrelated with how abundant a species is. Lewontin’s paradox is the mismatch between the huge range of $N$ and the narrow range of $\pi$.`,
-      idea: String.raw`With $\theta=4N_e\mu$ (3.4) and a mutation rate $\mu$ of order $10^{-8}$ per site per generation, a species with $N_e=10^{9}$ should have $\theta\approx40$ per site, far above anything seen; the observed range is explained only if $N_e$ is always much smaller than census size. Several forces may compress it: recurrent selective sweeps and background selection remove linked diversity (so that $N_e$ is effectively capped), large populations have more fluctuation in size (2.7, the harmonic mean), and mutation rates covary with life history. The simplest model of a cap, drawn here, sets $1/N_e=1/N+1/N_{\max}$.`,
+      idea: String.raw`With $\theta=4N_e\mu$ (3.4) and a mutation rate $\mu$ of order $10^{-8}$ per site per generation, a species with $N_e=10^{9}$ should have $\theta\approx40$ per site, far above anything seen; the observed range is explained only if $N_e$ is always much smaller than census size. Proposed explanations include linked selection (recurrent sweeps and background selection remove diversity at linked sites, lowering the effective size), fluctuations in size (the effective size is a harmonic mean dominated by the smallest sizes, 2.7), and covariation of mutation rate with life history; their relative importance is still debated. The simplest model of a cap, drawn here, sets $1/N_e=1/N+1/N_{\max}$.`,
       caption: String.raw`Log–log plot of diversity $\pi$ against census size $N$. The green curve is the neutral prediction $\pi=\theta/(1+\tfrac43\theta)$ with $\theta=4N\mu$ (a Jukes–Cantor-type saturation); **mutation rate** shifts it. The grey band is the observed range of diversity across 167 species (0.01% to 8.01%); the three coloured bars are species with a census estimate (horizontal bar = estimate range). Turn on an **effective-size ceiling** and the curve flattens inside the band: the paradox “solved” by assuming $N_e\ll N$. The gold dot follows your census-size slider.`,
       deps: ['popgen-3.4', 'popgen-2.7'],
       refs: ['Gillespie'],
@@ -346,13 +346,13 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
           const ne = (x) => 1 / (1 / x + 1 / cap), pi = (x) => { const th = 4 * ne(x) * mu; return th / (1 + (4 / 3) * th); };
           Sp.setView([10, 1e13], [1e-5, 1]);
           Sp.rect(10, 1e-4, 1e13, 8.01e-2, { fill: 'muted', fillAlpha: 0.12, stroke: false });
-          Sp.text('observed range of π across 167 species: 0.01% – 8.01%', 3e12, 6e-2, { align: 'right', color: 'muted', size: 11.5 });
+          Sp.text('observed range of π across 167 species: 0.01% – 8.01%', 3e12, 1.5e-4, { align: 'right', color: 'muted', size: 11.5 });
           Sp.fn(pi, { domain: [10, 1e13], n: 200, color: 'green', width: 2.8 });
           [['gibbon', 1e4, 5e4, 2.1e-3], ['collared flycatcher', 4e6, 7e6, 3.8e-3], ['white-throated sparrow', 1.4e8, 1.4e8, 6.6e-3]].forEach(([nm, a, b, y], i) => {
             const col = ['purple', 'orange', 'teal'][i];
             if (b > a) Sp.line(a, y, b, y, { color: col, width: 4 });
             Sp.dot(Math.sqrt(a * b), y, { r: 5.5, color: col });
-            Sp.text(nm, Math.sqrt(a * b) * 1.5, y * 1.35, { color: col, size: 11.5, weight: 600 });
+            Sp.text(nm, Math.sqrt(a * b) * (i === 1 ? 0.7 : 1.5), y * (i === 1 ? 0.62 : 1.35), { color: col, size: 11.5, weight: 600 });
           });
           Sp.dot(N, pi(N), { r: 7, color: 'gold' });
           Sp.vline(N, { color: 'gold', dash: true, width: 1 });
@@ -371,12 +371,12 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
       paper: { authors: 'Motoo Kimura', year: 1968, title: 'Evolutionary Rate at the Molecular Level', venue: 'Nature 217 (5129): 624–626', doi: '10.1038/217624a0' },
       introduces: ['popgen-3.10', 'popgen-3.8'],
       statement: String.raw`Kimura compared the rate at which amino acids are replaced in well-studied proteins, which is remarkably steady per site and per year, with the genome size of a mammal. Scaled to all of the nucleotides in a mammalian genome, the observed rate of nucleotide substitution amounts to about one substitution in the population every two years. If each substitution were driven by natural selection and carried a Haldane-type “cost”, this would exceed by orders of magnitude the roughly one substitution per 300 generations that Haldane’s calculation allowed. Kimura concluded that the great majority of molecular substitutions must be selectively neutral, for which the rate $k$ equals the mutation rate $u$ and carries no cost.`,
-      idea: String.raw`In 1957 Haldane argued that every substitution selected to fixation imposes a “cost” in the form of selective deaths, and that a population can pay for only a limited number of them per generation (5.2, 5.4). Protein sequences compared between species, the work of Margoliash, Zuckerkandl and Pauling, Dayhoff and others, had meanwhile shown steady rates of amino acid replacement, so many substitutions in total that, summed over the whole genome, they could not be adaptive. Kimura’s way out: if most substitutions are neutral the cost never arises, and since the neutral rate is equal to the mutation rate (3.8) the steady rate per site per year is just the steady mutation rate. The paper introduced the neutral theory (3.10) and the neutral substitution rate (3.8).`,
+      idea: String.raw`In 1957 Haldane argued that every substitution selected to fixation imposes a “cost” in the form of selective deaths, and that a population can pay for only a limited number of them per generation (5.2, 5.4). Protein sequences compared between species had meanwhile shown remarkably steady rates of amino acid replacement in proteins such as haemoglobin and cytochrome c; summed over a whole genome these give a substitution rate far above what a Haldane-type budget could pay for. Kimura’s way out: if most substitutions are neutral the cost never arises, and since the neutral rate is equal to the mutation rate (3.8) the steady rate per site per year is just the steady mutation rate. The paper introduced the neutral theory (3.10) and the neutral substitution rate (3.8).`,
       caption: String.raw`**An arithmetic reconstruction, not the paper’s table.** Set the genome size, the substitution rate per nucleotide per year, the generation time, Haldane’s cost per substitution $D$ and the load the population can bear. **Left**: substitutions per generation on a log axis, observed against the number Haldane’s budget allows ($L/D$). **Right**: the load incurred (log) if a fraction $a$ of the observed substitutions were adaptive, against the budget; the red mark is the largest adaptive fraction the budget can pay. Defaults are chosen to reproduce the quantities named in the paper’s argument (one substitution every two years; one per 300 generations).`,
       deps: ['popgen-5.4', 'popgen-2.4', 'popgen-3.1'],
       refs: [],
       credit: 'Motoo Kimura, 1968 (Nature 217: 624–626)',
-      scope: String.raw`Back-of-the-envelope: assumes a haploid genome size of $4\times10^9$ nucleotide pairs (the figure I believe the paper uses, not re-checked here), a constant rate per site, and Haldane’s cost accounting, which later work showed to be too pessimistic when selection acts on many loci at once. The default rate $1.2\times10^{-10}$ per nucleotide per year is my conversion of the paper’s protein rate (about one substitution per 28 million years in a polypeptide of 100 amino acids) to one third of that per nucleotide: the paper’s own values were read only from secondary summaries.`,
+      scope: String.raw`Back-of-the-envelope: assumes a haploid genome size of $4\times10^9$ nucleotide pairs (the figure I take the paper to use; not confirmed against the paper), a constant rate per site, and Haldane’s cost accounting, which later work showed to be too pessimistic when selection acts on many loci at once. The default rate $1.2\times10^{-10}$ per nucleotide per year is my conversion of the protein rate that secondary summaries attribute to the paper (about one substitution per 28 million years in a polypeptide of 100 amino acids, i.e. $3.6\times10^{-10}$ per site per year) to one third of that per nucleotide. The paper itself was not accessible here: the “one substitution every two years” and “one per 300 generations” figures come from secondary summaries and the neutral-theory literature.`,
       tags: ['neutral theory', 'Haldane', 'history'],
       links: { doi: 'https://doi.org/10.1038/217624a0', wikipedia: 'https://en.wikipedia.org/wiki/Neutral_theory_of_molecular_evolution' },
       verify: true,
@@ -387,7 +387,7 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
         const DS = v.slider('Haldane cost per substitution $D$', 3, 100, 30, { log: true, sig: 2 });
         const LS = v.slider('tolerable load $L$ per generation', 0.01, 0.5, 0.1, { log: true, sig: 2 });
         const Lp = v.stage({ x: [-0.6, 3.6], y: [1e-4, 1e4], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: '', ylabel: 'substitutions per generation', title: 'Observed rate against the budget', xticks: [[0, 'observed'], [1, 'Haldane limit L/D'], [2, 'ratio']], minWidth: 300 });
-        const Rp = v.stage({ x: [0, 1], y: [1e-3, 1e4], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'fraction a of the observed substitutions that were adaptive', ylabel: 'load per generation', title: 'Cost if the substitutions were adaptive', minWidth: 300 });
+        const Rp = v.stage({ x: [1e-4, 1], y: [1e-3, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'fraction a of the observed substitutions that were adaptive', ylabel: 'load per generation', title: 'Cost if the substitutions were adaptive', minWidth: 300 });
         let info = {};
         v.render(() => {
           const G = GS.value, r = rS.value, g = gS.value, D = DS.value, Lm = LS.value;
@@ -397,14 +397,14 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
           Lp.rect(0.65, 1e-4, 1.35, limit, { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1.5 });
           Lp.rect(1.65, 1e-4, 2.35, Math.max(ratio, 1.01e-4), { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.5 });
           Lp.text(`${v.fmt(perGen, 3)}`, 0, perGen * 1.6, { align: 'center', size: 12, weight: 700 });
-          Lp.text(`${v.fmt(limit, 3)} (1 per ${Math.round(D / Lm)} gen.)`, 1, limit * 1.6, { align: 'center', size: 12, weight: 700 });
+          Lp.text(`${v.fmt(limit, 2)}`, 1, limit * 1.6, { align: 'center', size: 12, weight: 700 });
           Lp.text(`×${v.fmt(ratio, 3)}`, 2, ratio * 1.6, { align: 'center', size: 12, weight: 700 });
-          Rp.setView([0, 1], [1e-3, 1e4]);
-          Rp.fn((a) => Math.max(1.01e-3, a * perGen * D), { domain: [0, 1], n: 120, color: 'accent', width: 2.8 });
+          Rp.setView([1e-4, 1], [1e-3, 1e4]);
+          Rp.fn((a) => Math.max(1.01e-3, a * perGen * D), { domain: [1e-4, 1], n: 120, color: 'accent', width: 2.8 });
           Rp.hline(Lm, { color: 'green', width: 2.2 });
           Rp.vline(amax, { color: 'red', width: 2, dash: true });
           Rp.dot(amax, Lm, { r: 5.5, color: 'red' });
-          Rp.text(`budget L = ${v.fmt(Lm, 2)}`, 0.02, Lm * 1.6, { color: 'green', size: 12, weight: 600 });
+          Rp.text(`budget L = ${v.fmt(Lm, 2)}`, 2e-4, Lm * 1.6, { color: 'green', size: 12, weight: 600 });
           info = { G, perYear, perGen, limit, ratio, amax, D, Lm, g, perHaldane: 1 / limit };
         });
         v.legend([['accent', 'observed substitutions per generation'], ['green', 'Haldane’s budget $L/D$'], ['red', 'ratio / largest adaptive share', { dash: true }]]);

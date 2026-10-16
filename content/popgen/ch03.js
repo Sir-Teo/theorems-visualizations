@@ -46,7 +46,7 @@ Whatever the start, $p_t\to p^*$ geometrically, with time scale $1/(\mu+\nu)$ ge
           const dm = Math.max(mu, nu) * 1.15, unit = 10 ** Math.floor(Math.log10(dm));
           R.setView([0, 1], [-dm, dm]);
           R.setLabels(undefined, `change per generation Δp (units of ${pow10(Math.round(Math.log10(unit)))})`);
-          R.setTicks(undefined, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter((k) => Math.abs(k * unit) < dm).map((k) => [k * unit, String(k)]));
+          R.setTicks(undefined, [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter((k) => Math.abs(k * unit) < dm).map((k) => [k * unit, String(k)]));
           R.hline(0, { color: 'muted', width: 1 });
           R.line(0, nu, 1, -mu, { color: 'accent', width: 2.8 });
           R.dot(ps, 0, { r: 5, color: 'green', label: 'p*', labelPos: 'ne' });
@@ -239,7 +239,7 @@ The number of distinct alleles $K=\sum_j a_j$ has $\Pr(K=k)=|s(n,k)|\,\theta^k/\
       deps: ['popgen-3.4', 'popgen-2.1'],
       refs: ['Ewens §9.5'],
       credit: 'Warren Ewens, 1972',
-      scope: String.raw`Neutral, constant size, infinitely-many-alleles model at equilibrium, a sample small relative to $2N$ (the simulation samples without replacement from $2N=60$ copies, so $n\le8$ keeps the finite-population correction small). The original dependency on the Hoppe urn (stoch-14.5 in the syllabus) was replaced: that item is about reflected random walks.`,
+      scope: String.raw`Neutral, constant size, infinitely-many-alleles model at equilibrium, a sample small relative to $2N$ (the simulation samples without replacement from $2N=60$ copies, so $n\le8$ keeps the finite-population correction small).`,
       tags: ['sampling', 'mutation', 'neutral theory'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ewens%27s_sampling_formula' },
       viz(v) {
