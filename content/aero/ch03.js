@@ -135,7 +135,7 @@ const sigmaFit = (hb) => (1 - 1.32 * hb) / (1.05 + 7.4 * hb);
 const fitPhi = (hb) => (hb >= 0.7575 ? 1 : 1 - sigmaFit(hb));
 
 // ═════════════════════════════════════════════════════════════════════ helpers for 3.8
-const SV = Math.PI / 8, CORE = 0.04, NQ = 28;
+const SV = Math.PI / 8, CORE = 0.06, NQ = 28;
 /** Fractional induced-drag saving of bird i (elliptic loading, equal lift) in the trailing-vortex field of all birds placed further forward (smaller x). */
 function birdSaving(i, birds) {
   const b = birds[i]; let s = 0;
@@ -145,6 +145,7 @@ function birdSaving(i, birds) {
     for (let j = 0; j < birds.length; j++) {
       if (j === i) continue;
       const dx = b.x - birds[j].x;
+      if (dx < 0) continue;
       for (const sg of [1, -1]) {
         const r = y - (birds[j].y + sg * SV), fac = 0.5 * (1 + dx / Math.sqrt(dx * dx + r * r + CORE * CORE));
         up += sg * r / (TWO_PI * (r * r + CORE * CORE)) * fac;
@@ -491,7 +492,7 @@ where $C_{D,0}$ is the **parasite drag** (friction and pressure drag at zero lif
 $$D_p=\tfrac12\rho V^2SC_{D,0},\qquad D_i=\frac{2KW^2}{\rho V^2S},$$
 the first rising as $V^2$ and the second falling as $V^{-2}$. Their sum is least, and the lift-to-drag ratio greatest, at the speed
 $$V_{md}=\sqrt{\frac{2W}{\rho S}}\Big(\frac{K}{C_{D,0}}\Big)^{1/4},$$
-where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ and $(L/D)_{\max}=1/(2\sqrt{KC_{D,0}})$. The speed is independent of the weight only through $W/S$ and changes with altitude as $1/\sqrt\rho$.`,
+where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ and $(L/D)_{\max}=1/(2\sqrt{KC_{D,0}})$. The speed depends on the aircraft only through $W/S$ and $K/C_{D,0}$, and rises with altitude as $1/\sqrt\rho$.`,
       idea: String.raw`With $C_L=2W/\rho V^2S$ in level flight, $D=D_p+D_i=A V^2+B V^{-2}$ with $A=\tfrac12\rho SC_{D,0}$ and $B=2KW^2/\rho S$. Setting $\mathrm dD/\mathrm dV=2AV-2BV^{-3}=0$ gives $AV^2=BV^{-2}$, which says $D_p=D_i$; the arithmetic–geometric mean inequality $AV^2+BV^{-2}\ge2\sqrt{AB}$ confirms it is a minimum. It is the same tangent condition as in 3.5, read as a function of speed rather than of lift coefficient.`,
       caption: String.raw`Drag per unit weight, $D/W=1/(L/D)$, against speed: parasite (orange), induced (purple) and total (blue). Drag the gold handle along the total curve, or change wing loading, altitude, aspect ratio and parasite drag. The green point is the numerical minimum, and the readout compares it with the formula. Then break the hypothesis: add a camber offset $C_{L,m}$ and the induced term becomes $K(C_L-C_{L,m})^2$; the two drag curves no longer cross at the minimum. The red region is below the stall speed.`,
       deps: ['aero-3.5'],
@@ -509,8 +510,8 @@ where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ 
         const clxS = v.slider('maximum lift coefficient $C_{L,\\max}$', 1, 2.4, 1.5, { step: 0.05 });
         const A = v.stage({ x: [10, 100], y: [0, 0.3], axes: 'box', gutter: true, height: 330, minWidth: 340, xlabel: 'speed $V$ (m/s)', ylabel: '$D/W$', title: 'drag in level flight' });
         const B = v.stage({ x: [10, 100], y: [0, 25], axes: 'box', gutter: true, height: 330, minWidth: 280, xlabel: 'speed $V$ (m/s)', ylabel: '$L/D$', title: 'lift-to-drag ratio' });
-        let Vh = 40, info = {};
-        const hd = A.handle(40, 0.06, { color: 'gold', r: 8, constrain: (x) => { const V = clamp(x, A.bounds ? A.bounds.x0 : 10, 400); return [V, info.dw ? info.dw(V) : 0.06]; } });
+        let Vh = 75, info = {};
+        const hd = A.handle(75, 0.06, { color: 'gold', r: 8, constrain: (x) => { const V = clamp(x, A.bounds ? A.bounds.x0 : 10, 400); return [V, info.dw ? info.dw(V) : 0.06]; } });
         hd.onDrag = () => { Vh = hd.x; };
         v.render(() => {
           const ws = wsS.value, rho = atmo(hS.value * 1000).rho, K = 1 / (Math.PI * eS.value * arS.value), c0 = cd0S.value, m = clmS.value, clx = clxS.value;
@@ -550,7 +551,7 @@ where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ 
 $$\Phi\equiv\frac{C_{D,i}(h/b)}{C_{D,i}(\infty)}=\frac{C_{D,i}\ \text{near ground}}{C_{D,i}\ \text{free air}}<1,$$
 with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the ground falls below about $b/4$.`,
       idea: String.raw`This is the method of images (fluid-4.12) applied to the trailing vortex system of 3.1: a vortex at height $h$ over a rigid plane behaves like the pair formed with an opposite vortex at $-h$, which keeps the vertical velocity zero on the ground. The image trailing vortices, a distance $2h$ below the real ones, induce an upward velocity at the wing that grows as $h$ decreases, so the wing sees less downwash; the lift vector tilts back less, and for the same lift the induced drag falls. In the picture the loading of a rectangular wing is recomputed with the images included.`,
-      caption: String.raw`Drag the wing (gold handle) toward the ground, or use the sliders. The left picture is the front view: the real tip vortices (blue, rotating as shown) and their opposite images below the ground; the arrows are the cross-flow they induce, which is horizontal on the ground. The middle graph is the induced-drag ratio $\Phi$ against $h/b$ from the lifting-line calculation (blue) and a fit quoted in textbooks (dashed). The right graph shows the downwash angle along the span at the same lift, with and without the ground.`,
+      caption: String.raw`Drag the wing (gold handle) toward the ground, or use the sliders. The left picture is the front view: the real tip vortices (blue, rotating as shown) and their opposite-signed images (grey) in the mirror image of the picture; the arrows are the cross-flow they induce, which is horizontal on the ground. The middle graph is the induced-drag ratio $\Phi$ against $h/b$ from the lifting-line calculation (blue) and a fit quoted in textbooks (dashed). The right graph shows the downwash angle along the span at the same lift, with and without the ground.`,
       deps: ['aero-3.1', 'fluid-4.12'],
       refs: ['Anderson ch. 6'],
       tags: ['ground effect', 'induced drag', 'images'],
@@ -560,7 +561,7 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
       viz(v) {
         const hS = v.slider('height of the wing over the ground $h/b$', 0.03, 1, 0.15, { step: 0.01, log: true });
         const arS = v.slider('aspect ratio AR (rectangular wing)', 4, 14, 8, { step: 0.5 });
-        const A = v.stage({ x: [-1.5, 1.5], y: [-0.2, 1.15], equal: true, axes: false, height: 300, minWidth: 330, title: 'front view: wing, vortices and images' });
+        const A = v.stage({ x: [-1.5, 1.5], y: [-1.1, 1.1], equal: true, axes: false, height: 330, minWidth: 330, title: 'front view: wing, vortices and images' });
         const B = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: '$h/b$', ylabel: '$\\Phi=C_{D,i}/C_{D,i}(\\infty)$', title: 'induced drag at equal lift' });
         const C = v.stage({ x: [-0.8, 0.8], y: [0, 3], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: '$y/b$', ylabel: '$\\alpha_i$ (°) at $C_L=0.8$', title: 'downwash along the span' });
         const hd = A.handle(0, 0.15, { color: 'gold', r: 8, constrain: (x, y) => [0, clamp(y, 0.03, 1)] });
@@ -571,16 +572,16 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
           const h = hS.value, AR = arS.value, gc = groundCurve(AR), sol = weissinger({ AR, alpha: 0.1, h, M: 60 }), s0 = gc.free;
           const phi = (sol.CDi / sol.CL ** 2) / (s0.CDi / s0.CL ** 2);
           // front view
-          A.rect(-1.5, -0.2, 1.5, 0, { fill: 'muted', fillAlpha: 0.15, hatch: true, stroke: false }); A.line(-1.5, 0, 1.5, 0, { color: 'ink', width: 2 });
-          A.text('ground', 1.42, -0.12, { color: 'muted', size: 11, align: 'right' });
+          A.rect(-1.5, -0.03, 1.5, 0.03, { fill: 'muted', fillAlpha: 0.35, hatch: true, stroke: false }); A.line(-1.5, 0, 1.5, 0, { color: 'ink', width: 2 });
+          A.text('ground (mirror plane)', 1.45, 0.1, { color: 'muted', size: 11, align: 'right' });
           const sv = Math.PI / 8, G = 1, vs = [[sv, h, G], [-sv, h, -G], [sv, -h, -G], [-sv, -h, G]];
           A.field((x, y) => { if (y < 0) return [0, 0]; let u = 0, w = 0; for (const [vx, vy, g] of vs) { const q = vort(x, y, vx, vy, g * 0.2); u += q[0]; w += q[1]; } const m = Math.hypot(u, w) || 1, cap = Math.min(m, 0.9) / m; return [u * cap, w * cap]; }, { spacing: 34, color: 'faint' });
           A.line(-0.5, h, 0.5, h, { color: 'ink', width: 4 });
           A.line(-0.5, -h, 0.5, -h, { color: 'muted', width: 2.5, dash: true });
-          for (const [vx, vy, g] of vs) { const real = vy > 0; A.dot(vx, vy, { r: 8, color: real ? 'accent' : 'muted', hollow: true }); A.text(g > 0 ? '↻' : '↺', vx, vy, { color: real ? 'accent' : 'muted', size: 14, align: 'center', baseline: 'middle' }); }
-          A.measure(0.8, 0, 0.8, h, `h = ${fx(h, 2)} b`);
+          for (const [vx, vy, g] of vs) { const real = vy > 0; A.dot(vx, vy, { r: 8, color: real ? 'accent' : 'muted', hollow: true }); A.tex(g > 0 ? String.raw`\circlearrowleft` : String.raw`\circlearrowright`, vx, vy, { color: real ? 'accent' : 'muted', size: 17, align: 'center', baseline: 'middle' }); }
+          A.measure(1.0, 0, 1.0, h, `h = ${fx(h, 2)} b`);
           sync = true; hd.set(0, h); sync = false;
-          A.text('image wing (opposite circulation)', 0, -h - 0.07, { color: 'muted', size: 10.5, align: 'center' });
+          A.text('image wing, opposite circulation', 0, -h - 0.08, { color: 'muted', size: 10.5, align: 'center' });
           // phi curve
           B.path(gc.pts.map((p) => [p[0], p[1]]), { color: 'accent', width: 2.6 });
           B.fn((x) => fitPhi(x), { domain: [0.03, 1], color: 'muted', dash: true, width: 1.6, n: 200 });
@@ -593,7 +594,7 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
           st = { h, phi, AR, clr: sol.CL / s0.CL, fit: fitPhi(h) };
         });
         v.legend([['accent', 'with the ground'], ['muted', 'free air', { dash: true }], ['muted', 'textbook fit, $1-\\sigma$', { dash: true }]]);
-        v.readout(() => `$h/b=${fx(st.h, 2)}$: induced drag at equal lift is $${fx(st.phi, 3)}$ of the free-air value (a reduction of $${fx(100 * (1 - st.phi), 0)}$ %), as if the aspect ratio were $${fx(st.AR / st.phi, 1)}$ instead of $${fx(st.AR, 1)}$. At equal angle of attack the lift is $${fx(st.clr, 3)}\\times$ the free-air value. The quoted fit $1-\\sigma$, $\\sigma=(1-1.32h/b)/(1.05+7.4h/b)$, gives $${fx(st.fit, 3)}$.\nFor $h/b>1$ the effect is under 3 %; at $h/b=0.05$ the drag is about a third.`);
+        v.readout(() => `$h/b=${fx(st.h, 2)}$: induced drag at equal lift is $${fx(st.phi, 3)}$ of the free-air value (a reduction of $${fx(100 * (1 - st.phi), 0)}$ %), as if the aspect ratio were $${fx(st.AR / st.phi, 1)}$ instead of $${fx(st.AR, 1)}$. At equal angle of attack the lift is $${fx(st.clr, 3)}\\times$ the free-air value. The quoted fit $1-\\sigma$, $\\sigma=(1-1.32h/b)/(1.05+7.4h/b)$, gives $${fx(st.fit, 3)}$.\nFor $h/b>1$ the effect is under 3 %; at $h/b=0.05$ it is about $0.4$ of the free-air value.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.8
@@ -607,7 +608,7 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
       deps: ['aero-3.1', 'aero-3.2'],
       refs: ['Anderson ch. 5'],
       tags: ['formation flight', 'induced drag', 'biology'],
-      scope: String.raw`A cartoon in the spirit of the original analysis, not a reproduction: lightly loaded elliptic wings, steady flight, all birds at one height and speed, the leader's wake taken as a rolled-up vortex pair from the wing onwards (no decay, no roll-up distance, no turbulence), and the induced share of the total drag a free parameter. The model gives the saving in induced drag only; real birds also flap, so what an upwash is worth depends on flap phase, and measured savings are smaller than the 1970 figure.`,
+      scope: String.raw`A cartoon in the spirit of the original analysis, not a reproduction: lightly loaded elliptic wings, steady flight, all birds at one height and speed, the leader's wake taken as a rolled-up vortex pair from the wing onwards (no decay, no roll-up distance, no turbulence) with a core of $0.06\,b$ — the largest savings are sensitive to this core size, and the bound vortices are ignored, and the induced share of the total drag a free parameter. The model gives the saving in induced drag only; real birds also flap, so what an upwash is worth depends on flap phase, and measured savings are smaller than the 1970 figure.`,
       credit: 'Lissaman & Shollenberger, Science 168 (1970) 1003–1005; Weimerskirch et al., Nature 413 (2001) 697–698; Portugal et al., Nature 505 (2014) 399–402',
       viz(v) {
         const kindS = v.select('formation', [{ value: 'v', label: 'V' }, { value: 'ech', label: 'echelon' }, { value: 'abr', label: 'line abreast' }, { value: 'file', label: 'single file' }], 'v');
@@ -617,7 +618,7 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
         const qS = v.slider('induced share of the total drag', 0.3, 0.8, 0.5, { step: 0.05 });
         v.button('best spacing', () => { let b = { d: 0.85, m: -9 }; for (let d = 0.5; d <= 1.4001; d += 0.01) { const m = flockSavings(kindS.value, nS.value, d, angS.value).mean; if (m > b.m) b = { d, m }; } dS.set(Math.round(b.d * 100) / 100); });
         const A = v.stage({ x: [-3, 3], y: [-2.5, 0.6], equal: true, axes: false, height: 320, full: true, title: 'plan view: birds coloured by induced-drag saving' });
-        const B = v.stage({ x: [0, 1.6], y: [-1, 0.6], axes: 'box', gutter: true, height: 260, minWidth: 280, xlabel: 'lateral offset of the follower (wingspans)', ylabel: 'induced-drag saving', title: 'one follower behind one leader' });
+        const B = v.stage({ x: [0, 1.6], y: [-1, 1], axes: 'box', gutter: true, height: 260, minWidth: 280, xlabel: 'lateral offset of the follower (wingspans)', ylabel: 'induced-drag saving', title: 'one follower behind one leader' });
         const C = v.stage({ x: [1, 25], y: [-0.2, 1], axes: 'box', gutter: true, height: 260, minWidth: 280, xlabel: 'number of birds', ylabel: 'range gain', title: 'range gain of the flock' });
         const pairSaving = (off, gap) => birdSaving(1, [{ x: 0, y: 0 }, { x: gap, y: off }]);
         const hd = B.handle(0.85, 0, { color: 'gold', r: 7, constrain: (x) => { const d = clamp(x, 0.5, 1.4); return [d, pairSaving(d, 8)]; } });
