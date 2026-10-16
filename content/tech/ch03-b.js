@@ -92,6 +92,7 @@ The second step is separating number from thing. A token for "a jar of oil" coun
         const amount = () => (com.value === 'barley' ? Math.min(qty.value, 59) : qty.value);
         const sys = () => (com.value === 'barley' ? SYS_SE : SYS_S);
         const nMarks = (n, sy) => decompose(n, sy).reduce((t, [, k]) => t + k, 0);
+        const envS = (() => { const out = []; let mx = 0; for (let q = 1; q <= 5000; q++) { const k = nMarks(q, SYS_S); if (k > mx) { if (q > 1) out.push([q, mx]); mx = k; out.push([q, mx]); } } out.push([5000, mx]); return out; })();
         const commoditySign = (x, y, u) => {
           if (com.value === 'sheep') { A.circle(x, y, 0.4 * u, { color: 'ink', width: 2 }); A.line(x - 0.4 * u, y, x + 0.4 * u, y, { color: 'ink', width: 2 }); A.line(x, y - 0.4 * u, x, y + 0.4 * u, { color: 'ink', width: 2 }); }
           else { A.line(x, y - 0.55 * u, x, y + 0.6 * u, { color: 'ink', width: 2 }); for (let k = 0; k < 4; k++) { const yy = y - 0.25 * u + k * 0.22 * u; A.line(x, yy, x - 0.22 * u, yy + 0.16 * u, { color: 'ink', width: 1.8 }); A.line(x, yy, x + 0.22 * u, yy + 0.16 * u, { color: 'ink', width: 1.8 }); } }
@@ -112,15 +113,16 @@ The second step is separating number from thing. A token for "a jar of oil" coun
             // line 1: numerals + commodity
             const parts = decompose(n, sys()).filter(([, k]) => k > 0), u = 1;
             let x = 0.9; const y = 4.45;
-            for (const [sign, k] of parts) { const cols = Math.min(k, 5), rows = Math.ceil(k / 5); for (let i = 0; i < k; i++) { const cx = x + (i % 5) * signW[sign] * u + signW[sign] / 2, cy = y + (rows > 1 ? (Math.floor(i / 5) === 0 ? 0.45 : -0.45) : 0); numSign(A, sign, cx, cy, u); } x += cols * signW[sign] + 0.25; }
+            for (const [sign, k, val] of parts) { const cols = Math.min(k, 5), rows = Math.ceil(k / 5); for (let i = 0; i < k; i++) { const cx = x + (i % 5) * signW[sign] * u + signW[sign] / 2, cy = y + (rows > 1 ? (Math.floor(i / 5) === 0 ? 0.45 : -0.45) : 0); numSign(A, sign, cx, cy, u); } A.text(`${k}×${val}`, x + cols * signW[sign] / 2, 3.4, { size: 10.5, color: 'muted', align: 'center' }); x += cols * signW[sign] + 0.25; }
             commoditySign(Math.min(x + 0.5, 9.0), y, 1.1);
+            A.text(com.value, Math.min(x + 0.5, 9.0), 3.4, { size: 10.5, color: 'muted', align: 'center' });
             // line 2: the same signs read as the other commodity, or the rebus
             if (m === 'tab') {
               const other = com.value === 'sheep' ? 'barley' : 'sheep', small = parts.every(([sign]) => sign === 'SC' || sign === 'N1');
               const kSC = (parts.find(([sg]) => sg === 'SC') || [0, 0])[1], kN1 = (parts.find(([sg]) => sg === 'N1') || [0, 0])[1];
               const re = other === 'barley' ? 6 * kSC + kN1 : 10 * kSC + kN1;
               A.text(small ? `the same impressions read as ${other}: ${re} units` : `in the barley system the large signs mean other amounts`, 5, 2.3, { size: 12, color: 'purple', align: 'center', weight: 700 });
-              A.text(`${nMarks(n, sys())} impressions + 1 commodity sign`, 5, 1.3, { size: 12, color: 'ink', align: 'center' });
+              A.text(`${nMarks(n, sys())} impressions + 1 commodity sign, where tokens needed ${n}`, 5, 1.3, { size: 12, color: 'ink', align: 'center' });
             } else {
               // arrow sign TI, read as "arrow" and as "life"
               A.line(2.1, 1.75, 3.9, 1.75, { color: 'ink', width: 2.2 }); A.poly([[3.9, 1.95], [4.3, 1.75], [3.9, 1.55]], { fill: 'ink', fillAlpha: 0.6, color: 'ink', width: 1.4 }); A.line(2.1, 1.75, 1.8, 2.0, { color: 'ink', width: 1.6 }); A.line(2.1, 1.75, 1.8, 1.5, { color: 'ink', width: 1.6 });
@@ -132,10 +134,9 @@ The second step is separating number from thing. A token for "a jar of oil" coun
           }
           // ---- B
           B.fn((x) => x, { color: 'orange', width: 2.4 });
-          B.fn((x) => Math.max(1, nMarks(Math.round(x), SYS_S)), { color: 'accent', width: 1.6, n: 800 });
-          B.fn((x) => Math.max(1, Math.log10(x) * 4.5), { color: 'faint', width: 1, dash: [4, 3] });
+          B.path(envS, { color: 'accent', width: 2 });
           B.text('tokens: one per unit', 30, 60, { size: 11, color: 'orange', align: 'right' });
-          B.text('sexagesimal numerals', 150, 3, { size: 11, color: 'accent', align: 'center' });
+          B.text('numerals (most needed up to that amount)', 60, 30, { size: 11, color: 'accent', align: 'center' });
           B.dot(n, n, { r: 4.5, color: 'orange' });
           B.dot(n, Math.max(1, nMarks(n, com.value === 'barley' ? SYS_SE : SYS_S)), { r: 5, color: 'accent' });
           // ---- C
@@ -146,7 +147,7 @@ The second step is separating number from thing. A token for "a jar of oil" coun
             { t: [-3300, -3150], label: 'labels, Abydos tomb U-j' },
             { t: [-3100, -2900], label: 'rebus signs, Jemdet Nasr', color: 'green' },
             { t: -2600, label: 'Sumerian literary texts' },
-          ], { lanes: 4, ticks: [-8000, -7000, -6000, -5000, -4000, -3000] });
+          ], { lanes: 6, laneH: 0.12, ticks: [-8000, -7000, -6000, -5000, -4000, -3000] });
         });
         v.legend([['orange', 'tokens'], ['accent', 'impressed numerals'], ['purple', 'same signs, other system']]);
         v.readout(() => {

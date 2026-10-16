@@ -34,7 +34,7 @@ export default {
           const b = bs.value, c = cs.value, a = H.x, d = H.y;
           const det0 = a * d - b * c;
           const sv = svd22(a, b, c, d), sig = sv.s2;
-          SL.raster((x, y) => (x * y - b * c > 0 ? rgbA('blue', 70) : rgbA('orange', 70)), { res: 220, key: `${b.toFixed(3)}|${c.toFixed(3)}` });
+          SL.raster((x, y) => (x * y - b * c > 0 ? rgbA('blue', 70) : rgbA('orange', 70)), { res: 3, key: `${b.toFixed(3)}|${c.toFixed(3)}` });
           SL.contour((x, y) => x * y - b * c, [0], { color: 'red', width: 2.6, res: 220 });
           SL.axes();
           SL.circle(a, d, sig, { fill: 'green', fillAlpha: 0.22, color: 'green', width: 2 });
@@ -88,7 +88,7 @@ export default {
           });
           LN.path(T.map((t) => [t, detAt(star, t * sig)]), { color: 'red', width: 3 });
           LN.dot(1, detAt(star, sig), { r: 6, color: 'red' });
-          LN.text('sharp direction $-uv^{\\mathsf T}$', 1.1, ymax * 0.55, { size: 12, color: 'red', align: 'left', plate: true });
+          LN.text('sharp direction −uvᵀ', -2.4, ymax * 0.8, { size: 12, color: 'red', align: 'left', plate: true });
           st = { sig, det0, dmin, same, tot, minRoot, s1: sv.s1, starDet: detAt(star, sig) };
         });
         v.legend([['blue', '$\\det>0$', { area: true }], ['orange', '$\\det<0$', { area: true }], ['red', 'singular matrices $\\det=0$'], ['green', 'ball of radius $\\sigma_{\\min}$', { area: true }]]);
@@ -116,9 +116,9 @@ export default {
         const eps = v.slider('neighbourhood radius', 0.08, 0.45, 0.25, { step: 0.01 });
         const second = v.toggle('second chart $\\Phi\\circ\\varphi$', true);
         const kap = v.slider('$\\kappa$', 0, 1.6, 0.8, { step: 0.01 });
-        const PS = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 340, title: 'parameter picture', weight: 1, minWidth: 280 });
-        const S3 = v.stage3d({ range: 1.6, height: 340, yaw: -0.8, pitch: 0.55, axes: false, title: 'the space in $\\mathbb R^3$', weight: 1.1, minWidth: 280 });
-        const CH = v.stage({ x: [-1.3, 1.3], y: [-0.4, 1.0], equal: true, axes: false, height: 340, title: 'a chart into $\\mathbb H^2$', weight: 1, minWidth: 280 });
+        const PS = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 320, title: 'parameter picture', weight: 1, minWidth: 230 });
+        const S3 = v.stage3d({ range: 1.6, height: 320, yaw: -0.8, pitch: 0.55, axes: false, title: 'the space in $\\mathbb R^3$', weight: 1, minWidth: 230 });
+        const CH = v.stage({ x: [-1.3, 1.3], y: [-0.4, 1.0], equal: true, axes: false, height: 320, title: 'a chart into $\\mathbb H^2$', weight: 1, minWidth: 230 });
         const R = 1, rt = 0.45;
         const clampDisc = (x, y) => { const r = Math.hypot(x, y); if (r > 0.95) return [x / r, y / r]; return [x, y]; };
         const H = PS.handle(0.5, 0.4, { color: 'gold', label: 'p', constrain: (x, y) => {
@@ -138,7 +138,7 @@ export default {
           const rp = Math.hypot(p[0], p[1]);
           if (rp < 0.5) return [q[0] - p[0], 0.35 + (q[1] - p[1])];
           const dth = ((Math.atan2(q[1], q[0]) - Math.atan2(p[1], p[0]) + 3 * PI) % TAU) - PI;
-          return [dth, 1 - Math.hypot(q[0], q[1])];
+          return [dth * rp, 1 - Math.hypot(q[0], q[1])];
         };
         let st = null;
         v.render(() => {
@@ -225,7 +225,7 @@ export default {
         const B = v.stage({ x: [0.01, 2], y: [1e-45, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, title: '$|f^{(n)}(x)|$, $n=0..6$', xlabel: 'x', weight: 1.1, minWidth: 260 });
         const C = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 320, title: 'a plateau bump on $\\mathbb R^2$', weight: 1, minWidth: 260 });
         const fn = (x) => g(x);
-        const H = A.handle(0.5, fn(0.5), { color: 'gold', label: 'x₀', constrain: (x) => { const X = clamp(x, -1.1, 2.3); return [X, fn(X)]; } });
+        const H = A.handle(0.4, fn(0.4), { color: 'gold', label: 'x₀', constrain: (x) => { const X = clamp(x, -1.1, 2.3); return [X, fn(X)]; } });
         const cols = ['accent', 'blue', 'teal', 'green', 'gold', 'orange', 'red'];
         const plateau = (r, a, b) => 1 - step((r - a) / (b - a));
         const bump2 = (x, y) => {
@@ -243,17 +243,16 @@ export default {
           A.dot(x0, fn(x0), { r: 6, color: 'gold' });
           // log-log derivatives
           const xs = []; for (let i = 0; i <= 160; i++) xs.push(0.01 * Math.pow(200, i / 160));
-          for (let n = 0; n <= 6; n++) B.path(xs.map((x) => [x, Math.max(bumpDeriv(BP, n, x), 1e-300)]), { color: cols[n], width: n === 0 ? 3 : 1.8 });
+          for (let n = 0; n <= 6; n++) B.path(xs.map((x) => [x, Math.max(Math.abs(bumpDeriv(BP, n, x)), 1e-300)]), { color: cols[n], width: n === 0 ? 3 : 1.8 });
           B.path(xs.map((x) => [x, Math.pow(x, mm.value)]), { color: 'muted', width: 2, dash: [6, 4] });
-          B.tex(`x^{${mm.value}}`, 1.2, Math.pow(1.2, mm.value) * 4 + 5, { color: 'muted', size: 14 });
           if (x0 > 0.01) B.vline(x0, { color: 'gold', width: 1.2, dash: [3, 3] });
           // heat map of the bump
-          C.heat(bump2, { range: [0, 1], cmap: 'viridis', res: 140, key: `${prof.value}|${r1.value}|${r2.value}` });
+          C.heat(bump2, { range: [0, 1], cmap: 'viridis', res: 4, key: `${prof.value}|${r1.value}|${r2.value}` });
           const a = Math.min(r1.value, r2.value - 0.05), b = r2.value;
           if (prof.value === 'box') { C.rect(-a, -a, a, a, { color: 'ink', width: 1, dash: true }); C.rect(-b, -b, b, b, { color: 'ink', width: 1 }); } else { C.circle(0, 0, a, { color: 'ink', width: 1, dash: true }); C.circle(0, 0, b, { color: 'ink', width: 1 }); }
           // readouts
           const d = [0, 1, 2].map((n) => bumpDeriv(BP, n, x0));
-          let worst = 0; for (let n = 0; n <= 6; n++) worst = Math.max(worst, x0 > 0 ? bumpDeriv(BP, n, x0) / Math.pow(x0, mm.value) : 0);
+          let worst = 0; for (let n = 0; n <= 6; n++) worst = Math.max(worst, x0 > 0 ? Math.abs(bumpDeriv(BP, n, x0)) / Math.pow(x0, mm.value) : 0);
           st = { x0, d, worst };
         });
         v.legend([['accent', '$f$'], ['red', 'Taylor polynomial at $0$'], ['muted', '$x^m$ (dashed)']]);
@@ -282,7 +281,7 @@ export default {
         const tilt = v.slider('tilt of the great circle', 0, 3.1, 0.9, { step: 0.01 });
         const ST = v.stage({ x: [0, TAU], y: [-0.62, 1.12], axes: 'box', gutter: true, height: 360, title: 'the layers $\\rho_i$ (stacked) and $\\sum\\psi_i$ (dashed)', xlabel: 'θ  or  φ along the great circle', weight: 1.25, minWidth: 320,
           xticks: [[0, '0'], [PI, 'π'], [TAU, '2π']] });
-        const S3 = v.stage3d({ range: 1.35, height: 360, yaw: -0.9, pitch: 0.4, axes: false, title: 'the manifold coloured by the blend of $\\rho_i$', weight: 1, minWidth: 300 });
+        const S3 = v.stage3d({ range: 1.35, height: 360, yaw: -0.9, pitch: 0.6, axes: false, title: 'the manifold coloured by the blend of $\\rho_i$', weight: 1, minWidth: 300 });
         const y0 = [-0.14, -0.28, -0.42];
         const hs = [1.0, 3.3, 5.4].map((c, i) => ST.handle(c, y0[i], { color: ['accent', 'orange', 'green'][i], constrain: (x) => [clamp(wrap(x), 0.01, TAU - 0.01), y0[i]] }));
         const pal = ['blue', 'orange', 'green', 'purple'];
@@ -335,7 +334,7 @@ export default {
         v.readout(() => {
           if (!st) return '';
           if (st.gap) return `**The sets do not cover**: $\\sum_i\\psi_i$ vanishes on an interval/region (red), so $\\rho_i=\\psi_i/\\sum\\psi_j$ is undefined there — no partition of unity from these bumps. Everywhere else the layers still stack to $1$ (max error $${v.sci(Math.max(st.maxErr, 1e-17), 1)}$).`;
-          return `Covered: $\\min\\sum_i\\psi_i=${v.sci(st.minS, 2)}>0$, and $\\max\\big|\\sum_i\\rho_i-1\\big|=${st.maxErr < 1e-12 ? '<10^{-12}' : v.sci(st.maxErr, 1)}$ over ${480} sample points — the layers stack to exactly $1$, each $\\rho_i$ vanishing outside its ${mode.value === 'circ' ? 'arc' : 'cap'}.`;
+          return `Covered: $\\min\\sum_i\\psi_i=${v.sci(st.minS, 2)}>0$, and $\\max\\big|\\sum_i\\rho_i-1\\big|${st.maxErr < 1e-12 ? '<10^{-12}' : '=' + v.sci(st.maxErr, 1)}$ over ${480} sample points — the layers stack to exactly $1$, each $\\rho_i$ vanishing outside its ${mode.value === 'circ' ? 'arc' : 'cap'}.`;
         });
       },
     },
@@ -353,7 +352,7 @@ export default {
       viz(v) {
         const gens = v.slider('generations of gaps (Cantor set)', 1, 7, 5, { int: true });
         const sel = v.select('closed set in the plane', [{ value: 'sine', label: 'topologist’s sine curve' }, { value: 'dust', label: 'Cantor dust' }, { value: 'ring', label: 'circle and a segment' }, { value: 'click', label: 'click to add points' }], 'sine');
-        const lv = v.slider('resolution (levels of squares)', 3, 7, 6, { int: true });
+        const lv = v.slider('resolution (levels of squares)', 3, 7, 7, { int: true });
         v.button('Clear clicked points', () => { clicked.length = 0; ver++; });
         const CS = v.stage({ x: [0, 1], y: [1e-15, 2], ylog: true, axes: 'box', gutter: true, height: 270, full: true, title: '$f$ for the Cantor set (log scale)', xlabel: 'x', ylabel: 'f(x)' });
         const P2 = v.stage({ x: [-0.9, 1.9], y: [-1.4, 1.4], equal: true, axes: false, height: 400, title: 'the set and its Whitney squares', weight: 1, minWidth: 300 });
@@ -431,7 +430,7 @@ export default {
           // ---- tests
           let maxOnA = 0; D.pts.forEach((p, i) => { if (i % 3 === 0) maxOnA = Math.max(maxOnA, D.fv(p[0], p[1])); });
           let farZero = 0, nz = 0, minPos = Infinity, npos = 0;
-          for (let i = 0; i <= NG; i++) for (let j = 0; j <= NG; j++) { const x = -0.9 + (2.8 * i) / NG, y = -1.4 + (2.8 * j) / NG, z = zs[i][j]; if (z === 0) { nz++; farZero = Math.max(farZero, nearest(D.grid, D.pts, x, y, 4 * D.smin)); } else { npos++; minPos = Math.min(minPos, z); } }
+          for (let i = 0; i <= NG; i++) for (let j = 0; j <= NG; j++) { const x = -0.9 + (2.8 * i) / NG, y = -1.4 + (2.8 * j) / NG, z = zs[i][j]; if (z === 0) { nz++; farZero = Math.max(farZero, nearest(D.grid, D.pts, x, y, 1.0)); } else { npos++; minPos = Math.min(minPos, z); } }
           st = { n: D.sq.length, smin: D.smin, maxOnA, farZero, nz, npos, minPos, fmax, L, ng: gaps.length };
         });
         v.legend([['red', 'the closed set / where $f=0$'], ['accent', 'bumps and Whitney squares']]);

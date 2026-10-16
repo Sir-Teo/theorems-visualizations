@@ -560,6 +560,7 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
         const L = v.stage({ x: [0, 50], y: [0, 0.1], height: 320, weight: 1.4, axes: 'box', gutter: true, xlabel: '$S=Y_1+\\dots+Y_N$', title: '6000 seeded random sums' });
         const R = v.stage({ x: [0, 2], y: [0, 100], height: 320, axes: 'box', gutter: true, title: '$\\operatorname{var}(S)$', xticks: [[0.5, 'formula'], [1.5, 'sample']] });
         let st = null;
+        const M_q = (xs, q) => v.M.quantile(xs, q);
         v.render(() => {
           const N = NL[nl.value], Y = YL[yl.value], r = v.rng(seed * 29 + 11), xs = [];
           for (let i = 0; i < 6000; i++) { const n = N.draw(r); let s = 0; for (let j = 0; j < n; j++) s += Y.draw(r); xs.push(s); }
@@ -576,7 +577,6 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
           v.legend([['green', '$EN\\cdot EY$', { dash: true }], ['gold', 'sample mean / variance'], ['accent', '$EN\\operatorname{var}(Y)$', { area: true }], ['orange', '$\\operatorname{var}(N)(EY)^2$', { area: true }]]);
           st = { mE, mT, vE, a, b, pois: nl.value === 'pois', ey2: Y.v + Y.m * Y.m };
         });
-        const M_q = (xs, q) => v.M.quantile(xs, q);
         v.readout(() => st && `Mean: sample $${v.fix(st.mE, 3)}$ vs $EN\\cdot EY=${v.fix(st.mT, 3)}$. Variance: sample $${v.fix(st.vE, 2)}$ vs $${v.fix(st.a, 2)}+${v.fix(st.b, 2)}=${v.fix(st.a + st.b, 2)}$` + (st.pois ? ` $=\\lambda EY^2=4\\times${v.fix(st.ey2, 2)}$.` : '.'));
       },
     },
@@ -753,7 +753,7 @@ Equivalently, the $n+1$ spacings of $n$ sorted uniforms have the law of $(\xi_1,
         const nS = v.slider('$n$', 2, 30, 8, { int: true });
         const kS = v.slider('$k$', 1, 30, 3, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const T = v.stage({ x: [0, 1], y: [0, 3], height: 150, full: true, axes: 'box', gutter: true, xlabel: '', title: 'one draw of each', yticks: [[2, 'uniforms'], [1, 'T_k/T_{n+1}']] });
+        const T = v.stage({ x: [0, 1], y: [0, 3], height: 150, full: true, axes: 'box', gutter: true, xlabel: '', title: 'one draw of each', yticks: [[2, 'uniforms'], [1, 'Tₖ/Tₙ₊₁']] });
         const B = v.stage({ x: [0, 1], y: [0, 1], height: 290, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'distribution of the $k$-th point' });
         let sim = null, st = null;
         v.render(() => {

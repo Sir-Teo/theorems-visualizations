@@ -431,10 +431,11 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
             run.push([p[0], p[1]]);
           }
           const tNow = interp(H.pts, 0, 1, Q), stage = Q <= H.melt0 ? 'ice' : Q < H.melt1 ? 'melt' : Q <= H.boil0 ? 'liquid' : Q < H.boil1 ? 'boil' : 'steam';
-          if (run.length) { run.push([Q, tNow]); stg = stage === 'ice' ? 'ice' : stg; flush(); }
+          if (run.length) { if (stage !== stg) { const last = run[run.length - 1]; flush(); run = [last]; stg = stage; } run.push([Q, tNow]); flush(); }
           sc.dot(Q, tNow, { r: 5.5, color: 'gold' });
           // plateau brackets
-          sc.measure(H.melt0, 12, H.melt1, 12, `fusion ${v.fix(H.melt1 - H.melt0, 1)} kJ`, { math: false, color: 'purple', size: 11.5 });
+          sc.measure(H.melt0, 18, H.melt1, 18, null, { color: 'purple' });
+          sc.text(`fusion ${v.fix(H.melt1 - H.melt0, 1)} kJ`, (H.melt0 + H.melt1) / 2, 18, { dy: -11, size: 11.5, color: 'purple', align: 'center', plate: true });
           sc.measure(H.boil0, H.Tb - 16, H.boil1, H.Tb - 16, `vaporization ${v.fix(H.boil1 - H.boil0, 0)} kJ`, { math: false, color: 'red', size: 11.5 });
           sc.hline(H.Tb, { color: 'red', width: 1, dash: [3, 4] });
           sc.text(`boils at ${v.fix(H.Tb, 1)} °C`, H.Qend * 0.02, H.Tb, { dy: -9, size: 11, color: 'red', align: 'left', plate: true });
