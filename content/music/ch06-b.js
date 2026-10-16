@@ -177,18 +177,19 @@ export default {
           cv.path(K.P.map(([c, y]) => [c, nrm(y)]), { color: 'accent', width: 2.4 });
           cv.dot(sev.value, nrm(D(sev.value)), { r: 6, color: 'gold' });
           const P = pairs();
-          const top = P.filter((p) => p.b >= 0.5).sort((a, b) => b.w - a.w)[0];
-          let row = 0;
-          P.slice().sort((a, b) => a.b - b.b).forEach((p) => {
-            const x = Math.max(p.b, 0.35), lock = p.lock || p === top;
-            bt.line(x, 0, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', width: 4, alpha: 0.85 });
-            if (lock) { bt.text(p.lab, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', size: 10, align: x > 26 ? 'right' : 'left', dx: x > 26 ? -5 : 5, dy: -2 + 15 * (row % 2), plate: true }); row++; }
+          const top = P.filter((p) => p.b >= 0.5 && !p.lock).sort((a, b) => b.w - a.w)[0];
+          P.forEach((p) => {
+            const x = Math.max(p.b, 0.35), col = p.b < 0.5 ? 'green' : p.lock ? 'gold' : 'red';
+            bt.line(x, 0, x, p.w, { color: col, width: 4, alpha: 0.9 });
           });
+          if (top) bt.text(top.lab, Math.max(top.b, 0.35), top.w, { color: 'red', size: 10, align: top.b > 26 ? 'right' : 'left', dx: top.b > 26 ? -5 : 5, dy: -2, plate: true });
+          const locks = P.filter((p) => p.lock);
+          locks.forEach((p, k) => bt.text(`${p.lab}: ${p.b < 0.5 ? 'locked' : `${v.fix(p.b, 1)} Hz`}`, 1, 0.86 - 0.075 * k, { color: 'gold', size: 10.5, align: 'left', weight: 600, plate: true }));
           if (!P.length) bt.text('no partial pairs within 40 Hz', 20, 0.6, { color: 'muted', size: 12, align: 'center' });
           bt.vband(15, 40, { color: 'red', alpha: 0.05 });
           bt.text('rough (≳15 beats/s)', 39, 0.9, { color: 'red', size: 10, align: 'right' });
         });
-        v.legend([['accent', 'chord dissonance'], ['red', 'beating pair (height: its Plomp–Levelt roughness)'], ['green', 'coinciding pair (no beats; height: weaker amplitude)']]);
+        v.legend([['accent', 'chord dissonance'], ['gold', 'the three pairs that lock at 4:5:6:7'], ['red', 'other beating pairs (height: Plomp–Levelt roughness)'], ['green', 'coinciding pair']]);
         v.readout(() => {
           const P = pairs(), co = P.filter((p) => p.b < 0.5).length, beating = P.filter((p) => p.b >= 0.5), slow = beating.length ? beating.reduce((a, b) => (b.w > a.w ? b : a)) : null, K = curve();
           return `seventh ${v.fix(sev.value, 1)} ¢ = ${sc(v, sev.value - 1000, 1)} ¢ from 12-TET, ${sc(v, sev.value - cents(7 / 4), 1)} ¢ from 7/4 · ${co} coinciding pair${co === 1 ? '' : 's'}, ${beating.length} beating${slow ? `, strongest ${slow.lab} at ${v.fix(slow.b, 1)} Hz` : ''} · dissonance ${v.fix((D(sev.value) - K.lo) / (K.hi - K.lo), 3)} on the min–max scale (12-TET seventh: ${v.fix((D(1000) - K.lo) / (K.hi - K.lo), 3)}, 7/4: ${v.fix((D(cents(7 / 4)) - K.lo) / (K.hi - K.lo), 3)})`;
