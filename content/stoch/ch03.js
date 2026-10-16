@@ -22,9 +22,9 @@ export default {
         const lam = v.slider('leak $\\lambda$ from state 2', 0, 0.5, 0.2, { step: 0.01, onChange: () => rebuild() });
         const Nex = v.slider('excursions per state', 100, 4000, 800, { log: true, int: true, onChange: () => rebuild() });
         let seed = 5; v.button('resample', () => { seed++; rebuild(); });
-        const s1 = v.stage({ x: [-0.4, 10.4], y: [0, 6.4], axes: false, equal: true, height: 300, title: 'the chain' });
+        const s1 = v.stage({ x: [-1.4, 11.2], y: [-0.3, 6.6], axes: false, equal: true, height: 300, title: 'the chain' });
         const s2 = v.stage({ x: [-0.7, 5.7], y: [0, 1.1], axes: 'box', gutter: true, height: 300, xlabel: 'state $i$', ylabel: 'return probability', title: 'excursions that came back' });
-        const s3 = v.stage({ x: [0, 4000], y: [0, 100], axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'visits up to time $n$', title: 'one long run from state 5' });
+        const s3 = v.stage({ x: [0, 4000], y: [0.8, 5000], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'visits up to time $n$', title: 'one long run from state 5 (log scale)' });
         const G = v.graph(s1, { directed: true, layout: 'none', draggable: false, r: 16, nodes: leakNodes(), edges: [] });
         let P, rho, est, counts, tops;
         function rebuild() {
@@ -37,8 +37,8 @@ export default {
             return back / Nex.value;
           });
           const T = 4000, path = pathOf(P, R, 5, T), c = new Array(6).fill(0); counts = P.map(() => []);
-          for (let t = 1; t <= T; t++) { c[path[t]]++; if (t % 20 === 0) c.forEach((k, i) => counts[i].push([t, k])); }
-          tops = Math.max(10, ...c) * 1.1; s3.setView([0, T], [0, tops]);
+          for (let t = 1; t <= T; t++) { c[path[t]]++; if (t % 20 === 0 || t < 20) c.forEach((k, i) => counts[i].push([t, k])); }
+          tops = Math.max(10, ...c) * 1.6; s3.setView([0, T], [0.8, tops]);
           v.invalidate();
         }
         rebuild();
@@ -52,8 +52,9 @@ export default {
           rho.forEach((r, i) => s2.dot(i, r, { color: 'ink', r: 5 }));
           s2.hline(1, { color: 'faint', dash: true });
           counts.forEach((pts, i) => {
-            s3.path(pts, { color: recolor(rho, i), width: 2 });
-            const last = pts[pts.length - 1]; s3.text(String(i), last[0], last[1], { color: recolor(rho, i), dx: 8, baseline: 'middle', size: 13 });
+            const pp = pts.filter((q) => q[1] > 0); if (!pp.length) return;
+            s3.path(pp, { color: recolor(rho, i), width: 2 });
+            const last = pp[pp.length - 1]; s3.text(String(i), last[0], last[1], { color: recolor(rho, i), dx: 8, baseline: 'middle', size: 13 });
           });
         });
         v.legend([['green', 'recurrent ($\\rho=1$)', { area: true }], ['red', 'transient ($\\rho<1$)', { area: true }], ['ink', 'exact $\\rho_i$', { dot: true }]]);
@@ -185,7 +186,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           if (pi === pj) return 'Choose two different states $i\\ne j$.';
           if (c === null) return `States ${pi} and ${pj} do **not** communicate (no route ${m === null ? `${pi}→${pj}` : `${pj}→${pi}`}), so the theorem says nothing: they are ${recolor(rho, pi) === recolor(rho, pj) ? 'both ' + (rho[pi] > 1 - 1e-9 ? 'recurrent' : 'transient') + ' here, but need not be' : 'allowed to differ — and here they do'}.`;
           let ok = true; for (let N = m + l; N <= NN; N++) if (Si[N][1] < c * Sj[N - m - l][1] - 1e-9) ok = false;
-          return `Shortest routes: $m=${m}$ steps $i\\to j$, $l=${l}$ steps $j\\to i$; $c=p^{(m)}_{ij}p^{(l)}_{ji}=${v.fix(c, 4)}$. The inequality $S^i_N\\ge c\\,S^j_{N-m-l}$ holds for every $N\\le${NN}: **${ok ? 'yes' : 'NO'}**. Both states are ${rho[pi] > 1 - 1e-9 ? 'recurrent' : 'transient'}.`;
+          return `Shortest routes: $m=${m}$ steps $i\\to j$, $l=${l}$ steps $j\\to i$; $c=p^{(m)}_{ij}p^{(l)}_{ji}=${v.fix(c, 4)}$. The inequality $S^i_N\\ge c\\,S^j_{N-m-l}$ holds for every $N\\le${NN}$: **${ok ? 'yes' : 'NO'}**. Both states are ${rho[pi] > 1 - 1e-9 ? 'recurrent' : 'transient'}.`;
         });
       },
     },
@@ -257,7 +258,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
       statement: String.raw`Simple symmetric random walk on $\mathbb Z^d$ (each step moves to one of the $2d$ nearest neighbours with probability $1/(2d)$) is recurrent for $d=1$ and $d=2$ and transient for every $d\ge3$. Equivalently, $\sum_n\Pr_0(S_{2n}=0)$ diverges for $d\le2$ and converges for $d\ge3$, because $\Pr_0(S_{2n}=0)\sim c_d\,n^{-d/2}$. In $d=3$ the probability of ever returning to the origin is $\approx0.3405$.`,
       scope: String.raw`Nearest-neighbour walk with uniform steps on the integer lattice. The constants $0.3405$ ($d=3$) and $0.1932$ ($d=4$) are numerical values from the literature (Watson 1939, McCrea–Whipple 1940; table of Montroll 1956 as listed by MathWorld), not consequences of the argument sketched here.`,
       idea: String.raw`By the recurrence criterion (3.2) it is enough to sum $u_{2n}=\Pr_0(S_{2n}=0)$. In one dimension $u_{2n}=\binom{2n}{n}4^{-n}$, and Stirling's formula (pma-8.22) gives $u_{2n}\sim1/\sqrt{\pi n}$. In two dimensions the coordinates in the rotated frame $(x+y,x-y)$ are independent one-dimensional walks, so $u_{2n}$ is its square, $\sim1/(\pi n)$: the harmonic series diverges. In $d$ dimensions, $u_{2n}\asymp n^{-d/2}$, and the $p$-series test (pma-3.28) says $\sum n^{-d/2}$ converges exactly when $d>2$.`,
-      caption: String.raw`Choose the dimension $d$. Left: partial sums $\sum_{k\le n}u_{2k}$ on log-log axes, computed exactly; for $d=1,2$ they grow without bound (like $\sqrt n$ and $\log n$) and for $d\ge3$ they level off at the expected number of returns. Right: the probability that the walk has been back at the origin by time $T$ — exact curve (renewal equation) and the fraction of 800 simulated walkers. In $d=2$ it creeps to 1 so slowly that after 4000 steps still about a fifth of the walkers have not come home.`,
+      caption: String.raw`Choose the dimension $d$. Left: partial sums $\sum_{k\le n}u_{2k}$ on log-log axes, computed exactly; for $d=1,2$ they grow without bound (like $\sqrt n$ and $\log n$) and for $d\ge3$ they level off at the expected number of returns. Right: the probability that the walk has been back at the origin by time $T$ — exact curve (renewal equation) and the fraction of 800 simulated walkers. In $d=2$ it creeps to 1 so slowly that after 4000 steps about 29% of the walkers (exact value) have still not come home.`,
       deps: ['stoch-3.2', 'pma-8.22', 'pma-3.28'], refs: ['Norris §1.6'], credit: 'G. Pólya, 1921', tags: ['random walk', 'recurrence', 'dimension'],
       viz(v) {
         const dd = v.select('dimension $d$', ['1', '2', '3', '4'], '2', { onChange: () => rebuild() });
@@ -292,7 +293,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           const pts = []; for (let n = 0; n <= 2000; n += 4) pts.push([2 * n, Fcur[n]]);
           s2.path(pts, { color: COLS[d], width: 2.5 });
           const lim = POLYA_P[d]; s2.hline(lim, { color: 'muted', dash: true });
-          s2.text(d <= 2 ? 'limit 1' : `limit ${lim.toFixed(4)}`, 3950, lim, { align: 'right', dy: -10, color: 'muted', size: 12 });
+          s2.text(d <= 2 ? 'limit 1' : `limit ${lim.toFixed(4)}`, 3950, lim, { align: 'right', dy: 14, color: 'muted', size: 12 });
           // empirical cumulative fraction
           const emp = []; let k = 0; for (let t = 0; t <= 4000; t += 20) { while (k < simFirst.length && simFirst[k] <= t) k++; emp.push([t, k / M]); }
           s2.path(emp, { color: 'gold', width: 2 });
@@ -321,7 +322,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
         const HZ = 1000;
         const s1 = v.stage({ x: [0, 300], y: [-60, 200], axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'position $S_n$', title: 'ten walks' });
         const s2 = v.stage({ x: [0.5, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 300, xlabel: 'up-probability $p$', ylabel: 'return probability', title: 'return probability against $p$' });
-        const s3 = v.stage({ x: [0, 2000], y: [0, 1.05], axes: 'box', gutter: true, height: 300, xlabel: 'time $T$', ylabel: 'returned by time $T$', title: 'returned by time $T$' });
+        const s3 = v.stage({ x: [1, 2000], y: [0, 1.05], xlog: true, axes: 'box', gutter: true, height: 300, xlabel: 'time $T$', ylabel: 'returned by time $T$', title: 'returned by time $T$' });
         let walks, grid, simPts, Fp, simFrac, simSeed = -1;
         const Fof = (p) => { const q = 1 - p, N = 1000, u = new Float64Array(N + 1); u[0] = 1; for (let n = 1; n <= N; n++) u[n] = u[n - 1] * (2 * (2 * n - 1) / n) * p * q; return returnedBy(u).F; };
         function rebuild() {
@@ -341,7 +342,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           Fp = Fof(p);
           const T2 = 2000, fr = new Float64Array(T2 + 1);
           for (let w = 0; w < 600; w++) { let x = 0; for (let t = 1; t <= T2; t++) { x += R() < p ? 1 : -1; if (x === 0) { fr[t]++; break; } } }
-          simFrac = []; let c = 0; for (let t = 0; t <= T2; t += 10) { for (let k = Math.max(0, t - 9); k <= t; k++) c += fr[k]; simFrac.push([t, c / 600]); }
+          simFrac = []; let c = 0, tPrev = 0; for (const t of Array.from({ length: 61 }, (_, i) => Math.round(Math.exp((Math.log(T2) * i) / 60)))) { for (let k = tPrev + 1; k <= t; k++) c += fr[k]; tPrev = Math.max(tPrev, t); if (t >= 1) simFrac.push([t, c / 600]); }
           v.invalidate();
         }
         rebuild();
@@ -354,7 +355,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           s2.fn((x) => 2 * (1 - x), { color: 'green', width: 2.5, domain: [0.5, 1], n: 2 });
           simPts.forEach(([x, y]) => s2.dot(x, y, { color: 'gold', r: 4.5 }));
           s2.vline(p, { color: 'faint', dash: true });
-          const ex = []; for (let n = 0; n <= 1000; n += 4) ex.push([2 * n, Fp[n]]);
+          const ex = []; for (let n = 1; n <= 1000; n += 4) ex.push([2 * n, Fp[n]]);
           s3.path(ex, { color: 'accent', width: 2.5 });
           s3.path(simFrac, { color: 'gold', width: 2 });
           s3.hline(2 * (1 - p), { color: 'green', dash: true, width: 2 });
@@ -380,7 +381,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
         const pu = v.slider('up-probability $p$', 0.2, 0.7, 0.4, { step: 0.01, onChange: () => rebuild() });
         let seed = 4; v.button('resample', () => { seed++; rebuild(); });
         const NEX = 3000, CAP = 20000;
-        const s1 = v.stage({ x: [1, CAP], y: [1e-3, 1.2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'time $n$', ylabel: '$\\Pr(T_0>n)$', title: 'tail of the return time' });
+        const s1 = v.stage({ x: [1, CAP], y: [2e-4, 1.2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'time $n$', ylabel: '$\\Pr(T_0>n)$', title: 'tail of the return time' });
         const s2 = v.stage({ x: [1, NEX], y: [0, 10], xlog: true, axes: 'box', gutter: true, height: 320, xlabel: 'number of excursions', ylabel: 'average return time', title: 'running mean of return times' });
         let surv, runMean, nRet, mean0;
         function rebuild() {
@@ -389,7 +390,7 @@ $$p^{(m+n+l)}_{ii}\;\ge\;p^{(m)}_{ij}\,p^{(n)}_{jj}\,p^{(l)}_{ji}.$$`,
           for (let e = 0; e < NEX; e++) { let x = 1, t = 1; while (x > 0 && t < CAP) { x += R() < p ? 1 : -1; t++; } times.push(x === 0 ? t : Infinity); }
           const sorted = times.slice().sort((a, b) => a - b);
           surv = []; let k = 0;
-          for (let i = 0; i <= 60; i++) { const n = Math.exp((Math.log(CAP) * i) / 60); while (k < sorted.length && sorted[k] <= n) k++; surv.push([n, Math.max(1e-4, (NEX - k) / NEX)]); }
+          for (let i = 0; i <= 60; i++) { const n = Math.exp((Math.log(CAP) * i) / 60); while (k < sorted.length && sorted[k] <= n) k++; surv.push([n, Math.max(2e-4, (NEX - k) / NEX)]); }
           runMean = []; let sum = 0, cnt = 0;
           for (let e = 0; e < NEX; e++) { if (isFinite(times[e])) { sum += times[e]; cnt++; } if ((e + 1) % 5 === 0 || e < 20) runMean.push([e + 1, cnt ? sum / cnt : 0]); }
           nRet = cnt; mean0 = p < 0.5 ? (2 * q) / (1 - 2 * p) : Infinity;

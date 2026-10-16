@@ -337,8 +337,8 @@ the coefficients of the characteristic polynomial $\sigma^3-I_1\sigma^2+I_2\sigm
       statement: String.raw`Plane strain components $\varepsilon_x,\varepsilon_y,\gamma_{xy}$ (engineering shear strain $\gamma=2\varepsilon_{xy}$) transform under a rotation of axes exactly like stress with $\tau\to\gamma/2$:
 $$\varepsilon_{x'}=\tfrac{\varepsilon_x+\varepsilon_y}{2}+\tfrac{\varepsilon_x-\varepsilon_y}{2}\cos2\theta+\tfrac{\gamma_{xy}}{2}\sin2\theta,$$
 so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and principal strains $\varepsilon_{1,2}=\tfrac{\varepsilon_x+\varepsilon_y}{2}\pm\sqrt{(\tfrac{\varepsilon_x-\varepsilon_y}{2})^2+(\tfrac{\gamma_{xy}}2)^2}$. A strain gauge measures only the normal strain along its own axis, so three gauges in three different directions are needed: for the **rectangular rosette** (gauges at $0^\circ,45^\circ,90^\circ$ to a reference axis) the full state is $\varepsilon_x=\varepsilon_a$, $\varepsilon_y=\varepsilon_c$, $\gamma_{xy}=2\varepsilon_b-\varepsilon_a-\varepsilon_c$.`,
-      idea: String.raw`Strain is the symmetric part of the displacement gradient (2.5), so the normal strain along a unit direction $\mathbf n$ is $\mathbf n^{\mathsf T}\boldsymbol\varepsilon\,\mathbf n$, the same quadratic form as in 3.1 with $\gamma/2$ in the role of $\tau$. A plane state has three unknowns, and the readings at $\theta=0^\circ,45^\circ,90^\circ$ give three linear equations that can be solved by hand: the $45^\circ$ gauge fixes $\gamma_{xy}$. The conversion from the solved strains to stress needs Hooke's law (2.7) and a known material, which is a separate step. Bonded-wire strain gauges themselves date to the late 1930s (Simmons at Caltech and Ruge at MIT, independently); rosette formats came later.`,
-      caption: String.raw`The coloured plate is a clamped cantilever loaded at its free end (a plane-stress finite-element solution, steel-like $E=200$ GPa, $\nu=0.3$, illustrative), coloured by von Mises stress. Drag the black dot: three gauges (a, b, c at $\alpha,\alpha+45^\circ,\alpha+90^\circ$) read the true normal strain along their axes. The right panel rebuilds the Mohr circle of strain from those three readings (accent) and compares it with the FE strain (green, dashed). Add gauge noise to see how errors in three numbers move the principal strains and especially the principal direction.`,
+      idea: String.raw`Strain is the symmetric part of the displacement gradient (2.5), so the normal strain along a unit direction $\mathbf n$ is $\mathbf n^{\mathsf T}\boldsymbol\varepsilon\,\mathbf n$, the same quadratic form as in 3.1 with $\gamma/2$ in the role of $\tau$. A plane state has three unknowns, and the readings at $\theta=0^\circ,45^\circ,90^\circ$ give three linear equations that can be solved by hand: the $45^\circ$ gauge fixes $\gamma_{xy}$. The conversion from the solved strains to stress needs Hooke's law (2.7) and a known material, which is a separate step. Bonded-wire strain gauges themselves date to the late 1930s (Simmons at Caltech and Ruge at MIT, developing them independently).`,
+      caption: String.raw`The coloured plate is a clamped cantilever loaded at its free end (a plane-stress finite-element solution, steel-like $E=200$ GPa, $\nu=0.3$, illustrative), coloured by von Mises stress. Drag the black dot: three gauges (a, b, c at $\alpha,\alpha+45^\circ,\alpha+90^\circ$) read the true normal strain along their axes. The right panel rebuilds the Mohr circle of strain from those three readings (accent) and compares it with the FE strain (green, dashed; the two circles coincide until you add gauge error). Add gauge noise to see how errors in three numbers move the principal strains and especially the principal direction.`,
       deps: ['solid-2.5', 'solid-3.1'],
       refs: ['Gere–Goodno §7.7'],
       tags: ['strain', 'measurement'],
@@ -389,8 +389,8 @@ so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and princ
           const g = s.pt.c, Rt = s.pt.R, Rr = s.pr.R, cr = s.pr.c;
           // Mohr stage: auto-fit to the data
           const m = Math.max(Math.abs(g) + Rt, Math.abs(cr) + Rr, 60) * 1.3; M.setView([-m, m], [-m * 0.75, m * 0.75]);
-          M.circle(g, 0, Rt, { color: 'green', width: 2.4, dash: [6, 4], fill: false });
-          M.circle(cr, 0, Rr, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.07 });
+          M.circle(cr, 0, Rr, { color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.07 });
+          M.circle(g, 0, Rt, { color: 'green', width: 2, dash: [6, 5], fill: false });
           s.R.forEach((r, i) => { M.dot(r, 0, { r: 5, color: cols[i] }); M.tex(labs[i], r, m * (0.07 + 0.07 * i), { size: 12.5, color: cols[i] }); M.line(r, 0, r, m * (0.04 + 0.07 * i), { color: cols[i], width: 1, dash: [2, 2] }); });
           M.dot(s.pr.s1, 0, { r: 5.5, color: 'red', hollow: true }); M.dot(s.pr.s2, 0, { r: 5.5, color: 'red', hollow: true });
           void sc;
@@ -475,7 +475,7 @@ with compressive radial stress equal to the applied pressure on each surface, $\
       refs: ['Timoshenko–Goodier ch. 4'],
       tags: ['elasticity', 'pressure vessel'],
       credit: 'G. Lamé',
-      scope: String.raw`Linear elasticity, uniform pressures, long cylinder far from the ends, isotropic homogeneous material; the stress field does not depend on $E$ or $\nu$ for plane-strain/plane-stress ends with uniform axial strain.`,
+      scope: String.raw`Linear elasticity, uniform pressures, long cylinder far from the ends, isotropic homogeneous material; the axial stress given is for a closed end, away from the end caps.`,
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cylinder_stress' },
       viz(v) {

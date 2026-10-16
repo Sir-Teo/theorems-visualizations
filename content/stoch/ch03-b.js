@@ -188,7 +188,7 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
         v.readout(() => {
           const sumLaw = law.reduce((a, b) => a + b, 0);
           const k = kk.value;
-          return `${famName[fam.value]}, $\\mu=${v.fix(m, 2)}$. This tree has $T=${isFinite(Tsize) ? Tsize : '\\infty'}$ individuals; at $k=${k}$ the walk stands at $S_k=${walk[k]}$. Simulated $\\Pr(T<\\infty)=${v.fix(finiteFrac, 3)}$ against $\\rho=${v.fix(rho, 3)}$; the formula's mass for $n\\le${NB}$ is ${v.fix(sumLaw, 3)}$ against ${v.fix(sim.slice(1, NB + 1).reduce((a, b) => a + b, 0), 3)} simulated.${fam.value === 'poisson' ? ` (Poisson: $\\Pr(T=5)=e^{-5\\mu}(5\\mu)^4/5!=${v.fix(Math.exp(-5 * m) * (5 * m) ** 4 / 120, 4)}$ from the Borel formula, ${v.fix(law[5], 4)} from the convolution.)` : ''}`;
+          return `${famName[fam.value]}, $\\mu=${v.fix(m, 2)}$. This tree has $T=${isFinite(Tsize) ? Tsize : '\\infty'}$ individuals; at $k=${k}$ the walk stands at $S_k=${walk[k]}$. Simulated $\\Pr(T<\\infty)=${v.fix(finiteFrac, 3)}$ against $\\rho=${v.fix(rho, 3)}$; the formula's mass for $n\\le${NB}$ is ${v.fix(sumLaw, 3)} against ${v.fix(sim.slice(1, NB + 1).reduce((a, b) => a + b, 0), 3)} simulated.${fam.value === 'poisson' ? ` (Poisson: $\\Pr(T=5)=e^{-5\\mu}(5\\mu)^4/5!=${v.fix(Math.exp(-5 * m) * (5 * m) ** 4 / 120, 4)}$ from the Borel formula, ${v.fix(law[5], 4)} from the convolution.)` : ''}`;
         });
       },
     },
@@ -229,7 +229,7 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           s1.path(orbit.map((x, i) => [i, x]), { color: 'accent', width: 2.5 });
           s1.dots(ext.map((x, i) => [i, x]), { r: 3.5, color: 'gold' });
           s1.hline(rho, { color: 'green', dash: true, width: 2 });
-          if (wat.value && rho < 1 - 1e-9) { s1.hline(1, { color: 'red', dash: true, width: 2 }); s1.text('Watson: 1', GEN, 1, { color: 'red', align: 'right', dy: -10, size: 12 }); }
+          if (wat.value && rho < 1 - 1e-9) { s1.hline(1, { color: 'red', dash: true, width: 2 }); s1.text('Watson: 1', GEN, 1, { color: 'red', align: 'right', dy: 14, size: 12 }); }
           s1.vline(rr.value, { color: 'faint', dash: true });
           const r = rr.value, c = sizes[r], ex = exactSizes[r];
           const top = Math.max(5, ...c.slice(1), ...ex.slice(1)) * 1.15; s2.setView([0, MM + 1], [0, top]);
