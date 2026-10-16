@@ -73,7 +73,7 @@ Equivalently $K(\cdot,t;x_0,0)$ is the solution at time $t$ of the Schrödinger 
             const c = rgb(Math.atan2(b, a)); return [c[0], c[1], c[2], Math.round(255 * w)];
           }, { res: 2, key: `${fk}|${rgb.key}` });
           A.hline(tS.value, { color: 'gold', width: 1.6, dash: [5, 4] });
-          phaseWheel(A, col, A.W - 30, 60, 11);
+          phaseWheel(A, col, A.W - 42, 60, 11);
           // direct evolution vs kernel
           const P0 = packet(x, xS.value, 0.7, kS.value), dre = Float64Array.from(P0.re), dim = Float64Array.from(P0.im);
           for (let s = 0; s < k * SNAP; s++) K.step(dre, dim);
@@ -119,7 +119,7 @@ with $\sqrt{i}=e^{i\pi/4}$. Its modulus $\sqrt{m/2\pi\hbar t}$ does not depend o
           for (const c of [0.5, 2, 6, 14]) A.curve((u) => [Math.sqrt(2 * c * (0.15 + u * 2.85)), 0.15 + u * 2.85], 0, 1, { color: 'ink', width: 0.9, alpha: 0.5, n: 120 });
           for (const c of [0.5, 2, 6, 14]) A.curve((u) => [-Math.sqrt(2 * c * (0.15 + u * 2.85)), 0.15 + u * 2.85], 0, 1, { color: 'ink', width: 0.9, alpha: 0.5, n: 120 });
           A.hline(t, { color: 'gold', width: 1.8, dash: [5, 4] });
-          phaseWheel(A, col, A.W - 30, 60, 11);
+          phaseWheel(A, col, A.W - 42, 60, 11);
           const m = 1 / Math.sqrt(2 * Math.PI * t), sc = 1 / (1.6 * m);
           B.setView([-6, 6], [-1.1, 1.1]);
           B.hline(m * sc, { color: 'muted', dash: [4, 3] }); B.hline(-m * sc, { color: 'muted', dash: [4, 3] });
@@ -283,15 +283,15 @@ with the discretised action $S_N=\sum_{j=0}^{N-1}\varepsilon\big[\tfrac m2\big(\
           A.curve((t) => [t, Kcl(t)], 0, T, { color: 'green', width: 2.6, n: 80 });
           A.dot(0, XA, { r: 5, color: 'ink' }); A.dot(T, xbS.value, { r: 5, color: 'ink' });
           for (let j = 1; j < N; j++) A.vline((j * T) / N, { color: 'faint', width: 1, dash: [2, 4] });
-          phaseWheel(A, col, A.W - 30, 62, 11);
+          phaseWheel(A, col, A.W - 42, 62, 11);
           const est = (m) => [(cst * cum.re[m]) / m, (cst * cum.im[m]) / m];
           const km = Math.hypot(Kex[0], Kex[1]), R = Math.max(0.5, 2.2 * km);
           B.setView([-R, R], [-R, R]);
           B.circle(0, 0, km, { color: 'muted', width: 1, dash: [3, 4] });
           const trail = []; for (let m = 10; m <= n; m = Math.max(m + 1, Math.round(m * 1.04))) trail.push(est(m));
           B.clip(() => { B.path(trail, { color: 'gold', width: 1.6, alpha: 0.9 }); B.dot(...est(n), { r: 5, color: 'gold' }); });
-          B.dot(KW[0], KW[1], { r: 6, color: 'ink', label: 'K_W', labelPos: 'se' });
-          B.dot(Kex[0], Kex[1], { r: 6, color: 'green', label: 'K', labelPos: 'ne' });
+          B.dot(KW[0], KW[1], { r: 6, color: 'ink', label: 'K_W', tex: true, labelPos: 'se' });
+          B.dot(Kex[0], Kex[1], { r: 6, color: 'green', label: 'K', tex: true, labelPos: 'ne' });
           const errs = []; for (let m = 10; m <= NMAX; m = Math.max(m + 1, Math.round(m * 1.06))) { const e = est(m); errs.push([Math.log10(m), Math.log10(Math.hypot(e[0] - KW[0], e[1] - KW[1]) + 1e-12)]); }
           C.setView([1, Math.log10(NMAX)], [Math.min(-3, Math.min(...errs.map((q) => q[1])) - 0.3), Math.max(1.3, Math.max(...errs.map((q) => q[1])) + 0.3)]);
           C.path(errs, { color: 'gold', width: 1.8 });

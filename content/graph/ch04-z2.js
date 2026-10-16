@@ -42,7 +42,7 @@ function drawDual(s, S, { hi = new Set(), color = 'orange', ring = true, vtx = t
   if (vtx) S.cen.forEach((p) => { if (p) s.dot(p[0], p[1], { r: 4.5, color, hollow: true }); });
 }
 function shadeFaces(s, S, colOf, alpha = 0.22) { S.F.forEach((f, i) => { if (i === S.oi) return; const c = colOf(i); if (c) s.poly(f.walk.map((u) => S.P[u]), { fill: c, fillAlpha: alpha, stroke: false }); }); }
-function setPlane(G, S) { G.set({ nodes: S.H.ids.map((id, i) => ({ id, x: S.P[i][0], y: S.P[i][1], label: lab1(i) })), edges: S.N.E.map(([a, b]) => [a, b]) }); G.layout('none'); }
+function setPlane(G, S, fit) { G.set({ nodes: S.H.ids.map((id, i) => ({ id, x: S.P[i][0], y: S.P[i][1], label: lab1(i) })), edges: S.N.E.map(([a, b]) => [a, b]) }); G.layout(fit ? 'fit' : 'none'); }
 const CYC = (H) => allCycles(H, 3000).sort((p, q) => p.vs.length - q.vs.length);
 const dualIx = (S) => ix({ nodes: S.F.map((_, i) => ({ id: i })), edges: S.dual.edges.map((e) => [e.a, e.b]) }, { multi: true });
 
@@ -54,7 +54,7 @@ export default {
     {
       num: '4.5.1', kind: 'Theorem', name: 'MacLane’s planarity criterion', credit: 'S. Mac Lane, 1937',
       statement: String.raw`A graph is planar if and only if its cycle space has a **simple basis**: a basis consisting of cycles (edge sets of cycles) in which every edge of the graph lies in at most two of the basis elements.`,
-      idea: String.raw`In a plane graph the boundaries of all faces but one form a basis of the cycle space (1.9.5 and Euler's formula count $m-n+1$ faces besides the outer one), and an edge lies on exactly two faces (4.2.2), so we get a simple basis. For the converse one shows, using the Kuratowski–Wagner theorem 4.4.6, that it suffices to check $K^5$ and $K_{3,3}$ and that a simple basis is inherited by subgraphs and subdivisions: so a non-planar graph, which contains a subdivision of one of them, cannot have one. For $K^5$ and $K_{3,3}$ the non-existence is a finite check, which the app performs.`,
+      idea: String.raw`In a plane graph the boundaries of all faces but one form a basis of the cycle space (1.9.5 together with Euler's formula count $m-n+1$ bounded faces), and every edge lies on exactly two faces (4.2.2), which gives a simple basis. For the converse one shows that having a simple basis passes to minors (contracting an edge keeps the family simple), so a graph with a simple basis has no $K^5$ or $K_{3,3}$ minor, and the Kuratowski–Wagner theorem 4.4.6 makes it planar. For $K^5$ and $K_{3,3}$ the non-existence is a finite check, which the app performs for you.`,
       caption: String.raw`The app searches *exhaustively* through all cycles of the graph for a family of $m-n+1$ independent cycles in which every edge is used at most twice. For planar graphs it finds one at once (these are the face boundaries). For $K^5$, $K_{3,3}$ and the Petersen graph the search is complete and fails; the best family it can build has only $\dim-1$ cycles. The matrix on the right has one row per cycle of the family and one column per edge; the bottom row counts how many cycles use the edge. Use the slider to look at one cycle at a time.`,
       deps: ['graph-1.9.5', 'graph-4.2.6', 'graph-4.4.6', 'graph-4.2.2'], refs: ['Diestel §4.5'], tags: ['planar', 'cycle space'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph#Other_criteria' },
@@ -123,13 +123,13 @@ export default {
       caption: String.raw`A random plane triangulation with outer vertices $a_1,a_2,a_3$ and its Schnyder wood from a canonical ordering: every inner edge is an arrow in colour 1, 2 or 3 (each inner vertex has one outgoing arrow of each colour). Click a vertex $v$: its three paths to the corners cut the triangle into three shaded regions $R_1,R_2,R_3$. The right panel places each vertex at (number of faces in $R_1$, number of faces in $R_2$): Schnyder's grid drawing, which is crossing-free — the same wood that realises the three linear orders of the theorem.`,
       deps: ['graph-4.4.1a', 'graph-4.2.7a', 'graph-4.4.6'], refs: ['Diestel §4.5'], see: ['comb-8.1'], tags: ['planar', 'order dimension', 'Schnyder wood'],
       viz(v) {
-        const nS = v.slider('$n$', 5, 12, 9, { int: true, onChange: () => make() });
+        const nS = v.slider('$n$', 5, 12, 8, { int: true, onChange: () => make() });
         v.button('new triangulation', () => { seed++; make(); });
         const sL = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, equal: true, height: 350, title: 'Schnyder wood' }), sR = v.stage({ x: [-1, 15], y: [-1, 15], axes: false, equal: true, height: 350, title: 'grid drawing from the region counts' });
         const OC = ['orange', 'teal', 'purple'];
         const G = v.graph(sL, { nodes: [], edges: [], r: 10, draggable: false, directed: true });
         let seed = 1, n, T, W, E, pos, Pg, sel = 3, regs;
-        const sp = (p) => [5 + 2.6 * p[0], 3.2 + 2.9 * p[1]];
+        const sp = (p) => [5 + 3.0 * p[0], 3.0 + 3.0 * p[1]];
         function make() {
           n = nS.value; let tries = 0;
           do { const r = v.rng(seed * 8191 + 17 + tries); T = triDraw(randomTriangulation(n, r, 4 + Math.floor(r() * 8))); W = schnyder(n, T.E, T.pos); tries++; } while (!W && tries < 20);
@@ -243,12 +243,12 @@ export default {
         const G = v.graph(sL, { nodes: [], edges: [], r: 11, draggable: false }), D = v.graph(sR, { nodes: [], edges: [], r: 11, draggable: false });
         let S, H, Dm, pi, cycles, sel = null, HD, HG;
         function load() {
-          S = plane(NORM(ex.value)); H = S.H; setPlane(G, S); HG = ix(G); cycles = CYC(H); sel = null;
+          S = plane(NORM(ex.value)); H = S.H; setPlane(G, S, true); HG = ix(G); cycles = CYC(H); sel = null;
           const ends = cand.value === 'dual' ? S.dual.edges.map((e) => [e.a, e.b]) : H.E.map(([a, b]) => [a, b]);
           const nn = cand.value === 'dual' ? S.F.length : H.n;
           const pts = cand.value === 'dual' ? S.F.map((f, i) => (i === S.oi ? [S.ring.c[0], S.ring.c[1] + 1.25 * S.ring.R] : S.cen[i])) : S.P;
           Dm = { n: nn, ends }; pi = ends.map((_, k) => k);
-          D.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: cand.value === 'dual' ? '*' + (i + 1) : lab1(i) })), edges: ends.map(([a, b], k) => ({ from: a, to: b, k })) }); D.layout('none'); HD = ix(D, { multi: true });
+          D.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: cand.value === 'dual' ? '*' + (i + 1) : lab1(i) })), edges: ends.map(([a, b], k) => ({ from: a, to: b, k })) }); D.layout('fit'); HD = ix(D, { multi: true });
         }
         load();
         D.onClick = ({ edge }) => {
@@ -274,8 +274,8 @@ export default {
     },
     {
       num: '4.6.2', kind: 'Proposition', name: 'An abstract dual swaps cycle space and cut space',
-      statement: String.raw`Let $G^*$ be an abstract dual of the connected graph $G$ via the bijection $\varphi\colon E(G)\to E(G^*)$. Then $F\subseteq E(G)$ lies in the cycle space $\mathscr C(G)$ if and only if $\varphi(F)$ lies in the cut space $\mathscr C^*(G^*)$, and vice versa; so $\varphi$ induces an isomorphism $\mathscr C(G)\cong\mathscr C^*(G^*)$, and the dimensions agree: $m-n+1=n^*-1$.`,
-      idea: String.raw`The cycle space is generated by the cycles (1.9.1) and every cut is a disjoint union of bonds (1.9.3), the cut space being generated by the bonds. Since $\varphi$ maps cycles of $G$ to bonds of $G^*$ and bonds of $G$ to cycles of $G^*$ (the definition is symmetric after applying it to $\varphi^{-1}$; that symmetry is part of the proof in the book), linearity of $\varphi$ over $\mathbb F_2$ carries the generated spaces onto each other. Both dimensions are known: $\dim\mathscr C(G)=m-n+1$ (1.9.5), and the cut space of a connected graph has dimension $|G^*|-1$; equality of the two dimensions recovers Euler's formula in the plane case.`,
+      statement: String.raw`Let $G^*$ be an abstract dual of the connected graph $G$ via the bijection $\varphi\colon E(G)\to E(G^*)$. Then $F\subseteq E(G)$ lies in the cycle space $\mathscr C(G)$ if and only if $\varphi(F)$ lies in the cut space $\mathscr C^*(G^*)$; so $\varphi$ induces an isomorphism $\mathscr C(G)\cong\mathscr C^*(G^*)$, and the dimensions agree: $m-n+1=n^*-1$.`,
+      idea: String.raw`Extend $\varphi$ linearly to a map between the edge spaces over $\mathbb F_2$. The cycle space is generated by the cycles of $G$ (1.9.1), and the cut space of $G^*$ is generated by its bonds, because every cut is a disjoint union of bonds (1.9.3). By definition $\varphi$ sends cycles of $G$ exactly to bonds of $G^*$, so it maps a generating set of $\mathscr C(G)$ onto a generating set of the cut space of $G^*$, and being bijective on edges it is an isomorphism between the two spaces. The dimensions are $m-n+1$ (1.9.5) for the cycle space and $|G^*|-1$ for the cut space of a connected graph, so $|G^*|=m-n+2$; for plane duals this is Euler's formula.`,
       caption: String.raw`$G^*$ is the plane dual with its natural pairing. Click edges of $G$ to build an arbitrary edge set $F$; the right panel shows the same set $F^*$ in the dual. The app reports whether $F$ is in the cycle space (every vertex has even degree in $F$) and whether $F^*$ is in the cut space of $G^*$ (the vertices of $G^*$ can be 2-coloured so that $F^*$ is exactly the set of bichromatic edges; if so the two colours are shown). The two answers always agree. **random cycle-space element** adds up a few cycles for you.`,
       deps: ['graph-4.6.1b', 'graph-1.9.4', 'graph-1.9.3', 'graph-3.1.3'], refs: ['Diestel §4.6'], tags: ['duality', 'cycle space', 'cut space'],
       viz(v) {
@@ -284,9 +284,9 @@ export default {
         const G = v.graph(sL, { nodes: [], edges: [], r: 11, draggable: false }), D = v.graph(sR, { nodes: [], edges: [], r: 11, draggable: false });
         let S, H, HG, Fs = new Set(), cycles, HD;
         function load() {
-          S = plane(NORM(ex.value)); H = S.H; setPlane(G, S); HG = ix(G); Fs = new Set(); cycles = CYC(H);
+          S = plane(NORM(ex.value)); H = S.H; setPlane(G, S, true); HG = ix(G); Fs = new Set(); cycles = CYC(H); { const c0 = cycles[Math.min(3, cycles.length - 1)]; c0.E.forEach((x, k) => { if (x) Fs.add(k); }); }
           const pts = S.F.map((f, i) => (i === S.oi ? [S.ring.c[0], S.ring.c[1] + 1.25 * S.ring.R] : S.cen[i]));
-          D.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: '*' + (i + 1) })), edges: S.dual.edges.map((e, k) => ({ from: e.a, to: e.b, k })) }); D.layout('none');
+          D.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: '*' + (i + 1) })), edges: S.dual.edges.map((e, k) => ({ from: e.a, to: e.b, k })) }); D.layout('fit');
         }
         load();
         G.onClick = ({ edge }) => { if (!edge) return true; const k = HG.eix.get(edge); if (k != null) { if (Fs.has(k)) Fs.delete(k); else Fs.add(k); } return true; };
@@ -318,7 +318,7 @@ export default {
     {
       num: '4.6.3', kind: 'Theorem', name: 'Whitney: planar iff an abstract dual exists', credit: 'H. Whitney, 1932', verify: true,
       statement: String.raw`A graph is planar if and only if it has an abstract dual.`,
-      idea: String.raw`A planar graph has a drawing, and the plane dual of that drawing is an abstract dual (4.6.1). Conversely let $G^*$ be an abstract dual of $G$. The vertex stars of $G^*$ are bonds, so their images are cycles of $G$ (4.6.1b, 4.6.2); each edge lies in exactly two stars (its two ends), the stars span the cut space of $G^*$ and all but one of them form a basis, which $\varphi^{-1}$ turns into a basis of the cycle space of $G$ in which every edge occurs at most twice. By MacLane's criterion (4.5.1) $G$ is planar. (This is the argument in the usual presentations; check against the book for the exact order of steps.)`,
+      idea: String.raw`A planar graph has a drawing, and the plane dual of that drawing is an abstract dual (4.6.1). Conversely let $G^*$ be an abstract dual of $G$. The vertex stars of $G^*$ are cuts, and in a 2-connected $G^*$ they are bonds, so $\varphi^{-1}$ turns them into cycles of $G$ (4.6.1b); each edge lies in exactly two stars (its two ends), the stars span the cut space of $G^*$ and all but one of them form a basis, which by 4.6.2 corresponds to a basis of the cycle space of $G$ in which every edge occurs at most twice. By MacLane's criterion (4.5.1) $G$ is planar. (This is the argument in the usual presentations; check against the book for the exact order of steps.)`,
       caption: String.raw`For a planar graph the app draws the plane dual with its natural edge pairing and checks the definition on every cycle (the readout reports the test). For $K^5$, $K_{3,3}$ and the Petersen graph there is no drawing to take a dual of. Suppose there were an abstract dual: the proof turns it into a simple basis of the cycle space, so the app runs the exhaustive search of 4.5.1 — it fails, and the picture on the right shows the largest simple independent family it could assemble, which stops one cycle short of a basis.`,
       deps: ['graph-4.6.1', 'graph-4.6.2', 'graph-4.5.1', 'graph-1.9.2'], refs: ['Diestel §4.6'], see: ['circ-3.11'], tags: ['duality', 'planar'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Dual_graph' },
@@ -335,7 +335,7 @@ export default {
             const Dm = { n: S.F.length, ends: S.dual.edges.map((e) => [e.a, e.b]) }, cycles = CYC(H);
             test = { bad: cyclesToBonds(H, Dm, Dm.ends.map((_, k) => k), cycles), nc: cycles.length, bonds: allBonds(dualIx(S)).length };
             const pts = S.F.map((f, i) => (i === S.oi ? [S.ring.c[0], S.ring.c[1] + 1.25 * S.ring.R] : S.cen[i]));
-            R.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: '*' + (i + 1) })), edges: S.dual.edges.map((e, k) => ({ from: e.a, to: e.b, k })) }); R.layout('none'); HR = ix(R, { multi: true });
+            R.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: '*' + (i + 1) })), edges: S.dual.edges.map((e, k) => ({ from: e.a, to: e.b, k })) }); R.layout('fit'); HR = ix(R, { multi: true });
           } else {
             loadSpec(G, { nodes: N.pos.map(([x, y], i) => ({ id: i, x, y, label: lab1(i) })), edges: N.E.map(([a, b]) => [a, b]), layout: 'fit' }); HG = ix(G);
             res = simpleBasis(H); loadSpec(R, { nodes: N.pos.map(([x, y], i) => ({ id: i, x, y, label: lab1(i) })), edges: N.E.map(([a, b]) => [a, b]), layout: 'fit' }); HR = ix(R);
