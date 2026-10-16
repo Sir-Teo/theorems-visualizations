@@ -7,19 +7,22 @@ const PI = Math.PI;
 // Units: lengths in 1/k_TF, energies in E_F. w(x) = eφ/E_F obeys (x w)'' = x·(2/3)[(1+w)^{3/2} − 1], x w → q at x → 0 and 0 at ∞.
 // Linearised: w = q e^{−x}/x. Returns the grid x, the potential w and the cumulative screening charge Q(x)/q.
 function tfSolve(q, h = 0.02, N = 480) {
-  const x = new Float64Array(N + 1), u = new Float64Array(N + 1); for (let i = 0; i <= N; i++) { x[i] = i * h; u[i] = q * Math.exp(-x[i]); }
+  const x = new Float64Array(N + 1), u = new Float64Array(N + 1); for (let i = 0; i <= N; i++) { x[i] = i * h; u[i] = 0; }
   const phi = (w) => (2 / 3) * (Math.pow(Math.max(1 + w, 0), 1.5) - 1), dphi = (w) => (w > -1 ? Math.sqrt(1 + w) : 0);
   const a = new Float64Array(N - 1), b = new Float64Array(N - 1), c = new Float64Array(N - 1), d = new Float64Array(N - 1);
-  for (let it = 0; it < 80; it++) {
-    for (let i = 1; i < N; i++) {
-      const w = u[i] / x[i], r = u[i - 1] - 2 * u[i] + u[i + 1] - h * h * x[i] * phi(w);
-      a[i - 1] = 1; c[i - 1] = 1; b[i - 1] = -2 - h * h * dphi(w); d[i - 1] = -r;
+  const resid = () => { let m = 0; for (let i = 1; i < N; i++) m = Math.max(m, Math.abs(u[i - 1] - 2 * u[i] + u[i + 1] - h * h * x[i] * phi(u[i] / x[i]))); return m; };
+  const steps = Math.max(1, Math.ceil(Math.abs(q) / 0.4));
+  for (let st = 1; st <= steps; st++) { // continuation in the strength of the charge: each solution starts the next
+    const qq = (q * st) / steps; u[0] = qq; if (st === 1) for (let i = 1; i <= N; i++) u[i] = qq * Math.exp(-x[i]);
+    for (let it = 0; it < 60; it++) {
+      for (let i = 1; i < N; i++) {
+        const w = u[i] / x[i], r = u[i - 1] - 2 * u[i] + u[i + 1] - h * h * x[i] * phi(w);
+        a[i - 1] = 1; c[i - 1] = 1; b[i - 1] = -2 - h * h * dphi(w); d[i - 1] = -r;
+      }
+      const du = thomas(a, b, c, d), old = Float64Array.from(u), r0 = resid(); let lam = 1;
+      for (let k = 0; k < 12; k++) { for (let i = 1; i < N; i++) u[i] = old[i] + lam * du[i - 1]; if (resid() < r0 || r0 < 1e-12) break; lam /= 2; }
+      if (resid() < 1e-11) break;
     }
-    const du = thomas(a, b, c, d); let m = 0, damp = 1;
-    for (let i = 1; i < N; i++) m = Math.max(m, Math.abs(du[i - 1]));
-    if (m > 0.5 * q) damp = (0.5 * q) / m;
-    for (let i = 1; i < N; i++) u[i] += damp * du[i - 1];
-    if (m < 1e-10) break;
   }
   const w = new Float64Array(N + 1), Q = new Float64Array(N + 1);
   w[0] = Infinity; let acc = 0;
@@ -213,6 +216,7 @@ $\theta$ being the angle between $\mathbf B$ and the valley axis. Each inequival
         const sM = v.stage({ x: [0, 90], y: [0, 1.7], axes: 'box', gutter: true, height: 320, xlabel: 'angle $\\theta$ (°)', ylabel: '$m_c/m_e$', title: 'cyclotron masses of the valleys', weight: 0.85 });
         const cols = ['accent', 'orange', 'green', 'purple'];
         let ls = [];
+        const group = (ms) => { const g = []; ms.forEach((q) => { const f = g.find((e) => Math.abs(e.m - q.m) < 1e-6); if (f) f.n++; else g.push({ m: q.m, id: q.id, n: 1 }); }); return g.sort((p, r) => p.m - r.m); };
         v.render(() => {
           const m = MAT[mat.value], f = fq.value * 1e9, w = TAU * f, B0 = (w * C.me) / C.e;
           plane.el.hidden = !!m.iso; th.el.hidden = !!m.iso;
@@ -222,7 +226,7 @@ $\theta$ being the angle between $\mathbf B$ and the valley axis. Each inequival
           const gm = Math.max(...ms.map((q) => g(B0 * q.m))); const sc = gm > 0 ? 1 / Math.max(gm, 1.0) : 1;
           ms.forEach((q) => sA.fn((B) => { const wc = (C.e * B) / (q.m * C.me), x = (w - wc) * (wt.value / w); return sc / (1 + x * x); }, { color: cols[q.id % 4], width: 1.2, alpha: 0.55 }));
           sA.fn((B) => g(B) * sc, { color: 'ink', width: 2.4 });
-          ms.forEach((q) => { const Br = B0 * q.m; if (Br < Bmax) { sA.vline(Br, { color: cols[q.id % 4], width: 1.4, dash: [4, 4] }); sA.text(`${v.fix(q.m, 3)}`, Br, 1.08 - 0.07 * (ms.indexOf(q) % 3), { size: 11, color: cols[q.id % 4], align: 'center' }); } });
+          group(ms).forEach((q, gi) => { const Br = B0 * q.m; if (Br < Bmax) { sA.vline(Br, { color: cols[q.id % 4], width: 1.4, dash: [4, 4] }); sA.text(`${v.fix(q.m, 3)}${q.n > 1 ? ' ×' + q.n : ''}`, Br + 0.02 * Bmax, 1.08 - 0.08 * (gi % 3), { size: 11, color: cols[q.id % 4], align: 'left' }); } });
           // masses against the angle
           sM.setView([0, 90], [0, 1.15 * (m.iso ? m.iso[1] : Math.sqrt(m.mt * m.ml) * 1.02)]);
           if (m.iso) m.iso.forEach((x, i) => sM.hline(x, { color: cols[i], width: 2 }));

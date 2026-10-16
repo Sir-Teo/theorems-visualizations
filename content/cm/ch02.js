@@ -95,9 +95,9 @@ with $\mathbf k$ defined modulo reciprocal-lattice vectors. The band index is co
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bloch_oscillations' },
       viz(v) {
         const M = v.M, TM = 60;
-        const F = v.slider('force $F$', 0.05, 1.2, 0.3, { step: 0.01 });
+        const F = v.slider('force $F$', 0.05, 1.2, 0.15, { step: 0.01 });
         const sc = v.toggle('scattering', false);
-        const tau = v.slider('mean time $\\tau$', 3, 40, 12, { step: 0.5 });
+        const tau = v.slider('mean time $\\tau$', 0.5, 40, 2, { step: 0.5 });
         let seed = 11; v.button('Resample', () => { seed += 17; });
         const tk = [[-PI, '−π'], [0, '0'], [PI, 'π']];
         const sB = v.stage({ x: [-PI, PI], y: [-2.5, 2.5], axes: 'box', gutter: true, height: 280, xlabel: '$k$', ylabel: '$E/t$', xticks: tk, title: 'band and crystal momentum', weight: 1 });
