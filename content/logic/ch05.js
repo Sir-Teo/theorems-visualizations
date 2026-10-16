@@ -155,7 +155,7 @@ export default {
           const Asize = inf.value ? Infinity : aS.value;
           const cx = (i, n) => 12 + (76 * i) / Math.max(1, n - 1);
           s.text('new constants (to be interpreted by pairwise distinct elements)', 50, 94, { color: 'muted', size: 12, align: 'center' });
-          s.text('the structure A (elements a₀, a₁, …)', 3, 33, { color: 'muted', size: 12, align: 'left' });
+          s.text('A:', 3, 22, { color: 'ink', size: 14, align: 'left', baseline: 'middle' });
           const nA = inf.value ? 8 : aS.value;
           let failed = 0;
           for (let i = 0; i < D; i++) {

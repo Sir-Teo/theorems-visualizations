@@ -140,7 +140,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
           });
           sgr.corner(r ? `rule ${r.sp.rule}:  ${r.ok ? '✓ d-separated' : '✗ d-connected'}` : 'probability calculus', 'tl', { color: r ? (r.ok ? 'green' : 'red') : 'muted', weight: 700 });
         });
-        v.readout(() => { const fr = S.frames.slice(0, S.i + 1); return fr.map((f) => '$$' + f.tex + (f.res ? (f.res.ok ? '\\quad\\checkmark' : '\\quad\\text{✗ not licensed}') : '') + '$$').join('\n'); });
+        v.readout(() => { const fr = S.frames.slice(0, S.i + 1); return fr.map((f) => '$' + f.tex + (f.res ? (f.res.ok ? '\\quad\\checkmark' : '\\quad\\text{✗ not licensed}') : '') + '$').join('\n'); });
       },
     },
     // ------------------------------------------------------------------ 4.10

@@ -235,7 +235,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
         v.readout(() => {
           const { D, wins, K, pool, stdz } = info; const G0 = D.g[0], G1 = D.g[1];
           return `**${D.title}.** Legend: first group = ${G0} (blue), second = ${G1} (orange); outcome = ${D.out}.\n` +
-            `${G0} have the higher rate in **${wins} of ${K}** strata, and pooled **${v.fix(100 * pool[0], 1)}%** against **${v.fix(100 * pool[1], 1)}%** for ${G1} — ${(pool[0] > pool[1]) === (wins * 2 > K) ? 'the pooled comparison points the same way as most strata.' : 'the pooled comparison points the **opposite** way.'}\n` +
+            `${G0[0].toUpperCase() + G0.slice(1)} have the higher rate in **${wins} of ${K}** strata, and pooled **${v.fix(100 * pool[0], 1)}%** against **${v.fix(100 * pool[1], 1)}%** for ${G1} — ${(pool[0] > pool[1]) === (wins * 2 > K) ? 'the pooled comparison points the same way as most strata.' : 'the pooled comparison points the **opposite** way.'}\n` +
             `Standardized to the combined stratum mix (adjusting for the stratum): ${v.fix(100 * stdz[0], 1)}% against ${v.fix(100 * stdz[1], 1)}%. In the graph: ${D.note}.`;
         });
       },
