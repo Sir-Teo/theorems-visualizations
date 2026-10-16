@@ -161,7 +161,7 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
           L.rect(-1.25, -0.62, 1.25, 0, { fill: 'gold', fillAlpha: 0.12, stroke: false });
           L.line(-1.25, 0, 1.25, 0, { color: 'ink', width: 1.4 });
           // Syene: the well
-          L.rect(-0.82, -0.5, -0.58, 0, { fill: 'ink', fillAlpha: 0.75, stroke: false });
+          L.rect(-0.82, -0.5, -0.58, 0, { fill: 'muted', fillAlpha: 0.55, stroke: false });
           L.rect(-0.82, -0.5, -0.58, -0.42, { fill: 'gold', fillAlpha: 0.9, stroke: false });
           for (const x of [-0.78, -0.7, -0.62]) L.arrow(x, 1.15, x, -0.42, { color: 'gold', width: 1.3, head: 5 });
           L.text('Syene', -0.7, 1.3, { align: 'center', size: 12, weight: 600 });

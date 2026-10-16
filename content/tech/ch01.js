@@ -292,12 +292,13 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
           if (!isFinite(ta) || !isFinite(ba)) return 120;
           return (Math.atan2(ta - mid, 0.6) + Math.atan2(mid - ba, 0.6)) / D2R;
         }
-        function strike(x, y, face, depth = depthS.value, soft = hamSel.value === 'soft') {
+        function strike(x, y, face, depth = depthS.value, soft = hamSel.value === 'soft', skipBlunt = false) {
           // nearest margin cell within 1.3 cm of the click
           let best = null, bd = 1.3;
           for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) if (isMargin(i, j)) { const d = Math.hypot(cx(i) - x, cy(j) - y); if (d < bd) { bd = d; best = [i, j]; } }
           if (!best) { msg = 'click closer to the edge of the piece'; return false; }
           const [i, j] = best, ang = edgeAngle(i, j), [nx, ny] = inward(i, j), mx = cx(i), my = cy(j);
+          if (skipBlunt && ang >= 90) return false;
           ver++; stack.push([zt.slice(), zb.slice(), nRem.slice(), nextFace]); if (stack.length > 60) stack.shift();
           if (ang >= 90) { // too blunt: the edge crumbles a little, no flake
             for (let jj = j - 2; jj <= j + 2; jj++) for (let ii = i - 2; ii <= i + 2; ii++) if (has(ii, jj) && Math.hypot(cx(ii) - mx, cy(jj) - my) < 0.28) { zt[idx(ii, jj)] = 0; zb[idx(ii, jj)] = 0; }
@@ -312,7 +313,7 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
             if (!has(ii, jj)) continue;
             const dx = cx(ii) - mx, dy = cy(jj) - my, u = dx * nx + dy * ny, w = dx * tx + dy * ty;
             if (u < -0.6 || Math.abs(w) > 1.0 + 0.7 * Math.max(u, 0) || Math.abs(w) > 3.2) continue;
-            const Sz = zStart + sgn * (Math.max(u, 0) * slope + kap * w * w), k = idx(ii, jj);
+            const uu = Math.max(u, 0), Sz = zStart + sgn * (uu * slope + (soft ? 0.025 : 0.05) * uu * uu + kap * w * w), k = idx(ii, jj);
             if (face === 'A' && zt[k] > Sz) { removed += (zt[k] - Math.max(Sz, zb[k])) * H * H; zt[k] = Sz; }
             if (face === 'B' && zb[k] < Sz) { removed += (Math.min(Sz, zt[k]) - zb[k]) * H * H; zb[k] = Sz; }
             if (zt[k] - zb[k] <= 0.03) { zt[k] = 0; zb[k] = 0; }
@@ -357,11 +358,11 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
           if (!n) return; const M0 = { g: [sx / n, sy / n] };
           let x = M0.g[0], y = M0.g[1];
           for (let r = 0; r < 12; r += 0.05) { const xx = M0.g[0] + r * Math.cos(phi), yy = M0.g[1] + r * Math.sin(phi); if (!has(Math.floor((xx - X0) / H), Math.floor((yy - Y0) / H))) break; x = xx; y = yy; }
-          strike(x, y, face, depth, soft);
+          strike(x, y, face, depth, soft, true);
         }
         // reference: an Oldowan chopper made from the same cobble in the same model
         function chopper() { cobble(); for (const [phi, d] of [[-1.25, 0.45], [-1.57, 0.45], [-1.9, 0.45], [-1.42, 0.3], [-1.72, 0.3]]) strikeDir(phi, 'A', d, false); }
-        chopper(); const ref = metrics(); cobble(); for (const p of autoPlan()) strikeDir(p.phi, p.face, p.depth, p.soft); // TEMP
+        chopper(); const ref = metrics(); cobble(); for (const p of autoPlan().slice(0, 18)) strikeDir(p.phi, p.face, p.depth, p.soft); msg = 'a first round of flakes has been struck: carry on'; // start part-worked
         const secH = P.handle(6.1, 0, { color: 'orange', constrain: (x, y) => [6.1, clamp(y, -8.6, 8.6)] });
         P.onClick((x, y, mod) => {
           const xx = view.value ? -x : x;

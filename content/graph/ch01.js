@@ -605,7 +605,7 @@ export default {
         v.legend([['red', '$2\\log_2 n$'], ['accent', 'random cubic samples', { dot: true }], ['teal', 'cubic cages', { dot: true }], ['gold', 'the graph shown', { dot: true }]]);
         v.readout(() => {
           const H = ix(G), g = girth(H).g, n = H.n, b = 2 * Math.log2(n), dmin = Math.min(...degrees(H));
-          return String.raw`$\delta(G) = ${dmin}$, $|G| = ${n}$: $g(G) = ${g}$ ${g < b ? '<' : '\\ge'} $2\log_2 ${n} = ${b.toFixed(2)}$ ${dmin >= 3 ? (g < b ? '✓' : '✗') : '— minimum degree 2 is not enough'}`;
+          return String.raw`$\delta(G) = ${dmin}$, $|G| = ${n}$: $g(G) = ${g} ${g < b ? '<' : '\\ge'} 2\log_2 ${n} = ${b.toFixed(2)}$ ${dmin >= 3 ? (g < b ? '✓' : '✗') : '— minimum degree 2 is not enough'}`;
         });
       },
     },

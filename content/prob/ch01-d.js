@@ -766,10 +766,10 @@ Included is the fact that the sections $y\mapsto f(x,y)$ and the inner integrals
           S.line(colX, -0.1, colX, N + 0.1, { color: 'muted', width: 1 }); S.line(-0.1, rowY, N + 0.1, rowY, { color: 'muted', width: 1 });
           if (Md.cont) {
             H.visible = false;
-            S.heat((x, y) => cf(x / N, 1 + (5 * y) / N), { range: [-1, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'red', rect: [0, 0, N, N], key: 'cont', res: 2 });
-            S.path(Array.from({ length: 201 }, (_, i) => { const x = (i / 200) * N; return [x, rowY + sc * 1.6 * phiX(x / N)]; }), { color: 'purple', width: 2, fill: 'purple', fillAlpha: 0.2 });
-            S.path([[0, rowY], ...Array.from({ length: 201 }, (_, i) => { const x = (i / 200) * N; return [x, rowY + sc * 1.6 * phiX(x / N)]; }), [N, rowY]], { fill: 'purple', fillAlpha: 0.18, stroke: false, close: true });
-            const rp = Array.from({ length: 201 }, (_, i) => { const y = (i / 200) * N; return [colX + sc * 8 * psiY(1 + (5 * y) / N), y]; });
+            S.heat((x, y) => cf(x / N, 1 + (5 * y) / N), { range: [-0.3, 0.3], cmap: 'theme-diverging', neg: 'blue', pos: 'red', rect: [0, 0, N, N], key: 'cont', res: 2 });
+            S.path(Array.from({ length: 201 }, (_, i) => { const x = (i / 200) * N; return [x, rowY + 1.2 * phiX(x / N)]; }), { color: 'purple', width: 2 });
+            S.path([[0, rowY], ...Array.from({ length: 201 }, (_, i) => { const x = (i / 200) * N; return [x, rowY + 1.2 * phiX(x / N)]; }), [N, rowY]], { fill: 'purple', fillAlpha: 0.18, stroke: false, close: true });
+            const rp = Array.from({ length: 201 }, (_, i) => { const y = (i / 200) * N; return [colX + 5 * psiY(1 + (5 * y) / N), y]; });
             S.path([[colX, 0], ...rp, [colX, N]], { fill: 'purple', fillAlpha: 0.18, stroke: false, close: true }); S.path(rp, { color: 'purple', width: 2 });
             S.text('x = 0', 0, -0.25, { size: 10.5, color: 'muted', baseline: 'top' }); S.text('1', N, -0.25, { size: 10.5, color: 'muted', align: 'right', baseline: 'top' });
             S.text('y = 1', -0.15, 0.2, { size: 10.5, color: 'muted', align: 'right' }); S.text('6', -0.15, N - 0.2, { size: 10.5, color: 'muted', align: 'right' });

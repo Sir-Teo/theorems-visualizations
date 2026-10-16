@@ -187,7 +187,7 @@ Two consequences shape classical singing:
         v.toggle('hold the note', false, { onChange: (on) => { if (on) { const b = loopBuf(); toRms(b, 0.14); lv.start(b, 0.8); } else lv.stop(); } });
         v.soundButton('glide /i/ → /a/ → /u/', (snd) => {
           const w = voice.value === 'w' ? 3 : 2, path = ['i', 'ɑ', 'u'].map((s) => PB.find((p) => p[0] === s)[w]), f0 = fS.value, dur = 2.4;
-          const at = (t) => { const u = M.clamp(t / dur, 0, 1) * 2, i = Math.min(1, Math.floor(u)), a = M.smoothstep(0.15, 0.85, u - i), p = path[i], q = path[i + 1]; return [p[0] * (q[0] / p[0]) ** a, p[1] * (q[1] / p[1]) ** a]; };
+          const at = (t) => { const u = M.clamp(t / dur, 0, 1) * 2, i = Math.min(1, Math.floor(u)), a = M.smoothstep((u - i - 0.15) / 0.7), p = path[i], q = path[i + 1]; return [p[0] * (q[0] / p[0]) ** a, p[1] * (q[1] / p[1]) ** a]; };
           const base = formants(), parts = [];
           for (let n = 1; n * f0 < 5000; n++) parts.push({ f: n * f0, a: 1, env: (t) => { const [F1, F2] = at(t), FB = { F: [tune.value && f0 * 1.04 > F1 ? f0 * 1.04 : F1, F2, ...base.F.slice(2)], B: base.B }; return src(n * f0, f0) * Hgain(FB, n * f0); } });
           snd.samples(toRms(partials(parts, dur, { att: 0.06, rel: 0.12 }), 0.14), SR, { gain: 0.85 });
@@ -405,7 +405,7 @@ With $f_n=nf_0$ and constant $a_n$ it reproduces any periodic tone to any accura
         const pert = M.range(NB).map((i) => 10 ** ((3 * Math.sin(12.9898 * (i + 1)) * Math.cos(78.233 * (i + 1))) / 20));
         const amps = (T, N) => T.A.map((a, i) => (i < N ? a * (err.value ? pert[i] : 1) : 0));
         const fr = (n, f0) => f0 * n ** (1 + sS.value);
-        const envOf = (n) => eS.value === 'steady' ? (t) => Math.min(1, t / 0.04) : eS.value === 'brass' ? (t) => M.smoothstep(0, 1, (t - 0.007 * (n - 1)) / (0.03 + 0.006 * n)) : (t) => Math.min(1, t / 0.002) * Math.exp(-(1.2 + 0.0035 * n * 330) * t);
+        const envOf = (n) => eS.value === 'steady' ? (t) => Math.min(1, t / 0.04) : eS.value === 'brass' ? (t) => M.smoothstep((t - 0.007 * (n - 1)) / (0.03 + 0.006 * n)) : (t) => Math.min(1, t / 0.002) * Math.exp(-(1.2 + 0.0035 * n * 330) * t);
         const relErr = (T, a) => { // waveform error over one period (harmonic case), relative to the target's RMS
           const K = 512; let e = 0, s = 0;
           for (let i = 0; i < K; i++) { const u = i / K; let y = 0, z = 0; for (let n = 0; n < T.all.n; n++) { const c = Math.cos(TAU * (n + 1) * u + T.all.ph[n]); y += T.all.amp[n] * c; if (n < a.length) z += a[n] * c; } e += (y - z) ** 2; s += y * y; }
@@ -572,7 +572,7 @@ The model predicts that changing one feature (brightening a spectrum, sharpening
             const f = h * S.f; if (f > 0.45 * SR2) break;
             const a = S.amp[h - 1] * h ** (p.tilt / 6.02), w = (TAU * f) / SR2, r1 = 3.1 + 1.7 * h, r2 = 5.3 + 0.9 * h, ph1 = 1.3 * h, ph2 = 2.7 * h, dep = 0.9 * p.flux;
             for (let i = 0; i < n; i++) {
-              const t = i / SR2, att = pl ? Math.min(1, t / Math.max(0.0015, p.att)) * Math.exp(-(2 + 0.004 * f) * t) : M.smoothstep(0, 1, t / p.att);
+              const t = i / SR2, att = pl ? Math.min(1, t / Math.max(0.0015, p.att)) * Math.exp(-(2 + 0.004 * f) * t) : M.smoothstep(t / p.att);
               const fl = 1 + dep * (0.6 * Math.sin(TAU * r1 * t + ph1) + 0.4 * Math.sin(TAU * r2 * t + ph2)) * (pl ? 0 : 1);
               out[i] += a * att * Math.max(0, fl) * Math.cos(w * i + S.ph[h - 1]);
             }

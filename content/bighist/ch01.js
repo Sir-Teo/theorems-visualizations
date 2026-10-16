@@ -663,7 +663,7 @@ He proposes it as a single, physical measure of complexity. His estimates rise b
           ['jet airliner', 66, 2.3e7, 'mach', null, null, 'Boeing 707, 1959; 747-400 ≈ 2.7×10⁷'],
         ];
         const CAT = { phys: ['blue', 'physical'], bio: ['green', 'biological'], cult: ['orange', 'cultural'], mach: ['purple', 'machines'] };
-        const s = v.stage({ x: [-10.4, -0.8], y: [1e-3, 3e8], ylog: true, axes: 'box', gutter: true, height: 400, full: true, xlabel: 'time of emergence (years ago)', ylabel: 'Φm (erg s⁻¹ g⁻¹)',
+        const s = v.stage({ x: [-10.6, -0.6], y: [1e-3, 3e8], ylog: true, axes: 'box', gutter: true, height: 460, full: true, xlabel: 'time of emergence (years ago)', ylabel: 'Φm (erg s⁻¹ g⁻¹)',
           xticks: [[-10, '10 Gyr'], [-9, '1 Gyr'], [-8, '100 Myr'], [-7, '10 Myr'], [-6, '1 Myr'], [-5, '100 kyr'], [-4, '10 kyr'], [-3, '1 kyr'], [-2, '100 yr'], [-1, '10 yr']] });
         const den = v.select('society per', [{ value: 'body', label: 'human body mass (Chaisson)' }, { value: 'built', label: 'bodies + human-made mass' }], 'body');
         const mach = v.toggle('machines', true);
@@ -688,27 +688,20 @@ He proposes it as a single, physical measure of complexity. His estimates rise b
           for (const p of P) if (p[4] != null) s.line(-Math.log10(p[1]), p[4], -Math.log10(p[1]), p[5], { color: CAT[p[3]][0], width: 7, alpha: 0.18, cap: 'round' });
           // connect sequences within categories
           for (const c of Object.keys(CAT)) { const q = P.filter((p) => p[3] === c && !/human b|brain|Earth/.test(p[0])).sort((a, b) => b[1] - a[1]); if (q.length > 1 && c !== 'bio') s.path(q.map((p) => [-Math.log10(p[1]), p[2]]), { color: CAT[c][0], width: 1, alpha: 0.35, dash: [3, 3] }); }
-          const boxes = [];
-          for (const p of P) {
-            const x = -Math.log10(p[1]), col = CAT[p[3]][0], on = p[0] === sel;
-            s.dot(x, p[2], { r: on ? 6.5 : 4.8, color: col });
-            boxes.push({ p, x, col, on });
-          }
-          // labels: alternate sides to reduce collisions
-          for (const b of boxes) {
-            const left = b.x > -2.2 || ['gymnosperms', 'reptiles', 'C4 plants', 'agriculturists', 'Daimler engine', 'technologists'].includes(b.p[0]);
-            const dy = ['reptiles', 'Otto engine', 'industrialists', 'gymnosperms'].includes(b.p[0]) ? 11 : ['fish & amphibians', 'world society', 'Daimler engine', 'jet airliner', 'algae (protists)'].includes(b.p[0]) ? -11 : 0;
-            s.text(b.p[0], b.x, b.p[2], { align: left ? 'right' : 'left', dx: left ? -8 : 8, dy, size: b.on ? 12 : 10.5, weight: b.on ? 700 : 500, color: b.on ? b.col : 'ink' });
-          }
+          for (const p of P) s.dot(-Math.log10(p[1]), p[2], { r: p[0] === sel ? 6.5 : 4.8, color: CAT[p[3]][0] });
+          const lab = P.map((p) => ({ x: -Math.log10(p[1]), y: p[2], text: p[0], r: p[0] === sel ? 6.5 : 4.8, size: p[0] === sel ? 12 : 10.5, weight: p[0] === sel ? 700 : 500, color: p[0] === sel ? CAT[p[3]][0] : 'ink' }));
+          if (preset.value !== 'none') lab.push({ x: -1.0, y: userPhi(), text: 'your system', r: 6, size: 11, weight: 650, color: 'gold', prefer: [-1, 0] });
+          lab.sort((p, q) => (q.text === sel) - (p.text === sel));
+          placeLabels(v, s, lab);
           if (den.value === 'built') { const w = D.find((p) => p[0] === 'world society'); s.arrow(-Math.log10(w[1]), w[2] * 0.7, -Math.log10(w[1]), phiOf(w) * 1.6, { color: 'red', width: 1.6, head: 7 }); }
-          if (preset.value !== 'none') { const u = userPhi(); s.dot(-1.0, u, { r: 6, color: 'gold' }); s.text('your system', -1.0, u, { align: 'right', dx: -9, size: 11, weight: 650, color: 'gold' }); }
+          if (preset.value !== 'none') s.dot(-1.0, userPhi(), { r: 6, color: 'gold' });
           v.legend([['blue', 'physical', { dot: true }], ['green', 'biological', { dot: true }], ['orange', 'cultural (per person)', { dot: true }], ['purple', 'machines', { dot: true }], ['gold', 'your system', { dot: true }]]);
         });
         v.readout(() => {
           const P = shown(), rho = spearman(P.map((p) => -Math.log10(p[1])), P.map((p) => Math.log10(p[2])));
           const p = P.find((q) => q[0] === sel) || P[0];
           const u = userPhi();
-          return `Rank correlation of Φm with time of emergence: **ρ = ${v.fix(rho, 2)}** (${P.length} systems). · **${p[0]}**: Φm ≈ ${v.fmt(p[2], 2)} erg s⁻¹ g⁻¹ = ${v.fmt(p[2] / 1e4, 2)} W/kg${p[6] ? ` (${p[6]})` : ''}.${preset.value !== 'none' ? ` · Your system: ${v.M.si(pw.value, 'W', 3)} ÷ ${v.M.si(ms.value * 1000, 'g', 3)} = **${v.fmt(u, 2)}** erg s⁻¹ g⁻¹${u > 1.5e5 ? ', above the human brain' : ''}.` : ''}`;
+          return `Rank correlation of Φm with time of emergence: **ρ = ${v.fix(rho, 2)}** (${P.length} systems). · **${p[0]}**: Φm ≈ ${sci(p[2])} erg s⁻¹ g⁻¹ = ${sci(p[2] / 1e4)} W/kg${p[6] ? ` (${p[6]})` : ''}.${preset.value !== 'none' ? ` · Your system: ${v.M.si(pw.value, 'W', 3)} ÷ ${v.M.si(ms.value * 1000, 'g', 3)} = **${sci(u)}** erg s⁻¹ g⁻¹${u > 1.5e5 ? ', above the human brain' : ''}.` : ''}`;
         });
       },
     },
