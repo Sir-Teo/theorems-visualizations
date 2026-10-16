@@ -212,8 +212,8 @@ which is usually far larger than $\alpha$. With $\pi_1=0.1$ and power $0.5$ it i
           };
           const f1 = bar(2.1, sigN, sigR, a), f2 = bar(0.9, winN, winR, a);
           sR.text('dashed line: α', a, 2.85, { color: 'ink', size: 11, align: 'left', dx: 4 });
-          sR.text('all significant results ($p\\le\\alpha$)', 0.02, 2.62, { color: 'ink', size: 12, align: 'left', weight: 600 });
-          sR.text('just significant ($0.8\\alpha<p\\le\\alpha$)', 0.02, 1.42, { color: 'ink', size: 12, align: 'left', weight: 600 });
+          sR.text('all significant results ($p\\le\\alpha$)', 0.08, 2.62, { color: 'ink', size: 12, align: 'left', weight: 600 });
+          sR.text('just significant ($0.8\\alpha<p\\le\\alpha$)', 0.08, 1.42, { color: 'ink', size: 12, align: 'left', weight: 600 });
           const Gw = (u) => powZ2(dl, u);
           const exAll = ((1 - pi1) * a) / ((1 - pi1) * a + pi1 * pw);
           const exWin = ((1 - pi1) * 0.2 * a) / ((1 - pi1) * 0.2 * a + pi1 * (Gw(a) - Gw(0.8 * a)));

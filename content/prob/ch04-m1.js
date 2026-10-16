@@ -34,7 +34,7 @@ export default {
 $$C=\{\lim_n X_n \text{ exists and is finite}\},\qquad D=\{\limsup_n X_n=+\infty,\ \liminf_n X_n=-\infty\}.$$
 Then $P(C\cup D)=1$: almost every path either settles down or swings between arbitrarily large positive and negative values. There is no third behaviour (drifting off to $+\infty$, say).`,
       idea: String.raw`Fix $a$ and stop the martingale the first time it goes below $-a$ (a stopping time, by 4.2.8a). Bounded increments mean the stopped process is bounded below by $-a-K$, so adding the constant it becomes a nonnegative martingale, which converges by 4.2.12. Hence on $\{\inf_n X_n>-a\}$ the path converges. Letting $a\to\infty$ gives convergence on $\{\liminf X_n>-\infty\}$. The same argument applied to $-X_n$ handles $\{\limsup X_n<\infty\}$. What is left is exactly $D$.`,
-      caption: String.raw`300 seeded paths, 40 drawn, are run for $1500$ steps and sorted by how much they still move in the second half (the range $R$ of $X_n$ over $n\ge750$). Green paths have settled ($R<1$), red ones are still swinging ($R\ge3$) and orange ones have escaped (they stay beyond everything seen before). Switch martingales: the gap in the histogram of $R$ is the theorem. The last option is not a martingale (biased steps): orange paths appear, so the hypothesis matters. In the coin option about half the paths are frozen and half swing: both $C$ and $D$ can have positive probability.`,
+      caption: String.raw`300 seeded paths, 40 drawn, are run for $3000$ steps and sorted by how much they still move in the second half (the range $R$ of $X_n$ over $n\ge1500$). Green paths have settled ($R<1$), red ones are still swinging ($R\ge3$) and orange ones have drifted away ($|X_{3000}|>0.06\cdot3000$). The classes are finite-horizon proxies for the events $C$ and $D$. Switch martingales: the gap in the histogram of $R$ is the theorem. The last option is not a martingale (biased steps): orange (drifting) paths appear, so the hypothesis matters. In the coin option about half the paths are frozen and half swing: both $C$ and $D$ can have positive probability.`,
       deps: ['prob-4.2.9', 'prob-4.2.12'],
       tags: ['martingales'],
       scope: String.raw`Needs bounded increments (not just integrable ones) and a genuine martingale (or at least a sub- or supermartingale along the lines of 4.2.12's proof).`,
@@ -44,9 +44,9 @@ Then $P(C\cup D)=1$: almost every path either settles down or swings between arb
           { value: 'mix', label: 'coin: frozen or walking' }, { value: 'bias', label: 'biased steps' },
         ], 'mix');
         let seed = 1; v.button('Resample', () => { seed++; });
-        const N = 1500, MP = 300, H = N >> 1;
+        const N = 3000, MP = 300, H = N >> 1;
         const A = v.stage({ x: [0, N], y: [-90, 90], axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: 'paths $X_n$', weight: 1.4 });
-        const B = v.stage({ x: [0, 60], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'range $R$ of $X_n$ over $n\\ge750$', ylabel: 'fraction of paths', title: 'how much paths still move' });
+        const B = v.stage({ x: [0, 60], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'range $R$ of $X_n$ over $n\\ge1500$', ylabel: 'fraction of paths', title: 'how much paths still move' });
         let cache = null, st = null;
         v.render(() => {
           const key = `${reg.value}|${seed}`;
@@ -63,19 +63,18 @@ Then $P(C\cup D)=1$: almost every path either settles down or swings between arb
                 X[n] = X[n - 1] + d;
                 if (reg.value === 'exit' && Math.abs(X[n]) >= 6) stopped = true;
               }
-              let lo = Infinity, hi = -Infinity, early = -Infinity, earlyLo = Infinity;
+              let lo = Infinity, hi = -Infinity;
               for (let n = H; n <= N; n++) { lo = Math.min(lo, X[n]); hi = Math.max(hi, X[n]); }
-              for (let n = 0; n <= N >> 2; n++) { early = Math.max(early, X[n]); earlyLo = Math.min(earlyLo, X[n]); }
-              const R = hi - lo, escaped = lo > early + 1 || hi < earlyLo - 1;
-              paths.push(X); Rs.push(R); cls.push(R < 1 ? 'C' : escaped ? 'E' : R >= 3 ? 'D' : 'U');
+              const R = hi - lo;
+              paths.push(X); Rs.push(R); cls.push(R < 1 ? 'C' : Math.abs(X[N]) > 0.06 * N ? 'E' : R >= 3 ? 'D' : 'U');
             }
             cache = { key, paths, cls, Rs };
           }
-          const sc = { rw: 90, shrink: 2.5, exit: 9, mix: 90, bias: 160 }[reg.value];
-          A.setView([0, N], reg.value === 'bias' ? [-40, 160] : [-sc, sc]);
+          const sc = { rw: 200, shrink: 2.5, exit: 9, mix: 200, bias: 200 }[reg.value];
+          A.setView([0, N], reg.value === 'bias' ? [-100, 400] : [-sc, sc]);
           A.vline(H, { color: 'faint', dash: [4, 4] });
           const col = { C: 'green', D: 'red', E: 'orange', U: 'gold' };
-          for (let i = 0; i < 40; i++) A.path(pts(cache.paths[i], 5), { color: col[cache.cls[i]], width: 1.1, alpha: 0.7 });
+          for (let i = 0; i < 40; i++) A.path(pts(cache.paths[i], 8), { color: col[cache.cls[i]], width: 1.1, alpha: 0.7 });
           const cnt = { C: 0, D: 0, E: 0, U: 0 }; cache.cls.forEach((c) => cnt[c]++);
           const hi = Math.max(1.2, ...cache.Rs) * 1.05, h = v.M.histogram(cache.Rs, { bins: 40, range: [0, hi] });
           const top = Math.max(...h.counts) / MP;
@@ -84,8 +83,8 @@ Then $P(C\cup D)=1$: almost every path either settles down or swings between arb
           B.vline(1, { color: 'green', dash: [4, 4] }); B.vline(3, { color: 'red', dash: [4, 4] });
           st = cnt;
         });
-        v.legend([['green', 'settled'], ['red', 'still swinging'], ['orange', 'escaped'], ['gold', 'in between']]);
-        v.readout(() => st && `Of 300 paths: **${st.C}** settled ($R<1$), **${st.D}** still swinging ($R\\ge3$), **${st.E}** escaped, **${st.U}** in between.${reg.value === 'bias' ? '\nThe steps have mean $+0.1$, so $X_n$ is a submartingale and not a martingale: paths run off to $+\\infty$.' : '\nBounded steps and a martingale: nothing but the first two groups.'}`);
+        v.legend([['green', 'settled'], ['red', 'still swinging'], ['orange', 'drifted away'], ['gold', 'in between']]);
+        v.readout(() => st && `Of 300 paths: **${st.C}** settled ($R<1$), **${st.D}** still swinging ($R\\ge3$), **${st.E}** drifted away, **${st.U}** in between.${reg.value === 'bias' ? '\nThe steps have mean $+0.1$, so $X_n$ is a submartingale and not a martingale: paths run off to $+\\infty$.' : '\nBounded steps and a martingale: nothing but the first two groups.'}`);
       },
     },
     // ======================================================================== 4.3.2
@@ -209,7 +208,7 @@ For independent events $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair 
           st = { N: one.N, S: one.S, nbig: big.length, ratio: big.length ? meanOf(Float64Array.from(big, (u) => u.N / u.S)) : NaN, nsmall: small.length, maxSmall: small.length ? Math.max(...small.map((u) => u.N)) : NaN };
         });
         v.legend([['accent', '$N_n$ (occurrences)'], ['orange', '$S_n$ (sum of conditional probabilities)', { dash: [6, 4] }], ['gold', 'this path', { dot: true }]]);
-        v.readout(() => st && `This path: $N=${st.N}$ occurrences, $S=${fr(st.S, 2)}$.\nAmong 150 paths: **${st.nbig}** have $S_N\\ge6$ and there $N_N/S_N$ averages ${isNaN(st.ratio) ? '—' : '$' + fr(st.ratio, 2) + '$'}; **${st.nsmall}** have $S_N<2$ and there $N_N\\le${isNaN(st.maxSmall) ? '—' : st.maxSmall}.`);
+        v.readout(() => st && `This path: $N=${st.N}$ occurrences, $S=${fr(st.S, 2)}$.\nAmong 150 paths: **${st.nbig}** have $S_N\\ge6$ and there $N_N/S_N$ averages ${isNaN(st.ratio) ? '—' : '$' + fr(st.ratio, 2) + '$'}; **${st.nsmall}** have $S_N<2$ and there $N_N\\le ${isNaN(st.maxSmall) ? '?' : st.maxSmall}$.`);
       },
     },
     // ======================================================================== 4.3.4a
@@ -255,7 +254,8 @@ For $b=r=1$ the limit is uniform.`,
           const be = v.M.dist.beta(b, r0), idx = CP.indexOf(nSel.value), xs = cache.snaps[idx];
           P.hline(b / (b + r0), { color: 'muted', dash: [4, 4] });
           for (const path of cache.shown) P.path(path, { color: 'accent', width: 1, alpha: 0.5 });
-          const ymax = Math.max(1.3, ...Array.from({ length: 101 }, (_, i) => be.pdf(0.005 + 0.99 * i / 100)).filter(isFinite).map((y) => Math.min(y, 6))) * 1.15;
+          const hh = v.M.histogram(xs, { bins: 40, range: [0, 1] });
+          const ymax = Math.max(1.3, Math.max(...hh.counts) * 40 / NP, ...Array.from({ length: 101 }, (_, i) => be.pdf(0.005 + 0.99 * i / 100)).filter(isFinite).map((y) => Math.min(y, 6))) * 1.12;
           Hs.setView([0, 1], [0, ymax]);
           Hs.hist(xs, { bins: 40, range: [0, 1], density: true, color: 'accent', fillAlpha: 0.35 });
           Hs.fn((x) => Math.min(be.pdf(x), 1e3), { color: 'green', width: 2.4, domain: [0.002, 0.998], n: 400 });
@@ -286,8 +286,8 @@ The first term is the part of $\mu$ absolutely continuous with respect to $\nu$;
       viz(v) {
         const sing = v.select('singular part', SING_OPTS, 'cantor');
         const wS = v.slider('weight $w$', 0, 1, 0.4, { step: 0.01 });
-        const nS = v.slider('level $n$', 1, 13, 6, { int: true });
-        const kS = v.slider('threshold $K$', 1.5, 40, 6, { log: true });
+        const nS = v.slider('level $n$', 1, 13, 9, { int: true });
+        const kS = v.slider('threshold $K$', 1.5, 40, 3, { log: true });
         const L = v.stage({ x: [0, 1], y: [0, 5], axes: 'box', gutter: true, height: 320, xlabel: '$x$', title: '$X_n=\\mu(I)/\\lambda(I)$ on dyadic cells', weight: 1.3 });
         const R = v.stage({ x: [1, 13], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'level $n$', title: 'mass of $\\mu$ on $\\{X_n\\le K\\}$ and $\\{X_n>K\\}$' });
         let cache = null, st = null;
@@ -353,7 +353,7 @@ $$\frac{\mu(I)}{\lambda(I)}=\tfrac12\Big(\frac{\mu(I_0)}{\lambda(I_0)}+\frac{\mu
           for (let n = 0; n <= LV; n++) {
             const row = LV - n, mm = m(n);
             for (let k = 0; k < mm; k++) {
-              const val = lv[n][k], t = Math.min(1, val / 3);
+              const val = lv[n][k], t = Math.min(1, val / 2) ** 0.7;
               P.rect(k / mm, row + 0.08, (k + 1) / mm, row + 0.92, { fill: v.ramp(t, 'accent', 'panel'), color: 'panel', width: mm > 16 ? 0.4 : 1, stroke: mm <= 16 });
               if (mm <= 8) P.text(fr(val, 2), (k + 0.5) / mm, row + 0.5, { size: 11, align: 'center', baseline: 'middle', color: t > 0.55 ? 'panel' : 'ink' });
             }
@@ -364,6 +364,7 @@ $$\frac{\mu(I)}{\lambda(I)}=\tfrac12\Big(\frac{\mu(I_0)}{\lambda(I_0)}+\frac{\mu
           // the path of the clicked point
           const xpt = (k + 0.5) / mm, path = [];
           for (let j = 0; j <= 10; j++) path.push([j, lv[j][Math.min(m(j) - 1, Math.floor(xpt * m(j)))]]);
+          Pa.setView([0, 10], [0, Math.max(2, ...path.map((q) => q[1])) * 1.1]);
           Pa.hline(1, { color: 'muted', dash: [5, 4] });
           Pa.path(path, { color: 'accent', width: 2, close: false });
           Pa.dots(path, { r: 3.5, color: 'accent' });
@@ -390,8 +391,8 @@ Under $\mu$ the likelihood ratio $R_n=\prod_{k\le n}\frac{d\nu_k}{d\mu_k}$ then 
       tags: ['martingales', 'radon-nikodym'],
       credit: 'S. Kakutani, 1948 (Ann. of Math. 49, 214–224)',
       viz(v) {
-        const gS = v.slider('exponent $\\gamma$', 0.2, 1.2, 0.4, { step: 0.01 });
-        const cS = v.slider('size $c$', 0.05, 0.45, 0.25, { step: 0.01 });
+        const gS = v.slider('exponent $\\gamma$', 0.2, 1.2, 0.35, { step: 0.01 });
+        const cS = v.slider('size $c$', 0.05, 0.45, 0.3, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const T = 3000, NP = 600;
         const L = v.stage({ x: [1, T], y: [1e-8, 1e3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: '$n$', title: 'likelihood ratio $R_n$ under fair coins $\\mu$', weight: 1.3 });
@@ -418,8 +419,10 @@ Under $\mu$ the likelihood ratio $R_n=\prod_{k\le n}\frac{d\nu_k}{d\mu_k}$ then 
             }
             cache = { key, prod, emp, cp, paths, finals, s2, eps };
           }
+          const fin = cache.paths.map((row) => Math.exp(row[row.length - 1])), lo = Math.max(1e-60, Math.min(...fin) * 0.2), hi = Math.max(20, Math.max(...fin) * 4);
+          L.setView([1, T], [Math.min(lo, 0.01), hi]);
           L.hline(1, { color: 'muted', dash: [5, 4] });
-          for (const row of cache.paths) L.path(row.map((l, j) => [cache.cp[j], Math.max(Math.exp(l), 1e-9)]), { color: 'accent', width: 1.1, alpha: 0.55 });
+          for (const row of cache.paths) L.path(row.map((l, j) => [cache.cp[j], Math.max(Math.exp(l), 1e-60)]), { color: 'accent', width: 1.1, alpha: 0.55 });
           const xs = []; for (let k = 0; k <= 120; k++) xs.push(Math.max(1, Math.round(Math.exp((Math.log(T) * k) / 120))));
           R.hline(0, { color: 'grid' });
           R.path(xs.map((n) => [n, cache.prod[n]]), { color: 'accent', width: 2.4 });
@@ -449,7 +452,7 @@ $Z_n$ is the number of individuals in generation $n$ when every individual indep
       verify: true,
       viz(v) {
         const law = v.select('offspring law', LAW_OPTS, 'poisson');
-        const mS = v.slider('mean $m$', 0.2, 2, 1.3, { step: 0.05 });
+        const mS = v.slider('mean $m$', 0.2, 2, 1.6, { step: 0.05 });
         const gS = v.slider('generations shown', 1, 8, 6, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const T = v.stage({ x: [0, 1], y: [-8.6, 0.8], axes: false, height: 360, title: 'family tree', weight: 1.5 });
@@ -473,6 +476,7 @@ $Z_n$ is the number of individuals in generation $n$ when every individual indep
             if (g < G) { let cx = x0; for (const c of kids[g][i]) { const cw = width(g + 1, c); T.line(x, y, (cx + cw / 2) / W, y - 1, { color: 'muted', width: W > 120 ? 0.6 : 1, alpha: 0.7 }); place(g + 1, c, cx); cx += cw; } }
             T.dot(x, y, { r: W > 150 ? 1.6 : W > 60 ? 2.6 : 4, color: g === 0 ? 'gold' : 'accent' }); drawn++;
           };
+          T.setView([0, 1], [-(G + 0.6), 0.7]);
           place(0, 0, 0);
           const upto = sizes.slice(0, G + 1), mx = Math.max(2, ...upto, ...upto.map((_, n) => L.mean ** n)) * 1.15;
           Bz.setView([-0.5, G + 0.5], [0, mx]);
