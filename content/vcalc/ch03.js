@@ -6,7 +6,6 @@ import {
 
 const W = [-1.3, 1.3];
 const fieldOptions = (keys) => keys.map((k) => ({ value: k, label: FIELDS[k].label }));
-const sgn = (x) => (x < 0 ? '-' : '');
 
 export default {
   collection: 'vcalc',
@@ -195,7 +194,7 @@ So $\mathbf c$ is tangent to the arrow of $\mathbf F$ at each of its points. If 
       statement: String.raw`The **divergence** of a differentiable vector field $\mathbf F=(F_1,\dots,F_n)$ on $U\subseteq\R^n$ is the scalar field
 $$\operatorname{div}\mathbf F=\nabla\!\cdot\!\mathbf F=\frac{\partial F_1}{\partial x_1}+\cdots+\frac{\partial F_n}{\partial x_n}.$$
 In the plane $\operatorname{div}(u,v)=u_x+v_y$. It is positive where the field spreads out (a source), negative where it gathers (a sink); a field with $\operatorname{div}\mathbf F=0$ is called *solenoidal* or incompressible.`,
-      idea: String.raw`The formula is a trace: it adds the stretching rates of the field along the coordinate axes (the diagonal of the derivative matrix $D\mathbf F$ of Rudin's 9.11 and 10.42). Its meaning is that of 3.6: if each point of a small blob of dye moves with the velocity $\mathbf F$, the blob's area (volume) changes at the rate $\operatorname{div}\mathbf F$ per unit area. A shear or a rotation moves points a lot without changing areas, which is why a rotation has divergence zero.`,
+      idea: String.raw`The formula is a trace: it adds the stretching rates of the field along the coordinate axes (the diagonal of the derivative matrix $D\mathbf F$ of pma-9.11 and pma-9.17). Its meaning is that of 3.6: if each point of a small blob of dye moves with the velocity $\mathbf F$, the blob's area (volume) changes at the rate $\operatorname{div}\mathbf F$ per unit area. A shear or a rotation moves points a lot without changing areas, which is why a rotation has divergence zero.`,
       caption: String.raw`The map is coloured by $\operatorname{div}\mathbf F$ (red positive, blue negative). A circular cloud of dye is released at the gold handle (drag it to move the release point; the field is scaled by $\tfrac12$ so the cloud stays in view) and carried by the flow. On the right, the rate $dA/dt$ at which its area changes, measured from the actual polygon, is plotted against the integral of the divergence over the cloud: the curves lie on top of each other.`,
       deps: ['vcalc-3.1', 'pma-10.42'],
       refs: ['Marsden–Tromba §4.4', 'Schey ch. II'],
@@ -309,7 +308,7 @@ A planar field $(u,v)$ is the case $F_3=0$ with nothing depending on $z$; its cu
           st = { omega, curl, enclosed: pick.value === 'vortex' && Math.hypot(P.x, P.y) < r, speed: Math.hypot(q[0], q[1]) };
         }, { period: 20, still: 1 });
         v.legend([['green', 'field along the rim, counter-clockwise'], ['red', 'field along the rim, clockwise'], ['orange', 'blades of the wheel']]);
-        v.readout(() => `$\\mathbf F=${FIELDS[pick.value].tex}$.  The wheel turns at $\\omega=${sgn(st.omega) ? '' : ''}${tf(st.omega, 3)}$ rad per unit time (${Math.abs(st.omega) < 5e-4 ? 'not turning' : st.omega > 0 ? 'counter-clockwise' : 'clockwise'}; animation ${tf(speed.value, 1)}× faster).\nCurl at the centre: $\\tfrac12\\operatorname{curl}\\mathbf F=\\tfrac12(v_x-u_y)=${tf(st.curl / 2, 3)}$.${st.enclosed ? ' The wheel encloses the singular point, so it feels the whole circulation $2\\pi$ of the vortex: $\\omega=1/r^2$.' : ''}`);
+        v.readout(() => `$\\mathbf F=${FIELDS[pick.value].tex}$.  The wheel turns at $\\omega=${tf(st.omega, 3)}$ rad per unit time (${Math.abs(st.omega) < 5e-4 ? 'not turning' : st.omega > 0 ? 'counter-clockwise' : 'clockwise'}; animation ${tf(speed.value, 1)}× faster).\nCurl at the centre: $\\tfrac12\\operatorname{curl}\\mathbf F=\\tfrac12(v_x-u_y)=${tf(st.curl / 2, 3)}$.${st.enclosed ? ' The wheel encloses the singular point, so it feels the whole circulation $2\\pi$ of the vortex: $\\omega=1/r^2$.' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 3.6
@@ -322,7 +321,7 @@ $$\operatorname{div}\mathbf F(p)=\lim_{h\to0}\frac{1}{|Q_h|}\int_{\partial Q_h}\
 (In the plane the boundary integral is over the four sides of a square, $|Q_h|=4h^2$.) The same limit holds for balls or any family of shrinking regions of controlled shape. Thus the divergence is the **net outflow per unit volume**, a coordinate-free quantity.`,
       idea: String.raw`On the right and left faces of the square, $u$ is evaluated at $x\pm h$; their contribution is $\int_{-h}^{h}\bigl(u(x+h,y+s)-u(x-h,y+s)\bigr)ds\approx 2h\cdot 2h\,u_x$ by the mean value theorem (pma-5.10) and continuity of $u_x$. The top and bottom give $4h^2v_y$ in the same way. Dividing by $4h^2$ leaves $u_x+v_y$ with an error that tends to $0$ with $h$ because the partials are continuous.`,
       caption: String.raw`Drag the gold point and shrink the box $h$ (log scale). The left panel is the box at its true place; the right panel magnifies it to constant size and shows the normal component $\mathbf F\cdot\mathbf n$ on each side (red out, blue in). The curve below plots flux/area against $h$: the raw flux tends to $0$, but the ratio settles on $\operatorname{div}\mathbf F(p)$ (dashed line), computed independently from the partial derivatives.`,
-      deps: ['vcalc-3.4'],
+      deps: ['vcalc-3.4', 'pma-5.10'],
       refs: ['Schey ch. II'],
       tags: ['divergence', 'flux', 'limit'],
       viz(v) {
