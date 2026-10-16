@@ -55,7 +55,7 @@ export default {
       name: 'Compression of morbidity (contested)',
       statement: String.raw`When life expectancy rises, does the time spent in poor health shrink, grow, or stay the same? Fries (1980) proposed **compression of morbidity**: if the onset of chronic illness is postponed faster than death, and the lifespan has a limit, the unhealthy period before death is squeezed into fewer years. The opposite view (Gruenberg's "failures of success") expects **expansion**, as medicine keeps the sick alive longer, and Manton's **dynamic equilibrium** expects the extra years to be split, with disease more prevalent but milder. With a prevalence schedule $p(x)$ of poor health, the Sullivan decomposition gives $e_0=\int S(x)\,dx = \text{healthy years}+\text{unhealthy years}$ with $\text{unhealthy years}=\int S(x)p(x)\,dx$. The hypothesis is about how $p(x)$ moves as $S(x)$ does, and the empirical evidence is **mixed**.`,
       idea: String.raw`The Sullivan method of 2.12 turns any survival curve and prevalence schedule into healthy and unhealthy expected years; the hypotheses differ only in how the onset age of poor health moves when mortality falls (and the survival curve squares, 3.8). This picture uses a stylized logistic prevalence schedule and a delay of senescent mortality; it is a scenario generator, not a forecast, and it shows that the same gain in life expectancy is consistent with all three outcomes.`,
-      caption: String.raw`Slide the delay of ageing: the senescent hazard of a 1950-type schedule is postponed by that many years, raising $e_0$ and squaring the curve. Then choose how far the onset of poor health moves per year of life expectancy gained (the onset slider), or pick a scenario. Red area: unhealthy years; green: healthy years. The bars compare today's baseline with the scenario.`,
+      caption: String.raw`Slide the delay of ageing: the senescent hazard of a 1950-type schedule is postponed by that many years, raising $e_0$ and squaring the curve. Then choose how far the onset of poor health moves per year of life expectancy gained (the onset slider), or pick a scenario. Red area: unhealthy years; green: healthy years. The bars compare the baseline (the 1950-type schedule itself) with the scenario.`,
       deps: ['demo-2.12', 'demo-3.8'],
       refs: ['PHG ch. 4'],
       tags: ['morbidity', 'healthy life expectancy', 'scenarios'],
@@ -63,11 +63,11 @@ export default {
       credit: 'James F. Fries, 1980 (compression); Gruenberg, 1977 (expansion); Manton, 1982 (dynamic equilibrium)',
       links: { doi: 'https://doi.org/10.1056/NEJM198007173030304' },
       viz(v) {
-        const P0 = SILER.y1950, X0 = 68, W = 7;
+        const P0 = SILER.y1950, X0 = 68, W = 7, sgn = (x) => (x >= 0 ? '+' : '') + v.fix(x, 1);
         const sh = v.slider('delay of ageing (years)', 0, 40, 20, { step: 1 });
         const th = v.slider('onset postponed per year of $e_0$ gained', 0, 3, 1, { step: 0.01 });
         let preset = null;
-        const FAC = { exp: 0.5, eq: 1, comp: 1.6 };
+        const FAC = { exp: 0.5, eq: 1, comp: 1.3 };
         preset = v.select('scenario', [{ value: 'exp', label: 'expansion' }, { value: 'eq', label: 'unhealthy years constant' }, { value: 'comp', label: 'compression' }, { value: 'cus', label: 'custom' }], 'comp');
         th.onChange = () => { if (!applying) preset.value = 'cus'; };
         let applying = false;
@@ -101,7 +101,7 @@ export default {
           R = { base, now };
         });
         v.legend([['green', 'healthy years'], ['red', 'unhealthy years'], ['muted', 'baseline survival', { dash: true }], ['orange', 'onset of poor health', { dash: true }]]);
-        v.readout(() => { const { base, now } = R, f = (x) => v.fix(x, 1); return `$e_0$ ${f(base.e0)} → ${f(now.e0)} (+${f(now.e0 - base.e0)}); healthy years ${f(base.H)} → ${f(now.H)} (${v.fix(now.H - base.H, 1)}); unhealthy years ${f(base.U)} → ${f(now.U)} (${v.fix(now.U - base.U, 1)})\nonset of poor health (midpoint) ${f(X0)} → ${f(now.xo)}; share of life unhealthy ${f(100 * base.U / base.e0)}% → ${f(100 * now.U / now.e0)}%`; });
+        v.readout(() => { const { base, now } = R, f = (x) => v.fix(x, 1); return `$e_0$ ${f(base.e0)} → ${f(now.e0)} (+${f(now.e0 - base.e0)}); healthy years ${f(base.H)} → ${f(now.H)} (${sgn(now.H - base.H)}); unhealthy years ${f(base.U)} → ${f(now.U)} (${sgn(now.U - base.U)})\nonset of poor health (midpoint) ${f(X0)} → ${f(now.xo)}; share of life unhealthy ${f(100 * base.U / base.e0)}% → ${f(100 * now.U / now.e0)}%`; });
       },
     },
     // ───────────────────────────────────────────────────────────── 3.10
@@ -110,8 +110,8 @@ export default {
       kind: 'Phenomenon',
       name: 'The Preston curve',
       statement: String.raw`Plot life expectancy at birth against income per person for the countries of a given year: the points lie near a **concave curve**, rising steeply at low incomes and flattening above a few tens of thousands of dollars. Preston (1975) showed that the curve for later years lies above that for earlier years, so a country at a given income lives longer now than at the same income decades ago: the gain in life expectancy over time cannot be attributed to rising incomes alone, and he argued that diffusion of knowledge and public-health technology shifted the curve. A cross-section is not a causal law: the association also reflects health raising income, and shared causes.`,
-      idea: String.raw`The curve is concave because the extra years bought by an additional dollar fall with income. Life expectancy is a summary of the survival curve (2.4), so a shift in the curve at fixed income reflects a lower mortality schedule for the same resources. Fitting a smooth curve to each year (here a quadratic in the logarithm of income) lets one read off the vertical distance between years, which is the part of the gain not "explained by" income.`,
-      caption: String.raw`Dots are countries (area grows with population): amber 1930, teal 1960, blue 2022; toggle years on and off. The curves are least-squares quadratics in log income for each year. Drag the vertical line to an income and read the three curves' life expectancy there; hover to identify a country.`,
+      idea: String.raw`The curve is concave because the extra years bought by an additional dollar fall with income. Life expectancy is a summary of the survival curve (2.4), so a shift in the curve at fixed income reflects a lower mortality schedule for the same resources. Fitting a smooth saturating curve to each year (here constant + log income + a term in 1/income) lets one read off the vertical distance between years, which is the part of the gain not "explained by" income.`,
+      caption: String.raw`Dots are countries (area grows with population): amber 1930, teal 1960, blue 2022; toggle years on and off. The curves are least-squares curves of the form $c_0 + c_1\log_{10} g + c_2/g$ (log income plus a saturation term), drawn over the range of each year's data. Drag the vertical line to an income and read the three curves' life expectancy there; hover to identify a country.`,
       deps: ['demo-2.4'],
       refs: ['PHG ch. 3'],
       tags: ['income', 'life expectancy', 'cross-section'],
@@ -121,13 +121,14 @@ export default {
       viz(v) {
         const YR = [{ y: '1930', c: 'gold' }, { y: '1960', c: 'teal' }, { y: '2022', c: 'accent' }];
         const tg = YR.map((o) => v.toggle(o.y, true));
-        const s = v.stage({ x: [500, 150000], y: [20, 90], xlog: true, axes: 'box', gutter: true, xlabel: 'GDP per person (international \\$, 2011 prices)', ylabel: 'life expectancy at birth', height: 420, title: 'Life expectancy and income', hover: true });
+        const s = v.stage({ x: [500, 150000], y: [20, 90], xlog: true, axes: 'box', gutter: true, xlabel: 'GDP per person (international $, 2011 prices)', ylabel: 'life expectancy at birth', height: 420, title: 'Life expectancy and income', hover: true });
         const h = s.handle(8000, 25, { color: 'ink', r: 6, constrain: 'x', label: 'income' });
         const fits = YR.map((o) => {
-          const pts = PRESTON[o.y], X = pts.map((r) => [1, Math.log10(r[1]), Math.log10(r[1]) ** 2]), Yv = pts.map((r) => r[2]);
-          const b = v.M.lstsq(X, Yv), pred = (g) => b[0] + b[1] * Math.log10(g) + b[2] * Math.log10(g) ** 2;
+          const pts = PRESTON[o.y], X = pts.map((r) => [1, Math.log10(r[1]), 1000 / r[1]]), Yv = pts.map((r) => r[2]);
+          const b = v.M.lstsq(X, Yv), pred = (g) => b[0] + b[1] * Math.log10(g) + b[2] * (1000 / g);
           const res = pts.map((r) => r[2] - pred(r[1])), sd = Math.sqrt(sum(res.map((e) => e * e)) / (pts.length - 3));
-          return { pts, pred, sd, n: pts.length };
+          const gs = pts.map((r) => r[1]);
+          return { pts, pred, sd, n: pts.length, lo: Math.min(...gs), hi: Math.max(...gs) };
         });
         let R = null;
         v.render(() => {
@@ -135,7 +136,7 @@ export default {
           YR.forEach((o, k) => {
             if (!tg[k].value) return;
             const f = fits[k];
-            s.fn(f.pred, { domain: [500, 150000], color: o.c, width: 3 });
+            s.fn(f.pred, { domain: [f.lo, f.hi], color: o.c, width: 3 });
             for (const r of f.pts) {
               const rad = clamp(2.2 + 0.32 * Math.sqrt(r[3]), 2.5, 11);
               s.dot(r[1], r[2], { r: rad, color: o.c, alpha: 0.55 });
@@ -143,7 +144,7 @@ export default {
             }
           });
           s.vline(h.x, { color: 'ink', dash: true, alpha: 0.6 });
-          if (near) { s.dot(near.r[1], near.r[2], { r: 8, hollow: true, color: 'ink' }); s.text(`${near.r[0]} ${near.o.y}: ${near.r[2]} years, \\$${int(near.r[1])}`, near.r[1], near.r[2], { dy: -14, align: 'center', size: 12, color: 'ink' }); }
+          if (near) { s.dot(near.r[1], near.r[2], { r: 8, hollow: true, color: 'ink' }); s.text(`${near.r[0]} ${near.o.y}: ${near.r[2]} years, $${int(near.r[1])}`, near.r[1], near.r[2], { dy: -14, align: 'center', size: 12, color: 'ink' }); }
           h.set(clamp(h.x, 600, 140000), 25);
           R = { x: h.x, vals: YR.map((o, k) => fits[k].pred(h.x)), near };
         });
@@ -238,7 +239,7 @@ export default {
       introduces: ['demo-3.1'],
       statement: String.raw`Gompertz (1825) worked from the life tables of his day, among them those for Northampton and Carlisle, and argued that, over the adult ages, the force of mortality is well described by a function that grows in geometrical progression: equal increments of age multiply the death rate by the same factor. In modern notation, $\mu(x)=Bc^{x}$ with $c>1$; from this he derived the survivorship function and proposed how to value life contingencies (annuities and insurances) from a table's two constants instead of its full list of numbers. The paper does not claim the law holds at childhood or at all ages.`,
       idea: String.raw`Before the paper, tables were lists of numbers and annuity values were computed age by age. Gompertz noticed that, beyond the early years, the numbers of living at successive ages decline in a pattern consistent with a hazard that is a geometric progression, which let a whole table be summarized by two constants (the level $B$ and the factor $c$) and made calculations of contingencies tractable. The law is the Gompertz law (3.1); the idea of a **force of mortality** as a function of age is the hazard of 2.5. Makeham later added the constant term (3.2).`,
-      caption: String.raw`A reconstruction with modern UN tables, not Gompertz's data. Left: the ratio of the death rate in each 5-year age group to the one before; a geometric progression means this ratio is constant (the line is $c^5$ from the fit). Right: the slope $\alpha=\ln c$ and the death rate at age 60 for every country and year of the UN tables used here (colour: year); the level of mortality changes about tenfold, while the slope stays within a narrow band. Pick a country and year.`,
+      caption: String.raw`A reconstruction with modern UN tables, not Gompertz's data. Left: the ratio of the death rate in each 5-year age group to the one before; a geometric progression means this ratio is constant (the line is $c^5$ from the fit). Right: the slope $\alpha=\ln c$ and the death rate at age 60 for every country and year of the UN tables used here (colour: year); the level of mortality changes more than tenfold while the slope changes much less, but the two are linked: lower mortality goes with a steeper slope. Pick a country and year.`,
       deps: ['demo-2.3', 'demo-2.5'],
       refs: [],
       tags: ['history', 'hazard', 'life contingencies'],
@@ -248,7 +249,7 @@ export default {
         const co = v.select('country', cOpts(CTRY), 'SWE');
         const yi = v.slider('year', 0, LTY.length - 1, LTY.length - 1, { int: true, fmt: yFmt });
         const s = v.stage({ x: [30, 100], y: [1, 2.2], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'ratio of successive death rates', height: 360, title: 'Is the progression geometric?' });
-        const t = v.stage({ x: [0.05, 0.13], y: [3e-3, 1e-1], ylog: true, axes: 'box', gutter: true, xlabel: 'slope $\\alpha$ of $\\ln\\mu$ (per year)', ylabel: 'death rate at age 60', height: 360, title: 'Level changes, slope hardly' });
+        const t = v.stage({ x: [0.05, 0.13], y: [3e-3, 1e-1], ylog: true, axes: 'box', gutter: true, xlabel: 'slope $\\alpha$ of $\\ln\\mu$ (per year)', ylabel: 'death rate at age 60', height: 360, title: 'Level versus slope, all tables' });
         const ALL = []; const info = (c, j) => { const h = hazardsFromL(lxOf(c, LTY[j]), 40, 90), g = gompFit(h); return { c, j, alpha: g.alpha, mu60: g.B * Math.exp(g.alpha * 60) }; };
         for (const c of CTRY) for (let j = 0; j < LTY.length; j++) ALL.push(info(c, j));
         let R = null;
@@ -286,8 +287,8 @@ export default {
       viz(v) {
         const co = v.select('country', cOpts(LC_CTRY), 'USA');
         const last = v.slider('last year of data used', 1975, 2022, 1989, { int: true });
-        const s = v.stage({ x: [1950, 2065], y: [60, 100], axes: 'box', gutter: true, xlabel: 'year', ylabel: 'life expectancy at birth', height: 380, title: 'Forecast and outcome' });
-        const t = v.stage({ x: [1950, 2065], y: [-50, 40], axes: 'box', gutter: true, xlabel: 'year', ylabel: '$k_t$', height: 380, title: 'The mortality index' });
+        const s = v.stage({ x: [1950, 2072], y: [60, 100], axes: 'box', gutter: true, xlabel: 'year', ylabel: 'life expectancy at birth', height: 380, title: 'Forecast and outcome' });
+        const t = v.stage({ x: [1950, 2072], y: [-50, 40], axes: 'box', gutter: true, xlabel: 'year', ylabel: '$k_t$', height: 380, title: 'The mortality index' });
         const obsE = {}; const e0Obs = (c, y) => (obsE[c + y] = obsE[c + y] || lt22(mxOf(c, y)).e0);
         let R = null;
         v.render(() => {
