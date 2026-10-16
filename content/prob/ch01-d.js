@@ -830,7 +830,7 @@ Included is the fact that the sections $y\mapsto f(x,y)$ and the inner integrals
           { E: Sk, ops: [['S_1', (x, y) => x < 0.5 && y < 0.5], ['S_2', (x, y) => x >= 0.5 && x < 0.75 && y < 0.25]], line: 5, note: String.raw`A countable union of rectangles $S_k=[1-2^{1-k},1-2^{-k})\times[0,2^{-k})$: the section is a countable union of sections.` },
           { E: E5, ops: [['E_3', E3], ['E_4', Sk]], line: 6, note: String.raw`The final set $E_3\cup E_4$; its section is still a union of intervals, hence in $\mathcal B$.` },
         ];
-        const S = v.steps({ frames, code: ['$E_0=A_1\\times B_1$', '$E_1=E_0\\cup(A_2\\times B_2)$', '$E_2=E_1^{\\,c}$', '$E_3=E_2\\setminus(X\\times B_3)$', '$E_4=\\bigcup_k S_k$', '$E_5=E_3\\cup E_4$'], codeTitle: 'building $E$', start: 0, still: 3, speed: 0.8 });
+        const S = v.steps({ frames, code: ['$E_0=A_1\\times B_1$', '$E_1=E_0\\cup(A_2\\times B_2)$', '$E_2=E_1^{\\,c}$', '$E_3=E_2\\setminus(X\\times B_3)$', '$E_4=\\bigcup_k S_k$', '$E_5=E_3\\cup E_4$'], codeTitle: 'building E', start: 0, still: 3, speed: 0.8 });
         const P = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 330, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', title: 'the set $E$ in $X\\times Y=[0,1]^2$' });
         const Q = v.stage({ x: [0.3, 3.7], y: [0, 1], height: 330, axes: 'box', gutter: true, xticks: [], title: 'sections at the chosen $x$' });
         const X0 = P.handle(0.45, 0.97, { color: 'gold', label: 'x', labelPos: 'e', constrain: (x) => [clampN(x, 0.005, 0.995), 0.97] });
@@ -885,7 +885,7 @@ $$\int_Xg\,d\mu_1=\mu(E),\qquad\mu=\mu_1\times\mu_2.$$`,
           T.y = 0; X0.y = W * 0.95;
           const t = T.x, x0 = X0.x;
           if (Pr.atoms) L.heat((x, y) => { const k = Math.round(x); return Math.abs(x - k) < 0.07 && k >= 0 ? Pz.pmf(k) * Pr.f2(y) : 0; }, { range: [0, 0.4], cmap: 'theme', color: 'accent', key: 'pe' + W, res: 2 });
-          else L.heat((x, y) => Pr.f1(x) * Pr.f2(y), { range: [0, 1.25], cmap: 'theme', color: 'accent', key: pair.value, res: 3 });
+          else L.heat((x, y) => Pr.f1(x) * Pr.f2(y), { range: [0, 0.7], cmap: 'theme', color: 'accent', key: pair.value, res: 3 });
           L.poly([[0, 0], [t, 0], [0, t]], { fill: 'orange', fillAlpha: 0.16, hatch: 'orange', hatchAlpha: 0.3, stroke: false });
           L.line(t + 0.2 * W, -0.2 * W, -0.2 * W, t + 0.2 * W, { color: 'orange', width: 1.6, dash: [6, 4] });
           L.vline(x0, { color: 'purple', width: 1, alpha: 0.6 });

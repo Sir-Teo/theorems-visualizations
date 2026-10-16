@@ -427,14 +427,14 @@ $$[x]=\{y\in X : y\sim x\}.$$`,
           }
         });
         v.readout(() => {
-          const [p, q] = [X.y, X.x], [r, ss] = [Y.y, Y.x], fx = reduce(p, q), fy = reduce(r, ss), cx = pts.filter((pt) => inCls(X, pt)), cy = pts.filter((pt) => inCls(Y, pt));
+          const [p, q] = [X.y, X.x], [r, ss] = [Y.y, Y.x], P = (z) => (z < 0 ? `(${z})` : z), fx = reduce(p, q), fy = reduce(r, ss), cx = pts.filter((pt) => inCls(X, pt)), cy = pts.filter((pt) => inCls(Y, pt));
           const both = cx.filter((pt) => inCls(Y, pt)), onlyX = cx.filter((pt) => !inCls(Y, pt)), lab = ([qq, pp]) => `${pp}/${qq}`;
           if (fake.value) {
             if (both.length && onlyX.length) return String.raw`Overlap without equality: $${lab(both[0])}$ is within $\tfrac14$ of both $x = ${p}/${q}$ and $y = ${r}/${ss}$, but $${lab(onlyX[0])}$ is close to $x$ and not to $y$. Transitivity fails, so these "classes" do not partition the fractions.`;
             return String.raw`Here the two blobs ${both.length ? 'coincide' : 'happen to be disjoint'}; move $x$ or $y$ (e.g. $x = 1/2$, $y = 3/4$) until they overlap only partly — impossible for a genuine equivalence relation.`;
           }
           const eq = p * ss === q * r;
-          return String.raw`$x = ${p}/${q}$, $y = ${r}/${ss}$: $p\,s = ${p * ss}$ and $q\,r = ${q * r}$, so ${eq ? String.raw`$x\sim y$ and $[x] = [y]$ — the same line, all ${cx.length} points shared (each equals $${fx[0]}/${fx[1]}$ in lowest terms).` : String.raw`$x\not\sim y$, and $[x]\cap[y] = \varnothing$: two different lines through the origin meet only at $(0, 0)$, which is not a fraction. ($[x]$ is $${fx[0]}/${fx[1]}$ with ${cx.length} names here, $[y]$ is $${fy[0]}/${fy[1]}$ with ${cy.length}.)`}`;
+          return String.raw`$x = ${p}/${P(q)}$, $y = ${r}/${P(ss)}$: $p\,s = ${p * ss}$ and $q\,r = ${q * r}$, so ${eq ? String.raw`$x\sim y$ and $[x] = [y]$ — the same line, all ${cx.length} points shared (each equals $${fx[0]}/${fx[1]}$ in lowest terms).` : String.raw`$x\not\sim y$, and $[x]\cap[y] = \varnothing$: two different lines through the origin meet only at $(0, 0)$, which is not a fraction. ($[x]$ is $${fx[0]}/${fx[1]}$ with ${cx.length} names here, $[y]$ is $${fy[0]}/${fy[1]}$ with ${cy.length}.)`}`;
         });
       },
     },
@@ -464,7 +464,7 @@ which partition $\mathbb Z$. For example $41\equiv17\pmod 8$, since $41-17=24=3\
         const place = (k, R) => { const { n, lo, hi } = R, r = ((k % n) + n) % n, ang = Math.PI / 2 - (2 * Math.PI * r) / n, rad = 1.0 + (2.75 * (k - lo)) / (hi - lo + 1); return [rad * Math.cos(ang), rad * Math.sin(ang)]; };
         s.onClick((x, y) => { const R = rng(); let best = null, bd = 14; for (let k = R.lo; k <= R.hi; k++) { const [px, py] = place(k, R), d = Math.hypot(s.X(px) - s.X(x), s.Y(py) - s.Y(y)); if (d < bd) { bd = d; best = k; } } if (best != null) B.set(Math.max(-20, Math.min(60, best))); });
         v.render(() => {
-          const R = rng(), { n, lo, hi } = R, cnt = hi - lo + 1, r0 = Math.max(4.5, Math.min(11, 300 / cnt));
+          const R = rng(), { n, lo, hi } = R, cnt = hi - lo + 1, r0 = Math.max(4.5, Math.min(11, 440 / cnt));
           for (let r = 0; r < n; r++) {
             const ang = Math.PI / 2 - (2 * Math.PI * r) / n;
             s.line(0.75 * Math.cos(ang), 0.75 * Math.sin(ang), 3.85 * Math.cos(ang), 3.85 * Math.sin(ang), { color: col(r, n), width: 1, alpha: 0.35 });
@@ -476,7 +476,7 @@ which partition $\mathbb Z$. For example $41\equiv17\pmod 8$, since $41-17=24=3\
             const [x, y] = place(k, R), r = ((k % n) + n) % n, sel = k === A.value || k === B.value;
             s.dot(x, y, { r: sel ? r0 + 3 : r0, color: col(r, n) });
             if (r0 >= 7) s.text(String(k), x, y, { align: 'center', size: Math.min(11, r0 * 1.05), weight: 700, color: 'panel', halo: false });
-            if (sel) { const c = s.ctx; c.save(); c.beginPath(); c.arc(s.X(x), s.Y(y), r0 + 7, 0, 2 * Math.PI); c.strokeStyle = v.color('ink'); c.lineWidth = 2.2; c.stroke(); c.restore(); s.text(k === A.value ? 'a' : 'b', x, y, { dx: r0 + 10, dy: -r0 - 4, math: true, size: 15, weight: 700 }); }
+            if (sel) { const c = s.ctx; c.save(); c.beginPath(); c.arc(s.X(x), s.Y(y), r0 + 7, 0, 2 * Math.PI); c.strokeStyle = v.color('ink'); c.lineWidth = 2.2; c.stroke(); c.restore(); s.text(k === A.value ? 'a' : 'b', x, y, { dx: -(r0 + 10), dy: r0 + 4, align: 'right', math: true, size: 15, weight: 700, plate: true }); }
           }
           // the number line strip
           const k0 = Math.min(-n, A.value, B.value) - 1, k1 = Math.max(3 * n, A.value, B.value) + 1;

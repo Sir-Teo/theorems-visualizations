@@ -269,7 +269,7 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
             const x = cx(i), y = cy(j), th = Math.atan2(y, x);
             const a = 4.7 * (1 - 0.18 * Math.max(0, y) / 8) * (1 + 0.04 * Math.sin(3 * th + 1) + 0.03 * Math.cos(5 * th)), b = 7.9 * (1 + 0.03 * Math.sin(2 * th + 0.4));
             const q = (x / a) ** 2 + (y / b) ** 2;
-            if (q < 1) { const sq = (1 - q) ** 0.6; zt[idx(i, j)] = 1.75 * sq * (1 + 0.16 * Math.sin(2 * th + 1)); zb[idx(i, j)] = -1.15 * sq * (1 + 0.16 * Math.cos(3 * th)); }
+            if (q < 1) { const sq = (1 - q) ** 0.6; const md = Math.hypot(x, y) / (Math.hypot(x, y) + 1.5); zt[idx(i, j)] = 1.75 * sq * (1 + 0.16 * md * Math.sin(2 * th + 1)); zb[idx(i, j)] = -1.15 * sq * (1 + 0.16 * md * Math.cos(3 * th)); }
           }
           ver++; z0t = zt.slice(); z0b = zb.slice(); nRem = [0, 0]; nextFace = 'A'; last = null; msg = ''; stack.length = 0;
         }
@@ -406,8 +406,8 @@ Symmetry is not forced by the mechanics. It is measured with the *flip test* (Ha
             // contiguous runs only
             Q.poly([...sec.top, ...sec.bot.slice().reverse()], { fill: 'muted', fillAlpha: 0.45, color: 'ink', width: 1.6 });
             const l = sec.top[0], r = sec.top[sec.top.length - 1];
-            const angAt = (pts, bots, from) => { const k = Math.min(6, pts.length - 1), a = pts[from], b = pts[from === 0 ? k : pts.length - 1 - k], c = bots[from], d = bots[from === 0 ? k : bots.length - 1 - k], dx = Math.abs(b[0] - a[0]) || 1; return (Math.atan2(b[1] - a[1], dx) + Math.atan2(c[1] - d[1], dx)) / D2R; };
-            const aL = angAt(sec.top, sec.bot, 0), aR = angAt(sec.top, sec.bot, sec.top.length - 1);
+            const jr = Math.round((secH.y - Y0) / H - 0.5), il = Math.round((l[0] - X0) / H - 0.5), ir = Math.round((r[0] - X0) / H - 0.5);
+            const aL = edgeAngle(il, jr), aR = edgeAngle(ir, jr);
             Q.text(`${Math.round(aL)}°`, l[0] - 0.15, 0.05, { size: 12, color: aL < 70 ? 'green' : aL < 90 ? 'orange' : 'red', align: 'right', weight: 700 });
             Q.text(`${Math.round(aR)}°`, r[0] + 0.15, 0.05, { size: 12, color: aR < 70 ? 'green' : aR < 90 ? 'orange' : 'red', align: 'left', weight: 700 });
             let tmax = 0; for (let k = 0; k < sec.top.length; k++) tmax = Math.max(tmax, sec.top[k][1] - sec.bot[k][1]);
