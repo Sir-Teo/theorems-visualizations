@@ -156,7 +156,7 @@ Sigmoid and tanh are smooth, bounded and **saturate**: their derivatives decay l
 $$f(x)=v_0+\sum_{k=1}^m v_k\,\sigma(w_k\cdot x+b_k),$$
 with hidden-unit weights $w_k\in\R^d$, biases $b_k$, output weights $v_k$ and output bias $v_0$ — $m(d+2)+1$ parameters. In matrix form $f(x)=v^\top\sigma(Wx+b)+v_0$. For $d=1$ and $\sigma=\mathrm{ReLU}$, unit $k$ contributes a **hinge** $v_k\max(0,w_kx+b_k)$: zero on one side of the **kink** $x=-b_k/w_k$ and linear with slope $v_kw_k$ on the other. The sum is a continuous piecewise-linear function with at most $m+1$ pieces; on each piece the set of active units (the **activation pattern**) is fixed and the slope is the sum of the active units' slopes.`,
       idea: String.raw`Each hidden unit is a ridge function (1.1), and the output layer takes a linear combination of them. With ReLU the picture is completely explicit in one dimension: every kink is a place where one unit switches on or off, and crossing it changes the slope by exactly that unit's $v_kw_k$. Conversely, any continuous piecewise-linear function with $m$ kinks is such a sum, which is the engine of universal approximation in 1D (2.1). Once the hidden units are fixed, $f$ is *linear* in $(v_0,\dots,v_m)$, so fitting the output layer alone is ordinary least squares.`,
-      caption: String.raw`Left: each hidden unit's contribution $v_k\,\mathrm{ReLU}(w_kx+b_k)$ in its own colour. Drag a unit's square-root-free handles: the dot on the axis moves its kink, the dot on the hinge sets its slope and which side is active. Right: their sum, coloured segment by segment, with each segment's activation pattern written beneath it (1 = unit on). Pick a target and press *least-squares output weights* to fit $v_0,\dots,v_m$ with the kinks held fixed.`,
+      caption: String.raw`Left: each hidden unit's contribution $v_k\,\mathrm{ReLU}(w_kx+b_k)$ in its own colour. Drag a unit's two handles: the dot on the axis moves its kink, the dot on the hinge sets its slope and which side is active. Right: their sum, coloured segment by segment, with each segment's activation pattern written beneath it (1 = unit on). Pick a target and press *least-squares output weights* to fit $v_0,\dots,v_m$ with the kinks held fixed.`,
       deps: ['deep-1.2'],
       refs: ['Prince §3.1', 'Prince §3.4'],
       tags: ['shallow network', 'ReLU'],
@@ -255,7 +255,7 @@ which gives $f=0,1,1,0$ on the four points. The hidden layer maps the inputs to 
             sR.path(bestCurve, { color: 'red', width: 2.6 });
             sR.text('0 mistakes would be here — never reached', 90, 0.12, { align: 'center', color: 'green', size: 12 });
             sR.vline((th * 180) / Math.PI, { color: 'ink', width: 1.4, dash: [4, 3] });
-            sR.dot((th * 180) / Math.PI, Math.min(mist(n, b), 4 - mist(n, b)), { r: 5, color: 'gold' });
+            sR.dot((th * 180) / Math.PI, wrongs, { r: 5, color: 'gold' });
             extra = `your line: **${wrongs} mistake${wrongs === 1 ? '' : 's'}** · minimum over all lines: **${Math.min(...bestCurve.map((p) => p[1]))}**`;
           } else {
             let F, Hm, outLine, lo, hi;

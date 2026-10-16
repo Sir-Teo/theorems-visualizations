@@ -746,7 +746,7 @@ The plot cannot settle the question by itself. Any list that names a roughly equ
           L.fn((x) => Math.pow(10, -x - 0.6), { color: 'gray', width: 1, dash: [4, 4], domain: [-10.2, -1] });
           for (const p of P) L.dot(-Math.log10(p.t), p.dt, { r: data.value === 'list' ? 4.5 : 3.2, color: data.value === 'list' ? 'accent' : 'gold' });
           if (data.value === 'list') placeLabels(v, L, P.filter((p) => ['Big Bang', 'Cambrian explosion', 'K–Pg extinction', 'Homo sapiens', 'writing', 'steam engine', 'Sun & Earth', 'farming', 'hominins'].includes(p.label)).map((p) => ({ x: -Math.log10(p.t), y: p.dt, text: p.label, size: 10.5 })), { points: P.map((p) => [L.X(-Math.log10(p.t)), L.Y(p.dt), 5]) });
-          L.text('slope 1 (Δt ∝ t)', -2.2, Math.pow(10, 2.2 - 0.6), { dy: 14, size: 10.5, color: 'muted' });
+          L.text('slope 1 (Δt ∝ t)', -5.6, Math.pow(10, 5.6 - 0.6), { dy: 16, size: 10.5, color: 'muted' });
           // per-decade histogram
           const cnt = new Array(10).fill(0); for (const e of E) { const d = Math.floor(Math.log10(e.t)); if (d >= 1 && d <= 10) cnt[d - 1]++; }
           const mx = Math.max(...cnt, 1); R.setView([-10.4, -0.8], [0, mx * 1.3]);
