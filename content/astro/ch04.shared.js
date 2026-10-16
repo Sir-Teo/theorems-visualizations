@@ -30,11 +30,10 @@ export function bbColor(v, T) {
     r += w * c[0]; g += w * c[1]; b += w * c[2];
   }
   const m = Math.max(r, g, b) || 1;
-  // desaturate towards white so that a 5800 K Sun looks yellow-white rather than orange
-  const out = [r, g, b].map((c) => Math.round(255 * Math.pow(c / m, 0.45)));
-  const mx = Math.max(...out), mn = Math.min(...out);
-  const lift = 0.35 * (mx - mn);
-  const res = out.map((c) => Math.min(255, Math.round(c + lift * (c < mx ? 1 : 0))));
+  // chroma stretch about the mean so that the (physically pale) star colours stay distinguishable on a panel
+  const out = [r, g, b].map((c) => Math.pow(c / m, 0.5));
+  const mean = (out[0] + out[1] + out[2]) / 3;
+  const res = out.map((c) => Math.max(0, Math.min(255, Math.round(255 * (mean + 2.6 * (c - mean))))));
   bbCache.set(key, res);
   return res;
 }

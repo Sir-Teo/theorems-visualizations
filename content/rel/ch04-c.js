@@ -1,5 +1,5 @@
 // Special & General Relativity — Chapter 4 (items 4.13–4.17): four-force, cyclotron, pair creation, and the papers of Einstein (1905) and Compton (1923)
-import { gam, boostEp, eng, ME, MP, MMU } from './ch04.shared.js';
+import { gam, eng, ME, MP, U_MEV as U } from './ch04.shared.js';
 
 export default {
   collection: 'rel',
@@ -68,7 +68,7 @@ so $a_\parallel=F_\parallel/\gamma^3m$ and $a_\perp=F_\perp/\gamma m$. A constan
           const { spd, g, ax, ay, Fx, Fy, K0, px, py, ex } = st; if (g === undefined) return '';
           const a = Math.hypot(ax, ay), ang = Math.abs(Math.atan2(Fx * ay - Fy * ax, Fx * ax + Fy * ay)) * 180 / Math.PI;
           return String.raw`Now: $\beta=${v.fix(spd, 4)}$, $\gamma=${v.fix(g, 3)}$, $|p|=${v.fix(ex, 3)}\,mc$. Four-force $K^\mu=\gamma(\mathbf F\!\cdot\!\mathbf v,\mathbf F)=(${v.fix(K0, 3)},\,${v.fix(g * Fx, 3)},\,${v.fix(g * Fy, 3)})$.` + '\n' +
-            String.raw`Acceleration $|\mathbf a|=${v.fix(a, 3)}\,F/m$ (Newton: 1), pointing ${v.fix(ang, 1)}° away from the force. Check $K\cdot u=${v.fix(g * g * (K0 / g * 1 - 0) * 0 + (K0 * g - g * g * (Fx * px / g + Fy * py / g) * 0) * 0, 3)}$ is replaced by: $dE/dt=\mathbf F\cdot\mathbf v=${v.fix(Fx * (px / Math.sqrt(1 + px * px + py * py)) + Fy * (py / Math.sqrt(1 + px * px + py * py)), 4)}$.`;
+            String.raw`Acceleration $|\mathbf a|=${v.fix(a, 3)}\,F/m$ (Newton: 1), pointing ${v.fix(ang, 1)}° away from the force. Work–energy: $dE/dt=\mathbf F\cdot\mathbf v=${v.fix(Fx * px / Math.sqrt(1 + px * px + py * py) + Fy * py / Math.sqrt(1 + px * px + py * py), 4)}$.`;
         });
       },
     },
@@ -82,7 +82,7 @@ so $a_\parallel=F_\parallel/\gamma^3m$ and $a_\perp=F_\perp/\gamma m$. A constan
 $$\omega=\frac{qB}{\gamma m},$$
 and the magnetic force does no work, so $\gamma$ is constant on the circle. As the particle gains energy the radius grows with $p$ and the revolution frequency **falls** as $1/\gamma$. A cyclotron whose accelerating voltage alternates at the fixed frequency $qB/m$ therefore loses synchronism as $\gamma$ rises: the particle arrives at each gap later and later, and when its phase lag passes $90^\circ$ it is decelerated instead. The cure is to lower the drive frequency as $1/\gamma$ (synchrocyclotron) or to raise $B$ with radius (isochronous cyclotron, synchrotron).`,
       idea: String.raw`With the force $q\mathbf v\times\mathbf B$ always perpendicular to $\mathbf v$, $\gamma$ is constant and the relativistic second law (rel-4.13) reads $\gamma m\,\dot{\mathbf v}=q\mathbf v\times\mathbf B$: circular motion at the Larmor frequency reduced by $\gamma$. The Newtonian cyclotron (mech-1.18) has $\omega=qB/m$, independent of energy, which is what makes a fixed-frequency machine possible; the factor $\gamma$ spoils it. Each half-turn the phase against the drive slips by $\pi(\gamma-1)$.`,
-      caption: String.raw`A proton in a 1.5 T field crosses a gap voltage $V$ twice per turn, beginning at the peak of the drive. **Choose the gap voltage** and switch between a **fixed** drive frequency and an ideally **tracking** one. Left: the orbit spirals out (radius in cm); with fixed frequency it turns round and spirals back in after the phase slips by $90^\circ$. Right: the kinetic energy against the number of gap crossings: linear for the tracking machine, saturating near a few tens of MeV for the fixed one.`,
+      caption: String.raw`A proton in a 1.5 T field crosses a gap voltage $V$ twice per turn, beginning at the peak of the drive. **Choose the gap voltage** and switch between a **fixed** drive frequency and an ideally **tracking** one. Left: the orbit spirals out (radius in cm); with fixed frequency it turns round and spirals back in after the phase slips by $90^\circ$. Right: the kinetic energy against the number of gap crossings: linear for the tracking machine, while the fixed one peaks (at about 10 MeV for 200 kV) and then falls back.`,
       deps: ['rel-4.13', 'mech-1.18'],
       refs: ['Taylor–Wheeler ch. 8'],
       tags: ['cyclotron', 'accelerator', 'magnetic field'],
@@ -106,7 +106,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
         let st = {};
         v.render(() => {
           const Vk = VS.value, eV = Vk / 1000, kc = Math.sqrt(mc2 / eV);
-          const N = Math.max(30, Math.min(2500, Math.ceil(4 * kc)));
+          const N = Math.max(30, Math.min(2500, Math.ceil(2.4 * kc)));
           const fx = sim(Vk, false, N), tk = sim(Vk, true, N), cur = mode.value === 'fixed' ? fx : tk;
           const Tmax = Math.max(...cur.Ts, ...tk.Ts.slice(0, Math.ceil(N * 0.0 + 1))) * 1.05;
           const Cy = Math.max(2, Math.max(...fx.Ts, tk.Ts[N]) * 1.08);
@@ -190,9 +190,9 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
           const { p, E1, rt, ok, s, Eth } = st; if (!p) return '';
           const e = (x) => eng(x / 1e6);
           if (p === 'g') return String.raw`A lone photon: $s=(k)^2=0$ in every frame, so it cannot become a pair (needs $\sqrt s\ge2m_ec^2=${e(2 * m)}$). It needs a nucleus or a second photon.`;
-          if (p === 'gN') return String.raw`Photon on a proton at rest: ${ok ? 'allowed' : 'forbidden'}, the energy available $\sqrt s-M=${e(rt)}$ against $2m_ec^2=${e(2 * m)}$. Threshold photon energy $2m_ec^2(1+m_e/M)=${e(Eth)}$ (essentially $1.022$ MeV).`;
-          return String.raw`$E_1=${e(E1)}$, $E_2=${e(st.E2)}$: $\sqrt s=${e(rt)}$ — pair creation is ${ok ? 'allowed' : 'forbidden'} (threshold $2m_ec^2=${e(2 * m)}$).` + '\n' +
-            (ok ? String.raw`In the CM frame each lepton has speed $${v.fix(s.beta, 5)}\,c$; the CM moves at $${v.fix(s.bcm, 6)}\,c$ in this frame.` : String.raw`At this angle the threshold would be reached for $E_1\ge${e(Eth)}$.`);
+          if (p === 'gN') return `Photon on a proton at rest: ${ok ? 'allowed' : 'forbidden'}. Energy available √s − M = ${e(rt)} against 2mc² = ${e(2 * m)}; the threshold photon energy 2mc²(1 + m/M) is ${e(Eth)} (essentially 1.022 MeV).`;
+          return `E₁ = ${e(E1)}, E₂ = ${e(st.E2)}: √s = ${e(rt)}. Pair creation is ${ok ? 'allowed' : 'forbidden'} (threshold 2mc² = ${e(2 * m)}).` + '\n' +
+            (ok ? `In the CM frame each lepton has speed ${v.fix(s.beta, 5)} c; the CM moves at ${v.fix(s.bcm, 7)} c in this frame.` : `At this angle and E₂ the threshold would be reached for E₁ ≥ ${e(Eth)}.`);
         });
       },
     },
@@ -205,7 +205,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
       introduces: ['rel-4.4'],
       statement: String.raw`In three pages Einstein considers a body at rest that emits two plane light waves of equal energy $L/2$ in opposite directions, and describes the same event from a frame in which the body moves at speed $v$. Using the transformation of the energy of light between the frames (the Doppler factor $\gamma(1\mp\beta\cos\varphi)$ of rel-2.9) and conservation of energy, he finds that the body's kinetic energy in the moving frame has decreased by $L\big(1/\sqrt{1-\beta^2}-1\big)\approx\tfrac12(L/c^2)v^2$, as if its mass had decreased by $L/c^2$. His conclusion: *the mass of a body is a measure of its energy content*; if the energy changes by $L$, the mass changes by $L/c^2$ (he adds that radioactive bodies, such as radium salts, may offer a test).`,
       idea: String.raw`Before 1905 mass and energy were separate conserved quantities, and electromagnetic energy was known to carry momentum and to exert pressure (em-11.5). Einstein had just derived the Lorentz transformation and the Doppler formula from the postulates (rel-1.14); here he applies them to a radiating body. The argument needs only the way energy of light transforms and the fact that the body's kinetic energy is $\tfrac12 mv^2$ at low speed. This is the first derivation of the mass–energy relation (rel-4.4); later derivations (rel-4.3) use four-momentum. The paper does not write $E=mc^2$ in this form: it states $\Delta m=L/V^2$ with $V$ the speed of light.`,
-      caption: String.raw`Left: the radiating body in its rest frame, two equal pulses at angle $\varphi$ to the $x$-axis. Middle: the same event in the frame where the body moves at $\beta$: the pulses have unequal Doppler-shifted energies (arrow lengths) and aberrated directions. **Set $\beta$, $\varphi$ and the emitted energy $L$** (relative to the body's rest energy $Mc^2$). The ledger on the right is in units of $L$: the pulses carry $\gamma L$ away. If the body's rest mass is **assumed unchanged** (toggle) the books do not balance; with a mass drop $L/c^2$ they do. The bottom panel shows how small $L/Mc^2$ is for chemical, fission and fusion reactions. (Einstein's own figure is only a verbal thought experiment; this is a modern reconstruction.)`,
+      caption: String.raw`Left: the radiating body in its rest frame, two equal pulses at angle $\varphi$ to the $x$-axis. Middle: the same event in the frame where the body moves at $\beta$: the pulses have unequal Doppler-shifted energies (arrow lengths) and aberrated directions. **Set $\beta$, $\varphi$ and the emitted energy $L$** (relative to the body's rest energy $Mc^2$). The ledger on the right is in units of $L$: the pulses carry $\gamma L$ away. If the body's rest mass is **assumed unchanged** (toggle) the books do not balance; with a mass drop $L/c^2$ they do. The bottom panel shows how small $L/Mc^2$ is for chemical, fission and fusion reactions. (The paper has no figure; this is a modern reconstruction of its thought experiment.)`,
       deps: ['rel-2.1', 'rel-2.9', 'em-11.5', 'rel-1.14'],
       refs: [],
       tags: ['mass–energy', 'Einstein', 'thought experiment'],
@@ -234,9 +234,9 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
           const dir = (cs, sn) => { const px = g * (cs + b), py = sn; const n = Math.hypot(px, py); return [px / n, py / n]; };
           const d1 = dir(c, s), d2 = dir(-c, -s);
           Bm.circle(0, 0, 0.35, { fill: 'accent', fillAlpha: 0.4, color: 'accent' }); Bm.arrow(-1.9, -1.7, -1.9 + 0.8 * b + 0.15, -1.7, { color: 'accent', width: 2 }); Bm.text(`$v=${v.fix(b, 2)}c$`, -1.9, -1.45, { color: 'accent', align: 'left' });
-          Bm.arrow(0.35 * d1[0], 0.35 * d1[1], 0.35 * d1[0] + 1.7 * E1 * d1[0], 0.35 * d1[1] + 1.7 * E1 * d1[1], { color: 'gold', width: 3 });
-          Bm.arrow(0.35 * d2[0], 0.35 * d2[1], 0.35 * d2[0] + 1.7 * E2 * d2[0], 0.35 * d2[1] + 1.7 * E2 * d2[1], { color: 'gold', width: 3 });
-          Bm.text(`${v.fix(E1, 2)} L`, 1.2 * d1[0], 1.2 * d1[1], { color: 'gold', dy: -12 }); Bm.text(`${v.fix(E2, 2)} L`, 1.2 * d2[0], 1.2 * d2[1], { color: 'gold', dy: 12 });
+          Bm.arrow(0.35 * d1[0], 0.35 * d1[1], 0.35 * d1[0] + 1.3 * E1 * d1[0], 0.35 * d1[1] + 1.3 * E1 * d1[1], { color: 'gold', width: 3 });
+          Bm.arrow(0.35 * d2[0], 0.35 * d2[1], 0.35 * d2[0] + 1.3 * E2 * d2[0], 0.35 * d2[1] + 1.3 * E2 * d2[1], { color: 'gold', width: 3 });
+          Bm.text(`${v.fix(E1, 2)} L`, 0.9 * d1[0], 0.9 * d1[1], { color: 'gold', dy: -12 }); Bm.text(`${v.fix(E2, 2)} L`, 1.2 * d2[0], 1.2 * d2[1], { color: 'gold', dy: 12 });
           // ledger in units of L: pulses carry gamma L; body loses gamma * dM c^2 where dM = L/c^2 (or 0)
           const carried = E1 + E2, lost = un.value ? 0 : g;
           Cl.rect(0.4, 0, 1.2, carried, { fill: 'gold', fillAlpha: 0.55, color: 'gold' }); Cl.rect(1.8, 0, 2.6, lost, { fill: 'blue', fillAlpha: 0.55, color: 'blue' });
@@ -298,10 +298,9 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
         v.readout(() => {
           const { th, d, lm, E0, T, rel } = st; if (lm === undefined) return '';
           return String.raw`$\theta=${v.fix(th * 180 / Math.PI, 0)}^\circ$: modified line at $${v.fix(lm, 3)}$ pm ($\lambda_0=${v.fix(lam0, 3)}$ pm, ${v.fix(E0, 2)} keV), shift $\Delta\lambda=${v.fix(d, 3)}$ pm $=${v.fix(d * 10, 4)}$ Å, i.e. ${v.fix(100 * rel, 2)}% of $\lambda_0$; the electron gets ${v.fix(T * 1000, 0)} eV.` + '\n' +
-            String.raw`The paper's coefficient $2h/mc=0.0484$ Å against today's $2\lambda_C=${v.fix(2 * lamC / 100, 5)}$ Å (CODATA 2018, agreement to the quoted digits).`;
+            String.raw`The paper's coefficient $2h/mc=0.0484$ Å against today's $2\lambda_C=${v.fix(2 * lamC / 100, 5)}$ Å (CODATA 2018): they agree to 0.3%.`;
         });
       },
     },
   ],
 };
-const U = 931.49410242;

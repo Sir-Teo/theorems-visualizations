@@ -28,7 +28,7 @@ export default {
       deps: ['mat-1.2'],
       refs: ['Callister §6.3', 'Callister §6.7'],
       tags: ['tensile test', 'stress–strain', 'necking'],
-      scope: String.raw`Valid for a ductile metal pulled slowly at constant temperature, with a round bar and a power-law (Hollomon-type) true curve, $\varepsilon=\sigma/E+0.002\,(\sigma/\sigma_{0.2})^{1/n}$. The preset parameter sets are rounded orders of magnitude, not measured data. The neck is a one-dimensional equal-force model (no triaxial stress in the neck, no void growth, fracture imposed at a chosen neck strain); slices that unload after necking are taken to follow the same curve back.`,
+      scope: String.raw`Valid for a ductile metal pulled slowly at constant temperature, with a round bar and a power-law (Hollomon-type) true curve, $\varepsilon=\sigma/E+0.002\,(\sigma/\sigma_{0.2})^{1/n}$. The preset parameter sets are rounded orders of magnitude, not measured data. The neck is a one-dimensional equal-force model (no triaxial stress in the neck, no void growth, fracture imposed at a chosen neck strain); after the force maximum the other slices unload elastically, and the neck is one slice (1/41 of the gauge) wide, sharper than a real neck, which is about a diameter long.`,
       viz(v) {
         let preset = TENSILE_PRESETS[0];
         const pick = v.select('material', TENSILE_PRESETS.map((p) => ({ value: p.id, label: p.label })), 'steel', {
@@ -59,7 +59,7 @@ export default {
           B.path(conv.slice(0, k + 1), { color: 'orange', width: 2, dash: true });
           B.path(loc.slice(0, k + 1), { color: 'green', width: 2.4 });
           const pk = bar.steps[kPk];
-          B.dot(pk.e, pk.s, { r: 5, color: 'red', fill: 'red', label: 'tensile strength', labelPos: 'ne' });
+          B.dot(pk.e, pk.s, { r: 5, color: 'red', fill: 'red', label: 'tensile strength', labelPos: 'n' });
           B.dot(st.e, st.s, { r: 6, color: 'accent', fill: 'accent' });
           B.dot(Math.exp(st.ew) - 1, st.sw, { r: 6, color: 'green', fill: 'green' });
           B.dot(st.e, st.s * (1 + st.e), { r: 5, color: 'orange', fill: 'orange', hollow: true });
@@ -84,7 +84,7 @@ export default {
           if (!cur) return '';
           const { st, pk, bar, neckW } = cur;
           const post = st.e > pk.e + 1e-4;
-          return `Engineering: $s=${sig(st.s)}$ MPa at $e=${v.fix(st.e, 3)}$.  Formulas: $s(1+e)=${sig(st.s * (1 + st.e))}$ MPa, $\\ln(1+e)=${v.fix(Math.log(1 + st.e), 3)}$.  Neck: $\\sigma=${sig(st.sw)}$ MPa, $\\varepsilon=${v.fix(st.ew, 3)}$.\nTensile strength ${sig(pk.s)} MPa at $e_u=${v.fix(pk.e, 3)}$ (true strain ${v.fix(Math.log(1 + pk.e), 3)}$; the Considère strain of this material is ${v.fix(bar.eu, 3)}$). ${post ? `The bar has necked: the narrowest section is ${v.fix(neckW * 100, 0)} % of the widest in diameter, and the formulas understate the true stress there by ${v.fix((1 - (st.s * (1 + st.e)) / st.sw) * 100, 0)} %.` : 'The bar is still uniform: the formulas give the true stress exactly.'}`;
+          return `Engineering: $s=${sig(st.s)}$ MPa at $e=${v.fix(st.e, 3)}$.  Formulas: $s(1+e)=${sig(st.s * (1 + st.e))}$ MPa, $\\ln(1+e)=${v.fix(Math.log(1 + st.e), 3)}$.  Neck: $\\sigma=${sig(st.sw)}$ MPa, $\\varepsilon=${v.fix(st.ew, 3)}$.\nTensile strength $${sig(pk.s)}$ MPa at $e_u=${v.fix(pk.e, 3)}$ (true strain $${v.fix(Math.log(1 + pk.e), 3)}$; the Considère strain of this material is $${v.fix(bar.eu, 3)}$). ${post ? `The bar has necked: the narrowest section is ${v.fix(neckW * 100, 0)} % of the widest in diameter, and the formulas understate the true stress there by ${v.fix((1 - (st.s * (1 + st.e)) / st.sw) * 100, 0)} %.` : 'The bar is still uniform: the formulas give the true stress exactly.'}`;
         });
       },
     },
@@ -106,23 +106,20 @@ export default {
         const MAT = { metal: { nu: 0.3, E: 200, lab: 'metal' }, rubber: { nu: 0.49, E: 0.01, lab: 'rubber' }, cork: { nu: 0.02, E: 0.03, lab: 'cork' }, foam: { nu: -0.7, E: 0.02, lab: 'auxetic foam' } };
         const mat = v.select('block', [{ value: 'metal', label: 'metal' }, { value: 'rubber', label: 'rubber' }, { value: 'cork', label: 'cork' }, { value: 'foam', label: 'auxetic foam' }, { value: 'free', label: 'free $\\nu$' }], 'metal', { onChange: (id) => { if (MAT[id]) nuS.set(MAT[id].nu); } });
         const nuS = v.slider('Poisson ratio $\\nu$', -0.95, 0.495, 0.3, { step: 0.005, decimals: 3 });
-        const epsS = v.slider('axial strain $\\varepsilon$', -0.1, 0.25, 0.15, { step: 0.005 });
+        const epsS = v.slider('axial strain $\\varepsilon$', -0.1, 0.25, 0.08, { step: 0.005 });
         const th = v.slider('honeycomb rib angle $\\theta_0$ (°)', -60, 60, -30, { step: 1 });
         const hl = v.slider('rib ratio $h/l$', 0.8, 2.5, 2, { step: 0.05 });
         const A = v.stage({ x: [-1.9, 2.9], y: [-1.6, 1.6], equal: true, axes: false, height: 330, weight: 1, title: 'a block, stretched' });
         const B = v.stage({ x: [-3.2, 5.4], y: [-3.6, 3.6], equal: true, axes: false, height: 330, weight: 1.1, title: 'a honeycomb of rigid ribs and hinges' });
         let info = null;
-        // honeycomb geometry for rib angle t (radians), ribs length 1, vertical ribs h
+        // honeycomb of rigid ribs: inclined ribs of length 1 at angle t to the horizontal, vertical ribs of length h
         const cellXY = (t, h) => ({ X: 2 * Math.cos(t), Y: 2 * (h + Math.sin(t)) });
         function drawHoney(S, t, h, col, alpha, w) {
-          // unit cell of the standard re-entrant/hexagonal honeycomb: vertical ribs of length h joined by inclined ribs of length 1.
-          const { X, Y } = cellXY(t, h), c = Math.cos(t), s = Math.sin(t);
-          for (let i = -4; i <= 4; i++) for (let j = -3; j <= 3; j++) {
-            const ox = i * X + (j % 2 ? X / 2 : 0), oy = j * Y / 2 + 0;
-            // zig-zag chain along x: points  (ox, oy) -> (ox + c, oy + s) ... vertical ribs between chains
-            const a = [ox, oy], b = [ox + c, oy - s], d = [ox + 2 * c, oy];
-            S.path([a, b, d], { color: col, alpha, width: w });
-            if (j % 2 === 0) S.line(ox + c, oy - s, ox + c, oy - s - h, { color: col, alpha, width: w });
+          const c = Math.cos(t), sn = Math.sin(t), rowH = h + sn;
+          for (let j = -3; j <= 3; j++) for (let m = -3; m <= 3; m++) {
+            const cx = 2 * c * m + (j & 1 ? c : 0), cy = j * rowH;
+            const P = [[cx - c, cy + h / 2], [cx, cy + h / 2 + sn], [cx + c, cy + h / 2], [cx + c, cy - h / 2], [cx, cy - h / 2 - sn], [cx - c, cy - h / 2]];
+            S.path(P, { close: true, color: col, alpha, width: w });
           }
         }
         v.render(() => {
@@ -145,16 +142,16 @@ export default {
           const tn = Math.sign(t0 || 1) * Math.acos(arg);
           drawHoney(B, t0, h, 'muted', 0.35, 1.2);
           drawHoney(B, tn, h, 'accent', 0.95, 2.2);
-          const X0 = cellXY(t0, h), X1 = cellXY(tn, h);
+          const X0 = cellXY(t0, h), X1 = cellXY(tn, h), X2 = cellXY(Math.sign(t0 || 1) * Math.acos(clamp(1.0001 * c0, -1, 1)), h);
           const exH = X1.X / X0.X - 1, eyH = X1.Y / X0.Y - 1;
-          const nuH = Math.abs(exH) > 1e-6 ? -eyH / exH : NaN;
+          const nuH = Math.abs(X2.X / X0.X - 1) > 1e-9 ? -(X2.Y / X0.Y - 1) / (X2.X / X0.X - 1) : NaN;
           const nuTh = Math.cos(t0) ** 2 / ((h + Math.sin(t0)) * Math.sin(t0 || 1e-9));
           info = { nu, e, dV, nuH, nuTh, exH, eyH, valid: Math.abs(arg) < 1 };
         });
         v.readout(() => {
           if (!info) return '';
           const { nu, e, dV, nuH, nuTh, valid } = info;
-          return `Block: axial $\\varepsilon=${v.fix(e, 3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu * e, 4)}=-\\nu\\varepsilon$ with $\\nu=${v.fix(nu, 3)}$; exact volume change $${v.fix(dV * 100, 2)}\\,\\%$ (small-strain $(1-2\\nu)\\varepsilon=${v.fix((1 - 2 * nu) * e * 100, 2)}\\,\\%$). With $E=${MAT[mat.value] ? MAT[mat.value].E : 'free'}$ GPa, $\\sigma=E\\varepsilon$.\nHoneycomb: width strain $${v.fix(info.exH, 3)}$, height strain $${v.fix(info.eyH, 3)}$, measured $\\nu=${Number.isFinite(nuH) ? v.fix(nuH, 2) : '–'}$; small-strain formula $\\cos^2\\theta/[(h/l+\\sin\\theta)\\sin\\theta]=${v.fix(nuTh, 2)}$${valid ? '' : '. At this strain the ribs are fully straightened: the mechanism locks.'}`;
+          return `Block: axial $\\varepsilon=${v.fix(e, 3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu * e, 4)}=-\\nu\\varepsilon$ with $\\nu=${v.fix(nu, 3)}$; exact volume change $${v.fix(dV * 100, 2)}\\,\\%$ (small-strain $(1-2\\nu)\\varepsilon=${v.fix((1 - 2 * nu) * e * 100, 2)}\\,\\%$). With $E=${MAT[mat.value] ? MAT[mat.value].E : 'free'}$ GPa, $\\sigma=E\\varepsilon$.\nHoneycomb: width strain $${v.fix(info.exH, 3)}$, height strain $${v.fix(info.eyH, 3)}$, measured at small strain $\\nu=${Number.isFinite(nuH) ? v.fix(nuH, 2) : '–'}$ (the shape change shown is large, so $-\\varepsilon_y/\\varepsilon_x$ here is $${v.fix(-info.eyH / (info.exH || 1e-9), 2)}$); the small-strain formula $\\cos^2\\theta/[(h/l+\\sin\\theta)\\sin\\theta]=${v.fix(nuTh, 2)}$${valid ? '' : '. At this strain the ribs are fully straightened: the mechanism locks.'}`;
         });
       },
     },
@@ -211,7 +208,7 @@ export default {
           const X = crossing(pts, eo);
           let pl = null;
           for (const p of pts) if (p[1] > 5 && p[0] > p[1] / (E * 1000) * 1.01) { pl = p; break; }
-          if (pl) { S.dot(pl[0], pl[1], { r: 4, color: 'muted', fill: 'muted', label: 'proportional limit', labelPos: 'nw' }); }
+          if (pl) { S.dot(pl[0], pl[1], { r: 4, color: 'muted', fill: 'muted', label: 'proportional limit', labelPos: 'se' }); }
           if (X) {
             S.hline(X[1], { color: 'green', alpha: 0.5 }); S.vline(X[0], { color: 'green', alpha: 0.35, dash: true });
             S.dot(X[0], X[1], { r: 7, color: 'green', fill: 'green' });
@@ -236,7 +233,7 @@ export default {
       name: 'Considère criterion for necking',
       statement: String.raw`Pull a ductile bar at constant volume and let $\sigma(\varepsilon)$ be its true stress–strain curve (uniform deformation). The force is $F=\sigma A_0e^{-\varepsilon}$, and it has a maximum exactly where $$\frac{d\sigma}{d\varepsilon}=\sigma.$$ A uniform bar is stable while $d\sigma/d\varepsilon>\sigma$ (hardening beats thinning): a slightly thinner section strains a little more and is then strengthened enough to catch up. Once $d\sigma/d\varepsilon<\sigma$ the thinner section is also the one that carries less force, it keeps straining and deformation localizes into a neck. For a power law $\sigma=K\varepsilon^n$ this happens at the true strain $\varepsilon_u=n$.`,
       idea: String.raw`Differentiate $F=\sigma(\varepsilon)A_0e^{-\varepsilon}$: $dF/d\varepsilon=A_0e^{-\varepsilon}\,(d\sigma/d\varepsilon-\sigma)$, so the force maximum, the end of stable uniform flow and the crossing of the curve of $d\sigma/d\varepsilon$ with $\sigma$ are one and the same. The stability argument: give two sections the same force but a 1 % difference in area; on the rising branch of $F(\varepsilon)$ they settle with a small strain difference, but beyond the maximum no equal-force state exists with both sections hardening: the weak one runs away. The right-hand picture computes that strain difference directly, using the same force balance as the tensile bar of 4.1.`,
-      caption: String.raw`Drag the gold handle along the true curve (left): at each strain the slope $d\sigma/d\varepsilon$ is drawn as a segment and compared with $\sigma$. Right: the strain difference $\Delta\varepsilon$ between a slice 1 % thinner and a normal one, carrying the same force, against the strain of the normal slice: small and calm until the Considère strain, then it diverges. Choose the hardening law: with Hollomon's $\varepsilon_u=n$, with saturating (Voce) hardening the necking strain depends on the saturation stress, and a non-hardening metal necks at once.`,
+      caption: String.raw`Drag the gold handle along the true curve (left): at each strain the slope $d\sigma/d\varepsilon$ is drawn as a segment and compared with $\sigma$. Right: the strain difference $\Delta\varepsilon$ between a slice 1 % thinner and a normal one, carrying the same force, against the strain of the normal slice: small and calm until the Considère strain, then no balanced state exists and the thin spot necks (slightly before $\\varepsilon_u$, by an amount that shrinks with the flaw). Choose the hardening law: with Hollomon's $\varepsilon_u=n$, with saturating (Voce) hardening the necking strain depends on the saturation stress, and a non-hardening metal necks at once.`,
       deps: ['mat-4.1'],
       refs: ['Callister §6.7'],
       tags: ['necking', 'plastic instability', 'tensile test'],
@@ -292,12 +289,13 @@ export default {
           let seg = [];
           for (const p of pts) { if (p) seg.push(p); else { if (seg.length) dif.push(seg); seg = []; } }
           if (seg.length) dif.push(seg);
-          B.setView([0, 1], [0, 0.5]);
+          const dmax = Math.max(0.02, ...dif.flat().map((p) => p[1]));
+          B.setView([0, 1], [0, dmax * 1.25]);
           for (const sgm of dif) B.path(sgm, { color: 'green', width: 2.6 });
           const lastOk = dif.length ? dif[dif.length - 1][dif[dif.length - 1].length - 1][0] : 0;
           if (eu !== null) { B.vline(eu, { color: 'red', dash: true, alpha: 0.8 }); }
           const below = pts.filter(Boolean).length;
-          if (lastOk < 0.985) { B.rect(lastOk, 0, 1, 0.5, { fill: 'red', fillAlpha: 0.1, stroke: false }); B.text('no equal-force state: neck', (lastOk + 1) / 2, 0.25, { color: 'red', size: 12, plate: true }); }
+          if (lastOk < 0.985) { B.rect(lastOk, 0, 1, dmax * 1.25, { fill: 'red', fillAlpha: 0.1, stroke: false }); B.text('the thin spot necks', lastOk + 0.03, dmax * 0.6, { color: 'red', size: 12, align: 'left', plate: true }); }
           const ppt = dif.flat().find((p) => p[0] >= e - 0.003);
           if (ppt) B.dot(ppt[0], ppt[1], { r: 5, color: 'gold', fill: 'gold' });
           info = { e, sg, dd, eu, lastOk };

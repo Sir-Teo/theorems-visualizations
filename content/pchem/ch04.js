@@ -102,6 +102,7 @@ export default {
         };
         const low = (T, p) => { const m = [mu(0, T, p), mu(1, T, p), mu(2, T, p)]; return m.indexOf(Math.min(...m)); };
         const s = v.stage({ x: [240, 420], y: [-14, 36], axes: 'box', gutter: true, xlabel: '$T$ / K', ylabel: '$\\mu$ / (kJ/mol)', height: 380, title: 'chemical potential of each phase' });
+        const sz = v.stage({ x: [255, 292], y: [-500, 500], axes: 'box', gutter: true, xlabel: '$T$ / K', ylabel: '$\\mu_{\\text{ice}}-\\mu_{\\text{liq}}$ / (J/mol)', height: 380, weight: 0.8, minWidth: 260, title: 'zoom: melting' });
         const cols = ['blue', 'teal', 'orange'], names = ['solid', 'liquid', 'gas'];
         let trans = [];
         v.render(() => {
@@ -118,9 +119,14 @@ export default {
           for (let k = 0; k < 3; k++) s.fn((T) => mu(k, T, p) / 1000, { color: cols[k], width: 1.6, alpha: 0.9 });
           s.fn((T) => mu(low(T, p), T, p) / 1000, { color: 'ink', width: 4.5, alpha: 0.3 });
           for (const [T, , j] of trans) s.dot(T, mu(j, T, p) / 1000, { r: 5, color: 'red', label: `${v.fix(T, 1)} K`, labelPos: 'ne' });
+          sz.hline(0, { color: 'teal', width: 2 });
+          sz.fn((T) => mu(0, T, p) - mu(1, T, p), { color: 'blue', width: 2.2 });
+          sz.text('ice is stable below', 256, 440, { size: 11, color: 'muted' });
+          const Tmz = Tm0 + (Vs - Vl) * (p - 1) * 1e5 / (Ss - Sl);
+          sz.dot(Tmz, 0, { r: 5, color: 'red', label: `${v.fix(Tmz, 2)} K`, labelPos: 'ne' });
           s.text('ice', 246, mu(0, 246, p) / 1000 - 1.6, { color: 'blue' });
           s.text('liquid', 246, mu(1, 246, p) / 1000 + 1.6, { color: 'teal' });
-          s.text('vapour', 404, mu(2, 404, p) / 1000 + 2.2, { color: 'orange' });
+          s.text('vapour', 392, mu(2, 392, p) / 1000 + 2.8, { color: 'orange' });
         });
         v.legend([['blue', 'solid'], ['teal', 'liquid'], ['orange', 'gas'], ['ink', 'lowest μ = stable', { dash: false }]]);
         v.readout(() => {
@@ -151,7 +157,7 @@ where $\Delta_{\text{trs}}H$ and $\Delta_{\text{trs}}V$ are the molar enthalpy a
           cm: { name: 'CO₂: solid → liquid', T: 216.58, H: 9020, dV: 9.0e-6, win: [4, 250], ref: null },
         };
         const sel = v.select('transition', Object.entries(TR).map(([k, t]) => ({ value: k, label: t.name })), 'wm');
-        const s = v.stage({ x: [-1, 1], y: [-1, 1], axes: true, grid: true, height: 340, weight: 1.4, minWidth: 300, xlabel: 'dT / K', ylabel: 'dp / bar', title: 'window around the transition point' });
+        const s = v.stage({ x: [-1, 1], y: [-1, 1], axes: 'box', gutter: true, height: 340, weight: 1.4, minWidth: 300, xlabel: 'dT / K', ylabel: 'dp / bar', title: 'window around the transition point' });
         const sb = v.stage({ x: [0.4, 3.6], y: [-1, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, ylabel: 'μ terms / (J/mol)', xticks: [[1, '−ΔS dT'], [2, 'ΔV dp'], [3, 'Δμ']], title: 'chemical-potential bookkeeping' });
         const h = s.handle(0.5, 0.4, { color: 'ink', r: 8 });
         let cur = '';
@@ -215,7 +221,7 @@ if $\Delta_{\text{vap}}H$ is constant. A plot of $\ln p$ against $1/T$ is then a
           const x1 = hA.x, y1 = hA.y, x2 = hB.x, y2 = hB.y;
           sec = (y2 - y1) / (x2 - x1) * 1000;         // d ln p / d(1/T) in K
           s.line(x1 - 0.3, y1 - 0.3 * (y2 - y1) / (x2 - x1), x2 + 0.3, y2 + 0.3 * (y2 - y1) / (x2 - x1), { color: 'ink', width: 1.5, dash: true });
-          s.dot(1000 / 373.124, Math.log(ATM), { r: 4, color: 'muted', label: '1 atm', labelPos: 'sw' });
+          s.dot(1000 / 373.124, Math.log(ATM), { r: 4, color: 'muted', label: '1 atm', labelPos: 'ne' });
           const p = pAlt(alt.value * 1);
           s.hline(Math.log(p), { color: 'muted', dash: true });
           s2.fn((h) => { const pp = pAlt(h * 1000); return invA(pp); }, { color: 'accent', width: 2.2 });
@@ -310,7 +316,7 @@ if $\Delta_{\text{vap}}H$ is constant. A plot of $\ln p$ against $1/T$ is then a
           h.set(h.x, Math.min(199, blade));
           s.raster((x, y) => (y > SLOPE_MPA * -x ? v.ramp(0.3, 'teal') : v.ramp(0.3, 'blue')), { res: 3, key: `ice-${v.color('panel')}` });
           s.line(-14, SLOPE_MPA * 14, 0, 0, { color: 'ink', width: 2.2 });
-          s.text('liquid water', -2.5, 150, { color: 'teal', size: 14 }); s.text('ice', -11, 20, { color: 'blue', size: 14 });
+          s.text('liquid water', -7, 150, { color: 'teal', size: 14 }); s.text('ice', -11, 20, { color: 'blue', size: 14 });
           s.vline(0, { color: 'muted', dash: true });
           const need = SLOPE_MPA * -h.x;
           s.segment([h.x, Math.min(blade, 199)], [h.x, need], { color: 'red', width: 2, dash: true });

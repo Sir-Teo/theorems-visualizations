@@ -23,7 +23,7 @@ export default {
       num: '4.7', kind: 'Phenomenon', name: 'Supercritical fluids and continuity of states',
       statement: String.raw`Above the critical temperature $T_c$ no pressure condenses a gas, and above the critical pressure $p_c$ heating a liquid never boils it. The liquid and gas phases are therefore not separated by an unbroken line: a path from liquid to vapour that goes around the critical point changes the density continuously, with no phase boundary crossed, whereas a path that crosses the vaporization curve shows a finite jump in density. The region $T>T_c$, $p>p_c$ is the supercritical fluid, with gas-like diffusivity and liquid-like density.`,
       idea: String.raw`In the van der Waals picture (pchem-1.13) the isotherm below $T_c$ has three volume roots between the spinodals, and Maxwell's construction (pchem-1.14) picks the saturation pressure at which liquid and vapour coexist; as $T\to T_c$ the liquid and vapour roots approach each other and merge at the critical point (pchem-1.15), so above it there is always just one root and $\rho(T,p)$ is smooth. Only a path that crosses the coexistence curve switches between the two roots.`,
-      caption: String.raw`The waypoint (drag the diamond) bends the route from the liquid state (left) to the gas state (right) in the reduced $(T/T_c,\;p/p_c)$ plane of a van der Waals fluid; the bottom panel shows the density along the route. Send the route above the critical point and the density slides smoothly; send it straight across the coexistence curve and it jumps. Move the slider to ride along the route; the readout converts to CO$_2$ units.`,
+      caption: String.raw`The waypoint (drag the purple dot) bends the route from the liquid state (left) to the gas state (right) in the reduced $(T/T_c,\;p/p_c)$ plane of a van der Waals fluid; the bottom panel shows the density along the route. Send the route above the critical point and the density slides smoothly; send it straight across the coexistence curve and it jumps. Move the slider to ride along the route; the readout converts to CO$_2$ units.`,
       deps: ['pchem-1.15', 'pchem-4.1'],
       refs: ['Atkins 4A'],
       tags: ['critical point', 'supercritical', 'continuity of states'],
@@ -35,6 +35,8 @@ export default {
         const s = v.stage({ x: [0.75, 1.3], y: [0.2, 2.2], axes: 'box', gutter: true, xlabel: '$T/T_c$', ylabel: '$p/p_c$', height: 340, weight: 1.2, minWidth: 300, title: 'route in the p–T plane' });
         const sd = v.stage({ x: [0, 1], y: [0, 3], axes: 'box', gutter: true, xlabel: 'progress along the route', ylabel: '$\\rho/\\rho_c$', height: 340, weight: 1, minWidth: 280, title: 'density along the route' });
         const W = s.handle(1.02, 1.7, { color: 'purple', r: 8, constrain: { x: [0.78, 1.28], y: [0.25, 2.15] } });
+        v.button('route around the critical point', () => W.set(1.02, 1.7));
+        v.button('route straight across', () => W.set(1.02, 0.7));
         const u = v.slider('position on route', 0, 1, 0.5, { step: 0.001 });
         const N = 500;
         let prof = [], pts = [], jumps = 0;
@@ -67,7 +69,7 @@ export default {
         v.legend([['purple', 'route / density along it'], ['ink', 'vaporization curve (Maxwell)']]);
         v.readout(() => {
           const k = Math.round(u.value * N), [T, p] = pts[k], d = prof[k][1], g = VDW.CO2, vc = 3 * g.b;
-          return `at this point: $T/T_c=${v.fix(T, 3)}$, $p/p_c=${v.fix(p, 3)}$, $\\rho/\\rho_c=${v.fix(d, 3)}$ — for CO$_2$: ${v.fix(T * g.Tc, 1)} K, ${v.fix(p * g.pc, 1)} bar, vdW density ≈ ${v.fix(44.01 / (vc / d), 0)} g/L\nroute length ${jumps ? 'crosses the vaporization curve (density jump of about ' + v.fix(Math.max(...prof.slice(1).map((q, i) => Math.abs(q[1] - prof[i][1]))), 2) + ' ρ_c)' : 'stays on one side: liquid and gas are connected continuously'}`;
+          return `at this point: $T/T_c=${v.fix(T, 3)}$, $p/p_c=${v.fix(p, 3)}$, $\\rho/\\rho_c=${v.fix(d, 3)}$ — for CO$_2$: ${v.fix(T * g.Tc, 1)} K, ${v.fix(p * g.pc, 1)} bar, vdW density ≈ ${v.fix(44.01 / (vc / d), 0)} g/L\nthe route ${jumps ? 'crosses the vaporization curve (density jump of about ' + v.fix(Math.max(...prof.slice(1).map((q, i) => Math.abs(q[1] - prof[i][1]))), 2) + ' ρ_c)' : 'stays on one side: liquid and gas are connected continuously'}`;
         });
       },
     },
@@ -146,7 +148,7 @@ $$\Delta p=\frac{2\gamma}{r}$$
           if (Va <= lo) { Va = lo; st.done = true; } else if (Va >= hi) { Va = hi; st.done = true; }
           st.a = Math.cbrt(Va * 3 / (4 * Math.PI)); st.b = Math.cbrt((st.Vt - Va) * 3 / (4 * Math.PI));
         }, { dt: 0.02 });
-        const s = v.stage({ x: [-9, 9], y: [-4, 4], equal: true, axes: false, height: 320, weight: 1.5, minWidth: 320, title: 'two bubbles on one tube' });
+        const s = v.stage({ x: [-7.5, 7.5], y: [-3.5, 3.5], equal: true, axes: false, height: 320, weight: 1.5, minWidth: 320, title: 'two bubbles on one tube' });
         const sb = v.stage({ x: [0.4, 2.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 240, ylabel: '$\\Delta p$ / Pa', xticks: [[1, 'left'], [2, 'right']], title: 'excess pressure' });
         let st = { a: 1, b: 1 };
         v.animate((t) => {
@@ -160,7 +162,7 @@ $$\Delta p=\frac{2\gamma}{r}$$
           s.circle(xb, 0, b, { color: 'orange', width: 2.5, fill: 'orange', fillAlpha: 0.12 });
           const dir = pa - pb;
           if (Math.abs(dir) > 0.02 && !st.done) s.arrow(dir > 0 ? -0.9 : 0.9, 0.6, dir > 0 ? 0.9 : -0.9, 0.6, { color: 'green', width: 3 });
-          s.text(`${(a).toFixed(2)} cm`, xa, 0, { align: 'center', color: 'blue' }); s.text(`${b.toFixed(2)} cm`, xb, 0, { align: 'center', color: 'orange' });
+          s.text(`${a.toFixed(2)} cm`, xa, a + 0.4, { align: 'center', color: 'blue' }); s.text(`${b.toFixed(2)} cm`, xb, b + 0.4, { align: 'center', color: 'orange' });
           if (st.done) s.corner('stopped: small bubble is a cap on the tube end', 'bl', { plate: true });
           sb.setView([0.4, 2.6], [0, Math.max(pa, pb) * 1.2]);
           sb.bars([pa, pb], { x0: 1, dx: 1, color: (val, i) => ['blue', 'orange'][i] });
@@ -168,7 +170,7 @@ $$\Delta p=\frac{2\gamma}{r}$$
         v.onCleanup(() => {});
         v.readout(() => {
           const k = +mode.value, gm = g.value * 1e-3, pa = k * gm / (st.a * 1e-2), pb = k * gm / (st.b * 1e-2);
-          return `$\\Delta p_{\\text{left}}=${k}\\gamma/r=${v.fix(pa, 2)}$ Pa, $\\Delta p_{\\text{right}}=${v.fix(pb, 2)}$ Pa → gas flows ${pa > pb ? 'left → right (small into large)' : pa < pb ? 'right → left (small into large)' : 'nowhere (equal radii, unstable balance)'}\nthe pressure difference is only ${v.fix(Math.abs(pa - pb), 2)} Pa, about ${v.sci(Math.abs(pa - pb) / 101325, 2)} of an atmosphere`;
+          return `$\\Delta p_{\\text{left}}=${k}\\gamma/r=${v.fix(pa, 2)}$ Pa, $\\Delta p_{\\text{right}}=${v.fix(pb, 2)}$ Pa → gas flows ${pa > pb ? 'left → right (small into large)' : pa < pb ? 'right → left (small into large)' : 'nowhere (equal radii, unstable balance)'}\nthe pressure difference is only ${v.fix(Math.abs(pa - pb), 2)} Pa, about $${v.sci(Math.abs(pa - pb) / 101325, 2)}$ of an atmosphere`;
         });
       },
     },
@@ -274,7 +276,7 @@ above (below) the pool level, where $\theta$ is the contact angle of the liquid 
           function hOf0(x) { return hOf(x); }
           s2.dot(r, Math.max(0.1, Math.abs(h * 10)), { r: 7, color: 'accent' });
           s2.vline(lc, { color: 'red', dash: true });
-          s2.text(`capillary length ${lc.toFixed(1)} mm`, lc * 1.1, 400, { color: 'red', size: 11 });
+          s2.text(`capillary length ${lc.toFixed(1)} mm`, lc * 0.9, 400, { color: 'red', size: 11, align: 'right' });
         });
         v.readout(() => {
           const [g, rho] = D[liq.value], r = rr.value, h = hOf(r), lc = Math.sqrt(g / (rho * g0)) * 1e3;

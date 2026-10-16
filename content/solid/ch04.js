@@ -6,10 +6,9 @@
 // (Crossref 10.1098/rsta.1932.0009). Rankine (1857) and Mohr (c. 1900) are from memory and flagged verify; Coulomb's essay is dated 1776
 // (published) per Wikipedia "Mohr–Coulomb theory".
 
-import { num as num0, drawElem, primeAxes, prin2, tr2, rad, deg, vm2, tresca2, vm3, tresca3, hexagon, ellipse, rayVM, rayTresca, curveOf, MATS, heatColor, textW } from './ch04.shared.js';
+import { num as num0, prin2, rad, deg, vm2, tresca2, tresca3, hexagon, ellipse, rayVM, rayTresca, curveOf, MATS } from './ch04.shared.js';
 
 const num = (x, d = 1) => num0(x, d).replace('-', '−');
-void textW;
 
 export default {
   collection: 'solid',
@@ -37,10 +36,10 @@ Safe states satisfy $\sigma_1-\sigma_3<Y$. In the plane of the two non-zero prin
         const Y = 250;
         const s3 = v.slider('$\\sigma_3$ (MPa)', -250, 250, 0, { step: 5 });
         const A = v.stage({ x: [-400, 400], y: [-400, 400], equal: true, axes: true, height: 380, title: 'safe region in the (σ₁, σ₂) plane', xlabel: 'σ₁', ylabel: 'σ₂' });
-        const B = v.stage({ x: [-420, 420], y: [-240, 240], equal: true, axes: true, height: 380, title: 'Mohr’s three circles', xlabel: 'σ', ylabel: 'τ' });
+        const B = v.stage({ x: [-330, 330], y: [-190, 190], equal: true, axes: true, height: 380, title: 'Mohr’s three circles', xlabel: 'σ', ylabel: 'τ' });
         const H = A.handle(150, 60, { color: 'gold', r: 8 });
         const sorted = () => [H.x, H.y, s3.value].sort((a, b) => b - a);
-        v.legend([['accent', 'safe region', { area: true }], ['ink', 'Tresca locus'], ['red', 'yield']]);
+        v.legend([['accent', 'safe region', { area: true }], ['ink', 'Tresca locus']]);
         v.render(() => {
           const [a, b, c] = sorted(), tm = (a - c) / 2, yl = tresca3(a, b, c) >= Y - 1e-9;
           const key = 't' + s3.value;
@@ -56,8 +55,8 @@ Safe states satisfy $\sigma_1-\sigma_3<Y$. In the plane of the two non-zero prin
             B.circle((p + q) / 2, 0, Math.abs(p - q) / 2, { color: big ? (yl ? 'red' : 'accent') : 'muted', width: big ? 2.6 : 1.4, fill: big ? (yl ? 'red' : 'accent') : undefined, fillAlpha: 0.07 });
           });
           B.hline(Y / 2, { color: 'orange', width: 1.4, dash: [6, 4] }); B.hline(-Y / 2, { color: 'orange', width: 1.4, dash: [6, 4] });
-          B.tex(String.raw`\tau=Y/2`, 330, Y / 2 + 14, { size: 12, color: 'orange' });
-          [a, b, c].forEach((q, i) => { B.dot(q, 0, { r: 5, color: yl ? 'red' : 'ink' }); B.tex(`\\sigma_${i + 1}`, q, -22, { size: 12, color: 'ink' }); });
+          B.tex(String.raw`\tau=Y/2`, 270, Y / 2 + 14, { size: 12, color: 'orange' });
+          [a, b, c].forEach((q, i) => { B.dot(q, 0, { r: 5, color: yl ? 'red' : 'ink' }); B.tex(`\\sigma_${i + 1}`, q, i === 1 ? 18 : -18, { size: 12, color: 'ink' }); });
           B.dot((a + c) / 2, tm, { r: 5, color: 'gold' });
         });
         v.readout(() => {
@@ -85,7 +84,7 @@ Equivalently the elastic energy of distortion (shape change at constant volume) 
       viz(v) {
         const Y = 250, E = 210000, nu = 0.3;
         const A = v.stage({ x: [-400, 400], y: [-400, 400], equal: true, axes: true, height: 380, title: 'Tresca hexagon inside the von Mises ellipse', xlabel: 'σ₁', ylabel: 'σ₂' });
-        const B = v.stage({ x: [0, 360], y: [0, 1.4], axes: 'box', gutter: true, height: 380, xlabel: 'loading direction α (°)', ylabel: 'yield stress along the ray / Y', xticks: [0, 45, 90, 135, 180, 225, 270, 315, 360], title: 'distance to each locus along a ray' });
+        const B = v.stage({ x: [0, 360], y: [0, 1.5], axes: 'box', gutter: true, height: 380, xlabel: 'loading direction α (°)', ylabel: 'yield stress along the ray / Y', xticks: [0, 45, 90, 135, 180, 225, 270, 315, 360], title: 'distance to each locus along a ray' });
         const H = A.handle(120, -170, { color: 'gold', r: 8 });
         v.legend([['accent', 'von Mises'], ['orange', 'Tresca']]);
         v.render(() => {
@@ -128,7 +127,7 @@ The crack then opens perpendicular to the direction of $\sigma_1$. For a shaft u
         const sut = 207;
         const beta = v.slider('mix angle $\\beta$ (°)', 0, 90, 60, { step: 1 });
         const S = v.slider('combined stress $S$ (MPa)', 0, 260, 150, { step: 1 });
-        const A = v.stage({ x: [-4.2, 4.2], y: [-2.3, 2.3], equal: true, axes: false, height: 340, title: 'the bar and its crack plane' });
+        const A = v.stage({ x: [-3.9, 3.9], y: [-2.1, 2.1], equal: true, axes: false, height: 340, title: 'the bar and its crack plane' });
         const B = v.stage({ x: [-120, 280], y: [-170, 170], equal: true, axes: true, height: 340, title: 'Mohr’s circle', xlabel: 'σ', ylabel: 'τ' });
         const C = v.stage({ x: [0, 90], y: [0, 260], axes: 'box', gutter: true, height: 340, xlabel: 'mix angle β (°)', ylabel: 'breaking level S_f (MPa)', xticks: [0, 15, 30, 45, 60, 75, 90], title: 'breaking level for every mix' });
         const Sf = (b) => sut / (0.5 * Math.cos(rad(b)) + Math.hypot(0.5 * Math.cos(rad(b)), Math.sin(rad(b))));
@@ -149,7 +148,7 @@ The crack then opens perpendicular to the direction of $\sigma_1$. For a shaft u
           if (g > 0.04) { A.arrow(3.15, -0.6, 3.15, -0.6 + g, { color: 'orange', width: 3 }); A.arrow(-3.15, 0.6, -3.15, 0.6 - g, { color: 'orange', width: 3 }); }
           A.text('tension', 0, 1.55, { size: 12, color: 'accent', align: 'center' }); A.text('torque', 0, -1.55, { size: 12, color: 'orange', align: 'center' });
           A.arrow(-0.4, -0.35, -0.4 + 0.9 * u[0], -0.35 + 0.9 * u[1], { color: 'green', width: 2 });
-          A.tex(String.raw`\sigma_1`, -0.4 + 1.1 * u[0], -0.35 + 1.1 * u[1], { size: 13, color: 'green' });
+          A.tex(String.raw`\sigma_1`, -0.4 + 1.15 * u[0] - 0.25, -0.35 + 1.15 * u[1] + 0.12, { size: 13, color: 'green' });
           // Mohr
           B.vline(sut, { color: 'red', width: 2, dash: [6, 4] }); B.tex(String.raw`\sigma_{ut}`, sut + 14, 150, { size: 12, color: 'red' });
           if (p.R > 0.5) B.circle(p.c, 0, p.R, { color: fail ? 'red' : 'accent', width: 2.4, fill: fail ? 'red' : 'accent', fillAlpha: 0.08 });
@@ -203,29 +202,26 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
           for (let i = 0; i < nt.value; i++) {
             const s3 = s3s[i], s1 = fail(s3), m = (s1 + s3) / 2, R = (s1 - s3) / 2;
             A.circle(m, 0, R, { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.05 });
-            A.circle(m, 0, 0.001, { color: 'accent' });
             const tx = m - R * Math.sin(ph), ty = R * Math.cos(ph); // tangent point
             A.dot(tx, ty, { r: 4.5, color: 'green' });
             A.dot(s3, 0, { r: 3.5, color: 'ink' }); A.dot(s1, 0, { r: 3.5, color: 'ink' });
           }
           // specimen
-          const s3 = s3s[nt.value - 1], s1 = fail(s3), a = Math.PI / 2 - (Math.PI / 4 + ph / 2); // plane angle from horizontal 45+φ/2
-          void a;
+          const s3 = s3s[nt.value - 1], s1 = fail(s3);
           B.rect(-1, -2, 1, 2, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.08 });
           const pa = Math.PI / 4 + ph / 2, dx = Math.cos(pa), dy = Math.sin(pa), t = Math.min(1 / dx, 2 / dy);
           B.line(-dx * t, -dy * t, dx * t, dy * t, { color: 'red', width: 3 });
           B.arrow(0, 2.9, 0, 2.05, { color: 'accent', width: 3 }); B.arrow(0, -2.9, 0, -2.05, { color: 'accent', width: 3 });
           B.arrow(-2.2, 0, -1.05, 0, { color: 'orange', width: 2 }); B.arrow(2.2, 0, 1.05, 0, { color: 'orange', width: 2 });
           B.tex(String.raw`\sigma_1=${num(s1, 0)}`, 1.2, 2.9, { size: 12, color: 'accent', align: 'left' }); B.tex(String.raw`\sigma_3=${s3}`, 2.2, -0.45, { size: 12, color: 'orange', align: 'right' });
-          B.measure(0.2, 0, 0.2 + 0.9 * Math.cos(0), 0, ''); // keep stage non-empty
-          B.tex(String.raw`45^\circ+\varphi/2=${num(45 + phi.value / 2, 1)}^\circ`, 0.6, 1.35, { size: 12, color: 'red' });
+          B.tex(String.raw`45^\circ+\varphi/2=${num(45 + phi.value / 2, 1)}^\circ`, -2.9, 1.3, { size: 12, color: 'red', align: 'left' });
         });
         v.readout(() => {
           const ph = rad(phi.value), c = cc.value, rows = [];
           for (let i = 0; i < nt.value; i++) {
             const s3 = s3s[i], s1 = fail(s3), m = (s1 + s3) / 2, R = (s1 - s3) / 2;
             const dist = (c + m * Math.tan(ph)) * Math.cos(ph); // distance from centre to the line
-            rows.push(`$\\sigma_3=${s3}\\to\\sigma_1=${num(s1, 0)}$ (gap ${num(dist - R, 6)})`);
+            rows.push(`$\\sigma_3=${s3}\\to\\sigma_1=${num(s1, 0)}$ (gap ${Math.abs(dist - R) < 1e-9 ? '0' : num(dist - R, 6)})`);
           }
           return `${rows.join(' · ')} kPa. The “gap” is distance(centre, line) − radius, computed independently: 0 means tangent. · $N_\\varphi=\\frac{1+\\sin\\varphi}{1-\\sin\\varphi}=${num((1 + Math.sin(ph)) / (1 - Math.sin(ph)), 3)}$; failure plane at $${num(45 + phi.value / 2, 1)}^\\circ$ to the major principal plane. · Unconfined strength ($\\sigma_3=0$): $${num(fail(0), 1)}$ kPa.`;
         });
@@ -236,7 +232,7 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
       num: '4.5',
       kind: 'Model',
       name: 'Elastic–perfectly plastic material',
-      statement: String.raw`The **elastic–perfectly plastic** model replaces a ductile metal's stress–strain curve by two straight pieces: for $|\sigma|<\sigma_y$ the response is linear elastic, $\sigma=E\varepsilon_e$; at $|\sigma|=\sigma_y$ the strain increases at constant stress, $\varepsilon=\varepsilon_e+\varepsilon_p$, with the plastic part $\varepsilon_p$ non-negative in sign of the loading. Unloading and reloading follow lines of slope $E$ (so the elastic strain is always $\sigma/E$), and a plastic strain left behind is **permanent**. Stress never exceeds $\sigma_y$ in magnitude. After loading to the strain $\varepsilon_{\max}>\varepsilon_y=\sigma_y/E$ and unloading to zero stress, the bar keeps the permanent set $\varepsilon_p=\varepsilon_{\max}-\varepsilon_y$; on reversal it yields in compression after an elastic stress range of $2\sigma_y$.`,
+      statement: String.raw`The **elastic–perfectly plastic** model replaces a ductile metal's stress–strain curve by two straight pieces: for $|\sigma|<\sigma_y$ the response is linear elastic, $\sigma=E\varepsilon_e$; at $|\sigma|=\sigma_y$ the strain increases at constant stress, $\varepsilon=\varepsilon_e+\varepsilon_p$, with the plastic part $\varepsilon_p$ growing only while $|\sigma|=\sigma_y$. Unloading and reloading follow lines of slope $E$ (so the elastic strain is always $\sigma/E$), and a plastic strain left behind is **permanent**. Stress never exceeds $\sigma_y$ in magnitude. After loading to the strain $\varepsilon_{\max}>\varepsilon_y=\sigma_y/E$ and unloading to zero stress, the bar keeps the permanent set $\varepsilon_p=\varepsilon_{\max}-\varepsilon_y$; on reversal it yields in compression after an elastic stress range of $2\sigma_y$.`,
       idea: String.raw`The model keeps exactly what a design calculation needs from the curve of 1.3: the stiffness $E$ and the yield strength $\sigma_y$, and drops hardening. The key idea is that the *loading* path and the *unloading* path differ: the stress is a function of the history, not of the present strain, since elastic strain recovers along a line parallel to the initial one while plastic strain does not. Hooke's law (1.4) acts on the elastic part only. The model underlies limit analysis (4.10) and the plastic hinge (6.12).`,
       caption: String.raw`Set the peak strain (in units of the yield strain $\varepsilon_y$) and the stress the bar is finally brought to. The blue path is loading, the green one unloading with slope $E$, parallel to the first line. Where the green line meets the strain axis the bar is unloaded, and its permanent set can be read off. Switch on the faint real S355 curve of chapter 1 to see what the idealisation drops (Lüders plateau, hardening, necking). The bar below is drawn with an exaggerated strain scale.`,
       deps: ['solid-1.3'],
@@ -250,7 +246,7 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
         const send = v.slider('final stress $\\sigma/\\sigma_y$', -1, 1, 0, { step: 0.01 });
         const real = v.toggle('show real S355 curve', false);
         const A = v.stage({ x: [-0.3, 6.6], y: [-1.45, 1.45], axes: true, height: 360, title: 'stress against strain', xlabel: 'ε/εy', ylabel: 'σ/σy' });
-        const B = v.stage({ x: [-0.5, 8.5], y: [-1.6, 1.6], equal: true, axes: false, height: 360, title: 'the bar (strain scale exaggerated)' });
+        const B = v.stage({ x: [-0.5, 10], y: [-2.2, 1.8], equal: true, axes: false, height: 360, title: 'the bar (strain scale exaggerated)' });
         v.legend([['accent', 'loading'], ['green', 'unloading (slope E)'], ['muted', 'real curve', { dash: true }]]);
         const path = () => {
           const pk = peak.value, sp = Math.min(pk, 1), se = Math.min(send.value, sp), ee = pk - (sp - se);
@@ -264,18 +260,15 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
           A.path([[pk, sp], [ee, se]], { color: 'green', width: 3 });
           A.dot(ee, se, { r: 7, color: 'gold' });
           if (se === 0 && pk > 1) { A.measure(0, -0.18, pk - 1, -0.18, 'permanent set'); }
-          A.tex(String.raw`E`, 0.3, 0.42, { size: 13, color: 'accent' });
+          A.tex(String.raw`E`, 0.78, 0.22, { size: 13, color: 'accent' });
           // bar
-          const k = 0.35, L0 = 6, L = L0 * (1 + k * ee / 6 * 6 / 6), Lp = L0 * (1 + k * (ee - se) / 6 * 1);
-          void L;
-          const len = (e) => L0 + 2.2 * (e / 6) * 1.0;
-          B.rect(0, -0.4, L0, 0.4, { color: 'faint', width: 1.4, dash: [5, 4] });
-          const col = se >= 0 ? heatColor(v, se) : heatColor(v, -se);
-          void col;
-          B.rect(0, -0.4, len(ee), 0.4, { color: 'ink', width: 2, fill: se >= 0 ? (Math.abs(se) >= 0.999 ? 'red' : 'accent') : 'orange', fillAlpha: 0.12 + 0.3 * Math.abs(se) });
-          B.rect(0, -1.1, len(ee - se), -0.8, { color: 'orange', width: 1, fill: 'orange', fillAlpha: 0.25 }); void Lp;
-          B.text('permanent set (what stays)', 0, -1.45, { size: 11, color: 'orange', align: 'left' });
-          B.text('original length', 0, 0.8, { size: 11, color: 'muted', align: 'left' });
+          const L0 = 5, k = 0.15, X = (e) => L0 * (1 + k * e);
+          B.rect(0, -0.4, L0, 0.4, { color: 'muted', width: 1.4, dash: [5, 4] });
+          B.rect(0, -0.4, X(ee), 0.4, { color: 'ink', width: 2, fill: se >= 0 ? 'accent' : 'orange', fillAlpha: 0.1 + 0.35 * Math.abs(se) });
+          B.measure(L0, 0.95, X(ee), 0.95, 'ΔL');
+          if (ee - se > 1e-6) B.measure(L0, -1.0, X(ee - se), -1.0, 'permanent part');
+          B.text('original length', 0, 0.75, { size: 11, color: 'muted', align: 'left' });
+          B.text(`stress ${num(se * m.sy, 0)} MPa`, 0, -1.7, { size: 12, color: 'ink', align: 'left' });
         });
         v.readout(() => {
           const { pk, sp, se, ee } = path(), eps = ee - se;
@@ -285,4 +278,3 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
     },
   ],
 };
-void tr2; void drawElem; void primeAxes; void vm3;

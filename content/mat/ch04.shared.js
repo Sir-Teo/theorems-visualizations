@@ -34,32 +34,44 @@ export function considereSigma(m) {
  * smallest at the middle. Equal force in every slice: sigma_i * exp(-eps_i) * A_i = F (volume conserved, so the area is A_i exp(-eps_i)).
  * Slice strains below the peak force are found on the hardening branch; the weakest slice is the driver and may pass the peak.
  * Returns {steps: [{e, s, ew, sw, eps: Float64Array}], su (true stress at max force), eu (true strain there), N, A}.
- * Deformation theory: slices that unload after necking follow the same curve back (a small error: real unloading is elastic).
+ * After the force maximum the other slices unload elastically (plastic strain frozen), so the neck is one slice wide: sharper than a real one.
  */
-export function pullBar(m, { N = 41, imp = 0.01, epsF = 1.0, K = 360 } = {}) {
-  const A = new Float64Array(N), mid = (N - 1) / 2;
+export function pullBar(m, { N = 41, imp = 0.01, epsF = 1.0, K = 400 } = {}) {
+  const A = new Float64Array(N), mid = (N - 1) >> 1, E = m.E * 1000;
   for (let i = 0; i < N; i++) { const x = (i - mid) / (N * 0.14); A[i] = 1 + imp * (1 - Math.exp(-x * x)); }
   const su = considereSigma(m), eu = epsOfSigma(m, su);
-  const h = (sig) => sig * Math.exp(-epsOfSigma(m, sig));
+  const h = (sg) => sg * Math.exp(-epsOfSigma(m, sg));
   const Fmax = h(su);
   const steps = [];
   const Abar = A.reduce((a, b) => a + b, 0) / N;
+  let epsP = null, sigPk = null, kpk = -1;
   for (let k = 0; k <= K; k++) {
     const ew = epsF * Math.pow(k / K, 2.2) + 1e-6;
     const sw = sigmaOfEps(m, ew);
-    const F = h(sw) * A[mid | 0];
-    const eps = new Float64Array(N);
+    if (kpk < 0 && sw >= su) kpk = k;
+    const F = Math.min(h(sw), Fmax) * A[mid] * (kpk >= 0 && k > kpk ? 1 : 1);
+    const Fw = h(sw) * A[mid];
+    const eps = new Float64Array(N), sg = new Float64Array(N);
     let sumL = 0;
     for (let i = 0; i < N; i++) {
-      const target = F / A[i];
-      if (i === (mid | 0)) eps[i] = ew;
-      else if (target >= Fmax) eps[i] = eu;
-      else { let lo = 0, hi = su; for (let it = 0; it < 50; it++) { const md = (lo + hi) / 2; if (h(md) < target) lo = md; else hi = md; } eps[i] = epsOfSigma(m, (lo + hi) / 2); }
+      const target = Fw / A[i];
+      if (i === mid) { eps[i] = ew; sg[i] = sw; }
+      else if (kpk < 0 || k <= kpk) {
+        if (target >= Fmax) { sg[i] = su; eps[i] = eu; }
+        else { let lo = 0, hi = su; for (let it = 0; it < 50; it++) { const md = (lo + hi) / 2; if (h(md) < target) lo = md; else hi = md; } sg[i] = (lo + hi) / 2; eps[i] = epsOfSigma(m, sg[i]); }
+      } else {
+        // after the force maximum the other slices unload elastically from their frozen plastic strain
+        let lo = 0, hi = sigPk[i];
+        const ep = epsP[i];
+        for (let it = 0; it < 50; it++) { const md = (lo + hi) / 2; if (md * Math.exp(-(ep + md / E)) < target) lo = md; else hi = md; }
+        sg[i] = (lo + hi) / 2; eps[i] = ep + sg[i] / E;
+      }
       sumL += Math.exp(eps[i]);
     }
-    steps.push({ e: sumL / N - 1, s: F / Abar, ew, sw, eps });
+    if (k === kpk) { epsP = Array.from(eps, (e, i) => e - sg[i] / E); sigPk = Array.from(sg); }
+    steps.push({ e: sumL / N - 1, s: Fw / Abar, ew, sw, eps });
   }
-  return { steps, su, eu, N, A, Fmax: Fmax };
+  return { steps, su, eu, N, A, Fmax };
 }
 /** Index of the step with the largest engineering stress. */
 export const peakStep = (bar) => { let b = 0; bar.steps.forEach((p, i) => { if (p.s > bar.steps[b].s) b = i; }); return b; };
