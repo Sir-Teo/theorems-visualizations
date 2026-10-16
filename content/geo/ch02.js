@@ -84,13 +84,12 @@ It is positive in the northern hemisphere (deflection to the right of the motion
           Xs.tex('\\Omega\\sin\\varphi', tipV[0] + (Math.abs(lat) < 10 ? 0 : 0.0), tipV[1], { color: 'green', size: 13, dx: 18, dy: lat >= 0 ? 8 : -10 });
           Xs.tex('\\Omega\\cos\\varphi', tipH[0], tipH[1], { color: 'purple', size: 13, align: 'right', dx: -8, dy: -4 });
           Xs.dot(P[0], P[1], { r: 6, color: 'gold' });
-          Xs.tex('\\text{up}', P[0] + 0.32 * nv[0], P[1] + 0.32 * nv[1], { color: 'muted', size: 11, dx: -16, dy: 14 });
           // f(φ)
           Fs.hline(0, { color: 'muted' });
           Fs.fn((x) => fcor(x) * 1e4, { domain: [-90, 90], color: 'accent', width: 2.6, n: 181 });
           Fs.vline(0, { color: 'faint', dash: [3, 4] });
-          Fs.text('f > 0: deflect right', 38, 1.3, { color: 'green', size: 11, align: 'center' });
-          Fs.text('f < 0: deflect left', -38, -1.3, { color: 'red', size: 11, align: 'center' });
+          Fs.text('f > 0: deflect right', 38, 1.6, { color: 'green', size: 11, align: 'center' });
+          Fs.text('f < 0: deflect left', -38, -1.6, { color: 'red', size: 11, align: 'center' });
         });
         v.readout(() => {
           const f = fcor(lat), Tsd = TAU / OMEGA;
@@ -153,7 +152,8 @@ At $45^\circ$ this is about 17 hours. With weak friction the circles slowly shri
         v.animate((t) => {
           const R = integrate(), Ri = U.value / Math.abs(R.f) / 1000;
           const ext = Math.max(1.4 * Ri, 0.5);
-          s1.setView([-ext * 1.1, ext * 1.1], [-ext * 1.1, ext * 1.1]);
+          const cy0 = -U.value / R.f / 1000;
+          s1.setView([-ext * 1.1, ext * 1.1], [cy0 - ext * 1.1, cy0 + ext * 1.1]);
           const pts = R.X.map((x, i) => [x / 1000, R.Y[i] / 1000]);
           s1.path(pts, { color: 'accent', width: 1.8, alpha: 0.85 });
           const i = clamp(Math.floor(((t % 12) / 12) * NS), 0, NS);
@@ -202,20 +202,20 @@ the ratio of the advective acceleration $U^2/L$ to the Coriolis acceleration $fU
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rossby_number' },
       viz(v) {
         const lat = v.slider('latitude $\\varphi$ (°)', -80, 80, 45, { step: 1 });
-        const sm = v.stage({ x: [-2, 7.3], y: [-3, 3], height: 380, axes: 'box', gutter: true, xticks: [[-2, '1 cm'], [0, '1 m'], [1, '10 m'], [3, '1 km'], [5, '100 km'], [6, '1000 km'], [7, '10 000 km']], yticks: [[-3, '1 mm/s'], [-2, '1 cm/s'], [-1, '10 cm/s'], [0, '1 m/s'], [1, '10 m/s'], [2, '100 m/s']], xlabel: 'length scale $L$', ylabel: 'speed $U$', title: '$\\log_{10}\\mathrm{Ro}$ over the scales of motion', weight: 1.5, minWidth: 300 });
+        const sm = v.stage({ x: [-2, 7], y: [-3, 3], height: 380, axes: 'box', gutter: true, gutter: { l: 74, r: 10, t: 12, b: 38 }, xticks: [[-2, '1 cm'], [0, '1 m'], [2, '100 m'], [4, '10 km'], [6, '1000 km']], yticks: [[-3, '1 mm/s'], [-2, '1 cm/s'], [-1, '10 cm/s'], [0, '1 m/s'], [1, '10 m/s'], [2, '100 m/s']], xlabel: 'length scale $L$', ylabel: 'speed $U$', title: '$\\log_{10}\\mathrm{Ro}$ over the scales of motion', weight: 1.5, minWidth: 300 });
         const sd = v.stage({ x: [-0.1, 1.1], y: [-0.1, 1.1], equal: true, axes: false, height: 380, title: 'a parcel crossing a box of size $L$', weight: 0.9, minWidth: 250 });
         const EX = [
-          ['bathtub vortex', 0.3, 0.1, 'ne'], ['tornado', 100, 70, 'n'], ['sea breeze', 2e4, 5, 'se'], ['hurricane', 1e5, 40, 'ne'],
-          ['Gulf Stream', 5e4, 1.5, 'sw'], ['ocean eddy', 3e4, 0.15, 'se'], ['weather system', 1e6, 12, 'n'], ['ocean gyre', 5e6, 0.02, 'ne'],
+          ['bathtub vortex', 0.3, 0.1, 'ne'], ['tornado', 100, 70, 'n'], ['sea breeze', 2e4, 5, 'nw'], ['hurricane', 1e5, 40, 'ne'],
+          ['Gulf Stream', 5e4, 1.5, 'sw'], ['ocean eddy', 3e4, 0.15, 'se'], ['weather system', 1e6, 12, 'nw'], ['ocean gyre', 5e6, 0.02, 'nw'],
         ];
-        const hd = sm.handle(5.2, 0.7, { color: 'gold', label: 'you', constrain: { x: [-2, 7.3], y: [-3, 3] } });
+        const hd = sm.handle(2.4, 0.3, { color: 'gold', label: 'you', constrain: { x: [-2, 7], y: [-3, 3] } });
         v.render(() => {
           const f = Math.max(Math.abs(fcor(lat.value)), 1e-7), lf = log10(f);
           sm.heat((x, y) => clamp(y - x - lf, -6, 6), { range: [-6, 6], cmap: 'theme-diverging', neg: 'blue', pos: 'orange', key: lat.value, res: 3 });
-          for (const k of [-2, 0, 2]) { const c = x0 => x0 + lf + k; sm.line(-2, c(-2), 7.3, c(7.3), { color: k === 0 ? 'green' : 'muted', width: k === 0 ? 3 : 1, dash: k === 0 ? false : [4, 4], alpha: k === 0 ? 1 : 0.7 }); }
-          sm.text('Ro = 1', 6.2, 6.2 + lf, { color: 'green', size: 12, align: 'center', dy: -9 });
+          for (const k of [-2, 0, 2]) { const c = x0 => x0 + lf + k; sm.line(-2, c(-2), 7, c(7), { color: k === 0 ? 'green' : 'muted', width: k === 0 ? 3 : 1, dash: k === 0 ? false : [4, 4], alpha: k === 0 ? 1 : 0.7 }); }
+          sm.text('Ro = 1', 2.4, 2.4 + lf, { color: 'green', size: 12, align: 'right', dx: -10, dy: -2, plate: true });
           sm.text('rotation dominates', 5.4, -2.4, { color: 'blue', size: 12, align: 'center', plate: true });
-          sm.text('rotation negligible', -0.1, 2.4, { color: 'orange', size: 12, align: 'center', plate: true });
+          sm.text('rotation negligible', 0.0, 2.55, { color: 'orange', size: 12, align: 'center', plate: true });
           for (const [nm, L, U0, pos] of EX) { sm.dot(log10(L), log10(U0), { r: 5, color: 'ink' }); sm.text(nm, log10(L), log10(U0), { dx: pos.includes('e') ? 8 : pos.includes('w') ? -8 : 0, dy: pos.includes('n') ? -9 : pos.includes('s') ? 12 : 0, align: pos.includes('e') ? 'left' : pos.includes('w') ? 'right' : 'center', size: 11, color: 'ink', plate: true }); }
           // box panel
           const Ro = Math.pow(10, hd.y - hd.x - lf), sg = fcor(lat.value) >= 0 ? 1 : -1;
@@ -230,16 +230,17 @@ the ratio of the advective acceleration $U^2/L$ to the Coriolis acceleration $fU
           sd.clip(() => sd.path(pts, { color: 'accent', width: 2.6 }));
           sd.dot(0, 0.5, { r: 5, color: 'muted' });
           const sx = 1 / Ro, tx = Ro * Math.sin(sx), ty = 0.5 - sg * Ro * (1 - Math.cos(sx));
-          if (sx < 4 * TAU && Math.abs(tx) < 1.3) sd.dot(tx, ty, { r: 6, color: 'gold' });
+          const inside = sx < 4 * TAU && tx > -0.05 && tx < 1.05 && ty > -0.05 && ty < 1.05;
+          if (inside) sd.dot(tx, ty, { r: 6, color: 'gold' });
           sd.text('start', 0, 0.5, { dx: 8, dy: -10, size: 11, color: 'muted' });
-          sd.text('crossing time $L/U$', tx, ty, { dx: 10, dy: -12, size: 11, color: 'gold', align: 'left', plate: true });
+          if (inside) sd.text('after one crossing time $L/U$', tx, ty, { dx: tx > 0.55 ? -10 : 10, dy: -14, size: 11, color: 'gold', align: tx > 0.55 ? 'right' : 'left', plate: true });
           sd.text('$L$', 0.5, 0, { dy: 14, size: 13, color: 'muted', align: 'center' });
           sd.corner(Ro > 1 ? 'nearly straight' : 'strongly curved', 'tr', { color: Ro > 1 ? 'orange' : 'blue' });
         });
         v.readout(() => {
           const f = Math.max(Math.abs(fcor(lat.value)), 1e-7);
           const Ro = Math.pow(10, hd.y - hd.x - log10(f)), turn = 1 / Ro;
-          const exs = EX.map(([nm, L, U0]) => `${nm} ${sci(v, U0 / (f * L), 1).includes('e') ? '$' + sci(v, U0 / (f * L), 1) + '$' : v.fix(U0 / (f * L), 2)}`).join(' · ');
+          const exs = EX.map(([nm, L, U0]) => `${nm} ${U0 / (f * L) > 100 || U0 / (f * L) < 0.01 ? '$' + v.sci(U0 / (f * L), 1) + '$' : v.fix(U0 / (f * L), 2)}`).join(' · ');
           return `$f=${v.fix(f * 1e4, 2)}\\times10^{-4}\\,\\mathrm{s^{-1}}$ · your flow: $U=${v.sci(Math.pow(10, hd.y), 2)}$ m/s, $L=${v.sci(Math.pow(10, hd.x), 2)}$ m, $\\mathrm{Ro}=U/fL=$ **$${v.sci(Ro, 2)}$** → turned through $1/\\mathrm{Ro}$ = ${v.fix(turn * 180 / Math.PI, turn > 100 ? 0 : 1)}° while crossing: ${Ro < 0.1 ? 'strongly rotating' : Ro < 1 ? 'rotation matters' : 'rotation weak'}\nexamples at this latitude, Ro: ${exs}`;
         });
       },
@@ -324,7 +325,7 @@ with $f=2\Omega\sin\varphi$ (the metric terms $uv\tan\varphi/a$, $u^2\tan\varphi
         const mult = v.slider('spin rate $\\Omega/\\Omega_{\\rm Earth}$', 0, 15, 1, { step: 0.25 });
         const mag = v.slider('shape magnification', 1, 300, 80, { step: 1 });
         const Xs = v.stage({ x: [-1.55, 1.55], y: [-1.4, 1.4], equal: true, axes: false, height: 350, title: 'meridian cross-section (level surface of $\\Phi$)', weight: 1.1, minWidth: 260 });
-        const Ts = v.stage({ x: [-0.35, 0.95], y: [-1.2, 0.25], equal: true, axes: false, height: 350, title: 'forces at the observer', weight: 0.9, minWidth: 240 });
+        const Ts = v.stage({ x: [-0.8, 0.95], y: [-1.2, 0.25], equal: true, axes: false, height: 350, title: 'forces at the observer', weight: 0.9, minWidth: 240 });
         const Ps = v.stage({ x: [-90, 90], y: [0, 0.12], height: 350, axes: 'box', gutter: true, xticks: [-90, -60, -30, 0, 30, 60, 90], xlabel: 'latitude (°)', ylabel: 'plumb-line tilt (°)', title: 'tilt of the plumb line', weight: 1, minWidth: 240 });
         let lat = 45;
         let tabR = []; for (let i = 0; i <= 45; i++) tabR.push(levelR(i * 2 * RAD, OMEGA) / RE_EQ);
@@ -351,14 +352,13 @@ with $f=2\Omega\sin\varphi$ (the metric terms $uv\tan\varphi/a$, $u^2\tan\varphi
           const dg = tiltOf(rr, phi, om);
           Xs.arrow(P[0], P[1], P[0] + 0.35 * Math.cos(phi), P[1] + 0.35 * Math.sin(phi), { color: 'muted', width: 1.5, head: 7, dash: [3, 3] });
           Xs.dot(P[0], P[1], { r: 6, color: 'gold' });
-          Xs.text('plumb line ≈ radial: ' + v.fix(Math.abs(dg) / RAD, 3) + '° off', P[0], P[1], { dx: 10, dy: -14, size: 11, color: 'muted', plate: true });
           // force triangle in tangent coordinates (x toward the equator, y up)
           const gr = GM / (rr * rr), cn = om * om * rr * Math.cos(phi) ** 2, ch = om * om * rr * Math.sin(phi) * Math.cos(phi) * Math.sign(phi || 1) * 1;
           const k = om > 0 ? 0.45 / (om * om * rr / gr) : 1; // magnification of the centrifugal arrow
           const sx = Math.sign(phi || 1);
           const cX = Math.abs(ch) / gr * k, cY = cn / gr * k;
           Ts.line(0, 0.2, 0, -1.15, { color: 'faint', dash: [4, 4] });
-          Ts.arrow(0, 0, 0, -1, { color: 'blue', width: 2.6 }); Ts.tex('\\text{gravitation}', 0.04, -0.55, { color: 'blue', size: 12, align: 'left', dx: 6 });
+          Ts.arrow(0, 0, 0, -1, { color: 'blue', width: 2.6 }); Ts.tex('\\text{gravitation}', 0, -0.55, { color: 'blue', size: 12, align: 'right', dx: -8 });
           Ts.arrow(0, -1, cX, -1 + cY, { color: 'orange', width: 2.4 }); Ts.tex('\\text{centrifugal}\\ (\\times' + v.fix(k / (1) , 0) + ')', cX, -1 + cY, { color: 'orange', size: 12, align: 'left', dx: 8, dy: -4 });
           Ts.arrow(0, 0, cX, -1 + cY, { color: 'ink', width: 2.8 }); Ts.tex('\\mathbf g', cX * 0.5, (-1 + cY) * 0.5, { color: 'ink', size: 14, dx: 12 });
           Ts.line(-0.3, 0, 0.3, 0, { color: 'ink', width: 2 });
@@ -432,7 +432,7 @@ with $f=2\Omega\sin\varphi$ (the metric terms $uv\tan\varphi/a$, $u^2\tan\varphi
           s1.corner(`${v.fix(turns, turns < 0.1 ? 4 : 2)} turns on the way in`, 'bl', { color: 'muted' });
           s1.text('tub', 0.2, 0.2, { size: 11, color: 'muted' });
           // ratio
-          s2.hline(1, { color: 'green', width: 2.6 }); s2.text('Coriolis wins below this line', 118, 1, { color: 'green', size: 11, align: 'right', dy: -10 });
+          s2.hline(1, { color: 'green', width: 2.6 }); s2.text('Coriolis wins below this line', 2, 1, { color: 'green', size: 11, align: 'left', dy: 14, plate: true });
           s2.fn((t) => Math.max(ratioAt(t), 1e-4), { domain: [0, 120], color: 'accent', width: 2.6, n: 160 });
           hw.set(wait.value, Math.max(ratioAt(wait.value), 1.01e-3));
           // profiles
@@ -464,7 +464,7 @@ the whole velocity field, all three components, is independent of the coordinate
       scope: String.raw`Linear, inviscid, homogeneous fluid with $\mathrm{Ro}\ll1$ and slow time dependence ($\omega\ll f$); viscous (Ekman) and stratification effects limit real columns.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Taylor%E2%80%93Proudman_theorem' },
       viz(v) {
-        const th = v.slider('rotation rate over forcing frequency, $f/\\omega$', 0, 12, 5, { step: 0.05 });
+        const th = v.slider('$f/\\omega$ (rotation / forcing frequency)', 0, 12, 3, { step: 0.05 });
         const sf = v.stage({ x: [-4, 4], y: [0, 5], equal: true, axes: false, height: 340, title: 'streamfunction $\\psi$ and velocity (x–z plane)', weight: 1.3, minWidth: 300 });
         const sp = v.stage({ x: [0, 1.05], y: [0, 5], height: 340, axes: 'box', gutter: true, xlabel: 'amplitude of $\\psi$ above the ridge crest', ylabel: 'height $z/a$', title: 'how far up does it reach?', weight: 0.7, minWidth: 230 });
         const NX = 161, NZ = 101, X0 = -4, DX = 8 / (NX - 1), DZ = 5 / (NZ - 1);
@@ -486,9 +486,9 @@ the whole velocity field, all three components, is independent of the coordinate
         const at = (g, x, z) => { const fx = clamp((x - X0) / DX, 0, NX - 1.001), fz = clamp(z / DZ, 0, NZ - 1.001), i = Math.floor(fx), j = Math.floor(fz), a = fx - i, b = fz - j; return (1 - b) * ((1 - a) * g[j * NX + i] + a * g[j * NX + i + 1]) + b * ((1 - a) * g[(j + 1) * NX + i] + a * g[(j + 1) * NX + i + 1]); };
         v.animate((t) => {
           const T = th.value, g = field(T), ph = Math.cos(t * 0.9 * 1.0);
-          sf.heat((x, z) => at(g, x, z) * ph, { range: [-1, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'orange', key: `${T}|${ph.toFixed(2)}`, res: 3 });
+          sf.heat((x, z) => { const q = at(g, x, z) * ph; return Math.sign(q) * Math.pow(Math.abs(q), 0.7); }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'orange', key: `${T}|${ph.toFixed(2)}`, res: 3 });
           sf.contour((x, z) => at(g, x, z) * ph, [-0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8], { color: 'ink', width: 0.9, alpha: 0.5, res: 70 });
-          sf.field((x, z) => { const e = 0.02; return [(at(g, x, z + e) - at(g, x, z - e)) / (2 * e) * ph, -(at(g, x + e, z) - at(g, x - e, z)) / (2 * e) * ph]; }, { color: 'ink', spacing: 30, alpha: 0.7 });
+          sf.field((x, z) => { const e = 0.02; return [(at(g, x, z + e) - at(g, x, z - e)) / (2 * e) * ph, -(at(g, x + e, z) - at(g, x - e, z)) / (2 * e) * ph]; }, { color: 'ink', spacing: 30, alpha: 0.7, normalize: false, scale: 0.35 });
           // ridge on the floor
           const rid = []; for (let x = -4; x <= 4.001; x += 0.1) rid.push([x, 0.28 * Math.exp(-x * x / 2) * (ph >= 0 ? 1 : 1)]);
           sf.poly([[-4, 0], ...rid, [4, 0]], { fill: 'ink', fillAlpha: 0.55, color: 'ink' });

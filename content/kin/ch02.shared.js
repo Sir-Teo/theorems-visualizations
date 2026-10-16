@@ -89,20 +89,20 @@ export function mep(P, sd) {
 
 /** Classical trajectory by velocity Verlet in (X, Y). Returns {pts: [[X,Y]], outcome: 'reaction'|'reflected'|'trapped', t}. */
 export function trajectory(P, X0, Y0, VX0, VY0, { dt = 0.1, tmax = 260, keep = true } = {}) {
-  let X = X0, Y = Y0, VX = VX0, VY = VY0, g = gradXY(X, Y, P), t = 0; const pts = keep ? [[X, Y]] : null;
+  let X = X0, Y = Y0, VX = VX0, VY = VY0, g = gradXY(X, Y, P), t = 0; const pts = keep ? [[X, Y]] : null, en = keep ? [] : null; const energy = () => 0.5 * M_EFF * (VX * VX + VY * VY) + vXY(X, Y, P); if (keep) en.push(energy());
   let out = 'trapped';
   for (let i = 0; i * dt < tmax; i++) {
     VX -= 0.5 * dt * g[0] / M_EFF; VY -= 0.5 * dt * g[1] / M_EFF;
     X += dt * VX; Y += dt * VY;
     g = gradXY(X, Y, P);
     VX -= 0.5 * dt * g[0] / M_EFF; VY -= 0.5 * dt * g[1] / M_EFF; t += dt;
-    if (keep && i % 2 === 0) pts.push([X, Y]);
+    if (keep && i % 2 === 0) { pts.push([X, Y]); en.push(energy()); }
     const [x, y] = fromXY(X, Y);
     if (x < 0.15 || y < 0.15) { out = 'trapped'; break; }
     if (y > 3.6 && x < 2.6 && VY > 0 && ((y - x) > 1.5)) { out = 'reaction'; break; }
     if (x > 3.6 && y < 2.6 && VX > 0 && ((x - y) > 1.5)) { out = 'reflected'; break; }
   }
-  return { pts, outcome: out, t };
+  return { pts, en, outcome: out, t, dtStore: 2 * dt, X, Y, VX, VY };
 }
 
 /** Morse vibration of the diatomic BC (reduced mass m/2) with vibrational energy Ev above its minimum, started at the outer turning point
@@ -190,10 +190,10 @@ export class DiscGas {
   }
   /** collisions per unit time with E_n >= E0 (E0 in units of kT), from the histogram (bin edges: the threshold is rounded to a bin) */
   count(E0) { const b0 = Math.ceil(E0 / this.EMAX * this.NB - 1e-9); let s = 0; for (let b = b0; b < this.NB; b++) s += this.hist[b]; return s; }
-  /** dilute hard-disc theory (2D) including the Enskog pair-contact factor */
+  /** dilute hard-disc theory (2D: the collision cross-section is a width 2d for discs of diameter d, so Z = (N^2 d / A)(mean relative speed)) including the Enskog pair-contact factor */
   theory(E0) {
     const N = this.N, d = this.d, eta = N * Math.PI * d * d / 4, g = (1 - 7 * eta / 16) / ((1 - eta) ** 2);
     const vrel = Math.sqrt(Math.PI * this.kT / 1); // mean relative speed in 2D for mu = 1/2: sqrt(pi kT / (2 mu))
-    return { Z: 0.5 * N * (N - 1) * d * vrel * g * Math.exp(-E0), Z0: 0.5 * N * (N - 1) * d * vrel, g, eta };
+    return { Z: N * (N - 1) * d * vrel * g * Math.exp(-E0), Z0: N * (N - 1) * d * vrel, g, eta };
   }
 }
