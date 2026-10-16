@@ -656,12 +656,11 @@ $$\limsup_{n\to\infty}\bigl(1-F_n(M)+F_n(-M)\bigr)\le\eps.$$`,
           const am = f === 'spike' ? 1 / n : f === 'half' ? 0.5 : 0;
           if (am > 0) { if (n < 24.5) stems(L, [[n, am]], { scale: 0.4 / 0.5, color: 'red' }); else { L.arrow(19, 0.3, 24.5, 0.3, { color: 'red', width: 2 }); L.text(`mass ${fr(am, 3)} at x = ${n}`, 24, 0.34, { align: 'right', size: 12, color: 'red' }); } }
           for (const mm of [2, 5, 10, 20]) R.path(ns.map((k) => [k, tail(f, k, mm)]), { color: 'muted', width: 1, alpha: 0.6 });
-          for (const mm of [2, 5, 10, 20]) R.text(`M=${mm}`, 1000, tail(f, 1000, mm), { align: 'right', dx: -4, dy: -8, size: 10.5, color: 'muted' });
           R.hline(limsup(f, m), { color: 'red', dash: [6, 4], width: 1.4 });
           R.path(ns.map((k) => [k, tail(f, k, m)]), { color: 'accent', width: 2.4 });
           R.dot(n, tail(f, n, m), { r: 5.5, color: 'accent' });
           st = { f, n, m, t: tail(f, n, m), ls: limsup(f, m), ls20: limsup(f, 20), mass: mass[f] };
-          v.legend([['accent', 'tail at your $M$'], ['red', '$\\limsup_n$ of it', { dash: [6, 4] }], ['muted', 'other $M$']]);
+          v.legend([['accent', 'tail at your $M$'], ['red', '$\\limsup_n$ of it', { dash: [6, 4] }], ['muted', '$M=2,5,10,20$']]);
         });
         v.readout(() => st && `$M=${fr(st.m, 2)}$: tail at $n=${st.n}$ is $${fr(st.t, 4)}$, $\\limsup_n=${fr(st.ls, 4)}$ (at $M=20$: $${fr(st.ls20, 4)}$). ` + (st.ls20 < 1e-3 ? `**Tight**: the limsup tends to $0$ as $M\\to\\infty$, and every vague limit has mass $1$.` : `**Not tight**: the limsup stays at $${fr(st.ls20, 2)}$, and the vague limits have total mass $${fr(st.mass, 2)}$.`));
       },

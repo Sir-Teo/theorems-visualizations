@@ -32,7 +32,7 @@ function dagRun(G, s, sign) {
   const snap = (e) => F.push({ ...e, d: { ...d }, prevEdge: { ...prevEdge }, done: done.slice(), rel });
   snap({ line: [1, 2], note: `Topological order from DFS finishing times: ${order.map((x) => G.lab(x)).join(', ')}. Every estimate is ∞ except $d[${G.lab(s)}] = 0$.` });
   for (const u of order) {
-    if (d[u] === INF) { done.push(u); rel += G.adj(u).length; snap({ u, line: 3, note: `${L(u)} has $d = \\infty$ (it is not reachable from ${G.lab(s)}): relaxing its ${plural(G.adj(u).length, 'edge')} changes nothing ($\\infty + w = \\infty$).` }); continue; }
+    if (d[u] === INF) { done.push(u); rel += G.adj(u).length; snap({ u, line: 3, note: `${L(u)} has $d = ${sign > 0 ? '' : '-'}\\infty$ (it is not reachable from ${G.lab(s)}): relaxing its ${plural(G.adj(u).length, 'edge')} changes nothing ($\\infty + w = \\infty$).` }); continue; }
     snap({ u, line: 3, note: `Take ${L(u)}. Every edge into it comes from a vertex already processed, so $d[${G.lab(u)}] = ${tnum(sign * d[u])}$ is final.` });
     for (const { id, edge, w } of G.adj(u)) {
       const x = K(id), nd = d[u] + sign * w, old = d[x], better = nd < old; rel++;

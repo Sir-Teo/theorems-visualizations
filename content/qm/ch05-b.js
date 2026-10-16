@@ -278,7 +278,7 @@ the time for $\langle Q\rangle$ to change by one standard deviation (**Mandelsta
           let X, P;
           if (rnd.value) { const r = v.rng(seed * 101 + N); X = randHerm(r, N, 0.8); P = randHerm(r, N, 0.8); } else { X = cplx(oscX(N)); P = oscP(N); }
           const Cm = comm(X, P), u = 6 / N;
-          cells(v, SC, Cm, [0, 0, 6, 6], { max: rnd.value ? maxAbs(Cm) : Math.max(1, N - 1), minR: 0.3, text: N <= 8 ? (z) => texC(v, z, rnd.value ? 1 : 0).replace(/-/g, '−') : null, size: Math.max(8, 13 - N * 0.5) });
+          cells(v, SC, Cm, [0, 0, 6, 6], { max: rnd.value ? maxAbs(Cm) : Math.max(1, N - 1), minR: 0.3, text: N <= (rnd.value ? 5 : 8) ? (z) => texC(v, z, rnd.value ? 1 : 0).replace(/-/g, '−') : null, size: Math.max(8, 13 - N * 0.5) });
           // diagonal bars and running trace
           const d = Cm.map((row, k) => row[k][1]); let run = 0; const runs = [];
           const cum = d.reduce((acc, y) => { acc.push((acc.length ? acc[acc.length - 1] : 0) + y); return acc; }, []), lo = Math.min(-1.5, ...d, ...cum) * 1.15, hi = Math.max(2, ...d, ...cum) * 1.15;

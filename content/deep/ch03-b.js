@@ -267,7 +267,7 @@ and similarly for $U$ and $b$; the shared weight's gradient is the **sum of per-
       num: '3.9',
       kind: 'Method',
       name: 'Gradient checkpointing',
-      statement: String.raw`Reverse mode on a chain of $n$ layers normally stores all $n$ intermediate activations. **Checkpointing** stores only a subset $C$ (the *checkpoints*) during the forward pass; during the backward pass, each segment between consecutive checkpoints is **recomputed** from its left checkpoint, back-propagated through, and freed. With $k$ evenly spaced checkpoints the peak memory is about $k+n/k$ activations and the extra work is one more forward pass over the non-checkpointed layers ($\approx n-k$ layer evaluations), so $k\approx\sqrt n$ gives memory $O(\sqrt n)$ for about $33\%$ more computation (forward + recompute + backward $\approx 3n$ instead of $2n$ layer-equivalents, counting a backward step as one). The gradient is **bit-for-bit identical**, because exactly the same arithmetic is redone. Recursive schedules (Griewank's *revolve*) reach $O(\log n)$ memory with $O(n\log n)$ work.`,
+      statement: String.raw`Reverse mode on a chain of $n$ layers normally stores all $n$ intermediate activations. **Checkpointing** stores only a subset $C$ (the *checkpoints*) during the forward pass; during the backward pass, each segment between consecutive checkpoints is **recomputed** from its left checkpoint, back-propagated through, and freed. With $k$ evenly spaced checkpoints the peak memory is about $k+n/k$ activations and the extra work is $n-k$ recomputed layers — at most one more forward pass. So $k\approx\sqrt n$ gives memory $O(\sqrt n)$ for at most one extra forward pass: about $50\%$ more layer evaluations if a backward step costs as much as a forward one, about $33\%$ if it costs twice as much. The gradient is **bit-for-bit identical**, because exactly the same arithmetic is redone. Recursive schedules (Griewank's *revolve*) reach $O(\log n)$ memory with $O(n\log n)$ work.`,
       idea: String.raw`The backward pass through layer $i$ needs the activations entering and leaving it (3.3); anything else can be thrown away and recomputed when needed, since the forward computation is deterministic. Splitting the chain into $k$ segments, the forward pass keeps $k$ checkpoints, and at any moment of the backward pass only one segment's $\approx n/k$ activations are live, so the peak is $k+n/k$, minimised at $k=\sqrt n$ by AM–GM. Each layer is recomputed at most once, so the time overhead is bounded by one forward pass.`,
       caption: String.raw`Top: a chain of $n$ layers; green cells are checkpoints, blue cells are activations currently held in memory, gold is the layer being computed in the forward pass, orange a recomputation, purple the backward pass. Step through the schedule or press play. Middle: memory in use over the schedule, with its peak. Right: for every number $k$ of evenly spaced checkpoints, the peak memory (blue) and the recomputation (orange); $\sqrt n$ is marked. Choose $k$ with the slider, or click cells to place checkpoints by hand. The readout runs the schedule on real tanh layers and compares the gradient with plain backprop.`,
       deps: ['deep-3.3'],
@@ -326,17 +326,18 @@ and similarly for $U$ and $b$; the shared weight's gradient is the **sum of per-
             if (n <= 40 || i % 4 === 0) sC.text(String(i), X(i), y1, { dy: -8, align: 'center', size: 10, color: 'muted' });
           }
           // memory over the schedule
-          const ev = Sch.ev; sM.setView([0, ev.length], [0, Math.max(n + 2, 10)]);
+          const ev = Sch.ev, ymax = n + 7; sM.setView([0, ev.length + 1], [0, ymax]);
+          ev.forEach((e, k) => sM.rect(k + 0.55, 0, k + 1.45, ymax * 0.035, { fill: e.type === 'fwd' ? 'gold' : e.type === 're' ? 'orange' : 'purple', fillAlpha: 0.7, stroke: false }));
           sM.path(ev.map((e, k) => [k + 1, e.mem]), { color: 'accent', width: 2 });
           sM.hline(Sch.peak, { color: 'red', width: 1.2, dash: [5, 4] }); sM.text(`peak ${Sch.peak}`, ev.length, Sch.peak, { dy: -8, dx: -4, align: 'right', size: 11.5, color: 'red', weight: 600 });
           sM.hline(n + 1, { color: 'faint', width: 1, dash: [3, 3] }); sM.text(`store all: ${n + 1}`, 1, n + 1, { dy: -8, dx: 4, size: 11, color: 'muted' });
-          sM.vband(n, n + Sch.re, { color: 'orange', alpha: 0.06 });
           sM.vline(S.i + 1, { color: 'gold', width: 1.5 }); sM.dot(S.i + 1, F.mem ?? 0, { r: 5, color: 'gold' });
           // trade-off
           const TR = tradeoff(n, () => Array.from({ length: n }, (_, j) => { const k = j + 1, s = new Set(); for (let q = 0; q < k; q++) s.add(Math.round((q * n) / k)); const R = schedule(n, [...s].sort((a, b) => a - b)); return [k, R.peak, R.re]; }));
-          sT.setView([1, n], [0, n + 4]);
+          sT.setView([1, n], [0, n + 6]);
           sT.path(TR.map((q) => [q[0], q[1]]), { color: 'accent', width: 2.2 }); sT.path(TR.map((q) => [q[0], q[2]]), { color: 'orange', width: 2.2 });
-          sT.vline(Math.sqrt(n), { color: 'green', width: 1.4, dash: [4, 3] }); sT.text('√n', Math.sqrt(n), n + 4, { dx: 4, dy: 12, size: 12, color: 'green', weight: 700 });
+          sT.vline(Math.sqrt(n), { color: 'green', width: 1.4, dash: [4, 3] }); sT.text('√n', Math.sqrt(n), n + 6, { dx: 4, dy: 12, size: 12, color: 'green', weight: 700 });
+          sT.text('peak memory', n, TR[n - 1][1], { dx: -4, dy: -12, align: 'right', size: 11.5, color: 'accent', weight: 600, plate: true }); sT.text('recomputed layers', n * 0.62, TR[Math.round(n * 0.62) - 1][2], { dy: -14, dx: 6, size: 11.5, color: 'orange', weight: 600, plate: true });
           sT.dot(C.length, Sch.peak, { r: 6, color: 'accent' }); sT.dot(C.length, Sch.re, { r: 6, color: 'orange' });
           const best = TR.reduce((b, q) => (q[1] < b[1] ? q : b), TR[0]);
           const diff = check(n + '|' + C.join(','), () => realCheck(n, C));
