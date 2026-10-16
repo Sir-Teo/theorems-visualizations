@@ -190,7 +190,7 @@ export default {
           const pairs = []; for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) pairs.push({ a: i, b: j, d: Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) });
           pairs.sort((p, q) => p.d - q.d);
           const mst = kruskal(range(N), pairs.map((p) => ({ a: p.a, b: p.b, w: p.d }))), inM = new Set(mst.map((e) => ekey(e.a, e.b)));
-          const chosen = pairs.filter((p) => inM.has(ekey(p.a, p.b)) || p.d < 2.3);
+          const chosen = pairs.filter((p) => inM.has(ekey(p.a, p.b)) || p.d < 3.3);
           edges = chosen.map((p, k) => ({ a: p.a, b: p.b, w: k + 1 })); nodes = pts;
           if (G) G.set({ nodes: pts.map((p) => ({ ...p })), edges: edges.map((e) => [e.a, e.b, e.w]) });
         };

@@ -94,7 +94,7 @@ export default {
         const sN = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 350, title: 'network (estimate beside each process)', weight: 1.3, minWidth: 300 });
         const sT = v.stage({ x: [0, 30], y: [0, 14], axes: 'box', gutter: true, xlabel: 'time', ylabel: 'estimate', height: 350, title: 'estimates over time', weight: 1, minWidth: 260 });
         const metric = v.select('metric', [{ value: 'hops', label: 'hops (BFS)' }, { value: 'w', label: 'weights' }], 'w');
-        const slow = new Set();
+        const slow = new Set(['0-1']);
         const G = v.graph(sN, {
           directed: false, layout: 'none', r: 15, fontSize: 13, notePos: 's', editable: false, weights: true,
           nodes: [{ id: 0, x: 1, y: 3 }, { id: 1, x: 3, y: 5 }, { id: 2, x: 3, y: 1 }, { id: 3, x: 5.2, y: 3 }, { id: 4, x: 7, y: 5 }, { id: 5, x: 7, y: 1 }, { id: 6, x: 9, y: 3 }, { id: 7, x: 5.2, y: 5.3 }],
