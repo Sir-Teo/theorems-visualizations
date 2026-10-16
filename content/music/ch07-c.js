@@ -125,7 +125,7 @@ export default {
         const ua = v.slider('u: fifths', -12, 12, 4, { int: true }), ub = v.slider('u: thirds', -12, 12, -1, { int: true });
         const va = v.slider('v: fifths', -12, 12, 0, { int: true }), vb = v.slider('v: thirds', -12, 12, -3, { int: true });
         const tmp = v.toggle('temper the unison vectors out', false);
-        const s = v.stage({ x: [-10.5, 10.5], y: [-6.5, 6.5], equal: true, axes: false, height: 360, weight: 2, title: 'the lattice (fifths →, thirds ↑)' });
+        const s = v.stage({ x: [-8.5, 10.5], y: [-4.5, 8.5], equal: true, axes: false, height: 360, title: 'the lattice (fifths →, thirds ↑)' });
         const tor = v.stage({ x: [-0.15, 1.15], y: [-0.15, 1.15], equal: true, axes: false, height: 360, title: 'the torus' });
         const rg = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 360, title: 'the scale' });
         const snd = v.sound();
@@ -147,11 +147,11 @@ export default {
         v.soundButton('play the scale', (sd) => { const C = cur(), P = sc12(block(C), C); sd.samples(seqCents(P.concat([1200]).map((c) => [c]), C4, 0.45, 0.02), SR, { gain: 0.9 }); });
         v.render(() => {
           const C = cur(), B = block(C), D = C.u[0] * C.w[1] - C.u[1] * C.w[0];
-          for (let a = -10; a <= 10; a++) for (let b = -6; b <= 6; b++) s.dot(a, b, { r: 2.6, color: 'faint' });
+          for (let a = -8; a <= 10; a++) for (let b = -4; b <= 8; b++) s.dot(a, b, { r: 2.6, color: 'faint' });
           s.arrow(0, 0, C.u[0], C.u[1], { color: 'red', width: 2.4 }); s.arrow(0, 0, C.w[0], C.w[1], { color: 'orange', width: 2.4 });
           s.text('u', C.u[0] * 0.5, C.u[1] * 0.5 + 0.4, { size: 14, color: 'red', weight: 700, align: 'center' }); s.text('v', C.w[0] * 0.5, C.w[1] * 0.5 + 0.4, { size: 14, color: 'orange', weight: 700, align: 'center' });
           s.poly([[0, 0], C.u, [C.u[0] + C.w[0], C.u[1] + C.w[1]], C.w], { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.08 });
-          B.forEach(([a, b]) => { if (Math.abs(a) <= 10 && Math.abs(b) <= 6) s.dot(a, b, { r: 5, color: 'accent' }); });
+          B.forEach(([a, b]) => { s.dot(a, b, { r: 5, color: 'accent' }); });
           s.dot(0, 0, { r: 6.5, color: 'green' });
           tor.rect(0, 0, 1, 1, { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.06 });
           for (const [a, b, x, y] of B) { tor.dot(x, y, { r: 5, color: 'accent' }); }
@@ -191,7 +191,7 @@ export default {
       viz(v) {
         const M = v.M, CHORDS = [{ n: 'C', notes: [0, 4, 7], root: 0 }, { n: 'Am', notes: [0, 4, 9], root: 9 }, { n: 'Dm', notes: [2, 5, 9], root: 2 }, { n: 'G', notes: [2, 7, 11], root: 7 }];
         const mode = v.select('rule', [{ value: 'follow', label: 'common tones held' }, { value: 'anchor', label: 'roots anchored to 12-TET' }], 'follow');
-        const lam = v.slider('pull toward 12-TET', 0, 0.01, 0.0005, { step: 0.0001, fmt: (x) => v.fix(x * 1000, 2) });
+        const lam = v.slider('pull toward 12-TET', 0, 0.004, 0.0001, { step: 0.00005, fmt: (x) => v.fix(x * 1000, 2) });
         const passes = v.slider('passes', 1, 6, 3, { int: true });
         const g = v.stage({ x: [-0.3, 12.3], y: [-60, 15], axes: 'box', gutter: true, height: 340, full: true, xticks: [], xlabel: 'chord', ylabel: 'deviation from 12-TET (¢)', title: 'the retuned notes' });
         const snd = v.sound();

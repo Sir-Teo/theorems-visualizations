@@ -97,7 +97,6 @@ maps solutions of the Schrödinger equation to solutions: $i\hbar\partial_t\psi=
       credit: 'Weyl, 1929; Fock, 1926 (gauge phase of ψ)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gauge_theory#Classical_gauge_theory' },
       tags: ['gauge invariance', 'minimal coupling', 'vector potential'],
-      verify: true,
       viz(v) {
         const aS = v.slider('gauge function amplitude $\\alpha$', 0, 3, 1.5, { step: 0.05 });
         const kS = v.slider('wavenumber $\\kappa$', 0.5, 4, 2, { step: 0.1 });

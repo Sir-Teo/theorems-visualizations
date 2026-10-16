@@ -69,7 +69,7 @@ Equivalently $K(\cdot,t;x_0,0)$ is the solution at time $t$ of the Schrödinger 
           A.raster((X, T) => {
             const s = Math.round(T / DT); if (s < 2 || s > NT) return null;
             const i = (((Math.round((X - x[0]) / dx)) % NG) + NG) % NG, a = fan[s][0][i], b = fan[s][1][i], m = Math.hypot(a, b);
-            const w = Math.min(1, Math.sqrt(m * Math.sqrt(2 * Math.PI * Math.max(T, 0.2)) / 1.2));
+            const w = Math.min(1, (m * Math.sqrt(2 * Math.PI * Math.max(T, 0.2))) / 1.1) ** 1.2;
             const c = rgb(Math.atan2(b, a)); return [c[0], c[1], c[2], Math.round(255 * w)];
           }, { res: 2, key: `${fk}|${rgb.key}` });
           A.hline(tS.value, { color: 'gold', width: 1.6, dash: [5, 4] });
