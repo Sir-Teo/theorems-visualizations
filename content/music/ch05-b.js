@@ -270,7 +270,7 @@ Both cues are the same for every source on a **cone of confusion** around the in
       refs: ['Loy I ch. 6'],
       tags: ['localization', 'binaural'],
       credit: 'Lord Rayleigh, 1876–1907 (duplex theory; sphere 1904); Woodworth, 1938; Kuhn, 1977',
-      scope: String.raw`A rigid sphere of radius 8.75 cm with ears at ±90°, a distant source in the horizontal plane, no torso or pinnae. Real heads give larger low-frequency ITDs (about 3a/c sin θ, Kuhn 1977, which the sphere solution reproduces) and pinna cues that break the front–back symmetry. Headphone playback places the image inside the head (lateralization) rather than outside.`,
+      scope: String.raw`A rigid sphere of radius 8.75 cm with ears at ±90°, a distant source in the horizontal plane, no torso or pinnae. Real heads give larger low-frequency ITDs (about 3a/c sin θ, Kuhn 1977, which the sphere solution reproduces) and pinna cues that break the front–back symmetry. With the ears exactly at ±90°, waves creeping round both sides of a sphere meet in phase at the far ear for a source straight to the side (the acoustic *bright spot*), so the sphere's ILD peaks near 60–75° rather than at 90°. Headphone playback places the image inside the head (lateralization) rather than outside.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sound_localization' },
       viz(v) {
         const M = v.M, A = 0.0875, C = 343, RS = 3.1;
