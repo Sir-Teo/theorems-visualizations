@@ -33,7 +33,7 @@ const FAM = {
   free: { label: 'the same chain without the blocker', sat: true },
 };
 function famSentence(fam, k, m) { // k = 0-based position in the list
-  if (fam === 'dist') return { label: `c${subNum(k + 1)}≠c${subNum(k)}…`, text: `c${subNum(k + 1)} differs from c${subNum(0)},…,c${subNum(k)}`, cl: null };
+  if (fam === 'dist') return { label: `σ${subNum(k + 1)}`, text: `c${subNum(k + 1)} differs from c${subNum(0)},…,c${subNum(k)}`, cl: null };
   if (fam === 'block') {
     if (k === 0) return { label: `¬P(c${subNum(m)})`, text: `¬P(c${subNum(m)})`, cl: [-(m + 1)] };
     if (k === 1) return { label: 'P(c₀)', text: 'P(c₀)', cl: [1] };
@@ -93,7 +93,7 @@ export default {
       name: 'Compactness theorem',
       statement: String.raw`A set $\Sigma$ of first-order sentences has a model if and only if every finite subset of $\Sigma$ has a model. Equivalently: if $\Sigma\models\varphi$, then some finite $\Sigma_0\subseteq\Sigma$ already satisfies $\Sigma_0\models\varphi$.`,
       idea: String.raw`If $\Sigma$ has no model it is inconsistent by the completeness theorem (logic-4.6). A deduction of a contradiction is a finite object and cites only finitely many members $\Sigma_0$ of $\Sigma$, so $\Sigma_0$ is inconsistent, and by soundness (logic-4.4) it has no model either. This is the whole proof: completeness turns the semantic property “no model anywhere” into a finite syntactic certificate. Note that the proof does not construct the model of $\Sigma$ from the finite ones; it comes from the Henkin construction of logic-4.5.`,
-      caption: String.raw`Choose a family of sentences and a stage $N$: the first $N$ sentences are lit, and a finite model is shown for them (found by a SAT solver for the chain families). In the two satisfiable families every stage has a model, and the right panel shows the compactness argument: no contradiction can be derived, so a model of the whole infinite set exists, even though no finite stage shows it. In the blocked chain the first failing stage is exactly where the minimal inconsistent subset (red chips) has been collected; drag the blocker's position $m$ to move it.`,
+      caption: String.raw`Choose a family of sentences and a stage $N$: the first $N$ sentences are lit, and a finite model is shown for them (found by a SAT solver for the chain families). In the two satisfiable families every stage has a model, and the right panel shows the compactness argument: no contradiction can be derived, so a model of the whole infinite set exists, even though no finite stage shows it. In the blocked chain the first failing stage is exactly where the minimal inconsistent subset (red chips) has been collected; drag the blocker’s position $m$ to move it.`,
       credit: 'Gödel, 1930 (as a corollary of completeness); for arbitrary cardinalities, Maltsev, 1936',
       deps: ['logic-4.6'],
       refs: ['Enderton §2.5'],
@@ -103,7 +103,7 @@ export default {
         const NS = v.slider('stage $N$', 1, 14, 4, { int: true });
         const mS = v.slider('blocker position $m$', 2, 9, 5, { int: true });
         mS.el.hidden = true;
-        const A = v.stage({ x: [0, 100], y: [0, 34], axes: false, height: 120, full: true });
+        const A = v.stage({ x: [0, 100], y: [0, 34], axes: false, height: 105, full: true });
         const B = v.stage({ x: [-0.7, 14.7], y: [-2.2, 2.4], axes: false, height: 200, weight: 1.3, minWidth: 330 });
         const C = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 200, weight: 1, minWidth: 260 });
         let info = null;
@@ -144,7 +144,7 @@ export default {
               B.text(`c${subNum(i)}`, i, 0, { align: 'center', baseline: 'top', dy: 18, size: 11.5, math: true, color: 'ink' });
               if (f !== 'dist') B.text(on ? 'P' : '¬P', i, 0, { align: 'center', baseline: 'bottom', dy: -17, size: 10.5, color: on ? 'accent' : 'muted', weight: 700 });
             }
-            if (f === 'dist') B.text(`a model of stage ${N}: ${N + 1} different elements — a finite model cannot be a model of all of Σ`, 7, 1.7, { align: 'center', size: 11.5, color: 'muted' });
+            if (f === 'dist') B.text(`stage ${N}: ${N + 1} different elements (σₙ: cₙ differs from c₀,…,cₙ₋₁)`, 7, 1.7, { align: 'center', size: 11.5, color: 'muted' });
             else B.text(`a model of the first ${N} sentences (found by the SAT solver)`, 7, 1.7, { align: 'center', size: 11.5, color: 'muted' });
           } else {
             B.text('no model', 7, 0.5, { align: 'center', size: 20, weight: 700, color: 'red' });
@@ -181,7 +181,7 @@ export default {
       name: 'The validities are effectively enumerable',
       statement: String.raw`There is an algorithm that prints, one after another, exactly the logically valid sentences of a given (effectively presented) first-order language: every valid sentence is eventually printed and nothing else is. For an invalid sentence the algorithm just keeps running: validity is **semi-decidable**. (That it is not decidable is the theorem of Church and Turing, 1936, which is not proved here.)`,
       idea: String.raw`By completeness (logic-4.6) a sentence is valid iff it has a deduction, and soundness (logic-4.4) makes the converse. Deductions are finite strings that can be checked mechanically (logic-4.1), so list all strings in order of length, test each, and print the conclusion of those that are deductions. A practical machine does the same thing through Herbrand's theorem: negate the sentence, replace $\exists$ by Skolem functions, and instantiate the universal quantifiers with ever larger sets of terms; the sentence is valid iff, at some stage, the resulting propositional clauses are unsatisfiable. The machine below runs that search for several sentences at once (dovetailing) so that a sentence that never closes cannot block the others.`,
-      caption: String.raw`The machine is working on six sentences, the first of which you can edit (equality-free sentences in $P,Q,R$). Drag **time $T$**: units of work are handed out in turn to the sentences, each unit computing the next Herbrand level of the negation. A cell is grey while the instances so far are still satisfiable and turns red-then-green when they first become propositionally unsatisfiable: the sentence is *valid* and is printed in the list at the top. Invalid sentences stay grey for ever. The last sentence has no finite countermodel at all, only infinite ones, which is why no finite search can ever tell that it is invalid.`,
+      caption: String.raw`The machine is working on six sentences, the first of which you can edit (equality-free sentences in $P,Q,R$). Drag **time $T$**: units of work are handed out in turn to the sentences, each unit computing the next Herbrand level of the negation. A cell is grey while the instances so far are still satisfiable and turns green (⊥) when they first become propositionally unsatisfiable: the sentence is *valid* and is printed in the list at the top. Invalid sentences stay grey for ever. The last sentence has no finite countermodel at all, only infinite ones, which is why no finite search can ever tell that it is invalid.`,
       scope: String.raw`Herbrand levels are computed up to level 5 with at most 2 500 ground instances; beyond that a cell is shown as capped. The correctness of "unsatisfiable at some level ⇔ valid" is Herbrand's theorem for equality-free sentences.`,
       credit: 'Gödel’s completeness theorem (1930) gives the enumeration; Herbrand, 1930, the instance-based form; the undecidability is Church and Turing, 1936',
       verify: true,
@@ -197,7 +197,7 @@ export default {
           { text: '(∀x ∃y R(x,y) ∧ ∀x ¬R(x,x) ∧ ∀x ∀y ∀z (R(x,y) ∧ R(y,z) → R(x,z))) → ∃x (P(x) ∧ ¬P(x))', tag: 'invalid, but only infinite countermodels' },
         ];
         const fld = foField(v, 'sentence 1', '∀x P(x) → ∃x P(x)', { sig: SIGM, width: 360, check: (a) => (freeVars(a).length ? 'it must be a sentence (no free variables)' : noEq(a)), onChange: () => { memo.clear(); v.invalidate(); } });
-        const T = v.slider('time $T$ (units of work)', 0, 40, 40, { int: true });
+        const T = v.slider('time $T$ (units of work)', 0, 40, 14, { int: true });
         const A = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 330, full: true });
         const memo = new Map();
         const LEV = 6;
@@ -238,7 +238,8 @@ export default {
             }
             A.text(s.done ? 'valid ✓' : s.units ? 'running…' : 'waiting', 99.5, y, { align: 'right', baseline: 'middle', size: 11, color: s.done ? 'green' : 'muted', weight: 700 });
           });
-          A.text('Herbrand level of ¬σ →   0     1     2     3     4     5', 72, 6, { align: 'left', baseline: 'middle', size: 9.8, color: 'muted' });
+          A.text('Herbrand level of ¬σ:', 70, 6, { align: 'right', baseline: 'middle', size: 9.8, color: 'muted' });
+          for (let l = 0; l < LEV; l++) A.text(String(l), 72 + l * 4.6, 6, { align: 'center', baseline: 'middle', size: 9.8, color: 'muted' });
         });
         v.readout(() => {
           const Q = queue(), St = status(Q, T.value), my = St[0], q0 = Q[0];
@@ -292,9 +293,12 @@ export default {
             B.text(ok ? '✓' : '✗', x, 55, { align: 'center', baseline: 'middle', size: 13, weight: 700, color: ok ? 'green' : 'red' });
           });
           // the chain Γ_N
-          B.text('Γ_N = {φ, λ₁, …, λ_N}', 2, 40, { align: 'left', baseline: 'middle', size: 12.5, weight: 700, color: 'ink' });
-          for (let n = 1; n <= 8; n++) B.rect(2 + (n - 1) * 11.5, 22, 2 + (n - 1) * 11.5 + 10.5, 32, { fill: n <= N ? (hit ? 'green' : 'red') : null, fillAlpha: 0.3, color: 'faint', width: 1, radius: 3 });
-          B.text('φ  λ₁ λ₂ …', 2, 14, { align: 'left', baseline: 'middle', size: 10.5, color: 'muted' });
+          B.text('Γ_N = {φ, λ₁, …, λ_N}: the sentences in use are lit', 2, 40, { align: 'left', baseline: 'middle', size: 12.5, weight: 700, color: 'ink' });
+          for (let k = 0; k <= 8; k++) {
+            const x = 5.5 + k * 10.6, on = k <= N;
+            B.rect(x - 4.6, 20, x + 4.6, 32, { fill: on ? (hit ? 'green' : 'red') : null, fillAlpha: 0.3, color: 'faint', width: 1, radius: 3 });
+            B.text(k === 0 ? 'φ' : `λ${subNum(k)}`, x, 26, { align: 'center', baseline: 'middle', size: 11.5, color: on ? 'ink' : 'faint' });
+          }
         });
         v.readout(() => {
           if (!fld.ok) return fld.src.trim() ? `Cannot read the sentence: ${fld.error}.` : 'Type a sentence.';
@@ -312,7 +316,7 @@ export default {
       name: 'Connectedness is not first-order axiomatizable',
       statement: String.raw`There is no set $T$ of first-order sentences in the language of graphs ($E$ for adjacency) whose models are exactly the connected graphs. In fact no theory true in all connected graphs can exclude every disconnected graph: with two new constants $a,b$, the set $T\cup\{\delta_n : n\ge 1\}$, where $\delta_n$ says “no path of length at most $n$ joins $a$ and $b$”, is satisfiable.`,
       idea: String.raw`Suppose $T$ axiomatized connectedness. Every finite subset of $T\cup\{\delta_n\}$ uses only $\delta_n$ for $n\le N$, and is satisfied by a long path graph with $a,b$ at its two ends (connected, so a model of $T$, and with $a,b$ at distance larger than $N$). By compactness (logic-4.7) there is a model of all of it: a model of $T$ in which no finite path joins $a$ and $b$, i.e. a disconnected graph satisfying $T$, contradicting the choice of $T$. The second panel shows the same phenomenon from the other side: first-order sentences cannot distinguish one long cycle from two cycles of half the length.`,
-      caption: String.raw`Top: the path graph with endpoints $a,b$ satisfies $\delta_1,\dots,\delta_N$ at stage $N$ (drag $N$); no stage can capture connectedness. Bottom: choose a sentence of your own or an example and compare the connected graph $C_{2m}$ with the disconnected graph $C_m\sqcup C_m$ for $m=3,\dots,10$ (green dot: the sentence has the same truth value in both, red: it tells them apart). Small cycles are told apart by short-range properties; once $m$ is large compared with the sentence's quantifier rank, every sentence agrees.`,
+      caption: String.raw`Top: the path graph with endpoints $a,b$ satisfies $\delta_1,\dots,\delta_N$ at stage $N$ (drag $N$); no stage can capture connectedness. Bottom: choose a sentence of your own or an example and compare the connected graph $C_{2m}$ with the disconnected graph $C_m\sqcup C_m$ for $m=3,\dots,10$ (green dot: the sentence has the same truth value in both, red: it tells them apart). Small cycles are told apart by short-range properties; once $m$ is large compared with the sentence’s quantifier rank, every sentence agrees.`,
       scope: String.raw`The cycle comparison is a finite experiment (exact evaluation for each $m$ shown); that agreement persists for all larger $m$ is the Ehrenfeucht–Fraïssé argument and is not proved here.`,
       deps: ['logic-4.7'],
       refs: ['Enderton §2.6'],
@@ -354,7 +358,7 @@ export default {
           if (fld.ok) {
             const maxM = qrank(fld.ast) >= 4 ? 8 : 10;
             for (let k = 3; k <= 10; k++) {
-              const x = 8 + (k - 3) * 11.5, big = k > maxM, r = big ? null : verdict(fld.ast, k), same = r && r.a === r.b;
+              const x = 16 + (k - 3) * 11, big = k > maxM, r = big ? null : verdict(fld.ast, k), same = r && r.a === r.b;
               C.dot(x, 70, { r: k === m ? 10 : 7, color: big ? 'faint' : same ? 'green' : 'red', fill: big ? null : same ? 'green' : 'red', hollow: big, width: k === m ? 3 : 1.5 });
               C.text(String(k), x, 55, { align: 'center', size: 11, color: k === m ? 'ink' : 'muted' });
             }
@@ -390,7 +394,7 @@ export default {
         const mode = v.select('sentences', [{ value: 'first', label: 'the first N' }, { value: 'all', label: 'all of them' }], 'first', { onChange: () => v.invalidate() });
         const ind = v.select('induction', [{ value: 'so', label: 'second-order axiom' }, { value: 'fo', label: 'first-order schema' }], 'so', { onChange: () => v.invalidate() });
         const NS = v.slider('$N$', 1, 10, 4, { int: true });
-        const A = v.stage({ x: [-1, 14], y: [-3.2, 3.6], axes: false, height: 340, full: true });
+        const A = v.stage({ x: [-1, 14], y: [-3.2, 4.4], axes: false, height: 340, full: true });
         v.render(() => {
           const all = mode.value === 'all', N = NS.value, so = ind.value === 'so';
           const K = 12;
@@ -481,7 +485,7 @@ export default {
           for (let n = 1; n <= 12; n++) { if (godelSat(godelInstances(d, n)).sat === false) { firstUnsat = n; break; } }
           S = { d, pre: pre0, inst, sat: r.sat, atoms: r.atoms.map((a) => a[0]), cnf: r.cnf, firstUnsat };
           if (r.sat === false) { // minimal core by deletion
-            let keep = range(N); for (const i of [...keep]) { const t = keep.filter((j) => j !== i); if (godelSat(t.map((j) => inst[j])).sat === false) keep = t; }
+            let keep = range(N); for (const i of [...keep].reverse()) { const t = keep.filter((j) => j !== i); if (godelSat(t.map((j) => inst[j])).sat === false) keep = t; }
             S.core = keep;
           } else if (r.sat) {
             // greedy path through the tree of atom values
@@ -514,13 +518,13 @@ export default {
           } else if (S.sat) {
             const H = Math.min(4, S.atoms.length);
             B.text('values of the first atoms (True ↑, False ↓): the tree of partial assignments', 2, 98, { align: 'left', baseline: 'top', size: 11, color: 'muted', weight: 700 });
-            const nodes = [{ pre: [], x: 8, y: 50 }];
+            const nodes = [{ pre: [], x: 8, y: 46 }];
             let level = nodes;
             const colw = 84 / (H + 1);
             for (let h = 0; h < H; h++) {
               const next = [];
               for (const nd of level) for (const b of [true, false]) {
-                const pre = [...nd.pre, [S.atoms[h], b]], span = 36 / 2 ** h;
+                const pre = [...nd.pre, [S.atoms[h], b]], span = 21 / 2 ** h;
                 const nn = { pre, x: 8 + (h + 1) * colw, y: nd.y + (b ? span : -span), parent: nd };
                 next.push(nn);
               }
@@ -530,19 +534,20 @@ export default {
                 nn.ok = ok; nn.onPath = onPath;
               }
               for (const nn of next) B.dot(nn.x, nn.y, { r: nn.onPath ? 6 : 4, color: nn.ok ? 'green' : 'red', fill: nn.ok ? 'green' : 'red', width: 1 });
-              B.text(S.atoms[h], 8 + (h + 1) * colw, 94 - 0, { align: 'center', baseline: 'top', size: 9.5, color: 'muted', dy: 8 });
+              B.text(S.atoms[h], 8 + (h + 1) * colw, 88, { align: 'center', baseline: 'top', size: 9.5, color: 'muted' });
               level = next;
             }
-            B.dot(8, 50, { r: 5, color: 'ink', fill: 'ink' });
+            B.dot(8, 46, { r: 5, color: 'ink', fill: 'ink' });
             B.corner(`the whole assignment has ${S.atoms.length} atoms; gold path extended to all of them`, 'bl', { size: 11, color: 'muted' });
           }
+          if (S.sat === false) { C.text('no model', 0, 0.2, { align: 'center', size: 18, weight: 700, color: 'red' }); C.text('a refutable formula has none', 0, -0.2, { align: 'center', size: 12, color: 'muted' }); }
           // model
           if (S.sat && S.val) {
             const K = Math.min(7, Math.max(2, ...S.atoms.flatMap((a) => (a.match(/\d+/g) || []).map(Number))));
-            const get = (r, args) => { const k = `${r}(${args.map((a) => a + 1).join(', ')})`; return S.val.has(k) ? S.val.get(k) : true; };
+            const get = (r, args) => S.val.get(`${r}(${args.map((a) => a + 1).join(', ')})`) === true;
             const M = { n: K, dom: range(K), rel: (r, a) => get(r, a), konst: () => 0, fn: () => 0 };
             drawStruct(C, M, { rels: new Map([['P', 1], ['R', 2]].filter(([r]) => preorder(S.pre).some((n) => n.op === 'rel' && n.r === r))), consts: new Set(), funcs: new Map() }, { radius: 1.0, r: 13, label: (a) => String(a + 1) });
-            C.corner(`the model: elements 1…${K}, relations read from the assignment (atoms never mentioned count as true)`, 'tl', { size: 10.5, color: 'muted' });
+            C.corner(`the model: elements 1…${K}, a drawn arrow = an atom the assignment makes true; atoms outside D_N are drawn false`, 'tl', { size: 10.5, color: 'muted' });
           }
         });
         v.readout(() => {
@@ -550,7 +555,7 @@ export default {
           if (!S || S.error) return S ? `${S.error}.` : '';
           const N = NS.value;
           if (S.sat === false) return `$D_{${N}}$ is unsatisfiable: the instances ${S.core.map((i) => `$B_{${i + 1}}$`).join(', ')} (${S.core.length} of ${N}) are propositionally contradictory. The first stage where this happens is $n=${S.firstUnsat}$, so $\\varphi$ is refutable, and a refutation of the finite propositional sentence is a derivation of $\\neg\\varphi$ in the calculus.`;
-          if (S.sat) return `$D_{${N}}$ is satisfiable, and so is every $D_n$ with $n\\le 12$ (none fails up to 12). The path of gold nodes fixes all ${S.atoms.length} atoms at once; the resulting relation satisfies every $B_n$ for $n\\le${N} ${S.ok ? '✓ (checked)' : '✗'}. Letting $N\\to\\infty$ and always keeping a branch with infinitely many extensions is Gödel's argument: the limit assignment is a model on the numbers $1,2,3,\\dots$ — so a formula is always refutable or satisfiable, never neither.`;
+          if (S.sat) return `$D_{${N}}$ is satisfiable, and so is every $D_n$ with $n\\le 12$ (none fails up to 12). The path of gold nodes fixes all ${S.atoms.length} atoms at once; the resulting relation satisfies every $B_n$ for $n\\le ${N}$ ${S.ok ? '✓ (checked)' : '✗'}. Letting $N\\to\\infty$ and always keeping a branch with infinitely many extensions is Gödel's argument: the limit assignment is a model on the numbers $1,2,3,\\dots$ — so a formula is always refutable or satisfiable, never neither.`;
           return `The SAT solver gave up at stage ${N}.`;
         });
       },
