@@ -145,6 +145,21 @@ export function makeConvection({ nx = 80, nz = 28, Ra = 1e4, seed = 3, amp = 0.0
     return { top: top / nx, bottom: bot / nx, mean: (top + bot) / (2 * nx) };
   };
   S.wrms = () => { flow(); let s = 0; for (let o = 0; o < W.length; o++) s += W[o] * W[o]; return Math.sqrt(s / W.length); };
+  /** Starting-plume initial condition: cold interior, a thin hot basal layer and a hot blob of width `w` at the centre of the floor. */
+  S.initPlume = ({ bump = 1, w = 0.1, layer = 0.05 } = {}) => {
+    for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+      const z = (j + 0.5) * dz, x = (i + 0.5) * dx - L / 2;
+      const base = Math.max(0, 1 - z / layer), blob = bump * Math.exp(-(x * x) / (2 * w * w) - (z * z) / (2 * (1.2 * w) ** 2));
+      T[j * nx + i] = Math.min(1, Math.max(base, blob));
+    }
+    S.time = 0; S.steps = 0;
+  };
+  /** Stream function ψ (u = ∂ψ/∂z, w = −∂ψ/∂x) at (x, z) from the last flow solve (call S.wrms() or S.step() first). */
+  S.psiAt = (x, z) => {
+    const fi = Math.min(Math.max(x / dx - 0.5, 0), nx - 1.001), fj = Math.min(Math.max(z / dz - 0.5, 0), nz - 1.001);
+    const i = Math.floor(fi), j = Math.floor(fj), a = fi - i, b = fj - j;
+    return (P[j * nx + i] * (1 - a) + P[j * nx + i + 1] * a) * (1 - b) + (P[(j + 1) * nx + i] * (1 - a) + P[(j + 1) * nx + i + 1] * a) * b;
+  };
   S.reset();
   return S;
 }

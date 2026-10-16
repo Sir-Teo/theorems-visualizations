@@ -145,7 +145,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { cur, pk, sheared } = info;
-          return `$t=${v.fmt(tS.value, 3)}$ h at ${TS.value} °C: $r=${v.fix(cur.r, 1)}$ nm, shearing $+${v.fix(cur.sh, 0)}$ MPa, Orowan $+${v.fix(Number.isFinite(cur.orr) ? cur.orr : 9999, 0)}$ MPa → strength ${v.fix(cur.s, 0)} MPa by ${sheared ? 'shearing (under-aged)' : 'bypass (over-aged)'}.\nPeak ${v.fix(pk.s, 0)} MPa at $t^*=${v.fmt(pk.t, 3)}$ h, $r^*=${v.fix(pk.r, 1)}$ nm. Each ${v.fix(10 ** 0.5, 1)}-fold increase of time beyond the peak costs strength: aged 100 times longer than $t^*$ the alloy has lost ${v.fix(pk.s - curve(pk.t * 100).s, 0)} MPa.`;
+          return `$t=${v.fmt(tS.value, 3)}$ h at ${TS.value} °C: $r=${v.fix(cur.r, 1)}$ nm, shearing $+${v.fix(cur.sh, 0)}$ MPa, Orowan $+${v.fix(Number.isFinite(cur.orr) ? cur.orr : 9999, 0)}$ MPa → strength ${v.fix(cur.s, 0)} MPa by ${sheared ? 'shearing (under-aged)' : 'bypass (over-aged)'}.\nPeak ${v.fix(pk.s, 0)} MPa at $t^*=${v.fmt(pk.t, 3)}$ h, $r^*=${v.fix(pk.r, 1)}$ nm. Aged 100 times longer than $t^*$ the alloy has lost ${v.fix(pk.s - curve(pk.t * 100).s, 0)} MPa.`;
         });
       },
     },
@@ -168,7 +168,7 @@ export default {
         let S;
         const reset = () => { S.reset(); };
         const EsS = v.slider('stored energy $E_s$ (per site)', 0.4, 3, 1.5, { step: 0.05, onChange: reset });
-        const nucS = v.slider('number of nuclei', 0, 60, 20, { step: 1, int: true, onChange: reset });
+        const nucS = v.slider('number of nuclei', 0, 300, 120, { step: 1, int: true, onChange: reset });
         const recT = v.toggle('recovery acts first', false, { onChange: reset });
         const seedS = v.slider('random seed', 1, 40, 5, { step: 1, int: true, onChange: reset });
         const DT = 1 / 30;
@@ -201,7 +201,7 @@ export default {
           // plots
           const h = st.hist, Hm = (p) => 0;
           const tmax = Math.max(720, st.t + 20);
-          B.setView([0, 720], [0, 1.05]); C.setView([0, 720], [0, 400]);
+          B.setView([0, 720], [0, 1.05]); C.setView([0, 720], [0, Math.max(100, ...h.map((p) => (N * N) / p.ng)) * 1.1]);
           const rel = h.map((p) => ({ t: p.t, fx: p.fx, rho: Math.sqrt((1 - p.fx) * R(p.t)), er: R(p.t) * (1 - p.fx) }));
           B.path(rel.map((p) => [p.t, p.fx]), { color: 'green', width: 2.6 });
           B.path(rel.map((p) => [p.t, p.rho]), { color: 'accent', width: 2.6 });
@@ -211,14 +211,14 @@ export default {
           // power-law exponent of the mean diameter after recrystallization (fx > 0.98)
           const post = h.filter((p) => p.fx > 0.98 && p.t > 0);
           let nExp = NaN;
-          if (post.length > 12) { const a = post[Math.floor(post.length * 0.3)].t; const pp = post.filter((p) => p.t >= a); if (pp.length > 6) nExp = v.M.linreg(pp.map((p) => Math.log(p.t)), pp.map((p) => 0.5 * Math.log((N * N) / p.ng))).slope; }
+          if (post.length > 12 && post[post.length - 1].ng >= 8) { const a = post[Math.floor(post.length * 0.3)].t; const pp = post.filter((p) => p.t >= a); if (pp.length > 6) nExp = v.M.linreg(pp.map((p) => Math.log(p.t)), pp.map((p) => 0.5 * Math.log((N * N) / p.ng))).slope; }
           info = { st, last, nExp, Es: EsS.value * R(st.t), hard: 60 + 80 * Math.sqrt((1 - last.fx) * R(st.t)) };
         }, { period: 24, still: 20 });
         v.legend([['green', 'recrystallized fraction'], ['accent', 'relative hardness $\\sqrt{\\rho}$'], ['orange', 'stored energy remaining', { dash: true }], ['purple', 'mean grain area']]);
         v.readout(() => {
           if (!info) return '';
           const { st, last, nExp, Es, hard } = info;
-          return `Step ${st.t}: ${v.fix(last.fx * 100, 0)} % recrystallized, hardness ≈ ${v.fix(hard, 0)} HV (60 annealed, 140 cold-worked), stored energy per deformed site ${v.fix(Es, 2)}, ${last.ng} grains of mean area ${v.fix((N * N) / Math.max(1, last.ng), 0)} sites.\n${Number.isFinite(nExp) ? `After recrystallization the mean diameter grows as $t^{${v.fix(nExp, 2)}}$ in this run (Burke–Turnbull's ideal is $t^{1/2}$; small lattices and few grains scatter).` : last.fx < 0.02 && st.t > 200 ? 'The nuclei have not grown: the stored energy is below the threshold set by boundary curvature.' : ''}`;
+          return `Step ${st.t}: ${v.fix(last.fx * 100, 0)} % recrystallized, hardness ≈ ${v.fix(hard, 0)} HV (60 annealed, 140 cold-worked), stored energy per deformed site ${v.fix(Es, 2)}, ${last.ng} grains of mean area ${v.fix((N * N) / Math.max(1, last.ng), 0)} sites.\n${Number.isFinite(nExp) ? `After recrystallization the fitted growth exponent of the mean diameter is $${v.fix(nExp, 2)}$ in this run (Burke–Turnbull's ideal is $1/2$)${nExp < 0.25 ? ': growth has nearly stalled, because at zero temperature the boundaries of a small lattice pin on the grid, a known artifact of the Potts model' : ''}.` : last.fx < 0.02 && st.t > 200 ? 'The nuclei have not grown: the stored energy is below the threshold set by boundary curvature.' : ''}`;
         });
       },
     },
@@ -274,11 +274,11 @@ export default {
           if (tt === 'brinell') {
             A.circle(0, 0, r.a, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
             A.arrow(-r.a, -r.a * 0.15 - half * 0.1, r.a, -r.a * 0.15 - half * 0.1, { both: true, color: 'red', head: 6 });
-            A.text(`$d=${r.d.toFixed(2)}$ mm`, 0, -r.a * 0.15 - half * 0.2, { color: 'red', size: 13 });
+            A.text(`$d=${r.d.toFixed(2)}$ mm`, 0, -r.a * 0.15 - half * 0.2, { color: 'red', size: 13, plate: true });
           } else {
             const d = r.d / 2; A.poly([[d, 0], [0, d], [-d, 0], [0, -d]], { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
             A.arrow(-d, 0, d, 0, { both: true, color: 'red', head: 6 });
-            A.text(`$d=${r.d.toFixed(3)}$ mm`, 0, d * 0.35, { color: 'red', size: 13 });
+            A.text(`$d=${r.d.toFixed(3)}$ mm`, 0, -d * 0.4, { color: 'red', size: 13, plate: true });
           }
           // section: the surface at y = 0 and the impression below; the indenter dashed
           B.hline(0, { color: 'muted' });
@@ -287,23 +287,24 @@ export default {
             const R = r.D / 2, cy = R - r.h;
             B.curve((q) => [R * Math.sin(q), cy - R * Math.cos(q) - 0 * q], -Math.asin(r.a / R), Math.asin(r.a / R), { n: 60, color: 'accent', width: 3 });
             B.curve((q) => [R * Math.sin(q), cy + R * Math.cos(q)], 0, 2 * Math.PI, { n: 90, color: 'faint', dash: true, alpha: 0.6 });
-            B.arrow(half * 0.9, 0, half * 0.9, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(2)}$ mm`, half * 0.88, -r.h / 2, { color: 'red', size: 12, align: 'right' });
+            B.arrow(half * 0.9, 0, half * 0.9, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(2)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
           } else if (tt === 'vickers') {
             const hw = r.d / 2, depth = r.d / 7;
             B.path([[-hw, 0], [0, -depth], [hw, 0]], { color: 'accent', width: 3 });
-            B.arrow(half * 0.95, 0, half * 0.95, -depth, { both: true, color: 'red', head: 5 }); B.text(`$h\\approx d/7=${depth.toFixed(3)}$ mm`, half * 0.9, -depth / 2 - half * 0.1, { color: 'red', size: 12, align: 'right' });
+            B.arrow(half * 0.95, 0, half * 0.95, -depth, { both: true, color: 'red', head: 5 }); B.text(`$h\\approx d/7=${depth.toFixed(3)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
           } else {
             const hw = r.h * Math.tan((60 * Math.PI) / 180);
             B.path([[-hw, 0], [0, -r.h], [hw, 0]], { color: 'accent', width: 3 });
-            B.arrow(half * 0.95, 0, half * 0.95, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(3)}$ mm`, half * 0.9, -r.h / 2 - half * 0.1, { color: 'red', size: 12, align: 'right' });
+            B.arrow(half * 0.95, 0, half * 0.95, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(3)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
           }
           // H/sigma0.2 against n
           const ratio = (nn) => 3 * Math.pow(500 * r.er, nn);
+          C.setView([0, 0.5], [0, Math.max(5.5, ratio(0.5) * 1.05)]);
           C.fn(ratio, { domain: [0, 0.5], color: 'ink', width: 2.6 });
-          C.hline(3, { color: 'red', dash: true }); C.text('$H=3\\sigma_{0.2}$ (no hardening)', 0.495, 3.12, { color: 'red', size: 11.5, align: 'right' });
+          C.hline(3, { color: 'red', dash: true }); C.text('$H=3\\sigma_{0.2}$ (no hardening)', 0.495, 3.35, { color: 'red', size: 11.5, align: 'right', plate: true });
           hC.set(n, ratio(n));
           const su = s0 * Math.pow(500, n) * Math.pow(n, n) * Math.exp(-n);
-          const HBeq = tt === 'brinell' ? r.HB : (r.pm / g) * 0.95;
+          const HBeq = tt === 'brinell' ? r.HB : r.pm / g;
           info = { r, tt, n, s0, su, HBeq, ratio: ratio(n) };
         });
         v.readout(() => {
