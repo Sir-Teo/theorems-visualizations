@@ -480,7 +480,7 @@ For water $K_f$ = 1.86 K kg/mol and $K_b$ = 0.512 K kg/mol (CRC Handbook). A dis
 $$\prod_i \left(\frac{x_iP}{P^\circ}\right)^{\nu_i} = K(T) = e^{-\Delta G^\circ/RT},\qquad \Delta G^\circ = \sum_i \nu_i\mu_i^\circ = \Delta H^\circ - T\Delta S^\circ.$$
 The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) = -\Delta H^\circ/R$. Disturbing an equilibrium (adding a species, changing $P$ or $T$) makes the reaction quotient $Q \ne K$, and the system relaxes in the direction that reduces $|\ln(Q/K)|$ — the content of Le Chatelier's principle.`,
       idea: String.raw`$G(\xi)$ is the sum of a linear part, the Gibbs energies of the unmixed species, and the mixing term $RT\sum N_i\ln x_i$ (4.12), which is convex with infinite slope at the ends. Their sum therefore has an interior minimum (3.10): no reaction runs exactly to completion. Setting $dG/d\xi = \sum\nu_i\mu_i = \Delta G^\circ + RT\ln Q$ to zero gives $Q = K$. Since $\ln K = -\Delta H^\circ/RT + \Delta S^\circ/R$, a plot of $\ln K$ against $1/T$ is nearly straight with slope $-\Delta H^\circ/R$ (Gibbs–Helmholtz). Pressure enters through $(P/P^\circ)^{\Delta\nu}$, so compression favours the side with fewer gas molecules.`,
-      caption: String.raw`**Pick a reaction** and set $T$ and $P$. Left: $G(\xi)$ (ink) as the sum of the unmixed line (dashed) and the mixing term (dotted); the green dot is the equilibrium. Middle: the van 't Hoff plot — the line uses $\Delta H^\circ$ and $\Delta S^\circ$ at 298 K from the NIST-JANAF tables, the dots are JANAF's own equilibrium constants (which include the temperature dependence of $\Delta H^\circ$). Bottom: **choose a disturbance** and press play — at $t$ = 1 s it is applied, $Q/K$ jumps, and the composition relaxes to the new equilibrium. Adding argon at fixed volume changes nothing; at fixed pressure it dilutes the mixture and shifts it toward more molecules.`,
+      caption: String.raw`**Pick a reaction** and set $T$ and $P$. Left: $G(\xi)$ (ink), computed from JANAF Gibbs energies of formation at the chosen temperature, as the sum of the unmixed line (dashed) and the mixing term (dotted); the green dot is the equilibrium. Middle: the van 't Hoff plot — the line uses $\Delta H^\circ$ and $\Delta S^\circ$ at 298 K from the NIST-JANAF tables, the dots are JANAF's own equilibrium constants (which include the temperature dependence of $\Delta H^\circ$). Bottom: **choose a disturbance** and press play — at $t$ = 1 s it is applied, $Q/K$ jumps, and the composition relaxes to the new equilibrium. Adding argon at fixed volume changes nothing; at fixed pressure it dilutes the mixture and shifts it toward more molecules.`,
       deps: ['thermo-4.12', 'thermo-3.10'],
       see: ['pchem-7.4', 'pchem-7.7', 'pchem-7.9', 'pchem-7.11'],
       refs: ['Schroeder §5.6'],
@@ -501,11 +501,15 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
         const sv = v.stage({ x: [1, 3.6], y: [-20, 20], height: 290, axes: 'box', gutter: true, xlabel: '1000 K / T', ylabel: 'ln K', weight: 1, title: 'van ’t Hoff plot' });
         const sl = v.stage({ x: [0, 6], y: [0, 1], height: 230, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'product mole fraction', full: true, title: 'disturb the equilibrium (Le Chatelier)' });
         const thermo = (r) => { const H = r.sp.reduce((a, s, k) => a + r.nu[k] * JANAF[s].H, 0) * 1e3, S = r.sp.reduce((a, s, k) => a + r.nu[k] * JANAF[s].S, 0); return { H, S }; };
+        /** log10 Kf of a species at T from JANAF, linear in 1/T (extrapolated beyond the table); 0 for elements. */
+        const logKf = (sp, T) => { const t = JANAF[sp].logKf; if (!t) return 0; const rows = t.map(([TT, k]) => [1 / TT, k]).sort((a, b) => a[0] - b[0]); const u = 1 / T; let i = rows.findIndex((q) => q[0] >= u); if (i <= 0) i = i === 0 ? 1 : rows.length - 1; const a = rows[i - 1], b = rows[i]; return a[1] + (b[1] - a[1]) * (u - a[0]) / (b[0] - a[0]); };
+        /** Standard chemical potential μ°/RT of a species: −ln Kf (= ΔfG°/RT, elements in their reference state = 0). */
+        const mu0 = (sp, T) => -logKf(sp, T) * Math.LN10;
         /** Mixture state: amounts n (array incl. inert last), T, P. */
-        const G = (r, n, T, P) => { const tot = n.reduce((a, b) => a + b, 0); let g = 0; r.sp.forEach((s, k) => { if (n[k] > 0) g += n[k] * ((JANAF[s].H * 1e3 - T * JANAF[s].S) / (R * T) + Math.log(n[k] / tot * P)); }); const ni = n[r.sp.length]; if (ni > 0) g += ni * Math.log(ni / tot * P); return g; };
+        const G = (r, n, T, P) => { const tot = n.reduce((a, b) => a + b, 0); let g = 0; r.sp.forEach((s, k) => { if (n[k] > 0) g += n[k] * (mu0(s, T) + Math.log(n[k] / tot * P)); }); const ni = n[r.sp.length]; if (ni > 0) g += ni * Math.log(ni / tot * P); return g; };
         const amounts = (r, base, xi) => r.sp.map((_, k) => base[k] + r.nu[k] * xi).concat([base[r.sp.length] || 0]);
         const range = (r, base) => { let lo = -Infinity, hi = Infinity; r.nu.forEach((nu, k) => { const lim = -base[k] / nu; if (nu < 0) hi = Math.min(hi, lim); else lo = Math.max(lo, lim); }); return [lo, hi]; };
-        const lnQK = (r, base, xi, T, P) => { const n = amounts(r, base, xi), tot = n.reduce((a, b) => a + b, 0), { H, S } = thermo(r); let q = 0; r.sp.forEach((_, k) => { q += r.nu[k] * Math.log(Math.max(n[k], 1e-300) / tot * P); }); return q + (H - T * S) / (R * T); };
+        const lnQK = (r, base, xi, T, P) => { const n = amounts(r, base, xi), tot = n.reduce((a, b) => a + b, 0); let q = 0; r.sp.forEach((sp, k) => { q += r.nu[k] * (Math.log(Math.max(n[k], 1e-300) / tot * P) + mu0(sp, T)); }); return q; };
         const eqXi = (r, base, T, P) => { const [lo, hi] = range(r, base), e = 1e-9 * (hi - lo); return bisect((xi) => lnQK(r, base, xi, T, P), lo + e, hi - e, 80); };
         const prodFrac = (r, n) => n[r.sp.length - 1] / n.reduce((a, b) => a + b, 0);
         // the Le Chatelier run: before/after states
@@ -539,7 +543,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           const base = r.feed.concat([0]), [lo, hi] = range(r, base);
           const xs = []; for (let i = 0; i <= 200; i++) xs.push(lo + (hi - lo) * (0.0005 + 0.999 * i / 200));
           const Gv = xs.map((xi) => G(r, amounts(r, base, xi), T, P));
-          const lin = (xi) => { const n = amounts(r, base, xi); return r.sp.reduce((a, s, k) => a + n[k] * ((JANAF[s].H * 1e3 - T * JANAF[s].S) / (R * T) + Math.log(P)), 0); };
+          const lin = (xi) => { const n = amounts(r, base, xi); return r.sp.reduce((a, s, k) => a + n[k] * (mu0(s, T) + Math.log(P)), 0); };
           const mixT = (xi) => G(r, amounts(r, base, xi), T, P) - lin(xi);
           const all = Gv.concat(xs.map(lin)), g0 = Math.min(...Gv), gy = [Math.min(...all), Math.max(...all)];
           const yr = [Math.min(gy[0], g0 - 0.5) - g0, Math.min(gy[1] - g0, (Math.max(...Gv) - g0) * 1.6 + 0.5)];
@@ -559,7 +563,7 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           const pts = (r.sp.includes('NH3') ? JANAF.NH3.logKf : JANAF.NO2.logKf).map((q) => q[0]).filter((TT) => TT >= Ta - 1 && TT <= Tb + 1);
           sv.dots(pts.map((TT) => [1000 / TT, r.kJ(TT) * Math.LN10]), { r: 4, color: 'ink' });
           sv.hline(0, { color: 'muted', width: 1 });
-          sv.dot(1000 / T, -(H - T * S) / (R * T), { r: 5.5, color: 'gold' });
+          sv.dot(1000 / T, -r.sp.reduce((a, s2, k) => a + r.nu[k] * mu0(s2, T), 0), { r: 5.5, color: 'gold' });
           sv.text(`slope −ΔH°/R = ${v.fix(-H / R / 1000, 2)}×10³ K`, 1000 / Tb + 0.05, rx.value === 'nh3' ? 13 : 6, { size: 11, color: 'accent', align: 'left', plate: true });
           // --- Le Chatelier ---
           const ys = c.path.map((q) => q[1]); const ylo = Math.min(...ys), yhi = Math.max(...ys), pad = Math.max(0.02, 0.25 * (yhi - ylo));
@@ -571,14 +575,14 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           sl.text('new equilibrium', 5.9, c.f1, { dy: c.f1 >= c.f0 ? -9 : 13, size: 11, color: 'green', align: 'right', plate: true });
           sl.text('disturbance', 1, Math.min(1, yhi + pad), { dx: 5, dy: 12, size: 10.5, color: 'red', align: 'left' });
           const lnK = -(H - T * S) / (R * T);
-          info = { r, T, P, H, S, lnK, lnKJ: r.kJ(T) * Math.LN10, xe: X(xe), c };
+          info = { r, T, P, H, S, lnK, lnKJ: -r.sp.reduce((a, s2, k) => a + r.nu[k] * mu0(s2, T), 0), xe: X(xe), c };
         }, { still: 5, period: 7 });
         v.legend([['ink', 'G(ξ)'], ['muted', 'unmixed species', { dash: true }], ['purple', 'mixing term', { dash: true }], ['accent', "constant ΔH°, ΔS° (van 't Hoff)"], ['ink', 'JANAF K(T)', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
           const { r, T, P, H, S, lnK, lnKJ, xe, c } = info;
           const dir = c.qk < 0.999 ? 'Q < K: shifts toward products' : c.qk > 1.001 ? 'Q > K: shifts toward reactants' : 'Q = K: no shift';
-          return `${r.label} · $\\Delta H^\\circ$ = ${v.fix(H / 1e3, 2)} kJ, $\\Delta S^\\circ$ = ${v.fix(S, 2)} J/K (JANAF, 298 K) · at ${T} K: $K$ = $${v.sci(Math.exp(lnK), 3)}$ (van 't Hoff line), JANAF $${v.sci(Math.exp(lnKJ), 3)}$ · equilibrium at ${v.fix(P, P < 10 ? 2 : 0)} bar: product mole fraction **${v.fix(c.f0, 4)}**\ndisturbance "${{ add: r.add, rem: r.rem, P2: 'double P', T50: 'heat by 50 K', ArP: 'add 1 mol Ar at fixed P', ArV: 'add 1 mol Ar at fixed V' }[dist.value]}": right after it $Q/K$ = **${v.fix(c.qk, 4)}** → ${dir}; product fraction ${v.fix(c.f0, 4)} → ${v.fix(c.f1, 4)}`;
+          return `${r.label} · $\\Delta H^\\circ$ = ${v.fix(H / 1e3, 2)} kJ, $\\Delta S^\\circ$ = ${v.fix(S, 2)} J/K (JANAF, 298 K) · at ${T} K: $K$ = $${v.sci(Math.exp(lnKJ), 3)}$ from JANAF (used for $G(\\xi)$), $${v.sci(Math.exp(lnK), 3)}$ on the constant-$\\Delta H^\\circ$ line · equilibrium at ${v.fix(P, P < 10 ? 2 : 0)} bar: product mole fraction **${v.fix(c.f0, 4)}**\ndisturbance "${{ add: r.add, rem: r.rem, P2: 'double P', T50: 'heat by 50 K', ArP: 'add 1 mol Ar at fixed P', ArV: 'add 1 mol Ar at fixed V' }[dist.value]}": right after it $Q/K$ = **${v.fix(c.qk, 4)}** → ${dir}; product fraction ${v.fix(c.f0, 4)} → ${v.fix(c.f1, 4)}`;
         });
       },
     },

@@ -66,7 +66,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
           A.arrow(700, 400, 745, boudouardRatio(745 + K0) * 1.6, { color: 'ink', width: 1, head: 6 });
           for (const [t, lab, c, right] of [[1085, 'Cu melts 1085', 'orange', true], [SLAG_T, 'slag runs ~1150', 'purple', false], [1538, 'Fe melts 1538', 'red', true]]) {
             A.vline(t, { color: c, width: 1.2, dash: [4, 3] });
-            A.text(lab, t, 2.5e-6, { size: 10.5, color: c, align: right ? 'right' : 'left', dx: right ? -4 : 4, baseline: 'bottom', plate: true });
+            A.text(lab, t, t > 1500 ? 2.5e-5 : 2.5e-6, { size: 10.5, color: c, align: right ? 'right' : 'left', dx: right ? -4 : 4, baseline: 'bottom', plate: true });
           }
           const yStab = key === 'Cu2O' ? 3e-2 : key === 'SnO2' ? 30 : 300, yOx = key === 'Cu2O' ? 1.5e-5 : key === 'SnO2' ? 3e-3 : 3e-2;
           A.text(`${o.mname} stable`, key === 'Cu2O' ? 900 : 1250, yStab, { size: 12, color: 'green', align: 'left', weight: 700, plate: true });
@@ -81,7 +81,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
           B.text('air', -1.18, 1.2, { size: 10.5, color: 'accent', align: 'left' }); B.text('air', 1.18, 1.2, { size: 10.5, color: 'accent', align: 'right' });
           // charge: charcoal and ore lumps
           const rng = v.rng(7), lumps = [];
-          for (let j = 0; j < 5; j++) for (let i = 0; i < 6; i++) { const y = -0.4 + j * 0.27, w = 0.72 + 0.12 * (y + 0.4) / 1.1; lumps.push([-w + (i + 0.5) * (2 * w / 6) + rng.uniform(-0.04, 0.04), y + rng.uniform(-0.04, 0.04), 0.075 + 0.03 * rng(), (i + 2 * j) % 3 === 0]); }
+          for (let j = 0; j < 5; j++) for (let i = 0; i < 6; i++) { const y = -0.22 + j * 0.24, w = 0.72 + 0.12 * (y + 0.4) / 1.1; lumps.push([-w + (i + 0.5) * (2 * w / 6) + rng.uniform(-0.04, 0.04), y + rng.uniform(-0.04, 0.04), 0.075 + 0.03 * rng(), (i + 2 * j) % 3 === 0]); }
           const pool = liquid ? 0.12 + 0.12 * red : 0, slagH = slag ? 0.12 : 0;
           for (const [x, y, rr, isOre] of lumps) {
             const pts = lump(x, y, rr, Math.round((x + 2) * 1000 + y * 77));
@@ -137,7 +137,7 @@ The phase diagram explains the casting advantage (mat-6.1): tin lowers the liqui
         const A = v.stage({ x: [0, 30], y: [450, 1120], axes: 'box', gutter: true, height: 290, weight: 1.15, minWidth: 330, xlabel: 'tin (wt %)', ylabel: '°C', title: 'Cu–Sn phase diagram (copper side)' });
         const B = v.stage({ x: [0, 30], y: [0, 340], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 290, xlabel: 'tin (wt %)', ylabel: 'hardness (HV)', title: 'hardness' });
         const Cs = v.stage({ x: [-2.2, 2.2], y: [-0.25, 3.2], equal: true, axes: false, height: 260, weight: 1, minWidth: 290, title: 'the last 4 mm of each edge, after the same work' });
-        const D = yearStage(v, [-5250, -750], { height: 200, weight: 1.3, minWidth: 380, title: 'dated evidence: bronze' });
+        const D = yearStage(v, [-5400, -700], { height: 200, weight: 1.3, minWidth: 380, title: 'dated evidence: bronze' });
         const sn = v.slider('tin', 0, 25, 10, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} wt %` });
         const cw = v.slider('cold work', 0, 80, 50, { step: 1, fmt: (x) => `${Math.round(x)}%` });
         const cuts = v.slider('cuts', 0, 3000, 1000, { step: 50, int: true });
