@@ -27,13 +27,13 @@ The traceback starts at the maximal cell and stops when it reaches a cell with v
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm' },
       viz(v) {
         const EX = {
-          site: { s: findMotif('THIO_ECOLI', 'WCGPC', 8, 7), t: findMotif('THIO_HUMAN', 'WCGPC', 8, 7), note: 'thioredoxin active-site segments, E. coli (P0AA25) and human (P10599)' },
+          site: { s: PROT.HBA_HUMAN.seq.slice(0, 4) + findMotif('THIO_ECOLI', 'WCGPC', 4, 4) + PROT.LYSC_CHICK.seq.slice(0, 3), t: PROT.CYC_HORSE.seq.slice(0, 4) + findMotif('THIO_HUMAN', 'WCGPC', 4, 4) + PROT.HBB_HUMAN.seq.slice(0, 3), note: 'planted island: the thioredoxin active-site segments of E. coli (P0AA25) and human (P10599), each flanked by unrelated residues from other proteins' },
           unrel: { s: PROT.HBA_HUMAN.seq.slice(0, 15), t: PROT.LYSC_CHICK.seq.slice(0, 15), note: 'human α-globin and hen lysozyme starts (P69905, P00698): unrelated' },
           trx: { s: PROT.THIO_ECOLI.seq, t: PROT.THIO_HUMAN.seq, note: 'thioredoxin, E. coli (P0AA25) against human (P10599)' },
           lyz: { s: PROT.LYSC_CHICK.seq, t: PROT.LALBA_HUMAN.seq, note: 'hen lysozyme (P00698) against human α-lactalbumin (P00709): distant homologues' },
           hbmb: { s: PROT.HBA_HUMAN.seq, t: PROT.CYC1_YEAST.seq, note: 'human α-globin against yeast cytochrome c (P00044): unrelated' },
         };
-        const ex = v.select('pair', [{ value: 'site', label: 'trx segments' }, { value: 'unrel', label: 'unrelated 15-mers' }, { value: 'trx', label: 'thioredoxins' }, { value: 'lyz', label: 'lysozyme / lactalbumin' }, { value: 'hbmb', label: 'globin / cyt c' }], 'site');
+        const ex = v.select('pair', [{ value: 'site', label: 'planted site' }, { value: 'unrel', label: 'unrelated 15-mers' }, { value: 'trx', label: 'thioredoxins' }, { value: 'lyz', label: 'lysozyme / lactalbumin' }, { value: 'hbmb', label: 'globin / cyt c' }], 'site');
         const mode = v.select('', [{ value: 'local', label: 'local (Smith–Waterman)' }, { value: 'global', label: 'global (Needleman–Wunsch)' }], 'local');
         const gp = v.slider('gap cost $d$', 1, 14, 6, { int: true });
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 440, title: 'table of scores $F(i,j)$' });
@@ -61,6 +61,7 @@ The traceback starts at the maximal cell and stops when it reaches a cell with v
             let hi = 1; for (let i = 0; i <= n; i++) for (let j = 0; j <= m; j++) if (r.H[i][j] > hi) hi = r.H[i][j];
             const lo = loc ? 0 : Math.min(...r.H.map((row) => Math.min(...row.filter((x) => x > -1e8))));
             sR.setView([0, m + 1], [-(n + 1), 0]);
+            const stp = n > 100 ? 20 : 10, yt = []; for (let k = 0; k <= n; k += stp) yt.push([-k, String(k)]); sR.setTicks(null, yt);
             drawDPRaster(v, sR, r.H, lo, hi, `${ex.value}|${gp.value}|${mode.value}|${n}`, { res: 2 });
             sR.path(r.path.map(([i, j]) => [j + 0.5, -(i + 0.5)]), { color: 'green', width: 2.4 });
             sR.dot(r.start[1] + 0.5, -(r.start[0] + 0.5), { r: 5, color: 'green' });

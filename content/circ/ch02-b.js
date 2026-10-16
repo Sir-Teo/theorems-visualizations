@@ -206,13 +206,13 @@ export default {
             const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, nx = -(q[1] - p[1]), ny = q[0] - p[0], nl = Math.hypot(nx, ny) || 1;
             s.text(e.g === 0 ? 'cut' : `${v.fix(e.g, 1)}`, mx + (nx / nl) * 0.06, my + (ny / nl) * 0.06, { size: 11, color: e.g < 0 ? 'red' : 'muted', plate: true });
           });
+          s.dot(P[sNode][0], P[sNode][1], { r: 22, color: 'gold', hollow: true });
           P.forEach((p, i) => {
             const fl = floating.includes(i);
             const col = i === ground ? 'ink' : phi ? v.ramp(Math.max(0, Math.min(1, phi[i] / vmax)), 'orange') : fl ? 'faint' : 'muted';
             s.dot(p[0], p[1], { r: 17, color: col, label: net.names[i], labelPos: 'nw' });
             s.text(i === ground ? 'gnd' : phi ? v.fix(phi[i], 2) : '?', p[0], p[1], { size: 11, color: i === ground ? 'panel' : 'ink' });
           });
-          s.dot(P[sNode][0], P[sNode][1], { r: 22, color: 'gold', hollow: true });
           se.setView([0, Math.max(m, 4) + 1], [Math.min(-0.5, lmin * 1.3 - 0.2), Math.max(2, lmax * 1.12)]);
           ev.forEach((x, k) => { const bad = x <= tol; se.rect(k + 0.65, 0, k + 1.35, x, { fill: bad ? 'red' : 'green', fillAlpha: 0.4, color: bad ? 'red' : 'green', width: 1.5 }); });
           se.hline(0, { color: 'ink', width: 1.5 });

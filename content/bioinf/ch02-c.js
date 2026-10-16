@@ -54,7 +54,7 @@ export default {
       name: 'Banded alignment',
       statement: String.raw`If an optimal alignment of $s$ and $t$ is known to stay within $w$ diagonals of the main one, only the cells $(i,j)$ with $-w+\min(0,m-n)\le j-i\le w+\max(0,m-n)$ need be computed, a band of width $O(w)$, so time and space fall from $O(nm)$ to $O(w\max(n,m))$. The band score is always a lower bound on the optimum (it optimises over fewer paths), and equals the optimum exactly when the optimal path lies inside the band; if not, doubling $w$ until the score stops improving gives the exact optimum in $O(w^*\max(n,m))$ time, where $w^*$ is the smallest sufficient half-width.`,
       idea: String.raw`Cells outside the band are simply treated as $-\infty$ in the recurrence of item 2.5/2.7, i.e. the edit graph is cut down to the paths that stay close to the diagonal. A path that strays $k$ diagonals from the diagonal must contain at least $k$ gap positions, so for sequences that differ by few indels the optimal path cannot go far, and for a gap of length $>w$ the band is guaranteed to miss it.`,
-      caption: String.raw`Two real proteins (UniProt) are aligned with BLOSUM62 and gaps $11/1$. The blue band is the set of cells computed; the thick pale gold line is the full optimal path, the green line is the best path inside the band. Narrow the band and watch it hold the exact answer until it is narrower than the optimal path's excursion; then **insert** a block of foreign residues into $t$ and see the full path leave the band while the banded answer pays for the missing gap. The readout gives the smallest sufficient $w$.`,
+      caption: String.raw`Two real proteins (UniProt) are aligned with BLOSUM62 and gaps $11/1$. The blue band is the set of cells computed; the thick pale gold line is the full optimal path, the green line is the best path inside the band. Narrow the band and watch it hold the exact answer until it is narrower than the optimal path's excursion; then raise $k$: a block of $k$ foreign residues is inserted into $t$ near the start and $k$ residues are deleted further on, so the lengths stay equal but the optimal path must wander $k$ diagonals away and back. The full path leaves the band while the banded answer pays for the missing gaps. (A single long indel would not do: the band is stretched to contain the diagonal from corner to corner.) The readout gives the smallest sufficient $w$.`,
       scope: String.raw`Exact only when the optimal alignment stays inside the band; the band is a heuristic bound for dissimilar sequences or large indels.`,
       deps: ['bioinf-2.5'],
       refs: ['Durbin ch. 2'],
@@ -68,13 +68,13 @@ export default {
         };
         const pair = v.select('pair', [{ value: 'hh', label: 'α human / horse' }, { value: 'hc', label: 'α human / chicken' }, { value: 'ab', label: 'α / β human' }], 'hh');
         const wS = v.slider('band half-width $w$', 0, 80, 6, { int: true });
-        const kS = v.slider('insert $k$ foreign residues into $t$', 0, 60, 0, { int: true });
+        const kS = v.slider('swap in $k$ foreign residues (insertion at 41, deletion at 91)', 0, 60, 14, { int: true });
         const sR = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 440, xlabel: 'position in $t$', ylabel: 'position in $s$', title: 'the DP matrix: band, full path, banded path' });
         const sa = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 160, full: true, title: 'banded alignment (first columns)' });
         const cache = {};
         const inputs = () => {
-          const P = PAIR[pair.value], s = PROT[P.a].seq, k = kS.value, t0 = PROT[P.b].seq, at = 70;
-          const t = k ? t0.slice(0, at) + PROT.LYSC_CHICK.seq.slice(20, 20 + k) + t0.slice(at) : t0;
+          const P = PAIR[pair.value], s = PROT[P.a].seq, k = kS.value, t0 = PROT[P.b].seq;
+          const t = k ? t0.slice(0, 40) + PROT.LYSC_CHICK.seq.slice(20, 20 + k) + t0.slice(40, 90) + t0.slice(90 + k) : t0;
           return { s, t, P, k };
         };
         const full = (x) => { const key = pair.value + '|' + x.k; return cache[key] || (cache[key] = align(x.s, x.t, B62OPT)); };
@@ -84,6 +84,7 @@ export default {
           const x = inputs(), n = x.s.length, m = x.t.length, f = full(x), bd = band(x, wS.value);
           const b = align(x.s, x.t, { ...B62OPT, band: bd });
           sR.setView([0, m + 1], [-(n + 1), 0]);
+          { const yt = []; for (let k = 0; k <= n; k += 20) yt.push([-k, String(k)]); sR.setTicks(null, yt); }
           sR.raster((px, py) => { const j = Math.floor(px), i = Math.floor(-py); if (i < 0 || j < 0 || i > n || j > m) return null; return j - i >= bd[0] && j - i <= bd[1] ? v.rgb('accent').map((c, q) => (q < 3 ? c : 0.35)) : null; }, { res: 2, key: `${pair.value}|${wS.value}|${kS.value}` });
           sR.path(f.path.map(([i, j]) => [j + 0.5, -(i + 0.5)]), { color: 'gold', width: 7, alpha: 0.5 });
           sR.path(b.path.map(([i, j]) => [j + 0.5, -(i + 0.5)]), { color: 'green', width: 2.2 });
@@ -93,7 +94,7 @@ export default {
           const x = inputs(), n = x.s.length, m = x.t.length, f = full(x), bd = band(x, wS.value), b = align(x.s, x.t, { ...B62OPT, band: bd });
           let cells = 0; for (let i = 0; i <= n; i++) { const lo = Math.max(0, i + bd[0]), hi = Math.min(m, i + bd[1]); if (hi >= lo) cells += hi - lo + 1; }
           const w = needed(x, f), ok = b.score === f.score, chk = align(x.s, x.t, { ...B62OPT, band: band(x, w) }).score === f.score;
-          return `${x.P.name}${x.k ? ` with ${x.k} inserted residues` : ''}: $n=${n}$, $m=${m}$ · band computes **${cells.toLocaleString('en-US')}** of ${((n + 1) * (m + 1)).toLocaleString('en-US')} cells (${v.fix((100 * cells) / ((n + 1) * (m + 1)), 0)}%)\nfull optimum **${f.score}** · banded **${b.score}** ${ok ? '✓ exact' : `✗ short by ${f.score - b.score}`} · identities ${v.fix((100 * f.ident) / f.len, 0)}% · smallest sufficient $w^* = ${w}$ (band $w^*$ gives the optimum: ${chk ? 'yes' : 'no'})`;
+          return `${x.P.name}${x.k ? ` with a ${x.k}-residue insertion and deletion` : ''}: $n=${n}$, $m=${m}$ · band computes **${cells.toLocaleString('en-US')}** of ${((n + 1) * (m + 1)).toLocaleString('en-US')} cells (${v.fix((100 * cells) / ((n + 1) * (m + 1)), 0)}%)\nfull optimum **${f.score}** · banded **${b.score}** ${ok ? '✓ exact' : `✗ short by ${f.score - b.score}`} · identities ${v.fix((100 * f.ident) / f.len, 0)}% · smallest sufficient $w^* = ${w}$ (band $w^*$ gives the optimum: ${chk ? 'yes' : 'no'})`;
         });
       },
     },
@@ -128,7 +129,7 @@ export default {
               out.push({ cls: 'h', len: p.len, id: p.id * 100, p });
               for (let r = 0; r < 2; r++) { const q = align(A, shuffled(B, 1000 * idx + r + 1), { ...B62OPT, local: true }); out.push({ cls: 's', len: q.len, id: (100 * q.ident) / q.len, p }); }
             } else {
-              const L = 30 + ((idx * 37) % 111), a = A.slice(0, L), b = B.slice(0, L), h = align(a, b, B62OPT);
+              const L = 30 + ((idx * 53) % 111), a = A.slice(0, L), b = B.slice(0, L), h = align(a, b, B62OPT);
               out.push({ cls: 'h', len: h.len, id: (100 * h.ident) / h.len, p });
               for (let r = 0; r < 2; r++) { const q = align(a, shuffled(b, 1000 * idx + r + 1), B62OPT); out.push({ cls: 's', len: q.len, id: (100 * q.ident) / q.len, p }); }
             }
@@ -218,7 +219,7 @@ export default {
         v.readout(() => {
           const [s, t] = seqs(), r = run(), modern = align(s, t, B62OPT), c = countsOf({ top: r.top, bot: r.bot });
           const score = r.ident - (gm.value === 'res' ? gp.value * r.gaps : gp.value * c.opens);
-          return `1970-style pathway: **${r.ident}** identities, ${r.gaps} gap positions in ${c.opens} gaps → score $${r.ident} - ${v.fix(score - r.ident, 1).replace('-', '')} = ${v.fix(score, 1)}$ (matrix maximum ${v.fix(r.score, 1)})\ntoday's global alignment of the same pair (BLOSUM62, gaps 11/1): score **${modern.score}**, ${modern.ident} identities in ${modern.len} columns = ${v.fix((100 * modern.ident) / modern.len, 0)}%`;
+          return `1970-style pathway: **${r.ident}** identities, ${r.gaps} gap positions in ${c.opens} gaps → score $${r.ident} - ${v.fix(r.ident - score, 1)} = ${v.fix(score, 1)}$ (matrix maximum ${v.fix(r.score, 1)})\ntoday's global alignment of the same pair (BLOSUM62, gaps 11/1): score **${modern.score}**, ${modern.ident} identities in ${modern.len} columns = ${v.fix((100 * modern.ident) / modern.len, 0)}%`;
         });
       },
     },
