@@ -1,7 +1,7 @@
 // Graph Theory (Diestel) — Chapter 4, part Z1 (§§4.3–4.4: planar embeddings, Whitney, planar and maximally planar graphs, Kuratowski–Wagner)
 import {
   K, ix, comps, blob, PALETTE, named, gstage, EDIT, cacheBy, wheel, kappa, isKconn, amask, allCycles, nonSepInduced, blocks,
-  crossings, faceWalks, dmp, tutte, isPlanar, planarEdges, kuratowski, faceSetKey, faceKey, maximalize, planarPos, ixE, fitPos, posOf,
+  crossings, faceWalks, dmp, tutte, spread, isPlanar, planarEdges, kuratowski, faceSetKey, faceKey, maximalize, planarPos, ixE, fitPos, posOf,
   loadSpec, segPoint, specOf, norm, contractG, randomTriangulation, ekey2, TAU,
 } from './ch04-z.shared.js';
 
@@ -25,7 +25,7 @@ const outerOf = (faces) => faces.reduce((b, f, i) => (f.length > faces[b].length
 function embed(N, rng, outer) {
   const faces = dmp(N.n, N.E, rng); if (!faces) return null;
   const o = outer == null ? outerOf(faces) : ((outer % faces.length) + faces.length) % faces.length;
-  return { faces, outer: o, pos: tutte(N.n, N.E, faces, o) };
+  return { faces, outer: o, pos: spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60) };
 }
 /** Fill the bounded faces of a crossing-free drawing. */
 function shade(s, F, pos, colOf, alpha = 0.22) {
@@ -147,7 +147,7 @@ export default {
           found = [...m.values()].sort((a, b) => b.n - a.n);
           ns = nonSepKeys(H); three = isKconn(H, 3).ok; sel.set(1); show();
         }
-        function show() { const e = found[Math.min(sel.value, found.length) - 1]; const o = outerOf(e.faces); setG(G, N, tutte(N.n, N.E, e.faces, o)); }
+        function show() { const e = found[Math.min(sel.value, found.length) - 1]; const o = outerOf(e.faces); setG(G, N, spread(N.n, N.E, tutte(N.n, N.E, e.faces, o), 60)); }
         v.button('sample', run);
         sel.el.addEventListener?.('input', show);
         run();

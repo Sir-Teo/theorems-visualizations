@@ -187,7 +187,7 @@ function gauss(A, b) {
  * the outer face is fixed as a regular polygon, every other face gets an extra vertex joined to its boundary (so the
  * graph becomes 3-connected) and Tutte's barycentric equations are solved. Returns pos[v] = [x, y] with |coordinates| ≤ 1.
  */
-export function tutte(n, E, faces, outer = 0) {
+export function tutte(n, E, faces, outer = 0, wf = 4) {
   const outerF = faces[outer], N = n + faces.length - 1, nbr = Array.from({ length: N }, () => new Set());
   E.forEach(([a, b]) => { nbr[a].add(b); nbr[b].add(a); });
   let id = n; const fid = new Map();
@@ -196,8 +196,8 @@ export function tutte(n, E, faces, outer = 0) {
   const free = []; for (let v = 0; v < N; v++) if (!fixedPos.has(v) && nbr[v].size) free.push(v);
   const idx = new Map(free.map((v, i) => [v, i])), A = free.map(() => new Array(free.length).fill(0)), bx = free.map(() => 0), by = free.map(() => 0);
   free.forEach((v, i) => {
-    A[i][i] = nbr[v].size;
-    for (const w of nbr[v]) { if (fixedPos.has(w)) { bx[i] += fixedPos.get(w)[0]; by[i] += fixedPos.get(w)[1]; } else A[i][idx.get(w)] -= 1; }
+    const wt = (w) => ((v >= n) !== (w >= n) ? wf : 1);
+    for (const w of nbr[v]) { const c = wt(w); A[i][i] += c; if (fixedPos.has(w)) { bx[i] += c * fixedPos.get(w)[0]; by[i] += c * fixedPos.get(w)[1]; } else A[i][idx.get(w)] -= c; }
   });
   const X = gauss(A.map((r) => r.slice()), bx), Y = gauss(A.map((r) => r.slice()), by);
   const pos = [];
@@ -369,7 +369,7 @@ export function planarPos(H) {
   const add = maximalize(H), E = H.E.map(([a, b]) => [a, b]).concat(add);
   const faces = dmp(H.n, E); if (!faces) return null;
   let o = 0; faces.forEach((f, i) => { if (f.length > faces[o].length) o = i; });
-  return tutte(H.n, E, faces, o);
+  return spread(H.n, E, tutte(H.n, E, faces, o), 40);
 }
 /** Index structure from n and an edge list. */
 export const ixE = (n, E) => ix({ nodes: Array.from({ length: n }, (_, i) => ({ id: i })), edges: E });
@@ -447,4 +447,25 @@ export function contractG(g, a, b) {
   map[b] = map[a]; const seen = new Set(), E = [];
   for (const [x, y] of g.E) { const p = map[x], q = map[y]; if (p === q) continue; const k = ekey2(p, q); if (seen.has(k)) continue; seen.add(k); E.push([Math.min(p, q), Math.max(p, q)]); }
   return { groups, E };
+}
+/**
+ * Spread out a crossing-free straight-line drawing of a connected plane graph (relative coordinates): vertices repel each
+ * other and keep a weak pull towards the barycentre of their neighbours; a move is accepted only if no edge crosses
+ * another and the set of faces stays the same, so the embedding never changes.
+ */
+export function spread(n, E, pos, iters = 80) {
+  const H = ixE(n, E), P = pos.map((p) => [p[0], p[1]]), key = (Q) => faceWalks(H, Q).map((f) => f.key).sort().join('#'), k0 = key(P);
+  const okMove = (v, np) => {
+    const old = P[v]; P[v] = np;
+    for (const [, k] of H.adj[v]) { const [a, b] = H.E[k]; for (let j = 0; j < H.m; j++) { if (j === k) continue; const [c, d] = H.E[j]; if (a === c || a === d || b === c || b === d) continue; if (segCross(P[a], P[b], P[c], P[d])) { P[v] = old; return false; } } }
+    if (key(P) !== k0) { P[v] = old; return false; }
+    return true;
+  };
+  for (let it = 0; it < iters; it++) for (let v = 0; v < n; v++) {
+    let fx = 0, fy = 0;
+    for (let w = 0; w < n; w++) { if (w === v) continue; const dx = P[v][0] - P[w][0], dy = P[v][1] - P[w][1], d2 = dx * dx + dy * dy + 0.01; fx += (0.02 * dx) / d2; fy += (0.02 * dy) / d2; }
+    const nb = H.adj[v]; if (nb.length) { let mx = 0, my = 0; for (const [w] of nb) { mx += P[w][0]; my += P[w][1]; } mx /= nb.length; my /= nb.length; fx += 0.15 * (mx - P[v][0]); fy += 0.15 * (my - P[v][1]); }
+    let s = 1; for (let t = 0; t < 5; t++, s /= 2) if (okMove(v, [P[v][0] + s * fx, P[v][1] + s * fy])) break;
+  }
+  return P;
 }

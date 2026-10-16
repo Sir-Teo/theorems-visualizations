@@ -29,7 +29,7 @@ export const TIM = harmonic(6, 0.88);
 export const circ = (c, R = 1, period = 1200) => [R * Math.sin((2 * Math.PI * c) / period), R * Math.cos((2 * Math.PI * c) / period)];
 /** Ring with ticks every `tick` cents and optional labels, on an equal-aspect stage. */
 export function ring(s, R = 1, { tick = 100, period = 1200, color = 'faint', len = 0.04, labels = null, ls = 11 } = {}) {
-  s.circle(0, 0, R, { color, width: 1.2, fill: false });
+  s.circle(0, 0, R, { color, width: 1.2 });
   for (let c = 0; c < period - 1e-6; c += tick) {
     const a = circ(c, R, period), b = circ(c, R - len, period);
     s.line(a[0], a[1], b[0], b[1], { color: 'muted', width: 1 });
@@ -56,7 +56,7 @@ export function tuneFromFifths(f) {
   return pcs;
 }
 /** Size of the interval from semitone r up by `n` semitones in a tuning pcs (cents). */
-export const ivl = (pcs, r, n) => fold(pcs[(r + n) % 12] - pcs[r]) + (r + n >= 12 && false ? 0 : 0);
+export const ivl = (pcs, r, n) => fold(pcs[(r + n) % 12] - pcs[r]);
 /** Sizes (cents above the root) of the notes of a major or minor triad on semitone r. */
 export const triadC = (pcs, r, minor = false) => [0, ivl(pcs, r, minor ? 3 : 4), ivl(pcs, r, 7)];
 /** Absolute cents (above C4) of the notes of a triad on semitone r, root placed in the octave above middle C when `up`. */

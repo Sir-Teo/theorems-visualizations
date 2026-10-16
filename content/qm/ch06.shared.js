@@ -117,3 +117,12 @@ export function airyZeros(N) {
   }
   return out;
 }
+
+import { phaseLUT as _phaseLUT } from './ch04.shared.js';
+/** Phase → [r, g, b] on the quantum kit's wheel, for raster images; rebuild per render (theme-aware). */
+export function phaseRGB(v, n = 120) {
+  const col = _phaseLUT(v, n), rg = col.lut.map((c) => v.rgb(c));
+  const f = (phi) => rg[((Math.round((phi / TAU2) * n) % n) + n) % n];
+  f.key = col.lut[0] + col.lut[n >> 2];
+  return f;
+}

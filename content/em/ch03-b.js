@@ -151,7 +151,7 @@ In each case the field lives between the conductors and the capacitance is a pur
           const ja = jt - 2, jc = jt + 2, ia = i0 - 2, ic = i1 + 2; let flux = 0;
           for (let i = ia; i < ic; i++) { flux += -(V[(jc + 0) * N + i] - V[(jc - 1) * N + i]) / h * h; flux -= -(V[(ja + 1) * N + i] - V[ja * N + i]) / h * h; }
           for (let j = ja; j < jc; j++) { flux += -(V[j * N + ic + 0] - V[j * N + ic - 1]) / h * h; flux -= -(V[j * N + ia + 1] - V[j * N + ia]) / h * h; }
-          return { C: (E0 * flux) / 1, ideal: (E0 * (i1 - i0) * h) / ((jt - jb) * h), w: (i1 - i0) * h, d: (jt - jb) * h, jt, jb, i0, i1 };
+          return { mode: 'p', C: (E0 * flux) / 1, ideal: (E0 * (i1 - i0) * h) / ((jt - jb) * h), w: (i1 - i0) * h, d: (jt - jb) * h, jt, jb, i0, i1 };
         };
         v.render(() => {
           upd();
@@ -178,10 +178,10 @@ In each case the field lives between the conductors and the capacitance is a pur
             sR.setView([0, b * 1.15], [0, 1.1]); sR.setLabels('radius $r$ (cm)', 'relative $E$ (blue), $V$ (red)');
             sR.fn((r) => Ef(r) / Ef(a), { color: 'blue', width: 2.2, domain: [a, b] }); sR.fn((r) => Vf(r) / V0, { color: 'red', width: 2.2, domain: [0, b * 1.15] });
             sR.vline(a, { color: 'faint', dash: true }); sR.vline(b, { color: 'faint', dash: true });
-            info = { C: sph ? (4 * Math.PI * E0 * a * b) / (b - a) : (2 * Math.PI * E0) / Math.log(b / a), a, b, sph, Ea: Ef(a) / 1 };
+            info = { mode: 'x', C: sph ? (4 * Math.PI * E0 * a * b) / (b - a) : (2 * Math.PI * E0) / Math.log(b / a), a, b, sph, Ea: Ef(a) / 1 };
           }
         });
-        v.readout(() => mode.value === 'p' ? `From the flux through a loop round the upper plate: $C'=${v.fix(info.C, 4)}$ pF/cm. Ideal $\\varepsilon_0w/d=${v.fix(info.ideal, 4)}$ pF/cm. Ratio $${v.fix(info.C / info.ideal, 3)}$ at $d/w=${v.fix(info.d / info.w, 2)}$ (fringing makes the true value larger).` : info.sph ? `$C=4\\pi\\varepsilon_0ab/(b-a)=${v.fix(info.C, 3)}$ pF. Narrow-gap check: with gap $d=b-a=${v.fix(info.b - info.a, 2)}$ cm and area $4\\pi ab$ the plate formula gives $\\varepsilon_0A/d=${v.fix((E0 * 4 * Math.PI * info.a * info.b) / (info.b - info.a), 3)}$ pF — identical, since $A=4\\pi ab$ is the geometric mean area.` : `$C'=2\\pi\\varepsilon_0/\\ln(b/a)=${v.fix(info.C, 4)}$ pF/cm. Plate formula with $A/\\ell=2\\pi\\sqrt{ab}$ and $d=b-a$: $${v.fix((E0 * 2 * Math.PI * Math.sqrt(info.a * info.b)) / (info.b - info.a), 4)}$ pF/cm; the two agree as $b\\to a$.`);
+        v.readout(() => info.mode === 'p' ? `From the flux through a loop round the upper plate: $C'=${v.fix(info.C, 4)}$ pF/cm. Ideal $\\varepsilon_0w/d=${v.fix(info.ideal, 4)}$ pF/cm. Ratio $${v.fix(info.C / info.ideal, 3)}$ at $d/w=${v.fix(info.d / info.w, 2)}$ (fringing makes the true value larger).` : info.sph ? `$C=4\\pi\\varepsilon_0ab/(b-a)=${v.fix(info.C, 3)}$ pF. Narrow-gap check: with gap $d=b-a=${v.fix(info.b - info.a, 2)}$ cm and area $4\\pi ab$ the plate formula gives $\\varepsilon_0A/d=${v.fix((E0 * 4 * Math.PI * info.a * info.b) / (info.b - info.a), 3)}$ pF — identical, since $A=4\\pi ab$ is the geometric mean area.` : `$C'=2\\pi\\varepsilon_0/\\ln(b/a)=${v.fix(info.C, 4)}$ pF/cm. Plate formula with $A/\\ell=2\\pi\\sqrt{ab}$ and $d=b-a$: $${v.fix((E0 * 2 * Math.PI * Math.sqrt(info.a * info.b)) / (info.b - info.a), 4)}$ pF/cm; the two agree as $b\\to a$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.10
