@@ -73,13 +73,16 @@ export function psublW(T) {
 /** Triple points of ice phases with liquid (IAPWS R14-08 Table 1). */
 export const ICE_TRIPLES = [['Ih–III', 251.165, 208.566e6], ['III–V', 256.164, 350.1e6], ['V–VI', 273.31, 632.4e6], ['VI–VII', 355, 2216e6]];
 /**
- * Saturated water at T (K) from the IAPWS-95 table WSAT (linear interpolation, 5 K grid; pressure from Wagner–Pruss):
+ * Saturated water at T (K) from the IAPWS-95 table WSAT (linear interpolation on the 5 K grid, logarithmic for the vapour
+ * density; pressure from Wagner–Pruss):
  * {T, P (Pa), rl, rv (kg/m³), hl, hv (J/kg), sl, sv (J/(kg K)), L (J/kg), dv (m³/kg)}.
  */
+let WSATL = null;
 export function satW(T) {
   T = clamp(T, 273.16, 647.0);
   const g = (k) => interp(WSAT, 0, k, T);
-  const rl = g(2), rv = g(5), hl = g(3) * 1e3, hv = g(6) * 1e3, sl = g(4) * 1e3, sv = g(7) * 1e3;
+  if (!WSATL) WSATL = WSAT.map((r) => [r[0], Math.log(r[5])]);
+  const rl = g(2), rv = Math.exp(interp(WSATL, 0, 1, T)), hl = g(3) * 1e3, hv = g(6) * 1e3, sl = g(4) * 1e3, sv = g(7) * 1e3;
   return { T, P: psatW(T), rl, rv, hl, hv, sl, sv, L: hv - hl, dv: 1 / rv - 1 / rl };
 }
 

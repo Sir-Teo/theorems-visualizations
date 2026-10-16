@@ -160,7 +160,7 @@ export default {
       statement: String.raw`**Loss aversion**: losses loom larger than gains of the same size. Most people reject a 50–50 gamble to win or lose the same amount, and accept a mixed gamble (win $G$ or lose $L$ with equal chances) only when $G$ is well above $L$. In prospect theory this is a kink of the value function at the reference point, measured by the **loss-aversion coefficient** $\lambda=-v(-x)/v(x)$; with a linear value function and no probability weighting, an even-chance gamble is acceptable exactly when $G/L\ge\lambda$. Tversky and Kahneman's (1992) subjects accepted an even chance to lose \$25, \$50, \$100 or \$150 only for gains of at least \$61, \$101, \$202 or \$280 (medians), ratios of about 2, and their median fitted $\lambda$ was 2.25. A 2024 meta-analysis of 607 estimates (Brown, Imai, Vieider and Camerer) puts the mean at 1.96 (95% interval 1.82–2.10); another, restricted to fits of individual choices between mixed gambles (Walasek, Mullett and Stewart), finds only 1.31 (1.10–1.53).`,
       scope: String.raw`Strongest for money and goods given up from an endowment and for moderate stakes; weak or absent for small stakes, for money spent as intended, for experienced traders and for some elicitation methods. Estimates of $\lambda$ depend on the assumed curvature and probability weighting and on what is taken as the reference point, which is why the critics (Gal and Rucker 2018) argue that the effect has been overstated.`,
       idea: String.raw`Loss aversion explains the refusal of favourable small gambles that expected utility can explain only with absurd risk aversion (Rabin's theorem, behav-1.8), and it underlies the endowment effect (behav-2.9), status quo bias (behav-2.10) and the equity premium (behav-2.12). It is measured by finding where a person switches from rejecting to accepting mixed gambles: at the switch $v(G)=\lambda\,|v(-L)|$, so the ratio $G/L$ of the switch point estimates $\lambda$ once curvature and weights are fixed. Because gains and losses enter through different branches, an estimate made with a bilinear value function and one made with curvature and weighting differ, as the toggle shows.`,
-      caption: String.raw`Each row offers even-chance gambles that lose the amount shown on the left; going right, the gain grows from 1 to 4 times the loss. Click the first gamble in each row you would accept: it and everything to its right turn green, the rest red (shift-click toggles one gamble). The vertical line is the loss-aversion coefficient fitted to all your answers by maximum likelihood (logistic choice), and the gold diamonds are the medians of Tversky and Kahneman's subjects for the same losses. Below, your $\lambda$ beside published estimates. Or set a $\lambda$ and press **simulate a respondent**.`,
+      caption: String.raw`Each row offers even-chance gambles that lose the amount shown on the left; going right, the gain grows from 1 to 4 times the loss. Click the first gamble in each row you would accept: it and everything to its right turn green, the rest red (shift-click toggles one gamble). The vertical line is the loss-aversion coefficient fitted to all your answers by maximum likelihood (logistic choice), and the gold marks are the median switch points of Tversky and Kahneman's subjects for the same losses. Below, your $\lambda$ beside published estimates. Or set a $\lambda$ and press **simulate a respondent**.`,
       deps: ['behav-2.1'], refs: ['Kahneman ch. 26', 'Kahneman ch. 28'], tags: ['loss aversion', 'prospect theory', 'measurement'],
       see: ['behav-1.8', 'behav-2.9'],
       credit: 'Kahneman & Tversky, 1979; Tversky & Kahneman, 1992',
@@ -177,7 +177,7 @@ export default {
         });
         v.button('clear my answers', () => LOSS.forEach((_, i) => RAT.forEach((_, j) => { ans[i][j] = null; })));
         const G = v.stage({ x: [0.88, 4.5], y: [0.4, 4.6], xlog: true, axes: 'box', gutter: { l: 70, b: 40, t: 10, r: 10 }, height: 300, full: true, xlabel: 'gain ÷ loss', ylabel: '', yticks: LOSS.map((L, i) => [i + 1, `lose $${L}`]), xticks: RAT.map((R) => [R, String(R)]), title: 'which 50–50 gambles would you accept?' });
-        const Mtr = v.stage({ x: [0.8, 3.2], y: [0, 6.6], axes: 'box', gutter: { l: 210, b: 36, t: 8, r: 16 }, height: 250, full: true, xlabel: 'loss-aversion coefficient λ', yticks: [], title: 'your λ beside published estimates' });
+        const Mtr = v.stage({ x: [-0.9, 3.2], y: [0.4, 6.6], axes: false, height: 240, full: true, title: 'your λ beside published estimates (loss-aversion coefficient)' });
         G.onClick((x, y, mod) => {
           const i = Math.round(y) - 1; if (i < 0 || i >= LOSS.length) return;
           let j = 0, best = 1e9; RAT.forEach((R, k) => { const d = Math.abs(Math.log(R) - Math.log(Math.max(0.5, x))); if (d < best) { best = d; j = k; } });
@@ -215,7 +215,8 @@ export default {
               G.text(`+${Math.round(R * L)}`, R, yc, { dy: 19, align: 'center', size: 10, color: 'muted' });
             });
             const tk = TKX[L] / L;
-            G.dot(tk, yc, { r: 6, color: 'gold', label: `${TKX[L]}`, labelPos: 'n' });
+            G.line(tk, yc - 0.3, tk, yc + 0.3, { color: 'gold', width: 3 });
+            G.text(`TK92: +${TKX[L]}`, tk, yc + 0.3, { dy: -7, align: 'center', size: 10.5, weight: 700, color: 'gold' });
           });
           if (fit) {
             const R = corr.value ? Math.pow(fit.lam / wr, 1 / al) : fit.lam;
@@ -230,10 +231,12 @@ export default {
             { y: 2, lab: 'Walasek et al. 2024 (mixed gambles)', c: 'orange', m: 1.31, lo: 1.10, hi: 1.53 },
             { y: 1, lab: 'simulated respondent', c: 'muted', m: simL.value },
           ];
-          Mtr.vline(1, GUIDE); Mtr.text('no loss aversion', 1, 0.15, { dx: 5, size: 10.5, color: 'muted' });
+          Mtr.line(0.8, 0.55, 3.2, 0.55, { color: 'muted', width: 1 });
+          for (let t = 1; t <= 3; t += 0.5) { Mtr.line(t, 0.55, t, 0.45, { color: 'muted', width: 1 }); Mtr.text(String(t), t, 0.45, { dy: 9, align: 'center', size: 10.5, color: 'muted' }); }
+          Mtr.line(1, 0.55, 1, 6.5, GUIDE); Mtr.text('λ = 1: no loss aversion', 1, 6.5, { dx: 5, dy: 4, size: 10.5, color: 'muted' });
           for (const r of rows) {
-            Mtr.text(r.lab, 0.8, r.y, { dx: -10, align: 'right', size: 11.5, weight: r.c === 'accent' ? 700 : 500, color: r.c === 'accent' ? 'accent' : 'ink' });
-            Mtr.hline(r.y, { color: 'grid', width: 1 });
+            Mtr.text(r.lab, -0.88, r.y, { size: 11.5, weight: r.c === 'accent' ? 700 : 500, color: r.c === 'accent' ? 'accent' : 'ink' });
+            Mtr.line(0.8, r.y, 3.2, r.y, { color: 'grid', width: 1 });
             if (r.lo != null) Mtr.line(r.lo, r.y, r.hi, r.y, { color: r.c, width: 5, alpha: 0.6 });
             if (r.m != null) { Mtr.dot(clamp(r.m, 0.8, 3.2), r.y, { r: 6.5, color: r.c }); Mtr.text(r.m.toFixed(2), clamp(r.m, 0.8, 3.2), r.y, { dy: -13, align: 'center', size: 11, weight: 700, color: r.c }); }
             else if (r.lo == null) Mtr.text('answer some rows above', 2, r.y, { align: 'center', size: 11, color: 'muted' });
@@ -389,7 +392,7 @@ with $0<\gamma,a<1$ giving the inverse S and $\gamma=a=1$ giving $w(p)=p$ (expec
           B.fn((p) => wTK(p, 0.61), { color: 'faint', width: 1.4, dash: [6, 4], domain: [0, 1] });
           B.fn((p) => wTK(p, g), { color: 'blue', width: 2.6, domain: [0, 1], n: 300 });
           B.fn((p) => wPrelec(p, pa), { color: 'purple', width: 2, domain: [0.0005, 1], n: 300 });
-          const fT = fixedPoint((p) => wTK(p, g)), fP = fixedPoint((p) => wPrelec(p, pa));
+          const fT = Math.abs(g - 1) > 0.06 ? fixedPoint((p) => wTK(p, g)) : null, fP = Math.abs(pa - 1) > 0.06 ? fixedPoint((p) => wPrelec(p, pa)) : null;
           if (fT) B.dot(fT, fT, { r: 5, color: 'blue', label: `${fT.toFixed(2)}`, labelPos: 'se' });
           if (fP) B.dot(fP, fP, { r: 5, color: 'purple', label: `${fP.toFixed(2)}`, labelPos: 'nw' });
           for (const [p, y] of pts) B.dot(p, y, { r: 5.5, color: 'gold' });

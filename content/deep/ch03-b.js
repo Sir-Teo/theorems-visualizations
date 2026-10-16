@@ -399,7 +399,7 @@ This needs only $z^\ast$ — not the iterates that produced it — so memory is 
         v.render(() => {
           const s = sS.value, K = KS.value, t = [Ht.x, Ht.y], I = implicitGrad(s, b0, t), U = unrolledGrad(s, b0, t, K);
           // vector field and contours of the loss
-          sZ.field((x, y) => { const f = fz([x, y], s, b0); return [f[0] - x, f[1] - y]; }, { spacing: 0.23, color: 'muted', alpha: 0.5 });
+          sZ.field((x, y) => { const f = fz([x, y], s, b0); return [f[0] - x, f[1] - y]; }, { spacing: 26, color: 'muted', alpha: 0.5 });
           for (const r of [0.25, 0.5, 0.75, 1, 1.25]) sZ.circle(t[0], t[1], r, { color: 'red', width: 0.7, alpha: 0.25 });
           const path = [[0, 0]]; let z = [0, 0]; for (let k = 0; k < K; k++) { z = fz(z, s, b0); path.push(z); }
           sZ.path(path, { color: 'gold', width: 1.6 }); sZ.dots(path, { r: 2.8, color: 'gold' });

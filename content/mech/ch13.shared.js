@@ -30,6 +30,12 @@ export function fastDots(v, s, xs, ys, n, color, { alpha = 0.8, size = 1.6 } = {
   for (let i = 0; i < n; i++) { const X = s.X(xs[i]), Y = s.Y(ys[i]); if (X === X && Y === Y) c.fillRect(X - h, Y - h, size, size); }
 }
 
+/** Plain-text scientific number for slider labels: 3.2 × 10⁻⁹. */
+export function sciText(v, x, d = 1) {
+  if (!(x > 0)) return String(x);
+  let e = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** e; if (m >= 9.95) { m /= 10; e++; }
+  return (Math.abs(m - 1) < 0.05 ? '' : `${m.toFixed(d)} × `) + v.M.pow10Text(e);
+}
 /** Least-squares slope and intercept of y on x. */
 export function fitLine(xs, ys) {
   const n = xs.length; if (n < 2) return { slope: NaN, intercept: NaN };

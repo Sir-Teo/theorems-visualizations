@@ -477,7 +477,7 @@ $$x = R\lambda,\qquad y = R\sin\varphi$$
           sX.circle(0, 0, 1, { color: 'ink', width: 1.4 });
           for (const sg of [1, -1]) sX.line(sg, -1, sg, 1, { color: 'muted', width: 1.4 });
           sX.line(-1, 1, 1, 1, { color: 'muted', width: 1, dash: [4, 4] }); sX.line(-1, -1, 1, -1, { color: 'muted', width: 1, dash: [4, 4] });
-          sX.line(0, -1.12, 0, 1.12, { color: 'faint', width: 1, dash: [3, 3] });
+          sX.line(0, -1.02, 0, 1.06, { color: 'faint', width: 1, dash: [3, 3] });
           if (!eq) {
             const zm = (z1 + z2) / 2, fm = Math.asin(zm), cm = Math.cos(fm);
             for (const z of [z1 + 0.15 * (z2 - z1), zm, z2 - 0.15 * (z2 - z1)]) { const c = Math.sqrt(1 - z * z); if (1 - c > 0.06) sX.arrow(c, z, 1, z, { color: 'ink', width: 1.2, head: 6 }); }
@@ -486,7 +486,7 @@ $$x = R\lambda,\qquad y = R\sin\varphi$$
             sX.tex(String.raw`R\cos\varphi`, cm / 2, zm, { size: 13, dy: -11 });
             const ang = []; for (let i = 0; i <= 16; i++) ang.push([0.22 * Math.cos((fm * i) / 16), 0.22 * Math.sin((fm * i) / 16)]);
             sX.path(ang, { color: 'muted', width: 1.2 }); sX.tex(String.raw`\varphi`, 0.3 * Math.cos(fm / 2), 0.3 * Math.sin(fm / 2), { size: 13, color: 'muted' });
-            sX.tex(String.raw`dA = 2\pi R\cos\varphi\cdot R\,d\varphi = 2\pi R\,dz`, 0.1, -1.08, { size: 13 });
+            sX.tex(String.raw`dA = 2\pi R\cos\varphi\cdot R\,d\varphi = 2\pi R\,dz`, 0.1, -1.11, { size: 13 });
           }
           sX.corner('section through the axis', 'tl', { color: 'muted', weight: 600 });
           // ---- Lambert map

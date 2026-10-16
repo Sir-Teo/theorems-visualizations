@@ -202,11 +202,15 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
         v.render(() => {
           const g = gS.value;
           const eqs = [];
-          for (let k = 0; k <= K; k++) { const D = Dk(k), Q = bisect((q) => D(pLR(q, g)) - q, 1, 6000) ?? 0; eqs.push({ k, Q, p: pLR(Q, g), w: wOf(Q, g), N: Q / 6 }); }
+          for (let k = 0; k <= K; k++) {
+            // the largest root of D(p(Q)) = Q (with decreasing costs Q = 0 can also be an equilibrium): scan down, then bisect
+            const D = Dk(k), ex = (q) => D(pLR(q, g)) - q; let hi = 6000, Q = 0;
+            for (let j = 1; j <= 300; j++) { const lo = 6000 * (1 - j / 300) + 1; if (ex(lo) > 0) { Q = bisect(ex, lo, hi) ?? lo; break; } hi = lo; }
+            eqs.push({ k, Q, p: pLR(Q, g), w: wOf(Q, g), N: Q / 6 }); }
           const pTop = Math.max(45, Math.ceil((Math.max(...eqs.map((e) => e.p)) + 10) / 5) * 5);
           m.setView([0, QM], [0, pTop]); f.setView([0, 12], [0, pTop]);
           for (let k = 0; k <= K; k++) m.fn((Q) => 60 - Q / (15 * (1 + 0.4 * k)), { domain: [0, QM], color: 'blue', width: k === K ? 2.6 : 1.4, alpha: k === K ? 1 : 0.45 });
-          m.fn((Q) => pLR(Q, g), { domain: [30, QM], color: 'green', width: 3.4 });
+          m.fn((Q) => pLR(Q, g), { domain: [80, QM], color: 'green', width: 3.4 });
           m.path(eqs.map((e) => [e.Q, e.p]), { color: 'gold', width: 1.4, dash: [3, 3] });
           eqs.forEach((e) => { m.dot(e.Q, e.p, { r: 6, color: 'gold' }); m.text(String(e.k + 1), e.Q, e.p, { dy: -14, size: 11.5, weight: 700, color: 'ink', align: 'center' }); });
           plateText(m, 'long-run supply', QM * 0.97, pLR(QM * 0.97, g), { dy: g >= 0 ? -16 : 16, align: 'right', color: 'green' });

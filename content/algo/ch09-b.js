@@ -136,7 +136,7 @@ The first inequality holds because $u$ was the minimum of the queue. The last ho
       tags: ['shortest paths', 'greedy', 'correctness'],
       viz(v) {
         const neg = v.toggle('make e → d weigh −5', false, { onChange: () => { G.edge('e', 'd').w = neg.value ? -5 : 2; S.reset({ at: 'keep' }); } });
-        const rv = v.slider('rival path #', 1, 8, 2, { int: true });
+        const rv = v.slider('rival path #', 1, 9, 5, { int: true });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 330 });
         const G = v.graph(s, { directed: true, weights: true, layout: 'none', nodes: nodesAt(P99, { s: { notePos: 'n' }, b: { notePos: 's' }, e: { notePos: 's' }, t: { notePos: 's' } }), edges: E99.map(([a, b, w]) => [a, b, w]) });
         let run = null, info = null;
