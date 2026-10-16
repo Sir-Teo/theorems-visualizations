@@ -22,7 +22,7 @@ export default {
       statement: String.raw`A **quantum circuit** on $n$ qubits is a time-ordered list of gates, each a unitary acting on one or two of the qubits, applied to the input $|0\rangle^{\otimes n}$ and usually ended by measurements in the computational basis. The state after the first $k$ gates is
 $$|\psi_k\rangle=U_k\cdots U_2U_1|0\ldots0\rangle\in\mathbb C^{2^n},$$
 where each $U_j$ is a one- or two-qubit gate tensored with identities on the other wires. A measurement of all wires then returns the bit string $x$ with probability $|\langle x|\psi_k\rangle|^2$ (the Born rule). The circuit's *size* is the number of gates and its *depth* the number of layers of gates that can run in parallel.`,
-      idea: String.raw`A wire is a qubit and a box is a unitary, so the diagram is just a product of matrices written in time order: reading it left to right you multiply on the left each time. Gates on disjoint wires commute, which is why they can be drawn in one column. A state of $n$ qubits needs $2^n$ complex amplitudes (qm-14.1), so a classical simulation tracks exponentially many numbers; this is the sense in which the picture is expensive to simulate but cheap to run on hardware. Measurement collapses the state according to the Born rule (qm-5.7).`,
+      idea: String.raw`A wire is a qubit and a box is a unitary, so the diagram is just a product of matrices written in time order: reading it left to right you multiply on the left each time. Gates on disjoint wires commute, which is why they can be drawn in one column. A state of $n$ qubits needs $2^n$ complex amplitudes (qm-14.1), so a classical simulation tracks exponentially many numbers; this is the sense in which the picture is expensive to simulate but cheap to run on hardware. Measurement collapses the state according to the projection postulate (qm-5.7).`,
       caption: String.raw`**Build a circuit**: choose a gate, the target wire (and a control wire for two-qubit gates) and press *Add gate*; or load a preset. The *after gate* slider replays the circuit gate by gate (a click on a gate in the diagram does the same). Bars show the probability of every bit string, with colour giving the phase of the amplitude; the three spheres are the single-qubit Bloch vectors, which shrink toward the centre exactly when that qubit is entangled with the others.`,
       deps: ['qinfo-2.1', 'qm-5.7'],
       refs: ['Nielsen–Chuang §1.3.4', 'Nielsen–Chuang §4.6'],
@@ -175,7 +175,7 @@ If the pairs are Werner states with visibilities $w_1,w_2$ (mixtures $w|\Phi^+\r
 
 A forger who does not know the bases and uses *measure and resend* (measure each qubit in a guessed basis, prepare a state from the outcome) passes the test on a single forged note with probability $(3/4)^n$ per note; to turn one note into **two** accepted notes this attack succeeds with probability $(5/8)^n$, and no strategy whatever achieves more than $(3/4)^n$ for two notes. Either way the success probability falls exponentially in $n$.`,
       idea: String.raw`If the guessed basis is right (probability $\tfrac12$) the forger learns $s_i$ and the copy is perfect; if it is wrong, the outcome is a fair coin in the wrong basis and the bank's measurement in the true basis again gives a fair coin, so the qubit passes with probability $\tfrac12$. Averaging, $\tfrac12\cdot1+\tfrac12\cdot\tfrac12=\tfrac34$ per qubit. For two copies the wrong-basis case must pass twice, $\tfrac14$, giving $\tfrac12+\tfrac18=\tfrac58$. Qubits are independent, so the probabilities multiply. The root cause is the no-cloning theorem (qm-14.14): the four states are not orthogonal (qinfo-1.5), so no measurement identifies them, and measuring disturbs them.`,
-      caption: String.raw`The top row of the strip is the bank's secret state of each qubit (toggle *reveal* to see it; arrows show the polarisation). The forger picks a basis for each (row 2, green if lucky) and sends two copies; rows 3 and 4 show whether each copy passes the bank's test. Slide the **note length** $n$: the graph (log scale) shows the measured pass rates over 20 000 simulated forgeries against $(3/4)^n$ and $(5/8)^n$. A genuine, untouched note passes every time.`,
+      caption: String.raw`The top row of the strip is the bank's secret state of each qubit (toggle *reveal* to see it; arrows show the polarisation). The forger picks a basis for each (row 2, green if lucky) and sends two copies; rows 3 and 4 show whether each copy passes the bank's test. Slide the **note length** $n$: on the log-scale graph the gold dots are the fraction of 20 000 simulated forgeries in which *both* copies were accepted, tracking $(5/8)^n$ (orange); the green curve $(3/4)^n$ is the pass rate of a single copy, and also the best any attack can do for two copies. A genuine, untouched note passes every time.`,
       deps: ['qinfo-1.5', 'qm-14.14'],
       refs: ['Nielsen–Chuang §12.6'],
       tags: ['quantum money', 'no-cloning', 'cryptography'],
@@ -183,88 +183,60 @@ A forger who does not know the bases and uses *measure and resend* (measure each
       credit: 'S. Wiesner, “Conjugate coding”, written around 1970 and published in SIGACT News 15(1), 78–88 (1983); optimal two-note forgery bound $(3/4)^n$: A. Molina, T. Vidick and J. Watrous, 2012 (arXiv:1202.4010)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_money', arxiv: 'https://arxiv.org/abs/1202.4010' },
       viz(v) {
-        const NS = 20;
-        const St = v.stage({ x: [-4.2, NS], y: [0, 4.2], equal: true, axes: false, height: 250, weight: 1.35, title: 'the note and the forged copies (first 20 qubits)' });
+        const NS = 20, MAXN = 40, TR = 20000;
+        const St = v.stage({ x: [-5.6, NS], y: [0, 4.2], axes: false, height: 250, weight: 1.35, title: 'the note and the forged copies (first 20 qubits)' });
         const Gr = v.stage({ x: [0, 40], y: [1e-7, 1], ylog: true, axes: 'box', gutter: true, height: 250, weight: 1, xlabel: 'qubits on the note $n$', ylabel: 'probability the forgery is accepted', title: 'pass probability' });
         const nn = v.slider('qubits on the note $n$', 1, 40, 12, { int: true });
         const strat = v.select('forger', [{ value: 'rand', label: 'random bases' }, { value: 'z', label: 'always $+$ basis' }, { value: 'none', label: 'no forgery (genuine note)' }], 'rand');
         const reveal = v.toggle('reveal the secret', false);
         let seed = 7; v.button('forge again', () => { seed++; });
-        const MAXN = 40, TR = 20000;
-        // arrow for state (basis b: 0 = +, 1 = ×; bit s)
+        // arrow for state (basis b: 0 = +, 1 = ×; bit s), drawn with a fixed pixel length
         const dirOf = (b, s) => (b === 0 ? (s === 0 ? [0, 1] : [0, -1]) : (s === 0 ? [R2, R2] : [-R2, R2]));
-        let cache = null;
-        function simulate(kind, sd) {
-          const r = v.rng(sd * 977 + (kind === 'rand' ? 1 : kind === 'z' ? 2 : 3));
-          const first1 = new Array(MAXN + 2).fill(0), first2 = new Array(MAXN + 2).fill(0); // first failing qubit index per note (copy 1, both copies)
-          for (let t = 0; t < TR; t++) {
-            let f1 = MAXN + 1, f2 = MAXN + 1;
-            for (let i = 0; i < MAXN; i++) {
-              const b = r() < 0.5 ? 0 : 1, s = r() < 0.5 ? 0 : 1;
-              let ok1 = true, ok2 = true;
-              if (kind !== 'none') {
-                const g = kind === 'z' ? 0 : (r() < 0.5 ? 0 : 1), res = g === b ? s : (r() < 0.5 ? 0 : 1); // forger's outcome, copies are prepared in basis g with value res
-                if (g !== b) { ok1 = (r() < 0.5 ? 0 : 1) === s; ok2 = (r() < 0.5 ? 0 : 1) === s; }
-                void res;
-              }
-              if (!ok1 && f1 > MAXN) f1 = i + 1;
-              if ((!ok1 || !ok2) && f2 > MAXN) f2 = i + 1;
-              if (f2 <= MAXN) break;
-            }
-            first1[f1]++; first2[f2]++;
-          }
-          // pass rate of the first n qubits = fraction of notes whose first failure lies beyond n
-          const rate = (first) => { const out = []; let acc = TR; for (let n = 0; n <= MAXN; n++) { if (n > 0) acc -= first[n]; out.push(acc / TR); } return out; };
-          // copy 1 alone needs its own failure bookkeeping (loop above stops at the first failure of either copy), so recompute exactly
-          return { p2: rate(first2) };
+        const glyph = (x, y, d, col) => { const L = 11, ax = L / Math.abs(St.sx), ay = L / Math.abs(St.sy); St.arrow(x - d[0] * ax, y - d[1] * ay, x + d[0] * ax, y + d[1] * ay, { color: col, width: 2.2, head: 6 }); };
+        // one qubit of the experiment: the bank's secret (b, s), the forger's basis g; each forged copy is then tested by the bank in basis b
+        const trial = (r, kind) => {
+          const b = r() < 0.5 ? 0 : 1, s = r() < 0.5 ? 0 : 1, g = kind === 'z' ? 0 : (r() < 0.5 ? 0 : 1);
+          let c1 = true, c2 = true;
+          if (kind !== 'none' && g !== b) { c1 = (r() < 0.5 ? 0 : 1) === s; c2 = (r() < 0.5 ? 0 : 1) === s; } // wrong basis: each copy gives a fair coin when tested
+          return { b, s, g, c1, c2 };
+        };
+        let cache = null, sim = {};
+        function monteCarlo(kind, sd) {
+          const r = v.rng(sd * 977 + 11), fail = new Array(MAXN + 2).fill(0); // first qubit at which a note stops passing with both copies
+          for (let t = 0; t < TR; t++) { let f = MAXN + 1; for (let i = 0; i < MAXN; i++) { const q = trial(r, kind); if (!(q.c1 && q.c2)) { f = i + 1; break; } } fail[f]++; }
+          const out = []; let acc = TR; for (let n = 0; n <= MAXN; n++) { if (n > 0) acc -= fail[n]; out.push(acc / TR); }
+          return out;
         }
-        let sim = {};
         v.render(() => {
           const n = nn.value, kind = strat.value, key = `${kind}|${seed}`;
-          if (!cache || cache.key !== key) { cache = { key, ...simulate(kind, seed) }; }
-          // per-qubit display of the first NS qubits for the current note: independent draw stream
-          const r = v.rng(seed * 131 + 5), shown = Math.min(n, NS), cells = [];
-          let pass1 = 0, pass2 = 0;
-          for (let i = 0; i < n; i++) {
-            const b = r() < 0.5 ? 0 : 1, s = r() < 0.5 ? 0 : 1, g = kind === 'z' ? 0 : (r() < 0.5 ? 0 : 1), res = g === b ? s : (r() < 0.5 ? 0 : 1);
-            const c1 = kind === 'none' ? true : (g === b ? true : (r() < 0.5 ? 0 : 1) === s), c2 = kind === 'none' ? true : (g === b ? true : (r() < 0.5 ? 0 : 1) === s);
-            if (c1) pass1++; if (c1 && c2) pass2++;
-            if (i < NS) cells.push({ b, s, g, res, c1, c2 });
-          }
-          sim = { n, ok1: pass1 === n, ok2: pass2 === n, cells };
-          const rowY = [3.45, 2.45, 1.45, 0.45], lab = ['bank’s secret state', kind === 'none' ? 'no forger' : 'forger measures in', 'copy 1: test', 'copy 2: test'];
-          lab.forEach((t, i) => St.text(t, -4.05, rowY[i], { size: 11.5, color: 'muted', align: 'left', baseline: 'middle' }));
+          if (!cache || cache.key !== key) cache = { key, both: monteCarlo(kind, seed) };
+          const r = v.rng(seed * 131 + 5), cells = []; let p1 = 0, p2 = 0;
+          for (let i = 0; i < n; i++) { const c = trial(r, kind); if (c.c1) p1++; if (c.c1 && c.c2) p2++; if (i < NS) cells.push(c); }
+          sim = { n, ok1: p1 === n, ok2: p2 === n };
+          const rowY = [3.5, 2.5, 1.5, 0.5], lab = ['bank’s secret', kind === 'none' ? 'no forger' : 'forger’s basis', 'copy 1 tested', 'copy 2 tested'];
+          lab.forEach((t, i) => St.text(t, -5.5, rowY[i], { size: 11.5, color: 'muted', align: 'left', baseline: 'middle' }));
           cells.forEach((c, i) => {
             const x = i + 0.5;
-            St.rect(i + 0.06, 3.02, i + 0.94, 3.9, { fill: 'grid', fillAlpha: 0.14, color: 'grid', width: 0.8, radius: 3 });
-            if (reveal.value) { const d = dirOf(c.b, c.s); St.arrow(x - 0.3 * d[0], rowY[0] - 0.3 * d[1], x + 0.3 * d[0], rowY[0] + 0.3 * d[1], { color: c.b === 0 ? 'accent' : 'purple', width: 2.2, head: 6 }); }
-            else St.text('?', x, rowY[0], { size: 14, align: 'center', baseline: 'middle', color: 'faint' });
-            if (kind !== 'none') {
-              const lucky = c.g === c.b;
-              St.text(c.g === 0 ? '+' : '×', x, rowY[1], { size: 16, align: 'center', baseline: 'middle', color: reveal.value ? (lucky ? 'green' : 'red') : 'ink' });
-              St.text(c.c1 ? '✓' : '✗', x, rowY[2], { size: 14, align: 'center', baseline: 'middle', color: c.c1 ? 'green' : 'red' });
-              St.text(c.c2 ? '✓' : '✗', x, rowY[3], { size: 14, align: 'center', baseline: 'middle', color: c.c2 ? 'green' : 'red' });
-            } else { St.text('✓', x, rowY[2], { size: 14, align: 'center', baseline: 'middle', color: 'green' }); St.text('✓', x, rowY[3], { size: 14, align: 'center', baseline: 'middle', color: 'green' }); }
+            St.rect(i + 0.06, 3.05, i + 0.94, 3.95, { fill: 'grid', fillAlpha: 0.14, color: 'grid', width: 0.8, radius: 3 });
+            if (reveal.value) glyph(x, rowY[0], dirOf(c.b, c.s), c.b === 0 ? 'accent' : 'purple'); else St.text('?', x, rowY[0], { size: 14, align: 'center', baseline: 'middle', color: 'faint' });
+            if (kind !== 'none') St.text(c.g === 0 ? '+' : '×', x, rowY[1], { size: 16, align: 'center', baseline: 'middle', color: reveal.value ? (c.g === c.b ? 'green' : 'red') : 'ink' });
+            St.text(c.c1 ? '✓' : '✗', x, rowY[2], { size: 14, align: 'center', baseline: 'middle', color: c.c1 ? 'green' : 'red' });
+            St.text(c.c2 ? '✓' : '✗', x, rowY[3], { size: 14, align: 'center', baseline: 'middle', color: c.c2 ? 'green' : 'red' });
           });
           if (n > NS) St.text(`… and ${n - NS} more qubits`, NS - 0.1, 4.05, { size: 11, align: 'right', baseline: 'middle', color: 'muted' });
-          // graph
-          const xs = Array.from({ length: MAXN + 1 }, (_, i) => i), floor = 1.2e-7;
-          const th = (p) => (x) => Math.max(floor, Math.pow(p, x));
-          Gr.path(xs.map((x) => [x, th(0.75)(x)]), { color: 'green', width: 2 });
-          Gr.path(xs.map((x) => [x, th(0.625)(x)]), { color: 'orange', width: 2 });
-          if (kind !== 'none') {
-            const mc = cache.p2;
-            Gr.dots(xs.filter((x) => x > 0 && mc[x] > 0).map((x) => [x, mc[x]]), { r: 3, color: kind === 'rand' ? 'orange' : 'red' });
-          }
+          const xs = Array.from({ length: MAXN + 1 }, (_, i) => i), floor = 1.5e-7;
+          const curve = (p) => xs.map((x) => (Math.pow(p, x) >= floor ? [x, Math.pow(p, x)] : null)).filter(Boolean);
+          Gr.path(curve(0.75), { color: 'green', width: 2 }); Gr.path(curve(0.625), { color: 'orange', width: 2 });
+          if (kind !== 'none') Gr.dots(xs.filter((x) => x > 0 && cache.both[x] > 0).map((x) => [x, cache.both[x]]), { r: 3, color: 'gold' });
           Gr.vline(n, { color: 'faint', dash: true });
-          Gr.text('$(3/4)^n$', 36, 0.75 ** 36 * 1.5, { size: 12, color: 'green', align: 'right', baseline: 'bottom' });
-          Gr.text('$(5/8)^n$', 36, 0.625 ** 36 * 1.5, { size: 12, color: 'orange', align: 'right', baseline: 'bottom' });
+          Gr.text('$(3/4)^n$', 38, 0.75 ** 38 * 1.6, { size: 12, color: 'green', align: 'right', baseline: 'bottom' });
+          Gr.text('$(5/8)^n$', 22, 0.625 ** 22 * 1.6, { size: 12, color: 'orange', align: 'left', baseline: 'bottom', dx: 6 });
         });
         v.readout(() => {
           const n = sim.n, kind = strat.value;
-          if (kind === 'none') return `a genuine note of $n=${n}$ qubits passes the bank’s test with probability 1; a note used as a forgery template and returned undisturbed also passes`;
-          const mc = cache.p2[Math.min(n, 40)];
-          return `this forgery: copy 1 ${sim.ok1 ? '**accepted**' : '**rejected**'}, both copies ${sim.ok2 ? '**accepted**' : '**rejected**'}\nboth copies pass in ${fix(v, mc * 100, 3)}% of 20 000 forgeries (theory $(5/8)^{${n}}=${fix(v, 0.625 ** n * 100, 3)}$%); one copy alone would pass with probability $(3/4)^{${n}}=${fix(v, 0.75 ** n * 100, 3)}$%${kind === 'z' ? ' (a fixed basis is no better than a random one: the secret bases are uniform)' : ''}`;
+          if (kind === 'none') return `a genuine note of $n=${n}$ qubits passes the bank’s test with probability 1: the bank measures each qubit in the basis in which it was prepared`;
+          const mc = cache.both[Math.min(n, 40)];
+          return `this forgery: copy 1 ${sim.ok1 ? '**accepted**' : '**rejected**'}, both copies ${sim.ok2 ? '**accepted**' : '**rejected**'}\nboth copies pass in ${fix(v, mc * 100, 3)}% of 20 000 forgeries (gold dots; theory $(5/8)^{${n}}=${fix(v, 0.625 ** n * 100, 3)}$%); a single copy would pass with probability $(3/4)^{${n}}=${fix(v, 0.75 ** n * 100, 3)}$%${kind === 'z' ? ' (a fixed basis is no worse for the forger than a random one: the secret bases are uniform)' : ''}`;
         });
       },
     },
@@ -287,7 +259,7 @@ An eavesdropper who intercepts a fraction $q$ of the qubits, measures each in a 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/BB84', arxiv: 'https://arxiv.org/abs/2003.06557' },
       viz(v) {
         const NS = 24;
-        const St = v.stage({ x: [-4.6, NS], y: [0, 7.4], equal: true, axes: false, height: 290, weight: 1.5, title: 'the first 24 qubits' });
+        const St = v.stage({ x: [-6, NS], y: [0, 7.4], axes: false, height: 290, weight: 1.5, title: 'the first 24 qubits' });
         const Pd = v.stage({ x: [0, 64], y: [0, 1.02], axes: 'box', gutter: true, height: 290, weight: 1, xlabel: 'sifted bits compared $k$', ylabel: 'probability Eve is detected', title: 'detecting the eavesdropper' });
         const N = v.slider('qubits sent $N$', 100, 4000, 1000, { log: true, int: true });
         const q = v.slider('Eve intercepts a fraction $q$', 0, 1, 0.5, { step: 0.01 });
@@ -317,7 +289,7 @@ An eavesdropper who intercepts a fraction $q$ of the qubits, measures each in a 
           run = fresh(N.value, q.value, seed);
           const rowY = { a: 6.4, ba: 5.4, eve: 4.1, bb: 2.8, bob: 1.8, kept: 0.7 };
           const labels = [['Alice’s bit', rowY.a], ['Alice’s basis', rowY.ba], ['Eve’s basis', rowY.eve], ['Bob’s basis', rowY.bb], ['Bob’s result', rowY.bob], ['kept / error', rowY.kept]];
-          labels.forEach(([t, y]) => St.text(t, -4.5, y, { size: 11.5, color: 'muted', align: 'left', baseline: 'middle' }));
+          labels.forEach(([t, y]) => St.text(t, -5.9, y, { size: 11.5, color: 'muted', align: 'left', baseline: 'middle' }));
           run.rows.forEach((c, i) => {
             const x = i + 0.5;
             if (c.kept) St.rect(i + 0.04, 0.05, i + 0.96, 7.2, { fill: c.bad ? 'red' : 'green', fillAlpha: c.bad ? 0.2 : 0.1, color: c.bad ? 'red' : 'green', width: 0.8, radius: 3 });
@@ -348,8 +320,8 @@ An eavesdropper who intercepts a fraction $q$ of the qubits, measures each in a 
       statement: String.raw`A source emits Bell pairs $|\Phi^+\rangle$; Alice and Bob each receive one qubit and measure it along an axis chosen at random from three, all in the $xz$-plane of the Bloch sphere (the observable $\cos\theta\,Z+\sin\theta\,X$). For $\Phi^+$ the correlation of axes $\theta_A,\theta_B$ is $E=\cos(\theta_A-\theta_B)$. Rounds where the two axes coincide give identical random bits: the **key**. Rounds with the four settings $(0,\tfrac\pi4),(0,-\tfrac\pi4),(\tfrac\pi2,\tfrac\pi4),(\tfrac\pi2,-\tfrac\pi4)$ are used to estimate
 $$S=E_{00}+E_{01}+E_{10}-E_{11},$$
 which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explainable by local hidden variables and no secrecy can be certified; values of $S$ below the Tsirelson value $2\sqrt2$ signal that the pairs are noisy or have been tampered with.`,
-      idea: String.raw`A Bell-violating correlation cannot be shared with a third party (monogamy, qinfo-2.8), so the more Eve learns about the key, the more $S$ must fall below $2\sqrt2$. An intercept–resend attack replaces the entangled pair by a classical correlation along Eve's basis: with probability $q$ the state is dephased, which scales the transverse correlations and cuts $S$ (qm-14.9). The scheme is the entangled twin of BB84 (qinfo-3.5); Bennett, Brassard and Mermin showed that its key distribution is equivalent to BB84 and needs no Bell inequality for its security argument.`,
-      caption: String.raw`Choose **Eve's strategy** and the fraction $q$ of pairs she intercepts (she measures Bob's qubit in the stated basis and resends it). The bars on the left are the CHSH estimate from the simulated rounds and the exact value; the right graph plots the exact $S$ against $q$ for her three strategies: only the full intercept in a fixed basis reaches $\sqrt2$, below the classical bound 2. The key panel reports the error rate of the matching-axis rounds. The axis set used here is one convenient choice, not Ekert's original angles.`,
+      idea: String.raw`A Bell-violating correlation cannot be shared with a third party (monogamy, qinfo-2.8), so the more Eve learns about the key, the more $S$ must fall below $2\sqrt2$. An intercept–resend attack replaces the entangled pair by a classical correlation along Eve's basis: with probability $q$ the pair is dephased, which removes correlations in the $xz$-plane that the CHSH settings rely on and so cuts $S$ linearly (qm-14.9). The scheme is the entangled twin of BB84 (qinfo-3.5); Bennett, Brassard and Mermin showed that its key distribution is equivalent to BB84 and needs no Bell inequality for its security argument.`,
+      caption: String.raw`Choose **Eve's strategy** and the fraction $q$ of pairs she intercepts (she measures Bob's qubit in the stated basis and resends it). The bars on the left are the CHSH estimate from the simulated rounds and the exact value; the middle graph plots the exact $S$ against $q$: it falls linearly from $2\sqrt2$ to $\sqrt2$ and crosses the classical bound 2 at $q=\tfrac{2\sqrt2-2}{\sqrt2}\approx0.59$, whichever basis she uses (for these settings the three strategies give the same $S$). The right graph shows what the strategies do *not* share: the error rate of the matching-axis rounds, which differs with her basis. The axis set used here is one convenient choice, not Ekert's original angles.`,
       deps: ['qm-14.9', 'qinfo-3.5'],
       refs: ['Nielsen–Chuang §12.6.3'],
       tags: ['key distribution', 'Bell inequality', 'cryptography'],
@@ -357,9 +329,9 @@ which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explain
       credit: 'A. K. Ekert, Phys. Rev. Lett. 67, 661 (1991); equivalence with BB84: C. H. Bennett, G. Brassard and N. D. Mermin, Phys. Rev. Lett. 68, 557 (1992)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_key_distribution#E91_protocol:_Artur_Ekert_(1991)' },
       viz(v) {
-        const Sb = v.stage({ x: [-0.3, 3.1], y: [0, 3.2], axes: false, height: 290, weight: 0.8, title: 'CHSH value' });
-        const Gq = v.stage({ x: [0, 1], y: [1, 3], axes: 'box', gutter: true, height: 290, weight: 1.25, xlabel: 'fraction $q$ of pairs intercepted', ylabel: 'exact CHSH value $S$', title: '$S$ against the eavesdropping fraction' });
-        const Kt = v.stage({ x: [-0.1, 4.1], y: [-0.2, 1.22], axes: false, height: 290, weight: 1, title: 'matching-axis rounds' });
+        const Sb = v.stage({ x: [-0.3, 3.1], y: [-0.35, 3.2], axes: false, height: 290, weight: 0.8, title: 'CHSH value' });
+        const Gq = v.stage({ x: [0, 1], y: [1, 3.1], axes: 'box', gutter: true, height: 290, weight: 1.25, xlabel: 'fraction $q$ of pairs intercepted', ylabel: 'exact CHSH value $S$', title: '$S$ against the eavesdropping fraction' });
+        const Kt = v.stage({ x: [0, 1], y: [0, 0.4], axes: 'box', gutter: true, height: 290, weight: 1, xlabel: 'fraction $q$ of pairs intercepted', ylabel: 'error rate of the key', title: 'error rate of the matching-axis rounds' });
         const strat = v.select('Eve measures in', [{ value: 'Z', label: '$Z$ basis' }, { value: 'X', label: '$X$ basis' }, { value: 'R', label: 'random basis' }], 'R');
         const q = v.slider('intercepted fraction $q$', 0, 1, 0.4, { step: 0.01 });
         const nR = v.slider('rounds', 200, 20000, 4000, { log: true, int: true });
@@ -386,7 +358,8 @@ which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explain
           const Eh = (i, j) => (cnt[i][j].n ? (2 * cnt[i][j].same - cnt[i][j].n) / cnt[i][j].n : 0);
           const Sest = Eh(0, 0) + Eh(0, 1) + Eh(1, 0) - Eh(1, 1), Sx = Sexact(rho);
           const k1 = cnt[0][2], k2 = cnt[2][0], keyN = k1.n + k2.n, keyBad = keyN - k1.same - k2.same;
-          const qber = keyN ? keyBad / keyN : 0, exactQ = ((1 - jointProbs(rho, A[0], B[2]).reduce((s, x, i) => s + (i === 0 || i === 3 ? x : 0), 0)) + (1 - jointProbs(rho, A[2], B[0]).reduce((s, x, i) => s + (i === 0 || i === 3 ? x : 0), 0))) / 2;
+          const qberOf = (rr) => { const f = (a, b) => { const p = jointProbs(rr, a, b); return p[1] + p[2]; }; return (f(A[0], B[2]) + f(A[2], B[0])) / 2; };
+          const qber = keyN ? keyBad / keyN : 0, exactQ = qberOf(rho);
           [[Sest, 'blue', 'simulated'], [Sx, 'green', 'exact']].forEach(([s, col, nm], i) => {
             const x0 = 0.3 + i * 1.5;
             Sb.rect(x0, 0, x0 + 1.1, s, { fill: col, fillAlpha: 0.3, color: col, width: 1.6 });
@@ -395,17 +368,18 @@ which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explain
           });
           Sb.hline(2, { color: 'red', dash: true, width: 1.4 }); Sb.text('2', 3.05, 2, { size: 11, color: 'red', align: 'right', baseline: 'bottom', dy: -2 });
           Sb.hline(2 * Math.SQRT2, { color: 'green', dash: true, width: 1.2 }); Sb.text('2√2', 3.05, 2 * Math.SQRT2, { size: 11, color: 'green', align: 'right', baseline: 'bottom', dy: -2 });
-          // S against q for the three strategies
           const qs = Array.from({ length: 41 }, (_, i) => i / 40);
-          for (const [s, col, nm] of [['Z', 'accent', 'Z'], ['X', 'purple', 'X'], ['R', 'orange', 'random']]) {
-            Gq.path(qs.map((qq) => [qq, Sexact(rhoFor(s, qq))]), { color: col, width: s === strat.value ? 2.6 : 1.4, alpha: s === strat.value ? 1 : 0.7 });
-          }
+          Gq.path(qs.map((qq) => [qq, Sexact(rhoFor(strat.value, qq))]), { color: 'orange', width: 2.4 });
           Gq.hline(2, { color: 'red', dash: true, width: 1.3 }); Gq.hline(2 * Math.SQRT2, { color: 'green', dash: true, width: 1.2 });
           Gq.text('classical bound 2', 0.99, 2, { size: 11, color: 'red', align: 'right', baseline: 'top', dy: 3 });
           Gq.text('Tsirelson 2√2', 0.99, 2 * Math.SQRT2, { size: 11, color: 'green', align: 'right', baseline: 'top', dy: 3 });
           Gq.dot(q.value, Sx, { r: 6, color: 'gold' });
-          const ps = [1 - exactQ, exactQ];
-          drawGroups(v, Kt, [{ probs: ps, freq: [1 - qber, qber], names: ['agree', 'differ'], colors: ['green', 'red'] }], { labelY: 1.08 });
+          for (const [sname, col] of [['Z', 'accent'], ['X', 'purple'], ['R', 'orange']]) {
+            Kt.path(qs.map((qq) => [qq, qberOf(rhoFor(sname, qq))]), { color: col, width: sname === strat.value ? 2.6 : 1.3, alpha: sname === strat.value ? 1 : 0.65 });
+            Kt.text(sname === 'R' ? 'random' : sname, 0.98, qberOf(rhoFor(sname, 1)), { size: 11.5, color: col, align: 'right', baseline: 'bottom', dy: -3 });
+          }
+          Kt.dot(q.value, exactQ, { r: 6, color: 'gold' });
+          Kt.dot(q.value, qber, { r: 4, color: 'ink', hollow: true });
           cur = { Sest, Sx, qber, exactQ, keyN };
         });
         v.readout(() => `exact $S=${fix(v, cur.Sx, 4)}$, from the simulated rounds $${fix(v, cur.Sest, 3)}$ · key rounds: ${cur.keyN}, error rate $${fix(v, cur.qber, 3)}$ (exact $${fix(v, cur.exactQ, 3)}$)\n${cur.Sx < 2 ? '**$S<2$: the pairs carry no Bell violation — the parties abort**' : cur.Sx < 2 * Math.SQRT2 - 0.02 ? '$S$ is below $2\\sqrt2$: noise or an eavesdropper is present' : 'close to $2\\sqrt2$: no sign of an intruder'}`);
@@ -432,7 +406,7 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
         const Mp = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'fidelity $F$ of the input pairs', ylabel: 'fidelity $F^\\prime$ of the output pair', title: 'one round: $F\\mapsto F^\\prime$', xticks: [0, 0.25, 0.5, 0.75, 1], yticks: [0, 0.25, 0.5, 0.75, 1] });
         const Rd = v.stage({ x: [0, 10], y: [0, 1.04], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'round', ylabel: 'fidelity after the round', title: 'iterating the protocol', xticks: [0, 2, 4, 6, 8, 10], yticks: [0, 0.25, 0.5, 0.75, 1] });
         const nr = v.slider('rounds', 1, 10, 6, { int: true });
-        const h = Mp.handle(0.7, 0.7, { color: 'gold', r: 7, label: 'F₀', constrain: (x) => { const c = Math.max(0.27, Math.min(0.995, x)); return [c, c]; } });
+        const h = Mp.handle(0.7, 0.7, { color: 'gold', r: 7, label: 'F₀', labelPos: 'se', constrain: (x) => { const c = Math.max(0.27, Math.min(0.995, x)); return [c, c]; } });
         let cur;
         v.render(() => {
           const F0 = h.x, N = nr.value;
@@ -466,12 +440,13 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
       deps: ['qinfo-3.3', 'qinfo-3.7'],
       refs: ['Nielsen–Chuang §12.5.2'],
       tags: ['repeaters', 'entanglement', 'networks'],
-      scope: String.raw`Model assumptions: perfect memories that never decohere, instantaneous classical messages (no $L/c$ latency per attempt), perfect local gates, Werner-state links. These favour the repeater; real devices lose to direct transmission at short distance and need very good memories at long distance. Rates are per attempt cycle, and fibre loss $0.2$ dB/km is a typical value, not a constant of nature.`,
+      verify: true,
+      scope: String.raw`Model assumptions: perfect memories that never decohere, instantaneous classical messages (no $L/c$ latency per attempt), perfect local gates, Werner-state links. These favour the repeater; real devices lose to direct transmission at short distance and need very good memories at long distance. Rates are per attempt cycle, and fibre loss $0.2$ dB/km is a typical value (not checked against a source here, hence the verification flag), not a constant of nature.`,
       credit: 'H.-J. Briegel, W. Dür, J. I. Cirac and P. Zoller, Phys. Rev. Lett. 81, 5932 (1998); polynomial overhead analysed in W. Dür, H.-J. Briegel, J. I. Cirac and P. Zoller, Phys. Rev. A 59, 169 (1999)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_repeater', arxiv: 'https://arxiv.org/abs/quant-ph/9803056' },
       viz(v) {
         const Rt = v.stage({ x: [5, 20000], y: [1e-12, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, weight: 1.35, xlabel: 'distance $L$ (km)', ylabel: 'entangled pairs per attempt cycle', title: 'rate against distance' });
-        const Ch = v.stage({ x: [-0.6, 16.6], y: [-0.6, 5.2], axes: false, height: 320, weight: 1.1, title: 'the chain (drawn for up to 4 levels)' });
+        const Ch = v.stage({ x: [-0.6, 16.6], y: [-1.3, 5.2], axes: false, height: 320, weight: 1.1, title: 'the chain (drawn for up to 4 levels)' });
         const Fd = v.stage({ x: [0, 8], y: [0.25, 1.02], axes: 'box', gutter: true, height: 320, weight: 0.9, xlabel: 'nesting level $k$', ylabel: 'fidelity of the pair', title: 'fidelity of the long pair', xticks: [0, 2, 4, 6, 8] });
         const l0 = v.slider('segment length $\\ell_0$ (km)', 5, 50, 20, { step: 1, int: true });
         const K = v.slider('nesting levels $K$', 0, 8, 5, { int: true });
@@ -513,7 +488,7 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
           const last = pts[pts.length - 1];
           Rt.dot(last.L, last.rate, { r: 7, color: 'gold' });
           Rt.text('direct fibre', 400, 1e-9, { size: 12, color: 'red', align: 'left' });
-          Rt.text('repeater chain', last.L, last.rate, { size: 12, color: 'green', align: 'left', dx: 8, dy: -10 });
+          Rt.text('repeater', last.L, last.rate, { size: 12, color: 'green', align: 'right', dx: -10, dy: -12 });
           // chain schematic
           const Kd = Math.min(Kk, 4), Nseg = 1 << Kd, sx = 16 / Nseg;
           const lc = ['blue', 'teal', 'purple', 'orange', 'pink'];
@@ -528,8 +503,8 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
               if (j > 0) Ch.dot(x0 + (x1 - x0) / 2, h, { r: 3.2, color: lc[j % lc.length] });
             }
           }
-          Ch.text(`${Nseg} segment${Nseg > 1 ? 's' : ''} of ${v.fix(l0.value, 0)} km; arcs: pairs made by swapping; end nodes (gold) share the long pair`, 8, -0.45, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
-          if (Kk > 4) Ch.text(`(levels beyond 4 are not drawn: the real chain has ${1 << Kk} segments)`, 8, 4.9, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
+          Ch.text(`${Nseg} segment${Nseg > 1 ? 's' : ''} of ${v.fix(l0.value, 0)} km · arcs = swapped pairs`, 8, -0.55, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
+          if (Kk > 4) Ch.text(`only 4 levels drawn (real chain: ${1 << Kk} segments)`, 8, 4.9, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
           // fidelity
           Fd.path(pts.map((p) => [p.k, p.Fraw]), { color: 'red', width: 2, dash: true });
           Fd.path(pts.map((p) => [p.k, p.F]), { color: 'green', width: 2.4 }); Fd.dots(pts.map((p) => [p.k, p.F]), { r: 3.5, color: 'green' });
@@ -538,7 +513,7 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
           const prevP = pts.length > 1 ? pts[pts.length - 2] : null;
           cur = { last, prevP, direct: Math.pow(10, -0.02 * last.L), slope: prevP ? Math.log(last.rate / prevP.rate) / Math.log(2) : NaN };
         });
-        v.readout(() => `${K.value} levels: pair across $L=${v.fmt(cur.last.L, 4)}$ km at $${v.sci(cur.last.rate, 2)}$ per cycle; direct fibre would give $${v.sci(cur.direct, 2)}$${cur.direct > 0 ? ` (a gain of ${v.sci(cur.last.rate / cur.direct, 2)})` : ''}\n${cur.prevP ? `doubling $L$ multiplies the rate by $2^{${fix(v, cur.slope, 2)}}$: a power law, in contrast with the factor $10^{-0.02L}$ of the direct link` : 'no swapping yet (K = 0): the repeater is just the direct link'} · fidelity ${fix(v, cur.last.F, 3)} with purification, ${fix(v, cur.last.Fraw, 3)} without`);
+        v.readout(() => `${K.value} levels: pair across $L=${v.fmt(cur.last.L, 4)}$ km at $${v.sci(cur.last.rate, 2)}$ per cycle; direct fibre would give $${v.sci(cur.direct, 2)}$${cur.direct > 0 ? ` (a gain of $${v.sci(cur.last.rate / cur.direct, 2)}$)` : ''}\n${cur.prevP ? `doubling $L$ multiplies the rate by $2^{${fix(v, cur.slope, 2)}}$: a power law, in contrast with the factor $10^{-0.02L}$ of the direct link` : 'no swapping yet (K = 0): the repeater is just the direct link'} · fidelity ${fix(v, cur.last.F, 3)} with purification, ${fix(v, cur.last.Fraw, 3)} without`);
       },
     },
   ],

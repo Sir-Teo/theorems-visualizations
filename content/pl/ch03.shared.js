@@ -6,6 +6,7 @@ import {
   V, L, A, subst, P, DEFS, key, redexes, contract, getAt, setAt, cat, size, findRedex, normalize,
 } from './ch02.shared.js';
 export * from './ch02.shared.js';
+export { drawDeriv } from './ch01.shared.js';
 
 // ====================================================================== reduction search
 /** All one-step β-reducts of t (one per redex): [{path, term}] (terms larger than maxSize are skipped). */

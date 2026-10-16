@@ -246,8 +246,8 @@ The block structure of the periodic table (2, 6, 10, 14 columns for s, p, d, f) 
       viz(v) {
         const zS = v.slider('atomic number $Z$', 1, 103, 26, { int: true });
         const mad = v.toggle('show the Madelung prediction instead of experiment', false);
-        const sL = v.stage({ x: [-3.1, 7.6], y: [-0.8, 19.2], axes: false, height: 470, weight: 0.8, minWidth: 300, title: 'subshells in Madelung order' });
-        const sT = v.stage({ x: [-0.7, 17.7], y: [-9.7, 0.7], equal: true, axes: false, height: 470, weight: 1.35, title: 'the table: filled up to Z' });
+        const sL = v.stage({ x: [-3.1, 7.6], y: [-0.8, 19.2], axes: false, height: 470, weight: 0.5, minWidth: 250, title: 'subshells in Madelung order' });
+        const sT = v.stage({ x: [-0.7, 17.7], y: [-9.6, 0.6], equal: true, axes: false, height: 380, weight: 1.8, minWidth: 420, title: 'the table: filled up to Z' });
         const BL = { s: 'accent', p: 'green', d: 'orange', f: 'purple' };
         let st = null;
         v.render(() => {
@@ -272,12 +272,12 @@ The block structure of the periodic table (2, 6, 10, 14 columns for s, p, d, f) 
             sT.rect(c - 0.46, -r - 0.46, c + 0.46, -r + 0.46, { color: cur ? 'gold' : ex ? 'red' : 'faint', fill: BL[bl], fillAlpha: z <= Z ? 0.5 : 0.1, width: cur ? 3 : ex ? 1.8 : 0.8 });
             sT.text(SYM[z - 1], c, -r, { size: 11, align: 'center', baseline: 'middle', color: z <= Z ? 'ink' : 'muted' });
           }
-          sT.text('lanthanides: La–Lu', 1.8, -7.35, { color: 'muted', size: 10, align: 'left' }); sT.text('actinides: Ac–Lr', 1.8, -8.35, { color: 'muted', size: 10, align: 'left' });
+          sT.text('La–Lu ▸', 1.5, -8, { color: 'muted', size: 10, align: 'right', baseline: 'middle' }); sT.text('Ac–Lr ▸', 1.5, -9, { color: 'muted', size: 10, align: 'right', baseline: 'middle' });
           const dif = ORDER.filter((x) => (occE[x] || 0) !== (occM[x] || 0));
           st = { Z, dif, nexc: Object.keys(EXCEPTIONS).filter((k) => +k <= Z).length };
         });
         v.legend([['accent', 's block'], ['green', 'p block'], ['orange', 'd block'], ['purple', 'f block'], ['red', 'differs from Madelung', { dot: true }]]);
-        v.readout(() => { if (!st) return ''; const { Z, dif } = st; return `**${SYM[Z - 1]}** ($Z=${Z}), block ${blockOf(Z)}: experiment ${configText(Z)} · Madelung ${configText(Z, madelung(Z))}` + (dif.length ? `\n**exception**: ${dif.map((x) => `${x} ${madelung(Z)[x] || 0} → ${groundConfig(Z)[x] || 0}`).join(', ')}.` : '\nthe rule is right for this element.') + ` Exceptions among the first ${Z} elements: ${st.nexc}.`; });
+        v.readout(() => { if (!st) return ''; const { Z, dif } = st; return `**${SYM[Z - 1]}** ($Z=${Z}$), block ${blockOf(Z)}: experiment ${configText(Z)} · Madelung ${configText(Z, madelung(Z))}` + (dif.length ? `\n**exception**: ${dif.map((x) => `${x} ${madelung(Z)[x] || 0} → ${groundConfig(Z)[x] || 0}`).join(', ')}.` : '\nthe rule is right for this element.') + ` Exceptions among the first ${Z} elements: ${st.nexc}.`; });
       },
     },
     // ------------------------------------------------------------------ 3.6
@@ -307,7 +307,7 @@ the hole contains exactly one electron, $n_\sigma\!\int(g_{\sigma\sigma}-1)\,d^3
         v.render(() => {
           const rs = rsS.value, kF = Math.cbrt((9 * Math.PI) / 4) / rs, same = rel.value === 'same';
           const g = (r) => (same ? gSame(kF * r) : 1);
-          sM.heat((x, y) => g(Math.hypot(x, y)), { range: [0, 1.15], cmap: 'theme', color: 'accent', res: 3, key: `${rs.toFixed(3)},${rel.value}` });
+          sM.heat((x, y) => g(Math.hypot(x, y)), { range: [0, 1.7], cmap: 'theme', color: 'accent', res: 3, key: `${rs.toFixed(3)},${rel.value}` });
           sM.dot(0, 0, { r: 6, color: 'gold' });
           sM.circle(0, 0, rs, { color: 'ink', dash: true, fill: false });
           sG.hline(1, { color: 'faint', dash: true });
@@ -315,14 +315,14 @@ the hole contains exactly one electron, $n_\sigma\!\int(g_{\sigma\sigma}-1)\,d^3
           sG.fn((r) => 1, { color: 'faint', width: 0.001, fill: 'accent', fillAlpha: 0.13, base: 0 });
           sG.vline(rs, { color: 'muted', dash: true });
           // sum rule and exchange energy (same spin), spin density n_sigma = kF^3 / (6 pi^2)
-          const nsig = kF ** 3 / (6 * Math.PI * Math.PI), R = 400 / kF;
-          const hole = nsig * 4 * Math.PI * M.integrate((r) => (gSame(kF * r) - 1) * r * r, 0, R, 60000);
+          const nsig = kF ** 3 / (6 * Math.PI * Math.PI), R = 600 / kF;
+          const hole = nsig * 4 * Math.PI * (M.integrate((r) => (gSame(kF * r) - 1) * r * r, 0, R, 60000) - 4.5 / (kF ** 4 * R));
           const ex = 0.5 * nsig * 4 * Math.PI * M.integrate((r) => (gSame(kF * r) - 1) * r, 0, R, 60000);
           let rh = 0; for (let r = 0; r < 20; r += 0.01) { if (nsig * 4 * Math.PI * M.integrate((q) => (1 - gSame(kF * q)) * q * q, 0, r, 200) >= 0.5) { rh = r; break; } }
           st = { rs, kF, hole, ex, exTh: (-3 * kF) / (4 * Math.PI), rh, same };
         });
-        v.legend([['accent', 'g(r) (shaded: the level 1 of an uncorrelated pair)'], ['ink', 'r = r_s', { dash: true }]]);
-        v.readout(() => st && `$r_s=${v.fix(st.rs, 2)}$, $k_F=${v.fix(st.kF, 3)}\\,a_0^{-1}$. Hole content (same spin): $n_\\sigma\\!\\int(g-1)\\,d^3r=${v.fix(st.hole, 4)}$ — one missing electron. Half of it lies within $${v.fix(st.rh, 2)}\\,a_0=${v.fix(st.rh / st.rs, 2)}\\,r_s$.` + `\nexchange energy per electron from the hole, $\\tfrac12 n_\\sigma\\!\\int(g-1)/r\\,d^3r=${v.fix(st.ex, 4)}$ Eh; closed form $-3k_F/4\\pi=${v.fix(st.exTh, 4)}$ Eh $=-0.458/r_s=${v.fix(-0.4582 / st.rs, 4)}$.` + (st.same ? '' : `\nopposite spins: $g\\equiv1$, no hole, no exchange energy between them.`));
+        v.legend([['accent', 'g(r)'], ['muted', 'g = 1: uncorrelated pair', { dash: true }], ['ink', 'r = r_s', { dash: true }]]);
+        v.readout(() => st && `$r_s=${v.fix(st.rs, 2)}$, $k_F=${v.fix(st.kF, 3)}\\,a_0^{-1}$. Hole content (same spin): $n_\\sigma\\!\\int(g-1)\\,d^3r=${v.fix(st.hole, 4)}$ — one missing electron (the $r^{-4}$ tail beyond the integration range is added analytically). Half of it lies within $${v.fix(st.rh, 2)}\\,a_0=${v.fix(st.rh / st.rs, 2)}\\,r_s$.` + `\nexchange energy per electron from the hole, $\\tfrac12 n_\\sigma\\!\\int(g-1)/r\\,d^3r=${v.fix(st.ex, 4)}$ Eh; closed form $-3k_F/4\\pi=${v.fix(st.exTh, 4)}$ Eh $=-0.458/r_s=${v.fix(-0.4582 / st.rs, 4)}$.` + (st.same ? '' : `\nopposite spins: $g\\equiv1$, no hole, no exchange energy between them.`));
       },
     },
     // ------------------------------------------------------------------ 3.7
@@ -374,7 +374,7 @@ the hole contains exactly one electron, $n_\sigma\!\int(g_{\sigma\sigma}-1)\,d^3
           const Lmax = D.n * D.l - 0, rows = Object.keys(D.cnt).map((k) => +k.split(',')[0]), mls = [Math.min(...rows), Math.max(...rows)];
           const cols = Object.keys(D.cnt).map((k) => +k.split(',')[1]); const ms2 = [Math.min(...cols), Math.max(...cols)];
           const nR = mls[1] - mls[0] + 1, nC = (ms2[1] - ms2[0]) / 2 + 1;
-          sG.setView([-0.8 - nC / 2, nC / 2 + 0.8], [mls[0] - 1.4, mls[1] + 1.4]);
+          sG.setView([-0.8 - nC / 2, nC / 2 + 0.8], [mls[0] - 2.1, mls[1] + 1.4]);
           const snap = D.snaps[K];
           for (let a = mls[0]; a <= mls[1]; a++) { sG.text(`${a}`, -nC / 2 - 0.45, a, { color: 'muted', size: 11, align: 'right', baseline: 'middle' }); }
           for (let b = ms2[0], i = 0; b <= ms2[1]; b += 2, i++) {
@@ -386,7 +386,7 @@ the hole contains exactly one electron, $n_\sigma\!\int(g_{\sigma\sigma}-1)\,d^3
               if (c0 > 0) sG.text(`${c}`, x, a, { size: 13, align: 'center', baseline: 'middle', color: c > 0 ? 'ink' : 'faint' });
             }
           }
-          sG.text('$M_S$', 0, mls[0] - 1.35, { color: 'muted', size: 12, align: 'center' }); sG.text('$M_L$', -nC / 2 - 0.5, mls[1] + 1.0, { color: 'muted', size: 12, align: 'right' });
+          sG.text('$M_S$', 0, mls[0] - 1.65, { color: 'muted', size: 12, align: 'center' }); sG.text('$M_L$', -nC / 2 - 0.5, mls[1] + 1.0, { color: 'muted', size: 12, align: 'right' });
           // right panel
           const data = NIST[sel.value];
           sE.el.style.display = data ? '' : 'none';

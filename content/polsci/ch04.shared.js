@@ -160,4 +160,5 @@ export function gridMedian(w) {
 }
 export const gridMean = (w) => sum(Array.from(w, (p, i) => p * binX(w.length, i)));
 
+export const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 export { range, sum };
