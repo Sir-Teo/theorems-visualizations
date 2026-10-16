@@ -148,9 +148,9 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
       viz(v) {
         const R0 = 0.6, L0 = 1.6, w0 = 2, T = 6;
         const es = v.slider('axial strain rate $\\varepsilon$ (1/s)', -0.3, 0.3, 0.25, { step: 0.01 });
-        const s = v.stage({ x: [-6, 6], y: [-1.5, 1.5], equal: true, axes: false, height: 250, weight: 1.6, title: 'side view: the vortex tube is stretched' });
-        const e = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: false, height: 250, weight: 0.7, title: 'end view' });
-        const g = v.stage({ x: [0, T], y: [0, 3], axes: 'box', gutter: true, height: 250, weight: 1, xlabel: 'time $t$ (s)', title: 'amplification' });
+        const s = v.stage({ x: [-6, 6], y: [-1, 1], equal: true, axes: false, height: 260, full: true, title: 'side view: the vortex tube is stretched' });
+        const e = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: false, height: 300, weight: 0.8, title: 'end view' });
+        const g = v.stage({ x: [0, T], y: [0, 3], axes: 'box', gutter: true, height: 300, weight: 1.2, xlabel: 'time $t$ (s)', title: 'amplification' });
         const rg = v.rng(11), tr = [];
         for (let i = 0; i < 52; i++) tr.push({ z: (rg() - 0.5) * L0, r: R0 * Math.sqrt(rg()), p: TAU * rg() });
         const th = (t, ep) => (Math.abs(ep) < 1e-9 ? (w0 * t) / 2 : (w0 / (2 * ep)) * (Math.exp(ep * t) - 1));
@@ -160,13 +160,13 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
           s.rect(-L0 / 2, -R0, L0 / 2, R0, { color: 'muted', width: 1, dash: true });
           s.rect(-L / 2, -R, L / 2, R, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 2 });
           s.arrow(-L / 2 - 0.3, 0, L / 2 + 0.3, 0, { color: 'orange', width: 1.5 });
-          s.text('ω', L / 2 + 0.45, 0.2, { color: 'orange', math: true, size: 16 });
+          s.text('ω', L / 2 + 0.5, 0.25, { color: 'orange', math: true, size: 16 });
           const e0 = tr.map((q) => ({ z: q.z * st, y: q.r * Math.cos(q.p + ang) / Math.sqrt(st), d: Math.sin(q.p + ang), x: q.r * Math.cos(q.p + ang) / Math.sqrt(st), w: q.r * Math.sin(q.p + ang) / Math.sqrt(st) }));
           e0.sort((a, b) => a.d - b.d);
-          for (const q of e0) { if (Math.abs(q.z) < 6) s.dot(q.z, q.y, { r: 3.3, color: 'gold', hollow: q.d < 0 }); }
+          for (const q of e0) { if (Math.abs(q.z) < 6) s.dot(q.z, q.y, { r: 3, color: 'gold', hollow: q.d < 0 }); }
           e.circle(0, 0, R0, { color: 'muted', width: 1, dash: true });
           e.circle(0, 0, R, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 2 });
-          for (const q of e0) e.dot(q.x, q.w, { r: 3.3, color: 'gold' });
+          for (const q of e0) e.dot(q.x, q.w, { r: 3, color: 'gold' });
           const ymax = Math.max(1.5, 1.1 * Math.exp(Math.abs(ep) * T));
           g.setView([0, T], [0, Math.max(1.6, Math.min(8, ymax))]);
           g.hline(1, { color: 'green', width: 2.4 });
@@ -177,7 +177,7 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
           info = { t, L: L / L0, R, w: w / w0, G: (w * R * R) / (w0 * R0 * R0), vol: (R * R * L) / (R0 * R0 * L0) };
         }, { period: T, still: 4.5 });
         v.legend([['orange', '$\\omega/\\omega_0$'], ['accent', '$L/L_0$', { dash: true }], ['purple', '$(R_0/R)^2$', { dash: true }], ['green', '$\\Gamma/\\Gamma_0$']]);
-        v.readout(() => `$t=${v.fix(info.t, 1)}$ s: $L/L_0=${v.fix(info.L, 3)}$, $R=${v.fix(info.R, 3)}$ m, $\\omega/\\omega_0=${v.fix(info.w, 3)}$\n tube volume $\\pi R^2L$ unchanged ($${v.fix(info.vol, 4)}$ of the initial) · circulation $\\Gamma/\\Gamma_0=${v.fix(info.G, 4)}$ · $\\omega/\\omega_0\;/\;(L/L_0)=${v.fix(info.w / info.L, 4)}$`);
+        v.readout(() => `$t=${v.fix(info.t, 1)}$ s: $L/L_0=${v.fix(info.L, 3)}$, $R=${v.fix(info.R, 3)}$ m, $\\omega/\\omega_0=${v.fix(info.w, 3)}$\n tube volume $\\pi R^2L$ unchanged ($${v.fix(info.vol, 4)}$ of the initial) · circulation $\\Gamma/\\Gamma_0=${v.fix(info.G, 4)}$ · $(\\omega/\\omega_0)/(L/L_0)=${v.fix(info.w / info.L, 4)}$`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 3.4
@@ -194,11 +194,11 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
       tags: ['vortex tube', 'Helmholtz', 'Kelvin'],
       scope: String.raw`Inviscid, barotropic, conservative forces. In this picture the ring is treated as a passive thin tube in a prescribed volume-preserving flow, which is what the theorems say about the transport of vorticity; the measured strength is accurate to the size of the tracer square (about 1–3%).`,
       viz(v) {
-        const EPS = 0.02, CAP = 1800, N0 = 120, R = 1.2, DT = 0.025;
+        const EPS = 0.01, CAP = 1800, N0 = 120, R = 1.2, DT = 0.025, fl = (p) => abc(p).map((x) => 0.45 * x);
         const sh = v.select('ring', [{ value: 'flat', label: 'flat' }, { value: 'tilt', label: 'tilted' }], 'flat', { onChange: () => { S.reset(); } });
         const ks = v.select('station', ['1', '2', '3', '4', '5', '6'], '1');
-        const s3 = v.stage3d({ range: 4.4, height: 420, yaw: -0.7, pitch: 0.45, axes: false, weight: 1.3, title: 'a vortex tube carried by the flow' });
-        const hp = v.stage({ x: [0, 10], y: [0.02, 50], ylog: true, axes: 'box', gutter: true, height: 420, weight: 0.85, xlabel: 'time $t$', title: 'selected station (log scale)' });
+        const s3 = v.stage3d({ range: 3.2, height: 420, yaw: -0.7, pitch: 0.45, axes: false, weight: 1.3, title: 'a vortex tube carried by the flow' });
+        const hp = v.stage({ x: [0, 10], y: [0.05, 20], ylog: true, axes: 'box', gutter: true, height: 420, weight: 0.85, xlabel: 'time $t$', title: 'selected station (log scale)' });
         const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
         const dotp = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2], nrm = (a) => Math.hypot(a[0], a[1], a[2]);
         const rotp = (p, tilt) => (tilt ? [p[0], p[1] * Math.cos(0.9) - p[2] * Math.sin(0.9), p[1] * Math.sin(0.9) + p[2] * Math.cos(0.9)] : p);
@@ -224,8 +224,8 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
           return [nrm(wv), nrm(Av) / (2 * EPS * EPS), dotp(wv, Av) / (2 * EPS * EPS)];
         };
         const S = v.sim(init, (st, dt) => {
-          for (let i = 0; i < st.pts.length; i++) st.pts[i] = rk4p(abc, st.pts[i], dt);
-          for (const stn of st.stations) for (let j = 0; j < 6; j++) stn.p[j] = rk4p(abc, stn.p[j], dt);
+          for (let i = 0; i < st.pts.length; i++) st.pts[i] = rk4p(fl, st.pts[i], dt);
+          for (const stn of st.stations) for (let j = 0; j < 6; j++) stn.p[j] = rk4p(fl, stn.p[j], dt);
           st.t += dt; st.k++;
           if (st.k % 4 === 0) {
             const np = [], ns = [], n = st.pts.length;
@@ -244,17 +244,18 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
         v.animate((t) => {
           const st = S.advance(t), n = st.pts.length;
           let tot = 0, ms = 1;
+          const cen = st.pts.reduce((a, p) => [a[0] + p[0] / n, a[1] + p[1] / n, a[2] + p[2] / n], [0, 0, 0]), mv = (p) => [p[0] - cen[0], p[1] - cen[1], p[2] - cen[2]];
           for (let i = 0; i < n; i++) {
             const j = (i + 1) % n, ds = (i + 1 === n ? st.L0 : st.sp[j]) - st.sp[i], len = nrm(sub(st.pts[j], st.pts[i]));
             const stretch = len / ds; tot += len; ms = Math.max(ms, stretch);
             const bin = clamp(Math.floor(Math.log2(stretch) + 1.5), 0, 5);
-            s3.line(st.pts[i], st.pts[j], { color: cols[bin], width: clamp(3.4 / Math.sqrt(stretch), 0.9, 3.4) });
+            s3.line(mv(st.pts[i]), mv(st.pts[j]), { color: cols[bin], width: clamp(3.4 / Math.sqrt(stretch), 0.9, 3.4) });
           }
           const sel = Number(ks.value) - 1;
           st.stations.forEach((stn, k) => {
             const m = measure(stn);
             const cx = stn.p.slice(2).reduce((a, p) => [a[0] + p[0] / 4, a[1] + p[1] / 4, a[2] + p[2] / 4], [0, 0, 0]);
-            s3.dot(cx, { r: k === sel ? 6 : 4, color: k === sel ? 'ink' : 'muted', label: String(k + 1) });
+            s3.dot(mv(cx), { r: k === sel ? 6 : 4, color: k === sel ? 'ink' : 'muted', label: String(k + 1) });
             stn._m = m;
           });
           const H = st.stations[sel].hist;
@@ -264,9 +265,196 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
           hp.path(H.map((q) => [q[0], q[3]]), { color: 'green', width: 2.4, dash: true });
           const fl = st.stations.map((q) => q._m[2]);
           info = { t: st.t, len: tot / st.L0, ms, fl, w: st.stations[sel]._m[0], a: st.stations[sel]._m[1] };
-        }, { period: 10, still: 7 });
+        }, { period: 10, still: 8 });
         v.legend([['orange', 'vorticity $|\\boldsymbol\\omega|/\\omega_0$'], ['accent', 'cross-section $A/A_0$'], ['green', 'strength $\\omega A$', { dash: true }]]);
         v.readout(() => `$t=${v.fix(info.t, 1)}$ · tube length ${v.fix(info.len, 2)}× initial, strongest stretch ${v.fix(info.ms, 1)}×\nstrength $\\omega A/\\omega_0A_0$ at the six stations: ${info.fl.map((x) => v.fix(x, 3)).join(', ')} — all 1 within the tracer-square error\nstation ${ks.value}: $|\\omega|/\\omega_0=${v.fix(info.w, 2)}$, $A/A_0=${v.fix(info.a, 3)}$`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.5
+    {
+      num: '3.5',
+      kind: 'Law',
+      name: 'Biot–Savart law for vorticity',
+      statement: String.raw`In an incompressible fluid that is at rest at infinity and has no interior boundaries, the velocity is fixed by the vorticity distribution:
+$$\mathbf u(\mathbf x)=\frac1{4\pi}\int\frac{\boldsymbol\omega(\mathbf x')\times(\mathbf x-\mathbf x')}{|\mathbf x-\mathbf x'|^3}\,dV'.$$
+For a thin vortex filament $C$ of circulation $\Gamma$ this becomes $\mathbf u(\mathbf x)=\dfrac{\Gamma}{4\pi}\oint_C\dfrac{d\mathbf l'\times(\mathbf x-\mathbf x')}{|\mathbf x-\mathbf x'|^3}$. It is the same formula that gives the magnetic field of a current, with $\boldsymbol\omega$ playing the role of the current density and $\mathbf u$ that of $\mathbf B$; a straight infinite filament gives a swirl of speed $\Gamma/(2\pi r)$, and a circular ring of radius $R$ gives $\Gamma R^2/\big(2(R^2+z^2)^{3/2}\big)$ along its axis.`,
+      idea: String.raw`Incompressibility lets one write $\mathbf u=\nabla\times\mathbf A$ with $\nabla\cdot\mathbf A=0$, and then $\boldsymbol\omega=\nabla\times\nabla\times\mathbf A=-\nabla^2\mathbf A$. Each component of $\mathbf A$ solves a Poisson equation whose solution is the convolution of $\boldsymbol\omega$ with the free-space Green's function $1/(4\pi|\mathbf x|)$ (Laplace's equation, 4.2, is the homogeneous case). Taking the curl of the result differentiates $1/|\mathbf x-\mathbf x'|$ and produces the cross-product kernel. So the velocity at a point is a weighted sum over all the vorticity in the flow, falling off as the inverse square of distance.`,
+      caption: String.raw`A vortex filament (top view of its section by the plane $y=0$: $\odot$ points toward you, $\otimes$ away) induces the arrows drawn in that plane. Choose a straight line, a ring or a helix, and move the probe: the velocity there is found by adding up the exact contributions of 200 to 600 straight segments of the filament. For the straight line the result is compared with $\Gamma/2\pi r$; for the ring, the on-axis value is compared with the closed formula. Change $\Gamma$, the radius or the pitch and watch the arrows change linearly with $\Gamma$ and fall off with distance. The helix is a finite coil of 24 turns, so only its middle is a good picture of an infinitely long one.`,
+      deps: ['fluid-1.9', 'fluid-1.7'],
+      refs: ['Kundu §5.4'],
+      tags: ['vorticity', 'Biot–Savart', 'induced velocity'],
+      scope: String.raw`Unbounded incompressible flow with vorticity of finite extent. Near a real filament of finite core size the formula diverges logarithmically, so the picture stays outside a distance of a few core radii; inside walls the velocity also needs an irrotational correction.`,
+      viz(v) {
+        const kind = v.select('filament', [{ value: 'line', label: 'straight line' }, { value: 'ring', label: 'ring' }, { value: 'helix', label: 'helix' }], 'ring');
+        const gs = v.slider('circulation $\\Gamma$', 0.2, 3, 1, { step: 0.05 });
+        const rs = v.slider('radius $R$', 0.5, 1.6, 1, { step: 0.05 });
+        const ps = v.slider('helix pitch', 0.1, 1.5, 0.4, { step: 0.05 });
+        const s = v.stage({ x: [-3.2, 3.2], y: [-2.3, 2.3], equal: true, axes: 'box', gutter: true, height: 420, full: true, xlabel: '$x$', ylabel: '$z$', title: 'induced velocity in the plane y = 0' });
+        const pr = s.handle(1.9, 0.9, { color: 'gold', r: 8, label: 'probe', labelPos: 'ne' });
+        let fil = null, info = {};
+        const build = () => {
+          const R = rs.value, pts = [];
+          if (kind.value === 'line') pts.push([0, -400, 0], [0, 400, 0]);
+          else if (kind.value === 'ring') for (let i = 0; i < 200; i++) pts.push([R * Math.cos((TAU * i) / 200), R * Math.sin((TAU * i) / 200), 0]);
+          else for (let i = 0; i <= 600; i++) { const f = -24 * Math.PI + (48 * Math.PI * i) / 600; pts.push([R * Math.cos(f), (ps.value * f) / TAU, R * Math.sin(f)]); }
+          return pts;
+        };
+        v.render(() => {
+          const closed = kind.value === 'ring', G = gs.value, R = rs.value;
+          ps.el.hidden = kind.value !== 'helix'; rs.el.hidden = kind.value === 'line';
+          fil = build();
+          const U = (a, b) => biotSavart(fil, closed, G, [a, 0, b]);
+          let mx = 0; const arrows = [];
+          for (let a = -4.8; a <= 4.81; a += 0.4) for (let b = -2.2; b <= 2.21; b += 0.4) {
+            const w = U(a, b), m = Math.hypot(w[0], w[2]);
+            if (Math.hypot(a - (kind.value === 'line' ? 0 : R), b) < 0.16 || (kind.value === 'ring' && Math.hypot(a + R, b) < 0.16) || (kind.value === 'line' && Math.hypot(a, b) < 0.16)) continue;
+            arrows.push([a, b, w[0], w[2], m]); mx = Math.max(mx, m);
+          }
+          for (const [a, b, ux, uz, m] of arrows) {
+            const L = 0.34 * Math.pow(m / (mx + 1e-12), 0.45);
+            if (m > 1e-9) s.arrow(a, b, a + (L * ux) / m, b + (L * uz) / m, { color: 'accent', width: 1.6, head: 6, alpha: 0.35 + 0.65 * Math.min(1, m / (0.4 * mx)) });
+          }
+          if (kind.value === 'line') s.text('⊙', 0, 0, { size: 24, color: 'orange' });
+          else if (kind.value === 'ring') { s.text('⊙', R, 0, { size: 24, color: 'orange' }); s.text('⊗', -R, 0, { size: 24, color: 'orange' }); }
+          else s.text('⊙', R, 0, { size: 24, color: 'orange' });
+          const w = U(pr.x, pr.y), m = Math.hypot(w[0], w[2]);
+          s.arrow(pr.x, pr.y, pr.x + (0.8 * w[0]) / (m + 1e-12) * Math.min(1, m * 1.2), pr.y + (0.8 * w[2]) / (m + 1e-12) * Math.min(1, m * 1.2), { color: 'gold', width: 3, head: 10 });
+          const r = Math.hypot(pr.x, pr.y), ax = U(0, pr.y);
+          info = { m, wx: w[0], wz: w[2], r, line: G / (TAU * r), ring: (G * R * R) / (2 * Math.pow(R * R + pr.y * pr.y, 1.5)), ax: Math.hypot(ax[0], ax[1], ax[2]), z: pr.y, G };
+        });
+        v.readout(() => {
+          const k = kind.value;
+          let l2 = '';
+          if (k === 'line') l2 = `\nstraight filament: $\\Gamma/2\\pi r=${v.fix(info.line, 4)}$ — relative difference $${v.sci(Math.abs(info.m - info.line) / info.line + 1e-12, 2)}$ (the filament is cut at $\\pm400$)`;
+          else if (k === 'ring') l2 = `\non the axis at height $z=${v.fix(info.z, 2)}$: integral $${v.fix(info.ax, 5)}$ vs $\\Gamma R^2/2(R^2+z^2)^{3/2}=${v.fix(info.ring, 5)}$ (probe is at $x=${v.fix(pr.x, 2)}$, off the axis)`;
+          else l2 = '\nthe coil swirls round its axis and carries fluid along it: the velocity here has both components';
+          return `probe at $(${v.fix(pr.x, 2)}, ${v.fix(pr.y, 2)})$: $\\mathbf u=(${v.fix(info.wx, 4)},\\,${v.fix(info.wz, 4)})$, $|\\mathbf u|=${v.fix(info.m, 4)}$ (proportional to $\\Gamma=${v.fix(info.G, 2)}$)${l2}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.6
+    {
+      num: '3.6',
+      kind: 'Model',
+      name: 'Rankine vortex',
+      statement: String.raw`The Rankine vortex is a steady, axisymmetric swirl with total circulation $\Gamma$ and a core of radius $a$:
+$$u_\theta=\begin{cases}\dfrac{\Gamma r}{2\pi a^2},&r\le a\ \text{(solid-body rotation, } \omega_z=\Gamma/\pi a^2\text{)},\\[2mm]\dfrac{\Gamma}{2\pi r},&r\ge a\ \text{(irrotational)}.\end{cases}$$
+The pressure follows from the radial balance $\partial p/\partial r=\rho u_\theta^2/r$: with $p\to p_\infty$ far away, $p-p_\infty=-\rho\Gamma^2/(8\pi^2r^2)$ outside and $-\rho\big(\Gamma^2/4\pi^2a^2\big)\big(1-r^2/2a^2\big)$ inside, so the pressure is lowest at the axis, lower by $\rho\Gamma^2/(4\pi^2a^2)$. A free surface above the vortex dips by $\Gamma^2/(4\pi^2a^2g)$ at the centre.`,
+      idea: String.raw`Any $u_\theta(r)$ is a steady solution of Euler's equation (2.8) provided the pressure supplies the centripetal force, so the Rankine vortex is the simplest swirl with a finite vorticity core. The inside is a rigidly rotating cylinder of fluid; the outside is the field of a line vortex (the Biot–Savart result of 3.5). The two pieces match in velocity at $r=a$ but not in vorticity, which jumps from $\Gamma/\pi a^2$ to zero. Bernoulli's theorem (2.9), applied on the free surface where $p$ is atmospheric, converts the pressure deficit into the depth of the dimple.`,
+      caption: String.raw`Left: top view of a vortex in water. Fluid particles (gold) go round faster the nearer they are to the axis in the outer region, but at a constant angular rate inside the core, shown in slow motion. The paddle wheel (red spoke) follows a circular streamline: it spins with the core and stays pointing in one direction outside, even though the water circles the centre. Middle: the velocity profile; drag the handle to change the core radius. Right: the dimple of a free surface above the vortex (water 0.35 m deep). Make $\Gamma$ large or $a$ small and the dimple reaches the floor: an air core forms and the model, which assumes a single connected surface, no longer applies.`,
+      deps: ['fluid-1.9', 'fluid-2.9'],
+      refs: ['Kundu §3.5', 'Acheson ch. 5'],
+      tags: ['vortex', 'Rankine', 'free surface'],
+      verify: true,
+      scope: String.raw`Steady, inviscid, axisymmetric and two-dimensional; real vortices (a bathtub vortex, a tornado) have smooth cores, which a Lamb–Oseen vortex describes better. The model is named after W. J. M. Rankine; I did not trace the original passage in his work, so no date is given. The numbers here (water at 1000 kg/m³, $g=9.81$ m/s²) are chosen for illustration.`,
+      viz(v) {
+        const g = G0, H = 0.35, RM = 0.3;
+        const Gs = v.slider('circulation $\\Gamma$ (m²/s)', 0.05, 1, 0.4, { step: 0.01 });
+        const as = v.slider('core radius $a$ (m)', 0.02, 0.15, 0.06, { step: 0.005 });
+        const ws = v.slider('paddle-wheel radius $r_w$ (m)', 0.01, 0.28, 0.03, { step: 0.005 });
+        const sa = v.stage({ x: [-RM, RM], y: [-RM, RM], equal: true, axes: false, height: 340, weight: 1, title: 'top view' });
+        const sb = v.stage({ x: [0, RM], y: [0, 4], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'radius $r$ (m)', ylabel: '$u_\\theta$ (m/s)', title: 'velocity profile' });
+        const sc = v.stage({ x: [-RM, RM], y: [-0.45, 0.06], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'distance from the axis (m)', ylabel: 'surface height (m)', title: 'free surface above the vortex' });
+        const uth = (r) => { const G = Gs.value, a = as.value; return r <= a ? (G * r) / (TAU * a * a) : G / (TAU * r); };
+        const eta = (r) => { const G = Gs.value, a = as.value, k = (G * G) / (4 * Math.PI * Math.PI * g); return r <= a ? -(k / (a * a)) * (1 - (r * r) / (2 * a * a)) : -(k / 2) / (r * r); };
+        const hd = sb.handle(0.06, 2, { color: 'orange', r: 8, label: 'a', labelPos: 'ne', constrain: (x) => [clamp(x, 0.02, 0.15), 2] });
+        hd.onDrag = () => { as.set(hd.x); };
+        const radii = [0.025, 0.05, 0.08, 0.11, 0.15, 0.19, 0.24, 0.29];
+        let info = {};
+        v.animate((t) => {
+          const G = Gs.value, a = as.value, tt = t / 12, om = G / (Math.PI * a * a);
+          const umax = G / (TAU * a);
+          hd.set(a, umax);
+          sb.setView([0, RM], [0, Math.max(1, 1.25 * umax)]);
+          sa.circle(0, 0, a, { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.6 });
+          for (const r of radii) {
+            sa.circle(0, 0, r, { color: 'faint', width: 1 });
+            for (let k = 0; k < 4; k++) { const th = (k * Math.PI) / 2 + (uth(r) / r) * tt; sa.dot(r * Math.cos(th), r * Math.sin(th), { r: 3.4, color: 'gold' }); }
+          }
+          const rw = ws.value, thw = (uth(rw) / rw) * tt, spin = rw <= a ? (om / 2) * tt : 0;
+          const wx = rw * Math.cos(thw), wy = rw * Math.sin(thw), L = 0.035;
+          sa.line(wx - L * Math.sin(spin), wy + L * Math.cos(spin), wx + L * Math.sin(spin), wy - L * Math.cos(spin), { color: 'ink', width: 2.4 });
+          sa.line(wx - L * Math.cos(spin), wy - L * Math.sin(spin), wx, wy, { color: 'ink', width: 2.4 });
+          sa.line(wx, wy, wx + L * Math.cos(spin), wy + L * Math.sin(spin), { color: 'red', width: 3.4 });
+          sa.dot(wx, wy, { r: 3, color: 'ink' });
+          sa.text('core', 0, a + 0.012, { size: 13, color: 'orange', align: 'center' });
+          sb.fn(uth, { color: 'accent', width: 2.6, domain: [0, RM] });
+          sb.vline(rw, { color: 'red', dash: true, alpha: 0.6 });
+          sb.fn((r) => G / (TAU * r), { color: 'muted', dash: true, domain: [a, RM], width: 1.4 });
+          const e0 = eta(0), air = -e0 > H;
+          sc.rect(-RM, -H, RM, 0.06, { fill: 'panel', color: 'ink', width: 0 });
+          sc.between((x) => Math.max(eta(Math.abs(x)), -H), () => -H, -RM, RM, { fill: 'accent', fillAlpha: 0.3 });
+          sc.fn((x) => Math.max(eta(Math.abs(x)), -H), { color: 'accent', width: 2.6, domain: [-RM, RM], n: 400 });
+          sc.hline(-H, { color: 'ink', width: 2 });
+          sc.vline(a, { color: 'orange', dash: true, alpha: 0.6 }); sc.vline(-a, { color: 'orange', dash: true, alpha: 0.6 });
+          if (air) sc.text('air core: the dimple reaches the floor', 0, -0.05, { size: 14, color: 'red', align: 'center' });
+          info = { umax, om, dp: (1000 * G * G) / (4 * Math.PI * Math.PI * a * a), e0, air, uw: uth(rw), wspin: rw <= a ? om / 2 : 0, rw, a };
+        }, { period: 24, still: 3 });
+        v.legend([['accent', '$u_\\theta(r)$'], ['muted', '$\\Gamma/2\\pi r$ continued inward', { dash: true }], ['orange', 'core, $\\omega\\ne0$']]);
+        v.readout(() => `peak speed $\\Gamma/2\\pi a=${v.fix(info.umax, 2)}$ m/s at $r=a$ · core vorticity $\\Gamma/\\pi a^2=${v.fix(info.om, 1)}$ s$^{-1}$ · pressure at the axis lower by $${v.fix(info.dp / 1000, 2)}$ kPa\nsurface dip at the axis $\\Gamma^2/4\\pi^2a^2g=${v.fix(-info.e0, 3)}$ m${info.air ? ' (**deeper than the water: air core**)' : ''} · wheel at $r=${v.fix(info.rw, 3)}$ m ${info.rw <= info.a ? 'inside' : 'outside'} the core: speed $${v.fix(info.uw, 2)}$ m/s, spin rate $\\omega/2=${v.fix(info.wspin, 2)}$ s$^{-1}$`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.7
+    {
+      num: '3.7',
+      kind: 'Model',
+      name: 'Point-vortex dynamics',
+      statement: String.raw`In two-dimensional incompressible Euler flow whose vorticity is concentrated in $N$ points $(x_j,y_j)$ carrying circulations $\Gamma_j$, each vortex is carried by the velocity the others induce:
+$$\dot x_j-i\dot y_j\ \ \text{(complex form)}\ \ =\ \frac1{2\pi i}\sum_{k\neq j}\frac{\Gamma_k}{z_j-z_k}.$$
+The system is Hamiltonian, with $H=-\frac1{4\pi}\sum_{j\neq k}\Gamma_j\Gamma_k\ln|z_j-z_k|$, and $x_j,\,y_j$ conjugate up to the factor $\Gamma_j$. It conserves $H$, the linear impulse $\sum\Gamma_jz_j$ and the angular impulse $\sum\Gamma_j|z_j|^2$. Two vortices circle their centre of vorticity, or translate together if their circulations are equal and opposite; three vortices are integrable; four or more can move chaotically.`,
+      idea: String.raw`Each vortex is a point source of the line-vortex velocity $\Gamma/2\pi r$ (3.5 in two dimensions), and by Kelvin's theorem (3.1) and Helmholtz's theorems (3.4) the vorticity stays on the same fluid particles, so the vortices are simply advected by the field of the others (not by their own: that is singular and has zero mean effect). Writing out the equations shows that $\Gamma_j\dot x_j=\partial H/\partial y_j$ and $\Gamma_j\dot y_j=-\partial H/\partial x_j$, which is Hamilton's form (12.3 of mechanics). Noether's theorem gives the translations and rotation, and with three vortices there are enough independent invariants in involution to integrate; for four there are not.`,
+      caption: String.raw`Choose a preset or click in the left panel to add a vortex (shift-click: opposite sign); the system restarts from $t=0$ each time. Circulations are in units of $2\pi$ (so a unit vortex has speed $1/r$). Watch the trails: two like vortices circle each other, a dipole travels in a straight line, and two dipoles leapfrog. Four identical vortices in a square-ish arrangement wander irregularly. The right panel plots the distances between vortices, and the readout lists the three invariants as errors of the numerical integration (4th-order Runge–Kutta, step 0.004); they stay tiny except in very close encounters.`,
+      deps: ['fluid-3.5', 'mech-12.3'],
+      refs: ['Kundu §5.6', 'Acheson ch. 5'],
+      credit: 'Equations of motion: H. von Helmholtz, 1858; Hamiltonian form: G. Kirchhoff, Vorlesungen über mathematische Physik, 1876; integrability of three vortices: W. Gröbli, 1877',
+      tags: ['point vortices', 'Hamiltonian', 'chaos'],
+      scope: String.raw`Two-dimensional, inviscid, unbounded flow with point singularities (real vortices have cores; the model is good while the separations are much larger than the core radius). The syllabus line speaks of chaos for three or more vortices; the identical-vortex result is that three are integrable and four are not (Aref and Pomphrey, 1982), which this item follows.`,
+      viz(v) {
+        const P = {
+          pair: { name: 'two like vortices', g: [1, 1], x: [-0.5, 0.5], y: [0, 0], T: 6 },
+          dip: { name: 'a dipole', g: [1, -1], x: [0, 0], y: [-0.5, 0.5], T: 6, ymid: 1 },
+          leap: { name: 'leapfrogging dipoles', g: [1, -1, 1, -1], x: [-0.8, -0.8, 0.8, 0.8], y: [0.5, -0.5, 0.5, -0.5], T: 8 },
+          three: { name: 'three vortices', g: [1, 1, -0.8], x: [-1, 0.9, 0.1], y: [0, 0.2, 1.1], T: 12 },
+          four: { name: 'four identical vortices', g: [1, 1, 1, 1], x: [1, 0.15, -0.8, 0.1], y: [0.05, 0.95, -0.1, -1], T: 14 },
+        };
+        const ps = v.select('preset', Object.keys(P).map((k) => ({ value: k, label: P[k].name })), 'leap', { onChange: () => { extra.length = 0; S.reset(); } });
+        v.button('remove added vortices', () => { extra.length = 0; S.reset(); });
+        const s = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, axes: 'box', gutter: true, height: 420, weight: 1.3, title: 'click to add a vortex (shift-click: opposite sign)' });
+        const h = v.stage({ x: [0, 14], y: [0, 4], axes: 'box', gutter: true, height: 420, weight: 0.8, xlabel: 'time $t$', ylabel: 'distance $r_{jk}$', title: 'separations' });
+        const extra = [];
+        const fol = v.toggle('follow the vortices', true);
+        let ctr = [0, 0], ctr0 = [0, 0];
+        const cfg = () => { const q = P[ps.value]; return { g: q.g.concat(extra.map((e) => e[2])), x: q.x.concat(extra.map((e) => e[0])), y: q.y.concat(extra.map((e) => e[1])) }; };
+        const inv = (st) => {
+          let H = 0, px = 0, py = 0, I = 0;
+          for (let i = 0; i < st.G.length; i++) { px += st.G[i] * st.x[i]; py += st.G[i] * st.y[i]; I += st.G[i] * (st.x[i] ** 2 + st.y[i] ** 2); for (let j = i + 1; j < st.G.length; j++) H -= st.G[i] * st.G[j] * Math.log(Math.hypot(st.x[i] - st.x[j], st.y[i] - st.y[j])); }
+          return { H, px, py, I };
+        };
+        const S = v.sim(() => { const c = cfg(), st = { x: Float64Array.from(c.x), y: Float64Array.from(c.y), G: c.g.map((q) => q * TAU), tr: c.g.map((q, i) => [[c.x[i], c.y[i]]]), sep: [], k: 0, t: 0 }; st.i0 = inv(st); st.sep.push([0, ...pairs(st)]); return st; }, (st, dt) => {
+          rk4Vortices({ x: st.x, y: st.y, G: st.G }, null, dt, 0); st.t += dt; st.k++;
+          if (st.k % 6 === 0) { st.tr.forEach((q, i) => q.push([st.x[i], st.y[i]])); st.sep.push([st.t, ...pairs(st)]); }
+        }, { dt: 0.004, maxSteps: 6000 });
+        function pairs(st) { const o = []; for (let i = 0; i < st.G.length; i++) for (let j = i + 1; j < st.G.length; j++) o.push(Math.hypot(st.x[i] - st.x[j], st.y[i] - st.y[j])); return o; }
+        s.onClick((x, y, mod) => { extra.push([x - (ctr[0] - ctr0[0]), y - (ctr[1] - ctr0[1]), mod.shift ? -1 : 1]); S.reset(); });
+        const cl = ['accent', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
+        let info = {};
+        v.animate((t) => {
+          const st = S.advance(t), n = st.G.length;
+          const mx = st.x.reduce((a, b) => a + b, 0) / n, my = st.y.reduce((a, b) => a + b, 0) / n;
+          { const c0 = cfg(); ctr0 = [c0.x.reduce((a, b) => a + b, 0) / n, c0.y.reduce((a, b) => a + b, 0) / n]; }
+          ctr = fol.value ? [mx, my] : ctr0; s.setView([ctr[0] - 4, ctr[0] + 4], [ctr[1] - 3, ctr[1] + 3]);
+          st.tr.forEach((q, i) => s.path(q, { color: st.G[i] > 0 ? 'accent' : 'red', width: 1.3, alpha: 0.55 }));
+          for (let i = 0; i < n; i++) s.dot(st.x[i], st.y[i], { r: 6 + 2 * Math.abs(st.G[i] / TAU), color: st.G[i] > 0 ? 'accent' : 'red' });
+          const cx = st.G.reduce((a, g, i) => a + g * st.x[i], 0), cy = st.G.reduce((a, g, i) => a + g * st.y[i], 0), gs = st.G.reduce((a, g) => a + g, 0);
+          if (Math.abs(gs) > 1e-9) s.dot(cx / gs, cy / gs, { r: 4, color: 'ink', hollow: true, label: 'centre of vorticity', labelPos: 'se' });
+          const tmax = Math.max(14, st.t);
+          h.setView([0, Math.max(P[ps.value].T, st.t)], [0, Math.max(3, ...st.sep.map((q) => Math.max(...q.slice(1))))]);
+          const m = st.sep[0].length - 1;
+          for (let k = 0; k < m; k++) h.path(st.sep.map((q) => [q[0], q[k + 1]]), { color: cl[k % cl.length], width: 1.6 });
+          const I = inv(st), I0 = st.i0;
+          info = { t: st.t, n, dH: Math.abs(I.H - I0.H), dP: Math.hypot(I.px - I0.px, I.py - I0.py), dI: Math.abs(I.I - I0.I), H: I.H / TAU, tmax };
+        }, { period: 14, still: 10 });
+        v.readout(() => `${info.n} vortices, $t=${v.fix(info.t, 1)}$ · invariants (errors since $t=0$): Hamiltonian $${v.sci(info.dH + 1e-16, 1)}$, linear impulse $\\sum\\Gamma\\mathbf x$: $${v.sci(info.dP + 1e-16, 1)}$, angular impulse $\\sum\\Gamma|\\mathbf x|^2$: $${v.sci(info.dI + 1e-16, 1)}$`);
       },
     },
   ],

@@ -4,7 +4,7 @@
 // Lintner, Rev. Econ. Stat. 47(1):13–37 (1965); Mossin, Econometrica 34(4):768–783 (1966); Sharpe, Management Science 9(2):277–293 (1963);
 // Jensen, J. Finance 23(2):389–416 (1968); Ross, J. Econ. Theory 13(3):341–360 (1976), doi 10.1016/0022-0531(76)90046-6.
 // 4.1, 4.2, 4.5 (partly), 4.6 use stylised model universes; 4.3, 4.4, 4.5 use real monthly returns from Kenneth R. French's Data Library.
-import { clamp, pct, fx, sg, pctTicks, data, ymOf, monthLabel, idxOf, mean, sdev, solveLin, invert, matVec, dot, ols, excess, ann, frontierConsts, frontierSd, tangency, covRho, quad, rng, IND_LONG } from './ch04.shared.js';
+import { clamp, pct, fx, sg, pctTicks, data, ymOf, monthLabel, idxOf, mean, sdev, solveLin, invert, matVec, dot, ols, excess, ann, fanLabels, frontierConsts, frontierSd, tangency, covRho, quad, rng, IND_LONG } from './ch04.shared.js';
 
 export default {
   collection: 'fin',
@@ -54,14 +54,14 @@ Scope: homogeneous beliefs, mean–variance preferences, a single riskless rate 
           L.line(0, rf, 0.5, rf + slope * 0.5, { color: 'green', width: 2.4 });
           L.text('capital market line', 0.5, rf + slope * 0.5, { dx: -4, dy: -10, align: 'right', size: 11.5, color: 'green', weight: 700 });
           SD.forEach((s, i) => { L.dot(s, mu[i], { r: 4.5, color: 'muted' }); L.text(NAMES[i], s, mu[i], { dx: 8, dy: -2, align: 'left', size: 12, color: 'muted', weight: 700 }); });
-          L.dot(0, rf, { r: 4.5, color: 'ink' }); L.text('$r_f$', 0.012, rf, { dx: 4, dy: 12, align: 'left', size: 11.5, color: 'muted' });
+          L.dot(0, rf, { r: 4.5, color: 'ink' }); L.text('$r_f$', 0, rf, { dx: 8, dy: 14, align: 'left', size: 11.5, color: 'muted' });
           const Mmu = dot(wM, mu), Msd = Math.sqrt(varM);
           L.dot(sdT, muT, { r: 7, color: 'green' }); L.text('tangency T', sdT, muT, { dx: -9, dy: -8, align: 'right', size: 12, color: 'green', weight: 700 });
           if (Math.abs(shock.value) > 1e-9) { L.dot(Msd, Mmu, { r: 6, color: 'red', hollow: true }); L.text('market M', Msd, Mmu, { dx: 9, dy: 14, align: 'left', size: 12, color: 'red', weight: 700 }); }
           const y = REL.map((r) => (muT - rf) / (scale.value * r * sdT * sdT));
           y.forEach((yi, i) => { L.dot(Math.abs(yi) * sdT, rf + yi * (muT - rf), { r: 5, color: 'gold' }); });
-          L.text('most cautious investor', Math.abs(y[0]) * sdT, rf + y[0] * (muT - rf), { dx: 8, dy: 14, align: 'left', size: 10.5, color: 'muted' });
-          L.text('most aggressive', Math.abs(y[4]) * sdT, rf + y[4] * (muT - rf), { dx: -8, dy: 14, align: 'right', size: 10.5, color: 'muted' });
+          L.text('most risk-averse investor', Math.abs(y[4]) * sdT, rf + y[4] * (muT - rf), { dx: 6, dy: 14, align: 'left', size: 10.5, color: 'muted' });
+          L.text('least risk-averse', Math.abs(y[0]) * sdT, rf + y[0] * (muT - rf), { dx: -8, dy: 14, align: 'right', size: 10.5, color: 'muted' });
           // aggregate demand against supply
           const riskyW = WEALTH.reduce((s, w, i) => s + (w / 100) * y[i], 0);
           const dem = T.map((t) => t * riskyW);
@@ -90,7 +90,7 @@ In the $(\beta,E[r])$ plane all assets, and all portfolios, lie on one straight 
 
 Scope: a model result. It holds exactly only at equilibrium prices, under the assumptions of fin-4.1.`,
       idea: String.raw`Mix a small fraction $\varepsilon$ of asset $i$ into the market portfolio. Since $M$ is the tangency portfolio, it must maximise the Sharpe ratio, so the derivative of the Sharpe ratio in the direction of $i$ must vanish at $\varepsilon=0$. That derivative is a combination of $E[r_i]-r_f$ and $\operatorname{Cov}(r_i,r_M)$, and setting it to zero gives $E[r_i]-r_f=\beta_i(E[r_M]-r_f)$. The market-clearing story is the converse: if the price of an asset were off the line, its expected return would be too high or too low for its covariance, the demand of mean–variance investors would exceed or fall short of the supply, and the price would move until it returned.`,
-      caption: String.raw`Six assets with random payoffs; each investor demands shares $q=\tfrac1a\,C^{-1}\!\bigl(m-(1+r_f)P\bigr)$ (mean–variance utility, risk aversion $a$, payoff means $m$ and covariance $C$), and the six supplies are one share each. **Drag the blue ring** to put one asset's price off its equilibrium level (a different expected return): it leaves the line, and the right panel shows the **excess demand** that this creates for it and, through correlation, for the others. Raise **rounds of trading** and prices move 15% of the way implied by the excess demand each round: the asset returns to the line and every bar goes to zero. (Stylised universe, not data.)`,
+      caption: String.raw`Six assets with random payoffs; each investor demands shares $q=\tfrac1a\,C^{-1}\!\bigl(m-(1+r_f)P\bigr)$ (mean–variance utility, risk aversion $a$, payoff means $m$ and covariance $C$), and the six supplies are one share each. **Drag the blue ring** (starting 3 points too high for asset D; pick another asset, or drag it, to change that) to put one asset's price off its equilibrium level (a different expected return): it leaves the line, and the right panel shows the **excess demand** that this creates for it and, through correlation, for the others. Raise **rounds of trading** and prices move 15% of the way implied by the excess demand each round: the asset returns to the line and every bar goes to zero. (Stylised universe, not data.)`,
       deps: ['fin-4.1'],
       refs: ['Luenberger: CAPM', 'BKM ch. 9'],
       tags: ['CAPM', 'security market line', 'equilibrium'],
@@ -108,7 +108,7 @@ Scope: a model result. It holds exactly only at equilibrium prices, under the as
         const tS = v.slider('rounds of trading', 0, 40, 0, { int: true });
         const S = v.stage({ x: [0, 2.2], y: [0, 0.16], axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 300, xlabel: 'beta $\\beta_i$', ylabel: 'expected return', yticks: pctTicks(0, 0.15, 0.05), title: 'the security market line' });
         const X = v.stage({ x: [0.4, 6.6], y: [-1, 1], axes: 'box', gutter: true, height: 340, weight: 0.85, minWidth: 240, xlabel: 'asset', ylabel: 'excess demand (shares)', xticks: NAMES.map((n, i) => [i + 1, n]), title: 'excess demand at the current prices' });
-        const h = S.handle(1, 0.08, { color: 'blue', label: '', constrain: 'y' });
+        const h = S.handle(1, 0.095, { color: 'blue', label: '', constrain: 'y' });
         const Pstar = (a, rf) => { const Cs = C.map((r) => r.reduce((s, x) => s + x, 0)); return m.map((mi, i) => (mi - a * Cs[i]) / (1 + rf)); };
         const stats = (P) => {
           const V = P.reduce((s, p) => s + p, 0), w = P.map((p) => p / V);
@@ -116,20 +116,20 @@ Scope: a model result. It holds exactly only at equilibrium prices, under the as
           const vm = dot(w, cr), er = m.map((mi, i) => mi / P[i] - 1);
           return { beta: cr.map((c) => c / vm), er, erM: dot(w, er), w };
         };
-        let st = null, k0 = 3, startEr = null;
+        let st = null, k0 = 3;
         v.render(() => {
           const a = aS.value, rf = rfS.value, k = NAMES.indexOf(pick.value);
           const Ps = Pstar(a, rf), eq = stats(Ps);
-          if (k !== k0 || startEr === null) { k0 = k; startEr = eq.er[k]; }
+          if (k !== k0) { k0 = k; h.set(eq.beta[k], clamp(eq.er[k] + 0.03, 0.005, 0.15)); } // a new asset starts 3 points above its equilibrium return
           h.set(eq.beta[k], clamp(h.y, 0.005, 0.15)); // the handle keeps the equilibrium beta
-          if (h.dragging || Math.abs(h.y - startEr) > 1e-9) startEr = clamp(h.y, 0.005, 0.15);
+          const startEr = clamp(h.y, 0.005, 0.15);
           const P0 = Ps.slice(); P0[k] = m[k] / (1 + startEr);
           const f = Math.pow(0.85, tS.value), P = P0.map((p, i) => Ps[i] + (p - Ps[i]) * f);
           const cur = stats(P), prem = cur.erM - rf;
           S.line(0, rf, 2.2, rf + prem * 2.2, { color: 'green', width: 2.2 });
           S.text('security market line', 2.15, rf + prem * 2.15, { dx: -2, dy: -10, align: 'right', size: 11.5, color: 'green', weight: 700 });
           S.dot(0, rf, { r: 4.5, color: 'ink' }); S.text('$r_f$', 0.04, rf, { dx: 4, dy: 12, align: 'left', size: 11.5, color: 'muted' });
-          S.dot(1, cur.erM, { r: 6, color: 'gold' }); S.text('market', 1, cur.erM, { dx: 0, dy: 16, align: 'center', size: 11.5, color: 'gold', weight: 700 });
+          S.dot(1, cur.erM, { r: 6, color: 'gold' }); S.text('market', 1, cur.erM, { dx: 9, dy: 14, align: 'left', size: 11.5, color: 'gold', weight: 700 });
           cur.beta.forEach((b, i) => {
             const alpha = cur.er[i] - rf - b * prem, off = Math.abs(alpha) > 0.0004;
             S.dot(b, cur.er[i], { r: i === k ? 6 : 4.5, color: i === k ? 'blue' : 'accent' });
@@ -192,7 +192,7 @@ Scope: this is a definition and a sample estimate: with finitely many months, $\
           X.dots(pts, { r: 2.6, color: 'accent', alpha: 0.55 });
           X.line(-0.25, r.b[0] + r.b[1] * -0.25, 0.25, r.b[0] + r.b[1] * 0.25, { color: 'orange', width: 2.4 });
           X.hline(0, { color: 'muted', width: 1, alpha: 0.5 }); X.vline(0, { color: 'muted', width: 1, alpha: 0.5 });
-          X.text(`slope = β̂ = ${fx(r.b[1], 2)}`, 0.24, r.b[0] + r.b[1] * 0.2, { dx: 0, dy: 18, align: 'right', size: 12.5, color: 'orange', weight: 700 });
+          X.corner(`slope = β̂ = ${fx(r.b[1], 2)}`, 'tl', { color: 'orange', size: 12.5, weight: 700 });
           const roll = rolling(name);
           Rl.vband(1963.5 + (i0 + 0.5) / 12, 1963.5 + (i1 - 0.5) / 12, { color: 'orange', alpha: 0.15 });
           Rl.hline(1, { color: 'muted', width: 1, dash: true });
@@ -232,7 +232,7 @@ Scope: a measure of performance *relative to the one-factor benchmark*; it is on
         const endS = v.slider('window ends in', 1975, 2026, 2026, { int: true, fmt: (x) => String(x) });
         const frac = v.slider('share of funds with real skill', 0, 0.4, 0.1, { step: 0.01, fmt: (x) => pct(x, 0) });
         const skill = v.slider('their true alpha (a year)', 0, 0.05, 0.02, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const L = v.stage({ x: [0.4, 1.5], y: [0, 0.14], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 290, xlabel: 'beta', ylabel: 'average excess return (a year)', yticks: pctTicks(0, 0.14, 0.02), title: 'ten industry portfolios against the security market line' });
+        const L = v.stage({ x: [0.4, 1.5], y: [0, 0.14], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 290, xlabel: 'beta', ylabel: 'average excess return (a year)', title: 'ten industry portfolios against the security market line' });
         const H = v.stage({ x: [-6, 6], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 't-statistic of $\\hat\\alpha$', ylabel: 'funds', title: 'simulated funds: how many look skilled?' });
         let st = null;
         v.render(() => {
@@ -240,18 +240,18 @@ Scope: a measure of performance *relative to the one-factor benchmark*; it is on
           const prem = 12 * mean(mk, i0, i1);
           const rows = NM.map((nm, j) => { const r = ols(excess(D.ind[j], D.rf), [mk], i0, i1); return { nm, beta: r.b[1], er: 12 * mean(excess(D.ind[j], D.rf), i0, i1), a: 12 * r.b[0], sea: 12 * r.se[0], t: r.t[0] }; });
           const bmin = Math.min(...rows.map((r) => r.beta)), bmax = Math.max(...rows.map((r) => r.beta));
-          const lo = Math.min(0.4, bmin - 0.05), hi = Math.max(1.5, bmax + 0.05);
-          const ymax = Math.max(0.14, ...rows.map((r) => r.er + 2 * r.sea)) * 1.05, ymin = Math.min(0, ...rows.map((r) => r.er - 2 * r.sea)) * 1.1;
+          const lo = Math.min(0.4, bmin - 0.1), hi = Math.max(1.5, bmax + 0.35);
+          const ymax = Math.max(0.12, ...rows.map((r) => r.er)) * 1.25, ymin = Math.min(0, ...rows.map((r) => r.er)) - 0.02;
           L.setView([lo, hi], [ymin, ymax]);
           L.line(lo, lo * prem, hi, hi * prem, { color: 'green', width: 2.2 });
-          L.text('security market line (premium ' + pct(prem, 1) + ')', hi, hi * prem, { dx: -4, dy: -12, align: 'right', size: 11, color: 'green', weight: 700 });
+          L.corner('security market line: slope ' + pct(prem, 1), 'tl', { color: 'green', size: 11.5, weight: 700 });
           rows.forEach((r) => {
             const sigf = Math.abs(r.t) > 2, base = r.beta * prem;
             L.line(r.beta, base + r.a - 2 * r.sea, r.beta, base + r.a + 2 * r.sea, { color: 'muted', width: 1.4 });
             L.line(r.beta, base, r.beta, r.er, { color: sigf ? 'red' : 'orange', width: 2.2 });
             L.dot(r.beta, r.er, { r: 5, color: sigf ? 'red' : 'accent' });
-            L.text(r.nm, r.beta, r.er, { dx: 8, dy: -3, align: 'left', size: 10.5, color: 'muted', weight: 600 });
           });
+          fanLabels(L, rows.map((r) => ({ x: r.beta, y: r.er, text: r.nm, color: v.color('muted') })), { leader: v.color('faint') });
           // simulation of funds on the same market returns
           const rn = rng(11), NF = 800, bins = new Array(48).fill(0); let fp = 0, tp = 0, nSk = 0, nUn = 0, sigPos = 0;
           for (let f = 0; f < NF; f++) {
@@ -286,7 +286,7 @@ so that $n$ assets need only $2n+1$ estimated numbers ($\beta_i$, $\sigma_{\vare
 
 Scope: a *model*; the assumption of uncorrelated residuals is false in real data (industries co-move beyond the market), so the model trades some bias for a large reduction in estimation noise.`,
       idea: String.raw`The covariance matrix of $n$ assets estimated from $T$ monthly observations has $n(n+1)/2$ entries each with sampling error, and it is singular if $T\le n$; an optimiser (fin-3.7, fin-3.13) loves to exploit those errors. Forcing the structure $\beta\beta^{\!\top}\sigma_M^2+\operatorname{diag}(\sigma_\varepsilon^2)$ throws away real correlations (the residual correlation within industries, size and value groups) but estimates far fewer numbers, and the trade is often a good one — the same bias–variance trade as in regression. Whether it wins depends on how large $T$ is relative to $n$ and on how well one factor describes the assets.`,
-      caption: String.raw`Real data: the 25 portfolios formed on size and book-to-market (value-weighted monthly returns), excess of the T-bill rate. **Left**: each point is one pair of portfolios: its covariance as estimated from the sample (horizontal) against the single-index prediction (vertical); the diagonal means a perfect match. **Right**: the annualised out-of-sample volatility of the *global minimum-variance portfolio* built (a) from the full sample covariance, (b) from the single-index covariance and (c) equal-weighted 1/N, averaged over every 12th month as a start date since 1963; the estimation window is the **months** slider and **the selected window** ends in the year you pick. Short windows ruin the sample covariance; the index covariance holds up.`,
+      caption: String.raw`Real data: the 25 portfolios formed on size and book-to-market (value-weighted monthly returns), excess of the T-bill rate. **Left**: each point is one pair of portfolios: its covariance as estimated from the sample (horizontal) against the single-index prediction (vertical); the diagonal means a perfect match. **Right**: the annualised out-of-sample volatility of the *global minimum-variance portfolio* built (a) from the full sample covariance, (b) from the single-index covariance and (c) equal-weighted 1/N, averaged over every 12th month as a start date since 1963; the estimation window is the **months** slider and **the selected window** ends in the year you pick. With a short window relative to the 25 portfolios (30–48 months) the noisy sample covariance loses to the single-index one; with 10–20 years of data the sample covariance wins, because the residual correlations the index model assumes away are real.`,
       deps: ['fin-4.3'],
       refs: ['BKM ch. 8'],
       tags: ['index model', 'covariance', 'estimation'],
@@ -294,7 +294,7 @@ Scope: a *model*; the assumption of uncorrelated residuals is false in real data
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Single-index_model' },
       viz(v) {
         const D = data(), n = D.n, K = 25, NPer = 60;
-        const Tm = v.slider('estimation window (months)', 30, 240, 60, { int: true });
+        const Tm = v.slider('estimation window (months)', 30, 240, 36, { int: true });
         const ey = v.slider('selected window ends in', 1970, 2020, 2000, { int: true, fmt: (x) => String(x) });
         const ex = D.p25.map((p) => excess(p, D.rf));
         const fit = (i0, i1) => {
@@ -368,8 +368,8 @@ Scope: an asymptotic result in the number of assets (Ross, 1976); with few asset
         const eS = v.slider('expected return of D', 0.06, 0.14, 0.105, { step: 0.0005, fmt: (x) => pct(x, 2) });
         const nS = v.slider('stocks in each portfolio', 5, 5000, 400, { int: true, log: true, sig: 2 });
         const Lp = v.stage({ x: [0, 1.6], y: [0, 1.6], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'loading on factor 1', ylabel: 'loading on factor 2', title: 'factor loadings' });
-        const Ep = v.stage({ x: [0.06, 0.14], y: [0.06, 0.14], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'expected return from the plane through A, B, C', ylabel: 'actual expected return', xticks: pctTicks(0.06, 0.14, 0.02), yticks: pctTicks(0.06, 0.14, 0.02), title: 'pricing by the plane' });
-        const Wp = v.stage({ x: [0.4, 4.6], y: [-3, 3], axes: 'box', gutter: true, height: 340, weight: 0.8, minWidth: 220, xlabel: 'portfolio', ylabel: 'weight in the arbitrage portfolio', xticks: PL.map((p, i) => [i + 1, p]), title: 'the zero-cost, zero-factor-risk portfolio' });
+        const Ep = v.stage({ x: [0.06, 0.14], y: [0.06, 0.14], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'return implied by the plane', ylabel: 'actual expected return', xticks: pctTicks(0.06, 0.14, 0.02), yticks: pctTicks(0.06, 0.14, 0.02), title: 'pricing by the plane' });
+        const Wp = v.stage({ x: [0.4, 4.6], y: [-3, 3], axes: 'box', gutter: true, height: 340, weight: 0.8, minWidth: 220, xlabel: 'portfolio', ylabel: 'weight', xticks: PL.map((p, i) => [i + 1, p]), title: 'the arbitrage portfolio' });
         const start = [[1.2, 0.3], [0.4, 1.1], [0.9, 0.9], [0.8, 0.7]], col = ['blue', 'orange', 'purple', 'gold'];
         const hs = start.map((p, i) => Lp.handle(p[0], p[1], { color: col[i], label: PL[i], constrain: { x: [0.05, 1.55], y: [0.05, 1.55] } }));
         let st = null;

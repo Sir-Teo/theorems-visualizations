@@ -109,6 +109,40 @@ export function rng(seed) {
 }
 export const signText = (x, d = 1) => (x < 0 ? '−' : '+') + Math.abs(x).toFixed(d);
 
+/**
+ * Labels next to their points, pushed apart so that none overlap (pixel relaxation); a thin leader joins a label that had to move.
+ * items = [{x, y, text, color}] in data units. st: {size, w (label width px), h (height px), dx, dy, weight, leader (CSS colour)}.
+ */
+export function fanLabels(S, items, st = {}) {
+  const w = st.w ?? 46, h = st.h ?? 13, dx = st.dx ?? 8, dy = st.dy ?? -2;
+  const P = items.map((it) => ({ ...it, x0: S.X(it.x), y0: S.Y(it.y), px: S.X(it.x) + dx, py: S.Y(it.y) + dy }));
+  for (let it = 0; it < 80; it++) {
+    let moved = false;
+    for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
+      const a = P[i], b = P[j];
+      if (Math.abs(a.px - b.px) < w && Math.abs(a.py - b.py) < h) {
+        const push = (h - Math.abs(a.py - b.py)) / 2 + 0.3, up = a.py <= b.py;
+        a.py += up ? -push : push; b.py += up ? push : -push; moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  const H = S.height || 300, c = S.ctx;
+  for (const p of P) {
+    p.py = Math.min(Math.max(p.py, 10), H - 30);
+    const left = p.px + (st.w ?? 46) > (S.width || 600) - 4 && p.x0 > (S.width || 600) / 2;
+    if (left) p.px = p.x0 - dx;
+    if (st.leader && (Math.abs(p.py - (p.y0 + dy)) > 3)) { c.save(); c.strokeStyle = st.leader; c.lineWidth = 1; c.beginPath(); c.moveTo(p.x0 + 3, p.y0); c.lineTo(p.px - 2, p.py); c.stroke(); c.restore(); }
+    S.textPx(p.text, p.px, p.py, { color: p.color, size: st.size ?? 10.5, weight: st.weight ?? 600, align: left ? 'right' : 'left' });
+  }
+}
+/** Compact number for growth multiples: 5.5, 334.8, 5.5×10⁶. */
+export function fmtBig(x) {
+  if (x < 1000) return x < 10 ? x.toFixed(2) : x.toFixed(1);
+  const k = Math.floor(Math.log10(x)), m = x / 10 ** k, sup = String(k).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]).join('');
+  return `${m.toFixed(1)}×10${sup}`;
+}
+
 // ---------------------------------------------------------------- data (real: Kenneth R. French Data Library / CRSP)
 /** Fama–French factors, monthly %×100 from 1963-07 to 2026-06: [Mkt−RF, SMB, HML, RF]. */
 export const D_FF = [
