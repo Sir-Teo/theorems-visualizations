@@ -50,14 +50,13 @@ export default {
         const E = G.handle(30, 25, { label: 'E', color: 'purple' });
         v.button('Best fit', () => E.set(best.pole[0], best.pole[1]));
         v.button('Reset', () => E.set(30, 25));
-        const bars = v.stage({ x: [0.3, 9.7], y: [-12, 12], axes: 'box', gutter: true, xlabel: 'fault number (south to north)', ylabel: 'misfit (°)', height: 200, full: true });
+        const bars = v.stage({ x: [0.3, 9.7], y: [-90, 90], axes: 'box', gutter: true, xlabel: 'fault number (south to north)', ylabel: 'misfit (°)', height: 200, full: true });
         let rms = 0, res = [];
         v.render(() => {
           const pole = [E.lon, E.lat];
           G.draw({ land: false });
           G.land(null, { fillAlpha: 0.1, alpha: 0.35, color: 'muted', fill: 'muted' });
           G.path(rp, { color: 'blue', width: 2.2, geodesic: false, alpha: 0.7 });
-          const d90 = []; for (const q of G.greatCircle ? [] : []) d90.push(q);
           res = [];
           sites.forEach((p, i) => {
             const d = angDist(p, pole), az = mod360(bearing(pole, p) - 90); // small-circle direction about E (counter-clockwise sense)
@@ -98,15 +97,15 @@ export default {
         const r1 = v.slider('rate $\\omega_{BA}$ (°/Myr)', 0, 1, 0.6, { step: 0.01 }), r2 = v.slider('rate $\\omega_{CB}$ (°/Myr)', 0, 1, 0.45, { step: 0.01 });
         const hid = v.toggle('hidden plate D in the circuit', false);
         const rd = v.slider('its rate $\\omega_D$ (°/Myr)', 0, 0.6, 0.25, { step: 0.01 });
-        const S3 = v.stage3d({ range: 1.3, height: 360, yaw: 0.9, pitch: 0.45, axes: false });
+        const S3 = v.stage3d({ range: 1.0, height: 320, yaw: 0.9, pitch: 0.45, axes: false });
         let info = {};
-        const sc = 1.0;
+        const sc = 0.8;
         v.render(() => {
           const w1 = evec([E1.lon, E1.lat], r1.value), w2 = evec([E2.lon, E2.lat], r2.value), wd = hid.value ? evec([ED.lon, ED.lat], rd.value) : [0, 0, 0];
           const pred = vadd(w1, w2), meas = vadd(pred, wd), res = vsub(meas, pred);
           const q = [Q.lon, Q.lat], v1 = velVec(q, w1), v2 = velVec(q, w2), vp = velVec(q, pred), vm = velVec(q, meas);
           const vsum = { east: v1.east + v2.east, north: v1.north + v2.north };
-          const tip = (vel, k = 0.1) => { const sp = Math.hypot(vel.east, vel.north); return dest(q, mod360(Math.atan2(vel.east, vel.north) / D), Math.max(0.01, sp * k)); };
+          const tip = (vel, k = 0.3) => { const sp = Math.hypot(vel.east, vel.north); return dest(q, mod360(Math.atan2(vel.east, vel.north) / D), Math.max(0.01, sp * k)); };
           G.draw({ land: false });
           G.land(null, { fillAlpha: 0.1, alpha: 0.35, color: 'muted', fill: 'muted' });
           for (const [p, c] of [[E1, 'purple'], [E2, 'orange']]) G.dot([p.lon, p.lat], { r: 5, color: c });
@@ -122,7 +121,7 @@ export default {
           S3.arrow(P(w1), P(pred), { color: 'orange', width: 2.4 });
           S3.arrow([0, 0, 0], P(pred), { color: 'green', width: 3 });
           if (hid.value) { S3.arrow(P(pred), P(meas), { color: 'red', width: 2.4 }); S3.arrow([0, 0, 0], P(meas), { color: 'ink', width: 1.5, dash: true }); }
-          S3.text('$\\omega_{BA}$', vscale(P(w1), 0.5)); S3.text('$\\omega_{CA}$', vscale(P(pred), 0.55));
+          S3.tex('\\omega_{BA}', vscale(P(w1), 0.5)); S3.tex('\\omega_{CA}', vscale(P(pred), 0.55));
           info = { pred, meas, res, vp, vm, v1, v2, vsum, q };
         });
         v.legend([['purple', '$\\omega_{BA}$ / $v_{BA}$'], ['orange', '$\\omega_{CB}$ / $v_{CB}$'], ['green', 'sum: $\\omega_{CA}$ / $v_{CA}$'], ['red', 'unmodelled motion (plate D)']]);
@@ -174,7 +173,6 @@ export default {
           let J = X[0], miss = Infinity;
           if (J) { miss = Math.max(...L.map((l) => Math.abs((J[0] - l.p[0]) * -l.d[1] + (J[1] - l.p[1]) * l.d[0]))); }
           const stable = !!J && miss < 0.04;
-          vs.polygon?.(P);
           vs.path([P[0], P[1], P[2], P[0]], { color: 'faint', width: 1, dash: true });
           L.forEach((l, k) => { vs.line(l.p[0] - 30 * l.d[0], l.p[1] - 30 * l.d[1], l.p[0] + 30 * l.d[0], l.p[1] + 30 * l.d[1], { color: colors[k], width: 2.2 }); vs.tex(`\\text{${names[k]}: ${ty[k][0] === 'T' ? 'T' : ty[k]}}`, ...[l.p[0], l.p[1]], { color: colors[k], size: 12, dx: 8, dy: -8 }); });
           if (stable) vs.dot(J[0], J[1], { r: 7, color: 'green' });
@@ -217,10 +215,10 @@ export default {
         const H0 = [-155.3, 19.4];
         const obs = [['Kauaʻi', [-159.5, 22.05], 5.1], ['Midway', [-177.4, 28.2], 27.7], ['Koko', [171.6, 35.3], 50], ['Ōjin', [170.6, 38.0], 55], ['Suiko', [170.0, 44.8], 61], ['Detroit', [167.6, 51.3], 76]];
         const s = v.stage({ height: 400, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-175, 38], graticule: 15 });
+        const G = v.globe(s, { projection: 'orthographic', center: [-175, 38], graticule: 15, zoom: 1.7 });
         const az1 = v.slider('Hawaiian leg: direction (°)', 270, 330, 300, { step: 0.5 }), v1 = v.slider('speed (mm/yr)', 30, 140, 80, { step: 1 });
         const az2 = v.slider('Emperor leg: direction (°)', 320, 390, 350, { step: 0.5 }), v2 = v.slider('speed (mm/yr)', 30, 140, 70, { step: 1 });
-        const dl = v.slider('pole distance $\\Delta$ from Hawaii (°)', 20, 110, 65, { step: 1 });
+        const dl = v.slider('pole distance $\\Delta$ from Hawaii (°)', 20, 160, 65, { step: 1 });
         const tb = v.slider('bend age (Ma)', 30, 60, 47, { step: 0.5 });
         const dr = v.slider('hotspot drifts south during the Emperor leg (°)', 0, 20, 0, { step: 0.5 });
         const age = v.stage({ x: [0, 6500], y: [0, 90], axes: 'box', gutter: true, xlabel: 'distance along the chain from Kīlauea (km)', ylabel: 'age (Ma)', height: 240, full: true });
@@ -232,7 +230,7 @@ export default {
           const frac = clamp((t - P.tb) / (81 - P.tb), 0, 1.2), H = t > P.tb ? dest(H0, 0, P.dr * frac) : H0;
           return t <= P.tb ? rotApply(R1(t), H) : rotApply(R1(P.tb), rotApply(R2(t - P.tb), H));
         };
-        const cost = (x, base) => { const P = { ...base, a1: x[0], w1: x[1], a2: x[2], w2: x[3], d: clamp(x[4], 15, 120) }; let q = 0; for (const [, p, t] of obs) { const d = angDist(posAt(P, t), p) * D * R_EARTH; q += d * d; } return Math.sqrt(q / obs.length); };
+        const cost = (x, base) => { const P = { ...base, a1: x[0], w1: x[1], a2: x[2], w2: x[3], d: clamp(x[4], 20, 160) }; let q = 0; for (const [, p, t] of obs) { const d = angDist(posAt(P, t), p) * D * R_EARTH; q += d * d; } return Math.sqrt(q / obs.length); };
         const nm = (f, x0, step) => {
           const n = x0.length; let P = [x0, ...x0.map((_, i) => { const x = x0.slice(); x[i] += step[i]; return x; })], F = P.map(f);
           for (let it = 0; it < 900; it++) {
@@ -245,7 +243,7 @@ export default {
           }
           return P[0];
         };
-        const fit = () => { const base = params(); const x = nm((z) => cost(z, base), [az1.value, v1.value, az2.value, v2.value, dl.value], [8, 15, 8, 15, 12]); az1.set(clamp(x[0], 270, 330)); v1.set(clamp(x[1], 30, 140)); az2.set(clamp(x[2], 320, 390)); v2.set(clamp(x[3], 30, 140)); dl.set(clamp(x[4], 20, 110)); };
+        const fit = () => { const base = params(); const x = nm((z) => cost(z, base), [az1.value, v1.value, az2.value, v2.value, dl.value], [8, 15, 8, 15, 12]); az1.set(clamp(x[0], 270, 330)); v1.set(clamp(x[1], 30, 140)); az2.set(clamp(x[2], 320, 390)); v2.set(clamp(x[3], 30, 140)); dl.set(clamp(x[4], 20, 160)); };
         let first = true;
         v.button('Best fit', fit);
         let info = {};
@@ -289,8 +287,8 @@ export default {
       verify: true,
       viz(v) {
         const dip = v.slider('mean slab dip (°)', 15, 80, 45, { step: 1 });
-        const age = v.slider('plate age at the trench (Myr)', 5, 150, 80, { step: 1 });
-        const rate = v.slider('convergence rate (mm/yr)', 10, 120, 70, { step: 1 });
+        const age = v.slider('plate age at the trench (Myr)', 5, 150, 120, { step: 1 });
+        const rate = v.slider('convergence rate (mm/yr)', 10, 120, 90, { step: 1 });
         const count = v.slider('number of events', 300, 3000, 1200, { step: 100, int: true });
         const s = v.stage({ x: [-80, 1200], y: [-760, 60], equal: true, axes: 'box', gutter: true, xlabel: 'distance from the trench (km)', ylabel: 'depth (km, down)', height: 420, full: true, yticks: [[0, '0'], [-200, '200'], [-400, '400'], [-600, '600']] });
         const h = v.stage({ x: [0, 720], y: [0, 1], axes: 'box', gutter: true, xlabel: 'depth (km)', ylabel: 'relative number of events', height: 220, full: true });
@@ -309,9 +307,9 @@ export default {
           let guard = 0; while (evs.length < count.value && guard++ < 60000) {
             const z = rng() * zmax; if (rng() * 1.3 > pd(z)) continue;
             let k = 0; while (k < pts.length - 1 && -pts[k][1] < z) k++;
-            const th2 = Math.atan2(pts[Math.min(k + 1, pts.length - 1)][1] - pts[Math.max(k - 1, 0)][1], pts[Math.min(k + 1, pts.length - 1)][0] - pts[Math.max(k - 1, 0)][0]);
+            const a = pts[Math.max(k - 1, 0)], b = pts[Math.min(k + 1, pts.length - 1)], tx = b[0] - a[0], ty = b[1] - a[1], tn = Math.hypot(tx, ty) || 1;
             const off = 6 * rng.normal(); // scatter normal to the slab
-            evs.push([pts[k][0] - Math.sin(th2) * off * -1 * 0 + off * Math.sin(-th2) * 1, pts[k][1] + off * Math.cos(th2), z]);
+            evs.push([pts[k][0] - (ty / tn) * off, pts[k][1] + (tx / tn) * off, z]);
           }
           s.hline(0, { color: 'faint' });
           for (const zz of [410, 660]) { s.hline(-zz, { color: 'muted', dash: true, alpha: 0.6 }); s.text(`${zz} km`, 1170, -zz + 12, { size: 11, color: 'muted', align: 'right' }); }

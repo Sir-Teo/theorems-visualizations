@@ -46,16 +46,16 @@ The washout state $(S_0,0)$ always exists. A second equilibrium with the culture
           const n = Math.round(220 * Math.min(1, x / Math.max(S0.value, 1)));
           for (let j = 0; j < n; j++) { const c = cells[j]; Vs.dot(0.27 + 0.46 * (c[0] + 0.012 * Math.sin(t * 2 + c[2])), 0.12 + 0.58 * (c[1] + 0.012 * Math.cos(t * 2.3 + c[2])), { r: 2.6, color: 'orange' }); }
           Vs.arrow(0.03, 0.86, 0.36, 0.86, { color: 'teal', width: 3 }); Vs.arrow(0.36, 0.86, 0.36, 0.74, { color: 'teal', width: 3 });
-          Vs.tex('\\text{feed } S_0=' + v.fix(S0.value, 2) + ',\\ \\text{rate } D', 0.03, 0.93, { size: 13, color: 'teal' });
+          Vs.tex('\\text{feed } S_0=' + v.fix(S0.value, 2) + ',\\ \\text{rate } D', 0.03, 0.93, { size: 13, color: 'teal', align: 'left' });
           Vs.arrow(0.64, 0.12, 0.64, 0.02, { color: 'muted', width: 3 }); Vs.arrow(0.64, 0.02, 0.97, 0.02, { color: 'muted', width: 3 });
-          Vs.tex('\\text{outflow, rate } D', 0.62, 0.075, { size: 12, color: 'muted', align: 'right' });
+          Vs.tex('\\text{outflow } D', 0.97, 0.085, { size: 12, color: 'muted', align: 'right' });
           Ts.path(sol.ts.map((q, j) => [q, sol.ys[j][0]]), { color: 'teal', width: 2.4 });
           Ts.path(sol.ts.map((q, j) => [q, sol.ys[j][1]]), { color: 'orange', width: 2.4 });
           Ts.vline(tt, { color: 'gold', width: 1.6 });
           pp.draw();
           Ps.dot(S, x, { r: 6, color: 'gold' });
         }, { period: 20, still: 10 });
-        pp.legend();
+        pp.legend([['teal', 'nutrient $S(t)$'], ['orange', 'bacteria $x(t)$']]);
         v.readout(() => { const d = D.value, s0 = S0.value, lam = d < 1 ? d * 0.5 / (1 - d) : Infinity; const alive = d < 1 && lam < s0; return `break-even $\\lambda=DK/(\\mu_m-D)=${isFinite(lam) ? v.fix(lam, 3) : '\\infty'}$ vs feed $S_0=${v.fix(s0, 2)}$ → ${alive ? `**culture survives**: $S^*=${v.fix(lam, 3)}$, $x^*=${v.fix(s0 - lam, 3)}$` : '**washout**: $x\\to0$, $S\\to S_0$'}\n${pp.describe({ max: 3 })}`; });
       },
     },
@@ -128,7 +128,7 @@ Define the break-even concentration $R_i^*=\dfrac{DK_i}{\mu_{m,i}-D}$ (if $\mu_{
         const sg = v.slider('interaction strength $\\sigma$', 0.02, 0.6, 0.2, { step: 0.005 });
         const C = v.slider('connectance $C$', 0.1, 1, 0.5, { step: 0.01 });
         let seed = 5; v.button('Resample', () => { seed++; pool = null; });
-        const H = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 320, axes: 'box', minWidth: 230, title: 'interaction matrix A' });
+        const H = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 320, axes: false, minWidth: 230, title: 'interaction matrix A' });
         const E = v.stage({ x: [-3, 1.6], y: [-2.4, 2.4], equal: true, height: 320, axes: true, minWidth: 250, title: 'eigenvalues of the community matrix' });
         const T = v.stage({ x: [0, 40], y: [0, 3], height: 320, axes: 'box', gutter: true, minWidth: 250, xlabel: 'time', ylabel: 'densities $x_i$', title: 'recovery after a 15% kick' });
         let pool = null, key = '', A = null, ev = null, ser = null;
@@ -136,7 +136,7 @@ Define the break-even concentration $R_i^*=\dfrac{DK_i}{\mu_{m,i}-D}$ (if $\mu_{
           if (!pool) { const r = v.rng(seed); pool = { Z: Array.from({ length: 60 }, () => Array.from({ length: 60 }, () => r.normal())), U: Array.from({ length: 60 }, () => Array.from({ length: 60 }, () => r())), xi: Array.from({ length: 60 }, () => r.normal()) }; key = ''; }
           const k = [n.value, sg.value, C.value, seed].join(); if (k === key) return; key = k;
           const N = n.value;
-          A = Array.from({ length: N }, (_, i) => Array.from({ length: N }, (_, j) => (i === j ? -1 : pool.U[i][j] < C.value ? sg.value / Math.sqrt(C.value) * pool.Z[i][j] : 0)));
+          A = Array.from({ length: N }, (_, i) => Array.from({ length: N }, (_, j) => (i === j ? -1 : pool.U[i][j] < C.value ? sg.value * pool.Z[i][j] : 0)));
           ev = v.M.eig(A).values;
           const x0 = pool.xi.slice(0, N).map((z) => Math.max(0.05, 1 + 0.15 * z));
           ser = rk4sys((t, x) => x.map((xi, i) => { let s = 0; for (let j = 0; j < N; j++) s += A[i][j] * (x[j] - 1); return xi * s; }), x0, 40, 800, 0);
@@ -144,9 +144,9 @@ Define the break-even concentration $R_i^*=\dfrac{DK_i}{\mu_{m,i}-D}$ (if $\mu_{
         v.render(() => {
           ensure();
           const N = n.value;
-          H.raster((x, y) => { if (x < 0 || x >= 1 || y < 0 || y >= 1) return null; const j = Math.floor(x * N), i = Math.floor((1 - y) * N); const a = A[i][j]; const c = v.diverge(0.5 + 0.5 * Math.max(-1, Math.min(1, a / (i === j ? 1 : 3 * sg.value + 1e-9))), 'blue', 'red'); return [c[0], c[1], c[2], 1]; }, { res: 2, key });
+          H.raster((x, y) => { if (x < 0 || x >= 1 || y < 0 || y >= 1) return null; const j = Math.floor(x * N), i = Math.floor((1 - y) * N); const a = A[i][j]; const c = v.diverge(Math.max(-1, Math.min(1, a / (i === j ? 1 : 3 * sg.value + 1e-9))), 'blue', 'red'); return [c[0], c[1], c[2], 1]; }, { res: 2, key });
           E.vline(0, { color: 'red', dash: true, width: 1.5 });
-          const R = sg.value * Math.sqrt(N * C.value) * Math.sqrt(1 / 1);
+          const R = sg.value * Math.sqrt(N * C.value);
           E.circle(-1, 0, R, { color: 'accent', fill: 'accent', fillAlpha: 0.08, dash: true });
           ev.forEach((z) => E.dot(z.re, z.im, { r: 4, color: z.re < 0 ? 'green' : 'red' }));
           T.hline(1, { color: 'muted', dash: true });
@@ -189,7 +189,7 @@ Define the break-even concentration $R_i^*=\dfrac{DK_i}{\mu_{m,i}-D}$ (if $\mu_{
         v.render(() => {
           prep(); pp.draw();
           const T0 = 2 * PI / Math.sqrt(a.value * c.value);
-          B.setView([0, 3], [0, Math.max(14, T0 * 2)]);
+          B.setView([0, Math.max(0.5, ...curve.map((q) => q[0])) * 1.15], [0, Math.max(T0 * 1.6, ...curve.map((q) => q[1])) * 1.1]);
           B.hline(T0, { color: 'muted', dash: true });
           B.path(curve, { color: 'accent', width: 2.6 });
           pp.trajectories.forEach((tr) => { const f = tr.fwd; if (f && f.stop === 'closed orbit' && isFinite(f.period)) { const V = lvV(a.value, c.value, tr.x0, tr.y0) - lvV(a.value, c.value, c.value, a.value); B.dot(V, f.period, { r: 6, color: 'gold' }); } });

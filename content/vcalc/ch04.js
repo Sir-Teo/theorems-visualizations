@@ -67,7 +67,7 @@ $f$ is **Riemann integrable** on $R$ if $U_n-L_n\to0$; the common limit is the *
             const i = Math.min(n - 1, Math.floor(x * n)), j = Math.min(n - 1, Math.floor(y * n));
             return (mode === 'lo' ? e.lo : e.hi)[i * n + j];
           };
-          S.heat(val, { range: [-0.3, 2.3], cmap: 'theme', color: 'accent', res: 3, key: `${key}|${mode}|${mode === 'f' ? 0 : n}` });
+          S.heat(val, { range: [-0.3, 2.3], cmap: 'theme', color: 'accent', res: 3, rect: [0, 0, 1, 1], key: `${key}|${mode}|${mode === 'f' ? 0 : n}` });
           const mx = Math.max(...e.hi.map((h, i) => h - e.lo[i]));
           for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
             if (e.hi[i * n + j] - e.lo[i * n + j] > 0.5 * mx && n <= 30) S.rect(i / n, j / n, (i + 1) / n, (j + 1) / n, { color: 'orange', width: 1.4, fill: false, alpha: 0.9 });
@@ -125,7 +125,7 @@ Geometrically, the volume under the graph is the integral of the slice areas $A(
           const classicOn = sel.value === 'classic', d = classicOn ? cut.value : 0;
           cut.el.hidden = !classicOn;
           const f = classicOn ? (x, y) => (x < d && y < d ? NaN : classic(x, y)) : smooth;
-          S.heat(f, { range: classicOn ? [-4, 4] : [-0.7, 1.7], cmap: 'theme-diverging', res: 3, key: `${sel.value}|${d}` });
+          S.heat(f, { range: classicOn ? [-4, 4] : [-0.7, 1.7], cmap: 'theme-diverging', res: 3, rect: [0, 0, 1, 1], key: `${sel.value}|${d}` });
           if (classicOn && d > 0) S.rect(0, 0, d, d, { color: 'red', fill: 'red', fillAlpha: 0.25, width: 1.4 });
           S.vline(P.x, { color: 'orange', width: 2 }); S.hline(P.y, { color: 'green', width: 2 });
           const N = 400, xs = Array.from({ length: N + 1 }, (_, i) => (i + 0.5 * (i === 0)) / N);
@@ -176,13 +176,20 @@ If $D$ is **horizontally simple**, $D=\{c\le y\le d,\ l(y)\le x\le r(y)\}$, then
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 400, weight: 0.8, minWidth: 240, xlabel: 'sweep position', title: 'inner integral along the sweep' });
         const cache = {};
         const chordsAt = (R, y) => {
+          const ins = (x) => y >= R.g(x) && y <= R.h(x);
+          // bisect between an outside and an inside sample to find the boundary
+          const edge = (a, b, leaving) => {
+            let o = leaving ? b : a, n = leaving ? a : b;
+            for (let k = 0; k < 40; k++) { const m = (o + n) / 2; if (ins(m)) n = m; else o = m; }
+            return n;
+          };
           // intervals of x in the region at height y, by scanning
           const [x0, x1] = R.x, N = 600, out = [];
           let start = null;
           for (let i = 0; i <= N; i++) {
             const x = x0 + ((x1 - x0) * i) / N, inside = y >= R.g(x) && y <= R.h(x);
-            if (inside && start === null) start = x;
-            if (!inside && start !== null) { out.push([start, x0 + ((x1 - x0) * (i - 1)) / N]); start = null; }
+            if (inside && start === null) start = i === 0 ? x : edge(x0 + ((x1 - x0) * (i - 1)) / N, x, false);
+            if (!inside && start !== null) { out.push([start, edge(x0 + ((x1 - x0) * (i - 1)) / N, x, true)]); start = null; }
           }
           if (start !== null) out.push([start, x1]);
           return out;
@@ -246,7 +253,7 @@ So the average value of a continuous function over a connected region is actuall
       tags: ['average value', 'connectedness', 'intermediate value'],
       viz(v) {
         const CASES = {
-          one: { label: 'one disc, wavy $f$', inD: (x, y) => x * x + y * y <= 1.0, f: (x, y) => 0.6 * x + 0.4 * y + 0.5 * Math.sin(2.2 * x) * Math.cos(1.6 * y), box: [-1.1, 1.1] },
+          one: { label: 'one disc, wavy $f$', inD: (x, y) => x * x + y * y <= 1.0, f: (x, y) => 0.6 * x + 0.4 * y + 0.5 * Math.sin(2.2 * x) * Math.cos(1.6 * y) + 0.35 * x * x, box: [-1.1, 1.1] },
           two: { label: 'two discs, $f=x$', inD: (x, y) => (x - 1.2) ** 2 + y * y <= 0.36 || (x + 1.2) ** 2 + y * y <= 0.36, f: (x) => x, box: [-1.9, 1.9] },
         };
         const sel = v.select('case', Object.entries(CASES).map(([k, o]) => ({ value: k, label: o.label })), 'one');
@@ -264,16 +271,17 @@ So the average value of a continuous function over a connected region is actuall
             if (C.inD(x, y)) { const z = C.f(x, y); vals.push(z); sum += z; area++; mn = Math.min(mn, z); mx = Math.max(mx, z); }
           }
           const A = area * hx * hy;
-          return (cache[k] = { mean: sum / area, area: A, vals, mn, mx });
+          const bw = (mx - mn) / 40, cnt = new Array(41).fill(0); for (const z of vals) cnt[Math.min(40, Math.floor((z - mn) / bw))]++;
+          return (cache[k] = { mean: sum / area, area: A, vals, mn, mx, dmax: (Math.max(...cnt) / (vals.length * bw)) * 1.15 });
         };
         let info = {};
         v.render(() => {
           const C = CASES[sel.value], T = stats(sel.value), mean = T.mean;
-          S.heat((x, y) => (C.inD(x, y) ? C.f(x, y) : NaN), { range: [T.mn, T.mx], cmap: 'theme', color: 'accent', res: 3, key: sel.value });
+          S.heat((x, y) => (C.inD(x, y) ? C.f(x, y) : NaN), { range: [-Math.max(Math.abs(T.mn), Math.abs(T.mx)), Math.max(Math.abs(T.mn), Math.abs(T.mx))], cmap: 'theme-diverging', res: 3, key: sel.value });
           S.contour((x, y) => (C.inD(x, y) ? C.f(x, y) : NaN), [mean], { color: 'green', width: 3, res: 220 });
           const inside = C.inD(P.x, P.y);
-          if (inside) { S.dot(P.x, P.y, { color: 'gold', r: 0 }); }
-          const hv = H.hist(T.vals, { bins: 40, range: [T.mn, T.mx], density: true, color: 'accent', fillAlpha: 0.35 });
+                    H.setView([T.mn - 0.1, T.mx + 0.1], [0, T.dmax]);
+          H.hist(T.vals, { bins: 40, range: [T.mn, T.mx], density: true, color: 'accent', fillAlpha: 0.35 });
           H.vline(mean, { color: 'green', width: 2.5 });
           H.vline(T.mn, { color: 'red', dash: true, width: 1.2 }); H.vline(T.mx, { color: 'red', dash: true, width: 1.2 });
           if (inside) H.vline(C.f(P.x, P.y), { color: 'gold', width: 2 });
@@ -379,7 +387,7 @@ The same holds in $\R^n$. The absolute value of the Jacobian determinant is esse
         const nS = v.slider('cells per side $n$', 2, 40, 6, { int: true });
         const U = v.stage({ x: [0, 2.6], y: [0, 2.6], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, xlabel: 'u', ylabel: 'v', title: '$D^*$: the rectangle' });
         const X = v.stage({ x: [-3, 3], y: [-1, 3.2], equal: true, axes: true, height: 340, weight: 1.1, minWidth: 240, title: '$D$: the image' });
-        const E = v.stage({ x: [2, 40], y: [0.001, 5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, xlabel: 'n', title: 'relative error of the sums' });
+        const E = v.stage({ x: [2, 40], y: [1e-6, 5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, xlabel: 'n', title: 'relative error of the sums' });
         const cache = {};
         const sums = (key, fk, n) => {
           const M = MAPS[key], f = fk === 'one' ? () => 1 : (x, y) => x * x + y * y + 1;

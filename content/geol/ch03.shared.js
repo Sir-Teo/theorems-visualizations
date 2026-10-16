@@ -96,24 +96,25 @@ export const meanAngle = (a) => mod360(Math.atan2(a.reduce((s, x) => s + Math.si
 
 // ── Euler-pole fit to transform-fault azimuths ─────────────────────────────
 /** RMS misfit (deg) between observed transform azimuths and the small-circle azimuths about `pole`. */
-export function poleMisfit(pole, sites, azs) {
+export function poleMisfit(pole, sites, azs, sense) {
   let s = 0;
   for (let i = 0; i < sites.length; i++) {
     const d = angDist(sites[i], pole); if (d < 1e-3 || d > 179.999) { s += 45 * 45; continue; }
-    const az = mod360(bearing(pole, sites[i]) + 90); // direction of motion about the pole: perpendicular to the great circle from the pole
-    const e = azDiff180(az, azs[i]); s += e * e;
+    // direction of motion about the pole: perpendicular to the great circle from the pole (sense −1: counter-clockwise, +1: clockwise)
+    const az = mod360(bearing(pole, sites[i]) + 90 * (sense || 1));
+    const e = sense ? azDiff(az, azs[i]) : azDiff180(az, azs[i]); s += e * e;
   }
   return Math.sqrt(s / sites.length);
 }
 /** Best-fitting pole by a coarse grid search followed by shrinking-step coordinate descent. */
-export function fitPole(sites, azs, start = [0, 60]) {
+export function fitPole(sites, azs, start = [0, 60], sense) {
   let best = null, bf = 1e9;
-  for (let lat = -88; lat <= 88; lat += 8) for (let lon = -180; lon < 180; lon += 8) { const f = poleMisfit([lon, lat], sites, azs); if (f < bf) { bf = f; best = [lon, lat]; } }
+  for (let lat = -88; lat <= 88; lat += 8) for (let lon = -180; lon < 180; lon += 8) { const f = poleMisfit([lon, lat], sites, azs, sense); if (f < bf) { bf = f; best = [lon, lat]; } }
   let step = 4;
   while (step > 0.01) {
     let moved = false;
     for (const [dl, df] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) {
-      const c = [wrap180(best[0] + dl * step), clamp(best[1] + df * step, -89.9, 89.9)], f = poleMisfit(c, sites, azs);
+      const c = [wrap180(best[0] + dl * step), clamp(best[1] + df * step, -89.9, 89.9)], f = poleMisfit(c, sites, azs, sense);
       if (f < bf - 1e-12) { bf = f; best = c; moved = true; }
     }
     if (!moved) step /= 2;
@@ -171,3 +172,24 @@ export function anomalyProfile(xs, blocks, { zTop = 3, thick = 1, F = 50000, inc
 // ── hypsometry (schematic mixture, Earth's area fractions) ─────────────────
 /** Gaussian density. */
 export const gauss = (x, m, s) => Math.exp(-0.5 * ((x - m) / s) ** 2) / (s * Math.sqrt(2 * Math.PI));
+
+/** Schematic hypsometric mixture (area fractions of the whole Earth, heights in km above sea level): continents, shelf and slope, rises, abyssal plains, trenches. */
+export const HYPS = {
+  land: { w: 0.292, k: 1.15, theta: 0.73 }, // gamma(k, θ): mean 0.84 km
+  ocean: [
+    { name: 'shelf and slope', w: 0.130, m: -1.0, s: 0.9 },
+    { name: 'ridges and rises', w: 0.180, m: -2.9, s: 0.6 },
+    { name: 'abyssal plains', w: 0.380, m: -4.7, s: 0.7 },
+    { name: 'trenches', w: 0.018, m: -7.6, s: 1.2 },
+  ],
+};
+const lgam = (z) => { const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5]; let y = z, x = z, t = x + 5.5; t -= (x + 0.5) * Math.log(t); let ser = 1.000000000190015; for (const cj of c) ser += cj / ++y; return -t + Math.log((2.5066282746310005 * ser) / x); };
+/** Density (per km of elevation, summing to 1 over the whole Earth's area) of the schematic hypsometric mixture at height h (km). */
+export function hypsDensity(h) {
+  const L = HYPS.land; let d = 0;
+  if (h > 0) d += L.w * Math.exp((L.k - 1) * Math.log(h / L.theta) - h / L.theta - lgam(L.k)) / L.theta;
+  else for (const o of HYPS.ocean) d += (o.w * gauss(h, o.m, o.s)) / normCdf(-o.m / o.s);
+  return d;
+}
+const erf = (x) => { const t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return x >= 0 ? y : -y; };
+const normCdf = (z) => 0.5 * (1 + erf(z / Math.SQRT2));

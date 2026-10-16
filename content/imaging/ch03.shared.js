@@ -356,3 +356,50 @@ export function fbpAt(q, sc, pts) {
   });
   return out;
 }
+
+// ---------------------------------------------------------------- circular cone-beam (3.15)
+// Ellipsoid list: [A, a, b, c, x0, y0, z0] (axis-aligned). Source at (D cosβ, D sinβ, 0); virtual flat detector through the rotation axis,
+// perpendicular to the central ray, coordinates (u, v) with u along (−sinβ, cosβ, 0) and v along z.
+export function ellipsoidAt(E, x, y, z) { let s = 0; for (const [A, a, b, c, x0, y0, z0] of E) if (((x - x0) / a) ** 2 + ((y - y0) / b) ** 2 + ((z - z0) / c) ** 2 <= 1) s += A; return s; }
+export function coneProj(E, D, beta, u, v) {
+  const cb = Math.cos(beta), sb = Math.sin(beta), Sx = D * cb, Sy = D * sb;
+  const px = -u * sb, py = u * cb, pz = v; // detector point
+  let dx = px - Sx, dy = py - Sy, dz = pz; const n = Math.hypot(dx, dy, dz); dx /= n; dy /= n; dz /= n;
+  let tot = 0;
+  for (const [A, a, b, c, x0, y0, z0] of E) {
+    const ox = Sx - x0, oy = Sy - y0, oz = -z0;
+    const q = (dx / a) ** 2 + (dy / b) ** 2 + (dz / c) ** 2, B = (dx * ox) / (a * a) + (dy * oy) / (b * b) + (dz * oz) / (c * c), C = (ox / a) ** 2 + (oy / b) ** 2 + (oz / c) ** 2 - 1;
+    const disc = B * B - q * C; if (disc > 0) tot += (A * 2 * Math.sqrt(disc)) / q;
+  }
+  return tot;
+}
+/** Feldkamp–Davis–Kress reconstruction of an N³ volume on [-1,1]³ from nb views of an nu×nv detector of half-size `hd` (virtual detector at the axis). */
+export function fdk(E, D, nb, nu, nv, hd, N, zs = null) {
+  const du = (2 * hd) / nu, dv = (2 * hd) / nv, P = new Float64Array(nb * nu * nv);
+  const F = makeFilter(nu, du, 'ramp', 1);
+  const re = new Float64Array(F.P), im = new Float64Array(F.P);
+  for (let b = 0; b < nb; b++) {
+    const beta = (2 * PI * b) / nb;
+    for (let j = 0; j < nv; j++) {
+      const vv = -hd + (j + 0.5) * dv; re.fill(0); im.fill(0);
+      for (let i = 0; i < nu; i++) { const uu = -hd + (i + 0.5) * du; re[i] = coneProj(E, D, beta, uu, vv) * (D / Math.hypot(D, uu, vv)); }
+      fft1(re, im); for (let q = 0; q < F.P; q++) { re[q] *= F.H[q]; im[q] *= F.H[q]; } fft1(re, im, true);
+      for (let i = 0; i < nu; i++) P[(b * nv + j) * nu + i] = re[i] * du;
+    }
+  }
+  const slices = zs || Array.from({ length: N }, (_, k) => -1 + ((k + 0.5) * 2) / N), out = slices.map(() => new Float64Array(N * N));
+  slices.forEach((z, zi) => {
+    for (let jy = 0; jy < N; jy++) for (let ix = 0; ix < N; ix++) {
+      const x = -1 + ((ix + 0.5) * 2) / N, y = 1 - ((jy + 0.5) * 2) / N; let acc = 0;
+      for (let b = 0; b < nb; b++) {
+        const beta = (2 * PI * b) / nb, t = x * Math.cos(beta) + y * Math.sin(beta), s = -x * Math.sin(beta) + y * Math.cos(beta), den = D - t;
+        const uu = (D * s) / den, vv = (D * z) / den, fi = (uu + hd) / du - 0.5, fj = (vv + hd) / dv - 0.5, i0 = Math.floor(fi), j0 = Math.floor(fj), a = fi - i0, c = fj - j0;
+        if (i0 < 0 || i0 >= nu - 1 || j0 < 0 || j0 >= nv - 1) continue;
+        const base = b * nv * nu, p00 = P[base + j0 * nu + i0], p10 = P[base + j0 * nu + i0 + 1], p01 = P[base + (j0 + 1) * nu + i0], p11 = P[base + (j0 + 1) * nu + i0 + 1];
+        acc += ((1 - c) * ((1 - a) * p00 + a * p10) + c * ((1 - a) * p01 + a * p11)) * ((D * D) / (den * den));
+      }
+      out[zi][jy * N + ix] = (acc * 0.5 * 2 * PI) / nb;
+    }
+  });
+  return { slices, out };
+}
