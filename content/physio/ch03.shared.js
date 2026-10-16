@@ -193,10 +193,9 @@ export function drawLoop(s, R, st = {}) {
   if (st.color && st.color !== 'phase') { s.path(R.loop, { color: st.color, width: st.width ?? 2.2, alpha: st.alpha, dash: st.dash, close: true }); return; }
   for (const ph of phases(R)) {
     if (ph.key === 'A') continue;
-    const pts = phaseLoop(R, ph);
-    if (ph.key === 'F') pts.unshift(...phaseLoop(R, phases(R)[0]));
-    s.path(pts, { color: ph.color, width: st.width ?? 2.8, alpha: st.alpha });
+    s.path(phaseLoop(R, ph), { color: ph.color, width: st.width ?? 2.8, alpha: st.alpha });
   }
+  s.path(phaseLoop(R, phases(R)[0]), { color: phases(R)[4].color, width: st.width ?? 2.8, alpha: st.alpha }); // the atrial kick continues the filling segment
 }
 /** The four valve events of the beat as [V, P, label-number]. */
 export function cornerPoints(R) {

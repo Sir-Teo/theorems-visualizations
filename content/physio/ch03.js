@@ -32,10 +32,10 @@ export default {
       viz(v) {
         const hr = v.slider('heart rate', 50, 120, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
         const bands = v.toggle('shade the phases', true);
-        const gut = (b) => ({ l: 50, r: 10, t: 6, b });
-        const sP = v.stage({ x: [0, 1], y: [0, 150], height: 230, axes: 'box', gutter: gut(6), ylabel: 'pressure (mmHg)', full: true });
-        const sV = v.stage({ x: [0, 1], y: [40, 130], height: 110, axes: 'box', gutter: gut(6), ylabel: 'volume (mL)', full: true });
-        const sE = v.stage({ x: [0, 1], y: [-0.4, 1.2], height: 96, axes: 'box', gutter: gut(6), ylabel: 'ECG', yticks: [], full: true });
+        const gut = (b) => ({ l: 50, r: 10, t: 20, b });
+        const sP = v.stage({ x: [0, 1], y: [0, 150], height: 230, axes: 'box', gutter: gut(6), ylabel: 'pressure (mmHg)', xticks: [], full: true });
+        const sV = v.stage({ x: [0, 1], y: [40, 130], height: 110, axes: 'box', gutter: gut(6), ylabel: 'volume (mL)', xticks: [], full: true });
+        const sE = v.stage({ x: [0, 1], y: [-0.4, 1.2], height: 96, axes: 'box', gutter: gut(6), ylabel: 'ECG', yticks: [], xticks: [], full: true });
         const sS = v.stage({ x: [0, 1], y: [-1.3, 1.3], height: 90, axes: 'box', gutter: gut(34), xlabel: 't (s)', ylabel: 'sound', yticks: [], full: true });
         let T = 0.8, R = null, tc = 0;
         v.animate((t) => {
@@ -47,7 +47,7 @@ export default {
             if (bands.value) for (const p of ph) s.vband(p.t0, p.t1, { color: p.color, alpha: 0.1, edges: false });
             s.vline(tc, { color: 'gold', width: 1.6 });
           }
-          if (bands.value) { const lab = { A: 'A', IC: 'IC', E: 'ejection', IR: 'IR', F: 'filling' }; for (const p of ph) sP.text(lab[p.key], (p.t0 + p.t1) / 2, 144, { size: 11, color: p.color, align: 'center', baseline: 'top', weight: 700 }); }
+          if (bands.value) { const lab = { A: 'A', IC: 'IC', E: 'ejection', IR: 'IR', F: 'filling' }; for (const p of ph) sP.text(lab[p.key], (p.t0 + p.t1) / 2, 148, { size: 11, color: p.color, align: 'center', baseline: 'top', weight: 700 }); }
           trace(sP, R.t, R.Pa, { color: 'red', width: 2.2 });
           trace(sP, R.t, R.P, { color: 'accent', width: 2.4 });
           trace(sP, R.t, R.Pat, { color: 'green', width: 2 });
@@ -102,17 +102,15 @@ export default {
           sT.vline(tc, { color: 'gold', width: 1.6 });
           // loop, with the chosen phase thickened
           for (const p of ph) {
-            let pts = phaseLoop(R, p);
-            if (p.key === 'F') pts = [...phaseLoop(R, ph[0]), ...pts];
-            if (p.key === 'A') continue;
-            sL.path(pts, { color: p.color, width: hi.value === 'all' ? 2.8 : hi.value === p.key ? 5 : 1.4, alpha: hi.value === 'all' || hi.value === p.key ? 1 : 0.5 });
+            const pts = phaseLoop(R, p), key = p.key === 'A' ? 'F' : p.key, col = p.key === 'A' ? 'accent' : p.color;
+            sL.path(pts, { color: col, width: hi.value === 'all' ? 2.8 : hi.value === key ? 5 : 1.4, alpha: hi.value === 'all' || hi.value === key ? 1 : 0.5 });
           }
-          const cs = cornerPoints(R), pos = ['se', 'ne', 'nw', 'sw'];
+          const cs = cornerPoints(R), pos = ['ne', 'ne', 'nw', 'nw'];
           cs.forEach((c, k) => sL.dot(c[0], c[1], { r: 6, color: 'ink', label: c[2], labelPos: pos[k] }));
-          sL.text('mitral closes', cs[0][0] - 3, cs[0][1] - 11, { size: 10.5, color: 'muted', align: 'right' });
+          sL.text('mitral closes', cs[0][0] + 2, cs[0][1] - 9, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
           sL.text('aortic opens', cs[1][0] + 4, cs[1][1], { size: 10.5, color: 'muted', align: 'left' });
           sL.text('aortic closes', cs[2][0] + 4, cs[2][1] + 7, { size: 10.5, color: 'muted', align: 'left' });
-          sL.text('mitral opens', cs[3][0] - 3, cs[3][1] + 12, { size: 10.5, color: 'muted', align: 'left' });
+          sL.text('mitral opens', cs[3][0] - 2, cs[3][1] + 18, { size: 10.5, color: 'muted', align: 'right' });
           sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
           const i = beatIdx(R, tc);
           sL.dot(R.V[i], R.P[i], { r: 7, color: 'gold' });
@@ -132,8 +130,8 @@ export default {
       kind: 'Law',
       name: 'Frank–Starling law of the heart',
       statement: String.raw`Within the physiological range, the volume of blood the ventricle ejects in a beat increases with the volume (and so the pressure) at which it was filled: a more stretched ventricle beats harder, and in the intact circulation the output of the heart automatically matches the venous return. In the language of the pressure–volume plane, raising the filling pressure moves end-diastole to the right, the loop widens, and stroke volume rises along a **Starling curve** that is steep at low filling and **flattens** at high filling pressure, where the heart is at the stiff end of its passive pressure–volume curve. The law holds beat by beat, without nerves or hormones.`,
-      idea: String.raw`Two relations do the work in the elastance picture (physio-3.4). The end-systolic pressure–volume line is the same whatever the filling, so a larger end-diastolic volume ends at a somewhat larger end-systolic volume, but not as much larger: the difference, the stroke volume, grows. At the cellular level the stretched sarcomere develops more force because of the length–tension relation (physio-2.4) and a higher calcium sensitivity; the model below deliberately contains none of that, only the organ-level elastance, so it shows how much of the Starling curve comes from the geometry of the pressure–volume plane alone. The flattening comes from the steepening passive curve: the ventricle cannot be filled much beyond about 140 mL without a large pressure.`,
-      caption: String.raw`Drag the **filling pressure** (the pressure feeding the atrium). The right-hand loop at that filling is drawn bold, with five other fillings behind it; the plotted point on the Starling curve (stroke volume against end-diastolic pressure) follows. Switch the **contractility** to a failing ventricle (low end-systolic elastance) and the curve flattens and drops: the same filling now ejects less, and filling pressure rises for any output.`,
+      idea: String.raw`Two relations do the work in the elastance picture (physio-3.4). The end-systolic pressure–volume line is the same whatever the filling, so a larger end-diastolic volume ends at a somewhat larger end-systolic volume, but not as much larger: the difference, the stroke volume, grows. At the cellular level the stretched sarcomere develops more force because of the length–tension relation (physio-2.4) and a higher calcium sensitivity; the model below deliberately contains none of that, only the organ-level elastance, so it shows how much of the Starling curve comes from the geometry of the pressure–volume plane alone. The flattening comes from the steepening passive curve: the ventricle cannot be filled much beyond about 140–150 mL without a large pressure.`,
+      caption: String.raw`Drag the **filling pressure** (the pressure feeding the atrium). The coloured loop is the beat at that filling, with six other fillings behind it in grey; the plotted point on the Starling curve (stroke volume against end-diastolic pressure) follows. Switch the **contractility** to a failing ventricle (low end-systolic elastance) and the curve flattens and drops: the same filling now ejects less, and filling pressure rises for any output.`,
       scope: String.raw`Holds for a ventricle working in its normal range of fillings with a given arterial load and contractility; at extreme stretch the curve flattens or declines, and in a failing, dilated ventricle the operating point lies on the flat part. The model has no length-dependent activation or nervous control, so its curve is shallower than measured ones; the shape is the point.`,
       deps: ['physio-3.2', 'physio-2.4'],
       see: ['physio-3.11'],
@@ -155,7 +153,7 @@ export default {
           for (const p of [4, 7, 10, 14, 18, 22]) { const Q = heartBeat({ Pv: p, Ees }); sL.path(Q.loop, { color: 'faint', width: 1.2, alpha: 0.8, close: true }); }
           sL.fn((V) => Ees * (V - HEART.V0), { color: 'orange', dash: [6, 4], width: 1.3, domain: [HEART.V0, 170] });
           sL.fn((V) => HEART.A * (Math.exp(HEART.B * (V - HEART.V0)) - 1), { color: 'blue', dash: [6, 4], width: 1.3, domain: [HEART.V0, 170] });
-          sL.text('end-systolic line', 150, Ees * 140 + 6, { size: 10.5, color: 'orange', align: 'right' });
+          { const Vt = Math.min(150, HEART.V0 + 150 / Ees); sL.text('end-systolic line', Vt, Ees * (Vt - HEART.V0), { size: 10.5, color: 'orange', align: 'left', baseline: 'bottom', dx: 6, dy: -2 }); }
           sL.text('passive filling curve', 168, 28, { size: 10.5, color: 'blue', align: 'right' });
           drawLoop(sL, R);
           sL.dot(R.EDV, R.EDP, { r: 5, color: 'ink' }); sL.dot(R.ESV, R.Pes, { r: 5, color: 'ink' });
@@ -266,7 +264,7 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
         });
         v.legend([['muted', 'resting baseline', { dash: true }], ['accent', 'filling'], ['red', 'ejection (and aortic pressure)'], ['orange', 'end-systolic line', { dash: true }]]);
         const d = (x, y, u = '') => `${v.fix(x, 0)}${u} (${y >= 0 ? '+' : '−'}${v.fix(Math.abs(y), 0)})`;
-        v.readout(() => `$V_{\\mathrm{ED}}$ ${d(R.EDV, R.EDV - B.EDV)} mL · $V_{\\mathrm{ES}}$ ${d(R.ESV, R.ESV - B.ESV)} mL · $SV$ ${d(R.SV, R.SV - B.SV)} mL · $EF$ ${v.fix(100 * R.EF, 0)}\\% (rest ${v.fix(100 * B.EF, 0)}\\%) · peak $P$ ${d(R.Pmax, R.Pmax - B.Pmax)} mmHg · $CO$ ${v.fix(R.CO, 1)} L/min (rest ${v.fix(B.CO, 1)})\nchanges from the resting beat in brackets`);
+        v.readout(() => `$V_{\\mathrm{ED}}$ ${d(R.EDV, R.EDV - B.EDV)} mL · $V_{\\mathrm{ES}}$ ${d(R.ESV, R.ESV - B.ESV)} mL · $SV$ ${d(R.SV, R.SV - B.SV)} mL · $EF$ ${v.fix(100 * R.EF, 0)}% (rest ${v.fix(100 * B.EF, 0)}%) · peak $P$ ${d(R.Pmax, R.Pmax - B.Pmax)} mmHg · $CO$ ${v.fix(R.CO, 1)} L/min (rest ${v.fix(B.CO, 1)})\nchanges from the resting beat in brackets`);
       },
     },
 
@@ -277,7 +275,7 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
       name: 'Stroke volume, ejection fraction and cardiac output',
       statement: String.raw`The **stroke volume** is the blood ejected by the ventricle in one beat, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, the difference of the end-diastolic and end-systolic volumes. The **ejection fraction** is the fraction of the filled volume that is ejected, $EF = SV/V_{\mathrm{ED}}$. The **cardiac output** is the volume ejected per minute, $CO = SV \times HR$, and in the steady state equals the output of the other ventricle and the venous return. In an echocardiographic reference study the normal range for the left-ventricular ejection fraction is quoted as roughly 52–72 % for men and 54–74 % for women (2015 ASE/EACVI chamber-quantification recommendations, as relayed by secondary sources); a resting cardiac output of about 5 L/min is typical of a healthy adult.`,
       idea: String.raw`These three numbers are read straight from the pressure–volume loop (physio-3.2): the loop's width is $SV$, its right edge is $V_{\mathrm{ED}}$, and multiplying by the heart rate turns a per-beat quantity into a flow. $EF$ is a ratio, so it can look normal while the heart is small and the output low, and it can fall as a dilated heart ejects the same $SV$ out of a larger $V_{\mathrm{ED}}$. Cardiac output is the one the body needs, which is why a failing ventricle compensates by dilating (preload, physio-3.3) and by raising the heart rate.`,
-      caption: String.raw`Pick a **heart** and set the **heart rate**. The left panel is the pressure–volume loop, with the stroke volume as its width. The right panel is the area picture of $CO = SV \times HR$: a rectangle with width the heart rate and height the stroke volume, so its area is the output per minute; the dashed rectangle is the resting healthy heart. Compare the "failing" heart (a dilated ventricle with weak contraction, low ejection fraction) with the "athlete" (large stroke volume, slow rate): the same output from very different rectangles.`,
+      caption: String.raw`Pick a **heart** (its typical heart rate is set for you; change it freely). The left panel is the pressure–volume loop, with the stroke volume as its width. The right panel is the area picture of $CO = SV \times HR$: a rectangle with width the heart rate and height the stroke volume, so its area is the output per minute; the dashed rectangle is the resting healthy heart. Compare the "failing" heart (a dilated ventricle with weak contraction, low ejection fraction) with the "athlete" (large stroke volume, slow rate): a similar area built from a tall, narrow rectangle against a short, wide one. The small, stiff ventricle keeps a normal ejection fraction yet a low output.`,
       scope: String.raw`The four hearts are parameter sets of the chapter's illustrative model, not patient data. Ejection-fraction reference values are method-dependent (2-D echocardiography vs MRI, sex), and the numbers in the statement come from a secondary source, so they should be checked against the guideline itself before use. Nothing here is medical advice.`,
       deps: ['physio-3.2'],
       see: ['physio-3.5', 'physio-4.1'],
@@ -286,20 +284,20 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ejection_fraction' },
       viz(v) {
-        const type = v.select('heart', [{ value: 'healthy', label: 'healthy' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'athlete' }, { value: 'stiff', label: 'small, stiff' }], 'healthy');
+        const P = { healthy: { hr: 75 }, failing: { Ees: 1.0, V0: 40, Pv: 12, R: 1.5, hr: 90 }, athlete: { Ees: 3.4, V0: 10, A: 0.15, B: 0.028, Pv: 11, R: 1.0, hr: 52 }, stiff: { Ees: 4.2, V0: 10, A: 1.2, B: 0.04, Pv: 12, R: 1.5, hr: 85 } };
         const hr = v.slider('heart rate', 40, 130, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
-        const P = { healthy: {}, failing: { Ees: 1.0, V0: 40, Pv: 12, R: 1.5 }, athlete: { Ees: 3.4, V0: 10, Pv: 12, R: 1.0 }, stiff: { Ees: 4.2, V0: 10, A: 1.2, B: 0.04, Pv: 12, R: 1.5 } };
+        const type = v.select('heart', [{ value: 'healthy', label: 'healthy' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'athlete' }, { value: 'stiff', label: 'small, stiff' }], 'healthy', { onChange: (k) => hr.set(P[k.value ?? k].hr) });
         const sL = v.stage({ x: [20, 230], y: [0, 160], height: 330, axes: 'box', gutter: true, xlabel: 'ventricular volume (mL)', ylabel: 'ventricular pressure (mmHg)', weight: 1.2 });
         const sA = v.stage({ x: [0, 140], y: [0, 130], height: 330, axes: 'box', gutter: true, xlabel: 'heart rate (beats/min)', ylabel: 'stroke volume (mL)', weight: 1 });
         let R = null, B = null;
         v.render(() => {
-          R = heartBeat({ ...P[type.value], HR: hr.value }); B = heartBeat({});
+          const { hr: _h, ...pp } = P[type.value]; R = heartBeat({ ...pp, HR: hr.value }); B = heartBeat({});
           sL.path(B.loop, { color: 'muted', dash: [5, 4], width: 1.4, close: true });
           drawLoop(sL, R);
           sL.vline(R.EDV, { color: 'faint', dash: [3, 4], width: 1 }); sL.vline(R.ESV, { color: 'faint', dash: [3, 4], width: 1 });
           sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
-          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 4, { size: 11, color: 'muted', align: 'right', dx: -4 });
-          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 4, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 138, { size: 11, color: 'muted', align: 'right', dx: -4 });
+          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 138, { size: 11, color: 'muted', align: 'left', dx: 4 });
           const bs = B.SV, b75 = 75;
           sA.rect(0, 0, b75, bs, { fill: 'muted', fillAlpha: 0.1, stroke: true, color: 'muted', dash: [5, 4] });
           sA.rect(0, 0, hr.value, R.SV, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
