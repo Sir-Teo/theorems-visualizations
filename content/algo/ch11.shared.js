@@ -100,17 +100,18 @@ export function fordFulkerson(ids, arcs, s, t, rule = 'bfs', o = {}) {
   let f = o.f0 ? o.f0.slice() : zeros(arcs.length);
   const frames = [], steps = [];
   const mk = (type, extra) => frames.push({ type, f: f.slice(), value: flowValue(arcs, f, s), res: resArcs(arcs, f), ...extra });
+  const pn = (p) => [p[0].from, ...p.map((r) => r.to)].join('→');
   mk('init', { line: 1, note: 'Start from the zero flow, which is always feasible.' });
   for (let k = 0; k < maxIt; k++) {
     const res = resArcs(arcs, f), p = findPath(res, s, t, rule, rng);
     if (!p) break;
     const b = pathBottleneck(p);
-    mk('path', { line: 3, path: p, bottleneck: b, k: k + 1, dist: resDist(res, s, ids) });
+    mk('path', { line: 3, path: p, bottleneck: b, k: k + 1, dist: resDist(res, s, ids), note: `Augmentation ${k + 1}: the residual path ${pn(p)} has bottleneck ${num(b, 3)}.` });
     f = pushPath(f, p, b); steps.push({ path: p, b, dist: resDist(res, s, ids) });
-    mk('push', { line: 4, path: p, bottleneck: b, k: k + 1 });
+    mk('push', { line: 4, path: p, bottleneck: b, k: k + 1, note: `Pushed ${num(b, 3)} units: the flow value is now ${num(flowValue(arcs, f, s), 3)}.` });
   }
   const res = resArcs(arcs, f), S = reachSet(res, s);
-  mk('done', { line: 5, S, cap: cutCap(arcs, S) });
+  mk('done', { line: 5, S, cap: cutCap(arcs, S), note: `No augmenting path is left. The vertices reachable from s are {${[...S].join(', ')}}; the cut they define has capacity ${num(cutCap(arcs, S), 3)} = the flow value.` });
   return { frames, f, value: flowValue(arcs, f, s), S, cap: cutCap(arcs, S), steps };
 }
 export const FF_CODE = ['f ← 0 on every arc', 'while the residual graph G_f has an s–t path P:', '    b ← smallest residual capacity on P', '    push b units along P (forward arcs +b, backward arcs −b)', 'return f   ▷ reachable set of G_f is a minimum cut'];

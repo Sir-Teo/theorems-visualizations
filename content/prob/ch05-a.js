@@ -50,7 +50,7 @@ where $\mathscr F_n=\sigma(X_0,\dots,X_n)$: given the whole past, the next state
           const { P, path } = make(), steps = N.value, cnt = Array.from({ length: n }, () => Array(n).fill(0)), tot = Array(n).fill(0);
           for (let t = 0; t < steps; t++) { cnt[path[t]][path[t + 1]]++; tot[path[t]]++; }
           const i = +row.value;
-          drawChain(G, P, { pos, labels: true, cur: path[steps], fills: [0, 1, 2, 3].map((k) => (k === i ? 'orange' : 'accent')) });
+          drawChain(G, P, { pos, labels: true, labelRow: i, cur: path[steps], fills: [0, 1, 2, 3].map((k) => (k === i ? 'orange' : 'accent')) });
           B.bars(P[i], { x0: 0, dx: 1, color: 'accent' });
           const emp = P[i].map((_, j) => (tot[i] ? cnt[i][j] / tot[i] : 0));
           B.dots(emp.map((e, j) => [j, e]), { r: 6, color: 'gold' });
@@ -155,7 +155,7 @@ $$P(\text{fixation at }N\mid X_0=k)=\frac kN,\qquad P(\text{fixation at }0\mid X
           B.dots([[0, 1 - k / N], [1, k / N]], { r: 7, color: 'gold' });
           info = `$N=${N}$, start count $k=${k}$ (frequency $${fr(k / N, 3)}$). Fixed at $N$ in ${R.fixN} of 300 runs: $${fr(fN, 3)}$ against $k/N=${fr(k / N, 3)}$ (standard error about $${fr(Math.sqrt((k / N) * (1 - k / N) / 300), 3)}$). Mean time to absorption $${fr(R.tsum / 300, 1)}$ generations.`;
         });
-        v.legend([['gold', 'prediction $k/N$ and $1-k/N$', { dot: true }], ['accent', 'simulation']]);
+        v.legend([['orange', 'frequency paths'], ['accent', 'simulated fixation frequency'], ['gold', 'prediction $k/N$, $1-k/N$', { dot: true }]]);
         v.readout(() => info);
       },
     },
@@ -283,7 +283,7 @@ Then $\mathscr H$ contains every bounded $\sigma(\mathscr A)$-measurable functio
             for (let c = 0; c < m; c++) s.rect(c / m, 0, (c + 1) / m, vals[c], { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1 });
             s.fn(f, { color: 'ink', width: 2.2, n: 500 });
             let err = 0; for (let i = 0; i < G; i++) { const x = (i + 0.5) / G; err = Math.max(err, f(x) - vals[Math.floor(x * m)]); }
-            info = `Level $n=${n}$: $f_n$ is a combination of ${nz} indicators $1_{[0,a)}$ (coefficients $f_n$-jumps), $0\\le f_n\\le f$ and $\\sup(f-f_n)=${fr(err, 3)}$. As $n\\uparrow$ the $f_n$ increase to $f$, so closure under increasing limits puts $f$ in $\\mathscr H$.`;
+            info = `Level $n=${n}$: $f_n$ is a combination of ${nz} indicators $1_{[0,a)}$ (the coefficients are the jumps of $f_n$), $0\\le f_n\\le f$ and $\\sup(f-f_n)=${fr(err, 3)}$. As $n\\uparrow$ the $f_n$ increase to $f$, so closure under increasing limits puts $f$ in $\\mathscr H$.`;
           } else {
             const edges = [0, 0.3, 0.6, 0.9, 1], len = [0.3, 0.3, 0.3, 0.1], bas = [[1, 1, 1, 1], [1, 1, 0, 0], [0, 1, 1, 0]], tar = [0, 1, 0, 0];
             const Aw = len.map((l, i) => bas.map((b) => Math.sqrt(l) * b[i])), bw = len.map((l, i) => Math.sqrt(l) * tar[i]);
@@ -351,7 +351,7 @@ In words: given $\mathscr F_m=\sigma(X_0,\dots,X_m)$, the future $(X_m,X_{m+1},\
 $$p^{m+n}(x,z)=\sum_{y}p^{m}(x,y)\,p^{n}(y,z),$$
 that is, the $(m+n)$-step transition matrix is the product of the $m$-step and $n$-step matrices, and $p^n$ is the $n$th matrix power of $p$.`,
       idea: String.raw`Split the event $\{X_{m+n}=z\}$ according to the value $y$ of $X_m$ and apply the Markov property (5.2.3) at time $m$: $P_x(X_m=y,X_{m+n}=z)=P_x(X_m=y)P_y(X_n=z)$. Summing over the intermediate state $y$ is matrix multiplication.`,
-      caption: String.raw`Move $m$ and $n$. The three matrices are $p^m$, $p^n$ and $p^{m+n}$ (darker is larger); the gold row of $p^m$ and gold column of $p^n$ combine, term by term, into the gold entry $(i,j)$ of the product. The bars at the right are the individual terms $p^m(i,k)p^n(k,j)$ - their sum is the entry - and the gold dot is the frequency of that transition among $20\,000$ seeded chains.`,
+      caption: String.raw`Move $m$ and $n$. The three matrices are $p^m$, $p^n$ and $p^{m+n}$ (darker is larger); the gold row of $p^m$ and gold column of $p^n$ combine, term by term, into the gold entry $(i,j)$ of the product. The bars at the right are the individual terms $p^m(i,k)p^n(k,j)$ - their sum (green bar) is the entry, and the gold dot is the frequency of that transition among $20\,000$ seeded chains.`,
       deps: ['prob-5.2.3'],
       see: ['stoch-1.2'],
       credit: 'S. Chapman, 1928; A. N. Kolmogorov, 1931 (independently, for continuous-time processes)',
@@ -361,7 +361,7 @@ that is, the $(m+n)$-step transition matrix is the product of the $m$-step and $
         const iS = v.slider('row $i$', 0, 3, 0, { int: true }), jS = v.slider('column $j$', 0, 3, 2, { int: true });
         const mk = (t) => v.stage({ x: [0, 4], y: [0, 4], equal: true, axes: false, height: 230, minWidth: 190, weight: 0.7, title: t });
         const SA = mk('$p^m$'), SB = mk('$p^n$'), SC = mk('$p^{m+n}$');
-        const T = v.stage({ x: [-0.6, 3.6], y: [0, 0.5], axes: 'box', gutter: true, height: 230, minWidth: 210, weight: 0.8, xlabel: 'intermediate state $k$', xticks: [[0, '0'], [1, '1'], [2, '2'], [3, '3']], title: 'terms of the sum' });
+        const T = v.stage({ x: [-0.6, 3.6], y: [0, 0.5], axes: 'box', gutter: true, height: 230, minWidth: 210, weight: 0.8, xlabel: 'intermediate state $k$ (green: the sum)', xticks: [[0, '0'], [1, '1'], [2, '2'], [3, '3'], [4, 'Σ']], title: 'terms of the sum' });
         let info = '';
         v.render(() => {
           const m = mS.value, n = nS.value, i = iS.value, j = jS.value, Pm = matPowSm(P4, m), Pn = matPowSm(P4, n), Pt = matMulSm(Pm, Pn);
@@ -369,11 +369,11 @@ that is, the $(m+n)$-step transition matrix is the product of the $m$-step and $
           drawMatrix(v, SB, Pn, { hl: (r, c) => c === j, size: 10 });
           drawMatrix(v, SC, Pt, { hl: (r, c) => r === i && c === j, size: 10 });
           const terms = [0, 1, 2, 3].map((k) => Pm[i][k] * Pn[k][j]), tot = terms.reduce((a, b) => a + b, 0);
-          T.setView([-0.6, 3.6], [0, Math.max(0.3, ...terms, Pt[i][j]) * 1.15]);
-          T.bars(terms, { x0: 0, dx: 1, color: 'accent' });
+          T.setView([-0.6, 4.6], [0, Math.max(0.3, ...terms, Pt[i][j]) * 1.15]);
+          T.bars([...terms, tot], { x0: 0, dx: 1, color: (q, k) => (k < 4 ? 'accent' : 'green') });
           const rg = v.rng(11 + m * 17 + n), st = stepper(rg, P4); let hit = 0; const M = 20000;
           for (let q = 0; q < M; q++) { let x = i; for (let t = 0; t < m + n; t++) x = st(x); if (x === j) hit++; }
-          T.dot(1.5, hit / M, { r: 6, color: 'gold' });
+          T.dot(4, hit / M, { r: 6, color: 'gold' });
           info = `$p^{${m + n}}(${i},${j})=\\sum_k p^{${m}}(${i},k)\\,p^{${n}}(k,${j})=${terms.map((t) => fr(t, 3)).join('+')}=${fr(tot, 4)}$; entry of the matrix power: $${fr(Pt[i][j], 4)}$; simulated: $${fr(hit / M, 4)}$.`;
         });
         v.readout(() => info);
@@ -411,7 +411,7 @@ After a stopping time the chain restarts afresh from where it stands, independen
         let info = '';
         v.render(() => {
           const y = +yS.value, { e1, e2 } = run(y, rule.value, seed), P2 = matPowSm(P5, 2), q1 = P5[y], q2 = P2[y];
-          [[A, e1, q1], [B, e2, q2]].forEach(([S, e, q]) => { S.bars(e, { x0: 0, dx: 1, color: 'accent' }); S.dots(q.map((p, k) => [k, p]), { r: 6, color: 'gold' }); });
+          [[A, e1, q1], [B, e2, q2]].forEach(([S, e, q]) => { S.setView([-0.6, 4.6], [0, Math.max(0.3, ...e, ...q) * 1.15]); S.bars(e, { x0: 0, dx: 1, color: 'accent' }); S.dots(q.map((p, k) => [k, p]), { r: 6, color: 'gold' }); });
           info = `Total variation distance between the empirical law and the fresh chain's law: one step after $${fr(tvd(e1, q1), 3)}$, two steps after $${fr(tvd(e2, q2), 3)}$ (sampling noise is about $0.01$).`;
         });
         v.legend([['accent', 'after the random time'], ['gold', 'fresh chain from $y$', { dot: true }]]);
@@ -447,9 +447,10 @@ Hence the number of visits $N(y)$ to $y$ after time $0$ satisfies $P_x(N(y)\ge k
           const ee = e.value, x = +xS.value, y = +yS.value, rho = rhoTo(CHAIN5E(ee), y), rxy = rho[x], ryy = rho[y];
           const ex = Array.from({ length: K + 1 }, (_, k) => (k === 0 ? 1 - rxy : k < K ? rxy * ryy ** (k - 1) * (1 - ryy) : rxy * ryy ** (K - 1)));
           const emp = run(ee, x, y, seed);
+          s.setView([-0.6, K + 0.6], [0, Math.max(0.2, ...ex, ...emp) * 1.15]);
           s.bars(ex, { x0: 0, dx: 1, color: 'accent' });
           s.dots(emp.map((q, k) => [k, q]), { r: 6, color: 'gold' });
-          info = `$\\rho_{${x}${y}}=${fr(rxy, 4)}$ and $\\rho_{${y}${y}}=${fr(ryy, 4)}$, so $P_${x}(N(${y})\\ge k)=${fr(rxy, 3)}\\cdot${fr(ryy, 3)}^{k-1}$.   Expected number of visits $${ryy >= 1 - 1e-9 ? (rxy > 0 ? '\\infty' : '0') : fr(rxy / (1 - ryy), 3)}$; simulated mean (visits capped at ≥${K}) is not shown.`;
+          info = `$\\rho_{${x}${y}}=${fr(rxy, 4)}$ and $\\rho_{${y}${y}}=${fr(ryy, 4)}$, so $P_${x}(N(${y})\\ge k)=${fr(rxy, 3)}\\cdot${fr(ryy, 3)}^{k-1}$.   Expected number of visits $${ryy >= 1 - 1e-9 ? (rxy > 0 ? '\\infty' : '0') : fr(rxy / (1 - ryy), 3)}$; the last bar is capped at $\\ge${K}$ visits.`;
         });
         v.legend([['accent', 'exact: $\\rho_{xy}\\rho_{yy}^{k-1}$ law'], ['gold', 'simulation', { dot: true }]]);
         v.readout(() => info);
@@ -464,7 +465,7 @@ Hence the number of visits $N(y)$ to $y$ after time $0$ satisfies $P_x(N(y)\ge k
 $$P\Big(\max_{m\le n}S_m\ge a\Big)\le 2\,P(S_n\ge a).$$
 When the walk cannot jump over $a$ (for instance, simple random walk and integer $a$) this is an identity in the form $P(\max_{m\le n}S_m\ge a)=P(S_n\ge a)+P(S_n>a)$.`,
       idea: String.raw`Let $\tau=\min\{m:S_m\ge a\}$. By the strong Markov property (5.2.5), after $\tau$ the walk $S_{\tau+k}-S_\tau$ is a fresh walk, and by symmetry it is as likely to end up above $S_\tau$ as below: $P(S_n\ge a\mid\tau\le n)\ge\tfrac12$. Reflecting the path after $\tau$ turns the walk that ended below $a$ into one that ends above it, which is the picture. Hence $P(S_n\ge a)\ge\tfrac12P(\tau\le n)$.`,
-      caption: String.raw`Choose a symmetric step law (all scaled to variance 1), the horizon $n$ and the level $a=c\sqrt n$. Left: seeded walks; the first one that reaches the level is shown in blue after it with its reflected twin (red, dashed) from the first hit onward. Right: from $12\,000$ walks, the three numbers $P(\max\ge a)$, $2P(S_n\ge a)$ and $P(S_n\ge a)$. The first never exceeds the second, and the identity-case ratio $P(\max\ge a)/P(S_n\ge a)$ is $2$ only up to the overshoot of $a$.`,
+      caption: String.raw`Choose a symmetric step law (all scaled to variance 1), the horizon $n$ and the level $a=c\sqrt n$. Left: seeded walks; the first one that reaches the level is drawn thick, with its reflected twin (red, dashed) from the first hit onward. Right: from $12\,000$ walks, the three numbers $P(\max\ge a)$, $2P(S_n\ge a)$ and $P(S_n\ge a)$. The first never exceeds the second, and the identity-case ratio $P(\max\ge a)/P(S_n\ge a)$ is $2$ only up to the overshoot of $a$.`,
       deps: ['prob-5.2.5'],
       credit: 'reflection argument for walks and Brownian motion: D. Mirimanoff and Aebly, 1923 (André\'s 1887 ballot argument is often credited)',
       tags: ['random walk', 'maximal inequalities'],
@@ -473,7 +474,7 @@ When the walk cannot jump over $a$ (for instance, simple random walk and integer
         const nS = v.slider('horizon $n$', 10, 200, 100, { int: true }), cS = v.slider('level $a/\\sqrt n$', 0.2, 3, 1.2, { step: 0.05 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const A = v.stage({ x: [0, 200], y: [-20, 30], axes: 'box', gutter: true, height: 320, xlabel: 'step $m$', title: 'walks, the level $a$ and one reflected path' });
-        const B = v.stage({ x: [-0.5, 3.5], y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 260, weight: 0.8, xticks: [[0, '$P(S_n\\ge a)$'], [1, '$P(\\max\\ge a)$'], [2, '$2P(S_n\\ge a)$']], title: 'the inequality' });
+        const B = v.stage({ x: [-0.5, 3.5], y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 260, weight: 0.8, xticks: [[0, 'P(Sₙ ≥ a)'], [1, 'P(max ≥ a)'], [2, '2P(Sₙ ≥ a)']], title: 'the inequality' });
         const step = { srw: (r) => (r() < 0.5 ? -1 : 1), uni: (r) => r.uniform(-Math.sqrt(3), Math.sqrt(3)), lap: (r) => sampleLaplace(r) / Math.SQRT2, t3: (r) => sampleT3(r) / Math.sqrt(3) };
         let key = '', R = null;
         const run = (lw, n, sd) => {
@@ -496,7 +497,7 @@ When the walk cannot jump over $a$ (for instance, simple random walk and integer
             if (t0 >= 0 && !shown) { shown = true; A.path(tr.map((x, t) => [t, t <= t0 ? x : 2 * tr[t0] - x]).slice(t0), { color: 'red', width: 2, dash: true }); A.dot(t0, tr[t0], { r: 5, color: 'gold' }); }
           });
           B.setView([-0.5, 3.5], [0, Math.min(1.05, Math.max(0.05, 2 * pu * 1.2))]);
-          B.bars([pu, pm, 2 * pu], { x0: 0, dx: 1, color: (q, i) => (i === 1 ? 'orange' : 'accent') });
+          B.bars([pu, pm, 2 * pu], { x0: 0, dx: 1, color: (q, i) => ['accent', 'orange', 'purple'][i] });
           info = `$P(\\max_{m\\le n}S_m\\ge a)=${fr(pm, 4)}$,  $2P(S_n\\ge a)=${fr(2 * pu, 4)}$ - the inequality holds: ${pm <= 2 * pu + 1e-9 ? 'yes' : 'no (sampling noise)'}.   $P(S_n\\ge a\\mid\\tau\\le n)=${fr(hit ? hitUp / hit : 0, 3)}\\ge\\tfrac12$.`;
         });
         v.readout(() => info);

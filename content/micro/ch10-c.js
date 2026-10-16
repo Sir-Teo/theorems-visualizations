@@ -93,7 +93,7 @@ Compared with Cournot the leader produces more and earns more, the follower prod
           const prof = (i) => { const pi = cur[i], pj = cur[1 - i]; return pi < pj - 1e-9 ? (pi - c) * D(pi) : pi > pj + 1e-9 ? 0 : 0.5 * (pi - c) * D(pi); };
           let dev = 0; for (let x = c; x <= 10; x += 0.01) dev = Math.max(dev, (x < c - 1e-9 ? 0 : x < c + 1e-9 ? 0.5 * (x - c) * D(x) : 0));
           st = { k, L, cur, pm, p1: prof(0), p2: prof(1), done: k === L, dev };
-        }, { period: PER + 1.5, once: true, still: PER + 1.5 });
+        }, { period: PER + 1.5, once: true, still: 4 });
         v.readout(() => `Step ${st.k} of ${st.L}: prices $(${fx(st.cur[0], 2)}, ${fx(st.cur[1], 2)})$ from the monopoly price $${fx(st.pm, 2)}$; profits $${fx(st.p1)}$ and $${fx(st.p2)}$.${st.done ? ' Equilibrium: both at marginal cost, zero profit; no deviation does better (best deviation profit $0$ when the rival sits at $c$).' : ''}`);
       },
     },
@@ -228,7 +228,7 @@ With linear demand and $n = 2$, $\delta^* = 9/17 \approx 0.53$; $\delta^*$ rises
           s.dot(x_, 0.19, { r: 7, color: 'gold' }); s.vline(x_, { color: 'gold', width: 1.5, dash: [3, 3] });
           if (!fixed) { tag(s, `$p_A = ${fx(pA, 3)}$`, a, 0.85, 'accent', { dy: -4 }); tag(s, `$p_B = ${fx(pB, 3)}$`, b, 0.85, 'orange', { dy: -4 }); }
           const payoff = (aa) => (fixed ? (aa + b) / 2 : (t * (b - aa) * (2 + aa + b) ** 2) / 18);
-          const top = fixed ? 1 : 0.25;
+          const top = fixed ? 1 : 0.35;
           G.setView([0, 1], [0, top]);
           G.fn(payoff, { domain: [0, b - 0.02], color: 'accent', width: 2.6 });
           G.dot(a, payoff(a), { r: 7, color: 'accent' }); G.vline(b, { color: 'orange', width: 1.5, dash: [4, 3] });

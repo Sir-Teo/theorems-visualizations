@@ -119,12 +119,12 @@ export function drawChain(S, P, o = {}) {
     if (i === j) {
       const [x, y] = pos[i], d = Math.hypot(x, y) || 1, cx = x + (x / d) * (rN + 0.06), cy = y + (y / d) * (rN + 0.06);
       S.circle(cx, cy, 0.11, { color: col, width: w, alpha: 0.85 });
-      if (o.labels && p >= 0.05) S.text(fr(p, 2), cx + (x / d) * 0.24, cy + (y / d) * 0.24, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
+      if (o.labels && p >= 0.05 && (o.labelRow == null || o.labelRow === i)) S.text(fr(p, 2), cx + (x / d) * 0.24, cy + (y / d) * 0.24, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
       continue;
     }
     const [x1, y1] = pos[i], [x2, y2] = pos[j], dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy * 0.07, ny = ux * 0.07;
     S.arrow(x1 + ux * rN + nx, y1 + uy * rN + ny, x2 - ux * (rN + 0.02) + nx, y2 - uy * (rN + 0.02) + ny, { color: col, width: w, alpha: 0.85, head: 8 });
-    if (o.labels && p >= 0.05) S.text(fr(p, 2), (x1 + x2) / 2 + nx * 2.6, (y1 + y2) / 2 + ny * 2.6, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
+    if (o.labels && p >= 0.05 && (o.labelRow == null || o.labelRow === i)) S.text(fr(p, 2), (x1 + x2) / 2 + nx * 2.6, (y1 + y2) / 2 + ny * 2.6, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
   }
   for (let i = 0; i < n; i++) {
     const [x, y] = pos[i], c = o.fills ? o.fills[i] : 'accent';
