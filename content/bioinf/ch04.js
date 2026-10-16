@@ -142,8 +142,8 @@ and the probability of the observations alone is the sum of this over all $K^T$ 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hidden_Markov_model', doi: 'https://doi.org/10.1214/aoms/1177699147' },
       viz(v) {
         const preset = v.select('model', [{ value: 'casino', label: 'dishonest casino' }, { value: 'dna', label: 'base composition' }], 'casino', { onChange: (p) => { a01.set(p === 'casino' ? 0.05 : 0.03); a10.set(p === 'casino' ? 0.1 : 0.08); } });
-        const a01 = v.slider('switch $0\\to1$', 0.01, 0.5, 0.05, { step: 0.01 });
-        const a10 = v.slider('switch $1\\to0$', 0.01, 0.5, 0.1, { step: 0.01 });
+        const a01 = v.slider('switch $1\\to2$', 0.01, 0.5, 0.05, { step: 0.01 });
+        const a10 = v.slider('switch $2\\to1$', 0.01, 0.5, 0.1, { step: 0.01 });
         const Tn = 36;
         let seed = 3; v.button('Resample', () => { seed++; });
         const model = () => {
@@ -152,8 +152,8 @@ and the probability of the observations alone is the sum of this over all $K^T$ 
           return { K: 2, M: 4, names: ['Island', 'Background'], sn: ['I', 'B'], sym: NUC.split(''), A: [[1 - a01.value, a01.value], [a10.value, 1 - a10.value]], E: [pp, pm], pi: [a10.value / (a01.value + a10.value), a01.value / (a01.value + a10.value)] };
         };
         const sD = v.stage({ x: [-3.3, 3.3], y: [-1.7, 1.9], equal: true, axes: false, height: 250, minWidth: 330, title: 'states and transitions' });
-        const sB = v.stage({ x: [0, 15], y: [0, 1], axes: 'box', gutter: true, height: 250, minWidth: 280, ylabel: 'emission probability', title: 'emission distributions $e_k(x)$' });
-        const sQ = v.stage({ x: [0, Tn], y: [0, 3.1], axes: false, height: 150, full: true });
+        const sB = v.stage({ x: [0, 15], y: [0, 1], axes: 'box', gutter: true, xticks: [[0, '']], height: 250, minWidth: 280, ylabel: 'emission probability', title: 'emission distributions $e_k(x)$' });
+        const sQ = v.stage({ x: [0, Tn], y: [0, 3.4], axes: false, height: 160, full: true });
         const C = ['accent', 'orange'];
         let info = null;
         v.render(() => {
@@ -170,7 +170,7 @@ and the probability of the observations alone is the sum of this over all $K^T$ 
           sB.setView([0, 2 * h.M + 3], [0, preset.value === 'casino' ? 0.6 : 0.45]);
           for (let k = 0; k < 2; k++) {
             const x0 = 1 + k * (h.M + 1);
-            for (let a = 0; a < h.M; a++) { sB.rect(x0 + a + 0.1, 0, x0 + a + 0.9, h.E[k][a], { fill: C[k], fillAlpha: 0.45, color: C[k], width: 1 }); sB.text(h.sym[a], x0 + a + 0.5, -0.045, { align: 'center', size: 12, color: 'muted' }); }
+            for (let a = 0; a < h.M; a++) { sB.rect(x0 + a + 0.1, 0, x0 + a + 0.9, h.E[k][a], { fill: C[k], fillAlpha: 0.45, color: C[k], width: 1 }); sB.text(h.sym[a], x0 + a + 0.5, 0.012, { align: 'center', size: 12.5, color: 'ink', weight: 600 }); }
             sB.text(h.names[k], x0 + h.M / 2, preset.value === 'casino' ? 0.57 : 0.43, { align: 'center', size: 13, color: C[k], weight: 700 });
           }
           drawRuns(sQ, S.path, 1.9, 2.7, C, { alpha: 0.35 });
@@ -179,7 +179,7 @@ and the probability of the observations alone is the sum of this over all $K^T$ 
             sQ.rect(t + 0.06, 0.55, t + 0.94, 1.45, { color: 'faint', width: 1 });
             sQ.text(h.sym[S.obs[t]], t + 0.5, 1.0, { align: 'center', baseline: 'middle', size: 13, weight: 600 });
           }
-          sQ.text('hidden path $\\pi$', 0, 2.95, { size: 12, color: 'muted' }); sQ.text('observed sequence $x$', 0, 0.2, { size: 12, color: 'muted' });
+          sQ.text('hidden path $\\pi$', 0, 3.15, { size: 12, color: 'muted' }); sQ.text('observed sequence $x$', 0, 0.2, { size: 12, color: 'muted' });
           let sw = 0; for (let t = 1; t < Tn; t++) if (S.path[t] !== S.path[t - 1]) sw++;
           info = { lj: logJoint(h, S.path, S.obs), sw, K: h.K };
         });
@@ -204,12 +204,12 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm', doi: 'https://doi.org/10.1109/TIT.1967.1054010' },
       viz(v) {
         const h = casino(), CODE = ['$V_1(k) \\leftarrow \\log_2 \\pi_k e_k(x_1)$', 'for $t = 2$ to $T$', '  for each state $k$', '    $V_t(k) \\leftarrow \\log_2 e_k(x_t) + \\max_j [V_{t-1}(j) + \\log_2 a_{jk}]$', '    store the maximising $j$ as pointer', '$k \\leftarrow \\arg\\max_k V_T(k)$', 'follow the pointers back to $t = 1$'];
-        let X = '316666625436';
+        let X = '3542166666631';
         const clean = (z) => cleanSeq(z, '1-6', 14) || '3';
         const inp = v.input('rolls', X, { width: 190, onChange: (z) => { X = clean(z); S.reset(); } });
         v.button('Random rolls', () => { const r = mkRng(Math.floor(Math.random() * 1e6)); X = Array.from(sampleHMM(h, 12, r).obs, (o) => o + 1).join(''); inp.set(X); S.reset(); });
-        const st = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250 });
-        const T = v.table(st, { rows: 2, cols: 12, square: false, cellAspect: 0.9, maxCell: 62, minCell: 24, size: 12.5, rowLabels: ['Fair', 'Loaded'] });
+        const st = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 210 });
+        const T = v.table(st, { rows: 2, cols: 14, square: false, cellAspect: 0.9, maxCell: 62, minCell: 24, size: 12, rowLabels: ['Fair', 'Loaded'] });
         const L2 = (x) => Math.log2(x), lA = h.A.map((r) => r.map(L2)), lE = h.E.map((r) => r.map(L2));
         function frames() {
           const obs = Array.from(X, (c) => +c - 1), n = obs.length, V = Array.from({ length: 2 }, () => Array(n).fill(null)), P = Array.from({ length: 2 }, () => Array(n).fill(null));
@@ -235,9 +235,8 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
             rows: 2, cols: n, colLabels: (j) => `${f.obs[j] + 1}`, cornerLabel: 'roll',
             value: (i, j) => (f.V[i][j] == null ? null : f.V[i][j]), format: 1,
             fill: (i, j) => (f.cur && f.cur[0] === i && f.cur[1] === j ? ['gold', 0.45] : dep.has(key(i, j)) ? ['orange', 0.3] : onP.has(key(i, j)) ? ['green', 0.3] : null),
-            highlight: f.cur ? [f.cur] : [],
+            highlight: f.cur ? [f.cur] : [], sub: (i, j) => (f.P[i][j] ? `←${'FL'[i + f.P[i][j][0]]}` : ''), subSize: 9.5,
           });
-          for (let i = 0; i < 2; i++) for (let j = 1; j < n; j++) if (f.P[i][j] && !(f.cur && f.cur[0] === i && f.cur[1] === j)) T.pointer(i, j, f.P[i][j], { color: onP.has(key(i, j)) ? 'green' : 'faint' });
           if (f.cur && f.P[f.cur[0]][f.cur[1]]) { const [di, dj] = f.P[f.cur[0]][f.cur[1]]; T.arrow(f.cur, [f.cur[0] + di, f.cur[1] + dj], { color: 'accent', width: 2.2 }); }
           for (let k = 0; k + 1 < path.length; k++) T.arrow(path[k], path[k + 1], { color: 'green', width: 2.6 });
         });
@@ -278,7 +277,7 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
           const V = viterbi(h, S.obs), G = posterior(h, S.obs), pm = Uint8Array.from(G.gamma, (g) => (g[1] > 0.5 ? 1 : 0));
           sS.setView([0, T], [0, 4.3]); sP.setView([0, T], [0, 1]);
           const rows = [['true path', S.path, 3.15], ['Viterbi', V.path, 2.15], ['posterior > ½', pm, 1.15]];
-          for (const [nm, p, y] of rows) { drawRuns(sS, p, y, y + 0.8, C, { alpha: 0.45 }); sS.text(nm, T * 0.002, y + 0.4, { size: 11.5, color: 'muted', baseline: 'middle' }); }
+          for (const [nm, p, y] of rows) { drawRuns(sS, p, y, y + 0.8, C, { alpha: 0.45 }); sS.text(nm, T * 0.004, y + 0.4, { size: 11.5, color: 'ink', baseline: 'middle', plate: true }); }
           for (let t = 0; t < T; t++) if (S.obs[t] === 5) sS.line(t + 0.5, 0.15, t + 0.5, 0.85, { color: 'gold', width: 1.4 });
           sS.text('rolls of six', T * 0.002, 0.5, { size: 11.5, color: 'gold', baseline: 'middle', dy: -14 });
           let a = 0; for (let t = 1; t <= T; t++) if (t === T || S.path[t] !== S.path[a]) { if (S.path[a] === 1) sP.vband(a, t, { color: 'orange', alpha: 0.18 }); a = t; }
@@ -288,7 +287,7 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
           const nl = S.path.reduce((s, x) => s + x, 0);
           info = { aV: acc(V.path), aP: acc(pm), base: 1 - nl / T, nl, T };
         });
-        v.legend([['accent', 'fair'], ['orange', 'loaded (true runs shaded below)'], ['gold', 'six']]);
+        v.legend([['accent', 'fair'], ['orange', 'loaded (true runs shaded in the lower panel)'], ['gold', 'six']]);
         v.readout(() => `the true path is loaded for $${info.nl}$ of ${info.T} rolls · correct positions: Viterbi $${fx(100 * info.aV, 1)}\\%$, posterior mode $${fx(100 * info.aP, 1)}\\%$, always answering "fair" $${fx(100 * info.base, 1)}\\%$`);
       },
     },
@@ -309,8 +308,8 @@ where $\alpha_t(k)=P(x_1,\dots,x_t,\ \pi_t=k)$. It is the Viterbi recursion with
       tags: ['dynamic programming', 'likelihood', 'hmm'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Forward_algorithm', doi: 'https://doi.org/10.1214/aoms/1177697196' },
       viz(v) {
-        const h = casino(), full = sampleHMM(h, 14, mkRng(2026)).obs;
-        const Ts = v.slider('length $T$', 2, 14, 6, { int: true });
+        const h = casino(), full = Array.from('35421666666312', (c) => +c - 1);
+        const Ts = v.slider('length $T$', 2, 14, 10, { int: true });
         const mode = v.select('recursion', [{ value: 'sum', label: 'sum (forward)' }, { value: 'max', label: 'max (Viterbi)' }], 'sum');
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
         const T = v.table(sT, { rows: 2, cols: 14, square: false, cellAspect: 0.8, maxCell: 62, minCell: 26, size: 11.5, rowLabels: ['Fair', 'Loaded'], cornerLabel: 'roll' });
