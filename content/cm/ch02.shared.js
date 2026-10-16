@@ -71,3 +71,19 @@ export function thomas(a, b, c, d) {
   x[n - 1] = dp[n - 1]; for (let i = n - 2; i >= 0; i--) x[i] = dp[i] - cp[i] * x[i + 1];
   return x;
 }
+
+// ------------------------------------------------------------------ integer quantum Hall model (2.13, 2.14)
+// Disorder-broadened Landau levels E_j = (j+½)ħω_c with Gaussian width Γ = G0·√B; only states within ±w of a level centre are extended.
+// n in 10¹¹ cm⁻², B in T, energies in meV, conductivities in e²/h. Illustrative model: the shapes, not the numbers, are physical.
+const erf = (x) => { const s = Math.sign(x), a = Math.abs(x), t = 1 / (1 + 0.3275911 * a); return s * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-a * a)); };
+export const QHE_D = 0.2418; // eB/h per tesla, in 10¹¹ cm⁻²
+export function qheAt(n, B, p) {
+  const hw = p.hw * B, G = Math.max(1e-6, p.G0 * Math.sqrt(B)), kT = 0.08617 * p.T, w = 0.05 * G + 0.3 * kT + 1e-4, NJ = 48, D = QHE_D * B;
+  const cnt = (mu) => { let s = 0; for (let j = 0; j < NJ; j++) s += p.g * D * 0.5 * (1 + erf((mu - (j + 0.5) * hw) / (G * Math.SQRT2))); return s; };
+  let lo = -6 * G, hi = (NJ + 1) * hw;
+  for (let it = 0; it < 50; it++) { const m = (lo + hi) / 2; if (cnt(m) < n) lo = m; else hi = m; }
+  const mu = (lo + hi) / 2; let sxy = 0, sxx = 0;
+  for (let j = 0; j < NJ; j++) { const x = (mu - (j + 0.5) * hw) / w; if (x > 40) { sxy += p.g; continue; } if (x < -40) continue; sxy += (p.g * 0.5) * (1 + Math.tanh(x)); const c = Math.cosh(x); sxx += p.g * p.sp / (c * c); }
+  const d = sxx * sxx + sxy * sxy;
+  return { mu, G, w, sxy, sxx, rxy: sxy / d, rxx: sxx / d, nu: n / D };
+}

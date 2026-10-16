@@ -19,7 +19,7 @@ export default {
 $$\mathbf v_n(\mathbf k)=\frac1\hbar\,\nabla_{\mathbf k}E_n(\mathbf k).$$
 It is the velocity of a wave packet $\psi=\int d\mathbf k\,A(\mathbf k)\,e^{i\mathbf k\cdot\mathbf r-iE_n(\mathbf k)t/\hbar}u_{n\mathbf k}(\mathbf r)$ whose weight $A$ is concentrated in a narrow range around $\mathbf k_0$. It is periodic in the reciprocal lattice, vanishes at the band extrema and at the zone boundary of a symmetric 1D band, and is generally *not* $\hbar\mathbf k/m$.`,
       idea: String.raw`In a stationary Bloch state $\psi_{n\mathbf k}$ the phase advances as $e^{-iE_n t/\hbar}$, so the phase of the packet at $\mathbf r$ is $\mathbf k\cdot\mathbf r-E_n(\mathbf k)t/\hbar$. Constructive interference of the nearby $\mathbf k$ occurs where this phase is stationary in $\mathbf k$, i.e. where $\mathbf r=\nabla_{\mathbf k}E_n\,t/\hbar$ — the same stationary-phase argument as for any dispersive wave (qm-9.7 supplies the Bloch states, cm-1.2 the crystal momentum). Because $E_n$ is periodic in $\mathbf k$, the velocity is bounded by the bandwidth, and at a Bragg plane the two standing waves of cm-1.3 carry no net current, so $\mathbf v=0$.`,
-      caption: String.raw`Tight-binding chain, $E(k)=-2\cos k$ (optionally with next-nearest hopping). **Drag the handle** along the band to choose the central wave vector $k_0$; the tangent line and the middle panel show $v=dE/dk$. The packet in the bottom panel (thin line: the real part, shaded: the density) moves at that velocity: the orange marker is the group-velocity prediction, the dashed grey line moves at the phase velocity $E/k$. Drag $k_0$ to the zone boundary $\pm\pi$: the packet stays put although $k_0$ is far from $0$. Narrow the packet in $k$ and it widens in space, and spreads more slowly.`,
+      caption: String.raw`Tight-binding chain, $E(k)=-2\cos k$ (optionally with next-nearest hopping). **Drag the handle** along the band to choose the central wave vector $k_0$; the tangent line and the velocity panel show $v=dE/dk$. The packet in the bottom panel (thin line: the real part, shaded: the density) moves at that velocity: the orange marker is the group-velocity prediction, the dashed grey line moves at the phase velocity $E/k$. Drag $k_0$ to the zone boundary $\pm\pi$: the packet stays put although $k_0$ is far from $0$. Narrow the packet in $k$ and it widens in space, and spreads more slowly.`,
       scope: String.raw`Wave packets narrow enough in $\mathbf k$ to see one band only, and smooth on the scale of the lattice; dispersion makes the packet spread, and interband transitions are ignored (valid while the field is far below the gap scale).`,
       deps: ['cm-1.2'],
       refs: ['Ashcroft–Mermin ch. 12', 'Kittel ch. 8'],
@@ -177,7 +177,7 @@ a real symmetric matrix. Its eigenvectors are the principal axes and its eigenva
         const pre = v.select('go to', [{ value: 'free', label: 'drag' }, { value: 'bot', label: 'band bottom Γ' }, { value: 'top', label: 'band top M' }, { value: 'sad', label: 'saddle X' }], 'free', {
           onChange: (val) => { if (val === 'bot') h.set(0, 0); if (val === 'top') h.set(PI, PI); if (val === 'sad') h.set(PI, 0); },
         });
-        v.legend([['gold', 'point $\\mathbf k_0$'], ['orange', 'parabola ($E_0+\\tfrac12\\hbar^2\\delta k^T M^{-1}\\delta k$)'], ['accent', 'true band']]);
+        v.legend([['gold', 'point $\\mathbf k_0$'], ['orange', 'parabola ($E_0+\\tfrac12\\hbar^2\\delta k^T M^{-1}\\delta k$)'], ['ink', 'constant-energy lines of the true band']]);
         let info = null;
         v.render(() => {
           const key = `${ty.value}|${tp.value}`;
@@ -198,7 +198,7 @@ a real symmetric matrix. Its eigenvectors are the principal axes and its eigenva
             sC.fn((s) => E(k0x + s * e[0], k0y + s * e[1]) - e0, { color: cols[i], width: 2.4 });
             sC.fn((s) => 0.5 * lam[i] * s * s, { color: cols[i], width: 1.6, dash: [5, 4] });
           }
-          sC.setView([-1.6, 1.6], [-3, 3]);
+          { let lo = 0; for (let i = 0; i < 2; i++) for (let s = -1.6; s <= 1.6; s += 0.1) lo = Math.min(lo, E(k0x + s * vec[i][0], k0y + s * vec[i][1]) - e0, 0.5 * lam[i] * s * s); sC.setView([-1.6, 1.6], [Math.max(-4, lo) - 0.3, 3]); }
           sC.corner('solid: true band · dashed: parabola', 'tl', { color: 'muted' });
           info = { lam, vec };
         });
@@ -238,8 +238,8 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
         const tk = [[-PI, '−π'], [0, '0'], [PI, 'π']];
         const E = (k) => -2 * Math.cos(k), wrap = (k) => ((((k + PI) % TAU) + TAU) % TAU) - PI;
         const sB = v.stage({ x: [-PI, PI], y: [-2.6, 2.6], axes: 'box', gutter: true, height: 320, xlabel: '$k$', ylabel: '$E/t$', xticks: tk, title: 'occupied states of the band', weight: 1.05 });
-        const sH = v.stage({ x: [0, 2], y: [-4, 4], axes: 'box', gutter: true, height: 320, xlabel: 'electrons per site $n$', ylabel: '$R_H/R_H^{\\rm free}$', title: 'Hall coefficient, square-lattice band', weight: 0.95 });
-        const curve = []; for (let i = 1; i < 40; i++) { const n = (i * 2) / 40; curve.push([n, -n * hallTransport(0, n, 0.08, 56).RH]); }
+        const sH = v.stage({ x: [0, 2], y: [-10, 3], axes: 'box', gutter: true, height: 320, xlabel: 'electrons per site $n$', ylabel: '$R_H/R_H^{\\rm free}$', title: 'Hall coefficient, square-lattice band', weight: 0.95 });
+        const curve = []; for (let i = 1; i < 40; i++) { const n = (i * 2) / 40; curve.push([n, -n * hallTransport(0, n, 0.1, 64).RH]); }
         sB.onClick((x) => { let best = 0, bd = 9; ks.forEach((k, i) => { const d = Math.abs(wrap(k - x)); if (d < bd) { bd = d; best = i; } }); occ[best] = !occ[best]; });
         let st = null;
         v.legend([['accent', 'electron'], ['red', 'hole (missing electron)', { dot: true }]]);
@@ -254,12 +254,12 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
           const holes = ks.map((k, i) => (occ[i] ? null : wrap(k + d))).filter((x) => x != null);
           if (holes.length === 1) { const kh = holes[0]; sB.tex('k_h', kh, E(kh) + (E(kh) > 0 ? -0.5 : 0.55), { color: 'red', size: 14 }); }
           const n = (2 * cnt) / NS;
-          st = { J, cnt, holes, n, ratio: -n * hallTransport(0, Math.min(1.98, Math.max(0.02, n)), 0.08, 56).RH, K };
+          st = { J, cnt, holes, n, ratio: -n * hallTransport(0, Math.min(1.98, Math.max(0.02, n)), 0.1, 64).RH, K };
           sH.path(curve, { color: 'accent', width: 2.4 });
           sH.hline(1, { color: 'green', dash: true, width: 1.2 }); sH.hline(0, { color: 'faint', width: 1 });
-          sH.dot(Math.min(1.98, Math.max(0.02, n)), Math.max(-4, Math.min(4, st.ratio)), { r: 7, color: 'gold' });
-          sH.text('electron-like: $R_H=-1/ne$', 0.06, 1.35, { color: 'green', size: 11 });
-          sH.text('hole-like: $R_H>0$', 1.55, -2.1, { color: 'red', size: 11, align: 'center' });
+          sH.dot(Math.min(1.98, Math.max(0.02, n)), Math.max(-9.6, Math.min(2.8, st.ratio)), { r: 7, color: 'gold' });
+          sH.text('electron-like: $R_H=-1/ne$', 0.06, 1.7, { color: 'green', size: 11 });
+          sH.text('hole-like: $R_H>0$', 0.45, -5, { color: 'red', size: 11, align: 'left' });
         });
         v.readout(() => {
           if (!st) return '';
@@ -298,7 +298,7 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
         let hit = [], rrNow = 0;
         v.render(() => {
           const kk = String(tp.value);
-          if (kk !== key) { curve = []; for (let i = 1; i < 60; i++) { const n = (i * 2) / 60; curve.push([n, -n * hallTransport(tp.value, n, 0.07, 56).RH]); } key = kk; }
+          if (kk !== key) { curve = []; for (let i = 1; i < 60; i++) { const n = (i * 2) / 60; curve.push([n, -n * hallTransport(tp.value, n, 0.1, 64).RH]); } key = kk; }
           names.forEach((m, i) => { const r = ratio(m); sD.bars([r], { x0: i + 1, dx: 1, color: m === sel.value ? 'gold' : r < 0 ? 'red' : 'accent' }); });
           sD.hline(1, { color: 'green', dash: true, width: 1.4 }); sD.hline(0, { color: 'ink', width: 1 });
           sD.text('free-electron value', names.length + 0.6, 1.15, { color: 'green', size: 11, align: 'right' });
@@ -307,7 +307,7 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
           const r0 = ratio(sel.value); sM.hline(Math.max(-6.4, r0), { color: 'orange', width: 1.6, dash: [5, 3] });
           hit = []; for (let i = 1; i < curve.length; i++) { const a = curve[i - 1], b = curve[i]; if ((a[1] - r0) * (b[1] - r0) <= 0 && a[1] !== b[1]) hit.push(a[0] + ((r0 - a[1]) * (b[0] - a[0])) / (b[1] - a[1])); }
           hit.forEach((n) => sM.dot(n, Math.max(-6.4, r0), { r: 6, color: 'orange' }));
-          const n = nS.value, tr = hallTransport(tp.value, n, 0.07, 56), rr = -n * tr.RH;
+          const n = nS.value, tr = hallTransport(tp.value, n, 0.1, 64), rr = -n * tr.RH;
           sM.dot(n, Math.max(-6.4, Math.min(2.5, rr)), { r: 7, color: 'gold' });
           sM.text('electron-like', 0.15, 1.5, { color: 'green', size: 11 }); sM.text('hole-like', 1.75, -5.6, { color: 'red', size: 11, align: 'center' });
           rrNow = rr;
@@ -361,7 +361,7 @@ Drude’s classical treatment gives $L=\tfrac32(k_B/e)^2=1.11\times10^{-8}$. Mea
         v.readout(() => {
           const T = Tk.value, n = NDENS[sel.value] * 1e28, kF = Math.cbrt(3 * Math.PI ** 2 * n), EF = (C.hbar * kF) ** 2 / (2 * C.me), TF = EF / C.kB;
           const cv = (Math.PI ** 2 * T) / (3 * TF), v2 = (2 * TF) / (3 * T);
-          return `$\\int x^2(-f')dx\\big/\\!\\int(-f')dx=${v.fix(K.area, 4)}$ vs $\\pi^2/3=${v.fix(Math.PI ** 2 / 3, 4)}$ · with $\\sigma\\propto1+\\alpha x$: $L/L_0=${v.fix(K.ratio, 4)}$ · Sommerfeld $L_0=${v.fix(L0, 3)}$, Drude $${v.fix(LD, 3)}$, measured mean ${v.fix(M.mean(Object.values(LZ)), 2)}$ ($\\times10^{-8}$) · ${sel.value} at ${T} K: $T_F=${v.fix(TF / 1e4, 2)}\\times10^4$ K; Sommerfeld/Drude heat capacity $=${v.fix(cv, 4)}$, $v_F^2/\\langle v^2\\rangle=${v.fix(v2, 1)}$, product $${v.fix(cv * v2, 3)}$ ($=2\\pi^2/9$, the factor between $L_0$ and $L_{\\rm Drude}$).`;
+          return `$\\int x^2(-f')dx\\big/\\!\\int(-f')dx=${v.fix(K.area, 4)}$ vs $\\pi^2/3=${v.fix(Math.PI ** 2 / 3, 4)}$ · with $\\sigma\\propto1+\\alpha x$: $L/L_0=${v.fix(K.ratio, 4)}$ · Sommerfeld $L_0=${v.fix(L0, 3)}$, Drude $${v.fix(LD, 3)}$, measured mean ${v.fix(M.mean(Object.values(LZ)), 2)} ($\\times10^{-8}$) · ${sel.value} at ${T} K: $T_F=${v.fix(TF / 1e4, 2)}\\times10^4$ K; Sommerfeld/Drude heat capacity $=${v.fix(cv, 4)}$, $v_F^2/\\langle v^2\\rangle=${v.fix(v2, 1)}$, product $${v.fix(cv * v2, 3)}$ ($=2\\pi^2/9$, the factor between $L_0$ and $L_{\\rm Drude}$).`;
         });
       },
     },
@@ -376,7 +376,7 @@ Drude’s classical treatment gives $L=\tfrac32(k_B/e)^2=1.11\times10^{-8}$. Mea
 $$\rho(T)=\rho_{\rm imp}+\rho_{\rm ph}(T),$$
 where the **residual resistivity** $\rho_{\rm imp}$ is independent of temperature and proportional to the impurity concentration, and $\rho_{\rm ph}(T)$ is a property of the pure host. Two samples of the same metal then have *parallel* $\rho(T)$ curves, with a $T$-independent difference. In the Bloch–Grüneisen form $\rho_{\rm ph}\propto T^5$ at $T\ll\Theta_D$ and $\propto T$ at $T\gtrsim\Theta_D$.`,
       idea: String.raw`In the relaxation-time approximation (em-6.4) $\rho=m/ne^2\tau$ and independent collision channels give $1/\tau=1/\tau_{\rm imp}+1/\tau_{\rm ph}(T)$. Impurity scattering is elastic and temperature-independent, phonon scattering freezes out as $T\to0$ (few phonons, and only small-angle scattering), producing $T^5$, while at high $T$ the number of phonons is $\propto T$. The rule can fail when the scattering rate is not the same for all carriers: with two groups of carriers in parallel the conductivities add and the resistivities do not.`,
-      caption: String.raw`Resistivity (in units of the phonon resistivity at $T=\Theta_D$) of three samples of one metal with different impurity levels, using the Bloch–Grüneisen function for the phonons. **Drag the Debye temperature** and the two impurity levels; the top-right plot shows the difference of the curves, which is constant. Switch to **two parallel bands** (impurities scatter mostly the second band) and the curves are no longer parallel: the difference drifts with $T$, which is the failure of the rule. The readout gives the residual resistance ratio $\rho(300\,\mathrm K)/\rho(4\,\mathrm K)$ of each sample.`,
+      caption: String.raw`Resistivity (in units of the phonon resistivity at $T=\Theta_D$) of three samples of one metal with different impurity levels, using the Bloch–Grüneisen function for the phonons. **Drag the Debye temperature** and the two impurity levels; the right-hand plot shows the difference of the curves, which is constant. Switch to **two parallel bands** (impurities scatter mostly the second band) and the curves are no longer parallel: the difference drifts with $T$, which is the failure of the rule. The readout gives the residual resistance ratio $\rho(300\,\mathrm K)/\rho(4\,\mathrm K)$ of each sample.`,
       scope: String.raw`Independent scattering mechanisms acting on the same carriers on one isotropic Fermi surface. Deviations of a few percent are routine in real metals (anisotropic scattering, multiband conduction, Kondo and size effects), and the rule is only a first approximation at high impurity concentrations.`,
       deps: ['em-6.4'],
       refs: ['Ashcroft–Mermin ch. 16'],
