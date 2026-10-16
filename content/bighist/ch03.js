@@ -214,7 +214,7 @@ Molecular-clock dating puts LUCA very early. One 2024 analysis, calibrating dupl
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Great_Oxidation_Event', doi: 'https://doi.org/10.1126/science.289.5480.756' },
       verify: true,
       viz(v) {
-        const S0 = v.slider('net source before / reductant supply', 0.2, 0.98, 0.6, { step: 0.01 });
+        const S0 = v.slider('net source before / reductant supply', 0.2, 0.98, 0.4, { step: 0.01 });
         const S1 = v.slider('net source after / reductant supply', 0.3, 2.5, 1.4, { step: 0.01 });
         const tC = v.slider('date of the transition (Ga ago)', 1.8, 3.4, 2.4, { step: 0.01 });
         const kS = v.slider('weak sink k', 0.3, 3, 1, { step: 0.01 });

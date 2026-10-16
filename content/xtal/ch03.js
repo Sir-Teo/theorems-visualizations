@@ -152,7 +152,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
         const T = v.stage({ x: [0, 11], y: [-1.1, 8.6], axes: false, height: 400, weight: 1, title: 'all 35 combinations' });
         let info = null;
         v.render(() => {
-          const sys = sysSel.value, c = cenSel.value, { V, res } = solve(sys, c), k = fitScale(V, 1.15);
+          const sys = sysSel.value, c = cenSel.value, { V, res } = solve(sys, c), k = fitScale(V, 1.6);
           const Vs = V.map((r) => r.map((x) => x * k)), o = mul(-0.5, add(add(Vs[0], Vs[1]), Vs[2]));
           const pt = (f, V2 = Vs, o2 = o) => add(o2, comb(f, V2));
           sc.begin();
@@ -173,7 +173,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
           }
           sc.flush();
           // table of all combinations
-          T.text('P', 2.3, 8.0, { size: 13, color: 'muted' }); CEN.forEach((cc, i) => T.text(cc, 4.1 + 1.55 * i, 8.0, { size: 13, color: 'muted', align: 'center' }));
+          CEN.forEach((cc, i) => T.text(cc, 4.1 + 1.55 * i, 8.0, { size: 13, color: 'muted', align: 'center' }));
           const found = new Set();
           SYS.forEach((sy, r) => {
             const y = 7 - r;
@@ -193,10 +193,80 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
           const { sys, c, res, same, n } = info;
           if (!res.cell) return 'No conventional cell was found for this combination.';
           const p = res.params.map((x, i) => (i < 3 ? v.fix(x, 3) : v.fix(x, 1) + '^\\circ'));
-          const L = Math.hypot(...[0, 1, 2].map((i) => 0)) + 0;
-          void L;
-          const head = `${sys} lattice with ${c} centring: point-group order $${res.order}$ (${LATTICE_SYSTEM_BY_ORDER[res.order]}), Bravais type **${res.pearson}**; the smallest cell of that system holds ${res.index === 3 ? 3 : res.index} lattice point${res.index > 1 ? 's' : ''} (cell $a,b,c=${p[0]},${p[1]},${p[2]}$, $\\alpha,\\beta,\\gamma=${p[3]},${p[4]},${p[5]}$ in the units where the drawn cell has $a=1$ along its first edge).`;
+                    const head = `${sys} lattice with ${c} centring: point-group order $${res.order}$ (${LATTICE_SYSTEM_BY_ORDER[res.order]}), Bravais type **${res.pearson}**; the smallest cell of that system holds ${res.index === 3 ? 3 : res.index} lattice point${res.index > 1 ? 's' : ''} (cell $a,b,c=${p[0]},${p[1]},${p[2]}$, $\\alpha,\\beta,\\gamma=${p[3]},${p[4]},${p[5]}$, edges in units of the input cell's $a$).`;
           return `${head}\n${same ? 'This combination is a genuine Bravais lattice: no cell of the same system with fewer points exists.' : `Not new: the green cell shows the same lattice as **${res.pearson}**.`} Over the 35 combinations the program finds **${n}** distinct types.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.3
+    {
+      num: '3.3',
+      kind: 'Concept',
+      name: 'Primitive versus conventional cells',
+      statement: String.raw`A **primitive cell** contains exactly one lattice point and has the smallest possible volume, $V_P$; a **conventional cell** is chosen to show the symmetry of the lattice (right angles, equal edges, a hexagonal prism), even if this requires extra lattice points at the face or body centres, so that it holds $k=2,3$ or $4$ points and has volume $kV_P$. For the cubic lattices: $P$ has $k=1$; $I$ has $k=2$ and a primitive rhombohedral cell with $a_P=\tfrac{\sqrt3}{2}a$ and $\alpha_P\approx109.47^\circ$; $F$ has $k=4$ and a primitive rhombohedral cell with $a_P=a/\sqrt2$ and $\alpha_P=60^\circ$. A primitive cell is far from unique (any basis related to another by an integer matrix of determinant $\pm1$ will do) but its volume is not: it is the volume per lattice point. Conventional cells are used in tables and descriptions of structures, primitive cells in band-structure calculations.`,
+      idea: String.raw`The lattice is the same set of points whichever cell is drawn. Changing from basis $\mathbf a_i$ to $\mathbf a'_i=\sum_jM_{ij}\mathbf a_j$ multiplies the cell volume by $|\det M|$, so a cell with a smaller volume that still tiles space must have $\det M=\pm1$ relative to a primitive cell, and any larger cell has $|\det M|=k$ points. In the conventional cube of fcc, the face centres are lattice points: $k=4$ ($\tfrac18\cdot8+\tfrac12\cdot6$). The three vectors $\tfrac a2(0,1,1)$, $\tfrac a2(1,0,1)$, $\tfrac a2(1,1,0)$ from a corner to the three neighbouring face centres generate every point and have $60^\circ$ between them; the cell they span looks only rhombohedral (order 12 of its own shape), although the lattice has the full cubic symmetry (order 48).`,
+      caption: String.raw`Pick a lattice ($F$, $I$, or a $C$-centred orthorhombic one) and one of three cells: the conventional cell, the standard primitive cell, or a skewed primitive cell that is just as good as a tiling. The lattice points that fall inside the (half-open) cell are counted and shown in gold; the volume is the triple product of the edge vectors. The last line compares the symmetry of the **cell as a shape** (signed permutations of its edges that preserve all lengths and angles) with the symmetry of the **lattice** (integer matrices preserving the metric): the primitive cell of fcc hides 36 of the 48 operations.`,
+      deps: ['xtal-3.2'],
+      refs: ['Hammond ch. 3'],
+      tags: ['primitive cell', 'conventional cell', 'centring'],
+      viz(v) {
+        const LAT = {
+          F: { V: cellVectors([1, 1, 1, 90, 90, 90]), c: 'F', name: 'face-centred cubic' },
+          I: { V: cellVectors([1, 1, 1, 90, 90, 90]), c: 'I', name: 'body-centred cubic' },
+          C: { V: cellVectors([1, 1.45, 1.1, 90, 90, 90]), c: 'C', name: 'C-centred orthorhombic' },
+        };
+        const STDPRIM = { F: [[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]], I: [[-0.5, 0.5, 0.5], [0.5, -0.5, 0.5], [0.5, 0.5, -0.5]], C: [[0.5, 0.5, 0], [-0.5, 0.5, 0], [0, 0, 1]] };
+        const latSel = v.select('lattice', [{ value: 'F', label: 'fcc (F)' }, { value: 'I', label: 'bcc (I)' }, { value: 'C', label: 'C-centred orthorhombic' }], 'F');
+        const cellSel = v.select('cell', [{ value: 'conv', label: 'conventional' }, { value: 'prim', label: 'primitive (standard)' }, { value: 'skew', label: 'primitive (skewed)' }], 'prim');
+        const s = v.stage({ x: [-2.2, 2.2], y: [-1.9, 1.9], equal: true, axes: false, height: 440, title: 'the lattice and the chosen cell (drag to rotate)' });
+        const sc = v.scene3(s, { yaw: -0.62, pitch: 0.3, axes: false });
+        let info = null;
+        const cache = {};
+        const setup = (key) => {
+          if (cache[key]) return cache[key];
+          const L = LAT[key], B = STDPRIM[key].map((f) => comb(f, L.V));
+          const prim = latticeSymmetry(gram(B), 2);
+          // all lattice points in a block, as integer coordinates in the reduced primitive basis
+          const pts = [];
+          for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) for (let l = -4; l <= 4; l++) pts.push({ n: [i, j, l], r: comb([i, j, l], B) });
+          return (cache[key] = { L, B, order: prim.length, pts, k: fitScale(L.V, 1.55) });
+        };
+        const inv3 = (M) => { const c = [cross(M[1], M[2]), cross(M[2], M[0]), cross(M[0], M[1])], d = dot(M[0], c[0]); return [0, 1, 2].map((i) => [0, 1, 2].map((j) => c[j][i] / d)); };
+        const SP = [];
+        [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]].forEach((p) => { for (let m = 0; m < 8; m++) { const S = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; for (let c = 0; c < 3; c++) S[p[c]][c] = (m >> c) & 1 ? -1 : 1; SP.push(S); } });
+        v.render(() => {
+          const D = setup(latSel.value), { L, B, k } = D;
+          const U = cellSel.value === 'conv' ? L.V : cellSel.value === 'prim' ? B : [add(B[0], B[1]), B[1], add(B[2], B[0])];
+          const Vc = L.V.map((r) => r.map((x) => x * k)), o = mul(-0.5, add(add(Vc[0], Vc[1]), Vc[2])), Us = U.map((r) => r.map((x) => x * k));
+          const Ui = inv3(U), Vi = inv3(L.V);
+          let count = 0;
+          sc.begin();
+          const inside = [];
+          for (const p of D.pts) {
+            const f = [0, 1, 2].map((q) => p.r[0] * Ui[0][q] + p.r[1] * Ui[1][q] + p.r[2] * Ui[2][q]);
+            const inCell = f.every((x) => x > -1e-7 && x < 1 - 1e-7);
+            if (inCell) { count++; inside.push(p); }
+            const w = add(o, mul(k, p.r));
+            const g = [0, 1, 2].map((q) => p.r[0] * Vi[0][q] + p.r[1] * Vi[1][q] + p.r[2] * Vi[2][q]);
+            if (g.every((x) => x > -0.52 && x < 1.52)) sc.dot(w, { r: inCell ? 6.5 : 3, color: inCell ? 'gold' : 'blue', top: false, alpha: inCell ? 1 : 0.55 });
+          }
+          if (cellSel.value !== 'conv') drawCell(sc, Vc, o, { color: 'faint', width: 1.2, alpha: 0.7 });
+          drawCell(sc, Us, o, { color: 'accent', width: 2.6 });
+          const o0 = o;
+          [0, 1, 2].forEach((q) => { sc.arrow(o0, add(o0, Us[q]), { color: ['accent', 'orange', 'green'][q], width: 3 }); });
+          sc.flush();
+          const [a, b, c] = U.map((r) => Math.hypot(...r)), ang = (p, q) => deg(Math.acos(clamp(dot(U[p], U[q]) / (norm(U[p]) * norm(U[q])), -1, 1)));
+          const G = gram(U);
+          const shapeOrder = SP.filter((S) => {
+            // S acts on the edge vectors; it preserves the cell shape iff S^T G S = G
+            const St = [0, 1, 2].map((i) => [0, 1, 2].map((j) => S[j][i])), M = mm3(mm3(St, G), S);
+            return M.every((r, i) => r.every((x, j) => Math.abs(x - G[i][j]) < 1e-9));
+          }).length;
+          info = { U, a, b, c, al: ang(1, 2), be: ang(0, 2), ga: ang(0, 1), vol: Math.abs(triple(U)), V0: Math.abs(triple(L.V)), count, shapeOrder, order: D.order, name: L.name, cs: cellSel.value };
+        });
+        v.readout(() => {
+          const { a, b, c, al, be, ga, vol, V0, count, shapeOrder, order, name, cs } = info, Vp = Math.abs(triple(STDPRIM[latSel.value].map((f) => comb(f, LAT[latSel.value].V))));
+          return `${name}, ${cs === 'conv' ? 'conventional cell' : cs === 'prim' ? 'standard primitive cell' : 'skewed primitive cell'}: $a,b,c=${v.fix(a, 3)},\\,${v.fix(b, 3)},\\,${v.fix(c, 3)}$, $\\alpha,\\beta,\\gamma=${v.fix(al, 1)}^\\circ,\\,${v.fix(be, 1)}^\\circ,\\,${v.fix(ga, 1)}^\\circ$.\nVolume $\\mathbf a\\cdot(\\mathbf b\\times\\mathbf c)=${v.fix(vol, 4)}$ = ${v.fix(vol / V0, 3)} of the conventional cell = $${v.fix(vol / Vp, 0)}\\times$ the primitive volume; lattice points inside (counted): **${count}** ${count === Math.round(vol / Vp) ? '✓' : '✗'}.\nSymmetry of the cell as a shape: ${shapeOrder} operations; symmetry of the lattice: ${order}.${shapeOrder < order ? ` The cell hides ${order - shapeOrder} of them.` : ' The cell shows all of them.'}`;
         });
       },
     },

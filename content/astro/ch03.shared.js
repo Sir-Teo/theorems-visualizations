@@ -118,14 +118,15 @@ export function spinOrbit(tab, sigma, kappa, s) {
 
 // ── Hill's problem: change of a ring particle's guiding centre in one passage of a small moon ────────────────────
 // Units: n = 1, length in the moon's Hill radius R_H = a (m/3M)^{1/3}; ẍ = 2ẏ + 3x − 3x/r³, ÿ = −2ẋ − 3y/r³.
-// The guiding-centre offset is x_g = 2(ẏ + 2x); the table gives Δx_g (in R_H) for a particle that starts on a circular orbit at x_g = Δ.
-export function hillKick(Delta, Y0 = 40) {
-  const sg = Math.sign(Delta), D = Math.abs(Delta);
-  let x = D, y = -Y0, u = 0, w = -1.5 * D, t = 0;
+// The guiding-centre offset is x_g = 2(ẏ + 2x); kick = change of x_g for a particle that starts on a circular orbit at x_g = Δ > 0
+// (outside the moon: it moves backward relative to the moon and the moon approaches from y > 0). The truncated path leaves an error ∝ 1/Y0,
+// removed by Richardson extrapolation from Y0 and 2Y0. Returns NaN for trapped (horseshoe-type) orbits that never pass.
+function hillKickRaw(D, Y0) {
+  let x = D, y = Y0, u = 0, w = -1.5 * D, guard = 0;
   const acc = (X, Y, U, W) => { const r2 = X * X + Y * Y, k = 3 / (r2 * Math.sqrt(r2)); return [2 * W + 3 * X - k * X, -2 * U - k * Y]; };
   const g0 = 2 * (w + 2 * x);
-  let guard = 0;
-  while (y < Y0 && guard++ < 200000) {
+  while (y > -Y0) {
+    if (guard++ > 60000) return NaN;
     const r = Math.hypot(x, y), h = Math.min(0.05, 0.02 * r);
     const k1 = acc(x, y, u, w);
     const x2 = x + 0.5 * h * u, y2 = y + 0.5 * h * w, u2 = u + 0.5 * h * k1[0], w2 = w + 0.5 * h * k1[1], k2 = acc(x2, y2, u2, w2);
@@ -133,7 +134,23 @@ export function hillKick(Delta, Y0 = 40) {
     const x4 = x + h * u3, y4 = y + h * w3, u4 = u + h * k3[0], w4 = w + h * k3[1], k4 = acc(x4, y4, u4, w4);
     x += (h / 6) * (u + 2 * u2 + 2 * u3 + u4); y += (h / 6) * (w + 2 * w2 + 2 * w3 + w4);
     u += (h / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); w += (h / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
-    t += h;
   }
-  return sg * (2 * (w + 2 * x) - g0);
+  return 2 * (w + 2 * x) - g0;
+}
+/** Guiding-centre kick (in Hill radii) for offset Δ (either sign, |Δ| ≥ Δmin); table computed once. */
+export const HILL_MIN = 2.6;
+let hillTab = null;
+export function hillKick(Delta) {
+  if (!hillTab) {
+    const D = [2.6, 2.8, 3.0, 3.25, 3.5, 3.8, 4.2, 4.7, 5.3, 6, 7, 8.5, 10, 12], K = [];
+    for (const d of D) K.push(2 * hillKickRaw(d, 60) - hillKickRaw(d, 30));
+    hillTab = { D, lnD: D.map(Math.log), lnK: K.map(Math.log) };
+  }
+  const a = Math.abs(Delta), sg = Math.sign(Delta);
+  if (a < HILL_MIN) return NaN;
+  const { D, lnD, lnK } = hillTab, n = D.length;
+  let v;
+  if (a >= D[n - 1]) v = Math.exp(lnK[n - 1] + (-5) * (Math.log(a) - lnD[n - 1]));
+  else { let i = 0; while (D[i + 1] < a) i++; const t = (Math.log(a) - lnD[i]) / (lnD[i + 1] - lnD[i]); v = Math.exp(lnK[i] + t * (lnK[i + 1] - lnK[i])); }
+  return sg * v;
 }

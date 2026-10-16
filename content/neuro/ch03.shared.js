@@ -2,6 +2,7 @@
 // (re-exports the chapter-2 helpers; adds a generic RK4 integrator, spike counting for planar models, the FitzHugh–Nagumo
 //  equations, the Morris–Lecar model with its two textbook parameter sets, and the Ca²⁺-activated K⁺ bursting extension)
 export * from './ch02.shared.js';
+import { HH, gateInf, phiT } from './ch02.shared.js';
 
 /** One classical RK4 step of y' = F(y) for an array state, returning a new array. */
 export function rk4(F, y, dt) {
@@ -87,4 +88,69 @@ export function mlOrbit(p, I, T, { dt = 0.25, y0, every = 1 } = {}) {
   let y = y0 || [-60, mlWinf(p, -60)]; const F = (s) => mlF(p, s[0], s[1], I), N = Math.round(T / dt), ys = [y];
   for (let k = 1; k <= N; k++) { y = rk4(F, y, dt); if (k % every === 0) ys.push(y); }
   return ys;
+}
+
+// ---------------------------------------------------------------- two-dimensional reduction of Hodgkin–Huxley
+/** Least-squares line h ≈ h0 − k n through the (n, h) samples of a full HH run. Returns {h0, k, r2}. */
+export function lineHn(n, h) {
+  const N = n.length, mn = n.reduce((a, b) => a + b, 0) / N, mh = h.reduce((a, b) => a + b, 0) / N;
+  let sxx = 0, sxy = 0, syy = 0;
+  for (let i = 0; i < N; i++) { sxx += (n[i] - mn) ** 2; sxy += (n[i] - mn) * (h[i] - mh); syy += (h[i] - mh) ** 2; }
+  const sl = sxy / sxx; return { h0: mh - sl * mn, k: -sl, r2: (sxy * sxy) / (sxx * syy) };
+}
+/** Two-variable HH: m = m∞(V), h = h0 − k n. State [V, n]. */
+export function hh2F(y, I, h0, k, phi, p = HH) {
+  const [V, n] = y, m = gateInf('m', V), h = h0 - k * n;
+  return [(I - p.gNa * m ** 3 * h * (V - p.ENa) - p.gK * n ** 4 * (V - p.EK) - p.gL * (V - p.EL)) / p.C, phi * (HH.an(V) * (1 - n) - HH.bn(V) * n)];
+}
+/** Integrate the reduced model under Ifn(t); returns {t, V, n}. */
+export function hh2Sim(Ifn, h0, k, { T = 6.3, tEnd = 30, dt = 0.02, every = 1 } = {}) {
+  const phi = phiT(T), o = { t: [], V: [], n: [] }; let y = [-65, gateInf('n', -65)];
+  const N = Math.round(tEnd / dt);
+  for (let i = 0; i <= N; i++) {
+    const t = i * dt;
+    if (i % every === 0) { o.t.push(t); o.V.push(y[0]); o.n.push(y[1]); }
+    if (i < N) { const I0 = Ifn(t), I1 = Ifn(t + dt), Im = 0.5 * (I0 + I1);
+      const a = hh2F(y, I0, h0, k, phi), b = hh2F([y[0] + 0.5 * dt * a[0], y[1] + 0.5 * dt * a[1]], Im, h0, k, phi), c = hh2F([y[0] + 0.5 * dt * b[0], y[1] + 0.5 * dt * b[1]], Im, h0, k, phi), d = hh2F([y[0] + dt * c[0], y[1] + dt * c[1]], I1, h0, k, phi);
+      y = [y[0] + (dt / 6) * (a[0] + 2 * b[0] + 2 * c[0] + d[0]), y[1] + (dt / 6) * (a[1] + 2 * b[1] + 2 * c[1] + d[1])]; }
+  }
+  return o;
+}
+
+// ---------------------------------------------------------------- Ca²⁺-activated K⁺ bursting (Morris–Lecar + slow variable)
+// C V' = … − gKCa z/(1+z)(V−VK),  z' = ε(−μ ICa − z): a slow, calcium-like variable that is pumped up by inward Ca²⁺ current and decays.
+// A model of this page, built on the Morris–Lecar equations; its numbers were tuned to give clear bursts, they are not fitted to a cell.
+export const BURST = { ...ML_SETS.snic, phi: 0.23, gKCa: 0.5, mu: 0.02, eps: 0.001, I: 50 };
+export const burstF = (p, V, w, z, I = p.I, zFix) => {
+  const zz = zFix ?? z, ica = p.gCa * mlMinf(p, V) * (V - p.VCa);
+  return [(I - p.gL * (V - p.VL) - ica - p.gK * w * (V - p.VK) - p.gKCa * (zz / (1 + zz)) * (V - p.VK)) / p.C, (mlWinf(p, V) - w) / mlTau(p, V), p.eps * (-p.mu * ica - z)];
+};
+export function burstOrbit(p, T, { dt = 0.25, every = 4, I = p.I, y0 } = {}) {
+  let y = y0 || [-50, mlWinf(p, -50), 0.1]; const F = (s) => burstF(p, s[0], s[1], s[2], I), o = [y], N = Math.round(T / dt);
+  for (let k = 1; k <= N; k++) { y = rk4(F, y, dt); if (k % every === 0) o.push(y); }
+  return o;
+}
+
+// ---------------------------------------------------------------- Izhikevich simple model
+/** Parameter sets of Izhikevich (2003), Fig. 2 / Table: a, b, c, d and a typical step current (our choice). */
+export const IZH = {
+  RS: { name: 'regular spiking', a: 0.02, b: 0.2, c: -65, d: 8, I: 10 },
+  IB: { name: 'intrinsically bursting', a: 0.02, b: 0.2, c: -55, d: 4, I: 10 },
+  CH: { name: 'chattering', a: 0.02, b: 0.2, c: -50, d: 2, I: 10 },
+  FS: { name: 'fast spiking', a: 0.1, b: 0.2, c: -65, d: 2, I: 10 },
+  LTS: { name: 'low-threshold spiking', a: 0.02, b: 0.25, c: -65, d: 2, I: 10 },
+  RZ: { name: 'resonator', a: 0.1, b: 0.26, c: -65, d: 2, I: 0.3 },
+};
+/** Simulate to tEnd ms with step 0.1 ms (two half-steps of the voltage equation per step, as in the paper's code); Ifn(t) in pA-like units. */
+export function izhRun(p, Ifn, tEnd, { dt = 0.5 } = {}) {
+  let v = -65, u = p.b * v; const o = { t: [], v: [], u: [], spikes: [] }, N = Math.round(tEnd / dt);
+  for (let i = 0; i <= N; i++) {
+    const t = i * dt;
+    if (v >= 30) { o.v.push(30); o.spikes.push(t); v = p.c; u += p.d; } else o.v.push(v);
+    o.t.push(t); o.u.push(u);
+    const I = Ifn(t);
+    for (let j = 0; j < 2; j++) v += 0.5 * dt * (0.04 * v * v + 5 * v + 140 - u + I);
+    u += dt * p.a * (p.b * v - u);
+  }
+  return o;
 }
