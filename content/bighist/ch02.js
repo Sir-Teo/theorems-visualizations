@@ -106,7 +106,7 @@ function bbn(eta10, Nnu, tauN = 879.4) {
   const out = [], dl = -0.004;
   while (Tn > 0.03) {
     const T = Tn * rr(Tn), lam = lnp(T) + 1 / tauN, lpn = lnp(T) * Math.exp(-Q / T), dt = -dl / H(Tn);
-    X += dt * (lpn * (1 - X) - lam * X); t += dt; Tn *= Math.exp(dl);
+    X = (X + dt * lpn) / (1 + dt * (lpn + lam)); t += dt; Tn *= Math.exp(dl); // implicit step: stable for the fast early rates
     const Tg = Tn * rr(Tn);
     out.push({ t, T: Tg, X, Xeq: 1 / (1 + Math.exp(Q / Tg)) });
     if (!fr && lnp(Tg) < H(Tn)) fr = { t, T: Tg, X };
@@ -226,9 +226,9 @@ export default {
       credit: 'Alpher, Bethe & Gamow, 1948; Penzias & Wilson, 1965',
       tags: ['cosmology', 'nucleosynthesis', 'CMB'],
       viz(v) {
-        const eta = v.slider('baryons per 10¹⁰ photons (η₁₀)', 1, 12, 6.1, { step: 0.01 });
-        const nnu = v.slider('neutrino species Nν', 1, 5, 3, { step: 0.1 });
-        const TC = v.slider('CMB temperature (K)', 2.6, 2.85, 2.7255, { step: 0.0005 });
+        const eta = v.slider('baryon density η₁₀', 1, 12, 6.1, { step: 0.01 });
+        const nnu = v.slider('neutrino species', 1, 5, 3, { step: 0.1 });
+        const TC = v.slider('CMB T (K)', 2.6, 2.85, 2.725, { step: 0.0005 });
         const YR_S = 3.15576e7;
         const T1 = v.stage({ x: [10, 3.2e13], y: [1e3, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 270, full: true, ylabel: 'photon temperature (K)', xticks: [[10, '10 s'], [60, '1 min'], [3600, '1 hour'], [86400, '1 day'], [YR_S, '1 year'], [100 * YR_S, '100 yr'], [1e4 * YR_S, '10 kyr'], [1e6 * YR_S, '1 Myr']], title: 'the first million years' });
         const T2 = v.stage({ x: [0.1, 2000], y: [0, 0.52], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time (s)', ylabel: 'neutron fraction', title: 'the first minutes: neutrons' });
@@ -242,8 +242,11 @@ export default {
           T1.path(pts.filter(([t]) => t >= 8), { color: 'accent', width: 2.6 });
           const B = bbn(eta.value, nnu.value), zNuc = (B.nuc ? B.nuc.T : 0.1) * MEV_K / 2.7255 - 1;
           const ev = [[tOfZ(zNuc), 2.7255 * (1 + zNuc), `helium forms (≈ ${(tOfZ(zNuc) / 60).toFixed(1)} min)`, 'green'], [tOfZ(3402), 2.7255 * 3403, 'matter–radiation equality', 'purple'], [tOfZ(1089.92), 2.7255 * 1090.92, `recombination: transparent (${(tOfZ(1089.92) / YR_S / 1000).toFixed(0)} kyr)`, 'red']];
+          const tEq = tOfZ(3402);
+          T1.vband(10, tEq, { color: 'orange', alpha: 0.05 }); T1.vband(tEq, 3.2e13, { color: 'purple', alpha: 0.06 });
+          T1.text('radiation era', Math.sqrt(10 * tEq) * 30, 3e9, { align: 'center', size: 11, color: 'orange' }); T1.text('matter era', Math.sqrt(tEq * 3.2e13), 3e9, { align: 'center', size: 11, color: 'purple' });
           ev.forEach(([t, T, , col]) => T1.dot(t, T, { r: 5, color: col }));
-          placeLabels(v, T1, ev.map(([t, T, lab, col]) => ({ x: t, y: T, text: lab, color: col, weight: 650, r: 6, prefer: [1, -1] })));
+          placeLabels(v, T1, ev.map(([t, T, lab, col], k) => ({ x: t, y: T, text: lab, color: col, weight: 650, r: 6, prefer: [[1, -1], [-1, 1], [-1, -2]][k] })));
           T1.hband(2900, 3100, { color: 'red', alpha: 0.05 });
           // neutrons
           const out = B.out.filter((p) => p.t >= 0.1 && p.t <= 2000);
@@ -261,12 +264,13 @@ export default {
           FIRAS.forEach(([s, I, e]) => { const r = (I - planckMJy(s, TC.value)) * 1000; chi2 += (r / e) ** 2; const y = base + clamp(r * kRes, -42, 42); T3.line(s, y - e * kRes, s, y + e * kRes, { color: 'accent', width: 1, alpha: 0.6 }); T3.dot(s, y, { r: 2.2, color: 'accent' }); });
           T3.text('residuals (kJy/sr, ×1000)', 21.5, base + 42, { align: 'right', size: 10.5, color: 'muted' });
           cur = { B, chi2 };
+          T3.text(`χ² = ${chi2.toFixed(0)} (43 points)`, 21.5, 300, { align: 'right', size: 11, weight: 650, color: chi2 < 80 ? 'green' : 'red' });
           v.legend([['accent', 'computed / measured', { dot: true }], ['muted', 'equilibrium neutron fraction', { dash: true }], ['orange', 'blackbody at your temperature']]);
         });
         v.readout(() => {
           const { B, chi2 } = cur;
           let best = 2.7255, bc = Infinity; for (let T = 2.72; T <= 2.731; T += 0.00005) { let c2 = 0; for (const [s, I, e] of FIRAS) c2 += (((I - planckMJy(s, T)) * 1000) / e) ** 2; if (c2 < bc) { bc = c2; best = T; } }
-          return `Freeze-out at ${(B.fr.T).toFixed(2)} MeV (${B.fr.t.toFixed(1)} s) with n/p = 1/${((1 - B.fr.X) / B.fr.X).toFixed(1)}; nuclei form at ${B.nuc.T.toFixed(3)} MeV (${B.nuc.t.toFixed(0)} s) with n/p = 1/${((1 - B.nuc.X) / B.nuc.X).toFixed(1)} → **Yp = ${B.nuc.Yp.toFixed(3)}** in this one-equation model (observed 0.245 ± 0.003; full reaction networks give ≈ 0.247 at η₁₀ = 6.1) · FIRAS: χ² = ${chi2.toFixed(0)} for 43 points at ${TC.value.toFixed(4)} K; best fit **${best.toFixed(4)} K** (χ² = ${bc.toFixed(0)}).`;
+          return `Freeze-out at ${(B.fr.T).toFixed(2)} MeV (${B.fr.t.toFixed(1)} s) with n/p = 1/${((1 - B.fr.X) / B.fr.X).toFixed(1)}; nuclei form at ${B.nuc.T.toFixed(3)} MeV (${B.nuc.t.toFixed(0)} s) with n/p = 1/${((1 - B.nuc.X) / B.nuc.X).toFixed(1)} → **Yp = ${B.nuc.Yp.toFixed(3)}** in this one-equation model (observed 0.245 ± 0.003; full reaction networks give ≈ 0.247 at η₁₀ = 6.1) · FIRAS: χ² = ${chi2.toFixed(0)} for 43 points at ${TC.value.toFixed(4)} K; best fit **${best.toFixed(4)} K** (χ² = ${bc.toFixed(0)}; this file is referenced to 2.725 K, and combining FIRAS with other data gives 2.7255 K).`;
         });
       },
     },

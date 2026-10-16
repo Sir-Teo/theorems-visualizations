@@ -534,11 +534,11 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         const sgS = v.slider('stocks: volatility per year', 0.1, 0.3, 0.2, { step: 0.01 });
         const MB = 0.05, SB = 0.06;
         const D = v.stage({ x: [-60, 100], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: 'return over the period (%)', ylabel: 'density', title: 'stock returns over one evaluation period' });
-        const Hs = v.stage({ x: [1, 120], y: [-2, 2], xlog: true, axes: 'box', gutter: true, height: 290, xlabel: 'evaluation period (months)', ylabel: 'V(stocks) − V(bonds)', title: 'when do stocks win?' });
+        const Hs = v.stage({ x: [1, 120], y: [-2, 2], xlog: true, axes: 'box', gutter: true, height: 290, xlabel: 'evaluation period (months)', ylabel: 'CE gap (points/year)', title: 'when do stocks win?' });
         const As = v.stage({ x: [0, 100], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'share in stocks (%)', ylabel: 'prospective value', title: 'the best mix for this period' });
         const NQ = 200, QZ = Array.from({ length: NQ }, (_, i) => ninv((i + 0.5) / NQ)), NQ2 = 36, QZ2 = Array.from({ length: NQ2 }, (_, i) => ninv((i + 0.5) / NQ2));
         const rets = (mu, sg, h, Z) => Z.map((z) => 100 * (Math.exp((mu * h) / 12 + sg * Math.sqrt(h / 12) * z) - 1));
-        v.legend([['blue', 'stocks'], ['teal', 'bonds'], ['red', 'losses'], ['accent', 'your share', { dot: true }]]);
+        v.legend([['blue', 'stock returns: gains'], ['red', 'stock returns: losses'], ['blue', 'certainty-equivalent return of stocks minus bonds, per year', { dash: false }], ['purple', 'prospective value of a mix'], ['accent', 'your share', { dot: true }]]);
         let st = {};
         v.render(() => {
           const h = hS.value, l = lS.value, mu = muS.value, sg = sgS.value, a = 0.88, g = 0.61, d = 0.69;
@@ -553,21 +553,23 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           D.vline(0, { color: 'ink', width: 1 });
           const z0 = -m / s, Phi = (z) => { const t = 1 / (1 + 0.2316419 * Math.abs(z)), y = 1 - (Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI)) * t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z >= 0 ? y : 1 - y; };
           const pl = Phi(z0), plb = Phi(-mb / sb);
-          D.text(`P(loss) = ${pct(pl, 1)}`, xr[0] + 0.03 * (xr[1] - xr[0]), top * 1.13, { size: 12, weight: 700, color: 'red' });
-          D.text(`bonds: ${pct(plb, 1)}`, xr[0] + 0.03 * (xr[1] - xr[0]), top * 1.0, { size: 11, color: 'teal', weight: 600 });
+          D.text(`stocks: P(loss) = ${pct(pl, 1)}`, xr[1] - 0.03 * (xr[1] - xr[0]), top * 1.15, { align: 'right', size: 12, weight: 700, color: 'red' });
+          D.text(`bonds: P(loss) = ${pct(plb, 1)}`, xr[1] - 0.03 * (xr[1] - xr[0]), top * 1.03, { align: 'right', size: 11, color: 'teal', weight: 600 });
           // ---- V(stocks) − V(bonds) over the evaluation period
-          const diff = (hh) => cptEq(rets(mu, sg, hh, QZ), a, l, g, d) - cptEq(rets(MB, SB, hh, QZ), a, l, g, d);
+          // certainty-equivalent return over the period (CPT value inverted), annualized; same sign as the value difference
+          const ceR = (V) => vInv(V, a, l);
+          const diff = (hh) => (ceR(cptEq(rets(mu, sg, hh, QZ), a, l, g, d)) - ceR(cptEq(rets(MB, SB, hh, QZ), a, l, g, d))) * (12 / hh);
           const H = []; for (let k = 0; k <= 40; k++) { const hh = Math.exp((Math.log(120) * k) / 40); H.push([hh, diff(hh)]); }
           let hStar = null; for (let k = 1; k < H.length; k++) if (H[k - 1][1] < 0 && H[k][1] >= 0) { const [h0, d0] = H[k - 1], [h1, d1] = H[k]; hStar = Math.exp(Math.log(h0) + ((Math.log(h1) - Math.log(h0)) * -d0) / (d1 - d0)); break; }
           const lo = Math.min(...H.map((p) => p[1])), hi = Math.max(...H.map((p) => p[1]));
           const span = Math.max(1, hi - lo);
-          const yLo = Math.min(lo, -0.08 * span) - 0.05 * span, yHi = Math.min(hi, 0.5 * span + Math.max(0, -lo)) + 0.08 * span;
+          const yLo = Math.min(lo, -0.1 * span) - 0.06 * span, yHi = Math.max(hi, 0.1 * span) + 0.1 * span;
           Hs.setView([1, 120], [yLo, yHi]);
           Hs.hline(0, { color: 'muted', width: 1.2 });
           Hs.path(H, { color: 'blue', width: 2.6 });
           const dNow = diff(h);
           Hs.dot(h, dNow, { r: 6, color: dNow >= 0 ? 'green' : 'red' });
-          if (hStar) { Hs.vline(hStar, { color: 'green', width: 1.6, dash: [5, 4] }); Hs.text(`indifferent at ${hStar.toFixed(1)} months`, hStar, 0, { dx: 6, dy: -10, size: 11, weight: 700, color: 'green' }); }
+          if (hStar) { Hs.vline(hStar, { color: 'green', width: 1.6, dash: [5, 4] }); Hs.text(`indifferent at ${hStar.toFixed(1)} months`, hStar, yLo, { dx: 6, dy: -12, size: 11, weight: 700, color: 'green', plate: true }); }
           Hs.vband(11, 12, { color: 'gold', alpha: 0.25 });
           Hs.text('BT 1995: 11–12', 12, yHi, { dx: 4, dy: 12, size: 10.5, color: 'gold', weight: 700 });
           // ---- allocation curve for this period (stocks and bonds independent)
@@ -586,7 +588,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         });
         v.readout(() => {
           const { h, hStar, pl, best, mine, bestV, dNow, l } = st; if (h == null) return '';
-          return `Evaluating every **${h.toFixed(h < 10 ? 1 : 0)} months**, a stock investment shows a loss with probability ${pct(pl, 1)}; with $\\lambda = ${l.toFixed(2)}$ all-stocks is worth ${dNow >= 0 ? 'more' : 'less'} than all-bonds (difference ${dNow.toFixed(2)}). ${hStar ? `This stand-in makes them equal at **${hStar.toFixed(1)} months**` : 'No crossing in 1–120 months'} (Benartzi–Thaler, with resampled 1926–1990 data: 11–12 months). Best share in stocks for this period: **${best}%**; your ${myW.value}% reaches ${(mine - bestV).toFixed(2)} below the best (Benartzi–Thaler: about 50% at one year). Stocks and bonds are drawn independently here.`;
+          return `Evaluating every **${h.toFixed(h < 10 ? 1 : 0)} months**, a stock investment shows a loss with probability ${pct(pl, 1)}; with $\\lambda = ${l.toFixed(2)}$ all-stocks is worth ${dNow >= 0 ? 'more' : 'less'} than all-bonds (certainty-equivalent gap ${dNow >= 0 ? '+' : '−'}${Math.abs(dNow).toFixed(2)} points a year). ${hStar ? `This stand-in makes them equal at **${hStar.toFixed(1)} months**` : 'No crossing in 1–120 months'} (Benartzi–Thaler, with resampled 1926–1990 data: 11–12 months). Best share in stocks for this period: **${best}%** (prospective value ${bestV.toFixed(2)}; your ${myW.value}%: ${mine.toFixed(2)}; Benartzi–Thaler: about 50% at one year). Stocks and bonds are drawn independently here.`;
         });
       },
     },
