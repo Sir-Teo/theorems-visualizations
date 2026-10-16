@@ -80,7 +80,7 @@ export default {
       credit: 'A. Church, 1940 (J. Symbolic Logic 5(2), “A formulation of the simple theory of types”) is the source of the simply typed λ-calculus; the presentation with typing contexts follows later textbooks',
       verify: true,
       viz(v) {
-        const sD = pxStage(v, { height: 300, full: true, title: 'Typing derivation' });
+        const sD = pxStage(v, { height: 260, full: true, title: 'Typing derivation' });
         const sG = pxStage(v, { height: 108, full: true, title: 'Context and rule of the selected node' });
         const EX = ['λx:Nat. succ x', 'λf:Nat->Nat. λx:Nat. f (f x)', '(λx:Nat. iszero x) 3', 'λb:Bool. λn:Nat. if b then n else 0', 'λx:Nat. x x', '(λx:Nat. x) true'];
         const f = tmField(v, 'term', EX[1], () => { sel = null; v.invalidate(); });
@@ -192,13 +192,13 @@ export default {
       caption: String.raw`Top: the derivation of $t$ in the context $y{:}\mathsf{Nat},\,x{:}S$. Bottom: the derivation of $[x\mapsto s]\,t$; the grafted subtrees, copies of the derivation of $s$, are ringed green. Pick another $s$ or type your own: a term of the wrong type for $x$ breaks the derivation at the graft.`,
       deps: ['pl-4.7'], refs: ['Pierce §9.3'], tags: ['substitution', 'typing'],
       viz(v) {
-        const sA = pxStage(v, { height: 230, full: true, title: 'Γ, x:S ⊢ t : T' });
-        const sB = pxStage(v, { height: 250, full: true, title: 'Γ ⊢ [x ↦ s] t : T, with the derivation of s grafted in' });
+        const sA = pxStage(v, { height: 190, full: true, title: 'Γ, x:S ⊢ t : T' });
+        const sB = pxStage(v, { height: 215, full: true, title: 'Γ ⊢ [x ↦ s] t : T, with the derivation of s grafted in' });
         const EX = [
           { t: 'x (x 0)', S: 'Nat->Nat', s: 'λz:Nat. succ z' },
           { t: 'if iszero x then y else succ x', S: 'Nat', s: 'pred y' },
           { t: 'λy:Nat. x', S: 'Nat', s: 'y' },
-          { t: 'x (succ x)', S: 'Nat', s: 'true' },
+          { t: 'if iszero x then 0 else succ x', S: 'Nat', s: 'true' },
         ];
         const tF = tmField(v, 't', EX[0].t, () => v.invalidate(), 340);
         const SS = v.select('Type S of x', ['Nat', 'Bool', 'Nat->Nat'], 'Nat->Nat', { onChange: () => v.invalidate() });

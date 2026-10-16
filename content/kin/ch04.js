@@ -188,9 +188,9 @@ The observed rate constant is $k_{\rm eff}=Kk_2/(1+K)$, which reduces to $Kk_2$ 
     // ------------------------------------------------------------------ 4.5
     {
       num: '4.5', kind: 'Paradox', name: 'When the steady-state approximation fails',
-      statement: String.raw`"The intermediate is reactive, so set its rate of change to zero" is not a theorem. The steady-state approximation needs a *small parameter* and a *time scale separation*, not just a short-lived species: it holds on the slow manifold, reached after an initial layer of duration $\sim1/k_2$ in which the intermediate is still being established, and its error is of relative order $\varepsilon=k_1/k_2$. For $\mathrm A\xrightarrow{k_1}\mathrm I\xrightarrow{k_2}\mathrm P$ the exact long-time ratio is $[\mathrm I]/[\mathrm A]=k_1/(k_2-k_1)$, not $k_1/k_2$; for $k_2<k_1$ the intermediate accumulates and the approximation is wrong by a large factor. A highly reactive intermediate that is also formed in a burst (large initial amount, or a fast first step) is not in a steady state either.`,
+      statement: String.raw`"The intermediate is reactive, so set its rate of change to zero" is not a theorem. The steady-state approximation needs a *small parameter* and a *time scale separation*, not just a short-lived species: it holds on the slow manifold, reached after an initial layer of duration $\sim1/k_2$ in which the intermediate is still being established, and its error is of relative order $\varepsilon=k_1/k_2$. For $\mathrm A\xrightarrow{k_1}\mathrm I\xrightarrow{k_2}\mathrm P$ for $k_2>k_1$ the exact long-time ratio is $[\mathrm I]/[\mathrm A]=k_1/(k_2-k_1)$, not $k_1/k_2$, and for $k_2<k_1$ the intermediate accumulates ($[\mathrm I]/[\mathrm A]$ grows without bound) and the approximation is wrong by a large factor. A highly reactive intermediate that is also formed in a burst (large initial amount, or a fast first step) is not in a steady state either.`,
       idea: String.raw`Write the exact equations as $\dot A=-k_1A,\ \dot I=k_1A-k_2I$. The line $I=\frac{k_1}{k_2-k_1}A$ is invariant (the eigenvector of the slow eigenvalue $-k_1$), and every trajectory is attracted to it at rate $k_2$. Setting $\dot I=0$ replaces it by $I=\frac{k_1}{k_2}A$, a different line unless $k_1\ll k_2$. What matters is therefore the ratio of the two eigenvalues, the separation of time scales (as in singular perturbation theory with small parameter $\varepsilon$), and the initial condition's distance from the slow manifold; "short-lived" only controls the first.`,
-      caption: String.raw`Left: the phase plane of $(A,I)$ with the true slow manifold (green) and the steady-state line (orange dashed); the trajectory starts at $(1,I_0)$ and hugs the green line after the initial layer. Right: $[\mathrm I]$ against time, exact and steady-state. Lower $k_2/k_1$ toward 1, or start with $I_0>0$, and the orange line misses the trajectory; at $k_2<k_1$ the slow manifold is the steeper line and the approximation is useless.`,
+      caption: String.raw`Left: the phase plane of $(A,I)$ with the true slow manifold (green) and the steady-state line (orange dashed); the trajectory starts at $(1,I_0)$ and hugs the green line after the initial layer. Right: $[\mathrm I]$ against time, exact and steady-state. Lower $k_2/k_1$ toward 1, or start with $I_0>0$, and the orange line misses the trajectory; at $k_2<k_1$ there is no such line (the trajectory runs off to the $I$ axis as A is used up first) and the approximation is useless.`,
       deps: ['kin-4.3'],
       refs: ['Steinfeld et al.'],
       tags: ['steady state', 'time scales'],
@@ -208,10 +208,10 @@ The observed rate constant is $k_{\rm eff}=Kk_2/(1+K)$, which reduces to $Kk_2$ 
           const slope = 1 / (k2 - 1), slopeSS = 1 / k2;
           const manifold = k2 > 1 + 1e-6 ? slope : null;
           ph.line(0, 0, 1.05, 1.05 * slopeSS, { color: 'orange', width: 2, dash: true });
-          if (manifold !== null) ph.line(0, 0, 1.05, Math.min(1.6, 1.05 * manifold), { color: 'green', width: 2.2 });
-          else ph.line(0, 0, 1.05, Math.min(1.6, 1.05 * 1.0), { color: 'faint', width: 1, dash: true });
+          if (manifold !== null) ph.line(0, 0, 1.05, 1.05 * manifold, { color: 'green', width: 2.2 });
           const tr = []; for (let i = 0; i <= 400; i++) { const y = sol.at(T * i / 400); tr.push([y[0], y[1]]); }
           ph.path(tr, { color: 'accent', width: 2.4 });
+          ph.setView([0, 1.05], [0, Math.max(0.15, 1.1 * Math.max(...tr.map((q) => q[1]), 1.05 * slopeSS, manifold !== null ? 1.05 * manifold : 0, i0))]);
           ph.dot(1, i0, { r: 5, color: 'gold' });
           // time series
           const ex = []; for (let i = 0; i <= 400; i++) { const t = T * i / 400; ex.push([t, sol.at(t)[1]]); }

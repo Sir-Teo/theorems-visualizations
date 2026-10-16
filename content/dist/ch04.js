@@ -32,7 +32,7 @@ export default {
           for (let c = 0; c < 8; c++) { const h = c % 2, o = 1 - h; sched.push(2, h, 2, h, o, 2, h); }
           Z.run(sched);
         });
-        v.render(() => { starve.el.hidden = proto.value !== 'tas'; });
+        v.render(() => { starve.hidden = proto.value !== 'tas'; });
         v.readout(() => `${Z.status()}\nEntries into the critical section so far: P0 ${entries(Z)[0]}, P1 ${entries(Z)[1]}, P2 ${entries(Z)[2]}. ${Z.exText()}`);
       },
     },
@@ -62,7 +62,7 @@ export default {
             highlight: [[Z.S.pc[0], Z.S.pc[1], 'gold']],
           });
         });
-        v.readout(() => `${Z.status()}\n${Z.exText()} Starred lines are the critical section; the pair (*,*) is a violation.`);
+        v.readout(() => `${Z.status()}\n${Z.exText()} A star marks the critical section; a nonzero cell with a star on both sides would be a violation.`);
       },
     },
     {
@@ -111,7 +111,7 @@ export default {
         const rmw = v.toggle('registers also offer test-and-set', false, { onChange: () => reset() });
         let cover = [], k = 0, fail = null, choice = -1, note = '';
         const reset = () => { cover = []; k = 0; fail = null; choice = -1; note = ''; };
-        const sR = v.stage({ x: [-0.7, 6.2], y: [-1.9, 3.3], axes: false, height: 330, weight: 1.1, minWidth: 340, title: 'registers and the processes poised to write them (click a register to choose)' });
+        const sR = v.stage({ x: [-0.7, 6.2], y: [-2.3, 2.5], axes: false, height: 300, weight: 1.1, minWidth: 340, title: 'registers and the processes poised to write them (click a register to choose)' });
         const sL = v.stage({ x: [-0.5, 10.5], y: [-0.6, 5.6], axes: false, height: 300, weight: 1, minWidth: 340, title: 'the execution built from the contradiction' });
         sR.onClick((x) => { choice = Math.max(0, Math.min(mS.value - 1, Math.round(x))); });
         v.button('next process runs alone', () => {
@@ -128,7 +128,7 @@ export default {
         v.button('reset', reset);
         v.render(() => {
           const n = nS.value, m = mS.value;
-          sR.setView([-0.7, Math.max(m, 4) + 0.4], [-1.9, 3.3]);
+          sR.setView([-0.7, Math.max(m, 4) + 0.4], [-2.3, 2.5]);
           for (let i = 0; i < m; i++) {
             const c = cover[i], sel = (choice === i) || (choice < 0 && !fail && c === undefined && range(i).every((q) => cover[q] !== undefined));
             sR.rect(i - 0.36, 0, i + 0.36, 0.8, { fill: c !== undefined ? 'orange' : 'grid', fillAlpha: c !== undefined ? 0.4 : 0.25, color: sel ? 'gold' : 'muted', width: sel ? 3 : 1.4, radius: 4 });
@@ -136,7 +136,7 @@ export default {
             if (c !== undefined) { sR.dot(i, 1.9, { r: 14, color: 'orange' }); sR.text(`p${c + 1}`, i, 1.9, { align: 'center', size: 13, color: 'ink' }); sR.arrow(i, 1.55, i, 0.9, { color: 'orange', width: 2.2 }); }
           }
           for (let j = k; j < n; j++) { sR.dot(j * (Math.max(m, 4) - 0.3) / Math.max(1, n - 1), -1.2, { r: j === k && !fail ? 13 : 11, color: j === k ? 'gold' : 'faint' }); sR.text(`p${j + 1}`, j * (Math.max(m, 4) - 0.3) / Math.max(1, n - 1), -1.2, { align: 'center', size: 12, color: 'ink' }); }
-          sR.text('still in the remainder', 0, -1.8, { align: 'left', size: 12, color: 'muted' });
+          sR.text('processes still in the remainder', 0, -1.95, { align: 'left', size: 12, color: 'muted' });
           sL.el.style.display = fail ? '' : 'none';
           if (fail) {
             const lanes = [`q`, `p${fail.p + 1}`, ...range(k).map((i) => `p${i + 1}`)], N = lanes.length;

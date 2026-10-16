@@ -207,8 +207,8 @@ export function mxSim(v, getSpec, o = {}) {
   v.render(() => {
     if (Z.spec !== getSpec()) { Z.spec = getSpec(); reset(); }
     const spec = Z.spec, n = spec.n, H = Z.hist, X1 = Math.max(30, H.length + 1);
-    Z.btn.forEach((b, p) => { b.el.hidden = p >= n; });
-    if (Z.replay) { Z.ex = Z.cache.get(spec.id) || null; Z.replay.el.hidden = !(Z.ex && (Z.ex.bad >= 0 || Z.ex.dead >= 0 || Z.ex.solo >= 0)); }
+    Z.btn.forEach((b, p) => { b.hidden = p >= n; });
+    if (Z.replay) { Z.ex = Z.cache.get(spec.id) || null; Z.replay.hidden = !(Z.ex && (Z.ex.bad >= 0 || Z.ex.dead >= 0 || Z.ex.solo >= 0)); }
     sT.setView([-1.4, X1], [-0.7, nMax - 0.3]);
     const yOf = (i) => nMax - 1 - i;
     for (let i = 0; i < n; i++) {
@@ -305,7 +305,7 @@ export function drawHistory(s, ops, nProc, T, o = {}) {
   ops.forEach((op, i) => {
     const y = nProc - 1 - op.p, h = 0.27, col = o.color ? o.color(i) : (op.kind === 'w' ? 'accent' : 'orange');
     s.rect(op.s, y - h, op.e, y + h, { fill: col, fillAlpha: o.hl && o.hl.has(i) ? 0.55 : 0.28, color: col, width: o.hl && o.hl.has(i) ? 2.4 : 1.4, radius: 4 });
-    s.text(opLabel(op, o.labelReg !== false), (op.s + op.e) / 2, y, { align: 'center', size: 12.5, color: 'ink', math: false, halo: false });
+    s.text(opLabel(op, o.labelReg !== false), op.s + 0.16, y, { align: 'left', size: 12.5, color: 'ink', math: false, halo: false });
   });
 }
 
@@ -324,6 +324,80 @@ export function historyEditor(s, cap, state, o = {}) {
     if (op) { const y = state.nProc - 1 - op.p; a.set(op.s, y); b.set(op.e, y); }
   });
   return { sync, hs };
+}
+
+
+/** Operations whose removal makes a non-conforming history conform (the ones "responsible" for the failure). */
+export function culprits(ops, mode) {
+  const out = new Set();
+  ops.forEach((_, i) => { if (checkHistory(ops.filter((__, j) => j !== i), mode).ok) out.add(i); });
+  return out;
+}
+
+/**
+ * The interactive history picture of items 4.8 and 4.9: presets {value, label, nProc, ops}, draggable interval ends, click an operation to cycle its value.
+ * o.mode 'lin' shows linearization points and the sequential tape; 'sc' shows both verdicts and the sequentially consistent order.
+ * Returns {st, res(), text()}; the caller supplies the readout.
+ */
+export function histViz(v, o) {
+  const T = 10, st = { ops: [], nProc: 3 }, cl = (ops) => ops.map((x) => ({ ...x }));
+  const load = (key) => { const P = o.presets.find((q) => q.value === key); st.ops = cl(P.ops); st.nProc = P.nProc; };
+  const maxP = Math.max(...o.presets.map((q) => q.nProc));
+  const pre = v.select('history', o.presets.map((q) => ({ value: q.value, label: q.label })), o.presets[0].value, { onChange: (x) => load(typeof x === 'string' ? x : pre.value) });
+  load(o.presets[0].value);
+  const s = v.stage({ x: [-0.9, T + 0.2], y: [-0.7, maxP - 0.3], axes: false, height: 66 * maxP + 56, full: true, title: o.title || 'a history: each operation is an interval from invocation to response (drag its ends; click it to change its value)' });
+  const ed = historyEditor(s, 10, st, { T });
+  s.onClick((x, y) => {
+    st.ops.forEach((op) => { if (x >= op.s && x <= op.e && Math.abs(y - (st.nProc - 1 - op.p)) < 0.3) op.val = (op.val + 1) % 4; });
+  });
+  v.button('reset this history', () => load(pre.value));
+  const tape = o.mode === 'lin' ? v.stage({ x: [0, 11], y: [0, 1], axes: false, height: 96, full: true, title: 'a sequential execution that explains it (the register after each operation)' }) : null;
+  const R = { st, lin: null, sc: null, bad: new Set(), inv: null };
+  v.render(() => {
+    const ops = st.ops, np = st.nProc;
+    s.setView([-0.9, T + 0.2], [-0.7, np - 0.3]);
+    R.lin = checkHistory(ops, 'lin'); R.sc = checkHistory(ops, 'sc');
+    const main = o.mode === 'lin' ? R.lin : R.sc;
+    R.bad = main.ok ? new Set() : culprits(ops, o.mode === 'lin' ? 'lin' : 'sc');
+    drawHistory(s, ops, np, T, { hl: R.bad, color: (i) => (R.bad.has(i) ? 'red' : ops[i].kind === 'w' ? 'accent' : 'orange') });
+    R.inv = null;
+    if (o.mode === 'lin' && R.lin.ok) {
+      const ts = pointTimes(ops, R.lin.order);
+      if (ts) {
+        const pts = R.lin.order.map((j, k) => [ts[k], np - 1 - ops[j].p]);
+        s.path(pts, { color: 'green', width: 1.6, dash: [5, 4], alpha: 0.8 });
+        R.lin.order.forEach((j, k) => { s.dot(pts[k][0], pts[k][1], { r: 6, color: 'green' }); s.text(String(k + 1), pts[k][0], pts[k][1], { align: 'center', baseline: 'bottom', dy: -9, size: 12, color: 'green', halo: true }); });
+      }
+    }
+    if (o.mode === 'sc' && R.sc.ok) {
+      const pos = new Map(R.sc.order.map((j, k) => [j, k]));
+      R.sc.order.forEach((j, k) => s.text(`#${k + 1}`, (ops[j].s + ops[j].e) / 2, np - 1 - ops[j].p, { align: 'center', baseline: 'bottom', dy: -17, size: 12, color: 'purple', halo: true }));
+      if (!R.lin.ok) {
+        for (const a of ops.keys()) for (const b of ops.keys()) if (!R.inv && ops[a].e < ops[b].s && pos.get(b) < pos.get(a)) R.inv = [a, b];
+        if (R.inv) { const [a, b] = R.inv; s.arrow(ops[a].e, np - 1 - ops[a].p, ops[b].s, np - 1 - ops[b].p, { color: 'red', width: 2.2, dash: [6, 4] }); }
+      }
+    }
+    s.corner(o.mode === 'lin' ? (R.lin.ok ? 'linearizable' : 'not linearizable') : `${R.lin.ok ? 'linearizable' : 'not linearizable'} · ${R.sc.ok ? 'sequentially consistent' : 'not sequentially consistent'}`, 'tr', { color: (o.mode === 'lin' ? R.lin.ok : R.sc.ok) ? 'green' : 'red', weight: 700, plate: true });
+    ed.sync();
+    if (tape) {
+      const k = R.lin.ok ? R.lin.order.length : 0; let val = {};
+      if (!R.lin.ok) tape.text('no sequential order is both legal for the register and consistent with real time', 5.5, 0.5, { align: 'center', size: 14, color: 'red' });
+      else R.lin.order.forEach((j, q) => {
+        const op = ops[j]; if (op.kind === 'w') val[op.reg] = op.val;
+        const x0 = 0.2 + q * Math.min(1.9, 10.6 / k), w = Math.min(1.7, 10.6 / k - 0.2);
+        tape.rect(x0, 0.15, x0 + w, 0.85, { fill: op.kind === 'w' ? 'accent' : 'orange', fillAlpha: 0.3, color: op.kind === 'w' ? 'accent' : 'orange', width: 1.4, radius: 4 });
+        tape.text(opLabel(op, false), x0 + w / 2, 0.64, { align: 'center', size: 12.5, color: 'ink' });
+        tape.text(`x = ${val.x ?? 0}${val.y !== undefined || ops.some((z) => z.reg === 'y') ? ', y = ' + (val.y ?? 0) : ''}`, x0 + w / 2, 0.3, { align: 'center', size: 11, color: 'muted' });
+      });
+    }
+  });
+  R.text = () => {
+    const ops = st.ops, ord = (res) => res.order.map((j) => `P${ops[j].p}:${opLabel(ops[j], new Set(ops.map((z) => z.reg)).size > 1)}`).join(' → ');
+    const L = R.lin, S = R.sc;
+    if (o.mode === 'lin') return L.ok ? `**Linearizable.** One legal order inside the intervals: ${ord(L)}.` : `**Not linearizable.** No order of the ${ops.length} operations respects real time and gives every read the latest write. Operations whose removal would repair it: ${[...R.bad].map((i) => `P${ops[i].p}:${opLabel(ops[i], false)}`).join(', ') || 'none alone (several interact)'}.`;
+    return `Linearizable: **${L.ok ? 'yes' : 'no'}**. Sequentially consistent: **${S.ok ? 'yes' : 'no'}**.${S.ok ? ` A program-order-respecting order: ${ord(S)}.` : ''}${R.inv ? ` In that order ${opLabel(ops[R.inv[1]], false)} on P${ops[R.inv[1]].p} comes before ${opLabel(ops[R.inv[0]], false)} on P${ops[R.inv[0]].p}, although the latter had already returned when the former began (red arrow): sequential consistency allows this, linearizability does not.` : ''}`;
+  };
+  return R;
 }
 
 export { PCOL };

@@ -172,8 +172,8 @@ export function drawLines(s, lines, { color = 'accent', width = 1.3, alpha = 1, 
  * A body made by mapping the circle |zeta - zeta0| = R (R > max |zeta0 -+ c|, so the circle encloses both critical points) with z = zeta + c^2/zeta,
  * in a uniform stream U at angle of attack alpha with clockwise circulation G (aerodynamic sign). Density 1, p_inf = 0.
  */
-export function joukBody({ zeta0 = [0, 0], c = 1, round = 0.2, U = 1, alpha = 0, G = 0 }) {
-  const R = Math.max(Math.hypot(zeta0[0] - c, zeta0[1]), Math.hypot(zeta0[0] + c, zeta0[1])) * (1 + round);
+export function joukBody({ zeta0 = [0, 0], c = 1, round = 0.2, U = 1, alpha = 0, G = 0, R: Rin = 0 }) {
+  const R = Rin || Math.max(Math.hypot(zeta0[0] - c, zeta0[1]), Math.hypot(zeta0[0] + c, zeta0[1])) * (1 + round);
   const zOf = (zt) => cadd(zt, cdiv([c * c, 0], zt));
   const dz = (zt) => csub([1, 0], cdiv([c * c, 0], cmul(zt, zt)));
   const Wz = (zt) => { // dW/dzeta, zt absolute
@@ -202,6 +202,15 @@ export function joukBody({ zeta0 = [0, 0], c = 1, round = 0.2, U = 1, alpha = 0,
       s = cadd(s, cmul(t, dzt));
     }
     const F = cmul([0, 0.5], s); return { Fx: F[0], Fy: -F[1], contour: Array.from({ length: 181 }, (_, k) => zOf(cadd(zeta0, cpolar(rc, (TAU * k) / 180)))) };
+  };
+  /** Velocity [u, v] at the physical point (x, y), or null inside the body. */
+  P.at = (x, y) => {
+    const z = [x, y], q = csqrt(csub(cmul(z, z), [4 * c * c, 0]));
+    const a = [(x + q[0]) / 2, (y + q[1]) / 2], b = [(x - q[0]) / 2, (y - q[1]) / 2];
+    const da = Math.hypot(a[0] - zeta0[0], a[1] - zeta0[1]), db = Math.hypot(b[0] - zeta0[0], b[1] - zeta0[1]);
+    const zt = da >= db ? a : b;
+    if (Math.max(da, db) <= R * 1.003) return null;
+    return vel(zt);
   };
   return P;
 }

@@ -161,7 +161,8 @@ export function layoutC(C, o = {}) {
   lv.forEach((arr, l) => {
     arr.forEach((i, k) => {
       const m = arr.length;
-      pos[i] = [maxL === 0 ? 0.5 : 0.04 + 0.92 * l / maxL, 0.5 + (k - (m - 1) / 2) / Math.max(H, 2) * (o.spread ?? 0.92)];
+      const u = maxL === 0 ? 0.5 : 0.04 + 0.92 * l / maxL, w = 0.5 + (k - (m - 1) / 2) / Math.max(H, 2) * (o.spread ?? 0.92);
+      pos[i] = o.vertical ? [w, 1 - u] : [u, w];
     });
   });
   return { pos, levels: L, live, maxL, H };
@@ -200,7 +201,7 @@ export const log2Circuits = (s, n) => s * Math.log2(3 * (s + n) ** 2);
 /** Least s with log2Circuits(s, n) >= 2^n (the counting threshold). */
 export function shannonThreshold(n) {
   const target = 2 ** n; let lo = 1, hi = 2; while (log2Circuits(hi, n) < target) hi *= 2;
-  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (log2Circuits(m, n) >= target) hi = m; else lo = m; }
+  while (hi - lo > 1) { const m = Math.floor((lo + hi) / 2); if (log2Circuits(m, n) >= target) hi = m; else lo = m; }
   return hi;
 }
 

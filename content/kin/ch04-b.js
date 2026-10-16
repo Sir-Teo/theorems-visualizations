@@ -56,7 +56,13 @@ function rrkmTables(s, tight, Emax) {
   if (bsCache.size > 40) bsCache.clear();
   bsCache.set(key, res); return res;
 }
-const rrkm = (T, E, E0) => { const i = Math.round(E / GRAIN), j = Math.round((E - E0) / GRAIN); return j < 0 ? 0 : CLIGHT * T.cum[j] / (T.mol[i] / GRAIN); };
+const rrkm = (T, E, E0) => {
+  const i = Math.round(E / GRAIN), x = (E - E0) / GRAIN;
+  if (x < 0) return 0;
+  const j = Math.floor(x), f = x - j, N = T.cum[j] + f * ((T.cum[j + 1] ?? T.cum[j]) - T.cum[j]);
+  let rho = 0, c = 0; for (let q = i - 8; q <= i + 8; q++) if (q >= 0 && q < T.mol.length) { rho += T.mol[q]; c++; }
+  return CLIGHT * N / (rho / c / GRAIN);     // state density smoothed over +-160 cm^-1 (removes the commensurability ripples of a few model frequencies)
+};
 
 export default {
   collection: 'kin',
@@ -103,7 +109,7 @@ All products appear with the same time constant $1/k_{\rm tot}$ (the *observed* 
           info = { kt, phi, obs: cnt.map((c) => c / n), n, ratio: ks[1] > 0 ? ks[0] / ks[1] : NaN };
         });
         v.legend([['ink', 'A'], ['blue', 'P₁'], ['orange', 'P₂'], ['purple', 'P₃']]);
-        v.readout(() => `observed rate constant $k_{\\rm tot}=${nz(v, info.kt)}$ s$^{-1}$ (lifetime $${nz(v, 1 / info.kt)}$ s), the sum of all channels.\n$[\\mathrm P_1]/[\\mathrm P_2]=k_1/k_2=${v.fix(info.ratio, 2)}$ at every time; branching ratios $\\Phi=(${info.phi.map((x) => v.fix(x, 3)).join(',\\ ')})$; sampled with $N=${info.n}$: $(${info.obs.map((x) => v.fix(x, 3)).join(',\\ ')})$.`);
+        v.readout(() => `observed rate constant $k_{\\rm tot}=${nz(v, info.kt)}$ s$^{-1}$ (lifetime $${nz(v, 1 / info.kt)}$ s), the sum of all channels.\n$[\\mathrm P_1]/[\\mathrm P_2]=k_1/k_2=${v.fix(info.ratio, 2)}$ at every time; branching ratios $\\Phi=(${info.phi.map((x) => v.fix(x, 3)).join(',\\ ')})$; \nsampled with $N=${info.n}$: $(${info.obs.map((x) => v.fix(x, 3)).join(',\\ ')})$`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -128,7 +134,7 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
         const ph = v.slider('half-pressure $[\\mathrm M]_{1/2}$ (atm)', 1e-4, 1, 0.01, { log: true, sig: 2 });
         const noise = v.toggle('synthetic noisy data', true);
         const view = v.select('plot', [{ value: 'loglog', label: '$\\log k$ vs $\\log p$' }, { value: 'recip', label: '$1/k$ vs $1/p$' }], 'loglog');
-        const s = v.stage({ x: [-6, 2], y: [-6, 3], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ p / atm', ylabel: 'log₁₀ k_uni / s⁻¹', title: 'fall-off over eight decades' });
+        const s = v.stage({ x: [-6, 2], y: [-6, 3], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ p / atm', ylabel: 'log₁₀ k / s⁻¹', title: 'fall-off over eight decades' });
         let info = {};
         const r = v.rng(11), jit = Array.from({ length: 30 }, () => r.normal());
         v.render(() => {
@@ -136,7 +142,7 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
           const lp = (i) => -6 + 8 * i / 29;
           if (view.value === 'loglog') {
             s.setView([-6, 2], [Math.log10(ki) - 5, Math.log10(ki) + 1.2]);
-            s.setLabels('log₁₀ p / atm', 'log₁₀ k_uni / s⁻¹');
+            s.setLabels('log₁₀ p / atm', 'log₁₀ k / s⁻¹');
             s.path(Array.from({ length: 161 }, (_, i) => { const l = -6 + i * 0.05; return [l, Math.log10(lamLH(ki, p1, Math.pow(10, l)))]; }), { color: 'accent', width: 2.6 });
             s.path(Array.from({ length: 161 }, (_, i) => { const l = -6 + i * 0.05; return [l, Math.log10(lindemann(ki, p1, Math.pow(10, l)))]; }), { color: 'orange', width: 2, dash: true });
             s.hline(Math.log10(ki), { color: 'green', dash: [3, 3], alpha: 0.8 });
@@ -147,7 +153,7 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
             const pts = Array.from({ length: 30 }, (_, i) => { const p = Math.pow(10, lp(i)); return [1 / p, 1 / lamLH(ki, p1, p)]; });
             const xm = 1 / 1e-3, ym = 1 / ki + p1 / ki * xm;
             s.setView([0, xm], [0, ym * 1.05]);
-            s.setLabels('1/p (atm⁻¹)', '1/k_uni (s)');
+            s.setLabels('1/p (atm⁻¹)', '1/k (s)');
             s.line(0, 1 / ki, xm, 1 / ki + p1 / ki * xm, { color: 'orange', width: 2, dash: true });
             s.dots(pts.filter((q) => q[0] <= xm), { r: 3.5, color: 'accent' });
             s.dot(0, 1 / ki, { r: 5, color: 'green' });
@@ -166,7 +172,7 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
 $$\frac{k}{k_\infty}=\frac{P_r}{1+P_r}\,F,\qquad \log F=\frac{\log F_{\rm cent}}{1+\bigl[(\log P_r+c)/(n-d(\log P_r+c))\bigr]^2},$$
 with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
       idea: String.raw`The Lindemann scheme gives every energized molecule the same decay rate. In reality $k(E)$ grows with energy (4.9), so the molecules that are activated at low pressure sit at a distribution of energies and a spread of lifetimes, and the crossover from collision control to unimolecular control happens at different pressures for different energies: the single sharp step is smeared over more decades of pressure. The picture here uses the Rice–Ramsperger–Kassel $k(E)$ with $s$ oscillators and strong collisions; real systems are broadened further by incomplete (weak) collisional energy transfer.`,
-      caption: String.raw`Reduced fall-off curves $k/k_\infty$ against $\log P_r$: Lindemann (orange), the strong-collision RRK curve for $s$ oscillators and $E_0/k_BT=x_0$ (blue; a model, not data), and the Troe form (green dashed) with your $F_{\rm cent}$. Press **Match centre** to set $F_{\rm cent}$ to the RRK value at $P_r=1$ and see how well the three-parameter fit follows the whole curve. Fewer oscillators give narrower, more Lindemann-like curves; more oscillators broaden them. The classic experimental example is the isomerization of cyclopropane to propene (Chambers and Kistiakowsky 1934; later fall-off work by Schlag and Rabinovitch 1960): its measured fall-off lies below the Lindemann curve, which is why the model has $s\approx$ 10–20 effective oscillators; no measured data are plotted here.`,
+      caption: String.raw`Reduced fall-off curves $k/k_\infty$ against $\log P_r$: Lindemann (orange), the strong-collision RRK curve for $s$ oscillators and $E_0/k_BT=x_0$ (blue; a model, not data), and the Troe form (green dashed) with your $F_{\rm cent}$. Press **Match centre** to set $F_{\rm cent}$ to the RRK value at $P_r=1$ and see how well the three-parameter fit follows the whole curve. Fewer oscillators give narrower, more Lindemann-like curves; more oscillators broaden them. The classic experimental example is the isomerization of cyclopropane to propene (Chambers and Kistiakowsky 1934; later fall-off work by Schlag and Rabinovitch 1960) is the textbook case of a fall-off broader than Lindemann's; no measured data are plotted here and the parameters of the model are not fitted to it.`,
       deps: ['kin-4.7'],
       refs: ['Steinfeld et al.'],
       tags: ['fall-off', 'unimolecular reactions'],
@@ -175,11 +181,11 @@ with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
       scope: String.raw`Model curves in reduced coordinates; experimental $F_{\rm cent}$ values depend on the molecule, bath gas and temperature.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lindemann_mechanism' },
       viz(v) {
-        const sS = v.slider('oscillators $s$', 3, 25, 10, { int: true });
-        const x0S = v.slider('$E_0/k_BT$', 10, 60, 40, { step: 1 });
-        const fc = v.slider('Troe $F_{\\rm cent}$', 0.1, 1, 1, { step: 0.01 });
+        const sS = v.slider('oscillators $s$', 3, 25, 5, { int: true });
+        const x0S = v.slider('$E_0/k_BT$', 10, 60, 30, { step: 1 });
+        const fc = v.slider('Troe $F_{\\rm cent}$', 0.05, 1, 0.5, { step: 0.01 });
         const st = v.stage({ x: [-4, 4], y: [0, 1.05], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ P_r', ylabel: 'k / k∞', title: 'reduced fall-off curve', weight: 1.3 });
-        const dv = v.stage({ x: [-4, 4], y: [-0.25, 0.05], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ P_r', ylabel: 'log₁₀ (k / k_Lindemann)', title: 'broadening relative to Lindemann', weight: 1 });
+        const dv = v.stage({ x: [-4, 4], y: [-1.2, 0.1], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ P_r', ylabel: 'log₁₀ (k / k_L)', title: 'broadening relative to Lindemann', weight: 1 });
         v.button('Match centre', () => { const c = rrkFalloff(sS.value, x0S.value).curve.find((q) => Math.abs(q[0]) < 1e-6); fc.set(clamp(2 * c[1], 0.1, 1)); });
         let info = {};
         v.render(() => {
@@ -191,6 +197,8 @@ with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
           dv.path(curve.filter((q) => q[0] >= -4 && q[0] <= 4).map(([x, y]) => [x, Math.log10(y * (1 + Math.pow(10, -x)))]), { color: 'accent', width: 2.4 });
           dv.fn((x) => Math.log10(troe(x, F) * (1 + Math.pow(10, -x))), { color: 'green', width: 2, dash: true, domain: [-4, 4] });
           dv.hline(0, { color: 'orange', width: 1.6 });
+          const lo = Math.min(...curve.filter((q) => q[0] >= -4 && q[0] <= 4).map(([x, y]) => Math.log10(y * (1 + Math.pow(10, -x)))), Math.log10(troe(0, F)));
+          dv.setView([-4, 4], [Math.min(-0.3, lo * 1.15), 0.1]);
           const c0 = curve.find((q) => Math.abs(q[0]) < 1e-6)[1];
           let rms = 0, cnt = 0; for (const [x, y] of curve) if (x >= -3 && x <= 3) { rms += (Math.log10(y) - Math.log10(troe(x, F))) ** 2; cnt++; }
           info = { Fc: 2 * c0, rms: Math.sqrt(rms / cnt) };
@@ -208,7 +216,7 @@ the probability that this happens. **RRKM** theory (Marcus 1952) replaces the cl
 $$k(E)=\frac{N^\ddagger(E-E_0)}{h\,\rho(E)},$$
 with $\rho(E)$ the density of vibrational states of the molecule and $N^\ddagger(E-E_0)$ the number of states of the transition state with excess energy up to $E-E_0$ (transition-state theory, 3.2, applied microcanonically). Both give $k(E)$ rising steeply above threshold and, at fixed $E$, falling as the energy is shared among more oscillators.`,
       idea: String.raw`Lindemann's picture (4.7) needs the lifetime of A* as a function of its energy. If energy flows freely among the modes, every arrangement of the quanta is equally likely, and the molecule reacts when the quanta happen to pile up in the reaction coordinate: the fraction of arrangements in which a given mode holds more than $E_0$ out of $E$ is $(1-E_0/E)^{s-1}$ for classical oscillators. Counting states exactly with the Beyer–Swinehart algorithm gives RRKM, with no adjustable $A$: the pre-exponential factor comes from the ratio of the transition state's states to the molecule's, which is the microcanonical form of the Eyring equation. Averaging $k(E)$ over the thermal distribution of activated molecules gives the fall-off curves of 4.8.`,
-      caption: String.raw`Left: $k(E)$ against $E/E_0$ on a log axis, RRK (orange; $A$ is matched to RRKM at $E=2E_0$) and RRKM (blue, exact state counts for a model molecule of $s$ harmonic oscillators with frequencies 3000, 2900, 1500, … cm$^{-1}$; not a real molecule), with a dot at your $E$. Right: $N$ random ways to share the energy $E$ among the $s$ oscillators (uniform on the simplex): the histogram of the energy in one chosen mode against $(s-1)/E\,(1-\varepsilon/E)^{s-2}$, with the part above $E_0$ shaded: its area is the RRK probability. Loosen the transition state (tightness below 1) to raise the RRKM rate.`,
+      caption: String.raw`Left: $k(E)$ against $E/E_0$ on a log axis, RRK (orange; $A$ is matched to RRKM at $E=2E_0$) and RRKM (blue, Beyer–Swinehart state counts with the density of states smoothed over ±160 cm$^{-1}$, for a model molecule of $s$ harmonic oscillators with frequencies 3000, 2900, 1500, … cm$^{-1}$; not a real molecule), with a dot at your $E$. Right: 3000 random ways to share the energy $E$ among the $s$ oscillators (uniform on the simplex): the histogram of the energy in one chosen mode against $(s-1)/E\,(1-\varepsilon/E)^{s-2}$, with the part above $E_0$ shaded: its area is the RRK probability. Loosen the transition state (tightness below 1) to raise the RRKM rate.`,
       deps: ['kin-4.7', 'kin-3.2'],
       refs: ['Steinfeld et al.'],
       tags: ['unimolecular reactions', 'statistical theory'],
@@ -232,9 +240,10 @@ with $\rho(E)$ the density of vibrational states of the molecule and $N^\ddagger
           const Aref = (() => { const kk = kM(2); return kk > 0 ? kk / Math.pow(0.5, s - 1) : 1e13; })();
           const rrk = (x) => Aref * Math.pow(1 - 1 / x, s - 1);
           const lg = (f) => (x) => { const y = f(x); return y > 0 ? Math.log10(y) : NaN; };
-          k.fn(lg(rrk), { color: 'orange', width: 2.2, domain: [1.0001, 3] });
+          k.fn(lg(rrk), { color: 'orange', width: 2.2, domain: [1.05, 3] });
           const pts = []; for (let x = 1.0; x <= 3.0001; x += 0.01) { const y = kM(x); pts.push(y > 0 ? [x, Math.log10(y)] : null); }
           k.path(pts, { color: 'accent', width: 2.4 });
+          const fin = pts.filter(Boolean).map((q) => q[1]); k.setView([1, 3], [Math.floor(Math.min(...fin)) - 1, Math.ceil(Math.max(...fin, 12)) + 1]);
           const E = er.value; k.vline(E, { color: 'muted', dash: true });
           const yM = kM(E), yR = rrk(E);
           if (yM > 0) k.dot(E, Math.log10(yM), { r: 5.5, color: 'accent' });
