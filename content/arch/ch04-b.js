@@ -348,7 +348,7 @@ larger for a small, flat-topped oculus and smaller for a steep one. The extra we
       name: 'Thrust network analysis',
       statement: String.raw`**Thrust network analysis** (Block and Ochsendorf, 2007) extends the graphic statics of arch-1.5 to vaults. A *thrust network* is a three-dimensional net of straight compressive members that carries the vertical loads. It is found in two linear steps. First, its plan is fixed and the **horizontal forces** are chosen: the plan network Γ and a force diagram Γ* are reciprocal (parallel edges, dual graphs), so every node is in horizontal equilibrium, and each edge gets a *force density* $q=F/\ell$, its horizontal force over its plan length. Second, with the $q$ known, the **heights** $z$ of the nodes follow from vertical equilibrium, which is *linear*: $\sum_j q_{ij}(z_i-z_j)=p_i$ at every free node, with the loads $p_i$ and the heights of the supports given. The vault is safe if some network found in this way fits inside the thickness of the masonry (the safe theorem, arch-3.5, in three dimensions).`,
       idea: String.raw`In a cable net under a given load, shape and force are coupled non-linearly. Fixing the plan and the horizontal forces first removes the coupling: vertical equilibrium is then a discrete Poisson equation (arch-4.3 solves the same kind of equation in the continuum) and has one solution. The designer's freedom is the force diagram, i.e. the distribution of horizontal thrust; moving it moves the network up and down inside the vault, the same freedom as the choice of the pole in arch-1.5. Here the force diagram is a degenerate one: straight lines of constant horizontal force (rows, columns and, optionally, diagonals), which makes equilibrium of the horizontal forces hold automatically; the general method takes any reciprocal pair.`,
-      caption: String.raw`Pick a vault (its middle surface is the shaded band of thickness $t$) and press **find the best network**: the optimiser changes four numbers (force level and its centre/edge contrast, for the rows-and-columns family and for the diagonals) to bring the network inside the band. The left plot is the plan with line widths proportional to the horizontal force, nodes green when inside the vault and red when outside; the middle plot is a section; the right plot is the force diagram, the force of each line. Thin the vault, or turn the diagonals off, and see which networks stop fitting: a cross vault needs forces along its groins, which rows and columns alone cannot give.`,
+      caption: String.raw`Pick a vault (sail, cross or cloister; its middle surface is the shaded band of thickness $t$) and press **find the best network**: the optimiser changes four numbers (force level and its centre/edge contrast, for the rows-and-columns family and for the diagonals) to bring the network inside the band. The left plot is the plan with line widths proportional to the horizontal force, nodes green when inside the vault and red when outside; the middle plot is a section; the right plot is the force diagram, the force of each line. Thin the vault, or turn the diagonals off, and see which networks stop fitting: a cross vault needs forces along its groins, which rows and columns alone cannot give.`,
       deps: ['arch-4.3', 'arch-1.5'],
       see: ['arch-3.5', 'arch-4.1'],
       tags: ['form-finding', 'graphic statics', 'vaults'],
@@ -358,26 +358,28 @@ larger for a small, flat-topped oculus and smaller for a steep one. The extra we
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Thrust_network_analysis' },
       viz(v) {
         const n = 13, hx = 2 / (n - 1), X = (i) => -1 + i * hx;
-        const shape = v.select('vault', [{ value: 'sail', label: 'sail vault' }, { value: 'cross', label: 'cross vault' }, { value: 'barrel', label: 'barrel vault' }], 'sail', { onChange: () => { optimise(); } });
+        const shape = v.select('vault', [{ value: 'sail', label: 'sail vault' }, { value: 'cross', label: 'cross vault' }, { value: 'cloister', label: 'cloister vault' }], 'sail', { onChange: () => { optimise(); } });
         const diag = v.toggle('diagonal lines of thrust', true, { onChange: () => { optimise(); } });
         const tt = v.slider('thickness t / span', 0.03, 0.3, 0.12, { step: 0.005 });
-        const lev = v.slider('force level (ln F)', -7, -0.5, -2.7, { step: 0.05 });
-        const con = v.slider('rows/cols: centre vs edge', -0.9, 8, 3.7, { step: 0.05 });
-        const dlev = v.slider('diagonals: force level (ln F)', -7, -0.5, -3.4, { step: 0.05 });
-        const dcon = v.slider('diagonals: centre vs edge', -0.9, 8, 1, { step: 0.05 });
+        const lev = v.slider('force level (ln F)', -10, -0.5, -5.8, { step: 0.05 });
+        const con = v.slider('rows/cols: centre vs edge', -0.9, 12, 3.7, { step: 0.05 });
+        const dlev = v.slider('diagonals: force level (ln F)', -10, -0.5, -6.5, { step: 0.05 });
+        const dcon = v.slider('diagonals: centre vs edge', -0.9, 12, 1, { step: 0.05 });
         const sec = v.select('section', [{ value: 'mid', label: 'y = 0' }, { value: 'q', label: 'y = 0.5' }, { value: 'd', label: 'diagonal' }], 'mid');
-        const env = (x, y) => (shape.value === 'sail' ? Math.sqrt(Math.max(0, 2 - x * x - y * y)) : shape.value === 'cross' ? Math.min(Math.sqrt(Math.max(0, 1 - x * x)), Math.sqrt(Math.max(0, 1 - y * y))) : Math.sqrt(Math.max(0, 1 - y * y)));
+        const env = (x, y) => (shape.value === 'sail' ? Math.sqrt(Math.max(0, 2 - x * x - y * y)) : shape.value === 'cross' ? Math.min(Math.sqrt(Math.max(0, 1 - x * x)), Math.sqrt(Math.max(0, 1 - y * y))) : Math.max(Math.sqrt(Math.max(0, 1 - x * x)), Math.sqrt(Math.max(0, 1 - y * y))));
         const load = (i, j) => { const x = X(i), y = X(j), d = 1e-3, gx = (env(x + d, y) - env(x - d, y)) / (2 * d), gy = (env(x, y + d) - env(x, y - d)) / (2 * d); return tt.value * Math.sqrt(1 + gx * gx + gy * gy) * hx * hx; };
         const solve = (P, useDiag) => {
-          const [a, b, c, d] = P, bc = clamp(b, -0.9, 20), dc = clamp(d, -0.9, 20);
+          const [a, b, c, d] = P, bc = clamp(b, -0.9, 12), dc = clamp(d, -0.9, 12);
           const Fr = (u) => Math.exp(a) * (1 + bc * (1 - u * u)), Fd = useDiag ? (u) => Math.exp(c) * (1 + dc * (1 - u * u)) : null;
           return tnaSolve(n, Fr, Fr, Fd, load, (i, j) => env(X(i), X(j)));
         };
         const dev = (r) => { let mx = 0; for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) mx = Math.max(mx, Math.abs(r.z[i][j] - env(X(i), X(j)))); return mx; };
         function optimise() {
-          const f = (P) => dev(solve(P, diag.value));
-          const r = v.M.nelderMead(f, [lev.value, con.value, dlev.value, dcon.value], { step: 0.6, tol: 1e-6, maxIt: 260 });
-          const [a, b, c, d] = r.x; lev.set(clamp(a, -7, -0.5)); con.set(clamp(b, -0.9, 8)); dlev.set(clamp(c, -7, -0.5)); dcon.set(clamp(d, -0.9, 8));
+          const rnd = v.rng(11), f = (P) => dev(solve(P, diag.value));
+          let best = null;
+          for (let k = 0; k < 70; k++) { const P = [-9 + 7 * rnd(), 8 * rnd(), -9 + 7 * rnd(), 8 * rnd()], c = f(P); if (!best || c < best.c) best = { P, c }; }
+          const r = v.M.nelderMead(f, best.P, { step: 0.5, tol: 1e-6, maxIt: 140 });
+          const [a, b, c, d] = r.x; lev.set(clamp(a, -10, -0.5)); con.set(clamp(b, -0.9, 12)); dlev.set(clamp(c, -10, -0.5)); dcon.set(clamp(d, -0.9, 12));
         }
         v.button('find the best network', () => optimise());
         const PL = v.stage({ x: [-1.15, 1.15], y: [-1.15, 1.15], equal: true, axes: false, height: 320, weight: 0.9, minWidth: 240, title: 'plan: lines of thrust' });
@@ -398,12 +400,12 @@ larger for a small, flat-topped oculus and smaller for a steep one. The extra we
           SE.between((x) => { const k = Math.round(((x + (sec.value === 'd' ? Math.SQRT2 : 1)) / (sec.value === 'd' ? 2 * Math.SQRT2 : 2)) * 159); const q = fine[clamp(k, 0, 159)]; return q[1] + t2; }, (x) => { const k = Math.round(((x + (sec.value === 'd' ? Math.SQRT2 : 1)) / (sec.value === 'd' ? 2 * Math.SQRT2 : 2)) * 159); const q = fine[clamp(k, 0, 159)]; return Math.max(0, q[1] - t2); }, sec.value === 'd' ? -1 : -1, sec.value === 'd' ? 1 : 1, { fill: 'muted', fillAlpha: 0.2 });
           SE.path(pts, { color: 'red', width: 2.6 }); SE.dots(pts, { r: 3.2, color: 'red' });
           // force diagram: force of each row (blue) and of each diagonal line (orange) by position
-          const us = Array.from({ length: 41 }, (_, k) => -1 + k / 20), Fr = us.map((u) => Math.exp(P[0]) * (1 + clamp(P[1], -0.9, 20) * (1 - u * u))), Fdg = us.map((u) => Math.exp(P[2]) * (1 + clamp(P[3], -0.9, 20) * (1 - u * u)));
+          const us = Array.from({ length: 41 }, (_, k) => -1 + k / 20), Fr = us.map((u) => Math.exp(P[0]) * (1 + clamp(P[1], -0.9, 12) * (1 - u * u))), Fdg = us.map((u) => Math.exp(P[2]) * (1 + clamp(P[3], -0.9, 12) * (1 - u * u)));
           const mx = Math.max(...Fr, diag.value ? Math.max(...Fdg) : 0);
           FD.path(us.map((u, k) => [u, Fr[k] / mx]), { color: 'accent', width: 2.6 });
           if (diag.value) FD.path(us.map((u, k) => [u, Fdg[k] / mx]), { color: 'orange', width: 2.6 });
           let W = 0; for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) W += load(i, j);
-          let Hx = 0; for (let j = 1; j < n - 1; j++) Hx += Math.exp(P[0]) * (1 + clamp(P[1], -0.9, 20) * (1 - X(j) ** 2));
+          let Hx = 0; for (let j = 1; j < n - 1; j++) Hx += Math.exp(P[0]) * (1 + clamp(P[1], -0.9, 12) * (1 - X(j) ** 2));
           info = { bad, dv: dev(r), W, Hx, t2 };
           v.legend([['accent', 'rows and columns'], ['orange', 'diagonals'], ['red', 'network (section)'], ['muted', 'vault thickness', { area: true }]]);
         });

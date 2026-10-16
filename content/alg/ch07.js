@@ -6,7 +6,7 @@ import { ABC, ENG, m26, gcdN, invMod, UNITS26, mapText, counts26, abcTicks, powm
 
 const clean = (t) => String(t).toUpperCase().replace(/[^A-Z ]/g, '');
 const SAMPLES = {
-  short: 'MEET ME AT NOON',
+  short: 'WHY DID IT FAIL',
   medium: 'THE LETTER E APPEARS MORE OFTEN THAN ANY OTHER LETTER IN ENGLISH',
   long: 'THE FREQUENCY OF LETTERS IN ENGLISH IS FAR FROM UNIFORM AND THE LETTER E APPEARS MORE OFTEN THAN ANY OTHER SO A CIPHER THAT REPLACES EACH LETTER BY ANOTHER LETTER ALWAYS THE SAME ONE KEEPS THE SHAPE OF THE HISTOGRAM AND ONLY SLIDES IT ALONG THE ALPHABET',
 };
@@ -144,7 +144,7 @@ export default {
       name: 'Breaking a shift code by letter frequencies',
       statement: String.raw`A shift code replaces every occurrence of a plaintext letter by the same ciphertext letter, so the histogram of the ciphertext is the histogram of the plaintext cyclically shifted by the key $k$. Since English letters occur with very uneven frequencies ($E$, $T$, $A$ most often), the shift can be found as the one for which the shifted ciphertext histogram best matches the English one — without trying decryptions by hand. The method needs a long enough text to have English-like statistics.`,
       idea: String.raw`Encryption acts on the multiset of letters by the permutation $j\mapsto j+k$, so the count vector $(n_0,\dots,n_{25})$ is rotated cyclically. Scoring every rotation $g$ by the correlation $\sum_j f_{j+g}\,e_j$ with the English frequencies $e_j$ turns key recovery into finding a maximum among 26 numbers. For short texts the sampling noise in $f$ is larger than the gap between the best and second-best rotation, and the attack can fail.`,
-      caption: String.raw`The bars are the English frequencies; the orange line is the ciphertext histogram slid left by your guess $g$. Drag $g$ until the peaks align (or press *Best match*), then read the decrypted text. Choose *short* text and move the true key: the correlation chart (right) stops having a clear winner.`,
+      caption: String.raw`The bars are the English frequencies; the orange line is the ciphertext histogram slid left by your guess $g$. Drag $g$ until the peaks align (or press *Best match*), then read the decrypted text. Choose *short* text (12 letters: it is a deliberately unlucky sample whose own statistics are unlike English): the correlation chart (right) picks the wrong shift for every key.`,
       deps: ['alg-7.1'],
       see: ['crypto-1.6'],
       refs: ['Judson §7.1'],

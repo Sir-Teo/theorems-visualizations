@@ -103,7 +103,7 @@ export function drawTree(s, P, o = {}) {
     s.line(e.from.x, e.from.y, e.to.x, e.to.y, { color: col || 'muted', width: w, alpha: col ? 1 : 0.8 });
     if (o.labelEdges !== false) {
       const t = 0.5, lx = e.from.x + (e.to.x - e.from.x) * t, ly = e.from.y + (e.to.y - e.from.y) * t;
-      const lab = e.pr != null && e.from.p === 0 ? `${e.a} ${e.pr}` : e.a;
+      const lab = o.edgeLabel ? o.edgeLabel(e) : e.pr != null && e.from.p === 0 ? `${e.a} ${e.pr}` : e.a;
       s.text(lab, lx + (e.to.x < e.from.x ? -0.06 : e.to.x > e.from.x ? 0.06 : 0.08), ly + 0.02, { size: sz - 1, color: o.labelColor ? o.labelColor(e) : 'ink', align: e.to.x < e.from.x ? 'right' : 'left', baseline: 'middle', weight: 600, plate: true });
     }
   });
@@ -130,6 +130,7 @@ export function drawTree(s, P, o = {}) {
           s.text(`${nmz(n.u[1])}`, n.x + 0.05, n.y - 0.1, { align: 'left', baseline: 'top', size: sz, color: 'orange', weight: 700 });
         }
       }
+      if (o.leafNote) s.text(o.leafNote(n), n.x, n.y - 0.42, { align: 'center', baseline: 'top', size: sz - 1.5, color: 'muted', weight: 600 });
       return;
     }
     const col = pcol(n.p), fill = o.nodeFill ? o.nodeFill(n) : null;
@@ -177,4 +178,31 @@ export function solveGame(G, start) {
   };
   go(start);
   return { value: (st) => go(st), memo };
+}
+
+/**
+ * Kuhn's construction. mu: array of probabilities over pureStrategies(P, p) (same order). Returns beh[key] = action probabilities
+ * (the behaviour strategy realising the same distribution over outcomes when player p has perfect recall).
+ */
+export function kuhnBehaviour(P, p, S, mu) {
+  const beh = {};
+  const own = (n) => { const out = []; for (let x = n; x.par; x = x.par) if (x.par.p === p) out.unshift([x.par.key, x.pa]); return out; };
+  const wt = (cond) => S.reduce((t, s, i) => t + (cond.every(([k, a]) => s[k] === a) ? mu[i] : 0), 0);
+  infoSets(P, p).forEach((I) => {
+    const path = own(I.nodes[0]), w0 = wt(path);
+    beh[I.key] = Array.from({ length: I.na }, (_, a) => (w0 > 1e-12 ? wt([...path, [I.key, a]]) / w0 : 1 / I.na));
+  });
+  return beh;
+}
+/** Outcome distribution (leaf probabilities, in P.leaves order) when player p mixes over S with weights mu and the others use behaviour `others`. */
+export function mixedOutcome(P, p, S, mu, others) {
+  const out = P.leaves.map(() => 0);
+  S.forEach((s, i) => {
+    if (mu[i] < 1e-15) return;
+    const beh = { ...others };
+    P.nodes.forEach((n) => { if (n.p === p) beh[n.key] = n.kids.map((_, a) => (s[n.key] === a ? 1 : 0)); });
+    const r = playBeh(P, beh);
+    P.leaves.forEach((l, j) => { out[j] += mu[i] * (r.leafP.get(l) || 0); });
+  });
+  return out;
 }
