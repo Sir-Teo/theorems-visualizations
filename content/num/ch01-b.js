@@ -61,7 +61,7 @@ export default {
           sE.vline(hopt, { color: 'green', width: 1.5, dash: true }); sE.vline(sh.value, { color: 'gold', width: 1.8 });
           sE.dot(sh.value, Math.max(S.err(sh.value), 1e-15), { r: 5.5, color: 'gold' });
           sE.text('truncation', 1e-1, S.trunc(0.1) * 0.25, { size: 11, color: 'orange', align: 'right' });
-          sE.text('rounding  ≈ u(|f|+|xf′|)/h', 1e-16, S.round(1e-16) * 0.3, { size: 11, color: 'red', align: 'left' });
+          sE.text('rounding ≈ u(|f|+|xf′|)/h', 1e-13, S.round(1e-13) * 8, { size: 11, color: 'red', align: 'left' });
           // staircase
           const g = ulpOf(S.x, S.F), pts = [];
           for (let k = 0; k <= 600; k++) { const t = 0.05 + k * 39.95 / 600, h = t * g, q = METH.fwd.q(S.f, S.x, h, S.o); pts.push([t, q / S.d1]); }
@@ -73,7 +73,7 @@ export default {
         v.readout(() => {
           if (!S) return '';
           const e = S.err(sh.value), M = S.M, p = M.p;
-          return `${M.lab} formula (order $p=${p}$), $x=${S.x}$: at $h=${sciTex(sh.value)}$ the relative error is **${sci(e, 2)}**; model: truncation ${sci(S.trunc(sh.value), 2)}, rounding ${sci(S.round(sh.value), 2)}.\nBest measured error **${sci(S.best[1], 2)}** at $h\\approx${sciTex(S.best[0])}$; the model's optimum is $h^\\ast\\approx${sciTex(S.hopt)}$, near $u^{1/${p + 1}}=${sciTex(S.F.u ** (1 / (p + 1)))}$ (u = ${sciTex(S.F.u, 3)}).`;
+          return `${M.lab} formula (order $p=${p}$), $x=${S.x}$: at $h=${sciTex(sh.value)}$ the relative error is **${sci(e, 2)}**; model: truncation ${sci(S.trunc(sh.value), 2)}, rounding ${sci(S.round(sh.value), 2)}.\nBest measured error **${sci(S.best[1], 2)}** at $h\\approx${sciTex(S.best[0])}$; the model's optimum is $h^\\ast\\approx${sciTex(S.hopt)}$, near $u^{1/${p + 1}}=${sciTex(S.F.u ** (1 / (p + 1)))}$ ($u=${sciTex(S.F.u, 3)}$).`;
         });
       },
     },
@@ -103,8 +103,9 @@ The formula involves **no subtraction of nearby numbers**, so $h$ can be taken a
         };
         const fn = v.select('function', Object.entries(FN).map(([k, f]) => ({ value: k, label: f.lab })), 'sin', { onChange: () => { const d = FN[fn.value].dom; if (sx.value < d[0] || sx.value > d[1]) sx.set(clamp(sx.value, d[0], d[1])); } });
         const sx = v.slider('$x$', 0.1, 3, 0.8, { step: 0.05 });
-        const sh = v.slider('$h$', 1e-300, 1, 1e-100, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
-        const sE = v.stage({ x: [1e-300, 1], y: [1e-17, 30], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, minWidth: 340, xlabel: 'step h', ylabel: 'relative error of f′(x)', title: 'error against step size' });
+        const rng = v.select('range of h', [{ value: 1e-30, label: '10⁻³⁰ … 1' }, { value: 1e-300, label: '10⁻³⁰⁰ … 1' }], 1e-30);
+        const sh = v.slider('$h$', 1e-300, 1, 1e-20, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
+        const sE = v.stage({ x: [1e-30, 1], y: [1e-17, 30], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, minWidth: 340, xlabel: 'step h', ylabel: 'relative error of f′(x)', title: 'error against step size' });
         const sI = v.stage({ x: [0, 2], y: [0, 1], axes: 'box', gutter: true, height: 340, minWidth: 280, xlabel: 'h', ylabel: 'Im f(x+ih) / h', title: 'the complex-step quotient' });
         let S = null;
         const evalAll = (h) => {
@@ -113,7 +114,8 @@ The formula involves **no subtraction of nearby numbers**, so $h$ can be taken a
           return { d, fw, ce, im, ef: Math.abs(fw - d) / Math.abs(d), ec: Math.abs(ce - d) / Math.abs(d), ei: Math.abs(im - d) / Math.abs(d) };
         };
         v.render(() => {
-          const F = FN[fn.value], x = sx.value, d = F.d(x), hs = logspace(1e-300, 1, 420);
+          const F = FN[fn.value], x = sx.value, d = F.d(x), hs = logspace(rng.value, 1, 420);
+          sE.setView([rng.value, 1], [1e-17, 30]);
           const A = hs.map((h) => evalAll(h));
           const flo = (e) => Math.max(e, 1e-17);
           sE.path(hs.map((h, i) => [h, flo(A[i].ef)]), { color: 'red', width: 2 });
@@ -168,9 +170,10 @@ The formula involves **no subtraction of nearby numbers**, so $h$ can be taken a
           R = run(); const { fw, bw, N, e0, eN } = R, ns = Array.from({ length: N + 1 }, (_, i) => i);
           sV.hline(0, { color: 'faint' });
           sV.path(ns.map((n) => [n, exNum(n)]), { color: 'green', width: 7, alpha: 0.4 });
-          sV.path(ns.map((n) => [n, Number.isFinite(fw[n]) ? fw[n] : null]), { color: 'red', width: 2 }); sV.dots(ns.map((n) => [n, fw[n]]).filter((p) => Number.isFinite(p[1])), { r: 3, color: 'red' });
+          const cut = fw.findIndex((x) => !(Math.abs(x) < 1.2)), keep = ns.filter((n) => cut < 0 || n < cut);
+          sV.path(keep.map((n) => [n, fw[n]]), { color: 'red', width: 2 }); sV.dots(keep.map((n) => [n, fw[n]]), { r: 3, color: 'red' });
+          if (cut >= 0) { sV.arrow(cut, 0.7, cut, 1.0, { color: 'red', width: 2.2, head: 8 }); sV.text(`forward values leave the picture from n = ${cut}`, cut + 0.8, 0.82, { size: 11, color: 'red', align: 'left' }); }
           sV.path(ns.map((n) => [n, bw[n]]), { color: 'blue', width: 2 }); sV.dots(ns.map((n) => [n, bw[n]]), { r: 3, color: 'blue' });
-          sV.text('forward values leave the picture', 1, -0.15, { size: 11, color: 'red', align: 'left' });
           const eF = ns.map((n) => [n, Math.max(err(fw[n], n), 1e-20)]), eB = ns.map((n) => [n, Math.max(err(bw[n], n), 1e-20)]);
           sE.path(eF.filter((p) => Number.isFinite(p[1])), { color: 'red', width: 2 }); sE.path(eB, { color: 'blue', width: 2 });
           sE.path(ns.map((n) => [n, Math.max(fact(n) * e0, 1e-20)]), { color: 'orange', width: 1.8, dash: true });
@@ -201,10 +204,10 @@ in which every exponent is $\le0$, the largest term is exactly $1$, so the sum l
       tags: ['overflow', 'softmax'],
       viz(v) {
         const fmt = v.select('format', [{ value: 'half', label: 'binary16' }, { value: 'single', label: 'binary32' }, { value: 'double', label: 'binary64' }], 'double');
-        const sH = v.stage({ x: [-800, 800], y: [0, 1], axes: false, height: 200, full: true, title: 'the inputs xᵢ (drag)' });
-        const sB = v.stage({ x: [0, 5], y: [-360, 360], axes: 'box', gutter: true, height: 300, full: true, ylabel: 'log₁₀ of the term', title: 'size of each exponential, as a power of ten' });
-        const ys = [0.8, 0.6, 0.4, 0.2], cols = ['blue', 'orange', 'purple', 'teal'], init = [1000 * 0.7, 400, 100, -300];
-        const hs = ys.map((y, i) => sH.handle(init[i], y, { color: cols[i], label: 'x' + (i + 1), constrain: (x) => [clamp(x, -790, 790), y] }));
+        const sH = v.stage({ x: [-1100, 1100], y: [0, 1], axes: false, height: 200, full: true, title: 'the inputs xᵢ (drag)' });
+        const sB = v.stage({ x: [0, 5], y: [-500, 500], axes: 'box', gutter: true, height: 300, full: true, ylabel: 'log₁₀ of the term', title: 'size of each exponential, as a power of ten' });
+        const ys = [0.8, 0.6, 0.4, 0.2], cols = ['blue', 'orange', 'purple', 'teal'], init = [1000, 1001, 999, 500];
+        const hs = ys.map((y, i) => sH.handle(init[i], y, { color: cols[i], label: 'x' + (i + 1), constrain: (x) => [clamp(x, -1090, 1090), y] }));
         const run = () => {
           const F = FORMATS[fmt.value], o = mkOps(F), xs = hs.map((h) => h.x), m = Math.max(...xs);
           const naiveTerms = xs.map((x) => o.r(Math.exp(x))), shiftTerms = xs.map((x) => o.r(Math.exp(o.sub(x, m))));
@@ -215,28 +218,28 @@ in which every exponent is $\le0$, the largest term is exactly $1$, so the sum l
         };
         let R = null;
         v.render(() => {
-          R = run(); const F = R.F, lnMax = Math.log(F.max), lnMin = Math.log(F.sub / 2);
-          sH.vband(lnMax, 800, { color: 'red', alpha: 0.12 }); sH.vband(-800, lnMin, { color: 'muted', alpha: 0.18 });
-          sH.line(-800, 0.08, 800, 0.08, { color: 'faint', width: 1.5 });
-          for (const t of [-600, -400, -200, 0, 200, 400, 600]) { sH.line(t, 0.05, t, 0.11, { color: 'faint' }); sH.text(String(t), t, 0.0, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
+          R = run(); const F = R.F, lnMax = Math.log(F.max), lnMin = (F.emin - F.fb - 1) * Math.LN2;
+          sH.vband(lnMax, 1100, { color: 'red', alpha: 0.12 }); sH.vband(-1100, lnMin, { color: 'muted', alpha: 0.18 });
+          sH.line(-1100, 0.08, 1100, 0.08, { color: 'faint', width: 1.5 });
+          for (const t of [-1000, -750, -500, -250, 0, 250, 500, 750, 1000]) { sH.line(t, 0.05, t, 0.11, { color: 'faint' }); sH.text(String(t), t, 0.0, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
           sH.vline(R.m, { color: 'green', width: 1.5, dash: true });
-          sH.text(`overflow: x > ${lnMax.toFixed(2)}`, Math.min(lnMax + 10, 560), 0.95, { size: 11, color: 'red', align: 'left' });
-          sH.text(`underflow to 0: x < ${lnMin.toFixed(1)}`, Math.max(lnMin - 10, -560), 0.95, { size: 11, color: 'muted', align: 'right' });
+          sH.text(`e^x overflows for x > ${lnMax.toFixed(2)}`, 1090, 0.95, { size: 11, color: 'red', align: 'right' });
+          sH.text(`e^x rounds to 0 for x < ${lnMin.toFixed(1)}`, -1090, 0.95, { size: 11, color: 'muted', align: 'left' });
           sH.text('max', R.m, 0.12, { size: 10.5, color: 'green', align: 'center' });
           // bars
           const L = Math.log10(F.max), Lm = Math.log10(F.sub / 2);
-          sB.hband(L, 400, { color: 'red', alpha: 0.12 }); sB.hband(-400, Lm, { color: 'muted', alpha: 0.2 });
+          sB.hband(L, 500, { color: 'red', alpha: 0.12 }); sB.hband(-500, Lm, { color: 'muted', alpha: 0.2 });
           sB.hline(0, { color: 'faint' });
           R.xs.forEach((x, i) => {
             const a = x / Math.LN10, b = (x - R.m) / Math.LN10, x0 = i + 0.5, over = !Number.isFinite(R.naiveTerms[i]);
-            sB.rect(x0 - 0.38, 0, x0 - 0.02, clamp(a, -400, 400), { fill: 'red', fillAlpha: over ? 0.7 : 0.45, color: 'red', width: 1 });
+            sB.rect(x0 - 0.38, 0, x0 - 0.02, clamp(a, -500, 500), { fill: 'red', fillAlpha: over ? 0.7 : 0.45, color: 'red', width: 1 });
             sB.rect(x0 + 0.02, 0, x0 + 0.38, b, { fill: 'green', fillAlpha: 0.5, color: 'green', width: 1 });
-            sB.text('x' + (i + 1), x0, -378, { align: 'center', size: 11, color: cols[i] });
-            if (over) sB.text('∞', x0 - 0.2, clamp(a, -400, 400) + 22, { align: 'center', size: 15, weight: 800, color: 'red' });
+            sB.text('x' + (i + 1), x0, -478, { align: 'center', size: 11, color: cols[i] });
+            if (over) sB.text('∞', x0 - 0.2, clamp(a, -500, 500) + 24, { align: 'center', size: 15, weight: 800, color: 'red' });
             else if (R.naiveTerms[i] === 0) sB.text('0', x0 - 0.2, -22, { align: 'center', size: 13, weight: 800, color: 'red' });
           });
           sB.text(`largest ${F.name} number ≈ 10^${L.toFixed(1)}`, 4.95, L + 14, { size: 11, color: 'red', align: 'right' });
-          sB.text(`smallest ${F.name} number ≈ 10^${Lm.toFixed(1)}`, 4.95, Lm - 16, { size: 11, color: 'muted', align: 'right' });
+          sB.text(`smallest ${F.name} number ≈ 10^${Lm.toFixed(1)}`, 4.95, Lm - 18, { size: 11, color: 'muted', align: 'right' });
         });
         v.legend([['red', 'naive: $e^{x_i}$'], ['green', 'shifted: $e^{x_i-m}$']]);
         v.readout(() => {
@@ -255,7 +258,7 @@ in which every exponent is $\le0$, the largest term is exactly $1$, so the sum l
 $$\kappa_f(x)=\lim_{\delta\to0}\ \sup_{|\Delta x|\le\delta|x|}\ \frac{|f(x+\Delta x)-f(x)|/|f(x)|}{|\Delta x|/|x|}=\left|\frac{x\,f'(x)}{f(x)}\right|.$$
 It is the factor by which a relative error in the input is magnified in the output, *whatever algorithm is used*: even a correctly rounded $\mathrm{fl}(f(x))$ for the rounded input has relative error about $\kappa_f(x)\,u$. A problem with large $\kappa$ is **ill-conditioned**; examples are $\log x$ near $1$, $\tan x$ near $\pi/2$ and $x-1$ near $1$ (subtraction is ill-conditioned exactly when its result is small, which is 1.4 seen from the problem's side).`,
       idea: String.raw`To first order $f(x+\Delta x)-f(x)\approx f'(x)\Delta x$, so dividing by $|f(x)|$ and writing $\Delta x=\delta x$ gives $|\Delta f/f|\approx|xf'/f|\,\delta$. The condition number belongs to the *problem*; stability (1.9) belongs to the *algorithm*. A stable algorithm applied to an ill-conditioned problem still loses $\log_{10}\kappa$ digits.`,
-      caption: String.raw`Choose a function and drag the point along its graph. The orange band on the $x$-axis is the input uncertainty $\pm\delta x$ and the green band on the $y$-axis the resulting spread of $f$. **Right:** 400 random relative perturbations as points (input change, output change); they fall within the wedge of slope $\pm\kappa$. **Bottom:** $\kappa(x)$ on a log scale.`,
+      caption: String.raw`Choose a function and drag the point along its graph. The orange band on the $x$-axis is the input uncertainty $\pm\delta x$ and the green band on the $y$-axis the resulting spread of $f$. **Right:** 400 random relative perturbations as points (input change, output change); they fall on the line of slope $\pm\kappa$ predicted to first order (curvature shows at large $\delta$). **Bottom:** $\kappa(x)$ on a log scale.`,
       deps: ['nla-3.1', 'num-1.2'],
       refs: ['Süli–Mayers ch. 2'],
       tags: ['conditioning'],
@@ -290,10 +293,10 @@ It is the factor by which a relative error in the input is magnified in the outp
           sA.dot(x, clamp(fx, F.yr[0], F.yr[1]), { r: 5, color: 'accent' });
           const m = Math.max(...pts.map((p) => Math.abs(p[1])), kap * d) * 1.1;
           sC.setView([-d * 1.1, d * 1.1], [-m, m]);
-          sC.line(-d, -kap * d, d, kap * d, { color: 'green', width: 2, dash: true }); sC.line(-d, kap * d, d, -kap * d, { color: 'green', width: 2, dash: true, alpha: 0.4 });
+          const sl = (F.f(x * (1 + 1e-7)) - fx) / fx / 1e-7; sC.line(-d, -sl * d, d, sl * d, { color: 'green', width: 2, dash: true });
           sC.dots(pts, { r: 2.2, color: 'blue' });
-          sC.text('slope = ±κ', d * 0.96, kap * d * 0.9, { align: 'right', size: 11, color: 'green' });
-          sC.text('input change Δx/x', d * 1.05, 0, { align: 'right', size: 11, color: 'muted', dy: 14 });
+          sC.text('slope = ±κ (first-order prediction)', -d * 1.04, m * 0.8, { align: 'left', size: 11, color: 'green' });
+          sC.text('input change Δx/x', d * 1.05, 0, { align: 'right', size: 11, color: 'muted', dy: -12 });
           sC.text('output change Δf/f', 0, m * 0.93, { align: 'left', size: 11, color: 'muted', dx: 6 });
           sK.fn((t) => Math.min(Math.max(F.k(t), 0.1), 1000), { color: 'purple', width: 2.2 });
           sK.hline(1, { color: 'muted', dash: true }); sK.vline(x, { color: 'gold', width: 1.6 }); sK.dot(x, clamp(kap, 0.1, 1000), { r: 5, color: 'gold' });
@@ -340,7 +343,7 @@ It is the factor by which a relative error in the input is magnified in the outp
           sE.setView([0, 150], [-top * 0.08, top]);
           const hh = Array.from({ length: 301 }, (_, i) => i * 0.5);
           sE.path(hh.map((t) => [t, errAt(t) * spd]), { color: 'blue', width: 2.4 });
-          if (!sr.value && pt.e > 0) for (const t of [8, 20, 48, 72, 100]) { const e = pt.e * t * TPH; sE.dot(t, e * spd, { r: 4, color: 'blue' }); sE.text(`${t} h: ${e.toFixed(3)} s`, t, e * spd, { size: 10.5, color: 'muted', align: t > 90 ? 'right' : 'left', dx: t > 90 ? -8 : 7, dy: 12 }); }
+          if (!sr.value && pt.e > 0) for (const t of [8, 20, 48, 72, 100]) { const e = pt.e * t * TPH; sE.dot(t, e * spd, { r: 4, color: 'blue' }); sE.text(`${t} h: ${e.toFixed(3)} s`, t, e * spd, { size: 10.5, color: 'muted', align: t >= 100 ? 'right' : 'left', dx: t >= 100 ? -10 : 7, dy: t >= 100 ? 14 : 12 }); }
           sE.hline(500, { color: 'red', dash: true, alpha: 0.6 }); sE.text('half a kilometre', 148, 500, { align: 'right', size: 11, color: 'red', dy: 11 });
           sE.vline(hrs, { color: 'gold', width: 1.6 }); sE.dot(hrs, errAt(hrs) * spd, { r: 6, color: 'gold' });
           // bits
@@ -369,7 +372,7 @@ It is the factor by which a relative error in the input is magnified in the outp
         });
         v.readout(() => {
           const pt = perTick(), hrs = sh.value, e = errAt(hrs), dist = e * sv.value;
-          return `After **${hrs} h** (${(hrs * TPH).toLocaleString('en-US')} ticks${sr.value ? `, ${hrs % sr.value} h since the last reboot` : ''}): clock error **${e.toFixed(4)} s**, so a target at ${sv.value} m/s is mislocated by **${dist.toFixed(0)} m**.\nPer tick the stored 0.1 is off by ${sci(pt.e, 3)} s (the Patriot's 24-bit register: $9.5\\times10^{-8}$ s). The error is one-sided, so it grows linearly with the tick count ${rep.value === 'near' ? '(rounding to nearest halves it here but the bias remains)' : ''}.`;
+          return `After **${hrs} h** (${(hrs * TPH).toLocaleString('en-US')} ticks${sr.value ? `, ${hrs % sr.value} h since the last reboot` : ''}): clock error **${e.toFixed(4)} s**, so a target at ${sv.value} m/s is mislocated by **${dist.toFixed(0)} m**.\nPer tick the stored 0.1 is off by ${sci(pt.e, 3)} s (the Patriot's 24-bit register: $9.5\\times10^{-8}$ s). The error is one-sided, so it grows linearly with the tick count${rep.value === 'near' ? ' (rounding to nearest shrinks it here but the bias remains)' : ''}.`;
         });
       },
     },

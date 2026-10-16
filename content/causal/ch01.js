@@ -254,7 +254,7 @@ export default {
           rows.forEach(([name, val, col], k) => {
             const y = 4.3 - k * 1.1; if (!Number.isFinite(val)) return;
             s2.line(0, y, val, y, { color: col, width: 2, alpha: 0.5 }); s2.dot(val, y, { r: 7, color: col });
-            lab(s2, name, -0.49, y + 0.42, { align: 'left', color: col, size: 10.5 }); lab(s2, fx(val, 3), val, y, { align: val >= -0.2 ? 'left' : 'right', dx: val >= -0.2 ? 12 : -12, color: col, size: 11.5 });
+            lab(s2, name, -0.49, y + 0.42, { align: 'left', color: col, size: 10.5 }); lab(s2, fx(val, 3), val, y, { align: 'left', dx: 12, color: col, size: 11.5 });
           });
         });
         v.readout(() => {
@@ -269,7 +269,7 @@ export default {
       num: '1.6', kind: 'Concept', name: 'Association versus causation',
       statement: String.raw`Association compares groups as they were observed, $E[Y\mid A=1]-E[Y\mid A=0]$; causation compares the same population under two interventions, $E[Y^1]-E[Y^0]$. They are different quantities: $$E[Y\mid A=1]-E[Y\mid A=0]=\underbrace{E[Y^1-Y^0\mid A=1]}_{\text{ATT}}+\underbrace{E[Y^0\mid A=1]-E[Y^0\mid A=0]}_{\text{selection bias}},$$ so the observed contrast equals the effect on the treated plus the amount by which the treated would have fared differently from the untreated even without treatment. Equivalently, naive difference $=$ ATE $+$ bias. The association has the causal meaning only when the bias vanishes, and the bias can be large enough to reverse the sign.`,
       idea: String.raw`The identity is algebra: replace $E[Y\mid A=1]$ by $E[Y^1\mid A=1]$ (consistency) and add and subtract $E[Y^0\mid A=1]$, a quantity that is counterfactual for exactly those people. If treatment is chosen by sicker people (confounding by indication) $E[Y^0\mid A=1]$ is worse than $E[Y^0\mid A=0]$ and the bias is negative for a good outcome and positive for mortality. Under randomization (item 1.7) the bias is zero in expectation.`,
-      caption: String.raw`480 simulated patients; the outcome is death (red). The treatment truly lowers everyone's risk. With **sicker patients seek treatment** at 0 the groups are alike; raise it and the treated die more often than the untreated even though the treatment saves lives. The right panel decomposes the naive difference (blue) into the true average effect (green) plus selection bias (red). Switch on **stratify by severity** to see the effect re-appear within each stratum, and **show hidden counterfactuals** to ring the patients the treatment actually saved. Simulated, illustrative.`,
+      caption: String.raw`480 simulated patients; the outcome is death (red). The treatment truly lowers everyone's risk. With **sicker patients seek treatment** at 0 the groups are alike; raise it and the treated die more often than the untreated even though the treatment saves lives. The right panel decomposes the naive difference (blue) into the true average effect (green) plus selection bias (red). Switch on **stratify by severity** (U = untreated, T = treated; mild, moderate, severe) to see the effect re-appear within each stratum, and **show hidden counterfactuals** to ring the patients the treatment actually saved. Simulated, illustrative.`,
       deps: ['causal-1.3'], refs: ['Hernán–Robins §1.5'], tags: ['confounding', 'selection bias', 'Simpson'],
       credit: 'Hernán & Robins, What If, 2020',
       viz(v) {
@@ -278,7 +278,7 @@ export default {
         const p0 = (x) => logistic(-1.0 + 1.1 * x), p1 = (x) => logistic(-1.0 + 1.1 * x - 1.0);
         const y0 = xs.map((x, i) => (us[i] < p0(x) ? 1 : 0)), y1 = xs.map((x, i) => (us[i] < p1(x) ? 1 : 0));
         const strat = xs.map((x) => (x < -0.45 ? 0 : x < 0.45 ? 1 : 2));
-        const k = v.slider('sicker patients seek treatment', 0, 3, 2, { step: 0.1 });
+        const k = v.slider('sicker patients seek treatment', 0, 3, 1.6, { step: 0.1 });
         const split = v.toggle('stratify by severity', false);
         const god = v.toggle('show hidden counterfactuals', false);
         const s1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, title: 'who died', weight: 1.4 });
@@ -301,12 +301,14 @@ export default {
           const C = calc(), { A, Y } = C;
           const lbl = (b, n) => {
             if (!split.value) return b ? `treated (${n}): ${pct(C.r1, 0)} died` : `untreated (${n}): ${pct(C.r0, 0)} died`;
-            return `${b < 3 ? 'untreated' : 'treated'}, ${['mild', 'moderate', 'severe'][b % 3]} (${n})`;
+            return `${b < 3 ? 'U' : 'T'} ${['mild', 'mod.', 'severe'][b % 3]}`;
           };
           I.set({ n: N, shape: 'person', block: (i) => (split.value ? (A[i] ? 3 : 0) + strat[i] : A[i] ? 1 : 0), blockLabels: lbl,
             style: (i) => ({ color: Y[i] ? 'red' : 'accent', alpha: Y[i] ? 1 : 0.55, ring: god.value && y1[i] < y0[i] ? 'green' : undefined, label: Y[i] ? 'died' : 'survived' }) });
           I.draw();
           const { naive, ate } = C;
+          const ylo = Math.min(-0.2, ...(split.value ? C.sd.filter(Number.isFinite) : []), ate, naive) - 0.05, yhi = Math.max(0.3, ...(split.value ? C.sd.filter(Number.isFinite) : []), naive) + 0.03;
+          s2.setView([-0.6, 6.6], [ylo, yhi]);
           s2.hline(0, { color: 'muted', width: 1 });
           s2.rect(-0.3, Math.min(0, ate), 0.3, Math.max(0, ate), { fill: 'green', fillAlpha: 0.4, color: 'green', width: 1.5 });
           s2.rect(0.7, Math.min(ate, naive), 1.3, Math.max(ate, naive), { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.5 });
