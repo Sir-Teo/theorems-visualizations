@@ -358,17 +358,17 @@ In thermal equilibrium the total current vanishes, which forces the **Einstein r
 $$\frac{D}{\mu}=\frac{k_BT}{e},$$
 and gives the Boltzmann profile $n\propto e^{-e\phi/k_BT}$ in a potential $\phi$. At room temperature $k_BT/e\approx25.9$ mV. The relation is a statement of fluctuation–dissipation; for a degenerate gas $k_BT$ is replaced by a larger quantity.`,
       idea: String.raw`In a Drude picture (em-6.4) a carrier accelerates for a time $\tau$ between collisions, so its drift velocity is $\mu E$ with $\mu=e\tau/m^*$, while the random velocity between collisions, with $\langle v_x^2\rangle=k_BT/m^*$ (equipartition), makes a random walk of step $v\tau$, so $D=\langle v_x^2\rangle\tau=k_BT\tau/m^*$. Dividing eliminates the scattering time and the mass: $D/\mu=k_BT/e$. Equivalently, in equilibrium the density follows the Boltzmann factor of the potential energy; a density gradient $\nabla n=-(eE/k_BT)n$ then produces a diffusion current that cancels the drift current only if $D/\mu=k_BT/e$.`,
-      caption: String.raw`A **simulation** of $3000$ carriers that accelerate in the field and have their velocity re-drawn from a thermal (Maxwell) distribution at random Poisson times (mean $\tau=1$); nothing in the code mentions the Einstein relation. **Packet mode:** start all carriers at one point; the cloud's centre drifts at $\mu E$ and its variance grows as $2Dt$, from which the readout measures $\mu$ and $D$ (for $t\gg\tau$; at early times the motion is ballistic). **Equilibrium mode:** carriers confined between walls at $x=0$ and $L$, pushed toward $x=0$: they pile up in the steady profile $n\propto e^{-eEx/k_BT}$, whose measured decay length is $k_BT/eE$ only if the Einstein relation holds. Move $T$ and $E$ and watch the measured ratio follow $k_BT/e$.`,
-      scope: String.raw`Non-degenerate carriers with a single energy-independent relaxation time (collisions that fully re-thermalize the velocity); in real semiconductors $\mu$ and $D$ both depend on doping and temperature, but their ratio is still $k_BT/e$ in the non-degenerate regime. Units: $m^*=e=\tau=1$ and the thermal velocity at 300 K equal to 1; $k_BT/e$ at 300 K is $25.85$ mV.`,
+      caption: String.raw`A **simulation** of $3000$ carriers that accelerate in the field and have their velocity re-drawn from a thermal (Maxwell) distribution at random Poisson times (mean $\tau=1$); nothing in the code mentions the Einstein relation. **Packet mode:** start all carriers at one point; the cloud's centre drifts at $\mu E$ and its variance grows as $2Dt$, from which the readout measures $\mu$ and $D$ (for $t\gg\tau$; at early times the motion is ballistic). **Equilibrium mode:** carriers confined between walls at $x=0$ and $L$, pushed toward $x=0$: they pile up in the steady profile $n\propto e^{-eEx/k_BT}$, whose measured decay length is $k_BT/eE$ only if the Einstein relation holds. Move $T$ and $E$ and watch the measured ratio follow $k_BT/e$; raise $E$ far enough and it fails, because the Einstein relation is a linear-response result (the field heats the carriers).`,
+      scope: String.raw`Non-degenerate carriers with a single energy-independent relaxation time (collisions that fully re-thermalize the velocity); in real semiconductors $\mu$ and $D$ both depend on doping and temperature, but their ratio is still $k_BT/e$ in the non-degenerate regime. The Einstein relation is a **linear-response** statement: in a strong field the carriers' mean energy rises and in this model $D/\mu=k_BT/e+(eE\tau)^2\tau/m^*$. Units: $m^*=e=\tau=1$ and the thermal velocity at 300 K equal to 1; $k_BT/e$ at 300 K is $25.85$ mV.`,
       deps: ['cm-4.5', 'em-6.4', 'thermo-7.6'],
       refs: ['Ashcroft–Mermin ch. 29'],
       tags: ['drift', 'diffusion', 'einstein relation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory)' },
       viz(v) {
         const mode = v.select('experiment', [{ value: 'packet', label: 'spreading packet' }, { value: 'box', label: 'equilibrium between walls' }], 'packet');
-        const Es = v.slider('field $eE/m$', 0, 1, 0.4, { step: 0.01 });
+        const Es = v.slider('field $eE/m$', 0, 1, 0.2, { step: 0.01 });
         const Ts = v.slider('temperature $T$ (K)', 100, 600, 300, { step: 10 });
-        const NP = 3000, DT = 0.05, TM = { packet: 14, box: 80 }, LBOX = 10;
+        const NP = 3000, DT = 0.05, TM = { packet: 14, box: 100 }, LBOX = 10;
         let key = '', S = null;
         function simulate(a, kT, md) {
           const steps = Math.round(TM[md] / DT), R = v.rng(md === 'box' ? 7 : 3), sd = Math.sqrt(kT), pc = 1 - Math.exp(-DT);
@@ -405,7 +405,11 @@ and gives the Boltzmann profile $n\propto e^{-e\phi/k_BT}$ in a potential $\phi$
             const mu = 1, D = kT, m0 = a * mu * ts, v0 = 2 * D * ts; // Einstein-consistent prediction  μ = τ, D = kT τ
             if (ts > 0.3) sH.fn((x) => Math.exp(-((x - m0) ** 2) / (2 * Math.max(v0, 1e-3))) / Math.sqrt(2 * PI * Math.max(v0, 1e-3)), { color: 'orange', width: 2.4, domain: sx });
             sT.dot(mean, ts, { r: 6, color: 'gold' }); sH.vline(mean, { color: 'gold', width: 1.4 });
-            st = { md, ts, mu: ts > 0.2 && a > 0 ? mean / (a * ts) : NaN, D: varx / (2 * Math.max(ts, 1e-3)), kT };
+            // transport coefficients from the last 4τ (removes the ballistic start-up): μ = Δ⟨x⟩/(E Δt), D = Δvar/(2Δt)
+            const wi = Math.min(si, Math.round(4 / DT)); let m1 = 0, v1 = 0;
+            if (wi > 4) { let s1 = 0; for (let i = 0; i < NP; i++) s1 += S.X[(si - wi) * NP + i]; m1 = s1 / NP; let q1 = 0; for (let i = 0; i < NP; i++) q1 += (S.X[(si - wi) * NP + i] - m1) ** 2; v1 = q1 / NP; }
+            const dt = wi * DT;
+            st = { md, ts, mean, mu: dt > 1 && a > 0 ? (mean - m1) / (a * dt) : NaN, D: dt > 1 ? (varx - v1) / (2 * dt) : NaN, kT, a, dt };
           } else {
             sH.setView([0, LBOX], [0, Math.max(0.5, 1.3 / Math.max(0.0001, kT / Math.max(a, 0.02)))]);
             const nb = 25, cnt = new Array(nb).fill(0); for (const x of vals) cnt[Math.min(nb - 1, Math.floor((x / LBOX) * nb))]++;
@@ -421,7 +425,7 @@ and gives the Boltzmann profile $n\propto e^{-e\phi/k_BT}$ in a potential $\phi$
         }, { period: 14, still: 12 });
         v.readout(() => {
           const s = st; if (!s.md) return '';
-          if (s.md === 'packet') return `$t=${v.fix(s.ts, 1)}\\tau$ · measured mobility $\\mu=\\langle x\\rangle/(Et)=${isNaN(s.mu) ? '—' : v.fix(s.mu, 2)}$ (Drude: $\\tau$ = 1) · measured $D=\\mathrm{var}(x)/2t=${v.fix(s.D, 2)}$ (early times ballistic, so read at $t\\gtrsim3\\tau$)\n$D/\\mu=${isNaN(s.mu) ? '—' : v.fix(s.D / s.mu, 3)}$ against $k_BT/e=${v.fix(s.kT, 3)}$ (${v.fix(25.85 * s.kT, 1)} mV)`;
+          if (s.md === 'packet') return `$t=${v.fix(s.ts, 1)}\\tau$ · cloud centre $\\langle x\\rangle=${v.fix(s.mean, 2)}$ · measured over the last ${v.fix(s.dt, 0)} $\\tau$: mobility $\\mu=\\Delta\\langle x\\rangle/(E\\,\\Delta t)=${isNaN(s.mu) ? '—' : v.fix(s.mu, 3)}$ (Drude: $\\tau=1$), $D=\\Delta\\mathrm{var}/2\\Delta t=${isNaN(s.D) ? '—' : v.fix(s.D, 3)}$\n$D/\\mu=${isNaN(s.mu) ? '—' : v.fix(s.D / s.mu, 3)}$ against $k_BT/e=${v.fix(s.kT, 3)}$ (${v.fix(25.85 * s.kT, 1)} mV at this $T$) · the excess grows as $(eE\\lambda)^2$: field heating gives $D/\\mu=k_BT/e+(eE\\tau)^2\\tau/m=${v.fix(s.kT + s.a * s.a, 3)}$ here`;
           return `$t=${v.fix(s.ts, 0)}\\tau$ ${s.ts < 40 ? '(still relaxing: run to $t\\gtrsim50\\tau$)' : '(steady state)'} · profile fitted with $e^{-x/\\ell}$: $\\ell=${isNaN(s.lf) ? '—' : v.fix(s.lf, 2)}$ · Einstein prediction $\\ell=k_BT/eE=${v.fix(s.ell, 2)}$ (units of the thermal mean free path) · $eE\\ell/k_BT=${isNaN(s.lf) ? '—' : v.fix((s.a * s.lf) / s.kT, 3)}$ (equals 1 when $D/\\mu=k_BT/e$)`;
         });
       },

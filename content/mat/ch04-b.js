@@ -202,7 +202,7 @@ export default {
         let info = null;
         v.render(() => {
           const m = HP.find((p) => p.id === matS.value), d = dS.value, dM = d * 1e-6;
-          const sy = hpYield(m, d), tau = (m.k * 1e6 / Math.sqrt(dM)) / TAYLOR, a = (m.G * 1e9 * m.b * 1e-9) / (2 * Math.PI * (1 - m.nu) * tau * 1e6), L = dM / 2, nCont = pileCount(m, dM);
+          const sy = hpYield(m, d), tauPa = (m.k * 1e6) / Math.sqrt(dM) / TAYLOR, tau = tauPa / 1e6, a = (m.G * 1e9 * m.b * 1e-9) / (2 * Math.PI * (1 - m.nu) * tauPa), L = dM / 2, nCont = pileCount(m, dM);
           // number of dislocations that fit in the slip band: largest n with x_{n-1} a <= L
           let n = Math.max(1, Math.min(60, Math.floor(nCont))), xs = pileUp(n);
           for (let g = 0; g < 8 && n > 1 && xs[n - 1] * a > L; g++) { n--; xs = pileUp(n); }
@@ -223,7 +223,7 @@ export default {
           const xm = 1 / Math.sqrt(d);
           B.setView([0, 4.2], [0, hpYield(m, 1 / (4.2 * 4.2)) * 1.08]);
           B.fn((x) => m.s0 + 1000 * m.k * x, { domain: [0, 4.2], color: 'ink', width: 2.5 });
-          B.hline(m.s0, { color: 'faint', dash: true }); B.text('$\\sigma_0$', 0.05, m.s0 + 10, { color: 'muted', size: 12, align: 'left' });
+          B.hline(m.s0, { color: 'faint', dash: true }); B.text('$\\sigma_0$', 3.9, m.s0 + 14, { color: 'muted', size: 12, align: 'right' });
           hB.set(xm, sy);
           B.vline(xm, { color: 'accent', alpha: 0.4, dash: true });
           info = { m, d, sy, n, nCont, a, L, tau, capped: nCont > 60 };
@@ -231,7 +231,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { m, d, sy, n, nCont, a, tau, capped } = info;
-          return `$d=${v.fmt(d, 3)}\\,\\mu$m: $\\sigma_y=\\sigma_0+k_y/\\sqrt d=${v.fix(m.s0, 0)}+${v.fix(1000 * m.k / Math.sqrt(d), 0)}=${v.fix(sy, 0)}$ MPa (shear $\\tau=(\\sigma_y-\\sigma_0)/3.06=${v.fix(tau, 0)}$ MPa).\nPile-up across half the grain: $n=\\pi(1-\\nu)\\tau d/(2Gb)=${v.fix(nCont, 1)}$ dislocations${capped ? ' (drawing capped at 60)' : ''}; the ${n} dislocations drawn are bunched against the boundary, and the stress at the head is about $n\\tau=${v.fix(n * tau, 0)}$ MPa (the length unit of the force balance is $a=${v.fix(a * 1e9, 0)}$ nm).`;
+          return `$d=${v.fmt(d, 3)}\\,\\mu$m: $\\sigma_y=\\sigma_0+k_y/\\sqrt d=${v.fix(m.s0, 0)}+${v.fix(1000 * m.k / Math.sqrt(d), 0)}=${v.fix(sy, 0)}$ MPa (shear $\\tau=(\\sigma_y-\\sigma_0)/3.06=${v.fix(tau, 0)}$ MPa).\nPile-up across half the grain: $n=\\pi(1-\\nu)\\tau d/(2Gb)=${v.fix(nCont, 1)}$ dislocations${capped ? ' (drawing capped at 60)' : ''}; the exact force balance fits ${n} dislocations in half a grain (drawn, bunched against the boundary; the formula is an asymptotic estimate), and the stress at the head is about $n\\tau=${v.fix(n * tau, 0)}$ MPa (the length unit of the force balance is $a=${v.fix(a * 1e9, 0)}$ nm).`;
         });
       },
     },
@@ -272,7 +272,7 @@ export default {
           A.fn((x) => strength(x).sl, { domain: [3, 10000], color: 'red', width: 2, alpha: 0.6, dash: true });
           A.fn((x) => strength(x).s, { domain: [3, 10000], color: 'ink', width: 3 });
           A.vline(dc, { color: 'muted', dash: true, alpha: 0.6 }); A.text('$d_c$', dc * 1.06, Math.max(600, peak * 1.25) * 0.05, { color: 'muted', size: 12, align: 'left' });
-          A.text('dislocations carry slip', 600, Math.max(600, peak * 1.25) * 0.93, { color: 'accent', size: 12 });
+          A.text('dislocations carry slip', 9000, Math.max(600, peak * 1.25) * 0.8, { color: 'accent', size: 12, align: 'right' });
           A.text('boundaries slide', 5.5, Math.max(600, peak * 1.25) * 0.93, { color: 'red', size: 12, align: 'left' });
           const st = strength(d);
           hA.set(d, st.s);
@@ -335,9 +335,11 @@ export default {
         let seed = 3;
         v.button('new random field', () => { seed += 1; plan(); });
         const A = v.stage({ x: [0, 128], y: [-4, 44], equal: true, axes: false, height: 250, full: true, title: 'a dislocation line in its slip plane (periodic in x)' });
-        const B = v.stage({ x: [0.003, 0.09], y: [0.003, 0.3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, full: true, xlabel: 'concentration $c$', ylabel: 'critical stress $\\tau_c$ (units $T/b$ per $b$)', title: 'critical stress against concentration' });
+        const B = v.stage({ x: [0.003, 0.09], y: [0.003, 0.3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, full: true, xlabel: 'concentration $c$', ylabel: 'critical stress $\\tau_c b$ (units of $T/b$)', title: 'critical stress against concentration' });
         const CS = [0.004, 0.008, 0.016, 0.032, 0.064];
         let ramp = null, sweep = [], gen = 0, timer = null, busy = false;
+        const sl1 = cS, sl2 = fS;
+        let lastKey = '', sweepKey = '';
         const planSweep = () => {
           const g = ++gen; sweep = []; busy = true;
           if (timer) clearTimeout(timer);

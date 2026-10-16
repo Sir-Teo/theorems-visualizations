@@ -188,7 +188,7 @@ where $A$ is the rate of non-radiative (defect) recombination, $B$ the radiative
           const E = Eg.value, J = hE.x, Bc = B[typ.value], eta = iqe(J, Bc), lam = 1239.84 / E, rgb = colOf(M, lam), ph = t / P;
           // IQE panel
           for (const key of ['direct', 'indirect']) sE.fn((x) => iqe(x, B[key]), { color: key === 'direct' ? 'accent' : 'red', width: typ.value === key ? 3 : 1.4, alpha: typ.value === key ? 1 : 0.5, domain: [0.1, 1e4] });
-          hE.set(J, eta);
+          hE.set(J, eta); sE.text('indirect gap (never above 0.2%)', 0.15, 0.06, { size: 10, color: 'red' });
           // band diagram
           const w = 0.15, Ecc = E + w, Evc = -w;
           const ln = (c, y0, y1, x0, x1) => sD.line(x0, y0, x1, y1, { color: c, width: 2.6 });

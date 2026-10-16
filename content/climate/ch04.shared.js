@@ -31,15 +31,15 @@ export function moistProfile(Ts, ps) {
   return out;
 }
 /**
- * Warming at each layer of GRID per kelvin of surface warming for a tropical moist adiabat (surface air at `Ts` K), tapered to
- * zero between 130 and 70 hPa (the tropopause). Values above 1 aloft are the lapse-rate effect.
+ * Warming at each layer of GRID per kelvin of surface warming for a tropical moist adiabat (surface air at `Ts` K), blended
+ * to 1 (the stratosphere is not part of the lapse-rate effect) between 130 and 70 hPa. Values above 1 aloft are the lapse-rate effect.
  */
 export function tropicalAmp(Ts = 300) {
   const pm = GRID.pm, a = moistProfile(Ts, pm), b = moistProfile(Ts + 1, pm);
-  return pm.map((p, i) => { const w = p >= 130 ? 1 : p <= 70 ? 0 : (p - 70) / 60; return w * (b[i] - a[i]); });
+  return pm.map((p, i) => { const w = p >= 130 ? 1 : p <= 70 ? 0 : (p - 70) / 60; return w * (b[i] - a[i]) + (1 - w); });
 }
 /** Surface-trapped (inversion-like) warming pattern: ≈1 at the ground, decaying with height (high latitudes in winter). */
-export function polarAmp() { return GRID.pm.map((p) => 0.12 + 0.88 * Math.exp(-(1000 - p) / 170)); }
+export function polarAmp() { return GRID.pm.map((p) => { const w = p >= 130 ? 1 : p <= 70 ? 0 : (p - 70) / 60; return 1 + w * (0.12 + 0.88 * Math.exp(-(1000 - p) / 170) - 1); }); }
 
 /** Thomas algorithm for a tridiagonal system: a (sub), b (diag), c (super), d (rhs). */
 export function tridiag(a, b, c, d) {

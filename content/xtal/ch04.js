@@ -53,7 +53,7 @@ export default {
             if (g > 1) sc.arrow([0, 0, 0], r, { color: 'accent', width: 2.2 });
             for (let k = 1; k <= g; k++) sc.dot(mul(k, rr), { r: 3.6, color: 'gold' });
             sc.arrow([0, 0, 0], rr, { color: 'green', width: 3.2 });
-            sc.tex(`${idxTex(red, '[', ']')}`, add(rr, mul(0.16, unit(rr))), { size: 16, color: 'green' });
+            sc.tex(`${idxTex(red, '[', ']')}`, add(add(rr, mul(0.12, unit(rr))), [0, 0, 0.22]), { size: 16, color: 'green' });
           }
           sc.flush();
           info = { idx, g, red, fam, len: norm(r), lenRed: norm(rr), P };
@@ -112,7 +112,7 @@ export default {
             const m0 = Math.min(...cs), m1 = Math.max(...cs);
             for (let m = Math.ceil(m0); m <= m1; m++) {
               const poly = planeSection(V, hkl, m, 0, 1);
-              if (poly) { ms.push(m); sc.poly(poly.map(sh), { fill: 'muted', fillAlpha: m === 1 ? 0.0 : 0.07, color: m === 1 ? 'accent' : 'muted', width: m === 1 ? 1.8 : 0.8, alpha: m === 1 ? 0.9 : 0.5 }); }
+              if (poly) { ms.push(m); sc.poly(poly.map(sh), { fill: 'muted', fillAlpha: m === 1 ? 0.0 : 0.07, color: m === 1 ? 'green' : 'muted', width: m === 1 ? 1.8 : 0.8, alpha: m === 1 ? 0.9 : 0.5 }); }
             }
             const big = planeSection(V, nReal, 1, -1.2, 2.2);
             if (big) sc.poly(big.map(sh), { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.8, alpha: 0.95 });
@@ -126,7 +126,7 @@ export default {
           const f = (i) => (ics[i][1] === 0 ? '\\infty' : ics[i][2] === 1 ? `${ics[i][1]}` : `${ics[i][1] < 0 ? '-' : ''}\\tfrac{${Math.abs(ics[i][1])}}{${ics[i][2]}}`);
           const rec = (i) => (ics[i][1] === 0 ? '0' : ics[i][1] === 1 ? `${ics[i][2]}` : ics[i][1] === -1 ? `-${ics[i][2]}` : `${ics[i][2] / 1}/${ics[i][1]}`.replace('/-', '/-'));
           if (!ok) return 'The plane never meets any axis: it is at infinity and has no indices. Cut at least one axis.';
-          return `Intercepts $(${f(0)},\\,${f(1)},\\,${f(2)})$ → reciprocals $(${rec(0)},\\,${rec(1)},\\,${rec(2)})$ → times ${L} → $(${ints.map(barTex).join('\\,')})$${g > 1 ? ` → divide by common factor ${g}` : ''} → **Miller indices $${idxTex(hkl)}$**.\nThe plane you drew is number $m=${mdrawn}$ of the stack $hx+ky+lz=m$; the nearest one to the origin ($m=1$, outlined in blue) cuts the axes at $1/h,\\,1/k,\\,1/l$.`;
+          return `Intercepts $(${f(0)},\\,${f(1)},\\,${f(2)})$ → reciprocals $(${rec(0)},\\,${rec(1)},\\,${rec(2)})$ → times ${L} → $(${ints.map(barTex).join('\\,')})$${g > 1 ? ` → divide by common factor ${g}` : ''} → **Miller indices $${idxTex(hkl)}$**.\nThe plane you drew is number $m=${mdrawn}$ of the stack $hx+ky+lz=m$; the nearest one to the origin ($m=1$, outlined in green) cuts the axes at $1/h,\\,1/k,\\,1/l$.`;
         });
       },
     },
@@ -253,9 +253,8 @@ If $h,k,l$ have a common factor $n$, the formula gives $d_{hkl}=d_{hkl/n}/n$.`,
         v.render(() => {
           const P = cellP(), V = cellVectors(P), hkl = [sh.value, sk.value, sl.value];
           sc.begin();
-          const kk = fitScale(V, 1.35), ctr = mul(0.5, add(add(V[0], V[1]), V[2])), S = (p) => mul(kk, sub(p, ctr));
+          const kk = fitScale(V, 1.9), ctr = mul(0.5, add(add(V[0], V[1]), V[2])), S = (p) => mul(kk, sub(p, ctr));
           drawCell(sc, V.map((r) => mul(kk, r)), mul(-kk, ctr), { color: 'accent', width: 1.6, alpha: 0.9 });
-          sc.tex('\\mathbf a', S(mul(0.5, V[0])), { size: 14, color: 'muted' });
           let geo = null, ok = hkl.some((x) => x);
           if (ok) {
             const cs = [0, 1].flatMap((i) => [0, 1].flatMap((j) => [0, 1].map((k2) => dot(hkl, [i, j, k2]))));
