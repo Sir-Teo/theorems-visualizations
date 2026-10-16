@@ -52,3 +52,22 @@ export function femSurv(c, y) {
 /** Net reproduction rate Σ f_a (L_a/l_0) / (1 + SRB), with the sex ratio at birth srb as boys per girl. */
 export const nrrOf = (f, Lg, srb) => f.reduce((s, x, i) => s + x * Lg[i], 0) / (1 + srb);
 export const FYEARS = Array.from({ length: FY1 - FY0 + 1 }, (_, i) => FY0 + i);
+
+// ───────────── drawing and model helpers (chapter 4) ─────────────
+import { AGE22, CTRY } from './ch03.shared.js';
+export const cOpts = (list = CTRY) => list.map((c) => ({ value: c, label: CNAME[c] }));
+/** Outline of a step schedule over the nine groups: [[a, 0], [a, f], [a+5, f], …]. */
+export function stepPath(f, scale = 1) {
+  const pts = [[FAGES[0], 0]];
+  for (let i = 0; i < f.length; i++) { pts.push([FAGES[i], f[i] * scale]); pts.push([FAGES[i] + 5, f[i] * scale]); }
+  pts.push([FAGES[f.length - 1] + 5, 0]);
+  return pts;
+}
+/** Survivorship l(a)/l(0) at any age by linear interpolation of the 22 abridged-table knots (l = array of 22 survivors). */
+export function lAtAge(l, a) {
+  if (a <= 0) return 1;
+  for (let i = 0; i < 21; i++) if (a < AGE22[i + 1]) return (l[i] + ((l[i + 1] - l[i]) * (a - AGE22[i])) / (AGE22[i + 1] - AGE22[i])) / l[0];
+  return l[21] / l[0];
+}
+/** Index of the group a (10, 15, …) in the nine-group arrays. */
+export const gIdx = (a) => (a - 10) / 5;

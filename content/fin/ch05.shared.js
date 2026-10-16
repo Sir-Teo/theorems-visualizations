@@ -62,11 +62,11 @@ export function simGarch(n, omega, alpha, beta, seed, df = 0) {
 }
 
 /** First T years of the Shiller series, real, divided by the exponential trend of the real price fitted on those years: {year, p, d, g, trend}. */
-export function shillerDetrended(T) {
+export function shillerDetrended(T, gOverride = null) {
   const s = shiller(); T = Math.min(T, s.n);
   let sx = 0, sy = 0, sxx = 0, sxy = 0;
   for (let i = 0; i < T; i++) { const y = Math.log(s.pr[i]); sx += i; sy += y; sxx += i * i; sxy += i * y; }
-  const g = (T * sxy - sx * sy) / (T * sxx - sx * sx), p = [], d = [], trend = [];
+  const g = gOverride == null ? (T * sxy - sx * sy) / (T * sxx - sx * sx) : gOverride, p = [], d = [], trend = [];
   for (let i = 0; i < T; i++) { const f = Math.exp(g * i); trend.push(f); p.push(s.pr[i] / f); d.push(s.dr[i] / f); }
   return { year: s.year.slice(0, T), p, d, g, trend, T };
 }

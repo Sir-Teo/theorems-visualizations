@@ -45,7 +45,13 @@ export function primSet(w) {
   const Pi = inv3(P);
   return { w, k, P, Pi, prim: (i) => [P[0][i], P[1][i], P[2][i]], amounts: (c) => mv3(Pi, c), cmf: (l) => mv3(Pi, cmf(l)) };
 }
-export const CIERGB = primSet([700, 546.1, 435.8]);
+/** The CIE RGB system (primaries 700, 546.1, 435.8 nm), defined here by the PUBLISHED RGB -> XYZ matrix of the 1931 standard (equal-energy white = (1,1,1))
+ *  rather than by the fit, whose red tail near 700 nm is too low. Unit amounts are scaled to the fit's own equal-energy white EW. */
+export const CIERGB_M = [[0.49, 0.31, 0.2], [0.17697, 0.8124, 0.01063], [0, 0.01, 0.99]];
+export const CIERGB = (() => {
+  const P = CIERGB_M.map((row, r) => row.map((a) => a * EW[r])), Pi = inv3(P);
+  return { w: [700, 546.1, 435.8], P, Pi, prim: (i) => [P[0][i], P[1][i], P[2][i]], amounts: (c) => mv3(Pi, c), cmf: (l) => mv3(Pi, cmf(l)) };
+})();
 
 // ---------------------------------------------------------------- chromaticity helpers
 export const uv60 = (x, y) => { const d = -2 * x + 12 * y + 3; return [(4 * x) / d, (6 * y) / d]; };

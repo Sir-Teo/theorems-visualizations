@@ -47,7 +47,7 @@ Scope: a statement about a constant discount rate and stationary (detrended) ser
           A.path(S.year.map((y, i) => [y, S.p[i]]), { color: 'accent', width: 2.2 });
           A.path(S.year.map((y, i) => [y, ps[i]]), { color: 'green', width: 2.6 });
           A.text('real S&P price p', S.year[S.T - 1] - 28, S.p[S.T - 1], { dx: 0, dy: -14, size: 11.5, color: 'accent', weight: 700, align: 'center' });
-          A.text('p* (ex-post rational)', 1930, ps[59] * 0.7, { size: 11.5, color: 'green', weight: 700 });
+          A.text('p* (ex-post rational)', 1925, ps[54], { dy: 22, size: 11.5, color: 'green', weight: 700 });
           const xs = [], ys = []; for (let r = 0.02; r <= 0.1201; r += 0.0025) { xs.push(r); ys.push(calc(S, r).sd); }
           B.setView([0.02, 0.12], [0, Math.max(sdp, ...ys) * 1.15]);
           B.path(xs.map((x, i) => [x, ys[i]]), { color: 'green', width: 2.6 });
@@ -57,7 +57,7 @@ Scope: a statement about a constant discount rate and stationary (detrended) ser
           req = null; for (let i = 0; i < xs.length; i++) if (ys[i] >= sdp) { req = xs[i]; break; }
           B.vband(0.04, 0.08, { color: 'orange', alpha: 0.08 }); B.text('plausible range', 0.06, sdp * 0.08, { size: 10.5, color: 'orange', align: 'center' });
         });
-        v.readout(() => `With $r=${pct(rate.value, 2)}$: **sd(p) = ${v.fix(sdp, 1)}**, **sd(p\\*) = ${v.fix(sds, 1)}**, ratio ${v.fix(ratio, 2)}; the rational-price bound needs sd(p) ≤ sd(p\\*)${ratio < 1 ? ', which fails: the price is ' + v.fix(1 / ratio, 1) + ' times as variable as it may be' : ''}.\n${req ? `Only a discount rate of about ${pct(req, 1)} or lower would make $p^*$ as variable as $p$ here, below the average dividend yield (${pct(meanOf(shillerDetrended(152).d) / meanOf(shillerDetrended(152).p), 1)}) plus growth that investors earned.` : 'No discount rate in the plotted range makes $p^*$ as variable as the price.'}\nDetrending by the fitted real growth of the price (${pct(shillerDetrended(end.value === '1979' ? 109 : 152).g, 2)} a year).`);
+        v.readout(() => `With $r=${pct(rate.value, 2)}$: $\\mathrm{sd}(p)=${v.fix(sdp, 1)}$, $\\mathrm{sd}(p^*)=${v.fix(sds, 1)}$, ratio ${v.fix(ratio, 2)}; the rational-price bound needs $\\mathrm{sd}(p)\\le\\mathrm{sd}(p^*)$${ratio < 1 ? ', which fails: the price is ' + v.fix(1 / ratio, 1) + ' times as variable as it may be' : ''}.\n${req ? `Only a discount rate of about ${pct(req, 1)} or lower would make $p^*$ as variable as $p$ here, well below the average dividend yield of ${pct(meanOf(shillerDetrended(152).d) / meanOf(shillerDetrended(152).p), 1)}.` : 'No discount rate in the plotted range makes $p^*$ as variable as the price.'}\nDetrending by the fitted real growth of the price (${pct(shillerDetrended(end.value === '1979' ? 109 : 152).g, 2)} a year).`);
       },
     },
     // ------------------------------------------------------------------ 5.7
@@ -100,7 +100,7 @@ Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The t
           let liqAt = -1; const eq = []; for (let t = 0; t <= T; t++) { const e = 1 + L * (m0.value - mp[t]) / 100; eq.push(e); if (liqAt < 0 && e <= r0 * L) { liqAt = t; break; } }
           A.setView([0, T], [Math.min(-2, ...mp) - 0.5, Math.max(16, thr + 1, ...mp) + 0.5]);
           A.hline(0, { color: 'green', dash: true }); A.text('fundamental ratio (gap 0)', T, 0, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'green' });
-          A.hline(thr, { color: 'red', dash: true }); A.text('liquidation level', 2, thr, { dx: 4, dy: -9, align: 'left', size: 10.5, color: 'red', weight: 700 });
+          A.hline(thr, { color: 'red', dash: true }); A.text('liquidation level', T, thr, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'red', weight: 700 });
           const upto = liqAt < 0 ? T : liqAt;
           A.path(mp.map((y, t) => [t, y]), { color: liqAt >= 0 ? 'muted' : 'accent', width: 1.6 });
           A.path(mp.slice(0, upto + 1).map((y, t) => [t, y]), { color: 'accent', width: 2.4 });
@@ -117,7 +117,7 @@ Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The t
           C.path(Ls.map((l, i) => [l, liqP[i]]), { color: 'red', width: 2.4 });
           C.path(Ls.map((l, i) => [l, clamp(50 * mean[i], 0, 100)]), { color: 'green', width: 2.4 });
           C.text('liquidated before day 250', 30, liqP[liqP.length - 1], { dx: -4, dy: 14, align: 'right', size: 11, color: 'red', weight: 700 });
-          C.text('average final equity (50 = 1.0)', 1, clamp(50 * mean[0], 0, 100), { dx: 4, dy: -10, align: 'left', size: 11, color: 'green', weight: 700 });
+          C.text('mean final equity (50 = 1.0)', 30, 8, { dx: -4, align: 'right', size: 11, color: 'green', weight: 700 });
           C.vline(L, { color: 'gold', width: 2 });
           let nl = 0, sm = 0; const th = m0.value + (1 - r0 * L) / L * 100; for (let i = 0; i < M; i++) { if (mx[i] >= th) { nl++; sm += r0 * L; } else sm += 1 + L * (m0.value - fin[i]) / 100; }
           stat = { liq: nl / M, mean: sm / M, liqAt, thr, eqEnd: eq[eq.length - 1] };
@@ -147,7 +147,7 @@ Scope: the 15 897 trading days 1963–2026 of the value-weighted U.S. market; th
         const per = v.select('period', [{ value: 'all', label: '1963–2026' }, { value: 'a', label: '1963–1989' }, { value: 'b', label: '1990–2026' }], 'all');
         const A = v.stage({ x: [-9, 9], y: [3e-6, 1], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.1, minWidth: 280, xlabel: 'standardised return z', ylabel: 'density (log scale)', title: 'the distribution of returns' });
         const B = v.stage({ x: [1963, 2027], y: [0, 10], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'year', ylabel: '|r| / average |r|', title: 'the size of daily moves' });
-        const Cc = v.stage({ x: [0, 41], y: [-0.1, 0.4], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'lag k (days)', ylabel: 'autocorrelation', title: 'of returns and of |returns|' });
+        const Cc = v.stage({ x: [0, 41], y: [-0.1, 0.4], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'lag k (days)', ylabel: 'autocorrelation', title: 'autocorrelation of returns (dots) and of |returns| (bars)' });
         const absr = Float64Array.from(r, Math.abs), mabs = meanOf(absr);
         const acAbs = [], acR = []; for (let k = 1; k <= 40; k++) { acAbs.push(acf(absr, k)); acR.push(acf(r, k)); }
         let st = {};
@@ -158,7 +158,7 @@ Scope: the 15 897 trading days 1963–2026 of the value-weighted U.S. market; th
           const nb = 61, lo = -9, hi = 9, w = (hi - lo) / nb, cnt = new Array(nb).fill(0); for (const q of z) { const b = Math.floor((q - lo) / w); if (b >= 0 && b < nb) cnt[b]++; }
           A.fn((x) => normPdf(x), { domain: [-9, 9], color: 'green', width: 2.2, n: 300 });
           A.dots(cnt.map((c, b) => c > 0 ? [lo + (b + 0.5) * w, c / (z.length * w)] : null).filter(Boolean), { r: 3.6, color: 'accent' });
-          A.text('normal', 3.1, 0.004, { size: 11.5, color: 'green', weight: 700 }); A.text('real returns', -8.8, 3e-4, { size: 11.5, color: 'accent', weight: 700 });
+          A.text('normal', 2.2, 0.12, { size: 11.5, color: 'green', weight: 700 }); A.text('real returns', -8.8, 3e-2, { size: 11.5, color: 'accent', weight: 700 });
           const k4 = kurtosis(xs); let big = 0; for (const q of z) if (Math.abs(q) > 4) big++; const ex = z.length * 2 * (1 - normCdf(4));
           st = { k4, big, ex, n: z.length, worst: Math.min(...z) };
           // |r| over time
@@ -225,7 +225,7 @@ Scope: a parametric model of the conditional variance, fitted by maximum likelih
           B.dots(cnt.map((c, k) => c > 0 ? [lo + (k + 0.5) * w, c / (z.length * w)] : null).filter(Boolean), { r: 3.6, color: 'accent' });
           const ab = Float64Array.from(S.r, Math.abs); const acs = []; for (let k = 1; k <= 40; k++) acs.push(acf(ab, k));
           Cc.hline(0, { color: 'faint' }); Cc.bars(acs, { x0: 1, dx: 1, color: 'accent' }); Cc.dots(acReal.map((x, i) => [i + 1, x]), { r: 3.4, color: 'red' });
-          Cc.text('real market', 24, 0.28, { size: 11.5, color: 'red', weight: 700 }); Cc.text('model', 24, 0.19, { size: 11.5, color: 'accent', weight: 700 });
+          Cc.text('real market', 30, 0.27, { size: 11.5, color: 'red', weight: 700 }); Cc.text('model', 30, 0.12, { size: 11.5, color: 'accent', weight: 700 });
           const den = 1 - ps * ps - 2 * a * a;
           st = { ps, kt: kurtosis(S.r), kth: den > 0 && dist.value === 0 ? 3 * (1 - ps * ps) / den : null, half: ps > 0 && ps < 1 ? Math.log(0.5) / Math.log(ps) : Infinity, ac1: acs[0] };
         });
@@ -269,7 +269,7 @@ Scope: qualitative regularities from a handful of historical episodes; the dot-c
           const ser = (a, c) => a.map((x, i) => [i - pk, 100 * x / a[pk]]).filter(([t]) => t >= -60 && t <= 36);
           A.hline(100, { color: 'faint', dash: true }); A.vline(0, { color: 'faint', dash: true });
           A.path(ser(hi), { color: 'accent', width: 2.6 }); A.path(ser(te), { color: 'purple', width: 2 }); A.path(ser(mk), { color: 'muted', width: 2 });
-          A.text('high-tech (US)', -24, 35, { size: 11.5, color: 'accent', weight: 700 }); A.text('telecom', -14, 72, { size: 11.5, color: 'purple', weight: 700 }); A.text('whole market', 12, 65, { size: 11.5, color: 'muted', weight: 700 });
+          A.text('high-tech (US)', -50, 24, { size: 11.5, color: 'accent', weight: 700 }); A.text('telecom', -14, 72, { size: 11.5, color: 'purple', weight: 700 }); A.text('whole market', 12, 65, { size: 11.5, color: 'muted', weight: 700 });
           A.dots([[-6, 12.8], [3, 15]], { r: 6, color: 'red' }); A.text('South Sea (anchors)', -6, 12.8, { dx: 8, dy: -12, size: 11, color: 'red', weight: 700 });
           A.corner(`peak: ${peakLabel}`, 'tr', { color: 'muted' });
           // herding model
@@ -284,6 +284,7 @@ Scope: qualitative regularities from a handful of historical episodes; the dot-c
             xs.push(k / N);
           }
           const pr = xs.map((x) => 100 * Math.exp(1.2 * (x - 0.5)));
+          B.setView([0, T], [Math.min(60, ...pr) - 5, Math.max(160, ...pr) + 8]);
           B.hline(100, { color: 'green', dash: true, width: 2 }); B.text('fundamental value', T, 100, { dx: -4, dy: 12, align: 'right', size: 11, color: 'green', weight: 700 });
           B.path(pr.map((y, t) => [t, y]), { color: 'accent', width: 2 });
           let above = 0, mx = 0, mn = 1e9; for (const y of pr) { if (y > 130) above++; mx = Math.max(mx, y); mn = Math.min(mn, y); }

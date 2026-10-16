@@ -120,3 +120,48 @@ export function crossVault(R, t, gamma, n = 400) {
   const Hb = m0 / R, Wb = gamma * t * Math.PI * R * 2 * R;
   return { Wgroin, Wbarrel: Wb, pier: Wgroin / 4, Hd, Hbarrel: Hb, Hbarrel_bay: Hb * 2 * R, q };
 }
+
+// ── thrust network analysis on a regular plan: straight lines of constant horizontal force ────────────────────────────
+/**
+ * A plan grid of n x n nodes on [-1, 1]^2 carrying straight lines of thrust: rows (y = const), columns (x = const) and,
+ * optionally, the two diagonal families. The horizontal force F of a line is the same along the whole line, so horizontal
+ * equilibrium holds at every node by construction (the force diagram is made of parallel segments). The edge force density
+ * is q = F / (plan length). Vertical equilibrium of an interior node i, with downward load p_i, reads
+ *   sum_j q_ij (z_i - z_j) = p_i,
+ * a linear system for the heights z given the force densities and the heights of the boundary nodes (the supports).
+ *   Fr(y), Fc(x): force of the row at y / column at x;  Fd(u): force of a diagonal line, u = (x -/+ y)/sqrt2 (null: no diagonals)
+ *   p(i, j): downward load of node (i, j);  zb(i, j): support height of a boundary node.
+ * Returns {z (n x n), q-edge list, reactions Hx, Hy per boundary node: horizontal thrust vectors}.
+ */
+export function tnaSolve(n, Fr, Fc, Fd, p, zb) {
+  const h = 2 / (n - 1), X = (i) => -1 + i * h, idx = new Map(); let m = 0;
+  for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) idx.set(i * n + j, m++);
+  const edges = [];
+  const add = (i0, j0, i1, j1, F, fam) => { const L = Math.hypot(X(i1) - X(i0), X(j1) - X(j0)); edges.push({ a: [i0, j0], b: [i1, j1], F, q: F / L, fam, L }); };
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+    // i = index in x, j = index in y
+    if (i + 1 < n) add(i, j, i + 1, j, Fr(X(j)), 'r');
+    if (j + 1 < n) add(i, j, i, j + 1, Fc(X(i)), 'c');
+    if (Fd && i + 1 < n && j + 1 < n) add(i, j, i + 1, j + 1, Fd((X(i) - X(j)) / Math.SQRT2), 'd');
+    if (Fd && i + 1 < n && j - 1 >= 0) add(i, j, i + 1, j - 1, Fd((X(i) + X(j)) / Math.SQRT2), 'e');
+  }
+  const A = Array.from({ length: m }, () => new Float64Array(m)), b = new Float64Array(m);
+  for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) b[idx.get(i * n + j)] = p(i, j);
+  const z = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === 0 || j === 0 || i === n - 1 || j === n - 1 ? zb(i, j) : 0)));
+  for (const e of edges) {
+    const ia = e.a[0] * n + e.a[1], ib = e.b[0] * n + e.b[1], ka = idx.get(ia), kb = idx.get(ib);
+    if (ka !== undefined) { A[ka][ka] += e.q; if (kb !== undefined) A[ka][kb] -= e.q; else b[ka] += e.q * z[e.b[0]][e.b[1]]; }
+    if (kb !== undefined) { A[kb][kb] += e.q; if (ka !== undefined) A[kb][ka] -= e.q; else b[kb] += e.q * z[e.a[0]][e.a[1]]; }
+  }
+  // Gaussian elimination (the matrix is symmetric positive definite)
+  const M = A.map((r, i) => { const rr = Array.from(r); rr.push(b[i]); return rr; });
+  for (let c = 0; c < m; c++) {
+    let pv = c; for (let r = c + 1; r < m; r++) if (Math.abs(M[r][c]) > Math.abs(M[pv][c])) pv = r;
+    [M[c], M[pv]] = [M[pv], M[c]];
+    for (let r = c + 1; r < m; r++) { const f = M[r][c] / M[c][c]; if (!f) continue; for (let k = c; k <= m; k++) M[r][k] -= f * M[c][k]; }
+  }
+  const sol = new Float64Array(m);
+  for (let r = m - 1; r >= 0; r--) { let s = M[r][m]; for (let k = r + 1; k < m; k++) s -= M[r][k] * sol[k]; sol[r] = s / M[r][r]; }
+  for (const [key, k] of idx) z[Math.floor(key / n)][key % n] = sol[k];
+  return { z, edges, n, h };
+}

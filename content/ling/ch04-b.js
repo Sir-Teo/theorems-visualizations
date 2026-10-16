@@ -43,7 +43,7 @@ export default {
 $$y(x)\;=\;a\,x^{\,b}\,e^{-cx},\qquad b<0,\ c\ge 0,$$
 which reduces to a power law $y=a\,x^{b}$ when $c=0$.`,
       idea: String.raw`Part of the effect is arithmetic and part is substance. If every extra syllable added a full average syllable's worth of letters, syllable length would be flat; instead words grow more slowly than they gain syllables, because speakers compress the parts of long words: the second panel shows word length rising far less than in proportion to syllable count. The law is general (it is found in genomes and music too), and it has been argued to follow from a simple trade-off, a constant total budget shared among parts. Here syllable length is measured in letters and syllables are counted by a heuristic, so the picture is a proxy for the phonetic law.`,
-      caption: String.raw`Pick a language and whether to count word types or running words. Dots with bars: mean letters per syllable (±1 SD) for words of $x$ syllables; the curve is Altmann's formula fitted by least squares (log scale). Right: mean word length against syllable count, with the dashed line “no compression”.`,
+      caption: String.raw`Pick a language and whether to count word types or running words. Dots with bars: mean letters per syllable (±1 SD) for words of $x$ syllables; the curve is Altmann's formula fitted by least squares (log scale). Right: mean word length against syllable count, with the dashed line “no compression” (length proportional to syllables).`,
       scope: String.raw`A statistical tendency measured on averages; words are not constrained individually. Proxy measurement: syllables are counted by vowel groups, and orthographic letters stand in for sound duration.`,
       deps: ['ling-4.5'],
       refs: ['Jurafsky & Martin ch. 2'],
@@ -61,15 +61,14 @@ which reduces to a power law $y=a\,x^{b}$ when $c=0$.`,
           const D = menzerathData(tx.value, wt.value === 'tokens'); if (D.length < 3) return;
           const ymax = Math.max(...D.map((d) => d.y + d.sd)) * 1.1; s1.setView([0.5, 7.5], [0, Math.max(3, ymax)]);
           const w = D.map((d) => Math.sqrt(d.n));
-          const cost = (p) => { let e = 0; D.forEach((d, i) => { const m = form.value === 'alt' ? Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k) - p[2] * d.k : Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k); e += w[i] * (m - Math.log(d.y)) ** 2; }); return e; };
+          const cost = (p) => { let e = 0; D.forEach((d, i) => { const m = form.value === 'alt' ? Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k) - p[2] * p[2] * d.k : Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k); e += w[i] * (m - Math.log(d.y)) ** 2; }); return e; };
           const fitr = v.M.nelderMead(cost, form.value === 'alt' ? [D[0].y, -0.3, 0.05] : [D[0].y, -0.3, 0], { step: 0.3, tol: 1e-10, maxIt: 2000 });
-          const [a, b, cc0] = fitr.x; const c = form.value === 'alt' ? cc0 : 0;
+          const [a, b, cc0] = fitr.x; const c = form.value === 'alt' ? cc0 * cc0 : 0;
           s1.fn((x) => Math.abs(a) * Math.pow(x, b) * Math.exp(-c * x), { domain: [1, 7], color: 'green', width: 3 });
           for (const d of D) { s1.line(d.k, Math.max(0, d.y - d.sd), d.k, d.y + d.sd, { color: 'accent', width: 1.5, alpha: 0.6 }); s1.dot(d.k, d.y, { r: 3 + Math.min(7, Math.log10(d.n)), color: 'accent' }); }
           s2.setView([0.5, 7.5], [0, Math.max(...D.map((d) => d.L)) * 1.15]);
           s2.line(1, D[0].L, 7, 7 * D[0].L, { color: 'muted', dash: true, width: 1.5 });
           s2.path(D.map((d) => [d.k, d.L]), { color: 'orange', width: 2.5 }); s2.dots(D.map((d) => [d.k, d.L]), { r: 5, color: 'orange' });
-          s2.text('no compression: length ∝ x', 3.3, 3.3 * D[0].L, { size: 12, color: 'muted', align: 'left', baseline: 'bottom', dx: -80 });
           info = { a: Math.abs(a), b, c, D };
         });
         v.legend([['accent', 'mean ± SD of letters per syllable', { dot: true }], ['green', 'fitted curve'], ['orange', 'mean word length', { dot: true }]]);
@@ -112,14 +111,14 @@ which reduces to a power law $y=a\,x^{b}$ when $c=0$.`,
         const maxC = () => Math.max(...cf); const maxF = ENG_ORDER.f[ENG_ORDER.ord[0]];
         v.render(() => {
           order.forEach((c, i) => {
-            const h = (cf[c] / maxC()) * 2.4, x = i + 0.5, on = c === sel;
+            const h = (cf[c] / maxC()) * 2.0, x = i + 0.5, on = c === sel;
             s.rect(x - 0.36, 7, x + 0.36, 7 + h, { fill: 'orange', fillAlpha: on ? 0.7 : 0.35, color: 'orange', width: on ? 2.5 : 1 });
             s.text(String.fromCharCode(65 + c), x, 6.3, { size: 15, color: on ? 'accent' : 'ink', align: 'center', baseline: 'middle' });
             s.text(String(cf[c]), x, 6.85 + h + 0.0, { size: 9.5, color: 'muted', align: 'center', baseline: 'bottom', dy: -2 });
             const pl = assign[c]; s.text(pl >= 0 ? String.fromCharCode(97 + pl) : '·', x, 5.0, { size: 15, color: pl >= 0 ? 'green' : 'faint', align: 'center', baseline: 'middle' });
           });
           ENG_ORDER.ord.forEach((pl, i) => {
-            const h = (ENG_ORDER.f[pl] / maxF) * 2.4, x = i + 0.5;
+            const h = (ENG_ORDER.f[pl] / maxF) * 2.0, x = i + 0.5;
             const used = assign.includes(pl);
             s.rect(x - 0.36, 3.7 - h, x + 0.36, 3.7, { fill: 'accent', fillAlpha: used ? 0.15 : 0.4, color: 'accent', width: 1 });
             s.text(String.fromCharCode(97 + pl), x, 4.1, { size: 15, color: used ? 'faint' : 'ink', align: 'center', baseline: 'middle' });
@@ -161,7 +160,7 @@ and the more context the guesser has, the smaller both bounds become. With long 
         load();
         v.button('New passage', () => { pi++; load(); });
         v.button('Reset my statistics', () => { all.fill(0); load(); });
-        const s = v.stage({ x: [0, 22], y: [2.7, 11], axes: false, height: 440 });
+        const s = v.stage({ x: [0, 22], y: [2.7, 11], axes: false, height: 420, full: true });
         const s2 = v.stage({ x: [0, 11], y: [0, 0.6], axes: 'box', gutter: true, xlabel: 'guess number i', ylabel: 'q_i (share of letters right on guess i)', height: 300 });
         const W = 22, KX = 6.5;
         s.onClick((x, y) => {
@@ -250,7 +249,7 @@ with the conditional probabilities estimated from counts, $\hat P(w\mid h)=c(h\,
       credit: 'Roger Levy & T. Florian Jaeger, 2006/2007 (Advances in Neural Information Processing Systems 19, 849–856); developed in Jaeger, 2010 (Cognitive Psychology 61)',
       statement: String.raw`**Uniform information density (UID):** within the bounds of grammar, speakers prefer utterances that spread information evenly over the signal, keeping the **surprisal** $-\log_2 P(w_t\mid\text{context})$ of successive words close to a roughly constant level and avoiding sharp peaks. Where the speaker has a choice between a reduced and a longer form, the longer form is predicted to be used when the upcoming material would otherwise be unusually surprising, as with the optional *that* in *My boss confirmed (that) we were mistaken*, which is mentioned more often when a clause was not expected after the verb.`,
       idea: String.raw`Surprisal measures how much information a word carries given what came before; a channel of limited capacity is used best if the load is steady. An optional word costs time but, placed just before an unexpected stretch, it announces the structure and splits the information of the clause onset across two words. Levy and Jaeger tested this on corpora of spoken and written English and found that *that*-mention rises as the complement clause becomes less predictable, even controlling for other factors. Here, a deliberately simplified toy model (not corpus data) shows the arithmetic behind the idea.`,
-      caption: String.raw`The sentence is *My boss confirmed (that) we were completely mistaken.* Surprisals of the five unrelated words are fixed illustrative values; what you control is the toy model's probability $c$ that this verb takes a clause at all and $\theta$, the chance a clause comes with *that*. Left and middle bars: per-word surprisal without and with *that*; right: the variance of surprisal against $c$ for both versions. Where the omitted version has the larger variance, UID predicts *that*.`,
+      caption: String.raw`The sentence is *My boss confirmed (that) we were completely mistaken.* Surprisals of the six other content and function words are fixed illustrative values; what you control is the toy model's probability $c$ that this verb takes a clause at all and $\theta$, the chance a clause comes with *that*. Left and middle bars: per-word surprisal without and with *that*; right: the variance of surprisal against $c$ for both versions. Where the omitted version has the larger variance, UID predicts *that*.`,
       scope: String.raw`A hypothesis about production, supported by corpus studies but contested in detail (other factors, such as the verb and the length of the subject, matter too). The numbers in the picture are a toy illustration, not measurements.`,
       deps: ['ling-4.9'],
       refs: ['Jurafsky & Martin ch. 3'],
@@ -261,21 +260,21 @@ with the conditional probabilities estimated from counts, $\hat P(w\mid h)=c(h\,
         const cS = v.slider('$c$ = P(verb takes a clause)', 0.02, 0.98, 0.15, { step: 0.01 });
         const thS = v.slider('$\\theta$ = P(that | clause)', 0.1, 0.9, 0.4, { step: 0.01 });
         const q = 0.06; const WORDS = ['My', 'boss', 'confirmed', 'that', 'we', 'were', 'completely', 'mistaken'];
-        const FIX = { My: 4.5, boss: 8, confirmed: 8.5, were: 2.2, completely: 6, mistaken: 4.5 };
+        const FIX = { My: 4.5, boss: 7, confirmed: 6.5, were: 2.2, completely: 6, mistaken: 4.5 };
         const surp = (c, th, withThat) => WORDS.filter((w) => withThat || w !== 'that').map((w) => {
           if (w === 'that') return -Math.log2(c * th);
           if (w === 'we') return withThat ? -Math.log2(q) : -Math.log2(c * (1 - th) * q);
           return FIX[w];
         });
         const vari = (a) => { const m = a.reduce((x, y) => x + y, 0) / a.length; return a.reduce((x, y) => x + (y - m) ** 2, 0) / a.length; };
-        const sA = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'Without “that”', xticks: [] });
-        const sB = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'With “that”', xticks: [] });
+        const sA = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'Without “that”', xticks: ['My', 'boss', 'confirmed', 'we', 'were', 'completely', 'mistaken'].map((w, i) => [i + 0.5, w]) });
+        const sB = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'With “that”', xticks: ['My', 'boss', 'confirmed', 'that', 'we', 'were', 'completely', 'mistaken'].map((w, i) => [i + 0.5, w]) });
         const sC = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, xlabel: 'c', ylabel: 'variance of surprisal', height: 300, title: 'Which is smoother?' });
         let info = {};
         const bars = (st, arr, words, col) => {
           const m = arr.reduce((a, b) => a + b, 0) / arr.length;
           arr.forEach((b, i) => { const x = i + 0.5, hi = b === Math.max(...arr); st.rect(x - 0.36, 0, x + 0.36, b, { fill: words[i] === 'that' ? 'gold' : col, fillAlpha: 0.4, color: words[i] === 'that' ? 'gold' : col, width: hi ? 2.5 : 1 });
-            st.text(words[i], x, 0, { size: 10.5, color: 'ink', align: 'center', baseline: 'top', dy: 6 }); st.text(b.toFixed(1), x, b, { size: 10, color: 'muted', align: 'center', baseline: 'bottom', dy: -2 }); });
+            st.text(b.toFixed(1), x, b, { size: 10, color: 'muted', align: 'center', baseline: 'bottom', dy: -2 }); });
           st.line(0, m, arr.length, m, { color: 'muted', dash: true, width: 1.5 });
         };
         v.render(() => {

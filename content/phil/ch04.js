@@ -49,8 +49,8 @@ export default {
             if (off) { s.text('no gaps allowed', xc, 3.7, { align: 'center', size: 13, color: 'faint' }); return; }
             s.dot(xc - 0.9, 4.4, { r: 22, color: COL[x], fill: COL[x] });
             s.dot(xc + 0.9, 4.4, { r: 22, color: COL[c], fill: COL[c] });
-            s.text(x === 'G' ? 'gap' : x === 'T' ? 'true' : 'false', xc - 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700 });
-            s.text(c === 'G' ? 'gap' : c === 'T' ? 'true' : 'false', xc + 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700 });
+            s.text(x === 'G' ? 'gap' : x === 'T' ? 'true' : 'false', xc - 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700, halo: false });
+            s.text(c === 'G' ? 'gap' : c === 'T' ? 'true' : 'false', xc + 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700, halo: false });
             s.arrow(xc - 0.45, 4.4, xc + 0.45, 4.4, { color: 'ink', width: 2 });
             s.text('its status', xc - 0.9, 3.45, { align: 'center', size: 11.5, color: 'muted' });
             s.text('status of its claim', xc + 0.9, 3.45, { align: 'center', size: 11.5, color: 'muted' });
@@ -133,7 +133,7 @@ export default {
           S.forEach((q, i) => {
             const y = 5.2 - i * 1.2, ok = lv[q.id] != null;
             left.dot(0.7, y, { r: 13, color: ok ? 'accent' : 'red', fill: ok ? 'accent' : 'red' });
-            left.text(q.id, 0.7, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, color: 'panel' });
+            left.text(q.id, 0.7, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, color: 'panel', halo: false });
             left.text(`“${q.t}”`, 1.5, y + 0.12, { size: 13.5, color: 'ink' });
             left.text(ok ? `level ${lv[q.id]}` : 'no level: rejected', 1.5, y - 0.45, { size: 11.5, color: ok ? 'muted' : 'red' });
           });
@@ -154,7 +154,7 @@ export default {
           S.forEach((q) => {
             const ok = lv[q.id] != null, [x, y] = pos[q.id];
             right.dot(x, y, { r: 14, color: ok ? 'accent' : 'red', fill: ok ? 'accent' : 'red' });
-            right.text(q.id, x, y, { align: 'center', baseline: 'middle', size: 13, weight: 700, color: 'panel' });
+            right.text(q.id, x, y, { align: 'center', baseline: 'middle', size: 13, weight: 700, color: 'panel', halo: false });
           });
           info = { rej: S.filter((q) => lv[q.id] == null).length, n, mod: models(S) };
         });
@@ -213,7 +213,7 @@ export default {
           return st;
         };
         const mode = v.select('jump', [{ value: '3', label: 'three-valued (Kripke)' }, { value: '2', label: 'two-valued' }], '3');
-        const stage = v.slider('stage', 0, NS - 1, 0, { int: true });
+        const stage = v.slider('stage', 0, NS - 1, 4, { int: true });
         v.button('Step', () => { stage.set(stage.value >= NS - 1 ? 0 : stage.value + 1); });
         const s = v.stage({ x: [0, 13], y: [-1.1, 11.6], axes: false, height: 400, full: true });
         const X0 = 5.6, DX = 1.05;
@@ -257,7 +257,7 @@ export default {
       name: 'Dialetheism and paraconsistent logic',
       statement: String.raw`A **dialetheia** is a sentence that is both true and false. **Dialetheism** (Graham Priest) holds that there are such sentences, the liar being the leading example: its truth follows from its falsity and conversely, so it is both. Classical logic cannot survive true contradictions, because it validates **explosion** (from $A$ and $\neg A$ infer any $B$), so the dialetheist uses a **paraconsistent** logic in which explosion fails. The simplest such system is Priest’s **Logic of Paradox (LP)**: sentences take one of three values $\mathsf T$, $\mathsf B$ (both) and $\mathsf F$, connectives are computed with $\neg x=1-x$, $\wedge=\min$, $\vee=\max$ on $\mathsf F=0<\mathsf B=\tfrac12<\mathsf T=1$, and an argument is valid iff every valuation that gives the premises a *designated* value ($\mathsf T$ or $\mathsf B$) gives the conclusion one.`,
       idea: String.raw`LP and Kleene’s strong three-valued logic $K_3$ have identical truth tables: they differ in what is designated. In $K_3$ only $\mathsf T$ is designated, so no sentence takes the middle value as an asserted truth, and the excluded middle fails (a gap is not designated). In LP the middle value is designated, so the excluded middle holds (it is never fully false) but explosion fails: let $A$ be $\mathsf B$ and $B$ be $\mathsf F$, so that $A$ and $\neg A$ are both designated while $B$ is not. Disjunctive syllogism and the material modus ponens fail for the same reason. The costs are that LP is weaker than classical logic in such inferences, and that it cannot express that anything is *only* false without the revenge of 4.1.`,
-      caption: String.raw`Choose a logic and an inference. The table runs through every assignment of the three values to $A$ and $B$ (classical logic allows just $\mathsf T$ and $\mathsf F$, so rows with a middle value are greyed out). A row is shaded green when the premises are all designated and the conclusion is too, red when the premises are designated but the conclusion is not (a counterexample), and neutral otherwise. The readout compares all three logics on the chosen inference: explosion survives in classical logic and $K_3$ but not in LP; the excluded middle survives in LP but not in $K_3$.`,
+      caption: String.raw`Choose a logic and an inference. The table runs through every assignment of the three values to $A$ and $B$ (classical logic allows just $\mathsf T$ and $\mathsf F$, so rows with a middle value are greyed out). A row is shaded green when the premises are all designated and the conclusion is too, red when the premises are designated but the conclusion is not (a counterexample), and neutral (n/a) when a premise is not designated. The readout compares all three logics on the chosen inference: explosion survives in classical logic and $K_3$ but not in LP; the excluded middle survives in LP but not in $K_3$.`,
       deps: ['phil-4.1'],
       refs: ['Sainsbury', 'SEP “Dialetheism”'],
       credit: 'Priest, “The Logic of Paradox”, J. Phil. Logic 8 (1979) 219–241 (the three-valued system also in F. G. Asenjo, 1966)',
@@ -311,7 +311,7 @@ export default {
               const d = desig(L, x);
               s.text(nm(L, x), xs[i], y, { align: 'center', baseline: 'middle', size: 14, weight: d ? 700 : 400, color: off ? 'faint' : d ? 'ink' : 'muted', alpha: off ? 0.5 : 1 });
             });
-            s.text(off ? '—' : bad ? 'counterexample' : good ? 'ok' : 'premises not designated', Math.min(xv, 11.2), y, { align: 'center', baseline: 'middle', size: 11.5, weight: bad ? 700 : 400, color: off ? 'faint' : bad ? 'red' : good ? 'green' : 'muted' });
+            s.text(off ? '—' : bad ? 'counterexample' : good ? 'ok' : 'n/a', Math.min(xv, 11.2), y, { align: 'center', baseline: 'middle', size: 11.5, weight: bad ? 700 : 400, color: off ? 'faint' : bad ? 'red' : good ? 'green' : 'muted' });
           }
           s.text(L === 'LP' ? 'designated: T and B' : 'designated: T only', 0.3, 0.4, { size: 11.5, color: 'muted' });
           s.text(L === 'C' ? 'values: T, F' : `values: T, ${L === 'K3' ? 'N (neither)' : 'B (both)'}, F`, 11.8, 0.4, { align: 'right', size: 11.5, color: 'muted' });
