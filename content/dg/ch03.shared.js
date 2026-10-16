@@ -164,3 +164,21 @@ export const SHAPES = {
   limacon: { name: 'limaçon with a loop', f: (t) => { const r = 0.5 + Math.cos(t); return [1.15 * r * Math.cos(t) - 0.35, 1.15 * r * Math.sin(t)]; } },
   rosette: { name: 'three-lobed rosette', f: (t) => [(1.3 + 0.3 * Math.cos(3 * t)) * Math.cos(t), (1.3 + 0.3 * Math.cos(3 * t)) * Math.sin(t)] },
 };
+
+/**
+ * Convex curve of constant width w from its support function h(θ) = w/2 + Σ h_k cos kθ (odd k = 3, 5, 7), whose radius of
+ * curvature is ρ = h + h″ = (w/2)(1 + r3 cos 3θ + r5 cos 5θ + r7 cos 7θ). The r's are scaled so that |r3|+|r5|+|r7| ≤ 0.98 (ρ > 0).
+ * Returns m boundary points p(θ) = h u + h′ u′ and the normalised coefficients.
+ */
+export function widthCurve(w, r3 = 0, r5 = 0, r7 = 0, m = 720) {
+  const s = Math.abs(r3) + Math.abs(r5) + Math.abs(r7), f = s > 0.98 ? 0.98 / s : 1;
+  const rk = [[3, r3 * f], [5, r5 * f], [7, r7 * f]], pts = [];
+  for (let i = 0; i < m; i++) {
+    const th = (TAU * i) / m; let h = w / 2, hp = 0;
+    for (const [k, r] of rk) { const hk = (-(w / 2) * r) / (k * k - 1); h += hk * Math.cos(k * th); hp += -k * hk * Math.sin(k * th); }
+    pts.push(supportPoint(h, hp, th));
+  }
+  return { pts, r: rk.map((x) => x[1]) };
+}
+/** Rotate points by φ about the origin. */
+export const rotPts = (P, phi) => { const c = Math.cos(phi), s = Math.sin(phi); return P.map((p) => [c * p[0] - s * p[1], s * p[0] + c * p[1]]); };
