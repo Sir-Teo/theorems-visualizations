@@ -4,9 +4,9 @@ import { PI, KB, MAT, eg, Nc, Nv, niB, fdHalf, np, solveMu } from './ch04.shared
 // ---------------------------------------------------------------------------------------------- helpers for 4.1
 // Toy band structures along Γ → zone edge (k in units of the Γ–X or Γ–L distance), energies in eV; valence band top at 0.
 const BANDS = {
-  GaAs: { label: 'GaAs', Ed: 1.424, valleys: [{ k0: 0, E0: 1.424, c: 5.0 }, { k0: 1, E0: 1.424 + 0.48, c: 1.6 }], Ei: null, Ep: 0, Ad: 5e4, Ai: 0, edge: 'X' },
-  Si: { label: 'Si', Ed: 3.4, valleys: [{ k0: 0.85, E0: 1.12, c: 3.2 }, { k0: 0, E0: 3.4, c: 1.1 }], Ei: 1.12, k0: 0.85, Ep: 0.057, Ad: 5e4, Ai: 8e3, edge: 'X' },
-  Ge: { label: 'Ge', Ed: 0.8, valleys: [{ k0: 1, E0: 0.66, c: 2.4 }, { k0: 0, E0: 0.8, c: 2.2 }], Ei: 0.66, k0: 1, Ep: 0.03, Ad: 5e4, Ai: 1e4, edge: 'L' },
+  GaAs: { label: 'GaAs', Ed: 1.424, valleys: [{ k0: 0, E0: 1.424, c: 5.0 }, { k0: 1, E0: 1.424 + 0.48, c: 1.6, dom: [0.5, 1] }], Ei: null, Ep: 0, Ad: 5e4, Ai: 0, edge: 'X' },
+  Si: { label: 'Si', Ed: 3.4, valleys: [{ k0: 0.85, E0: 1.12, c: 3.2, dom: [0.3, 1] }, { k0: 0, E0: 3.4, c: 1.1 }], Ei: 1.12, k0: 0.85, Ep: 0.057, Ad: 5e4, Ai: 8e3, edge: 'X' },
+  Ge: { label: 'Ge', Ed: 0.8, valleys: [{ k0: 1, E0: 0.66, c: 2.4, dom: [0.45, 1] }, { k0: 0, E0: 0.8, c: 2.2 }], Ei: 0.66, k0: 1, Ep: 0.03, Ad: 5e4, Ai: 1e4, edge: 'L' },
 };
 const VB_HEAVY = 1.0, VB_LIGHT = 2.5;
 const cbE = (val, k) => val.E0 + val.c * (Math.abs(k) - val.k0) ** 2;
@@ -42,6 +42,9 @@ function drawLattice(s, v, a, R) {
   ctx.restore();
 }
 
+/** Slider label for log-scale densities: 3.2×10¹⁶ */
+export const dens = (M) => (x) => { const k = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** k; return (Math.abs(m - 1) < 0.01 ? '' : m.toFixed(1) + '×') + M.pow10Text(k); };
+
 export default {
   collection: 'cm',
   chapter: 4,
@@ -75,13 +78,13 @@ export default {
         v.render(() => {
           const b = BANDS[mat.value], E = hw.value;
           for (const [a, c] of [[VB_HEAVY, 'green'], [VB_LIGHT, 'green']]) sB.fn((k) => -a * k * k, { color: c, width: a === VB_HEAVY ? 2.6 : 1.6, alpha: a === VB_HEAVY ? 1 : 0.7, domain: [-1, 1] });
-          b.valleys.forEach((val, i) => sB.fn((k) => cbE(val, k), { color: 'accent', width: i === 0 ? 2.8 : 1.6, alpha: i === 0 ? 1 : 0.65, domain: [-1, 1] }));
+          b.valleys.forEach((val, i) => { const st = { color: 'accent', width: i === 0 ? 2.8 : 1.6, alpha: i === 0 ? 1 : 0.65 }; if (val.dom) { sB.fn((k) => cbE(val, k), { ...st, domain: val.dom }); sB.fn((k) => cbE(val, k), { ...st, domain: [-val.dom[1], -val.dom[0]] }); } else sB.fn((k) => cbE(val, k), { ...st, domain: [-1, 1] }); });
           if (mat.value === 'GaAs') sB.text('X valley', 0.62, 2.12, { size: 10, color: 'muted' });
           // gap markers
           const min = b.valleys[0], gap = min.E0;
           sB.dot(0, 0, { r: 5, color: 'green' }); sB.dot(min.k0, min.E0, { r: 5, color: 'accent' }); if (min.k0 > 0) sB.dot(-min.k0, min.E0, { r: 5, color: 'accent' });
           sB.hline(gap, { color: 'faint', width: 1, dash: [3, 4] });
-          sB.text(`$E_g=${gap.toFixed(2)}$ eV`, -1.0, gap + 0.14, { size: 11, color: 'muted' });
+          sB.text(`$E_g=${gap.toFixed(2)}$ eV`, 0.0, gap - 0.28, { size: 11, color: 'muted', align: 'center' });
           let kind = 'below the gap: no absorption', k1 = 0;
           const direct = b.valleys.find((q) => q.k0 === 0);
           if (min.k0 === 0) {
@@ -107,7 +110,7 @@ export default {
         v.readout(() => {
           const b = info.b, E = hw.value; if (!b) return '';
           const kph = (2 * PI * E) / 1239.84, kz = (2 * PI) / (BANDS[mat.value].label === 'Ge' ? 0.5658 : mat.value === 'Si' ? 0.5431 : 0.5653), need = (b.k0 ?? 0) * kz;
-          return `$\\hbar\\omega=${v.fix(E, 2)}$ eV ($\\lambda=${v.fix(1239.84 / E, 0)}$ nm) · ${info.kind} · $\\alpha\\approx${info.a < 1 ? '0' : v.sci(info.a, 2)}\\ \\text{cm}^{-1}$ (absorption depth $1/\\alpha\\approx${info.a < 1 ? '\\infty' : v.fix(1e4 / info.a, info.a > 1e3 ? 2 : 1)}\\ \\mu\\text{m}$)\nThe photon brings $k=${v.sci(kph, 2)}\\ \\text{nm}^{-1}$, only $${v.fix((100 * kph) / kz, 3)}\\%$$ of the zone scale $2\\pi/a$${b.k0 ? ` — the electron needs $\\Delta k\\approx${v.fix(need, 1)}\\ \\text{nm}^{-1}$, $${v.fix(need / kph, 0)}\\times$ more, so a phonon must supply it` : ' — negligible, so the transition is vertical'}.`;
+          return `$\\hbar\\omega=${v.fix(E, 2)}$ eV ($\\lambda=${v.fix(1239.84 / E, 0)}$ nm) · ${info.kind} · $\\alpha\\approx${info.a < 1 ? '0' : v.sci(info.a, 2)}\\ \\text{cm}^{-1}$ (absorption depth $1/\\alpha\\approx${info.a < 1 ? '\\infty' : v.fix(1e4 / info.a, info.a > 1e3 ? 2 : 1)}\\ \\mu\\text{m}$)\nThe photon brings $k=${v.sci(kph, 2)}\\ \\text{nm}^{-1}$, only $${v.fix((100 * kph) / kz, 3)}\\%$ of the zone scale $2\\pi/a$${b.k0 ? ` — the electron needs $\\Delta k\\approx${v.fix(need, 1)}\\ \\text{nm}^{-1}$, $${v.fix(need / kph, 0)}\\times$ more, so a phonon must supply it` : ' — negligible, so the transition is vertical'}.`;
         });
       },
     },
@@ -122,7 +125,7 @@ export default {
 $$n_i=\sqrt{N_cN_v}\,e^{-E_g/2k_BT},\qquad N_{c,v}=2\left(\frac{m_{e,h}^*k_BT}{2\pi\hbar^2}\right)^{3/2},$$
 where $N_c,N_v$ are the effective densities of states at the band edges and $m^*_{e,h}$ the density-of-states effective masses. The chemical potential sits near mid-gap, $\mu=\tfrac12E_g+\tfrac34k_BT\ln(m_h^*/m_e^*)$. A plot of $\ln n_i$ against $1/T$ is therefore nearly a straight line of slope $-E_g/2k_B$ (the $T^{3/2}$ prefactor and the temperature dependence of $E_g$ bend it slightly). This holds when $E_g\gg k_BT$, so that the Fermi function is a Boltzmann factor.`,
       idea: String.raw`The density of conduction electrons is the integral of (density of states $\propto\sqrt{E-E_c}$) times (Fermi function, from thermo-8.4). When the chemical potential lies far below $E_c$ the Fermi function is $e^{-(E-\mu)/k_BT}$ and the integral is $N_ce^{-(E_c-\mu)/k_BT}$; the same for holes with $N_v$ and $(\mu-E_v)$. Requiring $n=p$ fixes $\mu$, and in the product $np=N_cN_ve^{-E_g/k_BT}$ the chemical potential cancels, so $n_i$ depends only on the gap and the masses. Each carrier needs an energy $E_g/2$ in effect, because every thermally excited electron leaves a hole behind (cm-2.4).`,
-      caption: String.raw`Drag the gold handle along the **Arrhenius plot** to change the temperature; the three straight-ish lines are Ge, Si and GaAs. **Right:** the electron and hole distributions at that temperature, drawn as (density of states)$\times$(Fermi function) above $E_c$ and below $E_v$, magnified so that they are visible (the factor is printed); notice that the Fermi level sits in the gap, far from both bands. Turn off the gap shrinkage ($E_g$ fixed at its 300 K value) to see the line straighten; the readout gives the apparent gap $-2k_B\,d\ln n_i/d(1/T)$ against the true one and checks the Boltzmann result against the exact Fermi–Dirac integral.`,
+      caption: String.raw`Drag the gold handle along the **Arrhenius plot** to change the temperature; the three straight-ish lines are Ge, Si and GaAs. **Right:** the electron and hole distributions at that temperature, drawn as (density of states)$\times$(Fermi function) above $E_c$ and below $E_v$, each rescaled to its own peak so that they are visible (the true densities are $10^{-9}$ or less of the band-edge densities of states); notice that the Fermi level sits in the gap, far from both bands. Turn off the gap shrinkage ($E_g$ fixed at its 300 K value) to see the line straighten; the readout gives the apparent gap $-2k_B\,d\ln n_i/d(1/T)$ against the true one and checks the Boltzmann result against the exact Fermi–Dirac integral.`,
       scope: String.raw`Non-degenerate, undoped, equilibrium, parabolic bands with constant density-of-states masses (Si $1.08\,m_0, 0.81\,m_0$; Ge $0.55\,m_0, 0.37\,m_0$; GaAs $0.067\,m_0, 0.53\,m_0$) and Varshni gap $E_g(T)=E_0-\alpha T^2/(T+\beta)$ — parameters quoted from standard tables, accurate to a few per cent. At 300 K the model gives $n_i\approx8\times10^{9}$ (Si), $2.0\times10^{13}$ (Ge), $2.3\times10^6\ \text{cm}^{-3}$ (GaAs), compared with the commonly quoted $1.0\times10^{10}$, $2\times10^{13}$ (some tables $2.4\times10^{13}$) and $2.1\times10^6$ (the latter from the Ioffe archive). Si and Ge densities are quoted from memory of tables.`,
       deps: ['cm-4.1', 'thermo-8.4', 'cm-2.4'],
       refs: ['Ashcroft–Mermin ch. 28', 'Kittel ch. 8'],
@@ -170,7 +173,7 @@ where $N_c,N_v$ are the effective densities of states at the band edges and $m^*
         v.readout(() => {
           const I = info; if (!I.m) return '';
           const ref = I.m.ni300;
-          return `$T=${v.fix(I.T, 0)}$ K · $E_g=${v.fix(I.E, 3)}$ eV · $n_i=${v.sci(I.nB, 2)}\\ \\text{cm}^{-3}$ (Boltzmann) vs ${v.sci(I.nExact, 2)} (exact Fermi–Dirac, $${v.fix((100 * (I.nB - I.nExact)) / I.nExact, 2)}\\%$ apart) · $\\mu-E_v=${v.fix(I.mu, 3)}$ eV ($E_g/2=${v.fix(I.E / 2, 3)}$)\nApparent gap from the slope of the Arrhenius line: $-2k_B\\,d\\ln n_i/d(1/T)=${v.fix(I.app, 3)}$ eV (true $E_g=${v.fix(I.E, 3)}$ eV; the difference is $\\tfrac32k_BT$ from $T^{3/2}$ plus the $T$-dependence of the gap) · 300 K value ${v.sci(niT(I.m, 300), 2)}$ against the commonly quoted ${v.sci(ref, 1)}$.`;
+          return `$T=${v.fix(I.T, 0)}$ K · $E_g=${v.fix(I.E, 3)}$ eV · $n_i=${v.sci(I.nB, 2)}\\ \\text{cm}^{-3}$ (Boltzmann) vs $${v.sci(I.nExact, 2)}$ (exact Fermi–Dirac, $${v.fix((100 * (I.nB - I.nExact)) / I.nExact, 2)}\\%$ apart) · $\\mu-E_v=${v.fix(I.mu, 3)}$ eV ($E_g/2=${v.fix(I.E / 2, 3)}$)\nApparent gap from the slope of the Arrhenius line: $-2k_B\\,d\\ln n_i/d(1/T)=${v.fix(I.app, 3)}$ eV (true $E_g=${v.fix(I.E, 3)}$ eV; the difference is $\\tfrac32k_BT$ from $T^{3/2}$ plus the $T$-dependence of the gap) · 300 K value $${v.sci(niT(I.m, 300), 2)}$ against the commonly quoted $${v.sci(ref, 1)}$.`;
         });
       },
     },
@@ -196,10 +199,10 @@ Away from equilibrium (light, injection) $np>n_i^2$: the splitting of the quasi-
       viz(v) {
         const mat = v.select('material', [{ value: 'Ge', label: 'Ge' }, { value: 'Si', label: 'Si' }, { value: 'GaAs', label: 'GaAs' }], 'Si');
         const Ts = v.slider('temperature $T$ (K)', 200, 700, 300, { step: 5 });
-        const Nds = v.slider('donors $N_d$ (cm$^{-3}$)', 1e8, 1e19, 1e16, { log: true });
-        const Nas = v.slider('acceptors $N_a$ (cm$^{-3}$)', 1e8, 1e19, 1e8, { log: true });
+        const Nds = v.slider('donors $N_d$ (cm$^{-3}$)', 1e8, 1e19, 1e16, { log: true, fmt: dens(v.M) });
+        const Nas = v.slider('acceptors $N_a$ (cm$^{-3}$)', 1e8, 1e19, 1e8, { log: true, fmt: dens(v.M) });
         const ill = v.toggle('illuminate (excess pairs)', false);
-        const dn = v.slider('excess $\\Delta n=\\Delta p$ (cm$^{-3}$)', 1e8, 1e17, 1e13, { log: true });
+        const dn = v.slider('excess $\\Delta n=\\Delta p$ (cm$^{-3}$)', 1e8, 1e17, 1e13, { log: true, fmt: dens(v.M) });
         const sA = v.stage({ x: [1e8, 1e19], y: [1e0, 1e20], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'donor density $N_d$ (cm$^{-3}$)', ylabel: 'carrier density (cm$^{-3}$)', title: 'electrons and holes against doping', weight: 1.1 });
         const sB = v.stage({ x: [0, 20], y: [0, 20], equal: true, axes: 'box', gutter: true, height: 340, xlabel: '$\\log_{10}n$', ylabel: '$\\log_{10}p$', title: '$np=n_i^2$: the equilibrium line', weight: 0.9 });
         v.legend([['accent', 'electrons $n$'], ['red', 'holes $p$'], ['faint', '$n_i$ (dashed)', { dash: true }], ['gold', 'now']]);
@@ -222,7 +225,7 @@ Away from equilibrium (light, injection) $np>n_i^2$: the splitting of the quasi-
           sB.path([[L(n0), L(p0)]], { color: 'gold' });
           sB.dot(L(Math.max(1, n)), L(Math.max(1, p)), { r: 7, color: 'gold', label: ill.value ? 'illuminated' : 'equilibrium', labelPos: 'ne' });
           if (ill.value) { sB.dot(L(n0), L(p0), { r: 4, color: 'muted' }); sB.arrow(L(n0), L(p0), L(n), L(p), { color: 'orange', width: 1.4 }); }
-          sB.text('$np=n_i^2$', 0.6, 2 * ln - 1.7, { size: 11, color: 'accent', dx: 8, dy: -4 });
+          sB.text('$np=n_i^2$', 2 * ln * 0.25, 2 * ln * 0.75, { size: 11, color: 'accent', dx: 12, dy: -8 });
           st = { n, p, ni, n0, p0, fs, T, type: Nd > Na ? 'n-type' : 'p-type' };
         });
         v.readout(() => {
@@ -272,12 +275,13 @@ The ground state lies $E_d\sim10$ meV below the conduction band (one thousandth 
           sA.circle(0, 0, aB, { color: 'accent', width: 2.2, stroke: true, fill: false });
           sA.dot(0, 0, { r: 6, color: 'red' });
           sA.tex('\\text{donor ion }(+)', 0.0, 0.0, { dy: 16, size: 11, color: 'red', baseline: 'top' });
-          if (R > aB * 0.9) { sA.measure(0, -aB * 0.55, aB, -aB * 0.55, `$a^*=${v.fix(aB, 2)}$ nm`); }
-          sA.measure(R * 0.55, R * 0.8, R * 0.55 + H.a, R * 0.8, `$a=${H.a.toFixed(3)}$ nm`);
+          if (R > aB * 0.9) { sA.measure(0, -aB * 0.55, aB, -aB * 0.55, `a* = ${v.fix(aB, 2)} nm`); }
+          sA.measure(-R * 0.9, R * 0.85, -R * 0.9 + H.a, R * 0.85, `a = ${H.a.toFixed(3)} nm`);
           // right: ladder
-          sB.hline(0, { color: 'accent', width: 2.4 }); sB.text('conduction band edge', 0.5, 0.0035, { size: 10, color: 'accent', align: 'center' });
-          for (let n = 1; n <= 4; n++) { const En = -Ed / (n * n); sB.line(0.12, En, 0.58, En, { color: n === 1 ? 'orange' : 'muted', width: n === 1 ? 2.8 : 1.6 }); sB.text(`$n=${n}$: ${v.fix(1000 * -En, 1)} meV`, 0.6, En, { size: 10, color: 'muted', baseline: 'middle' }); }
-          sB.rect(0.82, -kT, 0.96, 0, { fill: 'gold', fillAlpha: 0.35, color: 'gold' }); sB.text('$k_BT$', 0.89, -kT - 0.004, { size: 11, color: 'gold', align: 'center', baseline: 'top' });
+          sB.hline(0, { color: 'accent', width: 2.4 }); sB.text('conduction band edge $E_c$', 0.7, 0.0048, { size: 10, color: 'accent', align: 'center' });
+          for (let n = 1; n <= 5; n++) { const En = -Ed / (n * n); sB.line(0.12, En, 0.5, En, { color: n === 1 ? 'orange' : 'muted', width: n === 1 ? 2.8 : 1.6 }); if (n <= 2) sB.text(`n = ${n}: ${v.fix(1000 * -En, 1)} meV`, 0.52, En, { size: 10, color: n === 1 ? 'orange' : 'muted', baseline: 'middle' }); }
+          sB.text('n = 3, 4, … crowd up to the band edge', 0.12, 0.0042, { size: 10, color: 'muted' });
+          sB.rect(0.8, -kT, 0.92, 0, { fill: 'gold', fillAlpha: 0.35, color: 'gold' }); sB.text('thermal energy $k_BT$', 0.86, -kT - 0.0015, { size: 10, color: 'gold', align: 'center', baseline: 'top' });
           sB.arrow(0.3, -Ed, 0.3, 0, { color: 'green', width: 1.8 }); sB.text('ionize', 0.08, -Ed / 2, { size: 10, color: 'green' });
           const nat = (4 / 3) * PI * aB ** 3 * (8 / H.a ** 3);
           info = { H, m, e, Ed, aB, nat, kT };
@@ -308,8 +312,8 @@ with $E_d'=E_c-E_d$ the donor level and a spin factor $2$ in the occupation. As 
       verify: true,
       viz(v) {
         const mat = v.select('material', [{ value: 'Si', label: 'Si' }, { value: 'Ge', label: 'Ge' }, { value: 'GaAs', label: 'GaAs' }], 'Si');
-        const Nds = v.slider('donors $N_d$ (cm$^{-3}$)', 1e12, 1e19, 1e15, { log: true });
-        const Nas = v.slider('acceptors $N_a$ (cm$^{-3}$)', 1e0, 1e18, 1, { log: true });
+        const Nds = v.slider('donors $N_d$ (cm$^{-3}$)', 1e12, 1e19, 1e15, { log: true, fmt: dens(v.M) });
+        const Nas = v.slider('acceptors $N_a$ (cm$^{-3}$)', 1e0, 1e18, 1, { log: true, fmt: dens(v.M) });
         const NT = 90, Ts = Array.from({ length: NT }, (_, i) => 10 * Math.pow(100, i / (NT - 1))); // 10 … 1000 K
         let key = '', curve = [];
         const sM = v.stage({ x: [10, 1000], y: [-0.1, 1.6], xlog: true, axes: 'box', gutter: true, height: 360, xlabel: 'temperature $T$ (K)', ylabel: 'energy above $E_v$ (eV)', title: 'chemical potential $\\mu(T)$', weight: 1 });
@@ -328,7 +332,7 @@ with $E_d'=E_c-E_d$ the donor level and a spin factor $2$ in the occupation. As 
           const T = h.x, c = solveMu(m, T, Nds.value, Nas.value); h.set(T, c.mu);
           sN.path(curve.map((q) => [q.T, Math.max(1, q.n)]), { color: 'accent', width: 2.8 });
           sN.hline(Math.max(1, Nds.value - Nas.value), { color: 'muted', width: 1.2, dash: [5, 4] }); sN.path(curve.map((q) => [q.T, Math.max(1, q.ni)]), { color: 'red', width: 1.6, dash: [2, 4] });
-          sN.text('$N_d-N_a$', 12, (Nds.value - Nas.value) * 2, { size: 11, color: 'muted' }); sN.text('$n_i(T)$', 700, 1e17, { size: 11, color: 'red' });
+          sN.text('$N_d-N_a$', 12, (Nds.value - Nas.value) * 2, { size: 11, color: 'muted' }); sN.text('$n_i(T)$', 420, 1e16, { size: 11, color: 'red' });
           sN.vline(T, { color: 'gold', width: 1.2 }); sN.dot(T, Math.max(1, c.n), { r: 6, color: 'gold' });
           const E = eg(m, T), frac = Nds.value > 0 ? c.ndp / Nds.value : 1;
           let reg = 'extrinsic plateau (all donors ionized)';

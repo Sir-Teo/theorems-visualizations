@@ -14,6 +14,21 @@ function debye(t) {
   return 3 * t ** 3 * (s * h) / 3;
 }
 
+/** Advance a charge (x, y, vx, vy) on its exact cyclotron arc (rate Om) for time tau inside a disc of radius R, reflecting specularly at the wall at the exact hitting time (found by bisection). */
+function arcStep(p, tau, Om, R) {
+  const arc = (t) => { const c = Math.cos(Om * t), s = Math.sin(Om * t); return { x: p.x + (p.vx * s - p.vy * (1 - c)) / Om, y: p.y + (p.vy * s + p.vx * (1 - c)) / Om, vx: p.vx * c - p.vy * s, vy: p.vx * s + p.vy * c }; };
+  for (let g = 0; g < 4 && tau > 1e-12; g++) {
+    const q = arc(tau);
+    if (q.x * q.x + q.y * q.y <= R * R) { p.x = q.x; p.y = q.y; p.vx = q.vx; p.vy = q.vy; return; }
+    let lo = 0, hi = tau;
+    for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2, w = arc(m); if (w.x * w.x + w.y * w.y > R * R) hi = m; else lo = m; }
+    const w = arc(lo), rr = Math.hypot(w.x, w.y), ux = w.x / rr, uy = w.y / rr, vn = w.vx * ux + w.vy * uy;
+    p.x = w.x; p.y = w.y; p.vx = w.vx; p.vy = w.vy;
+    if (vn > 0) { p.vx -= 2 * vn * ux; p.vy -= 2 * vn * uy; }
+    tau -= lo; if (lo < 1e-12) tau -= 1e-9;
+  }
+}
+
 export default {
   collection: 'thermo',
   chapter: 6,
@@ -124,7 +139,7 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Dulong%E2%80%93Petit_law' },
       scope: String.raw`Data: $C_P$ at 25 °C from the CRC Handbook of Chemistry and Physics (84th ed.), as tabulated on Wikipedia's "Heat capacities of the elements (data page)", fetched Oct 2026; the Einstein curves are a model fitted to one point each, not measurements, and use $C_P\approx C_V$.`,
       viz(v) {
-        const D = [['Li', 24.86], ['Be', 16.443], ['B', 11.087], ['C(gr)', 8.517], ['C(di)', 6.115], ['Na', 28.23], ['Mg', 24.869], ['Al', 24.2], ['Si', 19.789], ['K', 29.6], ['Ca', 25.929], ['Ti', 25.06], ['Cr', 23.35], ['Fe', 25.1], ['Ni', 26.07], ['Cu', 24.44], ['Zn', 25.39], ['Ag', 25.35], ['Sn', 27.112], ['W', 24.27], ['Pt', 25.86], ['Au', 25.418], ['Pb', 26.65]];
+        const D = [['Li', 24.86], ['Be', 16.443], ['B', 11.087], ['Cg', 8.517], ['Cd', 6.115], ['Na', 28.23], ['Mg', 24.869], ['Al', 24.2], ['Si', 19.789], ['K', 29.6], ['Ca', 25.929], ['Ti', 25.06], ['Cr', 23.35], ['Fe', 25.1], ['Ni', 26.07], ['Cu', 24.44], ['Zn', 25.39], ['Ag', 25.35], ['Sn', 27.112], ['W', 24.27], ['Pt', 25.86], ['Au', 25.418], ['Pb', 26.65]];
         const R3 = 3 * Rg;
         const sel = v.select('Einstein curve fitted to', [{ value: 4, label: 'diamond' }, { value: 3, label: 'graphite' }, { value: 2, label: 'boron' }, { value: 1, label: 'beryllium' }, { value: 8, label: 'silicon' }], 4);
         const kT = v.slider('temperature $T$ (K)', 20, 1500, 298.15, { log: true, sig: 3 });
@@ -138,12 +153,12 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
             sa.rect(i - 0.38, 0, i + 0.38, d[1], { fill: c, fillAlpha: i === k ? 0.95 : 0.55, color: i === k ? 'ink' : c, width: i === k ? 2 : 1 });
           });
           sa.hline(R3, { color: 'ink', dash: true, width: 1.6 });
-          sa.text('$3R=24.94$', 22.6, R3, { size: 11, color: 'muted', align: 'right', dy: -8 });
+          sa.corner('dashed line: $3R=24.94$ J/(mol K)', 'tl', { color: 'muted' });
           sb.fn((t) => cEin(TE / t), { color: 'accent', width: 2.6, n: 200, domain: [2, 1500] });
           sb.hline(1, { color: 'ink', dash: true });
           sb.dot(298.15, Cp / R3, { r: 6, color: 'red' }); sb.vline(T, { color: 'faint', dash: true }); sb.dot(T, cEin(TE / T), { r: 5.5, color: 'gold' });
           sb.text('measured, 298 K', 298.15, Cp / R3, { dx: 10, dy: 12, size: 11, color: 'red' });
-          st = { Cp, TE, c: cEin(TE / T), T, name: D[k][0], within: D.filter((d) => Math.abs(d[1] / R3 - 1) <= 0.12).length };
+          st = { Cp, TE, c: cEin(TE / T), T, name: ({ Cg: 'graphite', Cd: 'diamond' }[D[k][0]] || D[k][0]), within: D.filter((d) => Math.abs(d[1] / R3 - 1) <= 0.12).length };
         });
         v.legend([['green', 'within 12 % of $3R$', { area: true }], ['orange', 'below', { area: true }], ['purple', 'above', { area: true }], ['red', 'data point used for the fit', { dot: true }]]);
         v.readout(() => st && `${st.within} of 23 elements lie within 12 % of $3R$ · ${st.name}: $C_P(298)/3R=${fix(st.Cp / R3, 3)}$ gives $\\theta_E\\approx${fix(st.TE, 0)}$ K · at $T=${fix(st.T, 0)}$ K the fitted model gives $C/3R=${fix(st.c, 3)}$`);
@@ -154,7 +169,7 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
       num: '6.14', kind: 'Phenomenon', name: 'Freezing out of degrees of freedom',
       statement: String.raw`A degree of freedom with a spacing $\Delta$ between its levels contributes to the heat capacity only when $kT\gtrsim\Delta$. For a diatomic gas the molar $C_V/k$ per molecule therefore climbs in steps, $\frac32\to\frac52\to\frac72$, as translation (always), rotation ($kT\gtrsim\hbar^2/2I$, $\theta_{\rm rot}=87.5$ K for H$_2$, $2.9$ K for N$_2$) and vibration ($kT\gtrsim\hbar\omega$, $\theta_{\rm vib}\approx6300$ K for H$_2$, $3400$ K for N$_2$) are each unfrozen in turn. At room temperature most diatomic gases show $\frac52k$.`,
       idea: String.raw`Equipartition (6.12) counts a mode as $\frac12kT$ only if its energy levels are dense on the scale $kT$. The rotational levels $\theta_{\rm rot}J(J+1)$ and the vibrational levels $\theta_{\rm vib}(v+\frac12)$ are a ladder of spacing $\theta$; for $T\ll\theta$ the Boltzmann factor $e^{-\theta/T}$ (6.1) keeps the molecule in its ground state, and the mode contributes nothing. The curves are computed exactly from the partition function of each mode: a rigid rotor (with nuclear-spin weights for the homonuclear molecules) and an anharmonic oscillator with the tabulated $\omega_e$, $\omega_ex_e$.`,
-      caption: String.raw`Choose the gas and **move the temperature**. The blue curve is $C_V/k$ computed from the partition functions of translation (exactly $\frac32$), rotation and vibration; the right-hand panel stacks the three contributions at the chosen $T$. Gold dots are $C_P/R-1$ from the NIST–JANAF tables (equilibrium ideal gas, 1 bar). For H$_2$ compare the **equilibrium** mixture of ortho and para with the metastable **normal** 3:1 mixture: the rotational step differs between 50 and 200 K.`,
+      caption: String.raw`Choose the gas and **move the temperature**. The blue curve is $C_V/k$ computed from the partition functions of translation (exactly $\frac32$), rotation and vibration; the right-hand panel stacks the three contributions at the chosen $T$. Gold dots are $C_P/R-1$ from the NIST–JANAF tables (equilibrium ideal gas, 1 bar). For H$_2$ compare the **equilibrium** mixture of ortho and para with the metastable **normal** 3:1 mixture: the rotational step differs between 50 and 200 K (the overshoot near 50 K in the equilibrium curve comes from para–ortho conversion).`,
       deps: ['thermo-6.12', 'qm-8.14', 'qm-4.3'], refs: ['Tong ch. 2'], tags: ['heat capacity', 'quantization', 'molecules'],
       credit: 'Eucken, 1912', verify: true,
       scope: String.raw`Ideal-gas, rigid-rotor / anharmonic-oscillator model with spectroscopic constants from the NIST Chemistry WebBook (H$_2$: $B_e=60.853$, $\omega_e=4401.213$, $\omega_ex_e=121.336$ cm$^{-1}$; N$_2$: $B_e=1.998241$, $\omega_e=2358.57$, $\omega_ex_e=14.324$ cm$^{-1}$); no rotation–vibration coupling, so small deviations from the tables at high $T$. Heat-capacity data: NIST–JANAF Thermochemical Tables (janaf.nist.gov), fetched Oct 2026.`,
@@ -292,7 +307,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
         const lam = (m, T) => HP / Math.sqrt(2 * Math.PI * m * AMU * KB * T);
         const sST = (m, T, P) => Math.log(KB * T / (P * lam(m, T) ** 3)) + 2.5;
         const sa = v.stage({ x: [5, 2000], xlog: true, y: [0, 25], axes: 'box', gutter: true, height: 290, xlabel: '$T$ (K)', ylabel: '$S/Nk$', title: 'Sackur–Tetrode entropy', weight: 1.1 });
-        const sb = v.stage({ x: [-8, 3], y: [-12, 2], axes: 'box', gutter: true, height: 290, xlabel: '$\\ln n\\lambda^3$', ylabel: '$F/NkT$', title: 'free energy per atom', weight: 1 });
+        const sb = v.stage({ x: [-18, 3], y: [-20, 2], axes: 'box', gutter: true, height: 290, xlabel: '$\\ln n\\lambda^3$', ylabel: '$F/NkT$', title: 'free energy per atom', weight: 1 });
         const sc = v.stage({ x: [0, 4], y: [-10, 10], axes: 'box', gutter: true, height: 290, weight: 0.8, minWidth: 190, ylabel: 'units of $N$', title: '$\\ln Z$ for $N=10^3$ atoms', xticks: [[0.5, 'ln Z₁ᴺ'], [1.5, '−ln N!'], [2.5, 'ln Z']] });
         let st = null;
         v.render(() => {
@@ -302,12 +317,12 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           sa.fn((t) => sST(m, t, 1e5), { color: 'muted', width: 1.4, dash: true, n: 160 });
           const Smol = g.S / Rg; sa.dot(298.15, Smol, { r: 6, color: 'red' });
           sa.dot(T, sST(m, T, P), { r: 6, color: 'gold' }); sa.vline(T, { color: 'faint', dash: true });
-          const x0 = -8, x1 = 3;
+          const x0 = -18, x1 = 3;
           sb.fn((x) => x - 1, { color: 'accent', width: 2.4, domain: [x0, x1] });
-          sb.rect(0, -12, 3, 2, { fill: 'red', fillAlpha: 0.12, stroke: false });
+          sb.rect(0, -20, 3, 2, { fill: 'red', fillAlpha: 0.12, stroke: false });
           sb.text('quantum:  $n\\lambda^3\\gtrsim1$', 2.9, 1.2, { size: 11, color: 'red', align: 'right' });
           const n = P / (KB * T), nl3 = Math.log(n * lam(m, T) ** 3);
-          sb.dot(clamp(nl3, x0, x1), clamp(nl3 - 1, -12, 2), { r: 6, color: 'gold' });
+          sb.dot(clamp(nl3, x0, x1), clamp(nl3 - 1, -20, 2), { r: 6, color: 'gold' });
           const Nn = 1e3, V = Nn / n, lnZ1N = Nn * Math.log(V / lam(m, T) ** 3), lnNf = lnFac(Nn);
           const vals = [lnZ1N / Nn, -lnNf / Nn, (lnZ1N - lnNf) / Nn], cols = ['accent', 'orange', 'green'];
           const mx = Math.max(...vals.map(Math.abs), 1) * 1.2;
@@ -321,7 +336,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           st = { nl3, S: sST(m, T, P), Smol, Sstd: sST(m, 298.15, 1e5) * Rg, Sref: g.S, Pn, P, Un, U32: 1.5 * Nn * KB * T, lam: lam(m, T) };
         });
         v.legend([['accent', '$S/Nk$ at chosen $P$'], ['muted', 'at 1 bar', { dash: true }], ['red', 'NIST $S^\\circ$ (298.15 K, 1 bar)', { dot: true }]]);
-        v.readout(() => st && `$\\lambda=${fix(st.lam * 1e12, 2)}$ pm, $n\\lambda^3=${st.nl3 < -9 ? (Math.exp(st.nl3)).toExponential(1) : fix(Math.exp(st.nl3), 4)}$ · $S/Nk=${fix(st.S, 3)}$ · Sackur–Tetrode $S^\\circ(298.15\\,\\mathrm K,1\\,\\mathrm{bar})=${fix(st.Sstd, 2)}$ J/(mol K) vs NIST ${fix(st.Sref, 3)}\nfrom $\\ln Z$: $P=kT\\,\\partial_V\\ln Z=${st.Pn.toExponential(4)}$ Pa vs $nkT=${st.P.toExponential(4)}$ · $U=-\\partial_\\beta\\ln Z=${fix(st.Un / st.U32, 6)}\\times\\frac32NkT$`);
+        v.readout(() => st && `$\\lambda=${fix(st.lam * 1e12, 2)}$ pm, $n\\lambda^3=${v.sci(Math.exp(st.nl3), 2)}$ · $S/Nk=${fix(st.S, 3)}$ · Sackur–Tetrode $S^\\circ(298.15\\,\\mathrm K,1\\,\\mathrm{bar})=${fix(st.Sstd, 2)}$ J/(mol K) vs NIST ${fix(st.Sref, 3)}\nfrom $\\ln Z$: $P=kT\\,\\partial_V\\ln Z=${v.sci(st.Pn, 5)}$ Pa vs $nkT=${v.sci(st.P, 5)}$ Pa · $U=-\\partial_\\beta\\ln Z=${fix(st.Un / st.U32, 6)}\\times\\frac32NkT$`);
       },
     },
     // ------------------------------------------------------------------ 6.17
@@ -360,7 +375,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           st = { q, Tc, Tm: Tmic(N, q), d, sd, rel: sd / q, smic, scan, N };
         });
         v.legend([['accent', 'canonical $P(q)$ / computed difference'], ['green', 'microcanonical'], ['orange', '$1/2N$ (guide)', { dash: true }]]);
-        v.readout(() => st && `$N=${st.N}$, $q=${st.q}$ · $kT_{\\rm micro}=${fix(st.Tm, 4)}\\,\\varepsilon$ vs $kT_{\\rm can}=${fix(st.Tc, 4)}\\,\\varepsilon$ (relative difference ${st.d.toExponential(1)}) · entropy per oscillator $s_{\\rm micro}=${fix(st.smic, 4)}$ vs Legendre transform of $\\ln Z$: ${fix(st.scan, 4)} · canonical energy width $${fix(100 * st.rel, 1)}$ % of $q$`);
+        v.readout(() => st && `$N=${st.N}$, $q=${st.q}$ · $kT_{\\rm micro}=${fix(st.Tm, 4)}\\,\\varepsilon$ vs $kT_{\\rm can}=${fix(st.Tc, 4)}\\,\\varepsilon$ (relative difference ${fix(100 * st.d, 2)} %) · entropy per oscillator $s_{\\rm micro}=${fix(st.smic, 4)}$ vs Legendre transform of $\\ln Z$: ${fix(st.scan, 4)} · canonical energy width ${fix(100 * st.rel, 1)} % of $q$`);
       },
     },
     // ------------------------------------------------------------------ 6.18
@@ -381,14 +396,10 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           for (let i = 0; i < NP; i++) { const rr = Math.sqrt(r()) * R0, a = 2 * Math.PI * r(); P.push({ x: rr * Math.cos(a), y: rr * Math.sin(a), vx: r.normal(), vy: r.normal() }); }
           return { P, sb: 0, ss: 0, n: 0, hist: [], tt: 0 };
         }, (s, dt) => {
-          const Om = -Bs.value, c = Math.cos(Om * dt), sn = Math.sin(Om * dt);
+          const Om = -Bs.value;
           let mb = 0, ms = 0;
           for (const p of s.P) {
-            const nx = p.x + (p.vx * sn - p.vy * (1 - c)) / Om, ny = p.y + (p.vy * sn + p.vx * (1 - c)) / Om;
-            const nvx = p.vx * c - p.vy * sn, nvy = p.vx * sn + p.vy * c;
-            p.x = nx; p.y = ny; p.vx = nvx; p.vy = nvy;
-            const rr = Math.hypot(p.x, p.y);
-            if (rr > R0) { const ux = p.x / rr, uy = p.y / rr, vn = p.vx * ux + p.vy * uy; if (vn > 0) { p.vx -= 2 * vn * ux; p.vy -= 2 * vn * uy; } p.x = ux * (2 * R0 - rr); p.y = uy * (2 * R0 - rr); if (Math.hypot(p.x, p.y) > R0) { p.x = ux * R0 * 0.999; p.y = uy * R0 * 0.999; } }
+            arcStep(p, dt, Om, R0);
             const cx = p.x - p.vy / Om, cy = p.y + p.vx / Om, rc = Math.hypot(p.vx, p.vy) / Math.abs(Om);
             p.bulk = Math.hypot(cx, cy) + rc < R0;
             const mu = 0.5 * (p.x * p.vy - p.y * p.vx);
@@ -458,7 +469,7 @@ so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the 
           st = { r, rho: cf, err, pur: (1 + r * r) / 2, S: Sf(T), Z };
         });
         v.legend([['orange', 'field direction $\\hat n$'], ['gold', 'Bloch vector (length $|\\mathbf r|$)'], ['accent', 'purity $\\operatorname{tr}\\hat\\rho^2$'], ['purple', '$S/(k\\ln2)$']]);
-        v.readout(() => st && `$\\hat\\rho=\\begin{pmatrix}${fix(st.rho[0][0], 3)}&${fix(st.rho[0][1], 3)}\\\\${fix(st.rho[1][0], 3)}&${fix(st.rho[1][1], 3)}\\end{pmatrix}$ in the $\\sigma_z$ basis · $|\\mathbf r|=\\tanh\\frac{\\Delta}{2kT}=${fix(st.r, 3)}$ · purity ${fix(st.pur, 3)} · $S/k=${fix(st.S * Math.LN2, 3)}$ · matches $e^{-\\beta H}/Z$ from diagonalization to ${st.err.toExponential(1)}`);
+        v.readout(() => st && `$\\hat\\rho=\\begin{pmatrix}${fix(st.rho[0][0], 3)}&${fix(st.rho[0][1], 3)}\\\\${fix(st.rho[1][0], 3)}&${fix(st.rho[1][1], 3)}\\end{pmatrix}$ in the $\\sigma_z$ basis · $|\\mathbf r|=\\tanh\\frac{\\Delta}{2kT}=${fix(st.r, 3)}$ · purity ${fix(st.pur, 3)} · $S/k=${fix(st.S * Math.LN2, 3)}$ · matches $e^{-\\beta H}/Z$ from diagonalization to ${v.sci(st.err + 1e-17, 1)}`);
       },
     },
     // ------------------------------------------------------------------ 6.20
@@ -500,7 +511,8 @@ so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the 
           st = { T1, ideal: T0 * B1 / B0, S0, S1, floor: T0 * bs.value / B0, B1, B0, x0: muK * B0 / T0 };
         });
         v.legend([['muted', '$B=0$ (internal field only)'], ['accent', '$B=B_i$'], ['purple', '$B=B_f$'], ['ink', 'ideal $T_i B_f/B_i$', { dash: true }]]);
-        v.readout(() => st && `$\\mu B_i/kT_i=${fix(st.x0, 2)}$: entropy $${fix(st.S0, 3)}\\to${fix(st.S1, 4)}\\,Nk$ on magnetizing · after reducing the field to ${fix(st.B1, 2)} T: $T_f=${st.T1 < 0.01 ? fix(st.T1 * 1000, 2) + '$ mK$' : fix(st.T1, 3) + '$ K$'}$ · ideal ($b=0$) $T_iB_f/B_i=${st.ideal < 0.01 ? fix(st.ideal * 1000, 2) + '$ mK$' : fix(st.ideal, 3) + '$ K$'}$ · floor at $B_f=0$: ${fix(st.floor * 1000, 2)} mK`);
+        const tf = (T) => (T < 0.01 ? fix(T * 1000, 2) + ' mK' : fix(T, 3) + ' K');
+        v.readout(() => st && `$\\mu B_i/kT_i=${fix(st.x0, 2)}$: spin entropy ${fix(st.S0, 3)} → ${fix(st.S1, 4)} $Nk$ on magnetizing · after reducing the field to ${fix(st.B1, 2)} T: **$T_f$ = ${tf(st.T1)}** · ideal ($b=0$) $T_iB_f/B_i$ = ${tf(st.ideal)} · floor at $B_f=0$: ${fix(st.floor * 1000, 2)} mK`);
       },
     },
   ],
