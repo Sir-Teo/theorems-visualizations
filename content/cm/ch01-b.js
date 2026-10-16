@@ -66,7 +66,7 @@ export default {
       credit: 'Van Hove, 1953',
       statement: String.raw`The **density of states** of a band per unit cell and per spin is $g(E)=\int_{\rm BZ}\frac{d^dk}{(2\pi)^d}\,\delta\big(E-E(\mathbf k)\big)=\oint_{E(\mathbf k)=E}\frac{dS}{(2\pi)^d\,|\nabla_{\mathbf k}E|}$: the number of states in $[E,E+dE]$. It is large where the band is flat. Because $E(\mathbf k)$ is periodic on a compact zone it has, in every dimension, at least a minimum, a maximum and (for $d\ge2$) saddle points, where $\nabla_{\mathbf k}E=0$; there $g(E)$ is non-analytic — **van Hove singularities**. For a nearest-neighbour chain $g=1/(\pi\sqrt{4t^2-E^2})$ diverges at the band edges; on a square lattice $g\propto K(\sqrt{1-E^2/16t^2})$ has a logarithmic peak at the saddle energy $E=0$; in 3D $g$ is finite with square-root kinks at the critical energies.`,
       idea: String.raw`Near a critical point $E\approx E_c+\sum_i\pm\tfrac12 m_i^{-1}q_i^2$, and the volume of $k$-space between $E$ and $E+dE$ scales as $|E-E_c|^{d/2-1}$ — divergent for a 1D edge, a step for a 2D extremum, a $\sqrt{\ }$ onset in 3D. A 2D saddle has hyperbolic level curves that approach a crossing, with $|\nabla E|\to0$ along an infinite length, giving $\ln|E-E_c|$. The counting is done numerically below: histogramming $E$ over a $k$-grid is exactly this integral (qm-9.9 supplies the tight-binding bands; cm-1.1 the free-electron $g\propto E^{(d-2)/2}$).`,
-      caption: String.raw`Pick a **lattice** and a **resolution** $N$ of the $k$-grid: the bars histogram the band energies over all grid points; the curve is the exact $g(E)$ (analytic in 1D and 2D with $t'=0$, a very fine grid in 3D). The orange **probe energy** moves the constant-energy contour on the left (the dispersion in 1D/3D) and the marker on the right — watch the 2D contour change from a circle through the cross at the saddle ($\nabla E=0$) to pockets exactly where $g$ peaks. Dashed lines: critical energies.`,
+      caption: String.raw`Pick a **lattice** and a **resolution** $N$ of the $k$-grid: the bars histogram the band energies over all grid points; the curve is the exact $g(E)$ (analytic in 1D and in 2D with $t'=0$; otherwise a very fine, lightly smoothed grid). The orange **probe energy** moves the constant-energy contour on the left (the dispersion in 1D/3D) and the marker on the right — watch the 2D contour change from a circle through the cross at the saddle ($\nabla E=0$) to pockets exactly where $g$ peaks. Dashed lines: critical energies.`,
       deps: ['qm-9.9', 'cm-1.1'],
       refs: ['Ashcroft–Mermin ch. 8'],
       tags: ['density of states', 'van hove singularity', 'critical points'],
@@ -76,12 +76,12 @@ export default {
         const model = v.select('lattice', [{ value: '1', label: '1D chain' }, { value: '2', label: '2D square' }, { value: '3', label: '3D cubic' }], '2', { onChange: sync });
         const tpS = v.slider("$t'/t$ (2D)", -0.4, 0.4, 0, { step: 0.01 });
         const resS = v.slider('$k$-grid resolution', 6, 300, 60, { int: true });
-        const probe = v.slider('probe energy $E$', -4, 4, -1.5, { step: 0.01 });
+        const probe = v.slider('probe energy $E$', -6, 6, -1.5, { step: 0.02 });
         function sync() { tpS.el.hidden = model.value !== '2'; }
         sync();
         const sL = v.stage({ x: [-PI, PI], y: [-PI, PI], equal: true, height: 360, axes: 'box', gutter: true, weight: 1, xlabel: '$k_x$', ylabel: '$k_y$', title: 'band $E(\\mathbf k)$' });
         const sR = v.stage({ x: [-4, 4], y: [0, 0.4], height: 360, axes: 'box', gutter: true, weight: 1, xlabel: 'E / t', ylabel: 'g(E)', title: 'density of states $g(E)$' });
-        const NX = (d) => (d === 1 ? resS.value * 10 : d === 2 ? resS.value : Math.round(resS.value / 4) + 2);
+        const NX = (d) => (d === 1 ? resS.value * 40 : d === 2 ? resS.value : Math.round(resS.value / 3) + 4);
         const energies = (d, N, tp) => {
           const c = new Float64Array(N); for (let i = 0; i < N; i++) c[i] = Math.cos(-PI + ((i + 0.5) * TAU) / N);
           if (d === 1) return Float64Array.from(c, (x) => -2 * x);
@@ -91,7 +91,7 @@ export default {
           return out;
         };
         const hist = (vals, lo, hi, nb) => { const cnt = new Float64Array(nb), w = (hi - lo) / nb; for (const e of vals) { const b = Math.min(nb - 1, Math.floor((e - lo) / w)); if (b >= 0) cnt[b]++; } return cnt.map((c) => c / (vals.length * w)); };
-        let refKey = '', ref = null;
+        let refKey = '', ref = null, refN = 240;
         const E2 = (kx, ky, tp) => -2 * (Math.cos(kx) + Math.cos(ky)) - 4 * tp * Math.cos(kx) * Math.cos(ky);
         let st = null;
         v.render(() => {
@@ -106,8 +106,12 @@ export default {
           } else crit = [[-6, 'min Γ'], [-2, 'saddle X'], [2, 'saddle M'], [6, 'max R']];
           if (!g) {
             const key = d + '|' + tp.toFixed(3);
-            if (refKey !== key) { refKey = key; const Nr = d === 2 ? 700 : 96, rv = energies(d, Nr, tp), hh = hist(rv, lo, hi, nb); ref = hh; }
-            g = (E) => { const b = Math.floor((E - lo) / w); return b >= 0 && b < nb ? ref[b] : NaN; };
+            if (refKey !== key) {
+              refKey = key; const Nr = d === 2 ? 800 : 128, rv = energies(d, Nr, tp), nr = 240, hh = hist(rv, lo, hi, nr), sg = d === 2 ? 0.05 : 0.09, wr = (hi - lo) / nr;
+              ref = Float64Array.from(hh, (_, i) => { let a = 0, z = 0; for (let j = Math.max(0, i - 30); j < Math.min(nr, i + 31); j++) { const q = Math.exp(-0.5 * (((j - i) * wr) / sg) ** 2); a += q * hh[j]; z += q; } return a / z; });
+              refN = nr;
+            }
+            g = (E) => { const b = Math.floor(((E - lo) / (hi - lo)) * refN); return b >= 0 && b < refN ? ref[b] : NaN; };
           }
           const bars = hist(vals, lo, hi, nb);
           let top = 0; for (let b = 1; b < nb - 1; b++) top = Math.max(top, bars[b]); top = d === 1 ? 0.5 : Math.min(top * 1.12, d === 2 ? 0.45 : 0.2);
@@ -120,14 +124,14 @@ export default {
           sR.vline(pe, { color: 'orange', width: 2.6 });
           // left panel
           if (d === 2) {
-            sL.setView([-PI, PI], [-PI, PI]); sL.setLabels('$k_x$', '$k_y$');
+            sL.setScale({ equal: true }); sL.setView([-PI, PI], [-PI, PI]); sL.setLabels('$k_x$', '$k_y$'); sL.setTicks(null, null);
             sL.heat((x, y) => E2(x, y, tp), { cmap: 'theme', color: 'accent', range: [lo, hi], res: 3, key: 'e2|' + tp.toFixed(3) });
             sL.contour((x, y) => E2(x, y, tp), 10, { color: 'muted', width: 1, alpha: 0.3, res: 90 });
             sL.contour((x, y) => E2(x, y, tp), [pe], { color: 'orange', width: 3.4, res: 200 });
             for (const [x, y, t] of [[0, 0, '\\Gamma'], [PI, 0, 'X'], [0, PI, 'X'], [-PI, 0, 'X'], [0, -PI, 'X'], [PI, PI, 'M'], [-PI, -PI, 'M'], [PI, -PI, 'M'], [-PI, PI, 'M']]) sL.dot(x, y, { r: 4.5, color: 'red' });
             sL.setTitle('band $E(\\mathbf k)$: critical points $\\nabla E=0$ (red)');
           } else if (d === 1) {
-            sL.setView([-PI, PI], [-2.4, 2.4]); sL.setLabels('k', 'E / t');
+            sL.setScale({ equal: false }); sL.setTicks(null, null); sL.setView([-PI, PI], [-2.4, 2.4]); sL.setLabels('$k$', '$E/t$');
             sL.fn((k) => -2 * Math.cos(k), { color: 'accent', width: 2.6 });
             sL.hline(pe, { color: 'orange', width: 2.4 });
             if (Math.abs(pe) < 2) { const k = Math.acos(-pe / 2); sL.dot(k, pe, { r: 6, color: 'orange' }); sL.dot(-k, pe, { r: 6, color: 'orange' }); }
@@ -136,7 +140,7 @@ export default {
             const pts = [[0, 0, 0], [PI, 0, 0], [PI, PI, 0], [PI, PI, PI], [0, 0, 0]], P = [];
             for (let s = 0; s < 4; s++) for (let i = 0; i < 40; i++) { const a = pts[s], b = pts[s + 1], u = i / 40, kx = a[0] + (b[0] - a[0]) * u, ky = a[1] + (b[1] - a[1]) * u, kz = a[2] + (b[2] - a[2]) * u; P.push([s + u, -2 * (Math.cos(kx) + Math.cos(ky) + Math.cos(kz))]); }
             P.push([4, -6]);
-            sL.setView([0, 4], [-6.6, 6.6]); sL.setLabels('', 'E / t'); sL.setTicks([[0, 'Γ'], [1, 'X'], [2, 'M'], [3, 'R'], [4, 'Γ']], null);
+            sL.setScale({ equal: false }); sL.setView([0, 4], [-6.6, 6.6]); sL.setLabels('', '$E/t$'); sL.setTicks([[0, 'Γ'], [1, 'X'], [2, 'M'], [3, 'R'], [4, 'Γ']], null);
             sL.path(P, { color: 'accent', width: 2.6 }); sL.hline(pe, { color: 'orange', width: 2.4 });
             for (const x of [1, 2, 3]) sL.vline(x, { color: 'grid', dash: [3, 4] });
             sL.setTitle('band $E(\\mathbf k)$ along $\\Gamma X M R\\Gamma$');

@@ -58,9 +58,15 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
             if (Math.abs(p[0]) > half - 0.45 || Math.abs(p[1]) > half - 0.45) continue;
             (i < m ? occ : emp).push([p[0], d === 1 ? 0 : p[1]]);
           }
-          sL.dots(emp, { r: Math.max(1.2, r * 0.55), color: 'faint' });
-          sL.dots(occ, { r, color: 'accent' });
-          if (d === 1) { sL.vline(rThy, { color: 'green', width: 1.8, dash: [5, 4] }); sL.vline(-rThy, { color: 'green', width: 1.8, dash: [5, 4] }); sL.hline(0, { color: 'grid' }); }
+          if (d === 1) {
+            const h = 0.14 * half;
+            for (const p of emp) sL.line(p[0], -h * 0.7, p[0], h * 0.7, { color: 'faint', width: Math.max(1.2, px * 0.28) });
+            for (const p of occ) sL.line(p[0], -h, p[0], h, { color: 'accent', width: Math.max(1.6, px * 0.4) });
+          } else {
+            sL.dots(emp, { r: Math.max(1.2, r * 0.55), color: 'faint' });
+            sL.dots(occ, { r, color: 'accent' });
+          }
+          if (d === 1) { sL.vline(rThy, { color: 'green', width: 1.8, dash: [5, 4] }); sL.vline(-rThy, { color: 'green', width: 1.8, dash: [5, 4] }); }
           else sL.circle(0, 0, rThy, { color: 'green', width: 1.8, dash: [5, 4] });
           sL.tex(String.raw`k_F`, rThy * 0.72, d === 1 ? 0.35 * half : rThy * 0.72 + 0.6, { color: 'green', size: 14 });
           // density of states from the grid
@@ -102,7 +108,7 @@ Only electrons within $\sim k_BT$ of $E_F$ matter for thermal and transport prop
         const M = v.M, NB = 3, BW = 0.25, ks = lin(0, 1, 81), NC = 4, PPC = 14;
         const model = v.select('potential', [{ value: 'nfe', label: 'weak cosine' }, { value: 'kp', label: 'Kronig–Penney' }], 'nfe', { onChange: () => { U.el.hidden = model.value !== 'nfe'; V0.el.hidden = model.value !== 'kp'; } });
         const U = v.slider('strength $U$', 0, 1.5, 0.6, { step: 0.01 });
-        const V0 = v.slider('barrier height $V_0$ ($E_1$)', 2, 80, 25, { log: true }); V0.el.hidden = true;
+        const V0 = v.slider('barrier height $V_0$ ($E_1$)', 2, 80, 10, { log: true }); V0.el.hidden = true;
         const fold = v.slider('fold into the first zone', 0, 1, 0, { step: 0.01 });
         const rep = v.toggle('repeated-zone scheme', false, { onChange: () => { fold.el.hidden = rep.value; } });
         const chk = v.toggle('real-space ring check', true);

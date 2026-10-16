@@ -217,7 +217,7 @@ Take $A$ to be any $\mathrm{PSPACE}$-complete language (e.g. TQBF); then $\mathr
         const x2 = v.toggle('$x_2=1$', false, { onChange: () => S.reset({ at: 'keep' }) });
         const SA = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 300, title: 'oracle $A$: TQBF, so $\\mathrm P^A=\\mathrm{NP}^A$' });
         const SB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 300, title: 'oracle $B$: built against every machine' });
-        const T = v.table(SA, { rows: 9, cols: 3, square: false, cellAspect: 1.4, maxCell: 34, size: 13, labelSize: 11.5, colLabels: ['phi_y true?', 'N accepts?', ''], cornerLabel: 'guess y' });
+        const T = v.table(SA, { rows: 9, cols: 2, square: false, cellAspect: 1.7, maxCell: 34, size: 13, labelSize: 11.5, colLabels: ['phi_y', 'N accepts?'], cornerLabel: 'guess y' });
         const NS = [6, 7, 8, 9], KIND = ['scans $0,1,2,\\dots$', 'probes pseudo-random strings', 'probes low-weight strings, then guesses “accept”', 'probes with a large stride'], OUT = [0, 0, 1, 0];
         const probes = (i, n, q) => {
           const N = 2 ** n, res = [];
@@ -266,16 +266,22 @@ Take $A$ to be any $\mathrm{PSPACE}$-complete language (e.g. TQBF); then $\mathr
           }
           // right panel
           const st = f.final ? 3 : f.st, I = stageInfo[st], R = 2 ** Math.ceil(I.n / 2), C = 2 ** Math.floor(I.n / 2);
-          SB.setView([-0.5, C + 0.5 + 0], [-2.8, R + 0.5]);
           const showQ = !f.final && f.sub >= 1, showW = !f.final && f.sub === 2 && I.plant;
-          for (let m = 0; m < 2 ** I.n; m++) {
-            const cx = m % C, cy = R - 1 - Math.floor(m / C), qd = showQ && I.pr.has(m), w = showW && m === I.w;
-            SB.rect(cx + 0.06, cy + 0.06, cx + 0.94, cy + 0.94, { fill: w ? 'red' : qd ? 'gold' : 'muted', fillAlpha: w ? 0.9 : qd ? 0.65 : 0.1, color: w ? 'red' : qd ? 'gold' : 'faint', width: w ? 2 : 0.8 });
-          }
           if (f.final) {
-            SB.text('Final tally (planting at stages 1, 2, 4; empty at stage 3)', C / 2, -0.9, { align: 'center', size: 12, weight: 700 });
-            stageInfo.forEach((s, i) => SB.text(`$M_${i + 1}$, $n=${s.n}$: ${OUT[i] ? 'accepts' : 'rejects'}, $1^{${s.n}}\\in L_B$: ${s.plant ? 'yes' : 'no'} → differ ✓`, C / 2, -1.45 - i * 0.35, { align: 'center', size: 11.5, color: 'green' }));
-          } else SB.text(`length $n_${f.st + 1}=${I.n}$: ${2 ** I.n} strings, ${I.q} queries`, C / 2, -1.2, { align: 'center', size: 12.5, weight: 600 });
+            SB.setView([0, 10], [0, 7.4]);
+            SB.text('Final tally', 5, 6.7, { align: 'center', size: 14, weight: 700 });
+            stageInfo.forEach((s, i) => {
+              SB.text(`$M_${i + 1}$ at $n_${i + 1}=${s.n}$: ${OUT[i] ? 'accepts' : 'rejects'}`, 0.4, 5.5 - i * 1.25, { size: 13, weight: 600 });
+              SB.text(`${s.plant ? 'string planted' : 'row left empty'} → $1^{${s.n}}\\${s.plant ? 'in' : 'notin'}L_B$ → ${OUT[i] ? 'M says yes, truth no' : 'M says no, truth yes'} ✓`, 0.4, 5.5 - i * 1.25 - 0.55, { size: 12, color: 'green' });
+            });
+          } else {
+            SB.setView([-0.5, C + 0.5], [-2.2, R + 0.5]);
+            for (let m = 0; m < 2 ** I.n; m++) {
+              const cx = m % C, cy = R - 1 - Math.floor(m / C), qd = showQ && I.pr.has(m), w = showW && m === I.w;
+              SB.rect(cx + 0.06, cy + 0.06, cx + 0.94, cy + 0.94, { fill: w ? 'red' : qd ? 'gold' : 'muted', fillAlpha: w ? 0.9 : qd ? 0.65 : 0.1, color: w ? 'red' : qd ? 'gold' : 'faint', width: w ? 2 : 0.8 });
+            }
+            SB.text(`length $n_${f.st + 1}=${I.n}$: ${2 ** I.n} strings, ${I.q} queries`, C / 2, -1.2, { align: 'center', size: 12.5, weight: 600 });
+          }
         });
         v.legend([['gold', 'queried by $M_i$ (answer: no)', { dot: true }], ['red', 'planted into $B$', { dot: true }], ['green', 'both sides agree']]);
         v.readout(() => {

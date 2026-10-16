@@ -303,9 +303,9 @@ export default {
         const yOf = (b, R) => (b - 1) * L2 - Math.log10(R);
         const secs = [[0, '1 s'], [Math.log10(3600), '1 hour'], [Math.log10(86400), '1 day'], [Math.log10(31557600), '1 year'], [Math.log10(31557600 * 100), '100 years'], [Math.log10(AGE_UNIVERSE_S), 'age of universe']];
         const s = v.stage({ x: [0, 140], y: [-3, 36], axes: 'box', gutter: { l: 66, r: 10, t: 24, b: 46 }, height: 410, xlabel: 'key length b (bits)', ylabel: 'average search time, log₁₀ of seconds', xticks: [0, 20, 40, 56, 80, 100, 128].map((x) => [x, String(x)]), yticks: [[-3, '10⁻³'], ...secs.slice(0, 4).map((x) => x), [Math.log10(AGE_UNIVERSE_S), '13.8 Gyr'], [25, '10²⁵'], [30, '10³⁰'], [35, '10³⁵']] });
-        const rate = v.slider('Attacker speed $R$ (keys/s)', 1e3, 1e21, 3e11, { log: true, sig: 2, fmt: (x) => sciText(x, 2) });
+        const rate = v.slider('Attacker speed $R$ (keys/s)', 1e3, 1e21, 1e12, { log: true, sig: 2, fmt: (x) => sciText(x, 2) });
         const bSl = v.slider('Key length $b$ (bits)', 1, 140, 56, { int: true, onChange: (b) => hb.set(b, yOf(b, rate.value)) });
-        const hb = s.handle(56, yOf(56, 3e11), { color: 'gold', r: 8, label: 'b', constrain: (x) => { const b = clamp(Math.round(x), 1, 140); return [b, yOf(b, rate.value)]; } });
+        const hb = s.handle(56, yOf(56, 1e12), { color: 'gold', r: 8, label: 'b', constrain: (x) => { const b = clamp(Math.round(x), 1, 140); return [b, yOf(b, rate.value)]; } });
         hb.onDrag = () => { bSl.set(Math.round(hb.x)); };
         const presets = [{ R: 1e9, c: 'blue', name: 'laptop-class, $10^{9}$ keys/s' }, { R: 9e10, c: 'purple', name: 'EFF Deep Crack 1998, $9\\times10^{10}$' }, { R: 1e18, c: 'teal', name: 'a hypothetical $10^{18}$ keys/s' }];
         const marks = [[4.7, 'shift'], [8.3, 'affine'], [37.6, 'Vigenère-8'], [56, 'DES'], [128, 'AES-128']];
@@ -444,19 +444,19 @@ export default {
         const place = (ci, p) => { for (let j = 0; j < 26; j++) if (guess[j] === p) guess[j] = -1; guess[ci] = p; };
         const L = { left: 14, cw: 0 };
         sA.onClick((x, y) => {
-          const P = pix(sA), [px, py] = P.at(x, y), I = info(), cw = (P.W - 28) / 26, i = Math.floor((px - 14) / cw);
+          const P = pix(sA), [px, py] = P.at(x, y), I = info(), cw = (P.W - 78) / 26, i = Math.floor((px - 64) / cw);
           if (i < 0 || i > 25) return;
           if (py < 196) { sel = I.by[i]; }
           else if (py > 214 && py < 250 && sel >= 0) { place(sel, i); }
         });
         v.render(() => {
-          const I = info(), P = pix(sA), { W } = P, cw = (W - 28) / 26, n = Math.max(1, I.n), hMax = Math.max(...I.c, 1) / n;
+          const I = info(), P = pix(sA), { W } = P, cw = (W - 78) / 26, n = Math.max(1, I.n), hMax = Math.max(...I.c, 1) / n;
           // bars sorted by frequency rank
           const top = 20, bh = 112;
-          P.line(14, top + bh, W - 14, top + bh, { color: 'faint', width: 1 });
+          P.line(64, top + bh, W - 14, top + bh, { color: 'faint', width: 1 });
           P.text('ciphertext letters by frequency (bars) · English frequency at the same rank (dots)', 14, 9, { size: 11, weight: 600, color: 'muted', align: 'left', halo: false });
           I.by.forEach((ci, r) => {
-            const x = 14 + r * cw, f = I.c[ci] / n, h = (f / Math.max(hMax, EN_P[code(EN_ORDER[0])])) * (bh - 8);
+            const x = 64 + r * cw, f = I.c[ci] / n, h = (f / Math.max(hMax, EN_P[code(EN_ORDER[0])])) * (bh - 8);
             const isSel = ci === sel;
             P.rect(x + 2, top + bh - h, cw - 4, Math.max(h, 0), { fill: isSel ? 'gold' : 'orange', fillAlpha: isSel ? 0.7 : 0.45, color: isSel ? 'gold' : 'orange', width: 1, radius: 2 });
             const eh = (EN_P[code(EN_ORDER[r])] / Math.max(hMax, EN_P[code(EN_ORDER[0])])) * (bh - 8);
@@ -467,14 +467,14 @@ export default {
             const okc = I.truth ? (g === code(I.truth[ci]) ? 'green' : 'red') : 'green';
             P.text(g >= 0 ? A[g].toLowerCase() : '·', x + cw / 2, top + bh + 50, { size: 14, weight: 700, color: g >= 0 ? okc : 'faint', align: 'center', halo: false });
           });
-          P.text('cipher', 2, top + bh + 14, { size: 9.5, color: 'orange', weight: 700, align: 'left', halo: false });
-          P.text('English', 2, top + bh + 31, { size: 9.5, color: 'muted', weight: 700, align: 'left', halo: false });
-          P.text('your key', 2, top + bh + 50, { size: 9.5, color: 'green', weight: 700, align: 'left', halo: false });
+          P.text('cipher', 8, top + bh + 14, { size: 9.5, color: 'orange', weight: 700, align: 'left', halo: false });
+          P.text('English', 8, top + bh + 31, { size: 9.5, color: 'muted', weight: 700, align: 'left', halo: false });
+          P.text('your key', 8, top + bh + 50, { size: 9.5, color: 'green', weight: 700, align: 'left', halo: false });
           // plaintext strip
-          P.text(sel >= 0 ? `assign a plaintext letter to ciphertext letter ${A[sel]}:` : 'click a ciphertext letter above, then choose its plaintext letter:', 14, 216, { size: 11, color: 'muted', weight: 600, align: 'left', halo: false });
+          P.text(sel >= 0 ? `assign a plaintext letter to ciphertext letter ${A[sel]}:` : 'click a ciphertext letter above, then choose its plaintext letter:', 64, 216, { size: 11, color: 'muted', weight: 600, align: 'left', halo: false });
           const used = new Set(guess.filter((x) => x >= 0));
           for (let i = 0; i < 26; i++) {
-            const x = 14 + i * cw, isU = used.has(i), cur = sel >= 0 && guess[sel] === i;
+            const x = 64 + i * cw, isU = used.has(i), cur = sel >= 0 && guess[sel] === i;
             P.rect(x + 1.5, 224, cw - 3, 30, { fill: cur ? 'green' : 'accent', fillAlpha: cur ? 0.35 : isU ? 0.04 : 0.12, color: cur ? 'green' : 'faint', width: 1.2, radius: 5 });
             P.text(A[i], x + cw / 2, 239, { size: 13, weight: 700, color: isU ? 'faint' : 'blue', align: 'center', halo: false });
           }
@@ -503,9 +503,9 @@ export default {
           top.forEach(([d, k], i) => {
             const y = 34 + i * 16, g = [...d].map((ch) => (guess[code(ch)] >= 0 ? A[guess[code(ch)]].toLowerCase() : '·')).join('');
             P.text(d, 20, y, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
-            P.rect(54, y - 5, Math.max(2, (k / top[0][1]) * (colW - 150)), 10, { fill: 'orange', fillAlpha: 0.35, stroke: false, radius: 2 });
-            P.text(`${v.fix(100 * k / N, 1)}%`, 60 + (k / top[0][1]) * (colW - 150), y, { size: 10.5, color: 'muted', align: 'left', halo: false });
-            P.text('→ ' + g, colW - 70, y, { size: 13, weight: 700, color: 'green', align: 'left', halo: false });
+            P.rect(54, y - 5, Math.max(2, (k / top[0][1]) * (colW - 190)), 10, { fill: 'orange', fillAlpha: 0.35, stroke: false, radius: 2 });
+            P.text(`${v.fix(100 * k / N, 1)}%`, 60 + (k / top[0][1]) * (colW - 190), y, { size: 10.5, color: 'muted', align: 'left', halo: false });
+            P.text('→ ' + g, colW - 52, y, { size: 13, weight: 700, color: 'green', align: 'left', halo: false });
             const [e, ek] = TOP_BIGRAMS[i];
             P.text(e, W / 2 + 12, y, { size: 12.5, weight: 700, color: 'blue', align: 'left', halo: false });
             P.rect(W / 2 + 46, y - 5, (ek / TOP_BIGRAMS[0][1]) * (colW - 110), 10, { fill: 'blue', fillAlpha: 0.35, stroke: false, radius: 2 });
