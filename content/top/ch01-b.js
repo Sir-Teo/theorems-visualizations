@@ -35,7 +35,7 @@ In particular $A$ is closed if and only if it contains all its limit points. Poi
       tags: ['closure', 'limit points'],
       viz(v) {
         const L = [-1.35, 0.3], N = 3000;
-        const xs = Array.from({ length: N }, (_, i) => { const n = i + 1, r = 1.35 / n; return [L[0] + r * Math.cos(0.9 * n), L[1] + r * Math.sin(0.9 * n)]; });
+        const xs = Array.from({ length: N }, (_, i) => { const n = i + 1, r = 1.25 / n ** 0.6; return [L[0] + r * Math.cos(0.9 * n), L[1] + r * Math.sin(0.9 * n)]; });
         const P0 = [0.45, -1.15], P1 = [2.05, 0.25], C = [1.55, 1.15], CR = 0.42;
         let pts = [[-2.35, -1.25], [2.45, -1.3]];
         const eps = v.slider('ball radius $\\varepsilon$', 0.002, 1, 0.3, { log: true });
@@ -47,7 +47,7 @@ In particular $A$ is closed if and only if it contains all its limit points. Poi
           for (const q of cands) if (Math.hypot(x - q[0], y - q[1]) < 0.07) return [q[0], q[1]];
           return [x, y];
         };
-        const p = s.handle(L[0] + 0.18, L[1] - 0.12, { color: 'accent', label: '$p$', constrain: snap });
+        const p = s.handle(L[0], L[1], { color: 'accent', label: '$p$', constrain: snap });
         s.onClick((x, y) => { if (Math.hypot(x - p.x, y - p.y) > 0.15) pts.push([x, y]); });
         const same = (a, b) => Math.abs(a[0] - b[0]) < 1e-12 && Math.abs(a[1] - b[1]) < 1e-12;
         let st = null;
@@ -64,7 +64,7 @@ In particular $A$ is closed if and only if it contains all its limit points. Poi
             s.circle(C[0], C[1], CR, { color: 'green', width: 2.2 });
             s.line(P0[0], P0[1], P1[0], P1[1], { color: 'green', width: 1.4 });
             for (const q of [L, P0, P1]) s.circle(q[0], q[1], 0.07, { color: 'green', width: 2.2 });
-            for (const q of [...xs.slice(0, 12), ...pts]) s.circle(q[0], q[1], 0.065, { color: 'red', width: 1.8 });
+            for (const q of [...xs.slice(0, 16), ...pts]) s.circle(q[0], q[1], 0.065, { color: 'red', width: 1.8 });
           }
           // the probe and its ball
           s.circle(P[0], P[1], e, { fill: 'orange', fillAlpha: 0.12, color: 'orange', width: 1.8 });

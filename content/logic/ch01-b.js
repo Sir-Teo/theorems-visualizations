@@ -69,7 +69,7 @@ function berryTables() {
     let x = 1; while (x <= C && E[x] && E[x] <= N) x++; b.push(x);
     let y = x + 1; while (y <= C && E[y] && E[y] <= N) y++; b2.push(y);
   }
-  BERRY = { E, expr: (v) => expr(3, v), count, b, b2 };
+  BERRY = { E, expr: (v) => expr(3, v).replace(/\*/g, '×'), count, b, b2 };
   return BERRY;
 }
 
@@ -100,7 +100,7 @@ function evalD(n) {
   switch (n.t) { case 'n': return n.n; case 'π': return Math.PI; case 'e': return Math.E; case '√': return Math.sqrt(evalD(n.a)); case '/': return evalD(n.a) / evalD(n.b); case '+': return evalD(n.a) + evalD(n.b); default: return evalD(n.a) - evalD(n.b); }
 }
 const BIGC = new Map();
-function isqrt(n) { if (n < 2n) return n; let x = BigInt(Math.floor(Math.sqrt(Number(n)))) || 1n; if (n > 1n << 1000n) { x = 1n << BigInt(Math.ceil(n.toString(2).length / 2)); } for (;;) { const y = (x + n / x) >> 1n; if (y >= x) { while (x * x > n) x--; while ((x + 1n) * (x + 1n) <= n) x++; return x; } x = y; } }
+function isqrt(n) { if (n < 2n) return n; let x = 1n << BigInt(Math.ceil(n.toString(2).length / 2)); for (;;) { const y = (x + n / x) >> 1n; if (y >= x) { while (x * x > n) x--; while ((x + 1n) * (x + 1n) <= n) x++; return x; } x = y; } }
 function bigPi(S) { const at = (k) => { let t = S / k, s = t, n = 1n, sg = -1n; const k2 = k * k; while (t) { t /= k2; n += 2n; s += sg * (t / n); sg = -sg; } return s; }; return 16n * at(5n) - 4n * at(239n); }
 function bigE(S) { let t = S, s = S, k = 1n; while (t) { t /= k; s += t; k++; } return s - S + S; }
 /** value × 10^P (+ guard) as a BigInt fixed-point number */
@@ -124,7 +124,7 @@ function richardList() {
     if (pre.length === L) { const ast = parseDef(pre); if (ast) { const x = evalD(ast); if (x > 1e-12 && x < 1 - 1e-12) out.push({ s: pre, ast, x }); } return; }
     for (const c of RA) gen(L, pre + c);
   };
-  for (let L = 1; L <= 4; L++) { const arr = []; gen(L, ''); }
+  for (let L = 1; L <= 4; L++) gen(L, '');
   RICH = out; return out;
 }
 
@@ -402,14 +402,14 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
         v.readout(() => {
           if (!st) return '';
           const { N, b, b2, phrase, fits, count, pickE, pickL } = st;
-          const pk = pickE ? `${pick} = \`${pickE}\` (${pickL} symbols${pickL > N ? ', over budget' : ''})` : `${pick} needs more than ${BERRY_NMAX} symbols`;
+          const pk = pickE ? `${pick} = “${pickE}” (${pickL} symbols${pickL > N ? ', over budget' : ''})` : `${pick} needs more than ${BERRY_NMAX} symbols`;
           let berry;
-          if (!fits) berry = `The Berry phrase \`${phrase}\` has ${phrase.length} symbols, more than $N=${N}$, so it defines $b(${N})$ without contradiction.`;
+          if (!fits) berry = `The Berry phrase “${phrase}” has ${phrase.length} symbols, more than $N=${N}$, so it defines $b(${N})$ without contradiction.`;
           else {
             const seq = [...Array(round + 1)].map((_, k) => (k % 2 ? b2 : b));
-            berry = `The Berry phrase \`${phrase}\` has only ${phrase.length} ≤ ${N} symbols. Admit it: it denotes $b=${b}$, which is now definable, so the least undefinable number becomes ${b2}; then ${b} is undefinable again… Rounds so far: ${seq.join(' → ')} — it never settles ✗.`;
+            berry = `The Berry phrase “${phrase}” has only ${phrase.length} ≤ ${N} symbols. Admit it: it denotes $b=${b}$, which is now definable, so the least undefinable number becomes ${b2}; then ${b} is undefinable again… Rounds so far: ${seq.join(' → ')} — it never settles ✗.`;
           }
-          return `With $N=${N}$: ${count.toLocaleString('en')} numbers ≤ 200 000 are definable (≤ ${v.sci ? '' : ''}${st.strings.toExponential(1)} strings), and the least undefinable one is $b(${N})=${b}$. Picked: ${pk}. ${berry}`;
+          return `With $N=${N}$: ${count.toLocaleString('en')} numbers ≤ 200 000 are definable (out of at most $${v.sci(st.strings, 2)}$ strings), and the least undefinable one is $b(${N})=${b}$. Picked: ${pk}. ${berry}`;
         });
       },
     },
@@ -568,8 +568,8 @@ Self-reference need not be direct: cycles of sentences (Jourdain's card) and eve
           if (!st) return '';
           const { mine, str, total, delta } = st;
           let me;
-          if (mine) me = `\`${str}\` $= ${v.fix(mine.x, 6)}\\ldots$ is row $${mine.m}$ of the list; its digit $${mine.m}$ is ${mine.dm}, so $d$ has ${mine.dd} there: $d\\ne$ \`${str}\` ✓.`;
-          else me = `\`${str}\` is not in the list (it must be a valid string of at most 4 symbols with value strictly between 0 and 1).`;
+          if (mine) me = `“${str}” $= ${v.fix(mine.x, 6)}\\ldots$ is row $${mine.m}$ of the list; its digit $${mine.m}$ is ${mine.dm}, so $d$ has ${mine.dd} there: $d\\ne$ “${str}” ✓.`;
+          else me = `“${str}” is not in the list (it must be a valid string of at most 4 symbols with value strictly between 0 and 1).`;
           const dl = delta ? ` δ is row 1, so its first digit must differ from its own first digit: guess ${guess} ⇒ rule gives ${rule(guess)} ✗ (evaluations: ${evals}). δ defines nothing.` : '';
           return `The list has ${total.toLocaleString('en')} definitions of up to 4 symbols, and $d = 0.${st.dDig.join('')}\\ldots$ differs from row $n$ at digit $n$. ${me}${dl}`;
         });

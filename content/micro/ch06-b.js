@@ -32,7 +32,7 @@ Then $L \ge K(u_0)$ and $P \le K(u_1)$, where $u_1$ is the utility reached with 
         const q1 = v.slider("new price of good 1 $p_1'$", 0.4, 3, 2, { step: 0.01 });
         const q2 = v.slider("new price of good 2 $p_2'$", 0.4, 3, 1, { step: 0.01 });
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 370, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.2, title: 'the old basket at new prices' });
-        const b = v.stage({ x: [0, 1], y: [0, 4.4], height: 370, axes: false, weight: 0.8, minWidth: 230, title: 'price indices (base = 1)' });
+        const b = v.stage({ x: [0, 1], y: [0, 4.4], height: 370, axes: false, weight: 0.8, minWidth: 230, title: 'price indices, bars measured from the base 1' });
         const c = v.stage({ x: [0.4, 3], y: [0.5, 2.5], height: 190, axes: 'box', full: true, xlabel: "new price of good 1, p₁'", ylabel: 'index', title: "the indices against $p_1'$ (with $p_2'$ as set)" });
         v.legend([['muted', 'base budget', { dash: true }], ['red', 'Laspeyres: old basket at new prices'], ['green', 'true cost of living: cheapest way back to u₀'], ['purple', 'old indifference curve u₀'], ['orange', 'Paasche', {}], ['gold', 'Fisher']]);
         const idx = (F, P1, P2) => {
@@ -55,10 +55,10 @@ Then $L \ge K(u_0)$ and $P \le K(u_1)$, where $u_1$ is the utility reached with 
           if (mL - mK > 0.05) s.corner(`bias: the old basket costs ${v.fix(mL, 2)}, staying as well off costs ${v.fix(mK, 2)}`, 'tr', { color: 'red', weight: 700 });
           // bars
           const rows = [['Paasche P', r.P, 'orange'], ['Fisher √(LP)', r.Fi, 'gold'], ['true cost K', K, 'green'], ['Laspeyres L', L, 'red']];
-          const top = Math.max(...rows.map((q) => q[1]), 1) * 1.25;
-          b.setView([0, top], [0, 4.4]);
-          rows.forEach(([nm, val, col], i) => { const y = 3.7 - i; b.rect(0, y - 0.28, val, y + 0.28, { fill: col, fillAlpha: 0.7, stroke: false, radius: 3 }); b.text(`${nm} = ${v.fix(val, 3)}`, 0, y + 0.45, { dx: 4, color: 'ink', size: 11.5, weight: 600, align: 'left' }); });
-          b.line(1, 0.2, 1, 4.3, { color: 'muted', width: 1, dash: [3, 3] });
+          const vals = rows.map((q) => q[1]), blo = Math.min(1, ...vals), bhi = Math.max(1, ...vals), bs = Math.max(0.05, bhi - blo);
+          b.setView([blo - 0.12 * bs, bhi + 0.12 * bs], [0, 4.4]);
+          rows.forEach(([nm, val, col], i) => { const y = 3.7 - i; b.rect(1, y - 0.28, val, y + 0.28, { fill: col, fillAlpha: 0.7, stroke: false, radius: 3 }); b.text(`${nm} = ${v.fix(val, 3)}`, blo - 0.1 * bs, y + 0.45, { dx: 4, color: 'ink', size: 11.5, weight: 600, align: 'left' }); });
+          b.line(1, 0.2, 1, 4.3, { color: 'ink', width: 1.2 }); b.text('base 1', 1, 0.15, { dx: 4, color: 'muted', size: 10.5, align: 'left' });
           // indices against p1'
           const key = `${S}|${P2}`;
           if (!cache[key]) { const out = []; for (let i = 0; i <= 40; i++) { const p = 0.4 + (2.6 * i) / 40, q = idx(F, p, P2); out.push([p, q.L, q.K, q.P, q.Fi]); } cache[key] = out; }
@@ -118,12 +118,13 @@ the area to the left of the demand curve between the two prices. Because utility
           g.setView([0.5, 12.5], [0, Math.max(area, gmax) * 1.3 + 0.1]);
           g.hline(area, { color: 'orange', width: 2.2, dash: [6, 4] });
           g.text(`area ΔCS = ${v.fix(area, 3)}`, 12.4, area, { dy: -10, color: 'orange', ...LBL, align: 'right' });
-          g.path(xs.map((x, i) => (gs[i] == null ? null : [x, gs[i]])), { color: 'gold', width: 2.6 });
+          g.path(xs.map((x, i) => (gs[i] == null ? null : [x, gs[i]])), { color: 'gold', width: 4 });
+          g.hline(area, { color: 'orange', width: 1.8, dash: [6, 4] });
           st = { e: eta.value, P, area, gmin, gmax, du: u1 - u0 };
         });
         v.readout(() => {
           const { e, P, area, gmin, gmax, du } = st, f = (q) => v.fix(q, 3);
-          if (e < 1e-6) return `Quasilinear: when $p_1$ falls from 2 to ${v.fix(P, 2)} utility rises by $\\Delta u = ${f(du)}$, the area to the left of the demand curve is ${f(area)}, and the vertical gap between the curves is ${f(gmin)} everywhere (from ${f(gmin)} to ${f(gmax)}). One number, in units of good 2, measures the gain exactly.`;
+          if (e < 1e-6) return `Quasilinear: when $p_1$ falls from 2 to ${v.fix(P, 2)} utility rises by $\\Delta u = ${f(du)}$, the area to the left of the demand curve is ${f(area)}, and the vertical gap between the curves is ${f(gmin)} at every $x_1$ (it varies by ${v.sci(Math.abs(gmax - gmin) + 1e-16, 1)}). One number, in units of good 2, measures the gain exactly.`;
           return `With $\\eta = ${v.fix(e, 2)}$ good 1 has an income effect. The consumer-surplus area is ${f(area)}, but the vertical gap between the two curves now ranges from ${f(gmin)} to ${f(gmax)} depending on where it is measured, and the utility change ${f(du)} is in utils, not money. The area is only an approximation, lying between the compensating and equivalent variations (6.11).`;
         });
       },
