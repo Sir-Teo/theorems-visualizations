@@ -28,11 +28,12 @@ export default {
 $$z(p^*) = 0,$$
 a Walrasian equilibrium (9.5). With two goods this is the statement that the single continuous function $z_1(p_1/p_2)$, positive for small relative prices and negative for large ones, has a zero.`,
       idea: String.raw`With two goods, Walras' law makes market 2 redundant and homogeneity reduces everything to the relative price $p = p_1/p_2$. As $p \to 0$ good 1 is almost free and everybody wants more, so $z_1 > 0$; as $p \to \infty$ the traders can afford little of it and sell what they have, so $z_1 < 0$; and $z_1$ is continuous because strictly convex preferences give each consumer a unique, continuously varying best bundle. The intermediate value theorem (Rudin 4.23) then yields a zero. With $n$ goods the same argument runs through Brouwer's fixed-point theorem applied to a price-adjustment map of the simplex (9.21). Convexity is not a technicality: when it fails, demand jumps and $z_1$ can leap over zero.`,
-      caption: String.raw`Left: $z_1(p)$ for $A$ (Cobb–Douglas) and a second trader $B$ whose preferences you choose. With **convex** preferences the curve runs continuously from $+$ to $-$ and crosses zero at $p^*$ (green). Switch to **non-convex** tastes for $B$ (indifference curves bulging away from the origin): $B$'s demand flips between two corners at $p = 1$, the curve jumps (dashed) over zero and no price clears the market. Right: the offer curves in the box; equilibrium is where they cross. Drag $\omega$ or the price.`,
+      caption: String.raw`Left: $z_1(p)$ for $A$ (Cobb–Douglas) and a second trader $B$ whose preferences you choose. With **convex** preferences the curve runs continuously from $+$ to $-$ and crosses zero at $p^*$ (green). Switch to **non-convex** tastes for $B$ (indifference curves bulging away from the origin): $B$'s demand flips between two corners at $p = 1$, the curve jumps (dashed) over zero and no price clears the market. Right: the offer curves in the box; equilibrium is where they cross (in the non-convex case $B$'s corner demands lie outside the box, so only $A$'s curve is visible). Drag $\omega$ or the price.`,
       deps: ['micro-9.6', 'pma-4.23', 'top-13.11'],
       see: ['micro-9.21', 'micro-2.5'],
       refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'existence'],
       credit: 'Wald (1936), Arrow & Debreu, 1954 and McKenzie, 1954 (general proofs)',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model' },
       viz(v) {
         const kind = v.select('$B$’s preferences', [{ value: 'cd', label: 'convex (Cobb–Douglas)' }, { value: 'sq', label: 'non-convex' }], 'cd');
@@ -81,7 +82,6 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       see: ['micro-9.5'],
       refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'stability'],
       credit: 'H. Scarf, 1960 (global instability); L. Shapley & M. Shubik, 1977 (three equilibria)',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/General_equilibrium_theory' },
       viz(v) {
         const rS = v.slider('complementarity $\\rho$ (more negative = closer to Leontief)', -30, -12, -20, { step: 0.5 });
@@ -140,8 +140,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       deps: ['micro-9.5', 'micro-9.2'],
       see: ['micro-9.10'],
       refs: ['Varian Ch. 32'], tags: ['welfare', 'efficiency'],
-      credit: 'Arrow, 1951 and Debreu, 1951 (modern proofs); the idea goes back to Adam Smith and Pareto',
-      verify: true,
+      credit: 'K. Arrow, 1951; G. Debreu, 1951 (modern proofs)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics' },
       viz(v) {
         const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.65, { step: 0.01 });
@@ -188,7 +187,6 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       see: ['micro-9.14'],
       refs: ['Varian Ch. 32'], tags: ['welfare', 'convexity'],
       credit: 'K. Arrow, 1951; G. Debreu, 1951 and 1954',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics' },
       viz(v) {
         const kind = v.select('$B$’s preferences', [{ value: 'cd', label: 'convex (Cobb–Douglas)' }, { value: 'sq', label: 'non-convex' }], 'cd');

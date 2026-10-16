@@ -311,7 +311,7 @@ Consequently, if all markets but one clear at $p$, the last one clears too; with
         });
         v.readout(() => {
           const { p, z, val, r } = st;
-          return `At $p = ${f2(p)}$: $z_1 = ${f2(z[0])}$, $z_2 = ${f2(z[1])}$, so $p z_1 + z_2 = ${f2(p * z[0])} ${z[1] < 0 ? '−' : '+'} ${f2(Math.abs(z[1]))} = ${f2(val, 4)}$${Math.abs(val) < 1e-6 ? ': Walras’ law holds' : ': **the law fails** (A does not spend all of his or her income, so some income is left unspent)'}.${r.length ? ` Market 1 clears at $p^* = ${f2(r[0].p, 3)}$, and at that price market 2 clears too: $z_2 = ${f2(M2(r[0].p, sat.value), 4)}$.` : ''}`;
+          return `At $p = ${f2(p)}$: $z_1 = ${f2(z[0])}$, $z_2 = ${f2(z[1])}$, so $p z_1 + z_2 = ${f2(p * z[0])} ${z[1] < 0 ? '−' : '+'} ${f2(Math.abs(z[1]))} = ${f2(val, 4)}$${Math.abs(val) < 1e-6 ? ': Walras’ law holds' : ': **the law fails** (A does not spend all of his or her income, so some income is left unspent)'}.${r.length ? ` Market 1 clears at $p^* = ${f2(r[0].p, 3)}$; there $z_2 = ${f2(M2(r[0].p, sat.value), 4)}$${Math.abs(M2(r[0].p, sat.value)) < 1e-6 ? ', so market 2 clears too (Walras’ law)' : ': market 2 does **not** clear, because the law fails'}.` : ''}`;
         });
         function M2(p, s) { const M = market(s ? pref('sat', { bx: 4, by: 4 }) : cd(0.35), cd(0.6), w); return M.z(p)[1]; }
       },

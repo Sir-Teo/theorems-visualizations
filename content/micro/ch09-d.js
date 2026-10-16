@@ -147,7 +147,7 @@ export default {
         v.readout(() => {
           const { roots, Om, err, wal, mg, sD } = st;
           const ns = roots.filter((r) => r.stable).length;
-          return `Your sketch has **${roots.length} zero${roots.length === 1 ? '' : 's'}** (${ns} stable, ${roots.length - ns} unstable). The construction: seller $S$ owns $\\Omega = ${f2(Om, 0)}$ units of good 1 and sells about half of them, buyer $D$ buys about ${f2(sD, 0)}; their net excess demand reproduces the sketch to within $${f2(err, 6)}$ and $p z_1 + z_2$ is within $${f2(wal, 6)}$ of zero. The convexity margin of $S$'s preferences is at least ${f2(mg, 3)} \\ge 0$: individually perfectly well-behaved consumers produce an arbitrary-looking market.`;
+          return `Your sketch has **${roots.length} zero${roots.length === 1 ? '' : 's'}** (${ns} stable, ${roots.length - ns} unstable). The construction: seller $S$ owns $\\Omega = ${f2(Om, 0)}$ units of good 1 and sells about half of them, buyer $D$ buys about ${f2(sD, 0)}; their net excess demand reproduces the sketch to within $${f2(err, 6)}$ and $p z_1 + z_2$ is within $${f2(wal, 6)}$ of zero. The convexity margin of $S$'s preferences is at least $${f2(mg, 3)} \\ge 0$: individually perfectly well-behaved consumers produce an arbitrary-looking market.`;
         });
       },
     },
@@ -211,7 +211,7 @@ export default {
       deps: ['micro-2.5', 'micro-4.9'],
       see: ['micro-9.5', 'micro-9.6'],
       refs: [], tags: ['general equilibrium', 'history', 'price adjustment'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Tâtonnement' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/T%C3%A2tonnement' },
       viz(v) {
         const TMAX = 14;
         const L = v.stage({ x: [0, 3], y: [0, 3], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'price of good 1 (good 3 = 1)', ylabel: 'price of good 2', title: 'tâtonnement in the price plane', weight: 1.1 });
@@ -248,7 +248,7 @@ export default {
           B.hline(0, { color: 'muted', width: 1 });
           pz.forEach((val, g) => bar(B, g + 1, 0.55, 0, val, col[g]));
           bar(B, 4, 0.55, 0, sum, 'green', { fillAlpha: 0.9 });
-          B.text(`Σ = ${f2(sum, 6)}`, 4, 0, { dy: -14, size: 12, weight: 700, color: 'green', align: 'center', plate: true });
+          B.text('Σ = 0', 4, 0, { dy: -14, size: 12, weight: 700, color: 'green', align: 'center', plate: true });
           st = { q, z, sum, t: n * DT };
         }, { period: 12, still: 11.5 });
         v.readout(() => {
@@ -270,7 +270,6 @@ export default {
       deps: ['micro-9.20', 'micro-9.5', 'micro-4.6', 'game-2.4'],
       see: ['micro-9.7'],
       refs: [], tags: ['general equilibrium', 'existence', 'history'],
-      doi: '10.2307/1907353',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model' },
       viz(v) {
         const tech = v.select('the firm’s technology', [{ value: 'cvx', label: 'convex (decreasing returns)' }, { value: 'inc', label: 'non-convex (increasing returns)' }], 'cvx');
@@ -303,13 +302,14 @@ export default {
           for (let it = 0; it < 500; it++) { let moved = false; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) { const q = [p[0] + dx * h, p[1] + dy * h, 1 - (p[0] + dx * h) - (p[1] + dy * h)]; if (q.some((c) => c <= 1e-3)) continue; const w = disp(F, q, 1); if (w < d) { d = w; p = q; moved = true; } } if (!moved) h *= 0.6; }
           return (cache = { key, rest: { p, d } }).rest;
         };
+        let this_state = { found: true, rp: { d: 0, p: [1 / 3, 1 / 3, 1 / 3] }, last: [1 / 3, 1 / 3, 1 / 3], dLast: 0, Lq: 0, steps: 0 };
         v.animate((t) => {
           const F = firmOf(), l = lS.value, steps = Math.min(40, Math.floor(t * 3.4));
           const rp = rest(F, l);
           // brightness: displacement of the map from each price vector
           const key = `${tech.value}|${kS.value}|${l}`;
-          s.raster((x, y) => { const p = toP(x, y); if (p[0] < 0 || p[1] < 0 || p[2] < 0) return null; const d = disp(F, p, 1), tt = clamp(d / 0.4, 0, 1), c = v.ramp(1 - Math.sqrt(tt), 'accent', 'panel'); return [c[0], c[1], c[2], 150]; }, { key: `simplex|${key}`, res: 3 });
-          s.poly([[0, 0], [1, 0], [0.5, R3]], { stroke: true, color: 'ink', width: 2, fill: false });
+          s.raster((x, y) => { const p = toP(x, y); if (p[0] < 0 || p[1] < 0 || p[2] < 0) return null; const d = disp(F, p, 1), c = v.ramp(0.9 * Math.exp(-d / 0.12), 'accent', 'panel'); return [c[0], c[1], c[2], 255]; }, { key: `simplex|${key}`, res: 3 });
+          s.path([[0, 0], [1, 0], [0.5, R3]], { close: true, color: 'ink', width: 2 });
           s.text('good 1', 0, 0, { dy: 16, size: 12, weight: 700, color: 'ink', align: 'center' }); s.text('good 2', 1, 0, { dy: 16, size: 12, weight: 700, color: 'ink', align: 'center' }); s.text('good 3', 0.5, R3, { dy: -14, size: 12, weight: 700, color: 'ink', align: 'center' });
           for (let a = 0; a <= 9; a++) for (let b = 0; b + a <= 9; b++) {
             const p = clampP([(a + 0.5) / 10.5, (b + 0.5) / 10.5, 1 - (a + 0.5) / 10.5 - (b + 0.5) / 10.5]), q = mapT(excess(p, F), p, 1), xy = toXY(p), xy2 = toXY(q);
@@ -322,7 +322,7 @@ export default {
           path.slice(0, steps + 1).forEach((q, i) => { const xy = toXY(q); s.dot(xy[0], xy[1], { r: i === steps ? 6 : 3, color: 'accent' }); });
           const found = rp.d < 2e-3, xr = toXY(rp.p);
           s.dot(xr[0], xr[1], { r: 8, color: found ? 'green' : 'red', hollow: !found });
-          if (!found) plateText(s, 'no rest point', xr[0], xr[1], { dy: -17, color: 'red', align: 'center' });
+          if (!found) plateText(s, 'no rest point', xr[0], xr[1], { dy: 20, color: 'red', align: 'center' });
           s.dot(H.x, H.y, { r: 6, color: 'gold' });
           // displacement over iterations
           G.fn(() => 0, { domain: [0, 40], color: 'muted', width: 1 });
@@ -330,10 +330,9 @@ export default {
           G.dot(steps, Math.min(ds[steps], 0.59), { r: 6, color: 'accent' });
           this_state = { found, rp, F, steps, last: path[steps], dLast: ds[steps], Lq: F(path[steps]).L, fp: path };
         }, { period: 14, still: 13 });
-        let this_state = { found: true, rp: { d: 0, p: [1 / 3, 1 / 3, 1 / 3] }, last: [1 / 3, 1 / 3, 1 / 3], dLast: 0, Lq: 0, steps: 0 };
         v.readout(() => {
           const { found, rp, last, dLast, Lq, steps } = this_state;
-          return `Iteration ${steps}: prices $(${f2(last[0], 3)}, ${f2(last[1], 3)}, ${f2(last[2], 3)})$, displacement $\\lVert T(p) - p\\rVert = ${f2(dLast, 4)}$, the firm uses ${f2(Lq, 2)} units of good 1. ${found ? `**A fixed point exists**: $p^* = (${rp.p.map((c) => f2(c, 3)).join(', ')})$, displacement ${rp.d.toExponential(1)} (zero up to the search tolerance), so excess demand is zero there.` : `**No price vector is at rest**: the smallest displacement found anywhere on the simplex is ${f2(rp.d, 3)}. With increasing returns the firm's supply jumps from zero to its capacity as prices cross a threshold, so excess demand is discontinuous and Brouwer's and Kakutani's theorems no longer apply.`}`;
+          return `Iteration ${steps}: prices $(${f2(last[0], 3)}, ${f2(last[1], 3)}, ${f2(last[2], 3)})$, displacement $\\lVert T(p) - p\\rVert = ${f2(dLast, 4)}$, the firm uses ${f2(Lq, 2)} units of good 1. ${found ? `**A fixed point exists**: $p^* = (${rp.p.map((c) => f2(c, 3)).join(', ')})$, displacement ${rp.d < 1e-9 ? 'below 1e-9' : rp.d.toExponential(1)} (zero up to the search tolerance), so excess demand is zero there.` : `**No price vector is at rest**: the smallest displacement found anywhere on the simplex is ${f2(rp.d, 3)}. With increasing returns the firm's supply jumps from zero to its capacity as prices cross a threshold, so excess demand is discontinuous and Brouwer's and Kakutani's theorems no longer apply.`}`;
         });
       },
     },

@@ -65,7 +65,6 @@ export default {
       deps: ['micro-9.3'],
       refs: ['Varian Ch. 34'], tags: ['welfare', 'equity'],
       credit: 'A. Bergson, 1938 (social welfare function); J. Nash, 1950 (Nash product); J. Rawls, 1971 (maximin)',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Utility%E2%80%93possibility_frontier' },
       viz(v) {
         const sel = v.select('social welfare function', [{ value: 'util', label: 'utilitarian' }, { value: 'rawls', label: 'Rawlsian (max-min)' }, { value: 'nash', label: 'Nash product' }], 'util');
@@ -131,7 +130,7 @@ With many consumers, all of them must share a common MRS equal to the MRT (the e
         const mk = v.toggle('market chooses (with the wedge)', false);
         const R = 10;
         const s = v.stage({ x: [0, 11.5], y: [0, 11.5], equal: true, axes: 'box', gutter: true, height: 400, xlabel: 'good 1', ylabel: 'good 2', title: 'production frontier and indifference curve', weight: 1.1 });
-        const G = v.stage({ x: [0, Math.PI / 2], y: [0, 10], axes: 'box', gutter: true, height: 400, xlabel: 'position on the frontier (more good 1 →)', ylabel: 'utility', title: 'welfare along the frontier', weight: 0.9, minWidth: 260, xticks: [[0, 'only 2'], [Math.PI / 4, ''], [Math.PI / 2, 'only 1']] });
+        const G = v.stage({ x: [0, Math.PI / 2], y: [0, 10], axes: 'box', gutter: true, height: 400, xlabel: 'position on the frontier (more good 1 →)', ylabel: 'utility', title: 'welfare along the frontier', weight: 0.9, minWidth: 260, xticks: [[0, 'only 2'], [Math.PI / 4, ''], [Math.PI / 2 - 0.15, 'only 1']] });
         v.legend([['ink', 'production frontier'], ['purple', 'indifference curve'], ['orange', 'MRT tangent'], ['accent', 'MRS tangent'], ['green', 'welfare maximum']]);
         const pt = (ph) => [R * Math.sin(ph), R * Math.cos(ph)];
         const H = s.handle(...pt(0.7), { color: 'gold', r: 9, label: 'x', labelPos: 'ne', constrain: (x, y) => { const ph = clamp(Math.atan2(x, y), 0.03, Math.PI / 2 - 0.03); return pt(ph); } });
@@ -171,8 +170,7 @@ With many consumers, all of them must share a common MRS equal to the MRT (the e
       deps: ['micro-1.11', 'micro-7.3', 'micro-9.14'],
       see: ['micro-9.16'],
       refs: ['CORE Unit 18'], tags: ['trade', 'general equilibrium'],
-      credit: 'E. Heckscher, 1919; B. Ohlin, 1933 (modern form: P. Samuelson, 1948–49)',
-      verify: true,
+      credit: 'E. Heckscher, 1919; B. Ohlin, 1933 (modern form: P. Samuelson, 1948)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heckscher%E2%80%93Ohlin_model' },
       viz(v) {
         const sK = v.slider('Home’s share of world capital', 0.2, 0.8, 0.65, { step: 0.01 });
