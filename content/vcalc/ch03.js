@@ -92,7 +92,9 @@ So $\mathbf c$ is tangent to the arrow of $\mathbf F$ at each of its points. If 
         const KEYS = ['eddies', 'rot', 'saddle', 'source', 'vortex', 'waves', 'mix', 'grad', 'shear'];
         const pick = v.select('field', fieldOptions(KEYS), 'eddies');
         const rev = v.toggle('run time backwards', false);
-        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 460, weight: 1, xlabel: 'x', ylabel: 'y', title: 'click to drop dye' });
+        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 440, weight: 1.2, xlabel: 'x', ylabel: 'y', title: 'click to drop dye' });
+        const R = v.stage({ x: [0, 8], y: [0, 2], axes: 'box', gutter: true, height: 440, weight: 1, minWidth: 260, xlabel: 't', title: 'speed $|\\mathbf F|$ along each flow line' });
+        const PAL = ['accent', 'orange', 'green', 'purple', 'teal', 'pink', 'red'];
         const start = [[-1.05, 0.85], [-1.05, 0.3], [-1.0, -0.4], [0.35, 1.0], [0.2, -0.3], [0.9, -0.9], [-0.3, 0.1]];
         let seeds = start.map((p) => p.slice()), built = '', paths = [], stats = { err: 0, n: 0 };
         v.button('reset dye', () => { seeds = start.map((p) => p.slice()); });
@@ -135,6 +137,17 @@ So $\mathbf c$ is tangent to the arrow of $\mathbf F$ at each of its points. If 
             S.path(run.slice(Math.max(0, i - 30), i + 1), { color: 'gold', width: 2.6 });
             S.dot(run[i][0], run[i][1], { r: 5, color: 'gold' });
           }
+          let ymax = 0.5;
+          for (const { run } of paths) for (let i = 0; i < run.length; i += 4) { const f = F(run[i][0], run[i][1]); ymax = Math.max(ymax, Math.min(4, Math.hypot(f[0], f[1]))); }
+          R.setView([0, 8], [0, 1.15 * ymax]);
+          paths.forEach(({ run }, k) => {
+            const sp = (i) => { const f = F(run[i][0], run[i][1]); return Math.hypot(f[0], f[1]); };
+            const pts = []; for (let i = 0; i < run.length; i += 2) pts.push([i * DT, sp(i)]);
+            const c = PAL[k % PAL.length];
+            R.path(pts, { color: c, width: 1.6, alpha: 0.8 });
+            const i = Math.min(idx, run.length - 1); R.dot(i * DT, sp(i), { r: 4, color: c });
+          });
+          R.vline(t % 8, { color: 'muted', alpha: 0.5, width: 1 });
           tNow = t % 8; vNow = paths.length ? (() => { const r = paths[0].run, i = Math.min(idx, r.length - 1), f = F(r[i][0], r[i][1]); return Math.hypot(f[0], f[1]); })() : 0;
         }, { period: 8, still: 3.4 });
         v.legend([['accent', 'flow line through the dye\'s starting point'], ['gold', 'dye particle with its recent track'], ['orange', 'where the dye was released', { dot: true }]]);
@@ -161,7 +174,8 @@ So $\mathbf c$ is tangent to the arrow of $\mathbf F$ at each of its points. If 
         const rot = v.toggle('rotate every arrow by 90° (not a gradient any more)', false);
         v.button('reset', () => { B = base(); });
         v.button('clear', () => { B = []; });
-        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 460, weight: 1, xlabel: 'x', ylabel: 'y', title: 'click: hill, shift-click: well' });
+        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 440, weight: 1.2, xlabel: 'x', ylabel: 'y', title: 'click: hill, shift-click: well' });
+        const R = v.stage({ x: [0, TAU], y: [-1, 1], axes: 'box', gutter: true, height: 440, weight: 1, minWidth: 260, xlabel: 'angle $\\theta$ around the circle', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [1.5 * Math.PI, '3π/2'], [TAU, '2π']], title: 'going once round the loop' });
         S.onClick((x, y, mod) => { if (B.length < 12) B.push({ a: (mod.shift ? -1 : 1) * amp.value, x, y, w: tool.value }); v.invalidate(); });
         const P = S.handle(-0.2, 0.15, { color: 'gold', label: 'p', constrain: { x: [-1.2, 1.2], y: [-1.2, 1.2] } });
         let st = {};
@@ -180,9 +194,19 @@ So $\mathbf c$ is tangent to the arrow of $\mathbf F$ at each of its points. If 
           const q0 = F(P.x, P.y), L = Math.hypot(q0[0], q0[1]);
           if (L > 1e-9) S.arrow(P.x, P.y, P.x + (q0[0] / L) * Math.min(0.3, 0.3 * L), P.y + (q0[1] / L) * Math.min(0.3, 0.3 * L), { color: 'gold', width: 3, head: 8 });
           const gg = g(P.x, P.y);
-          st = { circ, L: Math.hypot(gg[0], gg[1]), val: f(P.x, P.y), n: B.length };
+          const tang = (th) => { const q = F(P.x + r * Math.cos(th), P.y + r * Math.sin(th)); return r * (-q[0] * Math.sin(th) + q[1] * Math.cos(th)); };
+          const hgt = (th) => f(P.x + r * Math.cos(th), P.y + r * Math.sin(th));
+          const h0 = hgt(0);
+          let lo = 0, hi = 0;
+          for (let i = 0; i <= 90; i++) { const th = (TAU * i) / 90, a = hgt(th) - h0, b = tang(th); lo = Math.min(lo, a, b); hi = Math.max(hi, a, b); }
+          const pad = Math.max(0.05, 0.2 * (hi - lo));
+          R.setView([0, TAU], [lo - pad, hi + pad]);
+          R.hline(0, { color: 'muted', alpha: 0.5, width: 1 });
+          R.fn((th) => tang(th), { domain: [0, TAU], n: 180, color: rot.value ? 'red' : 'orange', width: 2.2, fill: true, fillAlpha: 0.2 });
+          R.fn((th) => hgt(th) - h0, { domain: [0, TAU], n: 180, color: 'accent', width: 2.4 });
+          st = { circ, L: Math.hypot(gg[0], gg[1]), val: f(P.x, P.y), n: B.length, end: hgt(TAU) - h0 };
         });
-        v.legend([['accent', 'arrows of $\\nabla\\varphi$'], ['red', 'arrows rotated by $90^\\circ$ (when ticked)'], ['orange', 'closed loop for the circulation']]);
+        v.legend([['accent', 'arrows of $\\nabla\\varphi$ (left); height $\\varphi-\\varphi_0$ round the loop (right)'], ['orange', 'the loop (left); $r\\,\\mathbf F\\cdot\\mathbf t$ round it (right), whose area is the circulation'], ['red', 'the same, for arrows rotated by $90^\\circ$']]);
         v.readout(() => `${st.n} bump${st.n === 1 ? '' : 's'} in $\\varphi$.  At $p$: $\\varphi(p)=${tf(st.val, 3)}$, $|\\nabla\\varphi(p)|=${tf(st.L, 3)}$.\nAround the orange circle: $\\oint \\mathbf F\\cdot d\\mathbf r=${Math.abs(st.circ) < 5e-12 ? '0\\ (<10^{-11})' : tf(st.circ, 4)}$${rot.value ? ' — nonzero: the rotated field is not the gradient of anything' : ' — a gradient field does not circulate'}.`);
       },
     },
@@ -275,7 +299,8 @@ A planar field $(u,v)$ is the case $F_3=0$ with nothing depending on $z$; its cu
         const pick = v.select('field', fieldOptions(KEYS), 'shear');
         const rad = v.slider('wheel radius', 0.03, 0.45, 0.18, { step: 0.01 });
         const speed = v.slider('time-lapse', 1, 6, 3, { step: 0.5 });
-        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 460, weight: 1, xlabel: 'x', ylabel: 'y', title: 'drag the paddle wheel' });
+        const S = v.stage({ x: W, y: W, equal: true, axes: 'box', gutter: true, height: 440, weight: 1.2, xlabel: 'x', ylabel: 'y', title: 'drag the paddle wheel' });
+        const R = v.stage({ x: [0, TAU], y: [-1, 1], axes: 'box', gutter: true, height: 440, weight: 1, minWidth: 260, xlabel: 'angle $\\theta$ around the rim', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [1.5 * Math.PI, '3π/2'], [TAU, '2π']], title: 'field along the rim: $\\mathbf F\\cdot\\mathbf t$' });
         const P = S.handle(-0.3, 0.35, { color: 'gold', label: '', constrain: { x: [-1.15, 1.15], y: [-1.15, 1.15] } });
         let ang = 0, last = 0, st = {};
         v.animate((t) => {
@@ -292,6 +317,14 @@ A planar field $(u,v)$ is the case $F_3=0$ with nothing depending on $z$; its cu
             tot += ft; if (i % 6 === 0) rim.push([th, ft]);
           }
           const omega = tot / n / r, curl = curl2(F, P.x, P.y, 0.01);
+          const ft = (th) => { const q = F(P.x + r * Math.cos(th), P.y + r * Math.sin(th)); return -q[0] * Math.sin(th) + q[1] * Math.cos(th); };
+          let lo = 0, hi = 0;
+          for (let i = 0; i <= 90; i++) { const q = ft((TAU * i) / 90); lo = Math.min(lo, q); hi = Math.max(hi, q); }
+          const pad = Math.max(0.1, 0.25 * (hi - lo));
+          R.setView([0, TAU], [lo - pad, hi + pad]);
+          R.hline(0, { color: 'muted', alpha: 0.5, width: 1 });
+          R.fn(ft, { domain: [0, TAU], n: 180, color: 'accent', width: 2.4, fill: true, fillAlpha: 0.18 });
+          R.hline(omega * r, { color: 'orange', width: 2.2, dash: true });
           ang += omega * speed.value * dt;
           const mx = Math.max(1e-9, ...rim.map((q) => Math.abs(q[1])));
           S.circle(P.x, P.y, r, { color: 'ink', width: 2.2, fill: 'panel', fillAlpha: 0.5 });
@@ -307,7 +340,7 @@ A planar field $(u,v)$ is the case $F_3=0$ with nothing depending on $z$; its cu
           const q = FIELDS[pick.value].F(P.x, P.y);
           st = { omega, curl, enclosed: pick.value === 'vortex' && Math.hypot(P.x, P.y) < r, speed: Math.hypot(q[0], q[1]) };
         }, { period: 20, still: 1 });
-        v.legend([['green', 'field along the rim, counter-clockwise'], ['red', 'field along the rim, clockwise'], ['orange', 'blades of the wheel']]);
+        v.legend([['green', 'field along the rim, counter-clockwise'], ['red', 'field along the rim, clockwise'], ['orange', 'blades of the wheel; mean of $\\mathbf F\\cdot\\mathbf t$ (right, dashed)']]);
         v.readout(() => `$\\mathbf F=${FIELDS[pick.value].tex}$.  The wheel turns at $\\omega=${tf(st.omega, 3)}$ rad per unit time (${Math.abs(st.omega) < 5e-4 ? 'not turning' : st.omega > 0 ? 'counter-clockwise' : 'clockwise'}; animation ${tf(speed.value, 1)}× faster).\nCurl at the centre: $\\tfrac12\\operatorname{curl}\\mathbf F=\\tfrac12(v_x-u_y)=${tf(st.curl / 2, 3)}$.${st.enclosed ? ' The wheel encloses the singular point, so it feels the whole circulation $2\\pi$ of the vortex: $\\omega=1/r^2$.' : ''}`);
       },
     },
@@ -358,8 +391,8 @@ $$\operatorname{div}\mathbf F(p)=\lim_{h\to0}\frac{1}{|Q_h|}\int_{\partial Q_h}\
             const len = (0.85 * fn) / mx;
             Z.arrow(qx, qy, qx + nx * len, qy + ny * len, { color: fn > 0 ? 'red' : 'blue', width: 2.2, head: 6 });
           }
-          Z.tex(String.raw`\text{net out: }\ ${tf(flux, 5)}`, 0, 0.12, { size: 14 });
-          Z.tex(String.raw`\text{area } 4h^2=${tf(A, 5)}`, 0, -0.14, { size: 14 });
+          Z.tex(String.raw`\text{net out: }\ ${tf(flux, 5)}`, 0, 0.45, { size: 14 });
+          Z.tex(String.raw`\text{area } 4h^2=${tf(A, 5)}`, 0, 0.1, { size: 14 });
           // ratio curve
           const hs = Array.from({ length: 70 }, (_, i) => 0.004 * Math.pow(150, i / 69));
           const ys = hs.map((q) => fluxOf(F, P.x, P.y, q) / (4 * q * q));

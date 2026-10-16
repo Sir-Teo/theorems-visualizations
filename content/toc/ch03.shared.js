@@ -76,9 +76,13 @@ export function nfaEdges(N, o = {}) {
     for (const c of N.alpha) for (const t of N.delta[s.id]?.[c] || []) add(s.id, t, c);
     for (const t of N.eps?.[s.id] || []) add(s.id, t, EPS);
   }
-  for (const e of out) { e.label = e.syms.join(', '); e.eps = e.syms.includes(EPS); e.epsOnly = e.syms.every((c) => c === EPS); }
+  for (const e of out) { e.label = e.syms.join(', '); e.eps = e.syms.includes(EPS); e.epsOnly = e.syms.every((c) => c === EPS); const f = N.flag?.[e.from + '>' + e.to]; if (f) { e.kind = f.kind; e.h = f.h; } }
   return out;
 }
+/** Thompson loop-back / bypass arcs: bend them clear of the fragment (px per layout unit). */
+export function bendEdges(G, unit) { for (const e of G.edges) if (e.kind) e.bend = (e.kind === 'loop' ? 1 : -1) * (e.h ?? 1) * unit * 1.25; }
+/** Fit the stage window to a Thompson NFA's layout; returns pixels per layout unit. */
+export function fitThompson(s, N) { const h = Math.max(N.top, N.bot) + 0.9; s.setView([-0.8, N.W + 0.8], [-h, h]); return Math.abs(s.X(1) - s.X(0)); }
 export function nfaGraph(v, s, N, o = {}) {
   const G = v.graph(s, { nodes: [], edges: [], layout: 'none', directed: true, r: o.r ?? 18, autoRadius: false, texSize: o.texSize ?? 15, draggable: o.draggable !== false, editable: false, edgeFontSize: 11.5, shape: o.shape });
   G.sync = (NN = N) => { G.set({ nodes: NN.states, edges: nfaEdges(NN) }); return G; };
@@ -225,7 +229,6 @@ export function thompson(ast, alpha) {
   let cnt = 0; const edges = [], nodes = [], events = [], merge = new Map();
   const mk = (x, y) => { const id = cnt++; nodes.push({ id, x, y }); return id; };
   const ed = (a, b, c, extra = {}) => { const e = { a, b, c, ...extra }; edges.push(e); return e; };
-  const shift = (fr, dx, dy) => { for (const q of fr.ids) { const n = nodes[q]; if (!n.moved || !n.moved.has(fr)) { /* positions are shifted at the end via offsets */ } } };
   // each fragment: {s, f, ids:[node ids], W, top, bot}; coordinates are stored relative and fixed up through offsets
   function build(x) {
     let fr;
@@ -255,7 +258,7 @@ export function thompson(ast, alpha) {
       offset(A, 1, 0);
       const s = mk(0, 0), f = mk(A.W + 2, 0);
       ev.newStates.push(s, f);
-      ev.newEdges.push(ed(s, A.s, EPS), ed(A.f, f, EPS), ed(A.f, A.s, EPS, { loopBack: true }), ed(s, f, EPS, { bypass: true }));
+      ev.newEdges.push(ed(s, A.s, EPS), ed(A.f, f, EPS), ed(A.f, A.s, EPS, { loopBack: true, h: A.top + 0.5 }), ed(s, f, EPS, { bypass: true, h: A.bot + 0.5 }));
       fr = { s, f, ids: [...A.ids, s, f], W: A.W + 2, top: A.top + 0.9, bot: A.bot + 0.9 };
     }
     ev.fr = fr; events.push(ev);
@@ -274,20 +277,11 @@ export function thompson(ast, alpha) {
   for (const [id] of states) { delta[id] = {}; eps[id] = []; }
   for (const e of E) { if (e.c === EPS) eps[e.from].push(e.to); else { (delta[e.from][e.c] = delta[e.from][e.c] || []).push(e.to); } }
   const N = nfa(alpha2, states, name.get(rep(root.s)), delta, eps, { thompson: true, W: root.W, top: root.top, bot: root.bot });
-  N.bends = {}; N.edgeInfo = E;
+  N.bends = {}; N.edgeInfo = E; N.flag = {}; for (const e of E) if (e.loopBack || e.bypass) N.flag[e.from + '>' + e.to] = { kind: e.loopBack ? 'loop' : 'bypass', h: e.h };
   // list of events with resolved ids (for stepping)
   const evs = events.map((ev) => ({ node: ev.node, newStates: ev.newStates.map(rep).map((q) => name.get(q)), newEdges: ev.newEdges.map((e) => E[edges.indexOf(e)]), merged: ev.merged ? { from: name.get(rep(ev.merged[0])), raw: ev.merged[0], into: name.get(rep(ev.merged[1])) } : null, fr: { s: name.get(rep(ev.fr.s)), f: name.get(rep(ev.fr.f)), ids: [...new Set(ev.fr.ids.map(rep))].map((q) => name.get(q)) } }));
   return { N, events: evs, rawCount: nodes.length, root, nameOf: (q) => name.get(rep(q)) };
 }
-/** Set bend of loop-back / bypass edges of a Thompson NFA (pixel units per layout unit). */
-export function applyThompsonBends(N, G, unitPx, top, bot) {
-  for (const e of G.edges) {
-    const info = N.edgeInfo?.find((x) => x.from === e.from && x.to === e.to && x.c === EPS);
-    if (!info) continue;
-    if (info.loopBack) e.bend = -(0.5 + 0.55) * unitPx; else if (info.bypass) e.bend = (0.5 + 0.55) * unitPx;
-  }
-}
-
 // ---- subset construction + backtracking matcher step counts
 /** Backtracking matcher over the AST (continuation passing). Counts calls; stops at `cap`. Returns {ok, steps, capped}. */
 export function backtrack(ast, w, cap = 3e6) {
@@ -347,4 +341,46 @@ export const asNFA = (D) => ({ ...D, eps: D.eps || Object.fromEntries(D.states.m
 /** Language-equality check of an AST against a set (strings up to n). */
 export function sameLang(ast, set, n) { return eqSets(langFlat(ast, n), set); }
 
-export { EPS, DEAD, layer, upTo, MONO, SANS, pen, texName };
+
+// ---------------------------------------------------------------- UI helpers
+/** A regular-expression text field with ε / ∪ buttons and optional presets. cur() → {ast} | {error, pos}. */
+export function rxInput(v, o = {}) {
+  const inp = v.input(o.label ?? 'expression', o.value, { width: o.width ?? 230, placeholder: o.placeholder ?? '(a|b)*abb' });
+  let last = null, res = null;
+  const cur = () => { if (inp.value !== last) { last = inp.value; res = tryParse(last); } return res; };
+  if (o.presets) v.select(o.presetLabel ?? 'example', o.presets.map(([label, src]) => ({ value: src, label })), o.value, { onChange: (s) => { inp.set(s); o.onPick?.(s); } });
+  if (o.buttons !== false) { v.button('ε', () => inp.set(inp.value + 'ε')); v.button('∪', () => inp.set(inp.value + '|')); }
+  return { inp, cur, set: (s) => inp.set(s) };
+}
+/** Strings of each length as green chips, one row per length (rows[k] = array of strings). */
+export function drawLangRows(P, rows, alphaSize, o = {}) {
+  const rh = o.rh ?? 22, top = o.top ?? 8, x0 = o.x0 ?? 62;
+  rows.forEach((row, k) => {
+    const y = top + k * rh; let x = x0;
+    P.sans(`|w| = ${k}`, 10, y + rh / 2, { align: 'left', size: 11, color: 'muted' });
+    P.text(`${row.length} / ${alphaSize ** k}`, P.W - 10, y + rh / 2, { align: 'right', size: 11.5, weight: 600, color: row.length ? 'green' : 'muted' });
+    let shown = 0;
+    for (const u of row) {
+      const t = u === '' ? EPS : u, wpx = P.tw(t, 11.5) + 10;
+      if (x + wpx > P.W - 96) { P.sans(`+ ${row.length - shown} more`, x + 2, y + rh / 2, { align: 'left', size: 11, color: 'muted' }); break; }
+      P.box(x, y + 2, wpx, rh - 5, { r: 4, fill: o.color ?? 'green', alpha: 0.16, stroke: o.color ?? 'green', strokeAlpha: 0.6 });
+      P.text(t, x + wpx / 2, y + rh / 2, { size: 11.5, color: 'ink' });
+      x += wpx + 5; shown++;
+    }
+    if (!row.length) P.text('—', x + 6, y + rh / 2, { size: 12, color: 'faint' });
+  });
+}
+export const tt = (u) => (u ? `\\mathtt{${u}}` : '\\varepsilon');
+export const texName3 = (N, q) => String(N.states.find((s) => s.id === q)?.label ?? q).replace(/\$/g, '');
+export const setStr = (S) => '{' + S.join(',') + '}';
+export const setTex = (N, S) => (S.length ? '\\{' + S.map((q) => texName3(N, q)).join(',') + '\\}' : '\\varnothing');
+/** Barcode rows: for each length k ≤ n, one cell per string in lexicographic order, coloured by colorOf(string). */
+export function drawBarcode(P, alpha, n, colorOf, o = {}) {
+  const rows = n + 1, rh = (P.H - 8) / rows, L0 = o.l0 ?? 54, L1 = P.W - (o.r ?? 70);
+  for (let k = 0; k <= n; k++) {
+    const strs = layer(alpha, k), bw = (L1 - L0) / strs.length, y = 4 + k * rh; let hits = 0;
+    P.sans(`n = ${k}`, 10, y + rh / 2, { align: 'left', size: 10.5, color: 'muted' });
+    strs.forEach((u, j) => { const c = colorOf(u); if (c && c.hit) hits++; P.box(L0 + j * bw, y + 2, Math.max(1, bw - (bw > 3 ? 1 : 0)), rh - 4, { r: bw > 6 ? 2 : 0, fill: c ? c.color : 'faint', alpha: c ? c.alpha ?? 0.75 : 0.22, stroke: c?.outline ? c.outline : false, width: 1.4 }); });
+    P.text(`${hits}`, P.W - 12, y + rh / 2, { align: 'right', size: 11, weight: 600, color: 'green' });
+  }
+}

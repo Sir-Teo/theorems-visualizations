@@ -85,7 +85,7 @@ export default {
       num: '5.2', kind: 'Model', name: 'Two-state paramagnet',
       statement: String.raw`A two-state paramagnet is $N$ distinguishable, non-interacting magnetic dipoles $\mu$ in a field $B$, each pointing along or against the field. With $N_\uparrow$ dipoles aligned and $N_\downarrow=N-N_\uparrow$ anti-aligned, the energy is $U=-\mu B\,(N_\uparrow-N_\downarrow)$ and the macrostate is fixed by $U$ (equivalently $N_\uparrow$). Its multiplicity is $\Omega(N_\uparrow)=\binom{N}{N_\uparrow}$, so the entropy $S=k\ln\Omega$ rises from zero at the ground state $U=-N\mu B$ to a maximum at $U=0$ and falls again to zero at $U=+N\mu B$. For large $N$, $S\approx -Nk\,[x\ln x+(1-x)\ln(1-x)]$ with $x=N_\uparrow/N$.`,
       idea: String.raw`Fixing the energy fixes the number of up dipoles; the multiplicity is then the same binomial coefficient as for coin flips (5.1), with "heads" meaning "aligned". Stirling's formula (pma-8.22) turns $\ln\binom{N}{N_\uparrow}$ into the binary-entropy form. The entropy is not monotonic in energy: with the energy bounded above, there are more ways to be half-flipped than fully flipped, a feature of systems with a bounded spectrum that will give negative temperatures in 5.9. The spin-½ nature of each dipole (qm-7.7) is what makes two states per dipole.`,
-      caption: String.raw`**Choose $N$ and drag the fraction of up dipoles** (or the handle on the middle panel). Left: the dipoles, arranged at random for a given fraction. Middle: multiplicity of each energy relative to the largest. Right: $S/Nk$ against $U/N\mu B$ — the exact points and the Stirling curve — with the tangent whose slope is $\mu B/kT$ (see 5.8). Notice that the energy $U=0$ has the largest multiplicity, and that the tangent slope changes sign there.`,
+      caption: String.raw`**Choose $N$ and drag the fraction of up dipoles** (or the handle on the right-hand panel). Left: the dipoles, arranged at random for a given fraction. Middle: multiplicity of each energy relative to the largest. Right: $S/Nk$ against $U/N\mu B$ — the exact points and the Stirling curve — with the tangent whose slope is $\mu B/kT$ (see 5.8). Notice that the energy $U=0$ has the largest multiplicity, and that the tangent slope changes sign there.`,
       deps: ['thermo-5.1', 'qm-7.7'], refs: ['Schroeder §2.1'], tags: ['paramagnet', 'entropy'],
       viz(v) {
         const Ns = v.select('number of dipoles $N$', ['10', '20', '50', '100'], '50');
@@ -136,7 +136,7 @@ export default {
       num: '5.3', kind: 'Model', name: 'Einstein solid',
       statement: String.raw`An Einstein solid is a collection of $N$ identical, independent, distinguishable quantum harmonic oscillators, each able to hold $n=0,1,2,\dots$ quanta of energy $\varepsilon=\hbar\omega$ (the zero-point energy is a constant and is dropped). The macrostate with $q$ quanta in total has multiplicity $\Omega(N,q)=\binom{q+N-1}{q}$: the number of ways to distribute $q$ identical quanta among $N$ labelled oscillators. If all microstates of fixed $q$ are equally likely, the probability that oscillator 1 holds exactly $n$ quanta is $\Omega(N-1,q-n)/\Omega(N,q)$.`,
       idea: String.raw`Arrange the $q$ quanta as dots and the $N-1$ walls between oscillators as bars in a row of length $q+N-1$; choosing which positions are dots counts the distributions, so $\Omega=\binom{q+N-1}{q}$. The energy ladder of each oscillator is equally spaced (qm-4.3), which is exactly what lets quanta be treated as identical units shared among the oscillators. A random walk that moves one quantum between a randomly chosen pair of oscillators treats all microstates alike, so its long-run visit frequencies are flat: the model is the simplest stage on which "all microstates are equally likely" can be watched at work.`,
-      caption: String.raw`**Set $N$ and $q$** (kept small so that every microstate can be listed). Top left: the current microstate, the number of quanta on each oscillator. Press *Hop 20000×* to let quanta move between random pairs of oscillators: the middle panel counts how often each of the $\Omega$ microstates (one bar each) is visited — the bars come out level. Right: $\ln\Omega$ against $q$ for the chosen $N$, whose growth with energy is the root of everything in 5.8.`,
+      caption: String.raw`**Set $N$ and $q$** (kept small so that every microstate can be listed). Left: the current microstate, the number of quanta on each oscillator. Press *Hop 20000×* to let quanta move between random pairs of oscillators: the middle panel counts how often each of the $\Omega$ microstates (one bar each) is visited — the bars come out level. Right: $\ln\Omega$ against $q$ for the chosen $N$, whose growth with energy is the root of everything in 5.8.`,
       deps: ['thermo-5.1', 'qm-4.3'], refs: ['Schroeder §2.2'], tags: ['Einstein solid', 'multiplicity'], credit: 'A. Einstein, 1907 (quantized oscillators as a model of a solid)',
       scope: String.raw`A model of independent oscillators of one frequency; real solids have a spectrum of frequencies (Debye), and coupling between oscillators is neglected here.`,
       viz(v) {
@@ -250,7 +250,7 @@ export default {
           if (!st) return '';
           const { N, n, q, sig, exact, exs, z, tail, rel } = st;
           const lnf = N > 1 ? 0.5 * Math.log(2 * Math.PI * N) / (N * Math.log(N) - N) : NaN;
-          return `$N=${N >= 1e6 ? '10^{' + v.fix(Math.log10(N), 1) + '}' : N}$ per solid, $q=${N >= 1e6 ? v.sci(q, 2) : Math.round(q)}$: $\\sigma=${v.sci(sig, 3)}$ quanta${exs ? ` (exact sum: ${v.sci(exs.sig, 3)})` : ''} · relative width $\\sigma/q_A=${v.sci(rel, 3)}$ ($=1/\\sqrt N$ times ${v.fix(Math.sqrt((1 + n) / (2 * n)), 2)}) · ${exact ? 'curve exact' : 'Gaussian only'}\nprobability that A's energy is off by more than 1 % of $q/2$: ${z < 40 ? sup10(tail) : '10^(−' + v.sci(-tail, 2).replace(/\\times10\^\{(\d+)\}/, '×10^$1') + ')'} (${v.fix(z, 1)} $\\sigma$) · crude Stirling $N\\ln N-N$ for $\\ln N!$ is off by a fraction ${N > 1 ? v.sci(lnf, 2) : '—'}`;
+          return `$N=${N >= 1e6 ? '10^{' + v.fix(Math.log10(N), 1) + '}' : N}$ per solid, $q=${N >= 1e6 ? v.sci(q, 2) : Math.round(q)}$: $\\sigma=${v.sci(sig, 3)}$ quanta${exs ? ` (exact sum: ${v.sci(exs.sig, 3)})` : ''} · relative width $\\sigma/q_A=${v.sci(rel, 3)}$ ($=1/\\sqrt N$ times ${v.fix(Math.sqrt((1 + n) / (2 * n)), 2)}) · ${exact ? 'curve exact' : 'Gaussian only'}\nprobability that A's energy is off by more than 1 % of $q/2$: ${z < 40 ? sup10(tail) : '10^(−' + v.sci(-tail, 2).replace(/\\times10\^\{(\d+)\}/, '×10^$1') + ')'} (${v.fix(z, 1)} $\\sigma$) · crude Stirling $N\\ln N-N$ for $\\ln N!$ is off by a fraction ${N > 1 ? '$' + v.sci(lnf, 2) + '$' : '—'}`;
         });
       },
     },
@@ -331,7 +331,7 @@ export default {
           sa.raster((x, y) => {
             const i = Math.floor((x + 2.2) / CS), j = Math.floor((y + 1.1) / CS);
             if (i < 0 || i >= NX || j < 0 || j >= NY || !G.inside(x, y)) return null;
-            const c = v.ramp(clamp(rel[i + NX * j] / 2.4, 0, 1), 'accent'); return [c[0], c[1], c[2], 255];
+            const c = v.ramp(clamp(rel[i + NX * j] / 1.8, 0, 1), 'accent'); return [c[0], c[1], c[2], 255];
           }, { res: 3, key: 'occ' + mode.value + aS.value + st.n + v.color('panel') });
           // boundary
           if (mode.value === 'circle') sa.curve((u) => [Math.cos(u), Math.sin(u)], 0, 2 * Math.PI, { color: 'ink', width: 2.2, n: 120 });
@@ -394,7 +394,7 @@ export default {
         v.readout(() => {
           if (!st) return '';
           const { a, b, tot, N, lnO, S } = st;
-          return `$\\Omega_A=${texExp(a)}$, $\\Omega_B=${texExp(b)}$, product $\\Omega_A\\Omega_B=${texExp(tot)}$ · $S_A/k+S_B/k=${v.fix(a, 2)}+${v.fix(b, 2)}=${v.fix(tot, 2)}=\\ln(\\Omega_A\\Omega_B)$ · the sum $\\Omega_A+\\Omega_B$ would be ${texExp(Math.max(a, b) + Math.log1p(Math.exp(-Math.abs(a - b))))}, not additive in $S$\n$N=${N >= 1e6 ? v.sci(N, 2) : N}$ with $q=N$: $\\ln\\Omega=${v.sci(lnO, 3)}$, so $\\Omega$ has about ${v.sci(lnO / Math.LN10, 2)}$ digits · $S=k\\ln\\Omega=${v.sci(S, 3)}$ J/K${N > 1e22 && N < 1e25 ? ` (one mole of oscillators, $q=N$: $S=2Nk\\ln2$ = ${v.fix(2 * R * Math.LN2, 2)} J/K per mole)` : ''}`;
+          return `$\\Omega_A=${texExp(a)}$, $\\Omega_B=${texExp(b)}$, product $\\Omega_A\\Omega_B=${texExp(tot)}$ · $S_A/k+S_B/k=${v.fix(a, 2)}+${v.fix(b, 2)}=${v.fix(tot, 2)}=\\ln(\\Omega_A\\Omega_B)$ · the sum $\\Omega_A+\\Omega_B$ would be $${texExp(Math.max(a, b) + Math.log1p(Math.exp(-Math.abs(a - b))))}$, not additive in $S$\n$N=${N >= 1e6 ? v.sci(N, 2) : N}$ with $q=N$: $\\ln\\Omega=${v.sci(lnO, 3)}$, so $\\Omega$ has about $${v.sci(lnO / Math.LN10, 2)}$ digits · $S=k\\ln\\Omega=${v.sci(S, 3)}$ J/K${N > 1e22 && N < 1e25 ? ` (one mole of oscillators, $q=N$: $S=2Nk\\ln2$ = ${v.fix(2 * R * Math.LN2, 2)} J/K per mole)` : ''}`;
         });
       },
     },
@@ -403,7 +403,7 @@ export default {
       num: '5.7', kind: 'Theorem', name: 'The second law as overwhelming probability',
       statement: String.raw`If all microstates of an isolated system are equally likely (5.5), then a system started in a low-multiplicity macrostate will, over time, be found in macrostates in proportion to their multiplicities. Since multiplicities are sharply peaked (5.4), for a macroscopic system the entropy $S=k\ln\Omega$ almost always increases to within a negligible fraction of its maximum and then stays there; fluctuations to lower entropy do occur but their probability is $\approx e^{-\Delta S/k}$ and is utterly negligible once $\Delta S\gg k$. The second law is thus a statement about probabilities, exact in the limit of many particles, not an absolute law of the dynamics.`,
       idea: String.raw`Two Einstein solids that can exchange quanta by random hops (the walk of 5.3) are an exactly solvable model of an isolated system relaxing. The chance of the macrostate $q_A$ is $\Omega_A(q_A)\Omega_B(q-q_A)/\Omega_{\text{tot}}$; the initial all-in-A macrostate has multiplicity $\Omega_A(q)\cdot1$, a vanishing fraction of the total, whereas the neighbourhood of the equilibrium split carries essentially all of it (5.4, with the entropy of 5.6 as the logarithm of the weight). Hence the drift to the peak and the astronomically small chance $p\approx\Omega(\text{initial})/\Omega_{\text{tot}}$ of ever returning.`,
-      caption: String.raw`**Press play.** Quanta hop at random between the oscillators of two solids that start with all the energy in A (or choose a start at equilibrium). Top: the energy fraction in A, with its equilibrium band. Middle: the total entropy $S/k=\ln\Omega_A+\ln\Omega_B$ rising to its maximum and then jittering just below it. **Raise $N$** and the jitter shrinks; the right panel gives the probability that the initial state is found at a random instant, $10^{-\text{(hundreds)}}$ already for 400 oscillators.`,
+      caption: String.raw`**Press play.** Quanta hop at random between the oscillators of two solids that start with all the energy in A (or choose a start at equilibrium). Top: the energy fraction in A, with its equilibrium band. Middle: the total entropy $S/k=\ln\Omega_A+\ln\Omega_B$ rising to its maximum and then jittering just below it. **Raise $N$** and the jitter shrinks relative to the rise; the right panel gives the probability that the initial state is found at a random instant, about $10^{-45}$ already for 120 oscillators per solid.`,
       deps: ['thermo-5.6', 'thermo-5.4'], refs: ['Schroeder §2.3'], tags: ['second law', 'probability'],
       scope: String.raw`Valid for isolated systems whose microstates are equally likely; a model in which "time" is the number of random hops, not a physical dynamics.`,
       viz(v) {
@@ -453,3 +453,167 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 5.8
+    {
+      num: '5.8', kind: 'Theorem', name: 'Statistical temperature',
+      statement: String.raw`For a system with multiplicity $\Omega(U,V,N)$ the **statistical temperature** is defined by $\dfrac1T=\left(\dfrac{\partial S}{\partial U}\right)_{V,N}=k\left(\dfrac{\partial\ln\Omega}{\partial U}\right)_{V,N}$. If two systems exchange energy only, with $U_A+U_B$ fixed, the most probable split (the maximum of $\Omega_A\Omega_B$) is the one at which $T_A=T_B$; away from it, energy flows spontaneously from the system with the larger $T$ to the one with the smaller, because that raises $S_A+S_B$. This temperature coincides with the thermodynamic one (3.2) and with the zeroth-law equilibrium label (1.2).`,
+      idea: String.raw`Maximising $S_A(U_A)+S_B(U-U_A)$ gives $\partial S_A/\partial U_A=\partial S_B/\partial U_B$, the equality of slopes. A system with a small slope $\partial S/\partial U$ gains little entropy per unit energy it receives, and the other, with a larger slope, gains more than the first loses when energy moves toward it: so energy flows from small slope (high $T$) to large slope (low $T$). The shape of $S(U)$ for ordinary systems (concave: 3.15) makes $T$ increase with $U$, so the equilibrium found is stable.`,
+      caption: String.raw`**Drag the handle** along the total-entropy curve to choose how many quanta solid A holds (the two solids share $q$ quanta). The tangent lines are the entropy slopes of A and B; the total is maximal where they match. The right panel shows $kT/\varepsilon$ of each solid (the reciprocal of its slope) as the energy moves: the temperatures cross exactly at the maximum, and the arrow shows which way heat flows.`,
+      deps: ['thermo-5.6', 'thermo-3.2'], refs: ['Schroeder §3.1'], tags: ['temperature', 'entropy'],
+      viz(v) {
+        const NA = v.slider('$N_A$', 5, 300, 30, { int: true });
+        const NB = v.slider('$N_B$', 5, 300, 90, { int: true });
+        const Q = v.slider('total quanta $q$', 20, 800, 200, { int: true });
+        const sa = v.stage({ x: [0, 200], y: [0, 100], axes: 'box', gutter: true, height: 300, weight: 1.3, xlabel: 'quanta $q_A$ in solid A', ylabel: '$S/k$', title: 'entropy of the pair' });
+        const sb = v.stage({ x: [0, 200], y: [0, 10], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'quanta $q_A$ in solid A', ylabel: '$kT/\\varepsilon$', title: 'temperatures' });
+        const h = sa.handle(40, 10, { color: 'gold', r: 7, label: '' });
+        let st = null, key = '', TT = null;
+        h.constrain = (x, y) => [clamp(x, 2, Q.value - 2), y];
+        v.render(() => {
+          const na = NA.value, nb = NB.value, q = Q.value, k = na + '|' + nb + '|' + q;
+          if (k !== key) { key = k; TT = twoSolids(na, nb, q); }
+          const { a, b, t } = TT, qm = argmax(t), qA = clamp(Math.round(h.x), 2, q - 2);
+          const top = t[qm] * 1.08;
+          sa.setView([0, q], [0, top]);
+          sa.path(a.map((y, i) => [i, y]), { color: 'blue', width: 2 });
+          sa.path(b.map((y, i) => [i, y]), { color: 'orange', width: 2 });
+          sa.path(t.map((y, i) => [i, y]), { color: 'ink', width: 2.6 });
+          sa.vline(qm, { color: 'green', width: 1.2, dash: true });
+          // slopes per quantum of S_A(q_A) and S_B(q − q_A)
+          const bAA = (a[qA + 1] - a[qA - 1]) / 2;
+          const qb = q - qA, bBB = (lnEin(nb, qb + 1) - lnEin(nb, qb - 1)) / 2;
+          const len = q * 0.18;
+          sa.line(qA - len, a[qA] - len * bAA, qA + len, a[qA] + len * bAA, { color: 'blue', width: 2.2, alpha: 0.9 });
+          sa.line(qA - len, b[qA] + len * bBB, qA + len, b[qA] - len * bBB, { color: 'orange', width: 2.2, alpha: 0.9 });
+          h.set(qA, t[qA]);
+          const TA = 1 / bAA, TB = 1 / bBB;
+          const ta = [], tb = [];
+          for (let i = 2; i <= q - 2; i++) { ta.push([i, 2 / (a[i + 1] - a[i - 1])]); tb.push([i, 1 / ((lnEin(nb, q - i + 1) - lnEin(nb, q - i - 1)) / 2)]); }
+          const Tm = Math.max(...ta.map((p) => p[1]), ...tb.map((p) => p[1]));
+          sb.setView([0, q], [0, Math.min(Tm * 1.08, 40)]);
+          sb.path(ta, { color: 'blue', width: 2.2 }); sb.path(tb, { color: 'orange', width: 2.2 });
+          sb.vline(qm, { color: 'green', width: 1.2, dash: true });
+          sb.dot(qA, Math.min(TA, 40), { r: 5, color: 'blue' }); sb.dot(qA, Math.min(TB, 40), { r: 5, color: 'orange' });
+          if (Math.abs(TA - TB) > 0.03 * Math.max(TA, TB)) sb.text(TA > TB ? 'heat flows A → B' : 'heat flows B → A', q / 2, Math.min(Tm * 1.0, 38), { size: 12, align: 'center', color: 'green', weight: 650, plate: true });
+          st = { na, nb, q, qA, qm, TA, TB, S: t[qA], Sm: t[qm], bAA, bBB };
+        });
+        v.legend([['blue', 'solid A'], ['orange', 'solid B'], ['ink', 'total'], ['green', 'most probable split', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { na, nb, q, qA, qm, TA, TB, S, Sm, bAA, bBB } = st;
+          return `$q_A=${qA}$, $q_B=${q - qA}$: slopes $\\partial S_A/\\partial q_A=${v.fix(bAA, 3)}\\,k/\\varepsilon$, $\\partial S_B/\\partial q_B=${v.fix(bBB, 3)}\\,k/\\varepsilon$ → $kT_A=${v.fix(TA, 2)}\\,\\varepsilon$, $kT_B=${v.fix(TB, 2)}\\,\\varepsilon$ · ${Math.abs(TA - TB) < 0.03 * Math.max(TA, TB) ? '**equal: this is the equilibrium**' : TA > TB ? 'energy flows from A (hotter) to B' : 'energy flows from B (hotter) to A'}\n$S_A+S_B=${v.fix(S, 2)}\\,k$ here; maximum $${v.fix(Sm, 2)}\\,k$ at $q_A=${qm}$ (${v.fix(100 * qm / q, 1)} % of the energy, vs $N_A/(N_A+N_B)$ = ${v.fix(100 * na / (na + nb), 1)} %)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.9
+    {
+      num: '5.9', kind: 'Phenomenon', name: 'Negative temperatures',
+      statement: String.raw`A system whose energy spectrum is bounded above as well as below can have an entropy $S(U)$ that increases up to a maximum and then decreases. Where $\partial S/\partial U<0$, the statistical temperature $T=(\partial S/\partial U)^{-1}$ is **negative**. Such a state is not colder than absolute zero but hotter than every positive temperature: ordering the states by $\beta=1/kT$ from $+\infty$ through $0$ to $-\infty$ runs from coldest to hottest, and when a negative-temperature system touches any positive-temperature one, energy flows out of the negative one. Negative temperatures need a system that is thermally isolated from every degree of freedom with an unbounded spectrum, and so far have been realised in nuclear spins and in cold atoms in optical lattices.`,
+      idea: String.raw`For $N$ two-state dipoles (5.2) at most half the dipoles can be up in the sense of maximum multiplicity; pushing more energy in beyond the half-filling point *reduces* the number of ways, so $\partial S/\partial U$ changes sign at $U=0$ and $T$ jumps from $+\infty$ to $-\infty$ there. Joined to a normal system, the total entropy $S_A(U_A)+S_B(U-U_A)$ is increased by moving energy out of the negative-slope system and into the positive-slope one — both entropies rise, so the flow is unconditional and the negative-$T$ body behaves as the hotter one (5.8).`,
+      caption: String.raw`**Drag the handle** on the paramagnet's entropy curve past the maximum (energy to the right of the peak is negative temperature). The middle panel shows $\beta\varepsilon=\varepsilon/kT$, which passes smoothly through zero, while $T$ itself jumps. The right panel joins the paramagnet to an Einstein solid (set the solid's temperature with the slider) and plots the pair's total entropy as the paramagnet's energy $n$ varies at fixed total energy: the maximum — the equilibrium — is always at positive $T$, and a negative-$T$ start always flows to lower $n$, even into a very hot solid.`,
+      deps: ['thermo-5.8', 'thermo-5.2'], refs: ['Schroeder §3.3'], tags: ['temperature', 'spin systems'],
+      credit: 'E. M. Purcell & R. V. Pound, 1951 (nuclear spins in LiF, Phys. Rev. 81, 279); N. F. Ramsey, 1956 (theory, Phys. Rev. 103, 20); S. Braun et al., 2013 (atoms in an optical lattice, Science 339, 52)',
+      scope: String.raw`Needs a bounded spectrum and effective isolation from the rest of the world on the time scale of the experiment; the spin–lattice relaxation time must be much longer than the spin–spin one.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Negative_temperature' },
+      viz(v) {
+        const NP = v.slider('spins $N$', 20, 400, 100, { int: true });
+        const NE = v.slider('solid oscillators $N_E$', 20, 400, 100, { int: true });
+        const qE = v.slider('solid quanta per oscillator', 0.2, 20, 2, { log: true, sig: 2, fmt: (x) => v.fix(x, 1) });
+        const sa = v.stage({ x: [0, 1], y: [0, 0.75], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 250, xlabel: 'energy $U/N\\varepsilon$', ylabel: '$S/Nk$', title: 'paramagnet: entropy' });
+        const sb = v.stage({ x: [0, 1], y: [-3, 3], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 250, xlabel: 'energy $U/N\\varepsilon$', ylabel: '$\\beta\\varepsilon=\\varepsilon/kT$', title: 'coldness 1/T' });
+        const sc = v.stage({ x: [0, 1], y: [-30, 5], axes: 'box', gutter: true, height: 280, weight: 1.1, minWidth: 250, xlabel: 'paramagnet energy $n/N$', ylabel: '$\\Delta S_{\\text{tot}}/k$', title: 'paramagnet + solid' });
+        const hp = sa.handle(0.8, 0.5, { color: 'gold', r: 7 });
+        hp.constrain = (x, y) => [clamp(x, 0.02, 0.98), y];
+        const sfun = (x) => -(x * Math.log(x) + (1 - x) * Math.log(1 - x));
+        let st = null;
+        v.render(() => {
+          const N = NP.value, ne = NE.value, x0 = clamp(Math.round(hp.x * N) / N, 1 / N, 1 - 1 / N), n0 = Math.round(x0 * N);
+          sa.fn(sfun, { domain: [0.001, 0.999], color: 'ink', width: 1.8, n: 300 });
+          sa.vline(0.5, { color: 'faint', width: 1, dash: true });
+          sa.text('T > 0', 0.2, 0.08, { size: 12, color: 'blue', align: 'center', weight: 650 });
+          sa.text('T < 0', 0.8, 0.08, { size: 12, color: 'red', align: 'center', weight: 650 });
+          const lnP = (n) => lnBin(N, n);
+          const beta = (n) => (n <= 0 || n >= N ? NaN : (lnP(n + 1) - lnP(n - 1)) / 2);
+          const b0 = beta(n0);
+          hp.set(x0, sfun(x0));
+          const sl = b0 / N * N;   // dS/dn per quantum is b0; in plot coordinates (x = n/N, y = S/Nk) the slope is dS/dn
+          sa.line(x0 - 0.25, sfun(x0) - 0.25 * b0, x0 + 0.25, sfun(x0) + 0.25 * b0, { color: b0 > 0 ? 'blue' : 'red', width: 2.2 });
+          sb.path(Array.from({ length: N - 1 }, (_, i) => [(i + 1) / N, beta(i + 1)]), { color: 'ink', width: 2 });
+          sb.hline(0, { color: 'faint', width: 1 }); sb.vline(0.5, { color: 'faint', width: 1, dash: true });
+          sb.dot(x0, b0, { r: 6, color: b0 >= 0 ? 'blue' : 'red' });
+          sb.text('T → +∞', 0.5, 0.35, { size: 11, align: 'right', dx: -6, color: 'muted' }); sb.text('T → −∞', 0.5, -0.35, { size: 11, align: 'left', dx: 6, color: 'muted' });
+          // contact with the Einstein solid
+          const qe = Math.round(qE.value * ne), Qt = n0 + qe;
+          const Sf = (n) => (n < 0 || n > N || Qt - n < 0 ? -Infinity : lnP(n) + lnEin(ne, Qt - n));
+          const base = Sf(n0); let best = n0;
+          const arr = []; for (let n = 0; n <= Math.min(N, Qt); n++) { const s = Sf(n); arr.push([n / N, s - base]); if (s > Sf(best)) best = n; }
+          sc.setView([0, 1], [-30, Math.max(5, (Sf(best) - base) * 1.4)]);
+          sc.path(arr, { color: 'purple', width: 2.4 });
+          sc.hline(0, { color: 'faint', width: 1, dash: true });
+          sc.dot(n0 / N, 0, { r: 6, color: 'gold' }); sc.dot(best / N, Sf(best) - base, { r: 6, color: 'green' });
+          if (best !== n0) sc.arrow(n0 / N, Math.max(2, (Sf(best) - base)) * 0.5, best / N, Math.max(2, (Sf(best) - base)) * 0.5, { color: 'green', width: 2.2 });
+          const TE = 1 / ((lnEin(ne, qe + 1) - lnEin(ne, Math.max(0, qe - 1))) / 2), bEq = beta(best);
+          st = { N, n0, b0, qe, TE, best, gain: Sf(best) - base, Teq: 1 / bEq, Qt };
+        });
+        v.legend([['gold', 'start'], ['green', 'equilibrium']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { N, n0, b0, qe, TE, best, gain, Teq } = st;
+          return `paramagnet: $n=${n0}$ of $N=${N}$ spins flipped, $kT=${isFinite(1 / b0) ? v.fix(1 / b0, 2) : '∞'}\\,\\varepsilon$ ${b0 < 0 ? '(**negative**)' : ''} · solid: $q=${qe}$, $kT_E=${v.fix(TE, 2)}\\,\\varepsilon$\n${best === n0 ? 'already at equilibrium' : best < n0 ? `in contact, energy flows **out of the paramagnet** (${n0} → ${best} flipped spins)${b0 < 0 && TE > 0 ? ': hotter than any positive $T$' : ''}` : `in contact, energy flows into the paramagnet (${n0} → ${best})`} · total entropy gain $${v.fix(gain, 1)}\\,k$; final common temperature $kT=${v.fix(Teq, 2)}\\,\\varepsilon$`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.10
+    {
+      num: '5.10', kind: 'Theorem', name: 'Multiplicity of an ideal gas',
+      statement: String.raw`For $N$ non-interacting point particles of mass $m$ in a box of volume $V$, the number of classical microstates with total energy at most $E$ is proportional to $V^{N}$ times the volume of the ball $\sum p^2\le 2mE$ in the $3N$-dimensional momentum space, $\;\Sigma(E)\propto V^N\,\dfrac{(2\pi mE)^{3N/2}}{\Gamma(\tfrac{3N}{2}+1)}$. The multiplicity of the thin energy shell $[E-\delta E,E]$ differs from $\Sigma$ by the factor $1-(1-\delta E/E)^{3N/2}$, which is essentially 1 for large $N$ however small $\delta E/E$: almost all the volume of a high-dimensional ball lies near its surface. Hence $\ln\Omega=N\ln V+\tfrac32N\ln E+(\text{terms of order }N\text{ independent of }V,E)$ up to $O(\ln N)$ corrections, independent of the shell width.`,
+      idea: String.raw`Each particle contributes three momentum coordinates and the energy $\sum p_i^2/2m$ is the squared radius of a point in $\mathbb R^{3N}$, so the allowed momenta fill the surface region of a $3N$-ball whose volume is $\pi^{d/2}R^d/\Gamma(d/2+1)$ (pma-8.17, pma-8.21: the Gamma function and its half-integer values). The volume of a ball of radius $R$ varies as $R^d$, so the volume between $(1-\delta)R$ and $R$ is the fraction $1-(1-\delta)^d\to1$ as $d\to\infty$. The dependence on volume is $V^N$ because each particle may be anywhere; making the cells of size $h^{3N}$ countable is the subject of qm-12.13 and of 5.11.`,
+      caption: String.raw`**Slide the number of molecules $N$** (so the dimension is $d=3N$) and the shell thickness. Left: histogram of the radius of points drawn uniformly from the unit $d$-ball by a Metropolis random walk, against the exact density $d\,r^{d-1}$ — the points pile up against the surface. Right: the fraction of the volume lying within the outer shell as a function of $N$; it is a step function that moves to small $N$ as soon as the shell is not razor thin. Because $E\propto r^2$, a shell of fractional thickness $\delta$ in radius is a shell of relative width $\approx2\delta$ in energy.`,
+      deps: ['thermo-5.6', 'pma-8.17', 'pma-8.21', 'qm-12.13'], refs: ['Schroeder §2.5'], tags: ['ideal gas', 'high dimensions'],
+      scope: String.raw`Classical point particles without interactions, distinguishable (the $1/N!$ and $h^{3N}$ factors are added in 5.11 and 5.12).`,
+      viz(v) {
+        const Ns = v.slider('molecules $N$ ($d=3N$)', 1, 100, 10, { int: true });
+        const dl = v.slider('shell thickness $\\delta$ (fraction of radius)', 0.001, 0.3, 0.02, { log: true, sig: 2, fmt: (x) => v.fix(x, 3) });
+        const sa = v.stage({ x: [0, 1], y: [0, 10], axes: 'box', gutter: true, height: 290, weight: 1.15, xlabel: 'radius $r/R$', ylabel: 'density of $r$', title: 'where the points of a ball are' });
+        const sb = v.stage({ x: [1, 1e4], y: [0, 1.05], xlog: true, axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 250, xlabel: 'molecules $N$', ylabel: 'volume fraction in the shell', title: 'the shell holds the ball' });
+        const cache = new Map();
+        const sample = (d) => {
+          if (cache.has(d)) return cache.get(d);
+          const r = v.rng(40 + d), x = Float64Array.from({ length: d }, () => 0.01 * r.normal()), step = 0.8 / Math.sqrt(d);
+          let r2 = x.reduce((a, b) => a + b * b, 0); const out = [];
+          for (let it = 0; it < 14000; it++) {
+            const y = new Float64Array(d); let y2 = 0;
+            for (let k = 0; k < d; k++) { y[k] = x[k] + step * r.normal(); y2 += y[k] * y[k]; }
+            if (y2 <= 1) { x.set(y); r2 = y2; }
+            if (it >= 4000 && it % 2 === 0) out.push(Math.sqrt(r2));
+          }
+          cache.set(d, out); return out;
+        };
+        let st = null;
+        v.render(() => {
+          const N = Ns.value, d = 3 * N, delta = dl.value, rs = sample(d), bins = 40, cnt = new Array(bins).fill(0);
+          rs.forEach((r) => { cnt[Math.min(bins - 1, Math.floor(r * bins))]++; });
+          const dens = cnt.map((c) => c / rs.length * bins), top = Math.max(2, Math.max(d * 1.0, ...dens) * 1.1);
+          sa.setView([0, 1], [0, Math.min(top, Math.max(...dens, 3) * 1.25)]);
+          sa.bars(dens, { x0: 0.5 / bins, dx: 1 / bins, color: 'accent' });
+          sa.fn((r) => d * Math.pow(r, d - 1), { domain: [0, 1], color: 'orange', width: 2.2, n: 400 });
+          sa.vband(1 - delta, 1, { color: 'green', alpha: 0.18 });
+          const inShell = rs.filter((r) => r > 1 - delta).length / rs.length, exact = 1 - Math.pow(1 - delta, d);
+          sb.fn((n) => 1 - Math.pow(1 - delta, 3 * n), { color: 'orange', width: 2.4, n: 300 });
+          sb.dot(N, exact, { r: 6, color: 'gold' });
+          sb.vline(1e0, { color: 'faint', width: 0 });
+          const Nstar = Math.log(0.5) / (3 * Math.log(1 - delta));
+          sb.vline(Nstar, { color: 'green', width: 1.2, dash: true });
+          st = { N, d, delta, inShell, exact, Nstar, lnG: lnGam(d / 2 + 1), lnS: lnStirling(d / 2) };
+        });
+        v.legend([['accent', 'sampled points (Metropolis walk)'], ['orange', 'exact $d\\,r^{d-1}$, fraction $1-(1-\\delta)^d$'], ['green', 'shell / half-volume point', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { N, d, delta, inShell, exact, Nstar } = st;
+          const lnV = (dd) => (dd / 2) * Math.log(Math.PI) - lnGam(dd / 2 + 1);
+          return `$d=3N=${d}$: fraction of the ball's volume with $r>(1-\\delta)R$ for $\\delta=${v.fix(delta, 3)}$: exact **${v.fix(100 * exact, 1)} %**, sampled ${v.fix(100 * inShell, 1)} % · half the volume lies in the shell once $N>${v.fix(Nstar, 1)}$ · energy-shell width $\\delta E/E\\approx${v.fix(2 * delta, 3)}$\nunit ball volume $V_{${d}}=\\pi^{d/2}/\\Gamma(d/2+1)=${texExp(lnV(d))}$ (the cube $[-1,1]^d$ that encloses it has volume $2^d$; the ball fills a fraction $${texExp(lnV(d) - d * Math.LN2)}$ of it)`;
+        });
+      },
+    },
+  ],
+};
