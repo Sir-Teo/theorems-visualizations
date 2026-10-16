@@ -122,7 +122,7 @@ A function $f$ defines a distribution function in this way if and only if $f\ge0
           sA.hist(v.M.histogram(xs, { bins }), { density: true, color: 'accent', fillAlpha: 0.3 });
           sA.fn(d.pdf, { color: 'ink', width: 2.2, n: 500 });
           sA.vline(s, { color: 'gold', width: 2 }); sA.text('s', s, top * 0.92, { size: 14, math: true, color: 'gold', dx: 5 });
-          sA.corner(`${surv.length} of 4000 survive past s`, 'tr', { color: 'gold', weight: 600 });
+          sA.text(`${surv.length} of 4000 survive past s`, X * 0.97, top * 0.94, { align: 'right', color: 'gold', weight: 600, size: 12 });
           if (surv.length > 1) { const H = v.M.histogram(surv, { bins }); sB.hist({ edges: H.edges, counts: H.counts.map((c) => c) }, { density: true, color: 'gold', fillAlpha: 0.35 }); }
           sB.fn(d.pdf, { color: 'green', width: 2.6, dash: [6, 4], n: 500 });
           if (k !== 'exp') sB.fn(cond, { color: 'ink', width: 2, n: 500 });

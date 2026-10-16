@@ -845,7 +845,7 @@ class Stage {
    */
   handle(x, y, st = {}) {
     const hd = { x, y, color: st.color || 'accent', r: st.r ?? 7, label: st.label, labelPos: st.labelPos, constrain: st.constrain, onDrag: st.onDrag, visible: true, dragging: false, hover: false };
-    hd.set = (nx, ny) => { hd.x = nx; hd.y = ny; this.rt.invalidate(); };
+    hd.set = (nx, ny) => { if (hd.x === nx && hd.y === ny) return; hd.x = nx; hd.y = ny; if (!this.rt._inFrame) this.rt.invalidate(); }; // safe inside render
     this.handles.push(hd);
     this.canvas.style.touchAction = 'none';
     return hd;
@@ -1287,7 +1287,7 @@ function makeSelect(rt, label, options, value, o = {}) {
   const seg = h('div', 'seg'); el.append(seg);
   const opts = options.map((x) => typeof x === 'object' ? x : { value: x, label: String(x) });
   let cur = value ?? opts[0].value; const btns = [];
-  const ctl = { el, get value() { return cur; }, set(v) { cur = v; sync(); rt.invalidate(); } };
+  const ctl = { el, get value() { return cur; }, set value(v) { ctl.set(v); }, set(v, so = {}) { if (v === cur) return; cur = v; sync(); if (so.fire) o.onChange?.(cur); if (!rt._inFrame) rt.invalidate(); } };
   const sync = () => btns.forEach((b, i) => b.classList.toggle('on', opts[i].value === cur));
   opts.forEach((op) => {
     const b = h('button'); b.type = 'button'; b.innerHTML = inlineHTML(op.label);

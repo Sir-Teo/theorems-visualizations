@@ -533,5 +533,86 @@ Each side of the triangle moves a curve. Fine, dry fuel (tinder) reacts faster, 
         });
       },
     },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4',
+      kind: 'Invention',
+      name: 'The spear-thrower (atlatl)',
+      credit: 'Upper Palaeolithic hunters; oldest surviving example c. 17,500 radiocarbon years old (Combe-Saunière, France)',
+      statement: String.raw`A **spear-thrower** (atlatl, from the Nahuatl word) is a rigid stick or board with a hook or spur at its far end that engages the butt of a light spear, the *dart*. The thrower holds the near end and swings the arm as in an overhand throw. The stick lengthens the arm, so the hook, and the dart with it, moves faster than the hand.
+
+The oldest surviving spear-thrower is a reindeer-antler hook from the Solutrean layers of Combe-Saunière, France, with a radiocarbon age of about 17,500 years (Cattelain 1989). Wooden ones rarely survive, so the invention may be older: some of the larger points at Grotte Mandrin, France, about 54,000 years old, may have tipped spear-thrower darts (Metz et al. 2023). Hand-thrown wooden spears are far older; the Schöningen spears from Germany are about 300,000 years old. Spear-throwers were used on every inhabited continent and survived into recent times in Australia (the woomera) and the Americas.`,
+      idea: String.raw`Muscles cannot shorten arbitrarily fast. Their force falls as the contraction speed rises (Hill's force–velocity relation), so a throwing arm reaches a limiting angular speed $\omega$ whatever it throws. The tip of a lever of length $R$ rotating at $\omega$ moves at $v=\omega R$ (mech-2.8), so extending $R$ from the arm's length $r$ to $r+L$ multiplies the release speed by up to $(r+L)/r$.
+
+The gain is less than that because the longer lever and the dart at its end add moment of inertia $I = I_{\text{arm}}+I_{\text{atlatl}}+m(r+L)^2$, which the same torque spins up more slowly. A light dart therefore gains much more than a heavy spear would. Launched at speed $v$ and angle $\alpha$, a projectile flies $\approx v^2\sin 2\alpha/g$ ignoring drag (mech-1.11), so a 60% faster dart reaches about two and a half times as far. Measured atlatl darts mostly leave at 20–35 m/s (Whittaker et al. 2017), against 12–20 m/s for heavy hand-thrown spears (Milks et al. 2019).`,
+      caption: String.raw`Slide the **atlatl length** and pick the projectile. **Left:** a strobe of the throw at equal time steps, showing the hand (orange) and the hook (blue). The hook's dots spread wider because it moves faster. **Right:** release speed against atlatl length, computed from a torque-limited arm. The dashed line is the ideal lever gain $(r+L)/r$, and the bands are measured speeds. **Bottom:** the two flights from shoulder height, drag ignored; drag the gold handle to change the launch angle.`,
+      deps: ['tech-1.2', 'mech-2.8', 'mech-1.11'],
+      see: ['tech-2.1'],
+      refs: ['Cardwell', 'Whittaker, Pettigrew & Grohsmeyer 2017, PaleoAmerica 3:161', 'Milks, Parker & Pope 2019, Sci. Rep. 9:820'],
+      tags: ['prehistory', 'lever', 'projectiles'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Spear-thrower' },
+      viz(v) {
+        const R0 = 0.65, IARM = 0.35, MA = 0.12, TAU0 = 140, WMAX = 24, SWEEP = 2.2, VB = 2, G0 = 9.81, HREL = 1.8;
+        const A = v.stage({ x: [-2.3, 2.3], y: [-0.4, 3.6], equal: true, axes: false, height: 300, weight: 1, minWidth: 300, title: 'the throw, strobed every 15 ms' });
+        const B = v.stage({ x: [0, 1.2], y: [0, 40], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 380, xlabel: 'atlatl length L (m)', ylabel: 'release speed (m/s)', title: 'speed gained by the lever' });
+        const C = v.stage({ x: [0, 120], y: [0, 36], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'distance (m)', ylabel: 'height (m)', title: 'flight (no air drag)' });
+        const LS = v.slider('atlatl length $L$', 0.2, 1.2, 0.6, { step: 0.01, fmt: (x) => `${x.toFixed(2)} m` });
+        const mSel = v.select('projectile', [{ value: 0.06, label: 'light dart 60 g' }, { value: 0.15, label: 'heavy dart 150 g' }, { value: 0.8, label: 'spear 800 g' }], 0.06);
+        let alpha = 32;
+        const aH = C.handle(10 * Math.cos(alpha * D2R), HREL + 10 * Math.sin(alpha * D2R), { color: 'gold', label: 'angle', labelPos: 'ne', constrain: (x, y) => { const a = clamp(Math.atan2(y - HREL, x) / D2R, 5, 60); return [10 * Math.cos(a * D2R), HREL + 10 * Math.sin(a * D2R)]; } });
+        aH.onDrag = () => { alpha = Math.atan2(aH.y - HREL, aH.x) / D2R; };
+        /** Spin-up of arm + atlatl + projectile under a torque that falls linearly with angular speed. → {v, t, frames: [angle swept at equal times]} */
+        function throwModel(L, m) {
+          const R = R0 + L, I = IARM + (L > 0 ? MA * (R0 * R0 + R0 * L + (L * L) / 3) : 0) + m * R * R;
+          let w = 0.3, th = 0, t = 0; const dt = 0.0005, frames = [0];
+          while (th < SWEEP && t < 2) { const tau = TAU0 * (1 - w / WMAX); w += (dt * tau) / I; th += w * dt; t += dt; if (Math.round(t / dt) % 30 === 0) frames.push(Math.min(th, SWEEP)); }
+          return { v: w * R + VB, w, t, frames, R };
+        }
+        v.render(() => {
+          const L = LS.value, m = mSel.value, at = throwModel(L, m), hand = throwModel(0, m);
+          // ---- A: strobe of the throw (thrower faces +x, arm sweeps over the top clockwise)
+          const sh = [0, 1.5], phiRel = (90 + alpha) * D2R, phi0 = phiRel + SWEEP;
+          A.line(-2.3, 0, 2.3, 0, { color: 'faint', width: 1.5 });
+          A.path([[-0.15, 0], [0, 0.9], [0.15, 0]], { color: 'muted', width: 3 }); A.line(0, 0.9, sh[0], sh[1], { color: 'muted', width: 4 }); A.circle(0, 1.75, 0.16, { fill: 'muted', fillAlpha: 0.5, color: 'muted' });
+          const pos = (phi, rr) => [sh[0] + rr * Math.cos(phi), sh[1] + rr * Math.sin(phi)];
+          at.frames.forEach((th, k) => {
+            const phi = phi0 - th, hp = pos(phi, R0), tp = pos(phi, at.R), last = k === at.frames.length - 1;
+            A.line(sh[0], sh[1], hp[0], hp[1], { color: 'orange', width: last ? 3 : 1.2, alpha: last ? 1 : 0.35 });
+            A.line(hp[0], hp[1], tp[0], tp[1], { color: 'accent', width: last ? 3 : 1, alpha: last ? 1 : 0.3 });
+            A.dot(hp[0], hp[1], { r: 3, color: 'orange' }); A.dot(tp[0], tp[1], { r: 3.5, color: 'accent' });
+          });
+          const tpe = pos(phiRel, at.R), dv = [Math.sin(phiRel), -Math.cos(phiRel)];
+          A.arrow(tpe[0], tpe[1], tpe[0] + 0.035 * at.v * dv[0], tpe[1] + 0.035 * at.v * dv[1], { color: 'accent', width: 2.4 });
+          A.arrow(sh[0] + R0 * Math.cos(phiRel), sh[1] + R0 * Math.sin(phiRel), sh[0] + R0 * Math.cos(phiRel) + 0.035 * hand.v * dv[0], sh[1] + R0 * Math.sin(phiRel) + 0.035 * hand.v * dv[1], { color: 'orange', width: 2.4 });
+          A.corner(`${at.frames.length - 1} steps of 15 ms: the throw takes ${Math.round(at.t * 1000)} ms`, 'bl', { size: 11 });
+          // ---- B: speed against length
+          B.hband(20, 35, { color: 'accent', alpha: 0.1 });
+          B.text('atlatl darts measured (Whittaker et al. 2017)', 1.18, 21, { size: 10.5, color: 'accent', align: 'right', baseline: 'bottom', plate: true });
+          B.rect(0.005, 11.8, 0.03, 20.1, { fill: 'orange', fillAlpha: 0.55, stroke: false });
+          B.text('hand-thrown spears (Milks et al. 2019)', 0.04, 12.4, { size: 10.5, color: 'orange', align: 'left' });
+          const v0 = throwModel(0, m).v;
+          B.fn((x) => (v0 - VB) * (R0 + x) / R0 + VB, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, 1.2] });
+          B.fn((x) => throwModel(x, m).v, { color: 'accent', width: 2.6, domain: [0, 1.2], n: 60 });
+          B.dot(0, v0, { r: 5, color: 'orange' });
+          B.dot(L, at.v, { r: 6, color: 'accent', label: `${v.fix(at.v, 1)} m/s`, labelPos: 'se' });
+          B.text('ideal lever (r+L)/r', 0.86, (v0 - VB) * (R0 + 0.86) / R0 + VB + 1.2, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', plate: true });
+          // ---- C: trajectories
+          const fly = (vv, col, lab) => {
+            const a = alpha * D2R, vx = vv * Math.cos(a), vy = vv * Math.sin(a), T = (vy + Math.sqrt(vy * vy + 2 * G0 * HREL)) / G0, X = vx * T;
+            C.curve((t) => [vx * t, HREL + vy * t - 0.5 * G0 * t * t], 0, T, { color: col, width: 2.4 });
+            C.dot(X, 0, { r: 4.5, color: col }); C.text(`${lab}: ${Math.round(X)} m`, Math.min(X, 117), 1.2, { size: 11.5, color: col, align: X > 100 ? 'right' : 'center', baseline: 'bottom', weight: 700 });
+            return X;
+          };
+          fly(hand.v, 'orange', 'by hand'); fly(at.v, 'accent', 'with atlatl');
+          C.line(0, HREL, aH.x, aH.y, { color: 'gold', width: 1, dash: [3, 3] });
+        });
+        v.legend([['orange', 'hand alone'], ['accent', 'hook of the atlatl'], ['muted', 'ideal lever gain', { dash: true }]]);
+        v.readout(() => {
+          const m = mSel.value, at = throwModel(LS.value, m), hand = throwModel(0, m), a = alpha * D2R;
+          const range = (vv) => { const vy = vv * Math.sin(a); return vv * Math.cos(a) * (vy + Math.sqrt(vy * vy + 2 * G0 * HREL)) / G0; };
+          return `release speed by hand **${v.fix(hand.v, 1)} m/s**, with a ${v.fix(LS.value, 2)} m atlatl **${v.fix(at.v, 1)} m/s** (×${v.fix(at.v / hand.v, 2)}; ideal lever ×${v.fix((R0 + LS.value) / R0, 2)}) · kinetic energy ${v.fix(0.5 * m * hand.v ** 2, 0)} J → ${v.fix(0.5 * m * at.v ** 2, 0)} J · range at ${Math.round(alpha)}°: ${Math.round(range(hand.v))} m → ${Math.round(range(at.v))} m (×${v.fix(range(at.v) / range(hand.v), 2)})`;
+        });
+      },
+    },
   ],
 };

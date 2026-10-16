@@ -106,8 +106,8 @@ In particular $A$ is closed if and only if it contains all its limit points. Poi
       statement: String.raw`Let $X$ be a topological space and $A\subset X$. Applying the closure operator $k$ and the complement operator $c$ to $A$ repeatedly, in any order, produces at most **14** distinct sets. The bound is sharp: for $X=\R$ the set
 $$A=(0,1)\cup(1,2)\cup\{3\}\cup\bigl(\Q\cap(4,5)\bigr)$$
 yields exactly 14.`,
-      idea: String.raw`Since $cc=\mathrm{id}$ and $kk=k$, every word reduces to an alternating one. The key identity is $kckck=kck$: with $i=ckc$ the interior, $kik$ is closed and contained in $k$, so $kikik=kik$. Hence the alternating words starting with $k$ repeat after $kckck$, and there are at most 7 sets $A, kA, ckA, kckA, ckckA, kckckA, ckckckA$ plus their complements — 14 in all. The example needs each part to feed one step: a removed point $1$ (closure fills it), an isolated point $3$, and the rationals of $(4,5)$, whose closure is $[4,5]$ but whose interior is empty.`,
-      caption: String.raw`Press **closure** and **complement** to walk from $A$; each set of the orbit is drawn on its own number line (bars: intervals; dots: rationals only; dashes: irrationals only; hollow ends excluded). Sets you have reached are bright; the readout counts them and checks $kckck=kck$ on every set of the orbit. Other starting sets give fewer than 14.`,
+      idea: String.raw`Since $cc=\mathrm{id}$ and $kk=k$, every word reduces to an alternating one. The key identity is $kckckck=kck$. With $i=ckc$ the interior operator it reads $kiki=ki$ (applied to $cA$): $ki\,A$ is closed, so $iki\,A\subset ki\,A$ and hence $kiki\,A\subset ki\,A$; conversely $i\,A\subset iki\,A$ because $i\,A$ is open and inside $ki\,A$, so $ki\,A\subset kiki\,A$. Hence the alternating words starting with $k$ repeat from length 7 on, and there are at most 7 sets $A, kA, ckA, kckA, ckckA, kckckA, ckckckA$ plus their complements — 14 in all. The example needs each part to feed one step: a removed point $1$ (closure fills it), an isolated point $3$, and the rationals of $(4,5)$, whose closure is $[4,5]$ but whose interior is empty.`,
+      caption: String.raw`Press **closure** and **complement** to walk from $A$; each set of the orbit is drawn on its own number line (bars: intervals; dots: rationals only; dashes: irrationals only; hollow ends excluded). Sets you have reached are bright; the readout counts them and checks $kckckck=kck$ on every set of the orbit. Other starting sets give fewer than 14.`,
       deps: ['top-1.8'],
       refs: ['Munkres §17'],
       tags: ['closure', 'combinatorics'],
@@ -136,15 +136,15 @@ yields exactly 14.`,
             const y = 13.6 - j, on = seen.has(j);
             if (j === cur) s.rect(-1.22, y - 0.45, 6.08, y + 0.45, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.2, radius: 6 });
             s.text(o.word, -0.62, y, { align: 'right', size: 12, weight: 700, color: on ? (j === cur ? 'accent' : 'ink') : 'faint' });
-            drawPSet(s, o.set, y, { color: j === cur ? 'accent' : on ? 'ink' : 'muted', alpha: on ? 1 : 0.28, width: 4.5, r: 3.6, labels: on, labelSize: 9.5 });
+            drawPSet(s, o.set, y, { color: j === cur ? 'accent' : on ? 'ink' : 'muted', alpha: on ? 1 : 0.42, width: 4.5, r: 3.6, labels: false, lo: -0.5 });
           });
           s.corner(`reached ${seen.size} of ${n}`, 'tr', { color: seen.size === n ? 'green' : 'muted', weight: 700, plate: true });
         });
         v.readout(() => {
           if (!orb) return '';
           const fmt = (x) => String(x).replace('-', '−');
-          const ok = orb.every((o) => psEq(psClos(psComp(psClos(psComp(psClos(o.set))))), psClos(psComp(psClos(o.set)))));
-          return `Current set (${orb[cur].word}, reached by the word ${path.length > 18 ? '…' + path.slice(-17) : path}): $${psTex(orb[cur].set, fmt)}$. This start has **${orb.length}** distinct sets in its orbit; $kckck=kck$ ${ok ? 'holds on all of them ✓' : 'fails ✗'}.`;
+          const kc = (X) => psClos(psComp(X)), ok = orb.every((o) => { const kA = psClos(o.set); return psEq(kc(kc(kc(kA))), kc(kA)); });
+          return `Current set (${orb[cur].word}, reached by the word ${path.length > 18 ? '…' + path.slice(-17) : path}): $${psTex(orb[cur].set, fmt)}$. This start has **${orb.length}** distinct sets in its orbit; $kckckck=kck$ ${ok ? 'holds on all of them ✓' : 'fails ✗'}.`;
         });
       },
     },
@@ -167,7 +167,7 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
         const mode = v.select('space', [{ value: 'R', label: '$\\R$' }, { value: 'cof', label: 'cofinite $\\R$' }, { value: 'two', label: 'two origins' }, { value: 'sier', label: 'Sierpiński' }], 'R');
         const r = v.slider('neighbourhood radius $r$', 0.05, 2, 0.9, { step: 0.01 });
         const k = v.slider('points deleted from each', 0, 14, 6, { int: true });
-        const s = v.stage({ x: [-3.3, 3.3], y: [-1.4, 1.5], axes: false, height: 270, full: true });
+        const s = v.stage({ x: [-3.3, 3.3], y: [-1.05, 1.15], axes: false, height: 230, full: true });
         const hx = s.handle(-0.7, 0, { color: 'blue', label: '$x$', labelPos: 'n', constrain: (x) => [v.M.clamp(x, -3, 3), 0] });
         const hy = s.handle(0.6, 0, { color: 'orange', label: '$y$', labelPos: 's', constrain: (x) => [v.M.clamp(x, -3, 3), 0] });
         let st = null;
@@ -191,12 +191,12 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
             const R = r.value;
             s.dot(0, 0.16, { r: 5, color: 'blue' }); s.dot(0, -0.16, { r: 5, color: 'orange' });
             s.dot(0, 0, { r: 4, color: 'panel', ring: false });
-            s.text('0ₐ', 0.12, 0.3, { size: 12, color: 'blue', weight: 700 }); s.text('0_b', 0.12, -0.32, { size: 12, color: 'orange', weight: 700 });
+            s.text('0₁', 0.12, 0.3, { size: 12, color: 'blue', weight: 700 }); s.text('0₂', 0.12, -0.32, { size: 12, color: 'orange', weight: 700 });
             s.line(-R, UY, R, UY, { color: 'blue', width: 7, alpha: 0.5 }); s.dot(0, UY, { r: 5, color: 'panel' }); s.dot(0, UY, { r: 3, color: 'blue' });
             s.line(-R * 0.8, VY, R * 0.8, VY, { color: 'orange', width: 7, alpha: 0.5 }); s.dot(0, VY, { r: 5, color: 'panel' }); s.dot(0, VY, { r: 3, color: 'orange' });
             s.line(-R * 0.8, 0, -0.03, 0, { color: 'red', width: 5 }); s.line(0.03, 0, R * 0.8, 0, { color: 'red', width: 5 });
-            s.text('U = (−r,0) ∪ {0ₐ} ∪ (0,r)', -R, UY + 0.3, { size: 11.5, color: 'blue', weight: 600 });
-            s.text('V = (−r′,0) ∪ {0_b} ∪ (0,r′)', -R * 0.8, VY - 0.3, { size: 11.5, color: 'orange', weight: 600 });
+            s.text('U = (−r,0) ∪ {0₁} ∪ (0,r)', -R, UY + 0.3, { size: 11.5, color: 'blue', weight: 600 });
+            s.text('V = (−r′,0) ∪ {0₂} ∪ (0,r′)', -R * 0.8, VY - 0.3, { size: 11.5, color: 'orange', weight: 600 });
             st = { sep: false, m, R };
             return;
           }
@@ -258,7 +258,7 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
           if (S === 'R') return 'only $0$';
           if (S === 'sorg') return Q === 'inv' ? 'only $0$ (approached from the right)' : 'none';
           if (S === 'cof') return 'every real number';
-          return 'both origins $0_a$ and $0_b$';
+          return 'both origins $0_1$ and $0_2$';
         };
         v.render(() => {
           const S = sp.value, f = SQ[sq.value].f, L = hL.y, e = eps.value, two = S === 'two';
@@ -274,7 +274,7 @@ Every metric space is Hausdorff; subspaces and products of Hausdorff spaces are 
             s.hband(L - e, L + e, { color: 'orange', alpha: 0.18, edges: true });
             inU = (t) => Math.abs(t - L) < e;
           }
-          if (two && Math.abs(L) < 1e-12) { s.dot(-0.5, 0.05, { r: 4, color: 'blue' }); s.dot(-0.5, -0.05, { r: 4, color: 'purple' }); s.text('0ₐ and 0_b: every neighbourhood of either contains this band minus 0', 0.6, -e - 0.08, { size: 11, color: 'muted', baseline: 'top' }); }
+          if (two && Math.abs(L) < 1e-12) { s.dot(-0.5, 0.05, { r: 4, color: 'blue' }); s.dot(-0.5, -0.05, { r: 4, color: 'purple' }); s.text('0₁ and 0₂: every neighbourhood of either contains this band minus 0', 0.6, -e - 0.08, { size: 11, color: 'muted', baseline: 'top' }); }
           let last = 0; for (let n = 1; n <= 2000; n++) if (!inU(f(n))) last = n;
           const finite = last < 1500;
           for (let n = 1; n <= 30; n++) { const t = f(n); s.dot(n, t, { r: 4, color: inU(t) ? 'gold' : 'red' }); }

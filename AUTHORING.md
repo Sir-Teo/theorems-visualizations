@@ -189,7 +189,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.sim(init, step, {dt, maxSteps})` | fixed-step simulation that follows the animation clock: `S.advance(t)` steps to time t (restarting from `init()` when the clock goes backwards: loop wrap, reset, `--still` jump), `S.state`, `S.reset()`. `step(state, dt, t)` mutates or returns the new state. |
 | `v.slider(label, min, max, value, {step, int, log, sig, decimals, fmt, onChange})` | returns `{value, set(x)}`. `int: true` for integers, `log: true` for log scale (drags round to `sig` = 3 significant figures). The default and `set(x)` are kept exact (never snapped to the step grid). |
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
-| `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
+| `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}`; `value` is assignable, `set(v, {fire: true})` also calls onChange. |
 | `v.input(label, text, {vars, onChange, width, placeholder})` | text field; with `vars: ['t', 'x']` it compiles a typed formula safely (no eval) → `.fn(t, x)` (last valid version), `.error`, `.value`; errors show under the field. The parser alone is `v.M.compileExpr(src, vars)`. |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
@@ -266,7 +266,7 @@ Interaction (create once, outside `render`):
 
 | call | |
 |---|---|
-| `s.handle(x, y, {color, r, label, labelPos, constrain})` → `h` | draggable point; read `h.x`, `h.y`. `constrain`: `'x'`, `'y'`, `{x:[a,b], y:[c,d]}` or `(x,y) => [x', y']` (e.g. snap onto a curve). `h.onDrag = fn`, `h.visible = false`, `h.set(x,y)`. |
+| `s.handle(x, y, {color, r, label, labelPos, constrain})` → `h` | draggable point; read `h.x`, `h.y`. `constrain`: `'x'`, `'y'`, `{x:[a,b], y:[c,d]}` or `(x,y) => [x', y']` (e.g. snap onto a curve). `h.onDrag = fn`, `h.visible = false`, `h.set(x,y)` (free to call inside render). |
 | `s.onDrag((x, y, phase) => …)` | free drag/draw anywhere (`phase`: start/move/end). |
 | `s.onClick((x, y, mod) => …)` | click to add points etc.; `mod = {shift, alt, ctrl, button}` (e.g. shift-click to decrease). |
 

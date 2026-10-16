@@ -223,5 +223,104 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 7.14
+    // Verified against the report (typeset text, Wiley appendix A, after Godfrey's 1992 edition): §2 the organs CA, CC, M,
+    // I, O, R; §11.4 the ten operations of CA: +, −, ×, ÷, √, i, j, s, db, bd (i, j move Ica or Jca to Oca; s "forms" u or
+    // v according to the sign of the number held in Oca); §12.2 a standard number is 30 binary digits + sign + 1 digit
+    // marking it as a number: 32 = 2⁵ units, a "minor cycle"; §12.7 M = 262,144 = 2¹⁸ units in 256 delay lines (DLA organs,
+    // "major cycles") of 1,024 units, i.e. 8,192 minor cycles, 32 per line; τ about a microsecond; §14.3–14.5 orders are
+    // obeyed in their natural temporal sequence, CC must wait for a wanted minor cycle to emerge (on average 512 τ);
+    // §15.1 i₀ = 0 a number, i₀ = 1 an order; §15.3–15.6 the code: A ← µρ, w → µρ, wh, C ← µρ; final remark: a transfer
+    // into a minor cycle holding an order "should clear only its 13 digits representing µρ, and accept the last 13 digits".
+    {
+      num: '7.14',
+      kind: 'Paper',
+      name: 'First Draft of a Report on the EDVAC',
+      paper: { authors: 'John von Neumann', year: 1945, title: 'First Draft of a Report on the EDVAC',
+               venue: 'Moore School of Electrical Engineering, University of Pennsylvania (reprinted in IEEE Annals of the History of Computing 15 (4): 27–75, 1993)', doi: '10.1109/85.238389' },
+      introduces: ['tech-11.15'],
+      statement: String.raw`Von Neumann described the logical design of an automatic electronic digital computer with five "organs": a central arithmetic part **CA**, a central control **CC**, a **memory M**, and input **I** and output **O** organs connected to an outside recording medium. Its defining features:
+(a) **one memory for orders and numbers**: M is divided into 32-digit "minor cycles", each holding either a number (first digit 0) or an order (first digit 1); orders are fetched by CC from M exactly as numbers are fetched by CA;
+(b) **sequential control**: CC obeys orders in the order in which they appear in M, unless an order $C\leftarrow\mu\rho$ transfers it elsewhere;
+(c) **binary, serial arithmetic** on 30-digit numbers, with ten operations $+,-,\times,\div,\sqrt{}$, two transfers $i,j$, a selection $s$ that picks one of two numbers by a sign (the basis of conditional branching), and decimal conversions;
+(d) a memory of $2^{18}$ digits in 256 mercury **delay lines** of 32 minor cycles each, so that access means waiting for the wanted word to circulate past the output.
+Because orders are words in M, a program can compute its own orders: a number sent to a minor cycle that holds an order replaces only its 13 address digits. This is the **stored-program architecture** (tech-11.15).`,
+      idea: String.raw`ENIAC (1945) was programmed by plugging cables and setting switches, and its few registers held only numbers. Eckert and Mauchly at the Moore School had already planned a successor with a mercury delay-line memory large enough for instructions; von Neumann, a consultant from Los Alamos, wrote up the group's ideas in an abstract, neuron-like notation, in a document circulated in June 1945 under his name alone, which caused a lasting dispute over credit. Logically it is a universal Turing machine (toc-7.9) made practical: a finite control reading instructions from the same tape that holds the data, with random (if slow) access to it. The report fixed the vocabulary and organisation of nearly every computer since: an arithmetic unit, a control unit with a program counter, a single store, input and output, and instruction words with operation and address fields that programs may modify. Its principle that addresses could be computed in place later gave way to index registers, but programs-as-data remains the foundation of compilers, loaders and operating systems (tech-11.14).`,
+      caption: String.raw`A toy machine in the report's spirit, small enough to watch: one delay line of 32 minor cycles (the report's major cycle) holding a program and its data, CC with its order, CA with its registers $I_{ca}$, $J_{ca}$, $O_{ca}$. The ring turns as time passes: a word can be read only when it reaches the output head (gold), so the clock counts the wait. **Step** (or play) through the fetch–execute cycle of a program that adds four numbers. It uses the report's own orders: $A\leftarrow\mu\rho$ loads, $w\to\mu\rho$ operates and stores, $wh$ holds the result, $s$ selects, $C\leftarrow\mu\rho$ jumps. The loop advances by **rewriting the address of its own first order** (cell 0) and chooses where to jump by writing into the address of order 12. Our simplification: reading an order as a number yields its address. Switch on **orders are read-only** and the program can no longer move on: it never halts.`,
+      deps: ['toc-7.9', 'tech-11.14'],
+      refs: [],
+      tags: ['computer architecture', 'stored program', 'history'],
+      credit: 'John von Neumann (with Eckert, Mauchly and the Moore School group), 1945',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/First_Draft_of_a_Report_on_the_EDVAC' },
+      viz(v) {
+        const ro = v.toggle('orders are read-only (no address substitution)', false, { onChange: () => S.reset() });
+        const dataSel = v.select('data', [{ value: 'a', label: '5, 8, 13, 21' }, { value: 'b', label: '3, 1, 4, 1' }, { value: 'c', label: '12, −7, 30, 2' }], 'a', { onChange: () => S.reset() });
+        const DATA = { a: [5, 8, 13, 21], b: [3, 1, 4, 1], c: [12, -7, 30, 2] };
+        const O = (op, a) => ({ t: 'O', op, a }), Nn = (x) => ({ t: 'N', v: x });
+        const PROG = [O('A←', 24), O('A←', 31), O('+→', 31), O('A←', 20), O('A←', 0), O('+→', 0), O('A←', 0), O('A←', 21), O('−h'), O('A←', 23), O('A←', 22), O('s→', 12), O('C←', 0), O('stop')];
+        const CODE = ['cell 0:  A ← 24     load the next number (address changes)', 'cell 1:  A ← 31     load the running sum', 'cell 2:  + → 31     add, store the sum', 'cell 3:  A ← 20     load the constant 1', 'cell 4:  A ← 0      load the address of order 0', 'cell 5:  + → 0      address + 1 into order 0', 'cell 6:  A ← 0      load the new address', 'cell 7:  A ← 21     load the last address, 27', 'cell 8:  − h        27 − address, held in Oca', 'cell 9:  A ← 23     v = 13 (exit)', 'cell 10:  A ← 22     u = 0 (loop)', 'cell 11:  s → 12     u if Oca ≥ 0 else v, into order 12', 'cell 12:  C ← 0      jump (address set by order 11)', 'cell 13:  stop'];
+        const txt = (w) => (!w ? '' : w.t === 'N' ? `${w.v}` : w.a == null ? w.op : `${w.op}${w.a}`);
+        const build = () => {
+          const mem = new Array(32).fill(null); PROG.forEach((w, i) => (mem[i] = { ...w }));
+          mem[20] = Nn(1); mem[21] = Nn(27); mem[22] = Nn(0); mem[23] = Nn(13); DATA[dataSel.value].forEach((x, i) => (mem[24 + i] = Nn(x))); mem[31] = Nn(0);
+          let T = 0, pc = 0, I = 0, J = 0, Oc = 0, wait = 0, n = 0; const frames = [];
+          const snap = (extra) => frames.push({ mem: mem.map((w) => (w ? { ...w } : null)), T, pc, I, J, Oc, wait, n, ...extra });
+          const reach = (rho) => { const w = (((rho - T) % 32) + 32) % 32; wait += w; T += w + 1; return w; };
+          const valOf = (w) => (w.t === 'N' ? w.v : w.a ?? 0);
+          const store = (a, x) => { const w = mem[a]; if (w && w.t === 'O') { if (!ro.value) { mem[a] = { ...w, a: ((x % 32) + 32) % 32 }; return 'sub'; } return 'blocked'; } mem[a] = Nn(x); return 'num'; };
+          snap({ phase: 'start', head: 0, line: 1, note: 'The program sits in cells 0–13 of the delay line, the constants in 20–23, four numbers in 24–27, the sum in 31.' });
+          for (let guard = 0; guard < 75; guard++) {
+            const wF = reach(pc), ord = mem[pc]; n++;
+            snap({ phase: 'fetch', head: pc, line: pc + 1, note: `Fetch: CC waits ${wF} minor cycle${wF === 1 ? '' : 's'} for cell ${pc} to reach the head and reads the order **${txt(ord)}**.` });
+            let next = pc + 1, note = '', head = pc, changed = -1;
+            if (ord.op === 'stop') { snap({ phase: 'halt', head, line: pc + 1, note: `Stop. Cell 31 holds the sum **${mem[31].v}**.`, done: true }); break; }
+            if (ord.op === 'A←') { reach(ord.a); J = I; I = valOf(mem[ord.a]); head = ord.a; note = `Execute: wait for cell ${ord.a}; its ${mem[ord.a].t === 'O' ? 'order’s address' : 'number'} ${I} goes into Ica (the old Ica moves to Jca).`; }
+            else if (ord.op === '+→') { Oc = I + J; reach(ord.a); const r = store(ord.a, Oc); head = ord.a; changed = ord.a; note = r === 'sub' ? `Execute: Ica + Jca = ${Oc}; cell ${ord.a} holds an order, so only its **address** is replaced: it now reads **${txt(mem[ord.a])}**.` : r === 'blocked' ? `Execute: Ica + Jca = ${Oc}, but orders are read-only: cell ${ord.a} keeps **${txt(mem[ord.a])}**.` : `Execute: Ica + Jca = ${Oc}, stored in cell ${ord.a}.`; }
+            else if (ord.op === '−h') { Oc = I - J; note = `Execute: Ica − Jca = ${I} − ${J} = ${Oc}, held in Oca for the selection.`; }
+            else if (ord.op === 's→') { const held = Oc, sel = Oc >= 0 ? I : J; reach(ord.a); const r = store(ord.a, sel); Oc = sel; head = ord.a; changed = ord.a; note = `Execute: Oca = ${held} ${held >= 0 ? '≥' : '<'} 0, so the selection gives ${sel} (${sel === I ? 'u: loop again' : 'v: leave the loop'}); ${r === 'sub' ? `order 12 becomes **${txt(mem[12])}**` : r === 'blocked' ? 'but order 12 cannot be changed' : ''}.`; }
+            else if (ord.op === 'C←') { next = ord.a; note = `Execute: CC transfers to cell ${ord.a}.`; }
+            snap({ phase: 'exec', head, line: pc + 1, note, changed });
+            pc = next;
+            if (guard === 74) snap({ phase: 'cap', head: pc, line: pc + 1, note: `After ${n} orders the machine is still running: with read-only orders the loop can never advance — it would run for ever.`, done: true, never: true });
+          }
+          return frames;
+        };
+        const S = v.steps({ frames: build, code: CODE, codeTitle: 'program (cells 0–13)', speed: 3, still: 60 });
+        const St = v.stage({ x: [-1.75, 2.75], y: [-1.3, 1.3], equal: true, axes: false, height: 420, full: true, title: 'M: one delay line of 32 minor cycles · CC · CA' });
+        v.render(() => {
+          const f = S.frame; if (!f || !f.mem) return;
+          const cx = -0.55, R = 1.0, ang = (rho) => (2 * Math.PI * ((((rho - f.T + 1) % 32) + 32) % 32)) / 32;
+          St.circle(cx, 0, R, { color: 'faint', width: 10, alpha: 0.5 });
+          for (let rho = 0; rho < 32; rho++) {
+            const a = ang(rho), x = cx + R * Math.cos(a), y = R * Math.sin(a), w = f.mem[rho], hd = rho === f.head && f.phase !== 'start';
+            const col = !w ? 'faint' : w.t === 'O' ? 'blue' : 'orange';
+            St.rect(x - 0.105, y - 0.07, x + 0.105, y + 0.07, { fill: hd ? 'gold' : col, fillAlpha: hd ? 0.9 : w ? 0.2 : 0.06, color: rho === f.changed ? 'red' : hd ? 'gold' : col, width: rho === f.changed ? 2.4 : 1, radius: 3 });
+            if (w) St.text(txt(w), x, y, { size: 9.5, weight: 700, color: 'ink', align: 'center', halo: false });
+            St.text(`${rho}`, cx + (R + 0.17) * Math.cos(a), (R + 0.17) * Math.sin(a), { size: 8.5, color: 'muted', align: 'center' });
+          }
+          St.poly([[cx + R + 0.3, 0], [cx + R + 0.42, 0.07], [cx + R + 0.42, -0.07]], { fill: 'gold', fillAlpha: 1, color: 'gold' });
+          St.text('output head', cx + R + 0.36, -0.14, { size: 10.5, color: 'gold', weight: 700, align: 'center' });
+          St.text('the words circulate ↻', cx, 0, { size: 11, color: 'muted', align: 'center' });
+          // CC and CA boxes
+          const box = (x0, y0, x1, y1, title, col, lit) => { St.rect(x0, y0, x1, y1, { fill: col, fillAlpha: lit ? 0.22 : 0.08, color: col, width: lit ? 2.4 : 1.4, radius: 8 }); St.text(title, x0 + 0.06, y1 - 0.1, { size: 12, weight: 700, color: col, align: 'left' }); };
+          const toCC = f.phase === 'fetch', toCA = f.phase === 'exec';
+          box(1.0, 0.25, 2.7, 1.15, 'CC  central control', 'blue', toCC);
+          St.text(`order counter: cell ${f.pc}`, 1.08, 0.75, { size: 12, align: 'left' });
+          St.text(f.phase === 'start' ? '—' : `order: ${txt(f.mem[f.pc]) || '—'}`, 1.08, 0.48, { size: 13, weight: 700, align: 'left', color: 'blue' });
+          box(1.0, -1.15, 2.7, 0.1, 'CA  central arithmetic', 'orange', toCA);
+          [['Ica', f.I, -0.25], ['Jca', f.J, -0.55], ['Oca', f.Oc, -0.85]].forEach(([nm, val, y]) => { St.text(nm, 1.1, y, { size: 12, align: 'left', color: 'muted' }); St.rect(1.55, y - 0.11, 2.55, y + 0.11, { fill: 'panel', fillAlpha: 1, color: 'orange', width: 1, radius: 4 }); St.text(`${val}`, 2.05, y, { size: 13, weight: 700, align: 'center' }); });
+          if (toCC) St.arrow(cx + R + 0.45, 0.05, 1.0, 0.55, { color: 'gold', width: 2.6 });
+          if (toCA && f.head !== f.pc) St.arrow(cx + R + 0.45, -0.05, 1.0, -0.45, { color: 'gold', width: 2.6 });
+          St.corner(`clock: ${f.T} minor cycles = ${f.T * 32} µs (τ = 1 µs) · ${f.wait} spent waiting`, 'bl', { size: 11.5, color: 'ink', weight: 600 });
+        });
+        v.legend([['blue', 'order (first digit 1)', { area: true }], ['orange', 'number (first digit 0)', { area: true }], ['gold', 'word at the output head now', { area: true }], ['red', 'cell just rewritten', { area: true }]]);
+        v.readout(() => {
+          const f = S.frame; if (!f || !f.mem) return '';
+          const fin = S.frames[S.frames.length - 1], sum = DATA[dataSel.value].reduce((a, b) => a + b, 0);
+          const end = fin.never ? `with read-only orders the machine is still looping after ${fin.n} orders and would never stop` : `the whole run: ${fin.n} orders, ${fin.T} minor cycles (${(fin.T * 32 / 1000).toFixed(2)} ms), ${Math.round((100 * fin.wait) / fin.T)}% of them spent waiting for words to come round; result ${fin.mem[31].v} (= ${sum})`;
+          return `order ${f.n} · cell 0 now reads **${txt(f.mem[0])}**, cell 12 **${txt(f.mem[12])}**, the sum so far ${f.mem[31].v} · ${end} · the report's M: 256 such lines of 32 minor cycles, 8,192 words of 32 digits, an average wait of half a line (512 τ) per transfer — which is why it suggested placing operands right after the orders that use them`;
+        });
+      },
+    },
   ],
 };

@@ -110,26 +110,22 @@ export default {
         const s = v.stage({ x: [-1.9, 1.9], y: [-1.45, 1.45], equal: true, axes: false, height: 340, weight: 1.3 });
         const t = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 340, weight: 1 });
         const F = [[-1, 0], [0, 1]], rot = (a) => [[Math.cos(a), -Math.sin(a)], [Math.sin(a), Math.cos(a)]];
-        const conf = (u = 1) => { const fl = flip ? [[Math.cos(Math.PI * u) * 1, 0], [0, 1]] : I2; void fl; return mm(rot(th), flip ? [[-Math.cos(Math.PI * (1 - u)) * -1 * -1, 0], [0, 1]] : I2); };
         const P = () => SH[fig.value];
-        const gripPos = () => { const M = mm(rot(th), flip ? F : I2), q = mv(M, P()[0]); return q; };
+        const flipNow = () => { const u = tw.t; return [[flip ? Math.cos(Math.PI * u) : -Math.cos(Math.PI * u), 0], [0, 1]]; }; // tween I → F (or back)
+        const gripPos = () => mv(mm(rot(th), flip ? F : I2), P()[0]);
         const grip = s.handle(...P()[0], { color: 'gold', r: 8, constrain: (x, y) => {
-          const p0 = mv(flip ? F : I2, P()[0]), want = Math.atan2(y, x) - Math.atan2(p0[1], p0[0]);
-          const step = fig.value === 'rect' ? Math.PI : (2 * Math.PI) / P().length; let a = want; const k = Math.round(a / step); if (Math.abs(a - k * step) < 0.12) a = k * step;
-          th = a; const q = mv(mm(rot(th), flip ? F : I2), P()[0]); return q;
+          const p0 = mv(flip ? F : I2, P()[0]), step = fig.value === 'rect' ? Math.PI : (2 * Math.PI) / P().length;
+          let a = Math.atan2(y, x) - Math.atan2(p0[1], p0[0]); const k = Math.round(a / step); if (Math.abs(a - k * step) < 0.12) a = k * step;
+          th = a; return gripPos();
         } });
         const permOf = (M) => { const Q = P(); return Q.map((p) => { const q = mv(M, p); return Q.findIndex((r) => Math.hypot(r[0] - q[0], r[1] - q[1]) < 0.02); }); };
-        void conf;
         v.render(() => {
-          const u = tw.t, Q = P();
-          const flipM = flip ? [[-Math.cos(Math.PI * (1 - u)), 0], [0, 1]] : [[u < 1 ? -Math.cos(Math.PI * (1 - u)) * -1 : 1, 0], [0, 1]];
-          const M = mm(rot(th), flip ? [[Math.cos(Math.PI * u) * 1 * (u < 1 ? 1 : 1), 0], [0, 1]] : [[u < 1 ? Math.cos(Math.PI * (1 - u)) * -1 : 1, 0], [0, 1]]);
-          void flipM;
+          const u = tw.t, Q = P(), M = mm(rot(th), u < 1 ? flipNow() : flip ? F : I2);
           const Mfinal = mm(rot(th), flip ? F : I2), perm = permOf(Mfinal), fits = perm.every((x) => x >= 0) && new Set(perm).size === Q.length;
           if (fits && u >= 1) found.add(perm.join(','));
           s.line(0, -1.4, 0, 1.4, { color: 'faint', width: 1, dash: [3, 4] });
           drawFigure(v, s, M, Q, { R: 1, lab: 0.2 });
-          grip.set(...mv(M, Q[0]));
+          { const g = mv(M, Q[0]); grip.x = g[0]; grip.y = g[1]; }
           s.corner(fits ? 'fits the outline ✓' : 'does not fit', 'tl', { size: 13, weight: 700, color: fits ? 'green' : 'red' });
           // gallery of recorded symmetries
           const list = [...found].map((k) => k.split(',').map(Number));
@@ -168,8 +164,8 @@ $G$ is **abelian** (commutative) if $a\circ b=b\circ a$ for all $a,b$, and **non
         const fmtR = (x) => (Math.abs(x - Math.round(x)) < 1e-9 ? String(Math.round(x)) : (() => { for (let q = 2; q < 30; q++) if (Math.abs(x * q - Math.round(x * q)) < 1e-9) return `${Math.round(x * q) < 0 ? '-' : ''}\\tfrac{${Math.abs(Math.round(x * q))}}{${q}}`; return x.toFixed(2); })());
         const C = {
           zadd: { tex: '(\\mathbb Z, +)', sample: (r) => r.int(-20, 20), op: (a, b) => a + b, mem: Number.isInteger, e: 0, inv: (a) => -a, f: String, s: '+' },
-          zsub: { tex: '(\\mathbb Z, -)', sample: (r) => r.int(-9, 9), op: (a, b) => a - b, mem: Number.isInteger, e: null, noE: '$0$ works only on the right: $0 - a = -a \\ne a$ for $a\\ne0$', inv: () => null, f: String, s: '-' },
-          nadd: { tex: '(\\mathbb N, +)', sample: (r) => r.int(1, 30), op: (a, b) => a + b, mem: (x) => Number.isInteger(x) && x >= 1, e: null, noE: 'no $e\\in\\mathbb N = \\{1, 2, \\ldots\\}$ has $e + a = a$ (that would be $0$)', inv: () => null, f: String, s: '+' },
+          zsub: { tex: '(\\mathbb Z, -)', sample: (r) => r.int(-9, 9), op: (a, b) => a - b, mem: Number.isInteger, e: null, noE: 'the only candidate, $e = 0$, works on the right only: $a - e = a$, but $e - a = -a \\ne a$ when $a \\ne 0$', inv: () => null, f: String, s: '-' },
+          nadd: { tex: '(\\mathbb N, +)', sample: (r) => r.int(1, 30), op: (a, b) => a + b, mem: (x) => Number.isInteger(x) && x >= 1, e: null, noE: 'no $e\\in\\mathbb N = \\{1, 2, \\ldots\\}$ has $e + a = a$ (that would be zero)', inv: () => null, f: String, s: '+' },
           z5: { tex: '(\\mathbb Z_5, +)', els: [0, 1, 2, 3, 4], op: (a, b) => (a + b) % 5, mem: (x) => x >= 0 && x < 5, e: 0, inv: (a) => (5 - a) % 5, f: String, s: '+' },
           z6m: { tex: '(\\mathbb Z_6\\setminus\\{0\\}, \\cdot)', els: [1, 2, 3, 4, 5], op: (a, b) => (a * b) % 6, mem: (x) => x >= 1 && x < 6, e: 1, inv: (a) => [1, 2, 3, 4, 5].find((b) => (a * b) % 6 === 1) ?? null, f: String, s: '\\cdot' },
           z7m: { tex: '(\\mathbb Z_7\\setminus\\{0\\}, \\cdot)', els: [1, 2, 3, 4, 5, 6], op: (a, b) => (a * b) % 7, mem: (x) => x >= 1 && x < 7, e: 1, inv: (a) => [1, 2, 3, 4, 5, 6].find((b) => (a * b) % 7 === 1), f: String, s: '\\cdot' },
@@ -202,8 +198,8 @@ $G$ is **abelian** (commutative) if $a\circ b=b\circ a$ for all $a,b$, and **non
             const show = tests.slice(0, 60), w = Math.min(0.13, 2.6 / Math.max(show.length, 1));
             show.forEach((x, j) => { const cx = 0.35 + (j % 20) * 0.13, cy = y - 0.12 - Math.floor(j / 20) * 0.15; s.rect(cx, cy - 0.055, cx + 0.1, cy + 0.055, { fill: x.ok ? 'green' : 'red', fillAlpha: 0.8, stroke: false }); void w; });
             s.text(`${tests.length > 1 ? `${tests.filter((x) => x.ok).length}/${tests.length} instances` : ''}`, 0.3, y - 0.48, { size: 10.5, color: 'muted' });
-            const msg = fail ? (fail.txt ? fail.txt : `$${fail.bad}$`) : `$${tests[0].ex}$`;
-            s.text(msg, 3.2, y, { size: 13, color: fail ? 'red' : 'ink' });
+            if (fail && fail.txt) s.text(fail.txt, 3.2, y, { size: 13, color: 'red' });
+            else s.tex(fail ? fail.bad : tests[0].ex, 3.2, y, { size: 16, align: 'left', color: fail ? 'red' : 'ink' });
           });
         });
         v.readout(() => {

@@ -176,13 +176,13 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
         const n = names.length;
         let M = [...Array(n)].map(() => Array(n).fill(0));
         M[0][1] = 1; M[0][2] = 1; M[1][2] = 1; M[3][3] = 1; M[3][5] = 1; M[4][5] = 1; for (let x = 0; x < n; x++) M[x][4] = 1;
-        const comp = v.select('', [{ value: 'naive', label: 'unrestricted comprehension' }, { value: 'sep', label: 'separation inside A' }], 'naive');
+        const comp = v.select('', [{ value: 'naive', label: 'unrestricted comprehension' }, { value: 'sep', label: 'separation inside A' }], 'naive', { onChange: () => { A = 2; rIn = false; } });
         const place = v.toggle('place R in the universe', true);
-        let rIn = false, evals = 0, sel = null, A = 4;
+        let rIn = false, evals = 0, sel = null, A = 2;
         v.button('evaluate R ∈ R', () => { rIn = !rIn; evals++; });
         const s = v.stage({ x: [-0.3, 10.3], y: [-0.4, 7], equal: true, axes: false, height: 380, weight: 1.2 });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1 });
-        const RP = [8.9, 5.6];
+        const RP = [9.4, 6.0];
         s.onClick((x, y) => {
           let hit = null; pos.forEach((p, i) => { if (Math.hypot(x - p[0], y - p[1]) < 0.55) hit = i; });
           if (place.value && Math.hypot(x - RP[0], y - RP[1]) < 0.55) { rIn = !rIn; evals++; return; }
@@ -213,11 +213,12 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
             for (let x = 0; x < n; x++) if (Rm[x]) { const [a, b] = [pos[x], RP], d = Math.hypot(b[0] - a[0], b[1] - a[1]), ux = (b[0] - a[0]) / d, uy = (b[1] - a[1]) / d; s.arrow(a[0] + ux * 0.55, a[1] + uy * 0.55, b[0] - ux * 0.6, b[1] - uy * 0.6, { color: 'red', width: 1.8, head: 8, alpha: 0.85 }); }
             if (RinA && sep) { const [a, b] = [RP, pos[A]]; s.arrow(a[0], a[1] - 0.55, b[0] + 0.3, b[1] + 0.5, { color: 'red', width: 1.4, dash: [4, 3], head: 7 }); }
             if (rIn) loop(RP, 'red', 2.4, 1);
+            { const [a, b] = [RP, pos[4]], d = Math.hypot(b[0] - a[0], b[1] - a[1]), ux = (b[0] - a[0]) / d, uy = (b[1] - a[1]) / d; s.arrow(a[0] + ux * 0.55, a[1] + uy * 0.55, b[0] - ux * 0.62, b[1] - uy * 0.62, { color: 'faint', width: 1, head: 6, dash: [3, 3] }); }
             const ok = rIn === demanded;
             s.dot(RP[0], RP[1], { r: 19, color: ok ? 'green' : 'red' });
             s.text(sep ? 'R_A' : 'R', RP[0], RP[1], { align: 'center', size: 13, weight: 700, color: 'panel', halo: false });
-            s.text(rIn ? 'R ∈ R ?' : 'R ∉ R ?', RP[0], RP[1] - 0.85, { align: 'center', size: 11.5, weight: 700, color: ok ? 'green' : 'red' });
-            s.text(ok ? 'consistent' : `definition demands ${demanded ? '∈' : '∉'}`, RP[0], RP[1] - 1.25, { align: 'center', size: 10.5, color: ok ? 'green' : 'red' });
+            s.text(rIn ? 'R ∈ R ?' : 'R ∉ R ?', RP[0] + 0.75, RP[1] - 0.95, { align: 'right', size: 11.5, weight: 700, color: ok ? 'green' : 'red' });
+            s.text(ok ? 'consistent' : `definition demands ${demanded ? '∈' : '∉'}`, RP[0] + 0.75, RP[1] - 1.4, { align: 'right', size: 10.5, color: ok ? 'green' : 'red' });
           }
           pos.forEach((p, i) => {
             const isA = sep && i === A;
@@ -228,7 +229,7 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
             if (isA) s.text('A', p[0] - 0.75, p[1] + 0.6, { size: 13, weight: 700, color: 'orange' });
           });
           // table
-          const cols = n + (place.value ? 1 : 0), cw = Math.min(0.11, 0.8 / (cols + 1)), ch = pxY(t, pxX(t, 1) * cw), x0 = 0.18, y0 = 0.86;
+          const cols = n + (place.value ? 1 : 0), cw = Math.min(0.11, 0.8 / (cols + 1)), ch = pxY(t, cw / pxX(t, 1)), x0 = 0.18, y0 = 0.86;
           t.text('x ∈ y ?', x0 - 0.02, y0 + ch * 0.5, { align: 'right', size: 10.5, color: 'muted' });
           for (let j = 0; j < cols; j++) t.text(j < n ? names[j] : sep ? 'R_A' : 'R', x0 + (j + 0.5) * cw, y0 + ch * 0.5, { align: 'center', size: j < n && names[j].length > 4 ? 7.5 : 11, weight: 700, color: j < n ? 'ink' : 'red' });
           for (let i = 0; i < n; i++) {
@@ -237,7 +238,7 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
               const val = j < n ? M[i][j] : Rm[i] ? 1 : 0, X0 = x0 + j * cw, Y0 = y0 - (i + 1) * ch;
               const differs = j < n && i === j && (M[j][j] ? 1 : 0) !== (Rm[j] ? 1 : 0) && inDom(j);
               t.rect(X0 + 0.004, Y0 + 0.004, X0 + cw - 0.004, Y0 + ch - 0.004, { fill: j === n ? 'red' : 'blue', fillAlpha: val ? (j === n ? 0.5 : 0.45) : 0, color: i === j ? 'gold' : 'grid', width: i === j ? 2.4 : 1, radius: 3 });
-              if (val) t.text('∈', X0 + cw / 2, Y0 + ch / 2, { align: 'center', size: 12, color: 'panel', halo: false, weight: 700 });
+              if (val) t.text('∈', X0 + cw / 2, Y0 + ch * (differs ? 0.62 : 0.5), { align: 'center', size: 12, color: 'panel', halo: false, weight: 700 });
               if (differs) t.text('≠R', X0 + cw / 2, Y0 + 0.012, { align: 'center', size: 8.5, color: 'red', weight: 700, baseline: 'bottom' });
             }
           }
@@ -249,7 +250,7 @@ a contradiction, so unrestricted comprehension is inconsistent. Zermelo's **sepa
               t.rect(X0 + 0.004, Y0 + 0.004, X0 + cw - 0.004, Y0 + ch - 0.004, { fill: 'red', fillAlpha: val ? 0.45 : 0, color: j === n ? 'red' : 'grid', width: j === n ? 2.6 : 1, radius: 3 });
               if (j === n) t.text(rIn === demanded ? '' : '✗', X0 + cw / 2, Y0 + ch / 2, { align: 'center', size: 14, color: 'red', weight: 700 });
             }
-            t.text('R’s own diagonal cell', x0 + cols * cw + 0.01, Y0 + ch / 2, { size: 9.5, color: 'red' });
+            t.text('R ∈ R?', x0 + cols * cw + 0.01, Y0 + ch / 2, { size: 10, color: 'red', weight: 600 });
           }
           t.text(sep ? 'red column: members of A that are not members of themselves' : 'red column R: the gold diagonal, flipped', 0.5, 0.06, { align: 'center', size: 10.5, color: 'red' });
           st = { sep, Rm, RinA, demanded, ok: rIn === demanded };

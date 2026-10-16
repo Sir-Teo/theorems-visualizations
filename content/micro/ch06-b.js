@@ -225,8 +225,9 @@ It is negative for a price rise (the most the consumer would pay to avoid it) an
           e.hline(M, { color: 'ink', width: 1.4, dash: [4, 3] }); e.text('income m', 2.1, M, { dy: -9, color: 'ink', size: 11.5, weight: 600, align: 'left' });
           e.fn((u) => hicks(F, P0, 1, u).e, { domain: [2, 9], color: 'muted', width: 2.4, n: 60 });
           e.fn((u) => hicks(F, P, 1, u).e, { domain: [2, 9], color: 'accent', width: 2.4, n: 60 });
-          e.text('e(p⁰, u)', 8.9, hicks(F, P0, 1, 8.9).e, { dx: -4, dy: P > P0 ? 12 : -12, color: 'muted', ...LBL, align: 'right' });
-          e.text("e(p¹, u)", 8.9, hicks(F, P, 1, 8.9).e, { dx: -4, dy: P > P0 ? -12 : 12, color: 'accent', ...LBL, align: 'right' });
+          const ul = (pp) => Math.min(8.9, 17 / hicks(F, pp, 1, 1).e); // e is linear in u for Cobb–Douglas
+          e.text('e(p⁰, u)', ul(P0), hicks(F, P0, 1, ul(P0)).e, { dx: 8, dy: 6, color: 'muted', ...LBL, align: 'left', baseline: 'top', plate: true });
+          e.text('e(p¹, u)', ul(P), hicks(F, P, 1, ul(P)).e, { dx: -8, dy: -6, color: 'accent', ...LBL, align: 'right', baseline: 'bottom', plate: true });
           e.line(u1, M, u1, M + EV, { color: 'gold', width: 4 }); e.line(u0, M, u0, M + CV, { color: 'orange', width: 4 });
           e.vline(u0, GUIDE); e.vline(u1, GUIDE);
           e.text('EV', u1, M + EV / 2, { dx: -8, color: 'gold', ...LBL, align: 'right' }); e.text('CV', u0, M + CV / 2, { dx: 8, color: 'orange', ...LBL, align: 'left' });
@@ -257,7 +258,7 @@ for price cuts and price rises alike, with equality throughout when there is no 
         const ql = v.toggle('quasilinear (no income effect)', false);
         const eta = v.slider('income effect $\\eta$', 0.05, 1, 0.8, { step: 0.01 });
         const pc = v.slider('new price as a share of the old', 0.3, 0.95, 0.45, { step: 0.01 });
-        const s = v.stage({ x: [0, 16], y: [0, 14], height: 340, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.1, title: 'gaps between the two indifference curves' });
+        const s = v.stage({ x: [0, 18], y: [0, 20], height: 340, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.1, title: 'gaps between the two indifference curves' });
         const d = v.stage({ x: [0, 16], y: [0, 3.2], height: 340, axes: 'box', xlabel: 'x₁', ylabel: 'p₁', title: 'three demand curves, three areas' });
         const g = v.stage({ x: [0.3, 0.95], y: [0, 1], height: 180, axes: 'box', full: true, xlabel: 'size of the change: new price / old price (for a rise, old / new)', ylabel: 'gain', title: 'welfare gain measures: $CV \\le \\Delta CS \\le EV$ for a normal good' });
         v.legend([['orange', 'Hicksian at u₀ · CV'], ['accent', 'Marshallian · ΔCS'], ['gold', 'Hicksian at u₁ · EV'], ['purple', 'indifference curves']]);
@@ -277,7 +278,7 @@ for price cuts and price rises alike, with equality throughout when there is no 
           // tangent lines: old slope to the "other" curve (EV), new slope to the "other" curve (CV)
           const eOld = hicks(F, P0, 1, u1), eNew = hicks(F, Pn, 1, u0);
           s.clip(() => { s.line(eOld.e / P0, 0, 0, eOld.e, { color: 'gold', width: 2.2 }); s.line(eNew.e / Pn, 0, 0, eNew.e, { color: 'orange', width: 2.2 }); });
-          const yt = (y) => Math.min(y, 13.8);
+          const yt = (y) => Math.min(y, 19.8);
           s.line(0.25, M, 0.25, yt(eOld.e), { color: 'gold', width: 5 }); s.line(0.7, M, 0.7, yt(eNew.e), { color: 'orange', width: 5 });
           s.text('EV', 0.25, (M + yt(eOld.e)) / 2, { dx: -2, color: 'gold', ...LBL, align: 'right' }); s.text('CV', 0.9, (M + yt(eNew.e)) / 2, { color: 'orange', ...LBL, align: 'left' });
           s.dot(A[0], A[1], { r: 5, color: 'ink' }); s.dot(C[0], C[1], { r: 5.5, color: 'green' });
@@ -296,16 +297,17 @@ for price cuts and price rises alike, with equality throughout when there is no 
           const key = `${e0}|${up}`;
           if (!cache[key]) { const out = []; for (let i = 0; i <= 26; i++) { const sh = 0.3 + (0.65 * i) / 26, q = measures(F, up ? P0 / sh : P0 * sh); out.push([sh, q.cv, q.cs, q.ev]); } cache[key] = out; }
           const cv = cache[key], all = cv.flatMap((z) => z.slice(1)), gl = Math.min(0, ...all), gh = Math.max(0, ...all);
-          g.setView([0.3, 0.95], [gl - 0.08 * (gh - gl), gh + 0.08 * (gh - gl)]);
+          g.setView([0.3, 0.95], [gl - 0.2 * (gh - gl), gh + 0.08 * (gh - gl)]);
           g.hline(0, { color: 'faint', width: 1 });
           [[1, 'orange'], [2, 'accent'], [3, 'gold']].forEach(([j, col]) => g.path(cv.map((z) => [z[0], z[j]]), { color: col, width: 2.4 }));
           g.vline(pc.value, GUIDE);
-          st = { e0, up, Pn, ...r };
+          const sl = slutsky(F, P0, 1, M);
+          st = { e0, up, Pn, ...r, inc: (sl.dm * M) / sl.x[0] };
         });
         v.readout(() => {
-          const { e0, up, Pn, cs, cv, ev } = st, f = (q) => v.fix(q, 3);
+          const { e0, up, Pn, cs, cv, ev, inc } = st, f = (q) => v.fix(q, 3);
           const order = cv <= cs + 1e-9 && cs <= ev + 1e-9 ? 'so $CV \\le \\Delta CS \\le EV$' : 'ordered as stated';
-          const will = e0 > 0 ? ` Willig's rule of thumb predicts a relative gap $(\\Delta CS - CV)/|\\Delta CS| \\approx \\eta\\,|\\Delta CS|/2m \\approx ${v.fix(100 * e0 * Math.abs(cs) / 20, 1)}\\%$ (income elasticity near the optimum ≈ ${v.fix(e0, 2)}); the actual gap is ${v.fix(100 * (cs - cv) / Math.abs(cs), 1)}%.` : ' With no income effect the three measures coincide, as 6.8 showed.';
+          const will = e0 > 0 ? ` Willig's rule of thumb predicts a relative gap $(\\Delta CS - CV)/|\\Delta CS| \\approx \\eta\\,|\\Delta CS|/2m \\approx ${v.fix((100 * inc * Math.abs(cs)) / 20, 1)}\\%$, using the income elasticity $\\eta = ${v.fix(inc, 2)}$ of good 1 at the old optimum; the actual gap is ${v.fix(100 * (cs - cv) / Math.abs(cs), 1)}%.` : ' With no income effect the three measures coincide, as 6.8 showed.';
           return `$p_1$: 1.5 → ${v.fix(Pn, 2)} (a price ${up ? 'rise: the gains are negative' : 'cut'}). Gains: $CV = ${f(cv)}$, $\\Delta CS = ${f(cs)}$, $EV = ${f(ev)}$, ${order}.${will}`;
         });
       },
