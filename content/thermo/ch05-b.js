@@ -558,7 +558,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           sa.text('pawl at $T_2=1$', 0.4, 1.3, { size: 11, color: 'blue', align: 'left', plate: true });
           sa.rect(-1.85, -0.45, -1.2, 0.45, { fill: 'red', fillAlpha: 0.15 + 0.12 * (T1.value - 1), color: 'red', width: 1.2 });
           sa.line(-1.2, 0, -0.15, 0, { color: 'ink', width: 3 });
-          sa.text('vane', -1.52, 0, { size: 12, color: 'red', align: 'center', weight: 650 }); sa.text(`$T_1=${v.fix(T1.value, 2)}$`, -1.52, -0.62, { size: 11.5, color: 'red', align: 'center' });
+          sa.text('vane', -1.52, 0, { size: 12, color: 'red', align: 'center', weight: 650 }); sa.text(`$T_1=${v.fix(T1.value, 2)}$`, -1.4, -0.62, { size: 11.5, color: 'red', align: 'center' });
           sa.arrow(0.55, -1.0, 0.55 + 0.4, -1.0 + 0.12, { color: 'green', width: 2, head: 7 });
           sa.text(st.n >= 0 ? `+${st.n} teeth` : `${st.n.toString().replace('-', '−')} teeth`, 0, -1.3, { size: 12.5, color: 'ink', align: 'center', weight: 650 });
           const tm = Math.max(50, st.t);
