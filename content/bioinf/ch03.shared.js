@@ -214,10 +214,10 @@ export const seedWeight = (pat) => pat.split('').filter((c) => c === '1').length
 export function seedData(seed, N, L) { const r = mkRng(seed), u = new Float32Array(N * L); for (let i = 0; i < u.length; i++) u[i] = r(); return { u, N, L }; }
 // fraction of alignments (each position matches with probability p) hit by the seed, and the mean number of hits
 export function seedSensitivity(D, pat, p) {
-  const len = pat.length, mask = seedMask(pat), full = len >= 31 ? -1 : (1 << len) - 1; let hit = 0, tot = 0;
+  const len = pat.length, mask = seedMask(pat), full = len >= 31 ? -1 : (1 << len) - 1, use = D.use || D.L; let hit = 0, tot = 0;
   for (let a = 0; a < D.N; a++) {
     let win = 0, c = 0; const base = a * D.L;
-    for (let k = 0; k < D.L; k++) { win = ((win << 1) | (D.u[base + k] < p ? 1 : 0)) & full; if (k >= len - 1 && (win & mask) === mask) c++; }
+    for (let k = 0; k < use; k++) { win = ((win << 1) | (D.u[base + k] < p ? 1 : 0)) & full; if (k >= len - 1 && (win & mask) === mask) c++; }
     if (c) hit++; tot += c;
   }
   return { sens: hit / D.N, hits: tot / D.N };

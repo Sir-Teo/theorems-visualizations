@@ -205,7 +205,7 @@ export default {
       caption: String.raw`Choose a scenario. The graph shows the true effect (green) and the path that biases the crude analysis (red). Slide the **bias strength** and compare three bars: the true effect, the crude analysis, and the repaired analysis (adjust for $L$ / weight selected units by the inverse of their selection probability / rescale by the known reliability). The repaired bar stays on the truth, the crude bar does not.`,
       deps: ['causal-3.5'], refs: ['Hernán–Robins §6.5'], tags: ['bias', 'confounding', 'selection'],
       credit: 'Hernán, Hernández-Díaz & Robins, 2004 (structural approach to selection bias)',
-      scope: String.raw`Linear Gaussian illustrations with true effect $\tau=1$; the classification itself is graph-theoretic and does not depend on linearity. Measurement bias is shown for the simplest case, independent classical error in $A$.`,
+      scope: String.raw`Linear Gaussian illustrations with true effect $\tau=1$; the classification itself is graph-theoretic and does not depend on linearity. Measurement bias is shown for the simplest case, independent classical error in $A$. Selection probability here is $0.05+0.95\,\mathrm{logistic}(3C)$ with $C=k(A+Y)+\text{noise}$.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Confounding' },
       viz(v) {
         const SC = [

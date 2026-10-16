@@ -54,23 +54,24 @@ export default {
         };
         let info = null;
         v.render(() => {
-          const D = data(), xs = D.xs, M = moments(xs), lo = Math.max(0, Math.floor(Math.min(...xs)) - 2), hi = Math.ceil(Math.max(...xs, D.real)) + 3;
+          const D = data(), xs = D.xs, M = moments(xs), lo = Math.max(0, Math.floor(Math.min(...xs)) - 2), nmax = Math.ceil(Math.max(...xs));
+          const far = D.real > nmax + 40, hi = far ? nmax + 30 : Math.max(nmax, Math.ceil(D.real)) + 4;
           const H = latticeHist(xs, lo, hi), ymax = Math.max(...H.counts) * 1.25;
-          sH.setView([lo - 1, Math.max(hi, 45)], [0, ymax]);
+          sH.setView([lo - 1, hi + 1], [0, ymax]);
           sH.hist(H, { color: 'accent', fillAlpha: 0.35 });
           sH.fn((x) => normPdf(x, M.mean, M.sd), { color: 'purple', dash: true, width: 2, domain: [lo, hi] });
           sH.vline(M.mean, { color: 'muted', dash: true });
-          sH.vline(D.real, { color: 'gold', width: 3 });
-          sH.text(`real subject: $S_0=${D.real}$`, D.real - 0.5, ymax * 0.93, { align: D.real > (lo + hi) / 2 ? 'right' : 'left', size: 12.5, color: 'gold' });
+          if (far) { sH.arrow(hi - 14, ymax * 0.55, hi + 0.6, ymax * 0.55, { color: 'gold', head: 9 }); sH.text(`real subject: $S_0=${D.real}$ (off scale)`, hi - 1, ymax * 0.64, { align: 'right', size: 12.5, color: 'gold' }); }
+          else { sH.vline(D.real, { color: 'gold', width: 3 }); sH.text(`real subject: $S_0=${D.real}$`, D.real - 0.5, ymax * 0.93, { align: D.real > (lo + hi) / 2 ? 'right' : 'left', size: 12.5, color: 'gold' }); }
           // normal quantile plot
           const srt = xs.slice().sort((a, b) => a - b), pts = [];
           for (let i = 0; i < srt.length; i += Math.max(1, Math.floor(srt.length / 160))) pts.push([normQuantile((i + 0.5) / srt.length), (srt[i] - M.mean) / M.sd]);
-          sQ.setView([-3, 3.5], [-3, Math.max(5, (D.real - M.mean) / M.sd + 1)]);
+          const zr = (D.real - M.mean) / M.sd, ztop = Math.max(5, ...pts.map((p) => p[1]) ) + 0.8;
+          sQ.setView([-3, 3.5], [-3, Math.min(ztop, Math.max(5.5, zr + 1))]);
           sQ.line(-3, -3, 3.5, 3.5, { color: 'muted', dash: true });
           sQ.dots(pts, { r: 2.5, color: 'accent' });
-          const zr = (D.real - M.mean) / M.sd;
-          sQ.hline(zr, { color: 'gold', width: 2 });
-          sQ.text('real score', -2.9, zr + 0.18, { size: 12, color: 'gold' });
+          if (zr <= ztop - 0.2) { sQ.hline(zr, { color: 'gold', width: 2 }); sQ.text('real score', -2.9, zr + 0.3, { size: 12, color: 'gold' }); }
+          else sQ.text(`real score: ${fx(zr, 0)} sd, off scale`, -2.9, ztop - 0.6, { size: 12, color: 'gold' });
           info = { D, M, zr, k: xs.filter((x) => x >= D.real).length };
         });
         v.legend([['accent', 'null scores', { area: true }], ['purple', 'normal fit', { dash: true }], ['gold', 'real subject']]);
@@ -117,7 +118,7 @@ export default {
           const R = run(), k = kS.value, all = R.flatMap((q) => q.vals);
           const lo = Math.max(0, Math.floor((Math.min(...all) - 0.03) * 20) / 20), hi = Math.min(1.02, Math.max(...all) + 0.04);
           sA.setView([6, 1500], [k === 2 ? Math.min(lo, 0.6) : lo, Math.max(hi, k === 2 ? 0.9 : 0)]);
-          if (k === 2) { sA.hband(0.792665992, 0.82628, { color: 'green', alpha: 0.18 }); sA.text('known bounds for $k=2$', 7.5, 0.836, { size: 11.5, color: 'green' }); }
+          if (k === 2) { sA.hband(0.792665992, 0.82628, { color: 'green', alpha: 0.18 }); sA.text('known bounds for $k=2$', 1400, 0.842, { size: 11.5, color: 'green', align: 'right' }); }
           else { sA.hline(2 / Math.sqrt(k), { color: 'muted', dash: true }); sA.text('$2/\\sqrt{k}$', 7.5, 2 / Math.sqrt(k) + 0.012, { size: 11.5, color: 'muted' }); }
           sA.poly([...R.map((q) => [q.n, q.mean + q.sd]), ...R.slice().reverse().map((q) => [q.n, q.mean - q.sd])], { fill: 'accent', fillAlpha: 0.15, stroke: false });
           R.forEach((q, i) => q.vals.forEach((x, j) => sA.dot(q.n * (1 + 0.08 * (((j * 7 + i * 3) % 11) / 11 - 0.5)), x, { r: 2.2, color: 'faint' })));
@@ -143,7 +144,7 @@ export default {
       name: 'Linear-to-logarithmic phase transition of local scores',
       statement: String.raw`Score two random sequences of length $n$ locally, with match $+1$, mismatch $-\mu$ and gap penalty $-\delta$ per residue. The optimal local score $S_n$ has a phase transition in $(\mu,\delta)$: there is a region of small penalties where $S_n/n$ converges to a positive constant (*linear growth*), and a region of large penalties where $S_n/\log n$ converges to a constant (*logarithmic growth*). With no gaps allowed the boundary is where the expected score of a random aligned pair, $\mathbb E[s]$, is zero.`,
       idea: String.raw`A local alignment starts afresh whenever its running score falls to $0$, so $S_n$ is the largest excursion of a random walk with steps $s$ over about $n^2$ starting places. If $\mathbb E[s]<0$ excursions have exponentially small probability $e^{-\lambda h}$ of reaching height $h$, and the largest of $n^2$ trials reaches only $h\approx 2\ln n/\lambda$. If $\mathbb E[s]>0$ the walk drifts upward and runs for length proportional to $n$. Allowing gaps lets the alignment buy better pairings, which pushes the boundary towards larger penalties; Arratia and Waterman proved that the transition exists for the gapped problem; the longest common subsequence of item 3.2 is a special case, on the linear side.`,
-      caption: String.raw`The left map colours each pair $(\mu,\delta)$ by the growth exponent $\alpha$ in $S_n\propto n^{\alpha}$, measured from simulated random DNA at $n=60$ and $n=360$ (about linear, $\alpha\approx1$: dark; logarithmic, $\alpha$ small: pale). Drag the handle: the right panel shows $S_n$ against $n$ for that choice, on logarithmic axes, with a linear and a logarithmic fit. The dashed vertical line is the exact no-gap boundary $\mu=1/3$; with cheap gaps the real boundary moves to larger $\mu$ (watch the colour change).`,
+      caption: String.raw`The left map colours each pair $(\mu,\delta)$ by the growth exponent $\alpha$ in $S_n\propto n^{\alpha}$, measured from simulated random DNA at $n=60$ and $n=360$ (about linear, $\alpha\approx1$: dark; logarithmic, $\alpha$ small: pale). Drag the handle: the right panel shows $S_n$ against $n$ for that choice, on logarithmic axes, with a linear and a logarithmic fit. The dashed vertical line is the exact no-gap boundary $\mu=1/3$; in this simulation, gaps cheaper than about $1$ keep the growth linear whatever the mismatch penalty, and between the two regimes the boundary bends away from $\mu=1/3$.`,
       scope: String.raw`Simulation on i.i.d. uniform four-letter sequences with linear gap costs, at only two lengths and three samples per cell, so the colours blur near the boundary and a cell's exponent has noise of a few hundredths. The exact boundary is known in closed form only for the no-gap limit; for gapped alignment the curve in the $(\mu,\delta)$ plane is characterised but not explicit.`,
       credit: 'Arratia & Waterman, 1994',
       deps: ['bioinf-3.1'],
@@ -188,7 +189,7 @@ export default {
           sM.axes();
           sM.vline(1 / 3, { color: 'ink', dash: true, width: 1.6 });
           sM.text('no-gap boundary $\\mu=1/3$', 1 / 3 + 0.05, 2.85, { size: 11.5, color: 'ink' });
-          sM.colorbar([0, 1], (t) => v.ramp(t, 'accent'), { pos: 'right', label: 'exponent $\\alpha$', tex: true, ticks: [0, 0.5, 1] });
+          sM.colorbar([0, 1], (t) => v.ramp(t, 'accent'), { pos: 'right', label: 'exponent α', ticks: [0, 0.5, 1] });
           const mu = h.x, de = h.y, C = curve(mu, de), F = fit(C);
           sG.setView([10, 600], [Math.max(0.5, Math.min(...C.map((p) => p.s)) / 1.6), Math.max(...C.map((p) => p.s)) * 2.2]);
           sG.fn((n) => F.a * n, { color: 'orange', dash: true, width: 1.8, domain: [12, 560] });
@@ -284,7 +285,7 @@ export default {
 $$P(S_{\max}\ge x)\;\approx\;1-\exp\!\big(-K\,mn\,e^{-\lambda x}\big),$$
 a Gumbel law with location $u=\ln(Kmn)/\lambda$ and scale $1/\lambda$. Its mean is $u+\gamma_E/\lambda$ and its standard deviation $\pi/(\lambda\sqrt6)$. In the upper tail $P(S_{\max}\ge x)\approx Kmn\,e^{-\lambda x}$, so $\log P$ is a straight line of slope $-\lambda$.`,
       idea: String.raw`By item 3.4 the number of segments scoring at least $x$ is Poisson with mean $E(x)=Kmne^{-\lambda x}$, and $S_{\max}<x$ exactly when that number is zero, which has probability $e^{-E(x)}$: this is the Gumbel distribution function. Changing the lengths only changes $E$ by a factor $mn$, so only the location $u$ moves, by $\ln(mn)/\lambda$, and the shape stays fixed. A normal curve has a tail that bends down like $e^{-x^2/2}$, far lighter than the exponential tail of the Gumbel.`,
-      caption: String.raw`Histogram of the best score over random sequence pairs (left) and the same data as a log survival plot (right). The accent curve is the Gumbel law with the NCBI constants, or with parameters fitted by moments (choose with the selector); the dashed purple curve is a normal law with the same mean and spread. On the log plot the Gumbel tail is the straight line of slope $-\lambda/\ln10$ per score unit, while the normal curve bends away. Change the length: the whole distribution slides by $\ln(mn)/\lambda$ and keeps its shape.`,
+      caption: String.raw`Histogram of the best score over random sequence pairs (left) and the same data as a log survival plot (right). The green curve is the Gumbel law with the NCBI constants, or with parameters fitted by moments (choose with the selector); the dashed purple curve is a normal law with the same mean and spread. On the log plot the Gumbel tail is the straight line of slope $-\lambda/\ln10$ per score unit, while the normal curve bends away. Change the length: the whole distribution slides by $\ln(mn)/\lambda$ and keeps its shape.`,
       scope: String.raw`Exact asymptotics are proved for ungapped scores. For gapped scores (gaps $11+k$, BLOSUM62) the same form is an empirical law with fitted $\lambda=0.267$, $K=0.041$ (NCBI); at the short lengths used here the sample mean is a little above the prediction, which shows the finite-size error. The BLAST-style length adjustment $\ell$ replaces $m,n$ by $m-\ell,\ n-\ell$ to correct for edge effects.`,
       deps: ['bioinf-3.4'],
       refs: ['Durbin ch. 2'],
