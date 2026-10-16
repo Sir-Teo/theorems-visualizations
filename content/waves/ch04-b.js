@@ -180,17 +180,17 @@ The reflection for the reversed incidence therefore has the opposite sign, and $
             P1.arrow(-si * L, ci * L, 0, 0, { color: 'accent', width: 4, head: 10 });
             P1.line(0, 0, si * L, ci * L, { color: 'red', width: lw(I.r) });
             P1.line(0, 0, s2 * L, -c2 * L, { color: 'green', width: lw(I.t) });
-            P1.tex('1', -si * L * 0.6 - 0.2, ci * L * 0.6 + 0.15, { size: 14 });
-            P1.tex(`r=${v.fix(I.r, 3)}`, si * L * 0.75 + 0.15, ci * L * 0.75 + 0.2, { size: 13, color: 'red' });
-            P1.tex(`t=${v.fix(I.t, 3)}`, s2 * L * 0.75 + 0.2, -c2 * L * 0.75, { size: 13, color: 'green' });
+            P1.tex('1', -si * L * 0.5 - 0.25, ci * L * 0.5 + 0.25, { size: 14, color: 'accent' });
+            P1.tex(`r=${v.fix(I.r, 3)}`, 1.2, 1.45, { size: 13, color: 'red', align: 'left' });
+            P1.tex(`t=${v.fix(I.t, 3)}`, 0.5, -1.55, { size: 13, color: 'green', align: 'left' });
             // reversed: rays r (along the reflected ray reversed) and t (along refracted reversed) arrive; outgoing: back along incident ray, and along the reflected-ray side with r' etc.
             P2.arrow(si * L, ci * L, 0, 0, { color: 'red', width: lw(I.r), head: 9 });
             P2.arrow(s2 * L, -c2 * L, 0, 0, { color: 'green', width: lw(I.t), head: 9 });
             const out1 = I.r * I.r + I.t * I.tp, out2 = I.r * I.t + I.t * I.rp;
             P2.line(0, 0, -si * L, ci * L, { color: 'accent', width: lw(out1) });
-            P2.tex(`r^2+tt'=${v.fix(out1, 3)}`, -si * L * 0.6 - 0.5, ci * L * 0.7 + 0.25, { size: 13, color: 'accent' });
-            P2.tex(`rt+tr'=${v.fix(out2, 3)}`, 1.0, 1.5, { size: 13, color: 'muted' });
-            P2.tex(`r'=${v.fix(I.rp, 3)}`, -1.5, -1.1, { size: 13, color: 'orange' });
+            P2.tex(`r^2+tt'=${v.fix(out1, 3)}`, -1.9, 1.5, { size: 13, color: 'accent', align: 'left' });
+            P2.tex(`rt+tr'=${v.fix(out2, 3)}`, 0.3, 1.5, { size: 13, color: 'muted', align: 'left' });
+            P2.tex(`r'=${v.fix(I.rp, 3)}`, -1.9, -1.3, { size: 13, color: 'orange', align: 'left' });
             st = { ...I, out1, out2, ok };
           } else st = { ok };
           P3.fn((a) => { if (a >= deg(crit)) return NaN; return info(rad(a)).r; }, { color: 'accent', width: 2.2, n: 300 });
@@ -212,7 +212,7 @@ The reflection for the reversed incidence therefore has the opposite sign, and $
 $$n=\frac{\sin\frac{A+D_{\min}}2}{\sin\frac A2}.$$
 In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal reflections is turned through $D=k\pi+2i-2(k+1)r$ with $\sin i=n\sin r$; this has a **minimum** at $\cos^2 i=(n^2-1)/(k(k+2))$, so rays crowd into directions near $D_{\min}$ and a bright bow appears at angle $180^\circ-D_{\min}$ from the antisolar point for $k=1$ (about $42^\circ$ for red) and $D_{\min}-180^\circ$ for $k=2$ (about $51^\circ$), with the colours in reverse order.`,
       idea: String.raw`Snell's law (4.6) applied at each surface with a wavelength-dependent $n$ (3.3, em-11.13) gives the deviation of each colour. For the drop, the deviation as a function of $b$ is stationary at its minimum, so many neighbouring rays leave in nearly the same direction and their combined intensity peaks there (Descartes, 1637). Since $D_{\min}$ depends on $n$, the colours land at slightly different angles: red outermost in the primary bow, innermost in the secondary. The region between the bows is darker (Alexander's band). Rays leaving beyond the minimum angle do not exist, which is the sharp inner edge of the bright arc. This geometric picture omits the Airy interference that produces the faint supernumerary bows.`,
-      caption: String.raw`Choose the drop or the prism. Drop: the gold handle sets the impact height $b$; the ray is traced through one or two internal reflections for the colour you pick (or all three); the right graph shows $D(b)$ with its minimum (dot). The faint bundle shows how rays crowd where the curve is flat. Prism: set the apex angle and the incidence angle; three colours leave at different angles, and the right graph shows the deviation for each against $\theta_1$, with the minimum marked. Colours use a model index (water: Cauchy fit through $n(656)$ and $n(486)$; prism glass: $n=1.6+0.012/\lambda^2$ with $\lambda$ in µm).`,
+      caption: String.raw`Choose the drop or the prism. Drop: the slider sets the impact height $b$ (gold in the graph); the ray is traced through one or two internal reflections for the colour you pick (or all three); the right graph shows $D(b)$ with its minimum (dot). The faint bundle shows how rays crowd where the curve is flat. Prism: set the apex angle and the incidence angle; three colours leave at different angles, and the right graph shows the deviation for each against $\theta_1$, with the minimum marked. Colours use a model index (water: Cauchy fit through $n(656)$ and $n(486)$; prism glass: $n=1.6+0.012/\lambda^2$ with $\lambda$ in µm).`,
       deps: ['waves-4.6', 'em-11.13'],
       refs: ['Hecht ch. 5'],
       tags: ['dispersion', 'rainbow', 'prism'],
@@ -458,6 +458,7 @@ where $\varepsilon$ is the molar absorptivity (L mol$^{-1}$ cm$^{-1}$) and $A$ t
         let st = null;
         v.render(() => {
           const c = cS.value * 1e-6, l = lS.value, s = sS.value / 100;
+          C.setView([0, Math.max(l * 1.12, 0.5)], [0, 1.15]);
           const I = (x) => Math.pow(10, -EPS * c * x);
           // beam slices, brightness = remaining light
           const NS = 50;

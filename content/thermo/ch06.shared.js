@@ -28,3 +28,6 @@ export function brillouin(J, x) {
 }
 /** Langevin function L(x) = coth x − 1/x. */
 export const langevin = (x) => (Math.abs(x) < 1e-4 ? x / 3 : 1 / Math.tanh(x) - 1 / x);
+
+// event-driven hard-sphere gas and its drawing and clock helpers (from chapter 1)
+export { hsGas, drawGas, runBudget, simClock } from './ch01.shared.js';
