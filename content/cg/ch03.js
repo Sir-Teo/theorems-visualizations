@@ -294,9 +294,9 @@ export default {
           T = earTrace(P);
           return T.frames.map((f, i) => ({ ...f, line: f.done ? 6 : 3, note: f.done ? `The last triangle remains: ${T.tris.length} triangles $=n-2$ for $n=${P.length}$.` : `**${f.ears.length} ears** available (gold: two non-overlapping ones, as guaranteed). Clip vertex ${f.ear}: the diagonal ${f.tri[0]}–${f.tri[2]} cuts off a triangle and leaves a simple polygon with ${f.ids.length - 1} vertices.`, vars: { n: f.ids.length, clipped: f.tris.length } }));
         };
+        load();
         S = v.steps({ frames: build, code: ['while the polygon has more than 3 vertices', '  find an ear v  (convex, and v⁻v v⁺ contains no other vertex)', '  output the triangle v⁻ v v⁺', '  remove v;  add the diagonal v⁻v⁺', 'output the last triangle'], codeTitle: 'Ear clipping', speed: 1.4, still: 4 });
         H.forEach((h) => { h.onDrag = () => S.reset(undefined, { at: 'keep' }); });
-        load();
         let dinfo = {};
         v.render(() => {
           const f = S.frame; if (!P.length) return;

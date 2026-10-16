@@ -57,7 +57,7 @@ export const gauss = (l, mu, fwhm) => Math.exp(-4 * Math.LN2 * ((l - mu) / fwhm)
 export const sigm = (x) => 1 / (1 + Math.exp(-x));
 
 /** Spectral locus (xy of monochromatic lights, 380..700 nm every nm). */
-export const LOCUS = (() => { const P = []; for (let l = 380; l <= 700; l += 1) { const c = cmfT(l), s = c[0] + c[1] + c[2]; P.push([l, c[0] / s, c[1] / s]); } return P; })();
+export const LOCUS = (() => { const P = []; for (let l = 420; l <= 700; l += 1) { const c = cmfT(l), s = c[0] + c[1] + c[2]; P.push([l, c[0] / s, c[1] / s]); } return P; })();
 const inPoly = (x, y, P) => { let c = false; for (let i = 0, j = P.length - 1; i < P.length; j = i++) if ((P[i][1] > y) !== (P[j][1] > y) && x < ((P[j][0] - P[i][0]) * (y - P[i][1])) / (P[j][1] - P[i][1]) + P[i][0]) c = !c; return c; };
 const LOC_POLY = LOCUS.filter((_, i) => i % 2 === 0).map((p) => [p[1], p[2]]);
 export const inLocus = (x, y) => inPoly(x, y, LOC_POLY);
@@ -81,14 +81,14 @@ export function dominant(x, y) {
   return { l: h.l, purple, purity: dist > 0 ? Math.hypot(dx, dy) / dist : 0 };
 }
 /** A chromaticity-diagram backdrop (colours inside the spectral locus, faded), the locus, and a few wavelength ticks. */
-export function drawChromaticity(s, v, { fade = 0.62, ticks = [450, 480, 500, 520, 540, 560, 580, 600, 650] } = {}) {
+export function drawChromaticity(s, v, { fade = 0.62, ticks = [440, 480, 500, 520, 540, 560, 580, 600, 650] } = {}) {
   s.raster((x, y) => {
     if (y < 0.02 || !inLocus(x, y)) return null;
     const c = rgbOf(xyz(x, y, 1), 0.78), a = fade; return [c[0] * a + 255 * (1 - a) * 0.0 + 0, c[1] * a, c[2] * a, 1];
   }, { res: 3, key: 'chroma' + fade });
   s.path(LOCUS.map((p) => [p[1], p[2]]), { color: 'ink', width: 1.4, close: true, alpha: 0.7 });
   for (const l of ticks) {
-    const p = LOCUS[l - 380], q = LOCUS[l - 380 + 3], nx = -(q[2] - p[2]), ny = q[1] - p[1], nn = Math.hypot(nx, ny) || 1;
+    const p = LOCUS[l - 420], q = LOCUS[l - 420 + 3], nx = -(q[2] - p[2]), ny = q[1] - p[1], nn = Math.hypot(nx, ny) || 1;
     s.line(p[1], p[2], p[1] + (nx / nn) * 0.012, p[2] + (ny / nn) * 0.012, { color: 'ink', width: 1.2, alpha: 0.7 });
     s.text(`${l}`, p[1] + (nx / nn) * 0.045, p[2] + (ny / nn) * 0.045, { size: 9.5, color: 'muted', align: 'center', baseline: 'middle' });
   }
