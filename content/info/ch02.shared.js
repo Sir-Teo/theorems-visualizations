@@ -2,8 +2,8 @@
 // Same house style as chapter 1 (bits, blue bars you can drag, green entropies, orange bounds, red failures,
 // purple shared information), plus divergence helpers and small editors for pairs of distributions and joint tables.
 
-import { clamp, sum, H, h2, surpr, LET, commas, setProb, dragBars, hashStr } from './ch01.shared.js';
-export { clamp, sum, H, h2, surpr, LET, commas, setProb, dragBars, hashStr };
+import { clamp, sum, H, h2, surpr, LET, commas, setProb, dragBars, hashStr, lensArea } from './ch01.shared.js';
+export { clamp, sum, H, h2, surpr, LET, commas, setProb, dragBars, hashStr, lensArea };
 
 export const LN2 = Math.LN2;
 /** D(p‖q) in bits (∞ when some p_i > 0 has q_i = 0; q need not be normalised). */
@@ -44,16 +44,6 @@ export function barEd(v, { title, p, color = 'accent', labels, height = 220, min
     if (fn) fn(s, q);
   };
   return ed;
-}
-
-/** Free (unnormalised) bar editor for positive numbers: drag a bar to set its height. */
-export function freeBars(s, vals, { lo = 0.02, hi = 1, onEdit } = {}) {
-  let idx = -1;
-  s.onDrag((x, y, phase) => {
-    if (phase === 'start') { const i = Math.round(x * 2); idx = i >= 0 && i < vals.length * 2 && Math.abs(x * 2 - i) < 0.9 ? i : -1; }
-    if (idx >= 0) { vals[idx] = clamp(y, lo, hi); onEdit?.(idx); }
-    if (phase === 'end') idx = -1;
-  });
 }
 
 /** Joint-table editing: drag vertically inside a cell of a table drawn with `drawTable` on stage s. */

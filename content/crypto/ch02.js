@@ -44,7 +44,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Information-theoretic_security' },
       viz(v) {
         const pr = v.stage({ x: [0.35, 4.65], y: [0, 1], axes: 'box', gutter: true, height: 300, minWidth: 250, weight: 0.8, title: 'Prior $\\Pr[M=m]$: drag the bar tops', xticks: MSG4.map((n, i) => [i + 1, n]) });
-        const po = v.stage({ x: [0, 21], y: [0, 1], axes: 'box', gutter: true, height: 300, minWidth: 300, weight: 1.35, title: 'Posterior $\\Pr[M=m\\mid C=c]$ for each ciphertext $c$', xticks: [0, 1, 2, 3].map((c) => [5 * c + 2.5, `c = ${c}`]), yticks: [0, 0.25, 0.5, 0.75, 1].map((y) => [y, String(y)]) });
+        const po = v.stage({ x: [0, 21], y: [0, 1], axes: 'box', gutter: true, height: 300, minWidth: 300, weight: 1.35, title: 'Posterior $\\Pr[M=m\\mid C=c]$ for each ciphertext $c$ (grey: $\\Pr[C=c]$)', xticks: [0, 1, 2, 3].map((c) => [5 * c + 2.5, `c = ${c}`]), yticks: [0, 0.25, 0.5, 0.75, 1].map((y) => [y, String(y)]) });
         const kind = v.select('Cipher', [{ value: 'all', label: 'Shift, 4 keys' }, { value: 'three', label: 'Shift, keys 0–2 only' }, { value: 'one', label: 'No key' }], 'all');
         const bias = v.slider('$\\Pr[k=0]$', 0, 1, 0.25, { step: 0.01 });
         let w = [0.4, 0.3, 0.2, 0.1];
@@ -71,7 +71,7 @@ export default {
               post.forEach((q, i) => po.line(x0 + i - 0.42, p[i], x0 + i + 0.42, p[i], { color: 'gold', width: 3 }));
             } else po.text('never occurs', x0 + 1.5, 0.5, { size: 12, color: 'muted' });
             MSG4.forEach((n, i) => po.text(n[0], x0 + i, 0.96, { size: 11, color: 'muted', weight: 700 }));
-            po.text(`Pr[c] = ${v.fix(Pc, 2)}`, x0 + 1.5, 0.88, { size: 11, color: 'muted' });
+            po.text(v.fix(Pc, 2), x0 + 1.5, 0.88, { size: 10.5, color: 'muted' });
           }
           last = { p, T, res, pk };
         });
@@ -578,8 +578,8 @@ export default {
       viz(v) {
         const PH = ['ATTACKATDAWN', 'HOLDTHELINES', 'ABORTMISSION', 'SURRENDERNOW', 'COMEHOMESOON', 'SENDMOREFOOD'];
         const NX = 16, D = LOG2_26 - H2;
-        const sL = v.stage({ x: [0, NX], y: [0, 1.08], axes: 'box', gutter: true, height: 360, minWidth: 320, weight: 1, xlabel: 'cryptogram letters seen, n', ylabel: 'H(K | c₁…cₙ) / H(K)', title: 'Key equivocation', yticks: [0, 0.25, 0.5, 0.75, 1].map((y) => [y, String(y)]) });
-        const sR = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 330, weight: 1.1, title: 'Which messages are still possible?' });
+        const sL = v.stage({ x: [0, NX], y: [0, 1.08], axes: 'box', gutter: true, height: 420, minWidth: 320, weight: 1, xlabel: 'cryptogram letters seen, n', ylabel: 'H(K | c₁…cₙ) / H(K)', title: 'Key equivocation', yticks: [0, 0.25, 0.5, 0.75, 1].map((y) => [y, String(y)]) });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, minWidth: 330, weight: 1.1, title: 'Which messages are still possible?' });
         const cip = v.select('Cipher', [{ value: 1, label: 'Vigenère L=1' }, { value: 2, label: 'L=2' }, { value: 3, label: 'L=3' }, { value: 0, label: 'One-time pad' }], 3);
         const nS = v.slider('Letters seen $n$', 0, 12, 4, { int: true });
         const tru = v.select('True message', PH.map((_, i) => ({ value: i, label: String(i + 1) })), 0);

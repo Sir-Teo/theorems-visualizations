@@ -22,13 +22,13 @@ export function esat(T) { return 611.2 * Math.exp((17.67 * (T - 273.15)) / (T - 
 // ── absorption coefficients, m² per kg of absorber (before pressure scaling) ─────────────────────────────────────
 // CO₂: strong Q-branch core at 667 cm⁻¹ plus broad exponential wings, plus weak hot bands near 960/1060.
 // Mass path of 400 ppm over the whole atmosphere is ~ 6 kg m⁻², so k ~ 1e3–1e5 m²/kg in the core.
-const PAR = { co2A: 150, co2W: 14, co2B: 0.05, co2C: 120, hot: 0.005, rotA: 730, rotW: 74, vibA: 30, vibW: 52, floor: 0.1, contA: 1.07e-3, contW: 167, o3A: 3500 };
+const PAR = { co2A: 150, co2W: 14, co2B: 0.05, co2C: 120, co2A1: 3000, co2W1: 4, hot: 0.005, rotA: 730, rotW: 74, vibA: 30, vibW: 52, floor: 0.1, contA: 1.07e-3, contW: 167, o3A: 3500 };
 const K_CO2 = [], K_H2O = [], K_CONT = [], K_O3 = [];
 export function buildSpec(P = PAR) {
   K_CO2.length = K_H2O.length = K_CONT.length = K_O3.length = 0;
   for (const n of NU) {
     const d = Math.abs(n - 667);
-    K_CO2.push((P.co2A * Math.exp(-d / P.co2W) + P.co2B * Math.exp(-d / 40)) * Math.exp(-((d / P.co2C) ** 2)) + P.hot * (Math.exp(-Math.abs(n - 960) / 20) + 0.75 * Math.exp(-Math.abs(n - 1060) / 20)));
+    K_CO2.push((P.co2A * Math.exp(-d / P.co2W) + P.co2B * Math.exp(-d / 40)) * Math.exp(-((d / P.co2C) ** 2)) + P.co2A1 * Math.exp(-d / P.co2W1) + P.hot * (Math.exp(-Math.abs(n - 960) / 20) + 0.75 * Math.exp(-Math.abs(n - 1060) / 20)));
     K_H2O.push(P.rotA * Math.exp(-n / P.rotW) + P.vibA * Math.exp(-Math.abs(n - 1600) / P.vibW) + P.floor);
     K_CONT.push(P.contA * Math.exp(-n / P.contW));
     K_O3.push(P.o3A * Math.exp(-(((n - 1042) / 28) ** 2)));
