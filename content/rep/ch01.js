@@ -21,7 +21,7 @@ export default {
       deps: ['pma-9.4', 'ladr-3.1'],
       refs: ['Serre §1.1', 'Fulton–Harris §1.1'],
       tags: ['representation', 'homomorphism'],
-      credit: 'Frobenius, 1896–97 (group characters and representations); Burnside and Schur independently, 1897–1905',
+      credit: 'Frobenius, 1896–97 (characters and representations of finite groups); developed independently by Burnside (1898) and Schur (1905)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Group_representation' },
       viz(v) {
         const GS = { D3: dihedral(3), D4: dihedral(4) };
@@ -92,7 +92,7 @@ export default {
         const sync = () => { const a = ACT[key.value]; g3.el.hidden = a.G !== D3; g4.el.hidden = a.G !== D4; conv.el.hidden = !a.regular; };
         sync();
         const sA = v.stage({ x: [-1.4, 1.4], y: [-1.3, 1.3], equal: true, axes: false, height: 380, weight: 1 });
-        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1 });
+        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1, title: 'the permutation matrix $P(g)$: column $x$ has its $1$ in row $g\\cdot x$' });
         const T = v.table(sB, { rows: 3, cols: 3, maxCell: 62, size: 16, margin: 8 });
         const cur = () => {
           const a = ACT[key.value], G = a.G, g = a.G === D3 ? g3.value : g4.value;
@@ -120,7 +120,6 @@ export default {
             rows: X, cols: X, rowLabels: (i) => N[i], colLabels: (j) => N[j], cornerLabel: '', size: 16,
             value: (i, j) => (mats[g][i][j] ? '1' : null), fill: (i, j) => (mats[g][i][j] ? [ecol(j), 0.4] : null), textColor: () => 'ink', labelSize: X > 4 ? 11 : 13,
           });
-          sB.corner(`matrix $P(${G.L[g]})$: column $x$ has its $1$ in row $g\\cdot x$`, 'tl', { size: 12 });
         });
         v.legend([['muted', 'slots (the set $X$)', { dot: true }], ['accent', 'bead $x$ moves to slot $g\\cdot x$']]);
         v.readout(() => {
@@ -189,7 +188,7 @@ export default {
           const gc = (a, b) => (b ? gc(b, a % b) : a);
           if (ok) {
             const ord = n / gc(k, n) | 0;
-            return `$\\rho(g)=z=e^{2\\pi i\\,${k}/${n}}$: ${snap.value ? '' : '(close to a root) '}checked all $${n}^2$ products $\\rho(g^{a+b})=\\rho(g^a)\\rho(g^b)$, max error $${nm(max, 1) === '0' ? '0' : v.sci(max, 1)}$ · $z$ has order $${ord}$, kernel of size $\\gcd(${k},${n})=${gc(k, n) || n}$, ${gc(k, n) === 1 ? '**faithful**' : 'not faithful'}.\nThere are exactly $n=${n}$ such homomorphisms (the table's ${n} rows).`;
+            return `$\\rho(g)=z=e^{2\\pi i\\,${k}/${n}}$: checked all $${n}^2$ products $\\rho(g^{a+b})=\\rho(g^a)\\rho(g^b)$, max error $${nm(max, 1) === '0' ? '0' : v.sci(max, 1)}$ · $z$ has order $${ord}$, kernel of size $\\gcd(${k},${n})=${gc(k, n) || n}$, ${gc(k, n) === 1 ? '**faithful**' : 'not faithful'}.\nThere are exactly $n=${n}$ such homomorphisms (the table's ${n} rows).`;
           }
           const zn = pw[n];
           return `**Not a homomorphism.** $z^{${n}}=${nm(zn[0], 3)}${zn[1] < 0 ? '-' : '+'}${nm(Math.abs(zn[1]), 3)}i\\ne 1=\\rho(g^{${n}})$, so $\\rho(g^{a+b})\\ne\\rho(g^a)\\rho(g^b)$ whenever $a+b\\ge n$ (max error $${nm(max, 3)}$). A homomorphism from $\\mathbb Z/${n}$ needs $z^{${n}}=1$.`;

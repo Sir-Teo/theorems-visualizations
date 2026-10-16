@@ -21,7 +21,7 @@ export default {
       viz(v) {
         const kS = v.slider('curvature $\\kappa$', -2, 2, 0.8, { step: 0.01 });
         const LS = v.slider('length $L$', 1, 14, 7, { step: 0.1 });
-        const eS = v.slider('break it: $\\kappa(s) = \\kappa + \\varepsilon s$, $\\varepsilon$', 0, 0.25, 0, { step: 0.005 });
+        const eS = v.slider('break it: drift $\\varepsilon$', 0, 0.25, 0, { step: 0.005 });
         const S = v.stage({ x: [-6.4, 6.4], y: [-4.6, 4.6], equal: true, axes: false, height: 380, title: 'curves of curvature $\\kappa$ from three starts' });
         const D = v.stage({ x: [0, 14], y: [0, 3], axes: 'box', gutter: true, height: 380, weight: 0.75, minWidth: 240, xlabel: 'arc length $s$', ylabel: '$|\\beta - c_0|$', title: 'distance from the initial centre of curvature' });
         const starts = [
@@ -180,7 +180,7 @@ the Fresnel integrals. As $s \to \pm\infty$ it winds ever more tightly, with inf
           S.setView([-R2, R2], [-R2, R2]);
           S.path(pos, { color: 'accent', width: 2.6 }); S.path(neg, { color: 'accent', width: 2.6 });
           for (const sg of [-1, 1]) { S.dot(sg * lim, sg * lim, { r: 5, color: 'red' }); }
-          S.tex(`(${v.fix(lim, 3)},\\,${v.fix(lim, 3)})`, lim, lim + 0.12 * R2, { color: 'red', align: 'right' });
+          
           // road
           const R = RS.value, Ls = TS.value, phiMax = 1.45;
           const th = (s) => (s <= 0 ? 0 : Ls > 0 && s < Ls ? (s * s) / (2 * R * Ls) : (Ls / (2 * R)) + (s - Ls) / R);
@@ -284,11 +284,11 @@ and the axis is an asymptote: the curve approaches it but never reaches it, and 
       viz(v) {
         const aS = v.slider('leash length $a$', 0.5, 2.5, 1.5, { step: 0.01 });
         const sel = v.select('path of the puller', [{ value: 'line', label: 'straight line' }, { value: 'sine', label: 'sine wave' }, { value: 'circle', label: 'circle' }], 'line');
-        const S = v.stage({ x: [-1.4, 11], y: [-3.6, 3.6], equal: true, axes: false, height: 380, title: 'puller $P$ (gold), object $Q$ (blue)' });
+        const S = v.stage({ x: [-1.5, 10.5], y: [-1.2, 3.4], equal: true, axes: false, height: 330, title: 'puller $P$ (gold), object $Q$ (blue)' });
         const paths = {
-          line: { r: (u) => [u, 0], u1: 10, view: [[-1.4, 11], [-3.6, 3.6]] },
-          sine: { r: (u) => [u, Math.sin(0.9 * u)], u1: 10, view: [[-1.4, 11], [-3.6, 3.6]] },
-          circle: { r: (u) => [2.4 * Math.cos(u), 2.4 * Math.sin(u)], u1: TAU - 0.02, view: [[-6, 6], [-4.6, 4.6]] },
+          line: { r: (u) => [u, 0], u1: 10, view: [[-1.5, 10.5], [-1.2, 3.4]] },
+          sine: { r: (u) => [u, Math.sin(0.9 * u)], u1: 10, view: [[-1.5, 10.5], [-2.4, 3.6]] },
+          circle: { r: (u) => [2.4 * Math.cos(u), 2.4 * Math.sin(u)], u1: TAU - 0.02, view: [[-7.5, 7.5], [-4.6, 4.6]] },
         };
         const tabs = {}; const tab = (k) => (tabs[k] ??= arcTable(paths[k].r, 0, paths[k].u1, 800));
         let u = 4;
@@ -300,7 +300,7 @@ and the axis is an asymptote: the curve approaches it but never reaches it, and 
           if (k === 'line') S.hline(0, { color: 'muted', width: 1.2 });
           u = clamp(u, 0.0001, pa.u1); P.set(...pa.r(u));
           // stateless pursuit simulation from u = 0 to the current u
-          const n = Math.max(2, Math.min(1500, Math.ceil(u / 0.006)));
+          const n = Math.max(2, Math.min(5000, Math.ceil(u / 0.002)));
           const p0 = pa.r(0), p1 = pa.r(0.001), tg = [p1[0] - p0[0], p1[1] - p0[1]], tm = Math.hypot(...tg);
           let q = [p0[0] + (-tg[1] / tm) * a, p0[1] + (tg[0] / tm) * a];
           let pp = p0; const trail = [q.slice()], ps = [p0], leashes = [];
@@ -348,7 +348,7 @@ and the axis is an asymptote: the curve approaches it but never reaches it, and 
         const N = 22, G = 9.8;
         const LS = v.slider('chain length $\\ell$', 6.5, 12, 8, { step: 0.05 });
         const par = v.toggle('compare with a parabola', false);
-        const S = v.stage({ x: [-6.5, 6.5], y: [-6.2, 3.2], equal: true, axes: false, height: 400, title: 'hanging chain (simulated) and catenary (green)' });
+        const S = v.stage({ x: [-6.5, 6.5], y: [-4.2, 2.8], equal: true, axes: false, height: 340, title: 'hanging chain (simulated) and catenary (green)' });
         const hA = S.handle(-3, 1.4, { color: 'gold', r: 8, label: 'A', constrain: { x: [-5.6, -0.6], y: [-1, 2.6] } });
         const hB = S.handle(3, 1.4, { color: 'gold', r: 8, label: 'B', constrain: { x: [0.6, 5.6], y: [-1, 2.6] } });
         const sim = v.sim(
@@ -419,7 +419,7 @@ and the axis is an asymptote: the curve approaches it but never reaches it, and 
         const S = v.stage({ x: [-0.5, 6.8], y: [-3.9, 0.8], equal: true, axes: false, height: 340, title: 'race from rest at $A$ to $B$' });
         const T = v.stage({ x: [-0.3, 5.1], y: [-1.9, 0.4], equal: true, axes: false, height: 340, weight: 0.85, minWidth: 260, title: 'tautochrone: release from three heights' });
         const hB = S.handle(4.4, -2.3, { color: 'gold', r: 8, label: 'B', constrain: { x: [0.5, 6.2], y: [-3.5, -0.3] } });
-        const hC = S.handle(0.7, -2.4, { color: 'purple', r: 7, constrain: { x: [-0.3, 6.5], y: [-3.7, -0.05] } });
+        const hC = S.handle(1.2, -3.0, { color: 'purple', r: 7, constrain: { x: [-0.3, 6.5], y: [-3.7, -0.05] } });
         v.legend([['blue', 'cycloid'], ['red', 'straight line'], ['purple', 'your curve']]);
         // descent table: polyline from rest at pts[0]; v² = 2g(y0 − y) is linear along each chord, so each chord has uniform acceleration
         const descent = (pts) => {

@@ -29,7 +29,7 @@ export const fit = (P, E) => ({ ...fixed(P, E), layout: 'fit' });
 /** Wheel C^n * K^1 (hub 'h'). */
 export function wheel(n) {
   const nodes = [{ id: 'h', x: 0, y: 0 }], edges = [];
-  for (let i = 0; i < n; i++) { const a = Math.PI / 2 - (TAU * i) / n; nodes.push({ id: 'w' + i, x: Math.cos(a), y: Math.sin(a) }); edges.push(['h', 'w' + i], ['w' + i, 'w' + ((i + 1) % n)]); }
+  for (let i = 0; i < n; i++) { const a = Math.PI / 2 - (TAU * i) / n; nodes.push({ id: 'w' + i, label: String(i + 1), x: Math.cos(a), y: Math.sin(a) }); edges.push(['h', 'w' + i], ['w' + i, 'w' + ((i + 1) % n)]); }
   return { nodes, edges, layout: 'fit' };
 }
 /** Subscript digits. */

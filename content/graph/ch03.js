@@ -15,8 +15,8 @@ const BLOCKY = (iso) => {
   return { ...fit(P, 'ab ac bc ad cd ce ef fg gh he fh gi ij jg hk jl'), layout: 'none' };
 };
 /** Two larger blocks joined at a cutvertex, plus a bridge. */
-const BLOCK2 = () => ({ ...fit({ a: [0.7, 1.4], b: [0.7, 5.0], c: [2.4, 3.2], d: [2.9, 5.7], e: [2.9, 0.7], f: [4.6, 3.2], g: [6.3, 5.3], h: [6.3, 1.1], i: [8.0, 3.2], j: [9.4, 3.2] },
-  'ab ac bc bd ae cd ce df ef cf fg fh gh gi hi ij'), layout: 'none' });
+const BLOCK2 = () => ({ ...fit({ p: [0.7, 1.4], q: [0.7, 5.0], r: [2.4, 3.2], s: [2.9, 5.7], t: [2.9, 0.7], u: [4.6, 3.2], w: [6.3, 5.3], x: [6.3, 1.1], y: [8.0, 3.2], z: [9.4, 3.2] },
+  'pq pr qr qs pt rs rt su tu ru uw ux wx wy xy yz'), layout: 'none' });
 /** A 2-connected graph for ear decompositions. */
 const EARS = () => ({ ...fit({ a: [0.8, 3.2], b: [2.4, 5.5], c: [2.4, 0.9], d: [4.3, 3.2], e: [5.6, 5.6], f: [5.6, 0.8], g: [7.4, 4.6], h: [7.4, 1.8], i: [9.2, 3.2] },
   'ab ac bd cd be cf de df eg fh gi hi gh'), layout: 'none' });
@@ -121,9 +121,9 @@ export default {
       deps: ['graph-1.4.1b'], refs: ['Diestel §3.1'], tags: ['blocks', 'cutvertices'],
       viz(v) {
         const mode = v.select('click', [{ value: 'del', label: 'click deletes a vertex' }, { value: 'edit', label: 'edit' }], 'del');
-        const s = gstage(v, { height: 330, x: [0, 10], y: [0.1, 6.4] });
+        const s = gstage(v, { height: 340, x: [0, 10], y: [-0.5, 6.4] });
         const G = v.graph(s, { ...BLOCKY(true), r: 13, editable: true });
-        let gone = 'g';
+        let gone = null;
         G.onClick = ({ node, alt }) => { if (mode.value !== 'del' || alt) return false; gone = node && K(node.id) !== K(gone) ? node.id : null; return true; };
         const info = cacheBy((G) => { const H = ix(G); return { H, BL: blocks(H) }; });
         v.render(() => {
@@ -133,12 +133,13 @@ export default {
           if (g == null) {
             drawBlocks(v, s, G, H, BL);
             G.draw({ nodeFill: (id) => (BL.cut[H.at(id)] ? 'gold' : null) });
+            if (mode.value === 'del') s.corner('click a vertex to delete it', 'bl', { color: 'muted', weight: 600, size: 12.5 });
           } else {
             const C0 = comps(H), C = comps(H, (u) => u !== g), before = C0.lists.find((L) => L.includes(g)).length;
-            drawBlocks(v, s, G, H, BL, { alpha: 0.08 });
+            drawBlocks(v, s, G, H, BL, { alpha: 0.12 });
             G.draw({ nodeFill: (id) => (H.at(id) === g ? null : PALETTE[C.comp[H.at(id)] % PALETTE.length]), dim: [gone], nodeRing: (id) => (H.at(id) === g ? 'red' : null) });
             const own = C.k - C0.k + 1;
-            s.corner(BL.cut[g] ? `${G.lab(gone)} is a cutvertex: its component falls into ${own} pieces` : `${G.lab(gone)} is not a cutvertex${before > 1 ? ': its component stays connected' : ''}`, 'tl', { color: BL.cut[g] ? 'red' : 'green', weight: 700, size: 13 });
+            s.corner(BL.cut[g] ? `${G.lab(gone)} is a cutvertex: deleting it splits its component into ${own} pieces` : `${G.lab(gone)} is not a cutvertex${before > 1 ? ': its component stays connected' : ''}`, 'bl', { color: BL.cut[g] ? 'red' : 'green', weight: 700, size: 13 });
           }
         });
         v.legend([['gold', 'cutvertex', { dot: true }], ['blue', 'blocks (one colour each)', { area: true }]]);
@@ -203,7 +204,7 @@ export default {
         const spec = BLOCK2(), shared = spec.nodes.map((n) => ({ ...n }));
         const s1 = gstage(v, { height: 280, title: 'a cycle through $e$ and $f$' }), s2 = gstage(v, { height: 280, title: 'a bond through $e$ and $f$' });
         const G = v.graph(s1, { nodes: shared, edges: spec.edges, r: 12 }), G2 = v.graph(s2, { nodes: shared, edges: spec.edges, r: 12 });
-        let sel = [G.edge('b', 'd'), G.edge('e', 'f')];
+        let sel = [G.edge('q', 's'), G.edge('t', 'u')];
         const pick = (edge) => { if (!edge) return; const H = ix(G), k = H.eix.get(edge) ?? ix(G2).eix.get(edge); const e = H.E[k][2]; if (sel.includes(e)) return; sel = [sel[1], e]; };
         G.onClick = ({ edge }) => { pick(edge); return true; };
         G2.onClick = ({ edge }) => { const H2 = ix(G2), k = H2.eix.get(edge); if (k != null) pick(ix(G).E[k][2]); return true; };
@@ -291,7 +292,8 @@ export default {
         const spec = () => ({ ...fit({ a: [0.6, 1.4], b: [0.6, 4.6], c: [1.9, 3.0], d: [3.3, 3.0], e: [4.6, 4.8], f: [4.6, 1.2], g: [5.9, 3.0], h: [7.3, 3.0], i: [8.6, 4.7], j: [8.6, 1.3], k: [3.3, 5.6], l: [9.6, 3.0] }, 'ab ac bc cd de df ef eg fg gh hi hj ij dk il'), layout: 'none' });
         const G = v.graph(s, { ...spec(), r: 12, editable: true });
         const T = v.graph(t, { nodes: [], edges: [], r: 12, draggable: false, fontSize: 11.5 });
-        let hist = [], merged = null;
+        let hist = [], merged = null, demo = ['e', 'h'];
+        G.onClick = () => { demo = null; return false; };
         const snap = () => ({ nodes: G.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: G.edges.map((e) => [e.from, e.to]) });
         let last = snap();
         G.onChange = (kind, obj) => {
@@ -316,14 +318,21 @@ export default {
           if (T._key !== key) {
             T._key = key;
             const nodes = BG.nodes.map((nd) => (nd.kind === 'block' ? { id: 'B' + nd.i, label: 'B' + (nd.i + 1), shape: 'box' } : { id: 'c' + nd.i, label: vname(G, H, nd.i) }));
-            T.set({ nodes, edges: BG.edges.map(([p, q]) => [nodes[p].id, nodes[q].id]) }); T.layout('tree', { rankdir: 'right', root: nodes.find((n) => n.id[0] === 'B').id });
+            T.set({ nodes, edges: BG.edges.map(([p, q]) => [nodes[p].id, nodes[q].id]) });
+          }
+          // draw the block graph over the geometry of G: a block at the centre of its vertices, a cutvertex where it is
+          for (const n of T.nodes) {
+            const i = +n.id.slice(1);
+            if (n.id[0] === 'c') { const g = G.node(H.ids[i]); n.x = g.x; n.y = g.y; }
+            else { const V = BL.blocks[i].V.map((u) => G.node(H.ids[u])); n.x = V.reduce((a, g) => a + g.x, 0) / V.length; n.y = V.reduce((a, g) => a + g.y, 0) / V.length; }
           }
           let path = null;
-          const sel = G._sel, hov = G._hover;
+          let sel = G._sel, hov = G._hover;
+          if (!sel && demo && G.has(demo[0]) && G.has(demo[1])) { sel = G.node(demo[0]); hov = G.node(demo[1]); }
           if (sel && hov && sel !== hov && G.has(sel.id) && G.has(hov.id)) path = bgPath(I, H.at(sel.id), H.at(hov.id));
           const redB = new Set(), redC = new Set();
-          if (path) for (const x of path) { const nd = BG.nodes[x]; (nd.kind === 'block' ? redB : redC).add(nd.i); }
-          const pathBlocks = path && redB.size + redC.size > 1;
+          if (path) path.forEach((x, j) => { const nd = BG.nodes[x]; if (nd.kind === 'block') redB.add(nd.i); else if (j > 0 && j < path.length - 1) redC.add(nd.i); });
+          const pathBlocks = path && redB.size > 1;
           const mB = merged ? BL.blocks.findIndex((B) => B.V.length === merged.length && B.V.every((u) => merged.includes(H.ids[u]))) : -1;
           drawBlocks(v, s, G, H, BL, { color: (i) => (pathBlocks && redB.has(i) ? 'red' : BLC[i % BLC.length]), alpha: 0.2 });
           if (mB >= 0) drawBlocks(v, s, G, H, BL, { only: new Set([mB]), color: () => 'green', alpha: 0.25, w: 44 });
@@ -333,7 +342,7 @@ export default {
             nodeFill: (id) => (id[0] === 'B' ? (pathBlocks && redB.has(+id.slice(1)) ? 'red' : BLC[+id.slice(1) % BLC.length]) : pathBlocks && redC.has(+id.slice(1)) ? 'red' : 'gold'),
             nodeRing: (id) => (id[0] === 'B' && +id.slice(1) === mB ? 'green' : null),
           });
-          s.corner(sel ? (pathBlocks ? 'an edge here would merge the red blocks' : 'hover over another vertex') : 'click a vertex to start an edge', 'tl', { color: pathBlocks ? 'red' : 'muted', weight: 600, size: 12.5 });
+          s.corner(sel ? (pathBlocks ? `an edge ${G.lab(sel.id)}${G.lab(hov.id)} would merge the red blocks` : 'hover over another vertex') : 'click a vertex to start an edge', 'tl', { color: pathBlocks ? 'red' : 'muted', weight: 600, size: 12.5 });
         });
         v.legend([['red', 'would merge', { area: true }], ['green', 'block just merged', { area: true }], ['gold', 'cutvertex', { dot: true }]]);
         v.readout(() => {
@@ -354,7 +363,7 @@ export default {
         const pre = v.select('', opts3(['prism', 'w5', 'cube', 'k4']), 'prism', { onChange: () => { load(G, P3[pre.value]()); e = G.edges[0]; X = []; } });
         const s = v.stage({ x: [-1.25, 1.25], y: [-1.2, 1.2], axes: false, equal: true, height: 300, title: '$G$' }), t = v.stage({ x: [-1.25, 1.25], y: [-1.2, 1.2], axes: false, equal: true, height: 300, title: '$G\\,\\dot-\\,e$' });
         const G = v.graph(s, { nodes: [], edges: [], r: 12 }), R = v.graph(t, { nodes: [], edges: [], r: 12, draggable: false });
-        load(G, P3.prism()); let e = G.edge(0, 5) || G.edges[0], X = [];
+        load(G, P3.prism()); let e = G.edge(0, 5) || G.edges[0], X = [5, 1];
         G.onClick = ({ node, edge }) => {
           if (edge) { e = edge; X = []; }
           else if (node) { const i = X.findIndex((x) => K(x) === K(node.id)); if (i >= 0) X.splice(i, 1); else { X.push(node.id); if (X.length > 2) X.shift(); } }
@@ -382,7 +391,7 @@ export default {
             nodeFill: (id) => (c.xv.some((x) => K(x) === K(id)) ? null : X.length && c.CD.k > 1 ? PALETTE[c.CD.comp[c.Hd.at(id)] % PALETTE.length] : null), dim: c.xv, nodeRing: (id) => (c.xv.some((x) => K(x) === K(id)) ? 'red' : null) });
           if (X.length) s.corner(c.CG.k > 1 ? `{${X.map((x) => G.lab(x)).join(', ')}} separates G` : `{${X.map((x) => G.lab(x)).join(', ')}} does not separate G`, 'bl', { color: c.CG.k > 1 ? 'red' : 'green', weight: 700, size: 12.5 });
           const f = mgFlaws(c.D.M);
-          t.corner(c.three.ok ? '3-connected' : f.par ? `${f.par} pair${f.par > 1 ? 's' : ''} of parallel edges` : c.three.small ? 'too small' : `separator {${c.three.sep.map((i) => G.lab(c.D.M.ids[i])).join(', ')}}`, 'bl', { color: c.three.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+          t.corner(c.three.ok ? '3-connected' : f.par ? `${f.par} pair${f.par > 1 ? 's' : ''} of parallel edges` : c.three.small ? 'too small' : `separator {${c.three.sep.map((i) => G.lab(c.D.M.ids[i])).join(', ')}}`, 'tl', { color: c.three.ok ? 'green' : 'red', weight: 700, size: 12.5 });
         });
         v.legend([['red', '$e$ / deleted $x_i\'$', { dash: true }], ['orange', 'suppressed end; merged edge'], ['red', 'tested separator', { dot: true }]]);
         v.readout(() => {
@@ -435,9 +444,9 @@ export default {
             nodeFill: (id) => (T4 && T4.branch.includes(H.at(id)) ? 'gold' : null),
           });
           if (e0) { const D = delSuppress(I.M, k); showMG(R, G, D.M, ''); const th = mgIs3(D.M); R.draw({ edgeColor: (f) => (f.mg.path.length > 2 ? 'orange' : null), edgeWidth: (f) => (f.mg.path.length > 2 ? 3.5 : null) });
-            t.corner(th.ok ? '3-connected' : mgFlaws(D.M).par ? 'parallel edges' : 'not 3-connected', 'bl', { color: th.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+            t.corner(th.ok ? '3-connected' : mgFlaws(D.M).par ? 'parallel edges' : 'not 3-connected', 'tl', { color: th.ok ? 'green' : 'red', weight: 700, size: 12.5 });
             const a = G.node(e0.from), b = G.node(e0.to); s.text('e', (a.x + b.x) / 2, (a.y + b.y) / 2, { dx: 9, dy: -9, color: 'ink', size: 14, math: true });
-          } else { showMG(R, G, I.M, ''); R.draw({}); t.corner('no deletable edge', 'bl', { color: 'red', weight: 700, size: 12.5 }); }
+          } else { showMG(R, G, I.M, ''); R.draw({}); t.corner('no deletable edge', 'tl', { color: 'red', weight: 700, size: 12.5 }); }
         });
         v.legend([['green', '$G\\,\\dot-\\,e$ 3-connected'], ['red', 'not', { dash: true }], ['accent', '$C$'], ['orange', '$P$'], ['purple', '$Q$']]);
         v.readout(() => {
@@ -454,11 +463,11 @@ export default {
       caption: String.raw`Play the sequence from $K^4$ (step 1) to $G$: the vertices of $G_i$ are dark, each edge of $G_i$ is drawn along the path of $G$ it stands for (so $G_i$ appears as a subdivision inside $G$), and the edge added at this step is gold — its ends are marked old or new in the note. Switch **draw** to see each $G_i$ as a graph in its own right. The readout confirms that every $G_i$ is 3-connected.`,
       deps: ['graph-3.2.2', 'graph-3.2.1'], refs: ['Diestel §3.2'], tags: ['3-connected', 'Tutte'],
       viz(v) {
-        const pre = v.select('', opts3(['cube', 'prism', 'pet', 'dod', 'oct']), 'prism', { onChange: () => { load(G, P3[pre.value]()); S.reset({ at: 'end' }); } });
+        const pre = v.select('', opts3(['cube', 'prism', 'pet', 'dod', 'oct']), 'dod', { onChange: () => { load(G, P3[pre.value]()); S.reset({ at: 1 }); } });
         const draw = v.select('draw $G_i$', [{ value: 'sub', label: 'inside $G$' }, { value: 'own', label: 'on its own' }], 'sub');
         const s = v.stage({ x: [-1.25, 1.25], y: [-1.18, 1.18], axes: false, equal: true, height: 340 });
         const G = v.graph(s, { nodes: [], edges: [], r: 11 }), R = v.graph(s, { nodes: [], edges: [], r: 11, draggable: false });
-        load(G, P3.prism());
+        load(G, P3.dod());
         const frames = () => {
           const H = ix(G); let M = toMG(H); const seq = [{ M, e: null }];
           if (!is3(H)) return [{ H, bad: true, note: 'This graph is not 3-connected.' }];
@@ -478,7 +487,7 @@ export default {
             return { H, M: x.M, add, i, n: seq.length - 1, note };
           });
         };
-        const S = v.steps({ frames, speed: 0.9, start: 'end', still: 2, counter: 'graph' });
+        const S = v.steps({ frames, speed: 0.9, start: 1, still: 2, counter: 'graph' });
         v.render(() => {
           const f = S.frame; if (!f.H) return;
           if (f.bad) { G.draw({}); return; }
@@ -493,7 +502,7 @@ export default {
             G.draw({ edgeColor: () => 'faint', edgeWidth: () => 0.6, nodeColor: () => 'faint', nodeLabel: () => '', dim: G.nodes.map((n) => n.id) });
             R.draw({ edgeColor: (e) => (e.mg.path.map(K).join('>') === addKey || e.mg.path.map(K).reverse().join('>') === addKey ? 'gold' : 'accent'), edgeWidth: (e) => (e.mg.path.map(K).join('>') === addKey || e.mg.path.map(K).reverse().join('>') === addKey ? 5 : 2.6), nodeFill: () => 'ink', nodeLabel: () => '' });
           }
-          s.corner(`$G_{${f.i}}$ of $G_{${f.n}}$`, 'tl', { color: 'ink', weight: 700, size: 14 });
+          s.corner(`$G_{${f.i}}$ in $G_0, \\dots, G_{${f.n}}$`, 'tl', { color: 'ink', weight: 700, size: 14 });
         });
         v.legend([['accent', 'edges of $G_i$ (as paths of $G$)'], ['gold', 'edge just added'], ['ink', 'vertices of $G_i$', { dot: true }]]);
         v.readout(() => {
@@ -528,7 +537,7 @@ export default {
             // position the merged vertex at the midpoint of e
             const a = G.node(e0.from), b = G.node(e0.to), m = R.node(c.kept); if (m) { m.x = (a.x + b.x) / 2; m.y = (a.y + b.y) / 2; m.label = G.lab(e0.from) + G.lab(e0.to); }
             R.draw({ nodeFill: (id) => (K(id) === vxy ? 'gold' : CG ? null : null), nodeRing: (id) => (sepIds.some((x) => K(x) === K(id)) ? 'red' : null) });
-            t.corner(r.t.ok ? '3-connected' : r.t.small ? 'only 3 vertices' : `2-separator {${sepIds.map((id) => (K(id) === vxy ? 'v' : G.lab(id))).join(', ')}}`, 'bl', { color: r.t.ok ? 'green' : 'red', weight: 700, size: 12.5 });
+            t.corner(r.t.ok ? '3-connected' : r.t.small ? 'only 3 vertices' : `2-separator {${sepIds.map((id) => (K(id) === vxy ? 'merged vertex' : G.lab(id))).join(', ')}}`, 'tl', { color: r.t.ok ? 'green' : 'red', weight: 700, size: 12.5 });
           }
           G.draw({
             edgeColor: (e) => (I.res[H.eix.get(e)].t.ok ? 'green' : 'red'), edgeWidth: (e) => (e === e0 ? 6 : 3), edgeDash: (e) => !I.res[H.eix.get(e)].t.ok,
@@ -549,7 +558,7 @@ export default {
       caption: String.raw`Play forwards from $K^4$: at each step one vertex splits into two adjacent vertices (they glide apart; the new edge $xy$ is gold) and the degrees $d(x), d(y)\ge3$ are shown. Each $G_i$ is drawn with every vertex at the centre of the vertices of $G$ it will become. The readout checks every $G_i$ for 3-connectedness. Compare 3.2.3, which builds the same graphs by adding edges instead.`,
       deps: ['graph-3.2.4', 'graph-1.7.1a'], refs: ['Diestel §3.2'], tags: ['3-connected', 'Tutte', 'wheel theorem'],
       viz(v) {
-        const pre = v.select('', opts3(['cube', 'prism', 'pet', 'dod', 'oct']), 'cube', { onChange: () => { load(G, P3[pre.value]()); S.reset({ at: 'end' }); } });
+        const pre = v.select('', opts3(['cube', 'prism', 'pet', 'dod', 'oct']), 'cube', { onChange: () => { load(G, P3[pre.value]()); S.reset({ at: 2 }); } });
         const s = v.stage({ x: [-1.25, 1.25], y: [-1.18, 1.18], axes: false, equal: true, height: 340 });
         const G = v.graph(s, { nodes: [], edges: [], r: 11, draggable: false }), R = v.graph(s, { nodes: [], edges: [], r: 12, draggable: false });
         load(G, P3.cube());
@@ -569,22 +578,19 @@ export default {
           const cen = (bag) => { const P = bag.map(pos); return [P.reduce((a, p) => a + p[0], 0) / P.length, P.reduce((a, p) => a + p[1], 0) / P.length]; };
           return seq.map((x, i) => {
             const P = {}; for (const id of x.M.ids) P[K(id)] = cen(x.bags[K(id)]);
+            // seq[i] arises from seq[i−1] by splitting the vertex 'kept' into 'kept' and 'merged' (recorded on seq[i−1], the contracted graph)
             const prev = seq[i - 1]; let split = null, from = null, note = '$G_0 = K^4$.';
-            if (prev) {
-              const sp = seq[i - 1]; // seq[i] arises from seq[i-1] by splitting vertex sp.kept... recorded on the contracted graph
-              const info = seq[i - 1].kept != null ? { kept: seq[i - 1].kept, merged: seq[i - 1].merged } : null;
-              if (info) {
-                split = [info.kept, info.merged]; from = {}; for (const id of x.M.ids) from[K(id)] = [split[0], split[1]].some((q) => K(q) === K(id)) ? prev.P[K(info.kept)] : prev.P[K(id)];
-                const d = (id) => x.M.E.filter((e) => K(x.M.ids[e.a]) === K(id) || K(x.M.ids[e.b]) === K(id)).length;
-                note = `$G_{${i}}$: split one vertex into $x$, $y$ with $d(x) = ${d(split[0])}$, $d(y) = ${d(split[1])}$ (both $\\ge 3$) — ${mgN(x.M)} vertices, ${x.M.E.length} edges.`;
-              }
-              void sp;
+            if (prev && prev.kept != null) {
+              split = [prev.kept, prev.merged]; from = {};
+              for (const id of x.M.ids) from[K(id)] = split.some((q) => K(q) === K(id)) ? prev.P[K(prev.kept)] : prev.P[K(id)];
+              const d = (id) => x.M.E.filter((e) => K(x.M.ids[e.a]) === K(id) || K(x.M.ids[e.b]) === K(id)).length;
+              note = `$G_{${i}}$: split one vertex into $x$, $y$ with $d(x) = ${d(split[0])}$, $d(y) = ${d(split[1])}$ (both $\\ge 3$) — ${mgN(x.M)} vertices, ${x.M.E.length} edges.`;
             }
             x.P = P;
             return { H, M: x.M, P, from, split, i, n: seq.length - 1, note };
           });
         };
-        const S = v.steps({ frames, speed: 0.8, transition: 0.7, start: 'end', still: 3, counter: 'graph' });
+        const S = v.steps({ frames, speed: 0.8, transition: 0.7, start: 2, still: 2, counter: 'graph' });
         v.render(() => {
           const f = S.frame; if (!f.H) return;
           G.draw({ edgeColor: () => 'faint', edgeWidth: () => 0.8, nodeColor: () => 'faint', nodeLabel: () => '', dim: G.nodes.map((n) => n.id) });
@@ -595,7 +601,7 @@ export default {
           const isSplit = (id) => f.split && f.split.some((q) => K(q) === K(id));
           R.draw({ edgeColor: (e) => (f.split && isSplit(e.from) && isSplit(e.to) ? 'gold' : 'accent'), edgeWidth: (e) => (f.split && isSplit(e.from) && isSplit(e.to) ? 5 : 2.6),
             nodeFill: (id) => (isSplit(id) ? 'gold' : 'ink'), nodeNote: (id) => (isSplit(id) ? String(R.degree(id)) : null), noteColor: 'gold' });
-          s.corner(`$G_{${f.i}}$ of $G_{${f.n}}$`, 'tl', { color: 'ink', weight: 700, size: 14 });
+          s.corner(`$G_{${f.i}}$ in $G_0, \\dots, G_{${f.n}}$`, 'tl', { color: 'ink', weight: 700, size: 14 });
         });
         v.legend([['accent', 'edges of $G_i$'], ['gold', 'the split: $x$, $y$ and the new edge $xy$'], ['faint', '$G$', { dash: true }]]);
         v.readout(() => {

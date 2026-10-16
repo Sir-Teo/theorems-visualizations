@@ -180,3 +180,14 @@ export const pixelAt = (I, u, v) => {
 };
 /** Grey value in [0,1] as an [r, g, b] triple. */
 export const grey = (g) => { const t = Math.round(255 * clamp01(g)); return [t, t, t]; };
+
+/** Points of a small arc at the origin from direction u to direction w (the short way), radius r. */
+export function arcPts(u, w, r) {
+  const a0 = Math.atan2(u[1], u[0]);
+  let d = Math.atan2(w[1], w[0]) - a0;
+  while (d > Math.PI) d -= TAU;
+  while (d < -Math.PI) d += TAU;
+  return Array.from({ length: 21 }, (_, k) => [r * Math.cos(a0 + (d * k) / 20), r * Math.sin(a0 + (d * k) / 20)]);
+}
+/** Angle in degrees between two plane vectors. */
+export const angDeg = (u, w) => (Math.acos(Math.max(-1, Math.min(1, dot(u, w) / (len(u) * len(w) || 1)))) * 180) / Math.PI;

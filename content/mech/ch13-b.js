@@ -431,7 +431,7 @@ the mean divergence over the current region, so friction ($\nabla\!\cdot f = -\g
         const sys = v.select('system', [{ value: 'pend', label: 'damped pendulum' }, { value: 'vdp', label: 'van der Pol ($\\mu = 1$)' }, { value: 'duff', label: 'forced Duffing' }], 'pend', { onChange: () => { const c = CENT[sys.value]; hc.set(c[0], c[1]); } });
         const gS = v.slider('damping $\\gamma$', 0.05, 0.6, 0.25, { step: 0.01 });
         const TT = 32, DT = 0.02, NP = 1500, RAD = 0.38, MU = 1, DD = 0.25, DG = 0.3;
-        const CENT = { pend: [-2.2, 1.7], vdp: [2.3, 1.6], duff: [0.95, 0.35] }, VIEW = { pend: [[-Math.PI, Math.PI], [-2.7, 2.7]], vdp: [[-3.2, 3.2], [-3.6, 3.6]], duff: [[-1.9, 1.9], [-1.25, 1.25]] };
+        const CENT = { pend: [-2.2, 1.7], vdp: [0.75, 0.45], duff: [0.95, 0.35] }, VIEW = { pend: [[-Math.PI, Math.PI], [-2.7, 2.7]], vdp: [[-3.2, 3.2], [-3.6, 3.6]], duff: [[-1.9, 1.9], [-1.25, 1.25]] };
         const sP = v.stage({ x: [-Math.PI, Math.PI], y: [-2.7, 2.7], axes: 'box', gutter: true, height: 380, weight: 1.4, xlabel: 'x', ylabel: 'ẋ' });
         const sA = v.stage({ x: [0, TT], y: [1e-3, 3], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 't', title: 'area of the cloud ÷ initial' });
         const hc = sP.handle(-2.2, 1.7, { color: 'ink', r: 7 });
@@ -475,6 +475,7 @@ the mean divergence over the current region, so friction ($\nabla\!\cdot f = -\g
           gS.el.hidden = sys.value !== 'pend';
           const st = sim.advance(Math.min(2 * tt, TT)), t = st.n * DT, name = st.name, [vx, vy] = VIEW[name];
           sP.setView(vx, vy); sP.setTicks(name === 'pend' ? piTicks(-Math.PI, Math.PI) : null, null);
+          sA.setView([0, TT], name === 'vdp' ? [1e-4, 30] : [1e-3, 3]);
           const att = attractor();
           if (name === 'pend') { sP.contour((x, y) => 0.5 * y * y - Math.cos(x), [1], { color: 'muted', width: 1, alpha: 0.6, res: 120 }); sP.dot(0, 0, { r: 6, color: 'green' }); }
           if (att && att.cycle) sP.path(att.cycle, { color: 'green', width: 2.6, close: true });
@@ -507,7 +508,7 @@ $$\ddot\phi + 2\beta\dot\phi + \omega_0^2\sin\phi = \gamma\,\omega_0^2\cos\omega
 where the dimensionless **drive strength** $\gamma$ is the ratio of the drive torque to the maximum gravitational torque. With Taylor’s parameters $\omega = 2\pi$ (drive period 1), $\omega_0 = 1.5\omega$, $\beta = \omega_0/4$, and starting from rest at $\phi = -\pi/2$: for small $\gamma$ the motion settles into a periodic response with the drive’s period, nearly sinusoidal; around $\gamma \approx 1$ it is periodic but strongly anharmonic; near $\gamma \approx 1.066$ it **doubles its period** (alternate swings differ), at $\gamma \approx 1.079$ doubles again, then again ever faster, and beyond about $\gamma \approx 1.083$ it is **chaotic**, never repeating, with a positive Lyapunov exponent. At larger $\gamma$ periodic windows and rolling motions, where the pendulum goes over the top, alternate with chaos.`,
       scope: String.raw`The thresholds quoted depend on the damping, frequencies and initial state; the qualitative route (period doubling to chaos) is generic for driven dissipative oscillators.`,
       idea: String.raw`Sampling the state once per drive cycle gives a two-dimensional map that contracts area by $e^{-2\beta}$ per cycle (13.12). A periodic response is a fixed point of this map, stable while its two Floquet multipliers lie inside the unit circle. As $\gamma$ grows, one multiplier passes through $-1$: the fixed point becomes unstable, and a stable cycle of period two is born (a flip bifurcation). The same happens to that cycle and its descendants, at drive strengths that accumulate geometrically (13.14). Past the accumulation point the attractor is strange: the stroboscopic points no longer repeat but lie on a fractal set, and nearby states separate exponentially (13.4).`,
-      caption: String.raw`Top left: the stroboscopic section, the state $(\phi, \dot\phi)$ once per drive cycle, after the transient has died away (red dots), over the continuous trajectory (faint). Top right: the pendulum itself. Bottom: $\phi(t)$ over eight drive cycles; the grey bars mark the drive cycles. Use the presets or the slider. At $1.060$ one red dot: the motion repeats every cycle. At $1.078$ two dots, and alternate swings differ. At $1.081$ four, at $1.0826$ eight. At $1.105$ the dots never repeat and fill a strange attractor, the time series wanders, and the Lyapunov exponent in the readout turns positive.`,
+      caption: String.raw`Top left: the stroboscopic section, the state $(\phi, \dot\phi)$ once per drive cycle, after the transient has died away (red dots), over the continuous trajectory (faint). Top right: the pendulum itself. Bottom: $\phi(t)$ over eight drive cycles; the grey bars mark the drive cycles. Use the presets or the slider. At $1.060$ one red dot: the motion repeats every cycle. At $1.078$ two dots, and alternate swings differ. At $1.081$ four, at $1.0826$ eight. At $1.105$ the dots never repeat: they trace out a strange attractor (thin, because each drive cycle contracts areas by $e^{-2\beta}$), the time series wanders, and the Lyapunov exponent in the readout turns positive.`,
       deps: ['mech-13.12', 'mech-4.14'],
       refs: ['Taylor §12.2', 'Taylor §12.4'],
       tags: ['driven pendulum', 'period doubling', 'chaos'],
@@ -580,7 +581,7 @@ and the widths of the forks shrink by the factor $\alpha = 2.502907875\ldots$ Th
       viz(v) {
         const sys = v.select('system', [{ value: 'pend', label: 'driven pendulum' }, { value: 'log', label: 'logistic map' }], 'pend');
         const win = v.select('window', [{ value: 'full', label: 'whole cascade' }, { value: 'zoom', label: 'zoom on the accumulation' }], 'full');
-        const WIN = { pend: { full: [1.06, 1.087], zoom: [1.0805, 1.0832] }, log: { full: [2.8, 4], zoom: [3.54, 3.574] } }, NCOL = 360, NPT = 48;
+        const WIN = { pend: { full: [1.06, 1.087], zoom: [1.0804, 1.0831] }, log: { full: [2.8, 4], zoom: [3.54, 3.574] } }, NCOL = 360, NPT = 48;
         const sD = v.stage({ x: [1.06, 1.087], y: [-1, 0], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'γ', ylabel: 'φ' });
         const sF = v.stage({ x: [0.5, 11.5], y: [4.5, 4.9], axes: 'box', gutter: true, height: 200, full: true, xlabel: 'n', ylabel: 'δₙ', title: 'measured ratios of successive intervals' });
         const job = progressive(v);
@@ -742,8 +743,8 @@ with $b = 1$, $\sigma = \nu/(IK)$ and $\rho$ proportional to the inflow. For sma
             cur = { wh, D, tau };
           } else {
             const D = dims();
-            const step = Math.max(1, Math.floor(D.P.length / 3500)), pts = []; for (let k = 0; k < D.P.length; k += step) pts.push([D.P[k][0], D.P[k][1], D.P[k][2] - 25]);
-            s3.path(pts, { color: 'accent', width: 0.8, alpha: 0.55 });
+            const pts = []; for (let k = 0; k < 4000; k++) pts.push([D.P[k][0], D.P[k][1], D.P[k][2] - 25]);
+            s3.path(pts, { color: 'accent', width: 1, alpha: 0.6 });
             sN.path(D.box, { color: 'accent', width: 1.4 }); sN.dots(D.box, { r: 3.5, color: 'accent' });
             sN.fn((e) => Math.exp(D.lb.intercept + D.lb.slope * Math.log(e)), { color: 'red', width: 1.4, dash: [6, 4], domain: [0.5, 9] });
             sN.vband(0.7, 6, { color: 'red', alpha: 0.05 });

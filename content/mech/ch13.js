@@ -709,15 +709,15 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
           sP.path(D.C.map((z) => z && [z[0], Y(z[0], z[1])]), { color: 'gold', width: 2.4 });
           for (const f of D.fixed) sP.dot(f.th, Y(f.th, f.p), { r: 6, color: f.ell ? 'green' : 'red' });
           let amp = 1e-6; for (const d of D.DP) if (isFinite(d)) amp = Math.max(amp, Math.abs(d));
-          sD.setView([0, TAU], [-1.3 * amp, 1.3 * amp]);
-          sD.setLabels('θ along C', 'radial shift');
-          const pos = D.DP.map((d, i) => [(TAU * i) / D.DP.length * (D.DP.length / (D.DP.length - 1)) * ((D.DP.length - 1) / D.DP.length), d]);
-          sD.between((x) => { const i = Math.round((x / TAU) * NT); return Math.max(0, D.DP[i] ?? 0); }, () => 0, 0, TAU, { fill: 'green', fillAlpha: 0.2 });
-          sD.between(() => 0, (x) => { const i = Math.round((x / TAU) * NT); return Math.min(0, D.DP[i] ?? 0); }, 0, TAU, { fill: 'red', fillAlpha: 0.2 });
+          const ex = Math.floor(Math.log10(amp)), sc = 10 ** -ex;
+          sD.setView([0, TAU], [-1.3 * amp * sc, 1.3 * amp * sc]);
+          sD.setLabels('θ along C', `radial shift (× 10${v.M.pow10Text(ex).slice(2)})`);
+          sD.between((x) => { const i = Math.round((x / TAU) * NT); return sc * Math.max(0, D.DP[i] ?? 0); }, () => 0, 0, TAU, { fill: 'green', fillAlpha: 0.2 });
+          sD.between(() => 0, (x) => { const i = Math.round((x / TAU) * NT); return sc * Math.min(0, D.DP[i] ?? 0); }, 0, TAU, { fill: 'red', fillAlpha: 0.2 });
           sD.hline(0, { color: 'muted', width: 1 });
-          sD.path(D.DP.map((d, i) => [(TAU * i) / NT, d]), { color: 'purple', width: 2 });
+          sD.path(D.DP.map((d, i) => [(TAU * i) / NT, sc * d]), { color: 'purple', width: 2 });
           for (const f of D.fixed) sD.dot(f.th, 0, { r: 4.5, color: f.ell ? 'green' : 'red' });
-          cur = { D, pos };
+          cur = { D };
         });
         v.legend([['gold', 'curve $C$: moved radially by $T^q$'], ['purple', 'its image $T^q(C)$ / radial shift'], ['green', 'elliptic fixed points (island centres)'], ['red', 'hyperbolic fixed points']]);
         v.readout(() => {

@@ -76,16 +76,16 @@ export default {
             const key = `${sel.value}${what.value}`;
             const cm = (t) => v.M.cmap(Math.sqrt(Math.max(0, Math.min(1, t))), 'viridis');
             sA.raster((x, y) => (x * x + y * y > 1 ? null : cm(defect(mats, dirOf(rep, x, y)))), { res: 3, key });
-            sA.colorbar([0, 1], cm, { pos: 'right', label: 'defect', length: 150 });
             sA.circle(0, 0, 1, { color: 'ink', width: 1.4, alpha: 0.5 });
             [['x', 1, 0], ['y', 0, 1]].forEach(([l, x, y]) => { sA.dot(x, y, { r: 3, color: 'ink' }); sA.text(l, x * 1.12, y * 1.12, { math: true, size: 14, color: 'muted', align: 'center', baseline: 'middle' }); });
-            sA.text('z', 0.07, -0.07, { math: true, size: 13, color: 'panel' }); sA.dot(0, 0, { r: 2.5, color: 'panel' });
+            sA.dot(0, 0, { r: 3, color: 'ink' }); sA.text('z', 0.08, -0.09, { math: true, size: 13, color: 'ink', align: 'left' });
             const best = (what.value === 'planes' && rep.dim === 3 ? inf.planes : inf.lines);
             if (best.d < 1e-6) { sA.dot(best.at[0], best.at[1], { r: 9, hollow: true, color: 'green', width: 3 }); sA.text('invariant', best.at[0] - 0.05, best.at[1] + 0.17, { size: 12, color: 'green', weight: 700, align: 'center' }); }
             const d = dirOf(rep, h3.x, h3.y);
             sB.bars(mats.map((M) => sinAng(M, d)), { x0: 1, color: (val, i) => (val < 1e-6 ? 'green' : ecol(i)) });
             sB.hline(0, { color: 'faint' }); sB.corner('defect of each $\\rho(g)$ at the handle', 'tr', { size: 11.5 });
           }
+          v.legend(rep.dim === 2 ? [['orange', 'candidate line'], ['green', 'invariant (defect 0)']] : [['orange', 'candidate direction'], ['green', 'invariant (defect 0)'], ['blue', 'heat map: dark = nearly invariant, yellow = far']]);
           sA.corner(rep.dim === 2 ? 'lines through 0 in $\\mathbb R^2$' : 'directions in $\\mathbb R^3$ (upper hemisphere, seen from above)', 'tl', { size: 11.5, plate: true });
         });
         function zerosOf(mats) {
@@ -93,7 +93,6 @@ export default {
           for (let i = 0; i < 720; i++) { const t = (Math.PI * i) / 720; if (defect(mats, [Math.cos(t), Math.sin(t)]) < 1e-3) { const last = out[out.length - 1]; if (last == null || t - last > 0.05) out.push(t); } }
           return out;
         }
-        v.legend([['orange', 'candidate (line / direction)'], ['green', 'invariant']]);
         v.readout(() => {
           const rep = RE[sel.value], inf = info(sel.value), n = rep.mats.length;
           const hdr = `${rep.name}: $|G|=${n}$ matrices of size ${rep.dim}.`;

@@ -227,7 +227,7 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
             for (const g of gases) sa.dots(CSAT[g].map((r) => [1 / r[0], Math.log(r[1])]), { r: 2.6, color: gcol[g] });
             sa.vline(1 / Tr, { color: 'gold', width: 1.2, dash: [4, 3] });
             sa.vline(1 / 0.7, { color: 'faint', width: 1, dash: [2, 3] });
-            sa.text('T/Tc = 0.7', 1 / 0.7, -4.6, { dx: 4, size: 10.5, color: 'muted', align: 'left' });
+            sa.text('T/Tc = 0.7', 1 / 0.7, -0.35, { dx: 4, size: 10.5, color: 'muted', align: 'left' });
             gases.forEach((g, i) => {
               const C = CSAT[g], ext = C[0][0] > 0.7;
               // below CO2's triple point (T/Tc = 0.712) extend ln P linearly in 1/T from the first two points

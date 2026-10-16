@@ -374,13 +374,13 @@ the one-dimensional wave equation, with $u=0$ at the fixed ends.`,
           const st = S.state, u = st.u; fill();
           let lo = 1e9, hi = -1e9; for (let i = 0; i < u.length; i++) { lo = Math.min(lo, u[i]); hi = Math.max(hi, u[i]); }
           lo = Math.min(lo, -0.1); hi = Math.max(hi, 0.1);
-          s.heat((x, y) => at(u, x, y), { range: [lo, hi], cmap: 'magma', res: 3, key: `${st.n}|${lo}|${hi}|${fKey}` });
+          s.heat((x, y) => at(u, x, y), { range: [lo, hi], cmap: 'magma', res: 3, rect: [0, 0, 1, 1], key: `${st.n}|${lo}|${hi}|${fKey}` });
           const lv = []; for (let k = 1; k < 12; k++) lv.push(lo + ((hi - lo) * k) / 12);
           s.contour((x, y) => at(u, x, y), lv, { color: 'ink', alpha: 0.35, width: 1, res: 50 });
           s.path([[0, 0], [1, 0], [1, 1], [0, 1]], { close: true, color: 'ink', width: 1.5 });
           s.colorbar([lo, hi], 'magma', { pos: 'bottom', fmt: (x) => v.fix(x, 1) });
           const rmap = (x, y) => { const i = Math.round(y * NP), j = Math.round(x * NP); return i < 1 || j < 1 || i > NP - 1 || j > NP - 1 ? NaN : resid(u, i, j); };
-          sr.heat((x, y) => { const r = rmap(x, y); return isFinite(r) ? signedLog(r) : NaN; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 3, key: `${st.n}|${fKey}` });
+          sr.heat((x, y) => { const r = rmap(x, y); return isFinite(r) ? signedLog(r) : NaN; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 3, rect: [0, 0, 1, 1], key: `${st.n}|${fKey}` });
           sr.path([[0, 0], [1, 0], [1, 1], [0, 1]], { close: true, color: 'ink', width: 1.5 });
           sr.text('white: |Δu+f| < 0.01   deep colour: > 100', 0.5, 0.02, { color: 'ink', size: 11, align: 'center', plate: true });
           let mx = 0; for (let i = 1; i < NP; i++) for (let j = 1; j < NP; j++) mx = Math.max(mx, Math.abs(resid(u, i, j)));

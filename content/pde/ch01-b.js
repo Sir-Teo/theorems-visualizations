@@ -198,7 +198,7 @@ Equivalently the symmetric matrix $A=\begin{pmatrix}a&b\\b&c\end{pmatrix}$ has e
           const Q = (x, y) => a * x * x + 2 * b * x * y + c * y * y;
           sq.contour(Q, [1], { color: 'accent', width: 2.6, res: 240 }); sq.contour(Q, [-1], { color: 'red', width: 2.2, res: 240 });
           for (const d of ds) { const nx = -d[1], ny = d[0]; sq.line(-3 * nx, -3 * ny, 3 * nx, 3 * ny, { color: 'muted', width: 1.4, dash: [6, 4] }); }
-          sq.text('Q = 1', -2.9, 2.7, { color: 'accent', size: 12 }); sq.text('Q = −1', -2.9, 2.35, { color: 'red', size: 12 });
+          sq.text('Q = 1', -2.9, -2.45, { color: 'accent', size: 12, plate: true }); sq.text('Q = −1', -2.9, -2.8, { color: 'red', size: 12, plate: true });
           info = { a, b, c, sy, ds, at: typeAt(P.x, P.y) };
         });
         v.legend([['orange', 'hyperbolic region', { area: true }], ['accent', 'elliptic region', { area: true }], ['green', 'parabolic', { area: true }], ['ink', 'characteristic directions (two families)']]);
@@ -457,7 +457,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
           const head = I.ds.length ? `characteristic directions at ${angs} to the $x$-axis` : 'no real characteristic directions (elliptic): every curve is non-characteristic';
           if (I.name === 'line') {
             const bad = Math.abs(I.qNow) < 0.02 * Math.max(I.sca, 1e-9);
-            return `${head}\n$\\nu^TA\\nu=${v.fix(I.qNow, 3)}$ for this segment — ${bad ? '**characteristic**: $u,u_\\nu$ do not determine $u_{\\nu\\nu}$; the Cauchy problem breaks down' : 'non-characteristic: $u_{\\nu\\nu}=-(\\ldots)/\\nu^TA\\nu$ is determined'}${I.area != null ? ` · determinacy region covers ${v.fix(100 * I.area, 1)}% of the window` : ''}`;
+            return `${head}\n$\\nu^TA\\nu=${v.fix(I.qNow, 3)}$ for this segment — ${bad ? '**characteristic**: $u,u_\\nu$ do not determine $u_{\\nu\\nu}$; the Cauchy problem breaks down' : 'non-characteristic: $u_{\\nu\\nu}=-(\\ldots)/\\nu^TA\\nu$ is determined'}${I.area != null ? ` · determinacy region covers ${v.fix(100 * I.area, 1)}% of the window` : I.sy.type === 'parabolic' ? ' · only one family of characteristics, so no bounded domain of determinacy' : I.sy.type === 'elliptic' ? ' · elliptic: data on a curve never determine a solution in a region (see 1.8)' : ''}`;
           }
           return `${head}\nthe curve is characteristic at ${I.chars} point${I.chars === 1 ? '' : 's'} (red dots), exactly where its tangent lines up with a characteristic direction; elsewhere the Cauchy data determine the second derivatives`;
         });

@@ -264,7 +264,7 @@ lower than for the pure substance because $\ln x_i < 0$. Mixing pure ideal compo
 $$\Delta S_{\text{mix}} = -Nk\sum_i x_i\ln x_i > 0,\qquad \Delta G_{\text{mix}} = NkT\sum_i x_i\ln x_i < 0,$$
 with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2$ for $x = 1/2$.`,
       idea: String.raw`When a partition is removed, each ideal gas expands isothermally from its own volume $V_i = x_iV$ into the whole volume $V$, gaining entropy $N_ik\ln(V/V_i) = -N_ik\ln x_i$ as in a free expansion (2.11); the gases do not notice one another. Equivalently, the number of ways of arranging the $N$ molecules among positions, once they may share the volume, grows by the multinomial $N!/\prod N_i!$, whose logarithm is $-N\sum x_i\ln x_i$ by Stirling's formula. The chemical potential is the slope of $G$; its $kT\ln x$ term is what makes it energetically favourable for every species to spread into every available phase (3.4) — the root of osmosis (4.14) and of chemical equilibrium (4.15).`,
-      caption: String.raw`500 molecules of two ideal gases (blue and orange) in a box, at first separated by a partition placed so both sides have the same pressure. The partition is removed at $t = 1$ s; each molecule then random-walks freely. The middle panel tracks the mixing entropy measured from the counts in 32 cells, $-\sum_\text{cells} \sum_i n_i\ln(n_i/n)$ per molecule, which climbs to the ideal value $-\sum x\ln x$ (dashed). **Change the composition** to move along the curve on the right, which also shows how much each species' chemical potential has dropped, $RT\ln x$ at 298 K. Keep the partition in and nothing changes.`,
+      caption: String.raw`500 molecules of two ideal gases (blue and orange) in a box, at first separated by a partition placed so both sides have the same pressure. The partition is removed at $t = 1$ s; each molecule then random-walks freely. The middle panel tracks the mixing entropy measured from the counts in 32 cells, $-\sum_\text{cells} \sum_i n_i\ln(n_i/n)$ per molecule, which climbs to the ideal value $-\sum x\ln x$ (dashed). **Change the composition** to move along the curve on the right, which also shows how far each species' chemical potential has dropped, $(\mu - \mu^\circ)/RT = \ln x$. Keep the partition in and nothing changes.`,
       deps: ['thermo-3.4', 'thermo-2.11'],
       see: ['pchem-5.4', 'thermo-4.13'],
       refs: ['Schroeder §5.4', 'Kardar §4.5'],
@@ -273,16 +273,16 @@ with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2
       viz(v) {
         const xs = v.slider('mole fraction of blue $x$', 0.1, 0.9, 0.5, { step: 0.02, fmt: (x) => v.fix(x, 2), onChange: () => v.restart() });
         const keep = v.toggle('keep the partition', false, { onChange: () => v.restart() });
-        const sb = v.stage({ x: [0, 2], y: [0, 1], equal: true, height: 220, axes: false, full: true, title: 'the box' });
+        const sb = v.stage({ x: [-0.04, 2.04], y: [-0.05, 1.05], equal: true, height: 220, axes: false, full: true, title: 'the box' });
         const sh = v.stage({ x: [0, 12], y: [0, 0.75], height: 290, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'ΔS / Nk', weight: 1, title: 'mixing entropy, measured' });
-        const sc = v.stage({ x: [0, 1], y: [-6, 0.75], height: 290, axes: 'box', gutter: true, xlabel: 'x (blue)', ylabel: 'ΔS/Nk  ·  RT ln x (kJ/mol)', weight: 1, title: 'ideal mixing' });
+        const sc = v.stage({ x: [0, 1], y: [-2.5, 0.85], height: 290, axes: 'box', gutter: true, xlabel: 'x (blue)', ylabel: 'ΔS/Nk  and  (μ − μ°)/RT', weight: 1, title: 'ideal mixing' });
         const N = 500, CX = 8, CY = 4;
         const S = v.sim(() => {
           const r = v.rng(21), x = xs.value, nA = Math.round(N * x), wall = 2 * x;
           const P = []; for (let i = 0; i < N; i++) { const a = i < nA; P.push({ x: a ? r() * wall : wall + r() * (2 - wall), y: r(), a }); }
           return { P, r, hist: [], wall, S: 0 };
         }, (st, h, t) => {
-          const on = keep.value || t < 1, step = 0.018;
+          const on = keep.value || t < 1, step = 0.055;
           for (const p of st.P) {
             let nx = p.x + step * st.r.normal(), ny = p.y + step * st.r.normal();
             if (nx < 0) nx = -nx; if (nx > 2) nx = 4 - nx; if (ny < 0) ny = -ny; if (ny > 1) ny = 2 - ny;
@@ -317,12 +317,13 @@ with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2
           // theory panel
           sc.hline(0, { color: 'muted', width: 1 });
           sc.fn((q) => -(q * Math.log(q) + (1 - q) * Math.log(1 - q)), { color: 'green', width: 2.6, domain: [0.001, 0.999] });
-          sc.fn((q) => R * 298.15 * Math.log(q) / 1e3, { color: 'blue', width: 2, domain: [0.08, 1] });
-          sc.fn((q) => R * 298.15 * Math.log(1 - q) / 1e3, { color: 'orange', width: 2, domain: [0, 0.92] });
+          sc.fn((q) => Math.log(q), { color: 'blue', width: 2, domain: [0.08, 1] });
+          sc.fn((q) => Math.log(1 - q), { color: 'orange', width: 2, domain: [0, 0.92] });
           sc.dot(x, ideal, { r: 5, color: 'green' }); sc.dot(x, st.S, { r: 4, color: 'accent', hollow: true });
-          sc.dot(x, R * 298.15 * Math.log(x) / 1e3, { r: 4.5, color: 'blue' }); sc.dot(x, R * 298.15 * Math.log(1 - x) / 1e3, { r: 4.5, color: 'orange' });
-          sc.text('μ − μ° of blue', 0.95, R * 298.15 * Math.log(0.95) / 1e3, { dx: -4, dy: 14, size: 10.5, color: 'blue', align: 'right' });
-          sc.text('μ − μ° of orange', 0.05, R * 298.15 * Math.log(0.95) / 1e3, { dx: 4, dy: 14, size: 10.5, color: 'orange', align: 'left' });
+          sc.dot(x, Math.log(x), { r: 4.5, color: 'blue' }); sc.dot(x, Math.log(1 - x), { r: 4.5, color: 'orange' });
+          sc.text('blue: ln x', 0.3, Math.log(0.3), { dx: 8, dy: 6, size: 10.5, color: 'blue', align: 'left' });
+          sc.text('orange: ln(1 − x)', 0.7, Math.log(0.3), { dx: -8, dy: 6, size: 10.5, color: 'orange', align: 'right' });
+          sc.text('−x ln x − (1 − x) ln(1 − x)', 0.5, 0.69, { dy: -10, size: 10.5, color: 'green', align: 'center' });
           info = { t, x, ideal, S: st.S, dmuA: R * 298.15 * Math.log(x), dmuB: R * 298.15 * Math.log(1 - x) };
         }, { still: 8, period: 12 });
         v.legend([['blue', 'species A'], ['orange', 'species B'], ['accent', 'measured −Σ n ln(n/n_cell) / N'], ['green', 'ideal $-\\sum x\\ln x$', { dash: true }]]);
@@ -713,7 +714,6 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           // dome
           ts.poly(dome.map(([s, T]) => [s, T]), { fill: PHASE.liquid, fillAlpha: 0.08, color: 'muted', width: 1.6 });
           ts.dot(WSAT[WSAT.length - 1][4] / 2 + WSAT[WSAT.length - 1][7] / 2, 647.096, { r: 4, color: 'red' });
-          ts.text('liquid + vapour', 4.6, 330, { size: 11, color: 'muted', align: 'center' });
           // cycle path
           const kJ = (x) => x / 1e3;
           const liqLine = WSAT.filter((r) => r[0] > Tc && r[0] < Ts).map((r) => [r[4], r[0]]);
@@ -730,25 +730,25 @@ The temperature dependence follows the **van 't Hoff equation** $d\ln K/d(1/T) =
           const lab = (txt, s, T, o) => { ts.dot(s, T, { r: 4.5, color: 'ink' }); ts.text(txt, s, T, { size: 12, weight: 700, color: 'ink', ...o }); };
           lab('1', kJ(s1), T1, { dx: 8, dy: -6, align: 'left' }); lab('2', kJ(s1), T2, { dx: 8, dy: 10, align: 'left' }); lab('3', kJ(sf), Tc, { dx: -8, dy: 10, align: 'right' }); lab('4', kJ(sf), Tc + 0.3, { dx: -8, dy: -8, align: 'right' });
           ts.text(`boils at ${v.fix(Ts - 273.15, 0)} °C`, kJ((cs.sl + cs.sv) / 2), Ts, { dy: -9, size: 11, color: 'red', align: 'center', plate: true });
-          ts.text('Carnot', kJ(s1), T1, { dx: -6, dy: 14, size: 10.5, color: 'gold', align: 'right' });
+          ts.text('Carnot', kJ(sf), T1, { dx: 6, dy: 12, size: 10.5, color: 'gold', align: 'left' });
           // energy-flow schematic
           const sc2 = 1 / 3500e3 * 60;   // px per J/kg
-          const B = [5, 8.2], Tu = [8.2, 5], Co = [5, 1.8], Pu = [1.8, 5];
+          const B = [5, 7.9], Tu = [7.7, 5], Co = [5, 2.1], Pu = [2.3, 5];
           sc.path([Pu, [Pu[0], B[1]], B], { color: PHASE.liquid, width: 2 }); sc.path([B, [Tu[0], B[1]], Tu], { color: PHASE.gas, width: 2.4 });
           sc.path([Tu, [Tu[0], Co[1]], Co], { color: PHASE.gas, width: 2, dash: x2 < 1 ? [5, 3] : null }); sc.path([Co, [Pu[0], Co[1]], Pu], { color: PHASE.liquid, width: 2 });
           band(v, sc, [[B[0], B[1] + 1.8], [B[0], B[1] + 0.85]], Math.max(2, qin * sc2), 'red');
-          band(v, sc, [[Tu[0] + 0.85, Tu[1]], [Tu[0] + 1.75, Tu[1]]], Math.max(2, wt * sc2), 'green');
+          band(v, sc, [[Tu[0] + 0.85, Tu[1]], [Tu[0] + 1.9, Tu[1]]], Math.max(2, wt * sc2), 'green');
           band(v, sc, [[Co[0], Co[1] - 0.85], [Co[0], Co[1] - 1.7]], Math.max(2, qout * sc2), 'blue');
           band(v, sc, [[Pu[0] - 1.6, Pu[1]], [Pu[0] - 0.85, Pu[1]]], Math.max(2, wp * sc2 * 20), 'purple');
           device(sc, B[0], B[1], 0.8, 'boiler', 'red'); device(sc, Tu[0], Tu[1], 0.8, 'turbine', 'green', { size: 11 }); device(sc, Co[0], Co[1], 0.8, 'condenser', 'blue', { size: 10 }); device(sc, Pu[0], Pu[1], 0.8, 'pump', 'purple', { size: 11 });
-          sc.text(`q_in ${v.fix(qin / 1e3, 0)} kJ`, B[0] + 0.5, B[1] + 1.45, { size: 11, color: 'red', align: 'left' });
-          sc.text(`w ${v.fix(wt / 1e3, 0)} kJ`, Tu[0], Tu[1] - 1.05, { size: 11, color: 'green', align: 'center' });
-          sc.text(`q_out ${v.fix(qout / 1e3, 0)} kJ`, Co[0] + 0.5, Co[1] - 1.35, { size: 11, color: 'blue', align: 'left' });
+          sc.text(`heat in ${v.fix(qin / 1e3, 0)} kJ`, B[0] - 1.2, B[1] + 1.35, { size: 11, color: 'red', align: 'right', plate: true });
+          sc.text(`work ${v.fix(wt / 1e3, 0)} kJ`, Tu[0] + 0.3, Tu[1] - 1.1, { size: 11, color: 'green', align: 'center' });
+          sc.text(`heat out ${v.fix(qout / 1e3, 0)} kJ`, Co[0] - 1.2, Co[1] - 1.3, { size: 11, color: 'blue', align: 'right', plate: true });
           sc.text(`pump ${v.fix(wp / 1e3, 1)} kJ (×20)`, Pu[0], Pu[1] + 1.05, { size: 10.5, color: 'purple', align: 'center' });
           sc.text(`η = ${v.fix(100 * eta, 1)} %`, 5, 5, { size: 16, weight: 700, color: 'accent', align: 'center' });
           st = { P1, T1, Ts, h1, s1, h2, x2, wt, wp, qin, qout, eta, Tbar, carnot, Tc };
         });
-        v.legend([['red', 'heat in (4 → 1)'], ['green', 'turbine (1 → 2)'], ['blue', 'condenser (2 → 3)'], ['purple', 'pump (3 → 4)'], ['gold', 'Carnot between T₁ and T_C', { dash: true }]]);
+        v.legend([['red', 'heat in (4 → 1)'], ['green', 'turbine (1 → 2)'], ['blue', 'condenser (2 → 3)'], ['purple', 'pump (3 → 4)'], ['gold', 'Carnot between T₁ and T_C', { dash: true }], [PHASE.liquid, 'two-phase dome', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { P1, T1, Ts, x2, wt, wp, qin, qout, eta, Tbar, carnot, Tc } = st;

@@ -25,7 +25,7 @@ export default {
       viz(v) {
         const C = {
           circle: { r: (u) => [Math.cos(PI * u), Math.sin(PI * u)], dr: (u) => [-PI * Math.sin(PI * u), PI * Math.cos(PI * u)], name: 'circle' },
-          cusp: { r: (u) => [1.7 * u * u - 0.6, 1.7 * u * u * u], dr: (u) => [3.4 * u, 5.1 * u * u], name: 'semicubical parabola $(u^2,u^3)$' },
+          cusp: { r: (u) => [1.4 * u * u - 0.7, 1.4 * u * u * u], dr: (u) => [2.8 * u, 4.2 * u * u], name: 'semicubical parabola $(u^2,u^3)$' },
           line: { r: (u) => [1.6 * u * u * u, 0.9 * u * u * u], dr: (u) => [4.8 * u * u, 2.7 * u * u], name: 'cubed line $(u^3,u^3)$' },
         };
         const sel = v.select('trace', [{ value: 'circle', label: 'circle' }, { value: 'cusp', label: 'cusp $(u^2,u^3)$' }, { value: 'line', label: 'line $(u^3,u^3)$' }], 'circle');
@@ -114,10 +114,10 @@ export default {
             S.setView([-2.2, 2.2], [-1.9, 1.9]);
             S.path(pts, { color: 'orange', width: k > 4 ? 1.1 : 2 });
             if (k < 4) S.dots(pts, { r: 3, color: 'gold' });
-            G.setView([-0.4, 6.4], [0, 6.2]); G.setLabels('generation $k$', '$L_k$');
+            G.setView([-0.4, 6.4], [0, 54]); G.setLabels('generation $k$', '$L_k$');
             const xs = []; for (let i = 0; i <= 6; i++) xs.push([i, polyLen(koch(i), false)]);
             G.path(xs, { color: 'muted', width: 1 }); G.dots(xs, { r: 4, color: 'gold' });
-            G.fn((x) => 4 * Math.pow(4 / 3, x) / 4, { domain: [0, 6.4], color: 'red', dash: true, width: 1.2 });
+            G.fn((x) => 4 * Math.pow(4 / 3, x), { domain: [0, 6.4], color: 'red', dash: true, width: 1.2 });
             G.dot(k, polyLen(pts, false), { r: 6.5, color: 'orange' });
             v.readout(() => `Koch curve, generation $k=${k}$: $4^{${k}}=${4 ** k}$ segments, polygon length $(4/3)^{${k}}\\cdot 4 = ${v.fix(polyLen(pts, false), 3)}$ — and $(4/3)^k\\to\\infty$: no finite length, because the curve is **not rectifiable**.`);
             return;

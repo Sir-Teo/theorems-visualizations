@@ -395,7 +395,9 @@ The four conditions are independent: for each one there is a rule satisfying the
             txt(v, d, 'Borda violates IIA: same A-vs-B opinions,', GW / 2, 18, { size: 11.5, weight: 650 });
             txt(v, d, 'different social verdict on A vs B', GW / 2, 34, { size: 11.5, weight: 650, color: 'red' });
             [[ex.p1, ex.S1], [ex.p2, ex.S2]].forEach(([p, S], k) => { const X0 = 14 + k * (GW / 2); drawProfile(v, d, X0, 60, p, { r: 9, colW: 28, ring: (i, cc) => (cc < 2 ? 'gold' : null) }); drawRel(v, d, X0 + 112, 80, S, { r: 9 }); });
-            txt(v, e, 'no rule selected: IIA is off', Lt.width / 2, Lt.height / 2, { size: 12, color: 'muted' });
+            drawLattice(v, e, [Lt.width * 0.02, 26, Lt.width * 0.5, Lt.height - 26], n, { fill: () => ['muted', 0.04] });
+            txt(v, e, 'without IIA, decisiveness over a pair can depend', Lt.width * 0.53, 50, { size: 11.5, weight: 650, color: 'muted', align: 'left' });
+            txt(v, e, 'on the other alternative — Borda has no decisive coalition but the whole electorate', Lt.width * 0.53, 70, { size: 11, weight: 600, color: 'muted', align: 'left' });
             cards = [];
             return;
           }
@@ -430,7 +432,12 @@ The four conditions are independent: for each one there is a rule satisfying the
           if (list.length) txt(v, d, `columns: which voters prefer the first letter (${range(NP).map((p) => coalName(p, n)).join(' ')})`, GW / 2, GH - 8, { size: 9, weight: 500, color: 'muted' });
           // ---- lattice of the selected rule
           const r = list[selR];
-          if (!r) { txt(v, e, 'no rule to show', Lt.width / 2, Lt.height / 2, { size: 12, color: 'muted' }); return; }
+          if (!r) {
+            drawLattice(v, e, [Lt.width * 0.02, 26, Lt.width * 0.5, Lt.height - 26], n, { fill: () => ['red', 0.06], stroke: () => 'red' });
+            txt(v, e, 'no rule: Pareto makes the electorate decisive, contraction', Lt.width * 0.53, 50, { size: 11.5, weight: 650, color: 'red', align: 'left' });
+            txt(v, e, 'shrinks it to one voter — which non-dictatorship forbids', Lt.width * 0.53, 70, { size: 11.5, weight: 650, color: 'red', align: 'left' });
+            return;
+          }
           const dec = range(1 << n).map((Gm) => { let k = 0; [0, 1, 2].forEach((pk) => { if (decisiveIIA(r, n, Gm, pk, 1, M.main.seen)) k++; if (decisiveIIA(r, n, Gm, pk, -1, M.main.seen)) k++; }); return k; });
           const LW = Lt.width;
           drawLattice(v, e, [LW * 0.02, 26, LW * 0.5, Lt.height - 26], n, {
@@ -663,7 +670,7 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
           const cyc = B.length === 0;
           for (const a of A) {
             const opp = A.some((b) => b.x === a.y && b.y === a.x);
-            const M = arrowPx(v, c, pos[a.x][0], pos[a.x][1], pos[a.y][0], pos[a.y][1], { color: cyc || opp ? 'red' : srcCol(a.src[0]), width: 2.6, t0: 26, t1: 28, head: 11, bend: opp ? 16 : -Rr * 0.12 });
+            const M = arrowPx(v, c, pos[a.x][0], pos[a.x][1], pos[a.y][0], pos[a.y][1], { color: cyc || opp ? 'red' : srcCol(a.src[0]), width: 2.6, t0: 26, t1: 28, head: 11, bend: opp ? 34 : -Rr * 0.12 });
             pill(v, c, a.src.map(srcName).join(' + '), M.mx, M.my, { color: srcCol(a.src[0]), size: 10.5 });
           }
           [0, 1, 2].forEach((k) => {

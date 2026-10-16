@@ -904,7 +904,7 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
         v.render(() => {
           const A = analyse(), c = Tb.ctx, W = Tb.width, H = Tb.height;
           cellsGeo = [];
-          const blocks = n === 2 ? [null] : [1, 0, -1], bw = (W - 20) / blocks.length, s = Math.min(n === 2 ? 64 : 36, (bw - 40) / 3, (H - 120) / 3);
+          const blocks = n === 2 ? [null] : [1, 0, -1], bw = (W - 20) / blocks.length, s = Math.min(n === 2 ? 64 : 50, (bw - 40) / 3, (H - 120) / 3);
           const markCells = new Set(); Object.values(A).forEach((list) => list.slice(0, 40).forEach((pr) => markCells.add(pr[0].join(','))));
           blocks.forEach((d3, b) => {
             const X0 = 10 + b * bw + (bw - 3 * s) / 2 + 12, Y0 = 56;
