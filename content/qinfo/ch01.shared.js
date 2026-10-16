@@ -212,10 +212,10 @@ export function drawGroups(v, s, groups, o = {}) {
       const col = g.colors ? g.colors[k] : 'accent', xc = x0 + k + 0.5;
       s.rect(xc - w / 2, 0, xc + w / 2, p, { fill: col, fillAlpha: 0.22, color: col, width: 1.5 });
       if (g.freq) { s.rect(xc - w * 0.22, 0, xc + w * 0.22, g.freq[k], { fill: 'gold', fillAlpha: 0.85, color: 'gold', width: 1 }); }
-      s.text(g.names ? g.names[k] : String(k), xc, 0, { size: 12, align: 'center', baseline: 'top', dy: 5, color: 'muted', math: true });
+      s.text(g.names ? g.names[k] : String(k), xc, 0, { size: 12, align: 'center', baseline: 'top', dy: 5, color: 'muted' });
       const top = Math.max(p, g.freq ? g.freq[k] : 0);
       s.text(v.fix(p, 3).replace(/^0\./, '.').replace(/^1\.000$/, '1'), xc, top, { size: 11, align: 'center', baseline: 'bottom', dy: -3, color: 'ink' });
     });
-    if (g.label) s.text(g.label, x0 + g.probs.length / 2, 1.0, { size: 11.5, align: 'center', baseline: 'bottom', dy: -2, color: g.labelColor || 'muted' });
+    if (g.label) s.text(g.label, x0 + g.probs.length / 2, o.labelY ?? 1.17, { size: 11.5, align: 'center', baseline: 'bottom', dy: 0, color: g.labelColor || 'muted' });
   });
 }

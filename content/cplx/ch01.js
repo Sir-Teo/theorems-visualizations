@@ -293,7 +293,7 @@ This is the nondeterministic analogue of the time hierarchy theorem (Cook 1973; 
         v.button('random machine', () => { const r = v.rng(++seeded * 7 + 3); M = M.map(() => (r() < 0.5 ? 0 : 1)); });
         const reset = () => { const r = v.rng(11 + iS.value); M = Array.from({ length: Ls.value }, () => (r() < 0.5 ? 0 : 1)); };
         reset();
-        const T = v.table(B, { rows: 3, cols: 8, square: false, cellAspect: 1.05, maxCell: 62, size: 17, labelSize: 12.5, rowLabels: ['$M_i(n)$ (you choose)', '$D(n)$ (lazy rule)', '$D(n)=M_i(n)$ ?'] });
+        const T = v.table(B, { rows: 3, cols: 8, square: false, cellAspect: 1.05, maxCell: 62, size: 17, labelSize: 12.5, rowLabels: ['M_i(n): you choose', 'D(n): lazy rule', 'D(n) = M_i(n) ?'] });
         const Dv = () => M.map((_, k) => (k < M.length - 1 ? M[k + 1] : 1 - M[0]));
         B.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i === 0 && c.j >= 0) M[c.j] = 1 - M[c.j]; });
         const BP = ['2', '4', '16', '2^{16}', '2^{65536}'];
@@ -348,7 +348,7 @@ This is the nondeterministic analogue of the time hierarchy theorem (Cook 1973; 
           const prep = n + Math.ceil(n / k);
           return { macro, moves, prep, total: prep + moves };
         };
-        const kS = v.select('block size $k$', [1, 2, 4, 8, 16, 32].map((k) => ({ value: k, label: String(k) })), 4);
+        const kS = v.select('block size $k$', [1, 2, 4, 8, 16, 32].map((k) => ({ value: k, label: String(k) })), 16);
         const nS = v.slider('input length $n$', 6, 60, 36, { int: true });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'step $t$', ylabel: 'head cell', title: 'space–time diagram of the palindrome machine' });
         const B = v.stage({ x: [4, 61], y: [3, 3e3], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'input length $n$', ylabel: 'steps (log scale)' });
@@ -380,7 +380,7 @@ This is the nondeterministic analogue of the time hierarchy theorem (Cook 1973; 
       statement: String.raw`For every time-constructible $t(n)\ge n$,
 $$\mathrm{DTIME}(t(n))\subseteq\mathrm{DSPACE}\big(t(n)/\log t(n)\big).$$
 This holds for multitape Turing machines; the trivial inclusion is $\mathrm{DTIME}(t)\subseteq\mathrm{DSPACE}(t)$. Combined with the space hierarchy theorem it gives $\mathrm{DTIME}(t)\subsetneq\mathrm{DSPACE}(t)$, i.e. space is strictly more powerful than time at the same bound.`,
-      idea: String.raw`Cut the computation into $t/\log t$ blocks of $\log t$ steps; a block touches only a bounded number of tape segments, so the whole run becomes a bounded-degree DAG of $N\approx t/\log t$ nodes (each node: the contents of a few segments after a block). To evaluate the last node the simulator need not keep all intermediate values: it plays the **pebble game** on this DAG — a pebble on a node means "its value is stored"; a pebble may be placed on a node only when all its predecessors carry pebbles, and may be removed at any moment. The Hopcroft–Paul–Valiant lemma says every bounded-degree DAG can be pebbled with $O(N/\log N)$ pebbles, so the simulation stores $O(t/\log t)$ segments of $\log t$ cells… and recomputes what it has thrown away.`,
+      idea: String.raw`Cut the computation into $t/\log t$ blocks of $\log t$ steps; a block touches only a bounded number of tape segments, so the whole run becomes a bounded-degree DAG of $N\approx t/\log t$ nodes (each node: the contents of a few segments after a block). To evaluate the last node the simulator need not keep all intermediate values: it plays the **pebble game** on this DAG — a pebble on a node means "its value is stored"; a pebble may be placed on a node only when all its predecessors carry pebbles, and may be removed at any moment. The Hopcroft–Paul–Valiant lemma says every bounded-degree DAG can be pebbled with $O(N/\log N)$ pebbles, so the simulation stores $O(t/\log t)$ cells in all and recomputes what it has thrown away. (Paul, Tarjan and Celoni showed in 1977 that $N/\log N$ pebbles are really needed for some bounded-degree graphs, so the lemma is tight.)`,
       caption: String.raw`Play the **pebble game** on a computation graph (arrows run from the inputs of a step to the step). In *play* mode click a node to place a pebble (only when all its predecessors are pebbled; sources are free) or to take it off; get a pebble onto the gold output node using as few pebbles as you can. *Optimal strategy* steps through a shortest sequence of moves found by exhaustive search over all pebble placements, with the **provably minimum** number of pebbles. In *edit* mode drag nodes, click empty space to add a node, click two nodes in turn to add an arrow (Alt-click deletes), and the minimum is recomputed. Path: 2 pebbles whatever the length; binary tree of depth $d$: $d+1$; pyramid of height $h$: $h+1$.`,
       deps: ['toc-14.1'],
       refs: ['Arora–Barak ch. 4'],

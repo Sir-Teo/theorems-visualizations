@@ -84,7 +84,7 @@ Under the further assumptions of continuous trading and a log-normal stock price
             E.hline(Math.max(0, S0 - 100), { color: col, width: 1, alpha: 0.6 });
             E.text(`S = ${S0}: exercise now = ${Math.max(0, S0 - 100)}`, 0.98, Math.max(0, S0 - 100), { dy: S0 === 100 ? -8 : 14, align: 'right', size: 10.5, color: col, weight: 600 });
           }
-          E.corner('solid: call value · dashed: S − K e^(−rτ) · flat: S − K', 'tl', { size: 10.5, color: 'muted' });
+          E.corner('dashed: S − K e^(−rτ)', 'tl', { size: 10.5, color: 'muted' });
           // arbitrage panel
           if (arb) {
             A.hline(0, { color: 'faint', width: 1 });

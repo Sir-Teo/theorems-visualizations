@@ -616,7 +616,7 @@ export default {
             sB.text(tot.toLocaleString('en-US'), r.n, 1.045, { size: 10, align: 'center', color: 'muted' });
             // example chips only for the largest size shown: row of three small buttons
           });
-          void 0;
+          { const last = rows[rows.length - 1], tot = last.value + last.stuck + last.steps; ro = (f.err ? '' : ro + '\n') + `Among all **${tot.toLocaleString('en-US')}** terms of size ${last.n}: **${last.value}** values, **${last.stuck.toLocaleString('en-US')}** stuck, **${last.steps.toLocaleString('en-US')}** can step.`; }
         });
         v.legend([['green', 'value'], ['red', 'stuck (normal, not a value)'], ['accent', 'can step']]);
       },

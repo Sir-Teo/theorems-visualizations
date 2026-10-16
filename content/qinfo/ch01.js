@@ -53,7 +53,7 @@ export default {
           let k = 0; const cum = new Float64Array(n + 1); for (let i = 0; i < n; i++) { if (us[i] < p1) k++; cum[i + 1] = k; }
           const f1 = k / n, f0 = 1 - f1;
           drawGroups(v, H, [{ probs: [ma * ma, p1], freq: [f0, f1], names: ['0', '1'], colors: ['accent', 'orange'] }]);
-          H.text('gold bars: measured', 1, 1.2, { size: 11, align: 'center', color: 'gold' });
+          H.text('gold bars: measured', 1, 1.17, { size: 11, align: 'center', color: 'gold' });
           const sd = (m) => 2 * Math.sqrt(p1 * (1 - p1) / m);
           const pts = [], hi = [], lo = []; const M = 140;
           for (let j = 0; j <= M; j++) { const m = Math.max(1, Math.round(Math.exp(Math.log(20000) * j / M))); if (m <= n) { pts.push([m, cum[m] / m]); } hi.push([m, Math.min(1, p1 + sd(m))]); lo.push([m, Math.max(0, p1 - sd(m))]); }
@@ -150,9 +150,9 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_logic_gate#Hadamard_gate' },
       viz(v) {
         const { S, sc } = blochStage(v, { height: 340, weight: 1.15, title: 'ψ and Hψ on the Bloch sphere' });
-        const B = v.stage({ x: [-0.3, 8.3], y: [-0.2, 1.3], axes: false, height: 340, weight: 1.15, title: 'three experiments' });
+        const B = v.stage({ x: [-0.3, 8.3], y: [-0.2, 1.35], axes: false, height: 340, weight: 1.15, title: 'three experiments' });
         const shots = v.slider('shots per experiment', 10, 20000, 400, { log: true, int: true });
-        const hPsi = sphereHandle(sc, [0.0, 0.0, 1], { color: 'accent', label: 'ψ' });
+        const hPsi = sphereHandle(sc, [0.0, 0.0, 1], { color: 'accent' });
         const presets = [['|0⟩', [0, 0, 1]], ['|1⟩', [0, 0, -1]], ['|+⟩', [1, 0, 0]], ['|−⟩', [-1, 0, 0]], ['|+i⟩', [0, 1, 0]]];
         for (const [n, p] of presets) v.button(n, () => hPsi.set(p));
         const hv = unit3([1, 0, 1]), H = GATE.H();
@@ -205,7 +205,7 @@ export default {
         let raf = 0, info = null;
         v.button('Play', () => { cancelAnimationFrame(raf); const t0 = performance.now(); const tick = (now) => { const s = Math.min(3, (now - t0) / 1200); sw.set(s); if (s < 3) raf = requestAnimationFrame(tick); }; raf = requestAnimationFrame(tick); });
         v.onCleanup(() => cancelAnimationFrame(raf));
-        const hPsi = sphereHandle(sc, [0.5, 0.35, 0.75], { color: 'accent', label: 'ψ' });
+        const hPsi = sphereHandle(sc, [0.5, 0.35, 0.75], { color: 'accent' });
         const tests = [[[1, 0, 0], 'purple'], [[0, 1, 0], 'teal'], [[0, 0, -1], 'pink']];
         const axes = [[0, 0, 1], [0, 1, 0], [0, 0, 1]], cols = ['orange', 'green', 'purple'];
         v.render(() => {
@@ -228,11 +228,11 @@ export default {
           sc.flush();
           T.text('U', 0.5, 13.2, { size: 15, color: 'muted', math: true });
           cells(v, T, U, [1.5, 9.1, 8.5, 13], { text: (z) => txtC(v, z, 2) });
-          T.text('e^{iα} R_z(β) R_y(γ) R_z(δ)', 5, 8.5, { size: 12, align: 'center', color: 'muted', math: true });
+          T.text('$e^{i\\alpha}R_z(\\beta)R_y(\\gamma)R_z(\\delta)$', 5, 8.6, { size: 12, align: 'center', color: 'muted' });
           cells(v, T, Ur, [1.5, 4.3, 8.5, 8.2], { text: (z) => txtC(v, z, 2) });
           T.text(`α = ${v.fix(E.alpha, 3)}   β = ${v.fix(E.beta, 3)}`, 5, 2.6, { size: 12, align: 'center' });
           T.text(`γ = ${v.fix(E.gamma, 3)}   δ = ${v.fix(E.delta, 3)}`, 5, 1.5, { size: 12, align: 'center' });
-          T.text(`‖U − reconstruction‖ = ${err < 1e-12 ? '< 1e-12' : err.toExponential(1)}`, 5, 0.4, { size: 11, align: 'center', color: 'muted' });
+          T.text(`‖U − reconstruction‖ ${err < 1e-12 ? '< 1e-12' : '= ' + err.toExponential(1)}`, 5, 0.4, { size: 11, align: 'center', color: 'muted' });
           info = { E, err };
         });
         v.legend([['orange', '$R_z(\\delta)$'], ['green', '$R_y(\\gamma)$'], ['purple', '$R_z(\\beta)$']]);

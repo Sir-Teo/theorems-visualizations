@@ -205,3 +205,40 @@ export function minPebbles(N, preds, goal) {
   }
   return null;
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Boolean formulas: '(x1 | ~x2) & x3'. Operators | & ~ (or !), parentheses, variables x1, y2, u ... (letters+digits).
+export function parseFormula(src) {
+  const toks = src.replace(/!/g, '~').match(/[A-Za-z][A-Za-z0-9_]*|[()|&~]|\S/g) || [];
+  let i = 0;
+  const fail = (m) => { throw new Error(m); };
+  const peek = () => toks[i];
+  function or() { let a = and(); while (peek() === '|') { i++; a = { t: 'or', a, b: and() }; } return a; }
+  function and() { let a = not(); while (peek() === '&') { i++; a = { t: 'and', a, b: not() }; } return a; }
+  function not() {
+    const t = peek();
+    if (t === '~') { i++; return { t: 'not', a: not() }; }
+    if (t === '(') { i++; const a = or(); if (peek() !== ')') fail('missing )'); i++; return a; }
+    if (t && /^[A-Za-z]/.test(t)) { i++; return { t: 'var', n: t }; }
+    return fail(t ? `unexpected "${t}"` : 'unexpected end');
+  }
+  if (!toks.length) fail('empty formula');
+  const ast = or();
+  if (i < toks.length) fail(`unexpected "${toks[i]}"`);
+  return ast;
+}
+export function evalFormula(a, env) {
+  switch (a.t) {
+    case 'var': return !!env[a.n];
+    case 'not': return !evalFormula(a.a, env);
+    case 'and': return evalFormula(a.a, env) && evalFormula(a.b, env);
+    default: return evalFormula(a.a, env) || evalFormula(a.b, env);
+  }
+}
+export function formulaVars(a, out = new Set()) { if (a.t === 'var') out.add(a.n); else { formulaVars(a.a, out); if (a.b) formulaVars(a.b, out); } return [...out].sort(); }
+export function isSat(a) {
+  const vs = formulaVars(a), env = {};
+  for (let m = 0; m < 1 << vs.length; m++) { vs.forEach((x, k) => { env[x] = !!(m >> k & 1); }); if (evalFormula(a, env)) return true; }
+  return false;
+}
+export const negate = (a) => ({ t: 'not', a });

@@ -174,7 +174,7 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           E.forEach((e, k) => {
             const col = e.rel >= 1 ? 'red' : e.rel > 1e-3 ? 'gold' : 'green';
             s1.dot(e.s, e.rel, { r: 6, color: col });
-            s1.text(e.n, e.s, e.rel, { size: 10.5, align: k === 0 ? 'left' : k === 7 ? 'right' : 'center', dx: k === 0 ? -4 : k === 7 ? 4 : 0, dy: k % 2 ? 15 : -13, color: 'ink' });
+            s1.text(e.n, e.s, e.rel, { size: 10.5, align: k <= 2 ? 'left' : k === 7 ? 'right' : 'center', dx: k === 0 ? -4 : k <= 2 ? 8 : k === 7 ? 4 : 0, dy: k % 2 ? 15 : -13, color: 'ink' });
           });
           const { w, h, Y } = px(s2), left = 112, top = 34, rh = (h - top - 26) / E.length, bw = w - left - 62;
           for (let d = 0; d <= 20; d += 5) {

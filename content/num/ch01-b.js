@@ -343,7 +343,7 @@ It is the factor by which a relative error in the input is magnified in the outp
           sE.setView([0, 150], [-top * 0.08, top]);
           const hh = Array.from({ length: 301 }, (_, i) => i * 0.5);
           sE.path(hh.map((t) => [t, errAt(t) * spd]), { color: 'blue', width: 2.4 });
-          if (!sr.value && pt.e > 0) for (const t of [8, 20, 48, 72, 100]) { const e = pt.e * t * TPH; sE.dot(t, e * spd, { r: 4, color: 'blue' }); sE.text(`${t} h: ${e.toFixed(3)} s`, t, e * spd, { size: 10.5, color: 'muted', align: t >= 100 ? 'right' : 'left', dx: t >= 100 ? -10 : 7, dy: t >= 100 ? 14 : 12 }); }
+          if (!sr.value && pt.e > 0) for (const t of [8, 20, 48, 72, 100]) { const e = pt.e * t * TPH; sE.dot(t, e * spd, { r: 4, color: 'blue' }); sE.text(`${t} h: ${e.toFixed(3)} s`, t, e * spd, { size: 10.5, color: 'muted', align: t >= 100 ? 'right' : 'left', dx: t >= 100 ? -10 : 7, dy: t >= 100 ? -16 : 12 }); }
           sE.hline(500, { color: 'red', dash: true, alpha: 0.6 }); sE.text('half a kilometre', 148, 500, { align: 'right', size: 11, color: 'red', dy: 11 });
           sE.vline(hrs, { color: 'gold', width: 1.6 }); sE.dot(hrs, errAt(hrs) * spd, { r: 6, color: 'gold' });
           // bits
