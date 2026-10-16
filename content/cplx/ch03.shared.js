@@ -215,3 +215,25 @@ export function qTrace(n, quant, levels) {
 }
 /** Tree node position in a stage window [0,W]×[ytop, ybot]: depth d, index i. */
 export const treePos = (d, i, n, W, y0, dy) => [(W * (i + 0.5)) / (1 << d), y0 - d * dy, n];
+
+/** Like qLevels, but the leaf value is any function of the assignment array a[1..n] (a[0] unused). */
+export function qLevelsFn(n, quant, leafFn) {
+  const levels = [], leaves = [];
+  for (let i = 0; i < (1 << n); i++) { const a = [null]; for (let j = 0; j < n; j++) a.push((i >> (n - 1 - j)) & 1); leaves.push(leafFn(a) ? 1 : 0); }
+  levels[n] = leaves;
+  for (let d = n - 1; d >= 0; d--) {
+    levels[d] = [];
+    for (let i = 0; i < (1 << d); i++) { const a = levels[d + 1][2 * i], b = levels[d + 1][2 * i + 1]; levels[d][i] = quant[d + 1] === 'E' ? a | b : a & b; }
+  }
+  return levels;
+}
+/** Random 3-DNF: m terms, each of up to 3 distinct literals. A term is a list of literals like a clause. */
+export function randomDNF(r, n, m, k = 3) {
+  const out = [];
+  for (let j = 0; j < m; j++) {
+    const vs = []; while (vs.length < Math.min(k, n)) { const x = 1 + Math.floor(r() * n); if (!vs.includes(x)) vs.push(x); }
+    out.push(vs.map((x) => (r() < 0.5 ? x : -x)));
+  }
+  return out;
+}
+export const dnfSat = (terms, a) => terms.some((t) => t.every((l) => (l > 0 ? a[l] === 1 : a[-l] === 0)));
