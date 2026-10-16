@@ -125,7 +125,7 @@ export function ackeretDiamond(M, alpha, eps) {
 // ── Slender-body wave drag (area rule) ──────────────────────────────────────────────────────────────────────────────────
 /**
  * Wave drag D/q of a slender body of length l with cross-section area S(x) (S(0) = S(l) = 0), via the Fourier series S(theta) = sum A_n sin(n theta), x = (l/2)(1 - cos theta):
- * D/q = (pi / (2 l^2)) ... fixed so that sears() is reproduced; returns { dq, A (coefficients), Sfun }. S given as samples S(x) on n+1 equispaced points over [0, l].
+ * D/q = (6 pi / l^2) sum n A_n^2 (coefficient fixed by the Sears-Haack body and confirmed against the double integral); returns { dq, A (coefficients), Sfun }. S given as samples S(x) on n+1 equispaced points over [0, l].
  */
 export function waveDrag(Sfun, l = 1, nth = 400, nmax = 40) {
   const A = [];
@@ -135,10 +135,26 @@ export function waveDrag(Sfun, l = 1, nth = 400, nmax = 40) {
     A.push(2 / nth * s);
   }
   let sum = 0; A.forEach((a, i) => { sum += (i + 1) * a * a; });
-  return { dq: 6 * Math.PI / (l * l) * sum / 1.0 * 1, A, sum };
+  return { dq: 6 * Math.PI / (l * l) * sum, A, sum };
 }
 /** Closed-form minimum wave drag D/q = 128 V^2 / (pi l^4) of a body of volume V and length l (Sears-Haack), and its area distribution S(x). */
 export function sears(V, l = 1) {
   const S0 = 16 * V / (3 * Math.PI * l);
   return { dq: 128 * V * V / (Math.PI * l ** 4), S: (x) => S0 * Math.pow(4 * x * (l - x) / (l * l), 1.5) };
 }
+
+// ── A wing-body area distribution (items 4.4 and 4.8) ──────────────────────────────────────────────────────────────────────
+export const LBODY = 1;
+/** Ideal fuselage area (Sears-Haack-like, peak Af at mid-length) in terms of x/l. */
+export const fusIdeal = (x, Af) => { const c = 1 - 2 * x / LBODY, s2 = Math.max(0, 1 - c * c); return Af * Math.pow(s2, 1.5); };
+/** Smooth hump of wing cross-section area: sin^2 over [xw, xw + ww]. */
+export const wingHump = (x, Aw, xw, ww) => (x <= xw || x >= xw + ww ? 0 : Aw * Math.sin(Math.PI * (x - xw) / ww) ** 2);
+const _cache = new Map();
+/** Fourier coefficients of the ideal fuselage and of the wing hump (the area-rule drag is quadratic in the sum A_f + (1 - k) A_w). */
+export function areaCoeffs(Af, Aw, xw, ww) {
+  const key = `${Af}|${Aw}|${xw}|${ww}`; let o = _cache.get(key); if (o) return o;
+  const f = waveDrag((x) => fusIdeal(x, Af), LBODY, 300, 30).A, w = waveDrag((x) => wingHump(x, Aw, xw, ww), LBODY, 300, 30).A;
+  o = { f, w }; _cache.set(key, o); if (_cache.size > 40) _cache.delete(_cache.keys().next().value); return o;
+}
+/** Wave drag D/q (area units) of the body whose area is fusIdeal + (1 - k) wingHump (k = 1: fuselage indented by exactly the wing area). */
+export function dragOfK(co, k) { let s = 0; for (let i = 0; i < co.f.length; i++) { const a = co.f[i] + (1 - k) * co.w[i]; s += (i + 1) * a * a; } return 6 * Math.PI / (LBODY * LBODY) * s; }

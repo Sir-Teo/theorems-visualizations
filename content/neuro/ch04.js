@@ -112,6 +112,7 @@ with the membrane time constant $\tau_m=r_mc_m=R_mC_m$ and the length constant $
           sC.tex(String.raw`r_m/h`, xs[0] - 0.3, bot - 0.45, { color: 'orange', size: 13 });
           sC.tex(String.raw`c_m h`, xs[0] + 0.45, bot - 0.45, { color: 'accent', size: 13 });
           // profile
+          sP.setView([0, 4], [0, Math.max(...Vr) * 1.15]);
           sP.path(Array.from(Vr, (y, i) => [gR.x[i], y]), { color: 'ink', width: 2 });
           const pc = Array.from(Vc, (y, i) => [(i + 0.5) * h, y]);
           sP.path(pc, { color: 'accent', width: 1.4 });

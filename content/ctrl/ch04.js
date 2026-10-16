@@ -55,15 +55,15 @@ Rise time and peak time measure *speed*; overshoot and settling time measure *da
           if (info.tr !== null) {
             const t10 = ((i) => r.t[i])(r.y.findIndex((q) => q >= 0.1 * fin)), t90 = r.t[r.y.findIndex((q) => q >= 0.9 * fin)];
             st.dot(t10, 0.1 * fin, { r: 5, color: 'gold' }); st.dot(t90, 0.9 * fin, { r: 5, color: 'gold' });
-            st.measure(t10, 0.04 * ymax, t90, 0.04 * ymax, `t_r = ${fx(info.tr, 2)}`);
+            st.measure(t10, 0.1 * fin, t90, 0.1 * fin, `$t_r=${fx(info.tr, 2)}$`);
           }
           if (info.tp !== null) {
             st.dot(info.tp, info.ypeak, { r: 6, color: 'red' });
             st.vline(info.tp, { color: 'red', width: 1, dash: [3, 4], alpha: 0.7 });
-            st.text(`M_p = ${fx(100 * info.Mp, 1)} %,  t_p = ${fx(info.tp, 2)}`, info.tp, info.ypeak, { size: 12, color: 'red', dx: 10, dy: -8, align: 'left' });
+            st.text(`$M_p=${fx(100 * info.Mp, 1)}\\,\\%,\\ t_p=${fx(info.tp, 2)}$`, info.tp, info.ypeak, { size: 12, color: 'red', dx: 10, dy: -8, align: 'left' });
           }
-          if (isFinite(info.ts) && info.ts > 0) { st.vline(info.ts, { color: 'green', width: 2, dash: [5, 3] }); st.text(`t_s = ${fx(info.ts, 2)}`, info.ts, ymax * 0.88, { size: 12, color: 'green', dx: 6, align: 'left' }); }
-          if (Math.abs(1 - fin) > 1e-6) { st.measure(T * 0.93, fin, T * 0.93, 1, `e = ${fx(1 - fin, 3)}`); }
+          if (isFinite(info.ts) && info.ts > 0) { st.vline(info.ts, { color: 'green', width: 2, dash: [5, 3] }); st.text(`$t_s=${fx(info.ts, 2)}$`, info.ts, ymax * 0.88, { size: 12, color: 'green', dx: 6, align: 'left' }); }
+          if (Math.abs(1 - fin) > 1e-6) { st.measure(T * 0.93, fin, T * 0.93, 1, `$e_\\infty=${fx(1 - fin, 3)}$`); }
           st.text('reference r = 1', T * 0.99, 1, { size: 11, color: 'muted', align: 'right', dy: -8 });
           const p = st.pointer;
           hov = null;
@@ -134,7 +134,7 @@ For $\zeta=1$ the poles coincide on the negative real axis (critical damping) an
             h.visible = false;
           }
           for (const p of poles) xMark(sp, p[0], p[1], { color: 'accent', r: 6, width: 2.6 });
-          sp.text(z < 1 ? `ωn = ${fx(wn, 2)}` : '', 0.1, wn + 0.3, { size: 11, color: 'orange', align: 'left' });
+          if (z < 1) sp.tex(String.raw`\omega_n=${fx(wn, 2)}`, -wn * 0.72, -wn * 0.72 - 0.1, { size: 12, color: 'orange' });
           const T = 12, r = stepExact(v.M, second(z, wn), T, 900);
           R = r;
           if (z > 0 && z < 1) {
@@ -151,7 +151,7 @@ For $\zeta=1$ the poles coincide on the negative real axis (critical damping) an
           const q = z >= 1 ? Math.sqrt(z * z - 1) : 0;
           const pl = z < 1 ? `$s=${fx(-z * wn, 2)}\\pm ${fx(wn * Math.sqrt(1 - z * z), 2)}\\,i$, $\\omega_d=${fx(wn * Math.sqrt(1 - z * z), 2)}$` : `$s=${fx(-wn * (z - q), 2)},\\ ${fx(-wn * (z + q), 2)}$`;
           const info = R ? stepInfo(R.t, R.y, 1, 0.02) : null;
-          return `$\\zeta=${fx(z, 2)}$, $\\omega_n=${fx(wn, 2)}$: ${kind}; poles ${pl}\n` + (z > 0 && info ? `measured $M_p=${fx(100 * info.Mp, 1)}\\,\\%$ (formula ${fx(100 * mpOfZeta(z), 1)}\\,\\%) · $t_s(2\\,\\%)=${fx(info.ts, 2)}$ s (rule $4/(\\zeta\\omega_n)=${fx(4 / (z * wn), 2)}$ s)` : '');
+          return `$\\zeta=${fx(z, 2)}$, $\\omega_n=${fx(wn, 2)}$: ${kind}; poles ${pl}\n` + (z > 0 && info ? `measured $M_p=${fx(100 * info.Mp, 1)}\\,\\%$ (formula ${fx(100 * mpOfZeta(z), 1)} %) · $t_s(2\\,\\%)=${fx(info.ts, 2)}$ s (rule $4/(\\zeta\\omega_n)=${fx(4 / (z * wn), 2)}$ s)` : '');
         });
       },
     },
@@ -210,7 +210,7 @@ which depends on $\zeta$ alone: it is the same for every natural frequency $\ome
         v.legend([['purple', 'ωn = 1'], ['accent', 'ωn = 2'], ['orange', 'ωn = 3.5'], ['red', 'formula 1 + Mp', { dash: true }], ['ink', 'Mp(ζ)']]);
         v.readout(() => {
           const z = zS.value;
-          return `$\\zeta=${fx(z, 2)}$ (ray at $\\beta=${fx((Math.acos(z) * 180) / Math.PI, 1)}^\\circ$): measured $M_p=${meas.map((m) => fx(m, 2) + '\\,\\%').join(' / ')}$ for $\\omega_n=1,\\,2,\\,3.5$ · formula $e^{-\\pi\\zeta/\\sqrt{1-\\zeta^2}}=${fx(100 * mpOfZeta(z), 2)}\\,\\%$ · $t_p=\\pi/\\omega_d$ equals $${W.map((w) => fx(Math.PI / (w * Math.sqrt(1 - z * z)), 2)).join(',\\ ')}$$ s` +
+          return `$\\zeta=${fx(z, 2)}$ (ray at $\\beta=${fx((Math.acos(z) * 180) / Math.PI, 1)}^\\circ$): measured $M_p=${meas.map((m) => fx(m, 2) + '\\,\\%').join(' / ')}$ for $\\omega_n=1,\\,2,\\,3.5$ · formula $e^{-\\pi\\zeta/\\sqrt{1-\\zeta^2}}=${fx(100 * mpOfZeta(z), 2)}\\,\\%$ · $t_p=\\pi/\\omega_d$ equals $${W.map((w) => fx(Math.PI / (w * Math.sqrt(1 - z * z)), 2)).join(',\\ ')}$ s` +
             (exS.value === 'fixed' ? '\nthe zero at $-3$ is fixed: the three overshoots now differ, because the zero is "closer" to the slower pole pairs.' : exS.value === 'scaled' ? '\nthe zero scales with $\\omega_n$: all three shapes agree with each other, but differ from the formula (larger overshoot).' : '');
         });
       },
@@ -248,7 +248,7 @@ Meeting all three means placing the poles in the intersection of the three regio
           sp.path([[0, 0], [-8 * Math.cos(b), 8 * Math.sin(b)]], { color: 'purple', width: 2 }); sp.path([[0, 0], [-8 * Math.cos(b), -8 * Math.sin(b)]], { color: 'purple', width: 2 });
           sp.vline(-sig, { color: 'accent', width: 2 });
           sp.vline(0, { color: 'red', width: 1.3, alpha: 0.5 });
-          sp.tex(String.raw`\omega_n=${fx(wmin, 2)}`, -wmin * 0.6, -wmin * 0.8, { size: 12, color: 'orange' });
+          sp.tex(String.raw`\omega_n=${fx(wmin, 2)}`, 0.15, wmin + 0.35, { size: 12, color: 'orange', align: 'left' });
           sp.tex(String.raw`\zeta=${fx(zmin, 2)}`, -6.5 * Math.cos(b) - 0.2, 6.5 * Math.sin(b) + 0.3, { size: 12, color: 'purple' });
           sp.tex(String.raw`\sigma=${fx(sig, 2)}`, -sig - 0.1, -4.4, { size: 12, color: 'accent', align: 'right' });
           const px = h.x, py = Math.abs(h.y);
@@ -259,8 +259,10 @@ Meeting all three means placing the poles in the intersection of the three regio
           st.hband(0.98, 1.02, { color: 'green', alpha: 0.12 });
           st.hline(1 + mS.value / 100, { color: 'purple', width: 1.6, dash: [6, 4] });
           st.vline(tsS.value, { color: 'accent', width: 1.6, dash: [6, 4] });
-          st.vline(trS.value, { color: 'orange', width: 1.6, dash: [6, 4] });
-          st.hline(0.9, { color: 'orange', width: 1, alpha: 0.5 });
+                    const i10 = r.y.findIndex((q) => q >= 0.1), t10 = i10 >= 0 ? r.t[i10] : 0;
+          st.hline(0.9, { color: 'orange', width: 1, alpha: 0.5 }); st.hline(0.1, { color: 'orange', width: 1, alpha: 0.5 });
+          if (R.info.tr !== null) st.measure(t10, 0.05, t10 + R.info.tr, 0.05, `$t_r=${fx(R.info.tr, 2)}$`);
+          st.measure(t10, 0.2, t10 + trS.value, 0.2, `limit ${trS.value}`);
           st.clip(() => trace(st, r.t, r.y, { color: R.inside ? 'green' : 'red', width: 3 }));
         });
         v.legend([['orange', '$t_r$: outside circle'], ['purple', '$M_p$: inside wedge'], ['accent', '$t_s$: left of line'], ['green', 'allowed region', { area: true }]]);
@@ -323,7 +325,7 @@ Meeting all three means placing the poles in the intersection of the three regio
         v.readout(() => {
           if (!R) return '';
           const I = R.info;
-          let s = `$\\omega_n=${WN}$, $\\zeta=${fx(zS.value, 2)}$ · with ${R.zero ? `zero at $s=${fx(R.mark, 2)}$` : `pole at $s=-${fx(-hp.x, 2)}$`}: $M_p=${fx(100 * I.Mp, 1)}\\,\\%$ (without: ${fx(100 * mpOfZeta(zS.value), 1)}\\,\\%) · lowest value of $y$: ${fx(R.ymin, 3)}`;
+          let s = `$\\omega_n=${WN}$, $\\zeta=${fx(zS.value, 2)}$ · with ${R.zero ? `zero at $s=${fx(R.mark, 2)}$` : `pole at $s=-${fx(-hp.x, 2)}$`}: $M_p=${fx(100 * I.Mp, 1)}\\,\\%$ (without: ${fx(100 * mpOfZeta(zS.value), 1)} %) · lowest value of $y$: ${fx(R.ymin, 3)}`;
           if (R.integ !== null) s += `\n**right-half-plane zero** ⇒ $\\int_0^\\infty y(t)\\,e^{-z_0t}dt=${fx(R.integ, 5)}$ (zero, as proved), so $y$ must be negative somewhere: it reaches ${fx(R.ymin, 3)} at $t=${fx(R.tmin, 2)}$ s`;
           return s;
         });

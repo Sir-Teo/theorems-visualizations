@@ -83,7 +83,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
           sG.circle((sel % 10) + 0.5, 9.5 - Math.floor(sel / 10), 0.46, { color: 'gold', width: 2.4 });
           // bars
           sB.setView([-0.6, 7.7], [0, Math.max(120, Math.ceil((sum * 100 + 10) / 20) * 20)]);
-          sB.hline(100, { color: 'ink', width: 1.2, dash: [5, 4] }); sB.text('100% of cases', 7.6, 100, { dy: -9, align: 'right', size: 11, color: 'muted' });
+          sB.hline(100, { color: 'ink', width: 1.2, dash: [5, 4] }); sB.text('100% of cases', -0.55, 100, { dy: -9, align: 'left', size: 11, color: 'muted' });
           af.forEach((a, k) => { sB.rect(k - 0.36, 0, k + 0.36, 100 * a, { fill: COL[k], fillAlpha: k === rk ? 0.25 : 0.75, stroke: false }); sB.text(`${(100 * a).toFixed(0)}%`, k, 100 * a, { dy: -9, align: 'center', size: 11.5, weight: 600 }); });
           let acc = 0; af.forEach((a, k) => { sB.rect(6.1, 100 * acc, 6.9, 100 * (acc + a), { fill: COL[k], fillAlpha: 0.75, stroke: false }); acc += a; });
           sB.text(`${(100 * sum).toFixed(0)}%`, 6.5, 100 * sum, { dy: -9, align: 'center', size: 13, weight: 700, color: sum > 1.005 ? 'red' : 'ink' });
@@ -120,7 +120,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
         let epoch = 0;
         v.button('New studies', () => { epoch++; });
         const sR = v.stage({ x: [-0.6, 4.6], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 260, xticks: [[0, 'none'], [1, 'low'], [2, 'mid'], [3, 'high'], [4, 'top']], xlabel: 'exposure level (fifths)', ylabel: 'risk of disease', title: 'one large cohort' });
-        const sF = v.stage({ x: [0.25, 20], xlog: true, y: [0.3, 6.7], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 260, xticks: RATIO_TICKS, yticks: [], xlabel: 'risk ratio, top vs bottom level', title: 'six studies' });
+        const sF = v.stage({ x: [0.25, 100], xlog: true, y: [0.3, 6.7], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 260, xticks: [...RATIO_TICKS, [32, '32'], [64, '64']], yticks: [], xlabel: 'risk ratio, top vs bottom level', title: 'six studies' });
         const sC = v.stage({ x: [0, 1], y: [0, 10], axes: false, height: 300, weight: 1.15, minWidth: 300, title: 'the viewpoints' });
         const a = 0.85;
         function sim(kind, s, n, r, randomize) {
@@ -129,7 +129,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
             const u = r.normal(), e = r.normal(), d0 = r() < 0.1 ? 1 : 0;
             U[i] = u; D0[i] = d0;
             const z = kind === 'conf' && !randomize ? a * u + Math.sqrt(1 - a * a) * e : e;
-            Z0[i] = z; Z[i] = z + (kind === 'rev' && !randomize ? 3 * s * d0 : 0);
+            Z0[i] = z; Z[i] = z + (kind === 'rev' && !randomize ? 1.6 * s * d0 : 0);
           }
           const quint = (arr) => { const idx = Array.from({ length: n }, (_, i) => i).sort((p, q) => arr[p] - arr[q]), X = new Uint8Array(n); idx.forEach((i, rank) => { X[i] = Math.floor((5 * rank) / n); }); return X; };
           const X = quint(Z), X0 = kind === 'rev' ? quint(Z0) : X;
@@ -159,7 +159,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
           big.risk.forEach((p, k) => { sR.rect(k - 0.36, 0, k + 0.36, p, { fill: col, fillAlpha: 0.6, stroke: false }); sR.text(pcs(p), k, p, { dy: -9, align: 'center', size: 11.5, weight: 600 }); });
           // studies
           sF.vline(1, { color: 'ink', width: 1.2, dash: [5, 4] });
-          studies.forEach((t, i) => { const y = 6 - i; sF.line(Math.max(0.26, t.lo), y, Math.min(19.5, t.hi), y, { color: col, width: 2.2 }); sF.dot(t.rr, y, { r: 5, color: col }); sF.text(t.rr.toFixed(1), Math.min(19, t.hi), y, { dx: 6, size: 10.5, color: 'muted', align: 'left' }); });
+          studies.forEach((t, i) => { const y = 6 - i; sF.line(Math.max(0.26, t.lo), y, Math.min(95, t.hi), y, { color: col, width: 2.2 }); sF.dot(t.rr, y, { r: 5, color: col }); sF.text(`RR ${t.rr.toFixed(1)}`, 0.27, y, { dy: -10, size: 10.5, color: 'muted', align: 'left' }); });
           // scorecard
           const sig = studies.filter((t) => t.lo > 1).length, mono = big.risk.every((r, k) => k === 0 || r > big.risk[k - 1] * 1.02);
           const temp = 1 - big.afterShare;
@@ -191,7 +191,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
       num: '4.4',
       kind: 'Event',
       name: 'John Snow and the Broad Street pump (1854)',
-      statement: String.raw`In the cholera outbreak that began in Soho, London, at the end of August 1854, the physician John Snow plotted the fatal cases on a map and found them clustered around the public pump in Broad Street; on 7 September he persuaded the parish Board of Guardians, and the next day the pump handle was removed. The outbreak was already falling by then, a point Snow made himself, so the removal cannot be shown from the epidemic curve to have ended it. What made the case was the comparison: deaths decreased with distance from that pump, nearly all of the dead lived nearer to it than to any other, and the exceptions had explanations (workers at a nearby brewery had their own supply; others sent for the pump's water). Snow's larger test of the water-borne hypothesis was the comparison of customers of two water companies in south London, where houses supplied from the more polluted source of the Southwark & Vauxhall Company suffered about 8 times the death rate of the Lambeth Company's (1,263 deaths in 40,046 houses against 98 in 26,107 in the first seven weeks).`,
+      statement: String.raw`In the cholera outbreak that began in Soho, London, at the end of August 1854, the physician John Snow plotted the fatal cases on a map and found them clustered around the public pump in Broad Street; on 7 September he persuaded the parish Board of Guardians, and the next day the pump handle was removed. The outbreak was already falling by then, a point Snow made himself, so the removal cannot be shown from the epidemic curve to have ended it. What made the case was the comparison: deaths decreased with distance from that pump, most of the dead lived nearer to it than to any other pump (62% by straight-line distance on the digitised map below; Snow himself used walking distance), and some apparent exceptions had explanations (workers at a nearby brewery had their own supply; a woman living far away had water from the pump sent to her). Snow's larger test of the water-borne hypothesis was the comparison of customers of two water companies in south London, where houses supplied from the more polluted source of the Southwark & Vauxhall Company suffered about 8 times the death rate of the Lambeth Company's (1,263 deaths in 40,046 houses against 98 in 26,107 in the first seven weeks).`,
       idea: String.raw`Snow reasoned by elimination from the pattern of cases in space and time, with the epidemic curve (1.11) giving the time and the map the place. Spatial clustering only suggests a common source; what turns it into evidence is the **dose gradient** (the closer to the pump, the more deaths per unit area) and the **exceptions that prove the rule**. The pump-handle story is the textbook example of an intervention whose effect cannot be read off a curve that was already declining: separating the effect of the intervention from the natural decline needs a counterfactual, which the curve alone does not supply.`,
       caption: String.raw`**Top left**: Snow's fatal attacks per day in 1854 (red: before the handle was taken off on 8 September) with a log-linear fit to the decline from a day you choose; the green curve continues that trend past the removal. **Right and bottom left**: the 578 deaths on Snow's map as digitised by Tobler; pick any of the 13 **pumps** and a **ring radius**: the bars show deaths per unit of map area in rings around the chosen pump. Around the Broad Street pump the density is far higher at short range and falls off; around any other pump it is low.`,
       scope: String.raw`The death coordinates are Tobler's digitisation of Snow's printed map in the map's own units (stacked deaths are counted individually, 578 of the 616 dated or undated fatal attacks in Snow's table); densities per unit of map area include streets and unbuilt ground, so they are a picture of clustering, not of risk. The log-linear trend line is a descriptive device for this page and is not Snow's analysis.`,
@@ -230,7 +230,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
           SNOW_DEATHS.forEach((p, i) => (ds[i] <= rad.value ? inside : outside).push(p));
           sM.dots(outside, { r: 2, color: 'ink', alpha: 0.55 }); sM.dots(inside, { r: 2.6, color: 'red' });
           SNOW_PUMPS.forEach((p, j) => { const X = p[1], Y = p[2], me = j === k; sM.poly([[X, Y + 0.3], [X - 0.26, Y - 0.18], [X + 0.26, Y - 0.18]], { fill: me ? 'gold' : j === SNOW_BROAD ? 'red' : 'panel', fillAlpha: 1, color: j === SNOW_BROAD ? 'red' : 'blue', width: 1.6 }); });
-          sM.text('Broad St pump', SNOW_PUMPS[SNOW_BROAD][1], SNOW_PUMPS[SNOW_BROAD][2], { dy: 16, size: 12, weight: 700, color: 'red', align: 'center' });
+          sM.text('Broad St pump', SNOW_PUMPS[SNOW_BROAD][1], SNOW_PUMPS[SNOW_BROAD][2], { dy: 18, size: 12, weight: 700, color: 'red', align: 'center', plate: true });
           // density by ring
           const dr = 0.5, bins = Array.from({ length: 16 }, () => 0);
           ds.forEach((d) => { const b = Math.floor(d / dr); if (b < 16) bins[b]++; });
@@ -254,7 +254,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
       kind: 'Event',
       name: 'Semmelweis and handwashing (1847)',
       statement: String.raw`In the First Obstetric Clinic of the Vienna General Hospital, staffed by doctors and medical students, many more women died of childbed fever than in the Second Clinic, which trained midwives: in 1841–46 the First lost 1,989 of 20,042 mothers (9.9%) and the Second 691 of 17,791 (3.9%). Ignaz Semmelweis concluded that examiners coming from the autopsy room carried “cadaverous matter” to the women, and from mid-May 1847 required everyone to wash their hands in chlorinated lime. The First Clinic's mortality, 18.3% in April 1847, dropped to a few per cent within weeks and was 1.3% in 1848, matching the midwives' clinic. Handwashing is the first documented hospital infection-control intervention backed by a before-and-after comparison.`,
-      idea: String.raw`The comparison of the two clinics is a natural experiment: women were admitted to each on alternating days, and the one difference that fitted was who examined them. The mechanism is a chain of transmissions, each small, repeated at every examination; if each examination by unwashed hands carries a small risk, then the total risk grows with the number of examinations (the form of the survival law in 1.5), and cutting the contamination per examination by a fixed fraction cuts the total by nearly the same fraction. The model below is not Semmelweis's: it is the simplest chain that reproduces the before-and-after figures and shows why even imperfect washing helps so much.`,
+      idea: String.raw`The comparison of the two clinics is a natural experiment: women were admitted to each on alternating days, and the one difference that fitted was who examined them. The mechanism is a chain of small risks, repeated at every examination: if each examination by contaminated hands carries a small risk, the woman's total risk compounds over her examinations (the form of the constant-rate law in 1.5), and cutting the contamination per examination by a fixed fraction cuts the deaths from the hands by nearly the same fraction. The model below is not Semmelweis's: it is the simplest chain that reproduces the before-and-after figures, and it shows how complete the washing had to be to bring the First Clinic down to the midwives' level and below.`,
       caption: String.raw`The curve is the **modelled mortality of the First Clinic** as a function of the **effectiveness of handwashing**: the fraction of contaminating examinations that washing removes. Drag the gold handle (or the sliders for the number of examinations per woman, the share of examinations by hands that had been in the dissecting room, and the background mortality). The dashed lines are the observed rates (First Clinic 1841–46 and 1848, Second Clinic 1841–46). Below, 1 000 women: red dots die from the hands, dark dots from the background causes. The defaults are tuned so that no washing gives 9.9% and the effectiveness needed to reach the 1848 rate is read off in the readout.`,
       scope: String.raw`An illustrative model, not Semmelweis's data or a fit to it: examinations are independent, and the per-examination risk of 3.8% is chosen so that the unwashed First Clinic matches the observed 9.9%. The observed rates are Semmelweis's tables (1861) as in item 4.15.`,
       deps: ['epi-3.2', 'epi-1.5'],
@@ -271,7 +271,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
         const bgm = v.slider('background mortality', 0, 0.03, 0.012, { step: 0.001, fmt: (x) => pcs(x) });
         const s = v.stage({ x: [0, 1], y: [0, 0.16], axes: 'box', gutter: true, height: 320, weight: 1.3, minWidth: 320, xlabel: 'effectiveness of handwashing', ylabel: 'deaths (% of births)', xticks: [0, 0.25, 0.5, 0.75, 1].map((x) => [x, `${100 * x}%`]), yticks: [0, 0.04, 0.08, 0.12, 0.16].map((y) => [y, `${100 * y}%`]), title: 'model: mortality in the First Clinic' });
         const sI = v.stage({ x: [0, 40], y: [0, 25], equal: true, axes: false, height: 320, weight: 1, minWidth: 280, title: '1 000 women' });
-        const e = s.handle(0, 0.099, { color: 'gold', r: 8, label: 'effectiveness', labelPos: 'ne', constrain: (x) => [Math.max(0, Math.min(1, x)), 0] });
+        const e = s.handle(0, 0.099, { color: 'gold', r: 8, labelPos: 'ne', constrain: (x) => [Math.max(0, Math.min(1, x)), 0] });
         // calibrate per-examination risk so that no washing gives the observed First Clinic rate
         const h = () => { const q = Math.pow((1 - R1) / (1 - bgm.value), 1 / nEx.value); return Math.min(1, (1 - q) / fAut.value); };
         const mort = (eff) => 1 - (1 - bgm.value) * Math.pow(1 - fAut.value * (1 - eff) * h(), nEx.value);
@@ -280,7 +280,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
           const eff = e.x, hh = h();
           e.set(eff, mort(eff));
           s.fn((x) => mort(x), { color: 'blue', width: 2.6 });
-          [[R1, 'First Clinic 1841–46', 'red', 0.05], [R2, 'Second Clinic (midwives) 1841–46', 'purple', 0.55], [R48, 'First Clinic 1848', 'green', 0.45]].forEach(([r, lab, c, x]) => { s.hline(r, { color: c, width: 1.6, dash: [6, 4] }); s.text(`${lab}: ${pcs(r)}`, x, r, { dy: -9, size: 11.5, color: c, weight: 600, align: 'left' }); });
+          [[R1, 'First Clinic 1841–46', 'red', 0.3], [R2, 'Second Clinic 1841–46', 'purple', 0.98], [R48, 'First Clinic 1848', 'green', 0.98]].forEach(([r, lab, c, x]) => { s.hline(r, { color: c, width: 1.6, dash: [6, 4] }); s.text(`${lab}: ${pcs(r)}`, x, r, { dy: -9, size: 11.5, color: c, weight: 600, align: x > 0.5 ? 'right' : 'left' }); });
           const m = mort(eff), dBg = bgm.value, dHands = Math.max(0, m - dBg * (1 - m) / (1)) ;
           const nDead = Math.round(1000 * m), nBg = Math.round(1000 * dBg * Math.min(1, 1));
           iconArray(sI, 1000, 40, (i) => (i < Math.min(nBg, nDead) ? { color: 'ink', r: 3 } : i < nDead ? { color: 'red', r: 3 } : { color: 'blue', alpha: 0.3, r: 2.4 }), (i) => i);
@@ -337,7 +337,7 @@ Not every variable associated with $E$ and $D$ should be adjusted for: a **media
           const w = [tot(0, 0) + tot(0, 1), tot(1, 0) + tot(1, 1)];
           return { crude, s0: risk(0, 1) / risk(0, 0), s1: risk(1, 1) / risk(1, 0), std: (w[0] * risk(0, 1) + w[1] * risk(1, 1)) / (w[0] * risk(0, 0) + w[1] * risk(1, 0)) };
         }
-        const node = (x, y, lab, sub, col, sq) => { sG.dot(x, y, { r: 24, color: col, hollow: false }); sG.text(lab, x, y, { align: 'center', baseline: 'middle', size: 18, weight: 700, color: 'panel' }); sG.text(sub, x, y, { dy: 38, align: 'center', size: 11.5, color: 'muted' }); if (sq) sG.rect(x - 0.7, y - 0.7, x + 0.7, y + 0.7, { color: 'gold', width: 3, fill: false, radius: 6 }); };
+        const node = (x, y, lab, sub, col, sq, up) => { sG.dot(x, y, { r: 24, color: col, hollow: false }); sG.text(lab, x, y, { align: 'center', baseline: 'middle', size: 18, weight: 700, color: 'panel' }); sG.text(sub, x, y, { dy: up ? -38 : 38, align: 'center', size: 11.5, color: 'muted' }); if (sq) sG.rect(x - 0.7, y - 0.7, x + 0.7, y + 0.7, { color: 'gold', width: 3, fill: false, radius: 6 }); };
         const edge = (x1, y1, x2, y2, strength, col, dash) => { const w = 1.4 + 2.2 * Math.abs(Math.log2(strength)) / 3; const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L; sG.arrow(x1 + ux * 0.85, y1 + uy * 0.85, x2 - ux * 0.95, y2 - uy * 0.95, { color: col, width: Math.min(6, w), dash }); };
         let st = null;
         v.render(() => {
@@ -348,13 +348,13 @@ Not every variable associated with $E$ and $D$ should be adjusted for: a **media
           if (k === 'conf') { edge(C[0], C[1], E[0], E[1], orCE.value, 'red'); edge(C[0], C[1], D[0], D[1], rrCD.value, 'red'); }
           if (k === 'med') { edge(E[0], E[1], C[0], C[1], orCE.value, 'orange'); edge(C[0], C[1], D[0], D[1], rrCD.value, 'orange'); }
           if (k === 'coll') { edge(E[0], E[1], C[0], C[1], orCE.value, 'purple'); edge(D[0], D[1], C[0], C[1], rrCD.value, 'purple'); }
-          node(E[0], E[1], 'E', 'exposure', 'blue'); node(D[0], D[1], 'D', 'disease', 'red'); node(C[0], C[1], 'C', { conf: 'confounder', med: 'mediator', coll: 'collider' }[k], 'ink', adj.value);
+          node(E[0], E[1], 'E', 'exposure', 'blue'); node(D[0], D[1], 'D', 'disease', 'red'); node(C[0], C[1], 'C', { conf: 'confounder', med: 'mediator', coll: 'collider' }[k], 'ink', adj.value, true);
           // estimates
           sR.vline(truth, { color: 'green', width: 2, dash: [6, 4] }); sR.vline(1, { color: 'ink', width: 1, alpha: 0.5 });
           sR.text('causal effect', truth, 3.75, { dx: 6, size: 11.5, color: 'green', weight: 600, align: 'left' });
+          sR.dot(adj.value ? e.std : e.crude, adj.value ? 0 : 3, { r: 12, hollow: true, color: 'gold', width: 3 });
           const rows = [['crude', e.crude, 3, 'ink'], ['within C = 0', e.s0, 2, 'blue'], ['within C = 1', e.s1, 1, 'blue'], ['adjusted for C', e.std, 0, 'accent']];
           rows.forEach(([lab, val, y, col]) => { sR.dot(Math.max(0.21, Math.min(23.5, val)), y, { r: 7, color: col }); sR.text(`${lab}: ${val.toFixed(2)}`, 0.22, y, { dy: -14, size: 12, weight: 600, align: 'left' }); });
-          const used = adj.value ? 0 : 3; sR.dot(adj.value ? e.std : e.crude, used, { r: 12, hollow: true, color: 'gold', width: 3 });
           st = { e, truth, used: adj.value ? e.std : e.crude };
         });
         v.legend([['gold', 'the analysis you report', { dot: true }], ['green', 'true causal effect', { dash: true }]]);
@@ -383,7 +383,7 @@ Not every variable associated with $E$ and $D$ should be adjusted for: a **media
       viz(v) {
         const view = v.select('evidence', [{ value: 'cc', label: '1950 case–control' }, { value: 'co', label: 'cohort, 1951–55 deaths' }], 'co');
         const p0 = v.slider('hidden confounder: prevalence among non-smokers', 0.01, 0.5, 0.04, { log: true, sig: 2, fmt: (x) => pcs(x) });
-        const sB = v.stage({ x: [-0.6, 3.6], y: [0, 30], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 300, ylabel: 'ratio (relative to non-smokers)', title: 'how large is the association?' });
+        const sB = v.stage({ x: [-0.6, 3.6], y: [0, 30], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 300, ylabel: 'ratio', title: 'how large is the association?' });
         const sQ = v.stage({ x: [25, 65], y: [0, 12], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 280, xlabel: 'age at which a cigarette smoker stopped', ylabel: 'years of life gained', xticks: [30, 40, 50, 60].map((x) => [x, `${x}`]), title: 'stopping: 2004 report' });
         const RATES = [['none', 0.07], ['1–14 a day', 0.47], ['15–24', 0.86], ['25 or more', 1.66]];
         // case-control counts (Doll & Hill 1950, men): non-smokers 2 of 649 cases, 27 of 649 controls
@@ -395,11 +395,18 @@ Not every variable associated with $E$ and $D$ should be adjusted for: a **media
         v.render(() => {
           const cap = 1 / p0.value;
           sB.hline(1, { color: 'ink', width: 1, alpha: 0.5 });
+          const cc1 = view.value === 'cc';
           let bars;
-          if (view.value === 'cc') { bars = [[cc.or, 'OR of lung cancer, non-smokers vs smokers: 1 / OR(non-smoking)', 'red']]; sB.setView([-0.6, 3.6], [0, 70]); sB.setTicks(null, null); }
-          else { bars = RATES.slice(1).map(([lab, r]) => [r / RATES[0][1], lab, 'orange']); sB.setView([-0.6, 3.6], [0, 30]); }
-          bars.forEach(([val, lab, col], i) => { const x = view.value === 'cc' ? 1.5 : i + 0.5 + 0.5; sB.rect(x - 0.4, 0, x + 0.4, val, { fill: col, fillAlpha: 0.65, stroke: false }); if (view.value === 'cc') { sB.line(x, cc.lo, x, cc.hi, { color: 'ink', width: 2 }); sB.text(`${val.toFixed(1)}  (95% CI ${cc.lo.toFixed(1)}–${cc.hi.toFixed(0)})`, x, cc.hi, { dy: -10, align: 'center', size: 12, weight: 700 }); sB.text('smokers vs non-smokers: odds ratio of lung cancer', x, -0, { dy: 12, size: 11.5, align: 'center', color: 'muted' }); } else { sB.text(val.toFixed(1), x, val, { dy: -9, align: 'center', size: 12, weight: 700 }); sB.text(lab, x, 0, { dy: 12, align: 'center', size: 11, color: 'muted' }); } });
-          sB.hline(cap, { color: 'gold', width: 2.6 }); sB.text(`largest ratio a confounder with ${pcs(p0.value)} prevalence in non-smokers could explain: ${cap.toFixed(1)}`, 3.55, cap, { dy: -9, size: 11.5, color: 'gold', weight: 700, align: 'right', plate: true });
+          if (cc1) { bars = [[cc.or, 'smokers vs non-smokers', 'red']]; sB.setView([0.3, 3.7], [0, 70]); sB.setTicks([[2, 'smokers vs non-smokers (men)']], null); }
+          else { bars = RATES.slice(1).map(([lab, r]) => [r / RATES[0][1], lab, 'orange']); sB.setView([0.3, 3.7], [0, 30]); sB.setTicks([[1, '1–14 a day'], [2, '15–24 a day'], [3, '25 or more']], null); }
+          sB.setLabels(undefined, cc1 ? 'odds ratio of lung cancer' : 'death-rate ratio, lung cancer');
+          bars.forEach(([val, lab, col], i) => {
+            const x = cc1 ? 2 : i + 1;
+            sB.rect(x - 0.38, 0, x + 0.38, val, { fill: col, fillAlpha: 0.65, stroke: false });
+            if (cc1) { sB.line(x, cc.lo, x, cc.hi, { color: 'ink', width: 2 }); sB.text(`${val.toFixed(1)}  (95% CI ${cc.lo.toFixed(1)}–${cc.hi.toFixed(0)})`, x, cc.hi, { dy: -10, align: 'center', size: 12, weight: 700 }); }
+            else sB.text(val.toFixed(1), x, val, { dy: 14, align: 'center', size: 13, weight: 700 });
+          });
+          sB.hline(cap, { color: 'gold', width: 2.6 }); sB.text(`confounder bound: ${cap.toFixed(1)}`, 0.35, cap, { dy: -9, size: 11.5, color: 'gold', weight: 700, align: 'left', plate: true });
           // stopping
           sQ.path(GAIN.map(([a, g]) => [a, g]), { color: 'blue', width: 2.4 }); sQ.dots(GAIN, { r: 5, color: 'blue' });
           GAIN.forEach(([a, g]) => sQ.text(`${g}`, a, g, { dy: -12, size: 11.5, color: 'blue', weight: 600, align: 'center' }));
@@ -410,7 +417,7 @@ Not every variable associated with $E$ and $D$ should be adjusted for: a **media
           if (!st) return '';
           const { cap, gainNow } = st;
           const need = view.value === 'cc' ? cc.or : RATES[3][1] / RATES[0][1];
-          return `case–control odds ratio (647 × 27) ÷ (2 × 622) = **${v.fix(cc.or, 1)}**; cohort ratios ${RATES.slice(1).map(([, r]) => v.fix(r / RATES[0][1], 1)).join(', ')} · Cornfield: a confounder with ${pcs(p0.value)} prevalence among non-smokers can explain at most **${v.fix(cap, 1)}**-fold; the ${view.value === 'cc' ? 'odds ratio' : 'heaviest-smoking group'} (${v.fix(need, 1)}) ${need > cap ? 'is **beyond** that bound' : 'is within that bound'} · stopping at ${v.fix(H.x, 0)} gains about **${v.fix(gainNow, 1)}** years (interpolated between the four published ages)`;
+          return `case–control odds ratio (647 × 27) ÷ (2 × 622) = **${v.fix(cc.or, 1)}**; cohort ratios ${RATES.slice(1).map(([, r]) => v.fix(r / RATES[0][1], 1)).join(', ')} · Cornfield: a confounder with ${pcs(p0.value)} prevalence among non-smokers can explain at most **${v.fix(cap, 1)}**-fold; the ${view.value === 'cc' ? 'odds ratio' : 'heaviest-smoking group'} (${v.fix(need, 1)}) ${need > cap ? 'is **beyond** that bound: no such confounder can explain it' : 'could in principle be explained by such a confounder'} · stopping at ${v.fix(H.x, 0)} gains about **${v.fix(gainNow, 1)}** years (interpolated between the four published ages)`;
         });
       },
     },

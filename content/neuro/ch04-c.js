@@ -94,8 +94,8 @@ export default {
         v.legend([['accent', 'voltage along the fibre'], ['gold', 'nodes of Ranvier; current $D$', { dot: true }], ['green', 'myelinated'], ['muted', 'unmyelinated of the same diameter']]);
         v.readout(() => {
           if (!st) return '';
-          const head = st.ok ? String.raw`$D=${v.fmt(st.D, 3)}$ µm: impulse speed $\theta=${v.fix(st.speed, 2)}$ m/s ($${v.fix(st.speed / st.D, 2)}$ m/s per µm), internodes $L=${v.fmt(st.L, 3)}$ µm, sheath of $${st.nb}$ membranes; an unmyelinated axon of diameter $D$ runs at $${v.fix(st.u, 2)}$ m/s (ratio $${v.fix(st.speed / st.u, 1)}$)` : String.raw`$D=${v.fmt(st.D, 3)}$ µm with $${st.nb}$ membranes in the sheath and internodes $L=${v.fmt(st.L, 3)}$ µm: **conduction fails** — the impulse dies out before reaching node 10`;
-          return head + '\n' + String.raw`log–log slope of speed against diameter over the seven diameters: myelinated $${v.fix(st.slM, 2)}$ (theory 1), unmyelinated $${v.fix(st.slU, 2)}$ (theory 0.5)`;
+          const head = st.ok ? String.raw`$D=${v.fmt(st.D, 3)}$ µm: impulse speed $\theta=${v.fix(st.speed, 2)}$ m/s ($${v.fix(st.speed / st.D, 2)}$ m/s per µm), internodes $L=${v.fmt(st.L, 3)}$ µm, sheath of $${st.nb}$ membrane layer${st.nb === 1 ? '' : 's'}; an unmyelinated axon of diameter $D$ runs at $${v.fix(st.u, 2)}$ m/s (ratio $${v.fix(st.speed / st.u, 1)}$)` : String.raw`$D=${v.fmt(st.D, 3)}$ µm with $${st.nb}$ membrane layer${st.nb === 1 ? '' : 's'} in the sheath and internodes $L=${v.fmt(st.L, 3)}$ µm: **conduction fails** — the impulse dies out before reaching node 10`;
+          return head + '\n' + String.raw`log–log slope of speed against diameter over the seven diameters: myelinated ${isFinite(st.slM) ? '$' + v.fix(st.slM, 2) + '$' : 'n/a (no conduction)'} (theory 1), unmyelinated $${v.fix(st.slU, 2)}$ (theory 0.5)`;
         });
       },
     },
@@ -173,9 +173,9 @@ export default {
       num: '4.10',
       kind: 'Phenomenon',
       name: 'Active dendrites and dendritic spikes',
-      statement: String.raw`Dendrites of many neurons carry voltage-gated channels (Na$^+$, Ca$^{2+}$ and NMDA receptors, whose conductance is relieved of its Mg$^{2+}$ block by depolarisation). When enough excitatory synapses on the same thin branch are active together, the local depolarisation switches these conductances on regeneratively and the branch produces a **dendritic spike** (a sodium spike, a calcium spike or a long NMDA plateau). The somatic response to inputs on one branch is then a sigmoid, **supralinear** function of the number of coactive synapses, whereas the same number of synapses spread over different branches adds (roughly) linearly until the cell as a whole is depolarised. Thin branches therefore act as semi-independent nonlinear subunits, and a neuron resembles a two-layer network rather than a single threshold unit.`,
+      statement: String.raw`Dendrites of many neurons carry voltage-gated channels (Na$^+$, Ca$^{2+}$ and NMDA receptors, whose conductance is relieved of its Mg$^{2+}$ block by depolarisation). When enough excitatory synapses on the same thin branch are active together, the local depolarisation switches these conductances on regeneratively and the branch produces a **dendritic spike** (a sodium spike, a calcium spike or a long NMDA plateau). The somatic response to inputs on one branch is then a sigmoid, **supralinear** function of the number of coactive synapses, whereas the same number of synapses spread over different branches adds more or less linearly until the cell as a whole is depolarised enough to unblock NMDA receptors everywhere, which takes more synapses. Thin branches therefore act as semi-independent nonlinear subunits, and a neuron resembles a two-layer network rather than a single threshold unit.`,
       idea: String.raw`Positive feedback needs a local input resistance high enough for the synaptic current to depolarise the branch past the activation threshold of the voltage-gated conductance; a thin branch has $R_{\rm in}\propto d^{-3/2}$ (neuro-4.3) of several hundred megaohms, so a handful of synapses suffices, while the same synapses on different branches each see only their small share. For NMDA receptors the feedback is that depolarisation unblocks them, which admits more current, which depolarises more; the plateau lasts tens of milliseconds. Schiller et al. (2000) found NMDA spikes in thin basal dendrites of cortical pyramidal cells and Polsky et al. (2004) showed the sigmoidal summation of clustered inputs; Larkum et al. (1999) found calcium spikes in distal apical dendrites and Stuart and Sakmann (1994) showed that Na$^+$ action potentials also propagate back into the dendrites.`,
-      caption: String.raw`A model cell: a passive soma and ten thin dendrites (1 µm, 250 µm long). $N$ synapses (AMPA-like with, optionally, NMDA-like receptors) are activated at $t=5$ ms either **clustered** on one branch (blue; the outline of the cell shows where) or **dispersed**, one per branch and then a second round (orange). Top right: somatic peak depolarisation against $N$ with the straight line “N times a single synapse”; below it the voltage traces for your $N$. Turn NMDA receptors off and both curves lose their supralinear steps; raise the dendritic Na$^+$ channel density to make the thresholds sharper. The soma is passive (no spikes), so large values only measure dendritic drive.`,
+      caption: String.raw`A model cell: a passive soma and ten thin dendrites (1 µm, 250 µm long). $N$ synapses (AMPA-like with, optionally, NMDA-like receptors) are activated at $t=5$ ms either **clustered** on one branch (blue; the outline of the cell shows where) or **dispersed**, one per branch and then a second round (orange). Top right: somatic peak depolarisation against $N$ with the straight line “N times a single synapse”; below it the voltage traces for your $N$. Turn NMDA receptors off and both curves lose their supralinear steps; the dendritic Na$^+$ density sharpens the thresholds (too much makes any branch spike propagate and recruit the whole cell). The soma is passive (no spikes), so large values only measure dendritic drive.`,
       scope: String.raw`Illustrative model with parameters tuned to show the effect (not fitted to any recording): squid-axon Na$^+$/K$^+$ kinetics at 30 °C on the distal 170 µm of each branch, AMPA conductance 0.3 nS and NMDA conductance 2.2 nS per synapse, $R_m=20\,\mathrm{k\Omega\,cm^2}$. Real clusters, receptor mixes, inhibition and calcium channels change the numbers; the qualitative contrast between clustered and dispersed input is what experiments report.`,
       deps: ['neuro-4.6', 'neuro-2.3'],
       see: ['neuro-4.9', 'neuro-5.7'],
@@ -186,7 +186,7 @@ export default {
       viz(v) {
         const NS = v.slider('active synapses $N$', 1, 20, 6, { int: true });
         const nm = v.toggle('NMDA receptors', true);
-        const na = v.slider('dendritic Na⁺ density', 0, 0.1, 0.04, { step: 0.005, fmt: (x) => `${v.fix(x, 3)}× HH` });
+        const na = v.slider('dendritic Na⁺ density', 0, 0.08, 0.02, { step: 0.005, fmt: (x) => `${v.fix(x, 3)}× HH` });
         const NB = 10;
         const segs = [{ parent: -1, len: 20, dia: 20, soma: true }]; for (let j = 0; j < NB; j++) segs.push({ parent: 0, len: 250, dia: 1 });
         const tr = buildTree(segs, { dxMax: 12.5, Ra: 100 });
@@ -220,7 +220,7 @@ export default {
           sI.path(c, { color: 'accent', width: 2.2 }); sI.dots(c, { r: 3.5, color: 'accent' });
           sI.path(d, { color: 'orange', width: 2.2 }); sI.dots(d, { r: 3.5, color: 'orange' });
           sI.vline(N, { color: 'faint', dash: true });
-          sT.setView([0, 100], [-3, Math.max(10, Math.max(A.peak, B.peak) * 1.1)]);
+          sT.setView([0, 100], [-3, Math.max(10, Math.max(A.peak, B.peak, A.lpeak) * 1.1)]);
           sT.path(A.t.map((t, k) => [t, A.soma[k]]), { color: 'accent', width: 2.4 });
           sT.path(B.t.map((t, k) => [t, B.soma[k]]), { color: 'orange', width: 2.4 });
           sT.path(A.t.map((t, k) => [t, A.loc[k]]), { color: 'accent', width: 1.4, dash: [4, 4] });
