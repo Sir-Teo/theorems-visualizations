@@ -134,8 +134,8 @@ The payoffs $u_i$ are now meaningful **up to positive affine maps** $u_i\mapsto\
           if (!st) return '';
           const { p, q, qs, ps, rg, cg, R, Cc } = st;
           const eq = rg < 1e-6 && cg < 1e-6;
-          const where = qs != null && ps != null ? `the lines cross at $q^*=${v.fix(qs, 3)}$ (row) and $p^*=${v.fix(ps, 3)}$ (column): the mixed equilibrium is $(p^*,q^*)$` : 'the lines do not cross inside $[0,1]$: one action is always better, so no player ever mixes in equilibrium';
-          return `Row payoffs at $q=${v.fix(q, 2)}$: ${v.fix(R.y0, 2)} vs ${v.fix(R.y1, 2)}, her mixture $p=${v.fix(p, 2)}$ earns ${v.fix(R.own, 2)} — a loss of **${v.fix(rg, 3)}** against her best action\nColumn payoffs at $p=${v.fix(p, 2)}$: ${v.fix(Cc.y0, 2)} vs ${v.fix(Cc.y1, 2)}, her mixture $q$ earns ${v.fix(Cc.own, 2)} — a loss of **${v.fix(cg, 3)}**\n${where} · $(p,q)$ is ${eq ? '**an equilibrium ✓**' : 'not an equilibrium'}`;
+          const where = qs != null && ps != null ? `the lines cross at $q^*=${v.fix(qs, 3)}$ (row) and $p^*=${v.fix(ps, 3)}$ (column): the mixed equilibrium is $(p^*,q^*)$.` : 'the lines do not cross inside $[0,1]$: one action is always better, so no player ever mixes in equilibrium';
+          return `Row payoffs at $q=${v.fix(q, 2)}$: ${v.fix(R.y0, 2)} vs ${v.fix(R.y1, 2)}, her mixture $p=${v.fix(p, 2)}$ earns ${v.fix(R.own, 2)} — a loss of **${v.fix(rg, 3)}** against her best action\nColumn payoffs at $p=${v.fix(p, 2)}$: ${v.fix(Cc.y0, 2)} vs ${v.fix(Cc.y1, 2)}, her mixture $q$ earns ${v.fix(Cc.own, 2)} — a loss of **${v.fix(cg, 3)}**\n${where}\n$(p,q)$ is ${eq ? '**an equilibrium ✓**' : 'not an equilibrium'}`;
         });
       },
     },
@@ -157,7 +157,7 @@ whose fixed points are exactly the equilibria; Brouwer's theorem gives a fixed p
       viz(v) {
         const rng0 = (s) => v.rng(s);
         const games = {
-          a: () => randGame(rng0(5), 3, 3), b: () => randGame(rng0(12), 3, 3), c: () => randGame(rng0(23), 3, 3),
+          a: () => randGame(rng0(18), 3, 3), b: () => randGame(rng0(47), 3, 3), c: () => randGame(rng0(27), 3, 3),
           rps: () => ({ A: [[0, -1, 1], [1, 0, -1], [-1, 1, 0]], B: [[0, 1, -1], [-1, 0, 1], [1, -1, 0]] }),
           coord: () => ({ A: [[3, 0, 0], [0, 2, 0], [0, 0, 1]], B: [[3, 0, 0], [0, 2, 0], [0, 0, 1]] }),
         };
@@ -209,7 +209,196 @@ whose fixed points are exactly the equilibria; Brouwer's theorem gives a fixed p
           if (!st) return '';
           const f = (a) => `(${a.map((t) => v.fix(t, 2)).join(', ')})`;
           const mixedCount = EQ.length;
-          return `$n=${N.value}$: row ${f(st.cx)}, column ${f(st.cy)} · regret ${st.cur < 1e-9 ? '**0**' : '$' + v.sci(st.cur, 2) + '$'} · $\\lVert f(\\sigma)-\\sigma\\rVert=${v.fix(st.moved, 4)}$\nEnumerating supports finds **${mixedCount}** equilibri${mixedCount === 1 ? 'um' : 'a'} (an odd number for a generic game) — Nash: never zero ✓${map.value === 'br' ? ' · the pure jump need not settle: it has no continuity, and Brouwer does not apply to it' : ''}`;
+          return `$n=${N.value}$: row ${f(st.cx)}, column ${f(st.cy)} · regret ${st.cur < 1e-9 ? '**0**' : '$' + v.sci(st.cur, 2) + '$'} · $\\lVert f(\\sigma)-\\sigma\\rVert=${v.fix(st.moved, 4)}$\nEnumerating supports finds **${mixedCount}** equilibri${mixedCount === 1 ? 'um' : 'a'}${mixedCount % 2 ? ' (odd, as for a generic game)' : ' (even: this game has ties, so it is not generic)'} — Nash: never zero ✓${map.value === 'br' ? ' · the pure jump need not settle: it has no continuity, and Brouwer does not apply to it' : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.4
+    {
+      num: '2.4',
+      kind: 'Theorem',
+      name: 'Kakutani’s fixed-point theorem and best-response correspondences',
+      credit: 'Shizuo Kakutani, 1941',
+      statement: String.raw`Let $K\subset\R^d$ be nonempty, compact and convex, and let $\Phi$ assign to every $x\in K$ a **nonempty convex** subset $\Phi(x)\subseteq K$, in such a way that the graph $\{(x,y):y\in\Phi(x)\}$ is **closed**. Then $\Phi$ has a fixed point: some $x^*$ with $x^*\in\Phi(x^*)$. For a finite game, take $K=\prod_i\Delta(A_i)$ and let $\Phi(\sigma)=\prod_i\mathrm{BR}_i(\sigma_{-i})$ be the correspondence of mixed best replies. It has nonempty values (a continuous function on a compact set attains its maximum), convex values (the set of maximisers of a linear function on a simplex is a face), and a closed graph (payoffs are continuous), so it has a fixed point — and a fixed point of $\Phi$ is exactly a mixed Nash equilibrium (game-2.3). When $\Phi$ is single-valued the theorem is Brouwer's.`,
+      idea: String.raw`Brouwer's theorem (top-13.11) needs a *function*; best replies are not functions, since at a point of indifference every mixture of the tied actions is a best reply. Kakutani's idea is to replace the correspondence by continuous approximating functions — average the values over a fine triangulation, using convexity to stay inside $K$ — and pass to a limit of their Brouwer fixed points using closedness of the graph. The pictures below make each hypothesis visible in a symmetric $2\times2$ game, where a fixed point is an intersection of the graph with the diagonal: closedness is what makes the graph run *vertically through* the jump rather than leap over it, and convexity fills in the segment.`,
+      caption: String.raw`A symmetric $2\times2$ game: if both choose the first action with probability $x$ (the opponent's), the graph shows the set of best replies $y$ of one player; green points are where the graph meets the diagonal $y=x$, i.e. symmetric equilibria. Edit the four payoffs or load a game. Then **break a hypothesis**: *pure replies only* deletes the mixtures from the value at the indifference point (values no longer convex), and *one reply at the jump* keeps a single reply there (graph no longer closed). In Chicken either break destroys the only symmetric equilibrium.`,
+      deps: ['top-13.11', 'game-2.2'],
+      refs: ['MSZ §24.1', 'MSZ §5.4'],
+      tags: ['fixed point', 'best reply'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kakutani_fixed-point_theorem' },
+      viz(v) {
+        const S = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'opponent’s probability x of the first action', ylabel: 'my best replies y', title: 'the best-reply correspondence' });
+        const sa = v.slider('$a=u(T,T)$', -3, 6, 2, { int: true }), sb = v.slider('$b=u(T,B)$', -3, 6, 1, { int: true });
+        const sc = v.slider('$c=u(B,T)$', -3, 6, 3, { int: true }), sd = v.slider('$d=u(B,B)$', -3, 6, 0, { int: true });
+        const pre = { chicken: [2, 1, 3, 0], stag: [4, 0, 3, 3], pd: [3, 0, 5, 1], coord: [2, 0, 0, 1] };
+        v.select('load', [{ value: 'chicken', label: 'Chicken' }, { value: 'stag', label: 'Stag Hunt' }, { value: 'pd', label: 'Prisoner’s Dilemma' }, { value: 'coord', label: 'Coordination' }], 'chicken', { onChange: (k) => { [sa, sb, sc, sd].forEach((s, i) => s.set(pre[k][i])); } });
+        const mode = v.select('values of the correspondence', [{ value: 'full', label: 'all best replies' }, { value: 'pure', label: 'pure replies only' }, { value: 'jump', label: 'one reply at the jump' }], 'full');
+        let st = null;
+        v.render(() => {
+          const D = (x) => x * (sa.value - sc.value) + (1 - x) * (sb.value - sd.value), t = indiff(D);
+          const D0 = D(0), D1 = D(1), zero = Math.abs(D0) < 1e-12 && Math.abs(D1) < 1e-12;
+          const cuts = t != null ? [0, t, 1] : [0, 1];
+          const hs = [], vs = [], rects = [], pts = [];
+          // pieces on the open intervals between cuts, plus the value set at each cut where D = 0
+          for (let k = 0; k + 1 < cuts.length; k++) {
+            const lo = cuts[k], hi = cuts[k + 1], dm = D((lo + hi) / 2);
+            if (zero) rects.push([lo, hi]); else hs.push([lo, hi, dm > 0 ? 1 : 0]);
+          }
+          const zeros = zero ? [] : [t != null ? t : Math.abs(D0) < 1e-12 ? 0 : Math.abs(D1) < 1e-12 ? 1 : null].filter((z) => z != null);
+          for (const z of zeros) { if (mode.value === 'full') vs.push([z, 0, 1]); else if (mode.value === 'pure') { pts.push([z, 0], [z, 1]); } else pts.push([z, 0]); }
+          // fixed points: intersections with y = x
+          const fp = [];
+          for (const [lo, hi, y] of hs) { const openL = zeros.some((z) => Math.abs(z - lo) < 1e-12), openR = zeros.some((z) => Math.abs(z - hi) < 1e-12); if (y >= lo - 1e-12 && y <= hi + 1e-12 && !(openL && Math.abs(y - lo) < 1e-12) && !(openR && Math.abs(y - hi) < 1e-12)) fp.push(y); }
+          for (const [x, y0, y1] of vs) if (x >= y0 - 1e-12 && x <= y1 + 1e-12) fp.push(x);
+          for (const [x, y] of pts) if (Math.abs(x - y) < 1e-12) fp.push(x);
+          if (zero) fp.push(...[0, 0.5, 1]);
+          S.line(0, 0, 1, 1, { color: 'muted', dash: true, width: 1.5 });
+          S.text('y = x', 0.2, 0.26, { color: 'muted', size: 11.5 });
+          for (const [lo, hi] of rects) S.rect(lo, 0, hi, 1, { fill: C1, fillAlpha: 0.2, stroke: false });
+          for (const [lo, hi, y] of hs) S.line(lo, y, hi, y, { color: C1, width: 5, alpha: 0.85 });
+          for (const [x, y0, y1] of vs) S.line(x, y0, x, y1, { color: C1, width: 5, alpha: 0.85 });
+          for (const [x, y] of pts) S.dot(x, y, { r: 6.5, color: C1 });
+          if (t != null) {
+            if (mode.value !== 'full') { for (const y of [0, 1]) S.dot(t, y, { r: 7, hollow: true, color: 'red', width: 2 }); S.text('open end', t, 0.5, { dx: 8, size: 11, color: 'red', align: 'left' }); }
+            if (mode.value === 'pure') S.line(t, 0.04, t, 0.96, { color: 'red', dash: [3, 5], width: 2 });
+          }
+          [...new Set(fp.map((z) => Math.round(z * 1e6) / 1e6))].forEach((z) => S.dot(z, z, { r: 9, color: 'green' }));
+          st = { t, fp: [...new Set(fp.map((z) => Math.round(z * 1e6) / 1e6))], zero };
+        });
+        v.legend([[C1, 'best replies $\\Phi(x)$'], ['green', 'fixed points $x\\in\\Phi(x)$', { dot: true }], ['red', 'value missing at the jump', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { t, fp, zero } = st, m = mode.value;
+          const hyp = m === 'full' ? 'nonempty ✓ · convex ✓ · closed graph ✓' : m === 'pure' ? 'nonempty ✓ · **convex ✗** (the value at the jump is $\\{0,1\\}$) · closed graph ✓' : 'nonempty ✓ · convex ✓ · **closed graph ✗** (limits from the left and right are missing)';
+          const where = zero ? 'every action is a best reply everywhere: the whole diagonal is fixed' : t != null ? `the reply switches at $x=${v.fix(t, 3)}$, the indifference point` : 'one action is a best reply for every $x$ (strictly dominant)';
+          return `Hypotheses of Kakutani: ${hyp}\n${where} · **${fp.length}** fixed point${fp.length === 1 ? '' : 's'}${fp.length ? ': $x=' + fp.map((z) => v.fix(z, 3)).join(',\;') + '$' : ' — the conclusion fails'}${m !== 'full' && fp.length === 0 ? ' ✗' : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.5
+    {
+      num: '2.5',
+      kind: 'Algorithm',
+      name: 'Lemke–Howson algorithm',
+      credit: 'Carlton E. Lemke & J. T. Howson, Jr., 1964',
+      statement: String.raw`Let $(A,B)$ be a nondegenerate two-player game with $m\times n$ payoff matrices, scaled so all entries are positive. Label the points of $P=\{x\in\R^m: x\ge0,\ B^{\!\top}x\le\mathbf 1\}$ by $i$ when $x_i=0$ and by $m+j$ when the $j$-th inequality is tight, and those of $Q=\{y\in\R^n: y\ge0,\ Ay\le\mathbf 1\}$ by $m+j$ when $y_j=0$ and by $i$ when the $i$-th inequality is tight. A pair of vertices $(x,y)\ne(0,0)$ that together carry **all** the labels $1,\dots,m+n$ is, after normalising $x$ and $y$ to sum to one, a Nash equilibrium, and conversely. **Lemke–Howson**: starting from $(0,0)$, drop an arbitrary label $k$ — move along the edge of $P$ (or $Q$) that releases it — and then repeatedly pivot in the *other* polytope on the label that was just duplicated. The path of vertex pairs cannot revisit a pair and must end at a completely labelled pair other than $(0,0)$: **an equilibrium is found**. This gives a constructive proof that equilibria exist and that their number is odd.`,
+      idea: String.raw`Every vertex pair has at most one duplicated label once label $k$ is allowed to be missing ("almost completely labelled"), so each pair has exactly two neighbours along the path — except $(0,0)$ and the equilibria, which have one. Following the path, a finite graph all of whose vertices have degree two except for the endpoints, from the endpoint $(0,0)$ must therefore end at another endpoint, an equilibrium (the parity argument is the discrete shadow of Brouwer's theorem, top-13.11). It works by the indifference principle (game-2.2): a label shared by two actions means the opponent is indifferent between them. The path is not a descent of any potential, so there is no guarantee that it is short (game-2.6).`,
+      caption: String.raw`The triangles are the mixed-strategy simplices of a $3\times3$ game; the shading shows the opponent's best reply (the region where each column — or row — is best), and the lines separating regions are where two actions tie. Pick a label to drop and move the step slider: blue is the path of $x$ (row player), orange the path of $y$; at each step one player's mixture moves along an edge of its subdivision. When the path stops at a pair that carries all six labels, the green dots on both triangles agree: that is an equilibrium. Drop a different label and, in a game with several equilibria, you may arrive at a different one.`,
+      deps: ['game-2.2'],
+      refs: ['MSZ §5.2'],
+      tags: ['algorithm', 'path following'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lemke%E2%80%93Howson_algorithm' },
+      viz(v) {
+        const mk = {
+          a: () => randGame(v.rng(18), 3, 3), b: () => randGame(v.rng(47), 3, 3), c: () => randGame(v.rng(27), 3, 3),
+          coord: () => ({ A: [[3.1, 0.1, 0.3], [0.2, 2.2, 0.1], [0.1, 0.4, 1.3]], B: [[2.9, 0.2, 0.1], [0.3, 2.1, 0.4], [0.2, 0.1, 1.1]] }),
+        };
+        let G = mk.a(), EQ = supportEnum(G.A, G.B), gk = 'a', LH = null, reg = null;
+        const names = ['T', 'M', 'B', 'L', 'C', 'R'];
+        const compute = () => { LH = lemkeHowson(G.A, G.B, lab.value); };
+        const opts = { x: [-0.12, 1.12], y: [-0.14, 1.0], equal: true, axes: false, height: 320, weight: 1 };
+        const SX = v.stage({ ...opts, title: 'row player’s simplex: column replies' }), SY = v.stage({ ...opts, title: 'column player’s simplex: row replies' });
+        v.select('game', [{ value: 'a', label: 'random A' }, { value: 'b', label: 'random B' }, { value: 'c', label: 'random C' }, { value: 'coord', label: '3-way coordination' }], 'a', { onChange: (k) => { gk = k; G = mk[k](); EQ = supportEnum(G.A, G.B); compute(); } });
+        const lab = v.select('drop label', names.map((t, i) => ({ value: i, label: t })), 3, { onChange: () => compute() });
+        const stp = v.slider('pivot step', 0, 40, 40, { int: true });
+        compute();
+        const cols = [C2, 'teal', 'pink'], rowc = [C1, 'purple', 'gold'];
+        const centroid = (f) => { const sum = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; for (let a = 0; a <= 60; a++) for (let b = 0; a + b <= 60; b++) { const bc = [a / 60, b / 60, 1 - (a + b) / 60], k = f(bc); sum[k][0] += triPt(bc)[0]; sum[k][1] += triPt(bc)[1]; sum[k][2]++; } return sum.map((s) => (s[2] ? [s[0] / s[2], s[1] / s[2]] : null)); };
+        v.render(() => {
+          const path = LH.path, K = Math.min(stp.value, path.length - 1);
+          const colBest = (bc) => colPay(G.B, bc).reduce((bi, t, j, arr) => (t > arr[bi] ? j : bi), 0);
+          const rowBest = (bc) => rowPay(G.A, bc).reduce((bi, t, j, arr) => (t > arr[bi] ? j : bi), 0);
+          const paint = (S, best, palette) => S.raster((x, y) => { const bc = triBary(x, y); if (bc.some((t) => t < 0)) return null; const c = v.rgb(palette[best(bc)]); return [c[0], c[1], c[2], 0.26]; }, { res: 3, key: `${gk}|${best === colBest}` });
+          paint(SX, colBest, cols); paint(SY, rowBest, rowc);
+          drawTriangle(SX, v, { labels: ['T', 'M', 'B'], labelColor: C1 }); drawTriangle(SY, v, { labels: ['L', 'C', 'R'], labelColor: C2 });
+          centroid(colBest).forEach((c, j) => c && SX.text(`${names[3 + j]} best`, c[0], c[1], { align: 'center', size: 11.5, weight: 700, color: cols[j] }));
+          centroid(rowBest).forEach((c, i) => c && SY.text(`${names[i]} best`, c[0], c[1], { align: 'center', size: 11.5, weight: 700, color: rowc[i] }));
+          EQ.forEach((e) => { const a = triPt(e.x), b = triPt(e.y); SX.dot(a[0], a[1], { r: 11, hollow: true, color: 'green', width: 2.5 }); SY.dot(b[0], b[1], { r: 11, hollow: true, color: 'green', width: 2.5 }); });
+          const norm = (z) => { const s = z.reduce((a, b) => a + b, 0); return s > 1e-9 ? triPt(z.map((t) => t / s)) : null; };
+          const px = path.map((s) => norm(s.x)), py = path.map((s) => norm(s.y));
+          const draw = (S, P, col) => {
+            S.path(P.slice(0, K + 1), { color: col, width: 3 });
+            P.slice(0, K + 1).forEach((q, k) => { if (q && (k === 0 || !P[k - 1] || Math.hypot(q[0] - P[k - 1][0], q[1] - P[k - 1][1]) > 1e-9)) { S.dot(q[0], q[1], { r: 4, color: col }); } });
+            P.slice(0, K + 1).forEach((q, k) => { if (q && k > 0 && (!P[k - 1] || Math.hypot(q[0] - P[k - 1][0], q[1] - P[k - 1][1]) > 1e-9)) S.text(String(k), q[0], q[1], { dx: 8, dy: -8, size: 10.5, weight: 700, color: col }); });
+          };
+          draw(SX, px, C1); draw(SY, py, C2);
+          const cur = path[K];
+          const a = norm(cur.x), b = norm(cur.y);
+          if (a) SX.dot(a[0], a[1], { r: 7, color: 'gold' }); if (b) SY.dot(b[0], b[1], { r: 7, color: 'gold' });
+          reg = { K, cur, done: K === path.length - 1 && LH.ok };
+        });
+        v.legend([[C1, 'path of the row mixture $x$'], [C2, 'path of the column mixture $y$'], ['gold', 'current vertex pair', { dot: true }], ['green', 'equilibria', { dot: true }]]);
+        v.readout(() => {
+          if (!reg) return '';
+          const { K, cur, done } = reg, f = (a) => (a.reduce((s, t) => s + t, 0) < 1e-9 ? '0' : `(${a.map((t) => v.fix(t / a.reduce((s, z) => s + z, 0), 2)).join(', ')})`);
+          const move = cur.enter == null ? 'start at the artificial equilibrium $(0,0)$, which has every label' : `step ${K}: label **${names[cur.enter]}** enters, label **${names[cur.leave]}** leaves${cur.leave === lab.value ? ' — the dropped label is regained' : ` — **${names[cur.leave]}** is now duplicated: pivot on it in the other polytope`}`;
+          const end = LH.ok ? `path length ${LH.steps} pivots` : 'the path did not close (degenerate game)';
+          const verdict = done ? `\n**Completely labelled:** $x=${f(cur.x)}$, $y=${f(cur.y)}$ is a Nash equilibrium (regret $${v.sci(Math.max(regret(G.A, G.B, LH.x, LH.y), 1e-16), 1)}$ ✓); the game has ${EQ.length} equilibri${EQ.length === 1 ? 'um' : 'a'} in all` : '';
+          return `Dropped label **${names[lab.value]}** · ${move} · ${end}${verdict}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.6
+    {
+      num: '2.6',
+      kind: 'Theorem',
+      name: 'Computing a Nash equilibrium is PPAD-complete',
+      credit: 'Daskalakis, Goldberg & Papadimitriou, 2006 (three players); Chen & Deng, 2006 (two players)',
+      statement: String.raw`**PPAD** is the class of total search problems reducible to END-OF-LINE: given a succinct (circuit) description of a directed graph in which every vertex has at most one predecessor and one successor, and a source $0^n$ with no predecessor, find some other end of a path — a sink, or another source. The problem NASH — given a finite game (even a two-player one), find an $\epsilon$-approximate Nash equilibrium for suitably small $\epsilon$ — is **PPAD-complete**: it lies in PPAD (Nash's theorem provides the totality, and the Lemke–Howson path of game-2.5 is such a line), and every problem in PPAD reduces to it. Hence a polynomial-time algorithm for equilibria would solve every PPAD problem, which is not believed possible. The theorem does not say equilibria are NP-hard to *find* (they always exist); it says the totality argument itself is as hard as the whole class.`,
+      idea: String.raw`Membership: the lines of the Lemke–Howson algorithm are exactly END-OF-LINE instances over pairs of polytope vertices, with the successor function computed by one pivot (game-2.5). Hardness: Daskalakis, Goldberg and Papadimitriou built game gadgets (arithmetic circuits realised by equilibrium conditions) that simulate the Brouwer fixed-point problem on a discretised cube, itself PPAD-complete by Sperner-type arguments; Chen and Deng pushed the reduction down to two players. The takeaway for the picture: a path can be exponentially long though each step is cheap, and no known shortcut exists that sees where a path ends without walking it (algo-14.2 for the sibling notions NP and completeness).`,
+      caption: String.raw`**Left:** a toy END-OF-LINE instance on the $2^n$ vertices (bit strings) of an $n$-bit vertex set, laid out on a circle in scrambled order. The successor rule is one cheap bit operation per vertex — yet the line from the source visits all $2^n$ vertices. Drag the slider to walk it; switch off *reveal* to see only the ground already covered. **Right:** the length of the Lemke–Howson path measured on random $n\times n$ games (mean and maximum over 60 games, one dropped label), against the $2^n-1$ steps of the worst-case line. Random games are easy; the hard families that make the algorithm exponential are specially constructed.`,
+      deps: ['game-2.5', 'algo-14.2'],
+      refs: ['MSZ §5.2'],
+      tags: ['complexity', 'PPAD'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/PPAD_(complexity)' },
+      viz(v) {
+        const SL = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.25], equal: true, axes: false, height: 360, weight: 1, title: 'a line hidden in $2^n$ vertices' });
+        const SR = v.stage({ x: [2, 10], y: [1, 2000], ylog: true, axes: 'box', gutter: true, height: 360, weight: 1.1, xlabel: 'size n (n × n game; n-bit vertex names)', ylabel: 'number of steps', title: 'path lengths' });
+        const nb = v.slider('bits $n$', 2, 6, 4, { int: true });
+        const walk = v.slider('steps walked $t$', 0, 63, 12, { int: true });
+        const reveal = v.toggle('reveal the whole line', false);
+        // measured Lemke-Howson path lengths on random n x n games
+        const stats = (() => {
+          const out = [];
+          for (let n = 2; n <= 10; n++) {
+            const r = v.rng(100 + n); let sum = 0, mx = 0, ok = 0;
+            for (let t = 0; t < 60; t++) { const G = randGame(r, n, n), lh = lemkeHowson(G.A, G.B, r.int(0, 2 * n - 1)); if (lh.ok) { sum += lh.steps; mx = Math.max(mx, lh.steps); ok++; } }
+            out.push({ n, mean: sum / Math.max(ok, 1), max: mx });
+          }
+          return out;
+        })();
+        let st = null, permN = -1, perm = [];
+        v.render(() => {
+          const n = nb.value, L = 2 ** n - 1;
+          if (permN !== n) { perm = v.rng(7 + n).shuffle(Array.from({ length: 2 ** n }, (_, i) => i)); permN = n; }
+          const t = Math.min(walk.value, L);
+          const g = (k) => k ^ (k >> 1), pos = (k) => { const a = (2 * Math.PI * perm[g(k)]) / 2 ** n + 0.3; return [Math.cos(a), Math.sin(a)]; };
+          const big = 2 ** n <= 32;
+          for (let k = 0; k <= L; k++) { const q = pos(k); if (k < L && (reveal.value || k < t)) { const q2 = pos(k + 1); S_line(SL, q, q2, k < t ? C1 : 'faint', k < t ? 2.4 : 1.2, k < t ? 0.9 : 0.5); } }
+          for (let k = 0; k <= L; k++) {
+            const q = pos(k), seen = k <= t;
+            SL.dot(q[0], q[1], { r: seen ? 4.5 : 3, color: seen ? C1 : 'faint', alpha: seen || reveal.value ? 1 : 0.55 });
+            if (big && (seen || reveal.value)) SL.text(g(k).toString(2).padStart(n, '0'), q[0] * 1.14, q[1] * 1.14, { align: 'center', baseline: 'middle', size: 9.5, color: seen ? 'ink' : 'muted' });
+          }
+          const s0 = pos(0), sk = pos(L), w = pos(t);
+          SL.dot(s0[0], s0[1], { r: 8, color: 'green' }); SL.text('source', s0[0], s0[1], { dx: 0, dy: -16, size: 11.5, weight: 700, color: 'green', align: 'center' });
+          if (reveal.value || t === L) { SL.dot(sk[0], sk[1], { r: 8, color: 'red' }); SL.text('sink', sk[0], sk[1], { dy: -16, size: 11.5, weight: 700, color: 'red', align: 'center' }); }
+          SL.dot(w[0], w[1], { r: 9, color: 'gold' });
+          // right: measurements
+          SR.fn((x) => 2 ** x - 1, { domain: [2, 10], color: 'red', width: 2, dash: true });
+          SR.path(stats.map((s) => [s.n, Math.max(s.mean, 1)]), { color: 'accent', width: 2.5 });
+          SR.path(stats.map((s) => [s.n, Math.max(s.max, 1)]), { color: 'blue', width: 1.5, dash: true });
+          stats.forEach((s) => { SR.dot(s.n, Math.max(s.mean, 1), { r: 4, color: 'accent' }); });
+          SR.vline(n, { color: 'gold', dash: true, width: 1.5 });
+          SR.text('$2^n-1$', 8.6, 640, { color: 'red', size: 12, weight: 700, align: 'right' });
+          st = { n, L, t, cur: stats.find((s) => s.n === n) };
+        });
+        function S_line(S, a, b, color, width, alpha) { S.line(a[0], a[1], b[0], b[1], { color, width, alpha }); }
+        v.legend([[C1, 'part of the line already walked'], ['accent', 'Lemke–Howson pivots, mean (random games)'], ['blue', 'maximum of 60 games', { dash: true }], ['red', '$2^n-1$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, L, t, cur } = st;
+          return `$n=${n}$: the line has $2^n-1=${L}$ steps; after $t=${t}$ the walker has learned nothing about where it ends, and each step costs only $O(n)$ bit operations (checking a step is easy)\nLemke–Howson on random $n\\times n$ games: mean **${v.fix(cur.mean, 1)}** pivots, max ${cur.max} — against $2^n-1=${L}$ for the worst-case line; PPAD-hardness says such lines can be forced by the game, not that random games are hard`;
         });
       },
     },

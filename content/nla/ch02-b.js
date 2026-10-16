@@ -48,7 +48,7 @@ export default {
           const rn = len(r);
           if (rn > 0.05) { const d1 = len(sub(pp, foot)) > 0.05 ? unit(sub(pp, foot)) : B[0]; sc.path(rightAngle3(foot, d1, unit(r), 0.13), { color: 'red', width: 1.6 }); }
           sc.arrow([0, 0, 0], b.p, { color: 'gold', width: 1.6, alpha: 0.5 });
-          sc.dot(foot, { color: 'green', r: 6 }); sc.tex('A\\hat x', foot, { color: 'green', size: 14, dx: -22, dy: 14 });
+          sc.dot(foot, { color: 'green', r: 6 }); sc.tex('A\\hat x', foot, { color: 'green', size: 14, dx: 34, dy: 20 });
           sc.tex('r', add(foot, scl(r, 0.5)), { color: 'red', size: 15, dx: 12 });
           sc.flush();
           const dp = sub(pp, foot);
@@ -74,7 +74,7 @@ These *normal equations* always have a solution; it is unique exactly when $A$ h
       viz(v) {
         const M = v.M;
         const X = v.stage({ x: [-3, 4.4], y: [-3, 4.4], equal: true, axes: true, height: 400, minWidth: 340, title: 'coefficient plane: contours of $\\|b-Ax\\|^2$' });
-        const B = v.stage({ x: [0, 3], y: [-3.4, 3.4], axes: 'box', gutter: true, height: 400, minWidth: 220, xlabel: '', ylabel: 'inner product', xticks: [[1, '$a_1^{\\top}r$'], [2, '$a_2^{\\top}r$']], title: 'residual against each column' });
+        const B = v.stage({ x: [0, 3], y: [-3.4, 3.4], axes: 'box', gutter: true, height: 400, minWidth: 220, xlabel: '', ylabel: 'inner product', xticks: [[1, 'a₁ᵀr'], [2, 'a₂ᵀr']], title: 'residual against each column' });
         const ph = v.slider('angle between the columns', 12, 90, 50, { step: 1, fmt: (x) => `${v.fix(x, 0)}°` });
         const xh = X.handle(2.2, -0.6, { color: 'gold', label: 'x' });
         const bv = [1.0, 0.9, 0.7];
@@ -84,7 +84,7 @@ These *normal equations* always have a solution; it is unique exactly when $A$ h
           const xs = M.lstsq(A, bv), f = (x, y) => { const r = sub(bv, mv(A, [x, y])); return dot(r, r); };
           const fm = f(xs[0], xs[1]);
           X.clip(() => {
-            X.contour(f, [0.1, 0.4, 1, 2.2, 4, 7, 12, 20, 32].map((l) => fm + l), { color: 'accent', width: 1.3, alpha: 0.55, res: 160 });
+            X.contour(f, [0.1, 0.4, 1, 2.2, 4, 7, 12, 20, 32].map((l) => fm + l), { color: 'muted', width: 1.3, alpha: 0.8, res: 160 });
             // the two normal-equation lines: a_j . (b - A x) = 0
             const G = mm(tp(A), A), g = mv(tp(A), bv);
             [0, 1].forEach((j) => {
@@ -102,7 +102,7 @@ These *normal equations* always have a solution; it is unique exactly when $A$ h
           const cond = M.svd(A).S;
           st = { xs, ip, rn: len(r), rmin: Math.sqrt(fm), ne: len(sub(mv(mm(tp(A), A), xs), mv(tp(A), bv))), kappa: cond[0] / cond[1], A, gn };
         });
-        v.legend([['accent', 'contours of $\\|b-Ax\\|^2$'], ['blue', '$a_1^{\\top}(b-Ax)=0$'], ['purple', '$a_2^{\\top}(b-Ax)=0$'], ['red', 'gradient'], ['green', '$\\hat x$']]);
+        v.legend([['muted', 'contours of $\\|b-Ax\\|^2$'], ['blue', '$a_1^{\\top}(b-Ax)=0$'], ['purple', '$a_2^{\\top}(b-Ax)=0$'], ['red', 'gradient'], ['green', '$\\hat x$']]);
         v.readout(() => st ? `$\\hat x=${vecT(st.xs, 3)}$ solves $A^{\\top}A\\hat x=A^{\\top}b$ (error $${sciT(st.ne)}$); $\\min\\|r\\|=${nm(st.rmin, 4)}$, at your $x$: $\\|r\\|=${nm(st.rn, 4)}$.\nInner products with the columns at $x$: $a_1^{\\top}r=${nm(st.ip[0], 3)}$, $a_2^{\\top}r=${nm(st.ip[1], 3)}$; $\\kappa(A)=${nm(st.kappa, 2)}$ (the ellipses' axis ratio is $\\kappa$).` : '');
       },
     },
@@ -143,7 +143,7 @@ found by back-substitution. The residual is $r=b-\hat Q\hat Q^{\top}b$ and $\|r\
           fr.push({ k: 4, note: String.raw`Done: compare with the normal equations and the SVD solution (readout).` });
           return fr;
         };
-        const Sx = v.steps({ frames, still: 3, code: ['form A, b', 'A = Q̂ R̂', 'c ← Q̂ᵀ b', 'for i = n … 1', '  x_i ← (c_i − Σ_{j>i} r_ij x_j) / r_ii'] });
+        const Sx = v.steps({ frames, still: 7, code: ['form A, b', 'A = Q̂ R̂', 'c ← Q̂ᵀ b', 'for i = n … 1', '  x_i ← (c_i − Σ_{j>i} r_ij x_j) / r_ii'] });
         const T = v.table(Tt, { rows: 4, cols: 6, square: false, cellAspect: 1.4, maxCell: 54, size: 11 });
         v.render(() => {
           const f = Sx.frame, n = D.n;
@@ -154,7 +154,7 @@ found by back-substitution. The residual is $r=b-\hat Q\hat Q^{\top}b$ and $\|r\
             S.fn((t) => ev(D.xq, t), { color: 'accent', width: 2.6, domain: [0, 1] });
             if (D.xn) S.fn((t) => ev(D.xn, t), { color: 'red', width: 1.8, dash: true, domain: [0, 1] });
           } else if (f.k === 3) {
-            S.text('solving for the coefficients…', 0.5, 1.35, { align: 'center', color: 'muted', size: 13 });
+            S.text('solving for the coefficients…', 0.5, -0.15, { align: 'center', color: 'muted', size: 13 });
           }
           const done = (i) => f.k === 3 ? i >= f.row : f.k >= 4;
           T.draw({
@@ -211,7 +211,7 @@ where $A^{+}=V\Sigma^{+}U^{\top}$ is the Moore–Penrose pseudoinverse, with $\S
           const xp = solveT(tau.value), xexact = s2.value > 1e-9 ? solveT(0) : xp;
           const f = (x, y) => { const r = sub(b, mv(Am, [x, y])); return dot(r, r); };
           X.clip(() => {
-            X.heat((x, y) => Math.log10(f(x, y) + 0.02), { range: [-1.6, 1.5], cmap: 'theme', res: 4, key: `${s2.value}|${b[0]}|${b[1]}` });
+            X.heat((x, y) => Math.log10(f(x, y) + 0.02), { range: [-1.7, 2.6], cmap: 'theme', res: 4, key: `${s2.value}|${b[0]}|${b[1]}` });
             X.contour(f, [0.05, 0.3, 1, 2.5, 5, 10, 20], { color: 'accent', width: 1, alpha: 0.4 });
             if (s2.value < 1e-9) X.line(xp[0] - 9 * vcol[1][0], xp[1] - 9 * vcol[1][1], xp[0] + 9 * vcol[1][0], xp[1] + 9 * vcol[1][1], { color: 'green', width: 3 });
           });
@@ -240,7 +240,7 @@ where $A^{+}=V\Sigma^{+}U^{\top}$ is the Moore–Penrose pseudoinverse, with $\S
       name: 'Polynomial data fitting',
       statement: String.raw`Given data $(t_i,y_i)$, $i=1,\dots,m$, with distinct nodes, the degree-$d$ polynomial $p(t)=\sum_{k=0}^dx_kt^k$ that minimises $\sum_i(p(t_i)-y_i)^2$ solves the least squares problem with the Vandermonde matrix $A_{ik}=t_i^k$ ($m\times(d+1)$, full column rank when $d<m$). The residual $\|y-Ax\|$ is non-increasing in $d$ and reaches $0$ at $d=m-1$, where $p$ interpolates the data; the fit to the underlying function does not improve forever.`,
       idea: String.raw`The model spaces are nested, so the minimum over a larger space cannot be bigger, and at $d=m-1$ the square Vandermonde matrix is invertible (a polynomial of degree $m-1$ is determined by $m$ values), so the data are matched exactly — together with their noise. High-degree fits through noisy data oscillate between the nodes (the Runge phenomenon of interpolation plus noise amplification, with $\kappa(A)$ growing quickly) which is why a low-residual fit is not a good fit; the system is solved by QR (2.10) rather than by the normal equations.`,
-      caption: String.raw`Drag the data points up and down (their abscissae are fixed), choose the degree, and watch the fit (blue) against the curve the noisy data were sampled from (dashed grey). On the right, the residual norm falls monotonically to $0$ at degree $11$, while the error against the underlying function (orange) first falls and then explodes. **Resample** draws new noise.`,
+      caption: String.raw`Drag the data points up and down (their abscissae are fixed), choose the degree, and watch the fit (blue) against the curve the noisy data were sampled from (dashed grey). On the right, the residual norm falls monotonically to $0$ at degree $11$, while the error against the underlying function (orange) falls only until the model is flexible enough and then climbs again, the fit chasing the noise. **Resample** draws new noise.`,
       deps: ['nla-2.10'],
       credit: 'Gauss and Legendre; the Vandermonde setting is classical',
       tags: ['least-squares', 'fitting', 'overfitting'],
@@ -285,7 +285,7 @@ where $A^{+}=V\Sigma^{+}U^{\top}$ is the Moore–Penrose pseudoinverse, with $\S
 $$x_\lambda=\sum_i\frac{\sigma_i}{\sigma_i^2+\lambda^2}(u_i^{\top}b)\,v_i=\sum_i f_i\,\frac{u_i^{\top}b}{\sigma_i}\,v_i,\qquad f_i=\frac{\sigma_i^2}{\sigma_i^2+\lambda^2}.$$
 The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp those with $\sigma_i\ll\lambda$. As $\lambda\to0$, $x_\lambda\to A^{+}b$ (2.11); as $\lambda\to\infty$, $x_\lambda\to0$. The curve $(\|Ax_\lambda-b\|,\|x_\lambda\|)$ is the *L-curve*.`,
       idea: String.raw`In the SVD basis (2.11) the penalised problem decouples into scalar problems $\min(\sigma_iy_i-\beta_i)^2+\lambda^2y_i^2$ with solution $y_i=\sigma_i\beta_i/(\sigma_i^2+\lambda^2)$. For an ill-posed problem (singular values decaying to $0$) the unregularised solution divides noisy $\beta_i$ by tiny $\sigma_i$ and is dominated by noise; the penalty cuts exactly those terms. Increasing $\lambda$ trades a larger residual for a smaller solution norm; the corner of the L-curve is a popular balance.`,
-      caption: String.raw`Deblurring: $b=Ax_{\rm true}+{\rm noise}$ where $A$ is a Gaussian blur of a piecewise signal on $40$ points. Left: the true signal (grey), the data (dots), the unregularised solution (red, off the chart: noise amplified by $1/\sigma_{\min}$) and the Tikhonov solution (blue). Right: the L-curve with your $\lambda$ as the gold dot and its corner in green. Slide $\lambda$ from tiny (noise explodes) to large (oversmoothed) and try more or less noise.`,
+      caption: String.raw`Deblurring: $b=Ax_{\rm true}+{\rm noise}$ where $A$ is a Gaussian blur of a piecewise signal on $40$ points. Left: the true signal (grey), the data (dots), and the Tikhonov solution (blue). The unregularised solution is far off the chart (noise amplified by $1/\sigma_{\min}$), as the readout shows. Right: the L-curve with your $\lambda$ as the gold dot and its corner in green. Slide $\lambda$ from tiny (noise explodes) to large (oversmoothed) and try more or less noise.`,
       deps: ['nla-2.11'],
       credit: 'A. N. Tikhonov, 1943–63; D. L. Phillips, 1962; Hoerl & Kennard, 1970 (ridge regression)',
       tags: ['regularization', 'ill-posed', 'ridge'],
@@ -295,7 +295,7 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
         const Sg = v.stage({ x: [0, 1], y: [-0.4, 1.7], axes: 'box', gutter: true, height: 360, minWidth: 340, xlabel: 't', ylabel: 'signal', title: 'reconstruction' });
         const Lc = v.stage({ x: [1e-3, 1e1], y: [1, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, minWidth: 300, xlabel: 'residual ‖Ax_λ − b‖', ylabel: 'solution norm ‖x_λ‖', title: 'the L-curve' });
         const noise = v.slider('noise level', 1e-4, 1e-1, 1e-2, { log: true, sig: 2, onChange: () => { cache = null; } });
-        const lam = v.slider('$\\lambda$', 1e-5, 1, 2e-3, { log: true, sig: 2 });
+        const lam = v.slider('$\\lambda$', 1e-5, 1, 3e-2, { log: true, sig: 2 });
         let seed = 2;
         v.button('New noise', () => { seed++; cache = null; });
         v.button('Go to the corner', () => { if (cache?.corner) lam.set(cache.corner); });
@@ -325,7 +325,6 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
           if (!cache) prep();
           const { b, solve, res } = cache, x = solve(lam.value), x0 = solve(1e-9);
           Sg.path(tt.map((t, i) => [t, xt[i]]), { color: 'muted', width: 2.6 });
-          Sg.path(tt.map((t, i) => [t, x0[i]]), { color: 'red', width: 1.4, alpha: 0.7 });
           Sg.dots(tt.map((t, i) => [t, b[i]]), { r: 2.6, color: 'ink' });
           Sg.path(tt.map((t, i) => [t, x[i]]), { color: 'accent', width: 3 });
           Lc.path(cache.pts.map(([a, c]) => [Math.max(a, 1.1e-3), c]), { color: 'blue', width: 2.2 });
@@ -333,7 +332,7 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
           Lc.dot(Math.max(res(x), 1.1e-3), len(x), { color: 'gold', r: 7 });
           st = { rn: res(x), xn: len(x), err: len(sub(x, xt)) / len(xt), err0: len(sub(x0, xt)) / len(xt), noiseN: len(sub(b, mv(A, xt))), f: sg.map((s) => (s * s) / (s * s + lam.value ** 2)) };
         });
-        v.legend([['muted', 'true signal'], ['ink', 'blurred data $b$', { dot: true }], ['red', '$\\lambda\\to0$ (unregularised)'], ['accent', '$x_\\lambda$'], ['green', 'L-curve corner', { dot: true }]]);
+        v.legend([['muted', 'true signal'], ['ink', 'blurred data $b$', { dot: true }], ['accent', '$x_\\lambda$'], ['green', 'L-curve corner', { dot: true }]]);
         v.readout(() => st ? `$\\lambda=${v.sci(lam.value, 2)}$: residual $\\|Ax_\\lambda-b\\|=${nm(st.rn, 4)}$ (the noise itself has norm $${nm(st.noiseN, 4)}$), $\\|x_\\lambda\\|=${nm(st.xn, 3)}$, relative error $${nm(st.err, 3)}$ — unregularised: $${st.err0 > 1e3 ? v.sci(st.err0, 1) : nm(st.err0, 2)}$. Filter factors: $f_1=${nm(st.f[0], 3)}$, $f_{10}=${nm(st.f[9], 3)}$, $f_{20}=${v.sci(Math.max(st.f[19], 1e-30), 1)}$.` : '');
       },
     },
@@ -352,7 +351,7 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-0.5, 7.5], y: [-0.5, 5.5], equal: true, axes: 'box', gutter: true, height: 420, full: true, xlabel: 'x', ylabel: 'y' });
-        const P0 = [[0.8, 0.9], [1.5, 1.9], [2.3, 1.6], [3.0, 2.9], [3.9, 2.4], [4.6, 3.8], [5.5, 3.5], [6.3, 4.6]];
+        const P0 = [[0.8, 1.7], [1.5, 0.9], [2.3, 2.6], [3.0, 1.7], [3.9, 3.7], [4.6, 2.8], [5.5, 4.5], [6.3, 3.6]];
         const H = P0.map((p, i) => S.handle(p[0], p[1], { color: 'gold', r: 6 }));
         const which = v.select('OLS regresses', [{ value: 'yx', label: '$y$ on $x$' }, { value: 'xy', label: '$x$ on $y$' }], 'yx');
         let st = null;
@@ -371,7 +370,7 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
             const o = which.value === 'yx' ? [p[0], cy + (dO[1] / (dO[0] || 1e-12)) * (p[0] - cx)] : [cx + (dO[0] / (dO[1] || 1e-12)) * (p[1] - cy), p[1]];
             S.line(p[0], p[1], o[0], o[1], { color: 'orange', width: 1.4, alpha: 0.8 });
           });
-          S.dot(cx, cy, { r: 4, color: 'ink', label: 'centroid', labelPos: 'se' });
+          S.dot(cx, cy, { r: 4, color: 'ink', label: 'centroid', labelPos: 'nw' });
           const sse = (dir, kind) => C.reduce((s, p) => {
             if (kind === 'perp') { const q = dot(p, dir); return s + dot(p, p) - q * q; }
             if (kind === 'v') { const m = dir[1] / (dir[0] || 1e-12); return s + (p[1] - m * p[0]) ** 2; }
@@ -391,7 +390,7 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
       name: 'Rank-revealing QR with column pivoting',
       statement: String.raw`QR with column pivoting (Businger–Golub) computes $AP=QR$ with a permutation $P$ chosen greedily: at step $k$ the remaining column of largest norm is swapped into position $k$ before it is zeroed by a Householder reflector. The diagonal then satisfies $|r_{11}|\ge|r_{22}|\ge\cdots\ge|r_{nn}|$. Since $\sigma_{\min}(A)\le|r_{nn}|$ (the $(n,n)$ entry of $R^{-1}$ is $1/r_{nn}$), a tiny $r_{kk}$ certifies near rank-deficiency, and in practice $|r_{kk}|$ tracks $\sigma_k$ closely, so the rank is read off the diagonal at a fraction of the cost of an SVD. The converse is not guaranteed: for special matrices (Kahan's example) the diagonal stays large while $\sigma_n$ is exponentially small.`,
       idea: String.raw`Choosing the largest remaining column makes each Householder step peel off as much of the matrix as possible, so the energy is concentrated in the leading rows of $R$: if $A$ has numerical rank $r$, the trailing block $R_{22}$ is tiny and $r_{kk}$, $k>r$, are small. The method uses the reflectors of 2.6 with one extra search per step. A lower bound on $\sigma_k$ in terms of $|r_{kk}|$ can fail by a factor growing like $2^{n}$; Kahan's matrix (unit upper-triangular with $-c$ above the diagonal, rows scaled by $s^{i-1}$) is already in pivoted form, so pivoting does nothing, and yet it has a tiny singular value.`,
-      caption: String.raw`Plot of $\log_{10}$ of the singular values $\sigma_k$ (grey) and of the diagonal $|r_{kk}|$ without pivoting (red) and with column pivoting (green). Case **low rank + noise**: the matrix has $5$ large singular values and a noise floor; unpivoted QR shows no gap, pivoted QR reproduces the singular values to within a small factor. Case **Kahan**: the diagonal of pivoted QR decays gently while $\sigma_n$ is far below it — the known counterexample. Slide the tolerance to read off the rank each way.`,
+      caption: String.raw`Plot of $\log_{10}$ of the singular values $\sigma_k$ (grey) and of the diagonal $|r_{kk}|$ without pivoting (red) and with column pivoting (green). Case **low rank + noise**: the matrix has $5$ large singular values (spread over $20$ columns) and a noise floor; the first eight columns are nearly parallel, so unpivoted QR gives tiny diagonal entries there and then large ones again (a misleading, non-monotone profile), while pivoted QR picks the independent columns first and reproduces the singular values to within a small factor. Case **Kahan**: pivoting makes no swaps (the red curve hides under the green), the diagonal decays gently, and $\sigma_n$ is thousands of times smaller than $|r_{nn}|$ — the known counterexample. Slide the tolerance to read off the rank each way.`,
       deps: ['nla-2.6'],
       credit: 'P. Businger & G. H. Golub, 1965; W. Kahan, 1966 (the example)',
       tags: ['qr', 'pivoting', 'rank'],
@@ -400,15 +399,18 @@ The *filter factors* $f_i$ keep components with $\sigma_i\gg\lambda$ and damp th
         const M = v.M, n = 20;
         const S = v.stage({ x: [0.5, n + 0.5], y: [1e-17, 20], ylog: true, axes: 'box', gutter: true, height: 420, full: true, xlabel: 'column index k', ylabel: 'size' });
         const kind = v.select('matrix', [{ value: 'low', label: 'low rank + noise' }, { value: 'kahan', label: 'Kahan matrix' }], 'low');
-        const floorS = v.slider('noise floor', 1e-12, 1e-2, 1e-8, { log: true, sig: 2 });
+        const floorS = v.slider('noise floor', 1e-12, 1e-2, 1e-8, { log: true, sig: 1, fmt: (x) => x.toExponential(0) });
         const th = v.slider('Kahan $\\theta$', 0.2, 1.4, 0.9, { step: 0.01 });
-        const tol = v.slider('rank tolerance $\\tau$', 1e-14, 1, 1e-6, { log: true, sig: 1 });
+        const tol = v.slider('tolerance $\\tau$', 1e-14, 1, 1e-6, { log: true, sig: 1, fmt: (x) => x.toExponential(0) });
         let cacheKey = '', cache = null;
         const build = () => {
           if (kind.value === 'low') {
-            const r = v.rng(3), m = 30, Un = M.qr(Array.from({ length: m }, () => Array.from({ length: n }, () => r.normal())), { thin: true }).Q, Vn = M.qr(Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal()))).Q;
-            const sg = Array.from({ length: n }, (_, i) => (i < 5 ? 2 ** (-i * 0.7) : floorS.value * (1 - 0.04 * i)));
-            return Un.map((ur) => Vn.map((_, c) => ur.reduce((s, x, j) => s + x * sg[j] * Vn[c][j], 0)));
+            const r = v.rng(3), m = 30, X = M.qr(Array.from({ length: m }, () => Array.from({ length: 5 }, () => r.normal())), { thin: true }).Q;
+            const sg5 = [1, 0.5, 0.25, 0.12, 0.06];
+            // eight nearly parallel columns first (all dominated by the first component), then independent ones
+            const W = Array.from({ length: n }, (_, i) => (i < 8 ? [1 + 0.1 * r.normal(), ...[1, 2, 3, 4].map(() => 0.01 * r.normal())] : Array.from({ length: 5 }, () => r.normal())));
+            const A = X.map((xr) => W.map((w) => xr.reduce((s, x, k) => s + x * sg5[k] * w[k], 0)));
+            return A.map((row) => row.map((a) => a + floorS.value * r.normal()));
           }
           const s = Math.sin(th.value), c = Math.cos(th.value);
           return Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (s ** i) * (i === j ? 1 : j > i ? -c : 0) * (1 - 1e-9 * j)));

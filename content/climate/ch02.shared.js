@@ -166,8 +166,8 @@ export function rceSteps(st, o, n, grid = GRID) {
       const d = (gain * dt) / Ce[i]; T[i] += d; maxd = Math.max(maxd, Math.abs(d));
     }
     const Cse = Cs + 4 * SIG * st.Ts ** 3 * 0.6 * dt, ds = ((Ssfc - (L.up[0] - L.down[0])) * dt) / Cse; st.Ts += ds; maxd = Math.max(maxd, Math.abs(ds));
-    if (st.Ts > T[0]) { const m = (st.Ts * Cse + T[0] * Ce[0]) / (Cse + Ce[0]); st.Ts = m; T[0] = m; }
-    convect(T, Ce, kk, grid);
+    if (!o.noConvect && st.Ts > T[0]) { const m = (st.Ts * Cse + T[0] * Ce[0]) / (Cse + Ce[0]); st.Ts = m; T[0] = m; }
+    if (!o.noConvect) convect(T, Ce, kk, grid);
     st.steps++; st.resid = L.olr - asr; st.maxd = maxd;
   }
   return st;
@@ -220,7 +220,7 @@ export function ozoneProfile(du = 300, grid = GRID) {
  * Shortwave (UV and visible) heating by ozone in W m⁻² per layer. `uv` = total solar flux in the absorbing bands
  * (default 11 W m⁻²); the Hartley/Huggins absorption has k ≈ `kUV` m²/kg so that 300 DU is optically thick.
  */
-export function ozoneHeating(o3, grid = GRID, uv = 11, kUV = 6e3) {
+export function ozoneHeating(o3, grid = GRID, uv = 8, kUV = 6e3) {
   const { N, dp } = grid, out = new Array(N).fill(0); let tauAbove = 0;
   for (let i = N - 1; i >= 0; i--) { const d = kUV * o3[i] * (dp[i] * 100) / G0; out[i] = uv * (Math.exp(-tauAbove) - Math.exp(-tauAbove - d)); tauAbove += d; }
   return out;
@@ -248,4 +248,48 @@ export function greyColumn(tauInf, o = {}, grid = GRID) {
     if (conv) { if (Ts > T[0]) { const m = (Ts * Cse + T[0] * Ce[0]) / (Cse + Ce[0]); Ts = m; T[0] = m; } convect(T, Ce, kk, grid); }
   }
   return { T, Ts, olr: up[N], z: heights(T, grid) };
+}
+
+/** Absorbed sunlight (W/m²) of the radiative–convective control column: chosen so that 280 ppm, fixed RH and 300 DU of ozone give Ts ≈ 288 K. */
+export const ASR_RCE = 226.5;
+
+/** A radiative–convective integration that can be advanced in time slices (so the page stays responsive). */
+export function rceJob(o, start = null, grid = GRID) {
+  const st = rceStart(o, start, grid);
+  return { o, st, grid, done: false, hist: [], minSteps: o.minSteps ?? 120, maxSteps: o.maxSteps ?? 1400 };
+}
+export function rceAdvance(job, ms = 20) {
+  const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  while (!job.done && now() - t0 < ms) {
+    rceSteps(job.st, job.o, 4, job.grid);
+    job.hist.push(job.st.Ts);
+    const n = job.hist.length, drift = n > 15 ? Math.abs(job.hist[n - 1] - job.hist[n - 16]) : 1;
+    if ((job.st.steps >= job.minSteps && Math.abs(job.st.resid) < 0.08 && drift < 0.004) || job.st.steps >= job.maxSteps) job.done = true;
+  }
+  return job.done;
+}
+/** Run a job to the end (used for still screenshots). */
+export function rceFinishJob(job) { while (!rceAdvance(job, 1000)); return job; }
+
+/**
+ * Saturated (water-vapour-limited) column for the runaway-greenhouse limit: 1000 hPa of dry air plus the saturation
+ * vapour pressure of the surface; temperature on the moist adiabat up to `tmin`, isothermal above; vapour saturated.
+ * Returns {grid, T, q, ps} suitable for opticalDepths(T, {q, co2: 0}, grid) and longwave().
+ */
+export function saturatedColumn(Ts, o = {}) {
+  const pdry = o.pdry ?? 1000, es0 = esat(Ts) / 100, ps = pdry + es0, N = 44, ptop = Math.min(1, ps * 1e-3);
+  const e = []; for (let j = 0; j <= N; j++) e.push(ps * Math.exp((-Math.log(ps / ptop) * j) / N));
+  const pm = [], dp = []; for (let i = 0; i < N; i++) { pm.push(Math.sqrt(e[i] * e[i + 1])); dp.push(e[i] - e[i + 1]); }
+  const Lv = 2.5e6, cpd = 1004, cpv = 1860, Rd = 287, eps = 0.622, tmin = o.tmin ?? 200;
+  const rOf = (T, p) => { const ev = Math.min(esat(T) / 100, p * 0.999); const x = ev / (p - 0 * ev); return (eps * ev) / (p - ev + 1e-12) * (x < 1 ? 1 : 1); };
+  const dlnT = (T, p) => { const r = rOf(T, p), cp = cpd + r * cpv; return (Rd / cp + (Lv * r) / (cp * T)) / (1 + (Lv * Lv * r * eps) / (cp * Rd * T * T)); };
+  const T = [], q = []; let Tc = Ts, lp = Math.log(ps);
+  for (let i = 0; i < N; i++) {
+    const lpm = Math.log(pm[i]); let Tm = Tc;
+    const h = lpm - lp; const k1 = dlnT(Tc, Math.exp(lp)) * Tc, k2 = dlnT(Tc + 0.5 * h * k1, Math.exp(lp + h / 2)) * (Tc + 0.5 * h * k1);
+    Tm = Math.max(tmin, Tc + h * k2); T.push(Tm); lp = lpm; Tc = Tm;
+    const r = rOf(Tm, pm[i]); q.push(Tm <= tmin + 1e-9 ? Math.min(r, 1e-5) : r / (1 + r));
+  }
+  return { grid: { N, e, pm, dp }, T, q, ps };
 }

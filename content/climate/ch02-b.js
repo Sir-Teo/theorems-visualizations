@@ -50,7 +50,7 @@ If the temperature is the same everywhere ($T = T_s$) the answer is simply $B_\n
         const co2 = v.slider('CO₂ (ppm)', 20, 2000, 420, { log: true, sig: 2 });
         const sA = v.stage({ x: [180, 330], y: [0, 40], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'temperature (K)', ylabel: 'height (km)', title: 'one wavenumber, built up layer by layer' });
         const sB = v.stage({ x: [200, 1500], y: [180, 300], axes: 'box', gutter: true, height: 340, weight: 1.3, minWidth: 280, xlabel: 'wavenumber (cm⁻¹)', ylabel: 'brightness T (K)', title: 'spectrum from the integral' });
-        const sC = v.stage({ x: [-4, 10], y: [-30, 200], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 250, xlabel: 'lapse rate Γ (K/km)', ylabel: 'greenhouse effect (W/m²)', title: 'no temperature drop, no greenhouse' });
+        const sC = v.stage({ x: [-4, 10], y: [-80, 200], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 250, xlabel: 'lapse rate Γ (K/km)', ylabel: 'greenhouse effect (W/m²)', title: 'no temperature drop, no greenhouse' });
         const Ts = 288;
         const G = (g, c) => column(`g${g.toFixed(1)}|${c.toFixed(0)}`, () => { const T = profile(Ts, g); const L = olrFor(T, Ts, { co2: c, spec: true }); return { L, T, G: L.up[0] - L.olr }; });
         const pick = sB.handle(667, 250, { color: 'gold', r: 6, constrain: (x) => [Math.max(200, Math.min(1500, x)), 252] });
@@ -65,7 +65,7 @@ If the temperature is the same everywhere ($T = T_s$) the answer is simply $B_\n
           let I = planckNu(nu, Ts);
           for (let i = 0; i < GRID.N; i++) { const t = Math.exp(-1.66 * tau[i][n]); I = I * t + planckNu(nu, T[i]) * (1 - t); Tb.push(brightT(nu, I)); zz.push(z[i]); }
           const zmax = 40;
-          sA.path(T.map((t, i) => [t, z[i]]), { color: 'orange', width: 2.4 });
+          sA.path(T.map((t, i) => [t, z[i]]), { color: 'orange', width: 6, alpha: 0.55 });
           sA.dot(Ts, 0, { color: 'red', r: 5, label: 'surface', labelPos: 'ne' });
           sA.path(Tb.map((t, i) => [t, zz[i]]), { color: 'accent', width: 2.8 });
           sA.dot(Tb[Tb.length - 1], zz[zz.length - 1], { color: 'green', r: 6, label: 'to space', labelPos: 'w' });
@@ -79,7 +79,7 @@ If the temperature is the same everywhere ($T = T_s$) the answer is simply $B_\n
           sC.hline(0, { color: 'faint', width: 1.2 }); sC.vline(0, { color: 'faint', dash: [3, 3] });
           sC.path(gs, { color: 'accent', width: 2.6 });
           sC.dot(g, Gm, { color: 'gold', r: 7, label: `${fx(v, Gm, 0)} W/m²`, labelPos: 'nw' });
-          sC.text('inversion: gases cool', -3.8, -20, { size: 11, color: 'muted', align: 'left' });
+          sC.text('inversion: gases cool', 0.4, -60, { size: 11, color: 'muted', align: 'left' });
           R = { nu, g, c, Gm, olr: L.olr, up0: L.up[0], tbTop: Tb[Tb.length - 1], tbAir: T[GRID.N - 1] };
         });
         v.legend([['orange', 'air temperature $T(z)$'], ['accent', 'brightness temperature of the upward beam'], ['red', 'surface', { dash: true }]]);
@@ -125,8 +125,8 @@ Adding greenhouse gas makes the atmosphere more opaque, which raises $z_e$ to a 
           sA.path(T.map((t, i) => [t, z[i]]), { color: 'accent', width: 2.8 });
           sA.vline(TeR, { color: 'muted', width: 1, dash: [2, 4] });
           sA.hline(zeR, { color: 'muted', width: 1.2, dash: [5, 4] }); sA.dot(TeR, zeR, { color: 'muted', r: 5, hollow: true });
-          sA.hline(ze, { color: 'orange', width: 1.8 }); sA.dot(TeB, ze, { color: 'orange', r: 6.5, label: `z_e = ${fx(v, ze, 1)} km`, labelPos: 'ne' });
-          sA.text(`reference (280 ppm, 288 K): z_e = ${fx(v, zeR, 1)} km`, 192, zeR, { size: 11, color: 'muted', align: 'left', baseline: 'bottom', dy: -3 });
+          sA.hline(ze, { color: 'orange', width: 1.8 }); sA.dot(TeB, ze, { color: 'orange', r: 6.5, label: `$z_e$ = ${fx(v, ze, 1)} km`, labelPos: 'e' });
+          sA.text(`reference (280 ppm, 288 K): $z_e$ = ${fx(v, zeR, 1)} km`, 192, zeR, { size: 11, color: 'muted', align: 'left', baseline: 'top', dy: 4 });
           sA.dot(Ts, 0, { color: 'red', r: 5, label: `${fx(v, Ts, 1)} K`, labelPos: 'ne' });
           // OLR vs Ts
           sB.hline(OREF, { color: 'green', width: 1.6, dash: [6, 4] }); sB.text('absorbed sunlight ≙ reference OLR', 275.5, OREF, { size: 11, color: 'green', align: 'left', baseline: 'bottom', dy: -3 });
@@ -230,9 +230,12 @@ so every doubling adds the same $5.35\ln 2 \approx 3.7$ W/m² (including stratos
         v.render(() => {
           const c = co2.value, l = L.value, tau = taus(c);
           // transmission through the lowest l km (vertical, 1.66 slant)
-          let acc = new Float64Array(NN), zc = 0;
-          for (let i = 0; i < GRID.N && z[i] - 0 < l; i++) for (let n = 0; n < NN; n++) acc[n] += tau[i][n] * Math.min(1, (l - (i ? z[i - 1] : 0)) / Math.max(1e-6, z[i] - (i ? z[i - 1] : 0)));
-          void zc;
+          const acc = new Float64Array(NN); let zb = 0;
+          for (let i = 0; i < GRID.N && zb < l; i++) {
+            const zt = zb + ((RD * T[i]) / G0) * Math.log(GRID.e[i] / GRID.e[i + 1]) * 1e-3, f = Math.min(1, (l - zb) / (zt - zb));
+            for (let n = 0; n < NN; n++) acc[n] += tau[i][n] * f;
+            zb = zt;
+          }
           sA.path(NU.map((m, i) => [m, Math.exp(-1.66 * acc[i])]).filter((p) => p[0] >= 560 && p[0] <= 800), { color: 'accent', width: 2.8 });
           sA.fn(() => 0, { color: 'faint' });
           sA.text(`lowest ${l < 1 ? fx(v, l * 1000, 0) + ' m' : fx(v, l, 1) + ' km'} of air`, 575, 0.97, { size: 12, color: 'accent', align: 'left', weight: 600 });
@@ -250,7 +253,7 @@ so every doubling adds the same $5.35\ln 2 \approx 3.7$ W/m² (including stratos
           sC.hline(0, { color: 'faint' });
           sC.text('most of the effect: upper troposphere and lower stratosphere', 39, 0.88, { size: 11.5, color: 'muted', align: 'right' });
           const imax = s.reduce((b, x, i) => (Math.abs(x) > Math.abs(s[b]) ? i : b), 0);
-          sC.text('lowest 2 km', 1, 0.15, { size: 11, color: 'muted', align: 'left' });
+          sC.text('ground layers', 0.5, -0.1, { size: 11, color: 'muted', align: 'left' });
           R = { c, l, tc: Math.exp(-1.66 * acc[idxOf(667)]), zc: zOf(c, 667), zw: zOf(c, 740), zmax: z[imax], low: Math.abs(s[0]) / smax };
         });
         v.legend([['red', 'adding CO₂ here lowers OLR']]);

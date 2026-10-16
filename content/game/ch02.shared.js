@@ -96,9 +96,9 @@ export function lemkeHowson(A0, B0, k) {
   return { path, ok, x: ok ? last.x.map((t) => t / sx) : null, y: ok ? last.y.map((t) => t / sy) : null, steps: path.length - 1 };
 }
 
-/** Deterministic random integer game, entries 0..9. */
+/** Deterministic random integer game, entries 0..9 with one decimal (generic: no ties). */
 export function randGame(rng, m, n) {
-  const mk = () => idx(m).map(() => idx(n).map(() => rng.int(0, 9)));
+  const mk = () => idx(m).map(() => idx(n).map(() => rng.int(0, 90) / 10));
   return { A: mk(), B: mk() };
 }
 
@@ -121,7 +121,7 @@ export function drawTriangle(s, v, o = {}) {
   s.path([TRI[0], TRI[1], TRI[2], TRI[0]], { color: o.color || 'muted', width: 1.4 });
   if (o.labels) o.labels.forEach((t, i) => {
     const [x, y] = TRI[i];
-    s.text(t, x, y, { dx: i === 0 ? -6 : i === 1 ? 6 : 0, dy: i === 2 ? -12 : 12, align: i === 0 ? 'right' : i === 1 ? 'left' : 'center', size: 12, weight: 700, color: o.labelColor || 'muted' });
+    s.text(t, x, y, { dx: i === 0 ? -20 : i === 1 ? 20 : 0, dy: i === 2 ? -20 : 4, align: i === 0 ? 'right' : i === 1 ? 'left' : 'center', size: 12, weight: 700, color: o.labelColor || 'muted' });
   });
 }
 
