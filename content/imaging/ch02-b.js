@@ -259,7 +259,7 @@ so contrast is largest in the window just above $E_K$, and the beam spectrum sho
         v.legend([['red', 'agent: $\\mu/\\rho$ and contrast'], ['ink', 'soft tissue'], ['muted', 'beam at the detector', { area: true }], ['accent', 'contrast with this beam', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
-          return `K-edge $${fx(st.Ek, 1)}$ keV: contrast jumps from $${fx(st.below, 3)}$ to $${fx(st.above, 3)}$ across it (ratio $${fx(st.above / st.below, 1)}$, model value 5.5).\nMonochromatic at $E=${fx(st.E, 1)}$ keV: $\\Delta A=${fx(st.mono, 3)}$ (agent attenuates $${fx(st.tcon, 0)}\\times$ more per gram than tissue). Tube beam: $\\Delta A=${fx(st.poly, 3)}$, which is $${fx(100 * st.poly / st.above, 0)}\\%$ of the monochromatic contrast just above the edge ($${fx(st.above, 3)}$); mean energy $${fx(st.mE, 1)}$ keV.`;
+          return `K-edge $${fx(st.Ek, 1)}$ keV: contrast jumps from $${fx(st.below, 3)}$ to $${fx(st.above, 3)}$ across it (ratio $${fx(st.above / st.below, 1)}$, model jump ratio 5.5 for I, Ba and Gd).\nMonochromatic at $E=${fx(st.E, 1)}$ keV: $\\Delta A=${fx(st.mono, 3)}$ (agent attenuates $${fx(st.tcon, 0)}\\times$ more per gram than tissue). Tube beam: $\\Delta A=${fx(st.poly, 3)}$, which is $${fx(100 * st.poly / st.above, 0)}\\%$ of the monochromatic contrast just above the edge ($${fx(st.above, 3)}$); mean energy $${fx(st.mE, 1)}$ keV.`;
         });
       },
     },

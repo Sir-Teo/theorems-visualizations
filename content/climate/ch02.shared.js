@@ -3,8 +3,8 @@
 //
 // The spectroscopy is SYNTHETIC but physically structured: a CO₂ 15 µm band with exponentially decaying wings
 // (the property that makes forcing logarithmic), H₂O rotation and 6.3 µm bands, an H₂O self-continuum that keeps
-// the 8–12 µm window nearly (not perfectly) clear, and the O₃ 9.6 µm band. Amplitudes are tuned so a clear-sky
-// column gives OLR ≈ 240 W m⁻², a greenhouse effect ≈ 150 W m⁻², and ≈ 3–4 W m⁻² per CO₂ doubling.
+// the 8–12 µm window nearly (not perfectly) clear, and the O₃ 9.6 µm band. Amplitudes are tuned (water-vapour parameters set so the fixed-relative-humidity CO₂ response is near that of Manabe & Wetherald 1967) so a clear-sky
+// column gives OLR ≈ 240–250 W m⁻², a greenhouse effect ≈ 140–150 W m⁻², and ≈ 3–4 W m⁻² per CO₂ doubling.
 
 export const SIG = 5.670374e-8, CP = 1004, G0 = 9.81, RD = 287, PS = 1000;
 export const C2 = 1.438777; // hc/k, cm K
@@ -22,7 +22,7 @@ export function esat(T) { return 611.2 * Math.exp((17.67 * (T - 273.15)) / (T - 
 // ── absorption coefficients, m² per kg of absorber (before pressure scaling) ─────────────────────────────────────
 // CO₂: strong Q-branch core at 667 cm⁻¹ plus broad exponential wings, plus weak hot bands near 960/1060.
 // Mass path of 400 ppm over the whole atmosphere is ~ 6 kg m⁻², so k ~ 1e3–1e5 m²/kg in the core.
-const PAR = { co2A: 150, co2W: 14, co2B: 0.05, co2C: 120, co2A1: 3000, co2W1: 4, hot: 0.005, rotA: 730, rotW: 74, vibA: 30, vibW: 52, floor: 0.1, contA: 1.07e-3, contW: 167, o3A: 3500 };
+const PAR = { co2A: 190, co2W: 15.5, co2B: 0.05, co2C: 120, co2A1: 3000, co2W1: 4, hot: 0.005, rotA: 2300, rotW: 74, vibA: 30, vibW: 52, floor: 0, contA: 1.07e-3, contW: 167, o3A: 3500 };
 const K_CO2 = [], K_H2O = [], K_CONT = [], K_O3 = [];
 export function buildSpec(P = PAR) {
   K_CO2.length = K_H2O.length = K_CONT.length = K_O3.length = 0;
@@ -251,7 +251,7 @@ export function greyColumn(tauInf, o = {}, grid = GRID) {
 }
 
 /** Absorbed sunlight (W/m²) of the radiative–convective control column: chosen so that 280 ppm, fixed RH and 300 DU of ozone give Ts ≈ 288 K. */
-export const ASR_RCE = 226.5;
+export const ASR_RCE = 232.5;
 
 /** A radiative–convective integration that can be advanced in time slices (so the page stays responsive). */
 export function rceJob(o, start = null, grid = GRID) {

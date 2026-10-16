@@ -139,7 +139,7 @@ where the zero-lift angle $\alpha_{L0}$ is zero for a symmetric section and nega
       deps: ['aero-2.1', 'fluid-5.7', 'fluid-8.7'],
       refs: ['Anderson ch. 5'],
       tags: ['lift', 'stall'],
-      scope: String.raw`The measured data are for a smooth NACA 0012 section at $M \le 0.15$ and $Re = 1.8\times10^6$ and $0.5\times10^6$. The cambered curves are a model: camber is assumed only to shift the curve by $\alpha_{L0}$, while real cambered sections also change $c_{l,\max}$ and the stall character. Pressure and shear from a three-dimensional wing are a different matter (chapter 3).`,
+      scope: String.raw`The measured data are for a smooth NACA 0012 section at low Mach number and $Re = 1.8\times10^6$ and $0.5\times10^6$. The cambered curves are a model: camber is assumed only to shift the curve by $\alpha_{L0}$, while real cambered sections also change $c_{l,\max}$ and the stall character. Pressure and shear from a three-dimensional wing are a different matter (chapter 3).`,
       credit: 'NACA 0012 data: Critzos, Heyson & Boswinkle, NACA TN 3361, 1955',
       viz(v) {
         const reSel = v.select('Reynolds number', [{ value: 'r18', label: '1.8×10⁶' }, { value: 'r05', label: '0.5×10⁶' }], 'r18');

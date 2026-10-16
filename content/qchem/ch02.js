@@ -101,7 +101,7 @@ the **Rydberg formula**: the lines group into series ending on a common lower le
       idea: String.raw`The radial equation of 2.1 has bound solutions only when the series truncates, which fixes $E=-Z^2/2n^2$ hartree: the same number for all $l<n$, hence the $n^2$-fold degeneracy $\sum_{l<n}(2l+1)$. The Bohr condition $h\nu=E_u-E_l$ (energy conservation for the emitted photon) turns the difference of two such levels into Balmer's empirical $1/4-1/n^2$ pattern. The tiny difference between $R_\infty$ and $R_H$ is the reduced-mass correction $\mu=m_e/(1+m_e/M)$, which also separates hydrogen from deuterium.`,
       caption: String.raw`**Click a level** on the energy ladder (or use the series buttons and the slider) to choose a jump $n_u\to n_l$: the arrow is drawn in the true colour of the photon where it is visible. The right panel places the lines of all four series on a logarithmic wavelength axis, with the series limits dashed and the visible band underneath; the chosen line is marked in gold. Switch the **nucleus** between infinite mass, $^{1}$H and $^{2}$H: the Balmer lines move by a few tenths of a nanometre. The readout recomputes the wavelength from $R_M$ and compares Balmer lines with tabulated air wavelengths (recalled from standard tables, not re-measured here).`,
       deps: ['qchem-2.1'],
-      see: ['qm-8.5'],
+      see: ['qm-1.4', 'qm-8.9'],
       refs: ['McQuarrie ch. 7'],
       tags: ['Rydberg formula', 'hydrogen spectrum', 'spectral series'],
       viz(v) {

@@ -1,11 +1,11 @@
 // Medical Imaging — Chapter 2 (part 3): 2.10 radiation dose and the inverse-square law, 2.11 pulse oximetry, 2.12 Röntgen's first paper.
 import { clamp, fx, MATS, mu, tubeSpectrum, transmit, energyFluence, meanEnergy, hvlOf } from './ch02.shared.js';
 
-// ---------------------------------------------------------------- haemoglobin extinction coefficients (cm⁻¹ / (mol/L)); APPROXIMATE, recalled and rounded
-const HB = [ // [nm, HbO2, Hb]
-  [600, 3200, 14700], [620, 940, 6500], [640, 440, 3750], [660, 320, 3230], [680, 300, 2400], [700, 290, 1794], [720, 350, 1450], [740, 480, 1115],
-  [760, 590, 1550], [780, 710, 1310], [800, 816, 1075], [820, 930, 880], [840, 1010, 800], [860, 1090, 770], [880, 1150, 740], [900, 1190, 730],
-  [920, 1210, 710], [940, 1214, 693], [960, 1200, 680], [980, 1180, 670], [1000, 1130, 660],
+// ---------------------------------------------------------------- haemoglobin extinction coefficients (cm⁻¹ / (mol/L)); from Prahl's tabulation (omlc.org), rounded
+const HB = [ // [nm, HbO2, Hb]  (S. Prahl's compilation of Gratzer / Kollias data, omlc.org/spectra/hemoglobin, rounded)
+  [600, 3200, 14677], [620, 942, 6510], [640, 442, 4345], [660, 320, 3227], [680, 278, 2408], [700, 290, 1794], [720, 348, 1326], [740, 446, 1116],
+  [760, 586, 1549], [780, 710, 1075], [800, 816, 762], [820, 916, 694], [840, 1022, 692], [860, 1092, 694], [880, 1154, 726], [900, 1198, 762],
+  [920, 1224, 777], [940, 1214, 693], [960, 1186, 526], [980, 1128, 360], [1000, 1024, 207],
 ];
 function hbAt(l) {
   const i = clamp(Math.floor((l - 600) / 20), 0, HB.length - 2), t = (l - HB[i][0]) / 20;
@@ -15,7 +15,7 @@ function hbAt(l) {
 const eps = (l) => { const h = hbAt(l), w = clamp((l - 700) / 100, 0, 1); return { o: h.o, d: h.d, c: h.o * (1 - 0.9 * w) }; };
 
 const pc = (t) => (t < 1e-5 ? '<0.001\\%' : `${fx(100 * t, t < 0.01 ? 3 : 1)}\\%`);
-const DOSES = [ // typical effective doses in mSv: [name, low, high, typical] (order-of-magnitude values recalled from UNSCEAR/ICRP/ACR summaries)
+const DOSES = [ // typical effective doses in mSv: [name, low, high, typical] (order-of-magnitude typical values in line with UNSCEAR/ICRP/ACR summaries)
   ['dental bitewing', 0.002, 0.01, 0.005], ['chest radiograph', 0.02, 0.1, 0.05], ['mammogram (2 views)', 0.2, 0.6, 0.4], ['abdomen radiograph', 0.3, 1, 0.7],
   ['lumbar spine radiographs', 0.5, 2, 1], ['head CT', 1, 3, 2], ['chest CT', 4, 10, 7], ['abdomen–pelvis CT', 5, 15, 10], ['natural background, one year', 1, 10, 2.4],
 ];
@@ -98,7 +98,7 @@ Real instruments use an empirical calibration of $S$ against $R$ (about $S\appro
       deps: ['imaging-2.2', 'physio-6.2'],
       tags: ['pulse oximetry', 'haemoglobin', 'absorption spectroscopy'],
       refs: ['Prince–Links ch. 4'],
-      scope: String.raw`Beer–Lambert with no scattering: real devices need the empirical calibration (the two curves differ), and accuracy degrades below about 70% saturation. The extinction coefficients are rounded values recalled from the standard compilation (they are not a substitute for it); the carboxyhaemoglobin spectrum is a schematic one.`,
+      scope: String.raw`Beer–Lambert with no scattering: real devices need the empirical calibration (the two curves differ), and accuracy degrades below about 70% saturation. The extinction coefficients are rounded values from the standard compilation (from Prahl's tabulation at omlc.org; not a substitute for it); the carboxyhaemoglobin spectrum is a schematic one.`,
       viz(v) {
         const SP = v.stage({ x: [600, 1000], y: [300, 20000], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 260, xlabel: 'wavelength (nm)', ylabel: 'extinction $\\varepsilon$ (cm⁻¹/M)', title: 'Absorption spectra of haemoglobin' });
         const WV = v.stage({ x: [0, 4], y: [0.96, 1.04], axes: 'box', gutter: true, height: 320, minWidth: 260, xlabel: 'time (s)', ylabel: 'transmitted light ÷ its DC level', title: 'Pulse at the two wavelengths' });
@@ -148,14 +148,14 @@ Real instruments use an empirical calibration of $S$ against $R$ (about $S\appro
       name: 'Ueber eine neue Art von Strahlen',
       paper: { authors: 'W. C. Röntgen', year: 1895, title: 'Ueber eine neue Art von Strahlen (Vorläufige Mittheilung)', venue: 'Sitzungsberichte der Physikalisch-medicinischen Gesellschaft zu Würzburg (1895)', url: 'https://archive.org/details/b30475697' },
       introduces: ['imaging-2.1'],
-      statement: String.raw`In this preliminary communication Röntgen reported that a discharge tube, even when wrapped in black cardboard, makes a screen coated with barium platinocyanide glow at a distance of a couple of metres. He concluded that the tube emits a previously unknown radiation, which he called X-rays: they are not deflected by magnets, are not reflected or refracted appreciably, travel in straight lines, blacken photographic plates, and **penetrate matter to very different degrees**: paper, a thick book and wood let most of it through, aluminium of a centimetre or more only weakens it, and metals such as lead block it, with lead glass much more opaque than ordinary glass. Shadow images show that bone is more opaque than flesh, and he published the first images of a living hand's skeleton. This is the founding observation of projection radiography: a transmission shadow whose darkness records the path-integrated attenuation, which depends on composition (atomic number) and not on density alone.`,
+      statement: String.raw`In this preliminary communication Röntgen reported that a discharge tube, even when wrapped in black cardboard, makes a screen coated with barium platinocyanide glow at a distance of a couple of metres. He concluded that the tube emits a previously unknown radiation, which he called X-rays: they are not deflected by magnets, are not reflected or refracted appreciably, travel in straight lines, blacken photographic plates, and **penetrate matter to very different degrees**: paper, a thick book and wood let most of it through, aluminium of a centimetre or more only weakens it, and metals such as lead block it, with lead glass much more opaque than ordinary glass. Shadow images show that bone is more opaque than flesh, and he saw the bones of a living hand as shadows on the screen (the radiograph of his wife's hand, the first of his photographs to become famous, went out with reprints in January 1896). This is the founding observation of projection radiography: a transmission shadow whose darkness records the path-integrated attenuation, which depends on composition (atomic number) and not on density alone.`,
       idea: String.raw`Before the paper, cathode rays (electrons) had been studied outside discharge tubes by Hertz and Lenard, but only over a few centimetres of air. Röntgen noticed a glowing screen far beyond that range, set aside everything else for seven weeks and systematically tested which materials stop the new rays and what they do, which showed that they were not cathode rays. He introduced the **name and the concept of X-rays**, the shadow-image method and the first radiographs; the physics of how they are made (stopping of electrons in the anode, imaging-2.1) was worked out later, and their wave nature was shown by von Laue's crystal diffraction in 1912. Röntgen received the first Nobel Prize in Physics in 1901.`,
       caption: String.raw`A fluorescent screen glows green where X-rays arrive; the bright screen on the right shows an open beam above and, below it, the beam behind a slab of the **material** and **thickness** you choose, and on the left the shadow of a hand, soft tissue grey and bones dark. The curves show the fraction transmitted against thickness for each material at the chosen tube voltage (modelled with a modern tungsten-tube spectrum, since Röntgen's tube and voltage are not known). Check his claims: 15 mm of aluminium weakens but does not stop the glow, a millimetre or two of lead extinguishes it, and lead glass is far more opaque than ordinary glass of the same thickness.`,
       deps: [],
       tags: ['X-rays', 'discovery', 'radiography'],
       refs: [],
       credit: 'Röntgen, 28 Dec 1895',
-      scope: String.raw`The pictures are a modern model (Kramers spectrum, remembered attenuation data) of what Röntgen observed: they reproduce which materials block and which pass the rays, not his quantitative measurements, which were qualitative. The tube voltage he used is unknown, and the observed screen brightness depends on the screen and the eye.`,
+      scope: String.raw`The pictures are a modern model (Kramers spectrum, attenuation model calibrated to NIST XCOM) of what Röntgen observed: they reproduce which materials block and which pass the rays, not his quantitative measurements, which were qualitative. The tube voltage he used is unknown, and the observed screen brightness depends on the screen and the eye.`,
       viz(v) {
         const SC = v.stage({ x: [0, 160], y: [-9, 109], equal: true, axes: false, height: 340, minWidth: 300, title: 'The fluorescent screen' });
         const TC = v.stage({ x: [0.05, 100], y: [1e-4, 1.3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'thickness (mm)', ylabel: 'fraction of the light transmitted', title: 'Transmission through each material' });
