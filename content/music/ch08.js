@@ -239,6 +239,7 @@ export default {
       credit: 'Named for the mathematician John Myhill by John Clough and Gerald Myerson, "Variety and multiplicity in diatonic systems", Journal of Music Theory 29 (1985)',
       scope: String.raw`Scales with $\gcd(c,n)=1$ in the theorem as stated here; the converse (Myhill's property characterises the maximally even, equivalently well-formed, scales) is due to the same literature and is only illustrated by the examples.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cardinality_equals_variety' },
+      verify: true,
       viz(v) {
         const SC = { diatonic: ['diatonic', PRESETS.diatonic], pent: ['pentatonic', PRESETS.pentatonic], harm: ['harmonic minor', PRESETS.harmMinor], mel: ['melodic minor', PRESETS.melMinor], whole: ['whole-tone', PRESETS.wholetone], oct: ['octatonic', PRESETS.octatonic], rand: ['random 7 notes', null] };
         const sc = v.select('scale', Object.entries(SC).map(([value, [label]]) => ({ value, label })), 'diatonic');

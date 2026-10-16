@@ -59,7 +59,7 @@ export function reInv(w, r, y1, y2 = 0, y3 = 0) {
 }
 /** Cumulative (outside-in) integral of Re 1/(1−rφ) over the shell η<|y|<δ in R^d, using polar quadrature with log-spaced radii.
  *  Returns {rad: ascending radii, tail[i] = ∫_{|y|>rad[i]}, total}. */
-export function shellIntegral(w, d, r, { rmin = 1e-4, rmax = 1, nr = 140 } = {}) {
+export function shellIntegral(w, d, r, { rmin = 1e-6, rmax = 1, nr = 210 } = {}) {
   const dirs = [];
   if (d === 1) dirs.push([1, 0, 0, 2]);
   else if (d === 2) { const K = 48; for (let k = 0; k < K; k++) { const th = ((k + 0.5) * 2 * Math.PI) / K; dirs.push([Math.cos(th), Math.sin(th), 0, (2 * Math.PI) / K]); } }
@@ -114,7 +114,7 @@ export function excursion(cum, x, r, cap = 100000) {
 
 // ------------------------------------------------------------------ drawing
 /** Nodes with arrows between them; width/alpha follow w(i,j) in [0,1]. Returns nothing. */
-export function drawChain(v, s, ch, { w, colors, label, nodeR = 15, showSelf = false } = {}) {
+export function drawChain(v, s, ch, { w, colors, label, nodeR = 15, minLabel = 0.15 } = {}) {
   const n = ch.n, P = ch.P;
   for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
     if (i === j) continue;
@@ -123,7 +123,7 @@ export function drawChain(v, s, ch, { w, colors, label, nodeR = 15, showSelf = f
     const [x1, y1] = ch.pos[i], [x2, y2] = ch.pos[j], dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
     const off = 0.07, px = -uy * off, py = ux * off, sh = 0.2;
     s.arrow(x1 + ux * sh + px, y1 + uy * sh + py, x2 - ux * sh + px, y2 - uy * sh + py, { color: 'muted', width: 0.6 + 4.5 * Math.min(1, val), alpha: 0.35 + 0.6 * Math.min(1, val), head: 7 });
-    if (P[i][j] > 1e-9) s.text(P[i][j].toFixed(2), (x1 + x2) / 2 + px * 2.6 + ux * (i < j ? -0.06 : 0.06), (y1 + y2) / 2 + py * 2.6 + uy * (i < j ? -0.06 : 0.06), { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
+    if (P[i][j] >= minLabel) s.text(P[i][j].toFixed(2), (x1 + x2) / 2 + px * 2.6 + ux * (i < j ? -0.06 : 0.06), (y1 + y2) / 2 + py * 2.6 + uy * (i < j ? -0.06 : 0.06), { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
   }
   for (let i = 0; i < n; i++) {
     const [x, y] = ch.pos[i];

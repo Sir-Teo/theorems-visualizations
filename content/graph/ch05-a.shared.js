@@ -315,3 +315,9 @@ export function hajosRecipe(n, E, k, limit = 400) {
 }
 /** Edge colouring of H with k colours (exact search on the line graph): {status, col (per edge)}. */
 export function edgeColourWith(H, k, budget = 1.5e6) { return colourWith(lineAdj(H), k, budget); }
+import { spread as _spread, triDraw as _triDraw, randomTriangulation as _rt } from './ch04-z.shared.js';
+/** Random plane triangulation with a spread-out straight-line drawing: {n, E, pos}. */
+export function triangulation(n, seed, flips = 12) {
+  const D = _triDraw(_rt(n, rng32(seed), flips));
+  return { ...D, pos: _spread(D.n, D.E, D.pos, 70, [0, 1, 2]) };
+}

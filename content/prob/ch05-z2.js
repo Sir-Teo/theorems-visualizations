@@ -92,7 +92,7 @@ $$v\,\bar p=p .$$`,
           const { g, sp } = get(), VP = matMulS(sp.V, sp.Pb); let err = 0, neg = 0, rowErr = 0;
           VP.forEach((row, i) => row.forEach((x, j) => { err = Math.max(err, Math.abs(x - g.P[i][j])); }));
           sp.Pb.forEach((row) => { rowErr = Math.max(rowErr, Math.abs(row.reduce((a, b) => a + b, 0) - 1)); row.forEach((x) => { if (x < -1e-15) neg++; }); });
-          return `$\\varepsilon=${fx(sp.eps, 4)}$. $\\max|v\\bar p-p|=${err.toExponential(1)}$; the rows of $\\bar p$ sum to $1$ within ${rowErr.toExponential(1)}$ and ${neg} entries are negative.`;
+          return `$\\varepsilon=${fx(sp.eps, 4)}$. Largest entry of $|v\\bar p-p|$: ${err.toExponential(1)}; the rows of $\\bar p$ sum to $1$ within ${rowErr.toExponential(1)}, and ${neg} entries are negative.`;
         });
       },
     },
@@ -147,7 +147,7 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
       idea: String.raw`Since $v\bar p=p$ (5.8.4), a double step of the alternating chain has kernel $p$, so $\bar X_{2n}$ has the law of $X_n$ by induction. For the odd times, one more $\bar p$-step from $\bar X_{2n+1}$ lands on $\bar X_{2n+2}\overset{d}{=}X_{n+1}$; averaging $f$ over that step gives $\bar pf$.`,
       credit: SPLIT_CREDIT,
       verify: true,
-      caption: String.raw`Choose a test function and a starting cell. Curves: $E f(X_n)$ computed exactly for the original discretised chain (blue) and from the alternating chain (green dashes) — they coincide. Dots: simulation of the alternating chain (3000 runs) at even times $2n$ (gold) and the odd-time quantity $E\bar f(\bar X_{2n+1})$ (purple), both landing on the blue curve up to sampling noise.`,
+      caption: String.raw`Choose a test function and a starting cell. Curves: $E f(X_n)$ computed exactly for the original discretised chain (blue) and from the alternating chain (green dashes) — they coincide. Dots: simulation of the alternating chain (3000 runs) at even times $2n$ (gold) and the odd-time quantity $E\bar f(\bar X_{2n+1})$ (purple, plotted at $n+1$), both landing on the blue curve up to sampling noise.`,
       deps: ['prob-5.8.5'],
       tags: ['general state space'],
       viz(v) {
@@ -178,7 +178,7 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
           S.path(ex.map((y, n) => [n, y]), { color: 'accent', width: 3 });
           S.path(sp2.map((y, n) => [n, y]), { color: 'green', width: 2, dash: [8, 5] });
           mcE.forEach((y, n) => S.dot(n, y, { color: 'gold', r: 4 }));
-          mcO.forEach((y, n) => S.dot(n, y, { color: 'purple', r: 3, hollow: true }));
+          mcO.forEach((y, n) => n < NN && S.dot(n + 1, y, { color: 'purple', r: 3, hollow: true }));
         });
         v.legend([['accent', 'original chain (exact)'], ['green', 'alternating chain (exact)', { dash: true }], ['gold', 'simulated $f(\\bar X_{2n})$'], ['purple', 'simulated $\\bar f(\\bar X_{2n+1})$ vs $E f(X_{n+1})$']]);
         v.readout(() => { const { ex, sp2, odd, mcE } = get(); let e1 = 0, e2 = 0, e3 = 0; ex.forEach((y, n) => { e1 = Math.max(e1, Math.abs(y - sp2[n])); e3 = Math.max(e3, Math.abs(y - mcE[n])); if (n < NN) e2 = Math.max(e2, Math.abs(ex[n + 1] - odd[n])); }); return `Exact original vs exact alternating: max difference ${e1.toExponential(1)}; odd-time identity (against $Ef(X_{n+1})$): ${e2.toExponential(1)}; simulation vs exact: ${fx(e3, 3)}.`; });
@@ -213,10 +213,10 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
         };
         v.render(() => {
           const { path, regs, cReg, cC, N } = get(); const mx = Math.max(6, ...path.map((p) => Math.abs(p[1]))), ym = Math.max(5, ...cReg.map((p) => p[1]), ...cC.map((p) => p[1]));
-          P.setView([0, N], [-Math.min(mx, 1e4) * 1.05, Math.min(mx, 1e4) * 1.05]);
+          P.setView([0, N], [-Math.min(mx, 15) * 1.05, Math.min(mx, 15) * 1.05]);
           P.hband(-1, 1, { color: 'orange', alpha: 0.25 });
           P.path(path, { color: 'accent', width: 1.2 });
-          const vy = Math.min(mx, 1e4) * 1.05;
+          const vy = Math.min(mx, 15) * 1.05;
           regs.forEach((n) => P.line(n, -vy, n, -vy * 0.85, { color: 'gold', width: 1, alpha: 0.7 }));
           C.setView([0, N], [0, ym * 1.1]);
           C.path(cReg, { color: 'gold', width: 2.4 }); C.path(cC, { color: 'accent', width: 2 });
@@ -361,11 +361,11 @@ $$\|p^n(x,\cdot)-\pi\|_{TV}\to0 .$$`,
           H.hist(xs, { bins: 60, range: [lo, hi], density: true, color: 'accent', fillAlpha: 0.25 });
           const sd = Math.sqrt(L.v); if (n > 0) H.fn((x) => phi((x - L.m) / sd) / sd, { color: 'accent', width: 2.2 });
           H.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
-          const pts = []; for (let k = 0; k <= 40; k++) { const q = law(k, a, x0.value); pts.push([k, Math.max(1e-4, tvNormal(q.m, q.v, 0, s2))]); }
+          const pts = []; for (let k = 0; k <= 40; k++) { const q = law(k, a, x0.value); pts.push([k, k === 0 ? 1 : Math.max(1e-4, tvNormal(q.m, q.v, 0, s2))]); }
           T.path(pts, { color: 'green', width: 2.4 }); T.dot(n, pts[n][1], { color: 'gold', r: 5 }); T.vline(n, { color: 'gold', width: 1.2, dash: true });
         });
         v.legend([['accent', 'simulated / exact law of $X_n$'], ['green', 'stationary law']]);
-        v.readout(() => { const a = aS.value, n = nS.value, L = law(n, a, x0.value); return `$n=${n}$: $X_n\\sim N(${fx(L.m, 2)},${fx(L.v, 2)})$; stationary variance $${fx(stationaryVar(a), 2)}$; $\\|p^n(x_0,\\cdot)-\\pi\\|_{TV}=${fx(tvNormal(L.m, L.v, 0, stationaryVar(a)), 4)}$.`; });
+        v.readout(() => { const a = aS.value, n = nS.value, L = law(n, a, x0.value); return `$n=${n}$: $X_n\\sim N(${fx(L.m, 2)},${fx(L.v, 2)})$; stationary variance $${fx(stationaryVar(a), 2)}$; $\\|p^n(x_0,\\cdot)-\\pi\\|_{TV}=${fx(n === 0 ? 1 : tvNormal(L.m, L.v, 0, stationaryVar(a)), 4)}$.`; });
       },
     },
     {

@@ -209,7 +209,7 @@ $$1-\cos x\ \ge\ \frac{x^2}{4}.$$`,
       see: ['prob-5.4.11'],
       tags: ['estimates'],
       viz(v) {
-        const A = v.stage({ x: [-3.4, 3.4], y: [-0.1, 2.2], axes: 'box', gutter: true, height: 300, xlabel: '$x$', title: '$1-\\cos x$ and $x^2/4$', xticks: [[-Math.PI / 3, '$-\\pi/3$'], [0, '0'], [Math.PI / 3, '$\\pi/3$'], [Math.PI, '$\\pi$'], [-Math.PI, '$-\\pi$']] });
+        const A = v.stage({ x: [-3.4, 3.4], y: [-0.1, 2.2], axes: 'box', gutter: true, height: 300, xlabel: '$x$', title: '$1-\\cos x$ and $x^2/4$', xticks: [[-Math.PI / 3, '−π/3'], [0, '0'], [Math.PI / 3, 'π/3'], [Math.PI, 'π'], [-Math.PI, '−π']] });
         const B = v.stage({ x: [-3.4, 3.4], y: [0, 0.55], axes: 'box', gutter: true, height: 300, xlabel: '$x$', title: '$(1-\\cos x)/x^2$ against $1/4$' });
         const h = A.handle(1.0, 0, { color: 'gold', constrain: 'x', label: 'x' });
         const ratio = (x) => (Math.abs(x) < 1e-6 ? 0.5 : (1 - Math.cos(x)) / (x * x));

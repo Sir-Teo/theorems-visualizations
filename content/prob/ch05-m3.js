@@ -56,7 +56,7 @@ If $\mu$ is a probability measure it is a **stationary distribution**: a chain s
         v.button('Random', () => { const n = CHAINS[cS.value].n, r = v.rng(Math.floor(performance.now())); const m = Array.from({ length: n }, () => r()); const t = sumOf(m); m.forEach((x, i) => hs[i].set(i, x / t)); });
         v.render(() => {
           const ch = CHAINS[cS.value], mu = cur(), q = muP(mu, ch.P), mx = Math.max(...mu, 0.05);
-          drawChain(v, A, ch, { colors: mu.map((m) => v.ramp(clampN(m / Math.max(mx, 0.3), 0, 1), 'accent')), label: (i) => String(i) });
+          drawChain(v, A, ch, { colors: mu.map((m) => v.ramp(0.35 + 0.65 * clampN(m / Math.max(mx, 0.3), 0, 1), 'accent')), label: (i) => String(i) });
           mu.forEach((m, i) => { A.text(m.toFixed(2), ch.pos[i][0] * 1.32, ch.pos[i][1] * 1.32, { size: 11, color: 'ink', align: 'center', baseline: 'middle' }); });
           q.forEach((x, i) => { B.rect(i + 0.04, 0, i + 0.34, x, { fill: 'orange', fillAlpha: 0.7, color: 'orange' }); });
           mu.forEach((m, i) => { B.rect(i - 0.34, 0, i - 0.04, m, { fill: 'accent', fillAlpha: 0.7, color: 'accent' }); });
@@ -170,7 +170,7 @@ $$\prod_{i=0}^{k-1}p(x_i,x_{i+1})=\prod_{i=0}^{k-1}p(x_{i+1},x_i).$$`,
           B.setView([-0.6, 5.6], [-top * 0.5, top]);
           B.rect(-0.3, 0, 0.3, fw, { fill: 'accent', fillAlpha: 0.75, color: 'accent' }); B.text('forward', 0, -top * 0.08, { size: 11, color: 'muted', align: 'center' });
           B.rect(0.7, 0, 1.3, bw, { fill: 'orange', fillAlpha: 0.75, color: 'orange' }); B.text('backward', 1, -top * 0.08, { size: 11, color: 'muted', align: 'center' });
-          const sc = top * 0.45 / Math.max(0.05, ...defects.map(Math.abs));
+          const sc = top * 0.45 / Math.max(1e-9, ...defects.map(Math.abs));
           defects.forEach((d, k) => { B.rect(2.7 + k * 0.7 - 0.25, 0, 2.7 + k * 0.7 + 0.25, d * sc, { fill: Math.abs(d) < 1e-4 ? 'green' : 'red', fillAlpha: 0.75, color: 'red' }); });
           B.text('edge defects (rescaled)', 3.7, -top * 0.08, { size: 11, color: 'muted', align: 'center' });
           B.hline(0, { color: 'faint' });
@@ -208,10 +208,10 @@ Then $\mu_x$ is a stationary measure: $\mu_xp=\mu_x$, with $\mu_x(x)=1$. It live
             A.rect(y + 0.04, 0, y + 0.36, q[y], { fill: 'green', fillAlpha: 0.7, color: 'green' });
             A.dot(y, ex[y], { r: 6, hollow: true, color: 'orange' });
           }
-          v.res = { d: l1(Array.from(q), Array.from(mu)), e: l1(Array.from(mu), ex), tot: sumOf(mu), x };
+          v.res = { d: l1(Array.from(q), Array.from(mu)), e: l1(Array.from(mu), ex), tot: sumOf(mu), x, ipi: 1 / pi[x] };
         });
         v.legend([['accent', '$\\hat\\mu_x$'], ['green', '$\\hat\\mu_xp$'], ['orange', 'exact $\\pi/\\pi(x)$']]);
-        v.readout(() => v.res && `$\\hat\\mu(x)=1$. Mismatch $\\|\\hat\\mu p-\\hat\\mu\\|_1=$ **${fr(v.res.d, 3)}**; distance to the exact measure ${fr(v.res.e, 3)}. Mean excursion length $\\sum\\hat\\mu=${fr(v.res.tot, 3)}$ (exact $1/\\pi(x)$).`);
+        v.readout(() => v.res && `$\\hat\\mu(x)=1$. Mismatch $\\|\\hat\\mu p-\\hat\\mu\\|_1=$ **${fr(v.res.d, 3)}**; distance to the exact measure ${fr(v.res.e, 3)}. Mean excursion length $\\sum\\hat\\mu=${fr(v.res.tot, 3)}$ (exact $1/\\pi(x)=${fr(v.res.ipi, 3)}$).`);
       },
     },
     // ======================================================================== 5.5.9
@@ -394,7 +394,7 @@ $$\pi(x)=\frac1{E_xT_x},\qquad T_x=\inf\{n\ge1:X_n=x\}.$$`,
         const A = v.stage({ x: [0, T], y: [1e-8, 3], ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$t$', title: '$\\|\\mu_t-\\pi\\|_1$' });
         const B = v.stage({ x: [-0.6, 4.6], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'state', title: '$\\mu_{60}$ from each start', xticks: [0, 1, 2, 3, 4] });
         v.render(() => {
-          const ch = CHAINS[cS.value], n = ch.n, pi = piOf(ch.P, 20000), starts = [Array.from({ length: n }, (_, i) => (i === 0 ? 1 : 0)), Array.from({ length: n }, (_, i) => (i === n - 1 ? 1 : 0)), Array.from({ length: n }, (_, i) => (i + 1) / ((n * (n + 1)) / 2))];
+          const ch = CHAINS[cS.value], n = ch.n, pi = piOf(ch.P, 20000), starts = [Array.from({ length: n }, (_, i) => (i === 0 ? 1 : 0)), Array.from({ length: n }, (_, i) => (i === n - 1 ? 1 : 0)), Array.from({ length: n }, (_, i) => (i === 1 ? 5 : 1) / (n + 4))];
           const cols = ['accent', 'orange', 'green'], fin = [];
           starts.forEach((s0, k) => {
             let mu = Float64Array.from(s0), run = Float64Array.from(s0); const pts = [[0, l1(s0, pi)]];

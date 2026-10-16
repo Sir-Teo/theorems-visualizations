@@ -139,7 +139,7 @@ export default {
           for (let i = 0; i < 24; i++) {
             const on = i < n, nm = i < 12 ? `T${i}` : `I${i - 12}`, h = Math.min(f[i], top * 0.97);
             b.rect(i - 0.38, 0, i + 0.38, h, { fill: i < 12 ? 'accent' : 'orange', fillAlpha: on ? 0.75 : 0.12, stroke: false });
-            if (on && f[i]) b.text(f[i] > top * 0.97 ? `${f[i]} ↑` : String(f[i]), i, h + top * 0.015, { size: 9.5, color: 'ink', align: 'center' });
+            if (on && f[i]) b.text(f[i] > top * 0.97 ? `${f[i]} ↑` : String(f[i]), i, h + top * 0.015, { size: 9.5, color: 'ink', align: i === 0 ? 'left' : 'center', dx: i === 0 ? 6 : 0 });
             b.text(nm, i, 0, { size: 8, color: on ? 'muted' : 'faint', align: 'center', baseline: 'top', dy: 4 });
           }
           b.hline(avg, { color: 'green', dash: [5, 4], width: 2 }); b.text(`average ${v.fix(avg, 2)}`, 23.8, top * 0.93, { size: 12, color: 'green', align: 'right', baseline: 'top', weight: 700, plate: true });
@@ -254,6 +254,7 @@ export default {
       credit: 'The name and the relation are due to Allen Forte (1964); the relation was considered earlier by Howard Hanson, who called such sets "isomeric" (secondary sources)',
       scope: String.raw`Classes under $T_n/T_nI$. Under transposition alone the notion changes (a set and its inversion can have the same vector without being a transposition of each other); the counts of 23 pairs here are computed from the 224 classes.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Z-relation' },
+      verify: true,
       viz(v) {
         const Z = zPairs();
         const pair = v.slider('Z-pair number', 1, Z.length, 1, { int: true });
