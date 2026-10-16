@@ -181,10 +181,10 @@ export function drawBox(s, o = {}) {
   s.tex('O_A', 0, 0, { color: 'accent', dx: -14, dy: 14, size: 15 });
   s.tex('O_B', W1, W2, { color: 'orange', dx: 14, dy: -14, size: 15 });
   if (o.axes !== false) {
-    s.text('A: good 1 →', 0, 0, { dx: 0, dy: 16, size: 11.5, color: 'accent', align: 'left', weight: 600 });
+    s.text('A: good 1 →', 0, 0, { dx: 4, dy: 16, size: 11.5, color: 'accent', align: 'left', weight: 600 });
     s.text('B: good 2 ↓', W1, 0, { dy: 16, size: 11.5, color: 'orange', align: 'right', weight: 600 });
     s.text('A: good 2 ↑', 0, W2, { dy: -15, size: 11.5, color: 'accent', align: 'left', weight: 600 });
-    s.text('← B: good 1', W1, W2, { dy: -15, size: 11.5, color: 'orange', align: 'right', weight: 600 });
+    s.text('← B: good 1', W1, W2, { dx: -30, dy: -15, size: 11.5, color: 'orange', align: 'right', weight: 600 });
   }
 }
 /** Trader A's indifference curve of level L (clipped to the box). */

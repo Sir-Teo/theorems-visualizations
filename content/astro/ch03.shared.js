@@ -98,18 +98,18 @@ export function orbitTable(e, Ns = 96) {
   return { Ns, ar3, f, e };
 }
 /**
- * Advance the spin one orbit (pericentre to pericentre) by RK4. State s = [θ, ω] (θ in rad, ω in units of n), torque κ (dω/dt = −κ on top of the
- * gravitational torque; 0 for the conservative map). Returns the new state in place.
+ * Advance the spin one orbit (pericentre to pericentre) by RK4. State s = [θ, ω] (θ in rad, ω in units of n). κ is a tidal (viscous)
+ * braking rate, dω/dt = −κ(ω − 1) on top of the gravitational torque; κ = 0 gives the conservative (Hamiltonian) map. Returns the state in place.
  */
 export function spinOrbit(tab, sigma, kappa, s) {
   const { Ns, ar3, f } = tab, h = TAU / Ns;
   let th = s[0], w = s[1];
-  const acc = (t, k) => -1.5 * sigma * ar3[k] * Math.sin(2 * (t - f[k])) - kappa;
+  const acc = (t, k, ww) => -1.5 * sigma * ar3[k] * Math.sin(2 * (t - f[k])) - kappa * (ww - 1);
   for (let j = 0; j < Ns; j++) {
     const k0 = 2 * j;
-    const a1 = acc(th, k0), t2 = th + 0.5 * h * w, w2 = w + 0.5 * h * a1, a2 = acc(t2, k0 + 1);
-    const t3 = th + 0.5 * h * w2, w3 = w + 0.5 * h * a2, a3 = acc(t3, k0 + 1);
-    const t4 = th + h * w3, w4 = w + h * a3, a4 = acc(t4, k0 + 2);
+    const a1 = acc(th, k0, w), t2 = th + 0.5 * h * w, w2 = w + 0.5 * h * a1, a2 = acc(t2, k0 + 1, w2);
+    const t3 = th + 0.5 * h * w2, w3 = w + 0.5 * h * a2, a3 = acc(t3, k0 + 1, w3);
+    const t4 = th + h * w3, w4 = w + h * a3, a4 = acc(t4, k0 + 2, w4);
     th += (h / 6) * (w + 2 * w2 + 2 * w3 + w4); w += (h / 6) * (a1 + 2 * a2 + 2 * a3 + a4);
   }
   s[0] = th; s[1] = w;

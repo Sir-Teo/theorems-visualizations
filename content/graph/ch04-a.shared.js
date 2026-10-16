@@ -61,10 +61,13 @@ export function crossPairs(P, E, tol = 1e-6) {
 
 // ================================================================ 2. planarize
 /** Cut the edges at all crossings (and at vertices lying on them): a plane graph {P, E, orig (original edge per new edge)}. */
-export function planarize(P, E, tol = 1e-6) {
-  const Q = P.map((p) => p.slice()), cuts = E.map(() => []), keyOf = new Map();
+export function planarize(P, E0, tol = 1e-6) {
+  const Q = P.map((p) => p.slice()), keyOf = new Map();
+  const key0 = (p) => Math.round(p[0] * 1e6) + ',' + Math.round(p[1] * 1e6);
+  P.forEach((p, i) => { if (!keyOf.has(key0(p))) keyOf.set(key0(p), i); });
+  const canon = P.map((p) => keyOf.get(key0(p))); // coincident points are one vertex
+  const E = E0.map(([a, b]) => [canon[a], canon[b]]), cuts = E.map(() => []);
   const key = (x, y) => Math.round(x * 1e6) + ',' + Math.round(y * 1e6);
-  P.forEach((p, i) => { if (!keyOf.has(key(p[0], p[1]))) keyOf.set(key(p[0], p[1]), i); });
   const mk = (x, y) => { const k = key(x, y); if (keyOf.has(k)) return keyOf.get(k); Q.push([x, y]); keyOf.set(k, Q.length - 1); return Q.length - 1; };
   for (let i = 0; i < E.length; i++) {
     for (let j = i + 1; j < E.length; j++) {
@@ -74,13 +77,14 @@ export function planarize(P, E, tol = 1e-6) {
       if (h) { const v = mk(h.x, h.y); cuts[i].push([h.t, v]); cuts[j].push([h.u, v]); }
     }
     for (let v = 0; v < P.length; v++) {
-      if (v === E[i][0] || v === E[i][1]) continue;
+      if (canon[v] !== v || v === E[i][0] || v === E[i][1]) continue;
       const d = distSeg(P[v], P[E[i][0]], P[E[i][1]]);
       if (d.d < tol) cuts[i].push([d.t, v]);
     }
   }
   const E2 = [], orig = [], seen = new Set();
   E.forEach(([a, b], k) => {
+    if (a === b) return;
     const seq = [[0, a], ...cuts[k].sort((x, y) => x[0] - y[0]), [1, b]];
     for (let i = 0; i + 1 < seq.length; i++) {
       const u = seq[i][1], w = seq[i + 1][1];
@@ -168,7 +172,7 @@ export function paintFaces(s, F, o = {}) {
   F.faces.forEach((f, i) => {
     const c = o.colorOf ? o.colorOf(i) : i ? FILLS[(i - 1) % FILLS.length] : null;
     if (!c) return;
-    s.rings(i ? f.rings : [rect, ...f.rings], { fill: c, fillAlpha: o.alpha ?? 0.22, stroke: false, evenodd: true });
+    s.rings(i ? f.rings : [rect, ...f.rings], { fill: c, fillAlpha: i ? o.alpha ?? 0.22 : o.outerAlpha ?? 0.1, stroke: false, evenodd: true });
   });
 }
 /** Mark crossing points (red rings). */
@@ -390,4 +394,32 @@ export function partsGraph(parts) {
 export function regionsOf(parts) {
   const g = partsGraph(parts), pl = planarize(g.P, g.E);
   return { g, pl, F: faceStruct(pl.P, pl.E) };
+}
+
+/** Click-to-select vertex pairs on a PG board: returns {sel}; onPair(u, w) runs on the second click. */
+export function pgPick(s, getPg, onPair) {
+  const st = { sel: -1 };
+  s.onClick((x, y) => {
+    const i = pgNearest(getPg(), x, y);
+    if (i < 0) { st.sel = -1; return; }
+    if (st.sel < 0) st.sel = i; else if (st.sel === i) st.sel = -1; else { const u = st.sel; st.sel = -1; onPair(u, i); }
+  });
+  return st;
+}
+/** Would the straight edge ab keep the drawing of a plane graph (ps = planeOf(G)) crossing-free? */
+export const freeEdge = (ps, a, b) => crossPairs(ps.P, [...ps.E, [a, b]], 0.05).length === 0;
+/** Bridges of a plane graph: edges that have the same face on both sides. */
+export const isBridge = (F, k) => F.faceOfHe[2 * k] === F.faceOfHe[2 * k + 1];
+/** Is the (simple) graph on n vertices with edge list E 2-connected? (n ≥ 3, connected, no cutvertex) */
+export function twoConnected(n, E) {
+  if (n < 3) return false;
+  const conn = (skip) => {
+    const adj = Array.from({ length: n }, () => []); E.forEach(([a, b]) => { if (a !== skip && b !== skip) { adj[a].push(b); adj[b].push(a); } });
+    const s0 = skip === 0 ? 1 : 0, seen = new Set([s0]), Q = [s0];
+    while (Q.length) for (const w of adj[Q.pop()]) if (!seen.has(w)) { seen.add(w); Q.push(w); }
+    return seen.size === n - (skip >= 0 ? 1 : 0);
+  };
+  if (!conn(-1)) return false;
+  for (let v = 0; v < n; v++) if (!conn(v)) return false;
+  return true;
 }

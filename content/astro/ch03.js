@@ -100,7 +100,7 @@ export default {
         const K2 = 0.3, delta0 = 0.5 * Math.asin(kq / K2);
         const Lorb = (a) => mu0 * Math.sqrt(G * (E.M + Mm) * a), Ltot = C * w0 + Lorb(a0);
         const dial = 1.55, MAG = 8; // the lag is drawn 8 times too large so that it can be seen and dragged
-        const s = v.stage({ x: [-1.9, 5.3], y: [-2.1, 2.1], equal: true, axes: false, height: 330, full: true, title: 'tidal bulge with lag angle $\\delta$ (angle drawn ×8, sizes not to scale)' });
+        const s = v.stage({ x: [-1.9, 5.3], y: [-2.1, 2.1], equal: true, axes: false, height: 270, full: true, title: 'tidal bulge with lag angle $\\delta$ (angle drawn ×8, sizes not to scale)' });
         const ga = v.stage({ x: [-1.6, 5], y: [0, 700], axes: 'box', gutter: true, height: 250, weight: 1, xlabel: 'time (Gyr from today)', ylabel: 'Earth–Moon distance (10³ km)', title: 'the orbit grows' });
         const gl = v.stage({ x: [-1.6, 5], y: [0, 160], axes: 'box', gutter: true, height: 250, weight: 1, xlabel: 'time (Gyr from today)', ylabel: 'rotation period of Earth (h)', title: 'the day lengthens' });
         const tS = v.slider('time $t$ (Gyr)', -1.6, 5, 0, { step: 0.05, fmt: (x) => v.fix(x, 2) });
@@ -231,8 +231,8 @@ where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rig
 $$\ddot\theta = -\tfrac32\,\frac{B-A}{C}\,\frac{GM_\odot}{r^3}\,\sin 2(\theta - f),$$
 a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It has stable resonant states at $\dot\theta = \tfrac p2 n$ ($p$ an integer) when $e\neq 0$; the half-integer ones ($3/2$, $5/2$, …) exist only because the orbit is eccentric. Tidal despinning that slows a fast-rotating planet can capture it into one of these states as it passes; the capture probability depends on the eccentricity history, and Mercury's final state is the 3:2.`,
       idea: String.raw`Averaged over an orbit the torque has a nonzero mean only when $\theta$ advances by a multiple of $\pi$ per orbit, and the strength of the term at $\dot\theta = \frac p2 n$ is set by an eccentricity-expansion coefficient that grows with $e$. Near each resonance the dynamics is a pendulum (mech 4.15): a libration island in the spin phase portrait bounded by a separatrix, whose width scales as $\sqrt{(B-A)/C}$. Slow tidal braking pushes $\omega$ down through the islands; whether the planet is trapped depends on the phase at which it arrives, hence a probability.`,
-      caption: String.raw`Left: Poincaré section of the spin, sampled once per orbit at perihelion — the angle $\theta$ against spin rate $\omega = \dot\theta/n$. Each colour is one orbit of initial conditions; the closed loops at $\omega = 1,\ 3/2,\ 2,\ 5/2$ are resonance islands. Drag the **gold point** to launch your own spin. Raise $e$ and the half-integer islands grow; at $e = 0$ they vanish. Press **Despin ×40** (right): forty spins with random phase start fast and feel a constant braking torque; each curve either stays at an island or slides on. The count is the capture frequency in this toy model.`,
-      scope: String.raw`Rigid, planar spin with a fixed axis, Keplerian orbit; the triaxiality $\sigma = (B-A)/C$ is exaggerated by default so that the islands are visible (Mercury's value, estimated from the MESSENGER gravity coefficient $C_{22}$ and the polar moment of inertia, is of order $10^{-4}$). The braking is a constant torque, as in the classical Goldreich–Peale calculation; actual capture involves the eccentricity history and core–mantle friction.`,
+      caption: String.raw`Left: Poincaré section of the spin, sampled once per orbit at perihelion — the angle $\theta$ against spin rate $\omega = \dot\theta/n$. Each curve is one initial condition followed for 260 orbits; the closed loops at $\omega = 1,\ 3/2,\ 2,\ 5/2$ are resonance islands. Drag the **gold point** to launch your own spin. Raise $e$ and the half-integer islands grow; at $e = 0$ they vanish. Press **Despin ×40** (right): forty spins with random phase start fast and feel a tidal braking torque proportional to $\omega - n$; each curve either stays at an island or slides on toward $\omega = 1$. With $e = 0$ every one ends at 1:1; with the present eccentricity a fraction is caught at 3/2. This toy model's counts are not the published capture probabilities.`,
+      scope: String.raw`Rigid, planar spin with a fixed axis, Keplerian orbit; the triaxiality $\sigma = (B-A)/C$ is exaggerated by default so that the islands are visible (Mercury's value, estimated from the MESSENGER gravity coefficient $C_{22}$ and the polar moment of inertia, is of order $10^{-4}$). The tidal torque is modelled as a viscous term $-\kappa(\omega - n)$ (it must depend on $\omega$: a torque of constant sign is conservative and can never capture); real tidal torques are not linear, and actual capture involves the eccentricity history and core–mantle friction.`,
       deps: ['astro-3.3', 'mech-4.15'],
       refs: ['Murray–Dermott §5.4', 'Murray–Dermott §5.5'],
       tags: ['resonance', 'spin–orbit', 'Mercury'],
@@ -242,7 +242,7 @@ a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It
       viz(v) {
         const eS = v.slider('orbital eccentricity $e$', 0, 0.4, 0.2056, { step: 0.001 });
         const sS = v.slider('triaxiality $\\sigma = (B-A)/C$', 1e-4, 3e-2, 8e-3, { log: true, sig: 2 });
-        const kS = v.slider('braking torque $\\kappa$ (units $n^2$)', 2e-5, 3e-3, 4e-4, { log: true, sig: 2 });
+        const kS = v.slider('tidal braking rate $\\kappa/n$', 3e-4, 2e-2, 3e-3, { log: true, sig: 2 });
         const ph = v.stage({ x: [0, 180], y: [0, 3.2], axes: 'box', gutter: true, height: 360, weight: 1.15, xlabel: 'spin angle $\\theta$ mod 180° at perihelion', ylabel: 'spin rate $\\omega$ ($n$)', title: 'Poincaré section',
           yticks: [[0, '0'], [1, '1'], [1.5, '3/2'], [2, '2'], [2.5, '5/2'], [3, '3']], xticks: [0, 45, 90, 135, 180] });
         const tr = v.stage({ x: [0, 400], y: [0, 3.4], axes: 'box', gutter: true, height: 360, weight: 1, xlabel: 'time (orbits)', ylabel: 'spin rate $\\omega$ ($n$)', title: 'despinning ensemble',
@@ -265,21 +265,21 @@ a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It
           });
           return out;
         });
-        function runEnsemble() {
-          const tab = orbitTable(eS.value, 40), rng = v.rng(2024), runs = [], K = kS.value, W0 = 3.3;
-          const tMax = Math.ceil((W0 + 0.4) / K / TAU) + 60, out = { runs: [], count: { '1': 0, '3/2': 0, '2': 0, '5/2': 0, '3': 0, other: 0 }, tMax };
+        function runEnsemble(first) {
+          const tab = orbitTable(eS.value, 40), rng = v.rng(2024), K = kS.value, W0 = 3.3;
+          const tMax = Math.ceil(7 / K / TAU) + 30, out = { runs: [], count: { '1': 0, '3/2': 0, '2': 0, '5/2': 0, '3': 0, other: 0 }, tMax };
           for (let j = 0; j < 40; j++) {
             const st = [rng() * Math.PI, W0 + 0.03 * rng()], tr = [];
-            for (let k = 0; k <= tMax; k++) { if (k % 2 === 0) tr.push([k, st[1]]); spinOrbit(tab, sS.value, st[1] > 0.55 ? K : 0, st); if (st[1] < 0.55) break; }
-            // classify by mean spin over the last 25 orbits
+            for (let k = 0; k <= tMax; k++) { tr.push([k, st[1]]); spinOrbit(tab, sS.value, K, st); }
             const L = tr.length; let m = 0, c = 0; for (let q = Math.max(0, L - 12); q < L; q++) { m += tr[q][1]; c++; } m /= Math.max(c, 1);
             let cls = 'other'; for (const [key, val] of [['1', 1], ['3/2', 1.5], ['2', 2], ['5/2', 2.5], ['3', 3]]) { if (Math.abs(m - val) < 0.06) cls = key; }
             out.count[cls]++; out.runs.push({ tr, cls });
           }
           ens = out; runKey = `${eS.value}|${sS.value}|${kS.value}`;
-          v.invalidate();
+          if (first !== true) v.invalidate();
         }
-        v.button('Despin ×40', runEnsemble);
+        v.button('Despin ×40', () => runEnsemble());
+        runEnsemble(true);
         v.onCleanup(() => { ens = null; });
         const COLS = ['blue', 'teal', 'purple', 'orange', 'green', 'pink'];
         const col = (i) => COLS[i % COLS.length];
@@ -300,13 +300,13 @@ a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It
           } else { tr.corner('press “Despin ×40”', 'tr', { color: 'muted' }); }
           cur = { wmin, wmax };
         });
-        v.legend([['blue', 'spin states, one colour per initial rate', { dot: true }], ['gold', 'your spin', { dot: true }], ['green', 'captured in 3:2'], ['orange', 'captured in 2:1'], ['blue', 'ended at 1:1 (synchronous)']]);
+        v.legend([['teal', 'spin states (one curve per initial condition)', { dot: true }], ['gold', 'your spin', { dot: true }], ['green', 'despin ends in 3:2'], ['orange', 'ends in 2:1'], ['blue', 'ends at 1:1 (synchronous)']]);
         v.readout(() => {
           const e = eS.value;
           let out = String.raw`$e = ${v.fix(e, 4)}$, $\sigma = ${fmtSci(v, sS.value, 2)}$` + (e < 1e-3 ? ' · circular orbit: only $\\omega = 1$ (synchronous) survives; the half-integer islands vanish' : '');
           if (cur) out += String.raw` · your trajectory has $\omega \in [${v.fix(cur.wmin, 2)},\, ${v.fix(cur.wmax, 2)}]$` + (cur.wmax - cur.wmin < 0.4 ? ' — librating in a resonance island' : ' — circulating/chaotic (outside the islands)');
           if (ens && runKey === `${eS.value}|${sS.value}|${kS.value}`) { const c = ens.count; out += String.raw` · of 40 despinning spins: $${c['3/2']}$ in 3:2, $${c['2']}$ in 2:1, $${c['5/2']}$ in 5:2, $${c['1']}$ reached 1:1, $${c.other + c['3']}$ other`; }
-          out += String.raw` · for comparison, Goldreich and Peale's estimate for the present $e$ was only about $7\%$ for the 3:2 capture, while Correia and Laskar's chaotic-eccentricity calculation gave about $55\%$ (secondary source)`;
+          out += String.raw` · published capture estimates (secondary source): about $7\%$ for 3:2 from Goldreich and Peale (eccentricity fixed at its present value) and about $55\%$ from Correia and Laskar (eccentricity evolving chaotically)`;
           return out;
         });
       },
@@ -377,7 +377,8 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
           g.vline(Math.cbrt(2), { color: 'red', width: 1.2, dash: [3, 3] });
           g.text(`fluid: ${v.fix(Dcrit, 3)}`, Dcrit, 2.2, { color: 'blue', size: 10.5, dx: 5, align: 'left' });
           g.text('rigid: 1.26', Math.cbrt(2), 2.2, { color: 'red', size: 10.5, dx: 5, align: 'left' });
-          g.vband(1, Dcrit, { color: 'red', alpha: 0.06 });
+          g.vband(1, Dcrit, { color: 'blue', alpha: 0.05 });
+          g.text('no fluid equilibrium', (1 + Dcrit) / 2, 0.55, { color: 'blue', size: 10.5, align: 'center' });
           g.vline(D, { color: 'gold', width: 1.4 });
         });
         v.legend([['blue', '$a_1/r$ (toward the planet)'], ['green', '$a_2/r$'], ['orange', '$a_3/r$ (spin axis)'], ['red', 'rigid: tide / self-gravity', { dash: true }]]);
@@ -393,7 +394,7 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
       kind: 'Phenomenon',
       name: 'Planetary rings and shepherd moons',
       statement: String.raw`The giant planets' rings lie mostly inside the Roche limit, where tides prevent ring particles from accreting into a moon. A ring spreads radially by collisions between its particles. Narrow rings can nevertheless stay narrow if a small moon orbits on each side: each shepherd repels the ring particles near it (a particle just outside the moon's orbit gains angular momentum at every conjunction and is pushed out; one just inside loses it and is pushed in), so a pair confines the ring between them. Resonances with larger moons (for example the 2:1 resonance with Mimas at the Cassini Division's boundary) clear sharp gaps; a moon inside a gap, like Pan in the Encke gap, keeps it open by the same repulsion.`,
-      idea: String.raw`Two forces compete: viscous spreading, which pushes the ring's edges outward and inward, and the gravitational torque of a moon that is overtaken (or overtakes) a ring particle at each synodic conjunction. The change in the particle's orbital radius per conjunction falls steeply with the separation, as $\propto \Delta^{-5}$ in Hill-radius units for $\Delta \gtrsim 3R_H$. Where it exceeds the spreading, the edge is held. Inside $\approx 2.5\,R_H$ the particles are on horseshoe-type orbits or are scattered, so the moon clears its path. Shepherding was proposed by Goldreich and Tremaine in 1979, shortly before Voyager imaged small moons beside the F ring and Uranus's ε ring.`,
+      idea: String.raw`Two forces compete: viscous spreading, which pushes the ring's edges outward and inward, and the gravitational torque of a moon that is overtaken (or overtakes) a ring particle at each synodic conjunction. The change in the particle's orbital radius per conjunction falls steeply with the separation, as $\propto \Delta^{-5}$ in Hill-radius units for $\Delta \gtrsim 3R_H$. Where it exceeds the spreading, the edge is held. Inside $\approx 2.5\,R_H$ the particles are on horseshoe-type orbits or are scattered, so the moon clears its path. Shepherding was proposed by Goldreich and Tremaine in 1979; small moons flanking Saturn's F ring (Prometheus) and Uranus's ε ring (Cordelia and Ophelia) were then found in Voyager images.`,
       caption: String.raw`A ring of particles (blue, radial scale stretched ×7) between two small moons. The kick each conjunction gives a particle is computed from Hill's equations (the encounter integral is evaluated numerically for a table of separations). Viscous spreading is a random walk in orbital radius. Lower the **moon mass** and the ring oozes out toward and past the moons; raise it and the ring is confined. Grey outline: the same ring with no moons. Particles that fall within $2.6\,R_H$ of a moon are scattered out (red).`,
       scope: String.raw`Toy model: the moons are on fixed circular orbits; the mass ratio used is far larger than for the real shepherds so that the confinement shows within a few hundred orbits; spreading is a diffusion step in orbital radius rather than a collisional ring simulation; each encounter uses the Hill-approximation kick (small $\Delta a/a$).`,
       deps: ['astro-3.5', 'astro-2.8'],
@@ -480,7 +481,7 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
       statement: String.raw`Io keeps one face toward Jupiter, but its orbit is slightly eccentric ($e = 0.004$), so the tide Jupiter raises on it grows and shrinks, and its bulge is flexed once per $1.77$-day orbit. The internal friction turns orbital energy into heat at a rate
 $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
 ($M_J$ Jupiter's mass, $R$, $a$, $n$ Io's radius, orbital radius and mean motion). This is proportional to $e^2$, and tides alone would circularise the orbit in roughly $10^5$ years (for $k_2/Q$ of order $10^{-2}$); the heating continues because Io's mean motions are locked in the Laplace resonance with Europa and Ganymede (2.10), which keeps pumping its eccentricity. The result is the most volcanic body of the Solar System, radiating of order $10^{14}$ W.`,
-      idea: String.raw`The tidal energy is dissipated only in the time-varying part of the tide. For a synchronous satellite on a circular orbit the bulge is fixed and nothing flexes (tidal locking, 3.3, has already removed the steady part); with eccentricity the distance changes by $\pm ae$ and the tide amplitude $\propto (a/r)^3$ by $\pm3e$, and the dissipation scales with the square of that, hence $e^2$ and the steep $a^{-6}$. Tides also act to reduce $e$, on a time $\tau_e = \frac{2}{21n}\frac{Q}{k_2}\frac{m}{M_J}\left(\frac aR\right)^5$; only the resonance (2.10), which transfers angular-momentum and energy among the three moons, can sustain a forced $e$ against this. Peale, Cassen and Reynolds (1979) predicted that this heating should melt much of Io, days before Voyager 1 found volcanoes.`,
+      idea: String.raw`The tidal energy is dissipated only in the time-varying part of the tide. For a synchronous satellite on a circular orbit the bulge is fixed and nothing flexes (tidal locking, 3.3, has already removed the steady part); with eccentricity the distance changes by $\pm ae$ and the tide amplitude $\propto (a/r)^3$ by $\pm3e$, and the dissipation scales with the square of that, hence $e^2$ and the steep $a^{-6}$. Tides also act to reduce $e$, on a time $\tau_e = \frac{2}{21n}\frac{Q}{k_2}\frac{m}{M_J}\left(\frac aR\right)^5$; only the resonance (2.10), which transfers angular-momentum and energy among the three moons, can sustain a forced $e$ against this. Peale, Cassen and Reynolds (1979) predicted that this heating should melt much of Io, shortly before Voyager 1 found its volcanoes.`,
       caption: String.raw`Left: the strength of Jupiter's tide on Io over one orbit, $(a/r)^3$: its swing is $\pm3e$. Middle: dissipated power against eccentricity for the chosen $k_2/Q$; drag the **eccentricity handle** (the cross marks Io's value, the band the published range of the observed total). Right: with the resonance **off**, tides alone damp $e$ (and the heating) away in $\tau_e$; with it **on**, $e$ is maintained.`,
       scope: String.raw`Synchronously rotating satellite on a nearly circular orbit, uniform dissipation described by a single $k_2/Q$, with the eccentricity given. $k_2/Q$ of Io is uncertain; the slider shows what value would be needed to match the observed output. Observed heat-flow estimates differ between studies and between methods.`,
       deps: ['astro-3.2', 'astro-2.10'],
@@ -540,7 +541,7 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
       statement: String.raw`A fluid planet in hydrostatic equilibrium (fluid-2.2) that rotates with angular velocity $\Omega$ has a surface of constant effective potential: it bulges at the equator. The size of the effect is set by $q = \Omega^2R^3/GM$, the ratio of centrifugal to gravitational acceleration at the equator, and by how centrally concentrated the mass is. For small $q$ the flattening $f = (R_\mathrm{eq} - R_\mathrm{pol})/R_\mathrm{eq}$ is $f \approx \tfrac54 q$ for a uniform (Maclaurin) spheroid and, to first order, $f = \dfrac{\tfrac52 q}{1 + \tfrac{25}{4}\,(1 - \tfrac32 K)^2}$ (Darwin–Radau) with $K = C/MR^2$ the moment-of-inertia factor: $K = 0.4$ for a uniform sphere and less for a centrally condensed one, which is flattened less.`,
       idea: String.raw`In the rotating frame the surface is an equipotential of gravity plus the centrifugal potential (mech 9.7), so the surface has to dip at the pole by the amount that the centrifugal term lifts the equator. For a homogeneous body this is solved exactly by the Maclaurin spheroids, for which $\Omega^2/\pi G\rho$ is an explicit function of the eccentricity; for a body in which the density increases inward Clairaut's equation links the flattening of each layer to the density profile, and Radau's approximation reduces it to a single relation between $f$, $q$ and $C/MR^2$. Concentrating mass toward the centre makes the interior gravity field nearly that of a point, which is less deformable.`,
       caption: String.raw`Pick **Earth**, **Jupiter** or **Saturn** (its rotation, size and mass are loaded) or move the **spin period** and **concentration** $K$ yourself: the outline is the computed spheroid (exaggerated for Earth) against a circle of equal equatorial radius. Right: flattening against $q$ for several $K$ (log axes), the exact Maclaurin curve for a uniform fluid, and the observed planets. The observed values sit near the curves; the **inferred $K$** is the concentration that would reproduce each planet's flattening.`,
-      scope: String.raw`Rigid-rotation hydrostatic equilibrium, small flattening (Radau–Darwin is first order). The giant planets rotate differentially in their winds, which causes percent-level departures; Earth is also not perfectly hydrostatic. Maclaurin spheroids exist only up to $e \approx 0.81$ and beyond that the sequence leaves the symmetric branch.`,
+      scope: String.raw`Rigid-rotation hydrostatic equilibrium, small flattening (Radau–Darwin is first order). The giant planets rotate differentially in their winds, which causes percent-level departures; Earth is also not perfectly hydrostatic. The Maclaurin curve is drawn only up to $e \approx 0.81$, beyond which these spheroids are secularly unstable to the triaxial Jacobi ellipsoids.`,
       deps: ['mech-9.7', 'fluid-2.2'],
       refs: ['Murray–Dermott §4.5'],
       tags: ['rotation', 'shape', 'hydrostatics'],
@@ -606,7 +607,8 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
         const body = v.select('body', [{ value: 'earth', label: 'Earth (exobase)' }, { value: 'moon', label: 'Moon (surface)' }], 'earth', { onChange: (k) => { T.set(k === 'earth' ? 1000 : 390); alt.el.hidden = k !== 'earth'; } });
         const T = v.slider('temperature $T$ (K)', 100, 3000, 1000, { log: true, sig: 3 });
         const alt = v.slider('exobase altitude (km)', 0, 1500, 500, { step: 10 });
-        const s = v.stage({ x: [0, 14], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 1.25, xlabel: 'molecular speed (km/s)', ylabel: 'probability density (per km/s, scaled)', title: 'Maxwell–Boltzmann speeds' });
+        const logy = v.toggle('logarithmic density axis (shows the tails)', true);
+        const s = v.stage({ x: [0, 14], y: [1e-12, 2], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.25, xlabel: 'molecular speed (km/s)', ylabel: 'probability density (per km/s, scaled)', title: 'Maxwell–Boltzmann speeds' });
         const g = v.stage({ x: [0.4, 4.6], y: [-3, 24], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '', ylabel: '$\\log_{10}$ drain time (yr)', title: 'time to drain the exobase column',
           xticks: [[1, 'H'], [2, 'He'], [3, 'N₂'], [4, 'CO₂']], yticks: [[-2, '10⁻²'], [0, '1'], [4, '10⁴'], [9, '10⁹'], [14, '10¹⁴'], [19, '10¹⁹'], [24, '10²⁴']] });
         let cur = null;
@@ -621,13 +623,14 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
           });
           const dens = (sp, vk) => { const v_ = vk * 1e3, a = sp.m / (2 * Math.PI * K_B * TT); return 4 * Math.PI * a ** 1.5 * v_ * v_ * Math.exp(-sp.m * v_ * v_ / (2 * K_B * TT)) * 1e3; }; // per km/s
           let top = 0; for (const r of rows) { for (let i = 0; i < 80; i++) top = Math.max(top, dens(r, (i * 14) / 80)); }
-          s.setView([0, 14], [0, top * 1.1]);
+          const floor = top * 1e-13;
+          s.setScale({ ylog: logy.value, x: [0, 14], y: logy.value ? [floor, top * 2] : [0, top * 1.1] });
           for (const r of rows) {
-            s.fn((x) => dens(r, x), { color: r.color, width: 2.2, n: 220 });
-            if (vesc / 1e3 < 14) s.fn((x) => dens(r, x), { color: r.color, stroke: false, fill: true, fillAlpha: 0.35, domain: [vesc / 1e3, 14], n: 100 });
+            s.fn((x) => Math.max(dens(r, x), logy.value ? floor * 0.5 : 0), { color: r.color, width: 2.2, n: 260 });
+            if (vesc / 1e3 < 14) s.fn((x) => Math.max(dens(r, x), logy.value ? floor * 0.5 : 0), { color: r.color, stroke: false, fill: true, base: logy.value ? floor : 0, fillAlpha: 0.35, domain: [vesc / 1e3, 14], n: 100 });
           }
           s.vline(vesc / 1e3, { color: 'ink', width: 1.6, dash: [6, 4] });
-          s.text(`$v_\\mathrm{esc} = ${v.fix(vesc / 1e3, 2)}$ km/s`, vesc / 1e3, top * 1.04, { color: 'ink', size: 11, dx: -6, align: 'right' });
+          s.text(`$v_\\mathrm{esc} = ${v.fix(vesc / 1e3, 2)}$ km/s`, vesc / 1e3, logy.value ? top * 1.2 : top * 1.04, { color: 'ink', size: 11, dx: vesc / 1e3 > 6 ? -6 : 6, align: vesc / 1e3 > 6 ? 'right' : 'left' });
           // drain times
           g.hline(Math.log10(4.5e9), { color: 'green', width: 1.2, dash: [6, 4] });
           g.text('age of the Solar System', 0.45, Math.log10(4.5e9), { color: 'green', size: 10, dy: -9, align: 'left' });
@@ -654,7 +657,7 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
 $$\mathbf F_\mathrm{rad} = \beta\,\frac{GMm}{r^2}\left[\Big(1 - \frac{\dot r}{c}\Big)\hat{\mathbf r} - \frac{\mathbf v}{c}\right],\qquad \beta = \frac{3L_\odot Q_\mathrm{pr}}{16\pi G M_\odot c\,\rho s}$$
 ($s$ grain radius, $\rho$ density, $Q_\mathrm{pr}$ the radiation-pressure efficiency, $\approx1$ for large grains). The radial part just weakens gravity by the factor $1-\beta$; the drag part removes angular momentum, so the grain spirals inward: for a circular orbit $dr/dt = -2\beta GM/(cr)$ and it reaches the Sun in $t_\mathrm{PR} = c\,r_0^2/(4\beta GM)$, proportional to the grain size and to $r_0^2$.`,
       idea: String.raw`To first order in $v/c$ the radiation is aberrated: seen from the Sun the light a moving grain absorbs comes from a direction tilted by $v/c$ (relativistic aberration, rel 2.10), and the radiation pressure (em 11.6) it exerts is not quite radial. The tangential piece $-\beta\,GMm\,v/(c\,r^2)$ is a drag. On a circular orbit the angular momentum is $h = \sqrt{GMr}$, so $\dot h = -\beta (GM)^{3/2}/(c\,r^{3/2})$ gives $\dot r = -2\beta GM/(cr)$ and integrates to $r^2 = r_0^2 - 4\beta GM\,t/c$. A grain launched from a circular parent orbit starts on an ellipse of eccentricity $e = \beta/(1-\beta)$, which the drag then circularises as it shrinks (orbit elements, 1.1).`,
-      caption: String.raw`Choose $\beta$ (small grains have large $\beta$). The simulation integrates the full force law with the speed of light set to $c = 60$ circular speeds (the real value, $\approx 10^4$ circular speeds, would make the spiral invisible); time is in orbital periods. Left: the spiral; middle: semi-major axis against time, with the analytic $a^2 = a_0^2 - 4\beta GM t/c$ dashed; right: the real inspiral time for the grain radius and density you pick, from the same law with the real $c$.`,
+      caption: String.raw`Choose $\beta$ (small grains have large $\beta$). The simulation integrates the full force law with the speed of light set to $c = 20$ circular speeds (the real value, $\approx 10^4$ circular speeds at 1 AU, would make the spiral invisible); time is in orbital periods. Left: the spiral; middle: semi-major axis against time, with the analytic $a^2 = a_0^2 - 4\beta GM t/c$ dashed; right: the real inspiral time for the grain radius and density you pick, from the same law with the real $c$.`,
       scope: String.raw`Valid to first order in $v/c$, for a perfectly absorbing, isotropically re-emitting spherical grain (the constant $Q_\mathrm{pr}\approx1$ needs $s$ larger than the wavelength of sunlight, a few micrometres or more). The simulated $c$ is deliberately small; the analytic law for circular orbits neglects the small eccentricity corrections. Very small grains are blown out by radiation pressure instead ($\beta > 1/2$).`,
       deps: ['rel-2.10', 'astro-1.1', 'em-11.6'],
       refs: ['Murray–Dermott §3.14'],
@@ -662,7 +665,7 @@ $$\mathbf F_\mathrm{rad} = \beta\,\frac{GMm}{r^2}\left[\Big(1 - \frac{\dot r}{c}
       credit: 'Poynting, 1903; Robertson, 1937',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Poynting%E2%80%93Robertson_effect' },
       viz(v) {
-        const CS = 60; // speed of light in the simulation, units of the parent's circular speed
+        const CS = 20; // speed of light in the simulation, units of the parent's circular speed
         const bS = v.slider('$\\beta$ = radiation force / gravity', 0.005, 0.3, 0.05, { log: true, sig: 2, onChange: () => { if (S) S.reset(); } });
         const rho = v.select('grain density', [{ value: 1000, label: '1000 kg/m³ (ice-like)' }, { value: 2500, label: '2500 kg/m³ (silicate)' }, { value: 7800, label: '7800 kg/m³ (iron)' }], 2500);
         const r0S = v.slider('starting distance (AU)', 0.3, 10, 1, { log: true, sig: 2 });
@@ -714,11 +717,11 @@ $$\mathbf F_\mathrm{rad} = \beta\,\frac{GMm}{r^2}\left[\Big(1 - \frac{\dot r}{c}
           const sNow = (3 * L_SUN) / (16 * Math.PI * GM_SUN * C_LIGHT * den * b);
           k.dot(clamp(sNow * 1e6, 1, 1000), tReal(clamp(sNow * 1e6, 1, 1000)), { r: 6, color: 'gold' });
           cur = { b, sNow, tFall, tReal: tReal(sNow * 1e6), a0 };
-        }, { period: 90, still: 14 });
+        }, { period: 90, still: 9 });
         v.legend([['accent', 'simulation'], ['green', '$a^2 = a_0^2 - 4\\beta GM t/c$', { dash: true }], ['gold', 'now / your $\\beta$', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
-          return String.raw`$\beta = ${v.fix(cur.b, 3)}$ → grain radius $s = 3L_\odot/(16\pi GMc\rho\beta) = ${v.fix(cur.sNow * 1e6, 1)}\ \mu$m (with $Q_\mathrm{pr}=1$) · launched from a circular orbit: $a_0 = ${v.fix(cur.a0, 3)}$, $e = ${v.fix(cur.b / (1 - cur.b), 3)}$ · simulated fall time $c\,a_0^2/4\beta GM = ${v.fix(cur.tFall, 0)}$ orbits (at $c = 60$) · real inspiral time from $${v.fix(r0S.value, 2)}$ AU: $${fmtSci(v, cur.tReal, 2)}$ yr, i.e. $\approx ${v.fix(cur.tReal / 1e3, 1)}\times10^3$ yr for this grain; at 1 AU the law gives $t_\mathrm{PR}\approx 400/\beta$ yr`;
+          return String.raw`$\beta = ${v.fix(cur.b, 3)}$ → grain radius $s = 3L_\odot/(16\pi GMc\rho\beta) = ${v.fix(cur.sNow * 1e6, 1)}\ \mu$m (with $Q_\mathrm{pr}=1$) · launched from a circular orbit: $a_0 = ${v.fix(cur.a0, 3)}$, $e = ${v.fix(cur.b / (1 - cur.b), 3)}$ · simulated fall time $c\,a_0^2/4\beta GM = ${v.fix(cur.tFall, 0)}$ orbits (at $c = 20$) · real inspiral time from $${v.fix(r0S.value, 2)}$ AU: $${fmtSci(v, cur.tReal, 2)}$ yr, i.e. $\approx ${v.fix(cur.tReal / 1e3, 1)}\times10^3$ yr for this grain; at 1 AU the law gives $t_\mathrm{PR}\approx 400/\beta$ yr`;
         });
       },
     },

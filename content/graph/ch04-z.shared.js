@@ -436,4 +436,15 @@ export function segPoint(p, q, r, s) {
   const t = ((r[0] - p[0]) * (s[1] - r[1]) - (r[1] - p[1]) * (s[0] - r[0])) / d; return [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
 }
 /** Spec of a graph given by relative positions P = [[x, y], …] and edge pairs. */
-export const specOf = (P, E) => ({ nodes: P.map(([x, y], i) => ({ id: i, x, y })), edges: E.map(([a, b]) => [a, b]), layout: 'fit' });
+export const specOf = (P, E, lab = (i) => String(i + 1)) => ({ nodes: P.map(([x, y], i) => ({ id: i, x, y, label: lab(i) })), edges: E.map(([a, b]) => [a, b]), layout: 'fit' });
+
+/** Normalised preset: {n, E (index pairs), pos (relative coordinates)} from a kit graph spec. */
+export function norm(spec) { const H = ix(spec); return { n: H.n, E: H.E.map(([a, b]) => [a, b]), pos: H.nodes.map((q) => [q.x ?? 0, q.y ?? 0]) }; }
+/** Contract the edge [a, b] of a simple graph given as {groups, E}: groups are lists of base vertices. Returns the new graph. */
+export function contractG(g, a, b) {
+  const map = new Int32Array(g.groups.length); let c = 0; const groups = [];
+  for (let i = 0; i < g.groups.length; i++) { if (i === b) continue; map[i] = c++; groups.push(i === a ? g.groups[a].concat(g.groups[b]) : g.groups[i].slice()); }
+  map[b] = map[a]; const seen = new Set(), E = [];
+  for (const [x, y] of g.E) { const p = map[x], q = map[y]; if (p === q) continue; const k = ekey2(p, q); if (seen.has(k)) continue; seen.add(k); E.push([Math.min(p, q), Math.max(p, q)]); }
+  return { groups, E };
+}
