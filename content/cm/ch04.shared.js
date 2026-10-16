@@ -108,15 +108,16 @@ export function mosModel(Na, toxNm, Vfb = 0, T = 300) {
   /** Drain current (A) for W/L = wl and mobility mu (cm²/Vs). */
   const Id = (Vg, Vd, mu = 400, wl = 10) => {
     if (Vg <= Vfb) return 0;
-    const n = 24, h = Vd / n; let s = 0;
-    for (let i = 0; i <= n; i++) { const vc = i * h, q = Qinv(psiOf(Vg, vc), vc); s += q * (i === 0 || i === n ? 1 : i % 2 ? 4 : 2); }
-    const q0 = Qinv(psiOf(Vg, 0), 0), q1 = Qinv(psiOf(Vg, Vd), Vd);
-    return Math.max(0, mu * wl * ((s * h) / 3 + Vt * (q1 - q0)));
+    // I = μ (W/L) ∫0^Vd Q_inv(V_c) dV_c with V_c the electron quasi-Fermi potential (it already contains the diffusion current);
+    // the substitution V_c = V_d s² puts more points near the source, where Q_inv varies on the scale k_BT/e.
+    const n = 40, h = 1 / n; let s = 0;
+    for (let i = 0; i <= n; i++) { const t = i * h, vc = Vd * t * t; s += Qinv(psiOf(Vg, vc), vc) * 2 * Vd * t * (i === 0 || i === n ? 1 : i % 2 ? 4 : 2); }
+    return Math.max(0, mu * wl * ((s * h) / 3));
   };
   /** Band bending ψ(z) from the surface into the bulk (z in nm), by integrating dψ/dz = −E_s(ψ). */
   const profile = (psis) => {
     const out = [[0, psis]]; let z = 0, psi = psis; const LD = Math.sqrt((eps * Vt) / (Q * Na));
-    for (let it = 0; it < 2500 && psi > 0.003 * Vt; it++) {
+    for (let it = 0; it < 2500 && psi > 0.03 * Vt; it++) {
       const Es = (u) => Math.sqrt(2) * (Vt / LD) * Math.sqrt(F2(u, 0));
       const e1 = Es(psi / Vt); const dz = Math.max(0.03e-7, Math.min(3e-7, (0.04 * Vt) / e1));
       const mid = psi - 0.5 * dz * e1, e2 = Es(Math.max(mid, 1e-6) / Vt); psi = psi - dz * e2; z += dz; out.push([z * 1e7, Math.max(psi, 0)]);

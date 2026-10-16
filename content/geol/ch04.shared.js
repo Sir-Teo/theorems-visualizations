@@ -60,7 +60,7 @@ export function makeConvection({ nx = 80, nz = 28, Ra = 1e4, seed = 3, amp = 0.0
   for (let n = 0; n < Nz; n++) { const r = new Float64Array(Mx); for (let m = 0; m < Mx; m++) { const k = ((m + 1) * Math.PI) / L, q = (n + 1) * Math.PI; r[m] = (k * k + q * q) ** 2; } k2.push(r); }
   const T = new Float64Array(nx * nz), T1 = new Float64Array(nx * nz), K1 = new Float64Array(nx * nz);
   const U = new Float64Array(nx * nz), W = new Float64Array(nx * nz), P = new Float64Array(nx * nz), Tx = new Float64Array(nx * nz);
-  const A = new Float64Array(nz * Mx), C = new Float64Array(Nz * Mx), B = new Float64Array(Nz * Mx);
+  const A = new Float64Array(nz * Mx), C = new Float64Array(nz * Mx), B = new Float64Array(Nz * Mx);
   // simple seeded noise
   let sd = seed >>> 0 || 1; const rnd = () => ((sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0) / 4294967296) - 0.5;
   const S = { nx, nz, L, dx, dz, Ra, T, U, W, P, time: 0, steps: 0 };
@@ -141,7 +141,7 @@ export function makeConvection({ nx = 80, nz = 28, Ra = 1e4, seed = 3, amp = 0.0
   /** Nusselt number: mean of the conductive flux at the bottom and top walls (equal when steady). */
   S.nu = () => {
     let top = 0, bot = 0;
-    for (let i = 0; i < nx; i++) { top += T[(nz - 1) * nx + i] / (dz / 2); bot += (2 - T[i] - 0) / 1 / (dz / 2) * 0.5 * 2 * 0 + (1 - T[i]) / (dz / 2); }
+    for (let i = 0; i < nx; i++) { top += T[(nz - 1) * nx + i] / (dz / 2); bot += (1 - T[i]) / (dz / 2); }
     return { top: top / nx, bottom: bot / nx, mean: (top + bot) / (2 * nx) };
   };
   S.wrms = () => { flow(); let s = 0; for (let o = 0; o < W.length; o++) s += W[o] * W[o]; return Math.sqrt(s / W.length); };

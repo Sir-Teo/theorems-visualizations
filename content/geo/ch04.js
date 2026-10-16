@@ -33,7 +33,7 @@ The current at the surface points $45^\circ$ to the right of the wind in the nor
         const dep = v.slider('depth marker $|z|/d$', 0, 8, 1.5, { step: 0.05 });
         const sH = v.stage({ x: [-10, 10], y: [-10, 10], equal: true, axes: true, height: 330, weight: 1, minWidth: 280, title: 'hodograph: current vs depth (cm/s)' });
         const sP = v.stage({ x: [-10, 10], y: [-100, 0], axes: 'box', gutter: true, xlabel: 'current (cm/s)', ylabel: 'depth (m)', height: 300, weight: 1, minWidth: 280, title: 'components against depth' });
-        const s3 = v.stage3d({ range: 1.45, height: 520, yaw: -0.8, pitch: 0.38, labels: ['u', 'v', 'z'], weight: 1.2, minWidth: 300, title: 'the spiral' });
+        const s3 = v.stage3d({ range: 1.45, height: 440, yaw: -0.8, pitch: 0.38, labels: ['u', 'v', 'z'], weight: 1.2, minWidth: 300, title: 'the spiral' });
         v.legend([['accent', 'u (east)'], ['orange', 'v (north)'], ['gold', 'marker depth']]);
         let st = {};
         v.render(() => {
@@ -59,12 +59,12 @@ The current at the surface points $45^\circ$ to the right of the wind in the nor
           sP.hline(-Math.PI * d, { color: 'muted', width: 1, dash: [3, 4] });
           sP.text('Ekman depth $\\pi d$', lim * 0.95, -Math.PI * d, { size: 11, color: 'muted', align: 'right', dy: -8 });
           // 3D
-          const zz = (t) => 0.8 - 1.6 * t / TM, S = (t) => { const p = U(t); return [p[0] / m0, p[1] / m0, zz(t)]; };
+          const zz = (t) => 0.6 - 1.2 * t / TM, S = (t) => { const p = U(t); return [p[0] / m0, p[1] / m0, zz(t)]; };
           s3.curve((t) => S(t), 0, TM, { n: 220, color: 'accent' });
-          s3.line([0, 0, 0.8], [0, 0, -0.8], { color: 'muted' });
+          s3.line([0, 0, 0.6], [0, 0, -0.6], { color: 'muted' });
           for (let k = 0; k <= 8; k++) { const t = k * Math.PI / 4, p = S(t); s3.arrow([0, 0, p[2]], p, { color: 'muted' }); }
-          s3.arrow([0, 0, 0.8], [1.2, 0, 0.8], { color: 'orange' });
-          s3.text('wind', [1.25, 0, 0.8]);
+          s3.arrow([0, 0, 0.6], [1.2, 0, 0.6], { color: 'orange' });
+          s3.text('wind', [1.25, 0, 0.6]);
           s3.arrow([0, 0, zz(dep.value)], S(dep.value), { color: 'gold' });
           // numerical check
           const sol = ekmanSolve(() => A.value, f, 9 * d, 360);
@@ -72,7 +72,7 @@ The current at the surface points $45^\circ$ to the right of the wind in the nor
           const rev = U(Math.PI);
           st = { f, d, m0, ang: rightDeg(a0[0], a0[1]) * hem.value, err, ratio: cabs(rev[0], rev[1]) / m0, dot: (rev[0] * U(0)[0] + rev[1] * U(0)[1]) / (m0 * cabs(rev[0], rev[1])), pm: cabs(pm[0], pm[1]) };
         });
-        v.readout(() => `$f=${v.sci(st.f, 3)}\\ \\mathrm{s^{-1}}$, $d=\\sqrt{2A/|f|}=${v.fix(st.d, 1)}$ m, Ekman depth $\\pi d=${v.fix(Math.PI * st.d, 0)}$ m. Surface current ${v.fix(st.m0, 1)} cm/s at **${v.fix(st.ang, 1)}°** to the ${hem.value > 0 ? 'right' : 'left'} of the wind.\nAt $z=-\\pi d$: speed ${v.fix(100 * st.ratio, 1)}% of the surface value ($e^{-\\pi}=4.3\\%$), direction cosine to the surface current ${v.fix(st.dot, 3)} (opposite). Marker: ${v.fix(st.pm, 2)} cm/s. Formula vs numerical solution: relative error ${v.sci(st.err, 2)}.`);
+        v.readout(() => `$f=${v.sci(st.f, 3)}\\ \\mathrm{s^{-1}}$, $d=\\sqrt{2A/|f|}=${v.fix(st.d, 1)}$ m, Ekman depth $\\pi d=${v.fix(Math.PI * st.d, 0)}$ m. Surface current ${v.fix(st.m0, 1)} cm/s at **${v.fix(st.ang, 1)}°** to the ${hem.value > 0 ? 'right' : 'left'} of the wind.\nAt $z=-\\pi d$: speed ${v.fix(100 * st.ratio, 1)}% of the surface value ($e^{-\\pi}=4.3\\%$), direction cosine to the surface current ${v.fix(st.dot, 3)} (opposite). Marker: ${v.fix(st.pm, 2)} cm/s. Formula vs numerical solution: relative error $${v.sci(st.err, 2)}$.`);
       },
     },
 
@@ -190,7 +190,7 @@ In the northern hemisphere, cyclonic wind stress (positive curl) draws water up 
           sM.heat((x, y) => wy(x, y), { range: [-R0, R0], cmap: 'theme-diverging', neg: 'red', pos: 'blue', res: 3, key: [pat.value, lat.value, hem.value, tau0.value, beta.value, Math.round(hC.x / 20), Math.round(hC.y / 20)].join('|') });
           sM.colorbar([-R0, R0], (t) => v.diverge(2 * t - 1, 'red', 'blue'), { pos: 'right', label: 'm/yr', ticks: [-R0, 0, R0] });
           const scale = 190 / Math.max(tau0.value, 1e-3);
-          for (let gx = 300; gx <= 3800; gx += 500) for (let gy = 250; gy <= 2800; gy += 350) {
+          for (let gx = 300; gx <= 3300; gx += 500) for (let gy = 250; gy <= 2800; gy += 350) {
             const [tx, ty] = stress(gx * 1e3, gy * 1e3), m = Math.hypot(tx, ty);
             if (m < 0.006) continue;
             sM.arrow(gx, gy, gx + tx * scale, gy + ty * scale, { color: 'ink', width: 1.6, head: 5 });

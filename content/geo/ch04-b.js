@@ -23,10 +23,10 @@ $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tea_leaf_paradox' },
       viz(v) {
         const R = 0.1; // m
-        const nu = v.slider('viscosity $\\nu$ (m²/s)', 3e-7, 1e-4, 1e-6, { log: true, sig: 2 });
+        const nu = v.slider('viscosity $\\nu$ (m²/s)', 3e-7, 1e-4, 1e-6, { log: true, sig: 2, fmt: (x) => x.toExponential(1) });
         const Hc = v.slider('fluid depth $H$ (cm)', 3, 20, 8, { step: 0.5 });
         const Om = v.slider('rotation rate $\\Omega$ (rad/s)', 0.5, 8, 3, { step: 0.1 });
-        const eps = v.slider('initial Rossby number $\\epsilon$', 0.05, 0.5, 0.25, { step: 0.01 });
+        const eps = v.slider('initial Rossby number $\\epsilon$', 0.02, 0.5, 0.1, { step: 0.01 });
         const lid = v.select('lids', [{ value: 2, label: 'two rigid lids' }, { value: 1, label: 'free top surface' }], 2);
         const sT = v.stage({ x: [-R * 100, R * 100], y: [-R * 100, R * 100], equal: true, axes: false, height: 330, weight: 1, minWidth: 260, title: 'top view in the rotating frame (cm)' });
         const sS = v.stage({ x: [0, 11], y: [-1.5, 22], axes: 'box', gutter: true, xlabel: 'radius (cm)', ylabel: 'height (cm)', height: 330, weight: 1, minWidth: 260, title: 'side view: Ekman circulation' });
@@ -46,7 +46,7 @@ $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\
           for (const [r, a] of leaves) { const th = a + Theta, rr = r * contr; sT.dot(rr * Math.cos(th), rr * Math.sin(th), { r: 3.4, color: 'gold' }); }
           sT.text('rotation $\\Omega$ (anticlockwise)', 0, -R * 100 * 1.02, { size: 11, color: 'muted', align: 'center' });
           // side view
-          const Hcm = Hc.value; sS.setView([0, 11], [-1.5, Math.max(22, Hcm + 3)]);
+          const Hcm = Hc.value; sS.setView([0, 11], [-2.5, Math.max(22, Hcm + 3)]);
           sS.rect(0, 0, R * 100, Hcm, { color: 'ink', width: 2, fill: 'blue', fillAlpha: 0.06 });
           sS.rect(0, -0.9, R * 100, 0, { fill: 'muted', fillAlpha: 0.5, stroke: false });
           if (lid.value === 2) sS.rect(0, Hcm, R * 100, Hcm + 0.9, { fill: 'muted', fillAlpha: 0.5, stroke: false });
@@ -56,7 +56,7 @@ $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\
             if (lid.value === 2) sS.arrow(r - len / 2, Hcm - 0.6, r + len / 2, Hcm - 0.6, { color: 'ink', width: 2, head: 5 });
           }
           for (const r of [1.5, 4, 6.5, 9]) sS.arrow(r, Hcm * 0.3, r, Hcm * 0.3 + (Hcm * 0.4) * (0.2 + 0.8 * k), { color: 'accent', width: 2, head: 5 });
-          sS.text('floor layer: inflow', 5.5, -0.9, { size: 11, color: 'muted', align: 'center', dy: -12 });
+          sS.text('floor layer: inflow', 5.5, -0.9, { size: 11, color: 'muted', align: 'center', dy: 12 });
           sS.text('interior: upflow', 5.5, Hcm * 0.5, { size: 11, color: 'accent', align: 'center', dx: 0, dy: 8 });
           // decay plot
           const Tmax = 6 * tE;
@@ -116,7 +116,7 @@ largest at the equator, positive for $|y|<r/\beta\,(\text{width}\sim 2^{\circ}\t
             const wv = w(y); if (Math.abs(wv) < 0.05) continue;
             const L = clamp(wv * 7, -28, 28); sS.arrow(y, -hE - 4, y, -hE - 4 + L, { color: 'orange', width: 2.2, head: 6 });
           }
-          sS.text('easterly trades ($\\otimes$ into the page for $\\tau_x<0$ seen from the south: westward)', 0, 7, { size: 11, color: 'muted', align: 'center' });
+          sS.text('easterly trades blow toward the west', 0, 7, { size: 11, color: 'muted', align: 'center' });
           // transport
           const ymax = Math.max(1.2 * mpk, 1);
           sM.setView([-1800, 1800], [-ymax, ymax]);
@@ -158,7 +158,7 @@ largest at the equator, positive for $|y|<r/\beta\,(\text{width}\sim 2^{\circ}\t
         const lat = v.slider('latitude (°)', 20, 80, 70, { step: 1 });
         const rat = v.slider('depth ratio $h/D$', 0.1, 3, 3, { step: 0.05 });
         const sP = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: true, height: 360, weight: 1, minWidth: 280, title: 'plan view: wind, current, transport' });
-        const sC = v.stage({ x: [0, 3], y: [0, 60], axes: 'box', gutter: true, xlabel: 'water depth / Ekman depth, $h/D$', ylabel: 'deflection of the surface current (°)', height: 360, weight: 1, minWidth: 280, title: 'surface deflection vs water depth' });
+        const sC = v.stage({ x: [0, 3.15], y: [0, 60], axes: 'box', gutter: true, xlabel: 'water depth / Ekman depth, $h/D$', ylabel: 'deflection of the surface current (°)', height: 360, weight: 1, minWidth: 280, title: 'surface deflection vs water depth' });
         v.legend([['orange', 'wind'], ['accent', 'current spiral'], ['green', 'transport'], ['muted', 'Nansen band (ice)'], ['red', '45° (deep water)', { dash: true }]]);
         // dimensionless curve: unit viscosity scale, any f
         const f1 = 1e-4, A1 = 0.1, d1 = Math.sqrt(2 * A1 / f1), D1 = Math.PI * d1;
@@ -183,14 +183,14 @@ largest at the equator, positive for $|y|<r/\beta\,(\text{width}\sim 2^{\circ}\t
           sP.arrow(0, 0, p0[0] * 0.95, p0[1] * 0.95, { color: 'accent', width: 3 });
           const tl = Math.min(mag, 1) * 0.8, ta = -tang * RAD;
           sP.arrow(0, 0, tl * Math.cos(ta), tl * Math.sin(ta), { color: 'green', width: 3.4 });
-          sP.text('transport', tl * Math.cos(ta) * 0.5 + 0.05, tl * Math.sin(ta) * 0.5 - 0.1, { size: 11, color: 'green', align: 'left' });
+          sP.text('transport', 0.04, tl * Math.sin(ta) * 0.5, { size: 11, color: 'green', align: 'left' });
           // curve
           sC.hline(45, { color: 'red', width: 1.6, dash: true });
           sC.hband(20, 40, { color: 'muted', alpha: 0.2 });
           sC.path(curve, { color: 'accent', width: 2.8 });
           sC.dot(rat.value, ang, { r: 6, color: 'gold' });
           sC.text('Ekman 1905: 45°', 2.95, 46.5, { size: 11, color: 'red', align: 'right' });
-          sC.text('Nansen: 20–40° (ice)', 0.05, 39, { size: 11, color: 'muted', align: 'left', baseline: 'bottom' });
+          sC.text('Nansen: 20–40° (ice)', 2.0, 30, { size: 11, color: 'muted', align: 'center' });
           st = { D, h, ang, mag, tang, d };
         });
         v.readout(() => `Ekman depth $D=\\pi\\sqrt{2A/|f|}=${v.fix(st.D, 0)}$ m; water depth $h=${v.fix(st.h, 0)}$ m. Surface current **${v.fix(st.ang, 1)}°** right of the wind (paper: 45° in deep water); transport at ${v.fix(st.tang, 1)}° with magnitude ${v.fix(st.mag, 3)}$\\,\\tau/\\rho f$ (paper: 90°, 1.000 for $h\\gtrsim D$).\nToday's picture: observed surface deflections scatter around and mostly below 45° (reported typical values about 5°–20°, range 10°–80° in reviews: secondary sources, unverified), while the transport law holds far better.`);

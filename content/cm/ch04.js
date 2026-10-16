@@ -422,7 +422,7 @@ and gives the Boltzmann profile $n\propto e^{-e\phi/k_BT}$ in a potential $\phi$
         v.readout(() => {
           const s = st; if (!s.md) return '';
           if (s.md === 'packet') return `$t=${v.fix(s.ts, 1)}\\tau$ · measured mobility $\\mu=\\langle x\\rangle/(Et)=${isNaN(s.mu) ? '—' : v.fix(s.mu, 2)}$ (Drude: $\\tau$ = 1) · measured $D=\\mathrm{var}(x)/2t=${v.fix(s.D, 2)}$ (early times ballistic, so read at $t\\gtrsim3\\tau$)\n$D/\\mu=${isNaN(s.mu) ? '—' : v.fix(s.D / s.mu, 3)}$ against $k_BT/e=${v.fix(s.kT, 3)}$ (${v.fix(25.85 * s.kT, 1)} mV)`;
-          return `steady-state profile fitted with $e^{-x/\\ell}$: $\\ell=${isNaN(s.lf) ? '—' : v.fix(s.lf, 2)}$ · Einstein prediction $\\ell=k_BT/eE=${v.fix(s.ell, 2)}$ (units of the thermal mean free path) · $eE\\ell/k_BT=${isNaN(s.lf) ? '—' : v.fix((s.a * s.lf) / s.kT, 3)}$ (equals 1 when $D/\\mu=k_BT/e$)`;
+          return `$t=${v.fix(s.ts, 0)}\\tau$ ${s.ts < 40 ? '(still relaxing: run to $t\\gtrsim50\\tau$)' : '(steady state)'} · profile fitted with $e^{-x/\\ell}$: $\\ell=${isNaN(s.lf) ? '—' : v.fix(s.lf, 2)}$ · Einstein prediction $\\ell=k_BT/eE=${v.fix(s.ell, 2)}$ (units of the thermal mean free path) · $eE\\ell/k_BT=${isNaN(s.lf) ? '—' : v.fix((s.a * s.lf) / s.kT, 3)}$ (equals 1 when $D/\\mu=k_BT/e$)`;
         });
       },
     },

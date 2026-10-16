@@ -192,13 +192,13 @@ where $A$ is the rate of non-radiative (defect) recombination, $B$ the radiative
           // band diagram
           const w = 0.15, Ecc = E + w, Evc = -w;
           const ln = (c, y0, y1, x0, x1) => sD.line(x0, y0, x1, y1, { color: c, width: 2.6 });
-          sD.rect(4, -0.7, 6, 4.1, { fill: 'gold', fillAlpha: 0.07, stroke: false }); sD.text('active layer', 5, 3.85, { size: 11, color: 'muted', align: 'center' });
+          sD.rect(4, -0.7, 6, 4.1, { fill: 'gold', fillAlpha: 0.07, stroke: false }); sD.text('active layer', 5, -0.55, { size: 11, color: 'muted', align: 'center' });
           ln('accent', Ecc, Ecc, 0, 4); ln('accent', Ecc, E, 4, 4); ln('accent', E, E, 4, 6); ln('accent', E, Ecc, 6, 6); ln('accent', Ecc, Ecc, 6, 10);
           ln('green', Evc, Evc, 0, 4); ln('green', Evc, 0, 4, 4); ln('green', 0, 0, 4, 6); ln('green', 0, Evc, 6, 6); ln('green', Evc, Evc, 6, 10);
           sD.hline(Ecc - 0.05, { color: 'blue', width: 1.2, dash: [4, 4], alpha: 0.7 }); sD.hline(Evc + 0.05, { color: 'pink', width: 1.2, dash: [4, 4], alpha: 0.7 });
           sD.text('$n$-type', 1.2, Ecc + 0.35, { size: 11, color: 'muted', align: 'center' }); sD.text('$p$-type', 8.8, Ecc + 0.35, { size: 11, color: 'muted', align: 'center' });
-          sD.text('$E_c$', 0.15, Ecc + 0.08, { size: 11, color: 'accent' }); sD.text('$E_v$', 0.15, Evc - 0.28, { size: 11, color: 'green' });
-          sD.measure(6.6, 0, 6.6, E, `$E_g$ = ${E.toFixed(2)} eV`);
+          sD.text('$E_c$', 0.15, Ecc + 0.18, { size: 11, color: 'accent' }); sD.text('$E_v$', 0.15, Evc - 0.28, { size: 11, color: 'green' });
+          sD.measure(7.2, 0, 7.2, E, `Eg = ${E.toFixed(2)} eV`);
           for (let k = 0; k < KP; k++) {
             const f = (ph + k / KP) % 1, rad = ((k + 1) * 0.6180339) % 1 < eta, ym = E / 2, xc = 4.5 + 1.0 * ((k * 0.73) % 1);
             if (f < 0.5) {
@@ -239,7 +239,7 @@ where $A$ is the rate of non-radiative (defect) recombination, $B$ the radiative
 $$V_T=V_{fb}+2\varphi_F+\frac{\sqrt{4\varepsilon eN_a\varphi_F}}{C_{ox}},\qquad C_{ox}=\varepsilon_{ox}/t_{ox}.$$
 Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac WL\bigl[(V_g-V_T)V_d-\tfrac12V_d^2\bigr]$ (linear regime) and saturates at $\tfrac12\mu C_{ox}\tfrac WL(V_g-V_T)^2$ for $V_d>V_g-V_T$; below $V_T$ it falls exponentially, one decade per $\sim60$–$100$ mV.`,
       idea: String.raw`The gate and the semiconductor form a capacitor in series with the semiconductor's own space-charge layer, so the gate voltage divides as $V_g-V_{fb}=\psi_s+|Q_s|/C_{ox}$, where the charge $Q_s(\psi_s)$ follows from integrating Poisson's equation (vcalc-9.4) through the bent bands with Boltzmann carriers (cm-4.3). Once $\psi_s$ reaches $2\varphi_F$ the electron density at the surface grows as $e^{\psi_s/k_BT}$, so any additional gate voltage goes almost entirely into more channel charge $Q_{inv}$ instead of more band bending: $\psi_s$ pins near $2\varphi_F$. Source-to-drain, the channel charge is a resistor controlled by $V_g$; as $V_d$ approaches $V_g-V_T$ the charge at the drain end vanishes (pinch-off) and the current saturates.`,
-      caption: String.raw`Drag the **gate voltage**. **Left:** the band diagram of the gate/oxide/silicon stack at the true surface potential (from the exact Poisson solution): the Fermi level of the metal moves down by $eV_g$, the silicon bands bend down, and the shaded layer near the surface where $n>p$ is the inversion channel. Choose the **right-hand panel**: the transfer curve $I_d(V_g)$ on a log scale (exponential subthreshold turn-on, then square-law-like growth), the output family $I_d(V_d)$ (linear region and saturation), or the surface potential $\psi_s(V_g)$, which stops rising near $2\varphi_F$. Vary the doping and the oxide thickness: thinner oxide and lighter doping lower $V_T$ and sharpen the turn-on.`,
+      caption: String.raw`Drag the **gate voltage**. **Left:** the band diagram of the gate/oxide/silicon stack at the true surface potential (from the exact Poisson solution): the Fermi level of the metal moves down by $eV_g$, the silicon bands bend down, the pale shading marks where the electrons outnumber the holes ($n>p$, the surface is inverted) and the dark sliver at the surface is the channel proper, where $n$ exceeds even the bulk hole density $N_a$. Choose the **right-hand panel**: the transfer curve $I_d(V_g)$ on a log scale (exponential subthreshold turn-on, then square-law-like growth), the output family $I_d(V_d)$ (linear region and saturation), or the surface potential $\psi_s(V_g)$, which stops rising near $2\varphi_F$. Vary the doping and the oxide thickness: thinner oxide and lighter doping lower $V_T$ and sharpen the turn-on.`,
       scope: String.raw`Ideal $n$-channel device on $p$-type Si at 300 K: no interface charge, equal work functions ($V_{fb}=0$), uniform doping, one-dimensional (long-channel, no short-channel effects, velocity saturation or tunnelling through thin oxide), constant inversion-layer mobility $400$ cm$^2$/Vs and $W/L=10$. The current is a numerical charge-sheet integral (Brews), including weak inversion; the textbook threshold formula marks where $\psi_s=2\varphi_F$.`,
       deps: ['cm-4.7'],
       refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 17'],
@@ -254,7 +254,7 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
         const view = v.select('right panel', [{ value: 'transfer', label: '$I_d(V_g)$' }, { value: 'output', label: '$I_d(V_d)$' }, { value: 'psi', label: '$\\psi_s(V_g)$' }], 'transfer');
         const sB = v.stage({ x: [-20, 150], y: [-2, 2], axes: 'box', gutter: true, height: 380, xlabel: 'depth $z$ (nm); gate and oxide at $z<0$', ylabel: 'energy relative to the silicon Fermi level (eV)', title: 'gate–oxide–silicon band diagram', weight: 1.1 });
         const sR = v.stage({ x: [0, 3.5], y: [1e-14, 1e-3], ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'gate voltage $V_g$ (V)', ylabel: 'drain current $I_d$ (A)', title: 'device characteristics', weight: 1 });
-        v.legend([['accent', '$E_c$'], ['green', '$E_v$'], ['muted', '$E_i$', { dash: true }], ['ink', 'Fermi levels'], ['blue', 'inversion layer ($n>p$)']]);
+        v.legend([['accent', '$E_c$'], ['green', '$E_v$'], ['muted', '$E_i$', { dash: true }], ['ink', 'Fermi levels'], ['blue', 'surface inverted ($n>p$); dark: channel ($n>N_a$)']]);
         let key = '', mos = null, cache = {};
         let info = {};
         v.render(() => {
@@ -263,13 +263,13 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
           const Vg = Vgs.value, Vd = Vds.value, Eg = 1.12;
           const psis = Math.max(-0.3, mos.psiOf(Vg)), prof = mos.profile(Math.max(psis, 0.0));
           const phiF = mos.phiF, Ecinf = Eg / 2 + phiF, tx = tox.value;
-          const zEnd = prof[prof.length - 1][0], zmax = Math.max(40, zEnd * 1.15);
+          const zEnd = prof[prof.length - 1][0], zmax = Math.max(40, Math.min(zEnd * 1.15, mos.Wm * 1e7 * 1.5));
           const Ec = (psi) => Ecinf - psi;
           const ymin = Math.min(-Vg, Ecinf - Eg, Ec(Math.max(psis, 0)) - Eg) - 0.25, ymax = Ecinf + 0.45;
           sB.setView([-(tx + 14), zmax], [ymin, ymax]);
           // metal, oxide
           sB.rect(-(tx + 12), ymin, -tx, ymax, { fill: 'muted', fillAlpha: 0.12, stroke: false }); sB.rect(-tx, ymin, 0, ymax, { fill: 'orange', fillAlpha: 0.1, stroke: false });
-          sB.text('gate', -(tx + 6), ymax - 0.12, { size: 11, color: 'muted', align: 'center', baseline: 'top' }); sB.text('oxide', -tx / 2, ymax - 0.12, { size: 11, color: 'orange', align: 'center', baseline: 'top' });
+          sB.text('gate', -(tx + 6), ymax - 0.1, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); sB.text('oxide', -tx / 2, ymax - 0.32, { size: 10, color: 'orange', align: 'center', baseline: 'top' });
           sB.line(-(tx + 12), -Vg, -tx, -Vg, { color: 'ink', width: 2.2 });
           const Vox = Vg - psis, Ec0 = Ec(Math.max(psis, 0));
           sB.line(-tx, Ec0 - Vox, 0, Ec0, { color: 'accent', width: 1.4, dash: [4, 4], alpha: 0.7 }); sB.line(-tx, Ec0 - Vox - Eg, 0, Ec0 - Eg, { color: 'green', width: 1.4, dash: [4, 4], alpha: 0.7 });
@@ -277,11 +277,11 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
           const zs = prof.map((p) => p[0]), ps = prof.map((p) => p[1]);
           const path = (f) => { const a = zs.map((z, i) => [z, f(ps[i])]); a.push([zmax, f(0)]); return a; };
           // inversion layer: region where ψ > φF
-          let zi = 0; for (let i = 0; i < zs.length; i++) if (ps[i] > phiF) zi = zs[i];
-          if (zi > 0) sB.vband(0, zi, { color: 'blue', alpha: 0.2 });
+          let zi = 0, zc = 0; for (let i = 0; i < zs.length; i++) { if (ps[i] > phiF) zi = zs[i]; if (ps[i] > 2 * phiF) zc = zs[i]; }
+          if (zi > 0) sB.vband(0, zi, { color: 'blue', alpha: 0.12 }); if (zc > 0) sB.vband(0, Math.max(zc, 0.6), { color: 'blue', alpha: 0.5 });
           if (zEnd > 0.5) sB.line(zEnd, ymin, zEnd, ymax, { color: 'faint', width: 1, dash: [3, 4] });
           sB.path(path((p) => Ec(p)), { color: 'accent', width: 2.8 }); sB.path(path((p) => Ec(p) - Eg), { color: 'green', width: 2.8 }); sB.path(path((p) => Ec(p) - Eg / 2), { color: 'muted', width: 1.2, dash: [4, 4] });
-          sB.hline(0, { color: 'ink', width: 1.6, alpha: 0.8 }); sB.text('$E_F$', zmax * 0.94, 0.07, { size: 11, color: 'ink' }); sB.text(`$-eV_g$`, -(tx + 6), -Vg + 0.08, { size: 10, color: 'ink', align: 'center' });
+          sB.hline(0, { color: 'ink', width: 1.6, alpha: 0.8 }); sB.text('$E_F$', zmax * 0.94, 0.12, { size: 11, color: 'ink' }); sB.text(`$-eV_g$`, -(tx + 6), -Vg + 0.08, { size: 10, color: 'ink', align: 'center' });
           sB.text(psis < phiF ? 'depletion' : psis < 2 * phiF - 0.03 ? 'weak inversion' : 'strong inversion', zmax * 0.5, ymax - 0.12, { size: 12, color: 'blue', align: 'center', baseline: 'top' });
           // right panel
           const VT = mos.VT;
@@ -328,7 +328,7 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
       statement: String.raw`A thin layer of a small-gap semiconductor (GaAs, width $L$) between layers of a larger-gap one (Al$_x$Ga$_{1-x}$As) forms a **quantum well** for both carriers, with depths $\Delta E_c=Q_c\,\Delta E_g$ and $\Delta E_v=(1-Q_c)\Delta E_g$. In the envelope-function (effective-mass) picture the confined electron obeys $-\tfrac{\hbar^2}{2}\frac{d}{dz}\bigl(\tfrac1{m^*(z)}\tfrac{d\psi}{dz}\bigr)+V(z)\psi=E\psi$, so the allowed energies solve $\ \tfrac{k}{m_w}\tan\tfrac{kL}{2}=\tfrac{\kappa}{m_b}$ (even) or $-\tfrac{k}{m_w}\cot\tfrac{kL}{2}=\tfrac{\kappa}{m_b}$ (odd) with $k=\sqrt{2m_wE}/\hbar$, $\kappa=\sqrt{2m_b(V-E)}/\hbar$. For a wide well the levels approach the infinite-well values $E_n=\hbar^2\pi^2n^2/2m_wL^2$; a narrow well has few bound states. The lowest optical transition is
 $$\hbar\omega\approx E_g^{\text{GaAs}}+E_{e1}+E_{hh1},$$
 which moves to higher energy (to the blue) as $L$ shrinks, tunable by the width.`,
-      idea: String.raw`Because the conduction-band edge of GaAs lies below that of AlGaAs, an electron near the band edge is described by a slowly varying envelope that obeys the one-dimensional finite square-well problem of quantum mechanics (qm-3.4) with the effective mass cm-2.3 inside and a different mass in the barrier; continuity of $\psi$ and of $\psi'/m^*$ (so that probability current is conserved) fixes the quantisation. The levels therefore have the box-eigenstate structure — alternately even and odd — but are lower than in an infinite box because the wave function leaks into the barrier. Confinement raises the zero-point energy like $1/L^2$, so a thinner well emits at a higher photon energy. Dingle, Wiegmann and Henry saw the steps of this quantisation in the absorption spectra of GaAs layers between $\sim$ 7 and $\sim$ 40 nm.`,
+      idea: String.raw`Because the conduction-band edge of GaAs lies below that of AlGaAs, an electron near the band edge is described by a slowly varying envelope that obeys the one-dimensional finite square-well problem of quantum mechanics (qm-3.4) with the effective mass cm-2.3 inside and a different mass in the barrier; continuity of $\psi$ and of $\psi'/m^*$ (so that probability current is conserved) fixes the quantisation. The levels therefore have the box-eigenstate structure — alternately even and odd — but are lower than in an infinite box because the wave function leaks into the barrier. Confinement raises the zero-point energy like $1/L^2$, so a thinner well emits at a higher photon energy. Dingle, Wiegmann and Henry saw this quantisation in the absorption spectra of molecular-beam-epitaxy GaAs layers between AlGaAs, resolving up to eight exciton transitions, and found the layers to behave as simple rectangular wells.`,
       caption: String.raw`Drag the **well width**, the aluminium fraction (barrier height) and the conduction-band offset fraction. **Left:** conduction and valence band edges of the heterostructure with the bound electron levels (blue) and heavy-hole levels (red) and their wave functions, which leak into the barriers. The gold arrow is the lowest interband transition, drawn in the colour of the photon it emits. **Right:** the emission energy against width: the finite-well result (solid) against the infinite-well estimate (dashed), which overestimates the confinement of narrow wells. Turn the BenDaniel–Duke condition off to use the well mass in the barrier too.`,
       scope: String.raw`Single rectangular well, parabolic bands at $300$ K, heavy hole only (mass $0.35\,m_0$ taken equal in well and barrier), electron masses $0.067\,m_0$ (GaAs) and $0.067+0.083x$ (AlGaAs), gap $E_g^{\text{AlGaAs}}-E_g^{\text{GaAs}}=1.247x$ eV for $x<0.45$ (direct-gap range), conduction offset fraction $Q_c\approx0.6$–$0.65$ in modern work (Dingle's early value was $\approx0.85$–$0.88$). Excitonic binding ($\sim 10$ meV) and strain are ignored. Material constants quoted from standard references from memory (unverified).`,
       deps: ['cm-4.1', 'cm-2.3', 'qm-3.4'],
@@ -369,7 +369,7 @@ which moves to higher energy (to the blue) as $L$ shrinks, tunable by the width.
           sW.setView([1, 40], [1.38, Math.max(1.9, Math.min(2.3, EG + P.dEg * 0.9))]);
           sW.path(curve.filter((q) => q[1] != null && q[0] >= 1), { color: 'ink', width: 2.8 });
           sW.fn((l) => EG + (HB * (1 / ME + 1 / MH)) / (l * l), { color: 'muted', width: 1.6, dash: [5, 4], domain: [2.5, 40] });
-          sW.hline(EG, { color: 'faint', width: 1, dash: [3, 4] }); sW.text('bulk GaAs', 36, EG + 0.015, { size: 10, color: 'muted', align: 'right' });
+          sW.hline(EG, { color: 'faint', width: 1, dash: [3, 4] }); sW.text('bulk GaAs 1.424 eV', 38, EG - 0.03, { size: 10, color: 'muted', align: 'right' });
           sW.hline(EG + P.Vc * 0 + 0, { color: 'faint', width: 0 });
           sW.vline(L, { color: 'gold', width: 1.2 }); if (isFinite(hw)) sW.dot(L, Math.min(hw, 2.28), { r: 7, color: rgb });
           info = { e, h, hw, lam, P };
@@ -425,7 +425,7 @@ These discrete lines lie just below the gap in the absorption spectrum; their st
           sA.hline(1, { color: 'muted', width: 1.4, dash: [5, 4] });
           sA.path(pts, { color: 'accent', width: 2 });
           // mark the lines
-          lines.filter((q) => q.n <= 12 || q.n % 5 === 0).slice(0, 14).forEach((q) => { if (q.Eb > Ry / 1600 * 0.8) sA.text(`${q.n}`, q.Eb, 1.4e4, { size: 10, color: 'muted', align: 'center' }); });
+          lines.filter((q) => q.n <= 10 || q.n % 5 === 0).slice(0, 14).forEach((q) => { if (q.Eb > Ry / 1600 * 0.8) sA.text(`${q.n}`, q.Eb, 1.4e4, { size: 10, color: 'muted', align: 'center' }); });
           sA.text('$n$ =', Ry * 1.25, 1.4e4, { size: 10, color: 'muted', align: 'center' });
           // orbit-size panel
           sB.path(Array.from({ length: 30 }, (_, i) => [i + 1, rOf(i + 1)]), { color: 'accent', width: 2.6 });
