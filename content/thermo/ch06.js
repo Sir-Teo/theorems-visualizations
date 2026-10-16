@@ -379,8 +379,6 @@ Equivalently $\ln Z$, $U$, $S$, $C$ are additive. If the parts interact, $E_{ab}
             });
             xA += a;
           });
-          sa.text('width $e^{-a\\varepsilon_A/kT}$ (system A) →', ZA / 2, -0.03 * ZB, { size: 11, color: 'muted', baseline: 'top', align: 'center' });
-          sa.text('height $e^{-b\\varepsilon_B/kT}$ (B) →', -0.03 * ZA, ZB / 2, { size: 11, color: 'muted', align: 'right', baseline: 'middle' });
           sb.fn((t) => Math.log(wsum(t, eA.value, eB.value, J.value)), { color: 'accent', width: 2.4, n: 140 });
           sb.fn((t) => Math.log(wsum(t, eA.value, eB.value, 0)), { color: 'green', width: 2, dash: true, n: 140 });
           sb.setView([0.2, 5], [0, Math.max(1, Math.log(12) * 1.05)]);

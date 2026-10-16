@@ -4,6 +4,7 @@
 //   the principal-stress-plane yield loci, and the illustrative S–N model used by the three fatigue items.
 
 export * from './ch03.shared.js';
+export { MATS, curveOf, heatColor, textW, placeLabels } from './ch01.shared.js';
 
 /** Plane-stress (sigma3 = 0) equivalent stresses from the in-plane principal values. */
 export const vm2 = (a, b) => Math.sqrt(a * a - a * b + b * b);

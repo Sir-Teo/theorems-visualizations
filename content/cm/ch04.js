@@ -43,7 +43,7 @@ function drawLattice(s, v, a, R) {
 }
 
 /** Slider label for log-scale densities: 3.2×10¹⁶ */
-export const dens = (M) => (x) => { const k = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** k; return (Math.abs(m - 1) < 0.01 ? '' : m.toFixed(1) + '×') + M.pow10Text(k); };
+const dens = (M) => (x) => { const k = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** k; return (Math.abs(m - 1) < 0.01 ? '' : m.toFixed(1) + '×') + M.pow10Text(k); };
 
 export default {
   collection: 'cm',

@@ -143,7 +143,7 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
         const R3 = 3 * Rg;
         const sel = v.select('Einstein curve fitted to', [{ value: 4, label: 'diamond' }, { value: 3, label: 'graphite' }, { value: 2, label: 'boron' }, { value: 1, label: 'beryllium' }, { value: 8, label: 'silicon' }], 4);
         const kT = v.slider('temperature $T$ (K)', 20, 1500, 298.15, { log: true, sig: 3 });
-        const sa = v.stage({ x: [-0.8, 22.8], y: [0, 32], axes: 'box', gutter: true, height: 290, ylabel: '$C_P$ (J mol⁻¹ K⁻¹) at 25 °C', title: 'measured heat capacities of the elements', weight: 1.5, xticks: D.map((d, i) => [i, d[0]]) });
+        const sa = v.stage({ x: [-0.8, 22.8], y: [0, 37], axes: 'box', gutter: true, height: 290, ylabel: '$C_P$ (J mol⁻¹ K⁻¹) at 25 °C', title: 'measured heat capacities of the elements', weight: 1.5, xticks: D.map((d, i) => [i, d[0]]) });
         const sb = v.stage({ x: [0, 1500], y: [0, 1.15], axes: 'box', gutter: true, height: 290, xlabel: '$T$ (K)', ylabel: '$C/3R$', title: 'Einstein curve through the chosen point', weight: 1 });
         let st = null;
         v.render(() => {
@@ -383,7 +383,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
       num: '6.18', kind: 'Theorem', name: 'Bohr–van Leeuwen theorem',
       statement: String.raw`In classical statistical mechanics the thermal equilibrium magnetization of any system of charges in an external magnetic field is zero at every temperature: $Z(\mathbf B)=Z(0)$, hence $\mathbf M=kT\,\partial_{\mathbf B}\ln Z/V=0$. There is no classical diamagnetism, paramagnetism or ferromagnetism; magnetism is a quantum effect.`,
       idea: String.raw`With the Hamiltonian $H=\sum(\mathbf p_i-q\mathbf A(\mathbf r_i))^2/2m+V(\mathbf r)$ the field enters only through the vector potential, and in the classical phase-space integral $Z=\int d^3r\,d^3p\,e^{-\beta H}$ one may shift each momentum, $\mathbf p\to\mathbf p+q\mathbf A(\mathbf r)$, at fixed $\mathbf r$. The shift is a change of variables with unit Jacobian (the Lorentz force does no work, em-7.3, and the canonical momentum of mech-6.14 only reparametrizes phase space), so $Z$ does not depend on $B$. Physically, the diamagnetic moment of closed cyclotron orbits is exactly cancelled by the opposite moment of orbits that skip along the boundary.`,
-      caption: String.raw`**Classical charged particles bounce in a circular box** under a perpendicular field $B$ (units $m=q=kT=1$). Blue particles execute complete orbits inside the box and are diamagnetic; orange particles touch the wall and their skipping orbits go the other way. The right panel shows the running time average of the magnetic moment per particle for each class and the total. **Change $B$**: the two parts become large (about $\mp kT/B$ per particle for the full orbits) but their sum stays at zero within the noise.`,
+      caption: String.raw`**Classical charged particles bounce in a circular box** under a perpendicular field $B$ (units $m=q=kT=1$). Blue particles execute complete orbits inside the box and are diamagnetic; orange particles touch the wall and their skipping orbits go the other way. The right panel shows the running time average of the magnetic moment per particle for each class and the total. **Change $B$**: the two parts become large (a complete orbit is diamagnetic, carrying $-\tfrac12mv^2/B$ on average) but their sum stays at zero within the noise.`,
       deps: ['thermo-6.2', 'em-7.3', 'mech-6.14'], refs: ['Tong ch. 3'], tags: ['magnetism', 'classical limit'],
       credit: 'Bohr, 1911; van Leeuwen, 1919',
       links: { doi: 'https://doi.org/10.1051/jphysrad:01921002012036100' },
@@ -409,7 +409,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           if (s.n % 25 === 0) s.hist.push([s.tt, s.sb / s.n, s.ss / s.n, (s.sb + s.ss) / s.n]);
         }, { dt: 0.01, maxSteps: 3000 });
         const sa = v.stage({ x: [-1.15, 1.15], y: [-1.15, 1.15], equal: true, axes: false, height: 300, weight: 0.9, minWidth: 240, title: 'particles in a magnetic field' });
-        const sb = v.stage({ x: [0, 20], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'time-averaged moment per particle, $\\times B/kT$', title: 'magnetic moment', weight: 1.2 });
+        const sb = v.stage({ x: [0, 20], y: [-0.4, 0.4], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'time-averaged moment per particle, $\\times B/kT$', title: 'magnetic moment', weight: 1.2 });
         let info = null;
         v.animate((t) => {
           const s = S.advance(t * 6) || S.state;
@@ -418,7 +418,7 @@ Then $F=-kT\ln Z=-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial
           const p0 = s.P.find((p) => p.bulk) || s.P[0], Om = -Bs.value, cx = p0.x - p0.vy / Om, cy = p0.y + p0.vx / Om, rc = Math.hypot(p0.vx, p0.vy) / Math.abs(Om);
           sa.circle(cx, cy, rc, { color: 'accent', width: 1, dash: true });
           const T = Math.max(20, Math.ceil(s.tt / 20) * 20), B = Bs.value;
-          sb.setView([0, T], [-1.5, 1.5]);
+          sb.setView([0, T], [-0.4, 0.4]);
           sb.hline(0, { color: 'faint' });
           const ser = (k, c) => sb.path(s.hist.map((h) => [h[0], h[k] * B]), { color: c, width: k === 3 ? 2.8 : 1.8 });
           ser(1, 'accent'); ser(2, 'orange'); ser(3, 'green');
@@ -469,7 +469,7 @@ so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the 
           st = { r, rho: cf, err, pur: (1 + r * r) / 2, S: Sf(T), Z };
         });
         v.legend([['orange', 'field direction $\\hat n$'], ['gold', 'Bloch vector (length $|\\mathbf r|$)'], ['accent', 'purity $\\operatorname{tr}\\hat\\rho^2$'], ['purple', '$S/(k\\ln2)$']]);
-        v.readout(() => st && `$\\hat\\rho=\\begin{pmatrix}${fix(st.rho[0][0], 3)}&${fix(st.rho[0][1], 3)}\\\\${fix(st.rho[1][0], 3)}&${fix(st.rho[1][1], 3)}\\end{pmatrix}$ in the $\\sigma_z$ basis · $|\\mathbf r|=\\tanh\\frac{\\Delta}{2kT}=${fix(st.r, 3)}$ · purity ${fix(st.pur, 3)} · $S/k=${fix(st.S * Math.LN2, 3)}$ · matches $e^{-\\beta H}/Z$ from diagonalization to ${v.sci(st.err + 1e-17, 1)}`);
+        v.readout(() => st && `$\\hat\\rho=\\begin{pmatrix}${fix(st.rho[0][0], 3)}&${fix(st.rho[0][1], 3)}\\\\${fix(st.rho[1][0], 3)}&${fix(st.rho[1][1], 3)}\\end{pmatrix}$ in the $\\sigma_z$ basis · $|\\mathbf r|=\\tanh\\frac{\\Delta}{2kT}=${fix(st.r, 3)}$ · purity ${fix(st.pur, 3)} · $S/k=${fix(st.S * Math.LN2, 3)}$ · matches $e^{-\\beta H}/Z$ from diagonalization to $${v.sci(st.err + 1e-17, 1)}$`);
       },
     },
     // ------------------------------------------------------------------ 6.20
@@ -503,7 +503,7 @@ so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the 
           sa.arrow(T0, S0, T0, S1, { color: 'orange', width: 3, head: 9 });
           sa.arrow(T0, S1, Math.max(T1, 0.0021), S1, { color: 'green', width: 3, head: 9 });
           sa.dot(T0, S0, { r: 5, color: 'muted' }); sa.dot(T0, S1, { r: 5.5, color: 'gold' }); sa.dot(Math.max(T1, 0.0021), S1, { r: 6, color: 'green' });
-          sa.text('magnetize, isothermal', T0 * 1.08, (S0 + S1) / 2, { size: 11, color: 'orange' });
+          sa.text('magnetize, isothermal', T0 * 0.9, (S0 + S1) / 2, { size: 11, color: 'orange', align: 'right' });
           sa.text('demagnetize, adiabatic', Math.sqrt(T0 * Math.max(T1, 0.0021)), S1, { size: 11, color: 'green', dy: -10, align: 'center' });
           sb.fn((B) => Tf(Math.min(B, B0)), { color: 'accent', width: 2.4, n: 100, domain: [0, B0] });
           sb.fn((B) => Math.max(T0 * B / B0, 0.0011), { color: 'ink', dash: true, width: 1.5, domain: [0, B0] });
