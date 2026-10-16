@@ -75,11 +75,12 @@ is the convective available potential energy (J/kg), the area on a $T$–$\ln p$
           seg((i) => R.lfc != null && g.p[i] <= lfc + 1e-9 && g.p[i] >= el - 1e-9 && g.B[i] > 0, 'orange');
           seg((i) => g.B[i] < 0 && (R.lfc == null || g.p[i] >= lfc) && g.p[i] >= R.pL - 400, 'blue');
           sk.path(env.rows.map((r) => [skx(r[2], r[0]), sky(r[0])]), { color: 'red', width: 2.6 });
+          sk.path(g.p.map((p, i) => [skx(g.Tve[i] - 273.15, p), sky(p)]), { color: 'red', width: 1.3, dash: [2, 3] });
           sk.path(env.rows.filter((r) => r[3] != null).map((r) => [skx(r[3], r[0]), sky(r[0])]), { color: 'blue', width: 2, dash: [6, 4] });
-          sk.path(g.p.map((p, i) => [skx(g.Tp[i] - 273.15, p), sky(p)]), { color: 'ink', width: 2.4 });
+          sk.path(g.p.map((p, i) => [skx(g.Tvp[i] - 273.15, p), sky(p)]), { color: 'ink', width: 2.4 });
           sk.dot(skx(par.T - 273.15, par.p), sky(par.p), { r: 5, color: 'ink' });
-          const mark = (p, label, dx) => { if (p == null) return; const T = env.T(p) - 273.15; sk.dot(skx(T, p), sky(p), { r: 5, color: 'gold' }); sk.text(`${label} ${v.fix(p, 0)}`, skx(T, p), sky(p), { dx: dx, dy: -10, size: 11, color: 'ink', plate: true, align: dx > 0 ? 'left' : 'right' }); };
-          sk.dot(skx(R.TL - 273.15, R.pL), sky(R.pL), { r: 5, color: 'gold' }); sk.text(`LCL ${v.fix(R.pL, 0)} hPa`, skx(R.TL - 273.15, R.pL), sky(R.pL), { dx: 10, dy: 12, size: 11, color: 'ink', plate: true, align: 'left' });
+          const mark = (p, label, dx) => { if (p == null) return; const T = g.Tve[Math.round(par.p - p)] - 273.15; sk.dot(skx(T, p), sky(p), { r: 5, color: 'gold' }); sk.text(`${label} ${v.fix(p, 0)}`, skx(T, p), sky(p), { dx: dx, dy: -10, size: 11, color: 'ink', plate: true, align: dx > 0 ? 'left' : 'right' }); };
+          const iL = clamp(Math.round(par.p - R.pL), 0, g.p.length - 1), xL = skx(g.Tvp[iL] - 273.15, g.p[iL]); sk.dot(xL, sky(g.p[iL]), { r: 5, color: 'gold' }); sk.text(`LCL ${v.fix(R.pL, 0)} hPa`, xL, sky(g.p[iL]), { dx: -10, dy: 14, size: 11, color: 'ink', plate: true, align: 'right' });
           if (R.lfc != null && Math.abs(R.lfc - R.pL) > 8) mark(R.lfc, 'LFC', 12);
           if (R.el != null && R.cape > 0) mark(R.el, 'EL', 12);
           // buoyancy panel
@@ -94,11 +95,11 @@ is the convective available potential energy (J/kg), the area on a $T$–$\ln p$
           const lo = Math.floor(Math.min(...eth.map((q) => q[0])) / 5) * 5 - 5, hi = Math.ceil(Math.max(...eth.map((q) => q[0])) / 5) * 5 + 5;
           se.setView([lo, hi], [0, Math.ceil(eth[eth.length - 1][1])]);
           for (let i = 1; i < eth.length; i++) se.line(eth[i - 1][0], eth[i - 1][1], eth[i][0], eth[i][1], { color: eth[i][0] < eth[i - 1][0] ? 'red' : 'accent', width: eth[i][0] < eth[i - 1][0] ? 4 : 2.4 });
-          const thP = thetaE(par.T, par.Td, par.p); se.vline(thP, { color: 'ink', dash: [5, 4] }); se.text(`parcel ${v.fix(thP, 0)} K`, thP, eth[eth.length - 1][1] * 0.97, { dx: 6, size: 11, align: 'left', color: 'ink' });
+          const thP = thetaE(par.T, par.Td, par.p); se.vline(thP, { color: 'ink', dash: [5, 4] }); se.text(`parcel ${v.fix(thP, 0)} K`, thP, eth[eth.length - 1][1] * 0.97, { dx: -6, size: 11, align: 'right', color: 'ink' });
           let unst = 0; for (let i = 1; i < eth.length; i++) if (eth[i][0] < eth[i - 1][0]) unst += eth[i][1] - eth[i - 1][1];
           info = { R, par, thP, unst, z: (p) => env.z(p) };
         });
-        v.legend([['red', 'temperature'], ['blue', 'dew point', { dash: true }], ['ink', 'lifted parcel'], ['orange', 'CAPE', { area: true }], ['blue', 'CIN', { area: true }]]);
+        v.legend([['red', 'temperature (dotted: virtual)'], ['blue', 'dew point', { dash: true }], ['ink', 'lifted parcel (virtual $T$)'], ['orange', 'CAPE', { area: true }], ['blue', 'CIN', { area: true }]]);
         v.readout(() => {
           if (!info) return '';
           const { R, par, thP, unst, z } = info;
@@ -160,7 +161,7 @@ is the convective available potential energy (J/kg), the area on a $T$–$\ln p$
             sx.poly([...bot, ...top.reverse()], { fill: 'accent', fillAlpha: 0.22, stroke: false });
             if (rain.value) for (let x = xw + 4; x < X0 + 4; x += 5) { const z = terrain(x); if (z > 0.1) sx.line(x, z + 0.3, x - 1.2, Math.max(z + 0.03, 0.03), { color: 'blue', width: 1.6, alpha: 0.8 }); }
           }
-          sx.hline(zL, { color: 'accent', dash: [4, 5], alpha: 0.5 }); sx.text(`LCL ${v.fix(zL, 2)} km`, 2, zL, { dy: -9, size: 11, color: 'accent' });
+          sx.hline(zL, { color: 'accent', dash: [4, 5], alpha: 0.5 }); sx.text(`LCL ${v.fix(zL, 2)} km`, W - 3, zL, { dy: -9, size: 11, color: 'accent', align: 'right' });
           // path coloured: windward blue, lee red
           sx.path(pts.filter((q) => q.x <= X0).map((q) => [q.x, q.z + 0.03]), { color: 'blue', width: 3 });
           sx.path(pts.filter((q) => q.x >= X0).map((q) => [q.x, q.z + 0.03]), { color: 'red', width: 3 });
@@ -203,19 +204,21 @@ $\alpha$ is small in cold water (about $5\times10^{-5}\,\mathrm{K^{-1}}$ near 0 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Seawater#Density' },
       viz(v) {
         const SR = [0, 40], TR = [-2, 32];
-        const sm = v.stage({ x: SR, y: TR, height: 430, axes: 'box', gutter: true, xlabel: 'salinity $S$ (psu)', ylabel: 'temperature (°C)', title: 'density $\\sigma = \\rho - 1000$ (kg/m³) and two water masses', weight: 1.5, minWidth: 340 });
-        const sx = v.stage({ x: [0, 1], y: [0, 1], height: 430, axes: 'box', gutter: true, xlabel: 'fraction of B in the mixture', ylabel: 'density excess (kg/m³)', title: 'density along the mixing line', weight: 0.85, minWidth: 240 });
-        const sa = v.stage({ x: [-2, 32], y: [-0.6, 3.6], height: 430, axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: '$\\alpha$ ($10^{-4}$ K$^{-1}$)', title: 'thermal expansion', weight: 0.85, minWidth: 240 });
+        const sm = v.stage({ x: SR, y: TR, height: 430, axes: 'box', gutter: true, xlabel: 'salinity $S$ (psu)', ylabel: 'temperature (°C)', title: 'density $\\sigma = \\rho - 1000$ (kg/m³) and two water masses', weight: 1.5, minWidth: 300 });
+        const sx = v.stage({ x: [0, 1], y: [0, 1], height: 430, axes: 'box', gutter: true, xlabel: 'fraction of B in the mixture', ylabel: 'density excess (kg/m³)', title: 'density along the mixing line', weight: 0.85, minWidth: 190 });
+        const sa = v.stage({ x: [-2, 32], y: [-0.6, 3.6], height: 430, axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: '$\\alpha$ ($10^{-4}$ K$^{-1}$)', title: 'thermal expansion', weight: 0.85, minWidth: 190 });
         const hA = sm.handle(34.5, 2, { color: 'blue', r: 8, label: 'A', labelPos: 'ne', constrain: { x: [0.5, 39], y: [-1.5, 31] } });
         const hB = sm.handle(36.5, 12.9, { color: 'red', r: 8, label: 'B', labelPos: 'ne', constrain: { x: [0.5, 39], y: [-1.5, 31] } });
         const solveT = (S, rho) => { let lo = -2.5, hi = 34; if (rho0(S, lo) < rho || rho0(S, hi) > rho) return null; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; (rho0(S, m) > rho ? lo = m : hi = m); } return (lo + hi) / 2; };
+        hB.set(36.5, solveT(36.5, rho0(34.5, 2)));
         v.button('B: same density as A', () => { const T = solveT(hB.x, rho0(hA.x, hA.y)); if (T != null) hB.set(hB.x, T); });
         const frz = [], tmd = []; for (let S = 0; S <= 40; S += 0.5) frz.push([S, freezeT(S)]); for (let S = 0; S <= 24.7; S += 0.5) tmd.push([S, tMaxDensity(S)]);
         let info = null;
         v.render(() => {
           sm.heat((S, T) => rho0(S, T) - 1000, { range: [-5, 32], cmap: 'viridis', res: 3, key: 'sigma' });
           sm.contour((S, T) => rho0(S, T) - 1000, Array.from({ length: 38 }, (_, i) => i - 5), { color: 'ink', width: 0.7, alpha: 0.4, res: 100 });
-          sm.contour((S, T) => rho0(S, T) - 1000, [20, 25, 28, 30], { color: 'ink', width: 1.1, alpha: 0.9, res: 100, labels: true, fmt: (x) => String(x) });
+          sm.contour((S, T) => rho0(S, T) - 1000, [0, 10, 20, 25, 28, 30], { color: 'ink', width: 1.3, alpha: 0.85, res: 100 });
+          sm.colorbar([-5, 32], 'viridis', { pos: 'right', label: 'σ (kg/m³)', length: 160 });
           sm.path(frz, { color: 'red', width: 2.2, dash: [7, 4] }); sm.path(tmd, { color: 'teal', width: 2.4, dash: [7, 4] });
           sm.text('freezing', 36, freezeT(36), { dy: 12, size: 11, color: 'red', plate: true }); sm.text('max density', 8, tMaxDensity(8), { dy: -10, size: 11, color: 'teal', plate: true });
           const A = { S: hA.x, T: hA.y }, B = { S: hB.x, T: hB.y }, rA = rho0(A.S, A.T), rB = rho0(B.S, B.T);
@@ -236,14 +239,13 @@ $\alpha$ is small in cold water (about $5\times10^{-5}\,\mathrm{K^{-1}}$ near 0 
           // alpha(T)
           for (const [S, col] of [[0, 'teal'], [10, 'purple'], [35, 'ink']]) {
             const lo = Math.max(-2, freezeT(S)); sa.fn((T) => alphaBeta(S, T).alpha * 1e4, { color: col, width: 2.2, domain: [lo, 32] });
-            sa.text(`S = ${S}`, 31.5, alphaBeta(S, 31.5).alpha * 1e4, { dy: -9, size: 11, color: col, align: 'right' });
           }
           sa.hline(0, { color: 'muted' });
           const aA = alphaBeta(A.S, A.T), aB = alphaBeta(B.S, B.T);
           sa.dot(A.T, aA.alpha * 1e4, { r: 6, color: 'blue' }); sa.dot(B.T, aB.alpha * 1e4, { r: 6, color: 'red' });
           info = { A, B, rA, rB, aA, aB, best, bx, rm: f(0.5), tA: tMaxDensity(A.S), fA: freezeT(A.S) };
         });
-        v.legend([['blue', 'water mass A'], ['red', 'water mass B'], ['gold', 'mixing line'], ['orange', 'extra density (cabbeling)', { area: true }]]);
+        v.legend([['blue', 'water mass A'], ['red', 'water mass B'], ['gold', 'mixing line'], ['orange', 'extra density (cabbeling)', { area: true }], ['teal', '$\\alpha$ at $S$ = 0'], ['purple', '$S$ = 10'], ['ink', '$S$ = 35']]);
         v.readout(() => {
           if (!info) return '';
           const { A, B, rA, rB, aA, aB, best, bx } = info;
@@ -267,7 +269,7 @@ which peaks in the thermocline, typically at a few to ten cycles per hour ($N\si
       viz(v) {
         const loc = v.select('location', [{ value: 'sargasso', label: 'Sargasso Sea' }, { value: 'equator', label: 'equatorial Pacific' }, { value: 'papa', label: 'subpolar N. Pacific' }], 'sargasso');
         const rng = v.select('depth range', [{ value: 300, label: 'upper 300 m' }, { value: 1000, label: 'upper 1 km' }, { value: 2000, label: 'to 2 km' }], 1000);
-        const U10 = v.slider('wind speed $U_{10}$ (m/s)', 0, 30, 0, { step: 0.5 });
+        const U10 = v.slider('wind speed $U_{10}$ (m/s)', 0, 30, 14, { step: 0.5 });
         const days = v.slider('duration (days)', 0.5, 20, 5, { step: 0.5 });
         const mk = (xl, title, w = 1) => v.stage({ x: [0, 1], y: [-1000, 0], height: 440, axes: 'box', gutter: true, xlabel: xl, ylabel: 'depth (m)', title, weight: w, minWidth: 210 });
         const sT = mk('temperature (°C)', 'temperature'), sR = mk('density $\\sigma$ (kg/m³)', 'density'), sN = mk('$N$ (cycles per hour)', 'buoyancy frequency');
@@ -347,10 +349,10 @@ which peaks in the thermocline, typically at a few to ten cycles per hour ($N\si
           const S = TS[k], rows = S[season.value], tr = S.trop[season.value];
           sS.path(zs.filter((z) => z <= 20).map((z) => [ussaT(geopot(z * KM)) - 273.15, z]), { color: 'muted', width: 1.6, dash: [6, 4] });
           sS.path(rows.map((r) => [r[2], r[1] / KM]), { color: 'red', width: 2.8 });
-          if (tr) { sS.hline(tr.z / KM, { color: 'orange', width: 1.6, dash: [5, 4] }); sS.dot(tr.T, tr.z / KM, { r: 7, color: 'orange' }); sS.text(`tropopause ${v.fix(tr.z / KM, 1)} km, ${v.fix(tr.p, 0)} hPa`, tr.T, tr.z / KM, { dx: 12, dy: -12, size: 12, color: 'orange', align: 'left', plate: true }); }
-          sS.text(S.name + `, ${v.fix(S.lat, 1)}° N`, -93, 29, { size: 12, color: 'ink', align: 'left' });
+          if (tr) { sS.hline(tr.z / KM, { color: 'orange', width: 1.6, dash: [5, 4] }); sS.dot(tr.T, tr.z / KM, { r: 7, color: 'orange' }); sS.text(`${v.fix(tr.z / KM, 1)} km`, tr.T, tr.z / KM, { dx: 12, dy: -12, size: 12, color: 'orange', align: 'left', plate: true }); }
+          sS.text(S.name + `, ${v.fix(S.lat, 1)}° N`, -93, 1.5, { size: 12, color: 'ink', align: 'left' });
           // latitude panel
-          sL.hline(11.0, { color: 'muted', dash: [6, 4] }); sL.text('standard atmosphere 11 km', 74, 11.0, { align: 'right', dy: -9, size: 11, color: 'muted' });
+          sL.hline(11.0, { color: 'muted', dash: [6, 4] }); sL.text('standard atmosphere: 11 km', 3, 11.0, { align: 'left', dy: 11, size: 11, color: 'muted' });
           for (const [sn, col] of [['jan', 'blue'], ['jul', 'red']]) {
             const pts = TS.filter((s) => s.trop[sn]).map((s) => [s.lat, s.trop[sn].z / KM]);
             sL.path(pts, { color: col, width: 1.4, alpha: 0.5 }); sL.dots(pts, { r: 5, color: col });

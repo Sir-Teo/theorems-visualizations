@@ -52,7 +52,7 @@ export default {
 
 Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, $1\ \text{toe/yr} = 1.33\ \text{kW}$, $1\ \text{EJ/yr} = 31.7\ \text{GW}$. A kilowatt that runs all year uses $8766$ kWh. Real quantities span more than twenty decades, so comparisons are made on a **logarithmic axis**, where each tick is a factor of ten.`,
       idea: String.raw`Units grew up in separate trades — heat (calorie, Btu), electricity (kWh), oil (barrel, tonne) — and the modern ones are all defined as exact or conventional multiples of the joule, so a conversion is one multiplication. The only conceptual step is energy $=$ power $\times$ time, which turns any energy statistic per year into an average power and back; dividing a country's yearly energy by the hours in a year gives the gigawatts of power stations needed to supply it. Plotting on log axes puts a light bulb and a continent in the same picture.`,
-      caption: String.raw`Type an amount (a formula such as \`2000*4184\` works), pick its unit, or drag the log slider: the readout converts it into every unit, and the gold line shows it on both axes — an energy is also shown as the average power it makes **if spent over one year**, a power as the energy it uses **in one year**. Switch between energy and power and watch a household, a car tank and a country land among the reference objects.`,
+      caption: String.raw`Type an amount (a formula such as 2000*4184 works), pick its unit, or drag the log slider: the readout converts it into every unit, and the gold line shows it on both axes — an energy is also shown as the average power it makes **if spent over one year**, a power as the energy it uses **in one year**. Switch between energy and power and watch a household, a car tank and a country land among the reference objects.`,
       deps: ['mech-3.1'],
       refs: ['MacKay ch. 2', 'Tester ch. 1'],
       tags: ['units', 'scale'],
@@ -70,38 +70,38 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
         const fix = () => linkSlider();
         const unit = () => qty.value === 'E' ? find(EU, eu.value) : find(PU, pu.value);
         const SI = () => num() * unit().f; // joules or watts
-        const sE = v.stage({ x: [0.3, 3e21], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 270, full: true, xlabel: 'energy', yticks: [], hover: false,
+        const sE = v.stage({ x: [0.3, 3e21], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 215, full: true, xlabel: 'energy', yticks: [], hover: false,
           xticks: [[1, '1 J'], [1e3, '1 kJ'], [1e6, '1 MJ'], [1e9, '1 GJ'], [1e12, '1 TJ'], [1e15, '1 PJ'], [1e18, '1 EJ'], [1e21, '1 ZJ']] });
-        const sP = v.stage({ x: [3, 1e18], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 270, full: true, xlabel: 'power', yticks: [],
-          xticks: [[10, '10 W'], [1e3, '1 kW'], [1e6, '1 MW'], [1e9, '1 GW'], [1e12, '1 TW'], [1e15, '1 PW'], [1e18, '1 EW']] });
+        const sP = v.stage({ x: [0.02, 1e18], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 215, full: true, xlabel: 'power', yticks: [],
+          xticks: [[0.1, '0.1 W'], [10, '10 W'], [1e3, '1 kW'], [1e6, '1 MW'], [1e9, '1 GW'], [1e12, '1 TW'], [1e15, '1 PW'], [1e18, '1 EW']] });
         const yrW = (kWh) => kWh * 1e12 / 8766;
         // [value in J, label, colour, note]
         const E = [
-          [0.981, 'apple (100 g) lifted 1 m', 'accent', 'm g h = 0.1 kg × 9.81 m/s² × 1 m'],
-          [4184, '1 kcal', 'accent', 'exact: thermochemical calorie'],
-          [3.6e6, '1 kWh', 'blue', 'exact'],
-          [8.37e6, 'a day of food (2000 kcal)', 'accent', '2000 × 4184 J'],
-          [3.35e7, '1 litre of petrol', 'accent', 'EIA: 120,214 Btu per US gallon (higher heating value)'],
-          [6.12e9, '1 barrel of oil equivalent', 'blue', '5.8 million Btu (convention)'],
-          [1.62e8, 'EV battery, 45 kWh', 'accent', 'ICCT 2021 lower-medium car, Table 2.4'],
-          [4.1868e10, '1 toe', 'blue', 'IEA/EI convention, 10 Gcal'],
+          [0.981, 'apple (100 g) lifted 1 m', 'teal', 'm g h = 0.1 kg × 9.81 m/s² × 1 m'],
+          [4184, '1 kcal', 'teal', 'exact: thermochemical calorie'],
+          [3.6e6, '1 kWh', 'accent', 'exact'],
+          [8.37e6, 'a day of food (2000 kcal)', 'teal', '2000 × 4184 J'],
+          [3.35e7, '1 litre of petrol', 'teal', 'EIA: 120,214 Btu per US gallon (higher heating value)'],
+          [6.12e9, '1 barrel of oil equivalent', 'accent', '5.8 million Btu (convention)'],
+          [1.62e8, 'EV battery, 45 kWh', 'teal', 'ICCT 2021 lower-medium car, Table 2.4'],
+          [4.1868e10, '1 toe', 'accent', 'IEA/EI convention, 10 Gcal'],
           [2.795e11, 'an American, one year', 'orange', '77,628 kWh of primary energy per person in 2022 (OWID/EI, substitution method)'],
-          [6.28e13, 'Hiroshima bomb (15 kt)', 'accent', '15,000 t × 4.184 GJ/t (conventional yield estimate)'],
-          [1.055e18, '1 quad', 'blue', '10¹⁵ Btu'],
+          [6.28e13, 'Hiroshima bomb (15 kt)', 'teal', '15,000 t × 4.184 GJ/t (conventional yield estimate)'],
+          [1.055e18, '1 quad', 'accent', '10¹⁵ Btu'],
           [9.98e19, 'USA 2024: 94.6 quad', 'orange', 'LLNL flow chart, 2024'],
           [6.25e20, 'one hour of sunlight on Earth', 'gold', '1361 W/m² × π R⊕² × 3600 s'],
           [6.36e20, 'world primary energy, 1 year', 'orange', '176,737 TWh in 2024 (OWID/EI, substitution method)'],
         ];
         const P = [
-          [10, 'LED bulb, 10 W', 'accent', 'typical'],
-          [96.9, 'a person: 2000 kcal/day', 'accent', '2000 × 4184 J ÷ 86,400 s'],
-          [745.7, '1 horsepower', 'blue', 'mechanical hp, 745.7 W'],
-          [2990, 'electric kettle', 'accent', '13 A × 230 V (UK plug fuse limit)'],
-          [1e5, 'car engine, 100 kW', 'accent', 'typical rating, ≈ 134 hp'],
-          [2.8e6, 'wind turbine, 2.8 MW', 'accent', 'EIA/S&L reference onshore turbine'],
-          [1.078e9, 'one AP1000 reactor, 1.1 GW', 'accent', 'EIA/S&L: 2 units = 2,156 MW net'],
-          [2.08e9, 'Hoover Dam, 2.08 GW', 'accent', 'installed capacity'],
-          [2.25e10, 'Three Gorges, 22.5 GW', 'accent', '32 × 700 MW + 2 × 50 MW'],
+          [10, 'LED bulb, 10 W', 'teal', 'typical'],
+          [96.9, 'a person: 2000 kcal/day', 'teal', '2000 × 4184 J ÷ 86,400 s'],
+          [745.7, '1 horsepower', 'accent', 'mechanical hp, 745.7 W'],
+          [2990, 'electric kettle', 'teal', '13 A × 230 V (UK plug fuse limit)'],
+          [1e5, 'car engine, 100 kW', 'teal', 'typical rating, ≈ 134 hp'],
+          [2.8e6, 'wind turbine, 2.8 MW', 'teal', 'EIA/S&L reference onshore turbine'],
+          [1.078e9, 'one AP1000 reactor, 1.1 GW', 'teal', 'EIA/S&L: 2 units = 2,156 MW net'],
+          [2.08e9, 'Hoover Dam, 2.08 GW', 'teal', 'installed capacity'],
+          [2.25e10, 'Three Gorges, 22.5 GW', 'teal', '32 × 700 MW + 2 × 50 MW'],
           [2.21e11, 'UK primary energy, 221 GW', 'orange', '1,937 TWh/yr ÷ 8766 h (OWID/EI, 2024)'],
           [3.64e11, 'Germany, 365 GW', 'orange', '3,195 TWh/yr ÷ 8766 h (2024)'],
           [3.02e12, 'USA, 3.0 TW', 'orange', '26,529 TWh/yr ÷ 8766 h (2024)'],
@@ -122,13 +122,13 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
             you(sE, isE ? q : q * YEAR_S, isE ? `${sci(q)} J` : `${sci(q * YEAR_S)} J per year`);
             you(sP, isE ? q / YEAR_S : q, isE ? `${sci(q / YEAR_S)} W if spent over a year` : `${sci(q)} W`);
           }
-          v.legend([['blue', 'unit definitions', { dot: true }], ['accent', 'everyday scale', { dot: true }], ['orange', 'countries & the world', { dot: true }], ['gold', 'sunlight / your amount', { dot: true }]]);
+          v.legend([['accent', 'unit definitions', { dot: true }], ['teal', 'everyday scale', { dot: true }], ['orange', 'countries & the world', { dot: true }], ['gold', 'sunlight / your amount', { dot: true }]]);
         });
         v.readout(() => {
           const q = SI(), isE = qty.value === 'E', T = isE ? EU : PU, u = unit();
-          if (!isFinite(q)) return 'Type a positive number or a formula (for example `1.5e6/3.6`).';
+          if (!isFinite(q)) return 'Type a positive number or a formula (for example 1.5e6/3.6).';
           const f = (x) => sci(x, 3);
-          const line = T.filter((o) => o.id !== u.id).map((o) => `${f(q / o.f)} ${o.label}`).join(' = ');
+          const line = T.filter((o) => o.id !== u.id && o.id !== 'J' && o.id !== 'W').map((o) => `${f(q / o.f)} ${o.label}`).join(' = ');
           const near = (isE ? E : P).reduce((b, e) => (Math.abs(Math.log(e[0] / q)) < Math.abs(Math.log(b[0] / q)) ? e : b));
           const r = q / near[0];
           const a = isE ? `Spent over one year it is ${f(q / YEAR_S)} W on average.` : `Running for one year it uses ${f(q * YEAR_S / 3.6e6)} kWh (${f(q * YEAR_S / 4.1868e10)} toe).`;

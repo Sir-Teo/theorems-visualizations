@@ -44,17 +44,18 @@ export function ladder(v, s, items, o = {}) {
   for (const it of its) {
     const right = it.X + it.w + 6 > xr - 2; // label would leave the panel: put it to the left of its stem
     const L = right ? it.X - it.w - 4 : it.X + 4, R = L + it.w;
-    let lane = 0;
-    while (ends[lane] != null && ends[lane] > L - 8) lane++;
+    const ok = (k, strict) => (ends[k] == null || ends[k] <= L - 8) && (!strict || ends.slice(0, k).every((e) => e == null || e <= it.X - 3));
+    let lane = 0; while (lane < 9 && !ok(lane, true)) lane++;
+    if (lane >= 9) { lane = 0; while (!ok(lane, false)) lane++; }
     ends[lane] = R;
     it.lane = lane; it.L = L; it.right = right;
   }
   const c = s.ctx;
+  for (const it of its) { it.yt = y0 - 12 - it.lane * laneH; c.save(); c.strokeStyle = v.color(it.stemColor || 'faint', 0.8); c.lineWidth = 1; c.beginPath(); c.moveTo(it.X, y0); c.lineTo(it.X, it.yt + 8); c.stroke(); c.restore(); }
   for (const it of its) {
-    const yt = y0 - 12 - it.lane * laneH, col = it.color || 'ink';
-    c.save(); c.strokeStyle = v.color(it.stemColor || 'faint'); c.lineWidth = 1; c.beginPath(); c.moveTo(it.X, y0); c.lineTo(it.X, yt + 8); c.stroke(); c.restore();
-    s.textPx(it.text, it.L, yt, { size, weight: it.weight ?? 550, color: col, align: 'left' });
-    s.ctx.save(); s.ctx.fillStyle = v.color(col); s.ctx.beginPath(); s.ctx.arc(it.X, y0, 3.6, 0, 7); s.ctx.fill(); s.ctx.restore();
+    const col = it.color || 'ink';
+    s.textPx(it.text, it.L, it.yt, { size, weight: it.weight ?? 550, color: col, align: 'left' });
+    c.save(); c.fillStyle = v.color(col); c.beginPath(); c.arc(it.X, y0, 3.6, 0, 7); c.fill(); c.restore();
   }
   return its;
 }

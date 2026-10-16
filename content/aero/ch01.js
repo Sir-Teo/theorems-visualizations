@@ -38,7 +38,7 @@ export default {
 $$p = p_b\Bigl(\tfrac{T}{T_b}\Bigr)^{-g_0/(RL)}\ (L \ne 0),\qquad p = p_b\,e^{-g_0 (H-H_b)/(R T_b)}\ (L = 0),$$
 chained from layer to layer; density is $\rho = p/RT$ and the speed of sound $a = \sqrt{\gamma R T}$ with $R = 287.05$ J/(kg K), $\gamma = 1.4$.`,
       idea: String.raw`Both the weight of the air above and the ideal-gas law are exact, so $\mathrm{d}\ln p/\mathrm{d}H = -g_0/(RT)$: the only modelling choice is the temperature profile, which ISA fixes as a few straight segments. Where $T$ is linear the integral is a power law, where it is constant an exponential, and the chained formulas reproduce the published layer-base pressures to a few parts per million. Pressure and density fall by a factor of about $e$ every 7 to 8 km (the scale height $RT/g_0$) in the troposphere, and the temperature break at 11 km is why a single exponential is badly wrong.`,
-      caption: String.raw`Drag the gold handle (or the slider) up through the atmosphere. Temperature falls at 6.5 K/km to the tropopause, stays at $-56.5$ °C, then rises; pressure and density, drawn on a log axis, decay by orders of magnitude. The red dashed curves are a single isothermal exponential at 15 °C: at 20 km it is already 1.5 times too dense. The readout compares the closed form with a numerical integration of the hydrostatic equation and with the published table.`,
+      caption: String.raw`Drag the gold handle (or the slider) up through the atmosphere. Temperature falls at 6.5 K/km to the tropopause, stays at $-56.5$ °C, then rises; pressure and density, drawn on a log axis, decay by orders of magnitude. The red dashed curves are a single isothermal exponential at 15 °C: at 20 km it is already 1.3 times too dense. The readout compares the closed form with a numerical integration of the hydrostatic equation and with the published table.`,
       deps: ['fluid-2.2', 'pchem-1.4'],
       refs: ['Anderson ch. 3'],
       tags: ['atmosphere', 'hydrostatics'],
@@ -79,7 +79,7 @@ chained from layer to layer; density is $\rho = p/RT$ and the speed of sound $a 
             B.curve((t) => [isoAt(t).rho / RHO0, t], 0, zm, { n, color: 'red', dash: true, width: 1.5, alpha: 0.6 });
             C.curve((t) => [A0, t], 0, zm, { n: 2, color: 'red', dash: true, width: 1.5 });
           }
-          for (const [nm, zk] of mark) if (zk < zm) { A.dot(at(zk).T, zk, { r: 3.5, color: 'ink' }); A.text(nm, at(zk).T + 3, zk, { size: 10, color: 'ink', baseline: 'middle' }); }
+          for (const [nm, zk] of mark) if (zk < zm) { const T = at(zk).T; A.dot(T, zk, { r: 3.5, color: 'ink' }); if (nm === 'Cessna 172' || nm === 'A320') A.text(nm, T - 3, zk, { size: 10, color: 'ink', baseline: 'middle', align: 'right' }); else A.text(nm, T + 3, zk, { size: 10, color: 'ink', baseline: 'middle' }); }
           for (const S of [A, B, C]) S.hline(z, { color: 'gold', alpha: 0.55, width: 1.2 });
           sync = true; h.set(cur.T, z); sync = false;
           B.dot(cur.p / P0, z, { color: 'accent', r: 5 }); B.dot(cur.rho / RHO0, z, { color: 'orange', r: 5 });
@@ -120,7 +120,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
         const bl = v.select('boundary layer', [{ value: 'lam', label: 'laminar' }, { value: 'tr', label: 'transition at 30 %' }, { value: 'turb', label: 'turbulent' }], 'tr');
         const sep = v.slider('upper surface separates at x/c =', 0.1, 1, 1, { step: 0.01 });
         const onP = v.toggle('pressure', true), onF = v.toggle('skin friction', true);
-        const A = v.stage({ x: [-0.55, 1.5], y: [-0.5, 0.62], equal: true, axes: false, height: 340, full: true });
+        const A = v.stage({ x: [-0.6, 1.5], y: [-0.28, 0.55], equal: true, axes: false, height: 420, full: true });
         const B = v.stage({ x: [0, 1], y: [-1.5, 4], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '−C_p (up = suction)', title: 'pressure coefficient' });
         const C = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '1000·c_f', title: 'skin friction' });
         let last = {};
@@ -140,8 +140,8 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
           const cpU = onP.value ? cp : new Float64Array(N), F = panelForces(model, cpU, onF.value ? cf : null, al);
           const rot = (x, y) => [0.25 + (x - 0.25) * ca + y * sa, -(x - 0.25) * sa + y * ca], rv = (x, y) => [x * ca + y * sa, -x * sa + y * ca];
           // free stream
-          for (const y of [-0.3, -0.1, 0.1, 0.3]) A.arrow(-0.52, y, -0.34, y, { color: 'muted', width: 1.2, head: 5 });
-          A.text('V∞', -0.43, 0.4, { color: 'muted', size: 11, align: 'center' });
+          for (const y of [-0.15, -0.05, 0.05, 0.15]) A.arrow(-0.55, y, -0.35, y, { color: 'muted', width: 1.2, head: 5 });
+          A.text('V∞', -0.45, 0.23, { color: 'muted', size: 11, align: 'center' });
           A.poly(model.pts.map(([x, y]) => rot(x, y)), { fill: 'ink', fillAlpha: 0.22, color: 'ink', width: 1.6 });
           if (ks < N) { const [sx, sy] = rot(model.cx[ks], model.cy[ks]); A.dot(sx, sy, { r: 4.5, color: 'red' }); A.text('separation', sx + 0.02, sy + 0.07, { color: 'red', size: 10.5 }); }
           for (const i of pick(model)) {
@@ -156,7 +156,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
           A.arrow(0.25, 0, 0.25, Ls, { color: 'green', width: 3.2, head: 9 });
           if (Math.abs(F.cd) > 1e-4) A.arrow(0.25, 0, 0.25 + Ds, 0, { color: 'red', width: 3.2, head: 9 });
           A.tex(String.raw`L`, 0.25, Ls + (Ls >= 0 ? 0.045 : -0.045), { color: 'green', size: 15, align: 'center' });
-          A.tex(String.raw`D\,(\times20)`, 0.25 + Math.max(Ds, 0.04) + 0.04, -0.045, { color: 'red', size: 13, align: 'left' });
+          A.corner('green: lift L · red: drag D, drawn ×20', 'tl', { color: 'muted' });
           // plots
           const up = [], lo = [], cu = [], cl = [];
           for (let i = n; i < N; i++) { up.push([model.cx[i], -cp[i]]); cu.push([model.cx[i], cf[i] * 1000]); }
@@ -214,7 +214,7 @@ By the Buckingham $\pi$ theorem they depend only on the dimensionless groups tha
         const quantity = v.select('dimensional analysis of', [{ value: 'lift', label: 'lift' }, { value: 'full', label: 'lift with μ and a' }, { value: 'moment', label: 'pitching moment' }], 'lift');
         const A = v.stage({ x: [5, 350], y: [1, 1e8], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, minWidth: 260, xlabel: 'true airspeed V (m/s)', ylabel: 'lift L (N)', title: 'forces: very different' });
         const B = v.stage({ x: [0, 30], y: [0, 1.6], axes: 'box', gutter: true, height: 340, minWidth: 260, xlabel: 'α (°)', ylabel: 'C_L = L/(qS)', title: 'coefficient: the same' });
-        const Cp = v.stage({ x: [0, 0.7], y: [0, 1.6], axes: 'box', gutter: true, height: 340, minWidth: 260, xlabel: 'C_D', ylabel: 'C_L', title: 'drag polar of the section' });
+        const Cp = v.stage({ x: [0, 0.25], y: [0, 1.6], axes: 'box', gutter: true, height: 340, minWidth: 260, xlabel: 'C_D', ylabel: 'C_L', title: 'drag polar of the section' });
         const hnd = B.handle(6, clTab(CRITZOS_18, 6), { color: 'gold', r: 8, constrain: (x) => [clamp(x, 0, 30), clTab(CRITZOS_18, clamp(x, 0, 30))] });
         let sync = false; hnd.onDrag = () => { if (sync) return; sync = true; alpha.set(Math.round(hnd.x * 10) / 10); sync = false; };
         let best = [0, 0, 0]; for (let a = 0; a <= 30; a += 0.05) { const r = clTab(CRITZOS_18, a) / cdTab(CRITZOS_18, a); if (r > best[0]) best = [r, a, 0]; }
@@ -226,7 +226,7 @@ By the Buckingham $\pi$ theorem they depend only on the dimensionless groups tha
             A.fn((V) => 0.5 * c.a.rho * V * V * c.S * Math.max(CL, 1e-6), { color: c.color, width: 2.2 });
             A.dot(c.V, Math.max(c.L, 1.01), { color: c.color, r: 6 });
           });
-          A.text('lift curves ∝ V²', 6.2, 3.2, { color: 'muted', size: 10.5 });
+          A.text('each curve: L ∝ V²', 6, 4e7, { color: 'muted', size: 10.5 });
           B.fn((a) => clTab(CRITZOS_18, a), { color: 'ink', width: 2.4, domain: [0, 30] });
           B.fn((a) => clTab(CRITZOS_05, a), { color: 'muted', width: 1.6, dash: true, domain: [0, 30] });
           B.fn((a) => 2 * Math.PI * a * DEG, { color: 'green', width: 1.4, dash: true, domain: [0, 12] });
@@ -237,7 +237,7 @@ By the Buckingham $\pi$ theorem they depend only on the dimensionless groups tha
           sync = true; hnd.set(al, CL); sync = false;
           Cp.curve((t) => [cdTab(CRITZOS_18, t), clTab(CRITZOS_18, t)], 0, 30, { n: 400, color: 'ink', width: 2.2 });
           Cp.line(0, 0, cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', dash: true, width: 1.6 });
-          Cp.dot(cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', r: 5, label: `max L/D = ${fx(best[0], 0)}`, labelPos: 'e' });
+          Cp.dot(cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', r: 5, label: `max L/D = ${fx(best[0], 0)}`, labelPos: 'ne' });
           Cp.dot(CD, CL, { color: 'gold', r: 7 });
           v.legend([['ink', 'NACA 0012, R = 1.8×10⁶'], ['muted', 'R = 0.5×10⁶', { dash: true }], ['green', '2π per radian', { dash: true }]]);
         });
@@ -276,7 +276,7 @@ $$Re = \frac{\rho V c}{\mu}\quad\text{and}\quad M = \frac{V}{a}$$
         TS = v.slider('tunnel temperature (K)', 80, 330, 288, { step: 1 });
         MS = v.slider('test Mach number', 0.1, 4, 0.78, { log: true, sig: 2 });
         const A = v.stage({ x: [0.1, 4], y: [3e4, 1e9], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, minWidth: 300, weight: 1.4, xlabel: 'Mach number M', ylabel: 'Reynolds number (based on chord)', title: 'the Reynolds–Mach plane' });
-        const B = v.stage({ x: [0, 32], y: [0, 1.5], axes: 'box', gutter: true, height: 380, minWidth: 260, weight: 1, xlabel: 'α (°)', ylabel: 'c_l', title: 'same section, two Reynolds numbers' });
+        const B = v.stage({ x: [0, 32], y: [0, 1.6], axes: 'box', gutter: true, height: 380, minWidth: 260, weight: 1, xlabel: 'α (°)', ylabel: 'c_l', title: 'same section, two Reynolds numbers' });
         const full = () => { const a = AIRCRAFT.find((q) => q.id === ac.value), at = atmo(a.alt), V = a.tas ?? a.mach * at.a, M = V / at.a; return { ...a, at, V, M, Re: at.rho * V * a.chord / at.mu }; };
         const tun = (m, p = pS.value, T = TS.value, c = 1) => { const g = gasState(T, p * P0), V = m * g.a; return g.rho * V * c / g.mu; };
         v.render(() => {
@@ -292,8 +292,8 @@ $$Re = \frac{\rho V c}{\mu}\quad\text{and}\quad M = \frac{V}{a}$$
           A.dot(MS.value, Rt, { r: 7, color: 'gold', label: 'model test point', labelPos: 'se' });
           B.fn((a) => clTab(CRITZOS_18, a), { color: 'ink', width: 2.4, domain: [0, 32] });
           B.fn((a) => clTab(CRITZOS_05, a), { color: 'red', width: 2.4, domain: [0, 32] });
-          B.dot(14.2, 1.33, { color: 'ink', r: 4.5, label: 'c_l,max 1.33', labelPos: 'ne' }); B.dot(12.5, 1.0, { color: 'red', r: 4.5, label: 'c_l,max ≈ 1.0', labelPos: 'ne' });
-          B.text('R = 1.8×10⁶', 22, 0.5, { color: 'ink', size: 11, align: 'left' }); B.text('R = 0.5×10⁶', 24, 0.7, { color: 'red', size: 11, align: 'left' });
+          B.dot(14.2, 1.33, { color: 'ink', r: 4.5 }); B.dot(12.5, 1.0, { color: 'red', r: 4.5 });
+          B.text('R = 1.8×10⁶: c_l,max = 1.33', 1, 1.45, { color: 'ink', size: 11, align: 'left' }); B.text('R = 0.5×10⁶: c_l,max ≈ 1.0', 1, 1.34, { color: 'red', size: 11, align: 'left' });
           v.legend([['green', 'full-size flight condition', { dot: true }], ['orange', 'model line (this tunnel)'], ['accent', 'reachable band (1 atm, 320 K ↔ 9 atm, 100 K)', { area: true }]]);
         });
         v.readout(() => {
@@ -325,7 +325,7 @@ $$q_c = p_0\Bigl[\bigl(1 + \tfrac{\gamma-1}{2}(V_C/a_0)^2\bigr)^{\gamma/(\gamma-
       viz(v) {
         const cas = v.slider('indicated (calibrated) airspeed (kt)', 60, 500, 280, { step: 1 });
         const alt = v.slider('altitude (km)', 0, 20, 10.7, { step: 0.1 });
-        const A = v.stage({ x: [0, 20], y: [0, 9.2], equal: true, axes: false, height: 340, full: true });
+        const A = v.stage({ x: [0, 21], y: [0, 9.2], equal: true, axes: false, height: 340, full: true });
         const B = v.stage({ x: [0, 900], y: [0, 20], axes: 'box', gutter: true, height: 380, minWidth: 300, xlabel: 'airspeed (kt)', ylabel: 'altitude (km)', title: 'one indicated speed, many true speeds' });
         const H = B.handle(300, 10.7, { color: 'gold', r: 8, constrain: (x, y) => { const z = clamp(y, 0, 20); return [tasFromCas(cas.value * KT, z * 1000) / KT, z]; } });
         let sync = false; H.onDrag = () => { if (sync) return; sync = true; alt.set(Math.round(H.y * 10) / 10); sync = false; };
@@ -361,8 +361,8 @@ $$q_c = p_0\Bigl[\bigl(1 + \tfrac{\gamma-1}{2}(V_C/a_0)^2\bigr)^{\gamma/(\gamma-
           A.text(`CAS ${fx(cas.value, 0)} kt · EAS ${fx(F.eas / KT, 0)} kt · M ${fx(F.M, 2)}`, cx - 0.3, 0.75, { size: 11, color: 'ink', align: 'left', weight: 600 });
         };
         v.render(() => {
-          cell(0.6, 0, 'sea level'); cell(10.6, alt.value, `${fx(alt.value, 1)} km (${fx(alt.value * 1000 / FT, 0)} ft)`);
-          A.line(10, 0.3, 10, 9, { color: 'grid', width: 1 });
+          cell(4.6, 0, 'sea level'); cell(15,  alt.value, `${fx(alt.value, 1)} km (${fx(alt.value * 1000 / FT, 0)} ft)`);
+          A.line(10.5, 0.3, 10.5, 9, { color: 'grid', width: 1 });
           const cs = cas.value, zs = []; for (let k = 0; k <= 80; k++) zs.push(20 * k / 80);
           B.curve((t) => [flight(cs, t).V / KT, t], 0, 20, { n: 120, color: 'accent', width: 2.6 });
           B.curve((t) => [flight(cs, t).eas / KT, t], 0, 20, { n: 120, color: 'green', width: 2, dash: true });
@@ -370,16 +370,16 @@ $$q_c = p_0\Bigl[\bigl(1 + \tfrac{\gamma-1}{2}(V_C/a_0)^2\bigr)^{\gamma/(\gamma-
           B.curve((t) => [0.78 * atmo(t * 1000).a / KT, t], 0, 20, { n: 120, color: 'red', width: 1.6, dash: true });
           B.curve((t) => [atmo(t * 1000).a / KT, t], 0, 20, { n: 120, color: 'muted', width: 1.2, dash: true });
           const zx = crossover(cs, 0.78);
-          if (zx < 20) B.dot(flight(cs, zx).V / KT, zx, { r: 5, color: 'red', label: `crossover ${fx(zx, 1)} km`, labelPos: 'e' });
+          if (zx < 20) B.dot(flight(cs, zx).V / KT, zx, { r: 5, color: 'red', label: `crossover ${fx(zx, 1)} km`, labelPos: 'w' });
           B.hline(alt.value, { color: 'gold', alpha: 0.5 });
           sync = true; H.set(flight(cs, alt.value).V / KT, alt.value); sync = false;
-          B.text('speed of sound', 0.9 * 0 + 560, 17.4, { color: 'muted', size: 10.5, align: 'left' });
+          B.text('speed of sound', 690, 1.6, { color: 'muted', size: 10.5, align: 'left' });
           v.legend([['accent', 'true airspeed'], ['green', 'equivalent airspeed', { dash: true }], ['orange', 'calibrated (indicated) airspeed'], ['red', 'Mach 0.78', { dash: true }]]);
         });
         v.readout(() => {
           const F = flight(cas.value, alt.value), G = flight(cas.value, 0), z = crossover(cas.value, 0.78);
           return `At ${fx(alt.value, 1)} km: $\\sigma = ${fx(F.a.sigma, 3)}$, $p = ${fx(F.a.p / 100, 1)}$ hPa, $a = ${fx(F.a.a, 1)}$ m/s. Impact pressure $q_c = ${fx(F.qc, 0)}$ Pa (the same as at sea level by construction). True airspeed $${fx(F.V / KT, 1)}$ kt, equivalent $${fx(F.eas / KT, 1)}$ kt, Mach $${fx(F.M, 3)}$; dynamic pressure $\\tfrac12\\rho V^2 = ${fx(F.q, 0)}$ Pa.\n`
-            + `Check: $V_E/\\sqrt\\sigma = ${fx(F.eas / Math.sqrt(F.a.sigma) / KT, 1)}$ kt equals $V_T$. Sea level at the same indicated speed: true speed $${fx(G.V / KT, 1)}$ kt (compressibility makes CAS ${fx(cas.value - G.eas / KT, 1)} kt above EAS there). ${z < 20 ? `Crossover to Mach 0.78 at ${fx(z, 1)} km (${fx(z * 1000 / FT / 100, 0)} hundred feet).` : 'This indicated speed never reaches Mach 0.78 below 20 km.'}`;
+            + `Check: $V_E/\\sqrt\\sigma = ${fx(F.eas / Math.sqrt(F.a.sigma) / KT, 1)}$ kt equals $V_T$. Sea level at the same indicated speed: true speed $${fx(G.V / KT, 1)}$ kt. Here CAS exceeds EAS by ${fx(cas.value - F.eas / KT, 1)} kt: compressibility, growing with Mach number. ${z < 20 ? `Crossover to Mach 0.78 at ${fx(z, 1)} km (${fx(z * 1000 / FT / 100, 0)} hundred feet).` : 'This indicated speed never reaches Mach 0.78 below 20 km.'}`;
         });
       },
     },
@@ -392,7 +392,7 @@ $$q_c = p_0\Bigl[\bigl(1 + \tfrac{\gamma-1}{2}(V_C/a_0)^2\bigr)^{\gamma/(\gamma-
 $$a = \sqrt{\Bigl(\frac{\partial p}{\partial \rho}\Bigr)_s} = \sqrt{\gamma R T},$$
 $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **Mach number** of a flow at speed $V$ is $M = V/a$ with $a$ evaluated at the local air temperature. Flight is subsonic for $M<1$, supersonic for $M>1$; a source moving faster than sound outruns its own waves, which pile up on a cone of half-angle $\mu = \arcsin(1/M)$.`,
       idea: String.raw`A sound wave is a tiny, fast (hence adiabatic) and reversible (hence isentropic) compression, so $a^2 = \mathrm{d}p/\mathrm{d}\rho$ at constant entropy; with $p\propto\rho^\gamma$ this is $\gamma p/\rho = \gamma R T$. Since ISA temperature drops to $-56.5$ °C at 11 km, $a$ falls from 340 to 295 m/s: an airliner at a fixed true speed of 231 m/s is at Mach 0.68 at sea level but 0.78 at 35,000 ft. Mach number, not speed, governs compressibility effects, so it is the number that matters for shocks and drag rise (chapter 4).`,
-      caption: String.raw`The source moves left to right; rings are the pressure pulses it emitted at equal time steps, drawn in the source's frame. Slide the speed past the speed of sound (gold line on the chart) and the rings stop running ahead of the source and pile into a Mach cone. Drag the gold handle on the sound-speed curve to change the air temperature, or use the lower chart to see how the Mach number of an aircraft at fixed true speed changes with altitude.`,
+      caption: String.raw`The source moves left to right; rings are the pressure pulses it emitted at equal time steps, drawn in the source's frame. Slide the speed past the speed of sound (red line on the sound-speed chart) and the rings stop running ahead of the source and pile into a Mach cone. Drag the gold handle on the sound-speed curve to change the air temperature, or use the lower chart to see how the Mach number of an aircraft at fixed true speed changes with altitude.`,
       deps: ['pchem-2.7', 'aero-1.1', 'fluid-9.11'],
       refs: ['Anderson ch. 4'],
       tags: ['speed of sound', 'Mach number'],
@@ -405,7 +405,7 @@ $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **M
         const zS = v.slider('altitude for the Mach chart (km)', 0, 28, 10.7, { step: 0.1 });
         const cone = v.toggle('draw the Mach cone', true);
         const A = v.stage({ x: [-2300, 700], y: [-780, 780], equal: true, axes: false, height: 360, full: true });
-        const B = v.stage({ x: [180, 400], y: [260, 380], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'temperature T (K)', ylabel: 'speed of sound a (m/s)', title: 'a = √(γRT)' });
+        const B = v.stage({ x: [180, 400], y: [0, 820], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'temperature T (K)', ylabel: 'speed of sound a (m/s)', title: 'a = √(γRT)' });
         const C = v.stage({ x: [0, 3.6], y: [0, 28], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'Mach number V/a at the standard-atmosphere a', ylabel: 'altitude (km)', title: 'fixed true speed, rising altitude' });
         const aT = (T) => Math.sqrt(GAMMA * R_STD * T);
         const hT = B.handle(288.15, aT(288.15), { color: 'gold', r: 8, constrain: (x) => { const T = clamp(x, 180, 400); return [T, aT(T)]; } });
@@ -426,8 +426,8 @@ $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **M
           A.dot(0, 0, { r: 7, color: 'ink' }); A.arrow(30, 0, 30 + Math.min(500, V * 0.55) , 0, { color: 'ink', width: 2.2, head: 8 });
           A.text(`M = ${fx(M, 2)}`, 40, 60, { color: 'ink', size: 14, weight: 650 });
           B.fn(aT, { color: 'accent', width: 2.4, domain: [180, 400] });
-          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'se' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'nw' });
-          B.hline(V, { color: 'red', dash: true, width: 1.3 }); if (V >= 260 && V <= 380) B.text('source speed V', 182, V + 3, { color: 'red', size: 10.5, align: 'left' });
+          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'se' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'ne' });
+          B.hline(V, { color: 'red', dash: true, width: 1.3 }); B.text('source speed V', 184, V + 18, { color: 'red', size: 10.5, align: 'left' });
           sync = true; hT.set(Tsl.value, aT(Tsl.value)); sync = false;
           C.curve((z) => [V / atmo(z * 1000).a, z], 0, 28, { n: 140, color: 'accent', width: 2.4 });
           C.vline(1, { color: 'red', width: 1.6, dash: true }); C.vband(1, 3.6, { color: 'red', alpha: 0.05 });

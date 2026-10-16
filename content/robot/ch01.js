@@ -276,6 +276,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           A.setView(arm ? [-2.8, 2.8] : [-4.1, 4.1], arm ? [-2.6, 2.6] : [-3.7, 3.7]);
           if (arm) { B.setView([-Math.PI, Math.PI], [-Math.PI, Math.PI]); B.setLabels('θ₁', 'θ₂'); B.setTicks(piTicks(-4, 4), piTicks(-4, 4)); } else { B.setLabels(null, null); B.setTicks([], []); }
           if (arm) {
+            if (limits.value) th = th.map((x) => clamp(x, -lim, lim));
             const idx = Math.round(scrub.value * (trace.length - 1));
             if (scrub.value < 0.999 && trace[idx]) { th = [wrap(trace[idx][0]), wrap(trace[idx][1])]; if (limits.value) th = [clamp(trace[idx][0], -lim, lim), clamp(trace[idx][1], -lim, lim)]; }
             discs.forEach((d, i) => { d.x = dh[i].x; d.y = dh[i].y; });
@@ -443,6 +444,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           const wheel = kind.value === 'wheel', trt = plan.value === 'trt';
           ang.el.hidden = len.el.hidden = cyc.el.hidden = trt; GH.visible = G.visible = trt;
           START.splice(0, 3, ...(trt ? [-3.1, -1.4, 0.5] : [0.4, -2.1, 0.5]));
+          L.setView(trt ? [-4.6, 4.6] : [-3.1, 3.1], trt ? [-3.2, 3.2] : [-3.1, 3.1]);
           P = build();
           const sNow = M.smoothstep(Math.min(1, (t % 7) / 5.5));
           const q = poseAt(P, sNow);

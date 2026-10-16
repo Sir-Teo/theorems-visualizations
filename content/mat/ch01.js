@@ -277,13 +277,13 @@ export default {
       num: '1.4',
       kind: 'Phenomenon',
       name: 'Polymorphism and allotropy of iron',
-      statement: String.raw`Many elements and compounds can crystallise in more than one structure, called **polymorphs** (allotropes for an element), each stable in its own range of temperature and pressure. At atmospheric pressure iron is body-centred cubic (bcc, ferrite, $\alpha$) below $912\,^\circ$C, face-centred cubic (fcc, austenite, $\gamma$) from $912$ to $1394\,^\circ$C, and bcc again ($\delta$) up to its melting point at $1538\,^\circ$C. At each transformation the atoms rearrange abruptly, so the density and the length of a heated bar change in a step on top of the smooth thermal expansion: heating through $912\,^\circ$C **shortens** the bar by about $0.3\,\%$, because the fcc arrangement uses the volume more efficiently (packing fraction $0.74$ against $0.68$). The magnetic change at the Curie temperature ($771\,^\circ$C) is not a change of structure and gives no step.`,
-      idea: String.raw`At fixed temperature the structure with the lowest Gibbs energy wins, and the free energies of bcc and fcc iron cross at $912\,^\circ$C: fcc has a higher entropy and a smaller volume per atom. Dilatometry measures the sum of two effects: the smooth expansion of the lattice, $\alpha\approx14\times10^{-6}\,{\rm K^{-1}}$ for bcc and $23\times10^{-6}\,{\rm K^{-1}}$ for fcc, and the discontinuity in atomic volume at the transition. Because the length of a bar scales as the cube root of the atomic volume, the step in length is about one third of the step in volume. The model curve is built from the measured lattice parameters of the two phases.`,
-      caption: String.raw`Drag the temperature (or use the buttons) and watch the cell change between bcc and fcc while the dilatometer trace grows. The coloured bands mark the three stability ranges; the gold dot sits at the current temperature. Note the step down at $912\,^\circ$C, the nearly invisible step at $1394\,^\circ$C, and no step at the Curie point.`,
+      statement: String.raw`Many elements and compounds can crystallise in more than one structure, called **polymorphs** (allotropes for an element), each stable in its own range of temperature and pressure. At atmospheric pressure iron is body-centred cubic (bcc, ferrite, $\alpha$) below $912{}^\circ$C, face-centred cubic (fcc, austenite, $\gamma$) from $912$ to $1394{}^\circ$C, and bcc again ($\delta$) up to its melting point at $1538{}^\circ$C. At each transformation the atoms rearrange abruptly, so the density and the length of a heated bar change in a step on top of the smooth thermal expansion: heating through $912{}^\circ$C **shortens** the bar by about $0.3\,\%$, because the fcc arrangement uses the volume more efficiently (packing fraction $0.74$ against $0.68$). The magnetic change at the Curie temperature ($771{}^\circ$C) is not a change of structure and gives no step.`,
+      idea: String.raw`At fixed temperature the structure with the lowest Gibbs energy wins, and the free energies of bcc and fcc iron cross at $912{}^\circ$C: fcc has a higher entropy and a smaller volume per atom. Dilatometry measures the sum of two effects: the smooth expansion of the lattice, $\alpha\approx14\times10^{-6}\,{\rm K^{-1}}$ for bcc and $23\times10^{-6}\,{\rm K^{-1}}$ for fcc, and the discontinuity in atomic volume at the transition. Because the length of a bar scales as the cube root of the atomic volume, the step in length is about one third of the step in volume. The model curve is built from the measured lattice parameters of the two phases.`,
+      caption: String.raw`Drag the temperature (or use the buttons) and watch the cell change between bcc and fcc while the dilatometer trace grows. The coloured bands mark the three stability ranges; the gold dot sits at the current temperature. Note the step down at $912{}^\circ$C, the nearly invisible step at $1394{}^\circ$C, and no step at the Curie point.`,
       deps: ['xtal-1.6'],
       refs: ['Callister §3.6'],
       tags: ['allotropy', 'iron', 'dilatometry'],
-      scope: String.raw`Pure iron at atmospheric pressure, slow heating. The lattice parameters are interpolated linearly between measured values ($a_\alpha=2.8665$ Å at $20\,^\circ$C and $2.9033$ Å at $912\,^\circ$C; $a_\gamma=3.6306(1+23.0\times10^{-6}(T-1000\,{\rm K}))$ Å from a measured value at 1000 K). The $\delta$ phase is modelled by extending the $\alpha$ line (an assumption).`,
+      scope: String.raw`Pure iron at atmospheric pressure, slow heating. The lattice parameters are interpolated linearly between measured values ($a_\alpha=2.8665$ Å at $20{}^\circ$C and $2.9033$ Å at $912{}^\circ$C; $a_\gamma=3.6306(1+23.0\times10^{-6}(T-1000\,{\rm K}))$ Å from a measured value at 1000 K). The $\delta$ phase is modelled by extending the $\alpha$ line (an assumption).`,
       viz(v) {
         const A0 = 2.8665, A912 = 2.9033, TA = 912, TG = 1394, TM = 1538, TC = 771, MFe = 55.845;
         const aAlpha = (T) => A0 + ((A912 - A0) * (T - 20)) / (TA - 20);
@@ -311,7 +311,7 @@ export default {
           const col = fcc ? 'orange' : 'accent';
           if (fcc) { sc.line([-E, -E, 0], [E, E, 0], { color: 'red', width: 2.2 }, 2); sc.line([-E, E, 0], [E, -E, 0], { color: 'red', width: 2.2 }, 2); } else sc.line([-E, -E, -E], [E, E, E], { color: 'red', width: 2.2 }, 2);
           const rc = (fcc ? Math.SQRT2 / 4 : Math.sqrt(3) / 4) * 2 * E * 1.0; // contact radius in drawing units
-          pts.forEach((p, i) => sc.dot(p.map((c, k) => c + amp * 0.35 * jit[i][k]), { r: Math.max(6, rc * px * 0.55), color: col }));
+          pts.forEach((p, i) => sc.dot(p.map((c, k) => c + amp * 0.35 * jit[i][k]), { r: Math.max(5, rc * px * 0.3), color: col }));
           sc.flush();
           S.corner(`${ph}-Fe: ${fcc ? 'fcc' : 'bcc'}, a = ${a.toFixed(4)} Å`, 'tl', { size: 12, color: col, weight: 700 });
           // dilatometer
@@ -319,8 +319,8 @@ export default {
           D.text('α  bcc', 450, 2.3, { size: 12, color: 'accent', align: 'center', weight: 700 }); D.text('γ  fcc', 1153, 2.3, { size: 12, color: 'orange', align: 'center', weight: 700 }); D.text('δ  bcc', 1466, 2.3, { size: 12, color: 'accent', align: 'center', weight: 700 });
           D.fn(dL, { domain: [20, TA - 0.01], color: 'accent', width: 2.8 }); D.fn(dL, { domain: [TA + 0.01, TG - 0.01], color: 'orange', width: 2.8 }); D.fn(dL, { domain: [TG + 0.01, TM], color: 'accent', width: 2.8 });
           D.line(TA, dL(TA - 0.01), TA, dL(TA + 0.01), { color: 'red', width: 2 }); D.line(TG, dL(TG - 0.01), TG, dL(TG + 0.01), { color: 'red', width: 2 });
-          D.vline(TC, { color: 'muted', dash: [4, 4] }); D.text('Curie 771 °C: no step', TC - 12, 0.2, { size: 11, color: 'muted', align: 'right' });
-          D.text(`step ${(dL(TA + 0.01) - dL(TA - 0.01)).toFixed(2)} %`, TA - 14, (dL(TA - 0.01) + dL(TA + 0.01)) / 2 + 0.05, { size: 11, color: 'red', align: 'right' });
+          D.vline(TC, { color: 'muted', dash: [4, 4] }); D.text('Curie 771 °C: no step', TC - 12, 1.9, { size: 11, color: 'muted', align: 'right' });
+          D.text(`step ${(dL(TA + 0.01) - dL(TA - 0.01)).toFixed(2)} %`, TA + 22, 0.55, { size: 11, color: 'red', align: 'left' });
           D.dot(t, dL(t), { r: 8, color: 'gold' });
         });
         v.readout(() => {
@@ -350,10 +350,10 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
         const sel = v.select('crystal', CRYSTALS.map((c) => ({ value: c.sym, label: c.sym })), 'Cu', { onChange: () => { const c = cur(); sl.set(2 * c.c[2] / (c.c[0] - c.c[1])); } });
         const cur = () => CRYSTALS.find((c) => c.sym === sel.value);
         const A0 = (c) => (2 * c.c[2]) / (c.c[0] - c.c[1]);
-        sl = v.slider('Zener ratio A = 2C₄₄/(C₁₁−C₁₂)', 0.3, 4, A0(CRYSTALS[0]), { log: true, decimals: 2 });
+        sl = v.slider('Zener ratio A', 0.3, 4, A0(CRYSTALS[0]), { log: true, decimals: 2 });
         const hill = v.toggle('show polycrystal average', true);
         const s3 = v.stage3d({ range: 1.25, height: 400, yaw: -0.7, pitch: 0.35, axes: false, weight: 1.25, title: 'Young’s modulus as a surface E(n)' });
-        const P = v.stage({ x: [-1.35, 1.35], y: [-1.35, 1.35], equal: true, axes: false, height: 400, weight: 0.9, minWidth: 280, title: 'cut through [001], [111], [110]' });
+        const P = v.stage({ x: [-1.9, 1.9], y: [-1.5, 1.5], equal: true, axes: false, height: 400, weight: 0.9, minWidth: 280, title: 'cut through [001], [111], [110]' });
         const consts = () => { const c = cur(), a = sl.value; const c44 = (a * (c.c[0] - c.c[1])) / 2; return [c.c[0], c.c[1], c44]; };
         v.render(() => {
           const c = cur(), cc = consts(), S = cubicS(...cc), pa = polyAverage(...cc);
@@ -363,14 +363,14 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
           const sc = 1.05 / hi;
           s3.surface((th, ph) => { const n = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)], e = youngDir(S, n) * sc; return [n[0] * e, n[1] * e, n[2] * e]; }, [0, Math.PI], [0, 2 * Math.PI], { n: 36, alpha: 0.95, colorFn: (th, ph) => { const n = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]; const t = hi - lo < 1e-6 ? 0.5 : (youngDir(S, n) - lo) / (hi - lo); return v.ramp(t, 'red', 'blue'); } });
           if (hill.value) { const R = pa.Hill * sc; for (const k of [0, 1, 2]) s3.curve((t) => { const x = R * Math.cos(t), y = R * Math.sin(t); return k === 0 ? [x, y, 0] : k === 1 ? [x, 0, y] : [0, x, y]; }, 0, 2 * Math.PI, { color: 'ink', width: 1.4, alpha: 0.7 }); }
-          for (const [d, nm] of [[[1, 0, 0], '[100]'], [[0, 1, 1], '[011]'], [[1, 1, 1], '[111]']]) { const n = v.M.normalize(d), e = youngDir(S, n) * sc * 1.12; s3.text(nm, [n[0] * e, n[1] * e, n[2] * e], { color: 'ink', size: 11 }); }
+          for (const [d, nm] of [[[1, 0, 0], '[100]'], [[0, 1, 1], '[011]'], [[1, 1, 1], '[111]']]) { const n = v.M.normalize(d), e = youngDir(S, n) * sc * 1.06; s3.text(nm, [n[0] * e, n[1] * e, n[2] * e], { color: 'ink', size: 11 }); }
           // planar cut: directions cosθ [001] + sinθ [110]/√2
           const dirAt = (t) => { const s = Math.sin(t) / Math.SQRT2; return [s, s, Math.cos(t)]; };
-          const k = 1.2 / hi;
-          P.circle(0, 0, 1.2 * pa.Hill / hi, { color: 'muted', width: 1.4, fillAlpha: 0, dash: [5, 4] });
+          const k = 1.05 / hi;
+          P.circle(0, 0, 1.05 * pa.Hill / hi, { color: 'muted', width: 1.4, fillAlpha: 0, dash: [5, 4] });
           P.line(-1.3, 0, 1.3, 0, { color: 'grid' }); P.line(0, -1.3, 0, 1.3, { color: 'grid' });
           P.curve((t) => { const r = youngDir(S, dirAt(t)) * k; return [r * Math.sin(t), r * Math.cos(t)]; }, 0, 2 * Math.PI, { n: 240, color: 'accent', width: 3, fill: 'accent', fillAlpha: 0.12 });
-          for (const [t, nm] of [[0, '[001]'], [Math.atan(Math.SQRT2), '[111]'], [Math.PI / 2, '[110]']]) { const e = youngDir(S, dirAt(t)) * k; P.dot(e * Math.sin(t), e * Math.cos(t), { r: 6, color: 'gold', label: `${nm} ${v.fmt(e / k, 3)}`, labelPos: t === 0 ? 'ne' : t > 1 && t < 1.5 ? 'e' : 'ne' }); }
+          for (const [t, nm] of [[0, '[001]'], [Math.atan(Math.SQRT2), '[111]'], [Math.PI / 2, '[110]']]) { const e = youngDir(S, dirAt(t)) * k; P.dot(e * Math.sin(t), e * Math.cos(t), { r: 6, color: 'gold', label: `${nm} ${v.fmt(e / k, 3)}`, labelPos: t === 0 ? 'ne' : 'e' }); }
           P.corner(`rim = E in GPa; dashed = polycrystal Hill average ${v.fmt(pa.Hill, 3)}`, 'bl', { size: 11, color: 'muted' });
         });
         v.readout(() => {
@@ -387,7 +387,7 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
       kind: 'Definition',
       name: 'Linear and planar atomic densities',
       statement: String.raw`The **linear density** of a crystallographic direction $[uvw]$ is the number of atoms centred on a line segment along it, per unit length: $\mathrm{LD}=1/t$, where $t$ is the repeat distance (the shortest lattice vector in that direction). The **planar density** of a plane $(hkl)$ is the number of atoms centred on the plane per unit area, $\mathrm{PD}=1/A_{\rm cell}$ with $A_{\rm cell}$ the area of the primitive cell of the planar atom net. For a cubic lattice of edge $a$: fcc $\{111\}$ has $\mathrm{PD}=4/(\sqrt3a^2)\approx2.31/a^2$ and bcc $\{110\}$ has $\mathrm{PD}=\sqrt2/a^2\approx1.41/a^2$, the largest values in each structure; the densest directions are $\langle110\rangle$ in fcc ($\sqrt2/a$) and $\langle111\rangle$ in bcc ($2/(\sqrt3a)$), where atoms touch.`,
-      idea: String.raw`Count lattice points on the plane through the origin: they form a two-dimensional lattice spanned by its two shortest vectors, and the area of that parallelogram is $1/\mathrm{PD}$. Planes with large PD are also the widest spaced ($d_{hkl}$ is large when the net is dense, since $\mathrm{PD}\cdot d_{hkl}$ is the volume per atom is fixed), they are weakly bound to their neighbours and slide over each other easily. This is why slip happens on the densest planes along the densest directions, the subject of chapter 3 (slip systems $\{111\}\langle110\rangle$ in fcc, $\{110\}\langle111\rangle$ in bcc).`,
+      idea: String.raw`Count lattice points on the plane through the origin: they form a two-dimensional lattice spanned by its two shortest vectors, and the area of that parallelogram is $1/\mathrm{PD}$. Planes with large PD are also the widest spaced, because $\mathrm{PD}\times d_{hkl}$ is the volume per atom, which is fixed; widely spaced planes are weakly bound to their neighbours and slide over each other easily. This is why slip happens on the densest planes along the densest directions, the subject of chapter 3 (slip systems $\{111\}\langle110\rangle$ in fcc, $\{110\}\langle111\rangle$ in bcc).`,
       caption: String.raw`Choose a metal and indices. In the 3D panel the atoms lying on the chosen plane (or direction) are gold; the middle panel shows the planar net with its primitive cell and the atoms drawn touching. The bars rank all low-index planes (or directions) of the structure: the densest is flagged green, the current one gold.`,
       deps: ['xtal-4.2', 'xtal-1.5'],
       refs: ['Callister §3.11'],
@@ -506,7 +506,7 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
         const idx = v.select('design', [{ value: 1, label: 'stiff light tie  E/ρ' }, { value: 2, label: 'stiff light beam  E^½/ρ' }, { value: 3, label: 'stiff light plate  E^⅓/ρ' }], 1);
         const s = v.stage({ x: [0.45, 30], y: [0.006, 2500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 520, full: true, xlabel: 'density ρ (Mg/m³)', ylabel: 'Young’s modulus E (GPa)', title: 'modulus–density chart' });
         const hd = s.handle(7.85, 200, { color: 'green', r: 9, label: 'index line', labelPos: 'se' });
-        let sel = 'steel (A36)';
+        let sel = 'aluminium';
         s.onClick((x, y) => { let best = null, bd = 0.16; for (const m of M) { const d = Math.hypot(Math.log10(x / m.p), Math.log10(y / m.e)); if (d < bd) { bd = d; best = m.name; } } if (best) sel = best; });
         const hull = (P) => { const q = [...P].sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = []; for (const p of q) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); } for (const p of [...q].reverse()) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); } return [...lo.slice(0, -1), ...up.slice(0, -1)]; };
         const Mi = (m, p) => Math.pow(m.e, 1 / p) / m.p;
@@ -520,20 +520,20 @@ It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equ
           s.fn(line, { color: 'green', width: 0 });
           const items = [];
           for (const m of M) {
-            const above = Mi(m, p) > Mh, on = m.name === sel;
+            const above = Mi(m, p) > Mh * 1.0005, on = m.name === sel;
             if (m.E[1] / m.E[0] > 1.05) s.line(m.p, m.E[0], m.p, m.E[1], { color: COL[m.cls], width: 3, alpha: 0.5 });
             s.dot(m.p, m.e, { r: on ? 8 : 5, color: above ? 'green' : COL[m.cls], hollow: !m.ver, ring: on });
             if (m.lab || on) items.push({ x: m.p, y: m.e, text: m.name, r: on ? 8 : 5, size: on ? 13 : 10.5, weight: on ? 700 : 500, color: on ? COL[m.cls] : 'ink' });
           }
           items.sort((a, b) => (b.weight === 700) - (a.weight === 700));
-          placeLabels(v, s, items);
+          placeLabels(v, s, items, { avoid: [[s.X(hd.x) - 12, s.Y(hd.y) - 14, s.X(hd.x) + 95, s.Y(hd.y) + 30]] });
           v.legend([...Object.keys(COL).map((c) => [COL[c], CN[c], { area: true }]), ['green', 'beats the selection line', { dot: true }]]);
         });
         v.readout(() => {
           const p = +idx.value, Mh = Math.pow(hd.y, 1 / p) / hd.x, name = ['E/ρ', 'E^{1/2}/ρ', 'E^{1/3}/ρ'][p - 1], unit = ['GPa/(Mg/m³) = MN·m/kg', 'GPa^{1/2}/(Mg/m³)', 'GPa^{1/3}/(Mg/m³)'][p - 1];
           const steel = M[0], rank = [...M].sort((a, b) => Mi(b, p) - Mi(a, p)), top = rank.slice(0, 5).map((m) => `${m.name} ${v.fmt(Mi(m, p), 3)}`).join(', ');
           const m = M.find((q) => q.name === sel);
-          return `Line through the handle: $M=${name}=${v.fmt(Mh, 3)}$ ${unit}. Best five of ${M.length}: ${top}. A stiffness-matched part in the best material weighs ${v.fix(Mi(steel, p) / Mi(rank[0], p), 3)} × the steel one.\n**${m.name}**: $E=${m.E[0] === m.E[1] ? m.E[0] : `${m.E[0]}$–$${m.E[1]}`}$ GPa, $\\rho=${m.r[0] === m.r[1] ? m.r[0] : `${m.r[0]}$–$${m.r[1]}`}$ Mg/m³ (${m.ver ? 'density checked' : 'typical density'}) → $M=${v.fmt(Mi(m, p), 3)}$, ${Mi(m, p) > Mh ? 'above' : 'below'} the line.`;
+          return `Line through the handle: $M=${name}=${v.fmt(Mh, 3)}$ ${unit}. Best five of ${M.length}: ${top}. A stiffness-matched part in the best material weighs ${v.fix(Mi(steel, p) / Mi(rank[0], p), 3)} × the steel one.\n**${m.name}**: $E=${m.E[0] === m.E[1] ? m.E[0] : `${m.E[0]}$–$${m.E[1]}`}$ GPa, $\\rho=${m.r[0] === m.r[1] ? m.r[0] : `${m.r[0]}$–$${m.r[1]}`}$ Mg/m³ (${m.ver ? 'density checked' : 'typical density'}) → $M=${v.fmt(Mi(m, p), 3)}$, ${Mi(m, p) > Mh * 1.0005 ? 'above' : 'on or below'} the line.`;
         });
       },
     },

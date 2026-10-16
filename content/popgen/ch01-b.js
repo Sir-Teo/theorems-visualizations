@@ -34,7 +34,7 @@ The frequency among all X chromosomes, $\bar q = \tfrac13(2q_f + q_m)$ (two thir
       caption: String.raw`Drag the gold start point in the left panel ($q_m$ across, $q_f$ up). The path jumps across the diagonal every generation, always along the dashed line of constant $\bar q = (2q_f+q_m)/3$, and homes in on the green equilibrium. On the right the two sexes leapfrog inside an envelope that halves each generation. Turn on the autosomal locus to compare: the gap closes at once. Turn on a finite population to see a simulated run of 300 females and 300 males (hollow dots) follow the same zig-zag up to sampling noise.`,
       deps: ['popgen-1.5'],
       refs: ['Gillespie'],
-      credit: 'Jennings, 1916',
+      credit: 'Reported as early work on sex-linked genes under random mating: Jennings, 1916 (Genetics 1: 53–89)',
       tags: ['sex linkage', 'Hardy–Weinberg'],
       viz(v) {
         const M = v.M, G = 12, N = 300;
