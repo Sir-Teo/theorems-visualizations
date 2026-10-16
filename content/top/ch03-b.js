@@ -222,7 +222,7 @@ export default {
           if (!info) return '';
           if (info.sp === 'disc') return `$B(p,\\varepsilon)\\cap D$ is convex, so **one** piece for every $\\varepsilon$ (and $p$ has path-connected neighbourhoods of every size): the open disc is locally connected and locally path-connected.`;
           const { k, near, onLimit, neigh } = info;
-          return `$B(p,\\varepsilon)\\cap X$ has **${k}** component${k > 1 ? 's' : ''}. ${neigh ? `The component of $p$ is all of $B(p,\\varepsilon)\\cap X$, so for this $\\varepsilon$ it is a neighbourhood of $p$.` : `The component of $p$ is **not** a neighbourhood of $p$: other pieces come within $${v.fix(near, 3)}$ of $p$${onLimit ? ' — and teeth $x=1/n$ for every larger $n$ come arbitrarily closer, so no smaller ball helps' : ''}.`} ${onLimit && !neigh ? 'The comb is not locally connected at points of the limit tooth.' : ''}`;
+          return `$B(p,\\varepsilon)\\cap X$ has ${onLimit && k > 1 ? 'at least ' : ''}**${k}** component${k > 1 ? 's' : ''}${onLimit && k > 1 ? ' (teeth drawn up to $n=60$; the true comb has infinitely many)' : ''}. ${neigh ? `The component of $p$ is all of $B(p,\\varepsilon)\\cap X$, so for this $\\varepsilon$ it is a neighbourhood of $p$.` : `The component of $p$ is **not** a neighbourhood of $p$: other pieces come within $${v.fix(near, 3)}$ of $p$${onLimit ? ' — and teeth $x=1/n$ for every larger $n$ come arbitrarily closer, so no smaller ball helps' : ''}.`} ${onLimit && !neigh ? 'The comb is not locally connected at points of the limit tooth.' : ''}`;
         });
       },
     },

@@ -346,11 +346,11 @@ export default {
           const Lz = st.x * st.dy - st.y * st.dx;
           info = { n: st.n, tv, tvd, vis, cells, Lz, b: st.bounces };
         }, { still: 9, period: 30 });
-        v.legend([['accent', 'time in cell / area (dark = more)'], ['green', 'uniform', { dash: true }]]);
+        v.legend([['accent', 'time in cell ÷ area (more saturated = more time)'], ['green', 'uniform', { dash: true }]]);
         v.readout(() => {
           if (!info) return '';
           const { n, tv, tvd, vis, cells, Lz, b } = info;
-          return `after ${b} bounces (${v.fix(n * 0.05, 0)} path lengths): positions deviate from equal-probability by **${v.fix(100 * tv, 1)} %** (total variation), directions by **${v.fix(100 * tvd, 1)} %** · cells visited: ${vis} of ${cells}\nangular momentum about the centre $x\\,\\dot y-y\\,\\dot x=${v.fix(Lz, 3)}$ ${mode.value === 'circle' ? '(conserved for the circle: the orbit never enters the disc of radius $|L|$)' : '(not conserved here)'}`;
+          return `after ${b} bounces (${v.fix(n * 0.05, 0)} path lengths): positions deviate from equal-probability by **${v.fix(100 * tv, 1)} %** (total variation), directions by **${v.fix(100 * tvd, 1)} %** · cells visited: ${vis} of ${cells}\nangular momentum about the centre $x\\,\\dot y-y\\,\\dot x=${v.fix(Lz, 3)}$ ${mode.value === 'circle' ? '(conserved for the circle, so the orbit stays outside the disc of radius $|L|$)' : '(not conserved here)'}`;
         });
       },
     },
@@ -449,7 +449,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { N, q, moves, S, eqS, qa, S0, p } = info;
-          return `after ${moves} hops: $q_A=${qa}$ of $q=${q}$, $S/k=${v.fix(S, 1)}$ (start ${v.fix(S0, 1)}, maximum ${v.fix(eqS, 1)}; $\\Delta S/k=${v.fix(S - S0, 1)}$ gained)\nthe initial macrostate (all $q$ quanta in A) has multiplicity $\\Omega_A(q)=${texExp(lnEin(N, q))}$ out of $\\Omega_{\\text{tot}}=${texExp(lnEin(2 * N, q))}$: probability **$10^{${v.fix(p, 1)}}$** per instant (for $N=${N}$)`;
+          return `after ${moves} hops: $q_A=${qa}$ of $q=${q}$, $S/k=${v.fix(S, 1)}$ (start ${v.fix(S0, 1)}, maximum ${v.fix(eqS, 1)}; $\\Delta S/k=${v.fix(Math.abs(S - S0) < 0.05 ? 0 : S - S0, 1)}$ gained)\nthe initial macrostate (all $q$ quanta in A) has multiplicity $\\Omega_A(q)=${texExp(lnEin(N, q))}$ out of $\\Omega_{\\text{tot}}=${texExp(lnEin(2 * N, q))}$: probability **$10^{${v.fix(p, 1)}}$** per instant (for $N=${N}$)`;
         });
       },
     },
@@ -541,7 +541,7 @@ export default {
           sb.path(Array.from({ length: N - 1 }, (_, i) => [(i + 1) / N, beta(i + 1)]), { color: 'ink', width: 2 });
           sb.hline(0, { color: 'faint', width: 1 }); sb.vline(0.5, { color: 'faint', width: 1, dash: true });
           sb.dot(x0, b0, { r: 6, color: b0 >= 0 ? 'blue' : 'red' });
-          sb.text('T → +∞', 0.5, 0.35, { size: 11, align: 'right', dx: -6, color: 'muted' }); sb.text('T → −∞', 0.5, -0.35, { size: 11, align: 'left', dx: 6, color: 'muted' });
+          sb.text('T → +∞', 0.5, 1.1, { size: 11, align: 'right', dx: -6, color: 'muted' }); sb.text('T → −∞', 0.5, -1.1, { size: 11, align: 'left', dx: 6, color: 'muted' });
           // contact with the Einstein solid
           const qe = Math.round(qE.value * ne), Qt = n0 + qe;
           const Sf = (n) => (n < 0 || n > N || Qt - n < 0 ? -Infinity : lnP(n) + lnEin(ne, Qt - n));

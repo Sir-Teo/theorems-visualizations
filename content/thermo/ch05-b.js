@@ -28,36 +28,36 @@ export default {
 $$S=Nk\left[\ln\!\left(\frac{V}{N\lambda^{3}}\right)+\frac52\right],\qquad \lambda=\frac{h}{\sqrt{2\pi mkT}}.$$
 Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It reproduces $\partial S/\partial U=1/T$, $P=NkT/V$ and $C_V=\tfrac32Nk$ and is valid only when $N\lambda^3/V\ll1$; as $T\to0$ it would give $S\to-\infty$, so the classical gas fails below the degeneracy temperature.`,
       idea: String.raw`The number of states below energy $E$ is the momentum-ball volume of 5.10 times $V^N$, divided by $h^{3N}$ (one quantum state per cell of size $h$ per degree of freedom, qm-12.13) and by $N!$ for identical atoms. Taking the logarithm and using Stirling's formula (pma-8.22) for $\ln N!$ and $\ln\Gamma(\tfrac{3N}2+1)$ gives the equation; differentiating with respect to $U$, $V$, $N$ reproduces the ideal-gas law and $\mu$. The constant $h$ appears inside the logarithm, so thermodynamic entropies of gases could be used to *measure* $h$ (Sackur and Tetrode compared such values with Planck's).`,
-      caption: String.raw`**Choose a noble gas, a pressure and a temperature.** Left: $S/Nk$ against $T$ for the chosen gas (thick) and the others (thin); the red zone is where $N\lambda^3/V>1$ and the formula breaks down (it would give negative entropy). Right: the formula, evaluated at 298.15 K and 1 bar, against the CODATA key values of the standard entropy, as a deviation in J/(mol K). The *Planck-constant factor* rescales $h$: the agreement is lost at once, which is the point — the absolute entropy depends on $h$.`,
+      caption: String.raw`**Choose a noble gas, a pressure and a temperature.** Left: $S/Nk$ against $T$ for the chosen gas (thick) and the others (thin); the red zone is where $N\lambda^3/V>1$ and the formula breaks down (it would give negative entropy). Right: the formula, evaluated at 298.15 K and 1 bar (bars), against the CODATA key values of the standard entropy (rings), with the difference printed above each bar. The *Planck-constant factor* rescales $h$: the agreement is lost at once, which is the point — the absolute entropy depends on $h$.`,
       deps: ['thermo-5.10', 'pma-8.22'], refs: ['Schroeder §2.6'], tags: ['ideal gas', 'entropy'],
       credit: 'O. Sackur, 1911, and H. Tetrode, 1912 (independently; Annalen der Physik 38, 434 for Tetrode)',
       scope: String.raw`Dilute monatomic gas with $N\lambda^3/V\ll1$ (classical limit of the ideal quantum gas) and negligible electronic excitation. The "CODATA key values" quoted here are the standard-state entropies of the noble gases as tabulated by NIST; they agree with this formula to a few parts per million, which is a check of the arithmetic and constants (the tabulated monatomic values are, to the best of my knowledge, themselves obtained from the translational partition function rather than calorimetry).`,
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sackur%E2%80%93Tetrode_equation' },
       viz(v) {
-        const gsel = v.select('gas', Object.keys(NOBLE), 'Ar');
-        const Ts = v.slider('temperature $T$ (K)', 1, 3000, 298.15, { log: true, sig: 4, fmt: (x) => v.fix(x, x < 10 ? 2 : 1) });
+        const gsel = v.select('gas', Object.keys(NOBLE), 'He');
+        const Ts = v.slider('temperature $T$ (K)', 0.1, 3000, 298.15, { log: true, sig: 4, fmt: (x) => v.fix(x, x < 10 ? 2 : 1) });
         const Ps = v.slider('pressure $P$ (bar)', 1e-4, 1e3, 1, { log: true, sig: 2, fmt: (x) => String(+x.toPrecision(2)) });
         const hs = v.slider('Planck-constant factor $h\\to f\\,h$', 0.5, 2, 1, { log: true, sig: 3, fmt: (x) => v.fix(x, 2) });
-        const sa = v.stage({ x: [1, 3000], y: [-8, 26], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.3, xlabel: 'temperature $T$ (K)', ylabel: '$S/Nk$', title: 'Sackur–Tetrode entropy per atom' });
-        const sb = v.stage({ x: [0.4, 5.6], y: [-18, 18], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, ylabel: '$S_{\\text{ST}}-S^\\circ_{\\text{CODATA}}$ (J/(mol K))', xticks: Object.keys(NOBLE).map((k, i) => [i + 1, k]), title: 'against CODATA, 298.15 K and 1 bar' });
+        const sa = v.stage({ x: [0.1, 3000], y: [-10, 26], xlog: true, axes: 'box', gutter: true, height: 300, weight: 1.3, xlabel: 'temperature $T$ (K)', ylabel: '$S/Nk$', title: 'Sackur–Tetrode entropy per atom' });
+        const sb = v.stage({ x: [0.4, 5.6], y: [100, 185], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, ylabel: '$S^\\circ$ (J/(mol K))', xticks: Object.keys(NOBLE).map((k, i) => [i + 1, k]), title: 'formula (bars) vs CODATA (rings), 298.15 K, 1 bar' });
         const keys = Object.keys(NOBLE);
         let st = null;
         v.render(() => {
           const P = Ps.value * 1e5, hf = hs.value, key = gsel.value, g = NOBLE[key];
           const td = Tdeg(g.m, P) * Math.pow(hf, 0.8);   // λ ∝ h: nλ³ = 1 at T ∝ h^{4/5}... (λ³ ∝ h³ T^{-3/2}, n ∝ T^{-1})
-          sa.vband(1, Math.max(1.0001, td), { color: 'red', alpha: 0.14 });
+          sa.vband(0.1, Math.max(0.1001, td), { color: 'red', alpha: 0.14 });
           for (const k of keys) if (k !== key) sa.fn((T) => sST(NOBLE[k].m, T, P, hf), { color: 'muted', width: 1.1, alpha: 0.7, n: 120 });
           sa.fn((T) => sST(g.m, T, P, hf), { color: 'accent', width: 2.8, n: 200 });
           sa.hline(0, { color: 'faint', width: 1 });
-          if (td > 1.3) sa.text('$N\\lambda^3/V>1$: classical formula fails', Math.sqrt(td), -6.5, { size: 11, color: 'red', align: 'center', plate: true });
+          if (td > 0.2) sa.text('$N\\lambda^3/V>1$: formula fails', Math.max(0.35, Math.sqrt(0.1 * td)), -7.5, { size: 11, color: 'red', align: 'center', plate: true });
           sa.dot(Ts.value, sST(g.m, Ts.value, P, hf), { r: 6, color: 'gold' });
           keys.forEach((k, i) => {
             const S = R * sST(NOBLE[k].m, 298.15, 1e5, hf), d = S - NOBLE[k].S;
-            sb.rect(i + 0.65, 0, i + 1.35, clamp(d, -17.5, 17.5), { fill: k === key ? 'accent' : 'muted', fillAlpha: 0.7, color: k === key ? 'accent' : 'muted', width: 1 });
-            sb.text(Math.abs(d) < 0.01 ? '0.00' : v.fix(d, 2), i + 1, d >= 0 ? clamp(d, -17.5, 17.5) + 1.2 : clamp(d, -17.5, 17.5) - 1.2, { size: 10.5, align: 'center', color: 'ink' });
+            sb.rect(i + 0.65, 100, i + 1.35, S, { fill: k === key ? 'accent' : 'muted', fillAlpha: 0.65, color: k === key ? 'accent' : 'muted', width: 1 });
+            sb.dot(i + 1, NOBLE[k].S, { r: 7, color: 'orange', hollow: true });
+            sb.text(Math.abs(d) < 0.05 ? v.fix(1e6 * d / NOBLE[k].S, 1) + ' ppm' : v.fix(d, 1), i + 1, S, { dy: -12, size: 10.5, align: 'center', color: 'ink', plate: true });
           });
-          sb.hline(0, { color: 'ink', width: 1 });
           const T = Ts.value, lam = lambdaT(g.m * AMU, T, hf), n = P / (KB * T);
           st = { key, g, T, lam, n, nl3: n * lam ** 3, S: R * sST(g.m, T, P, hf), S0: R * sST(g.m, 298.15, 1e5, hf), td, hf, P };
         });
@@ -82,7 +82,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         const kind = v.select('gases', [{ value: 'same', label: 'identical' }, { value: 'diff', label: 'different' }], 'same');
         const Nl = v.slider('$\\log_{10}N$ in each box', 0, 12, 3, { step: 0.1, fmt: (x) => v.fix(x, 1) });
         const nl3 = v.slider('density in thermal units $n\\lambda^3$', -9, -2, -6, { step: 0.1, fmt: (x) => '1e' + v.fix(x, 1) });
-        const sa = v.stage({ x: [1, 1e12], y: [8, 24], xlog: true, axes: 'box', gutter: true, height: 290, weight: 1.2, xlabel: 'number of molecules $N$ (at fixed density)', ylabel: '$S/Nk$', title: 'is the entropy extensive?' });
+        const sa = v.stage({ x: [1, 1e12], y: [8, 46], xlog: true, axes: 'box', gutter: true, height: 290, weight: 1.2, xlabel: 'number of molecules $N$ (at fixed density)', ylabel: '$S/Nk$', title: 'is the entropy extensive?' });
         const sb = v.stage({ x: [0.4, 4.6], y: [0, 1.7], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 250, ylabel: '$\\Delta S_{\\text{mix}}/Nk$', xticks: [[1, 'same, 1/N!'], [2, 'same, none'], [3, 'diff., 1/N!'], [4, 'diff., none']], title: 'removing the partition' });
         const sMol = (N, a, corr) => { // S/(N k) at density n with lnFac exact (N ≥ 1): ln(V/λ³) = ln N − ln(nλ³)
           const lnVl = Math.log(N) - a * Math.LN10;
@@ -176,7 +176,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         v.readout(() => {
           if (!info) return '';
           const { S0, Smid, Send, dend, trev, kick, Sn, tn } = info;
-          return `$t=${v.fix(tn, 1)}$: entropy ${v.fix(Sn, 2)} · start ${v.fix(S0, 2)}, at the reversal ${v.fix(Smid, 2)} (max ${v.fix(Math.log(16), 2)}), at $t=2t_{\\text{rev}}$ **${v.fix(Send, 2)}**\nerror ${kick === 0 ? 'only rounding ($\\sim10^{-16}$)' : 'of relative size $' + v.sci(kick, 1) + '$'}: the particles end ${v.sci(dend, 2)} from where they started ${dend < 0.05 ? '— the block has reassembled' : dend < 1 ? '— partly reassembled' : '— the memory of the reversal is gone'}; $\\ln(\\text{amplification})\\approx\\lambda t$ with $\\lambda\\sim${v.fix(Math.log(Math.max(dend / Math.max(kick, 1e-16), 1)) / (2 * trev), 1)}$ per unit time (crude)`;
+          return `$t=${v.fix(tn, 1)}$: entropy ${v.fix(Sn, 2)} · start ${v.fix(S0, 2)}, at the reversal ${v.fix(Smid, 2)} (max ${v.fix(Math.log(16), 2)}), at $t=2t_{\\text{rev}}$ **${v.fix(Send, 2)}**\nerror ${kick === 0 ? 'only rounding ($\\sim10^{-16}$)' : 'of relative size $' + v.sci(kick, 1) + '$'}: the particles end $${v.sci(dend, 2)}$ from where they started ${dend < 0.05 ? '— the block has reassembled' : dend < 1 ? '— partly reassembled' : '— the memory of the reversal is gone'}; crude estimate of the growth rate of errors $\\lambda\\approx${v.fix(Math.log(Math.max(dend / Math.max(kick, 1e-16), 1)) / (2 * trev), 1)}$ per unit time`;
         });
       },
     },
@@ -237,7 +237,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         v.readout(() => {
           if (!st) return '';
           const { N, pred, mean, count, M, Nstar, lt } = st;
-          return `$N=${N}$: probability of “all left” $2^{-N}=${v.sci(1 / pred, 2)}$ → predicted mean wait $2^N=${pred}$ samples; **simulated: ${isFinite(mean) ? v.fix(mean, 0) : '—'}** from ${count} visits in ${M.toLocaleString('en-US')} samples\nwith $\\tau=10^{${v.fix(lt, 1)}}$ s the recurrence time $2^N\\tau$ is **${sup10(N * Math.log10(2) + lt)} s** here; it exceeds the age of the universe (${v.sci(AGE, 2)} s) beyond $N\\approx${v.fix(Nstar, 0)}$ molecules; for a mole it is $10^{(1.8\\times10^{23})}$ times $\\tau$`;
+          return `$N=${N}$: probability of “all left” $2^{-N}=${v.sci(1 / pred, 2)}$ → predicted mean wait $2^N=${pred}$ samples; **simulated: ${isFinite(mean) ? v.fix(mean, 0) : '—'}** from ${count} visits in ${M.toLocaleString('en-US')} samples\nwith $\\tau=10^{${v.fix(lt, 1)}}$ s the recurrence time $2^N\\tau$ is **${sup10(N * Math.log10(2) + lt)} s** here; it exceeds the age of the universe ($${v.sci(AGE, 2)}$ s) beyond $N\\approx${v.fix(Nstar, 0)}$ molecules; for a mole it is $10^{(1.8\\times10^{23})}$ times $\\tau$`;
         });
       },
     },
@@ -264,7 +264,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         const rec = (() => { const out = []; for (let N = 2; N <= 12; N++) { const r = v.rng(500 + N); let k = 0, gap = 0, sum = 0, c = 0; const total = Math.min(3e6, 400 * 2 ** N); for (let t = 0; t < total; t++) { if (r() < k / N) k--; else k++; gap++; if (k === 0) { sum += gap; c++; gap = 0; } } out.push([N, c ? sum / c : NaN, c]); } return out; })();
         const sa = v.stage({ x: [0, 400], y: [0, 60], axes: 'box', gutter: true, height: 270, weight: 1.3, xlabel: 'step', ylabel: 'balls in urn A', title: 'the urn contents' });
         const sb = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 270, weight: 0.9, minWidth: 230, xlabel: 'balls in urn A', ylabel: 'time fraction', title: 'occupation after relaxation' });
-        const sc = v.stage({ x: [1.5, 12.5], y: [1, 1e4], ylog: true, axes: 'box', gutter: true, height: 270, weight: 0.9, minWidth: 230, xlabel: 'balls $N$', ylabel: 'mean steps between returns to $k=0$', title: 'mean recurrence time' });
+        const sc = v.stage({ x: [1.5, 12.5], y: [1, 1e4], ylog: true, axes: 'box', gutter: true, height: 270, weight: 0.9, minWidth: 230, xlabel: 'balls $N$', ylabel: 'mean return time (steps)', title: 'mean recurrence time' });
         let info = null;
         v.animate((t) => {
           S.advance(t);
@@ -310,7 +310,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         const S = v.sim(() => {
           const r = v.rng(5), x = new Float64Array(Np), y = new Float64Array(Np), vx = new Float64Array(Np), vy = new Float64Array(Np);
           for (let i = 0; i < Np; i++) { x[i] = (i % 2 ? 0.5 : 0) + 0.5 * r(); y[i] = r(); vx[i] = r.normal(); vy[i] = r.normal(); }
-          return { x, y, vx, vy, t: 0, bits: 0, erased: 0, ser: [], r };
+          return { x, y, vx, vy, t: 0, bits: 0, erased: 0, ser: [[0, 1, 1]], r, Tl: 1, Tr: 1, nl: Np / 2, dSg: 0 };
         }, (st) => {
           const { x, y, vx, vy } = st, n = Math.round(1 / 30 / dt * speed.value / 1);
           for (let k = 0; k < n; k++) {
@@ -343,24 +343,24 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           return st;
         }, { dt: 1 / 30, maxSteps: 4000 });
         const rampc = tRamp(v);
-        const sa = v.stage({ x: [-0.05, 1.05], y: [-0.05, 1.05], equal: true, axes: false, height: 290, weight: 0.8, minWidth: 230, title: 'the two chambers' });
-        const sb = v.stage({ x: [0, 100], y: [0.6, 1.5], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 230, xlabel: 'time', ylabel: 'temperature (kinetic)', title: 'temperatures' });
-        const sc = v.stage({ x: [0.4, 4.6], y: [-5, 20], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 230, ylabel: 'entropy change / $k$', xticks: [[1, 'gas'], [2, 'memory'], [3, 'erasure heat'], [4, 'total']], title: 'entropy ledger' });
+        const sa = v.stage({ x: [-0.05, 1.05], y: [-0.05, 1.12], equal: true, axes: false, height: 290, weight: 0.8, minWidth: 230, title: 'the two chambers' });
+        const sb = v.stage({ x: [0, 100], y: [0.3, 1.8], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 230, xlabel: 'time', ylabel: 'temperature (kinetic)', title: 'temperatures' });
+        const sc = v.stage({ x: [0.4, 4.6], y: [-5, 20], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 230, ylabel: 'entropy change / $k$', xticks: [[1, 'gas'], [2, 'memory'], [3, 'erasure'], [4, 'total']], title: 'entropy ledger' });
         let info = null;
         v.animate((t) => {
           S.advance(t);
           const st = S.state, { x, y, vx, vy } = st;
           sa.rect(0, 0, 1, 1, { color: 'ink', width: 2.2 });
           sa.line(0.5, 0, 0.5, 0.5 - w / 2, { color: 'ink', width: 3.5 }); sa.line(0.5, 0.5 + w / 2, 0.5, 1, { color: 'ink', width: 3.5 });
-          sa.text(on.value ? 'demon' : 'door open', 0.5, 0.5, { size: 10.5, color: on.value ? 'gold' : 'muted', align: 'center', weight: 700, plate: true });
+          sa.text(on.value ? 'demon at the door' : 'door open', 0.5, 1.045, { size: 11, color: on.value ? 'gold' : 'muted', align: 'center', weight: 700 });
           for (let i = 0; i < Np; i++) sa.dot(x[i], y[i], { r: 2.8, color: pick(rampc, clamp((Math.hypot(vx[i], vy[i]) - 0.3) / 2.2, 0, 1)), ring: false });
           const tm = st.t;
-          sb.setView([0, Math.max(40, tm)], [0.6, 1.5]);
+          sb.setView([0, Math.max(40, tm)], [0.3, 1.8]);
           sb.path(st.ser.map((p) => [p[0], p[1]]), { color: 'red', width: 2 }); sb.path(st.ser.map((p) => [p[0], p[2]]), { color: 'blue', width: 2 });
           sb.hline(1, { color: 'faint', width: 1, dash: true });
           const memo = (st.bits - st.erased) * Math.LN2, env = st.erased * Math.LN2, tot = st.dSg + memo + env;
           const top = Math.max(5, memo, env, tot) * 1.15;
-          sc.setView([0.4, 4.6], [Math.min(-2, st.dSg * 1.5), top]);
+          sc.setView([0.4, 4.6], [Math.min(-4, st.dSg * 1.4 - 0.12 * top), top]);
           [[1, st.dSg, 'blue'], [2, memo, 'orange'], [3, env, 'purple'], [4, tot, 'green']].forEach(([i, val, c]) => { sc.rect(i - 0.33, 0, i + 0.33, val, { fill: c, fillAlpha: 0.6, color: c, width: 1.2 }); sc.text(v.fix(val, 1), i, val, { dy: val >= 0 ? -9 : 12, size: 11, align: 'center', color: 'ink' }); });
           sc.hline(0, { color: 'ink', width: 1 });
           info = { t: st.t, bits: st.bits, erased: st.erased, Tl: st.Tl, Tr: st.Tr, nl: st.nl, dSg: st.dSg, tot };
@@ -377,7 +377,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
     {
       num: '5.17', kind: 'Principle', name: 'Landauer’s principle',
       statement: String.raw`Erasing one bit of information — resetting a memory that may hold 0 or 1 to a standard value — in an environment at temperature $T$ necessarily dissipates heat $Q\ge kT\ln2$ into that environment, i.e. increases the entropy of the surroundings by at least $k\ln2$. More generally, any logically irreversible operation that reduces the entropy of the memory by $\Delta S$ releases at least $T\,|\Delta S|$. The bound can be approached by quasi-static (slow) protocols and is exceeded by finite-time ones. At $T=300$ K, $kT\ln2=2.87\times10^{-21}$ J $=0.0179$ eV.`,
-      idea: String.raw`Erasure maps two logical states onto one, so the system's phase-space volume available to the memory shrinks by half and its Gibbs entropy decreases by $k\ln2$ (5.6, 6.6). Since the combined system plus bath cannot lose entropy (5.7), at least $k\ln2$ must go to the bath, as heat $T\Delta S$ (the second law of 2.10). For a particle in a double well (a model of a memory) erased by lowering the barrier, tilting the wells and raising the barrier again, the average work done on the particle equals the heat released, since the energy returns to its original value; this work exceeds $kT\ln2$ by the dissipation of the finite-speed protocol.`,
+      idea: String.raw`Erasure maps two logical states onto one, so the system's phase-space volume available to the memory shrinks by half and its entropy decreases by $k\ln2$ (5.6). Since the combined system plus bath cannot lose entropy (5.7), at least $k\ln2$ must go to the bath, as heat $T\Delta S$ (the second law, 2.10). For a particle in a double well (a model of a memory) erased by lowering the barrier, tilting the wells and raising the barrier again, the average work done on the particle equals the heat released, since the energy returns to its original value; this work exceeds $kT\ln2$ by the dissipation of the finite-speed protocol.`,
       caption: String.raw`**Choose the protocol duration $\tau$** (in units of the time a particle takes to diffuse across a well) and press play. The memory is a particle in a double well $V=\tfrac14ax^4-\tfrac12m(t)x^2+f(t)x$ with a barrier of $8\,kT$: the barrier is lowered, the wells tilted toward the left, the barrier restored, the tilt removed. The distribution $p(x)$ is evolved by the Fokker–Planck equation, so the work $W=\int\langle\partial_tV\rangle dt$ is exact. Right: the heat released against $\tau$, with the bound $kT\,|\Delta S|$ (green) from the entropy actually removed and $kT\ln2$ (orange).`,
       deps: ['thermo-5.16', 'thermo-5.6', 'info-1.2'], refs: ['Kardar §2.7'], tags: ['information', 'erasure'],
       credit: 'R. Landauer, 1961 (IBM J. Res. Dev. 5, 183–191); experimental test with a colloidal particle in a double well: A. Bérut et al., 2012 (Nature 483, 187)',
@@ -423,12 +423,12 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           const ph = clamp(((t % 14) / 14) * 1.15, 0, 1), fr = run.frames[Math.min(run.frames.length - 1, Math.floor(ph * (run.frames.length - 1)))];
           sa.fn((x) => Vx(x, fr.m, fr.f), { color: 'ink', width: 2.4, n: 200 }); sa.hline(0, { color: 'faint', width: 1, dash: true });
           const pm = Math.max(...fr.p);
+          sp.setView([-3, 3], [0, Math.max(1.4, pm * 1.25)]);
           sp.path(Array.from(xs, (x, i) => [x, fr.p[i]]), { color: 'accent', width: 2.2 });
-          sp.between((x) => 0, () => 0, 0, 0);
           let pl = 0; for (let i = 0; i < n; i++) if (xs[i] < 0) pl += fr.p[i] * dx;
-          sp.text(`left ${v.fix(100 * pl, 1)} %`, -1.6, 1.2, { size: 11.5, color: 'accent', align: 'center', plate: true }); sp.text(`right ${v.fix(100 * (1 - pl), 1)} %`, 1.6, 1.2, { size: 11.5, color: 'accent', align: 'center', plate: true });
-          const Wm = Math.max(3, run.W * 1.2);
-          sw.setView([0, 1], [-0.5, Wm]);
+          sp.text(`left ${v.fix(100 * pl, 1)} %`, -1.6, Math.max(1.4, pm * 1.25) * 0.92, { size: 11.5, color: 'accent', align: 'center', plate: true }); sp.text(`right ${v.fix(100 * (1 - pl), 1)} %`, 1.6, Math.max(1.4, pm * 1.25) * 0.92, { size: 11.5, color: 'accent', align: 'center', plate: true });
+          const wv = run.Wser.map((q) => q[1]), wlo = Math.min(0, ...wv), whi = Math.max(1, ...wv);
+          sw.setView([0, 1], [wlo - 0.1 * (whi - wlo), whi + 0.1 * (whi - wlo)]);
           sw.path(run.Wser, { color: 'accent', width: 2.2 }); sw.hline(Math.LN2, { color: 'orange', width: 1.5, dash: true });
           sw.vline(fr.s, { color: 'gold', width: 1.4 });
           sq.setView([2, 160], [0, Math.max(...curve.map((c) => c[1])) * 1.1]);
@@ -436,7 +436,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           sq.path(curve.map((c) => [c[0], c[2]]), { color: 'green', width: 1.8, dash: true }); sq.hline(Math.LN2, { color: 'orange', width: 1.5, dash: true });
           sq.dot(tau.value, run.Q, { r: 6, color: 'gold' });
           info = { Q: run.Q, W: run.W, dS: run.dS, pr: run.pr, s: fr.s };
-        }, { still: 8, period: 14 });
+        }, { still: 10, period: 14 });
         v.legend([['accent', 'simulation (Fokker–Planck)'], ['green', '$kT|\\Delta S|$ bound', { dash: true }], ['orange', '$kT\\ln2$', { dash: true }]]);
         v.readout(() => {
           if (!info) return '';
@@ -445,3 +445,145 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         });
       },
     },
+    // ------------------------------------------------------------------ 5.18
+    {
+      num: '5.18', kind: 'Model', name: 'Szilard engine',
+      statement: String.raw`A single molecule in a box in contact with a heat bath at $T$ is the working substance of Szilard's engine. A partition is inserted in the middle, trapping the molecule on one side; an observer determines which side (one bit of information); a piston is then coupled to the partition so that the molecule's pressure $P=kT/V_{\text{side}}$ pushes it out to the empty side isothermally, extracting work $W=kT\ln2$ per cycle, drawn from the bath as heat. The cycle appears to turn heat into work with a single reservoir. It does not, because the measurement record must be reset to make the cycle repeatable, which by Landauer's principle (5.17) costs at least $kT\ln2$ of work: the net work is at most zero. If the observer does not measure and couples the load blindly, the average work is zero.`,
+      idea: String.raw`Isothermal expansion of one molecule from $V/2$ to $V$ is an ideal-gas isotherm (1.16): $W=\int P\,dV=kT\ln2$, and the heat absorbed is the same, so the entropy of the gas rises by $k\ln2$, exactly the information gained. Szilard (1929) argued that the measurement must produce at least this much entropy; Landauer and Bennett later located the cost in the erasure of the memory rather than the measurement. The ledger at the end of every cycle is therefore: gas $+k\ln2$ (heat in), memory $-k\ln2$ upon reset, bath $+k\ln2$ (heat out), work: $+kT\ln2$ out, $kT\ln2$ in.`,
+      caption: String.raw`**Press play** to watch the cycle (free molecule, partition inserted, measurement, isothermal expansion, reset). The middle panel is the $P$–$V$ diagram of the one-molecule gas with the extracted work as the shaded area under $P=kT/V$. The right panel runs 40 cycles at once: the engine's gross work grows as $kT\ln2$ per cycle; once the erasure cost of the memory is charged the net work stays at zero; a blind engine, which cannot tell which side holds the molecule, makes a random walk around zero.`,
+      deps: ['thermo-5.17', 'thermo-1.16'], refs: ['Kardar §2.7'], tags: ['Szilard', 'information'],
+      credit: 'L. Szilard, 1929 (Zeitschrift für Physik 53, 840–856)',
+      scope: String.raw`A single molecule in thermal contact with a bath, with ideal reversible (quasi-static) operation of the piston.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Szilard_engine' },
+      viz(v) {
+        const showErase = v.toggle('charge the erasure cost in the plot', true);
+        const PER = 12, sm = (u) => u * u * (3 - 2 * u);
+        const tri = (u) => { const w = ((u % 2) + 2) % 2; return w < 1 ? w : 2 - w; };
+        const cyc = (c) => { const r = v.rng(900 + c), x0 = r(), sp = 1.6 + r() * 1.4, y0 = r(), spy = 1.1 + r() * 1.3; return { x0, sp, y0, spy, side: tri(x0 + sp * 2.3) < 0.5 ? 0 : 1 }; };
+        const NC = 40;
+        const hist = (() => { const g = [0], n = [0], b = [0]; let G = 0, B = 0; for (let c = 0; c < NC; c++) { const side = cyc(c).side; G += Math.LN2; B += side === 0 ? Math.LN2 : -Math.LN2; g.push(G); n.push(0); b.push(B); } return { g, n, b }; })();
+        let cycle = 0, lastT = -1;
+        const sa = v.stage({ x: [-0.05, 1.45], y: [-0.55, 1.15], equal: true, axes: false, height: 280, weight: 1.1, minWidth: 260, title: 'one molecule' });
+        const sb = v.stage({ x: [0.2, 1.1], y: [0, 4.2], axes: 'box', gutter: true, height: 280, weight: 0.9, minWidth: 230, xlabel: 'occupied volume / $V$', ylabel: '$P/(kT/V)$', title: 'the $P$–$V$ diagram' });
+        const sc = v.stage({ x: [0, NC], y: [-6, 30], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 230, xlabel: 'cycles', ylabel: 'work extracted / $kT$', title: 'cumulative work' });
+        let info = null;
+        v.animate((t) => {
+          if (lastT >= 0 && t < lastT - 1) cycle++;
+          lastT = t;
+          const c = cyc(cycle), ph = t % PER, { side } = c;
+          // positions
+          let x, y, xp = 0.5, part = false, Wd = 0, mem = '?', stage = 'free molecule';
+          const lo = (s) => (s === 0 ? 0 : xp), hi = (s) => (s === 0 ? xp : 1);
+          if (ph < 2) { x = tri(c.x0 + c.sp * ph); y = tri(c.y0 + c.spy * ph); }
+          else if (ph < 3) { part = true; stage = 'partition inserted'; }
+          else if (ph < 4) { part = true; stage = 'measure: which side?'; mem = side === 0 ? 'L' : 'R'; }
+          else if (ph < 8) { part = true; stage = 'isothermal expansion: work out'; mem = side === 0 ? 'L' : 'R'; const u = sm((ph - 4) / 4); xp = side === 0 ? 0.5 + 0.5 * u : 0.5 - 0.5 * u; Wd = Math.log((side === 0 ? xp : 1 - xp) / 0.5); }
+          else if (ph < 9) { stage = 'partition removed'; mem = side === 0 ? 'L' : 'R'; Wd = Math.LN2; xp = 0.5; }
+          else if (ph < 11) { stage = 'reset the memory: heat kT ln2 to the bath'; mem = ph < 10 ? (side === 0 ? 'L' : 'R') : '0'; Wd = Math.LN2; }
+          else { stage = 'ready'; mem = '?'; Wd = Math.LN2; }
+          if (x === undefined) { // inside its side
+            const u = ph - 2, wlo = side === 0 ? 0 : (ph >= 4 && ph < 8 ? xp : 0.5), whi = side === 0 ? (ph >= 4 && ph < 8 ? xp : 0.5) : 1;
+            x = wlo + (whi - wlo) * tri(c.x0 + c.sp * 2 + c.sp * 1.3 * u); y = tri(c.y0 + c.spy * ph);
+            if (ph >= 8) { x = tri(c.x0 + c.sp * ph); }
+          }
+          sa.rect(0, 0, 1, 1, { color: 'ink', width: 2.2 });
+          if (part) sa.rect(xp - 0.012, 0, xp + 0.012, 1, { fill: 'orange', fillAlpha: 0.9, color: 'orange', width: 1.5 });
+          if (ph >= 4 && ph < 8) sa.line(xp, 0.5, side === 0 ? 1.12 : -0.12, 0.5, { color: 'orange', width: 3 });
+          sa.dot(x, y, { r: 7, color: 'gold' });
+          sa.text(stage, 0.5, 1.09, { size: 12, color: 'ink', align: 'center', weight: 650 });
+          // memory register and bath
+          sa.rect(1.1, -0.1, 1.4, 0.25, { color: 'purple', width: 1.8, fill: 'purple', fillAlpha: 0.1 }); sa.text(mem, 1.25, 0.075, { size: 19, color: 'purple', align: 'center', weight: 700 }); sa.text('memory', 1.25, -0.2, { size: 10.5, color: 'purple', align: 'center' });
+          sa.rect(0, -0.5, 1, -0.3, { fill: 'red', fillAlpha: 0.12, color: 'red', width: 1 }); sa.text('heat bath at $T$', 0.5, -0.4, { size: 11, color: 'red', align: 'center' });
+          sa.rect(1.1, 0.5, 1.4, 0.5 + 0.45 * Wd / Math.LN2 * 0.9 + 0.001, { fill: 'green', fillAlpha: 0.6, color: 'green', width: 1 }); sa.text('work', 1.25, 0.43, { size: 10.5, color: 'green', align: 'center' });
+          // PV
+          sb.fn((u) => 1 / u, { domain: [0.2, 1.1], color: 'ink', width: 2, n: 150 });
+          if (ph >= 4) { const wv = ph < 8 ? (side === 0 ? xp : 1 - xp) : 1; sb.fn((u) => 1 / u, { domain: [0.5, Math.max(0.5001, wv)], color: 'green', width: 2.4, fill: true, base: 0, n: 100 }); sb.dot(wv, 1 / wv, { r: 6, color: 'gold' }); } else sb.dot(0.5, 2, { r: 6, color: 'gold' });
+          sb.text('$W=kT\\ln2$', 0.78, 0.55, { size: 12, color: 'green', align: 'center' });
+          // cumulative
+          sc.setView([0, NC], [-6, Math.max(30, hist.g[NC] * 1.05)]);
+          sc.path(hist.g.map((g, i) => [i, g]), { color: 'green', width: 2.2 });
+          sc.path(hist.g.map((g, i) => [i, showErase.value ? 0 : g - 0]), { color: 'accent', width: 2.4, alpha: showErase.value ? 1 : 0 });
+          sc.path(hist.b.map((g, i) => [i, g]), { color: 'orange', width: 1.8 });
+          sc.dot(Math.min(NC, cycle + (ph >= 8 ? 1 : 0)), hist.g[Math.min(NC, cycle + (ph >= 8 ? 1 : 0))], { r: 5, color: 'gold' });
+          info = { ph, cycle, Wd, side, stage };
+        }, { still: 5.5, period: PER });
+        v.legend([['green', 'engine, measuring (gross)'], ['accent', 'after charging erasure'], ['orange', 'blind coupling']]);
+        v.readout(() => {
+          if (!info) return '';
+          const { ph, cycle, Wd, side, stage } = info;
+          return `cycle ${cycle + 1}, ${stage} · the molecule is on the ${side === 0 ? 'left' : 'right'} · work extracted so far this cycle $W=${v.fix(Wd, 3)}\\,kT$ ($kT\\ln2=${v.fix(Math.LN2, 3)}\\,kT$)\nover 40 cycles: gross $${v.fix(hist.g[40], 1)}\\,kT$ ($=40\\ln2$) · erasure cost $-${v.fix(hist.g[40], 1)}\\,kT$ · net **0** · the blind engine ends at $${v.fix(hist.b[40], 1)}\\,kT$ (a random walk of $\\pm\\ln2$ steps)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.19
+    {
+      num: '5.19', kind: 'Paradox', name: 'Feynman’s ratchet and pawl',
+      statement: String.raw`Feynman's ratchet is a small vane in a gas at temperature $T_1$, joined by an axle to a ratchet wheel whose teeth are asymmetric, held by a spring-loaded pawl at temperature $T_2$. It seems that molecular bombardment of the vane should make the wheel rotate in the direction the teeth allow, extracting work from a single temperature. It does not: when $T_1=T_2$ the pawl itself fluctuates and occasionally lifts, letting the wheel slip backward at exactly the rate at which thermal kicks advance it, so the net rotation is zero on average. If the vane is hotter than the pawl ($T_1>T_2$) the device does turn, lifting a load until a stall load at which its efficiency equals the Carnot value $1-T_2/T_1$ (at vanishing power). In the two-rate model used here the forward and backward step rates are $r_f=r_0e^{-(\varepsilon+w)/kT_1}$ and $r_b=r_0e^{-\varepsilon/kT_2}$, with $\varepsilon$ the energy to lift the pawl over a tooth and $w$ the load work per tooth.`,
+      idea: String.raw`The statistical content is that fluctuations occur at *both* ends of the axle: whatever the vane's thermal energy can do to the ratchet, the pawl's thermal energy can undo, and at equal temperatures detailed balance forces the two rates to match (the second law, 2.1, in microscopic form). Smoluchowski had given the qualitative resolution in 1912; Feynman worked out the rates in the *Lectures*. Balancing the two rates gives the stall load $w^*=\varepsilon(T_1/T_2-1)$, and with energy $\varepsilon+w^*$ drawn from the hot vane per tooth, the efficiency $w^*/(\varepsilon+w^*)=1-T_2/T_1$ — the Carnot limit of the earlier chapter (2.7), approached only when the ratchet advances infinitely slowly.`,
+      caption: String.raw`**Adjust the vane temperature $T_1$ (the pawl stays at $T_2=1$), the lifting energy $\varepsilon$ and the load $w$**, then press play: the wheel turns by a random sequence of forward and backward steps (Gillespie simulation of the two rates). With $T_1=T_2$ the trace wanders with no drift; with $T_1>T_2$ it climbs until you raise the load beyond the stall value $w^*$, when it descends. The right panel plots the net rate against load for the chosen $T_1$ (blue) and for equal temperatures (grey).`,
+      deps: ['thermo-5.16', 'thermo-2.1'], refs: ['Schroeder ch. 4'], tags: ['ratchet', 'second law'],
+      credit: 'M. von Smoluchowski, 1912 (Physikalische Zeitschrift 13, 1069); R. P. Feynman, 1963 (Lectures on Physics vol. I, ch. 46)',
+      scope: String.raw`A schematic two-rate model in the spirit of Feynman's argument: the numerical prefactors and the way heat is partitioned are simplified, and heat leaking from the vane to the pawl through the axle, which makes real ratchets far less efficient than Carnot, is ignored.`,
+      verify: true,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Brownian_ratchet' },
+      viz(v) {
+        const T1 = v.slider('vane temperature $T_1$ (pawl $T_2=1$)', 1, 4, 2, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const eps = v.slider('pawl-lifting energy $\\varepsilon/kT_2$', 0.5, 6, 3, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const wl = v.slider('load work per tooth $w/kT_2$', 0, 8, 1, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const rate = v.slider('simulated time per second', 2, 200, 40, { log: true, sig: 2 });
+        const S = v.sim(() => ({ n: 0, t: 0, r: v.rng(17), ser: [[0, 0]], nf: 0, nb: 0 }), (st) => {
+          const rf = Math.exp(-(eps.value + wl.value) / T1.value), rb = Math.exp(-eps.value / 1), tot = rf + rb;
+          let left = rate.value / 30;
+          while (left > 0) { const wt = -Math.log(1 - st.r()) / tot; if (wt > left) { st.t += left; left = 0; } else { st.t += wt; left -= wt; if (st.r() < rf / tot) { st.n++; st.nf++; } else { st.n--; st.nb++; } st.ser.push([st.t, st.n]); } }
+          st.ser.push([st.t, st.n]); if (st.ser.length > 6000) st.ser = st.ser.filter((_, i) => i % 2 === 0 || i === st.ser.length - 1);
+          return st;
+        }, { dt: 1 / 30, maxSteps: 3000 });
+        const sa = v.stage({ x: [-1.9, 1.9], y: [-1.45, 1.45], equal: true, axes: false, height: 290, weight: 0.9, minWidth: 250, title: 'the ratchet' });
+        const sb = v.stage({ x: [0, 100], y: [-5, 5], axes: 'box', gutter: true, height: 290, weight: 1.1, minWidth: 250, xlabel: 'time (units of $1/r_0$)', ylabel: 'teeth advanced', title: 'one run' });
+        const sc = v.stage({ x: [0, 8], y: [-0.2, 0.2], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 250, xlabel: 'load $w/kT_2$', ylabel: 'net rate $(r_f-r_b)/r_0$', title: 'engine or no engine' });
+        const rampc = tRamp(v);
+        const NT = 8, sector = 2 * Math.PI / NT;
+        let info = null;
+        v.animate((t) => {
+          S.advance(t);
+          const st = S.state, rf = Math.exp(-(eps.value + wl.value) / T1.value), rb = Math.exp(-eps.value);
+          // wheel
+          const rot = -st.n * sector, pts = [];
+          for (let k = 0; k < NT; k++) { const a = rot + k * sector; pts.push([0.78 * Math.cos(a), 0.78 * Math.sin(a)], [1.0 * Math.cos(a), 1.0 * Math.sin(a)]); }
+          // sawtooth outline: tip at a, drop to inner radius at a + sector
+          const poly = []; for (let k = 0; k < NT; k++) { const a = rot + k * sector; poly.push([0.78 * Math.cos(a), 0.78 * Math.sin(a)], [1.0 * Math.cos(a + 0.05), 1.0 * Math.sin(a + 0.05)]); }
+          sa.poly(poly, { fill: 'muted', fillAlpha: 0.35, color: 'ink', width: 2 });
+          sa.circle(0, 0, 0.15, { fill: 'ink', fillAlpha: 0.7, color: 'ink' });
+          sa.line(0.3, 1.38, 0.0, 0.93, { color: tRamp(v)[0], width: 4 }); sa.dot(0.3, 1.38, { r: 4, color: 'ink' });
+          sa.text('pawl at $T_2=1$', 0.4, 1.3, { size: 11, color: 'blue', align: 'left', plate: true });
+          sa.rect(-1.85, -0.45, -1.2, 0.45, { fill: 'red', fillAlpha: 0.15 + 0.12 * (T1.value - 1), color: 'red', width: 1.2 });
+          sa.line(-1.2, 0, -0.15, 0, { color: 'ink', width: 3 });
+          sa.text('vane', -1.52, 0, { size: 12, color: 'red', align: 'center', weight: 650 }); sa.text(`$T_1=${v.fix(T1.value, 2)}$`, -1.52, -0.62, { size: 11.5, color: 'red', align: 'center' });
+          sa.arrow(0.55, -1.0, 0.55 + 0.4, -1.0 + 0.12, { color: 'green', width: 2, head: 7 });
+          sa.text(st.n >= 0 ? `+${st.n} teeth` : `${st.n.toString().replace('-', '−')} teeth`, 0, -1.3, { size: 12.5, color: 'ink', align: 'center', weight: 650 });
+          const tm = Math.max(50, st.t);
+          const lo = Math.min(-5, ...st.ser.map((p) => p[1])) - 1, hi = Math.max(5, ...st.ser.map((p) => p[1])) + 1;
+          sb.setView([0, tm], [lo, hi]); sb.path(st.ser, { color: 'accent', width: 1.6 });
+          sb.line(0, 0, tm, (rf - rb) * tm, { color: 'orange', width: 2, dash: [6, 4] });
+          sb.hline(0, { color: 'faint', width: 1 });
+          const f = (T, w) => Math.exp(-(eps.value + w) / T) - Math.exp(-eps.value);
+          const top = Math.max(0.05, f(Math.max(T1.value, 1.0001), 0)) * 1.2;
+          sc.setView([0, 8], [-top, top]);
+          sc.fn((w) => f(T1.value, w), { color: 'accent', width: 2.4, n: 100 }); sc.fn((w) => f(1, w), { color: 'muted', width: 1.8, n: 100, dash: [5, 4] });
+          sc.hline(0, { color: 'ink', width: 1 });
+          const ws = eps.value * (T1.value - 1);
+          if (ws > 0 && ws < 8) { sc.dot(ws, 0, { r: 6, color: 'green' }); sc.text('stall $w^*$', ws, 0, { dy: 16, size: 11, color: 'green', align: 'center' }); }
+          sc.dot(wl.value, rf - rb, { r: 6, color: 'gold' });
+          info = { rf, rb, n: st.n, t: st.t, ws, nf: st.nf, nb: st.nb };
+        }, { still: 8, period: 30 });
+        v.legend([['accent', 'simulation'], ['orange', 'mean drift $(r_f-r_b)t$', { dash: true }], ['muted', '$T_1=T_2$', { dash: true }]]);
+        v.readout(() => {
+          if (!info) return '';
+          const { rf, rb, n, t, ws, nf, nb } = info;
+          const eta = ws > 0 ? ws / (eps.value + ws) : 0;
+          return `$r_f/r_0=${v.fix(rf, 4)}$, $r_b/r_0=${v.fix(rb, 4)}$ → mean rate **${v.fix(rf - rb, 4)}** teeth per unit time ${rf > rb ? '(turns forward, lifting the load)' : rf < rb ? '(slips backward)' : '(no net motion)'} · after $t=${v.fix(t, 1)}$: ${nf} forward and ${nb} backward steps, net ${n}\nstall load $w^*=\\varepsilon(T_1/T_2-1)=${v.fix(ws, 2)}\\,kT_2$ ${T1.value === 1 ? '(zero: no engine at equal temperatures)' : ''} · efficiency at stall $w^*/(\\varepsilon+w^*)=${v.fix(eta, 3)}$ vs Carnot $1-T_2/T_1=${v.fix(1 - 1 / T1.value, 3)}$`;
+        });
+      },
+    },
+  ],
+};
