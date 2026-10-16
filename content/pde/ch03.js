@@ -331,7 +331,7 @@ On a circle with $g=\sum c_ne^{inx}$ the same fact reads $u=\sum c_ne^{-kn^2t}e^
           info = { m: [0, 1, 2, 3, 4].map((m) => bnd(m, t)), m0: [0, 1, 2, 3, 4].map((m) => bnd(m, 0)) };
         });
         v.legend([['muted', 'initial $|c_n|$'], ['accent', '$|c_n|e^{-kn^2t}$'], ['orange', '$e^{-kn^2t}$', { dash: true }]]);
-        v.readout(() => info && `bound on $\\sup|\\partial_x^mu|$ for $m=0..4$ at $t=${v.sci(tS.value, 2)}$: ${info.m.map((z) => `$${v.sci(z, 2)}$`).join(', ')}\nthe same sums with the damping removed (160 modes of the data): ${info.m0.map((z) => `$${v.sci(z, 2)}$`).join(', ')} — they grow without bound as more modes are added`);
+        v.readout(() => info && `bound on $\\sup|\\partial_x^mu|$ for $m=0..4$ at $t=${v.sci(tS.value, 2)}$: ${info.m.map((z) => `$${v.sci(z, 2)}$`).join(', ')}\nthe same sums without the damping (the 160 modes of the data): ${info.m0.map((z) => `$${v.sci(z, 2)}$`).join(', ')} — for rough data the higher ones keep growing as more modes are added (infinite in the limit)`);
       },
     },
   ],

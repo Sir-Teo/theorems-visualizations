@@ -57,10 +57,14 @@ function tyDerivs(al, t, K) {
 }
 /** u(x,t) = Σ_{k≤K} g^{(k)}(t) x^{2k}/(2k)! from precomputed derivatives; returns {u, err (rounding bound + next-term size)}. */
 function tyEval(D, x) {
-  let s = 0, e = 0, tf = 1;
-  for (let k = 0; k <= D.K; k++) { if (k > 0) tf *= (x * x) / ((2 * k - 1) * (2 * k)); s += D.d[k] * tf; e += D.err[k] * tf; }
+  let s = 0, e = 0, tf = 1, recent = 0;
+  for (let k = 0; k <= D.K; k++) {
+    if (k > 0) tf *= (x * x) / ((2 * k - 1) * (2 * k));
+    const term = D.d[k] * tf; s += term; e += D.err[k] * tf;
+    if (k > D.K - 12) recent = Math.max(recent, Math.abs(term));
+  }
   const tail = Math.abs(D.d[D.K + 1]) * tf * (x * x) / ((2 * D.K + 1) * (2 * D.K + 2));
-  return { u: s, err: e + tail };
+  return { u: s, err: e + tail + 12 * recent };   // the last twelve terms must already be negligible
 }
 const tyOK = (r) => r.err < 1e-4 * Math.max(Math.abs(r.u), 1e-10);
 
@@ -81,7 +85,7 @@ So the value at the *top* point of a heat ball is a weighted average of the valu
       deps: ['pde-3.3'],
       refs: ['Evans §2.3'],
       tags: ['mean value property', 'heat ball'],
-      credit: 'N. A. Watson, 1973 (heat balls); W. Fulks, 1966',
+      credit: 'Fulks, 1966; Watson, 1973 (heat balls)',
       verify: true,
       scope: String.raw`Stated for $u_t=\Delta u$ (diffusivity $k=1$); the attribution of the heat-ball form to Watson and of the earlier level-surface form to Fulks follows secondary sources and has not been checked against the papers.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat_equation' },
@@ -90,10 +94,10 @@ So the value at the *top* point of a heat ball is a weighted average of the valu
         const sol = v.select('function', [
           { value: 'a', label: '$x^2+2t$' }, { value: 'b', label: '$e^{-t}\\cos x$' }, { value: 'c', label: '$x^3+6xt$' }, { value: 'd', label: '$\\Phi(x,t+2)$' }, { value: 'e', label: '$1$' }, { value: 'f', label: '$x^2$ (not a solution)' },
         ], 'a');
-        const rS = v.slider('radius $r$', 0.3, 3, 1.2, { step: 0.05 });
+        const rS = v.slider('radius $r$', 0.5, 5, 3, { step: 0.05 });
         const P1 = v.stage({ x: [-4, 4], y: [-0.3, 5], axes: 'box', gutter: true, height: 300, xlabel: 'x', ylabel: 't', title: 'heat ball $E(x,t;r)$ over the solution', minWidth: 330 });
-        const P2 = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'depth $t-s$ (as a fraction of $r^2/4\\pi$)', title: 'weighted average accumulated from the top', minWidth: 300 });
-        const hp = P1.handle(0.5, 3.6, { color: 'gold', r: 8, label: '(x,t)', constrain: (x, y) => [M.clamp(x, -2.5, 2.5), M.clamp(y, 0.6, 4.6)] });
+        const P2 = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'depth $(t-s)\\,4\\pi/r^2$', title: 'weighted average accumulated from the top', minWidth: 300 });
+        const hp = P1.handle(0.5, 3.6, { color: 'gold', r: 8, label: 'top', constrain: (x, y) => [M.clamp(x, -2.5, 2.5), M.clamp(y, 0.6, 4.6)] });
         const U = {
           a: (y, s) => y * y + 2 * s, b: (y, s) => Math.exp(-s) * Math.cos(y), c: (y, s) => y * y * y + 6 * y * s,
           d: (y, s) => G(y, s + 2, 1), e: () => 1, f: (y) => y * y,
@@ -137,7 +141,7 @@ So the value at the *top* point of a heat ball is a weighted average of the valu
 $$u(x,t)=\sum_{k=0}^\infty\frac{g^{(k)}(t)}{(2k)!}\,x^{2k}.$$
 The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of order $1+1/\alpha<2$), $u$ is $C^\infty$, solves $u_t=u_{xx}$ for all $t$, satisfies $u(x,0)=0$, and is not identically zero. So the Cauchy problem for the heat equation on $\R$ has more than one solution: $u$ and $0$. By the uniqueness theorem for solutions with $|u|\le Ae^{ax^2}$, this $u$ must grow faster than $e^{ax^2}$ for every $a$ as $|x|\to\infty$. Uniqueness on the line therefore needs a growth condition.`,
       idea: String.raw`Formally $u=\cosh(x\sqrt{\partial_t})\,g$: termwise $u_t=\sum g^{(k+1)}x^{2k}/(2k)!$ and $u_{xx}=\sum_{k\ge1}g^{(k)}x^{2k-2}/(2k-2)!$ are the same series, so the equation holds as soon as the series converges nicely. Convergence needs derivative bounds $|g^{(k)}(t)|\lesssim C^k(k!)^{s}$ with $s<2$ (so that $(k!)^s/(2k)!$ is summable against $x^{2k}$); the function $e^{-t^{-\alpha}}$ has $s=1+1/\alpha$, which is why $\alpha>1$. Because $g$ is flat at $t=0$ (every derivative vanishes) the initial values are $0$. Nothing contradicts the maximum principle (3.1): the sup of $u$ over an unbounded strip is not attained. The maximum principle and uniqueness on $\R$ hold only in a class that excludes this growth (compare 3.2 and 3.4).`,
-      caption: String.raw`The series is evaluated in double precision with $g^{(k)}$ computed by Cauchy's integral on circles of radius $\rho t$ (with $\rho$ chosen for each $k$); every value comes with a rounding-error bound and is drawn only if it is below $10^{-4}$ of the value (the dotted vertical line marks where that stops). Left: $|u(x,t)|$ against $t$ for several $x$ (log–log): every curve plunges to $0$ as $t\to0^+$, faster than any power (the flat function $g$ is shown in grey). Middle: $u(\cdot,t_0)$ as a function of $x$: it is far from zero. Right: $g(t)$ against powers of $t$. The readout checks the equation at $(x_0,t_0)$ two ways (termwise identity and central differences). The super-Gaussian growth itself lies beyond double precision (it appears far out in $x$); it is a consequence of the uniqueness theorem, not something drawn here.`,
+      caption: String.raw`The series is evaluated in double precision, with $g^{(k)}$ computed by Cauchy's integral on circles of radius $\rho t$ ($\rho$ chosen for each $k$). Every value carries a rounding-error bound and a convergence check, and is drawn only if the bound is below $10^{-4}$ of the value (gaps in a curve, or the red dotted line in the middle panel, mark where that fails). Left: $|u(x,t)|$ against $t$ for four values of $x$. For small $x$ the curve dives towards $0$ as $t\to0^+$, like the flat function $g$ (grey, dashed); for larger $x$ the dive starts at smaller $t$ than double precision can follow, and before it the values are orders of magnitude above $1$. Middle: $u(\cdot,t_0)$ against $x$: far from zero. Right: $g$ against $t^2,t^4,t^8$: flatter than any power. The readout checks the equation at $(x_0,t_0)$ in two ways (the termwise identity and central differences). The growth faster than $e^{ax^2}$ in $x$ is forced by the uniqueness theorem; it lies beyond double precision and is not drawn`,
       deps: ['pde-3.2'],
       refs: ['Evans §2.3'],
       tags: ['non-uniqueness', 'Tychonoff', 'growth conditions'],
@@ -150,7 +154,7 @@ The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of orde
         const aS = v.slider('exponent $\\alpha$', 1.2, 1.9, 1.5, { step: 0.05 });
         const x0S = v.slider('probe $x_0$', 0.5, 5, 2, { step: 0.1 });
         const t0S = v.slider('time $t_0$', 0.15, 2, 0.8, { step: 0.01 });
-        const P1 = v.stage({ x: [0.1, 2], y: [1e-12, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 250, xlabel: 't', title: '$|u(x,t)|$ against $t$', minWidth: 260 });
+        const P1 = v.stage({ x: [0.05, 2], y: [1e-14, 1e6], xlog: true, ylog: true, axes: 'box', gutter: true, height: 250, xlabel: 't', title: '$|u(x,t)|$ against $t$', minWidth: 260 });
         const P2 = v.stage({ x: [0, 8], y: [-0.3, 2], axes: 'box', gutter: true, height: 250, xlabel: 'x', title: '$u(x,t_0)$', minWidth: 260 });
         const P3 = v.stage({ x: [0.02, 2], y: [1e-30, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 250, xlabel: 't', title: '$g(t)=e^{-t^{-\\alpha}}$ against powers', minWidth: 260 });
         let cache = { al: null, ts: null, D: null };
@@ -158,14 +162,13 @@ The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of orde
         v.render(() => {
           const al = aS.value, K = 100;
           if (cache.al !== al) {
-            const ts = M.range(48).map((i) => 0.1 * Math.pow(20, i / 47));
+            const ts = M.range(60).map((i) => 0.05 * Math.pow(40, i / 59));
             cache = { al, ts, D: ts.map((t) => tyDerivs(al, t, K)) };
           }
-          const xs = [1, 2, 3, 4], cols = ['accent', 'orange', 'purple', 'teal'];
+          const xs = [0.5, 1, 2, 3], cols = ['accent', 'orange', 'purple', 'teal'];
           xs.forEach((x, i) => {
             const pts = []; cache.ts.forEach((t, j) => { const r = tyEval(cache.D[j], x); if (tyOK(r)) pts.push([t, Math.max(1e-13, Math.abs(r.u))]); else pts.push(null); });
             P1.path(pts, { color: cols[i], width: 2.4 });
-            const last = pts.filter(Boolean).slice(-1)[0]; if (last) P1.text(`x=${x}`, 2 * 0.93, last[1] * 1.0, { color: cols[i], size: 11, align: 'right' });
           });
           P1.path(cache.ts.map((t) => [t, Math.max(1e-13, Math.exp(-Math.pow(t, -al)))]), { color: 'muted', width: 1.6, dash: [5, 4] });
           const t0 = t0S.value, D0 = tyDerivs(al, t0, K), xg = M.range(161).map((i) => (8 * i) / 160);
@@ -179,7 +182,7 @@ The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of orde
           const ts3 = M.range(80).map((i) => 0.02 * Math.pow(100, i / 79));
           P3.path(ts3.map((t) => [t, Math.max(1e-29, Math.exp(-Math.pow(t, -al)))]), { color: 'ink', width: 2.8 });
           for (const m of [2, 4, 8]) { P3.path(ts3.map((t) => [t, Math.pow(t, m)]), { color: 'muted', width: 1.2, dash: [4, 4] }); }
-          P3.text('t²', 1.5, 2.2, { color: 'muted', size: 11 }); P3.text('t⁸', 0.45, 1e-3, { color: 'muted', size: 11 });
+          [2, 4, 8].forEach((m) => P3.text(`t^${m}`, 0.024, Math.pow(0.02, m) * 4, { color: 'muted', size: 11, align: 'left' }));
           // equation check at (x0, t0): termwise series and central differences of the evaluated u
           const x0 = x0S.value, ru = tyEval(D0, x0);
           const h = 0.01, up = tyEval(tyDerivs(al, t0 + h, K), x0).u, um = tyEval(tyDerivs(al, t0 - h, K), x0).u;
@@ -188,7 +191,7 @@ The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of orde
           tf = 1; for (let k = 1; k <= K; k++) { tf = k === 1 ? 1 : tf * (x0 * x0) / ((2 * k - 3) * (2 * k - 2)); uxx2 += D0.d[k] * tf; }
           info = { u: ru.u, ok: tyOK(ru), err: ru.err, ut, uxx, ut2, uxx2, x0, t0 };
         });
-        v.legend([['accent', '$x=1$'], ['orange', '$x=2$'], ['purple', '$x=3$'], ['teal', '$x=4$'], ['muted', '$g(t)$', { dash: true }]]);
+        v.legend([['accent', '$x=0.5$'], ['orange', '$x=1$'], ['purple', '$x=2$'], ['teal', '$x=3$'], ['muted', '$g(t)$', { dash: true }]]);
         v.readout(() => info && `$u(x_0,t_0)=${v.sci(info.u, 3)}$ at $(x_0,t_0)=(${v.fix(info.x0, 1)},${v.fix(info.t0, 2)})$${info.ok ? '' : ' (not reliable here)'} — $u\\not\\equiv0$ although $u(\\cdot,0)=0\\ (g^{(k)}(0)=0$ for all $k)$\n` +
           `equation check: termwise $u_t=${v.sci(info.ut2, 4)}$, $u_{xx}=${v.sci(info.uxx2, 4)}$ (the same series) · central differences: $u_t\\approx${v.sci(info.ut, 3)}$, $u_{xx}\\approx${v.sci(info.uxx, 3)}$`);
       },
@@ -237,8 +240,8 @@ The series converges for all $x$ and $t$ (because $g$ is of Gevrey class of orde
           P1.clip(() => P1.fn(rec, { color: 'red', width: 2.6, n: 500 }));
           let err = 0; for (const x of xs) err = Math.max(err, Math.abs(rec(x) - f0[dat.value](x)));
           const ns = M.range(NM).map((i) => i + 1), sig = ns.map((n) => Math.max(1e-17, Math.hypot(a[n], b[n]) * dmp(n))), cl = (z) => Math.min(1e11, Math.max(1e-16, z));
-          P2.path(ns.map((n) => [n, Math.max(1e-17, Math.hypot(a[n], b[n]))]).filter((p) => p[1] > 1e-16), { color: 'muted', width: 1.6 });
-          P2.path(ns.map((n, i) => [n, sig[i]]), { color: 'accent', width: 2.8 });
+          P2.path(ns.map((n) => [n, Math.hypot(a[n], b[n])]).filter((p) => p[1] > 1e-15), { color: 'muted', width: 1.6 });
+          P2.path(ns.map((n, i) => [n, sig[i]]).filter((p) => p[1] > 1e-15), { color: 'accent', width: 2.8 });
           P2.hline(eps, { color: 'ink', width: 1.5, alpha: 0.7 });
           P2.path(ns.map((n) => [n, cl(eps * Math.exp(Math.min(600, k * n * n * T)))]), { color: 'red', width: 2.2, dash: [6, 4] });
           P2.vline(Nc, { color: 'gold', width: 1.6 });

@@ -34,7 +34,7 @@ export function heartBeat(over = {}) {
   const P = { ...HEART, ...over };
   const key = JSON.stringify(P);
   if (_cache.has(key)) return _cache.get(key);
-  const T = 60 / P.HR, Tmax = 0.3 + 0.45 * T, dt = 0.0005, N = Math.round(T / dt);
+  const T = 60 / P.HR, Tmax = 0.3 + 0.45 * T, dt = 0.001, N = Math.round(T / dt);
   const Ea = (t) => { const x = t - 0 ; const u = x / P.tAtr; return P.EaMin + (P.EaMax - P.EaMin) * (x >= 0 && x < 2 * P.tAtr ? Math.sin((Math.PI * x) / (2 * P.tAtr)) ** 2 : 0) + 0 * u; };
   const e = (t) => activation(t - P.tVent, Tmax);
   const Pven = (V, t) => { const ee = e(t); const d = V - P.V0; return ee * P.Ees * d + (1 - ee) * P.A * (Math.exp(P.B * d) - 1); };
@@ -45,13 +45,13 @@ export function heartBeat(over = {}) {
     const Qm = Math.max(0, (Pat - Plv) / P.Rm), Qav = Math.max(0, (Plv - Part) / P.Rav), Qv = (P.Pv - Pat) / P.Rv;
     return [Qm - Qav, Qv - Qm, Qav - Part / P.R];
   };
-  let y = [100, 30, 80 * P.C];
+  let y = [110, 35, 85 * P.C];
   const step = (y, t) => { // RK4
     const k1 = rhs(y, t), y2 = y.map((v, i) => v + 0.5 * dt * k1[i]), k2 = rhs(y2, t + dt / 2), y3 = y.map((v, i) => v + 0.5 * dt * k2[i]),
       k3 = rhs(y3, t + dt / 2), y4 = y.map((v, i) => v + dt * k3[i]), k4 = rhs(y4, t + dt);
     return y.map((v, i) => v + (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
   };
-  for (let b = 0; b < 25; b++) for (let k = 0; k < N; k++) y = step(y, k * dt);
+  for (let b = 0; b < 12; b++) for (let k = 0; k < N; k++) y = step(y, k * dt);
   const R = { t: [], P: [], Pa: [], Pat: [], V: [], Va: [], Q: [], Qm: [], e: [], Ea: [], T, HR: P.HR, par: P };
   for (let k = 0; k <= N; k++) {
     const t = k * dt, [V, Va, Va2] = y, ee = e(t), Plv = Pven(V, t), Pat = Ea(t) * (Va - P.Va0), Part = Va2 / P.C;
@@ -103,7 +103,7 @@ export const gauss = (t, mu, sd) => Math.exp(-0.5 * ((t - mu) / sd) ** 2);
  */
 export function makeSheet(n, mask, o = {}) {
   const P = { ...MS, tclose: o.tclose ?? MS.tclose, topen: o.topen ?? MS.topen, tout: o.tout ?? MS.tout };
-  const D = o.D ?? 0.0012, dx = o.dx ?? 0.05, dt = o.dt ?? 0.1;
+  const D = o.D ?? 0.0004, dx = o.dx ?? 0.04, dt = o.dt ?? 0.1;
   const v = new Float32Array(n * n), h = new Float32Array(n * n).fill(1), w = new Float32Array(n * n);
   const k = (D * dt) / (dx * dx);
   const S = {
@@ -139,7 +139,7 @@ export function cableProps(tclose, topen = MS.topen) {
   const n = 200, mask = new Uint8Array(n * 3).fill(0);
   const S = makeSheet(n, new Uint8Array(n * n).fill(0), {}); // placeholder to reuse params
   // 1-D cable via a 1×n strip embedded in an n×n array would be wasteful; do a direct cable.
-  const dx = 0.05, dt = 0.1, D = 0.0012, k = (D * dt) / (dx * dx), P = { ...MS, tclose, topen };
+  const dx = 0.04, dt = 0.1, D = 0.0004, k = (D * dt) / (dx * dx), P = { ...MS, tclose, topen };
   const v = new Float32Array(n), h = new Float32Array(n).fill(1), w = new Float32Array(n);
   for (let i = 0; i < 4; i++) v[i] = 0.9;
   let tA = null, tB = null, apd = null; const iA = 60, iB = 140; let up = null, down = null;
