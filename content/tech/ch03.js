@@ -85,7 +85,7 @@ So the practical barrier for copper was not chemistry but heat. Below 1085 °C t
           const pool = liquid ? 0.12 + 0.12 * red : 0, slagH = slag ? 0.12 : 0;
           for (const [x, y, rr, isOre] of lumps) {
             const pts = lump(x, y, rr, Math.round((x + 2) * 1000 + y * 77));
-            if (!isOre) { B.poly(pts, { fill: 'ink', fillAlpha: 0.55, color: 'ink', width: 0.6 }); continue; }
+            if (!isOre) { B.poly(pts, { fill: [52, 48, 46], fillAlpha: 0.85, color: [30, 28, 27], width: 0.6 }); continue; }
             B.poly(pts, { fill: o.raw, fillAlpha: 0.75 * (1 - 0.8 * red), color: o.raw, width: 0.8 });
             if (red > 0.02 && !liquid) { const r2 = v.rng(Math.round(x * 1e3 + 5e3)); for (let k = 0; k < Math.round(8 * red); k++) B.dot(x + r2.uniform(-rr, rr) * 0.6, y + r2.uniform(-rr, rr) * 0.6, { r: 1.8, color: o.metal }); }
           }
@@ -268,7 +268,7 @@ The furnace must also not get too hot. Hot iron in contact with charcoal absorbs
           A.line(1.25, -0.25, 0.6, -0.45, { color: 'muted', width: 5 }); A.arrow(1.28, -0.2, 0.75, -0.38, { color: 'accent', width: 1.5, head: 7 }); A.text('bellows', 1.25, -0.08, { size: 10.5, color: 'accent', align: 'right' });
           if (k <= 3) { // layered charge
             const r2 = v.rng(3);
-            for (let i = 0; i < 26; i++) { const y = -0.35 + i * 0.09, w = 0.62 - (0.29 * (y + 0.75)) / 2.85; const x = r2.uniform(-w + 0.08, w - 0.08), ore = i % 2 === 0; const reduced = k >= 1 && y < 1.6; A.poly(lump(x, y, 0.06, i + 1), { fill: ore ? (reduced ? 'ink' : 'red') : 'muted', fillAlpha: ore ? 0.6 : 0.7, color: ore ? 'red' : 'ink', width: 0.6 }); }
+            for (let i = 0; i < 26; i++) { const y = -0.35 + i * 0.09, w = 0.62 - (0.29 * (y + 0.75)) / 2.85; const x = r2.uniform(-w + 0.08, w - 0.08), ore = i % 2 === 0; const reduced = k >= 1 && y < 1.6; A.poly(lump(x, y, 0.06, i + 1), { fill: ore ? (reduced ? [90, 90, 96] : 'red') : [52, 48, 46], fillAlpha: ore ? 0.75 : 0.85, color: ore ? 'red' : [30, 28, 27], width: 0.6 }); }
           }
           if (k >= 4) A.text('opened: bloom removed', 0, 0.6, { size: 10.5, color: 'muted', align: 'center', plate: true });
           if (k >= 1 && k <= 3) { A.text('reduction', -0.3, 1.25, { size: 10.5, color: 'ink', align: 'center', plate: true }); A.text('hot zone', 0, -0.25, { size: 10.5, color: 'red', align: 'center', plate: true }); }

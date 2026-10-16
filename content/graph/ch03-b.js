@@ -84,7 +84,7 @@ export default {
           }
           return out;
         }
-        const S = v.steps({ frames, code, codeTitle: 'Menger by alternating walks', speed: 1, start: 'end', still: 'end' });
+        const S = v.steps({ frames, code, codeTitle: 'Menger by alternating walks', codePos: 'below', speed: 1, start: 'end', still: 'end' });
         G.onChange = () => S.reset({ at: 'end' });
         v.render(() => {
           const f = S.frame; if (!f.H || f.H.n !== G.nodes.length) return; const H = f.H;
@@ -167,7 +167,7 @@ export default {
       caption: String.raw`With a maximum path system, the vertices reached by alternating walks are shaded gold and $X$ (red boxes) takes the last reached vertex of each path; the two sides of $G-X$ are tinted blue ($A$-side) and green. Click an edge of a path to drop that path from $\mathcal P$: now an alternating walk does reach $B\setminus V[\mathcal P]$ (arrows), the hypothesis fails, and the same recipe gives a set $X$ that does **not** separate — a red dashed $A$–$B$ path avoids it. **Reset** restores the maximum system.`,
       deps: ['graph-3.3.2'], see: ['graph-3.3.1'], refs: ['Diestel §3.3'], tags: ['Menger', 'separators'],
       viz(v) {
-        const s = gstage(v, { height: 330, x: [0, 10], y: [-0.05, 6.45] });
+        const s = gstage(v, { height: 340, x: [0, 10], y: [-0.05, 6.95] });
         const G = v.graph(s, { ...SEP3(), r: 13, draggable: true });
         const A0 = ['a1', 'a2', 'a3', 'a4'], B0 = ['b1', 'b2', 'b3', 'b4'];
         const dropped = new Set();
@@ -299,7 +299,7 @@ export default {
       num: '3.3.6', kind: 'Theorem', name: 'Global version of Menger’s theorem', credit: 'Whitney, 1932',
       statement: String.raw`(i) A graph is $k$-connected if and only if it contains $k$ independent paths between any two vertices. (ii) A graph is $k$-edge-connected if and only if it contains $k$ edge-disjoint paths between any two vertices.`,
       idea: String.raw`If every two vertices are joined by $k$ independent paths, then $|G|>k$ and no set of fewer than $k$ vertices can separate anything. Conversely let $G$ be $k$-connected, and suppose $a,b$ are not joined by $k$ independent paths. By Corollary 3.3.5 (i) they must be adjacent; in $G':=G-ab$ they are joined by at most $k-2$ independent paths, hence separated by a set $X$ of at most $k-2$ vertices. Some further vertex $v$ exists as $|G|>k$; $X$ separates $v$ from $a$ or from $b$ in $G'$, say from $a$ — then $X\cup\{b\}$, of size $\le k-1$, separates $v$ from $a$ in $G$, a contradiction. (ii) is Corollary 3.3.5 (ii). Diestel credits the global version to Whitney (1932).`,
-      caption: String.raw`The table lists, for every pair of vertices, the greatest number of independent paths (switch to edge-disjoint paths); the darkest cells are the minimum, outlined in red. Click a cell to draw those paths in the graph. The minimum equals $\kappa(G)$ (or $\lambda(G)$), computed independently from separators — so $G$ is $k$-connected exactly for $k\le$ the minimum. Edit the graph (${EDIT}).`,
+      caption: String.raw`The table lists, for every pair of vertices, the greatest number of independent paths (switch to edge-disjoint paths); the cells attaining the minimum are red, the chosen pair is outlined. Click a cell to draw those paths in the graph. The minimum equals $\kappa(G)$ (or $\lambda(G)$), computed independently from separators — so $G$ is $k$-connected exactly for $k\le$ the minimum. Edit the graph (${EDIT}).`,
       deps: ['graph-3.3.5', 'graph-1.4.1b'], refs: ['Diestel §3.3'], tags: ['Menger', 'connectivity'],
       viz(v) {
         const PRE = { two: TWOK4, cube: () => named('cube'), w5: () => wheel(5), pet: () => named('petersen') };

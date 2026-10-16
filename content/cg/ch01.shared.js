@@ -128,32 +128,39 @@ const expSign = (e) => sgn(e[e.length - 1]);
  * Returns {sign, stage} with stage 'A' (plain float filter), 'B' (exact product of rounded differences),
  * 'C' (tail correction) or 'D' (full exact expansion).
  */
-export function orientAdaptive(ax, ay, bx, by, cx, cy) {
+export function orientAdaptive(ax, ay, bx, by, cx, cy, force = false) {
   const acx = ax - cx, bcx = bx - cx, acy = ay - cy, bcy = by - cy; cost.flops += 4;
-  const dl = acx * bcy, dr = acy * bcx; let det = dl - dr; cost.flops += 3;
-  let dsum;
-  if (dl > 0) { if (dr <= 0) return { sign: sgn(det), stage: 'A' }; dsum = dl + dr; }
-  else if (dl < 0) { if (dr >= 0) return { sign: sgn(det), stage: 'A' }; dsum = -dl - dr; }
-  else return { sign: sgn(det), stage: 'A' };
-  let eb = ERR_A * dsum; cost.flops += 3;
-  if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'A' };
-  // stage B: exact (acx·bcy − acy·bcx) for the rounded differences
-  const [l1, l0] = twoProd(acx, bcy), [r1, r0] = twoProd(acy, bcx);
-  let B = grow(grow(grow([l0], l1), -r0), -r1);
-  det = B.reduce((s, x) => s + x, 0); cost.flops += 4; eb = ERR_B * dsum;
-  if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'B' };
-  const [, acxt] = twoDiff(ax, cx), [, bcxt] = twoDiff(bx, cx), [, acyt] = twoDiff(ay, cy), [, bcyt] = twoDiff(by, cy);
-  if (acxt === 0 && acyt === 0 && bcxt === 0 && bcyt === 0) return { sign: expSign(B), stage: 'B' };
-  // stage C: first-order correction from the tails of the differences
-  eb = ERR_C * dsum + ERR_RES * Math.abs(det); cost.flops += 20;
-  det += (acx * bcyt + bcy * acxt) - (acy * bcxt + bcx * acyt);
-  if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'C' };
-  // stage D: the whole determinant as an exact expansion
+  let det, dsum;
+  if (!force) {
+    const dl = acx * bcy, dr = acy * bcx; det = dl - dr; cost.flops += 3;
+    if (dl > 0) { if (dr <= 0) return { sign: sgn(det), stage: 'A' }; dsum = dl + dr; }
+    else if (dl < 0) { if (dr >= 0) return { sign: sgn(det), stage: 'A' }; dsum = -dl - dr; }
+    else return { sign: sgn(det), stage: 'A' };
+    let eb = ERR_A * dsum; cost.flops += 3;
+    if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'A' };
+    // stage B: exact (acx·bcy − acy·bcx) for the rounded differences
+    const [l1, l0] = twoProd(acx, bcy), [r1, r0] = twoProd(acy, bcx);
+    const B = grow(grow(grow([l0], l1), -r0), -r1);
+    det = B.reduce((s, x) => s + x, 0); cost.flops += 4; eb = ERR_B * dsum;
+    if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'B' };
+    const [, acxt] = twoDiff(ax, cx), [, bcxt] = twoDiff(bx, cx), [, acyt] = twoDiff(ay, cy), [, bcyt] = twoDiff(by, cy);
+    if (acxt === 0 && acyt === 0 && bcxt === 0 && bcyt === 0) return { sign: expSign(B), stage: 'B' };
+    // stage C: first-order correction from the tails of the differences
+    eb = ERR_C * dsum + ERR_RES * Math.abs(det); cost.flops += 20;
+    det += (acx * bcyt + bcy * acxt) - (acy * bcxt + bcx * acyt);
+    if (det >= eb || -det >= eb) return { sign: sgn(det), stage: 'C' };
+    return { sign: stageD(acx, acxt, acy, acyt, bcx, bcxt, bcy, bcyt), stage: 'D' };
+  }
+  const acxt = twoDiff(ax, cx)[1], bcxt = twoDiff(bx, cx)[1], acyt = twoDiff(ay, cy)[1], bcyt = twoDiff(by, cy)[1];
+  return { sign: stageD(acx, acxt, acy, acyt, bcx, bcxt, bcy, bcyt), stage: 'D' };
+}
+/** Stage D: the whole determinant as an exact expansion. */
+function stageD(acx, acxt, acy, acyt, bcx, bcxt, bcy, bcyt) {
   let E = [];
   for (const [u, w, s] of [[acx, bcy, 1], [acx, bcyt, 1], [acxt, bcy, 1], [acxt, bcyt, 1], [acy, bcx, -1], [acy, bcxt, -1], [acyt, bcx, -1], [acyt, bcxt, -1]]) {
     const [p1, p0] = twoProd(u, w); E = grow(grow(E, s * p0), s * p1);
   }
-  return { sign: expSign(E), stage: 'D' };
+  return expSign(E);
 }
 
 // ------------------------------------------------------------------ convex hull (monotone chain) with a pluggable predicate
