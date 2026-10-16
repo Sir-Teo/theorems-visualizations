@@ -44,7 +44,7 @@ export default {
 
 Every prediction agrees because $\langle\psi_S(t)|A_S|\psi_S(t)\rangle=\langle\psi(0)|U^\dagger A_SU|\psi(0)\rangle=\langle\psi_H|A_H(t)|\psi_H\rangle$, and the same holds for all probabilities $\langle\psi|P_\lambda|\psi\rangle$ and all operator products, since $U^\dagger(AB)U=(U^\dagger AU)(U^\dagger BU)$. (An interaction picture splits the evolution between the two.)`,
       idea: String.raw`Only inner products of the form $\langle\varphi|A|\psi\rangle$ are physical, and unitarity (5.15) lets $U$ be moved from the kets onto the operator: $\langle U\varphi|A\,U\psi\rangle=\langle\varphi|U^\dagger AU\,\psi\rangle$. Geometrically for a spin: the Schrödinger picture rotates the Bloch vector forward about the field axis, while the Heisenberg picture rotates the measurement axis *backward* by the same angle — the angle between them, which is all a measurement sees, evolves identically. Heisenberg's own matrix mechanics (5.22) was born in the second picture; Schrödinger's wave mechanics in the first.`,
-      caption: String.raw`A spin-½ in a field along $\mathbf n$ (purple); we measure $\sigma_{\mathbf m}$ along the green axis. **Toggle the picture.** *Schrödinger:* the state (gold) precesses about $\mathbf n$ and the green axis stays put. *Heisenberg:* the state is frozen and the green axis precesses the other way. **Drag the state** or tilt the axes. Right: $\langle\sigma_{\mathbf m}\rangle(t)$ computed both ways — $\langle\psi(t)|\sigma_{\mathbf m}|\psi(t)\rangle$ (accent) and $\langle\psi_0|U^\dagger\sigma_{\mathbf m}U|\psi_0\rangle$ (dashed) — the curves coincide. Bottom: which matrices move — $\rho$ in one picture, $A$ in the other.`,
+      caption: String.raw`A spin-½ in a field along $\mathbf n$ (purple); we measure $\sigma_{\mathbf m}$ along the green axis. **Toggle the picture.** *Schrödinger:* the state (gold) precesses about $\mathbf n$ and the green axis stays put. *Heisenberg:* the state is frozen and the green axis precesses the other way. **Drag the initial state** (ring) or tilt the axes. Right: $\langle\sigma_{\mathbf m}\rangle(t)$ computed both ways — $\langle\psi(t)|\sigma_{\mathbf m}|\psi(t)\rangle$ (accent) and $\langle\psi_0|U^\dagger\sigma_{\mathbf m}U|\psi_0\rangle$ (dashed) — the curves coincide. Bottom: which matrices move — $\rho$ in one picture, $A$ in the other.`,
       deps: ['qm-5.15', 'qm-5.9'],
       refs: ['Griffiths §6.8', 'Sakurai ch. 2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heisenberg_picture' },
@@ -55,8 +55,8 @@ Every prediction agrees because $\langle\psi_S(t)|A_S|\psi_S(t)\rangle=\langle\p
         const tn = v.slider('field axis $\\mathbf n$ tilt', 0, Math.PI, 0.5, { step: 0.01 });
         const tm = v.slider('measured axis $\\mathbf m$ tilt', 0, Math.PI, 1.9, { step: 0.01 });
         const SB = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, axes: false, height: 320, weight: 1, title: 'Bloch sphere' });
-        const SP = v.stage({ x: [0, TAU * 2], y: [-1.1, 1.1], axes: 'box', gutter: true, height: 320, weight: 1.2, xlabel: 'ωt', ylabel: '⟨σ_m⟩', title: 'the expectation value is the same in both pictures' });
-        const SC = v.stage({ x: [0, 21], y: [-0.9, 3.1], equal: true, axes: false, height: 175, full: true });
+        const SP = v.stage({ x: [0, TAU * 2], y: [-1.1, 1.1], axes: 'box', gutter: true, height: 320, weight: 1.2, xlabel: 'ωt', ylabel: '⟨σₘ⟩', title: 'the expectation value is the same in both pictures' });
+        const SC = v.stage({ x: [0, 16], y: [-0.3, 2.9], equal: true, axes: false, height: 165, full: true });
         const sc = v.scene3(SB, { axes: false, yaw: -0.6, pitch: 0.3 });
         const h = sc.handle([0.62, 0.55, 0.56], { color: 'gold', snap: (p) => { const r = Math.hypot(...p) || 1; return p.map((c) => c / r); } });
         const pauli = (u) => madd(madd(mscale(cplx([[0, 1], [1, 0]]), u[0]), mscale([[[0, 0], [0, -1]], [[0, 1], [0, 0]]], u[1])), mscale(cplx([[1, 0], [0, -1]]), u[2]));
@@ -86,10 +86,10 @@ Every prediction agrees because $\langle\psi_S(t)|A_S|\psi_S(t)\rangle=\langle\p
           const rho0 = outer(psi0, psi0), rhoS = mmul(mmul(Ut, rho0), adj(Ut)), AH = mmul(mmul(adj(Ut), Am), Ut);
           const four = pic.value === 'S' ? [[rhoS, '$\\rho_S(t)$', true], [Am, '$A_S=\\sigma_{\\mathbf m}$', false]] : [[rho0, '$\\rho_H=\\rho_0$', false], [AH, '$A_H(t)=U^\\dagger\\sigma_{\\mathbf m}U$', true]];
           four.forEach(([A, lab, moving], k) => {
-            const x0 = 2.2 + k * 10;
-            cells(v, SC, A, [x0, 0, x0 + 2.4, 2.4], { max: 1, text: (z) => texC(v, z, 2).replace(/-/g, '−'), size: 9.5 });
-            SC.text(lab, x0 + 3, 1.6, { size: 13 });
-            SC.text(moving ? 'moves' : 'fixed', x0 + 3, 0.7, { size: 11, color: moving ? 'gold' : 'muted' });
+            const x0 = 0.8 + k * 8;
+            cells(v, SC, A, [x0, 0, x0 + 2.7, 2.7], { max: 1, text: (z) => texC(v, z, 2).replace(/-/g, '−'), size: 10 });
+            SC.text(lab, x0 + 3.0, 1.7, { size: 14 });
+            SC.text(moving ? 'moves' : 'fixed', x0 + 3.0, 0.8, { size: 12, color: moving ? 'gold' : 'muted', weight: 700 });
           });
           let dmax = 0; for (let k = 0; k <= 60; k++) { const s = (TAU * 2 * k) / 60; dmax = Math.max(dmax, Math.abs(fS(s) - fH(s))); }
           st = { val: fS(tt), dmax, tt, ang: (Math.acos(Math.max(-1, Math.min(1, pic.value === 'S' ? M.dot(r, m) : M.dot(h.p, mH)))) * 180) / Math.PI };
@@ -223,7 +223,7 @@ Then $A$ is a **constant of motion**, its eigenvalues are good quantum numbers, 
           const mA = rows.map((r) => r[1].reduce((s, p, k) => s + p * groups[k].l, 0)); const dA = Math.max(...mA) - Math.min(...mA);
           st = { cn, drift, dA, labels: groups.map((g) => fz(v, g.l, 0)) };
         });
-        v.legend([['accent', 'first outcome', { area: true }], ['purple', 'second', { area: true }], ['orange', 'third', { area: true }]]);
+        v.legend([['accent', 'smallest eigenvalue', { area: true }], ['purple', 'middle', { area: true }], ['orange', 'largest (labels give the values)', { area: true }]]);
         v.readout(() => st && `Outcomes of $A$: ${st.labels.join(', ')}. $\\|[A,H]\\| = ${v.sci(Math.max(st.cn, 1e-17), 2)}$; largest change of any outcome probability over $0\\le t\\le4\\pi$: $${v.sci(Math.max(st.drift, 1e-17), 2)}$; range of $\\langle A\\rangle(t)$: $${v.sci(Math.max(st.dA, 1e-17), 2)}$ — ${st.cn < 1e-12 ? '**conserved**.' : 'not conserved.'}`);
       },
     },
@@ -245,7 +245,7 @@ $$P_N=\Big[\cos^2\frac{\pi}{2N}\Big]^N\;\approx\;1-\frac{\pi^2}{4N}\to1.$$`,
       viz(v) {
         const NN = v.slider('measurements $N$ per half-period', 1, 60, 6, { int: true });
         const SL = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 320, weight: 1.15, xlabel: 't / (π/Ω)', ylabel: 'P(still in |0⟩)', title: 'one Rabi half-period' });
-        const SR = v.stage({ x: [1, 100], y: [0, 1.02], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'N', ylabel: 'survival P_N', title: 'more looking, less change' });
+        const SR = v.stage({ x: [1, 100], y: [0, 1.02], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'N', ylabel: 'survival P(N)', title: 'more looking, less change' });
         const PN = (N) => Math.cos(Math.PI / (2 * N)) ** (2 * N);
         // Monte Carlo (seeded): a run survives a measurement with probability cos²(π/2N)
         const mc = new Map(); const sim = (N) => { if (mc.has(N)) return mc.get(N); const r = v.rng(500 + N), q = Math.cos(Math.PI / (2 * N)) ** 2; let s = 0; for (let k = 0; k < 4000; k++) { let ok = true; for (let j = 0; j < N && ok; j++) if (r() > q) ok = false; if (ok) s++; } const p = s / 4000; mc.set(N, p); return p; };
@@ -254,17 +254,19 @@ $$P_N=\Big[\cos^2\frac{\pi}{2N}\Big]^N\;\approx\;1-\frac{\pi^2}{4N}\to1.$$`,
           const N = NN.value, q = Math.cos(Math.PI / (2 * N)) ** 2;
           SL.fn((t) => Math.cos((Math.PI * t) / 2) ** 2, { color: 'muted', width: 1.4, alpha: 0.6 });
           // individual runs
-          const r = v.rng(77 + N);
+          const r = v.rng(77 + N), fails = [];
           for (let run = 0; run < 25; run++) {
             const pts = [[0, 1]]; let alive = true;
             for (let j = 0; j < N; j++) {
               const t0 = j / N, t1 = (j + 1) / N;
               if (!alive) { pts.push([t1, 0]); continue; }
               for (let k = 1; k <= 8; k++) { const t = t0 + ((t1 - t0) * k) / 8; pts.push([t, Math.cos((Math.PI * (t - t0)) / 2) ** 2]); }
-              if (r() > q) { alive = false; pts.push([t1, 0]); } else pts.push([t1, 1]);
+              if (r() > q) { alive = false; pts.push([t1, 0]); fails.push(t1); } else pts.push([t1, 1]);
             }
             SL.path(pts, { color: 'gold', width: 0.8, alpha: 0.35 });
           }
+          fails.forEach((tf, i) => SL.dot(tf, 0.025 + 0.022 * (i % 4), { r: 3.2, color: 'red' }));
+          SL.text(`${fails.length} of 25 runs caught in |1⟩ (red)`, 0.02, 0.2, { size: 10.5, color: 'red', plate: true });
           // ensemble staircase
           const pts = []; for (let j = 0; j < N; j++) { const t0 = j / N; for (let k = 0; k <= 30; k++) { const t = t0 + k / (30 * N); pts.push([t, q ** j * Math.cos((Math.PI * (t - t0)) / 2) ** 2]); } }
           SL.path(pts, { color: 'accent', width: 2.6 });
@@ -311,7 +313,7 @@ with real $x_0,p_0$ (centre, mean momentum) and width $\sigma=\Delta x$. Allowin
         eps.el.hidden = def.el.hidden = true;
         let drawn = null;
         const SW = v.stage({ x: [-8, 8], y: [0, 1.15], axes: 'box', gutter: true, height: 300, weight: 1.3, xlabel: 'x', ylabel: '|ψ|', title: 'the wave function' });
-        const SR = v.stage({ x: [0, 60], y: [0.45, 1.2], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'step', ylabel: 'Δx·Δp', title: 'the product falls to ½' });
+        const SR = v.stage({ x: [0, 240], y: [0.45, 1.2], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'step', ylabel: 'Δx·Δp', title: 'the product falls to ½' });
         SW.onDrag((X, Y, ph) => {
           if (mode.value !== 'opt') return;
           const cur = S.state; if (!drawn) { drawn = { re: Float64Array.from(cur.re), im: Float64Array.from(cur.im) }; let mx = 0; for (let i = 0; i < n; i++) mx = Math.max(mx, Math.hypot(drawn.re[i], drawn.im[i])); for (let i = 0; i < n; i++) { drawn.re[i] /= mx; drawn.im[i] /= mx; } }
@@ -326,7 +328,7 @@ with real $x_0,p_0$ (centre, mean momentum) and width $\sigma=\Delta x$. Allowin
           const m = moments(x, re, im); return { re, im, hist: [[0, m.sx * m.sp]], it: 0 };
         };
         const step = (s) => {
-          const m = moments(x, s.re, s.im), a = m.sp * m.sp, b = m.sx * m.sx, tau = 0.15 / Math.sqrt(a * b);
+          const m = moments(x, s.re, s.im), a = m.sp * m.sp, b = m.sx * m.sx, tau = 0.012 / Math.sqrt(a * b);
           const R = Array.from(s.re), I = Array.from(s.im);
           for (let i = 0; i < n; i++) { const f = Math.exp(-0.5 * tau * a * (x[i] - m.mx) ** 2); R[i] *= f; I[i] *= f; }
           M.fft(R, I); for (let i = 0; i < n; i++) { const f = Math.exp(-tau * b * (k[i] - m.mp) ** 2); R[i] *= f; I[i] *= f; } M.ifft(R, I);
@@ -345,7 +347,7 @@ with real $x_0,p_0$ (centre, mean momentum) and width $\sigma=\Delta x$. Allowin
           }
           normalize(re, im, dx); return { re, im };
         };
-        const S = v.sim(initState, (s) => { step(s); step(s); }, { dt: 0.05, maxSteps: 4000 });
+        const S = v.sim(initState, (s) => { step(s); }, { dt: 0.05, maxSteps: 4000 });
         let st = null;
         v.animate((t) => {
           const col = phaseLUT(v);
@@ -361,12 +363,12 @@ with real $x_0,p_0$ (centre, mean momentum) and width $\sigma=\Delta x$. Allowin
           // Gaussian with the same centre and width
           const gA = (2 * Math.PI * m.sx * m.sx) ** -0.25;
           SW.fn((X) => sc * gA * Math.exp(-((X - m.mx) ** 2) / (4 * m.sx * m.sx)), { color: 'green', width: 2, dash: [6, 4] });
-          phaseWheel(SW, col, SW.W - 34, 50, 12);
+          phaseWheel(SW, col, SW.W - 34, 64, 12);
           if (mode.value === 'opt') { SW.corner('drag to draw a new start', 'tl', { color: 'muted', size: 11 }); }
           // right: history, or the product as a function of ε
           if (mode.value === 'opt') {
             const last = hist[hist.length - 1][0];
-            SR.setView([0, Math.max(60, last + 2)], [0.45, Math.max(1.0, hist[0][1] * 1.08)]);
+            SR.setView([0, 240], [0.45, Math.max(1.0, Math.min(6, hist[0][1] * 1.08))]);
             SR.setLabels('step', 'Δx·Δp');
             SR.hline(0.5, { color: 'green', width: 1.6, dash: [5, 4] });
             SR.path(hist, { color: 'accent', width: 2 }); SR.dot(hist[hist.length - 1][0], hist[hist.length - 1][1], { r: 5, color: 'accent' });
@@ -417,21 +419,22 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
         const arrowAmp = (x, y, z, dir = [1, 0]) => { if (cabs(z) < 1e-9) return; const L = 0.9 * cabs(z), c = Q.phaseColor(carg(z)); SD.arrow(x - (dir[0] * L) / 2, y - (dir[1] * L) / 2, x + (dir[0] * L) / 2, y + (dir[1] * L) / 2, { color: c, width: 4, head: 10 }); };
         let st = null;
         v.render(() => {
+          v.legend(mode.value === 'ev' ? [['accent', 'quantum prediction (and amplitudes)', { area: true }], ['gold', 'simulated frequencies', { area: true }]] : [['green', 'interaction-free success $\\cos^{2N}(\\pi/2N)$', { dot: true }], ['orange', 'one-pass efficiency', { dash: true }]]);
           if (mode.value === 'ev') {
-            SR.setView([-0.6, 2.6], [0, 1.05]); SR.setTicks([[0, 'explodes'], [1, 'C (bright)'], [2, 'D (dark)']], null); SR.setLabels(null, 'probability');
+            SR.setView([-0.6, 2.6], [0, 1.12]); SR.setTicks([[0, 'explodes'], [1, 'C (bright)'], [2, 'D (dark)']], null); SR.setLabels(null, 'probability');
             // amplitudes: input in the horizontal mode a; BS1 → upper arm (a, transmitted) and lower arm (b, reflected, ×i)
             const [up, lo] = bs([1, 0], [0, 0]);
             const loAfter = bomb.value ? [0, 0] : lo;
             const [C, D] = bs(loAfter, up); // at BS2 the lower arm reaches C by transmission, the upper by reflection
             const pX = bomb.value ? cabs2(lo) : 0, pC = cabs2(C), pD = cabs2(D);
             // diagram geometry: source (0.4, 4.6) → BS1 (2, 4.6); upper arm to mirror (2, 5.6)? use a square: BS1 (2,4.5), M1 (7,4.5), M2 (2,1.5), BS2 (7,1.5)
-            const P = { src: [0.5, 4.5], b1: [2.2, 4.5], m1: [7.2, 4.5], m2: [2.2, 1.5], b2: [7.2, 1.5], C: [9.3, 1.5], D: [7.2, -0.35] };
+            const P = { src: [0.75, 4.5], b1: [2.2, 4.5], m1: [7.2, 4.5], m2: [2.2, 1.5], b2: [7.2, 1.5], C: [9.3, 1.5], D: [7.2, -0.35] };
             const line = (p, q, o = {}) => SD.line(p[0], p[1], q[0], q[1], { color: 'muted', width: 1.6, ...o });
             line(P.src, P.b1); line(P.b1, P.m1); line(P.b1, P.m2); line(P.m1, P.b2); line(P.m2, P.b2, { alpha: bomb.value ? 0.35 : 1 }); line(P.b2, P.C); line(P.b2, P.D);
             const bsBox = (p, lab) => { SD.line(p[0] - 0.45, p[1] + 0.45, p[0] + 0.45, p[1] - 0.45, { color: 'teal', width: 4 }); SD.text(lab, p[0] - 0.55, p[1] + 0.55, { size: 11, color: 'teal', align: 'right' }); };
             bsBox(P.b1, 'BS1'); bsBox(P.b2, 'BS2');
             for (const p of [P.m1, P.m2]) SD.line(p[0] - 0.45, p[1] + 0.45, p[0] + 0.45, p[1] - 0.45, { color: 'ink', width: 5 });
-            SD.rect(P.src[0] - 0.4, P.src[1] - 0.3, P.src[0] + 0.15, P.src[1] + 0.3, { fill: 'gold', fillAlpha: 0.5, color: 'gold', radius: 3 }); SD.text('photon', P.src[0] - 0.12, P.src[1] + 0.6, { size: 10.5, align: 'center', color: 'muted' });
+            SD.rect(P.src[0] - 0.4, P.src[1] - 0.3, P.src[0] + 0.15, P.src[1] + 0.3, { fill: 'gold', fillAlpha: 0.5, color: 'gold', radius: 3 }); SD.text('photon', P.src[0] - 0.12, P.src[1] + 0.6, { size: 10.5, align: 'left', color: 'muted', dx: -14 });
             // detectors
             const det = (p, lab, prob, vertical) => { SD.circle(p[0], p[1], 0.38, { fill: prob > 1e-9 ? 'green' : 'grid', fillAlpha: 0.15 + 0.6 * prob, color: 'ink', width: 1.4 }); SD.text(lab, p[0] + (vertical ? 0.6 : 0), p[1] + (vertical ? 0 : 0.65), { size: 12, align: vertical ? 'left' : 'center', weight: 700 }); };
             det(P.C, 'C', pC, false); det(P.D, 'D', pD, true);
@@ -456,28 +459,33 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
             // diagram: a row of cycles with the polarization arrow after each
             const show = Math.min(N, 12), w = 9 / show;
             let amp = [1, 0], alive = 1;
-            SD.text(bomb.value ? 'with the absorber: each cycle projects back onto H' : 'no absorber: the rotations add up to V', 5, 5.7, { align: 'center', size: 12, color: bomb.value ? 'green' : 'muted' });
+            SD.text(bomb.value ? 'with the absorber: each cycle projects back onto H' : 'no absorber: the rotations add up to V', 5, 5.2, { align: 'center', size: 12, color: bomb.value ? 'green' : 'muted' });
             for (let j = 0; j < show; j++) {
-              const cx = 0.5 + w * (j + 0.5), cy = 3.2;
+              const cx = 0.5 + w * (j + 0.5), cy = 2.9, R = Math.min(0.42 * w, 0.9), L = R * Math.sqrt(alive);
               // rotate by θ
               const a = Math.cos(th) * amp[0] - Math.sin(th) * amp[1], b = Math.sin(th) * amp[0] + Math.cos(th) * amp[1];
               amp = [a, b];
-              SD.circle(cx, cy, Math.min(0.42 * w, 0.9), { color: 'faint', width: 1 });
-              const R = Math.min(0.42 * w, 0.9);
-              SD.arrow(cx, cy, cx + R * amp[0], cy + R * amp[1], { color: 'accent', width: 2.4, head: 7 });
-              if (bomb.value) { alive *= amp[0] ** 2; SD.line(cx, cy, cx, cy + R * amp[1], { color: 'red', width: 2, alpha: 0.7 }); amp = [1, 0]; }
-              SD.text(`${j + 1}`, cx, cy - R - 0.35, { size: 10, align: 'center', color: 'muted' });
+              SD.circle(cx, cy, R, { color: 'faint', width: 1 });
+              SD.line(cx - R, cy, cx + R, cy, { color: 'faint', width: 0.6 }); SD.line(cx, cy - R, cx, cy + R, { color: 'faint', width: 0.6 });
+              SD.arrow(cx, cy, cx + L * amp[0], cy + L * amp[1], { color: 'accent', width: 2.4, head: 7 });
+              if (bomb.value) {
+                SD.line(cx + L * amp[0], cy, cx + L * amp[0], cy + L * amp[1], { color: 'red', width: 2.2 });
+                alive *= amp[0] ** 2; amp = [1, 0];
+              }
+              SD.text(`${j + 1}`, cx, cy + R + 0.3, { size: 10, align: 'center', color: 'muted' });
+              SD.text(bomb.value ? `${v.fix(100 * alive, 1)}%` : `${v.fix((Math.atan2(amp[1], amp[0]) * 180) / Math.PI, 0)}°`, cx, cy - R - 0.32, { size: 9.5, align: 'center', color: bomb.value ? 'green' : 'accent' });
             }
-            if (N > show) SD.text(`… (${N} cycles; first 12 shown)`, 5, 1.6, { size: 11, align: 'center', color: 'muted' });
-            SD.text('arrow = polarization after each rotation by π/2N' + (bomb.value ? '; red = component absorbed' : ''), 5, 0.7, { size: 10.5, align: 'center', color: 'muted' });
+            SD.text(bomb.value ? 'green: probability not yet absorbed' : 'blue: polarization angle', 5, 1.3, { size: 10.5, align: 'center', color: 'muted' });
+            if (N > show) SD.text(`… (${N} cycles; first 12 shown)`, 5, 1.9, { size: 11, align: 'center', color: 'muted' });
+            SD.text('arrow = polarization after each rotation by π/2N' + (bomb.value ? '; red = component absorbed' : ''), 5, 0.6, { size: 10.5, align: 'center', color: 'muted' });
             // probabilities vs N
-            SR.fn((n) => Math.cos(Math.PI / (2 * Math.round(n))) ** (2 * Math.round(n)), { color: 'green', width: 2.4, n: 300 });
+            SR.fn((n) => Math.cos(Math.PI / (2 * n)) ** (2 * n), { color: 'green', width: 1.2, alpha: 0.5, domain: [1, 30.5] });
+            for (let n = 1; n <= 30; n++) SR.dot(n, Math.cos(Math.PI / (2 * n)) ** (2 * n), { r: 2.8, color: 'green' });
             SR.hline(1 / 3, { color: 'orange', width: 1.4, dash: [5, 4] }); SR.text('one-pass EV: 1/3', 30, 1 / 3, { align: 'right', dy: -10, size: 10.5, color: 'orange' });
             const pS = Math.cos(th) ** (2 * N); SR.dot(N, pS, { r: 6, color: 'green' });
             st = { m: 'zeno', N, pS, noBomb: Math.sin(N * th) ** 2 };
           }
         });
-        v.legend([['accent', 'quantum prediction / polarization', { area: true }], ['gold', 'simulated frequencies', { area: true }], ['green', 'interaction-free success']]);
         v.readout(() => {
           if (!st) return '';
           if (st.m === 'ev') return `${bomb.value ? 'Bomb present' : 'No bomb'}: $P(\\text{explode}) = ${v.fix(st.probs[0], 3)}$, $P(C) = ${v.fix(st.probs[1], 3)}$, $P(D) = ${v.fix(st.probs[2], 3)}$. Of ${st.N} simulated photons: ${st.cnt[0]} explosions, ${st.cnt[1]} at C, ${st.cnt[2]} at D. ${bomb.value ? `Every click at D (${st.cnt[2]} of them) certifies the bomb without touching it; efficiency $P(D)/(P(D)+P(\\text{explode})) = ${v.fix(st.eff, 3)}$.` : 'D never clicks: destructive interference.'}`;
@@ -494,7 +502,7 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
       introduces: [],
       statement: String.raw`Heisenberg proposed to build atomic mechanics only from observable quantities — transition frequencies $\omega(n,n-\alpha)$ and amplitudes $x(n,n-\alpha)$ — instead of unobservable electron orbits. He replaced the classical Fourier series $x(t)=\sum_\alpha a_\alpha(n)e^{i\alpha\omega(n)t}$ by the array $x(n,m)e^{i\omega(n,m)t}$ with Ritz-combining frequencies $\omega(n,m)=(E_n-E_m)/\hbar$, which forces the multiplication rule $(xy)(n,m)=\sum_kx(n,k)\,y(k,m)$ — non-commutative. Keeping Newton's equation of motion and replacing the Bohr–Sommerfeld condition by its differentiated form (the Thomas–Kuhn sum rule $\sum_k(E_k-E_n)|x(n,k)|^2=\hbar^2/2m$), he computed the harmonic oscillator's energies $E_n=(n+\tfrac12)\hbar\omega$ — with a zero-point energy — and first-order energies of anharmonic oscillators, e.g. for $\ddot x+\omega^2x+\lambda x^3=0$: $E_n=(n+\tfrac12)\hbar\omega+\tfrac{3\lambda\hbar^2}{8m^2\omega^2}\big(n^2+n+\tfrac12\big)$, which differs from the old quantum theory's $\big(n+\tfrac12\big)^2$ by a quantum term.`,
       idea: String.raw`By 1925 the Bohr–Sommerfeld rules (qm-1.7) worked for hydrogen but failed for helium, the anomalous Zeeman effect and intensities; the correspondence principle (qm-1.6) linked spectral lines to Fourier components of orbits. Heisenberg's reinterpretation (*Umdeutung*) kept the formal structure of classical mechanics but replaced each Fourier component by a transition between two stationary states (Bohr 1913, qm-1.16; Rydberg–Ritz combination, qm-1.4). Within months Born and Jordan recognized his arrays as matrices and derived $[x,p]=i\hbar$ (5.9); Born, Heisenberg and Jordan built matrix mechanics, Dirac its algebra of q-numbers (5.17), and Schrödinger proved it equivalent to wave mechanics — the formalism of this whole chapter.`,
-      caption: String.raw`A recreation of the paper's calculation with today's matrices ($\hbar=m=\omega=1$). **Arrays:** the oscillator's $x(n,m)$ — only $m=n\pm1$, i.e. a single classical harmonic — with Heisenberg's product $x\cdot x$; **click any entry of $x^2$** to see the row and column whose products sum to it. **Quantum condition:** the sum rule fixes $|x(n,n+1)|^2$ rung by rung from $x(0,-1)=0$; the energy array $\tfrac12(p^2+x^2)$ then comes out *diagonal* with $E_n=n+\tfrac12$. **Anharmonic:** for $V=\tfrac12x^2+\tfrac\lambda4x^4$ (his second example), the energy shifts $E_n-(n+\tfrac12)$ from exact diagonalization of an $80\times80$ matrix (bars), Heisenberg's first-order formula (green), and the old quantum theory with $J=n\hbar$ and $J=(n+\tfrac12)\hbar$ (red, orange). Slide $\lambda$.`,
+      caption: String.raw`A recreation of the paper's calculation with today's matrices ($\hbar=m=\omega=1$). **Arrays:** the oscillator's $x(n,m)$ — only $m=n\pm1$, i.e. a single classical harmonic — with Heisenberg's product $x\cdot x$; **click any entry of $x^2$** to see the row and column whose products sum to it. **Quantum condition:** the sum rule fixes $|x(n,n+1)|^2$ rung by rung from $x(0,-1)=0$; the energy array $\tfrac12(p^2+x^2)$ then comes out *diagonal* with $E_n=n+\tfrac12$. **Anharmonic:** for $V=\tfrac12x^2+\tfrac\lambda4x^4$ (his second example) the first-order shift is $\tfrac{3\lambda}8\times$ ($n^2+n+\tfrac12$ for Heisenberg, $(n+\tfrac12)^2$ or $n^2$ in the old quantum theory with $J=(n+\tfrac12)\hbar$ or $J=n\hbar$). The plot shows $\big[E_n-(n+\tfrac12)\big]/\tfrac{3\lambda}8-(n+\tfrac12)^2$: the exact levels from diagonalizing an $80\times80$ matrix (bars) sit on Heisenberg's $+\tfrac14$ (green), not on 0 (orange) or $-(n+\tfrac14)$ (red). **Slide $\lambda$** down and the bars settle onto $\tfrac14$; up, and second-order terms pull the high levels away.`,
       deps: ['qm-1.4', 'qm-1.6', 'qm-1.7', 'qm-1.16'],
       see: ['qm-5.9', 'qm-4.3'],
       refs: [],
@@ -505,9 +513,9 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
         const M = v.M;
         const step = v.select('part', [{ value: 'arr', label: 'arrays and the product rule' }, { value: 'qc', label: 'quantum condition → $E_n$' }, { value: 'anh', label: 'anharmonic oscillator' }], 'arr', { onChange: (m) => show(m) });
         const NN = v.slider('array size', 4, 9, 6, { int: true });
-        const lam = v.slider('$\\lambda$ (strength of $\\frac\\lambda4x^4$)', 0, 0.3, 0.1, { step: 0.005 });
+        const lam = v.slider('$\\lambda$ (strength of $\\frac\\lambda4x^4$)', 1e-4, 0.05, 0.002, { log: true });
         const SA = v.stage({ x: [0, 20], y: [-1.5, 7.5], equal: true, axes: false, height: 330, full: true });
-        const SP = v.stage({ x: [-0.6, 8.6], y: [0, 3], axes: 'box', gutter: true, height: 330, full: true, xlabel: 'n', ylabel: 'Eₙ − (n + ½), units ħω' });
+        const SP = v.stage({ x: [-0.6, 6.6], y: [-0.45, 0.42], axes: 'box', gutter: true, height: 330, full: true, xlabel: 'n', ylabel: 'energy shift ÷ (3λ/8)  −  (n + ½)²' });
         const show = (m) => { SA.el.style.display = m === 'anh' ? 'none' : ''; SP.el.style.display = m === 'anh' ? '' : 'none'; lam.el.hidden = m !== 'anh'; NN.el.hidden = m === 'anh'; };
         show('arr');
         let pick = [1, 3];
@@ -515,6 +523,9 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
         let geo = null, st = null, exactCache = null;
         v.render(() => {
           const N = NN.value;
+          v.legend(step.value === 'arr' ? [['accent', 'entry (disc area ∝ size)', { dot: true }], ['gold', 'row $n$ of the left factor, column $m$ of the right'], ['green', 'the product entry']]
+            : step.value === 'qc' ? [['accent', '$|x(n,n+1)|^2$ from the quantum condition', { area: true }], ['accent', 'energy array $\\tfrac12(p^2+x^2)$', { dot: true }]]
+            : [['accent', 'exact diagonalization (80 levels)', { area: true }], ['green', 'Heisenberg 1925, first order', { dot: true }], ['orange', 'old quantum theory, $J=(n+\\frac12)\\hbar$'], ['red', 'old quantum theory, $J=n\\hbar$', { dot: true }]]);
           if (step.value === 'arr') {
             const X = cplx(oscX(N)), X2 = mmul(X, X), u = Math.min(1, 6 / N), W = N * u;
             const xs = [0.4, 0.4 + W + 1.4, 0.4 + 2 * W + 3.0];
@@ -536,7 +547,7 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
             const P = mat(N, N, (i, j) => (i === j + 1 ? [0, Math.sqrt(a2[j])] : j === i + 1 ? [0, -Math.sqrt(a2[i])] : 0)); // p = m ẋ, ẋ(n,m) = iω(n,m) x(n,m)
             const H = mscale(madd(mmul(P, P), mmul(X, X)), 0.5);
             const u = Math.min(1, 6 / N), W = N * u;
-            SA.setView([0, 20], [-1.5, Math.max(7.2, W + 1.4)]);
+            SA.setView([0, 11.5 + W + 0.5], [-0.8, Math.max(7.0, W + 1.3)]);
             // left: the ladder of |x(n,n+1)|²
             const bx = 0.6, bw = 7.5, top = Math.max(...a2);
             a2.forEach((q, n) => { const y = 0.3 + (n * W) / N, h = (0.7 * W) / N, len = (bw * q) / top; SA.rect(bx, y, bx + len, y + h, { fill: 'accent', fillAlpha: 0.5, color: 'accent', radius: 2 }); SA.text(`|x(${n},${n + 1})|² = ${v.fix(q, 1)}`, bx + len + 0.15, y + h / 2, { size: 10, color: 'ink' }); });
@@ -545,29 +556,32 @@ a click at D proves the bomb is there although no photon touched it. Repeating t
             const hx = 11.5;
             cells(v, SA, H, [hx, 0.2, hx + W, 0.2 + W], { max: N, text: N <= 8 ? (z) => (cabs(z) < 1e-12 ? null : v.fix(z[0], 2)) : null, size: 9.5 });
             SA.text('$\\tfrac12(p^2+x^2)$ — diagonal!', hx + W / 2, W + 0.75, { align: 'center', size: 13 });
+            SA.text('corner: truncation artifact', hx + W, 0.2 - 0.35, { align: 'right', size: 10, color: 'muted' });
             let off = 0; for (let i = 0; i < N - 1; i++) for (let j = 0; j < N - 1; j++) if (i !== j) off = Math.max(off, cabs(H[i][j]));
             st = { m: 'qc', E: Array.from({ length: N - 1 }, (_, n) => H[n][n][0]), off };
           } else {
             const l = lam.value;
             if (!exactCache || exactCache.l !== l) { const O = oscH(80, l); const vals = M.eigSym(O.H).values.slice().sort((a, b) => a - b); exactCache = { l, vals }; }
-            const ex = exactCache.vals, K = 9;
-            const heis = (n) => (3 * l / 8) * (n * n + n + 0.5), bsJ = (n) => (3 * l / 8) * n * n, bsH = (n) => (3 * l / 8) * (n + 0.5) ** 2;
-            const top = Math.max(0.05, ...Array.from({ length: K }, (_, n) => Math.max(ex[n] - (n + 0.5), heis(n)))) * 1.15;
-            SP.setView([-0.6, K - 0.4], [0, top]);
+            const ex = exactCache.vals, K = 7, c = (3 * l) / 8;
+            // normalized: shift/(3λ/8) − (n+½)²  → Heisenberg ¼, old quantum theory with J=(n+½)ħ: 0, with J=nħ: −(n+¼)
+            SP.hline(0.25, { color: 'green', width: 1.6, dash: [6, 4] }); SP.text('Heisenberg: n² + n + ½ → +¼', 6.5, 0.25, { align: 'right', dy: -11, size: 11, color: 'green' });
+            SP.hline(0, { color: 'orange', width: 1.6, dash: [6, 4] }); SP.text('old theory, J = (n+½)ħ: (n+½)² → 0', 1.0, 0, { align: 'left', dy: 12, size: 11, color: 'orange' });
+            const ys = [];
             for (let n = 0; n < K; n++) {
-              const d = ex[n] - (n + 0.5);
-              SP.rect(n - 0.32, 0, n + 0.32, d, { fill: 'accent', fillAlpha: 0.45, color: 'accent' });
-              SP.dot(n, heis(n), { r: 5, color: 'green' }); SP.dot(n - 0.18, bsJ(n), { r: 3.6, color: 'red' }); SP.dot(n + 0.18, bsH(n), { r: 3.6, color: 'orange' });
+              const y = (ex[n] - (n + 0.5)) / c - (n + 0.5) ** 2; ys.push(y);
+              SP.rect(n - 0.3, Math.min(0, y), n + 0.3, Math.max(0, y), { fill: 'accent', fillAlpha: 0.45, color: 'accent' });
+              SP.dot(n, 0.25, { r: 4.5, color: 'green' });
+              const yr = -(n + 0.25); if (yr > -0.45) SP.dot(n, yr, { r: 4, color: 'red' });
             }
-            st = { m: 'anh', l, e0: ex[0], h0: 0.5 + heis(0), b0: 0.5 + bsH(0), j0: 0.5 + bsJ(0), e5: ex[5], h5: 5.5 + heis(5) };
+            SP.text('old theory, J = nħ: n² → −(n+¼), off scale for n ≥ 1', 0.1, -0.25, { size: 10.5, color: 'red', dx: 8 });
+            st = { m: 'anh', l, ys, e0: ex[0], h0: 0.5 + c * 0.5, b0: 0.5 + c * 0.25, j0: 0.5 };
           }
         });
-        v.legend([['accent', 'exact / computed', { area: true }], ['green', 'Heisenberg 1925 (first order)', { dot: true }], ['red', 'old quantum theory, $J=n\\hbar$', { dot: true }], ['orange', 'old quantum theory, $J=(n+\\frac12)\\hbar$', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           if (st.m === 'arr') return `$(x^2)(${st.pi},${st.pj}) = ${st.terms.length ? st.terms.map(([k, a, b]) => `x(${st.pi},${k})\\,x(${k},${st.pj})`).join('+') : '0'} = ${v.fix(st.val, 4)}$. Only intermediate states $k=n\\pm1$ contribute; the diagonal $(x^2)(n,n)=n+\\tfrac12$ is the quantum mean of $x^2$, the off-diagonal entries oscillate at $\\pm2\\omega$ — the second harmonic.`;
           if (st.m === 'qc') return `Energies from the arrays: $E_n = ${st.E.map((e) => v.fix(e, 3)).join(',\\ ')}$ $=(n+\\tfrac12)\\hbar\\omega$ — including the zero-point energy $E_0=\\tfrac12\\hbar\\omega$, absent in the old quantum theory. Largest off-diagonal entry of $\\tfrac12(p^2+x^2)$ (truncation corner excluded): $${v.sci(Math.max(st.off, 1e-17), 1)}$ — energy is conserved, the array is diagonal.`;
-          return `$\\lambda = ${v.fix(st.l, 3)}$: ground state exact $E_0 = ${v.fix(st.e0, 5)}$; Heisenberg 1925 $\\tfrac12+\\tfrac{3\\lambda}{16} = ${v.fix(st.h0, 5)}$; old quantum theory $${v.fix(st.j0, 5)}$ ($J=n\\hbar$) or $${v.fix(st.b0, 5)}$ ($J=(n+\\frac12)\\hbar$). At $n=5$: exact $${v.fix(st.e5, 4)}$, Heisenberg $${v.fix(st.h5, 4)}$. His formula is right to first order in $\\lambda$; the residue is second order.`;
+          return `$\\lambda = ${v.sci(st.l, 2)}$: exact levels give ${st.ys.slice(0, 4).map((y, n) => `$${v.fix(y, 3)}$ ($n=${n}$)`).join(', ')} — tending to Heisenberg's $\\tfrac14$ as $\\lambda\\to0$ (the drift at larger $n$ is the second-order term $\\propto\\lambda n^3$). Ground state: exact $E_0 = ${v.fix(st.e0, 7)}$, Heisenberg $\\tfrac12+\\tfrac{3\\lambda}{16} = ${v.fix(st.h0, 7)}$, old theory $${v.fix(st.b0, 7)}$ ($J=(n+\\frac12)\\hbar$) or $${v.fix(st.j0, 7)}$ ($J=n\\hbar$).`;
         });
       },
     },

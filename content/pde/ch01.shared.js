@@ -38,7 +38,7 @@ export function makeRod(n, k, left, right) {
   const R = { n, h, x, u: new Float64Array(n + 1), t: 0, k, left, right };
   R.step = (dt) => {
     const u = R.u, lo = new Float64Array(n + 1), di = new Float64Array(n + 1), up = new Float64Array(n + 1), rhs = new Float64Array(n + 1);
-    const r = (k * dt) / (h * h);
+    const k = R.k, r = (k * dt) / (h * h);
     for (let i = 1; i < n; i++) { lo[i] = -r; di[i] = 1 + 2 * r; up[i] = -r; rhs[i] = u[i]; }
     const end = (E, i, nb, sgn) => {
       if (E.type === 'D') { di[i] = 1; rhs[i] = E.g; if (sgn > 0) up[i] = 0; else lo[i] = 0; return; }
@@ -47,7 +47,7 @@ export function makeRod(n, k, left, right) {
       di[i] = 1 + q * (k / h + k * a); rhs[i] = u[i] + q * k * a * T;
       if (sgn > 0) up[i] = -q * (k / h); else lo[i] = -q * (k / h);
     };
-    end(left, 0, 1, +1); end(right, n, n - 1, -1);
+    end(R.left, 0, 1, +1); end(R.right, n, n - 1, -1);
     R.u = thomas(lo, di, up, rhs); R.t += dt;
     return R;
   };

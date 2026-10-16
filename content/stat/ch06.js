@@ -5,7 +5,7 @@
 // checked twice, by an exact area or sum and by simulated datasets (gold), and each item has a setting that leaves
 // the theorem's hypotheses: a discrete statistic, a Cauchy likelihood ratio, a parameter on the boundary.
 import {
-  phi, clamp, commas, pct, hashStr, memo, mean, sortNum, binned, legender, titler, strip, mulberry, lfact,
+  phi, clamp, commas, pct, hashStr, memo, mean, sortNum, binned, legender, titler, repeater, strip, mulberry, lfact,
   Phi, qnorm, dchisq1, lchoose, dbinom, rpois, rcauchy, rlaplace,
   TC, Q, chiUp, chiCdf, dchi, qchi, binUp, area, tag, mcse, pfmt,
 } from './ch06.shared.js';
@@ -399,7 +399,7 @@ because the integrand is nonnegative pointwise ($\mathbf 1_{R_k}-\mathbf 1_R$ an
           const law = lawS.value, n = nS.value, mu = mS.value, S = sim(law, n, mu), L0 = S.out[0].LR, L1 = S.out[1].LR;
           const key = [law, n, mu].join('|');
           const sd = law === 'normal' ? 1 / Math.sqrt(n) : Math.sqrt(2 / n) * Math.min(1, mu);
-          const lo = law === 'normal' ? -3.2 * sd : -mu, hi = law === 'normal' ? mu + 3.2 * sd : mu;
+          const lo = law === 'normal' ? -3.2 * sd : -1.04 * mu, hi = law === 'normal' ? mu + 3.2 * sd : 1.04 * mu;
           const B0 = binned(L0, lo, hi, 40), B1 = binned(L1, lo, hi, 40), top = Math.max(B0.max, B1.max) * 1.15;
           sL.setView([lo, hi], [0, top]);
           if (key !== last) { last = key; hT.set(law === 'normal' ? mu / 2 + 0.6 * sd : 0.5 * (lo + hi) + 0.3 * (hi - lo) * 0.3, top * 0.04); }
@@ -447,7 +447,7 @@ because the integrand is nonnegative pointwise ($\mathbf 1_{R_k}-\mathbf 1_R$ an
           unif: { lab: 'uniform on (0, θ)', t1: 1.5, t2: 3, rng: [0.5, 4], xr: [-0.2, 4.5], pdf: (x, t) => (x >= 0 && x <= t ? 1 / t : 0), disc: false },
           cauchy: { lab: 'Cauchy location', t1: 0, t2: 2, rng: [-2, 4], xr: [-8, 10], pdf: (x, t) => 1 / (Math.PI * (1 + (x - t) ** 2)), disc: false },
         };
-        const famS = v.select('family', Object.entries(FAM).map(([k, f]) => ({ value: k, label: f.lab.split(' (')[0] })), 'normal', { onChange: (k) => { const F = FAM[k]; t1S.set(F.t1); t2S.set(F.t2); } });
+        const famS = v.select('family', Object.entries(FAM).map(([k, f]) => ({ value: k, label: { normal: 'normal', expo: 'exponential', poisson: 'Poisson', unif: 'uniform $(0,\\theta)$', cauchy: 'Cauchy' }[k] })), 'normal', { onChange: (k) => { const F = FAM[k]; t1S.set(F.t1); t2S.set(F.t2); } });
         const t1S = v.slider('$\\theta_1$', -2, 10, 0, { step: 0.05 });
         const t2S = v.slider('$\\theta_2$', -2, 10, 1.5, { step: 0.05 });
         const sL = v.stage({ x: [-4, 6], y: [0, 0.45], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '$x$', ylabel: 'density', title: '$f(x\\mid\\theta_1)$ and $f(x\\mid\\theta_2)$' });
@@ -488,6 +488,290 @@ because the integrand is nonnegative pointwise ($\mathbf 1_{R_k}-\mathbf 1_R$ an
           const { k, a, b, down, maxDrop, xm } = st;
           const form = { normal: String.raw`$\log\frac{f_2}{f_1}=(\theta_2-\theta_1)x-\frac{\theta_2^2-\theta_1^2}2$: a line with slope ${v.fix(b - a, 2)} > 0`, expo: String.raw`$\log\frac{f_2}{f_1}=\big(\frac1{\theta_1}-\frac1{\theta_2}\big)x+\log\frac{\theta_1}{\theta_2}$: slope ${v.fix(1 / a - 1 / b, 3)} > 0`, poisson: String.raw`$\log\frac{f_2}{f_1}=x\log\frac{\theta_2}{\theta_1}-(\theta_2-\theta_1)$: slope ${v.fix(Math.log(b / a), 3)} > 0 in $x$`, unif: String.raw`ratio $=\theta_1/\theta_2$ on $[0,\theta_1]$, $+\infty$ on $(\theta_1,\theta_2]$: nondecreasing in $x$ (and in $\max X_i$ for samples)`, cauchy: String.raw`$\frac{f_2}{f_1}=\frac{1+(x-\theta_1)^2}{1+(x-\theta_2)^2}\to1$ as $x\to\pm\infty$` }[k];
           return `${form} · ` + (down === 0 ? '**monotone likelihood ratio ✓**' : `**not monotone ✗**: the log ratio decreases by a total of ${v.fix(maxDrop, 2)}, starting near x = ${v.fix(xm, 2)}, so a large x is not uniformly evidence for a larger θ`);
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.7
+    {
+      num: '6.7',
+      kind: 'Theorem',
+      name: 'Karlin–Rubin theorem',
+      credit: 'S. Karlin & H. Rubin, 1956',
+      statement: String.raw`Let $T$ be a sufficient statistic for a real parameter $\theta$, and suppose the family of densities (or mass functions) $g(t\mid\theta)$ of $T$ has a monotone likelihood ratio in $t$ (stat-6.6). For testing $H_0:\theta\le\theta_0$ against $H_1:\theta>\theta_0$, the test that rejects when $T>t_0$, with $t_0$ chosen so that $P_{\theta_0}(T>t_0)=\alpha$ (randomizing at $t_0$ in the discrete case), is a **uniformly most powerful (UMP)** level-$\alpha$ test: its power at every $\theta>\theta_0$ is at least that of any other test of level $\alpha$. Its power function is nondecreasing in $\theta$, so its size is attained at $\theta_0$.`,
+      idea: String.raw`Fix one alternative $\theta_1>\theta_0$. By the Neyman–Pearson lemma (stat-6.4) the most powerful test of $\theta_0$ against $\theta_1$ rejects when $g(T\mid\theta_1)/g(T\mid\theta_0)>k$, and by monotonicity that region is $\{T>t_0\}$. The cutoff $t_0$ is fixed by the size under $\theta_0$ alone, so it does **not** depend on $\theta_1$: the same test is most powerful against every alternative simultaneously. The monotone power function (another consequence of MLR) makes the test of level $\alpha$ for the whole composite null $\theta\le\theta_0$. Without MLR the Neyman–Pearson region moves with $\theta_1$ and no single test can be best everywhere.`,
+      caption: String.raw`One observation; $H_0:\theta=\theta_0$, level 5%. Left: the Neyman–Pearson rejection region against each alternative $\theta_1\in\{0.5,1,2,4\}$ and against the gold $\theta_1$ (slider), one row each, computed by sorting a fine grid of cells by their likelihood ratio; the null density is drawn underneath. Right: the power curves of these five tests. For the **normal** and **exponential** families (monotone likelihood ratio) the five regions are the same tail and the five power curves are one curve: a UMP test. For the **Cauchy** location family each region is a different interval near its own $\theta_1$, the curves cross, and none is best everywhere.`,
+      deps: ['stat-6.6', 'stat-6.4'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['uniformly most powerful', 'monotone likelihood ratio', 'one-sided test'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Uniformly_most_powerful_test#The_Karlin%E2%80%93Rubin_theorem' },
+      viz(v) {
+        const FAM = {
+          normal: { t0: 0, xr: [-3, 7], pr: [-1, 5], cdf: (x, t) => Phi(x - t), sf: (x, t) => Phi(t - x), pdf: (x, t) => phi(x - t), lpdf: (x, t) => -0.5 * (x - t) ** 2, lo: -12, hi: 16 },
+          expo: { t0: 1, xr: [0, 14], pr: [0.5, 7], cdf: (x, t) => (x <= 0 ? 0 : 1 - Math.exp(-x / t)), sf: (x, t) => (x <= 0 ? 1 : Math.exp(-x / t)), pdf: (x, t) => (x < 0 ? 0 : Math.exp(-x / t) / t), lpdf: (x, t) => (x < 0 ? -Infinity : -x / t - Math.log(t)), lo: 0, hi: 80 },
+          cauchy: { t0: 0, xr: [-3, 8], pr: [-1, 7], cdf: (x, t) => 0.5 + Math.atan(x - t) / Math.PI, sf: (x, t) => 0.5 - Math.atan(x - t) / Math.PI, pdf: (x, t) => 1 / (Math.PI * (1 + (x - t) ** 2)), lpdf: (x, t) => -Math.log1p((x - t) ** 2), lo: -30, hi: 30 },
+        };
+        const famS = v.select('family', [{ value: 'normal', label: 'normal location' }, { value: 'expo', label: 'exponential mean' }, { value: 'cauchy', label: 'Cauchy location' }], 'normal');
+        const aS = v.slider('alternative $\\theta_1-\\theta_0$ (gold row)', 0.1, 5, 3, { step: 0.05 });
+        const sL = v.stage({ x: [-3, 7], y: [0, 6.2], axes: 'box', gutter: { l: 66 }, height: 360, weight: 1.05, xlabel: '$x$', yticks: [], title: 'Neyman–Pearson rejection region against each $\\theta_1$' });
+        const sR = v.stage({ x: [-1, 5], y: [0, 1], axes: 'box', gutter: true, height: 360, weight: 0.95, minWidth: 250, xlabel: '$\\theta$', ylabel: 'power', title: 'power functions of the five tests' });
+        const ALPHA = 0.05, ROWS = [0.5, 1, 2, 4], NC = 2400;
+        // NP region of size α against θ1: cells sorted by likelihood ratio, last one split; returns merged intervals
+        const npRegion = (F, t1) => {
+          const t0 = F.t0, E = [-Infinity], cw = (F.hi - F.lo) / NC; for (let i = 0; i <= NC; i++) E.push(F.lo + cw * i); E.push(Infinity);
+          const mass = (a, b, t) => (a >= t ? F.sf(a, t) - F.sf(b, t) : F.cdf(b, t) - F.cdf(a, t));
+          const cells = [];
+          for (let i = 0; i < E.length - 1; i++) {
+            const a = E[i], b = E[i + 1], p0 = Math.max(0, mass(a, b, t0));
+            const xm = !Number.isFinite(a) ? b - 50 : !Number.isFinite(b) ? a + 50 : 0.5 * (a + b);
+            const l0 = F.lpdf(xm, t0), l1 = F.lpdf(xm, t1);
+            if (l0 === -Infinity && l1 === -Infinity) continue;
+            cells.push({ i, a, b, p0, lr: l1 - l0 });
+          }
+          cells.sort((c, d) => d.lr - c.lr);
+          const taken = new Set(), pieces = []; let s = 0;
+          for (const c of cells) {
+            if (s + c.p0 <= ALPHA + 1e-13) { taken.add(c.i); pieces.push([c.a, c.b]); s += c.p0; continue; }
+            const f = (ALPHA - s) / c.p0;
+            if (f > 1e-6) pieces.push(taken.has(c.i - 1) || !taken.has(c.i + 1) ? [c.a, c.a + f * (c.b - c.a)] : [c.b - f * (c.b - c.a), c.b]);
+            break;
+          }
+          pieces.sort((u, w) => u[0] - w[0]);
+          const merged = []; for (const iv of pieces) { const L = merged[merged.length - 1]; if (L && iv[0] <= L[1] + 1e-9) L[1] = Math.max(L[1], iv[1]); else merged.push([iv[0], iv[1]]); }
+          return merged;
+        };
+        const powerOf = (F, R, t) => R.reduce((s, [a, b]) => s + (a >= t ? F.sf(a, t) - F.sf(b, t) : F.cdf(b, t) - F.cdf(a, t)), 0);
+        const mc = memo();
+        const regions = (k, a) => mc(k + '|' + a, () => { const F = FAM[k], th = (d) => (k === 'expo' ? F.t0 + d : F.t0 + d); return [...ROWS, a].map((d) => ({ d, t1: th(d), R: npRegion(F, th(d)) })); });
+        let st = null;
+        v.render(() => {
+          const k = famS.value, F = FAM[k], a = aS.value, RG = regions(k, a);
+          sL.setView(F.xr, [0, 6.2]); sR.setView([F.pr[0], F.pr[1]], [0, 1]);
+          sL.setTicks(null, [...RG.map((g, i) => [i + 1.5, i < 4 ? `θ₀ + ${g.d}` : 'gold θ₁'])]);
+          // null density underneath, scaled to height 0.9
+          const top = F.pdf(k === 'expo' ? 0 : F.t0, F.t0);
+          sL.fn((x) => (0.9 * F.pdf(x, F.t0)) / top, { domain: F.xr, color: TC.h0, width: 2, n: 300, fill: TC.h0, fillAlpha: 0.12 });
+          sL.text('null density', F.xr[0] + 0.02 * (F.xr[1] - F.xr[0]), 0.95, { color: TC.h0, size: 11, align: 'left', dy: -6 });
+          RG.forEach((g, i) => {
+            const y = i + 1.5, cur = i === 4;
+            sL.hline(y, { color: 'faint', width: 1 });
+            for (const [lo, hi] of g.R) { const x0 = Math.max(lo, F.xr[0]), x1 = Math.min(hi, F.xr[1]); if (x1 > x0) sL.rect(x0, y - 0.28, x1, y + 0.28, { fill: cur ? TC.sim : TC.alpha, fillAlpha: cur ? 0.8 : 0.55, color: cur ? TC.sim : TC.alpha, width: 1 }); if (hi > F.xr[1]) sL.arrow(F.xr[1] - 0.04 * (F.xr[1] - F.xr[0]), y, F.xr[1] - 0.005 * (F.xr[1] - F.xr[0]), y, { color: cur ? TC.sim : TC.alpha, width: 2 }); }
+            sL.dot(g.t1, y, { r: 3.5, color: TC.h1 });
+          });
+          // power curves
+          sR.hline(ALPHA, { color: TC.alpha, width: 1, dash: [3, 3] });
+          sR.vline(F.t0, { color: 'muted', width: 1, dash: [3, 3] });
+          const pc = RG.map((g) => (t) => powerOf(F, g.R, t));
+          RG.forEach((g, i) => { if (i < 4) sR.fn(pc[i], { domain: F.pr, color: ['teal', 'purple', 'orange', 'pink'][i], width: 2, n: 160, alpha: 0.85 }); });
+          sR.fn(pc[4], { domain: F.pr, color: TC.sim, width: 3, n: 160, dash: [7, 5] });
+          // spread between the curves
+          let spread = 0; for (let j = 0; j <= 60; j++) { const t = F.pr[0] + ((F.pr[1] - F.pr[0]) * j) / 60, ps = pc.map((f) => f(t)); spread = Math.max(spread, Math.max(...ps) - Math.min(...ps)); }
+          if (spread < 0.002) tag(sR, 'all five power curves coincide: one UMP test', 0.5 * (F.pr[0] + F.pr[1]), 0.12, { color: 'green' });
+          else tag(sR, 'the curves cross: no test is best everywhere', 0.5 * (F.pr[0] + F.pr[1]), 0.93, { color: 'red' });
+          v.legend([[TC.h1, 'the alternative θ₁ of each row', { dot: true }], [TC.alpha, 'NP rejection region', { area: true }], ...ROWS.map((d, i) => [['teal', 'purple', 'orange', 'pink'][i], `power, test built for θ₀ + ${d}`]), [TC.sim, 'power, gold test', { dash: true }]]);
+          st = { k, F, RG, spread, pc };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { k, F, RG, spread, pc } = st, fmtR = (R) => R.map(([a, b]) => `(${Number.isFinite(a) ? v.fix(a, 2) : '−∞'}, ${Number.isFinite(b) ? v.fix(b, 2) : '∞'})`).join(' ∪ ');
+          if (spread < 0.002) return `every Neyman–Pearson region is the same tail ${fmtR(RG[4].R)} (exactly: ${k === 'normal' ? 'x > z₀.₀₅ = 1.645' : 'x > −θ₀ log 0.05 = 2.996'}), so the five power curves agree to ${v.fix(spread, 4)}: **uniformly most powerful** ✓`;
+          const i0 = 0, i3 = 3, tA = RG[i0].t1, tB = RG[i3].t1;
+          return `gold region ${fmtR(RG[4].R)} · the test built for θ₀ + 0.5 has power ${v.fix(pc[i0](tA), 3)} at θ = ${v.fix(tA, 1)} but only ${v.fix(pc[i0](tB), 3)} at θ = ${v.fix(tB, 1)}, where the test built for θ₀ + 4 has ${v.fix(pc[i3](tB), 3)} · largest gap between curves ${v.fix(spread, 3)}: **no UMP test** for the Cauchy family (no monotone likelihood ratio)`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.8
+    {
+      num: '6.8',
+      kind: 'Proposition',
+      name: 'No uniformly most powerful two-sided test',
+      statement: String.raw`Let $X_1,\dots,X_n$ be i.i.d. $N(\theta,1)$ and test $H_0:\theta=\theta_0$ against the two-sided alternative $H_1:\theta\ne\theta_0$ at level $\alpha\in(0,1)$. There is **no** uniformly most powerful level-$\alpha$ test. Against $\theta>\theta_0$ the most powerful test is the upper one-sided test, and against $\theta<\theta_0$ the lower one; each has power below $\alpha$ (tending to $0$) on the wrong side, and any test that matches both has to coincide with two different tests. The same holds for any one-parameter exponential family with a two-sided alternative.`,
+      idea: String.raw`Suppose $\phi$ were UMP. Against a fixed $\theta_1>\theta_0$ the Neyman–Pearson test is unique up to null sets (stat-6.4(b)), so $\phi$ must be the upper test $\{Z>z_\alpha\}$; against $\theta_2<\theta_0$ it must equally be the lower test $\{Z<-z_\alpha\}$. These differ on a set of positive probability, a contradiction. The **power envelope**, the pointwise best power $\sup_\phi\beta_\phi(\theta)$ over level-$\alpha$ tests, is attained on each side by a different test, so no single power curve can reach it everywhere. The way out is to restrict the class of tests, e.g. to unbiased ones (stat-6.18).`,
+      caption: String.raw`Left: power curves of the upper one-sided test (teal), the lower one-sided test (orange) and the symmetric two-sided test (blue), with the power envelope (black dashes). Drag the gold alternative $\theta$. Each one-sided test touches the envelope on its own side and falls below $\alpha$ on the other; the two-sided test never touches it. Right: the distribution of $Z=\sqrt n(\bar X-\theta_0)$ when the truth is the gold $\theta$, with the three rejection regions as bars and the probability each one captures.`,
+      deps: ['stat-6.7'],
+      refs: ['Casella–Berger §8.3'],
+      tags: ['uniformly most powerful', 'two-sided test', 'power envelope'],
+      viz(v) {
+        const nS = v.slider('sample size $n$', 1, 60, 10, { int: true });
+        const sL = v.stage({ x: [-1.2, 1.2], y: [0, 1], axes: 'box', gutter: true, height: 350, weight: 1.1, xlabel: '$\\theta$ ($\\theta_0=0$)', ylabel: 'power', title: 'three level-5% tests and the power envelope' });
+        const sR = v.stage({ x: [-5, 5], y: [-0.5, 0.46], axes: 'box', gutter: true, height: 350, weight: 0.9, minWidth: 250, xlabel: '$z$', yticks: [[0, '0'], [0.2, '0.2'], [0.4, '0.4']], title: 'where $Z$ falls when the truth is $\\theta$' });
+        const hT = sL.handle(0.35, 0.04, { color: TC.sim, label: '$\\theta$', labelPos: 'ne', constrain: 'x' });
+        const za = zq(0.05), z2 = zq(0.025);
+        const up = (t, n) => Q(za - Math.sqrt(n) * t), dn = (t, n) => Phi(-za - Math.sqrt(n) * t), two = (t, n) => Q(z2 - Math.sqrt(n) * t) + Phi(-z2 - Math.sqrt(n) * t);
+        const env = (t, n) => Math.max(up(t, n), dn(t, n));
+        const mc = memo();
+        const sim = (n, t) => mc(n + '|' + t.toFixed(3), () => { const r = v.rng(hashStr(`t6.8|${n}|${t.toFixed(3)}`)); let u = 0, d = 0, w = 0; const R = 4000; for (let i = 0; i < R; i++) { let s = 0; for (let j = 0; j < n; j++) s += t + r.normal(); const z = s / Math.sqrt(n); if (z > za) u++; if (z < -za) d++; if (Math.abs(z) > z2) w++; } return { u: u / R, d: d / R, w: w / R, R }; });
+        let st = null;
+        v.render(() => {
+          const n = nS.value, t = hT.x, mu = Math.sqrt(n) * t;
+          sL.hband(0, 0.05, { color: TC.alpha, alpha: 0.1 });
+          sL.fn((x) => env(x, n), { domain: [-1.2, 1.2], color: 'ink', width: 2, dash: [6, 5], n: 300 });
+          sL.fn((x) => up(x, n), { domain: [-1.2, 1.2], color: 'teal', width: 2.6, n: 300 });
+          sL.fn((x) => dn(x, n), { domain: [-1.2, 1.2], color: 'orange', width: 2.6, n: 300 });
+          sL.fn((x) => two(x, n), { domain: [-1.2, 1.2], color: TC.h0, width: 2.6, n: 300 });
+          sL.vline(t, { color: TC.sim, width: 1.4, dash: [3, 3] });
+          const S = sim(n, +t.toFixed(3));
+          [[up(t, n), 'teal', S.u], [dn(t, n), 'orange', S.d], [two(t, n), TC.h0, S.w]].forEach(([p, c, q]) => { sL.dot(t, p, { r: 4.5, color: c }); sL.dot(t, q, { r: 2.6, color: TC.sim }); });
+          tag(sL, 'below α on the wrong side', t < 0 ? 0.62 : -0.62, 0.12, { color: 'red', size: 11 });
+          // right: Z ~ N(√n θ, 1) and the three regions
+          sR.fn((z) => phi(z - mu), { domain: [-5, 5], color: TC.h1, width: 2.4, n: 300, fill: TC.h1, fillAlpha: 0.1 });
+          sR.fn(phi, { domain: [-5, 5], color: TC.h0, width: 1.2, dash: [4, 4], n: 200 });
+          sR.hline(0, { color: 'muted', width: 1 });
+          const rows = [[-0.12, 'teal', [[za, 5]], up(t, n), 'upper'], [-0.26, 'orange', [[-5, -za]], dn(t, n), 'lower'], [-0.4, TC.h0, [[-5, -z2], [z2, 5]], two(t, n), 'two-sided']];
+          for (const [y, c, R, p, nm] of rows) {
+            for (const [a, b] of R) { sR.rect(a, y - 0.04, b, y + 0.04, { fill: c, fillAlpha: 0.6, stroke: false }); area(sR, (z) => phi(z - mu), a, b, c, 0.18); }
+            tag(sR, `${nm}: ${v.fix(p, 3)}`, 0, y, { color: c, size: 11 });
+          }
+          sR.text('true law of Z', mu, phi(0), { color: TC.h1, size: 11, dy: -10 });
+          v.legend([['teal', 'upper one-sided'], ['orange', 'lower one-sided'], [TC.h0, 'two-sided'], ['ink', 'power envelope', { dash: true }], [TC.sim, 'simulated (4,000 samples)', { dot: true }]]);
+          st = { n, t, S, e: env(t, n), u: up(t, n), d: dn(t, n), w: two(t, n) };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { n, t, S, e, u, d, w } = st;
+          const best = t > 0 ? 'upper' : 'lower';
+          return String.raw`at $\theta=${v.fix(t, 2)}$, $n=${n}$: power upper ${v.fix(u, 3)} (sim ${v.fix(S.u, 3)}), lower ${v.fix(d, 3)} (sim ${v.fix(S.d, 3)}), two-sided ${v.fix(w, 3)} (sim ${v.fix(S.w, 3)}) · envelope ${v.fix(e, 3)}, attained only by the ${best} test · the ${best === 'upper' ? 'lower' : 'upper'} test has power ${v.fix(best === 'upper' ? d : u, 4)} < α here · two-sided shortfall ${v.fix(e - w, 3)} > 0: **no test attains the envelope on both sides**`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.9
+    {
+      num: '6.9',
+      kind: 'Method',
+      name: 'Likelihood ratio test',
+      statement: String.raw`For $H_0:\theta\in\Theta_0$ against $H_1:\theta\in\Theta\setminus\Theta_0$ with likelihood $L(\theta\mid x)$, the **likelihood ratio statistic** is
+$$\lambda(x)=\frac{\sup_{\theta\in\Theta_0}L(\theta\mid x)}{\sup_{\theta\in\Theta}L(\theta\mid x)}\in[0,1],$$
+the best explanation the null can offer divided by the best overall (stat-3.5: the denominator is the likelihood at the MLE). A **likelihood ratio test (LRT)** rejects when $\lambda(x)\le c$, equivalently when $-2\log\lambda(x)=2\{\ell(\hat\theta)-\ell(\hat\theta_0)\}\ge c'$, with $c'$ chosen for size $\alpha$ from the exact null distribution of $-2\log\lambda$ or from its $\chi^2$ limit (Wilks, stat-6.10). For a simple null $\theta=\theta_0$ the statistic is twice the drop of the log-likelihood from its peak to $\theta_0$; the values of $\theta_0$ not rejected at level $\alpha$ form a likelihood-ratio confidence set.`,
+      idea: String.raw`The Neyman–Pearson lemma says to threshold the likelihood ratio when both hypotheses are simple; the LRT extends the recipe to composite hypotheses by letting each side choose its best parameter. It is invariant under reparametrization, uses only the likelihood, and in many classical problems reproduces the familiar test (the $t$-test for a normal mean, the $F$-test in regression, the $G$-test for counts). Reading it off the log-likelihood curve is direct: the farther $\theta_0$ is from the peak in height, the stronger the evidence against it.`,
+      caption: String.raw`Left: the log-likelihood $\ell(\theta)-\ell(\hat\theta)$ for $x$ successes in $n$ trials (or a Poisson total). Drag the gold null value $\theta_0$; the purple drop is $\tfrac12(-2\log\lambda)$ and the red dashed line is the cutoff $\tfrac12\chi^2_{1,0.95}=1.92$; the green bar is the set of $\theta_0$ the test would not reject. Change the data with the sliders. Right: the **exact** null distribution of $-2\log\lambda$ at $\theta_0$, obtained by listing every possible outcome, against the $\chi^2_1$ density, with the observed value; the readout compares the exact $p$-value with the $\chi^2$ approximation.`,
+      deps: ['stat-6.4', 'stat-3.5'],
+      see: ['stat-8.9', 'stat-13.13'],
+      refs: ['Casella–Berger §8.2', 'Wasserman §10.6'],
+      tags: ['likelihood ratio test', 'log-likelihood'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Likelihood-ratio_test' },
+      viz(v) {
+        const modS = v.select('model', [{ value: 'bin', label: 'binomial' }, { value: 'pois', label: 'Poisson' }], 'bin', { onChange: () => home() });
+        const nS = v.slider('$n$ (trials or observations)', 3, 100, 20, { int: true, onChange: () => { xS.set(Math.min(xS.value, modS.value === 'bin' ? nS.value : 999)); } });
+        const xS = v.slider('observed total $x$', 0, 100, 7, { int: true });
+        const sL = v.stage({ x: [0, 1], y: [-6, 0.6], axes: 'box', gutter: true, height: 350, weight: 1.05, xlabel: '$p$', ylabel: '$\\ell(\\theta)-\\ell(\\hat\\theta)$', title: 'the log-likelihood and the drop at $\\theta_0$' });
+        const sR = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 350, weight: 0.95, minWidth: 250, xlabel: '$-2\\log\\lambda$', ylabel: 'density', title: 'exact null distribution of $-2\\log\\lambda$' });
+        const hP = sL.handle(0.5, -4.8, { color: TC.sim, label: '$\\theta_0$', labelPos: 'ne', constrain: (x) => [clamp(x, xr()[0] + 1e-3, xr()[1]), -4.8] });
+        const xr = () => { if (modS.value === 'bin') return [0.001, 0.999]; const n = nS.value, lh = Math.max(xS.value, 1) / n; return [0.001, lh + 6 * Math.sqrt(Math.max(lh, 0.5) / n) + 0.15]; };
+        const home = () => { const r = xr(); sL.setView([0, r[1]], [-6, 0.6]); sL.setLabels(modS.value === 'bin' ? '$p$' : '$\\lambda$'); hP.set(modS.value === 'bin' ? 0.5 : Math.max(0.2, (1.6 * Math.max(1, xS.value)) / nS.value), -4.8); };
+        const ll = (m, n, x, t) => (m === 'bin' ? (x ? x * Math.log(t) : 0) + (n - x ? (n - x) * Math.log(1 - t) : 0) : (x ? x * Math.log(t) : 0) - n * t);
+        const mle = (m, n, x) => (m === 'bin' ? x / n : x / n);
+        const stat = (m, n, x, t) => 2 * (ll(m, n, x, mle(m, n, x)) - ll(m, n, x, t));
+        const pmf = (m, n, x, t) => (m === 'bin' ? dbinom(x, n, t) : Math.exp((x ? x * Math.log(n * t) : 0) - n * t - lfact(x)));
+        let st = null;
+        home();
+        v.render(() => {
+          const m = modS.value, n = nS.value;
+          if (m === 'bin' && xS.value > n) xS.set(n);
+          const x = xS.value, th = mle(m, n, x), t0 = hP.x, r = xr();
+          sL.setView([0, r[1]], [-6, 0.6]);
+          const f = (t) => ll(m, n, x, t) - ll(m, n, x, th);
+          // likelihood interval {θ: drop ≤ 1.92}
+          const cut = qchi(1, 0.95) / 2, root = (a, b) => { for (let i = 0; i < 60; i++) { const c = 0.5 * (a + b); if ((f(c) + cut) * (f(a) + cut) <= 0) b = c; else a = c; } return 0.5 * (a + b); };
+          const lo = th <= r[0] || f(r[0]) > -cut ? 0 : root(r[0], th), hi = f(r[1]) > -cut ? r[1] : root(th, r[1]);
+          sL.rect(lo, -6, hi, -5.82, { fill: 'green', fillAlpha: 0.6, stroke: false });
+          sL.text('not rejected at 5%', 0.5 * (lo + hi), -5.82, { color: 'green', size: 11, dy: -8, weight: 600 });
+          sL.hline(-cut, { color: TC.alpha, width: 1.4, dash: [6, 4] });
+          sL.text('cutoff −1.92', r[1], -cut, { color: TC.alpha, size: 11, align: 'right', dx: -4, dy: -9 });
+          sL.fn(f, { domain: [r[0], r[1]], color: TC.h0, width: 2.8, n: 400 });
+          sL.dot(th, 0, { r: 4.5, color: TC.h0 }); sL.tex('\\hat\\theta', th, 0, { color: TC.h0, size: 14, dy: -12 });
+          const d0 = f(t0);
+          sL.vline(t0, { color: TC.sim, width: 1.2, dash: [3, 3] });
+          sL.line(t0, Math.max(d0, -6), t0, 0, { color: TC.h1, width: 4 });
+          sL.line(Math.min(t0, th), 0, Math.max(t0, th), 0, { color: 'faint', width: 1, dash: [2, 3] });
+          tag(sL, `drop ${v.fix(-d0, 2)}`, t0, Math.max(d0, -5.2) / 2, { color: TC.h1, align: t0 > th ? 'left' : 'right', dx: t0 > th ? 8 : -8, size: 11 });
+          // exact null distribution of −2 log λ at θ0
+          const K = m === 'bin' ? n : Math.ceil(n * t0 + 10 * Math.sqrt(n * t0) + 20), lam = [], P = [];
+          for (let k = 0; k <= K; k++) { lam.push(stat(m, n, k, t0)); P.push(pmf(m, n, k, t0)); }
+          const obs = stat(m, n, x, t0);
+          let pex = 0; for (let k = 0; k <= K; k++) if (lam[k] >= obs - 1e-9) pex += P[k];
+          const w = 0.25, nb = 40, cnt = new Array(nb).fill(0);
+          for (let k = 0; k <= K; k++) { const b = Math.floor(lam[k] / w); if (b < nb) cnt[b] += P[k]; }
+          const dens = cnt.map((c) => c / w), top = Math.min(2.2, Math.max(1.0, ...dens.slice(1)) * 1.1);
+          sR.setView([0, 10], [0, top]);
+          dens.forEach((d, b) => { if (d > 0) sR.rect(b * w, 0, (b + 1) * w, Math.min(d, top * 0.995), { fill: TC.h0, fillAlpha: 0.3, color: TC.h0, width: 1 }); });
+          sR.fn((u) => dchisq1(u), { domain: [0.03, 10], color: 'ink', width: 2.2, n: 300 });
+          sR.vline(Math.min(obs, 9.95), { color: TC.sim, width: 2.6 });
+          sR.vline(qchi(1, 0.95), { color: TC.alpha, width: 1.2, dash: [5, 4] });
+          tag(sR, `observed ${v.fix(obs, 2)}`, Math.min(obs, 9.9), top * 0.9, { align: obs > 6 ? 'right' : 'left', dx: obs > 6 ? -6 : 6, size: 11 });
+          v.legend([[TC.h0, 'log-likelihood'], [TC.h1, 'drop at θ₀'], ['green', 'LR confidence set', { area: true }], [TC.h0, 'exact null law of −2 log λ', { area: true }], ['ink', '$\\chi^2_1$ density']]);
+          st = { m, n, x, th, t0, obs, pex, pchi: chiUp(1, obs), lo, hi };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { m, n, x, th, t0, obs, pex, pchi, lo, hi } = st, p = m === 'bin' ? 'p' : '\\lambda';
+          return String.raw`$x=${x}$, $n=${n}$, $\hat ${p}=${v.fix(th, 3)}$ · at $${p}_0=${v.fix(t0, 3)}$: $-2\log\lambda=${v.fix(obs, 3)}$ ${obs >= 3.841 ? '≥' : '<'} 3.841 → **${obs >= 3.841 ? 'reject' : 'retain'}** · exact $p$-value ${pfmt(pex)} vs $\chi^2_1$ approximation ${pfmt(pchi)} · 95% likelihood-ratio set $[${v.fix(lo, 3)}, ${v.fix(hi, 3)}]$`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.10
+    {
+      num: '6.10',
+      kind: 'Theorem',
+      name: 'Wilks’ theorem',
+      credit: 'S. S. Wilks, 1938',
+      statement: String.raw`Let $X_1,\dots,X_n$ be i.i.d. from a regular parametric family with $\Theta$ an open subset of $\R^p$ (the conditions of stat-5.2), and let $H_0:\theta\in\Theta_0$, where $\Theta_0$ is a smooth $(p-r)$-dimensional submanifold (e.g. $r$ coordinates fixed). If the true $\theta$ lies in the **interior** of $\Theta$ and in $\Theta_0$, the likelihood ratio statistic satisfies
+$$-2\log\lambda_n=2\{\ell_n(\hat\theta)-\ell_n(\hat\theta_0)\}\ \xrightarrow{\ d\ }\ \chi^2_r,$$
+the chi-squared law with $r$ = number of independent restrictions (stat-1.8). So rejecting when $-2\log\lambda_n>\chi^2_{r,1-\alpha}$ has asymptotic size $\alpha$. If instead the null value lies on the **boundary** of the parameter space, the limit changes: for one parameter restricted to $\theta\ge\theta_0$ and tested at $\theta_0$, it is the 50:50 mixture $\tfrac12\chi^2_0+\tfrac12\chi^2_1$ (Chernoff, 1954).`,
+      idea: String.raw`Near the MLE the log-likelihood is a quadratic with curvature $nI(\theta)$ (stat-5.2), and $\sqrt n(\hat\theta-\theta)$ is approximately $N(0,I^{-1})$. In coordinates where $I$ is the identity, $2\{\ell_n(\hat\theta)-\ell_n(\theta)\}\approx\|Z\|^2$ for a standard normal vector $Z\in\R^p$, and maximizing over $\Theta_0$ projects $Z$ onto a $(p-r)$-dimensional subspace, so the drop is the squared length of the projection onto the $r$-dimensional complement: $\chi^2_r$. At a boundary the MLE cannot cross $\theta_0$: half the time it sticks at $\theta_0$ and the statistic is exactly 0.`,
+      caption: String.raw`Left: the histogram of $-2\log\lambda$ over thousands of data sets simulated under the null, against the $\chi^2_r$ density. Right: the $p$-values computed from $\chi^2_r$, which should look uniform. Choose a model and grow $n$: a Poisson mean ($r=1$), an exponential rate ($r=1$), a normal mean and variance both fixed ($r=2$), a fair die ($r=5$, the $G$-test). At small $n$ the discrete models give lumpy, slightly anti-conservative histograms that smooth out. Choose the **variance at its boundary** ($X_i\sim N(0,1+\tau^2)$, testing $\tau^2=0$ with $\tau^2\ge0$): about half the statistics are exactly 0 (the gold bar), the rest follow $\tfrac12\chi^2_1$, and the naive $\chi^2_1$ $p$-values pile up at 1.`,
+      deps: ['stat-6.9', 'stat-5.2', 'stat-1.8'],
+      see: ['stat-5.5', 'stat-6.14'],
+      refs: ['Casella–Berger §10.3', 'Wasserman §10.6'],
+      tags: ['likelihood ratio test', 'chi-squared', 'asymptotics'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Wilks%27_theorem' },
+      viz(v) {
+        const MOD = {
+          pois: { lab: 'Poisson mean', k: 1 }, expo: { lab: 'exponential rate', k: 1 }, norm2: { lab: 'normal $(\\mu,\\sigma^2)$', k: 2 }, die: { lab: 'fair die', k: 5 }, bdry: { lab: 'variance at boundary', k: 1, bdry: true },
+        };
+        const modS = v.select('null model', Object.entries(MOD).map(([value, m]) => ({ value, label: m.lab })), 'pois');
+        const nS = v.slider('sample size $n$', 3, 500, 20, { int: true, log: true });
+        const sL = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1.1, xlabel: '$-2\\log\\lambda$', ylabel: 'density', title: 'null distribution of $-2\\log\\lambda$' });
+        const sR = v.stage({ x: [0, 1], y: [0, 2], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 240, xlabel: '$p$-value from $\\chi^2_r$', ylabel: 'density', title: '$p$-values (uniform if Wilks holds)' });
+        const one = (k, n, r) => {
+          if (k === 'pois') { const l0 = 1.5; let s = 0; for (let i = 0; i < n; i++) s += rpois(r, l0); const m = s / n; return 2 * n * ((m > 0 ? m * Math.log(m / l0) : 0) - (m - l0)); }
+          if (k === 'expo') { let s = 0; for (let i = 0; i < n; i++) s += -Math.log(1 - r()); const m = s / n; return 2 * n * (m - 1 - Math.log(m)); }
+          if (k === 'norm2') { let s = 0, q = 0; const xs = new Float64Array(n); for (let i = 0; i < n; i++) { xs[i] = r.normal(); s += xs[i]; } const m = s / n; for (let i = 0; i < n; i++) q += (xs[i] - m) ** 2; const s2 = q / n; return n * (m * m + s2 - 1 - Math.log(s2)); }
+          if (k === 'die') { const O = [0, 0, 0, 0, 0, 0]; for (let i = 0; i < n; i++) O[Math.floor(6 * r())]++; const E = n / 6; let g = 0; for (const o of O) if (o > 0) g += o * Math.log(o / E); return 2 * g; }
+          let q = 0; for (let i = 0; i < n; i++) { const z = r.normal(); q += z * z; } const s = q / n; return s > 1 ? n * (s - 1 - Math.log(s)) : 0;
+        };
+        const R = repeater(v, { key: () => [modS.value, nS.value].join('|'), sample: (r) => one(modS.value, nS.value, r), init: 5000, buttons: [5000, 20000], seed: 'stat6.10' });
+        let st = null;
+        v.render(() => {
+          const S = R.sync(), L = S.vals, k = modS.value, M = MOD[k], df = M.k, N = L.length;
+          const xmax = Math.max(8, qchi(df, 0.995) * 1.05);
+          const B = binned(L, 0, xmax, 48), w = xmax / 48;
+          let zeros = 0; for (const x of L) if (x <= 1e-12) zeros++;
+          const f = M.bdry ? (x) => 0.5 * dchi(1, x) : (x) => dchi(df, x);
+          const dens = B.density.slice(); if (M.bdry) dens[0] = Math.max(0, (B.counts[0] - zeros) / (N * w));
+          const top = Math.min(Math.max(f(df > 2 ? df - 2 : 0.6 * w) * 1.4, Math.max(...dens.slice(1)) * 1.15, 0.3), 1.2);
+          sL.setView([0, xmax], [0, top]);
+          if (N) sL.hist({ edges: B.edges, counts: B.counts.map((c, i) => (i === 0 && M.bdry ? c - zeros : c)), density: dens, total: N }, { density: true, color: TC.sim, fillAlpha: 0.35, width: 1.2 });
+          sL.fn(f, { domain: [Math.min(0.02, w / 4), xmax], color: M.bdry ? 'green' : 'ink', width: 2.4, n: 400 });
+          if (M.bdry) { sL.fn((x) => dchi(1, x), { domain: [0.02, xmax], color: 'red', width: 1.6, dash: [6, 4], n: 300 }); sL.rect(0, 0, w * 0.6, top * 0.97, { fill: TC.sim, fillAlpha: 0.9, stroke: false }); tag(sL, `mass at 0: ${pct(zeros / Math.max(1, N))}`, w * 0.8, top * 0.88, { align: 'left', color: 'ink', size: 11 }); }
+          const cut = qchi(df, 0.95);
+          sL.vline(cut, { color: TC.alpha, width: 1.4, dash: [5, 4] });
+          sL.text(`χ² 5% cut ${v.fix(cut, 2)}`, cut, top * 0.97, { color: TC.alpha, size: 11, align: 'left', dx: 5, dy: 6 });
+          // p-values from χ²_df
+          const P = L.map((x) => chiUp(df, x)), PB = binned(P, 0, 1, 20), ptop = Math.max(2, PB.max * 1.1);
+          sR.setView([0, 1], [0, ptop]);
+          sR.hline(1, { color: 'green', width: 2 });
+          if (N) sR.hist(PB, { density: true, color: TC.sim, fillAlpha: 0.35, width: 1.2 });
+          sR.vband(0, 0.05, { color: TC.alpha, alpha: 0.12 });
+          const rej = L.filter((x) => x > cut).length / Math.max(1, N);
+          v.legend([[TC.sim, `simulated, ${commas(N)} null data sets`, { area: true }], M.bdry ? ['green', '$\\frac12\\chi^2_0+\\frac12\\chi^2_1$ (continuous part)'] : ['ink', `$\\chi^2_{${df}}$ density`], ...(M.bdry ? [['red', '$\\chi^2_1$ (wrong reference)', { dash: true }]] : []), ['green', 'uniform density']]);
+          st = { k, M, df, N, rej, zeros, n: nS.value, mean: L.reduce((a, b) => a + b, 0) / Math.max(1, N) };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { M, df, N, rej, zeros, n, mean } = st;
+          let s = String.raw`${M.lab}, $n=${n}$, ${commas(N)} null data sets: mean of $-2\log\lambda$ **${v.fix(mean, 3)}** (χ²$_{${df}}$ mean ${M.bdry ? '0.5 for the mixture' : df}) · rejection rate at the χ²$_{${df}}$ 5% cutoff **${pct(rej, 2)}** ± ${pct(2 * mcse(0.05, N), 2)}`;
+          if (M.bdry) s += String.raw` · ${pct(zeros / N)} of the statistics are exactly 0 (theory 50%): the true null value sits on the edge of $\tau^2\ge0$, Wilks' interior condition fails, and the naive test has size about 2.5%; the correct mixture $p$-value is $\tfrac12P(\chi^2_1>x)$`;
+          else s += Math.abs(rej - 0.05) < 2.5 * mcse(0.05, N) ? ' · matches the nominal 5% ✓' : ' · not yet at the limit: grow n';
+          return s;
         });
       },
     },

@@ -33,7 +33,7 @@ export default {
         v.button('Quench again (no droplet)', () => { seed = false; v.restart(); v.play(); });
         const sd = v.stage({ x: [0, 2.4], y: [0.78, 1.04], height: 350, axes: 'box', gutter: true, xlabel: 'ρ/ρc', ylabel: 'T/Tc', weight: 1, title: 'where the quench lands' });
         const sf = v.stage({ x: [0, 64], y: [0, 64], equal: true, height: 350, axes: false, weight: 0.95, minWidth: 240, title: 'density after the quench' });
-        const q = sd.handle(0.46, 0.85, { color: 'gold', label: 'quench', constrain: { x: [0.12, 2.3], y: [0.79, 1.03] } });
+        const q = sd.handle(1.0, 0.85, { color: 'gold', label: 'quench', constrain: { x: [0.12, 2.3], y: [0.79, 1.03] } });
         q.onDrag = () => { seed = false; v.restart(); };
         // binodal and spinodal in (ρ, T)
         const bin = [], spl = [];
@@ -61,7 +61,7 @@ export default {
           for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) f[i][j] = re[i][j];
           st.steps++;
           return st;
-        }, { dt: 1 / 150, maxSteps: 12 });
+        }, { dt: 1 / 150 });
         let info = null;
         v.animate((t) => {
           S.advance(t);
@@ -74,12 +74,12 @@ export default {
           sd.dot(1, 1, { r: 4.5, color: 'red' });
           sd.text('metastable vapour', 0.43, 0.8, { size: 10.5, color: 'ink', align: 'center', plate: true });
           sd.text('metastable liquid', 1.72, 0.8, { size: 10.5, color: 'ink', align: 'center', plate: true });
-          sd.text('unstable', 1.0, 0.86, { size: 11.5, weight: 650, color: 'red', align: 'center' });
+          sd.text('unstable', 1.0, 0.935, { size: 11.5, weight: 650, color: 'red', align: 'center' });
           sd.text('one fluid', 1.2, 1.025, { size: 11, color: 'muted', align: 'center' });
           // field
           const pal = rampRGBA(v, 'teal', 64);
           const f = st.f;
-          sf.raster((x, y) => { const i = clamp(Math.floor(y), 0, N - 1), j = clamp(Math.floor(x), 0, N - 1); return pal[clamp(Math.round((f[i][j] - 0.2) / 1.75 * 63), 0, 63)]; }, { res: 2, key: 'f' + st.steps + seed + p0 + T });
+          sf.raster((x, y) => { const i = clamp(Math.floor(y), 0, N - 1), j = clamp(Math.floor(x), 0, N - 1); return pal[clamp(Math.round((f[i][j] - 0.2) / 1.75 * 63), 0, 63)]; }, { res: 2, rect: [0, 0, 64, 64], key: 'f' + st.steps + seed + p0 + T });
           sf.rect(0, 0, 64, 64, { color: 'muted', width: 1 });
           let liq = 0, mn = 9, mx = 0, m = 0; const c = vdwCoex(T);
           const mid = c ? (1 / c.vl + 1 / c.vg) / 2 : 1;
@@ -125,7 +125,7 @@ where $\gamma$ is the interfacial free energy per area and $\Delta g_v > 0$ the 
           const r = v.rng(7 + gen), T = Tm - dT.value, p = params(T, gam.value * 1e-3);
           return { r: Array.from({ length: NC }, (_, i) => p.rs * (0.45 + 1.1 * (i + r()) / NC)), rng: r, p };
         }, (st, h) => {
-          const { p } = st, D = p.rs * p.rs / (p.Gs / p.kT) * 2.5;   // diffusion constant so that the drift crosses r* in ~1 s
+          const { p } = st, D = p.rs * p.rs / (p.Gs / p.kT) * 0.6;   // diffusion constant: the drift moves clusters by ~r* in a few seconds
           for (let i = 0; i < NC; i++) {
             const r = st.r[i]; if (r <= 0 || r > 3 * p.rs) continue;
             const dGdr = (8 * Math.PI * r * gam.value * 1e-3 - 4 * Math.PI * r * r * p.dg) / p.kT;
@@ -148,7 +148,6 @@ where $\gamma$ is the interfacial free energy per area and $\Delta g_v > 0$ the 
           sg.vline(rs, { color: 'red', width: 1.2, dash: [3, 3] });
           sg.dot(rs, hb, { r: 5, color: 'red' });
           sg.text(`r* = ${v.fix(rs, 2)} nm, ΔG* = ${v.fix(hb, 0)} kT`, rs, hb, { dy: -12, size: 11.5, color: 'red', align: 'center', plate: true });
-          sg.text('surface 4πr²γ', xr * 0.97, Math.min(1.5 * hb, G(xr * 0.5) * 0 + 4 * Math.PI * (xr * 0.97e-9) ** 2 * g / p.kT), { dy: 12, size: 11, color: 'orange', align: 'right' });
           sg.text('bulk −(4/3)πr³Δg', xr * 0.6, -0.8 * hb, { size: 11, color: 'blue', align: 'left' });
           // clusters (radii in SI from the sim; the sim restarts when the clock does)
           const st = S.state; let grown = 0, gone = 0;
@@ -166,7 +165,7 @@ where $\gamma$ is the interfacial free energy per area and $\Delta g_v > 0$ the 
           sj.dot(tHom, Jth, { r: 4.5, color: 'gold' });
           const J1 = Jof(-dT.value), J2 = Jof(-dT.value - 1);
           info = { T, rs, hb, n: 4 / 3 * Math.PI * (p.rs) ** 3 * rhoI / W.M * NA, tHom, J1, fac: J2 / J1, grown, gone };
-        }, { still: 2.5, period: 6 });
+        }, { still: 1.6, period: 8 });
         v.legend([['ink', 'ΔG(r)'], ['orange', 'surface cost', { dash: true }], ['blue', 'bulk gain', { dash: true }], ['gold', 'clusters', { dot: true }], ['accent', 'rate J(T)']]);
         v.readout(() => {
           if (!info) return '';

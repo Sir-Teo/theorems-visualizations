@@ -15,7 +15,8 @@ export function sciT(x, d = 2) {
   if (x === 0) return '0';
   const e = Math.floor(Math.log10(Math.abs(x)));
   if (e >= -2 && e <= 3) return fr(x, Math.max(0, d + 1 - Math.max(0, e + 1)));
-  return `${(x / 10 ** e).toFixed(d - 1)}\\times10^{${e}}`;
+  let m = x / 10 ** e, ee = e; if (Math.abs(+m.toFixed(d - 1)) >= 10) { m /= 10; ee++; }
+  return `${m.toFixed(d - 1).replace('-', '−')}\\times10^{${ee}}`;
 }
 
 // ------------------------------------------------------------------ exact discrete laws

@@ -178,7 +178,11 @@ export function parseFO(src, sig = null, { term: allowTerm = false } = {}) {
       if (c === 'const') return CONST(t.v);
       return VAR(t.v);
     }
-    if (t.t === '(') { k++; const a = term(); expect(')', 'expected “)” to close the term'); return a; }
+    if (t.t === '(') {
+      k++; const a = term();
+      if (peek() && (peek().t === 'r' || peek().t === 'c')) fail(`${peek().t === 'r' ? peek().v : CONN[peek().v]} would make a formula here, but a term is needed`);
+      expect(')', 'expected “)” to close the term'); return a;
+    }
     if (t.t === 'q') fail('a quantifier cannot stand where a term is expected');
     if (t.t === 'c') fail(`expected a term, found the connective ${tokText(t)}`);
     if (t.t === 'r') fail(`${t.v} needs a term on its left`);
@@ -849,7 +853,7 @@ export function drawFO(s, L, opts = {}) {
  */
 export function relEditor(v, s, { n = 4, edges = [], radius = 1, center = [0, 0], start = 90, labels = null, onChange = null, r = 15, fontSize = 13 } = {}) {
   const pos = (i, k) => { const a = (start - (360 * i) / k) * Math.PI / 180; return [center[0] + radius * Math.cos(a), center[1] + radius * Math.sin(a)]; };
-  const mkNodes = (k, old = []) => range(k).map((i) => { const o = old.find((m) => m.id === i); const [x, y] = o && o.x != null ? [o.x, o.y] : pos(i, k); return { id: i, x, y, label: labels ? labels(i) : String(i), notePos: y < center[1] - 0.2 * radius ? 's' : 'n' }; });
+  const mkNodes = (k, old = []) => range(k).map((i) => { const o = old.find((m) => m.id === i); const [x, y] = o && o.x != null ? [o.x, o.y] : pos(i, k); return { id: i, x, y, label: labels ? labels(i) : String(i) }; });
   const E = { n, sel: null, onChange };
   const G = v.graph(s, {
     directed: true, layout: 'none', r, fontSize, editable: { moveNode: true },
@@ -865,6 +869,19 @@ export function relEditor(v, s, { n = 4, edges = [], radius = 1, center = [0, 0]
     },
   });
   E.G = G;
+  // loops point outward and a little clockwise, notes sit outward and a little anticlockwise, so they never collide
+  const COMP = { e: 0, ne: 45, n: 90, nw: 135, w: 180, sw: 225, s: 270, se: 315 };
+  E.prep = () => {
+    for (const nd of G.nodes) {
+      const th = Math.atan2(nd.y - center[1], nd.x - center[0]) * 180 / Math.PI;
+      const want = th + 42; let best = 'n', bd = 1e9;
+      for (const [k, a] of Object.entries(COMP)) { const d = Math.abs(((want - a) % 360 + 540) % 360 - 180); if (d < bd) { bd = d; best = k; } }
+      nd.notePos = best; nd._th = th;
+    }
+    for (const e of G.edges) if (e.from === e.to) { const nd = G.node(e.from); if (nd) e.angle = nd._th - 42; }
+  };
+  const draw0 = G.draw.bind(G);
+  G.draw = (o) => { E.prep(); return draw0(o); };
   E.toggle = (a, b) => { const ex = G.edges.find((e) => e.from === a && e.to === b); if (ex) G.removeEdge(ex); else G.addEdge(a, b); if (E.onChange) E.onChange(); };
   E.adj = () => { const m = range(E.n).map(() => new Array(E.n).fill(0)); for (const e of G.edges) if (e.from < E.n && e.to < E.n) m[e.from][e.to] = 1; return m; };
   E.edgeList = () => G.edges.map((e) => [e.from, e.to]);

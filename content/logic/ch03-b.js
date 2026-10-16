@@ -134,7 +134,7 @@ In particular, $\mathfrak A$ and $\mathfrak B$ satisfy the same sentences: isomo
           const isBad = (list) => (e) => list.some(([a, b]) => a === e.from && b === e.to);
           EA.G.draw({ nodeColor: (id) => PAL[id], nodeFill: (id) => PAL[id], nodeRing: (id) => (id === selA ? 'gold' : null), edgeColor: (e) => (isBad(badA)(e) ? 'red' : null), edgeDash: (e) => (isBad(badA)(e) ? [5, 4] : null) });
           EB.G.draw({ nodeColor: (id) => PAL[hinv[id]], nodeFill: (id) => PAL[hinv[id]], edgeColor: (e) => (isBad(badB)(e) ? 'red' : null), edgeDash: (e) => (isBad(badB)(e) ? [5, 4] : null) });
-          SA.corner('click a point here, then its new image', 'bl', { size: 10.5 });
+          SA.corner('click a point here, then its new image', 'tl', { size: 10.5 });
           SB.corner(`h: ${range(n).map((a) => `${a}↦${LET[h[a]]}`).join('  ')}`, 'bl', { size: 11, color: badA.length + badB.length ? 'red' : 'green' });
           const MA = graphStruct(n, A), MB = graphStruct(n, B, { label: (i) => LET[i] });
           const va = SENT38.map((s) => holds(s.ast, MA)), vb = SENT38.map((s) => holds(s.ast, MB));
@@ -164,7 +164,7 @@ In particular, $\mathfrak A$ and $\mathfrak B$ satisfy the same sentences: isomo
           const iso = isoSearch({ n, bin: [A] }, { n, bin: [B] });
           const mis = fld.ast ? range(n).filter((a) => holds(fld.ast, MA, { x: a }) !== holds(fld.ast, MB, { x: h[a] })).length : 0;
           const hs = broke ? `$h$ is a bijection but **not** an isomorphism (${broke} ordered pair${broke === 1 ? '' : 's'} not preserved)` : '$h$ is an **isomorphism** ✓';
-          const ss = diff.length ? `**${diff.length} sentence${diff.length === 1 ? '' : 's'} disagree** (${diff.map((s) => s.d).join(', ')})` : 'all six sentences agree';
+          const ss = diff.length ? `**${diff.length} sentence${diff.length === 1 ? ' disagrees' : 's disagree'}** (${diff.map((d) => d.d).join(', ')})` : 'all six sentences agree';
           const st = iso ? 'The structures are isomorphic (an isomorphism exists, found by search).' : `No isomorphism exists${noIso ? ' (the search found none)' : ''}.`;
           return `${hs}; ${ss}; $\\varphi(a) \\leftrightarrow \\varphi(h(a))$ fails for ${mis} of 5 points${!broke && !mis ? ' ✓' : ''}. ${st}`;
         });
@@ -177,14 +177,14 @@ In particular, $\mathfrak A$ and $\mathfrak B$ satisfy the same sentences: isomo
       name: 'Automorphisms preserve definable sets',
       statement: String.raw`Let $h$ be an automorphism of $\mathfrak A$ (an isomorphism of $\mathfrak A$ onto itself) and let $R \subseteq |\mathfrak A|^k$ be definable with parameters $b_1,\dots,b_m$. If $h(b_i) = b_i$ for every $i$, then $h[R] = R$, that is, $\bar a \in R \iff h\bar a \in R$. In particular every relation definable without parameters is mapped onto itself by every automorphism. For example, in $(\R,<)$ the only subsets of $\R$ definable without parameters are $\varnothing$ and $\R$, and the relation $y = 2x$ is not definable.`,
       idea: String.raw`Apply logic-3.8 to the isomorphism $h:\mathfrak A\to\mathfrak A$. If $\varphi(\bar x, \bar b)$ defines $R$, then $\mathfrak A \models \varphi[\bar a, \bar b]$ iff $\mathfrak A \models \varphi[h\bar a, h\bar b] = \varphi[h\bar a, \bar b]$. This is the standard tool for proving that something is *not* definable: exhibit an automorphism that moves it. Every increasing bijection of $\R$ is an automorphism of $(\R,<)$, and any point can be moved to any other, so no proper non-empty subset is invariant. Fixing the parameter $0$ leaves $(-\infty,0)$, $\{0\}$, $(0,\infty)$ and their unions as the only invariant sets.`,
-      caption: String.raw`Drag the five handles to shape an increasing bijection $h$ of $\R$; it is linear between the handles and has slope 1 outside. Pick a candidate set or relation. For a set $S$, the bottom panel shows $S$ (top line) and its image $h[S]$ (bottom line), with sample points joined to their images. For a relation, the right panel shows $R$ in blue and $(h\times h)[R]$ in orange. If $h$ moves the candidate, it is not definable. Turn on **fix the parameter 0**: the handle at $0$ is pinned, and $x>0$ (definable as $0 < x$) can no longer be moved, but $[-1,1]$ and $y = 2x$ still can.`,
+      caption: String.raw`Drag the five handles to shape an increasing bijection $h$ of $\R$; it is linear between the handles and has slope 1 outside. Pick a candidate set or relation. For a set $S$, the right panel shows $S$ (top line) and its image $h[S]$ (bottom line), with sample points joined to their images. For a relation, the right panel shows $R$ in blue and $(h\times h)[R]$ in orange. If $h$ moves the candidate, it is not definable. Turn on **fix the parameter 0**: the handle at $0$ is pinned, and $x>0$ (definable as $0 < x$) can no longer be moved, but $[-1,1]$ and $y = 2x$ still can.`,
       deps: ['logic-3.8', 'logic-3.6'],
       refs: ['Enderton §2.2'],
       tags: ['definability', 'automorphisms'],
       viz(v) {
         const cand = v.select('candidate', [{ value: 'pos', label: 'x > 0' }, { value: 'int', label: '[−1, 1]' }, { value: 'zero', label: '{0}' }, { value: 'all', label: 'ℝ' }, { value: 'lt', label: 'x < y' }, { value: 'dbl', label: 'y = 2x' }], 'pos');
         const par = v.toggle('fix the parameter 0', false, { onChange: (on) => { if (on) H[2].set(0, 0); } });
-        const S = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: 'box', gutter: true, height: 320, title: 'the automorphism h of (ℝ, <)', xlabel: 'x', ylabel: 'h(x)' });
+        const S = v.stage({ x: [-3, 3], y: [-3, 3], axes: 'box', gutter: true, height: 320, title: 'the automorphism h of (ℝ, <)', xlabel: 'x', ylabel: 'h(x)' });
         const P = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 320, title: 'the candidate and its image' });
         const xs = [-2, -1, 0, 1, 2], y0 = [-2.3, -1.6, 0.6, 1.3, 2.2];
         const H = xs.map((x, i) => S.handle(x, y0[i], {
@@ -224,22 +224,25 @@ In particular, $\mathfrak A$ and $\mathfrak B$ satisfy the same sentences: isomo
           if (V.unary) {
             const band = (lo, hi, col, axis, w) => {
               const a = Math.max(-3, lo), b = Math.min(3, hi);
-              if (axis === 'x') { if (a === b) S.dot(a, -3, { r: 5, color: col }); else S.line(a, -3, b, -3, { color: col, width: w }); }
-              else if (a === b) S.dot(-3, a, { r: 5, color: col }); else S.line(-3, a, -3, b, { color: col, width: w });
+              const e = -2.86;
+              if (axis === 'x') { if (a === b) S.dot(a, e, { r: 5, color: col }); else S.line(a, e, b, e, { color: col, width: w }); }
+              else if (a === b) S.dot(e, a, { r: 5, color: col }); else S.line(e, a, e, b, { color: col, width: w });
             };
             band(V.lo, V.hi, 'accent', 'x', 7);
             band(V.lo, V.hi, 'accent', 'y', 7);
             band(V.flo, V.fhi, 'orange', 'y', 3.5);
-            for (const e of [V.lo, V.hi]) if (Number.isFinite(e) && Math.abs(e) <= 3) { S.line(e, -3, e, f(e), { color: 'orange', width: 1, dash: [3, 3] }); S.line(e, f(e), -3, f(e), { color: 'orange', width: 1, dash: [3, 3] }); }
+            for (const e of [V.lo, V.hi]) if (Number.isFinite(e) && Math.abs(e) <= 3) { S.line(e, -2.86, e, f(e), { color: 'orange', width: 1, dash: [3, 3] }); S.line(e, f(e), -2.86, f(e), { color: 'orange', width: 1, dash: [3, 3] }); }
             // bottom panel: number lines
             P.setView([-3, 3], [-1.5, 1.5]);
-            const seg = (lo, hi, y, col) => { const a = Math.max(-3, lo), b = Math.min(3, hi); if (a === b) P.dot(a, y, { r: 6, color: col }); else P.line(a, y, b, y, { color: col, width: 8, alpha: 0.7 }); };
+            const seg = (lo, hi, y, col, w, al) => { const a = Math.max(-3, lo), b = Math.min(3, hi); if (a === b) P.dot(a, y, { r: w > 6 ? 7 : 4.5, color: col, alpha: al }); else P.line(a, y, b, y, { color: col, width: w, alpha: al }); };
             P.line(-3, 0.8, 3, 0.8, { color: 'grid', width: 1.5 }); P.line(-3, -0.8, 3, -0.8, { color: 'grid', width: 1.5 });
-            seg(V.lo, V.hi, 0.8, 'accent'); seg(V.lo, V.hi, -0.8, 'accent'); seg(V.flo, V.fhi, -0.8, 'orange');
+            for (let k = -2; k <= 2; k++) for (const yy of [0.8, -0.8]) { P.line(k, yy - 0.07, k, yy + 0.07, { color: 'muted', width: 1 }); }
+            for (let k = -2; k <= 2; k++) P.text(String(k).replace('-', '−'), k, -1.08, { align: 'center', size: 10, color: 'muted' });
+            seg(V.lo, V.hi, 0.8, 'accent', 8, 0.75); seg(V.lo, V.hi, -0.8, 'accent', 12, 0.28); seg(V.flo, V.fhi, -0.8, 'orange', 5, 0.95);
             for (let t = -2.75; t <= 2.76; t += 0.5) { const inS = t >= V.lo && t <= V.hi && (V.lo !== V.hi || t === V.lo); const ft = f(t); if (Math.abs(ft) <= 3) P.arrow(t, 0.66, ft, -0.66, { color: inS ? 'orange' : 'faint', width: inS ? 1.4 : 1, head: 5 }); }
             if (V.lo === V.hi) P.arrow(V.lo, 0.66, V.flo, -0.66, { color: 'orange', width: 1.8, head: 6 });
             P.text('S', -2.9, 1.15, { size: 12, color: 'accent', weight: 700 });
-            P.text('h[S] (orange) against S (blue)', -2.9, -1.2, { size: 12, color: 'orange', weight: 700 });
+            P.text('h[S] (orange) over S (pale blue)', -2.9, -1.35, { size: 12, color: 'orange', weight: 700 });
           } else {
             P.setView([-3.4, 3.2], [-3.4, 3.2]);
             for (let k = -3; k <= 3; k++) { P.line(k, -3, k, 3, { color: 'grid', width: 1 }); P.line(-3, k, 3, k, { color: 'grid', width: 1 }); P.text(String(k).replace('-', '−'), k, -3.22, { align: 'center', size: 10, color: 'muted' }); P.text(String(k).replace('-', '−'), -3.12, k, { align: 'right', baseline: 'middle', size: 10, color: 'muted' }); }
@@ -247,14 +250,14 @@ In particular, $\mathfrak A$ and $\mathfrak B$ satisfy the same sentences: isomo
               P.poly([[-3, -3], [3, 3], [-3, 3]], { fill: 'accent', fillAlpha: 0.14, stroke: false });
               P.line(-3, -3, 3, 3, { color: 'accent', width: 1.5, dash: [5, 4] });
               for (let a = -2.5; a <= 2.6; a += 0.5) for (let b = -2.5; b <= 2.6; b += 0.5) if (a < b) { const p = [f(a), f(b)]; if (Math.abs(p[0]) < 3 && Math.abs(p[1]) < 3) P.dot(p[0], p[1], { r: 2.6, color: 'orange' }); }
-              P.text('(h×h) of sample points of x < y', -2.85, -2.7, { size: 11, color: 'orange' });
+              P.text('images (h(a), h(b)) of sample pairs a < b', 2.9, -2.7, { size: 11, color: 'orange', align: 'right' });
             } else {
               P.clip(() => P.fn((x) => 2 * x, { color: 'accent', width: 2.4 }), [-3, 3], [-3, 3]);
               P.clip(() => P.curve((t) => [f(t), f(2 * t)], -3, 3, { color: 'orange', width: 2.4, n: 300 }), [-3, 3], [-3, 3]);
               if (V.worst != null) { const t = V.worst; P.dot(t, 2 * t, { r: 4.5, color: 'accent' }); P.arrow(t, 2 * t, f(t), f(2 * t), { color: 'red', width: 1.6, head: 6 }); P.dot(f(t), f(2 * t), { r: 4.5, color: 'orange' }); }
             }
           }
-          if (par.value) S.corner('h(0) = 0 is pinned', 'tl', { size: 11, color: 'gold' });
+          if (par.value) S.corner('h(0) = 0 is pinned', 'br', { size: 11, color: 'gold' });
         });
         v.legend([['accent', 'candidate set / relation'], ['orange', 'its image under h']]);
         v.readout(() => {
@@ -294,10 +297,10 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
         const pair = v.select('pair', [{ value: 'NZ', label: 'ℕ ⊆ ℤ' }, { value: 'EZ', label: '2ℤ ⊆ ℤ' }, { value: 'QR', label: 'ℚ ⊆ ℝ' }], 'NZ', { onChange: () => { ha.set(PAIRS[pair.value].snap(ha.x), yA); hb.set(PAIRS[pair.value].snap(hb.x), yA); } });
         const fld = foField(v, 'φ(a, b)', EX[0], { width: 280, sig: { name: 'the language of orders', rels: { '<': 2 }, funcs: {}, consts: [] }, check: (a) => (freeVars(a).some((x) => x !== 'a' && x !== 'b') ? 'only a and b may be free' : qrank(a) > 3 ? 'keep the quantifier rank at most 3 here' : null) });
         v.button('next example', () => { exI = (exI + 1) % EX.length; fld.set(EX[exI]); });
-        const S = v.stage({ x: [-6.6, 6.6], y: [-1.3, 2.6], axes: false, height: 300, full: true });
-        const yB = 1.7, yA = -0.35;
-        const ha = S.handle(1, yA, { color: 'gold', label: 'a', labelPos: 's', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
-        const hb = S.handle(3, yA, { color: 'gold', label: 'b', labelPos: 's', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
+        const S = v.stage({ x: [-6.6, 6.6], y: [-0.75, 2.45], axes: false, height: 250, full: true });
+        const yB = 1.6, yA = 0.05;
+        const ha = S.handle(0, yA, { color: 'gold', label: 'a', labelPos: 'n', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
+        const hb = S.handle(3, yA, { color: 'gold', label: 'b', labelPos: 'n', constrain: (x) => [PAIRS[pair.value].snap(x), yA] });
         const posA = (x) => PAIRS[pair.value].pos(x);
         const evalBoth = () => {
           const P = PAIRS[pair.value], MB = orderStruct(P.big), MA = orderStruct(P.small), env = { a: P.val(ha.x), b: P.val(hb.x) };
@@ -311,13 +314,13 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
           // the big structure
           S.line(-6.4, yB, 6.4, yB, { color: 'muted', width: 1.5 });
           S.tex(`\\mathfrak B = (${P.bigTex}, <)`, -6.5, yB + 0.55, { align: 'left', size: 14, color: 'muted' });
-          S.tex(`\\mathfrak A = (${P.smallTex}, <)`, -6.5, yA + 0.62, { align: 'left', size: 14, color: 'muted' });
+          S.tex(`\\mathfrak A = (${P.smallTex}, <)`, -6.5, yA + 0.55, { align: 'left', size: 14, color: 'muted' });
           S.line(-6.4, yA, 6.4, yA, { color: 'muted', width: 1.5 });
           if (dense) {
             S.line(-6.4, yB, 6.4, yB, { color: 'accent', width: 4, alpha: 0.35 });
             for (let k = -24; k <= 24; k++) S.dot(k / 4, yB, { r: 2.2, color: 'accent' });
             for (let k = -24; k <= 24; k++) S.dot(k / 4, yA, { r: 2.2, color: 'accent' });
-            S.text('rationals: a dense subset of the line', 6.4, yA - 0.55, { align: 'right', size: 11, color: 'muted' });
+            S.text('rationals: a dense subset of the line', 6.4, yA - 0.45, { align: 'right', size: 11, color: 'muted' });
             for (let k = -6; k <= 6; k++) { S.text(String(k).replace('-', '−'), k, yB - 0.35, { align: 'center', size: 10.5, color: 'muted' }); }
           } else {
             for (let k = -6; k <= 6; k++) {
@@ -336,7 +339,7 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
           // parameter markers on the big line
           for (const [nm, val] of [['a', env.a], ['b', env.b]]) { S.dot(val, yB, { r: 9, color: 'gold', hollow: true, width: 2.5 }); S.text(nm, val, yB + 0.42, { align: 'center', size: 12, weight: 700, color: 'gold', math: true }); }
           if (!fld.ast) { S.corner(fld.error || '', 'tr', { color: 'red', size: 11 }); return; }
-          const mark = (w, y, x0) => { if (!w || w.d === undefined) return; const X = x0(w.d); if (Math.abs(X) > 6.5) { S.text(`${w.role} ${w.x} = ${fmtQ(w.d)} (off screen)`, 6.4, y + 0.5, { align: 'right', size: 11, color: 'green' }); return; } S.dot(X, y, { r: 6.5, color: w.role === 'witness' ? 'green' : 'red' }); S.text(`${w.x}`, X, y - 0.42, { align: 'center', size: 12, weight: 700, color: w.role === 'witness' ? 'green' : 'red', math: true }); };
+          const mark = (w, y, x0) => { if (!w || w.d === undefined) return; const X = x0(w.d); if (Math.abs(X) > 6.5) { S.text(`${w.role} ${w.x} = ${fmtQ(w.d)} (off screen)`, 6.4, y + 0.5, { align: 'right', size: 11, color: 'green' }); return; } S.dot(X, y, { r: 6.5, color: w.role === 'witness' ? 'green' : 'red' }); S.text(`${w.x}`, X, y + 0.36, { align: 'center', size: 12, weight: 700, color: w.role === 'witness' ? 'green' : 'red', math: true }); };
           mark(R.wB, yB, (d) => d);
           mark(R.wA, yA, posA);
           const agree = R.va === R.vb;
@@ -369,8 +372,8 @@ The test refers only to truth in $\mathfrak B$: whenever $\mathfrak B$ has a wit
       credit: 'Tarski & Vaught, 1957',
       viz(v) {
         const sub = v.select('candidate 𝔄 ⊆ (ℚ, <)', Object.entries(SUBS).map(([k, s]) => ({ value: k, label: s.label })), 'closed', { onChange: () => H.forEach((h) => h.set(snapA(SUBS[sub.value], h.x), 0)) });
-        const S = v.stage({ x: [-3.2, 4.2], y: [-0.9, 1.3], axes: false, height: 200, full: true });
-        const T = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 230, full: true });
+        const S = v.stage({ x: [-3.2, 4.2], y: [-0.85, 1.05], axes: false, height: 170, full: true });
+        const T = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 205, full: true });
         const TB = v.table(T, { rows: 7, cols: 3, square: false, maxCell: 27, cellAspect: 4.2, size: 12.5, labelSize: 12, colLabels: ['witness in 𝔅 = ℚ', 'witness in 𝔄', 'verdict'], colWeights: [1, 1, 0.7] });
         const H = [0, 1, 2].map((i) => S.handle([0, 1, 2][i], 0, { color: 'gold', label: `a${'₁₂₃'[i]}`, labelPos: 'n', constrain: (x) => [snapA(SUBS[sub.value], Math.max(-3, Math.min(4, x))), 0] }));
         const cells = () => {
@@ -509,7 +512,7 @@ their duals with $\exists$ and $\lor$, valid whenever $x$ does not occur free in
         const B = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 330, weight: 1.1 });
         const E = relEditor(v, A, { n: 3, radius: 0.95, edges: [[0, 1], [1, 2], [0, 2]] });
         const nS = v.slider('points', 1, 6, 3, { int: true, onChange: (k) => E.setN(k) });
-        const TB = v.table(B, { rows: 4, cols: 2, square: false, maxCell: 30, cellAspect: 3.2, size: 13, labelSize: 12.5, region: [0, 0, 10, 4.6], colLabels: ['labelled models', 'up to ≅'], cornerLabel: 'size' });
+        const TB = v.table(B, { rows: 4, cols: 2, square: false, maxCell: 30, cellAspect: 3.8, size: 13, labelSize: 12.5, region: [0, 0, 10, 4.6], colLabels: ['labelled models', 'up to ≅'], cornerLabel: 'size' });
         let memo = { key: null };
         const spectrum = () => {
           const act = AXIOMS.filter((a) => on[a.id]), key = act.map((a) => a.id).join(',');

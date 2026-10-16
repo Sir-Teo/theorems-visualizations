@@ -62,7 +62,7 @@ export default {
         const Vs = v.stage({ x: [-5, 5], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'change from the reference point (millions)', ylabel: 'v(x)', title: 'value of gains and losses' });
         const ans = { ab0: null, ab1: null, jj: null };
         const RAB = [[[25, 21, 61, 33], [63, 21, 99, 33]], [[25, 3, 61, 15], [63, 3, 99, 15]]];
-        const RJJ = [[2, 4, 33, 24], [35, 4, 66, 24], [68, 4, 99, 24]];
+        const RJJ = [[2, 8, 33, 22], [35, 8, 66, 22], [68, 8, 99, 22]];
         C.onClick((x, y) => {
           if (ex.value === 'ab') RAB.forEach((row, i) => row.forEach((r, k) => { if (inside(r, x, y)) ans['ab' + i] = k; }));
           else RJJ.forEach((r, k) => { if (inside(r, x, y)) ans.jj = k; });
@@ -109,7 +109,7 @@ export default {
             U.arrow(1, u(1), 4.85, u(5) - 0.02 * (uhi - ulo), { color: 'blue', width: 1.6 });
             U.arrow(9, u(9), 5.15, u(5) - 0.02 * (uhi - ulo), { color: 'red', width: 1.6 });
             U.dot(1, u(1), { r: 5, color: 'blue', hollow: true, label: 'Jack yesterday', labelPos: 'se' });
-            U.dot(9, u(9), { r: 5, color: 'red', hollow: true, label: 'Jill yesterday', labelPos: 'n' });
+            U.dot(9, u(9), { r: 5, color: 'red', hollow: true, label: 'Jill yesterday', labelPos: 'sw' });
             U.dot(5, u(5), { r: 7, color: 'purple', label: 'both today', labelPos: 'n' });
             U.text('same wealth, same utility', 9.8, ulo + 0.08 * (uhi - ulo), { align: 'right', size: 11.5, color: 'muted', weight: 600 });
           }
@@ -177,7 +177,7 @@ export default {
         });
         v.button('clear my answers', () => LOSS.forEach((_, i) => RAT.forEach((_, j) => { ans[i][j] = null; })));
         const G = v.stage({ x: [0.88, 4.5], y: [0.4, 4.6], xlog: true, axes: 'box', gutter: { l: 70, b: 40, t: 10, r: 10 }, height: 300, full: true, xlabel: 'gain ÷ loss', ylabel: '', yticks: LOSS.map((L, i) => [i + 1, `lose $${L}`]), xticks: RAT.map((R) => [R, String(R)]), title: 'which 50–50 gambles would you accept?' });
-        const Mtr = v.stage({ x: [-0.9, 3.2], y: [0.4, 6.6], axes: false, height: 240, full: true, title: 'your λ beside published estimates (loss-aversion coefficient)' });
+        const Mtr = v.stage({ x: [-0.9, 3.2], y: [0, 6.6], axes: false, height: 240, full: true, title: 'your λ beside published estimates (loss-aversion coefficient)' });
         G.onClick((x, y, mod) => {
           const i = Math.round(y) - 1; if (i < 0 || i >= LOSS.length) return;
           let j = 0, best = 1e9; RAT.forEach((R, k) => { const d = Math.abs(Math.log(R) - Math.log(Math.max(0.5, x))); if (d < best) { best = d; j = k; } });
@@ -215,7 +215,7 @@ export default {
               G.text(`+${Math.round(R * L)}`, R, yc, { dy: 19, align: 'center', size: 10, color: 'muted' });
             });
             const tk = TKX[L] / L;
-            G.line(tk, yc - 0.3, tk, yc + 0.3, { color: 'gold', width: 3 });
+            G.line(tk, yc - 0.08, tk, yc + 0.3, { color: 'gold', width: 3 });
             G.text(`TK92: +${TKX[L]}`, tk, yc + 0.3, { dy: -7, align: 'center', size: 10.5, weight: 700, color: 'gold' });
           });
           if (fit) {
@@ -233,11 +233,12 @@ export default {
           ];
           Mtr.line(0.8, 0.55, 3.2, 0.55, { color: 'muted', width: 1 });
           for (let t = 1; t <= 3; t += 0.5) { Mtr.line(t, 0.55, t, 0.45, { color: 'muted', width: 1 }); Mtr.text(String(t), t, 0.45, { dy: 9, align: 'center', size: 10.5, color: 'muted' }); }
-          Mtr.line(1, 0.55, 1, 6.5, GUIDE); Mtr.text('λ = 1: no loss aversion', 1, 6.5, { dx: 5, dy: 4, size: 10.5, color: 'muted' });
+          Mtr.line(1, 0.55, 1, 6.5, GUIDE); Mtr.text('λ = 1: no loss aversion', 1, 0.55, { dx: 5, dy: -8, size: 10.5, color: 'muted' });
           for (const r of rows) {
             Mtr.text(r.lab, -0.88, r.y, { size: 11.5, weight: r.c === 'accent' ? 700 : 500, color: r.c === 'accent' ? 'accent' : 'ink' });
             Mtr.line(0.8, r.y, 3.2, r.y, { color: 'grid', width: 1 });
             if (r.lo != null) Mtr.line(r.lo, r.y, r.hi, r.y, { color: r.c, width: 5, alpha: 0.6 });
+            if (r.lo != null && r.m == null) Mtr.text(`${r.lo.toFixed(2)}–${r.hi.toFixed(2)}`, (r.lo + r.hi) / 2, r.y, { dy: -12, align: 'center', size: 11, weight: 700, color: r.c });
             if (r.m != null) { Mtr.dot(clamp(r.m, 0.8, 3.2), r.y, { r: 6.5, color: r.c }); Mtr.text(r.m.toFixed(2), clamp(r.m, 0.8, 3.2), r.y, { dy: -13, align: 'center', size: 11, weight: 700, color: r.c }); }
             else if (r.lo == null) Mtr.text('answer some rows above', 2, r.y, { align: 'center', size: 11, color: 'muted' });
           }
@@ -520,8 +521,8 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
         const ans = { 1: null, 2: null };
         const RECT = { A: [2, 24.5, 49, 40], B: [51, 24.5, 98, 40], C: [2, 3, 49, 18.5], D: [51, 3, 98, 18.5] };
         C.onClick((x, y) => { for (const k in RECT) if (inside(RECT[k], x, y)) ans[k < 'C' ? 1 : 2] = k; });
-        const PATCOL = { cert: 'purple', safe: 'green', risky: 'blue', rev: 'red' };
-        v.legend([['purple', 'certainty-effect pattern', { dot: true }], ['green', 'safe in both', { dot: true }], ['blue', 'risky in both', { dot: true }], ['red', 'the reverse pattern', { dot: true }]]);
+        const PATCOL = { cert: 'purple', safe: 'green', risky: 'teal', rev: 'red' };
+        v.legend([['purple', 'certainty-effect pattern', { dot: true }], ['green', 'safe in both', { dot: true }], ['teal', 'risky in both', { dot: true }], ['red', 'the reverse pattern', { dot: true }]]);
         const predict = (P, g, a) => {
           const par = { a, b: a, l: 2.25, g, d: g };
           const V = Object.fromEntries(P.pairs.map(([k, L]) => [k, cptValue(L, par)]));
@@ -564,7 +565,7 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
           W.rect(bx, by + 0.02, bx + Math.max(0.002, midW * sc), by + 0.07, { fill: 'orange', fillAlpha: 0.7, stroke: false });
           W.text(`${m0} → ${m1}: ${midW.toFixed(3)}`, bx + midW * sc, by + 0.045, { dx: 4, size: 10.5, weight: 700, color: 'orange' });
           // ---- prediction map
-          const RC = Object.fromEntries(Object.entries(PATCOL).map(([k, c]) => [k, v.ramp(0.42, c)]));
+          const RC = Object.fromEntries(Object.entries(PATCOL).map(([k, c]) => [k, v.ramp(0.55, c)]));
           R.raster((x, y) => RC[predict(P, x, y).pat], { res: 3, key: pr.value });
           // label each predicted region at its centroid
           const acc = {};

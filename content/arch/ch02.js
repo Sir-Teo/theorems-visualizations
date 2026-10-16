@@ -504,7 +504,7 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
           const Hof = (S) => { const e0 = S.el.find((e) => e.part === 'main'), ang = Math.atan2(S.nodes[e0.j].y - S.nodes[e0.i].y, S.nodes[e0.j].x - S.nodes[e0.i].x); return internal(e0, 0).N * Math.cos(ang); };
           const main = sol.el.filter((e) => e.part === 'main'), H0 = Hof(M0.sol), Hf = Hof(sol), Hform = (w * b.L * b.L) / (8 * b.sag), Tmax = Math.max(...main.map((e) => internal(e, 0).N));
           const sig = Tmax / b.A / 1000, mBase = Math.abs(sol.R[M.bL][2]) / 1000;
-          return `Dead load alone: frame $H$ = **${MN(H0)}** vs $wL^2/8d$ = ${MN(Hform)} (${v.fix(100 * (H0 / Hform - 1), 1)}%: the deck takes a sliver by bending) · the truck adds ${MN(Hf - H0, 2)} · cable tension at the tower ${MN(Tmax)} → stress **${sig.toFixed(0)} MPa** in ${b.A.toFixed(2)} m² of wire (strength ${b.fu.toLocaleString('en-US')} MPa, i.e. ${(100 * sig / b.fu).toFixed(0)}%) · anchorage pull ${MN(Math.hypot(...sol.R[M.aL].slice(0, 2)))} · left tower base moment ${v.fmt(mBase, 3)} MN·m.`;
+          return `Dead load alone: frame $H$ = **${MN(H0)}** vs $wL^2/8d$ = ${MN(Hform)} (${Math.abs(H0 / Hform - 1) < 5e-4 ? 'agreement to 0.05%' : v.fix(100 * (H0 / Hform - 1), 1) + '%: the deck takes a sliver by bending'}) · the truck adds ${MN(Hf - H0, 2)} · cable tension at the tower ${MN(Tmax)} → stress **${sig.toFixed(0)} MPa** in ${b.A.toFixed(2)} m² of wire (strength ${b.fu.toLocaleString('en-US')} MPa, i.e. ${(100 * sig / b.fu).toFixed(0)}%) · anchorage pull ${MN(Math.hypot(...sol.R[M.aL].slice(0, 2)))} · left tower base moment ${v.fmt(mBase, 3)} MN·m.`;
         });
       },
     },

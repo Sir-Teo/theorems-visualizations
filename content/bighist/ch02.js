@@ -104,7 +104,7 @@ function bbn(eta10, Nnu, tauN = 879.4) {
   const Tnuc = DD / Math.log(1 / (eta10 * 1e-10));
   let Tn = 12, t = 1 / (2 * H(12)), X = 1 / (1 + Math.exp(Q / Tn)), nuc = null, fr = null;
   const out = [], dl = -0.004;
-  while (Tn > 0.03) {
+  while (Tn > 0.012) {
     const T = Tn * rr(Tn), lam = lnp(T) + 1 / tauN, lpn = lnp(T) * Math.exp(-Q / T), dt = -dl / H(Tn);
     X = (X + dt * lpn) / (1 + dt * (lpn + lam)); t += dt; Tn *= Math.exp(dl); // implicit step: stable for the fast early rates
     const Tg = Tn * rr(Tn);
@@ -192,7 +192,7 @@ export default {
           B.line(t0 - tH, 0, Math.min(xmax, t0 + 0.6 * tH), 1 + 0.6, { color: 'orange', width: 1.4, dash: [6, 4] });
           B.dot(t0, 1, { r: 5, color: 'accent', label: 'today', labelPos: 'nw' });
           B.dot(Math.max(0, t0 - tH), 0, { r: 4, color: 'orange' });
-          B.text(`1/H₀ = ${tH.toFixed(1)} Gyr before today`, Math.max(0, t0 - tH), 0, { dx: 12, dy: -26, align: 'left', size: 11, color: 'orange' });
+          B.text(`← tangent meets a = 0: 1/H₀ = ${tH.toFixed(1)} Gyr before today`, Math.max(0, t0 - tH) + 0.04 * xmax, 0.045, { align: 'left', size: 11, color: 'orange' });
           B.vline(t0, { color: 'accent', width: 1, dash: [3, 3], alpha: 0.6 });
           // cursor and lattice inset
           const tb = Math.min(back.value, t0), ab = bisectA(C, tb);
@@ -253,7 +253,7 @@ export default {
           T2.path(out.map((p) => [p.t, p.Xeq]), { color: 'muted', width: 1.4, dash: [6, 4] });
           T2.path(out.map((p) => [p.t, p.X]), { color: 'accent', width: 2.6 });
           if (B.fr) { T2.dot(B.fr.t, B.fr.X, { r: 4.5, color: 'gold' }); T2.text('weak reactions freeze out', B.fr.t, B.fr.X, { dx: 8, dy: -8, align: 'left', size: 10.5, color: 'gold' }); }
-          if (B.nuc) { T2.vline(B.nuc.t, { color: 'green', width: 1.4, dash: [3, 3] }); T2.dot(B.nuc.t, B.nuc.X, { r: 5, color: 'green' }); T2.text(`nuclei form: Yp = 2X = ${B.nuc.Yp.toFixed(3)}`, B.nuc.t, B.nuc.X, { dx: -8, dy: -16, align: 'right', size: 11, weight: 650, color: 'green' }); }
+          if (B.nuc) { T2.vline(B.nuc.t, { color: 'green', width: 1.4, dash: [3, 3] }); T2.dot(B.nuc.t, B.nuc.X, { r: 5, color: 'green' }); T2.text(`nuclei form: Yp = 2X = ${B.nuc.Yp.toFixed(3)}`, B.nuc.t, B.nuc.X, { dx: -8, dy: 24, align: 'right', size: 11, weight: 650, color: 'green' }); }
           // CMB
           T3.hline(0, { color: 'faint', width: 1 });
           T3.fn((s) => planckMJy(s, TC.value), { domain: [0.5, 22], color: 'orange', width: 2.2 });
@@ -270,7 +270,8 @@ export default {
         v.readout(() => {
           const { B, chi2 } = cur;
           let best = 2.7255, bc = Infinity; for (let T = 2.72; T <= 2.731; T += 0.00005) { let c2 = 0; for (const [s, I, e] of FIRAS) c2 += (((I - planckMJy(s, T)) * 1000) / e) ** 2; if (c2 < bc) { bc = c2; best = T; } }
-          return `Freeze-out at ${(B.fr.T).toFixed(2)} MeV (${B.fr.t.toFixed(1)} s) with n/p = 1/${((1 - B.fr.X) / B.fr.X).toFixed(1)}; nuclei form at ${B.nuc.T.toFixed(3)} MeV (${B.nuc.t.toFixed(0)} s) with n/p = 1/${((1 - B.nuc.X) / B.nuc.X).toFixed(1)} → **Yp = ${B.nuc.Yp.toFixed(3)}** in this one-equation model (observed 0.245 ± 0.003; full reaction networks give ≈ 0.247 at η₁₀ = 6.1) · FIRAS: χ² = ${chi2.toFixed(0)} for 43 points at ${TC.value.toFixed(4)} K; best fit **${best.toFixed(4)} K** (χ² = ${bc.toFixed(0)}; this file is referenced to 2.725 K, and combining FIRAS with other data gives 2.7255 K).`;
+          const p20 = B.out.find((p) => p.t >= 20);
+          return `The weak rate falls below the expansion rate at ${(B.fr.T).toFixed(2)} MeV (${B.fr.t.toFixed(1)} s); n/p levels off near 1/${((1 - p20.X) / p20.X).toFixed(1)} (at 20 s) and decays; nuclei form at ${B.nuc.T.toFixed(3)} MeV (${B.nuc.t.toFixed(0)} s) with n/p = 1/${((1 - B.nuc.X) / B.nuc.X).toFixed(1)} → **Yp = ${B.nuc.Yp.toFixed(3)}** in this one-equation model (observed 0.245 ± 0.003; full reaction networks give ≈ 0.247 at η₁₀ = 6.1) · FIRAS: χ² = ${chi2.toFixed(0)} for 43 points at ${TC.value.toFixed(4)} K; best fit **${best.toFixed(4)} K** (χ² = ${bc.toFixed(0)}; this file is referenced to 2.725 K, and combining FIRAS with other data gives 2.7255 K).`;
         });
       },
     },
@@ -290,12 +291,12 @@ export default {
       viz(v) {
         const mS = v.slider('stellar mass (M☉)', 0.5, 40, 1, { log: true });
         const A = v.stage({ x: [-0.45, 2.05], y: [-17, 8.5], axes: 'box', gutter: true, height: 420, weight: 1, minWidth: 300, xlabel: 'colour index B−V (hot ← → cool)', ylabel: 'absolute magnitude M_V', yticks: [[-15, '15'], [-10, '10'], [-5, '5'], [0, '0'], [5, '−5']], title: 'Hertzsprung–Russell diagram (Hipparcos)' });
-        const P = v.stage({ x: [-0.2, 18.2], y: [-0.25, 10.75], equal: true, axes: false, height: 420, weight: 1.45, title: 'where the elements come from' });
+        const P = v.stage({ x: [-0.15, 18.15], y: [1.15, 10.5], axes: false, height: 420, weight: 1.45, title: 'where the elements come from' });
         const stars = HR.split(';').map((p) => { const [b, m] = p.split(','); return [+b / 100, +m / 10]; });
         const groups = [[-9, 0, 'blue'], [0, 0.3, 'teal'], [0.3, 0.8, 'gold'], [0.8, 1.4, 'orange'], [1.4, 9, 'red']].map(([lo, hi, col]) => ({ col, pts: stars.filter(([b]) => b >= lo && b < hi).map(([b, m]) => [b, -m]) }));
         let sel = 26;
         P.onClick((x, y) => { for (let Z = 1; Z <= 94; Z++) { const [r, c] = ptSlot(Z), [x0, y0] = cellXY(r, c); if (x >= x0 && x <= x0 + 0.94 && y >= y0 && y <= y0 + 0.94) { sel = Z; return; } } });
-        function cellXY(r, c) { const yy = r <= 7 ? 10.5 - r : 10.5 - r - 0.35; return [c - 1, yy]; }
+        function cellXY(r, c) { const yy = r <= 7 ? 10.5 - r : 11.25 - r; return [c - 1, yy]; }
         // approximate main-sequence position and schematic track (illustrative)
         const msMV = (M) => 4.83 - 8.75 * Math.log10(M), msBV = (M) => clamp(0.65 - 0.75 * Math.log10(M) * (M > 1 ? 0.9 : 1.6), -0.33, 1.6);
         const track = (M) => {
@@ -307,9 +308,8 @@ export default {
           const M = mS.value, life = 10 * M ** -2.5, massive = M >= 8;
           for (const g of groups) A.dots(g.pts, { r: 1.5, color: g.col, alpha: 0.6 });
           for (const [name, b, m] of NAMED) A.dot(b, -m, { r: 2.6, color: 'ink' });
-          placeLabels(v, A, NAMED.map(([name, b, m]) => ({ x: b, y: -m, text: name, size: 10, color: 'muted', r: 3 })));
           // Teff along the top
-          for (const T of [20000, 10000, 6000, 4500, 3500]) { let lo = -0.4, hi = 2.0; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (teffBV(mid) > T) lo = mid; else hi = mid; } A.text(`${T.toLocaleString('en-US')} K`, lo, 8.2, { align: 'center', size: 9.5, color: 'muted' }); }
+          for (const T of [10000, 6000, 4500, 3500]) { let lo = -0.4, hi = 2.0; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (teffBV(mid) > T) lo = mid; else hi = mid; } A.text(`${T.toLocaleString('en-US')} K`, lo, 8.2, { align: 'center', size: 9.5, color: 'muted' }); }
           // the chosen star
           const tr = track(M);
           A.path(tr.map(([b, m]) => [b, -m]), { color: massive ? 'red' : 'green', width: 2, dash: [5, 4] });
@@ -317,7 +317,8 @@ export default {
           A.dot(tr[0][0], -tr[0][1], { r: 6, color: massive ? 'red' : 'green' });
           const end = tr[tr.length - 1];
           A.text(massive ? 'core collapse ✸' : 'white dwarf', end[0], -end[1], { dx: massive ? -6 : 8, dy: massive ? -10 : 0, align: massive ? 'right' : 'left', size: 11, weight: 650, color: massive ? 'red' : 'green' });
-          A.corner(`${v.fmt(M, 2)} M☉ · main sequence ≈ ${life >= 1 ? v.fmt(life, 2) + ' Gyr' : v.fmt(life * 1000, 2) + ' Myr'} (schematic path)`, 'br', { color: massive ? 'red' : 'green', weight: 650 });
+          placeLabels(v, A, [{ x: tr[0][0], y: -tr[0][1], text: `${v.fmt(M, 2)} M☉: ${life >= 1 ? v.fmt(life, 2) + ' Gyr' : v.fmt(life * 1000, 2) + ' Myr'} on the main sequence`, size: 11, weight: 650, color: massive ? 'red' : 'green', r: 7, prefer: [1, 1] },
+            ...NAMED.map(([name, b, m]) => ({ x: b, y: -m, text: name, size: 10, color: 'muted', r: 3 }))]);
           // periodic table
           const hiCat = massive ? 3 : 2;
           for (let Z = 1; Z <= 94; Z++) {
@@ -329,8 +330,8 @@ export default {
             P.rect(x0, y0, x0 + w, y0 + w, { color: Z === sel ? 'ink' : lit ? (massive ? 'red' : 'green') : 'faint', width: Z === sel ? 2.6 : lit ? 2 : 0.6, radius: 1 });
             P.text(n[0], x0 + w / 2, y0 + w / 2, { align: 'center', baseline: 'middle', size: 11, weight: 650, color: 'ink' });
           }
-          P.text('lanthanides', 2.9, 1.43, { align: 'right', size: 9.5, color: 'muted' }); P.text('actinides', 2.9, 0.43, { align: 'right', size: 9.5, color: 'muted' });
-          P.text(massive ? 'outlined: mostly from exploding massive stars' : 'outlined: mostly from dying low-mass stars', 9, 10.45, { align: 'center', size: 10.5, weight: 650, color: massive ? 'red' : 'green' });
+          P.text('La–Lu', 1.9, 2.72, { align: 'right', size: 10.5, color: 'muted' }); P.text('Ac–Pu', 1.9, 1.72, { align: 'right', size: 10.5, color: 'muted' });
+          P.text(massive ? 'outlined: mostly from exploding massive stars' : 'outlined: mostly from dying low-mass stars', 9, 9.95, { align: 'center', size: 10.5, weight: 650, color: massive ? 'red' : 'green' });
           v.legend(ORIG.map(([lab, col]) => [col, lab, { area: true }]).concat([['muted', 'no stable isotope', { area: true }]]));
         });
         v.readout(() => {
@@ -361,7 +362,7 @@ export default {
         const PL = [['Mercury', 0.387, 0.0553], ['Venus', 0.723, 0.815], ['Earth', 1, 1], ['Mars', 1.52, 0.107], ['Jupiter', 5.2, 317.8], ['Saturn', 9.57, 95.2], ['Uranus', 19.17, 14.5], ['Neptune', 30.18, 17.1]];
         const A = v.stage({ x: [0.25, 45], y: [20, 2000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, weight: 1, xlabel: 'distance from the Sun (AU)', ylabel: 'disk temperature (K)', title: 'the disk and its snow line' });
         const B = v.stage({ x: [0.25, 45], y: [0.003, 600], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, weight: 1, xlabel: 'distance from the Sun (AU)', ylabel: 'mass (Earth masses)', title: 'how big can a core grow?' });
-        const Ct = v.stage({ x: [0.01, 150], y: [0, 4], xlog: true, axes: 'box', gutter: true, height: 210, full: true, xlabel: 'million years after the first solids (4,567.30 ± 0.16 Ma)', yticks: [], title: 'the meteorite clocks' });
+        const Ct = v.stage({ x: [0.01, 150], y: [0.35, 5.05], xlog: true, axes: 'box', gutter: true, height: 210, full: true, xlabel: 'million years after the first solids (4,567.30 ± 0.16 Ma)', yticks: [], title: 'the meteorite clocks' });
         const MS = 1.989e30, MEA = 5.972e24, AU = 1.496e11;
         const snow = () => (T0.value / 170) ** 2;
         const Miso = (r) => { const sig = 7.1 * fD.value * (r > snow() ? 4.2 : 1) * r ** -1.5 * 10, R = r * AU, bH = 10; return (2 * Math.PI * bH * R * R * sig) ** 1.5 / Math.sqrt(3 * MS) / MEA; }; // Σ in kg/m²
@@ -371,25 +372,25 @@ export default {
           A.fn((r) => T0.value * r ** -0.5, { color: 'red', width: 2.4 });
           A.hline(170, { color: 'blue', width: 1.2, dash: [5, 4] });
           A.vline(rs, { color: 'blue', width: 1.6 });
-          A.text(`snow line ${rs.toFixed(2)} AU`, rs, 1300, { dx: 6, align: 'left', size: 11, weight: 650, color: 'blue' });
-          A.text('rock and metal', Math.sqrt(0.25 * rs), 40, { align: 'center', size: 10.5, color: 'orange' });
-          A.text('rock, metal and ice', Math.sqrt(rs * 45), 40, { align: 'center', size: 10.5, color: 'blue' });
+          A.text(`snow line ${rs.toFixed(2)} AU`, rs, 650, { dx: 6, align: 'left', size: 11, weight: 650, color: 'blue' });
+          A.text('rock and metal', Math.sqrt(0.25 * rs), 1350, { align: 'center', size: 10.5, weight: 600, color: 'orange' });
+          A.text('rock, metal and ice', Math.sqrt(rs * 45) * 1.4, 1350, { align: 'center', size: 10.5, weight: 600, color: 'blue' });
           PL.forEach(([name, a]) => A.dot(a, T0.value * a ** -0.5, { r: 4.5, color: 'ink' }));
           placeLabels(v, A, PL.map(([name, a]) => ({ x: a, y: T0.value * a ** -0.5, text: name, size: 10, color: 'muted', r: 5, prefer: [0, 1] })));
           // isolation mass
           B.hband(10, 600, { color: 'gold', alpha: 0.07 });
-          B.hline(10, { color: 'gold', width: 1.4, dash: [5, 4] }); B.text('≈ 10 M⊕: core can capture gas', 0.28, 10, { dy: -9, align: 'left', size: 10.5, color: 'gold' });
+          B.hline(10, { color: 'gold', width: 1.4, dash: [5, 4] }); B.text('≈ 10 Earth masses: a core can capture gas', 0.28, 10, { dy: -9, align: 'left', size: 10.5, color: 'gold' });
           const pts = []; for (let k = 0; k <= 200; k++) { const r = 0.25 * (180) ** (k / 200); pts.push([r, Miso(r)]); }
           B.path(pts, { color: 'accent', width: 2.4 });
           B.vline(rs, { color: 'blue', width: 1, dash: [3, 3] });
           PL.forEach(([name, a, m]) => B.dot(a, m, { r: 5, color: 'ink' }));
           placeLabels(v, B, PL.map(([name, a, m]) => ({ x: a, y: m, text: name, size: 10, color: 'muted', r: 5 })));
           // timeline
-          const rows = [[0.01, 0.16, 3.5, 'CAIs: t = 0 (± 0.16 Myr)', 'accent'], [0.01, 2.61, 2.6, 'chondrules form (0 to 2.6 Myr)', 'orange'], [0.01, 1, 1.7, 'Jupiter core ≈ 20 M⊕ (< 1 Myr)', 'purple'], [1, 4, 1.7, 'grows to ≈ 50 M⊕ (to 3–4 Myr)', 'purple'], [0.01, 57, 0.8, 'Moon formed by 4.51 Ga (≤ ≈ 57 Myr)', 'gray']];
-          rows.forEach(([a, b, y, lab, col]) => { Ct.rect(a, y - 0.28, b, y + 0.28, { fill: col, fillAlpha: 0.3, color: col, width: 1.2, radius: 3 }); Ct.text(lab, b, y, { dx: 6, align: 'left', baseline: 'middle', size: 10.5, weight: 600, color: col === 'gray' ? 'muted' : col }); });
+          const rows = [[0.01, 0.16, 4.5, 'CAIs, the first solids: t = 0 (± 0.16 Myr)', 'accent', 'right'], [0.01, 2.61, 3.6, 'chondrules form, from t = 0 to 2.6 Myr', 'orange', 'in'], [0.01, 1, 2.7, 'Jupiter’s core reaches ≈ 20 Earth masses (< 1 Myr)', 'purple', 'right'], [1, 4, 1.8, 'core grows to ≈ 50 Earth masses (1 to 3–4 Myr)', 'purple', 'right'], [0.01, 57, 0.9, 'the Moon has formed by 4.51 Ga (≤ ≈ 57 Myr)', 'gray', 'in']];
+          rows.forEach(([a, b, y, lab, col, where]) => { Ct.rect(a, y - 0.3, b, y + 0.3, { fill: col, fillAlpha: 0.28, color: col, width: 1.2, radius: 3 }); Ct.text(lab, where === 'in' ? a : b, y, { dx: 6, align: 'left', baseline: 'middle', size: 10.5, weight: 650, color: col === 'gray' ? 'ink' : col }); });
           v.legend([['red', 'disk temperature T₀ r^−1/2'], ['accent', 'isolation mass'], ['ink', 'planets today', { dot: true }], ['blue', 'snow line (170 K)', { dash: true }]]);
         });
-        v.readout(() => `Snow line at **${snow().toFixed(2)} AU** · isolation mass at 1 AU **${v.fmt(Miso(1), 2)} M⊕**, at Jupiter's 5.2 AU **${v.fmt(Miso(5.2), 2)} M⊕** (${Miso(5.2) >= 10 ? 'enough to capture gas' : 'short of the ≈ 10 M⊕ needed'}) · minimum-mass nebula: solids 7.1 (r/AU)^−3/2 g cm⁻², ×4.2 beyond the snow line, embryos sweeping 10 Hill radii.`);
+        v.readout(() => `Snow line at **${snow().toFixed(2)} AU** · isolation mass at 1 AU **${v.fmt(Miso(1), 2)}** Earth masses (Mars: 0.107), at Jupiter's 5.2 AU **${v.fmt(Miso(5.2), 2)}** (${Miso(5.2) >= 10 ? 'enough to capture gas' : 'short of the ≈ 10 needed'}) · minimum-mass nebula: solids 7.1 (r/AU)^−3/2 g cm⁻², ×4.2 beyond the snow line, embryos sweeping 10 Hill radii.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 2.5
@@ -410,7 +411,7 @@ export default {
         const thS = v.slider('impact angle θ (°)', 0, 80, 45, { step: 1 });
         const vS = v.slider('impact speed / escape speed', 1, 1.8, 1.05, { step: 0.01 });
         const A = v.stage({ x: [-3, 3], y: [-2.2, 2.2], equal: true, axes: false, height: 330, weight: 1.2, title: 'impact geometry (to scale)' });
-        const B = v.stage({ x: [0, 4], y: [0, 3.2], axes: 'box', gutter: { l: 40 }, height: 330, weight: 1, minWidth: 260, xticks: [[0.5, 'L / L_EM'], [1.7, 'Earth core'], [2.7, 'Moon core'], [3.5, '']], ylabel: '', title: 'what has to come out right' });
+        const B = v.stage({ x: [0, 4], y: [0, 2.2], axes: 'box', gutter: { l: 40 }, height: 330, weight: 1, minWidth: 260, xticks: [[0.5, 'L / L_EM'], [1.7, 'Earth: core'], [2.7, 'Moon: core']], ylabel: 'ratio to today / mass fraction', title: 'what has to come out right' });
         const LEM = CE * W0 + LORB(A0);
         function impact() {
           const m = gS.value * ME, Mt = ME - m, Rt = RE * ((Mt / ME) ** (1 / 3)), Ri = Math.cbrt((3 * m) / (4 * Math.PI * 3930));
@@ -428,26 +429,25 @@ export default {
           A.arrow(bx - 1.6, by, bx - ri - 0.05, by, { color: 'red', width: 2.2 });
           A.line(-3, 0, 3, 0, { color: 'faint', width: 1, dash: [4, 4] });
           A.line(bx - 1.6, by, 2.6, by, { color: 'red', width: 1, dash: [2, 4], alpha: 0.6 });
-          if (Math.abs(by) > 0.08) { A.line(2.3, 0, 2.3, by, { color: 'gold', width: 1.6 }); A.text(`b = ${(I.b / 1e3).toLocaleString('en-US', { maximumSignificantDigits: 3 })} km`, 2.35, by / 2, { align: 'left', size: 11, weight: 650, color: 'gold' }); }
+          if (Math.abs(by) > 0.08) { A.line(2.3, 0, 2.3, by, { color: 'gold', width: 1.6 }); A.text(`b = ${(I.b / 1e3).toLocaleString('en-US', { maximumSignificantDigits: 3 })} km`, 2.24, by / 2, { align: 'right', size: 11, weight: 650, color: 'gold' }); }
           A.line(0, 0, bx, by, { color: 'muted', width: 1, dash: [3, 3] });
           A.text('proto-Earth', 0, -rt, { dy: 14, align: 'center', size: 11, color: 'blue' });
-          A.text(`impactor ${v.fmt(gS.value, 2)} M⊕`, bx, by + ri, { dy: -10, align: 'center', size: 11, color: 'red' });
+          A.text(`impactor ${v.fmt(gS.value, 2)} Earth masses`, bx, by + ri, { dy: -10, align: 'center', size: 11, color: 'red' });
           A.text(`${v.fix(I.vi / 1000, 1)} km/s`, bx - 0.9, by, { dy: -10, align: 'center', size: 10.5, color: 'red' });
           // bars
           const ratio = I.L / LEM;
-          B.hline(1, { color: 'green', width: 1.4, dash: [5, 4] }); B.text('today’s Earth–Moon value', 0.05, 1, { dy: -9, align: 'left', size: 10, color: 'green' });
-          B.rect(0.2, 0, 0.8, Math.min(3.15, ratio), { fill: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', fillAlpha: 0.55, color: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', width: 1.2 });
-          B.text(v.fix(ratio, 2), 0.5, Math.min(3.15, ratio), { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
+          B.hline(1, { color: 'green', width: 1.4, dash: [5, 4] }); B.text('today’s Earth–Moon value', 3.95, 1, { dy: -9, align: 'right', size: 10.5, color: 'green' });
+          B.rect(0.2, 0, 0.8, Math.min(2.15, ratio), { fill: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', fillAlpha: 0.55, color: ratio > 0.8 && ratio < 1.3 ? 'green' : 'red', width: 1.2 });
+          B.text(v.fix(ratio, 2), 0.5, Math.min(2.15, ratio), { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
           const fE = 0.325, fM = (330 / 1737.4) ** 3 * 7 / 3.344; // Earth's core ≈ 32.5% of its mass; Moon: 330 km core of density ≈ 7 g/cm³
-          B.rect(1.4, 0, 2.0, fE * 6, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`${(100 * fE).toFixed(0)}%`, 1.7, fE * 6, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
-          B.rect(2.4, 0, 3.0, fM * 6, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`≈ ${(100 * fM).toFixed(1)}%`, 2.7, fM * 6, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
-          B.text('iron core, % of mass (×6 scale)', 2.2, 2.4, { align: 'center', size: 10, color: 'muted' });
+          B.rect(1.4, 0, 2.0, fE, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`${(100 * fE).toFixed(0)}% of its mass`, 1.7, fE, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
+          B.rect(2.4, 0, 3.0, fM, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.2 }); B.text(`≈ ${(100 * fM).toFixed(1)}%`, 2.7, fM, { dy: -9, align: 'center', size: 11, weight: 650, color: 'ink' });
           cur = { I, ratio, LEM };
           v.legend([['blue', 'proto-Earth (dashed: iron core)'], ['red', 'impactor'], ['gold', 'impact parameter b'], ['green', 'match with today']]);
         });
         v.readout(() => {
           const { I, ratio, LEM } = cur;
-          return `Mutual escape speed ${v.fix(I.vesc / 1000, 2)} km/s · delivered $L = \\mu v b$ = **${v.sci(I.L, 3)}** kg m²/s = **${v.fix(ratio, 2)} × L_EM** (today: Earth's spin ${v.sci(CE * W0, 2)} + Moon's orbit ${v.sci(LORB(A0), 2)} = ${v.sci(LEM, 3)}) · Canup & Asphaug (2001): about a Mars mass (0.11 M⊕) at about 45°, near escape speed.`;
+          return `Mutual escape speed ${v.fix(I.vesc / 1000, 2)} km/s · delivered $L = \\mu v b = ${v.sci(I.L, 3)}$ kg m²/s = **${v.fix(ratio, 2)}** × today's $L_{EM}$ (Earth's spin $${v.sci(CE * W0, 2)}$ + Moon's orbit $${v.sci(LORB(A0), 2)}$ = $${v.sci(LEM, 3)}$) · Canup & Asphaug (2001): about a Mars mass (0.11 Earth masses) at about 45°, near escape speed.`;
         });
       },
     },
@@ -466,8 +466,8 @@ export default {
       tags: ['Moon', 'tides', 'deep time'],
       viz(v) {
         const fS = v.slider('average dissipation (× today’s)', 0.2, 1.2, 0.5, { step: 0.01 });
-        const A = v.stage({ x: [0, 4.5], y: [0.2, 1.05], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time ago (Gyr)', ylabel: 'Earth–Moon distance / today', title: 'the Moon draws closer' });
-        const B = v.stage({ x: [0, 4.5], y: [4, 25], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time ago (Gyr)', ylabel: 'length of day (h)', title: 'the day gets shorter' });
+        const A = v.stage({ x: [0, 4.5], y: [0, 1.05], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time ago (Gyr)', ylabel: 'Earth–Moon distance / today', title: 'the Moon draws closer' });
+        const B = v.stage({ x: [0, 4.5], y: [0, 25], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time ago (Gyr)', ylabel: 'length of day (h)', title: 'the day gets shorter' });
         const V0 = 0.0382 / YR; // m/s today
         // da/dt = f V0 (A0/a)^{11/2}: closed form back in time
         const aAt = (tGyr, f) => { const s = A0 ** 6.5 - 6.5 * f * V0 * A0 ** 5.5 * tGyr * 1e9 * YR; return s > 0 ? s ** (1 / 6.5) : null; };
@@ -476,9 +476,10 @@ export default {
         v.render(() => {
           const f = fS.value;
           for (const [ff, col, w, dash] of [[1, 'red', 1.8, [6, 4]], [f, 'accent', 2.6, null]]) {
-            const pa = [], pl = []; for (let k = 0; k <= 300; k++) { const t = (4.5 * k) / 300, a = aAt(t, ff); if (!a || a < 2 * RE) break; pa.push([t, a / A0]); pl.push([t, solarDayH(wOf(a))]); }
+            const pa = [], pl = [], tc = tCrash(ff);
+            for (let k = 0; k <= 400; k++) { const t = Math.min(4.5, tc) * (1 - (1 - k / 400) ** 2.5), a = aAt(t, ff); if (!a || a < 2 * RE) break; pa.push([t, a / A0]); pl.push([t, solarDayH(wOf(a))]); }
             A.path(pa, { color: col, width: w, dash }); B.path(pl, { color: col, width: w, dash });
-            if (ff === 1) { const tc = tCrash(1); A.dot(tc, 2 * RE / A0, { r: 4, color: 'red' }); A.text(`today’s rate: Moon at the Earth ${tc.toFixed(2)} Gyr ago`, tc, 0.26, { dx: 6, align: 'left', size: 10.5, color: 'red' }); }
+            if (ff === 1) { const tc = tCrash(1); A.dot(tc, 2 * RE / A0, { r: 4, color: 'red' }); A.text(`today’s rate: Moon at the Earth ${tc.toFixed(2)} Gyr ago`, tc, 0.06, { dx: 8, align: 'left', size: 10.5, color: 'red' }); }
           }
           // data
           A.line(0.62, 0.96, 0.62, 0.97, { color: 'ink', width: 2 }); A.dot(0.62, 0.965, { r: 4.5, color: 'ink' });
@@ -517,10 +518,10 @@ export default {
         const s = v.stage({ height: 380, full: true });
         const G = v.globe(s, { projection: 'orthographic', center: [-20, -10], graticule: 30 });
         const Q = G.handle(-38, -10, { label: 'Q', color: 'gold' });
-        const t = v.stage({ height: 200, full: true });
+        const t = v.stage({ height: 150, full: true, title: 'supercontinents (Bradley 2011)' });
         const TL = v.timeline(t, { scale: 'linear', range: ['2.6 Ga', 'now'], zoom: false, fontSize: 11, trackHeight: 18,
-          spans: [{ from: '2.6 Ga', to: '2.09 Ga', label: 'Superia / Sclavia', color: 'gray', track: 0 }, { from: '1.75 Ga', to: '1.3 Ga', label: 'Nuna', color: 'purple', track: 0 }, { from: '1.0 Ga', to: '520 Ma', label: 'Rodinia (breaking up in stages)', color: 'teal', track: 0 }, { from: '530 Ma', to: '300 Ma', label: 'Gondwana', color: 'orange', track: 1 }, { from: '300 Ma', to: '180 Ma', label: 'Pangaea', color: 'red', track: 0 }, { from: '180 Ma', to: 'now', label: 'Atlantic opens', color: 'blue', track: 1 }],
-          events: [{ t: '1.75 Ga', label: 'Nuna assembled', priority: 1 }, { t: '1.0 Ga', label: 'Rodinia', priority: 1 }, { t: '300 Ma', label: 'Pangaea', priority: 1 }, { t: '180 Ma', label: 'breakup begins' }] });
+          spans: [{ from: '2.6 Ga', to: '2.09 Ga', label: 'Superia / Sclavia', color: 'gray', track: 0 }, { from: '1.75 Ga', to: '1.0 Ga', label: 'Nuna', color: 'purple', track: 0 }, { from: '1.0 Ga', to: '520 Ma', label: 'Rodinia', color: 'teal', track: 1 }, { from: '530 Ma', to: '300 Ma', label: 'Gondwana', color: 'orange', track: 0 }, { from: '300 Ma', to: '180 Ma', label: '', color: 'red', track: 1 }, { from: '180 Ma', to: 'now', label: 'Atlantic', color: 'blue', track: 0 }],
+          events: [{ t: '2.09 Ga', label: 'Sclavia breaks up' }, { t: '1.75 Ga', label: 'Nuna assembled', priority: 1 }, { t: '1.0 Ga', label: 'Rodinia assembled', priority: 1 }, { t: '300 Ma', label: 'Pangaea', priority: 1 }, { t: '180 Ma', label: 'Pangaea breaks up' }] });
         const BUL = { lon: -30.6, lat: 44.0 }, MOR = { lon: -39.0, lat: 60.9 }, OMEGA = 0.295; // °/Myr, Nubia–South America
         const SA = G.landmass('South America'), AF = G.landmass('Africa');
         v.render(() => {

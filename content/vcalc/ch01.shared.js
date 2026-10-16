@@ -86,3 +86,10 @@ export function lengthTable(r, t0, t1, n) {
   }
   return L;
 }
+
+/** TeX for a tiny non-negative number that should read as zero: "0 (below 10^-12)" or a scientific literal. */
+export function tiny(x) {
+  if (x < 1e-12) return '0\\ (<10^{-12})';
+  const [m, e] = x.toExponential(1).split('e');
+  return `${m}\\times10^{${+e}}`;
+}

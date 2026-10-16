@@ -216,7 +216,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           const VA = cum ? cptValue(A, par) : optValue(A, par), VB = cum ? cptValue(B, par) : optValue(B, par);
           const sumB = wB.filter((o) => o.x > 0).reduce((s, o) => s + o.pi, 0), sumA = wA.filter((o) => o.x > 0).reduce((s, o) => s + o.pi, 0);
           // ---- stems and weights
-          const ymax = Math.max(0.2, sumA * 1.25, ...wB.map((o) => o.pi * 1.25)), xl = 100 - 1.5 * e - 0.4;
+          const ymax = Math.max(0.2, sumA * 1.25, ...wB.filter((o) => o.x > 0).map((o) => o.pi * 1.25)), xl = 100 - 1.5 * e - 0.4;
           S.setView([xl, 100.6], [0, ymax]); F.setView([xl, 100.6], [0, 0.32]);
           const bw = Math.min(0.12, (0.8 * e) / Math.max(1, n));
           for (const o of wB) if (o.x > 0) {
@@ -276,10 +276,11 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         v.render(() => {
           let wtp, wta, label;
           if (ds.value === 'sim') {
-            // values lognormal around a $2.60 median (KKT's median bids were $2.25–2.75); owners ask r × their value
+            // values lognormal around a $2.20 median (KKT's median bids were $2.25–2.75); owners ask r × their value
             const rr = v.rng(seed), z = () => { let s = 0; for (let k = 0; k < 12; k++) s += rr(); return s - 6; };
-            const vals = Array.from({ length: 44 }, () => clamp(2.6 * Math.exp(0.5 * z()), 0.25, 30));
-            wta = vals.slice(0, 22).map((x) => clamp(rS.value * x, 0, 30)); wtp = vals.slice(22);
+            // both groups get the same 22 underlying values (in different random orders), so r = 1 gives exactly 11 trades
+            const vals = Array.from({ length: 22 }, () => clamp(2.2 * Math.exp(0.5 * z()), 0.25, 30));
+            wta = rr.shuffle(vals.slice()).map((x) => clamp(rS.value * x, 0, 30)); wtp = rr.shuffle(vals.slice());
             label = 'simulated';
           } else { wtp = PZ[ds.value].wtp; wta = PZ[ds.value].wta; label = ds.value === 'rep' ? 'replication of KKT' : 'with training, anonymity'; }
           const { k, b, s, price } = clear(wtp, wta);
@@ -483,8 +484,9 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           const xL = P.X(S.day) + 26;
           ctx.save(); ctx.font = '600 11.5px system-ui, sans-serif'; ctx.textBaseline = 'middle';
           for (const L of labs) {
-            ctx.fillStyle = v.color(L.g >= 0 ? 'green' : 'red', 0.15); ctx.strokeStyle = v.color(L.g >= 0 ? 'green' : 'red');
-            ctx.beginPath(); ctx.roundRect ? ctx.roundRect(xL, L.y - 8.5, 80, 17, 5) : ctx.rect(xL, L.y - 8.5, 80, 17); ctx.fill(); ctx.stroke();
+            ctx.strokeStyle = v.color(L.g >= 0 ? 'green' : 'red');
+            ctx.beginPath(); ctx.roundRect ? ctx.roundRect(xL, L.y - 8.5, 96, 17, 5) : ctx.rect(xL, L.y - 8.5, 96, 17);
+            ctx.fillStyle = v.color('panel'); ctx.fill(); ctx.fillStyle = v.color(L.g >= 0 ? 'green' : 'red', 0.15); ctx.fill(); ctx.stroke();
             ctx.fillStyle = v.color('ink'); ctx.fillText(`sell #${L.i + 1} ${L.g >= 0 ? '+' : '−'}${Math.abs(100 * L.g).toFixed(1)}%`, xL + 6, L.y);
             ctx.strokeStyle = v.color('faint'); ctx.beginPath(); ctx.moveTo(P.X(S.day) + 5, P.Y(L.g)); ctx.lineTo(xL, L.y); ctx.stroke();
           }
@@ -538,7 +540,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
         const As = v.stage({ x: [0, 100], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'share in stocks (%)', ylabel: 'prospective value', title: 'the best mix for this period' });
         const NQ = 200, QZ = Array.from({ length: NQ }, (_, i) => ninv((i + 0.5) / NQ)), NQ2 = 36, QZ2 = Array.from({ length: NQ2 }, (_, i) => ninv((i + 0.5) / NQ2));
         const rets = (mu, sg, h, Z) => Z.map((z) => 100 * (Math.exp((mu * h) / 12 + sg * Math.sqrt(h / 12) * z) - 1));
-        v.legend([['blue', 'stock returns: gains'], ['red', 'stock returns: losses'], ['blue', 'certainty-equivalent return of stocks minus bonds, per year', { dash: false }], ['purple', 'prospective value of a mix'], ['accent', 'your share', { dot: true }]]);
+        v.legend([['red', 'losses over the period'], ['blue', 'stocks’ certainty-equivalent edge over bonds'], ['green', 'indifference period', { dash: true }], ['purple', 'value of a stock–bond mix'], ['accent', 'your share', { dot: true }]]);
         let st = {};
         v.render(() => {
           const h = hS.value, l = lS.value, mu = muS.value, sg = sgS.value, a = 0.88, g = 0.61, d = 0.69;
@@ -569,7 +571,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           Hs.path(H, { color: 'blue', width: 2.6 });
           const dNow = diff(h);
           Hs.dot(h, dNow, { r: 6, color: dNow >= 0 ? 'green' : 'red' });
-          if (hStar) { Hs.vline(hStar, { color: 'green', width: 1.6, dash: [5, 4] }); Hs.text(`indifferent at ${hStar.toFixed(1)} months`, hStar, yLo, { dx: 6, dy: -12, size: 11, weight: 700, color: 'green', plate: true }); }
+          if (hStar) { Hs.vline(hStar, { color: 'green', width: 1.6, dash: [5, 4] }); Hs.text(`indifferent: ${hStar.toFixed(1)} mo`, hStar, yLo, { dx: hStar > 15 ? -6 : 6, dy: -12, align: hStar > 15 ? 'right' : 'left', size: 11, weight: 700, color: 'green', plate: true }); }
           Hs.vband(11, 12, { color: 'gold', alpha: 0.25 });
           Hs.text('BT 1995: 11–12', 12, yHi, { dx: 4, dy: 12, size: 10.5, color: 'gold', weight: 700 });
           // ---- allocation curve for this period (stocks and bonds independent)

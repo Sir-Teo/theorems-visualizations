@@ -59,7 +59,7 @@ function relChecks(adj, reading) {
   const trans = { name: 'transitive', missing: [] }; let tw = null;
   for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (R(a, b)) for (let c = 0; c < n; c++) if (R(b, c) && !R(a, c)) { if (!trans.missing.some(([p, q]) => p === a && q === c)) trans.missing.push([a, c]); if (!tw) tw = [a, b, c]; }
   trans.ok = !trans.missing.length; trans.why = trans.ok ? 'all shortcuts present' : `${tw[0]}→${tw[1]}→${tw[2]} but not ${tw[0]}→${tw[2]}`;
-  const fun = { name: 'one arrow out of each point', missing: [], bad: [] };
+  const fun = { name: 'a function', missing: [], bad: [] };
   for (let a = 0; a < n; a++) { const outs = range(n).filter((b) => R(a, b)); if (!outs.length) fun.missing.push([a, a]); if (outs.length > 1) outs.slice(1).forEach((b) => fun.bad.push([a, b])); }
   fun.ok = !fun.missing.length && !fun.bad.length;
   fun.why = fun.ok ? 'f is a total function' : fun.bad.length ? `${fun.bad[0][0]} has ${range(n).filter((b) => R(fun.bad[0][0], b)).length} arrows out` : `${fun.missing[0][0]} has no arrow out`;
@@ -357,7 +357,7 @@ The symbol $=$ is always interpreted as identity. For a language with one binary
             nodeRing: E.ring,
             nodeColor: rd === 'equiv' ? (id) => PAL[[...new Set(cls)].indexOf(cls[id]) % PAL.length] : null,
             nodeFill: rd === 'equiv' ? (id) => PAL[[...new Set(cls)].indexOf(cls[id]) % PAL.length] : null,
-            nodeNote: rd === 'func' ? (id) => { const o = range(n).filter((b) => adj[id][b]); return o.length === 1 ? `f(${id})=${o[0]}` : o.length ? `${o.length} values` : 'undefined'; } : null,
+            nodeNote: rd === 'func' ? (id) => { const o = range(n).filter((b) => adj[id][b]); return o.length === 1 ? `f(${id})=${o[0]}` : o.length ? `${o.length} values` : 'no value'; } : null,
             noteColor: rd === 'func' ? (id) => (range(n).filter((b) => adj[id][b]).length === 1 ? 'ink' : 'red') : null,
             edgeColor: (e) => (rd === 'order' ? (covers(e.from, e.to) ? 'accent' : e.from === e.to ? 'faint' : 'muted') : rd === 'func' && checks[0].bad.some(([a, b]) => a === e.from && b === e.to) ? 'red' : null),
             edgeWidth: (e) => (rd === 'order' && covers(e.from, e.to) ? 2.6 : null),
@@ -367,7 +367,7 @@ The symbol $=$ is always interpreted as identity. For a language with one binary
             for (const [a, b] of c.bad || []) if (c.name === 'antisymmetric') { const P = E.G.node(a), Q = E.G.node(b); A.text('✗', (P.x + Q.x) / 2, (P.y + Q.y) / 2, { align: 'center', baseline: 'middle', size: 16, color: 'red', weight: 700 }); }
           }
           A.corner('click a point, then another: toggle an arrow', 'bl', { size: 10.5 });
-          TB.draw({ rows: n, cols: n, rowLabels: range(n).map(String), colLabels: range(n).map(String), cornerLabel: rd === 'func' ? 'x \\ f(x)' : rd === 'order' ? '≤' : rd === 'equiv' ? '∼' : 'E',
+          TB.draw({ rows: n, cols: n, rowLabels: range(n).map(String), colLabels: range(n).map(String), cornerLabel: rd === 'func' ? 'f' : rd === 'order' ? '≤' : rd === 'equiv' ? '∼' : 'E',
             value: (i, j) => (adj[i][j] ? '1' : ''), fill: (i, j) => (adj[i][j] ? ['accent', 0.3] : null), size: 13 });
           // checklist
           if (!checks.length) {
@@ -516,6 +516,7 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
                 row.tested++;
                 if (!fp.every((f) => f(M, { ...env }))) continue;
                 row.sat++;
+                if (!out.model) out.model = { M, env, n };
                 if (!fc(M, { ...env })) { row.counter++; if (out.counters.length < 60) out.counters.push({ M, env, n }); }
               }
             }
@@ -535,20 +536,29 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
             highlight: cm ? [[cm.n - 1, 2, 'red']] : [],
           });
           A.text('last column: countermodels;  * = random sample', 5, 0.9, { align: 'center', size: 10.5, color: 'muted' });
-          if (!cm) {
+          const isInf = G.value.trim() === PRE.inf[0] && C.value.trim() === PRE.inf[1];
+          if (!cm && !R.model) {
             GV.set({ nodes: [], edges: [] });
-            B.text('no countermodel', 0, 0.25, { align: 'center', size: 16, weight: 700, color: 'green' });
-            B.text('among the structures searched', 0, -0.2, { align: 'center', size: 12, color: 'muted' });
+            B.text('no finite model of Γ', 0, 1.05, { align: 'center', size: 15, weight: 700, color: 'red' });
+            if (isInf) {
+              B.text('but (ℕ, <) is a model:', 0, 0.62, { align: 'center', size: 12, color: 'muted' });
+              for (let i = 0; i < 6; i++) { const x = -1.25 + i * 0.45; B.dot(x, 0, { r: 9, color: 'accent', hollow: true, width: 1.8 }); B.text(String(i), x, 0, { align: 'center', baseline: 'middle', size: 11, color: 'ink' }); if (i < 5) B.arrow(x + 0.1, 0, x + 0.35, 0, { color: 'accent', width: 1.6, head: 6 }); }
+              B.text('⋯', 1.47, 0, { align: 'center', baseline: 'middle', size: 16, color: 'accent' });
+              for (let i = 0; i < 4; i++) B.curve((t) => [-1.25 + i * 0.45 + 0.9 * t, -0.12 - 0.32 * Math.sin(Math.PI * t)], 0, 1, { color: 'faint', width: 1.1 });
+              B.text('(and every x < y with y further right)', 0, -0.72, { align: 'center', size: 11, color: 'muted' });
+            } else B.text('either Γ is unsatisfiable, or all its models are larger', 0, 0.55, { align: 'center', size: 11.5, color: 'muted' });
             return;
           }
-          const M = cm.M, n = M.n, unary = [...langOf(...R.prem, R.concl).rels].filter(([, ar]) => ar === 1).map(([r]) => r);
+          if (!cm) B.text('no countermodel — here is a model of Γ and φ', 0, 1.22, { align: 'center', size: 12, weight: 700, color: 'green' });
+          const shown = cm || R.model;
+          const M = shown.M, n = M.n, unary = [...langOf(...R.prem, R.concl).rels].filter(([, ar]) => ar === 1).map(([r]) => r);
           const nodes = range(n).map((i) => { const a = (90 - (360 * i) / n) * Math.PI / 180; return { id: i, x: (n === 1 ? 0 : 0.95 * Math.cos(a)), y: (n === 1 ? 0 : 0.95 * Math.sin(a)) - 0.05 }; });
           const es = []; for (const [r, ar] of langOf(...R.prem, R.concl).rels) if (ar === 2) for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (M.rel(r, [a, b])) es.push({ from: a, to: b });
           GV.set({ nodes, edges: es });
-          const inv = new Map(); for (const [x, d] of Object.entries(cm.env)) inv.set(d, (inv.get(d) ? inv.get(d) + ',' : '') + x);
+          const inv = new Map(); for (const [x, d] of Object.entries(shown.env)) inv.set(d, (inv.get(d) ? inv.get(d) + ',' : '') + x);
           GV.draw({ nodeFill: unary.length ? (id) => (M.rel(unary[0], [id]) ? 'gold' : null) : null, nodeNote: (id) => inv.get(id) || null });
-          B.corner(`countermodel ${(pick % R.counters.length) + 1} of ${R.counters.length}${R.counters.length >= 60 ? '+' : ''}`, 'tl', { size: 11 });
-          B.corner(`Γ: ${R.prem.map(() => '✓').join(' ')}   φ: ✗`, 'bl', { size: 12, color: 'red', weight: 700 });
+          if (cm) B.corner(`countermodel ${(pick % R.counters.length) + 1} of ${R.counters.length}${R.counters.length >= 60 ? '+' : ''}`, 'tl', { size: 11 });
+          B.corner(`Γ: ${R.prem.map(() => '✓').join(' ')}   φ: ${cm ? '✗' : '✓'}`, 'bl', { size: 12, color: cm ? 'red' : 'green', weight: 700 });
           if (unary.length) B.corner(`gold = ${unary[0]}`, 'br', { size: 11, color: 'gold' });
         });
         v.readout(() => {
@@ -559,7 +569,9 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
             const c = R.counters[0];
             return `**Γ ⊭ φ.** The smallest countermodel has ${c.n} element${c.n === 1 ? '' : 's'}: it satisfies ${prem} but not ${concl}. One countermodel is enough to refute an implication.`;
           }
-          if (!satAll) return `No structure with at most 4 elements satisfies Γ at all (${tested.toLocaleString('en')} checked), so there is no finite countermodel. But Γ is satisfiable: $(\\N, <)$ is a model and makes ${concl} false. So **Γ ⊭ φ**, and no finite search can show it.`;
+          const isInf = G.value.trim() === PRE.inf[0] && C.value.trim() === PRE.inf[1];
+          if (!satAll && isInf) return `No structure with at most 4 elements satisfies Γ at all (${tested.toLocaleString('en')} checked), and indeed none of any finite size: an irreflexive transitive relation with no dead ends would cycle back and give $E(x,x)$. But Γ is satisfiable: $(\\N, <)$ is a model and makes ${concl} false. So **Γ ⊭ φ**, and no finite search can show it.`;
+          if (!satAll) return `No structure with at most 4 elements satisfies Γ (${tested.toLocaleString('en')} checked), so there is no small countermodel. Either Γ is unsatisfiable, and then Γ ⊨ φ for every φ, or every model of Γ is larger.`;
           return `No countermodel among ${tested.toLocaleString('en')} structure–assignment pairs with at most 4 elements (${satAll.toLocaleString('en')} satisfy Γ). This is evidence that Γ ⊨ φ, not a proof: a countermodel could be larger or infinite. Here an argument settles it.`;
         });
       },
@@ -573,7 +585,7 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
 $$\varphi^{\mathfrak A} = \{(a_1,\dots,a_k) \in |\mathfrak A|^k : \mathfrak A \models \varphi[a_1,\dots,a_k]\}.$$
 A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if some formula defines it. With parameters $b_1, \dots, b_m$ from $|\mathfrak A|$ we allow formulas $\varphi(\bar x, \bar y)$ and take $\{\bar a : \mathfrak A \models \varphi[\bar a, \bar b]\}$. For example, in $(\R, <, +, \cdot, 0, 1)$ the formula $\exists y\,(y\cdot y = x)$ defines $[0,\infty)$, and in $(\N, +)$ the formula $\exists y\,(y+y=x)$ defines the even numbers.`,
       idea: String.raw`Definable sets are closed under the Boolean operations and under projection, which correspond to the connectives and to $\exists$. In a finite structure we can say exactly which sets are definable. Every definable set is a union of orbits of the automorphism group (logic-3.9). Conversely, every orbit is definable: list the universe as $a_1,\dots,a_n$ and let $\Delta(y_1,\dots,y_n)$ be the conjunction of all atomic facts and negated atomic facts about the $a_i$. Then $\exists \bar y\,(\bigwedge_{i<j} y_i \neq y_j \land \Delta(\bar y) \land x = y_i)$ defines the orbit of $a_i$. So the definable subsets are exactly the $2^k$ unions of the $k$ orbits.`,
-      caption: String.raw`Choose a structure, type a formula $\varphi(x)$ (one free variable $x$), or press **next example**. The set it defines is filled in blue. The coloured rings are the orbits of the automorphism group, computed by search (one-element orbits are left uncoloured). The readout confirms that the defined set is a union of orbits and counts how many subsets are definable at all. In $\Z/n$, halving is possible exactly when $n$ is odd. In the divisibility order on $\{1,\dots,N\}$ the primes are definable, but $11$ and $13$ lie in one orbit, so no formula can tell them apart. Edit the graph to change its symmetries.`,
+      caption: String.raw`Choose a structure, type a formula $\varphi(x)$ (one free variable $x$), or press **next example**. The set it defines is filled in blue. The coloured rings are the orbits of the automorphism group, computed by search (one-element orbits are left uncoloured). The readout confirms that the defined set is a union of orbits and counts how many subsets are definable at all. In $\Z/n$, halving is possible exactly when $n$ is odd. In the divisibility order on $\{1,\dots,N\}$ the primes are definable, but for $N = 12$ the primes $7$ and $11$ lie in one orbit (for $N = 30$, so do $11$ and $13$), so no formula can tell them apart. Edit the graph to change its symmetries.`,
       deps: ['logic-3.4'],
       refs: ['Enderton §2.2'],
       tags: ['definability', 'automorphisms'],
@@ -594,7 +606,7 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
         const E = relEditor(v, A, { n: 6, radius: 1.0, edges: [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 4]] });
         let memo = { key: null };
         const model = () => {
-          const k = kind.value, N = k === 'zn' ? Math.min(size.value, 24) : Math.max(4, size.value);
+          const k = kind.value, N = k === 'zn' ? size.value : Math.max(4, size.value);
           const key = k === 'graph' ? `g${JSON.stringify(E.edgeList())}${E.n}` : `${k}${N}`;
           if (memo.key === key) return memo;
           let M, FR, label = (a) => String(a), pos;
@@ -630,13 +642,14 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
               const [x, y] = P[a], oc = ocol.get(a);
               if (oc) A.dot(x, y, { r: rr + 4, color: oc, alpha: 0.9 });
               A.dot(x, y, { r: rr, color: 'panel' });
-              A.dot(x, y, { r: rr, color: set.has(a) ? 'accent' : 'muted', hollow: !set.has(a), width: 1.5 });
-              A.text(R.label(a), x, y, { align: 'center', baseline: 'middle', size: R.N > 18 ? 10 : 11.5, weight: 600, color: set.has(a) ? 'panel' : 'ink' });
+              if (set.has(a)) A.dot(x, y, { r: rr, color: 'accent', alpha: 0.35 });
+              A.dot(x, y, { r: rr, color: set.has(a) ? 'accent' : 'muted', hollow: true, width: set.has(a) ? 2.2 : 1.5 });
+              A.text(R.label(a), x, y, { align: 'center', baseline: 'middle', size: R.N > 18 ? 10 : 11.5, weight: 600, color: 'ink' });
             }
           }
           if (fld.error) A.corner(fld.error, 'tl', { color: 'red', size: 11 });
           // orbit list
-          const list = R.orb.list, rowsMax = 9, shown = list.slice(0, rowsMax);
+          const list = R.orb.list, rowsMax = list.length > 9 ? 8 : 9, shown = list.slice(0, rowsMax);
           shown.forEach((o, i) => {
             const y = 9.1 - i * 0.92, col = o.length > 1 ? ocol.get(o[0]) : 'muted', inS = o.every((x) => set.has(x));
             B.rect(0.3, y - 0.36, 9.7, y + 0.36, { fill: inS ? 'accent' : col, fillAlpha: inS ? 0.22 : 0.08, color: col, width: 1.2, radius: 5 });
@@ -645,6 +658,17 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
             B.text(inS ? '⊆ φ' : '', 9.4, y, { align: 'right', baseline: 'middle', size: 11, color: 'accent', weight: 700 });
           });
           if (list.length > rowsMax) B.text(`+ ${list.length - rowsMax} more orbits`, 5, 9.1 - rowsMax * 0.92, { align: 'center', size: 11, color: 'muted' });
+          else if (list.length <= 3) {
+            // all definable subsets: the unions of orbits
+            const y0 = 9.1 - list.length * 0.92 - 0.55;
+            B.text(`all ${2 ** list.length} definable subsets:`, 0.4, y0, { align: 'left', baseline: 'middle', size: 11.5, weight: 600, color: 'muted' });
+            for (let m = 0; m < 2 ** list.length; m++) {
+              const U = list.filter((_, i) => (m >> i) & 1).flat().sort((a, b) => a - b), y = y0 - 0.78 * (m + 1), hit = U.length === set.size && U.every((x) => set.has(x));
+              const t = setStr(U.map(R.label));
+              B.text(t.length > 30 ? t.slice(0, 28) + '…}' : t, 0.8, y, { align: 'left', baseline: 'middle', size: 11.5, color: hit ? 'accent' : 'ink', weight: hit ? 700 : 400 });
+              if (hit) B.text('← φ', 9.4, y, { align: 'right', baseline: 'middle', size: 11.5, color: 'accent', weight: 700 });
+            }
+          }
           B.text(`${list.length} orbits → $2^{${list.length}}$ definable subsets`, 5, 0.45, { align: 'center', size: 11.5, weight: 600, color: 'ink' });
         });
         v.readout(() => {
