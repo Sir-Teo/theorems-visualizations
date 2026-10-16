@@ -133,7 +133,7 @@ export function conic(kind, f1, f2, f0) {
     n = (Math.sin(f1) + Math.sin(f2)) / 2;
     const C = Math.cos(f1) ** 2 + 2 * n * Math.sin(f1); rho = (f) => Math.sqrt(Math.max(0, C - 2 * n * Math.sin(f))) / n;
   }
-  const rho0 = rho(f0 ?? (f1 + f2) / 2), kk = (f) => (n * rho(f)) / Math.cos(f);
+  const rho0 = f0 === 'apex' ? 0 : rho(f0 ?? (f1 + f2) / 2), kk = (f) => (n * rho(f)) / Math.cos(f);
   const k = (f) => Math.abs(kk(f)), h = kind === 'eqdc' ? () => 1 : kind === 'lcc' ? k : (f) => 1 / k(f);
   return { kind, n, rho, rho0, k, h, f1, f2, fwd: (dl, f) => { const t = n * dl, r = rho(f); return [r * Math.sin(t), rho0 - r * Math.cos(t)]; } };
 }
@@ -167,4 +167,13 @@ export function conicBase(s, v, C, lon0, fa, fb, o = {}) {
 export function conicIndicatrix(s, C, dl, f, r0, col, alpha = 0.26) {
   const t = C.n * dl, [x, y] = C.fwd(dl, f);
   ellipse(s, x, y, C.h(f) * r0, C.k(f) * r0, Math.atan2(-Math.cos(t), Math.sin(t)), col, alpha);
+}
+/** Boundary points of a conic map frame (latitudes fa..fb, longitudes +-span degrees from the central meridian). */
+export function conicFrame(C, fa, fb, span = 180) {
+  const A = fa * D2R, B = fb * D2R, out = [];
+  for (let l = -span; l <= span; l += 3) out.push(C.fwd(l * D2R, A));
+  for (let f = fa; f <= fb; f += 3) out.push(C.fwd(span * D2R, f * D2R));
+  for (let l = span; l >= -span; l -= 3) out.push(C.fwd(l * D2R, B));
+  for (let f = fb; f >= fa; f -= 3) out.push(C.fwd(-span * D2R, f * D2R));
+  return out;
 }

@@ -106,7 +106,7 @@ where $Q^n(E)$ is the probability that the empirical distribution of $X^n$ lies 
       num: '3.10',
       kind: 'Theorem',
       name: 'Chernoff–Stein lemma',
-      statement: String.raw`Test the simple hypotheses $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ (i.i.d., finite alphabet, $D(P\|Q)<\infty$) with $n$ observations. For a decision region $A_n$ (accept $H_0$), let $\alpha_n=P^n(A_n^c)$ be the false-alarm probability and $\beta_n=Q^n(A_n)$ the miss probability. Fix $0<\varepsilon<1$ and let $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n<\varepsilon\}$. Then
+      statement: String.raw`Test the simple hypotheses $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ (i.i.d., finite alphabet, $D(P\|Q)<\infty$) with $n$ observations. For a decision region $A_n$ (accept $H_0$), let $\alpha_n=P^n(A_n^c)$ be the false-alarm probability and $\beta_n=Q^n(A_n)$ the miss probability. Fix $0<\varepsilon<\tfrac12$ and let $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n<\varepsilon\}$. Then
 $$\lim_{n\to\infty}-\frac1n\log_2\beta_n^\varepsilon\ =\ D(P\|Q),$$
 whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the best miss probability decays exponentially at the rate given by the relative entropy of the null from the alternative.`,
       idea: String.raw`Achievability: take $A_n$ to be the typical set of $P$ (3.3) with respect to the log-likelihood ratio: it has $P^n$-probability $>1-\varepsilon$ eventually (3.1), and each member has $Q^n(x^n)\le2^{-n(D(P\|Q)-\varepsilon')}$, so $\beta_n\le2^{-n(D-\varepsilon')}$. Converse: any region with $P^n(A_n)\ge1-\varepsilon$ must contain at least $1-2\varepsilon$ of its mass on sequences whose log-likelihood ratio is close to $nD$, and these have $Q^n$-mass at least $2^{-n(D+\varepsilon')}$ times their $P^n$-mass. The optimal regions are Neyman–Pearson likelihood-ratio tests; the picture computes them exactly.`,
@@ -121,12 +121,12 @@ whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the b
       viz(v) {
         const pS = v.slider(String.raw`$P=\mathrm{Bern}(p_0)$, $p_0$`, 0.05, 0.95, 0.5, { step: 0.01 });
         const qS = v.slider(String.raw`$Q=\mathrm{Bern}(q)$, $q$`, 0.05, 0.95, 0.2, { step: 0.01 });
-        const eS = v.slider(String.raw`false-alarm bound $\varepsilon$`, 0.01, 0.5, 0.1, { log: true });
+        const eS = v.slider(String.raw`false-alarm bound $\varepsilon$`, 0.01, 0.45, 0.1, { log: true });
         const nS = v.slider('length $n$ (right panel)', 5, 300, 60, { int: true });
         const NM = 300;
         const s1 = v.stage({ x: [5, NM], y: [0, 2], height: 280, axes: 'box', gutter: true, xlabel: 'n', ylabel: '−(1/n) log₂ βₙ', title: 'miss-probability exponent of the best test' });
         const s2 = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'fraction of ones k/n', ylabel: 'probability density of k/n', title: 'the two hypotheses and the optimal acceptance region' });
-        v.legend([['accent', '$\\varepsilon$ (slider)'], ['orange', '$\\varepsilon=0.5$'], ['purple', '$\\varepsilon=0.01$'], ['green', '$D(P\\|Q)$']]);
+        v.legend([['accent', '$\\varepsilon$ (slider)'], ['orange', '$\\varepsilon=0.3$'], ['purple', '$\\varepsilon=0.01$'], ['green', '$D(P\\|Q)$']]);
         // Neyman–Pearson: classes ordered by likelihood ratio (large first)
         function np(n, p0, q, eps) {
           const ks = []; for (let k = 0; k <= n; k++) ks.push(k);
@@ -149,7 +149,7 @@ whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the b
           const p0 = pS.value, q = qS.value, eps = eS.value, n = nS.value, D = KL([p0, 1 - p0], [q, 1 - q]), key = `${p0}|${q}|${eps}`;
           if (!cache || cache.key !== key) {
             const mk = (e) => { const a = []; for (let m = 5; m <= NM; m++) a.push([m, -np(m, p0, q, e).lb / m]); return a; };
-            cache = { key, a: mk(eps), b: mk(0.5), c: mk(0.01) };
+            cache = { key, a: mk(eps), b: mk(0.3), c: mk(0.01) };
           }
           const top = Math.max(0.5, D * 1.5, ...cache.c.map((p) => p[1]).filter(isFinite)) * 1.05;
           s1.setView([5, NM], [0, Math.min(top, 8)]);
@@ -197,7 +197,7 @@ the entropy per symbol; the companion quantity is $H'(\mathcal X)=\lim_{n\to\inf
         const mS = v.slider('$P(X_1=1)$', 0, 1, 0.9, { step: 0.01 });
         const NM = 40;
         const s1 = v.stage({ x: [1, NM], y: [0, 1.05], height: 270, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'bits', title: 'two ways to average the same quantity' });
-        const s2 = v.stage({ x: [1, NM], y: [0, 1.05], height: 270, axes: 'box', gutter: true, xlabel: 't', ylabel: 'P(X_t = 1)', title: 'the chain forgets its start' });
+        const s2 = v.stage({ x: [1, NM], y: [0, 1.05], height: 270, axes: 'box', gutter: true, xlabel: 't', ylabel: 'P(Xₜ = 1)', title: 'the chain forgets its start' });
         v.legend([['accent', '$\\frac1nH(X_1,\\dots,X_n)$'], ['orange', '$H(X_n\\mid X_{n-1},\\dots,X_1)$'], ['green', 'entropy rate'], ['purple', '$P(X_t=1)$']]);
         let info = {};
         v.render(() => {
@@ -320,7 +320,7 @@ For a $d$-regular graph this is $\log_2d$. (For a graph with several components 
 $$D(\mu_{n+1}\|\mu'_{n+1})\ \le\ D(\mu_n\|\mu'_n),$$
 so relative entropy between the two never increases. In particular, if $\mu'=\pi$ is a stationary distribution, then $D(\mu_n\|\pi)$ decreases monotonically (to $0$ when the chain is irreducible and aperiodic). The entropy $H(\mu_n)$ need *not* increase: if the stationary distribution is uniform, $D(\mu_n\|\pi)=\log|\mathcal X|-H(\mu_n)$ and $H(\mu_n)$ does increase, but for a non-uniform $\pi$ it can go down.`,
       idea: String.raw`Both $\mu_{n+1}$ and $\mu'_{n+1}$ are obtained from $\mu_n,\mu'_n$ by passing through the same channel $P$. The data-processing inequality for relative entropy (2.10) says that applying the same channel to both arguments cannot increase their divergence. Stationarity of $\pi$ means $\pi_n\equiv\pi$, which gives the second statement. For doubly stochastic $P$ the uniform law is stationary, and $D(\mu\|\text{uniform})=\log|\mathcal X|-H(\mu)$ turns the monotone fall of $D$ into the rise of entropy, which is the thermodynamic second law; for a general $\pi$ the monotone quantity is the divergence, not the entropy.`,
-      caption: String.raw`Drag the starting distribution $\mu_0$ (blue) and, in "free" mode, a second start $\nu_0$ (orange) on the simplex; the dots trace how they move under the chain. The plot shows $D(\mu_n\|\nu_n)$ (blue), which falls at every step, and $H(\mu_n)$ (green). Pick the "uniform stationary law" chain and the entropy climbs; pick the "biased" chain with $\pi$ non-uniform and $H(\mu_n)$ can first fall while $D$ still decreases. The laziness slider mixes in the identity and slows everything down.`,
+      caption: String.raw`Drag the starting distribution $\mu_0$ (blue) and, in "free" mode, a second start $\nu_0$ (orange) on the simplex; the dots trace how they move under the chain. The plot shows $D(\mu_n\|\nu_n)$ (blue), which falls at every step, and $H(\mu_n)$ (green). Pick the "uniform stationary law" chain and the entropy climbs; in the "biased" chain, $\pi$ is not uniform, and starting from the centre (the maximum-entropy distribution) $H(\mu_n)$ falls while $D$ still decreases. The laziness slider mixes in the identity and slows everything down.`,
       deps: ['info-3.12', 'info-2.10'],
       refs: ['Cover–Thomas §4.4'],
       tags: ['second law', 'Markov chain'],
@@ -335,7 +335,7 @@ so relative entropy between the two never increases. In particular, if $\mu'=\pi
         const modeS = v.select('reference $\\nu_0$', [{ value: 'pi', label: 'stationary $\\pi$' }, { value: 'free', label: 'free (second start)' }], 'pi');
         const lazy = v.slider('laziness $\\lambda$', 0, 0.9, 0, { step: 0.01 });
         const sim = simStage(v, { height: 300, title: 'the two distributions moving under $P$' });
-        const h1 = simHandle(sim, [0.8, 0.1, 0.1], { color: 'accent', label: 'μ₀' });
+        const h1 = simHandle(sim, [0.36, 0.32, 0.32], { color: 'accent', label: 'μ₀' });
         const h2h = simHandle(sim, [0.15, 0.7, 0.15], { color: 'orange', label: 'ν₀' });
         const NS = 30;
         const s = v.stage({ x: [0, NS], y: [0, 1.7], height: 300, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'bits', title: '$D(\\mu_n\\|\\nu_n)$ and $H(\\mu_n)$' });

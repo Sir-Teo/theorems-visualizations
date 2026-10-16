@@ -160,7 +160,7 @@ Around a low ($G>0$) the physical root has $V<V_g=G/f$: the **gradient wind is s
         v.button('anticyclone', preset(800, 1.5, 45, -1));
         v.button('hurricane eyewall', preset(30, 100, 20, 1));
         v.button('tornado', preset(0.1, 5.9e4, 40, 1));
-        const sD = v.stage({ x: [-1.15, 2.35], y: [-1.15, 1.15], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'forces on a parcel (plan view)' });
+        const sD = v.stage({ x: [-1.15, 2.6], y: [-1.15, 1.15], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'forces on a parcel (plan view)' });
         const sR = v.stage({ x: [0.01, 1e6], xlog: true, y: [0, 2.4], axes: 'box', gutter: true, xlabel: '$|\\mathrm{Ro}_g|=|V_g|/(|f|r)$', ylabel: '$V/V_g$', height: 380, weight: 1.2, minWidth: 280, title: 'gradient wind relative to geostrophic' });
         const RHO = 1.2;
         let st = {};
@@ -177,7 +177,7 @@ Around a low ($G>0$) the physical root has $V<V_g=G/f$: the **gradient wind is s
             const sc = 0.75 / Math.max(Math.abs(cen), Math.abs(cor), Math.abs(pg), 1e-30);
             const A = (val, y0, col, lab) => { sD.arrow(px, y0, px + val * sc, y0, { color: col, width: 3 }); sD.text(lab, px + val * sc, y0, { size: 12, color: col, dy: -12, dx: val * sc >= 0 ? 6 : -6, align: val * sc >= 0 ? 'left' : 'right', plate: true }); };
             sD.dot(px, 0, { r: 7, color: 'gold' });
-            A(pg, 0.0, 'red', 'PGF'); A(cen, 0.28, 'orange', 'centrifugal $V^2/r$'); A(cor, -0.28, 'blue', 'Coriolis $fV$');
+            A(pg, 0.0, 'red', 'PGF'); A(cen, 0.28, 'orange', 'centrifugal'); A(cor, -0.28, 'blue', 'Coriolis');
             sD.arrow(px, 0.62, px, 0.62 + Math.sign(V) * 0.35, { color: 'ink', width: 2.4 });
             sD.text(`V = ${sgn(v, V, 1)} m/s`, px, 0.62, { size: 12, color: 'ink', dx: 8, dy: -4, align: 'left', plate: true });
             sD.text(V > 0 ? 'anticlockwise' : 'clockwise', 0, -0.98, { size: 12, color: 'muted', align: 'center' });
@@ -197,7 +197,7 @@ Around a low ($G>0$) the physical root has $V<V_g=G/f$: the **gradient wind is s
           sR.text('cyclostrophic limit $V/V_g=\\mathrm{Ro}_g^{-1/2}$', 40, 1.5, { size: 11, color: 'orange', align: 'left', dy: -2 });
           sR.text('low: $V<V_g$', 3e3, 0.45, { size: 12, color: 'green', align: 'center' });
           sR.text('high: $V>V_g$', 0.014, 1.35, { size: 12, color: 'red', align: 'left' });
-          sR.text('anomalous root', 0.19, 2.25, { size: 11, color: 'red', align: 'right' });
+          sR.text('anomalous', 0.0115, 2.25, { size: 11, color: 'red', align: 'left' });
           const xr = clamp(Math.abs(Rog), 0.0101, 9.9e5);
           if (ok) sR.dot(xr, Math.abs(Vg) > 0 ? roots.reg / Vg : 1, { r: 7, color: 'gold' });
           else sR.vline(xr, { color: 'red', dash: [4, 4] });
