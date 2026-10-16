@@ -96,7 +96,7 @@ export function invert(f, level, a, b) {
 }
 
 // ---------------------------------------------------------------- E. coli regulatory network (curated subset)
-// A hand-curated subset of well-known direct interactions (textbook systems: lac, ara, mal, gal, SOS, arginine, tryptophan, anaerobic
+// A hand-written subset of direct interactions (textbook systems: lac, ara, mal, gal, SOS, arginine, tryptophan, anaerobic
 // respiration, flagella). Written from memory of the literature: illustrative, NOT the 577-interaction RegulonDB data set.
 export const TFS = ['CRP', 'LacI', 'AraC', 'MalT', 'GalR', 'GalS', 'LexA', 'ArgR', 'TrpR', 'FNR', 'NarL', 'FlhDC', 'FliA'];
 export const ECOLI_EDGES = [

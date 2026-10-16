@@ -303,7 +303,7 @@ Published medians span almost four orders of magnitude, from several hundred W/m
 $$\text{CF} = \frac{E_{\text{delivered}}}{P_{\text{rated}}\,T} = \frac{\bar P}{P_{\text{rated}}}, \qquad E_{\text{year}} = P_{\text{rated}} \times 8760\ \text{h} \times \text{CF}.$$
 It is the average power as a fraction of the peak. For the US power fleet in 2025 (EIA) the annual capacity factors were about 91% for nuclear, 58% for gas combined-cycle plants, 49% for coal, 35% for hydro, 34% for wind and 24% for utility-scale solar PV. A rating in megawatts therefore says little about annual energy until it is multiplied by the capacity factor: 1 GW of nuclear and 3 GW of solar PV deliver about the same energy per year.`,
       idea: String.raw`A plant falls short of its rating for three different reasons. *Resource*: the Sun sets and the wind drops, so a solar farm sits at zero half the hours and at its peak only briefly. *Availability*: refuelling and maintenance outages take even reliable plants offline for weeks. *Dispatch*: a plant that is more expensive than its neighbours is switched on only at times of high demand, so gas and coal capacity factors depend on the market, not the machine. Averaging power over the year turns the hourly output curve into one number; geometrically, the capacity factor is the height of the rectangle spanning the whole year that has the same area as the sorted (duration) curve.`,
-      caption: String.raw`Real hourly output of three plant types in France in 2023 (Energy-Charts / RTE), as a fraction of installed capacity. Pick a technology: the calendar shows every hour of the year (days across, hour of day up); drag the week slider to see 168 hours; the right panel sorts all 8760 hours and shades their area — the dashed rectangle with the same area has height equal to the capacity factor. The gold line marks the 2025 US average for the same technology.`,
+      caption: String.raw`Real hourly output of three plant types in France in 2023 (Energy-Charts / RTE), as a fraction of installed capacity. Pick a technology: the calendar shows every hour of the year (days across, hour of day up); drag the week slider to see 168 hours; the right panel sorts all 8760 hours and shades their area — the dashed rectangle with the same area has height equal to the capacity factor. The red line marks the 2025 US average for the same technology.`,
       deps: ['energy-1.1'],
       refs: ['Tester ch. 3'],
       tags: ['capacity factor', 'generation'],
@@ -346,15 +346,78 @@ It is the average power as a fraction of the peak. For the US power fleet in 202
           sd.poly([[0, 0], ...dp, [8760, 0]], { fill: col, fillAlpha: 0.32, stroke: false });
           sd.path(dp, { color: col, width: 2.2 });
           sd.rect(0, 0, 8760, st.mean, { color: 'ink', width: 1.8, dash: true });
-          sd.hline(us, { color: 'gold', width: 1.8 });
+          sd.hline(us, { color: 'red', width: 1.8 });
           sd.hline(1, { color: 'faint', width: 1.2 });
-          sd.textPx(`${usn} ${v.fix(100 * us, 1)}%`, sd.X(8750), sd.Y(us) - 9, { size: 11, weight: 650, color: 'gold', align: 'right' });
+          sd.textPx(`${usn} ${v.fix(100 * us, 1)}%`, sd.X(8750), sd.Y(us) - 9, { size: 11, weight: 650, color: 'red', align: 'right' });
           sd.textPx(`equal-area rectangle: CF = ${v.fix(100 * st.mean, 1)}%`, sd.X(8750), sd.Y(st.mean / 2), { size: 11.5, weight: 700, color: 'ink', align: 'right', plate: true });
-          v.legend([[col, name, { area: true }], ['ink', 'annual mean = capacity factor', { dash: true }], ['gold', 'US average, 2025 (EIA)', {}]]);
+          v.legend([[col, name, { area: true }], ['ink', 'annual mean = capacity factor', { dash: true }], ['red', 'US average, 2025 (EIA)', {}]]);
         });
         v.readout(() => {
           const k = tech.value, st = stat(k), [name, , us, usn] = INFO[k], E = cap.value * 8760 * st.mean;
-          return `**${name}**, France 2023: capacity factor **${v.fix(100 * st.mean, 1)}%** (${v.fix(st.mean * 8760, 0)} full-power hours of 8760). Best hour ${v.fix(100 * st.mx, 0)}% of rated power; ${grp(st.high)} hours above 90%, ${grp(st.low)} hours below 5%.\nA ${v.fix(cap.value, cap.value < 10 ? 1 : 0)} MW plant would deliver **${E >= 1e4 ? v.fix(E / 1000, 0) + ' GWh' : v.fix(E, 0) + ' MWh'}** a year (average power ${v.fix(cap.value * st.mean, 1)} MW); to match 1 GW of US nuclear at ${v.fix(100 * 0.91, 0)}% you would need ${v.fix(1000 * 0.91 / us, 1)} MW of this technology at the US average of ${v.fix(100 * us, 1)}%.`;
+          return `**${name}**, France 2023: capacity factor **${v.fix(100 * st.mean, 1)}%** (${v.fix(st.mean * 8760, 0)} full-power hours of 8760). Best hour ${v.fix(100 * st.mx, 0)}% of rated power; ${grp(st.high)} hours above 90%, ${grp(st.low)} hours below 5%.\nA ${v.fix(cap.value, cap.value < 10 ? 1 : 0)} MW plant would deliver **${E >= 1e4 ? v.fix(E / 1000, 0) + ' GWh' : v.fix(E, 0) + ' MWh'}** a year (average power ${v.fix(cap.value * st.mean, 1)} MW); to match 1 GW of US nuclear at ${v.fix(100 * 0.91, 0)}% you would need ${grp(1000 * 0.91 / us)} MW of this technology at the US average of ${v.fix(100 * us, 1)}%.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.5
+    {
+      num: '1.5', kind: 'Concept', name: 'Energy return on investment (EROI)',
+      statement: String.raw`The **energy return on investment** of an energy source is the energy it delivers divided by the energy that had to be invested to obtain it (to build the equipment, extract, refine, transport and run it):
+$$\text{EROI} = \frac{E_{\text{delivered}}}{E_{\text{invested}}}.$$
+Of each unit of energy delivered, the fraction $1/\text{EROI}$ is spent on getting it and the **net energy** fraction $1 - 1/\text{EROI}$ is left to power everything else. Because this fraction is flat at high EROI and plunges at low EROI, it has a "**net energy cliff**": at 30:1 the net share is 97%, at 10:1 it is 90%, at 5:1 80%, at 2:1 only 50% and at 1:1 nothing. EROI depends on where the boundary is drawn: published estimates for fossil fuels at the wellhead or mine mouth are 15–80:1, but counted at the stage where energy enters the economy (fuel or electricity) a global estimate for 1995–2011 is only about 6:1 (about 3:1 for fossil electricity); modern wind and solar electricity are estimated at roughly 4–30:1.`,
+      idea: String.raw`EROI is a ratio of two energies, so it is a pure number — but both terms are slippery. Counting *direct* energy only (the diesel burnt at the mine) gives much higher ratios than adding *indirect* energy embodied in steel, concrete and machinery, and both rise or fall depending on whether the output is measured at the wellhead, as refined fuel or as electricity at the plug (a thermal power station converts only a third of its fuel to electricity, so a primary-stage 30:1 becomes a final-stage 10:1 before any extra investment is counted). Comparing a primary-stage figure for fossil fuels with a final-stage figure for renewables, as is often done, is therefore comparing different things. The curve $1-1/\text{EROI}$ then explains why low ratios matter: a society that must put a third of its energy back into energy supply has a third less for everything else.`,
+      caption: String.raw`Drag the orange handle along the net-energy curve to set the **primary-stage** EROI (it starts at the global fossil-fuel value of 29:1 for 2011) and the slider for the extra energy spent *after* the fuel leaves the ground (refining, generating, delivering): the blue dot is the resulting **final-stage** EROI and its much lower net share. The lower chart sets the published estimates (Brockway et al. 2019, Table 1) next to your two values on the same log axis.`,
+      deps: ['energy-1.1'],
+      refs: ['Tester ch. 6'],
+      tags: ['EROI', 'net energy'],
+      credit: 'Hall, Balogh & Murphy, 2009; Brockway et al., 2019',
+      scope: String.raw`EROI is a sensitive function of method and system boundary; ranges in the chart are published estimates, not measurements, and many studies do not say which boundary they use. The net energy cliff is a statement about arithmetic, not a prediction of society's breakdown point: the minimum EROI a society needs is itself debated (Hall et al. 2009; Fizaine & Court 2016).`,
+      viz(v) {
+        // [label, lo, hi, stage, source]
+        const R = [
+          ['Coal, mine mouth', 40, 80, 'prim', 'Hall et al.; Court & Fizaine'],
+          ['Oil, wellhead', 15, 20, 'prim', 'Court & Fizaine; Gagnon et al.; Hall et al.'],
+          ['Natural gas, wellhead', 18, 75, 'prim', 'Gagnon et al.; Hall et al.; Court & Fizaine'],
+          ['Solar PV, primary-energy equivalent', 19, 38, 'prim', 'Raugei et al.'],
+          ['Refined oil fuels', 4, 5, 'fin', 'Brandt'],
+          ['Electricity from gas', 6, 14, 'fin', 'Hall et al.; King & van den Bergh; Raugei & Leccisi'],
+          ['Electricity from coal', 4, 18, 'fin', 'Raugei & Leccisi; Hall et al.; King & van den Bergh'],
+          ['Electricity from solar PV', 4, 20, 'fin', 'Raugei et al.; Hall et al.; Leccisi et al.'],
+          ['Electricity from wind', 14, 30, 'fin', 'Kubiszewski et al.; Raugei & Leccisi'],
+        ];
+        const cc = v.slider('energy spent after the fuel leaves the ground (per unit of fuel)', 0, 0.6, 1 / 6 - 1 / 29, { step: 0.002, fmt: (x) => v.fix(x, 3) });
+        const sA = v.stage({ x: [1, 50], y: [0, 1.04], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 320, xlabel: 'EROI (energy delivered ÷ energy invested)', ylabel: 'net energy share  1 − 1/EROI', xticks: [1, 5, 10, 20, 30, 40, 50], yticks: [[0, '0%'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
+        const sB = v.stage({ x: [1, 100], y: [0, R.length + 1.3], xlog: true, axes: 'box', gutter: true, height: 390, full: true, xlabel: 'EROI (log axis)', yticks: [], xticks: [[1, '1'], [2, '2'], [5, '5'], [10, '10'], [20, '20'], [50, '50'], [100, '100']] });
+        const net = (e) => 1 - 1 / e;
+        const hP = sA.handle(29, net(29), { color: 'orange', r: 8, label: 'primary stage', labelPos: 'n', constrain: (x) => { const e = clamp(x, 1.05, 50); return [e, net(e)]; } });
+        const fin = () => 1 / (1 / hP.x + cc.value);
+        v.render(() => {
+          sA.vband(1, 5, { color: 'red', alpha: 0.1 });
+          sA.fn(net, { color: 'accent', width: 2.8, domain: [1.001, 50] });
+          sA.text('the net energy cliff', 7, 0.45, { size: 12, weight: 650, color: 'red', align: 'left' });
+          sA.hline(1, { color: 'faint', width: 1.2, dash: true });
+          const ep = hP.x, ef = fin();
+          sA.line(ef, 0, ef, net(ef), { color: 'blue', width: 1.2, dash: true }); sA.line(ep, 0, ep, net(ep), { color: 'orange', width: 1.2, dash: true });
+          sA.arrow(ep, net(ep) - 0.03, ef + 0.4, net(ef) + 0.02, { color: 'muted', width: 1.6 });
+          sA.dot(ef, net(ef), { r: 7, color: 'blue', label: `final stage ${v.fix(ef, ef < 10 ? 1 : 0)}:1`, labelPos: 'se' });
+          // bars: one row per estimate, label at the left, bar at its range, source note beside the bar
+          R.forEach(([name, lo, hi, st, src], i) => {
+            const y = R.length + 0.3 - i, col = st === 'prim' ? 'orange' : 'blue', Y = sB.Y(y);
+            sB.rect(lo, y - 0.2, hi, y + 0.2, { fill: col, fillAlpha: 0.6, color: col, width: 1.2 });
+            sB.textPx(`${name}   ${lo === hi ? lo : lo + '–' + hi}`, sB.X(1) + 8, Y - 6, { size: 11.5, weight: 650, color: 'ink', align: 'left' });
+            sB.textPx(src, sB.X(1) + 8, Y + 8, { size: 10, color: 'muted', align: 'left' });
+          });
+          sB.vline(ep, { color: 'orange', width: 2.2 }); sB.vline(ef, { color: 'blue', width: 2.2 });
+          const yg = 0.55;
+          sB.line(37, yg, 29, yg, { color: 'orange', width: 2.4 }); sB.line(6.8, yg, 6.05, yg, { color: 'blue', width: 2.4 });
+          sB.dots([[37, yg], [29, yg]], { r: 5, color: 'orange' }); sB.dots([[6.8, yg], [6.05, yg]], { r: 5, color: 'blue' });
+          sB.textPx('global fossil fuels 1995 → 2011 (Brockway et al.): primary 37 → 29, final 6.8 → 6', sB.X(1) + 8, sB.Y(yg), { size: 11.5, weight: 700, color: 'ink', align: 'left' });
+          sB.textPx('your primary', sB.X(ep) + 5, sB.Y(R.length + 1.15), { size: 11, weight: 700, color: 'orange', align: 'left' });
+          sB.textPx('your final', sB.X(ef) - 5, sB.Y(R.length + 1.15), { size: 11, weight: 700, color: 'blue', align: 'right' });
+          v.legend([['orange', 'primary stage (extraction)', { area: true }], ['blue', 'final stage (fuel or electricity delivered)', { area: true }]]);
+        });
+        v.readout(() => {
+          const ep = hP.x, ef = fin();
+          return `Primary stage **${v.fix(ep, ep < 10 ? 1 : 0)}:1** → net share **${v.fix(100 * net(ep), 1)}%**. After spending ${v.fix(cc.value, 3)} units more per unit of fuel on refining, generating and delivery, the final-stage EROI is **${v.fix(ef, ef < 10 ? 2 : 1)}:1** with a net share of **${v.fix(100 * net(ef), 1)}%**: the same fuel loses ${v.fix(100 * (net(ep) - net(ef)), 1)} percentage points of its energy to the supply chain. Slope of the curve here: ${v.fix(100 / (ef * ef), 1)} points of net share per unit of EROI.`;
         });
       },
     },

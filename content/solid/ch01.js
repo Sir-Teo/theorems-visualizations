@@ -47,7 +47,7 @@ positive when it pulls (tension) and negative when it pushes (compression). Its 
         const X0 = 0.8, X1 = 8.8, D0 = 30, HW = 1.35;
         const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
         const diam = (x) => D0 - (D0 - dn.value) * sm(2.4, 3.5, x) * (1 - sm(5.3, 6.4, x));
-        const FH = A.handle(11.2, 0, { color: 'orange', label: 'F', labelPos: 'n', constrain: { x: [9.2, 13.2], y: [0, 0] } });
+        const FH = A.handle(11.2, 0, { color: 'orange', constrain: { x: [9.2, 13.2], y: [0, 0] } });
         const PR = A.handle(7.2, 0, { color: 'accent', constrain: { x: [1.0, 8.6], y: [0, 0] } });
         FH.set(9.8, 0);
         const Fk = () => (FH.x - X1) * 70; // kN
@@ -63,7 +63,7 @@ positive when it pulls (tension) and negative when it pushes (compression). Its 
           A.path([...top, ...bot.reverse()], { close: true, color: 'ink', width: 1.6, fill: false });
           wallV(v, A, X0, -2.1, 2.1, -1, 12);
           if (F > 0.5) A.arrow(X1, 0, FH.x, 0, { color: 'orange', width: 3, head: 11 });
-          A.text(`F = ${f3(F)} kN`, X1 + 0.15, 0.55, { size: 12, weight: 650, color: 'orange', align: 'left' });
+          A.text(`F = ${f3(F)} kN`, X1 + 0.15, 0.6, { size: 12, weight: 650, color: 'orange', align: 'left' });
           // probe section
           const hp = (HW * diam(PR.x)) / D0;
           A.line(PR.x, -hp - 0.25, PR.x, hp + 0.25, { color: 'accent', width: 1.6, dash: [5, 3] });
@@ -252,7 +252,7 @@ Unloading from any point beyond yield follows a line parallel to the elastic slo
             void hiB; void loT;
           }
           SP.text(frac ? 'cup and cone' : '', 0, mid, { size: 11, color: 'red', align: 'center', weight: 650, dx: 62 });
-          SP.measure(-1.1, ylo, -1.1, yhi, `L = ${(1 + (mo === 'rub' ? e : e)).toFixed(mo === 'rub' ? 2 : 3)} L₀`);
+          SP.measure(-1.0, ylo, -1.0, yhi, ''); SP.text(`${(1 + e).toFixed(mo === 'rub' ? 2 : 3)} L₀`, -1.15, (ylo + yhi) / 2, { size: 11.5, color: 'muted', align: 'right', weight: 600 });
         });
         v.readout(() => {
           const st = state(), m = st.m;
@@ -581,7 +581,7 @@ For ductile metals the failure stress is usually the yield strength $\sigma_y$ (
           const lx = 3.2, ymax = 1.22 * Math.max(m.su, st.s), Y = (s) => 0.4 + (5.9 * s) / ymax;
           S.line(lx, Y(0), lx, Y(ymax), { color: 'muted', width: 1.4 });
           const mk = (s, text, color, dy = 0) => { S.line(lx - 0.25, Y(s), lx + 0.25, Y(s), { color, width: 2.2 }); S.text(text, lx + 0.4, Y(s) + dy, { size: 11, color, align: 'left', weight: 600 }); };
-          mk(st.sa, `σ_allow ${f3(st.sa)}`, 'green', -0.12);
+          mk(st.sa, `allowable ${f3(st.sa)}`, 'green', -0.12);
           if (m.ductile && m.sy < m.su) { mk(m.sy, `yield ${m.sy}`, 'orange', 0.12); mk(m.su, `ultimate ${m.su}`, 'red', 0.18); } else mk(m.su, `strength ${m.su}`, 'red', 0.12);
           S.rect(lx - 0.18, Y(0), lx + 0.18, Y(Math.min(st.s, ymax)), { fill: tcol, fillAlpha: 0.5, color: tcol, width: 1.2 });
           S.dot(lx, Y(Math.min(st.s, ymax)), { r: 5, color: 'gold' });

@@ -212,7 +212,7 @@ export default {
       deps: ['crypto-1.1'],
       tags: ['shift cipher', 'brute force'],
       refs: ['Katz–Lindell §1.3'],
-      credit: 'Julius Caesar, 1st century BCE (as reported by Suetonius, Life of Julius Caesar §56)',
+      credit: 'Julius Caesar, 1st century BCE (as reported by Suetonius, Life of Julius Caesar 56.6)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Caesar_cipher' },
       viz(v) {
         const wheel = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 380, weight: 1, minWidth: 300 });
