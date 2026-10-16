@@ -151,9 +151,9 @@ export default {
           for (let k = 1; k <= KMAX; k++) { const nx = new Array(n).fill(0); for (let x = 0; x < n; x++) if (mu[x]) for (let y = 0; y < n; y++) nx[y] += mu[x] * P[x][y]; mu = nx; tvs.push(0.5 * mu.reduce((s, m) => s + Math.abs(m - 1 / n), 0)); }
           const edges = []; const seen = new Set();
           for (let x = 0; x < n; x++) grp.gens.forEach((g) => { const y = g(x), key = grp.sym ? Math.min(x, y) + '-' + Math.max(x, y) : x + '>' + y; if (x !== y && !seen.has(key)) { seen.add(key); edges.push({ from: x, to: y }); } });
-          const nodes = grp.labels.map((l, i) => ({ id: i, label: n <= 16 ? l : '', x: grp.pos ? grp.pos[i][0] : undefined, y: grp.pos ? grp.pos[i][1] : undefined }));
-          G.set({ nodes, edges, directed: !grp.sym, layout: grp.pos ? 'none' : 'force', seed: 3, r: n <= 16 ? 14 : 9 });
-          if (grp.pos) G.layout('none');
+          const rp = ringPos(n, 1.2), nodes = grp.labels.map((l, i) => ({ id: i, label: n <= 16 ? l : '', x: grp.pos ? grp.pos[i][0] : rp[i][0], y: grp.pos ? grp.pos[i][1] : rp[i][1] }));
+          G.set({ nodes, edges, directed: !grp.sym, layout: 'none', seed: 3, r: n <= 16 ? 14 : 9 });
+          if (!grp.pos) G.layout('force', { seed: 3, iterations: 400, restarts: 6 });
           title = grp.name; reset();
         }
         load();
@@ -361,8 +361,8 @@ $$\pi_i=\pi_0\prod_{k=1}^{i}\frac{p_{k-1}}{q_k}.$$`,
       viz(v) {
         const a = v.slider('$\\alpha$ = P(0→1)', 0.02, 0.98, 0.15, { step: 0.01, onChange: () => resim() });
         const b = v.slider('$\\beta$ = P(1→0)', 0.02, 0.98, 0.3, { step: 0.01, onChange: () => resim() });
-        const nn = v.slider('$n$', 10, 1000, 200, { log: true, int: true });
-        const eps = v.slider('$\\varepsilon$', 0.01, 0.2, 0.05, { step: 0.005 });
+        const nn = v.slider('$n$', 10, 1000, 400, { log: true, int: true });
+        const eps = v.slider('$\\varepsilon$', 0.01, 0.2, 0.08, { step: 0.005 });
         let seed = 2; v.button('new runs', () => { seed++; resim(); });
         const K = 1000, M = 1500;
         const s1 = v.stage({ x: [0, K], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'number of trials $k$', ylabel: 'frequency $S_k/k$', title: 'running frequency of state 1' });
@@ -431,7 +431,7 @@ $$\pi_i=\pi_0\prod_{k=1}^{i}\frac{p_{k-1}}{q_k}.$$`,
         let sel = [1, 0, 1];
         s2.onClick((x, y) => { const n = 5 - Math.floor(y); if (n < 1 || n > 5) return; const bits = []; let lo = 0, w = 1; for (let k = 0; k < n; k++) { w /= 2; if (x >= lo + w) { bits.push(1); lo += w; } else bits.push(0); } sel = bits; });
         const prob = (w, n) => { // P_n of word w of length n under the chosen family
-          let r = 1; for (let k = 0; k < w.length; k++) { const q = fam.value === 'bad' && k === n - 1 ? 1 - p.value : p.value; r *= w[k] ? q : 1 - q; } return r;
+          let r = 1; for (let k = 0; k < w.length; k++) { const q = fam.value === 'bad' && k === n - 1 ? (p.value < 0.5 ? p.value + 0.3 : p.value - 0.3) : p.value; r *= w[k] ? q : 1 - q; } return r;
         };
         let info = {};
         v.render(() => {
@@ -464,7 +464,7 @@ $$\pi_i=\pi_0\prod_{k=1}^{i}\frac{p_{k-1}}{q_k}.$$`,
           const L = (m) => lab(m);
           const ax = info.neg.length ? `**III fails**: $\\Pr(${L(info.neg[0])})<0$.` : info.normOk ? 'III (non-negative) and IV ($\\Pr(\\Omega)=1,\\ \\Pr(\\varnothing)=0$) hold.' : `**IV fails**: $\\Pr(\\Omega)=${v.fix(info.sum, 2)}$ or $\\Pr(\\varnothing)\\ne0$.`;
           const add = info.bad ? `**V fails** for the disjoint pair ${L(info.bad[0])}, ${L(info.bad[1])}: $\\Pr(${L(info.bad[0] | info.bad[1])})=${v.fix(hs[info.bad[0] | info.bad[1]].y, 2)}\\ne ${v.fix(hs[info.bad[0]].y + hs[info.bad[1]].y, 2)}$.` : 'V (additivity over all disjoint pairs) holds.';
-          return `${ax} ${add}\nCylinder $[${sel.join('')}]$: $\\Pr_${sel.length}=${v.fix(info.pw, 4)}$${info.kids === null ? '' : `; children sum to $${v.fix(info.kids, 4)}$ ${Math.abs(info.kids - info.pw) < 1e-9 ? '(consistent, so the family extends to a measure)' : '(**inconsistent**: no measure restricts to both laws)'}`}. Continuity: $\\Pr(\\text{first }n\\text{ digits all }1)=p^n\\to0$ (e.g. $n=5$: ${v.fix(info.ones ** 5, 4)}$).`;
+          return `${ax} ${add}\nCylinder $[${sel.join('')}]$: $\\Pr_${sel.length}=${v.fix(info.pw, 4)}$${info.kids === null ? '' : `; children sum to $${v.fix(info.kids, 4)}$ ${Math.abs(info.kids - info.pw) < 1e-9 ? '(consistent, so the family extends to a measure)' : '(**inconsistent**: no measure restricts to both laws)'}`}. Continuity: $\\Pr(\\text{first }n\\text{ digits all }1)=p^n\\to0$ (e.g. $n=5$: $${v.fix(info.ones ** 5, 4)}$).`;
         });
       },
     },

@@ -15,7 +15,7 @@ export default {
 $$\frac{dN}{dt} = B - D + I - E .$$
 The **per-capita growth rate** is $g = \dfrac1N\dfrac{dN}{dt}$. If births and deaths are proportional to $N$ ($B = bN$, $D = dN$) and migration is a fixed inflow and outflow, then $\dfrac{dN}{dt} = (b-d)N + (I-E)$ and $g = (b-d) + (I-E)/N$.`,
       idea: String.raw`This is bookkeeping, not a law of nature: whatever enters the population and whatever leaves it must add up to the net change. All modelling content lies in how each flow depends on $N$. Dividing by $N$ asks the question the rest of the chapter keeps returning to: how does each individual's contribution to growth depend on how many others there are?`,
-      caption: String.raw`Slide the four rates; the arrow widths are proportional to the flows. The middle panel integrates $N(t)$; the right panel shows the per-capita rate against $N$, which is the constant $b-d$ only when there is no net migration.`,
+      caption: String.raw`Slide the four rates; the arrow widths are proportional to the flows. The upper right panel integrates $N(t)$; the lower panel shows the per-capita rate against $N$, which is the constant $b-d$ only when there is no net migration.`,
       deps: [],
       tags: ['balance law', 'per-capita rate'],
       refs: ['Murray I ch. 1', 'Edelstein-Keshet ch. 4'],
@@ -37,7 +37,7 @@ The **per-capita growth rate** is $g = \dfrac1N\dfrac{dN}{dt}$. If births and de
           const w = (x) => 2 + (13 * x) / big;
           A.rect(4.0, 2.0, 6.0, 4.2, { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 2, radius: 10 });
           A.text(`N = ${Math.round(N)}`, 5, 3.5, { size: 20, color: 'ink', align: 'center', math: true });
-          A.text(`dN/dt = ${net >= 0 ? '+' : '−'}${v.fix(Math.abs(net), 1)}`, 5, 2.75, { size: 14, color: net >= 0 ? 'green' : 'red', align: 'center', math: true });
+          A.text(`dN/dt = ${net >= 0 ? '+' : '−'}${v.fix(Math.abs(net), 1)}`, 5, 2.75, { size: 12, color: net >= 0 ? 'green' : 'red', align: 'center', math: true });
           A.arrow(5, 6.0, 5, 4.25, { color: 'green', width: w(bv * N), head: 12 + w(bv * N) });
           A.arrow(0.3, 3.1, 3.95, 3.1, { color: 'teal', width: w(Iv), head: 12 + w(Iv) });
           A.arrow(5, 1.95, 5, 0.95, { color: 'red', width: w(dv * N), head: 12 + w(dv * N) });

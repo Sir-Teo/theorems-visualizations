@@ -245,7 +245,7 @@ where $V_i$ is the potential at $\mathbf r_i$ due to all the *other* charges. It
           if (prog.value < 4) {
             const mx = pos[mover][0] + dirs[mover][0] * dist, my = pos[mover][1] + dirs[mover][1] * dist;
             s.line(pos[mover][0], pos[mover][1], pos[mover][0] + dirs[mover][0] * 11, pos[mover][1] + dirs[mover][1] * 11, { color: 'orange', width: 1.4, dash: [5, 4], alpha: 0.7 });
-            drawCharge(s, mx, my, q[mover], 10); s.text(`arriving: charge ${mover + 1}`, mx, my + 0.7, { size: 11.5, color: 'orange', align: 'center' });
+            drawCharge(s, mx, my, q[mover], 10); s.text(`arriving: ${mover + 1}`, mx - 0.5, my + 0.8, { size: 11.5, color: 'orange', align: 'right' });
             let V = 0; for (const j of placedNow) V += q[j] / Math.hypot(mx - pos[j][0], my - pos[j][1]);
             partial = KV * q[mover] * V;
           }
@@ -283,7 +283,7 @@ where $V_i$ is the potential at $\mathbf r_i$ due to all the *other* charges. It
 $$W=\frac{\varepsilon_0}{2}\int_{\text{all space}}|\mathbf E|^2\,d\tau ,$$
 so the field carries energy with density $u=\tfrac12\varepsilon_0E^2$. For two uniformly charged shells (radii $a_1,a_2$, charges $q_1,q_2$, not overlapping, centres $d$ apart) the integral splits into the two self-energies $q_i^2/8\pi\varepsilon_0a_i$ and the interaction energy $q_1q_2/4\pi\varepsilon_0d$ obtained by em-2.10.`,
       idea: String.raw`Write $W=\frac12\int\rho V\,d\tau$, replace $\rho$ by $\varepsilon_0\nabla\cdot\mathbf E$ (em-1.15), integrate by parts with the divergence theorem (pma-10.51) and use $\mathbf E=-\nabla V$; the surface term vanishes at infinity and what remains is $\frac{\varepsilon_0}2\int E^2$. Because $E^2=E_1^2+E_2^2+2\mathbf E_1\!\cdot\!\mathbf E_2$ for two sources, the energy is the sum of each source’s own field energy and a cross term, which is the interaction energy. The self-energy of a shell grows without bound as it shrinks.`,
-      caption: String.raw`The map shows the energy density $u$ (log scale, darker = more) of two uniformly charged shells on their axis (a cut through the plane of the axis). The right plot integrates $u$ numerically over a growing ball centred midway between them (slider $R$, drawn on the map): the blue curve is the total energy inside, the orange curve is just the cross term $\varepsilon_0\!\int\mathbf E_1\!\cdot\!\mathbf E_2$, which converges quickly to the interaction energy of em-2.10. The total converges slowly, like $1/R$, to the exact value (dashed). **Shrink the shells** with the radius slider and the self-energies grow like $1/a$ while the interaction stays put.`,
+      caption: String.raw`The map shows the energy density $u$ (log scale, darker = more) of two uniformly charged shells on their axis (a cut through the plane of the axis). The right plot integrates $u$ numerically over a growing ball centred midway between them (slider $R$, drawn on the map): the blue curve is the total energy inside, the orange curve is just the cross term $\varepsilon_0\!\int\mathbf E_1\!\cdot\!\mathbf E_2$, which tends to the interaction energy $q_1q_2/4\pi\varepsilon_0d$ of em-2.10 (dashed orange). Both curves approach their limits like $1/R$, because the field of a net charge has energy outside any large ball (dotted: the monopole estimate $-Q^2/8\pi\varepsilon_0R$ for the total). **Shrink the shells** with the radius slider and the self-energies grow like $1/a$ while the interaction stays put.`,
       scope: String.raw`Two insulating shells with frozen uniform surface charge (no induced charge), not overlapping. The numerical integral uses a $(z,\varrho)$ grid with partial-cell smoothing at the shell surfaces, good to about a percent.`,
       deps: ['em-2.10', 'pma-10.51'],
       refs: ['Griffiths §2.4', 'Feynman II ch. 8'],
@@ -335,7 +335,7 @@ so the field carries energy with density $u=\tfrac12\varepsilon_0E^2$. For two u
           sp.hline(0, { color: 'faint', width: 1 });
           sp.hline(res.tot, { color: 'green', width: 1.8, dash: [7, 4] }); sp.hline(res.inter, { color: 'orange', width: 1.4, dash: [4, 4] });
           sp.fn((R) => res.tot - (KV * res.Q * res.Q) / (2 * R), { domain: [Math.max(res.d / 2 + a + 0.3, 1.5), RM], color: 'ink', width: 1.4, dash: [2, 3], n: 80 });
-          sp.path(cr, { color: 'orange', width: 2.4 }); sp.path(pts, { color: 'accent', width: 2.8 });
+          sp.fn((R) => res.inter - (KV * res.A * res.B) / R, { domain: [Math.max(res.d / 2 + a + 0.3, 1.5), RM], color: 'orange', width: 1.2, dash: [2, 3], n: 80 }); sp.path(cr, { color: 'orange', width: 2.4 }); sp.path(pts, { color: 'accent', width: 2.8 });
           sp.vline(Rs.value, { color: 'ink', width: 1.2, dash: [4, 3] });
           const bi = Math.min(res.nb, Math.round(Rs.value / res.dR));
           sp.dot(Rs.value, res.U[bi], { r: 5, color: 'accent' }); sp.dot(Rs.value, res.X[bi], { r: 5, color: 'orange' });
@@ -360,27 +360,27 @@ so the field carries energy with density $u=\tfrac12\varepsilon_0E^2$. For two u
       viz(v) {
         const C = v.M.CONST, ke = 1.439964547; // MeV·fm per e²
         const s = v.stage({ x: [1e-8, 1e6], y: [1e-6, 1e10], xlog: true, ylog: true, height: 360, axes: 'box', gutter: true, weight: 1.35, xlabel: 'radius $R$ of the charged sphere (fm)', ylabel: 'field energy (MeV)', title: 'field energy of a charged sphere against its radius' });
-        const sb = v.stage({ x: [0.4, 7.6], y: [0, 100], height: 360, axes: 'box', gutter: true, weight: 0.9, xlabel: 'shell of radii $[10^{k}R,\\,10^{k+1}R)$', ylabel: 'share of the field energy (%)', xticks: [[1, '0'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5']], title: 'where the energy is: per decade of radius' });
+        const sb = v.stage({ x: [0.4, 6.6], y: [0, 100], height: 360, axes: 'box', gutter: true, weight: 0.9, xlabel: 'shell of radii $[10^{k}R,\\,10^{k+1}R)$', ylabel: 'share of the field energy (%)', xticks: [[1, 'inside'], [2, '0'], [3, '1'], [4, '2'], [5, '3'], [6, '4']], title: 'where the energy is: per decade of radius' });
         const model = v.select('charge sits on', [{ value: 0.5, label: 'a thin shell ($\\tfrac12$)' }, { value: 0.6, label: 'a uniform ball ($\\tfrac35$)' }], 0.5);
-        const R = v.slider('radius $R$', 1e-8, 1e6, 100, { log: true, fmt: (x) => `${x >= 1e3 ? v.M.si(x * 1e-15, 'm', 2) : x >= 1e-3 ? v.fmt(x, 3) + ' fm' : v.sci(x, 2).replace(/\\times10\^\{(-?\d+)\}/, '·10^$1') + ' fm'}` });
+        const R = v.slider('radius $R$', 1e-8, 1e6, 100, { log: true, fmt: (x) => (x >= 1e-2 && x < 1e5 ? `${+x.toPrecision(3)} fm` : `${x.toExponential(1)} fm`) });
         const E = (r) => (model.value * ke) / r;
-        const marks = [[0.84, 'proton', 'purple'], [2.818, '$r_e$', 'gold'], [52918, 'Bohr', 'teal'], [1e-7, 'electron bound', 'red']];
+        const marks = [[0.84, 'proton', 'purple', 3e8, 'right'], [2.818, '$r_e$', 'gold', 1.2e9, 'left'], [52918, 'Bohr', 'teal', 3e8, 'right'], [1e-7, 'electron bound', 'red', 3e8, 'left']];
         let inner = 0;
         v.render(() => {
           const k = model.value;
           s.fn((r) => (k * ke) / r, { color: 'accent', width: 3, n: 200 });
-          s.hline(0.51099895, { color: 'gold', width: 1.8, dash: [6, 4] }); s.text('$m_ec^2=0.511$ MeV', 3e-8, 0.8, { size: 12, color: 'gold' });
-          for (const [x, label, col] of marks) { s.vline(x, { color: col, width: 1.3, dash: [3, 4], alpha: 0.8 }); s.text(label, x * 1.5, 1.6e9, { size: 11.5, color: col, math: false }); }
+          s.hline(0.51099895, { color: 'gold', width: 1.8, dash: [6, 4] }); s.text('$m_ec^2=0.511$ MeV', 3e-8, 2.2, { size: 12, color: 'gold', align: 'left' });
+          for (const [x, label, col, yy, al] of marks) { s.vline(x, { color: col, width: 1.3, dash: [3, 4], alpha: 0.8 }); s.text(label, al === 'left' ? x * 1.6 : x / 1.6, yy, { size: 11.5, color: col, align: al }); }
           const Re = (k * ke) / 0.51099895; s.dot(Re, 0.51099895, { r: 7, color: 'gold' });
           s.dot(R.value, E(R.value), { r: 8, color: 'accent' });
           // decade shares
           inner = k === 0.5 ? 0 : 1 / 6;
-          const bars = [inner * 100]; for (let j = 0; j < 6; j++) bars.push((1 - inner) * 100 * 0.9 * Math.pow(0.1, j));
+          const bars = [inner * 100]; for (let j = 0; j < 5; j++) bars.push((1 - inner) * 100 * 0.9 * Math.pow(0.1, j));
           sb.bars(bars.slice(inner ? 0 : 1).map((x, i) => x), { x0: inner ? 1 : 2, dx: 1, color: 'accent' });
           bars.forEach((b, i) => { if (i === 0 && !inner) return; sb.text(`${b >= 1 ? v.fix(b, 0) : v.fix(b, 1)} %`, i + 1, b + 4, { align: 'center', size: 11.5, color: 'ink' }); });
-          if (inner) sb.text('inside', 1, 14, { align: 'center', size: 11, color: 'muted' });
+          
         });
-        v.readout(() => `$R=${v.sci(R.value, 3)}$ fm: field energy $U=${v.sci(E(R.value), 3)}$ MeV $= ${v.sci(E(R.value) / 0.51099895, 3)}\\,m_ec^2$.\nU equals the electron’s rest energy at $R=${v.fix((model.value * ke) / 0.51099895, 3)}$ fm (${model.value === 0.5 ? 'half' : '0.6 times'} of $e^2/4\\pi\\varepsilon_0 m_ec^2=${v.fix(ke / 0.51099895, 3)}$ fm); at the experimental bound, $10^{-7}$ fm, it would be ${v.sci((model.value * ke) / 1e-7 / 0.51099895, 2)} $ rest energies.`);
+        v.readout(() => `$R=${v.sci(R.value, 3)}$ fm: field energy $U=${v.sci(E(R.value), 3)}$ MeV $= ${v.sci(E(R.value) / 0.51099895, 3)}\\,m_ec^2$.\nU equals the electron’s rest energy at $R=${v.fix((model.value * ke) / 0.51099895, 3)}$ fm (${model.value === 0.5 ? 'half' : '0.6 times'} of $e^2/4\\pi\\varepsilon_0 m_ec^2=${v.fix(ke / 0.51099895, 3)}$ fm); at the experimental bound, $10^{-7}$ fm, it would be $${v.sci((model.value * ke) / 1e-7 / 0.51099895, 2)}$ rest energies.`);
       },
     },
   ],
