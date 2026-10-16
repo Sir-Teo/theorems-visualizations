@@ -404,6 +404,7 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
             cache[hk] = { its, sol, lim };
           }
           const C = cache[hk], k = kS.value;
+          S.setView(null, [0, Math.max(1.3, ...C.sol) * 1.1]);
           S.hline(C.lim, { color: 'green', width: 1.2, dash: [3, 3] });
           for (let j = 0; j < k; j++) S.path(Array.from(C.its[j], (y, i) => [i * dt, y]), { color: 'accent', width: 1, alpha: 0.25 });
           S.path(Array.from(C.sol, (y, i) => [i * dt, y]), { color: 'ink', width: 1.8, dash: [6, 4] });

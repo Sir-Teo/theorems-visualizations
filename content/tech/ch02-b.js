@@ -601,6 +601,7 @@ Scope: the model below is frictionless, has no air drag and a rigid beam, so its
             R.path(ptsR, { color: col, width: 2.2 }); R.path(ptsE, { color: col, width: 1.4, dash: [5, 4] });
           }
           if (r) { R.vline(relS.value, { color: 'gold', width: 1.2 }); R.dot(relS.value, r.range, { r: 5, color: 'gold' }); }
+          for (const e of [0.25, 0.5, 0.75, 1]) R.text(`${e * 100}%`, 79.5, e * rmax, { size: 10, color: 'muted', align: 'right', baseline: 'middle' });
           drawYears(v, C, [
             { t: -350, label: 'traction trebuchet, Mozi (China)' },
             { t: 1090, label: 'Salamiya', contested: true },

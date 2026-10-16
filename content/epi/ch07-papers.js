@@ -80,21 +80,24 @@ The argument is a model, not a measurement: its conclusion depends on the assume
           const hTP = c.tp / pT, hFP = c.fp / (1 - pT);
           const x0 = 0.04, x1 = 0.96, y0 = 0.05, y1 = 0.88, W = x1 - x0, H = y1 - y0;
           const xs = x0 + W * wT;
-          L.rect(x0, y0 + H * (1 - hTP), xs, y1, { fill: 'green', fillAlpha: 0.75, color: 'green', hatch: enlarged ? 'panel' : false });
-          L.rect(x0, y0, xs, y0 + H * (1 - hTP), { fill: 'green', fillAlpha: 0.18, color: 'green' });
-          L.rect(xs, y0 + H * (1 - hFP), x1, y1, { fill: 'red', fillAlpha: 0.75, color: 'red' });
-          L.rect(xs, y0, x1, y0 + H * (1 - hFP), { fill: 'muted', fillAlpha: 0.12, color: 'muted' });
-          L.text(`true ${Math.round(1000 * pT)}`, (x0 + xs) / 2, y1 + 0.05, { size: 11.5, color: 'green', weight: 700, align: xs < 0.3 ? 'left' : 'center' });
-          L.text(`false ${Math.round(1000 * (1 - pT))}`, (xs + x1) / 2, y1 + 0.05, { size: 11.5, color: 'muted', weight: 700 });
+          // claimed findings at the bottom (solid), unclaimed above (light)
+          L.rect(x0, y0, xs, y0 + H * hTP, { fill: 'green', fillAlpha: 0.75, color: 'green', hatch: enlarged ? 'panel' : false });
+          L.rect(x0, y0 + H * hTP, xs, y1, { fill: 'green', fillAlpha: 0.15, color: 'green' });
+          L.rect(xs, y0, x1, y0 + H * hFP, { fill: 'red', fillAlpha: 0.75, color: 'red' });
+          L.rect(xs, y0 + H * hFP, x1, y1, { fill: 'muted', fillAlpha: 0.1, color: 'muted' });
+          L.text(`true ${Math.round(1000 * pT)}`, xs < 0.3 ? x0 : (x0 + xs) / 2, y1 + 0.05, { size: 11.5, color: 'green', weight: 700, align: xs < 0.3 ? 'left' : 'center' });
+          L.text(`false ${Math.round(1000 * (1 - pT))}`, Math.max((xs + x1) / 2, 0.62), y1 + 0.05, { size: 11.5, color: 'muted', weight: 700 });
           const big = (val) => (val >= 10 ? Math.round(val) : v.fix(val, 1));
-          L.text(`claimed false: ${big(1000 * c.fp)}`, (xs + x1) / 2, Math.min(y1 - 0.05, y0 + H * (1 - hFP / 2) + 0.0), { size: 12, weight: 700, color: 'ink', plate: true });
-          L.text(`claimed true: ${big(1000 * c.tp)}`, Math.max(xs, 0.3) - 0.02, y0 + 0.07, { size: 12, weight: 700, color: 'green', align: 'right', plate: true });
-          if (enlarged) L.corner('true sliver widened to be visible', 'bl', { size: 10.5, color: 'muted' });
+          L.text(`false findings ${big(1000 * c.fp)}`, Math.max((xs + x1) / 2, 0.6), y0 + H * hFP + 0.045, { size: 12, weight: 700, color: 'red', plate: true });
+          L.text(`true findings ${big(1000 * c.tp)}`, xs < 0.45 ? x0 + 0.01 : (x0 + xs) / 2, y0 + H * hTP + 0.045, { size: 12, weight: 700, color: 'green', align: xs < 0.45 ? 'left' : 'center', plate: true });
+          L.text('claimed ↓', x1, y0 - 0.025, { size: 10, color: 'muted', align: 'right' });
+          if (enlarged) L.corner('true sliver widened to be visible', 'tl', { size: 10.5, color: 'muted', dy: 2 });
           // ---- PPV curve
           P.hline(0.5, { color: 'faint', width: 1.2, dash: [4, 4] });
           P.fn((r) => ppvOf(cells(pw.value, r, uu, nn, alpha)), { color: 'accent', width: 2.6 });
           if (nn === 1) P.fn((r) => ppvOf(cells(pw.value, r, 0, 1, alpha)), { color: 'accent', width: 1.2, alpha: 0.45, dash: [5, 4] });
-          T4.forEach((r, i) => { P.dot(r[1], r[3], { r: 4.5, color: 'orange' }); P.text(String(i + 1), r[1], r[3], { dx: i === 1 ? 9 : -9, dy: i % 2 ? 10 : -9, size: 11, color: 'orange', weight: 700 }); });
+          const OFF = [[-9, -9], [9, 10], [9, -9], [10, -6], [10, 8], [-10, -6], [-10, 8], [-8, -10], [10, -10]];
+          T4.forEach((r, i) => { P.dot(r[1], r[3], { r: 4.5, color: 'orange' }); if (i !== 7) P.text(i === 8 ? '8, 9' : String(i + 1), r[1], r[3], { dx: OFF[i][0], dy: OFF[i][1], size: 11, color: 'orange', weight: 700, align: OFF[i][0] > 0 ? 'left' : 'right' }); });
           P.dot(R, ppv, { r: 7, color: 'gold' });
           P.vline(R, { color: 'gold', width: 1, dash: [3, 3] });
           P.corner(`PPV = ${ppv >= 0.01 ? v.fix(ppv, 3) : v.sci(ppv, 2).replace(/\\times/, '×').replace(/[{}^]/g, '')}`, 'tl', { color: 'gold', weight: 700, size: 13, dx: 20 });
@@ -106,8 +109,8 @@ The argument is a model, not a measurement: its conclusion depends on the assume
             B.text(`${name}`, 0.02, y + 0.33, { size: 10.5, align: 'left', color: 'ink' });
             B.text(`${k}/${tot} = ${Math.round(100 * f)}%`, 0.04 + 0.9 * f, y, { size: 11, align: 'left', weight: 700, color: 'teal', dx: 2 });
           });
-          B.line(0.02 + 0.9 * ppv, -0.35, 0.02 + 0.9 * ppv, 3.45, { color: 'gold', width: 2, dash: [5, 4] });
-          B.text('your PPV', 0.02 + 0.9 * ppv, -0.35, { size: 10.5, color: 'gold', weight: 700, align: ppv > 0.7 ? 'right' : 'left', dx: ppv > 0.7 ? -4 : 4, baseline: 'bottom' });
+          for (let i = 0; i < REPL.length; i++) { const y = 3 - i, xp = 0.02 + 0.9 * ppv; B.poly([[xp, y - 0.17], [xp - 0.025, y - 0.32], [xp + 0.025, y - 0.32]], { fill: 'gold', fillAlpha: 1, color: 'gold' }); }
+          B.text(`▲ your PPV ${Math.round(100 * ppv)}% (a replication rate of about this size is what the model predicts)`, 0.02, -0.38, { size: 10, color: 'gold', weight: 700, align: 'left' });
           st = { R, c, ppv, nn, uu };
         });
         v.legend([['green', 'true findings', { area: true }], ['red', 'false findings', { area: true }], ['accent', 'PPV(R) for your settings'], ['orange', 'Table 4 examples', { dot: true }]]);
