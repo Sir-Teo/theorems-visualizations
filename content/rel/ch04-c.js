@@ -152,8 +152,8 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
       scope: String.raw`Kinematics only: this says what is allowed, not how likely; the cross-section (Breit–Wheeler) peaks a little above threshold.`,
       viz(v) {
         const proc = v.select('process', [{ value: 'gg', label: '$\\gamma\\gamma\\to e^+e^-$' }, { value: 'gN', label: '$\\gamma+$nucleus' }, { value: 'g', label: 'lone photon' }], 'gg');
-        const E1S = v.slider('photon energy $E_1$ (eV)', 1e-4, 1e15, 3e12, { log: true, sig: 2 });
-        const E2S = v.slider('photon energy $E_2$ (eV)', 1e-4, 1e15, 2, { log: true, sig: 2 });
+        const E1S = v.slider('photon energy $E_1$ (eV)', 1e-4, 1e15, 3e12, { log: true, sig: 2, fmt: (x) => eng(x / 1e6, 2) });
+        const E2S = v.slider('photon energy $E_2$ (eV)', 1e-4, 1e15, 2, { log: true, sig: 2, fmt: (x) => eng(x / 1e6, 2) });
         const thS = v.slider('angle between photons (°)', 1, 180, 180, { step: 1 });
         v.button('TeV γ + starlight (2 eV)', () => { E1S.set(5e11); E2S.set(2); thS.set(180); proc.set('gg', { fire: true }); });
         v.button('γ + CMB (6×10⁻⁴ eV)', () => { E1S.set(1e15); E2S.set(6.3e-4); thS.set(180); proc.set('gg', { fire: true }); });
@@ -190,7 +190,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
           const { p, E1, rt, ok, s, Eth } = st; if (!p) return '';
           const e = (x) => eng(x / 1e6);
           if (p === 'g') return String.raw`A lone photon: $s=(k)^2=0$ in every frame, so it cannot become a pair (needs $\sqrt s\ge2m_ec^2=${e(2 * m)}$). It needs a nucleus or a second photon.`;
-          if (p === 'gN') return `Photon on a proton at rest: ${ok ? 'allowed' : 'forbidden'}. Energy available √s − M = ${e(rt)} against 2mc² = ${e(2 * m)}; the threshold photon energy 2mc²(1 + m/M) is ${e(Eth)} (essentially 1.022 MeV).`;
+          if (p === 'gN') return `Photon on a proton at rest: ${ok ? 'allowed' : 'forbidden'}. Energy available √s − M = ${e(rt)} against 2mc² = ${e(2 * m)}; the threshold photon energy 2mc²(1 + m/M) is just above that, ${eng(Eth / 1e6, 5)}.`;
           return `E₁ = ${e(E1)}, E₂ = ${e(st.E2)}: √s = ${e(rt)}. Pair creation is ${ok ? 'allowed' : 'forbidden'} (threshold 2mc² = ${e(2 * m)}).` + '\n' +
             (ok ? `In the CM frame each lepton has speed ${v.fix(s.beta, 5)} c; the CM moves at ${v.fix(s.bcm, 7)} c in this frame.` : `At this angle and E₂ the threshold would be reached for E₁ ≥ ${e(Eth)}.`);
         });

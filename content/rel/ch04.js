@@ -188,6 +188,7 @@ and $M-m_1-m_2=K_{\text{cm}}/c^2$, where $K_{\text{cm}}$ is the kinetic energy t
           const tot = m1 + m2;
           B.rect(0.4, 0, 1.6, m1, { fill: 'blue', fillAlpha: 0.55, color: 'blue' }); B.rect(0.4, m1, 1.6, tot, { fill: 'orange', fillAlpha: 0.55, color: 'orange' });
           B.rect(2.2, 0, 3.4, tot, { fill: 'faint', fillAlpha: 0.4, color: 'muted' }); B.rect(2.2, tot, 3.4, M, { fill: 'red', fillAlpha: 0.6, color: 'red' });
+          B.rect(4.4, 0, 5.4, E, { fill: 'accent', fillAlpha: 0.5, color: 'accent' }); B.rect(5.6, 0, 6.6, gc * M, { fill: 'red', fillAlpha: 0.5, color: 'red' });
           B.setView([0, 7], [0, Math.max(6, 1.1 * E)]);
           st = { b, m2, M, dM, Kcm, E, gM: gc * M, tot };
         });

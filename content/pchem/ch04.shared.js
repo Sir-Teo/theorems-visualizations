@@ -24,7 +24,7 @@ function make(o) {
 }
 export const SUBST = {
   water: make({ key: 'water', name: 'water', Tt: 273.16, pt: 0.00611657, Tc: 647.096, pc: 220.64, T3: 373.124, p3: ATM, dHsub: 51.06e3, slope: -135, curv: -1.46e-6, pmaxMelt: 2099, T: [200, 700], p: [1e-4, 1e4] }),
-  co2: make({ key: 'co2', name: 'CO₂', Tt: 216.58, pt: 5.185, Tc: 304.13, pc: 73.77, T3: 273.15, p3: 34.85, Tsub: 194.69, slope: 45.7, pmaxMelt: 4000, T: [150, 400], p: [0.01, 1e4] }),
+  co2: make({ key: 'co2', name: 'CO₂', Tt: 216.58, pt: 5.185, Tc: 304.13, pc: 73.77, T3: 273.15, p3: 34.85, Tsub: 194.69, slope: 45.7, pmaxMelt: 4000, T: [150, 400], p: [0.01, 4000] }),
 };
 
 /** Phase of a state (T, p in bar): 'solid' | 'liquid' | 'gas' | 'sc' (supercritical fluid). */

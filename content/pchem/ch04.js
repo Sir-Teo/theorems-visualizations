@@ -62,7 +62,7 @@ export default {
           for (let i = 0; i <= 80; i++) { const p = S.pt * Math.pow(S.pmaxMelt / S.pt, i / 80); mel.push([S.Tm(p), p]); }
           s.path(sub, { color: 'ink', width: 2 }); s.path(vap, { color: 'ink', width: 2 }); s.path(mel, { color: 'ink', width: 2 });
           s.dot(S.Tt, S.pt, { r: 5, color: 'red', label: `triple point (${v.fix(S.Tt, 2)} K, ${v.fmt(S.pt, 4)} bar)`, labelPos: 'se' });
-          s.dot(S.Tc, S.pc, { r: 5, color: 'red', label: `critical point (${v.fix(S.Tc, 1)} K, ${v.fmt(S.pc, 4)} bar)`, labelPos: 'sw' });
+          s.dot(S.Tc, S.pc, { r: 5, color: 'red', label: `critical point (${v.fix(S.Tc, 1)} K, ${v.fmt(S.pc, 4)} bar)`, labelPos: 'nw' });
           const ph = phaseOf(S, h.x, h.y), [c] = PH[ph];
           h.color = c;
           const q = clouds[ph];
