@@ -283,3 +283,27 @@ export function topKeys(res, L, count = 6) {
   const idx = [...Array(res.K).keys()]; idx.sort((a, b) => res.final[b] - res.final[a]);
   return idx.slice(0, count).map((k) => ({ key: Array.from({ length: L }, (_, i) => A[res.digits[i][k]]).join(''), score: res.final[k] }));
 }
+
+// ------------------------------------------------------------------ drawing helpers
+/** Rounded box with a small title and a text of letters laid out on a fixed grid (up to maxRows rows, then “…”). */
+export function tile(P, x, y, w, h, title, text, col, o = {}) {
+  P.rect(x, y, w, h, { fill: col, fillAlpha: o.fillAlpha ?? 0.08, color: col, width: o.width ?? 1.6, radius: 8 });
+  if (title) P.text(title, x + 8, y + 11, { size: 11, color: col, weight: 700, align: 'left', halo: false });
+  const cw = o.cw || 8.4, per = Math.max(3, Math.floor((w - 16) / cw)), top = y + (title ? 28 : 16), rh = o.rh || 16, maxRows = o.rows || Math.max(1, Math.floor((h - (title ? 30 : 12)) / rh));
+  let s = String(text); const need = Math.ceil(s.length / per);
+  if (need > maxRows) s = s.slice(0, per * maxRows - 1) + '…';
+  rowsOf(s, per).forEach((r, i) => letterRow(P, r, x + 8 + (w - 16 - r.length * cw) / 2 * (o.center ? 1 : 0), top + i * rh, cw, () => o.textColor || 'ink', { size: o.size || 13 }));
+}
+export const dashedBox = (P, x, y, w, h, col, label) => { P.rect(x, y, w, h, { color: col, width: 1.4, dash: true, fill: false, radius: 10 }); if (label) P.text(label, x + 10, y - 1, { size: 11.5, weight: 700, color: col, align: 'left' }); };
+
+/** topKeys for exactly n letters (scores only, no entropies). */
+export function topAt(cipherCodes, L, n, count = 6) {
+  const K = 26 ** L, sc = new Float64Array(K), dg = [];
+  for (let i = 0, d = 1; i < L; i++, d *= 26) { const a = new Uint8Array(K); for (let k = 0; k < K; k++) a[k] = Math.floor(k / d) % 26; dg.push(a); }
+  for (let j = 0; j < n; j++) {
+    const dj = dg[j % L], dp = dg[(j + L - 1) % L];
+    for (let k = 0; k < K; k++) { const p = mod(cipherCodes[j] - dj[k], 26); sc[k] += j === 0 ? LOGP[p] : LOGB[mod(cipherCodes[j - 1] - dp[k], 26)][p]; }
+  }
+  const idx = [...Array(K).keys()]; idx.sort((a, b) => sc[b] - sc[a]);
+  return idx.slice(0, count).map((k) => ({ key: Array.from({ length: L }, (_, i) => A[dg[i][k]]).join(''), score: sc[k] }));
+}
