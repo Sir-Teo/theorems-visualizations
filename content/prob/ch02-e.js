@@ -204,7 +204,7 @@ $$ES_N=EX_1\cdot EN.$$`,
           }
           const mN = runs.reduce((a, q) => a + q.N, 0) / runs.length, mS = runs.reduce((a, q) => a + q.SN, 0) / runs.length;
           const qN = runs.map((q) => q.N).sort((a, b) => a - b)[Math.floor(0.97 * runs.length)];
-          const xmax = Math.max(12, qN * 1.05), ymax = xmax * 6 * 0.75;
+          const xmax = Math.max(12, qN * 1.05), qS = runs.map((q) => q.SN).sort((a, b) => a - b)[Math.floor(0.99 * runs.length)], ymax = Math.max(3.5 * xmax, qS) * 1.08;
           L.setView([0, xmax], [0, ymax]); R.setView([0, xmax], [0, ymax]);
           runs.slice(0, 12).forEach((q) => { const pts = [[0, 0]]; let s = 0; q.xs.forEach((x, i) => { s += x; if (i < xmax + 2) pts.push([i + 1, s]); }); L.path(pts.slice(0, Math.min(pts.length, q.N + 2)), { color: 'accent', width: 1.2, alpha: 0.6 }); L.dot(q.N, q.SN, { r: 3.5, color: rule.value === 'peek' ? 'red' : 'gold' }); });
           if (rule.value === 'level') L.hline(Lv, { color: 'orange', dash: [5, 4], width: 1.4 });
@@ -261,7 +261,7 @@ $$\frac{EN_t}{t}\to\frac1\mu\quad\text{as }t\to\infty.$$`,
           v.legend([['accent', 'estimate'], ['muted', '$t/\\mu$', { dash: true }], ['orange', 'Wald bound $t/\\mu-1$', { dash: true }], ['green', isFinite(Lw.s2) ? 'second-order line / limit' : 'limit $1/\\mu$', { dash: true }]]);
           st = { Ut: cache.U[nb][1], ratio: cache.R[cache.R.length - 1][1], mu: Lw.mu, s2: Lw.s2 };
         });
-        v.readout(() => st && `$U(12)\\approx${v.fix(st.Ut, 3)}$` + (isFinite(st.mu) ? ` (vs $t/\\mu=12$` + (isFinite(st.s2) ? `, second-order $12+${v.fix((st.s2 - 1) / 2, 3)}$)` : ')') : '') + `; $U(1000)/1000\\approx${v.fix(st.ratio, 4)}$, $\\ 1/\\mu=${isFinite(st.mu) ? v.fix(1 / st.mu, 4) : '0'}$.`);
+        v.readout(() => st && `$U(12)\\approx${v.fix(st.Ut, 3)}$` + (isFinite(st.mu) ? ` (vs $t/\\mu=12$` + (isFinite(st.s2) ? `, second-order $12${(st.s2 - 1) / 2 < 0 ? '' : '+'}${v.fix((st.s2 - 1) / 2, 3)}$)` : ')') : '') + `; $U(1000)/1000\\approx${v.fix(st.ratio, 4)}$, $\\ 1/\\mu=${isFinite(st.mu) ? v.fix(1 / st.mu, 4) : '0'}$.`);
       },
     },
     {

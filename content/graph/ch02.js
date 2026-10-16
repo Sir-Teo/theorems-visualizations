@@ -367,7 +367,7 @@ export default {
       caption: String.raw`Edit the edges between $A$ and $B$ (${EDIT}). If a matching of $A$ exists it is drawn in green and the readout confirms the marriage condition for all $2^{|A|}$ subsets by brute force. Otherwise the alternating search from an unmatched $a$ produces $S$ (orange) and $N(S)$ (red rings) with $|N(S)|=|S|-1$; the blue matching edges pair $N(S)$ off inside $S$, showing where the missing partner went.`,
       deps: ['graph-2.1.1b', 'graph-1.6.1a'], see: ['algo-11.11'], refs: ['Diestel §2.1'], tags: ['matching', 'Hall', 'bipartite'],
       viz(v) {
-        const PRE = { bad: () => bipSpec(5, 5, '1:12 2:2 3:23 4:2345 5:45'), good: () => bipSpec(5, 5, '1:12 2:23 3:13 4:345 5:45') };
+        const PRE = { bad: () => bipSpec(5, 5, '1:2 2:23 3:23 4:13 5:45'), good: () => bipSpec(5, 5, '1:12 2:23 3:13 4:345 5:45') };
         const pre = v.select('', [{ value: 'bad', label: 'condition fails' }, { value: 'good', label: 'condition holds' }], 'bad', { onChange: () => { const P = PRE[pre.value](); G.set({ nodes: P.nodes, edges: P.edges }); } });
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...PRE.bad(), editable: true, r: 14 });
@@ -407,7 +407,7 @@ export default {
       caption: String.raw`A random $k$-regular bipartite graph with its 1-factor in green. Click vertices of $A$ (top row) to form $S$: its $k|S|$ edges (orange) all land in $N(S)$ (red rings), which can absorb only $k|N(S)|$ edge-ends, so $|N(S)|\ge|S|$. Switch to **only A regular**: now Hall's condition can fail and the violating set is shown.`,
       deps: ['graph-2.1.2'], refs: ['Diestel §2.1'], tags: ['matching', 'regular graphs'],
       viz(v) {
-        const nS = v.slider('$n = |A| = |B|$', 3, 8, 6, { int: true, onChange: () => gen() });
+        const nS = v.slider('$n$', 3, 8, 6, { int: true, onChange: () => gen() });
         const kS = v.slider('$k$', 1, 5, 3, { int: true, onChange: () => gen() });
         const mode = v.select('', [{ value: 'reg', label: 'k-regular' }, { value: 'skew', label: 'only A regular' }], 'reg', { onChange: () => gen() });
         let seed = 7;

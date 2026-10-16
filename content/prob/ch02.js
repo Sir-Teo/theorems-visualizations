@@ -426,7 +426,7 @@ A collection that is both is a σ-field. The rays $\{(-\infty,x]:x\in\R\}$ form 
         });
         v.readout(() => {
           if (!st) return '';
-          const nm = (m) => `\\{${setName(m, 4, false) === '∅' ? '' : setName(m, 4, false).split('').join(',')}\\}`;
+          const nm = (m) => (m === 0 ? '\\emptyset' : `\\{${setName(m, 4, false).split('').join(',')}\\}`);
           const piT = st.pv ? `not a π-system: $${nm(st.pv[0])}\\cap${nm(st.pv[1])}=${nm(st.pv[0] & st.pv[1])}$ is missing` : 'a **π-system**';
           const laT = !st.lv ? 'a **λ-system**' : st.lv.omega ? 'not a λ-system: $\\Omega$ is missing' : `not a λ-system: $${nm(st.lv.B)}-${nm(st.lv.A)}=${nm(st.lv.B & ~st.lv.A)}$ is missing`;
           return `${st.n} sets: ${piT}; ${laT}.` + (!st.pv && !st.lv ? ' Both, so it is a σ-field.' : '');
@@ -575,7 +575,7 @@ That is, the joint distribution function factors into the product of the margina
       deps: ['prob-2.1.7'],
       tags: ['independence'],
       viz(v) {
-        const GR = { a: { label: '12 | 34 | 56', b: [[0, 1], [2, 3], [4, 5]] }, b: { label: '123 | 456', b: [[0, 1, 2], [3, 4, 5]] }, c: { label: '1 | 2345 | 6', b: [[0], [1, 2, 3, 4], [5]] }, d: { label: '13 | 245 | 6', b: [[0, 2], [1, 3, 4], [5]] } };
+        const GR = { a: { label: '12 | 34 | 56', b: [[0, 1], [2, 3], [4, 5]] }, b: { label: '123 | 456', b: [[0, 1, 2], [3, 4, 5]] }, c: { label: '1 | 2345 | 6', b: [[0], [1, 2, 3, 4], [5]] }, d: { label: '12 | 3 | 456', b: [[0, 1], [2], [3, 4, 5]] } };
         const EV = { all: { label: 'all heads', f: (k, n) => k === n }, odd: { label: 'odd # heads', f: (k) => k % 2 === 1 }, one: { label: '≥ 1 head', f: (k) => k > 0 } };
         const gr = v.select('blocks', Object.entries(GR).map(([value, o]) => ({ value, label: o.label })), 'a');
         const evs = v.select('event per block', Object.entries(EV).map(([value, o]) => ({ value, label: o.label })), 'all');
