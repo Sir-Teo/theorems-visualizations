@@ -44,17 +44,20 @@ export const CHAIN = ['E♭', 'B♭', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯',
 /** Semitone (from C) of chain element j. */
 export const chainSemi = (j) => (((7 * (j - 3)) % 12) + 12) % 12;
 /**
- * Pitch classes (cents above C, 12 entries indexed by semitone) of a tuning given by the sizes of its twelve fifths f[0..11]
- * (f[i] joins CHAIN[i] to CHAIN[i + 1]; f[11] is the closing fifth G♯–E♭ and does not enter). C is 0; the other notes
- * are reached from C along the chain without ever using f[11], as in historical tuning practice.
+ * Pitch classes (cents above C, indexed by semitone) of a tuning given by the sizes of its twelve fifths f[0..11]
+ * (f[i] joins CHAIN[i] to CHAIN[i + 1]). The chain is cut at fifth w (the "wolf": f[w] is not used) and the note CHAIN[a] is placed
+ * at `apc` cents above C; every other note is reached from it along the chain, as when a tuner works outward from a starting note.
  */
-export function tuneFromFifths(f) {
-  const pcs = new Array(12).fill(0), pos = new Array(12).fill(0);
-  for (let j = 4; j < 12; j++) pos[j] = pos[j - 1] + f[j - 1];
-  for (let j = 2; j >= 0; j--) pos[j] = pos[j + 1] - f[j];
+export function tuneChain(f, w, a, apc) {
+  const pos = new Array(12).fill(0); pos[a] = apc;
+  for (let j = a, k = 0; k < 12 && j !== w; k++) { const nj = (j + 1) % 12; pos[nj] = pos[j] + f[j]; j = nj; }
+  for (let j = a, k = 0; k < 12; k++) { const pj = (j + 11) % 12; if (pj === w) break; pos[pj] = pos[j] - f[pj]; j = pj; }
+  const pcs = new Array(12).fill(0);
   for (let j = 0; j < 12; j++) pcs[chainSemi(j)] = fold(pos[j]);
   return pcs;
 }
+/** The usual case: wolf (or closing fifth) at G♯–E♭, C at 0. */
+export const tuneFromFifths = (f) => tuneChain(f, 11, 3, 0);
 /** Size of the interval from semitone r up by `n` semitones in a tuning pcs (cents). */
 export const ivl = (pcs, r, n) => fold(pcs[(r + n) % 12] - pcs[r]);
 /** Sizes (cents above the root) of the notes of a major or minor triad on semitone r. */
@@ -92,3 +95,15 @@ export function convs(a) {
 export function edoApprox(n, c) { const k = Math.round((n * c) / 1200); return [k, (k * 1200) / n - c]; }
 /** Interval names (5-limit and a few more) used for tables: [p, q, name]. */
 export const J5 = [[16, 15, 'minor second'], [9, 8, 'major second'], [6, 5, 'minor third'], [5, 4, 'major third'], [4, 3, 'fourth'], [45, 32, 'tritone'], [3, 2, 'fifth'], [8, 5, 'minor sixth'], [5, 3, 'major sixth'], [9, 5, 'minor seventh'], [15, 8, 'major seventh']];
+
+/**
+ * Pairs of partials (harmonics 1..H of the given fundamentals) of different notes that are within `lim` Hz of each other:
+ * [{d (Hz apart), i, j (notes), hi, hj (harmonic numbers)}], sorted by d. d < 0.05 means the partials coincide.
+ */
+export function nearPairs(freqs, H = 6, lim = 12) {
+  const out = [];
+  for (let i = 0; i < freqs.length; i++) for (let j = i + 1; j < freqs.length; j++) for (let a = 1; a <= H; a++) for (let b = 1; b <= H; b++) {
+    const d = Math.abs(a * freqs[i] - b * freqs[j]); if (d < lim) out.push({ d, i, j, hi: a, hj: b });
+  }
+  return out.sort((x, y) => x.d - y.d);
+}

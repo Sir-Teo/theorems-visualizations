@@ -18,13 +18,13 @@ export default {
 (c) the whole conductor (surface included) is at one potential, i.e. an equipotential;
 (d) just outside the surface $\mathbf E$ is perpendicular to the surface.`,
       idea: String.raw`If $\mathbf E\neq\mathbf 0$ somewhere inside, free charges would feel a force and move, so it was not equilibrium: this is (a). Gauss’s law in differential form (em-1.15) gives $\rho=\varepsilon_0\nabla\cdot\mathbf E=0$, which is (b). Since $\mathbf E=-\nabla V$ (em-2.4) vanishes, $V$ is constant, which is (c); a tangential component of $\mathbf E$ just outside would, by continuity of $V$ along the surface, mean $V$ changes along the surface, so (d). Dynamically the charge arrives there fast: the free charge relaxes with a time constant $\varepsilon_0/\text{conductivity}$, about $10^{-19}$ s for copper.`,
-      caption: String.raw`A cartoon conductor: 90 mobile electrons (blue) can slide through the ellipse, each tied to a fixed positive ion (grey) at its starting spot, and an external field $E_0$ is switched on. Watch the electrons drift to the left rim until the field they leave behind cancels $E_0$: the arrows inside shrink and the curve on the right falls to zero. Switch to **insulator** (electrons tied to their ions by springs) and the interior field only drops partway.`,
+      caption: String.raw`A cartoon conductor: 140 mobile electrons (blue) can slide through the ellipse, each tied to a fixed positive ion (grey) at its starting spot, and an external field $E_0$ is switched on. Watch the electrons drift to the left rim until the field they leave behind cancels $E_0$: the arrows inside shrink and the curve on the right drops to a small residual (140 grains of charge cannot cancel the field perfectly; more carriers would take it to zero). Switch to **insulator** (electrons tied to their ions by springs) and the interior field only drops partway.`,
       scope: String.raw`A model: electrons interact through the two-dimensional (line-charge) $1/r$ force with a softened core, move by overdamped drift, and the numbers are in arbitrary units chosen so that a modest shift of the electron cloud cancels $E_0$. Real metals relax in about $10^{-19}$–$10^{-14}$ s and the surface layer is a fraction of a nanometre thick; the picture shows the structure of the argument, not those numbers.`,
       deps: ['em-1.15', 'em-2.4'],
       refs: ['Griffiths §2.5', 'Purcell ch. 3'],
       tags: ['conductor', 'equilibrium'],
       viz(v) {
-        const A = 3.2, B = 2, NE = 90, G = 0.09, MU = 1.2, SOFT = 0.18;
+        const A = 3.2, B = 2, NE = 140, G = 0.13, MU = 1.2;
         const s = v.stage({ x: [-5, 5], y: [-3.2, 3.2], equal: true, height: 330, axes: false, weight: 1.3, title: 'electrons in a conductor' });
         const sH = v.stage({ x: [0, 10], y: [0, 1.15], height: 330, axes: 'box', gutter: true, weight: 0.8, minWidth: 230, xlabel: 'time', ylabel: 'interior field / $E_0$', title: 'interior field' });
         const E0s = v.slider('applied field $E_0$', 0, 1, 1, { step: 0.05, onChange: () => sim.reset() });
@@ -32,7 +32,7 @@ export default {
         const r = v.rng(11), ion = [];
         while (ion.length < NE) { const x = (r() * 2 - 1) * A, y = (r() * 2 - 1) * B; if ((x / A) ** 2 + (y / B) ** 2 < 0.9) ion.push([x, y]); }
         const probes = []; for (let i = -2; i <= 2; i++) for (let j = -1; j <= 1; j++) probes.push([i * 1.15, j * 0.9]);
-        const Eat = (e, px, py, E0) => {
+        const Eat = (e, px, py, E0, SOFT = 0.45) => {
           let u = E0, w = 0;
           for (let k = 0; k < NE; k++) {
             let dx = px - ion[k][0], dy = py - ion[k][1]; let d = dx * dx + dy * dy + SOFT * SOFT; u += (G * dx) / d; w += (G * dy) / d;
@@ -68,7 +68,7 @@ export default {
           sH.hline(1, { color: 'faint', dash: true }); sH.hline(0, { color: 'faint' });
           sH.path(S.h, { color: mat.value === 'c' ? 'green' : 'orange', width: 2.2 });
         }, { period: 10, still: 9 });
-        v.readout(() => `Mean field at the 15 interior probe points: $${v.fix(cur, 2)}\\,E_0$.${mat.value === 'c' ? ' The mobile charges have cancelled the applied field inside; what is left is the surface layer on the left (excess electrons) and right (uncovered ions).' : ' Bound charges only polarize: the interior field is reduced but not removed.'}`);
+        v.readout(() => `Mean field at the 15 interior probe points: $${v.fix(cur, 2)}\\,E_0$.${mat.value === 'c' ? ' The mobile charges have all but cancelled the applied field inside (the remainder is graininess of this 140-electron cartoon); what is left is the surface layer on the left (excess electrons) and right (uncovered ions).' : ' Bound charges only polarize: the interior field is reduced but not removed.'}`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.2

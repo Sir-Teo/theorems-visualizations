@@ -172,7 +172,7 @@ Every analytic function is therefore a solution of some electrostatic problem; c
           jou: { w: (z) => { const i = inv(z); return [z[0] + i[0], z[1] + i[1]]; }, t: '$\\zeta+1/\\zeta$: a cylinder in a uniform field', du: 0.6, dv: 0.5 },
           sqrt: { w: (z) => { const r = Math.sqrt(Math.hypot(z[0], z[1])), t = Math.atan2(z[1], z[0]) / 2; return [r * Math.cos(t), r * Math.sin(t)]; }, t: '$\\sqrt\\zeta$: the edge of a half-plane conductor', du: 0.25, dv: 0.25 },
           sin: { w: (z) => [Math.sin(z[0]) * Math.cosh(z[1]), Math.cos(z[0]) * Math.sinh(z[1])], t: '$\\sin\\zeta$: periodic strips', du: 0.25, dv: 0.5 },
-          bad: { w: (z) => [z[0] * z[0] - z[1] * z[1], 3 * z[0] * z[1]], t: 'NOT analytic: $u=x^2-y^2,\\ v=3xy$', du: 2, dv: 2 },
+          bad: { w: (z) => [z[0] * z[0] - 0.5 * z[1] * z[1], 2 * z[0] * z[1]], t: 'NOT analytic: $u=x^2-y^2/2,\\ v=2xy$', du: 1.5, dv: 2 },
         };
         const names = [['z2', '$\\zeta^2$'], ['z3', '$\\zeta^3$'], ['inv', '$1/\\zeta$'], ['ln', '$\\ln\\zeta$'], ['jou', '$\\zeta+1/\\zeta$'], ['sqrt', '$\\sqrt\\zeta$'], ['sin', '$\\sin\\zeta$'], ['bad', 'not analytic']].map(([value, label]) => ({ value, label }));
         const s = v.stage({ x: [-3, 3], y: [-2.4, 2.4], equal: true, height: 400, axes: true, weight: 1, title: 'equipotentials and field lines' });

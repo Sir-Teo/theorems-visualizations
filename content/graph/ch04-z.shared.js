@@ -382,9 +382,10 @@ export function simpleBasis(H, budget = 6e5) {
   if (H.m > 30) return { dim, basis: null, tooBig: true, nCycles: 0, exhausted: false };
   if (dim === 0) return { dim, basis: [], nCycles: 0, exhausted: true };
   const cyc = allCycles(H, 3000).map((c) => ({ ...c, mask: c.E.reduce((a, x, k) => a | (x << k), 0) })).sort((p, q) => p.vs.length - q.vs.length);
-  const load = new Int32Array(H.m), chosen = []; let nodes = 0, found = null;
+  const load = new Int32Array(H.m), chosen = []; let nodes = 0, found = null, best = [];
   const go = (from, basis) => {
     if (found || nodes > budget) return;
+    if (chosen.length > best.length) best = chosen.slice();
     if (chosen.length === dim) { found = chosen.slice(); return; }
     if (cyc.length - from < dim - chosen.length) return;
     for (let i = from; i < cyc.length; i++) {
@@ -401,7 +402,7 @@ export function simpleBasis(H, budget = 6e5) {
     }
   };
   go(0, []);
-  return { dim, basis: found ? found.map((i) => cyc[i]) : null, nCycles: cyc.length, exhausted: !found && nodes <= budget, nodes };
+  return { dim, basis: found ? found.map((i) => cyc[i]) : null, best: best.map((i) => cyc[i]), nCycles: cyc.length, exhausted: !found && nodes <= budget, nodes };
 }
 /**
  * Schnyder regions: for an inner vertex v return counts of inner triangular faces in R1, R2, R3 and the face lists.
@@ -463,8 +464,8 @@ export function spread(n, E, pos, iters = 80) {
   };
   for (let it = 0; it < iters; it++) for (let v = 0; v < n; v++) {
     let fx = 0, fy = 0;
-    for (let w = 0; w < n; w++) { if (w === v) continue; const dx = P[v][0] - P[w][0], dy = P[v][1] - P[w][1], d2 = dx * dx + dy * dy + 0.01; fx += (0.02 * dx) / d2; fy += (0.02 * dy) / d2; }
-    const nb = H.adj[v]; if (nb.length) { let mx = 0, my = 0; for (const [w] of nb) { mx += P[w][0]; my += P[w][1]; } mx /= nb.length; my /= nb.length; fx += 0.15 * (mx - P[v][0]); fy += 0.15 * (my - P[v][1]); }
+    for (let w = 0; w < n; w++) { if (w === v) continue; const dx = P[v][0] - P[w][0], dy = P[v][1] - P[w][1], d2 = dx * dx + dy * dy + 0.01; fx += (0.05 * dx) / d2; fy += (0.05 * dy) / d2; }
+    const nb = H.adj[v]; if (nb.length) { let mx = 0, my = 0; for (const [w] of nb) { mx += P[w][0]; my += P[w][1]; } mx /= nb.length; my /= nb.length; fx += 0.1 * (mx - P[v][0]); fy += 0.1 * (my - P[v][1]); }
     let s = 1; for (let t = 0; t < 5; t++, s /= 2) if (okMove(v, [P[v][0] + s * fx, P[v][1] + s * fy])) break;
   }
   return P;

@@ -53,7 +53,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
             L.line(1, a, 1, b, { color: 'red', width: 2, dash: [4, 3] }); L.dot(1, a, { r: 4.5, color: 'blue' }); L.dot(1, b, { r: 4.5, color: 'blue', hollow: true });
           } else L.fn(cl, { domain: [0.2, 5], color: 'blue', width: 2.8, n: 200 });
           const roots = M.roots(0.2, 5);
-          for (const r of roots) { L.dot(r.p, 0, { r: 6.5, color: 'green' }); plateText(L, `p* = ${f2(r.p, 2)}`, r.p, 0, { dy: -15, color: 'green', align: 'center' }); }
+          for (const r of roots) { L.dot(r.p, 0, { r: 6.5, color: 'green' }); plateText(L, `p* = ${f2(r.p, 2)}`, r.p, 0, { dy: 20, dx: 6, color: 'green', align: 'left' }); }
           L.vline(p, { color: 'gold', width: 2 }); L.dot(p, cl(p), { r: 5, color: 'gold' });
           if (!roots.length) plateText(L, 'z₁ jumps over zero: no price clears market 1', 1.0, 6.5, { color: 'red', align: 'center' });
           drawBox(R);
@@ -76,7 +76,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       num: '9.8', kind: 'Phenomenon', name: 'Multiple and unstable equilibria',
       statement: String.raw`Existence (9.7) does not give uniqueness or stability. When income effects are strong (a trader who owns a good that is a strong complement of what he or she wants buys less of the other good when its price falls), the excess demand $z_1(p)$ can cross zero **three times**, so the economy has several equilibria. Under the price-adjustment rule $\dot p_1/p_1 = c\, z_1(p)$ (raise the price of a good in excess demand, lower it otherwise), an equilibrium is **locally stable** when $z_1$ crosses zero downward (the slope $z_1'(p^*)$ is negative) and **unstable** when it crosses upward. In the examples below the two outer equilibria are stable and the middle one is unstable. With gross substitutes, in contrast, equilibrium is unique and tâtonnement converges (Arrow–Block–Hurwicz).`,
       idea: String.raw`In a two-good economy a stable equilibrium is a down-crossing of $z_1$ and an unstable one an up-crossing, and between two down-crossings of a continuous function there must be an up-crossing, so the number of equilibria is odd and stable and unstable ones alternate (9.7 supplies the first). To obtain three crossings, $z_1$ has to be non-monotone, and that needs the income effect to beat the substitution effect: here both traders have nearly Leontief tastes, the first owning only good 1 and the second only good 2. The offer curves then bend back and cross the line of the endowment more than once. The picture is the one behind Scarf's examples of global instability (1960) and Shapley and Shubik's (1977) example of three equilibria.`,
-      caption: String.raw`Left: the Edgeworth box with the two offer curves (trader $A$ owns only good 1, $B$ only good 2); each crossing is an equilibrium. Right: excess demand $z_1(p)$; the coloured dots are price-adjustment runs that **start at six different prices** (or click the right panel to start one there) and follow $\dot p/p = c\,z_1(p)$: they settle at the outer equilibria and flee the middle one. Drag the **complementarity** slider toward $0$ and the extra equilibria vanish.`,
+      caption: String.raw`Left: excess demand $z_1(p)$ (in thousandths of a unit; trader $A$ owns only good 1, $B$ only good 2). The coloured dots are price-adjustment runs that **start at six different prices** (or click the panel to start one there) and follow $\dot p/p = c\,z_1(p)$: they settle at the two outer equilibria (green) and flee the middle one (red). Arrows on the axis show the direction of adjustment. Right: the box with the two offer curves, which cross at the same three points but are nearly indistinguishable at this scale. Weaken the complementarity (slide $\rho$ up) and the extra equilibria merge and vanish.`,
       deps: ['micro-9.7', 'micro-2.7'],
       see: ['micro-9.5'],
       refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'stability'],
@@ -84,18 +84,18 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/General_equilibrium_theory' },
       viz(v) {
-        const rS = v.slider('complementarity $\\rho$ (more negative = closer to Leontief)', -30, -3, -20, { step: 0.5 });
-        const R = boxStage(v, { title: 'the box: two offer curves, several crossings', height: 380, weight: 1 });
-        const Z = v.stage({ x: [0.2, 5], y: [-6, 8], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'relative price p₁/p₂  (click to start a run)', ylabel: 'excess demand z₁', title: 'price adjustment on the excess demand curve', weight: 1.1 });
-        v.legend([['accent', 'A’s offer curve', { dash: true }], ['orange', 'B’s offer curve', { dash: true }], ['green', 'stable equilibrium', { dot: true }], ['red', 'unstable equilibrium', { dot: true }], ['gold', 'price runs']]);
-        const starts = [0.22, 0.6, 0.97, 1.03, 1.7, 4.5], cols = ['purple', 'teal', 'pink', 'gold', 'blue', 'orange'];
+        const rS = v.slider('complementarity $\\rho$ (more negative = closer to Leontief)', -30, -12, -20, { step: 0.5 });
+        const Z = v.stage({ x: [0.2, 5], y: [-10, 10], xlog: true, axes: 'box', gutter: true, height: 400, xlabel: 'relative price p₁/p₂  (click to start a run)', ylabel: 'excess demand z₁  (units of 0.001)', title: 'price adjustment on the excess demand curve', weight: 1.35 });
+        const R = boxStage(v, { title: 'the box: the offer curves hug each other', height: 400, weight: 0.9, minWidth: 250 });
+        v.legend([['accent', 'A’s offer curve', { dash: true }], ['orange', 'B’s offer curve', { dash: true }], ['green', 'stable equilibrium', { dot: true }], ['red', 'unstable equilibrium', { dot: true }], ['ink', 'excess demand z₁']]);
+        const starts = [0.22, 0.42, 0.97, 1.03, 1.7, 4], cols = ['purple', 'teal', 'pink', 'gold', 'blue', 'orange'];
         let extra = null;
         Z.onClick((x) => { extra = clamp(x, 0.21, 4.9); v.restart(); });
         const econ = () => market(pref('ces', { a: 0.9, r: rS.value }), pref('ces', { a: 0.1, r: rS.value }), [W1, 0]);
-        const C = 0.28, DT = 0.05, NS = 700; let cache = { key: '', tr: [] };
+        const K = 1000, C = 0.1, DT = 0.05, NS = 800; let cache = { key: '', tr: [] };
         const trajectories = (M) => {
           const key = `${rS.value}|${extra}`; if (cache.key === key) return cache.tr;
-          const f = (lp) => C * M.z1(Math.exp(lp)), tr = [];
+          const f = (lp) => C * K * M.z1(Math.exp(lp)), tr = [];
           for (const p0 of extra ? [...starts, extra] : starts) {
             let lp = Math.log(p0); const a = [p0];
             for (let k = 0; k < NS; k++) { const k1 = f(lp), k2 = f(lp + (DT / 2) * k1), k3 = f(lp + (DT / 2) * k2), k4 = f(lp + DT * k3); lp = clamp(lp + (DT / 6) * (k1 + 2 * k2 + 2 * k3 + k4), Math.log(0.2), Math.log(5)); a.push(Math.exp(lp)); }
@@ -105,27 +105,29 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
         };
         let st = {};
         v.animate((t) => {
-          const M = econ(), roots = M.roots(0.2, 5, 400), tr = trajectories(M), tau = Math.min(NS, Math.round((t * 3.2) / DT));
+          const M = econ(), roots = M.roots(0.2, 5, 500), tr = trajectories(M), tau = Math.min(NS, Math.round((t * 3.4) / DT));
           drawBox(R);
           const [pa, pb] = offers(M, 0.2, 5, 240);
-          R.path(pa, { color: 'accent', width: 2.4, dash: [5, 4] }); R.path(pb, { color: 'orange', width: 2.4, dash: [5, 4] });
+          R.path(pa, { color: 'accent', width: 3, dash: [5, 4] }); R.path(pb, { color: 'orange', width: 3, dash: [5, 4], alpha: 0.9 });
           Z.hline(0, { color: 'muted', width: 1 });
-          Z.fn((q) => clamp(M.z1(q), -9, 9), { domain: [0.2, 5], color: 'ink', width: 2.6, n: 300 });
+          Z.fn((q) => clamp(K * M.z1(q), -14, 14), { domain: [0.2, 5], color: 'ink', width: 2.6, n: 400 });
+          // flow arrows along the axis: price rises where z₁ > 0
+          for (let i = 0; i < 14; i++) { const q = 0.2 * 25 ** ((i + 0.5) / 14), z = M.z1(q); Z.text(z > 0 ? '▶' : '◀', q, -8.6, { size: 11, color: z > 0 ? 'green' : 'red', align: 'center', alpha: 0.8 }); }
           for (const r of roots) {
             const col = r.stable ? 'green' : 'red';
             Z.dot(r.p, 0, { r: 7, color: col, hollow: !r.stable }); R.dot(...M.demA(r.p), { r: 7, color: col, hollow: !r.stable });
-            plateText(Z, r.stable ? 'stable' : 'unstable', r.p, 0, { dy: 17, color: col, align: 'center' });
+            plateText(Z, r.stable ? 'stable' : 'unstable', r.p, 0, { dy: -17, color: col, align: 'center' });
           }
           tr.forEach((a, i) => {
             const col = cols[i % cols.length];
-            for (let k = 8; k >= 0; k--) { const j = Math.max(0, tau - k * 6), q = a[j]; Z.dot(q, clamp(M.z1(q), -9, 9), { r: k === 0 ? 5.5 : 2.2, color: col, alpha: k === 0 ? 1 : 0.35 }); }
+            for (let k = 8; k >= 0; k--) { const j = Math.max(0, tau - k * 6), q = a[j]; Z.dot(q, clamp(K * M.z1(q), -14, 14), { r: k === 0 ? 5.5 : 2.2, color: col, alpha: k === 0 ? 1 : 0.35 }); }
           });
-          st = { roots, ends: tr.map((a) => a[Math.min(NS, tau)]), nstart: tr.length, tau };
+          st = { roots, ends: tr.map((a) => a[Math.min(NS, tau)]), tau };
         }, { period: 14, still: 13 });
         v.readout(() => {
           const { roots, ends } = st;
-          const list = roots.map((r) => `$p = ${f2(r.p, 3)}$ (${r.stable ? 'stable' : 'unstable'}, $z_1' = ${f2(r.slope, 1)}$)`).join('; ');
-          return `**${roots.length} equilibri${roots.length === 1 ? 'um' : 'a'}**: ${list || 'none found'}. Elasticity of substitution of each trader: $\\sigma = 1/(1-\\rho) = ${f2(1 / (1 - rS.value), 3)}$. Run end-points now: ${ends.map((p) => f2(p, 2)).join(', ')}.`;
+          const list = roots.map((r) => `$p = ${f2(r.p, 3)}$ (${r.stable ? 'stable' : 'unstable'}, $z_1' = ${f2(r.slope * 1000, 1)}\\times10^{-3}$)`).join('; ');
+          return `**${roots.length} equilibri${roots.length === 1 ? 'um' : 'a'}**: ${list || 'none found'}. Each trader has $\\sigma = 1/(1-\\rho) = ${f2(1 / (1 - rS.value), 3)}$. Run end-points now: ${ends.map((p) => f2(p, 2)).join(', ')}. The excess demands are a few thousandths of a unit: with nearly Leontief tastes the two offer curves almost coincide, which is why the effect needs the zoom of the left panel.`;
         });
       },
     },
@@ -147,7 +149,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
         const gS = v.slider('externality $\\gamma$: harm to $B$ per unit of $A$’s good 1', 0, 1.5, 0, { step: 0.01 });
         const s = boxStage(v, { title: 'the market equilibrium and the efficient set', height: 430 });
         v.legend([['green', 'market equilibrium E'], ['purple', 'contract curve', { dash: true }], ['accent', 'A’s curve'], ['orange', 'B’s curve'], ['red', 'B’s true curve (with γ)', { dash: true }], ['green', 'improvement lens', { area: true }]]);
-        const H = s.handle(7, 3, { color: 'gold', r: 9, label: 'ω', labelPos: 'ne', constrain: { x: [0.4, W1 - 0.4], y: [0.4, W2 - 0.4] } });
+        const H = s.handle(7, 3, { color: 'gold', r: 9, label: 'ω', labelPos: 'se', constrain: { x: [0.4, W1 - 0.4], y: [0.4, W2 - 0.4] } });
         let st = {};
         v.render(() => {
           const FA = cd(aS.value), FB = cd(bS.value), g = gS.value, M = market(FA, FB, [H.x, H.y]), roots = M.roots(0.05, 20);
@@ -161,7 +163,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
           drawA(s, FA, FA.u(...E)); drawB(s, FB, FB.u(W1 - E[0], W2 - E[1]));
           if (g > 0) s.clip(() => s.contour(trueB, trueB(E[0], E[1]), { color: 'red', width: 2.2, res: 120 }), [0, W1], [0, W2]);
           s.dot(H.x, H.y, { r: 6, color: 'gold' }); s.dot(E[0], E[1], { r: 8, color: 'green' });
-          plateText(s, 'E', E[0], E[1], { dx: 12, dy: -12, color: 'green' });
+          plateText(s, 'E', E[0], E[1], { dx: -13, dy: -13, color: 'green' });
           const imp = improvements(ua(FA), trueB, E[0], E[1], 60);
           if (imp.best) { s.arrow(E[0], E[1], imp.best[0], imp.best[1], { color: 'red', width: 2.2 }); s.dot(imp.best[0], imp.best[1], { r: 5, color: 'red', hollow: true }); }
           st = { p, E, mA: FA.mrs(...E), mB: FB.mrs(W1 - E[0], W2 - E[1]), imp, g, ua0: FA.u(...E), ub0: trueB(...E), best: imp.best && [FA.u(...imp.best), trueB(...imp.best)] };
@@ -220,7 +222,7 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
           if (Math.hypot(s.X(ox) - s.X(H.x), s.Y(oy) - s.Y(H.y)) > 16) s.arrow(H.x, H.y, ox, oy, { color: 'gold', width: 2 });
           s.dot(tx, ty, { r: 8, color: ok ? 'green' : 'ink' });
           s.dot(dA[0], dA[1], { r: 5.5, color: 'accent', hollow: true }); s.dot(dB[0], dB[1], { r: 5.5, color: 'orange', hollow: true });
-          if (!ok) { s.line(dA[0], dA[1], dB[0], dB[1], { color: 'red', width: 2.2, dash: [4, 3] }); }
+          if (!ok) { s.clip(() => s.line(dA[0], dA[1], dB[0], dB[1], { color: 'red', width: 2.2, dash: [4, 3] }), [0, W1], [0, W2]); }
           const zr = M.roots(0.02, 50);
           s.corner(ok ? 'x* is the equilibrium after the transfer' : 'x* is not supported by any price', 'tl', { color: ok ? 'green' : 'red', weight: 700, plate: true });
           st = { p, tx, ty, ok, dA, dB, zr, z: M.z(p), oy, ox };

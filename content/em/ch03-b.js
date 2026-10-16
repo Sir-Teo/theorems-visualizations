@@ -171,7 +171,7 @@ In each case the field lives between the conductors and the capacitance is a pur
             const a = as.value, b = Math.max(bs.value, a + 0.3), sph = mode.value === 's', Q = 1;
             const V0 = sph ? (1 / a - 1 / b) : Math.log(b / a), Ef = (r) => (r < a || r > b ? 0 : sph ? 1 / (r * r) : 1 / r), Vf = (r) => (r < a ? V0 : r > b ? 0 : sph ? 1 / r - 1 / b : Math.log(b / r));
             s.setView([-8, 8], [-6, 6]);
-            s.heat((x, y) => Vf(Math.hypot(x, y)) / V0, { range: [0, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 3, key: 'sc' + mode.value + a + b, alpha: 0.5 });
+            s.heat((x, y) => (Math.hypot(x, y) > b ? NaN : Vf(Math.hypot(x, y)) / V0), { range: [0, 1], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 3, key: 'sc' + mode.value + a + b, alpha: 0.5 });
             s.circle(0, 0, a, { color: 'red', width: 2.6, fill: 'red', fillAlpha: 0.15 }); s.circle(0, 0, b, { color: 'blue', width: 2.6 });
             for (let k = 0; k < 16; k++) { const t = (TAU * k) / 16; s.arrow(a * 1.04 * Math.cos(t), a * 1.04 * Math.sin(t), (b - 0.05) * Math.cos(t), (b - 0.05) * Math.sin(t), { color: 'ink', alpha: 0.45, width: 1.2, head: 6 }); }
             for (let k = 1; k < 6; k++) { const rr = a + ((b - a) * k) / 6, c2 = circ(0, 0, rr, 80); s.path(c2, { color: 'ink', alpha: 0.2, width: 1 }); }

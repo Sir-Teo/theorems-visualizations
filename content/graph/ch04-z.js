@@ -2,7 +2,7 @@
 import {
   K, ix, comps, blob, PALETTE, named, gstage, EDIT, cacheBy, wheel, kappa, isKconn, amask, allCycles, nonSepInduced, blocks,
   crossings, faceWalks, dmp, tutte, spread, isPlanar, planarEdges, kuratowski, faceSetKey, faceKey, maximalize, planarPos, ixE, fitPos, posOf,
-  loadSpec, segPoint, specOf, norm, contractG, randomTriangulation, ekey2, TAU,
+  loadSpec, segPoint, specOf, norm, contractG, randomTriangulation, triDraw, ekey2, TAU,
 } from './ch04-z.shared.js';
 
 // ---------- presets ----------
@@ -402,10 +402,10 @@ export default {
         load();
         v.render(() => {
           if (res.none) { s.corner('this graph has no pair of non-adjacent vertices: choose another one', 'bl', { color: 'red', weight: 700 }); return; }
-          const inK = res.kur ? new Set(res.kur.edges.map((k) => H.E[k][2])) : null;
+          const kk = (e) => ekey2(H.at(e.from), H.at(e.to)), inK = res.kur ? new Set(res.kur.edges.map((k) => ekey2(H.E[k][0], H.E[k][1]))) : null;
           G.draw({
             nodeFill: (id) => (S.includes(H.at(id)) ? 'gold' : side[H.at(id)] === 1 ? 'accent' : 'orange'),
-            edgeColor: (e) => (inK ? (inK.has(e) ? 'red' : 'faint') : null), edgeWidth: (e) => (inK && inK.has(e) ? 3.4 : null),
+            edgeColor: (e) => (inK ? (inK.has(kk(e)) ? 'red' : 'faint') : null), edgeWidth: (e) => (inK && inK.has(kk(e)) ? 3.4 : null),
           });
         });
         v.legend([['accent', '$G_1\\setminus S$', { dot: true }], ['orange', '$G_2\\setminus S$', { dot: true }], ['gold', 'the separator $S$', { dot: true }]]);
@@ -509,7 +509,7 @@ export default {
       num: '4.4.7', kind: 'Corollary', name: 'Maximal planar graphs on ≥ 4 vertices are 3-connected',
       statement: String.raw`Every maximal planar graph (equivalently every edge-maximal graph without $K^5$ or $K_{3,3}$ as a minor) with at least $4$ vertices is 3-connected.`,
       idea: String.raw`By the Kuratowski–Wagner theorem 4.4.6 the planar graphs are exactly the graphs without a $TK^5$ or $TK_{3,3}$, so a maximal planar graph is edge-maximal without them, and 4.4.5 shows that such a graph with at least $4$ vertices is 3-connected.`,
-      caption: String.raw`A random maximal planar graph on $n$ vertices. Click any two vertices to delete them: the remaining graph stays connected, and the colours show its components. The table counts all $\binom n2$ pairs at once. Switch on **remove an edge** to leave the maximal class: the new graph has a vertex of degree 2 and removing its two neighbours disconnects it, so some pairs now separate.`,
+      caption: String.raw`A random maximal planar graph on $n$ vertices. Click any two vertices to delete them: the remaining graph stays connected, and the colours show its components. The readout checks all $\binom n2$ pairs at once. Switch on **remove an edge** to leave the maximal class: the new graph has a vertex of degree 2 and removing its two neighbours disconnects it, so some pairs now separate.`,
       deps: ['graph-4.4.5', 'graph-4.4.6'], refs: ['Diestel §4.4'], tags: ['maximal planar', 'connectivity'],
       viz(v) {
         const nS = v.slider('$n$', 4, 12, 9, { int: true, onChange: () => make() });
@@ -520,9 +520,9 @@ export default {
         let seed = 1, n, E, pairs, sel = [], H;
         function make(keep) {
           n = nS.value; const r = v.rng(seed * 7001 + 3);
-          const T = randomTriangulation(n, r, 8); E = T.E.slice();
+          const T = triDraw(randomTriangulation(n, r, 8)); E = T.E.slice(); const P0 = spread(n, T.E, T.pos, 60);
           if (cut.value) { const deg = new Int32Array(n); E.forEach(([a, b]) => { deg[a]++; deg[b]++; }); const cand = E.filter(([a, b]) => deg[a] === 3 || deg[b] === 3); const e = cand.length ? cand[Math.floor(r() * cand.length)] : E[0]; E = E.filter((x) => x !== e); }
-          H = ixE(n, E); const p = planarPos(H) || H.ids.map((_, i) => [Math.cos(i), Math.sin(i)]);
+          H = ixE(n, E); const p = P0;
           G.set({ nodes: H.ids.map((id, i) => ({ id, x: p[i][0], y: p[i][1], label: lab1(i) })), edges: E.map(([a, b]) => [a, b]) }); G.layout('fit');
           pairs = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const C = comps(H, (u) => u !== i && u !== j); pairs.push({ i, j, k: C.k }); }
           sel = [];
