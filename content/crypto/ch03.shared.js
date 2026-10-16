@@ -2,6 +2,10 @@
 // Re-exports chapter 2 (and through it chapter 1) and adds toy generators, statistical tests and a toy keyed function.
 export * from './ch02.shared.js';
 
+import { pix } from './ch02.shared.js';
+/** pix() with text centred by default (pass align: 'left' / 'right' to override). */
+export function pixc(s) { const P = pix(s), t = P.text; P.text = (str, x, y, st) => t(str, x, y, { align: 'center', ...st }); return P; }
+
 /** 32-bit integer mixer (murmur3 finaliser): good avalanche, NOT cryptographic. */
 export function mix32(x) {
   x ^= x >>> 16; x = Math.imul(x, 0x85ebca6b); x ^= x >>> 13; x = Math.imul(x, 0xc2b2ae35); x ^= x >>> 16; return x >>> 0;

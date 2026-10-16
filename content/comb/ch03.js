@@ -119,7 +119,7 @@ So truncating the inclusion–exclusion series after an odd number of terms over
           S = [0]; for (let t = 1; t <= n; t++) { let s = 0; for (let r = t; r <= n; r++) s += mult[r] * binom(r, t); S.push(s); }
           P = [0]; for (let t = 1; t <= n; t++) P.push(P[t - 1] + (t % 2 ? 1 : -1) * S[t]);
           const hi = Math.max(U, ...P.slice(0, k + 2)) * 1.1, lo = Math.min(0, ...P.slice(0, n + 1));
-          A.setView([-0.4, n + 0.6], [Math.max(lo, -U) * 1.1 - 1, Math.max(hi, U * 1.3)]); A.setTicks(range(n + 1), null);
+          A.setView([-0.4, n + 0.6], [Math.min(lo * 1.1, -1), Math.max(hi, U * 1.3)]); A.setTicks(range(n + 1), null);
           A.hline(U, { color: 'green', width: 2, dash: true });
           A.hline(0, { color: 'faint', width: 1 });
           A.path(P.map((y, t) => [t, y]), { color: 'muted', width: 1.4, alpha: 0.7 });
@@ -202,7 +202,7 @@ so $D_n/n!\to e^{-1}$: the probability that a uniformly random permutation has n
           const n = nS.value, T = trials.length;
           let brute = '';
           if (n <= 8) { let c = 0; allPerms(n).forEach((p) => { if (fixedPoints(p) === 0) c++; }); brute = `; listing all $${n}!=${commas(fact(n))}$ permutations finds $${commas(c)}$ derangements ${c === derange(n) ? '✓' : '✗'}`; }
-          return String.raw`After $${commas(T)}$ hand-backs: ${good} derangements, fraction $${(good / T).toFixed(4)}$. Exact: $D_{${n}}=${commas(derangeBig(n))}$ (by $n!\sum(-1)^i/i!$ and by $D_n=nD_{n-1}+(-1)^n$), $D_{${n}}/${n}!=${(exact(n)).toFixed(6)}$, versus $1/e=${(1 / E).toFixed(6)}$ — the difference is $${(Math.abs(exact(n) - 1 / E)).toExponential(2)}<1/(n+1)!=${(1 / fact(n + 1)).toExponential(2)}$${brute}.`;
+          return String.raw`After $${commas(T)}$ hand-backs: ${good} derangements, fraction $${(good / T).toFixed(4)}$. Exact: $D_{${n}}=${commas(derangeBig(n))}$ (by $n!\sum(-1)^i/i!$ and by $D_n=nD_{n-1}+(-1)^n$), $D_{${n}}/${n}!=${(exact(n)).toFixed(6)}$, versus $1/e=${(1 / E).toFixed(6)}$ — the difference is $${v.sci(Math.abs(exact(n) - 1 / E), 3)}<1/(n+1)!=${v.sci(1 / fact(n + 1), 3)}$${brute}.`;
         });
       },
     },
@@ -215,7 +215,7 @@ so $D_n/n!\to e^{-1}$: the probability that a uniformly random permutation has n
 $$\Pr(F_n=k)=\frac{1}{k!}\sum_{i=0}^{n-k}\frac{(-1)^i}{i!}=\binom nk\frac{D_{n-k}}{n!},$$
 which is within $1/(k!\,(n-k+1)!)$ of the Poisson probability $e^{-1}/k!$. Hence $F_n\to\mathrm{Poisson}(1)$ in distribution, and the total-variation distance between the two laws tends to $0$ faster than any exponential in $n$.`,
       idea: String.raw`Choose which $k$ points are fixed ($\binom nk$ ways) and let the remaining $n-k$ points form a derangement ($D_{n-k}$ ways, from 3.3). Dividing by $n!$ and using $D_m/m!=\sum_{i\le m}(-1)^i/i!$ gives the formula; it is the series of $e^{-1}/k!$ stopped after $n-k+1$ terms, so the error is at most the first omitted term. Summing the errors over $k$ gives the total-variation bound.`,
-      caption: String.raw`Left: a histogram of the number of fixed points over thousands of random permutations (blue bars), the exact law $\binom nk D_{n-k}/n!$ (orange rings, computed from the formula) and Poisson(1) (green dots). Even for $n=6$ you cannot tell the three apart. Right: the exact total-variation distance (log scale) for $n=1,\dots,16$ — it drops by more than a factor of 10 at each step, and below $10^{-16}$ double precision cannot follow it.`,
+      caption: String.raw`Left: a histogram of the number of fixed points over thousands of random permutations (blue bars), the exact law $\binom nk D_{n-k}/n!$ (orange rings, computed from the formula) and Poisson(1) (green dots). Even for $n=6$ you cannot tell the three apart. Right: the exact total-variation distance (log scale) for $n=1,\dots,16$ — each extra step shrinks it by a larger factor than the one before (the curve bends down on this log scale), so it falls faster than any exponential. The red line is the sampling noise floor: below it a histogram of $N$ permutations cannot tell the laws apart, but the exact formula can.`,
       deps: ['comb-3.3'],
       refs: ['Stanley EC1 §2.2'],
       tags: ['derangements', 'poisson'],
@@ -249,7 +249,7 @@ which is within $1/(k!\,(n-k+1)!)$ of the Poisson probability $e^{-1}/k!$. Hence
           const n = nS.value, m = mS.value, { cnt } = sample(n, m), pm = fixedPointPmf(n);
           let emp = 0, mass = 0; for (let k = 0; k <= n; k++) { const q = poissonPmf(1, k); emp += Math.abs(cnt[k] / m - q); mass += q; } emp = 0.5 * (emp + (1 - mass));
           const k0 = Math.min(2, n);
-          return String.raw`$n=${n}$: $\Pr(F_n=${k0})=\binom{${n}}{${k0}}D_{${n - k0}}/${n}!=${pm[k0].toFixed(6)}$ versus Poisson $e^{-1}/${k0}!=${poissonPmf(1, k0).toFixed(6)}$. Exact total variation $=${tv[n - 1] < 1e-16 ? '<10^{-16}' : tv[n - 1].toExponential(2)}$; the sampled frequencies are ${v.fix(emp, 4)} away from Poisson(1) — that is sampling noise (about $1/\sqrt{N}=${v.fix(1 / Math.sqrt(m), 4)}$), not a real gap, once $n\ge5$.`;
+          return String.raw`$n=${n}$: $\Pr(F_n=${k0})=\binom{${n}}{${k0}}D_{${n - k0}}/${n}!=${pm[k0].toFixed(6)}$ versus Poisson $e^{-1}/${k0}!=${poissonPmf(1, k0).toFixed(6)}$. Exact total variation $=${v.sci(tv[n - 1], 3)}$; the sampled frequencies are ${v.fix(emp, 4)} away from Poisson(1) — that is sampling noise (about $1/\sqrt{N}=${v.fix(1 / Math.sqrt(m), 4)}$), not a real gap, once $n\ge5$.`;
         });
       },
     },
@@ -272,7 +272,7 @@ where $S(n,k)$ is the Stirling number of the second kind (1.13). In particular i
         const kS = v.slider('boxes $k$', 1, 5, 3, { int: true, onChange: () => resetTally() });
         let R = v.rng(seed);
         const throwOne = () => { const n = nS.value, k = kS.value; ball = range(n).map(() => Math.floor(R() * k)); tried++; if (new Set(ball).size === k) hit++; };
-        function resetTally() { tried = 0; hit = 0; R = v.rng(++seed); throwOne(); }
+        function resetTally() { tried = 0; hit = 0; R = v.rng(++seed); for (let t = 0; t < 300; t++) throwOne(); }
         v.button('Throw', () => throwOne());
         v.button('Throw 1000', () => { for (let t = 0; t < 1000; t++) throwOne(); });
         resetTally();
@@ -405,7 +405,7 @@ $$\sum_{k=0}^{n}(-1)^k\,r_k(B)\,(n-k)!.$$`,
         v.legend([['orange', '$+r_k(n-k)!$', { dot: true }], ['blue', '$-r_k(n-k)!$', { dot: true }], ['green', 'running total', { dot: true }]]);
         v.readout(() => {
           const { n, r, total, brute } = st;
-          return String.raw`$R_B(x)=${polyTex(r, { max: 9 })}$. Permutations of $[${n}]$ avoiding every red square: $\sum_k(-1)^kr_k(n-k)!=${total}$; listing all $${commas(fact(n))}$ permutations finds ${brute} ${brute === total ? '✓' : '✗'}.`;
+          return String.raw`$R_B(x)=${polyTex(r, { max: 9 }).replace(/q/g, 'x')}$. Permutations of $[${n}]$ avoiding every red square: $\sum_k(-1)^kr_k(n-k)!=${total}$; listing all $${commas(fact(n))}$ permutations finds ${brute} ${brute === total ? '✓' : '✗'}.`;
         });
       },
     },

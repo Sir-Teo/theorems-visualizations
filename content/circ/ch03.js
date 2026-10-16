@@ -95,7 +95,7 @@ export default {
           { type: 'W', at: [0, 0, 8.6, 0] }, { type: 'GND', at: [4, 0] },
         ]);
         const E = v.circuit(se, [
-          { type: 'V', id: 'VT', name: '$V_{Th}$', value: 5, at: [0, 3, 0, 0] }, { type: 'R', id: 'RT', name: '$R_{Th}$', value: 1000, at: [0, 3, 2.4, 3] }, { type: 'W', at: [2.4, 3, 3.9, 3] },
+          { type: 'V', id: 'VT', name: 'Vth', value: 5, at: [0, 3, 0, 0] }, { type: 'R', id: 'RT', name: 'Rth', value: 1000, at: [0, 3, 2.4, 3] }, { type: 'W', at: [2.4, 3, 3.9, 3] },
           { type: 'R', id: 'RL', name: 'RL', value: 1000, at: [3.9, 3, 3.9, 0] }, { type: 'W', at: [0, 0, 3.9, 0] }, { type: 'GND', at: [2, 0] },
         ]);
         const Vs = v.slider('source $V$', 0, 24, 12, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} V` });
@@ -153,7 +153,7 @@ export default {
         const s = v.stage({ x: [-2, 14], y: [-2, 16], axes: 'box', gutter: true, height: 340, weight: 1.35, xlabel: 'terminal voltage $v$ (V)', ylabel: 'current out of terminal $a$ (mA)', title: 'terminal characteristics' });
         const sn = v.stage({ x: [-1.1, 5.5], y: [-0.7, 3.9], equal: true, axes: false, height: 340, weight: 0.8, title: 'Norton equivalent' });
         const En = v.circuit(sn, [
-          { type: 'I', id: 'IN', name: '$I_N$', value: 0.001, at: [0, 0, 0, 3] }, { type: 'W', at: [0, 3, 3.8, 3] }, { type: 'R', id: 'RN', name: '$R_N$', value: 1000, at: [1.6, 3, 1.6, 0] },
+          { type: 'I', id: 'IN', name: 'IN', value: 0.001, at: [0, 0, 0, 3] }, { type: 'W', at: [0, 3, 3.8, 3] }, { type: 'R', id: 'RN', name: 'RN', value: 1000, at: [1.6, 3, 1.6, 0] },
           { type: 'R', id: 'RL', name: 'RL', value: 1000, at: [3.8, 3, 3.8, 0], labelSide: -1 }, { type: 'W', at: [0, 0, 3.8, 0] }, { type: 'GND', at: [1.8, 0] },
         ]);
         const inside = v.select('inside the box', [{ value: 'lin', label: 'resistor $R_3$ (linear)' }, { value: 'dio', label: 'diode (nonlinear)' }], 'lin');
@@ -265,7 +265,7 @@ export default {
         const sp = v.stage({ x: [0.01, 100], y: [0, 1.08], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.35, xlabel: 'ratio $\\rho$', ylabel: 'fraction', title: 'power and efficiency' });
         const sc = v.stage({ x: [-1.0, 5.2], y: [-0.7, 3.9], equal: true, axes: false, height: 340, weight: 0.8, title: 'the circuit' });
         const C = v.circuit(sc, [
-          { type: 'V', id: 'VT', name: '$V_{Th}$', value: 10, at: [0, 3, 0, 0] }, { type: 'R', id: 'RT', name: '$R_{Th}$', value: 100, at: [0, 3, 2.4, 3] }, { type: 'W', at: [2.4, 3, 4.1, 3] },
+          { type: 'V', id: 'VT', name: 'Vth', value: 10, at: [0, 3, 0, 0] }, { type: 'R', id: 'RT', name: 'Rth', value: 100, at: [0, 3, 2.4, 3] }, { type: 'W', at: [2.4, 3, 4.1, 3] },
           { type: 'R', id: 'RL', name: 'RL', value: 100, at: [4.1, 3, 4.1, 0] }, { type: 'W', at: [0, 0, 4.1, 0] }, { type: 'GND', at: [2, 0] },
         ]);
         const mode = v.select('vary', [{ value: 'load', label: 'the load $R_L$' }, { value: 'src', label: 'the source resistance (load fixed)' }], 'load');

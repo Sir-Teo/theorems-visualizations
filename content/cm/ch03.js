@@ -47,7 +47,7 @@ The series is only **conditionally convergent**: its value depends on how the si
         });
         v.readout(() => {
           const N = Ns.value, m = mode.value, cur = m === 'cube' ? D.cube : m === 'sphere' ? D.sphere : D.evjen, a = al(cur, N);
-          const q = m === 'cube' ? `net charge of the cube $=${(N & 1) ? '-' : '+'}e$ (odd $N$ leaves $-e$ outside the central ion, even $N$ $+e$)` : m === 'evjen' ? 'cube exactly neutral' : 'sphere not neutral either';
+          const q = m === 'cube' ? `net charge of the cube (central ion included) $=${(N & 1) ? '-' : '+'}e$` : m === 'evjen' ? 'cube exactly neutral' : 'sphere not neutral either';
           return `$\\alpha_N=${v.fix(a, 5)}$ · error against $1.747565$: $${v.fix(a - 1.747565, 5)}$ · ${q}\nfirst shell alone ($N=1$ cube): $\\alpha_1=${v.fix(al(D.cube, 1), 3)}$ · energy per pair with $n=9$: $-\\alpha(1-1/9)\\,e^2/4\\pi\\varepsilon_0 r_0=-${v.fix(a * 8 / 9, 3)}\\,e^2/4\\pi\\varepsilon_0r_0$`;
         });
       },

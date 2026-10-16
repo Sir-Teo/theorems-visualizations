@@ -51,7 +51,7 @@ const BRI = NETS.bridge, C1 = [1, -1, 0, 0, 1], C2 = [0, 0, 1, -1, -1];
 
 // ─── 3.11: the bridge with its source, and its dual ───
 // primal nodes: A (+ of the source), B, C, D (ground). Faces: F1 = ABC, F2 = BDC, F3 = A-C-D + source; O = outside.
-const PRI = { A: [0, 1], B: [2, 2], C: [2, 0], D: [4, 1] }, FAC = { F1: [1.33, 1], F2: [2.67, 1], F3: [2, -0.55] };
+const PRI = { A: [0, 1.5], B: [3, 3], C: [3, 0], D: [6, 1.5] }, FAC = { F1: [2, 1.5], F2: [4, 1.5], F3: [3, -0.8] };
 
 export default {
   collection: 'circ',
@@ -70,33 +70,34 @@ export default {
       refs: ['Agarwal–Lang §2.6'],
       tags: ['dependent source', 'amplification'],
       viz(v) {
-        const s = v.stage({ x: [-1.3, 10.5], y: [-0.7, 4.4], equal: true, axes: false, height: 290, weight: 1.3, title: 'input loop, controlled source, output loop' });
+        const s = v.stage({ x: [-3.2, 12.3], y: [-0.9, 4.7], equal: true, axes: false, height: 290, weight: 1.3, title: 'input loop, controlled source, output loop' });
         const sp = v.stage({ x: [-3, 3], y: [-8, 8], axes: 'box', gutter: true, height: 290, weight: 0.9, xlabel: 'control quantity', ylabel: 'output quantity', title: 'transfer characteristic' });
         const typ = v.select('type', [{ value: 'E', label: 'VCVS' }, { value: 'G', label: 'VCCS' }, { value: 'H', label: 'CCVS' }, { value: 'F', label: 'CCCS' }], 'G');
-        const K = v.slider('gain', -5, 5, 2, { step: 0.1, fmt: (x) => `${v.fix(DEP[typ.value].scale * x, 2)} ${DEP[typ.value].unit}` });
+        const Ks = {}; for (const t of ['E', 'G', 'H', 'F']) { Ks[t] = v.slider(`gain $${DEP[t].tex}$`, -5, 5, 2, { step: 0.1, fmt: (x) => `${v.fix(DEP[t].scale * x, 2)} ${DEP[t].unit}` }); }
         const Vs = v.slider('$V_s$', -5, 5, 2, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} V` });
         let info = null;
         v.render(() => {
-          const T = typ.value, D = DEP[T], r = depSolve(T, K.value, Vs.value), vc = T === 'E' || T === 'H';
+          const T = typ.value, D = DEP[T], K = Ks[T]; for (const t of Object.keys(Ks)) Ks[t].el.hidden = t !== T;
+          const r = depSolve(T, K.value, Vs.value), vc = T === 'E' || T === 'H';
           const gc = 'accent', gd = 'orange';
           // input loop
           drawEl(s, [0, 3], [0, 0], 'V', { color: gc }); s.line(0, 3, 0.8, 3, { color: 'ink', width: 2 }); drawEl(s, [0.8, 3], [2.8, 3], 'R', { color: 'ink' });
           s.line(2.8, 3, 3.3, 3, { color: 'ink', width: 2 }); s.circle(3.6, 3, 0.3, { color: 'ink', width: 2, fill: 'ink', fillAlpha: 0.06 }); s.text('A', 3.6, 3, { size: 12, color: 'ink' });
           s.line(3.9, 3, 4.6, 3, { color: 'ink', width: 2 }); drawEl(s, [4.6, 3], [4.6, 0], 'R', { color: 'ink' });
           s.line(0, 0, 10, 0, { color: 'ink', width: 2 });
-          s.text(`$V_s = ${v.fix(Vs.value, 1)}$ V`, -0.9, 1.5, { size: 12, color: gc, align: 'right' }); s.text('$R_s$', 1.8, 3.55, { size: 12, color: 'muted' }); s.text('$R_{in}$', 5.25, 1.5, { size: 12, color: 'muted' });
+          s.text(`$V_s = ${v.fix(Vs.value, 1)}\\ \\mathrm{V}$`, -0.5, 1.5, { size: 12, color: gc, align: 'right' }); s.text('$R_s$', 1.8, 3.55, { size: 12, color: 'muted' }); s.text('$R_{in}$', 3.7, 1.5, { size: 12, color: 'muted' });
           // output loop
-          drawEl(s, [6.4, 3], [6.4, 0], 'D', { color: gd, sym: vc ? 'pm' : 'arrow', size: 0.35 });
+          if (vc) drawEl(s, [6.4, 3], [6.4, 0], 'D', { color: gd, sym: 'pm', size: 0.35 }); else drawEl(s, [6.4, 0], [6.4, 3], 'D', { color: gd, sym: 'arrow', size: 0.35 });
           s.line(6.4, 3, 7.2, 3, { color: 'ink', width: 2 });
           if (vc) { drawEl(s, [7.2, 3], [8.6, 3], 'R', { color: 'ink' }); s.line(8.6, 3, 9.4, 3, { color: 'ink', width: 2 }); s.text('$R_o$', 7.9, 3.55, { size: 12, color: 'muted' }); } else s.line(7.2, 3, 9.4, 3, { color: 'ink', width: 2 });
           drawEl(s, [9.4, 3], [9.4, 0], 'R', { color: 'ink' }); s.text('$R_L$', 10.05, 1.5, { size: 12, color: 'muted' });
           // control link
-          const sx = D.ctl === 'v' ? 4.6 : 3.6, sy = D.ctl === 'v' ? 1.5 : 3.3;
-          s.path([[sx + 0.2, sy], [5.4, sy + (D.ctl === 'v' ? 0.9 : 0.3)], [6.0, 1.5]], { color: 'gold', width: 2, dash: [6, 5] });
-          s.text(D.ctl === 'v' ? `$v_x = ${v.fix(r.vx, 3)}$ V` : `$i_x = ${v.fix(r.ix, 3)}$ mA`, 4.9, 3.85, { size: 12.5, color: 'gold', plate: true });
+          const sx = D.ctl === 'v' ? 4.6 : 3.6, sy = D.ctl === 'v' ? 1.5 : 3.35;
+          s.path([[sx + 0.15, sy], [5.4, D.ctl === 'v' ? 1.5 : 2.4], [6.0, 1.5]], { color: 'gold', width: 2, dash: [6, 5] });
+          s.text(D.ctl === 'v' ? `$v_x = ${v.fix(r.vx, 3)}\\ \\mathrm{V}$` : `$i_x = ${v.fix(r.ix, 3)}\\ \\mathrm{mA}$`, 3.9, 4.15, { size: 12.5, color: 'gold', plate: true });
           s.text(`$${D.tex} ${D.ctl === 'v' ? 'v_x' : 'i_x'}$`, 6.4, -0.45, { size: 12.5, color: gd });
-          s.text(`$v_L = ${v.fix(r.vL, 3)}$ V`, 9.4, 3.85, { size: 12.5, color: 'green', plate: true });
-          s.text(`$i_L = ${v.fix(r.iL, 3)}$ mA`, 9.4, -0.45, { size: 12.5, color: 'green' });
+          s.text(`$v_L = ${v.fix(r.vL, 3)}\\ \\mathrm{V}$`, 7.3, 4.15, { size: 12.5, color: 'green', plate: true });
+          s.text(`$i_L = ${v.fix(r.iL, 3)}\\ \\mathrm{mA}$`, 7.6, -0.55, { size: 12.5, color: 'green' });
           // transfer line
           const xs = [], ys = [];
           for (let q = -5; q <= 5.001; q += 0.5) { const t = depSolve(T, K.value, q); xs.push(D.ctl === 'v' ? t.vx : t.ix); ys.push(D.out === 'v' ? t.vL : t.iL); }
@@ -116,7 +117,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { got, want, pdep, pin, pL, T, gain } = info, D = DEP[T], u = D.out === 'v' ? 'V' : 'mA';
-          return `${D.name}, gain ${v.fix(gain, 2)} ${D.unit}. Output: solver $${D.out === 'v' ? 'v_L' : 'i_L'} = ${v.fix(got, 4)}$ ${u}, closed form $${v.fix(want, 4)}$ ${u}.\nPower into the input port $v_x i_x = ${v.fix(pin, 3)}$ mW; delivered to the load ${v.fix(pL, 3)} mW; supplied by the dependent source ${v.fix(pdep, 3)} mW (negative: it absorbs). ${pdep > pin + 1e-9 ? 'The source gives out more than the control port takes in: an active element.' : ''}`;
+          return `${D.name}, gain ${v.fix(gain, 2)} ${D.unit}. Output: solver $${D.out === 'v' ? 'v_L' : 'i_L'} = ${v.fix(got, 4)}$ ${u}, closed form $${v.fix(want, 4)}$ ${u}.\nPower into the input port $v_x i_x = ${v.fix(pin, 3)}$ mW; delivered to the load ${v.fix(pL, 3)} mW; supplied by the dependent source ${v.fix(pdep, 3)} mW. ${pdep > pin + 1e-9 ? 'The source gives out more than the control port takes in: an active element.' : ''}`;
         });
       },
     },
@@ -133,7 +134,7 @@ export default {
       refs: ['Agarwal–Lang §15.9'],
       tags: ['two-port', 'cascade', 'matrix'],
       viz(v) {
-        const sd = v.stage({ x: [0, 14], y: [-0.3, 4.2], equal: true, axes: false, height: 230, weight: 1.15, title: 'box 1 cascaded with box 2' });
+        const sd = v.stage({ x: [-2.0, 15.6], y: [-0.3, 4.2], equal: true, axes: false, height: 230, weight: 1.15, title: 'box 1 cascaded with box 2' });
         const sp = v.stage({ x: [-6, 6], y: [-8, 8], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: '$V_2$ (V)', ylabel: '$I_2$ (mA)', title: 'output characteristics of box 1' });
         const lg = { log: true, sig: 2, fmt: (x) => sI(x * 1e3, 'Ω', 2) };
         const Ra = v.slider('$R_a$', 0.1, 5, 1, lg), Rb = v.slider('$R_b$', 0.1, 5, 2, lg), Rc = v.slider('$R_c$', 0.1, 5, 1, lg);
@@ -159,11 +160,11 @@ export default {
           }
           sp.hline(0, { color: 'faint', width: 1 }); sp.vline(0, { color: 'faint', width: 1 });
           // block diagram
-          const box = (x0, lab) => { sd.rect(x0, 0.6, x0 + 3.6, 3.4, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.07, radius: 6 }); sd.text(lab, x0 + 1.8, 2, { size: 13, color: 'ink' }); };
+          const box = (x0, lab) => { sd.rect(x0, 0.6, x0 + 3.6, 3.4, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.07, radius: 6 }); sd.text(lab, x0 + 1.8, 2, { size: 13, color: 'ink', align: 'center' }); };
           box(2.6, 'box 1'); box(8.2, 'box 2');
           for (const [x0, x1] of [[0.6, 2.6], [6.2, 8.2], [11.8, 13.2]]) { sd.line(x0, 3, x1, 3, { color: 'ink', width: 2 }); sd.line(x0, 1, x1, 1, { color: 'ink', width: 2 }); }
           [[0.6, 3], [0.6, 1], [6.2, 3], [6.2, 1], [13.2, 3], [13.2, 1]].forEach(([x, y]) => sd.dot(x, y, { r: 4.5, color: 'ink' }));
-          sd.text('$V_1, I_1$', 0.6, 2, { size: 12.5, color: 'accent', dx: -2 }); sd.text('$V_2, I_2$', 6.2, 2, { size: 12.5, color: 'accent' }); sd.text('$V_3, I_3$', 13.2, 2, { size: 12.5, color: 'accent', dx: -6 });
+          sd.text('$V_1, I_1$', 0.1, 2, { size: 12.5, color: 'accent', align: 'right' }); sd.text('$V_2, I_2$', 6.2, 2, { size: 12.5, color: 'accent', align: 'center' }); sd.text('$V_3, I_3$', 13.7, 2, { size: 12.5, color: 'accent', align: 'left' });
           sd.arrow(1.1, 3.35, 1.9, 3.35, { color: 'gold', width: 2.5, head: 8 }); sd.arrow(6.7, 3.35, 7.5, 3.35, { color: 'gold', width: 2.5, head: 8 });
           // parameter readout
           const sel = P1 && P1[set.value];
@@ -241,11 +242,11 @@ export default {
       refs: ['Agarwal–Lang ch. 3'],
       tags: ['duality', 'planar', 'mesh'],
       viz(v) {
-        const s = v.stage({ x: [-1.2, 5.4], y: [-3.7, 3.9], equal: true, axes: false, height: 400, weight: 1.05, title: 'bridge (blue) and its dual (orange)' });
+        const s = v.stage({ x: [-1.6, 7.6], y: [-3.9, 4.0], equal: true, axes: false, height: 420, weight: 1.15, title: 'bridge (blue) and its dual (orange)' });
         const sb = v.stage({ x: [0.3, 12.7], y: [-1, 1], axes: 'box', gutter: true, height: 400, weight: 1, ylabel: 'value', xticks: [[1, 'm₁'], [2, 'm₂'], [3, 'm₃'], [4.5, 'v_AB'], [5.5, 'v_BC'], [6.5, 'v_CA'], [7.5, 'v_BD'], [8.5, 'v_DC'], [9.5, 'V'], ], title: 'original quantity (blue) against its dual (orange)' });
         const view = v.select('show', [{ value: 'p', label: 'original' }, { value: 'd', label: 'dual' }, { value: 'b', label: 'both' }], 'b');
         const lg = { log: true, sig: 2, fmt: (x) => `${v.fix(x, 2)}` };
-        const rs = { AB: v.slider('$r_{AB}$ (kΩ ↔ mS)', 0.2, 5, 1, lg), BC: v.slider('$r_{BC}$', 0.2, 5, 2, lg), CA: v.slider('$r_{CA}$', 0.2, 5, 1.5, lg), BD: v.slider('$r_{BD}$', 0.2, 5, 0.8, lg), DC: v.slider('$r_{DC}$', 0.2, 5, 1.2, lg) };
+        const rs = { AB: v.slider('$r_{AB}$ (kΩ ↔ mS)', 0.2, 5, 1, lg), BC: v.slider('$r_{BC}$', 0.2, 5, 2, lg), CA: v.slider('$r_{CA}$', 0.2, 5, 2.5, lg), BD: v.slider('$r_{BD}$', 0.2, 5, 0.8, lg), DC: v.slider('$r_{DC}$', 0.2, 5, 1.2, lg) };
         const Vs = v.slider('source $V$ (volts ↔ mA)', 1, 20, 10, { step: 0.5, fmt: (x) => v.fix(x, 1) });
         let info = null;
         v.render(() => {
@@ -262,7 +263,7 @@ export default {
           const vb = [r.AB * ib[0], r.BC * ib[1], r.CA * ib[2], r.BD * ib[3], r.DC * ib[4]], id = [dual.cur[0], dual.cur[2], dual.cur[3], dual.cur[1], dual.cur[4]];
           const dualBranch = [psi[0] * r.AB, (psi[0] - psi[1]) * r.BC, (psi[0] - psi[2]) * r.CA, psi[1] * r.BD, (psi[1] - psi[2]) * r.DC];
           void id;
-          const pairs = [[m[0], psi[0]], [m[1], psi[1]], [m[2], psi[2]], [vb[0], dualBranch[0]], [vb[1], dualBranch[1]], [vb[2], -dualBranch[2]], [vb[3], dualBranch[3]], [vb[4], -dualBranch[4]], [V, V]];
+          const pairs = [[m[0], psi[0]], [m[1], psi[1]], [m[2], psi[2]], [vb[0], dualBranch[0]], [vb[1], dualBranch[1]], [vb[2], dualBranch[2]], [vb[3], dualBranch[3]], [vb[4], dualBranch[4]], [V, V]];
           const xs = [1, 2, 3, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5];
           const top = Math.max(1, ...pairs.flat().map(Math.abs)) * 1.2;
           sb.setView([0.3, 10.3], [-top, top]);
@@ -276,20 +277,21 @@ export default {
             const mid = (p, q) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
             [['AB', 'A', 'B'], ['BC', 'B', 'C'], ['CA', 'C', 'A'], ['BD', 'B', 'D'], ['DC', 'D', 'C']].forEach(([k, a, b]) => {
               drawEl(s, P[a], P[b], 'R', { color: pc, amp: 0.05 });
-              const m0 = mid(P[a], P[b]); s.text(lab(k), m0[0] + (k === 'BC' ? 0.45 : k === 'CA' ? -0.2 : k === 'DC' ? 0.45 : k === 'BD' ? 0.4 : -0.1), m0[1] + (k === 'AB' ? 0.35 : k === 'BC' ? 0 : k === 'CA' ? -0.3 : k === 'BD' ? 0.3 : -0.3), { size: 11, color: pc, plate: true });
+              const m0 = mid(P[a], P[b]); if (view.value !== 'd') s.text(lab(k), m0[0] + { AB: -0.55, BC: 0.45, CA: -0.5, BD: 0.55, DC: 0.5 }[k], m0[1] + { AB: 0.45, BC: -0.5, CA: -0.45, BD: 0.45, DC: -0.45 }[k], { size: 11, color: pc, plate: true });
             });
-            W(P.D, [4, -1.3], pc); W([4, -1.3], [3, -1.3], pc); drawEl(s, [3, -1.3], [1, -1.3], 'V', { color: pc }); W([1, -1.3], [0, -1.3], pc); W([0, -1.3], P.A, pc);
-            s.text(`$V = ${v.fix(V, 1)}$`, 2, -1.75, { size: 11.5, color: pc });
+            W(P.D, [6, -1.6], pc); W([6, -1.6], [2.4, -1.6], pc); drawEl(s, [1.2, -1.6], [2.4, -1.6], 'V', { color: pc, size: 0.2 }); W([1.2, -1.6], [0, -1.6], pc); W([0, -1.6], P.A, pc);
+            s.text(`$V = ${v.fix(V, 1)}$`, 0.9, -2.15, { size: 11.5, color: pc });
             for (const k of ['A', 'B', 'C', 'D']) s.dot(P[k][0], P[k][1], { r: 5.5, color: pc, label: k, labelPos: k === 'A' ? 'w' : k === 'D' ? 'e' : k === 'B' ? 'n' : 's' });
           }
           if (showD) {
             const oc = showP ? 'orange' : 'ink', F = FAC, gnd = (x, y) => { s.line(x - 0.18, y, x + 0.18, y, { color: oc, width: 2 }); s.line(x - 0.11, y - 0.07, x + 0.11, y - 0.07, { color: oc, width: 2 }); s.line(x - 0.04, y - 0.14, x + 0.04, y - 0.14, { color: oc, width: 2 }); };
             const edge = (p, q, k, kind = 'R') => { drawEl(s, p, q, kind, { color: oc, amp: 0.05, size: 0.1 }); const m0 = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; if (k) s.text(k, m0[0] + 0.35, m0[1] + 0.12, { size: 11, color: oc, plate: true }); };
-            edge(F.F1, [0.8, 2.75], `G ${v.fix(r.AB, 2)}`); gnd(0.8, 2.75);
-            edge(F.F2, [3.2, 2.75], `G ${v.fix(r.BD, 2)}`); gnd(3.2, 2.75);
-            edge(F.F1, F.F2, `G ${v.fix(r.BC, 2)}`); edge(F.F1, F.F3, `G ${v.fix(r.CA, 2)}`); edge(F.F2, F.F3, `G ${v.fix(r.DC, 2)}`);
-            edge([2, -3.05], F.F3, `I = ${v.fix(V, 1)}`, 'I'); gnd(2, -3.05);
-            ['F1', 'F2', 'F3'].forEach((k, i) => { s.dot(F[k][0], F[k][1], { r: 6, color: oc }); s.text(`ψ${i + 1} = ${v.fix(psi[i], 2)}`, F[k][0], F[k][1], { size: 11, color: oc, dy: i === 2 ? 17 : -14, plate: true }); });
+            const gl = (x) => (view.value === 'd' ? x : null);
+            edge(F.F1, [1.2, 3.5], gl(`G ${v.fix(r.AB, 2)}`)); gnd(1.2, 3.5);
+            edge(F.F2, [4.8, 3.5], gl(`G ${v.fix(r.BD, 2)}`)); gnd(4.8, 3.5);
+            edge(F.F1, F.F2, gl(`G ${v.fix(r.BC, 2)}`)); edge(F.F1, F.F3, gl(`G ${v.fix(r.CA, 2)}`)); edge(F.F2, F.F3, gl(`G ${v.fix(r.DC, 2)}`));
+            edge([3, -3.3], F.F3, gl(`I = ${v.fix(V, 1)}`), 'I'); gnd(3, -3.3);
+            ['F1', 'F2', 'F3'].forEach((k, i) => { s.dot(F[k][0], F[k][1], { r: 6, color: oc }); s.text(`ψ${i + 1} = ${v.fix(psi[i], 2)}`, F[k][0], F[k][1], { size: 11, color: oc, dy: i === 2 ? 17 : -15, plate: true }); });
           }
           info = { meshErr: Math.max(...[0, 1, 2].map((i) => Math.abs(m[i] - psi[i]))), brErr: Math.max(...[3, 4, 5, 6, 7].map((k) => Math.abs(pairs[k][0] - pairs[k][1]))), m, psi, mesh2: ib[0] - m[0] };
         });
@@ -371,10 +373,10 @@ export default {
           { t: 'I', a: 0, b: 3, i: 1, name: 'I1', tex: 'I_1', how: 'a current source touches only the right-hand side' },
           { t: 'G', a: 3, b: 0, cp: 2, cn: 0, g: 0.5, name: 'G1', tex: 'G_1', how: 'a controlled current source puts its gain in the column of the control node, on the row of its output node' },
         ];
-        const pos = [[0.4, 2.2], [2.6, 2.2], [4.8, 2.2], [0.4, 0], [2.6, 0], [4.8, 0], [6.0, 0], [6.0, 2.2], [7.2, 2.2], [7.2, 0]];
-        const s = v.stage({ x: [-0.9, 8.1], y: [-0.7, 3.3], equal: true, axes: false, height: 300, weight: 1.05, title: 'the circuit (kΩ, mA, V)' });
-        const sm = v.stage({ x: [0, 12], y: [0, 6], axes: false, height: 300, weight: 1.2, title: 'A x = z' });
-        const K = v.slider('elements stamped', 0, ALL.length, 1, { int: true });
+        const pos = [[0.4, 2.2], [2.6, 2.2], [4.8, 2.2], [0.4, 0], [2.6, 0], [4.8, 0], [6.1, 0], [6.1, 2.2], [7.8, 2.2], [7.8, 0]];
+        const s = v.stage({ x: [-1.2, 8.8], y: [-0.7, 3.3], equal: true, axes: false, height: 300, weight: 1.05, title: 'the circuit (kΩ, mA, V)' });
+        const sm = v.stage({ x: [-0.8, 12], y: [0, 6], axes: false, height: 300, weight: 1.2, title: 'A x = z' });
+        const K = v.slider('elements stamped', 0, ALL.length, ALL.length, { int: true });
         const names = ['v₁', 'v₂', 'v₃', 'i(V1)'];
         let info = null;
         v.render(() => {
@@ -425,7 +427,7 @@ export default {
           if (k >= 6) s.line(pos[2][0], pos[2][1], pos[7][0], pos[7][1], { color: 'ink', width: 2.2 });
           if (k >= 7) s.line(pos[7][0], pos[7][1], pos[8][0], pos[8][1], { color: 'ink', width: 2.2 });
           s.line(pos[3][0], pos[3][1], pos[9][0], pos[9][1], { color: 'ink', width: 2 });
-          drawNet(s, v, pos, parts, { phi, vmax: 6, nodeR: 7, skip: [3, 4, 5, 6, 7, 8, 9], labelSize: 12, size: 0.12, labelOff: 0.28 });
+          drawNet(s, v, pos, parts, { phi, vmax: 6, nodeR: 7, skip: [3, 4, 5, 6, 7, 8, 9], labelSize: 12, size: 0.12, labelOff: 0.45 });
           ['1', '2', '3'].forEach((nm, i) => s.text(`${nm}`, pos[i][0], pos[i][1], { size: 12, color: 'ink', dy: -22 }));
           void vcol; void mp;
           // independent check: KCL residual at each node from the element laws
