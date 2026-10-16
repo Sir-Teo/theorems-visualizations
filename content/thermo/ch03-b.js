@@ -426,7 +426,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
       num: '3.18', kind: 'Phenomenon', name: 'Unattainability of absolute zero',
       statement: String.raw`No finite sequence of processes can cool a system to $T = 0$. In a cooling scheme that alternates isothermal changes of a control parameter $X$ (magnetic field, pressure) with adiabatic ones, each step lowers the temperature by a fraction that shrinks as $T \to 0$, because the entropy curves $S(T, X_1)$ and $S(T, X_2)$ meet at $T = 0$ (3.17). Conversely, if the entropy curves for different $X$ ended at different values at $T = 0$, a single adiabatic step could reach absolute zero. Temperatures in the nanokelvin range are reached, but never zero.`,
       idea: String.raw`An adiabatic reversible step keeps $S$ fixed, so it moves horizontally between the two curves on a $T$–$S$ diagram; an isothermal step moves vertically. If both curves start from the same $S$ at $T = 0$, the horizontal step from $S(T, X_2)$ on the high-field curve lands at a positive temperature, and the staircase only approaches the origin. For an ideal paramagnet with a small internal field $b$, $S$ depends on $B_{\text{eff}}/T$ with $B_{\text{eff}} = \sqrt{B^2 + b^2}$, so each demagnetization multiplies $T$ by the fixed factor $b/\sqrt{B_1^2 + b^2}$: geometric decay, infinitely many steps. Setting $b = 0$ separates the curves at $T = 0$ ($S = k\ln 2$ for zero field) — violating the third law — and one step reaches zero.`,
-      caption: String.raw`Adiabatic demagnetization of a model spin-½ paramagnet (moment $\mu_B$ per spin) starting at 1 K. The two curves are $S/Nk$ in zero field and in the field $B_1$. Step with ▶: magnetize at constant temperature (down), then demagnetize adiabatically (left). **Change $B_1$ and the internal field $b$**; turn on the log axis to see equal steps in $\log T$ — the staircase never ends. Set $b = 0$ and the zero-field curve no longer comes down to the origin: then a single demagnetization reaches $T = 0$, which is exactly what the third law forbids.`,
+      caption: String.raw`Adiabatic demagnetization of a model spin-½ paramagnet (moment $\mu_B$ per spin) starting at 1 K. The two curves are $S/Nk$ in zero field and in the field $B_1$. Step with ▶: magnetize at constant temperature (down), then demagnetize adiabatically (left). **Change $B_1$ and the internal field $b$**; turn on log axes to see equal steps in $\log T$ — the staircase never ends, while the entropy it works with shrinks toward zero. Set $b = 0$ and the zero-field curve no longer comes down to the origin: then a single demagnetization reaches $T = 0$, which is exactly what the third law forbids.`,
       deps: ['thermo-3.17'],
       refs: ['Tong ch. 4'],
       tags: ['third law', 'cooling'],
@@ -436,8 +436,8 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
         const MUK = 0.67171381563;  // μ_B / k_B in K/T (CODATA 2018)
         const B1 = v.slider('field $B_1$', 0.1, 2, 0.5, { step: 0.01, fmt: (x) => v.fix(x, 2) + ' T', onChange: () => S.reset(frames(), { at: 'keep' }) });
         const bS = v.slider('internal field $b$', 0, 0.2, 0.08, { step: 0.005, fmt: (x) => v.fix(x * 1000, 0) + ' mT', onChange: () => S.reset(frames(), { at: 'keep' }) });
-        const lg = v.toggle('log T axis', false);
-        const Sof = (T, B) => { const Be = Math.hypot(B, bS.value); if (Be === 0) return Math.LN2; const x = MUK * Be / T; if (x > 300) return 0; return Math.log(2 * Math.cosh(x)) - x * Math.tanh(x); };
+        const lg = v.toggle('log axes', false);
+        const Sof = (T, B) => { const Be = Math.hypot(B, bS.value); if (Be === 0) return Math.LN2; const x = MUK * Be / T; if (x > 300) return 0; if (x > 15) return Math.exp(-2 * x) * (1 + 2 * x); return Math.log(2 * Math.cosh(x)) - x * Math.tanh(x); };
         const T0 = 1;
         const frames = () => {
           const out = [{ T: T0, S: Sof(T0, 0), path: [[T0, Sof(T0, 0)]], cyc: 0, note: 'Start: the salt sits in zero field at 1 K, in contact with a bath.' }];
@@ -459,7 +459,7 @@ Consequences: every heat capacity vanishes, $C \to 0$ (so $S = \int_0^T C\,dT'/T
         v.render(() => {
           const f = S.frame, L0 = lg.value;
           const xmin = Math.max(1e-6, (f.T || 1e-3) * 0.3);
-          sp.setScale({ xlog: L0, x: L0 ? [Math.min(1e-3, xmin), 1.5] : [0, 1.1] });
+          sp.setScale({ xlog: L0, ylog: L0, x: L0 ? [Math.min(1e-3, xmin), 1.5] : [0, 1.1], y: L0 ? [1e-14, 2] : [0, 0.75] });
           const dom = L0 ? [Math.min(1e-3, xmin), 1.5] : [1e-4, 1.1];
           sp.fn((T) => Sof(T, 0), { color: 'blue', width: 2.4, domain: dom, n: 400 });
           sp.fn((T) => Sof(T, B1.value), { color: 'red', width: 2.4, domain: dom, n: 400 });

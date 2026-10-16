@@ -139,15 +139,15 @@ usually continuous, injective and differentiable (pma-9.11) on its domain, so th
 $$\frac{|F(p) - F(q)|}{d_{S^2}(p, q)} \ne \frac{|F(p') - F(q')|}{d_{S^2}(p', q')}$$
 for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on the unit sphere has circumference $2\pi\sin\rho < 2\pi\rho$, so a map that kept all distances from the centre would have to shrink the rim, and one that kept the rim would have to stretch the radii.`,
       idea: String.raw`An isometry (dg-5.4) preserves the first fundamental form, and by Gauss's *Theorema Egregium* (dg-8.3) the Gaussian curvature depends only on that form: the sphere has $K = 1/R^2$ and the plane $K = 0$, so no isometry (or similarity, which rescales $K$ by a positive factor) can exist. The elementary version is the circumference argument: in the plane a circle of radius $\rho$ has length $2\pi\rho$, on the sphere only $2\pi R\sin(\rho/R)$; flattening an orange-peel cap that keeps its radii leaves wedge-shaped gaps of total angle $2\pi(1 - \sin\rho/\rho)$. Euler gave a proof from the line element in 1775; Gauss's 1827 theorem explains it.`,
-      caption: String.raw`Move the cap (drag $C$) and change its radius. Top right: the cap on the chosen map, with the triangle of sample points whose side ratios disagree most. Bottom left: the cap cut into 12 gores and laid flat keeping every radius and every rim length — the red gaps cannot be closed. Bottom right: for each projection centred on the cap, the worst disagreement between distance ratios as the cap grows; every curve leaves 0, and the dashed line is the rim stretch $\rho/\sin\rho$ that keeping the radii forces.`,
+      caption: String.raw`Move the cap (drag $C$) and change its radius. Left: true lengths on the globe; middle: the cap on the chosen map (centred on $C$ and zoomed to fit), with the well-shaped triangle of sample points whose side ratios disagree most, its map lengths scaled as well as possible. Right: the cap cut into 12 gores and laid flat keeping every radius and every rim length — the red gaps cannot be closed. Below: for each azimuthal projection centred on the cap, the worst disagreement between distance ratios as the cap grows; every curve leaves 0, and the dashed line is the rim stretch $\rho/\sin\rho$ that keeping the radii forces.`,
       deps: ['geog-3.1', 'dg-8.3', 'dg-5.4'],
       see: ['geog-1.5'],
       refs: ['Snyder §1', 'Snyder §4'],
       tags: ['map projections', 'curvature'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Theorema_Egregium' },
       viz(v) {
-        const NAMES = ['azimuthalEquidistant', 'stereographic', 'lambert', 'gnomonic', 'mercator'];
-        const COLS = { azimuthalEquidistant: 'accent', stereographic: 'purple', lambert: 'teal', gnomonic: 'pink', mercator: 'orange' };
+        const NAMES = ['azimuthalEquidistant', 'stereographic', 'lambert', 'gnomonic', 'orthographic'];
+        const COLS = { azimuthalEquidistant: 'accent', stereographic: 'purple', lambert: 'teal', gnomonic: 'pink', orthographic: 'orange' };
         const pj = v.select('map', NAMES.map((n) => ({ value: n, label: LABEL[n] })), 'azimuthalEquidistant');
         const rho = v.slider('cap radius $\\rho$', 3, 80, 35, { step: 1, fmt: (x) => `${x.toFixed(0)}° (${comma(x * D2R * R_MEAN)} km)` });
         const sA = v.stage({ height: 300 }), sM = v.stage({ height: 300 });
@@ -182,8 +182,10 @@ for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on 
           if (kk === triKey) return tri; triKey = kk;
           const pts = samples(c, r), P = v.geo('projection', n, { center: centreOf(n, c) }), S = pairStats(P, pts);
           if (!S) return (tri = null);
-          let best = null;
+          let best = null; const V = pts.map(vec), Dd = (i, j) => angle3(V[i], V[j]);
           for (let i = 0; i < NS; i++) for (let j = i + 1; j < NS; j++) for (let k = j + 1; k < NS; k++) {
+            const s1 = Dd(i, j), s2 = Dd(j, k), s3 = Dd(i, k), mx = Math.max(s1, s2, s3), mn = Math.min(s1, s2, s3);
+            if (mn < 0.5 * mx || s1 + s2 + s3 - 2 * mx < 0.25 * mx) continue; // keep well-shaped triangles
             const a = S.K[i][j], b = S.K[j][k], d = S.K[i][k], sp = Math.max(a, b, d) / Math.min(a, b, d);
             if (!best || sp > best.sp) best = { sp, ids: [i, j, k] };
           }
@@ -193,7 +195,12 @@ for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on 
         v.render(() => {
           const c = [C.lon, C.lat], r = rho.value, name = pj.value;
           const ck = name + centreOf(name, c).map((x) => x.toFixed(3)).join();
-          if (ck !== lastC) { lastC = ck; GM.set({ projection: name, center: centreOf(name, c) }); }
+          const zk = ck + r;
+          if (zk !== lastC) {
+            lastC = zk;
+            const P = v.geo('projection', name, { center: c }), e = P.forward(...v.geo('destination', c, 90, Math.min(r, (P.clip || 90) - 0.5)));
+            GM.set({ projection: name, center: centreOf(name, c), zoom: e ? clamp(P.rMax / (1.35 * Math.hypot(e[0], e[1])), 1, 40) : 1 });
+          }
           const T = getTri(c, r, name), cap = v.geo('smallCircle', c, r, 120);
           for (const g of [G, GM]) {
             g.draw();
@@ -210,8 +217,10 @@ for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on 
             for (let s = 0; s < 3; s++) {
               const i = ids[s], j = ids[(s + 1) % 3], mid = lonlat(unit3([V[s][0] + V[(s + 1) % 3][0], V[s][1] + V[(s + 1) % 3][1], V[s][2] + V[(s + 1) % 3][2]]));
               const km = angle3(V[s], V[(s + 1) % 3]) * R_MEAN, mkm = (km * T.S.K[i][j]) / T.scale;
-              G.text(comma(km), mid, { size: 11, color: 'ink', weight: 600, plate: true, align: 'center' });
-              GM.text(comma(mkm), mid, { size: 11, color: 'red', weight: 600, plate: true, align: 'center' });
+              const g = unit3(V.reduce((acc, q) => [acc[0] + q[0], acc[1] + q[1], acc[2] + q[2]], [0, 0, 0])), mv = vec(mid);
+              const out = lonlat(unit3([mv[0] + 0.45 * (mv[0] - g[0]), mv[1] + 0.45 * (mv[1] - g[1]), mv[2] + 0.45 * (mv[2] - g[2])]));
+              G.text(comma(km), out, { size: 11, color: 'ink', weight: 600, plate: true, align: 'center', baseline: 'middle' });
+              GM.text(comma(mkm), out, { size: 11, color: 'red', weight: 600, plate: true, align: 'center', baseline: 'middle' });
             }
           } else sM.corner('the cap does not fit on this map', 'bl', { color: 'red', plate: true });
           sA.corner('true lengths (km)', 'tl', { color: 'muted', weight: 600 });
@@ -241,7 +250,7 @@ for some other pair $p', q'$. Concretely, a geodesic circle of radius $\rho$ on 
           const frac = Math.sin(r * D2R) / (r * D2R);
           const gaps = `Flattening the cap keeping radii leaves gaps of $2\\pi(1 - \\sin\\rho/\\rho) = ${(360 * (1 - frac)).toFixed(2)}^\\circ$.`;
           if (!T) return `${gaps} This cap does not fit on the ${LABEL[pj.value]} map.`;
-          return `${gaps} On the ${LABEL[pj.value]} map, distance ratios (map ÷ globe) over ${NS} sample points range over a factor **${(T.S.hi / T.S.lo).toFixed(4)}**; the red triangle's sides disagree by a factor **${T.best.sp.toFixed(4)}** however the map is scaled. An isometry would need 1.0000 — impossible for every projection and every $\\rho > 0$.`;
+          return `${gaps} On the ${LABEL[pj.value]} map, distance ratios (map ÷ globe) over ${NS} sample points range over a factor **${(T.S.hi / T.S.lo).toFixed(4)}**; even a well-shaped triangle (red) has sides whose ratios disagree by a factor **${T.best.sp.toFixed(4)}**, however the map is scaled. An isometry would need 1.0000 — impossible for every projection and every $\\rho > 0$.`;
         });
       },
     },

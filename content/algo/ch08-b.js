@@ -214,7 +214,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
         const tog = v.toggle('edge serve → shop (makes a cycle)', false, { onChange: (x) => { const e = G.edges.find((q) => q.from === 'serve' && q.to === 'shop'); if (x && !e) G.addEdge('serve', 'shop', { bend: 75 }); if (!x && e) G.removeEdge(e); S.reset({ at: 'end' }); } });
         const s = v.stage({ x: [0, 10], y: [0, 6.2], axes: false, equal: true, height: 300 });
         const sl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true, title: 'the list, in order of decreasing finishing time' });
-        const G = v.graph(s, { directed: true, layout: 'none', shape: 'box', fontSize: 12, editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P813, { boil: { notePos: 's' }, pasta: { notePos: 's' }, drain: { notePos: 's' } }), edges: E813.map(([a, b]) => [a, b]) });
+        const G = v.graph(s, { directed: true, layout: 'none', shape: 'box', fontSize: 12, editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P813, { boil: { notePos: 's' }, pasta: { notePos: 's' }, drain: { notePos: 's' }, serve: { notePos: 's' } }), edges: E813.map(([a, b]) => [a, b]) });
         G.onChange = () => { tog.value = G.edges.some((q) => q.from === 'serve' && q.to === 'shop'); S.reset({ at: 'end' }); };
         const S = v.steps({ frames: () => dfsTrace(G).events, code: [...DFS_CODE.slice(0, 6), '  time ← time + 1;  f[u] ← time;  colour u black;  put u at the front of L'], codeTitle: 'TopoSort(G)', codePos: 'below', speed: 2, start: 'end', still: 'end' });
         let info = {};

@@ -310,7 +310,7 @@ Its events are those whose occurrence is not changed by altering any finite numb
       viz(v) {
         const dS = v.slider('drift $d$', -0.3, 0.3, -0.05, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const H = 4096, P = 200, NS = [4, 16, 64], DV = Array.from({ length: 41 }, (_, i) => -0.3 + 0.015 * i);
+        const H = 16384, P = 200, NS = [4, 16, 64, 256], DV = Array.from({ length: 41 }, (_, i) => -0.3 + 0.015 * i);
         const L = v.stage({ x: [0, 1024], y: [-60, 60], height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: '$m$', title: 'walks with drift $d$' });
         const R = v.stage({ x: [-0.3, 0.3], y: [-0.03, 1.05], height: 320, axes: 'box', gutter: true, xlabel: '$d$', title: 'P($S_m\\ge0$ for some $m\\in[N,64N]$)' });
         let cache = null, st = null;
@@ -318,8 +318,10 @@ Its events are those whose occurrence is not changed by altering any finite numb
           if (!cache || cache.seed !== seed) {
             const r = v.rng(seed * 37 + 5), W = [];
             for (let p = 0; p < P; p++) { const w = new Float64Array(H + 1); for (let m = 1; m <= H; m++) w[m] = w[m - 1] + r.normal(); W.push(w); }
-            const est = NS.map((N) => DV.map((d) => W.filter((w) => { for (let m = N; m <= 64 * N; m++) if (w[m] + d * m >= 0) return true; return false; }).length / P));
-            cache = { seed, W, est };
+            // the event {W_m + d m >= 0 for some m in [N, 64N]} is increasing in d: it holds iff d >= min_m (-W_m/m)
+            const est = NS.map((N) => { const th = W.map((w) => { let t = Infinity; for (let m = N; m <= 64 * N; m++) t = Math.min(t, -w[m] / m); return t; }); return th; });
+            const ths = est.slice(); for (let j = 0; j < est.length; j++) est[j] = DV.map((d) => ths[j].filter((t) => d >= t).length / P);
+            cache = { seed, W, est, ths };
           }
           const d = dS.value;
           L.hband(0, 200, { color: 'green', alpha: 0.07 });
@@ -327,14 +329,13 @@ Its events are those whose occurrence is not changed by altering any finite numb
           cache.W.slice(0, 20).forEach((w) => { const pts = []; for (let m = 0; m <= 1024; m += 4) pts.push([m, clampN(w[m] + d * m, -70, 70)]); L.path(pts, { color: 'accent', width: 1, alpha: 0.55 }); });
           L.fn((m) => d * m, { color: 'orange', width: 2, dash: [6, 4] });
           R.path([[-0.3, 0], [0, 0], [0, 1], [0.3, 1]], { color: 'green', width: 1.5, dash: [3, 3] });
-          const cols = ['purple', 'orange', 'accent'];
+          const cols = ['faint', 'purple', 'orange', 'accent'];
           NS.forEach((N, j) => R.path(DV.map((x, i) => [x, cache.est[j][i]]), { color: cols[j], width: 2.3 }));
           R.vline(d, { color: 'gold', width: 1.5 });
-          const i = Math.round((d + 0.3) / 0.015);
           v.legend([['orange', 'drift line $dm$', { dash: true }], ...NS.map((N, j) => [cols[j], `$N=${N}$`]), ['green', 'limit', { dash: true }]]);
-          st = { d, est: NS.map((N, j) => cache.est[j][i]) };
+          st = { d, est: cache.ths.map((th) => th.filter((t) => d >= t).length / P) };
         });
-        v.readout(() => st && `$d=${v.fix(st.d, 2)}$: estimates for $N=4,16,64$: ${st.est.map((x) => v.fix(x, 2)).join(', ')}. The true probability of $\\{S_m\\ge0\\text{ i.o.}\\}$ is $${st.d < 0 ? 0 : 1}$` + (st.d < 0 ? ' (the walk drifts to $-\\infty$).' : st.d > 0 ? ' (it drifts to $+\\infty$).' : ' (recurrence of a mean-zero walk).'));
+        v.readout(() => st && `$d=${v.fix(st.d, 2)}$: estimates for $N=4,16,64,256$: ${st.est.map((x) => v.fix(x, 2)).join(', ')}. The true probability of $\\{S_m\\ge0\\text{ i.o.}\\}$ is $${st.d < 0 ? 0 : 1}$` + (st.d < 0 ? ' (the walk drifts to $-\\infty$).' : st.d > 0 ? ' (it drifts to $+\\infty$).' : ' (recurrence of a mean-zero walk).'));
       },
     },
     {
@@ -374,7 +375,7 @@ The bound is the same as Chebyshev's for $|S_n|$ alone, yet it controls the whol
           }
           const ylim = 4 * sd; L.setView([0, n], [-ylim, ylim]);
           const x = clampN(Hd.y, 0.05 * sd, ylim); Hd.x = n;
-          L.hband(x, ylim * 2, { color: 'red', alpha: 0.07 }); L.hband(-ylim * 2, -x, { color: 'red', alpha: 0.07 });
+          if (x < ylim) { L.hband(x, ylim, { color: 'red', alpha: 0.07 }); L.hband(-ylim, -x, { color: 'red', alpha: 0.07 }); }
           L.hline(x, { color: 'gold', width: 1.6 }); L.hline(-x, { color: 'gold', width: 1.6 });
           let crossed = 0;
           cache.paths.forEach((pth) => { const i = pth.findIndex((p) => Math.abs(p[1]) >= x); if (i >= 0) crossed++; L.path(pth, { color: i >= 0 ? 'red' : 'accent', width: 1, alpha: i >= 0 ? 0.75 : 0.35 }); if (i >= 0) L.dot(pth[i][0], pth[i][1], { r: 2.6, color: 'red' }); });
@@ -395,7 +396,7 @@ The bound is the same as Chebyshev's for $|S_n|$ alone, yet it controls the whol
       name: 'Σ var(Xₙ) < ∞ ⇒ Σ Xₙ converges a.s.',
       statement: String.raw`Let $X_1,X_2,\dots$ be independent with $EX_n=0$. If $\sum_n\operatorname{var}(X_n)<\infty$, then $\sum_nX_n(\omega)$ converges for almost every $\omega$.`,
       idea: String.raw`Show the partial sums are Cauchy a.s. Kolmogorov's maximal inequality (2.5.5) applied to $X_{M+1},\dots,X_N$ gives $P\big(\max_{M<m\le N}|S_m-S_M|>\eps\big)\le\eps^{-2}\sum_{m>M}\operatorname{var}(X_m)$; let $N\to\infty$, then $M\to\infty$. So $w_M=\sup_{m,n>M}|S_m-S_n|\to0$ in probability; since $w_M$ decreases, it tends to $0$ a.s.`,
-      caption: String.raw`Random signs: $X_n=\pm n^{-s}$, so $\operatorname{var}(X_n)=n^{-2s}$ and the sum is finite exactly when $s>1/2$ ($s=1$ is the random harmonic series). Left: 30 seeded partial-sum paths. Right (log–log), against $M$: the maximal-inequality bound for a move of more than $\eps$ after time $M$ (blue) and the observed fraction of 100 seeded paths that make such a move before $2^{15}$ (gold). For $s\le1/2$ the bound is infinite and the paths keep wandering.`,
+      caption: String.raw`Random signs: $X_n=\pm n^{-s}$, so $\operatorname{var}(X_n)=n^{-2s}$ and the sum is finite exactly when $s>1/2$ ($s=1$ is the random harmonic series). Left: 30 seeded partial-sum paths. Right (log–log), against $M$: the maximal-inequality bound for a move of more than $\eps$ after time $M$ (purple) and the observed fraction of 100 seeded paths that make such a move before $2^{15}$ (gold). For $s\le1/2$ the bound is infinite and the paths keep wandering.`,
       deps: ['prob-2.5.5'],
       see: ['prob-2.5.8'],
       tags: ['random series'],
@@ -426,11 +427,11 @@ The bound is the same as Chebyshev's for $|S_n|$ alone, yet it controls the whol
           L.hline(0, { color: 'muted', width: 1 });
           cache.paths.forEach((pp) => L.path(grid.map((g, k) => [g, pp[k]]), { color: s > 0.5 ? 'accent' : 'red', width: 1, alpha: 0.55 }));
           const tail = (M) => { if (s <= 0.5) return Infinity; let t = 0; const K = 100000; for (let n = M + 1; n <= K; n++) t += n ** (-2 * s); return t + K ** (1 - 2 * s) / (2 * s - 1); };
-          if (s > 0.5) { R.path(Ms.map((M) => [M, tail(M) / (eps * eps)]), { color: 'accent', width: 2.4 }); R.hline(1, { color: 'muted', dash: [4, 4], width: 1 }); }
+          if (s > 0.5) { R.path(Ms.map((M) => [M, tail(M) / (eps * eps)]), { color: 'purple', width: 2.4 }); R.hline(1, { color: 'muted', dash: [4, 4], width: 1 }); }
           else cornerIn(R, '$\\sum\\operatorname{var}(X_n)=\\infty$: no bound', 'tr', { color: 'red' });
           const frac = Ms.map((M, j) => [M, cache.osc.filter((o) => o[j] > eps).length / P]);
           R.path(frac.map(([M, f]) => [M, f > 0 ? f : null]), { color: 'gold', width: 2.2 });
-          v.legend([[s > 0.5 ? 'accent' : 'red', '$S_n$'], ['accent', '$\\eps^{-2}\\sum_{n>M}\\operatorname{var}(X_n)$'], ['gold', 'observed fraction']]);
+          v.legend([[s > 0.5 ? 'accent' : 'red', '$S_n$'], ['purple', '$\\eps^{-2}\\sum_{n>M}\\operatorname{var}(X_n)$'], ['gold', 'observed fraction']]);
           st = { s, tot: s > 0.5 ? tail(0) : Infinity, f: frac[Math.floor(Ms.length / 2)], spread: Math.max(...cache.paths.map((pp) => pp[pp.length - 1])) - Math.min(...cache.paths.map((pp) => pp[pp.length - 1])) };
         });
         v.readout(() => st && `$\\sum_n\\operatorname{var}(X_n)=\\sum n^{-2s}=${isFinite(st.tot) ? v.fix(st.tot, 3) : '\\infty'}$. Observed chance of a move $>\\eps$ after $M=${st.f[0]}$: $${v.fix(st.f[1], 2)}$. Spread of the 30 limits $S_{32768}$: $${v.fix(st.spread, 2)}$` + (st.s > 0.5 ? ' (each path has its own random limit).' : ' (and growing like $n^{1/2-s}$).'));

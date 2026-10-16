@@ -24,7 +24,7 @@ function squeezeCov(r, phi) {
 /** Paint the Wigner function of a grid state on a phase-space stage (momentum samples follow the stage's view). */
 function drawWigner(v, s, x, re, im, key) {
   const [p0, p1] = s.yr, ps = Array.from({ length: 120 }, (_, k) => p0 + ((p1 - p0) * k) / 119);
-  const Wd = wigner(x, re, im, ps, 2);
+  const Wd = wigner(x, re, im, ps, Math.max(1, Math.round(x.length / 128)));
   paintPhase(v, s, (X, P) => wignerAt(Wd, X, P), { key, res: 2 });
   return Wd;
 }
@@ -54,9 +54,9 @@ In an anharmonic potential none of this survives: $\langle x\rangle$ departs fro
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Coherent_state' },
       tags: ['coherent states', 'phase space', 'correspondence principle'],
       viz(v) {
-        const M = v.M, G = oscGrid(256, 20), x = G.x, DT = 0.01, PER = 4 * TAU, NH = 50, phi = hermiteFns(x, NH);
+        const M = v.M, G = oscGrid(512, 20), x = G.x, DT = 0.01, PER = 4 * TAU, NH = 50, phi = hermiteFns(x, NH);
         let sim = null;
-        const lam = v.slider('anharmonicity $\\lambda$ in $V=\\tfrac12x^2+\\lambda x^4$', 0, 0.05, 0, { step: 0.001, onChange: () => sim.reset() });
+        const lam = v.slider('anharmonicity $\\lambda$ in $V=\\tfrac12x^2+\\lambda x^4$', 0, 0.05, 0.03, { step: 0.001, onChange: () => sim.reset() });
         const view = v.select('phase-space picture', [{ value: 'W', label: 'Wigner $W$' }, { value: 'Q', label: 'Husimi $Q$' }], 'W');
         const sP = v.stage({ x: [-4.6, 4.6], y: [-4.6, 4.6], height: 380, axes: 'box', gutter: true, equal: true, weight: 1.1, xlabel: 'x', ylabel: 'p', title: 'phase space at time $t$' });
         const sU = v.stage({ x: [0, PER], y: [0, 2.2], height: 380, axes: 'box', gutter: true, weight: 1, xlabel: 't', ylabel: 'Δx·Δp', title: 'uncertainty product $\\Delta x\\,\\Delta p$' });
@@ -127,7 +127,7 @@ so one quadrature is **quieter than the vacuum** at the cost of the other. Under
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Squeezed_coherent_state' },
       tags: ['squeezed states', 'uncertainty', 'quantum optics'],
       viz(v) {
-        const M = v.M, G = oscGrid(256, 20), x = G.x, DT = 0.01, PER = 2 * TAU, NH = 60, phi = hermiteFns(x, NH);
+        const M = v.M, G = oscGrid(512, 20), x = G.x, DT = 0.01, PER = 2 * TAU, NH = 60, phi = hermiteFns(x, NH);
         let sim = null;
         const rs = v.slider('squeezing $r$', 0, 1.2, 0.8, { step: 0.01, onChange: () => sim.reset() });
         const ph = v.slider('squeeze direction (degrees from the x axis)', 0, 90, 0, { step: 1, onChange: () => sim.reset() });
