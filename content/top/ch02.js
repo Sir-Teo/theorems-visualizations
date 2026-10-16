@@ -564,7 +564,7 @@ is a homeomorphism $S^n\setminus\{N\}\to\R^n$, with inverse $\sigma^{-1}(y)=\dfr
           R.path(pts.filter((p) => p[1] < 2.1), { color: 'accent', width: 3 });
           R.circle(c[0], c[1], r, { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.12 });
           R.dot(1, 0, { r: 4, color: 'ink' }); R.text('P = γ(0)', 1 + r + 0.08, -0.12, { size: 13, color: 'ink', math: true });
-          if (mode === 'open') { const e = gam(1e6, mode); R.dot(e[0], e[1], { r: 4.5, hollow: true, color: 'accent', label: 'limit, not on the curve', labelPos: 'sw' }); }
+          if (mode === 'open') { const e = gam(1e6, mode); R.dot(e[0], e[1], { r: 4.5, hollow: true, color: 'accent', label: 'limit, not on the curve', labelPos: 'ne' }); }
           // preimage of the ball: sample the compressed line
           const N = 4000, inB = []; for (let i = 0; i <= N; i++) { const x = -0.9995 + (1.999 * i) / N; const p = gam(tOf(x), mode); inB.push(Math.hypot(p[0] - c[0], p[1] - c[1]) < r); }
           const comps = []; let start = null;

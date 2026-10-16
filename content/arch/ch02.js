@@ -106,9 +106,9 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
       viz(v) {
         const panel = v.select('right panel', [{ value: 'poly', label: 'force polygon' }, { value: 'net', label: 'cable net (force densities)' }], 'poly');
         const lenS = v.slider('cable length / chord', 1.005, 1.4, 1.08, { step: 0.001 });
-        const rise = v.slider('net: corner rise (m)', 0, 3, 1.8, { step: 0.05 });
-        const qr = v.slider('net: force density ratio q₁/q₂', 0.25, 4, 1, { log: true });
-        const pn = v.slider('net: load per node (kN)', 0, 25, 8, { step: 0.5 });
+        const rise = v.slider('corner rise (m)', 0, 3, 1.5, { step: 0.05 });
+        const qr = v.slider('q₁ / q₂', 0.25, 4, 1, { log: true });
+        const pn = v.slider('node load (kN)', 0, 40, 10, { step: 0.5 });
         const S = v.stage({ x: [-1.2, 21.2], y: [-9, 3], equal: true, axes: false, height: 380, weight: 1.45, title: 'a cable carrying four weights (m)' });
         const F = v.stage({ x: [-5.6, 5.6], y: [-5.4, 5.4], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'force polygon' });
         const sc = v.scene3(F, { yaw: -0.65, pitch: 0.5, axes: false, hint: false, lim: 4 });
@@ -134,7 +134,7 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
         const NG = 7, idx = (i, j) => i * NG + j, isB = (i, j) => i === 0 || j === 0 || i === NG - 1 || j === NG - 1;
         const edges = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { if (i + 1 < NG) edges.push([idx(i, j), idx(i + 1, j), 1]); if (j + 1 < NG) edges.push([idx(i, j), idx(i, j + 1), 2]); }
         function solveNet() {
-          const q0 = 10, q = (fam) => (fam === 1 ? q0 * qr.value : q0), h = (NG - 1) / 2;
+          const q0 = 40, q = (fam) => (fam === 1 ? q0 * qr.value : q0), h = (NG - 1) / 2;
           const P0 = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { const x = i - h, y = j - h; P0.push([x, y, isB(i, j) ? (rise.value * x * y) / (h * h) : 0]); }
           const free = []; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) if (!isB(i, j)) free.push(idx(i, j));
           const fi = new Map(free.map((n, k) => [n, k])), nf = free.length;
@@ -186,14 +186,14 @@ Written node by node, equilibrium says $\sum_j q_{ij}(\mathbf x_j - \mathbf x_i)
             F.text(`H = ${st.H.toFixed(1)} kN`, (xL + px) / 2, yb, { dy: 12, align: 'center', size: 11, weight: 650, color: 'accent' });
             F.text(`ΣP = ${tot} kN`, xL, pts[0], { dx: -6, dy: -10, align: 'left', size: 10.5, color: 'muted' });
           } else {
-            const nt = solveNet(), Nmax = Math.max(...nt.N), Nmin = Math.min(...nt.N);
+            const nt = solveNet(), inner = nt.N.filter((_, k) => !(isB(Math.floor(edges[k][0] / NG), edges[k][0] % NG) && isB(Math.floor(edges[k][1] / NG), edges[k][1] % NG))), Nmax = Math.max(...inner), Nmin = Math.min(...inner);
             sc.begin();
-            edges.forEach(([a, b], k) => { const t = (nt.N[k] - Nmin) / Math.max(1e-9, Nmax - Nmin); sc.line(nt.P[a], nt.P[b], { color: t > 0.5 ? 'red' : 'orange', width: 1 + 3 * t }); });
+            edges.forEach(([a, b], k) => { const bd = isB(Math.floor(a / NG), a % NG) && isB(Math.floor(b / NG), b % NG); if (bd) { sc.line(nt.P[a], nt.P[b], { color: 'ink', width: 2.2, alpha: 0.7 }); return; } const t = (nt.N[k] - Nmin) / Math.max(1e-9, Nmax - Nmin); sc.line(nt.P[a], nt.P[b], { color: t > 0.5 ? 'red' : 'orange', width: 1 + 3 * t }); });
             for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { const p = nt.P[idx(i, j)]; if (isB(i, j)) sc.dot(p, { r: 3, color: 'ink' }); else if (pn.value > 0) sc.line(p, [p[0], p[1], p[2] - 0.12 * Math.sqrt(pn.value)], { color: 'gold', width: 1.4 }); }
             sc.flush();
             F.corner(`net forces ${Nmin.toFixed(0)}–${Nmax.toFixed(0)} kN · node residual ${nt.res.toExponential(0)} kN`, 'bl', { color: 'muted' });
           }
-          v.legend(net ? [['red', 'cable (thicker = more tension)'], ['orange', 'less-tensioned net members'], ['gold', 'node loads'], ['ink', 'fixed boundary nodes', { dot: true }]]
+          v.legend(net ? [['red', 'most-tensioned net members (thickness ∝ force)'], ['orange', 'less-tensioned members'], ['gold', 'node loads'], ['ink', 'fixed boundary']]
             : [['red', 'cable segments and rays (thickness ∝ tension)'], ['accent', 'pole distance = H', { dash: true }], ['green', 'sag below the chord', { dash: true }]]);
         });
         v.readout(() => {

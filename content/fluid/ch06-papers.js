@@ -78,12 +78,12 @@ Scope: smooth straight pipes, fully developed flow. The upper critical number de
           if (xb < 10) {
             const flash = 0.55 + 0.45 * Math.sin(3 * t);
             S.rect(xb + 0.4, -1, 10, 1, { fill: 'red', fillAlpha: 0.1 * flash + 0.06, stroke: false });
-            for (const [ux, uy, rr, ph] of eddy) {
+            S.clip(() => { for (const [ux, uy, rr, ph] of eddy) {
               const x = xb + 0.3 + ux * (10 - xb - 0.3), y = uy * 0.8;
               if (x > 9.95) continue;
               const r = 0.1 * rr * Math.min(1, (x - xb) / 1.2);
               S.curve((s) => [x + r * Math.cos(s + ph + 2 * t) * (1 + s / 8), y + r * Math.sin(s + ph + 2 * t) * (1 + s / 8)], 0, 7, { color: 'red', width: 1.4, alpha: 0.7, n: 30 });
-            }
+            } }, [0, 10], [-0.98, 0.98]);
           }
           S.corner(`Re = ${Math.round(Re).toLocaleString('en-US')} · U = ${v.fix(U * 100, 1)} cm/s in tube No. ${pipe.value} at ${v.fix(T.value, 1)} °C · ${Re < Rc ? (Re < 0.85 * Rc ? 'direct (laminar)' : 'wavering') : 'sinuous: eddies'}`, 'tl', { size: 12, weight: 700, color: Re < Rc ? 'blue' : 'red' });
           // ---- Table I points
