@@ -81,7 +81,7 @@ export default {
             paths = [];
             const m = M.value; let nl = 0;
             zs.slice(0, 24).forEach((z) => {
-              const tr = run(m, kOf(z), Es.value, 0, [0, 0, 0], 60, 600, 6), y = tr[tr.length - 1], ok = y[1] > y[2];
+              const tr = run(m, kOf(z), Es.value, 0, [0, 0, 0], 60, 1200, 8), y = tr[tr.length - 1], ok = y[1] > y[2];
               if (ok) nl++; paths.push({ pts: tr.map((r) => [r[1], r[2]]), ok });
             });
             paths.forEach((p) => S1.path(p.pts, { color: p.ok ? 'green' : 'red', width: 1.6, alpha: 0.75 }));
@@ -126,7 +126,7 @@ export default {
       name: 'Waddington’s landscape and cell-fate decisions',
       statement: String.raw`C. H. Waddington pictured development as a ball rolling down a **landscape** of branching valleys: the valleys are the cell fates, the ridges between them are the barriers that keep fates distinct, and a signal can tilt or reshape the surface. A gene circuit makes this picture quantitative. For a two-gene fate circuit with mutual repression and self-activation, the stable fixed points are the valleys, and the **quasi-potential** $U=-\ln P_{\rm ss}$ (with $P_{\rm ss}$ the steady-state distribution of the noisy circuit) is the height of the landscape. When the self-activation strength grows, the single "progenitor" valley can flatten and split into two fate valleys (a bifurcation); a signal that biases one gene deepens one valley and can make the progenitor valley vanish, which commits the cell.`,
       idea: String.raw`In a gradient system $\dot{\mathbf x}=-\nabla U$ the ball picture is literal. Gene circuits are generally not gradient systems (they have no potential), but with noise the long-run statistics are given by the stationary density $P_{\rm ss}$, and $U=-\ln P_{\rm ss}$ plays the role of the height, as in the potential-landscape treatments of Wang et al. and the bifurcation analysis of Huang et al. Here $P_{\rm ss}$ is computed by relaxing the Fokker–Planck equation on a grid. The valleys correspond to the stable states of 4.1 and 4.3, the saddles between them to the passes, and the splitting of the central valley to the pitchfork-type loss of stability of a monostable state; a differentiation signal acts as a bifurcation parameter.`,
-      caption: String.raw`Left: quasi-potential of a two-gene circuit (dark = low, so valleys are dark) in the plane of the two gene products $x,y$; the gold marble starts in the progenitor valley and is kicked by noise. Right: the landscape along the fate axis $x-y$ (marginal over the other direction). Raise the self-activation $a$: the single valley splits into a progenitor valley and two fate valleys. Then turn the signal up: the progenitor valley tilts and disappears and the marble rolls into fate $x$ (use "release another marble" for new noise). The landscape is relaxed for 2600 pseudo-time steps from a uniform start, so relative depths of valleys separated by high barriers are only approximate.`,
+      caption: String.raw`Left: quasi-potential of a two-gene circuit (dark = low, so valleys are dark) in the plane of the two gene products $x,y$; the gold marble starts in the progenitor valley and is kicked by noise. Right: the lowest height of the landscape at each position along the fate axis $x-y$ (the valley floor). Raise the self-activation $a$: the single central valley flattens into a progenitor shoulder flanked by two deeper fate valleys. Then turn the signal up: the progenitor valley tilts and disappears and the marble rolls into fate $x$ (use "release another marble" for new noise). The landscape is relaxed for 2600 pseudo-time steps from a uniform start, so relative depths of valleys separated by high barriers are only approximate.`,
       deps: ['sysbio-4.3'],
       refs: ['Alon: Positive Feedback, Bistability and Memory'],
       tags: ['cell fate', 'landscape', 'bifurcation'],
@@ -136,19 +136,19 @@ export default {
       viz(v) {
         const a = v.slider('self-activation strength a', 0.5, 2.5, 1.5, { step: 0.05 });
         const sg = v.slider('fate signal s (favours gene x)', -0.4, 0.4, 0, { step: 0.01 });
-        const Dn = v.slider('noise D', 0.03, 0.12, 0.05, { step: 0.005 });
+        const Dn = v.slider('noise D', 0.03, 0.12, 0.04, { step: 0.005 });
         let seed = 1; v.button('Release another marble', () => { seed++; });
         const S1 = v.stage({ x: [0, 2.8], y: [0, 2.8], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.1, minWidth: 300, xlabel: 'gene x product', ylabel: 'gene y product' });
-        const S2 = v.stage({ x: [-2.8, 2.8], y: [0, 8], axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 260, xlabel: 'fate axis  x − y', ylabel: 'U = −ln P (along the axis)' });
+        const S2 = v.stage({ x: [-2.8, 2.8], y: [0, 8], axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 260, xlabel: 'fate axis  x − y', ylabel: 'U = −ln P (valley floor)' });
         let key = '', F = null, prof = [], mkey = '', marble = [];
         const relax = (A, S) => { let x = 1, y = 1; for (let i = 0; i < 4000; i++) { const d = fateF(A, S, x, y); x += 0.02 * d[0]; y += 0.02 * d[1]; } return [x, y]; };
         const compute = () => {
           const k = `${a.value}|${sg.value}|${Dn.value}`;
           if (k !== key) {
             key = k; F = fokkerPlanck(a.value, sg.value, Dn.value);
-            const bins = 56, acc = new Float64Array(bins);
-            for (let j = 0; j < F.N; j++) for (let i = 0; i < F.N; i++) { const d = (i - j) * F.h, b = Math.min(bins - 1, Math.max(0, Math.floor(((d + 2.8) / 5.6) * bins))); acc[b] += F.P[j * F.N + i]; }
-            const mx = Math.max(...acc); prof = Array.from(acc, (p, b) => [-2.8 + ((b + 0.5) / bins) * 5.6, -Math.log(Math.max(p / mx, 1e-6))]);
+            const bins = 28, acc = new Float64Array(bins).fill(1e9);
+            for (let j = 0; j < F.N; j++) for (let i = 0; i < F.N; i++) { const d = (i - j) * F.h, b = Math.min(bins - 1, Math.max(0, Math.floor(((d + 2.8) / 5.6) * bins))); acc[b] = Math.min(acc[b], F.U[j * F.N + i]); }
+            prof = Array.from(acc, (u, b) => [-2.8 + ((b + 0.5) / bins) * 5.6, u]);
           }
           const mk = `${k}|${seed}`;
           if (mk !== mkey) {
@@ -168,7 +168,7 @@ export default {
           S1.path(marble.slice(0, k + 1), { color: 'gold', width: 1.5, alpha: 0.8 });
           S1.dot(marble[k][0], marble[k][1], { r: 7, color: 'gold' });
           S2.path(prof, { color: 'accent', width: 3 });
-          S2.dot(marble[k][0] - marble[k][1], Math.min(7.8, prof[Math.min(55, Math.max(0, Math.floor(((marble[k][0] - marble[k][1] + 2.8) / 5.6) * 56)))][1]), { r: 7, color: 'gold' });
+          S2.dot(marble[k][0] - marble[k][1], Math.min(7.8, prof[Math.min(27, Math.max(0, Math.floor(((marble[k][0] - marble[k][1] + 2.8) / 5.6) * 28)))][1]), { r: 7, color: 'gold' });
           cur = { n: at.length, x: marble[k][0], y: marble[k][1], fate: Math.abs(marble[k][0] - marble[k][1]) < 0.4 ? 'progenitor' : marble[k][0] > marble[k][1] ? 'fate x' : 'fate y' };
         }, { period: 10, still: 9.9 });
         v.legend([['gold', 'noisy marble', { dot: true }], ['ink', 'fixed points of the circuit', { dot: true }]]);
