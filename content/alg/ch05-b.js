@@ -266,7 +266,7 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
             const [x0, y0, h] = tile(n, 0, k), [x1, y1] = tile(n, side2, k2), hl = pick && ((pick[0] === 0 && pick[1] === k) || (pick[0] === side2 && pick[1] === k2));
             const col = hl ? 'gold' : side2 === 1 ? 'green' : 'red', wd = hl ? 3.4 : 1.8, al = pick && !hl ? 0.25 : 0.85;
             if (side2 === 1) s.curve((t) => [x0 + 2.6 + (x1 - x0 - 2.6) * t, y0 + (y1 - y0) * (t * t * (3 - 2 * t))], 0, 1, { color: col, width: wd, alpha: al });
-            else { const bulge = 0.5 + 0.18 * Math.abs(k2 - k) * h; s.curve((t) => [x0 - 0.08 - bulge * Math.sin(Math.PI * t), y0 + (y1 - y0) * t], 0, 1, { color: col, width: wd, alpha: al }); s.arrow(x0 - 0.08 - bulge * Math.sin(Math.PI * 0.9), y0 + (y1 - y0) * 0.9, x0 - 0.04, y1, { color: col, width: wd, head: 7, alpha: al }); }
+            else { const bulge = 0.35 + 0.15 * Math.abs(k2 - k) * h, xe = x0 + 2.68; s.curve((t) => [xe + bulge * Math.sin(Math.PI * t), y0 + (y1 - y0) * t], 0, 0.92, { color: col, width: wd, alpha: al }); s.arrow(xe + bulge * Math.sin(Math.PI * 0.9), y0 + (y1 - y0) * 0.9, xe + 0.02, y1, { color: col, width: wd, head: 7, alpha: al }); }
           });
           for (const side of [0, 1]) for (let k = 0; k < m; k++) {
             const [x0, yc, h] = tile(n, side, k), p = all[side][k], sel = pick && pick[0] === side && pick[1] === k;
@@ -501,7 +501,8 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
           byLoc.forEach((arr, c) => { arr.sort((a, b) => (a[0] < b[0] ? -1 : 1)); arr.forEach(([, i], r) => { cell[i] = [c, r]; }); });
           return { cell, locs };
         };
-        const geo = (md, i, L) => { const { cols, rows } = MODES[md], [c, r] = L.cell[i], w = 0.98 / cols, h = 0.86 / rows; return [0.01 + w * (c + 0.5), 0.86 - h * (r + 0.5), w, h]; };
+        // 12 columns wrap into two bands of 6 so the tiles stay roughly square
+        const geo = (md, i, L) => { const { cols, rows } = MODES[md], wrap = cols > 8 ? 2 : 1, cpb = cols / wrap, [c, r] = L.cell[i], cc = c % cpb, rr = Math.floor(c / cpb) * rows + r, w = 0.98 / cpb, h = 0.86 / (rows * wrap); return [0.01 + w * (cc + 0.5), 0.86 - h * (rr + 0.5), w, h]; };
         g.onClick((x, y) => { const md = mode.value, L = layout(md); for (let i = 0; i < 24; i++) { const [cx, cy, w, h] = geo(md, i, L); if (Math.abs(x - cx) < w / 2 && Math.abs(y - cy) < h / 2) { goTo(i); return; } } });
         const FACE_NAMES = { '1,0,0': '+x', '-1,0,0': '−x', '0,1,0': '+y', '0,-1,0': '−y', '0,0,1': 'top', '0,0,-1': 'bottom' };
         v.animate((tt) => {
@@ -524,7 +525,8 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
             g.rect(cx - w / 2 + 0.003, cy - h / 2 + 0.004, cx + w / 2 - 0.003, cy + h / 2 - 0.004, { radius: 5, fill: i === cur ? 'gold' : 'faint', fillAlpha: i === cur ? 0.25 : 0.05, color: i === cur ? 'gold' : 'faint', width: i === cur ? 2 : 0.8 });
             if (on) miniCube(v, g, GR[i], [cx, cy], Math.min(w * (g.width / g.height), h) * 0.36, { mark: p, ky: g.width / g.height, markR: cols > 8 ? 2.6 : 3.4 }); else g.text('?', cx, cy, { align: 'center', size: 12, color: 'faint' });
           }
-          for (let c = 0; c < cols; c++) { const key = L.locs[c], lab = md === 'face' ? FACE_NAMES[key] : String(c + 1); g.text(lab, 0.01 + (0.98 / cols) * (c + 0.5), 0.92, { align: 'center', size: cols > 8 ? 9.5 : 11, weight: 700, color: 'muted' }); }
+          if (cols <= 8) for (let c = 0; c < cols; c++) { const key = L.locs[c], lab = md === 'face' ? FACE_NAMES[key] : String(c + 1); g.text(lab, 0.01 + (0.98 / cols) * (c + 0.5), 0.92, { align: 'center', size: 11, weight: 700, color: 'muted' }); }
+          else for (let i = 0; i < 24; i++) { const [cx, cy, w, h] = geo(md, i, L); if (L.cell[i][1] === 0) g.text(`edge ${L.cell[i][0] + 1}`, cx - w / 2 + 0.012, cy + h / 2 - 0.022, { align: 'left', size: 9.5, weight: 700, color: 'muted' }); }
           g.text(`${cols} places for the gold ${md} × ${rows} turns`, 0.5, 0.975, { align: 'center', size: 11.5, weight: 700, color: 'ink' });
         }, { period: 0.7, once: true, autoplay: false, still: 0.7 });
         // a few positions found already
@@ -555,13 +557,13 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
         let R = I3, anim = null, lastPerm = null;
         const objs = () => (act.value === 'diag' ? DIAG : FAX);
         const permOf = (A, O = objs()) => O.map((d) => { const q = ap3(A, d); return O.findIndex((e) => (Math.abs(e[0] - q[0]) + Math.abs(e[1] - q[1]) + Math.abs(e[2] - q[2]) < 1e-6) || (Math.abs(e[0] + q[0]) + Math.abs(e[1] + q[1]) + Math.abs(e[2] + q[2]) < 1e-6)); });
-        let seen = new Set();
+        let visited = [I3]; // rotations reached so far; the realised permutations are computed for the current mode
+        const seenSet = () => new Set(visited.map((A) => pkey(permOf(A))));
         const axisNow = () => { const L = AXES[typ.value]; return L[(K.value - 1) % L.length]; };
-        const turnBy = (axis, ang) => { const A = round3(rot3(axis, ang)); anim = { R0: R, axis, ang }; R = mat3(A, R); lastPerm = permOf(A); seen.add(pkey(permOf(R))); v.t = 0; v.play(); };
+        const turnBy = (axis, ang) => { const A = round3(rot3(axis, ang)); anim = { R0: R, axis, ang }; R = mat3(A, R); lastPerm = A; visited.push(R); v.t = 0; v.play(); };
         v.button('Turn', () => turnBy(axisNow(), AXIS_ANGLE[typ.value]));
-        v.button('All 6 edge turns', () => { for (const a of AXES.edge) seen.add(pkey(permOf(mat3(round3(rot3(a, Math.PI)), R)))); });
-        v.button('Reset', () => { R = I3; anim = null; lastPerm = null; seen = new Set([pkey(permOf(I3))]); });
-        seen.add(pkey(permOf(I3)));
+        v.button('All 6 edge turns', () => { for (const a of AXES.edge) visited.push(mat3(round3(rot3(a, Math.PI)), R)); });
+        v.button('Reset', () => { R = I3; anim = null; lastPerm = null; visited = [I3]; });
         const s = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, axes: false, height: 390 });
         const sc = v.scene3(s, { yaw: -0.5, pitch: 0.33, axes: false });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, weight: 1.1 });
@@ -584,7 +586,7 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
           for (const [[x, y], j] of labs) s.text(String(j + 1), x, y, { align: 'center', size: 11.5, weight: 700, color: 'panel', halo: false });
           v.legend(act.value === 'diag' ? [['gold', 'current', { dot: true }], ['blue', 'transposition', { dot: true }], ['teal', 'double transposition', { dot: true }], ['orange', '3-cycle', { dot: true }], ['purple', '4-cycle', { dot: true }]] : [['gold', 'current', { dot: true }]]);
           // the S4 (or S3) tiles
-          const m = act.value === 'diag' ? 4 : 3, P = allPerms(m), cols = m === 4 ? 6 : 3, rows = P.length / cols, cur = permOf(R);
+          const m = act.value === 'diag' ? 4 : 3, P = allPerms(m), cols = m === 4 ? 6 : 3, rows = P.length / cols, cur = permOf(R), seen = seenSet();
           const mult = new Map(); for (const A of GR) { const k = pkey(permOf(A)); mult.set(k, (mult.get(k) || 0) + 1); }
           P.forEach((p, i) => {
             const c = i % cols, r = Math.floor(i / cols), w = 0.98 / cols, h = 0.8 / rows, cx = 0.01 + w * (c + 0.5), cy = 0.82 - h * (r + 0.5), on = seen.has(pkey(p)), isCur = same(p, cur);
@@ -593,14 +595,14 @@ Hence $D_n=\{1, r, r^2,\dots,r^{n-1}, s, rs, r^2s,\dots,r^{n-1}s\}$.`,
             t.text(cycText(p), cx, cy + h * 0.12, { align: 'center', size: m === 4 ? 11.5 : 13, weight: 700, color: on ? 'ink' : 'faint', halo: false });
             t.text(m === 4 ? oneLine(p) : `${mult.get(pkey(p)) || 0} rotations`, cx, cy - h * 0.22, { align: 'center', size: 10, color: on ? 'muted' : 'faint', halo: false });
           });
-          t.text(m === 4 ? `realised ${[...seen].filter((k) => k.split(',').length === 4).length} of 24 permutations of the diagonals` : 'each permutation of the 3 axes comes from 4 rotations', 0.5, 0.9, { align: 'center', size: 12, weight: 700 });
+          t.text(m === 4 ? `realised ${seen.size} of 24 permutations of the diagonals` : 'each permutation of the 3 axes comes from 4 rotations', 0.5, 0.9, { align: 'center', size: 12, weight: 700 });
         }, { period: 0.8, once: true, autoplay: false, still: 0.8 });
         // open with one edge half-turn and one face quarter-turn already made
         turnBy(AXES.face[2], Math.PI / 2); turnBy(AXES.edge[0], Math.PI);
         v.readout(() => {
           const cur = permOf(R), imgs = new Set(GR.map((A) => pkey(permOf(A)))), m = act.value === 'diag' ? 4 : 3;
           const edgeT = AXES.edge.map((a) => permOf(round3(rot3(a, Math.PI)))), allT = edgeT.every((p) => cycles(p).length === 1 && cycles(p)[0].length === 2);
-          const lp = lastPerm ? `The last turn permuted the ${m === 4 ? 'diagonals' : 'axes'} as $${cycTex(lastPerm.length === m ? lastPerm : permOf(I3))}$; the` : 'The';
+          const lp = lastPerm ? `The last turn permuted the ${m === 4 ? 'diagonals' : 'axes'} as $${cycTex(permOf(lastPerm))}$; the` : 'The';
           return m === 4
             ? String.raw`${lp} cube now realises $${cycTex(cur)}$. The 24 rotations give **${imgs.size}** different permutations of the diagonals — every element of $S_4$, each exactly once ✓. The 6 edge half-turns are the 6 transpositions ${allT ? '✓' : '✗'}.`
             : String.raw`On the 3 face axes the 24 rotations give only ${imgs.size} permutations: the map onto $S_3$ is onto but **not one-to-one** — the half-turns about the face axes all act trivially. The diagonals are what make the correspondence a bijection.`;

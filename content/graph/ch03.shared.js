@@ -288,6 +288,10 @@ export function menger(H, A, B, o = {}) {
       const x = from >> 1, y = to >> 1; if (x === y) continue;
       walk.push({ v: y, back: (a & 1) === 1 });
     }
+    if (o.limit != null && guard >= o.limit) { // report the pending alternating walk without using it
+      const reach = new Uint8Array(n); for (let v = 0; v < n; v++) if (!gone(v) && (r.reach[2 * v] || r.reach[2 * v + 1])) reach[v] = 1;
+      return { paths, sep: null, reach, walk, events: ev };
+    }
     const before = paths.map((p) => p.slice());
     pushArcs(N.F, r.arcs); paths = decompose(N);
     if (o.events) ev.push({ type: 'walk', before, walk, after: paths.map((p) => p.slice()) });
@@ -514,3 +518,79 @@ export function findTK(H, r, o = {}) {
 export function gnp(n, p, rng) { const E = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (rng() < p) E.push([i, j]); return E; }
 /** Plain index structure from n and an edge list (no kit graph needed). */
 export function ixOf(n, edges) { return ix({ nodes: Array.from({ length: n }, (_, i) => ({ id: i })), edges }); }
+
+// ================================================================ 7. more path tools (§§3.3, 3.5)
+/** A random maximal (not necessarily maximum) system of disjoint A–B paths, grown greedily from random BFS orders. */
+export function greedyPaths(H, A, B, rng) {
+  const n = H.n, inA = new Uint8Array(n), inB = new Uint8Array(n), used = new Uint8Array(n), out = [];
+  for (const a of A) inA[a] = 1; for (const b of B) inB[b] = 1;
+  const order = (L) => { const M = L.slice(); for (let i = M.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [M[i], M[j]] = [M[j], M[i]]; } return M; };
+  let progress = true;
+  while (progress) {
+    progress = false;
+    for (const a of order([...A])) {
+      if (used[a]) continue;
+      if (inB[a]) { used[a] = 1; out.push([a]); progress = true; continue; }
+      const par = new Int32Array(n).fill(-2); par[a] = -1; const q = [a]; let end = -1;
+      for (let i = 0; i < q.length && end < 0; i++) for (const [w] of order(H.adj[q[i]])) {
+        if (par[w] !== -2 || used[w] || inA[w]) continue; par[w] = q[i];
+        if (inB[w]) { end = w; break; } q.push(w);
+      }
+      if (end < 0) continue;
+      const p = []; for (let x = end; x !== -1; x = par[x]) p.push(x); p.reverse();
+      p.forEach((x) => (used[x] = 1)); out.push(p); progress = true;
+    }
+  }
+  return out;
+}
+/**
+ * Disjoint paths from the sources S to distinct vertices of U, with no inner vertex in U, minimising the total cost of the
+ * edges used (successive shortest paths with Bellman–Ford on the vertex-split graph). cost(k) ≥ 0 per edge index.
+ * Returns {paths (source … u), total} — fewer paths than |S| if not all can be routed.
+ */
+export function minCostPaths(H, S, U, cost) {
+  const n = H.n, N = 2 * n + 2, s = 2 * n, t = 2 * n + 1, inU = new Uint8Array(n); for (const u of U) inU[u] = 1;
+  const g = Array.from({ length: N }, () => []), to = [], cap = [], cst = [];
+  const add = (a, b, c, w) => { g[a].push(to.length); to.push(b); cap.push(c); cst.push(w); g[b].push(to.length); to.push(a); cap.push(0); cst.push(-w); };
+  for (let v = 0; v < n; v++) add(2 * v, inU[v] ? t : 2 * v + 1, 1, 0);
+  for (const a of S) add(s, 2 * a, 1, 0);
+  H.E.forEach(([a, b], k) => { if (a === b) return; if (!inU[a]) add(2 * a + 1, 2 * b, 1, cost(k)); if (!inU[b]) add(2 * b + 1, 2 * a, 1, cost(k)); });
+  let total = 0;
+  for (let it = 0; it < S.length; it++) {
+    const dist = new Array(N).fill(Infinity), via = new Int32Array(N).fill(-1); dist[s] = 0;
+    for (let round = 0; round < N; round++) { let ch = false; for (let x = 0; x < N; x++) if (dist[x] < Infinity) for (const a of g[x]) if (cap[a] > 0 && dist[x] + cst[a] < dist[to[a]]) { dist[to[a]] = dist[x] + cst[a]; via[to[a]] = a; ch = true; } if (!ch) break; }
+    if (dist[t] === Infinity) break;
+    for (let x = t; x !== s; x = to[via[x] ^ 1]) { cap[via[x]] -= 1; cap[via[x] ^ 1] += 1; }
+    total += dist[t];
+  }
+  // decompose
+  const paths = [], fl = (a) => cap[a ^ 1] > 0 && (a & 1) === 0;
+  for (const a0 of S) {
+    const first = g[s].find((a) => to[a] === 2 * a0 && fl(a)); if (first == null) continue;
+    const p = [a0]; let x = 2 * a0;
+    for (let guard = 0; guard < N; guard++) {
+      const nx = g[x].find((a) => fl(a)); if (nx == null) break;
+      cap[nx ^ 1] -= 1; const y = to[nx]; if (y === t) break;
+      if ((y >> 1) !== (x >> 1)) p.push(y >> 1);
+      x = y;
+    }
+    paths.push(p);
+  }
+  return { paths, total };
+}
+/** Local vertex connectivity of non-adjacent s, t, stopping at limit. */
+export function localKappa(H, s, t, limit = Infinity) {
+  const F = net(2 * H.n), BIG = 4 * H.n;
+  for (let v = 0; v < H.n; v++) arc(F, 2 * v, 2 * v + 1, v === s || v === t ? BIG : 1);
+  for (const [a, b] of H.E) { arc(F, 2 * a + 1, 2 * b, BIG); arc(F, 2 * b + 1, 2 * a, BIG); }
+  let val = 0, r; while (val < limit && (r = augPath(F, 2 * s + 1, 2 * t)).arcs) { pushArcs(F, r.arcs); val++; }
+  return val;
+}
+/** κ(G) with the Even-style shortcut (sources among the first κ + 1 vertices), capped at cap. */
+export function kappaFast(H, cap = 64) {
+  if (H.n <= 1) return 0; if (comps(H).k > 1) return 0;
+  const A = H.adj.map((l) => new Set(l.map(([w]) => w)));
+  let best = Math.min(H.n - 1, cap);
+  for (let i = 0; i <= best && i < H.n; i++) for (let j = i + 1; j < H.n; j++) { if (A[i].has(j)) continue; const k = localKappa(H, i, j, best); if (k < best) best = k; }
+  return best;
+}

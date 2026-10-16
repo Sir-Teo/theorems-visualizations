@@ -30,7 +30,7 @@ export default {
         };
         const sel = v.select('trace', [{ value: 'circle', label: 'circle' }, { value: 'cusp', label: 'cusp $(u^2,u^3)$' }, { value: 'line', label: 'line $(u^3,u^3)$' }], 'circle');
         const wS = v.slider('clock distortion $w$', 0, 1, 0.6, { step: 0.01 });
-        const S = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.45], equal: true, axes: false, height: 340, title: 'trace and velocity vectors at equal steps of $t$' });
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.65, 1.65], equal: true, axes: false, height: 340, title: 'trace and velocity vectors at equal steps of $t$' });
         const G = v.stage({ x: [-1, 1], y: [0, 6], axes: 'box', gutter: true, height: 340, weight: 0.75, minWidth: 240, xlabel: '$t$', ylabel: 'speed $|\\alpha\'(t)|$', });
         const phi = (t, w) => (1 - w) * t + w * t * t * t, dphi = (t, w) => 1 - w + 3 * w * t * t;
         const vel = (c, t, w) => { const d = c.dr(phi(t, w)), k = dphi(t, w); return [d[0] * k, d[1] * k]; };

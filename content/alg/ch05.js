@@ -101,7 +101,7 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
           }
           s.text('start', path[0][0], Y(0), { dx: 10, align: 'left', size: 11, color: 'muted' });
           // the chosen map as beads and wires
-          w.setView([0.2, n + 0.8], [-0.95, 3.15]);
+          w.setView([0.2, n + 0.8], [-0.9, 2.85]);
           const hits = new Array(n).fill(0); vals.forEach((x) => hits[x]++);
           for (let i = 0; i < n; i++) wire(w, [i + 1, 2], [vals[i] + 1, 0], { color: hits[vals[i]] > 1 ? 'red' : beadCol(v, i, n), width: 3 });
           for (let i = 0; i < n; i++) bead(v, w, i + 1, 2, i, { r: 12 });
@@ -111,7 +111,7 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
             bead(v, w, j + 1, 0, from[from.length - 1], { r: 12, ring: from.length > 1 ? 'red' : null });
             if (from.length > 1) w.text(`×${from.length}`, j + 1, 0, { dy: 24, align: 'center', size: 11, weight: 700, color: 'red' });
           }
-          w.text('slot i …', 0.25, 2.65, { align: 'left', size: 11, color: 'muted' });
+          w.text('slot i …', 0.25, 2.55, { align: 'left', size: 11, color: 'muted' });
           w.text('… goes to slot σ(i)', 0.25, -0.62, { align: 'left', size: 11, color: 'muted' });
         });
         v.readout(() => {

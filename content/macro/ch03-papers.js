@@ -41,10 +41,10 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model' },
       viz(v) {
         const M = v.M;
-        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'ces', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } if (k === 'ces') aS.set(0.25); if (k === 'cd') aS.set(0.33); } });
+        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'cd', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } if (k === 'ces') aS.set(0.25); if (k === 'cd') aS.set(0.33); } });
         const sS = v.slider('saving rate s', 0.05, 0.6, 0.25, { step: 0.005 });
         const nS = v.slider('labour growth n', 0.005, 0.08, 0.03, { step: 0.001 });
-        const aS = v.slider('a (capital exponent / weight)', 0.1, 0.9, 0.25, { step: 0.01 });
+        const aS = v.slider('a (capital exponent / weight)', 0.1, 0.9, 0.33, { step: 0.01 });
         const P = v.stage({ x: [0, 40], y: [0, 1.6], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 260, xlabel: 'capital per worker r', ylabel: 'per worker per year', title: 'Solow’s Figure 1' });
         const T = v.stage({ x: [0, 150], y: [0, 40], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'years', ylabel: 'capital per worker r(t)', title: 'convergence to balanced growth' });
         const h0 = T.handle(0, 3, { color: 'gold', constrain: (x, y) => [0, Math.max(0.2, y)] });
@@ -58,10 +58,10 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
           let rmax = 40;
           if (key === 'cd') rmax = Math.max(4, 2.2 * (s / n) ** (1 / (1 - a)));
           if (key === 'hd') rmax = Math.max(8, 3 * 3 * 1.6);
-          if (key === 'ces') { const D = n - s * a * a; rmax = D > 0 ? 1.6 * ((2 * s * a + Math.sqrt(4 * s * s * a * a + 4 * s * D)) / (2 * D)) ** 2 : 60; }
+          if (key === 'ces') { const D = n - s * a * a; rmax = D > 0 ? 1.637 * ((2 * s * a + Math.sqrt(4 * s * s * a * a + 4 * s * D)) / (2 * D)) ** 2 : 60; }
           if (key === 'multi') rmax = 50;
           rmax = Math.min(rmax, 2000);
-          for (let i = 1; i <= 2000; i++) { const r0 = (rmax * (i - 1)) / 2000, r1 = (rmax * i) / 2000; if (g(r0 + 1e-9) * g(r1) < 0) xs.push(M.bisect(g, r0 + 1e-9, r1)); }
+          for (let i = 1; i <= 2000; i++) { const r0 = (rmax * (i - 1)) / 2000, r1 = (rmax * i) / 2000; if (g(r0 + 1e-9) * g(r1) < 0 || (g(r1) === 0 && i < 2000)) xs.push(M.bisect(g, r0 + 1e-9, r1)); }
           const ymax = Math.max(s * F(rmax, a), n * rmax) * 1.08;
           P.setView([0, rmax], [0, ymax]);
           P.fn((r) => s * F(r, a), { color: 'green', width: 2.6, domain: [0, rmax], n: 400 });
@@ -74,7 +74,7 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
             P.dot(r, n * r, { r: 6, color: stable ? 'gold' : 'ink', hollow: !stable });
             P.text(stable ? `r* = ${v.fix(r, 2)}` : `unstable ${v.fix(r, 2)}`, r, n * r, { dx: stable ? 8 : -8, dy: stable ? 14 : -12, align: stable ? 'left' : 'right', size: 11.5, color: stable ? 'gold' : 'muted', weight: 700 });
           }
-          P.text('s F(r, 1)', rmax * 0.97, s * F(rmax * 0.97, a), { dy: -8, align: 'right', size: 12, color: 'green', weight: 700 });
+          P.text('s F(r, 1)', rmax * 0.45, s * F(rmax * 0.45, a), { dy: -10, align: 'right', size: 12, color: 'green', weight: 700 });
           P.text('n r', rmax * 0.97, n * rmax * 0.97, { dy: 14, align: 'right', size: 12, color: 'red', weight: 700 });
           // time paths
           const starts = [0.15 * rmax, 0.5 * rmax, 0.95 * rmax, 0.03 * rmax];

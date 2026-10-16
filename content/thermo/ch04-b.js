@@ -19,7 +19,7 @@ export default {
       num: '4.9', kind: 'Phenomenon', name: 'Metastability: supercooling and superheating',
       statement: String.raw`A phase can persist beyond its coexistence curve as a **metastable** state: vapour compressed above its saturation pressure (supersaturated), liquid heated above its boiling point (superheated) or cooled below its freezing point (supercooled). A metastable state is stable against small fluctuations — its free energy is locally convex, $(\partial P/\partial v)_T < 0$ — but not against large ones: it decays only after a sufficiently large nucleus of the stable phase forms. The limit of metastability is the **spinodal**, where $(\partial P/\partial v)_T = 0$; inside it the homogeneous state is unstable and separates spontaneously, without nucleation (**spinodal decomposition**). Coexistence (binodal) and spinodal curves meet at the critical point.`,
       idea: String.raw`Stability against small fluctuations requires a convex free energy $f(v)$, i.e. $\partial P/\partial v < 0$ (3.15). Between the binodal and the spinodal of the van der Waals isotherm this still holds, although a two-phase state of lower Gibbs energy exists (4.3); reaching it requires passing through intermediate states with an interface, which cost surface free energy, so there is a barrier (4.10). Inside the spinodal $f''(v) < 0$: any long-wavelength density ripple lowers the free energy and grows exponentially, at a rate set by the competition between the negative curvature and the gradient (surface) energy — the Cahn–Hilliard picture.`,
-      caption: String.raw`Left: the van der Waals phase diagram in reduced density and temperature — coexistence curve (binodal, ink) and spinodal (red dashed); the band between them is metastable. **Drag the quench point** (it restarts the run). Right: a 64 × 64 Cahn–Hilliard simulation of the fluid's density after the quench (van der Waals free energy plus a gradient term; dark = dense, liquid). Inside the spinodal, tiny noise grows into an interconnected pattern at once. In the metastable band nothing happens — until you **seed a droplet**: below a critical radius it dissolves, above it grows by draining the supersaturated vapour. Outside the binodal the fluid is simply stable.`,
+      caption: String.raw`Left: the van der Waals phase diagram in reduced density and temperature — coexistence curve (binodal, ink) and spinodal (red dashed); the band between them is metastable. **Drag the quench point** (it restarts the run). Right: a 64 × 64 Cahn–Hilliard simulation of the fluid's density after the quench (van der Waals free energy plus a gradient term; strong teal = dense liquid, background colour = dilute vapour). Inside the spinodal, tiny noise grows into an interconnected pattern at once. In the metastable band nothing happens — until you **seed a droplet**: below a critical radius it dissolves, above it grows by draining the supersaturated vapour. Outside the binodal the fluid is simply stable.`,
       deps: ['thermo-4.3', 'thermo-3.15'],
       see: ['thermo-4.10', 'pchem-4.8'],
       refs: ['Callen ch. 9'],
@@ -125,7 +125,7 @@ where $\gamma$ is the interfacial free energy per area and $\Delta g_v > 0$ the 
           const r = v.rng(7 + gen), T = Tm - dT.value, p = params(T, gam.value * 1e-3);
           return { r: Array.from({ length: NC }, (_, i) => p.rs * (0.45 + 1.1 * (i + r()) / NC)), rng: r, p };
         }, (st, h) => {
-          const { p } = st, D = p.rs * p.rs / (p.Gs / p.kT) * 0.6;   // diffusion constant: the drift moves clusters by ~r* in a few seconds
+          const { p } = st, D = p.rs * p.rs / (p.Gs / p.kT) * 0.15;   // diffusion constant: the drift moves clusters by ~r* in a few seconds
           for (let i = 0; i < NC; i++) {
             const r = st.r[i]; if (r <= 0 || r > 3 * p.rs) continue;
             const dGdr = (8 * Math.PI * r * gam.value * 1e-3 - 4 * Math.PI * r * r * p.dg) / p.kT;
@@ -165,7 +165,7 @@ where $\gamma$ is the interfacial free energy per area and $\Delta g_v > 0$ the 
           sj.dot(tHom, Jth, { r: 4.5, color: 'gold' });
           const J1 = Jof(-dT.value), J2 = Jof(-dT.value - 1);
           info = { T, rs, hb, n: 4 / 3 * Math.PI * (p.rs) ** 3 * rhoI / W.M * NA, tHom, J1, fac: J2 / J1, grown, gone };
-        }, { still: 1.6, period: 8 });
+        }, { still: 3, period: 10 });
         v.legend([['ink', 'ΔG(r)'], ['orange', 'surface cost', { dash: true }], ['blue', 'bulk gain', { dash: true }], ['gold', 'clusters', { dot: true }], ['accent', 'rate J(T)']]);
         v.readout(() => {
           if (!info) return '';
@@ -321,9 +321,9 @@ with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2
           sc.fn((q) => Math.log(1 - q), { color: 'orange', width: 2, domain: [0, 0.92] });
           sc.dot(x, ideal, { r: 5, color: 'green' }); sc.dot(x, st.S, { r: 4, color: 'accent', hollow: true });
           sc.dot(x, Math.log(x), { r: 4.5, color: 'blue' }); sc.dot(x, Math.log(1 - x), { r: 4.5, color: 'orange' });
-          sc.text('blue: ln x', 0.3, Math.log(0.3), { dx: 8, dy: 6, size: 10.5, color: 'blue', align: 'left' });
-          sc.text('orange: ln(1 − x)', 0.7, Math.log(0.3), { dx: -8, dy: 6, size: 10.5, color: 'orange', align: 'right' });
-          sc.text('−x ln x − (1 − x) ln(1 − x)', 0.5, 0.69, { dy: -10, size: 10.5, color: 'green', align: 'center' });
+          sc.text('blue: ln x', 0.15, Math.log(0.15), { dx: 10, dy: 4, size: 10.5, color: 'blue', align: 'left' });
+          sc.text('orange: ln(1 − x)', 0.85, Math.log(0.15), { dx: -10, dy: 4, size: 10.5, color: 'orange', align: 'right' });
+          sc.text('−x ln x − (1 − x) ln(1 − x)', 0.12, -(0.12 * Math.log(0.12) + 0.88 * Math.log(0.88)), { dx: 6, dy: -12, size: 10.5, color: 'green', align: 'left', plate: true });
           info = { t, x, ideal, S: st.S, dmuA: R * 298.15 * Math.log(x), dmuB: R * 298.15 * Math.log(1 - x) };
         }, { still: 8, period: 12 });
         v.legend([['blue', 'species A'], ['orange', 'species B'], ['accent', 'measured −Σ n ln(n/n_cell) / N'], ['green', 'ideal $-\\sum x\\ln x$', { dash: true }]]);
