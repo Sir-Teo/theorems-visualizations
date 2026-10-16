@@ -41,10 +41,9 @@ function interfaceViz(v, refract) {
     const dir = [s1, -c1];
     S.line(XS - 3.6 * dir[0], 3.6 * c1, XS, 0, { color: 'accent', width: 1, alpha: 0.4, dash: [4, 4] });
     S.line(XE - 3.6 * dir[0], 3.6 * c1, XE, 0, { color: 'accent', width: 1, alpha: 0.4, dash: [4, 4] });
-    S.arrow(XS + 0.5 * (XE - XS) - 1.8 * dir[0] + 0.5 * 0, 1.8 * c1 + 0.0, XS + 0.5 * (XE - XS) - 0.5 * dir[0] + 0, 0.5 * c1, { color: 'accent', width: 1.6, head: 8 });
+    S.arrow(-1.8 * dir[0], 1.8 * c1, -0.5 * dir[0], 0.5 * c1, { color: 'accent', width: 1.6, head: 8 });
     const N = 12;
     let thR = null, thT = null, ratio = null;
-    const rUp = v.v1 = 0;
     for (let k = 0; k < N; k++) {
       const xk = XS + (d * k) / (N - 1);
       if (d < 1e-3) break;
@@ -85,7 +84,7 @@ function interfaceViz(v, refract) {
     if (!refract) return rd.thR == null ? 'the wave has only just touched the mirror' : `incident angle (from the normal) $\\theta_1=${v.fix(rd.th1, 1)}^\\circ$ · reflected front built from the wavelets leaves at $\\theta_r=${v.fix(rd.thR, 2)}^\\circ$`;
     if (rd.d <= 0.15) return 'the wave has only just touched the interface';
     if (rd.thT == null) return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 3)}>n_2$: the wavelets in medium 2 are too small for the points reached to share a tangent line, so no refracted wave exists (total internal reflection, 4.9)`;
-    return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 4)}$ · refracted front measured from the wavelets: $\\theta_2=${v.fix(rd.thT, 2)}^\\circ$, so $n_2\\sin\\theta_2=${v.fix(rd.n2 * Math.sin(rad(rd.thT)), 4)}$ · wavelet radius in 2 over radius in 1 $=${v.fix(rd.ratio * 1, 3)}\\cdot(\\text{front speed ratio})$`;
+    return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 4)}$ · refracted front measured from the wavelets: $\\theta_2=${v.fix(rd.thT, 2)}^\\circ$, so $n_2\\sin\\theta_2=${v.fix(rd.n2 * Math.sin(rad(rd.thT)), 4)}$ · wavelet radius in 2 over radius in 1 $=n_1/n_2=${v.fix(rd.ratio, 3)}$`;
   });
 }
 
@@ -248,13 +247,11 @@ It is the distance light would travel in vacuum in the time it takes to traverse
         v.render(() => {
           aS.el.hidden = shape.value !== 'slit';
           const N = nS.value, r = rS.value;
-          let pts = [], norms = [], env = null, front = null;
+          let pts = [];
           const R0 = 3.2, span = rad(38);
           if (shape.value === 'plane' || shape.value === 'slit') {
             const hw = shape.value === 'slit' ? aS.value : 3.4;
-            for (let i = 0; i < N; i++) { pts.push([-hw + (2 * hw * i) / (N - 1), 0]); norms.push([0, 1]); }
-            front = [[-hw, 0], [hw, 0]];
-            if (shape.value === 'plane') env = (c) => c(() => [[-hw, r], [hw, r]]);
+            for (let i = 0; i < N; i++) { pts.push([-hw + (2 * hw * i) / (N - 1), 0]); }
             S.line(-4.5, 0, -hw, 0, { color: 'faint', width: 5 }); S.line(hw, 0, 4.5, 0, { color: 'faint', width: 5 });
             S.line(-hw, r, hw, r, { color: 'green', width: 1.5, dash: [6, 4] });
             if (shape.value === 'slit') {

@@ -512,7 +512,7 @@ export function infer(t0) {
     return a.k === b.k ? null : { clash: true };
   };
   let failed = null;
-  for (const c of cons) { const e = unify(c.a, c.b); if (e) { failed = { ...c, ...e }; break; } }
+  for (let i = 0; i < cons.length; i++) { const c = cons[i], e = unify(c.a, c.b); if (e) { failed = { ...c, ...e, idx: i }; break; } }
   const full = (T) => { T = walk(T); return T.k === 'f' ? TF(full(T.a), full(T.b)) : T; };
   if (failed) { failed.ra = full(failed.a); failed.rb = full(failed.b); return { ok: false, cons, failed, nvars: nv, full, binders, freeEnv }; }
   const names = new Map(); // rename remaining variables α β γ … in order of appearance

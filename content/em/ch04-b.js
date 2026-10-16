@@ -14,15 +14,15 @@ export default {
 $$U\simeq Q\,\varphi(\mathbf R)\;-\;\mathbf p\cdot\mathbf E(\mathbf R)\;+\;\frac16\sum_{jk}\Theta_{jk}\,\partial_j\partial_k\varphi(\mathbf R)\;+\;\cdots,$$
 with $Q$, $\mathbf p$, $\Theta$ the monopole, dipole and quadrupole moments about $\mathbf R$ and $\mathbf E=-\nabla\varphi$. Each omitted term is smaller by another factor (size of cluster)/(distance to the sources of $\varphi$).`,
       idea: String.raw`Taylor-expand $\varphi(\mathbf R+\mathbf s_i)=\varphi+\mathbf s_i\!\cdot\!\nabla\varphi+\tfrac12\sum s_{ij}s_{ik}\partial_j\partial_k\varphi+\dots$ and multiply by $q_i$ and sum: the sums $\sum q_i$, $\sum q_i\mathbf s_i$ and $\sum q_is_{ij}s_{ik}$ are the moments of em-4.2 and em-4.4. Because the sources of $\varphi$ are elsewhere, $\nabla^2\varphi=0$ at the cluster (em-2.8), so the trace part of $\sum qs_js_k$ drops out and only the traceless $\Theta$, with prefactor $1/6$, survives. The dipole term is the energy $-\mathbf p\cdot\mathbf E$ whose derivative gives the torque and force of em-1.12.`,
-      caption: String.raw`Three outside charges (drag them) make a potential, drawn as a map. A cluster of four charges sits at the gold handle, and the **size** slider scales it uniformly. The right plot has the error of the three approximations (order 0 green, 1 blue, 2 orange) on log–log axes against the cluster size: each extra order steepens the line by one power of the size (slopes about 1, 2, 3), so shrinking the cluster by 10 improves the dipole truncation 100-fold. Add a net charge with the toggle and watch the order-0 term stop being the dominant contribution only for a cluster that is neutral.`,
+      caption: String.raw`Three outside charges (drag them) make a potential, drawn as a map. A cluster of four charges sits at the gold handle, and the **size** slider scales it uniformly. The right plot has the error of the three approximations (order 0 green, 1 blue, 2 orange) on log–log axes against the cluster size: each extra order steepens the line by one power of the size (slopes about 1, 2, 3), so shrinking the cluster by 10 improves the dipole truncation 100-fold. Add a net charge with the toggle: the order-0 term $Q\varphi$ then carries almost all of the energy, and the dipole term is only a correction to it; for the neutral cluster order 0 is exactly zero and the dipole term leads.`,
       scope: String.raw`Sources of $\varphi$ outside the cluster and the cluster's size smaller than the distance to them; the expansion fails if the cluster is dragged next to an outside charge. The charges are in a plane, with the true three-dimensional $1/r$ law; energies in nC·V (nJ).`,
       deps: ['em-4.2', 'em-4.4', 'em-1.12'],
       refs: ['Griffiths §4.1'],
       tags: ['energy', 'dipole'],
       viz(v) {
         const s = v.stage({ x: [-6, 6], y: [-4.2, 4.2], equal: true, height: 340, axes: false, weight: 1.1, title: 'outside charges and the cluster' });
-        const sp = v.stage({ x: [0.02, 1.6], y: [1e-8, 100], xlog: true, ylog: true, height: 340, axes: 'box', gutter: true, weight: 1, minWidth: 260, xlabel: 'cluster size (cm)', ylabel: 'error of the approximation (nJ)', title: 'error against size' });
-        const sz = v.slider('cluster size', 0.02, 1.6, 0.8, { log: true, fmt: (x) => `${v.fmt(x, 2)} cm` });
+        const sp = v.stage({ x: [0.02, 1.6], y: [1e-10, 1e3], xlog: true, ylog: true, height: 340, axes: 'box', gutter: true, weight: 1, minWidth: 260, xlabel: 'cluster size (cm)', ylabel: 'error of the approximation (nJ)', title: 'error against size' });
+        const sz = v.slider('cluster size', 0.02, 1.6, 0.3, { log: true, fmt: (x) => `${v.fmt(x, 2)} cm` });
         const net = v.toggle('cluster carries net charge', false);
         const ext = [[-3.6, 1.8, 6], [3.8, -1.4, -5], [0.5, 3.1, 4]].map(([x, y, q]) => ({ q, h: s.handle(x, y, { color: sgnCol(q), r: 8 }) }));
         const C = s.handle(-0.4, -0.6, { color: 'gold', r: 8 });
@@ -121,7 +121,7 @@ The limit of the pair $\pm p/\varepsilon$ at $\pm\varepsilon/2$, as $\varepsilon
 $$V\simeq-\frac{1}{4\pi\varepsilon_0}\,\frac{2qa^2}{r^3}\,P_2(\cos\theta),\qquad P_2(\cos\theta)=\tfrac12(3\cos^2\theta-1),$$
 and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2\theta=1/3$ ($\theta\approx54.7^\circ$ and $125.3^\circ$).`,
       idea: String.raw`The monopole moment is $-q+2q-q=0$; the dipole moment is $-q(-a)+2q\cdot0-q(a)=0$ by symmetry, so the leading surviving term of em-4.1 is $\ell=2$. Each end charge contributes $-q\,a^2P_2(\cos\theta)/r^3$ (since $P_2$ is even, $\theta\to\pi-\theta$ gives the same value) and the centre charge contributes nothing at second order, giving $-2qa^2P_2/r^3$. The structure is one dipole followed by an opposite dipole: two dipoles of opposite sign a distance $a$ apart.`,
-      caption: String.raw`Left: the field lines (they start on the central $+2q$ and end on the two $-q$) and the potential of the exact three-charge system in a plane through the axis. Right: $V\,r^3/(kqa^2)$ against the angle $\theta$ from the axis for three distances (blue shades) approaching the quadrupole prediction $-2P_2(\cos\theta)$ (green dashed); at $r=10a$ the curves are indistinguishable. The monopole and dipole readouts are exactly zero for every spacing and every $q$.`,
+      caption: String.raw`Left: the field lines (they start on the central $+2q$ and end on the two $-q$) and the potential of the exact three-charge system in a plane through the axis. Right: $V\,r^3/(kqa^2)$ against the angle $\theta$ from the axis for three distances (blue, teal, purple) approaching the quadrupole prediction $-2P_2(\cos\theta)$ (green dashed); at $r=10a$ the curves are indistinguishable. The monopole and dipole readouts are exactly zero for every spacing and every $q$.`,
       scope: String.raw`Axially symmetric about the line of charges; the plane drawn contains the axis, so the field lines are the true three-dimensional ones. The far-field formula needs $r\gg a$; the exact potential has corrections of relative order $(a/r)^2$.`,
       deps: ['em-4.4'],
       refs: ['Griffiths §3.4'],
@@ -148,7 +148,7 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
           info = { Q: m.Q, p: Math.hypot(...m.p), T: m.T[0][0], T2: m.T[1][1], rel: Math.abs((pot(src, r * Math.cos(th), r * Math.sin(th)) * r ** 3) / (KV * q * a * a) + 2 * 0.25) / 0.5, r: rs, a, q };
         });
         v.legend([['accent', 'exact, $r=3a$'], ['teal', 'exact, mid'], ['purple', 'exact, largest'], ['green', '$-2P_2(\\cos\\theta)$', { dash: true }]]);
-        v.readout(() => `$Q=${v.fix(info.Q, 3)}$, $|\\mathbf p|=${v.fix(info.p, 3)}$ (both zero). $\\Theta_{xx}=${v.fix(info.T, 2)}=-4qa^2$, $\\Theta_{yy}=\\Theta_{zz}=${v.fix(info.T2, 2)}=2qa^2$ nC·cm². At $r=${v.fix(info.r[2] / info.a, 1)}\\,a$ and $\\theta=45^\\circ$ the exact potential differs from the quadrupole formula by ${v.fix(100 * info.rel, 2)}\\%.$`);
+        v.readout(() => `$Q=${v.fix(info.Q, 3)}$, $|\\mathbf p|=${v.fix(info.p, 3)}$ (both zero). $\\Theta_{xx}=${v.fix(info.T, 2)}=-4qa^2$, $\\Theta_{yy}=\\Theta_{zz}=${v.fix(info.T2, 2)}=2qa^2$ nC·cm². At $r=${v.fix(info.r[2] / info.a, 1)}\\,a$ and $\\theta=45^\\circ$ the exact potential differs from the quadrupole formula by ${v.fix(100 * info.rel, 2)}%.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.10
@@ -186,10 +186,10 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
           sL.line(at[0].x, at[0].y, at[1].x, at[1].y, { color: 'ink', width: 4 }); sL.line(at[0].x, at[0].y, at[2].x, at[2].y, { color: 'ink', width: 4 });
           for (const a of at) { sL.dot(a.x, a.y, { r: a.r, color: sgnCol(a.q) }); sL.text(a.n, a.x, a.y, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false }); }
           if (pm > 0.03) { const len = Math.min(2, 0.6 * pm), ux = p[0] / (pm * D), uy = p[1] / (pm * D); sL.arrow(0, 0 - 0.0, ux * len, uy * len, { color: 'green', width: 3.6, head: 12 }); sL.tex('\\mathbf p', ux * len + 0.3, uy * len + 0.1, { color: 'green', size: 15 }); }
-          sL.text(`${ang.value}°`, 0, 0.45, { align: 'center', size: 11, color: 'muted' });
+          sL.text(`${ang.value}°`, 0, -0.5, { align: 'center', size: 11, color: 'muted' });
           sP.fn((a) => (2 * d * L * Math.cos((a * Math.PI) / 360)) / D, { domain: [60, 180], n: 120, color: 'accent', width: 2.4 });
           sP.hline(1.8546, { color: 'orange', dash: true, width: 1.6 }); sP.vline(104.5, { color: 'orange', dash: true, alpha: 0.6 });
-          sP.text('measured H₂O: 1.8546 D at 104.5°', 62, 2.0, { size: 11, color: 'orange' });
+          sP.text('measured H₂O: 1.8546 D at 104.5°', 112, 2.1, { size: 11, color: 'orange' });
           sP.dot(ang.value, pm, { r: 6, color: 'green' });
           info = { pm, w, p, ang: ang.value, L };
         });
@@ -238,7 +238,7 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
           }
           const scale = sh ? (KV * Q) / R : (KV * 3) / 2;
           s.heat((x, y) => Math.max(-6, Math.min(0, Math.log10(Math.abs(VA(x, y) - VB(x, y)) / scale + 1e-12))), { range: [-6, 0], cmap: 'magma', res: 3, key: 'd' + (sh ? w.map((c) => c.value).join() : dA.value + ',' + dB.value) + mode.value, alpha: 0.95 });
-          s.colorbar([-6, 0], 'magma', { pos: 'right', label: 'log₁₀ diff.', ticks: [-6, -4, -2, 0] });
+          s.colorbar([-6, 0], 'magma', { pos: 'bottom', label: 'log₁₀ diff.', ticks: [-6, -4, -2, 0] });
           s.circle(0, 0, a, { color: 'orange', width: 2, dash: true });
           const ang = Math.atan2(pr.y, pr.x), cs = Math.cos(ang), sn = Math.sin(ang);
           s.line(0, 0, 4.2 * cs, 4.2 * sn, { color: 'gold', dash: true, alpha: 0.5 });

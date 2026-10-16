@@ -38,7 +38,7 @@ where $\alpha$ is the angle between $\mathbf r$ and $\mathbf r'$. The term $\ell
           const L = Ls.value, cl = hs.map((h, k) => ({ x: h.x, y: h.y, q: q0[k] })), a = Math.max(0.2, ...cl.map((c) => Math.hypot(c.x, c.y)));
           const key = cl.map((c) => c.x.toFixed(2) + c.y.toFixed(2)).join() + L;
           s.heat((x, y) => Math.max(-6, Math.min(0, Math.log10(errAt(cl, L, x, y) + 1e-12))), { range: [-6, 0], cmap: 'magma', res: 3, key: 'e' + key, alpha: 0.95 });
-          s.colorbar([-6, 0], 'magma', { pos: 'right', label: 'log₁₀ error', ticks: [-6, -4, -2, 0] });
+          s.colorbar([-6, 0], 'magma', { pos: 'bottom', label: 'log₁₀ error', ticks: [-6, -4, -2, 0] });
           s.circle(0, 0, a, { color: 'orange', width: 2, dash: true });
           s.tex('a', a * 0.72, -a * 0.72 - 0.25, { color: 'orange', size: 13 });
           cl.forEach((c, k) => { hs[k].color = sgnCol(c.q); });
@@ -201,7 +201,7 @@ The $\ell=2$ term of the potential is $V_2=\dfrac1{4\pi\varepsilon_0}\dfrac{1}{2
       name: 'Multipole fields fall off ever faster',
       statement: String.raw`Far from the sources, the field of the $\ell$-th multipole falls off as $r^{-(\ell+2)}$ and its potential as $r^{-(\ell+1)}$: monopole $E\sim Q/r^2$, dipole $E\sim p/r^3$, quadrupole $E\sim\Theta/r^4$. On a log–log plot the slopes are $-2,-3,-4,\dots$. A system whose lowest non-vanishing moment is of order $\ell$ has far field $\propto r^{-(\ell+2)}$; with mixed moments the field changes from the $\ell=0$ slope to the $\ell=1$ slope and so on as $r$ grows, with crossovers at $r\sim p/Q$, $\Theta/p$, …`,
       idea: String.raw`Every term in the expansion of em-4.1 has the form $r'^{\ell}P_\ell/r^{\ell+1}$ with an angular factor independent of $r$, so the potential of order $\ell$ is exactly $\propto r^{-(\ell+1)}$; the field is a gradient (em-2.4), one more power of $1/r$. Intuitively each higher multipole is a pair of the previous order with opposite signs displaced by a small distance, and the two fields cancel to leading order, leaving a difference that is smaller by a factor $d/r$ (em-1.11 for the dipole as two charges).`,
-      caption: String.raw`Three unit sources on the $x$ axis: a point charge ($1$ nC), a dipole ($\pm1$ nC a distance $d$ apart) and a linear quadrupole ($-1,+2,-1$ nC spaced $d$), each with a weight slider; the field is evaluated along the axis. Left: $|E|$ on log–log axes for each source (dashed) and for their sum (ink); right: the local slope $d\ln|E|/d\ln r$ with guide lines at $-2$, $-3$, $-4$. Close in, the sum follows whichever source is largest; far out, the monopole takes over wherever it is present. Set the monopole weight to zero and the dipole is the winner at infinity; kill both and only the $r^{-4}$ quadrupole remains.`,
+      caption: String.raw`Three unit sources on the $x$ axis: a point charge ($1$ nC), a dipole ($\pm1$ nC a distance $d$ apart) and a linear quadrupole ($-1,+2,-1$ nC spaced $d$), each with a weight slider; the field is evaluated along the axis. Left: $|E|$ on log–log axes for each source (dashed) and for their sum (ink); right: the local slope $d\ln|E|/d\ln r$ with guide lines at $-2$, $-3$, $-4$. Close in, the sum follows whichever source is largest; far out, the lowest multipole present takes over. The monopole starts weak (weight 0.03), so the slope runs from $-4$ through $-3$ to $-2$ as $r$ grows; raise its weight and the monopole wins earlier, set it to zero and the dipole wins at infinity, kill both and only the $r^{-4}$ quadrupole remains.`,
       scope: String.raw`Field on the axis of the linear arrangements, computed exactly from the point charges (no multipole approximation). The slopes $-2,-3,-4$ are reached only for $r\gg d$; inside $r\approx d$ the exact field is that of separate charges. Arbitrary directions give the same powers.`,
       deps: ['em-4.1'],
       refs: ['Griffiths §3.4'],
@@ -209,7 +209,7 @@ The $\ell=2$ term of the potential is $V_2=\dfrac1{4\pi\varepsilon_0}\dfrac{1}{2
       viz(v) {
         const sp = v.stage({ x: [0.2, 100], y: [1e-7, 1e6], xlog: true, ylog: true, height: 350, axes: 'box', gutter: true, weight: 1.1, minWidth: 270, xlabel: 'distance $r$ along the axis (cm)', ylabel: '$|E|$ (V/cm)', title: 'field strength' });
         const ss = v.stage({ x: [0.2, 100], y: [-5.5, -1], xlog: true, height: 350, axes: 'box', gutter: true, weight: 0.9, minWidth: 250, xlabel: 'distance $r$ (cm)', ylabel: 'slope $d\\ln|E|/d\\ln r$', title: 'local power law', yticks: [-5, -4, -3, -2, -1] });
-        const w0 = v.slider('monopole weight', 0, 1, 1, { step: 0.05 }), w1 = v.slider('dipole weight', 0, 1, 1, { step: 0.05 }), w2 = v.slider('quadrupole weight', 0, 1, 1, { step: 0.05 });
+        const w0 = v.slider('monopole weight', 0, 1, 0.03, { step: 0.01 }), w1 = v.slider('dipole weight', 0, 1, 1, { step: 0.05 }), w2 = v.slider('quadrupole weight', 0, 1, 1, { step: 0.05 });
         const dS = v.slider('spacing $d$', 0.2, 2, 1, { step: 0.05, fmt: (x) => `${x.toFixed(2)} cm` });
         const rS = v.slider('probe distance $r$', 0.2, 100, 5, { log: true, fmt: (x) => `${v.fmt(x, 3)} cm` });
         const srcs = (d) => [[[0, 1]], [[-d / 2, -1], [d / 2, 1]], [[-d, -1], [0, 2], [d, -1]]];
@@ -239,7 +239,7 @@ The $\ell=2$ term of the potential is $V_2=\dfrac1{4\pi\varepsilon_0}\dfrac{1}{2
 $$V(r,\theta,\varphi)=\frac1{\varepsilon_0}\sum_{\ell=0}^\infty\sum_{m=-\ell}^{\ell}\frac1{2\ell+1}\,\frac{q_{\ell m}}{r^{\ell+1}}\,Y_{\ell m}(\theta,\varphi),\qquad q_{\ell m}=\int r'^{\,\ell}\,Y_{\ell m}(\theta',\varphi')\,\rho(\mathbf r')\,d\tau',$$
 with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ numbers $q_{\ell m}$ are the multipole moments of order $\ell$. Rotating the charge system mixes the $q_{\ell m}$ with the same $\ell$ among themselves and leaves $\sum_mq_{\ell m}^2$ unchanged.`,
       idea: String.raw`The addition theorem for spherical harmonics, $P_\ell(\cos\alpha)=\frac{4\pi}{2\ell+1}\sum_mY_{\ell m}(\theta,\varphi)Y_{\ell m}(\theta',\varphi')$, splits the Legendre term of em-4.1 into a product of a function of the field point and a function of the source point; the latter integrates to $q_{\ell m}$. A rotation acts on the $2\ell+1$ harmonics of one $\ell$ by an orthogonal matrix (the harmonics of a given $\ell$ form an invariant subspace, as in the separation of variables of em-3.15), so the length of the vector $(q_{\ell,-\ell},\dots,q_{\ell\ell})$ cannot change.`,
-      caption: String.raw`Six charges in space (left: 3D view of the cluster, drag to rotate the view; the gold arrow is the probe direction) are rotated rigidly with the two sliders (about $z$, then about $y$). The bars show the real moments $q_{\ell m}$ for $\ell=0\ldots3$, $m=-\ell\ldots\ell$ (left to right within each group); the lower bars the power $\sum_mq_{\ell m}^2$ of each order. Rotating shuffles the heights within every group but leaves $q_{00}$ and the power bars exactly fixed. The readout compares the exact potential at the probe point with the expansion cut at $\ell\le L$.`,
+      caption: String.raw`Six charges in space (left: 3D view of the cluster, drag to rotate the view; the gold arrow is the probe direction) are rotated rigidly with the two sliders (about $z$, then about $y$). The bars show the real moments $q_{\ell m}$ for $\ell=0\ldots3$, $m=-\ell\ldots\ell$ (left to right within each group); the right-hand panel the power $\sum_mq_{\ell m}^2$ of each order. Rotating shuffles the heights within every group but leaves $q_{00}$ and the power bars exactly fixed. The readout compares the exact potential at the probe point with the expansion cut at $\ell\le L$.`,
       scope: String.raw`Valid outside a sphere containing all of the charge. The harmonics are real orthonormal ($\cos m\varphi$ for $m>0$, $\sin|m|\varphi$ for $m<0$, no Condon–Shortley phase), so the numerical values of $q_{\ell m}$ differ from the complex $q_{\ell m}$ of other texts by normalisation factors, though the power per order is the same up to those factors. The rotation here is of the charges, with the field point fixed.`,
       credit: 'Laplace, 1782 (harmonics); Gauss, 1839 (spherical-harmonic potential theory)',
       verify: true,
@@ -249,7 +249,8 @@ with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ number
       viz(v) {
         const base = [[0.6, 0.2, 0.3, 2], [-0.5, 0.4, -0.2, -1], [0.1, -0.7, 0.5, 1.5], [-0.3, -0.2, -0.7, -1.2], [0.7, -0.4, -0.5, 0.8], [-0.4, 0.6, 0.6, -0.6]];
         const s3 = v.stage3d({ range: 1.3, height: 330, yaw: -0.7, pitch: 0.35, axes: false, weight: 0.8, minWidth: 240, title: 'the cluster (rotated)' });
-        const sB = v.stage({ x: [-0.5, 18.5], y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1.2, minWidth: 300, xlabel: '$\\ell=0\\;\\;|\\;\\;\\ell=1\\;\\;|\\;\\;\\ell=2\\;\\;|\\;\\;\\ell=3$ (bars: $m=-\\ell\\ldots\\ell$)', ylabel: '$q_{\\ell m}$', xticks: [], title: 'moments $q_{\\ell m}$ and power per order' });
+        const sB = v.stage({ x: [-0.5, 17.3], y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1.1, minWidth: 280, xlabel: '$\\ell=0\\ldots3$, each group $m=-\\ell\\ldots\\ell$', ylabel: '$q_{\\ell m}$', xticks: [], title: 'moments $q_{\\ell m}$' });
+        const sW = v.stage({ x: [-0.6, 3.6], y: [0, 1], height: 330, axes: 'box', gutter: true, weight: 0.6, minWidth: 200, xlabel: 'order $\\ell$', ylabel: '$\\sum_mq_{\\ell m}^2$', xticks: [0, 1, 2, 3], title: 'power per order'  });
         const az = v.slider('rotate about $z$', 0, 360, 0, { step: 1, fmt: (x) => `${x}°` }), tilt = v.slider('rotate about $y$', 0, 180, 0, { step: 1, fmt: (x) => `${x}°` });
         const Ls = v.slider('keep orders $\\ell\\le L$', 0, 3, 2, { int: true });
         const pn = [3, 2, 4], pn_r = Math.hypot(...pn), cols = ['ink', 'orange', 'green', 'purple'];
@@ -265,13 +266,13 @@ with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ number
           for (const [p, q] of [[[1.1, 0, 0], 'x'], [[0, 1.1, 0], 'y'], [[0, 0, 1.1], 'z']]) { s3.line([0, 0, 0], p, { color: 'faint' }); s3.text(q, p, { color: 'muted' }); }
           for (const c of cl) { s3.line([0, 0, 0], [c.x, c.y, c.z], { color: 'faint', alpha: 0.4 }); s3.dot([c.x, c.y, c.z], { r: 6 + 2.5 * Math.abs(c.q), color: sgnCol(c.q) }); }
           s3.arrow([0, 0, 0], [(pn[0] / pn_r) * 1.25, (pn[1] / pn_r) * 1.25, (pn[2] / pn_r) * 1.25], { color: 'gold', width: 2.6 });
-          sB.setView([-0.5, 18.5], [-ymax * 1.5, ymax]);
-          const pw = [];
+          sB.setView([-0.5, 17.3], [-ymax, ymax]);
           for (const [l, m, x] of pos) { const q = qlm(cl, l, m); sB.rect(x - 0.4, 0, x + 0.4, q, { color: cols[l], fill: cols[l], fillAlpha: 0.5 }); }
-          // power bars drawn below the axis, scaled to fit the lower half
-          const pm = Math.max(...P0) * 1.0;
-          for (let l = 0; l <= 3; l++) { let t = 0; for (let m = -l; m <= l; m++) t += qlm(cl, l, m) ** 2; pw.push(t); const x0 = pos.find((p) => p[0] === l)[2], x1 = pos.filter((p) => p[0] === l).slice(-1)[0][2]; sB.rect(x0 - 0.4, -ymax * 0.2, x1 + 0.4, -ymax * 0.2 - (ymax * 1.1 * t) / pm, { color: cols[l], fill: cols[l], fillAlpha: 0.3, width: 2 }); sB.tex(`\\textstyle\\sum_m q^2=${v.fix(t, 2)}`, (x0 + x1) / 2, -ymax * 0.2 - (ymax * 1.1 * t) / pm - 0.12 * ymax, { color: cols[l], size: 11, align: 'center' }); sB.tex(`\\ell=${l}`, (x0 + x1) / 2, ymax * 0.93, { color: cols[l], size: 13, align: 'center' }); }
+          for (let l = 0; l <= 3; l++) { const xs = pos.filter((p) => p[0] === l).map((p) => p[2]); sB.tex(`\\ell=${l}`, (xs[0] + xs[xs.length - 1]) / 2, ymax * 0.9, { color: cols[l], size: 13, align: 'center' }); }
           sB.hline(0, { color: 'faint' });
+          const pw = [], pm = Math.max(...P0);
+          sW.setView([-0.6, 3.6], [0, pm * 1.25]);
+          for (let l = 0; l <= 3; l++) { let t = 0; for (let m = -l; m <= l; m++) t += qlm(cl, l, m) ** 2; pw.push(t); sW.rect(l - 0.35, 0, l + 0.35, t, { color: cols[l], fill: cols[l], fillAlpha: 0.45, width: 2 }); sW.text(v.fix(t, 2), l, t + pm * 0.06, { align: 'center', size: 12, color: cols[l] }); }
           let V = 0; for (let l = 0; l <= L; l++) { let t = 0; for (let m = -l; m <= l; m++) t += qlm(cl, l, m) * realY(l, m, ...pn); V += ((4 * Math.PI) / (2 * l + 1)) * t / Math.pow(pn_r, l + 1); }
           info = { Vex: pot(cl, ...pn.slice(0, 2), pn[2]), Vl: KV * V, pw, L };
         });
