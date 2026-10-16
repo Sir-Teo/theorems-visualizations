@@ -205,7 +205,7 @@ export function helmPair(f1, a1, f2, a2, b0 = 30, beta = 0.121) {
 
 /**
  * A simple harmonic-template ("virtual pitch") model, in the spirit of Terhardt (1974): for candidate fundamentals f0 (subharmonics of the
- * partials, down to fmin), score how much amplitude lies within ~σ cents of an integer multiple of f0, weighting the k-th harmonic by 1/√k;
+ * partials, down to fmin), score how much amplitude lies within ~σ cents of an integer multiple of f0, weighting the k-th harmonic by k^−0.3;
  * return the best score (0–1) and its f0. ILLUSTRATIVE: a toy measure, not a calibrated perceptual model.
  */
 export function harmonicity(P, { sigma = 12, fmin = 40, kmax = 16 } = {}) {
@@ -215,7 +215,7 @@ export function harmonicity(P, { sigma = 12, fmin = 40, kmax = 16 } = {}) {
     let sc = 0;
     for (const [f, a] of P) {
       const h = Math.max(1, Math.round(f / f0)), dc = 1200 * Math.log2(f / (h * f0));
-      sc += (a * Math.exp(-0.5 * (dc / sigma) ** 2)) / Math.sqrt(h);
+      sc += (a * Math.exp(-0.5 * (dc / sigma) ** 2)) / h ** 0.3;
     }
     sc /= tot;
     if (sc > best + 1e-9) { best = sc; bf = f0; }

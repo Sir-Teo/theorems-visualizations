@@ -160,7 +160,7 @@ $$\|\mu-\nu\|=\frac12\sum_{z\in S}|\mu(z)-\nu(z)|=\sup_{A\subset S}|\mu(A)-\nu(A
       statement: String.raw`(i) $d(\mu,\nu)=\|\mu-\nu\|$ is a metric on the probability measures on $\Z$.
 (ii) $\|\mu_n-\mu\|\to0$ if and only if $\mu_n(x)\to\mu(x)$ for every $x\in\Z$, which is equivalent to $\mu_n\Rightarrow\mu$.`,
       idea: String.raw`(i) Symmetry and $d=0\iff\mu=\nu$ are clear; the triangle inequality follows from the one for real numbers, summed over $x$. (ii) Pointwise convergence is necessary. Conversely, since both are probability measures, $\sum_x|\mu_n(x)-\mu(x)|=2\sum_x(\mu(x)-\mu_n(x))^+$, and the summands are dominated by $\mu(x)$, so dominated convergence sends the sum to $0$. Total mass $1$ for the limit is essential: without it mass can escape to infinity.`,
-      caption: String.raw`Left: $\mu_n$ (bars) and the limit $\mu$ (green) with the pointwise errors (red stems). Right: the total variation distance (accent) and the largest pointwise error (orange) against $n$, on log axes. For Binomial$(n,\lambda/n)\to$ Poisson$(\lambda)$ both vanish together. Switch to $\mu_n=\frac12\delta_0+\frac12\delta_n$: every point mass converges (to $\frac12\delta_0$), but half the mass runs off to infinity and the total variation to $\delta_0$ stays at $\frac12$.`,
+      caption: String.raw`Left: $\mu_n$ (bars) and the limit $\mu$ (green) with the pointwise errors (red stems). Right: the total variation distance (accent) and the largest pointwise error on the window $x\le12$ (orange) against $n$, on log axes. For Binomial$(n,\lambda/n)\to$ Poisson$(\lambda)$ both vanish together. Switch to $\mu_n=\frac12\delta_0+\frac12\delta_n$: every point mass converges (to $\frac12\delta_0$), but half the mass runs off to infinity and the total variation to $\delta_0$ stays at $\frac12$.`,
       deps: ['prob-3.6.3a', 'prob-1.5.8'],
       tags: ['metrics'],
       viz(v) {
@@ -172,7 +172,7 @@ $$\|\mu-\nu\|=\frac12\sum_{z\in S}|\mu(z)-\nu(z)|=\sup_{A\subset S}|\mu(A)-\nu(A
         const R = v.stage({ x: [2, 500], xlog: true, y: [1e-4, 1], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: 'distance and pointwise error' });
         const law = (md, n) => { if (md === 'bin') return binomPmf(M, n, lam / n); const a = new Float64Array(n + 1); a[0] += 0.5; a[n] += 0.5; return a; };
         const lim = (md) => (md === 'bin' ? poisPmf(lam, 600) : Float64Array.from({ length: 601 }, (_, k) => (k === 0 ? 1 : 0)));
-        const errs = (md, n) => { const a = law(md, n), b = lim(md), pw = md === 'esc' ? Float64Array.from(b, (x) => x / 2) : b; let mx = 0; for (let k = 0; k <= 600; k++) mx = Math.max(mx, Math.abs((a[k] || 0) - pw[k])); return [tvd(a, b), mx]; };
+        const errs = (md, n) => { const a = law(md, n), b = lim(md), pw = md === 'esc' ? Float64Array.from(b, (x) => x / 2) : b; let mx = 0; for (let k = 0; k <= 12; k++) mx = Math.max(mx, Math.abs((a[k] || 0) - pw[k])); return [tvd(a, b), mx]; };
         let cache = null, st = null;
         v.render(() => {
           const md = mode.value, n = nS.value;
@@ -188,11 +188,11 @@ $$\|\mu-\nu\|=\frac12\sum_{z\in S}|\mu(z)-\nu(z)|=\sup_{A\subset S}|\mu(A)-\nu(A
           R.path(cache.p, { color: 'orange', width: 1.8 });
           const [d, p] = errs(md, n);
           R.dot(n, d, { r: 5, color: 'gold' });
-          v.legend([['accent', '$\\|\\mu_n-\\mu\\|$'], ['orange', '$\\max_x|\\mu_n(x)-\\mu(x)|$'], ['red', 'pointwise errors'], ['green', 'limit']]);
+          v.legend([['accent', '$\\|\\mu_n-\\mu\\|$'], ['orange', '$\\max_{x\\le12}|\\mu_n(x)-\\mu(x)|$'], ['red', 'pointwise errors'], ['green', 'limit']]);
           const a2 = law(md, 2 * n);
           st = { md, n, d, p, tri: [tvd(a, a2), tvd(a2, b)] };
         });
-        v.readout(() => st && (st.md === 'bin' ? `$n=${st.n}$: $\\|\\mu_n-\\mu\\|=${v.fix(st.d, 5)}$, largest pointwise error $${v.fix(st.p, 5)}$. Triangle inequality: $${v.fix(st.d, 5)}\\le\\|\\mu_n-\\mu_{2n}\\|+\\|\\mu_{2n}-\\mu\\|=${v.fix(st.tri[0], 5)}+${v.fix(st.tri[1], 5)}$.` : `$n=${st.n}$: pointwise errors against $\\frac12\\delta_0$ are $${v.fix(st.p, 4)}$ off $x=n$, but $\\|\\mu_n-\\delta_0\\|=${v.fix(st.d, 3)}$ for every $n$: the pointwise limit is not a probability measure.`));
+        v.readout(() => st && (st.md === 'bin' ? `$n=${st.n}$: $\\|\\mu_n-\\mu\\|=${v.fix(st.d, 5)}$, largest pointwise error $${v.fix(st.p, 5)}$. Triangle inequality: $${v.fix(st.d, 5)}\\le\\|\\mu_n-\\mu_{2n}\\|+\\|\\mu_{2n}-\\mu\\|=${v.fix(st.tri[0], 5)}+${v.fix(st.tri[1], 5)}$.` : `$n=${st.n}$: largest pointwise error against $\\frac12\\delta_0$ on $x\\le12$ is $${v.fix(st.p, 4)}$ (it vanishes once $n>12$), but $\\|\\mu_n-\\delta_0\\|=${v.fix(st.d, 3)}$ for every $n$: the pointwise limit is not a probability measure.`));
       },
     },
     {
@@ -209,7 +209,7 @@ $$\|\mu_1\times\mu_2-\nu_1\times\nu_2\|\le\|\mu_1-\nu_1\|+\|\mu_2-\nu_2\|.$$`,
         const a1 = v.slider('$a_1$', 0.2, 5, 1.5, { step: 0.05 }), b1 = v.slider('$b_1$', 0.2, 5, 2.2, { step: 0.05 });
         const a2 = v.slider('$a_2$', 0.2, 5, 3, { step: 0.05 }), b2 = v.slider('$b_2$', 0.2, 5, 2.5, { step: 0.05 });
         const K = 9;
-        const G = v.stage({ x: [-0.7, 13.2], y: [-0.7, 13.2], equal: true, height: 400, weight: 1.3, axes: false, title: 'signed differences on $\\{0,\\dots,9\\}^2$' });
+        const G = v.stage({ x: [-0.9, 13.4], y: [-0.9, 13.1], equal: true, height: 400, weight: 1.3, axes: false, title: 'signed differences on $\\{0,\\dots,9\\}^2$' });
         const B = v.stage({ x: [0, 3], y: [0, 1], height: 400, axes: 'box', gutter: true, title: 'distances', xticks: [[0.75, 'marginals'], [2.25, 'product']] });
         let st = null;
         v.render(() => {
@@ -227,7 +227,7 @@ $$\|\mu_1\times\mu_2-\nu_1\times\nu_2\|\le\|\mu_1-\nu_1\|+\|\mu_2-\nu_2\|.$$`,
             G.rect(10.2, k - 0.4, 10.2 + m2[k] * sc, k - 0.02, { fill: 'blue', fillAlpha: 0.7, stroke: false });
             G.rect(10.2, k + 0.02, 10.2 + n2[k] * sc, k + 0.4, { fill: 'red', fillAlpha: 0.7, stroke: false });
           }
-          G.text('pair 1 (x)', 4.5, 13.1, { size: 11, color: 'ink' }); G.text('pair 2 (y)', 11.6, 10.6, { size: 11, color: 'ink', align: 'center' });
+          G.text('top: pair 1 (x)', 10.3, 12.2, { size: 11, color: 'ink', align: 'left' }); G.text('right: pair 2 (y)', 10.3, 11.3, { size: 11, color: 'ink', align: 'left' });
           const d1 = tvd(m1, n1), d2 = tvd(m2, n2);
           let s = 0, tm = 0, tn = 0; for (let x = 0; x <= 60; x++) for (let y = 0; y <= 60; y++) { const p = m1[x] * m2[y], q = n1[x] * n2[y]; s += Math.abs(p - q); tm += p; tn += q; }
           const dp = 0.5 * (s + Math.max(0, 1 - tm) + Math.max(0, 1 - tn));
@@ -255,8 +255,8 @@ $$\|\mu_1*\mu_2-\nu_1*\nu_2\|\le\|\mu_1\times\mu_2-\nu_1\times\nu_2\|.$$`,
       viz(v) {
         const M = v.M;
         const p1 = v.slider('$p_1$', 0.02, 0.9, 0.35, { step: 0.01 }), p2 = v.slider('$p_2$', 0.02, 0.9, 0.5, { step: 0.01 });
-        const K = 7;
-        const G = v.stage({ x: [-0.8, 7.6], y: [-0.8, 7.6], equal: true, height: 360, axes: false, title: 'product difference and anti-diagonals' });
+        const K = 5;
+        const G = v.stage({ x: [-0.9, 5.7], y: [-0.9, 5.7], equal: true, height: 360, axes: false, title: 'product difference and anti-diagonals' });
         const C = v.stage({ x: [-0.6, 9.6], y: [-0.2, 0.2], height: 360, weight: 1.1, axes: 'box', gutter: true, xlabel: '$k$', title: 'convolution difference = diagonal sums' });
         let st = null;
         v.render(() => {
@@ -266,7 +266,7 @@ $$\|\mu_1*\mu_2-\nu_1*\nu_2\|\le\|\mu_1\times\mu_2-\nu_1\times\nu_2\|.$$`,
           for (let x = 0; x <= K; x++) for (let y = 0; y <= K; y++) { const u = clampN(D(x, y) / mx, -1, 1); G.rect(x - 0.46, y - 0.46, x + 0.46, y + 0.46, { fill: v.diverge(u, 'red', 'blue'), fillAlpha: 1, stroke: false, radius: 2 }); }
           for (let k = 1; k <= 2 * K; k++) G.line(Math.max(-0.5, k - K - 0.5) - 0.0, Math.min(K + 0.5, k + 0.5), Math.min(K + 0.5, k + 0.5), Math.max(-0.5, k - K - 0.5), { color: 'faint', width: 1 });
           for (let k = 0; k <= K; k++) { G.text(String(k), k, -0.75, { size: 10, color: 'muted', baseline: 'top' }); G.text(String(k), -0.75, k, { size: 10, color: 'muted', align: 'right' }); }
-          G.text('x', 7.5, -0.75, { size: 11, color: 'muted', baseline: 'top' }); G.text('y', -0.75, 7.5, { size: 11, color: 'muted', align: 'right' });
+          G.text('x', 5.5, -0.75, { size: 11, color: 'muted', baseline: 'top' }); G.text('y', -0.75, 5.5, { size: 11, color: 'muted', align: 'right' });
           const cm = conv(m1, m2), cn = conv(n1, n2), cd = Array.from({ length: 10 }, (_, k) => (cm[k] || 0) - cn[k]);
           const yr = Math.max(0.02, ...cd.map(Math.abs)) * 1.25; C.setView(null, [-yr, yr]);
           C.hline(0, { color: 'muted', width: 1 });
@@ -292,7 +292,7 @@ $$\sup_A\big|P(S_n\in A)-P(\text{Poisson}(\lambda_n)\in A)\big|\le\sum_{m=1}^np_
       tags: ['poisson', 'metrics'],
       viz(v) {
         const M = v.M;
-        const lS = v.slider('$\\lambda$', 0.2, 5, 1, { step: 0.1 });
+        const lS = v.slider('$\\lambda$', 0.2, 5, 2, { step: 0.1 });
         const L = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: '$p$', title: '$\\|\\mathrm{Bernoulli}(p)-\\mathrm{Poisson}(p)\\|$' });
         const R = v.stage({ x: [1, 2000], xlog: true, y: [1e-5, 10], ylog: true, height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: '$n$', title: 'Binomial$(n,\\lambda/n)$ vs Poisson$(\\lambda)$' });
         const H = L.handle(0.5, 0.5 * (1 - Math.exp(-0.5)), { color: 'gold', label: 'p', labelPos: 'nw', constrain: (x) => { const p = clampN(x, 0.005, 1); return [p, p * (1 - Math.exp(-p))]; } });
@@ -374,7 +374,7 @@ so $S_n\Rightarrow$ Poisson$(1)$, and $|P(S_n=0)-e^{-1}|\le\frac1{(n+1)!}\big(1-
         const nS = v.slider('$n$ boxes', 10, 900, 100, { int: true, log: true });
         const lS = v.slider('$\\lambda$', 0.2, 5, 1.5, { step: 0.1 });
         let seed = 1; v.button('Throw again', () => { seed++; });
-        const L = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 330, axes: false, title: 'one throw' });
+        const L = v.stage({ x: [-0.04, 1.04], y: [-0.04, 1.04], equal: true, height: 330, axes: false, title: 'one throw' });
         const R = v.stage({ x: [-0.6, 10.6], y: [0, 0.6], height: 330, weight: 1.25, axes: 'box', gutter: true, xlabel: '$m$ = number of empty boxes', title: 'law of the number of empty boxes' });
         const exactEmpty = (n, r, K) => {
           let lo = 0, p = new Float64Array([1]); // p[i] = P(occupied = lo + i)
@@ -462,8 +462,8 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
         const nS = v.slider('$n$ slots', 1, 500, 12, { int: true, log: true });
         const lS = v.slider('$\\lambda t$', 0.5, 8, 3, { step: 0.1 });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const T = v.stage({ x: [0, 1], y: [0, 24.5], height: 260, full: true, axes: 'box', gutter: true, xlabel: 'time $s/t$', title: 'seeded runs', yticks: [] });
-        const B = v.stage({ x: [-0.6, 14.6], y: [0, 0.4], height: 260, full: true, axes: 'box', gutter: true, xlabel: '$k$', title: 'law of $N(0,t)$' });
+        const T = v.stage({ x: [0, 1], y: [0, 24.5], height: 230, full: true, axes: 'box', gutter: true, xlabel: 'time $s/t$', title: 'seeded runs', yticks: [] });
+        const B = v.stage({ x: [-0.6, 14.6], y: [0, 0.4], height: 230, full: true, axes: 'box', gutter: true, xlabel: '$k$', title: 'law of $N(0,t)$' });
         let st = null;
         v.render(() => {
           const pair = md.value === 'pair', n = nS.value, mu = lS.value, p = Math.min(1, pair ? mu / (2 * n) : mu / n), r = v.rng(seed * 19 + 3);
@@ -472,10 +472,10 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
           for (let row = 0; row < 24; row++) {
             let c = 0; const y = 23.6 - row;
             for (let j = 0; j < n; j++) if (r() < p) { const x = (j + 0.5) / n; if (pair) { T.dot(x, y + 0.18, { r: 2.6, color: 'red' }); T.dot(x, y - 0.18, { r: 2.6, color: 'red' }); c += 2; } else { T.dot(x, y, { r: 3, color: 'accent' }); c++; } }
-            totals.push(c); T.text(String(c), 1, y, { dx: 12, size: 10, color: 'muted', align: 'left' });
+            totals.push(c);
           }
           const K = 40, bn = binomPmf(M, n, p), law = new Float64Array(K + 1); for (let k = 0; k <= n; k++) { const idx = pair ? 2 * k : k; if (idx <= K) law[idx] += bn[k]; }
-          const P = poisPmf(mu, K), Kd = Math.min(K, Math.ceil(mu + 5 * Math.sqrt(2 * mu) + 2));
+          const P = poisPmf(mu, K), Kd = Math.min(K, Math.ceil(mu + 4 * Math.sqrt(pair ? 2 * mu : mu) + 2));
           B.setView([-0.6, Kd + 0.6], [0, Math.max(...law, ...P) * 1.15]);
           pmfBars(B, law, Kd, { w: 0.6, color: pair ? 'red' : 'accent' });
           pmfDots(B, P, Kd, 'green', 0, 4.5);
@@ -565,8 +565,8 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
           const N = NL[nl.value], Y = YL[yl.value], r = v.rng(seed * 29 + 11), xs = [];
           for (let i = 0; i < 6000; i++) { const n = N.draw(r); let s = 0; for (let j = 0; j < n; j++) s += Y.draw(r); xs.push(s); }
           const mE = mean(xs), vE = varr(xs), mT = N.m * Y.m, a = N.m * Y.v, b = N.v * Y.m * Y.m;
-          const hi = Math.max(10, Math.ceil(M_q(xs, 0.995))); L.setView([0, hi], null);
-          const H = v.M.histogram(xs, { bins: Array.from({ length: 41 }, (_, i) => (hi * i) / 40) });
+          const hi = Math.max(10, Math.ceil(M_q(xs, 0.995))); L.setView([-0.5, hi], null);
+          const disc = yl.value === 'die', H = v.M.histogram(xs, { bins: disc ? Array.from({ length: hi + 2 }, (_, i) => i - 0.5) : Array.from({ length: 41 }, (_, i) => (hi * i) / 40) });
           L.setView(null, [0, Math.max(...H.density) * 1.15]);
           L.hist(H, { density: true, color: 'accent', fillAlpha: 0.35, width: 1 });
           L.vline(mT, { color: 'green', width: 2, dash: [6, 4] }); L.vline(mE, { color: 'gold', width: 1.5 });
@@ -597,7 +597,7 @@ The joint law factors, so the counts are independent Poissons; independent incre
         const pS = v.slider('$p$ = P(red)', 0.05, 0.95, 0.4, { step: 0.01 });
         const fix = v.toggle('fix the total $N(10)$', false);
         let seed = 1; v.button('Resample', () => { seed++; });
-        const T = v.stage({ x: [0, 10], y: [-0.5, 3.5], height: 330, weight: 1.3, axes: 'box', gutter: true, xlabel: '$t$', title: 'thinning one path', yticks: [[3, 'all'], [2, 'red'], [1, 'blue']] });
+        const T = v.stage({ x: [0, 10], y: [0.5, 3.5], height: 330, weight: 1.3, axes: 'box', gutter: true, xlabel: '$t$', title: 'thinning one path', yticks: [[3, 'all'], [2, 'red'], [1, 'blue']] });
         const S = v.stage({ x: [0, 30], y: [0, 30], height: 330, axes: 'box', gutter: true, xlabel: 'red count', ylabel: 'blue count', title: '1500 paths' });
         let st = null;
         v.render(() => {
@@ -609,7 +609,8 @@ The joint law factors, so the counts are independent Poissons; independent incre
           for (let i = 0; i < 1500; i++) { const n = fix.value ? n0 : samplePois(r2, lam * Tm); let k = 0; for (let j = 0; j < n; j++) if (r2() < p) k++; R.push(k); B.push(n - k); }
           const top = Math.max(10, Math.ceil(Math.max(...R, ...B) * 1.05)); S.setView([-0.5, top], [-0.5, top]);
           const rj = v.rng(5); R.forEach((x, i) => S.dot(x + (rj() - 0.5) * 0.6, B[i] + (rj() - 0.5) * 0.6, { r: 2, color: 'purple', alpha: 0.35 }));
-          S.dot(lam * p * Tm, lam * (1 - p) * Tm, { r: 6, color: 'gold', label: '$(\\lambda pt,\\lambda(1-p)t)$', labelPos: 'ne' });
+          S.dot(lam * p * Tm, lam * (1 - p) * Tm, { r: 6, color: 'gold' });
+          S.text('(λpt, λ(1−p)t)', lam * p * Tm, lam * (1 - p) * Tm, { dx: 12, dy: -14, align: 'left', size: 12, color: 'ink', plate: true });
           v.legend([['red', 'red arrivals'], ['blue', 'blue arrivals'], ['purple', '(red, blue) counts', { dot: true }]]);
           st = { rho: corr(R, B), mr: mean(R), vr: varr(R), mb: mean(B), lam, p, fix: fix.value, n0 };
         });
@@ -647,6 +648,7 @@ The joint law factors, so the counts are independent Poissons; independent incre
           L.fn((s) => lam * pf(s), { color: 'accent', width: 2.4 });
           const r1 = v.rng(seed * 43 + 1);
           for (const t of arrivals(r1, lam, 10)) { const keep = r1() < pf(t); L.dot(t, -0.5, { r: 3.4, color: keep ? 'green' : 'faint' }); }
+          L.text('one path:', 0.1, -0.5, { dy: -14, size: 11, color: 'muted', align: 'left' });
           const integ = (() => { let s = 0; for (let i = 0; i < 1000; i++) s += pf((i + 0.5) / 100) / 100; return s; })(), mu = lam * integ;
           const P = poisPmf(mu, 60), Kd = Math.max(8, Math.min(40, Math.ceil(mu + 4 * Math.sqrt(mu) + 2)));
           const emp = new Float64Array(Kd + 1); kept.forEach((k) => { if (k <= Kd) emp[k] += 1 / kept.length; });
@@ -745,7 +747,7 @@ $$P\big(N(s)=m\mid N(t)=n\big)=\binom nm\Big(\frac st\Big)^m\Big(1-\frac st\Big)
 $$(V_1^n,\dots,V_n^n)\overset d=\Big(\frac{T_1}{T_{n+1}},\dots,\frac{T_n}{T_{n+1}}\Big).$$
 Equivalently, the $n+1$ spacings of $n$ sorted uniforms have the law of $(\xi_1,\dots,\xi_{n+1})/(\xi_1+\dots+\xi_{n+1})$.`,
       idea: String.raw`Change variables $v_i=t_i/t_{n+1}$ ($i\le n$), $v_{n+1}=t_{n+1}$; the Jacobian is $v_{n+1}^n$. The joint density of $T_1,\dots,T_{n+1}$ is $\lambda^{n+1}e^{-\lambda t_{n+1}}$ on $0<t_1<\dots<t_{n+1}$, so the new density is $\lambda^{n+1}v_{n+1}^ne^{-\lambda v_{n+1}}$, and integrating out $v_{n+1}$ leaves the constant $n!$ on $0<v_1<\dots<v_n<1$: sorted uniforms.`,
-      caption: String.raw`Top: for one seed, $n$ sorted uniforms (accent) and the normalized exponential partial sums $T_k/T_{n+1}$ (orange). Bottom: for the $k$ you choose, the empirical distribution functions of $V_k^n$ and of $T_k/T_{n+1}$ over 3000 seeded draws, against the exact Beta$(k,n+1-k)$ distribution function (green). The two constructions are indistinguishable.`,
+      caption: String.raw`Top: for one seed, $n$ sorted uniforms (accent) and the normalized exponential partial sums $T_k/T_{n+1}$ (orange). Bottom: for the $k$ you choose, the empirical distribution functions of $V_k^n$ and of $T_k/T_{n+1}$ over 3000 seeded draws, minus the exact Beta$(k,n+1-k)$ distribution function. Both wiggle inside the 95% sampling band (Dvoretzky–Kiefer–Wolfowitz): the two constructions are indistinguishable.`,
       deps: ['prob-3.7.9'],
       tags: ['order statistics', 'poisson process'],
       viz(v) {
@@ -753,8 +755,8 @@ Equivalently, the $n+1$ spacings of $n$ sorted uniforms have the law of $(\xi_1,
         const nS = v.slider('$n$', 2, 30, 8, { int: true });
         const kS = v.slider('$k$', 1, 30, 3, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const T = v.stage({ x: [0, 1], y: [0, 3], height: 150, full: true, axes: 'box', gutter: true, xlabel: '', title: 'one draw of each', yticks: [[2, 'uniforms'], [1, 'Tₖ/Tₙ₊₁']] });
-        const B = v.stage({ x: [0, 1], y: [0, 1], height: 290, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'distribution of the $k$-th point' });
+        const T = v.stage({ x: [0, 1], y: [0, 3], height: 150, full: true, axes: 'box', gutter: true, xlabel: '', title: 'one draw of each', yticks: [[2, 'Vₖ'], [1, 'Tₖ/Tₙ₊₁']] });
+        const B = v.stage({ x: [0, 1], y: [-0.05, 0.05], height: 280, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: 'empirical minus exact distribution function of the $k$-th point' });
         let sim = null, st = null;
         v.render(() => {
           const n = nS.value, k = Math.min(kS.value, n); if (kS.value > n) kS.set(n);
@@ -767,12 +769,14 @@ Equivalently, the $n+1$ spacings of $n$ sorted uniforms have the law of $(\xi_1,
           sim.U[0].forEach((x, j) => T.dot(x, 2, { r: j === k - 1 ? 6 : 3.6, color: 'accent' }));
           sim.E[0].forEach((x, j) => T.dot(x, 1, { r: j === k - 1 ? 6 : 3.6, color: 'orange' }));
           const a = sim.U.map((u) => u[k - 1]).sort((x, y) => x - y), b = sim.E.map((e) => e[k - 1]).sort((x, y) => x - y);
-          const ecdf = (xs) => { const pts = [[0, 0]]; xs.forEach((x, i) => { pts.push([x, i / xs.length], [x, (i + 1) / xs.length]); }); pts.push([1, 1]); return pts; };
-          B.fn((x) => M.betaI(k, n + 1 - k, x), { color: 'green', width: 4, alpha: 0.5 });
-          B.path(ecdf(a), { color: 'accent', width: 1.6 });
-          B.path(ecdf(b), { color: 'orange', width: 1.6, dash: [5, 3] });
+          const F = (x) => M.betaI(k, n + 1 - k, x);
+          const diff = (xs) => { const pts = [[0, 0]]; xs.forEach((x, i) => { const f = F(x); pts.push([x, i / xs.length - f], [x, (i + 1) / xs.length - f]); }); pts.push([1, 0]); return pts; };
+          const dkw = 1.36 / Math.sqrt(3000);
+          B.hband(-dkw, dkw, { color: 'green', alpha: 0.1 }); B.hline(0, { color: 'green', width: 2 });
+          B.path(diff(a), { color: 'accent', width: 1.4 });
+          B.path(diff(b), { color: 'orange', width: 1.4 });
           let ks = 0, i = 0, j = 0; while (i < a.length && j < b.length) { if (a[i] < b[j]) i++; else j++; ks = Math.max(ks, Math.abs(i / a.length - j / b.length)); }
-          v.legend([['accent', 'sorted uniforms $V_k^n$'], ['orange', '$T_k/T_{n+1}$', { dash: true }], ['green', 'Beta$(k,n+1-k)$']]);
+          v.legend([['accent', 'sorted uniforms $V_k^n$'], ['orange', '$T_k/T_{n+1}$'], ['green', '$0$ = exact Beta$(k,n+1-k)$; band: 95% DKW', { area: true }]]);
           st = { k, n, ks, ma: mean(a), mb: mean(b) };
         });
         v.readout(() => st && `$k=${st.k}$, $n=${st.n}$: means $${v.fix(st.ma, 4)}$ and $${v.fix(st.mb, 4)}$ vs $k/(n+1)=${v.fix(st.k / (st.n + 1), 4)}$. Two-sample Kolmogorov distance between the constructions: $${v.fix(st.ks, 4)}$ (noise level for 3000 + 3000 draws $\\approx0.035$).`);

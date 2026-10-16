@@ -42,7 +42,7 @@ with variable $x\in\R^n$, **objective** $f:\R^n\to\R$ and constraint functions $
         const useD = v.toggle('disc', true), flipD = v.toggle('disc: outside', false);
         const useG = v.toggle('curve $g\\le 0$', false);
         const Gi = v.input('$g(x,y)=$', 'x*y-1.5', { vars: ['x', 'y'], width: 200 });
-        const cS = v.slider('level $c-p^\\star$ (in spreads of $f$)', -1, 1, -0.4, { step: 0.01 });
+        const cS = v.slider('level $c-p^\\star$ (in spreads of $f$)', -1, 1, 0.12, { step: 0.01 });
         v.button('sweep to $p^\\star$', () => cS.set(0));
         const s = v.stage({ ...view, equal: true, axes: 'box', gutter: true, height: 410, xlabel: '$x$', ylabel: '$y$', title: 'feasible set, level sets and the sweep' });
         const A = s.handle(-3.2, -1.1, { color: 'accent', label: 'a', labelPos: 'sw' });
@@ -64,7 +64,7 @@ with variable $x\in\R^n$, **objective** $f:\R^n\to\R$ and constraint functions $
           const feas = (x, y) => cons.every((c) => c.g(x, y) <= 0);
           const stKey = [...hs.map((h) => h.x.toFixed(3) + ',' + h.y.toFixed(3)), useH.value, flipH.value, useD.value, flipD.value, useG.value, Gi.value, L.key].join('|');
           const sol = mem(stKey, () => ({ con: gridMin(f, view, feas), unc: gridMin(f, view), sc: landScale(f, view.x, view.y) }));
-          const { con, unc, sc } = sol, spread = sc.scale * 1.2;
+          const { con, unc, sc } = sol, spread = sc.scale * 0.5;
           const pstar = con ? con.f : NaN, c = (con ? pstar : unc.f) + cS.value * spread;
           s.raster((x, y) => {
             const fe = feas(x, y), sub = f(x, y) <= c;
@@ -82,7 +82,7 @@ with variable $x\in\R^n$, **objective** $f:\R^n\to\R$ and constraint functions $
           s.dot(unc.x, unc.y, { r: 5, color: 'muted', hollow: true, width: 2 });
           if (con) {
             s.dot(con.x, con.y, { r: 6.5, color: 'green' });
-            s.tex(String.raw`x^\star`, con.x, con.y, { color: 'green', dx: 12, dy: -14, size: 15 });
+            s.tex(String.raw`x^\star`, con.x, con.y, { color: 'green', dx: 14, dy: 16, size: 15 });
           }
           v.legend([['green', 'feasible set $F$', { area: true }], ['gold', 'sublevel set $\\{f\\le c\\}$', { area: true }], ['muted', 'unconstrained minimizer', { dot: true }], ['green', 'constrained minimizer $x^\\star$', { dot: true }]]);
           const act = con ? cons.filter((k) => k.g(con.x, con.y) > -k.tol).map((k) => k.name) : [];
@@ -110,7 +110,7 @@ with variable $x\in\R^n$, **objective** $f:\R^n\to\R$ and constraint functions $
 (i) $D$ is bounded (so $D$ is compact), or
 (ii) $f$ is **coercive**: $f(x)\to+\infty$ as $\norm{x}\to\infty$ in $D$,
 then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\inf_D f$. More generally it is enough that one sublevel set $\{x\in D: f(x)\le\alpha\}$ is nonempty and compact. Each hypothesis is needed: $e^x$ on $\R$ (not coercive), $x$ on $(0,2]$ (not closed) and a function with a downward jump missing from its value (not lower semicontinuous) all have a finite infimum that is never attained.`,
-      idea: String.raw`Take a minimizing sequence $f(x_k)\to\inf_D f$. Compactness of a sublevel set (opt-1.2 case (ii) reduces to it, because coercivity makes every sublevel set bounded, and closedness plus continuity makes it closed) lets the Bolzano–Weierstrass theorem (pma-2.37, pma-3.6) extract a convergent subsequence $x_{k_j}\to x^\star$. Closedness keeps $x^\star$ in $D$, and lower semicontinuity gives $f(x^\star)\le\liminf f(x_{k_j})=\inf_D f$. Remove any of the three ingredients — closed, bounded (or coercive), semicontinuous — and the minimizing sequence escapes to infinity, to a missing boundary point, or to a jump.`,
+      idea: String.raw`Take a minimizing sequence $f(x_k)\to\inf_D f$. Compactness of a sublevel set (in case (ii) coercivity makes every sublevel set bounded, and closedness plus continuity makes it closed) lets the Bolzano–Weierstrass theorem (pma-2.37, pma-3.6) extract a convergent subsequence $x_{k_j}\to x^\star$. Closedness keeps $x^\star$ in $D$, and lower semicontinuity gives $f(x^\star)\le\liminf f(x_{k_j})=\inf_D f$. Remove any of the three ingredients — closed, bounded (or coercive), semicontinuous — and the minimizing sequence escapes to infinity, to a missing boundary point, or to a jump.`,
       caption: String.raw`Left, one variable: pick a case and drag $\alpha$. The black bar is the domain $D$ and the bar below it is the sublevel set $\{f\le\alpha\}$: **green** when it is compact, **red** when it is not (unbounded, or missing an end point). Gold dots are a minimizing sequence. Right, two variables: the shaded sublevel set of a typed $f$ in a window; for the coercive examples it shrinks to a point, for $(xy-1)^2+x^2$ or $x^2+e^y$ it stays a channel leading off the window and the infimum is not attained.`,
       deps: ['opt-1.1', 'pma-4.16'],
       refs: ['Nocedal–Wright ch. 2'],
@@ -243,7 +243,7 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           const a = y[i], b = y[i + 1], ma = m(i), mb = m(i + 1);
           return (2 * t ** 3 - 3 * t ** 2 + 1) * a + (t ** 3 - 2 * t ** 2 + t) * ma + (-2 * t ** 3 + 3 * t ** 2) * b + (t ** 3 - t ** 2) * mb;
         };
-        const probe = s.handle(2.2, 0, { color: 'gold', r: 8, label: '$x$', labelPos: 'n', constrain: (x) => { const X = clamp(x, -4, 4); return [X, F(X)]; } });
+        const probe = s.handle(0.9, 0, { color: 'gold', r: 8, label: '$x$', labelPos: 'n', constrain: (x) => { const X = clamp(x, -4, 4); return [X, F(X)]; } });
         v.button('Rugged', () => { const r = v.rng(7 + Math.floor(Math.random() * 1000)); hs.forEach((h) => h.set(h.x, r.uniform(-1.8, 1.8))); });
         v.button('Two valleys', () => hs.forEach((h, i) => h.set(h.x, base[i])));
         v.button('One valley', () => hs.forEach((h) => h.set(h.x, 0.12 * h.x * h.x - 1.2)));
@@ -314,7 +314,8 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
         const showStat = v.toggle('mark stationary points', true);
         const showPath = v.toggle('descent path', false);
         v.button('jump to nearest stationary point', () => { const A = an(L.key, () => analyze(L.f, L.view)); const q = nearest(A.pts, p.x, p.y); if (q) p.set(q.x, q.y); });
-        const s = v.stage({ x: L.view.x, y: L.view.y, equal: true, axes: 'box', gutter: true, height: 420, xlabel: '$x$', ylabel: '$y$', title: 'gradient and descent directions at p' });
+        const s = v.stage({ x: L.view.x, y: L.view.y, equal: true, axes: 'box', gutter: true, height: 420, xlabel: '$x$', ylabel: '$y$', title: 'gradient and descent directions at p', weight: 1.15 });
+        const s2 = v.stage({ x: [-1, 1], y: [0, 1], axes: 'box', gutter: true, height: 420, xlabel: 'step $t$ along $-\\nabla f(p)$', ylabel: '$f(p-t\\,\\nabla f/\\norm{\\nabla f})$', title: 'f along the steepest-descent line', weight: 0.85, minWidth: 250 });
         const p = s.handle(1.9, 1.3, {
           color: 'gold', r: 8, label: '$p$', labelPos: 'ne',
           constrain: (x, y) => {
@@ -356,6 +357,18 @@ then $f$ attains its minimum on $D$: there is $x^\star\in D$ with $f(x^\star)=\i
           s.dot(x, y, { r: 3, color: 'ink' });
           v.legend([['green', '$-\\nabla f(p)$ (steepest descent)'], ['ink', '$\\nabla f(p)$ (half length)'], ['green', '$f$ decreases at $p+tu$', { dot: true }], ['red', '$f$ increases at $p+tu$', { dot: true }], ['green', 'minimum', { dot: true }], ['purple', 'saddle', { dot: true }], ['red', 'maximum', { dot: true }]]);
           const dm = f(x - (t * g[0]) / (gn || 1), y - (t * g[1]) / (gn || 1));
+          // right panel: f along the line through p in the direction -grad f
+          const ux = gn > 1e-9 ? -g[0] / gn : 1, uy = gn > 1e-9 ? -g[1] / gn : 0, T = 0.3 * W, fl = (tt) => f(x + tt * ux, y + tt * uy), vals = [];
+          for (let k = 0; k <= 80; k++) { const z = fl(-T + (2 * T * k) / 80); if (Number.isFinite(z)) vals.push(z); }
+          const lo = Math.min(...vals, fp), hi = Math.max(...vals, fp), pd = 0.08 * (hi - lo || 1);
+          s2.setView([-T, T], [lo - pd, hi + pd]);
+          s2.vband(0, T, { color: 'green', alpha: 0.07 });
+          s2.hline(fp, { color: 'faint', width: 1 }); s2.vline(0, { color: 'faint', width: 1 });
+          s2.line(-T, fp + gn * T, T, fp - gn * T, { color: 'ink', width: 1.5, dash: [6, 4] });
+          s2.fn(fl, { domain: [-T, T], color: 'accent', width: 2.8, n: 300 });
+          s2.vline(t, { color: 'gold', width: 1.2, dash: [3, 3] });
+          s2.dot(0, fp, { r: 5, color: 'gold' }); s2.dot(t, fl(t), { r: 4.5, color: 'green' });
+          s2.text(gn > 1e-9 ? 'tangent: slope $-\\norm{\\nabla f}$' : 'flat tangent: $\\nabla f=0$', -T * 0.95, hi, { color: 'ink', size: 12, align: 'left', plate: true, dy: 12 });
           info = { gn, fp, pred, act, agree, K, t, dm, A, cls: A.pts.length && gn < 1e-6 ? nearest(A.pts, x, y) : null };
         });
         v.readout(() => {

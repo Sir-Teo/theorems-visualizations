@@ -242,9 +242,9 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
       kind: 'Proposition',
       name: 'Aₙ has n!/2 elements',
       statement: String.raw`For $n\ge2$, $S_n$ contains as many even permutations as odd ones; hence $|A_n| = n!/2$.`,
-      idea: String.raw`Fix a transposition $\sigma$ (one exists since $n\ge2$) and send each even $\tau$ to $\lambda_\sigma(\tau)=\sigma\tau$, which is odd. The map is one-to-one by cancellation (3.21): $\sigma\tau=\sigma\mu$ gives $\tau=\mu$. It is onto, because an odd $\mu$ is the image of the even permutation $\sigma\mu$ (recall $\sigma^2=\mathrm{id}$). A bijection between the evens and the odds shows that the two halves of $S_n$ have equal size, $n!/2$. Multiplying by an *even* $\sigma$ instead only shuffles the evens among themselves.`,
+      idea: String.raw`Fix a transposition $\sigma$ (one exists since $n\ge2$) and send each even $\tau$ to $\lambda_\sigma(\tau)=\sigma\tau$, which is odd. The map is one-to-one by cancellation (3.22): $\sigma\tau=\sigma\mu$ gives $\tau=\mu$. It is onto, because an odd $\mu$ is the image of the even permutation $\sigma\mu$ (recall $\sigma^2=\mathrm{id}$). A bijection between the evens and the odds shows that the two halves of $S_n$ have equal size, $n!/2$. Multiplying by an *even* $\sigma$ instead only shuffles the evens among themselves.`,
       caption: String.raw`Even permutations on the left, odd ones on the right. Each line joins $\tau$ to $\sigma\tau$ for the chosen $\sigma$: with a transposition every left tile gets exactly one partner and every right tile is hit once. Choose the 3-cycle $(1\,2\,3)$ — an even permutation — and the arrows stay inside the left column: no pairing. Click a tile to highlight its line.`,
-      deps: ['alg-5.16', 'alg-5.1', 'alg-3.21'],
+      deps: ['alg-5.16', 'alg-5.1', 'alg-3.22'],
       refs: ['Judson §5.1'],
       tags: ['alternating group', 'counting', 'bijection'],
       viz(v) {

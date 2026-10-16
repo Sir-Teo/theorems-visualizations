@@ -27,8 +27,8 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
       refs: ['Trefethen–Bau Lec. 1'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-2.6, 2.6], y: [-2.05, 2.05], equal: true, axes: false, height: 440, full: true });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.9, lim: 1.5 });
+        const S = v.stage({ x: [-2.4, 2.4], y: [-1.85, 1.85], equal: true, axes: false, height: 440, full: true });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.7, lim: 1.5 });
         const CC = ['blue', 'purple', 'teal'], SUB = '₁₂₃';
         const C0 = [[1.2, 0.2, 0.1], [-0.3, 1.1, 0.4], [0.25, -0.45, 1.15]];
         const comb = () => add(scl(H[0].p, 0.6), scl(H[1].p, -0.5));
@@ -144,7 +144,7 @@ Hence the set of all products, the range of $A$, is the span of the columns; $Ax
       refs: ['Trefethen–Bau Lec. 3'],
       viz(v) {
         const B = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 360, minWidth: 280, title: 'unit balls in $\\mathbb R^2$' });
-        const F = v.stage({ x: [0.25, 60], y: [0, 3], xlog: true, axes: 'box', gutter: true, height: 360, minWidth: 280, xlabel: 'p', ylabel: '‖x‖ₚ', title: '$p\\mapsto\\|x\\|_p$' });
+        const F = v.stage({ x: [0.25, 60], y: [0, 8], xlog: true, axes: 'box', gutter: true, height: 360, minWidth: 280, xlabel: 'p', ylabel: '‖x‖ₚ', title: '$p\\mapsto\\|x\\|_p$' });
         const P = v.slider('$p$', 0.3, 30, 2, { log: true, sig: 2 });
         const xh = B.handle(1.3, 0.7, { color: 'gold', label: 'x' });
         v.render(() => {

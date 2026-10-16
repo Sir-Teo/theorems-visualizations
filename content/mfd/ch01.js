@@ -246,11 +246,11 @@ export default {
       refs: ['Lee SM Ch. 1'],
       tags: ['projective space', 'atlas'],
       viz(v) {
-        const D = v.stage({ x: [-1.28, 1.28], y: [-1.28, 1.28], equal: true, axes: false, height: 330, title: 'the projective plane: disc with antipodal rim', weight: 1, minWidth: 420 });
-        const S = v.stage3d({ range: 1.7, height: 330, yaw: -0.8, pitch: 0.35, axes: false, weight: 1.2, minWidth: 420, title: 'a line through the origin' });
-        const cx = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $x$: $(y/x,\\ z/x)$', weight: 0.8, minWidth: 220 });
-        const cy = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $y$: $(x/y,\\ z/y)$', weight: 0.8, minWidth: 220 });
-        const cz = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 250, title: 'chart $z$: $(x/z,\\ y/z)$', weight: 0.8, minWidth: 220 });
+        const D = v.stage({ x: [-1.28, 1.28], y: [-1.28, 1.28], equal: true, axes: false, height: 330, title: 'the projective plane: disc with antipodal rim', weight: 1, minWidth: 600 });
+        const S = v.stage3d({ range: 1.7, height: 330, yaw: -0.8, pitch: 0.35, axes: false, weight: 1, minWidth: 600, title: 'a line through the origin' });
+        const cx = v.stage({ x: [-3, 3], y: [-3, 3], axes: true, height: 250, title: 'chart $x$: $(y/x,\\ z/x)$', weight: 1, minWidth: 400 });
+        const cy = v.stage({ x: [-3, 3], y: [-3, 3], axes: true, height: 250, title: 'chart $y$: $(x/y,\\ z/y)$', weight: 1, minWidth: 400 });
+        const cz = v.stage({ x: [-3, 3], y: [-3, 3], axes: true, height: 250, title: 'chart $z$: $(x/z,\\ y/z)$', weight: 1, minWidth: 400 });
         const H = D.handle(0.5, 0.3, { color: 'gold', label: 'q', constrain: (x, y) => { const r = Math.hypot(x, y); return r > 1 ? [x / r, y / r] : [x, y]; } });
         const col = ['accent', 'orange', 'green'];
         let st = null;
@@ -265,11 +265,11 @@ export default {
           if (rq > 0.93) D.dot(-qx / rq, -qy / rq, { r: 6, hollow: true, color: 'gold' });
           // 3D
           S.surface((a, b) => [Math.sin(b) * Math.cos(a), Math.sin(b) * Math.sin(a), Math.cos(b)], [0, TAU], [0.001, PI - 0.001], { nu: 36, nv: 18, alpha: 0.18 });
-          const pl = [[[1, -1.6, -1.6], [1, 1.6, -1.6], [1, 1.6, 1.6], [1, -1.6, 1.6]], [[-1.6, 1, -1.6], [1.6, 1, -1.6], [1.6, 1, 1.6], [-1.6, 1, 1.6]], [[-1.6, -1.6, 1], [1.6, -1.6, 1], [1.6, 1.6, 1], [-1.6, 1.6, 1]]];
+          const pl = [[[1, -1.25, -1.25], [1, 1.25, -1.25], [1, 1.25, 1.25], [1, -1.25, 1.25]], [[-1.25, 1, -1.25], [1.25, 1, -1.25], [1.25, 1, 1.25], [-1.25, 1, 1.25]], [[-1.25, -1.25, 1], [1.25, -1.25, 1], [1.25, 1.25, 1], [-1.25, 1.25, 1]]];
           pl.forEach((q, i) => S.poly(q, { fill: col[i], fillAlpha: 0.1, color: col[i], width: 1 }));
           S.line(p.map((c) => -1.8 * c), p.map((c) => 1.8 * c), { color: 'ink', width: 2.6 });
           S.dot(p, { r: 5, color: 'gold' });
-          const inside = (q) => q.every((c) => Math.abs(c) <= 1.62);
+          const inside = (q) => q.every((c) => Math.abs(c) <= 1.27);
           for (let i = 0; i < 3; i++) if (Math.abs(p[i]) > 1e-9) { const q = p.map((c) => c / p[i]); if (inside(q)) S.dot(q, { r: 5.5, color: col[i] }); }
           // charts
           const stages = [cx, cy, cz], idx = [[1, 2], [0, 2], [0, 1]];

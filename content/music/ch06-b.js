@@ -6,16 +6,19 @@ const mname = (m) => `${NOTE[((m % 12) + 12) % 12]}${Math.floor(m / 12) - 1}`;
 const mfreq = (m) => 440 * 2 ** ((m - 69) / 12);
 const sc = (v, x, d = 0) => (Math.abs(x) < 0.5 * 10 ** -d ? `±${v.fix(0, d)}` : `${x >= 0 ? '+' : '−'}${v.fix(Math.abs(x), d)}`);
 
-/** Draw a piano keyboard from MIDI lo to hi on stage s (x = MIDI number, y in [0, 1]); `lit` = {midi: colour}. */
+const isBlack = (m) => [1, 3, 6, 8, 10].includes(((m % 12) + 12) % 12);
+/** Horizontal centre of key m on a keyboard whose white keys have equal width 12/7 (in semitone units), counted from C of octave lo. */
+function keyX(m, lo) {
+  const W = 12 / 7, oct = Math.floor((m - lo) / 12), pc = (((m - lo) % 12) + 12) % 12, whites = [0, 2, 4, 5, 7, 9, 11], wi = whites.indexOf(pc);
+  if (wi >= 0) return lo + (oct * 7 + wi + 0.5) * W;
+  return lo + (oct * 7 + whites.indexOf(pc - 1) + 1) * W;
+}
+/** Draw a piano keyboard from MIDI lo (a C) to hi on stage s (y in [0, 1]); `lit` = {midi: colour}. */
 function keyboard(s, lo, hi, lit = {}) {
-  const black = (m) => [1, 3, 6, 8, 10].includes(((m % 12) + 12) % 12);
-  for (let m = lo; m <= hi; m++) if (!black(m)) {
-    // white key spans to the neighbouring white keys' midpoints
-    const l = black(m - 1) ? m - 1 : m - 0.5, r = black(m + 1) ? m + 1 : m + 0.5;
-    s.rect(l, 0, r, 1, { fill: lit[m] || 'panel', fillAlpha: lit[m] ? 0.55 : 1, color: 'muted', width: 1 });
-  }
-  for (let m = lo; m <= hi; m++) if (black(m)) s.rect(m - 0.36, 0.38, m + 0.36, 1, { fill: lit[m] || 'ink', fillAlpha: lit[m] ? 0.9 : 0.85, color: 'ink', width: 1 });
-  for (let m = lo; m <= hi; m++) if (m % 12 === 0) s.text(mname(m), m, 0.1, { color: 'muted', size: 10, align: 'center' });
+  const W = 12 / 7;
+  for (let m = lo; m <= hi; m++) if (!isBlack(m)) { const x = keyX(m, lo); s.rect(x - W / 2, 0, x + W / 2, 1, { fill: lit[m] || 'panel', fillAlpha: lit[m] ? 0.6 : 1, color: 'muted', width: 1 }); }
+  for (let m = lo; m <= hi; m++) if (isBlack(m)) { const x = keyX(m, lo); s.rect(x - 0.3 * W, 0.38, x + 0.3 * W, 1, { fill: lit[m] || 'ink', fillAlpha: lit[m] ? 0.95 : 0.85, color: 'ink', width: 1 }); }
+  for (let m = lo; m <= hi; m++) if (m % 12 === 0) s.text(mname(m), keyX(m, lo), 0.1, { color: 'muted', size: 10, align: 'center' });
 }
 
 export default {
@@ -29,7 +32,7 @@ export default {
       name: 'The low interval limit',
       statement: String.raw`The same interval sounds rougher the lower it is played. A major or minor third that is smooth around middle C becomes thick and muddy two octaves lower, while a fifth stays clear further down and an octave further still. For each interval there is a register below which its roughness climbs steeply, and that register is lower the more consonant the interval: arrangers' rules of thumb ("low interval limits") keep thirds out of the deep bass and voice low chords in open fifths and octaves. Published tables of the limits differ from source to source.`,
       idea: String.raw`An interval of fixed ratio has partials separated by a fixed number of cents, that is by a frequency difference proportional to register; the critical band is about 100 Hz wide below 500 Hz and so is wide in cents in the bass (5.4). Lower an interval and more pairs of neighbouring partials fall within a fraction of a critical band of each other, the region of maximal roughness of the Plomp–Levelt curve (6.3). For a third the first partials already crowd together near the bottom of the keyboard; for an octave the closest neighbours are a whole fundamental apart, which stays outside a critical band to a much lower register. Plomp and Levelt computed exactly this (their Fig. 12, 6.14) and remarked that it matches the musical practice of avoiding thirds at low frequencies.`,
-      caption: String.raw`Top: drag the gold key to move the interval up and down the keyboard (both notes light up). Bottom: dissonance of the interval against the pitch of its lower note for five intervals of 6-partial harmonic tones (yours in bold); the red line marks where your interval becomes rougher than in the treble by one unit, an illustrative threshold. The readout names the closest pair of partials and compares their spacing with the critical band. Play the interval, or a descent through four octaves.`,
+      caption: String.raw`Top: drag the gold key to move the interval up and down the keyboard (both notes light up). Bottom: dissonance of the interval against the pitch of its lower note for five intervals of 6-partial harmonic tones (yours in bold); the red line marks where your interval becomes rougher than on C6 by 2.5 units, an illustrative threshold. The readout names the closest pair of partials and compares their spacing with the critical band. Play the interval, or a descent through four octaves.`,
       deps: ['music-6.3'],
       see: ['music-6.14', 'music-5.4', 'music-6.10'],
       refs: ['Sethares ch. 5'],
@@ -41,32 +44,35 @@ export default {
         const M = v.M, LO = 24, HI = 84, SP = harmonic(6, 0.88);
         const IV = [{ n: 3, name: 'minor third', col: 'red' }, { n: 4, name: 'major third', col: 'orange' }, { n: 5, name: 'fourth', col: 'purple' }, { n: 7, name: 'fifth', col: 'teal' }, { n: 12, name: 'octave', col: 'green' }];
         const ivS = v.select('interval', IV.map((x, i) => ({ value: i, label: x.name })), 1, { onChange: () => sync() });
-        const kb = v.stage({ x: [LO - 0.6, HI + 0.6], y: [0, 1.05], height: 110, axes: false, full: true, title: 'drag the gold key' });
+        const KX0 = keyX(LO, LO) - 6 / 7, KX1 = keyX(HI, LO) + 6 / 7;
+        const kb = v.stage({ x: [KX0, KX1], y: [0, 1.05], height: 110, axes: false, full: true, title: 'drag the gold key' });
         const cv = v.stage({ x: [LO, HI], y: [0, 9.5], height: 300, axes: 'box', gutter: true, full: true, xticks: [24, 36, 48, 60, 72, 84].map((m) => [m, mname(m)]), yticks: [0, 2, 4, 6, 8].map((y) => [y, String(y)]), xlabel: 'lower note', ylabel: 'dissonance', title: 'roughness of an interval across the register' });
-        const key = kb.handle(48, 0.62, { color: 'gold', r: 8, constrain: (x) => [Math.round(M.clamp(x, LO, HI - 12)), 0.62] });
+        let km = 48;
+        const nearestKey = (x) => { let b = LO, bd = 1e9; for (let m = LO; m <= HI - 12; m++) { const d = Math.abs(keyX(m, LO) - x); if (d < bd) { bd = d; b = m; } } return b; };
+        const key = kb.handle(keyX(48, LO), 0.25, { color: 'gold', r: 8, constrain: (x) => { km = nearestKey(x); return [keyX(km, LO), isBlack(km) ? 0.75 : 0.25]; } });
         const lv = loopVoice(v);
         const d = (m, n) => diss2(SP, mfreq(m), SP, mfreq(m + n));
         const curves = IV.map((iv) => { const P = []; for (let m = LO; m <= HI; m += 0.25) P.push([m, d(m, iv.n)]); return P; });
-        const limit = IV.map((iv, i) => { const ref = d(84, iv.n) + 1; let m = 84; while (m > LO && d(m, iv.n) < ref) m -= 0.25; return { m, ref }; });
-        const loopBuf = () => loopParts(at(SP, mfreq(key.x)).concat(at(SP, mfreq(key.x + IV[ivS.value].n))));
+        const limit = IV.map((iv, i) => { const ref = d(84, iv.n) + 2.5; let m = 84; while (m > LO && d(m, iv.n) < ref) m -= 0.25; return { m, ref }; });
+        const loopBuf = () => loopParts(at(SP, mfreq(km)).concat(at(SP, mfreq(km + IV[ivS.value].n))));
         function sync() { lv.update(loopBuf, 0.8); v.invalidate(); }
         key.onDrag = sync;
         v.toggle('hold the interval', false, { onChange: (x) => { if (x) lv.start(loopBuf(), 0.8); else lv.stop(); } });
         v.soundButton('descend four octaves', (snd) => { const n = IV[ivS.value].n; snd.samples(seqBuf([72, 60, 48, 36].map((m) => [[SP, mfreq(m)], [SP, mfreq(m + n)]]), 1.1, 0.15), SR, { gain: 0.9 }); });
         v.render(() => {
-          const iv = IV[ivS.value], m = key.x;
+          const iv = IV[ivS.value], m = km;
           keyboard(kb, LO, HI, { [m]: 'gold', [m + iv.n]: 'gold' });
-          IV.forEach((x, i) => { if (i !== ivS.value) cv.path(curves[i], { color: x.col, width: 1.2, alpha: 0.45 }); });
-          IV.forEach((x, i) => { const P = curves[i]; const lab = P.find((p) => p[1] < 8.8); if (lab && i !== ivS.value) cv.text(x.name, lab[0] + 0.6, Math.min(8.9, lab[1]), { color: x.col, size: 10, align: 'left', alpha: 0.8 }); });
+          IV.forEach((x, i) => { if (i !== ivS.value) cv.path(curves[i], { color: x.col, width: 1.2, alpha: 0.5 }); });
           cv.path(curves[ivS.value], { color: iv.col, width: 2.8 });
           const L = limit[ivS.value];
-          cv.vband(LO, L.m, { color: 'red', alpha: 0.06 });
+          cv.vband(LO, L.m, { color: 'red', alpha: 0.04 });
           cv.vline(L.m, { color: 'red', dash: [5, 4], width: 1.3 });
           cv.text(`below ${mname(Math.round(L.m))}: rough`, L.m, 9.1, { color: 'red', size: 10.5, align: 'right', dx: -4, plate: true });
           cv.dot(m, d(m, iv.n), { r: 6, color: 'gold' });
         });
+        v.legend(IV.map((x) => [x.col, x.name]));
         v.readout(() => {
-          const iv = IV[ivS.value], m = key.x, A = at(SP, mfreq(m)), B = at(SP, mfreq(m + iv.n));
+          const iv = IV[ivS.value], m = km, A = at(SP, mfreq(m)), B = at(SP, mfreq(m + iv.n));
           let best = null; for (const [fa] of A) for (const [fb] of B) { const df = Math.abs(fb - fa); if (df > 0.5 && (!best || df < best.df)) best = { df, fa, fb }; }
           const cb = cbw((best.fa + best.fb) / 2);
           return `${iv.name} on ${mname(m)} (${v.fix(mfreq(m), 1)} Hz) · dissonance ${v.fix(d(m, iv.n), 2)} (in the treble, on C6: ${v.fix(d(84, iv.n), 2)}) · closest partials ${v.fix(best.fa, 0)} and ${v.fix(best.fb, 0)} Hz, ${v.fix(best.df, 1)} Hz apart = ${v.fix(best.df / cb, 2)} of a critical band (maximal roughness near 0.25)`;
@@ -93,7 +99,7 @@ export default {
         let grid = null, gk = '';
         const tim = v.select('timbre', [{ value: 'harm', label: 'harmonic' }, { value: 'str', label: 'stretched (A = 2.1)' }, { value: 'bar', label: 'free bar' }], 'harm', { onChange: () => v.invalidate() });
         const specOf = (k) => (k === 'str' ? stretched(6, 2.1) : k === 'bar' ? BEAM.slice(0, 4).map((r, i) => [r, 0.88 ** i]) : harmonic(6, 0.88));
-        const s = v.stage({ x: [X0, X1], y: [X0, X1], height: 470, equal: true, axes: 'box', gutter: true, full: true, xticks: [100, 200, 300, 400, 500, 600, 700, 800].map((c) => [c, String(c)]), yticks: [100, 200, 300, 400, 500, 600, 700, 800].map((c) => [c, String(c)]), xlabel: 'lower interval $x$ (cents)', ylabel: 'upper interval $y$ (cents)', title: 'total dissonance of three-note chords' });
+        const s = v.stage({ x: [X0, X1], y: [X0, X1], height: 470, axes: 'box', gutter: true, full: true, xticks: [100, 200, 300, 400, 500, 600, 700, 800].map((c) => [c, String(c)]), yticks: [100, 200, 300, 400, 500, 600, 700, 800].map((c) => [c, String(c)]), xlabel: 'lower interval $x$ (cents)', ylabel: 'upper interval $y$ (cents)', title: 'total dissonance of three-note chords' });
         const h = s.handle(400, 300, { color: 'gold', r: 8, constrain: (x, y) => [M.clamp(x, X0, X1), M.clamp(y, X0, X1)] });
         const chordD = (S, x, y) => dissAll(at(S, F0).concat(at(S, F0 * 2 ** (x / 1200)), at(S, F0 * 2 ** ((x + y) / 1200))));
         function build() {
@@ -102,10 +108,12 @@ export default {
           for (let j = 0; j <= G; j++) for (let i = 0; i <= G; i++) { const x = X0 + ((X1 - X0) * i) / G, y = X0 + ((X1 - X0) * j) / G, val = chordD(S, x, y); d[j * (G + 1) + i] = val; if (val < lo) lo = val; if (val > hi) hi = val; }
           const mins = [];
           for (let j = 1; j < G; j++) for (let i = 1; i < G; i++) { const c = d[j * (G + 1) + i]; let ok = true; for (let dj = -1; dj <= 1 && ok; dj++) for (let di = -1; di <= 1; di++) if ((di || dj) && d[(j + dj) * (G + 1) + i + di] <= c) { ok = false; break; } if (ok) mins.push([X0 + ((X1 - X0) * i) / G, X0 + ((X1 - X0) * j) / G, c]); }
-          grid = { d, lo, hi, mins }; gk = tim.value; return grid;
+          const sorted = Array.from(d).sort((a, b) => a - b), p90 = sorted[Math.floor(0.9 * sorted.length)];
+          const keep = mins.filter((m) => m[2] < lo + 0.45 * (p90 - lo)).filter((m, i, A) => !A.some((o) => o !== m && o[2] < m[2] && Math.hypot(o[0] - m[0], o[1] - m[1]) < 45));
+          grid = { d, lo, hi: p90, mins: keep }; gk = tim.value; return grid;
         }
         const look = (x, y) => { const g = build(), u = M.clamp(((x - X0) / (X1 - X0)) * G, 0, G - 1e-9), w = M.clamp(((y - X0) / (X1 - X0)) * G, 0, G - 1e-9), i = Math.floor(u), j = Math.floor(w), a = u - i, b = w - j, D = g.d, n = G + 1; return (1 - a) * (1 - b) * D[j * n + i] + a * (1 - b) * D[j * n + i + 1] + (1 - a) * b * D[(j + 1) * n + i] + a * b * D[(j + 1) * n + i + 1]; };
-        const NAMED = [['major', 400, 300], ['minor', 300, 400], ['sus4', 500, 200], ['sus2', 200, 500], ['dim', 300, 300], ['aug', 400, 400], ['quartal', 500, 500], ['6/4 (maj. 2nd inv.)', 500, 400], ['6 (maj. 1st inv.)', 300, 500], ['cluster', 100, 100]];
+        const NAMED = [['major', 400, 300], ['minor', 300, 400], ['sus4', 500, 200], ['sus2', 200, 500], ['dim', 300, 300], ['aug', 400, 400], ['quartal', 500, 500], ['maj 6/4', 500, 400], ['maj 6', 300, 500], ['min 6', 400, 500], ['min 6/4', 500, 300], ['cluster', 100, 100]];
         const JT = [[cents(5 / 4), cents(6 / 5)], [cents(6 / 5), cents(5 / 4)]];
         const play = () => { const S = specOf(tim.value); v.sound().stop(); v.sound().samples(mixBuf([[S, F0], [S, F0 * 2 ** (h.x / 1200)], [S, F0 * 2 ** ((h.x + h.y) / 1200)]], 1.6), SR, { gain: 0.9 }); };
         h.onDrag = () => v.invalidate();
@@ -113,8 +121,8 @@ export default {
         v.button('snap to 12-TET', () => { h.set(Math.round(h.x / 100) * 100, Math.round(h.y / 100) * 100); play(); });
         v.render(() => {
           const g = build(), span = g.hi - g.lo;
-          s.raster((x, y) => v.ramp(Math.pow(M.clamp((look(x, y) - g.lo) / span, 0, 1), 0.7), 'accent'), { key: `${gk}|${v.rgb('panel').join()}`, res: 3 });
-          s.contour((x, y) => (look(x, y) - g.lo) / span, [0.1, 0.2, 0.3, 0.45, 0.6], { color: 'ink', width: 0.8, res: 80 });
+          s.raster((x, y) => v.ramp(M.clamp((look(x, y) - g.lo) / span, 0, 1), 'accent'), { key: `${gk}|${v.rgb('panel').join()}`, res: 3 });
+          s.contour((x, y) => (look(x, y) - g.lo) / span, [0.15, 0.3, 0.5, 0.75], { color: 'ink', width: 0.7, alpha: 0.5, res: 80 });
           s.axes();
           for (const [x, y] of g.mins) s.dot(x, y, { r: 3, color: 'green' });
           for (const [nm, x, y] of NAMED) { s.dot(x, y, { r: 3.5, color: 'ink' }); s.text(nm, x, y, { color: 'ink', size: 10.5, align: 'left', dx: 6, dy: -6, plate: true }); }
@@ -125,7 +133,7 @@ export default {
         v.readout(() => {
           const g = build(), d = look(h.x, h.y), nm = NAMED.reduce((b, c) => (Math.hypot(c[1] - h.x, c[2] - h.y) < Math.hypot(b[1] - h.x, b[2] - h.y) ? c : b));
           const rank = (x, y) => (look(x, y) - g.lo) / (g.hi - g.lo);
-          return `intervals ${v.fix(h.x, 0)} ¢ + ${v.fix(h.y, 0)} ¢ (nearest named: ${nm[0]}) · dissonance ${v.fix(d, 2)}, i.e. ${v.fix(100 * rank(h.x, h.y), 0)}% of the way from the smoothest to the roughest chord on the map · 12-TET major ${v.fix(look(400, 300), 2)}, minor ${v.fix(look(300, 400), 2)}, just major ${v.fix(look(JT[0][0], JT[0][1]), 2)}, diminished ${v.fix(look(300, 300), 2)}, augmented ${v.fix(look(400, 400), 2)}`;
+          return `intervals ${v.fix(h.x, 0)} ¢ + ${v.fix(h.y, 0)} ¢ (nearest named: ${nm[0]}) · dissonance ${v.fix(d, 2)}, i.e. ${v.fix(100 * Math.min(1, rank(h.x, h.y)), 0)}% of the way from the smoothest chord on the map to the 90th percentile · 12-TET major ${v.fix(look(400, 300), 2)}, minor ${v.fix(look(300, 400), 2)}, just major ${v.fix(look(JT[0][0], JT[0][1]), 2)}, diminished ${v.fix(look(300, 300), 2)}, augmented ${v.fix(look(400, 400), 2)}`;
         });
       },
     },
@@ -151,33 +159,33 @@ export default {
         const notes = (c7 = sev.value) => [...triad(), c7].map((c) => F * 2 ** (c / 1200));
         const D = (c7) => dissAll(notes(c7).flatMap((f) => at(SP, f)));
         const cv = v.stage({ x: [940, 1040], y: [0, 1.1], height: 300, axes: 'box', gutter: true, weight: 1.2, xticks: [940, 960, 980, 1000, 1020, 1040].map((c) => [c, String(c)]), yticks: [[0, 'min'], [1, 'max']], xlabel: 'the seventh (cents)', ylabel: 'chord dissonance', title: 'dissonance of the seventh chord' });
-        const bt = v.stage({ x: [0, 40], y: [0, 1.15], height: 300, axes: 'box', gutter: true, weight: 1, xticks: [0, 10, 20, 30, 40].map((x) => [x, String(x)]), yticks: [], xlabel: 'beat rate (Hz)', title: 'beating partial pairs' });
+        const bt = v.stage({ x: [0, 40], y: [0, 0.95], height: 300, axes: 'box', gutter: true, weight: 1, xticks: [0, 10, 20, 30, 40].map((x) => [x, String(x)]), yticks: [], xlabel: 'beat rate (Hz)', ylabel: 'roughness', title: 'partial pairs closer than 40 Hz' });
         let cache = null, ck = '';
-        const curve = () => { const k = String(just.value); if (cache && ck === k) return cache; const P = []; for (let c = 940; c <= 1040; c += 0.5) P.push([c, D(c)]); const lo = Math.min(...P.map((p) => p[1])), hi = Math.max(...P.map((p) => p[1])); cache = { P, lo, hi }; ck = k; return cache; };
+        const curve = () => { const k = String(just.value); if (cache && ck === k) return cache; const P = []; for (let c = 940; c <= 1040; c += 0.5) P.push([c, D(c)]); const lo = Math.min(D(cents(7 / 4)), ...P.map((p) => p[1])), hi = Math.max(...P.map((p) => p[1])); cache = { P, lo, hi }; ck = k; return cache; };
         const pairs = () => {
           const ns = notes(), out = [], names = ['root', '3rd', '5th'];
           const S7 = at(SP, ns[3]);
-          for (let n = 0; n < 3; n++) at(SP, ns[n]).forEach(([fa, aa], i) => S7.forEach(([fb, ab], j) => { const b = Math.abs(fb - fa); if (b < 40) out.push({ b, w: Math.min(aa, ab), lab: `7th·${j + 1} – ${names[n]}·${i + 1}` }); }));
+          for (let n = 0; n < 3; n++) at(SP, ns[n]).forEach(([fa, aa], i) => S7.forEach(([fb, ab], j) => { const b = Math.abs(fb - fa); if (b < 40) out.push({ b, w: b < 0.5 ? Math.min(aa, ab) : pl(fa, fb, aa, ab), lab: `7th·${j + 1} – ${names[n]}·${i + 1}` }); }));
           return out.sort((a, b) => b.w - a.w);
         };
         v.soundButton('play the chord', (snd) => snd.samples(mixBuf(notes().map((f) => [SP, f]), 2.2), SR, { gain: 0.9 }));
         v.soundButton('12-TET, then 4:5:6:7', (snd) => snd.samples(seqBuf([[0, 400, 700, 1000], [0, cents(5 / 4), cents(3 / 2), cents(7 / 4)]].map((ch) => ch.map((c) => [SP, F * 2 ** (c / 1200)])), 2.0, 0.35), SR, { gain: 0.9 }));
         v.render(() => {
           const K = curve(), nrm = (y) => (y - K.lo) / (K.hi - K.lo);
-          for (const [c, lab, col] of [[cents(7 / 4), '7/4', 'green'], [cents(16 / 9), '16/9', 'muted'], [1000, '12-TET', 'red'], [cents(9 / 5), '9/5', 'muted']]) { cv.vline(c, { color: col, dash: [4, 4], width: 1.2 }); cv.text(lab, c, 1.06, { color: col, size: 10.5, align: 'center', plate: true }); }
+          for (const [c, lab, col, y] of [[cents(7 / 4), '7/4', 'green', 1.06], [cents(16 / 9), '16/9', 'muted', 0.96], [1000, '12-TET', 'red', 1.06], [cents(9 / 5), '9/5', 'muted', 0.96]]) { cv.vline(c, { color: col, dash: [4, 4], width: 1.2 }); cv.text(lab, c, y, { color: col, size: 10.5, align: c === 1000 ? 'left' : c < 980 ? 'center' : 'right', dx: c === 1000 ? 2 : c < 980 ? 0 : -2, plate: true }); }
           cv.path(K.P.map(([c, y]) => [c, nrm(y)]), { color: 'accent', width: 2.4 });
           cv.dot(sev.value, nrm(D(sev.value)), { r: 6, color: 'gold' });
           const P = pairs();
           P.forEach((p, k) => {
             const x = Math.max(p.b, 0.25);
             bt.line(x, 0, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', width: 4, alpha: 0.85 });
-            if (k < 4) bt.text(p.lab, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', size: 10, align: x > 30 ? 'right' : 'left', dx: x > 30 ? -4 : 4, dy: -4 - 13 * (k % 2) });
+            if (k < 4) bt.text(p.lab, x, p.w, { color: p.b < 0.5 ? 'green' : 'red', size: 10, align: x > 26 ? 'right' : 'left', dx: x > 26 ? -5 : 5, dy: -2, plate: true });
           });
           if (!P.length) bt.text('no partial pairs within 40 Hz', 20, 0.6, { color: 'muted', size: 12, align: 'center' });
           bt.vband(15, 40, { color: 'red', alpha: 0.05 });
-          bt.text('rough (≳15 beats/s)', 39, 1.1, { color: 'red', size: 10, align: 'right' });
+          bt.text('rough (≳15 beats/s)', 39, 0.9, { color: 'red', size: 10, align: 'right' });
         });
-        v.legend([['accent', 'chord dissonance'], ['red', 'beating pair (height = weaker amplitude)'], ['green', 'coinciding pair (no beats)']]);
+        v.legend([['accent', 'chord dissonance'], ['red', 'beating pair (height: its Plomp–Levelt roughness)'], ['green', 'coinciding pair (no beats; height: weaker amplitude)']]);
         v.readout(() => {
           const P = pairs(), co = P.filter((p) => p.b < 0.5).length, beating = P.filter((p) => p.b >= 0.5), slow = beating.length ? beating.reduce((a, b) => (b.w > a.w ? b : a)) : null, K = curve();
           return `seventh ${v.fix(sev.value, 1)} ¢ = ${sc(v, sev.value - 1000, 1)} ¢ from 12-TET, ${sc(v, sev.value - cents(7 / 4), 1)} ¢ from 7/4 · ${co} coinciding pair${co === 1 ? '' : 's'}, ${beating.length} beating${slow ? `, strongest ${slow.lab} at ${v.fix(slow.b, 1)} Hz` : ''} · dissonance ${v.fix((D(sev.value) - K.lo) / (K.hi - K.lo), 3)} on the min–max scale (12-TET seventh: ${v.fix((D(1000) - K.lo) / (K.hi - K.lo), 3)}, 7/4: ${v.fix((D(cents(7 / 4)) - K.lo) / (K.hi - K.lo), 3)})`;
@@ -209,7 +217,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         const nodes = []; for (let b = 0; b < 3; b++) for (let a = 0; a < 4; a++) nodes.push({ a, b, name: NAMES[a + 4 * b], x: b - a, y: -(a + b) * 0.8 });
         let sel = [1, 5, 2], typed = null; // C, E, G
         const inp = v.input('or type ratios', '4:5:6', { width: 140, placeholder: 'e.g. 4:5:6:7', onChange: (t) => { const t2 = String(t).split(/[:\s,]+/).map(Number).filter((x) => Number.isInteger(x) && x > 0 && x < 100000); typed = t2.length >= 2 ? t2 : null; if (typed) sel = []; v.invalidate(); } });
-        const lat = v.stage({ x: [-3.7, 2.7], y: [-4.4, 0.6], equal: true, height: 320, axes: false, weight: 1, minWidth: 260, title: 'Euler’s lattice (1739): click tones' });
+        const lat = v.stage({ x: [-3.7, 2.7], y: [-4.8, 0.6], equal: true, height: 320, axes: false, weight: 1, minWidth: 260, title: 'Euler’s lattice (1739): click tones' });
         const wk = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: false, weight: 1.1, minWidth: 280, title: 'the gradus worked out' });
         lat.onClick((x, y) => { let best = -1, bd = 0.45; nodes.forEach((n, i) => { const d = Math.hypot(n.x - x, n.y - y); if (d < bd) { bd = d; best = i; } }); if (best < 0) return; typed = null; const k = sel.indexOf(best); if (k >= 0) sel.splice(k, 1); else if (sel.length < 6) sel.push(best); const t = terms(); inp.set(t ? t.join(':') : ''); });
         // chord from lattice: first note = bass at 1, others voiced in [1, 2) above it; exact exponents of 2, 3, 5
@@ -224,7 +232,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         const terms = () => { const t = typed || fromLattice(); if (!t) return null; const g = t.reduce((a, b) => gcd(a, b)); return t.map((x) => x / g); };
         const INT = JUST.filter(([p, q]) => p !== q && p * q < 2000);
         const rough = (() => { const C = dissCurve(harmonic(6, 0.88), 261.63, 0, 1210, 605); let mx = 0; for (const x of C.d) mx = Math.max(mx, x); return (c) => sample(C, c) / mx; })();
-        const rk = v.stage({ x: [0, 1], y: [0, INT.length], height: 330, axes: false, full: true, title: 'Euler’s ranking of the intervals, beside today’s roughness model' });
+        const rk = v.stage({ x: [0, 1], y: [0, INT.length + 0.9], height: 350, axes: false, full: true, title: 'Euler’s ranking of the intervals, beside today’s roughness model' });
         v.soundButton('play the chord', (snd) => { const t = terms(); if (!t) return; const sorted = t.slice().sort((a, b) => a - b), base = 196 / sorted[0] * (sorted[sorted.length - 1] / sorted[0] > 4 ? 0.5 : 1); snd.samples(mixBuf(sorted.map((x) => [harmonic(6, 0.88), base * x]), 2), SR, { gain: 0.9 }); });
         v.button('clear', () => { sel = []; typed = null; inp.set(''); });
         v.render(() => {
@@ -232,7 +240,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
           for (const n of nodes) { const r = nodes.find((m) => m.a === n.a + 1 && m.b === n.b), d = nodes.find((m) => m.a === n.a && m.b === n.b + 1); if (r) lat.line(n.x, n.y, r.x, r.y, { color: 'orange', width: 1.6 }); if (d) lat.line(n.x, n.y, d.x, d.y, { color: 'teal', width: 1.6 }); }
           lat.text('fifths ×3', -2.95, -0.55, { color: 'orange', size: 11, align: 'center' });
           lat.text('thirds ×5', 1.95, -0.55, { color: 'teal', size: 11, align: 'center' });
-          nodes.forEach((n, i) => { const k = sel.indexOf(i), on = k >= 0; lat.circle(n.x, n.y, 0.3, { fill: on ? (k === 0 ? 'gold' : 'accent') : 'panel', fillAlpha: on ? 0.85 : 1, color: on ? 'ink' : 'muted', width: 1.2 }); lat.text(n.name, n.x, n.y + 0.05, { color: on ? 'panel' : 'ink', size: 13, align: 'center', baseline: 'middle', weight: 700 }); lat.text(String(3 ** n.a * 5 ** n.b), n.x, n.y - 0.47, { color: 'muted', size: 9.5, align: 'center' }); });
+          nodes.forEach((n, i) => { const k = sel.indexOf(i), on = k >= 0; lat.circle(n.x, n.y, 0.3, { fill: on ? (k === 0 ? 'gold' : 'accent') : 'panel', fillAlpha: on ? 0.4 : 1, color: on ? (k === 0 ? 'gold' : 'accent') : 'muted', width: on ? 2.5 : 1.2 }); lat.text(n.name, n.x, n.y + 0.05, { color: 'ink', size: 13, align: 'center', baseline: 'middle', weight: 700 }); lat.text(String(3 ** n.a * 5 ** n.b), n.x, n.y - 0.47, { color: 'muted', size: 9.5, align: 'center' }); });
           // worked computation
           const t = terms();
           if (!t) { wk.text('click tones or type ratios', 0.5, 0.5, { color: 'muted', size: 13, align: 'center' }); }
@@ -241,7 +249,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
             const lines = [
               [`terms in lowest form: ${t.join(' : ')}`, 'ink'],
               [`exponent (lcm): ${L}`, 'ink'],
-              [`= ${F.map(([p, e]) => (e > 1 ? `${p}^${e}` : `${p}`)).join(' · ') || '1'}`, 'muted'],
+              [`= ${F.map(([p, e]) => (e > 1 ? `${p}${String(e).split('').map((ch) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+ch]).join('')}` : `${p}`)).join(' · ') || '1'}`, 'muted'],
               [`Γ = 1 + ${F.map(([p, e]) => `${e}·(${p}−1)`).join(' + ') || '0'}`, 'muted'],
               [`Γ = ${G}`, 'green'],
             ];
@@ -261,8 +269,8 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
             rk.text(`Γ ${r.g}`, 0.28 + (0.33 * r.g) / gmax, y, { color: 'ink', size: 10.5, align: 'left', baseline: 'middle', dx: 4 });
             rk.rect(0.68, y - 0.32, 0.68 + 0.3 * r.r, y + 0.32, { fill: 'red', fillAlpha: on ? 0.75 : 0.35, stroke: false });
           });
-          rk.text('Euler’s gradus (1739)', 0.27, INT.length + 0.1, { color: 'accent', size: 11, align: 'left', baseline: 'bottom' });
-          rk.text('summed roughness, harmonic tones (6.4)', 0.68, INT.length + 0.1, { color: 'red', size: 11, align: 'left', baseline: 'bottom' });
+          rk.text('Euler’s gradus (1739)', 0.27, INT.length + 0.45, { color: 'accent', size: 11.5, align: 'left', baseline: 'middle', weight: 600 });
+          rk.text('summed roughness of harmonic tones (6.4)', 0.68, INT.length + 0.45, { color: 'red', size: 11.5, align: 'left', baseline: 'middle', weight: 600 });
         });
         v.readout(() => {
           const t = terms(); if (!t) return 'no chord selected';
@@ -328,7 +336,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
             s.poly(P.concat(Q.reverse()), { fill: col, fillAlpha: 0.32, color: col, width: 0.8 });
             // label at this pair's peak if its band is thick enough there
             let ip = 0; for (let i = 0; i <= N; i++) if (p.ys[i] > p.ys[ip]) ip = i;
-            if (p.ys[ip] * sc1 > 0.045) s.text(`${p.m2}:${p.m1}`, (1200 * ip) / N, (base[ip] + p.ys[ip] / 2) * sc1, { color: 'ink', size: 9.5, align: 'center', baseline: 'middle' });
+            const multiple = gcd(p.m1, p.m2) > 1 && (p.fam === '1:1' || p.fam === '1:2'); if (p.ys[ip] * sc1 > 0.045 && !multiple) s.text(`${p.m2}:${p.m1}`, (1200 * ip) / N, (base[ip] + p.ys[ip] / 2) * sc1, { color: 'ink', size: 9.5, align: 'center', baseline: 'middle' });
             for (let i = 0; i <= N; i++) base[i] = top[i];
           }
           s.path(Array.from(K.tot, (y, i) => [(1200 * i) / N, y * sc1]), { color: 'ink', width: 1.6 });
@@ -354,7 +362,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
       introduces: ['music-6.3'],
       statement: String.raw`Plomp and Levelt asked young adult listeners without musical training to rate pairs of **pure tones** on a seven-point scale from dissonant (1) to consonant (7), at mean frequencies of 125, 250, 500, 1000 and 2000 Hz (tones from two sine oscillators through a loudspeaker at about 65 dB SPL, each pair heard for about 4 s; 8–11 consistent subjects per frequency after a test–retest screen). Plotted against the frequency difference the ratings showed no preference for simple ratios; they fell to a minimum and recovered, and the separation of the minimum grew with frequency in proportion to the **critical bandwidth**. Their rule of thumb: maximal dissonance at about **25% of a critical band**, full consonance from about **100%**. Expressing all the data in critical-band units they drew one standard curve (their Fig. 10) and, assuming the dissonances of all *adjacent* pairs of partials add, computed the dissonance of two complex tones of **six equal harmonics**: peaks of consonance appear at $1{:}1$, $5{:}6$, $4{:}5$, $3{:}4$, $2{:}3$, $3{:}5$, $1{:}2$, sharper for simpler ratios (Fig. 11), and every interval grows dissonant below a register that is lower for more consonant intervals (Fig. 12). A statistical analysis of a Bach trio sonata and a Dvořák quartet found the spacing of simultaneous tones following the critical band.`,
       idea: String.raw`Helmholtz had explained consonance by beats between partials but with a fixed optimum of 30–40 beats a second (6.13); Stumpf's tonal fusion and learned interval recognition were rival explanations. Plomp and Levelt separated the factors by using pure tones, which have no partials to coincide, and by choosing intervals by frequency difference rather than ratio so that listeners could not recognise them. The result kept Helmholtz's mechanism and replaced his constant by the critical band, newly measured by Zwicker and colleagues (5.4). Their summation over partials turned the curve into a predictive model of consonance for complex tones (6.4), which Kameoka and Kuriyagawa refined and Sethares parametrized (6.15). Today's narrower critical bands (ERB) would put the maximum nearer 40% of a band (Greenwood, 1991).`,
-      caption: String.raw`The paper's figures redrawn with its own data (read from the published graphs). **Ratings** (Figs. 3–7): median consonance against frequency difference at each mean frequency (choose one), with the standard curve mapped onto the rating scale; click anywhere to hear that separation, or run your own listening test and see your ratings in gold. **One curve** (Fig. 10): all 64 medians re-plotted against $\Delta f$ in critical bands collapse onto the standard curve; flip the toggle to scale by a fixed 132 Hz instead (Helmholtz's constant beat optimum) and the collapse gets worse. **Complex tones** (Fig. 11): the paper's computed curve (dots) and the same computation redone here (line). **Register** (Fig. 12): six intervals against the pitch of the lower tone. In Figs. 11 and 12 dissonance increases downward, as in the paper; click to hear.`,
+      caption: String.raw`The paper's figures redrawn with its own data (read from the published graphs). **Ratings** (Figs. 3–7): median consonance against frequency difference at each mean frequency (choose one), with the standard curve mapped onto the rating scale; click anywhere to hear that separation, or run your own listening test and see your ratings in gold. **One curve** (Fig. 10): all 68 medians re-plotted against $\Delta f$ in critical bands collapse onto the standard curve; flip the toggle to scale by a fixed 132 Hz instead (Helmholtz's constant beat optimum) and the collapse gets worse. **Complex tones** (Fig. 11): the paper's computed curve (dots) and the same computation redone here (line). **Register** (Fig. 12): six intervals against the pitch of the lower tone. In Figs. 11 and 12 dissonance increases downward, as in the paper; click to hear.`,
       deps: ['music-5.4', 'music-5.7', 'music-6.2'],
       see: ['music-6.3', 'music-6.9', 'music-6.4'],
       refs: [],
@@ -387,8 +395,13 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         });
         let cur11 = 375, cur12 = 250;
         const F12C = { '1:2': 'green', '2:3': 'teal', '3:5': 'orange', '5:6': 'red', '3:4': 'purple', '4:5': 'pink' };
+        const FLEG = FMS.map((f) => [FCOL[f], `${f} Hz`]);
         v.render(() => {
           const md = mode.value;
+          if (md === 'rate') v.legend([...FLEG, ['ink', 'standard curve on the rating scale', { dash: true }], ['gold', 'your ratings']]);
+          else if (md === 'one') v.legend([...FLEG, ['ink', 'Fig. 10 standard curve'], ['accent', 'Sethares fit (at 1 kHz)', { dash: true }]]);
+          else if (md === 'f11') v.legend([['accent', 'recomputed here'], ['ink', 'read from the paper’s Fig. 11', { dot: true }]]);
+          else v.legend([...Object.entries(F12C).map(([k, c]) => [c, k]), ['muted', 'circles: read from the paper’s Fig. 12', { dot: true }]]);
           if (md === 'rate') {
             s.setScale({ xlog: true, x: [3, 3000], y: [1, 7.2] }); s.setTitle(`Figs. 3–7: ratings of pure-tone pairs (median of the subjects at each mean frequency)`);
             s.setLabels('frequency difference $\\Delta f$ (Hz)', 'consonance rating (1–7)'); s.setTicks(null, [1, 2, 3, 4, 5, 6, 7].map((y) => [y, String(y)]));
@@ -437,7 +450,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         v.readout(() => {
           const md = mode.value;
           if (md === 'rate') { const fm = fmS.value, P = PL_MEDIANS[fm].pts, lo = P.reduce((a, b) => (b[1] < a[1] ? b : a)); return `${fm} Hz: lowest median ${v.fix(lo[1], 2)} at $\\Delta f = ${v.fix(lo[0], 1)}$ Hz = ${v.fix(lo[0] / cbw(fm), 2)} CB (critical band ${v.fix(cbw(fm), 0)} Hz) · your ratings so far: ${mine.length}${pending ? ' · a test interval is waiting for your rating' : ''}`; }
-          if (md === 'one') return `standard curve fitted to all 64 medians: rating ≈ ${v.fix(FCB.a, 2)} − ${v.fix(-FCB.b, 2)}·d · misfit with critical-band scaling ${v.fix(FCB.rms, 2)} vs fixed-Hz scaling ${v.fix(FH.rms, 2)} rating points · paper: maximal dissonance at about 25% of a critical band, consonance from 100%; with today's narrower bands, about 40% (Greenwood, 1991)`;
+          if (md === 'one') return `standard curve fitted to all 68 medians: rating ≈ ${v.fix(FCB.a, 2)} − ${v.fix(-FCB.b, 2)}·d · misfit with critical-band scaling ${v.fix(FCB.rms, 2)} vs fixed-Hz scaling ${v.fix(FH.rms, 2)} rating points · paper: maximal dissonance at about 25% of a critical band, consonance from 100%; with today's narrower bands, about 40% (Greenwood, 1991)`;
           if (md === 'f11') { let ss = 0; for (const [f, d] of PL_FIG11) ss += (plComplex(H6(250).concat(H6(f))) - d) ** 2; return `upper tone ${v.fix(cur11, 1)} Hz: recomputed dissonance ${v.fix(plComplex(H6(250).concat(H6(cur11))), 2)} · agreement with the paper's Fig. 11 over ${PL_FIG11.length} read-off points: rms ${v.fix(Math.sqrt(ss / PL_FIG11.length), 2)} (scale 0–6) · computation: Fig. 10 curve, critical band at the mean frequency, adjacent partials only, equal amplitudes`; }
           return `lower tone ${v.fix(cur12, 0)} Hz (fifth): recomputed dissonance ${v.fix(plComplex(H6(cur12).concat(H6(cur12 * 1.5))), 2)} · the paper: "below a critical frequency, the intervals become more and more dissonant … the critical frequency is lower for more consonant intervals" · open circles: values read from the paper's Fig. 12 (approximate)`;
         });
@@ -475,17 +488,17 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         let cache = null, cur = null;
         const curve = () => { if (cache) return cache; const D = def(), C = dissCurve(D.spec, D.f0, 0, D.cmax, 650); let mx = 0, mn = Infinity; for (const x of C.d) { mx = Math.max(mx, x); mn = Math.min(mn, x); } cache = { ...D, C, mx, mn, mins: minima(C, fig.value === 'two' ? 0.01 : 0.004) }; return cache; };
         const sp = v.stage({ x: [0.9, 30], y: [0, 1.15], xlog: true, height: 300, axes: 'box', gutter: true, weight: 0.6, minWidth: 220, yticks: [], xticks: [[1, '1'], [2, '2'], [5, '5'], [10, '10'], [20, '20']], xlabel: 'partial ÷ fundamental', title: 'spectrum' });
-        const cv = v.stage({ x: [0, 1300], y: [0, 1.12], height: 300, axes: 'box', gutter: true, weight: 1.4, yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance', title: 'dissonance curve' });
+        const cv = v.stage({ x: [0, 1300], y: [-0.09, 1.12], height: 300, axes: 'box', gutter: true, weight: 1.4, yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance', title: 'dissonance curve' });
         cv.onClick((x) => { const K = curve(); cur = M.clamp(x, 0, K.cmax); v.sound().stop(); v.sound().samples(mixBuf([[K.spec, K.f0], [K.spec, K.f0 * 2 ** (cur / 1200)]], 1.6), SR, { gain: 0.9 }); v.invalidate(); });
         const ratios = (spec, cmax) => { const out = []; for (const [a] of spec) for (const [b] of spec) if (b > a * 1.0001) { const c = cents(b / a); if (c <= cmax) out.push(c); } return out; };
         v.render(() => {
           const K = curve(), nrm = (d) => (d - K.mn) / (K.mx - K.mn);
           sp.setView([0.9, Math.max(3, 1.3 * Math.max(...K.spec.map((p) => p[0])))], [0, 1.15]);
           for (const [r, a] of K.spec) { sp.line(r, 0, r, a, { color: 'accent', width: 3 }); sp.dot(r, a, { r: 4, color: 'accent' }); sp.text(ratioStr(r), r, a, { color: 'accent', size: 10, align: 'center', dy: -10 }); }
-          cv.setView([0, K.cmax], [0, 1.12]);
+          cv.setView([0, K.cmax], [-0.09, 1.12]);
           cv.setTicks(Array.from({ length: Math.floor(K.cmax / 200) + 1 }, (_, k) => [200 * k, String(200 * k)]), undefined);
           const R = ratios(K.spec, K.cmax);
-          for (const c of R) cv.poly([[c, 0], [c - K.cmax * 0.006, 0.05], [c + K.cmax * 0.006, 0.05]], { fill: 'orange', fillAlpha: 0.85, color: 'orange' });
+          for (const c of R) cv.poly([[c, -0.015], [c - K.cmax * 0.007, -0.085], [c + K.cmax * 0.007, -0.085]], { fill: 'orange', fillAlpha: 0.85, color: 'orange' });
           cv.path(Array.from(K.C.c, (c, i) => [c, nrm(K.C.d[i])]), { color: 'accent', width: 2.4 });
           for (const m of K.mins) { const onR = R.some((c) => Math.abs(c - m.c) < 10); cv.dot(m.c, nrm(m.d), { r: onR ? 5 : 4, color: 'green', hollow: !onR }); }
           if (cur != null) cv.vline(cur, { color: 'gold', width: 1.6 });

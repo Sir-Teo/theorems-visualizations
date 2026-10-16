@@ -122,9 +122,9 @@ export function landScale(f, [x0, x1], [y0, y1]) {
 /** Draw the heat map and contours of f on stage s. `key` must change whenever f or the window changes. */
 export function drawLand(s, f, view, key, { levels = 14, alpha = 0.9, contourAlpha = 0.5 } = {}) {
   const sc = landScale(f, view.x, view.y);
-  s.heat((x, y) => sc.t(f(x, y)), { range: [0, 1], cmap: 'theme', color: 'accent', res: 3, key: 'L|' + key, alpha });
+  s.heat((x, y) => sc.t(f(x, y)), { range: [0, 1], cmap: 'theme', color: 'accent', res: 3, key: 'L|' + key, alpha, rect: [view.x[0], view.y[0], view.x[1], view.y[1]] });
   const L = []; for (let k = 1; k <= levels; k++) L.push(sc.level(k, levels));
-  s.contour(f, L, { color: 'ink', alpha: contourAlpha, width: 1, res: 110 });
+  s.clip(() => s.contour(f, L, { color: 'ink', alpha: contourAlpha, width: 1, res: 110 }), view.x, view.y);
   return sc;
 }
 
@@ -163,7 +163,7 @@ export const EX = {
 };
 
 /** Format a number with a real minus sign. */
-export const fx = (v, x, d = 3) => (Number.isFinite(x) ? v.fix(x, d) : '—');
+export const fx = (v, x, d = 3) => (Number.isFinite(x) ? (Math.abs(x) < 0.5 * 10 ** -d ? v.fix(0, d) : v.fix(x, d)) : '—');
 /** Format a 2-vector. */
 export const fv = (v, a, d = 2) => `(${fx(v, a[0], d)}, ${fx(v, a[1], d)})`;
 

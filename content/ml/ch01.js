@@ -4,7 +4,7 @@
 // problems differ (a toy threshold-learning spam filter whose error curve is simulated for each combination of switches).
 import { clamp, rand, hashStr, memo, mean, commas, lineMass, lineDraw, GAP_W, BEHAVIOURS, pigeonRun, favouriteShare } from './ch01.shared.js';
 
-const fx = (x) => (x < 1e-3 ? `${(x * 10 ** -Math.floor(Math.log10(x || 1))).toFixed(1)}\\times10^{${Math.floor(Math.log10(x || 1))}}` : x.toFixed(3));
+const fx = (x) => (x <= 0 ? "0" : x < 1e-3 ? `${(x * 10 ** -Math.floor(Math.log10(x || 1))).toFixed(1)}\\times10^{${Math.floor(Math.log10(x || 1))}}` : x.toFixed(3));
 const TH = 0.37; // the true spam threshold of the toy filter in item 1.1b
 
 /** Estimates θ̂_1..θ̂_M and the examples a learner sees: cfg = {labels, active, teacher, gap}. */

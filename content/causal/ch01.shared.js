@@ -44,8 +44,8 @@ export function makePop(n, seed, o = {}) {
 }
 /** Treatment indicators. Self-selection: P(A=1) = logistic(a + k·x + g·τ/sd(τ)) (k: sicker seek treatment; g: self-selection on gain). */
 export function selectAssign(P, seed, k, g = 0, a = 0) {
-  const r = rng(seed * 104729 + 7), A = new Uint8Array(P.n), st = Math.max(1e-9, sdev(P.t));
-  for (let i = 0; i < P.n; i++) A[i] = r() < logistic(a + k * P.x[i] + g * (P.t[i] - mean(P.t)) / st) ? 1 : 0;
+  const r = rng(seed * 104729 + 7), A = new Uint8Array(P.n), st = Math.max(1e-9, sdev(P.t)), mt = mean(P.t);
+  for (let i = 0; i < P.n; i++) A[i] = r() < logistic(a + k * P.x[i] + g * (P.t[i] - mt) / st) ? 1 : 0;
   return A;
 }
 /** Complete randomization: exactly m of n treated. */

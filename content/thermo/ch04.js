@@ -434,8 +434,8 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
           if (run.length) { if (stage !== stg) { const last = run[run.length - 1]; flush(); run = [last]; stg = stage; } run.push([Q, tNow]); flush(); }
           sc.dot(Q, tNow, { r: 5.5, color: 'gold' });
           // plateau brackets
-          sc.measure(H.melt0, 18, H.melt1, 18, null, { color: 'purple' });
-          sc.text(`fusion ${v.fix(H.melt1 - H.melt0, 1)} kJ`, (H.melt0 + H.melt1) / 2, 18, { dy: -11, size: 11.5, color: 'purple', align: 'center', plate: true });
+          sc.measure(H.melt0, -9, H.melt1, -9, null, { color: 'purple' });
+          sc.text(`fusion ${v.fix(H.melt1 - H.melt0, 1)} kJ`, H.melt1, -9, { dx: 10, size: 11.5, color: 'purple', align: 'left', plate: true });
           sc.measure(H.boil0, H.Tb - 16, H.boil1, H.Tb - 16, `vaporization ${v.fix(H.boil1 - H.boil0, 0)} kJ`, { math: false, color: 'red', size: 11.5 });
           sc.hline(H.Tb, { color: 'red', width: 1, dash: [3, 4] });
           sc.text(`boils at ${v.fix(H.Tb, 1)} °C`, H.Qend * 0.02, H.Tb, { dy: -9, size: 11, color: 'red', align: 'left', plate: true });

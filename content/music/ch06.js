@@ -76,12 +76,12 @@ Three kinds of explanation compete:
         v.render(() => {
           const { a, b, fa, fb } = segs();
           // ---- monochord
-          ms.rect(-0.03, -0.98, 1.03, -0.62, { fill: 'orange', fillAlpha: 0.12, color: 'orange', width: 1, radius: 6 });
-          ms.text('sounding box', 0.5, -0.8, { color: 'orange', size: 11, align: 'center' });
+          ms.rect(-0.03, -0.99, 1.03, -0.7, { fill: 'orange', fillAlpha: 0.12, color: 'orange', width: 1, radius: 6 });
+          ms.text('sounding box', 0.75, -0.85, { color: 'orange', size: 11, align: 'center' });
           DIV.forEach(([p, q], k) => {
-            const x = q / (p + q), near = Math.abs(x - br.x) < 0.004, row = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1][k];
-            ms.line(x, -0.06, x, row ? -0.33 : -0.18, { color: near ? 'green' : 'muted', width: near ? 2 : 1, alpha: 0.8 });
-            ms.text(`${p}:${q}`, x, row ? -0.43 : -0.28, { color: near ? 'green' : 'muted', size: near ? 12 : 10.5, align: 'center', weight: near ? 700 : 400 });
+            const x = q / (p + q), near = Math.abs(x - br.x) < 0.004, row = [0, 1, 0, 1, 0, 1, 0, 1, 2, 1][k];
+            ms.line(x, -0.06, x, [-0.18, -0.33, -0.48][row], { color: near ? 'green' : 'muted', width: near ? 2 : 1, alpha: 0.8 });
+            ms.text(`${p}:${q}`, x, [-0.28, -0.43, -0.58][row], { color: near ? 'green' : 'muted', size: near ? 12 : 10.5, align: 'center', weight: near ? 700 : 400 });
           });
           const lens = (x0, x1, amp, col) => { const P = [], Q = []; for (let i = 0; i <= 60; i++) { const u = i / 60, x = x0 + (x1 - x0) * u, y = amp * Math.sin(Math.PI * u); P.push([x, y]); Q.push([x, -y]); } ms.poly(P.concat(Q.reverse()), { fill: col, fillAlpha: 0.13, color: col, width: 1 }); };
           lens(0, a, 0.42 * Math.sqrt(a), 'accent'); lens(a, 1, 0.42 * Math.sqrt(b), 'teal');

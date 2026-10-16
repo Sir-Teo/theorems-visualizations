@@ -45,13 +45,13 @@ function decimalCost(a, b) {
 }
 
 // ---------------------------------------------------------------- base 60
-function toSexa(x, places) { const ip = Math.floor(x); let f = x - ip; const d = []; for (let i = 0; i < places; i++) { f *= 60; const k = Math.floor(f + 1e-12); d.push(k); f -= k; } return { ip, d }; }
+function toSexa(x, places) { const ip = Math.floor(x); let f = x - ip; const d = []; for (let i = 0; i < places; i++) { f *= 60; const k = Math.floor(f + 1e-9); d.push(k); f = Math.max(0, f - k); } return { ip, d }; }
 function roundSexa(x, places) { const s = 60 ** places, r = Math.round(x * s) / s; return { val: r, ...toSexa(r + 1e-13, places) }; }
 /** Cuneiform digit 1–59 at (x, y): Winkelhaken (tens) then vertical wedges (units). Returns the width used. */
 function cuneiDigit(s, n, x, y, u, col = 'ink') {
   const tens = Math.floor(n / 10), ones = n % 10; let cx = x;
   const st = { fill: col, fillAlpha: 0.55, color: col, width: 1 };
-  for (let i = 0; i < tens; i++) { s.poly([[cx + 0.3 * u, y + 0.22 * u], [cx, y], [cx + 0.3 * u, y - 0.22 * u], [cx + 0.18 * u, y]], st); cx += 0.27 * u; }
+  for (let i = 0; i < tens; i++) { s.poly([[cx + 0.22 * u, y + 0.2 * u], [cx, y], [cx + 0.22 * u, y - 0.2 * u], [cx + 0.13 * u, y]], st); cx += 0.2 * u; }
   if (tens && ones) cx += 0.08 * u;
   const rows = ones > 3 ? [Math.ceil(ones / 2), Math.floor(ones / 2)] : [ones];
   const cols = rows[0];
@@ -278,9 +278,9 @@ The Chinese **suanpan** has rods with two beads worth five above a beam and five
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Abacus' },
       viz(v) {
         const R = 7;
-        const A = v.stage({ x: [-0.6, R - 0.4], y: [-0.4, 3.0], axes: false, height: 230, full: true, title: 'suanpan (rods: units on the right)' });
+        const A = v.stage({ x: [-0.6, R - 0.4], y: [-0.8, 3.0], axes: false, height: 250, full: true, title: 'suanpan (rods: units on the right)' });
         const Bd = v.stage({ x: [-0.6, R - 0.4], y: [-0.2, 2.6], axes: false, height: 200, weight: 1.3, minWidth: 380, title: 'the same number on a counting board' });
-        const D = yearStage(v, [-500, 1700], { height: 200, weight: 1, minWidth: 300, title: 'dated evidence: boards and beads' });
+        const D = yearStage(v, [-650, 1750], { height: 200, weight: 1, minWidth: 300, title: 'dated evidence: boards and beads' });
         const op = v.select('operation', [{ value: 'add', label: 'add' }, { value: 'mul', label: 'multiply' }], 'add', { onChange: () => S.reset(undefined, { at: 'start' }) });
         const base = v.select('base', [{ value: 10, label: 'base 10' }, { value: 16, label: 'base 16 (jin, liang)' }], 10, { onChange: () => S.reset(undefined, { at: 'start' }) });
         const aS = v.slider('a', 1, 9999, 4782, { int: true, onChange: () => S.reset(undefined, { at: 'start' }) });
@@ -312,7 +312,7 @@ The Chinese **suanpan** has rods with two beads worth five above a beam and five
           }
           return frames;
         };
-        const S = v.steps({ frames: build, code: ['set the first number', 'for each digit (or digit product):', '  add it to its rod', '  rod full? clear it, carry 1 left', 'read the rods'], codeTitle: 'rules', still: 'end', speed: 1.2 });
+        const S = v.steps({ frames: build, start: 2, still: 'end', speed: 1.2 });
         v.render(() => {
           const f = S.frame, rods = f.rods || new Array(R).fill(0), B = +base.value, hi = new Set(f.hi || []);
           // ---- suanpan: x = R-1-i for rod i
@@ -321,9 +321,9 @@ The Chinese **suanpan** has rods with two beads worth five above a beam and five
           for (let i = 0; i < R; i++) {
             const x = R - 1 - i, [u, l] = beadsOf(rods[i]), col = hi.has(i) ? 'gold' : 'accent';
             A.line(x, -0.3, x, 2.9, { color: 'muted', width: 2 });
-            for (let k = 0; k < 2; k++) { const on = k < u, y = on ? 1.82 - k * 0.3 : 2.72 - (1 - k) * 0.3; A.rect(x - 0.33, y - 0.12, x + 0.33, y + 0.12, { fill: on ? col : 'muted', fillAlpha: on ? 0.85 : 0.3, color: on ? col : 'muted', width: 1, radius: 8 }); }
-            for (let k = 0; k < 5; k++) { const on = k < l, y = on ? 1.75 - 0.33 - k * 0.27 : -0.15 + (4 - k) * 0.27; A.rect(x - 0.33, y - 0.11, x + 0.33, y + 0.11, { fill: on ? col : 'muted', fillAlpha: on ? 0.85 : 0.3, color: on ? col : 'muted', width: 1, radius: 8 }); }
-            A.text(rods[i].toString(B).toUpperCase(), x, -0.38, { size: 12, color: hi.has(i) ? 'gold' : 'ink', align: 'center', baseline: 'top', weight: 700 });
+            for (let k = 0; k < 2; k++) { const on = k < u, y = on ? 2.15 + k * 0.27 : 2.76 - (1 - k) * 0.27; A.rect(x - 0.33, y - 0.12, x + 0.33, y + 0.12, { fill: on ? col : 'muted', fillAlpha: on ? 0.85 : 0.3, color: on ? col : 'muted', width: 1, radius: 8 }); }
+            for (let k = 0; k < 5; k++) { const on = k < l, y = on ? 1.85 - k * 0.27 : -0.16 + (4 - k) * 0.27; A.rect(x - 0.33, y - 0.11, x + 0.33, y + 0.11, { fill: on ? col : 'muted', fillAlpha: on ? 0.85 : 0.3, color: on ? col : 'muted', width: 1, radius: 8 }); }
+            A.text(rods[i].toString(B).toUpperCase(), x, -0.42, { size: 12, color: hi.has(i) ? 'gold' : 'ink', align: 'center', baseline: 'top', weight: 700 });
           }
           // ---- counting board (base 10 only)
           if (B === 10) {
@@ -382,13 +382,13 @@ Without a zero the notation is ambiguous: a Babylonian "1 4" might mean $64$, $3
         const places = v.slider('sexagesimal places', 1, 5, 3, { int: true });
         const zS = v.slider('number', 1, 216000, 3604, { int: true, log: true });
         const pairs = (() => { const r = v.rng(8), out = []; for (let i = 0; i < 200; i++) { const a = r.int(2, 99), b = r.int(2, 99); out.push([a * b, romanCost(a, b).total, decimalCost(a, b).total]); } return out; })();
-        const tri = (x0, y0, w) => A.poly([[x0, y0], [x0 + w, y0], [x0 + w / 2, y0 - w * 0.9]], { fill: 'ink' });
+        const tri = (x0, y0, w) => A.poly([[x0, y0], [x0 + w, y0 + 0.1], [x0 + w * 0.3, y0 - w * 0.9]], { fill: 'ink', fillAlpha: 0.6, color: 'ink', width: 1 });
         v.render(() => {
           const m = mode.value;
           aS.el.hidden = bS.el.hidden = m !== 'mul'; places.el.hidden = m !== 's60'; zS.el.hidden = m !== 'zero';
           if (m === 'mul') {
             const a = aS.value, b = bS.value, rc = romanCost(a, b), dc = decimalCost(a, b);
-            B.setView([1, 10000], [1, 2000]); B.setScale({ xlog: true, ylog: true }); B.setLabels('product', 'symbol operations'); B.setTitle('cost of a multiplication');
+            B.setView([1, 10000], [1, 2000]); B.setScale({ xlog: true, ylog: true }); B.setTicks(null, null); B.setLabels('product', 'symbol operations'); B.setTitle('cost of a multiplication');
             for (const [p, r, d] of pairs) { B.dot(p, r, { r: 2.2, color: 'red' }); B.dot(p, d, { r: 2.2, color: 'accent' }); }
             B.dot(a * b, rc.total, { r: 6, color: 'red', hollow: true }); B.dot(a * b, dc.total, { r: 6, color: 'accent', hollow: true });
             // working
@@ -404,18 +404,19 @@ Without a zero the notation is ambiguous: a Babylonian "1 4" might mean $64$, $3
             rows.forEach((s, i) => A.text(s, 4.0, 2.55 - i * 0.42, { size: 13, color: i === rows.length - 1 ? 'accent' : 'ink', align: 'right', weight: i === rows.length - 1 ? 700 : 500 }));
             A.line(2.6, 2.55 - 1.5 * 0.42 + 0.02, 4.1, 2.55 - 1.5 * 0.42 + 0.02, { color: 'ink', width: 1 });
             if (dc.rows.length > 1) A.line(2.6, 2.55 - (rows.length - 1.5) * 0.42, 4.1, 2.55 - (rows.length - 1.5) * 0.42, { color: 'ink', width: 1 });
-            A.text(`${dc.products} digit products, ${dc.written} digits written, ${dc.adds} column sums`, 4.6, 1.9, { size: 11.5, color: 'ink', align: 'left' });
-            A.text(`total ${dc.total} vs ${rc.total} for Roman`, 4.6, 1.35, { size: 12, color: 'accent', align: 'left', weight: 700 });
+            A.text(`${dc.products} digit products,`, 4.6, 2.2, { size: 11.5, color: 'ink', align: 'left' });
+            A.text(`${dc.written} digits written, ${dc.adds} column sums`, 4.6, 1.75, { size: 11.5, color: 'ink', align: 'left' });
+            A.text(`total ${dc.total} vs ${rc.total} for Roman`, 4.6, 1.2, { size: 12, color: 'accent', align: 'left', weight: 700 });
           } else if (m === 's60') {
             // tablet: square with diagonals, numbers in cuneiform
-            const cx = 2.6, cy = 3.0, h = 1.9, rot = Math.PI / 4, P = (x, y) => [cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot)];
-            A.circle(cx, cy, 2.75, { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 2 });
+            const cx = 2.75, cy = 3.0, h = 1.75, rot = Math.PI / 4, P = (x, y) => [cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot)];
+            A.circle(cx, cy, 2.6, { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 2 });
             const sq = [P(-h / 2 * 1.41, -h / 2 * 1.41), P(h / 2 * 1.41, -h / 2 * 1.41), P(h / 2 * 1.41, h / 2 * 1.41), P(-h / 2 * 1.41, h / 2 * 1.41)];
             A.poly(sq, { color: 'ink', width: 1.6 }); A.line(sq[0][0], sq[0][1], sq[2][0], sq[2][1], { color: 'ink', width: 1.2 }); A.line(sq[1][0], sq[1][1], sq[3][0], sq[3][1], { color: 'ink', width: 1.2 });
-            cuneiDigit(A, 30, 0.55, 4.35, 0.75);
-            let x = 1.25; for (const d of [1, 24, 51, 10]) { x += cuneiDigit(A, d, x, 3.2, 0.6, 'accent') + 0.22; }
-            x = 1.45; for (const d of [42, 25, 35]) { x += cuneiDigit(A, d, x, 2.45, 0.6, 'green') + 0.22; }
-            A.text('30', 0.4, 4.95, { size: 10.5, color: 'ink', align: 'left' });
+            cuneiDigit(A, 30, 0.95, 4.3, 0.75);
+            let x = 1.2; for (const d of [1, 24, 51, 10]) { x += cuneiDigit(A, d, x, 3.25, 0.6, 'accent') + 0.3; }
+            x = 1.45; for (const d of [42, 25, 35]) { x += cuneiDigit(A, d, x, 2.55, 0.6, 'green') + 0.3; }
+            A.text('30', 0.85, 4.85, { size: 10.5, color: 'ink', align: 'left' });
             A.text('1;24,51,10', 2.6, 3.65, { size: 10.5, color: 'accent', align: 'center' });
             A.text('42;25,35', 2.6, 1.95, { size: 10.5, color: 'green', align: 'center' });
             // iteration table
@@ -425,10 +426,10 @@ Without a zero the notation is ambiguous: a Babylonian "1 4" might mean $64$, $3
             A.text(`√2 to ${n} place${n > 1 ? 's' : ''}: 1;${r.d.join(',')}`, 5.6, 5.4, { size: 12.5, color: 'accent', align: 'left', weight: 700 });
             A.text(`= ${r.val.toFixed(10)}, error ${v.fmt(r.val - Math.SQRT2, 2)}`, 5.6, 4.9, { size: 11.5, color: 'ink', align: 'left' });
             A.text('Heron: x ← (x + 2/x) / 2', 5.6, 4.1, { size: 11.5, color: 'ink', align: 'left' });
-            it.forEach((xv, k) => { const s = toSexa(xv, 5); A.text(`x${k} = 1;${s.d.map((d) => String(d).padStart(2, '0')).join(',')}`, 5.6, 3.55 - k * 0.48, { size: 11, color: k === 2 ? 'green' : 'muted', align: 'left' }); });
-            A.text('x₂ already rounds to the tablet’s 1;24,51,10', 5.6, 1.45, { size: 10.5, color: 'green', align: 'left' });
+            it.forEach((xv, k) => { const s = toSexa(xv, 5); A.text(`x${k} = 1;${s.d.map((d) => String(d).padStart(2, '0')).join(',')}`, 5.6, 3.55 - k * 0.48, { size: 11, color: k === 3 ? 'green' : 'muted', align: 'left' }); });
+            A.text('x₃ rounded to 3 places = the tablet’s value', 5.6, 1.45, { size: 10.5, color: 'green', align: 'left' });
             // B: error vs places
-            B.setScale({ xlog: false, ylog: true }); B.setView([0.5, 5.5], [1e-12, 1]); B.setLabels('sexagesimal places kept', '|error|'); B.setTitle('error of the rounded value');
+            B.setScale({ xlog: false, ylog: true }); B.setView([0.5, 5.5], [1e-12, 1]); B.setTicks([1, 2, 3, 4, 5], null); B.setLabels('sexagesimal places kept', '|error|'); B.setTitle('error of the rounded value');
             for (let k = 1; k <= 5; k++) { const e = Math.abs(roundSexa(Math.SQRT2, k).val - Math.SQRT2); B.rect(k - 0.3, 1e-12, k + 0.3, Math.max(e, 1e-12), { fill: k === n ? 'accent' : 'muted', fillAlpha: k === 3 ? 0.8 : 0.4, color: k === 3 ? 'gold' : 'muted', width: k === 3 ? 2 : 1 }); }
             B.text('YBC 7289', 3, 3e-6, { size: 11, color: 'gold', align: 'center', weight: 700, plate: true });
           } else {
@@ -445,10 +446,10 @@ Without a zero the notation is ambiguous: a Babylonian "1 4" might mean $64$, $3
             for (let p0 = maxPos; p0 >= k - 3; p0--) rec(1, p0, nz[0] * 60 ** p0);
             const list = [...readings].filter((r) => r < 1e7).sort((a, b) => a - b);
             A.text(`could be read ${list.length} ways, e.g.:`, 0.2, 2.35, { size: 11.5, color: 'ink', align: 'left' });
-            const show = list.filter((r) => Number.isInteger(r)).slice(0, 6).concat(list.filter((r) => !Number.isInteger(r)).slice(-2));
+            const show = list.filter((r) => Number.isInteger(r)).slice(0, 6).concat(list.filter((r) => !Number.isInteger(r)).slice(0, 2));
             A.text(show.map((r) => (Number.isInteger(r) ? String(r) : v.fix(r, 4))).join(',  '), 0.2, 1.8, { size: 11.5, color: 'red', align: 'left' });
             A.text(`(the true value ${N} is one of them)`, 0.2, 1.25, { size: 11, color: 'muted', align: 'left' });
-            B.setScale({ xlog: false, ylog: false }); B.setView([0, 1], [0, 1]); B.setLabels(null, null); B.setTitle('a digit’s value depends on its place');
+            B.setScale({ xlog: false, ylog: false }); B.setView([0, 1], [0, 1]); B.setLabels(null, null); B.setTicks([], []); B.setTitle('a digit’s value depends on its place');
             B.text('the same two digits, 1 and 4:', 0.5, 0.88, { size: 12, color: 'ink', align: 'center' });
             [['1,4', '64'], ['1,0,4', '3,604'], ['1,4,0', '3,840'], ['1;4', '1 + 4/60'], ['0;1,4', '1/60 + 4/3600']].forEach(([w, val], i) => { B.text(w, 0.32, 0.72 - i * 0.14, { size: 12.5, color: 'accent', align: 'right', weight: 700 }); B.text(`= ${val}`, 0.38, 0.72 - i * 0.14, { size: 12, color: 'ink', align: 'left' }); });
           }
@@ -519,7 +520,8 @@ Standard weights are a coding problem: with one pan, a set of $n$ weights can ma
         const cover = {}; for (const k of Object.keys(SETS)) cover[k] = Array.from({ length: 131 }, (_, W) => (W === 0 ? true : solve(k, W).ok));
         // steelyard geometry (data units = dm): fulcrum at 0, hooks at a = 0.8 (light) / 0.35 (heavy), beam weight 1.2 kg at c = 1.0 on the long side, counterpoise 1 kg
         const wC = 1, Mb = 1.2, cB = 1.0;
-        const cp = A.handle(3, 0.3, { color: 'gold', label: 'counterpoise', labelPos: 'n', constrain: (x) => [clamp(x, 1.0, 5.4), 0.3] });
+        let cpx = 3;
+        const cp = A.handle(3, 0.3, { color: 'gold', label: 'counterpoise', labelPos: 'n', constrain: (x, y) => { cpx = clamp(x, 1.0, 5.4); return [cpx, y]; } });
         v.render(() => {
           const m = mode.value; cp.visible = m === 'sy'; set.el.hidden = m !== 'bal'; load.el.hidden = m !== 'bal'; heavy.el.hidden = m !== 'sy';
           if (m === 'bal') {
@@ -544,17 +546,17 @@ Standard weights are a coding problem: with one pan, a set of $n$ weights can ma
               const y = 0.78 - r * 0.28, on = k === set.value, maxW = s.two ? (s.w.reduce((a, b) => a + b, 0)) : s.w.reduce((a, b) => a + b, 0);
               B.text(`${s.label}: ${s.w.length} weights`, 0.02, y + 0.12, { size: 11, color: on ? 'ink' : 'muted', align: 'left', weight: on ? 700 : 500 });
               for (let Wx = 1; Wx <= 130; Wx++) { const x0 = 0.02 + (Wx - 1) * (0.96 / 130); B.rect(x0, y - 0.04, x0 + 0.96 / 130, y + 0.05, { fill: cover[k][Wx] ? (on ? 'green' : 'muted') : 'red', fillAlpha: cover[k][Wx] ? (on ? 0.7 : 0.35) : 0.55, stroke: false }); }
-              const reach = cover[k].findIndex((c, i) => i > 0 && !c); B.text(`every load 1–${reach < 0 ? 130 : reach - 1}${reach < 0 ? '+' : ''} (max ${maxW})`, 0.98, y - 0.09, { size: 10.5, color: on ? 'green' : 'muted', align: 'right', baseline: 'top' });
+              const reach = cover[k].findIndex((c, i) => i > 0 && !c); B.text(`every load 1–${reach < 0 ? 130 : reach - 1}${reach < 0 ? '+' : ''} (max ${maxW})`, 0.5, y + 0.005, { size: 10.5, color: on ? 'green' : 'ink', align: 'center', baseline: 'middle', plate: true });
             });
             const xW = 0.02 + (load.value - 0.5) * (0.96 / 130); B.line(xW, 0.0, xW, 0.92, { color: 'orange', width: 1.5, dash: [4, 3] });
             B.text('loads 1 → 130 units', 0.5, 0.0, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
           } else {
-            const a = heavy.value ? 0.35 : 0.8, x = cp.x;
+            const a = heavy.value ? 0.35 : 0.8, x = cpx;
             // load fixed for the picture: the load that would balance at the current mark
             const Wbal = (wC * x + Mb * cB) / a;
             const Wshow = heavy.value ? 12 : 5; // a fixed sack (kg) hanging on the hook
             const tau = wC * x + Mb * cB - Wshow * a, th = clamp(Math.atan(tau / 6), -0.25, 0.25);
-            const P = (u) => [u * Math.cos(th), 0.3 + u * Math.sin(th)];
+            const P = (u) => [u * Math.cos(th), 0.3 - u * Math.sin(th)];
             A.line(-5.8, -3.0, 5.8, -3.0, { color: 'muted', width: 1 });
             A.line(0, 0.3, 0, 2.6, { color: 'muted', width: 1.4 }); A.dot(0, 0.3, { r: 4, color: 'ink' });
             const e1 = P(-1.2), e2 = P(5.6); A.line(e1[0], e1[1], e2[0], e2[1], { color: 'ink', width: 4 });
@@ -563,7 +565,7 @@ Standard weights are a coding problem: with one pan, a set of $n$ weights can ma
             const hk = P(-a); A.line(hk[0], hk[1], hk[0], hk[1] - 1.2, { color: 'muted', width: 1.2 });
             A.poly([[hk[0] - 0.55, hk[1] - 1.2], [hk[0] + 0.55, hk[1] - 1.2], [hk[0] + 0.75, hk[1] - 2.5], [hk[0] - 0.75, hk[1] - 2.5]], { fill: 'orange', fillAlpha: 0.5, color: 'orange', width: 1.4 });
             A.text(`${v.fix(Wshow, 1)} kg`, hk[0], hk[1] - 1.85, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
-            const pc = P(x); cp.set(x, 0.3); A.line(pc[0], pc[1], pc[0], pc[1] - 0.8, { color: 'gold', width: 1.2 }); A.circle(pc[0], pc[1] - 1.05, 0.25, { fill: 'gold', fillAlpha: 0.7, color: 'gold', width: 1.2 });
+            const pc = P(x); if (!cp.dragging) cp.set(pc[0], pc[1]); A.line(pc[0], pc[1], pc[0], pc[1] - 0.8, { color: 'gold', width: 1.2 }); A.circle(pc[0], pc[1] - 1.05, 0.25, { fill: 'gold', fillAlpha: 0.7, color: 'gold', width: 1.2 });
             const ok = Math.abs(tau) < 0.15;
             A.corner(ok ? `balanced: reads ${v.fix(Wbal, 1)} kg` : `${tau > 0 ? 'long arm down' : 'load side down'}: mark reads ${v.fix(Wbal, 1)} kg`, 'tl', { color: ok ? 'green' : 'red', weight: 700, plate: true });
             // B: reading vs position, both hooks

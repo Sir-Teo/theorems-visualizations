@@ -375,10 +375,10 @@ free of every unknown parameter (stat-2.12). **Fisher's exact test** computes th
         const revS = v.toggle('reveal the truth', true);
         const bNew = v.button('Pour new cups', () => { seed++; pour(); });
         const bRnd = v.button('Random guesser', () => { const r = v.rng(hashStr('guess' + seed + '|' + Date.now())); const idx = Array.from({ length: 2 * mS.value }, (_, i) => i); for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; } guess = new Set(idx.slice(0, mS.value)); });
-        const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 1, title: 'the cups (click to choose milk-first)' });
+        const sL = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 320, weight: 1, title: 'the cups (click to choose milk-first)' });
         const sR = v.stage({ x: [-0.5, 4.5], y: [0, 0.6], axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'correct milk-first calls', ylabel: 'probability', title: 'null distribution (no ability)' });
         const tL = titler(sL), tR = titler(sR);
-        let seed = 1, truth = new Set(), guess = new Set();
+        let seed = 3, truth = new Set(), guess = new Set();
         const pour = () => { const m = mS.value, r = v.rng(hashStr('tea|' + seed + '|' + m)), idx = Array.from({ length: 2 * m }, (_, i) => i); for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; } truth = new Set(idx.slice(0, m)); guess = new Set(truth); };
         pour();
         let tab = [[3, 1], [1, 3]];
@@ -414,7 +414,7 @@ free of every unknown parameter (stat-2.12). **Fisher's exact test** computes th
             sL.text(`${guess.size} of ${m} chosen`, 0.5, 0.06, { color: guess.size === m ? 'muted' : 'red', size: 12, weight: 600 });
             const N = 2 * m, P = Array.from({ length: m + 1 }, (_, j) => dhyper(j, N, m, m)), ok = guess.size === m;
             sR.setView([-0.5, m + 0.5], [0, Math.max(...P) * 1.2]); sR.setTicks(Array.from({ length: m + 1 }, (_, j) => j), null);
-            tR(`null distribution: ${N} cups, ${m} milk-first`);
+            tR(`null distribution: ${N} cups, ${m} milk-first`); sR.setLabels('correct milk-first calls');
             let pv = 0; for (let j = 0; j <= m; j++) { const tail = ok && rev && j >= k; if (tail) pv += P[j]; sR.rect(j - 0.36, 0, j + 0.36, P[j], { fill: tail ? TC.alpha : TC.h0, fillAlpha: tail ? 0.7 : 0.35, color: tail ? TC.alpha : TC.h0, width: 1 }); sR.text(`${Math.round(P[j] * Math.exp(lchoose(N, m)))}/${Math.round(Math.exp(lchoose(N, m)))}`, j, P[j], { size: 10.5, color: 'muted', dy: -8 }); }
             if (ok && rev) sR.vline(k - 0.5, { color: TC.alpha, width: 1.4, dash: [4, 3] });
             v.legend([[TC.sim, 'called milk-first', { area: true }], ...(rev ? [[TC.h1, 'truly milk-first'], [TC.h0, 'truly tea-first']] : []), [TC.alpha, 'p-value: P(at least this many correct)', { area: true }]]);
@@ -425,7 +425,7 @@ free of every unknown parameter (stat-2.12). **Fisher's exact test** computes th
             T.draw({ value: (i, j) => tab[i][j], sub: (i, j) => `E ${v.fix(F.E[i][j], 1)}`, subColor: (i, j) => (F.E[i][j] < 5 ? 'red' : 'muted'), fill: (i, j) => (i === 0 && j === 0 ? [TC.sim, 0.35] : null) });
             const pm = Math.max(...F.P.map((q) => q[1]));
             sR.setView([F.lo - 0.6, F.hi + 0.6], [0, pm * 1.2]); sR.setTicks(F.P.length <= 16 ? F.P.map((q) => q[0]) : null, null);
-            tR('hypergeometric law of the top-left cell');
+            tR('hypergeometric law of the top-left cell'); sR.setLabels('top-left count $a$ (margins fixed)');
             const pobs = dhyper(F.a, F.n, tab[0][0] + tab[0][1], tab[0][0] + tab[1][0]);
             for (const [k, p] of F.P) { const inT = p <= pobs * (1 + 1e-7); sR.rect(k - 0.36, 0, k + 0.36, p, { fill: inT ? TC.alpha : TC.h0, fillAlpha: inT ? 0.65 : 0.35, color: k === F.a ? 'ink' : inT ? TC.alpha : TC.h0, width: k === F.a ? 2.4 : 1 }); }
             v.legend([[TC.alpha, 'tables no more probable than the observed one (two-sided p)', { area: true }], [TC.h0, 'other tables', { area: true }]]);
@@ -441,7 +441,7 @@ free of every unknown parameter (stat-2.12). **Fisher's exact test** computes th
             return String.raw`${k} of ${m} milk-first cups identified · exact $p=P(K\ge${k})=${v.fix(pv, 4)}$` + (k === m ? ` = 1/${commas(Math.round(1 / best))}` : '') + (pv <= 0.05 ? ' · significant at 5%' : ' · not significant at 5%') + (best > 0.01 ? ` · with ${2 * m} cups even a perfect score has p = ${v.fix(best, 3)}: the experiment cannot reach 1%` : '');
           }
           const { F } = st;
-          return String.raw`$n=${F.n}$ · Fisher exact $p$: two-sided **${v.fix(F.two, 4)}**, one-sided $P(A\ge${F.a})=${v.fix(F.up, 4)}$ · Pearson $X^2=${v.fix(F.x2, 3)}$, $\chi^2_1$ $p$-value ${v.fix(F.pchi, 4)}` + (Math.min(...F.E.flat()) < 5 ? ' · expected counts below 5: the χ² approximation is unreliable (here it is anti-conservative)' : '');
+          return String.raw`$n=${F.n}$ · Fisher exact $p$: two-sided **${v.fix(F.two, 4)}**, one-sided $P(A\ge${F.a})=${v.fix(F.up, 4)}$ · Pearson $X^2=${v.fix(F.x2, 3)}$, $\chi^2_1$ $p$-value ${v.fix(F.pchi, 4)}` + (Math.min(...F.E.flat()) < 5 ? ` · expected counts below 5: the χ² approximation is unreliable (here it is ${F.pchi < F.two ? 'anti-conservative' : 'conservative'})` : '');
         });
       },
     },
@@ -520,7 +520,7 @@ for the two-sided two-sample $t$-test with $n$ per group the power is a noncentr
 $$\beta(\theta)\le\alpha\ \text{ for }\theta\in\Theta_0\qquad\text{and}\qquad\beta(\theta)\ge\alpha\ \text{ for }\theta\in\Theta_1:$$
 it is never less likely to reject when $H_0$ is false than when it is true. A **uniformly most powerful unbiased (UMPU)** test is unbiased and has power at least that of every other unbiased level-$\alpha$ test at every $\theta\in\Theta_1$. For a two-sided alternative in a one-parameter exponential family no UMP test exists (stat-6.8), but a UMPU test does: it rejects in both tails of the sufficient statistic, with the tail areas chosen so that the power function has a minimum at $\theta_0$ (its derivative vanishes there). For a normal mean this is the equal-tailed $z$-test; for a normal variance (a $\chi^2$ statistic) the UMPU test does **not** have equal tails.`,
       idea: String.raw`Restricting to unbiased tests rules out the one-sided tests that bought their power on one side by giving up the other, and within the restricted class a best test reappears. Any unbiased test's power function has a minimum at $\theta_0$, so for a smooth power function $\beta'(\theta_0)=0$; for two-tail rejection regions $\{T<a\}\cup\{T>b\}$ of size $\alpha$ this one equation fixes the split. With a symmetric null distribution the split is even; with the skewed $\chi^2$ distribution of $(n-1)S^2/\sigma_0^2$ it is the condition $a\,f(a)=b\,f(b)$, which puts more of $\alpha$ in the lower tail.`,
-      caption: String.raw`Two-sided tests that put a share $\lambda$ of $\alpha=5\%$ in the lower tail and $1-\lambda$ in the upper. Left: the power function of the chosen split (gold) with the other splits faint; red shading marks alternatives where the power falls **below** $\alpha$, i.e. where the test is biased. Right: the smallest power over all parameter values for each split $\lambda$; it equals $\alpha$ (unbiased) at a single split. For the **normal mean** that split is $\lambda=\tfrac12$. Switch to the **normal variance**: the equal-tailed test is biased (it dips below 5% for variances a little above $\sigma_0^2$), and the unbiased split sits elsewhere. Press the button to jump to it.`,
+      caption: String.raw`Two-sided tests that put a share $\lambda$ of $\alpha=5\%$ in the lower tail and $1-\lambda$ in the upper. Left: the power function of the chosen split (gold) with the other splits faint; red shading marks alternatives where the power falls **below** $\alpha$, i.e. where the test is biased. Right: the smallest power over all parameter values for each split $\lambda$; it equals $\alpha$ (unbiased) at a single split. For the **normal mean** that split is $\lambda=\tfrac12$. Switch to the **normal variance**: the equal-tailed test is biased (it dips below 5% for variances a little below $\sigma_0^2$), and the unbiased split sits elsewhere. Press the button to jump to it.`,
       deps: ['stat-6.8'],
       refs: ['Casella–Berger §8.3'],
       tags: ['unbiased test', 'two-sided test', 'power'],
@@ -657,6 +657,177 @@ referring $T_W$ to $t_{\hat\nu}$ (Satterthwaite's approximation, matching the fi
           if (!st) return '';
           const { n1, n2, s1, H, nuBar, C } = st, worst = C.reduce((m, c, i) => (Math.abs(c.p - 0.05) > Math.abs(m[0] - 0.05) ? [c.p, SDs[i]] : m), [0.05, 1]), wW = Math.max(...C.map((c) => Math.abs(c.w - 0.05)));
           return String.raw`$n_1=${n1}$, $n_2=${n2}$, $\sigma_1=${v.fix(s1, 2)}$: realized size pooled **${pct(H.p, 1)}**, Welch **${pct(H.w, 1)}** (± ${pct(2 * mcse(0.05, R), 1)}) · Welch's degrees of freedom here ≈ ${v.fix(nuBar, 1)} (pooled uses ${n1 + n2 - 2}) · across the curve the pooled size ranges up to ${pct(worst[0], 1)} at $\sigma_1=${v.fix(worst[1], 2)}$, while Welch stays within ${pct(wW, 1)} of 5%` + (n1 === n2 ? ' · with equal group sizes pooling is nearly harmless' : '');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.20
+    {
+      num: '6.20',
+      kind: 'Paper',
+      name: 'On the criterion that a given system of deviations…',
+      paper: { authors: 'Karl Pearson', year: 1900, title: 'On the criterion that a given system of deviations from the probable in the case of a correlated system of variables is such that it can be reasonably supposed to have arisen from random sampling', venue: 'The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science (5) 50 (302): 157–175', doi: '10.1080/14786440009463897' },
+      introduces: ['stat-6.14'],
+      credit: 'Karl Pearson, 1900',
+      statement: String.raw`Pearson asked when a set of observed frequencies $m'_1,\dots,m'_{n'}$ in $n'$ groups can "reasonably be supposed" to be a random sample from a theory giving frequencies $m_1,\dots,m_{n'}$. Treating the $n'-1$ free deviations $e=m'-m$ as approximately multivariate normal, he showed that the exponent of their joint density is
+$$\chi^2=\sum_{j=1}^{n'}\frac{(m'_j-m_j)^2}{m_j},$$
+and that $P$, the probability of a system of deviations as improbable as or more improbable than the observed one, is the upper tail of what we now call the $\chi^2$ distribution with $n'-1$ degrees of freedom; he tabulated $P$ for $n'=3,\dots,20$ (with Alice Lee's help). Eight illustrations follow, among them:
+
+(I) W. F. R. Weldon's 26,306 casts of twelve dice, counting dice showing 5 or 6: against $p=\tfrac13$, $\chi^2=43.87$ and $P=0.000016$ ("odds of 62,499 to 1 against");
+
+(II) the same data against $p=0.3377$, the observed proportion: $\chi^2=17.78$, $P=0.1227$;
+
+(III) runs of one colour in 4,274 sets at Monte Carlo roulette, July 1892: $\chi^2=172.43$, $P\approx14.5/10^{30}$;
+
+(VII) Merriman's 1,000 shots at a target, counted in 11 belts, against the normal curve: $\chi^2=45.81$, $P=0.00000155$.
+
+Scope: the derivation is a large-sample approximation (expected counts not too small). Pearson used $n'-1$ degrees of freedom even when the theoretical frequencies had been fitted to the same data; Fisher (1922–24) showed that each fitted constant removes one more degree of freedom.`,
+      idea: String.raw`Before 1900, fits of curves to data were judged by eye; Airy's textbook, which Pearson singles out, smoothed observations three times and then declared the normal law verified. Pearson's criterion gave the first general, quantitative test of goodness of fit, and with it the modern pattern of a test: a statistic, its distribution under the hypothesis, and a tail probability. It introduced the $\chi^2$ statistic and distribution into statistics (stat-6.14, stat-1.8), and used it at once against the reigning belief that errors are normal: of his normal fits, Merriman's target data fail badly and Pearson's own line-bisecting errors pass. The one flaw, the degrees of freedom when parameters are estimated, was fixed by Fisher and led to a long dispute between the two men.`,
+      caption: String.raw`Pearson's own tables, read from the scan of the 1900 *Philosophical Magazine*. Left: observed frequencies (gold) against theoretical ones (blue outline); right: each group's contribution $(m'-m)^2/m$ to $\chi^2$ (purple where more were observed than expected, blue where fewer). For **Weldon's dice** slide $p$, the chance that one die shows 5 or 6: at $p=\tfrac13$ the fives and sixes are over-represented in every group above 4 (Illustration I); at the observed $p=0.3377$ the fit is acceptable (Illustration II); the readout tracks $\chi^2(p)$ and its minimum. Switch the counts to **simulated fair dice** to see what 26,306 honest casts give. **Roulette** and **Merriman's shots** show the other two verdicts, each compared with today's computation.`,
+      deps: ['stat-1.8', 'stat-1.19'],
+      refs: [],
+      tags: ['chi-squared test', 'goodness of fit', 'history'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test', scan: 'https://archive.org/details/londonedinburg5501900lond' },
+      viz(v) {
+        // Pearson (1900), pp. 167–173, as printed
+        const DICE = [185, 1149, 3265, 5475, 6114, 5194, 3067, 1331, 403, 105, 14, 4, 0];
+        const DICE_T1 = [203, 1217, 3345, 5576, 6273, 5018, 2927, 1254, 392, 87, 13, 1, 0];
+        const DICE_T2 = [187, 1146, 3215, 5465, 6269, 5115, 3043, 1330, 424, 96, 15, 1, 0];
+        const ROU = [2462, 945, 333, 220, 135, 81, 43, 30, 12, 7, 5, 1, 0], ROU_T = [2137, 1068, 534, 267, 134, 67, 33, 17, 8, 4, 2, 1, 0];
+        const MER = [1, 4, 10, 89, 190, 212, 204, 193, 79, 16, 2], MER_T = [1, 6, 27, 67, 162, 242, 240, 157, 70, 26, 2];
+        const NC = 26306, PH = 106602 / (12 * NC);
+        const illS = v.select('illustration', [{ value: 'dice', label: 'I–II: Weldon’s dice' }, { value: 'rou', label: 'III: Monte Carlo roulette' }, { value: 'mer', label: 'VII: Merriman’s shots' }], 'dice');
+        const pS = v.slider('dice: chance of a 5 or 6, $p$', 0.32, 0.35, 1 / 3, { step: 0.0001, fmt: (x) => x.toFixed(4) });
+        const bI = v.button('p = 1/3 (Illustration I)', () => pS.set(1 / 3));
+        const bII = v.button('p = 0.3377 (Illustration II)', () => pS.set(PH));
+        const srcS = v.select('dice counts', [{ value: 'weldon', label: 'Weldon’s 26,306 casts' }, { value: 'fair', label: 'simulated fair dice' }], 'weldon');
+        let seed = 1;
+        const bRe = v.button('Throw again', () => { seed++; });
+        const sL = v.stage({ x: [-0.5, 12.5], y: [0, 7000], axes: 'box', gutter: { l: 52 }, height: 340, weight: 1.1, xlabel: 'dice showing 5 or 6 (of 12)', ylabel: 'frequency', title: 'observed and theoretical frequencies' });
+        const sR = v.stage({ x: [-0.5, 12.5], y: [0, 10], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 240, xlabel: 'group', ylabel: '$(m\'-m)^2/m$', title: 'contributions to $\\chi^2$' });
+        const tL = titler(sL);
+        const mc = memo();
+        const fair = (s) => mc(s, () => { const r = v.rng(hashStr('weldon|' + s)), O = new Array(13).fill(0); for (let c = 0; c < NC; c++) { let k = 0; for (let d = 0; d < 12; d++) if (r() < 1 / 3) k++; O[k]++; } return O; });
+        const binE = (p) => DICE.map((_, k) => NC * dbinom(k, 12, p));
+        let st = null;
+        v.render(() => {
+          const ill = illS.value, dice = ill === 'dice';
+          pS.el.hidden = !dice; bI.hidden = !dice; bII.hidden = !dice; srcS.el.hidden = !dice; bRe.hidden = !dice || srcS.value !== 'fair';
+          let O, E, printed = null, xl, labs;
+          if (dice) {
+            const p = pS.value; O = srcS.value === 'fair' ? fair(seed) : DICE; E = binE(p);
+            if (srcS.value === 'weldon') { if (Math.abs(p - 1 / 3) < 5e-5) printed = DICE_T1; else if (Math.abs(p - PH) < 5e-5) printed = DICE_T2; }
+            xl = 'dice showing 5 or 6 (of 12)'; tL(srcS.value === 'fair' ? `26,306 casts of twelve fair dice (throw ${seed})` : 'Weldon’s dice: 26,306 casts of twelve');
+          } else if (ill === 'rou') { O = ROU; E = ROU.map((_, k) => (k < 12 ? 4274 / 2 ** (k + 1) : 4274 / 2 ** 12)); printed = ROU_T; xl = 'length of run of one colour (13 = over 12)'; tL('4,274 runs at Monte Carlo roulette, July 1892'); }
+          else { O = MER; E = MER_T; printed = MER_T; xl = 'belt on the target'; tL('Merriman’s 1,000 shots, by belt'); }
+          const G = O.length, x0 = ill === 'dice' ? 0 : 1;
+          labs = O.map((_, k) => k + x0);
+          const ym = Math.max(...O, ...E) * 1.12;
+          sL.setView([x0 - 0.6, x0 + G - 0.4], [0, ym]); sL.setLabels(xl); sR.setView([x0 - 0.6, x0 + G - 0.4], [0, 1]);
+          for (let k = 0; k < G; k++) {
+            const x = labs[k];
+            sL.rect(x - 0.32, 0, x + 0.32, O[k], { fill: TC.sim, fillAlpha: 0.65, color: TC.sim, width: 1 });
+            sL.rect(x - 0.4, 0, x + 0.4, E[k], { color: TC.h0, width: 2, fill: false });
+            if (printed) sL.line(x - 0.42, printed[k], x + 0.42, printed[k], { color: TC.h1, width: 1.6, dash: [3, 2] });
+          }
+          if (ill === 'rou') sL.text('Pearson’s theory: half the runs of each length ends there', x0 + G - 0.5, ym * 0.93, { color: 'muted', size: 11, align: 'right' });
+          // contributions
+          const C = O.map((o, k) => (E[k] > 0 ? (o - E[k]) ** 2 / E[k] : 0)), X = C.reduce((a, b) => a + b, 0), cm = Math.max(...C) * 1.15 || 1;
+          sR.setView([x0 - 0.6, x0 + G - 0.4], [0, cm]);
+          C.forEach((c, k) => sR.rect(labs[k] - 0.35, 0, labs[k] + 0.35, c, { fill: O[k] > E[k] ? TC.h1 : TC.h0, fillAlpha: 0.6, color: O[k] > E[k] ? TC.h1 : TC.h0, width: 1 }));
+          sR.corner(`χ² = ${v.fix(X, 2)}`, 'tr', { weight: 700 });
+          v.legend([[TC.sim, 'observed (Pearson’s table)', { area: true }], [TC.h0, 'theory, computed exactly'], ...(printed ? [[TC.h1, 'theory as Pearson printed it', { dash: true }]] : []), [TC.h1, 'more observed than expected', { area: true }], [TC.h0, 'fewer observed', { area: true }]]);
+          st = { ill, X, G, O, E, printed, p: dice ? pS.value : null, src: srcS.value };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { ill, X, G, O, printed, p, src } = st, df = G - 1, xp = printed ? chi2(O, printed) : null;
+          if (ill === 'dice') {
+            const chiAt = (q) => chi2(O, binE(q)), pmin = golden(chiAt, 0.32, 0.35), xmin = chiAt(pmin);
+            let s = String.raw`$p=${p.toFixed(4)}$: $\chi^2=${v.fix(X, 2)}$ on ${df} degrees of freedom, $P=${pfmt(chiUp(df, X))}$ · minimum $\chi^2=${v.fix(xmin, 2)}$ at $p=${pmin.toFixed(4)}$ (then 11 d.f., $P=${pfmt(chiUp(11, xmin))}$)`;
+            if (src === 'fair') return s + ' · honest dice: χ² is typically near its 12 degrees of freedom';
+            if (Math.abs(p - 1 / 3) < 5e-5) s += String.raw` · **Illustration I**: Pearson printed $\chi^2=43.87241$, $P=0.000016$; recomputed from his printed (rounded) theory ${v.fix(xp, 3)}, $P(\chi^2_{12}>43.87)=${pfmt(chiUp(12, 43.87241))}$ ✓`;
+            else if (Math.abs(p - PH) < 5e-5) s += String.raw` · **Illustration II**: Pearson printed $\chi^2=17.7757$, $P=0.1227$ ($P(\chi^2_{12}>17.78)=${pfmt(chiUp(12, 17.7757))}$ ✓); summing his own table again gives ${v.fix(xp, 2)}, because two of his entries slip (155² taken as 25,025 in group 4, and 1/15 written 0.667 in group 10); with Fisher's 11 degrees of freedom for the fitted $p$, $P=${pfmt(chiUp(11, xp))}$`;
+            return s;
+          }
+          if (ill === 'rou') return String.raw`exact theory ($4274/2^k$): $\chi^2=${v.fix(X, 2)}$ · from Pearson's rounded theory ${v.fix(xp, 2)} · Pearson printed $\chi^2=172.43$ and "about $14.5/10^{30}$" · today $P(\chi^2_{12}>172.43)=${pfmt(chiUp(12, 172.43))}$: the same verdict, that "little chance had to do with" July 1892's runs (his series evaluation of the tail was about 10 times larger)`;
+          return String.raw`$\chi^2=${v.fix(X, 3)}$ on ${df} degrees of freedom: Pearson printed 45.811 and $P=0.00000155$; today $P(\chi^2_{10}>45.81)=${pfmt(chiUp(10, 45.811))}$ ✓ · if the normal curve's mean and spread were fitted to these shots, Fisher's rule gives 8 degrees of freedom and $P=${pfmt(chiUp(8, 45.811))}$: "such a distribution … could only be expected to occur … some 15 or 16 times in 10,000,000 trials"`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 6.21
+    {
+      num: '6.21',
+      kind: 'Paper',
+      name: 'The most efficient tests of statistical hypotheses',
+      paper: { authors: 'J. Neyman and E. S. Pearson', year: 1933, title: 'On the Problem of the Most Efficient Tests of Statistical Hypotheses', venue: 'Philosophical Transactions of the Royal Society of London A 231: 289–337', doi: '10.1098/rsta.1933.0009' },
+      introduces: ['stat-6.4', 'stat-6.3'],
+      credit: 'Jerzy Neyman & Egon S. Pearson, 1933',
+      statement: String.raw`Neyman and Pearson framed a test as the choice of a **critical region** $w$ in the sample space, rejecting the hypothesis $H_0$ when the sample point falls in $w$. Two errors are possible: rejecting $H_0$ when true, with probability $\varepsilon=P_0(w)$, and accepting it when an alternative $H_1$ is true. Among regions with the same $P_0(w)=\varepsilon$ the **best critical region** maximizes $P_1(w)$, the **power** with respect to $H_1$. For simple $H_0$ and $H_1$ with densities $p_0,p_1$ they proved that the best region is $\{p_1\ge k\,p_0\}$ (the Neyman–Pearson lemma, stat-6.4), and they studied when one region is best against a whole class of alternatives (a **uniformly most powerful** test), working out examples for normal samples, including hypotheses that specify both the mean and the standard deviation, where the best region is bounded by a sphere in the sample space.`,
+      idea: String.raw`Fisher's significance tests (and Pearson's own $\chi^2$, stat-6.20) chose a statistic by intuition and reported a tail probability. Neyman and Pearson asked what makes one test better than another and answered that it is the alternative: a test is judged by its probability of detecting departures that matter, at a fixed risk of false rejection. Their 1928 papers proposed the likelihood ratio as a general principle; the 1933 paper proved its optimality for simple hypotheses and introduced the vocabulary still in use: type I and type II errors, size, power (stat-6.2, stat-6.3), best and uniformly most powerful regions. Fisher rejected the decision-theoretic reading, and the two schools have coexisted ever since.`,
+      caption: String.raw`A recreation (the paper has no data): $n$ normal observations summarized by their mean $\bar x$ and standard deviation $s$ (divisor $n$), which are sufficient. $H_0$: mean 0, SD 1 (blue contours); $H_1$: the mean and SD at the purple handle (contours in purple), so the hypotheses can differ in both. The shaded region is the chosen family's critical region of size $\alpha$; the green curve is the boundary of the likelihood-ratio region of the same size, a circle in this plane when the SDs differ. Right: power against size for five families of regions, each computed exactly on a fine grid. The likelihood-ratio curve is never beaten; move $H_1$ to an alternative with a larger SD and watch the regions based on $\bar x$ alone fall far below it.`,
+      deps: ['stat-6.1', 'stat-6.2', 'stat-2.11'],
+      see: ['stat-6.4', 'stat-6.5'],
+      refs: [],
+      tags: ['Neyman–Pearson', 'power', 'history'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma' },
+      viz(v) {
+        const famS = v.select('critical region', [{ value: 'lr', label: 'likelihood ratio' }, { value: 'xb', label: '$\\bar x$ only' }, { value: 's', label: '$s$ only' }, { value: 't', label: 'Student $t$' }, { value: 'ab', label: 'two-sided $|\\bar x|$' }], 'xb');
+        const nS = v.slider('sample size $n$', 3, 30, 10, { int: true });
+        const aS = v.slider('size $\\alpha$', 0.01, 0.3, 0.05, { step: 0.005 });
+        const XR = [-1.5, 1.5], SR = [0, 2.4];
+        const sL = v.stage({ x: XR, y: SR, axes: 'box', gutter: true, height: 370, weight: 1.05, xlabel: '$\\bar x$', ylabel: '$s$', title: 'the sample space of $(\\bar x,s)$ and a critical region' });
+        const sR = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 370, weight: 0.95, minWidth: 250, xlabel: 'size $P_0(w)$', ylabel: 'power $P_1(w)$', title: 'power against size, five families' });
+        const h1 = sL.handle(0.45, 1.5, { color: TC.h1, label: '$H_1$', labelPos: 'ne', constrain: (x, y) => [clamp(x, -1.3, 1.3), clamp(y, 0.45, 2.2)] });
+        const GX = 120, GS = 100, ex = [-Infinity], es = [0];
+        for (let i = 1; i < GX; i++) ex.push(XR[0] + ((XR[1] - XR[0]) * i) / GX); ex.push(Infinity);
+        for (let j = 1; j < GS; j++) es.push(SR[0] + ((SR[1] - SR[0]) * j) / GS); es.push(Infinity);
+        const cx = (i) => (i === 0 ? XR[0] : i === GX - 1 ? XR[1] : 0.5 * (ex[i] + ex[i + 1])), cs = (j) => (j === GS - 1 ? SR[1] : 0.5 * (es[j] + es[j + 1]));
+        // log density of (x̄, s) under N(μ, σ²): x̄ ~ N(μ, σ²/n), n s²/σ² ~ χ²_{n−1}, independent
+        const ld = (x, s, mu, sg, n) => -0.5 * n * ((x - mu) / sg) ** 2 + Math.log(Math.sqrt(n) / sg) + Math.log(Math.max(1e-300, dchi(n - 1, (n * s * s) / (sg * sg)) * (2 * n * s) / (sg * sg)));
+        const stat = (fam, x, s, mu1, sg1, n) => {
+          if (fam === 'lr') return ld(x, s, mu1, sg1, n) - ld(x, s, 0, 1, n);
+          if (fam === 'xb') return mu1 >= 0 ? x : -x;
+          if (fam === 's') return sg1 >= 1 ? s : -s;
+          if (fam === 't') return (mu1 >= 0 ? x : -x) / Math.max(s, 1e-9);
+          return Math.abs(x);
+        };
+        const FAMS = ['lr', 'xb', 's', 't', 'ab'], COL = { lr: 'green', xb: TC.h0, s: 'orange', t: 'teal', ab: 'pink' }, NAME = { lr: 'likelihood ratio', xb: 'x̄ only', s: 's only', t: 'Student t', ab: 'two-sided |x̄|' };
+        const mc = memo();
+        const compute = (mu1, sg1, n) => mc([mu1.toFixed(3), sg1.toFixed(3), n].join('|'), () => {
+          const mass = (mu, sg) => { const mx = [], ms = []; for (let i = 0; i < GX; i++) mx.push(Phi(((ex[i + 1] - mu) * Math.sqrt(n)) / sg) - Phi(((ex[i] - mu) * Math.sqrt(n)) / sg)); for (let j = 0; j < GS; j++) ms.push(chiCdf(n - 1, (n * es[j + 1] ** 2) / (sg * sg)) - chiCdf(n - 1, (n * es[j] ** 2) / (sg * sg))); return { mx, ms }; };
+          const M0 = mass(0, 1), M1 = mass(mu1, sg1), out = {};
+          for (const f of FAMS) {
+            const cells = [];
+            for (let i = 0; i < GX; i++) for (let j = 0; j < GS; j++) cells.push([stat(f, cx(i), cs(j), mu1, sg1, n), M0.mx[i] * M0.ms[j], M1.mx[i] * M1.ms[j]]);
+            cells.sort((a, b) => b[0] - a[0]);
+            const roc = [[0, 0, Infinity]]; let a = 0, b = 0; for (const c of cells) { a += c[1]; b += c[2]; roc.push([a, b, c[0]]); }
+            out[f] = roc;
+          }
+          return out;
+        });
+        const at = (roc, al) => { let lo = 0, hi = roc.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (roc[m][0] < al) lo = m; else hi = m; } const f = (al - roc[lo][0]) / Math.max(1e-15, roc[hi][0] - roc[lo][0]); return { pow: roc[lo][1] + f * (roc[hi][1] - roc[lo][1]), thr: roc[hi][2] }; };
+        let st = null;
+        v.render(() => {
+          const n = nS.value, al = aS.value, mu1 = h1.x, sg1 = h1.y, fam = famS.value, R = compute(+mu1.toFixed(3), +sg1.toFixed(3), n);
+          const A = at(R[fam], al), L = at(R.lr, al);
+          sL.raster((x, y) => (y > 0 && stat(fam, x, y, mu1, sg1, n) >= A.thr ? [...v.rgb(COL[fam]).slice(0, 3), 70] : null), { key: [fam, n, al, mu1.toFixed(3), sg1.toFixed(3)].join('|'), res: 2 });
+          const m0 = ld(0, Math.sqrt((n - 1) / n), 0, 1, n), m1 = ld(mu1, sg1 * Math.sqrt((n - 1) / n), mu1, sg1, n);
+          sL.contour((x, y) => (y > 0.005 ? ld(x, y, 0, 1, n) : -50), [m0 - 1, m0 - 3], { color: TC.h0, width: 1.4, alpha: 0.8 });
+          sL.contour((x, y) => (y > 0.005 ? ld(x, y, mu1, sg1, n) : -50), [m1 - 1, m1 - 3], { color: TC.h1, width: 1.4, alpha: 0.8 });
+          sL.contour((x, y) => (y > 0.005 ? stat('lr', x, y, mu1, sg1, n) : -50), [L.thr], { color: 'green', width: 2.6 });
+          sL.dot(0, 1, { r: 4.5, color: TC.h0, label: '$H_0$', labelPos: 'sw' });
+          // ROC curves
+          sR.fn((x) => x, { domain: [0, 1], color: 'faint', width: 1, dash: [4, 4] });
+          const pw = {};
+          for (const f of ['ab', 's', 't', 'xb', 'lr']) { const pts = R[f].filter((_, k) => k % 40 === 0 || k === R[f].length - 1).map((p) => [p[0], p[1]]); sR.path(pts, { color: COL[f], width: f === 'lr' ? 3.2 : f === fam ? 2.6 : 1.6, alpha: f === 'lr' || f === fam ? 1 : 0.7 }); pw[f] = at(R[f], al).pow; sR.dot(al, pw[f], { r: f === fam || f === 'lr' ? 5 : 3, color: COL[f] }); }
+          sR.vline(al, { color: TC.alpha, width: 1, dash: [3, 3] });
+          v.legend([[COL[fam], `critical region: ${NAME[fam]}`, { area: true }], ['green', 'boundary of the likelihood-ratio region'], [TC.h0, '$H_0$ contours'], [TC.h1, '$H_1$ contours'], ...FAMS.map((f) => [COL[f], `${NAME[f]} (power ${v.fix(pw[f], 3)})`])]);
+          st = { n, al, mu1, sg1, pw, fam };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { n, al, mu1, sg1, pw, fam } = st, best = Math.max(...FAMS.map((f) => pw[f]));
+          return String.raw`$n=${n}$, $H_1$: mean ${v.fix(mu1, 2)}, SD ${v.fix(sg1, 2)}; all regions of size $\alpha=${al}$ · power: likelihood ratio **${v.fix(pw.lr, 4)}**, ${FAMS.filter((f) => f !== 'lr').map((f) => `${NAME[f]} ${v.fix(pw[f], 4)}`).join(', ')} · ` + (pw.lr >= best - 2e-3 ? `no family beats the likelihood ratio ✓ (your ${NAME[fam]} region loses ${v.fix(pw.lr - pw[fam], 4)})` : 'grid error: a family beats the likelihood ratio');
         });
       },
     },

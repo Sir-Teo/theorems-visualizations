@@ -3,7 +3,7 @@
 // The domain is the unit square (colour × softness). The distribution D is a product of truncated normals on [0,1]
 // (a centre and a spread; a spread of 1.2 or more is exactly uniform), so the mass of every axis-aligned rectangle is
 // exact; masses of other shapes come from a 40 × 40 grid. Labels are 1 ("tasty") inside the target shape.
-import { Phi, clamp, rand, hashStr, memo, mean, commas, binom, lerp } from './ch01.shared.js';
+import { Phi, clamp } from './ch01.shared.js';
 export * from './ch01.shared.js';
 
 export const GN = 40;
@@ -17,12 +17,13 @@ export function makeDens(mx, my, s) {
     mx, my, s, U, key: [mx.toFixed(3), my.toFixed(3), s.toFixed(3)].join(','),
     cx: (x) => c1(x, mx, zx), cy: (y) => c1(y, my, zy),
     pdf: (x, y) => (U ? 1 : (gauss((x - mx) / s) / s / zx) * (gauss((y - my) / s) / s / zy)),
-    draw(r) {
-      if (U) return [r(), r()];
-      const t = (m) => { for (let k = 0; k < 400; k++) { const z = m + s * r.normal(); if (z >= 0 && z <= 1) return z; } return clamp(m, 0, 1); };
-      return [t(mx), t(my)];
-    },
   };
+  const TQ = 512, qt = (c) => { const T = new Float64Array(TQ + 1); for (let i = 0; i <= TQ; i++) { const u = i / TQ; let lo = 0, hi = 1; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (c(mid) < u) lo = mid; else hi = mid; } T[i] = (lo + hi) / 2; } return T; };
+  const qx = U ? null : qt(d.cx), qy = U ? null : qt(d.cy);
+  const look = (T, u) => { const f = u * TQ, i = Math.min(TQ - 1, Math.floor(f)); return T[i] + (T[i + 1] - T[i]) * (f - i); };
+  /** Point with uniform seeds (u, w) pushed through the inverse CDFs: stable when the density moves. */
+  d.fromU = (u, w) => (U ? [u, w] : [look(qx, u), look(qy, w)]);
+  d.draw = (r) => d.fromU(r(), r());
   d.mass = (x0, x1, y0, y1) => Math.max(0, d.cx(x1) - d.cx(x0)) * Math.max(0, d.cy(y1) - d.cy(y0));
   const wx = new Float64Array(GN), wy = new Float64Array(GN);
   for (let i = 0; i < GN; i++) { wx[i] = d.cx((i + 1) / GN) - d.cx(i / GN); wy[i] = d.cy((i + 1) / GN) - d.cy(i / GN); }
@@ -172,4 +173,3 @@ export function square(v, o = {}) {
 }
 /** Nicely formatted probability. */
 export const pr = (x, d = 3) => x.toFixed(d);
-export { mean, rand, hashStr, memo, commas, binom, lerp, clamp };

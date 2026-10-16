@@ -400,7 +400,7 @@ export default {
           const G = 48, x0 = -0.9, y0 = -1.4, cell = 2.8 / G, cells = Array.from({ length: G * G }, () => []);
           const discs = sq.map(([cx, cy, s]) => ({ cx, cy, r: 0.75 * s, w: epsS(s) }));
           discs.forEach((D, id) => { const i0 = Math.max(0, Math.floor((D.cx - D.r - x0) / cell)), i1 = Math.min(G - 1, Math.floor((D.cx + D.r - x0) / cell)), j0 = Math.max(0, Math.floor((D.cy - D.r - y0) / cell)), j1 = Math.min(G - 1, Math.floor((D.cy + D.r - y0) / cell)); for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) cells[i * G + j].push(id); });
-          const fv = (x, y) => { const i = Math.floor((x - x0) / cell), j = Math.floor((y - y0) / cell); if (i < 0 || j < 0 || i >= G || j >= G) return 0; let s = 0; for (const id of cells[i * G + j]) { const D = discs[id], r2 = (x - D.cx) ** 2 + (y - D.cy) ** 2, t = 1 - r2 / (D.r * D.r); if (t > 0) s += D.w * Math.exp(1 - 1 / t); } return s; };
+          const fv = (x, y) => { let i = Math.floor((x - x0) / cell), j = Math.floor((y - y0) / cell); if (x < x0 - 1e-9 || y < y0 - 1e-9 || x > x0 + 2.8 + 1e-9 || y > y0 + 2.8 + 1e-9) return 0; i = Math.min(G - 1, Math.max(0, i)); j = Math.min(G - 1, Math.max(0, j)); let s = 0; for (const id of cells[i * G + j]) { const D = discs[id], r2 = (x - D.cx) ** 2 + (y - D.cy) ** 2, t = 1 - r2 / (D.r * D.r); if (t > 0) s += D.w * Math.exp(1 - 1 / t); } return s; };
           cache = { key, data: { pts, grid, sq, smin, fv } };
           return cache.data;
         };

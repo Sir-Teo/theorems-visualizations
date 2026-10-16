@@ -140,7 +140,7 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
       viz(v) {
         const n = 5;
         const CH = [[[1, 2]], [[1, 3]], [[4, 5]], [[1, 2, 3]], [[1, 2], [3, 4]], [[1, 3], [2, 4]], [[1, 2, 3, 4, 5]], [[2, 5], [3, 4]]].map((c) => fromCycles(n, c));
-        let on = new Set([0, 6]);
+        let on = new Set([1, 2]);
         v.button('Clear', () => { on = new Set(); });
         const s = v.stage({ x: [0, 2], y: [0, 4], axes: false, height: 360, weight: 0.8, minWidth: 200 });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1.4 });
@@ -159,6 +159,7 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
           });
           const gens = [...on].map((k) => CH[k]), H = closure(gens, n), m = H.length;
           if (m <= 12) {
+            v.legend([]);
             const names = m === 4 && on.size === 2 && on.has(1) && on.has(2) ? ['\\iota', '\\sigma', '\\tau', '\\mu'] : null;
             const order = names ? [fromCycles(n, []), CH[2], CH[1], fromCycles(n, [[1, 3], [4, 5]])] : H;
             const G = permGroup(order, names || order.map((p, i) => (i === 0 ? 'e' : String.fromCharCode(96 + i))));
@@ -178,6 +179,8 @@ elements. Its identity is the identity map and the inverse of $\sigma$ is the in
               t.rect(x0 + 0.003, y1 - Hh + 0.004, x0 + W - 0.003, y1 - 0.004, { radius: 3, fill: ORD[ord] || 'pink', fillAlpha: 0.32, stroke: false });
               t.text(oneLine(p), x0 + W / 2, y1 - Hh / 2, { align: 'center', size: m > 60 ? 9 : 11, color: 'ink', halo: false });
             });
+            const ordsHere = Object.keys(ORD).filter((o) => H.some((p) => { let k = 1, q = p; while (!isId(q)) { q = compose(p, q); k++; } return k === +o; }));
+            v.legend(ordsHere.map((o) => [ORD[o], `order ${o}`, { dot: true }]));
             t.text(`${m} elements — orders: ${Object.entries(ORD).filter(([o]) => H.some((p) => { let k = 1, q = p; while (!isId(q)) { q = compose(p, q); k++; } return k === +o; })).map(([o]) => o).join(', ')}`, 0.02, 0.95, { align: 'left', size: 12, weight: 700, color: 'ink' });
           }
           s.setTitle('generators — click to toggle');
@@ -239,7 +242,7 @@ and $\sigma(x)=x$ for every other $x$. It is written $\sigma=(a_1\,a_2\,\dots\,a
           out.push({ done: done.slice(), cur: null, note: String.raw`Dropping the 1-cycles: $${ord.value === 'st' ? '\\sigma\\tau' : '\\tau\\sigma'} = ${cycTex(prod)}$.` });
           return out;
         };
-        const S = v.steps({ frames, start: 'end', still: 'end', speed: 0.8, transition: 1.1 });
+        const S = v.steps({ frames, start: 'end', still: 3, speed: 0.8, transition: 1.1 });
         v.render(() => {
           const [f, g, nf, ng] = firstLast(), prod = compose(g, f), F = S.frame, done = new Set(F.done || []), cur = F.cur, u = S.tween;
           const lab = [`first $${nf === 'τ' ? '\\tau' : '\\sigma'} = ${cycTex(f)}$`, `then $${ng === 'τ' ? '\\tau' : '\\sigma'} = ${cycTex(g)}$`, `$${ord.value === 'st' ? '\\sigma\\tau' : '\\tau\\sigma'} = ${S.atEnd ? cycTex(prod) : '\\;?'}$`];
@@ -493,7 +496,7 @@ and a product of disjoint cycles (5.9) multiplies these together; the identity i
       name: 'The identity is a product of an even number of transpositions',
       statement: String.raw`If the identity permutation is written as a product of $r$ transpositions, $\mathrm{id}=\tau_1\tau_2\cdots\tau_r$, then $r$ is even.`,
       idea: String.raw`Induction on $r$ ($r=1$ is impossible, and $r=2$ is fine). Let $a$ be a letter moved by the last factor $\tau_r=(a\,b)$. The last two factors match one of four patterns: $(a\,b)(a\,b)=\mathrm{id}$, $(b\,c)(a\,b)=(a\,c)(b\,c)$, $(c\,d)(a\,b)=(a\,b)(c\,d)$, $(a\,c)(a\,b)=(a\,b)(b\,c)$. In the first case two factors cancel and induction applies to $r-2$. In the others the rewrite keeps the length and the product but moves the last occurrence of $a$ one place to the left. Repeat: either a cancellation happens, or $a$ ends up only in $\tau_1$ — impossible, because then the product would move $a$, not fix it. So the length drops by $2$ each round, and $r$ is even.`,
-      caption: String.raw`A product of transpositions equal to the identity (the wires return every bead home). Step through Judson’s proof: the letter $a$ is gold, the boxed pair is rewritten by the rule in the note, and $a$ marches left until a pair cancels; then the next round starts. The product stays the identity throughout. Below: the lengths of 2,000 random swap sequences that came back to the identity — every bar sits on an even number.`,
+      caption: String.raw`A product of transpositions equal to the identity (the wires return every bead home). Step through Judson’s proof: the factors containing the letter $a$ carry a gold dot, the boxed pair is rewritten by the rule in the note, and $a$ marches left until a pair cancels; then the next round starts. The product stays the identity throughout. Below: the lengths of 2,000 random swap sequences that came back to the identity — every bar sits on an even number.`,
       deps: ['alg-5.11a'],
       refs: ['Judson §5.1'],
       tags: ['transpositions', 'parity'],
@@ -533,7 +536,7 @@ and a product of disjoint cycles (5.9) multiplies these together; the identity i
           return out;
         };
         const S = v.steps({ frames, start: 0, still: 6, speed: 1.2 });
-        const s = v.stage({ x: [0, 12], y: [-0.3, 7.2], axes: false, height: 300, full: true });
+        const s = v.stage({ x: [0, 12], y: [-0.3, 7.25], axes: false, height: 300, full: true });
         const h = v.stage({ x: [0, 31], y: [0, 1], axes: 'box', gutter: true, height: 170, full: true, xlabel: 'r = number of swaps until the beads first return home', ylabel: 'runs' });
         // random walks on S_4 by random transpositions, until the first return to the identity
         const walks = (() => {
@@ -552,7 +555,8 @@ and a product of disjoint cycles (5.9) multiplies these together; the identity i
             const x0 = 0.3 + k * cw, inBox = F.box && k >= F.box[0] && k <= F.box[1];
             s.rect(x0 + 0.04, 6.1, x0 + cw - 0.04, 6.85, { radius: 6, fill: inBox ? 'gold' : 'accent', fillAlpha: inBox ? 0.3 : 0.1, color: inBox ? 'gold' : 'accent', width: inBox ? 2.2 : 1 });
             const hasA = F.a != null && t.includes(F.a);
-            s.text(tTxt(t), x0 + cw / 2, 6.47, { align: 'center', size: cw < 0.9 ? 10.5 : 12.5, weight: 700, color: hasA ? 'gold' : 'ink' });
+            s.text(tTxt(t), x0 + cw / 2, 6.47, { align: 'center', size: cw < 0.9 ? 10.5 : 12.5, weight: 700, color: 'ink', halo: false });
+            if (hasA) s.dot(x0 + cw / 2, 6.98, { r: 4.5, color: 'gold' });
           });
           if (!r) s.text('(empty product)', 6, 6.47, { align: 'center', size: 13, color: 'green', weight: 700 });
           // wiring diagram of the product: the last factor acts first, so layers run right-to-left in the chip row
@@ -565,7 +569,7 @@ and a product of disjoint cycles (5.9) multiplies these together; the identity i
           const xr = x0 + Math.max(r, 1) * dx;
           for (let j = 0; j < n; j++) { bead(v, s, xr + 0.35, yOf(j), j, { r: 10 }); bead(v, s, x0 - 0.05, yOf(j), rows[r][j], { r: 10, ring: rows[r][j] === j ? null : 'red' }); }
           s.text('start', xr + 0.35, 0.15, { align: 'center', size: 10.5, color: 'muted' }); s.text('end', x0 - 0.05, 0.15, { align: 'center', size: 10.5, color: 'muted' });
-          s.corner(`r = ${r}`, 'tr', { size: 13, weight: 700, color: r % 2 ? 'red' : 'green' });
+          s.corner(`r = ${r}${F.a != null ? ` · a = ${F.a + 1} (gold dots)` : ''}`, 'tr', { size: 13, weight: 700, color: r % 2 ? 'red' : 'green' });
           // histogram
           const mx = Math.max(...walks.lens);
           h.setView([0, 31], [0, mx * 1.15]);

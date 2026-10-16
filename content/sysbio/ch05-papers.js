@@ -6,8 +6,8 @@
 //   correction communicated by S. Leibler): in units of the mRNA lifetime and of K_M,
 //     dm_i/dt = −m_i + α/(1 + p_j^n) + α₀,   dp_i/dt = −β (p_i − m_i),   (i, j) = (lacI, cI), (tetR, lacI), (cI, tetR),
 //   with n = 2, mRNA half-life 2 min, protein half-life 10 min (β = 0.2), α = 216, α₀ = 0.216 (α₀/α = 10⁻³).
-// - Stability of the symmetric steady state (Box 1): oscillation iff (β + 1)²/β < 3X²/(4 + 2X), X = −α n p^{n−1}/(1 + p^n)²
-//   evaluated at the fixed point p = α/(1 + p^n) + α₀ (a standard result; recomputed numerically here).
+// - Stability of the symmetric steady state: computed here from the linearisation, with X = α n p^{n−1}/(1 + p^n)² at the
+//   fixed point p = α/(1 + p^n) + α₀; the boundary is the curve of the paper's Fig. 1b-type phase diagram (not digitised).
 // - Observed (paper, via secondary sources: arXiv:0710.1421 and the abstract): period 160 ± 40 min at 30 °C, about 40% of
 //   cells oscillating, cell division 50–70 min, oscillations "slower than the cell-division cycle".
 // - The model period with the parameters above is about 125 min (computed here), not a number taken from the paper.
@@ -27,7 +27,16 @@ function simulate(al, a0, be, n, tEnd, dt) {
   return out;
 }
 function fixedPoint(al, a0, n) { let lo = 0, hi = al + a0 + 1; for (let i = 0; i < 80; i++) { const p = (lo + hi) / 2; if (p - al / (1 + p ** n) - a0 > 0) hi = p; else lo = p; } return (lo + hi) / 2; }
-function oscillates(al, a0, be, n) { const p = fixedPoint(al, a0, n), X = (al * n * p ** (n - 1)) / (1 + p ** n) ** 2; return (be + 1) ** 2 / be < (3 * X * X) / (4 + 2 * X); }
+/** Largest real part of the linearisation at the symmetric fixed point: each repressor stage contributes −Xβ/((λ+1)(λ+β)),
+ *  so the ring's eigenvalues solve (λ+1)(λ+β) = βX e^{iπ/3} (and its conjugate); unstable (oscillating) iff Re λ > 0. */
+function growth(al, a0, be, n) {
+  const p = fixedPoint(al, a0, n), X = (al * n * p ** (n - 1)) / (1 + p ** n) ** 2;
+  const cr = 0.5, ci = Math.sqrt(3) / 2; // e^{iπ/3}
+  const dr = (1 + be) ** 2 - 4 * (be - be * X * cr), di = 4 * be * X * ci; // discriminant
+  const mod = Math.hypot(dr, di), sr = Math.sqrt((mod + dr) / 2);
+  return (-(1 + be) + sr) / 2;
+}
+const oscillates = (al, a0, be, n) => growth(al, a0, be, n) > 0;
 
 export default {
   collection: 'sysbio',
@@ -59,7 +68,7 @@ Scope: a design principle demonstrated in one synthetic circuit; the oscillation
         const nS = v.slider('Hill coefficient n', 1, 4, 2, { step: 0.05 });
         const L = v.stage({ x: [0, 600], y: [0, 120], axes: 'box', gutter: true, height: 330, weight: 1.2, minWidth: 260, xlabel: 'minutes', ylabel: 'protein (units of K_M)', title: 'the repressilator (model, Box 1)' });
         const P = v.stage({ x: [1, 1e4], xlog: true, y: [0.01, 100], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, xlabel: 'α (max transcription)', ylabel: 'β (protein / mRNA decay)', title: 'phase diagram' });
-        let st = null;
+        let st = null, bkey = '', bpts = [];
         v.render(() => {
           const al = 10 ** la.value, be = 10 ** lb.value, a0 = al * 10 ** leak.value, n = nS.value;
           const tEnd = 600 / TAU;
@@ -76,9 +85,11 @@ Scope: a design principle demonstrated in one synthetic circuit; the oscillation
           // phase diagram: shade the oscillatory region (n and leakiness as set)
           const key = `${n}|${leak.value}`;
           P.raster((x, y) => (oscillates(x, x * 10 ** leak.value, y, n) ? [...v.rgb('green').slice(0, 3), 60] : null), { res: 3, key });
-          for (const nn of [2, 3]) if (Math.abs(nn - n) > 0.01) P.contour((x, y) => (oscillates(10 ** x, 10 ** x * 10 ** leak.value, 10 ** y, nn) ? 1 : 0), [0.5], { color: 'muted', width: 1, alpha: 0.6 });
+          const nn = Math.abs(n - 2) > 0.01 ? 2 : 3;
+          if (bkey !== key) { bkey = key; bpts = []; for (let i = 0; i <= 80; i++) { const y = 10 ** (-2 + (4 * i) / 80); let prev = null; for (let j = 0; j <= 240; j++) { const x = 10 ** ((4 * j) / 240), gg = growth(x, x * 10 ** leak.value, y, nn) > 0; if (prev !== null && gg !== prev) bpts.push([x, y]); prev = gg; } } }
+          P.dots(bpts, { r: 1.6, color: 'ink' });
           P.dot(al, be, { r: 7, color: 'gold' });
-          P.corner(`shaded: oscillates (n = ${v.fix(n, 2)})`, 'tr', { size: 11.5, color: 'green', weight: 700 });
+          P.setTitle(`phase diagram — shaded: oscillates (n = ${v.fix(n, 2)}), dotted: n = ${Math.abs(n - 2) > 0.01 ? 2 : 3}`);
           st = { per, amp, osc: oscillates(al, a0, be, n), al, be, n };
         });
         v.legend([['blue', 'LacI'], ['green', 'TetR'], ['red', 'λ CI'], ['faint', 'cell divisions (every ~60 min)', { area: true }], ['gold', 'your circuit', { dot: true }]]);

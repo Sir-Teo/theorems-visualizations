@@ -5,6 +5,9 @@ import {
   naiveSum, kahanSum, pairwiseSum, twoSum, twoProd, px, exNum, isqrt,
 } from './ch01.shared.js';
 
+/** Word-wrap a string to lines of at most n characters. */
+function wrap(str, n) { const out = []; let cur = ''; for (const w of str.split(' ')) { if ((cur + ' ' + w).length > n && cur) { out.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; } if (cur) out.push(cur); return out; }
+
 export default {
   collection: 'num',
   chapter: 1,
@@ -104,7 +107,7 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           sB.dot(X(p), Y(ay), { r: 6, color: 'gold' });
           sB.text('x', X(p), Y(ay - 20 + 0), { align: 'center', size: 12, color: 'gold', weight: 800, dy: -12 });
           modes.forEach(([nm, md], k) => {
-            const yy = ay + 52 + k * 24, r = rnd(T.td, F, md), chosen = r === lo ? 0 : 1, col = nm === 'nearest-even' ? 'green' : 'purple';
+            const yy = ay + 52 + k * 24, pos = Rt.N > 0n, chosen = md === 'zero' ? (pos ? 0 : 1) : md === 'up' ? 1 : md === 'down' ? 0 : p < 0.5 ? 0 : p > 0.5 ? 1 : (encode(lo, F)[bits.length - 1] === 0 ? 0 : 1), col = nm === 'nearest-even' ? 'green' : 'purple';
             sB.text(nm, 12, Y(yy), { size: 11.5, color: 'ink', baseline: 'middle' });
             sB.arrow(X(p), Y(yy), X(chosen), Y(yy), { color: col, width: 2.2, head: 7 });
             sB.dot(X(chosen), Y(yy), { r: 4, color: col });
@@ -117,7 +120,7 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           const top = (1 << F.eb) - 1;
           if (E === top) lines.push(Fr === 0n ? `The pattern is **${s ? '−' : '+'}∞** (all exponent bits 1, fraction 0).` : 'The pattern is **NaN** (all exponent bits 1, fraction nonzero).');
           else if (E === 0) lines.push(`Exponent field $E=0$: **subnormal** (no hidden bit): $x=(-1)^{${s}}\\cdot\\dfrac{${Fr}}{2^{${F.fb}}}\\cdot 2^{${1 - F.bias}}$.`);
-          else lines.push(`$x=(-1)^{${s}}\\big(1+\\tfrac{F}{2^{${F.fb}}}\\big)2^{E-${F.bias}}$ with $E=${E}$, $F=${Fr}$, so $x=(-1)^{${s}}\\times 1.${Fr === 0n ? '0' : ''}_{(2)}\\ldots\\times 2^{${E - F.bias}}$.`);
+          else lines.push(`$x=(-1)^{${s}}\\big(1+\\tfrac{F}{2^{${F.fb}}}\\big)2^{E-${F.bias}}$ with $E=${E}$, $F=${Fr}$, so $x=(-1)^{${s}}\\times 1.${Fr.toString(2).padStart(F.fb, '0').slice(0, 14)}\\ldots_{(2)}\\times 2^{${E - F.bias}}$.`);
           if (Number.isFinite(val)) {
             lines.push(`Stored value, exactly: **${clip(exactDecimal(val), 44)}**`);
             if (T && Number.isFinite(T.td)) {
@@ -163,15 +166,15 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           const E = errs();
           s1.hband(1, 1e30, { color: 'red', alpha: 0.07 });
           s1.hline(1, { color: 'red', dash: true });
-          s1.text('error ≥ 100 %: no correct digit', 2e-11, 3, { size: 11, color: 'red' });
+          s1.text('error ≥ 100 %: no correct digit', 5e21, 1e17, { size: 11, color: 'red', align: 'right' });
           s1.hline(FORMATS.double.u, { color: 'green', dash: true, alpha: 0.7 });
-          s1.text('u = 2⁻⁵³', 3e16, FORMATS.double.u * 3, { size: 11, color: 'green', align: 'right' });
+          s1.text('u = 2⁻⁵³', 2e-11, FORMATS.double.u * 4, { size: 11, color: 'green', align: 'left' });
           if (mode.value === 'abs') s1.fn((x) => sa.value / x, { color: 'muted', width: 1.2, dash: true });
           if (mode.value === 'rel') s1.hline(sr.value, { color: 'muted', width: 1.2, dash: true });
           E.forEach((e, k) => {
             const col = e.rel >= 1 ? 'red' : e.rel > 1e-3 ? 'gold' : 'green';
             s1.dot(e.s, e.rel, { r: 6, color: col });
-            s1.text(e.n, e.s, e.rel * (k % 2 ? 0.1 : 6), { size: 10.5, align: 'center', color: 'ink' });
+            s1.text(e.n, e.s, e.rel, { size: 10.5, align: k > 5 ? 'right' : 'left', dx: k > 5 ? -9 : 9, dy: -10, color: 'ink' });
           });
           const { w, h, Y } = px(s2), left = 112, top = 34, rh = (h - top - 26) / E.length, bw = w - left - 62;
           for (let d = 0; d <= 16; d += 4) {
@@ -243,16 +246,17 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
             sL.line(-3.8, 0.5, 3.8, 0.5, { color: 'faint', width: 1.5 });
             const cR = c.R || (Number.isFinite(c.d) ? ratOfDouble(c.d) : null), cf = Number.isFinite(c.d) ? rnd(c.d, FORMATS.double) : NaN;
             for (const [f, p] of fs) { sL.line(p, 0.45, p, 0.55, { color: f === cf ? 'red' : f === fl ? 'accent' : 'muted', width: f === fl || f === cf ? 3 : 1.5 }); }
-            sL.text('fl(a+b)', 0, 0.36, { align: 'center', size: 11, color: 'accent', weight: 700 });
-            sL.text(fl.toPrecision(17), 0, 0.27, { align: 'center', size: 10.5, color: 'accent', halo: false });
+            const same = Number.isFinite(c.d) && rnd(c.d, FORMATS.double) === fl;
+            sL.text(same ? 'fl(a+b) = fl(c)' : 'fl(a+b)', 0, 0.36, { align: same ? 'center' : 'left', dx: same ? 0 : 4, size: 11, color: 'accent', weight: 700 });
+            sL.text(fl.toPrecision(17), 0, 0.27, { align: same ? 'center' : 'left', dx: same ? 0 : 4, size: 10.5, color: 'accent', halo: false });
             const pe = pos(exact);
             sL.dot(clamp(pe, -3.8, 3.8), 0.5, { r: 6, color: 'gold' });
             sL.text('exact a+b', clamp(pe, -3, 3), 0.63, { align: 'center', size: 11, color: 'gold', weight: 700 });
             if (cR) {
               const pc = pos(cR);
-              if (Math.abs(pc) < 3.8) { sL.dot(pc, 0.5, { r: 5, color: 'red', hollow: true }); sL.text('decimal c', pc, 0.78, { align: 'center', size: 11, color: 'red', weight: 700 }); }
+              if (Math.abs(pc) < 3.8) { sL.dot(pc, 0.5, { r: 5, color: 'red', hollow: true }); sL.text('decimal c', clamp(pc, -3, 3), 0.78, { align: 'center', size: 11, color: 'red', weight: 700 }); }
               if (Number.isFinite(cf) && Math.abs(cf - fl) / g < 3.5 && cf !== fl) {
-                const pf = (cf - fl) / g; sL.text('fl(c)', pf, 0.36, { align: 'center', size: 11, color: 'red', weight: 700 }); sL.text(cf.toPrecision(17), pf, 0.27, { align: 'center', size: 10.5, color: 'red', halo: false });
+                const pf = (cf - fl) / g; sL.text('fl(c)', pf, 0.36, { align: pf < 0 ? 'right' : 'left', dx: pf < 0 ? -4 : 4, size: 11, color: 'red', weight: 700 }); sL.text(cf.toPrecision(17), pf, 0.27, { align: pf < 0 ? 'right' : 'left', dx: pf < 0 ? -4 : 4, size: 10.5, color: 'red', halo: false });
               }
             }
             sL.text('spacing of the grid = 1 ulp', 0, 0.1, { align: 'center', size: 11, color: 'muted' });
@@ -261,8 +265,9 @@ with subnormals ($E=0$, no hidden bit), $\pm0$, $\pm\infty$ and NaN filling the 
           // right: the histogram
           if (!cache) cache = make();
           const { errs, named } = cache, R = Math.max(1, ...errs.map(Math.abs), ...named.map((q) => Math.abs(q.e))) * 1.05;
-          sR.setView([-R, R], [0, 1]);
-          sR.hist(errs, { bins: 41, range: [-R, R], density: false, color: 'muted', fillAlpha: 0.35 });
+                    const cnt = new Array(41).fill(0); for (const e of errs) cnt[Math.min(40, Math.floor((e + R) / (2 * R) * 41))]++;
+          const top = Math.max(...cnt) * 1.12; sR.setView([-R, R], [0, top]);
+          sR.hist({ edges: Array.from({ length: 42 }, (_, i) => -R + 2 * R * i / 41), counts: cnt }, { color: 'muted', fillAlpha: 0.4 });
           named.forEach((q, i) => { sR.vline(q.e, { color: q.col, width: 2.4, dash: i === 0 ? false : [5, 3] }); });
         });
         v.legend([['accent', 'given order'], ['green', 'ascending'], ['orange', 'descending'], ['teal', 'smallest |x| first'], ['purple', 'largest |x| first'], ['muted', 'random orders', { area: true }]]);
@@ -309,7 +314,7 @@ Leading digits cancel and the result keeps only the noisy trailing digits. For $
         };
         const fn = v.select('function', Object.entries(FUN).map(([k, f]) => ({ value: k, label: f.lab })), 'cos');
         const prec = v.select('precision', [{ value: 'single', label: 'binary32' }, { value: 'double', label: 'binary64' }], 'double');
-        const lx = v.slider('$x$', 1e-10, 0.5, 1e-5, { log: true, sig: 2 });
+        const lx = v.slider('$x$', 1e-10, 0.5, 1e-5, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
         const sV = v.stage({ x: [1e-10, 0.5], y: [-0.1, 2.3], xlog: true, axes: 'box', gutter: true, height: 290, minWidth: 300, xlabel: 'x', ylabel: 'computed value', title: 'what the computer returns' });
         const sE = v.stage({ x: [1e-10, 0.5], y: [1e-18, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, minWidth: 300, xlabel: 'x', ylabel: 'relative error', title: 'relative error against a series' });
         const sB = v.stage({ axes: false, height: 200, full: true, title: 'the bits being subtracted' });
@@ -349,9 +354,8 @@ Leading digits cancel and the result keeps only the noisy trailing digits. For $
             const s = rnd(1 + x, F);
             row('1', bit(1), 24, 'blue'); row('x', bit(x), 48, 'orange');
             row('fl(1+x)', bit(s), 82, 'green');
-            const lost = x === 0 ? 0 : Math.max(0, Math.floor(-Math.log2(x)) + 1 - 0 === 0 ? 0 : 0);
             const kept = Math.max(0, P - Math.max(0, Math.floor(-Math.log2(x))));
-            sB.text(`x = ${sci(x, 3)} starts at bit 2^-${Math.floor(-Math.log2(x)) + 1}: only about ${Math.max(0, Math.min(P, kept))} of its ${P} significant bits fit into the sum; the rest are rounded off before the logarithm sees them.`, w / 2, Y(128), { align: 'center', size: 11.5, color: 'muted' });
+            wrap(`x = ${sci(x, 3)} starts at bit 2^-${Math.floor(-Math.log2(x)) + 1}: only about ${Math.max(0, Math.min(P, kept))} of its ${P} significant bits fit into the sum; the rest are rounded off before the logarithm sees them.`, Math.floor(w / 6.6)).forEach((ln, i) => sB.text(ln, w / 2, Y(128 + i * 17), { align: 'center', size: 11.5, color: 'muted' }));
           } else {
             const b = fn.value === 'cos' ? rnd(Math.cos(x), F) : rnd(Math.exp(x), F), d = Math.abs(1 - b);
             const jl = d === 0 ? P + 1 : Math.floor(-Math.log2(d)) + 1 - (fn.value === 'cos' ? 0 : 0);
@@ -360,14 +364,14 @@ Leading digits cancel and the result keeps only the noisy trailing digits. For $
             const m = Math.max(0, P + 1 - jl);
             const msg = d === 0 ? `${fn.value === 'cos' ? 'cos x' : 'eˣ'} rounds to exactly 1: the subtraction returns 0 and every bit is lost.`
               : `The first ${Math.min(jl, P + 1)} bits agree and cancel (grey). The difference keeps about ${m} significant bits of ${P}, and they are the ones the rounding error of ${fn.value === 'cos' ? 'cos x' : 'eˣ'} has already damaged: relative error ≈ 2^-${Math.max(m, 0)}.`;
-            sB.text(msg, w / 2, Y(128), { align: 'center', size: 11.5, color: 'muted' });
+            wrap(msg, Math.floor(w / 6.6)).forEach((ln, i) => sB.text(ln, w / 2, Y(128 + i * 17), { align: 'center', size: 11.5, color: 'muted' }));
           }
           sB.text(`${F.name}, p = ${P} bits`, w - 8, Y(h - 10), { align: 'right', size: 10.5, color: 'faint' });
         });
         v.legend([['red', 'textbook form'], ['green', 'rewritten form'], ['gold', 'chosen x']]);
         v.readout(() => {
           const H = here(), f = FUN[fn.value], en = Math.abs(H.nv - H.ref) / H.ref, es = Math.abs(H.sv - H.ref) / H.ref;
-          return `$f(x)=${f.tex}$ at $x=${tsci(H.x, 3)}$: textbook form **${H.nv.toPrecision(H.F.key === 'single' ? 8 : 16)}**, rewritten $${f.stab}$ **${H.sv.toPrecision(H.F.key === 'single' ? 8 : 16)}**, reference series ${H.ref.toPrecision(H.F.key === 'single' ? 8 : 16)}.\nRelative errors: textbook $${tsci(en, 2)}$ (≈ ${Math.max(0, Math.floor(-Math.log10(Math.max(en, 1e-17))))} good digits), rewritten $${tsci(es, 2)}$. Predicted size of the textbook error ≈ $u\\,\\dfrac{|x_1|+|x_2|}{|x_1-x_2|}$.`;
+          return `$f(x)=${f.tex}$ at $x=${tsci(H.x, 3)}$: textbook form **${H.nv.toPrecision(H.F.key === 'single' ? 8 : 16)}**, rewritten $${f.stab}$ **${H.sv.toPrecision(H.F.key === 'single' ? 8 : 16)}**, reference series ${H.ref.toPrecision(H.F.key === 'single' ? 8 : 16)}.\nRelative errors: textbook $${tsci(en, 2)}$ (≈ ${Math.max(0, Math.floor(-Math.log10(Math.max(en, 1e-17))))} good digits), rewritten $${tsci(es, 2)}$. Predicted size of the textbook error ≈ $u\\,\\tfrac{|x_1|+|x_2|}{|x_1-x_2|}$.`;
         });
       },
     },
@@ -386,8 +390,8 @@ using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (t
       tags: ['cancellation', 'algorithms'],
       viz(v) {
         const prec = v.select('precision', [{ value: 'single', label: 'binary32' }, { value: 'double', label: 'binary64' }], 'double');
-        const sb = v.slider('$b$', 1, 1e12, 1e8, { log: true, sig: 2 });
-        const sc = v.slider('$c$', 1e-3, 1e3, 1, { log: true, sig: 2 });
+        const sb = v.slider('$b$', 1, 1e12, 1e8, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
+        const sc = v.slider('$c$', 1e-3, 1e3, 1, { log: true, sig: 2, fmt: (x) => sci(x, 2) });
         const S = 200n, two = 2n ** S;
         const fixed = (x) => BigInt(x * 2 ** 200);
         function exactRoots(b, c) {
@@ -416,7 +420,7 @@ using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (t
           return { naiveS, naiveL, stabS, stabL, bq, cq };
         }
         const sE = v.stage({ x: [1, 1e12], y: [1e-18, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 270, full: true, xlabel: 'b', ylabel: 'relative error of the small root', title: 'x² + bx + c = 0, small root' });
-        const sD = v.stage({ axes: false, height: 250, full: true });
+        const sD = v.stage({ axes: false, height: 215, full: true });
         const cache = new Map();
         const curve = () => {
           const key = `${prec.value}|${sc.value}`; if (cache.has(key)) return cache.get(key);
@@ -453,7 +457,7 @@ using Vieta's relation $x_1x_2=c$. Both roots then have relative error $O(u)$ (t
             });
           };
           group('small root', 6, ex.small, r.naiveS, r.stabS);
-          group('large root', 124, ex.large, r.naiveL, r.stabL);
+          group('large root', 112, ex.large, r.naiveL, r.stabL);
         });
         v.legend([['red', 'textbook'], ['green', 'stable'], ['gold', 'chosen b']]);
         v.readout(() => {
@@ -475,7 +479,7 @@ $s\leftarrow0,\ c\leftarrow0$; for each $x_i$: $y\leftarrow x_i-c$; $t\leftarrow
 
 For $n$ terms its error satisfies $|\hat s-s|\le\big(2u+O(nu^2)\big)\sum|x_i|$, **independent of $n$** to first order. Naive summation has worst-case bound $(n-1)u\sum|x_i|$ (typically growing like $\sqrt n\,u$ for random errors, but linearly when errors share a sign), and pairwise (divide-and-conquer) summation $O(u\log n)\sum|x_i|$.`,
       idea: String.raw`In $t=s+y$ the low bits of $y$ fall off the end; $(t-s)$ recovers the part of $y$ that was actually added (exact, by the cancellation theorem of 1.4), and subtracting $y$ leaves exactly minus the lost part. Feeding it back into the next term turns a systematic drift into a one-term lag. Pairwise summation instead limits how many roundings any single term suffers to $\log_2 n$.`,
-      caption: String.raw`**Left:** error (in units of $u$) of three algorithms as terms accumulate, for $10^6$ terms. Naive grows linearly for repeated $0.1$ (its roundings all push the same way); pairwise grows like $\log n$; Kahan stays at the level of one rounding. **Right:** the individual rounding errors of the last 64 additions, in ulps of the running sum: naive's are biased, Kahan's cancel in effect. Drag the length $N$; switch to random terms to see the $\sqrt n$ behaviour.`,
+      caption: String.raw`**Left:** error (in units of $u$) of three algorithms as terms accumulate, for $10^6$ terms. Naive grows linearly for repeated $0.1$ (its roundings all push the same way); pairwise and Kahan stay within a few $u$ (pairwise's worst case grows only like $\log n$; on random terms it is visibly above Kahan). **Right:** the individual rounding errors of the last 64 additions, in ulps of the running sum: naive's are biased, Kahan's cancel in effect. Drag the length $N$; switch to random terms to see the $\sqrt n$ behaviour.`,
       deps: ['num-1.3'],
       refs: ['Süli–Mayers ch. 2'],
       credit: 'W. Kahan, "Further remarks on reducing truncation errors", Communications of the ACM 8 (1965), p. 40.',
@@ -484,7 +488,7 @@ For $n$ terms its error satisfies $|\hat s-s|\le\big(2u+O(nu^2)\big)\sum|x_i|$, 
       viz(v) {
         const N = 1e6, U = FORMATS.double.u;
         const kind = v.select('terms', [{ value: 'tenth', label: '0.1, 0.1, 0.1, …' }, { value: 'rand', label: 'uniform random in (0, 1)' }], 'tenth', { onChange: () => { data = null; } });
-        const sn = v.slider('number of terms $N$', 10, N, 1e6, { log: true, int: true, sig: 2 });
+        const sn = v.slider('number of terms $N$', 10, N, 1e6, { log: true, int: true, sig: 2, fmt: (x) => Math.round(x).toLocaleString('en-US') });
         let data = null;
         const build = () => {
           const xs = new Float64Array(N); let m = 0n;
@@ -525,7 +529,7 @@ For $n$ terms its error satisfies $|\hat s-s|\le\big(2u+O(nu^2)\big)\sum|x_i|$, 
           if (!data) data = build();
           const { out } = data, n = sn.value; cur = at(n);
           sE.path(out.ns.map((x, i) => [x, out.naive[i]]), { color: 'red', width: 2 });
-          sE.path(out.ns.map((x, i) => [x, out.pair[i]]), { color: 'orange', width: 2 });
+          sE.path(out.ns.map((x, i) => [x, out.pair[i]]), { color: 'orange', width: 4.5, alpha: 0.8 });
           sE.path(out.ns.map((x, i) => [x, out.kahan[i]]), { color: 'green', width: 2 });
           sE.hline(1, { color: 'muted', dash: true }); sE.vline(n, { color: 'gold', width: 1.5 });
           sR.hline(0, { color: 'muted' });

@@ -28,15 +28,15 @@ export default {
       refs: ['Trefethen–Bau Lec. 5'],
       viz(v) {
         const M = v.M;
-        const Ds = v.stage({ x: [-2.5, 2.5], y: [-2.05, 2.05], equal: true, axes: false, height: 400, minWidth: 300, title: 'domain: unit sphere, right singular vectors $v_i$' });
-        const Rs = v.stage({ x: [-2.5, 2.5], y: [-2.05, 2.05], equal: true, axes: false, height: 400, minWidth: 300, title: 'range: ellipsoid with semi-axes $\\sigma_iu_i$' });
-        const sd = v.scene3(Ds, { axes: false, yaw: -0.7, pitch: 0.35, hint: false }), sr = v.scene3(Rs, { axes: false, yaw: -0.7, pitch: 0.35 });
+        const Ds = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.75], equal: true, axes: false, height: 400, minWidth: 300, title: 'domain: unit sphere, right singular vectors $v_i$' });
+        const Rs = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.75], equal: true, axes: false, height: 400, minWidth: 300, title: 'range: ellipsoid with semi-axes $\\sigma_iu_i$' });
+        const sd = v.scene3(Ds, { axes: false, yaw: 0.45, pitch: 0.4, hint: false }), sr = v.scene3(Rs, { axes: false, yaw: 0.45, pitch: 0.4 });
         let seed = 3, U, V;
         const regen = () => { const r = v.rng(seed); U = randOrth(M, r, 3); V = randOrth(M, r, 3); };
         regen();
         const CC = ['blue', 'purple', 'teal'];
         let busy = false;
-        const sig = [2.2, 1.2, 0.55].map((x, i) => v.slider(`$\\sigma_${i + 1}$`, 0, 2.4, x, {
+        const sig = [1.8, 1.0, 0.45].map((x, i) => v.slider(`$\\sigma_${i + 1}$`, 0, 2, x, {
           step: 0.01,
           onChange: () => {
             if (busy) return; busy = true;
@@ -112,7 +112,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
         const K = v.slider('$k$', 1, 5, 2, { int: true });
         const nrm = v.select('norm', [{ value: '2', label: '$\\|\\cdot\\|_2$' }, { value: 'F', label: '$\\|\\cdot\\|_F$' }], '2');
         const fam = v.select('competitors', [{ value: 'fac', label: 'perturbed factors' }, { value: 'proj', label: 'projections $QQ^{\\top}A$' }], 'fac');
-        const EP = v.slider('$\\varepsilon$', 0, 1, 0.25, { step: 0.01 });
+        const EP = v.slider('$\\varepsilon$', 0, 0.6, 0.1, { step: 0.01 });
         let seed = 1, U, V, A, G1, G2;
         const build = () => {
           const r = v.rng(seed * 17 + 3);
@@ -181,7 +181,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
       name: 'Image compression by truncated SVD',
       statement: String.raw`A greyscale image is an $m\times n$ matrix $A$ of pixel values. Keep the first $k$ singular triplets, $A_k=\sum_{i\le k}\sigma_iu_iv_i^{\top}$, and store only the $k(m+n+1)$ numbers $\sigma_i$, $u_i$, $v_i$ instead of $mn$. By Eckart–Young (1.8) this is the best rank-$k$ image in the 2- and Frobenius norms: the error is $\|A-A_k\|_2/\|A\|_2=\sigma_{k+1}/\sigma_1$ and $\|A-A_k\|_F/\|A\|_F=\big(\sum_{i>k}\sigma_i^2\big/\sum_i\sigma_i^2\big)^{1/2}$. Compression pays only while $k<mn/(m+n+1)$, and it works well exactly when the singular values decay quickly.`,
       idea: String.raw`Each term $\sigma_iu_iv_i^{\top}$ is a rank-one "layer": an outer product of a column profile and a row profile. Images with large smooth or repeated structure (sky, walls, edges aligned with the axes) are dominated by a few layers, so the $\sigma_i$ fall off fast; diagonal edges, fine texture and noise spread their energy over many layers. Eckart–Young says the greedy choice — the top $k$ layers — is optimal, and the singular values give the error before reconstructing anything.`,
-      caption: String.raw`Pick one of three $64\times64$ greyscale images, all generated in code (a scene with sun, hills, house and tree; diagonal stripes with a ring; pure noise), and slide $k$. Left to right: the original, the rank-$k$ image, and the error (amplified $\times4$). The lower plots show the singular value decay and the relative errors against $k$ on a log axis, and the storage cost against $k$ — the scene is recognizable at a few layers, the stripes need more, and noise does not compress at all.`,
+      caption: String.raw`Pick one of three $64\times64$ greyscale images, all generated in code (a scene with sun, hills, house and tree; diagonal stripes with a ring; pure noise), and slide $k$. Left to right: the original, the rank-$k$ image, and the error (amplified $\times4$). The lower plots show the singular value decay and the relative errors against $k$ on a log axis, and the storage cost against $k$ — the scene is recognizable at a few layers, the stripes need more, and noise barely compresses at all beyond its mean (a flat spectrum after $\sigma_1$).`,
       deps: ['nla-1.8'],
       tags: ['svd', 'compression', 'images'],
       credit: 'Andrews & Patterson, 1976 (digital image processing by SVD)',
@@ -221,9 +221,9 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           const kStar = (N * N) / (2 * N + 1), sto = (kk) => (kk * (2 * N + 1)) / (N * N);
           St.path([[0, 0], [N, sto(N)]], { color: 'blue', width: 2 });
           St.hline(1, { color: 'green', dash: [5, 4], width: 1.4 });
-          St.text('raw image: $mn$ numbers', 1, 1.08, { size: 12, color: 'green', align: 'left' });
+          St.text('raw image: $mn$ numbers', N - 1, 1.1, { size: 12, color: 'green', align: 'right' });
           St.dot(kStar, 1, { color: 'green', r: 5 });
-          St.text(`break-even k = ${nm(kStar, 1)}`, kStar, 1, { size: 12, color: 'green', align: 'right', dx: -10, dy: 14 });
+          St.text(`break-even k = ${nm(kStar, 1)}`, kStar, 1, { size: 12, color: 'green', align: 'left', dx: 10, dy: 16 });
           St.dot(k, sto(k), { color: 'gold', r: 6 });
           St.vline(k, { color: 'gold', dash: [4, 3], width: 1 });
           const errF = fro(msub(d.I, Ak)) / fro(d.I);
@@ -296,7 +296,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           B.tex('v_2', centre[0] + (sc(1) + 0.25) * v2[0], centre[1] + (sc(1) + 0.25) * v2[1], { color: 'green', size: 15 });
           B.dot(centre[0], centre[1], { color: 'ink', r: 4, hollow: true });
           B.dot(0, 0, { color: 'muted', r: 2.5 });
-          if (!cen.value) B.corner('not centred: the axes are drawn from the origin, so $v_1$ is pulled toward the mean', 'tl', { color: 'red', weight: 600, plate: true });
+          if (!cen.value) B.corner('not centred: axes through the origin', 'tl', { color: 'red', weight: 600, plate: true });
           // scores
           const sco = Xc.map((p) => [dot(p, v1), dot(p, v2)]);
           T.dots(sco, { r: 3.6, color: 'accent' });
@@ -313,7 +313,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           if (!st) return 'Add points by clicking the left panel.';
           const { N, S, sumd, ev, off } = st;
           const tot = S[0] ** 2 + S[1] ** 2;
-          return `$N=${N}$, $\\sigma_1=${nm(S[0], 3)}$, $\\sigma_2=${nm(S[1], 3)}$: the first axis keeps **${nm((100 * S[0] ** 2) / tot, 1)}\\%** of the variance. Total squared distance to the $v_1$ line: $${nm(sumd, 4)} = \\sigma_2^2 = ${nm(S[1] ** 2, 4)}$.\nCovariance eigenvalues $${nm(ev[0], 4)},\\ ${nm(ev[1], 4)}$ vs $\\sigma_i^2/(N-1) = ${nm(S[0] ** 2 / (N - 1), 4)},\\ ${nm(S[1] ** 2 / (N - 1), 4)}$; covariance of the scores (off-diagonal): $${sciT(off)}$${cen.value ? '' : ' — but these are about the origin, not the mean'}.`;
+          return `$N=${N}$, $\\sigma_1=${nm(S[0], 3)}$, $\\sigma_2=${nm(S[1], 3)}$: the first axis keeps **${nm((100 * S[0] ** 2) / tot, 1)} %** of the variance. Total squared distance to the $v_1$ line: $${nm(sumd, 4)} = \\sigma_2^2 = ${nm(S[1] ** 2, 4)}$.\nCovariance eigenvalues $${nm(ev[0], 4)},\\ ${nm(ev[1], 4)}$ vs $\\sigma_i^2/(N-1) = ${nm(S[0] ** 2 / (N - 1), 4)},\\ ${nm(S[1] ** 2 / (N - 1), 4)}$; covariance of the scores (off-diagonal): $${sciT(off)}$${cen.value ? '' : ' — but these are about the origin, not the mean'}.`;
         });
       },
     },
@@ -346,11 +346,13 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           const mvOnce = () => { for (let i = 0; i < n; i++) { let s = 0; const o = i * n; for (let j = 0; j < n; j++) s += A[o + j] * x[j]; y[i] = s; } };
           const mmOnce = () => { C.fill(0); for (let i = 0; i < n; i++) for (let k = 0; k < n; k++) { const a = A[i * n + k]; for (let j = 0; j < n; j++) C[i * n + j] += a * Bm[k * n + j]; } };
           const bench = (f, target) => {
-            f(); let reps = 1, t = 0;
-            for (;;) { const t0 = now(); for (let r = 0; r < reps; r++) f(); t = now() - t0; if (t > target || reps > 1e6) break; reps *= 4; }
-            return t / reps / 1000;
+            f(); f(); f(); let reps = 1, t = 0;
+            for (;;) { const t0 = now(); for (let r = 0; r < reps; r++) f(); t = now() - t0; if (t > target || reps > 1e6) break; reps *= 2; }
+            let best = t / reps;
+            for (let q = 0; q < 3; q++) { const t0 = now(); for (let r = 0; r < reps; r++) f(); best = Math.min(best, (now() - t0) / reps); }
+            return best / 1000;
           };
-          return { n, mv: bench(mvOnce, 3), mm: bench(mmOnce, 5), sink: y[0] + C[0] };
+          return { n, mv: bench(mvOnce, 4), mm: bench(mmOnce, 6), sink: y[0] + C[0] };
         };
         const measure = () => { meas = sizes.map(timeOne); };
         measure();
@@ -364,7 +366,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           F.fn((x) => FL.a_bx(x), { color: 'purple', width: 1.8, dash: [6, 4], n: 160 });
           F.fn((x) => FL.dot(x), { color: 'muted', width: 2, n: 160 });
           F.tex('(AB)x', 3000, FL.abx(3000), { color: 'green', size: 13, dy: -14, align: 'right' }); F.tex('AB', 3000, FL.mm(3000) / 3, { color: 'orange', size: 13, dy: 14, align: 'right' });
-          F.tex('A(Bx)', 3000, FL.a_bx(3000), { color: 'purple', size: 13, dy: 14, align: 'right' }); F.tex('Ax', 3000, FL.mv(3000) / 4, { color: 'blue', size: 13, dy: 14, align: 'right' }); F.tex('x^{\\top}y', 3000, FL.dot(3000), { color: 'muted', size: 13, dy: 14, align: 'right' });
+          F.tex('A(Bx)', 3000, FL.a_bx(3000), { color: 'purple', size: 13, dy: -14, align: 'right' }); F.tex('Ax', 3000, FL.mv(3000) / 4, { color: 'blue', size: 13, dy: 14, align: 'right' }); F.tex('x^{\\top}y', 3000, FL.dot(3000), { color: 'muted', size: 13, dy: 14, align: 'right' });
           F.vline(n, { color: 'gold', dash: [4, 3], width: 1.2 });
           for (const [f, c] of [[FL.mm, 'orange'], [FL.mv, 'blue'], [FL.dot, 'muted']]) F.dot(n, f(n), { color: c, r: 4.5 });
           // measured
@@ -383,7 +385,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           const rate = last ? (2 * last.n ** 3) / last.mm / 1e9 : NaN;
           const fmt = (x) => (x >= 1e6 ? v.sci(x, 2) : String(Math.round(x)));
           const inner = `$n=${n}$: $x^{\\top}y$ $${fmt(FL.dot(n))}$ flops, $Ax$ $${fmt(FL.mv(n))}$, $AB$ $${fmt(FL.mm(n))}$; $(AB)x$ costs $${nm(FL.abx(n) / FL.a_bx(n), 1)}\\times$ as much as $A(Bx)$.`;
-          return `${inner}\nMeasured slopes (fit for $n\\ge32$): $Ax$ ≈ $${nm(slope('mv'), 2)}$, $AB$ ≈ $${nm(slope('mm'), 2)}$ — close to the flop-count exponents $2$ and $3$. At the measured $AB$ rate of about $${nm(rate, 2)}$ Gflop/s, one second of work would buy a product $Ax$ with $n\\approx${nm(Math.sqrt((rate * 1e9) / 2), 0)}$ but a product $AB$ with only $n\\approx${nm(Math.cbrt((rate * 1e9) / 2), 0)}$.`;
+          return `${inner}\nMeasured slopes (fit for $n\\ge32$): $Ax$ ≈ $${nm(slope('mv'), 2)}$, $AB$ ≈ $${nm(slope('mm'), 2)}$ (the flop counts predict $2$ and $3$; caches, JIT warm-up and timer resolution blur the small sizes). At the measured $AB$ rate of about $${nm(rate, 2)}$ Gflop/s, one second of work would buy a product $Ax$ with $n\\approx${nm(Math.sqrt((rate * 1e9) / 2), 0)}$ but a product $AB$ with only $n\\approx${nm(Math.cbrt((rate * 1e9) / 2), 0)}$.`;
         });
       },
     },
