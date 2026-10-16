@@ -1,5 +1,5 @@
 // Fluid Dynamics — Chapter 4: Potential flow (items 4.12–4.17)
-import { clamp, TAU, cadd, cpolar, cmul, cdiv, cexp, cabs, carg, elemVel, elemW1, streamlines, drawLines, theodorsen } from './ch04.shared.js';
+import { G0, clamp, TAU, cadd, cpolar, cmul, cdiv, cexp, cabs, carg, elemVel, elemW1, streamlines, drawLines, theodorsen } from './ch04.shared.js';
 
 const deg = (a) => (a * Math.PI) / 180;
 
@@ -170,7 +170,6 @@ is the flow that has the same singularities outside the circle and in addition h
           s.line(0, 0, 2.2, 0, { color: 'ink', width: 3 }); s.line(0, 0, 2.2 * Math.cos(wedge), 2.2 * Math.sin(wedge), { color: 'ink', width: 3 });
           s.dot(0, 0, { r: 4, color: 'red' });
           s.text(`angle ${v.fix((wedge * 180) / Math.PI, 0)}°`, 0.6 * Math.cos(wedge / 2), 0.6 * Math.sin(wedge / 2), { color: 'muted', size: 12 });
-          s.dot(M.x, 0, { r: 0 });
           q.fn((r) => n * Math.pow(r, n - 1), { color: 'accent', width: 2.6 });
           q.hline(1, { color: 'muted', alpha: 0.5, dash: true });
           const r1 = 0.1, r2 = 1, sl = Math.log((n * Math.pow(r2, n - 1)) / (n * Math.pow(r1, n - 1))) / Math.log(r2 / r1);
@@ -215,7 +214,7 @@ is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$
           const rr = rad(), k = rr.map((x) => x.toFixed(3)).join(',');
           if (k !== key) { key = k; Rf = trigInterp(rr); mp = theodorsen(Rf, 96, 40); }
           const alpha = deg(al.value), G = gm.value, c0 = Math.exp(mp.c0 ?? 0), Uz = c0;
-          const dW = (zt) => { const q = cmul([1, 0], [0, 0]); void q; const z2 = cmul(zt, zt); const t1 = cmul([Uz, 0], cadd(cpolar(1, -alpha), cmul([-1, 0], cdiv(cpolar(1, alpha), z2)))); return cadd(t1, cdiv([0, G / TAU], zt)); };
+          const dW = (zt) => { const z2 = cmul(zt, zt); const t1 = cmul([Uz, 0], cadd(cpolar(1, -alpha), cmul([-1, 0], cdiv(cpolar(1, alpha), z2)))); return cadd(t1, cdiv([0, G / TAU], zt)); };
           const k2 = al.value + '|' + gm.value;
           if (ck !== k2) { ck = k2; circLines = streamlines((x, y) => { if (x * x + y * y < 1.004) return null; const d = dW([x, y]); return [d[0], -d[1]]; }, [-3.2, 3.2, -2.4, 2.4], { sep: 0.2, step: 0.045, seeds: [[-3.1, 0.2]] }); }
           // left: circle flow
@@ -270,7 +269,7 @@ is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$
             if (body.value && x * x + y * y < 1) { ok = false; break; }
             const u = field(x, y); g += (u[0] * -Math.sin(t) + u[1] * Math.cos(t)) * r * (TAU / n);
           }
-          if (body.value) { const d = Math.hypot(cx, cy); if (d - r < 1 && d + r > 1) ok = false; }
+          if (body.value) { const d = Math.hypot(cx, cy); if (Math.abs(r - 1) <= d && d <= r + 1) ok = false; }
           return ok ? -g : null;
         };
         let lines = [], key = '';
@@ -291,7 +290,7 @@ is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$
           info = { gA, gB };
         });
         v.legend([['accent', 'loop A'], ['orange', 'loop B'], ['green', '$\\Gamma$', { dash: true }]]);
-        v.readout(() => `loop A: ${info.gA === null ? 'crosses the cylinder (not in the fluid)' : `$\\oint\\mathbf u\\cdot d\\mathbf l$ (clockwise) $=${v.fix(info.gA, 4)}$`} · loop B: ${info.gB === null ? 'crosses the cylinder' : `$${v.fix(info.gB, 4)}$`}\n$\\Gamma=${body.value ? v.fix(gs.value, 2) : '0$ (no body: the region is simply connected'})$`);
+        v.readout(() => `loop A: ${info.gA === null ? 'crosses the cylinder (not in the fluid)' : `$\\oint\\mathbf u\\cdot d\\mathbf l$ (clockwise) $=${v.fix(info.gA, 4)}$`} · loop B: ${info.gB === null ? 'crosses the cylinder' : `$${v.fix(info.gB, 4)}$`}\n${body.value ? `$\\Gamma=${v.fix(gs.value, 2)}$` : '$\\Gamma=0$ (no body: the region is simply connected)'}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.17
@@ -332,11 +331,6 @@ which for a sphere much lighter than the fluid tends to $2g$ rather than to the 
           drawLines(s, lines, { color: 'accent', width: 1.1, alpha: 0.75 });
           s.circle(0, 0, a0, { fill: 'gold', fillAlpha: 0.35, color: 'ink', width: 2.4 });
           // pressure from the acceleration term: p ~ cos(theta) (in units of rho a Udot (1/2 or 1))
-          let Fz = 0; const n = 360, kP = sph ? 0.5 : 1;
-          for (let j = 0; j < n; j++) {
-            const th = (TAU * (j + 0.5)) / n, c = Math.cos(th), p = kP * a * c; // rho = 1, a_body = a
-            Fz += sph ? -p * c * Math.sin(th) * (TAU / n) * 1 * (Math.PI) / (Math.PI) * 1 : -p * c * (TAU / n);
-          }
           for (let j = 0; j < 24; j++) {
             const th = (TAU * (j + 0.5)) / 24, c = Math.cos(th), sn = Math.sin(th), pp = c; // normalised
             const L = 0.4 * Math.abs(pp) + 0.03, x = sn, y = c; // theta measured from +y (direction of motion)
@@ -344,8 +338,8 @@ which for a sphere much lighter than the fluid tends to $2g$ rather than to the 
           }
           s.arrow(0, 0, 0, 0.8, { color: 'green', width: 3.5 }); s.text('acceleration', 0.1, 0.55, { color: 'green', align: 'left' });
           // plot
-          const ymax = Math.max(0.5, 0.5 * Math.abs(a) * 1.44, 0.5);
-          q.setView([0, 1.2], [-0.12 * 0.5 * Math.max(Math.abs(a), 1) * 1.44 - 0.1, 0.5 * Math.max(Math.abs(a), 1) * 1.44 * 1.1]); void ymax;
+          const hh = 0.5 * a * 1.44, lo = Math.min(0, hh), hi = Math.max(0, hh), pad = 0.12 * (hi - lo) + 0.05;
+          q.setView([0, 1.2], [lo - pad, hi + pad]);
           q.hline(0, { color: 'muted', alpha: 0.6 });
           q.fn((x) => 0.5 * clamp(an, -60, 60) * x * x, { color: 'muted', width: 2, dash: true, domain: [0, 1.2] });
           q.fn((x) => 0.5 * a * x * x, { color: 'accent', width: 2.8, domain: [0, 1.2] });

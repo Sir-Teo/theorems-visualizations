@@ -204,6 +204,7 @@ export function mxSim(v, getSpec, o = {}) {
     });
   }
   reset();
+  if (o.warm !== 0) { const r0 = mulberry32(5); for (let k = 0; k < (o.warm || 16); k++) act(Math.floor(r0() * Z.spec.n)); }
   v.render(() => {
     if (Z.spec !== getSpec()) { Z.spec = getSpec(); reset(); }
     const spec = Z.spec, n = spec.n, H = Z.hist, X1 = Math.max(30, H.length + 1);

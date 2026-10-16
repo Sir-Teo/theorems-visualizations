@@ -101,12 +101,12 @@ export default {
         v.button('adversary ×120', () => { for (let k = 0; k < 120; k++) sched.push(k % 4); });
         v.button('random ×40', () => { const base = sched.length; for (let k = 0; k < 40; k++) sched.push(Math.floor(hash01(base, k, 7) * 4)); });
         v.button('reset', () => { sched.length = 0; });
-        const s = v.stage({ x: [-2.2, 40], y: [-0.7, 4.3], axes: false, height: 330, full: true, title: 'registers over time (one column per step) and the scans' });
+        const s = v.stage({ x: [-3, 40], y: [-0.7, 4.3], axes: false, height: 330, full: true, title: 'registers over time (one column per step) and the scans' });
         let R = null;
         v.render(() => {
           R = simSnap(algo.value === 'full', sched);
           const X1 = Math.max(36, R.t + 1);
-          s.setView([-2.2, X1], [-0.7, 4.3]);
+          s.setView([-3, X1], [-0.7, 4.3]);
           const yR = (j) => 3 - j;
           ['R1', 'R2', 'R3'].forEach((nm, j) => { s.text(nm, -0.4, yR(j), { align: 'right', size: 13, color: 'ink' }); s.line(0, yR(j), X1, yR(j), { color: 'grid', width: 1 }); });
           s.text('S', -0.4, 0, { align: 'right', size: 13, color: 'ink' });
@@ -192,7 +192,7 @@ export default {
       credit: 'Attiya, Bar-Noy & Dolev, 1995', links: { doi: 'https://doi.org/10.1145/200836.200869' },
       viz(v) {
         const nS = v.slider('processes $n$', 3, 9, 5, { int: true, onChange: () => init() });
-        const fS = v.slider('crashes tolerated $f$', 0, 8, 2, { int: true, onChange: () => init() });
+        const fS = v.slider('crashes tolerated $f$', 0, 8, 3, { int: true, onChange: () => init() });
         const mode = v.select('click edits', [{ value: 'w', label: 'write quorum' }, { value: 'r', label: 'read quorum' }], 'w');
         let W = [], Rq = [];
         const qn = () => Math.max(1, nS.value - Math.min(fS.value, nS.value - 1));
