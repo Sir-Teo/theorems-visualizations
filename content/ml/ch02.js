@@ -334,7 +334,7 @@ with equality when the $A_i$ are pairwise disjoint (up to null sets).`,
       verify: false,
       viz(v) {
         const s = square(v, { height: 380, title: 'events in the unit square' });
-        const sB = v.stage({ x: [0, 3.2], y: [0, 1], axes: 'box', gutter: true, height: 380, xticks: [[0.7, '$\\sum_i\\mathcal D(A_i)$'], [2.1, '$\\mathcal D(\\bigcup A_i)$']], ylabel: 'probability mass', title: 'sum of the masses versus mass of the union' });
+        const sB = v.stage({ x: [0, 3.2], y: [0, 1], axes: 'box', gutter: true, height: 380, xticks: [[0.7, 'Σ D(Aᵢ)'], [2.1, 'D(A₁ ∪ … ∪ Aₙ)']], ylabel: 'probability mass', title: 'sum of the masses versus mass of the union' });
         const nS = v.slider('number of events $n$', 2, 6, 4, { int: true });
         const rS = v.slider('radius', 0.06, 0.32, 0.2, { step: 0.01 });
         const COL = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];

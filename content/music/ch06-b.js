@@ -84,7 +84,7 @@ export default {
       num: '6.10',
       kind: 'Model',
       name: 'Dissonance of three-note chords',
-      statement: String.raw`The sensory dissonance of a chord is the sum of the Plomp–Levelt dissonances of all pairs of partials of all its notes. For a three-note chord with intervals $x$ (lower to middle) and $y$ (middle to upper) it is a function $D(x,y)$ on the plane, the sum of the three two-note curves $D_2(x)$, $D_2(y)$ and $D_2(x+y)$ (6.4) plus the intrinsic dissonance of each tone. For harmonic tones the deepest valleys within the octave lie at the **major** and **minor triads** in just intonation ($x,y$ = 5/4 and 6/5, in either order), and at the open "sus" and quartal shapes built from fourths and fifths; equal-tempered triads sit on the valley walls, a few cents from the bottoms.`,
+      statement: String.raw`The sensory dissonance of a chord is the sum of the Plomp–Levelt dissonances of all pairs of partials of all its notes. For a three-note chord with intervals $x$ (lower to middle) and $y$ (middle to upper) it is a function $D(x,y)$ on the plane, the sum of the three two-note curves $D_2(x)$, $D_2(y)$ and $D_2(x+y)$ (6.4) plus the intrinsic dissonance of each tone. For harmonic tones the smoothest three-note chords are those built only from octaves, fifths and fourths (C–G–C′). Among chords containing thirds, the **major** and **minor triads** in just intonation ($x,y$ = 5/4 and 6/5, in either order) and their inversions sit in sharp local valleys, the major and minor triads almost equally deep, while the diminished and augmented triads lie far higher; the equal-tempered triads sit on the valley walls, a dozen cents from the bottoms.`,
       idea: String.raw`A triad's three intervals are all consonant at once only when each of $x$, $y$ and $x+y$ falls in a dip of the two-note curve. With $x+y$ a fifth (3/2), the choices $x=5/4$, $y=6/5$ and the reverse put all three intervals on minima: those are the major and minor triads, and their dissonance comes out nearly equal in this model; diminished and augmented triads place $x+y$ on a tritone or minor sixth instead. Changing the timbre changes $D_2$ and so moves the valleys: with stretched partials the triad valleys follow the stretched scale (6.5), and with a bar's inharmonic spectrum the familiar triads are no longer special.`,
       caption: String.raw`A map of the total dissonance of three-note chords on C4: horizontally the lower interval, vertically the upper one, with contours; light means smooth. Named chords are marked at their equal-tempered positions (just triads as rings). Drag the gold point to choose a chord and hear it; switch the timbre to stretched partials or to a free bar's partials and watch the valleys move away from the triads.`,
       deps: ['music-6.4'],
@@ -95,7 +95,7 @@ export default {
       scope: String.raw`Roughness only: the model rates major and minor triads alike, while listeners usually hear minor triads as less consonant, a difference attributed to harmonicity and to musical learning. Root at C4, 6 partials with amplitudes $0.88^{k-1}$ (stretched: $A=2.1$; free bar: the first four beam modes).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Triad_(music)' },
       viz(v) {
-        const M = v.M, F0 = 261.63, X0 = 50, X1 = 850, G = 96;
+        const M = v.M, F0 = 261.63, X0 = 50, X1 = 850, G = 128;
         let grid = null, gk = '';
         const tim = v.select('timbre', [{ value: 'harm', label: 'harmonic' }, { value: 'str', label: 'stretched (A = 2.1)' }, { value: 'bar', label: 'free bar' }], 'harm', { onChange: () => v.invalidate() });
         const specOf = (k) => (k === 'str' ? stretched(6, 2.1) : k === 'bar' ? BEAM.slice(0, 4).map((r, i) => [r, 0.88 ** i]) : harmonic(6, 0.88));
@@ -131,9 +131,9 @@ export default {
         });
         v.legend([['accent', 'more dissonant (darker)', { area: true }], ['green', 'local minima of the map; rings: just major and minor triads'], ['gold', 'your chord']]);
         v.readout(() => {
-          const g = build(), d = look(h.x, h.y), nm = NAMED.reduce((b, c) => (Math.hypot(c[1] - h.x, c[2] - h.y) < Math.hypot(b[1] - h.x, b[2] - h.y) ? c : b));
-          const rank = (x, y) => (look(x, y) - g.lo) / (g.hi - g.lo);
-          return `intervals ${v.fix(h.x, 0)} ¢ + ${v.fix(h.y, 0)} ¢ (nearest named: ${nm[0]}) · dissonance ${v.fix(d, 2)}, i.e. ${v.fix(100 * Math.min(1, rank(h.x, h.y)), 0)}% of the way from the smoothest chord on the map to the 90th percentile · 12-TET major ${v.fix(look(400, 300), 2)}, minor ${v.fix(look(300, 400), 2)}, just major ${v.fix(look(JT[0][0], JT[0][1]), 2)}, diminished ${v.fix(look(300, 300), 2)}, augmented ${v.fix(look(400, 400), 2)}`;
+          const g = build(), S = specOf(tim.value), E = (x, y) => chordD(S, x, y), d = E(h.x, h.y), nm = NAMED.reduce((b, c) => (Math.hypot(c[1] - h.x, c[2] - h.y) < Math.hypot(b[1] - h.x, b[2] - h.y) ? c : b));
+          const rank = (val) => (val - g.lo) / (g.hi - g.lo);
+          return `intervals ${v.fix(h.x, 0)} ¢ + ${v.fix(h.y, 0)} ¢ (nearest named: ${nm[0]}) · dissonance ${v.fix(d, 2)}, ${v.fix(100 * Math.min(1, rank(d, 0)), 0)}% of the way from the smoothest chord on the map to its 90th percentile · just major ${v.fix(E(JT[0][0], JT[0][1]), 2)}, just minor ${v.fix(E(JT[1][0], JT[1][1]), 2)}, 12-TET major ${v.fix(E(400, 300), 2)}, minor ${v.fix(E(300, 400), 2)}, diminished ${v.fix(E(300, 300), 2)}, augmented ${v.fix(E(400, 400), 2)}, C–G–C′ ${v.fix(E(cents(1.5), cents(4 / 3)), 2)}`;
         });
       },
     },
