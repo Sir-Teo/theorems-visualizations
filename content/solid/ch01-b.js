@@ -358,7 +358,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
         const peak = (sol, x) => { let m = 0; for (let j = 0; j <= 40; j++) { const y = -0.5 + j / 40; m = Math.max(m, Math.abs(sol.sxx(x, y) - 1)); } return m; };
         v.render(() => {
           const sol = get(kind.value);
-          A.raster((x, y) => (x < 0 || x > 4.5 || Math.abs(y) > 0.5 ? null : v.diverge(Math.max(-1, Math.min(1, sol.sxx(x, y) - 1)), 'blue', 'red')), { res: 420, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
+          A.heat((x, y) => (x < 0 || x > 4.5 || Math.abs(y) > 0.5 ? NaN : sol.sxx(x, y)), { range: [0, 2], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 3, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
           A.rect(0, -0.5, 4.5, 0.5, { color: 'ink', width: 1.6, fill: false });
           A.clip(() => A.contour((x, y) => sol.sxx(x, y), [0.95, 1.05], { color: 'ink', width: 1, alpha: 0.5, res: 200 }), [0, 4.5], [-0.5, 0.5]);
           // load arrows at the left end
