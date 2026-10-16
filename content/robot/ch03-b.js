@@ -97,6 +97,7 @@ export default {
           if (fwd && prevMode === 'inv') setLensFromPose();
           prevMode = mode.value;
           roll.el.hidden = pitch.el.hidden = yaw.el.hidden = fwd; ls.forEach((s) => { s.el.hidden = !fwd; }); sol.hidden = !fwd; T.visible = !fwd;
+          SC.setView([-3.2, 3.2], fwd ? [-3.4, 3.4] : [-1.4, 2.6]);
           const ref = poseNow(), lensRef = legLens(ref.R, ref.t);
           let show = ref, ghosts = [], lens = lensRef, count = 0, resid = 0, shown = 1;
           if (fwd) {

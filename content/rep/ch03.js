@@ -357,7 +357,7 @@ The irreducible characters form an orthonormal family in the space of class func
       name: 'Multiplicities from inner products',
       statement: String.raw`Let $V$ be a complex representation of a finite group $G$ with character $\chi$, and let $W_1,\dots,W_r$ be the irreducible representations with characters $\chi_1,\dots,\chi_r$. Then $V\cong\bigoplus_i W_i^{\,m_i}$ with $m_i=\langle\chi,\chi_i\rangle$, so $\chi=\sum_i\langle\chi,\chi_i\rangle\chi_i$. In particular the multiplicity of the trivial representation is $\frac1{|G|}\sum_g\chi(g)$, and a permutation representation has $\chi(g)=\#\{\text{points fixed by }g\}$.`,
       idea: String.raw`By Maschke (2.2) $V$ is a direct sum of irreducibles, so $\chi=\sum m_i\chi_i$ by 3.3. Take the inner product with $\chi_j$ and use 3.5: only the term $i=j$ survives and gives $m_j$. For a permutation representation on a finite set $X$ the matrix of $g$ is a permutation matrix, whose diagonal entries are $1$ exactly at the fixed points.`,
-      caption: String.raw`The rotation group of the cube is $S_4$ (it permutes the four body diagonals). Choose a set of geometric objects the cube rotations move: diagonals, faces, vertices, edges or the three face axes. Choose a class of rotation: the 3D picture shows which objects stay fixed (green) and which move (red), and the character of that class is their count. The bars on the right are the multiplicities $\langle\chi,\chi_i\rangle$ of the five irreducibles of $S_4$, computed by the weighted dot product; they are whole numbers, and the readout rebuilds $\chi$ from them.`,
+      caption: String.raw`The rotation group of the cube is $S_4$ (it permutes the four body diagonals). Choose a set of geometric objects the cube rotations move: diagonals, faces, vertices, edges or the three face axes. Choose a class of rotation ($e$; $(1\,2)$, a half-turn about an edge axis; $(1\,2)(3\,4)$, a half-turn about a face axis; $(1\,2\,3)$, a third-turn about a body diagonal; $(1\,2\,3\,4)$, a quarter-turn about a face axis): the 3D picture shows which objects stay fixed (green) and which move (red), and the character of that class is their count. The bars on the right are the multiplicities $\langle\chi,\chi_i\rangle$ of the five irreducibles of $S_4$, computed by the weighted dot product; they are whole numbers, and the readout rebuilds $\chi$ from them.`,
       deps: ['rep-3.5'],
       refs: ['Serre §2.3'],
       tags: ['multiplicity', 'permutation representation'],
@@ -378,7 +378,7 @@ The irreducible characters form an orthonormal family in the space of class func
         const sameLine = (a, b) => cube.same(a, b) || cube.same(a, b.map((t) => -t));
         const act = (A, key) => { const S = SETS[key]; return S.pts.map((p) => { const q = cube.app(A, p); return S.pts.findIndex((r) => (S.line ? sameLine(r, q) : cube.same(r, q))); }); };
         const oset = v.select('objects', [{ value: 'diag', label: '4 diagonals' }, { value: 'faceAxes', label: '3 face axes' }, { value: 'faces', label: '6 faces' }, { value: 'edgeAxes', label: '6 edge axes' }, { value: 'verts', label: '8 vertices' }, { value: 'edges', label: '12 edges' }], 'faces');
-        const csel = v.select('rotation', T.G.classes.map((c, i) => ({ value: i, label: `$${G.L[c.rep] === 'e' ? 'e' : G.L[c.rep]}$` })), 1);
+        const csel = v.select('rotation', T.G.classes.map((c, i) => ({ value: i, label: `$${G.L[c.rep] === 'e' ? 'e' : G.L[c.rep]}$` })), 2);
         const Sx = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.1], equal: true, axes: false, height: 360, weight: 1.05 });
         const sc = v.scene3(Sx, { yaw: 0.6, pitch: 0.38, axis: 0, lim: 1.5, axes: false, hint: true });
         const Bs = v.stage({ x: [-0.6, 4.6], y: [-0.5, 5], axes: 'box', gutter: true, height: 360, weight: 0.95, title: 'multiplicities $m_i=\\langle\\chi,\\chi_i\\rangle$', xlabel: 'irreducible' });
@@ -403,7 +403,7 @@ The irreducible characters form an orthonormal family in the space of class func
           sc.flush();
           const { chi } = chars(key), m = multiplicities(G, T.rows, chi);
           Bs.setView([-0.6, T.rows.length - 0.4], [-0.5, Math.max(3, ...m.map((z) => z[0])) + 1]);
-          Bs.setTicks(T.rows.map((r, i) => [i, `χ${r.d}${r.name.includes("'") ? "'" : r.name === 'e' ? 'ε' : ''}`]), null);
+          Bs.setTicks(T.rows.map((r, i) => [i, ['trivial', 'sign', '2-dim', '3-dim', "3-dim′"][i]]), null);
           Bs.bars(m.map((z) => z[0]), { x0: 0, dx: 1, color: (_, i) => ecol(i) });
           m.forEach((z, i) => Bs.text(nm(z[0], 0), i, z[0] + 0.1, { align: 'center', baseline: 'bottom', size: 13, color: 'ink', weight: 700 }));
           Bs.hline(0, { color: 'ink', width: 1 });
@@ -438,7 +438,7 @@ The irreducible characters form an orthonormal family in the space of class func
         let seed = 3;
         v.button('new random $X$', () => { seed += 1; });
         const A = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: true, height: 360, weight: 1, title: '$V$ with $\\rho$' });
-        const B = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: true, height: 360, weight: 1, title: '$W$ with $\\sigma$' });
+        const B = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: true, height: 360, weight: 1, title: '$W$ with $\\sigma$' });
         const sigma = () => {
           const t = sh.value;
           let Q;
@@ -502,11 +502,11 @@ The irreducible characters form an orthonormal family in the space of class func
         const ps = v.select('load', [{ value: 'none', label: 'custom' }, ...Object.entries(PRE).map(([k, p]) => ({ value: k, label: p.label }))], 'none', {
           onChange: () => { const p = PRE[ps.value]; if (!p) return; multiplicities(G, T.rows, p.chi).forEach((m, i) => sl[i].set(Math.round(m[0]))); },
         });
-        const A = v.stage({ x: [-0.3, 8], y: [-0.2, 6], equal: true, axes: false, height: 330, weight: 1.2, title: 'squares of side $m_i$' });
+        const A = v.stage({ x: [-0.3, 8], y: [-0.2, 6], equal: true, axes: false, height: 250, weight: 1.2, title: 'squares of side $m_i$' });
         const chiNow = () => G.classes.map((_, c) => T.rows.reduce((s, r, i) => cadd(s, csc(r.vals[c], sl[i].value)), [0, 0]));
         v.render(() => {
-          const ms = sl.map((s) => s.value), tot = ms.reduce((s, m) => s + m * m, 0), width = ms.reduce((s, m) => s + m, 0) + 0.3 * n, side = Math.max(8, width + 0.5, Math.sqrt(tot) + 1);
-          A.setView([-0.3, side * 1.0], [-0.6, side * 0.55]);
+          const ms = sl.map((s) => s.value), tot = ms.reduce((s, m) => s + m * m, 0), width = ms.reduce((s, m) => s + m, 0) + 0.3 * n;
+          A.setView([-0.3, Math.max(8, width + 0.3)], [-0.8, Math.max(3.2, ...ms) + 0.8]);
           let x = 0;
           ms.forEach((m, i) => {
             if (m > 0) {
