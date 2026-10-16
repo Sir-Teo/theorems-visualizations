@@ -56,7 +56,8 @@ export function odeDoses(V, k, ka, times, D, tEnd) {
   let y = [0, 0], t0 = 0;
   const step = (t1) => {
     const n = Math.max(8, Math.ceil((t1 - t0) / 0.05)), h = (t1 - t0) / n;
-    const F = ([g, a]) => [-ka * g, ka * g - k * a];
+    const kg = isFinite(ka) ? ka : 0; // IV: the dose enters the central compartment directly
+    const F = ([g, a]) => [-kg * g, kg * g - k * a];
     for (let i = 0; i < n; i++) y = rk4(F, y, 0, h);
     t0 = t1;
   };

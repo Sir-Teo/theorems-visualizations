@@ -1,0 +1,451 @@
+// Pharmacology — Chapter 4: Dosing regimens
+import { LN2, clamp, memo, DRUGS, BODY, clOf, cSingle, cMulti, cSS, meanOver, extrema, odeDoses, nPrev } from './ch04.shared.js';
+
+const fx = (x, d = 2) => (Math.abs(x) >= 100 ? x.toFixed(0) : x.toFixed(d));
+
+export default {
+  collection: 'pharm',
+  chapter: 4,
+  title: 'Dosing regimens',
+  summary: String.raw`Repeated doses superimpose, so concentrations accumulate toward a steady state that oscillates between a peak and a trough. Accumulation, the average steady-state level and the fluctuation within an interval all follow from the single-dose curve. Dosing is then tuned to keep concentrations inside the therapeutic window, adjusted for kidney function, scaled across species and made robust to missed doses. All drug parameters in this chapter are rounded teaching values or models, not fitted data and not dosing advice.`,
+  items: [
+    // ------------------------------------------------------------------ 4.1
+    {
+      num: '4.1',
+      kind: 'Model',
+      name: 'Repeated dosing by superposition',
+      statement: String.raw`If absorption and elimination are first-order (the system is linear and time-invariant), the concentration after repeated doses $D$ given at times $0,\tau,2\tau,\dots$ is the sum of the single-dose curves, each shifted to its dose time: $C(t)=\sum_{n\ge 0,\; n\tau\le t} C_1(t-n\tau)$. For an intravenous bolus $C_1(t)=\tfrac{D}{V}e^{-kt}$; for an oral dose it is the Bateman function. The sum climbs in a sawtooth and, when $k>0$, approaches a repeating pattern.`,
+      idea: String.raw`Linearity means the response to a sum of inputs is the sum of the responses, so a second dose does not care that a first one is still in the body: each dose decays on its own schedule (the one-compartment decay of pharm-2.1). Adding the shifted copies gives the whole history. Nothing here needs a differential equation per dose; the same sum is recovered by integrating the ODE across the dose jumps, which the readout does as a check.`,
+      caption: String.raw`Each thin coloured curve is the contribution of one dose; the thick curve is their sum. Drag the **interval** and the **half-life**: when $\tau$ is short compared with $t_{1/2}$ the contributions pile up, when it is long they hardly overlap. Switch to an **oral** dose to see the same superposition with the Bateman curve. The dashed lines mark the steady-state peak and trough that the sawtooth is heading for.`,
+      scope: String.raw`Holds only for linear kinetics: first-order absorption and elimination, constant parameters. It fails for saturable elimination (chapter 5), time-varying clearance, or autoinduction. Values here are a model (V = 40 L, dose 100 mg), not a particular drug.`,
+      deps: ['pharm-2.1'],
+      refs: ['Rowland–Tozer'],
+      tags: ['superposition', 'accumulation'],
+      viz(v) {
+        const V = 40, D = 100, nD = 10;
+        const tau = v.slider('dosing interval $\\tau$ (h)', 1, 48, 8, { step: 0.5 });
+        const t12 = v.slider('half-life $t_{1/2}$ (h)', 1, 48, 10, { step: 0.5 });
+        const route = v.select('route', [{ value: 'iv', label: 'IV bolus' }, { value: 'po', label: 'oral ($k_a=1$ h$^{-1}$)' }], 'iv');
+        const parts = v.toggle('show single-dose curves', true);
+        const s = v.stage({ x: [0, 80], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
+        let info = null;
+        v.render(() => {
+          const k = LN2 / t12.value, ka = route.value === 'iv' ? Infinity : 1, T = tau.value;
+          const times = Array.from({ length: nD }, (_, n) => n * T), tEnd = (nD - 0.2) * T;
+          const f = (t) => cMulti(t, times, V, k, ka, 0, D);
+          const ss = (t) => cSS(t, T, D, V, k, ka);
+          const ex = extrema(ss, 0, T, 300);
+          const top = Math.max(ex.hi, ...times.map((t) => f(t + 1e-6))) * 1.12;
+          s.setView([0, nD * T], [0, top]);
+          if (parts.value) times.forEach((t0, n) => s.fn((t) => cSingle(t - t0, D, V, k, ka), { domain: [t0, nD * T], color: ['purple', 'teal', 'orange', 'pink', 'blue'][n % 5], width: 1, alpha: 0.55 }));
+          s.hline(ex.hi, { color: 'green', dash: true, width: 1.2 });
+          s.hline(ex.lo, { color: 'green', dash: true, width: 1.2 });
+          const pts = []; const N = 700;
+          for (let i = 0; i <= N; i++) { const t = (nD * T * i) / N; pts.push([t, f(t)]); }
+          s.path(pts, { color: 'accent', width: 2.6 });
+          times.forEach((t0) => s.vline(t0, { color: 'muted', alpha: 0.25, width: 1 }));
+          s.text(`peak ${fx(ex.hi)}`, nD * T, ex.hi, { size: 10.5, color: 'green', align: 'right', baseline: 'bottom' });
+          s.text(`trough ${fx(ex.lo)}`, nD * T, ex.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
+          const chk = odeDoses(V, k, ka, times, D, tEnd);
+          info = { sum: f(tEnd), chk, hi: ex.hi, lo: ex.lo, n: times.length };
+        });
+        v.legend([['accent', 'sum of doses'], ['purple', 'single-dose curves', { dash: true }], ['green', 'steady-state peak / trough', { dash: true }]]);
+        v.readout(() => `At $t=${v.fix((nD - 0.2) * tau.value, 1)}$ h: superposition $=${v.fix(info.sum, 4)}$ mg/L; ODE integrated across the ${info.n} dose jumps $=${v.fix(info.chk, 4)}$ mg/L (difference $${v.sci(Math.abs(info.sum - info.chk), 2)}$).`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.2
+    {
+      num: '4.2',
+      kind: 'Theorem',
+      name: 'Accumulation factor 1/(1 − e^{−kτ})',
+      statement: String.raw`For an intravenous bolus $D$ repeated every $\tau$ in a one-compartment body with elimination rate $k$, put $r=e^{-k\tau}$. The peak just after the $n$-th dose is $C_{\max,n}=\tfrac{D}{V}\,(1+r+\dots+r^{n-1})=\tfrac{D}{V}\,\tfrac{1-r^n}{1-r}$ and the trough just before the $n$-th dose is $r$ times the preceding peak. As $n\to\infty$ the peak tends to $C_{\max,ss}=\tfrac{D}{V}\,R$ with **accumulation factor** $R=\dfrac{1}{1-e^{-k\tau}}$, and the trough to $C_{\min,ss}=C_{\max,ss}\,e^{-k\tau}$.`,
+      idea: String.raw`Just after the $n$-th dose the body still holds a fraction $r$ of the previous dose's contribution, $r^2$ of the one before, and so on: the peak is a geometric series (pma-3.26) in the residual fraction $r<1$. It converges because each dose is eliminated by a factor $r$ per interval, and its sum is $1/(1-r)$. With $r=2^{-\tau/t_{1/2}}$ the factor depends only on the ratio $\tau/t_{1/2}$.`,
+      caption: String.raw`Left: bars are the peak (blue) and trough (orange) after each dose; the green line is the closed-form limit. Right: the accumulation factor as a function of $\tau/t_{1/2}$; drag the point. At $\tau=t_{1/2}$ the factor is exactly 2, and for short intervals $R\approx t_{1/2}/(0.693\,\tau)$.`,
+      scope: String.raw`IV bolus, linear kinetics, equal doses at equal intervals, instantaneous mixing. For oral doses the trough and the accumulation factor are the same, the peak is lower and later.`,
+      deps: ['pharm-4.1', 'pma-3.26'],
+      refs: ['Rowland–Tozer'],
+      tags: ['accumulation', 'geometric series'],
+      viz(v) {
+        const ratio = v.slider('interval / half-life, $\\tau/t_{1/2}$', 0.1, 6, 1, { step: 0.05 });
+        const nn = v.slider('doses shown $n$', 1, 20, 10, { int: true });
+        const sB = v.stage({ x: [0, 21], y: [0, 4], axes: 'box', gutter: true, xlabel: 'dose number', ylabel: 'C in units of $D/V$', height: 330, weight: 1.2, minWidth: 270 });
+        const sR = v.stage({ x: [0, 6], y: [1, 12], axes: 'box', gutter: true, xlabel: 'interval / half-life', ylabel: 'accumulation factor $R$', height: 330, weight: 1, minWidth: 250 });
+        const hR = sR.handle(1, 2, { color: 'gold', constrain: (x) => [clamp(x, 0.1, 6), 1 / (1 - 2 ** -clamp(x, 0.1, 6))] });
+        hR.onDrag = () => { ratio.set(clamp(hR.x, 0.1, 6)); };
+        let info = null;
+        v.render(() => {
+          const x = ratio.value, r = 2 ** -x, R = 1 / (1 - r), n = nn.value;
+          hR.set(x, R);
+          sB.setView([0, n + 1], [0, Math.max(1.3, R * 1.15)]);
+          let peak = 0, sum = 0;
+          for (let i = 1; i <= n; i++) {
+            peak = (i === 1 ? 1 : peak * r + 1); sum = peak;
+            const trough = i === 1 ? 0 : (peak - 1);
+            sB.rect(i - 0.38, 0, i + 0.02, peak, { fill: 'accent', fillAlpha: 0.55, stroke: false });
+            sB.rect(i + 0.02, 0, i + 0.42, trough + (i === 1 ? 0 : 0), { fill: 'orange', fillAlpha: 0.55, stroke: false });
+          }
+          sB.hline(R, { color: 'green', dash: true, width: 1.6 });
+          sB.hline(R * r, { color: 'green', dash: true, width: 1, alpha: 0.6 });
+          sB.text(`R = ${fx(R, 3)}`, n + 1, R, { size: 11, color: 'green', align: 'right', baseline: 'bottom' });
+          sR.fn((u) => 1 / (1 - 2 ** -u), { domain: [0.1, 6], color: 'accent', width: 2.2 });
+          sR.hline(1, { color: 'muted', dash: true, width: 1 });
+          sR.text('at τ = t½, R = 2', 1, 2, { size: 10.5, color: 'muted', dx: 14, dy: -12, align: 'left' });
+          const n90 = Math.ceil(Math.log(0.1) / Math.log(r));
+          info = { peak: sum, R, r, n, n90, sumDirect: (1 - r ** n) / (1 - r) };
+        });
+        v.legend([['accent', 'peak after dose $n$'], ['orange', 'trough before next dose'], ['green', 'steady-state limit', { dash: true }]]);
+        v.readout(() => `$r=2^{-\\tau/t_{1/2}}=${v.fix(info.r, 4)}$; sum of ${info.n} terms $=${v.fix(info.peak, 4)}$ vs closed form $(1-r^{${info.n}})/(1-r)=${v.fix(info.sumDirect, 4)}$; limit $R=1/(1-r)=${v.fix(info.R, 4)}$. Within 10 % of steady state after ${info.n90} dose${info.n90 === 1 ? '' : 's'} (about 3.3 half-lives).`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.3
+    {
+      num: '4.3',
+      kind: 'Theorem',
+      name: 'Average steady-state concentration = F·Dose/(CL·τ)',
+      statement: String.raw`With linear kinetics and equal doses $D$ (bioavailable fraction $F$) every $\tau$, the average concentration over a dosing interval at steady state is $\bar C_{ss}=\dfrac{1}{\tau}\int_0^\tau C_{ss}(t)\,dt=\dfrac{F\,D}{\mathrm{CL}\,\tau}$: dosing rate divided by clearance. It does not depend on the volume of distribution or on the absorption rate.`,
+      idea: String.raw`The area under one single-dose curve is $F D/\mathrm{CL}$ (pharm-1.5). At steady state the superposed tails of all earlier doses fill each interval, and the area per interval equals the area of one complete dose curve (the part of its tail falling into later intervals is exactly compensated by the earlier tails entering this one). Dividing the area $FD/\mathrm{CL}$ by $\tau$ gives the mean. Absorption speed reshapes the curve but cannot change its area.`,
+      caption: String.raw`Steady-state profiles for an IV bolus, a fast oral dose and a slow oral dose of the same drug and dose. Their peaks and troughs differ, but the numerically averaged level (Simpson) is the same for all three and equals the dashed formula. Choose the **interval** to see the average in the first interval, the third, or at steady state; only at steady state does it equal $FD/(\mathrm{CL}\tau)$.`,
+      scope: String.raw`Linear, time-invariant kinetics. With saturable elimination or changing clearance the average is not given by this formula (chapter 5).`,
+      deps: ['pharm-4.2', 'pharm-1.5'],
+      refs: ['Rowland–Tozer'],
+      tags: ['steady state', 'clearance'],
+      viz(v) {
+        const D = 200, V = 40;
+        const CL = v.slider('clearance CL (L/h)', 1, 15, 4, { step: 0.1 });
+        const tau = v.slider('interval $\\tau$ (h)', 4, 36, 12, { step: 1 });
+        const F = v.slider('bioavailability $F$', 0.2, 1, 0.8, { step: 0.05 });
+        const which = v.select('interval', [{ value: 1, label: 'first' }, { value: 3, label: 'third' }, { value: 0, label: 'steady state' }], 0);
+        const s = v.stage({ x: [0, 12], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time within the interval (h)', ylabel: 'C (mg/L)', height: 340 });
+        const curves = [['iv', 'IV bolus', 'accent', Infinity], ['fast', 'oral, fast ($k_a=3$)', 'orange', 3], ['slow', 'oral, slow ($k_a=0.25$)', 'purple', 0.25]];
+        let info = null;
+        v.render(() => {
+          const k = CL.value / V, T = tau.value, n = which.value;
+          const target = (F.value * D) / (CL.value * T);
+          const res = curves.map(([id, nm, col, ka]) => {
+            const Fe = id === 'iv' ? 1 : F.value; // IV: F = 1 (no absorption loss); oral doses carry F
+            const g = (t) => {
+              if (n === 0) return cSS(t, T, D * Fe, V, k, ka);
+              let c = 0; for (let m = 0; m < n; m++) c += cSingle(t + m * T, D * Fe, V, k, ka); return c;
+            };
+            return { id, col, g, mean: meanOver(g, 0, T), ex: extrema(g, 0, T, 300), Fe };
+          });
+          const top = Math.max(...res.map((r) => r.ex.hi), target) * 1.15;
+          s.setView([0, T], [0, top]);
+          res.forEach((r) => s.fn(r.g, { domain: [0, T], color: r.col, width: 2.2 }));
+          res.forEach((r) => s.hline(r.mean, { color: r.col, dash: [3, 5], width: 1, alpha: 0.7 }));
+          s.hline((n === 0 ? 1 : 1) * target, { color: 'green', dash: true, width: 1.8 });
+          info = { res, target, n };
+        });
+        v.legend(curves.map(([, nm, col]) => [col, nm]).concat([['green', '$F D/(\\mathrm{CL}\\,\\tau)$ (oral $F$)', { dash: true }]]));
+        v.readout(() => `Average over the interval: ${info.res.map((r) => `${r.id === 'iv' ? 'IV' : r.id} $=${v.fix(r.mean, 3)}$`).join(', ')} mg/L. Formula for the oral doses $F D/(\\mathrm{CL}\\tau)=${v.fix(info.target, 3)}$ mg/L${info.n === 0 ? '' : '; **not yet at steady state**, so the means are lower'}. (The IV curve is drawn with $F=1$, so its formula value is $D/(\\mathrm{CL}\\tau)=${v.fix(info.target / F.value, 3)}$.)`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.4
+    {
+      num: '4.4',
+      kind: 'Concept',
+      name: 'Peak–trough fluctuation and the dosing interval',
+      statement: String.raw`Fix the daily dose (hence the same average concentration $\bar C_{ss}$, pharm-4.3) and split it into $N$ equal doses at interval $\tau=24/N$ h. For an IV bolus the steady-state peak-to-trough ratio is $C_{\max}/C_{\min}=e^{k\tau}=2^{\tau/t_{1/2}}$, so the fluctuation $(C_{\max}-C_{\min})/\bar C_{ss}$ shrinks as $\tau/t_{1/2}\to 0$ and the profile flattens toward a constant infusion.`,
+      idea: String.raw`Between doses the concentration only decays by the factor $e^{-k\tau}$, whatever the dose size; the accumulation factor of pharm-4.2 fixes the level at which that decay starts. Splitting the dose lowers each jump but not the mean (pharm-4.3), so the swing relative to the mean decreases with $\tau$. A drug with a half-life much longer than $\tau$ is already nearly flat; a short half-life gives large swings unless doses are frequent.`,
+      caption: String.raw`Choose how many doses per day and the half-life. The thick curve is the chosen regimen at steady state, the faint red curve is once-daily dosing of the same daily amount. The bars (right) give the fluctuation index for every regimen; the mean (dashed) stays put.`,
+      scope: String.raw`Linear kinetics. Oral absorption blunts the peak, so fluctuation is smaller than the IV value for the same $\tau$ (switch the route to see how much). Smaller swings are not always better: some drugs act through the peak (concentration-dependent antibiotics, pharm-4.9).`,
+      deps: ['pharm-4.2'],
+      refs: ['Rowland–Tozer'],
+      tags: ['fluctuation', 'dosing interval'],
+      viz(v) {
+        const Dday = 480, V = 40;
+        const t12 = v.slider('half-life $t_{1/2}$ (h)', 1, 48, 6, { step: 0.5 });
+        const N = v.select('doses per day', [1, 2, 3, 4, 6, 8, 12].map((n) => ({ value: n, label: String(n) })), 2);
+        const route = v.select('route', [{ value: 'iv', label: 'IV bolus' }, { value: 'po', label: 'oral ($k_a=1.5$)' }], 'iv');
+        const sP = v.stage({ x: [0, 48], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h), steady state', ylabel: 'C (mg/L)', height: 330, weight: 1.3, minWidth: 280 });
+        const sF = v.stage({ x: [0, 8], y: [0, 4], axes: 'box', gutter: true, xlabel: 'doses per day', ylabel: '(Cmax − Cmin) / mean', height: 330, weight: 0.9, minWidth: 240, xticks: [[1, '1'], [2, '2'], [3, '3'], [4, '4'], [6, '6'], [8, '8'], [12, '12']] });
+        const Ns = [1, 2, 3, 4, 6, 8, 12];
+        let info = null;
+        v.render(() => {
+          const k = LN2 / t12.value, ka = route.value === 'iv' ? Infinity : 1.5;
+          const prof = (n) => { const T = 24 / n, d = Dday / n; return { T, g: (t) => cSS(t, T, d, V, k, ka), f: (t) => cSS(((t % T) + T) % T, T, d, V, k, ka), d }; };
+          const stat = (n) => { const p = prof(n); const e = extrema(p.g, 0, p.T, 240), m = meanOver(p.g, 0, p.T, 240); return { ...e, m, fl: (e.hi - e.lo) / m }; };
+          const sel = stat(N.value), one = stat(1);
+          const meanC = Dday / (clOf0(k, V) * 24);
+          sP.setView([0, 48], [0, Math.max(sel.hi, one.hi) * 1.15]);
+          const p1 = prof(1), pS = prof(N.value);
+          sP.fn((t) => p1.f(t), { domain: [0, 48], color: 'red', alpha: 0.45, width: 1.4, n: 600 });
+          sP.fn((t) => pS.f(t), { domain: [0, 48], color: 'accent', width: 2.6, n: 900 });
+          sP.hline(meanC, { color: 'green', dash: true, width: 1.5 });
+          const stats = Ns.map(stat);
+          sF.setView([0, 13], [0, Math.max(1, ...stats.map((x) => x.fl)) * 1.2]);
+          Ns.forEach((n, i) => sF.rect(n - 0.4, 0, n + 0.4, stats[i].fl, { fill: n === N.value ? 'accent' : 'muted', fillAlpha: n === N.value ? 0.7 : 0.25, stroke: false }));
+          info = { sel, one, ratio: sel.hi / sel.lo, ex: Math.pow(2, 24 / N.value / t12.value), m: sel.m, meanC, iv: route.value === 'iv' };
+        });
+        v.legend([['accent', 'chosen regimen'], ['red', 'once daily', { dash: false }], ['green', 'mean $FD/(\\mathrm{CL}\\tau)$', { dash: true }]]);
+        v.readout(() => `${N.value} dose${N.value > 1 ? 's' : ''} per day: peak $=${v.fix(info.sel.hi, 2)}$, trough $=${v.fix(info.sel.lo, 2)}$ mg/L, ratio $=${v.fix(info.ratio, 3)}$${info.iv ? ` (formula $2^{\\tau/t_{1/2}}=${v.fix(info.ex, 3)}$)` : ''}; fluctuation $=${v.fix(info.sel.fl, 2)}$ vs once-daily $${v.fix(info.one.fl, 2)}$. Numerical mean $=${v.fix(info.m, 3)}$, formula $=${v.fix(info.meanC, 3)}$ mg/L.`);
+        function clOf0(k, V) { return k * V; }
+      },
+    },
+    // ------------------------------------------------------------------ 4.5
+    {
+      num: '4.5',
+      kind: 'Concept',
+      name: 'Therapeutic window and target concentration',
+      statement: String.raw`A **therapeutic window** is the band of plasma concentrations between a minimum effective level and a minimum toxic level, within which most patients get benefit without unacceptable harm. A regimen is designed so the steady-state trough stays above the lower edge and the peak below the upper one; the dosing rate follows from a target average concentration, $\text{dose rate}=\mathrm{CL}\,\bar C_{\text{target}}/F$ (pharm-4.3), and the interval is chosen so the swing fits inside the band.`,
+      idea: String.raw`Two constraints compete. The average level (set by dose rate and clearance) must sit inside the band, and the peak-to-trough swing (set by $\tau/t_{1/2}$ and by absorption, pharm-4.4) must be narrow enough to fit. A narrow window and a short half-life force frequent doses or a slow-release form; a wide window tolerates a once-daily tablet. Windows are population statistics, not sharp thresholds: individuals differ in sensitivity (chapters 6 and 7).`,
+      caption: String.raw`Pick a drug, then drag the dose and interval until the steady-state sawtooth (accent) lies in the green band. **Centre on target** sets the dose rate so the mean sits at the geometric middle of the band. The readout gives the fraction of the steady-state cycle spent inside the band.`,
+      scope: String.raw`The windows used here are commonly quoted textbook ranges (theophylline about 10–20 mg/L, digoxin about 0.5–2 ng/mL), which differ between sources, indications and decades; the pharmacokinetic values are rounded teaching figures (pharm-1.x presets) and ka values are assumed. Not dosing advice.`,
+      verify: true,
+      deps: ['pharm-4.4'],
+      refs: ['Rowland–Tozer', 'Goodman–Gilman ch. 3'],
+      tags: ['therapeutic window', 'target concentration'],
+      viz(v) {
+        const cfg = {
+          theo: { d: DRUGS.theophylline, lo: 10, hi: 20, ka: 1.0, unit: 'mg/L', dose: 500, tau: 12, dmax: 2000, step: 25, mg: 'mg' },
+          digo: { d: DRUGS.digoxin, lo: 0.5, hi: 2, ka: 1.0, unit: 'ng/mL', dose: 0.25, tau: 24, dmax: 1, step: 0.0125, mg: 'mg' },
+        };
+        const drug = v.select('drug (teaching preset)', [{ value: 'theo', label: 'theophylline' }, { value: 'digo', label: 'digoxin' }], 'theo');
+        const dose = v.slider('dose per administration (mg)', 0.0125, 2000, 500, { step: 0.0125, log: true, sig: 3 });
+        const tau = v.slider('interval $\\tau$ (h)', 2, 48, 12, { step: 1 });
+        v.button('centre on target', () => {
+          const c = cfg[drug.value], CL = clOf(c.d), mid = Math.sqrt(c.lo * c.hi);
+          // mean C (mg/L or ng/mL) = F D /(CL tau); ng/mL = mg/L for mg-scaled digoxin x1000
+          const sc = drug.value === 'digo' ? 1000 : 1;
+          dose.set(clamp((mid * CL * tau.value) / (c.d.F * sc), 0.0125, 2000));
+        });
+        let last = 'theo';
+        const s = v.stage({ x: [0, 120], y: [0, 30], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C', height: 340 });
+        let info = null;
+        v.render(() => {
+          const c = cfg[drug.value];
+          if (last !== drug.value) { last = drug.value; dose.set(c.dose); tau.set(c.tau); }
+          const sc = drug.value === 'digo' ? 1000 : 1;
+          const V = c.d.V * BODY.kg, k = LN2 / c.d.t12, T = tau.value, D = dose.value * c.d.F * sc;
+          const tShow = clamp(6 * c.d.t12, 4 * T, 300);
+          const times = []; for (let t = 0; t < tShow; t += T) times.push(t);
+          const f = (t) => cMulti(t, times, V, k, c.ka, 0, D);
+          const ss = (t) => cSS(t, T, D, V, k, c.ka);
+          const ex = extrema(ss, 0, T, 400);
+          let inside = 0; const M = 600; for (let i = 0; i < M; i++) { const y = ss((T * (i + 0.5)) / M); if (y >= c.lo && y <= c.hi) inside++; }
+          s.setView([0, tShow], [0, Math.max(c.hi * 1.4, ex.hi * 1.1)]);
+          s.setLabels(undefined, `C (${c.unit})`);
+          s.hband(c.lo, c.hi, { color: 'green', alpha: 0.16 });
+          s.hline(c.lo, { color: 'green', width: 1.2, dash: true }); s.hline(c.hi, { color: 'red', width: 1.2, dash: true });
+          s.fn(f, { domain: [0, tShow], color: 'accent', width: 2.5, n: 900 });
+          s.text('toxic above', tShow, c.hi, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
+          s.text('ineffective below', tShow, c.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
+          info = { ex, inside: inside / M, mean: (c.d.F * dose.value * sc) / (clOf(c.d) * T), c };
+        });
+        v.legend([['accent', 'concentration'], ['green', 'therapeutic window (assumed)', { area: true }]]);
+        v.readout(() => `Steady state: peak $${fx(info.ex.hi)}$, trough $${fx(info.ex.lo)}$, mean $${fx(info.mean)}$ ${info.c.unit} (window ${info.c.lo}–${info.c.hi}). Fraction of the cycle inside the window: $${v.fix(100 * info.inside, 0)}\\%$ ${info.ex.hi > info.c.hi ? '(peak above the toxic edge)' : ''} ${info.ex.lo < info.c.lo ? '(trough below the effective edge)' : ''}`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.6
+    {
+      num: '4.6',
+      kind: 'Method',
+      name: 'Dose adjustment in renal impairment',
+      statement: String.raw`Estimate creatinine clearance by the Cockcroft–Gault formula, $\mathrm{CrCl}=\dfrac{(140-\text{age})\times\text{weight (kg)}}{72\times S_{cr}\,(\text{mg/dL})}\ (\times 0.85$ for women$)$ mL/min. If a fraction $f_e$ of the drug is normally excreted unchanged and renal drug clearance is taken as proportional to CrCl, then with $K_F=\mathrm{CrCl}/\mathrm{CrCl}_{\text{normal}}$ total clearance falls to the fraction $Q=1-f_e(1-K_F)$ of normal. To keep the same average steady-state concentration (pharm-4.3) either give the dose $Q\cdot D$ at the usual interval, or the usual dose at the interval $\tau/Q$.`,
+      idea: String.raw`The average concentration is dose rate over clearance, so if clearance falls to $Q$ times its normal value the dose rate must fall by the same factor. Only the renal part of clearance (fraction $f_e$) shrinks with kidney function, hence $Q$. Both ways of lowering the rate give the same mean: smaller doses give a smaller swing, a longer interval gives a larger swing (pharm-4.4). The first choice suits drugs with a narrow window, the second those whose effect depends on the peak.`,
+      caption: String.raw`Enter the patient and the drug. Red: the **unadjusted** regimen, whose mean climbs to $1/Q$ times the intended one. Blue: the **dose reduced** to $QD$. Orange: the **interval lengthened** to $\tau/Q$. All three adjusted and unadjusted means are marked, and the readout gives the factor $Q$.`,
+      scope: String.raw`A rough rule. Cockcroft–Gault was derived in men in the 1970s and is only an estimate (extremes of age, body size and muscle mass mislead); the normal value of 120 mL/min used here is an assumption (texts use 100–125); proportionality of renal clearance to CrCl and unchanged non-renal clearance are assumed, and active metabolites are ignored. The drug is a model (V = 40 L, $t_{1/2}$ 6 h normally, IV bolus).`,
+      verify: true,
+      credit: 'Cockcroft & Gault, 1976 (creatinine clearance); Giusti & Hayton, 1973 (dose adjustment method)',
+      links: { doi: 'https://doi.org/10.1159/000180580' },
+      deps: ['physio-7.5', 'pharm-4.3'],
+      refs: ['Rowland–Tozer'],
+      tags: ['renal clearance', 'dose adjustment'],
+      viz(v) {
+        const V = 40, k0 = LN2 / 6, D0 = 200, T0 = 8, CLn = 120;
+        const age = v.slider('age (years)', 20, 90, 70, { int: true });
+        const wt = v.slider('weight (kg)', 40, 120, 70, { int: true });
+        const scr = v.slider('serum creatinine (mg/dL)', 0.5, 6, 2.4, { step: 0.1 });
+        const sex = v.select('sex', [{ value: 'm', label: 'male' }, { value: 'f', label: 'female' }], 'm');
+        const fe = v.slider('fraction excreted unchanged $f_e$', 0, 1, 0.8, { step: 0.05 });
+        const s = v.stage({ x: [0, 96], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
+        let info = null;
+        v.render(() => {
+          const crcl = Math.max(5, ((140 - age.value) * wt.value) / (72 * scr.value) * (sex.value === 'f' ? 0.85 : 1));
+          const KF = clamp(crcl / CLn, 0.04, 1.2), Q = 1 - fe.value * (1 - Math.min(KF, 1));
+          const k = k0 * Q, tEnd = 96;
+          const reg = (D, T) => { const ts = []; for (let t = 0; t <= tEnd; t += T) ts.push(t); return (t) => cMulti(t, ts, V, k, Infinity, 0, D); };
+          const fN = reg(D0, T0), fD = reg(D0 * Q, T0), fI = reg(D0, T0 / Q);
+          const fNormal = (() => { const ts = []; for (let t = 0; t <= tEnd; t += T0) ts.push(t); return (t) => cMulti(t, ts, V, k0, Infinity, 0, D0); })();
+          const mean = (D, T) => D / (k * V * T), meanRef = D0 / (k0 * V * T0);
+          s.setView([0, tEnd], [0, Math.max(meanRef * 3.2, mean(D0, T0) * 2.4)]);
+          s.fn(fNormal, { domain: [0, tEnd], color: 'muted', width: 1.3, dash: true, n: 900 });
+          s.fn(fN, { domain: [0, tEnd], color: 'red', width: 2, n: 900 });
+          s.fn(fD, { domain: [0, tEnd], color: 'blue', width: 2.2, n: 900 });
+          s.fn(fI, { domain: [0, tEnd], color: 'orange', width: 2.2, n: 900 });
+          s.hline(meanRef, { color: 'green', dash: true, width: 1.5 });
+          info = { crcl, KF, Q, mean: mean(D0, T0), meanRef, adj: mean(D0 * Q, T0) };
+        });
+        v.legend([['muted', 'normal kidneys, usual regimen', { dash: true }], ['red', 'impaired, unadjusted'], ['blue', 'dose × Q'], ['orange', 'interval ÷ Q'], ['green', 'intended mean', { dash: true }]]);
+        v.readout(() => `$\\mathrm{CrCl}\\approx${v.fix(info.crcl, 0)}$ mL/min ($K_F=${v.fix(info.KF, 2)}$); $Q=1-f_e(1-K_F)=${v.fix(info.Q, 2)}$. Usual dose ${D0} mg every ${T0} h → give **${v.fix(D0 * info.Q, 0)} mg every ${T0} h** or **${D0} mg every ${v.fix(T0 / info.Q, 1)} h**. Mean without adjustment $=${v.fix(info.mean, 2)}$ mg/L ($${v.fix(info.mean / info.meanRef, 2)}\\times$ intended); adjusted $=${v.fix(info.adj, 2)}$ mg/L.`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.7
+    {
+      num: '4.7',
+      kind: 'Phenomenon',
+      name: 'Missed doses and adherence',
+      statement: String.raw`When doses are taken at random with probability $a$ (adherence), the realised dosing rate is $a\cdot D/\tau$ and the long-run mean concentration is $a\bar C_{ss}$, but the concentration fluctuates widely. A drug with $t_{1/2}\ll\tau$ falls to ineffective levels after a single missed dose; a drug with $t_{1/2}\gg\tau$ averages over many doses, so isolated misses barely show (the drug is “forgiving”).`,
+      idea: String.raw`The concentration is the superposition of the doses actually taken (pharm-4.1): each missed dose deletes one term. The effect of the deletion lasts about one half-life, and what matters is how that compares with the interval. With a long half-life the missing term is small relative to the stored sum from many earlier doses; with a short one it is most of the signal.`,
+      caption: String.raw`A 14-day record of once-daily oral dosing with misses drawn at random for the chosen adherence (the same seed for every slider position; **resample** draws a new patient). Faint curve: perfect adherence. The band is an illustrative window of 0.5–1.5 times the planned mean. The readout also averages 60 simulated patients, so a short and a long half-life can be compared on the same adherence.`,
+      scope: String.raw`Model: independent misses, no “catching up”, a fixed dose time each day, oral absorption $k_a=1.5$ h$^{-1}$, history of perfect adherence before day 0. Real adherence is patterned (drug holidays, clusters of misses), which is worse than independent misses. The window is illustrative, not drug-specific.`,
+      deps: ['pharm-4.1'],
+      refs: ['Rowland–Tozer'],
+      tags: ['adherence', 'missed doses'],
+      viz(v) {
+        const V = 40, D = 100, ka = 1.5, tau = 24, days = 14, lead = 20;
+        const adh = v.slider('adherence $a$', 0.4, 1, 0.8, { step: 0.05 });
+        const t12 = v.slider('half-life $t_{1/2}$ (h)', 2, 120, 8, { step: 1, log: true, sig: 2 });
+        let seed = 7;
+        v.button('resample', () => { seed++; });
+        const s = v.stage({ x: [0, days * 24], y: [0, 2.2], axes: 'box', gutter: true, xlabel: 'time (days)', ylabel: 'C / planned mean', height: 340, xticks: Array.from({ length: days + 1 }, (_, i) => [i * 24, i % 2 ? '' : String(i)]) });
+        const cache = memo();
+        let info = null;
+        v.render(() => {
+          const k = LN2 / t12.value, mean0 = D / (k * V * tau);
+          const taken = (rng) => { const a = []; for (let n = -lead; n < 0; n++) a.push(n * tau); for (let n = 0; n < days; n++) if (rng() < adh.value) a.push(n * tau); return a; };
+          const grid = []; for (let t = 0; t <= days * 24; t += 1) grid.push(t);
+          const curve = (ts) => grid.map((t) => cMulti(t, ts, V, k, ka, 0, D) / mean0);
+          const below = (ys) => { let n = 0; for (let i = 0; i < ys.length; i++) if (ys[i] < 0.5) n++; return n / ys.length; };
+          const res = cache(`${seed}|${adh.value}|${t12.value}`, () => {
+            const r = v.rng(seed * 101 + 5);
+            const mine = taken(() => r.uniform(0, 1));
+            const myc = curve(mine);
+            const perfect = curve(taken(() => 0));
+            const rr = v.rng(999); let sum = 0; const S = 60;
+            for (let i = 0; i < S; i++) sum += below(curve(taken(() => rr.uniform(0, 1))));
+            return { mine, myc, perfect, mc: sum / S, missed: days - mine.filter((t) => t >= 0).length };
+          });
+          s.hband(0.5, 1.5, { color: 'green', alpha: 0.13 });
+          s.path(grid.map((t, i) => [t, res.perfect[i]]), { color: 'muted', alpha: 0.6, width: 1.3 });
+          s.path(grid.map((t, i) => [t, res.myc[i]]), { color: 'accent', width: 2.4 });
+          for (let n = 0; n < days; n++) {
+            const was = res.mine.includes(n * tau);
+            s.dot(n * tau, 0.05, { r: 3.5, color: was ? 'green' : 'red', hollow: !was });
+          }
+          info = { res, below: below(res.myc), perfect: below(res.perfect) };
+        });
+        v.legend([['accent', 'this patient'], ['muted', 'perfect adherence'], ['green', 'dose taken', { dot: true }], ['red', 'dose missed', { dot: true }]]);
+        v.readout(() => `${info.res.missed} of ${days} doses missed. Time below 0.5 × planned mean: **${v.fix(100 * info.below, 0)}%** (perfect adherence ${v.fix(100 * info.perfect, 0)}%); average over 60 simulated patients ${v.fix(100 * info.res.mc, 0)}%.`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.8
+    {
+      num: '4.8',
+      kind: 'Concept',
+      name: 'Zero-order and sustained-release delivery',
+      statement: String.raw`At a fixed daily dose the average concentration is fixed (pharm-4.3), so a delivery form can change only the **shape** of the steady-state profile. Slowing first-order release (small $k_a$) lowers and delays the peak; releasing at a constant, zero-order rate $D/T$ over a time $T$ (a patch, an osmotic pump, an infusion) does so more completely, and for $T=\tau$ the steady-state concentration is constant, $\bar C_{ss}$, with no fluctuation.`,
+      idea: String.raw`The area under each single-dose curve is the same, $FD/\mathrm{CL}$, whatever the release (pharm-1.5), and so is the mean. What changes is how that area is spread in time: a zero-order input with duration $T$ is a rectangle of rate $D/T$, whose response $\tfrac{D}{TkV}(1-e^{-kt})$ rises smoothly, and consecutive rectangles abut to a constant rate. Note that “zero-order” here describes the **input**; elimination is still first-order (not the saturation of chapter 5).`,
+      caption: String.raw`Steady-state profiles for the same daily dose given three ways: immediate release ($k_a=3$ h$^{-1}$), a first-order slow release (drag $k_a$), and a zero-order release lasting $T$ hours of each interval (drag $T$). Dashed line: the common mean. The readout lists the fluctuation index $(C_{\max}-C_{\min})/\bar C$ of each.`,
+      scope: String.raw`Linear elimination and complete release inside the absorption window; real sustained-release forms are limited by transit through the gut and by gastric emptying. Model values only (V = 40 L, daily dose 240 mg).`,
+      deps: ['pharm-2.4', 'pharm-2.7'],
+      refs: ['Rowland–Tozer'],
+      tags: ['sustained release', 'zero-order input'],
+      viz(v) {
+        const V = 40, Dday = 240;
+        const t12 = v.slider('half-life $t_{1/2}$ (h)', 1, 24, 4, { step: 0.5 });
+        const tau = v.select('interval $\\tau$', [{ value: 12, label: '12 h' }, { value: 24, label: '24 h' }], 24);
+        const kaS = v.slider('slow-release $k_a$ (h$^{-1}$)', 0.05, 1, 0.2, { step: 0.01, log: true, sig: 2 });
+        const Tz = v.slider('zero-order release time $T$ (h)', 1, 24, 24, { step: 1 });
+        const s = v.stage({ x: [0, 48], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h), steady state', ylabel: 'C (mg/L)', height: 340 });
+        let info = null;
+        v.render(() => {
+          const k = LN2 / t12.value, T = tau.value, D = (Dday * T) / 24, Tr = Math.min(Tz.value, T);
+          const forms = [['immediate', 'accent', Infinity, 0], ['slow first-order', 'orange', kaS.value, 0], ['zero-order', 'green', Infinity, Tr]];
+          const prof = forms.map(([nm, col, ka, Tz_]) => ({ nm, col, g: (t) => cSS(t, T, D, V, k, ka, Tz_), f: (t) => cSS(((t % T) + T) % T, T, D, V, k, ka, Tz_), T }));
+          const stats = prof.map((p) => { const e = extrema(p.g, 0, T, 360), m = meanOver(p.g, 0, T, 360); return { ...e, m, fl: (e.hi - e.lo) / m }; });
+          s.setView([0, 48], [0, Math.max(...stats.map((x) => x.hi)) * 1.15]);
+          prof.forEach((p) => s.fn(p.f, { domain: [0, 48], color: p.col, width: 2.2, n: 900 }));
+          s.hline(D / (k * V * T), { color: 'muted', dash: true, width: 1.3 });
+          info = { stats, forms, mean: D / (k * V * T) };
+        });
+        v.legend([['accent', 'immediate release'], ['orange', 'slow first-order'], ['green', 'zero-order (constant rate)'], ['muted', 'common mean', { dash: true }]]);
+        v.readout(() => `Mean: ${info.stats.map((x) => v.fix(x.m, 3)).join(' / ')} mg/L (formula ${v.fix(info.mean, 3)}). Fluctuation index: immediate $${v.fix(info.stats[0].fl, 2)}$, slow $${v.fix(info.stats[1].fl, 2)}$, zero-order $${v.fix(info.stats[2].fl, 2)}$.`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.9
+    {
+      num: '4.9',
+      kind: 'Method',
+      name: 'Intermittent infusion and aminoglycoside dosing',
+      statement: String.raw`For a drug given as short infusions (duration $T_{inf}$) every $\tau$, the concentration is the superposition of constant-rate rectangles (pharm-4.1). For the same total daily dose, giving it as one large infusion per day rather than three smaller ones raises the peak $C_{\max}$ roughly threefold, leaves the 24-h average (hence the daily AUC) unchanged, and lets the trough fall far lower. For aminoglycosides, whose killing is **concentration-dependent**, higher $C_{\max}/\mathrm{MIC}$ is the aim, and a drug-free trough is thought to limit toxicity; this is the rationale of extended-interval (“once-daily”) dosing.`,
+      idea: String.raw`Because the mean is set by the daily dose and clearance (pharm-4.3), only the shape differs, and the shape is governed by $\tau/t_{1/2}$ (pharm-4.4). Gentamicin's half-life of a few hours with normal kidneys lets one daily dose decay to a negligible trough by the next, while still giving the peak per MIC the antibiotic needs. The benefit is the use of two pharmacodynamic properties, concentration-dependent killing and a post-antibiotic effect that continues suppressing growth after the level falls below the MIC.`,
+      caption: String.raw`Gentamicin-like model drug ($V=0.25$ L/kg, 70 kg). Choose the daily dose, the dosing frequency (same daily total) and the half-life (slower with poor kidney function). The red band marks the concentration below the MIC. Drag the MIC and see the peak/MIC ratio and the hours per day spent below the MIC change, and notice that AUC$_{24}$ is the same for all schedules.`,
+      scope: String.raw`Illustrative model: one compartment, 30-min infusions, daily doses 3–7 mg/kg, no protein binding. The pharmacodynamic targets (a peak/MIC around 8–10 is often cited) and the claim that extended intervals reduce toxicity are summarised from memory and the evidence is debated; not dosing advice.`,
+      verify: true,
+      deps: ['pharm-4.1', 'pharm-2.4'],
+      refs: ['Rowland–Tozer'],
+      tags: ['aminoglycoside', 'infusion'],
+      viz(v) {
+        const Vd = 0.25 * 70, Tinf = 0.5;
+        const daily = v.slider('daily dose (mg/kg/day)', 3, 7, 5, { step: 0.5 });
+        const t12 = v.slider('half-life $t_{1/2}$ (h)', 1.5, 12, 2.5, { step: 0.1 });
+        const mic = v.slider('MIC (mg/L)', 0.25, 8, 1, { log: true, sig: 2 });
+        const freq = v.select('schedule', [{ value: 8, label: 'q8h' }, { value: 12, label: 'q12h' }, { value: 24, label: 'q24h' }], 8);
+        const s = v.stage({ x: [0, 72], y: [0, 40], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
+        let info = null;
+        v.render(() => {
+          const k = LN2 / t12.value, T = freq.value, D = (daily.value * 70 * T) / 24;
+          const ss = (t) => cSS(t, T, D, Vd, k, Infinity, Tinf);
+          const ex = extrema(ss, 0, T, 480);
+          const times = []; for (let t = 0; t < 72; t += T) times.push(t);
+          const f = (t) => cMulti(t, times, Vd, k, Infinity, Tinf, D);
+          const auc = meanOver(ss, 0, T, 480) * T * (24 / T);
+          let below = 0; for (let i = 0; i < 480; i++) if (ss((T * (i + 0.5)) / 480) < mic.value) below++;
+          const hb = (24 * below) / 480 * (T / T);
+          s.setView([0, 72], [0, Math.max(ex.hi * 1.15, 8)]);
+          s.hband(0, mic.value, { color: 'red', alpha: 0.15 });
+          s.hline(mic.value, { color: 'red', width: 1.3, dash: true });
+          s.fn(f, { domain: [0, 72], color: 'accent', width: 2.4, n: 1200 });
+          s.text('MIC', 72, mic.value, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
+          info = { ex, auc, hb, ratio: ex.hi / mic.value, D, T };
+        });
+        v.legend([['accent', 'concentration'], ['red', 'below MIC', { area: true }]]);
+        v.readout(() => `${v.fix(info.D, 0)} mg every ${info.T} h: steady-state peak $${v.fix(info.ex.hi, 1)}$ mg/L ($C_{\\max}/\\mathrm{MIC}=${v.fix(info.ratio, 1)}$), trough $${v.fix(info.ex.lo, 2)}$ mg/L; time below MIC $\\approx${v.fix(info.hb, 1)}$ h per day; AUC$_{24}=${v.fix(info.auc, 0)}$ mg·h/L (the same for every schedule: $D_{day}/\\mathrm{CL}=${v.fix((daily.value * 70) / (LN2 / t12.value * Vd), 0)}$).`);
+      },
+    },
+    // ------------------------------------------------------------------ 4.10
+    {
+      num: '4.10',
+      kind: 'Concept',
+      name: 'Allometric dose scaling across species',
+      statement: String.raw`Physiological quantities scale with body mass $W$ as power laws $Y=aW^{b}$: clearance and metabolic rate with $b\approx 0.75$, volumes with $b\approx 1$, and hence half-lives $\propto W^{1/4}$. On log–log axes the data of several species fall near a line, so a regression on animal values can be extrapolated to a human; per kilogram, clearance is lower in larger animals ($\propto W^{-1/4}$), which is why mg/kg doses do not transfer.`,
+      idea: String.raw`If the rates of the underlying physiological processes follow the quarter-power laws of metabolic scaling (ecol-1.5, Kleiber's law), then any clearance that is proportional to those processes inherits the exponent about $3/4$; volumes follow organ and body size. A linear fit of $\log Y$ on $\log W$ (a power law, ecol-1.4) turns the extrapolation into a straight line. It works best for drugs cleared by blood flow and organ size, and badly when a species-specific enzyme or transporter is involved.`,
+      caption: String.raw`Five species on log–log axes, with simulated values: a hidden power law with the exponent of the chosen quantity, log-normal scatter (slider) and a **human deviation** slider that moves the human away from the animals' line (as species-specific metabolism does). The accent line is fitted to the four animals and extrapolated to 70 kg; the green dashed line is the true exponent. Read the prediction error as a fold-change.`,
+      scope: String.raw`The exponents 0.75 and 1 are typical, not exact (fitted exponents for clearance in practice vary widely with drug and species set). The values shown are a model/reconstruction generated from the sliders, not measured data. Prediction from four animals carries a large uncertainty (shown as the readout's fold-range); allometry is a first estimate, not a substitute for human data.`,
+      credit: 'Dedrick, 1973; Boxenbaum, 1982',
+      links: { doi: 'https://doi.org/10.1007/bf01062336' },
+      deps: ['ecol-1.5'],
+      see: ['ecol-1.4'],
+      refs: ['Rowland–Tozer'],
+      tags: ['allometry', 'scaling'],
+      viz(v) {
+        const sp = [['mouse', 0.02], ['rat', 0.25], ['monkey', 5], ['dog', 10], ['human', 70]];
+        const qty = v.select('quantity', [{ value: 0.75, label: 'clearance ($b=0.75$)' }, { value: 1, label: 'volume ($b=1$)' }, { value: 0.25, label: 'half-life ($b=0.25$)' }], 0.75);
+        const scatter = v.slider('scatter (ln s.d.)', 0, 0.6, 0.2, { step: 0.02 });
+        const dev = v.slider('human deviation (fold)', 0.25, 4, 1, { step: 0.05, log: true, sig: 2 });
+        let seed = 3; v.button('resample', () => { seed++; });
+        const s = v.stage({ x: [0.01, 200], y: [0.1, 100000], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'body mass (kg)', ylabel: 'CL (mL/min), log', height: 360 });
+        const draw = memo();
+        let info = null;
+        v.render(() => {
+          const b = qty.value, ref = 70 ** b; // anchor so that "typical human" = 100 units
+          const noise = draw(`${seed}`, () => { const r = v.rng(seed * 13 + 1); return sp.map(() => r.normal()); });
+          const vals = sp.map(([, W], i) => 100 * (W / 70) ** b * Math.exp(scatter.value * noise[i]) * (i === 4 ? dev.value : 1));
+          const lw = sp.slice(0, 4).map(([, W]) => Math.log(W)), ly = vals.slice(0, 4).map(Math.log);
+          const fit = v.M.linreg(lw, ly);
+          const pred = Math.exp(fit.predict(Math.log(70)));
+          s.setLabels(undefined, qty.value === 0.75 ? 'CL (mL/min), log' : qty.value === 1 ? 'V (L), log' : 'half-life (h), log');
+          s.setView([0.01, 200], [Math.min(...vals) / 4, Math.max(...vals) * 4]);
+          s.fn((W) => 100 * (W / 70) ** b, { domain: [0.01, 200], color: 'green', dash: true, width: 1.6 });
+          s.fn((W) => Math.exp(fit.predict(Math.log(W))), { domain: [0.01, 200], color: 'accent', width: 2.2 });
+          s.dot(70, pred, { r: 8, color: 'accent', hollow: true, label: 'predicted', labelPos: 'se' });
+          sp.forEach(([nm, W], i) => s.dot(W, vals[i], { r: 5, color: i === 4 ? 'red' : 'gold', label: nm, labelPos: 'nw' }));
+          info = { fit, pred, human: vals[4], fold: vals[4] / pred, b, perKg: (100 * (1 / 70) ** b) };
+        });
+        v.legend([['gold', 'animals (model values)', { dot: true }], ['red', 'human (model value)', { dot: true }], ['accent', 'fit to animals, extrapolated'], ['green', 'true exponent', { dash: true }]]);
+        v.readout(() => `Fitted exponent $${v.fix(info.fit.slope, 2)}\\pm${v.fix(info.fit.seSlope, 2)}$ (generating value ${info.b}); predicted human ${v.fix(info.pred, 1)} vs model value ${v.fix(info.human, 1)}: error **${v.fix(info.fold, 2)}-fold**. Per kilogram, a value scaling as $W^{${info.b}}$ changes with mass like $W^{${v.fix(info.b - 1, 2)}}$.`);
+      },
+    },
+  ],
+};

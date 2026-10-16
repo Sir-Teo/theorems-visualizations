@@ -56,18 +56,38 @@ with the membrane time constant $\tau_m=r_mc_m=R_mC_m$ and the length constant $
         const sP = v.stage({ x: [0, 4], y: [0, 1.3], axes: 'box', gutter: true, xlabel: 'distance $x/\\lambda$', ylabel: 'voltage (units of $I r_a\\lambda$)', height: 300, full: true });
         const L = 4, NR = 400, gR = cableGrid(0, L, NR);
         const cache = {};
-        const solve = (N, mode) => {
+        // chain of N identical compartments (cell-centred): (2V_j − V_{j−1} − V_{j+1})/h² + V_j = source, end cells have one neighbour
+        const chain = (N, mode) => {
           const key = N + '|' + mode; if (cache[key]) return cache[key];
-          const g = cableGrid(0, L, N), src = new Float64Array(N + 1); src[0] = 2 / g.h;
-          let V;
-          if (mode === 'ss') V = cableSteady(g, 0, 1, 'sealed', 'sealed');
-          else { const T = +mode, nst = Math.max(4, Math.round(T / 0.004)); V = cableEvolve(g, new Float64Array(N + 1), T / nst, nst, { start: true, src }); }
+          const h = L / N, a = new Float64Array(N), b = new Float64Array(N), c = new Float64Array(N), d = new Float64Array(N);
+          const build = (th, dt) => { for (let j = 0; j < N; j++) { const e = (j === 0 || j === N - 1) ? 1 : 2; a[j] = -th * dt / (h * h); c[j] = -th * dt / (h * h); b[j] = 1 + th * dt * (e / (h * h) + 1); } a[0] = 0; c[N - 1] = 0; };
+          let V = new Float64Array(N);
+          if (mode === 'ss') { for (let j = 0; j < N; j++) { const e = (j === 0 || j === N - 1) ? 1 : 2; a[j] = -1 / (h * h); c[j] = -1 / (h * h); b[j] = e / (h * h) + 1; } a[0] = 0; c[N - 1] = 0; d.fill(0); d[0] = 1 / h; V = thomas(a, b, c, d); }
+          else {
+            const T = +mode, nst = Math.max(8, Math.round(T / 0.004)), dt = T / nst;
+            const step = (th, dtt) => {
+              build(th, dtt);
+              for (let j = 0; j < N; j++) {
+                const e = (j === 0 || j === N - 1) ? 1 : 2, lo = j > 0 ? V[j - 1] : 0, hi = j < N - 1 ? V[j + 1] : 0;
+                d[j] = V[j] + (1 - th) * dtt * ((lo - e * V[j] + hi) / (h * h) - V[j]) + (j === 0 ? dtt / h : 0);
+              }
+              V = thomas(a, b, c, d);
+            };
+            step(1, dt / 2); step(1, dt / 2);
+            for (let k = 1; k < nst; k++) step(0.5, dt);
+          }
           return (cache[key] = V);
+        };
+        const ref = (mode) => {
+          const key = 'ref|' + mode; if (cache[key]) return cache[key];
+          if (mode === 'ss') return (cache[key] = Float64Array.from(gR.x, (x) => Math.cosh(L - x) / Math.sinh(L)));
+          const T = +mode, nst = Math.round(T / 0.004), src = new Float64Array(NR + 1); src[0] = 2 / gR.h;
+          return (cache[key] = cableEvolve(gR, new Float64Array(NR + 1), T / nst, nst, { start: true, src }));
         };
         let st = null;
         v.render(() => {
           const N = Nsl.value, mode = when.value, h = L / N;
-          const Vc = solve(N, mode), Vr = solve(NR, mode);
+          const Vc = chain(N, mode), Vr = ref(mode);
           // circuit
           const M = Math.min(N, 7), xs = Array.from({ length: M }, (_, j) => 1.4 + (j * 8.4) / Math.max(1, M - 1)), top = 4.1, bot = 0.9, dx = M > 1 ? xs[1] - xs[0] : 2;
           const vmax = Math.max(1e-9, ...Vc);
@@ -80,7 +100,8 @@ with the membrane time constant $\tau_m=r_mc_m=R_mC_m$ and the length constant $
             sC.line(x + 0.3, bot, x + 0.3, bot + (top - bot) * 0.38, { color: 'accent', width: 1.8 });
             sC.line(x + 0.1, bot + (top - bot) * 0.55, x + 0.5, bot + (top - bot) * 0.55, { color: 'accent', width: 2.4 });
             sC.line(x + 0.1, bot + (top - bot) * 0.38, x + 0.5, bot + (top - bot) * 0.38, { color: 'accent', width: 2.4 });
-            sC.dot(x, top, { r: 7, color: v.ramp(clamp(vv / vmax, 0, 1), 'gold') });
+            sC.dot(x, top, { r: 8, color: 'muted', hollow: true });
+            sC.dot(x, top, { r: 6, color: v.ramp(clamp(vv / vmax, 0, 1), 'gold') });
             if (j + 1 < M) zigzag(sC, x, top, xs[j + 1], top, 3, 0.16, { color: 'purple', width: 1.8 });
             sC.tex(`V_{${j}}`, x, top + 0.55, { size: 12, color: 'muted' });
           }
@@ -92,16 +113,17 @@ with the membrane time constant $\tau_m=r_mc_m=R_mC_m$ and the length constant $
           sC.tex(String.raw`c_m h`, xs[0] + 0.45, bot - 0.45, { color: 'accent', size: 13 });
           // profile
           sP.path(Array.from(Vr, (y, i) => [gR.x[i], y]), { color: 'ink', width: 2 });
-          sP.path(Array.from(Vc, (y, i) => [i * h, y]), { color: 'accent', width: 1.4 });
-          sP.dots(Array.from(Vc, (y, i) => [i * h, y]), { r: N > 30 ? 3 : 5, color: 'accent' });
-          let err = 0; for (let j = 0; j <= N; j++) err = Math.max(err, Math.abs(Vc[j] - Vr[Math.round((j * h) / gR.h)]));
-          st = { N, h, err: err / Math.max(...Vr), v0: Vc[0], vL: Vc[N], tau: mode };
+          const pc = Array.from(Vc, (y, i) => [(i + 0.5) * h, y]);
+          sP.path(pc, { color: 'accent', width: 1.4 });
+          sP.dots(pc, { r: N > 30 ? 3 : 5, color: 'accent' });
+          let err = 0; for (let j = 0; j < N; j++) err = Math.max(err, Math.abs(Vc[j] - Vr[Math.round(((j + 0.5) * h) / gR.h)]));
+          st = { N, h, err: err / Math.max(...Vr), v0: Vc[0], vL: Vc[N - 1], tau: mode };
         });
         v.legend([['ink', 'continuum cable'], ['accent', 'chain of $N$ compartments', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           return String.raw`$N=${st.N}$ compartments of length $h=${v.fix(st.h, 3)}\,\lambda$ · largest deviation from the continuum cable: $${v.fix(100 * st.err, 2)}\%$ of the peak` + '\n' +
-            String.raw`$V(0)=${v.fix(st.v0, 3)}$, $V(4\lambda)=${v.fix(st.vL, 3)}$` + (st.tau === 'ss' ? String.raw`; exact steady state with sealed ends: $V(0)=\coth 4=${v.fix(1 / Math.tanh(4), 3)}$, $V(4\lambda)=1/\sinh 4=${v.fix(1 / Math.sinh(4), 3)}$` : '');
+            String.raw`first and last compartment: $V_0=${v.fix(st.v0, 3)}$, $V_{${st.N - 1}}=${v.fix(st.vL, 3)}$` + (st.tau === 'ss' ? String.raw`; exact steady state of the continuum cable at the two ends: $\coth 4=${v.fix(1 / Math.tanh(4), 3)}$ and $1/\sinh 4=${v.fix(1 / Math.sinh(4), 3)}$` : '');
         });
       },
     },
@@ -165,7 +187,7 @@ the ratio of membrane resistance to axial resistance per unit length, under a sq
 $$V(x)=\frac{I_0\,r_a\lambda}{2}\,e^{-|x-x_0|/\lambda},\qquad R_{\rm in}=\frac{V(x_0)}{I_0}=\frac{r_a\lambda}{2}=\frac{\sqrt{r_ar_m}}{2},$$
 so the voltage falls by $e$ every $\lambda$ on both sides, and $\ln V$ is a straight line of slope $\mp1/\lambda$. For a semi-infinite cable injected at its sealed end the amplitude is doubled ($R_{\rm in}=r_a\lambda$). For a finite cable of length $\ell$ injected at the end $x=0$, a sealed far end gives $V(x)=V(0)\cosh\frac{\ell-x}{\lambda}/\cosh\frac{\ell}{\lambda}$ (shallower decay, input resistance $R_{\rm in}=r_a\lambda\coth(\ell/\lambda)$), and a far end clamped to rest ("killed") gives $V(0)\sinh\frac{\ell-x}{\lambda}/\sinh\frac{\ell}{\lambda}$ (steeper decay, $R_{\rm in}=r_a\lambda\tanh(\ell/\lambda)$).`,
       idea: String.raw`Away from the source the steady cable equation is a second-order linear ODE with constant coefficients and characteristic roots $\pm1/\lambda$. The solution that stays bounded at infinity must decay on each side. At the source the two decaying halves must be continuous and their slopes must differ by the injected current, $-(V'(x_0^+)-V'(x_0^-))/r_a=I_0$, which fixes the amplitude $I_0r_a\lambda/2$. At a sealed end the axial current vanishes, $V'=0$, which is a mirror condition and favours $\cosh$; at a killed end $V=0$, which favours $\sinh$.`,
-      caption: String.raw`Drag the red handle to move the current source and the green probe to read the local slope of $\ln V$ (right panel, log axis). For the infinite cable the right panel shows two straight lines meeting at the source with slope $\mp1/\lambda$ (dotted guide). Choose sealed or killed ends of a finite cable and change its length $\ell$: sealed ends flatten the profile and raise the input resistance, killed ends steepen it. Voltages are in units of $I_0r_a\lambda$.`,
+      caption: String.raw`Drag the red handle to move the current source and the green probe to read the local slope of $\ln V$ (right panel, log axis). For the infinite cable the right panel shows two straight lines meeting at the source with slope $\mp1/\lambda$ (dashed green guide). Choose sealed or killed ends of a finite cable and change its length $\ell$: sealed ends flatten the profile and raise the input resistance, killed ends steepen it. Voltages are in units of $I_0r_a\lambda$.`,
       scope: String.raw`Passive, linear cable of uniform diameter under steady current; real dendrites are tapered, branched (item 4.5) and carry synaptic and voltage-gated conductances.`,
       deps: ['neuro-4.2'],
       see: ['neuro-4.4', 'neuro-4.5', 'neuro-4.9'],
@@ -262,14 +284,13 @@ a Gaussian of variance $2T$ that spreads and, at the same time, shrinks by the f
             sB.fn((t) => greenCable(X, t, lk), { color: cols[a], width: 2, domain: [0.005, 3], n: 300 });
             const jx = i0 + Math.round(X / g.h), numPts = rec.T.map((t, q) => [t, rec.prof[q][jx]]).filter((_, q) => q % 6 === 0);
             sB.dots(numPts, { r: 2, color: cols[a], alpha: 0.8 });
-            if (lk && X > 0) { const tp = greenPeakTime(X); sB.dot(tp, greenCable(X, tp, 1), { r: 5, color: 'gold' }); sB.tex(`X=${X}`, tp + 0.14, greenCable(X, tp, 1) + 0.07, { color: cols[a], size: 12 }); }
-            else if (X === 0) sB.tex('X=0', 0.25, 1.28, { color: cols[a], size: 12 });
+            if (lk && X > 0) { const tp = greenPeakTime(X); sB.dot(tp, greenCable(X, tp, 1), { r: 5, color: 'gold' }); }
           });
           let jp = 0, bestv = -1; // numerical peak time at X=1
           rec.prof.forEach((p, q) => { const val = p[i0 + Math.round(1 / g.h)]; if (val > bestv) { bestv = val; jp = q; } });
           st = { area, Tk, lk, tpNum: rec.T[jp], tpTh: greenPeakTime(1), amp: greenCable(0, Tk, lk) };
         });
-        v.legend([['accent', 'Green’s function $G(X,T)$'], ['gold', 'numerical cable solution', { dot: true }]]);
+        v.legend([['accent', '$G(X,T)$ at $T$ (left); $X=0$ (right)'], ['green', '$X=0.5$'], ['orange', '$X=1$'], ['purple', '$X=1.5$'], ['gold', 'numerical cable solution; predicted peaks', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           return String.raw`$T=${v.fix(st.Tk, 2)}$: area under the profile $=${v.fix(st.area, 3)}$ (theory ${st.lk ? String.raw`$e^{-T}=${v.fix(Math.exp(-st.Tk), 3)}$` : '1'}), peak height $G(0,T)=${v.fix(st.amp, 3)}$, variance $2T=${v.fix(2 * st.Tk, 2)}$` + '\n' +

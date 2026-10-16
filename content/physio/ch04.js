@@ -85,9 +85,9 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
       verify: true,
       viz(v) {
         const sr = v.slider('radius $r$', 0.2, 3, 1.5, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mm` });
-        const sL = v.slider('length $L$', 1, 20, 5, { step: 0.5, fmt: (x) => `${x} cm` });
+        const sL = v.slider('length $L$', 1, 20, 10, { step: 0.5, fmt: (x) => `${x} cm` });
         const sm = v.slider('viscosity $\\mu$', 1, 8, 3.5, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mPa·s` });
-        const sP = v.slider('pressure drop $\\Delta P$', 1, 50, 10, { step: 1, fmt: (x) => `${x} mmHg` });
+        const sP = v.slider('pressure drop $\\Delta P$', 1, 50, 2, { step: 1, fmt: (x) => `${x} mmHg` });
         const s = v.stage({ x: [0, 10], y: [-3.4, 3.4], height: 280, axes: false, weight: 1.3 });
         const p = v.stage({ x: [-3.2, 3.2], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'distance from axis ρ (mm)', ylabel: 'velocity u (cm/s)', weight: 1 });
         let o = null;
@@ -108,7 +108,7 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
             for (const k of [-0.75, -0.4, 0, 0.4, 0.75]) s.arrow(x0, k * ru, x0 + 1.7 * (1 - k * k), k * ru, { color: 'accent', width: 1.2, head: 6 });
             s.line(x0, -ru, x0, ru, { color: 'muted', width: 1 });
           }
-          s.measure(9.6, -ru, 9.6, ru, `2r = ${v.fix(2 * ru, 2)} mm`);
+          s.arrow(9.7, -ru, 9.7, ru, { both: true, color: 'muted', head: 6 }); s.text(`diameter 2r = ${v.fix(2 * ru, 2)} mm`, 5, -ru - 0.3, { size: 11, color: 'muted', align: 'center' });
           s.text('P in', 0.1, -ru - 0.3, { size: 11, color: 'muted', align: 'left' });
           p.setView([-3.2, 3.2], [0, Math.max(o.umax * 100 * 1.15, 1)]);
           p.fn((x) => (Math.abs(x) <= ru ? u(x * 1e-3) * 100 : NaN), { color: 'accent', width: 2.6, fill: true, fillAlpha: 0.15 });
@@ -116,7 +116,7 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
           p.text('mean = ½ peak', -3.0, o.umax * 50, { size: 11, color: 'orange', align: 'left', baseline: 'bottom', dy: -3 });
           p.dot(0, o.umax * 100, { r: 5, color: 'accent' });
         });
-        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_\\max=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L`);
+        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_{\\max}=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L`);
       },
     },
     // ------------------------------------------------------------------ 4.3
@@ -220,7 +220,7 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
           g.dot(nOpen, Rtot, { r: 7, color: 'gold' });
           g.text('parallel stage alone', 11.8, Rb / 12 + 2, { size: 11, color: 'green', align: 'right' });
         });
-        v.readout(() => `series + parallel: $R=R_a+\\dfrac{R_b}{N_\\text{open}}+R_v=${v.fix(o.Rtot, 2)}$ → $Q=${v.fix(o.Qf, 3)}$;   node equations: $Q=${v.fix(o.Qn, 3)}$ (difference ${v.sci(o.dRes + 1e-16, 2)})\njunction pressures ${v.fix(o.P1, 1)} → ${v.fix(o.P2, 1)} (source 100, sink 0);  the parallel stage's resistance is ${v.fix(o.Rpar, 2)}, ${v.fix(100 * o.Rpar / o.Rtot, 0)}% of the total`);
+        v.readout(() => `series + parallel: $R=R_a+\\dfrac{R_b}{N_\\text{open}}+R_v=${v.fix(o.Rtot, 2)}$ → $Q=${v.fix(o.Qf, 3)}$;   node equations: $Q=${v.fix(o.Qn, 3)}$ (difference $${v.sci(o.dRes + 1e-16, 2)}$)\njunction pressures ${v.fix(o.P1, 1)} → ${v.fix(o.P2, 1)} (source 100, sink 0);  the parallel stage's resistance is ${v.fix(o.Rpar, 2)}, ${v.fix(100 * o.Rpar / o.Rtot, 0)}% of the total`);
       },
     },
     // ------------------------------------------------------------------ 4.5
@@ -241,10 +241,10 @@ At a bifurcation, conservation of flow then gives **Murray's law** $r_0^3=r_1^3+
       credit: 'C. D. Murray, 1926',
       links: { doi: 'https://doi.org/10.1073/pnas.12.3.207' },
       viz(v) {
-        const sQ = v.slider('flow $Q$', 0.5, 20, 5, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mL/s` });
-        const sM = v.slider('metabolic cost $m$', 2e4, 8e5, 1.4e5, { log: true, sig: 2, fmt: (x) => `${v.fix(x / 1e5, 2)}×10⁵ W/m³` });
+        const sQ = v.slider('flow $Q$', 0.1, 50, 5, { log: true, sig: 2, fmt: (x) => `${v.fix(x, 2)} mL/s` });// { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mL/s` });
+        const sM = v.slider('metabolic cost $m$', 3e2, 3e4, 1.1e3, { log: true, sig: 2, fmt: (x) => `${v.fix(x / 1e3, 2)}×10³ W/m³` });
         const sF = v.slider('flow share of daughter 1', 0.1, 0.5, 0.5, { step: 0.01 });
-        const a = v.stage({ x: [0.2, 3], y: [0, 1500], height: 320, axes: 'box', gutter: true, xlabel: 'radius r (mm)', ylabel: 'power per length (mW/m)', weight: 1 });
+        const a = v.stage({ x: [0.2, 6], y: [0, 100], height: 320, axes: 'box', gutter: true, xlabel: 'radius r (mm)', ylabel: 'power per length (mW/m)', weight: 1 });
         const b = v.stage({ x: [0, 10], y: [-4, 4], height: 320, axes: false, weight: 1 });
         const hr = a.handle(1, 0, { color: 'gold', label: 'r', constrain: 'x' });
         const MU = MU_BLOOD;
@@ -255,14 +255,15 @@ At a bifurcation, conservation of flow then gives **Murray's law** $r_0^3=r_1^3+
         v.render(() => {
           const Q = sQ.value, m = sM.value, ro = ropt(Q, m);
           if (!init) { hr.set(ro * 1.5, 0); init = true; }
-          const rr = clamp(hr.x, 0.25, 3); hr.set(rr, 0);
-          a.fn((r) => pump(r, Q), { color: 'accent', width: 2.2, domain: [0.2, 3] });
-          a.fn((r) => vol(r, m), { color: 'red', width: 2.2, domain: [0.2, 3] });
-          a.fn((r) => pump(r, Q) + vol(r, m), { color: 'ink', width: 2.8, domain: [0.2, 3] });
-          const tot = pump(ro, Q) + vol(ro, m);
+          const rmax = 3 * ro, tot = pump(ro, Q) + vol(ro, m);
+          a.setView([0.25 * ro, rmax], [0, 2.4 * tot]);
+          const rr = clamp(hr.x, 0.3 * ro, rmax); hr.set(rr, 0);
+          a.fn((r) => pump(r, Q), { color: 'accent', width: 2.2, domain: [0.25 * ro, rmax] });
+          a.fn((r) => vol(r, m), { color: 'red', width: 2.2, domain: [0.25 * ro, rmax] });
+          a.fn((r) => pump(r, Q) + vol(r, m), { color: 'ink', width: 2.8, domain: [0.25 * ro, rmax] });
           a.vline(ro, { color: 'green', dash: [5, 4] }); a.dot(ro, tot, { r: 7, color: 'green', label: 'optimum', labelPos: 'ne' });
           a.dot(rr, pump(rr, Q) + vol(rr, m), { r: 6, color: 'gold' });
-          a.text('pumping', 2.9, 70, { size: 11, color: 'accent', align: 'right' }); a.text('blood volume', 2.9, vol(2.9, m) - 90, { size: 11, color: 'red', align: 'right' });
+          a.text('pumping', rmax * 0.97, 0.06 * tot, { size: 11, color: 'accent', align: 'right' }); a.text('blood volume', rmax * 0.55, vol(rmax * 0.55, m) + 0.2 * tot, { size: 11, color: 'red', align: 'right' });
           // bifurcation
           const f = sF.value, r0 = ro, r1 = r0 * Math.cbrt(f), r2 = r0 * Math.cbrt(1 - f), W = 9 / ro;
           const lw = (r) => Math.max(2, 18 * r / ro);
