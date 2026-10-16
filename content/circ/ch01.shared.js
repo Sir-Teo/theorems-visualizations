@@ -89,3 +89,26 @@ export function circuitGraph(C, kinds = ['R', 'C', 'L', 'V', 'I', 'SW', 'D']) {
   const list = nodeIds.filter((n, i) => nodeIds.indexOf(n) === i && used.has(n));
   return { nodes: list, edges };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────────────────────
+// Tidy straight-line drawing of a small graph by random search: fewest edge crossings first, then the largest clearance
+// between nodes and between a node and a non-incident edge. rng() ∈ [0,1). → {id: [x, y]} in the unit square.
+export function tidyLayout(ids, edges, rng, trials = 600) {
+  const E = edges.filter((e) => e.a !== e.b), key = new Set(), uniq = [];
+  for (const e of E) { const k = [e.a, e.b].sort().join('|'); if (!key.has(k)) { key.add(k); uniq.push(e); } }
+  const ccw = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  const segDist = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L)); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
+  let best = null, bs = null;
+  for (let tr = 0; tr < trials; tr++) {
+    const P = {}; for (const id of ids) P[id] = [rng(), rng()];
+    let cross = 0, clr = Infinity;
+    for (let i = 0; i < uniq.length; i++) for (let j = i + 1; j < uniq.length; j++) {
+      const a = uniq[i], b = uniq[j]; if (a.a === b.a || a.a === b.b || a.b === b.a || a.b === b.b) continue;
+      if (ccw(P[a.a], P[a.b], P[b.a]) * ccw(P[a.a], P[a.b], P[b.b]) < 0 && ccw(P[b.a], P[b.b], P[a.a]) * ccw(P[b.a], P[b.b], P[a.b]) < 0) cross++;
+    }
+    for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) clr = Math.min(clr, Math.hypot(P[ids[i]][0] - P[ids[j]][0], P[ids[i]][1] - P[ids[j]][1]));
+    for (const e of uniq) for (const id of ids) if (id !== e.a && id !== e.b) clr = Math.min(clr, segDist(P[id], P[e.a], P[e.b]) * 1.5);
+    if (!bs || cross < bs[0] || (cross === bs[0] && clr > bs[1])) { bs = [cross, clr]; best = P; }
+  }
+  return best;
+}

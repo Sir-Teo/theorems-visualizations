@@ -521,7 +521,7 @@ with $G$ the **shear modulus**. The shear modulus is not independent: for steel 
           };
           draw(-1.9, Math.min(ec, cd.ef), fD, false);
           draw(1.9, Math.min(ec, efb), fB, true);
-          SP.text(zoom ? 'stretch magnified ×40' : 'true proportions', 0, -0.05, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
+          SP.text(zoom ? 'stretch magnified ×40' : 'true proportions', 0, 0.05, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
           v.legend([['accent', 'steel', { area: true }], ['purple', 'cast iron', { area: true }], ['orange', 'gauge marks']]);
         }, { period: T + 1.5, still: 7.4 });
         v.readout(() => {

@@ -4,7 +4,7 @@
 // resistance temperature coefficient is ≈ 0.0039 /K near 20 °C (standard handbook values); Joule's 1840–41 experiments gave the
 // I²R law of heating.
 
-import { TAU, clamp, sI, z0, makeLamp, circuitGraph } from './ch01.shared.js';
+import { TAU, clamp, sI, z0, makeLamp, circuitGraph, tidyLayout } from './ch01.shared.js';
 
 export default {
   collection: 'circ',
@@ -309,10 +309,9 @@ export default {
           const C = cur(), k = `${sel.value}|${wt.value}`;
           if (key !== k) {
             key = k; info = analyse(C);
-            // node positions = centroid of the terminals attached
-            const pos = new Map(); for (const p of C.parts) { const T = C.net.terminals(p), m = C.net.termNode.get(p.id); if (!['R', 'C', 'L', 'V', 'I', 'SW', 'D'].includes(p.type)) continue; for (const [pin, name] of [['a', m.a], ['b', m.b]]) { const t = T.find((q) => q.pin === pin); const o = pos.get(name) || [0, 0, 0]; o[0] += t.x; o[1] += t.y; o[2]++; pos.set(name, o); } }
-            const nodes = info.names.map((id, i) => ({ id, label: id === '0' ? '0' : `${i}`, x: pos.get(id)[0] / pos.get(id)[2], y: pos.get(id)[1] / pos.get(id)[2], color: PAL[i % PAL.length] }));
-            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('force', { seed: 3, restarts: 60, iterations: 500 });
+            const P = tidyLayout(info.names, info.g.edges, v.rng(11));
+            const nodes = info.names.map((id, i) => ({ id, label: id === '0' ? '0' : `${i}`, x: P[id][0], y: P[id][1], color: PAL[i % PAL.length] }));
+            G.set({ nodes, edges: info.g.edges.map((e) => ({ from: e.a, to: e.b, label: e.name, key: e.id })), directed: false, draggable: false }).layout('fit');
           }
           const L = Math.min(Math.max(1, info.loops.length), 4); li.el.hidden = info.loops.length < 2; const sel2 = clamp(li.value, 1, L) - 1, lp = info.loops[sel2];
           C.draw({ colors: false, dots: false, probes: false });
