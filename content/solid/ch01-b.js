@@ -24,7 +24,7 @@ For a bar whose force $N(x)$, area $A(x)$ or modulus $E(x)$ change along its len
 $$\delta = \int_0^L \frac{N(x)}{E(x)A(x)}\,\mathrm{d}x,$$
 which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i N_iL_i/(E_iA_i)$. For a bar tapering linearly between diameters $d_1$ and $d_2$ under a constant force $P$, $\delta = 4PL/(\pi E d_1 d_2)$. $EA/L$ is the axial stiffness: the force needed per unit elongation.`,
       idea: String.raw`Hooke's law (1.4) gives the strain at each section, $\varepsilon = \sigma/E = N/(EA)$; the elongation is the integral of the strain over the length (1.2). Where $N$, $A$ and $E$ are constant the integral is a product; where they jump, it splits into pieces, and where the area varies smoothly it is evaluated exactly. The force in each piece comes from equilibrium of a free body cut there: the axial force is the sum of all the loads on the far side.`,
-      caption: String.raw`Drag the three orange handles (sideways, above the bar) to apply loads at the joints $B$, $C$, $D$ — negative means pushing — and change the diameters. The force $N$ in each segment follows from equilibrium; the strain bars are $N/EA$, and their **area is the elongation** (the shaded strips are drawn so that the same area is the same $\delta$). Make the middle segment aluminium, or switch to a **tapered** bar: the integral is evaluated numerically and compared with the closed form. The deformation is magnified (printed on the drawing).`,
+      caption: String.raw`Drag the three orange handles (sideways, above the bar) to apply loads at the joints $B$, $C$, $D$ — negative means pushing — and change the diameters. The force $N$ in each segment follows from equilibrium; the strain bars are $N/EA$, and their **area is the elongation** (the area under each step is that segment's elongation). Make the middle segment aluminium, or switch to a **tapered** bar: the integral is evaluated numerically and compared with the closed form. The deformation is magnified (printed on the drawing).`,
       deps: ['solid-1.4'],
       refs: ['Gere–Goodno §2.2', 'Gere–Goodno §2.3'],
       tags: ['elongation', 'axial'],
@@ -34,11 +34,11 @@ which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i
         const d1 = v.slider('diameter at wall / AB (mm)', 15, 50, 40, { step: 1 });
         const d2 = v.slider('diameter BC (mm) — tapered: free end', 10, 50, 30, { step: 1 });
         const d3 = v.slider('diameter CD (mm)', 10, 50, 20, { step: 1 });
-        const S = v.stage({ x: [-0.8, 16.5], y: [-2.6, 3.6], equal: true, axes: false, height: 290, full: true, title: 'the bar, joints B, C, D (unit = 100 mm)' });
+        const S = v.stage({ x: [-0.8, 14.8], y: [-2.6, 3.6], equal: true, axes: false, height: 290, full: true, title: 'the bar, joints B, C, D (unit = 100 mm)' });
         const EB = v.stage({ x: [0, 12], y: [0, 1], axes: 'box', gutter: { l: 52 }, height: 240, xlabel: 'position x along the bar (100 mm)', ylabel: 'strain ε (×10⁻³)', title: 'strain ε(x) = N/EA — its area is δ' });
         const UB = v.stage({ x: [0, 12], y: [0, 1], axes: 'box', gutter: { l: 52 }, height: 240, xlabel: 'position x along the bar (100 mm)', ylabel: 'displacement u (mm)', title: 'displacement u(x) = ∫ε dx' });
         const XJ = [5, 9, 12], FY = 1.9;
-        const H = XJ.map((x, i) => S.handle(x + [1.0, 0.5, 1.5][i], FY, { color: 'orange', label: ['F_B', 'F_C', 'F_D'][i], labelPos: 'n', constrain: { x: [x - 1.4, x + 2.6], y: [FY, FY] } }));
+        const H = XJ.map((x, i) => S.handle(x + [1.0, 0.5, 1.5][i], FY, { color: 'orange', label: ['$F_B$', '$F_C$', '$F_D$'][i], labelPos: 'n', constrain: { x: [x - 1.4, x + 2.6], y: [FY, FY] } }));
         const F = () => H.map((h, i) => (h.x - XJ[i]) * 40); // kN, +→ pulls to the right
         const dd = (x) => (shape.value === 't' ? d1.value + ((d2.value - d1.value) * x) / 12 : x < 5 ? d1.value : x < 9 ? d2.value : d3.value);
         const Em = (x) => (shape.value === 's' && alum.value && x >= 5 && x < 9 ? MATS.al.E : MATS.steel.E);
@@ -69,7 +69,7 @@ which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i
             S.line(X, FY - 0.9, H[i].x, FY, { color: 'orange', width: 1, dash: [2, 3], alpha: 0.7 });
             S.text(`${f3(f[i])} kN`, X, FY - 0.55, { size: 11, weight: 650, color: 'orange', align: 'center' });
           });
-          S.text(`deformation magnified ×${f3(mag * 100)}`, 16.2, -2.35, { size: 10.5, color: 'muted', align: 'right' });
+          S.text(`deformation magnified ×${f3(mag * 100)}`, 14.6, -2.35, { size: 10.5, color: 'muted', align: 'right' });
           // segment force labels
           [[2.5, f[0] + f[1] + f[2], 'AB'], [7, f[1] + f[2], 'BC'], [10.5, f[2], 'CD']].forEach(([x, N, nm]) => S.text(`N${nm} = ${f3(N)} kN`, x, -1.55 - 0.0, { size: 11, weight: 650, color: N >= 0 ? 'orange' : 'blue', align: 'center' }));
           // strain chart
@@ -81,7 +81,7 @@ which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i
           UB.setView([0, 12], [Math.min(0, ...us) * 1.15 - 1e-9, Math.max(0.01, ...us) * 1.2]);
           UB.hline(0, { color: 'muted', width: 1 });
           UB.path(xs.map((x, i) => [x, us[i]]), { color: 'accent', width: 2.4 });
-          XJ.forEach((x, i) => UB.dot(x, uAt(x), { r: 5, color: 'orange', label: 'BCD'[i], labelPos: 'n' }));
+          XJ.forEach((x, i) => UB.dot(x, uAt(x), { r: 5, color: 'orange', label: 'BCD'[i], labelPos: 'nw' }));
         });
         v.readout(() => {
           const { us } = sample(), f = F(), tot = us[us.length - 1];
@@ -129,7 +129,7 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
           if (mode.value === 'par') return { f1: 500 / (MATS.steel.E * A1), f2: 500 / (MATS.al.E * A2), A1, A2, names: ['steel', 'aluminium'] };
           const a = pos.value * 1000; return { f1: a / (MATS.steel.E * A1), f2: (1000 - a) / (MATS.steel.E * A2), A1, A2, names: ['left part', 'right part'] };
         };
-        const G = Pl.handle(0.5, 0.5, { color: 'gold', r: 8, constrain: (x, y) => { const P = Ps.value; const t = Math.max(-0.2 * P, Math.min(1.2 * P, (x - y + P) / 2)); return [t, P - t]; } });
+        const G = Pl.handle(60, 60, { color: 'gold', r: 8, constrain: (x, y) => { const P = Ps.value; const t = Math.max(-0.2 * P, Math.min(1.2 * P, (x - y + P) / 2)); return [t, P - t]; } });
         let Pn = Ps.value;
         const sol = () => { const { f1, f2 } = flex(), P = Ps.value; return [(P * f2) / (f1 + f2), (P * f1) / (f1 + f2)]; };
         v.button('solve (compatibility)', () => { const [a, b] = sol(); G.set(a, b); });
@@ -143,9 +143,9 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
           Pl.line(-0.2 * P, 1.2 * P, 1.2 * P, -0.2 * P, { color: 'red', width: 2.4 });
           const slope = f1 / f2; Pl.line(0, 0, 1.1 * P / Math.max(1, slope), 1.1 * P / Math.max(1, slope) * slope, { color: 'accent', width: 2.4 });
           const [a, b] = sol(); Pl.dot(a, b, { r: 6, color: 'green' });
-          Pl.text('equilibrium F₁ + F₂ = P', 0.9 * P, 0.15 * P, { size: 11, color: 'red', align: 'right', weight: 600 });
-          Pl.text('compatibility F₁f₁ = F₂f₂', 0.05 * P, 0.7 * P * Math.min(1, slope), { size: 11, color: 'accent', weight: 600 });
-          Pl.text('true solution', a, b, { size: 11, color: 'green', dx: 10, dy: -12, align: 'left', weight: 700 });
+          Pl.text('equilibrium F₁ + F₂ = P', 0.12 * P, 0.97 * P, { size: 11, color: 'red', align: 'left', weight: 600, dx: 14 });
+          Pl.text('compatibility F₁f₁ = F₂f₂', 0.0 * P, 0.0 * P, { size: 11, color: 'accent', weight: 600, dx: 22, dy: 14, align: 'left' });
+          Pl.text('true solution', a, b, { size: 11, color: 'green', dx: 12, dy: 14, align: 'left', weight: 700 });
           // structure: elongations exaggerated, mag so that true solution is 0.5 unit
           const d1 = F1 * 1000 * f1, d2 = F2 * 1000 * f2, mag = 0.55 / ((a * 1000 * f1) || 1);
           if (mode.value === 'par') {
@@ -158,10 +158,10 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
             S.rect(-0.8, tt, 7.3, tt + 0.38, { fill: 'gray', fillAlpha: 0.55, color: 'ink', width: 1.8 });
             if (Math.abs(t1 - t2) > 0.01) { const lo = Math.min(t1, t2), xx = t1 < t2 ? x1 : x2; S.rect(xx - 0.5, lo, xx + 0.5, tt, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.2, hatch: true }); S.text('gap: not compatible', xx, (lo + tt) / 2, { size: 11, color: 'red', weight: 700, align: 'center', dx: xx < 3 ? 90 : -90 }); }
             S.arrow(3.0, tt + 0.5, 3.0, tt + 1.4, { color: 'orange', width: 3.5, head: 12 }); S.text(`P = ${f3(P)} kN`, 3.0, tt + 1.4, { size: 12.5, weight: 700, color: 'orange', align: 'center', dy: -12 });
-            S.text(`F₁ = ${f3(F1)} kN`, x1, -1.5 + 0.8, { size: 11.5, weight: 650, color: 'accent', align: 'center' });
-            S.text(`F₂ = ${f3(F2)} kN`, x2, -1.5 + 0.8, { size: 11.5, weight: 650, color: 'orange', align: 'center' });
+            S.text(`F₁ = ${f3(F1)} kN`, x1, -1.5, { size: 11.5, weight: 650, color: 'accent', align: 'center' });
+            S.text(`F₂ = ${f3(F2)} kN`, x2, -1.5, { size: 11.5, weight: 650, color: 'orange', align: 'center' });
             S.text('steel', x1, 2.2, { size: 11.5, color: 'ink', align: 'center', weight: 600 }); S.text('aluminium', x2, 2.2, { size: 11.5, color: 'ink', align: 'center', weight: 600 });
-            S.text('δ exaggerated', 7.3, 5.8, { size: 10.5, color: 'muted', align: 'right' });
+            S.text('δ exaggerated', 9.3, -1.55, { size: 10.5, color: 'muted', align: 'right' });
           } else {
             // horizontal bar between walls; walls at x=0 and 9
             const aL = 9 * pos.value, w1 = 0.5 * Math.sqrt(A1 / 1000) * 0.9, w2 = 0.5 * Math.sqrt(A2 / 1000) * 0.9;
@@ -178,7 +178,7 @@ the load divides in proportion to the stiffnesses. The same recipe solves a bar 
             S.text(`P = ${f3(P)} kN`, xB + 0.9, yc + 2.2, { size: 12.5, weight: 700, color: 'orange', align: 'center' });
             S.text(`R_A = ${f3(F1)} kN`, 0.2, -0.7, { size: 11.5, weight: 650, color: 'accent', align: 'left' });
             S.text(`R_B = ${f3(F2)} kN`, 8.8, -0.7, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
-            S.text('δ exaggerated', 8.8, 3.6, { size: 10.5, color: 'muted', align: 'right' });
+            S.text('δ exaggerated', 9.3, -1.55, { size: 10.5, color: 'muted', align: 'right' });
             void gapR;
           }
           Pl.dot(F1, F2, { r: 6, color: 'gold' });
@@ -209,7 +209,7 @@ $$\sigma = -E\,\alpha\,\Delta T$$
         const MK = ['steel', 'al', 'cu', 'conc'], NM = { steel: 'steel', al: 'aluminium', cu: 'copper', conc: 'concrete' }, COL = { steel: 'accent', al: 'orange', cu: 'teal', conc: 'gray' };
         const sel = v.select('material', MK.map((k) => ({ value: k, label: NM[k] })), 'steel');
         const dT = v.slider('temperature rise ΔT (K)', 0, 120, 55, { step: 1 });
-        const Lm = v.slider('length L (m)', 1, 60, 14, { step: 0.5, log: true, sig: 2 });
+        const Lm = v.slider('length L (m)', 1, 60, 2.5, { step: 0.5, log: true, sig: 2 });
         const gap = v.slider('gap before the wall closes (mm)', 0, 30, 0, { step: 0.5 });
         const S = v.stage({ x: [-1.2, 11.2], y: [-1.9, 2.5], equal: true, axes: false, height: 270, weight: 1.15, minWidth: 300, title: 'the bar between rigid walls' });
         const C = v.stage({ x: [0, 120], y: [0, 400], axes: 'box', gutter: { l: 52 }, height: 270, weight: 1, minWidth: 280, xlabel: 'temperature rise ΔT (K)', ylabel: 'compressive stress (MPa)', title: 'σ = EαΔT, whatever the length' });
@@ -221,27 +221,27 @@ $$\sigma = -E\,\alpha\,\Delta T$$
         };
         v.render(() => {
           const s = st(), m = s.m, X0 = 0, X1 = 10, ex = 30;
-          wallV(v, S, X0, -1.6, 1.6, -1, 12); wallV(v, S, X1 + gap.value / s.L / 1000 * 0 + (gap.value / (s.L * 1000)) * 10 * ex, -1.6, 1.6, 1, 12);
           const gx = (gap.value / (s.L * 1000)) * 10 * ex, wallX = X1 + gx;
+          wallV(v, S, X0, -1.6, 1.6, -1, 12); wallV(v, S, wallX, -1.6, 1.6, 1, 12);
           const grow = Math.min(s.m.alpha * dT.value * 10 * ex, gx + 0.0 + 9);
           const free = m.alpha * dT.value * 10 * ex;
           S.rect(X1 + 0, -0.28, X0 + 10 + free, 0.28, { color: 'ink', width: 1.2, dash: [4, 3], fill: false, alpha: 0.6 });
           const t = Math.min(1, s.sig / m.sy * (m.id === 'conc' ? 8 : 1));
           const pts = [], n = 80, end = Math.min(wallX, 10 + free);
-          for (let i = 0; i <= n; i++) { const x = (end * i) / n; pts.push([x, s.buck ? s.amp / s.L * 10 * 12 * Math.sin((Math.PI * i) / n) : 0]); }
+          for (let i = 0; i <= n; i++) { const x = (end * i) / n; pts.push([x, s.buck ? Math.min(1.5, (s.amp / s.L) * 10 * 12) * Math.sin((Math.PI * i) / n) : 0]); }
           S.path(pts, { color: heatColor(v, (s.sig / (m.id === 'conc' ? 30 : m.sy)) * 1.0), width: 22, alpha: 0.9 });
           S.path(pts, { color: 'ink', width: 1.2 });
           if (s.sig > 0.5) { S.arrow(X0 + 1.4, 1.35, X0 + 0.15, 1.35, { color: 'red', width: 3, head: 10 }); S.arrow(wallX - 1.4, 1.35, wallX - 0.15, 1.35, { color: 'red', width: 3, head: 10 }); }
-          S.text(`σ = ${f3(s.sig)} MPa`, 5, -1.55, { size: 13, weight: 700, color: s.buck ? 'orange' : 'red', align: 'center' });
+          S.text(`σ = ${f3(s.sig)} MPa`, 5, -1.6, { size: 13, weight: 700, color: s.buck ? 'orange' : 'red', align: 'center' });
           if (gap.value > 0) S.text(`gap ${gap.value} mm (×30)`, wallX, 1.95, { size: 10.5, color: 'muted', align: 'center' });
-          if (s.buck) S.text(`buckled: lateral deflection ${f3(s.amp * 1000)} mm (drawn ×12)`, 5, 1.2 + s.amp / s.L * 120 + 0.3, { size: 11, weight: 650, color: 'orange', align: 'center' });
-          S.text('free expansion (dashed ghost, ×30)', X0 + 0.2, 2.2, { size: 10.5, color: 'muted', align: 'left' });
+          if (s.buck) S.text(`buckled: lateral deflection ${f3(s.amp * 1000)} mm (drawn ×${f3(Math.min(12, 1.5 / ((s.amp / s.L) * 10)))})`, 5, -1.1, { size: 11, weight: 650, color: 'orange', align: 'center' });
+          S.text('dashed: free expansion, ×30', X0 + 0.2, 2.25, { size: 10.5, color: 'muted', align: 'left' });
           void t; void grow;
           // right
           C.setView([0, 120], [0, 400]);
           for (const q of MK) { const mm = MATS[q], act = q === sel.value; C.fn((T) => mm.E * mm.alpha * T, { domain: [0, 120], color: COL[q], width: act ? 1.2 : 1.6, alpha: act ? 0.4 : 0.8, dash: act ? [4, 3] : false }); }
           C.hline(s.scr, { color: 'orange', width: 1.6, dash: [6, 4] });
-          C.text(`Euler cap σcr = ${f3(s.scr)} MPa (L = ${f3(s.L)} m)`, 118, s.scr, { size: 11, color: 'orange', align: 'right', baseline: 'bottom', dy: -3 });
+          C.text(`Euler cap σcr = ${f3(s.scr)} MPa (L = ${f3(s.L)} m)`, 3, s.scr, { size: 11, color: 'orange', align: 'left', baseline: 'bottom', dy: -3 });
           const g0 = gap.value / (s.L * 1000) / s.m.alpha;
           C.path([[0, 0], [Math.min(g0, 120), 0], ...[...Array(61)].map((_, i) => { const T = g0 + ((120 - g0) * i) / 60; return [T, Math.min(m.E * (m.alpha * T - gap.value / (s.L * 1000)), s.scr)]; })].filter((p) => p[0] <= 120), { color: COL[sel.value], width: 3 });
           C.dot(dT.value, s.sig, { r: 6, color: 'gold' });
@@ -273,7 +273,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
         const th = v.slider('cutting-plane angle θ (°)', -90, 90, 30, { step: 1 });
         const S = v.stage({ x: [-6, 6], y: [-4, 4], equal: true, axes: false, height: 330, weight: 1.05, minWidth: 280, title: 'free body: the bar cut by an inclined plane' });
         const P = v.stage({ x: [-90, 90], y: [-1.1, 1.1], axes: 'box', gutter: { l: 50 }, height: 330, weight: 1, minWidth: 260, xlabel: 'plane angle θ (degrees)', ylabel: 'stress / σ', xticks: [[-90, '−90'], [-45, '−45'], [0, '0'], [45, '45'], [90, '90']], title: 'σθ and τθ against θ' });
-        const M = v.stage({ x: [-0.2, 1.2], y: [-0.7, 0.7], equal: true, axes: 'box', gutter: { l: 50 }, height: 330, weight: 1, minWidth: 260, xlabel: 'normal stress σθ / σ', ylabel: 'shear stress τθ / σ', title: 'Mohr’s circle (preview of 3.3)' });
+        const M = v.stage({ x: [-0.4, 1.4], y: [-0.7, 0.7], equal: true, axes: 'box', gutter: { l: 50 }, height: 330, weight: 1, minWidth: 260, xlabel: 'normal stress σθ / σ', ylabel: 'shear stress τθ / σ', title: 'Mohr’s circle (preview of 3.3)' });
         const hr = 2.4, HC = S.handle(2.4 * Math.sin(0.5), -2.4 * Math.cos(0.5) + 0, { color: 'orange', r: 8, constrain: (x, y) => { const a = Math.atan2(x, -y); const c = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, a)); return [hr * Math.sin(c), -hr * Math.cos(c)]; } });
         let sync = true;
         HC.onDrag = () => { th.set(Math.round((Math.atan2(HC.x, -HC.y) * 180) / Math.PI)); };
@@ -290,18 +290,19 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           wallV(v, S, Lx, -hw - 0.3, hw + 0.3, -1, 12);
           // cut plane highlight and axial force on the right (the removed part acts on the cut face with P)
           S.line(xt(-hw), -hw, xt(hw), hw, { color: 'red', width: 3 });
-          const Fl = 2.3; S.arrow(xt(0) - 0.0, 0, xt(0) + Fl, 0, { color: 'orange', width: 3.5, head: 12 }); S.text('P', xt(0) + Fl + 0.3, 0.1, { size: 14, weight: 700, color: 'orange' });
+          const Fl = 2.3; S.arrow(xt(0) - 0.0, 0, xt(0) + Fl, 0, { color: 'orange', width: 3.5, head: 12 }); S.text('P', xt(0) + Fl + 0.3, -0.35, { size: 14, weight: 700, color: 'orange' });
           // components on the plane: normal n = (cos, sin), tangent = (−sin, cos)
           const sc = Fl * 0.95, nx = c * c * sc, ny = c * s * sc;
           S.arrow(0, 0, nx, ny, { color: 'green', width: 2.4, head: 9 }); S.arrow(0, 0, s * s * sc * 0 + (-s) * (-s * c * sc) * 0 + 0.0, 0, { color: 'green', width: 0 });
           const vx = Fl * 0.95 * s * s, vy = -Fl * 0.95 * s * c; // P·sinθ along the tangent (sinθ·(sinθ, −cosθ))
           S.arrow(nx, ny, nx + vx, ny + vy, { color: 'purple', width: 2.4, head: 9 });
-          if (Math.abs(c) > 0.2) S.text(`σθ·A′ = P cosθ`, nx * 0.5 - 0.1, ny * 0.5 + 0.55, { size: 10.5, color: 'green', weight: 650, align: 'right' });
-          S.text(`τθ·A′ = P sinθ`, nx + vx * 0.5 + 0.2, ny + vy * 0.5 - 0.05 - 0.45, { size: 10.5, color: 'purple', weight: 650, align: 'left' });
+          if (Math.abs(c) > 0.2) S.text(`P cosθ`, nx * 0.5 - 0.15, ny * 0.5 + 0.3, { size: 11, color: 'green', weight: 650, align: 'right' });
+          S.text(`P sinθ`, nx + vx * 0.5 + 0.2, ny + vy * 0.5 - 0.1, { size: 11, color: 'purple', weight: 650, align: 'left' });
           S.text(`A′ = A/cosθ = ${f3(1 / Math.max(1e-6, Math.abs(c)))} A`, 0, -3.5, { size: 11.5, color: 'red', weight: 650, align: 'center' });
           // angle arc between axis and normal
           const arc = []; for (let i = 0; i <= 18; i++) { const a = (t * i) / 18; arc.push([1.0 * Math.cos(a), 1.0 * Math.sin(a)]); }
           if (Math.abs(t) > 0.02) { S.path(arc, { color: 'ink', width: 1.6 }); S.text('θ', 1.25, 0.35 * Math.sign(t), { size: 13, color: 'ink' }); }
+          { const hc = []; for (let i = 0; i <= 40; i++) { const a = (-Math.PI / 2) + (Math.PI * i) / 40; hc.push([hr * Math.sin(a), -hr * Math.cos(a)]); } S.path(hc, { color: 'orange', width: 1, dash: [3, 4], alpha: 0.6 }); }
           // curves
           P.hline(0, { color: 'muted', width: 1 });
           P.fn((x) => Math.cos((x * Math.PI) / 180) ** 2, { color: 'green', width: 2.4 });
@@ -311,7 +312,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           P.vline(45, { color: 'muted', width: 1, dash: [2, 3], alpha: 0.5 }); P.vline(-45, { color: 'muted', width: 1, dash: [2, 3], alpha: 0.5 });
           P.text('σθ/σ = cos²θ', 3, 0.97, { size: 11, color: 'green', align: 'left', weight: 650 });
           P.text('τθ/σ = ½ sin 2θ', -88, 0.62, { size: 11, color: 'purple', align: 'left', weight: 650 });
-          P.text('τmax = σ/2', 47, 0.55, { size: 10.5, color: 'muted', align: 'left' });
+          P.text('peak shear σ/2 at ±45°', 88, 0.82, { size: 10.5, color: 'muted', align: 'right' });
           // Mohr circle
           const mc = []; for (let i = 0; i <= 80; i++) { const a = (2 * Math.PI * i) / 80; mc.push([0.5 + 0.5 * Math.cos(a), 0.5 * Math.sin(a)]); }
           M.path(mc, { color: 'accent', width: 2.2 }); M.hline(0, { color: 'muted', width: 1 });
@@ -319,7 +320,7 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           const a2 = []; for (let i = 0; i <= 20; i++) { const a = (2 * t * i) / 20; a2.push([0.5 + 0.14 * Math.cos(a), 0.14 * Math.sin(a)]); } M.path(a2, { color: 'gold', width: 1.6 });
           M.text('2θ', 0.5 + 0.2, 0.05 * Math.sign(t || 1) + 0.07 * Math.sign(t || 1), { size: 11, color: 'gold', weight: 700 });
           M.dot(c * c, s * c, { r: 6, color: 'gold' });
-          M.dot(1, 0, { r: 4, color: 'green', hollow: true, label: 'cross-section', labelPos: 'n' }); M.dot(0, 0, { r: 4, color: 'muted', hollow: true, label: 'along axis', labelPos: 'n' });
+          M.dot(1, 0, { r: 4, color: 'green', hollow: true, label: 'cross-section', labelPos: 'ne' }); M.dot(0, 0, { r: 4, color: 'muted', hollow: true, label: 'along axis', labelPos: 'nw' });
           M.dot(0.5, 0.5, { r: 4, color: 'purple', hollow: true, label: 'θ = 45°', labelPos: 'ne' });
           void sync; void ext; void s0;
         });
@@ -339,27 +340,27 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
       name: 'Saint-Venant’s principle',
       statement: String.raw`If a set of forces acting on a small part of the surface of an elastic body is replaced by a **statically equivalent** set (same resultant force and same moment) acting on that part, the stresses and strains change appreciably only in the neighbourhood of the loaded region; at distances large compared with its size the two solutions agree. For a strip of width $W$ pulled by an axial force $P$ the stress is the uniform $P/(Wt)$ to within a few per cent about one width from the end, however the force is applied (a point load, two loads, or uniform pressure), and the difference decays roughly exponentially with distance, like $e^{-4.2x/W}$ for end loads symmetric about the axis. It is a principle of elasticity — a statement supported by elaborate partial proofs and estimates, not a simple theorem — and it is why $\sigma = F/A$ works in the bulk of a bar whatever the details of the grips.`,
       idea: String.raw`Two statically equivalent load systems differ by a self-equilibrated system (zero resultant force and moment). Such a system acts like an elastic wave of stress that can only live near its source: it cannot transmit net force, and the Papkovich–Fadle eigenfunctions of the strip show it must decay exponentially with distance, at a rate set by the smallest root $z=2.106+1.125i$ of $\sin 2z+2z=0$, i.e. $e^{-2.106\,x/c}$ with $c=W/2$ the half-width. Hence $F/A$ is correct away from the ends (1.1), and the stress concentrations around attachments are local.`,
-      caption: String.raw`A finite-element solution (plane stress, bilinear quadrilaterals, 72 × 16 elements, computed live) of a strip pulled at its left end by the same total force $P$, applied as a point load, two loads, an edge load or a uniform pressure. The map shows $\sigma_{xx}/\sigma_{\text{avg}}$ (the average is 1); drag the section marker to see the stress profile across the width. On the right, the peak deviation from the uniform stress at each distance, on a log axis: all curves fall away along straight lines, i.e. exponentially, and are below a few per cent about one width from the load. The peak under a point load is mesh dependent, as the exact elastic stress there is infinite.`,
+      caption: String.raw`A finite-element solution (plane stress, bilinear quadrilaterals, 72 × 16 elements, computed live) of a strip pulled at its left end by the same total force $P$, applied as a point load, two loads or a uniform pressure (all statically equivalent), or at one edge (which is **not**: it adds a bending moment). The map shows $\sigma_{xx}/\sigma_{\text{avg}}$ (the average is 1); drag the section marker to see the stress profile across the width. On the right, the peak deviation from the uniform stress at each distance, on a log axis: the equivalent cases fall away along straight lines, i.e. exponentially, and are below a few per cent about one width from the load (the uniform load is exactly 1: it sits on the floor of the chart); the edge load, whose moment differs, never settles to uniform — break the hypothesis and the conclusion fails. The peak under a point load is mesh dependent, as the exact elastic stress there is infinite.`,
       scope: String.raw`Linear elasticity; a loaded region small compared with the body; the principle is for the region far from the load, not near it, and it can fail for thin-walled open sections.`,
       credit: 'Adhémar Barré de Saint-Venant, 1855',
       deps: ['solid-1.1'],
       refs: ['Timoshenko–Goodier ch. 3'],
       tags: ['elasticity', 'principle'],
       viz(v) {
-        const KS = [['point', 'point load'], ['two', 'two loads'], ['edge', 'edge load'], ['uniform', 'uniform']];
+        const KS = [['point', 'point load'], ['two', 'two loads'], ['edge', 'edge load (extra moment)'], ['uniform', 'uniform']];
         const kind = v.select('end load', KS.map(([value, label]) => ({ value, label })), 'point');
         const A = v.stage({ x: [-0.7, 4.5], y: [-0.85, 0.85], equal: true, axes: false, height: 250, full: true, title: 'σxx / σavg in the strip (same total force in each case)' });
         const B = v.stage({ x: [0, 1.4], y: [-0.5, 0.5], axes: 'box', gutter: { l: 50 }, height: 280, weight: 1, minWidth: 260, xlabel: 'σxx / σavg across the section', ylabel: 'y / W', title: 'stress profile at the marker' });
-        const D = v.stage({ x: [0, 3], y: [1e-3, 10], ylog: true, axes: 'box', gutter: { l: 52 }, height: 280, weight: 1.2, minWidth: 280, xlabel: 'distance from the loaded end x / W', ylabel: 'peak |σxx − σavg| / σavg', title: 'the difference dies away' });
+        const D = v.stage({ x: [0, 3], y: [3e-3, 10], ylog: true, axes: 'box', gutter: { l: 52 }, height: 280, weight: 1.2, minWidth: 280, xlabel: 'distance from the loaded end x / W', ylabel: 'peak |σxx − σavg| / σavg', title: 'the difference dies away' });
         const sols = {}; const get = (k) => (sols[k] ||= stripFE(k));
-        const MX = A.handle(1.0, 0.0, { color: 'orange', r: 8, constrain: { x: [0.05, 4.2], y: [0, 0] } });
+        const MX = A.handle(0.3, 0.0, { color: 'orange', r: 8, constrain: { x: [0.05, 4.2], y: [0, 0] } });
         const CMAP = { point: 'red', two: 'orange', edge: 'purple', uniform: 'green' };
         const peak = (sol, x) => { let m = 0; for (let j = 0; j <= 40; j++) { const y = -0.5 + j / 40; m = Math.max(m, Math.abs(sol.sxx(x, y) - 1)); } return m; };
         v.render(() => {
           const sol = get(kind.value);
-          A.heat((x, y) => (x < 0 || x > 4.5 ? NaN : sol.sxx(x, y)), { range: [0, 2.2], cmap: 'theme-diverging', res: 220, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
+          A.heat((x, y) => (x < 0 || x > 4.5 ? NaN : sol.sxx(x, y)), { range: [0.4, 1.6], cmap: 'theme-diverging', res: 220, key: kind.value, rect: [0, -0.5, 4.5, 0.5] });
           A.rect(0, -0.5, 4.5, 0.5, { color: 'ink', width: 1.6, fill: false });
-          A.contour((x, y) => sol.sxx(x, y), [0.95, 1.05], { color: 'ink', width: 1, alpha: 0.5, res: 160 });
+          A.clip(() => A.contour((x, y) => sol.sxx(x, y), [0.95, 1.05], { color: 'ink', width: 1, alpha: 0.5, res: 200 }), [0, 4.5], [-0.5, 0.5]);
           // load arrows at the left end
           const ar = (y, f) => A.arrow(0, y, -0.55 * f, y, { color: 'orange', width: 3, head: 10 });
           if (kind.value === 'point') ar(0, 1); else if (kind.value === 'two') { ar(0.25, 0.75); ar(-0.25, 0.75); } else if (kind.value === 'edge') ar(-0.5, 1); else for (let y = -0.45; y <= 0.46; y += 0.15) ar(y, 0.5);
@@ -374,9 +375,9 @@ The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and va
           B.text(`x = ${MX.x.toFixed(2)} W`, 1.38, 0.43, { size: 11.5, weight: 650, color: 'orange', align: 'right' });
           // decay
           D.hline(0.05, { color: 'muted', width: 1, dash: [4, 3] }); D.text('5 %', 2.95, 0.05, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
-          for (const [k] of KS) { const sl = get(k), act = k === kind.value; D.path([...Array(61)].map((_, i) => { const x = 0.02 + (i * 2.98) / 60; return [x, Math.max(1e-6, peak(sl, x))]; }), { color: CMAP[k], width: act ? 3 : 1.4, alpha: act ? 1 : 0.55 }); }
+          for (const [k] of KS) { const sl = get(k), act = k === kind.value; D.path([...Array(61)].map((_, i) => { const x = 0.02 + (i * 2.98) / 60; return [x, Math.max(3e-3, peak(sl, x))]; }), { color: CMAP[k], width: act ? 3 : 1.4, alpha: act ? 1 : 0.55 }); }
           D.vline(MX.x, { color: 'orange', width: 1.2, dash: [4, 3] });
-          D.dot(Math.min(3, MX.x), Math.max(1e-6, peak(sol, MX.x)), { r: 5, color: 'gold' });
+          D.dot(Math.min(3, MX.x), Math.max(3e-3, peak(sol, MX.x)), { r: 5, color: 'gold' });
           v.legend(KS.map(([k, l]) => [CMAP[k], l]));
         });
         v.readout(() => {
@@ -403,7 +404,7 @@ so the energy per unit volume is $u = \sigma^2/2E = \tfrac12\sigma\varepsilon$. 
       refs: ['Gere–Goodno §2.7'],
       tags: ['energy', 'elasticity'],
       viz(v) {
-        const frac = v.slider('peak stress ÷ yield stress', 0.2, 1.25, 0.8, { step: 0.05 });
+        const frac = v.slider('peak stress ÷ yield stress', 0.2, 1.25, 1.1, { step: 0.05 });
         const mat = v.select('material', [{ value: 'steel', label: 'steel S355' }, { value: 'al', label: 'Al 6061-T6' }], 'steel');
         const S = v.stage({ x: [-1, 11], y: [-2.5, 2.5], equal: true, axes: false, height: 240, full: true, title: 'a bar 1 m long, 100 mm² (left end fixed)' });
         const F = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: { l: 52 }, height: 300, full: true, xlabel: 'elongation δ (mm)', ylabel: 'force P (kN)', title: 'force–elongation: the area is the strain energy' });
@@ -450,7 +451,7 @@ so the energy per unit volume is $u = \sigma^2/2E = \tfrac12\sigma\varepsilon$. 
           if (!loading && ePerm * L > 0.001) S.line(10 + ePerm * L * mag, -1.0, 10 + ePerm * L * mag, 1.0, { color: 'red', width: 1.6, dash: [3, 3] });
           if (!loading && ePerm * L > 0.001) S.text('permanent set', 10 + ePerm * L * mag, -1.25, { size: 10.5, color: 'red', align: 'center' });
           void m; void rec;
-        }, { period: T, still: 4.5 });
+        }, { period: T, still: 6.2 });
         v.readout(() => {
           const { m, ePk, sPk, ePerm, E, A, L } = info(), V = A * L; // mm³
           const uel = (sPk * sPk) / (2 * E), u = (() => { const cv = curveOf(mat.value); return frac.value < 1 ? uel : cv.work(ePk); })();
@@ -472,7 +473,7 @@ which is 2 for $h = 0$ and grows like $\sqrt{2h/\delta_{\text{st}}}$ for large d
       refs: ['Gere–Goodno §2.8'],
       tags: ['impact', 'dynamics'],
       viz(v) {
-        const hS = v.slider('drop height h (mm)', 0, 60, 0, { step: 0.5 });
+        const hS = v.slider('drop height h (mm)', 0, 60, 20, { step: 0.5 });
         const mS = v.slider('collar mass (kg)', 100, 1000, 500, { step: 10 });
         const zS = v.slider('damping (fraction of critical)', 0, 0.15, 0, { step: 0.005 });
         const S = v.stage({ x: [-3.5, 3.5], y: [-0.4, 8.2], equal: true, axes: false, height: 440, weight: 0.8, minWidth: 240, title: 'collar dropped on the flange (slow motion)' });
@@ -527,7 +528,7 @@ which is 2 for $h = 0$ and grows like $\sqrt{2h/\delta_{\text{st}}}$ for large d
           ceilingH(v, S, topY, -1.2, 1.2, 10);
           S.rect(-0.16, fy, 0.16, topY, { fill: 'accent', fillAlpha: 0.3, color: 'ink', width: 1.6 });
           S.rect(-0.16, topY - rodL, 0.16, topY - rodL, { color: 'muted', width: 1, fill: false });
-          S.line(-0.9, topY - rodL, 0.9, topY - rodL, { color: 'muted', width: 1, dash: [3, 3] }); S.text('unstretched flange level', 1.0, topY - rodL, { size: 10, color: 'muted', align: 'left' });
+          S.line(-0.9, topY - rodL, 0.9, topY - rodL, { color: 'muted', width: 1, dash: [3, 3] }); S.text('unstretched', 1.0, topY - rodL + 0.25, { size: 10, color: 'muted', align: 'left' });
           S.rect(-0.75, fy - 0.2, 0.75, fy, { fill: 'gray', fillAlpha: 0.7, color: 'ink', width: 1.6 });
           const hDraw = p.h / p.dst * 0.0 + Math.min(2.6, p.h * 0.075), cy = fy + (cur[2] < 0 ? hDraw : Math.max(0, hDraw - (cur[2] / (p.h / 1000 || 1)) * hDraw * (p.h > 0 ? 1 : 0)));
           const cyy = cur[2] < 0 || p.h === 0 ? fy : fy + Math.max(0, hDraw * (1 - fall / (p.h / 1000)));

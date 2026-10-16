@@ -120,7 +120,7 @@ with $\mathbf n$ the outward normal. Its component perpendicular to the free str
         const bl = v.select('boundary layer', [{ value: 'lam', label: 'laminar' }, { value: 'tr', label: 'transition at 30 %' }, { value: 'turb', label: 'turbulent' }], 'tr');
         const sep = v.slider('upper surface separates at x/c =', 0.1, 1, 1, { step: 0.01 });
         const onP = v.toggle('pressure', true), onF = v.toggle('skin friction', true);
-        const A = v.stage({ x: [-0.6, 1.5], y: [-0.2, 0.46], equal: true, axes: false, height: 340, full: true });
+        const A = v.stage({ x: [-0.6, 1.5], y: [-0.2, 0.46], equal: true, axes: false, height: 300, full: true });
         const B = v.stage({ x: [0, 1], y: [-1.5, 4], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '−C_p (up = suction)', title: 'pressure coefficient' });
         const C = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: 'x/c', ylabel: '1000·c_f', title: 'skin friction' });
         let last = {};
@@ -426,7 +426,7 @@ $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **M
           A.dot(0, 0, { r: 7, color: 'ink' }); A.arrow(30, 0, 30 + Math.min(500, V * 0.55) , 0, { color: 'ink', width: 2.2, head: 8 });
           A.text(`M = ${fx(M, 2)}`, 40, 60, { color: 'ink', size: 14, weight: 650 });
           B.fn(aT, { color: 'accent', width: 2.4, domain: [180, 400] });
-          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'se' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'se' });
+          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'nw' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'se' });
           B.hline(V, { color: 'red', dash: true, width: 1.3 }); B.text('source speed V', 184, V + 18, { color: 'red', size: 10.5, align: 'left' });
           sync = true; hT.set(Tsl.value, aT(Tsl.value)); sync = false;
           C.curve((z) => [V / atmo(z * 1000).a, z], 0, 28, { n: 140, color: 'accent', width: 2.4 });

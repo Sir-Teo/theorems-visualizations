@@ -136,5 +136,105 @@ Power is also quoted per day or per year: $1\ \text{kWh/day} = 41.7\ \text{W}$, 
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 1.2
+    {
+      num: '1.2', kind: 'Concept', name: 'Primary, final and useful energy: the Sankey diagram',
+      statement: String.raw`Energy statistics count the same energy at three stages. **Primary energy** is what is extracted from nature — coal, oil, gas, uranium, sunlight captured, wind, falling water. **Final energy** is what reaches the consumer after refining, generating and distributing — petrol in the tank, electricity at the meter, gas in the pipe. **Useful energy** (or *energy services*) is what the end-use device actually delivers — motion, warmth, light — and everything else is **rejected energy**, almost all of it waste heat.
+
+A **Sankey diagram** draws every flow as a band whose width is proportional to the amount, so that conservation is visible: at every node, the widths entering equal the widths leaving. For the United States in 2024, 94.6 quads of primary energy produced 32.3 quads of services, an overall efficiency of about 34%, and rejected 62.3 quads: 19.2 in power stations alone, and 22.4 in the engines of the transport sector.`,
+      idea: String.raw`Each conversion step multiplies the flow by an efficiency below one (a thermal power plant about 35%, a petrol car about 21%, a gas furnace over 90%), and the efficiencies of successive steps multiply, so the overall figure is lower than any single step. Nothing is lost in the first-law sense: the rejected energy leaves as low-temperature heat, which by the second law (Carnot, chapter 2) cannot be turned back into work at the same rate. Counting methods matter too: wind, solar and hydro electricity have no fuel to waste, so under the "captured energy" convention used by the US statistics each kWh counts as 3,412 Btu of primary energy, while under the older fossil-fuel-equivalent convention it counted as about three times more.`,
+      caption: String.raw`Hover over any band for its size. The sliders change the efficiency of one conversion while the **energy services delivered stay fixed**: the primary energy needed, and so every upstream band, shrinks or swells. Raise the power-plant efficiency to 60% or the car-and-truck efficiency to 60%, and see which one thins the rejected-energy band more. The second picture is the world's primary energy by source since 1965: drag the year.`,
+      deps: ['energy-1.1'],
+      refs: ['Tester ch. 1'],
+      tags: ['energy flows', 'efficiency'],
+      scope: String.raw`Flows are the US 2024 annual averages of the Lawrence Livermore National Laboratory chart (DOE/EIA data); end-use efficiencies are LLNL's estimates (65% residential and commercial, 49% industrial, 21% transportation), not measurements. The sliders keep the mix of fuels and the mix of electricity sources fixed and only rescale it — a simplification.`,
+      links: { llnl: 'https://flowcharts.llnl.gov/commodities/energy' },
+      viz(v) {
+        const SRC = [['solar', 'Solar', 'gold'], ['nuclear', 'Nuclear', 'purple'], ['hydro', 'Hydro', 'teal'], ['wind', 'Wind', 'accent'], ['geo', 'Geothermal', 'red'], ['gas', 'Natural gas', 'blue'], ['coal', 'Coal', 'ink'], ['bio', 'Biomass', 'pink'], ['oil', 'Petroleum', 'orange']];
+        const SEC = [['res', 'Residential'], ['com', 'Commercial'], ['ind', 'Industrial'], ['tra', 'Transportation']];
+        // LLNL 2024, quads (values read from the published chart)
+        const TO_ELEC = { solar: 0.75, nuclear: 8.17, hydro: 0.83, wind: 1.54, geo: 0.05, gas: 13.94, coal: 7.01, bio: 0.32, oil: 0.17 };
+        const RETAIL = { res: 5.06, com: 4.95, ind: 3.53, tra: 0.02 };
+        const DIRECT = { res: { solar: 0.26, geo: 0.04, gas: 4.58, oil: 0.92, bio: 0.37 }, com: { solar: 0.08, geo: 0.02, gas: 3.46, coal: 0.01, oil: 0.8, bio: 0.17 }, ind: { solar: 0.02, geo: 0.01, gas: 10.9, coal: 0.85, bio: 2.36, oil: 8.73 }, tra: { gas: 1.39, bio: 1.89, oil: 24.97 } };
+        const ETA0 = { res: 0.65, com: 0.65, ind: 0.49, tra: 0.21 };
+        const NONTH = ['solar', 'hydro', 'wind'];
+        const tot0 = (k) => RETAIL[k] + Object.values(DIRECT[k]).reduce((a, b) => a + b, 0);
+        const E0 = Object.values(RETAIL).reduce((a, b) => a + b, 0), NT0 = NONTH.reduce((a, k) => a + TO_ELEC[k], 0);
+        const TH0 = Object.keys(TO_ELEC).filter((k) => !NONTH.includes(k)).reduce((a, k) => a + TO_ELEC[k], 0), ETH0 = (E0 - NT0) / TH0;
+        const view = v.select('picture', [{ value: 'flow', label: 'US energy flow, 2024' }, { value: 'mix', label: 'world primary energy since 1965' }], 'flow', { onChange: () => show() });
+        const eth = v.slider('thermal power plants', 0.2, 0.7, ETH0, { step: 0.005, fmt: (x) => v.fix(100 * x, 1) + ' %' });
+        const etr = v.slider('transport', 0.1, 0.9, ETA0.tra, { step: 0.005, fmt: (x) => v.fix(100 * x, 0) + ' %' });
+        const eind = v.slider('industry', 0.2, 0.95, ETA0.ind, { step: 0.005, fmt: (x) => v.fix(100 * x, 0) + ' %' });
+        const ebld = v.slider('buildings', 0.3, 0.97, ETA0.res, { step: 0.005, fmt: (x) => v.fix(100 * x, 0) + ' %' });
+        const reset = v.button('Reset to 2024', () => { eth.set(ETH0); etr.set(ETA0.tra); eind.set(ETA0.ind); ebld.set(ETA0.res); });
+        const yr = v.slider('year', 1965, 2024, 2024, { step: 1, int: true, fmt: (x) => String(x) });
+        const sF = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 520, full: true, hover: true });
+        const sM = v.stage({ x: [1965, 2024], y: [0, 700], axes: 'box', gutter: true, height: 430, full: true, xlabel: 'year', ylabel: 'primary energy (EJ per year)' });
+        const show = () => { const f = view.value === 'flow'; sF.el.hidden = !f; sM.el.hidden = f; [eth, etr, eind, ebld, reset].forEach((c) => { (c.el || c).hidden = !f; }); yr.el.hidden = f; };
+        show();
+        const model = () => {
+          const eta = { res: ebld.value, com: ebld.value, ind: eind.value, tra: etr.value };
+          const k = {}, S = {}; let E = 0;
+          for (const [s] of SEC) { k[s] = ETA0[s] / eta[s]; S[s] = ETA0[s] * tot0(s); E += RETAIL[s] * k[s]; }
+          const r = E / E0, NT = NT0 * r, TH = (E - NT) / eth.value, elecIn = NT + TH;
+          const toE = {}; for (const key of Object.keys(TO_ELEC)) toE[key] = NONTH.includes(key) ? TO_ELEC[key] * r : TO_ELEC[key] * TH / TH0;
+          const links = [];
+          for (const [key] of SRC) links.push({ a: key, b: 'elec', v: toE[key] });
+          for (const [s] of SEC) {
+            links.push({ a: 'elec', b: s, v: RETAIL[s] * k[s], color: 'orange' });
+            for (const [key, q] of Object.entries(DIRECT[s])) links.push({ a: key, b: s, v: q * k[s] });
+            const T = tot0(s) * k[s]; links.push({ a: s, b: 'svc', v: S[s], color: 'green' }); links.push({ a: s, b: 'rej', v: T - S[s], color: 'gray' });
+          }
+          links.push({ a: 'elec', b: 'rej', v: elecIn - E, color: 'gray' });
+          const prim = Object.values(toE).reduce((a, b) => a + b, 0) + SEC.reduce((a, [s]) => a + Object.values(DIRECT[s]).reduce((x, y) => x + y * k[s], 0), 0);
+          const svc = Object.values(S).reduce((a, b) => a + b, 0);
+          return { links, prim, svc, rej: prim - svc, elecRej: elecIn - E, E };
+        };
+        const BASE = (() => { const m = { prim: 0 }; return null; })();
+        const fm = (x) => (x >= 10 ? v.fix(x, 1) : v.fix(x, 2));
+        v.render(() => {
+          if (view.value === 'mix') {
+            const i = yr.value - 1965, rows = MIX, EJ = 0.0036;
+            const order = [[1, 'Coal', 'ink'], [2, 'Oil', 'orange'], [3, 'Gas', 'blue'], [4, 'Nuclear', 'purple'], [5, 'Hydro', 'teal'], [8, 'Other renewables (incl. biofuels)', 'pink'], [6, 'Wind', 'accent'], [7, 'Solar', 'gold']];
+            // stack bottom to top: coal, oil, gas, nuclear, hydro, other renewables, wind, solar
+            const val = (r, idx) => (idx === 8 ? r[8] + r[9] : r[idx]) * EJ;
+            let base = rows.map(() => 0);
+            for (const [idx, , col] of order) {
+              const top = rows.map((r, j) => base[j] + val(r, idx));
+              const pts = rows.map((r, j) => [r[0], top[j]]).concat(rows.map((r, j) => [r[0], base[j]]).reverse());
+              sM.poly(pts, { fill: col, fillAlpha: 0.72, color: col, width: 0.8 });
+              base = top;
+            }
+            sM.vline(yr.value, { color: 'ink', width: 1.4, dash: true });
+            v.legend(order.map(([, n, c]) => [c, n, { area: true }]));
+            return;
+          }
+          const m = model();
+          const W = sF.W, f = clamp(W / 920, 0.62, 1), lw = Math.round(112 * f), bw = Math.round(84 * f), rw = Math.round(98 * f), ew = Math.round(76 * f);
+          const c3 = W - rw - 10, avail = c3 - lw, scale = (sF.H - 28 - 8 * 7) / 94.6;
+          const nodes = {};
+          for (const [id, name, col] of SRC) nodes[id] = { label: name, color: col, w: 12 };
+          nodes.elec = { label: 'Electricity\ngeneration', color: 'muted', box: true, w: ew, top: 10 };
+          for (const [id, name] of SEC) nodes[id] = { label: name, color: 'muted', box: true, w: bw };
+          nodes.rej = { label: 'Rejected\nenergy', color: 'gray', box: true, w: rw, top: 10 };
+          nodes.svc = { label: 'Energy\nservices', color: 'green', box: true, w: rw };
+          const R = sankey(v, sF, {
+            cols: [SRC.map((x) => x[0]), ['elec'], SEC.map((x) => x[0]), ['rej', 'svc']], cx: [lw, lw + 0.27 * avail, lw + 0.62 * avail, c3], nodeW: 12, scale, gap: 7, top: 10, nodes, links: m.links,
+            side: ['l', 'r', 'r', 'r'], size: Math.round(11.5 * (0.9 + 0.1 * f) * 10) / 10, fmt: (x) => fm(x),
+            tip: (l) => `${l.A.label.replace('\n', ' ')} → ${l.B.label.replace('\n', ' ')}: ${v.fix(l.v, 2)} quads (${v.fix(100 * l.v / m.prim, 1)}% of primary)`,
+          });
+          sF.textPx('quads of energy per year', sF.W - 10, sF.H - 8, { size: 11, color: 'muted', align: 'right' });
+          sF.textPx(`primary ${fm(m.prim)}`, lw - 6, sF.H - 8, { size: 11.5, weight: 700, color: 'ink', align: 'right', halo: false });
+        });
+        v.readout(() => {
+          if (view.value === 'mix') {
+            const r = MIX[yr.value - 1965], tot = r[10], fossil = r[1] + r[2] + r[3], pct = (x) => v.fix(100 * x / tot, 0);
+            return `**${yr.value}**: ${v.fix(tot * 0.0036, 0)} EJ in total (${v.fix(tot * 1e12 / 8766 / 1e12, 1)} TW of average power). Coal ${pct(r[1])}%, oil ${pct(r[2])}%, gas ${pct(r[3])}% — fossil fuels ${pct(fossil)}%; nuclear ${pct(r[4])}%, hydro ${pct(r[5])}%, wind and solar ${pct(r[6] + r[7])}%, other renewables ${pct(r[8] + r[9])}%.\nSubstitution method: hydro, nuclear, wind and solar are counted as the fossil fuel that would produce the same electricity; traditional biomass (firewood, dung) is not included.`;
+          }
+          const m = model(), b = 94.61, eff = m.svc / m.prim;
+          return `Primary **${v.fix(m.prim, 1)} quads** → services **${v.fix(m.svc, 1)}** (always the same) + rejected **${v.fix(m.rej, 1)}** (${v.fix(100 * m.rej / m.prim, 0)}% of primary; power stations alone ${v.fix(m.elecRej, 1)}). Overall efficiency **${v.fix(100 * eff, 1)}%**; primary energy is ${m.prim < b - 0.05 ? v.fix(100 * (1 - m.prim / b), 0) + '% below' : m.prim > b + 0.05 ? v.fix(100 * (m.prim / b - 1), 0) + '% above' : 'equal to'} the 2024 value of 94.6.`;
+        });
+      },
+    },
   ],
 };

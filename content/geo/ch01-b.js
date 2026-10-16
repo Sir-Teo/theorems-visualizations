@@ -349,7 +349,7 @@ which peaks in the thermocline, typically at a few to ten cycles per hour ($N\si
           sS.path(zs.filter((z) => z <= 20).map((z) => [ussaT(geopot(z * KM)) - 273.15, z]), { color: 'muted', width: 1.6, dash: [6, 4] });
           sS.path(rows.map((r) => [r[2], r[1] / KM]), { color: 'red', width: 2.8 });
           if (tr) { sS.hline(tr.z / KM, { color: 'orange', width: 1.6, dash: [5, 4] }); sS.dot(tr.T, tr.z / KM, { r: 7, color: 'orange' }); sS.text(`${v.fix(tr.z / KM, 1)} km`, tr.T, tr.z / KM, { dx: 12, dy: -12, size: 12, color: 'orange', align: 'left', plate: true }); }
-          sS.text(S.name + `, ${v.fix(S.lat, 1)}° N`, -93, 1.5, { size: 12, color: 'ink', align: 'left' });
+          sS.setTitle('radiosonde: ' + S.name + `, ${v.fix(S.lat, 1)}° N`);
           // latitude panel
           sL.hline(11.0, { color: 'muted', dash: [6, 4] }); sL.text('standard atmosphere: 11 km', 3, 11.0, { align: 'left', dy: 11, size: 11, color: 'muted' });
           for (const [sn, col] of [['jan', 'blue'], ['jul', 'red']]) {

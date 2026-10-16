@@ -244,7 +244,7 @@ export default {
       name: 'Volume of distribution',
       statement: String.raw`The **apparent volume of distribution** of a drug is the proportionality constant between the amount of drug in the body and the plasma concentration, $V = A/C$. After an intravenous bolus of dose $D$ it is $V = D/C(0)$, with $C(0)$ found by extrapolating the decline back to time zero. It is not a real volume. If the drug stays in plasma, $V\approx 3$ L; if it spreads through all body water, $V\approx 42$ L (70 kg adult); if tissues bind it much more strongly than plasma does, $V$ can be hundreds or thousands of litres. In a model where the body is plasma (volume $V_p$) in equilibrium with tissue water (volume $V_T$) with tissue-to-plasma concentration ratio $K_p$, $V = V_p + K_p V_T$.`,
       idea: String.raw`At equilibrium the same plasma concentration is paired with a tissue concentration $K_p C$, so the amount in the body is $A = C\,V_p + K_p C\,V_T$. Dividing by $C$ gives $V = V_p + K_p V_T$. A drug that is bound or dissolved in tissue (fat, bone, cell proteins) has a large $K_p$: most of the dose hides outside the blood and the plasma concentration is low, which is the same as saying the dose was "diluted" into a huge volume. Polar drugs that cannot enter cells, or that stick to albumin, have $K_p<1$ and a small volume.`,
-      caption: String.raw`A dose of 200 dots (1 dot = 0.5 % of the dose) is dissolved in a body with 3 L of plasma and 39 L of tissue water; the box areas are drawn to scale. Dot density is concentration. Drag the **tissue-to-plasma ratio** $K_p$, or click a drug (preset values for a 70 kg adult): the more tissue binding, the sparser the plasma and the larger the apparent volume $V = D/C$, shown on the log ruler against plasma, extracellular fluid and total body water. Chloroquine's apparent volume is more than three hundred times total body water.`,
+      caption: String.raw`A dose of 200 dots (1 dot = 0.5 % of the dose) is dissolved in a body with 3 L of plasma and 39 L of tissue water; the box areas are drawn to scale. Dot density is concentration. Drag the **tissue-to-plasma ratio** $K_p$, or click a drug (preset values for a 70 kg adult): the more tissue binding, the sparser the plasma and the larger the apparent volume $V = D/C$, shown on the log ruler against plasma, extracellular fluid and total body water. Chloroquine's apparent volume, taken here as 200 L/kg (published estimates run from about 100 to several hundred L/kg), is hundreds of times total body water.`,
       scope: String.raw`$V$ is a ratio defined by a distribution that has reached equilibrium; for a real drug the value depends on the model used (initial volume, steady-state volume, terminal volume differ for multi-compartment drugs, ch. 3).`,
       deps: ['pharm-1.2'],
       refs: ['Rowland–Tozer', 'Rang, Pharmacology (2003) p. 103'],
@@ -482,11 +482,11 @@ export default {
       tags: ['bioavailability', 'first-pass'],
       viz(v) {
         const PRE = {
-          propranolol: { Fa: 1, Fg: 1, Eh: 0.74, V: 280, CL: 60, ka: 1.5, note: 'F ≈ 0.26' },
-          midazolam: { Fa: 1, Fg: 0.55, Eh: 0.2, V: 70, CL: 27, ka: 3, note: 'F ≈ 0.44' },
-          morphine: { Fa: 0.85, Fg: 0.9, Eh: 0.6, V: 245, CL: 72, ka: 1, note: 'F ≈ 0.3' },
-          lidocaine: { Fa: 1, Fg: 1, Eh: 0.65, V: 90, CL: 45, ka: 2, note: 'F ≈ 0.35' },
-          atenolol: { Fa: 0.5, Fg: 1, Eh: 0, V: 49, CL: 5.2, ka: 0.8, note: 'F ≈ 0.5' },
+          propranolol: { Fa: 1, Fg: 1, Eh: 0.74, V: 280, CL: 60, ka: 1.5, note: 'F ≈ 0.26 (textbooks quote about 0.2–0.3)' },
+          midazolam: { Fa: 1, Fg: 0.55, Eh: 0.2, V: 70, CL: 27, ka: 3, note: 'F ≈ 0.44 (sources differ)' },
+          morphine: { Fa: 0.85, Fg: 0.9, Eh: 0.6, V: 245, CL: 72, ka: 1, note: 'F ≈ 0.3 (textbooks quote about 0.2–0.35)' },
+          lidocaine: { Fa: 1, Fg: 1, Eh: 0.65, V: 90, CL: 45, ka: 2, note: 'F ≈ 0.35 (sources differ)' },
+          atenolol: { Fa: 0.5, Fg: 1, Eh: 0, V: 49, CL: 5.2, ka: 0.8, note: 'F ≈ 0.5 (sources quote 0.5–0.6)' },
           digoxin: { Fa: 0.7, Fg: 1, Eh: 0, V: 490, CL: 8.5, ka: 1.5, note: 'F ≈ 0.7' },
           warfarin: { Fa: 1, Fg: 1, Eh: 0, V: 9.8, CL: 0.17, ka: 2, note: 'F ≈ 1' },
         };
