@@ -154,7 +154,7 @@ is a subgroup of $G$, and it is the smallest subgroup of $G$ that contains $a$: 
             pts.forEach(([x, y], i) => {
               const lab = G.L[order[i]], col = order[i] === gh && order[i] === hgp ? 'gold' : order[i] === gh ? 'green' : order[i] === hgp ? 'red' : 'muted';
               s.dot(x, y, { r: col === 'muted' ? 5 : 8, color: col });
-              s.text(`$${lab}$`, x * 1.22 + (i >= 3 ? x * 0.08 : 0), y * 1.22 + (i >= 3 ? y * 0.08 : 0), { align: 'center', size: 14 });
+              if (i < 3) s.text(`$${lab}$`, x * 1.24, y * 1.24, { align: 'center', size: 14 }); else s.text(`$${lab}$`, x, y, { dx: 14, align: 'left', size: 14 });
             });
             drawWalk(v, s, 3, [0, 1, 2, 0], { R: 0.95, color: 'faint', arrows: true, trim: 12 });
             s.corner('powers of ρ₁ reach only the rotations', 'tl', { size: 11.5 });
@@ -221,7 +221,7 @@ is a subgroup of $G$, and it is the smallest subgroup of $G$ that contains $a$: 
         const W = 30;
         let S0 = new Set([18, 30, -12]);
         v.button('Clear', () => { S0 = new Set(); St.reset({ at: 'end' }); });
-        const s = v.stage({ x: [-W - 1, W + 1], y: [-1.2, 1.6], axes: false, height: 180, full: true });
+        const s = v.stage({ x: [-W - 1, W + 1], y: [-0.85, 1.3], axes: false, height: 165, full: true });
         s.onClick((x) => { const k = Math.round(x); if (Math.abs(k) > W) return; if (S0.has(k)) S0.delete(k); else S0.add(k); St.reset({ at: 'end' }); });
         const levels = () => {
           let cur = new Set([0, ...S0, ...[...S0].map((x) => -x)]); const out = [{ set: new Set(cur), add: new Set(cur), r: 0 }];
@@ -242,7 +242,7 @@ is a subgroup of $G$, and it is the smallest subgroup of $G$ that contains $a$: 
           for (let k = -W; k <= W; k++) s.line(k, -0.08, k, 0.08, { color: 'faint', width: 1 });
           s.line(-W - 0.5, 0, W + 0.5, 0, { color: 'muted', width: 1.3 });
           for (let k = -W; k <= W; k += 5) s.text(String(k).replace('-', '−'), k, 0, { dy: 16, align: 'center', size: 10.5, color: 'muted' });
-          if (f.done && n) for (let k = -Math.floor(W / n) * n; k <= W; k += n) s.line(k, -0.3, k, 0.3, { color: 'green', width: 2.2, alpha: 0.6 });
+          if (f.done && n) for (let k = -Math.floor(W / n) * n; k <= W; k += n) s.line(k, 0.05, k, 0.32, { color: 'green', width: 2.4, alpha: 0.7 });
           for (const k of f.set || []) s.dot(k, 0, { r: 5.5, color: f.add && f.add.has(k) && !f.done ? 'gold' : 'accent' });
           for (const k of S0) s.dot(k, 0.75, { r: 6, color: 'gold' });
           if (S0.size) s.text('generators', -W, 0.75, { size: 11.5, color: 'gold', weight: 700 });
@@ -286,7 +286,7 @@ is a subgroup of $G$, and it is the smallest subgroup of $G$ that contains $a$: 
           for (let j = -24; j <= 24; j++) {
             const z = mod(j, n) === 0;
             t.rect(j - 0.42, -0.35, j + 0.42, 0.35, { fill: z ? 'green' : 'muted', fillAlpha: z ? 0.55 : 0.08, color: z ? 'green' : 'faint', width: 1 });
-            if (j % 4 === 0 || z) t.text(String(j).replace('-', '−'), j, 0, { dy: 18, align: 'center', size: 9.5, color: z ? 'green' : 'muted' });
+            if (j % 8 === 0 || z) t.text(String(j).replace('-', '−'), j, 0, { dy: 18, align: 'center', size: 9.5, color: z ? 'green' : 'muted' });
           }
           t.rect(k - 0.5, -0.45, k + 0.5, 0.45, { color: 'gold', width: 2.6, fill: false });
           t.text('aᵏ = e ?', -24.8, 0.75, { size: 11, color: 'muted' });
