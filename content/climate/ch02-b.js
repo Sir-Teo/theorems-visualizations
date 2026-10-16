@@ -177,7 +177,6 @@ so every doubling adds the same $5.35\ln 2 \approx 3.7$ W/m² (including stratos
           sA.path(NU.map((m, i) => [m, s0[i]]).filter((p) => p[0] >= 550 && p[0] <= 800), { color: 'muted', width: 2, dash: [5, 4] });
           sA.path(NU.map((m, i) => [m, s1[i]]).filter((p) => p[0] >= 550 && p[0] <= 800), { color: 'accent', width: 2.6 });
           sA.between((nu) => s1[idxOf(nu)], (nu) => s0[idxOf(nu)], 555, 795, { fill: c > 280 ? 'red' : 'green', fillAlpha: 0.3 });
-          sA.text('280 ppm', 700, 0.31, { color: 'muted', size: 11, align: 'left' });
           // forcing curve
           const lin = axis.value === 'lin';
           sB.setScale({ xlog: !lin, x: lin ? [0, 2000] : [10, 5000] });
@@ -189,8 +188,8 @@ so every doubling adds the same $5.35\ln 2 \approx 3.7$ W/m² (including stratos
           // doublings
           incr.forEach((d, i) => sC.rect(i + 0.15, 0, i + 0.85, d, { fill: i === Math.floor(Math.log2(c / 10)) ? 'gold' : 'accent', fillAlpha: 0.6, stroke: false }));
           sC.hline(fit * Math.LN2, { color: 'green', dash: [6, 4], width: 1.6 });
-          sC.text(`log law: ${fx(v, fit * Math.LN2, 2)}`, 9.9, fit * Math.LN2, { color: 'green', size: 11.5, align: 'right', baseline: 'bottom', dy: -3 });
-          incr.forEach((d, i) => sC.text(`${10 * 2 ** i}→${20 * 2 ** i}`, i + 0.5, d, { size: 9.5, color: 'muted', align: 'center', baseline: 'bottom', dy: -3 }));
+          sC.text(`log law: ${fx(v, fit * Math.LN2, 2)}`, 0.1, fit * Math.LN2, { color: 'green', size: 11.5, align: 'left', baseline: 'top', dy: 5 });
+          { const k = Math.min(8, Math.max(0, Math.floor(Math.log2(c / 10)))); sC.text(`${10 * 2 ** k} → ${20 * 2 ** k} ppm`, k + 0.5, incr[k], { size: 11, color: 'ink', align: 'center', baseline: 'bottom', dy: -5, weight: 600 }); }
           R = { c, F: F(c), mid: (F(1120) - F(560)), per: fit * Math.LN2 };
         });
         v.legend([['muted', '280 ppm spectrum', { dash: true }], ['accent', 'current'], ['green', 'log law fit', { dash: true }]]);

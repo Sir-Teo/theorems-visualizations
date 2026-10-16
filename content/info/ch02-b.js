@@ -136,9 +136,9 @@ Processing the data $Y$, deterministically or with extra randomness, can never i
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Data_processing_inequality' },
       viz(v) {
         const aS = v.slider('$P(X=1)$', 0.05, 0.5, 0.5, { step: 0.01 });
-        const e1 = v.slider('first channel flip $\\varepsilon_1$', 0, 0.5, 0.1, { step: 0.005 });
+        const e1 = v.slider('first channel flip $\\varepsilon_1$', 0, 0.5, 0.25, { step: 0.005 });
         const kind = v.select('second channel', [{ value: 'bsc', label: 'flip' }, { value: 'era', label: 'erasure' }, { value: 'z', label: 'one-sided' }], 'bsc');
-        const qS = v.slider('strength $q$', 0, 1, 0.2, { step: 0.005 });
+        const qS = v.slider('strength $q$', 0, 1, 0.1, { step: 0.005 });
         const peek = v.toggle('$Z$ sees $X$ directly (break the chain)', false);
         const sB = v.stage({ x: [-0.6, 2.6], y: [0, 1.05], height: 280, axes: 'box', gutter: true, ylabel: 'bits', title: 'the three informations' });
         sB.setTicks([[0, 'I(X;Y)'], [1, 'I(X;Z)'], [2, 'I(Y;Z)']], null);
@@ -218,7 +218,7 @@ For $n$ coin flips with unknown bias $\theta$, the number of heads is sufficient
         const sC = v.stage({ x: [1, 8], y: [0, 3], height: 290, axes: 'box', gutter: true, xlabel: 'flips n', ylabel: 'bits', title: '$I(\\theta;T)$ against $n$' });
         sC.setTicks([1, 2, 3, 4, 5, 6, 7, 8].map((i) => [i, String(i)]), null);
         const sD = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', gutter: true, xlabel: 'sequences in the class', ylabel: 'p(x | T = t, θ)', title: 'inside one class, for $\\theta=0.25$ and $0.75$' });
-        v.legend([['ink', '$I(\\theta;X^n)$ (everything)', { dash: true }], ['accent', 'selected statistic'], ['faint', 'other statistics'], ['accent', '$\\theta=0.25$', { area: true }], ['orange', '$\\theta=0.75$', { area: true }]]);
+        v.legend([['ink', '$I(\\theta;X^n)$ (everything)', { dash: true }], ['green', 'selected statistic (here: the sufficient one)'], ['faint', 'other statistics'], ['accent', '$\\theta=0.25$', { area: true }], ['orange', '$\\theta=0.75$', { area: true }]]);
         const COL = { count: 'green', first: 'red', fl: 'purple', runs: 'teal' };
         let cur = {};
         v.render(() => {
@@ -267,7 +267,7 @@ so a large conditional entropy forces a large probability of error: $P_e\ge F^{-
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fano%27s_inequality' },
       viz(v) {
         const Ms = v.slider('alphabet size $M$', 2, 8, 4, { int: true });
-        const chan = v.select('channel', [{ value: 'sym', label: 'symmetric' }, { value: 'nb', label: 'errors to neighbours' }], 'sym');
+        const chan = v.select('channel', [{ value: 'sym', label: 'symmetric' }, { value: 'nb', label: 'errors to neighbours' }], 'nb');
         const eS = v.slider('channel noise $\\varepsilon$', 0, 0.9, 0.3, { step: 0.005 });
         const rS = v.slider('estimator noise $r$', 0, 1, 0, { step: 0.01 });
         const ru = v.toggle('runner-up guess', false);
@@ -311,8 +311,8 @@ so a large conditional entropy forces a large probability of error: $P_e\ge F^{-
             const g = guessR < rS.value ? uni : g0; if (g !== x) err++;
           }
           const sim = err / NT;
-          s.dot(ev.HXgY, sim, { r: 6, color: 'gold' });
-          s.dot(ev.HXgY, ev.pe, { r: 7, color: 'accent' });
+          s.dot(ev.HXgY, ev.pe, { r: 8, color: 'accent' });
+          s.dot(ev.HXgY, sim, { r: 4, color: 'gold' });
           const lb = Finv(ev.HXgY, M);
           s.line(ev.HXgY, lb, ev.HXgY, ev.pe, { color: 'accent', width: 2 });
           s.dot(ev.HXgY, lb, { r: 4, color: 'red', hollow: true });
@@ -435,14 +435,14 @@ where $H(S)$ is the entropy of the label distribution in $S$ (computed from the 
         v.render(() => {
           if (!useDay.value) for (const n of nodes) if (n.f === 4) { reset(); break; }
           const { xs, cnt } = leafOrder();
-          sT.setView([-0.2, Math.max(cnt, 5) - 0.8], [-4.6, 0.7]);
+          const W = Math.max(cnt + 0.6, 4); sT.setView([(cnt - 1) / 2 - W / 2, (cnt - 1) / 2 + W / 2], [-4.6, 0.7]);
           layout.forEach((L, i) => { L.x = xs[i]; });
           nodes.forEach((n, i) => {
             const L = layout[i]; if (!L) return;
             n.kids.forEach((k) => { sT.line(L.x, L.y - 0.28, layout[k].x, layout[k].y + 0.3, { color: 'faint', width: 1.4 }); sT.text(nodes[k].lab, (L.x + layout[k].x) / 2, (L.y + layout[k].y) / 2, { align: 'center', size: 10.5, color: 'muted', dy: -2 }); });
           });
           nodes.forEach((n, i) => {
-            const L = layout[i], g = n.S.filter((j) => rows[j].go).length, tot = n.S.length, hw = Math.min(0.42, Math.max(0.28, 3.4 / Math.max(cnt, 5)));
+            const L = layout[i], g = n.S.filter((j) => rows[j].go).length, tot = n.S.length, hw = Math.min(0.42, 0.1 * Math.max(cnt + 0.6, 4));
             const col = g * 2 >= tot ? 'green' : 'red', pure = g === 0 || g === tot;
             sT.rect(L.x - hw, L.y - 0.28, L.x + hw, L.y + 0.28, { fill: col, fillAlpha: pure ? 0.5 : 0.2, color: i === sel ? 'gold' : col, width: i === sel ? 3 : 1.4, radius: 5 });
             sT.text(`${g}:${tot - g}`, L.x, L.y + 0.07, { align: 'center', size: 11.5, weight: 700 });
@@ -459,14 +459,14 @@ where $H(S)$ is the entropy of the label distribution in $S$ (computed from the 
             sG.rect(f - 0.34, 0, f + 0.34, g, { fill: c, fillAlpha: n.f === null ? 0.5 : 0.2, color: c, width: 1.5 });
             sG.text(v.fix(g, 3), f, g, { dy: -9, align: 'center', size: 11, weight: 600 });
           });
-          sG.hline(ent(n.S), { color: 'orange', dash: true }); sG.text('H(node) = ' + v.fix(ent(n.S), 3), 4.5, ent(n.S), { align: 'right', dy: -9, size: 11, color: 'orange' });
+          sG.hline(ent(n.S), { color: 'orange', dash: true }); sG.text('H(node) = ' + v.fix(ent(n.S), 3), -0.55, ent(n.S), { align: 'left', dy: -9, size: 11, color: 'orange' });
           let leaves = 0, wH = 0, acc = 0;
           nodes.forEach((m) => { if (!m.kids.length) { leaves++; wH += (m.S.length / 16) * ent(m.S); acc += Math.max(m.S.filter((j) => rows[j].go).length, m.S.filter((j) => !rows[j].go).length); } });
           cur = { leaves, wH, acc: acc / 16, H0: ent(nodes[0].S), selH: ent(n.S), selN: n.S.length, split: n.f !== null };
         });
         v.readout(() => {
           const c = cur;
-          return String.raw`Root entropy $H=${v.fix(c.H0, 3)}$ bits. The tree has ${c.leaves} leaves with average leaf entropy $${v.fix(c.wH, 3)}$ bits (the root's $H$ minus the total gain so far, ${v.fix(c.H0 - c.wH, 3)}); training accuracy ${v.fix(100 * c.acc, 0)}%. Selected node: ${c.selN} days, $H=${v.fix(c.selH, 3)}$` + (c.split ? ' (already split).' : '.');
+          return String.raw`Root entropy $H=${v.fix(c.H0, 3)}$ bits. The tree has ${c.leaves} ${c.leaves === 1 ? 'leaf' : 'leaves'} with average leaf entropy $${v.fix(c.wH, 3)}$ bits (the root's $H$ minus the total gain so far, ${v.fix(c.H0 - c.wH, 3)}); training accuracy ${v.fix(100 * c.acc, 0)}%. Selected node: ${c.selN} days, $H=${v.fix(c.selH, 3)}$` + (c.split ? ' (already split).' : '.');
         });
       },
     },

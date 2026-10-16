@@ -59,7 +59,7 @@ with the conventions $0\log\frac0q=0$ and $p\log\frac p0=+\infty$ for $p>0$. So 
               s3.text(t === Infinity ? '∞' : v.fix(t, 2), (x0 + x1) / 2, h, { dy: t < 0 ? 10 : -9, align: 'center', size: 10.5, color: t === Infinity ? 'red' : 'muted', weight: 600 });
             });
           }
-          s3.corner(`D(p‖q) = ${fmtB(v, KL(p, q))} bits    D(q‖p) = ${fmtB(v, KL(q, p))} bits`, 'tl', { size: 12, weight: 600 });
+          s3.corner(`D(p‖q)=${fmtB(v, KL(p, q), 2)}  D(q‖p)=${fmtB(v, KL(q, p), 2)}`, 'tl', { size: 12, weight: 600 });
         });
         v.readout(() => {
           const p = edP.p, q = edQ.p, a = KL(p, q), b = KL(q, p);
@@ -88,13 +88,13 @@ with equality if and only if $p=q$. More generally, if $q$ is only a sub-probabi
         const edP = barEd(v, { title: 'drag: $p$', p: [0.4, 0.3, 0.2, 0.1], color: 'accent', height: 230 });
         const edQ = barEd(v, { title: 'drag: $q$ (shape)', p: [0.25, 0.25, 0.25, 0.25], color: 'orange', height: 230 });
         const cS = v.slider('mass of $q$, $c$', 0.5, 1.5, 1, { step: 0.01 });
-        const sJ = v.stage({ x: [0, 4], y: [-5, 1.8], height: 230, axes: 'box', gutter: true, xlabel: 't = q/p', ylabel: 'log₂ t', title: 'Jensen: the balance point lies below $\\log$' });
+        const sJ = v.stage({ x: [0, 3], y: [-4, 1.2], height: 230, axes: 'box', gutter: true, xlabel: 't = q/p', ylabel: 'log₂ t', title: 'Jensen: the balance point lies below $\\log$' });
         v.legend([['ink', '$\\log_2 t$'], ['accent', 'outcome at $(q/p,\\log q/p)$, size $\\propto p$', { dot: true }], ['gold', '$(\\sum p\\,t,\\ \\sum p\\log t)=(m,-D)$', { dot: true }], ['orange', 'Jensen gap']]);
         let pts = [];
         v.render(() => {
           edP.draw(); edQ.draw({ alpha: 0.3 });
           const p = edP.p, q = edQ.p.map((x) => x * cS.value);
-          sJ.fn((t) => log2(t), { domain: [0.03, 4], color: 'ink', width: 2 });
+          sJ.fn((t) => log2(t), { domain: [0.06, 3], color: 'ink', width: 2 });
           sJ.vline(1, { color: 'faint', dash: true }); sJ.hline(0, { color: 'faint', dash: true });
           let m = 0, mean = 0, bad = false;
           for (let i = 0; i < 4; i++) {
@@ -112,16 +112,16 @@ with equality if and only if $p=q$. More generally, if $q$ is only a sub-probabi
           for (let i = 0; i < 4; i++) {
             if (!(p[i] > 0)) continue;
             const t = q[i] / p[i];
-            if (t > 0 && t < 4) sJ.dot(t, log2(t), { r: 3 + 14 * Math.sqrt(p[i]), color: 'accent', label: LET[i], labelPos: 'ne' });
-            else if (t >= 4) sJ.text('→ ' + LET[i], 3.85, log2(4), { align: 'right', size: 11, color: 'accent' });
-            else sJ.text('↓ ' + LET[i] + ' (t = 0)', i * 0.9 + 0.2, -4.7, { size: 11, color: 'red' });
+            if (t > 0 && t < 3) sJ.dot(t, log2(t), { r: 3 + 7 * Math.sqrt(p[i]), color: 'accent', label: LET[i], labelPos: 'se' });
+            else if (t >= 3) sJ.text('→ ' + LET[i], 2.85, log2(3), { align: 'right', size: 11, color: 'accent' });
+            else sJ.text('↓ ' + LET[i] + ' (t = 0)', i * 0.7 + 0.2, -3.8, { size: 11, color: 'red' });
           }
           if (!bad) {
             sJ.line(m, mean, m, log2(m), { color: 'orange', width: 3 });
             sJ.dot(m, log2(m), { r: 4, color: 'ink', hollow: true });
             sJ.dot(m, mean, { r: 6, color: 'gold' });
           }
-          sJ.corner(bad ? 'D = ∞' : `−D = ${v.fix(mean, 3)}   log m = ${v.fix(log2(m), 3)}`, 'tr', { size: 12, weight: 600 });
+          sJ.corner(bad ? 'D = ∞' : `−D=${v.fix(mean, 2)}  log m=${v.fix(log2(m), 2)}`, 'br', { size: 12, weight: 600 });
           pts = { D, m, mean };
         });
         v.readout(() => {
@@ -141,17 +141,17 @@ with equality if and only if $p=q$. More generally, if $q$ is only a sub-probabi
 $$\sum_{i=1}^n a_i\log\frac{a_i}{b_i}\ \ge\ A\log\frac AB,$$
 with equality if and only if $a_i/b_i$ is the same constant for every $i$ (with $0\log\frac0b=0$ and $a\log\frac a0=\infty$). The numbers need not sum to one.`,
       idea: String.raw`The function $f(t)=t\log t$ is convex on $[0,\infty)$ (rca-3.1). Put the weights $b_i/B$ on the points $t_i=a_i/b_i$; Jensen's inequality gives $\sum\frac{b_i}{B}f(t_i)\ge f\big(\sum\frac{b_i}{B}t_i\big)=f(A/B)$, and multiplying through by $B$ is the claim. Equality needs all $t_i$ equal because $f$ is strictly convex. The identity $\sum a_i\log\frac{a_i}{b_i}-A\log\frac AB=A\,D(\hat a\|\hat b)$ for the normalised lists $\hat a=a/A$, $\hat b=b/B$ shows that the gap *is* a relative entropy, so this inequality is Gibbs' inequality (2.2) in disguise. It is the workhorse behind the convexity of $D$ (2.9) and the data-processing inequality.`,
-      caption: String.raw`Drag the bars of the two lists (blue $a_i$, orange $b_i$). On the right the pieces $a_i\log(a_i/b_i)$ are stacked (red ones hang downward) and compared with the single term $A\log(A/B)$; the gap is $A\,D(\hat a\|\hat b)$. “Equal ratios” rescales $b$ to be proportional to $a$ and the gap closes.`,
+      caption: String.raw`Drag the bars of the two lists (blue $a_i$, orange $b_i$). On the right the pieces $a_i\log(a_i/b_i)$ are added up as a waterfall (red bars subtract) and compared with the single term $A\log(A/B)$; the gap is $A\,D(\hat a\|\hat b)$. “Equal ratios” rescales $b$ to be proportional to $a$ and the gap closes.`,
       deps: ['rca-3.1', 'info-2.2'],
       refs: ['Cover–Thomas §2.7'],
       tags: ['log-sum', 'convexity'],
       viz(v) {
-        const a = [0.6, 0.3, 0.8, 0.2], b = [0.3, 0.5, 0.4, 0.7], N = 4;
+        const a = [0.6, 0.3, 0.8, 0.2], b = [0.25, 0.35, 0.2, 0.4], N = 4;
         const COLS = ['accent', 'teal', 'purple', 'pink'];
         const sL = v.stage({ x: [-0.6, 3.6], y: [0, 1.05], height: 270, axes: 'box', gutter: true, title: 'drag the bars: $a_i$ (left) and $b_i$ (right)' });
         sL.setTicks([0, 1, 2, 3].map((i) => [i, 'i=' + (i + 1)]), null);
-        const sR = v.stage({ x: [-0.7, 1.9], y: [-1, 1], height: 270, axes: 'box', gutter: true, ylabel: 'bits', title: 'left side (stacked) and right side' });
-        sR.setTicks([[0, 'Σ aᵢ log(aᵢ/bᵢ)'], [1.2, 'A log(A/B)']], null);
+        const sR = v.stage({ x: [-0.6, 6.2], y: [-1, 1], height: 270, axes: 'box', gutter: true, ylabel: 'bits', title: 'the terms $a_i\\log(a_i/b_i)$ added up, against $A\\log(A/B)$' });
+        sR.setTicks([[0, 'i=1'], [1, 'i=2'], [2, 'i=3'], [3, 'i=4'], [4.4, 'Σ terms'], [5.6, 'A log(A/B)']], null);
         let idx = -1;
         sL.onDrag((x, y, phase) => {
           if (phase === 'start') { const i = Math.round(x), side = x - i < 0 ? 0 : 1; idx = i >= 0 && i < N && Math.abs(x - i) < 0.5 ? 2 * i + side : -1; }
@@ -168,26 +168,29 @@ with equality if and only if $a_i/b_i$ is the same constant for every $i$ (with 
             sL.text('a/b=' + v.fix(a[i] / b[i], 2), i, 1.0, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
           }
           const A = sum(a), B = sum(b), terms = a.map((x, i) => x * log2(x / b[i])), L = sum(terms), R = A * log2(A / B);
-          // stacked terms, positives upward from the running total
-          let run = 0, lo = Math.min(0, R), hi = Math.max(0, R);
-          const segs = terms.map((t) => { const s0 = run; run += t; lo = Math.min(lo, run, s0); hi = Math.max(hi, run, s0); return [s0, run]; });
-          sR.setView([-0.7, 1.9], [lo - 0.12 * (hi - lo) - 0.05, hi + 0.18 * (hi - lo) + 0.05]);
+          let run = 0, lo = Math.min(0, R, L), hi = Math.max(0, R, L);
+          const segs = terms.map((t) => { const s0 = run; run += t; lo = Math.min(lo, run); hi = Math.max(hi, run); return [s0, run]; });
+          const pad = 0.14 * (hi - lo + 0.3);
+          sR.setView([-0.6, 6.2], [lo - pad, hi + pad]);
+          sR.hline(0, { color: 'faint' });
           segs.forEach(([s0, s1], i) => {
             const c = terms[i] < 0 ? 'red' : COLS[i];
-            sR.rect(-0.3, Math.min(s0, s1), 0.3, Math.max(s0, s1), { fill: c, fillAlpha: 0.5, color: c, width: 1.4 });
-            if (Math.abs(s1 - s0) > 0.05 * (hi - lo + 0.2)) sR.text(`i=${i + 1}: ${v.fix(terms[i], 2)}`, 0, (s0 + s1) / 2, { align: 'center', size: 10.5, color: 'ink', weight: 600 });
+            sR.rect(i - 0.34, Math.min(s0, s1), i + 0.34, Math.max(s0, s1), { fill: c, fillAlpha: 0.5, color: c, width: 1.4 });
+            sR.text(v.fix(terms[i], 2), i, Math.max(s0, s1), { dy: -9, align: 'center', size: 11, weight: 600 });
+            if (i < N - 1) sR.line(i + 0.34, s1, i + 0.66, s1, { color: 'muted', width: 1, dash: true });
           });
-          sR.rect(0.9, Math.min(0, R), 1.5, Math.max(0, R), { fill: 'green', fillAlpha: 0.5, color: 'green', width: 1.6 });
-          sR.text(v.fix(R, 2), 1.2, R, { dy: R >= 0 ? -10 : 10, align: 'center', size: 11, color: 'green', weight: 600 });
-          sR.line(-0.3, L, 1.5, L, { color: 'ink', dash: true, width: 1 });
-          sR.text('Σ = ' + v.fix(L, 2), 0, L, { dy: -9, align: 'center', size: 11, color: 'ink', weight: 700 });
+          sR.rect(4.06, 0, 4.74, L, { fill: 'ink', fillAlpha: 0.25, color: 'ink', width: 1.6 });
+          sR.text(v.fix(L, 2), 4.4, Math.max(0, L), { dy: -9, align: 'center', size: 11.5, weight: 700 });
+          sR.rect(5.26, 0, 5.94, R, { fill: 'green', fillAlpha: 0.5, color: 'green', width: 1.6 });
+          sR.text(v.fix(R, 2), 5.6, Math.max(0, R), { dy: -9, align: 'center', size: 11.5, weight: 700, color: 'green' });
+          sR.line(3.7, L, 5.94, L, { color: 'ink', dash: true, width: 1 });
           const ah = a.map((x) => x / A), bh = b.map((x) => x / B);
           info = { A, B, L, R, gap: L - R, DD: A * KL(ah, bh) };
         });
         v.readout(() => {
           const { A, B, L, R, gap, DD } = info;
           const rs = a.map((x, i) => x / b[i]), spread = Math.max(...rs) / Math.min(...rs);
-          return String.raw`$\sum a_i\log\frac{a_i}{b_i}=${v.fix(L, 3)}\ \ge\ A\log\frac AB=${v.fix(A, 2)}\log\frac{${v.fix(A, 2)}}{${v.fix(B, 2)}}=${v.fix(R, 3)}$. Gap $=${v.fix(gap, 3)}=A\,D(\hat a\|\hat b)=${v.fix(DD, 3)}$; the ratios $a_i/b_i$ range over a factor ${v.fix(spread, 2)}$` + (spread < 1.0001 ? ' (all equal: equality).' : '.');
+          return String.raw`$\sum a_i\log\frac{a_i}{b_i}=${v.fix(L, 3)}\ \ge\ A\log\frac AB=${v.fix(A, 2)}\log\frac{${v.fix(A, 2)}}{${v.fix(B, 2)}}=${v.fix(R, 3)}$. Gap $=${v.fix(gap, 3)}=A\,D(\hat a\|\hat b)=${v.fix(DD, 3)}$; the ratios $a_i/b_i$ range over a factor of ${v.fix(spread, 2)}` + (spread < 1.0001 ? ' (all equal: equality).' : '.');
         });
       },
     },
@@ -211,7 +214,7 @@ It is $+\infty$ when $q$ gives probability $0$ to an outcome that $p$ allows. Fo
         const NS = 3000;
         let seed = 1, U = null, Us = null;
         const edP = barEd(v, { title: 'drag: $p$, the source', p: [0.5, 0.25, 0.15, 0.1], color: 'accent', height: 220 });
-        const edQ = barEd(v, { title: 'drag: $q$, the model', p: [0.25, 0.25, 0.25, 0.25], color: 'orange', height: 220 });
+        const edQ = barEd(v, { title: 'drag: $q$, the model', p: [0.2, 0.4, 0.1, 0.3], color: 'orange', height: 220 });
         const nS = v.slider('samples shown $n$', 10, NS, NS, { int: true, log: true });
         v.button('New samples', () => { seed++; });
         const sC = v.stage({ x: [1, NS], y: [0, 5], xlog: true, height: 260, axes: 'box', gutter: true, full: true, xlabel: 'samples n', ylabel: 'bits per symbol', title: 'running average of $-\\log_2 q(x_t)$' });
@@ -321,7 +324,7 @@ with the **interaction information** $I(X;Y;Z)=I(X;Y)-I(X;Y\mid Z)$ in the centr
       viz(v) {
         const mode = v.select('picture', [{ value: 'two', label: 'two variables' }, { value: 'xor', label: 'three: XOR' }, { value: 'cause', label: 'three: common cause' }], 'two');
         const aS = v.slider('$P(X=1)$', 0.02, 0.5, 0.5, { step: 0.01 });
-        const eS = v.slider('noise $\\varepsilon$', 0, 0.5, 0, { step: 0.005 });
+        const eS = v.slider('noise $\\varepsilon$', 0, 0.5, 0.1, { step: 0.005 });
         const s = v.stage({ x: [-3.2, 3.2], y: [-2.5, 2.6], height: 380, equal: true, axes: false, full: true });
         const pmfOf = () => {
           const a = aS.value, e = eS.value, m = mode.value, out = [];
@@ -431,7 +434,7 @@ with equality if and only if $X$ and $Y$ are independent. The inequality holds *
             const w = S.py[j]; if (!(w > 0)) continue;
             const hj = H([P[j] / w, P[3 + j] / w]), up = hj > S.HX + 1e-9; if (up) raise++;
             sB.rect(x0, 0, x0 + w, hj, { fill: up ? 'red' : 'teal', fillAlpha: 0.45, color: up ? 'red' : 'teal', width: 1.5 });
-            if (w > 0.05) sB.text(`y${j + 1}: ${v.fix(hj, 2)}`, x0 + w / 2, hj, { dy: -9, align: 'center', size: 11, weight: 600, color: up ? 'red' : 'ink' });
+            sB.text(w > 0.15 ? `y${j + 1}: ${v.fix(hj, 2)}` : v.fix(hj, 2), Math.min(0.96, x0 + w / 2), hj, { dy: -9, align: 'center', size: 11, weight: 600, color: up ? 'red' : 'ink' });
             area += w * hj; x0 += w;
           }
           sB.hline(area, { color: 'green', width: 2 });
