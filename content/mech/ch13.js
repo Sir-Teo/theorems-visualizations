@@ -650,7 +650,7 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
       name: 'Poincaré–Birkhoff theorem: island chains',
       statement: String.raw`Let $T$ be an area-preserving map of an annulus that twists, rotating its two boundary circles in opposite directions relative to some rotation number between them. Then $T$ has at least two fixed points (Poincaré’s last geometric theorem, proved by Birkhoff). Applied to a perturbed integrable twist map: if an unperturbed invariant circle has rational rotation number $m/q$ (lowest terms), every point on it is fixed by $T^q$. Under a generic small perturbation the circle breaks up, but at least two periodic orbits of period $q$ survive, generically one elliptic and one hyperbolic, giving $q$ points each. Around the elliptic points lie small islands of invariant curves, and through the hyperbolic points pass the separatrices that bound them. The result is a **chain of $q$ islands**, with hyperbolic points between them, exactly where the KAM theorem (13.7) fails.`,
       idea: String.raw`Twist means that $T^q$ moves points on circles below the resonance backwards in angle and points above it forwards, so on each ray of fixed $\theta$ there is a point that $T^q$ moves purely radially. These points form a closed curve $C$ around the annulus. Its image $T^q(C)$ lies on the same rays, and area preservation forces it to enclose the same area as $C$, so the two curves must cross: the regions where $T^q$ pushes outward and inward have equal area. Each crossing is a fixed point of $T^q$. Crossings come in pairs with alternating index, $+1$ for elliptic and $-1$ for hyperbolic, and each orbit has $q$ points, so there are at least $2q$ crossings.`,
-      caption: String.raw`A strip of the standard map (13.6) around the resonant circle $p = 2\pi m/q$ (dashed). The gold curve $C$ joins the points that $T^q$ moves straight up or down, with no net angular motion; the purple curve is its image $T^q(C)$. They cross exactly at the fixed points of $T^q$: green elliptic points at the centres of the islands, red hyperbolic points between them. Bottom: the radial displacement along $C$, with equal positive and negative areas (area preservation), and its zeros. Change the resonance $m/q$ and the kick strength: there are always $q$ islands and $q$ hyperbolic points.`,
+      caption: String.raw`A strip of the standard map (13.6) around the resonant circle $p = 2\pi m/q$. By default the vertical coordinate is sheared to $p - p_C(\theta)$, an area-preserving change of variables that straightens the chain; switch to raw $p$ to see it as it lies (the dashed line is $p = 2\pi m/q$). The gold curve $C$ joins the points that $T^q$ moves straight up or down, with no net angular motion; the purple curve is its image $T^q(C)$. They cross exactly at the fixed points of $T^q$: green elliptic points at the centres of the islands, red hyperbolic points between them. Bottom: the radial displacement along $C$, with equal positive and negative areas (area preservation), and its zeros. Change the resonance $m/q$ and the kick strength: there are always $q$ islands and $q$ hyperbolic points.`,
       deps: ['mech-13.7', 'mech-13.6'],
       refs: ['Arnold App. 9'],
       tags: ['Poincaré–Birkhoff', 'island chains', 'resonance'],
@@ -658,6 +658,7 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
       viz(v) {
         const rS = v.select('resonance $m/q$', ['1/2', '1/3', '2/5', '1/4', '1/5'].map((x) => ({ value: x, label: `$${x}$` })), '1/3');
         const kS = v.slider('kick strength $K$', 0, 0.8, 0.3, { step: 0.005 });
+        const coord = v.select('vertical coordinate', [{ value: 'shear', label: 'sheared: $p - p_C(\\theta)$' }, { value: 'raw', label: 'raw $p$' }], 'shear');
         const NT = 480, WID = { 2: 1.45, 3: 0.95, 4: 0.75, 5: 0.6 };
         const sP = v.stage({ x: [0, TAU], y: [1, 3], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'θ', ylabel: 'p', xticks: piTicks(0, TAU) });
         const sD = v.stage({ x: [0, TAU], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 170, full: true, xlabel: 'θ along C', ylabel: 'Tᵠ lift', xticks: piTicks(0, TAU) });
@@ -682,26 +683,31 @@ For area-preserving twist maps such as the standard map (13.6), the invariant ci
             const th = (a + b) / 2, pc = pAt(th), tr = stdOrbit(K, th, pc, q).tr; fixed.push({ th, p: pc, tr, ell: Math.abs(tr) < 2 });
           }
           let cmin = Infinity, cmax = -Infinity, amp = 0; for (let i = 0; i <= NT; i++) if (C[i]) { cmin = Math.min(cmin, C[i][1], IMG[i][1]); cmax = Math.max(cmax, C[i][1], IMG[i][1]); amp = Math.max(amp, Math.abs(DP[i])); }
-          const pad = 0.1 + 5 * Math.sqrt(amp), view = isFinite(cmin) ? [cmin - pad, cmax + pad] : [p0 - W, p0 + W];
           let area = 0, absA = 0; for (let i = 0; i < NT; i++) if (isFinite(DP[i]) && isFinite(DP[i + 1])) { const a = 0.5 * (DP[i] + DP[i + 1]) * (TAU / NT); area += a; absA += Math.abs(a); }
-          // background orbits through the strip
-          const bg = [], e0 = fixed.find((f) => f.ell), th0 = e0 ? e0.th : Math.PI / q;
-          for (let k = 0; k < 34; k++) {
-            let th = k < 26 ? th0 : (TAU * (k - 26)) / 8 + 0.3, p = k < 26 ? view[0] + ((view[1] - view[0]) * (k + 0.5)) / 26 : p0; const xs = new Float32Array(700), ys = new Float32Array(700);
-            for (let i = 0; i < 700; i++) { p += K * Math.sin(th); th = wrap0(th + p); xs[i] = th; ys[i] = p - TAU * Math.floor((p - p0 + Math.PI) / TAU); }
-            bg.push({ xs, ys });
-          }
-          return { m, q, K, p0, W, C, IMG, DP, fixed, area, absA, bg, view };
+          // p_C(θ) by interpolation, for the sheared coordinates p − p_C(θ)
+          const pC = (th) => { const u = (wrap0(th) / TAU) * NT, i = Math.min(NT - 1, Math.floor(u)), f = u - i; return C[i] && C[i + 1] ? C[i][1] * (1 - f) + C[i + 1][1] * f : p0; };
+          const e0 = fixed.find((f) => f.ell), th0 = e0 ? e0.th : Math.PI / q, pe = e0 ? e0.p : p0;
+          const runOrbit = (th, p, n) => { const xs = new Float32Array(n), ys = new Float32Array(n), cov = new Uint8Array(36); for (let i = 0; i < n; i++) { p += K * Math.sin(th); th = wrap0(th + p); xs[i] = th; ys[i] = p - TAU * Math.floor((p - p0 + Math.PI) / TAU); cov[Math.floor((th / TAU) * 36) % 36] = 1; } let c = 0; for (const x of cov) c += x; return { xs, ys, cover: c / 36 }; };
+          // island half-width: largest |p − p_C| among orbits through the island centre that do not go all the way round
+          let wI = 0; const probe = 0.1 + 5 * Math.sqrt(amp);
+          if (K > 0) for (let k = 1; k <= 24; k++) { const o = runOrbit(th0, pe + (probe * k) / 24, 600); if (o.cover < 0.9) for (let i = 0; i < 600; i++) wI = Math.max(wI, Math.abs(o.ys[i] - pC(o.xs[i]))); else break; }
+          const hw = Math.max(0.02, 2.6 * wI), bg = [];
+          for (let k = 0; k < 30; k++) bg.push(runOrbit(th0, pe - hw + (2 * hw * (k + 0.5)) / 30, 700));
+          for (let k = 0; k < 6; k++) bg.push(runOrbit((TAU * k) / 6 + 0.2, pC((TAU * k) / 6 + 0.2) + hw * (k % 2 ? 0.8 : -0.8), 700));
+          const view = isFinite(cmin) ? [cmin - hw, cmax + hw] : [p0 - W, p0 + W];
+          return { m, q, K, p0, W, C, IMG, DP, fixed, area, absA, bg, view, pC, hw, wI };
         });
         let cur = null;
         v.render(() => {
           const D = data();
-          sP.setView([0, TAU], D.view);
-          for (const b of D.bg) fastDots(v, sP, b.xs, b.ys, 700, 'muted', { alpha: 0.45, size: 1.4 });
-          sP.hline(D.p0, { color: 'ink', dash: [5, 5], width: 1, alpha: 0.6 });
-          sP.path(D.IMG, { color: 'purple', width: 2.4 });
-          sP.path(D.C, { color: 'gold', width: 2.4 });
-          for (const f of D.fixed) sP.dot(f.th, f.p, { r: 6, color: f.ell ? 'green' : 'red' });
+          const sh = coord.value === 'shear', Y = (th, p) => (sh ? p - D.pC(th) : p);
+          sP.setView([0, TAU], sh ? [-D.hw, D.hw] : D.view);
+          sP.setLabels('θ', sh ? 'p − p_C(θ)' : 'p');
+          for (const b of D.bg) { const ys = sh ? b.ys.map((p, i) => p - D.pC(b.xs[i])) : b.ys; fastDots(v, sP, b.xs, ys, b.xs.length, 'muted', { alpha: 0.5, size: 1.5 }); }
+          if (!sh) sP.hline(D.p0, { color: 'ink', dash: [5, 5], width: 1, alpha: 0.6 });
+          sP.path(D.IMG.map((z) => z && [z[0], Y(z[0], z[1])]), { color: 'purple', width: 2.4 });
+          sP.path(D.C.map((z) => z && [z[0], Y(z[0], z[1])]), { color: 'gold', width: 2.4 });
+          for (const f of D.fixed) sP.dot(f.th, Y(f.th, f.p), { r: 6, color: f.ell ? 'green' : 'red' });
           let amp = 1e-6; for (const d of D.DP) if (isFinite(d)) amp = Math.max(amp, Math.abs(d));
           sD.setView([0, TAU], [-1.3 * amp, 1.3 * amp]);
           sD.setLabels('θ along C', 'radial shift');

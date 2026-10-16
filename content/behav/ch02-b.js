@@ -292,7 +292,7 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           const step = (arr) => { const pts = []; arr.forEach((y, j) => { pts.push([j, y], [j + 1, y]); }); return pts; };
           SD.path(step(s), { color: 'orange', width: 2.4 });
           SD.path(step(b), { color: 'blue', width: 2.4 });
-          if (k > 0) { SD.vband(0, k, { color: 'green', alpha: 0.1 }); SD.vline(k, { color: 'green', width: 1.6 }); SD.text(`${k} trade${k === 1 ? '' : 's'}`, k, SD.bounds ? 0 : 0, { dx: 5, dy: -10, size: 11.5, weight: 700, color: 'green' }); }
+          if (k > 0) { SD.vband(0, k, { color: 'green', alpha: 0.1 }); SD.vline(k, { color: 'green', width: 1.6 }); SD.text(`${k} trade${k === 1 ? '' : 's'}`, k, 0, { dx: 5, dy: -10, size: 11.5, weight: 700, color: 'green' }); }
           const vstar = Math.min(nS, nB) / 2;
           SD.vline(vstar, GUIDE); SD.text(`no endowment effect: ≈ ${vstar}`, vstar, Math.min(16, pmax) * 0.96, { dx: 5, size: 10.5, color: 'muted' });
           if (myA.value > 0) { SD.hline(myA.value, { color: 'orange', width: 1, dash: [2, 3] }); SD.text('your ask', qmax, myA.value, { dx: -4, dy: -8, align: 'right', size: 10.5, color: 'orange', weight: 700 }); }
@@ -534,7 +534,6 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           D.fn((x) => (x < 0 ? dens(x, m, s) : NaN), { color: 'red', width: 2, fill: 'red', fillAlpha: 0.25, domain: [xr[0], 0], n: 200 });
           D.fn((x) => (x >= 0 ? dens(x, m, s) : NaN), { color: 'blue', width: 2, fill: 'blue', fillAlpha: 0.15, domain: [0, xr[1]], n: 300 });
           D.vline(0, { color: 'ink', width: 1 });
-          const pLoss = 0.5 * (1 + Math.erf ? 0 : 0); // placeholder replaced below
           const z0 = -m / s, Phi = (z) => { const t = 1 / (1 + 0.2316419 * Math.abs(z)), y = 1 - (Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI)) * t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z >= 0 ? y : 1 - y; };
           const pl = Phi(z0), plb = Phi(-mb / sb);
           D.text(`P(loss) = ${pct(pl, 1)}`, xr[0] + 0.03 * (xr[1] - xr[0]), top * 1.13, { size: 12, weight: 700, color: 'red' });
@@ -545,14 +544,15 @@ A gain is weighted by how much $w^+$ rises when it is added to the better outcom
           let hStar = null; for (let k = 1; k < H.length; k++) if (H[k - 1][1] < 0 && H[k][1] >= 0) { const [h0, d0] = H[k - 1], [h1, d1] = H[k]; hStar = Math.exp(Math.log(h0) + ((Math.log(h1) - Math.log(h0)) * -d0) / (d1 - d0)); break; }
           const lo = Math.min(...H.map((p) => p[1])), hi = Math.max(...H.map((p) => p[1]));
           const span = Math.max(1, hi - lo);
-          Hs.setView([1, 120], [Math.min(lo, -0.08 * span) - 0.05 * span, Math.min(hi, 0.5 * span + Math.max(0, -lo)) + 0.08 * span]);
+          const yLo = Math.min(lo, -0.08 * span) - 0.05 * span, yHi = Math.min(hi, 0.5 * span + Math.max(0, -lo)) + 0.08 * span;
+          Hs.setView([1, 120], [yLo, yHi]);
           Hs.hline(0, { color: 'muted', width: 1.2 });
           Hs.path(H, { color: 'blue', width: 2.6 });
           const dNow = diff(h);
           Hs.dot(h, dNow, { r: 6, color: dNow >= 0 ? 'green' : 'red' });
           if (hStar) { Hs.vline(hStar, { color: 'green', width: 1.6, dash: [5, 4] }); Hs.text(`indifferent at ${hStar.toFixed(1)} months`, hStar, 0, { dx: 6, dy: -10, size: 11, weight: 700, color: 'green' }); }
           Hs.vband(11, 12, { color: 'gold', alpha: 0.25 });
-          Hs.text('BT: 11–12', 12, Hs.bounds ? 0 : 0, { dx: 4, dy: 16, size: 10.5, color: 'gold', weight: 700 });
+          Hs.text('BT 1995: 11–12', 12, yHi, { dx: 4, dy: 12, size: 10.5, color: 'gold', weight: 700 });
           // ---- allocation curve for this period (stocks and bonds independent)
           const RS = rets(mu, sg, h, QZ2), RB = rets(MB, SB, h, QZ2);
           const val = (wS) => { const xs = new Float64Array(NQ2 * NQ2); let k = 0; for (const x of RS) for (const y of RB) xs[k++] = wS * x + (1 - wS) * y; return cptEq(xs, a, l, g, d); };
