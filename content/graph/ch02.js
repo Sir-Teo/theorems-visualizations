@@ -124,7 +124,7 @@ function bridges(H) { const out = new Set(), base = comps(H).k; for (let k = 0; 
 function compsMinus(H, S) { const C = comps(H, (v) => !S.has(v)); return C.lists.map((L) => ({ L, odd: L.length % 2 === 1 })); }
 /** Graphs for the general-matching items. */
 const TUTTE_BAD = () => fixed({ s: [5.0, 3.3], a: [2.0, 5.4], b: [3.4, 5.9], c: [2.6, 4.4], d: [7.8, 5.3], e: [8.6, 4.0], f: [7.0, 4.3], g: [3.2, 1.0], h: [4.6, 0.5], i: [6.6, 1.0], j: [7.6, 1.8], k: [5.6, 1.6] },
-  'sa sb sc ab bc ac sd se de df ef sg gh sk hk hi ik ij ki jk');
+  'sa sb sc ab bc ac sd se de df ef sg gh sk hk hi ik ij jk');
 function sylvester() { // cubic, with three bridges at the centre and no 1-factor
   const nodes = [{ id: 0, x: 0, y: 0 }], edges = [];
   for (let t = 0; t < 3; t++) {
@@ -136,6 +136,40 @@ function sylvester() { // cubic, with three bridges at the centre and no 1-facto
   }
   return { nodes, edges, layout: 'fit' };
 }
+
+/** G_S of Theorem 2.2.3: S (Set of vertex indices) against the components of G − S, with a maximum matching of S. */
+function gsInfo(H, Sset) {
+  const C = comps(H, (u) => !Sset.has(u)), cl = C.lists, Sa = [...Sset].sort((a, b) => a - b), nS = Sa.length, n = nS + cl.length;
+  const adj = Array.from({ length: n }, () => []), E = [], seen = new Set();
+  Sa.forEach((sv, i) => { for (const [w] of H.adj[sv]) { const c = C.comp[w]; if (c < 0 || seen.has(i + ',' + c)) continue; seen.add(i + ',' + c); const k = E.length; E.push([i, nS + c, null]); adj[i].push([nS + c, k]); adj[nS + c].push([i, k]); } });
+  const GH = { n, adj, E }, side = [...Array(n)].map((_, u) => (u < nS ? 0 : 1)), R = bipMatch(GH, side);
+  const free = [...Array(nS).keys()].find((i) => R.mate[i] < 0);
+  let viol = null;
+  if (free != null) { const r = altReach(GH, side, R.mate, [free]); viol = { S: [...Array(nS).keys()].filter((i) => r.reachA[i]).map((i) => Sa[i]), C: [...Array(cl.length).keys()].filter((c) => r.reachB[nS + c]) }; }
+  return { cl, comp: C.comp, Sa, E, mate: R.mate, nS, viol, matchable: free == null };
+}
+/** Is the vertex set L (indices) factor-critical in H? {ok, bad: a vertex v with no 1-factor of L − v}. */
+function fcCheck(H, L) {
+  const inL = new Set(L);
+  for (const v of L) { const mate = maxMatchingOn(H, (u) => inL.has(u) && u !== v); if (L.some((u) => u !== v && mate[u] < 0)) return { ok: false, bad: v }; }
+  return { ok: L.length % 2 === 1, bad: -1 };
+}
+/** Draw G_S on the stage of the kit graph GS (S on the left, components on the right). */
+function drawGS(GS, H, G, I, o = {}) {
+  const nS = I.nS, nC = I.cl.length, y = (i, n) => (n === 1 ? 3.2 : 5.9 - (i * 5.4) / (n - 1));
+  const lab = (L) => { const t = L.map((u) => G.lab(H.ids[u])).join(''); return t.length <= 5 ? t : `|C|=${L.length}`; };
+  const nodes = I.Sa.map((u, i) => ({ id: 's' + i, label: G.lab(H.ids[u]), x: 2.2, y: y(i, nS) })).concat(I.cl.map((L, j) => ({ id: 'c' + j, label: lab(L), shape: 'box', x: 7.6, y: y(j, nC) })));
+  const edges = I.E.map(([a, b]) => ({ from: 's' + a, to: 'c' + (b - nS) }));
+  const key = JSON.stringify([nodes.map((x) => [x.id, x.label]), edges.map((e) => e.from + e.to)]);
+  if (GS._key !== key) { GS.set({ nodes, edges }); GS._key = key; }
+  const matched = (e) => { const a = +e.from.slice(1), b = +e.to.slice(1) + nS; return I.mate[a] === b; };
+  GS.draw({
+    nodeFill: (id) => (id[0] === 's' ? 'gold' : o.compColor ? o.compColor(+id.slice(1)) : I.cl[+id.slice(1)].length % 2 ? 'red' : 'blue'),
+    nodeRing: (id) => (I.viol && ((id[0] === 's' && I.viol.S.includes(I.Sa[+id.slice(1)])) || (id[0] === 'c' && I.viol.C.includes(+id.slice(1)))) ? 'orange' : null),
+    edgeColor: (e) => (matched(e) ? 'green' : null), edgeWidth: (e) => (matched(e) ? 4.5 : 1.5),
+  });
+}
+const idxSet = (H, ids) => new Set([...ids].map((id) => H.at(id)).filter((u) => u != null));
 
 export default {
   collection: 'graph',
@@ -465,7 +499,10 @@ export default {
           const r = v.rng(seed * 101 + 5), P = prefGraph(4, r, 3);
           for (const n of P.nodes) n.x = n.id[0] === 'a' ? 3.6 : 6.4;
           G.set({ nodes: P.nodes, edges: P.edges, layout: 'none' }); pref = randPrefs(G, r); M = new Set(); si = -1;
-          stable = allMatchings(G).filter((m) => blocking(G, pref, partnerOf(m)).length === 0);
+          const all = allMatchings(G).map((m) => ({ m, b: blocking(G, pref, partnerOf(m)).length }));
+          stable = all.filter((o) => o.b === 0).map((o) => o.m);
+          const start = all.filter((o) => o.m.length === 4 && o.b > 0).sort((x, y) => x.b - y.b)[0];
+          if (start) M = new Set(start.m);
         }
         gen();
         G.onClick = ({ edge }) => {
@@ -500,7 +537,7 @@ export default {
         let seed = 11, pref = {};
         const who = v.select('proposers', [{ value: 'a', label: '$A$ proposes' }, { value: 'b', label: '$B$ proposes' }], 'a', { onChange: () => S.reset({ at: 'end' }) });
         v.button('New preferences', () => { seed++; gen(); S.reset({ at: 'end' }); });
-        const s = gstage(v, { height: 300, full: true });
+        const s = gstage(v, { y: [0, 6.8], height: 310, full: true });
         const p = v.stage({ x: [0, 1], y: [-0.4, 5.4], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'step', ylabel: 'happiness', title: 'receivers: rank of current partner (higher = better)' });
         const G = v.graph(s, { nodes: [], edges: [], r: 13, draggable: false });
         const n = 5;
@@ -533,8 +570,8 @@ export default {
           G.draw({ edgeColor: (e) => (pkey(e) === f.cur ? 'gold' : M.has(pkey(e)) ? 'green' : pkey(e) === f.drop ? 'red' : bl.has(pkey(e)) ? 'red' : null),
             edgeWidth: (e) => (pkey(e) === f.cur ? 5.5 : M.has(pkey(e)) ? 4.5 : pkey(e) === f.drop ? 3 : 1.2), edgeDash: (e) => pkey(e) === f.drop });
           drawPrefs(s, G, pref, f.partner, bl, 0.55);
-          s.text(who.value === 'a' ? 'proposers' : 'receivers', 3.7, 6.35, { size: 11.5, align: 'center', color: 'muted' }); s.text(who.value === 'a' ? 'receivers' : 'proposers', 6.3, 6.35, { size: 11.5, align: 'center', color: 'muted' });
-          const T = Math.max(1, S.n - 2); p.setView([0, T], [-0.4, n + 0.4]);
+          s.text(who.value === 'a' ? 'proposers' : 'receivers', 3.7, 6.5, { size: 11.5, align: 'center', color: 'muted' }); s.text(who.value === 'a' ? 'receivers' : 'proposers', 6.3, 6.5, { size: 11.5, align: 'center', color: 'muted' });
+          const T = Math.max(1, S.n - 2); p.setView([0, T], [-0.4, n + 0.4]); p.setTicks([...Array(T + 1).keys()].filter((i) => T <= 12 || i % 2 === 0), [0, 1, 2, 3, 4, 5]);
           const recv = G.nodes.filter((x) => x.id[0] !== who.value);
           recv.forEach((b, j) => { const pts = f.hist.map((h, i) => [i, h[j] + (j - 2) * 0.06]); p.path(pts, { color: PALETTE[j], width: 2.4 }); const L = pts[pts.length - 1]; p.dot(L[0], L[1], { r: 3.5, color: PALETTE[j] }); p.text(sub(G.lab(b.id)), L[0], L[1], { dx: 6, size: 11.5, color: PALETTE[j], baseline: 'middle' }); });
         });
@@ -553,7 +590,7 @@ export default {
         const PRE = { oct: () => named('octahedron'), c9: () => circ(9, [1, 3]), k5: () => named('complete', 5), k7: () => named('complete', 7) };
         const pre = v.select('', [{ value: 'oct', label: 'octahedron (4-reg.)' }, { value: 'c9', label: '$C_9(1,3)$ (4-reg.)' }, { value: 'k5', label: '$K^5$' }, { value: 'k7', label: '$K^7$ (6-reg.)' }], 'c9', { onChange: () => { load(); S.reset({ at: 'end' }); } });
         const L = v.stage({ x: [-1.25, 1.25], y: [-1.2, 1.2], axes: false, equal: true, height: 320, title: '$G$' });
-        const R = v.stage({ x: [0, 10], y: [-0.3, 9.3], axes: false, height: 320, title: "$G'$: $v^+$ (tails) and $v^-$ (heads)" });
+        const R = v.stage({ x: [0, 10], y: [-0.7, 9.7], axes: false, height: 320, title: "$G'$: $v^+$ (tails) and $v^-$ (heads)" });
         const G = v.graph(L, { nodes: [], edges: [], r: 13, directed: false, draggable: true });
         const B = v.graph(R, { nodes: [], edges: [], r: 11, draggable: false, fontSize: 11 });
         function load() { const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: String(n.id + 1) })), edges: P.edges.map(([a, b]) => ({ from: a, to: b })) }).layout('fit'); }

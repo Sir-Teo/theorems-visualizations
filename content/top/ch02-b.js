@@ -29,7 +29,7 @@ export default {
       name: 'Maps into products are continuous iff coordinates are',
       statement: String.raw`Let $f\colon A\to\prod_{\alpha\in J}X_\alpha$ be given by $f(a)=(f_\alpha(a))_\alpha$, where the product carries the product topology. Then $f$ is continuous if and only if every coordinate function $f_\alpha=\pi_\alpha\circ f$ is continuous. (For the box topology on an infinite product the "if" direction fails; see 2.10.)`,
       idea: String.raw`If $f$ is continuous, so is each $\pi_\alpha\circ f$, since projections are continuous. Conversely, it suffices to check preimages of subbasic sets $\pi_\beta^{-1}(U_\beta)$, and $f^{-1}(\pi_\beta^{-1}(U_\beta))=f_\beta^{-1}(U_\beta)$ is open by hypothesis; a basic set involves only finitely many coordinates, so its preimage is a *finite* intersection of open sets. For a plane curve this is the familiar fact that $t\mapsto(x(t),y(t))$ is continuous exactly when $x$ and $y$ are.`,
-      caption: String.raw`Drag the control points of the coordinate graphs $x(t)$ (top) and $y(t)$ (bottom) and the parameter $t_0$. A basic neighbourhood $U\times V$ of $\gamma(t_0)$ is the orange square on the right; its preimage is $x^{-1}(U)\cap y^{-1}(V)$, built on the lanes between the graphs. Add a **jump** to one coordinate and put $t_0$ on it: one lane, and with it the preimage, stops being open.`,
+      caption: String.raw`Drag the control points of the coordinate graphs $x(t)$ (top) and $y(t)$ (bottom), and $t_0$ along the bottom track. A basic neighbourhood $U\times V$ of $\gamma(t_0)$ is the orange square on the right; its preimage $x^{-1}(U)\cap y^{-1}(V)$ is built on the three lanes between the graphs. A **jump** sits at $t=0.6$: with $t_0$ on it, one lane — and with it the preimage — is no longer open, and the curve breaks at the same parameter.`,
       deps: ['top-2.8', 'top-2.1'],
       see: ['pma-4.10'],
       refs: ['Munkres §19'],
@@ -37,48 +37,53 @@ export default {
       viz(v) {
         const jw = v.select('jump in', [{ value: 'none', label: 'none' }, { value: 'x', label: '$x(t)$' }, { value: 'y', label: '$y(t)$' }], 'x');
         const J = v.slider('jump size', 0, 0.9, 0.55, { step: 0.01 });
-        const eps = v.slider('half-side $\\varepsilon$ of $U\\times V$', 0.05, 0.6, 0.25, { step: 0.01 });
-        const L = v.stage({ x: [-0.06, 1.06], y: [-2.45, 2.45], height: 380, weight: 1.2, axes: false, title: 'coordinates and preimages' });
-        const R = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: true, height: 380, title: 'the curve $\\gamma=(x,y)$ in $\\R\\times\\R$' });
-        const TOP = 1.45, BOT = -1.45, SC = 0.7, TS = [0, 0.25, 0.5, 0.75, 1];
+        const eps = v.slider('$\\varepsilon$ (half-side)', 0.05, 0.6, 0.25, { step: 0.01 });
+        const L = v.stage({ x: [-0.17, 1.04], y: [-2.75, 2.6], height: 400, weight: 1.2, axes: false, title: 'coordinates and preimages' });
+        const R = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: true, height: 400, title: 'the curve $\\gamma=(x,y)$ in $\\R\\times\\R$' });
+        const TOP = 1.55, BOT = -1.4, SC = 0.6, TS = [0, 0.25, 0.5, 0.75, 1], TJ = 0.6, YT = -2.5;
         const xs = [-0.9, -0.2, 0.3, 0.1, 0.8], ys = [-0.6, 0.6, 0.1, -0.7, 0.5];
-        const hx = TS.map((t, i) => L.handle(t, TOP + SC * xs[i], { color: 'blue', r: 5, constrain: (x, y) => [t, clamp(y, TOP - SC * 1.2, TOP + SC * 1.2)] }));
-        const hy = TS.map((t, i) => L.handle(t, BOT + SC * ys[i], { color: 'purple', r: 5, constrain: (x, y) => [t, clamp(y, BOT - SC * 1.2, BOT + SC * 1.2)] }));
-        const ht = L.handle(0.5, 0, { color: 'gold', label: '$t_0$', labelPos: 'n', constrain: (x) => [Math.abs(x - 0.5) < 0.015 ? 0.5 : clamp(x, 0, 1), 0] });
+        // handles sit on the drawn graph (the jump at t = 0.6 lifts the last two); dragging edits the model values
+        const jx = (t) => (jw.value === 'x' && t >= TJ ? J.value : 0), jy = (t) => (jw.value === 'y' && t >= TJ ? J.value : 0);
+        const hx = TS.map((t, i) => L.handle(t, TOP + SC * xs[i], { color: 'blue', r: 5, constrain: (x, y) => { xs[i] = clamp((y - TOP) / SC - jx(t), -1.2, 1.2); return [t, TOP + SC * (xs[i] + jx(t))]; } }));
+        const hy = TS.map((t, i) => L.handle(t, BOT + SC * ys[i], { color: 'purple', r: 5, constrain: (x, y) => { ys[i] = clamp((y - BOT) / SC - jy(t), -1.2, 1.2); return [t, BOT + SC * (ys[i] + jy(t))]; } }));
+        const ht = L.handle(TJ, YT, { color: 'gold', label: '$t_0$', labelPos: 'e', constrain: (x) => [Math.abs(x - TJ) < 0.015 ? TJ : clamp(x, 0, 1), YT] });
         let st = null;
         v.render(() => {
-          const X0 = hx.map((h) => (h.y - TOP) / SC), Y0 = hy.map((h) => (h.y - BOT) / SC), j = J.value;
-          const xf = (t) => spline(X0, t) + (jw.value === 'x' && t >= 0.5 ? j : 0), yf = (t) => spline(Y0, t) + (jw.value === 'y' && t >= 0.5 ? j : 0);
+          TS.forEach((t, i) => { hx[i].set(t, TOP + SC * (xs[i] + jx(t))); hy[i].set(t, BOT + SC * (ys[i] + jy(t))); });
+          const j = J.value;
+          const xf = (t) => spline(xs, t) + jx(t), yf = (t) => spline(ys, t) + jy(t);
           const t0 = ht.x, c = [xf(t0), yf(t0)], e = eps.value;
+          L.line(0, YT, 1, YT, { color: 'faint', width: 1 });
+          L.text('t', 1.02, YT, { math: true, size: 14, color: 'muted' });
           // bands
           for (const [base, f, col] of [[TOP, xf, 'blue'], [BOT, yf, 'purple']]) {
             L.line(0, base, 1, base, { color: 'faint', width: 1 });
             const v0 = f(t0); L.hband(base + SC * (v0 - e), base + SC * (v0 + e), { color: 'orange', alpha: 0.12 });
-            const pts = []; for (let i = 0; i <= 400; i++) { const t = i / 400; pts.push([t, base + SC * f(t)]); if (jw.value !== 'none' && i === 199) pts.push(null); }
+            const pts = []; for (let i = 0; i <= 400; i++) { const t = i / 400; if (jw.value !== 'none' && i === 240) pts.push(null); pts.push([t, base + SC * f(t)]); }
             L.path(pts, { color: col, width: 2.6 });
-            if (jw.value !== 'none' && ((col === 'blue') === (jw.value === 'x'))) { L.dot(0.5, base + SC * (f(0.5) - j), { r: 4.2, hollow: true, color: col }); L.dot(0.5, base + SC * f(0.5), { r: 4.2, color: col }); }
+            if (jw.value !== 'none' && ((col === 'blue') === (jw.value === 'x'))) { L.dot(TJ, base + SC * (f(TJ) - j), { r: 4.2, hollow: true, color: col }); L.dot(TJ, base + SC * f(TJ), { r: 4.2, color: col }); }
           }
-          L.text('x(t)', -0.05, TOP + 0.95, { math: true, size: 15, color: 'blue' });
-          L.text('y(t)', -0.05, BOT + 0.95, { math: true, size: 15, color: 'purple' });
+          L.text('x(t)', -0.15, TOP, { math: true, size: 15, color: 'blue' });
+          L.text('y(t)', -0.15, BOT, { math: true, size: 15, color: 'purple' });
           // preimages on lanes
           const N = 1000, fx = [], fy = [], fb = [];
           for (let i = 0; i <= N; i++) { const t = i / N, a = Math.abs(xf(t) - c[0]) < e, b = Math.abs(yf(t) - c[1]) < e; fx.push(a); fy.push(b); fb.push(a && b); }
-          const lanes = [[0.36, fx, 'blue', '$x^{-1}(U)$'], [-0.36, fy, 'purple', '$y^{-1}(V)$'], [0, fb, 'green', '']];
+          const lanes = [[0.38, fx, 'blue', 'x⁻¹(U)'], [-0.38, fy, 'purple', 'y⁻¹(V)'], [0, fb, 'green', 'γ⁻¹(U×V)']];
           let openFail = false;
-          for (const [yL, fl, col] of lanes) {
+          for (const [yL, fl, col, lab] of lanes) {
             L.line(0, yL, 1, yL, { color: 'faint', width: 1 });
+            L.text(lab, -0.16, yL, { size: 10, color: col, weight: 600 });
             for (const [a, b] of runs(fl, 0, 1)) {
               L.line(a, yL, b, yL, { color: col, width: 6, cap: 'butt' });
               // a run that starts exactly at t0 = ½ (on the jump) is half-open there
-              if (jw.value !== 'none' && Math.abs(a - 0.5) < 1e-9 && Math.abs(t0 - 0.5) < 1e-9) { L.dot(0.5, yL, { r: 5.5, color: 'red' }); openFail = true; }
+              if (jw.value !== 'none' && Math.abs(a - TJ) < 1.5e-3 && Math.abs(t0 - TJ) < 1e-9) { L.dot(TJ, yL, { r: 5.5, color: 'red' }); openFail = true; }
             }
           }
           L.vline(t0, { color: 'gold', width: 1, dash: [3, 3] });
-          L.text('γ⁻¹(U×V) = x⁻¹(U) ∩ y⁻¹(V)', 1.0, 0.17, { size: 10.5, color: 'green', align: 'right' });
           // the plane curve
           const seg = (a, b) => { const p = []; for (let i = 0; i <= 300; i++) { const t = a + ((b - a) * i) / 300; p.push([xf(t), yf(t)]); } return p; };
           if (jw.value === 'none') R.path(seg(0, 1), { color: 'accent', width: 2.6 });
-          else { R.path(seg(0, 0.4999), { color: 'accent', width: 2.6 }); R.path(seg(0.5, 1), { color: 'accent', width: 2.6 }); const l = [jw.value === 'x' ? xf(0.5) - j : xf(0.5), jw.value === 'y' ? yf(0.5) - j : yf(0.5)]; R.dot(l[0], l[1], { r: 4.2, hollow: true, color: 'accent' }); }
+          else { R.path(seg(0, TJ - 1e-6), { color: 'accent', width: 2.6 }); R.path(seg(TJ, 1), { color: 'accent', width: 2.6 }); const l = [jw.value === 'x' ? xf(TJ) - j : xf(TJ), jw.value === 'y' ? yf(TJ) - j : yf(TJ)]; R.dot(l[0], l[1], { r: 4.2, hollow: true, color: 'accent' }); }
           R.rect(c[0] - e, c[1] - e, c[0] + e, c[1] + e, { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.12 });
           for (const [a, b] of runs(fb, 0, 1)) R.path(seg(a, b), { color: 'green', width: 5 });
           R.dot(c[0], c[1], { r: 5, color: 'gold', label: 'γ(t₀)' });
@@ -162,7 +167,7 @@ is a homeomorphism of $\{0,1\}^{\N}$ onto the middle-thirds Cantor set $C\subset
       tags: ['Cantor set', 'product'],
       viz(v) {
         const D = 7, DEEP = 30;
-        const S = v.stage({ x: [-0.04, 1.04], y: [-1.5, D + 0.6], height: 400, full: true, axes: false });
+        const S = v.stage({ x: [-0.04, 1.04], y: [-1.75, D + 0.5], height: 400, full: true, axes: false });
         const addr = (x) => { const b = []; let lo = 0, w = 1; for (let i = 0; i < DEEP; i++) { w /= 3; const r = (x - lo) / w; if (r < 1) b.push(0); else if (r >= 2) { b.push(1); lo += 2 * w; } else if (r - 1 < 0.5) b.push(0); else { b.push(1); lo += 2 * w; } } return b; };
         const val = (b) => b.reduce((s, bi, i) => s + (2 * bi) / 3 ** (i + 1), 0);
         const snapC = (x) => val(addr(clamp(x, 0, 1)));
@@ -200,7 +205,7 @@ is a homeomorphism of $\{0,1\}^{\N}$ onto the middle-thirds Cantor set $C\subset
         v.readout(() => {
           if (!st) return '';
           const { bx, by, k, d } = st;
-          const show = (b) => b.slice(0, 14).map((x, i) => (i < k ? `\\color{green}{${x}}` : x)).join('');
+          const show = (b) => b.slice(0, 14).map((x, i) => (i < k ? `\\textcolor{green}{\\mathbf{${x}}}` : x)).join('');
           if (k >= DEEP) return `$x=y$: the same address $${show(bx)}\\dots$`;
           const lo = 3 ** -(k + 1), hi = 3 ** -k, ok = d >= lo * (1 - 1e-9) && d <= hi * (1 + 1e-9);
           return `$x\\leftrightarrow ${show(bx)}\\dots$, $y\\leftrightarrow ${show(by)}\\dots$ — first difference at bit $${k + 1}$. $3^{-${k + 1}}=${v.fix(lo, 5)}\\le\\abs{x-y}=${v.fix(d, 5)}\\le3^{-${k}}=${v.fix(hi, 5)}$ ${ok ? '✓' : '✗'}; in the product metric $d=2^{-${k + 1}}$.`;
@@ -306,7 +311,7 @@ is a homeomorphism of $\{0,1\}^{\N}$ onto the middle-thirds Cantor set $C\subset
         const md = v.select('distance', [{ value: 'per', label: 'periodic (respects the gluing)' }, { value: 'plain', label: 'plain (ignores it)' }], 'per');
         const sg = v.slider('bump width', 0.08, 0.35, 0.2, { step: 0.01 });
         const L = v.stage({ x: [-0.12, 1.12], y: [-0.12, 1.12], equal: true, axes: false, height: 360, title: '$g$ on the square' });
-        const S = v.stage3d({ range: 1.55, height: 360, yaw: -0.5, pitch: 0.75, axes: false, title: '$\\bar g$ on the torus' });
+        const S = v.stage3d({ range: 1.5, height: 360, yaw: -0.5, pitch: 0.6, axes: false, title: '$\\bar g$ on the torus' });
         const hh = L.handle(0.86, 0.2, { color: 'ink', label: 'hot spot', constrain: (x, y) => [clamp(x, 0, 1), clamp(y, 0, 1)] });
         const T = folded('tor', 1);
         const g = (x, y) => {
@@ -316,21 +321,21 @@ is a homeomorphism of $\{0,1\}^{\N}$ onto the middle-thirds Cantor set $C\subset
         };
         let st = null;
         v.render(() => {
-          const col = (t) => v.ramp(0.15 + 0.85 * t, 'orange');
+          const C0 = v.rgb('blue'), C1 = v.rgb('orange'), col = (t) => [0, 1, 2].map((i) => C0[i] + t * (C1[i] - C0[i]));
           L.raster((x, y) => (x < 0 || x > 1 || y < 0 || y > 1 ? null : col(g(x, y))), { key: [md.value, hh.x, hh.y, sg.value].join(','), res: 3 });
           drawGlueSquare(L, 'tor');
           // the jump across the glued edges
           let jx = 0, jy = 0, ax = 0, ay = 0;
           for (let i = 0; i <= 200; i++) { const s = i / 200, a = Math.abs(g(0, s) - g(1, s)), b = Math.abs(g(s, 0) - g(s, 1)); if (a > jx) { jx = a; ax = s; } if (b > jy) { jy = b; ay = s; } }
           S.surface(T, [0, 1], [0, 1], { nu: 64, nv: 32, alpha: 0.97, colorFn: (u, w) => col(g(u + 1 / 128, w + 1 / 64)) });
-          const seam = (f, bad) => S.curve(f, 0, 1, { color: bad ? 'red' : 'faint', width: bad ? 3.5 : 1.2, n: 80 });
+          const seam = (f, bad) => S.curve(f, 0, 1, { color: bad ? 'red' : 'ink', width: bad ? 4 : 1.2, alpha: bad ? 1 : 0.5, n: 80 });
           seam((s) => T(0, s).map((c, i) => c * 1.01), jx > 1e-3);
           seam((s) => T(s, 0).map((c, i) => c * 1.01), jy > 1e-3);
           if (jx > 1e-3) L.line(0, ax, 1, ax, { color: 'red', width: 1, dash: [3, 4] });
           if (jy > 1e-3) L.line(ay, 0, ay, 1, { color: 'red', width: 1, dash: [3, 4] });
           st = { jx, jy };
         });
-        v.legend([['orange', 'value of $g$ (darker = hotter)', { area: true }], ['red', 'glued edges', {}], ['teal', 'the other glued pair']]);
+        v.legend([['orange', 'hot', { area: true }], ['blue', 'cold', { area: true }], ['red', 'glued edges / a tear'], ['teal', 'the other glued pair']]);
         v.readout(() => {
           if (!st) return '';
           const J = Math.max(st.jx, st.jy);

@@ -168,22 +168,23 @@ export function bender(c, N = 160) {
   };
 }
 const sampleAt = (pts, s) => { const N = pts.length - 1, x = Math.min(N - 1e-9, Math.max(0, s * N)), i = Math.floor(x), f = x - i; return [pts[i][0] + f * (pts[i + 1][0] - pts[i][0]), pts[i][1] + f * (pts[i + 1][1] - pts[i][1])]; };
-const FIG8 = bender((s) => [0.62 * Math.sin(2 * Math.PI * s), 0.42 * Math.sin(4 * Math.PI * s)]);
+const FIG8 = bender((s) => [0.5 * Math.sin(2 * Math.PI * s), 0.34 * Math.sin(4 * Math.PI * s)]);
 const sm = (x) => Math.min(1, Math.max(0, x));
 /**
  * Tube bending: a section point (a, b) in the normal plane of a centreline of length Lc that is bent into an arc of total angle
- * 2π·t (a circle when t = 1); the section is rotated by φ inside its plane. Returns [x, y, z] with the final ring horizontal.
+ * 2π·t (a circle when t = 1); the section is rotated by φ inside its plane. Returns [x, y, z]; the bending happens in the
+ * horizontal plane, so the closed ring lies flat.
  */
 function bendTube(a, b, w, t, Lc, phi = 0) {
   const sig = Lc * (w - 0.5), ca = Math.cos(phi), sa = Math.sin(phi);
   const A = a * ca - b * sa, B = a * sa + b * ca; // rotated section coordinates (A along the binormal, B along the normal)
-  if (t < 1e-5) return [sig, A, B];
+  if (t < 1e-5) return [sig, B, A];
   const rho = Lc / (2 * Math.PI * t), ang = sig / rho;
   const cz = rho * (1 - Math.sin(Math.PI * t) / (Math.PI * t)); // centroid shift keeps the picture centred
   // centreline in the (x, z) plane bending toward −z; normal points to the centre of curvature
   const px = rho * Math.sin(ang), pz = -rho * (1 - Math.cos(ang)) + cz;
   const nx = -Math.sin(ang), nz = Math.cos(ang); // unit normal (away from the centre)
-  return [px + B * nx, A, pz + B * nz];
+  return [px + B * nx, pz + B * nz, A]; // the closed ring lies in the horizontal plane
 }
 /**
  * The square folded toward the quotient `kind` at morph stage t ∈ [0,1] (two-step foldings use t ≤ ½ for the first gluing).
@@ -191,10 +192,10 @@ function bendTube(a, b, w, t, Lc, phi = 0) {
  */
 export function folded(kind, t) {
   const t1 = sm(2 * t), t2 = sm(2 * t - 1);
-  if (kind === 'cyl') return (u, w) => { const [a, b] = roll(u, sm(t), 4.0); return [a, 2.6 * (w - 0.5), b - 0.64 * sm(t)]; };
-  if (kind === 'mob') return (u, w) => bendTube(1.1 * (w - 0.5), 0, u, sm(t), 2 * Math.PI * 0.95, Math.PI * sm(t) * (u - 0.5) * 2 * 0.5);
-  if (kind === 'tor') return (u, w) => { const [a, b] = roll(u, t1, 2 * Math.PI * 0.42); return bendTube(a, b - 0.42 * t1, w, t2, 2 * Math.PI * 1.0); };
-  if (kind === 'kln') return (u, w) => { const [a, b] = sampleAt(FIG8(t1), u); return bendTube(a, b, w, t2, 2 * Math.PI * 1.05, Math.PI * t2 * (w - 0.5)); };
+  if (kind === 'cyl') return (u, w) => { const [a, b] = roll(u, sm(t), 3.6); return [a, 2.4 * (w - 0.5), b - 0.573 * sm(t)]; };
+  if (kind === 'mob') return (u, w) => bendTube(0.9 * (w - 0.5), 0, u, sm(t), 2 * Math.PI * 0.8, Math.PI * sm(t) * (u - 0.5));
+  if (kind === 'tor') return (u, w) => { const [a, b] = roll(u, t1, 2 * Math.PI * 0.36); return bendTube(a, b - 0.36 * t1, w, t2, 2 * Math.PI * 0.85); };
+  if (kind === 'kln') return (u, w) => { const [a, b] = sampleAt(FIG8(t1), u); return bendTube(a, b, w, t2, 2 * Math.PI * 0.85, Math.PI * t2 * (w - 0.5)); };
   // rp2: square → disc → upper hemisphere (t ≤ ½), then a straight-line homotopy to the cross-cap Q(p) = (yz, 2xy, x² − y²)·k,
   // which is even (Q(−p) = Q(p)), so antipodal points of the boundary circle land on the same point.
   return (u, w) => {
@@ -288,14 +289,14 @@ export function surfaceName({ chi, orientable, circles }) {
  * edges are plain. `o`: {x0, y0, size} place the square (default the unit square), `width`.
  */
 export function drawGlueSquare(s, kind, o = {}) {
-  const G = GLUE[kind], x0 = o.x0 ?? 0, y0 = o.y0 ?? 0, S = o.size ?? 1, w = o.width ?? 3;
+  const G = GLUE[kind], x0 = o.x0 ?? 0, y0 = o.y0 ?? 0, S = o.size ?? 1, w = o.width ?? 3, A = (o.head ?? 0.05) * S;
   const P = (u, v) => [x0 + S * u, y0 + S * v];
   const edge = (a, b, col, heads) => {
     s.line(...P(...a), ...P(...b), { color: col, width: w });
-    if (!heads) return;
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]), d = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], n = [-d[1], d[0]];
     for (let k = 0; k < heads; k++) {
-      const t = 0.5 + (k - (heads - 1) / 2) * 0.09, m = [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])], d = [(b[0] - a[0]) * 0.001, (b[1] - a[1]) * 0.001];
-      s.arrow(...P(m[0] - d[0], m[1] - d[1]), ...P(m[0] + d[0] * 40, m[1] + d[1] * 40), { color: col, width: w, head: 12 });
+      const t = 0.5 + (k - (heads - 1) / 2) * 0.1, m = P(a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]));
+      s.poly([[m[0] + d[0] * A, m[1] + d[1] * A], [m[0] - d[0] * A * 0.6 + n[0] * A * 0.75, m[1] - d[1] * A * 0.6 + n[1] * A * 0.75], [m[0] - d[0] * A * 0.6 - n[0] * A * 0.75, m[1] - d[1] * A * 0.6 - n[1] * A * 0.75]], { fill: col, fillAlpha: 1, color: col, width: 1 });
     }
   };
   // left edge goes up; right edge goes up ('same') or down ('flip')

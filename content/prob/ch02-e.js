@@ -545,7 +545,7 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
       name: 'Decreasing integrable h is directly Riemann integrable',
       statement: String.raw`A function $h\ge0$ on $[0,\infty)$ is **directly Riemann integrable** if, with $\overline m_k(\delta)=\sup\{h(x):x\in[k\delta,(k+1)\delta)\}$ and $\underline m_k(\delta)$ the infimum, the upper and lower sums $\overline I(\delta)=\delta\sum_{k\ge0}\overline m_k(\delta)$ and $\underline I(\delta)=\delta\sum_k\underline m_k(\delta)$ are finite and $\overline I(\delta)-\underline I(\delta)\to0$ as $\delta\to0$. **Lemma:** if $h\ge0$ is decreasing and $\int_0^\infty h(x)\,dx<\infty$, then $h$ is directly Riemann integrable.`,
       idea: String.raw`For decreasing $h$ the supremum on $[k\delta,(k+1)\delta)$ is $h(k\delta)$ and the infimum is at least $h((k+1)\delta)$, so the sums telescope: $\overline I(\delta)-\underline I(\delta)\le\delta\,h(0)\to0$, and $\overline I(\delta)\le\delta h(0)+\int_0^\infty h<\infty$. Integrability alone is not enough on an infinite interval: thin tall spikes can have finite total area yet put a full $\delta\cdot(\text{height})$ into the upper sum at every spike.`,
-      caption: String.raw`Left: $h$ with its upper (orange) and lower (blue) step functions on the mesh $\delta$. Right (log–log): the upper and lower sums over $[0,\infty)$ against $\delta$, their gap, and the bound $\delta h(0)$. For the decreasing examples the gap shrinks linearly in $\delta$. The spike train (height $1$, width $2^{-n}$ at $x=n$) has area $1$, but each spike adds at least $\delta$ to the upper sum, so the upper sum over $[0,T]$ grows like $\delta T$: it is infinite and the function is not d.R.i.`,
+      caption: String.raw`Left: $h$ with its upper (orange) and lower (blue) step functions on the mesh $\delta$. Right (log–log): the upper and lower sums over $[0,\infty)$ against $\delta$, their gap, and the bound $\delta h(0)$. For the decreasing examples the gap shrinks linearly in $\delta$. The spike train (height $1$, width $2^{-n}$ at $x=n$) has area $1$, but each spike adds at least $\delta$ to the upper sum, so the upper sum over $[0,T]$ grows at least like $\delta$ times the number of spikes: it is infinite and the function is not d.R.i.`,
       deps: [],
       see: ['prob-2.6.12'],
       tags: ['renewal', 'analysis'],
@@ -601,7 +601,7 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
             st = { dec: false, d, ups: Ts.map((T) => [T, sums(H, d, T)[0]]) };
           }
         });
-        v.readout(() => st && (st.dec ? `$\\delta=${v.fix(st.d, 3)}$: upper sum $${v.fix(st.up, 4)}$, lower sum $${v.fix(st.lo, 4)}$, gap $${v.fix(st.up - st.lo, 4)}\\le\\delta h(0)=${v.fix(st.d * st.h0, 4)}$.` : `$\\delta=${v.fix(st.d, 3)}$: upper sums over $[0,T]$: ` + st.ups.map(([T, u]) => `$T=${T}$: $${v.fix(u, 1)}$`).join(', ') + ` — growing like $\\delta T$, although $\\int h=1$.`));
+        v.readout(() => st && (st.dec ? `$\\delta=${v.fix(st.d, 3)}$: upper sum $${v.fix(st.up, 4)}$, lower sum $${v.fix(st.lo, 4)}$, gap $${v.fix(st.up - st.lo, 4)}\\le\\delta h(0)=${v.fix(st.d * st.h0, 4)}$.` : `$\\delta=${v.fix(st.d, 3)}$: upper sums over $[0,T]$: ` + st.ups.map(([T, u]) => `$T=${T}$: $${v.fix(u, 1)}$`).join(', ') + `: they grow in proportion to $T$ (at least $\\delta$ per spike), although $\\int h=1$.`));
       },
     },
     // ======================================================================== §2.7 Large deviations
@@ -637,7 +637,7 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
           L.fn((t) => Math.min(Lw.phi(t), 50), { domain: [-2, tmax], color: 'accent', width: 2.4, n: 500 });
           L.fn((t) => 1 + Lw.mu * t, { color: 'orange', width: 1.5, dash: [5, 4] });
           L.dot(0, 1, { r: 4, color: 'orange' });
-          if (tp === 1) { L.vline(1, { color: 'red', dash: [4, 3], width: 1.2 }); L.vband(1, 2, { color: 'red', alpha: 0.07 }); if (law.value === 'perv') L.dot(1, Lw.phi(1), { r: 5, color: 'accent' }); cornerIn(L, '$\\varphi=\\infty$ for $\\theta>1$', 'tr', { color: 'red' }); }
+          if (tp === 1) { L.vline(1, { color: 'red', dash: [4, 3], width: 1.2 }); L.vband(1, 2, { color: 'red', alpha: 0.07 }); if (law.value === 'perv') L.dot(1, Lw.phi(1), { r: 5, color: 'accent' }); cornerIn(L, '$\\varphi=\\infty$ for $\\theta>1$', 'br', { color: 'red' }); }
           const t = Math.min(H.x, tmax - 0.01); H.x = t;
           const k = kap(t), d = 1e-4, k1 = (kap(t + d) - kap(t - d)) / (2 * d), k2 = (kap(t + d) - 2 * k + kap(t - d)) / (d * d);
           const ylo = Math.min(-0.5, kap(-2) - 0.2), yhi = Math.max(1, Math.min(4, kap(tmax) + 0.3));
@@ -786,9 +786,9 @@ where $I(a)=\sup_\theta\big(a\theta-\kappa(\theta)\big)$ is the **rate function*
           // right panel
           R.setView([Lw.ar[0], Lw.ar[1]], [0, Lw.I(Lw.ar[1] - 1e-6) * 1.15 + 0.02]);
           R.fn(Lw.I, { domain: [Lw.ar[0], Lw.ar[1] - 1e-6], color: 'green', width: 2.6, n: 300 });
-          [[10, 'orange'], [40, 'purple'], [160, 'accent']].forEach(([n, col]) => { const pts = []; for (let i = 1; i <= 80; i++) { const x = Lw.ar[0] + (i / 80) * (Lw.ar[1] - Lw.ar[0]) * 0.995; const lp = Lw.lp(n, x); if (isFinite(lp)) pts.push([x, -lp / n]); } R.path(pts, { color: col, width: 1.6 }); });
+          [[10, 'orange'], [40, 'purple'], [160, 'teal']].forEach(([n, col]) => { const pts = []; for (let i = 1; i <= 80; i++) { const x = Lw.ar[0] + (i / 80) * (Lw.ar[1] - Lw.ar[0]) * 0.995; const lp = Lw.lp(n, x); if (isFinite(lp)) pts.push([x, -lp / n]); } R.path(pts, { color: col, width: 1.6 }); });
           R.dot(a, I, { r: 5, color: 'gold' });
-          v.legend([['accent', 'exact'], ['gold', 'simulated', { dot: true }], ['muted', '$e^{-nI(a)}$', { dash: true }], ['green', '$I$'], ['orange', '$n=10$'], ['purple', '$n=40$'], ['accent', '$n=160$']]);
+          v.legend([['accent', 'exact'], ['gold', 'simulated', { dot: true }], ['muted', '$e^{-nI(a)}$', { dash: true }], ['green', '$I$'], ['orange', '$n=10$'], ['purple', '$n=40$'], ['teal', '$n=160$']]);
           st = { a, I, r200: -Math.log(ex[NMAX - 1][1]) / NMAX, r50: -Math.log(ex[49][1]) / 50 };
         });
         v.readout(() => st && `$a=${v.fix(st.a, 3)}$: $I(a)=${v.fix(st.I, 5)}$; $\\ -\\frac1n\\log P(S_n\\ge na)=${v.fix(st.r50, 5)}$ at $n=50$ and $${v.fix(st.r200, 5)}$ at $n=200$, converging from above.`);
@@ -817,7 +817,7 @@ The tilted law has mean $\kappa'(\lambda)$, so choosing $\lambda=\theta_a$ moves
         const nS = v.slider('$n$', 5, 60, 30, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [0, 1], y: [0, 3], height: 320, axes: 'box', gutter: true, xlabel: '$x$', title: 'original and tilted densities' });
-        const R = v.stage({ x: [10, 20000], y: [1e-12, 1], xlog: true, ylog: true, height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: 'number of samples', title: 'estimating $P(S_n\\ge na)$' });
+        const R = v.stage({ x: [10, 20000], y: [1e-12, 1], xlog: true, ylog: true, height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: 'number of samples $m$', title: 'estimating $P(S_n\\ge na)$' });
         let st = null;
         v.render(() => {
           const Lw = LAWS[law.value], a = Math.round((Lw.ar[0] + aS.value * (Lw.ar[1] - Lw.ar[0])) * 1000) / 1000, n = nS.value;
@@ -907,11 +907,11 @@ The tilted law has mean $\kappa'(\lambda)$, so choosing $\lambda=\theta_a$ moves
 $$\frac1n\log P(S_n\ge na)\to-\big(a\theta_+-\kappa(\theta_+)\big),$$
 so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. Example: the "perverted exponential" with density $Cx^{-3}e^{-x}$ on $[1,\infty)$, where $\theta_+=1$ and $a_0=2$.`,
       idea: String.raw`The upper bound is Chernoff's with $\theta=\theta_+$. For the lower bound, no tilt has mean $a$, so instead tilt by $\theta_+$ (mean $a_0$) and let **one** summand make up the difference: $S_{n-1}\approx(n-1)a_0$ costs about $e^{-(n-1)(a_0\theta_+-\kappa(\theta_+))}$, and a single $X_n\ge n(a-a_0)$ costs only $e^{-n\theta_+(a-a_0)}$ up to polynomial factors, because the tail $x^{-3}e^{-x}$ is barely heavier than $e^{-x}$. Superadditivity (Lemma 2.7.1) turns this into the limit.`,
-      caption: String.raw`The perverted exponential. Left: its rate function, the Legendre curve up to $a_0=2$ and the straight tangent line beyond it (green), together with the curve one would get by ignoring $\theta\le\theta_+$ (dashed). Right: for $n=20$, the share of the largest summand in $S_n$ among samples conditioned on $S_n\ge na$ (6000 importance-weighted samples, tilted by $\min(\theta_a,1)$). Below $a_0$ the excess is spread over all summands; above $a_0$ a single big jump carries it.`,
+      caption: String.raw`The perverted exponential. Left: its rate function, the Legendre curve up to $a_0=2$ and the straight tangent line beyond it (green), with importance-sampling estimates of $-\frac1n\log P(S_n\ge na)$ for $n=20$ (orange) and $n=60$ (purple) descending towards it (the excess is a polynomial correction, of order $(\log n)/n$). Right: for $n=20$, the share of the largest summand in $S_n$ among samples conditioned on $S_n\ge na$ (6000 importance-weighted samples, tilted by $\min(\theta_a,1)$). Below $a_0$ the excess is spread over all summands; above $a_0$ a single big jump carries it.`,
       deps: ['prob-2.7.7', 'prob-2.7.1'],
       tags: ['large deviations'],
       viz(v) {
-        const I0 = (b) => simpson((u) => (u <= 0 ? 0 : u * Math.exp(-b / u)), 0, 1, 800), I1 = (b) => simpson((u) => (u <= 0 ? 0 : Math.exp(-b / u)), 0, 1, 800);
+        const I0 = (b) => simpson((u) => (u <= 0 ? 0 : u * Math.exp(-b / u)), 0, 1, 800), I1 = (b) => simpson((u) => (u <= 0 ? (b > 0 ? 0 : 1) : Math.exp(-b / u)), 0, 1, 800);
         const Z = I0(1), kap = (t) => Math.log(I0(1 - t) / Z), dkap = (t) => I1(1 - t) / I0(1 - t);
         const mu = dkap(0), a0 = dkap(1), k1 = kap(1);
         const thOf = (a) => { if (a >= a0) return 1; let lo = 0, hi = 1; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (dkap(m) < a) lo = m; else hi = m; } return (lo + hi) / 2; };
@@ -919,9 +919,9 @@ so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. E
         const aS = v.slider('level $a$', 1.6, 5, 3, { step: 0.05 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const n = 20, K = 6000;
-        const L = v.stage({ x: [mu, 5], y: [0, 3.5], height: 330, axes: 'box', gutter: true, xlabel: '$a$', title: 'rate function $I(a)$' });
+        const L = v.stage({ x: [mu, 5], y: [0, 4.3], height: 330, axes: 'box', gutter: true, xlabel: '$a$', title: 'rate function $I(a)$' });
         const R = v.stage({ x: [0, 1], y: [0, 8], height: 330, axes: 'box', gutter: true, xlabel: 'largest summand $/\\,S_n$', title: 'how the rare event happens ($n=20$)' });
-        let cache = null, st = null;
+        let cache = null, dotsC = null, st = null;
         const curve = []; for (let i = 0; i <= 120; i++) { const a = mu + (i / 120) * (5 - mu); curve.push([a, rate(a)]); }
         v.render(() => {
           const a = aS.value;
@@ -929,10 +929,14 @@ so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. E
           L.path(curve, { color: 'green', width: 2.6 });
           L.fn((x) => x - k1, { domain: [a0, 5], color: 'green', width: 1, alpha: 0.4 });
           L.vline(a0, { color: 'muted', dash: [4, 3], width: 1.2 });
-          L.text('a₀ = 2', a0, 3.25, { color: 'muted', size: 12, dx: 5 });
-          // hypothetical continuation: Legendre with unrestricted θ is not defined (φ = ∞), show the quadratic-like extrapolation of the curve below a0
-          const slope = (rate(a0) - rate(a0 - 0.05)) / 0.05, curv = (rate(a0) - 2 * rate(a0 - 0.05) + rate(a0 - 0.1)) / 0.0025;
-          L.fn((x) => rate(a0) + slope * (x - a0) + 0.5 * curv * (x - a0) ** 2, { domain: [a0, 5], color: 'muted', width: 1.3, dash: [5, 4] });
+          L.text('a₀ = 2', a0, 4.05, { color: 'muted', size: 12, dx: 5 });
+          if (!dotsC || dotsC.seed !== seed) {
+            const AG = [1.6, 2, 2.5, 3, 3.5, 4, 4.5, 5], r = v.rng(seed * 7 + 2), out = {};
+            [20, 60].forEach((nn) => { out[nn] = AG.map((aa) => { const th = thOf(aa), b = 1 - th, lk = kap(th), lw = []; for (let i = 0; i < 3000; i++) { let s2 = 0; for (let j = 0; j < nn; j++) { let x; do { x = (1 - r()) ** -0.5; } while (r() >= Math.exp(-b * (x - 1))); s2 += x; } if (s2 >= nn * aa) lw.push(-th * s2 + nn * lk); } if (!lw.length) return [aa, null]; const m = Math.max(...lw); return [aa, -(m + Math.log(lw.reduce((p, q) => p + Math.exp(q - m), 0) / 3000)) / nn]; }); });
+            dotsC = { seed, out };
+          }
+          L.dots(dotsC.out[20].filter((q) => q[1] != null), { r: 4, color: 'orange' });
+          L.dots(dotsC.out[60].filter((q) => q[1] != null), { r: 4, color: 'purple' });
           L.dot(a, rate(a), { r: 5, color: 'gold' });
           const key = a + '|' + seed;
           if (!cache || cache.key !== key) {
@@ -953,7 +957,7 @@ so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. E
           R.vline(1 / n, { color: 'muted', dash: [4, 3], width: 1.2 });
           R.vline(Math.max(0, (a - a0) / a), { color: 'red', dash: [5, 3], width: 1.2 });
           const mshare = cache.shares.reduce((p, sh, i) => p + sh * cache.w[i], 0) / (cache.W || 1);
-          v.legend([['green', '$I(a)$ (straight beyond $a_0$)'], ['muted', 'no-jump extrapolation', { dash: true }], [a > a0 ? 'red' : 'accent', 'weighted share histogram', { area: true }]]);
+          v.legend([['green', '$I(a)$ (straight beyond $a_0$)'], ['orange', '$-\\frac1n\\log P(S_n\\ge na)$, $n=20$', { dot: true }], ['purple', '$n=60$', { dot: true }], [a > a0 ? 'red' : 'accent', 'weighted share histogram', { area: true }]]);
           st = { a, I: rate(a), est: cache.est, mshare, hits: cache.hits };
         });
         v.readout(() => st && `$\\mu=${v.fix(mu, 4)}$, $\\ a_0=\\kappa'(1)=${v.fix(a0, 4)}$, $\\ \\kappa(1)=${v.fix(k1, 4)}$. At $a=${v.fix(st.a, 2)}$: $I(a)=${v.fix(st.I, 4)}$` + (st.a > a0 ? ` $=a-\\kappa(1)$` : '') + `; importance-sampling estimate $-\\frac1{20}\\log P(S_{20}\\ge20a)\\approx${isFinite(st.est) ? v.fix(-st.est / n, 4) : '\\infty'}$ (finite-$n$ corrections are polynomial). Mean share of the largest summand: $${v.fix(st.mshare, 3)}$.`);

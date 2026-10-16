@@ -547,7 +547,7 @@ peaks at $s\Delta=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$.`,
           for (let i = 0; i < n; i++) { const t = i / SR, c = (CMAX * t) / SW; p2 += (TAU * f1 * 2 ** (c / 1200)) / SR; out[i] = 0.3 * (Math.sin(TAU * f1 * t) + Math.sin(p2)); }
           snd.samples(finish(out, 0.6, SR, 0.05, 0.2), SR, { gain: 0.9 }); ph.start(SW, 'sweep');
         });
-        const pl = v.stage({ x: [0, CMAX], y: [0, 1.2], height: 260, axes: 'box', gutter: true, xticks: [[0, '0'], [100, '100 m2'], [200, '200 M2'], [300, '300 m3'], [400, '400 M3'], [500, '500 P4'], [600, '600'], [700, '700 P5']], yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval between the tones (cents)', ylabel: 'roughness', full: true, title: 'Plomp–Levelt roughness of two pure tones' });
+        const pl = v.stage({ x: [0, CMAX], y: [0, 1.2], height: 260, axes: 'box', gutter: true, xticks: [[0, '0'], [100, '100 m2'], [200, '200 M2'], [300, '300 m3'], [400, '400 M3'], [500, '500 P4'], [600, '600'], [700, 'P5']], yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval between the tones (cents)', ylabel: 'roughness', full: true, title: 'Plomp–Levelt roughness of two pure tones' });
         const wv = v.stage({ x: [0, 0.25], y: [-2.3, 2.3], height: 170, axes: 'box', gutter: true, xlabel: 'time (s)', yticks: [], weight: 1, title: 'the waveform' });
         const ex = v.stage({ x: [-6, 6], y: [0, 1.15], height: 170, axes: 'box', gutter: true, xlabel: 'place relative to $f_1$ (mm, toward apex →)', yticks: [], weight: 1, title: 'excitation on the basilar membrane' });
         const cents = () => (ph.tag === 'sweep' && ph.t != null ? Math.min(CMAX, (CMAX * ph.t) / SW) : cS.value);

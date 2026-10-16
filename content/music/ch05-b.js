@@ -155,7 +155,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
           // helix
           s3.curve((u) => { const m = LO + u * (HI - LO); return pos(m); }, 0, 1, { n: order.value === 1 ? 600 : 60, color: 'faint', width: 1.2 });
           s3.line([0, 0, pos(LO)[2] - 0.2], [0, 0, pos(HI)[2] + 0.2], { color: 'muted', width: 1, dash: [3, 4] });
-          s3.text('height', [0, 0, pos(HI)[2] + 0.38], { color: 'muted', size: 11 });
+          s3.text('height ↑', [0, 0, pos(LO)[2] - 0.25], { color: 'muted', size: 11 });
           for (let m = LO; m <= HI; m++) {
             const p = pos(m), same = M.mod(m, 12) === pc, isC = M.mod(m, 12) === 0;
             s3.dot(p, { r: m === cur ? 7 : same ? 5 : 3, color: m === cur ? 'red' : same ? 'accent' : isC ? 'gold' : 'muted' });
@@ -163,7 +163,7 @@ so that notes an octave apart lie directly above one another. Projecting onto th
           const ps = M.range(HI - LO + 1, LO).filter((m) => M.mod(m, 12) === pc).map(pos);
           if (ps.length > 1) s3.path(ps, { color: 'accent', width: 2, alpha: 0.7 });
           // chroma circle labels at the base
-          for (let k = 0; k < 12; k++) { const p = pos(LO + k); const lab = NOTE[M.mod((LO + k) * order.value, 12)]; s3.text(lab, [p[0] * 1.18 + 0.0001, p[1] * 1.18, pos(LO)[2] - 0.3], { color: M.mod((LO + k) * order.value, 12) === pc ? 'accent' : 'muted', size: 11 }); }
+          for (let k = 0; k < 12; k++) { const p = pos(LO + k); const lab = NOTE[M.mod((LO + k) * order.value, 12)]; s3.text(lab, [p[0] * 1.2 + 0.0001, p[1] * 1.2, pos(HI)[2] + 0.12], { color: M.mod((LO + k) * order.value, 12) === pc ? 'accent' : 'muted', size: 11 }); }
           s3.text(`${M.noteName(cur)}`, [pos(cur)[0] * 1.15, pos(cur)[1] * 1.15, pos(cur)[2] + 0.18], { color: 'red', size: 12.5 });
           // keyboard grid
           for (let oct = 0; oct <= 5; oct++) for (let col = 0; col < 12; col++) {

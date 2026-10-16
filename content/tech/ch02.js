@@ -62,7 +62,7 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           for (let k = -10; k <= 10; k++) { const q = P(k); A.dot(q[0], q[1], { r: k === 0 ? 0 : 2, color: 'muted' }); }
           A.dot(piv[0], piv[1], { r: 3.5, color: 'ink' });
           // stops
-          for (const sx of [-10.4, 10.4]) A.line(sx, -2.0, sx, piv[1] - hh + 10.4 * Math.sin(12 * D2R) * -1 * (sx < 0 ? -1 : 1) * 0 - 1.6, { color: 'faint', width: 3 });
+          for (const sx of [-10.4, 10.4]) A.line(sx, -2.0, sx, 0.55 - 10.4 * Math.tan(12 * D2R) - 0.12, { color: 'faint', width: 3 });
           // hanging loads
           const hang = (x, w, col, lab) => {
             const q = P(x), top = q[1] - 0.15, size = 0.5 + 0.12 * w, bot = top - 1.0 - size;
@@ -101,7 +101,7 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           }
           // ---- B
           if (m === 'bal') {
-            B.setView([0.5, 10.5], [-14, 14]); B.setLabels('distance of the right load', 'tilt (°)'); B.setTitle('tilt as the right load slides');
+            B.setView([0.5, 10.5], [-14, 14]); B.setLabels('distance of the right load', 'tilt (°)'); B.setTitle('tilt as the right load slides'); B.setTicks(null, null);
             B.hline(0, { color: 'faint', width: 1 });
             B.fn((x) => tilt(dA, x, wA, wB, h), { color: 'orange', width: 2.2, n: 400 });
             const xs = (wA * dA) / wB;
@@ -109,7 +109,7 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
             for (let k = 1; k <= 10; k++) B.dot(k, tilt(dA, k, wA, wB, h), { r: k === dB ? 5.5 : 2.5, color: k === dB ? 'orange' : 'muted' });
           } else if (m === 'proof') {
             const span = dA + dB;
-            B.setView([-span - 0.6, span + 0.6], [0, 1.25 * Math.max(wA / (2 * dB), wB / (2 * dA))]); B.setLabels('position along the beam', 'weight per unit length'); B.setTitle('density of the spread row and its mirror image');
+            B.setView([-span - 0.6, span + 0.6], [0, 1.25 * Math.max(wA / (2 * dB), wB / (2 * dA))]); B.setLabels('position along the beam', 'weight per unit length'); B.setTitle('density of the spread row and its mirror image'); B.setTicks(null, null);
             const rho = (x) => (x >= -dA - dB && x <= -dA + dB ? wA / (2 * dB) : 0) + (x > dB - dA && x <= dB + dA ? wB / (2 * dA) : 0);
             B.fn(rho, { color: 'ink', width: 2, n: 800, fill: 'accent', fillAlpha: 0.15 });
             B.fn((x) => rho(-x), { color: 'red', width: 1.5, dash: [5, 4], n: 800 });
@@ -117,7 +117,7 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           } else {
             const ratio = 5.972e24 / you.value, Llong = ratio * shortArm.value;
             B.setView([0, 24.5], [0, 1]); B.setLabels('length (m), log scale', null); B.setTitle('the long arm you would need');
-            B.setTicks([0, 4, 8, 12, 16, 20, 24].map((e) => [e, e === 0 ? '1' : `10${'⁰¹²³⁴⁵⁶⁷⁸⁹'.split('')[0] && sup(e)}`]), [[2, '']]);
+            B.setTicks([0, 4, 8, 12, 16, 20, 24].map((e) => [e, e === 0 ? '1' : `10${sup(e)}`]), []);
             const marks = [[3.844e8, 'Moon'], [1.496e11, 'Sun'], [4.0e16, 'Proxima Cen'], [9.5e20, 'Milky Way (across)'], [2.4e22, 'Andromeda']];
             marks.forEach(([d, lab], i) => { const x = Math.log10(d); B.vline(x, { color: 'faint', width: 1 }); B.text(lab, x, 0.12 + 0.13 * (i % 2 ? 1 : 0) + 0.02, { size: 10.5, color: 'muted', align: 'center', plate: true }); });
             const xl = Math.log10(Llong);

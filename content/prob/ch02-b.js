@@ -236,20 +236,23 @@ $$E(S_n/n-\mu)^2\le\frac Cn,\qquad P(|S_n/n-\mu|>\eps)\le\frac{C}{n\eps^2}.$$`,
             else if (sq.value === 'ar') { prev = 0.85 * prev + Math.sqrt(1 - 0.85 * 0.85) * r.normal(); xs.push(prev); }
             else xs.push(r.normal() + (3 * (k - 300)) / 600);
           }
+          const lo = Math.min(-3.5, ...xs) - 0.2, hi = Math.max(3.5, ...xs) + 0.2;
+          A.setView(null, [lo, hi]); B.setView([lo, hi], null); C.setView([lo, hi], [lo, hi]);
           for (let b = 0; b < 4; b++) A.vband(150 * b, 150 * (b + 1), { color: COL[b], alpha: 0.07 });
           A.path(xs.map((x, k) => [k, x]), { color: 'muted', width: 0.8, alpha: 0.6 });
           for (let b = 0; b < 4; b++) A.dots(xs.slice(150 * b, 150 * (b + 1)).map((x, i) => [150 * b + i, x]), { r: 1.7, color: COL[b] });
-          const E = linEdges(-3.5, 3.5, 20), Hs = [0, 1, 2, 3].map((b) => densityOn(xs.slice(150 * b, 150 * (b + 1)), E));
+          const E = linEdges(lo, hi, 22), Hs = [0, 1, 2, 3].map((b) => densityOn(xs.slice(150 * b, 150 * (b + 1)), E));
           B.setView(null, [0, Math.max(...Hs.flatMap((h) => h.density)) * 1.15]);
           Hs.forEach((h, b) => B.hist(h, { density: true, color: COL[b], fillAlpha: 0.06, width: 1.8 }));
           C.dots(xs.slice(0, -1).map((x, k) => [x, xs[k + 1]]), { r: 1.8, color: 'accent', alpha: 0.55 });
-          const lag = M.linreg(xs.slice(0, -1), xs.slice(1)).r;
+          const tr = M.linreg(xs.map((_, k) => k), xs), res = xs.map((x, k) => x - tr.predict(k)); // remove a linear trend first
+          const lag = M.linreg(res.slice(0, -1), res.slice(1)).r;
           const ks = (a, b) => { a = a.slice().sort((x, y) => x - y); b = b.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0; while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); } return D; };
           let D = 0; for (let b = 1; b < 4; b++) D = Math.max(D, ks(xs.slice(0, 150), xs.slice(150 * b, 150 * (b + 1))));
           st = { lag, D, crit: 1.36 * Math.sqrt(2 / 150) };
           v.legend(COL.map((c, b) => [c, `block ${b + 1}`, { area: true }]));
         });
-        v.readout(() => st && `Lag-1 correlation $${fr(st.lag, 3)}$ (noise level about $\\pm0.08$). Largest Kolmogorov–Smirnov distance between block 1 and another block: $${fr(st.D, 3)}$ (5% noise level $${fr(st.crit, 3)}$).` + (Math.abs(st.lag) > 0.15 ? ' **Not independent**: each value predicts the next' + (st.D > st.crit ? ', and so the blocks wander more than i.i.d. noise allows.' : '.') : st.D > st.crit * 1.15 ? ' **Not identically distributed.**' : ' Consistent with i.i.d.'));
+        v.readout(() => st && `Lag-1 correlation after removing the linear trend: $${fr(st.lag, 3)}$ (noise level about $\\pm0.08$). Largest Kolmogorov–Smirnov distance between block 1 and another block: $${fr(st.D, 3)}$ (5% noise level $${fr(st.crit, 3)}$).` + (Math.abs(st.lag) > 0.15 ? ' **Not independent**: each value predicts the next' + (st.D > st.crit ? ', and so the blocks wander more than i.i.d. noise allows.' : '.') : st.D > st.crit * 1.15 ? ' **Not identically distributed.**' : ' Consistent with i.i.d.'));
       },
     },
     {
@@ -630,7 +633,7 @@ both sides being finite or infinite together.`,
           const ex = c.ps.map((q) => [q, D.E(q)]).filter((q) => isFinite(q[1]));
           R.path(ex, { color: 'green', width: 2.4 });
           if (law.value === 'par') R.vline(3, { color: 'red', dash: [5, 4], width: 1.4 });
-          R.dots(c.ps.filter((_, i) => i % 3 === 0).map((q) => [q, tailInt(D.S, q)]), { r: 3.5, color: 'accent' });
+          R.dots(c.ps.filter((q, i) => i % 3 === 0 && isFinite(D.E(q))).map((q) => [q, tailInt(D.S, q)]), { r: 3.5, color: 'accent' });
           R.dots(c.ps.map((q) => [q, c.xs.reduce((s, y) => s + y ** q, 0) / c.xs.length]), { r: 2.5, color: 'gold' });
           const I = tailInt(D.S, p), mc = c.xs.reduce((s, y) => s + y ** p, 0) / c.xs.length;
           R.dot(p, Math.min(1000, isFinite(D.E(p)) ? D.E(p) : 1000), { r: 6, color: 'green', hollow: true });
