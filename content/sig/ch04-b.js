@@ -71,7 +71,7 @@ For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the
       deps: ['sig-4.5', 'pma-8.16'],
       refs: ['Oppenheim–Willsky §3.5'],
       tags: ['Parseval', 'power'],
-      credit: 'Parseval, 1799 (for series); Rayleigh, Plancherel for the transform versions',
+      credit: 'Parseval, c. 1799 (a relation for series that was later recognised as this identity); Plancherel for the transform version',
       verify: true,
       viz(v) {
         const NN = 48, K = 60, ys = new Float64Array(NN);
@@ -202,7 +202,7 @@ Conversely, fast decay of the $c_k$ forces smoothness. Consequently the error of
         const rs = v.slider('analytic ratio $r$', 0.4, 0.95, 0.8, { step: 0.01 });
         const A = v.stage({ x: [1, 200], y: [1e-8, 1], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'k', ylabel: 'size', height: 300, title: 'coefficient sizes $|c_k|$' });
         const B = v.stage({ x: [1, 200], y: [1e-8, 1], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'N', ylabel: 'RMS', height: 300, title: 'mean-square error of $S_N$ (root)' });
-        const C = v.stage({ x: [-PI, PI], y: [-2.6, 2.6], axes: 'box', gutter: true, xlabel: 't', xticks: PI_TICKS, height: 240, full: true, title: 'the five waveforms, each with unit power' });
+        const C = v.stage({ x: [-PI, PI], y: [-2.6, 2.6], axes: 'box', gutter: true, xlabel: 't', xticks: PI_TICKS, height: 240, full: true, title: 'the five waveforms, each with unit power (apart from the constant)' });
         // odd-harmonic family c_k = a_n (jk)^(-n), k odd; normalised so that sum_k |c_k|^2 = 1
         const KMAX = 6000, norm = {};
         for (const n of ORD) { let s = 0; for (let k = 1; k <= KMAX; k += 2) s += 2 * k ** (-2 * n); norm[n] = 1 / Math.sqrt(s); }
@@ -212,8 +212,7 @@ Conversely, fast decay of the $c_k$ forces smoothness. Consequently the error of
         let info = null;
         v.render(() => {
           const r = rs.value, kk = grid(1, 200, 199).map((x) => Math.round(x));
-          const rn = Math.sqrt((1 - r * r) / (1 + r * r)); // sum_{k≠0} r^{2|k|} = 2r²/(1−r²) … normalise c_0 included below
-          const nrm = 1 / Math.sqrt(2 * r * r / (1 - r * r)); // power of the non-constant part = 1
+          const nrm = 1 / Math.sqrt((2 * r * r) / (1 - r * r)); // the non-constant part has unit power
           const slopes = [];
           for (const n of ORD) if (tg[n].value) {
             const pts = kk.filter((k) => k % 2).map((k) => [k, norm[n] * k ** -n]);

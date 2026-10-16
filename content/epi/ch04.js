@@ -280,7 +280,7 @@ $$\sum_k \mathrm{AF}_k=\sum_k\frac{P(D)-P(D\mid\text{component }k\text{ absent})
           const eff = e.x, hh = h();
           e.set(eff, mort(eff));
           s.fn((x) => mort(x), { color: 'blue', width: 2.6 });
-          [[R1, 'First Clinic 1841–46', 'red', 0.3], [R2, 'Second Clinic 1841–46', 'purple', 0.98], [R48, 'First Clinic 1848', 'green', 0.98]].forEach(([r, lab, c, x]) => { s.hline(r, { color: c, width: 1.6, dash: [6, 4] }); s.text(`${lab}: ${pcs(r)}`, x, r, { dy: -9, size: 11.5, color: c, weight: 600, align: x > 0.5 ? 'right' : 'left' }); });
+          [[R1, 'First Clinic 1841–46', 'red', 0.3], [R2, 'Second Clinic 1841–46', 'purple', 0.02], [R48, 'First Clinic 1848', 'green', 0.02]].forEach(([r, lab, c, x]) => { s.hline(r, { color: c, width: 1.6, dash: [6, 4] }); s.text(`${lab}: ${pcs(r)}`, x, r, { dy: -9, size: 11.5, color: c, weight: 600, align: 'left' }); });
           const m = mort(eff), dBg = bgm.value, dHands = Math.max(0, m - dBg * (1 - m) / (1)) ;
           const nDead = Math.round(1000 * m), nBg = Math.round(1000 * dBg * Math.min(1, 1));
           iconArray(sI, 1000, 40, (i) => (i < Math.min(nBg, nDead) ? { color: 'ink', r: 3 } : i < nDead ? { color: 'red', r: 3 } : { color: 'blue', alpha: 0.3, r: 2.4 }), (i) => i);

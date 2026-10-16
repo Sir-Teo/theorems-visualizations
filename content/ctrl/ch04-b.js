@@ -142,9 +142,10 @@ with the **error constants** $K_p=\lim_{s\to0}L(s)$, $K_v=\lim_{s\to0}sL(s)$, $K
       name: 'Dominant-pole approximation',
       statement: String.raw`If a stable system has a pair of poles (or a single real pole) much closer to the imaginary axis than all the others and no zeros nearby, the **dominant poles**, then its step response is well approximated by that of the low-order system made of the dominant poles alone (with the DC gain preserved). For $G(s)=\dfrac{\omega_n^2p}{(s+p)(s^2+2\zeta\omega_ns+\omega_n^2)}$ the full response is
 $$y(t)=y_2(t)+B\,e^{-pt}+\text{(small change in the second-order part)},\qquad |B|=\frac{\omega_n^2}{p^2-2\zeta\omega_np+\omega_n^2}\to\frac{\omega_n^2}{p^2}\ \ (p\gg\omega_n),$$
-so for $p\gg\omega_n$ the extra term is small and decays quickly, and the response differs from $y_2$ mainly by a small delay of about $1/p$. Theory gives no sharp threshold for "much closer": the error falls smoothly as the ratio $p/\sigma$ of the real parts grows, with $\sigma=\zeta\omega_n$, and a factor of about five or more is the usual working rule.`,
+so for $p\gg\omega_n$ the extra term is small and decays quickly, and the response differs from $y_2$ mainly by a small delay of about $1/p$. Theory gives no sharp threshold for "much closer": the error falls smoothly as the ratio $p/\sigma$ of the real parts grows, with $\sigma=\zeta\omega_n$, and a factor of several (often quoted as about five) is the usual working rule.`,
       idea: String.raw`In the partial-fraction expansion of $Y(s)=G(s)/s$ (sig-9.14 for dominant poles, sig-9.7 for the poles themselves) each pole $s_k$ contributes a term $c_ke^{s_kt}$. A pole with real part ten times larger decays ten times sooner and, for fixed DC gain, its residue is small when it is far away, so after a short transient only the dominant terms remain. What is lost is a small delay: the far pole acts like an extra lag of about $1/p$ seconds, shifting the response to the right by roughly that amount.`,
       caption: String.raw`The dominant pair has $\omega_n=1$ and the damping ratio you choose; the extra real pole sits at $-p$ (drag the **teal** marker or use the slider for the ratio $p/\sigma$, with $\sigma=\zeta\omega_n$ the dominant real part). The full third-order response (**solid**) is compared with the second-order approximation (**dashed**), and the shaded gap is the error. The right panel plots the largest error against the ratio $p/\sigma$: it falls steadily rather than switching on at a magic ratio, and it is not negligible until $p$ is many times $\sigma$.`,
+      verify: true, // the quoted factor of about five is a rule of thumb, not checked against a source
       deps: ['sig-9.14', 'ctrl-4.2'],
       refs: ['Franklin–Powell §3.5'],
       tags: ['dominant poles', 'approximation'],
@@ -174,8 +175,8 @@ so for $p\gg\omega_n$ the extra term is small and decays quickly, and the respon
           sp.vline(sg, { color: 'accent', width: 1, dash: [3, 4], alpha: 0.7 });
           sp.vline(5 * sg, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.7 });
           sp.text('σ', sg, 1.3, { size: 12, color: 'accent', dx: 4, align: 'left' }); sp.text('5σ', 5 * sg, 1.3, { size: 12, color: 'muted', dx: 4, align: 'left' });
-          xMark(sp, sg, wd, { color: 'accent', r: 6, width: 2.6 }); xMark(sp, sg, -wd, { color: 'accent', r: 6, width: 2.6 });
-          xMark(sp, p, 0, { color: 'teal', r: 6, width: 2.6 });
+          sp.dot(sg, wd, { r: 6, color: 'accent' }); sp.dot(sg, -wd, { r: 6, color: 'accent' });
+          sp.dot(p, 0, { r: 6, color: 'teal' });
           const T = 16, N = 800, a = stepExact(v.M, full(z, p), T, N), b = stepExact(v.M, second(z, WN), T, N);
           st.hline(1, { color: 'muted', dash: [2, 4] });
           st.clip(() => { for (let i = 0; i < N; i += 1) st.line(a.t[i], a.y[i], a.t[i], b.y[i], { color: 'red', alpha: 0.28, width: 1.6 }); });
@@ -215,7 +216,7 @@ so for $p\gg\omega_n$ the extra term is small and decays quickly, and the respon
         const pl = v.stage({ x: [0, 3], y: [0, 4], axes: 'box', gutter: true, xlabel: 'delay θ (s)', ylabel: 'integral gain kᵢ', height: 340, minWidth: 250 });
         const st = v.stage({ x: [0, 30], y: [0, 2], axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'step response y', height: 340, minWidth: 260, weight: 1.2 });
         const bs = v.stage({ x: [0, 3], y: [0, 40], axes: 'box', gutter: true, xlabel: 'delay θ (s)', ylabel: 'best settling time (s)', height: 340, minWidth: 240 });
-        const h = pl.handle(1, 0.4, { color: 'gold', r: 8, label: '(θ, kᵢ)', labelPos: 'ne', constrain: { x: [0.1, 3], y: [0.05, 4] } });
+        const h = pl.handle(1, 0.4, { color: 'gold', r: 8, label: '(θ, kᵢ)', labelPos: 'sw', constrain: { x: [0.1, 3], y: [0.05, 4] } });
         const cacheB = new Map();
         const best = (tau) => {
           if (cacheB.has(tau)) return cacheB.get(tau);

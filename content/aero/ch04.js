@@ -226,7 +226,7 @@ at the price of a lower lift-curve slope, a lower usable lift coefficient and mo
         v.legend([['accent', 'Korn $M_{dd}$ (swept)'], ['orange', 'cosine rule $M_{dd,0}/\\cos\\Lambda$', { dash: true }], ['muted', 'unswept']]);
         v.readout(() => {
           const { m0, mdd, cosRule, Mn } = info;
-          return `Unswept: $M_{dd,0}=${fx(m0, 3)}$. Swept ${sw.value}°: Korn gives $M_{dd}=${fx(mdd, 3)}$, the cosine rule $${fx(cosRule, 3)}$ (it overstates the gain by $${fx(cosRule - mdd, 3)}$). The normal Mach number at divergence is $M_{dd}\\cos\\Lambda=${fx(Mn, 3)}$ — the unswept section's $M_{dd}$ would be $${fx(m0, 3)}$, so the normal-flow rule is $${Math.abs(Mn - m0) < 0.02 ? 'nearly' : 'only roughly'}$ satisfied once thickness and lift are included.`;
+          return `Unswept: $M_{dd,0}=${fx(m0, 3)}$. Swept ${sw.value}°: Korn gives $M_{dd}=${fx(mdd, 3)}$, the cosine rule $${fx(cosRule, 3)}$ (it overstates the gain by $${fx(cosRule - mdd, 3)}$). The normal Mach number at divergence is $M_{dd}\\cos\\Lambda=${fx(Mn, 3)}$ — the unswept section's $M_{dd}$ would be $${fx(m0, 3)}$, so the normal-flow rule is ${Math.abs(Mn - m0) < 0.02 ? 'nearly' : 'only roughly'} satisfied once thickness and lift are included.`;
         });
       },
     },
@@ -251,7 +251,7 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
         const awS = v.slider('wing area hump $A_w/A_f$', 0.05, 0.6, 0.3, { step: 0.01 });
         const xwS = v.slider('wing position $x_w/l$', 0.2, 0.6, 0.35, { step: 0.01 });
         const Af = 0.006, ww = 0.4;
-        const T = v.stage({ x: [0, 1], y: [-0.2, 0.2], axes: false, height: 200, minWidth: 340, full: true, title: 'top view (radial scale exaggerated)' });
+        const T = v.stage({ x: [0, 1], y: [-0.4, 0.4], axes: false, height: 220, minWidth: 340, full: true, title: 'top view (radial scale exaggerated)' });
         const S = v.stage({ x: [0, 1], y: [0, Af * 1.35], axes: 'box', gutter: true, height: 240, minWidth: 320, xlabel: 'station $x/l$', ylabel: 'area $S(x)$', title: 'cross-sectional area' });
         const D = v.stage({ x: [0, 1], y: [0.9, 1.6], axes: 'box', gutter: true, height: 240, minWidth: 280, xlabel: 'indentation $k$', ylabel: '$D_w/D_{\\mathrm{SH}}$', title: 'wave drag' });
         let info = {};
@@ -259,10 +259,10 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
           const k = kS.value, Aw = awS.value * Af, xw = xwS.value, co = areaCoeffs(Af, Aw, xw, ww);
           const fus = (x) => Math.max(0, fusIdeal(x, Af) - k * wingHump(x, Aw, xw, ww)), tot = (x) => fus(x) + wingHump(x, Aw, xw, ww);
           // top view: fuselage radius from the fuselage area, exaggerated by 4.5
-          const sc = 4.5, r = (x) => Math.sqrt(fus(x) / Math.PI) * sc * 5;
+          const r = (x) => Math.sqrt(fus(x) / Math.PI) * 1.8;
           const up = [], lo = []; for (let i = 0; i <= 120; i++) { const x = i / 120; up.push([x, r(x)]); lo.push([x, -r(x)]); }
           T.poly(up.concat(lo.reverse()), { fill: 'ink', fillAlpha: 0.14, color: 'ink', width: 1.6 });
-          const wr = Math.sqrt(Aw / Af) * 0.36 + 0.06; // schematic semi-span
+          const wr = 0.1 + 0.35 * Math.sqrt(Aw / Af); // schematic semi-span
           const wing = (s) => [[xw, s * r(xw)], [xw + ww * 0.55, s * wr * 1.0], [xw + ww * 0.9, s * wr], [xw + ww, s * r(xw + ww)]];
           T.poly(wing(1), { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 }); T.poly(wing(-1), { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
           // area plot

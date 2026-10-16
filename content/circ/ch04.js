@@ -265,7 +265,7 @@ export default {
       name: 'Digital abstraction: noise margins and the static discipline',
       statement: String.raw`In the digital abstraction each signal is a voltage that is interpreted as logic $0$ if it lies below $V_{IL}$ and as logic $1$ if it lies above $V_{IH}$ ($V_{IL}<V_{IH}$); between them the value is undefined and must not occur at inputs. A gate obeys the *static discipline* if every valid input produces an output that is more strictly valid: below $V_{OL}$ or above $V_{OH}$, with $V_{OL}<V_{IL}$ and $V_{OH}>V_{IH}$. The *noise margins* are $NM_L = V_{IL}-V_{OL}$ and $NM_H = V_{OH}-V_{IH}$. If each stage satisfies the discipline, any noise smaller than the margins added at a gate input is removed by the gate, and arbitrarily long chains compute without error.`,
       idea: String.raw`A gate with a steep transfer curve $v_{out}=f(v_{in})$ is a regenerator. If the gain magnitude $|f'|>1$ in the middle and $<1$ near the rails, the iteration $x\mapsto f(x)$ has two attracting levels near the supply and one repelling midpoint, so deviations from the nominal logic levels shrink at each stage. The standard choice puts $V_{IL}$ and $V_{IH}$ at the two points where the slope is $-1$; outside them the gain is below 1 and the output is within the output band. With gain $\le 1$ everywhere no such points exist and the chain forgets its input.`,
-      caption: String.raw`Left: the transfer curve $v_{out}=f(v_{in})$ of an inverter with adjustable gain, the identity line, and the valid bands (green outputs, orange inputs). Right: twelve signals pass through a chain of eight inverters with a random disturbance of up to $\pm$ the noise amplitude added at every input; the start voltage is deliberately degraded. With enough gain every run is restored to a clean level and alternates between the rails; lower the gain toward 1 or raise the noise above the margin and the runs drift to the midpoint or flip. The cobweb on the left follows run 1.`,
+      caption: String.raw`Left: the transfer curve $v_{out}=f(v_{in})$ of an inverter with adjustable gain, the identity line, and the valid bands (green outputs, orange inputs). Right: twelve signals pass through a chain of eight inverters with a random disturbance of up to $\pm$ the noise amplitude added at every input; the start voltage is deliberately degraded. With enough gain every run is restored to a clean level and alternates between the rails; lower the gain toward 1 or raise the noise above the margin and the runs drift to the midpoint or flip. The gold line marks the start voltage on the transfer curve; run 1 is drawn in blue.`,
       scope: String.raw`Static (DC) behaviour of memoryless gates with the tanh-shaped transfer curve used here (an illustrative model); real gates also need timing margins.`,
       deps: ['circ-1.9'],
       refs: ['Agarwal–Lang §5.1'],
@@ -275,9 +275,9 @@ export default {
         const Vdd = 5, K = 8;
         const s = v.stage({ x: [0, Vdd], y: [0, Vdd], equal: true, axes: 'box', gutter: true, height: 340, weight: 0.95, xlabel: '$v_{in}$ (V)', ylabel: '$v_{out}$ (V)', title: 'transfer curve and valid bands' });
         const sc = v.stage({ x: [0, K], y: [0, Vdd], axes: 'box', gutter: true, height: 340, weight: 1.1, xlabel: 'gate number', ylabel: 'voltage (V)', title: 'a chain of eight gates, noise at every input' });
-        const gain = v.slider('mid-point gain $|f\'|$', 0.6, 8, 4, { log: true, sig: 2, fmt: (x) => v.fix(x, 2) });
-        const noise = v.slider('noise $\\pm$', 0, 2.5, 0.5, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} V` });
-        const start = v.slider('start voltage', 0, Vdd, 4, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} V` });
+        const gain = v.slider('mid-point gain $|f\'|$', 0.6, 8, 2.5, { log: true, sig: 2, fmt: (x) => v.fix(x, 2) });
+        const noise = v.slider('noise $\\pm$', 0, 2.5, 0.6, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} V` });
+        const start = v.slider('start voltage', 0, Vdd, 3, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} V` });
         let seed = 7;
         v.button('Resample noise', () => { seed += 1; });
         let info = null;
@@ -300,16 +300,15 @@ export default {
           runs.forEach((tr, r) => sc.path(tr.map((y, k) => [k, y]), { color: r === 0 ? 'accent' : 'muted', width: r === 0 ? 2.6 : 1.2, alpha: r === 0 ? 1 : 0.55 }));
           if (ok) { sc.hband(0, VOL, { color: 'green', alpha: 0.12 }); sc.hband(VOH, Vdd, { color: 'green', alpha: 0.12 }); }
           sc.hline(Vdd / 2, { color: 'faint', dash: true });
-          // cobweb of the noiseless chain
-          let cx = start.value;
-          for (let k = 0; k < 5; k++) { const y = f(cx); s.line(cx, cx, cx, y, { color: 'gold', width: 1.4 }); s.line(cx, y, y, y, { color: 'gold', width: 1.4 }); cx = y; }
+          s.vline(start.value, { color: 'gold', width: 1.4, dash: true });
+          s.dot(start.value, f(start.value), { color: 'gold', r: 5 });
           // final correctness: stage 8 logic value vs ideal noiseless propagation
           let nl = start.value; for (let k = 0; k < K; k++) nl = f(nl);
           const wantHigh = nl > Vdd / 2;
           const clean = runs.filter((tr) => (wantHigh ? tr[K] > (ok ? VOH : 0.8 * Vdd) : tr[K] < (ok ? VOL : 0.2 * Vdd))).length;
           info = { ok, VIL, VIH, VOL, VOH, clean, nr, g };
         });
-        v.legend([['accent', 'transfer curve / run 1'], ['gold', 'cobweb (noiseless)'], ['orange', 'valid inputs'], ['green', 'valid outputs']]);
+        v.legend([['accent', 'transfer curve / run 1'], ['gold', 'start level'], ['orange', 'valid inputs'], ['green', 'valid outputs']]);
         v.readout(() => info && (info.ok
           ? `$V_{IL}=${v.fix(info.VIL, 2)}$, $V_{IH}=${v.fix(info.VIH, 2)}$, $V_{OL}=${v.fix(info.VOL, 3)}$, $V_{OH}=${v.fix(info.VOH, 3)}$ V; noise margins $NM_L=${v.fix(info.VIL - info.VOL, 2)}$ V, $NM_H=${v.fix(info.VOH - info.VIH, 2)}$ V. After 8 gates ${info.clean} of ${info.nr} runs are in the clean output band.`
           : `Gain $${v.fix(info.g, 2)}\\le 1$: the slope never reaches $-1$, so no valid bands exist and the chain does not restore levels (${info.clean} of ${info.nr} runs end in a clean band).`));

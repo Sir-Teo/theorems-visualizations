@@ -78,7 +78,7 @@ Rise time and peak time measure *speed*; overshoot and settling time measure *da
           const z = zS.value, wn = wS.value, under = sysS.value === 'under' && z < 1;
           const wd = wn * Math.sqrt(Math.max(0, 1 - z * z));
           let s = `$y_\\infty=${fx(fin, 3)}$, $e_\\infty=${fx(1 - fin, 3)}$ · $t_r=${fx(info.tr, 2)}$ s · $M_p=${fx(100 * info.Mp, 1)}\\,\\%$ · $t_p=${fx(info.tp, 2)}$ s · $t_s(${tolS.value * 100}\\,\\%)=${fx(info.ts, 2)}$ s`;
-          if (under) s += `\nformulas for the second-order system: $M_p=e^{-\\pi\\zeta/\\sqrt{1-\\zeta^2}}=${fx(100 * mpOfZeta(z), 1)}\\,\\%$ · $t_p=\\pi/\\omega_d=${fx(Math.PI / wd, 2)}$ s · $t_s\\approx 4/(\\zeta\\omega_n)=${fx(4 / (z * wn), 2)}$ s (2 %) · $t_r\\approx1.8/\\omega_n=${fx(1.8 / wn, 2)}$ s (a rule of thumb)`;
+          if (under) s += `\nformulas for the second-order system: $M_p=e^{-\\pi\\zeta/\\sqrt{1-\\zeta^2}}=${fx(100 * mpOfZeta(z), 1)}\\,\\%$ · $t_p=\\pi/\\omega_d=${fx(Math.PI / wd, 2)}$ s · $t_s\\approx 4/(\\zeta\\omega_n)=${fx(4 / (z * wn), 2)}$ s (2 %) · $t_r\\approx1.8/\\omega_n=${fx(1.8 / wn, 2)}$ s (rule of thumb, best near $\\zeta=0.5$)`;
           if (hov) s += `\ncursor: $t=${fx(hov[0], 2)}$, $y=${fx(hov[1], 3)}$`;
           return s;
         });
@@ -221,12 +221,13 @@ which depends on $\zeta$ alone: it is the same for every natural frequency $\ome
       kind: 'Proposition',
       name: 'Specifications as regions of the s-plane',
       statement: String.raw`For the standard second-order system with poles $s=-\sigma\pm i\omega_d$ ($\sigma=\zeta\omega_n$), the usual specifications translate into pole regions:
-(a) rise time $t_r\lesssim t_r^{\max}$ is guaranteed (approximately) by $\omega_n\ge\omega_{\min}\approx1.8/t_r^{\max}$: poles *outside* the circle of radius $\omega_{\min}$;
+(a) rise time $t_r\lesssim t_r^{\max}$ is guaranteed (approximately; the rule of thumb $t_r\approx1.8/\omega_n$ is most accurate near $\zeta=0.5$) by $\omega_n\ge\omega_{\min}\approx1.8/t_r^{\max}$: poles *outside* the circle of radius $\omega_{\min}$;
 (b) overshoot $M_p\le M^{\max}$ is equivalent to $\zeta\ge\zeta_{\min}=-\ln M^{\max}\big/\sqrt{\pi^2+\ln^2M^{\max}}$: poles inside the *wedge* $|\arg(-s)|\le\arccos\zeta_{\min}$;
 (c) settling time $t_s\le t_s^{\max}$ (2 % band) is guaranteed approximately by $\sigma\ge4/t_s^{\max}$: poles in the *half-plane* $\operatorname{Re}s\le-4/t_s^{\max}$.
 Meeting all three means placing the poles in the intersection of the three regions. Only (b) is exact for the second-order system; (a) and (c) are standard design rules of thumb.`,
       idea: String.raw`The overshoot condition is ctrl-4.3 solved for $\zeta$. The decay rate $\sigma$ is the exponent of the envelope in ctrl-4.2, which falls below $2\,\%$ after $\ln 50/\sigma\approx3.9/\sigma\approx4/\sigma$ seconds, and the rise time is, to a good approximation for moderate damping, inversely proportional to $\omega_n$ by the time scaling of ctrl-4.3. Because the pole location *is* the pair $(\sigma,\omega_d)$, each requirement draws a boundary (a vertical line, a ray, an arc) in the complex plane (sig-9.7 for poles and the pole–zero plot). The design problem is then geometric: put the closed-loop poles in the shaded region.`,
       caption: String.raw`Set the three limits with the sliders: the **green** region is where a pole pair meets all of them (outside the circle, inside the wedge, left of the line). Drag the **gold** pole: its step response appears on the right with the three limits drawn, and the readout lists the measured values. Poles inside the region meet the specifications, those outside miss at least one. Near the circle the rise-time rule of thumb $1.8/\omega_n$ is not exact, so a pole just inside can narrowly miss, or one just outside narrowly pass.`,
+      verify: true, // the constant 1.8 in t_r ≈ 1.8/ωn is a rule of thumb (confirmed only for ζ ≈ 0.5)
       deps: ['ctrl-4.3', 'sig-9.7'],
       refs: ['Franklin–Powell §3.4'],
       tags: ['pole regions', 'specifications'],

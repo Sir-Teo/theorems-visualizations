@@ -31,7 +31,7 @@ export function ktCorr(cp0, M) { const b = Math.sqrt(1 - M * M); return cp0 / (b
 export function laitoneCorr(cp0, M) { const b = Math.sqrt(1 - M * M); return cp0 / (b + (M * M * (1 + 0.5 * GM1 * M * M) / (2 * b)) * cp0); }
 /** Mach number at which a correction law reaches the critical Cp* for a given incompressible suction peak cp0 < 0 (null if never below M = 0.995). */
 export function machCritical(cp0, law = pgCorr) {
-  const f = (M) => law(cp0, M) - cpCrit(M);
+  const f = (M) => { const c = law(cp0, M); return (c > 0 || !Number.isFinite(c) ? -1e9 : c) - cpCrit(M); };
   let lo = 0.3, hi = 0.995; if (f(lo) < 0) return lo; if (f(hi) > 0) return null;
   for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m) > 0) lo = m; else hi = m; }
   return (lo + hi) / 2;
