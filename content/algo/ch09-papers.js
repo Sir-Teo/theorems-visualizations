@@ -72,6 +72,34 @@ function problem1(G, P) {
 /** Brute-force checks: Bellman–Ford distances and Kruskal's tree weight. */
 function bellmanFord(G, P) { const d = {}; for (const n of G.nodes) d[n.id] = Infinity; d[P] = 0; for (let k = 0; k < G.nodes.length; k++) for (const e of G.edges) { const w = e.w ?? 1; if (d[e.from] + w < d[e.to]) d[e.to] = d[e.from] + w; if (d[e.to] + w < d[e.from]) d[e.from] = d[e.to] + w; } return d; }
 
+// ───────── Hart, Nilsson & Raphael (1968): A* on a grid ─────────
+// Claims checked against the authors' 1972 correction (SIGART Newsletter 37; cse.sc.edu copy) and standard accounts:
+// with an admissible h (never above the true remaining cost) the algorithm finds a minimal-cost path whenever one exists;
+// with the consistency assumption h(n) ≤ c(n, n′) + h(n′) it expands no more nodes than any admissible algorithm that is
+// no better informed. Bound w·C* for weighted heuristics (w ≥ 1): Pohl (1970), a later result.
+const AS_W = 26, AS_H = 16;
+/** Best-first search on a 4-connected unit-cost grid: f = g + h(cell). Graph search without reopening, ties to larger g.
+ *  Returns the expansion order, the path and its cost. */
+function aStarGrid(walls, s, t, h) {
+  const N = AS_W * AS_H, g = new Float64Array(N).fill(Infinity), prev = new Int32Array(N).fill(-1), closed = new Uint8Array(N), order = [];
+  const heap = []; const push = (f, gg, i) => { heap.push([f, -gg, i]); let k = heap.length - 1; while (k > 0) { const p = (k - 1) >> 1; if (cmp(heap[k], heap[p]) < 0) { [heap[k], heap[p]] = [heap[p], heap[k]]; k = p; } else break; } };
+  const cmp = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let k = 0; for (;;) { const l = 2 * k + 1, r = l + 1; let m = k; if (l < heap.length && cmp(heap[l], heap[m]) < 0) m = l; if (r < heap.length && cmp(heap[r], heap[m]) < 0) m = r; if (m === k) break; [heap[k], heap[m]] = [heap[m], heap[k]]; k = m; } } return top; };
+  g[s] = 0; push(h(s), 0, s);
+  while (heap.length) {
+    const [, , i] = pop(); if (closed[i]) continue; closed[i] = 1; order.push(i);
+    if (i === t) break;
+    const x = i % AS_W, y = (i / AS_W) | 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= AS_W || Y >= AS_H) continue;
+      const j = Y * AS_W + X; if (walls[j] || closed[j]) continue;
+      if (g[i] + 1 < g[j]) { g[j] = g[i] + 1; prev[j] = i; push(g[j] + h(j), g[j], j); }
+    }
+  }
+  const path = []; if (g[t] < Infinity) { for (let k = t; k >= 0; k = prev[k]) path.push(k); path.reverse(); }
+  return { order, path, cost: g[t] };
+}
+
 export default {
   collection: 'algo',
   chapter: 9,
@@ -147,6 +175,71 @@ Both methods store at most $n$ branches at a time (sets I and II), against all o
           if (run.k === 2) { const bf = bellmanFord(G, run.P), ok = run.dist[run.Q] === bf[run.Q]; check = `Dijkstra: $d(${run.P},${run.Q})$ = ${run.dist[run.Q] ?? '∞'}, Bellman–Ford over all branches: ${bf[run.Q] === Infinity ? '∞' : bf[run.Q]} ${ok ? '✓' : '✗'}`; }
           else { const K = G.mst(), ok = Math.abs(K.weight - run.total) < 1e-9; check = `Dijkstra's tree: total length ${run.total}, Kruskal's: ${K.weight} ${ok ? '✓' : '✗'}`; }
           return `nodes: ${sets} · ${store} · ${check} · as written, each Step 2 scans set B, $O(n^2)$ in all; today, with a priority queue, $O(m\\log n)$, or $O(m+n\\log n)$ with Fibonacci heaps (Fredman & Tarjan 1987)`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 9.18
+    {
+      num: '9.18',
+      kind: 'Paper',
+      name: 'Heuristic Determination of Minimum Cost Paths',
+      paper: { authors: 'Peter E. Hart, Nils J. Nilsson and Bertram Raphael', year: 1968, title: 'A Formal Basis for the Heuristic Determination of Minimum Cost Paths',
+               venue: 'IEEE Transactions on Systems Science and Cybernetics 4 (2): 100–107', doi: '10.1109/TSSC.1968.300136' },
+      introduces: ['algo-9.12'],
+      statement: String.raw`Hart, Nilsson and Raphael defined the search algorithm A*: keep a frontier of discovered nodes and always expand the one with the smallest
+$$f(n)=g(n)+h(n),$$
+where $g(n)$ is the cost of the best path found so far from the start and $h(n)$ an estimate of the remaining cost to a goal. They proved:
+(a) **admissibility**: if $h(n)\le h^*(n)$ for every node (the estimate never exceeds the true remaining cost $h^*$), A* finds a minimum-cost path whenever one exists;
+(b) **optimality**: under the consistency assumption $h(n)\le c(n,n')+h(n')$, A* expands no more nodes than any other admissible algorithm using no more information.
+With $h\equiv0$ it is Dijkstra's algorithm (algo-9.8); the better the admissible estimate, the fewer nodes are expanded. An overestimating $h$ can be faster but loses the guarantee: the path found may be longer.
+
+The results assume non-negative edge costs bounded away from zero and a finite branching factor; the optimality claim needed the consistency condition stated in the authors' 1972 correction.`,
+      idea: String.raw`At SRI, the mobile robot Shakey had to plan routes across a room with obstacles, and two traditions met: the "uniform-cost" search of operations research (Dijkstra, Moore), which is exact but explores in all directions, and the heuristic search of early AI, which used rules of thumb with no guarantees. The paper's insight was to make the heuristic a lower bound and add it to the cost so far, so that $f$ estimates the length of the best path through $n$ and never overestimates it; a node on an optimal path then always has $f\le C^*$, which is why the goal cannot be reached by a worse path first. A consistent $h$ also keeps $f$ non-decreasing along paths, so each node is expanded once, as in Dijkstra's algorithm. A* with a consistent heuristic (algo-9.12) became the standard for path finding in robotics, games, and route planning, and its variants (weighted A*, IDA*, D*) trade the guarantee for speed or memory.`,
+      caption: String.raw`Two copies of one maze, four-connected, each step cost 1. **Left**: A* with your heuristic; **right**: Dijkstra's algorithm ($h=0$) on the same maze. Shading shows nodes in the order they are expanded (light to dark), the green line the path found. **Drag** the start (S) and goal (G), **paint walls** by dragging on empty cells of either grid (drag over walls to erase). Choose the base estimate, straight-line or Manhattan distance, both admissible here, and multiply it by the **weight** $w$: at $w\le1$ the path stays optimal while far fewer nodes are expanded; past $w=1$ the estimate can overestimate and, in the default maze, the path found is 6 steps longer than the shortest.`,
+      deps: ['algo-9.8'],
+      refs: [],
+      tags: ['search', 'shortest paths', 'heuristics'],
+      credit: 'Hart, Nilsson & Raphael, 1968',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/A*_search_algorithm' },
+      viz(v) {
+        const walls = new Uint8Array(AS_W * AS_H);
+        const reset = () => { walls.fill(0); const wl = (x0, y0, x1, y1) => { for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) walls[y * AS_W + x] = 1; }; wl(14, 3, 14, 12); wl(9, 3, 14, 3); wl(9, 12, 14, 12); wl(19, 0, 19, 9); };
+        reset();
+        const base = v.select('estimate h', [{ value: 'man', label: 'Manhattan' }, { value: 'euc', label: 'straight line' }], 'man', { onChange: () => v.restart() });
+        const wS = v.slider('weight w (h × w)', 0, 4, 1, { step: 0.05, onChange: () => v.restart() });
+        v.button('reset maze', () => { reset(); v.restart(); });
+        const opts = { x: [0, AS_W], y: [0, AS_H], equal: true, axes: false, height: 300 };
+        const L = v.stage({ ...opts, title: 'A*, f = g + w·h' }), R = v.stage({ ...opts, title: 'Dijkstra, h = 0' });
+        const snapCell = (x, y) => [Math.min(AS_W - 1, Math.max(0, Math.floor(x))) + 0.5, Math.min(AS_H - 1, Math.max(0, Math.floor(y))) + 0.5];
+        const S = L.handle(3.5, AS_H - 8.5, { color: 'blue', r: 9, label: 'S', labelPos: 'w', constrain: (x, y) => snapCell(x, y), onDrag: () => v.restart() });
+        const G = L.handle(23.5, AS_H - 5.5, { color: 'red', r: 9, label: 'G', labelPos: 'e', constrain: (x, y) => snapCell(x, y), onDrag: () => v.restart() });
+        const cellOf = (x, y) => { const cx = Math.floor(x), cy = AS_H - 1 - Math.floor(y); return cx < 0 || cy < 0 || cx >= AS_W || cy >= AS_H ? -1 : cy * AS_W + cx; };
+        let paint = 1;
+        for (const st of [L, R]) st.onDrag((x, y, ph) => { const c = cellOf(x, y); if (c < 0) return; if (c === cellOf(S.x, S.y) || c === cellOf(G.x, G.y)) return; if (ph === 'start') paint = walls[c] ? 0 : 1; walls[c] = paint; v.restart(); });
+        let st = null;
+        v.animate((t) => {
+          const s = cellOf(S.x, S.y), g = cellOf(G.x, G.y); walls[s] = 0; walls[g] = 0;
+          const tx = g % AS_W, ty = (g / AS_W) | 0, w = wS.value;
+          const hb = base.value === 'man' ? (i) => Math.abs((i % AS_W) - tx) + Math.abs(((i / AS_W) | 0) - ty) : (i) => Math.hypot((i % AS_W) - tx, ((i / AS_W) | 0) - ty);
+          const A = aStarGrid(walls, s, g, (i) => w * hb(i)), D = aStarGrid(walls, s, g, () => 0);
+          const shown = Math.floor(t * 120);
+          for (const [stg, res] of [[L, A], [R, D]]) {
+            const n = Math.min(res.order.length, shown), tot = Math.max(1, res.order.length);
+            for (let i = 0; i < AS_W * AS_H; i++) { const x = i % AS_W, y = AS_H - 1 - ((i / AS_W) | 0); stg.rect(x + 0.04, y + 0.04, x + 0.96, y + 0.96, { fill: walls[i] ? 'ink' : 'grid', fillAlpha: walls[i] ? 0.85 : 0.35, stroke: false }); }
+            for (let k = 0; k < n; k++) { const i = res.order[k], x = i % AS_W, y = AS_H - 1 - ((i / AS_W) | 0); stg.rect(x + 0.04, y + 0.04, x + 0.96, y + 0.96, { fill: 'orange', fillAlpha: 0.18 + 0.5 * (k / tot), stroke: false }); }
+            if (n >= res.order.length && res.path.length) stg.path(res.path.map((i) => [(i % AS_W) + 0.5, AS_H - 1 - ((i / AS_W) | 0) + 0.5]), { color: 'green', width: 3.4 });
+            if (stg === R) { R.dot(S.x, S.y, { r: 8, color: 'blue' }); R.dot(G.x, G.y, { r: 8, color: 'red' }); }
+            stg.corner(`${n} expanded${n >= res.order.length ? (res.path.length ? ` · path ${res.cost}` : ' · no path') : '…'}`, 'tl', { size: 12, weight: 700, color: 'ink', plate: true });
+          }
+          st = { A, D, w };
+        }, { still: 8, period: 1e9 });
+        v.legend([['orange', 'expanded (darker = later)', { area: true }], ['green', 'path found'], ['ink', 'wall', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { A, D, w } = st;
+          if (!D.path.length) return 'no path between S and G: both searches exhaust the reachable cells';
+          const opt = A.cost === D.cost, adm = w <= 1 + 1e-9;
+          return `A* with ${w === 0 ? '$h = 0$ (Dijkstra itself)' : `$${v.fix(w, 2)}\\times$ ${base.value === 'man' ? 'Manhattan' : 'straight-line'} distance`}: **${A.order.length}** nodes expanded against **${D.order.length}** for Dijkstra (${v.fix((100 * A.order.length) / D.order.length, 0)}%); path cost **${A.cost}**, shortest ${D.cost} — ${opt ? 'optimal' : `**${A.cost - D.cost} longer than optimal**`}${adm ? ' (the estimate is admissible, so optimality is guaranteed)' : opt ? ' (no guarantee at w > 1: here it happened to be optimal)' : ' (w > 1 lets h overestimate, so the guarantee is lost; Pohl later showed the cost stays within w × optimal)'} · on this grid Manhattan distance is the exact cost without walls, the most informed admissible estimate; straight-line distance is admissible but weaker`;
         });
       },
     },

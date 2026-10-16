@@ -749,7 +749,8 @@ class Stage {
   }
   /** Status text pinned to a corner: pos = 'tl' | 'tr' | 'bl' | 'br'. */
   corner(str, pos = 'tl', st = {}) {
-    const m = 10, X = pos[1] === 'l' ? m : this.W - m, Y = pos[0] === 't' ? m + 7 : this.H - m - 7;
+    const g = this.o.gutter ? this._m : { l: 0, r: 0, t: 0, b: 0 }, m = 10; // inside the data area when the stage has a gutter
+    const X = pos[1] === 'l' ? g.l + m : this.W - g.r - m, Y = pos[0] === 't' ? g.t + m + 7 : this.H - g.b - m - 7;
     const o = { align: pos[1] === 'l' ? 'left' : 'right', color: 'muted', size: 12, ...st };
     if (/\$[^$]+\$/.test(str)) return this.texPx(String(str), X, Y, { ...o, rich: true }); // text with $…$ math: HTML overlay
     return this.textPx(String(str), X, Y, o);

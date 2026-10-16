@@ -341,5 +341,104 @@ Plurality also violates **independence of irrelevant alternatives**: if $C$, who
         });
       },
     },
+
+    // ───────────────────────────────────────────────────────────── 2.4
+    {
+      num: '2.4',
+      kind: 'Theorem',
+      name: 'Borda: no Condorcet losers, but Condorcet winners can lose',
+      statement: String.raw`For any number $m \ge 2$ of candidates and any profile of $n$ complete rankings:
+
+(a) the Borda count never elects a Condorcet loser — the Condorcet loser’s Borda score is below the average $n(m-1)/2$, so it is not even tied for first;
+
+(b) the Condorcet winner’s Borda score is above the average, so it is never ranked last by Borda;
+
+(c) but the Condorcet winner need not win: with 3 voters ranking $A \succ B \succ C$ and 2 ranking $B \succ C \succ A$, $A$ beats both rivals $3$–$2$, yet Borda gives $B$ $7$ points against $A$’s $6$. So the Borda count is not a Condorcet method.`,
+      idea: String.raw`Everything follows from $B(x) = \sum_{y \ne x} N(x, y)$ (polsci-1.5). The $m(m-1)/2$ pairs share $n$ voters each, so the scores average $n(m-1)/2$. A Condorcet loser has $N(x, y) < n/2$ for each of its $m - 1$ rivals, so $B(x) < (m-1)n/2$: below average, hence below the maximum. A Condorcet winner has every $N(x, y) > n/2$, hence $B(x) >$ average. But “above average” is all one gets: a rival who wins its own contests narrowly but is ranked second by everyone can pile up more points, as $B$ does in (c), where the $A$-voters rank $B$ second and $B$’s voters bury $A$ last. Condorcet and Borda argued about exactly this in the 1780s.`,
+      caption: String.raw`Random electorates stream in from the right. For each one the dots are the candidates’ Borda scores divided by $n(m-1)$, so the average is exactly ½. Green is the Condorcet winner, always above the line; red is the Condorcet loser, always below it and never on top. A red stem marks an electorate where the Condorcet winner (ringed) loses to a higher Borda score (gold). The counters keep score. Click any column to load that electorate into the panels below and edit its ballots, or press *Next case* to jump to the next Condorcet winner who loses.`,
+      deps: ['polsci-1.5', 'polsci-1.6'],
+      see: ['polsci-2.10'],
+      refs: ['Saari, Chaotic Elections!', 'T&P ch. 1'],
+      tags: ['Borda count', 'Condorcet winner', 'Condorcet loser'],
+      credit: 'Borda (1784) and Condorcet (1785); the Condorcet-loser property is classical',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Borda_count#Criteria' },
+      viz(v) {
+        const St = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 240, full: true, title: 'random electorates: each column is one, each dot a candidate’s normalised Borda score' });
+        const D = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 320, title: 'the selected electorate: Borda scores' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, minWidth: 380, weight: 1.2, title: 'its ballots (click letters to move them up)' });
+        const CAP = 110;
+        const P = mkProfile(3, [[3, 'ABC'], [2, 'BCA']]);
+        let samples = [], stats, rng, selI = -1, geo = null, made = 0;
+        const mSel = v.select('candidates', [{ value: 3, label: '3' }, { value: 4, label: '4' }, { value: 5, label: '5' }], 4, { onChange: () => { reset(); v.restart(); } });
+        function gen() {
+          const m = mSel.value, Q = tidy(randomProfile(rng, m, 3 + Math.floor(rng() * 4), 1, 9)), n = total(Q), N = pairwise(Q), B = borda(Q);
+          const b = B.map((x) => x / (n * (m - 1))), cw = cwOf(N), C = condorcet(Q, N), mx = Math.max(...B), bw = best(B, range(m));
+          const s = { Q, b, cw, cl: C.loser, bw, cwLoses: cw >= 0 && B[cw] < mx - 1e-9, clWins: C.loser >= 0 && B[C.loser] >= mx - 1e-9 };
+          stats.n++; if (cw >= 0) stats.cw++; if (s.cwLoses) stats.lose++; if (C.loser >= 0) stats.cl++; if (s.clWins) stats.clw++;
+          samples.push(s); if (samples.length > CAP) { samples.shift(); if (selI >= 0) selI--; }
+          return s;
+        }
+        function reset() { rng = v.rng(17 + mSel.value); samples = []; selI = -1; stats = { n: 0, cw: 0, lose: 0, cl: 0, clw: 0 }; for (let k = 0; k < CAP; k++) gen(); made = CAP; }
+        reset();
+        const load = (i) => { selI = i; setProfile(P, samples[i].Q); };
+        v.button('Next case: Condorcet winner loses', () => { for (let k = 0; k < 20000; k++) { const s = gen(); if (s.cwLoses) { load(samples.length - 1); return; } } });
+        const ed = blocEditor(v, E, P, { max: 12, rank: true, rowMax: 34, onEdit: () => { selI = -1; } });
+        St.onClick((x) => { if (!geo) return; const i = Math.round((St.X(x) - geo.x0) / geo.dx); if (i >= 0 && i < samples.length) load(i); });
+        v.animate((t) => {
+          const target = CAP + Math.floor(t * 10);
+          while (made < target) { gen(); made++; }
+          // ---- strip
+          const c = St.ctx, W = St.width, H = St.height, x0 = 40, x1 = W - 14, y0 = 34, y1 = H - 14, dx = (x1 - x0) / (CAP - 1);
+          geo = { x0, dx };
+          const Y = (b) => y1 - b * (y1 - y0);
+          [0, 0.25, 0.5, 0.75, 1].forEach((b) => { hlinePx(v, c, x0 - 4, x1, Y(b), b === 0.5 ? 'ink' : 'grid', b === 0.5 ? [6, 4] : null, b === 0.5 ? 1.4 : 1); txt(v, c, b === 0.5 ? '½' : String(b), x0 - 9, Y(b), { size: 10, weight: 600, color: 'muted', align: 'right' }); });
+          txt(v, c, 'average', x1 - 2, Y(0.5) - 9, { size: 10, weight: 700, color: 'ink', align: 'right', halo: true });
+          samples.forEach((s, i) => {
+            const X = x0 + i * dx;
+            if (i === selI) { c.fillStyle = v.color('accent', 0.14); c.fillRect(X - dx / 2, y0 - 4, dx, y1 - y0 + 8); }
+            s.b.forEach((b, k) => { if (k !== s.cw && k !== s.cl) { c.beginPath(); c.arc(X, Y(b), 1.8, 0, 7); c.fillStyle = v.color('muted', 0.55); c.fill(); } });
+            if (s.cwLoses) {
+              const yb = Y(s.b[s.bw[0]]);
+              vlinePx(v, c, X, yb, Y(s.b[s.cw]), 'red', null, 2);
+              c.beginPath(); c.arc(X, yb, 3.4, 0, 7); c.fillStyle = v.color('gold'); c.fill();
+            }
+            if (s.cl >= 0) { c.beginPath(); c.arc(X, Y(s.b[s.cl]), 3.4, 0, 7); c.fillStyle = v.color('red'); c.fill(); }
+            if (s.cw >= 0) {
+              c.beginPath(); c.arc(X, Y(s.b[s.cw]), 3.4, 0, 7); c.fillStyle = v.color('green'); c.fill();
+              if (s.cwLoses) { c.beginPath(); c.arc(X, Y(s.b[s.cw]), 6, 0, 7); c.strokeStyle = v.color('red'); c.lineWidth = 1.6; c.stroke(); }
+            }
+          });
+          txt(v, c, `${fmtK(stats.n)} electorates · Condorcet winner in ${fmtK(stats.cw)}, of whom ${fmtK(stats.lose)} (${pct(stats.lose, stats.cw, 1)}) lose under Borda · Condorcet loser in ${fmtK(stats.cl)}, of whom ${stats.clw} win`, 12, 14, { size: 11, weight: 600, color: 'ink', align: 'left' });
+          // ---- detail
+          ed.draw();
+          const dc = D.ctx, DW = D.width, DH = D.height, m = P.m, n = total(P), N = pairwise(P), B = borda(P), C = condorcet(P, N);
+          const avg = (n * (m - 1)) / 2, ymax = Math.max(...B, avg) * 1.22 + 1, top = 34, base = DH - 34, bw = (DW - 56) / m;
+          const Yd = (val) => base - (val / ymax) * (base - top);
+          hlinePx(v, dc, 30, DW - 10, base, 'muted', null, 1);
+          hlinePx(v, dc, 30, DW - 10, Yd(avg), 'ink', [6, 4], 1.4);
+          txt(v, dc, `average n(m−1)/2 = ${+avg.toFixed(1)}`, DW - 10, Yd(avg) - 9, { size: 10.5, weight: 700, align: 'right', halo: true });
+          const win = best(B, range(m));
+          range(m).forEach((x) => {
+            const X = 40 + (x + 0.5) * bw, col = x === C.winner ? 'green' : x === C.loser ? 'red' : CC[x];
+            rr(dc, X - bw * 0.3, Yd(B[x]), bw * 0.6, base - Yd(B[x]), 3); dc.fillStyle = v.color(CC[x], 0.7); dc.fill();
+            if (x === C.winner || x === C.loser) { dc.strokeStyle = v.color(col); dc.lineWidth = 2.5; dc.stroke(); }
+            txt(v, dc, String(B[x]), X, Yd(B[x]) - 9, { size: 12, weight: 700, halo: true });
+            chip(v, dc, X, base + 16, x, { r: 10, ring: win.length === 1 && win[0] === x ? 'gold' : null });
+            if (x === C.winner) txt(v, dc, 'Condorcet winner', X, Yd(B[x]) - 24, { size: 9.5, weight: 700, color: 'green', halo: true });
+            if (x === C.loser) txt(v, dc, 'Condorcet loser', X, Yd(B[x]) - 24, { size: 9.5, weight: 700, color: 'red', halo: true });
+          });
+          txt(v, dc, `${n} voters, Borda winner ${names(win)}`, 10, 14, { size: 11, weight: 600, color: 'muted', align: 'left' });
+        }, { period: 1e6, still: 0.5 });
+        v.legend([['green', 'Condorcet winner', { dot: true }], ['red', 'Condorcet loser', { dot: true }], ['gold', 'Borda winner when it is not the Condorcet winner', { dot: true }], ['ink', 'average score', { dash: true }]]);
+        v.readout(() => {
+          const m = P.m, n = total(P), N = pairwise(P), B = borda(P), C = condorcet(P, N), avg = (n * (m - 1)) / 2, win = best(B, range(m));
+          let s = `Selected electorate: Borda ${range(m).map((x) => `${LET[x]} ${B[x]}`).join(', ')} (average ${+avg.toFixed(1)}) → **${names(win)}**. `;
+          if (C.winner >= 0) s += `Condorcet winner ${LET[C.winner]}: ${B[C.winner]} = Σ of its tallies ${range(m).filter((y) => y !== C.winner).map((y) => N[C.winner][y]).join(' + ')}, each > n/2 = ${n / 2}, so above average${win.includes(C.winner) ? ' — and it wins.' : ` — **yet it loses to ${names(win)}**.`} `;
+          else s += 'No Condorcet winner. ';
+          if (C.loser >= 0) s += `Condorcet loser ${LET[C.loser]}: ${B[C.loser]}, below average, as it must be.`;
+          return s + ` Overall: the Condorcet winner lost in ${pct(stats.lose, stats.cw, 1)} of electorates that had one; the Condorcet loser won in ${stats.clw} of ${fmtK(stats.cl)}.`;
+        });
+      },
+    },
   ],
 };
