@@ -24,7 +24,7 @@ export default {
       refs: ['Prince–Links ch. 2'],
       viz(v) {
         bindM(v.M);
-        const N = 64, st = { x: [0, N], y: [0, N], equal: true, axes: false, height: 280, minWidth: 190 };
+        const N = 64, st = { x: [0, N], y: [0, N], equal: true, axes: false, height: 230, minWidth: 190 };
         const O = v.stage({ ...st, title: 'object: two point sources' });
         const J = v.stage({ ...st, title: 'image of A alone + image of B alone' });
         const I = v.stage({ ...st, title: 'image of both together' });
@@ -382,7 +382,7 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
           } else {
             const fold = (t) => t - Math.round(t);
             const ua = fold(u), va = fold(vv);
-            C.dot(u, vv, { r: 7, color: 'gold' }); C.dot(-u, -vv, { r: 4, color: 'gold', hollow: true });
+            C.dot(u, vv, { r: 7, color: 'gold' }); C.dot(-u, -vv, { r: 4, color: 'gold', hollow: true }); C.dot(-ua, -va, { r: 4, color: 'red', hollow: true });
             if (Math.abs(u) > 0.5 || Math.abs(vv) > 0.5 || Math.abs(Math.abs(u) - 0.5) < 1e-9 || Math.abs(Math.abs(vv) - 0.5) < 1e-9 || true) { C.dot(ua, va, { r: 6, color: 'red', hollow: true, label: 'alias', labelPos: 'ne' }); }
             const i = pk[0], j = pk[1], mu = (i <= M / 2 ? i : i - M) / M, mvd = -((j <= M / 2 ? j : j - M) / M);
             const hit = (Math.abs(mu - ua) < 1e-9 && Math.abs(mvd - va) < 1e-9) || (Math.abs(mu + ua) < 1e-9 && Math.abs(mvd + va) < 1e-9);

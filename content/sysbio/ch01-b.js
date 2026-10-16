@@ -18,6 +18,7 @@ export default {
       tags: ['time scales', 'quasi-steady state'],
       scope: String.raw`Ranges drawn on the ruler are order-of-magnitude values: mRNA half-lives 3–8 min for about 80% of *E. coli* genes (Bernstein et al., PNAS 2002); doubling times 40–65 min in minimal media (see 1.6); binding times of seconds and a minute for transcription and translation are textbook-scale estimates (illustrative, quoted from memory of Alon's discussion).`,
       viz(v) {
+        const ST = {};
         const tb = v.slider('binding / unbinding time $\\tau_b$ (s)', 0.3, 3000, 1, { log: true, sig: 2, step: 0.01 });
         const th = v.slider('mRNA half-life (min)', 1, 120, 5, { log: true, sig: 2, step: 0.1 });
         const Td = v.slider('doubling time (min)', 20, 120, 60, { step: 1 });
@@ -51,12 +52,12 @@ export default {
           L.path(px.map((t, i) => [t, p1[i]]), { color: 'orange', width: 2.2, dash: [7, 3] });
           L.path(px.map((t, i) => [t, pr[i]]), { color: 'green', width: 2.4, dash: [2, 3] });
           let e1 = 0, e2 = 0; for (let i = 0; i < px.length; i++) { e1 = Math.max(e1, Math.abs(pf[i] - p1[i])); e2 = Math.max(e2, Math.abs(pf[i] - pr[i])); }
-          v._err = [e1, e2];
+          ST.err = [e1, e2];
         });
         v.legend([['accent', 'full model (binding, mRNA, protein)'], ['orange', 'binding in quasi-steady state', { dash: true }], ['green', 'binding and mRNA quasi-steady', { dash: true }], ['faint', 'input x(t) → promoter equilibrium', { dash: true }]]);
         v.readout(() => {
-          const [e1, e2] = v._err || [0, 0];
-          return `ratios: binding time / mRNA half-life = ${v.sci(tb.value / 60 / th.value, 2) ? '$' + v.sci(tb.value / 60 / th.value, 2) + '$' : ''}, mRNA half-life / doubling time = $${v.fix(th.value / Td.value, 3)}$. Worst error of the reductions (fraction of maximum): binding-only **${v.fix(e1, 3)}**, binding + mRNA **${v.fix(e2, 3)}**. Both are small at the default values (1 s, 5 min, 60 min) and grow as the time scales merge.`;
+          const [e1, e2] = ST.err || [0, 0];
+          return `ratios: binding time / mRNA half-life = $${v.sci(tb.value / 60 / th.value, 2)}$, mRNA half-life / doubling time = $${v.fix(th.value / Td.value, 3)}$. Worst error of the reductions (fraction of maximum): binding-only **${v.fix(e1, 3)}**, binding + mRNA **${v.fix(e2, 3)}**. Both are small at the default values (1 s, 5 min, 60 min) and grow as the time scales merge.`;
         });
       },
     },
@@ -75,6 +76,7 @@ So **dilution acts as first-order removal with $\alpha_{\rm dil}=\mu$**: a stabl
       tags: ['dilution', 'degradation'],
       scope: String.raw`Balanced exponential growth, constant production per volume, binomial partition at division. Half-lives of fluorescent proteins carrying C-terminal degradation tags in *E. coli* were measured by Andersen et al. (Appl. Environ. Microbiol. 1998): about 40 min for Gfp(LVA)/(LAA), about 60 min (AAV), about 110 min (ASV); untagged Gfp is stable (more than a day). The default 40 min follows the LVA/LAA value.`,
       viz(v) {
+        const ST = {};
         const Td = v.slider('doubling time $T_{\\rm div}$ (min)', 20, 120, 50, { step: 1 });
         const tag = v.toggle('add a degradation tag', false);
         const th = v.slider('tag half-life (min)', 10, 200, 40, { log: true, sig: 2, step: 1 });
@@ -139,6 +141,7 @@ In the *E. coli* transcription network (577 interactions among 424 operons) Shen
       credit: 'Milo et al., Science 2002; Shen-Orr et al., Nature Genetics 2002',
       scope: String.raw`Counts are for three-node patterns in a directed graph without multiple edges; autoregulation edges are excluded from the counts and left fixed in the randomization. Quoted *E. coli* numbers are from Table 1 of Shen-Orr et al. (2002), read from the paper's text; the network drawn here is synthetic.`,
       viz(v) {
+        const ST = {};
         const PAT = [['ffl', 'feed-forward loop'], ['cycle3', '3-cycle (feedback loop)'], ['cascade', 'cascade X→Y→Z'], ['bifan', 'bi-fan'], ['fanout', 'fan-out (two targets)']];
         const pat = v.select('pattern', PAT.map(([value, label]) => ({ value, label })), 'ffl');
         const bias = v.slider('feed-forward loop bias', 0, 1, 0.8, { step: 0.05 });
@@ -211,6 +214,7 @@ For a Hill function $n_{\rm eff}=n$. The local steepness is the **logarithmic se
       refs: ['Alon: Transcription Networks: Basic Concepts'],
       tags: ['Hill function', 'sensitivity'],
       viz(v) {
+        const ST = {};
         const XS = [0.03, 0.1, 0.3, 1, 3, 10, 30], LX = XS.map(Math.log10);
         const PRE = {
           h1: (x) => hillAct(x, 1, 1), h2: (x) => hillAct(x, 1, 2), h4: (x) => hillAct(x, 1, 4),
@@ -237,11 +241,11 @@ For a Hill function $n_{\rm eff}=n$. The local steepness is the **logarithmic se
           if (Number.isFinite(x50)) A.dot(x50, fmin + rng * 0.5, { r: 6, color: 'gold' });
           B.path(xs.map((x, i) => [x, sens[i]]), { color: 'purple', width: 2.6 });
           if (Number.isFinite(S50)) { B.dot(x50, S50, { r: 6, color: 'gold' }); B.hline(neff / 2, { color: 'green', dash: true }); }
-          v._m = { neff, S50, x10, x90, x50 };
+          ST.m = { neff, S50, x10, x90, x50 };
         });
         v.legend([['accent', 'your input function'], ['green', 'Hill curve with the same n_eff', { dash: true }], ['orange', 'x₁₀, x₉₀', { dot: true }], ['purple', 'logarithmic sensitivity'], ['gold', 'half-maximum', { dot: true }]]);
         v.readout(() => {
-          const m = v._m; if (!m) return '';
+          const m = ST.m; if (!m) return '';
           return `$x_{10}=${v.fix(m.x10, 3)}$, $x_{90}=${v.fix(m.x90, 3)}$, ratio ${v.fix(m.x90 / m.x10, 2)} → $n_{\\rm eff}=\\ln81/\\ln(x_{90}/x_{10}) = ${v.fix(m.neff, 2)}$. Sensitivity at half-maximum $S_{50}=${v.fix(m.S50, 2)}$ → $2S_{50}=${v.fix(2 * m.S50, 2)}$ ${Math.abs(2 * m.S50 - m.neff) < 0.15 * m.neff ? '(agrees with $n_{\\rm eff}$: Hill-like)' : '(differs from $n_{\\rm eff}$: not a Hill shape)'}.`;
         });
       },
@@ -264,8 +268,9 @@ Scope: the logic is that of negative control by a repressor binding at one opera
       credit: 'François Jacob & Jacques Monod, 1961',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lac_operon' },
       viz(v) {
+        const ST = {};
         const AL = { i: [['+', '$i^+$'], ['-', '$i^-$']], o: [['+', '$o^+$'], ['c', '$o^c$']], z: [['+', '$z^+$'], ['-', '$z^-$']] };
-        const mk = (g, def) => v.select(g, AL[g].map(([value, label]) => ({ value, label })), def);
+        const mk = (lab, def) => v.select(lab, AL[lab.match(/\$([a-z])\$/)[1]].map(([value, label]) => ({ value, label })), def);
         const ch = { i: mk('chromosome $i$', '+'), o: mk('chromosome $o$', '+'), z: mk('chromosome $z$', '+') };
         const ep = { i: mk('F′ episome $i$', '-'), o: mk('F′ episome $o$', '+'), z: mk('F′ episome $z$', '-') };
         const dip = v.toggle('F′ episome present (partial diploid)', true);
@@ -315,11 +320,11 @@ Scope: the logic is that of negative control by a repressor binding at one opera
           m.forEach((d, k) => { Bs.rect(0.65 + k * 0.35, 0, 0.65 + k * 0.35 + 0.3, un[k].level, { fill: k ? 'teal' : 'accent', fillAlpha: 0.7, color: k ? 'teal' : 'accent' }); Bs.rect(2.65 + k * 0.35, 0, 2.65 + k * 0.35 + 0.3, ind[k].level, { fill: k ? 'teal' : 'accent', fillAlpha: 0.7, color: k ? 'teal' : 'accent' }); });
           Bs.text(`${v.fix(u, 3)}`, 1.1, Math.max(u, 0) + 0.06, { size: 12, color: 'ink', align: 'center', baseline: 'bottom' });
           Bs.text(`${v.fix(i2, 2)}`, 3.1, i2 + 0.06, { size: 12, color: 'ink', align: 'center', baseline: 'bottom' });
-          v._res = { u, i2, m };
+          ST.res = { u, i2, m };
         });
         v.legend([['accent', 'gene on chromosome'], ['teal', 'gene on F′ episome']]);
         v.readout(() => {
-          const { u, i2, m } = v._res || { u: 0, i2: 0, m: [] };
+          const { u, i2, m } = ST.res || { u: 0, i2: 0, m: [] };
           const g = m.map((d) => `${d.i === '+' ? 'i⁺' : 'i⁻'}${d.o === '+' ? 'o⁺' : 'oᶜ'}${d.z === '+' ? 'z⁺' : 'z⁻'}`).join(' / F′ ');
           let verdict;
           if (i2 === 0) verdict = 'no enzyme at all (no functional z gene)';

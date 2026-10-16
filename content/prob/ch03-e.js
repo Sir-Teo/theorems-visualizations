@@ -94,7 +94,7 @@ export default {
       name: 'Diagonal choice of εₙ → 0',
       statement: String.raw`If $h_n(\eps)\to g(\eps)$ as $n\to\infty$ for each $\eps>0$, and $g(\eps)\to g(0)$ as $\eps\to0$, then there are $\eps_n\to0$ with $h_n(\eps_n)\to g(0)$.`,
       idea: String.raw`As in 3.4.15: pick $N_m$ increasing with $|h_n(1/m)-g(1/m)|\le1/m$ for $n\ge N_m$, and set $\eps_n=1/m$ on $[N_m,N_{m+1})$. Then $|h_n(\eps_n)-g(0)|\le1/m+|g(1/m)-g(0)|\to0$. In the proof of 3.8.2, $h_n(\eps)$ is the characteristic function of the sum of the terms larger than $\eps a_n$, and $g(\eps)$ its compound-Poisson limit.`,
-      caption: String.raw`A model family: $h_n(\eps)=g(\eps)(1-e^{-n\eps^2})$ with $g(\eps)=1-\eps$, so $h_n(\eps)\to g(\eps)$ for fixed $\eps$ but not uniformly. Left: the error $|h_n(\eps)-g(0)|$ over the $(n,\eps)$ plane on log axes; the valley of small error is where $\eps$ is small but $n\eps^2$ large. The diagonal staircase $\eps_n$ (gold) walks down the valley; the path $\eps_n=c/\sqrt n$ (red) goes to $0$ too fast and stays on the slope. Right: the errors along both paths.`,
+      caption: String.raw`A model family: $h_n(\eps)=g(\eps)(1-e^{-n\eps^2})$ with $g(\eps)=1-\eps$, so $h_n(\eps)\to g(\eps)$ for fixed $\eps$ but not uniformly. Left: the error $|h_n(\eps)-g(0)|$ over the $(n,\eps)$ plane on log axes (darker = larger, from $10^{-3}$ to $1$); the valley of small error is where $\eps$ is small but $n\eps^2$ large. The diagonal staircase $\eps_n$ (gold) walks down the valley; the path $\eps_n=c/\sqrt n$ (red) goes to $0$ too fast and stays on the slope. Right: the errors along both paths.`,
       deps: [],
       see: ['prob-3.4.15'],
       tags: ['analysis'],
@@ -116,7 +116,6 @@ export default {
           for (let i = 0; i <= 400; i++) { const lx = (8 * i) / 400, n = 10 ** lx, ed = epsDiag(n), ef = Math.min(1, c / Math.sqrt(n)); stair.push([lx, Math.log10(ed)]); fast.push([lx, Math.log10(ef)]); e1.push([n, Math.max(1e-3, err(n, ed))]); e2.push([n, Math.max(1e-3, err(n, ef))]); }
           L.path(stair, { color: 'gold', width: 2.6 });
           L.path(fast, { color: 'red', width: 2.2, dash: [6, 4] });
-          L.colorbar([-3.2, 0], (u) => v.ramp(u), { pos: 'left', length: 0.4, label: 'log₁₀ error' });
           R.path(e1, { color: 'gold', width: 2.4 });
           R.path(e2, { color: 'red', width: 2, dash: [6, 4] });
           R.hline(Math.exp(-c * c), { color: 'muted', width: 1, dash: [2, 3] });

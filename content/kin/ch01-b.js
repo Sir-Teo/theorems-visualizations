@@ -125,7 +125,7 @@ a **pseudo-first-order** reaction. Measuring $k'$ at several $[\mathrm B]_0$ and
             const D = DATA.noh2;
             s1.text('textbook runs (1280 °C), initial rates:', 0.03, 0.94, { color: 'muted', size: 12 });
             [0, 1, 2].forEach((i) => { const y = 0.72 - 0.25 * i, on = i === clamp(ex.value - 1, 0, 2); if (on) s1.rect(0.01, y - 0.13, 0.99, y + 0.11, { fill: 'gold', fillAlpha: 0.15, stroke: false });
-              s1.text(`run ${i + 1}:  [NO]₀ = ${D.no[i]} M,  [H₂]₀ = ${D.h2[i]} M`, 0.03, y + 0.03, { size: 12, color: 'ink' });
+              s1.text(`run ${i + 1}:  NO ${D.no[i]} M,  H₂ ${D.h2[i]} M`, 0.03, y + 0.03, { size: 12, color: 'ink' });
               s1.text(`v₀ = ${sciTxt(D.rate[i])} M/s`, 0.03, y - 0.07, { size: 12, color: 'ink', weight: 650 }); });
             s1.text('[NO] ×2 → rate ×4;  [H₂] ×2 → rate ×2', 0.03, 0.06, { size: 12, color: 'green', weight: 600 });
             hl = null;
@@ -301,7 +301,7 @@ The deviation from equilibrium decays exponentially with the **relaxation rate**
           s1.setView([1e-14, 1e5], [-0.1, 1.15]);
           s1.rect(1e-14, -0.1, m.td, 1.15, { fill: 'muted', fillAlpha: 0.22, stroke: false });
           s1.rect(m.te, -0.1, 1e5, 1.15, { fill: 'muted', fillAlpha: 0.22, stroke: false });
-          s1.text('dead time', Math.sqrt(1e-14 * m.td) * (m.td < 1e-9 ? 1 : 1), 1.08, { color: 'muted', size: 11, align: 'center' });
+          s1.text('dead time', 2e-14, 1.08, { color: 'muted', size: 11, align: 'left' });
           s1.text('record ended', Math.sqrt(m.te * 1e5), 1.08, { color: 'muted', size: 11, align: 'center' });
           s1.fn((t) => Math.exp(-k * t), { color: 'ink', alpha: 0.3, width: 2.6, n: 400 });
           const g = noiser(v, seed * 3), n = 40, ts = Array.from({ length: n }, (_, i) => m.td * Math.pow(m.te / m.td, (i + 0.5) / n)), ys = ts.map((t) => Math.exp(-k * t) + nS.value * g());

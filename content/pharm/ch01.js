@@ -300,5 +300,236 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4',
+      kind: 'Definition',
+      name: 'Clearance',
+      statement: String.raw`The **clearance** of a drug by an organ or by the whole body is the volume of blood (or plasma) from which the drug is completely removed per unit time, $CL = \text{rate of elimination}/C$. Equivalently, if blood flows through an eliminating organ at rate $Q$ with inflow concentration $C_{\text{in}}$ and outflow concentration $C_{\text{out}}$, the organ removes $Q(C_{\text{in}}-C_{\text{out}})$ per unit time and its clearance is $CL = Q\,E$, where the **extraction ratio** is $E=(C_{\text{in}}-C_{\text{out}})/C_{\text{in}}$. Clearance cannot exceed the flow, since $E \le 1$. For a first-order drug it is a constant: the elimination rate is directly proportional to concentration.`,
+      idea: String.raw`Mass balance across the organ. Per minute, $Q\,C_{\text{in}}$ enters and $Q\,C_{\text{out}}$ leaves, so the difference is eliminated. Dividing the removal rate by the concentration presented to the organ turns it into a volume per time, which can be read as the part of the stream that is scrubbed clean ($E\cdot Q$) with the rest passing untouched. Clearance is therefore a property of the organ and the drug (flow and efficiency), not of the dose, and clearances of parallel organs add (3.8). It is the number that connects exposure to dose, as the next result shows.`,
+      caption: String.raw`Plasma flows left to right through an eliminating organ. Each dot is a drug molecule; the fraction $E$ of them is removed in the organ (orange region: the part of the stream that is cleared, of volume $E\,Q$ per minute). Choose a drug and organ, or set the flow $Q$ and extraction $E$ yourself, then drag the inflow concentration on the right: the removal rate is a straight line through the origin whose **slope is the clearance**. Compare inulin (filtered, $E\approx 0.2$), p-aminohippurate (filtered and secreted, $E\approx 0.9$) and warfarin (barely extracted by the liver).`,
+      scope: String.raw`$CL=QE$ holds for any organ in a steady state. $E$ itself is constant, independent of concentration, only when the removal process is not saturated (first-order kinetics).`,
+      deps: ['pharm-1.2', 'physio-7.3'],
+      refs: ['Rowland–Tozer'],
+      tags: ['clearance', 'extraction'],
+      viz(v) {
+        const PRE = {
+          inulin: { Q: 600, E: 0.21, lab: 'inulin · kidney (plasma flow)' },
+          pah: { Q: 600, E: 0.9, lab: 'p-aminohippurate · kidney' },
+          lido: { Q: 1500, E: 0.7, lab: 'lidocaine · liver (blood flow)' },
+          warf: { Q: 1500, E: 0.002, lab: 'warfarin · liver' },
+        };
+        const sel = v.select('example', [{ value: 'inulin', label: 'inulin, kidney' }, { value: 'pah', label: 'p-aminohippurate, kidney' }, { value: 'lido', label: 'lidocaine, liver' }, { value: 'warf', label: 'warfarin, liver' }, { value: 'free', label: 'free' }], 'inulin');
+        let prog = false;
+        const Qs = v.slider('flow $Q$', 100, 2000, 600, { step: 10, fmt: (x) => `${Math.round(x)} mL/min`, onChange: () => { if (!prog) sel.value = 'free'; } });
+        const Es = v.slider('extraction $E$', 0, 1, 0.21, { step: 0.005, fmt: (x) => v.fix(x, 3), onChange: () => { if (!prog) sel.value = 'free'; } });
+        const sb = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 300, weight: 1.15 });
+        const sr = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, xlabel: 'concentration entering the organ (mg/L)', ylabel: 'elimination rate (mg/min)', height: 300, weight: 1 });
+        const hC = sr.handle(4, 0, { color: 'gold', r: 8, label: 'C', constrain: { x: [0.2, 10], y: [0, 0] } });
+        let last = sel.value;
+        const hash = (i) => { const s = Math.sin(i * 12.9898 + 4.1) * 43758.5453; return s - Math.floor(s); };
+        const N = 26, L = 9.4, gap = L / N;
+        v.animate((t) => {
+          if (sel.value !== last) { last = sel.value; if (sel.value !== 'free') { prog = true; Qs.set(PRE[sel.value].Q); Es.set(PRE[sel.value].E); prog = false; } }
+          const Q = Qs.value, E = Es.value, Cin = hC.x, Cout = Cin * (1 - E), CL = Q * E; // mL/min
+          const yc = 3, hh = 1.7;
+          // vessel and organ
+          sb.rect(0.3, yc - hh / 2, 9.7, yc + hh / 2, { fill: 'accent', fillAlpha: 0.05, color: 'faint', width: 1.2 });
+          sb.rect(0.3, yc - hh / 2, 3.6, yc + hh / 2, { fill: 'accent', fillAlpha: 0.04 + 0.22 * (Cin / 10), stroke: false });
+          sb.rect(6.4, yc - hh / 2, 9.7, yc + hh / 2, { fill: 'accent', fillAlpha: 0.04 + 0.22 * (Cout / 10), stroke: false });
+          sb.rect(3.6, yc - 1.45, 6.4, yc + 1.45, { fill: 'orange', fillAlpha: 0.07, color: 'orange', width: 2, radius: 10 });
+          // cleared part of the stream (cross-section at the inlet)
+          sb.rect(0.3, yc - hh / 2, 3.6, yc - hh / 2 + E * hh, { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1 });
+          sb.text('organ', 5, yc + 1.45, { size: 11.5, color: 'orange', align: 'center', baseline: 'bottom', dy: -4, weight: 600 });
+          sb.text(`cleared part: E·Q = ${Math.round(CL)} mL/min`, 0.45, yc - hh / 2 - 0.15, { size: 10.5, color: 'orange', align: 'left', baseline: 'top' });
+          sb.arrow(0.0, yc, 0.3, yc, { color: 'muted', width: 2, head: 7 });
+          sb.arrow(9.7, yc, 10.0, yc, { color: 'muted', width: 2, head: 7 });
+          sb.text(`C_in = ${v.fix(Cin, 2)}`, 1.9, yc + hh / 2 + 0.2, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom', weight: 600 });
+          sb.text(`C_out = ${v.fix(Cout, 2)}`, 8.1, yc + hh / 2 + 0.2, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom', weight: 600 });
+          sb.text(`flow Q = ${Math.round(Q)} mL/min`, 5, 0.85, { size: 11.5, color: 'muted', align: 'center', baseline: 'middle' });
+          // molecules: each is removed in the organ with probability E (fixed random number per molecule)
+          const keep = [], gone = [];
+          const speed = 1.5, ph = t * speed;
+          for (let j = 0; j < N; j++) {
+            const s = ph + j * gap, lap = Math.floor(s / L), x = 0.3 + (s - lap * L), id = j + N * lap + 7 * j * j;
+            const u = hash(id), yy = yc + (hash(id + 0.5) - 0.5) * (hh - 0.3);
+            if (u < E && x > 5) { const d = x - 5; const ty = yy - d * 1.15; if (ty > 0.7) gone.push([5 + d * 0.15, ty]); }
+            else keep.push([x, yy]);
+          }
+          sb.dots(keep, { r: 3.3, color: 'accent' });
+          sb.dots(gone, { r: 3.3, color: 'orange', alpha: 0.7 });
+          // ---- rate line
+          const rate = (CL / 1000) * 10;
+          const ymax = Math.max(CL / 1000 * 10 * 1.15, 0.02);
+          sr.setView([0, 10], [0, ymax]);
+          sr.line(0, 0, 10, (CL / 1000) * 10, { color: 'orange', width: 2.4 });
+          const C = hC.x, r = (CL / 1000) * C;
+          hC.set(C, 0);
+          sr.vline(C, { color: 'gold', dash: [4, 3], width: 1 });
+          sr.hline(r, { color: 'gold', dash: [4, 3], width: 1 });
+          sr.dot(C, r, { r: 6, color: 'gold' });
+          sr.text(`rate = CL·C = ${sig(r, 3)} mg/min`, C, r, { size: 11, color: 'ink', align: C > 6 ? 'right' : 'left', baseline: 'bottom', dx: C > 6 ? -8 : 8, dy: -8, weight: 600 });
+          sr.text(`slope = CL = ${sig(CL / 1000, 3)} L/min`, 9.8, (CL / 1000) * 9.8, { size: 11, color: 'orange', align: 'right', baseline: 'top', dy: 8, weight: 600 });
+        }, { period: 14, still: 3 });
+        v.legend([['accent', 'drug in the stream', { dot: true }], ['orange', 'molecules removed in the organ', { dot: true }]]);
+        v.readout(() => {
+          const Q = Qs.value, E = Es.value, C = hC.x, CL = Q * E;
+          const tHalf = Math.LN2 * 42000 / Math.max(CL, 1e-9) / 60;
+          return `$CL = Q\\,E = ${Math.round(Q)}\\times ${v.fix(E, 3)} = ${sig(CL, 3)}$ mL/min. Mass balance: $Q(C_\\text{in} - C_\\text{out}) = ${sig(Q * (C - C * (1 - E)) / 1000, 3)}$ mg/min $= CL\\cdot C_\\text{in} = ${sig(CL * C / 1000, 3)}$ mg/min. A body of 42 L cleared at this rate alone would have a half-life of ${tHalf < 100 ? v.fix(tHalf, 1) + ' h' : Math.round(tHalf) + ' h'} ($0.693\\,V/CL$, next chapter).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Theorem',
+      name: 'Dose = clearance × AUC',
+      statement: String.raw`For a drug eliminated with a constant clearance $CL$ (first-order kinetics), the total amount eliminated from the body equals the amount that entered it, $D = CL\int_0^\infty C(t)\,dt$. Hence $\mathrm{AUC}_{0\to\infty}=D/CL$, whatever the route, rate or pattern of administration and whatever the volume of distribution, provided the dose is completely available to the circulation (for an oral dose, $F\,D$ replaces $D$). Conversely, $CL = D/\mathrm{AUC}$ is how clearance is measured.`,
+      idea: String.raw`Let $A(t)$ be the amount in the body, so $A' = I(t) - CL\,C(t)$ where $I$ is the input rate. Integrate from $0$ to $\infty$: the body starts and ends empty ($A(0)=A(\infty)=0$), so $0 = \int I\,dt - CL\int C\,dt$, which is the claim. Only the elimination law "rate $=CL\cdot C$" was used, not the shape of $C$, which is why the input pattern and the volume (the compartment structure) drop out. If elimination saturates, the amount eliminated is still the dose, but the rate is no longer a constant times $C$, so $D/\mathrm{AUC}$ is no longer a fixed clearance.`,
+      caption: String.raw`**Draw the input**: drag the orange handles to shape the rate at which drug enters over the first 12 h (or press a preset), and add an intravenous bolus with the slider. The middle panel shows the concentration and its shaded area; the right panel compares the running total entered (dashed) with the total eliminated, $CL\int_0^t C$ (solid). They meet at the dose. Change the volume $V$ and the curve changes shape but not the area; change $CL$ and the area scales as $1/CL$. Turn on **saturable elimination** (hypothesis broken) and the area no longer obeys $D/CL$.`,
+      scope: String.raw`Linear kinetics (constant $CL$), complete availability, a single dose or any superposition of doses; the area runs to infinity, which here includes the part of the curve beyond the plotted 48 h.`,
+      deps: ['pharm-1.4', 'pma-6.21'],
+      refs: ['Rowland–Tozer'],
+      tags: ['AUC', 'clearance'],
+      viz(v) {
+        const CL = v.slider('clearance $CL$', 1, 30, 6, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} L/h` });
+        const Vs = v.slider('volume $V$', 10, 150, 40, { log: true, sig: 2, fmt: (x) => `${Math.round(x)} L` });
+        const bol = v.slider('IV bolus at $t=0$', 0, 500, 0, { step: 10, fmt: (x) => `${Math.round(x)} mg` });
+        const sat = v.toggle('saturable elimination (break linearity)', false);
+        const Km = v.slider('$K_m$', 1, 20, 4, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} mg/L` });
+        const TS = [0, 2, 4, 6, 8, 10, 12];
+        const PRE = {
+          bolus: { b: 300, y: [0, 0, 0, 0, 0, 0, 0] }, inf: { b: 0, y: [50, 50, 50, 50, 50, 50, 0] },
+          oral: { b: 0, y: [100, 55, 30, 16, 9, 5, 3] }, two: { b: 0, y: [0, 90, 20, 0, 90, 20, 0] },
+        };
+        const sI = v.stage({ x: [0, 48], y: [0, 100], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'input rate (mg/h)', height: 280, weight: 1, xticks: [0, 12, 24, 36, 48], yticks: [0, 25, 50, 75, 100] });
+        const sC = v.stage({ x: [0, 48], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'concentration (mg/L)', height: 280, weight: 1, xticks: [0, 12, 24, 36, 48] });
+        const sA = v.stage({ x: [0, 48], y: [0, 500], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'cumulative amount (mg)', height: 280, weight: 1, xticks: [0, 12, 24, 36, 48] });
+        const hs = TS.map((t, i) => sI.handle(t, PRE.oral.y[i], { color: 'orange', r: 7, constrain: 'y' }));
+        const clampH = () => hs.forEach((h) => { if (h.y < 0) h.set(h.x, 0); if (h.y > 100) h.set(h.x, 100); });
+        const setPre = (k) => { PRE[k].y.forEach((y, i) => hs[i].set(TS[i], y)); bol.set(PRE[k].b); };
+        v.button('IV bolus', () => setPre('bolus'));
+        v.button('IV infusion', () => setPre('inf'));
+        v.button('oral-like', () => setPre('oral'));
+        v.button('two doses', () => setPre('two'));
+        bol.set(0);
+        const rate = (t) => {
+          if (t >= 12) return 0;
+          let i = Math.min(5, Math.floor(t / 2)); const f = (t - TS[i]) / 2;
+          return hs[i].y * (1 - f) + hs[i + 1].y * f;
+        };
+        const get = memo();
+        function run() {
+          const cl = CL.value, V = Vs.value, nl = sat.value, km = Km.value, vmax = cl * km;
+          const key = `${hs.map((h) => Math.round(h.y * 4)).join(',')}|${bol.value}|${cl}|${V}|${nl}|${km}`;
+          return get(key, () => {
+            const el = (C) => (nl ? (vmax * C) / (km + C) : cl * C);
+            let y = [bol.value / V, 0, 0, 0, 0]; // C, ∫C, ∫elim, ∫input, (unused)
+            const f = (s, t) => [(rate(t) - el(Math.max(0, s[0]) )) / V, s[0], el(Math.max(0, s[0])), rate(t), 0];
+            const out = { t: [], C: [], auc: [], elim: [], inp: [] };
+            let t = 0, rec = 0;
+            for (let i = 0; i < 200000; i++) {
+              if (t >= rec - 1e-9 && t <= 72) { out.t.push(t); out.C.push(y[0]); out.auc.push(y[1]); out.elim.push(y[2]); out.inp.push(bol.value + y[3]); rec += 0.2; }
+              if (t > 12 && y[0] * V < 1e-5 * Math.max(1, bol.value + y[3])) break;
+              const h = t < 72 ? 0.02 : 0.1;
+              y = rk4(f, y, t, h); t += h;
+            }
+            const D = bol.value + y[3], tail = (y[0] * V) / cl;
+            return { ...out, D, aucTotal: y[1] + tail, elimTotal: y[2] + y[0] * V, tEnd: t, cl, V, nl };
+          });
+        }
+        v.render(() => {
+          clampH();
+          const R = run();
+          // input panel
+          const pts = [[0, 0]]; for (let t = 0; t <= 12.001; t += 0.25) pts.push([t, rate(t)]); pts.push([12, 0]);
+          sI.poly(pts, { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 2 });
+          if (bol.value > 0) { sI.arrow(0.4, 0, 0.4, 100, { color: 'red', width: 3, head: 9 }); sI.text(`bolus ${Math.round(bol.value)} mg`, 1.2, 95, { size: 11, color: 'red', align: 'left', baseline: 'top', weight: 600 }); }
+          // concentration + AUC
+          const cmax = Math.max(1, ...R.C), top = Math.max(2, Math.ceil(cmax * 1.15));
+          sC.setView([0, 48], [0, top]);
+          const n = R.t.findIndex((t) => t > 48), nn = n < 0 ? R.t.length : n;
+          const apts = []; for (let j = 0; j < nn; j++) apts.push([R.t[j], R.C[j]]);
+          sC.poly([[0, 0], ...apts, [apts[apts.length - 1][0], 0]], { fill: 'accent', fillAlpha: 0.22, stroke: false });
+          trace(sC, R.t.slice(0, nn), R.C.slice(0, nn), { color: 'accent', width: 2.4 });
+          // cumulative
+          const dTop = Math.max(100, Math.ceil(R.D / 100) * 100);
+          sA.setView([0, 48], [0, dTop * 1.05]);
+          sA.hline(R.D, { color: 'muted', dash: [4, 3], width: 1 });
+          trace(sA, R.t.slice(0, nn), R.inp.slice(0, nn), { color: 'accent', width: 2, dash: [6, 4] });
+          trace(sA, R.t.slice(0, nn), R.elim.slice(0, nn), { color: 'green', width: 2.6 });
+          sA.text(`dose ${sig(R.D, 4)} mg`, 47.5, R.D, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -3 });
+        });
+        v.legend([['orange', 'input rate', { area: true }], ['accent', 'concentration (area = AUC)', { area: true }], ['accent', 'cumulative input', { dash: true }], ['green', 'cumulative eliminated']]);
+        v.readout(() => {
+          const R = run(), cl = R.cl;
+          if (!R.nl) return `Dose $D = ${sig(R.D, 4)}$ mg · $\\mathrm{AUC}_{0\\to\\infty} = ${sig(R.aucTotal, 4)}$ mg·h/L · $CL\\times\\mathrm{AUC} = ${sig(cl * R.aucTotal, 4)}$ mg · ratio $CL\\cdot\\mathrm{AUC}/D = ${v.fix(cl * R.aucTotal / R.D, 4)}$ (numerical integration; $V = ${Math.round(R.V)}$ L has no effect on the area). Total eliminated $= ${sig(R.elimTotal, 4)}$ mg.`;
+          return `Saturable elimination: $D = ${sig(R.D, 4)}$ mg, $\\mathrm{AUC} = ${sig(R.aucTotal, 4)}$ mg·h/L, so $CL_\\text{low}\\times\\mathrm{AUC}/D = ${v.fix(cl * R.aucTotal / R.D, 3)}$ ≠ 1: the effective clearance $D/\\mathrm{AUC} = ${sig(R.D / R.aucTotal, 3)}$ L/h is below the low-concentration clearance ${sig(cl, 3)} L/h and depends on the dose. The eliminated total still reaches the dose (solid line).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6',
+      kind: 'Definition',
+      name: 'Bioavailability',
+      statement: String.raw`The **(absolute) bioavailability** $F$ of a drug given by a non-intravenous route is the fraction of the dose that reaches the systemic circulation unchanged. It is measured by comparing exposures after an oral and an intravenous dose of the same drug in the same person: $F = \dfrac{\mathrm{AUC}_{\text{po}}\,D_{\text{iv}}}{\mathrm{AUC}_{\text{iv}}\,D_{\text{po}}}$. For an oral dose it is the product of three survival fractions: absorbed through the gut wall ($F_a$), escaping metabolism in the gut wall ($F_g$) and escaping extraction by the liver on the first pass ($F_h = 1-E_h$), so $F = F_a F_g F_h$.`,
+      idea: String.raw`The intravenous dose delivers everything to the blood, so its area is $D_{\text{iv}}/CL$ (1.5) and defines the reference. An oral dose delivers only $F D_{\text{po}}$ to the circulation, and the same clearance acts on it, so its area is $F D_{\text{po}}/CL$. The ratio of dose-normalized areas is $F$, with no model of absorption needed. Splitting $F$ into factors follows the dose through the successive barriers: every molecule must cross the gut wall, survive the enzymes there and then survive one pass through the liver before it counts.`,
+      caption: String.raw`A hundred tablets' worth of drug on the left: green dots reach the circulation, the others are lost to incomplete absorption (red), gut-wall metabolism (purple) or the liver's first pass (orange). On the right, the same dose is given by mouth and intravenously; the AUCs are integrated numerically (trapezoids with an extrapolated tail) and their ratio is $F$. Pick a drug or drag the three survival fractions, and change the absorption rate: the peak moves but the area ratio $F$ does not. Only the total $F$ of each preset is a literature figure; its split into $F_a$, $F_g$, $F_h$ is illustrative.`,
+      scope: String.raw`Needs linear kinetics with the same clearance after both routes, and the same subject. Slow or incomplete absorption changes the shape of the curve, never the area for a given $F$. If the drug is also cleared by the lung or gut before reaching the sampling site, $F$ can exceed or fall short of what the liver alone predicts.`,
+      deps: ['pharm-1.5'],
+      refs: ['Rowland–Tozer'],
+      tags: ['bioavailability', 'first-pass'],
+      viz(v) {
+        const PRE = {
+          propranolol: { Fa: 1, Fg: 1, Eh: 0.74, V: 280, CL: 60, ka: 1.5, note: 'F ≈ 0.26' },
+          midazolam: { Fa: 1, Fg: 0.55, Eh: 0.2, V: 70, CL: 27, ka: 3, note: 'F ≈ 0.44' },
+          morphine: { Fa: 0.85, Fg: 0.9, Eh: 0.6, V: 245, CL: 72, ka: 1, note: 'F ≈ 0.3' },
+          lidocaine: { Fa: 1, Fg: 1, Eh: 0.65, V: 90, CL: 45, ka: 2, note: 'F ≈ 0.35' },
+          atenolol: { Fa: 0.5, Fg: 1, Eh: 0, V: 49, CL: 5.2, ka: 0.8, note: 'F ≈ 0.5' },
+          digoxin: { Fa: 0.7, Fg: 1, Eh: 0, V: 490, CL: 8.5, ka: 1.5, note: 'F ≈ 0.7' },
+          warfarin: { Fa: 1, Fg: 1, Eh: 0, V: 9.8, CL: 0.17, ka: 2, note: 'F ≈ 1' },
+        };
+        const names = Object.keys(PRE);
+        const sel = v.select('drug', [...names.map((n) => ({ value: n, label: n })), { value: 'free', label: 'free' }], 'propranolol');
+        let prog = false;
+        const mk = (label, init, opt = {}) => v.slider(label, 0, opt.max ?? 1, init, { step: 0.01, fmt: (x) => `${v.fix(x, 2)}`, onChange: () => { if (!prog) sel.value = 'free'; } });
+        const Fa = mk('absorbed, $F_a$', PRE.propranolol.Fa), Fg = mk('survives gut wall, $F_g$', PRE.propranolol.Fg), Eh = mk('hepatic extraction $E_h$', PRE.propranolol.Eh, { max: 0.98 });
+        const ka = v.slider('absorption rate $k_a$', 0.2, 6, 1.5, { log: true, sig: 2, fmt: (x) => `${sig(x, 2)} /h` });
+        const si = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 0.8, minWidth: 230 });
+        const sc = v.stage({ x: [0, 20], y: [0, 1], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'concentration (mg/L)', height: 300, weight: 1.3 });
+        const I = v.icons(si, { n: 100, order: 'group', shape: 'dot' });
+        let last = sel.value, info = null, lastPre = 'propranolol';
+        v.render(() => {
+          if (sel.value !== last) { last = sel.value; if (sel.value !== 'free') { const p = PRE[sel.value]; prog = true; Fa.set(p.Fa); Fg.set(p.Fg); Eh.set(p.Eh); ka.set(p.ka); prog = false; } }
+          if (sel.value !== 'free') lastPre = sel.value;
+          const V = PRE[lastPre].V, CL = PRE[lastPre].CL, k = CL / V, Dd = 100;
+          const F = Fa.value * Fg.value * (1 - Eh.value);
+          const nUn = Math.round(100 * (1 - Fa.value)), nGut = Math.round(100 * Fa.value * (1 - Fg.value)), nLiv = Math.round(100 * Fa.value * Fg.value * Eh.value);
+          const nSys = Math.max(0, 100 - nUn - nGut - nLiv);
+          I.set({ groups: [{ n: nSys, color: 'green', label: 'reaches the circulation' }, { n: nLiv, color: 'orange', label: 'lost in the liver (first pass)' }, { n: nGut, color: 'purple', label: 'lost in the gut wall' }, { n: nUn, color: 'red', label: 'not absorbed' }], rest: { color: 'muted', alpha: 0.3 } });
+          I.draw();
+          // curves
+          const tmax = Math.max(4, Math.min(300, 6 * Math.LN2 / k)), nt = 600;
+          const ts = [], civ = [], cpo = [];
+          for (let i = 0; i <= nt; i++) { const t = (i / nt) * tmax; ts.push(t); civ.push((Dd / V) * Math.exp(-k * t)); cpo.push(bateman(F, Dd, V, ka.value, k, t)); }
+          const aivB = trapz(ts, civ), apoB = trapz(ts, cpo);
+          const aiv = aivB + civ[nt] / k, apo = apoB + cpo[nt] / k;
+          const Fm = apo / aiv;
+          const top = (Dd / V) * 1.1;
+          sc.setView([0, tmax], [0, top]);
+          sc.fn((t) => (Dd / V) * Math.exp(-k * t), { domain: [0, tmax], color: 'blue', width: 2.2, fill: true, fillAlpha: 0.12 });
+          sc.fn((t) => bateman(F, Dd, V, ka.value, k, t), { domain: [0, tmax], color: 'orange', width: 2.4, fill: true, fillAlpha: 0.25 });
+          sc.text(`AUC iv = ${sig(aiv, 3)} mg·h/L`, tmax * 0.98, top * 0.97, { size: 11, color: 'blue', align: 'right', baseline: 'top', weight: 600 });
+          sc.text(`AUC oral = ${sig(apo, 3)} mg·h/L`, tmax * 0.98, top * 0.88, { size: 11, color: 'orange', align: 'right', baseline: 'top', weight: 600 });
+          info = { F, Fm, aiv, apo, V, CL, nSys, nLiv, nGut, nUn };
+        });
+        v.legend([['blue', 'intravenous 100 mg', { area: true }], ['orange', 'oral 100 mg', { area: true }]]);
+        v.readout(() => {
+          const r = info;
+          return `$F = F_a F_g (1-E_h) = ${v.fix(Fa.value, 2)}\\times ${v.fix(Fg.value, 2)}\\times ${v.fix(1 - Eh.value, 2)} = ${v.fix(r.F, 3)}$. From the curves: $\\mathrm{AUC_{po}}/\\mathrm{AUC_{iv}} = ${sig(r.apo, 4)}/${sig(r.aiv, 4)} = ${v.fix(r.Fm, 3)}$. Tablet fates (of 100): ${r.nSys} reach the circulation, ${r.nLiv} lost in the liver, ${r.nGut} in the gut wall, ${r.nUn} not absorbed. Systemic parameters used: $V = ${sig(r.V, 3)}$ L, $CL = ${sig(r.CL, 3)}$ L/h (typical adult values; educational).`;
+        });
+      },
+    },
   ],
 };

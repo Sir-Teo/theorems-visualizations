@@ -60,7 +60,7 @@ export default {
         });
         v.render(() => {
           const X = calc(), P = pix(sT), { W, H } = P, j = Math.min(pos.value - 1, Math.max(0, X.P.length - 1));
-          const cell = Math.min((W - 30) / 27, (H - 20) / 27), x0 = (W - 27 * cell) / 2 + cell, y0 = 14 + cell, fs = cell > 12 ? 9.5 : 8.5;
+          const cell = Math.min((W - 30) / 27, (H - 44) / 27), x0 = (W - 27 * cell) / 2 + cell, y0 = 14 + cell, fs = cell > 12 ? 9.5 : 8.5;
           const usedRows = new Set([...X.K].map(code));
           const kj = code(X.K[j % X.K.length]), pj = X.P.length ? code(X.P[j]) : 0, cj = mod(kj + pj, 26);
           // bands
@@ -160,7 +160,7 @@ export default {
           const X = calc(), fac = X.kas.fac.slice(2, 31), mx = Math.max(3, ...fac), k = period(X);
           sB.setView([1, 31], [0, mx * 1.18]);
           sB.bars(X.kas.fac.map((c, i) => (i < 2 ? 0 : c)).slice(1), { x0: 1, dx: 1, barWidth: 0.74, color: (y, i) => (i + 1 === k ? 'gold' : i + 1 === X.kK ? 'green' : 'accent') });
-          sB.text(X.kK ? `Kasiski: f = ${X.kK}` : 'too few repeats', 1.3, mx * 1.1, { size: 11.5, color: 'green', align: 'left', weight: 700 });
+          sB.text(X.kK ? `Kasiski: f = ${X.kK}` : 'too few repeats', 30.6, mx * 1.1, { size: 11.5, color: 'green', align: 'right', weight: 700 });
         });
         v.render(() => {
           const X = calc(), P = pix(sC), { W } = P, k = period(X);
@@ -170,7 +170,7 @@ export default {
             const sh = cnt.map((_, i) => cnt[(i + bs.s) % 26]);
             const mx = Math.max(...sh, ...EN_P.map((p) => p * n), 1), bw = (cw - 18) / 26;
             P.rect(x0, y0, cw - 8, ch, { fill: 'accent', fillAlpha: 0.04, color: 'faint', width: 1, radius: 6 });
-            P.text(`column ${j + 1}  →  key letter ${A[bs.s]}`, x0 + 8, y0 + 11, { size: 11, weight: 700, color: 'green', align: 'left', halo: false });
+            P.text(`column ${j + 1}  →  key ${A[bs.s]}`, x0 + 8, y0 + 11, { size: 11, weight: 700, color: 'green', align: 'left', halo: false });
             sh.forEach((c, i) => { const h = (c / mx) * (ch - 40); if (h > 0) P.rect(x0 + 9 + i * bw + 0.5, y0 + ch - 14 - h, bw - 1, h, { fill: 'orange', fillAlpha: 0.65, stroke: false }); P.dot(x0 + 9 + (i + 0.5) * bw, y0 + ch - 14 - (EN_P[i] * n / mx) * (ch - 40), { r: 1.8, color: 'blue' }); });
             P.line(x0 + 9, y0 + ch - 14, x0 + 9 + 26 * bw, y0 + ch - 14, { color: 'faint', width: 1 });
             P.text('A', x0 + 9 + 0.5 * bw, y0 + ch - 6, { size: 8.5, color: 'muted', align: 'center', halo: false });
@@ -184,7 +184,7 @@ export default {
           const k = period(X), key = recoverKey(X.C, k).map((s) => A[s]).join(''), plain = vigC(X.C, key, true);
           const reps = X.kas.reps.slice(0, 4).map((r) => `${r.seq.length > 8 ? r.seq.slice(0, 8) + '…' : r.seq} (${r.dist} = ${factorStr(r.dist) || r.dist})`).join(', ');
           return String.raw`Whole-text IC $${X.icAll.toFixed(4)}$ ${X.icAll > 0.06 ? '(looks monoalphabetic)' : '(flattened: polyalphabetic)'}. Best period by IC: **${X.kBest}** (mean column IC $${X.ics[X.kBest - 1].toFixed(4)}$); Kasiski: **${X.kK || '—'}** from ${X.kas.reps.length} repeated strings.` + '\n' +
-            `Key for period ${k}: **${key}** — decrypts to “${plain.slice(0, 90)}…”` + (reps ? `\nLongest repeats (distance = factors): ${reps}.` : '');
+            `Key for period ${k}: **${key}** — decrypts to “${groups5(plain.slice(0, 60))} …”` + (reps ? `\nLongest repeats (distance = factors): ${reps}.` : '');
         });
       },
     },

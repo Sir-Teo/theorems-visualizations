@@ -350,7 +350,7 @@ With $L=(N_{\rm bonds}+2)\,\ell$ and $\ell\approx1.39$ Å, lengthening a **cyani
           }
           const rgb = wl >= 380 && wl <= 780 ? M.wavelengthRGB(wl) : null;
           sL.arrow(0.82, E(nH), 0.82, E(nH + 1), { color: rgb ? `rgb(${rgb[0]},${rgb[1]},${rgb[2]})` : 'ink', width: 3, head: 9 });
-          sL.text(`${v.fix(wl, 0)} nm`, 0.95, (E(nH) + E(nH + 1)) / 2, { size: 12, color: 'ink', align: 'right', baseline: 'middle', dy: -14 });
+          sL.text(`${v.fix(wl, 0)} nm`, 0.86, (E(nH) + E(nH + 1)) / 2, { size: 12, color: 'ink', align: 'left', baseline: 'middle' });
           sL.corner(`L = ${v.fix(L * 10, 1)} Å`, 'tl', { color: 'muted' });
           // right: λ against N
           sR.raster((x, y) => (y >= 380 && y <= 750 ? [...M.wavelengthRGB(y), 0.32] : null), { res: 3, key: 'vis', rect: [2, 380, 24, 750] });
@@ -358,7 +358,7 @@ With $L=(N_{\rm bonds}+2)\,\ell$ and $\ell\approx1.39$ Å, lengthening a **cyani
           for (const [ff, color] of [['cy', 'accent'], ['poly', 'orange']]) {
             const on = ff === f;
             sR.fn((x) => lam(ff, x), { domain: [ff === 'cy' ? 6 : 2, 24], color, width: on ? 2.6 : 1.3, alpha: on ? 1 : 0.4, dash: on ? false : [5, 4] });
-            for (const [n, w, name] of DATA[ff]) sR.dot(n, w, { r: on ? 6 : 4, color, alpha: on ? 1 : 0.5, label: on ? name : undefined, labelPos: 'se' });
+            for (const [n, w, name] of DATA[ff]) { sR.dot(n, w, { r: on ? 6 : 4, color, alpha: on ? 1 : 0.5 }); if (on) sR.text(name, n, w, { size: 11, color, align: n > 20 ? 'right' : 'left', dx: n > 20 ? -10 : 10, dy: 12 }); }
           }
           sR.dot(N, wl, { r: 7, color: 'gold', hollow: true });
           sR.vline(N, { color: 'gold', width: 1, dash: [3, 3], alpha: 0.7 });
@@ -384,7 +384,7 @@ $$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qq
       refs: ['McQuarrie ch. 3'],
       tags: ['degeneracy', 'separation of variables', 'symmetry'],
       viz(v) {
-        const M = v.M, NM = 5, NL = 14;
+        const M = v.M, NM = 5, NL = 14, NY = 13, NZ = 12;
         const dim = v.select('box', [{ value: '2', label: '2D rectangle' }, { value: '3', label: '3D box with square base' }], '2', { onChange: () => { jS.set(Math.min(jS.value, NL)); } });
         const aS = v.slider('aspect ratio $a$', 0.5, 2.5, 1, { step: 0.005 });
         const jS = v.slider('inspect level #', 1, NL, 4, { int: true });
@@ -392,8 +392,8 @@ $$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qq
         for (const [lab, val] of [['$a=1$', 1], ['$a=\\sqrt2$', Math.SQRT2], ['$a=\\tfrac32$', 1.5], ['$a=2$', 2]]) v.button(lab, () => aS.set(val));
         const states = () => {
           const a = aS.value, three = dim.value === '3', out = [];
-          for (let i = 1; i <= NM; i++) for (let j = 1; j <= NM; j++) {
-            if (three) for (let k = 1; k <= NM; k++) out.push({ q: [i, j, k], E: i * i + j * j + (k * k) / (a * a) });
+          for (let i = 1; i <= NM; i++) for (let j = 1; j <= (three ? NM : NY); j++) {
+            if (three) for (let k = 1; k <= NZ; k++) out.push({ q: [i, j, k], E: i * i + j * j + (k * k) / (a * a) });
             else out.push({ q: [i, j], E: i * i + (j * j) / (a * a) });
           }
           return out;
@@ -426,7 +426,7 @@ $$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qq
           L.slice(0, NL).forEach((lv) => { if (lv.s.length > 1 && lv.E < top) sC.dot(a, lv.E, { r: 5, hollow: true, color: 'green' }); });
           // ladder
           L.slice(0, NL).forEach((lv, i) => {
-            const hi = i === lev, e = lv.E; if (e > top) return;
+            const hi = i === lev, e = lv.E; if (e > top * 0.96) return;
             sD.line(0.08, e, 0.52, e, { color: hi ? 'orange' : 'muted', width: hi ? 3 : 1.8, alpha: hi ? 1 : 0.7 });
             sD.text(`${lv.s.length > 1 ? '×' + lv.s.length : ''}`, 0.56, e, { size: 12, color: lv.s.length > 1 ? 'green' : 'muted', align: 'left', baseline: 'middle' });
             sD.text(v.fix(e, 2), 0.97, e, { size: 10.5, color: hi ? 'ink' : 'muted', align: 'right', baseline: 'middle', dy: -7 });
@@ -434,7 +434,7 @@ $$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qq
           // density of the chosen partner (projected on the xy-plane in 3D)
           const q = cur.s[part].q, wy = three ? 1 : a;
           sH.setView([0, 1], [0, wy]);
-          sH.heat((x, y) => (2 * Math.sin(q[0] * Math.PI * x) ** 2) * (2 * Math.sin(q[1] * Math.PI * (y / wy)) ** 2) / wy, { cmap: 'theme', color: 'accent', range: [0, 4.2 / wy], res: 3, key: `${q}|${wy.toFixed(3)}` });
+          sH.heat((x, y) => (2 * Math.sin(q[0] * Math.PI * x) ** 2) * (2 * Math.sin(q[1] * Math.PI * (y / wy)) ** 2) / wy, { cmap: 'theme', color: 'accent', range: [0, 4.2 / wy], res: 3, rect: [0, 0, 1, wy], key: `${q}|${wy.toFixed(3)}` });
           sH.rect(0, 0, 1, wy, { stroke: true, fill: false, color: 'ink', width: 1.5 });
           sH.corner(`(n = ${q.join(', ')})`, 'tl', { color: 'ink', plate: true });
           // statistics
@@ -444,6 +444,135 @@ $$E_{n_xn_y}=\frac{h^2}{8m}\Big(\frac{n_x^2}{L_x^2}+\frac{n_y^2}{L_y^2}\Big),\qq
         });
         v.legend([['muted', 'a level (one line per $(n_x,n_y)$ state)'], ['orange', 'states of the inspected level'], ['green', 'degenerate here', { dot: true }]]);
         v.readout(() => st && `$a=${v.fix(st.a, 3)}$ ($a^2=${v.fix(st.a * st.a, 4)}$${st.ratio ? ' $=' + st.ratio + '$' : ''}) · degeneracies of the lowest ${NL} levels: ${st.degs} · ${st.degPairs} of them degenerate · inspected level: $E=${v.fix(st.E, 3)}\\,E_0$ with states ${st.q}` + (Math.abs(st.a - 1) < 1e-6 ? ' — symmetric box: pairs (or triples) forced by symmetry.' : st.degPairs ? ' — an accidental degeneracy at a rational $a^2$ (no symmetry forces it).' : ' — all levels non-degenerate.'));
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7',
+      kind: 'Model',
+      name: 'Quantum harmonic oscillator',
+      credit: 'Schrödinger, 1926 (Hermite-function solution)',
+      statement: String.raw`A particle of mass $\mu$ in the potential $V=\tfrac12k x^2$ (angular frequency $\omega=\sqrt{k/\mu}$) has the energy levels and wave functions
+$$E_n=\hbar\omega\big(n+\tfrac12\big),\qquad \psi_n(x)=\frac{1}{\sqrt{2^nn!}}\Big(\frac{\mu\omega}{\pi\hbar}\Big)^{1/4}H_n\!\Big(\sqrt{\tfrac{\mu\omega}{\hbar}}\,x\Big)e^{-\mu\omega x^2/2\hbar},\qquad n=0,1,2,\dots$$
+The levels are equally spaced by $\hbar\omega$, $\psi_n$ has $n$ nodes and parity $(-1)^n$, and the ground state is a Gaussian of width $\sqrt{\hbar/\mu\omega}$. The classical turning points are $x_n=\pm\sqrt{(2n+1)\hbar/\mu\omega}$, and the wave function penetrates beyond them (for $n=0$ the particle is in the forbidden region with probability 15.7 %). For large $n$ the density, averaged over its oscillations, approaches the classical one, $1/\pi\sqrt{x_n^2-x^2}$.`,
+      scope: String.raw`Small vibrations about a minimum of any smooth potential (a bond near its equilibrium length) with $k=V''(x_e)$; for large amplitudes the potential departs from a parabola (1.8, 5.12 Morse).`,
+      idea: String.raw`Write $\hat H=\hbar\omega(\hat a^\dagger\hat a+\tfrac12)$ with ladder operators (1.13), or solve the differential equation: substituting $\psi=h(\xi)e^{-\xi^2/2}$ in the scaled variable $\xi=x\sqrt{\mu\omega/\hbar}$ gives Hermite's equation, whose solutions stay polynomial only if $E=\hbar\omega(n+\frac12)$ (otherwise the series grows like $e^{\xi^2}$ and $\psi$ diverges, as in 1.1). The equal spacing is special to the parabola. Classically a particle spends time $dt\propto dx/v$ at each point, so its probability density is largest where it is slow — at the turning points — which is where $|\psi_n|^2$ piles up for large $n$ (correspondence principle).`,
+      caption: String.raw`**Pick a level $n$** (or a real molecule: CO or HCl, whose force constant fixes the length scale, a few hundredths of an ångström). Left: the parabola, the level ladder, the chosen $\psi_n$ at its energy and the turning points. Right: $|\psi_n|^2$ against the classical probability density (orange dashed); the red tails are the classically forbidden region. Raise $n$ to 30 and the quantum density oscillates around the classical curve; the readout checks that $\hat H\psi_n=E_n\psi_n$ holds to the grid error.`,
+      deps: ['qchem-1.1', 'mech-4.2', 'qm-4.1'],
+      see: ['qm-4.4'],
+      refs: ['McQuarrie ch. 5'],
+      tags: ['harmonic oscillator', 'vibration', 'Hermite functions'],
+      viz(v) {
+        const M = v.M, U = units(M), NMAX = 30, XI = 10, NG = 801;
+        const MOLS = {
+          dl: { name: 'dimensionless', w: 1, mu: null },
+          CO: { name: 'CO', w: 2169.81358, mu: (12 * 15.9949146) / (12 + 15.9949146) },       // ω_e (NIST), reduced mass of ¹²C¹⁶O
+          HCl: { name: 'H³⁵Cl', w: 2990.9463, mu: (1.00782503 * 34.96885268) / (1.00782503 + 34.96885268) },
+        };
+        const mol = v.select('oscillator', Object.entries(MOLS).map(([value, m]) => ({ value, label: m.name })), 'CO');
+        const nS = v.slider('level $n$', 0, NMAX, 4, { int: true });
+        const { x: xi, dx } = grid(-XI, XI, NG), PH = hermiteFns(NMAX, xi);
+        const sL = v.stage({ x: [-9, 9], y: [0, 12], height: 380, axes: 'box', gutter: true, weight: 1.2, xlabel: 'x', ylabel: 'E', title: 'potential, levels and $\\psi_n$' });
+        const sR = v.stage({ x: [-9, 9], y: [0, 0.7], height: 380, axes: 'box', gutter: true, weight: 1, xlabel: 'x', ylabel: 'probability density', title: '$|\\psi_n|^2$ against the classical density' });
+        let st = null;
+        v.render(() => {
+          const m = MOLS[mol.value], n = nS.value, real = m.mu != null;
+          const x0 = real ? Math.sqrt(U.hbar2_uA2 / (m.mu * m.w)) : 1;          // Å (length scale √(ħ/μω)); 1 for dimensionless
+          const eU = real ? m.w : 1;                                               // ħω in cm⁻¹
+          const xs = real ? 'Å' : 'x₀', top = Math.max(n + 5, 9), A = Math.sqrt(2 * n + 1), XW = Math.sqrt(2 * top) + 0.4;
+          const phi = PH[n], Xv = (q) => q * x0;
+          // left
+          sL.setView([-XW * x0, XW * x0], [0, top * eU]); sL.setLabels(`x (${xs})`, real ? 'E (cm⁻¹)' : 'E / ħω');
+          sL.fn((X) => 0.5 * (X / x0) ** 2 * eU, { color: 'muted', width: 2, fill: 'muted', fillAlpha: 0.1, base: 0, n: 300 });
+          for (let k = 0; k <= Math.min(NMAX, top); k++) { const e = (k + 0.5) * eU, a = Math.sqrt(2 * k + 1) * x0; sL.line(-a, e, a, e, { color: k === n ? 'ink' : 'muted', width: k === n ? 1.6 : 0.8, alpha: k === n ? 0.9 : 0.4, dash: k === n ? false : [3, 3] }); }
+          const col = phaseLUT(v), amp = 1.5 * eU / Math.max(...phi.map(Math.abs));
+          drawReal(sL, Float64Array.from(xi, Xv), phi, { col, base: (n + 0.5) * eU, scale: amp, alpha: 0.55, outline: 'ink', width: 1.6 });
+          sL.vline(A * x0, { color: 'red', width: 1.2, dash: [4, 3] }); sL.vline(-A * x0, { color: 'red', width: 1.2, dash: [4, 3] });
+          sL.dot(A * x0, (n + 0.5) * eU, { r: 4, color: 'red' }); sL.dot(-A * x0, (n + 0.5) * eU, { r: 4, color: 'red' });
+          sL.text('turning point', A * x0, (top - 0.6) * eU, { size: 10.5, color: 'red', align: 'left', dx: 5 });
+          // right: density vs classical
+          const dens = Float64Array.from(phi, (q) => (q * q) / x0);
+          let dm = 0; for (const q of dens) dm = Math.max(dm, q);
+          const yt = Math.max(0.25 / x0, dm * 1.18); sR.setView([-XW * x0, XW * x0], [0, yt]);
+          const cl = (X) => (Math.abs(X) < A * x0 ? 1 / (Math.PI * Math.sqrt((A * x0) ** 2 - X * X)) : 0);
+          sR.rect(-XW * x0, 0, -A * x0, yt, { fill: 'red', fillAlpha: 0.07, stroke: false }); sR.rect(A * x0, 0, XW * x0, yt, { fill: 'red', fillAlpha: 0.07, stroke: false });
+          sR.path(Array.from(xi, (q, i) => [Xv(q), dens[i]]), { color: 'accent', width: 2.4 });
+          sR.fn(cl, { domain: [-A * x0 * 0.9995, A * x0 * 0.9995], color: 'orange', width: 2, dash: [6, 4], n: 400 });
+          sR.vline(A * x0, { color: 'red', width: 1.2, dash: [4, 3] }); sR.vline(-A * x0, { color: 'red', width: 1.2, dash: [4, 3] });
+          // checks
+          const f = (X) => interp(xi, phi, X);
+          const tail = 2 * M.integrate((X) => f(X) ** 2, A, XI, 400);
+          let x2 = 0, res = 0, mx = 0;
+          for (let i = 0; i < NG; i++) { x2 += xi[i] * xi[i] * phi[i] * phi[i] * dx; mx = Math.max(mx, Math.abs(phi[i])); }
+          for (let i = 3; i < NG - 3; i++) { const d2 = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (dx * dx); res = Math.max(res, Math.abs(-0.5 * d2 + 0.5 * xi[i] * xi[i] * phi[i] - (n + 0.5) * phi[i])); }
+          st = { n, tail, x2, res: res / mx, A: A * x0, x0, real, m, E: (n + 0.5) * eU, eU };
+        });
+        v.legend([['accent', '$|\\psi_n|^2$'], ['orange', 'classical density', { dash: true }], ['red', 'turning points / forbidden region', { dash: true }]]);
+        v.readout(() => st && `$E_{${st.n}}=(${st.n}+\\tfrac12)\\hbar\\omega$` + (st.real ? ` $=${v.fix(st.E, 1)}$ cm$^{-1}$ $=${v.fix(st.E * 0.01196266, 2)}$ kJ/mol; length scale $\\sqrt{\\hbar/\\mu\\omega}=${v.fix(st.x0, 4)}$ Å, turning points $\\pm${v.fix(st.A, 3)}$ Å` : ` (units $\\hbar\\omega$ and $\\sqrt{\\hbar/\\mu\\omega}$), turning points $\\pm${v.fix(st.A, 3)}$`) + ` · probability beyond the turning points: **${v.fix(100 * st.tail, 1)} %** · $\\langle\\xi^2\\rangle=${v.fix(st.x2, 4)}$ (exact $n+\\tfrac12=${st.n + 0.5}$) · residual of $\\hat H\\psi-E\\psi$ relative to max$|\\psi|$: ${v.sci(st.res, 1)}.` + (st.real ? `\nConstant: ω_e of ${st.m.name} from NIST (CO 2169.81 cm⁻¹, HCl 2990.95 cm⁻¹); the real molecule is anharmonic (5.12).` : ''));
+      },
+    },
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9',
+      kind: 'Model',
+      name: 'Rigid rotor and quantized angular momentum',
+      statement: String.raw`Two nuclei held at a fixed distance $r$ rotate about their centre of mass with moment of inertia $I=\mu r^2$ ($\mu$ the reduced mass). The rotational states are the spherical harmonics $Y_J^M(\theta,\varphi)$ with
+$$E_J=\frac{\hbar^2}{2I}J(J+1)=hcB\,J(J+1),\qquad B=\frac{h}{8\pi^2cI},\qquad J=0,1,2,\dots,\ \ M=-J,\dots,J,$$
+so each level is $(2J+1)$-fold degenerate. The magnitude of the angular momentum is $\sqrt{J(J+1)}\,\hbar$ and its $z$ component is $M\hbar$: the axis of rotation can point in only $2J+1$ discrete directions with respect to $z$. Spacing between neighbours grows, $E_{J+1}-E_J=2hcB(J+1)$.`,
+      scope: String.raw`Rigid linear molecule in the gas phase at low $J$; at high $J$ the bond stretches (centrifugal distortion, 9.5) and for polyatomics more moments of inertia appear (9.6).`,
+      idea: String.raw`The kinetic energy of a free rotor is $\hat L^2/2I$, so the Schrödinger equation on the sphere is $\hat L^2Y=\hbar^2\lambda Y$ and the energy follows from the eigenvalues of $\hat L^2$ (mech-8.2): single-valuedness of $Y$ in $\varphi$ forces $e^{iM\varphi}$ with integer $M$, regularity at the poles then forces $\lambda=J(J+1)$ with $|M|\le J$. The $J(J+1)$ law (not $J^2$) is why the picture of a classical spinning dumbbell has $|L|=\sqrt{J(J+1)}\hbar>M\hbar$: the angular momentum vector can never lie exactly along $z$.`,
+      caption: String.raw`**Step $J$ and $M$.** Left: the density of orientations — a polar plot of $|Y_J^M|$ coloured by the *phase* of $Y_J^M$, which winds $M$ times around the $z$ axis — with a classical dumbbell spinning about the precessing vector $\vec L$ (length $\sqrt{J(J+1)}$, $z$ projection $M$). Right: the ladder $E_J=BJ(J+1)$ with its $2J+1$ sublevels; the gap above the chosen level, $2B(J+1)$, is marked. Choose a **molecule** and slide the **bond length**: $B\propto1/r^2$ rescales the entire ladder.`,
+      deps: ['qchem-1.1', 'mech-8.2'],
+      see: ['qm-7.5'],
+      refs: ['McQuarrie ch. 6'],
+      tags: ['rigid rotor', 'angular momentum', 'spherical harmonics'],
+      viz(v) {
+        const M = v.M, C = M.CONST, JM = 8;
+        const MOLS = {
+          CO: { name: 'CO', re: 1.128323, mu: (12 * 15.9949146) / (12 + 15.9949146), Be: 1.93128087 },
+          HCl: { name: 'H³⁵Cl', re: 1.274552, mu: (1.00782503 * 34.96885268) / (1.00782503 + 34.96885268), Be: 10.593416 },
+        };
+        let mS = null, MS = null;
+        const mol = v.select('molecule', Object.entries(MOLS).map(([value, m]) => ({ value, label: m.name })), 'HCl', { onChange: () => rS.set(MOLS[mol.value].re) });
+        const rS = v.slider('bond length $r$ (Å)', 0.6, 2.4, MOLS.HCl.re, { step: 0.001, decimals: 3 });
+        const JS = v.slider('rotational quantum number $J$', 0, 7, 2, { int: true, onChange: () => { if (Math.abs(MS.value) > JS.value) MS.set(Math.sign(MS.value) * JS.value); } });
+        MS = v.slider('projection $M$', -7, 7, 1, { int: true });
+        const s3 = v.stage3d({ range: 1.9, height: 400, weight: 1.15, axes: false, yaw: -0.7, pitch: 0.35, title: 'orientation density $|Y_J^M|$ and the vector model' });
+        const sE = v.stage({ x: [0, 12], y: [0, 80], height: 400, axes: 'box', gutter: true, weight: 0.9, xticks: [], ylabel: 'E (cm⁻¹)', title: 'rotational levels $E_J=BJ(J+1)$' });
+        let st = null;
+        v.animate((t) => {
+          const m = MOLS[mol.value], r = rS.value, J = JS.value, Mq = M.clamp(MS.value, -J, J), col = phaseLUT(v);
+          const I = m.mu * C.u * (r * 1e-10) ** 2, B = C.h / (8 * Math.PI * Math.PI * (C.c * 100) * I); // cm⁻¹
+          // 3D: polar plot of |Y|, coloured by phase
+          let ymax = 0; for (let k = 0; k <= 60; k++) for (let q = 0; q <= 1; q++) ymax = Math.max(ymax, Math.hypot(...Ylm(J, Mq, (k / 60) * Math.PI, 0)));
+          s3.begin();
+          s3.surface((th, ph) => { const y = Ylm(J, Mq, th, ph), R = (1.45 * Math.hypot(y[0], y[1])) / ymax; return [R * Math.sin(th) * Math.cos(ph), R * Math.sin(th) * Math.sin(ph), R * Math.cos(th)]; }, [0, Math.PI], [0, TAU], { nu: 36, nv: 48, alpha: 0.5, colorFn: (th, ph) => { const y = Ylm(J, Mq, th, ph); return col(Math.atan2(y[1], y[0])); } });
+          s3.arrow([0, 0, -1.75], [0, 0, 1.75], { color: 'faint', width: 1 });
+          s3.text('z', [0, 0, 1.9], { color: 'muted', math: true });
+          if (J > 0) {
+            const Lm = Math.sqrt(J * (J + 1)), ca = Mq / Lm, sa = Math.sqrt(Math.max(0, 1 - ca * ca)), ph0 = 0.6 * t * 2 * Math.PI / 6;
+            const n = [sa * Math.cos(ph0), sa * Math.sin(ph0), ca];
+            const e1 = M.normalize(M.cross3(n, [0, 0, 1].map((q, i) => (Math.abs(n[2]) > 0.9 ? [1, 0, 0][i] : q)))), e2 = M.cross3(n, e1);
+            const w = 3.2 * (t * 2 * Math.PI / 6), a1 = Math.cos(w), a2 = Math.sin(w);
+            const ax = [a1 * e1[0] + a2 * e2[0], a1 * e1[1] + a2 * e2[1], a1 * e1[2] + a2 * e2[2]], rr = 0.8;
+            s3.line(ax.map((q) => q * rr), ax.map((q) => -q * rr), { color: 'ink', width: 2.5 });
+            s3.dot(ax.map((q) => q * rr), { r: 7, color: 'red' }); s3.dot(ax.map((q) => -q * rr), { r: 5, color: 'blue' });
+            s3.arrow([0, 0, 0], n.map((q) => q * 1.7), { color: 'gold', width: 3 });
+            s3.text('L', n.map((q) => q * 1.85), { color: 'gold', math: true });
+          } else s3.text('J = 0: spherical, no rotation axis', [0, 0, -1.9], { color: 'muted' });
+          s3.end();
+          // ladder
+          const top = B * (JM - 1) * JM * 1.06; sE.setView([0, 12], [0, top]); let lastY = 1e9;
+          for (let j = 0; j < JM; j++) {
+            const e = B * j * (j + 1), hi = j === J;
+            sE.line(0.4, e, 4.2, e, { color: hi ? 'ink' : 'muted', width: hi ? 3 : 1.8, alpha: hi ? 1 : 0.65 });
+            if (hi || sE.Y(e) < lastY - 13) { sE.text(`J = ${j}`, 4.35, e, { size: 11, color: hi ? 'ink' : 'muted', align: 'left', baseline: 'middle' }); lastY = sE.Y(e); }
+            if (j <= 5) for (let q = -j; q <= j; q++) sE.dot(2.3 + (q * 1.6) / Math.max(j, 1) * (j ? 0.9 : 0), e + top * 0.018, { r: hi && q === Mq ? 5 : 3, color: hi ? (q === Mq ? 'orange' : 'accent') : 'muted', alpha: hi ? 1 : 0.5 });
+          }
+          if (J + 1 < JM) { sE.arrow(6.3, B * J * (J + 1), 6.3, B * (J + 1) * (J + 2), { both: true, color: 'orange', width: 1.8, head: 7 }); sE.text(`2B(J+1) = ${v.fix(2 * B * (J + 1), 2)}`, 6.6, (B * J * (J + 1) + B * (J + 1) * (J + 2)) / 2, { size: 11, color: 'orange', align: 'left', baseline: 'middle' }); }
+          st = { B, I, J, Mq, E: B * J * (J + 1), r, m, Lm: Math.sqrt(J * (J + 1)) };
+        }, { period: 6, still: 1.2 });
+        v.readout(() => st && `$I=\\mu r^2=${v.fix(st.I * 1e47, 3)}\\times10^{-47}$ kg m² → $B=h/8\\pi^2cI=${v.fix(st.B, 4)}$ cm$^{-1}$` + (Math.abs(st.r - st.m.re) < 0.0015 ? ` (spectroscopic $B_e$ of ${st.m.name}: ${st.m.Be} cm⁻¹)` : '') + ` · $J=${st.J}$, $M=${st.Mq}$: $E_J=${v.fix(st.E, 3)}$ cm$^{-1}$, degeneracy $2J+1=${2 * st.J + 1}$, $|\\vec L|=\\sqrt{J(J+1)}\\hbar=${v.fix(st.Lm, 3)}\\hbar$, $L_z=${st.Mq}\\hbar$.`);
       },
     },
   ],
