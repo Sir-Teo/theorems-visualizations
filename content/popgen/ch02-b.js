@@ -132,17 +132,18 @@ It equals the census size $N_m+N_f$ only if the sexes are equal in number, and i
       num: '2.10',
       kind: 'Phenomenon',
       name: 'Drift in replicate populations (Buri 1956)',
-      statement: String.raw`Peter Buri followed 107 laboratory populations of *Drosophila melanogaster*, each kept at 16 flies per generation (all started with 16 heterozygotes for two eye-colour alleles, $bw^{75}$ and $bw$, at frequency $\tfrac12$) for 19 generations. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, with the mean frequency staying near $\tfrac12$. The spread was somewhat faster than for 16 breeding flies, corresponding to an effective size smaller than the census.`,
-      idea: String.raw`The experiment is the first quantitative test of drift with genuine replicates. All lines begin identical, so any divergence is sampling: the variance among lines grows by $p(1-p)/2N_e$ per generation (2.1) and heterozygosity decays as $(1-1/2N_e)^t$ (2.3), while the mean stays put (2.2). Fitting the observed variance among lines gives $N_e$ below the census number of 16 — ordinary variation in family size and unequal fertility (2.6).`,
+      statement: String.raw`Peter Buri followed 107 laboratory populations of *Drosophila melanogaster*, each kept at 16 flies per generation (all started with 16 heterozygotes for two eye-colour alleles, $bw^{75}$ and $bw$, at frequency $\tfrac12$) for 19 generations. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, with the mean frequency staying near $\tfrac12$. The spread was somewhat faster than for 16 breeding flies, corresponding to an effective size of about 11 flies (the figure usually quoted from his analysis is $N_e\approx11.5$) instead of the census 16.`,
+      idea: String.raw`The experiment is the first quantitative test of drift with genuine replicates. All lines begin identical, so any divergence is sampling: the variance among lines grows by $p(1-p)/2N_e$ per generation (2.1) and heterozygosity decays as $(1-1/2N_e)^t$ (2.3), while the mean stays put (2.2). Fitting the observed variance among lines gives $N_e$ of roughly 11–12, below the census number of 16 — ordinary variation in family size and unequal fertility (2.6).`,
       caption: String.raw`A simulation of Buri’s design (107 lines, 32 gene copies each, started at 16 $bw^{75}$ copies), **not his original counts**. Drag the generation $t$ and watch the histogram of $bw^{75}$ copies per line flatten and pile up at 0 and 32. Right: mean heterozygosity of the lines against theory for the chosen $N_e$ (green) and for census size 16 (grey dashed). Lower $N_e$ speeds the spread; resample for another set of lines.`,
       deps: ['popgen-2.3'],
       refs: ['Gillespie'],
       credit: 'Peter Buri, 1956 (Evolution 10: 367–402)',
-      scope: String.raw`Illustration by simulation of the published design; the lines are random, not the recorded data, and the quoted effective size is approximate.`,
+      verify: true,
+      scope: String.raw`Illustration by simulation of the published design; the lines are random, not the recorded data. The effective size $N_e\approx11.5$ is the value quoted in secondary summaries of Buri (1956); the paper's own estimate was not re-read here.`,
       tags: ['drift', 'experiment', 'Drosophila'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Genetic_drift#Experiment' },
       viz(v) {
-        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 9, { int: true });
+        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 11, { int: true });
         const tS = v.slider('generation $t$', 0, 19, 19, { int: true });
         let seed = 1; v.button('Resample lines', () => { seed++; });
         const L = v.stage({ x: [-1, 33], y: [0, 0.4], axes: 'box', gutter: true, height: 320, xlabel: 'number of bw75 copies in a line (out of 32)', ylabel: 'share of the 107 lines', title: 'Replicate lines at generation t' });

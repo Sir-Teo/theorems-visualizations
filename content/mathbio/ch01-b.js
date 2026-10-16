@@ -51,7 +51,7 @@ export default {
 $$\frac{du}{dt}=r\,u\Bigl(1-\frac uq\Bigr)-\frac{u^2}{1+u^2},$$
 logistic growth with scaled capacity $q$ (set by the foliage of the forest) and a sigmoidal (type III) loss to bird predation that saturates at $1$. Equilibria $u>0$ are the intersections of the line $r(1-u/q)$ with the hump $u/(1+u^2)$: for suitable $r$ there is one intersection at small and large $q$, but three for intermediate $q$ (a low "refuge" level, an unstable threshold and a high "outbreak" level); $u=0$ is always unstable.`,
       idea: String.raw`Birds eat little when budworms are rare, eat a nearly fixed number when they are abundant, and hence control the population only in a middle range. Growth minus predation is a cubic-like function of $u$ whose shape depends on $q$, and its zeros come and go as the line $r(1-u/q)$ tilts: sliding $q$ moves the line's intercept, and tangencies with the hump create or destroy pairs of equilibria (a saddle-node, studied in 1.11).`,
-      scope: String.raw`A slow–fast caricature of one stand of fir: the model treats foliage ($q$) as a fixed parameter although it varies on a much slower timescale than the budworm. Three equilibria occur for $r$ roughly between $0.5$ and $0.66$ in these units.`,
+      scope: String.raw`A slow–fast caricature of one stand of fir: the model treats foliage ($q$) as a fixed parameter although it varies on a much slower timescale than the budworm. Three equilibria occur only for $r$ below about $0.62$ (the cusp lies near $q\approx5$–$6$), and for each $r$ only in a window of $q$: for $q=8$, for instance, $r$ between about $0.47$ and $0.58$.`,
       caption: String.raw`Left: growth line and predation curve; their crossings are the equilibria (green stable, hollow red unstable). Slowly raise the forest capacity $q$: the number of crossings goes $1\to3\to1$. Middle: populations started at several sizes settle on the refuge or the outbreak level. Right: the full equilibrium curve against $q$ with the current $q$ marked.`,
       deps: ['mathbio-1.4', 'mathbio-1.5'],
       tags: ['outbreaks', 'bistability'],
@@ -299,7 +299,7 @@ logistic growth with scaled capacity $q$ (set by the foliage of the forest) and 
       num: '1.15',
       kind: 'Model',
       name: 'Hutchinson’s delayed logistic equation',
-      credit: 'Hutchinson, 1948',
+      credit: 'G. E. Hutchinson, 1948 (the equation); E. M. Wright, 1955 (global analysis of the delayed logistic)',
       statement: String.raw`Hutchinson's equation lets the density-dependent brake respond to the population a time $\tau>0$ ago:
 $$\frac{dN}{dt}=rN(t)\Bigl(1-\frac{N(t-\tau)}{K}\Bigr).$$
 A history $N(t)$ on $[-\tau,0]$ is needed to start it. $N=K$ remains an equilibrium. The qualitative behaviour depends only on $r\tau$: for $r\tau<1/e$ solutions approach $K$ monotonically, for $1/e<r\tau<\pi/2$ they oscillate with decaying amplitude, and for $r\tau>\pi/2$ they settle onto sustained oscillations (a limit cycle) of period a little over $4\tau$.`,

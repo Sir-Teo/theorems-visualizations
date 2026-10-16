@@ -66,7 +66,7 @@ The right side is positive for small $p$ and decreasing, so there is exactly one
       refs: ['Alon: Autoregulation'],
       tags: ['autoregulation', 'feedback'],
       scope: String.raw`A deterministic, well-mixed model with a single repressor species acting as a Hill function, instantaneous binding, and constant removal $\alpha$. It ignores transcription and translation delays, which can make real autoregulatory circuits oscillate.`,
-      credit: 'Early analysis of autogenous control: Savageau, Nature 1974 (from memory)',
+      credit: 'M. A. Savageau, 1974 (comparison of autogenous and classical regulation; Nature 252: 546–549)',
       viz(v) {
         const B = v.slider(String.raw`promoter strength $\beta/(\alpha K)$`, 1, 1000, 100, { log: true, sig: 2 });
         const N = v.slider('cooperativity $n$', 1, 4, 2, { int: true });
@@ -113,7 +113,7 @@ about $5.5$ for $n=1$.`,
       deps: ['sysbio-2.1'],
       refs: ['Alon: Autoregulation'],
       tags: ['autoregulation', 'response time'],
-      credit: 'Rosenfeld, Elowitz & Alon, J. Mol. Biol. 2002 (synthetic TetR circuit; from memory)',
+      credit: 'N. Rosenfeld, M. B. Elowitz & U. Alon, 2002 (synthetic TetR circuit; J. Mol. Biol. 323: 785–793)',
       scope: String.raw`Matched steady state, a single repressor with a Hill input function, first-order removal, production starting from an empty cell and a promoter that switches fully on at $t=0$. The factor saturates; it is not unbounded in the deterministic model. In a real cell a very strong promoter eventually runs into other limits (translation, burst noise), which are not modelled here.`,
       viz(v) {
         const S = v.slider(String.raw`repression strength $s=p_{\rm st}/K$`, 0.1, 30, 8, { log: true, sig: 2 });
@@ -161,7 +161,7 @@ which decreases from $1$ (weak repression, $u\to0$) toward $1/(n+1)$ (strong rep
       deps: ['sysbio-2.1', 'ctrl-1.7'],
       refs: ['Alon: Autoregulation'],
       tags: ['autoregulation', 'robustness', 'sensitivity'],
-      credit: 'Becskei & Serrano, Nature 2000 (noise reduction by autoregulation in synthetic circuits; from memory)',
+      credit: 'A. Becskei & L. Serrano, 2000 (engineering stability by autoregulation in synthetic circuits; Nature 405: 590–593)',
       scope: String.raw`Steady-state, deterministic model in which the only varying parameter is the production rate $\beta$ (e.g. through plasmid or promoter copy number or the level of an upstream regulator); $\alpha$ and $K$ are assumed fixed. It says nothing about *intrinsic* fluctuations in the number of molecules (see the stochastic chapters), and it does not protect against variation in $K$ or $\alpha$.`,
       viz(v) {
         const S = v.slider(String.raw`repression strength $s=p_{\rm st}/K$ at the median`, 0.1, 100, 10, { log: true, sig: 2 });
@@ -256,7 +256,7 @@ Compare it with a simply regulated gene that has the same steady state $p_{\rm s
       deps: ['sysbio-2.4', 'mathbio-6.6'],
       refs: ['Alon: Positive Feedback, Bistability and Memory'],
       tags: ['autoregulation', 'bistability', 'noise'],
-      credit: 'All-or-none induction: Novick & Weiner, 1957; graded-to-binary conversion by positive feedback: Becskei, Séraphin & Serrano, EMBO J. 2001 (both from memory)',
+      credit: 'All-or-none induction: A. Novick & M. Weiner, 1957 (PNAS 43: 553–566); graded-to-binary conversion by positive feedback: Becskei, Séraphin & Serrano, 2001 (EMBO J. 20: 2528–2535)',
       scope: String.raw`Illustrative parameters ($\beta_0=0.1$, $\beta=3$, $K=\alpha=1$) and a chemical Langevin approximation with a system size $\Omega$ (molecules per unit of $K$); bistability here begins between $n=2$ and $n=3$ and would shift with other parameters. Real populations can also be bimodal for other reasons (cell-cycle stage, gene copy number).`,
       viz(v) {
         const N = v.slider('cooperativity $n$', 1, 6, 4, { step: 0.1 });

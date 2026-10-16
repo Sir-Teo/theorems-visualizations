@@ -8,7 +8,7 @@
 //   2.9  primordial lead of Canyon Diablo troilite 9.307 / 10.294 (Tatsumoto, Knight & Allègre 1973; confirmed by a search
 //        result, not re-read in the paper); the other numbers are illustrative.
 //   2.8  Dodson (1973) closure-temperature formula with a sphere (A = 55). Activation energies and nominal closure
-//        temperatures at 10 °C/Myr are typed FROM MEMORY and rounded (zircon U–Pb ≳ 900 °C, titanite ≈ 650, hornblende
+//        temperatures at 10 °C/Myr are typed from the literature values as remembered and rounded (zircon Pb 550 kJ/mol Cherniak & Watson 2001; titanite 330 Cherniak 1993; hornblende 268 Harrison 1981; muscovite 183 Hames & Bowring 1994; biotite ~211 Grove & Harrison 1996; zircon He ~169 Reiners 2004; apatite He ~138 Farley 2000) (zircon U–Pb ≳ 900 °C, titanite ≈ 650, hornblende
 //        ≈ 530, muscovite ≈ 400, biotite ≈ 320, zircon (U–Th)/He ≈ 180, apatite (U–Th)/He ≈ 70); D0/a² is back-solved
 //        from them, so only the dependence on cooling rate is computed.
 //   2.7  retained-argon profile: exact series solution for diffusion out of a sphere; the numbers are illustrative.

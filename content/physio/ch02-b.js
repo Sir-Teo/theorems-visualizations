@@ -101,7 +101,8 @@ export default {
       see: ['physio-2.8', 'physio-2.9'],
       refs: ['Guyton–Hall'],
       tags: ['muscle', 'tetanus'],
-      credit: 'Summation and tetanus are described in Helmholtz’s 1850s experiments on frog muscle',
+      credit: 'Twitch time course recorded by H. von Helmholtz, 1850; summation and tetanus are classical 19th-century muscle physiology',
+      verify: true,
       viz(v) {
         const fr = v.slider('stimulation frequency', 1, 100, 20, { log: true, fmt: (x) => `${v.fix(x, x < 10 ? 1 : 0)} Hz` });
         const type = v.select('muscle', [{ value: 'fast', label: 'fast twitch' }, { value: 'slow', label: 'slow twitch' }], 'fast');

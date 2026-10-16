@@ -320,7 +320,7 @@ which lies between 0 (all deaths at one age: a rectangular survival curve) and 1
       name: 'Observations upon the Bills of Mortality',
       paper: { authors: 'John Graunt', year: 1662, title: 'Natural and Political Observations Mentioned in a Following Index, and Made upon the Bills of Mortality', venue: 'London: Tho. Roycroft for John Martin, James Allestry and Tho. Dicas', url: 'https://archive.org/details/2356014R.nlm.nih.gov' },
       introduces: ['demo-2.3', 'demo-4.11'],
-      statement: String.raw`Graunt tabulated the weekly London bills of christenings and burials and drew conclusions from the counts. Two are central. First, male christenings consistently exceeded female ones, in a ratio near 14 to 13, year after year. Second, since the bills gave no ages, he reasoned from the causes of death to a table of survivors of 100 births: 64 alive at age 6, 40 at 16, 25 at 26, 16 at 36, 10 at 46, 6 at 56, 3 at 66, 1 at 76 and none at 86. This is the first life table, and it is built from an assumption, not a census.`,
+      statement: String.raw`Graunt tabulated the weekly London bills of christenings and burials and drew conclusions from the counts. Two are central. First, male christenings consistently exceeded female ones, in a ratio near 14 to 13, year after year. Second, since the bills gave no ages, he reasoned from the causes of death to a table of survivors of 100 births: 64 alive at age 6, 40 at 16, 25 at 26, 16 at 36, 10 at 46, 6 at 56, 3 at 66, 1 at 76 and none at 80. This is the first life table, and it is built from an assumption, not a census.`,
       idea: String.raw`Before this, mortality was anecdote and the weekly bills a plague alarm. Graunt treated them as data: he estimated the share of deaths from children's diseases, took the remainder to decline by a roughly constant fraction each decade, and read off the table. The sex-ratio regularity is an early example of statistical stability that chance alone cannot explain. The two introduced ideas, the life table (2.3) and a stable sex ratio at birth, anchor all later demography.`,
       caption: String.raw`Left: Graunt's survivors (gold points; the table is his own) against a modern low-mortality table (Sweden 2019 from UN data, standing in for London now) and a constant-hazard curve. Each decade after six he lets about 5/8 survive, which is a constant hazard of about 0.047 per year. Right: the christenings of each simulated year; drag the slider for the number per year. A fair coin would give male excess in half the years; the 14:13 ratio gives it in almost every year.`,
       deps: [],
@@ -329,7 +329,7 @@ which lies between 0 (all deaths at one age: a rectangular survival curve) and 1
       credit: 'John Graunt, 1662',
       links: { archive: 'https://archive.org/details/2356014R.nlm.nih.gov' },
       viz(v) {
-        const ages = [0, 6, 16, 26, 36, 46, 56, 66, 76, 86], ls = [100, 64, 40, 25, 16, 10, 6, 3, 1, 0];
+        const ages = [0, 6, 16, 26, 36, 46, 56, 66, 76, 80], ls = [100, 64, 40, 25, 16, 10, 6, 3, 1, 0];
         const mod = tab18(WPP.SWE2019.m);
         const showMod = v.toggle('show a modern table (Sweden 2019)', true);
         const showExp = v.toggle('show a constant-hazard curve', true);

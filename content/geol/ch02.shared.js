@@ -1,7 +1,7 @@
 // Geology & Geophysics — Chapter 2: helpers shared by ch02.js and ch02-b.js
 //
-// Decay constants (per year). From memory, conventional values: ²³⁸U 1.55125e-10 and ²³⁵U 9.8485e-10 (Jaffey et al. 1971),
-// ⁸⁷Rb 1.393e-11 (Steiger & Jäger 1977 recommendation), ⁴⁰K total 5.543e-10 with electron-capture branch 0.581e-10
+// Decay constants (per year). Conventional literature values (Jaffey 1971; Steiger & Jäger 1977; Nebel 2011): ²³⁸U 1.55125e-10 and ²³⁵U 9.8485e-10 (Jaffey et al. 1971),
+// ⁸⁷Rb 1.393e-11 (the value of Nebel et al. 2011 (Minster et al. 1982 gave 1.402e-11); Steiger & Jäger 1977 had recommended 1.42e-11), ⁴⁰K total 5.543e-10 with electron-capture branch 0.581e-10
 // (Steiger & Jäger 1977), ¹⁴C half-life 5730 yr (Libby convention 5568), ¹⁰Be half-life 1.387 Myr.
 // ²³⁸U/²³⁵U today = 137.88.
 

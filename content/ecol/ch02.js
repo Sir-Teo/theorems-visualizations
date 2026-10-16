@@ -434,7 +434,7 @@ export default {
       num: '2.7',
       kind: 'Phenomenon',
       name: 'Law of constant final yield',
-      credit: 'Kira, Ogawa & Sinoto, 1953; C. T. de Wit, 1960; Shinozaki & Kira, 1956 (reciprocal yield law)',
+      credit: 'Kira, Ogawa & Sakazaki, 1953 (constant final yield); C. T. de Wit, 1960; Shinozaki & Kira, 1956 (reciprocal yield law)',
       statement: String.raw`For a crop of one species grown long enough under uniform conditions, the total biomass (yield) per unit area becomes independent of sowing density over a wide range of densities: yield $Y=\rho\bar w\to C$ as the growing time increases, even though the mean plant weight $\bar w$ falls in proportion to $1/\rho$ (the *reciprocal yield law*, $1/\bar w = (1+a\rho)/w_m$). At early harvests yield still increases with density; only later do the curves flatten onto the same ceiling.`,
       scope: String.raw`Even-aged stands of plants competing for the same resources, before density-dependent mortality sets in (extreme densities thin themselves, see 2.8). Some crops and conditions give parabolic yield–density curves that decline at high density instead (use the Bleasdale–Nelder exponent $b>1$).`,
       idea: String.raw`If each plant can claim only the area $1/\rho$ around it, its growth is capped at a weight proportional to $1/\rho$ because the area, not the plant, limits the final mass. In the logistic growth model below, $dw/dt=rw(1-w\rho/C)$, every plant approaches $w=C/\rho$, so $Y=\rho w\to C$ regardless of $\rho$. The sooner the cap bites (the higher the density), the sooner the yield saturates.`,

@@ -2,7 +2,7 @@
 //
 // Sources and provenance (Oct 2026):
 //   decay constants and half-lives are conventional values quoted from memory (see ch02.shared.js): ²³⁸U 1.55125e-10/yr,
-//   ²³⁵U 9.8485e-10/yr (Jaffey et al. 1971), ⁸⁷Rb 1.393e-11/yr, ⁴⁰K 5.543e-10/yr, ¹⁴C half-life 5730 yr.
+//   ²³⁵U 9.8485e-10/yr (Jaffey et al. 1971), ⁸⁷Rb 1.393e-11/yr (Nebel et al. 2011), ⁴⁰K 5.543e-10/yr, ¹⁴C half-life 5730 yr.
 //   2.4  half-lives of the ²³⁸U series (²³⁴U 245.5 kyr, ²³⁰Th 75.4 kyr, ²²⁶Ra 1600 yr, ²²²Rn 3.82 d, ²¹⁰Pb 22.2 yr,
 //        ²¹⁰Po 138.4 d) are from memory; the short-lived members between them are lumped (see the item).
 //   2.6  the calibration curve is SCHEMATIC: anchor points typed from memory to follow the shape of IntCal20 (Reimer
@@ -345,7 +345,7 @@ ${spread < 1e-3 || F.value === 0 ? 'No lead loss: all zircons sit together on th
       kind: 'Method',
       name: 'Radiocarbon dating and calibration',
       statement: String.raw`Cosmic rays make ${'$'}^{14}$C in the atmosphere; living things hold it at the atmospheric ratio, and after death it decays with $T_{1/2}=5730$ yr. The measured fraction $F$ of the modern ratio gives a *radiocarbon age* by convention $t_{14}=-8033\ln F$ (the Libby mean life, from the old half-life 5568 yr). Because atmospheric ${'$'}^{14}$C has varied, radiocarbon age is not calendar age: a **calibration curve** (tree rings, corals, varves, cave deposits) maps calendar age $c$ to the radiocarbon age $r(c)$ that a sample of that age would show, and a measurement $r\pm\sigma$ becomes a probability distribution $p(c)\propto\exp[-(r(c)-r)^2/2\sigma^2]$, often several separate calendar ranges.`,
-      idea: String.raw`The age equation (geol-2.2) with $\lambda_{14}=\ln2/5730$ yr$^{-1}$ gives a physical age, but it assumes a constant starting activity. Production changes with the geomagnetic field and solar activity, and the exchange between ocean and atmosphere changes too, so the starting activity wandered by per cent; the same radiocarbon age then fits several calendar ages wherever the curve is flat (plateaus) or turns. The curve is fixed by independent calendar clocks that also carry ${'$'}^{14}$C, such as tree rings and U–Th-dated corals. Usable range is about 50 kyr, when only ${'$'}^{14}$C of order $10^{-4}$ of modern remains.`,
+      idea: String.raw`The age equation (geol-2.2) with $\lambda_{14}=\ln2/5730$ yr$^{-1}$ gives a physical age, but it assumes a constant starting activity. Production changes with the geomagnetic field and solar activity, and the exchange between ocean and atmosphere changes too, so the starting activity wandered by per cent; the same radiocarbon age then fits several calendar ages wherever the curve is flat (plateaus) or turns. The curve is fixed by independent calendar clocks that also carry ${'$'}^{14}$C, such as tree rings and U–Th-dated corals. Usable range is about 50 kyr, when only about 0.2% of the modern ${'$'}^{14}$C remains.`,
       caption: String.raw`The curve is **schematic** (shaped after the real calibration curve, not its data). Drag the handle on the vertical axis to set the measured radiocarbon age and change the error; the lower panel shows the resulting calendar-age probability with its 95% range(s) shaded. Try $\approx2\,450$ yr: the plateau smears the answer over centuries.`,
       deps: ['geol-2.2'],
       refs: ['Press–Siever'],
