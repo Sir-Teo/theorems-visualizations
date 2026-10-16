@@ -253,7 +253,7 @@ independent of the turbine inlet temperature $T_3$. The net work per kilogram, h
       viz(v) {
         const T1 = 288.15;
         const sA = v.stage({ x: [-0.15, 2.0], y: [200, 2100], axes: 'box', gutter: true, height: 380, xlabel: 'entropy s − s₁ (kJ/kg·K)', ylabel: 'T (K)', title: 'Gas turbine on a $T$–$s$ diagram' });
-        const sB = v.stage({ x: [1.5, 60], y: [0, 0.8], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'pressure ratio $r$', ylabel: 'η   and   w/(c_p T₃)', title: 'Efficiency and work against $r$' });
+        const sB = v.stage({ x: [1.5, 60], y: [0, 0.8], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'pressure ratio $r$', ylabel: 'η   and   w/(cₚT₃)', title: 'Efficiency and work against $r$' });
         const rS = v.slider('pressure ratio $r$', 1.5, 60, 15, { log: true, sig: 3, onChange: () => 0 });
         const T3 = v.slider('turbine inlet temperature $T_3$ (K)', 1000, 2000, 1600, { step: 10 });
         const mode = v.select('components', [{ value: 'ideal', label: 'ideal' }, { value: 'real', label: 'real (η_c = 0.86, η_t = 0.88)' }], 'ideal');
@@ -275,11 +275,11 @@ independent of the turbine inlet temperature $T_3$. The net work per kilogram, h
           sA.poly(P.pts, { fill: 'accent', fillAlpha: 0.2, stroke: false });
           sA.path([[0, T1], [P.s2, b.T2]], { color: 'accent', width: 3 }); sA.path(P.heat, { color: 'orange', width: 3 });
           sA.path([[P.s3, b.T3], [P.s4, b.T4]], { color: 'accent', width: 3 }); sA.path(P.rej, { color: 'teal', width: 3 });
-          sA.text('compressor', P.s2 / 2 - 0.02, (T1 + b.T2) / 2, { color: 'accent', size: 12, align: 'right' });
+          sA.text('compressor', P.s2 / 2 - 0.05, (T1 + b.T2) / 2 + 60, { color: 'accent', size: 12, align: 'right' });
           sA.text('combustor, heat in', (P.heat[15][0]) + 0.05, P.heat[15][1] - 30, { color: 'orange', size: 12, align: 'left' });
           sA.text('turbine', P.s4 + 0.04, (b.T3 + b.T4) / 2 + 40, { color: 'accent', size: 12, align: 'left' });
           sA.text('exhaust, heat out', P.rej[15][0] + 0.06, P.rej[15][1] - 5, { color: 'teal', size: 12, align: 'left' });
-          [['1', 0, b.T1, 'sw'], ['2', P.s2, b.T2, 'nw'], ['3', P.s3, b.T3, 'ne'], ['4', P.s4, b.T4, 'se']].forEach(([n, s, T, p]) => sA.dot(s, T, { r: 5, color: 'gold', label: n, labelPos: p }));
+          [['1', 0, b.T1, 'nw'], ['2', P.s2, b.T2, 'nw'], ['3', P.s3, b.T3, 'ne'], ['4', P.s4, b.T4, 'se']].forEach(([n, s, T, p]) => sA.dot(s, T, { r: 5, color: 'gold', label: n, labelPos: p }));
           // right panel
           const rs = []; for (let i = 0; i <= 80; i++) rs.push(Math.exp(lerp(Math.log(1.5), Math.log(60), i / 80)));
           sB.path(rs.map((x) => [x, 1 - x ** -((GAM - 1) / GAM)]), { color: 'faint', width: 1.6, dash: true });
@@ -291,7 +291,7 @@ independent of the turbine inlet temperature $T_3$. The net work per kilogram, h
         });
         v.readout(() => {
           const r = rS.value, b = B(r), id = brayton(r, T1, T3.value), ropt = (T3.value / T1) ** (GAM / (2 * (GAM - 1)));
-          return `$\\eta = w/q_{in} = ${fx(v, b.w, 0)}/${fx(v, b.qin, 0)} = ${pc1(v, b.eta)}$; the formula $1-r^{-(\\gamma-1)/\\gamma} = ${pc1(v, id.eta)}$ is for ideal components.\nTurbine ${fx(v, b.wt, 0)}$ kJ/kg, compressor ${fx(v, b.wc, 0)}$ kJ/kg: back-work ratio ${pc1(v, b.bwr, 0)}$. Exhaust at ${v.fix(b.T4, 0)}$ K. Maximum work at $r_{opt} = (T_3/T_1)^{\\gamma/2(\\gamma-1)} = ${fx(v, ropt, 1)}$.`;
+          return `$\\eta = w/q_{in} = ${fx(v, b.w, 0)}/${fx(v, b.qin, 0)} = ${pc1(v, b.eta)}$; the formula $1-r^{-(\\gamma-1)/\\gamma} = ${pc1(v, id.eta)}$ is for ideal components.\nTurbine ${fx(v, b.wt, 0)} kJ/kg, compressor ${fx(v, b.wc, 0)} kJ/kg: back-work ratio ${pc1(v, b.bwr, 0)}. Exhaust at ${v.fix(b.T4, 0)} K. Maximum work at $r_{opt} = (T_3/T_1)^{\\gamma/2(\\gamma-1)} = ${fx(v, ropt, 1)}$.`;
         });
       },
     },
@@ -309,7 +309,7 @@ In practice only the fraction $\varepsilon$ of the exhaust heat between the turb
       scope: String.raw`A single-pressure heat-recovery boiler with a simple Rankine bottoming cycle (condenser at 7 kPa, turbine efficiency 0.88, pump 0.85) and an air-standard gas turbine without cooling-air or pressure losses. Real multi-pressure plants recover more, real turbines lose more; the net numbers are of the right size but not a plant model.`,
       viz(v) {
         const T1 = 288.15;
-        const sA = v.stage({ x: [0, 100], y: [0, 4.35], axes: false, height: 400, title: 'Where 100 units of fuel energy go' });
+        const sA = v.stage({ x: [0, 100], y: [0, 4.6], axes: false, height: 400, title: 'Where 100 units of fuel energy go' });
         const sB = v.stage({ x: [1000, 2000], y: [0, 0.8], axes: 'box', gutter: true, height: 400, xlabel: 'turbine inlet temperature $T_3$ (K)', ylabel: 'efficiency', title: 'Efficiency against $T_3$' });
         const rS = v.slider('pressure ratio $r$', 6, 40, 18, { step: 0.5 });
         const T3 = v.slider('turbine inlet $T_3$ (K)', 1000, 2000, 1600, { step: 10 });
@@ -330,17 +330,14 @@ In practice only the fraction $\varepsilon$ of the exhaust heat between the turb
         v.legend([['accent', 'gas-turbine work', { area: true }], ['green', 'steam-turbine work', { area: true }], ['orange', 'exhaust heat', { area: true }], ['red', 'lost to stack', { area: true }], ['teal', 'condenser', { area: true }]]);
         v.render(() => {
           const P = plant(rS.value, T3.value), X = (f) => 100 * f;
-          const row = (y, parts, h = 0.7) => { let x = 0; for (const [f, col, lab, x0] of parts) { const a = x0 ?? x; sA.rect(a, y, a + X(f), y + h, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 }); if (X(f) > 7) sA.text(`${lab} ${v.fix(X(f), 1)}`, a + X(f) / 2, y + h / 2, { size: 12, weight: 600, align: 'center', baseline: 'middle' }); x = a + X(f); } };
-          row(3.45, [[1, 'ink', 'fuel']]);
-          row(2.45, [[P.gt, 'accent', 'GT work'], [P.exh, 'orange', 'exhaust']]);
+          const row = (y, parts, h = 0.62) => { let x = 0; for (const [f, col, lab, x0] of parts) { const a = x0 ?? x; sA.rect(a, y, a + X(f), y + h, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 }); if (X(f) > 14) sA.text(`${lab} ${v.fix(X(f), 1)}`, a + X(f) / 2, y + h / 2, { size: 12, weight: 600, align: 'center', baseline: 'middle' }); x = a + X(f); } };
+          row(3.6, [[1, 'ink', 'fuel']]);
+          row(2.6, [[P.gt, 'accent', 'GT work'], [P.exh, 'orange', 'exhaust']]);
           const x0 = X(P.gt);
-          row(1.45, [[P.st, 'green', 'ST', x0], [P.cond, 'teal', 'cond.', x0 + X(P.st)], [P.stack, 'red', 'stack', x0 + X(P.st + P.cond)]]);
-          row(0.35, [[P.tot, 'green', 'total work'], [1 - P.tot, 'muted', 'rejected']]);
-          sA.poly([[0, 3.45], [100, 3.45], [100, 3.15], [0, 3.15]], { fill: 'ink', fillAlpha: 0.04, stroke: false });
+          row(1.6, [[P.st, 'green', 'ST', x0], [P.cond, 'teal', 'cond.', x0 + X(P.st)], [P.stack, 'red', 'stack', x0 + X(P.st + P.cond)]]);
+          row(0.4, [[P.tot, 'green', 'total work'], [1 - P.tot, 'muted', 'rejected']]);
           const lab = (t, y) => sA.text(t, 1, y, { size: 11.5, color: 'muted', align: 'left' });
-          lab('fuel', 4.3); lab('gas turbine (topping cycle)', 3.3); lab('steam cycle fed by the exhaust (bottoming cycle)', 2.3); lab('whole plant', 1.3);
-          sA.poly([[x0, 2.45], [100, 2.45], [100, 2.15], [x0, 2.15]], { fill: 'orange', fillAlpha: 0.1, stroke: false });
-          sA.poly([[x0, 1.45 + 0.7], [100, 1.45 + 0.7], [100, 2.45], [x0, 2.45]], { fill: 'orange', fillAlpha: 0.12, stroke: false });
+          lab('fuel', 4.35); lab('gas turbine (topping cycle)', 3.35); lab('steam cycle fed by the exhaust (bottoming cycle)', 2.35); lab('whole plant', 1.15);
           const Ts = []; for (let T = 1000; T <= 2000; T += 25) Ts.push(T);
           sB.path(Ts.map((t) => [t, plant(rS.value, t).tot]), { color: 'green', width: 3 });
           sB.path(Ts.map((t) => [t, plant(rS.value, t).ideal]), { color: 'green', width: 1.8, dash: true });
@@ -352,7 +349,7 @@ In practice only the fraction $\varepsilon$ of the exhaust heat between the turb
         });
         v.readout(() => {
           const P = plant(rS.value, T3.value);
-          return `Gas turbine: $\\eta_1 = ${pc1(v, P.gt)}$, exhaust at ${v.fix(P.g.T4 - K0, 0)} °C, so steam at ${P.R ? v.fix(P.tsteam, 0) : '—'} °C and ${P.R ? v.fix(P.pb, 1) : '—'} MPa gives $\\eta_2 = ${pc1(v, P.e2)}$; heat recovered down to the stack: $\\varepsilon = ${pc1(v, P.eps, 0)}$.\nCombined: $\\eta_{cc} = \\eta_1 + (1-\\eta_1)\\,\\varepsilon\\,\\eta_2 = ${pc1(v, P.tot)}$ (ideal formula with $\\varepsilon=1$: ${pc1(v, P.ideal)}$).`;
+          return `Gas turbine: $\\eta_1 = ${pc1(v, P.gt)}$, exhaust at ${v.fix(P.g.T4 - K0, 0)} °C, so steam at ${P.R ? v.fix(P.tsteam, 0) : '—'} °C and ${P.R ? v.fix(P.pb, 1) : '—'} MPa gives $\\eta_2 = ${pc1(v, P.e2)}$; heat recovered down to the stack: $\\varepsilon = ${pc1(v, P.eps, 0)}$.\nCombined: $\\eta_{cc} = \\eta_1 + (1-\\eta_1)\\,\\varepsilon\\,\\eta_2 = ${pc1(v, P.tot)}$ (ideal formula with $\\varepsilon=1$: ${pc1(v, P.ideal)}).`;
         });
       },
     },
@@ -382,7 +379,7 @@ independent of the amount of heat added. Efficiency therefore rises with the com
           sA.setView([0, 17], [0, Math.max(30, C.p3 * 1.12)]);
           sA.poly(C.P, { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 3 });
           const r = rS.value;
-          [['1', r, 1, 'se'], ['2', 1, C.p2, 'ne'], ['3', 1, C.p3, 'ne'], ['4', r, C.p4, 'ne']].forEach(([n, x, y, p]) => sA.dot(x, y, { r: 5, color: 'gold', label: n, labelPos: p }));
+          [['1', r, 1, 'e'], ['2', 1, C.p2, 'ne'], ['3', 1, C.p3, 'ne'], ['4', r, C.p4, 'ne']].forEach(([n, x, y, p]) => sA.dot(x, y, { r: 5, color: 'gold', label: n, labelPos: p }));
           sA.text('compression', 5.5, C.p2 * 0.45 + 2, { size: 12, color: 'accent', align: 'center' }); sA.text('expansion', 5.5, C.p3 * 0.45, { size: 12, color: 'accent', align: 'center' });
           sA.corner(`$Q_{in}$ at constant volume`, 'tr', { color: 'orange' });
           sB.vband(rk, 20, { color: 'red', alpha: 0.1 }); sB.vline(rk, { color: 'red', width: 1.5 }); sB.text('knock', (rk + 20) / 2, 0.74, { color: 'red', size: 12, align: 'center' });
