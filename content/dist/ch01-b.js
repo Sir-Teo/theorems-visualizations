@@ -317,7 +317,7 @@ export default {
         const lS = v.slider('loss probability', 0, 0.5, 0.2, { step: 0.05, onChange: redo });
         const sdS = v.select('loss pattern', [1, 2, 3, 4, 5, 6].map((x) => ({ value: x, label: `#${x}` })), 2, { onChange: redo });
         const N = 36;
-        const sN = v.stage({ x: [0, 10], y: [-1.3, 4.3], axes: false, height: 240, title: 'two networks joined by a gateway', full: true });
+        const sN = v.stage({ x: [0, 10], y: [-1.3, 3.9], axes: false, height: 220, title: 'two networks joined by a gateway', full: true });
         const sB = v.stage({ x: [-3.6, N + 0.2], y: [-1.4, 3.2], axes: false, height: 175, title: 'the byte stream (positions 0 … 35)', full: true });
         const par = () => ({ N, S: sg.value, m: mx.value, w: wS.value, n: nS.value, loss: lS.value, seed: sdS.value });
         const CODE = ['Sender: transmit segments whose text lies in L … L+w−1', 'Sender: on timeout retransmit the unacknowledged bytes', 'Sender: on ACK(e) advance the left window edge L over the acknowledged bytes', 'Gateway: split a packet that is too big for the next network; fix SEQ, CT, ES, EM in each piece', 'Receiver: SEQ at the left edge → accept, advance the edge, ACK the next sequence number expected', 'Receiver: SEQ inside the window but not at the edge → keep it, ACK the edge', 'Receiver: SEQ outside the window → discard, ACK the edge'];
@@ -352,9 +352,8 @@ export default {
           }
           sB.text('sender', -0.5, 2.0, { align: 'right', size: 12, color: 'ink' }); sB.text('receiver', -0.5, 0.5, { align: 'right', size: 12, color: 'ink' });
           const w = wS.value;
-          sB.rect(f.la, 1.5, Math.min(N, f.la + w), 2.5, { color: 'accent', width: 2.4, radius: 3 }); sB.text('L', f.la, 3.0, { align: 'center', size: 12, color: 'accent' });
+          sB.rect(f.la, 1.5, Math.min(N, f.la + w), 2.5, { color: 'accent', width: 2.4, radius: 3 }); sB.text(`L (window w = ${wS.value})`, f.la, 3.0, { align: 'left', size: 11.5, color: 'accent' });
           sB.rect(f.R, 0.0, Math.min(N + 0.0, f.R + w), 1.0, { color: 'green', width: 2.4, radius: 3, dash: true }); sB.text('left edge', f.R, -0.35, { align: 'center', size: 11.5, color: 'green' });
-          sB.text(`window w = ${w}`, N, 3.0, { align: 'right', size: 11.5, color: 'muted' });
           sB.text(`SEQ is a byte position mod n = ${nS.value}`, N, -0.35, { align: 'right', size: 11, color: 'muted' });
         });
         v.legend([['green', 'acknowledged / delivered', { area: true }], ['gold', 'sent, not yet acknowledged', { area: true }], ['teal', 'buffered out of order', { area: true }], ['red', 'garbage reassembled', { area: true }]]);

@@ -377,7 +377,7 @@ They touch, with $f=0$, only at the corners $K$ and $K'$ of the hexagonal Brillo
         const zS = v.slider('electrons per cell $Z$', 1, 6, 2, { int: true });
         const U = v.slider('potential strength $U$', 0, 1.5, 0.5, { step: 0.01 });
         const extra = v.toggle('add one more electron', false);
-        const sA = v.stage({ x: [-1.08, 1.08], y: [0, 10], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', title: 'allowed $k$ of a ring of $N$ cells', xticks: [-1, -0.5, 0, 0.5, 1] });
+        const sA = v.stage({ x: [-1.08, 1.08], y: [-0.5, 10.5], height: 360, axes: 'box', gutter: true, weight: 1.4, xlabel: 'k  (units of π/a)', ylabel: 'E / E₁', title: 'allowed $k$ of a ring of $N$ cells', xticks: [-1, -0.5, 0, 0.5, 1] });
         const sB = v.stage({ x: [0, 1], y: [0, NB + 0.4], height: 360, axes: false, weight: 0.8, title: 'how full is each band?' });
         const cacheE = new Map();
         const bandE = (k, u) => { const key = u.toFixed(3) + '|' + k.toFixed(5); if (!cacheE.has(key)) { if (cacheE.size > 3000) cacheE.clear(); cacheE.set(key, nfeSolve(M, [u], k).E.slice(0, NB)); } return cacheE.get(key); };
@@ -404,7 +404,7 @@ They touch, with $f=0$, only at the corners $K$ and $K'$ of the hexagonal Brillo
             sA.dot(s.k, s.E, { r: 5.4, color: col, hollow: s.occ === 0 });
           }
           const ef = (eTop + eNext) / 2;
-          sA.hline(ef, { color: 'green', width: 1.5, dash: [5, 4] }); sA.text('E_F', -1.04, ef + 0.35, { color: 'green', size: 12 });
+          sA.hline(ef, { color: 'green', width: 1.5, dash: [5, 4] }); sA.tex('E_F', -1.0, ef + 0.4, { color: 'green', size: 13 });
           // counting
           const perBand = [], fill = [];
           for (let b = 0; b < NB; b++) { const sb = states.filter((s) => s.b === b); perBand.push(sb.length); fill.push(sb.reduce((a, s) => a + s.occ, 0)); }
@@ -424,8 +424,8 @@ They touch, with $f=0$, only at the corners $K$ and $K'$ of the hexagonal Brillo
           const { N, total, perBand, top, topFull, gapAbove } = st;
           let verdict;
           if (!topFull) verdict = `band ${top + 1} is only partly full — **metal**`;
-          else if (gapAbove > 1e-6) verdict = `bands 1–${top + 1} are exactly full and a gap of **${v.fix(gapAbove, 3)}** $E_1$ lies above — **insulator**`;
-          else verdict = `bands 1–${top + 1} are full but the next band touches or overlaps them — **metal / semimetal**`;
+          else if (gapAbove > 1e-6) verdict = `${top === 0 ? 'band 1 is' : `bands 1–${top + 1} are`} exactly full and a gap of **${v.fix(gapAbove, 3)}** $E_1$ lies above — **insulator**`;
+          else verdict = `${top === 0 ? 'band 1 is' : `bands 1–${top + 1} are`} full but the next band touches or overlaps them — **metal / semimetal**`;
           return `each band has $${perBand[0]}$ allowed $k$ (all bands: ${perBand.join(', ')}) $=N$ · capacity $2N=${2 * N}$ · ${total} electrons for ${N} cells: ${verdict}.`;
         });
       },

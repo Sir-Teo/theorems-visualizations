@@ -417,7 +417,7 @@ export default {
       deps: ['pl-1.1'], refs: ['Pierce §3.5'], tags: ['inference rules', 'derivations', 'induction'],
       viz(v) {
         let ro = ""; v.readout(() => ro);
-        const sD = pxStage(v, { height: 380, full: true, title: 'Derivation tree (root at the bottom; premises stack above the line)' });
+        const sD = pxStage(v, { height: 320, full: true, title: 'Derivation tree (root at the bottom; premises stack above the line)' });
         const kindSel = v.select('Judgment', [{ value: 'nv', label: 't nv' }, { value: 'val', label: 't value' }, { value: 'step', label: 't → t′' }, { value: 'big', label: 't ⇓ v' }], 'step', { onChange: () => { rebuildRules(); f.set(DEF[kindSel.value]); } });
         const DEF = { nv: 'succ succ 0', val: 'succ 0', step: 'if iszero 0 then pred 2 else 0 -> if true then pred 2 else 0', big: 'pred (if true then 2 else 0)' };
         const parseGoal = (s) => {

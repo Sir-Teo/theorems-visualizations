@@ -101,7 +101,7 @@ export default {
           const r = v.rng(seed * 101 + N.value);
           const runs = [];
           for (let i = 0; i < 12; i++) {
-            const t = randomTerm(r, N.value + Math.floor(r() * 7) - 3, 'any', 0.9);
+            const t = randomTerm(r, N.value + Math.floor(r() * 7) - 3, 'any', 0.96);
             const run = runSmall(t, R, cap); runs.push({ t, run, sizes: run.terms.map(size) });
           }
           const maxK = Math.max(...runs.map((q) => q.sizes.length - 1)), maxS = Math.max(...runs.map((q) => Math.max(...q.sizes)));
@@ -228,7 +228,7 @@ export default {
         let ro = ''; v.readout(() => ro);
         const sO = pxStage(v, { height: 360, minWidth: 300, title: 'Operational: run and store' });
         const sDn = v.stage({ x: [-4, 11], y: [-1, 12], axes: 'box', gutter: true, height: 360, minWidth: 300, title: 'Denotational: ⟦c⟧ as a function of n', xlabel: 'input n', ylabel: 'result', xticks: [-3, 0, 3, 6, 9] });
-        const sAx = pxStage(v, { height: 360, minWidth: 300, title: 'Axiomatic: {P} c {Q} and the invariant' });
+        const sAx = pxStage(v, { height: 300, minWidth: 300, title: 'Axiomatic: {P} c {Q} and the invariant' });
         const prog = v.select('Program', Object.entries(IMP_PROGS).map(([value, p]) => ({ value, label: p.label })), 'sum', { onChange: () => load() });
         const nSl = v.slider('input n', -2, 9, 4, { step: 1, int: true, onChange: () => S.reset({ at: 'start' }) });
         const kSl = v.slider('loop budget k (approximant)', 0, 12, 12, { step: 1, int: true });
@@ -238,9 +238,9 @@ export default {
         const parsed = () => parseImp(cur().src).ast;
         function load() { preF.set(cur().pre); postF.set(cur().post); invF.set(cur().inv); S.reset({ at: 'start' }); }
         const frames = () => runImp(parsed(), { n: nSl.value }, 200).frames.map((fr, i) => ({ ...fr, i, line: 0, note: fr.rule ? `**${fr.rule}** — ${fr.note}` : 'Start: the store holds only the input n.' }));
-        const S = v.steps({ frames, note: true, still: 6, speed: 1.3 });
+        const S = v.steps({ frames, note: true, start: 9, still: 9, speed: 1.3 });
         v.render(() => {
-          const p = cur(), c = parsed(), vars = ['n', ...varsOf(c)], fr = S.frame, prev = S.i > 0 ? S.frames[S.i - 1].st : null;
+          const p = cur(), c = parsed(), vars = ['n', ...varsOf(c).filter((x) => x !== 'n')], fr = S.frame, prev = S.i > 0 ? S.frames[S.i - 1].st : null;
           // operational panel
           drawProgram(v, sO, fr.c, fr.redex, [0, 8, sO.W * 0.58, sO.H - 8], { lh: 22 });
           drawStore(v, sO, vars, fr.st, prev, [sO.W * 0.58 + 6, 14, sO.W - 8, sO.H - 40]);
@@ -317,7 +317,7 @@ export default {
         const f = field(v, 'program', EX.sum, parseImp, { width: 640, onChange: () => S.reset({ at: 'start' }) });
         const pre = v.select('Try', [{ value: 'sum', label: 'sum' }, { value: 'fact', label: 'factorial' }, { value: 'gcd', label: 'gcd by subtraction' }, { value: 'loop', label: 'never halts' }], 'sum', { onChange: () => f.set(EX[pre.value]) });
         const frames = () => runImp(f.ast, {}, 300).frames.map((fr, i) => ({ ...fr, i, note: fr.rule ? `**${fr.via ? fr.via + ' ∘ ' : ''}${fr.rule}** — ${fr.note}` : 'Start: every variable is 0.' }));
-        const S = v.steps({ frames, still: 9, speed: 2.5 });
+        const S = v.steps({ frames, start: 14, still: 14, speed: 2.5 });
         const T = v.table(sT, { rows: 6, cols: 4, square: false, cellAspect: 3, maxCell: 90, size: 13, labelSize: 11.5 });
         v.render(() => {
           if (f.err) { drawParseError(v, sP, f.src, f.err); return; }
