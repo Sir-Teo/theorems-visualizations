@@ -74,6 +74,46 @@ function spearman(a, b) {
 }
 /** Text width in px for canvas text at a given size/weight. */
 function textW(s, str, size = 12, weight = 500) { const c = s.ctx; c.save(); c.font = `${weight} ${size}px Inter, system-ui, sans-serif`; const w = c.measureText(str).width; c.restore(); return w; }
+const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+/** 150000 → '1.5×10⁵' (plain text); small numbers stay decimal. */
+function sci(x, d = 2) {
+  if (x === 0 || !isFinite(x)) return String(x);
+  const e = Math.floor(Math.log10(Math.abs(x)));
+  if (e >= -2 && e <= 3) return String(+x.toPrecision(d));
+  const m = +(x / 10 ** e).toPrecision(d);
+  return `${m === 1 ? '' : m + '×'}10${String(e).split('').map((ch) => SUP[ch]).join('')}`;
+}
+/**
+ * Greedy label placement: each label tries positions around its point (right, left, diagonals, above, below, then
+ * further out with a leader line) and takes the first that stays inside the data area and clears the points and the
+ * labels already placed. items: [{x, y, text, color, size, weight, r, prefer: [cx, cy]}] in data coordinates.
+ */
+function placeLabels(v, s, items, o = {}) {
+  const b = s.bounds, X0 = s.X(b.x[0]), X1 = s.X(b.x[1]), Y0 = s.Y(b.y[0]), Y1 = s.Y(b.y[1]);
+  const xl = Math.min(X0, X1), xr = Math.max(X0, X1), yt = Math.min(Y0, Y1), yb = Math.max(Y0, Y1);
+  const pts = items.map((it) => [s.X(it.x), s.Y(it.y), (it.r ?? 5) + 1.5]).concat(o.points || []);
+  const boxes = [...(o.avoid || [])];
+  const hit = (bx) => boxes.some((q) => bx[0] < q[2] && bx[2] > q[0] && bx[1] < q[3] && bx[3] > q[1])
+    || pts.some(([cx, cy, r]) => { const nx = Math.max(bx[0], Math.min(cx, bx[2])), ny = Math.max(bx[1], Math.min(cy, bx[3])); return Math.hypot(nx - cx, ny - cy) < r; });
+  const C = [[1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1], [0, -1], [0, 1], [1, -2], [-1, -2], [1, 2], [-1, 2], [0, -2], [0, 2], [2, -2], [-2, -2], [2, 2], [-2, 2], [0, -3], [0, 3]];
+  items.forEach((it, i) => {
+    const size = it.size ?? 11, wt = it.weight ?? 500, w = textW(s, it.text, size, wt), h = size + 4, [px, py] = pts[i];
+    let pick = null, first = null;
+    for (const [cx, cy] of it.prefer ? [it.prefer, ...C] : C) {
+      const far = Math.abs(cx) > 1 || Math.abs(cy) > 1, gx = far ? 22 : 7, gy = (Math.abs(cy) > 1 ? 1.5 * Math.abs(cy) - 1 : 0.85) * h;
+      const x0 = cx > 0 ? px + gx : cx < 0 ? px - gx - w : px - w / 2, yc = py + Math.sign(cy) * gy;
+      const bx = [x0 - 2, yc - h / 2, x0 + w + 2, yc + h / 2];
+      if (bx[0] < xl + 2 || bx[2] > xr - 2 || bx[1] < yt + 1 || bx[3] > yb - 1) continue;
+      first ||= { bx, x0, yc, far };
+      if (!hit(bx)) { pick = { bx, x0, yc, far }; break; }
+    }
+    pick ||= first; if (!pick) return;
+    boxes.push(pick.bx);
+    if (pick.far) { const nx = Math.max(pick.bx[0], Math.min(px, pick.bx[2])), ny = Math.max(pick.bx[1], Math.min(py, pick.bx[3])); const c = s.ctx; c.save(); c.strokeStyle = v.color(it.color || 'muted', 0.55); c.lineWidth = 1; c.beginPath(); c.moveTo(px, py); c.lineTo(nx, ny); c.stroke(); c.restore(); }
+    s.textPx(it.text, pick.x0, pick.yc, { size, weight: wt, color: it.color || 'ink', align: 'left' });
+  });
+}
+
 
 // ── 1.5 data ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 // CA533 standard ring-width index × 1000, 1700–1983 (ITRDB).
@@ -113,7 +153,7 @@ On a **logarithmic** axis of *years before present*, equal lengths mean equal *f
       tags: ['deep time', 'scales'],
       viz(v) {
         const AGE = 13.79e9;
-        const top = v.stage({ height: 196, full: true, title: 'linear axis: equal lengths are equal durations' });
+        const top = v.stage({ height: 222, full: true, title: 'linear axis: equal lengths are equal durations' });
         const bot = v.stage({ height: 262, full: true, title: 'logarithmic axis of years ago: equal lengths are equal factors' });
         const win = v.slider('linear window: the last', 100, AGE, AGE, { log: true, fmt: (x) => yrShort(x, 3) });
         const events = MILESTONES.map(([label, ago, p], i) => ({ id: 'e' + i, label, t: { ago }, priority: p, color: p ? 'accent' : 'blue' }));
@@ -121,10 +161,18 @@ On a **logarithmic** axis of *years before present*, equal lengths mean equal *f
         const eons = v.timelines('geologic', ['eon']).map((s) => ({ ...s, track: 1 }));
         const TG = v.timeline(bot, { scale: 'log', range: ['13.79 Ga', '10 yr ago'], minAgo: 10, events, zoom: false, fontSize: 11.5, laneHeight: 16, spans: eons });
         v.render(() => {
-          const N = win.value;
+          const N = win.value, perPx = N / Math.max(1, top.width - 32);
           TL.view = [PRESENT - N, PRESENT];
+          // events within the last 3 pixels cannot be told apart: draw them as one pile instead of a tower of labels
+          const pile = events.filter((e) => e.t.ago < 3 * perPx), shown = events.filter((e) => e.t.ago >= 3 * perPx && e.t.ago <= N);
+          // a span row below the axis is reserved for the note (a span far outside the view keeps the layout fixed)
+          TL.set({ events: shown, spans: [pile.length ? { from: PRESENT - 3 * perPx, to: PRESENT, label: '', color: 'red', track: 0 } : { from: -1e13, to: -1e13 + 1, label: '', track: 0 }] });
           TG.set({ spans: [{ from: PRESENT - N, to: PRESENT, label: 'window shown above', color: 'orange', track: 0 }, ...eons] });
           TL.draw(); TG.draw();
+          if (pile.length) {
+            const txt = pile.length === 1 ? `${pile[0].label} is in the last 3 pixels →` : `${pile.length} events, from ${pile[0].label} to ${pile[pile.length - 1].label}, share the last 3 pixels →`;
+            top.textPx(txt, top.width - 24, top.height - 21.5, { align: 'right', size: 12, weight: 650, color: 'red' });
+          }
         });
         v.readout(() => {
           const W = Math.max(1, top.width - 32), N = win.value, perPx = N / W;
@@ -194,12 +242,12 @@ On a **logarithmic** axis of *years before present*, equal lengths mean equal *f
             if (k < 4) s.rect(xOf(k, next), y - 0.05, X1, y + 0.05, { fill: 'accent', fillAlpha: 0.22, stroke: false });
             // title and zoom factor (left)
             s.text(B.name, X0 - 0.012, y + 0.06, { align: 'right', size: 12.5, weight: 650, color: 'ink' });
-            s.text(B.zoom, X0 - 0.012, y - 0.1, { align: 'right', size: 11, color: 'muted' });
+            s.text(B.zoom, X0 - 0.012, y - 0.11, { align: 'right', size: 11, color: 'muted' });
             // ticks
             for (const [tau, lab, mid] of B.ticks()) {
               const x = xOf(k, tau);
               if (!mid) s.line(x, y - 0.05, x, y - 0.1, { color: 'muted', width: 1 });
-              if (lab) s.text(lab, x, y - 0.16, { align: 'center', size: 10.5, color: 'muted', halo: false });
+              if (lab) s.text(lab, x, y - 0.16, { align: Math.abs(x - X0) < 1e-6 ? 'left' : Math.abs(x - X1) < 1e-6 ? 'right' : 'center', size: 10.5, color: 'muted', halo: false });
             }
             // events: own ones get labels, later ones are faint dots
             const own = ev.filter((e) => e.tau >= B.a && e.tau < next);

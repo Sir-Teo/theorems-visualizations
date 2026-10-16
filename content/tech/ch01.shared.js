@@ -50,14 +50,13 @@ export function drawEvidence(v, s, finds, o = {}) {
     placed.push({ lane, x0, x1: x0 + it.w }); it.lane = lane; it.x0 = x0;
   }
   ctx.restore();
-  for (const it of items) {
-    const c = it.f.color || (it.f.contested ? 'red' : 'accent'), y = yAxis;
-    if (it.hi !== it.lo) s.line(X(it.lo), y, X(it.hi), y, { color: c, width: 5, alpha: 0.55, dash: it.f.contested ? [4, 3] : null });
-    const ly = yAxis + 0.2 + it.lane * laneH;
-    s.line(X(it.mid), y, X(it.mid), ly - 0.05, { color: c, width: 1, alpha: 0.6 });
-    s.dot(X(it.mid), y, { r: 4, color: c, hollow: !!it.f.contested });
-    s.text(it.txt, s.inv(it.x0 + it.w / 2, 0)[0], ly, { size: 11, color: it.f.contested ? 'red' : 'ink', baseline: 'middle', align: 'center' });
+  const col = (it) => it.f.color || (it.f.contested ? 'red' : 'accent');
+  for (const it of items) { // spans and connectors first, then dots, then labels on top
+    if (it.hi !== it.lo) s.line(X(it.lo), yAxis, X(it.hi), yAxis, { color: col(it), width: 5, alpha: 0.55, dash: it.f.contested ? [4, 3] : null });
+    s.line(X(it.mid), yAxis, X(it.mid), yAxis + 0.15 + it.lane * laneH, { color: col(it), width: 1, alpha: 0.6 });
   }
+  for (const it of items) s.dot(X(it.mid), yAxis, { r: 4, color: col(it), hollow: !!it.f.contested });
+  for (const it of items) s.text(it.txt, s.inv(it.x0 + it.w / 2, 0)[0], yAxis + 0.2 + it.lane * laneH, { size: 11, color: it.f.contested ? 'red' : 'ink', baseline: 'middle', align: 'center' });
 }
 
 /** Point in polygon (even-odd). */

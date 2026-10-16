@@ -214,7 +214,7 @@ export function scatter(E, segs, VL = 0, VR = 0) {
   const kL = Math.sqrt(kL2), P = stackMatrix(E, segs), [a, b, c, d] = P;
   if (kR2 > 0) {
     const kR = Math.sqrt(kR2), Dr = kL * kR * b - c, Di = kR * a + kL * d, D2 = Dr * Dr + Di * Di;
-    const Nr = -c - kL * kR * b, Ni = kR * a - kL * d;
+    const Nr = c + kL * kR * b, Ni = kL * d - kR * a; // r = (c + k_Lk_Rb + i(k_Ld − k_Ra))/D (Cramer's rule)
     return { T: (4 * kL * kR) / D2, R: (Nr * Nr + Ni * Ni) / D2, t: [(2 * kL * Di) / D2, (2 * kL * Dr) / D2], r: [(Nr * Dr + Ni * Di) / D2, (Ni * Dr - Nr * Di) / D2], kL, kR, kappaR: 0, P };
   }
   const q = Math.sqrt(-kR2), al = c + q * a, B = kL * (d + q * b), den = al * al + B * B;

@@ -56,7 +56,7 @@ The technique exploits **conchoidal fracture**. In a brittle stone without cleav
       idea: String.raw`A blow puts a large force on a tiny contact. Just outside it the surface is stretched radially: for a point load $P$ on a half-space the radial stress at the surface is $\sigma_r=(1-2\nu)P/(2\pi r^2)$ (Boussinesq), largest at the rim of the contact. Stone is far weaker in tension than in compression, so a ring crack opens there. As it deepens it turns so as to stay perpendicular to the greatest tension, following a trajectory of the least principal stress $\sigma_3$, and flares into a cone (Frank & Lawn 1967). A stone with no grain or cleavage cannot deflect the crack, which is why the broken surfaces are smooth, shell-like curves ("conchoidal").
 
 Near an edge, the thin slab between the crack and the outer face bends outward under the blow, and the bending keeps the crack running roughly parallel to that face until it fades out at a feather edge (Cotterell & Kamminga 1987). This gives the rules found in the flaking experiments of Dibble and colleagues (Li et al. 2023). Flake thickness follows platform depth. Flakes get longer as the platform angle approaches 90°. Beyond about 90° the stone in front of the crack is too thick to bend away.`,
-      caption: String.raw`**Left:** stress under the hammerstone in a block of stone, coloured by the greatest principal stress (red tension, blue compression). The black curves are the cone crack, traced from the rim of the contact along the computed $\sigma_3$ trajectories; grey curves are other trajectories. Change Poisson's ratio $\nu$ and the cone angle changes. **Right:** drag the **strike point** (platform depth) and the **outer face** (platform angle), and tilt the blow. The edge-side flank of the cone starts the crack, which then runs along the face, and the gold flake comes off. **Map:** green is where a flake detaches. Elsewhere the edge crushes (purple), the flake overshoots and takes the base of the core with it (gold), or nothing detaches (red). Click the map to jump there.`,
+      caption: String.raw`**Left:** stress under the hammerstone in a block of stone, shaded by the greatest principal stress (deeper red, more tension). The black curves are the cone crack, traced from the rim of the contact along the computed $\sigma_3$ trajectories; grey curves are other trajectories. Change Poisson's ratio $\nu$ and the cone angle changes. **Right:** drag the **strike point** (platform depth) and the **outer face** (platform angle), and tilt the blow. The edge-side flank of the cone starts the crack, which then runs along the face, and the gold flake comes off. **Map:** green is where a flake detaches. Elsewhere the edge crushes (purple), the flake overshoots and takes the base of the core with it (gold), or nothing detaches (red). Click the map to jump there.`,
       deps: ['solid-11.11'],
       see: ['solid-11.4', 'mat-5.1', 'bighist-4.1'],
       refs: ['Cardwell', 'Cotterell & Kamminga 1987, Amer. Antiquity 52:675', 'Li et al. 2023, J. Archaeol. Method Theory 30:1284'],
@@ -67,13 +67,13 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
         const A = v.stage({ x: [-4.4, 4.4], y: [-5.2, 1.5], equal: true, axes: false, height: 300, weight: 1, minWidth: 320, title: 'under the hammerstone (block of stone)' });
         // ---- right: a flake from the edge of a core (millimetres)
         const B = v.stage({ x: [-30, 50], y: [-66, 16], equal: true, axes: false, height: 300, weight: 1.25, minWidth: 400, title: 'at the edge of a core (mm)' });
-        const C = v.stage({ x: [40, 105], y: [0, 25], height: 190, axes: 'box', weight: 0.85, minWidth: 260, xlabel: 'platform angle (°)', ylabel: 'platform depth (mm)', title: 'the flaking window' });
-        const D = evidenceStage(v, [3.8e6, 1.5e6], { height: 190, weight: 1.4, minWidth: 380, title: 'the oldest stone tools (years ago, log scale)' });
+        const C = v.stage({ x: [40, 105], y: [0, 25], height: 200, axes: 'box', gutter: true, weight: 0.85, minWidth: 260, xlabel: 'platform angle (°)', ylabel: 'platform depth (mm)', title: 'the flaking window' });
+        const D = evidenceStage(v, [3.8e6, 1.3e6], { height: 200, weight: 1.4, minWidth: 380, title: 'the oldest stone tools (years ago, log scale)' });
         const nuS = v.slider('Poisson’s ratio $\\nu$ of the stone', 0.05, 0.4, 0.15, { step: 0.01 });
         const betaS = v.slider('blow tilted toward the edge', -30, 30, 0, { step: 1, fmt: (x) => `${x}°` });
-        const XR = 48, YB = -62, AMM = 1.0; // core box (mm) and hammer contact radius (mm)
-        let epa = 72, pd = 8;
-        const S = B.handle(pd, 0, { color: 'accent', label: 'strike', labelPos: 'n', constrain: (x) => [clamp(x, 0.8, 24), 0] });
+        const XR = 48, YB = -62, AMM = 1.5; // core box (mm) and hammer contact radius (mm)
+        let epa = 76, pd = 10;
+        const S = B.handle(pd, 0, { color: 'accent', label: 'strike', labelPos: 'e', constrain: (x) => [clamp(x, 0.8, 24), 0] });
         const faceH = B.handle(40 * Math.cos(epa * D2R), -40 * Math.sin(epa * D2R), { color: 'orange', label: 'outer face', labelPos: 'e', constrain: (x, y) => {
           let e = Math.atan2(-y, x) / D2R; e = clamp(e, 40, 105); return [40 * Math.cos(e * D2R), -40 * Math.sin(e * D2R)];
         } });
@@ -100,20 +100,25 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
           const out = { f, n, W, dS, tStar, crack: [], kind: 'flake' };
           if (pdmm < 1.8) { out.kind = 'crush'; return out; }
           if (epaDeg >= 90) { out.kind = 'none'; return out; }
-          let P = null, dir = null;
+          // initiation: follow the computed cone flank for a length set by the platform depth
+          let P = null, dir = null, sArc = 0;
+          const sInit = 0.15 * pdmm + 0.8;
           for (let i = 1; i < track.length; i++) {
-            const Q = W(track[i][0], track[i][1]); out.crack.push(Q);
-            if (dist(Q) <= tStar && out.crack.length > 1) { P = Q; const Q0 = out.crack[out.crack.length - 2]; const L = Math.hypot(Q[0] - Q0[0], Q[1] - Q0[1]) || 1; dir = [(Q[0] - Q0[0]) / L, (Q[1] - Q0[1]) / L]; break; }
+            const Q = W(track[i][0], track[i][1]), Q0 = out.crack.length ? out.crack[out.crack.length - 1] : W(track[0][0], track[0][1]);
+            const L = Math.hypot(Q[0] - Q0[0], Q[1] - Q0[1]); sArc += L; out.crack.push(Q);
+            if ((sArc >= sInit || dist(Q) <= 0.6 * dS) && L > 0) { P = Q; dir = [(Q[0] - Q0[0]) / L, (Q[1] - Q0[1]) / L]; break; }
           }
           if (!P) { out.kind = 'none'; return out; }
           out.turn = P;
+          // propagation: bending steers the crack to run along the face, converging on it at a small taper angle
           const del = clamp(3 + (12 * (90 - epaDeg)) / 50, 3, 15) * D2R; out.delta = del;
           const g = [Math.cos(del) * f[0] - Math.sin(del) * n[0], Math.cos(del) * f[1] - Math.sin(del) * n[1]];
           const th0 = Math.atan2(dir[1], dir[0]), thg = Math.atan2(g[1], g[0]);
           let dth = thg - th0; while (dth > Math.PI) dth -= 2 * Math.PI; while (dth < -Math.PI) dth += 2 * Math.PI;
-          const ell = Math.max(1, 1.2 * tStar), h = 0.3;
+          const ad = Math.max(Math.abs(dth), 0.05), Si = ad - ad ** 3 / 18 + ad ** 5 / 600; // ∫ sin(Δθ e^(−s/ℓ)) ds = ℓ·Si(Δθ)
+          const ell = Math.max(0.4, (0.2 * dist(P)) / Si), h = 0.25;
           let s = 0;
-          for (let k = 0; k < 3000; k++) {
+          for (let k = 0; k < 4000; k++) {
             const ang = thg - dth * Math.exp(-s / ell), Pn = [P[0] + h * Math.cos(ang), P[1] + h * Math.sin(ang)]; s += h;
             const dn = dist(Pn);
             if (dn <= 0) { const u = dist(P) / (dist(P) - dn); out.crack.push([P[0] + u * (Pn[0] - P[0]), P[1] + u * (Pn[1] - P[1])]); out.kind = 'flake'; break; }
@@ -149,8 +154,7 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
             if (y > 0) return null;
             const r = Math.abs(x), z = -y; if (Math.hypot(r, z) < 0.55) return null;
             const { s1 } = principal(Math.max(r, 1e-6), z, nu);
-            const t = s1 > 0 ? Math.tanh((1.6 * s1) / sRing) : -Math.tanh(-s1 / (4 * sRing));
-            return v.diverge(t * 0.85, 'blue', 'red');
+            return v.ramp(0.88 * Math.tanh((1.4 * Math.max(s1, 0)) / sRing), 'red');
           }, { key: `cone${nu}`, res: 2 });
           A.circle(0, 0, 0.55, { fill: 'muted', fillAlpha: 0.35, stroke: false });
           A.line(-4.4, 0, 4.4, 0, { color: 'ink', width: 1.5 });
@@ -165,8 +169,7 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
           A.text(`${Math.round(ang)}°`, 1 + 1.45 * Math.cos((-ang * D2R) / 2), 1.45 * Math.sin((-ang * D2R) / 2), { size: 12.5, color: 'orange', weight: 700, align: 'left' });
           A.text('ring crack', -1.05, 0.28, { size: 11, color: 'ink', align: 'right' });
           A.text('cone crack', -2.9, -1.9, { size: 11.5, color: 'ink', align: 'center', plate: true });
-          A.text('compression', 0, -4.7, { size: 11, color: 'blue', align: 'center' });
-          A.text('tension', 3.5, -0.55, { size: 11, color: 'red', align: 'center' });
+          A.text('tension under the contact', 0, -1.15, { size: 11, color: 'red', align: 'center' });
           // ======== B: the core and the flake
           cur = flake(epa, pd, beta);
           const core = corePoly();
@@ -174,8 +177,8 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
           B.line(0, 0, XR, 0, { color: 'ink', width: 2 });
           B.line(0, 0, core[core.length - 1][0], core[core.length - 1][1], { color: 'orange', width: 2.4 });
           const b = beta * D2R, ax = [-Math.sin(b), -Math.cos(b)];
-          B.circle(pd - ax[0] * 10.4, -ax[1] * 10.4, 9, { fill: 'muted', fillAlpha: 0.3, color: 'muted', width: 1.2 });
-          B.arrow(pd - ax[0] * 6, -ax[1] * 6, pd - ax[0] * 1.6, -ax[1] * 1.6, { color: 'ink', width: 2 });
+          B.circle(pd - ax[0] * 12.5, -ax[1] * 12.5, 6, { fill: 'muted', fillAlpha: 0.3, color: 'muted', width: 1.2 });
+          B.arrow(pd - ax[0] * 6.4, -ax[1] * 6.4, pd - ax[0] * 1.8, -ax[1] * 1.8, { color: 'ink', width: 2 });
           // platform-angle arc at the edge
           const arcB = []; for (let k = 0; k <= 24; k++) { const t = (-epa * D2R * k) / 24; arcB.push([7 * Math.cos(t), 7 * Math.sin(t)]); }
           B.path(arcB, { color: 'orange', width: 1.3 });
@@ -185,7 +188,8 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
             B.path(cur.crack, { color: 'ink', width: 1.6 });
             const off = [-cur.n[0] * 5, -cur.n[1] * 5];
             B.poly(cur.poly.map(([x, y]) => [x + off[0], y + off[1]]), { fill: 'gold', fillAlpha: 0.55, color: 'gold', width: 1.6 });
-            B.text(cur.kind === 'flake' ? 'flake' : 'overshot flake', cur.poly[2][0] + off[0] - 4, cur.poly[2][1] + off[1] - 3, { size: 11.5, color: 'ink', align: 'right', plate: true });
+            const mid = cur.crack[Math.floor(cur.crack.length * 0.55)];
+            B.text(cur.kind === 'flake' ? 'flake' : 'overshot flake', mid[0] + off[0] - 6, mid[1] + off[1], { size: 11.5, color: 'ink', align: 'right', plate: true });
             if (cur.turn) B.dot(cur.turn[0], cur.turn[1], { r: 3, color: 'ink' });
           } else if (cur.kind === 'none') {
             for (const sg of [1, -1]) B.path(track.filter(([r, z]) => Math.hypot(r, z) < 2.2 * pd + 6).map(([r, z]) => cur.W(sg * r, z)), { color: 'red', width: 2, dash: [5, 4] });
@@ -217,7 +221,7 @@ Near an edge, the thin slab between the crack and the outer face bends outward u
             { ago: 1.76e6, label: 'first hand axes', color: 'orange' },
           ], { ticks: [3.5e6, 3e6, 2.5e6, 2e6, 1.5e6], lanes: 3, laneH: 0.22 });
         });
-        v.legend([['red', 'tension', { area: true }], ['blue', 'compression', { area: true }], ['ink', 'crack path'], ['gold', 'detached flake', { area: true }]]);
+        v.legend([['red', 'tension (greatest principal stress)', { area: true }], ['ink', 'crack path'], ['gold', 'detached flake', { area: true }], ['orange', 'outer face and platform angle']]);
         v.readout(() => {
           const ang = coneAngle(crack), k = cur.kind;
           const cone = `cone angle for $\\nu = ${v.fix(nuS.value, 2)}$: **${Math.round(ang)}°** to the surface (cones in soda-lime glass, $\\nu \\approx 0.22$, are measured at about 22°, shallower than the stress trajectory)`;

@@ -23,14 +23,14 @@ export function resolveColor(c) {
   if (typeof c === 'string' && /^[a-z][a-z0-9-]*$/.test(c)) { const v = getComputedStyle(document.documentElement).getPropertyValue('--c-' + c).trim(); P[c] = v || c; return P[c]; }
   return c;
 }
-/** [r,g,b,a] (0–255, a in 0–1) of a palette name or any CSS colour. */
-export /** Interpolate between two theme colours in linear light (t clamped to [0,1]) → [r,g,b] 0–255. */
-function themeRamp(t, to, from) {
+/** Interpolate between two theme colours in linear light (t clamped to [0,1]) → [r,g,b] 0–255. */
+export function themeRamp(t, to, from) {
   const a = rgbOf(from), b = rgbOf(to), u = Math.max(0, Math.min(1, +t || 0));
   const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
   const enc = (c) => Math.round(255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055));
   return [0, 1, 2].map((k) => enc(lin(a[k]) + (lin(b[k]) - lin(a[k])) * u));
 }
+/** [r,g,b,a] (0–255, a in 0–1) of a palette name or any CSS colour. */
 function rgbOf(c) {
   if (Array.isArray(c)) return [c[0], c[1], c[2], c[3] ?? 1];
   const s = resolveColor(c);
@@ -786,7 +786,7 @@ class Stage {
 
   // ---------- rasters ----------
   /**
-   * Per-pixel image: fn(x,y) → [r,g,b] or [r,g,b,a] (0–255) or null (transparent).
+   * Per-pixel image: fn(x,y) → [r,g,b] or [r,g,b,a] (0–255; an alpha ≤ 1 is read as a fraction, as v.rgb returns it) or null (transparent).
    * st.res = pixel block size (default 2); st.key = cache key (recompute only when it changes); st.id to cache several layers; st.rect = [x0, y0, x1, y1] limits it to a data rectangle.
    */
   raster(fn, st = {}) {
@@ -807,7 +807,7 @@ class Stage {
           if (R && (x < R[0] || x > R[2] || y < R[1] || y > R[3])) { d[k + 3] = 0; continue; }
           const col = fn(x, y);
           if (!col) { d[k + 3] = 0; continue; }
-          d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = col.length > 3 ? col[3] : 255;
+          d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = col.length > 3 ? (col[3] <= 1 ? Math.round(col[3] * 255) : col[3]) : 255;
         }
       }
       oc.putImageData(img, 0, 0);
@@ -1348,7 +1348,7 @@ class Runtime {
     for (const s of this.stages) s.end();
     if (this.readoutFn) {
       let str; try { str = this.readoutFn(this.t); } catch (e) { this.fail(e); return; }
-      if (str !== this._ro) { this._ro = str; this.readoutEl.innerHTML = inlineHTML(str); }
+      if (str !== this._ro) { this._ro = str; this.readoutEl.innerHTML = String(str ?? '').split('\n').map((l) => inlineHTML(l)).join('<br>'); }
     }
     this.frames = (this.frames || 0) + 1;
   }

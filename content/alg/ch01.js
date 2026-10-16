@@ -172,8 +172,8 @@ export default {
         const fake = v.toggle('false version: swap $\\cap$ and $\\cup$ on the right', false);
         const UX = [0.25, 9.75], UY = [0.25, 6.15], R = 2.05;
         const C = [{ x: 3.85, y: 3.2, r: R, name: 'A', color: 'blue', namePos: Math.PI * 0.8 }, { x: 6.15, y: 3.2, r: R, name: 'B', color: 'red', namePos: Math.PI * 0.2 }];
-        const s = v.stage({ x: [0, 10], y: [0, 6.4], equal: true, axes: false, height: 300, weight: 1 });
-        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1.3 });
+        const s = v.stage({ x: [0, 10], y: [0, 6.4], equal: true, axes: false, height: 290, weight: 1 });
+        const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1.45 });
         const P = [[1.2, 5.3], [5, 3.4], [3.3, 1.9], [8.6, 1.0]].map(([x, y], k) => s.handle(x, y, { color: 'gold', r: 6, label: 'pqrs'[k], constrain: (x, y) => [v.M.clamp(x, UX[0] + 0.15, UX[1] - 0.15), v.M.clamp(y, UY[0] + 0.15, UY[1] - 0.15)] }));
         const ops = () => {
           const k = law.value, f = fake.value;
@@ -187,7 +187,7 @@ export default {
           still: 4,
         });
         const cA = v.rgb('blue'), cB = v.rgb('red');
-        const T = v.table(t, { rows: 4, cols: 8, square: false, maxCell: 40, cellAspect: 1.45, size: 14, margin: 6, colWeights: [0.8, 0.8, 1.35, 1.5, 0.85, 0.85, 1.5, 0.9], rowLabels: ['$p$', '$q$', '$r$', '$s$'] });
+        const T = v.table(t, { rows: 4, cols: 8, square: false, maxCell: 40, cellAspect: 1.6, size: 14, labelSize: 12, margin: 4, colWeights: [0.7, 0.7, 1.5, 1.7, 0.8, 0.8, 1.7, 0.7], rowLabels: ['$p$', '$q$', '$r$', '$s$'] });
         v.render(() => {
           const k = S.frame.k ?? 0, o = ops(), lhsSig = signature(o.lhs, 2), rhsSig = signature(o.rhs, 2);
           const fillCol = k === 0 ? v.ramp(0.4, 'accent') : k === 1 ? v.ramp(0.4, 'orange') : null, green = v.ramp(0.45, 'green'), bad = v.ramp(0.5, 'red');
@@ -206,7 +206,7 @@ export default {
           const rows = P.map((h) => regionOf(C, h.x, h.y));
           const col = (m, j) => [!!(m & 1), !!(m & 2), o.inner(m), o.lhs(m), !(m & 1), !(m & 2), o.rhs(m)][j];
           T.draw({
-            colLabels: ['$A$', '$B$', `$${X.inn}$`, `$${X.lhs}$`, "$A'$", "$B'$", `$${X.rhs}$`, 'agree?'],
+            colLabels: ['$A$', '$B$', `$${X.inn}$`, `$${X.lhs}$`, "$A'$", "$B'$", `$${X.rhs}$`, '='],
             value: (i, j) => (j < 7 ? (col(rows[i], j) ? '1' : '0') : o.lhs(rows[i]) === o.rhs(rows[i]) ? '✓' : '✗'),
             fill: (i, j) => {
               const m = rows[i];
@@ -241,14 +241,16 @@ More generally $A_1\times\cdots\times A_n$ is the set of $n$-tuples $(a_1,\ldots
       tags: ['sets', 'relations'],
       credit: 'René Descartes (coordinates), 1637',
       viz(v) {
-        const nA = v.slider('$|A|$', 0, 6, 3, { int: true }), nB = v.slider('$|B|$', 0, 5, 3, { int: true });
+        const nA = v.slider('$|A|$', 0, 6, 4, { int: true }), nB = v.slider('$|B|$', 0, 5, 3, { int: true });
         const swap = v.toggle('draw $B\\times A$', false);
-        const s = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, height: 330 });
-        const R = new Set(['0,1', '1,0', '2,2']);
+        const s = v.stage({ x: [0, 10], y: [0, 6.9], axes: false, height: 320 });
+        const R = new Set(['0,1', '1,0', '2,2', '3,0']);
         const geo = () => {
           const sw = swap.value, cols = sw ? nB.value : nA.value, rows = sw ? nA.value : nB.value;
-          const X = (i) => 2.6 + i * 1.18, Y = (j) => 1.9 + j * 1.02;
-          return { sw, cols, rows, X, Y };
+          const dx = Math.min(1.45, 6.2 / Math.max(cols, 1)), dy = Math.min(1.4, 4.5 / Math.max(rows, 1));
+          const left = 5.3 - ((cols - 1) * dx) / 2, axisX = left - 1.25;
+          const X = (i) => left + i * dx, Y = (j) => 1.9 + j * dy;
+          return { sw, cols, rows, X, Y, axisX };
         };
         const labA = (i) => NAMES_A[i], labB = (j) => String(j + 1);
         s.onClick((x, y) => {
@@ -262,11 +264,11 @@ More generally $A_1\times\cdots\times A_n$ is the set of $n$-tuples $(a_1,\ldots
           const colCol = g.sw ? 'red' : 'blue', rowCol = g.sw ? 'blue' : 'red';
           // the two factor sets as ovals on the axes
           if (g.cols) s.rect(g.X(0) - 0.5, 0.45, g.X(g.cols - 1) + 0.5, 1.15, { radius: 999, fill: colCol, fillAlpha: 0.08, color: colCol, width: 1.3 });
-          if (g.rows) s.rect(0.75, g.Y(0) - 0.45, 1.65, g.Y(g.rows - 1) + 0.45, { radius: 999, fill: rowCol, fillAlpha: 0.08, color: rowCol, width: 1.3 });
-          s.text(g.sw ? 'B' : 'A', g.cols ? g.X(g.cols - 1) + 0.85 : 2.6, 0.8, { math: true, size: 18, color: colCol, weight: 700 });
-          s.text(g.sw ? 'A' : 'B', 1.2, g.rows ? g.Y(g.rows - 1) + 0.85 : 2, { math: true, size: 18, color: rowCol, weight: 700, align: 'center' });
+          if (g.rows) s.rect(g.axisX - 0.45, g.Y(0) - 0.45, g.axisX + 0.45, g.Y(g.rows - 1) + 0.45, { radius: 999, fill: rowCol, fillAlpha: 0.08, color: rowCol, width: 1.3 });
+          s.text(g.sw ? 'B' : 'A', g.cols ? g.X(g.cols - 1) + 0.85 : 5.3, 0.8, { math: true, size: 18, color: colCol, weight: 700 });
+          s.text(g.sw ? 'A' : 'B', g.axisX, g.rows ? g.Y(g.rows - 1) + 0.85 : 2, { math: true, size: 18, color: rowCol, weight: 700, align: 'center' });
           for (let i = 0; i < g.cols; i++) { s.dot(g.X(i), 0.8, { r: 5, color: colCol }); s.text(colLab(i), g.X(i), 0.8, { dy: 0, dx: 8, math: true, size: 15, color: colCol }); }
-          for (let j = 0; j < g.rows; j++) { s.dot(1.2, g.Y(j), { r: 5, color: rowCol }); s.text(rowLab(j), 1.2, g.Y(j), { dx: -10, align: 'right', math: true, size: 15, color: rowCol }); }
+          for (let j = 0; j < g.rows; j++) { s.dot(g.axisX, g.Y(j), { r: 5, color: rowCol }); s.text(rowLab(j), g.axisX, g.Y(j), { dx: -10, align: 'right', math: true, size: 15, color: rowCol }); }
           if (!g.cols || !g.rows) { s.text(`${g.sw ? 'B × A' : 'A × B'} = ∅  (a factor is empty)`, 5.6, 4.2, { align: 'center', size: 15, color: 'muted' }); return; }
           for (let i = 0; i < g.cols; i++) for (let j = 0; j < g.rows; j++) {
             const key = g.sw ? `${j},${i}` : `${i},${j}`, inR = R.has(key);
@@ -325,7 +327,7 @@ is its **range** or **image**. A rule that seems to assign values is **well-defi
             // the rule p/q ↦ p on ℚ: one rational, several names, several images
             const groups = [[['1/2', 1], ['2/4', 2], ['3/6', 3]], [['1/3', 1], ['2/6', 2]]], Bp = colPts(3, 7.4, 5.0, 1.6);
             drawBlob(v, s, [[2.6, 5.6], [2.6, 0.9]], { name: 'ℚ', padX: 1.5, padY: 0.25 });
-            drawBlob(v, s, Bp, { name: 'ℤ', padX: 0.55, padY: 0.7 });
+            drawBlob(v, s, Bp, { name: 'ℤ', padPy: 30 });
             let y = 5.25;
             groups.forEach((g, gi) => {
               const y0 = y, pts = g.map(() => { const p = [2.6, y]; y -= 0.82; return p; }); y -= 0.45;
@@ -377,7 +379,7 @@ is its **range** or **image**. A rule that seems to assign values is **well-defi
         v.button('Random map', () => { const r = v.rng(seed++ * 7 + 3); f = f.map(() => r.int(0, nB.value - 1)); });
         v.button('Random bijection', () => { const r = v.rng(seed++ * 11 + 5); const n = nA.value; nB.set(n); const p = r.shuffle([...Array(n).keys()]); f = f.map((x, i) => (i < n ? p[i] : 0)); });
         const s = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 330, weight: 1.55 });
-        const b = v.stage({ x: [-0.6, 6.6], y: [0, 4], height: 330, axes: 'box', gutter: true, weight: 1, ylabel: 'fibre size', xlabel: 'element of B', title: 'fibre sizes $|f^{-1}(b)|$' });
+        const b = v.stage({ x: [-0.6, 6.6], y: [0, 4], height: 330, axes: 'box', gutter: true, weight: 1, ylabel: 'fibre size |f⁻¹(b)|', xlabel: 'element b of B' });
         const geo = () => ({ A: colPts(nA.value, 2.4, 5.9, 0.9), B: colPts(nB.value, 7.6, 5.9, 0.9) });
         const fv = () => f.slice(0, nA.value).map((x) => Math.min(x, nB.value - 1));
         const ed = linkEditor(v, s, () => [{ pts: geo().A, to: 1 }, { pts: geo().B, to: null }], (c, i, j) => { f[i] = j; }, (c, i) => { if (c === 0) f[i] = (Math.min(f[i], nB.value - 1) + 1) % nB.value; });
@@ -454,7 +456,7 @@ It first applies $f$, then $g$ — composition is read from right to left. The c
             const gf = f.map((b) => g[b]), fg = g.map((c) => f[c]);
             [[gf, 1.2, 3.6, 'g ∘ f'], [fg, 6.4, 8.8, 'f ∘ g']].forEach(([h, x0, x1, name]) => {
               const P = colPts(4, x0, 5.4, 1.1), Q = colPts(4, x1, 5.4, 1.1);
-              drawBlob(v, t, P, { padX: 0.42 }); drawBlob(v, t, Q, { padX: 0.42 });
+              drawBlob(v, t, P, { padPx: 30 }); drawBlob(v, t, Q, { padPx: 30 });
               h.forEach((c, a) => mapArrow(v, t, P[a], Q[c], { color: gf[a] === fg[a] ? 'ink' : 'red', width: 2.1 }));
               drawElems(v, t, P, labs(0), { side: 'left', size: 13 }); drawElems(v, t, Q, labs(0), { side: 'right', size: 13 });
               t.text(name, (x0 + x1) / 2, 6.25, { size: 17, align: 'center', weight: 700, math: true });
@@ -465,7 +467,7 @@ It first applies $f$, then $g$ — composition is read from right to left. The c
           const { f, g } = cur();
           if (mode.value === 'abc') {
             const L = labs(0), C = labs(2);
-            return String.raw`$g\circ f$: ${f.map((b, a) => `$${L[a]}\mapsto ${C[g[b]]}$`).join(', ')}. The other order $f\circ g$ is **undefined**: $g$ produces elements of $C$, but $f$ only accepts elements of $A$.`;
+            return String.raw`$g\circ f$: ${f.map((b, a) => `$${L[a]}\\mapsto ${C[g[b]]}$`).join(', ')}. The other order $f\circ g$ is **undefined**: $g$ produces elements of $C$, but $f$ only accepts elements of $A$.`;
           }
           const gf = f.map((b) => g[b]), fg = g.map((c) => f[c]), two = (h) => String.raw`\begin{pmatrix}1&2&3&4\\ ${h.map((x) => x + 1).join('&')}\end{pmatrix}`;
           const diff = gf.map((x, i) => (x !== fg[i] ? i + 1 : null)).filter(Boolean);
@@ -500,8 +502,8 @@ whose bottom row lists every element of $S$ exactly once. There are $n!$ permuta
         v.render(() => {
           const n = N.value, q = p.slice(0, n), hits = Array(n).fill(0); q.forEach((j) => hits[j]++);
           s.rect(0.55, TOP - 0.55, 9.45, TOP + 0.55, { radius: 14, fill: 'muted', fillAlpha: 0.06, color: 'muted', width: 1, alpha: 0.5 });
-          s.rect(0.55, BOT - 0.55, 9.45, BOT + 0.55, { radius: 14, fill: 'muted', fillAlpha: 0.06, color: 'muted', width: 1, alpha: 0.5 });
-          s.text('tokens  i', 0.6, TOP + 0.85, { size: 12, color: 'muted' }); s.text('slots  π(i)', 0.6, BOT - 0.85, { size: 12, color: 'muted' });
+          s.rect(0.55, BOT - 0.8, 9.45, BOT + 0.55, { radius: 14, fill: 'muted', fillAlpha: 0.06, color: 'muted', width: 1, alpha: 0.5 });
+          s.text('tokens  i', 0.6, TOP + 0.85, { size: 12, color: 'muted' }); s.text('slots  π(i)', 0.6, BOT - 1.08, { size: 12, color: 'muted' });
           q.forEach((j, i) => mapArrow(v, s, [X(i, n), TOP], [X(j, n), BOT], { color: hits[j] > 1 ? 'red' : CAT[i % 8], width: 2.2, trim0: 15, trim1: 17 }));
           ed.rubber({ trim0: 15 });
           for (let i = 0; i < n; i++) {

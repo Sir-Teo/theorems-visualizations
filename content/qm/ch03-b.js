@@ -72,16 +72,6 @@ function packetAverage(g, k0, sk, n = 240) {
 }
 /** sinh(A)/sinh(B) for 0 < A ≤ B without overflow. */
 const sinhRatio = (A, B) => Math.exp(A - B) * (-Math.expm1(-2 * A)) / (-Math.expm1(-2 * B));
-/** Draw a bisection log row: the digits shared by lo and hi in green, the rest muted. */
-function digitRow(s, X, Y, str, common, size = 12) {
-  const c = s.ctx; c.save(); c.font = `500 ${size}px "JetBrains Mono", ui-monospace, monospace`; c.textBaseline = 'middle';
-  c.fillStyle = s.rt ? '' : ''; c.restore();
-  const head = str.slice(0, common), tail = str.slice(common);
-  c.save(); c.font = `600 ${size}px "JetBrains Mono", ui-monospace, monospace`; c.textBaseline = 'middle';
-  const w = c.measureText(head).width; c.restore();
-  return { head, tail, w };
-}
-
 export default {
   collection: 'qm',
   chapter: 3,
@@ -95,10 +85,10 @@ export default {
 $$k=\frac{\sqrt{2m(E+V_0)}}{\hbar},\quad \kappa=\frac{\sqrt{-2mE}}{\hbar},\quad z=ka,\quad z_0=\frac{a\sqrt{2mV_0}}{\hbar},\quad (ka)^2+(\kappa a)^2=z_0^2,$$
 they alternate in parity: even states $\cos kx$ inside satisfy $z\tan z=\sqrt{z_0^2-z^2}$, odd states $\sin kx$ satisfy $-z\cot z=\sqrt{z_0^2-z^2}$, and outside the well both decay as $e^{-\kappa|x|}$ — the particle is found in the classically forbidden region with nonzero probability. There are exactly $\lceil 2z_0/\pi\rceil$ bound states (always at least one); a new one appears, at $E=0$, each time $z_0$ passes a multiple of $\pi/2$. As $z_0\to\infty$ the low levels approach those of the infinite well of width $2a$, $E_n+V_0\to n^2\pi^2\hbar^2/2m(2a)^2$, from below.`,
       scope: String.raw`A model for quantum wells in semiconductor heterostructures, nucleons in a nucleus, and any short-range attraction with a sharp edge.`,
-      idea: String.raw`Solve in each region — oscillating inside, exponential outside (only the decaying one is normalizable) — and match $\psi$ and $\psi'$ at $x=\pm a$; dividing the two conditions gives the logarithmic-derivative condition $k\tan ka=\kappa$ (even) or $-k\cot ka=\kappa$ (odd). Multiplying by $a$ turns it into the intersection of the branches $z\tan z$, $-z\cot z$ with the quarter circle of radius $z_0$, because $z^2+(\kappa a)^2=z_0^2$. Each branch rises from $0$ to $+\infty$ across an interval of length $\pi/2$, so the circle meets one branch per interval it reaches: $\lceil 2z_0/\pi\rceil$ crossings. For a deep well, $\kappa a$ is large on low levels, $\tan z\to\infty$, so $z\to(n-\tfrac12)\pi$ or $n\pi$... more precisely $ka\to n\pi/2$, the box condition; the finite depth lets the wave leak a distance $1/\kappa$ and so lowers each level.`,
+      idea: String.raw`Solve in each region — oscillating inside, exponential outside (only the decaying one is normalizable) — and match $\psi$ and $\psi'$ at $x=\pm a$; dividing the two conditions gives the logarithmic-derivative condition $k\tan ka=\kappa$ (even) or $-k\cot ka=\kappa$ (odd). Multiplying by $a$ turns it into the intersection of the branches $z\tan z$, $-z\cot z$ with the quarter circle of radius $z_0$, because $z^2+(\kappa a)^2=z_0^2$. Each branch rises from $0$ to $+\infty$ across an interval of length $\pi/2$, so the circle meets one branch per interval it reaches: $\lceil 2z_0/\pi\rceil$ crossings. For a deep well the circle is huge, so on the low levels it meets each branch high up, just below its asymptote $z=n\pi/2$: $ka\to n\pi/2$, the box condition for width $2a$. The finite depth lets the wave leak a distance $1/\kappa$ beyond each wall, which acts like a slightly wider box and so lowers every level.`,
       caption: String.raw`Set the **depth** and **half-width**. Left: the graphical solution — the quarter circle of radius $z_0$ (green) meets the even branches $z\tan z$ (blue) and odd branches $-z\cot z$ (orange) once per quarter-period it reaches; each gold dot is a bound state. Right: the well with those levels and their wave functions, tails leaking into the shaded forbidden region; dashed red lines are the levels of an infinitely deep box of the same width, which the levels approach from below as the well deepens. Bottom: the levels against $z_0$ — deepen the well and new states enter one at a time at $E=0$.`,
       deps: ['qm-3.3'],
-      see: ['qm-3.10', 'qm-3.12', 'cm-4.9'],
+      see: ['qm-3.10', 'qm-3.12', 'cm-4.11'],
       refs: ['Griffiths §2.6'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Finite_potential_well' },
       tags: ['finite square well', 'bound states', 'graphical solution'],
@@ -107,7 +97,7 @@ they alternate in parity: even states $\cos kx$ inside satisfy $z\tan z=\sqrt{z_
         const as = v.slider('half-width $a$', 0.5, 2, 1, { step: 0.01 });
         const sG = v.stage({ x: [0, 6], y: [0, 6], equal: true, height: 330, axes: 'box', weight: 1, xlabel: 'z', title: '$z\\tan z$ (even), $-z\\cot z$ (odd), circle $\\sqrt{z_0^2-z^2}$' });
         const sD = v.stage({ x: [-3, 3], y: [-1, 0.3], height: 330, axes: 'box', weight: 1, xlabel: 'x', ylabel: 'E', title: 'levels and wave functions (dashed: infinitely deep box)' });
-        const sF = v.stage({ x: [0, 13], y: [-1.04, 0.04], height: 170, axes: 'box', full: true, xlabel: 'z₀', ylabel: 'E / V₀', title: 'levels against the strength $z_0=a\\sqrt{2mV_0}/\\hbar$' });
+        const sF = v.stage({ x: [0, 13], y: [-1.22, 0.04], height: 180, axes: 'box', full: true, xlabel: 'z₀', ylabel: 'E / V₀', title: 'levels against the strength $z_0=a\\sqrt{2mV_0}/\\hbar$' });
         const ZG = []; for (let i = 1; i <= 650; i++) { const z0 = (13 * i) / 650; ZG.push([z0, wellRoots(z0).map((r) => -(r.w * r.w) / (z0 * z0))]); }
         const NX = 701;
         let st = null;
@@ -128,7 +118,7 @@ they alternate in parity: even states $\cos kx$ inside satisfy $z\tan z=\sqrt{z_
           const x = Float64Array.from({ length: NX }, (_, i) => -half + (2 * half * i) / (NX - 1)), Vg = Float64Array.from(x, (X) => (Math.abs(X) < a ? -V0 : 0));
           const E = R.map((r) => -(r.w * r.w) / (2 * a * a)), psi = R.map((r) => { const f = wellPsi(r, a); return Float64Array.from(x, f); });
           let pmax = 0; for (const p of psi) for (const y of p) pmax = Math.max(pmax, Math.abs(y));
-          const sp = N > 1 ? (E[N - 1] - E[0]) / (N - 1) : 0.4 * V0, amp = (0.4 * Math.min(sp, 0.4 * V0)) / pmax;
+          const sp = N > 1 ? (E[N - 1] - E[0]) / (N - 1) : 0.4 * V0, amp = (0.32 * Math.min(sp, 0.4 * V0)) / pmax;
           sD.setView([-half, half], [-1.08 * V0, 0.24 * V0]);
           for (let n = 1; n < 40; n++) { const Eb = (n * n * Math.PI * Math.PI) / (2 * 4 * a * a) - V0; if (Eb > 0.22 * V0) break; sD.line(-a, Eb, a, Eb, { color: 'red', width: 1.2, dash: [5, 4], alpha: 0.7 }); }
           levelDiagram(sD, { x, V: Vg, E, psi, col, amp, label: (i) => `n=${i + 1}  E/V₀ = ${v.fix(E[i] / V0, 3)}` });
@@ -155,7 +145,7 @@ while the bound state spreads over a distance $1/\kappa\propto1/\lambda$. The di
       idea: String.raw`Variationally: take the trial state $\psi_\beta=\sqrt\beta\,e^{-\beta|x|}$. Its kinetic energy is $\hbar^2\beta^2/2m$ while its potential energy is about $\beta\int V\,dx<0$ for small $\beta$ (the state is so wide that it samples the whole well at height $\psi(0)^2=\beta$). Linear beats quadratic, so $\langle H\rangle<0$ for small $\beta$, and since the continuum starts at $0$, there is a bound state below it; optimizing $\beta$ gives the formula above. For the square well (3.11) the even branch of the graphical solution starts at the origin, so the circle of any radius $z_0$ meets it. In 2D the same trial state costs kinetic energy logarithmically more, and in 3D the $s$-wave equation for $u=r\psi$ is the 1D problem on a half-line with $u(0)=0$, which admits only the *odd* states of 3.11 — and the first odd branch starts at $z=\pi/2$.`,
       caption: String.raw`A square well of depth $V_0$ and radius (half-width) $a$, strength $z_0^2=2mV_0a^2/\hbar^2$. **Weaken it** with the slider. Left: the ground state $\psi(r)/\psi(0)$ against $r/a$ on a log scale — in 1D it never disappears, just spreads out to $1/\kappa$ (dashed). Right: the binding energy against $z_0^2$ on log–log axes for all three dimensions: 1D follows $|E|\approx z_0^4\,\varepsilon$ (slope 2 — the depth squared), 2D drops off exponentially, $4e^{-2\gamma}e^{-4/z_0^2}\varepsilon$, and 3D vanishes altogether below $z_0^2=\pi^2/4$. Switch the **dimension** to see the wave function do the same.`,
       deps: ['qm-3.11'],
-      see: ['qm-3.10', 'qm-12.1', 'cm-6.6'],
+      see: ['qm-3.10', 'qm-12.1'],
       refs: ['Griffiths §2.6'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Finite_potential_well' },
       tags: ['bound states', 'weak binding', 'dimension'],
@@ -204,12 +194,13 @@ while the bound state spreads over a distance $1/\kappa\propto1/\lambda$. The di
           sB.vline(z2, { color: 'gold', width: 1.2, dash: [2, 3] });
           st = { d, z2, w, E: w ? w * w : 0, as: asym(d, z2) };
         });
-        v.legend([['accent', '1D: |E| → z₀⁴ ε'], ['purple', '2D: |E| → 4e^{−2γ} e^{−4/z₀²} ε'], ['orange', '3D: threshold z₀² = π²/4'], ['gold', 'current well', { dot: true }]]);
+        v.legend([['accent', '1D: $|E|\\to z_0^4\\,\\varepsilon$'], ['purple', '2D: $|E|\\to4e^{-2\\gamma}e^{-4/z_0^2}\\,\\varepsilon$'], ['orange', '3D: threshold $z_0^2=\\pi^2/4$'], ['gold', 'current well', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const head = `$z_0^2 = ${v.fix(st.z2, 3)}$, ${st.d}D: `;
           if (!st.w) return head + `**no bound state** — in 3D the well must reach $z_0^2 = \\pi^2/4 = ${v.fix(Math.PI * Math.PI / 4, 4)}$ before it binds.`;
-          return head + `$E = -$${st.E > 1e-4 ? v.fix(st.E, 5) : `$${v.sci(st.E, 3)}$`}$\\,\\varepsilon$` + (st.d < 3 ? ` vs the weak-well law ${st.as > 1e-4 ? v.fix(st.as, 5) : `$${v.sci(st.as, 3)}$`} (ratio ${v.fix(st.E / st.as, 4)})` : '') + ` · size of the state $1/\\kappa = $${1 / st.w < 1e4 ? v.fix(1 / st.w, 2) : `$${v.sci(1 / st.w, 2)}$`}$\\,a$` + (st.d === 1 ? ' — still bound, however weak.' : st.d === 2 ? ' — bound, but exponentially weakly.' : '.');
+          const num = (q, d) => (q > 1e-4 && q < 1e4 ? q.toFixed(d) : v.sci(q, 3));
+          return head + `$E = -${num(st.E, 5)}\\,\\varepsilon$` + (st.d < 3 ? ` vs the weak-well law $${num(st.as, 5)}\\,\\varepsilon$ (ratio ${v.fix(st.E / st.as, 4)}, → 1 as the well weakens)` : '') + ` · size of the state $1/\\kappa = ${num(1 / st.w, 2)}\\,a$` + (st.d === 1 ? ' — still bound, however weak.' : st.d === 2 ? ' — bound, but exponentially weakly.' : '.');
         });
       },
     },
@@ -222,7 +213,7 @@ while the bound state spreads over a distance $1/\kappa\propto1/\lambda$. The di
 $$\psi\sim e^{ik_Lx}+r\,e^{-ik_Lx}\ (x\to-\infty),\qquad \psi\sim t\,e^{ik_Rx}\ (x\to+\infty),\qquad k_{L,R}=\frac{\sqrt{2m(E-V_{L,R})}}{\hbar}:$$
 a wave incident from the left, a reflected wave and a transmitted wave. The **reflection and transmission coefficients** are the ratios of probability currents,
 $$R=\frac{|j_{\rm ref}|}{j_{\rm inc}}=|r|^2,\qquad T=\frac{j_{\rm trans}}{j_{\rm inc}}=\frac{k_R}{k_L}\,|t|^2,$$
-and $R+T=1$. They are the probabilities that a particle of energy $E$ sent in from the left is reflected or transmitted. Note the velocity factor $k_R/k_L$: when $V_L\neq V_R$, $|t|^2$ alone is not a probability. If $V_R<E<V_L$... (or $E<V_R$) the transmitted wave is evanescent and $R=1$.`,
+and $R+T=1$. They are the probabilities that a particle of energy $E$ sent in from the left is reflected or transmitted. Note the velocity factor $k_R/k_L$: when $V_L\neq V_R$, $|t|^2$ alone is not a probability. If $V_L<E<V_R$ the transmitted wave is evanescent, carries no current, and $R=1$.`,
       idea: String.raw`For a stationary state the density is time independent, so the continuity equation (2.6) forces $\partial_xj=0$: the current is the **same at every $x$**. On the left the cross terms between $e^{ik_Lx}$ and $re^{-ik_Lx}$ cancel in $j=\frac\hbar m\operatorname{Im}\bar\psi\psi'$, leaving $j=\frac{\hbar k_L}m(1-|r|^2)$; on the right $j=\frac{\hbar k_R}m|t|^2$. Equating them gives $R+T=1$. Physically a plane wave is an idealization of a long, nearly monochromatic packet (3.6): the packet splits into a reflected and a transmitted piece whose probabilities are $R$ and $T$ (see 3.14, 3.15).`,
       caption: String.raw`Choose a potential (or type one). Top: the stationary scattering state at the energy set by the **gold handle** on the right panel, its real part animated as $\operatorname{Re}\,\psi e^{-iEt/\hbar}$ with the envelope $|\psi|$: on the left the incident and reflected waves interfere into ripples, on the right a pure transmitted wave of constant $|\psi|$ moves off. Middle left: the current $j(x)$, computed from $\psi$ and $\psi'$ — **flat** across the whole line, equal to $j_{\rm inc}-|j_{\rm ref}|$ on the left and $j_{\rm trans}$ on the right. Right: $R$ and $T$ against energy; their sum is 1 everywhere. For the **step**, compare $T$ with $|t|^2$ in the readout.`,
       deps: ['qm-3.6', 'qm-2.6'],
@@ -387,7 +378,7 @@ transmission falls **exponentially** with the width and with $\sqrt{V_0-E}$. For
         const eS = v.slider('energy $E/V_0$', 0.2, 1.4, 0.5, { step: 0.01, onChange: () => rebuild() });
         const axis = v.select('plot $T$ against', [{ value: 'w', label: 'width' }, { value: 'E', label: 'energy' }], 'w');
         const sA = v.stage({ x: [-60, 60], y: [-0.1, 2], height: 190, axes: 'box', full: true, ylabel: 'E', title: '$\\psi$ (height $|\\psi|$, colour phase) and the barrier' });
-        const sL = v.stage({ x: [-60, 60], y: [1e-12, 1], ylog: true, height: 160, axes: 'box', full: true, xlabel: 'x', title: '$|\\psi|^2$ on a log scale' });
+        const sL = v.stage({ x: [-60, 60], y: [1e-9, 1], ylog: true, height: 160, axes: 'box', full: true, xlabel: 'x', title: '$|\\psi|^2$ on a log scale' });
         const sB = v.stage({ x: [0, 8], y: [1e-12, 3], ylog: true, height: 240, axes: 'box', full: true, ylabel: 'T', title: 'transmission $T$: exact, WKB, thick-barrier formula; simulation (dot)' });
         const Vof = (sh, w) => (sh === 'square' ? (X) => (Math.abs(X) < w / 2 ? V0 : Math.abs(X) === w / 2 ? V0 / 2 : 0) : (X) => V0 * Math.exp((-L4 * X * X) / (w * w)));
         const segsOf = (sh, w) => (sh === 'square' ? [{ V: V0, d: w }] : sliceV(Vof(sh, w), -2 * w, 2 * w, 260));
@@ -416,13 +407,13 @@ transmission falls **exponentially** with the width and with $\sqrt{V_0-E}$. For
           // packet
           sA.setView([-60, 60], [-0.14 * 1.8, 1.8]);
           sA.fn((X) => Vof(sh, w)(X), { color: 'muted', width: 2, fill: 'muted', fillAlpha: 0.2, base: -0.25, n: 900 });
-          sA.hline(E, { color: 'ink', width: 1, dash: [5, 4], alpha: 0.6 }); sA.text('E', -59, E, { size: 11.5, dy: -8 });
+          sA.hline(E, { color: 'ink', width: 1, dash: [5, 4], alpha: 0.6 }); sA.text('E', 59, E, { size: 11.5, dy: -8, align: 'right' });
           let pk = 0; for (let i = 0; i < NG; i++) pk = Math.max(pk, Math.hypot(q.re[i], q.im[i]));
           drawPsi(sA, x, q.re, q.im, { col, base: E, scale: (0.42 * (1.8 - E)) / Math.max(pk, 0.2) });
           phaseWheel(sA, col, sA.W - 34, 40, 11);
           // log density
           const bl = sh === 'square' ? w / 2 : 0.8 * w; sL.vband(-bl, bl, { color: 'muted', alpha: 0.2 });
-          const pts = []; for (let i = 0; i < NG; i += 1) { if (x[i] < -61 || x[i] > 61) continue; pts.push([x[i], Math.max(1e-13, q.re[i] ** 2 + q.im[i] ** 2)]); }
+          const pts = []; for (let i = 0; i < NG; i += 1) { if (x[i] < -61 || x[i] > 61) continue; pts.push([x[i], Math.max(1e-10, q.re[i] ** 2 + q.im[i] ** 2)]); }
           sL.path(pts, { color: 'accent', width: 1.6 });
           sL.corner(`beyond the barrier: ${PT < 1e-3 ? v.sci(PT, 2).replace(/\\times10\^\{(-?\d+)\}/, '×10^$1') : v.fix(PT, 5)}${done ? ' (final)' : ''}`, 'tr', { color: done ? 'red' : 'muted', weight: 600 });
           // T curves
@@ -446,7 +437,7 @@ transmission falls **exponentially** with the width and with $\sqrt{V_0-E}$. For
           if (meas != null) sB.dot(X, Math.max(meas, 1e-12), { r: 5, color: 'red' });
           st = { E, w, tau, PT, done, Tpw, Tav, Tw: Twkb(sh, w, E), Tt: sh === 'square' ? Tthick(w, E) : NaN, sh, kap: E < V0 ? Math.sqrt(2 * (V0 - E)) : 0 };
         }, { period: PER, still: PER - 0.15 });
-        v.legend([['accent', 'exact T (transfer matrix)'], ['orange', 'WKB e^{−2∫κ dx}', { dash: true }], ['purple', 'thick-barrier formula (square)', { dash: true }], ['red', 'simulation; ring = packet average', { dot: true }]]);
+        v.legend([['accent', 'exact $T$ (transfer matrix)'], ['orange', 'WKB $e^{-2\\int\\kappa\\,dx}$', { dash: true }], ['purple', 'thick-barrier formula (square)', { dash: true }], ['red', 'simulation; ring = packet average', { dot: true }]]);
         const tx = (q) => (q > 1e-3 ? v.fix(q, 5) : `$${v.sci(q, 3)}$`);
         v.readout(() => st && `$E/V_0 = ${v.fix(st.E, 2)}$, $w = ${v.fix(st.w, 2)}$${st.kap ? `, $\\kappa w = ${v.fix(st.kap * st.w, 2)}$` : ''} · ${st.done ? 'measured' : 'so far'} beyond the barrier: **${tx(st.PT)}** · exact $T$ at $E$: ${tx(st.Tpw)}, averaged over the packet's momenta: ${tx(st.Tav)}` + (Number.isFinite(st.Tw) ? ` · WKB ${tx(st.Tw)} (exact/WKB = ${v.fix(st.Tpw / st.Tw, 3)})` : ' · above the barrier: no tunnelling needed, yet $T<1$') + (Number.isFinite(st.Tt) ? ` · thick-barrier ${tx(st.Tt)}` : '') + '.');
       },
@@ -469,10 +460,10 @@ where $k'=\sqrt{2m(E+V_0)}/\hbar$; between these energies part of the wave is re
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ramsauer%E2%80%93Townsend_effect' },
       tags: ['resonance', 'transmission', 'fabry–pérot'],
       viz(v) {
-        const M = v.M, EMAX = 4, NE = 900, B = 0.35;
+        const M = v.M, EMAX = 4, NE = 1400, B = 0.8;
         const mode = v.select('potential', [{ value: 'well', label: 'square well' }, { value: 'double', label: 'two barriers' }], 'well', { onChange: () => { cKey = null; setE = true; } });
-        const hS = v.slider('depth $V_0$ / barrier height', 0.5, 8, 3, { step: 0.05, onChange: () => { cKey = null; setE = true; } });
-        const WS = v.slider('width of the well $W$ / gap between the barriers', 1, 6, 3, { step: 0.01, onChange: () => { cKey = null; setE = true; } });
+        const hS = v.slider('depth $V_0$ (well) / height (barriers)', 0.5, 8, 3, { step: 0.05, onChange: () => { cKey = null; setE = true; } });
+        const WS = v.slider('width $W$ (well) / gap (barriers)', 1, 6, 5.5, { step: 0.01, onChange: () => { cKey = null; setE = true; } });
         const sT = v.stage({ x: [0, EMAX], y: [-0.03, 1.08], height: 240, axes: 'box', full: true, xlabel: 'E', ylabel: 'T', title: 'transmission $T(E)$' });
         const sW = v.stage({ x: [-8, 8], y: [-1, 1], height: 230, axes: 'box', full: true, xlabel: 'x', title: 'scattering state at the chosen energy: $|\\psi|$ (ink) and $\\operatorname{Re}\\psi$ (blue)' });
         let cKey = null, C = null, setE = true;
@@ -494,7 +485,7 @@ where $k'=\sqrt{2m(E+V_0)}/\hbar$; between these energies part of the wave is re
         v.render(() => {
           const C = curve(), E = M.clamp(hE.x, 0.01, EMAX); hE.y = interp(C.E, C.T, E);
           sT.hline(1, { color: 'ink', width: 1, dash: [3, 3], alpha: 0.5 });
-          C.pred.forEach(([n, e]) => { sT.vline(e, { color: 'green', width: 1.2, dash: [4, 4] }); sT.text(`n=${n}`, e, 1.04, { size: 10.5, color: 'green', align: 'center' }); });
+          C.pred.forEach(([n, e]) => { sT.vline(e, { color: 'green', width: 1.2, dash: [4, 4] }); sT.text(`n=${n}`, e, 0.05, { size: 10.5, color: 'green', align: 'left', dx: 3 }); });
           if (C.T1) sT.path(Array.from(C.E, (e, i) => [e, C.T1[i]]), { color: 'muted', width: 1.6, dash: [5, 4] });
           sT.path(Array.from(C.E, (e, i) => [e, C.T[i]]), { color: 'accent', width: 2.4 });
           // scattering state
@@ -589,7 +580,7 @@ $$\Delta E=E_--E_+\ \approx\ \frac{\hbar\omega}{\pi}\exp\!\Big(-\frac1\hbar\int_
           st = { b: D.b, dE: D.dE, Tt: D.Tt, wk: D.wk, dev, tau, PLn };
         }, { period: PER, still: 4 });
         v.legend([['accent', 'computed: levels, ΔE, P_left(t)'], ['orange', 'WKB estimate of ΔE', { dash: true }], ['green', 'cos²(ΔE t / 2ħ)', { area: true }]]);
-        v.readout(() => st && `$V_b = ${v.fix(st.b, 2)}$: $\\Delta E = E_--E_+ = ${v.sci(st.dE, 3)}$ (WKB estimate $${v.sci(st.wk, 3)}$, ratio ${v.fix(st.dE / st.wk, 3)}) · tunnelling period $2\\pi\\hbar/\\Delta E = ${st.Tt < 1e4 ? v.fix(st.Tt, 1) : `$${v.sci(st.Tt, 2)}$`}$ · computed $P_{\\rm left}(t)$ stays within ${v.sci(Math.max(st.dev, 1e-16), 1)} of $\\cos^2(\\Delta E\\,t/2\\hbar)$ · now $t = ${v.fix(st.tau / st.Tt, 3)}\\,T$, left half ${v.fix(st.PLn, 4)}.`);
+        v.readout(() => st && `$V_b = ${v.fix(st.b, 2)}$: $\\Delta E = E_--E_+ = ${v.sci(st.dE, 3)}$ (WKB estimate $${v.sci(st.wk, 3)}$, ratio ${v.fix(st.dE / st.wk, 3)}) · tunnelling period $2\\pi\\hbar/\\Delta E = ${st.Tt < 1e4 ? v.fix(st.Tt, 1) : `$${v.sci(st.Tt, 2)}$`}$ · computed $P_{\\rm left}(t)$ stays within $${v.sci(Math.max(st.dev, 1e-16), 1)}$ of $\\cos^2(\\Delta E\\,t/2\\hbar)$ · now $t = ${v.fix(st.tau / st.Tt, 3)}\\,T$, left half ${v.fix(st.PLn, 4)}.`);
       },
     },
     // ------------------------------------------------------------------ 3.18
@@ -613,7 +604,7 @@ $$\Delta E=E_--E_+\ \approx\ \frac{\hbar\omega}{\pi}\exp\!\Big(-\frac1\hbar\int_
         Vin = v.input('$V(x) =$', PRE.harmonic[1], { vars: ['x'], width: 210, onChange: () => { br = null; log = []; } });
         const meth = v.select('method', [{ value: 'left', label: 'shoot from the left' }, { value: 'both', label: 'shoot from both ends' }], 'left', { onChange: () => { br = null; log = []; } });
         const sA = v.stage({ x: [A, B], y: [0, 1], height: 300, axes: 'box', weight: 1.2, xlabel: 'x', ylabel: 'E', title: 'the solution at the trial energy $E$' });
-        const sB = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 300, axes: 'box', weight: 0.8, xlabel: 'E', yticks: [[-1, '−∞'], [0, '0'], [1, '+∞']], title: 'where it runs off to, against $E$' });
+        const sB = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 300, axes: 'box', weight: 0.8, xlabel: 'E', yticks: [[-1, '−∞'], [0, '0'], [1, '+∞']], title: 'where it runs off to, against $E$ (signed log scale)' });
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 190, axes: false, full: true, title: 'bisection log: the bracket $[E_{\\rm lo},E_{\\rm hi}]$, shared digits in green' });
         const hE = sA.handle(A + 0.4, 1, { color: 'gold', r: 8, label: 'E', labelPos: 'e', constrain: (X, Y) => [hE.x, Y] });
         let S = null;
@@ -631,11 +622,11 @@ $$\Delta E=E_--E_+\ \approx\ \frac{\hbar\omega}{\pi}\exp\!\Big(-\frac1\hbar\int_
           const n = S.x.length, uL = numerov(S.Vg, S.h, E);
           let im = 0, ib = n - 1; while (im < n - 1 && S.Vg[im] > E) im++; while (ib > 0 && S.Vg[ib] > E) ib--;
           let nm = 1e-300; for (let i = 0; i <= Math.min(n - 1, ib + 4); i++) nm = Math.max(nm, Math.abs(uL[i]));
-          if (m === 'left') return { uL, nm, val: uL[n - 1] / nm, g: (2 / Math.PI) * Math.atan(uL[n - 1] / nm / 3) };
+          if (m === 'left') { const val = uL[n - 1] / nm; return { uL, nm, val, g: Math.sign(val) * Math.min(1, Math.log10(1 + 100 * Math.abs(val)) / 10) }; }
           const uR = numerov(Float64Array.from(S.Vg).reverse(), S.h, E).reverse(), ic = Math.round((im + ib) / 2) || (n >> 1);
           let nr = 1e-300; for (let i = Math.max(0, im - 4); i < n; i++) nr = Math.max(nr, Math.abs(uR[i]));
           const W = (uL[ic] / nm) * (uR[ic + 1] - uR[ic - 1]) / (2 * S.h * nr) - (uR[ic] / nr) * (uL[ic + 1] - uL[ic - 1]) / (2 * S.h * nm);
-          return { uL, uR, nm, nr, ic, val: W, g: (2 / Math.PI) * Math.atan(W) };
+          return { uL, uR, nm, nr, ic, val: W, g: Math.sign(W) * Math.min(1, Math.log10(1 + 1e4 * Math.abs(W)) / 5) };
         };
         const landscape = (S, m) => { if (S.land[m]) return S.land[m]; const pts = []; for (let k = 0; k <= 500; k++) { const E = S.Vmin + ((S.Etop - S.Vmin) * k) / 500; pts.push([E, shoot(S, E, m).g]); } return (S.land[m] = pts); };
         const startBis = () => {
@@ -649,8 +640,9 @@ $$\Delta E=E_--E_+\ \approx\ \frac{\hbar\omega}{\pi}\exp\!\Big(-\frac1\hbar\int_
         v.button('Start bisection here', () => startBis());
         v.button('Bisect', () => bisectOnce());
         v.button('Bisect ×10', () => { for (let i = 0; i < 10; i++) bisectOnce(); });
-        let st = null;
+        let st = null, primed = false;
         v.render(() => {
+          if (!primed) { primed = true; solve(); startBis(); for (let i = 0; i < 9; i++) bisectOnce(); }
           const S = solve(), m = meth.value, span = S.Eref[K - 1] - S.Vmin;
           let a = 0, b = S.x.length - 1; while (a < b && S.Vg[a] > S.Etop + 0.2 * span) a++; while (b > a && S.Vg[b] > S.Etop + 0.2 * span) b--;
           const xl = S.x[Math.max(0, a - 10)], xr = S.x[Math.min(S.x.length - 1, b + 10)];
@@ -782,7 +774,7 @@ eigenstates of the angular momentum $L_z=-i\hbar\,\partial_\varphi$ with value $
         const RS = v.slider('ring radius $R$ (nm)', 0.5, 5, 1, { step: 0.05 });
         const sR = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, height: 320, axes: false, weight: 0.9, title: '$\\operatorname{Re}\\,\\psi(\\varphi,t)$ around the ring (colour $\\arg\\psi$)' });
         const sE = v.stage({ x: [-4.6, 4.6], y: [-0.5, 21], height: 320, axes: 'box', weight: 1.1, xlabel: 'm', ylabel: 'E / ε', title: 'levels $E_m=\\varepsilon\\,(m-\\Phi/\\Phi_0)^2$, $\\varepsilon=\\hbar^2/2MR^2$' });
-        const sF = v.stage({ x: [-1.5, 1.5], y: [-0.2, 6.5], height: 200, axes: 'box', full: true, xlabel: 'Φ / Φ₀', ylabel: 'E / ε', title: 'the spectrum against the enclosed flux (Aharonov–Bohm)' });
+        const sF = v.stage({ x: [-1.5, 1.5], y: [-1, 6.5], height: 210, axes: 'box', full: true, xlabel: 'Φ / Φ₀', ylabel: 'E / ε', title: 'the spectrum against the enclosed flux (Aharonov–Bohm)' });
         let st = null;
         v.animate((t) => {
           const col = phaseLUT(v), m = mS.value, F = fS.value, isInt = Math.abs(m - Math.round(m)) < 1e-9, E = (m - F) ** 2, Em = (-m - F) ** 2;
@@ -790,17 +782,17 @@ eigenstates of the angular momentum $L_z=-i\hbar\,\partial_\varphi$ with value $
           sR.circle(0, 0, 1, { color: 'muted', width: 1.4, alpha: 0.6 });
           sR.circle(0, 0, 0.32, { fill: Math.abs(F) > 0.005 ? 'purple' : 'faint', fillAlpha: 0.15 + 0.5 * Math.min(1, Math.abs(F)), color: 'purple', width: Math.abs(F) > 0.005 ? 1.4 : 0.6 });
           if (Math.abs(F) > 0.005) sR.text(`Φ = ${v.fix(F, 2)} Φ₀`, 0, 0, { align: 'center', size: 11.5, color: 'purple', weight: 600 });
-          const NP = 720, ph = (p) => { // ψ(φ, t) up to normalization
+          const NP = 720, RA = 0.2, ph = (p) => { // ψ(φ, t) up to normalization
             const a = m * p - E * t * 0.5; if (!sup.value) return [Math.cos(a), Math.sin(a)];
             const b = -m * p - Em * t * 0.5; return [(Math.cos(a) + Math.cos(b)) / Math.SQRT2, (Math.sin(a) + Math.sin(b)) / Math.SQRT2];
           };
           let prev = null;
           for (let k = 0; k <= NP; k++) {
-            const p = (TAU * k) / NP, [re, im] = ph(p), r = 1 + 0.28 * re, P = [r * Math.cos(p), r * Math.sin(p)];
+            const p = (TAU * k) / NP, [re, im] = ph(p), r = 1 + RA * re, P = [r * Math.cos(p), r * Math.sin(p)];
             if (prev) sR.line(prev[0], prev[1], P[0], P[1], { color: col(Math.atan2(im, re)), width: 3.2 });
             prev = P;
           }
-          if (!isInt) { const [r0] = ph(0), [r1] = ph(TAU); sR.line(1 + 0.28 * r0, 0, 1 + 0.28 * r1, 0, { color: 'red', width: 4 }); sR.dot(1 + 0.28 * r1, 0, { r: 5, color: 'red' }); sR.text('does not join', 1.18, -0.16, { size: 11.5, color: 'red', weight: 600, align: 'center' }); }
+          if (!isInt) { const [r0] = ph(0), [r1] = ph(TAU); sR.line(1 + RA * r0, 0, 1 + RA * r1, 0, { color: 'red', width: 4 }); sR.dot(1 + RA * r1, 0, { r: 5, color: 'red' }); sR.text('does not join', 1.18, -0.16, { size: 11.5, color: 'red', weight: 600, align: 'center' }); }
           const cur = sup.value ? 0 : m - F;
           if (Math.abs(cur) > 0.02) { const dir = Math.sign(cur), a0 = 2.1, a1 = a0 + dir * 0.7; sR.curve((u) => [1.42 * Math.cos(u), 1.42 * Math.sin(u)], a0, a1, { color: 'green', width: 2.4 }); const ex = 1.42 * Math.cos(a1), ey = 1.42 * Math.sin(a1); sR.arrow(ex + 0.12 * dir * Math.sin(a1), ey - 0.12 * dir * Math.cos(a1), ex, ey, { color: 'green', width: 2.4, head: 9 }); sR.text('current', 1.42 * Math.cos(a0 + dir * 0.35) * 1.13, 1.42 * Math.sin(a0 + dir * 0.35) * 1.13, { size: 11, color: 'green', align: 'center' }); }
           phaseWheel(sR, col, sR.W - 30, 36, 11);
@@ -818,7 +810,7 @@ eigenstates of the angular momentum $L_z=-i\hbar\,\partial_\varphi$ with value $
           st = { m, F, isInt, E, eps, deg: !sup.value && isInt && Math.round(m) !== 0 && Math.abs(F) < 1e-9, I, sup: sup.value };
         }, { period: PER, still: 3 });
         v.legend([['accent', 'allowed levels (integer m)'], ['gold', 'chosen state', { dot: true }], ['green', 'ground state / current'], ['purple', 'enclosed flux']]);
-        v.readout(() => st && (st.isInt ? `$m = ${Math.round(st.m)}$: $E = ${v.fix(st.E, 3)}\\,\\varepsilon$ with $\\varepsilon = \\hbar^2/2m_eR^2 = ${v.fix(st.eps * 1000, 3)}$ meV for an electron on a ring of radius ${v.fix(RS.value, 2)} nm` + (st.deg ? ` · **doubly degenerate** with $m = ${-Math.round(st.m)}$` : Math.round(st.m) === 0 ? ' · the only nondegenerate level' : st.sup ? ' · a standing wave: equal parts $\\pm m$, no current' : ' · the flux lifts the $\\pm m$ degeneracy') + (st.sup ? '' : ` · current $I = -\\partial E/\\partial\\Phi = ${v.fix(st.I * 1e9, 2)}$ nA`) : `$m = ${v.fix(st.m, 2)}$ is not a whole number: $e^{im\\varphi}$ jumps by the phase $e^{2\\pi im} = e^{${v.fix(TAU * st.m, 2)}i}$ going once round, so it is not single-valued — not an allowed state.`));
+        v.readout(() => st && (st.isInt ? `$m = ${Math.round(st.m)}$: $E = ${v.fix(st.E, 3)}\\,\\varepsilon$ with $\\varepsilon = \\hbar^2/2m_eR^2 = ${v.fix(st.eps * 1000, 3)}$ meV for an electron on a ring of radius ${v.fix(RS.value, 2)} nm` + (st.deg ? ` · **doubly degenerate** with $m = ${-Math.round(st.m)}$` : Math.round(st.m) === 0 ? ' · the only nondegenerate level' : st.sup ? ' · a standing wave: equal parts $\\pm m$, no current' : ' · the flux lifts the $\\pm m$ degeneracy') + (st.sup ? '' : ` · persistent current $I = -\\partial E/\\partial\\Phi = ${v.fix(st.I * 1e6, 3)}$ µA`) : `$m = ${v.fix(st.m, 2)}$ is not a whole number: $e^{im\\varphi}$ jumps by the phase $e^{2\\pi im} = e^{${v.fix(TAU * st.m, 2)}i}$ going once round, so it is not single-valued — not an allowed state.`));
       },
     },
   ],

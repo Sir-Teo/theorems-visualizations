@@ -276,7 +276,7 @@ export default {
               const tile = (val, j, y, col, best) => { Al.rect(j - 0.42, y - 0.3, j + 0.42, y + 0.3, { fill: best ? 'green' : col, fillAlpha: best ? 0.35 : 0.16, color: best ? 'green' : col, width: best ? 2 : 1, radius: 3 }); Al.text(String(val), j, y, { align: 'center', size: 12, weight: 700, halo: false }); };
               for (let j = cur.j0; j <= cur.j1; j++) { tile(cur.F[j - cur.j0], j, 1.2, 'blue', j === cur.js); tile(cur.B[j - cur.j0], j, 0.35, 'orange', j === cur.js); }
               Al.text('F', -1.3, 1.2, { align: 'center', size: 13, weight: 800, color: 'blue', math: true }); Al.text('B', -1.3, 0.35, { align: 'center', size: 13, weight: 800, color: 'orange', math: true });
-              Al.text(`stored right now: these 2 × ${cur.j1 - cur.j0 + 1} numbers (plus the recursion stack) — never the whole table`, -2.2, -0.62, { size: 11.5, weight: 600, color: 'muted' });
+              Al.text(`memory in use: these 2 × ${cur.j1 - cur.j0 + 1} numbers, never the whole table`, -2.2, -0.62, { size: 11.5, weight: 600, color: 'muted' });
             } else Al.text('base case: a single row of x is aligned directly', -2.2, 0.6, { size: 12, color: 'muted' });
           }
         });
@@ -376,7 +376,7 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
         const Lbin = (k) => items.reduce((t, it) => t + bits(it.w) + k, 0) + bits(W0) + k;
         const Lun = (k) => (items.reduce((t, it) => t + it.w, 0) + W0) * 2 ** k;
         const cells = (k) => (n + 1) * (W0 * 2 ** k + 1);
-        const L0 = Lbin(0), C0 = cells(0);
+        const L0 = Lbin(0), C0 = cells(0), runs = {};
         v.render(() => {
           const k = kS.value;
           // bit rows
@@ -400,7 +400,7 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
           if (copies <= 1024) {
             for (let r = 0; r < rws; r++) for (let c = 0; c < cols; c++) B.rect(c * bw, -r * bh, (c + 1) * bw, -(r + 1) * bh, { fill: r === 0 && c === 0 ? 'accent' : 'orange', fillAlpha: r === 0 && c === 0 ? 0.5 : 0.28, color: copies <= 64 ? 'panel' : null, width: copies <= 64 ? 1 : 0, stroke: copies <= 64 });
           } else { B.rect(0, 0, cols * bw, -rws * bh, { fill: 'orange', fillAlpha: 0.32, stroke: false }); B.rect(0, 0, bw, -bh, { fill: 'accent', fillAlpha: 0.6, stroke: false }); }
-          B.corner(`${big(copies)} ${copies === 1 ? 'copy' : 'copies'} · ${big(cells(k))} cells`, 'bl', { color: 'ink', weight: 600, plate: true });
+          B.corner(`${copies === 1 ? '1 copy' : `≈ ${big(copies)} copies`} · ${big(cells(k))} cells`, 'bl', { color: 'ink', weight: 600, plate: true });
           // chart
           for (const d of [1, 2, 3]) {
             C.fn((L) => C0 * (L / L0) ** d, { color: 'muted', dash: [5, 4], width: 1.2, alpha: 0.8 });
@@ -417,9 +417,9 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
         v.readout(() => {
           const k = kS.value, W = W0 * 2 ** k, sc = items.map((it) => ({ w: it.w * 2 ** k, v: it.v }));
           let check = '';
-          if (k <= 12) { const { K, take } = knapTable(sc, W); check = ` · DP run on the scaled instance: value ${K[n][W]}, items {${knapPick(sc, take, n, W).join(', ')}} — the same answer as for $k = 0$ ✓`; }
+          if (k <= 14) { if (!runs[k]) { const { K, take } = knapTable(sc, W); runs[k] = [K[n][W], knapPick(sc, take, n, W)]; } check = ` · DP run on the scaled instance: value ${runs[k][0]}, items {${runs[k][1].join(', ')}} — the same answer as for $k = 0$ ✓`; }
           else check = ' · (too big to run here: same answer, $2^{' + k + '}$ times the work)';
-          return `$W = 11\\cdot 2^{${k}} = ${tbig(W)}$ · input ${Lbin(k)} bits (+${Lbin(k) - L0}) · table $(n+1)(W+1) = ${tbig(cells(k))}$ cells, about $2^{${k}}$ = ${r2(cells(k) / C0)}× the $k=0$ table${check}`;
+          return `$W = 11\\cdot 2^{${k}} = ${tbig(W)}$ · input ${Lbin(k)} bits (+${Lbin(k) - L0}) · table $(n+1)(W+1) = ${tbig(cells(k))}$ cells, ${big(cells(k) / C0)}× the $k=0$ table (each extra bit nearly doubles it)${check}`;
         });
       },
     },
@@ -816,10 +816,11 @@ and the optimal tour has length $\min_j\big(D[\{1,\dots,n-1\},j]+d(j,0)\big)$. T
           const f = S.frame, n = nS.value, P = pts(), { subs, D } = run, rows = subs.length;
           H.forEach((h, k) => { h.visible = k < n; });
           // table
+          const labSz = rows <= 15 ? 11 : rows <= 31 ? 8 : 0;
           const big1 = rows <= 15, tourCells = new Set(f.tour ? run.cellsPath.map(([Sm, j]) => Sm * 10 + j) : []);
           let mx = 0; subs.forEach((Sm) => { for (const j in D[Sm]) mx = Math.max(mx, D[Sm][j]); });
           T.draw({
-            rows, cols: n - 1, rowLabels: (r) => setLab(subs[r]), colLabels: (c) => `j=${c + 1}`, cornerLabel: 'S',
+            rows, cols: n - 1, rowLabels: labSz ? (r) => setLab(subs[r]) : null, colLabels: (c) => `j=${c + 1}`, cornerLabel: labSz ? 'S' : null, labelSize: labSz || 10, minCell: 2,
             value: (r, c) => (big1 && r <= f.r && D[subs[r]][c + 1] != null ? r2(D[subs[r]][c + 1]) : null),
             fill: (r, c) => { const Sm = subs[r], j = c + 1; if (D[Sm][j] == null) return ['faint', 0.22]; if (sel && sel[0] === Sm && sel[1] === j) return ['purple', 0.5]; if (tourCells.has(Sm * 10 + j)) return ['green', 0.5]; if (r === f.r && !f.done) return j === f.bj ? ['gold', 0.6] : ['gold', 0.25]; if (r > f.r) return null; return [...v.ramp(0.12 + 0.5 * D[Sm][j] / mx, 'accent'), 0.9]; },
             activeRow: f.done ? undefined : f.r, size: big1 ? 12 : 9,

@@ -639,7 +639,7 @@ The case $p=q=2$ is the Cauchy–Schwarz inequality.`,
         const pair = v.select('$(f,g)$ =', Object.entries(PAIRS).map(([value, o]) => ({ value, label: o.label })), 'al');
         const free = v.toggle('free $(p,q)$', false);
         const S = v.stage({ x: [1, 8], y: [1, 8], xlog: true, ylog: true, height: 380, axes: 'box', gutter: true, xlabel: '$p$', ylabel: '$q$', title: 'the $(p,q)$ plane, log axes' });
-        const R = v.stage({ x: [0, 1], y: [0.03, 60], ylog: true, height: 360, axes: 'box', gutter: true, xlabel: '$\\omega$', title: 'normalised $|f|^p$ and $|g|^q$' });
+        const R = v.stage({ x: [0, 1], y: [0.03, 60], ylog: true, height: 380, axes: 'box', gutter: true, xlabel: '$\\omega$', title: 'normalised $|f|^p$ and $|g|^q$' });
         const H = S.handle(2, 2, { color: 'gold', constrain: (x, y) => { if (free.value) return [clampN(x, 1.02, 7.9), clampN(y, 1.02, 7.9)]; const p = clampN(x, 8 / 7, 8); return [p, p / (p - 1)]; } });
         const ratio = (P, p, q) => { const d = P.nf(p) * P.ng(q); return isFinite(d) ? P.E / d : 0; };
         let st = null;
@@ -718,7 +718,7 @@ The finiteness of $\mu(E)$ cannot be dropped: on $\R$ with Lebesgue measure, $f_
             const mb = bad[k](m, e).reduce((s, [a, b]) => s + b - a, 0), Mm = k === 'unb' ? m : Sq.M;
             bnd.push([m, isFinite(Sq.muE) ? e * Sq.muE + 2 * Mm * mb : NaN]);
           }
-          const ymax = k === 'unb' ? 2.6 : 1.15;
+          const ymax = k === 'unb' ? 2.6 : k === 'inf' ? 1.45 : 1.15;
           B.setView(null, [0, ymax]);
           if (isFinite(Sq.muE)) B.path(bnd, { color: 'orange', width: 2.2 }); else cornerIn(B, '$\\varepsilon\\,\\mu(E)=\\infty$: the bound is useless', 'tr', { color: 'red' });
           B.dots(errs, { color: 'accent', r: 3 });

@@ -76,6 +76,7 @@
     // blank-canvas check: every canvas should contain some non-transparent pixels
     const blank = [];
     document.querySelectorAll('#viz canvas').forEach((cv, i) => {
+      if (cv.getClientRects().length === 0 || getComputedStyle(cv).visibility === 'hidden') return; // a stage the viz hides on purpose (display: none)
       const c = cv.getContext('2d'); const { width: w, height: h } = cv; if (!w || !h) { blank.push(i); return; }
       const d = c.getImageData(0, 0, w, h).data; let n = 0;
       for (let k = 3; k < d.length; k += 4 * 37) if (d[k] > 0) n++;

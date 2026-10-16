@@ -195,7 +195,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
 | `v.onCleanup(fn)` | run `fn` when the viz is destroyed (clear your own `setInterval`s, observers…). |
 | `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
-| `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. |
+| `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. A `\n` in the string starts a new line. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
 | `v.t`, `v.play()`, `v.pause()`, `v.restart()`, `v.playing` | animation clock. |
 | `v.invalidate()` | request a redraw (e.g. after mutating state in a button handler — buttons already do this). |

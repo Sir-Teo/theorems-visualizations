@@ -177,6 +177,11 @@ export function trimArrow(s, a, b, st, t0 = 9, t1 = 10) {
   const ux = (X2 - X1) / L, uy = (Y2 - Y1) / L, [x1, y1] = s.inv(X1 + ux * t0, Y1 + uy * t0), [x2, y2] = s.inv(X2 - ux * t1, Y2 - uy * t1);
   s.arrow(x1, y1, x2, y2, st); return true;
 }
+/** trimArrow shifted sideways by d pixels (to separate a pair of opposite arrows). */
+export function sideArrow(s, a, b, st, d = 5, t0 = 12, t1 = 13) {
+  const X1 = s.X(a[0]), Y1 = s.Y(a[1]), X2 = s.X(b[0]), Y2 = s.Y(b[1]), L = Math.hypot(X2 - X1, Y2 - Y1) || 1, nx = (-(Y2 - Y1) / L) * d, ny = ((X2 - X1) / L) * d;
+  return trimArrow(s, s.inv(X1 + nx, Y1 + ny), s.inv(X2 + nx, Y2 + ny), st, t0, t1);
+}
 /** Budget set (shaded) and budget line p1 x1 + p2 x2 = m. */
 export function budget(s, p1, p2, m, st = {}) {
   const X1 = m / p1, X2 = m / p2;

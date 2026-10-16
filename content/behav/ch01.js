@@ -99,7 +99,7 @@ A player who values a gamble by its expected payout should therefore pay any fin
         const fin = v.toggle('the banker’s fortune is finite', false);
         const Bs = v.slider('banker’s fortune $B$ (ducats)', 100, 1e12, 1e6, { log: true, fmt: (x) => big(x, 2) });
         const coin = v.stage({ x: [0, 100], y: [0, 1], axes: false, height: 58, full: true });
-        const bars = v.stage({ x: [-1.4, 26.5], y: [-0.1, 1.25], axes: 'box', height: 310, xlabel: 'toss k on which heads first came', ylabel: 'ducats per game', title: 'average payout by toss k (theory: ½ from every k)' });
+        const bars = v.stage({ x: [-1.4, 26.5], y: [-0.1, 1.32], axes: 'box', height: 310, xlabel: 'toss k on which heads first came', ylabel: 'ducats per game', title: 'average payout by toss k (theory: ½ from every k)' });
         const run = v.stage({ x: [0.35, 1e4], xlog: true, y: [0, 12], axes: 'box', height: 310, weight: 1.25, xlabel: 'games played n', ylabel: 'average payout (ducats)', title: 'running average payout' });
         v.legend([['gold', 'what your games paid'], ['muted', 'theory: ½ per toss / ½ log₂ n', { dash: true }], ['orange', 'your price'], ['green', 'expected value, finite banker', { dash: true }]]);
         const stats = () => {
@@ -499,10 +499,10 @@ So for small risks the premium is proportional to the *variance*: halving the st
           gS.el.hidden = fam.value !== 'crra'; aS.el.hidden = fam.value !== 'cara'; lS.el.hidden = fam.value !== 'kink';
           const U = util(), sig = sS.value, c = dist.value === 'bet' ? sig : sig * Math.sqrt(3);
           const u0 = U.u(W0), slope = (U.u(W0 + 1e-4) - u0) / 1e-4, d = (x) => (U.u(x) - u0) / slope; // utility rescaled to money units at w
-          const lo = W0 - 32, hi = W0 + 32, y0 = d(lo + 1), y1 = d(hi);
+          const lo = W0 - 32, hi = W0 + 32, y0 = Math.max(d(lo + 1), -48), y1 = d(hi);
           const yb = y0 - 0.34 * (y1 - y0);
           s1.setView([lo - 5, hi], [yb, y1 + 0.06 * (y1 - y0)]);
-          s1.fn(d, { domain: [lo + 0.5, hi], color: 'ink', width: 2.4 });
+          s1.clip(() => s1.fn(d, { domain: [lo + 0.5, hi], color: 'ink', width: 2.4 }), [lo - 5, hi], [y0 - 0.02 * (y1 - y0), y1 + 0.06 * (y1 - y0)]);
           s1.fn((x) => x - W0, { domain: [lo + 0.5, hi], color: 'muted', width: 1, dash: [4, 4] });
           const eu = Eu(U, sig), pi = W0 - U.inv(eu), pa = 0.5 * sig * sig * U.A, deu = (eu - u0) / slope;
           if (dist.value === 'bet') { s1.line(W0 - sig, d(W0 - sig), W0 + sig, d(W0 + sig), { color: 'accent', width: 1.8 }); s1.dot(W0 - sig, d(W0 - sig), { r: 4, color: 'accent' }); s1.dot(W0 + sig, d(W0 + sig), { r: 4, color: 'accent' }); }

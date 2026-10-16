@@ -351,7 +351,7 @@ Most people prefer I to II and IV to III (Ellsberg 1961). No single subjective p
       viz(v) {
         const bS = v.slider('hypothetical number of black balls $b$', 0, 60, 20, { step: 1 });
         const us = v.stage({ x: [0, 100], y: [0, 50], axes: false, height: 240, full: true, title: 'the urn and the four bets: click one bet in each pair' });
-        const ch = v.stage({ x: [-6, 60], y: [-0.42, 1.06], axes: 'box', height: 320, full: true, xlabel: 'number of black balls b (of the 60 unknown)', ylabel: 'chance of winning', title: 'each bet’s chance of winning, for every composition', yticks: [0, [1 / 3, '1/3'], [2 / 3, '2/3'], 1] });
+        const ch = v.stage({ x: [-6, 60], y: [-0.42, 1.06], axes: 'box', height: 320, full: true, xlabel: 'number of black balls b (of the 60 unknown)', ylabel: 'chance of winning', title: 'each bet’s chance of winning, for every composition', yticks: [0, [1 / 3, '1/3'], [2 / 3, '2/3'], 1], xticks: [0, 10, 20, 30, 40, 50, 60] });
         const ans = { 1: null, 2: null };
         const R = { I: [27, 26.5, 62, 47], II: [64, 26.5, 99, 47], III: [27, 3, 62, 23.5], IV: [64, 3, 99, 23.5] };
         us.onClick((x, y) => { for (const k of ['I', 'II', 'III', 'IV']) if (inside(R[k], x, y)) ans[k === 'I' || k === 'II' ? 1 : 2] = k; });
@@ -383,8 +383,8 @@ Most people prefer I to II and IV to III (Ellsberg 1961). No single subjective p
           ch.fn((x) => x / 90, { color: COL.II, width: 2.6, domain: [0, 60] });
           ch.fn((x) => (90 - x) / 90, { color: COL.III, width: 2.6, domain: [0, 60] });
           ch.fn(() => 2 / 3, { color: COL.IV, width: 2.6, domain: [0, 60] });
-          ch.text('I', 60, 1 / 3, { dx: -6, dy: -9, align: 'right', size: 12, weight: 800, color: COL.I }); ch.text('II', 60, 60 / 90, { dx: -6, dy: 12, align: 'right', size: 12, weight: 800, color: COL.II });
-          ch.text('III', 0, 1, { dx: 8, dy: 4, size: 12, weight: 800, color: COL.III }); ch.text('IV', 0, 2 / 3, { dx: 8, dy: -9, size: 12, weight: 800, color: COL.IV });
+          ch.text('I', 60, 1 / 3, { dx: -6, dy: 12, align: 'right', size: 12, weight: 800, color: COL.I }); ch.text('II', 60, 60 / 90, { dx: -6, dy: 12, align: 'right', size: 12, weight: 800, color: COL.II });
+          ch.text('III', 8, 82 / 90, { dy: -11, size: 12, weight: 800, color: COL.III }); ch.text('IV', 0, 2 / 3, { dx: 8, dy: -9, size: 12, weight: 800, color: COL.IV });
           ch.vline(30, GUIDE); ch.text('b = 30', 30, 1.04, { dx: 5, size: 10.5, color: 'muted' });
           ch.vline(b, { color: 'gold', width: 1.4 });
           for (const k of ['I', 'II', 'III', 'IV']) ch.dot(b, pw[k], { r: 4, color: COL[k] });
@@ -425,7 +425,7 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
         const kS = v.slider('prior set: black count $30 \\pm k$', 0, 30, 15, { step: 1 });
         const aS = v.slider('weight on the worst case $\\alpha$', 0, 1, 1, { step: 0.01 });
         const S = v.stage({ x: [-0.12, 1.12], y: [-0.14, 0.98], equal: true, axes: false, height: 360, title: 'beliefs about the drawn ball' });
-        const B = v.stage({ x: [-0.6, 3.5], y: [0, 1.1], axes: 'box', height: 360, ylabel: 'chance of winning', title: 'each bet over the prior set', xticks: [[0, 'I: red'], [1, 'II: black'], [2, 'III: red/yellow'], [3, 'IV: black/yellow']] });
+        const B = v.stage({ x: [-0.6, 3.5], y: [0, 1.1], axes: 'box', height: 360, ylabel: 'P(win)', title: 'each bet over the prior set', xticks: [[0, 'I: red'], [1, 'II: black'], [2, 'III: red/yellow'], [3, 'IV: black/yellow']] });
         const Vr = [0.5, Math.sqrt(3) / 2], Vb = [0, 0], Vy = [1, 0];
         const P = (r, b) => { const y = 1 - r - b; return [r * Vr[0] + b * Vb[0] + y * Vy[0], r * Vr[1] + b * Vb[1] + y * Vy[1]]; };
         const COL = ['red', 'ink', 'orange', 'teal'];
@@ -518,7 +518,7 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
             for (let k = 1; k <= N; k++) {
               const x = a + Math.pow(2, k - 1), y = u(x); eu += Math.pow(2, -k) * y;
               M.line(x, 0, x, y, { color: 'teal', width: 1 + 2.5 * Math.pow(2, -k + 1), alpha: 0.85 });
-              if (M.X(x) - lastX > 30 || k === N) { M.text(k === 1 ? 'p = ½' : `2⁻${sup(k)}`, x, y, { dy: -9, align: 'center', size: 10, color: 'teal' }); lastX = M.X(x); }
+              if (M.X(x) - lastX > 24 || k === N) { M.text(k === 1 ? '½' : k === 2 ? '¼' : `2⁻${sup(k)}`, x, y, { dy: -9, align: 'center', size: 10, color: 'teal' }); lastX = M.X(x); }
             }
             const ce = a * Math.exp(eu) - a;
             M.hline(eu, { color: 'orange', width: 1.4, dash: [5, 4] });
@@ -545,8 +545,8 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
           } else {
             const q = sS.value / 10, nmax = 12, ev = 8000 * (1 - q);
             const base = Math.min(6000, Math.floor((semp(1, q) - 300) / 500) * 500);
-            M.setView([-1, nmax + 0.7], [base, 8200]); M.setTitle('the goods spread over n ships: their value to Sempronius'); M.setLabels('number of ships n', 'value (ducats)');
-            for (let n = 1; n <= nmax; n++) { const val = semp(n, q); M.rect(n - 0.32, base, n + 0.32, val, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); if (n <= 2 || n === nmax) M.text(money(val, 1), n, val, { dy: -10, align: n === 1 ? 'left' : 'center', dx: n === 1 ? -14 : 0, size: 10.5, weight: 600 }); }
+            M.setView([-1, nmax + 0.7], [base, ev + 0.14 * (ev - base)]); M.setTitle('the goods spread over n ships: their value to Sempronius'); M.setLabels('number of ships n', 'value (ducats)');
+            for (let n = 1; n <= nmax; n++) { const val = semp(n, q); M.rect(n - 0.32, base, n + 0.32, val, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); if (n <= 2) M.text(money(val, 1), n, val, { dy: -10, align: n === 1 ? 'left' : 'center', dx: n === 1 ? -14 : 0, size: 10.5, weight: 600 }); }
             M.hline(ev, { color: 'green', width: 1.8, dash: [6, 4] }); M.text(`expected value ${money(ev)}: never reached`, nmax + 0.6, ev, { align: 'right', dy: -9, size: 11.5, weight: 600, color: 'green' });
             if (Math.abs(q - 0.1) < 1e-9) { M.dot(1, 6751, { r: 6, hollow: true, color: 'gold', width: 2.4 }); M.dot(2, 7033, { r: 6, hollow: true, color: 'gold', width: 2.4 }); }
             drawT([['one ship', '6,751', money(semp(1, 0.1), 1)], ['two ships', '7,033', money(semp(2, 0.1), 1)], ['ten ships', '—', money(semp(10, 0.1), 1)], ['the limit', '7,200', money(7200, 1)]], 'value of 8,000 ducats of goods, 1 ship in 10 lost (§16)');
@@ -556,8 +556,8 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
         v.readout(() => {
           const s = st; if (!s.md) return '';
           if (s.md === 'paul') return `With a fortune of ${money(s.a)} ducats and the game stopped after ${s.N} tosses, the mean utility $PO$ corresponds to a sure gain $BP$ = ${v.fix(s.ce, 3)} ducats (expected payout ${v.fix(s.N / 2, 1)}). With every toss allowed the game is worth ${v.fix(s.full, 3)} to its owner and a buyer should pay at most ${v.fix(s.price, 3)}. Bernoulli's "approximately three, four and six ducats" for fortunes of 10, 100 and 1,000 compare with exact values 3.043, 4.389 and 5.972: his rounding, not his theory, is the only error.`;
-          if (s.md === 'caius') return `Premium ${money(s.P)} rubles, ${v.fix(100 * s.q, 0)} ships in 100 lost (expected loss ${money(10000 * s.q)}): Caius gains from insuring if his other wealth is below **${money(s.x0)}** rubles, and an insurer gains from selling if his wealth exceeds **${money(s.y0)}**. Bernoulli's 5,043 and 14,243 for 800 rubles and 5% losses are exact to within a ruble (5,042.4 and 14,242.4): both sides of the policy can gain because both are risk averse at different wealth levels.`;
-          return `With ${v.fix(10 * s.q, 1)} ships in ten lost, one ship makes the 8,000 ducats of goods worth ${money(s.v1)}, two ships ${money(s.v2)}; more ships approach the expected value ${money(s.ev)} from below. Bernoulli's 6,751 and 7,033 (for one in ten) match the exact 6,751.5 and 7,033.5: under a concave utility spreading the risk raises its value, the first statement of diversification.`;
+          if (s.md === 'caius') return `Premium ${money(s.P)} rubles, ${v.fix(100 * s.q, 0)} ships in 100 lost (expected loss ${money(10000 * s.q)}): Caius gains from insuring if his other wealth is below **${money(s.x0)}** rubles, and an insurer gains from selling if his wealth exceeds **${money(s.y0)}**. Bernoulli's 5,043 and 14,243 for 800 rubles and 5% losses are exact to within a ruble (5,042.4 and 14,242.4). Both sides can gain at once: the premium exceeds the expected loss, which a rich insurer, for whom the risk is small, accepts gladly, while for a poorer merchant shedding the risk is worth more than the premium.`;
+          return `With ${v.fix(10 * s.q, 1)} ships in ten lost, one ship makes the 8,000 ducats of goods worth ${money(s.v1, 1)}, two ships ${money(s.v2, 1)}; more ships approach the expected value ${money(s.ev)} from below. Bernoulli's 6,751 and 7,033 (for one in ten) match the exact 6,751.5 and 7,033.5: under a concave utility spreading the risk raises its value, the first statement of diversification.`;
         });
       },
     },
@@ -599,7 +599,7 @@ His claims were normative as well as descriptive, and concerned large sums relat
           const [x0, y0, x1, y1] = b;
           G.rect(x0, y0, x1, y1, { fill: chosen ? 'accent' : 'panel', fillAlpha: chosen ? 0.12 : 1, color: chosen ? 'accent' : 'faint', width: chosen ? 2.6 : 1.1, radius: 8 });
           G.text(label, x0, y1, { dx: 9, dy: 15, size: 16, weight: 800, color: chosen ? 'accent' : dimmed ? 'faint' : 'muted' });
-          G.text(desc, x0, y1, { dx: 30, dy: 15, size: 11, weight: 600, color: dimmed ? 'muted' : 'ink' });
+          G.text(desc, x0, y1, { dx: 30, dy: 15, size: 10.5, weight: 600, color: dimmed ? 'muted' : 'ink' });
           const px0 = G.X(x0) + 14, py0 = G.Y(y1) + 32, side = Math.min(G.X(x1) - G.X(x0) - 28, G.Y(y0) - py0 - 10), c = side / 10;
           const cell = (t, col, alpha) => { const i = t % 10, j = Math.floor(t / 10); const [ax, ay] = G.inv(px0 + i * c + 1, py0 + j * c + 1), [bx, by] = G.inv(px0 + (i + 1) * c - 1, py0 + (j + 1) * c - 1); G.rect(ax, by, bx, ay, { fill: col, fillAlpha: alpha, stroke: false }); };
           for (let t = 0; t < 100; t++) {
@@ -652,7 +652,7 @@ His claims were normative as well as descriptive, and concerned large sums relat
             ? `Expected utility: $EU(A)-EU(B) = 0.11\\,u(100) - 0.10\\,u(500) = EU(C) - EU(D)$, the same number whatever $u$ is, so A goes with C and B with D.`
             : `Expected utility: $EU(E)-EU(F) = u(100) - 0.98\\,u(500)$ and $EU(G) - EU(H) = 0.01\\,[u(100) - 0.98\\,u(500)]$, the same sign whatever $u$ is.`;
           const yours = pat ? ` You chose **${pat}**: ${consistent ? 'consistent with expected utility.' : 'a violation of the independence axiom.'}` : ' Click your choices to compare.';
-          return head + yours + (e === 1 ? ` The paper predicted the pattern for prudent people facing large sums; today it is regarded as real but fragile: in Blavatskyy, Ortmann and Panchenko's 2022 review of 81 experiments it appears most reliably with large hypothetical payoffs like Allais's, and weakens or reverses with small real stakes or compound presentations.` : ` The second example is the common-ratio effect; Kahneman and Tversky's Problems 3 and 4 (1979) reproduced it with 80% and 65% majorities.`);
+          return head + yours + (e === 1 ? ` The paper predicted the pattern for prudent people facing large sums; today it is regarded as real but fragile: in Blavatskyy, Ortmann and Panchenko's 2022 review of 81 experiments it appears most reliably with large hypothetical payoffs like Allais's and with lotteries shown as simple probability distributions, and is often absent or even reversed in other designs.` : ` The second example is the common-ratio effect; Kahneman and Tversky's Problems 3 and 4 (1979) reproduced it with 80% and 65% majorities.`);
         });
       },
     },

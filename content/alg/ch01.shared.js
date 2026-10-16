@@ -123,7 +123,8 @@ export function colPts(n, x, yTop, yBot) {
 }
 /** Rounded "blob" around a column of points: the set drawn as an oval. */
 export function drawBlob(v, s, pts, o = {}) {
-  const padX = o.padX ?? 0.55, padY = o.padY ?? 0.55, ys = pts.map((p) => p[1]), x = pts[0][0];
+  const ux = Math.abs(s.X(1) - s.X(0)), uy = Math.abs(s.Y(0) - s.Y(1));
+  const padX = o.padX ?? (o.padPx ?? 36) / ux, padY = o.padY ?? (o.padPy ?? 26) / uy, ys = pts.map((p) => p[1]), x = pts[0][0];
   const lo = Math.min(...ys) - padY, hi = Math.max(...ys) + padY;
   s.rect(x - padX, lo, x + padX, hi, { radius: 999, fill: o.fill || 'muted', fillAlpha: o.fillAlpha ?? 0.07, color: o.color || 'muted', width: o.width ?? 1.4, alpha: o.alpha ?? 0.7 });
   if (o.name) s.text(o.name, x, hi, { dy: -14, align: 'center', color: o.nameColor || 'muted', size: o.nameSize ?? 17, math: true, weight: 600 });

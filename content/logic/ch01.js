@@ -66,7 +66,7 @@ In set-theoretic terms, each move is an injection $f:\N\to\N$; the newcomers go 
       credit: 'David Hilbert, 1924 lecture; popularised by George Gamow, 1947',
       tags: ['infinity', 'bijection', 'countability'],
       viz(v) {
-        let moves = ['s1', 'd2'];
+        let moves = ['s1', 'd2', 'cp'];
         let traced = { w: 0, i: 1 };
         const MAXM = 5, R = 16;
         for (const [k, M] of Object.entries(HOTEL_MOVES)) v.button(M.btn, () => { if (moves.length < MAXM) moves = [...moves, k]; });
@@ -102,8 +102,8 @@ In set-theoretic terms, each move is an injection $f:\N\to\N$; the newcomers go 
           if (traced.w > m) traced = { w: 0, i: 1 };
           const bh = 0.39;
           // room numbers
-          for (let r = 1; r <= R; r++) s.text(String(r), 2.2, -r, { align: 'right', size: 10.5, color: 'muted' });
-          s.text('room', 2.2, 0.75, { align: 'right', size: 10, color: 'muted' });
+          for (let r = 1; r <= R; r++) s.text(String(r), 3.4, -r, { align: 'right', size: 10.5, color: 'muted' });
+          s.text('room', 0.4, 0.85, { align: 'left', size: 10, color: 'muted' });
           // arrows of each move
           for (let t = 1; t <= m; t++) {
             const M = HOTEL_MOVES[moves[t - 1]], x0 = cx(t - 1) + HW, x1 = cx(t) - HW;
@@ -158,9 +158,9 @@ In set-theoretic terms, each move is an injection $f:\N\to\N$; the newcomers go 
           for (let r = 1; r <= N; r++) { const k = occ(m, r).length; if (k === 0) emp.push(r); else if (k > 1) dub.push(r); }
           st = { m, emp, dub, empty, dbl };
         });
-        v.legend([['blue', 'original guests g1, g2, …', { dot: true }], ['gold', 'newcomers of move 1, 2, … (a, b, …)', { dot: true }], ['red', 'doubly booked', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
+          v.legend([['blue', 'original guests g1, g2, …', { dot: true }], ...moves.map((k, t) => [WAVE_COL[t + 1], `move ${t + 1}: ${WAVE_LET[t + 1]}…`, { dot: true }]), ['red', 'doubly booked', { dot: true }], ['gold', 'traced guest', { area: true }]]);
           const { m, emp, dub } = st;
           // composite on the original guests
           let comp;
@@ -236,7 +236,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             const cpx = Math.min(46, 300 / (n + 1.6)), cw = pxX(s, cpx), ch = pxY(s, cpx);
             const x0 = 13, y0 = 51;
             G = { x0, y0, cw, ch, n, nodes: [] };
-            s.text('f(x) =', x0 - 1, y0 + ch * 0.75, { align: 'right', size: 11, color: 'muted' });
+            s.text('contains', x0 - 1.2, y0 + ch * 0.45, { align: 'right', size: 10.5, color: 'muted' });
             for (let j = 0; j < n; j++) s.text(L[j], x0 + (j + 0.5) * cw, y0 + ch * 0.45, { align: 'center', size: 12.5, weight: 600, color: 'muted', math: true });
             for (let i = 0; i < n; i++) {
               s.text(`f(${L[i]})`, x0 - 1.2, y0 - (i + 0.5) * ch, { align: 'right', size: 13, color: i === sel ? 'accent' : 'ink', weight: i === sel ? 700 : 500, math: true });
@@ -296,19 +296,23 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             s.text('D', x0 - 0.8, yD - ch / 2, { align: 'right', size: 12, color: 'red', weight: 700, math: true });
             for (let k = 1; k <= K; k++) { const X0 = x0 + (k - 1) * cw; s.rect(X0 + 0.12, yD - ch + 0.15, X0 + cw - 0.12, yD - 0.15, { fill: D[k - 1] ? 'red' : 'panel', fillAlpha: D[k - 1] ? 0.5 : 1, color: 'red', width: 1.2, radius: 2 }); }
             s.text('…', x0 + K * cw + 0.8, y0 - K * ch / 2, { size: 14, color: 'muted' });
+            // first place where D and f(n) disagree (always at some k ≤ n): marked in each row, checked for n ≤ 2000
+            const Dm = (k) => !f.has(k, k);
+            const first = (n) => { for (let k = 1; k <= n; k++) if (f.has(n, k) !== Dm(k)) return k; return null; };
+            for (let n = 1; n <= K; n++) { const k = first(n), X0 = x0 + (k - 1) * cw, Y0 = y0 - n * ch; s.rect(X0 + 0.12, Y0 + 0.15, X0 + cw - 0.12, Y0 + ch - 0.15, { color: 'red', width: 2.2, radius: 2 }); }
+            let maxK = 0, okAll = true; for (let n = 1; n <= 2000; n++) { const k = first(n); if (k == null) okAll = false; else maxK = Math.max(maxK, k); }
             s.tex(f.tex, 72, 50, { size: 15 });
-            s.tex(f.D, 72, 42, { size: 17, color: 'red' });
-            s.text(f.why, 72, 30, { align: 'center', size: 12.5 });
-            // where D and f(n) differ: always at n — checked for n ≤ 2000
-            let ok = 0; for (let n = 1; n <= 2000; n++) if (f.has(n, n) !== !f.has(n, n)) ok++;
-            s.text(`checked: D ≠ f(n) at n, for n = 1 … 2000`, 72, 13, { align: 'center', size: 11.5, color: 'green', weight: 600 });
+            s.tex(f.D, 72, 41, { size: 18, color: 'red' });
+            s.text('red outline: the first element on which', 72, 30, { align: 'center', size: 12, color: 'red' });
+            s.text('f(n) and D disagree — never later than n', 72, 26.6, { align: 'center', size: 12, color: 'red' });
+            s.text(okAll ? 'checked for every n ≤ 2000 ✓' : 'a row agrees with D ✗', 72, 20, { align: 'center', size: 12, color: okAll ? 'green' : 'red', weight: 600 });
             st = { fin, D, K, f };
           }
         });
-        v.legend([['blue', '$x\\in f(x\')$', { dot: true }], ['gold', 'diagonal: is $x\\in f(x)$?', { dot: true }], ['red', '$D=\\{x : x\\notin f(x)\\}$', { dot: true }]]);
+        v.legend([['blue', 'member of $f(x)$', { dot: true }], ['gold', 'diagonal: is $x\\in f(x)$?', { dot: true }], ['red', '$D=\\{x : x\\notin f(x)\\}$', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
-          if (!st.fin) return `$${st.f.D}$, and for each $n$ the sets $D$ and $f(n)$ disagree about the element $n$ itself, so $D$ is not in the list $f(1), f(2), \\dots$ ✓. No map $\\mathbb N\\to\\mathcal P(\\mathbb N)$ is onto.`;
+          if (!st.fin) return `${st.f.why} In every case $D$ and $f(n)$ disagree about $n$ itself (if not earlier), so $D$ is not in the list $f(1), f(2), \\dots$ ✓: no map $\\mathbb N\\to\\mathcal P(\\mathbb N)$ is onto.`;
           const { n, D, F, hits, N2 } = st;
           const set = (bits) => (bits.some(Boolean) ? `\\{${bits.map((b, j) => (b ? L[j] : null)).filter(Boolean).join(',')}\\}` : '\\varnothing');
           const w = F.map((row, i) => `$D\\ne f(${L[i]})$ at $${L[i]}$`).join(', ');
@@ -335,11 +339,11 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           dbl: { lab: 'ℕ: f = g = 2n', lo: 0, hi: 15, f: (n) => 2 * n, g: (n) => 2 * n, finv: (m) => (m % 2 === 0 ? m / 2 : null), ginv: (m) => (m % 2 === 0 ? m / 2 : null), ftex: 'f(n)=2n', gtex: 'g(n)=2n', dom: (n) => n >= 0 },
           mix: {
             lab: 'ℤ: all four kinds', lo: -9, hi: 9,
-            f: (n) => (n % 2 !== 0 ? n : n >= 0 ? n + 2 : n === -2 ? -2 : n),
-            g: (n) => (n % 2 !== 0 ? n + 2 : n >= 0 ? n : n === -2 ? -2 : n - 2),
-            finv: (m) => (m % 2 !== 0 ? m : m >= 2 ? m - 2 : m === 0 ? null : m),
-            ginv: (m) => (m % 2 !== 0 ? m - 2 : m >= 0 ? m : m === -2 ? -2 : m === -4 ? null : m + 2),
-            ftex: 'f(n)=n \\ (n \\text{ odd or } n\\le -2),\\ n+2 \\ (n\\ge0 \\text{ even})', gtex: 'g(n)=n+2 \\ (\\text{odd}),\\ n\\ (n\\ge 0),\\ n-2 \\ (n\\le-4)', dom: () => true,
+            f: (n) => (n >= 0 ? n + 1 : n === -1 ? -2 : n === -2 ? -1 : n),
+            g: (n) => (n >= 0 ? n + 1 : n === -1 || n === -2 ? n : n === -4 ? -3 : n % 2 !== 0 ? n - 2 : n + 2),
+            finv: (m) => (m >= 1 ? m - 1 : m === 0 ? null : m === -1 ? -2 : m === -2 ? -1 : m),
+            ginv: (m) => (m >= 1 ? m - 1 : m === 0 ? null : m === -1 || m === -2 ? m : m === -3 ? -4 : m % 2 !== 0 ? m + 2 : m - 2),
+            ftex: 'f(n)=n+1\\ (n\\ge0),\\quad f(-1)=-2,\\ f(-2)=-1,\\quad f(n)=n\\ (n\\le-3)', gtex: 'g(n)=n+1\\ (n\\ge0),\\ \\ g(n)=n\\ (n=-1,-2),\\ \\ g(-4)=-3,\\ \\ g(n)=n\\mp2\\ (n\\le-3 \\text{ odd}\\,/\\,n\\le-6\\text{ even})', dom: () => true,
           },
           unit: { lab: '[0,1] vs [0,1)' },
         };
@@ -357,9 +361,9 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             sd = sd === 'A' ? 'B' : 'A'; m = p;
             if (sd === side && m === n) return { type: 'C', id: 'C' + n };
           }
-          return { type: 'Z', id: 'Z' + ((n % 2) + 2) % 2 };
+          return { type: 'Z', id: 'Z' };
         };
-        let selId = 'Amix';
+        let selId = 'B0';
         let last = null;
         top.onClick((x, y) => {
           const P = PRE[pre.value]; if (!P.f) return;
@@ -372,7 +376,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           const key = pre.value, P = PRE[key];
           if (last !== key) {
             last = key;
-            if (P.f) { top.setView([P.lo - 0.8, P.hi + 0.8], [-0.75, 1.95]); bot.setView([P.lo - 0.8, P.hi + 0.8], [-0.6, 1.6]); selId = key === 'mix' ? 'A-4' : 'A0'; }
+            if (P.f) { top.setView([P.lo - 0.8, P.hi + 0.8], [-0.75, 1.95]); bot.setView([P.lo - 0.8, P.hi + 0.8], [-0.6, 1.6]); selId = key === 'dbl' ? 'B1' : 'B0'; }
             else { top.setView([-0.1, 1.1], [-0.75, 1.95]); bot.setView([-0.12, 1.12], [-0.14, 1.12]); }
           }
           hx.visible = !P.f;
@@ -387,11 +391,11 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
               for (let n = P.lo; n <= P.hi; n++) {
                 const ca = ch['A' + n], cb = ch['B' + n];
                 const fa = P.f(n), gb = P.g(n);
-                top.arrow(n, yA - d, fa, yB + d, { color: TYPE[ca.type][0], width: dimmed(ca) ? 1 : 2.2, alpha: dimmed(ca) ? 0.3 : 0.95, head: 7 });
+                top.arrow(n, yA - d, fa, yB + d, { color: TYPE[ca.type][0], width: dimmed(ca) ? 1.1 : 2.4, alpha: dimmed(ca) ? 0.45 : 0.95, head: 7 });
                 const mid = [(n + gb) / 2 + 0.28, (yA + yB) / 2];
                 const pts = []; for (let k = 0; k <= 20; k++) pts.push(bezier([n, yB + d], mid, [gb, yA - d], k / 20));
-                top.path(pts, { color: TYPE[cb.type][0], width: dimmed(cb) ? 1 : 2, alpha: dimmed(cb) ? 0.3 : 0.9, dash: [5, 4] });
-                const e = pts[20], e2 = pts[18]; top.arrow(e2[0], e2[1], e[0], e[1], { color: TYPE[cb.type][0], width: dimmed(cb) ? 1 : 2, alpha: dimmed(cb) ? 0.3 : 0.9, head: 7 });
+                top.path(pts, { color: TYPE[cb.type][0], width: dimmed(cb) ? 1.1 : 2.2, alpha: dimmed(cb) ? 0.45 : 0.9, dash: [5, 4] });
+                const e = pts[20], e2 = pts[18]; top.arrow(e2[0], e2[1], e[0], e[1], { color: TYPE[cb.type][0], width: dimmed(cb) ? 1.1 : 2.2, alpha: dimmed(cb) ? 0.45 : 0.9, head: 7 });
               }
             });
             for (let n = P.lo; n <= P.hi; n++) for (const [side, y] of [['A', yA], ['B', yB]]) {
@@ -411,7 +415,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             bot.clip(() => {
               for (let n = P.lo; n <= P.hi; n++) {
                 const c = ch['A' + n], m = h(n);
-                bot.arrow(n, 1 - 0.12, m, 0.12, { color: TYPE[c.type][0], width: dimmed(c) ? 1.2 : 2.6, alpha: dimmed(c) ? 0.35 : 1, head: 8, dash: c.type === 'B' ? [6, 3] : null });
+                bot.arrow(n, 1 - 0.12, m, 0.12, { color: TYPE[c.type][0], width: dimmed(c) ? 1.4 : 2.8, alpha: dimmed(c) ? 0.5 : 1, head: 8, dash: c.type === 'B' ? [6, 3] : null });
               }
             });
             for (let n = P.lo; n <= P.hi; n++) { bot.dot(n, 1, { r: 5, color: TYPE[ch['A' + n].type][0] }); bot.dot(n, 0, { r: 5, color: TYPE[ch['B' + n].type][0] }); }
@@ -446,6 +450,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             const chain = [...back, ['A', x]]; side = 'A'; val = x;
             for (let k = 0; k < 8; k++) { if (side === 'A') { val /= 2; side = 'B'; } else side = 'A'; chain.push([side, val]); }
             const Y = (sd) => (sd === 'A' ? yA : yB);
+            if (type !== 'A') for (let k = 0; k < 7; k++) { const p = 2 ** -k; top.arrow(p, yA - 0.08, p / 2, yB + 0.08, { color: 'blue', width: 1, alpha: 0.3, head: 5 }); top.dot(p, yA, { r: 3, color: 'blue', alpha: 0.5 }); }
             for (let k = 0; k + 1 < chain.length; k++) {
               const [s1, v1] = chain[k], [s2, v2] = chain[k + 1];
               top.arrow(v1, Y(s1) + (s1 === 'A' ? -0.08 : 0.08), v2, Y(s2) + (s2 === 'A' ? -0.08 : 0.08), { color: col, width: 1.8, head: 6, dash: s1 === 'B' ? [5, 4] : null, alpha: k < back.length + 3 ? 1 : 0.5 });
@@ -478,7 +483,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           const { bad, kinds, selC, P } = st;
           const ks = [...kinds].map((k) => TYPE[k][1]).join(', ');
           const sel = selC ? ` Highlighted: a chain that ${TYPE[selC.type][1].replace('starts', 'starts')}.` : '';
-          return `${bad === 0 ? 'Every' : `${bad} points of`} $B$ in view ${bad === 0 ? 'has **exactly one** preimage under $h$ ✓' : 'are not hit exactly once ✗'} (checked over ${P.dom(-1) ? '$|n|\\le 600$' : '$0\\le n\\le600$'}). Chain kinds present: ${ks}.${sel}`;
+          return `${bad === 0 ? 'Every point of' : `${bad} points of`} $B$ in view ${bad === 0 ? 'has **exactly one** preimage under $h$ ✓' : 'are not hit exactly once ✗'} (checked over ${P.dom(-1) ? '$|n|\\le 600$' : '$0\\le n\\le600$'}). Chain kinds present: ${ks}.${sel}`;
         });
       },
     },
@@ -497,11 +502,11 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
       tags: ['cardinality', 'continuum', 'decimal expansions'],
       viz(v) {
         const mode = v.select('', [{ value: 'int', label: 'interleave ℝ² → ℝ' }, { value: 'nine', label: '0.0999… = 0.1000…' }, { value: 'pn', label: '𝒫(ℕ) ⇄ [0,1]' }], 'int');
-        const sq = v.stage({ x: [-0.02, 1.02], y: [-0.02, 1.02], equal: true, axes: false, height: 360, weight: 0.8, minWidth: 250 });
+        const sq = v.stage({ x: [-0.06, 1.04], y: [-0.08, 1.04], equal: true, axes: false, height: 360, weight: 0.8, minWidth: 250 });
         const ln = v.stage({ x: [-0.06, 1.06], y: [0.35, 6.45], axes: false, height: 360, weight: 1.35 });
         const K = 6;
-        const P = sq.handle(0.314159, 0.271828, { color: 'accent', label: 'P', constrain: (x, y) => [v.M.clamp(x, 0, 0.999999), v.M.clamp(y, 0, 0.999999)] });
-        const Zh = ln.handle(0.3, 3.65, { color: 'accent', label: 'z', constrain: (x) => [v.M.clamp(x, 0, 0.999999999), 3.65] });
+        const P = sq.handle(0.314159, 0.271828, { color: 'accent', label: 'P', r: 5, constrain: (x, y) => [v.M.clamp(x, 0, 0.999999), v.M.clamp(y, 0, 0.999999)] });
+        const Zh = ln.handle(0.3, 4.02, { color: 'accent', label: 'z', r: 6, constrain: (x) => [v.M.clamp(x, 0, 0.999999999), 4.02] });
         const Bx = ln.handle(0.65, 1.15, { color: 'teal', label: 'x', constrain: (x) => [v.M.clamp(x, 0, 0.9999), 1.15] });
         let S = new Set([0, 2, 3, 7]);
         let src = 'P';
@@ -509,9 +514,10 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
         const chip = (n) => [0.12 + (n % 4) * 0.25, 0.83 - Math.floor(n / 4) * 0.16];
         sq.onClick((x, y) => { if (mode.value !== 'pn') return; for (let n = 0; n < 12; n++) { const [cx, cy] = chip(n); if (Math.hypot(x - cx, y - cy) < 0.07) { if (S.has(n)) S.delete(n); else S.add(n); } } });
         let st = null;
-        const digitRow = (label, ds, y, cols, x0 = 0.02, dx = 0.068) => {
-          ln.text(label, x0, y, { size: 13, color: 'ink', weight: 600 });
-          ds.forEach((d, j) => ln.text(String(d), x0 + 0.13 + (j + 1) * dx * 0.62, y, { align: 'center', size: 13.5, weight: 600, color: cols[j] || 'ink' }));
+        /** digits at columns pos(j) of a fixed grid (so x-digits sit over the even places of z, y-digits over the odd ones) */
+        const digitRow = (label, ds, y, cols, pos = (j) => j) => {
+          ln.text(label, 0.0, y, { size: 13, color: 'ink', weight: 600 });
+          ds.forEach((d, j) => ln.text(String(d), 0.16 + pos(j) * 0.052, y, { align: 'center', size: 13.5, weight: 600, color: cols[j] || 'ink' }));
         };
         /** a ruler row: the interval [lo, lo + w] drawn over [0, 1] at height y */
         const ruler = (lo, w, y, dec) => {
@@ -563,45 +569,63 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           sq.rect(0, 0, 1, 1, { color: 'ink', width: 1.4 });
           for (let k = 1; k < 10; k++) { sq.line(k / 10, 0, k / 10, 1, { color: 'grid', width: 1 }); sq.line(0, k / 10, 1, k / 10, { color: 'grid', width: 1 }); }
           const path = []; for (let a = 0; a < 10; a++) for (let b = 0; b < 10; b++) path.push([(a + 0.5) / 10, (b + 0.5) / 10]);
-          sq.path(path, { color: 'teal', width: 1, alpha: 0.4 });
+          sq.path(path, { color: 'teal', width: 1, alpha: 0.22 });
           const c1 = [xd[0] / 10, yd[0] / 10], c2 = [c1[0] + xd[1] / 100, c1[1] + yd[1] / 100];
-          sq.rect(c1[0], c1[1], c1[0] + 0.1, c1[1] + 0.1, { fill: 'orange', fillAlpha: 0.25, color: 'orange', width: 2 });
-          sq.rect(c2[0], c2[1], c2[0] + 0.01, c2[1] + 0.01, { fill: 'red', fillAlpha: 0.6, color: 'red', width: 1.5 });
-          for (const t of [0, 0.5, 1]) { sq.text(String(t), t, -0.035, { align: 'center', size: 9.5, color: 'muted' }); }
-          sq.text('x', 1.0, -0.035, { align: 'right', size: 11, color: 'blue', math: true, dx: 14 });
-          sq.text('y', -0.035, 1.0, { align: 'center', size: 11, color: 'orange', math: true, dy: -6 });
+          sq.rect(c1[0], c1[1], c1[0] + 0.1, c1[1] + 0.1, { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 2 });
+          const p2 = []; for (let a = 0; a < 10; a++) for (let b = 0; b < 10; b++) p2.push([c1[0] + (a + 0.5) / 100, c1[1] + (b + 0.5) / 100]);
+          sq.path(p2, { color: 'teal', width: 0.8, alpha: 0.6 });
+          const e2 = pxX(sq, 2);
+          sq.rect(c2[0] - e2, c2[1] - e2, c2[0] + 0.01 + e2, c2[1] + 0.01 + e2, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 2 });
+          // inset: the orange 0.1-cell magnified ×10, in the corner away from P
+          const ix0 = P.x < 0.5 ? 0.57 : 0.03, iy0 = P.y < 0.5 ? 0.57 : 0.03, isz = 0.4, I = (u, w) => [ix0 + (u - c1[0]) * 10 * isz, iy0 + (w - c1[1]) * 10 * isz];
+          for (const [cx0, cy0] of [[0, 0], [0.1, 0], [0, 0.1], [0.1, 0.1]]) { const a = [c1[0] + cx0, c1[1] + cy0], b = I(a[0], a[1]); sq.line(a[0], a[1], b[0], b[1], { color: 'orange', width: 1, dash: [3, 3], alpha: 0.7 }); }
+          sq.rect(ix0, iy0, ix0 + isz, iy0 + isz, { fill: 'panel', fillAlpha: 1, color: 'orange', width: 2 });
+          for (let k = 1; k < 10; k++) { sq.line(ix0 + (k * isz) / 10, iy0, ix0 + (k * isz) / 10, iy0 + isz, { color: 'grid', width: 1 }); sq.line(ix0, iy0 + (k * isz) / 10, ix0 + isz, iy0 + (k * isz) / 10, { color: 'grid', width: 1 }); }
+          sq.path(p2.map(([u, w]) => I(u, w)), { color: 'teal', width: 1, alpha: 0.5 });
+          const r0 = I(c2[0], c2[1]); sq.rect(r0[0], r0[1], r0[0] + isz / 10, r0[1] + isz / 10, { fill: 'red', fillAlpha: 0.45, color: 'red', width: 2 });
+          const pI = I(P.x, P.y); sq.dot(pI[0], pI[1], { r: 3.5, color: 'accent' });
+          sq.text('×10', ix0 + isz, iy0 > 0.5 ? iy0 - 0.03 : iy0 + isz + 0.03, { align: 'right', size: 10.5, color: 'orange', weight: 600 });
+          for (const t of [0, 0.5, 1]) { sq.text(String(t), t, -0.04, { align: 'center', size: 9.5, color: 'muted' }); sq.text(String(t), -0.015, t, { align: 'right', size: 9.5, color: 'muted' }); }
+          sq.text('x', 0.75, -0.04, { align: 'center', size: 12, color: 'blue', math: true });
+          sq.text('y', -0.03, 0.75, { align: 'right', size: 12, color: 'orange', math: true });
           if (md === 'nine') sq.line(P.x, 0, P.x, 1, { color: 'red', width: 1.2, dash: [4, 4] });
           // digits
           const XC = Array(K).fill('blue'), YC = Array(K).fill('orange'), ZC = zd.map((_, j) => (j % 2 ? 'orange' : 'blue'));
+          const ev = (j) => 2 * j, od = (j) => 2 * j + 1;
           if (md === 'int') {
-            digitRow('x = 0.', xd, 6.05, XC); digitRow('y = 0.', yd, 5.55, YC);
-            digitRow('z = 0.', zd, 5.0, ZC, 0.02, 0.068);
+            digitRow('x = 0.', xd, 6.1, XC, ev); digitRow('y = 0.', yd, 5.6, YC, od);
+            for (let k = 0; k < 2 * K; k++) ln.line(0.16 + k * 0.052, k % 2 ? 5.4 : 5.9, 0.16 + k * 0.052, 5.25, { color: k % 2 ? 'orange' : 'blue', width: 1, alpha: 0.45 });
+            digitRow('z = 0.', zd, 5.0, ZC);
+            ln.text('…', 0.16 + 2 * K * 0.052, 5.0, { size: 13, color: 'muted' });
           } else {
             const x9 = [xd[0] - 1, ...Array(K - 1).fill(9)];
             const z9 = []; for (let j = 0; j < K; j++) z9.push(x9[j], yd[j]);
-            digitRow('x = 0.', xd, 6.12, XC); ln.text('…', 0.62, 6.12, { size: 13, color: 'muted' });
-            digitRow('  = 0.', x9, 5.72, Array(K).fill('red')); ln.text('…  (the same number)', 0.62, 5.72, { size: 11.5, color: 'red' });
-            digitRow('z₁= 0.', zd, 5.22, ZC); digitRow('z₂= 0.', z9, 4.82, z9.map((_, j) => (j % 2 ? 'orange' : 'red')));
+            digitRow('x = 0.', xd, 6.15, XC, ev); ln.text('…', 0.16 + 2 * K * 0.052, 6.15, { size: 13, color: 'muted' });
+            digitRow('   = 0.', x9, 5.78, Array(K).fill('red'), ev); ln.text('(same number)', 1.05, 5.78, { align: 'right', size: 11, color: 'red' });
+            digitRow('y = 0.', yd, 5.41, YC, od);
+            digitRow('z₁= 0.', zd, 5.0, ZC); digitRow('z₂= 0.', z9, 4.6, z9.map((_, j) => (j % 2 ? 'orange' : 'red')));
             st = { z9: fromDigits(z9) };
           }
           // ruler rows (zoom cascade)
           const z12 = Math.floor(z * 100 + 1e-9) / 100, z1234 = Math.floor(z * 1e4 + 1e-9) / 1e4;
           ruler(0, 1, 3.65, 1);
-          ln.rect(z12, 3.58, z12 + 0.01, 3.72, { fill: 'orange', fillAlpha: 0.7, color: 'orange', width: 1.5 });
+          ln.line(Zh.x, 3.7, Zh.x, 3.95, { color: 'accent', width: 1.4 });
+          ln.rect(z12, 3.56, z12 + 0.01, 3.74, { fill: 'orange', fillAlpha: 0.8, color: 'orange', width: 1.5 });
           ruler(z12, 0.01, 2.4, 3);
           const u2 = (z - z12) * 100, s2 = (z1234 - z12) * 100;
-          ln.rect(s2, 2.33, s2 + 0.01, 2.47, { fill: 'red', fillAlpha: 0.7, color: 'red', width: 1.5 });
-          ln.dot(u2, 2.4, { r: 5, color: 'accent' });
+          ln.rect(s2, 2.31, s2 + 0.01, 2.49, { fill: 'red', fillAlpha: 0.8, color: 'red', width: 1.5 });
+          const mark = (u, y) => { ln.line(u, y + 0.1, u, y + 0.32, { color: 'accent', width: 1.6 }); ln.dot(u, y + 0.36, { r: 4, color: 'accent' }); };
+          mark(u2, 2.4);
           ruler(z1234, 1e-4, 1.15, 5);
-          ln.dot((z - z1234) * 1e4, 1.15, { r: 5, color: 'accent' });
+          mark((z - z1234) * 1e4, 1.15);
           // zoom funnels
           ln.path([[z12, 3.58], [0, 2.47]], { color: 'orange', width: 1, dash: [3, 3] }); ln.path([[z12 + 0.01, 3.58], [1, 2.47]], { color: 'orange', width: 1, dash: [3, 3] });
           ln.path([[s2, 2.33], [0, 1.22]], { color: 'red', width: 1, dash: [3, 3] }); ln.path([[s2 + 0.01, 2.33], [1, 1.22]], { color: 'red', width: 1, dash: [3, 3] });
           ln.text('×100', 1.03, 3.0, { size: 10, color: 'muted', align: 'center' }); ln.text('×100', 1.03, 1.75, { size: 10, color: 'muted', align: 'center' });
           if (md === 'nine') {
             const z9 = st.z9;
-            ln.dot(z9, 3.65, { r: 5.5, color: 'red' }); ln.text('z₂', z9, 3.95, { align: 'center', size: 11, color: 'red', weight: 700 });
-            ln.dot(1 / 11, 3.65, { r: 6, hollow: true, color: 'red' }); ln.text('1/11', 1 / 11, 4.2, { align: 'center', size: 10.5, color: 'red' });
+            ln.dot(z9, 3.65, { r: 5, color: 'red' }); ln.text('z₂', z9, 3.4, { align: 'center', size: 11, color: 'red', weight: 700 });
+            ln.dot(1 / 11, 3.65, { r: 5.5, hollow: true, color: 'red' }); ln.text('1/11', 1 / 11, 3.4, { align: 'center', size: 10.5, color: 'red' });
           }
           st = { ...st, md, xd, yd, zd, z };
         });
@@ -648,7 +672,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           const len = (k) => (sch.value === 'geo' ? eps * 2 ** -k : (6 * eps) / (Math.PI ** 2 * k * k));
           // axis of heights
           for (let h = 1; h <= N; h++) { top.line(0, h, 1, h, { color: 'grid', width: 1 }); top.text(String(h), -0.012, h, { align: 'right', size: 10, color: 'muted' }); }
-          top.text('N', -0.012, N + 0.45, { align: 'right', size: 10.5, color: 'muted', math: true });
+          top.text('height N', 0.0, N + 0.48, { align: 'left', size: 10.5, color: 'muted' });
           const ivs = [];
           L.forEach((e, idx) => {
             const k = idx + 1, l = len(k);
