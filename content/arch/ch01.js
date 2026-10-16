@@ -762,7 +762,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
         ];
         const prop = v.select('property', [{ value: 3, label: 'tensile strength' }, { value: 4, label: 'compressive strength' }, { value: 5, label: 'stiffness E' }], 3);
         const s = v.stage({ x: [300, 12000], y: [0.05, 6000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, full: true, xlabel: 'density (kg/m³)', ylabel: 'strength (MPa)' });
-        const gH = s.handle(1000, 60, { color: 'green', label: 'σ/ρ' });
+        const gH = s.handle(5000, 300, { color: 'green', label: 'σ/ρ' });
         let sel = 'fired brick';
         const gm = (r) => Math.sqrt(r[0] * r[1]);
         s.onClick((x, y) => {
@@ -773,7 +773,7 @@ Plotted on log–log axes of strength (or stiffness) against density, materials 
         let lastK = null;
         v.render(() => {
           const k = prop.value, E = k === 5;
-          if (lastK !== k) { lastK = k; s.setView([300, 12000], E ? [0.1, 600] : [0.05, 6000]); s.setLabels(undefined, E ? 'Young’s modulus E (GPa)' : `${k === 3 ? 'tensile' : 'compressive'} strength (MPa)`); gH.set(1000, E ? 20 : 60); }
+          if (lastK !== k) { lastK = k; s.setView([300, 12000], E ? [0.1, 600] : [0.05, 6000]); s.setLabels(undefined, E ? 'Young’s modulus E (GPa)' : `${k === 3 ? 'tensile' : 'compressive'} strength (MPa)`); gH.set(5000, E ? 100 : 300); gH.label = E ? 'E/ρ' : 'σ/ρ'; }
           // guide line (slope 1)
           const c = gH.y / gH.x; s.fn((x) => c * x, { color: 'green', width: 1.4, dash: [6, 4] });
           const lab = [];

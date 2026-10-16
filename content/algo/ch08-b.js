@@ -38,7 +38,7 @@ const P812 = { a: [0.9, 4.6], b: [3.2, 5.3], c: [5.6, 5.3], d: [8.0, 5.0], e: [1
 const E812 = [['a', 'b'], ['b', 'c'], ['c', 'd'], ['a', 'e'], ['e', 'f'], ['f', 'c'], ['d', 'g'], ['f', 'g'], ['g', 'h'], ['e', 'h'], ['b', 'f']];
 
 // ---------------------------------------------------------------- 8.13 a recipe DAG
-const P813 = { shop: [0.9, 3.2], chop: [3.0, 5.2], boil: [3.0, 1.2], sauce: [5.3, 5.2], pasta: [5.3, 1.2], drain: [7.3, 1.2], mix: [7.6, 3.6], table: [5.6, 3.2], serve: [9.4, 3.2] };
+const P813 = { shop: [0.9, 3.2], chop: [3.0, 5.2], boil: [3.0, 1.2], sauce: [5.3, 5.2], pasta: [5.3, 1.2], drain: [7.3, 1.2], mix: [7.4, 2.9], table: [8.3, 5.3], serve: [9.4, 3.2] };
 const E813 = [['shop', 'chop'], ['shop', 'boil'], ['chop', 'sauce'], ['boil', 'pasta'], ['pasta', 'drain'], ['drain', 'mix'], ['sauce', 'mix'], ['mix', 'serve'], ['table', 'serve'], ['shop', 'pasta']];
 
 // ---------------------------------------------------------------- 8.14 course prerequisites
@@ -190,7 +190,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
         v.legend([['green', 'tree'], ['red', 'back', { dash: true }], ['purple', 'forward', { dash: true }], ['teal', 'cross', { dash: true }], ['gold', 'the cycle a back edge closes']]);
         v.readout(() => {
           const { f, backs, cyc, truth } = info; if (!f) return '';
-          const head = `Start order ${order.join(' ')} · ${plural(backs.length, 'back edge')} so far`;
+          const head = `Start order ${order.join(' ')} · ${plural(backs.length, 'back edge')}${f.type === 'done' ? '' : ' so far'}`;
           if (f.type !== 'done') return head;
           const ok = (backs.length > 0) === truth;
           return `${head}${backs.length ? `, e.g. ${G.lab(backs[0].from)} → ${G.lab(backs[0].to)}, closing the cycle ${cyc.map((x) => G.lab(x)).join(' → ')} → ${G.lab(cyc[0])}` : ''} · Warshall's closure: the graph is ${truth ? '**cyclic**' : '**acyclic**'} ${ok ? '✓' : '✗'}`;
@@ -210,7 +210,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
       tags: ['graphs', 'dags'],
       credit: 'Tarjan, 1976',
       viz(v) {
-        const tog = v.toggle('edge serve → shop (makes a cycle)', false, { onChange: (x) => { const e = G.edges.find((q) => q.from === 'serve' && q.to === 'shop'); if (x && !e) G.addEdge('serve', 'shop', { bend: -60 }); if (!x && e) G.removeEdge(e); S.reset({ at: 'end' }); } });
+        const tog = v.toggle('edge serve → shop (makes a cycle)', false, { onChange: (x) => { const e = G.edges.find((q) => q.from === 'serve' && q.to === 'shop'); if (x && !e) G.addEdge('serve', 'shop', { bend: 75 }); if (!x && e) G.removeEdge(e); S.reset({ at: 'end' }); } });
         const s = v.stage({ x: [0, 10], y: [0, 6.2], axes: false, equal: true, height: 300 });
         const sl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true, title: 'the list, in order of decreasing finishing time' });
         const G = v.graph(s, { directed: true, layout: 'none', shape: 'box', fontSize: 12, editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P813, { boil: { notePos: 's' }, pasta: { notePos: 's' }, drain: { notePos: 's' } }), edges: E813.map(([a, b]) => [a, b]) });
@@ -257,7 +257,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320 });
         const sq = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true });
         const G = v.graph(s, { directed: true, shape: 'box', fontSize: 12, notePos: 's', nodes: N814.map(([id, label]) => ({ id, label })), edges: E814.map(([a, b]) => [a, b]), layout: 'layered', rankdir: 'right' });
-        const S = v.steps({ frames: () => G.topoSort().events, code: KAHN_CODE, codeTitle: 'Kahn(G)', codePos: 'below', speed: 2, start: 9, still: 9 });
+        const S = v.steps({ frames: () => G.topoSort().events.map((e) => (e.type === 'done' && e.cycle ? { ...e, note: `Stuck: the queue is empty but ${G.nodes.length - e.order.length} courses are left, each with a prerequisite among the leftovers. Following prerequisites backwards must eventually repeat a course, which closes a cycle.` } : e)), code: KAHN_CODE, codeTitle: 'Kahn(G)', codePos: 'below', speed: 2, start: 9, still: 9 });
         let info = {};
         v.render(() => {
           const f = S.frame; if (!f.view) return;
@@ -334,7 +334,7 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
         v.button('Alphabetical', () => { order = Object.keys(P815); });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 320, weight: 1.4 });
         const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'component graph' });
-        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P815, { f: { notePos: 'w' }, h: { notePos: 's' }, l: { notePos: 's' }, m: { notePos: 's' } }), edges: E815.map(([a, b]) => [a, b]) });
+        const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P815, { c: { notePos: 's' }, e: { notePos: 's' }, f: { notePos: 'w' }, h: { notePos: 's' }, j: { notePos: 'e' }, k: { notePos: 'e' }, l: { notePos: 's' }, m: { notePos: 's' } }), edges: E815.map(([a, b]) => [a, b]) });
         const C = v.graph(s2, { directed: true, nodes: [], edges: [], layout: 'none', shape: 'box', fontSize: 12, draggable: false });
         let key = '', info = {};
         v.render(() => {
@@ -343,15 +343,15 @@ A directed graph has a topological order if and only if it is a DAG. Every DAG h
           const lab = comps.map((c) => (stat.value === 'max' ? Math.max : Math.min)(...c.map((x) => Rr.f[K(x)])));
           hulls(v, s, G, comps, col, 0.08);
           G.draw({ nodeColor: (id) => col(compOf[K(id)]), nodeNote: (id) => `${Rr.d[K(id)]}/${Rr.f[K(id)]}`, noteColor: (id) => (Rr.f[K(id)] === lab[compOf[K(id)]] ? col(compOf[K(id)]) : 'muted'), edgeColor: (e) => (Rr.kinds.get(e) === 'tree' ? 'ink' : null), edgeWidth: (e) => (Rr.kinds.get(e) === 'tree' ? 2.2 : null) });
-          const cg = condense(G, comps, compOf), k2 = JSON.stringify([cg.nodes.map((n) => n.label), cg.edges.map((e) => e.from + e.to)]);
+          const cg = condense(G, comps, compOf, (c, k) => `${c.map((x) => G.lab(x)).join(' ')}\n${stat.value === 'max' ? 'max' : 'min'} f = ${lab[k]}`), k2 = JSON.stringify([cg.nodes.map((n) => n.label), cg.edges.map((e) => e.from + e.to)]);
           if (k2 !== key) { key = k2; C.set(cg); C.layout('layered', { rankdir: 'down' }); }
           const top = lab.indexOf(Math.max(...lab)); let bad = 0;
           for (const e of C.edges) if (!(lab[e.a] > lab[e.b])) bad++;
           C.draw({
-            nodeLabel: (id, n) => `${n.label}\n${stat.value === 'max' ? 'max' : 'min'} f = ${lab[n.k]}`, nodeColor: (id, n) => col(n.k), nodeRing: (id, n) => (n.k === top ? 'gold' : null),
+            nodeColor: (id, n) => col(n.k), nodeRing: (id, n) => (n.k === top ? 'gold' : null),
             edgeColor: (e) => (lab[e.a] > lab[e.b] ? 'green' : 'red'), edgeWidth: () => 2.4, edgeDash: (e) => !(lab[e.a] > lab[e.b]),
           });
-          info = { bad, nE: C.edges.length, topSrc: !C.edges.some((e) => e.b === top), topName: cg.nodes[top]?.label };
+          info = { bad, nE: C.edges.length, topSrc: !C.edges.some((e) => e.b === top), topName: comps[top]?.map((x) => G.lab(x)).join(' ') };
         });
         v.legend([['green', 'edge from larger to smaller label'], ['red', 'violates the order', { dash: true }], ['gold', 'largest label (ring)', { dot: true }], ['ink', 'DFS tree edge']]);
         v.readout(() => {

@@ -176,7 +176,7 @@ so one quadrature is **quieter than the vacuum** at the cost of the other. Under
           }
           // breathing period from the recorded minima of Δx
           const mins = []; for (let k = 1; k < S.tr.length - 1; k++) if (S.tr[k][1] < S.tr[k - 1][1] && S.tr[k][1] <= S.tr[k + 1][1]) mins.push(S.tr[k][0]);
-          let mean = 0; for (const q of P) mean += 0; P.forEach((q, k) => { mean += k * q; });
+          let mean = 0; P.forEach((q, k) => { mean += k * q; });
           st = { S, cv, dxmin: Math.min(...S.tr.map((q) => q[1])), per: mins.length >= 2 ? (mins[mins.length - 1] - mins[0]) / (mins.length - 1) : NaN, fdev, sv, mean, Wmin: Wd.min };
         }, { period: PER, still: 2.4 });
         v.legend([['orange', 'Δx'], ['purple', 'Δp'], ['green', 'vacuum', { dash: true }], ['ink', '$1\\sigma$ ellipse'], ['accent', 'P(n) (projection)', { area: true }], ['orange', 'squeezed-vacuum formula', { dot: true }]]);
@@ -246,7 +246,6 @@ For the quantum state $\psi_n$ take the classical amplitude with the same energy
           sK.path(stats.filter((s) => s[0] >= 1).map((s) => [s[0], Math.max(1e-3, s[2])]), { color: 'orange', width: 1.6 });
           sK.fn((q) => Math.exp(fit.intercept) * q ** fit.slope, { color: 'ink', width: 1, dash: [4, 4] });
           if (n >= 1) { sK.dot(n, stats[n][1], { r: 5, color: 'gold' }); sK.dot(n, Math.max(1e-3, stats[n][2]), { r: 4, color: 'gold' }); }
-          let nodes = 0; const y = hermiteAt(0, 1); void y;
           st = { n, A, ks: stats[n][1], out: stats[n][2] };
         });
         v.legend([['accent', 'quantum $|\\psi_n|^2$ / its CDF'], ['red', 'classical $1/\\pi\\sqrt{A^2-x^2}$ / arcsine CDF'], ['green', 'running average'], ['orange', 'P(beyond ±A)'], ['ink', `fit $\\propto n^{${v.fix(fit.slope, 2)}}$`, { dash: true }]]);
@@ -391,7 +390,7 @@ The number states $|n\rangle$ contain $n$ **photons** of energy $\hbar\omega$ ea
           sA.setView([-0.08, 1.08], [-ylim, ylim]);
           for (const X of [-0.04, 1]) sA.rect(X, -ylim * 0.95, X + 0.04, ylim * 0.95, { fill: 'muted', fillAlpha: 0.4, hatch: 'muted', hatchAlpha: 0.45, stroke: false });
           sA.hline(0, { color: 'grid' });
-          const kz = 3 * Math.PI, smp = M_samp(XQ, p);
+          const kz = 3 * Math.PI, smp = v.M.gridSampler(XQ, p);
           for (let k = 0; k < 21; k++) { const E = Math.SQRT2 * smp((k + 0.5) / 21); sA.fn((z) => E * Math.sin(kz * z), { color: 'gold', width: 1, alpha: 0.45, domain: [0, 1], n: 120 }); }
           sA.between((z) => (Em + dE) * Math.sin(kz * z), (z) => (Em - dE) * Math.sin(kz * z), 0, 1, { fill: 'accent', fillAlpha: 0.16 });
           sA.fn((z) => Em * Math.sin(kz * z), { color: 'accent', width: 3, domain: [0, 1], n: 200 });
@@ -434,9 +433,9 @@ $$\frac FA=-\frac{\pi^2\hbar c}{240\,d^4},$$
 corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force comes from the zero-point energies $\tfrac12\hbar\omega$ of the field modes (4.4, 4.12): fewer modes fit between the plates than in the same volume of free space, and the difference of the two (each infinite) sums is finite and independent of how high frequencies are cut off. For a massless scalar field on a line between two points ($1$D) the same reasoning gives $E=-\pi\hbar c/24d$.`,
       scope: String.raw`Ideal conductors at zero temperature and $d$ well above the plasma wavelength of the metal; real metals, finite temperature and surface roughness modify it. Measured with a sphere and a plate (Lamoreaux, 1997) and with parallel plates (Bressi et al., 2002) at micrometre separations.`,
       idea: String.raw`Between the plates the wave number normal to them is quantized, $k_z=n\pi/d$, while outside it is continuous. With a smooth cutoff $e^{-\omega/\Lambda}$ (real mirrors become transparent at high frequency) the sum over $n$ and the corresponding integral both grow like $\Lambda^4$, but by the Euler–Maclaurin formula their difference is $-\tfrac1{12}F'(0)+\tfrac1{720}F'''(0)-\dots$ in terms of the mode-energy function $F$; for the plates only the $F'''$ term survives and gives $-\pi^2/720d^3$ (for the line, $-F'(0)/12=-\pi/24d$). The cutoff drops out as $\Lambda\to\infty$: the force is a property of the low-lying modes that the plates rearrange.`,
-      caption: String.raw`Top: **drag the right mirror**. Between the mirrors only standing waves with $d=n\lambda/2$ fit (coloured); outside, every wavelength is allowed (grey). Bottom left: modes between the plates minus modes in the same space without plates, counted up to frequency $\omega$ — always a deficit. Bottom middle: the regulated energy difference, computed by summing $\tfrac12\hbar\omega\,e^{-\omega/\Lambda}$ over the actual modes and subtracting the free-space integral, divided by the exact $-\pi^2\hbar c/720d^3$ (or $-\pi\hbar c/24d$). It tends to 1 as the cutoff $\Lambda d$ grows. **Change the cutoff** to see it. Bottom right: the resulting pressure on log–log axes against $1/d^4$, in pascals for real plates.`,
+      caption: String.raw`Top: **drag the right mirror**. Between the mirrors only standing waves with $d=n\lambda/2$ fit (coloured); outside, every wavelength is allowed (grey). Bottom left: the number of allowed normal wave numbers $k_z$ up to $k$ — a staircase between the plates against the straight line $kd/\pi$ of free space; the shaded gap (half a mode on average) is what the plates remove. Bottom middle: the regulated energy difference, computed by summing $\tfrac12\hbar\omega\,e^{-\omega/\Lambda}$ over the actual modes and subtracting the free-space integral, divided by the exact $-\pi^2\hbar c/720d^3$ (or $-\pi\hbar c/24d$). It tends to 1 as the cutoff $\Lambda d$ grows. **Change the cutoff** to see it. Bottom right: the resulting pressure on log–log axes against $1/d^4$, in pascals for real plates.`,
       deps: ['qm-4.12', 'qm-4.4'],
-      see: ['ana-3.1'],
+      see: ['qm-4.11'],
       refs: ['Sakurai ch. 7'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Casimir_effect' },
       tags: ['Casimir effect', 'vacuum energy', 'zero-point energy'],
@@ -445,7 +444,7 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
         const geo = v.select('field', [{ value: '3d', label: 'EM field, parallel plates' }, { value: '1d', label: 'scalar field on a line (1D)' }], '3d');
         const Ls = v.slider('cutoff $\\Lambda d$ (in units of $c/d$)', 2, 100, 20, { log: true });
         const sA = v.stage({ x: [-0.9, 3.6], y: [-1.3, 1.3], height: 200, axes: false, full: true, title: 'mirrors $d$ micrometres apart' });
-        const sM = v.stage({ x: [0, 12], y: [-1.2, 0.3], height: 240, axes: 'box', gutter: true, weight: 1, xlabel: 'ωd/πc', title: 'mode deficit between the plates' });
+        const sM = v.stage({ x: [0, 8], y: [0, 8], height: 240, axes: 'box', gutter: true, weight: 1, xlabel: 'k d / π', ylabel: 'modes', title: 'allowed $k_z$ below $k$: plates vs free space' });
         const sR = v.stage({ x: [1.5, 100], y: [0, 1.6], height: 240, axes: 'box', gutter: true, xlog: true, weight: 1, xlabel: 'Λd', title: 'regulated $\\Delta E$ / exact value' });
         const sP = v.stage({ x: [0.1, 10], y: [1e-8, 1e2], height: 240, axes: 'box', gutter: true, xlog: true, ylog: true, weight: 1, xlabel: 'd (µm)', title: 'pressure (Pa) against separation' });
         const hD = sA.handle(1.6, 0, { color: 'gold', r: 8, label: 'd', labelPos: 'n', constrain: (X) => [Math.min(3, Math.max(0.3, X)), 0] });
@@ -484,18 +483,13 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
           const fl = Math.min(0.55, 0.08 * (1.6 / d) ** (g === '1d' ? 2 : 4));
           sA.arrow(d + 0.2 + fl, 1.12, d + 0.2, 1.12, { color: 'red', width: 2.2, head: 7 }); sA.arrow(-0.2 - fl, 1.12, -0.2, 1.12, { color: 'red', width: 2.2, head: 7 });
           sA.text(`d = ${v.fix(d, 2)} µm`, d / 2, -1.12, { size: 12, color: 'ink', align: 'center', weight: 600, plate: true });
-          // mode deficit: N_in(ω) − N_out(ω) against u = ωd/π
-          const def = [];
-          for (let k = 0; k <= 1200; k++) {
-            const u = (12 * k) / 1200;
-            if (g === '1d') def.push([u, Math.floor(u) - u]);
-            else { let s = 0; for (let n = 0; n <= u; n++) s += (n ? 1 : 0.5) * (u * u - n * n); def.push([u, (s - (u ** 3) / 3) / Math.max(1, u * u) * 2]); } // in units of the leading term's scale (π²/2πd²): normalised by u²
-          }
-          sM.setView([0, 12], g === '1d' ? [-1.15, 0.25] : [-1.0, 0.4]);
-          sM.hline(0, { color: 'muted', width: 1 });
-          sM.path(def, { color: 'accent', width: 1.8 });
-          sM.hline(g === '1d' ? -0.5 : -0.5 * 0, { color: 'orange', width: 1.3, dash: [5, 4] });
-          sM.setLabels('ωd/πc', g === '1d' ? 'N_in − N_out' : '(N_in − N_out)/(u²/2) per area');
+          // counting the allowed normal wave numbers k_z = nπ/d below k, against free space (kd/π of them)
+          const stair = []; for (let n = 0; n <= 8; n++) { stair.push([n, n - 1 < 0 ? 0 : n - 1]); stair.push([n, n]); } stair.push([8, 8]);
+          sM.between((u) => u, (u) => Math.floor(u), 0, 8, { fill: 'red', fillAlpha: 0.14 });
+          sM.line(0, 0, 8, 8, { color: 'muted', width: 1.6, dash: [6, 4] });
+          sM.path(stair.slice(1), { color: 'accent', width: 2.2 });
+          sM.text('free space: kd/π', 5.6, 6.3, { size: 11, color: 'muted', align: 'right', plate: true });
+          sM.text('between plates', 6.2, 5.2, { size: 11, color: 'accent', align: 'left', plate: true });
           // ratio vs cutoff
           sR.hline(1, { color: 'green', width: 1.4, dash: [5, 4] });
           sR.path(Cv.ratio, { color: 'accent', width: 2.2 });
@@ -509,16 +503,9 @@ corresponding to an interaction energy $E/A=-\pi^2\hbar c/720\,d^3$. The force c
           let pdev = 0; for (const [q, p] of Cv.pr) pdev = Math.max(pdev, Math.abs(p / exactP(g, q) - 1));
           st = { g, d, L, rnow, P: toSI(g, exactP(g, d)), pdev };
         });
-        v.legend([['accent', 'computed from the mode sums'], ['red', 'Casimir formula'], ['green', 'exact ratio 1', { dash: true }], ['orange', 'average deficit −½ (1D)', { dash: true }]]);
+        v.legend([['accent', 'computed from the mode sums'], ['red', 'Casimir formula'], ['green', 'exact ratio 1', { dash: true }], ['red', 'missing modes', { area: true }]]);
         v.readout(() => st && `with cutoff $\\Lambda d = ${v.fix(st.L, 1)}$ the regulated $\\Delta E$ is **${v.fix(st.rnow, 5)}** × the exact ${st.g === '1d' ? '$-\\pi\\hbar c/24d$' : '$-\\pi^2\\hbar c/720d^3$'} (both sums grow like $\\Lambda^{${st.g === '1d' ? 2 : 4}}$; their difference does not) · pressures from finite differences of the regulated energy match the formula to ${v.fix(100 * st.pdev, 3)}% · at $d = ${v.fix(st.d, 2)}$ µm: ${st.g === '1d' ? `force $\\pi\\hbar c/24d^2 = ${v.sci(st.P, 3)}$ N` : `$\\pi^2\\hbar c/240d^4 = ${v.sci(st.P, 3)}$ Pa, attractive`}.`);
       },
     },
   ],
 };
-
-/** Inverse-CDF sampler on a tabulated density (thin wrapper so the quantiles move smoothly with the distribution). */
-function M_samp(xs, ps) {
-  const n = xs.length, cdf = new Float64Array(n); let s = 0;
-  for (let i = 1; i < n; i++) { s += 0.5 * (ps[i] + ps[i - 1]) * (xs[i] - xs[i - 1]); cdf[i] = s; }
-  return (u) => { const t = u * s; let lo = 0, hi = n - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cdf[m] < t) lo = m; else hi = m; } const w = (t - cdf[lo]) / (cdf[hi] - cdf[lo] || 1); return xs[lo] + w * (xs[hi] - xs[lo]); };
-}

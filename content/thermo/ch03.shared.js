@@ -121,6 +121,7 @@ export function thermoSquare(s, cx, cy, r, o = {}) {
   for (const [k, [x, y]] of Object.entries(C)) {
     const ring = o.corners && o.corners.includes(k);
     const col = (o.cornerColor && o.cornerColor[k]) || (ring ? 'orange' : 'ink');
+    s.circle(x, y, r * 0.17, { fill: 'panel', fillAlpha: 1, stroke: false });
     s.circle(x, y, r * 0.17, { fill: ring ? col : 'panel', fillAlpha: ring ? 0.25 : 1, color: ring ? col : 'faint', width: ring ? 2.2 : 1 });
     s.tex(k, x, y, { color: col, size: 15, align: 'center', baseline: 'middle' });
   }

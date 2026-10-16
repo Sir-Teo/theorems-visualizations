@@ -161,8 +161,8 @@ is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, an
             sL.fn((x) => yarotsky(x, m), { color: 'accent', width: 2 });
             for (let s = 1; s <= m; s++) sL.fn((x) => { let g = x; for (let i = 0; i < s; i++) g = tent(g); return g / 4 ** s; }, { color: CYC[s % CYC.length], width: 1.3, alpha: 0.8, n: 2000 });
             sL.line(0, 0, 1, 1, { color: 'faint', width: 1, dash: [4, 4] });
-            sL.fn((x) => 0.75 + 0.2 * (yarotsky(x, m) - x * x) * 4 ** (m + 1), { color: 'red', width: 1.6, fill: 'red', fillAlpha: 0.15, base: 0.75, n: 3000, domain: [0, 0.62] });
-            sL.text(`error × 4^${m + 1} (rescaled): ${2 ** m} identical arches`, 0.02, 0.98, { size: 11.5, color: 'red', baseline: 'top' });
+            sL.fn((u) => { const x = u / 0.6; return 0.7 + 0.18 * (yarotsky(x, m) - x * x) * 4 ** (m + 1); }, { color: 'red', width: 1.6, fill: 'red', fillAlpha: 0.15, base: 0.7, n: 3000, domain: [0, 0.6] });
+            sL.text(`error × 4${String(m + 1).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join('')} over [0, 1] (squeezed): ${2 ** m} identical arches`, 0.02, 0.98, { size: 11.5, color: 'red', baseline: 'top' });
           } else {
             sL.setView([0, 1], [0, 1]); tL(`error $|P_m(x,y)-xy|$ (scale: 0 to $4^{-m}$)`);
             sL.heat((x, y) => Math.abs(P(x, y, m) - x * y), { cmap: 'theme', color: 'red', range: [0, 4 ** -m], res: 3, key: 'p' + m });
@@ -185,7 +185,7 @@ is the piecewise-linear interpolant of $x^2$ at the $2^m+1$ points $k2^{-m}$, an
       credit: 'Zhang, Bengio, Hardt, Recht & Vinyals, 2017 (earlier: Baum 1988; Huang & Babri 1998)',
       statement: String.raw`For any $n$ distinct points $x_1,\dots,x_n\in\R^d$ and any real labels $y_1,\dots,y_n$, there is a two-layer ReLU network with $n$ hidden units and $2n+d$ weights,
 $$f(x)=\sum_{j=1}^n w_j\,\mathrm{ReLU}(a\cdot x-b_j),$$
-with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the projections $u_i=a\cdot x_i$ are distinct (almost every $a$), interleave the biases $b_1<u_{(1)}<b_2<u_{(2)}<\cdots<b_n<u_{(n)}$, and solve for $w$. Such networks can therefore fit even random labels perfectly, so perfect training accuracy by itself says nothing about generalization.`,
+with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the projections $u_i=a\cdot x_i$ are distinct (almost every $a$), interleave the biases $b_1<u_{(1)}\le b_2<u_{(2)}\le\cdots\le b_n<u_{(n)}$ (for instance $b_j=u_{(j-1)}$, which makes $f$ the piecewise-linear interpolant of the data along $a$), and solve for $w$. Such networks can therefore fit even random labels perfectly, so perfect training accuracy by itself says nothing about generalization.`,
       idea: String.raw`Project onto a generic direction to reduce the problem to one dimension. Sorted by projection, point $i$ activates exactly the units $j\le i$, so the conditions $f(x_i)=y_i$ form a lower-triangular linear system in $w$ whose diagonal entries $u_{(i)}-b_i$ are positive, solvable by forward substitution — the 1D interpolation of 2.1 with knots at the data. If two points of different label share a projection, no function of $a\cdot x$ can separate them; that is the only way the construction fails, and rotating $a$ fixes it.`,
       caption: String.raw`Left: click to add points with the selected label; the plane is coloured by the constructed network's output, which depends only on $a\cdot x$ — stripes perpendicular to the gold arrow $a$, which you can drag. Right: the same data projected onto $a$, with the network's piecewise-linear profile passing through every point (orange ticks: the biases $b_j$). Press *random labels* to memorise noise; rotate $a$ until two points align and watch the construction break.`,
       deps: ['deep-1.3'],
@@ -206,7 +206,7 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
           const a = [A.x, A.y], n = pts.length;
           const P = pts.map((p) => ({ u: a[0] * p[0] + a[1] * p[1], y: p[2] })).sort((p, q) => p.u - q.u);
           const span = n ? P[n - 1].u - P[0].u || 1 : 1; let gap = Infinity; for (let i = 1; i < n; i++) gap = Math.min(gap, P[i].u - P[i - 1].u);
-          const b = P.map((p, i) => (i === 0 ? p.u - 0.3 * span / Math.max(1, n) - 0.05 : (P[i - 1].u + p.u) / 2)), w = [];
+          const b = P.map((p, i) => (i === 0 ? p.u - 0.3 * span / Math.max(1, n) - 0.05 : P[i - 1].u)), w = [];
           for (let i = 0; i < n; i++) { let s = P[i].y; for (let j = 0; j < i; j++) s -= w[j] * (P[i].u - b[j]); w.push(s / (P[i].u - b[i])); }
           const f = (x) => { const u = a[0] * x[0] + a[1] * x[1]; let s = 0; for (let j = 0; j < n; j++) if (u > b[j]) s += w[j] * (u - b[j]); return s; };
           let err = 0; for (const p of pts) err = Math.max(err, Math.abs(f(p) - p[2]));
@@ -266,8 +266,8 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
         const sR = v.stage({ x: [0.8, 160], y: [1e-3, 1], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: ' ', ylabel: ' ', title: 'right' });
         const tL = titler(sL), tR = titler(sR);
         const MH = [[0.2, 0.6], [0.45, -0.8], [0.62, 0.5], [0.85, -0.3]].map(([x, m], i) => sL.handle(x, m, { color: m > 0 ? 'accent' : 'red', r: 6, constrain: (px, py) => [clamp(px, 0, 1), clamp(py, -1, 1)] }));
-        v.button('cancel the masses', () => { MH[1].set(MH[0].x, -MH[0].y); MH[3].set(MH[2].x, -MH[2].y); });
-        v.button('random masses', () => { const r = rand(hashStr('cy' + Math.round(MH[0].x * 1e4))); MH.forEach((h) => h.set(r(), r() * 2 - 1)); });
+        const bC = v.button('cancel the masses', () => { MH[1].set(MH[0].x, -MH[0].y); MH[3].set(MH[2].x, -MH[2].y); });
+        const bR = v.button('random masses', () => { const r = rand(hashStr('cy' + Math.round(MH[0].x * 1e4))); MH.forEach((h) => h.set(r(), r() * 2 - 1)); });
         const stair = (f, N, lam, exact) => { const xs = Array.from({ length: N + 1 }, (_, k) => k / N); return (x) => { let s = f(0); for (let k = 1; k <= N; k++) { const t = (xs[k - 1] + xs[k]) / 2, h = f(xs[k]) - f(xs[k - 1]); s += h * (exact ? (x >= t ? 1 : 0) : sigm(lam * N * (x - t))); } return s; }; };
         const lsq = (f, N, lam) => { const ts = Array.from({ length: N }, (_, k) => (k + 0.5) / N), X = Array.from({ length: 401 }, (_, i) => i / 400); const c = lstsq(X.map((x) => [1, ...ts.map((t) => sigm(lam * N * (x - t)))]), X.map(f), 1e-10); return (x) => c[0] + ts.reduce((s, t, k) => s + c[k + 1] * sigm(lam * N * (x - t)), 0); };
         const supE = (f, g) => { let e = 0; for (let i = 0; i <= 2000; i++) { const x = i / 2000; e = Math.max(e, Math.abs(f(x) - g(x))); } return e; };
@@ -276,7 +276,7 @@ with $f(x_i)=y_i$ for every $i$. One may take any direction $a$ for which the pr
         let info = null;
         v.render(() => {
           const disc = modeS.value === 'disc';
-          tgS.el.hidden = nS.el.hidden = lS.el.hidden = disc; MH.forEach((h, i) => { h.visible = disc; h.color = h.y >= 0 ? 'accent' : 'red'; });
+          tgS.el.hidden = nS.el.hidden = lS.el.hidden = disc; bC.hidden = bR.hidden = !disc; MH.forEach((h, i) => { h.visible = disc; h.color = h.y >= 0 ? 'accent' : 'red'; });
           if (!disc) {
             sL.setView([0, 1], [-0.05, 1.05]); sR.setScale({ xlog: true, ylog: true, x: [0.8, 160], y: [1e-3, 1] }); sL.setLabels('$x$', null); sR.setLabels('units $N$', null);
             tL('target $f$ and the staircase of $N$ steep sigmoids'); tR('sup error against $N$');

@@ -484,6 +484,8 @@ Proposition-wise majority voting on $\{P, Q, C\}$ accepts $P$ and $Q$ but reject
             highlight: A.clash ? [[n, 2, 'red'], [n + 1, 2, 'red']] : [],
           });
           // ---- chart
+          const ymx = Math.max(...NS.concat([n]).map((m) => Math.max(...curve(m, rule.value).map((p) => p[1])))) * 1.15;
+          Ch.setView([0, 1], [0, Math.max(0.2, ymx)]);
           NS.forEach((m) => { const cur = m === n; Ch.path(curve(m, rule.value), { color: cur ? 'accent' : 'muted', width: cur ? 3 : 1.4, alpha: cur ? 1 : 0.7 }); });
           if (!NS.includes(n)) Ch.path(curve(n, rule.value), { color: 'accent', width: 3 });
           NS.forEach((m) => { const cv = curve(m, rule.value), top = cv.reduce((a, b) => (b[1] > a[1] ? b : a)); Ch.text(`${m} judges`, top[0], top[1], { dy: -10, size: 10, weight: 700, align: 'center', color: m === n ? 'accent' : 'muted' }); });

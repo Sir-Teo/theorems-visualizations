@@ -86,7 +86,7 @@ reached only by reversible operation. Any irreversibility destroys work in propo
 $$\left(\frac{\partial T}{\partial V}\right)_S = -\left(\frac{\partial P}{\partial S}\right)_V,\quad \left(\frac{\partial T}{\partial P}\right)_S = \left(\frac{\partial V}{\partial S}\right)_P,\quad \left(\frac{\partial S}{\partial V}\right)_T = \left(\frac{\partial P}{\partial T}\right)_V,\quad -\left(\frac{\partial S}{\partial P}\right)_T = \left(\frac{\partial V}{\partial T}\right)_P.$$
 They hold for every substance whose potentials are twice continuously differentiable, and they turn hard-to-measure entropy derivatives into derivatives of the equation of state. (Allowing $N$ to vary gives further relations such as $(\partial\mu/\partial V)_{T,N} = -(\partial P/\partial N)_{T,V}$.)`,
       idea: String.raw`From $dF = -S\,dT - P\,dV$ (3.7), $S = -\partial_T F$ and $P = -\partial_V F$; Schwarz's theorem (pma 9.41) on $\partial_V\partial_T F = \partial_T\partial_V F$ gives $(\partial S/\partial V)_T = (\partial P/\partial T)_V$. The other three come the same way from $dU$, $dH$, $dG$. The **thermodynamic square** remembers them all: potentials sit on the sides between their natural variables, and each relation is read off by walking around a corner — the sign is minus when the two arrows point differently. The content is that the "entropy side" of each equation, which no instrument measures directly, equals a mechanical derivative of $P$, $V$, $T$.`,
-      caption: String.raw`Carbon dioxide as a van der Waals fluid over the plane of molar volume and temperature (the critical point is the gold dot; the dashed curve bounds the unstable region below it, where the identities still hold mathematically). Choose a relation: the left map is its left-hand side, the right map its right-hand side, each **computed independently by finite differences** — moving along a curve of constant $T$, $S$, $P$ or $V$ found numerically — and shown on the same signed-log colour scale. The two maps are indistinguishable. **Drag the probe** to compare the numbers. The square highlights the potential whose mixed derivatives are being equated.`,
+      caption: String.raw`Carbon dioxide as a van der Waals fluid over the plane of molar volume and temperature (the critical point is the gold dot; the dark curve bounds the unstable region below it, where the identities still hold mathematically). Choose a relation: the left map is its left-hand side, the right map its right-hand side, each **computed independently by finite differences** — moving along a curve of constant $T$, $S$, $P$ or $V$ found numerically — and shown on the same signed-log colour scale with the same contour levels. The two maps are indistinguishable. **Drag the probe** to compare the numbers. The square highlights the potential whose mixed derivatives are being equated.`,
       deps: ['thermo-3.7', 'pma-9.41'],
       see: ['thermo-3.13', 'thermo-4.1'],
       refs: ['Callen ch. 7', 'Tong ch. 4'],
@@ -111,12 +111,16 @@ They hold for every substance whose potentials are twice continuously differenti
         let st = null;
         v.render(() => {
           const k = which.value, r = REL[k], fa = side(k, 'lhs'), fb = side(k, 'rhs');
-          // colour scale from the probe-independent median magnitude over a coarse grid
-          const mags = []; for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) { const x = fa(Y[0] + (Y[1] - Y[0]) * (j + 0.5) / 9, X[0] * (X[1] / X[0]) ** ((i + 0.5) / 9)); if (isFinite(x)) mags.push(Math.abs(x)); }
-          mags.sort((a, b) => a - b); const x0 = mags[Math.floor(mags.length / 2)] || 1;
-          const rng = [-2.2, 2.2];
-          sa.heat((vL, T) => slog(fa(T, vL), x0), { range: rng, cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 4, key: 'a' + k });
-          sb.heat((vL, T) => slog(fb(T, vL), x0), { range: rng, cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 4, key: 'b' + k });
+          // colour scale: signed log of the values, range from the 3rd–97th percentiles of a coarse grid of the left side
+          const raw = []; for (let i = 0; i < 14; i++) for (let j = 0; j < 14; j++) { const x = fa(Y[0] + (Y[1] - Y[0]) * (j + 0.5) / 14, X[0] * (X[1] / X[0]) ** ((i + 0.5) / 14)); if (isFinite(x)) raw.push(x); }
+          const mags = raw.map(Math.abs).sort((a, b) => a - b), x0 = mags[Math.floor(mags.length / 2)] * 0.05 || 1;
+          const sl = raw.map((x) => slog(x, x0)).sort((a, b) => a - b), p3 = sl[Math.floor(sl.length * 0.03)], p97 = sl[Math.floor(sl.length * 0.97)];
+          const pos = p3 > 0, neg = p97 < 0, m = Math.max(Math.abs(p3), Math.abs(p97));
+          const opt = pos || neg ? { range: [p3, p97], cmap: 'theme', color: pos ? 'red' : 'blue' } : { range: [-m, m], cmap: 'theme-diverging', neg: 'blue', pos: 'red' };
+          const ga = (vL, T) => slog(fa(T, vL), x0), gb = (vL, T) => slog(fb(T, vL), x0);
+          sa.heat(ga, { ...opt, res: 4, key: 'a' + k }); sb.heat(gb, { ...opt, res: 4, key: 'b' + k });
+          const lv = Array.from({ length: 7 }, (_, i) => lerp(opt.range[0], opt.range[1], (i + 0.5) / 7));
+          sa.contour(ga, lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 }); sb.contour(gb, lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 55 });
           const spin = (vL, T) => pdiff(M.P, Vv.V, Vv.T, T, vL * L);
           for (const s of [sa, sb]) {
             s.contour(spin, [0], { color: 'ink', width: 1.4, alpha: 0.7, res: 70 });
@@ -166,7 +170,7 @@ Examples: the adiabatic coefficient $(\partial T/\partial P)_s = Tv\alpha/c_P$, 
             lines: ['\\left(\\frac{\\partial T}{\\partial P}\\right)_s = -\\frac{(\\partial s/\\partial P)_T}{(\\partial s/\\partial T)_P}', '(\\partial s/\\partial T)_P = c_P/T', '\\left(\\frac{\\partial s}{\\partial P}\\right)_T = -v\\alpha', '\\left(\\frac{\\partial T}{\\partial P}\\right)_s = \\frac{Tv\\alpha}{c_P}'],
             notes: ['Triple product rule.', 'Definition of the heat capacity at constant pressure.', 'Maxwell relation from $G$.', 'Always positive when $\\alpha > 0$: adiabatic compression heats.'],
             final: (q) => q.T * q.v * q.alpha / q.cP },
-          J: { label: 'Joule $(\\partial T/\\partial v)_u$', hold: 'U', unit: 'K mol/L', scale: 1 / L,
+          J: { label: 'Joule $(\\partial T/\\partial v)_u$', hold: 'U', unit: 'K mol/L', scale: L,
             lines: ['\\left(\\frac{\\partial T}{\\partial v}\\right)_u = -\\frac{(\\partial u/\\partial v)_T}{(\\partial u/\\partial T)_v}', '(\\partial u/\\partial v)_T = T\\left(\\frac{\\partial s}{\\partial v}\\right)_T - P,\\quad (\\partial u/\\partial T)_v = c_v', '\\left(\\frac{\\partial s}{\\partial v}\\right)_T = \\left(\\frac{\\partial P}{\\partial T}\\right)_v = \\frac{\\alpha}{\\kappa_T}', '\\left(\\frac{\\partial T}{\\partial v}\\right)_u = -\\frac{T\\alpha/\\kappa_T - P}{c_v}'],
             notes: ['Triple product rule.', 'Use $du = T\\,ds - P\\,dv$ to remove the energy.', 'Maxwell relation from $F$, then the triple product rule for $(\\partial P/\\partial T)_v$.', 'Free expansion cools a real gas; for van der Waals this is exactly $-a/(c_v v^2)$.'],
             final: (q) => -(q.T * q.alpha / q.kT - q.P) / q.cv },
@@ -191,12 +195,12 @@ Examples: the adiabatic coefficient $(\partial T/\partial P)_s = Tv\alpha/c_P$, 
           for (let i = 1; i <= f.k; i++) sw.line(0.02, 0.88 - i * 0.235 + 0.11, 0.98, 0.88 - i * 0.235 + 0.11, { color: 'grid', width: 1 });
           // map
           const val = (T, PB) => direct(k, T, PB * BAR) * t.scale;
-          const sc = k === 'J' ? 30 : k === 'JT' ? 0.5 : 0.5;
-          sm.heat((T, PB) => slog(val(T, PB), sc * 0.2), { range: [-1.2, 1.2], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 4, key: 'm' + k });
+          const sc = k === 'J' ? 20 : 0.5;
+          sm.heat((T, PB) => slog(val(T, PB), sc * 0.2), { range: [-0.9, 0.9], cmap: 'theme-diverging', neg: k === 'JT' ? 'red' : 'blue', pos: k === 'JT' ? 'blue' : 'red', res: 4, key: 'm' + k });
           if (k === 'JT') {
             sm.contour((T, PB) => val(T, PB), [0], { color: 'green', width: 2.6, res: 80 });
             sm.vline(621, { color: 'ink', dash: [5, 4], width: 1.3 });
-            sm.text('N₂ measured max. inversion ≈ 621 K', 627, 470, { size: 11, color: 'ink', plate: true });
+            sm.text('measured N₂ max. inversion ≈ 621 K', 615, 470, { size: 11, color: 'ink', plate: true, align: 'right' });
             sm.text('cools on throttling', 200, 120, { size: 11.5, color: 'blue', weight: 650, plate: true });
             sm.text('heats', 940, 420, { size: 11.5, color: 'red', weight: 650, plate: true, align: 'right' });
           }
@@ -240,7 +244,7 @@ and also $\kappa_T - \kappa_S = TV\alpha^2/C_P$, so $C_P/C_V = \kappa_T/\kappa_S
             cy = 3.74; cur.set(clamp(cur.x, 0.5, 99.5), cy);
             sl.path(WATER.map((r) => [r[0], r[1]]), { color: 'red', width: 1.6, alpha: 0.6 }); sl.dots(WATER.map((r) => [r[0], r[1]]), { r: 4.5, color: 'red' });
             sl.path(WATER.map((r) => [r[0], r[2]]), { color: 'blue', width: 1.6, alpha: 0.6 }); sl.dots(WATER.map((r) => [r[0], r[2]]), { r: 4.5, color: 'blue' });
-            sl.text('c_p', 96, 4.225, { size: 13, color: 'red', weight: 650, math: true }); sl.text('c_v', 96, 3.83, { size: 13, color: 'blue', weight: 650, math: true });
+            sl.tex('c_p', 95, 4.215, { size: 16, color: 'red', align: 'right', dy: -12 }); sl.tex('c_v', 95, 3.79, { size: 16, color: 'blue', align: 'right', dy: -14 });
             const f = (t) => (t + 273.15) * kellAlpha(t) ** 2 / (kellRho(t) * kellKappa(t)) / KJ;
             sr.fn(f, { color: 'green', width: 2.6, domain: [0, 100] });
             sr.dots(WATER.map((r) => [r[0], r[1] - r[2]]), { r: 4.5, color: 'ink' });
@@ -249,7 +253,7 @@ and also $\kappa_T - \kappa_S = TV\alpha^2/C_P$, so $C_P/C_V = \kappa_T/\kappa_S
             st = { w: true, t, cp: waterAt(t, 1), cv: waterAt(t, 2), f: f(t), a: kellAlpha(t), k: kellKappa(t), rho: kellRho(t) };
             v.legend([['red', '$c_p$ (IAPWS-95)', { dot: true }], ['blue', '$c_v$ (IAPWS-95)', { dot: true }], ['ink', '$c_p - c_v$ tabulated', { dot: true }], ['green', '$T\\alpha^2/\\rho\\kappa_T$ from Kell (1975)']]);
           } else {
-            const T0 = 310, T1 = 450;
+            const T0 = 296, T1 = 420;
             const pts = []; for (let i = 0; i <= 140; i++) { const T = T0 + (T1 - T0) * i / 140, q = co2(T); pts.push([T, q]); }
             const mx = Math.max(...pts.map((p) => p[1].cP));
             sl.setView([T0, T1], [0, mx * 1.08]); sr.setView([T0, T1], [0, Math.max(...pts.map((p) => p[1].cP - p[1].cV)) * 1.1]);
@@ -278,7 +282,7 @@ and also $\kappa_T - \kappa_S = TV\alpha^2/C_P$, so $C_P/C_V = \kappa_T/\kappa_S
 $$S(U + \Delta U, V + \Delta V) + S(U - \Delta U, V - \Delta V) \le 2S(U, V).$$
 Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and $S_{UU}S_{VV} - S_{UV}^2 \ge 0$, equivalently $C_V \ge 0$ and $\kappa_T \ge 0$. In the transformed potentials: $F$ is convex in $V$ and concave in $T$; $G$ is concave in both $T$ and $P$. Where a model's relation violates concavity, the system splits into two phases, and the true equilibrium relation is the **concave hull** (for $S$) or **convex hull** (for $F$) — straight segments joining coexisting phases.`,
       idea: String.raw`If the chord between $(U - \Delta U)$ and $(U + \Delta U)$ passed above $S(U)$, transferring $\Delta U$ from one half to the other would raise the total entropy, and by the maximum principle (3.4, 2.10) the uniform state would not be equilibrium. Concavity of a smooth function (rca 3.1 on convex functions) is equivalent to the second-derivative conditions; translated through $T$ and $P$ they read $C_V > 0$ and $\kappa_T > 0$. The Legendre transform (3.7) turns concavity of $S$ (convexity of $U$) into the stated properties of $F$ and $G$. The hull construction is the same as Maxwell's equal-area rule for the van der Waals loop (4.3).`,
-      caption: String.raw`**Drag the state** along the curve and widen the split $\delta$. The two halves sit at the ends of the chord (dots); their average, the chord's midpoint, is compared with the uniform state. **Entropy picture** (a model $S(U)$ with a convex stretch, dimensionless): where the curve is concave, splitting lowers the total entropy and the system returns to uniformity; on the convex stretch splitting *raises* it — the uniform state is unstable. The dashed concave hull is the true equilibrium entropy. **Van der Waals** (CO₂ below its critical temperature): stability now needs $F(v)$ convex; on the stretch where it is not, the pressure rises with volume ($\kappa_T < 0$, red on the right) and the fluid separates into liquid and gas along the common tangent, whose slope gives the flat coexistence pressure.`,
+      caption: String.raw`**Drag the state** along the curve and widen the split $\delta$. The two halves sit at the ends of the chord (dots); their average, the chord's midpoint, is compared with the uniform state. **Entropy picture** (a model $S(U)$ with a convex stretch, dimensionless): where the curve is concave, splitting lowers the total entropy and the system returns to uniformity; on the convex stretch splitting *raises* it — the uniform state is unstable. The dashed concave hull is the true equilibrium entropy. **Van der Waals** (CO₂ below its critical temperature): stability now needs $F(v)$ convex. The left curve is drawn as $F(v) + P_{\text{co}}v$, tilted by the slope of the common tangent — a linear term changes neither convexity nor the outcome of a split — so the double well shows plainly. On the stretch where $F$ is not convex, the pressure rises with volume ($\kappa_T < 0$, red on the right) and the fluid separates into liquid and gas along the common tangent, whose slope gives the flat coexistence pressure.`,
       deps: ['thermo-3.4', 'rca-3.1'],
       see: ['thermo-3.7', 'thermo-4.3', 'pchem-7.7'],
       refs: ['Callen ch. 8', 'Kardar §1.9'],
@@ -288,8 +292,8 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
         const mode = v.select('picture', [{ value: 'S', label: 'entropy S(U), concave?' }, { value: 'F', label: 'van der Waals F(v), convex?' }], 'F', { onChange: () => hd.set(mode.value === 'S' ? 2.0 : 0.15, 0) });
         const del = v.slider('split $\\delta$', 0.01, 0.6, 0.18, { step: 0.005, fmt: (x) => v.fix(x, 3) });
         const Tsl = v.slider('$T$ (van der Waals)', 240, 320, 270, { step: 1, fmt: (x) => x + ' K' });
-        const sa = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, weight: 1.1 });
-        const sb = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, weight: 1 });
+        const sa = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'F', weight: 1.1 });
+        const sb = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', gutter: true, xlabel: 'v (L/mol)', ylabel: 'P (bar)', weight: 1 });
         const CO2 = vdw('CO2');
         const Stoy = (u) => 2.2 * Math.log(u) + 0.9 * Math.exp(-((u - 2) ** 2) / 0.12);
         const hd = sa.handle(0.15, 0, { color: 'gold', label: 'state', constrain: (x) => [x, curveY(x)] });
@@ -298,8 +302,12 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
         v.render(() => {
           const S = mode.value === 'S'; Tsl.el.hidden = S;
           const T = Tsl.value;
-          const f = S ? Stoy : (vL) => CO2.f(T, vL * L) / KJ;
           const X = S ? [0.8, 3.4] : [0.065, 0.8];
+          // van der Waals: F(v) tilted by the common tangent, F + P_co v (a linear term changes neither convexity nor the split test)
+          const f0 = (vL) => CO2.f(T, vL * L) / KJ;
+          let tilt = 0;
+          if (!S) { const xs0 = [], ys0 = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs0.push(x); ys0.push(f0(x)); } const h0 = hullFn(xs0, ys0, false); tilt = h0.segs.length ? -(h0.segs[0][3] - h0.segs[0][2]) / (h0.segs[0][1] - h0.segs[0][0]) : CO2.P(T, hd.x * L) * L / KJ; }
+          const f = S ? Stoy : (vL) => f0(vL) + tilt * vL;
           curveY = f;
           const xs = [], ys = []; for (let i = 0; i <= 800; i++) { const x = lerp(X[0], X[1], i / 800); xs.push(x); ys.push(f(x)); }
           const hull = hullFn(xs, ys, S);
@@ -307,8 +315,8 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
           hd.set(x0, f(x0));
           const lo = Math.min(...ys), hi = Math.max(...ys);
           sa.setView(X, [lo - 0.06 * (hi - lo), hi + 0.08 * (hi - lo)]);
-          sa.setTitle(S ? 'entropy $S(U)$ — must be concave' : `Helmholtz $F(v)$ at ${T} K — must be convex`);
-          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S' : 'F (kJ/mol)');
+          sa.setTitle(S ? 'entropy $S(U)$ — must be concave' : `$F(v) + P_{\\text{co}}v$ at ${T} K — must be convex`);
+          sa.setLabels(S ? 'U' : 'v (L/mol)', S ? 'S' : 'F + P_co v (kJ/mol)');
           for (const [a, b] of hull.segs) sa.vband(a, b, { color: 'red', alpha: 0.07 });
           sa.fn(f, { color: 'ink', width: 2.4, domain: X, n: 400 });
           sa.fn(hull, { color: 'green', width: 2, dash: [7, 5], domain: X, n: 400 });
@@ -336,7 +344,7 @@ Locally: $\partial^2 S/\partial U^2 \le 0$, $\partial^2S/\partial V^2 \le 0$ and
             sb.setTitle('pressure $P = -\\partial F/\\partial v$: must fall'); sb.setLabels('v (L/mol)', 'P (bar)');
             sb.fn(P, { color: 'ink', width: 2.4, domain: X, n: 400 });
             for (let i = 1; i < 800; i++) if (ps[i] > ps[i - 1]) sb.line(xs[i - 1], ps[i - 1], xs[i], ps[i], { color: 'red', width: 4 });
-            for (const [a, b, fa, fb] of hull.segs) { const Pco = -(fb - fa) / (b - a) * KJ / L / BAR; sb.line(a, Pco, b, Pco, { color: 'green', width: 2.4, dash: [7, 5] }); sb.text(`coexistence ${v.fix(Pco, 1)} bar`, b, Pco, { dx: 6, dy: -10, size: 11, color: 'green', plate: true }); }
+            for (const [a, b, fa, fb] of hull.segs) { const Pco = (tilt - (fb - fa) / (b - a)) * KJ / L / BAR; sb.line(a, Pco, b, Pco, { color: 'green', width: 2.4, dash: [7, 5] }); sb.text(`coexistence ${v.fix(Pco, 1)} bar`, b, Pco, { dx: 6, dy: -10, size: 11, color: 'green', plate: true }); }
             sb.vline(x0, { color: 'gold', width: 1.2 });
             if (T >= CO2.Tc) sb.corner('above T_c: no unstable stretch', 'tr', { color: 'green' });
             curv = (f(x0 + 1e-4) - 2 * f(x0) + f(x0 - 1e-4)) / 1e-8;

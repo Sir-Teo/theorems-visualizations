@@ -49,6 +49,12 @@ export function withAlpha(c, a) {
 }
 /** Blend two colours: t=0 → a, t=1 → b. */
 export function mix(a, b, t) { const p = rgbOf(a), q = rgbOf(b); return `rgb(${p.slice(0, 3).map((x, i) => Math.round(x + (q[i] - x) * t)).join(',')})`; }
+/** "$5 and $10" is money, "$0 < x$" is maths: money when the $ count is odd, or when some $…$ pair reads like prices (a digit-led span followed by a plain word, with no TeX syntax inside). */
+function looksLikeMoney(t) {
+  const n = (t.match(/(^|[^\\])\$/g) || []).length; if (n % 2) return /\$\d/.test(t);
+  for (const m of t.matchAll(/\$([^$]+)\$/g)) if (/^\d[\d,.]*\s/.test(m[1]) && /[A-Za-z]{2,}/.test(m[1]) && !/[\\^_{}=<>]/.test(m[1])) return true;
+  return false;
+}
 const prefersReduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ------------------------------------------------------------------ rich text + TeX
@@ -744,7 +750,7 @@ class Stage {
   /** Text at data coords: canvas text, or the KaTeX overlay when it contains $…$. st: {size, color, align, baseline, dx, dy, math (italic serif), halo, plate (rounded backing box)}. */
   text(str, x, y, st = {}) {
     const t = String(str);
-    if (/\$[^$]+\$/.test(t) && !/\$\d/.test(t)) { const pure = /^\$[^$]+\$$/.test(t); return this.texPx(pure ? t.slice(1, -1) : t, this.X(x) + (st.dx || 0), this.Y(y) + (st.dy || 0), { ...st, dx: 0, dy: 0, rich: !pure, align: st.align || 'left', baseline: st.baseline || 'middle', size: st.size ? st.size * 1.15 : 14 }); } // $…$ → KaTeX overlay
+    if (/\$[^$]+\$/.test(t) && !looksLikeMoney(t)) { const pure = /^\$[^$]+\$$/.test(t); return this.texPx(pure ? t.slice(1, -1) : t, this.X(x) + (st.dx || 0), this.Y(y) + (st.dy || 0), { ...st, dx: 0, dy: 0, rich: !pure, align: st.align || 'left', baseline: st.baseline || 'middle', size: st.size ? st.size * 1.15 : 14 }); } // $…$ → KaTeX overlay
     return this.textPx(t, this.X(x), this.Y(y), st);
   }
   /** Status text pinned to a corner: pos = 'tl' | 'tr' | 'bl' | 'br'. */

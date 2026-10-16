@@ -241,7 +241,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `measure(x1,y1,x2,y2,label)` | double arrow with label (e.g. a radius “δ”). |
 | `bars(values, {x0:1, dx:1, color: c or (v,i)=>c})` | bar chart of a sequence. |
 | `field((x,y) => [u,v], {spacing})` | vector field. |
-| `text(str, x, y, {size, color, align, baseline, dx, dy, math})` | canvas text (`math: true` = italic serif). |
+| `text(str, x, y, {size, color, align, baseline, dx, dy, math})` | canvas text (`math: true` = italic serif). A string with `$…$` renders through KaTeX ("$0 < x$" is maths); prices are left alone (an odd number of `$`, or a pair like "$5 and $10" whose content is a number followed by words). |
 | `tex(latex, x, y, {color, size, align, baseline, dx, dy})` | KaTeX label overlay. |
 | `corner(str, 'tl'|'tr'|'bl'|'br', {color, weight})` | status text in a corner. |
 | `raster((x,y) => [r,g,b,a?] or null, {res, key, id})` | per-pixel image; recomputed only when `key` changes. |

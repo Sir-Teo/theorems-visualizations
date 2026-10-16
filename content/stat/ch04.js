@@ -80,8 +80,8 @@ Evaluated at a wrong value $\theta'\ne\theta$ its mean is $n\,E_\theta s(X,\thet
           const C = curves(S), ppx = Math.abs(sL.X(1) - sL.X(0)), ppy = Math.abs(sL.Y(1) - sL.Y(0));
           sL.vline(t0, { color: 'green', width: 1.4, dash: [4, 4] });
           sL.vline(t1, { color: 'accent', width: 1.4, alpha: 0.6 });
-          C.forEach((c, k) => {
-            const last = k === 0;
+          C.slice().reverse().forEach((c, kk) => {
+            const last = kk === C.length - 1;
             sL.path(c.g.map(([t, y]) => [t, Number.isFinite(y) ? y : null]), { color: last ? 'accent' : 'muted', width: last ? 2.6 : 1.1, alpha: last ? 1 : 0.45 });
             const y1 = sumOver(c.xs, F.ll, t1) - c.m, sl = sumOver(c.xs, F.s, t1);
             if (Number.isFinite(y1) && Number.isFinite(sl)) {
@@ -97,7 +97,7 @@ Evaluated at a wrong value $\theta'\ne\theta$ its mean is $n\,E_\theta s(X,\thet
           let lo = Math.min(0, qSorted(so, 0.003), Number.isFinite(ex) ? ex : 0), hi = Math.max(0, qSorted(so, 0.997), Number.isFinite(ex) ? ex : 0);
           if (!(hi - lo > 1e-9)) { lo -= 1; hi += 1; }
           const pad = 0.12 * (hi - lo); lo -= pad; hi += pad;
-          const B = binned(sc, lo, hi, 48);
+          const B = binned(sc, lo, hi, 36);
           let peak = B.max;
           const exactPdf = F.key.startsWith('normal') ? (y) => { const sd = Math.sqrt(n) / F.sg, m = n * F.Es(t0, t1); return Math.exp(-0.5 * ((y - m) / sd) ** 2) / (sd * Math.sqrt(2 * Math.PI)); } : null;
           if (exactPdf) peak = Math.max(peak, exactPdf(n * F.Es(t0, t1)));
@@ -144,13 +144,13 @@ while the random curvature $J_n(\theta)=-\ell_n''(\theta)$ of the sample at hand
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fisher_information' },
       viz(v) {
         const OPTS = [{ value: 'normalP', label: 'normal, $\\sigma=\\tfrac12$' }, { value: 'normalF', label: 'normal, $\\sigma=2$' }, { value: 'poisson', label: 'Poisson' }, { value: 'bernoulli', label: 'Bernoulli' }, { value: 'cauchy', label: 'Cauchy' }];
-        let F = family('normalP'), hT = null;
+        let F = family('poisson'), hT = null;
         const YB = -14, YT = 5;
         const win = () => (F.key === 'cauchy' ? [-3, 3] : [F.lo, F.hi]);
         const home = () => { sL.setView(win(), [YB, YT]); sL.setLabels(`$${F.ptex}$`); hT.set(F.def, YB + 0.9); };
-        const famS = v.select('model', OPTS, 'normalP', { onChange: (k) => { F = family(k); home(); } });
+        const famS = v.select('model', OPTS, 'poisson', { onChange: (k) => { F = family(k); home(); } });
         const nS = v.slider('sample size $n$', 1, 100, 10, { int: true, log: true });
-        const sL = v.stage({ x: [-2, 2], y: [YB, YT], axes: 'box', gutter: true, height: 360, weight: 1.25, xlabel: '$\\mu$', ylabel: '$\\ell_n(\\theta)-\\ell_n(\\theta_0)$', title: 'forty log-likelihoods around the truth' });
+        const sL = v.stage({ x: [F.lo, F.hi], y: [YB, YT], axes: 'box', gutter: true, height: 360, weight: 1.25, xlabel: '$\\lambda$', ylabel: '$\\ell_n(\\theta)-\\ell_n(\\theta_0)$', title: 'forty log-likelihoods around the truth' });
         const sR = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, weight: 0.75, minWidth: 230, xlabel: "observed information $-\\ell_n''(\\theta_0)$", title: 'curvature at the truth, 2,000 samples' });
         hT = sL.handle(F.def, YB + 0.9, { color: 'green', label: '$\\theta_0$', labelPos: 'ne', constrain: (x) => { const w = win(); return [clamp(x, w[0] + 0.04 * (w[1] - w[0]), w[1] - 0.04 * (w[1] - w[0])), YB + 0.9]; } });
         const mb = memo(), mj = memo(), GRID = 181;
@@ -270,7 +270,7 @@ Without the regularity conditions both can fail: for $\mathrm{Uniform}(0,\theta)
             sL.dot(d.n - 0.35, d.varS, { r: 4.2, color: 'accent' });
             sL.rect(d.n + 0.35 - 0.38, d.meanJ - (y1 - y0) * 0.009, d.n + 0.35 + 0.38, d.meanJ + (y1 - y0) * 0.009, { fill: 'orange', fillAlpha: 0.95, stroke: false });
           }
-          sL.text('nI(θ)', 41.5, 40 * I, { color: 'ink', size: 12, align: 'right', dy: -12, weight: 700, plate: true });
+          sL.text('nI(θ)', 34, 34 * I, { color: 'ink', size: 12, align: 'left', dx: 6, dy: 16, weight: 700, plate: true });
           // right: integrands s²f and j·f
           let xr, items = null;
           if (F.discrete) {
@@ -337,7 +337,7 @@ In particular every **unbiased** estimator of $\theta$ satisfies $\operatorname{
         const nS = v.slider('dartboard at $n$', 2, 200, 10, { int: true, log: true });
         const bT = v.toggle('add the biased $\\tfrac{n}{n+1}\\bar X$', false);
         const sL = v.stage({ x: [1.6, 260], y: [1e-3, 10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, weight: 1.15, xlabel: 'sample size $n$', ylabel: 'variance', title: 'variance against the bound' });
-        const sR = v.stage({ x: [0, 1], y: [0.3, 5.7], axes: 'box', gutter: { l: 74 }, height: 380, weight: 0.85, title: 'one dot per simulated estimate' });
+        const sR = v.stage({ x: [0, 1], y: [0.3, 5.7], axes: 'box', gutter: { l: 74 }, height: 380, weight: 0.85, xlabel: 'estimate', title: 'one dot per simulated estimate' });
         const EST = {
           normal: [
             { k: 'mean', lab: 'X̄', col: 'accent', ex: (n) => 1 / n },
@@ -395,7 +395,7 @@ In particular every **unbiased** estimator of $\theta$ satisfies $\operatorname{
             sL.dots(pts, { r: 3.6, color: e.col });
           }
           sL.vline(nd, { color: 'gold', width: 1.4, dash: [3, 4] });
-          sL.text('1/(nI)', 2.0, bound(2.0), { color: 'green', size: 12.5, weight: 700, dy: 14, align: 'left', plate: true });
+          sL.text('1/(nI)', 40, bound(40), { color: 'green', size: 12.5, weight: 700, dx: 4, dy: 16, align: 'right', plate: true });
           // right: dartboard rows
           const Dd = darts(fam, lam, nd), rows = ests.length, bsd = Math.sqrt(bound(nd));
           const sdOf = (e) => Math.sqrt(varN(Dd[e.k]));
@@ -514,12 +514,13 @@ Integrating in $\theta$, this happens exactly when the family is a one-parameter
           // right: the exact efficiency curve
           sR.setView([g.lo, g.hi], [0, 1.08]); sR.setLabels(`$${g.ptex}$`);
           sR.hline(1, { color: 'green', width: 1.6, dash: [6, 4] });
+          for (const m of [1, 2, 5, 10, 30]) if (m !== n && (k !== 'bv' || m >= 2)) { sR.fn((u) => eff(k, m, u), { domain: [g.lo, g.hi], color: 'muted', width: 1, alpha: 0.6, n: 160 }); }
           sR.fn((u) => eff(k, n, u), { domain: [g.lo, g.hi], color: 'accent', width: 2.6, n: 240 });
           const e = eff(k, n, t);
           sR.vline(t, { color: 'gold', width: 1.4 });
           if (Number.isFinite(e)) sR.dot(t, e, { r: 5.5, color: 'accent' });
           if (Number.isFinite(rho2)) sR.dot(t, rho2, { r: 5, hollow: true, color: 'ink', width: 2 });
-          v.legend([['gold', 'one simulated sample (disc area ∝ frequency)', { dot: true }], ['green', 'the line efficiency demands · target'], ['accent', 'exact efficiency'], ['ink', 'simulated $\\mathrm{Corr}(T,S_n)^2$', { dot: true }]]);
+          v.legend([['gold', 'one simulated sample (disc area ∝ frequency)', { dot: true }], ['green', 'the line efficiency demands · target'], ['accent', 'exact efficiency (grey: n = 1, 2, 5, 10, 30)'], ['ink', 'simulated $\\mathrm{Corr}(T,S_n)^2$', { dot: true }]]);
           info = { k, g, n, t, rho2, e, vr: exVar(k, n, t), bound: g.d(t) ** 2 / (n * info1(g.fam, t)), N: pts.length, clamped: k === 'bv' && nS.value < 2 };
         });
         v.readout(() => {
@@ -574,8 +575,11 @@ in the sense that the difference is positive semidefinite; for an unbiased estim
           const mx = mean(pts.map((p) => p[0])), my = mean(pts.map((p) => p[1]));
           let cxx = 0, cxy = 0, cyy = 0; for (const [x, y] of pts) { cxx += (x - mx) ** 2; cxy += (x - mx) * (y - my); cyy += (y - my) ** 2; }
           cxx /= 999; cxy /= 999; cyy /= 999;
-          const wx = 3.4 * Math.sqrt(Math.max(inv[0], cxx)), wy = 3.4 * Math.sqrt(Math.max(inv[2], cyy));
-          sP.setView([a - wx, a + wx], [y0 - wy, y0 + wy]);
+          const qx = sortNum(pts.map((p) => p[0])), qy = sortNum(pts.map((p) => p[1]));
+          const wx = 3 * Math.sqrt(inv[0]), wy = 3 * Math.sqrt(inv[2]);
+          const vx = [Math.min(a - wx, qSorted(qx, 0.004)), Math.max(a + wx, qSorted(qx, 0.996))], vy = [Math.min(y0 - wy, qSorted(qy, 0.004)), Math.max(y0 + wy, qSorted(qy, 0.996))];
+          const px = 0.05 * (vx[1] - vx[0]), py = 0.05 * (vy[1] - vy[0]);
+          sP.setView([vx[0] - px, vx[1] + px], [vy[0] - py, vy[1] + py]);
           sP.setLabels('$\\hat\\alpha$', par === 'rate' ? '$\\hat\\beta$' : '$\\hat\\mu=\\bar X$');
           const marg = 2 * Math.sqrt(inv[0]), cond = 2 / Math.sqrt(n * I[0]);
           sP.vband(a - cond, a + cond, { color: 'purple', alpha: 0.08 });
@@ -589,9 +593,8 @@ in the sense that the difference is positive semidefinite; for an unbiased estim
           const rows = [['simulated', cxx, 'orange'], ['bound, β unknown', inv[0], 'green'], ['bound, β known', 1 / (n * I[0]), 'purple']];
           const top = Math.max(...rows.map((q) => q[1])) * 1.25;
           sB.setView([0, top], [0.4, 3.6]);
-          sB.setTicks(null, rows.map((q, i) => [3 - i, q[0].replace(', ', '\n')]));
           rows.forEach(([lab, val, col], i) => { sB.rect(0, 3 - i - 0.28, val, 3 - i + 0.28, { fill: col, fillAlpha: 0.65, stroke: false, radius: 3 }); sB.text(v.fix(val, 4), val, 3 - i, { color: 'ink', size: 11.5, dx: 4, align: val > top * 0.7 ? 'right' : 'left', plate: true }); });
-          sB.setTicks(null, [[3, 'simulated'], [2, 'bound, β unknown'], [1, 'bound, β known']]);
+          const oth = par === 'rate' ? 'β' : 'μ'; sB.setTicks(null, [[3, 'simulated'], [2, `${oth} unknown`], [1, `${oth} known`]]);
           v.legend([['gold', 'one fit', { dot: true }], ['green', 'inverse information $\\{nI\\}^{-1}$ (2 SD)'], ['orange', 'simulated covariance (2 SD)'], ['purple', 'bound for $\\alpha$ if the other parameter were known', { dash: true }]]);
           const rho = -I[1] / Math.sqrt(I[0] * I[2]);
           info = { a, n, par, inv, cxx, cxy, cyy, inside, loss: inv[0] * n * I[0], rho, bias: mx - a };
@@ -655,7 +658,7 @@ while the formal bound $1/\{nE\,s^2\}=\theta^2/n$ (with $s=-1/\theta$) is larger
             sL.dots(pts, { r: 3.6, color: col });
           }
           sL.vline(n, { color: 'gold', width: 1.4, dash: [3, 4] });
-          sL.text(sp.crLab, 640, sp.cr(640), { color: 'green', size: 12, weight: 700, align: 'right', dy: -13, plate: true });
+          sL.text(sp.crLab, 2.2, sp.cr(2.2), { color: 'green', size: 12, weight: 700, align: 'left', dy: -14, plate: true });
           const slA = logSlope(C.filter((c) => c.n >= 13).map((c) => [c.n, c.a])), slB = logSlope(C.filter((c) => c.n >= 13).map((c) => [c.n, c.b]));
           // right: the scaled error
           const A = hist(fam, n), k = sc === 'n' ? n : Math.sqrt(n), vals = Array.from(A, (e) => k * e);
@@ -673,7 +676,7 @@ while the formal bound $1/\{nE\,s^2\}=\theta^2/n$ (with $s=-1/\theta$) is larger
           sR.vline(0, { color: 'green', width: 1.6 });
           sR.setLabels(sc === 'n' ? '$n\\,(\\hat\\theta-\\theta)$' : '$\\sqrt n\\,(\\hat\\theta-\\theta)$');
           const sd = Math.sqrt(varN(vals));
-          v.legend([['accent', sp.a.lab + ' (endpoint / median)'], ['orange', sp.b.lab], ['green', sp.crLab], ['ink', 'exact variance · exact density' + (fam === 'norm' ? ' (normal approximation)' : '')]]);
+          v.legend([['accent', sp.a.lab + (fam === 'norm' ? '' : ' (endpoint)')], ['orange', sp.b.lab], ['green', sp.crLab], ['ink', 'exact variance · exact density' + (fam === 'norm' ? ' (normal approximation)' : '')]]);
           info = { fam, sp, slA, slB, n, sd, sc, vA: C.find((c) => c.n === 500).a, cr500: sp.cr(500) };
         });
         v.readout(() => {

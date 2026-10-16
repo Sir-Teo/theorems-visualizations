@@ -37,7 +37,7 @@ Example: for a Poisson$(\lambda)$ sample, $\bar X$ has variance $\lambda/n$, whi
         const bT = v.toggle('add the biased $\\tfrac{n}{n+1}\\bar X$ (MSE)', false);
         const sL = v.stage({ x: [0, LMAX], y: [0, 1], axes: 'box', gutter: true, height: 360, weight: 1.2, xlabel: '$\\lambda$', ylabel: 'variance (MSE)', title: 'risk of unbiased estimators across the parameter' });
         const sR = v.stage({ x: [0, 1], y: [0.3, 4.7], axes: 'box', gutter: { l: 80 }, height: 360, weight: 0.8, minWidth: 230, xlabel: 'estimate', title: 'estimates at the handle' });
-        const H = sL.handle(2.5, 0, { color: 'gold', label: '$\\lambda$', labelPos: 'n', constrain: (x) => [clamp(x, 0.15, LMAX - 0.1), 0] });
+        const H = sL.handle(2.5, 0, { color: 'gold', label: '$\\lambda$', labelPos: 'e', constrain: (x) => [clamp(x, 0.15, LMAX - 0.1), 0] });
         const EST = [
           { k: 'mean', lab: 'X̄', col: 'accent', f: (n, l) => l / n },
           { k: 's2', lab: 'S²', col: 'teal', f: (n, l) => l / n + (2 * l * l) / (n - 1) },
@@ -57,7 +57,7 @@ Example: for a Poisson$(\lambda)$ sample, $\bar X$ has variance $\lambda/n$, whi
           sL.setView([0, LMAX], [0, top]);
           for (const e of ests) sL.fn((x) => e.f(n, x), { domain: [0, LMAX], color: e.col, width: e.k === 'mean' ? 3.4 : 2.2, dash: e.biased ? [7, 4] : undefined });
           const ls = (n - 1) ** 2 / (2 * n);
-          if (ls < LMAX) { sL.dot(ls, ls, { r: 5, hollow: true, color: 'ink', width: 2 }); sL.text('S² and X₁ cross', ls, ls, { color: 'ink', size: 11.5, dx: 8, dy: -10, align: 'left', plate: true }); }
+          if (ls < LMAX) { sL.dot(ls, ls, { r: 5, hollow: true, color: 'ink', width: 2 }); sL.text('S² and X₁ cross', ls, ls, { color: 'ink', size: 11.5, dx: -10, dy: -12, align: 'right', plate: true }); }
           sL.vline(l, { color: 'gold', width: 1.4, dash: [3, 4] });
           const D = sim(n, l);
           const simv = ests.map((e) => { const vals = D[e.k]; const m = mean(vals); const vr = e.biased ? mean(vals.map((x) => (x - l) ** 2)) : varN(vals) * 2000 / 1999; return { e, vr, m }; });
@@ -344,7 +344,7 @@ The maximum itself underestimates ($M\le N$ always), and the unbiased moment est
           for (const x of cap) sT.line(x, 0.34, x, 0.66, { color: 'gold', width: 2.6 });
           sT.text('1', 1, 0.2, { color: 'muted', size: 11, align: 'center' }); sT.text(`N = ${N}`, N, 0.2, { color: 'green', size: 12, weight: 700, align: 'center' });
           sT.line(N, 0.3, N, 0.7, { color: 'green', width: 2 });
-          ROWS.forEach((rw, j) => { sT.dot(e1[j], 0.85, { r: 5, color: rw.col }); });
+          ROWS.forEach((rw, j) => { sT.dot(e1[j], 0.85, { r: 5, color: rw.col }); sT.text(['M', 'N̂', '2X̄−1'][j], e1[j], 0.85, { color: rw.col, size: 11, weight: 700, align: 'center', dy: 13, baseline: 'top' }); });
           sT.text(`this capture: ${cap.length <= 12 ? cap.join(', ') : cap.slice(0, 12).join(', ') + ', …'}`, xr[1], 0.85, { color: 'ink', size: 11.5, align: 'right', dx: -4, plate: true });
           // histograms as rows
           sH.setView(xr, [0.3, 3.75]);
@@ -357,7 +357,7 @@ The maximum itself underestimates ($M\le N$ always), and the unbiased moment est
               // exact pmf of the UMVUE, binned the same way
               const pm = new Array(NB).fill(0), lc = lchoose(N, n);
               for (let m = n; m <= N; m++) { const p = Math.exp(lchoose(m - 1, n - 1) - lc), x = ((n + 1) / n) * m - 1, b = Math.floor((x - xr[0]) / w); if (b >= 0 && b < NB) pm[b] += p; }
-              const pts = []; pm.forEach((p, i) => { pts.push([B.edges[i], y0 + p * 2000 * sc]); pts.push([B.edges[i + 1], y0 + p * 2000 * sc]); });
+              const pts = []; const i0 = pm.findIndex((p) => p > 1e-6), i1 = pm.length - 1 - pm.slice().reverse().findIndex((p) => p > 1e-6); pm.forEach((p, i) => { if (i < i0 || i > i1) return; pts.push([B.edges[i], y0 + p * 2000 * sc]); pts.push([B.edges[i + 1], y0 + p * 2000 * sc]); }); pts.unshift([B.edges[i0], y0]); pts.push([B.edges[i1 + 1], y0]);
               sH.path(pts, { color: 'ink', width: 1.4 });
             }
             const mse = mean(vals.map((x) => (x - N) ** 2)), m = mean(vals);
@@ -411,7 +411,7 @@ since $E_\lambda(-1)^X=e^{-\lambda}\sum_k(-\lambda)^k/k!=e^{-2\lambda}$, and any
           sL.dots(up, { r: 2.4, color: 'gold', alpha: 0.6 }); sL.dots(dn, { r: 2.4, color: 'red', alpha: 0.6 });
           const run = []; let s = 0; for (let i = 0; i < K; i++) { s += X[i] % 2 ? -1 : 1; if (i % step === 0 || i === K - 1) run.push([i + 1, s / (i + 1)]); }
           sL.path(run, { color: 'accent', width: 2.4 });
-          sL.text('e^(−2λ)', Math.max(10, K), tau, { color: 'green', size: 12, weight: 700, align: 'right', dx: -6, dy: tau > 0.75 ? 14 : -12, plate: true });
+          sL.text('$e^{-2\\lambda}$', Math.max(10, K), tau, { color: 'green', size: 12, weight: 700, align: 'right', dx: -6, dy: tau > 0.75 ? 14 : -12, plate: true });
           sR.hline(1, { color: 'faint', width: 1 });
           sR.fn(mseU, { domain: [0, 3], color: 'red', width: 2.6 });
           sR.fn(mseT, { domain: [0, 3], color: 'orange', width: 2.4 });
@@ -488,7 +488,7 @@ a polynomial in $p$ of degree at most $n$. Conversely every polynomial of degree
           sL.hline(0, { color: 'faint', width: 1 });
           for (let k = 0; k <= n; k++) sL.rect(k - 0.3, 0, k + 0.3, H[k].y, { fill: 'accent', fillAlpha: 0.35, stroke: false, radius: 2 });
           sR.setView([0, 1], g.ry);
-          sR.vband(g.fit[0], g.fit[1], { color: 'muted', alpha: 0.06 });
+          sR.vband(g.fit[0], g.fit[1], { color: 'muted', alpha: 0.025 });
           sR.between((p) => Ed(p, n), (p) => Math.min(g.f(p), g.ry[1] * 2), 0.002, 0.998, { fill: 'red', fillAlpha: 0.14 });
           sR.fn(g.f, { domain: [0.002, 0.998], color: 'green', width: 3, n: 400 });
           sR.fn((p) => Ed(p, n), { domain: [0, 1], color: 'accent', width: 2.6, n: 300 });
@@ -501,7 +501,7 @@ a polynomial in $p$ of degree at most $n$. Conversely every polynomial of degree
         v.readout(() => {
           if (!info) return '';
           const { n, key, worst, wp, worstAll, d0, dn } = info;
-          let s = String.raw`$n=${n}$: largest bias on the shaded interval ${v.fix(worst, 4)} (at $p=${v.fix(wp, 2)}$), on all of $(0,1)$ ${Number.isFinite(worstAll) ? v.fix(worstAll, 4) : '∞'}`;
+          let s = String.raw`$n=${n}$: largest bias on the shaded interval ${v.fix(worst, 4)} (at $p=${v.fix(wp, 2)}$), on all of $(0,1)$ ${key === 'inv' || key === 'odds' ? '$\\infty$ (unbounded)' : v.fix(worstAll, 4)}`;
           if (key === 'inv') s += String.raw` · at $p\to0$ the expectation tends to $\delta(0)=${v.fix(d0, 2)}$ while $1/p\to\infty$: **no choice of the ${n + 1} values can be unbiased**`;
           else if (key === 'odds') s += String.raw` · at $p\to1$ the expectation tends to $\delta(n)=${v.fix(dn, 2)}$ while the odds $\to\infty$: **no unbiased estimator exists**`;
           else if (key === 'sqrt') s += ` · $\\sqrt p$ is not a polynomial: the error can shrink as $n$ grows but **never vanishes**`;
@@ -552,7 +552,7 @@ a polynomial in $p$ of degree at most $n$. Conversely every polynomial of degree
           const fam = famS.value, tk = tS.value, n = nS.value, D = sim(fam, tk, n), th = D.th, Iv = fam === 'B' ? 1 / 0.21 : 0.5, bound = 1 / (n * Iv);
           // left: two dartboard rows
           const wide = Math.sqrt(exactVar(fam, tk, n)) * 3.2;
-          sA.setView([th - wide, th + wide], [0.35, 2.65]);
+          sA.setView([Math.max(th - wide, -0.12 * wide), th + wide], [0.35, 2.65]);
           sA.setTicks(null, [[2, 'crude t'], [1, 'E[t | ΣX] = X̄']]);
           sA.vband(th - Math.sqrt(bound), th + Math.sqrt(bound), { color: 'green', alpha: 0.13, edges: true });
           sA.vline(th, { color: 'ink', width: 1.6 });
@@ -566,14 +566,14 @@ a polynomial in $p$ of degree at most $n$. Conversely every polynomial of degree
             const dh = rr / Math.SQRT2, cy = s1 * Math.cosh(dh), rad = s1 * Math.sinh(dh);
             sG.curve((a) => [Math.SQRT2 * (u1 + rad * Math.cos(a)), cy + rad * Math.sin(a)], 0, 2 * Math.PI, { color: 'purple', width: 1.2, alpha: 0.55, n: 160 });
           }
-          let geo;
-          if (Math.abs(u2 - u1) < 1e-6) geo = (a) => [P.x, s1 + (s2v - s1) * a];
-          else { const c = (u2 * u2 + s2v * s2v - u1 * u1 - s1 * s1) / (2 * (u2 - u1)), R = Math.hypot(u1 - c, s1), a1 = Math.atan2(s1, u1 - c), a2 = Math.atan2(s2v, u2 - c); geo = (a) => { const ang = a1 + (a2 - a1) * a; return [Math.SQRT2 * (c + R * Math.cos(ang)), R * Math.sin(ang)]; }; sG.curve((a) => { const ang = Math.PI * a; return [Math.SQRT2 * (c + R * Math.cos(ang)), R * Math.sin(ang)]; }, 0, 1, { color: 'accent', width: 1, alpha: 0.3, dash: [4, 4], n: 200 }); }
+          let geo, mid;
+          if (Math.abs(u2 - u1) < 1e-6) { geo = (a) => [P.x, s1 + (s2v - s1) * a]; mid = [P.x, Math.sqrt(s1 * s2v)]; }
+          else { const c = (u2 * u2 + s2v * s2v - u1 * u1 - s1 * s1) / (2 * (u2 - u1)), R = Math.hypot(u1 - c, s1), a1 = Math.atan2(s1, u1 - c), a2 = Math.atan2(s2v, u2 - c); geo = (a) => { const ang = a1 + (a2 - a1) * a; return [Math.SQRT2 * (c + R * Math.cos(ang)), R * Math.sin(ang)]; }; const am = 2 * Math.atan(Math.sqrt(Math.tan(a1 / 2) * Math.tan(a2 / 2))); mid = [Math.SQRT2 * (c + R * Math.cos(am)), R * Math.sin(am)]; sG.curve((a) => { const ang = Math.PI * a; return [Math.SQRT2 * (c + R * Math.cos(ang)), R * Math.sin(ang)]; }, 0, 1, { color: 'accent', width: 1, alpha: 0.3, dash: [4, 4], n: 200 }); }
           sG.curve(geo, 0, 1, { color: 'accent', width: 3, n: 160 });
           sG.line(P.x, P.y, Q.x, Q.y, { color: 'muted', width: 1.2, dash: [3, 4] });
           const d = rao(P.x, P.y, Q.x, Q.y);
-          // midpoint of the geodesic, by distance
-          const mid = geo(0.5);
+          // midpoint of the geodesic by information distance (equal hyperbolic length on both sides)
+          sG.dot(mid[0], mid[1], { r: 4, color: 'accent' });
           v.legend([['orange', 'crude $t$', { dot: true }], ['green', '$E[t\\mid\\sum X_i]$ · band $\\pm1/\\sqrt{nI}$', { dot: true }], ['accent', 'geodesic from P to Q'], ['purple', 'points at Rao distance 0.5, 1, …, 2.5 from P']]);
           info = { fam, tk, n, vA, vB, bound, exA: exactVar(fam, tk, n), d, eu: Math.hypot(P.x - Q.x, P.y - Q.y), klPQ: kl(P.x, P.y, Q.x, Q.y), klQP: kl(Q.x, Q.y, P.x, P.y), P: [P.x, P.y], Q: [Q.x, Q.y], mid };
         });

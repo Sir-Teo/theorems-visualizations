@@ -158,7 +158,7 @@ define, locally, a canonical transformation $(q, p) \mapsto (Q, P)$: solve the f
           sB.setLabels(osc ? 'Q (angle)' : 'Q', osc ? 'P (action)' : 'P');
           // left: levels of Q and P, failures in red
           sA.raster((q, p) => (isFinite(solve(q, p)[0]) ? null : v.rgb('red').slice(0, 3).concat([60])), { key: kind.value + '|' + fI.value, res: 5 });
-          const lq = osc ? piTicks(-Math.PI, Math.PI, 0.25).map((t) => t[0]) : [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+          const lq = osc ? piTicks(-Math.PI, Math.PI, 0.25).map((t) => t[0]).filter((x) => Math.abs(x) < 3) : [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
           sA.contour((q, p) => solve(q, p)[0], lq, { color: 'purple', width: 1.4, alpha: 0.85, res: 90 });
           sA.contour((q, p) => solve(q, p)[1], osc ? [0.1, 0.3, 0.6, 1, 1.5] : [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2], { color: 'green', width: 1.4, alpha: 0.85, res: 90 });
           // right: image of the old grid
@@ -180,7 +180,7 @@ define, locally, a canonical transformation $(q, p) \mapsto (Q, P)$: solve the f
           if (!fI.fn) return 'type a valid formula in $q$ and $P$';
           if (!cur) return '';
           const { worst, Z, J, osc } = cur;
-          const pt = isFinite(Z[0]) ? String.raw`at the gold point: $Q = ${v.fix(Z[0], 4)}$, $P = ${v.fix(Z[1], 4)}$, residual $|p - \partial F/\partial q| = $ $${sci(v, Z[3])}$ after ${Z[2]} Newton steps, $\{Q, P\} = ${v.fix(J.det, 5)}$` : 'at the gold point the implicit equation has no solution';
+          const pt = isFinite(Z[0]) ? String.raw`at the gold point: $Q = ${v.fix(Z[0], 4)}$, $P = ${v.fix(Z[1], 4)}$, residual $|p - \partial F/\partial q| = $ $${sci(v, Z[3])}$ ${osc ? '(inverted in closed form: $q = \\sqrt{2P}\\sin Q$, $p = \\sqrt{2P}\\cos Q$)' : `after ${Z[2]} Newton steps`}, $\{Q, P\} = ${v.fix(J.det, 5)}$` : 'at the gold point the implicit equation has no solution';
           return pt + String.raw` · largest change of a cell’s area: ${v.fix(100 * worst, 3)}%` + (osc ? String.raw` · along the orbit $P = J = ${v.fix(0.5 * 1.21, 4)}$ stays fixed and $Q$ advances at the rate $\omega = 1$` : '');
         });
       },
@@ -456,7 +456,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
       credit: 'Hamilton, 1834; Jacobi, 1837',
       viz(v) {
         const PRE = {
-          proj: { lab: 'projectiles from a point', x: [-2.3, 2.3], y: [-2.2, 0.85], U: (x, y) => y, dU: (x, y) => [0, 1], E: 0.5, n: 121, dW: 0.16, T: 3 },
+          proj: { lab: 'projectiles from a point', x: [-2.3, 2.3], y: [-2.2, 0.85], U: (x, y) => y, dU: (x, y) => [0, 1], E: 0.5, n: 91, dW: 0.3, T: 3 },
           ruth: { lab: 'Rutherford scattering', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => 0.25 / Math.hypot(x, y), dU: (x, y) => { const r = Math.hypot(x, y), k = -0.25 / (r * r * r); return [k * x, k * y]; }, E: 0.5, n: 161, dW: 0.3, T: 9.5 },
           lens: { lab: 'focusing well', x: [-3, 3], y: [-2.1, 2.1], U: (x, y) => -0.32 * Math.exp(-(x * x + y * y) / 0.6), dU: (x, y) => { const g = 0.32 * Math.exp(-(x * x + y * y) / 0.6) / 0.3; return [g * x, g * y]; }, E: 0.5, n: 161, dW: 0.3, T: 9.5 },
         };
@@ -490,7 +490,7 @@ Conversely, a **complete integral** $S(q, \alpha, t)$, depending on $n$ independ
           v.legend([['purple', 'wavefronts $W = $ const'], ['muted', 'rays (trajectories)'], ['blue', 'ray direction $\\nabla W$'], ['ink', 'wavefront tangent']].concat(pre.value === 'proj' ? [['red', 'envelope of the projectiles (caustic)', { dash: true }]] : []));
           if (pre.value === 'ruth') s.dot(0, 0, { r: 6, color: 'red', label: '+', labelPos: 'ne' });
           if (pre.value === 'lens') s.circle(0, 0, 0.55, { fill: 'teal', fillAlpha: 0.1, color: 'teal', width: 1, dash: [3, 3] });
-          for (const r of D.out) s.path(r.map((z) => [z[0], z[1]]), { color: 'muted', width: 0.8, alpha: 0.4 });
+          for (const r of D.out) s.path(r.map((z) => [z[0], z[1]]), { color: 'muted', width: 0.7, alpha: 0.3 });
           D.cross.forEach((row, li) => {
             const col = v.ramp(0.35 + 0.65 * (li / Math.max(1, D.levels.length - 1)), 'purple');
             const pts = [];

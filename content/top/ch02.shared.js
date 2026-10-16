@@ -212,9 +212,10 @@ export function folded(kind, t) {
 /**
  * Triangulate an n × m grid on the square, identify vertices by key(i, j) (a string or number after the gluing), and
  * compute V, E, F, χ = V − E + F, the number of boundary circles and orientability (by propagating an orientation across
- * shared edges). Triangles that collapse (two equal vertex keys) are dropped, as in a quotient that crushes a set.
+ * shared edges). Triangles that collapse (two equal vertex keys) are dropped, as in a quotient that crushes a set; with
+ * `dedupe`, triangles folded onto the same three vertices count once (for crushed regions).
  */
-export function gridInvariants(n, m, key) {
+export function gridInvariants(n, m, key, { dedupe = false } = {}) {
   const id = new Map(), vid = (i, j) => { const k = key(i, j); if (!id.has(k)) id.set(k, id.size); return id.get(k); };
   const tris = [];
   for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) {
@@ -223,7 +224,7 @@ export function gridInvariants(n, m, key) {
   }
   // dedupe triangles with the same vertex set (a crushed region can fold two triangles onto one)
   const seenT = new Map(); const T2 = [];
-  for (const T of tris) { const k = [...T].sort((p, q) => p - q).join(','); if (!seenT.has(k)) { seenT.set(k, T2.length); T2.push(T); } }
+  for (const T of tris) { const k = [...T].sort((p, q) => p - q).join(','); if (!dedupe || !seenT.has(k)) { seenT.set(k, T2.length); T2.push(T); } }
   const edges = new Map();
   T2.forEach((T, ti) => { for (let e = 0; e < 3; e++) { const p = T[e], q = T[(e + 1) % 3], k = p < q ? p + ',' + q : q + ',' + p; if (!edges.has(k)) edges.set(k, []); edges.get(k).push([ti, p, q]); } });
   const usedV = new Set(); T2.forEach((T) => T.forEach((x) => usedV.add(x)));
