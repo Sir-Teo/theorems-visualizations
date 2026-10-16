@@ -51,19 +51,20 @@ const RLAW = {
   par: { label: 'Pareto $\\alpha=3$', mu: 1, m2: 4 / 3, draw: (r) => (2 / 3) * (1 - r()) ** (-1 / 3), F: (x) => (x < 2 / 3 ? 0 : 1 - (2 / 3 / x) ** 3), f: (x) => (x < 2 / 3 ? 0 : 3 * (2 / 3) ** 3 * x ** -4), xmax: 5 },
 };
 const lawOpts = (keys) => keys.map((k) => ({ value: k, label: RLAW[k].label }));
-/** Discretized renewal density u = f + u*f on a grid of step dt over [0, T] (f a density). */
+/** Discretized renewal density u = f + u*f on a grid of step dt over [0, T] (f a density; trapezoid rule). */
 function renewalDensity(f, dt, T) {
   const n = Math.round(T / dt), fv = new Float64Array(n + 1), u = new Float64Array(n + 1);
   for (let i = 0; i <= n; i++) fv[i] = f(i * dt);
-  let K = n; while (K > 1 && fv[K] < 1e-12 && K > 0) K--;
-  for (let i = 0; i <= n; i++) { let s = 0; for (let j = 1; j <= Math.min(i, K); j++) s += fv[j] * u[i - j]; u[i] = fv[i] + s * dt - (i > 0 ? 0.5 * dt * fv[i] * u[0] : 0); }
+  let K = n; while (K > 1 && fv[K] < 1e-12) K--;
+  u[0] = fv[0];
+  for (let i = 1; i <= n; i++) { let s = 0; for (let j = 1; j <= Math.min(i - 1, K); j++) s += fv[j] * u[i - j]; if (i <= K) s += 0.5 * fv[i] * u[0]; u[i] = (fv[i] + s * dt) / (1 - 0.5 * dt * fv[0]); }
   return u;
 }
-/** (H * F)(t_i) = ∫_0^t H(t−s) f(s) ds on the grid (trapezoid). */
+/** (H * F)(t_i) = ∫_0^t H(t−s) f(s) ds on the grid (trapezoid rule). */
 function convF(H, fv, dt) {
   const n = H.length - 1, out = new Float64Array(n + 1);
   let K = fv.length - 1; while (K > 1 && fv[K] < 1e-12) K--;
-  for (let i = 1; i <= n; i++) { let s = 0.5 * (H[i] * fv[0] + H[Math.max(0, i - Math.min(i, K))] * fv[Math.min(i, K)]); for (let j = 1; j < Math.min(i, K); j++) s += H[i - j] * fv[j]; out[i] = s * dt; }
+  for (let i = 1; i <= n; i++) { let s = 0.5 * H[i] * fv[0]; for (let j = 1; j <= Math.min(i - 1, K); j++) s += H[i - j] * fv[j]; if (i <= K) s += 0.5 * H[0] * fv[i]; out[i] = s * dt; }
   return out;
 }
 
@@ -154,7 +155,6 @@ and both ends tend to $\mu$ by the strong law (2.4.1, or 2.4.5 when $\mu=\infty$
           const vals = grid.map((g, k) => [run.lo[k], g / Math.max(1, run.out[k] * g), run.hi[k]]);
           const top = isFinite(Lw.mu) ? Lw.mu * 2.2 : Math.max(...vals.slice(20).map((x) => x[2])) * 1.2;
           R.setView(null, [0, top]);
-          R.between((x) => NaN, (x) => NaN, 1, 2);
           R.poly([...grid.map((g, k) => [g, Math.min(top * 2, vals[k][2])]), ...grid.map((g, k) => [g, vals[k][0]]).reverse()].filter((p) => isFinite(p[1])), { fill: Lw.col, fillAlpha: 0.15, stroke: false });
           R.path(grid.map((g, k) => [g, vals[k][0]]), { color: 'purple', width: 1.6 });
           R.path(grid.map((g, k) => [g, vals[k][2]]), { color: 'orange', width: 1.6 });
@@ -560,9 +560,13 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
         const L = v.stage({ x: [0, 8], y: [0, 1.1], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$x$', title: '$h$ with upper and lower step functions' });
         const R = v.stage({ x: [0.02, 2], y: [1e-3, 30], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$\\delta$', title: 'upper and lower sums' });
         const sums = (H, d, T = 2000) => {
-          if (H.dec) { let up = 0, lo = 0; const K = Math.ceil(T / d); for (let k = 0; k < K; k++) { up += H.h(k * d); lo += H.h((k + 1) * d); } const tail = H.label === '$e^{-x}$' ? Math.exp(-T) : 1 / (1 + T); return [up * d + tail, lo * d + tail]; }
-          let up = 0; const K = Math.ceil(T / d); for (let k = 0; k < K; k++) { const a = k * d, b = a + d; const n0 = Math.max(1, Math.ceil(a - 0.5)), n1 = Math.floor(b + 0.5); let m = 0; for (let n = n0; n <= n1; n++) { const w = 2 ** -n; if (n + w > a && n - w < b) m = Math.max(m, n >= a && n < b ? 1 : Math.max(H.h(a), H.h(b - 1e-12))); } up += m; } return [up * d, 0];
+          const K = Math.ceil(T / d); let up = 0, lo = 0;
+          if (H.dec) { for (let k = 0; k < K; k++) { up += H.h(k * d); lo += H.h((k + 1) * d); } const tail = H.label === '$e^{-x}$' ? Math.exp(-T) : 1 / (1 + T); return [up * d + tail, lo * d + tail]; }
+          for (let k = 0; k < K; k++) { const a = k * d, b = a + d; up += Math.max(H.h(a), H.h(b - 1e-12), Math.ceil(a) < b && Math.ceil(a) >= 1 ? 1 : 0); }
+          return [up * d, 0];
         };
+        const memo = {};
+        const curves = (key, H) => memo[key] || (memo[key] = H.dec ? logGrid(2, 200, 40).map((x) => [x / 100, ...sums(H, x / 100)]) : [10, 100, 1000].map((T) => logGrid(2, 200, 40).map((x) => [x / 100, sums(H, x / 100, T)[0]])));
         let st = null;
         v.render(() => {
           const H = HS[hs.value], d = dS.value;
@@ -575,23 +579,24 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
             L.rect(a, 0, b, mx, { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 1 });
             L.rect(a, 0, b, mn, { fill: 'accent', fillAlpha: 0.3, stroke: false });
           }
-          const ds = logGrid(2, 200, 40).map((x) => x / 100);
           if (H.dec) {
-            const vals = ds.map((x) => [x, ...sums(H, x)]);
+            const vals = curves(hs.value, H);
             R.setView([0.02, 2], [1e-3, 5]);
             R.path(vals.map((q) => [q[0], q[1]]), { color: 'orange', width: 2.2 });
             R.path(vals.map((q) => [q[0], q[2]]), { color: 'accent', width: 2.2 });
             R.path(vals.map((q) => [q[0], q[1] - q[2]]), { color: 'red', width: 2 });
             R.fn((x) => x * H.h(0), { color: 'muted', dash: [5, 4], width: 1.4 });
             R.hline(H.area, { color: 'green', dash: [3, 3], width: 1.2 });
+            R.vline(d, { color: 'gold', width: 1.2 });
             v.legend([['orange', 'upper sum'], ['accent', 'lower sum'], ['red', 'gap'], ['muted', '$\\delta h(0)$', { dash: true }], ['green', '$\\int h$', { dash: true }]]);
             const [up, lo] = sums(H, d);
             st = { dec: true, up, lo, d, h0: H.h(0) };
           } else {
-            const Ts = [5, 10, 20, 50, 100, 200, 500, 1000];
-            R.setView([0.02, 2], [1e-3, 1000]);
-            [0.05, 0.2, 1].forEach((dd, i) => R.path(ds.map((x) => [x, sums(H, x, [10, 100, 1000][i])[0]]), { color: ['orange', 'red', 'purple'][i], width: 2 }));
+            const Ts = [10, 100, 1000];
+            R.setView([0.02, 2], [0.05, 1000]);
+            curves(hs.value, H).forEach((c, i) => R.path(c, { color: ['orange', 'red', 'purple'][i], width: 2 }));
             R.hline(1, { color: 'green', dash: [3, 3], width: 1.2 });
+            R.vline(d, { color: 'gold', width: 1.2 });
             v.legend([['orange', 'upper sum on $[0,10]$'], ['red', 'on $[0,100]$'], ['purple', 'on $[0,1000]$'], ['green', '$\\int h=1$', { dash: true }]]);
             st = { dec: false, d, ups: Ts.map((T) => [T, sums(H, d, T)[0]]) };
           }
