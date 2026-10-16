@@ -74,8 +74,8 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
           const cx = (g) => 0.4 + g * (9.2 / G);
           layers.forEach((lay, g) => { const n = lay.length; lay.forEach((nd, i) => { nd.y = (i + 0.5) / Math.max(n, 1); if (g > 0) { const p = layers[g - 1][nd.par]; s2.line(cx(g - 1), p.y, cx(g), nd.y, { color: 'faint', width: 1 }); } });
             { const c = s2.ctx; c.fillStyle = v.color(g === 0 ? 'gold' : 'accent'); for (const nd of lay) { c.beginPath(); c.arc(s2.X(cx(g)), s2.Y(nd.y), n > 30 ? 3 : 5, 0, 6.2832); c.fill(); } } s2.text(`g${g}`, cx(g), -0.07, { size: 10.5, color: 'muted', align: 'center' }); });
-          const last = layers.length - 1; if (!layers[last].length) s2.text('chain died out (press Resample)', cx(last) + 0.25, 0.78, { size: 13, weight: 700, color: 'red', align: 'left' });
-          s2.text(`four source neutrons, Poisson(${f2(v, keff)}) offspring each; populations ${layers.map((l) => (l.length >= 60 ? '60+' : l.length)).join(' → ')}`, 0.1, 1.07, { size: 11.5, color: 'muted', align: 'left' });
+          const last = layers.length - 1; if (!layers[last].length) s2.text('chain died out (press Resample)', Math.min(cx(last) + 0.25, 5.6), 0.78, { size: 13, weight: 700, color: 'red', align: 'left' });
+          s2.text(`four source neutrons, Poisson(${f2(v, keff)}) offspring each`, 0.1, 1.07, { size: 11.5, color: 'muted', align: 'left' });
         });
         v.readout(() => {
           const k = C.keff, q = extinct(k);

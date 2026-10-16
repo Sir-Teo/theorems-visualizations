@@ -275,14 +275,14 @@ and also $\frac1n\log|B_\delta^{(n)}|\le H+\delta'$. Thus the exponent of the sm
           let pt = 0;
           for (let k = 0; k <= n; k++) { const t = isTyp(n, k, p, eps); if (t) pt += probs[k]; sC.rect((k - 0.5) / n, 0, (k + 0.5) / n, probs[k], { fill: t ? 'green' : 'accent', fillAlpha: 0.5, stroke: false }); }
           sC.dot(1, probs[n], { r: 6, color: 'red' });
-          sD.setView([1, 400], [-400 * Hh * 1.08, 12]); sD.hline(0, { color: 'faint' });
+          sD.setView([1, 400], [-400 * Hh * 1.12, 40]); sD.hline(0, { color: 'faint' });
           const pa = [], pb = [], pc = [];
           for (let m = 1; m <= 400; m += 3) { pa.push([m, m * log2(p)]); pb.push([m, -m * Hh]); let tt = 0; for (let k = 0; k <= m; k++) if (isTyp(m, k, p, eps)) tt += pw2(lbinPmf(m, k, p)); pc.push([m, log2(Math.max(tt, 1e-18))]); }
           sD.path(pa, { color: 'red', width: 2 }); sD.path(pb, { color: 'accent', width: 2 }); sD.path(pc, { color: 'green', width: 2 });
           sD.vline(n, { color: 'faint', dash: true });
-          sD.text('log₂ P(all ones)', 400, 400 * log2(p), { align: 'right', dy: -8, size: 11, color: 'red' });
-          sD.text('log₂ p of a typical sequence', 400, -400 * Hh, { align: 'right', dy: 12, size: 11, color: 'accent' });
-          sD.text('log₂ P(typical set)', 400, 0, { align: 'right', dy: -10, size: 11, color: 'green' });
+          sD.text('log₂ P(all ones)', 400, 400 * log2(p), { align: 'right', dy: -10, size: 11, color: 'red' });
+          sD.text('log₂ p of one typical sequence', 400, -400 * Hh, { align: 'right', dy: -10, size: 11, color: 'accent' });
+          sD.text('log₂ P(typical set)', 400, 0, { align: 'right', dy: -12, size: 11, color: 'green' });
           const dif = Math.abs(-log2(p) - Hh);
           info = { n, p, pAll: n * log2(p), pTyp: pt, ratio: n * (Hh + log2(p)), dif, eps, atyp: dif > eps, Hh };
         });
@@ -347,7 +347,7 @@ So $\frac1n\log|T(P)|=H(P)-O\!\big(\tfrac{\log n}{n}\big)$ uniformly in $P$. A s
         const sim = simStage(v, { height: 280, title: 'drag the type $P$' });
         const h = simHandle(sim, [0.5, 0.3, 0.2], { color: 'accent', label: 'P' });
         const nS = v.slider('marker $n$', 3, 400, 60, { log: true, int: true });
-        const s = v.stage({ x: [3, 400], y: [-2, 40], xlog: true, height: 280, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'n·H(Pₙ) − log₂|T(Pₙ)|  [bits]', title: 'how far the class falls below $2^{nH}$' });
+        const s = v.stage({ x: [3, 400], y: [-2, 28], xlog: true, height: 280, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'n·H(Pₙ) − log₂|T(Pₙ)|  [bits]', title: 'how far the class falls below $2^{nH}$' });
         v.legend([['accent', 'exact gap'], ['green', 'Stirling prediction', { dash: true }], ['orange', 'bounds: $0$ and $3\\log_2(n+1)$']]);
         const gap = (n, P) => { const c = typeRound(P, n); return n * H(c) - lmult(c); };
         const stir = (n, P) => { const c = typeRound(P, n), nz = c.filter((x) => x > 0); return ((nz.length - 1) / 2) * log2(2 * Math.PI * n) + 0.5 * sum(nz.map((x) => log2(x / n))); };

@@ -16,7 +16,7 @@ export default {
 $$\Gamma(t)=\oint_{C(t)}\mathbf u\cdot d\mathbf l$$
 does not change with time, $D\Gamma/Dt=0$, however much the loop is stretched, folded or twisted. The statement fails if viscosity, a non-conservative force (such as the Coriolis force seen from a rotating frame) or a density-pressure mismatch (baroclinicity) can create or move vorticity across the loop.`,
       idea: String.raw`Differentiate under the integral, remembering that a material line element obeys $D(d\mathbf l)/Dt=(d\mathbf l\cdot\nabla)\mathbf u$. This gives $\oint \frac{D\mathbf u}{Dt}\cdot d\mathbf l+\oint \mathbf u\cdot d\mathbf u$. The second integral is $\oint d(\tfrac12|\mathbf u|^2)=0$. In the first, Euler's equation (2.8) turns $D\mathbf u/Dt$ into $-\nabla(h+\Phi)$, with $h=\int dp/\rho$ the enthalpy (barotropic) and $\Phi$ the potential of the body force, and the integral of a gradient round a closed loop is zero.`,
-      caption: String.raw`Three Lamb–Oseen vortices (blue: counter-clockwise, red: clockwise) move under each other's induction, and a loop of fluid particles (orange) is released round the first one. Press play: the loop is dragged out into tongues and wraps round the other vortices, yet the circulation measured on it (right, computed by summing $\mathbf u\cdot d\mathbf l$ over the loop points, which are refined as it stretches) stays on the dashed line. Now raise the viscosity $\nu$: the vortex cores spread, vorticity leaks out through the loop, and the number decays. The viscous run is a model (vortices keep their Lamb–Oseen shape while spreading), not a solution of the Navier–Stokes equations.`,
+      caption: String.raw`Three Lamb–Oseen vortices (blue: counter-clockwise, red: clockwise) move under each other's induction, and a loop of fluid particles (orange) is released round the first one. Press play: the loop is drawn out into a long tongue towards the other vortices, yet the circulation measured on it (right, computed by summing $\mathbf u\cdot d\mathbf l$ over the loop points, which are refined as it stretches) stays on the dashed line. Now raise the viscosity $\nu$: the vortex cores spread, vorticity leaks out through the loop, and the number decays. The viscous run is a model (vortices keep their Lamb–Oseen shape while spreading), not a solution of the Navier–Stokes equations.`,
       deps: ['fluid-1.11', 'fluid-2.8'],
       refs: ['Kundu §5.2', 'Acheson ch. 5'],
       credit: 'William Thomson (Lord Kelvin), “On vortex motion”, Trans. R. Soc. Edinburgh 25, 217–260, 1869',
@@ -114,7 +114,7 @@ does not change with time, $D\Gamma/Dt=0$, however much the loop is stretched, f
           let mth = 0;
           st.q.forEach((q, i) => {
             s.path(st.tr[i], { color: 'faint', width: 1 });
-            const L = 0.2, c = Math.cos(q[2]), sn = Math.sin(q[2]);
+            const L = 0.26, c = Math.cos(q[2]), sn = Math.sin(q[2]);
             s.line(q[0] - L * sn, q[1] + L * c, q[0] + L * sn, q[1] - L * c, { color: 'ink', width: 2 });
             s.line(q[0] - L * c, q[1] - L * sn, q[0], q[1], { color: 'ink', width: 2 });
             s.line(q[0], q[1], q[0] + L * c, q[1] + L * sn, { color: 'red', width: 2.6 });
@@ -187,7 +187,7 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
       name: 'Helmholtz’s vortex theorems',
       statement: String.raw`In an inviscid, barotropic fluid with conservative body forces: (i) fluid particles that lie on a vortex line at one instant lie on a vortex line at every later instant, so vortex lines move with the fluid; (ii) the strength of a vortex tube, the circulation round it (equal to the flux $\int\boldsymbol\omega\cdot d\mathbf S$ through any cross-section), is the same at every cross-section of the tube and constant in time; (iii) a vortex tube cannot begin or end in the fluid: it forms a closed loop, runs to infinity, or ends on a boundary. Part (iii) is $\nabla\cdot\boldsymbol\omega=0$.`,
       idea: String.raw`Statement (iii) and the constancy along the tube are just $\nabla\cdot(\nabla\times\mathbf u)=0$ and the divergence theorem applied to a piece of tube. For (i) and the constancy in time, note that a loop drawn on the wall of a vortex tube has zero circulation (the vorticity is tangent to the wall, Stokes' theorem), and by Kelvin's theorem (3.1) this stays true for the material loop as it moves, so the wall stays a vortex-tube wall. The strength of the tube is then the circulation round any material loop encircling it, which Kelvin says never changes.`,
-      caption: String.raw`A thin vortex tube, a closed ring of fluid particles, is carried through the steady ABC flow (a flow with $\nabla\times\mathbf u=\mathbf u$; here only the ring's transport is used, the ring being too weak to modify the background). The tube is drawn thinner where it is stretched. At six stations a tiny square of fluid particles surrounds the line and two more particles mark its length; the right panel follows the selected station: the vorticity (stretch of the line, orange) grows, the cross-section (blue) shrinks by the same factor, and their product, the tube strength, stays at 1 (green). Drag to rotate the 3D view. No part of the tube ever ends in the fluid.`,
+      caption: String.raw`A thin vortex tube, a closed ring of fluid particles, is carried through the steady ABC flow (a flow with $\nabla\times\mathbf u=\mathbf u$; here only the ring's transport is used, the ring being too weak to modify the background). The tube is drawn thinner where it is stretched. At six stations a tiny square of fluid particles surrounds the line and two more particles mark its length; the right panel follows the selected station: the vorticity (stretch of the line, orange) rises where the line is stretched and falls where it is compressed, the cross-section (blue) changes by the inverse factor, and their product, the tube strength, stays at 1 (green; the tube is coloured from blue, unstretched, to red, stretched many times). Drag to rotate the 3D view. No part of the tube ever ends in the fluid.`,
       deps: ['fluid-3.1', 'fluid-3.3'],
       refs: ['Kundu §5.2', 'Acheson ch. 5'],
       credit: 'Hermann von Helmholtz, “Über Integrale der hydrodynamischen Gleichungen, welche den Wirbelbewegungen entsprechen”, J. reine angew. Math. 55, 25–55, 1858',
@@ -304,15 +304,16 @@ For a thin vortex filament $C$ of circulation $\Gamma$ this becomes $\mathbf u(\
           ps.el.hidden = kind.value !== 'helix'; rs.el.hidden = kind.value === 'line';
           fil = build();
           const U = (a, b) => biotSavart(fil, closed, G, [a, 0, b]);
-          let mx = 0; const arrows = [];
+          const arrows = [];
           for (let a = -4.8; a <= 4.81; a += 0.4) for (let b = -2.2; b <= 2.21; b += 0.4) {
             const w = U(a, b), m = Math.hypot(w[0], w[2]);
             if (Math.hypot(a - (kind.value === 'line' ? 0 : R), b) < 0.16 || (kind.value === 'ring' && Math.hypot(a + R, b) < 0.16) || (kind.value === 'line' && Math.hypot(a, b) < 0.16)) continue;
-            arrows.push([a, b, w[0], w[2], m]); mx = Math.max(mx, m);
+            arrows.push([a, b, w[0], w[2], m]);
           }
+          const mm = arrows.map((q) => q[4]).sort((p, q) => p - q), mx = mm[Math.floor(0.92 * mm.length)] || 1;
           for (const [a, b, ux, uz, m] of arrows) {
-            const L = 0.34 * Math.pow(m / (mx + 1e-12), 0.45);
-            if (m > 1e-9) s.arrow(a, b, a + (L * ux) / m, b + (L * uz) / m, { color: 'accent', width: 1.6, head: 6, alpha: 0.35 + 0.65 * Math.min(1, m / (0.4 * mx)) });
+            const L = 0.36 * Math.min(1, Math.pow(m / (mx + 1e-12), 0.6));
+            if (m > 1e-9) s.arrow(a, b, a + (L * ux) / m, b + (L * uz) / m, { color: 'accent', width: 1.6, head: 6, alpha: 0.4 + 0.6 * Math.min(1, m / mx) });
           }
           if (kind.value === 'line') s.text('⊙', 0, 0, { size: 24, color: 'orange' });
           else if (kind.value === 'ring') { s.text('⊙', R, 0, { size: 24, color: 'orange' }); s.text('⊗', -R, 0, { size: 24, color: 'orange' }); }
@@ -455,6 +456,268 @@ The system is Hamiltonian, with $H=-\frac1{4\pi}\sum_{j\neq k}\Gamma_j\Gamma_k\l
           info = { t: st.t, n, dH: Math.abs(I.H - I0.H), dP: Math.hypot(I.px - I0.px, I.py - I0.py), dI: Math.abs(I.I - I0.I), H: I.H / TAU, tmax };
         }, { period: 14, still: 10 });
         v.readout(() => `${info.n} vortices, $t=${v.fix(info.t, 1)}$ · invariants (errors since $t=0$): Hamiltonian $${v.sci(info.dH + 1e-16, 1)}$, linear impulse $\\sum\\Gamma\\mathbf x$: $${v.sci(info.dP + 1e-16, 1)}$, angular impulse $\\sum\\Gamma|\\mathbf x|^2$: $${v.sci(info.dI + 1e-16, 1)}$`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.8
+    {
+      num: '3.8',
+      kind: 'Phenomenon',
+      name: 'Vortex rings and leapfrogging',
+      statement: String.raw`A thin-cored vortex ring of circulation $\Gamma$ and radius $R$ in an ideal fluid translates along its axis at about
+$$U\approx\frac{\Gamma}{4\pi R}\Big(\ln\frac{8R}{a}-\frac14\Big)$$
+for a core of radius $a\ll R$ with uniform vorticity (Kelvin's formula). Two coaxial rings of the same sense interact: each one's velocity field carries the other, and the rear ring, drawn into the flow through the front one's hole, shrinks and speeds up, slips through the front ring (which widens and slows), and the roles reverse. The passing repeats, an idealised motion called leapfrogging. Because $R$ and the speed change, the picture needs the full axisymmetric Biot–Savart interaction, not the single-ring formula.`,
+      idea: String.raw`By Helmholtz's theorems (3.4) each ring keeps its circulation and, since the core is a fluid volume, its core area changes as $a^2\propto1/R$. The velocity one ring induces on the other follows from the Stokes stream function of a ring, built from the elliptic integrals $K$ and $E$ (the Biot–Savart integral, 3.5, done over the circle). The motion of the pair then conserves the total impulse $\pi\sum\Gamma_jR_j^2$ (a conservation law of the Euler equations), which links shrinking to speeding up: if one ring contracts, the other must widen. The system has two degrees of freedom and this model gives a regular, periodic exchange when the rings are not too far apart.`,
+      caption: String.raw`The meridian plane of two rings with their common axis horizontal; the rings appear as two pairs of dots (core circles drawn at the true core radius), and faint curves are the streamlines of the pair in the frame moving with their mean speed. Press play: the rear ring (left) contracts and runs through the front one, again and again, and the plot shows the two radii and the gap ($z_2-z_1$; it changes sign at each pass). The impulse in the readout stays constant. Move the rings farther apart or make the circulations unequal and the passes slow down or stop. If the cores touch the model no longer applies (real rings merge or break up); real rings also suffer viscous decay and instabilities not included here.`,
+      deps: ['fluid-3.4', 'fluid-3.5'],
+      refs: ['Kundu §5.6', 'Acheson ch. 5'],
+      credit: 'Leapfrogging described by H. von Helmholtz, 1858; self-induced speed of a thin ring: Lord Kelvin (the constant 1/4 is for a uniform-vorticity core)',
+      tags: ['vortex rings', 'leapfrogging', 'impulse'],
+      scope: String.raw`Axisymmetric, inviscid, thin cores ($a\ll R$, separations well above $a$), uniform core vorticity at all times. Interactions that break the axial symmetry (the Widnall-type instabilities seen in real rings) and viscous spreading are not modelled.`,
+      viz(v) {
+        const ds = v.slider('initial gap $d$', 0.5, 2.5, 1, { step: 0.05, onChange: () => { S.reset(); } });
+        const as = v.slider('core radius $a/R_0$', 0.04, 0.25, 0.1, { step: 0.01, onChange: () => { S.reset(); } });
+        const gr = v.slider('circulation ratio $\\Gamma_2/\\Gamma_1$', 0.3, 1.5, 1, { step: 0.05, onChange: () => { S.reset(); } });
+        const s = v.stage({ x: [-4, 4], y: [-2.2, 2.2], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.4, xlabel: 'axial position $z$ (frame following the rings)', ylabel: 'radius', title: 'two coaxial vortex rings, edge-on' });
+        const h = v.stage({ x: [0, 40], y: [-2, 2], axes: 'box', gutter: true, height: 380, weight: 0.9, xlabel: 'time $t$', title: 'radii and gap' });
+        const hh = 1e-5;
+        const rates = (r, z, G, a0) => {
+          const dr = [0, 0], dz = [0, 0];
+          for (let i = 0; i < 2; i++) {
+            const j = 1 - i;
+            const psiz = (ringPsi(r[i], z[i] + hh, r[j], z[j], G[j]) - ringPsi(r[i], z[i] - hh, r[j], z[j], G[j])) / (2 * hh);
+            const psir = (ringPsi(r[i] + hh, z[i], r[j], z[j], G[j]) - ringPsi(r[i] - hh, z[i], r[j], z[j], G[j])) / (2 * hh);
+            const a = a0 / Math.sqrt(r[i]);
+            dr[i] = -psiz / r[i]; dz[i] = psir / r[i] + (G[i] / (4 * Math.PI * r[i])) * (Math.log((8 * r[i]) / a) - 0.25);
+          }
+          return [dr, dz];
+        };
+        const S = v.sim(() => ({ r: [1, 1], z: [0, ds.value], t: 0, k: 0, tr: [[[0, 1]], [[ds.value, 1]]], h: [[0, 1, 1, ds.value]], passes: 0, P0: 1 + gr.value, sg: 1 }), (st, dt) => {
+          const G = [1, gr.value], a0 = as.value, ad = (r, z, k, c) => [r.map((x, i) => x + c * k[0][i]), z.map((x, i) => x + c * k[1][i])];
+          const k1 = rates(st.r, st.z, G, a0), [r2, z2] = ad(st.r, st.z, k1, dt / 2), k2 = rates(r2, z2, G, a0), [r3, z3] = ad(st.r, st.z, k2, dt / 2), k3 = rates(r3, z3, G, a0), [r4, z4] = ad(st.r, st.z, k3, dt), k4 = rates(r4, z4, G, a0);
+          for (let i = 0; i < 2; i++) { st.r[i] += (dt / 6) * (k1[0][i] + 2 * k2[0][i] + 2 * k3[0][i] + k4[0][i]); st.z[i] += (dt / 6) * (k1[1][i] + 2 * k2[1][i] + 2 * k3[1][i] + k4[1][i]); }
+          st.t += dt; st.k++;
+          const sg = Math.sign(st.z[1] - st.z[0]); if (sg !== st.sg && sg !== 0) { st.passes++; st.sg = sg; }
+          if (st.k % 5 === 0) { st.h.push([st.t, st.r[0], st.r[1], st.z[1] - st.z[0]]); st.tr[0].push([st.z[0], st.r[0]]); st.tr[1].push([st.z[1], st.r[1]]); }
+        }, { dt: 0.01, maxSteps: 5000 });
+        let info = {};
+        v.animate((t) => {
+          const st = S.advance(t), G = [1, gr.value], a0 = as.value;
+          const zc = (st.z[0] + st.z[1]) / 2, dzs = rates(st.r, st.z, G, a0)[1], Vc = (dzs[0] + dzs[1]) / 2;
+          s.setView([zc - 4, zc + 4], [-2.2, 2.2]);
+          const psi = (x, y) => ringPsi(Math.abs(y) + 1e-9, x, st.r[0], st.z[0], G[0]) + ringPsi(Math.abs(y) + 1e-9, x, st.r[1], st.z[1], G[1]) - 0.5 * Vc * y * y;
+          let lo = Infinity, hi = -Infinity;
+          for (let i = 0; i <= 24; i++) for (let j = 0; j <= 12; j++) { const q = psi(zc - 4 + (8 * i) / 24, (2.2 * j) / 12); if (isFinite(q)) { lo = Math.min(lo, q); hi = Math.max(hi, q); } }
+          const lv = []; for (let i = 1; i < 18; i++) lv.push(lo + ((hi - lo) * i) / 18);
+          s.clip(() => s.contour(psi, lv, { color: 'faint', width: 1, res: 90 }));
+          const cols = ['accent', 'orange'];
+          for (let i = 0; i < 2; i++) {
+            s.path(st.tr[i], { color: cols[i], width: 1.2, alpha: 0.5 }); s.path(st.tr[i].map((q) => [q[0], -q[1]]), { color: cols[i], width: 1.2, alpha: 0.5 });
+            const a = a0 / Math.sqrt(st.r[i]);
+            s.circle(st.z[i], st.r[i], a, { fill: cols[i], fillAlpha: 0.5, color: cols[i], width: 1.5 }); s.circle(st.z[i], -st.r[i], a, { fill: cols[i], fillAlpha: 0.5, color: cols[i], width: 1.5 });
+          }
+          s.hline(0, { color: 'muted', dash: true, width: 1 });
+          s.text('ring 1', st.z[0], st.r[0] + 0.35, { color: 'accent', size: 14, align: 'center' }); s.text('ring 2', st.z[1], st.r[1] + 0.35, { color: 'orange', size: 14, align: 'center' });
+          h.setView([0, 40], [-1.2, 2.2]);
+          h.hline(0, { color: 'muted', dash: true });
+          h.path(st.h.map((q) => [q[0], q[1]]), { color: 'accent', width: 2 }); h.path(st.h.map((q) => [q[0], q[2]]), { color: 'orange', width: 2 }); h.path(st.h.map((q) => [q[0], q[3]]), { color: 'green', width: 2, dash: true });
+          const P = st.r[0] ** 2 * G[0] + st.r[1] ** 2 * G[1], dmin = Math.hypot(st.r[0] - st.r[1], st.z[0] - st.z[1]);
+          info = { t: st.t, passes: st.passes, P: P / st.P0, r: st.r.slice(), gap: st.z[1] - st.z[0], close: dmin < 3 * a0 / Math.sqrt(Math.min(...st.r)) };
+        }, { period: 40, still: 24 });
+        v.legend([['accent', '$R_1$ (rear ring)'], ['orange', '$R_2$ (front ring)'], ['green', 'gap $z_2-z_1$', { dash: true }]]);
+        v.readout(() => `$t=${v.fix(info.t, 1)}$ · rings have passed through each other ${info.passes} time${info.passes === 1 ? '' : 's'} · $R_1=${v.fix(info.r[0], 3)}$, $R_2=${v.fix(info.r[1], 3)}$, gap $${v.fix(info.gap, 3)}$\nimpulse $\\pi\\sum\\Gamma R^2$ relative to its initial value: $${v.fix(info.P, 6)}$ (conserved)${info.close ? ' — **the cores overlap here: the thin-core model has failed**' : ''}`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.9
+    {
+      num: '3.9',
+      kind: 'Definition',
+      name: 'Vortex sheets',
+      statement: String.raw`A vortex sheet is a surface across which the tangential velocity jumps, $\mathbf u_+-\mathbf u_-=\Delta\mathbf U$; it carries vorticity concentrated on the surface, $\boldsymbol\omega=\boldsymbol\gamma\,\delta(n)$, with sheet strength (circulation per unit length) $\boldsymbol\gamma=\mathbf n\times(\mathbf u_+-\mathbf u_-)$, so $|\gamma|=\Delta U$. A flat sheet at $y=0$ in a flow with $u=-\tfrac12\Delta U$ above and $+\tfrac12\Delta U$ below is the idealisation of a thin shear layer. Approximated by a row of point vortices of strength $\Delta U\,h$ at spacing $h$, the periodic row gives $u=-\tfrac12\Delta U\,\sinh(2\pi y/h)/\big(\cosh(2\pi y/h)-\cos(2\pi x/h)\big)$, which tends to the sheet's step profile with a ripple that dies off like $e^{-2\pi|y|/h}$.`,
+      idea: String.raw`The Biot–Savart law (3.5) turns a vorticity distribution into a velocity field, and a line of delta-function vorticity gives a velocity jump across the line by Stokes' theorem applied to a thin loop straddling it. For the row of point vortices the sum of the images can be done in closed form; expanding the kernel in Fourier modes in $x$ shows that only the mean (the step) survives far from the row, while the $k$-th harmonic is damped by $e^{-2\pi k|y|/h}$. In the second mode the same row is perturbed and followed in time with Krasny's regularisation: every point vortex is given a small smoothing length $\delta$, which tames the Kelvin–Helmholtz instability of the sheet and lets it roll up into a spiral.`,
+      caption: String.raw`Mode 'row of vortices': a row of $N$ point vortices per unit length (dots), the velocity field $u(x,y)$ drawn as arrows, and on the right the velocity along a vertical line through the middle of a gap (blue) against the ideal sheet (dashed). Raise $N$ and the profile converges to the step; drag the probe in $y$ to read the ripple, which is close to $\tfrac12\Delta U(1-\tanh(\pi|y|N))$. Mode 'roll-up' (shown first): 120 point vortices on a sheet with a tiny sine wave (amplitude 0.01); press play and the wave grows and curls up. Change the smoothing $\delta$ and replay: a smaller $\delta$ lets the sheet curl tighter, and the result depends on $\delta$, which is the ill-posedness of the unregularised sheet.`,
+      deps: ['fluid-3.5'],
+      refs: ['Kundu §5.7'],
+      credit: 'Roll-up computation: R. Krasny, “Desingularization of periodic vortex sheet roll-up”, J. Comput. Phys. 65, 292–313, 1986',
+      tags: ['vortex sheet', 'Kelvin–Helmholtz', 'roll-up'],
+      scope: String.raw`Two-dimensional inviscid flow. The unregularised sheet is a model that fails (its curvature becomes infinite) at a finite time for analytic perturbations; the second mode uses a smoothed kernel and is a numerical model, whose spiral depends on the smoothing parameter.`,
+      viz(v) {
+        const md = v.select('mode', [{ value: 'row', label: 'row of vortices' }, { value: 'roll', label: 'roll-up' }], 'roll', { onChange: () => { S.reset(); } });
+        const ns = v.slider('vortices per unit length $N$', 3, 40, 8, { step: 1, int: true });
+        const dl = v.slider('smoothing $\\delta$', 0.05, 0.3, 0.1, { step: 0.01, onChange: () => { S.reset(); } });
+        const sa = v.stage({ x: [-0.1, 2.1], y: [-0.5, 0.5], equal: true, axes: false, height: 340, weight: 1.5, title: 'the sheet' });
+        const sb = v.stage({ x: [-0.8, 0.8], y: [-0.5, 0.5], axes: 'box', gutter: true, height: 340, weight: 0.7, xlabel: 'velocity $u/\\Delta U$', ylabel: '$y$', title: 'profile through a gap' });
+        let uRow = (y) => 0;
+        const hp = sb.handle(-0.5, 0.18, { color: 'gold', r: 8, label: 'probe', labelPos: 'ne', constrain: (x, y) => [uRow(clamp(y, -0.45, 0.45)), clamp(y, -0.45, 0.45)] });
+        const NR = 120, TR = 2.6;
+        const kern = (dx, dy, d2) => { const c = Math.cosh(TAU * dy) - Math.cos(TAU * dx) + d2; return [-0.5 * Math.sinh(TAU * dy) / c, 0.5 * Math.sin(TAU * dx) / c]; };
+        const S = v.sim(() => { const X = new Float64Array(NR), Y = new Float64Array(NR); for (let i = 0; i < NR; i++) { X[i] = i / NR; Y[i] = -0.01 * Math.sin(TAU * X[i]); } return { X, Y, t: 0 }; }, (st, dt) => {
+          const d2 = dl.value ** 2, f = (X, Y) => { const U = new Float64Array(NR), W = new Float64Array(NR); for (let i = 0; i < NR; i++) { let u = 0, w = 0; for (let j = 0; j < NR; j++) { const q = kern(X[i] - X[j], Y[i] - Y[j], d2); u += q[0]; w += q[1]; } U[i] = u / NR; W[i] = w / NR; } return [U, W]; };
+          const ax = (c, k, h) => c.map((x, i) => x + h * k[i]);
+          const [u1, w1] = f(st.X, st.Y), [u2, w2] = f(ax(st.X, u1, dt / 2), ax(st.Y, w1, dt / 2)), [u3, w3] = f(ax(st.X, u2, dt / 2), ax(st.Y, w2, dt / 2)), [u4, w4] = f(ax(st.X, u3, dt), ax(st.Y, w3, dt));
+          for (let i = 0; i < NR; i++) { st.X[i] += (dt / 6) * (u1[i] + 2 * u2[i] + 2 * u3[i] + u4[i]); st.Y[i] += (dt / 6) * (w1[i] + 2 * w2[i] + 2 * w3[i] + w4[i]); }
+          st.t += dt;
+        }, { dt: 0.01, maxSteps: 400 });
+        let info = {};
+        v.animate((t) => {
+          const roll = md.value === 'roll';
+          ns.el.hidden = roll; dl.el.hidden = !roll; hp.visible = !roll;
+          if (!roll) {
+            const N = ns.value, hh = 1 / N, uu = (x, y) => (Math.abs(y) < 1e-9 ? 0 : -0.5 * Math.sinh((TAU * y) / hh) / (Math.cosh((TAU * y) / hh) - Math.cos((TAU * x) / hh)));
+            uRow = (y) => uu(hh / 2, y);
+            sa.setView([-0.1, 2.1], [-0.5, 0.5]);
+            sa.heat((x, y) => uu(x, y), { cmap: 'theme-diverging', range: [-0.55, 0.55], res: 3, key: `row${N}` });
+            for (let x = 0.05; x < 2.0; x += 0.2) for (const y of [-0.4, -0.26, -0.13, 0.13, 0.26, 0.4]) { const w = uu(x, y); sa.arrow(x - 0.05 * Math.sign(w), y, x + 0.05 * Math.sign(w), y, { color: 'ink', width: 1.4, head: 6, alpha: 0.75 }); }
+            sa.line(0, 0, 2, 0, { color: 'orange', width: 1.4, alpha: 0.7 });
+            for (let k = 0; k < 2 * N; k++) sa.dot((k + 0.5) / N - 0.5 / N + 0, 0, { r: N > 24 ? 2.2 : 4, color: 'orange' });
+            sa.text('$u=-\\Delta U/2$', 1.0, 0.47, { size: 14, color: 'ink', align: 'center', plate: true }); sa.text('$u=+\\Delta U/2$', 1.0, -0.47, { size: 14, color: 'ink', align: 'center', plate: true });
+            sb.setView([-0.8, 0.8], [-0.5, 0.5]);
+            sb.path([[0.5, -0.5], [0.5, 0], [-0.5, 0], [-0.5, 0.5]], { color: 'green', dash: true, width: 2 });
+            const pts = []; for (let i = -450; i <= 450; i++) { const y = i / 1000; pts.push(Math.abs(y) < 1e-9 ? null : [uu(hh / 2, y), y]); } sb.path(pts, { color: 'accent', width: 2.4 });
+            const y0 = hp.y, ex = -0.5 * Math.tanh((Math.PI * y0) / hh);
+            hp.set(uu(hh / 2, y0), y0);
+            info = { row: true, N, y0, u: uu(hh / 2, y0), ideal: -0.5 * Math.sign(y0), ex, rip: 0.5 - Math.abs(uu(hh / 2, y0)) };
+          } else {
+            const st = S.advance((t * TR) / 8);
+            sa.setView([-0.1, 2.1], [-0.5, 0.5]);
+            const pts = [], n = NR;
+            for (const off of [-1, 0, 1, 2]) { for (let i = 0; i < n; i++) pts.push([st.X[i] + off, st.Y[i]]); pts.push([st.X[0] + off + 1, st.Y[0]], null); }
+            const seg = []; for (const off of [-1, 0, 1, 2]) { const q = []; for (let i = 0; i <= n; i++) { const j = i % n; q.push([st.X[j] + off + (i === n ? 1 : 0), st.Y[j]]); } seg.push(q); }
+            sa.clip(() => { for (const q of seg) sa.path(q, { color: 'orange', width: 1.8 }); for (const off of [0, 1]) for (let i = 0; i < n; i += 1) sa.dot(st.X[i] + off, st.Y[i], { r: 1.8, color: 'accent', ring: false }); });
+            sb.setView([-0.8, 0.8], [-0.5, 0.5]);
+            let L = 0; for (let i = 0; i < n; i++) { const j = (i + 1) % n; L += Math.hypot(st.X[j] - st.X[i] + (j === 0 ? 1 : 0), st.Y[j] - st.Y[i]); }
+            let ym = 0; for (let i = 0; i < n; i++) ym += st.Y[i] / n;
+            const prof = []; for (let i = 0; i < 90; i++) { const y = -0.45 + i * 0.01; let u = 0; for (let j = 0; j < n; j++) u += kern(0.25 - st.X[j], y - st.Y[j], dl.value ** 2)[0] / n; prof.push([u, y]); }
+            sb.path(prof, { color: 'accent', width: 2.4 });
+            sb.path([[0.5, -0.5], [0.5, 0], [-0.5, 0], [-0.5, 0.5]], { color: 'green', dash: true, width: 2 });
+            info = { row: false, t: st.t, L, ym };
+          }
+        }, { period: 8, still: 6.8 });
+        v.readout(() => info.row ? `$N=${info.N}$ vortices per unit length, spacing $h=${v.fix(1 / info.N, 3)}$ · at the probe ($y=${v.fix(info.y0, 2)}$, mid-gap) $u/\\Delta U=${v.fix(info.u, 4)}$, ideal sheet $${v.fix(info.ideal, 1)}$; ripple $${v.fix(info.rip, 4)}$ vs the closed form $\\tfrac12(1-\\tanh\\pi|y|N)=${v.fix(0.5 * (1 - Math.tanh(Math.PI * Math.abs(info.y0) * info.N)), 4)}$` : `$t=${v.fix(info.t, 2)}$ (units: $\\Delta U=1$, period 1) · length of the sheet ${v.fix(info.L, 2)} (initially 1) · mean height of the vortices $${v.sci(Math.abs(info.ym) + 1e-12, 1)}$ (conserved at 0)`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.10
+    {
+      num: '3.10',
+      kind: 'Definition',
+      name: 'Rossby number and geostrophic balance',
+      statement: String.raw`For a flow of speed $U$ and length scale $L$ in a frame rotating at angular velocity $\Omega$ (so $f=2\Omega$, or $2\Omega\sin\varphi$ at latitude $\varphi$), the Rossby number is
+$$\mathrm{Ro}=\frac{U}{fL},$$
+the ratio of the advective acceleration $U^2/L$ to the Coriolis acceleration $fU$. When $\mathrm{Ro}\ll1$ (and friction and unsteadiness are also small) the horizontal momentum equation reduces to geostrophic balance
+$$f\,\hat{\mathbf z}\times\mathbf u=-\frac1\rho\nabla p,\qquad\text{i.e.}\quad \mathbf u_g=\frac1{\rho f}\,\hat{\mathbf z}\times\nabla p,$$
+so the flow runs along the isobars, with low pressure on its left in the northern hemisphere ($f>0$), and the pressure divided by $\rho f$ acts as a stream function for the horizontal flow.`,
+      idea: String.raw`Write Euler's equation (2.8) in a rotating frame, adding the Coriolis term $2\boldsymbol\Omega\times\mathbf u$ (mechanics 9.8). Scaling each term, the nonlinear acceleration is $\mathrm{Ro}$ times the Coriolis one, so for small $\mathrm{Ro}$ the pressure gradient must balance the Coriolis force alone. Since the geostrophic velocity is perpendicular to $\nabla p$ it has no component across isobars, and for constant $f$ its divergence vanishes, which is why $p/\rho f$ is a stream function. The parcel released from rest does not follow the pressure gradient: it starts that way, is turned by the Coriolis force, and performs inertial oscillations (mechanics 9.11) about the geostrophic state.`,
+      caption: String.raw`A low-pressure patch (colours, contours; dimensionless: $\Phi=-e^{-r^2/2}$) in a rotating fluid. Eight fluid parcels are released from rest on a circle and followed under the full equations $\dot{\mathbf u}=-\nabla\Phi-f\hat{\mathbf z}\times\mathbf u$ for 20 time units. Turn up $f$ (and so lower $\mathrm{Ro}$): the parcels stop rushing into the low and instead stay near their isobar, doing small loops (inertial oscillations) while drifting around it. The curve shows how far in toward the centre the parcels get, plotted against $\mathrm{Ro}$, with your setting marked. The readout compares the speed of geostrophic balance with the gradient-wind speed that includes the centrifugal term at $r=1$.`,
+      deps: ['fluid-2.8', 'mech-9.8', 'mech-9.11'],
+      refs: ['Kundu §13.4', 'Kundu §4.7'],
+      tags: ['Rossby number', 'geostrophic', 'rotation'],
+      scope: String.raw`Valid for $\mathrm{Ro}\ll1$, small Ekman number (viscous forces weak against Coriolis), flows that evolve slowly compared with $1/f$, and a constant $f$ (the plane); on a sphere $f$ varies with latitude and Rossby waves appear. The Rossby number is named after C.-G. Rossby.`,
+      viz(v) {
+        const fs = v.slider('Coriolis parameter $f=2\\Omega$', 0.2, 12, 3, { log: true, sig: 2 });
+        const s = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 420, weight: 1.1, title: 'parcels released from rest into a low' });
+        const h = v.stage({ x: [0.01, 20], y: [0, 1.05], xlog: true, axes: 'box', gutter: true, height: 420, weight: 0.9, xlabel: 'Rossby number $\\mathrm{Ro}=U/fL$', ylabel: 'fraction of the way to the centre', title: 'how far the parcels get' });
+        const Phi = (x, y) => -Math.exp(-(x * x + y * y) / 2);
+        const NP = 8, T = 20, R0 = 1.8;
+        const traj = (f, keep) => {
+          let best = 0, paths = [];
+          for (let k = 0; k < NP; k++) {
+            let x = R0 * Math.cos((TAU * k) / NP), y = R0 * Math.sin((TAU * k) / NP), u = 0, w = 0, rmin = R0; const pth = [[x, y]];
+            const acc = (x, y, u, w) => { const e = Math.exp(-(x * x + y * y) / 2); return [-x * e + f * w, -y * e - f * u]; };
+            const dt = 0.01, n = Math.round(T / dt);
+            for (let i = 0; i < n; i++) {
+              const a1 = acc(x, y, u, w), a2 = acc(x + (dt / 2) * u, y + (dt / 2) * w, u + (dt / 2) * a1[0], w + (dt / 2) * a1[1]), a3 = acc(x + (dt / 2) * (u + (dt / 2) * a1[0]), y + (dt / 2) * (w + (dt / 2) * a1[1]), u + (dt / 2) * a2[0], w + (dt / 2) * a2[1]);
+              const a4 = acc(x + dt * (u + (dt / 2) * a2[0]), y + dt * (w + (dt / 2) * a2[1]), u + dt * a3[0], w + dt * a3[1]);
+              x += dt * (u + (dt / 6) * (a1[0] + a2[0] + a3[0])); y += dt * (w + (dt / 6) * (a1[1] + a2[1] + a3[1]));
+              u += (dt / 6) * (a1[0] + 2 * a2[0] + 2 * a3[0] + a4[0]); w += (dt / 6) * (a1[1] + 2 * a2[1] + 2 * a3[1] + a4[1]);
+              rmin = Math.min(rmin, Math.hypot(x, y)); if (keep && i % 8 === 0) pth.push([x, y]);
+            }
+            best += (R0 - rmin) / R0; paths.push(pth);
+          }
+          return { frac: best / NP, paths };
+        };
+        const sweep = []; for (let i = 0; i <= 28; i++) { const f = 0.2 * Math.pow(60, i / 28); sweep.push([0.6065 / (f * f), traj(f, false).frac]); }
+        let info = {};
+        v.render(() => {
+          const f = fs.value, { frac, paths } = traj(f, true);
+          s.heat((x, y) => -Phi(x, y), { range: [0, 1], cmap: 'theme', res: 4, key: 'phi' });
+          s.contour(Phi, [-0.9, -0.75, -0.6, -0.45, -0.3, -0.15, -0.05], { color: 'ink', alpha: 0.35, width: 1, res: 100 });
+          for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) {
+            const x = i * 0.6, y = j * 0.6, e = Math.exp(-(x * x + y * y) / 2), ug = (-y * e) / f, vg = (x * e) / f, m = Math.hypot(ug, vg);
+            if (m < 1e-6) continue;
+            const L = 0.3 * Math.min(1, m / 0.25 + 0.15);
+            s.arrow(x, y, x + (L * ug) / m, y + (L * vg) / m, { color: 'ink', width: 1.6, head: 6, alpha: 0.7 });
+          }
+          paths.forEach((p, k) => { s.path(p, { color: 'orange', width: 1.8 }); s.dot(p[0][0], p[0][1], { r: 4, color: 'gold' }); s.dot(p[p.length - 1][0], p[p.length - 1][1], { r: 3.5, color: 'red' }); });
+          s.circle(0, 0, R0, { color: 'muted', dash: true, width: 1 });
+          h.path(sweep, { color: 'accent', width: 2.2 });
+          const Ro = 0.6065 / (f * f);
+          h.vline(Ro, { color: 'gold', width: 2 }); h.dot(Math.min(Ro, 19), frac, { r: 6, color: 'gold' });
+          const dphi = Math.exp(-0.5), vgw = (-f + Math.sqrt(f * f + 4 * dphi)) / 2;
+          info = { f, Ro, frac, vg: dphi / f, vgw };
+        });
+        v.legend([['orange', 'parcel paths (gold: start, red: end)'], ['ink', 'geostrophic velocity $\\mathbf u_g$']]);
+        v.readout(() => `$f=${v.fix(info.f, 2)}$, $U=u_g(r{=}1)=${v.fix(info.vg, 3)}$, $\\mathrm{Ro}=${v.fix(info.Ro, 3)}$ · parcels reach ${v.fix(100 * info.frac, 0)}% of the way to the centre\nat $r=1$: geostrophic speed $${v.fix(info.vg, 4)}$, gradient-wind speed $${v.fix(info.vgw, 4)}$ (ratio $${v.fix(info.vgw / info.vg, 3)}$; geostrophy is good when Ro is small)`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────── 3.11
+    {
+      num: '3.11',
+      kind: 'Theorem',
+      name: 'Taylor–Proudman theorem',
+      statement: String.raw`Consider the steady, inviscid motion of a homogeneous incompressible fluid in a frame rotating uniformly with angular velocity $\boldsymbol\Omega=\Omega\hat{\mathbf z}$, slow enough that the nonlinear term is negligible ($\mathrm{Ro}\ll1$): $2\boldsymbol\Omega\times\mathbf u=-\nabla p/\rho$. Then the velocity does not vary along the axis of rotation:
+$$\frac{\partial\mathbf u}{\partial z}=\mathbf 0.$$
+All three components are independent of $z$. Between a flat floor and a flat lid this forces $w\equiv0$ and the horizontal flow to be the same at every height, so the fluid moves in rigid vertical columns, and a slowly moving obstacle on the floor drags a stagnant column of fluid (a Taylor column) with it, extending over the full depth.`,
+      idea: String.raw`Take the curl of the balance: the pressure gradient drops out and, using incompressibility, $2(\boldsymbol\Omega\cdot\nabla)\mathbf u=\mathbf 0$ (the same algebra as the vorticity equation, 3.3, with the stretching term as the only survivor). So the flow cannot be stretched along $\boldsymbol\Omega$. Since the divergence of the horizontal velocity is then also independent of $z$ and $w$ vanishes on the floor, $w=0$ throughout. A short obstacle on the floor must therefore be felt as a full-depth cylinder, and the flow goes round that cylinder in every horizontal plane.`,
+      caption: String.raw`A uniform stream $U$ meets a hemispherical obstacle of radius 1 sitting on the floor. Left: horizontal slice at the height $z$ you choose, with the streamlines of the horizontal velocity. Right: the vertical section through the probe (drag the probe in the left panel), coloured by the horizontal speed $|(u,v)|/U$ (blue: slower than the stream, red: faster; the white interior is the obstacle or the stagnant column). Mode 1 is no rotation, a 3D potential flow (the flow of a sphere, which is exact for the hemisphere on a floor by symmetry): the slice shrinks and the flow relaxes back to uniform as $z$ grows. Mode 2 is the $\mathrm{Ro}\to0$ limit: every slice is the same, the flow circles a cylinder of radius 1 reaching to the top, and the fluid inside is stagnant. Only these two limits are computed; how the picture changes in between (and with the obstacle's height) is not modelled here.`,
+      deps: ['fluid-3.10', 'fluid-3.3'],
+      refs: ['Kundu §5.5', 'Kundu §13.4'],
+      credit: 'Joseph Proudman and G. I. Taylor, 1910s (theorem); G. I. Taylor’s rotating-tank experiments with a towed obstacle, early 1920s',
+      tags: ['rotation', 'Taylor column', 'geostrophic'],
+      verify: true,
+      scope: String.raw`Steady (or slowly varying), inviscid, homogeneous fluid with $\mathrm{Ro}\ll1$ and small Ekman number; strictly the columns extend between rigid horizontal boundaries. Dates and the exact attribution of the theorem differ in the sources I checked (some give 1916–17 for Proudman and Taylor, some mention earlier work by Hough), so they are given loosely.`,
+      viz(v) {
+        const md = v.select('rotation', [{ value: 'none', label: 'no rotation (3D flow)' }, { value: 'fast', label: 'fast rotation, Ro → 0' }], 'none');
+        const zs = v.slider('slice height $z$', 0, 3, 0.4, { step: 0.05 });
+        const s = v.stage({ x: [-3, 3], y: [-2.4, 2.4], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.1, xlabel: '$x$ (stream direction)', ylabel: '$y$', title: 'horizontal slice' });
+        const t = v.stage({ x: [-3, 3], y: [0, 3], axes: 'box', gutter: true, height: 380, weight: 1.1, xlabel: '$x$', ylabel: '$z$', title: 'vertical section at the probe’s $y$' });
+        const pr = s.handle(-1.3, 0.5, { color: 'gold', r: 8, label: 'probe', labelPos: 'ne', constrain: { x: [-2.9, 2.9], y: [-2.3, 2.3] } });
+        const vel = (x, y, z) => {
+          if (md.value === 'fast') { const r2 = x * x + y * y; if (r2 < 1) return null; const r4 = r2 * r2; return [1 + (y * y - x * x) / r4, (-2 * x * y) / r4, 0]; }
+          const r2 = x * x + y * y + z * z, r = Math.sqrt(r2); if (r < 1) return null;
+          const r3 = r2 * r, r5 = r3 * r2;
+          return [1 + 1 / (2 * r3) - (3 * x * x) / (2 * r5), (-3 * x * y) / (2 * r5), (-3 * x * z) / (2 * r5)];
+        };
+        v.render(() => {
+          const z = zs.value, rot = md.value === 'fast';
+          // streamlines of the horizontal field in the slice
+          for (let k = 0; k < 17; k++) {
+            let x = -3, y = -2.4 + 0.3 * k; const pts = [[x, y]];
+            for (let i = 0; i < 400 && x < 3; i++) {
+              const f = (a, b) => { const q = vel(a, b, z); return q ? [q[0], q[1]] : null; };
+              const k1 = f(x, y); if (!k1) break; const m1 = Math.hypot(k1[0], k1[1]), d = 0.03 / m1;
+              const k2 = f(x + (d / 2) * k1[0], y + (d / 2) * k1[1]); if (!k2) break;
+              x += d * k2[0]; y += d * k2[1]; pts.push([x, y]); if (Math.abs(y) > 2.6) break;
+            }
+            s.path(pts, { color: 'accent', width: 1.5, alpha: 0.8 });
+          }
+          const rs = rot ? 1 : (z < 1 ? Math.sqrt(1 - z * z) : 0);
+          if (rs > 0) s.circle(0, 0, rs, { fill: rot ? 'orange' : 'muted', fillAlpha: rot ? 0.28 : 0.4, color: rot ? 'orange' : 'ink', width: 2 });
+          if (rot) s.text('stagnant column', 0, 0, { size: 13, color: 'orange', align: 'center' });
+          if (rot && z < 1) s.circle(0, 0, Math.sqrt(1 - z * z), { color: 'ink', width: 1, dash: true });
+          // vertical section at y = probe.y
+          const y0 = pr.y;
+          t.raster((x, zz) => { const q = vel(x, y0, zz); if (!q) return null; const sp = Math.hypot(q[0], q[1]); return v.diverge(clamp((sp - 1) / 0.6, -1, 1)); }, { res: 3, key: `${md.value}|${y0.toFixed(2)}` });
+          t.hline(z, { color: 'gold', dash: true, width: 1.6 });
+          t.vline(pr.x, { color: 'gold', width: 1.6, alpha: 0.7 });
+          const hr = rot ? (Math.abs(y0) < 1 ? Math.sqrt(1 - y0 * y0) : 0) : (Math.hypot(y0, 0) < 1 ? 0 : 0);
+          if (rot && hr > 0) t.rect(-hr, 0, hr, 3, { fill: 'orange', fillAlpha: 0.28, color: 'orange', width: 1.5 });
+          if (!rot && Math.abs(y0) < 1) t.curve((a) => [Math.sqrt(1 - y0 * y0) * Math.cos(a), Math.sqrt(1 - y0 * y0) * Math.sin(a)], 0, Math.PI, { color: 'ink', width: 2 });
+          t.axes();
+        });
+        v.readout(() => {
+          const heights = [0, 0.5, 1, 2, 3].map((zz) => { const q = vel(pr.x, pr.y, zz); return q ? Math.hypot(q[0], q[1]) : 0; });
+          const spread = Math.max(...heights) - Math.min(...heights);
+          return `horizontal speed $|(u,v)|/U$ at the probe $(x,y)=(${v.fix(pr.x, 2)},${v.fix(pr.y, 2)})$, at heights $z=0,\\,0.5,\\,1,\\,2,\\,3$: ${heights.map((q) => v.fix(q, 3)).join(', ')}\nspread over height: $${v.fix(spread, 4)}$ — ${md.value === 'fast' ? 'zero: $\\partial\\mathbf u/\\partial z=0$, the Taylor–Proudman result' : 'not zero: without rotation the flow varies with height'}`;
+        });
       },
     },
   ],

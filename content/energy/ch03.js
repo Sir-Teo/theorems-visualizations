@@ -240,7 +240,7 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
           { n: 'LWR fuel, 50 GWd/t', kg: 50e9 * 86400 / 1e3 / 1e6, L: 50e9 * 86400 / 1e3 / 1e6 * 9.2, col: 'red' },
         ];
         items[6].L = items[6].kg * 19.05; items[7].L = items[7].kg * 9.2;
-        const s = v.stage({ x: [0.05, 3e8], y: [0.2, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 430, xlabel: 'specific energy, MJ/kg', ylabel: 'energy density, MJ/L', minWidth: 340 });
+        const s = v.stage({ x: [0.01, 3e8], y: [0.2, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 430, xlabel: 'specific energy, MJ/kg', ylabel: 'energy density, MJ/L', minWidth: 340 });
         const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, minWidth: 340 });
         const E = v.slider('stored energy (MJ)', 100, 5000, 1000, { step: 50, log: true });
         const usef = v.toggle('compare useful energy (engine vs electric drivetrain)', false);
@@ -248,10 +248,10 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
         const e2 = v.slider('battery drivetrain efficiency', 0.7, 0.95, 0.85, { step: 0.01 });
         const tankSet = ['petrol', 'H₂ 681 atm', 'Li-ion (mid)', 'lead-acid', 'LWR fuel, 50 GWd/t'];
         v.render(() => {
-          for (const rho of [0.1, 1, 10]) s.path([[0.05, 0.05 * rho], [3e8, 3e8 * rho]].filter((p) => p[1] >= 0.2 && p[1] <= 1e10), { color: 'faint', dash: true, width: 1 });
+          for (const rho of [0.1, 1, 10]) { const x0 = Math.max(0.01, 0.2 / rho), x1 = Math.min(3e8, 1e10 / rho); s.path([[x0, x0 * rho], [x1, x1 * rho]], { color: 'muted', dash: true, width: 1, alpha: 0.6 }); }
           for (const it of items) {
             if (it.box) s.rect(it.box[0], it.box[2], it.box[1], it.box[3], { color: it.col, fill: it.col, fillAlpha: 0.2 });
-            s.dot(it.kg, it.L, { r: 6, color: it.col, label: it.n, labelPos: ({ diesel: 'ne', petrol: 'nw', 'H₂ 681 atm': 'e', 'H₂ liquid': 'ne', 'lead-acid': 'n', 'Li-ion (mid)': 'se', 'U-235 fully fissioned': 'sw' })[it.n] || 'ne' });
+            s.dot(it.kg, it.L, { r: 6, color: it.col, label: it.n, labelPos: ({ diesel: 'ne', petrol: 'nw', 'H₂ 681 atm': 'e', 'H₂ liquid': 'ne', 'lead-acid': 'n', 'Li-ion (mid)': 'ne', 'U-235 fully fissioned': 'sw', 'LWR fuel, 50 GWd/t': 'nw' })[it.n] || 'ne' });
           }
           s.textPx('1 kg/L', s.X(2e3), s.Y(2e3) - 10, { size: 10.5, color: 'faint', align: 'right', halo: false });
           // equal-energy squares
@@ -311,7 +311,7 @@ about 17.6 MeV for fusion of deuterium and tritium and about 170–200 MeV for t
           s.dots(BEA.map((r) => [r[0], r[2] / 1000]), { r: 2.2, color: 'accent' });
           const lab = [[4, 'He-4'], [12, 'C-12'], [56, 'Fe-56'], [62, 'Ni-62'], [238, 'U-238']];
           s.dot(62, 8.7946, { r: 5, color: 'green', label: 'Ni-62 8.795', labelPos: 'n' });
-          s.dot(4, 7.074, { r: 4, color: 'purple', label: 'He-4', labelPos: 'n' }); s.dot(12, 7.680, { r: 4, color: 'purple', label: 'C-12', labelPos: 'se' });
+          s.dot(4, 7.074, { r: 4, color: 'purple', label: 'He-4', labelPos: 'se' }); s.dot(12, 7.680, { r: 4, color: 'purple', label: 'C-12', labelPos: 'e' });
           s.dot(238, 7.570, { r: 4, color: 'purple', label: 'U-238', labelPos: 's' });
           R = reaction();
           const bm = (A) => (A === 1 ? 0 : beaOf(A));

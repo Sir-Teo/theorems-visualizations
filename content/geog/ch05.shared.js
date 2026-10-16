@@ -143,23 +143,23 @@ export function conic(kind, f1, f2, f0) {
  */
 export function conicBase(s, v, C, lon0, fa, fb, o = {}) {
   const span = o.span ?? 180, st = o.step ?? 15, pst = o.pstep ?? st, A = fa * D2R, B = fb * D2R, X = (l, f) => C.fwd(l, clamp(f, A, B));
-  const frame = [];
+  const open = o.frame === false, frame = [];
   for (let l = -span; l <= span; l += 3) frame.push(X(l * D2R, A));
   for (let f = fa; f <= fb; f += 3) frame.push(X(span * D2R, f * D2R));
   for (let l = span; l >= -span; l -= 3) frame.push(X(l * D2R, B));
   for (let f = fb; f >= fa; f -= 3) frame.push(X(-span * D2R, f * D2R));
-  s.poly(frame, { fill: 'blue', fillAlpha: 0.07, stroke: false });
+  if (!open) s.poly(frame, { fill: 'blue', fillAlpha: 0.07, stroke: false });
   const gr = [];
   for (let l = Math.ceil(-span / st) * st; l <= span + 1e-9; l += st) { for (let f = fa; f <= fb + 1e-9; f += 3) gr.push(X(l * D2R, f * D2R)); gr.push(null); }
   for (let f = Math.ceil(fa / pst) * pst; f <= fb + 1e-9; f += pst) { for (let l = -span; l <= span + 1e-9; l += 3) gr.push(X(l * D2R, f * D2R)); gr.push(null); }
   s.path(gr, { color: 'muted', width: 0.7, alpha: 0.38 });
   if (o.land !== false) {
-    const L = landFrame(v, lon0), lim = span * D2R, T = (r) => r.map((p) => X(clamp(p[0], -lim, lim), p[1]));
+    const L = landFrame(v, lon0), lim = open ? 10 : span * D2R, T = (r) => r.map((p) => X(clamp(p[0], -lim, lim), p[1]));
     s.rings(L.fills.map(T), { fill: 'gold', fillAlpha: 0.26, stroke: false });
     const out = []; for (const pl of L.lines) out.push(...T(pl), null);
     s.path(out, { color: 'gold', width: 0.9, alpha: 0.8 });
   }
-  s.poly(frame, { color: 'faint', width: 1.2, fill: false });
+  if (!open) s.poly(frame, { color: 'faint', width: 1.2, fill: false });
   const xs = frame.map((p) => p[0]), ys = frame.map((p) => p[1]);
   return { x: [Math.min(...xs), Math.max(...xs)], y: [Math.min(...ys), Math.max(...ys)] };
 }

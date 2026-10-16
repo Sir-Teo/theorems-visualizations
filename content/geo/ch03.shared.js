@@ -73,7 +73,7 @@ export function adjustSim({ f, H, eta0 = 1, g = 9.80665, nx = 600, nframes = 160
   const T = f === 0 ? 4 * W / c : 16 / feff, dt = 0.45 * dx / c, nsteps = Math.ceil(T / dt);
   const eta = new Float64Array(nx), v = new Float64Array(nx), u = new Float64Array(nx + 1);
   const xs = new Float64Array(nx);
-  for (let i = 0; i < nx; i++) { xs[i] = -W + (i + 0.5) * dx; eta[i] = xs[i] < 0 ? -eta0 / 2 : eta0 / 2; }
+  for (let i = 0; i < nx; i++) { xs[i] = -W + (i + 0.5) * dx; eta[i] = 0.5 * eta0 * Math.tanh(xs[i] / (1.5 * dx)); }
   const frames = [], every = Math.max(1, Math.floor(nsteps / nframes));
   const snap = (t) => frames.push({ t, eta: Float64Array.from(eta), v: Float64Array.from(v), u: Float64Array.from(u) });
   snap(0);
