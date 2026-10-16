@@ -91,7 +91,7 @@ Scope: smooth straight pipes, fully developed flow. The upper critical number de
           C.hline(1 / (43.79 * NU0), { color: 'green', width: 1.6, dash: [6, 4] });
           const col = { 1: 'blue', 2: 'orange', 3: 'purple' };
           for (const [Tc, re, p] of reTab) C.dot(Tc, re, { r: 5, color: col[p] });
-          C.text('B_s = 43.79 → Re ≈ 12,760', 23.5, 1 / (43.79 * NU0), { align: 'right', dy: -10, size: 11.5, color: 'green', weight: 600 });
+          C.corner('dashed: B_s = 43.79 ⇒ Re ≈ 12,760', 'br', { size: 11.5, color: 'green', weight: 600 });
           if (Re > 8000 && Re < 16000) C.hline(Re, { color: 'gold', width: 2 });
           // ---- resistance data
           const vNow = (Re * nuWater(8)) / 0.00615; // pipe 4, about 8 °C

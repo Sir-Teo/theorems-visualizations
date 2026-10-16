@@ -256,8 +256,8 @@ For first-countable $X$ (metric spaces, say) they are also equivalent to sequent
         const XV = -2.45, YA = -1.65, XI = 2.42;
         const v0 = s.handle(XV, -0.1, { color: 'accent', constrain: (x, y) => [XV, clamp(snap(y), -1.8, 2.6)] });
         const v1 = s.handle(XV, 0.5, { color: 'accent', constrain: (x, y) => [XV, clamp(snap(y), -1.8, 2.6)] });
-        const a0 = s.handle(0.5, YA, { color: 'orange', constrain: (x, y) => [clamp(snap(x), -2.5, 2.5), YA] });
-        const a1 = s.handle(1.0, YA, { color: 'orange', constrain: (x, y) => [clamp(snap(x), -2.5, 2.5), YA] });
+        const a0 = s.handle(1.0, YA, { color: 'orange', constrain: (x, y) => [clamp(snap(x), -2.5, 2.5), YA] });
+        const a1 = s.handle(1.5, YA, { color: 'orange', constrain: (x, y) => [clamp(snap(x), -2.5, 2.5), YA] });
         let st = null;
         v.render(() => {
           const f = PL[fs.value].f, mode = crit.value;
@@ -287,6 +287,7 @@ For first-countable $X$ (metric spaces, say) they are also equivalent to sequent
             s.dot(lo, YA, { r: 4.2, hollow: true, color: 'orange' }); s.dot(hi, YA, { r: 4.2, hollow: true, color: 'orange' });
             drawVSet(s, cfA, XI, { color: 'green', width: 9 });
             drawVSet(s, fcA, XI - 0.17, { color: 'orange', width: 4 });
+            s.text('f(Ā)', XI - 0.17, 2.5, { size: 11, color: 'orange', align: 'center' }); s.text('cl f(A)', XI + 0.02, 2.3, { size: 11, color: 'green', align: 'center' });
             const bad = []; for (let i = 0; i < extra.bp.length; i++) if (extra.pt[i]) bad.push(extra.bp[i]);
             for (const y of bad) { s.hline(y, { color: 'red', width: 1.2, dash: [4, 4], alpha: 0.7 }); s.dot(XI - 0.17, y, { r: 6.5, color: 'red' }); }
             st = { mode, A, cA, fcA, cfA, ok: bad.length === 0, bad };

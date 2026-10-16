@@ -731,6 +731,7 @@ the sum running over integers $k>y$.`,
           for (let m = 0; m < 12; m++) L.path(Array.from({ length: 41 }, (_, i) => { const y = m + 1e-6 + (i / 40) * (1 - 2e-6); return [y, g(y)]; }), { color: 'accent', width: 2.4 });
           const y = H.x, m = Math.floor(y);
           L.vline(y, { color: 'gold', width: 1, dash: [3, 3] });
+          R.setView(null, [0, 1.15 / Math.max(1, m) ** 2]);
           const vals = []; for (let k = m + 1; k <= 14; k++) vals.push(k);
           vals.forEach((k) => R.rect(k - 1, 0, k, 1 / (k * k), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 }));
           R.fn((x) => 1 / (x * x), { domain: [Math.max(0.95, m), 14], color: 'orange', width: 2.2 });
