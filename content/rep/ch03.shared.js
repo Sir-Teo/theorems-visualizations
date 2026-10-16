@@ -6,7 +6,7 @@
 //  * A character table is {rows: [{name, tex, d, vals: [complex per class]}], G}. Complex numbers are pairs [re, im].
 //  * The tables are *data* (the classical tables); every use checks them (orthonormality, column orthogonality) before drawing.
 export * from './ch02.shared.js';
-import { TAU, nm, dihedral, cyclic, permMat, mm, tp, eye, inv, trace } from './ch02.shared.js';
+import { TAU, nm, dihedral, cyclic } from './ch02.shared.js';
 
 // ---------------------------------------------------------------- complex numbers
 export const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
@@ -114,7 +114,7 @@ export function orderClasses(G, reps) {
   if (reps.length !== G.classes.length) throw new Error(`${G.name}: ${G.classes.length} classes but ${reps.length} representatives`);
   const order = reps.map((r) => G.cls[r]);
   if (new Set(order).size !== order.length) throw new Error(`${G.name}: representatives are not in distinct classes`);
-  const list = order.map((i) => ({ ...G.classes[i], rep: reps[reps.length ? order.indexOf(i) : 0] }));
+  const list = order.map((i, k) => ({ ...G.classes[i], rep: reps[k] }));
   list.forEach((c, i) => c.els.forEach((x) => { G.cls[x] = i; }));
   G.classes = list;
   return G;
@@ -141,11 +141,7 @@ export function quaternion() {
   const U = [[0, 1, 2, 3], [1, 0, 3, 2], [2, 3, 0, 1], [3, 2, 1, 0]]; // table of units 1,i,j,k up to sign
   const SG = [[1, 1, 1, 1], [1, -1, 1, -1], [1, -1, -1, 1], [1, 1, -1, -1]]; // sign of unit_a·unit_b
   const L = ['1', '-1', 'i', '-i', 'j', '-j', 'k', '-k'], u = (g) => g >> 1, s = (g) => (g & 1 ? -1 : 1);
-  const mulp = (a, b) => { const sg = s(a) * s(b) * SG[u(a)][u(b)] * (u(a) === 0 || u(b) === 0 ? 1 : 1); return 2 * U[u(a)][u(b)] + (sg < 0 ? 1 : 0); };
-  // sign table for i·i=-1, i·j=k, j·i=-k, …
-  const SGN = [[1, 1, 1, 1], [1, -1, 1, -1], [1, -1, -1, 1], [1, 1, -1, -1]];
-  const m2 = (a, b) => { const sg = s(a) * s(b) * SGN[u(a)][u(b)]; return 2 * U[u(a)][u(b)] + (sg < 0 ? 1 : 0); };
-  void mulp;
+  const m2 = (a, b) => { const sg = s(a) * s(b) * SG[u(a)][u(b)]; return 2 * U[u(a)][u(b)] + (sg < 0 ? 1 : 0); };
   const mul = Array.from({ length: 8 }, (_, a) => Array.from({ length: 8 }, (_, b) => m2(a, b)));
   const G = { n: 8, name: 'Q8', tex: 'Q_8', mul, e: 0, L };
   G.inv = mul.map((r) => r.findIndex((x) => x === 0));
@@ -196,7 +192,7 @@ function s4Table() {
 }
 function a5Table() {
   const G = altGroup(5);
-  orderClasses(G, [0, elOf(G, [1, 0, 3, 2, 4]), elOf(G, [1, 2, 0, 3, 4]), elOf(G, [1, 2, 3, 4, 0]), elOf(G, [2, 3, 4, 0, 1].map((_, i) => ((i * 2 + 2) % 5)))]);
+  orderClasses(G, [0, elOf(G, [1, 0, 3, 2, 4]), elOf(G, [1, 2, 0, 3, 4]), elOf(G, [1, 2, 3, 4, 0]), elOf(G, [2, 3, 4, 0, 1])]);
   const rows = [row('1', '\\mathbf 1', 1, R(1, 1, 1, 1, 1)), row('3', '\\chi_3', 3, R(3, -1, 0, PHI, 1 - PHI)), row("3'", "\\chi_3'", 3, R(3, -1, 0, 1 - PHI, PHI)), row('4', '\\chi_4', 4, R(4, 0, 1, -1, -1)), row('5', '\\chi_5', 5, R(5, 1, -1, 0, 0))];
   return { G, rows, key: 'A5' };
 }
@@ -248,20 +244,33 @@ export const multiplicities = (G, rows, f) => rows.map((r) => ip(G, f, r.vals));
 export const fixedChar = (G, perms) => G.classes.map((c) => [perms[c.rep].reduce((s, x, k) => s + (x === k ? 1 : 0), 0), 0]);
 
 // ---------------------------------------------------------------- irreducible representations (matrices)
-/** The irreducible matrix representations of a few groups (complex matrices per element). */
+/** Standard representation of a permutation group on the sum-zero subspace (orthonormal Helmert basis); complex matrices. */
+export function stdMats(G) {
+  const k = G.perms[0].length, B = [];
+  for (let j = 1; j < k; j++) { const v = Array(k).fill(0); for (let i = 0; i < j; i++) v[i] = 1; v[j] = -j; const l = Math.hypot(...v); B.push(v.map((x) => x / l)); }
+  return G.perms.map((p) => cm(B.map((bi) => B.map((bj) => { const Pb = Array(k).fill(0); bj.forEach((x, t) => { Pb[p[t]] += x; }); return bi.reduce((s, x, t) => s + x * Pb[t], 0); }))));
+}
+/** The irreducible matrix representations (complex matrices per element) of the groups used for group determinants and matrix coefficients. */
 export function irrepMats(key) {
   const { G, rows } = tableOf(key);
-  const lin = (r) => ({ name: r.name, tex: r.tex, d: 1, mats: G.cls.map((ci) => [[r.vals[ci]]]) });
-  const out = rows.filter((r) => r.d === 1).map(lin);
-  if (key === 'S3' || key === 'D4' || key === 'D5' || key === 'D6') {
-    const d2 = rows.filter((r) => r.d === 2);
-    d2.forEach((r, k) => {
-      const m = G.m, th = (TAU * (k + 1)) / m;
-      out.push({ name: r.name, tex: r.tex, d: 2, mats: G.perms.map((_, g) => {
-        const a = g < m ? g : g - m, rot = [[Math.cos(th * a), -Math.sin(th * a)], [Math.sin(th * a), Math.cos(th * a)]];
-        return cm(g < m ? rot : mm(rot.length ? [[1, 0], [0, -1]] : rot, [[1, 0], [0, 1]]).map((r2, i) => r2.map((_x, j) => (i === 0 ? [[1, 0], [0, -1]] : [[1, 0], [0, -1]])[i][j] * 0 + 0)) );
-      }) });
+  const out = rows.filter((r) => r.d === 1).map((r) => ({ name: r.name, tex: r.tex, d: 1, mats: G.cls.map((ci) => [[r.vals[ci]]]) }));
+  const two = (name, tex, mats) => out.push({ name, tex, d: 2, mats });
+  if (key[0] === 'D' || key === 'S3') {
+    const m = G.m;
+    rows.filter((r) => r.d === 2).forEach((r, k0) => {
+      const th = (TAU * (k0 + 1)) / m;
+      two(r.name, r.tex, G.perms.map((_, g) => {
+        const a = g < m ? g : g - m, c = Math.cos(th * a), s = Math.sin(th * a);
+        return cm(g < m ? [[c, -s], [s, c]] : [[c, -s], [-s, -c]]);
+      }));
     });
+  } else if (key === 'Q8') {
+    const I = [0, 1], O = [0, 0], one = [1, 0], mone = [-1, 0], iu = [0, 1], miu = [0, -1];
+    void I; void O;
+    const U = { 0: [[one, O], [O, one]], 2: [[iu, O], [O, miu]], 4: [[O, one], [mone, O]], 6: [[O, iu], [iu, O]] };
+    two(rows[4].name, rows[4].tex, G.L.map((_, g) => (g & 1 ? cscale(U[g - 1], [-1, 0]) : U[g])));
+  } else if (key === 'A4') {
+    out.push({ name: '3', tex: '\\chi_3', d: 3, mats: stdMats(G) });
   }
   return out;
 }
@@ -310,4 +319,3 @@ export function orbitCount(perms, size) {
   for (let x = 0; x < size; x++) { const r = find(x); if (!roots.has(r)) roots.set(r, []); roots.get(r).push(x); }
   return [...roots.values()];
 }
-export { permMat, mm, tp, eye, inv, trace };

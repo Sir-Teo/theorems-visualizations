@@ -81,7 +81,7 @@ export default {
             const n = Math.hypot(t2, x2);
             if (n > 1e-6) S.line(-7 * x2 / n, -7 * t2 / n, 7 * x2 / n, 7 * t2 / n, { color: 'green', dash: [5, 4], width: 1.3, alpha: 0.8 });
             S.arrow(0, 0, x1, t1, { color: 'accent', width: 2.8 }); S.arrow(0, 0, x2, t2, { color: 'orange', width: 2.8 });
-            S.text('A', x1, t1, { dx: 10, dy: -8, color: 'accent', math: true }); S.text('B', x2, t2, { dx: 10, dy: -8, color: 'orange', math: true });
+            if (S === B) S.text('A', x1, t1, { dx: 10, dy: -8, color: 'accent', math: true }); S.text('B', x2, t2, { dx: 10, dy: -8, color: 'orange', math: true });
           }
           const ctn = (2 * l * ta * xa) / (Math.hypot(ta, xa) * Math.hypot(l * xa, l * ta) || 1);
           st = { b, ta, xa, tb, xb, tap, xap, tbp, xbp, ang: (Math.acos(Math.max(-1, Math.min(1, ctn))) * 180) / Math.PI, cls: Math.abs(ta * ta - xa * xa) < 0.05 * (ta * ta + xa * xa) ? 'null' : ta * ta > xa * xa ? 'timelike' : 'spacelike' };
@@ -282,7 +282,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
         v.readout(() => {
           const { al, ct, X, Tt, g1 } = st; if (!ct) return '';
           const trip = (d) => { const ph = Math.acosh(1 + (d * gly * al) / 2); return [2 * ct * ph, 2 * ct * Math.sinh(ph), Math.cosh(ph)]; };
-          const row = (nm, d) => { const [sh, ea, gm] = trip(d); return String.raw`${nm}: ship time ${v.fix(sh, 1)} yr, Earth-frame time ${v.fmt(ea, 3)} yr, peak $\gamma=${v.fix(gm, 0)}$`; };
+          const row = (nm, d) => { const [sh, ea, gm] = trip(d); return String.raw`${nm}: ship time ${v.fix(sh, 1)} yr, Earth-frame time ${v.fmt(ea, 3)} yr, peak $\gamma=${v.fmt(gm, 3)}$`; };
           return String.raw`$\alpha=${v.fix(al, 2)}\,g$ gives $c/\alpha=${v.fix(ct, 3)}$ yr. After $\tau$ the ship has gone ${v.fix(X, 2)} ly in ${v.fix(Tt, 2)} yr of Earth-frame time; $\gamma=${v.fix(g1, 2)}$ (Newton would predict a distance of ${v.fix(0.5 * al * gly * Tt * Tt, 1)} ly).` + '\n' +
             String.raw`Accelerate to the midpoint, flip, decelerate (formula $\tau=\tfrac{2c}{\alpha}\operatorname{arcosh}(1+\alpha d/2c^2)$):` + '\n' +
             row('Proxima Centauri, 4.24 ly', 4.24) + ';\n' + row('a star 100 ly away', 100) + ';\n' + row('Galactic Centre, 26,670 ly', 26670) + '.';
@@ -310,11 +310,11 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
         const hit = (te, xe) => { const c = xe - te; if (c <= 1e-9) return null; const th = (1 - c * c) / (2 * c); return { t: th, x: Math.sqrt(1 + th * th), tau: Math.asinh(th) }; };
         let st = {};
         v.render(() => {
-          A.poly([[-2, -2], [4.5, 4.5], [-2, 4.5]], { fill: 'red', fillAlpha: 0.1, stroke: false });
+          A.poly([[-9, -9], [9, 9], [-9, 9]], { fill: 'red', fillAlpha: 0.1, stroke: false });
           A.line(-2.5, -2.5, 5, 5, { color: 'red', width: 1.8, alpha: 0.8 }); A.line(-2.5, 2.5, 2.5, -2.5, { color: 'gold', width: 1, alpha: 0.4, dash: [4, 4] });
           A.curve((s) => [Math.cosh(s), Math.sinh(s)], -1.9, 1.9, { color: 'accent', width: 3 });
           A.line(0, -3.2, 0, 4, { color: 'ink', width: 1.4, alpha: 0.6 });
-          A.text('horizon $x=ct$', 3.3, 3.5, { color: 'red', size: 12, align: 'center', dx: -26 });
+          A.text('horizon $x=ct$', 3.4, 3.6, { color: 'red', size: 12, align: 'left', dx: 8, dy: 4 });
           const d = dS.value; let nr = 0; const pts = [];
           for (let k = -Math.floor(3 / d); k * d <= 3.5; k++) {
             const te = k * d, h = hit(te, 0);
@@ -384,7 +384,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
           }
           const x0 = 1, x1 = 1 + g * L, y = 1.4;
           B.line(x0, y, x0 + L, y, { color: 'green', width: 4 }); B.line(x0 + L, y, x1, y, { color: broke ? 'red' : 'orange', width: 4 });
-          B.measure(x0, y + 0.5, x1, y + 0.5, `$\\gamma L=${v.fix(g * L, 2)}$`);
+          B.measure(x0, y + 0.5, x1, y + 0.5, `γL = ${v.fix(g * L, 2)}`);
           st = { eta, b, g, L, kb, broke };
         });
         v.legend([['accent', 'rocket A'], ['orange', 'rocket B'], ['green', 'thread, rest length $L$'], ['red', 'stretch / broken thread']]);
@@ -441,7 +441,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
         v.readout(() => {
           const { rho, L, eta, born, Lp, af, ar } = st; if (!L) return '';
           return String.raw`Rear: $\alpha_r=1/\rho=${v.fix(ar, 3)}$ (units $c=1$); front: $\alpha_f=${v.fix(af, 3)}$${born ? String.raw`$=1/(\rho+L)$, smaller by the factor $\rho/(\rho+L)=${v.fix(rho / (rho + L), 3)}$` : String.raw`, equal to $\alpha_r$`}.` + '\n' +
-            String.raw`At rapidity $\varphi=${v.fix(eta, 2)}$ the proper length of the rod is $${v.fix(Lp, 3)}$ (${born ? 'constant' : 'ratio ' + v.fix(Lp / L, 3)}); a free rod launched with the same speed would have $\gamma L=${v.fix(Math.cosh(eta) * L, 3)}$ in the final frame.`;
+            String.raw`At rapidity $\varphi=${v.fix(eta, 2)}$ the proper length of the rod is $${v.fix(Lp, 3)}$ (${born ? 'constant' : 'ratio ' + v.fix(Lp / L, 3)}).`;
         });
       },
     },
@@ -455,7 +455,7 @@ so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. 
 $$\boldsymbol\omega_T=\frac{\gamma^2}{\gamma+1}\,\frac{\mathbf a\times\mathbf v}{c^2},$$
 retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, after one lap the axis has turned by $-2\pi(\gamma-1)$, which for small $\beta$ is about $-\pi\beta^2$.`,
       idea: String.raw`Successive boosts in different directions do not compose to a boost but to a boost and a rotation (the Wigner–Thomas rotation of rel-2.14); a path whose velocity direction keeps changing accumulates such rotations at a rate proportional to $\mathbf a\times\mathbf v$. In the lab frame the Fermi–Walker equation is $\dot{S}^\mu=-(a\cdot S)\,u^\mu$ (rel-3.5): the spin keeps $\eta(S,u)=0$ only if its time component follows the motion. Integrating it for a circle and reading off the rest-frame spin gives a rotation of $-(\gamma-1)\omega$ per unit lab time. In atoms the same kinematics halves the spin–orbit coupling, which is how Thomas resolved the factor-of-two anomaly in the fine structure.`,
-      caption: String.raw`A gyroscope orbits on a circle of radius $1$ at speed $\beta$; the slider counts laps (fractions allowed). The **blue arrow** is its spin in its own rest frame, found by integrating the Fermi–Walker transport equation numerically (the integrator's output is not the formula); the dashed grey arrow is where a Newtonian gyroscope would still point. Right: turns per lap against $\beta$: the integrator (gold dot at your $\beta$) agrees with $\gamma-1$ and tends to the small-speed value $\beta^2/2$.`,
+      caption: String.raw`A gyroscope orbits on a circle of radius $1$ at speed $\beta$; the slider counts laps (fractions allowed). The **blue arrow** is its spin in its own rest frame, found by integrating the Fermi–Walker transport equation numerically (the integrator's output is not the formula); the two grey arrows are the direction of motion and the fixed lab direction where a Newtonian gyroscope would still point. Right: turns per lap against $\beta$: the integrator (gold dot at your $\beta$) agrees with $\gamma-1$ and tends to the small-speed value $\beta^2/2$.`,
       deps: ['rel-2.14', 'rel-3.5'],
       refs: ['Taylor–Wheeler ch. L'],
       tags: ['Thomas precession', 'gyroscope', 'Fermi–Walker transport'],
@@ -534,8 +534,8 @@ retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, aft
         v.legend([['accent', 'vector $V$'], ['orange', 'level lines of $\\Omega$'], ['green', 'level lines of $V_\\flat$']]);
         v.readout(() => {
           const { b, w0, w1, V0, V1, V0p, V1p, w0p, w1p, val, low } = st; if (w0 === undefined) return '';
-          return String.raw`$V^\mu=(${v.fix(V0, 2)},${v.fix(V1, 2)})\to V'^\mu=(${v.fix(V0p, 2)},${v.fix(V1p, 2)})$; ${low ? String.raw`$V_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$ (lowering flips the sign of the space component)` : String.raw`$\omega_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$`}$\to\omega'_\mu=(${v.fix(w0p, 2)},${v.fix(w1p, 2)})$ at $v/c=${v.fix(b, 2)}$.` + '\n' +
-            String.raw`${low ? String.raw`$V_\mu V^\mu$` : String.raw`$\omega_\mu V^\mu$`}$=${v.fix(val, 4)}$ in $S$ and $\omega'_\mu V'^\mu=${v.fix(w0p * V0p + w1p * V1p, 4)}$ in $S'$: the same number.`;
+          return String.raw`$V^\mu=(${v.fix(V0, 2)},${v.fix(V1, 2)})\to V'^\mu=(${v.fix(V0p, 2)},${v.fix(V1p, 2)})$; ${low ? String.raw`$V_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$ (lowering flips the sign of the space component)` : String.raw`$\omega_\mu=(${v.fix(w0, 2)},${v.fix(w1, 2)})$`}$\to ${low ? "V'_\\mu" : "\\omega'_\\mu"}=(${v.fix(w0p, 2)},${v.fix(w1p, 2)})$ at $v/c=${v.fix(b, 2)}$.` + '\n' +
+            String.raw`${low ? String.raw`$V_\mu V^\mu$` : String.raw`$\omega_\mu V^\mu$`}$=${v.fix(val, 4)}$ in $S$ and $${low ? "V'_\\mu" : "\\omega'_\\mu"}V'^\mu=${v.fix(w0p * V0p + w1p * V1p, 4)}$ in $S'$: the same number.`;
         });
       },
     },
@@ -573,7 +573,7 @@ retrograde to the orbit. For uniform circular motion with speed $v=\beta c$, aft
           const T0 = base(kind), L = boost4(bx.value, by.value, 0), T = xf(L, T0);
           let m = 1e-6; for (const r of T) for (const x of r) m = Math.max(m, Math.abs(x));
           for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
-            const x = T[i][j], c = v.diverge ? v.diverge(0.5 + (0.5 * x) / m) : [128, 128, 128];
+            const x = T[i][j], c = v.diverge ? v.diverge(x / m) : [128, 128, 128];
             A.rect(j + 0.04, 3 - i + 0.04, j + 0.96, 3 - i + 0.96, { fill: c, fillAlpha: 1, color: 'faint', width: 1, radius: 4 });
             A.text(v.fix(Math.abs(x) < 5e-4 ? 0 : x, 2), j + 0.5, 3 - i + 0.5, { size: 13, align: 'center', baseline: 'middle', color: 'ink' });
           }
