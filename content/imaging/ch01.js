@@ -2,7 +2,7 @@
 // Part 1 (this file): 1.1–1.5 — linear shift-invariant systems, PSF and convolution, the 2-D Fourier transform,
 // the modulation transfer function, 2-D sampling and aliasing. Part 2 (ch01-b.js): 1.6–1.10 — noise, detectability, resolution, ROC.
 import {
-  bindM, clamp, fx, pct, mean, showImage, frame, psfC, convFFT, convCheck, mtfX, dft2, sheppLogan, render, starAt, barTarget, TAU, FWHM_K,
+  bindM, clamp, fx, pt, pct, mean, showImage, frame, psfC, convFFT, convCheck, mtfX, dft2, sheppLogan, render, starAt, barTarget, TAU, FWHM_K,
 } from './ch01.shared.js';
 
 export default {
@@ -24,10 +24,11 @@ export default {
       refs: ['Prince–Links ch. 2'],
       viz(v) {
         bindM(v.M);
-        const N = 64, st = { x: [0, N], y: [0, N], equal: true, axes: false, height: 280, minWidth: 220 };
+        const N = 64, st = { x: [0, N], y: [0, N], equal: true, axes: false, height: 280, minWidth: 190 };
         const O = v.stage({ ...st, title: 'object: two point sources' });
+        const J = v.stage({ ...st, title: 'image of A alone + image of B alone' });
         const I = v.stage({ ...st, title: 'image of both together' });
-        const R = v.stage({ ...st, title: 'A alone + B alone − together' });
+        const R = v.stage({ ...st, title: 'difference (sum − together)' });
         const sys = v.select('system', [{ value: 'lsi', label: 'linear, shift-invariant' }, { value: 'var', label: 'blur grows to the right' }, { value: 'sat', label: 'saturating (nonlinear)' }], 'lsi');
         const typ = v.select('PSF', [{ value: 'gauss', label: 'Gaussian' }, { value: 'disc', label: 'disc' }, { value: 'motion', label: 'motion blur' }], 'gauss');
         const wid = v.slider('width (px)', 1.5, 12, 6, { step: 0.1 });
@@ -71,16 +72,19 @@ export default {
           }
           const hi = kmax * 1.6, ref = kmax;
           showImage(O, oAB, N, N, { lo: 0, hi: 1 }); frame(O, N, N);
+          const gS = gA.map((x, q) => x + gB[q]);
+          showImage(J, gS, N, N, { lo: 0, hi, id: 'j' }); frame(J, N, N);
           showImage(I, gAB, N, N, { lo: 0, hi }); frame(I, N, N);
           R.heat((x, y) => res[(N - 1 - Math.floor(y)) * N + Math.floor(x)], { range: [-0.5 * ref, 0.5 * ref], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 1, key: `r${++ver}` }); frame(R, N, N);
-          R.corner(sup < 1e-9 * ref ? 'identically 0' : `peak residual ${pct(sup / ref, 1)} of one PSF peak`, 'tl', { color: sup < 1e-9 * ref ? 'green' : 'red', weight: 700, plate: true });
+          if (sup < 1e-9 * ref) R.text('no difference', N / 2, N / 2, { align: 'center', size: 15, color: 'muted' });
+          R.corner(sup < 1e-9 * ref ? 'max 0' : `peak residual ${pt(sup / ref, 1)} of one PSF peak`, 'tl', { color: sup < 1e-9 * ref ? 'green' : 'red', weight: 700, plate: true });
           I.dot(cA[0] + 0.5, N - cA[1] - 0.5, { r: 3, color: 'orange' }); I.dot(cB[0] + 0.5, N - cB[1] - 0.5, { r: 3, color: 'teal' });
           S = { sup: sup / ref, shiftErr: shiftErr / ref, dx, dy, kind };
         });
         v.readout(() => {
           if (!S) return '';
           const lin = S.sup < 1e-9, shi = S.shiftErr < 1e-9;
-          return `**Superposition:** $\\max|\\mathcal S[A]+\\mathcal S[B]-\\mathcal S[A+B]|=${lin ? '0 (rounding error only)' : pct(S.sup, 1) + '\\text{ of one PSF peak}'}$ — the system is ${lin ? '**linear**' : '**not linear**'}.\n**Shift test:** moving $A$ by $(${S.dx},${-S.dy})$ pixels and comparing with the old image moved by the same vector: $\\max$ difference $${shi ? '0 (rounding error only)' : pct(S.shiftErr, 1) + '\\text{ of one PSF peak}'}$ — ${shi ? '**shift-invariant**' : '**not shift-invariant**'}.`;
+          return `**Superposition:** $\\max|\\mathcal S[A]+\\mathcal S[B]-\\mathcal S[A+B]|$ is ${lin ? '0 (rounding error only)' : pt(S.sup, 1) + ' of one PSF peak'}, so the system is ${lin ? '**linear**' : '**not linear**'}.\n**Shift test:** move $A$ by $(${S.dx},${-S.dy})$ pixels and compare with the old image moved by the same vector: the largest difference is ${shi ? '0 (rounding error only)' : pt(S.shiftErr, 1) + ' of one PSF peak'}, so the system is ${shi ? '**shift-invariant**' : '**not shift-invariant**'}.`;
         });
       },
     },
@@ -119,7 +123,7 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
           return cache[k];
         };
         O.onDrag((x, y, ph) => { if (obj.value !== 'paint') { obj.set('paint'); } stamp(x, N - y, brush.value); pver++; v.invalidate(); });
-        const hRow = O.handle(N - 5, 0.3 * N, { color: 'gold', constrain: 'y', label: '' });
+        const hRow = O.handle(N - 5, 0.72 * N, { color: 'gold', constrain: 'y', label: '' });
         let ver = 0, S = null;
         v.render(() => {
           typ.value === 'motion' ? (ang.el.hidden = false) : (ang.el.hidden = true);
@@ -133,9 +137,10 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
           showImage(O, cache.f2, N, N, { lo: 0, hi: 1 }); frame(O, N, N);
           showImage(I, g, N, N, { lo: 0, hi: 1 }); frame(I, N, N);
           const kk = ker.a, kmax = Math.max(...kk);
-          showImage(K, kk, ker.K, ker.K, { lo: 0, hi: kmax, rect: undefined, id: 'k', win: [(45 - ker.K) / 2, (45 + ker.K) / 2, (45 - ker.K) / 2, (45 + ker.K) / 2] });
-          K.rect((45 - ker.K) / 2, (45 - ker.K) / 2, (45 + ker.K) / 2, (45 + ker.K) / 2, { color: 'muted', width: 1 });
-          K.text(`${ker.K} × ${ker.K} samples, peak ${fx(kmax, 3)}`, 22.5, 2, { align: 'center', color: 'muted', size: 12 });
+          const KW = ker.K + 4; K.setView([0, KW], [-1.2, KW]);
+          showImage(K, kk, ker.K, ker.K, { lo: 0, hi: kmax, id: 'k', win: [2, 2 + ker.K, 2, 2 + ker.K] });
+          K.rect(2, 2, 2 + ker.K, 2 + ker.K, { color: 'muted', width: 1 });
+          K.text(`${ker.K} × ${ker.K} samples, peak ${fx(kmax, 3)}`, KW / 2, -0.6, { align: 'center', color: 'muted', size: 12 });
           const row = clamp(N - 1 - Math.floor(hRow.y), 0, N - 1);
           hRow.x = N - 5;
           const line = []; const lineG = [];
@@ -143,7 +148,6 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
           O.line(0, N - row - 0.5, N, N - row - 0.5, { color: 'gold', dash: true, width: 1.4 });
           I.line(0, N - row - 0.5, N, N - row - 0.5, { color: 'gold', dash: true, width: 1.4 });
           P.path(line, { color: 'muted', width: 1.4, alpha: 0.9 }); P.path(lineG, { color: 'accent', width: 2.2 });
-          P.corner('object', 'tl', { color: 'muted', weight: 700 });
           let sf = 0, sg = 0; for (let q = 0; q < f.length; q++) { sf += f[q]; sg += g[q]; }
           S = { err: cache.err, sf, sg, K: ker.K, ver: ++ver };
         });
@@ -239,7 +243,7 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
         v.readout(() => {
           if (!S) return '';
           if (S.wave) return S.extra;
-          return `The mask keeps ${pct(S.kept, 2)} of the spectral energy $\\sum|F|^2$; by Parseval the output image holds that same fraction of $\\sum|f|^2$ (checked: relative mismatch $${S.parseval < 1e-12 ? '<10^{-12}' : v.sci(S.parseval, 1)}$). ${S.hp ? 'With the zero-frequency term removed the output has mean $0$, so grey means zero.' : ''}`;
+          return `The mask keeps ${pt(S.kept, 2)} of the spectral energy $\\sum|F|^2$; by Parseval the output image holds that same fraction of $\\sum|f|^2$ (checked: relative mismatch $${S.parseval < 1e-12 ? '<10^{-12}' : v.sci(S.parseval, 1)}$). ${S.hp ? 'With the zero-frequency term removed the output has mean $0$, so grey means zero.' : ''}`;
         });
       },
     },
@@ -281,8 +285,8 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
               for (let j = 0; j < HH; j++) tile.set(r, j * W);
               const g = convFFT(tile, W, HH, ker, true), gr = g.subarray((HH / 2) * W, (HH / 2 + 1) * W);
               for (let j = 0; j < BH; j++) { obj.set(r, (b * BH + j) * W); img.set(gr, (b * BH + j) * W); }
-              let mx = -1e9, mn = 1e9; for (const x of gr) { mx = Math.max(mx, x); mn = Math.min(mn, x); }
-              meas.push((mx - mn) / (mx + mn));
+              if (bars) { let mx = -1e9, mn = 1e9; for (const x of gr) { mx = Math.max(mx, x); mn = Math.min(mn, x); } meas.push((mx - mn) / (mx + mn)); }
+              else { const F = v.M.fftReal(Array.from(gr)); meas.push((2 * Math.hypot(F.re[k], F.im[k])) / W / (F.re[0] / W)); } // Fourier amplitude over mean = modulation
             });
             cache.obj = obj; cache.img = img; cache.meas = meas;
             cache.curve = Array.from({ length: 201 }, (_, i) => { const f = (0.5 * i) / 200; return [f / PIX, mtfX(ker, f)]; });
@@ -308,7 +312,7 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
           const bars = pat.value === 'bars';
           const th = thr.value;
           const closed = S.gl ? ` For a Gaussian the formula $e^{-2\\pi^2\\sigma^2u^2}=${fx(th, 2)}$ gives $u=${fx(Math.sqrt(-Math.log(th) / (2 * Math.PI ** 2)) / S.sig / PIX, 3)}$ cycles/mm.` : '';
-          return `Resolution limit at ${pct(th, 0)} contrast: ${S.flim == null ? 'not reached below Nyquist' : `$${fx(S.flim, 2)}$ cycles/mm, i.e. line pairs ${fx(1 / S.flim, 2)} mm apart`}.${closed}\n${bars ? 'Bars: the measured points are the contrast transfer function of a square wave, not the MTF, so they need not lie on the curve. Their difference from it: up to $' + fx(S.dev, 2) + '$.' : `Sine gratings: largest distance between the measured contrast and $|H|$ is $${S.dev < 1e-9 ? '<10^{-9}' : v.sci(S.dev, 1)}$ (rounding error).`}`;
+          return `Resolution limit at ${pt(th, 0)} contrast: ${S.flim == null ? 'not reached below Nyquist' : `$${fx(S.flim, 2)}$ cycles/mm, i.e. line pairs ${fx(1 / S.flim, 2)} mm apart`}.${closed}\n${bars ? 'Bars: the measured points are the contrast transfer function of a square wave, not the MTF, so they need not lie on the curve. Their difference from it: up to $' + fx(S.dev, 2) + '$.' : `Sine gratings: largest distance between the measured contrast and $|H|$ is $${S.dev < 1e-9 ? '<10^{-9}' : v.sci(S.dev, 1)}$ (rounding error).`}`;
         });
       },
     },
@@ -340,7 +344,7 @@ In a digital image, $g[m,n]=\sum_{j,k}f[j,k]\,h[m-j,n-k]$. The PSF is normally n
         let S = null;
         v.render(() => {
           const M = Ms.value - (Ms.value % 2), n = nsp.value, star = mode.value === 'star', area = smp.value === 'area';
-          nsp.el.hidden = !star; hW.visible = !star;
+          nsp.el.hidden = !star; hW.visible = !star; C.setView(star ? [-0.56, 0.56] : [-1.06, 1.06], star ? [-0.56, 0.56] : [-1.06, 1.06]);
           let u = hW.x, vv = hW.y; if (!star) { u = Math.round(u * M) / M; vv = Math.round(vv * M) / M; }
           // scene and samples
           let fine, sampled;

@@ -13,6 +13,7 @@ export const FWHM_K = 2 * Math.sqrt(2 * Math.LN2); // FWHM = 2.3548 σ for a Gau
 // ---------------------------------------------------------------- small utilities
 export const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
 export const fx = (x, d = 2) => (Number.isFinite(x) ? x.toFixed(d).replace('-', '−') : '—');
+export const pt = (x, d = 1) => `${fx(100 * x, d)}%`;
 export const pct = (x, d = 1) => `${fx(100 * x, d)}\\%`;
 const nextPow2 = (n) => { let p = 1; while (p < n) p *= 2; return p; };
 export const mean = (a) => { let s = 0; for (const x of a) s += x; return s / a.length; };
