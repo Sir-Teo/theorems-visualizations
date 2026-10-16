@@ -2,7 +2,7 @@
 import { cumRows, nextState, pfmt, edgesOf, STATE_COL, hitProb, leakChain, LEAK_POS, returnProbs, pathOf, uSeq, returnedBy, POLYA_P } from './ch03.shared.js';
 
 /** Graph-kit node specs for the six-state leak chain. */
-const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: i === 5 ? 's' : i < 3 ? (i === 1 ? 'n' : 's') : i === 4 ? 'e' : 's' }));
+const leakNodes = () => LEAK_POS.map(([x, y], i) => ({ id: i, label: String(i), x, y, notePos: ['w', 'n', 's', 's', 's', 'e'][i] }));
 const recolor = (rho, i) => (rho[i] > 1 - 1e-9 ? 'green' : 'red');
 
 export default {
@@ -22,7 +22,7 @@ export default {
         const lam = v.slider('leak $\\lambda$ from state 2', 0, 0.5, 0.2, { step: 0.01, onChange: () => rebuild() });
         const Nex = v.slider('excursions per state', 100, 4000, 800, { log: true, int: true, onChange: () => rebuild() });
         let seed = 5; v.button('resample', () => { seed++; rebuild(); });
-        const s1 = v.stage({ x: [-1.4, 11.2], y: [-0.3, 6.6], axes: false, equal: true, height: 300, title: 'the chain' });
+        const s1 = v.stage({ x: [-0.4, 10.6], y: [-0.2, 6.2], axes: false, equal: true, height: 300, title: 'the chain', weight: 1.2 });
         const s2 = v.stage({ x: [-0.7, 5.7], y: [0, 1.1], axes: 'box', gutter: true, height: 300, xlabel: 'state $i$', ylabel: 'return probability', title: 'excursions that came back' });
         const s3 = v.stage({ x: [0, 4000], y: [0.8, 5000], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'time $n$', ylabel: 'visits up to time $n$', title: 'one long run from state 5 (log scale)' });
         const G = v.graph(s1, { directed: true, layout: 'none', draggable: false, r: 16, nodes: leakNodes(), edges: [] });

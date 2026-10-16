@@ -180,7 +180,7 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           s2.path(walk.slice(0, k + 1).map((w, i) => [i, w]), { color: 'accent', width: 2.6 });
           s2.hline(-1, { color: 'green', dash: true, width: 2 });
           s2.dot(k, walk[k], { color: 'gold', r: 5 });
-          if (isFinite(Tsize)) { s2.dot(Tsize, -1, { color: 'green', r: 6 }); s2.text(`$T=${Tsize}$`, Tsize, -1, { color: 'green', dy: 14, size: 13 }); }
+          if (isFinite(Tsize)) { s2.dot(Tsize, -1, { color: 'green', r: 6 }); s2.text(`$T=${Tsize}$`, Tsize, -1, { color: 'green', dy: 16, dx: -6, align: 'right', size: 13 }); }
           s3.bars(sim.slice(1, NB + 1), { x0: 1, dx: 1, color: 'accent' });
           law.slice(1).forEach((q, i) => s3.dot(i + 1, q, { color: 'ink', r: 3.5 }));
         });
