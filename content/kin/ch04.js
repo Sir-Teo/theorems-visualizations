@@ -175,13 +175,13 @@ The observed rate constant is $k_{\rm eff}=Kk_2/(1+K)$, which reduces to $Kk_2$ 
           s.path(P(0).map(([t]) => [t, Kv * Math.exp(-keff * t) / (1 + Kv)]), { color: 'muted', dash: [2, 3], width: 1.6 });
           g.fn((x) => lam(Kv, km, x), { color: 'accent', width: 2.4, domain: [0.01, 300] });
           g.fn((x) => Kv * x / (1 + Kv), { color: 'orange', width: 1.8, dash: true, domain: [0.01, 300] });
-          g.fn((x) => Kv * km * x / (km + x) / (1 + 0) * 1, { color: 'purple', width: 1.5, dash: [2, 3], domain: [0.01, 300] });
+          g.fn((x) => Kv * km * x / (km + x), { color: 'purple', width: 1.5, dash: [2, 3], domain: [0.01, 300] });
           g.vline(km, { color: 'faint', dash: true });
           g.dot(k2, Math.max(lamS, 1.2e-3), { r: 6, color: 'gold' });
           const Pexact = sol.at(T / 2)[2], Ppre = 1 - Math.exp(-keff * T / 2);
           info = { keff, lamS, k2, km, Pexact, Ppre, T, Bratio: sol.at(T / 2)[1] / Math.max(1e-12, sol.at(T / 2)[0]) };
         });
-        v.legend([['accent', 'A (full)'], ['orange', 'B (full)'], ['green', 'P (full)'], ['ink', 'P pre-equilibrium', { dash: true }], ['muted', 'B = K·A', { dash: [2, 3] }], ['purple', 'steady-state B', { dash: [2, 3] }]]);
+        v.legend([['accent', 'A (full)'], ['orange', 'B (full)'], ['green', 'P (full)'], ['ink', 'P pre-equilibrium', { dash: true }], ['muted', 'B = K·A', { dash: [2, 3] }], ['purple', 'steady-state rate constant', { dash: [2, 3] }]]);
         v.readout(() => `$k_2/k_{-1}=${nz(v, info.k2 / info.km, 2)}$ — ${info.k2 / info.km < 0.1 ? 'the first step stays at equilibrium' : 'the equilibrium is being drained'}. Exact slow rate constant $${nz(v, info.lamS)}$ s$^{-1}$, pre-equilibrium $Kk_2/(1+K)=${nz(v, info.keff)}$ s$^{-1}$.\nHalfway through the run [B]/[A] $=${v.fix(info.Bratio, 3)}$ against $K=${v.fix(K.value, 3)}$; [P] exact $${v.fix(info.Pexact, 3)}$, pre-equilibrium $${v.fix(info.Ppre, 3)}$.`);
       },
     },

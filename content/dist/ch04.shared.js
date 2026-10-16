@@ -187,7 +187,7 @@ export function mxSim(v, getSpec, o = {}) {
   };
   Z.act = act;
   Z.run = (ps) => { for (const p of ps) act(p); };
-  Z.explore = () => { const sp = getSpec(); if (!Z.cache.has(sp.id)) Z.cache.set(sp.id, explore(sp, { limit: o.limit || 120000 })); Z.ex = Z.cache.get(sp.id); return Z.ex; };
+  Z.explore = () => { const sp = getSpec(); if (!Z.cache.has(sp.id)) Z.cache.set(sp.id, explore(o.exploreSpec ? o.exploreSpec(sp) : sp, { limit: o.limit || 120000 })); Z.ex = Z.cache.get(sp.id); return Z.ex; };
   Z.btn = [];
   for (let p = 0; p < nMax; p++) Z.btn.push(v.button(`step P${p}`, () => act(p)));
   v.button('20 random steps', () => { if (Z.spec !== getSpec()) reset(); const r = mulberry32(1000 + Z.seed++); for (let k = 0; k < 20; k++) act(Math.floor(r() * Z.spec.n)); });
