@@ -178,13 +178,14 @@ export default {
           // fraction curve
           const cu = curveOf(ls.value);
           Cc2.path(cu, { color: 'accent', width: 2.6 });
+          Cc2.setView([0.003, 1.5], [0, Math.max(0.1, 1.15 * Math.max(...cu.map((q) => q[1])))]);
           Cc2.dot(e, cv.frac, { r: 6, color: 'gold' });
           info = { e, area: cv.area, frac: cv.frac, hint: LAND[ls.value].hint, c, covered: cv.bins[clamp(Math.floor(((c - D.lo) / (D.hi - D.lo)) * NB), 0, NB - 1)] };
         });
         v.readout(() => {
           if (!info) return '';
           const p = (x) => v.fix(100 * x, 1);
-          return `$\\varepsilon=${v.fix(info.e, 3)}$: the region $|\\nabla h|<\\varepsilon$ covers **${p(info.area)}\\%** of the window, but the values $h$ takes on it fill only **${p(info.frac)}\\%** of the value range. This landscape has ${info.hint}.\nThe level $c=${v.fix(info.c, 3)}$ is ${info.covered ? 'inside the orange set: it is (nearly) a critical value for this $\\varepsilon$.' : 'outside the orange set: a regular value, whose level curve (orange, left) is smooth.'}`;
+          return `$\\varepsilon=${v.fix(info.e, 3)}$: the region $|\\nabla h|<\\varepsilon$ covers **${p(info.area)}%** of the window, but the values $h$ takes on it fill only **${p(info.frac)}%** of the value range. This landscape has ${info.hint}.\nThe level $c=${v.fix(info.c, 3)}$ is ${info.covered ? 'inside the orange set: it is (nearly) a critical value for this $\\varepsilon$.' : 'outside the orange set: a regular value, whose level curve (orange, left) is smooth.'}`;
         });
       },
     },
@@ -215,7 +216,7 @@ export default {
             return [x1, y, z1, w2];
           };
           const amp = Math.max(0.6, 1.3 * (Math.abs(Math.sin(a)) * 1.2 + Math.abs(Math.sin(b)) * 2 + L));
-          S3.surface((u, vv) => rot(KB(u, vv, L)).slice(0, 3), [0, TAU], [0, TAU], { nu: 72, nv: 36, alpha: 0.96, colorFn: (u, vv) => v.diverge(clamp(rot(KB(u, vv, L))[3] / amp, -1, 1), 'blue', 'orange') });
+          S3.surface((u, vv) => rot(KB(u, vv, L)).slice(0, 3), [0, TAU], [0, TAU], { nu: 72, nv: 36, alpha: 0.96, colorFn: (u, vv) => v.mix('blue', 'orange', (clamp(rot(KB(u, vv, L))[3] / amp, -1, 1) + 1) / 2) });
           S3.curve((u) => rot(KB(u, 0, L)).slice(0, 3), 0, TAU, { n: 160, color: 'red', width: 3 });
           S3.curve((u) => rot(KB(u, PI, L)).slice(0, 3), 0, TAU, { n: 160, color: 'green', width: 3 });
           const pairs = kbCandidates();
@@ -229,7 +230,7 @@ export default {
         });
         v.readout(() => {
           if (!info) return '';
-          return `Smallest distance between two points of $K$ that are not parameter-neighbours (mesh $\\approx0.1$): in $\\mathbb R^4$ **${v.fix(info.m4, 3)}** (the sheets along $v=0,\\pi$ are $2\\lambda=${v.fix(2 * info.L, 2)}$ apart); in the current $3$D projection **${v.fix(info.m3, 3)}**.\n${info.m4 > 0.15 ? 'In $\\mathbb R^4$ the surface does not touch itself: an embedding.' : 'At $\\lambda\\approx0$ the sheets meet in $\\mathbb R^4$ too: only an immersion.'} ${info.m3 < 0.12 ? 'The projection to $\\mathbb R^3$ still has a self-intersection (red/green curves overlap).' : 'This projection seems to separate the sheets, at the resolution of the mesh.'}`;
+          return `Smallest distance between two points of $K$ that are not parameter-neighbours (mesh $\\approx0.1$): in $\\mathbb R^4$ **${v.fix(info.m4, 3)}** (the two sheets along $v=0,\\pi$ differ by $2\\lambda=${v.fix(2 * info.L, 2)}$ in $w$); in the current $3$D projection **${v.fix(info.m3, 3)}**.\n${info.m4 > 0.15 ? 'In $\\mathbb R^4$ the surface does not touch itself: an embedding.' : 'At $\\lambda\\approx0$ the sheets meet in $\\mathbb R^4$ too: only an immersion.'} Near $0$ in the $3$D projection means a visible self-intersection; since the Klein bottle has no embedding in $\\mathbb R^3$ one always remains, though on this mesh a shallow crossing can show a value above $0.1$.`;
         });
       },
     },
@@ -248,7 +249,7 @@ export default {
       viz(v) {
         const eps = v.slider('tolerance $\\varepsilon$', 0.01, 0.5, 0.1, { log: true, sig: 2 });
         const np = v.select('patches', ['1', '2', '3', '4'], '3');
-        const amp = v.slider('roughness', 0.1, 1.2, 0.7, { step: 0.01 });
+        const amp = v.slider('roughness', 0.1, 1.2, 0.5, { step: 0.01 });
         let seed = 7;
         v.button('resample', () => { seed += 11; });
         const A = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 320, weight: 1, minWidth: 270, title: 'the maps $f$ (grey) and $g$ (blue)' });
@@ -309,7 +310,7 @@ export default {
         });
         v.readout(() => {
           if (!info) return '';
-          return `$\\varepsilon=${v.fix(info.e, 3)}$, kernel half-widths $\\rho_i=${info.rhos.map((r) => v.fix(r, 3)).join(',\\ ')}$ (in $t$). Largest error $\\max|g-f|=${v.fix(info.mx, 4)}$ ${info.mx <= info.e + 1e-9 ? '$\\le\\varepsilon$ ✓' : '$>\\varepsilon$ (the widest allowed kernel hit its lower limit)'}.\nLargest turning angle between consecutive samples: $f$: ${v.fix((info.tF * 180) / PI, 1)}^\\circ$, $g$: ${v.fix((info.tG * 180) / PI, 1)}^\\circ$ — $f$ has corners, $g$ is smooth (a finite sum of convolutions with a $C^\\infty$ kernel).`;
+          return `$\\varepsilon=${v.fix(info.e, 3)}$, kernel half-widths $\\rho_i=${info.rhos.map((r) => v.fix(r, 3)).join(',\\ ')}$ (in $t$). Largest error $\\max|g-f|=${v.fix(info.mx, 4)}$ ${info.mx <= info.e + 1e-9 ? '$\\le\\varepsilon$ ✓' : '$>\\varepsilon$ (the widest allowed kernel hit its lower limit)'}.\nLargest turning angle between consecutive samples: $f$: $${v.fix((info.tF * 180) / PI, 1)}^\\circ$, $g$: $${v.fix((info.tG * 180) / PI, 1)}^\\circ$. $f$ has genuine corners; $g$ is smooth, being a finite sum of convolutions with a $C^\\infty$ kernel weighted by smooth functions (its tight turns follow the tolerance, not corners).`;
         });
       },
     },
@@ -378,7 +379,7 @@ export default {
       name: 'Transversality is generic',
       statement: String.raw`(Parametric transversality.) Let $\Phi\colon X\times P\to M$ be a smooth map of manifolds (without boundary, second countable) and $S\subset M$ an embedded submanifold. If $\Phi\pitchfork S$, then for **almost every** parameter $q\in P$ (all outside a set of measure zero) the map $\Phi_q=\Phi(\cdot,q)\colon X\to M$ is transverse to $S$. In particular, for any smooth $f\colon X\to M$ and any $S$ there are arbitrarily small perturbations of $f$ transverse to $S$ (take the parameter space to be a small ball of linear maps added to an embedding in $\R^N$).`,
       idea: String.raw`Look at the manifold $W=\Phi^{-1}(S)$, which is a submanifold of $X\times P$ because $\Phi\pitchfork S$ (3.11). The projection $\pi\colon W\to P$ has a differential that fails to be onto exactly at the points $(x,q)$ where $\Phi_q$ is not transverse to $S$ at $x$: a short linear-algebra check. So the parameters $q$ for which $\Phi_q$ is not transverse are precisely the critical values of $\pi$, and by Sard's theorem (3.8) they form a null set. The generic statement is the engine behind the Whitney theorems and the dimension count of intersections.`,
-      caption: String.raw`The fixed curve $S$ is the wavy closed curve; the moving curve is a small closed curve $C$ translated by $q=(a,b)$. Drag $q$ in the right panel, the parameter plane; on the left you see $S$, $C+q$, their intersection points and the sine of the crossing angle at each. The family $(\sigma,t,\,)\mapsto S(\sigma)-C(t)$ is a map of a torus to the plane whose critical values are exactly the translations with a tangency: the curve drawn in the parameter plane (dots). Choose $\delta$: the random sample points (green) lie farther than $\delta$ from that curve, so the corresponding translates are transverse; the red ones are within $\delta$. As $\delta\to0$ the red share shrinks to $0$.`,
+      caption: String.raw`The fixed curve $S$ is the wavy closed curve; the moving curve is a small closed curve $C$ translated by $q=(a,b)$. Drag $q$ in the right panel, the parameter plane; on the left you see $S$, $C+q$, their intersection points and the sine of the crossing angle at each. The map $(\sigma,t)\mapsto S(\sigma)-C(t)$ is a map of a torus to the plane whose critical values are exactly the translations with a tangency: the curve drawn in the parameter plane (dots). Choose $\delta$: the random sample points (green) lie farther than $\delta$ from that curve, so the corresponding translates are transverse; the red ones are within $\delta$. As $\delta\to0$ the red share shrinks to $0$.`,
       deps: ['mfd-3.11', 'mfd-3.8'],
       refs: ['Lee SM Ch. 6'],
       tags: ['transversality', 'generic'],
@@ -411,7 +412,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const sn = info.pts.length ? Math.min(...info.pts.map((p) => p[2])) : null;
-          return `At $q$: ${info.pts.length} intersection point${info.pts.length === 1 ? '' : 's'}${sn === null ? '' : `, smallest $|\\sin(\\text{crossing angle})|=${v.fix(sn, 3)}$`}; distance from $q$ to the tangency curve: $${v.fix(info.dE, 3)}$ (it is $0$ only on that curve).\nOf $${info.n}$ random translations, **${v.fix(100 * info.bad, 1)}\\%** lie within $\\delta=${v.fix(info.d, 2)}$ of the tangency curve; the share shrinks about linearly with $\\delta$, so the exceptional set has measure zero.`;
+          return `At $q$: ${info.pts.length} intersection point${info.pts.length === 1 ? '' : 's'}${sn === null ? '' : `, smallest $|\\sin(\\text{crossing angle})|=${v.fix(sn, 3)}$`}; distance from $q$ to the tangency curve: $${v.fix(info.dE, 3)}$ (it is $0$ only on that curve).\nOf $${info.n}$ random translations, **${v.fix(100 * info.bad, 1)}%** lie within $\\delta=${v.fix(info.d, 2)}$ of the tangency curve; the share shrinks about linearly with $\\delta$, so the exceptional set has measure zero.`;
         });
       },
     },
@@ -511,8 +512,6 @@ export default {
             for (const r of dedup) G1.dot(r, f(r), { r: 6, color: fp(r) > 0 ? 'green' : 'red' });
             // fold points: critical values
             const crit = []; for (let i = 0; i < 6000; i++) { const th = (TAU * i) / 6000; if ((fp(th) < 0) !== (fp((TAU * (i + 1)) / 6000) < 0)) crit.push(th); }
-            G2.circle(-0.85, 0, 1, { color: 'muted', width: 2 }); G2.circle(0.85 + 0.25, 0, 0.0001, { color: 'muted' });
-            G2.circle(0.35 + 1, 0, 0, {});
             const cx0 = -0.8, cx1 = 1.0, R0 = 0.65;
             G2.circle(cx0, 0, R0, { color: 'muted', width: 2 }); G2.circle(cx1, 0, R0, { color: 'muted', width: 2 });
             G2.text('source $\\theta$', cx0, -R0 - 0.2, { align: 'center', color: 'muted' }); G2.text('target', cx1, -R0 - 0.2, { align: 'center', color: 'muted' });
@@ -524,7 +523,7 @@ export default {
             info = { circ, n: dedup.length, np, nm, d, nearCrit };
           } else {
             const t = tt.value, D = planeData(t), GT = D.GT, TW = D.TW;
-            P2.heat((x, y) => { const I = Math.floor((x + TW) / D.ph), J = Math.floor((y + TW) / D.ph); return I >= 0 && I < GT && J >= 0 && J < GT ? D.cnt[I * GT + J] : 0; }, { range: [0, 7], cmap: 'theme', res: 3, key: 'c' + t.toFixed(3), rect: [-TW, -TW, TW, TW] });
+            P2.heat((x, y) => { const I = Math.floor((x + TW) / D.ph), J = Math.floor((y + TW) / D.ph); return I >= 0 && I < GT && J >= 0 && J < GT ? D.cnt[I * GT + J] : 0; }, { range: [0, 6], cmap: 'theme', res: 3, key: 'c' + t.toFixed(3), rect: [-TW, -TW, TW, TW] });
             const rc = Math.sqrt(t / 3);
             if (t > 1e-6) { P2.curve((th) => { const z = [rc * Math.cos(th), rc * Math.sin(th)], w = D.F(z); return w; }, 0, TAU, { n: 400, color: 'red', width: 2.4 }); P1.circle(0, 0, rc, { color: 'red', width: 2.2 }); }
             else { P2.dot(0, 0, { r: 5, color: 'red' }); P1.dot(0, 0, { r: 5, color: 'red' }); }
@@ -566,7 +565,7 @@ In particular nondegenerate critical points are isolated, and (on a compact mani
         const S3 = v.stage3d({ range: 2.1, height: 340, yaw: -0.55, pitch: 0.5, axes: false, weight: 1, minWidth: 270, title: 'sublevel set $\\{h\\le c\\}$' });
         const C = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'a', ylabel: 'b', xticks: [[0, '0'], [PI, 'π'], [TAU, '2π']], yticks: [[0, '0'], [PI, 'π'], [TAU, '2π']], title: 'angle square' });
         const X = v.stage({ x: [-2, 2], y: [-1.6, 2.2], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'c', ylabel: 'χ', title: '$\\chi(\\{h\\le c\\})$' });
-        const L1 = v.stage({ x: [-0.6, 0.6], y: [-0.6, 0.6], equal: true, axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'a − a_p', ylabel: 'b − b_p', title: '$h-h(p)$ (blue) and its Hessian form (orange)' });
+        const L1 = v.stage({ x: [-0.6, 0.6], y: [-0.6, 0.6], equal: true, axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'Δa', ylabel: 'Δb', title: '$h-h(p)$ (blue) and its Hessian form (orange)' });
         const L2 = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'u₁', ylabel: 'u₂', title: 'normal form $\\pm u_1^2\\pm u_2^2$' });
         let info = null;
         v.render(() => {

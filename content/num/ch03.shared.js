@@ -104,9 +104,9 @@ export const cabs = (a) => Math.hypot(a[0], a[1]);
 
 /** Logarithmic potential U(z) = int log|z - t| dmu(t) of the equispaced (uniform) and Chebyshev (arcsine) measures on [-1,1]. */
 export function potEqui(x, y) {
-  // U = -1 + Re[ (z+1)log(z+1) - (z-1)log(z-1) ] / 2
-  const l1 = Math.log(Math.hypot(x + 1, y)), a1 = Math.atan2(y, x + 1), l2 = Math.log(Math.hypot(x - 1, y)), a2 = Math.atan2(y, x - 1);
-  return -1 + 0.5 * ((x + 1) * l1 - y * a1 - ((x - 1) * l2 - y * a2));
+  // U = -1 + Re[ (z+1)log(z+1) - (z-1)log(z-1) ] / 2   (the limit 0·log 0 = 0 at z = ±1)
+  const t = (a) => { const r = Math.hypot(a, y); if (r === 0) return 0; return a * Math.log(r) - y * Math.atan2(y, a); };
+  return -1 + 0.5 * (t(x + 1) - t(x - 1));
 }
 export function potCheb(x, y) {
   // U = log |(z + sqrt(z^2-1))/2|, choosing the root with |.| >= 1

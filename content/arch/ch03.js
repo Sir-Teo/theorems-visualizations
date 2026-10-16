@@ -228,7 +228,7 @@ export default {
       name: 'Heyman’s assumptions for masonry',
       statement: String.raw`Heyman’s limit analysis of masonry rests on three assumptions about the material: **(1)** masonry has no tensile strength, so joints open freely; **(2)** its compressive strength is so large that crushing does not decide anything (stresses are low and the strength is treated as unlimited); **(3)** one stone cannot slide on another (the friction is enough). Under them a masonry structure behaves as a rigid-plastic system whose only way to fail is by forming hinges where the line of thrust touches the surface of the stone, and the safe theorem (arch-3.5) applies. The assumptions are good approximations for typical stone arches and vaults; they are not laws, and each one has a failure mode that appears when it is dropped: crushing at a hinge, sliding along a joint, and, if tension is allowed, extra capacity that cannot be relied on.`,
       idea: String.raw`Each assumption removes one way for a joint to yield. Zero tension means a joint carries only a compressive resultant that lies inside the section, so the admissible region for the line of thrust is the stone itself (arch-3.2). Unlimited compression lets the resultant touch the surface, so a hinge is a point; with a finite strength $\sigma$ the force $F$ needs a contact length, and a triangular stress block puts the line at least $2F/3\sigma$ from the edge. No sliding lets the force cross a joint at any angle to its normal; with a friction coefficient $\mu$ the angle must stay below $\arctan\mu$. All three are linear inequalities on the thrust line, so each relaxation shrinks the set of admissible lines and can only lower the collapse load, apart from a ductile bond strength, which enlarges the set but is brittle in real mortar.`,
-      caption: String.raw`A point load stands on the extrados of an arch of 10 m span (slide it and change the ring thickness). The bars are the collapse loads: first under Heyman's three assumptions (hinges only), then with a finite friction coefficient, with a finite compressive strength, and with a bond (tensile) strength, each computed with the slider values below. Switch the three toggles on to combine relaxations: the picture shows the thrust line at collapse, hinges as discs, sliding joints as orange bars, and the readout names the mode that governs. The strengths are illustrative values, not data for any particular masonry.`,
+      caption: String.raw`A point load stands on the extrados of an arch of 10 m span (slide it and change the ring thickness). The bars are the collapse loads: first under Heyman's three assumptions (hinges only), then with a finite friction coefficient, with a finite compressive strength, and with a bond (tensile) strength, each computed with the slider values below ("falls" means no thrust line fits even before the load is added), and finally the combination selected by the toggles. Switch the three toggles on to combine relaxations: the picture shows the thrust line at collapse, hinges as discs, sliding joints as orange bars, and the readout names the mode that governs. The strengths are illustrative values, not data for any particular masonry.`,
       deps: ['arch-3.3'],
       see: ['arch-3.5', 'solid-4.10'],
       refs: ['Heyman'],
@@ -239,11 +239,11 @@ export default {
       viz(v) {
         const N = 24, R = 5, P0 = 50;
         const tS = v.slider('ring thickness t (m)', 0.3, 1.2, 0.8, { step: 0.01 }), xS = v.slider('load position x (m)', -4.6, 4.6, -2.5, { step: 0.05 });
-        const fT = v.toggle('finite friction', false), muS = v.slider('friction coefficient μ', 0.1, 1, 0.3, { step: 0.01 });
-        const cT = v.toggle('finite compressive strength', false), sgS = v.slider('σ (MPa)', 0.05, 50, 0.5, { log: true });
-        const bT = v.toggle('bond (tension) strength', false), btS = v.slider('σt (kPa)', 0, 600, 200, { step: 10 });
+        const fT = v.toggle('finite friction', false), muS = v.slider('friction coefficient μ', 0.1, 1, 0.42, { step: 0.01 });
+        const cT = v.toggle('finite compressive strength', false), sgS = v.slider('σ (MPa)', 0.05, 50, 1.2, { log: true });
+        const bT = v.toggle('bond (tension) strength', false), btS = v.slider('σt (kPa)', 0, 600, 40, { step: 10 });
         const A = v.stage({ x: [-6.2, 6.2], y: [-0.5, 5.8], equal: true, axes: false, height: 330, weight: 1.5, title: 'the arch at collapse' });
-        const Bc = v.stage({ x: [0.4, 4.6], y: [0, 100], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, ylabel: 'collapse load (kN/m)', title: 'which assumption protects against what' });
+        const Bc = v.stage({ x: [0.4, 5.6], y: [0, 100], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, ylabel: 'collapse load (kN/m)', title: 'which assumption protects against what' });
         const cache = new Map();
         const run = (g, loads, useMu, useSig, useBond, key) => {
           const k = `${key}|${useMu ? muS.value : '-'}|${useSig ? sgS.value : '-'}|${useBond ? btS.value : '-'}`;
@@ -267,11 +267,11 @@ export default {
           const base = run(g, loads, false, false, false, key), onlyMu = run(g, loads, true, false, false, key), onlySg = run(g, loads, false, true, false, key), onlyBd = run(g, loads, false, false, true, key);
           const cur = run(g, loads, use[0], use[1], use[2], key);
           const lams = [base, onlyMu, onlySg, onlyBd].map((r) => (r ? r.lam * P0 : 0)), curL = cur ? cur.lam * P0 : 0;
-          const ymax = Math.max(10, ...lams, curL) * 1.18; Bc.setView([0.4, 4.6], [0, ymax]);
-          Bc.bars(lams, { x0: 1, dx: 1, color: (val, i) => ['green', 'orange', 'red', 'purple'][i], width: 0.55 });
-          if (cur) Bc.bars([curL], { x0: 4.45, dx: 1, color: () => 'accent', width: 0.28 });
-          lams.forEach((l, i) => Bc.text(l.toFixed(0), 1 + i, l, { dy: -10, size: 11.5, color: 'ink', align: 'center' }));
-          Bc.setTicks([[1, 'Heyman'], [2, 'friction'], [3, 'crushing'], [4, 'bond']], null);
+          const ymax = Math.max(10, ...lams, curL) * 1.18; Bc.setView([0.4, 5.6], [0, ymax]);
+          const rs = [base, onlyMu, onlySg, onlyBd, cur];
+          Bc.bars([...lams, curL], { x0: 1, dx: 1, color: (val, i) => ['green', 'orange', 'red', 'purple', 'accent'][i], width: 0.55 });
+          rs.forEach((r, i) => Bc.text(r ? ([...lams, curL][i]).toFixed(0) : 'falls', 1 + i, r ? [...lams, curL][i] : 0, { dy: -10, size: 11.5, color: r ? 'ink' : 'red', align: 'center' }));
+          Bc.setTicks([[1, 'Heyman'], [2, 'friction'], [3, 'crushing'], [4, 'bond'], [5, 'selected']], null);
           // governing mode
           let mode = 'four-hinge mechanism (Heyman’s only failure)';
           if (cur && (use[0] || use[1] || use[2])) {
@@ -296,7 +296,62 @@ export default {
         v.readout(() => {
           if (!M || !M.cur) return 'No thrust line fits even without the load.';
           const rel = ['friction', 'crushing', 'bond'].filter((_, i) => [fT.value, cT.value, bT.value][i]);
-          return `Arch weight ${f2(M.g.W, 0)} kN/m. Under Heyman's assumptions it carries **${f2(M.lams[0], 0)} kN/m** at this position, failing by hinges. With ${rel.length ? rel.join(' + ') : 'none of the relaxations'} switched on: **${f2(M.curL, 0)} kN/m**, ${f2(100 * M.curL / Math.max(1e-9, M.lams[0]), 0)}% of the Heyman value. Governing mode: **${M.mode}**.\nTypical stress check: the hinge force is about ${f2(Math.hypot(...M.cur.u.slice(0, 2)), 0)} kN/m on a ${f2(tS.value, 2)} m joint, ${f2(Math.hypot(...M.cur.u.slice(0, 2)) / tS.value / 1000, 2)} MPa if spread over the whole depth, which is why crushing rarely governs in real stone.`;
+          return `Arch weight ${f2(M.g.W, 0)} kN/m. Under Heyman's assumptions it carries **${f2(M.lams[0], 0)} kN/m** at this position, failing by hinges. With ${rel.length ? rel.join(' + ') : 'none of the relaxations'} switched on: **${f2(M.curL, 0)} kN/m**, ${f2(100 * M.curL / Math.max(1e-9, M.lams[0]), 0)}% of the Heyman value. Governing mode: **${M.mode}**.\nStress check: the force at a hinge is about ${f2(Math.hypot(...M.cur.u.slice(0, 2)), 0)} kN/m on a ${f2(tS.value, 2)} m joint, ${f2(Math.hypot(...M.cur.u.slice(0, 2)) / tS.value / 1000, 2)} MPa if spread over the whole depth (compare it with the strength σ you set).`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.5
+    {
+      num: '3.5',
+      kind: 'Theorem',
+      name: 'Heyman’s safe theorem',
+      statement: String.raw`Take a masonry structure that obeys Heyman’s assumptions (arch-3.4) under given loads. If a line of thrust can be found that is in equilibrium with the loads and lies everywhere inside the masonry, the structure is **safe**: it will not collapse under those loads. The line need not be the one that actually acts, and need not be unique; its existence is enough, and one can search for it with any trial thrust. If no such line exists, safety can no longer be shown and the structure can collapse by forming hinges (arch-3.6). For an arch the admissible lines form a convex family, so the horizontal thrust that goes with them lies in an interval $[H_{\min}, H_{\max}]$ that shrinks to a point when the arch is at the limit of safety.`,
+      idea: String.raw`This is the lower-bound (static) theorem of plastic theory (solid-4.10) for a material with no tensile strength and unlimited compressive strength: a state of equilibrium that violates no yield condition certifies safety, whatever the real state of the structure is. One does not need to know how the real arch is cracked, or how far its supports have moved, only that cracks and small movements let it find some admissible state. For the arch the three unknown reactions $(H, V_0, m_0)$ make every condition "the line crosses joint $j$ inside the stone" a linear inequality, so the admissible lines are a polytope whose extreme thrusts are found by a small linear program. Poleni's argument for the dome of St Peter's, and Hooke's inversion (arch-3.1), both use the idea in this form.`,
+      caption: String.raw`Drag the two end points of the thrust line along the springing joints and set its horizontal thrust with the slider: the line is drawn in equilibrium with the arch's weight and the load, and is green only while it stays inside the stone. The dashed lines are the lowest and highest thrust lines that fit. Try drawing a line that leaves the stone while the buttons show that another one fits: the arch is still safe. Then load it, or thin the ring, until the allowed interval disappears.`,
+      deps: ['arch-3.2', 'arch-3.4'],
+      see: ['solid-4.10', 'arch-4.6'],
+      refs: ['Heyman'],
+      credit: 'Heyman, 1966',
+      scope: String.raw`Plane arch, radial joints, vertical loads, Heyman's assumptions: no tension, no crushing, no sliding.`,
+      tags: ['safe theorem', 'limit analysis'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Line_of_thrust' },
+      viz(v) {
+        const N = 24, tS = v.slider('thickness t / R', 0.08, 0.4, 0.2, { step: 0.005 }), wS = v.slider('point load, share of arch weight', 0, 0.8, 0.2, { step: 0.01 });
+        const hS = v.slider('horizontal thrust H / total load', 0.02, 0.5, 0.25, { step: 0.001 });
+        const A = v.stage({ x: [-1.3, 1.3], y: [-0.25, 1.4], equal: true, axes: false, height: 340, weight: 1.6, title: 'draw a thrust line' });
+        const B = v.stage({ x: [0, 0.5], y: [0, 1], axes: 'box', gutter: true, height: 200, weight: 1, minWidth: 240, xlabel: 'horizontal thrust H / total load', title: 'thrusts that fit' });
+        let G = arch({ R: 1, t: 0.2, N }), M = null, init = false;
+        const proj = (J, x, y) => { const dx = J.b[0] - J.a[0], dy = J.b[1] - J.a[1], t = clamp(((x - J.a[0]) * dx + (y - J.a[1]) * dy) / (dx * dx + dy * dy), 0, 1); return [J.a[0] + t * dx, J.a[1] + t * dy]; };
+        const Lh = A.handle(-1, 0.05, { color: 'green', r: 7, constrain: (x, y) => proj(G.joints[0], x, y) });
+        const Rh = A.handle(1, 0.05, { color: 'green', r: 7, constrain: (x, y) => proj(G.joints[N], x, y) });
+        const Ph = A.handle(-0.5, 1.1, { color: 'gold', r: 7, constrain: (x) => { const xx = clamp(x, -0.92, 0.92); return [xx, extradosY(G, xx)]; } });
+        const setFrom = (u, tl) => { Lh.set(...tl[0].p); Rh.set(...tl[N].p); hS.set(u[0] / M.tot); };
+        v.button('lowest thrust that fits', () => { if (M && M.rg) { const u = M.rg.min; setFrom(u, thrustLine(G, M.loads, u)); } });
+        v.button('highest thrust that fits', () => { if (M && M.rg) { const u = M.rg.max; setFrom(u, thrustLine(G, M.loads, u)); } });
+        v.button('most central line', () => { if (M && M.c) setFrom(M.c.u, thrustLine(G, M.loads, M.c.u)); });
+        v.render(() => {
+          G = arch({ R: 1, t: tS.value, N });
+          const x = Ph.x, loads = [{ x, P: wS.value * G.W, k: blockAt(G, x) }], tot = G.W + loads[0].P, rg = thrustRange(G, loads), c = rg ? centralLine(G, loads) : null;
+          M = { rg, c, loads, tot };
+          if (!init && c) { init = true; const tl0 = thrustLine(G, loads, c.u); Lh.set(...tl0[0].p); Rh.set(...tl0[N].p); hS.set(c.u[0] / tot); }
+          Lh.set(...proj(G.joints[0], Lh.x, Lh.y)); Rh.set(...proj(G.joints[N], Rh.x, Rh.y)); Ph.set(x, extradosY(G, x));
+          drawArch(v, A, G, { fillAlpha: 0.12 });
+          const lw = loads[0].P; if (lw > 1e-6) { const yl = extradosY(G, x); A.arrow(x, yl + 0.0 + 0.1 + 0.5 * wS.value, x, yl + 0.02, { color: 'gold', width: 3, head: 9 }); }
+          if (rg) for (const u of [rg.min, rg.max]) { const tl = thrustLine(G, loads, u); for (let i = 0; i + 1 < tl.length; i++) A.line(tl[i].p[0], tl[i].p[1], tl[i + 1].p[0], tl[i + 1].p[1], { color: 'muted', width: 1.2, dash: [4, 3], alpha: 0.9 }); }
+          const u = uFromEnds(G, loads, [Lh.x, Lh.y], [Rh.x, Rh.y], hS.value * tot), tl = thrustLine(G, loads, u), fits = tl.every((q) => q.inside);
+          drawThrust(v, A, tl, { color: fits ? 'green' : 'red', bad: 'orange', width: 2.8 });
+          M.fits = fits; M.u = u; M.tl = tl;
+          A.corner(fits ? 'your line fits: the arch is safe' : rg ? 'your line leaves the stone, but another one fits: still safe' : 'no line fits: safety cannot be shown', 'tl', { color: fits ? 'green' : rg ? 'muted' : 'red' });
+          // thrust meter
+          if (rg) { B.rect(rg.Hmin / tot, 0.25, rg.Hmax / tot, 0.75, { fill: 'green', fillAlpha: 0.25, color: 'green' }); B.text('allowed', rg.Hmax / tot, 0.5, { size: 11.5, color: 'green', align: 'left', dx: 8 }); }
+          B.line(hS.value, 0.08, hS.value, 0.92, { color: fits ? 'green' : 'red', width: 3 }); B.dot(hS.value, 0.92, { r: 4.5, color: fits ? 'green' : 'red' });
+          B.setView([0, 0.5], [0, 1]);
+        });
+        v.legend([['green', 'your thrust line (green = inside)'], ['muted', 'lowest and highest thrust that fit', { dash: true }], ['gold', 'load']]);
+        v.readout(() => {
+          if (!M) return '';
+          const { rg, tot } = M;
+          return rg ? `Total load ${f2(tot, 1)} kN/m (arch ${f2(G.W, 1)} + point load ${f2(M.loads[0].P, 1)}). The thrusts that fit lie between $H_{\\min} = ${f2(rg.Hmin, 2)}$ and $H_{\\max} = ${f2(rg.Hmax, 2)}$ kN/m (${f2(rg.Hmin / tot, 3)} to ${f2(rg.Hmax / tot, 3)} of the load); yours is ${f2(hS.value * tot, 2)}. **Safe theorem: at least one line fits, so the arch stands.**` : `No thrust line fits inside this ring under this load, so the safe theorem gives no certificate; the arch can collapse (see the next item for how).`;
         });
       },
     },

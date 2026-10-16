@@ -206,6 +206,14 @@ export function hilbertInv(n) {
 export const hilbertKappa = (M, n) => M.svd(hilbert(n)).S[0] * M.svd(hilbertInv(n)).S[0];
 
 // ---------- small utilities ----------
+/** Scientific notation as TeX with a carry fix (9.96 → 1.0×10^1), 2 significant digits by default. */
+export function sciT(x, d = 1) {
+  if (!isFinite(x)) return '\\infty';
+  if (Math.abs(x) < 1e-300) return '0';
+  let e = Math.floor(Math.log10(Math.abs(x))), m = x / 10 ** e;
+  if (Number(Math.abs(m).toFixed(d)) >= 10) { e += 1; m = x / 10 ** e; }
+  return `${m.toFixed(d)}\\times10^{${e}}`;
+}
 export const log10 = (x) => Math.log10(x);
 /** Floor a value for a log axis. */
 export const lg = (x, floor = 1e-17) => Math.max(floor, x);

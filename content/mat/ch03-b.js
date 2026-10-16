@@ -45,6 +45,8 @@ function pinch(st) {
     const X = segHit(P[i], P[i + 1], P[j], P[j + 1]);
     if (X) {
       const loop = [X, ...P.slice(i + 1, j + 1).map((p) => [...p])];
+      let ar = 0; for (let k = 0; k < loop.length; k++) { const p = loop[k], q = loop[(k + 1) % loop.length]; ar += p[0] * q[1] - q[0] * p[1]; }
+      if (ar > 0) loop.reverse(); // the emitted loop has the Burgers vector of the source, so it expands under the same stress (outward normal on the left)
       st.loops.push(resample(loop, true));
       st.line = resample([...P.slice(0, i + 1).map((p) => [...p]), X, ...P.slice(j + 1).map((p) => [...p])], false);
       st.emitted++;
@@ -117,9 +119,9 @@ export default {
       viz(v) {
         let S;
         const reset = () => S.reset();
-        const tauS = v.slider('applied stress $\\tau/\\tau_c$', 0.2, 2.2, 1.4, { step: 0.01, onChange: reset });
+        const tauS = v.slider('applied stress $\\tau/\\tau_c$', 0.2, 2.2, 1.25, { step: 0.01, onChange: reset });
         const Ls = v.slider('pin spacing $L$ (µm)', 0.1, 3, 1, { step: 0.05 });
-        const TS = 0.25; // simulated time per second of animation clock
+        const TS = 0.12; // simulated time per second of animation clock
         S = v.sim(() => ({ line: resample([[-0.5, 0], [0.5, 0]], false), loops: [], emitted: 0, n: 0, maxY: 0 }), (st, dt) => {
           const tau = 2 * tauS.value;
           relaxStep(st.line, false, tau, dt);
@@ -129,9 +131,9 @@ export default {
             let guard = 0; while (pinch(st) && guard++ < 3);
             st.maxY = Math.max(...st.line.map((p) => p[1]));
           }
-          if (st.n % 150 === 0) { st.line = resample(st.line, false); st.loops = st.loops.map((lp) => resample(lp, true)).filter((lp) => { let mx = 0; for (const p of lp) mx = Math.max(mx, Math.hypot(p[0], p[1] - 0.3)); return mx < 3.6; }); }
+          if (st.n % 150 === 0) { st.line = resample(st.line, false); st.loops = st.loops.map((lp) => resample(lp, true)).filter((lp) => { let mx = 0; for (const p of lp) mx = Math.max(mx, Math.hypot(p[0], p[1] - 0.3)); return mx < 6; }); }
         }, { dt: 1e-4, maxSteps: 40000 });
-        const A = v.stage({ x: [-1.6, 1.6], y: [-0.7, 1.6], equal: true, axes: false, height: 400, weight: 1.5, title: 'pinned dislocation segment on its glide plane' });
+        const A = v.stage({ x: [-2.8, 2.8], y: [-2.2, 3.2], equal: true, axes: false, height: 400, weight: 1.5, title: 'pinned dislocation segment on its glide plane' });
         const B = v.stage({ x: [0, 2.2], y: [0, 0.62], axes: 'box', gutter: true, height: 400, weight: 0.85, minWidth: 260, xlabel: 'applied stress  $\\tau/\\tau_c$', ylabel: 'bow height  $h/L$', title: 'steady bow height' });
         const hAn = (r) => { if (r > 1) return NaN; const R = 0.5 / r; return R - Math.sqrt(R * R - 0.25); };
         let info = null;
@@ -144,8 +146,8 @@ export default {
           st.loops.forEach((lp, k) => A.path([...lp, lp[0]], { color: 'orange', width: 2, alpha: 0.35 + 0.6 * (k + 1) / st.loops.length }));
           A.path(st.line, { color: 'accent', width: 3.5 });
           A.dot(-0.5, 0, { r: 7, color: 'ink', fill: 'ink' }); A.dot(0.5, 0, { r: 7, color: 'ink', fill: 'ink' });
-          A.arrow(0, -0.25, 0, -0.05, { color: 'red', width: 2.5, head: 9 }); A.text('force $\\tau b$ per length', 0.15, -0.3, { color: 'red', size: 11, align: 'left' });
-          A.text(`$L$`, 0, -0.5, { color: 'muted', size: 12 });
+          A.arrow(0, -0.35, 0, -0.08, { color: 'red', width: 2.5, head: 9 }); A.text('force $\\tau b$ per length', 0.15, -0.45, { color: 'red', size: 11, align: 'left' });
+          A.text(`$L$`, 0, -0.75, { color: 'muted', size: 12 });
           // right panel
           B.fn((x) => hAn(x), { domain: [0.02, 1], color: 'green', width: 2.5 });
           B.vline(1, { color: 'red', dash: [5, 4], width: 1.4 }); B.text('$\\tau_c$: semicircle', 1.03, 0.03, { color: 'red', size: 11, align: 'left' });
@@ -153,7 +155,7 @@ export default {
           if (r <= 1) B.dot(r, hAn(r), { r: 6, color: 'green', fill: 'green' });
           if (r <= 1) B.dot(r, st.maxY, { r: 6, color: 'accent', hollow: true, width: 2 });
           info = { r, h: hAn(r), sim: st.maxY, emitted: st.emitted, loops: st.loops.length };
-        }, { period: 14, still: 8 });
+        }, { period: 16, still: 11 });
         v.legend([['accent', 'dislocation line (simulated)'], ['green', 'analytic arc $R=Gb/2\\tau$', { dash: true }], ['orange', 'emitted loops']]);
         v.readout(() => {
           if (!info) return '';
@@ -182,15 +184,16 @@ export default {
         const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 400, weight: 1.1, title: 'dislocations on their glide planes (unit box)' });
         const B = v.stage({ x: [0, 14], y: [0, 4], axes: 'box', gutter: true, height: 400, weight: 1, minWidth: 270, xlabel: '$\\sqrt\\rho$  (box units)', ylabel: '$\\tau/(Gb)$ × box length', title: 'flow stress against √density' });
         let timer = null; v.onCleanup(() => clearTimeout(timer));
-        const run = () => { res = dddTest(Ns.value, seed, null); if (res.flow != null) { const k = sweep.findIndex((q) => q.n === res.n0 && q.seed === seed); const row = { n: res.n0, y: res.flow / (2 * Math.PI * (1 - NU8)), seed, you: true }; if (k < 0) sweep.push(row); } };
+        const run = () => { res = dddTest(Ns.value, seed, null); if (res.flow != null) { const k = sweep.findIndex((q) => q.n === res.n0 && q.seed === seed); const row = { n: res.n0, y: res.flow / (2 * Math.PI * (1 - NU8)), seed }; if (k < 0) sweep.push(row); } };
         v.button('Run stress test', () => { run(); });
         v.button('New random ensemble', () => { seed++; run(); });
-        v.button('Density sweep (N = 12…100)', () => {
-          const todo = []; for (const n of [12, 20, 30, 45, 65, 100]) for (let k = 0; k < 3; k++) todo.push([n, 100 + k + n]);
+        const sweepRun = (ns, nseed) => {
+          const todo = []; for (const n of ns) for (let k = 0; k < nseed; k++) todo.push([n, 100 + k + n]);
           const loop = () => { const q = todo.shift(); if (!q) return; const r = dddTest(q[0], q[1], null); if (r.flow != null) sweep.push({ n: r.n0, y: r.flow / (2 * Math.PI * (1 - NU8)), seed: q[1] }); v.invalidate(); timer = setTimeout(loop, 5); };
           loop();
-        });
-        timer = setTimeout(() => { run(); v.invalidate(); }, 10);
+        };
+        v.button('Density sweep (N = 12…100)', () => sweepRun([12, 20, 30, 45, 65, 100], 3));
+        timer = setTimeout(() => { run(); v.invalidate(); timer = setTimeout(() => sweepRun([12, 20, 30, 45, 65, 90], 2), 20); }, 10);
         const fit = () => { if (sweep.length < 2) return null; const xs = sweep.map((p) => Math.sqrt(p.n)), ys = sweep.map((p) => p.y); const al = xs.reduce((a, x, i) => a + x * ys[i], 0) / xs.reduce((a, x) => a + x * x, 0); const lr = v.M.linreg(xs.map(Math.log), ys.map(Math.log)); return { al, exp: lr.slope, r2: lr.r2 }; };
         v.render(() => {
           for (let k = 0; k <= 100; k += 10) A.hline(k * H, { color: 'grid', alpha: 0.35 });
@@ -207,7 +210,7 @@ export default {
           for (const p of sweep) B.dot(Math.sqrt(p.n), p.y, { r: 4, color: p.you ? 'gold' : 'accent', fill: p.you ? 'gold' : 'accent', alpha: 0.9 });
           if (res && res.flow != null) B.dot(Math.sqrt(res.n0), res.flow / (2 * Math.PI * (1 - NU8)), { r: 8, color: 'orange', hollow: true, width: 2 });
         });
-        v.legend([['orange', 'this ensemble'], ['accent', 'sweep (3 seeds per $N$)'], ['green', 'fit through the origin: slope $\\alpha$']]);
+        v.legend([['orange', 'this ensemble'], ['accent', 'runs (sweep and tests)'], ['green', 'fit through the origin: slope $\\alpha$']]);
         v.readout(() => {
           const f = fit();
           let s = res ? (res.flow != null ? `This ensemble: ${res.n0} dislocations survive relaxation; flow at $\\tilde\\tau=${v.fix(res.flow, 2)}$, i.e. $\\alpha=\\tau/(Gb\\sqrt\\rho)=${v.fix(alphaOf(res.flow, res.n0), 3)}$.` : `This ensemble did not reach the flow criterion before the end of the ramp.`) : 'Computing…';

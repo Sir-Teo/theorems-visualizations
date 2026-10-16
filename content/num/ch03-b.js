@@ -80,7 +80,7 @@ $$\Lambda_n^{\rm Cheb}=\frac2\pi\Bigl(\log n+\gamma+\log\frac8\pi\Bigr)+o(1)\app
 ($\gamma$ is Euler's constant), whereas for $n+1$ equispaced points it grows exponentially,
 $$\Lambda_n^{\rm equi}\sim\frac{2^{\,n+1}}{e\,n\log n}\qquad(n\to\infty).$$
 Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev interpolation is well-conditioned for every $n$ in practice, while equispaced interpolation loses digits roughly like $2^n$.`,
-      idea: String.raw`For Chebyshev points $\lambda_n$ is a sum of $n+1$ terms that, after the change of variables $x=\cos\theta$, behave like a Dirichlet-type kernel; summing their moduli gives $\sim\frac2\pi\log n$, the same growth as the Lebesgue constant of Fourier partial sums. For equispaced points $\ell_j$ has at the ends of the interval huge oscillations: in the first and last subintervals $|\omega(x)|$ is large compared with $|\omega'(x_j)|$ for the middle $j$, where $|\omega'(x_j)|=h^n j!(n-j)!$ is very small. The sizes are taken from the numerical evaluation below; the asymptotic formulas are quoted, not re-derived here.`,
+      idea: String.raw`Write $\ell_j(x)=\omega(x)/\bigl((x-x_j)\,\omega'(x_j)\bigr)$. For equispaced nodes with spacing $h$, $|\omega'(x_j)|=h^n\,j!\,(n-j)!$ is smallest for $j$ near the middle, so the middle basis functions carry binomial factors of size $\binom{n}{n/2}\sim2^n/\sqrt n$ that nothing cancels — the source of the exponential growth. For Chebyshev points the clustering at the ends keeps $|\omega|$ and $|\omega'(x_j)|$ in balance and $\lambda_n$ is of the same size as the Lebesgue function of Fourier partial sums, $\sim\frac2\pi\log n$. The exact asymptotics are quoted here, not re-derived; the picture computes $\Lambda_n$ honestly for $n\le60$ and compares.`,
       caption: String.raw`Dots: $\Lambda_n$ computed by maximising the Lebesgue function for every $n\le60$ (log scale; green = Chebyshev, red = equispaced). The dashed curves are the asymptotic formulas of the statement. On the log axis the Chebyshev points rise only like $\log n$ while the equispaced points climb along a straight line of slope $\log_{10}2$ per step, to about $3\times10^{15}$ at $n=60$ — as many digits as double precision has. Drag the marker to read off both values.`,
       deps: ['num-3.10', 'num-3.6'],
       refs: ['Trefethen ATAP ch. 15'],
@@ -113,8 +113,8 @@ Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev in
       kind: 'Theorem',
       name: 'Faber’s theorem: no universal node system',
       statement: String.raw`For every triangular array of nodes $\{x^{(n)}_j\}_{0\le j\le n}\subset[-1,1]$ there is a continuous function $f$ on $[-1,1]$ for which the interpolants $I_nf$ do **not** converge uniformly to $f$. Underlying this is the fact that the Lebesgue constants of any array are unbounded: $\Lambda_n\ge c\log n$ for some $c>0$ independent of the array (Faber's estimate), so by the uniform boundedness principle $\sup_n\|I_nf\|_\infty=\infty$ for some $f\in C[-1,1]$.`,
-      idea: String.raw`The interpolation operators $I_n:C[-1,1]\to C[-1,1]$ are bounded linear maps with norms $\Lambda_n$. If the array had $\sup_n\Lambda_n<\infty$, the Banach–Steinhaus theorem (rca-5.8) would not apply; since the norms are unbounded for every array, it gives a continuous $f$ with $\sup\|I_nf\|=\infty$ — and since $I_np=p$ for polynomials, uniform convergence $I_nf\to f$ would force boundedness, so $I_nf\not\to f$. Concretely one builds $f$ as a sum of "humps": $g_{n_k}$, the piecewise-linear function with values $\pm1$ at the nodes of level $n_k$ chosen to realise $\Lambda_{n_k}$.`,
-      caption: String.raw`Choose a node family and $n$. Top left: the hump $g_n$ — a piecewise-linear function of sup norm $1$ with values $\pm1$ at the nodes — and its interpolant $I_ng_n$ (red), which reaches height $\Lambda_n$. Top right: $\|I_nf\|_\infty$ (dots) for $f=\sum_{k\le K}2^{-k}g_{n_k}$, where $n_k$ is the first $n$ with $\Lambda_n\ge4^k$. For equispaced nodes the dots shoot up at each $n_k$. For Chebyshev points $\Lambda_n<4$ for all $n\le60$, so not even the first hump exists in this range: a divergent $f$ exists, but it needs astronomically large $n_k$ and cannot be drawn.`,
+      idea: String.raw`The maps $I_n:C[-1,1]\to C[-1,1]$ are bounded linear operators with $\|I_n\|=\Lambda_n$ (3.10). By the Banach–Steinhaus theorem (rca-5.8), if $\sup_n\|I_nf\|_\infty<\infty$ for every continuous $f$, then $\sup_n\Lambda_n<\infty$. Faber's estimate says $\Lambda_n\to\infty$ for every array, so some continuous $f$ has $\sup_n\|I_nf\|_\infty=\infty$; and if $I_nf\to f$ uniformly the norms $\|I_nf\|$ would be bounded, so the interpolants of that $f$ cannot converge. Constructively one adds "humps": $g_{n_k}$ is the piecewise-linear function of norm $1$ with values $\pm1$ at the nodes of level $n_k$, chosen so that $\|I_{n_k}g_{n_k}\|=\Lambda_{n_k}$.`,
+      caption: String.raw`Choose a node family and $n$. Top left: the hump $g_n$ — a piecewise-linear function of sup norm $1$ with values $\pm1$ at the nodes — and its interpolant $I_ng_n$ (red), which reaches height $\Lambda_n$. Top right: $\|I_nf\|_\infty$ (dots) for $f=\sum_{k\le K}2^{-k}g_{n_k}$, where $n_k$ is the first $n$ with $\Lambda_n\ge16^k$ (orange lines). The dots can never exceed $\|f\|_\infty\Lambda_n$ (dashed), and for equispaced nodes they follow the exponential growth of $\Lambda_n$: the hump at $n_k$ alone contributes $2^{-k}\Lambda_{n_k}\ge8^k$ while $\|f\|_\infty\le1$. For Chebyshev points $\Lambda_n<4$ for all $n\le60$, so not even the first hump exists in this range: a divergent $f$ exists, but it needs astronomically large $n_k$ and cannot be drawn.`,
       deps: ['num-3.11', 'rca-5.8'],
       refs: ['Trefethen ATAP ch. 15'],
       credit: 'G. Faber, 1914 (Jahresbericht der Deutschen Mathematiker-Vereinigung 23)',
@@ -133,7 +133,7 @@ Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev in
           if (cache[k]) return cache[k];
           const L = [], humps = [];
           for (let n = 1; n <= NM; n++) L.push(lebMax(nodesOf(k, n)).L);
-          for (let j = 1; j <= KMAX; j++) { const n = L.findIndex((q) => q >= 4 ** j) + 1; if (n < 1) break; const xs = nodesOf(k, n), w = baryW(xs), M = lebMax(xs, w); humps.push({ n, xs, g: pl(xs, xs.map((_, i) => Math.sign(lagr(xs, w, i, M.x)) || 1)) }); }
+          for (let j = 1; j <= KMAX; j++) { const n = L.findIndex((q) => q >= 16 ** j) + 1; if (n < 1) break; const xs = nodesOf(k, n), w = baryW(xs), M = lebMax(xs, w); humps.push({ n, xs, g: pl(xs, xs.map((_, i) => Math.sign(lagr(xs, w, i, M.x)) || 1)) }); }
           return (cache[k] = { L, humps, norms: {} });
         }
         function norms(k, K) {
@@ -163,7 +163,7 @@ Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev in
           b.vline(n, { color: 'faint' });
           info = { n, L: M.L, peak: Math.max(...Array.from({ length: 401 }, (_, i) => Math.abs(p(-1 + i / 200)))), K, nk, avail: S.humps.length };
         });
-        v.readout(() => `$n=${info.n}$: $\\|g_n\\|_\\infty=1$ but $\\|I_ng_n\\|_\\infty=${v.fmt(info.peak, 5)}=\\Lambda_n=${v.fmt(info.L, 5)}$\n` + (info.avail === 0 ? 'no hump with $\\Lambda_n\\ge4$ exists for $n\\le60$ in this family (the dashed curve is $\\Lambda_n$): the divergent $f$ cannot be drawn' : `humps at $n_k=${info.nk}$ (orange); dashed grey = $\\Lambda_n$; dots = $\\|I_nf\\|_\\infty$ with $\\|f\\|_\\infty\\le1$`));
+        v.readout(() => `$n=${info.n}$: $\\|g_n\\|_\\infty=1$ but $\\|I_ng_n\\|_\\infty=${v.fmt(info.peak, 5)}=\\Lambda_n=${v.fmt(info.L, 5)}$\n` + (info.avail === 0 ? 'no hump with $\\Lambda_n\\ge16$ exists for $n\\le60$ in this family (the dashed curve is $\\Lambda_n$): the divergent $f$ cannot be drawn' : `humps at $n_k=${info.nk}$ (orange); dashed grey = $\\Lambda_n$; dots = $\\|I_nf\\|_\\infty$ with $\\|f\\|_\\infty\\le1$`));
       },
     },
     // ------------------------------------------------------------------ 3.13
@@ -175,7 +175,7 @@ Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev in
 $$f(x)-p(x)=\frac1{2\pi i}\oint_\Gamma\frac{\omega(x)}{\omega(z)}\,\frac{f(z)}{z-x}\,dz,\qquad\omega(z)=\prod_{j=0}^n(z-x_j).$$
 Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour that stays away from the singularities of $f$.`,
       idea: String.raw`The integrand has simple poles at $z=x$ (residue $f(x)$) and at each node $z=x_j$ (residue giving $-\sum_j f(x_j)\ell_j(x)=-p(x)$ by the Lagrange form), so by the residue theorem — Cauchy's formula (rca-10.15) — the integral over $\Gamma$ equals $f(x)-p(x)$ provided $f$ itself has no singularities inside. This turns the interpolation error into an estimate of $|\omega(x)/\omega(z)|$, a ratio that is exponentially small in $n$ when $x$ lies in a smaller level set of $|\omega|$ than the contour: the idea behind potential theory (3.14).`,
-      caption: String.raw`The function is $f(z)=1/(z^2+a^2)$ with poles $\pm ia$ (red; drag the upper one) and the contour is the ellipse with foci $\pm1$ and parameter $\rho$ (orange; slider). Drag the gold marker $x$ along $[-1,1]$. The readout compares the true error $f(x)-p(x)$ with the numerically computed contour integral: they agree to many digits as long as the ellipse contains no pole, and **disagree** (by the residues) once $\rho$ is large enough that a pole is enclosed. Right: the size of the integrand around the contour.`,
+      caption: String.raw`The function is $f(z)=1/(z^2+a^2)$ with poles $\pm ia$ (red; drag the upper one) and the contour is the ellipse with foci $\pm1$ and parameter $\rho$ (orange; slider). Drag the gold marker $x$ along $[-1,1]$. The readout compares the true error $f(x)-p(x)$ with the numerically computed contour integral: they agree to many digits as long as the ellipse contains no pole, and **disagree** (by the residues) once $\rho$ is large enough that a pole is enclosed (when both poles are inside, the integral is $\approx0$: the integrand decays like $|z|^{-(n+3)}$, so the contour can be pushed to infinity). Right: the size of the integrand around the contour.`,
       deps: ['num-3.4', 'rca-10.15'],
       refs: ['Trefethen ATAP ch. 11'],
       credit: 'C. Hermite, 1878 (letter to Borchardt, Journal für die reine und angewandte Mathematik 84: 70–79)',
@@ -188,7 +188,7 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
         const rho = v.slider('ellipse parameter $\\rho$', 1.05, 3, 1.8, { step: 0.01 });
         const s = v.stage({ x: [-1.9, 1.9], y: [-1.45, 1.45], equal: true, axes: true, height: 340, title: 'the complex plane' });
         const g = v.stage({ x: [0, 2 * Math.PI], y: [1e-12, 1e8], ylog: true, axes: 'box', gutter: true, xlabel: 'position on the contour (angle θ)', height: 340, title: 'size of the integrand' });
-        const pole = s.handle(0, 0.6, { color: 'red', constrain: 'y', label: 'ia', labelPos: 'e' });
+        const pole = s.handle(0, 0.9, { color: 'red', constrain: 'y', label: 'ia', labelPos: 'e' });
         const hx = s.handle(0.3, 0, { color: 'gold', constrain: 'x', label: 'x' });
         let info = {};
         v.legend([['orange', 'contour $\\Gamma$'], ['red', 'poles of $f$'], ['gold', '$x$']]);
@@ -212,6 +212,8 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
             I = cadd(I, val); if (k % 8 === 0) mag.push([t, Math.max(cabs(val), 1e-12)]);
           }
           I = [I[1] * 2 * Math.PI / N / (2 * Math.PI) , -I[0] * 2 * Math.PI / N / (2 * Math.PI)]; // (1/2πi)·ΣΔt → multiply by −i
+          const mn = Math.min(...mag.map((q) => q[1])), mx = Math.max(...mag.map((q) => q[1]));
+          g.setView([0, 2 * Math.PI], [mn / 3, mx * 3]);
           g.path(mag, { color: 'orange', width: 1.8 });
           const err = fr(x) - p(x), inside = B > aa;
           info = { err, I: I[0], im: I[1], inside, R, B, aa, n };
@@ -242,7 +244,8 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
         v.render(() => {
           const k = kind.value, U = potOf(k), zx = z.x, zy = Math.max(Math.abs(z.y), 0.03); z.set(z.x, zy);
           const Uz = U(zx, zy);
-          s.raster((x, y) => (U(x, y) < Uz ? [60, 160, 90, 70] : null), { res: 3, key: `${k}|${zx.toFixed(3)}|${zy.toFixed(3)}` });
+          const on = v.ramp(0.3, 'green'), pk = v.rgb('panel').slice(0, 3).join(',');
+          s.raster((x, y) => (U(x, y) < Uz ? on : null), { res: 3, key: `${k}|${zx.toFixed(3)}|${zy.toFixed(3)}|${pk}` });
           const lv = []; for (let i = 0; i < 8; i++) lv.push(Uz + (i - 5) * 0.12);
           s.clip(() => s.contour((x, y) => U(x, y), lv, { color: 'muted', width: 0.8, alpha: 0.7, res: 110 }));
           s.clip(() => s.contour((x, y) => U(x, y), [Uz], { color: 'green', width: 2.4, res: 150 }));
@@ -373,28 +376,29 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
         const a = v.stage({ x: [-5, 5], y: [-1.2, 1.6], axes: 'box', gutter: true, xlabel: 'x', height: 300, title: '$f(x)=1/(1+x^2)$ on $[-5,5]$' });
         const e = v.stage({ x: [-5, 5], y: [1e-8, 1e6], ylog: true, axes: 'box', gutter: true, xlabel: 'x', ylabel: '|f − p|', height: 300, title: 'error of the interpolant' });
         const c = v.stage({ x: [-6, 6], y: [-3.4, 3.4], equal: true, axes: true, height: 300, title: 'complex plane: the level curve through $\\pm i$' });
-        const Us = (x, y) => potEqui(x / 5, y / 5), Ui = Us(0, 1);
-        let xc = 0; { let lo = 0, hi = 5; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (Us(m, 0) < Ui) lo = m; else hi = m; } xc = lo; }
         let info = {};
         v.legend([['ink', '$f$'], ['accent', 'interpolant'], ['red', '$|f-p|$']]);
         v.render(() => {
           const N = nn.value, n = N - 1, xs = nodesOf(kind.value, n).map((t) => 5 * t), p = interp(xs, xs.map(f));
+          const PU = potOf(kind.value), Us = (x, y) => PU(x / 5, y / 5), Ui = Us(0, 1);
+          let xc = 0; { let lo = 0, hi = 5.9; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (Us(m, 0) < Ui) lo = m; else hi = m; } xc = lo; }
           a.setView([-5, 5], [-1.2, 1.6]);
           a.fn(f, { color: 'ink', width: 1.6 });
           a.clip(() => a.fn(p, { color: 'accent', width: 2.2, n: 800 }));
           xs.forEach((x) => a.dot(x, f(x), { color: 'gold', r: 3 }));
           const pts = []; for (let i = 0; i <= 600; i++) { const x = -5 + i / 60; pts.push([x, Math.max(Math.abs(f(x) - p(x)), 1e-8)]); }
           e.path(pts, { color: 'red', width: 1.6 });
-          e.vline(xc, { color: 'faint', dash: true }); e.vline(-xc, { color: 'faint', dash: true });
-          c.raster((x, y) => (kind.value === 'equi' && Us(x, y) < Ui ? [60, 160, 90, 70] : null), { res: 3, key: 'runge-region' });
+          if (xc < 5) { e.vline(xc, { color: 'faint', dash: true }); e.vline(-xc, { color: 'faint', dash: true }); }
+          const on = v.ramp(0.3, 'green'), pk = v.rgb('panel').slice(0, 3).join(',');
+          c.raster((x, y) => (Us(x, y) < Ui ? on : null), { res: 3, key: 'runge-region' + kind.value + pk });
           c.clip(() => c.contour((x, y) => Us(x, y), [Ui], { color: 'green', width: 2.4, res: 160 }));
           c.line(-5, 0, 5, 0, { color: 'ink', width: 3 });
           c.dot(0, 1, { color: 'red', r: 5 }); c.dot(0, -1, { color: 'red', r: 5 }); c.dot(xc, 0, { color: 'green', r: 4 }); c.dot(-xc, 0, { color: 'green', r: 4 });
           // Runge's own numbers: 11 integer nodes
           const x11 = Array.from({ length: 11 }, (_, i) => i - 5), p11 = interp(x11, x11.map(f));
-          info = { d45: Math.abs(f(4.5) - p11(4.5)), d05: Math.abs(f(0.5) - p11(0.5)), N, pk: Math.max(...pts.map((q) => q[1])) };
+          info = { d45: Math.abs(f(4.5) - p11(4.5)), d05: Math.abs(f(0.5) - p11(0.5)), N, pk: Math.max(...pts.map((q) => q[1])), xc, cheb: kind.value === 'cheb' };
         });
-        v.readout(() => `Runge's 11 integer nodes: deviation at $x=4.5$ is $${v.fix(info.d45, 4)}$ (paper: not less than $1.53$), at $x=0.5$ it is $${v.fix(info.d05, 4)}$ (paper: not more than $0.044$)\nlevel curve through $\\pm i$ meets the real axis at $\\pm${v.fix(xc, 4)}$ (paper: about $\\pm3.63$); current interpolant: ${info.N} nodes, max error $${tsci(info.pk, 3)}$`);
+        v.readout(() => `Runge's 11 integer nodes: deviation at $x=4.5$ is $${v.fix(info.d45, 4)}$ (paper: not less than $1.53$), at $x=0.5$ it is $${v.fix(info.d05, 4)}$ (paper: not more than $0.044$)\nlevel curve through $\\pm i$ meets the real axis at $\\pm${v.fix(info.xc, 4)}$ for ${info.cheb ? 'Chebyshev' : 'equispaced'} nodes (paper, equispaced: about $\\pm3.63$); current interpolant: ${info.N} nodes, max error $${tsci(info.pk, 3)}$`);
       },
     },
   ],
