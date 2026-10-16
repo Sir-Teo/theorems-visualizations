@@ -73,8 +73,8 @@ export function kpEdges(V0, b, emax, nbMax = 8) {
 }
 /** Energy of Kronig–Penney band n (0-based) at k ∈ [0,1] (units π/a), given its edges from kpEdges. */
 export function kpEnergy(V0, b, edge, n, k) {
-  let [lo, hi] = edge[n]; const c = Math.cos(Math.PI * k), s = kpD(lo, V0, b) - c; // D − cos(πk) monotone inside a band
-  for (let i = 0; i < 48; i++) { const m = (lo + hi) / 2, f = kpD(m, V0, b) - c; if ((f > 0) === (s > 0)) lo = m; else hi = m; }
+  let [lo, hi] = edge[n]; const c = Math.cos(Math.PI * k), up = kpD(hi, V0, b) > kpD(lo, V0, b); // D is monotone inside a band
+  for (let i = 0; i < 48; i++) { const m = (lo + hi) / 2; if ((kpD(m, V0, b) < c) === up) lo = m; else hi = m; }
   return (lo + hi) / 2;
 }
 /** Kronig–Penney bands on a k-list → [band][k]. */
@@ -90,10 +90,10 @@ export function kpBands(V0, b, ks, nb = 4) {
  *  Diagonalised completely; the crystal momentum of each state is read off from the cell-translation operator T (T ψ = e^{iπk}ψ):
  *  within a degenerate pair ±k only the trace of T is basis independent, tr T = 2 cos πk.
  *  → [{E, k (0…1), pair (true for a ±k pair)}], ascending. */
-export function ringStates(M, V, nc, ppc) {
+export function ringStates(M, V, nc, ppc, avg = 1) {
   const n = nc * ppc, h = 1 / ppc, c = 1 / (Math.PI ** 2 * 12 * h * h), H = Array.from({ length: n }, () => new Array(n).fill(0));
   for (let j = 0; j < n; j++) {
-    H[j][j] += 30 * c + V((j + 0.5) * h);
+    let vj = 0; for (let q = 0; q < avg; q++) vj += V((j + (q + 0.5) / avg) * h); H[j][j] += 30 * c + vj / avg;
     for (const [d, w] of [[1, -16], [2, 1]]) { const a = (j + d) % n, b = (j - d + n) % n; H[j][a] += w * c; H[j][b] += w * c; }
   }
   const e = M.eigSym(H), E = e.values.slice().reverse(), vec = e.vecs.slice().reverse();

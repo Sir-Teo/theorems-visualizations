@@ -52,7 +52,7 @@ const GRID = () => {
   E.push(['a', 'g'], ['g', 'm'], ['c', 'i'], ['i', 'o'], ['h', 'n'], ['b', 'h']);
   return F(P, E);
 };
-const TWOK4 = () => F({ a: [1.0, 5.4], b: [1.0, 1.0], c: [3.2, 3.2], d: [1.9, 3.2], x: [5.0, 3.2], e: [7.0, 5.4], f: [7.0, 1.0], g: [9.0, 3.2] }, 'ab ac ad bc bd cd cx dx? '.replace('dx? ', '').trim() + ' xe xf xg ef eg fg');
+const TWOK4 = () => F({ a: [1.2, 5.6], b: [1.2, 0.8], c: [3.0, 3.2], x: [5.0, 3.2], e: [8.8, 5.6], f: [8.8, 0.8], g: [7.0, 3.2] }, 'ab ac ax bc bx cx ex fx gx ef eg fg');
 
 export default {
   collection: 'graph',

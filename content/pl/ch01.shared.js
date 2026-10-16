@@ -691,3 +691,15 @@ export function whileApprox(w, k) {
 }
 export const storeStr = (st, vars) => vars.map((x) => `${x} = ${st[x] ?? 0}`).join(', ');
 export const fmtN = (n) => String(n).replace('-', '−');
+
+// ====================================================================== UI helpers
+/** A text field that keeps the last input that parsed. parser(src) → {ast} | {error, pos, len}. */
+export function field(v, label, def, parser, { width = 300, onChange, placeholder } = {}) {
+  let ast = parser(def).ast, err = null, src = def;
+  const upd = (x) => { src = x; const r = parser(x); if (r.ast) { ast = r.ast; err = null; } else err = { ...r, src: x }; };
+  upd(def);
+  const ctl = v.input(label, def, { width, placeholder, onChange: (x) => { upd(x); if (onChange) onChange(); } });
+  return { ctl, get ast() { return ast; }, get err() { return err; }, get src() { return src; }, set(x) { ctl.set(x); upd(x); if (onChange) onChange(); } };
+}
+/** Plain stage for pixel-space drawing. */
+export const pxStage = (v, o = {}) => v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, ...o });
