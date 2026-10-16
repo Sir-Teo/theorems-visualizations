@@ -144,25 +144,31 @@ export function rceStart(o = {}, state = null, grid = GRID) {
   const T = state ? Array.from(state.T) : standardT(o.Ts0 ?? 288, o.gamma ?? 6.5, 200, grid);
   return { T, Ts: state ? state.Ts : (o.Ts0 ?? 288), steps: 0, resid: 1e9 };
 }
-/** Advance the column `n` pseudo-time steps (half a day each, with heat-capacity floors for stability). */
+/**
+ * Advance the column `n` pseudo-time steps. Each layer takes a diagonally-implicit step, dT = gain / (C/dt + S): C is
+ * its heat capacity (floored for the thin top layers), S the slope of its own emission (so a step never overshoots),
+ * and the surface and convection are handled as in Manabe & Strickler (1964).
+ */
 export function rceSteps(st, o, n, grid = GRID) {
   const { N, dp } = grid, kk = KAPPA_ADIABAT(o.gamma ?? 6.5), asr = o.asr ?? 240, sw = o.sw || null;
   const swAtm = sw ? sw.reduce((a, b) => a + b, 0) : 0, Ssfc = asr - swAtm;
-  const dt = (o.dt ?? 0.5) * 86400, wL = dp.map((d) => Math.max(d, 40)), C = wL.map((w) => (CP * w * 100) / G0), Cs = o.Cs ?? 4e6;
-  const T = st.T;
+  const dt = (o.dt ?? 3) * 86400, C = dp.map((d) => (CP * Math.max(d, 10) * 100) / G0), Cs = o.Cs ?? 4e6;
+  const T = st.T, dB = new Float64Array(NN);
   for (let it = 0; it < n; it++) {
     const q = o.fixedQ ? o.fixedQ : humidity(T, grid, { rhs: o.rhs });
-    const L = longwave(T, st.Ts, opticalDepths(T, { ...o, q }, grid), o, grid);
+    const tau = opticalDepths(T, { ...o, q }, grid), L = longwave(T, st.Ts, tau, o, grid);
     let maxd = 0;
+    const Ce = new Array(N);
     for (let i = 0; i < N; i++) {
-      const gain = L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1]) + (sw ? sw[i] : 0), d = (gain * dt) / C[i];
-      T[i] += d; maxd = Math.max(maxd, Math.abs(d));
+      const gain = L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1]) + (sw ? sw[i] : 0);
+      let S = 0; for (let k = 0; k < NN; k++) S += 2 * (1 - Math.exp(-DIFF * tau[i][k])) * (planckNu(NU[k], T[i] + 0.5) - planckNu(NU[k], T[i] - 0.5)) * DNU;
+      Ce[i] = C[i] + S * dt; // effective (pseudo) capacity: the step cannot overshoot, and convection conserves C̃·T
+      const d = (gain * dt) / Ce[i]; T[i] += d; maxd = Math.max(maxd, Math.abs(d));
     }
-    const ds = ((Ssfc - (L.up[0] - L.down[0])) * dt) / Cs; st.Ts += ds; maxd = Math.max(maxd, Math.abs(ds));
-    // surface and the lowest layer are one convective block when the ground is warmer than the air
-    if (st.Ts > T[0]) { const w0 = C[0], w = Cs, m = (st.Ts * w + T[0] * w0) / (w + w0); st.Ts = m; T[0] = m; }
-    convect(T, C, kk, grid);
-    st.steps++; st.resid = Math.abs(L.olr - (asr)) ; st.maxd = maxd;
+    const Cse = Cs + 4 * SIG * st.Ts ** 3 * 0.6 * dt, ds = ((Ssfc - (L.up[0] - L.down[0])) * dt) / Cse; st.Ts += ds; maxd = Math.max(maxd, Math.abs(ds));
+    if (st.Ts > T[0]) { const m = (st.Ts * Cse + T[0] * Ce[0]) / (Cse + Ce[0]); st.Ts = m; T[0] = m; }
+    convect(T, Ce, kk, grid);
+    st.steps++; st.resid = L.olr - asr; st.maxd = maxd;
   }
   return st;
 }

@@ -56,11 +56,12 @@ for every closed loop $C$. Here $\mathbf E$ is the sum of Coulomb fields of fixe
             s.line(W.x, W.y, W.x + RHO * 0.95 * ux, W.y + RHO * 0.95 * uy, { color: 'ink', width: 2.2 });
             s.line(W.x + RHO * 0.95 * ux - 0.13 * uy, W.y + RHO * 0.95 * uy + 0.13 * ux, W.x + RHO * 0.95 * ux + 0.13 * uy, W.y + RHO * 0.95 * uy - 0.13 * ux, { color: k % 2 ? 'orange' : 'gold', width: 4 });
           }
-          heatPot(sc, (x, y) => (src.some((c) => Math.hypot(x - c.x, y - c.y) < 0.7) ? NaN : curlAt(x, y, 0.02)), 90, key, { res: 4 });
+          heatPot(sc, (x, y) => (src.some((c) => Math.hypot(x - c.x, y - c.y) < 0.45) ? NaN : curlAt(x, y, 0.004)), 90, key, { res: 4 });
           sc.circle(-0.5, -0.5, 2.2, { color: 'purple', dash: [4, 4], width: 1.2, alpha: 0.7 });
           src.forEach((c) => sc.dot(c.x, c.y, { r: 4, color: sgnCol(c.q) }));
           sc.dot(W.x, W.y, { r: 5, color: 'gold' });
           sc.corner('red: counter-clockwise · blue: clockwise · white: zero', 'bl', { size: 11, plate: true });
+          if (!kap.value) sc.corner('charges alone: the curl is zero everywhere', 'tl', { size: 12.5, plate: true });
         }, { still: 3 });
         v.readout(() => `**Around the wheel's ring** (radius ${RHO} cm): $\\oint\\mathbf E\\cdot d\\mathbf l = ${v.fix(ci, 3)}$ V, divided by the area $\\pi\\rho^2$: $(\\nabla\\times\\mathbf E)_z\\approx ${v.fix(cur, 2)}$ V/cm²; central differences give $ ${v.fix(curlAt(W.x, W.y), 2)}$ V/cm². ${Math.abs(cur) < 0.05 ? 'The wheel does not turn: the field is irrotational here.' : 'The wheel turns ' + (cur > 0 ? 'counter-clockwise' : 'clockwise') + '.'}`);
       },
@@ -237,7 +238,7 @@ So $\mathbf E$ points in the direction of steepest decrease of $V$, perpendicula
       name: 'Equipotential surfaces',
       statement: String.raw`An **equipotential surface** is a level set $\{\mathbf r: V(\mathbf r)=c\}$ of the potential. Because $\mathbf E=-\nabla V$, the field is perpendicular to the equipotential through every point where $\mathbf E\ne\mathbf 0$ and points toward lower $V$, and moving a charge $q$ along an equipotential costs no work: $W = q\,[V(a)-V(b)]=0$. Equipotentials of different values never touch except at points where $\mathbf E=\mathbf 0$.`,
       idea: String.raw`The gradient is orthogonal to the level sets of its function (em-2.4), so field lines and equipotentials form two families of curves that cross at right angles. Work along any path is $q\,\Delta V$ by path independence, and $\Delta V=0$ on a level set. A conductor in electrostatic equilibrium is a whole equipotential, which is why field lines leave its surface perpendicularly.`,
-      caption: String.raw`Field lines (grey) and equipotentials (colour) of three charges you can drag; the gold contour is the one through the test charge. Choose how to carry the test charge a distance $\ell$ (slider): **along the equipotential** the work stays zero to numerical accuracy, **along a field line** it equals $q\,\Delta V$, and **straight to a goal** point gives the same as any other route with those endpoints. The green right-angle marks show $\mathbf E\perp$ contour at sample points.`,
+      caption: String.raw`Field lines (grey) and equipotentials (colour) of three charges you can drag; the gold contour is the one through the test charge. Choose how to carry the test charge a distance $\ell$ (slider): **along the equipotential** the work stays zero to numerical accuracy, **along a field line** it equals $q\,\Delta V$, and **straight to a goal** point gives the same as any other route with those endpoints. The purple right-angle marks show $\mathbf E\perp$ contour at sample points.`,
       credit: 'Faraday’s lines of force, 1830s',
       deps: ['em-2.4'],
       refs: ['Griffiths §2.3', 'Purcell ch. 2'],

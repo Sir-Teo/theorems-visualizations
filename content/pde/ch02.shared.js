@@ -77,15 +77,10 @@ export function makeWave(N, L, c, nu, phi, psi, opts = {}) {
     W.uo = u; W.u = nw; W.t += dt; W.n++;
   };
   W.energy = () => {
-    // the energy the leapfrog scheme conserves exactly: kinetic from (u − uo)/dt, potential from the product u_x · uo_x
+    // the energy the leapfrog scheme conserves exactly: kinetic from nodal (u − uo)/dt, potential from the product u_x · uo_x
     let k = 0, p = 0;
-    for (let i = 0; i < N; i++) {
-      const v = ((W.u[i] - W.uo[i]) + (W.u[i + 1] - W.uo[i + 1])) / (2 * W.dt);
-      k += 0.5 * v * v * dx;
-      const ux = (W.u[i + 1] - W.u[i]) / dx, uxo = (W.uo[i + 1] - W.uo[i]) / dx;
-      p += 0.5 * c * c * ux * uxo * dx;
-      if (m2) p += 0.5 * m2 * 0.5 * (W.u[i] * W.uo[i] + W.u[i + 1] * W.uo[i + 1]) * dx;
-    }
+    for (let i = 1; i < N; i++) { const v = (W.u[i] - W.uo[i]) / W.dt; k += 0.5 * v * v * dx; if (m2) p += 0.5 * m2 * W.u[i] * W.uo[i] * dx; }
+    for (let i = 0; i < N; i++) p += 0.5 * c * c * ((W.u[i + 1] - W.u[i]) / dx) * ((W.uo[i + 1] - W.uo[i]) / dx) * dx;
     return { k, p, e: k + p };
   };
   return W;
