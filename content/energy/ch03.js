@@ -240,8 +240,8 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
           { n: 'LWR fuel, 50 GWd/t', kg: 50e9 * 86400 / 1e3 / 1e6, L: 50e9 * 86400 / 1e3 / 1e6 * 9.2, col: 'red' },
         ];
         items[6].L = items[6].kg * 19.05; items[7].L = items[7].kg * 9.2;
-        const s = v.stage({ x: [0.05, 3e8], y: [0.2, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'specific energy, MJ/kg', ylabel: 'energy density, MJ/L', minWidth: 340 });
-        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 340 });
+        const s = v.stage({ x: [0.05, 3e8], y: [0.2, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 430, xlabel: 'specific energy, MJ/kg', ylabel: 'energy density, MJ/L', minWidth: 340 });
+        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, minWidth: 340 });
         const E = v.slider('stored energy (MJ)', 100, 5000, 1000, { step: 50, log: true });
         const usef = v.toggle('compare useful energy (engine vs electric drivetrain)', false);
         const e1 = v.slider('engine efficiency', 0.15, 0.4, 0.25, { step: 0.01 });
@@ -251,7 +251,7 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
           for (const rho of [0.1, 1, 10]) s.path([[0.05, 0.05 * rho], [3e8, 3e8 * rho]].filter((p) => p[1] >= 0.2 && p[1] <= 1e10), { color: 'faint', dash: true, width: 1 });
           for (const it of items) {
             if (it.box) s.rect(it.box[0], it.box[2], it.box[1], it.box[3], { color: it.col, fill: it.col, fillAlpha: 0.2 });
-            s.dot(it.kg, it.L, { r: 6, color: it.col, label: it.n, labelPos: ({ diesel: 'ne', petrol: 'nw', 'H₂ 681 atm': 'e', 'H₂ liquid': 'ne', 'lead-acid': 's', 'Li-ion (mid)': 'se' })[it.n] || 'ne' });
+            s.dot(it.kg, it.L, { r: 6, color: it.col, label: it.n, labelPos: ({ diesel: 'ne', petrol: 'nw', 'H₂ 681 atm': 'e', 'H₂ liquid': 'ne', 'lead-acid': 'n', 'Li-ion (mid)': 'se', 'U-235 fully fissioned': 'sw' })[it.n] || 'ne' });
           }
           s.textPx('1 kg/L', s.X(2e3), s.Y(2e3) - 10, { size: 10.5, color: 'faint', align: 'right', halo: false });
           // equal-energy squares
@@ -311,7 +311,7 @@ about 17.6 MeV for fusion of deuterium and tritium and about 170–200 MeV for t
           s.dots(BEA.map((r) => [r[0], r[2] / 1000]), { r: 2.2, color: 'accent' });
           const lab = [[4, 'He-4'], [12, 'C-12'], [56, 'Fe-56'], [62, 'Ni-62'], [238, 'U-238']];
           s.dot(62, 8.7946, { r: 5, color: 'green', label: 'Ni-62 8.795', labelPos: 'n' });
-          s.dot(4, 7.074, { r: 4, color: 'purple', label: 'He-4', labelPos: 'e' }); s.dot(12, 7.680, { r: 4, color: 'purple', label: 'C-12', labelPos: 'se' });
+          s.dot(4, 7.074, { r: 4, color: 'purple', label: 'He-4', labelPos: 'n' }); s.dot(12, 7.680, { r: 4, color: 'purple', label: 'C-12', labelPos: 'se' });
           s.dot(238, 7.570, { r: 4, color: 'purple', label: 'U-238', labelPos: 's' });
           R = reaction();
           const bm = (A) => (A === 1 ? 0 : beaOf(A));
@@ -325,7 +325,7 @@ about 17.6 MeV for fusion of deuterium and tritium and about 170–200 MeV for t
         v.legend([['accent', 'most bound nuclide at each $A$ (AME2020)', { dot: true }], ['red', 'reactants', { dot: true }], ['green', 'products', { dot: true }]]);
         v.readout(() => {
           const Q = R.Q, dm = Q / MEV_U, per = Q * 1.602176634e-13 * 6.02214076e23 / (R.kgA / 1000) / 1e12;
-          return `${R.label}: $Q = ${f1(v, Q)}$ MeV, i.e. a mass defect $\\Delta m = Q/c^2 = ${v.fix(dm, 4)}$ u (${v.fix(100 * dm / R.kgA, 3)} % of the reacting mass).\nPer kilogram of reactants that is ${v.fix(per, 1)} TJ, about $${v.sci(per * 1e6 / 32.5, 2)}$ times the heat of a kilogram of anthracite (32.5 MJ/kg). ${mode.value === 'fis' ? 'Compare: about 200 MeV per fission when later decays are counted; the prompt kinetic energy of the fragments is about 169 MeV.' : ''}`;
+          return `${R.label}: $Q = ${f1(v, Q)}$ MeV, i.e. a mass defect $\\Delta m = Q/c^2 = ${v.fix(dm, 4)}$ u (${v.fix(100 * dm / R.kgA, 3)} % of the reacting mass).\nPer kilogram of reactants that is ${v.fix(per, 1)} TJ, about $${v.sci(per * 1e6 / 32.5, 2)}$ times the heat of a kilogram of anthracite (32.5 MJ/kg). ${mode.value === 'fis' ? 'The dragged split uses the most bound isobars, so it is an upper bound (real fragments are neutron rich: the Ba-141 + Kr-92 button gives the exact 173 MeV). About 200 MeV per fission is released once later decays are counted; the fragments\' prompt kinetic energy is about 169 MeV.' : ''}`;
         });
       },
     },
