@@ -13,7 +13,7 @@ const MAZE = {
     [0, 0, 0.5, 0, 0, 0, 0.5],
     [0, 0, 0, 0, 0, 0, 1],
   ],
-  pos: [[0.8, 3.2], [3.2, 5.2], [3.2, 1.6], [7.2, 5.2], [6.4, 3], [5.2, 0.5], [9, 1.4]],
+  pos: [[1.4, 3], [3.4, 5.2], [3.4, 1.6], [7, 5.2], [6, 3], [5, 0.6], [8, 1.5]],
 };
 
 export default {
@@ -49,7 +49,7 @@ export default {
           n = P.length;
           const pos = kind.value === 'maze' ? MAZE.pos : ringPos(n, 2.3).map(([x, y]) => [5 + x * 1.35, 3 + y * 1.25]);
           G.set({ directed: true, layout: 'none', r: 16, draggable: false,
-            nodes: names.map((nm, i) => ({ id: i, label: nm, x: pos[i][0], y: pos[i][1], notePos: pos[i][1] > 3.1 ? 'n' : 's' })),
+            nodes: names.map((nm, i) => ({ id: i, label: nm, x: pos[i][0], y: pos[i][1], notePos: kind.value === 'maze' ? (i === 4 ? 'e' : pos[i][1] > 3.1 ? 'n' : 's') : (Math.abs(pos[i][0] - 5) > 1 ? (pos[i][0] > 5 ? 'e' : 'w') : (pos[i][1] > 3 ? 'n' : 's')) })),
             edges: edgesOf(P) });
           s2.setView([-0.7, n - 0.3], [0, 1.1]); s3.setView([-0.7, n - 0.3], [0, 10]);
           resim();
@@ -76,7 +76,7 @@ export default {
             nodeFill: (id) => (tgt[id] ? 'green' : null),
             nodeColor: (id) => (tgt[id] ? 'green' : sim.frac[id] > 0.995 ? 'blue' : sim.frac[id] > 0 ? 'orange' : 'red'),
             nodeNote: (id) => (tgt[id] ? 'in A' : `${v.fix(sim.frac[id], 2)} | ${isFinite(sim.mean[id]) ? v.fix(sim.mean[id], 1) : '–'}`),
-            edgeWidth: (e) => 1 + 4 * e.w, edgeLabel: (e) => pfmt(e.w),
+            edgeWidth: (e) => 1 + 4 * e.w, edgeLabel: (e) => (kind.value === 'maze' ? pfmt(e.w) : null),
           });
           const col = (i) => (tgt[i] ? 'green' : 'accent');
           s2.bars(sim.frac, { x0: 0, dx: 1, color: (x, i) => col(i) });
@@ -308,7 +308,7 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
         const kind = v.select('chain', [{ value: 'drunk', label: 'drunkard’s walk' }, { value: 'mouse', label: 'mouse in a maze' }, { value: 'random', label: 'random' }], 'mouse', { onChange: () => rebuild() });
         const p = v.slider('step right $p$ (drunkard)', 0.1, 0.9, 0.5, { step: 0.05, onChange: () => { if (kind.value === 'drunk') rebuild(); } });
         let seed = 5; v.button('new random chain', () => { seed++; kind.value = 'random'; rebuild(); });
-        const s1 = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340, title: 'the chain (click a transient state)' });
+        const s1 = v.stage({ x: [0, 10], y: [-0.5, 6], axes: false, equal: true, height: 340, title: 'the chain (click a transient state)' });
         const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, title: '$F=(I-Q)^{-1}$ (small: simulated visits)' });
         const G = v.graph(s1, { directed: true, layout: 'none', draggable: false, nodes: [{ id: 0, x: 1, y: 1 }], edges: [], r: 16 });
         const T = v.table(s2, { rows: 2, cols: 2, size: 14, maxCell: 70 });
@@ -322,14 +322,14 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
           if (kind.value === 'mouse') {
             const nb = [[1, 2], [0, 3, 4], [0, 3, 5], [1, 2, 5], [4], [5]];
             const P = nb.map((l, i) => Array.from({ length: 6 }, (_, j) => (i >= 4 ? (i === j ? 1 : 0) : l.includes(j) ? 1 / l.length : 0)));
-            return { names: ['A', 'B', 'C', 'D', 'cheese', 'cat'], P, pos: [[1.5, 4.6], [4.2, 4.6], [1.5, 1.4], [4.2, 1.4], [8, 4.6], [8, 1.4]], ab: [4, 5] };
+            return { names: ['A', 'B', 'C', 'D', 'cheese', 'cat'], P, pos: [[1.5, 4.8], [4.6, 4.8], [1.5, 1.8], [4.6, 1.8], [8, 4.8], [3.05, 0.2]], ab: [4, 5] };
           }
           const Rr = v.rng(seed * 17 + 3), n = 6;
           const W = Array.from({ length: n }, (_, i) => (i >= 4 ? Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)) : Array.from({ length: n }, (_, j) => (i === j || Rr() < 0.45 ? 0 : 0.2 + Rr()))));
           for (let i = 0; i < 4; i++) { if (!W[i].some((x, j) => x && (j >= 4 || j !== i))) W[i][(i + 1) % 4] = 1; }
           W[3][(Rr() < 0.5 ? 4 : 5)] += 0.8; W[2][(Rr() < 0.5 ? 4 : 5)] += 0.5;
           const P = rowNormalize(W);
-          return { names: ['a', 'b', 'c', 'd', 'X', 'Y'], P, pos: [[1.5, 4.6], [4.2, 4.6], [1.5, 1.4], [4.2, 1.4], [8, 4.6], [8, 1.4]], ab: [4, 5] };
+          return { names: ['a', 'b', 'c', 'd', 'X', 'Y'], P, pos: [[1.5, 4.8], [4.6, 4.8], [1.5, 1.8], [4.6, 1.8], [8, 4.8], [3.05, 0.2]], ab: [4, 5] };
         }
         function rebuild() {
           D = chain(); const n = D.P.length;
@@ -345,7 +345,7 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
             simF[a] = simF[a].map((c) => c / runs); simB[a] = simB[a].map((c) => c / runs);
           });
           G.set({ directed: true, layout: 'none', r: 16, draggable: false,
-            nodes: D.names.map((nm, i) => ({ id: i, label: nm, x: D.pos[i][0], y: D.pos[i][1], notePos: D.pos[i][1] > 3 ? 'n' : 's' })), edges: edgesOf(D.P, () => ({ bend: 26 })) });
+            nodes: D.names.map((nm, i) => ({ id: i, label: nm, x: D.pos[i][0], y: D.pos[i][1], notePos: D.pos[i][1] > 3 ? 'n' : (i === 5 ? 'e' : 's') })), edges: edgesOf(D.P, () => ({ bend: 20 })) });
           start = 0; v.invalidate();
         }
         G.onClick = ({ node, id }) => { const i = id !== undefined ? id : node && node.id; if (i != null && tr.includes(i)) { start = tr.indexOf(i); v.invalidate(); } return true; };
@@ -380,7 +380,7 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
       num: '2.6', kind: 'Model', name: 'Snakes and ladders as an absorbing chain',
       statement: String.raw`On a board with squares $1,\dots,100$ a player starts off the board (state $0$), repeatedly rolls a fair die $d\in\{1,\dots,6\}$ and moves from $s$ to $s+d$; if the new square is the foot of a ladder or the head of a snake, the player is carried to its other end (one jump only). Under the **exact-finish** rule a roll that would pass $100$ leaves the player where she is. The squares then form an absorbing Markov chain with the single absorbing state $100$, and the expected number of turns from square $s$ is $E_s=\big((I-Q)^{-1}\mathbf 1\big)_s$, the solution of $E_{100}=0$, $E_s=1+\tfrac16\sum_{d=1}^6E_{\,\mathrm{jump}(\min\{s+d,\,\cdot\})}$ (with the overshoot rule applied).`,
       idea: String.raw`This is 2.3 and 2.5 on a 101-state chain: the system $(I-Q)E=\mathbf 1$ is solved by Gaussian elimination, and $E_0$ is the expected length of a game. No closed formula exists because snakes and ladders connect distant squares, but the chain is still finite and absorbing, so the answer exists and is unique as long as the last square stays reachable from everywhere. A game is a path of the chain, so its length is the absorption time, and the histogram of simulated lengths is the distribution of that time, with mean $E_0$.`,
-      caption: String.raw`Squares are shaded by the expected number of turns still to go (darker orange: longer). **Edit the board:** click a square, then another, to add a ladder (up) or a snake (down) between them; click a jump's first square again (with nothing selected) to remove it. The right panel is the histogram of 20000 simulated games, with the exact mean $E_0$ from the linear system as the gold line. The classic board was written down from memory and is only a plausible layout; try deleting all snakes, or all ladders, and switch the finishing rule.`,
+      caption: String.raw`Squares are shaded by the expected number of turns still to go (deeper orange: longer). **Edit the board:** click a square, then another, to add a ladder (up) or a snake (down) between them; click a jump's first square again (with nothing selected) to remove it. The right panel is the histogram of 20000 simulated games, with the exact mean $E_0$ from the linear system as the gold line. The classic board was written down from memory and is only a plausible layout; try deleting all snakes, or all ladders, and switch the finishing rule.`,
       deps: ['stoch-2.5'], refs: ['Norris §1.3'], tags: ['absorbing chains', 'board games'],
       viz(v) {
         const CLASSIC = { 1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100, 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 };

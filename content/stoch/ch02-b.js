@@ -21,14 +21,14 @@ export default {
         const RULES = {
           first0: { label: 'first return to 0', T: (S) => first(S, (s, n) => s[n] === 0, 1), stop: true },
           hit3: { label: 'first visit to +3', T: (S) => first(S, (s, n) => s[n] === 3), stop: true },
-          twoups: { label: 'first two up-steps in a row', T: (S) => first(S, (s, n) => s[n] - s[n - 1] === 1 && s[n - 1] - s[n - 2] === 1, 2), stop: true },
-          cap: { label: 'first visit to +3, or time 12', T: (S) => Math.min(first(S, (s, n) => s[n] === 3), 12), stop: true },
-          before3: { label: 'one step before first visit to +3', T: (S) => { const t = first(S, (s, n) => s[n] === 3); return t === INF ? INF : t - 1; }, stop: false },
-          last0: { label: 'last visit to 0 up to time 20', T: (S) => { for (let n = H; n >= 0; n--) if (S[n] === 0) return n; return INF; }, stop: false },
-          maxt: { label: 'first time the walk is at its maximum over [0,20]', T: (S) => { let b = 0; for (let n = 1; n <= H; n++) if (S[n] > S[b]) b = n; return b; }, stop: false },
+          twoups: { label: 'two up-steps in a row', T: (S) => first(S, (s, n) => s[n] - s[n - 1] === 1 && s[n - 1] - s[n - 2] === 1, 2), stop: true },
+          cap: { label: 'visit to +3, or time 12', T: (S) => Math.min(first(S, (s, n) => s[n] === 3), 12), stop: true },
+          before3: { label: 'one step before +3', T: (S) => { const t = first(S, (s, n) => s[n] === 3); return t === INF ? INF : t - 1; }, stop: false },
+          last0: { label: 'last visit to 0 by time 20', T: (S) => { for (let n = H; n >= 0; n--) if (S[n] === 0) return n; return INF; }, stop: false },
+          maxt: { label: 'time of the maximum on [0,20]', T: (S) => { let b = 0; for (let n = 1; n <= H; n++) if (S[n] > S[b]) b = n; return b; }, stop: false },
         };
-        const rule = v.select('rule', Object.entries(RULES).map(([value, r]) => ({ value, label: r.label })), 'hit3', { onChange: () => recompute() });
-        const nn = v.slider('observation time $n$', 0, H, 6, { int: true, step: 1 });
+        const rule = v.select('rule', Object.entries(RULES).map(([value, r]) => ({ value, label: r.label })), 'before3', { onChange: () => recompute() });
+        const nn = v.slider('observation time $n$', 0, H, 2, { int: true, step: 1 });
         let seed = 6; v.button('new path', () => { seed++; recompute(); });
         const s1 = v.stage({ x: [0, L], y: [-9, 9], axes: 'box', gutter: true, height: 340, xlabel: 'time', ylabel: '$S_n$', title: 'the past (bold) and possible futures' });
         const s2 = v.stage({ x: [-0.7, H + 0.7], y: [0, 1.15], axes: 'box', gutter: true, height: 340, xlabel: 'time $n$', ylabel: 'P($T=n$ | past)', title: 'is “stop now” decided by the past?' });
@@ -52,7 +52,7 @@ export default {
           if (rule.value.includes('hit3') || rule.value === 'cap' || rule.value === 'before3') s1.hline(3, { color: 'faint', dash: true });
           if (T <= L) { s1.vline(T, { color: 'gold', width: 2, dash: true }); s1.tex(String.raw`T=${T}`, T + 0.3, 8, { color: 'gold', align: 'left' }); }
           s1.vline(H, { color: 'faint', alpha: 0.5 });
-          probs.forEach((p, i) => { const dec = p < 1e-9 || p > 1 - 1e-9; s2.bars([p], { x0: i, dx: 1, color: i === T ? 'gold' : dec ? 'green' : 'red' }); });
+          probs.forEach((p, i) => { const dec = p < 1e-9 || p > 1 - 1e-9; s2.bars([p], { x0: i - 0.4, dx: 0.8, color: i === T ? 'gold' : dec ? 'green' : 'red' }); s2.dot(i, p, { color: dec ? 'green' : 'red', r: 4.5 }); });
           const bad = probs.filter((p) => p > 1e-9 && p < 1 - 1e-9).length;
           s2.hline(1, { color: 'faint', dash: true });
           info = { bad, atN: probs[n] };
@@ -67,7 +67,7 @@ export default {
       num: '2.8', kind: 'Theorem', name: 'Strong Markov property',
       statement: String.raw`Let $(X_n)$ be a Markov chain with transition matrix $P$ and let $T$ be a stopping time. Then, conditional on $T<\infty$ and $X_T=i$, the process $(X_{T+n})_{n\ge0}$ is a Markov chain with transition matrix $P$ started at $i$, and it is independent of the pre-$T$ path $(X_0,\dots,X_T)$. In words: at a stopping time the chain starts afresh from its current state.`,
       idea: String.raw`For a fixed time $m$ this is the ordinary Markov property. For a stopping time, split according to the value of $T$: on $\{T=m\}$, which lies in $\mathcal F_m$ (2.7), the ordinary Markov property at time $m$ gives the claim for the event $\{T=m,X_m=i\}$, and summing over $m$ (a countable partition) yields the statement. The argument breaks exactly when $\{T=m\}$ depends on the future after $m$, because then conditioning on $T=m$ also conditions the future path.`,
-      caption: String.raw`Simple random walk is cut at a rule's time $\tau$ and the futures $Y_k=X_{\tau+k}-X_\tau$ of 3000 paths are overlaid (60 are drawn; the gold curve is the mean). The histogram at lag $k$ (drag the slider) is compared with a *fresh* walk from 0, the binomial law (black dots). For the stopping time “first visit to $+3$” they agree to within sampling noise; for the last visit to $+3$ or the time just before the first visit, which are not stopping times, the futures are visibly different (try $k=1$ or $2$).`,
+      caption: String.raw`Simple random walk is cut at a rule's time $\tau$ and the futures $Y_k=X_{\tau+k}-X_\tau$ of 3000 paths are overlaid (60 are drawn; the gold curve is the mean). The histogram at lag $k$ (drag the slider) is compared with a *fresh* walk from 0, the binomial law (black dots). For the stopping time “first visit to $+3$” they agree to within sampling noise; for the last visit to $+3$ or the time just before the first visit, which are not stopping times, the futures are visibly different (try $k=1$ for the rule “one step before”, $k=2$ for the last visit).`,
       deps: ['stoch-2.7'], refs: ['Norris §1.4'], tags: ['strong Markov property', 'stopping times'],
       scope: String.raw`$T$ must be a stopping time; the statement fails for non-stopping times such as the last visit.`,
       viz(v) {
@@ -175,7 +175,7 @@ export default {
             const val = h[idx(i, j)];
             if (!b && !corner) { mxI = Math.max(mxI, val); mnI = Math.min(mnI, val); }
             if (corner) { s1.rect(j - 0.5, i - 0.5, j + 0.5, i + 0.5, { fill: 'faint', fillAlpha: 0.15, stroke: false }); continue; }
-            s1.rect(j - 0.5, i - 0.5, j + 0.5, i + 0.5, { fill: v.ramp(Math.max(0, Math.min(1, val / 1.0)), 'accent'), fillAlpha: 1, color: b ? (bval[bIndex.get(idx(i, j))] ? 'accent' : 'muted') : 'grid', width: b ? 2 : 0.6 });
+            s1.rect(j - 0.5, i - 0.5, j + 0.5, i + 0.5, { fill: v.ramp(Math.max(0, Math.min(1, val / 1.0)), 'accent'), fillAlpha: 1, color: b ? (bval[bIndex.get(idx(i, j))] ? 'panel' : 'muted') : 'grid', width: b ? 1.5 : 0.6 });
           }
           s1.dot(start[1], start[0], { color: 'gold', r: 7 }); s1.text('start', start[1], start[0] + 0.85, { size: 11, color: 'ink', align: 'center' });
           if (src.value > 0) s1.dot(simSrc[1], simSrc[0], { color: 'red', r: 5, hollow: true });
@@ -197,10 +197,11 @@ export default {
       deps: ['comb-5.2', 'comb-5.6', 'stoch-2.7'], refs: ['Grimmett–Stirzaker §3.10', 'LPW §2.7'], tags: ['reflection principle', 'ballot theorem'],
       credit: 'D. André, 1887; J. Bertrand, 1887',
       viz(v) {
+        let fixing = false;
         const mode = v.select('theorem', [{ value: 'refl', label: 'reflection principle' }, { value: 'ballot', label: 'ballot theorem' }], 'refl', { onChange: () => { sync(); resim(); } });
         const n = v.slider('steps $n$', 4, 40, 20, { int: true, step: 1, onChange: () => resim() });
         const a = v.slider('start $a$', 1, 8, 3, { int: true, step: 1, onChange: () => resim() });
-        const b = v.slider('end $b$', 1, 12, 2, { int: true, step: 1, onChange: () => resim() });
+        const b = v.slider('end $b$', 1, 12, 2, { int: true, step: 1, onChange: () => { if (!fixing) resim(); } });
         const pv = v.slider('votes for A, $p$', 2, 30, 14, { int: true, step: 1, onChange: () => { if (qv.value >= pv.value) qv.set(pv.value - 1); resim(); } });
         const qv = v.slider('votes for B, $q$', 0, 29, 8, { int: true, step: 1, onChange: () => { if (qv.value >= pv.value) pv.set(qv.value + 1); resim(); } });
         const refl = v.toggle('show reflections', true);
@@ -211,8 +212,8 @@ export default {
         let N, A, B, U, paths, run, exact, counts;
         function resim() {
           if (mode.value === 'refl') {
-            N = n.value; A = a.value; B = b.value; if ((N + B - A) % 2 !== 0) B += 1; U = (N + B - A) / 2;
-            if (U < 0 || U > N) { B = A + N - (N - ((N + B - A) % 2)); U = Math.max(0, Math.min(N, U)); }
+            N = n.value; A = a.value; B = Math.min(b.value, A + N); if ((N + B - A) % 2 !== 0) B += 1; U = (N + B - A) / 2;
+            if (B !== b.value) { fixing = true; b.set(B); fixing = false; }
           } else { N = pv.value + qv.value; A = 0; B = pv.value - qv.value; U = pv.value; }
           const R = v.rng(seed * 331 + N * 7 + A);
           const base = Array.from({ length: N }, (_, i) => (i < U ? 1 : -1));
@@ -258,9 +259,9 @@ export default {
       num: '2.11', kind: 'Theorem', name: 'Hitting-time theorem for random walks',
       statement: String.raw`Let $S_n=\xi_1+\dots+\xi_n$ be a random walk whose steps are i.i.d. integers with $\xi_i\le 1$ (it can only go up by one at a time). For $k\ge1$ let $T_k=\inf\{n:S_n=k\}$ be the first time it reaches level $k$. Then for all $n\ge1$
 $$\Pr(T_k=n)=\frac kn\,\Pr(S_n=k).$$
-For simple symmetric random walk this gives $\Pr(T_k=n)=\frac kn\binom{n}{(n+k)/2}2^{-n}\sim \dfrac{k}{\sqrt{2\pi}}\,n^{-3/2}$, so the hitting time is almost surely finite but has infinite mean.`,
+For simple symmetric random walk this gives $\Pr(T_k=n)=\frac kn\binom{n}{(n+k)/2}2^{-n}\sim \dfrac{2k}{\sqrt{2\pi}}\,n^{-3/2}$ for $n\equiv k\pmod 2$ (and $0$ otherwise), so the hitting time is almost surely finite but has infinite mean.`,
       idea: String.raw`Reverse the time order of the first $n$ steps and use the cycle lemma (comb-5.5): among the $n$ cyclic rotations of any sequence of steps with sum $k$ that are at most $+1$, exactly $k$ rotations have the property that the partial sums stay below $k$ until the very last step, i.e. first reach $k$ at time $n$. Since the steps are exchangeable, all rotations are equally likely, so $\Pr(T_k=n)=\Pr(S_n=k)\cdot\frac kn$. The reflection count of 2.10 is the special case of simple walk. The $n^{-3/2}$ tail follows from the local central limit theorem for $\Pr(S_n=k)\approx\sqrt{2/(\pi n)}$.`,
-      caption: String.raw`Pick a walk whose steps never exceed $+1$ and a level $k$. Bars: histogram of the first-passage time of 30000 simulated walks; black dots: $\frac kn\Pr(S_n=k)$, computed by convolution (exact). The right panel plots the exact law on log–log axes against the $n^{-3/2}$ law (gold): straight for the symmetric walks, while a bias towards $-1$ makes the tail collapse exponentially.`,
+      caption: String.raw`Pick a walk whose steps never exceed $+1$ and a level $k$. Bars: histogram of the first-passage time of 30000 simulated walks; black dots: $\frac kn\Pr(S_n=k)$, computed by convolution (exact). The right panel plots the exact law on log–log axes against the $n^{-3/2}$ law $k/(\sigma\sqrt{2\pi})\,n^{-3/2}$ (gold; doubled for the ±1 walk, which only visits every other time): straight for the symmetric walks, while a bias towards $-1$ makes the tail collapse exponentially.`,
       scope: String.raw`Steps i.i.d., integer valued and bounded above by $+1$ ("skip-free to the right"); the walk may have any drift.`,
       deps: ['stoch-2.10', 'comb-5.5'], refs: ['Grimmett–Stirzaker §3.10'], tags: ['hitting times', 'cycle lemma'],
       credit: 'Kemperman 1961; Otter 1949',
@@ -303,12 +304,12 @@ For simple symmetric random walk this gives $\Pr(T_k=n)=\frac kn\binom{n}{(n+k)/
           const pts = []; let mn = 1; for (let nn = kk; nn <= NH; nn++) { const e = ex(nn); if (e > 1e-12) { pts.push([nn, e]); mn = Math.min(mn, e); } }
           s2.setView([1, NH], [Math.max(1e-10, mn / 3), 1]);
           s2.path(pts, { color: 'ink', width: 2 });
-          const c = (kk / Math.sqrt(2 * Math.PI)); s2.path(Array.from({ length: NH }, (_, i) => [i + 1, c * (i + 1) ** -1.5]), { color: 'gold', width: 2, dash: true });
+          const sg2 = steps.reduce((a, [s, p]) => a + s * s * p, 0) - (steps.reduce((a, [s, p]) => a + s * p, 0)) ** 2, c = (walkSel.value === 'simple' ? 2 : 1) * kk / Math.sqrt(2 * Math.PI * sg2); s2.path(Array.from({ length: NH }, (_, i) => [i + 1, c * (i + 1) ** -1.5]), { color: 'gold', width: 2, dash: true });
           s2.dot(nsel.value, Math.max(1e-10, ex(nsel.value)), { color: 'gold', r: 5 });
           let mx = 0, tot = 0; for (let nn = kk; nn <= NH; nn++) { mx = Math.max(mx, Math.abs(sim[nn] - ex(nn))); tot += ex(nn); }
           info = { mx, tot, mean: steps.reduce((a, [s, p]) => a + s * p, 0) };
         });
-        v.legend([['accent', 'simulated first-passage', { area: true }], ['ink', '$\\frac kn\\Pr(S_n=k)$', { dot: true }], ['gold', '$k\\,n^{-3/2}/\\sqrt{2\\pi}$', { dash: true }]]);
+        v.legend([['accent', 'simulated first-passage', { area: true }], ['ink', '$\\frac kn\\Pr(S_n=k)$', { dot: true }], ['gold', '$k\\,n^{-3/2}/(\\sigma\\sqrt{2\\pi})$ (×2 for ±1)', { dash: true }]]);
         v.readout(() => { const nn = nsel.value, kk = k.value; return `Drift per step $${v.fix(info.mean, 3)}$. At $n=${nn}$: $\\Pr(S_n=k)=${v.fix(pS(nn, kk), 5)}$, times $k/n=${v.fix(kk / nn, 4)}$ gives **${v.fix((kk / nn) * pS(nn, kk), 5)}**; simulated ${v.fix(sim[nn], 5)}.\nLargest gap simulation vs formula over $n\\le${NH}$: ${v.fix(info.mx, 4)}. Total mass reached by time ${NH}: ${v.fix(info.tot, 4)}.`; });
       },
     },
@@ -357,11 +358,11 @@ Consequently, as $n\to\infty$, both $L_{2n}/2n$ and $P_{2n}/2n$ converge in dist
           s1.fn((x) => 1 / (Math.PI * Math.sqrt(x * (1 - x))), { domain: [0.004, 0.996], color: 'gold', width: 2.2 });
           if (bell.value) s1.fn((x) => Math.exp(-((x - 0.5) ** 2) / (2 * 0.125)) / Math.sqrt(2 * Math.PI * 0.125), { color: 'red', width: 2, dash: true });
           let mid = 0, midEx = 0, ends = 0;
-          for (let k = 0; k <= n; k++) { const x = k / n; if (x >= 0.4 && x <= 0.6) { mid += h[k] / NW; midEx += u(k) * u(n - k); } if (x <= 0.1 || x >= 0.9) ends += h[k] / NW; }
+          for (let k = 0; k <= n; k++) { const x = k / n; if (x >= 0.4 - 1e-9 && x <= 0.6 + 1e-9) { mid += h[k] / NW; midEx += u(k) * u(n - k); } if (x <= 0.1 || x >= 0.9) ends += h[k] / NW; }
           info = { mid, midEx, ends, n };
         });
         v.legend([['accent', 'simulated', { area: true }], ['ink', 'exact $u_{2k}u_{2n-2k}$', { dot: true }], ['gold', 'arcsine density'], ['red', 'even-split guess', { dash: true }]]);
-        v.readout(() => `$2n=${2 * nSl.value}$ steps. Share of walks with the statistic in $[0.4,0.6]\\cdot 2n$: simulated **${v.fix(info.mid, 3)}**, exact ${v.fix(info.midEx, 3)}, arcsine limit $\\frac2\\pi(\\arcsin\\sqrt{0.6}-\\arcsin\\sqrt{0.4})=${v.fix((2 / Math.PI) * (Math.asin(Math.sqrt(0.6)) - Math.asin(Math.sqrt(0.4))), 3)}$.\nShare in the outer tenths ($\\le0.1$ or $\\ge0.9$): **${v.fix(info.ends, 3)}**; a uniform law would give 0.2.`);
+        v.readout(() => `$2n=${2 * nSl.value}$ steps. Share of walks with the statistic in $[0.4,0.6]\\cdot 2n$ (bins centred on $k/n$): simulated **${v.fix(info.mid, 3)}**, exact ${v.fix(info.midEx, 3)}, arcsine integral over the same window $=${v.fix((2 / Math.PI) * (Math.asin(Math.sqrt(Math.min(1, 0.6 + 0.5 / nSl.value))) - Math.asin(Math.sqrt(0.4 - 0.5 / nSl.value))), 3)}$.\nShare in the outer tenths ($\\le0.1$ or $\\ge0.9$): **${v.fix(info.ends, 3)}**; a uniform law would give 0.2.`);
       },
     },
   ],
