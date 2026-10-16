@@ -37,7 +37,7 @@ export default {
         const showS = v.toggle('show winning strategy', true);
         let seed = 4;
         v.button('New formula', () => { seed++; });
-        const s = v.stage({ x: [-2.6, 20], y: [-1.1, 8.4], axes: false, height: 430, full: true });
+        const s = v.stage({ x: [-2.6, 20], y: [0.1, 8.2], axes: false, height: 430, full: true });
         const s2 = v.stage({ x: [0, 12], y: [0, 2.4], axes: false, height: 150, full: true, title: 'blocks of the sentence, and where the tableau cells t join (schematic)' });
         let model = null;
         const build = () => {
@@ -289,6 +289,7 @@ export default {
         v.render(() => {
           evalAll();
           const cur = G.nodes[path[path.length - 1]], onPath = new Set(path);
+          s.dot(cur.x, cur.y, { r: 24, color: 'gold', hollow: true });
           for (const n of G.nodes) n.kids.forEach((k) => { const c = G.nodes[k], on = onPath.has(n.id) && onPath.has(k) && path.indexOf(k) === path.indexOf(n.id) + 1; s.line(n.x, n.y, c.x, c.y, { color: on ? 'gold' : 'faint', width: on ? 4 : 1.3, alpha: on ? 1 : 0.7 }); });
           for (const n of G.nodes) {
             const col = n.val ? 'green' : 'red', isCur = n === cur;
@@ -296,9 +297,8 @@ export default {
             else { s.dot(n.x, n.y, { r: 17, color: col, hollow: !isCur && !onPath.has(n.id) }); s.text(n.type === 'and' ? '∧' : '∨', n.x, n.y, { align: 'center', baseline: 'middle', size: 18, weight: 800, color: (isCur || onPath.has(n.id)) ? 'panel' : 'ink', halo: false }); }
             s.text(String(n.id), n.x + 0.34, n.y + 0.34, { size: 9.5, color: 'muted', halo: false });
           }
-          s.dot(cur.x, cur.y, { r: 22, color: 'gold', hollow: true });
           const root = G.nodes[G.root]; s.text(`claim: output = 1 (it is ${root.val})`, 10.7, 7.55, { align: 'right', size: 13, weight: 700, color: root.val ? 'green' : 'red' });
-          if (human && cur.type === 'and') { cur.kids.forEach((k) => { const c = G.nodes[k]; s.dot(c.x, c.y, { r: 24, color: 'orange', hollow: true }); }); s.text('your move as ∀: click a child to challenge', -0.6, 7.55, { size: 12, color: 'orange', weight: 700 }); }
+          if (human && cur.type === 'and') { cur.kids.forEach((k) => { const c = G.nodes[k]; s.circle(c.x, c.y, 0.5, { color: 'orange', width: 3, fill: false }); }); s.text('your move as ∀: click a child to challenge', -0.6, 7.55, { size: 12, color: 'orange', weight: 700 }); }
         });
         v.legend([['gold', 'pointer (the machine’s whole memory)', { dot: true }], ['green', 'gate or input = 1', { dot: true }], ['red', 'gate or input = 0', { dot: true }]]);
         v.readout(() => {
@@ -389,7 +389,7 @@ export default {
         const T = 4096, SB = 10, mask = (1 << SB) - 1;
         const step = (x) => ((x * 5 + 3) & mask) ^ (x >> 2);
         const traj = [0b1010011101]; for (let t = 0; t < T; t++) traj.push(step(traj[t]));
-        const s1 = v.stage({ x: [-0.5, 4.5], y: [0, 6.2], axes: false, height: 300, weight: 1.15, minWidth: 330, title: 'the chain of inclusions (bars = exponents)' });
+        const s1 = v.stage({ x: [-0.5, 4.5], y: [-0.9, 6.2], axes: false, height: 300, weight: 1.15, minWidth: 330, title: 'the chain of inclusions (bars = exponents)' });
         const s2 = v.stage({ x: [1, 2], y: [0.4, 2.2], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 300, xlabel: 'assumed time exponent c', ylabel: 'final exponent a·c²/2  (a = 1)', title: 'where the chain contradicts the hierarchy' });
         const s3 = v.stage({ x: [0, 1], y: [0, 3.2], axes: false, height: 230, full: true, title: `a deterministic ${SB}-bit machine, T = ${T} steps, cut into k segments` });
         const s4 = v.stage({ x: [1, 500], y: [300, 5000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 230, full: true, xlabel: 'checkpoints k', ylabel: 'cost  k·s + T/k', title: 'the cost of the ∃∀ simulation' });
@@ -400,16 +400,15 @@ export default {
         v.render(() => {
           const c = cS.value, a = aS.value;
           // chain
-          const e = [a, a * c, (a * c) / 2, (a * c * c) / 2], names = ['NTIME(n^a)', 'DTISP(n^{ac}, n^{o(1)})', 'Σ₂TIME(n^{ac/2})', 'NTIME(n^{ac²/2})'], ok = e[3] >= a - 1e-9, valid = e[2] >= 1;
-          s1.setView([-0.5, 4.5], [0, Math.max(6.2, e[1] * 1.15)]);
+          const e = [a, a * c, (a * c) / 2, (a * c * c) / 2], names = ['NTIME(nᵃ)', 'DTISP(nᵃᶜ, small)', 'Σ₂TIME(nᵃᶜ/²)', 'NTIME(nᵃᶜ²/²)'], ok = e[3] >= a - 1e-9, valid = e[2] >= 1;
+          s1.setView([-0.5, 4.5], [-0.9, Math.max(6.2, e[1] * 1.15)]);
           e.forEach((x, i) => {
             const col = i === 3 ? (ok ? 'green' : 'red') : i === 0 ? 'accent' : 'muted';
             s1.rect(i + 0.12, 0, i + 0.88, x, { fill: col, fillAlpha: 0.4, color: col, width: 2 });
             s1.text(x.toFixed(3), i + 0.5, x, { align: 'center', baseline: 'bottom', size: 12, weight: 700, color: col, dy: -3 });
-            s1.text(names[i], i + 0.5, -0.0, { align: 'center', baseline: 'top', size: 9.5, color: 'muted', dy: 2 });
+            s1.text(names[i], i + 0.5, -0.45, { align: 'center', baseline: 'middle', size: 9.5, color: 'muted' });
           });
           s1.hline(a, { color: 'accent', dash: true, width: 1.4 });
-          ['Cook–Levin + assumption', '∃ midpoints, ∀ segment', 'assumption on ∀ part'].forEach((t, i) => s1.text(t, i + 1, Math.max(e[i], e[i + 1]) * 0.5 + 0.35, { align: 'center', size: 9.5, color: 'muted' }));
           s1.corner(ok ? 'no contradiction: ac²/2 ≥ a' : 'ac²/2 < a: contradicts the NTIME hierarchy (1.5)', 'tr', { color: ok ? 'muted' : 'red', weight: 700, plate: true });
           // middle
           const f = (x) => (x * x) / 2;
@@ -418,7 +417,6 @@ export default {
           s2.vband(1, Math.SQRT2, { color: 'red', alpha: 0.1 });
           marks.forEach(([x, l, who], i) => { s2.vline(x, { color: i === 0 ? 'red' : 'muted', dash: true, width: 1.2, alpha: 0.8 }); s2.text(l, x, 2.12 - 0.12 * (i % 2) - (i === 2 ? 0 : 0), { align: 'center', size: 11, color: i === 0 ? 'red' : 'muted', weight: 700 }); });
           s2.text('contradiction (c < √2)', 1.04, 0.55, { size: 11, color: 'red' });
-          s2.text('this chain proves only c < √2; the other marks use longer chains', 1.99, 0.5, { size: 10, color: 'muted', align: 'right', dy: 14 });
           h.set(c, 1);
           s2.dot(c, f(c), { r: 6, color: 'gold' });
           // segments
@@ -447,7 +445,7 @@ export default {
         v.readout(() => {
           const I = info;
           return `$c=${v.fix(I.c, 3)}$, $a=${v.fix(I.a, 2)}$: $\\mathrm{NTIME}(n^{${v.fix(I.a, 2)}})\\subseteq\\mathrm{NTIME}(n^{${v.fix(I.e[3], 3)}})$ — ${I.ok ? 'no contradiction' : '**contradiction** with the nondeterministic time hierarchy'}${I.valid ? '' : ' (the middle step needs $ac/2\\ge1$: increase $a$)'} · threshold $\\sqrt2=${v.fix(Math.SQRT2, 4)}$ (computed from $c^2/2=1$)\n`
-            + `Simulation: $k=${I.k}$ checkpoints cost $ks+T/k=${Math.round(I.cost)}$ steps against $T=${T}$ (best $k\\approx${v.fix(I.kmin, 1)}$ gives about ${Math.round(I.minCost)}$, i.e. about $2\\sqrt{Ts}$) · segment checks failing: **${I.nbad}**.\n`
+            + `Simulation: $k=${I.k}$ checkpoints cost $ks+T/k=${Math.round(I.cost)}$ steps against $T=${T}$ (best $k\\approx${v.fix(I.kmin, 1)}$ gives about ${Math.round(I.minCost)}, i.e. about $2\\sqrt{Ts}$) · segment checks failing: **${I.nbad}**.\n`
             + `Known records (exponent $c$ below which "time $n^c$ and space $n^{o(1)}$" is impossible): $\\sqrt2\\approx1.414$ → $\\varphi\\approx${v.fix((1 + Math.sqrt(5)) / 2, 3)}$ → $2\\cos(\\pi/7)\\approx${v.fix(2 * Math.cos(Math.PI / 7), 4)}$; the 2cos(π/7) value is the limit of alternation-trading proofs.`;
         });
       },

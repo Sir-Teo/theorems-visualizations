@@ -84,7 +84,7 @@ export function feistel8(k, x) {
 export function ladder(P, names, rows, o = {}) {
   const { W } = P, x1 = o.x1 ?? Math.max(70, W * 0.16), x2 = o.x2 ?? W - Math.max(90, W * 0.2), top = o.top ?? 44, rh = o.rh ?? 26;
   [[x1, names[0], 'accent'], [x2, names[1], 'orange']].forEach(([x, n, c]) => {
-    P.rect(x - 52, 8, 104, 22, { fill: c, fillAlpha: 0.16, color: c, width: 1.5, radius: 7 });
+    const bw = Math.max(104, n.length * 8.2 + 22); P.rect(x - bw / 2, 8, bw, 22, { fill: c, fillAlpha: 0.16, color: c, width: 1.5, radius: 7 });
     P.text(n, x, 19, { size: 12, weight: 700, color: c, halo: false });
     P.line(x, 34, x, top + rows.length * rh + 6, { color: 'faint', width: 1.5, dash: true });
   });

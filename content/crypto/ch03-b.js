@@ -27,7 +27,7 @@ export default {
       credit: 'Formalised for symmetric encryption by Bellare, Desai, Jokipii & Rogaway, 1997',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Chosen-plaintext_attack' },
       viz(v) {
-        const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, full: true });
+        const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, full: true });
         const scheme = v.select('Scheme', [{ value: 'det', label: 'deterministic: $c=m\\oplus F_k(0)$' }, { value: 'rand', label: 'randomized: $(r,\\ F_k(r)\\oplus m)$' }], 'det', { onChange: () => newGame() });
         const qIn = v.input('Oracle query $m$ (hex)', '1234', { width: 80 });
         const m0In = v.input('$m_0$', '1234', { width: 80 }), m1In = v.input('$m_1$', '5678', { width: 80 });
@@ -72,7 +72,7 @@ export default {
           bC.hidden = G.phase !== 0; m0In.el.hidden = G.phase !== 0; m1In.el.hidden = G.phase !== 0;
           bG0.hidden = G.phase !== 1 || !!G.done; bG1.hidden = bG0.hidden;
           const P = pix(sL), rows = G.log.slice(-13);
-          ladder(P, ['Adversary A', 'Oracle / Challenger'], rows, { rh: 27, top: 44, x1: Math.max(70, P.W * 0.13), x2: P.W - Math.max(80, P.W * 0.15) });
+          ladder(P, ['Adversary A', 'Oracle / Challenger'], rows, { rh: 27, top: 44, x1: Math.max(70, P.W * 0.13), x2: P.W - Math.max(100, P.W * 0.15) });
         });
         v.readout(() => {
           let hint = '';
@@ -101,7 +101,7 @@ export default {
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 330, weight: 1.15 });
         const sR = v.stage({ x: [0, 2000], y: [0.3, 1.02], axes: 'box', gutter: true, height: 330, minWidth: 260, weight: 1, xlabel: 'games played', ylabel: 'fraction won' });
-        const sA = v.stage({ x: [-0.5, 16.5], y: [-18, 0.5], axes: 'box', gutter: true, height: 330, minWidth: 240, weight: 0.85, xlabel: 'random bits w', ylabel: 'advantage', title: 'Advantage $2^{-(w+1)}$' });
+        const sA = v.stage({ x: [-0.5, 16.5], y: [-18, 0.5], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'random bits w', ylabel: 'advantage', title: 'Advantage $2^{-(w+1)}$' });
         sA.setTicks(null, [0, -4, -8, -12, -16].map((y) => [y, p2(y)]));
         const wS = v.slider('randomness $w$ (bits; 0 = deterministic)', 0, 16, 0, { step: 1, int: true });
         let seed = 1; v.button('Resample', () => { seed += 1; });
@@ -127,7 +127,7 @@ export default {
             { dir: -1, text: `c* = ${f(demo.cs)}   [b = ${demo.b}]`, color: 'purple' },
             { dir: 0, text: demo.cs[0] === demo.c0[0] && demo.cs[1] === demo.c0[1] ? 'c* = c₀  ⇒  b′ = 0' : 'c* ≠ c₀  ⇒  b′ = 1', color: 'ink' },
             { dir: 0, text: demo.g === demo.b ? 'A wins this game' : 'A loses this game', color: demo.g === demo.b ? 'green' : 'red' },
-          ], { rh: 32, top: 46, x1: Math.max(60, P.W * 0.12), x2: P.W - Math.max(66, P.W * 0.14) });
+          ], { rh: 32, top: 46, x1: Math.max(60, P.W * 0.12), x2: P.W - Math.max(100, P.W * 0.14) });
           sR.path(Array.from({ length: 100 }, (_, i) => { const n = 20 + i * 20; return [n, Math.min(1.02, 0.5 + 0.5 * 1.96 / Math.sqrt(n))]; }), { color: 'faint', width: 1.3, dash: true });
           sR.path(Array.from({ length: 100 }, (_, i) => { const n = 20 + i * 20; return [n, 0.5 - 0.5 * 1.96 / Math.sqrt(n)]; }), { color: 'faint', width: 1.3, dash: true });
           sR.hline(0.5, { color: 'muted', width: 1 }); sR.hline(ex, { color: 'green', width: 2, dash: true });
@@ -176,7 +176,7 @@ export default {
           else { do { y = Math.floor(tabRng() * 256); } while (used.has(y)); }
           used.add(y); tab.set(x, y);
         }
-        resetTable();
+        resetTable(); for (let i = 0; i < 20; i++) query(Math.floor(tabRng() * 256));
         sG.onClick((x, y) => {
           const P = pix(sG), [px, py] = P.at(x, y), g = geom(P), i = Math.floor((px - g.x0) / g.cs), j = Math.floor((py - g.y0) / g.cs);
           if (i >= 0 && i < 16 && j >= 0 && j < 16) query(j * 16 + i);
@@ -217,7 +217,7 @@ export default {
           sB.rect(0.7, 0, 1.3, res.pr, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1.2 }); sB.line(1, res.pr - ci95(res.pr, NR), 1, res.pr + ci95(res.pr, NR), { color: 'ink', width: 2 });
           sB.rect(1.7, 0, 2.3, res.pi, { fill: 'orange', fillAlpha: 0.5, color: 'orange', width: 1.2 }); sB.line(2, res.pi - ci95(res.pi, NR), 2, res.pi + ci95(res.pi, NR), { color: 'ink', width: 2 });
           sB.text(v.fix(res.pr, 3), 1, res.pr + 0.07, { size: 12, weight: 700, color: 'accent' }); sB.text(v.fix(res.pi, 3), 2, res.pi + 0.07, { size: 12, weight: 700, color: 'orange' });
-          sB.setTicks([[1, 'real $F_k$'], [2, 'ideal']], null);
+          sB.setTicks([[1, 'real F_k'], [2, 'ideal']], null);
         });
         v.legend([['accent', 'real world'], ['orange', 'ideal world'], ['red', 'colliding answers (ring)', { dot: true }]]);
         v.readout(() => `Test “${test.value === 'coll' ? 'accept if the $' + qS.value + '$ answers are all distinct' : 'accept if $F(0)\\oplus F(x)\\oplus F(y)\\oplus F(x\\oplus y)=0$'}”: $\\Pr[D=1]$ is $${v.fix(res.pr, 3)}$ for $F_k$ and $${v.fix(res.pi, 3)}$ in the ideal world (1500 runs each), so the advantage is $${v.fix(Math.abs(res.pr - res.pi), 3)}\\ (\\pm${v.fix(ci95(0.5, NR) * 1.4, 2)}$ at worst).` + (Math.abs(res.pr - res.pi) > 0.25 ? '\n**This test distinguishes them: $F_k$ is not pseudorandom against it.**' : '\nThis test cannot separate the two; a different test might.'));
@@ -259,9 +259,9 @@ export default {
           }
           const exact = (q) => (mode.value === 'const' ? 0.5 : 0.5 * (1 - (1 - 1 / N) ** q));
           s.fn(exact, { color: 'green', width: 2.4, domain: [0, qmax] });
-          s.fn((q) => Math.min(0.6, q / N), { color: 'red', width: 2, domain: [0, qmax], dash: true });
+          s.fn((q) => q / N, { color: 'red', width: 2, domain: [0, Math.min(qmax, 0.6 * N)], dash: true });
           s.dots(pts, { r: 5, color: 'accent' });
-          s.text(`2^${n} = ${N} nonces`, qmax * 0.98, 0.04, { size: 11.5, color: 'muted', align: 'right' });
+          s.text(`n = ${n}: ${N} possible nonces`, qmax * 0.98, 0.04, { size: 11.5, color: 'muted', align: 'right' });
           info = { n, N, pts, qmax, exact };
         });
         v.legend([['accent', 'simulated advantage', { dot: true }], ['green', 'exact $\\tfrac12\\Pr[\\mathrm{hit}]$'], ['red', 'union bound $q/2^n$', { dash: true }]]);
@@ -294,7 +294,7 @@ export default {
         let lastN = 0, info = null, cache = null, ck = '';
         v.render(() => {
           const N = NS.value, qmax = Math.ceil(3.3 * Math.sqrt(N));
-          if (N !== lastN) { lastN = N; H.set(clamp(Math.round(1.1774 * Math.sqrt(N)), 2, qmax), 0.5); }
+          if (N !== lastN) { lastN = N; H.set(clamp(Math.ceil(1.1774 * Math.sqrt(N)), 2, qmax), 0.5); }
           sC.setView([0, qmax], [0, 1.04]);
           // exact curve by one pass
           const K = 160, qs = Array.from({ length: K + 1 }, (_, i) => Math.max(1, Math.round(qmax * i / K))), ex = []; let s = 0, cur = 1;
@@ -316,7 +316,7 @@ export default {
           sC.vline(1.1774 * Math.sqrt(N), { color: 'orange', width: 1.4, dash: true });
           sC.text('1.18√N', Math.min(qmax * 0.99, 1.1774 * Math.sqrt(N) + qmax * 0.01), 0.06, { size: 11, color: 'orange', weight: 700, align: 'left' });
           const q = Math.round(H.x), pq = 1 - Math.exp(logNoColl(N, q));
-          sC.dot(q, pq, { r: 8, color: 'gold' });
+          H.set(q, pq);
           // grid
           const P = pix(sG);
           if (N <= 4096) {
@@ -414,7 +414,7 @@ export default {
       credit: 'Shafi Goldwasser & Silvio Micali, 1984 (conference version: STOC 1982)',
       statement: String.raw`Goldwasser and Micali argued that deterministic public-key encryption leaks partial information about the plaintext and replaced it by **probabilistic encryption**, defined with a security notion — *semantic security*, which they showed equivalent to *polynomial security* (what is now called indistinguishability of encryptions), a computational counterpart of Shannon’s perfect secrecy. Their construction encrypts one bit at a time with a trapdoor predicate: with public key $(N,y)$, $N=pq$ for primes $p,q\equiv3\pmod 4$ and $y$ a *pseudosquare* (a non-square modulo $N$ with Jacobi symbol $+1$), a bit $b$ is encrypted as $c=y^{b}r^{2}\bmod N$ for a fresh random $r\in\mathbb Z_N^*$; the holder of $p,q$ decrypts by testing whether $c$ is a square modulo $p$. Under the **quadratic residuosity assumption** — that no efficient algorithm distinguishes squares from pseudosquares modulo $N$ without the factors — the scheme is secure, and longer messages are handled bit by bit by a hybrid argument.`,
       idea: String.raw`Before 1982 cryptography was judged by resistance to attacks that had been thought of. The paper made two moves: it *defined* what the adversary must not learn (any function of the plaintext; indistinguishability of two chosen plaintexts) with efficient adversaries and negligible advantage (3.2–3.4), and it gave a scheme whose security *reduces* to a number-theoretic assumption about quadratic residues (nt-4.1), proved by reduction (3.6) and a hybrid argument over the bits of the message (3.8). The ciphertext of a bit is randomised so that the same bit encrypts differently each time, the fix for the weakness of deterministic encryption (3.10). The scheme itself is inefficient (a full modulus-sized ciphertext per bit) and became the prototype for later probabilistic systems (9.13).`,
-      caption: String.raw`A reconstruction on small moduli — the paper has no data or figures to reproduce, so this is a model of its construction with toy primes. Left: the residues modulo $N$ as a grid; blue = squares, orange = pseudosquares (Jacobi symbol $+1$ but not squares), pale = Jacobi symbol $-1$, grey = not coprime to $N$. Click a cell for its square/Jacobi status. Encrypt the same bit repeatedly: the ciphertexts differ. Right: the indistinguishability game against several adversaries, 4000 games each; only an adversary who knows the factors (or runs an exhaustive search of cost $\approx N$) wins, while cheap tests stay at advantage $\approx0$ (error bars: $\pm1.96\sigma$).`,
+      caption: String.raw`A reconstruction on small moduli — the paper has no data or figures to reproduce, so this is a model of its construction with toy primes. Left: the residues modulo $N$ as a grid; blue = squares, orange = pseudosquares (Jacobi symbol $+1$ but not squares), light grey = Jacobi symbol $-1$, dark = not coprime to $N$. Click a cell for its square/Jacobi status. Encrypt the same bit repeatedly: the ciphertexts differ. Right: the indistinguishability game against several adversaries, 4000 games each; only an adversary who knows the factors (or runs an exhaustive search of cost $\approx N$) wins, while cheap tests stay at advantage $\approx0$ (error bars: $\pm1.96\sigma$).`,
       scope: String.raw`Toy moduli of up to 7 digits: with such $N$ an exhaustive search factors $N$ at once, so the security statement is only meaningful as $N$ grows; the scheme is the one of the paper as presented in textbooks (bit encryption $y^br^2$), not the paper’s exact notation.`,
       deps: ['crypto-3.2', 'nt-4.1'],
       tags: ['probabilistic encryption', 'quadratic residuosity'],
@@ -468,7 +468,7 @@ export default {
           // grid
           const P = pix(sG), cols = Math.ceil(Math.sqrt(N)), rows = Math.ceil(N / cols);
           const cs = Math.max(0.6, Math.min((P.W - 24) / cols, (P.H - 70) / rows)), x0 = (P.W - cols * cs) / 2, y0 = 26;
-          const ctx = sG.ctx, colr = [v.color('faint', 0.55), v.color('accent', 0.9), v.color('orange', 0.95), v.color('muted', 0.14)];
+          const ctx = sG.ctx, colr = [v.color('ink', 0.5), v.color('accent', 0.9), v.color('orange', 0.95), v.color('faint', 0.4)];
           for (let c = 0; c < 4; c++) { ctx.save(); ctx.fillStyle = colr[c]; ctx.beginPath(); for (let x = 0; x < N; x++) if (cls[x] === c && x > 0) ctx.rect(x0 + (x % cols) * cs, y0 + Math.floor(x / cols) * cs, cs + (cs < 1.5 ? 0.3 : -0.5), cs + (cs < 1.5 ? 0.3 : -0.5)); ctx.fill(); ctx.restore(); }
           if (sel > 0) P.rect(x0 + (sel % cols) * cs - 2, y0 + Math.floor(sel / cols) * cs - 2, cs + 4, cs + 4, { fill: false, color: 'gold', width: 2.4 });
           P.text(`ℤ_N,  N = ${p}·${q} = ${N},  pseudosquare y = ${y}`, P.W / 2, 11, { size: 12, weight: 700, color: 'ink', halo: false });
@@ -480,14 +480,14 @@ export default {
             sB.text(v.fix(o.adv, 3), x, o.adv + er + 0.06, { size: 11, weight: 700, color: col });
           });
           sB.setTicks(res.map((o, i) => [i + 1, ['r<N/2', 'c even', 'c mod 3', 'Jacobi', 'search', 'factors'][i]]), null);
-          sB.text('cheap tests', 2.5, 1.0, { size: 11.5, color: 'orange', weight: 700 }); sB.text('knows p,q or searches', 5.5, 1.0, { size: 11.5, color: 'green', weight: 700 });
+          sB.text('cheap tests', 2.5, 1.0, { size: 11.5, color: 'orange', weight: 700 }); sB.text('expensive', 5.5, 1.0, { size: 11.5, color: 'green', weight: 700 });
         });
         sG.onClick((x, y) => {
           if (!K) return; const P = pix(sG), cols = Math.ceil(Math.sqrt(K.N)), rows = Math.ceil(K.N / cols), cs = Math.max(0.6, Math.min((P.W - 24) / cols, (P.H - 70) / rows)), x0 = (P.W - cols * cs) / 2, y0 = 26;
           const [px, py] = P.at(x, y), i = Math.floor((px - x0) / cs), j = Math.floor((py - y0) / cs);
           if (i >= 0 && i < cols && j >= 0 && j < rows && j * cols + i < K.N) sel = j * cols + i;
         });
-        v.legend([['accent', 'square mod $N$', { dot: true }], ['orange', 'pseudosquare', { dot: true }], ['muted', 'Jacobi $-1$', { dot: true }], ['faint', 'not coprime', { dot: true }]]);
+        v.legend([['accent', 'square mod $N$', { dot: true }], ['orange', 'pseudosquare', { dot: true }], ['faint', 'Jacobi $-1$', { dot: true }], ['ink', 'not coprime', { dot: true }]]);
         v.readout(() => {
           const { p, q, N, cls } = K, fm = (a) => a.map((c) => String(c)).join(', ');
           let s = `Encryptions of the bit $0$ (squares): ${fm(enc[0])}; of the bit $1$ (pseudosquares): ${fm(enc[1])} — the same bit, four different ciphertexts.`;

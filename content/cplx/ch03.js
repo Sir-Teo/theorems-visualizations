@@ -184,7 +184,7 @@ export default {
         v.select('example', PRE.map(([t, l], i) => ({ value: i, label: l })), 1, { onChange: (i) => inp.set(PRE[i][0]) });
         const useCert = v.toggle('certified generator at the root', true);
         const gSl = v.slider('root generator $g$', 2, 60, 2, { int: true });
-        const s = v.stage({ x: [0, 10], y: [-0.7, 4.6], axes: false, height: 420, full: true });
+        const s = v.stage({ x: [0, 10], y: [-0.7, 4.6], axes: false, height: 340, full: true });
         let cache = { n: -1 };
         const build = () => {
           const t = inp.value.trim();
@@ -221,7 +221,7 @@ export default {
           }
           const T = C.tree, st = { leaf: 0, maxD: 0 }; layout(T, 0, st);
           const L = Math.max(st.leaf, 1), D = st.maxD;
-          const DD = Math.max(D, 3);
+          const DD = Math.max(D, 2);
           s.setView([-0.2, Math.max(L, 5) + 0.2], [-0.7, DD + 0.8]);
           const X = (n) => n.x + (Math.max(L, 5) - L) / 2, Y = (n) => DD - n.depth;
           rootInfo = { root: T, ok: true };

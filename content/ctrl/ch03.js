@@ -85,7 +85,7 @@ The order of the quantifiers is the point: the tolerance $\varepsilon$ is chosen
         v.readout(() => {
           const r = res; if (!r) return '';
           const d = r.none ? `\\text{no }\\delta>${v.sci(FL, 2)}\\text{ works}` : `\\delta\\approx${v.fix(r.delta, 3)}`;
-          return `${SYS[sysS.value].t}: for $\\varepsilon=${v.fix(eS.value, 2)}$: $${d}$` + (r.none ? ' (unstable, or $\\varepsilon$ too large; the orange orbits are from the smallest radius tried)' : '') + '\n' +
+          return `${SYS[sysS.value].t}: for $\\varepsilon=${v.fix(eS.value, 2)}$: $\\,${d}$` + (r.none ? ' (unstable, or $\\varepsilon$ too large; the orange orbits are from the smallest radius tried)' : '') + '\n' +
             `handle: $|x(0)|=${v.fix(Math.hypot(h0.x, h0.y), 3)}$ is ${r.inside ? '**inside** the $\\delta$-ball, so the orbit must stay in the $\\varepsilon$-ball' : 'outside the $\\delta$-ball'}; the orbit ${r.exits ? '**leaves** the $\\varepsilon$-ball' : 'stays in the $\\varepsilon$-ball'}`;
         });
       },
@@ -151,7 +151,7 @@ The order of the quantifiers is the point: the tolerance $\varepsilon$ is chosen
         v.legend([['green', 'true $e^{At}$'], ['accent', 'partial sum $S_N(t)$'], ['gold', 'initial state / time cursor']]);
         v.readout(() => {
           const A = Ms[aS.value], E = info.E, extra = aS.value === 'jordan'
-            ? `\nJordan block, $\\lambda=-0.5$: $e^{At}=e^{\\lambda t}\\begin{pmatrix}1&t\\\\0&1\\end{pmatrix}$, so the shear entry is $te^{\\lambda t}=${v.fix(tS.value * Math.exp(-0.5 * tS.value), 4)}$ and the computed one is $${v.fix(E[0][1], 4)}$` : '';
+            ? `\nJordan block, $\\lambda=-0.5$: $e^{At}=e^{\\lambda t}\\begin{pmatrix}1&t\\\\0&1\\end{pmatrix}$, so the shear entry is $te^{\\lambda t}=${v.fix(tS.value * Math.exp(-0.5 * tS.value), 4)}$ and the computed one is $\\,${v.fix(E[0][1], 4)}$` : '';
           return `$A=${matTeX(A, 3)}$, $t=${v.fix(tS.value, 2)}$: $\\|e^{At}-S_{${nS.value}}\\|_F=${v.sci(info.err, 2)}$, below the tail bound $\\frac{(\\|A\\|t)^{N+1}}{(N+1)!}e^{\\|A\\|t}=${v.sci(info.bound, 2)}$` + extra;
         });
       },
@@ -248,7 +248,7 @@ More precisely, when no eigenvalue is on the imaginary axis ($x_e$ is *hyperboli
           const r = rho.value, f = F[sysS.value], A = jac2(f, 0, 0), g = linField(A);
           mu.el.hidden = sysS.value !== 'centre';
           a.setView([-r, r], [-r, r]); b.setView([-r, r], [-r, r]);
-          const Tn = sysS.value === 'centre' ? 80 : 30, hh = 0.04;
+          const Tn = sysS.value === 'centre' ? 25 : 30, hh = 0.04;
           const starts = ring(12, 0.9 * r, 0.2).concat(ring(8, 0.45 * r, 0.5));
           if (sysS.value === 'saddle') starts.push([0.9 * r, 0], [-0.9 * r, 0], [0, 0.9 * r], [0, -0.9 * r]);
           for (const [s, ff] of [[a, f], [b, g]]) {
@@ -265,7 +265,7 @@ More precisely, when no eigenvalue is on the imaginary axis ($x_e$ is *hyperboli
           const { A, ev, worst } = info; if (!A) return '';
           const sg = Math.max(ev[0][0], ev[1][0]), eps = 1e-3;
           const verdict = Math.abs(ev[0][0]) < eps || Math.abs(ev[1][0]) < eps ? '**inconclusive**: an eigenvalue sits on the imaginary axis' : sg < 0 ? '**asymptotically stable** (all real parts negative)' : '**unstable** (a positive real part)';
-          return `$A=${matTeX(A, 2)}$, eigenvalues $${ev.map((z) => cTeX(z, 3)).join(',\\; ')}$: ${verdict}\nrelative mismatch of the two vector fields on the window boundary, $\\max|f-Ax|/|Ax|=${v.fix(worst, 3)}$ (it shrinks like $\\rho$)`;
+          return `$A=${matTeX(A, 2)}$, eigenvalues $\\,${ev.map((z) => cTeX(z, 3)).join(',\\; ')}$: ${verdict}\nrelative mismatch of the two vector fields on the window boundary, $\\max|f-Ax|/|Ax|=${v.fix(worst, 3)}$ (it shrinks like $\\rho$)`;
         });
       },
     },
@@ -436,7 +436,7 @@ has a unique solution $P$ whenever no two eigenvalues of $A$ satisfy $\lambda_i+
           const { A, P, ev, evP, res, V } = info; if (!A) return '';
           if (!P) return `$\\lambda=${ev.map((z) => cTeX(z, 3)).join(',\\; ')}$: the operator $P\\mapsto A^\\top P+PA$ is singular, so $A^\\top P+PA=-Q$ has no unique solution (on the imaginary axis it has none)`;
           const pd = evP[0] > 0 && evP[1] > 0, mono = V.every((x, i) => i === 0 || x <= V[i - 1] + 1e-9);
-          return `$\\lambda=${ev.map((z) => cTeX(z, 3)).join(',\\; ')}$, $P=${matTeX(P, 3)}$ with eigenvalues $${evP.map((x) => nTeX(x, 3)).join(',\\; ')}$: $P$ is **${pd ? 'positive definite' : 'not positive definite'}**, so $A$ is **${pd ? 'Hurwitz' : 'not Hurwitz'}**\n` +
+          return `$\\lambda=${ev.map((z) => cTeX(z, 3)).join(',\\; ')}$, $P=${matTeX(P, 3)}$ with eigenvalues $\\,${evP.map((x) => nTeX(x, 3)).join(',\\; ')}$: $P$ is **${pd ? 'positive definite' : 'not positive definite'}**, so $A$ is **${pd ? 'Hurwitz' : 'not Hurwitz'}**\n` +
             `residual $\\|A^\\top P+PA+Q\\|=${v.sci(Math.max(res, 1e-15), 2)}$; along the trajectory $V$ is ${mono ? 'monotonically decreasing' : '**not** monotone (indefinite $V$)'}`;
         });
       },
