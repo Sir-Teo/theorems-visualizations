@@ -37,7 +37,7 @@ function dagRun(G, s, sign) {
     for (const { id, edge, w } of G.adj(u)) {
       const x = K(id), nd = d[u] + sign * w, old = d[x], better = nd < old; rel++;
       if (better) { d[x] = nd; prev[x] = u; prevEdge[x] = edge; }
-      const sh = (y) => (y === INF ? '∞' : fmt(sign * y));
+      const sh = (y) => fmt(sign * y);
       snap({ u, edge, x, better, line: better ? [4, 5] : 4, note: `Relax ${G.lab(u)}→${G.lab(x)}: ${sh(d[u])} ${w >= 0 ? '+' : '−'} ${fmt(Math.abs(w))} = ${sh(nd)}${better ? `, ${sign > 0 ? 'less' : 'more'} than ${sh(old)}: improve ${L(x)}.` : `: no improvement on ${sh(old)}.`}` });
     }
     done.push(u);
@@ -371,7 +371,7 @@ Negating every weight turns the same sweep into a **longest-path** algorithm for
       viz(v) {
         const goal = v.select('compute', [{ value: 1, label: 'shortest paths' }, { value: -1, label: 'longest paths' }], 1, { onChange: () => S.reset({ at: 'end' }) });
         const back = v.toggle('add the back edge t → a', false, { onChange: () => { if (back.value) G.addEdge('t', 'a', 1); else G.removeEdge(G.edge('t', 'a')); S.reset({ at: 'end' }); } });
-        const s = v.stage({ x: [0, 10], y: [0, 4.2], axes: false, height: 280 });
+        const s = v.stage({ x: [0, 10], y: [0.2, 4.15], axes: false, height: 240 });
         const G = v.graph(s, { directed: true, weights: true, layout: 'none', editable: { editWeight: true, minWeight: -9, maxWeight: 9 }, draggable: false, nodes: N95.map((id) => ({ id, x: 5, y: 2.1, notePos: 's' })), edges: E95.map(([a, b, w]) => [a, b, w]) });
         let run = null, order = null;
         const place = () => {
@@ -402,7 +402,7 @@ Negating every weight turns the same sweep into a **longest-path** algorithm for
             nodeFill: (id) => (K(id) === K(f.u) && !f.end ? 'gold' : done.has(K(id)) ? 'accent' : null),
             nodeColor: (id) => (f.d[K(id)] < INF ? 'orange' : null),
             nodeRing: (id) => (K(id) === 's' ? 'ink' : null),
-            nodeNote: (id) => fmt(f.d[K(id)] === INF ? INF : sign * f.d[K(id)]),
+            nodeNote: (id) => fmt(sign * f.d[K(id)]),
             noteColor: (id) => (done.has(K(id)) ? 'accent' : f.d[K(id)] < INF ? 'orange' : 'faint'),
             edgeColor: (e) => (e === f.edge ? (f.better ? 'gold' : 'red') : tree.has(e) ? 'green' : null),
             edgeWidth: (e) => (e === f.edge ? 4.5 : tree.has(e) ? 3.4 : null),
@@ -417,8 +417,8 @@ Negating every weight turns the same sweep into a **longest-path** algorithm for
           const sign = +goal.value, I = ids(G).map(K);
           let truth;
           if (sign > 0) truth = bruteSP(G, 's').dist;
-          else { truth = {}; for (const u of I) { const ps = simplePaths(G, 's', u, 5000); truth[u] = ps.length ? Math.max(...ps.map((p) => p.w)) : INF; } }
-          const got = (u) => (f.d[u] === INF ? INF : sign * f.d[u]);
+          else { truth = {}; for (const u of I) { const ps = simplePaths(G, 's', u, 5000); truth[u] = ps.length ? Math.max(...ps.map((p) => p.w)) : -INF; } }
+          const got = (u) => sign * f.d[u];
           const ok = f.end ? I.every((u) => got(u) === truth[u]) : null;
           return `${f.done.length} of ${I.length} vertices processed, ${plural(f.rel, 'relaxation')} so far (the whole sweep uses exactly $m$ = ${G.edges.length}) · ${f.end ? `${sign > 0 ? 'shortest' : 'longest'} distances in topological order ${run.order.map((u) => `${u} ${fmt(got(u))}`).join(', ')} — brute force over all simple paths agrees ${ok ? '✓' : '✗'}` : 'step to the end for the check'}`;
         });

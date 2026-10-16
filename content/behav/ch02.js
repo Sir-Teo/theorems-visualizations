@@ -500,7 +500,7 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
     // ------------------------------------------------------------------ 2.6
     {
       num: '2.6', kind: 'Phenomenon', name: 'The certainty effect explains Allais',
-      statement: String.raw`**Certainty effect**: outcomes obtained with certainty are overweighted relative to outcomes that are merely probable. In Kahneman and Tversky's (1979) version of the Allais paradox, 82% of 72 respondents preferred 2,400 for sure (B) to a gamble paying 2,500 with probability .33, 2,400 with .66 and nothing with .01 (A); yet 83% preferred 2,500 with probability .33 (C) to 2,400 with probability .34 (D). Expected utility forces $B\succ A \iff D\succ C$. In (cumulative) prospect theory the gamble A receives the weight $1-w(0.99)$ for its 1% chance of nothing, whereas removing the common 66% chance of 2,400 changes the weights only in the flat middle of the weighting function: with $\gamma=0.61$, the last 1% before certainty carries weight $1-w(0.99)=0.088$, ten times the $w(0.34)-w(0.33)=0.008$ that the same 1% receives in the middle. The model predicts B and C. Allais's original prizes (100 and 500 million francs) need, in addition, much stronger curvature of value over millions.`,
+      statement: String.raw`**Certainty effect**: outcomes obtained with certainty are overweighted relative to outcomes that are merely probable. In Kahneman and Tversky's (1979) version of the Allais paradox, 82% of 72 respondents preferred 2,400 for sure (B) to a gamble paying 2,500 with probability .33, 2,400 with .66 and nothing with .01 (A); yet 83% preferred 2,500 with probability .33 (C) to 2,400 with probability .34 (D). Expected utility forces $B\succ A \iff D\succ C$. In (cumulative) prospect theory the gamble A receives the weight $1-w(0.99)$ for its 1% chance of nothing, whereas removing the common 66% chance of 2,400 changes the weights only in the flat middle of the weighting function: with $\gamma=0.61$, the last 1% before certainty carries weight $1-w(0.99)=0.088$, seventeen times the $w(0.34)-w(0.33)=0.005$ that the same 1% receives in the middle. The model predicts B and C. Allais's original prizes (100 and 500 million francs) need, in addition, much stronger curvature of value over millions.`,
       scope: String.raw`The weighting function explains common-consequence and common-ratio violations with stated probabilities. Whether a given parameter set predicts the pattern depends on both the weighting and the curvature, and the effect weakens with real payoffs and transparent presentations.`,
       idea: String.raw`Write the decision weights under cumulative prospect theory (behav-2.8). In choice 1 the sure option has $\pi=w(1)=1$, while the gamble spreads only $w(0.99)\approx0.91$ over its positive outcomes: certainty is worth a bonus of almost 9% of the decision weight. In choice 2 both options sit in the middle of the curve, where $w$ is nearly linear and both shrink by about the same factor. Expected utility (behav-1.3) weights probabilities linearly, so the common 66% (or 89%) cancels out and the two choices must agree (behav-1.11). The inverse-S weighting function (behav-2.4) is what lets them disagree.`,
       caption: String.raw`Choose in both pairs first (pick the problem with the selector). Left: the weighting function, with the two 1% slices that matter, the last 1% before certainty and a 1% step in the middle, and their weights compared in the inset. Right: every combination of weighting $\gamma$ and value curvature $\alpha$, coloured by the pair of choices cumulative prospect theory predicts. Drag the handle: purple is the certainty-effect pattern (safe in pair 1, risky in pair 2). The right edge $\gamma=1$ is expected utility with a power utility: never purple.`,
@@ -558,7 +558,7 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
           const bx = 0.5, bw = 0.42, by = 0.06;
           W.rect(bx - 0.02, by - 0.03, bx + bw + 0.02, by + 0.27, { fill: 'panel', fillAlpha: 0.9, color: 'faint', width: 1, radius: 6 });
           W.text('weight of a 1% slice', bx, by + 0.23, { size: 10.5, weight: 700, color: 'muted' });
-          const sc = bw / Math.max(0.12, certW * 1.15);
+          const sc = (0.5 * bw) / Math.max(0.1, certW);
           W.rect(bx, by + 0.12, bx + certW * sc, by + 0.17, { fill: 'purple', fillAlpha: 0.7, stroke: false });
           W.text(`.99 → 1: ${certW.toFixed(3)}`, bx + certW * sc, by + 0.145, { dx: 4, size: 10.5, weight: 700, color: 'purple' });
           W.rect(bx, by + 0.02, bx + Math.max(0.002, midW * sc), by + 0.07, { fill: 'orange', fillAlpha: 0.7, stroke: false });
@@ -566,6 +566,11 @@ In Tversky and Kahneman's (1992) experiment, the median cash equivalent of a 5% 
           // ---- prediction map
           const RC = Object.fromEntries(Object.entries(PATCOL).map(([k, c]) => [k, v.ramp(0.42, c)]));
           R.raster((x, y) => RC[predict(P, x, y).pat], { res: 3, key: pr.value });
+          // label each predicted region at its centroid
+          const acc = {};
+          for (let i = 0; i < 28; i++) for (let j = 0; j < 28; j++) { const x = 0.3 + (0.7 * (i + 0.5)) / 28, y = 0.05 + (0.95 * (j + 0.5)) / 28, pt = predict(P, x, y).pat; (acc[pt] = acc[pt] || [0, 0, 0]); acc[pt][0] += x; acc[pt][1] += y; acc[pt][2]++; }
+          const NAME = { cert: 'certainty-effect pattern', safe: 'safe in both', risky: 'risky in both', rev: 'reverse pattern' };
+          for (const k in acc) if (acc[k][2] > 40) R.text(NAME[k], acc[k][0] / acc[k][2], acc[k][1] / acc[k][2], { align: 'center', size: 11.5, weight: 700, color: PATCOL[k], plate: true });
           R.vline(1, { color: 'ink', width: 2.4 });
           R.text('expected utility', 0.985, 0.5, { align: 'right', size: 10.5, weight: 700, color: 'ink', plate: true });
           R.dot(0.61, 0.88, { r: 4, color: 'ink', hollow: true });

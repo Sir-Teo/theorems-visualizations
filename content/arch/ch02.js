@@ -527,8 +527,8 @@ where $h$ is the extra cable tension set by the cable's stretch. Since $H$ grows
         const PRE = { gg: { name: 'Golden Gate', L: 1280, h: 7.6 }, bw: { name: 'Bronx–Whitestone', L: 701, h: 3.35 }, tn: { name: 'Tacoma Narrows 1940', L: 853, h: 2.44 } };
         const pre = v.select('deck', [{ value: 'gg', label: 'Golden Gate (25 ft truss, 1:168)' }, { value: 'bw', label: 'Bronx–Whitestone (11 ft, 1:209)' }, { value: 'tn', label: 'Tacoma 1940 (8 ft, 1:350)' }], 'tn', { onChange: (k) => hS.set(PRE[k].h) });
         const hS = v.slider('deck depth (m)', 1, 16, 2.44, { step: 0.01 });
-        const xS = v.slider('truck at (× span)', 0.05, 0.95, 0.27, { step: 0.005 });
-        const PS = v.slider('truck (MN on 30 m)', 0.5, 8, 3, { step: 0.1 });
+        const xS = v.slider('truck position', 0.05, 0.95, 0.27, { step: 0.005 });
+        const PS = v.slider('truck (MN)', 0.5, 8, 3, { step: 0.1 });
         const A = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 230, full: true, title: 'deck deflection (exaggerated)' });
         const B = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'position along the span (fraction)', ylabel: 'deck moment (MN·m)' });
         const W = 150, E = 2e8, EcAcPerH = 1 / 0.003; // kN/m dead load; kPa; cable sized to work at ≈ 600 MPa (strain 0.003)

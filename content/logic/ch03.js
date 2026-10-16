@@ -51,14 +51,14 @@ function stripLayout(T) {
 function relChecks(adj, reading) {
   const n = adj.length, R = (a, b) => !!adj[a][b], out = [];
   const refl = { name: 'reflexive', missing: [] }; for (let a = 0; a < n; a++) if (!R(a, a)) refl.missing.push([a, a]);
-  refl.ok = !refl.missing.length; refl.why = refl.ok ? 'every point has a loop' : `no loop at ${refl.missing[0][0]}`;
+  refl.ok = !refl.missing.length; refl.why = refl.ok ? 'a loop at every point' : `no loop at ${refl.missing[0][0]}`;
   const sym = { name: 'symmetric', missing: [] }; for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (R(a, b) && !R(b, a)) sym.missing.push([b, a]);
-  sym.ok = !sym.missing.length; sym.why = sym.ok ? 'every arrow has its reverse' : `${sym.missing[0][1]}→${sym.missing[0][0]} but not back`;
+  sym.ok = !sym.missing.length; sym.why = sym.ok ? 'every arrow reversed' : `${sym.missing[0][1]}→${sym.missing[0][0]} but not back`;
   const anti = { name: 'antisymmetric', missing: [], bad: [] }; for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) if (R(a, b) && R(b, a)) anti.bad.push([a, b]);
-  anti.ok = !anti.bad.length; anti.why = anti.ok ? 'no two-way arrows between distinct points' : `${anti.bad[0][0]}⇄${anti.bad[0][1]}`;
+  anti.ok = !anti.bad.length; anti.why = anti.ok ? 'no two-way pair' : `${anti.bad[0][0]}⇄${anti.bad[0][1]}`;
   const trans = { name: 'transitive', missing: [] }; let tw = null;
   for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (R(a, b)) for (let c = 0; c < n; c++) if (R(b, c) && !R(a, c)) { if (!trans.missing.some(([p, q]) => p === a && q === c)) trans.missing.push([a, c]); if (!tw) tw = [a, b, c]; }
-  trans.ok = !trans.missing.length; trans.why = trans.ok ? 'every two-step path has a shortcut' : `${tw[0]}→${tw[1]}→${tw[2]} but not ${tw[0]}→${tw[2]}`;
+  trans.ok = !trans.missing.length; trans.why = trans.ok ? 'all shortcuts present' : `${tw[0]}→${tw[1]}→${tw[2]} but not ${tw[0]}→${tw[2]}`;
   const fun = { name: 'one arrow out of each point', missing: [], bad: [] };
   for (let a = 0; a < n; a++) { const outs = range(n).filter((b) => R(a, b)); if (!outs.length) fun.missing.push([a, a]); if (outs.length > 1) outs.slice(1).forEach((b) => fun.bad.push([a, b])); }
   fun.ok = !fun.missing.length && !fun.bad.length;
@@ -249,7 +249,7 @@ A **sentence** is a formula with no free variables. The truth of a formula in a 
         let rows = [];
         S.onClick((x, y) => {
           const r = rows[0]; if (!r || Math.abs(y - r.y) > 1.1) return;
-          const it = r.L.items.find((u) => x >= u.x0 - 0.15 && x <= u.x1 + 0.15);
+          const it = r.L.items.find((u) => x - r.x0 >= u.x0 - 0.15 && x - r.x0 <= u.x1 + 0.15);
           if (!it) return;
           const occ = occurrences(fld.ast).find((o) => o.node.id === (it.tk.node && it.tk.node.id));
           if (it.tk.kind === 'bvar' || it.tk.kind === 'q') sel = { q: it.tk.node.id };
@@ -267,7 +267,7 @@ A **sentence** is a formula with no free variables. The truth of a formula in a 
               const col = cols.get(q.id) || 'muted';
               const sel0 = sel && sel.q === q.id;
               for (const o of occ.values()) if (o.binder === q) {
-                const to2 = pos.get(o.node.id), a = x0 + from.xc, b = x0 + to2.xc, h = Math.min(2.6, 0.7 + Math.abs(b - a) * 0.16);
+                const to2 = pos.get(o.node.id), a = x0 + from.xc, b = x0 + to2.xc, h = Math.min(1.95, 0.6 + Math.abs(b - a) * 0.11);
                 S.curve((t) => [a + (b - a) * t, y + 0.62 + h * 4 * t * (1 - t)], 0, 1, { color: col, width: sel0 ? 2.8 : 1.7, n: 40 });
                 S.dot(b, y + 0.62, { r: 2.6, color: col });
               }
@@ -290,10 +290,10 @@ A **sentence** is a formula with no free variables. The truth of a formula in a 
           const R = analyse();
           if (!R) { S.setView([0, 30], [0, 10]); S.text(fld.error || 'type a formula', 15, 5, { align: 'center', color: 'red', size: 14 }); return; }
           rows = [drawRow(R.ast, 6.9, R.cols, null, 'φ'), drawRow(R.out, 2.2, R.cols, R.moved, 'φ′')];
-          const W = Math.max(rows[0].L.width, rows[1].L.width, 22);
-          S.setView([-2.6, W + 0.8], [0, 10]);
-          rows.forEach((r) => r.draw(0));
-          S.line(-2.4, 4.55, W + 0.6, 4.55, { color: 'grid', width: 1 });
+          const W = Math.max(rows[0].L.width, rows[1].L.width), Wv = Math.max(W + 4, (S.width || 800) / 19), x0 = (Wv - W) / 2;
+          S.setView([0, Wv], [0, 10]);
+          rows.forEach((r) => { r.x0 = x0; r.draw(x0); });
+          S.line(0.3, 4.55, Wv - 0.3, 4.55, { color: 'grid', width: 1 });
           if (fld.error) S.corner(fld.error, 'br', { color: 'red', size: 11 });
           // tree of φ′ with variables coloured by binder
           const L = layoutFO(R.out), occ = new Map(occurrences(R.out).map((o) => [o.node.id, o]));
@@ -310,7 +310,7 @@ A **sentence** is a formula with no free variables. The truth of a formula in a 
           const head = what.bound ? `Renaming the bound $${what.from}$ of $${what.q.op === 'all' ? '\\forall' : '\\exists'} ${what.from}$ (${occN} occurrence${occN === 1 ? '' : 's'}) to $${z}$` : `Renaming the free $${what.from}$ (${occN} occurrence${occN === 1 ? '' : 's'}) to $${z}$`;
           if (z === what.from) return `${head} changes nothing. Free variables of $\\varphi$: ${freeVars(R.ast).map((x) => `$${x}$`).join(', ') || 'none (a sentence)'}.`;
           const cap = R.moved.size ? ` **${R.moved.size} occurrence${R.moved.size === 1 ? ' is' : 's are'} captured** (red): ${what.bound ? 'it now has a different binder' : 'it falls under a quantifier'}.` : what.bound ? ' Every arc survives: an alphabetic variant.' : '';
-          const verdict = eq.ok ? `$\\varphi' \\equiv \\varphi$ ✓ on all ${eq.tested.toLocaleString('en')} structure–assignment pairs with at most ${eq.exhaustiveUpTo || 3} elements.` : `$\\varphi' \\not\\equiv \\varphi$: in the ${eq.counter.n}-element structure with $E = ${pairsStr(tableAdj(eq.counter.M, 'E')).replace(/[{}]/g, (c) => (c === '{' ? '\\{' : '\\}'))}$ and ${envStr(eq.counter.env)}, $\\varphi$ is ${TF(eq.counter.a)} but $\\varphi'$ is ${TF(eq.counter.b)}.`;
+          const verdict = eq.ok ? `$\\varphi' \\equiv \\varphi$ ✓ on all ${eq.tested.toLocaleString('en')} structure–assignment pairs with at most ${eq.exhaustiveUpTo || 3} elements.` : `$\\varphi' \\not\\equiv \\varphi$: in the ${eq.counter.n}-element structure with $E = ${pairsStr(tableAdj(eq.counter.M, 'E')).replace(/[{}]/g, (c) => (c === '{' ? '\\{' : '\\}'))}$ and $${envStr(eq.counter.env)}$, $\\varphi$ is ${TF(eq.counter.a)} but $\\varphi'$ is ${TF(eq.counter.b)}.`;
           return `${head}.${cap} ${verdict}`;
         });
       },
@@ -379,7 +379,7 @@ The symbol $=$ is always interpreted as identity. For a language with one binary
             const y = 3.3 - k * 1.05;
             B.text(c.ok ? '✓' : '✗', 0.6, y, { align: 'center', baseline: 'middle', size: 15, weight: 700, color: c.ok ? 'green' : 'red' });
             B.text(c.name, 1.2, y, { align: 'left', baseline: 'middle', size: 12.5, weight: 600, color: 'ink' });
-            B.text(c.why, 5.0, y, { align: 'left', baseline: 'middle', size: 11.5, color: c.ok ? 'muted' : 'red' });
+            B.text(c.why, 4.7, y, { align: 'left', baseline: 'middle', size: 11.5, color: c.ok ? 'muted' : 'red' });
           });
         });
         v.readout(() => {
@@ -429,12 +429,15 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
           const at = new Map(); for (const [x, d] of Object.entries(env)) at.set(d, (at.get(d) ? at.get(d) + ',' : '') + x);
           const end = S.atEnd, line = end ? explainLine(fld.ast, run.M) : [];
           const deciding = new Set(line.filter((l) => l.role !== 'all' && l.d !== undefined).map((l) => l.d));
+          // at the end of a ∀x∃y (or ∃x∀y) sentence: the whole witness (counterexample) function
+          const phi = fld.ast, sk = end && isQ(phi) && isQ(phi.a) && phi.op !== phi.a.op ? new Map(run.M.dom.map((d) => [d, run.M.dom.find((e) => holds(phi.a.a, run.M, { [phi.v]: d, [phi.a.v]: e }) === (phi.a.op === 'ex'))])) : null;
           E.G.draw({
-            nodeRing: (id) => (E.sel === id ? 'gold' : f.trying === id && !end ? 'orange' : end && deciding.has(id) ? (run.val ? 'green' : 'red') : null),
-            nodeFill: (id) => (at.has(id) ? 'gold' : null),
-            nodeNote: (id) => at.get(id) || null,
-            noteColor: () => 'gold',
+            nodeRing: (id) => (E.sel === id ? 'gold' : f.trying === id && !end ? 'orange' : end && !sk && deciding.has(id) ? (run.val ? 'green' : 'red') : null),
+            nodeFill: (id) => (!sk && at.has(id) ? 'gold' : null),
+            nodeNote: (id) => (sk ? (sk.get(id) === undefined ? `no ${phi.a.v}` : `${phi.a.v}=${sk.get(id)}`) : at.get(id) || null),
+            noteColor: (id) => (sk ? (sk.get(id) === undefined ? 'red' : phi.a.op === 'ex' ? 'green' : 'red') : 'gold'),
           });
+          if (sk) A.corner(phi.a.op === 'ex' ? `witness ${phi.a.v} for each ${phi.v}` : `counterexample ${phi.a.v} for each ${phi.v}`, 'bl', { size: 11, color: phi.a.op === 'ex' ? 'green' : 'red' });
           fitFO(B, Lc, { minW: 4 });
           drawFO(B, Lc, {
             fill: (nd) => (vals.has(nd.e.id) ? (vals.get(nd.e.id) ? 'green' : 'red') : null),
@@ -490,7 +493,7 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
         v.button('next countermodel', () => { pick++; });
         const A = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 300, weight: 1, title: 'search over small structures' });
         const B = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.35], equal: true, axes: false, height: 300, weight: 1, title: 'countermodel' });
-        const TB = v.table(A, { rows: 4, cols: 3, square: false, maxCell: 34, cellAspect: 2.7, size: 13, labelSize: 12.5, region: [0, 1.6, 10, 10], colLabels: ['structures', '⊨ Γ', 'counter-'], cornerLabel: 'size' });
+        const TB = v.table(A, { rows: 4, cols: 3, square: false, maxCell: 34, cellAspect: 2.7, size: 13, labelSize: 12.5, region: [0, 1.6, 10, 10], colLabels: ['structures', '⊨ Γ', '⊨ Γ, ⊭ φ'], cornerLabel: 'size' });
         const GV = v.graph(B, { nodes: [], edges: [], directed: true, layout: 'none', draggable: false, r: 15 });
         let memo = { key: null };
         const search = () => {
@@ -531,7 +534,7 @@ Here $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\mathfra
             fill: (i, j) => (j === 2 && R.rows[i].counter ? ['red', 0.28] : j === 1 && R.rows[i].sat ? ['accent', 0.18] : null),
             highlight: cm ? [[cm.n - 1, 2, 'red']] : [],
           });
-          A.text('counter- = countermodels;  * = random sample', 5, 0.9, { align: 'center', size: 10.5, color: 'muted' });
+          A.text('last column: countermodels;  * = random sample', 5, 0.9, { align: 'center', size: 10.5, color: 'muted' });
           if (!cm) {
             GV.set({ nodes: [], edges: [] });
             B.text('no countermodel', 0, 0.25, { align: 'center', size: 16, weight: 700, color: 'green' });
@@ -588,7 +591,7 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
         v.button('next example', () => { exI = (exI + 1) % EX[kind.value].length; fld.set(EX[kind.value][exI]); });
         const A = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 350, weight: 1.25 });
         const B = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 350, weight: 0.75, title: 'orbits = atoms of definability' });
-        const E = relEditor(v, A, { n: 6, radius: 1.0, edges: [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 4], [0, 4]] });
+        const E = relEditor(v, A, { n: 6, radius: 1.0, edges: [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 4]] });
         let memo = { key: null };
         const model = () => {
           const k = kind.value, N = k === 'zn' ? Math.min(size.value, 24) : Math.max(4, size.value);
@@ -642,7 +645,7 @@ A $k$-ary relation on $|\mathfrak A|$ is **definable** (without parameters) if s
             B.text(inS ? '⊆ φ' : '', 9.4, y, { align: 'right', baseline: 'middle', size: 11, color: 'accent', weight: 700 });
           });
           if (list.length > rowsMax) B.text(`+ ${list.length - rowsMax} more orbits`, 5, 9.1 - rowsMax * 0.92, { align: 'center', size: 11, color: 'muted' });
-          B.text(`${list.length} orbits → 2^${list.length} definable subsets`, 5, 0.45, { align: 'center', size: 11.5, weight: 600, color: 'ink' });
+          B.text(`${list.length} orbits → $2^{${list.length}}$ definable subsets`, 5, 0.45, { align: 'center', size: 11.5, weight: 600, color: 'ink' });
         });
         v.readout(() => {
           const R = model(); if (!fld.ast) return fld.error || '';
@@ -676,7 +679,7 @@ $\mathfrak A$ and $\mathfrak B$ are **elementarily equivalent**, $\mathfrak A \e
         v.button('new game', () => reset(false));
         v.button('undo', () => { pending = null; pairs.pop(); if (mode.value === 'dup') spoilerTurn(); });
         let pairs = [], pending = null, auto = false;
-        const m = () => mS.value, n = nS.value, k = () => kS.value;
+        const m = () => mS.value, n = () => nS.value, k = () => kS.value;
         const over = () => pairs.length >= k() || !efConsistent(pairs);
         const spoilerTurn = () => { if (!over() && mode.value === 'dup') { const mv = efSpoiler(W, pairs, m(), n(), k() - pairs.length); pending = mv; } };
         const reset = (demo) => {
@@ -721,11 +724,13 @@ $\mathfrak A$ and $\mathfrak B$ are **elementarily equivalent**, $\mathfrak A \e
           });
           for (let i = 0; i < mm; i++) G.dot(X(i, mm), yA, { r: 7, color: 'muted', hollow: true, width: 1.6 });
           for (let i = 0; i < nn; i++) G.dot(X(i, nn), yB, { r: 7, color: 'muted', hollow: true, width: 1.6 });
+          const labA = new Map(), labB = new Map();
           pairs.forEach(([a, b], i) => {
             const c = PAL[i % PAL.length];
             G.dot(X(a, mm), yA, { r: 7, color: c }); G.dot(X(b, nn), yB, { r: 7, color: c });
-            G.text(String(i + 1), X(a, mm), yA + 0.42, { align: 'center', size: 11, weight: 700, color: c });
-            G.text(String(i + 1), X(b, nn), yB - 0.42, { align: 'center', size: 11, weight: 700, color: c });
+            const ka = labA.get(a) || 0, kb = labB.get(b) || 0; labA.set(a, ka + 1); labB.set(b, kb + 1);
+            G.text(String(i + 1), X(a, mm), yA + 0.42 + 0.3 * ka, { align: 'center', size: 11, weight: 700, color: c });
+            G.text(String(i + 1), X(b, nn), yB - 0.42 - 0.3 * kb, { align: 'center', size: 11, weight: 700, color: c });
           });
           if (pending) { const y = pending.side ? yB : yA, len = pending.side ? nn : mm; G.dot(X(pending.pos, len), y, { r: 11, color: 'gold', hollow: true, width: 3 }); G.text('Spoiler', X(pending.pos, len), y + (pending.side ? -0.48 : 0.48), { align: 'center', size: 11, weight: 700, color: 'gold' }); }
           const status = !ok ? 'Spoiler wins: the order is broken' : pairs.length >= kk ? 'Duplicator survives all rounds' : pending ? 'your move: answer in the other order' : mode.value === 'spoiler' ? `round ${pairs.length + 1} of ${kk}: click a point` : '';

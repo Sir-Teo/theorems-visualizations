@@ -25,7 +25,7 @@ function graphView(v, s) {
   let key = null;
   return {
     G,
-    sync(P, k, label) { if (k !== key) { key = k; G.set(graphSpec(P, label)); G.layout('layered', { rankdir: 'right' }); } },
+    sync(P, k, label) { k += '|' + Math.round(s.width) + 'x' + Math.round(s.height); if (k !== key) { key = k; G.set(graphSpec(P, label)); G.layout('layered', { rankdir: 'right' }); } },
     /** Data position of node i. */
     pos(i) { const n = G.node(i); return n ? [n.x, n.y] : [0, 0]; },
   };
@@ -96,7 +96,7 @@ with designated output nodes giving $f(x)$. Ordering the nodes topologically and
         });
         v.legend([['accent', 'inputs'], ['green', 'output'], ['muted', 'elementary operations']]);
         v.readout(() => info && String.raw`$f(${mnus(H.x.toFixed(2))},${mnus(H.y.toFixed(2))})=${tsci(info.val, 4)}$` + (info.direct != null && isFinite(info.direct) ? ` (formula evaluated directly: $${tsci(info.direct, 4)}$ ${Math.abs(info.direct - info.val) < 1e-12 * (1 + Math.abs(info.val)) ? '✓' : '✗'})` : '') +
-          ` · graph: **${info.N} nodes** (${info.nIn} input ${info.share ? 'node' : 'leaf'}${info.nIn === 1 ? '' : info.share ? 's' : 's'} + ${info.m} operations), ${info.E} edges, depth ${info.depth}` +
+          ` · graph: **${info.N} nodes** (${info.nIn} ${info.share ? 'input nodes' : 'input leaves'} + ${info.m} operations), ${info.E} edges, depth ${info.depth}` +
           ` · the expression tree needs ${info.mT} operations, the DAG ${info.mD}` + (info.mT > info.mD ? ` — sharing saves ${info.mT - info.mD}` : '') + (info.share && info.fan ? ` · ${info.fan} intermediate value${info.fan === 1 ? ' is' : 's are'} used more than once` : ''));
       },
     },
@@ -283,7 +283,7 @@ so that when all users of $v_j$ have been visited, $\bar v_j=\partial f/\partial
 $$\mathrm{OPS}\bigl(f,\nabla f\bigr)\ \le\ c\cdot\mathrm{OPS}(f),$$
 where $c$ is a small constant **independent of $n$** ($c\le 4$ in Griewank's standard operation count; Baur and Strassen proved $c=3$ for multiplications and divisions of rational functions). Memory grows with the length of the evaluation (every intermediate value is stored). By contrast, forward mode or finite differences need about $n$ evaluations of cost $\approx\mathrm{OPS}(f)$, i.e. $\Theta(n)\cdot\mathrm{OPS}(f)$.`,
       idea: String.raw`In the backward pass each elementary operation is visited once and, for each of its (at most two) arguments, contributes one local partial, one multiplication and one addition. So the backward pass costs a bounded multiple of the forward pass, whatever $n$ is; the counting is per operation, so it is the same for a function with ten parameters or a billion. Forward mode instead propagates one tangent direction per pass, and a gradient needs one pass per input direction (3.2). This asymmetry — gradients of scalar losses are cheap — is why training networks with millions of parameters by gradient descent is feasible at all.`,
-      caption: String.raw`A tanh network with a squared-error loss; slide the parameter count from $10$ to $10^6$ (wide: one hidden layer; deep: six hidden layers). Every count is measured by running the code with an operation counter: the loss (grey), its full gradient by reverse mode (blue, the forward and backward pass together), forward mode (orange: one tangent pass, measured, times $n$ passes), and forward differences (red: one evaluation, measured, times $n+1$). On log–log axes, reverse mode runs parallel to the loss — a constant factor — while the other two climb one decade faster. Right: the costs at the chosen size relative to one loss evaluation.`,
+      caption: String.raw`A tanh network with a squared-error loss; slide the parameter count from $10$ to $10^6$ (wide: one hidden layer; deep: six hidden layers). Every count is measured by running the code with an operation counter: the loss (grey), its full gradient by reverse mode (blue, the forward and backward pass together), forward mode (orange: one tangent pass, measured, times $n$ passes), and forward differences (red: one evaluation, measured, times $n+1$). On log–log axes, reverse mode runs parallel to the loss — a constant factor — while the other two climb twice as steeply (slope 2: cost $\propto n^2$). Right: the costs at the chosen size relative to one loss evaluation.`,
       deps: ['deep-3.3'],
       refs: ['Goodfellow §6.5'],
       tags: ['backpropagation', 'complexity'],
@@ -350,14 +350,14 @@ where $c$ is a small constant **independent of $n$** ($c\le 4$ in Griewank's sta
           for (const [col, g] of ser) { sC.path(C.map((q) => [q.n, g(q)]), { color: col, width: 2.4 }); sC.dots(C.map((q) => [q.n, g(q)]), { r: 2.6, color: col }); }
           sC.vline(Pm.n, { color: 'gold', width: 1.4, dash: [4, 3] });
           for (const [col, g] of ser) sC.dot(Pm.n, g(Pm), { r: 5.5, color: col });
-          sC.fn((n) => 300 * n, { color: 'faint', width: 1, dash: [3, 4] }); sC.fn((n) => 3 * n * n, { color: 'faint', width: 1, dash: [3, 4] });
-          sC.text('∝ n', 2e5, 300 * 2e5, { dy: 12, size: 11.5, color: 'muted' }); sC.text('∝ n²', 1.2e4, 3 * 1.44e8, { dx: -8, align: 'right', size: 11.5, color: 'muted' });
+          sC.fn((n) => 300 * n, { color: 'faint', width: 1, dash: [3, 4] });
+          sC.text('slope 1: ∝ n', 2e5, 300 * 2e5, { dy: 14, size: 11.5, color: 'muted' }); sC.text('slope 2: ∝ n²', 40, 2e10, { size: 11.5, color: 'muted' });
           const rel = [1, Pm.R / Pm.F, (Pm.n * Pm.T) / Pm.F, Pm.n + 1];
-          ['muted', 'accent', 'orange', 'red'].forEach((col, k) => { sR.rect(k + 1 - 0.3, 0.5, k + 1 + 0.3, rel[k], { fill: col, fillAlpha: 0.55, color: col, width: 1.4 }); sR.text(rel[k] < 100 ? rel[k].toFixed(2) : f3(rel[k]), k + 1, rel[k], { dy: -9, align: 'center', size: 11.5, weight: 600 }); });
+          ['muted', 'accent', 'orange', 'red'].forEach((col, k) => { sR.rect(k + 1 - 0.3, 0.5, k + 1 + 0.3, rel[k], { fill: col, fillAlpha: 0.55, color: col, width: 1.4 }); sR.text(rel[k] < 100 ? rel[k].toFixed(2) : Math.round(rel[k]).toLocaleString('en-US'), k + 1, rel[k], { dy: -9, align: 'center', size: 11.5, weight: 600 }); });
           info = { ...Pm, ratio: Pm.R / Pm.F, ratios: C.map((q) => q.R / q.F) };
         });
         v.legend([['muted', 'loss $f$'], ['accent', 'gradient by reverse mode'], ['orange', 'gradient by forward mode ($n$ passes)'], ['red', 'gradient by finite differences ($n+1$ evaluations)']]);
-        v.readout(() => info && String.raw`layer sizes ${info.sz.join('–')}: $n=${info.n.toLocaleString('en-US').replace(/,/g, '{,}')}$ parameters · loss: ${info.F.toLocaleString('en-US')} operations · reverse-mode gradient: ${info.R.toLocaleString('en-US')} (**${info.ratio.toFixed(2)}×**; between ${Math.min(...info.ratios).toFixed(2)}× and ${Math.max(...info.ratios).toFixed(2)}× over the whole range) · forward mode ${f3(info.n * info.T)} · finite differences ${f3((info.n + 1) * info.F)} · reverse-mode partials agree with central differences to relative error ${tsci(info.chk, 1)}`);
+        v.readout(() => info && String.raw`layer sizes ${info.sz.join('–')}: $n=${info.n.toLocaleString('en-US').replace(/,/g, '{,}')}$ parameters · loss: ${info.F.toLocaleString('en-US')} operations · reverse-mode gradient: ${info.R.toLocaleString('en-US')} (**${info.ratio.toFixed(2)}×**; between ${Math.min(...info.ratios).toFixed(2)}× and ${Math.max(...info.ratios).toFixed(2)}× over the whole range) · forward mode $${tsci(info.n * info.T, 2)}$ · finite differences $${tsci((info.n + 1) * info.F, 2)}$ · reverse-mode partials agree with central differences to relative error $${tsci(info.chk, 1)}$`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.5
@@ -385,7 +385,7 @@ They are adjoint: $\ip{u}{Jv}=\ip{J^\top u}{v}$ for all $u\in\R^m$, $v\in\R^n$ (
         const sI = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 330, axes: 'box', gutter: true, xlabel: '$x_1$', ylabel: '$x_2$', title: 'input space: $v$ and the pullback $J^\\top u$' });
         const sO = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, height: 330, axes: 'box', gutter: true, xlabel: '$y_1$', ylabel: '$y_2$', title: 'output space: $Jv$ and the covector $u$' });
         const Hx = sI.handle(0.4, -0.3, { color: 'gold', r: 7, label: 'x', labelPos: 'sw' });
-        const Hv = sI.handle(1.2, 0.2, { color: 'orange', r: 6, label: 'v' });
+        const Hv = sI.handle(0.05, 0.55, { color: 'orange', r: 6, label: 'v' });
         const Hu = sO.handle(0.6, 0.5, { color: 'purple', r: 6, label: 'u' });
         let uRel = [0.55, 0.45];                         // u is stored relative to F(x)
         Hu.onDrag = () => { uRel = [Hu.x - Fx[0], Hu.y - Fx[1]]; };
@@ -405,7 +405,7 @@ They are adjoint: $\ip{u}{Jv}=\ip{J^\top u}{v}$ for all $u\in\R^m$, $v\in\R^n$ (
           // full Jacobian from two tangent sweeps (for the ellipse)
           const c1 = T.tangent(new Map([[xi, 1]])), c2 = T.tangent(new Map([[yi, 1]])), J = [[c1[o1], c2[o1]], [c1[o2], c2[o2]]];
           // input side: grid image is on the right; circle + its image
-          const eps = 0.45;
+          const eps = 0.35;
           sI.circle(Hx.x, Hx.y, eps, { color: 'accent', width: 1.6, fill: 'accent', fillAlpha: 0.08 });
           // pulled-back level lines: perpendicular to J^T u, spaced so that <J^T u, dx> steps by the same amounts as in output space
           const nI = Math.hypot(JTu[0], JTu[1]), nO = Math.hypot(u[0], u[1]), step = 0.3 * nO;
@@ -454,7 +454,7 @@ Hence the gradient is bounded ($\norm{p-y}_1\le2$), its components sum to zero, 
         v.button('descend 1 step', () => step(1));
         v.button('20 steps', () => step(20));
         v.button('reset', () => H.forEach((h, k) => h.set(k + 1, Z0[k])));
-        const TB = v.table(sT, { rows: K, cols: 6, square: false, cellAspect: 2.6, maxCell: 30, size: 12.5, colLabels: ['$z_k$', '$p_k$', '$y_k$', '$p_k-y_k$', 'tape $\\partial L/\\partial z_k$', 'difference'], rowLabels: (i) => `class ${i + 1}` });
+        const TB = v.table(sT, { rows: K, cols: 6, square: false, cellAspect: 2.6, maxCell: 30, size: 12.5, colLabels: ['$z_k$', '$p_k$', '$y_k$', '$p_k-y_k$', '$\\partial L/\\partial z_k\\ \\text{(tape)}$', '$\\text{difference}$'], colWeights: [1, 1, 1, 1.15, 1.6, 1.15], rowLabels: (i) => `class ${i + 1}` });
         let info = null;
         v.render(() => {
           const z = H.map((h) => h.y), p = softmax(z), y = target(), c = cS.value;

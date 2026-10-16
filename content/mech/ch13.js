@@ -346,8 +346,8 @@ the **predictability horizon**: making the error a thousand times smaller only a
       tags: ['Lyapunov exponent', 'sensitive dependence', 'chaos'],
       credit: 'Lyapunov, 1892; Benettin et al., 1980',
       viz(v) {
-        const orb = v.select('orbit at $E = 1/8$', [{ value: 'chaos', label: 'in the chaotic sea' }, { value: 'reg', label: 'on a regular torus' }], 'chaos', { onChange: () => v.restart() });
-        const d0S = v.slider('initial separation $\\delta_0$', 1e-12, 1e-4, 1e-9, { log: true, fmt: (x) => sciText(v, x), onChange: () => v.restart() });
+        const orb = v.select('orbit at $E = 1/8$', [{ value: 'chaos', label: 'in the chaotic sea' }, { value: 'reg', label: 'on a regular torus' }], 'chaos');
+        const d0S = v.slider('initial separation $\\delta_0$', 1e-12, 1e-4, 1e-9, { log: true, fmt: (x) => sciText(v, x) });
         const tax = v.select('time axis', [{ value: 'lin', label: 'linear $t$' }, { value: 'log', label: 'logarithmic $t$' }], 'lin');
         const E = 0.125, TT = 420, H = 0.02, REC = 5, L = 0.1;
         const sL = v.stage({ x: [0, TT], y: [-13, 1], axes: 'box', gutter: true, height: 330, weight: 1.55, xlabel: 't', ylabel: 'log₁₀ |δ(t)|' });

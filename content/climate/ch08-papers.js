@@ -49,7 +49,7 @@ export default {
 
 In modern terms this confirmed Milankovitch's astronomical theory (climate-8.5) as the **pacemaker** of glacial cycles. Its scope: the orbital forcing sets the timing; the size of the 100-kyr cycle, whose direct insolation forcing is weak, needs amplification inside the climate system (ice sheets, CO₂), which the paper could not explain and which is still debated.`,
       idea: String.raw`Croll and then Milankovitch (1920s–40s) had computed how the orbital elements (climate-8.1) change the seasonal and latitudinal distribution of sunlight (climate-8.4), but there was no long, well-dated climate record to test the theory, and by the 1960s it was widely doubted. Emiliani's oxygen-isotope stratigraphy and the CLIMAP project changed that: Hays (radiolaria), Shackleton (isotopes) and Imbrie (statistics) chose two cores with high accumulation rates, dated them with radiocarbon, the Brunhes–Matuyama reversal and a constant-accumulation assumption that did not use orbital theory, and computed power spectra (climate-8.12). The peaks fell where Berger's orbital calculations put them, including the predicted splitting of precession. The paper made orbital forcing the organising idea of paleoclimatology; later records (SPECMAP, Antarctic ice cores, LR04) confirmed it, and orbitally tuned time scales built on it now date the whole Cenozoic.`,
-      caption: String.raw`**Top**: core RC11-120 (one of the paper's two cores), δ¹⁸O of planktonic foraminifera (ice volume, glacial up) or radiolarian summer sea temperature, on one of two **time scales**: SPECMAP (orbitally tuned, so it partly assumes the answer) or an **untuned** constant-accumulation scale through the core top and Termination II (127,000 years at 440 cm), closer to how the paper avoided circularity. **Bottom**: the power spectrum, with the orbital periods marked. Switch to **red noise**: a random AR(1) series with the same variance and memory (**Resample** for another) has no peaks at those periods except by chance; the dashed line is its 95% level.`,
+      caption: String.raw`**Top**: core RC11-120 (one of the paper's two cores), δ¹⁸O of planktonic foraminifera (ice volume, glacial up) or radiolarian summer sea temperature, on one of two **time scales**: SPECMAP (orbitally tuned, so it partly assumes the answer) or an **untuned** constant-accumulation scale through the core top and Termination II (127,000 years at 440 cm), closer to how the paper avoided circularity. **Bottom**: the power spectrum, with the orbital periods marked. Switch to **red noise**: a random AR(1) series with the same variance and memory (**Resample** for another) has no peaks at those periods except by chance; the dashed line is its approximate 95% level.`,
       deps: ['climate-8.1', 'climate-8.4', 'climate-8.12'],
       refs: [],
       tags: ['paleoclimate', 'Milankovitch', 'spectral analysis'],
@@ -69,7 +69,7 @@ In modern terms this confirmed Milankovitch's astronomical theory (climate-8.5) 
         const flat = (dep) => (dep * 127) / 440;
         const freqs = Array.from({ length: 260 }, (_, i) => 0.003 + i * 0.00025);
         const T = v.stage({ x: [0, 300], y: [1.5, 3.8], axes: 'box', gutter: true, height: 210, full: true, xlabel: 'age (thousand years ago)', ylabel: 'δ¹⁸O (‰)', title: 'core RC11-120' });
-        const P = v.stage({ x: [0.003, 0.068], y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 300, full: true, xlabel: 'period (thousand years)', ylabel: 'relative power', xticks: [[1 / 150, '150'], [0.01, '100'], [1 / 60, '60'], [1 / 41, '41'], [1 / 30, '30'], [1 / 23, '23'], [1 / 19, '19'], [1 / 16, '16']], title: 'power spectrum' });
+        const P = v.stage({ x: [0.003, 0.068], y: [3e-3, 1.6], ylog: true, axes: 'box', gutter: true, height: 300, full: true, xlabel: 'period (thousand years)', ylabel: 'relative power', xticks: [[1 / 150, '150'], [0.01, '100'], [1 / 60, '60'], [1 / 41, '41'], [1 / 30, '30'], [1 / 23, '23'], [1 / 19, '19'], [1 / 16, '16']], title: 'power spectrum' });
         let st = null;
         v.render(() => {
           const age = chron.value === 'tuned' ? tuned : flat;
@@ -92,18 +92,18 @@ In modern terms this confirmed Milankovitch's astronomical theory (climate-8.5) 
           T.path(t.map((tt, i) => [tt, y[i]]), { color: rec.value === 'sst' ? 'red' : rec.value === 'noise' ? 'muted' : 'accent', width: 1.8 });
           if (chron.value === 'flat' && rec.value !== 'noise') { T.vline(127, { color: 'faint', width: 1, dash: [3, 3] }); T.text('Termination II, 127 kyr (anchor)', 127, hi + pad, { dx: 4, dy: 12, align: 'left', size: 10.5, color: 'muted' }); }
           // spectrum: normalised, smoothed over 3 frequencies
-          const Ps = sp.P.map((p, i) => (sp.P[Math.max(0, i - 2)] + p + sp.P[Math.min(sp.P.length - 1, i + 2)]) / 3);
+          const Ps = sp.P.map((p, i) => { let a = 0, c = 0; for (let j = Math.max(0, i - 8); j <= Math.min(sp.P.length - 1, i + 8); j++) { a += sp.P[j]; c++; } return a / c; }); // Daniell smoothing over ±0.002 cycles/kyr
           const mx = Math.max(...Ps);
           const N = sp.r.length, varr = sp.r.reduce((a, b) => a + b * b, 0) / N;
           const red = freqs.map((f) => (1 - rho * rho) / (1 + rho * rho - 2 * rho * Math.cos(2 * Math.PI * f * 2)));
           const scale = Ps.reduce((a, b) => a + b, 0) / red.reduce((a, b) => a + b, 0);
           for (const [per, lab, col] of ORB) {
-            const f = 1 / per, w = per === 100 ? [1 / 125, 1 / 90] : [1 / (per + 1.5), 1 / (per - 1.5)];
+            const f = 1 / per, w = per === 100 ? [1 / 125, 1 / 90] : [1 / (per + 0.7), 1 / (per - 0.7)];
             P.vband(w[0], w[1], { color: col, alpha: 0.12 });
-            P.text(lab, f, 1, { dy: 12, size: 10.5, color: col, weight: 700, align: per === 19 ? 'left' : 'center', dx: per === 19 ? 6 : 0 });
+            P.text(lab, f, 3e-3, { dy: -8, size: 10.5, color: col, weight: 700, align: per === 19 ? 'left' : per === 23 ? 'right' : 'center', dx: per === 19 ? 4 : per === 23 ? -4 : 0, baseline: 'bottom', plate: true });
           }
-          P.path(freqs.map((f, i) => [f, (red[i] * scale * 2.1) / mx]), { color: 'muted', width: 1.4, dash: [6, 4] });
-          P.path(freqs.map((f, i) => [f, Math.max(Ps[i] / mx, 1.1e-4)]), { color: rec.value === 'sst' ? 'red' : rec.value === 'noise' ? 'ink' : 'accent', width: 2.2 });
+          P.path(freqs.map((f, i) => [f, (red[i] * scale * 2.8) / mx]), { color: 'muted', width: 1.4, dash: [6, 4] });
+          P.path(freqs.map((f, i) => [f, Math.max(Ps[i] / mx, 3.1e-3)]), { color: rec.value === 'sst' ? 'red' : rec.value === 'noise' ? 'ink' : 'accent', width: 2.2 });
           // find the strongest peaks
           const pk = [];
           for (let i = 1; i < Ps.length - 1; i++) if (Ps[i] >= Ps[i - 1] && Ps[i] >= Ps[i + 1] && Ps[i] > 0.02 * mx) pk.push([1 / freqs[i], Ps[i] / mx, Ps[i] / (red[i] * scale)]);
@@ -114,9 +114,9 @@ In modern terms this confirmed Milankovitch's astronomical theory (climate-8.5) 
         v.legend([['accent', 'δ¹⁸O spectrum'], ['red', 'SST spectrum'], ['muted', 'red-noise 95% level', { dash: true }], ['gold', 'strongest peaks', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const pks = st.pk.map(([per, h, ratio]) => `**${Math.round(per)}** kyr${ratio > 2.1 ? ' ✓' : ''}`).join(', ');
+          const pks = st.pk.map(([per, h, ratio]) => `**${Math.round(per)}** kyr${ratio > 2.8 ? ' ✓' : ''}`).join(', ');
           const what = rec.value === 'noise' ? 'red noise (AR(1), ρ = ' + v.fix(st.rho, 2) + ' per 2 kyr)' : rec.value === 'sst' ? 'summer SST' : 'δ¹⁸O';
-          return `${what}, ${chron.value === 'tuned' ? 'SPECMAP (tuned)' : 'untuned'} time scale: strongest peaks at ${pks} (✓ = above the red-noise 95% level). Hays, Imbrie & Shackleton: peaks near 100, 42 and 23 kyr (and 19 kyr) in both cores; orbital periods today: eccentricity ~95–125 kyr, obliquity 41 kyr, precession 23 and 19 kyr. This core alone spans under 300 kyr, so the 100-kyr peak rests on fewer than three cycles.`;
+          return `${what}, ${chron.value === 'tuned' ? 'SPECMAP (tuned)' : 'untuned'} time scale: strongest peaks at ${pks} (✓ = above the approximate red-noise 95% level). Hays, Imbrie & Shackleton: peaks near 100, 42 and 23 kyr (and 19 kyr) in both cores; orbital periods today: eccentricity ~95–125 kyr, obliquity 41 kyr, precession 23 and 19 kyr. This single core spans under 300 kyr, so only the precession peak clears the noise level on its own, the 100-kyr peak rests on fewer than three cycles, and on the untuned scale the obliquity peak lands near 35 kyr; the paper's two-core record of about 450 kyr resolved all three.`;
         });
       },
     },

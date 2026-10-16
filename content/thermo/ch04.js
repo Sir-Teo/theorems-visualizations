@@ -398,5 +398,292 @@ This is equivalent to equality of the molar Gibbs energies (chemical potentials)
         });
       },
     },
+    // ------------------------------------------------------------------ 4.5
+    {
+      num: '4.5', kind: 'Phenomenon', name: 'Latent heat',
+      statement: String.raw`At a first-order phase transition a substance absorbs heat at **constant temperature** (and pressure) while it changes phase. The heat per unit mass, the **latent heat** $L$, equals the jump in enthalpy between the phases, $L = h_\beta - h_\alpha = T\,(s_\beta - s_\alpha)$, and is the same whether the transition is driven by heating or (in reverse) released on cooling. For water at 1 atm the latent heat of fusion is 333.4 kJ/kg at 0 °C and the latent heat of vaporization 2256 kJ/kg at 100 °C — enough to warm the same water from 0 to 100 °C five times over.`,
+      idea: String.raw`At fixed pressure the heat added equals the change in enthalpy (1.14). While two phases coexist, the temperature is pinned to the coexistence value (4.4), so heat cannot raise $T$; instead it converts one phase into the other, and the enthalpy grows linearly with the converted fraction. Because the transition happens reversibly at a single temperature, $\Delta s = L/T$ (2.9). The size of $L$ measures the bonds broken: melting loosens the hydrogen-bond network only partly, boiling separates molecules completely, so $L_v \approx 7L_f$; water's entropy of vaporization, 109 J/(mol K), exceeds Trouton's typical 85–88 because liquid water is unusually ordered.`,
+      caption: String.raw`1 kg of ice from −30 °C is heated at a steady rate (press play; the beaker shows the phases). The temperature rises while one phase is heated, then **stalls on two plateaus** whose lengths are the latent heats, measured from the curve in the readout and compared with IAPWS values. Heat capacities: ice from IAPWS R10-06, liquid and steam from IAPWS-95 (NIST). **Change the pressure**: on Everest's summit water boils near 71 °C and the boiling plateau is longer; in a pressure cooker it boils at 120 °C with a shorter one. The heater power only converts heat into time.`,
+      deps: ['thermo-4.4', 'thermo-2.9'],
+      see: ['thermo-1.14', 'thermo-4.6'],
+      refs: ['Schroeder §5.3'],
+      tags: ['latent heat', 'phase transitions'],
+      credit: 'Joseph Black, 1761–1762',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Latent_heat' },
+      viz(v) {
+        const pres = v.select('pressure', [{ value: '101325', label: '1 atm' }, { value: '33700', label: 'Everest summit (≈ 34 kPa)' }, { value: '198500', label: 'pressure cooker (≈ 2 bar)' }], '101325');
+        const pw = v.slider('heater power', 0.5, 5, 2, { step: 0.1, fmt: (x) => v.fix(x, 1) + ' kW' });
+        const sc = v.stage({ x: [0, 3300], y: [-35, 160], height: 350, axes: 'box', gutter: true, xlabel: 'heat added Q (kJ)', ylabel: 't (°C)', weight: 1.45, title: 'heating 1 kg of ice at a steady rate' });
+        const sb = v.stage({ x: [0, 10], y: [0, 12], equal: true, height: 350, axes: false, weight: 0.55, minWidth: 190, title: 'the beaker' });
+        const COL = { ice: PHASE.solid, melt: 'purple', liquid: PHASE.liquid, boil: 'red', steam: PHASE.gas };
+        let st = null;
+        v.animate((t) => {
+          const P = +pres.value, H = heatingCurve(P);
+          const Q = H.Qend * clamp(t / 10, 0, 1);
+          sc.setView([0, H.Qend * 1.02], [-35, 160]);
+          sc.path(H.pts.map((p) => [p[0], p[1]]), { color: 'faint', width: 1.6 });
+          // traversed part, coloured by stage
+          let run = [], stg = H.pts[0][2];
+          const flush = () => run.length > 1 && sc.path(run, { color: COL[stg], width: 3.2 });
+          for (let i = 0; i < H.pts.length; i++) {
+            const p = H.pts[i]; if (p[0] > Q) break;
+            if (p[2] !== stg) { const last = run[run.length - 1]; flush(); run = [last]; stg = p[2]; }
+            run.push([p[0], p[1]]);
+          }
+          const tNow = interp(H.pts, 0, 1, Q), stage = Q <= H.melt0 ? 'ice' : Q < H.melt1 ? 'melt' : Q <= H.boil0 ? 'liquid' : Q < H.boil1 ? 'boil' : 'steam';
+          if (run.length) { run.push([Q, tNow]); stg = stage === 'ice' ? 'ice' : stg; flush(); }
+          sc.dot(Q, tNow, { r: 5.5, color: 'gold' });
+          // plateau brackets
+          sc.measure(H.melt0, -14, H.melt1, -14, `L_f = ${v.fix(H.melt1 - H.melt0, 1)} kJ`);
+          sc.measure(H.boil0, H.Tb - 16, H.boil1, H.Tb - 16, `L_v = ${v.fix(H.boil1 - H.boil0, 0)} kJ`);
+          sc.hline(H.Tb, { color: 'red', width: 1, dash: [3, 4] });
+          sc.text(`boils at ${v.fix(H.Tb, 1)} °C`, H.Qend * 0.02, H.Tb, { dy: -9, size: 11, color: 'red', align: 'left', plate: true });
+          // beaker
+          const fIce = stage === 'ice' ? 1 : stage === 'melt' ? 1 - (Q - H.melt0) / (H.melt1 - H.melt0) : 0;
+          const fVap = stage === 'boil' ? (Q - H.boil0) / (H.boil1 - H.boil0) : stage === 'steam' ? 1 : 0;
+          const x0 = 1.5, x1 = 8.5, y0 = 1, top = 9.5;
+          const liqH = 4.5 * (1 - fIce) * (1 - fVap);
+          if (liqH > 0.02) sb.rect(x0, y0, x1, y0 + liqH, { fill: PHASE.liquid, fillAlpha: 0.45, stroke: false });
+          // ice cubes
+          const nC = Math.round(9 * fIce);
+          for (let k = 0; k < nC; k++) { const cx = x0 + 0.6 + (k % 3) * 2.2, cy = y0 + 0.3 + Math.floor(k / 3) * 1.8; sb.rect(cx, cy, cx + 1.7, cy + 1.5, { fill: PHASE.solid, fillAlpha: 0.55, color: PHASE.solid, width: 1.2, radius: 3 }); }
+          // bubbles and steam
+          if (stage === 'boil' || stage === 'steam') {
+            const R = v.rng(3);
+            for (let k = 0; k < 26; k++) { const bx = x0 + 0.4 + R() * (x1 - x0 - 0.8), by = y0 + ((R() * 8 + t * 2.2 * (0.6 + R())) % 8) + 0.4; if (stage === 'steam' || by > y0 + liqH) sb.dot(bx, Math.min(by, top - 0.3), { r: 2.6, color: PHASE.gas, alpha: 0.7 }); else sb.dot(bx, by, { r: 2, color: 'panel', alpha: 0.9 }); }
+          }
+          sb.line(x0, y0, x0, top, { color: 'ink', width: 2.2 }); sb.line(x1, y0, x1, top, { color: 'ink', width: 2.2 }); sb.line(x0, y0, x1, y0, { color: 'ink', width: 2.2 });
+          sb.rect(x0 - 0.6, y0 - 0.9, x1 + 0.6, y0 - 0.15, { fill: 'red', fillAlpha: 0.25 + 0.4 * (pw.value / 5), color: 'red', width: 1, radius: 3 });
+          sb.text(`${v.fix(tNow, 1)} °C`, 5, 11, { size: 15, weight: 700, align: 'center', color: COL[stage] });
+          sb.text({ ice: 'warming ice', melt: 'melting at 0 °C', liquid: 'warming water', boil: 'boiling', steam: 'warming steam' }[stage], 5, 10.1, { size: 11.5, align: 'center', color: 'ink' });
+          // measure plateaus from the curve itself: stretches where the temperature does not change
+          const flats = []; let f0 = null;
+          for (let i = 1; i < H.pts.length; i++) { const flat = Math.abs(H.pts[i][1] - H.pts[i - 1][1]) < 1e-9 && H.pts[i][0] > H.pts[i - 1][0]; if (flat && f0 === null) f0 = H.pts[i - 1][0]; if (!flat && f0 !== null) { flats.push([f0, H.pts[i - 1][0], H.pts[i - 1][1]]); f0 = null; } }
+          st = { Q, tNow, stage, H, flats, P };
+        }, { period: 12, still: 7 });
+        v.legend([[PHASE.solid, 'ice'], ['purple', 'melting plateau'], [PHASE.liquid, 'water'], ['red', 'boiling plateau'], [PHASE.gas, 'steam']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { Q, tNow, stage, H, flats, P } = st;
+          const Lf = flats[0] ? flats[0][1] - flats[0][0] : NaN, Lv = flats[1] ? flats[1][1] - flats[1][0] : NaN, Tb = H.Tb + 273.15;
+          return `$Q$ = ${v.fix(Q, 0)} kJ after ${v.fix(Q / pw.value / 60, 1)} min at ${v.fix(pw.value, 1)} kW · $t$ = ${v.fix(tNow, 2)} °C · plateaus measured on the curve: **${v.fix(Lf, 1)} kJ** at 0 °C (IAPWS $L_f$ = 333.4 kJ/kg) and **${v.fix(Lv, 0)} kJ** at ${v.fix(H.Tb, 2)} °C (IAPWS-95 $L_v$ there: ${v.fix(H.L, 1)} kJ/kg)\n$L_v/L_f$ = ${v.fix(Lv / Lf, 2)} · entropy of vaporization $L_vM/T_b$ = ${v.fix(Lv * 1e3 * W.M / Tb, 1)} J/(mol K) (Trouton's rule for ordinary liquids: 85–88) · warming the liquid 0 → ${v.fix(H.Tb, 0)} °C took ${v.fix(H.boil0 - H.melt1, 0)} kJ`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 4.6
+    {
+      num: '4.6', kind: 'Theorem', name: 'Clausius–Clapeyron relation',
+      statement: String.raw`Along a coexistence curve $P(T)$ between phases $\alpha$ and $\beta$ of a pure substance,
+$$\frac{dP}{dT} = \frac{s_\beta - s_\alpha}{v_\beta - v_\alpha} = \frac{L}{T\,\Delta v},$$
+where $L$ is the latent heat and $\Delta v$ the volume change of the transition (both per mole or both per kilogram). For liquid–vapour equilibrium far below the critical point, neglecting the liquid volume and treating the vapour as ideal ($\Delta v \approx RT/P$) gives the **Clausius–Clapeyron equation** $\dfrac{d\ln P}{dT} \approx \dfrac{L}{RT^2}$, which integrates (for constant $L$) to $\ln(P/P_0) = -\dfrac{L}{R}\left(\dfrac1T - \dfrac1{T_0}\right)$.`,
+      idea: String.raw`On the curve $\mu_\alpha(T, P) = \mu_\beta(T, P)$ (4.4). Moving along it, $d\mu_\alpha = d\mu_\beta$, and by the Gibbs–Duhem relation (3.6) $d\mu = -s\,dT + v\,dP$ for each phase; subtracting gives $-\Delta s\,dT + \Delta v\,dP = 0$, and $\Delta s = L/T$ (4.5). The exact form is an identity among measurable quantities — any reliable data set must satisfy it. The approximate form fails as the critical point is approached: $L \to 0$ and $\Delta v \to 0$ together, the vapour stops being ideal and the liquid volume stops being negligible.`,
+      caption: String.raw`Dots: the vapour pressure of water (IAPWS-95, NIST WebBook). **Drag the starting point** along the curve. From it, the exact relation $dP/dT = L/T\Delta v$ is integrated using only tabulated $L$ and $\Delta v$ (green); the approximate equation with ideal vapour and $L$ frozen at its starting value (orange) is integrated too. The right panel shows each curve's error against the data: the exact integral stays within a small fraction of a per cent all the way to the critical point; the approximation is good near the start and drifts by tens of per cent as $L$ shrinks. The readout checks the slope at the starting point both ways.`,
+      deps: ['thermo-4.5', 'thermo-3.6'],
+      see: ['pchem-4.4', 'thermo-4.7'],
+      refs: ['Schroeder §5.3', 'Tong ch. 5'],
+      tags: ['phase coexistence', 'vapour pressure'],
+      credit: 'É. Clapeyron, 1834; R. Clausius, 1850',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Clausius%E2%80%93Clapeyron_relation' },
+      viz(v) {
+        const approx = v.toggle('also integrate the approximate form (ideal vapour, constant L)', true);
+        const sp = v.stage({ x: [273.16, 647.1], y: [400, 3e7], ylog: true, height: 350, axes: 'box', gutter: { l: 56 }, xlabel: 'T (K)', ylabel: 'P (Pa)', weight: 1.2, title: 'vapour pressure of water' });
+        const se = v.stage({ x: [273.16, 647.1], y: [-40, 40], height: 350, axes: 'box', gutter: true, xlabel: 'T (K)', ylabel: 'error (%)', weight: 1, title: 'integrated curve against the data' });
+        const h = sp.handle(373.15, psatW(373.15), { color: 'gold', label: 'start', constrain: (x) => { const T = clamp(x, 278, 640); return [T, psatW(T)]; } });
+        const Rw = R / W.M;
+        let st = null;
+        v.render(() => {
+          const T0 = h.x, P0 = psatW(T0), s0 = satW(T0);
+          const exact = (T) => { const s = satW(T); return s.L / (T * s.dv); };          // dP/dT
+          const integ = (f, dir) => { const out = [[T0, P0]]; let T = T0, P = P0; const hs = 0.5 * dir; while ((dir > 0 ? T < 646.5 : T > 273.4)) { const k1 = f(T, P), k2 = f(T + hs / 2, P + hs / 2 * k1), k3 = f(T + hs / 2, P + hs / 2 * k2), k4 = f(T + hs, P + hs * k3); P += hs / 6 * (k1 + 2 * k2 + 2 * k3 + k4); T += hs; out.push([T, P]); } return out; };
+          const ex = [...integ((T) => exact(T), -1).reverse(), ...integ((T) => exact(T), 1).slice(1)];
+          const ap = [...integ((T, P) => s0.L * P / (Rw * T * T), -1).reverse(), ...integ((T, P) => s0.L * P / (Rw * T * T), 1).slice(1)];
+          sp.dots(WSAT.filter((r, i) => i % 2 === 0).map((r) => [r[0], r[1] * MPA]), { r: 3, color: 'ink', alpha: 0.75 });
+          sp.path(ex, { color: 'green', width: 2.6 });
+          if (approx.value) sp.path(ap, { color: 'orange', width: 2.2, dash: [7, 4] });
+          sp.dot(W.Tc, W.Pc, { r: 5, color: 'red' }); sp.text('critical point', W.Tc, W.Pc, { dx: -8, dy: -10, size: 11, color: 'red', align: 'right' });
+          sp.dot(W.Tt, W.Pt, { r: 5, color: 'red' }); sp.text('triple point', W.Tt, W.Pt, { dx: 8, dy: 4, size: 11, color: 'red', align: 'left' });
+          // errors at the table temperatures
+          const err = (path) => WSAT.map((r) => { const P = interp(path, 0, 1, r[0]); return [r[0], 100 * (P / (r[1] * MPA) - 1)]; });
+          const eEx = err(ex), eAp = err(ap);
+          se.hline(0, { color: 'muted', width: 1 });
+          se.path(eEx, { color: 'green', width: 2.6 }); se.dots(eEx.filter((_, i) => i % 3 === 0), { r: 2.6, color: 'green' });
+          if (approx.value) se.path(eAp, { color: 'orange', width: 2.2, dash: [7, 4] });
+          se.vline(T0, { color: 'gold', width: 1.2 });
+          const at100 = (path) => 100 * (interp(path, 0, 1, 373.124) / 101325 - 1);
+          const slopeData = (psatW(T0 + 0.01) - psatW(T0 - 0.01)) / 0.02;
+          const mxEx = Math.max(...eEx.filter((e) => e[0] < 645).map((e) => Math.abs(e[1])));
+          st = { T0, P0, s0, slopeData, slopeCC: exact(T0), slopeApprox: s0.L * P0 / (Rw * T0 * T0), e100: at100(ex), a100: at100(ap), mxEx, aTc: eAp[eAp.length - 1][1] };
+        });
+        v.legend([['ink', 'IAPWS-95 data', { dot: true }], ['green', 'exact: $dP/dT = L/T\\Delta v$'], ['orange', 'ideal vapour, constant $L$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { T0, P0, s0, slopeData, slopeCC, slopeApprox, e100, a100, mxEx, aTc } = st;
+          return `start ${v.fix(T0, 1)} K, ${v.fix(P0 / 1e3, 2)} kPa: $L$ = ${v.fix(s0.L / 1e3, 1)} kJ/kg, $\\Delta v$ = ${v.fix(s0.dv, 4)} m³/kg · slope of the data **${v.fix(slopeData, 2)} Pa/K**, $L/T\\Delta v$ = **${v.fix(slopeCC, 2)} Pa/K** (ratio ${v.fix(slopeCC / slopeData, 4)}), ideal-vapour estimate $LP/R_wT^2$ = ${v.fix(slopeApprox, 2)} Pa/K\nerror of the integrated curve at 100 °C: exact ${v.fix(e100, 3)} %${approx.value ? `, approximate ${v.fix(a100, 2)} %` : ''} · largest error of the exact integral below 645 K: ${v.fix(mxEx, 2)} % (5 K table, linear interpolation)${approx.value ? ` · approximation at the critical end: ${v.fix(aTc, 0)} %` : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 4.7
+    {
+      num: '4.7', kind: 'Phenomenon', name: 'Water’s backward-sloping melting curve',
+      statement: String.raw`Ice Ih is about 9 % less dense than liquid water (916.7 against 999.8 kg/m³ at 0 °C), so melting *decreases* the volume, $\Delta v < 0$, while it absorbs latent heat, $L > 0$. By the Clapeyron relation (4.6) the melting curve therefore has negative slope: near 0 °C, $dP/dT = L/(T\Delta v) \approx -13.5$ MPa/K, so raising the pressure lowers the melting point by about 0.0074 K per bar. Melting ice at −1 °C takes about 13 MPa (roughly 130 atm); the melting curve of ice Ih continues down to the triple point with ice III at −22 °C and 209 MPa. Most substances, whose solid is denser than the liquid, have forward-sloping melting curves.`,
+      idea: String.raw`The hydrogen-bonded tetrahedral network of ice Ih is open; melting partly collapses it, so liquid water packs more densely. Squeezing favours the denser phase — the liquid — because raising $P$ raises each phase's chemical potential by $v\,\Delta P$, more for ice. Hence at higher pressure ice must be colder to stay solid. The pressure needed is large: a 70 kg skater on a flat blade exerts only a few MPa, lowering the melting point by a few hundredths of a kelvin, so pressure melting cannot explain the slipperiness of ice at −10 °C (frictional heating and a premelted surface layer do).`,
+      caption: String.raw`The melting curve of ice Ih from IAPWS R14-08 (teal) and the straight Clapeyron line through the normal melting point (gold, slope $L/T\Delta v$ computed from IAPWS densities and latent heat). **Drag the state point** to see which phase is stable. Set a **skater's mass and blade contact**: the horizontal line is the pressure under the blade, and its crossing with the melting curve is the melting temperature there. Flip **"ice denser than water"** — a hypothetical with the volume change reversed — and the Clapeyron line tilts the other way, as for almost every other substance.`,
+      deps: ['thermo-4.6'],
+      see: ['thermo-4.4'],
+      refs: ['Schroeder §5.3'],
+      tags: ['phase coexistence', 'water'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ice_skating#Physics' },
+      viz(v) {
+        const mass = v.slider('skater mass', 30, 120, 70, { step: 1, fmt: (x) => x + ' kg' });
+        const contact = v.select('blade contact', [{ value: '30x3', label: 'flat blade 30 cm × 3 mm' }, { value: '30x0.5', label: 'edge 30 cm × 0.5 mm' }, { value: '3x0.5', label: 'rocked edge 3 cm × 0.5 mm' }], '30x3');
+        const flip = v.toggle('hypothetical: ice denser than water', false);
+        const sp = v.stage({ x: [-25, 2], y: [0, 230], height: 360, axes: 'box', gutter: true, xlabel: 't (°C)', ylabel: 'P (MPa)', weight: 1.4, title: 'melting curve of ice Ih' });
+        const sv = v.stage({ x: [-0.7, 1.7], y: [0.9, 1.12], height: 360, axes: 'box', gutter: true, ylabel: 'specific volume (cm³/g)', weight: 0.6, minWidth: 190, title: 'why it tilts', xticks: [[0, 'ice'], [1, 'water']] });
+        const h = sp.handle(-8, 60, { color: 'gold', label: 'state', constrain: { x: [-24.5, 1.5], y: [2, 225] } });
+        const vI = 1 / W.rhoIce, vL = 1 / W.rhoLiq, Tm = W.Tm;
+        const ice = tint(v, PHASE.solid, 0.18), liq = tint(v, PHASE.liquid, 0.18);
+        let st = null;
+        v.render(() => {
+          const dv = flip.value ? -(vI - vL) : vL - vI, slope = W.Lf / (Tm * dv) / MPA;   // MPa/K
+          sp.raster((t, P) => { const T = t + 273.15; if (T < 251.165) return ice; return P * MPA < pmeltIh(T) ? ice : liq; }, { res: 3, key: 'm7' + v.color('panel') });
+          sp.curve((u) => { const T = lerp(251.165, 273.16, u); return [T - 273.15, pmeltIh(T) / MPA]; }, 0, 1, { color: PHASE.liquid, width: 3, n: 120 });
+          sp.fn((t) => 0.101325 + slope * (t - (Tm - 273.15)), { color: flip.value ? 'red' : 'gold', width: 2, dash: [7, 4] });
+          sp.dot(251.165 - 273.15, 208.566, { r: 4.5, color: 'ink', hollow: true }); sp.text('ice III begins', 251.165 - 273.15, 208.566, { dx: 8, dy: 2, size: 11, color: 'ink', align: 'left', plate: true });
+          sp.text('ice Ih', -20, 40, { size: 14, weight: 700, color: PHASE.solid });
+          sp.text('liquid water', -4, 170, { size: 14, weight: 700, color: PHASE.liquid });
+          // skater
+          const [Lc, wc] = contact.value.split('x').map(Number), A = Lc * 1e-2 * wc * 1e-3, Psk = mass.value * 9.81 / A / MPA;
+          const tSk = bisect((T) => pmeltIh(T) - (Psk * MPA + 101325), 251.2, 273.16) - 273.15;
+          sp.hline(Psk, { color: 'purple', width: 1.8 });
+          sp.text(`skater: ${v.fix(Psk, 2)} MPa`, -24.5, Psk, { dy: -9, size: 11, color: 'purple', align: 'left', plate: true });
+          if (Psk < 230) sp.dot(tSk, Psk, { r: 4.5, color: 'purple' });
+          // state
+          const T = h.x + 273.15, P = h.y * MPA, phase = T < 251.165 || P < pmeltIh(T) ? 'ice Ih' : 'liquid';
+          // volumes panel
+          const vi = flip.value ? vL - (vI - vL) : vI;
+          bar(sv, 0, vi * 1e3, 0.3, PHASE.solid, { base: 0.9 }); bar(sv, 1, vL * 1e3, 0.3, PHASE.liquid, { base: 0.9 });
+          sv.text(v.fix(vi * 1e3, 4), 0, vi * 1e3, { dy: -9, size: 11, align: 'center' }); sv.text(v.fix(vL * 1e3, 4), 1, vL * 1e3, { dy: -9, size: 11, align: 'center' });
+          sv.arrow(0.35, vi * 1e3, 0.65, vL * 1e3, { color: dv < 0 ? 'green' : 'red', width: 2, head: 8 });
+          sv.text(`Δv ${dv < 0 ? '< 0' : '> 0'}`, 0.5, (vi + vL) / 2 * 1e3, { dx: 6, dy: -6, size: 11.5, weight: 650, color: dv < 0 ? 'green' : 'red', align: 'left' });
+          const p1 = pmeltIh(272.15) / MPA, p200 = bisect((T_) => pmeltIh(T_) - 200e6, 251.2, 273.16) - 273.15;
+          st = { slope, Psk, tSk, phase, T, P, p1, p200 };
+        });
+        v.legend([[PHASE.liquid, 'IAPWS melting curve'], ['gold', 'Clapeyron line $L/T\\Delta v$', { dash: true }], ['purple', 'pressure under the blade']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { slope, Psk, tSk, phase, T, P, p1, p200 } = st;
+          return `Clapeyron slope at 0 °C: $L/T\\Delta v$ = **${v.fix(slope, 2)} MPa/K** (${v.fix(slope * 10, 1)} bar/K)${flip.value ? ' — hypothetical sign' : ''} · IAPWS: ice at −1 °C melts at ${v.fix(p1, 2)} MPa = ${v.fix(p1 * 1e6 / 101325, 0)} atm; at 200 MPa the melting point is ${v.fix(p200, 2)} °C (the straight line predicts ${v.fix(200 / (-13.46), 2)} °C)\nskater ${mass.value} kg: ${v.fix(Psk, 2)} MPa under the blade → melting point ${v.fix(tSk, 3)} °C (rink ice is kept near −5 °C) · state ${v.fix(T - 273.15, 1)} °C, ${v.fix(P / MPA, 1)} MPa: **${phase}**`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 4.8
+    {
+      num: '4.8', kind: 'Theorem', name: 'Gibbs phase rule',
+      statement: String.raw`In a system of $C$ chemical components distributed among $P$ coexisting phases in equilibrium (no chemical reactions among the components), the number of intensive variables that can be varied independently without changing the number of phases is
+$$F = C - P + 2.$$
+For a pure substance ($C = 1$) single-phase states fill regions of the $(T, P)$ plane ($F = 2$), two-phase coexistence occupies curves ($F = 1$) and three phases meet only at isolated triple points ($F = 0$); four phases of one component cannot coexist. For a binary mixture at fixed pressure the count drops by one: two coexisting phases leave only $F' = 1$, so temperature alone fixes both phase compositions.`,
+      idea: String.raw`Count unknowns and equations. Each phase is described by $T$, $P$ and $C - 1$ independent mole fractions; temperature and pressure are common to all phases in equilibrium (3.4), leaving $2 + P(C - 1)$ unknowns. Equilibrium for transfer of each component between each pair of phases demands equal chemical potentials, $\mu_i^{(1)} = \mu_i^{(2)} = \dots = \mu_i^{(P)}$: $C(P - 1)$ equations. The difference is $F = C - P + 2$. The Gibbs–Duhem relation (3.6) is what makes $T$, $P$ and the compositions a complete set: the chemical potentials of each phase are functions of them.`,
+      caption: String.raw`**Pick a system.** For water, drag the state point over the IAPWS phase diagram: it **snaps** onto coexistence curves and triple points, and the counting panel shows the unknowns (squares) and equilibrium conditions (crossed) that leave $F$ free variables — 2 in a region, 1 on a curve, 0 at a triple point. For benzene + toluene, the temperature–composition diagram at the pressure you set follows from Raoult's law with NIST vapour pressures; inside the two-phase lens the tie line joins the liquid (bubble line) and vapour (dew line) compositions, and the lever rule gives how much of each phase is present.`,
+      deps: ['thermo-3.6', 'thermo-4.4'],
+      see: ['pchem-6.1', 'thermo-4.12'],
+      refs: ['Callen ch. 9'],
+      tags: ['phase rule', 'phase diagram'],
+      credit: 'J. W. Gibbs, 1875–1878',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Phase_rule' },
+      viz(v) {
+        const sys = v.select('system', [{ value: 'w', label: 'water (C = 1)' }, { value: 'bt', label: 'benzene + toluene (C = 2)' }], 'w', { onChange: () => { if (sys.value === 'w') h.set(330, 3e4); else h.set(0.4, 368); } });
+        const Pb = v.slider('pressure (binary)', 0.5, 1.5, 1.01325, { step: 0.005, fmt: (x) => v.fix(x, 3) + ' bar' });
+        const s = v.stage({ x: [190, 700], y: [0.1, 3e9], ylog: true, height: 380, axes: 'box', gutter: { l: 64 }, xlabel: 'T (K)', ylabel: 'P', yticks: PT_TICKS.concat([[1e9, '1 GPa']]), weight: 1.25, title: 'phase diagram' });
+        const sc = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: false, weight: 0.85, minWidth: 230, title: 'counting: unknowns − conditions' });
+        const A = ANTOINE.benzene, B = ANTOINE.toluene;
+        // binary helpers at pressure P (Pa)
+        const xBub = (T, P) => (P - pAnt(B, T)) / (pAnt(A, T) - pAnt(B, T));
+        const yDew = (T, P) => xBub(T, P) * pAnt(A, T) / P;
+        const tBub = (x, P) => bisect((T) => x * pAnt(A, T) + (1 - x) * pAnt(B, T) - P, 300, 420);
+        const tDew = (y, P) => bisect((T) => y * P / pAnt(A, T) + (1 - y) * P / pAnt(B, T) - 1, 300, 420);
+        let snapInfo = { n: 1, what: '' };
+        const snapW = (x, y) => {
+          const X = s.X(x), Y = s.Y(y), near = (T, P, r) => Math.hypot(s.X(T) - X, s.Y(P) - Y) < r;
+          const tps = [['triple point ice Ih – liquid – vapour', W.Tt, W.Pt], ...ICE_TRIPLES.filter((q) => q[2] < 3e9).map(([n, T, P]) => [`triple point ${n.replace('–', ' – ')} ice – liquid`, T, P])];
+          for (const [n, T, P] of tps) if (near(T, P, 14)) { snapInfo = { n: 3, what: n }; return [T, P]; }
+          const cand = [];
+          if (x > W.Tt && x < W.Tc) cand.push(['liquid – vapour curve', x, psatW(x)]);
+          if (x < W.Tt && x > 190) cand.push(['sublimation curve (ice – vapour)', x, psublW(x)]);
+          if (y > W.Pt && y < 208.566e6) { const T = bisect((T_) => pmeltIh(T_) - y, 251.165, 273.16); cand.push(['melting curve (ice Ih – liquid)', T, y]); }
+          if (x > 273.31 && x < 700 && pmeltW(x) < 3e9) cand.push(['melting curve (high-pressure ice – liquid)', x, pmeltW(x)]);
+          let best = null, bd = 11;
+          for (const c of cand) { const d = Math.hypot(s.X(c[1]) - X, s.Y(c[2]) - Y); if (d < bd) { bd = d; best = c; } }
+          if (best) { snapInfo = { n: 2, what: best[0] }; return [best[1], best[2]]; }
+          snapInfo = { n: 1, what: PHNAME[waterPhase(x, y)] };
+          return [x, y];
+        };
+        const h = s.handle(330, 3e4, { color: 'gold', label: 'state', constrain: (x, y) => (sys.value === 'w' ? snapW(clamp(x, 195, 695), clamp(y, 0.15, 2.8e9)) : [clamp(x, 0.002, 0.998), clamp(y, 341, 397)]) });
+        let st = null;
+        v.render(() => {
+          const water = sys.value === 'w';
+          Pb.el.hidden = water;
+          let C = 1, Pn = 1, info = '', lever = null;
+          if (water) {
+            s.setScale({ xlog: false, ylog: true, x: [190, 700], y: [0.1, 3e9] }); s.setLabels('T (K)', 'P'); s.setTicks(null, PT_TICKS.concat([[1e9, '1 GPa']])); s.setTitle('water: one component');
+            if (h.x < 2) h.set(330, 3e4);
+            snapW(h.x, h.y);
+            drawWaterPT(v, s, { labels: true });
+            Pn = snapInfo.n; info = snapInfo.what;
+            if (Pn === 2) s.dot(h.x, h.y, { r: 9, color: 'green', hollow: true });
+            if (Pn === 3) s.dot(h.x, h.y, { r: 12, color: 'green', hollow: true });
+          } else {
+            C = 2;
+            const P = Pb.value * BAR;
+            const TA = tAnt(A, P), TB = tAnt(B, P);
+            s.setScale({ xlog: false, ylog: false, x: [0, 1], y: [341, 397] }); s.setLabels('mole fraction of benzene', 'T (K)'); s.setTicks(null, null); s.setTitle(`benzene + toluene at ${v.fix(Pb.value, 3)} bar (Raoult's law)`);
+            if (h.x > 2) h.set(0.4, 368);
+            const liq = tint(v, PHASE.liquid, 0.2), gas = tint(v, PHASE.gas, 0.2), two = tint(v, 'gold', 0.16);
+            s.raster((x, T) => { if (T < TA) return liq; if (T > TB) return gas; const xb = xBub(T, P), yd = yDew(T, P); return x < xb && x > yd ? two : x >= xb ? liq : gas; }, { res: 3, key: 'bt' + Pb.value + v.color('panel') });
+            s.curve((x) => [x, tBub(x, P)], 0, 1, { color: PHASE.liquid, width: 2.6, n: 80 });
+            s.curve((y) => [y, tDew(y, P)], 0, 1, { color: PHASE.gas, width: 2.6, n: 80 });
+            s.text('liquid', 0.82, TA - 5 + (TB - TA) * 0.0, { size: 13, weight: 700, color: PHASE.liquid, align: 'center' });
+            s.text('vapour', 0.2, TB + 4, { size: 13, weight: 700, color: PHASE.gas, align: 'center' });
+            s.text('bubble line', 0.62, tBub(0.62, P), { dx: 6, dy: 12, size: 11, color: PHASE.liquid, align: 'left', plate: true });
+            s.text('dew line', 0.4, tDew(0.4, P), { dx: 6, dy: -10, size: 11, color: PHASE.gas, align: 'left', plate: true });
+            s.dot(1, TA, { r: 4, color: 'ink' }); s.dot(0, TB, { r: 4, color: 'ink' });
+            s.text(`benzene boils ${v.fix(TA, 1)} K`, 1, TA, { dx: -8, dy: 12, size: 10.5, align: 'right', color: 'ink' });
+            s.text(`toluene ${v.fix(TB, 1)} K`, 0, TB, { dx: 8, dy: -10, size: 10.5, align: 'left', color: 'ink' });
+            const z = h.x, T = h.y;
+            if (T > TA && T < TB) {
+              const xb = xBub(T, P), yd = yDew(T, P);
+              if (z > yd && z < xb) {
+                Pn = 2;
+                s.line(yd, T, xb, T, { color: 'green', width: 2.6 });
+                s.dot(yd, T, { r: 5, color: PHASE.gas }); s.dot(xb, T, { r: 5, color: PHASE.liquid });
+                const fl = (z - yd) / (xb - yd);
+                lever = { xb, yd, fl };
+                s.text(`liquid x = ${v.fix(xb, 3)}`, xb, T, { dx: 8, dy: 12, size: 11, color: PHASE.liquid, align: 'left', plate: true });
+                s.text(`vapour y = ${v.fix(yd, 3)}`, yd, T, { dx: -8, dy: -11, size: 11, color: PHASE.gas, align: 'right', plate: true });
+                info = 'liquid + vapour (tie line)';
+              } else info = z >= xb ? 'liquid' : 'vapour';
+            } else info = T <= TA ? 'liquid' : 'vapour';
+          }
+          // counting panel
+          const unk = 2 + Pn * (C - 1), eq = C * (Pn - 1), F = C - Pn + 2;
+          const box = (x, y, lab, col, crossed) => { sc.rect(x, y, x + 1.25, y + 1.0, { fill: col, fillAlpha: 0.22, color: col, width: 1.4, radius: 4 }); sc.text(lab, x + 0.62, y + 0.5, { size: 11.5, align: 'center', color: 'ink', weight: 650 }); if (crossed) { sc.line(x + 0.1, y + 0.1, x + 1.15, y + 0.9, { color: 'red', width: 2 }); } };
+          sc.text(`C = ${C} component${C > 1 ? 's' : ''}, P = ${Pn} phase${Pn > 1 ? 's' : ''}`, 5, 9.4, { size: 13, weight: 700, align: 'center' });
+          sc.text('unknowns: T, P and C − 1 mole fractions per phase', 0.2, 8.4, { size: 11, color: 'muted', align: 'left' });
+          const labs = ['T', 'P']; for (let p = 1; p <= Pn; p++) for (let c = 1; c < C; c++) labs.push(`x${p}`);
+          labs.forEach((l, i) => box(0.3 + (i % 6) * 1.55, 6.9 - Math.floor(i / 6) * 1.25, l, 'accent', i < eq));
+          sc.text('conditions: μᵢ equal in every phase', 0.2, 5.0, { size: 11, color: 'muted', align: 'left' });
+          for (let i = 0; i < eq; i++) box(0.3 + (i % 6) * 1.55, 3.5 - Math.floor(i / 6) * 1.25, `μ${C > 1 ? (i % C) + 1 : ''}`, 'red', false);
+          if (!eq) sc.text('none (one phase)', 0.4, 4.0, { size: 11.5, color: 'muted', align: 'left' });
+          sc.text(`F = C − P + 2 = ${unk} − ${eq} = ${F}`, 5, 1.1, { size: 15, weight: 700, align: 'center', color: F > 0 ? 'green' : 'red' });
+          st = { water, C, Pn, F, info, lever };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { water, C, Pn, F, info, lever } = st;
+          const meaning = water ? (F === 2 ? 'both T and P can be changed freely: a region' : F === 1 ? 'choosing T fixes P: a curve' : 'T and P both fixed: an isolated point') : (Pn === 2 ? 'at fixed pressure F − 1 = 1: temperature alone fixes both compositions (the ends of the tie line)' : 'at fixed pressure F − 1 = 2: temperature and composition are both free');
+          const lv = lever ? ` · lever rule: liquid fraction $(z - y)/(x - y)$ = **${v.fix(lever.fl, 3)}**, vapour ${v.fix(1 - lever.fl, 3)}` : '';
+          return `**${info}** · $F = C - P + 2$ = ${C} − ${Pn} + 2 = **${F}**: ${meaning}${lv}${water ? '' : `\nRaoult's law $p_i = x_i\\,p_i^*(T)$ with Antoine vapour pressures (NIST): the mixture is nearly ideal, so the lens is accurate to a few tenths of a kelvin`}`;
+        });
+      },
+    },
   ],
 };

@@ -295,11 +295,11 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rhumb_line' },
       viz(v) {
         const pj = v.select('right-hand map', [{ value: 'mercator', label: 'Mercator' }, { value: 'equirectangular', label: 'Plate carrée' }], 'mercator');
-        const brg = v.slider('compass bearing $\\beta$', 0, 359, 235, { step: 1, int: true, fmt: (x) => x + '°' });
+        const brg = v.slider('compass bearing $\\beta$', 0, 359, 75, { step: 1, int: true, fmt: (x) => x + '°' });
         const len = v.slider('distance sailed', 1000, 30000, 12000, { step: 100, fmt: (x) => comma(x) + ' km' });
         const sA = v.stage({ height: 330, weight: 0.85 }), sB = v.stage({ height: 330, weight: 1.35 });
         const sC = v.stage({ x: [0, 12000], y: [0, 180], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'distance sailed along the course (km)', ylabel: 'angle with the meridians (°)', yticks: [0, 45, 90, 135, 180] });
-        const G1 = v.globe(sA, { projection: 'orthographic', center: [-45, 10], graticule: 15 });
+        const G1 = v.globe(sA, { projection: 'orthographic', center: [45, 42], graticule: 15 });
         const G2 = v.globe(sB, { projection: 'mercator', center: [0, 0], graticule: 15 });
         const A = G1.handle(-9.14, 38.71, { label: 'Lisbon', color: 'accent' }); G2.handle(A);
         let last = 'mercator';
@@ -375,8 +375,8 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mercator_projection' },
       viz(v) {
         const pj = v.select('map', [{ value: 'mercator', label: 'Mercator' }, { value: 'mollweide', label: 'Mollweide (equal-area)' }], 'mercator');
-        const sA = v.stage({ height: 360, weight: 1.5 });
-        const sB = v.stage({ x: [0, 85], y: [0.7, 150], ylog: true, axes: 'box', gutter: true, height: 360, xlabel: 'latitude of the outline’s centre (°)', ylabel: 'area on the map ÷ true area' });
+        const sA = v.stage({ height: 420, weight: 1.5 });
+        const sB = v.stage({ x: [0, 85], y: [0.7, 150], ylog: true, axes: 'box', gutter: true, height: 420, xlabel: 'latitude of the outline’s centre (°)', ylabel: 'area on the map ÷ true area' });
         const G = v.globe(sA, { projection: 'mercator', center: [-10, 0], graticule: 15, drag: false });
         const GR = v.geo('landmass', 'Greenland'), AF = v.geo('landmass', 'Africa'), C0 = areaCentroid(GR[0]), home = lonlat(C0);
         const CA = lonlat(areaCentroid(AF[0]));
@@ -397,7 +397,7 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
           const r = ratios();
           G.polygon(r.R, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1.8 });
           G.text('Africa', [CA[0] + 4, CA[1] - 6], { size: 13, color: 'orange', weight: 700, plate: true });
-          G.text('Greenland (copy)', [H.lon, H.lat], { size: 12.5, color: 'accent', weight: 700, plate: true, dy: Math.abs(H.lat) < 40 ? 30 : -46 });
+          G.text('Greenland (copy)', [H.lon, H.lat], { size: 12.5, color: 'accent', weight: 700, plate: true, align: 'right', dx: -14 });
           if (r.g && r.a) sA.corner(`Greenland : Africa on this map = 1 : ${(r.a / r.g).toFixed(1)}   (true 1 : ${(aArea / gArea).toFixed(1)})`, 'bl', { color: 'ink', weight: 600, plate: true });
           sA.corner(pj.value === 'mercator' ? 'Mercator' : 'Mollweide (equal-area)', 'tl', { color: 'muted', weight: 600, plate: true });
           // area factor
@@ -405,7 +405,7 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
           sB.fn((x) => (mer ? secd(x) ** 2 : 1), { domain: [0, 85], color: mer ? 'red' : 'green', width: 2.6 });
           sB.hline(1, { color: 'faint', width: 1 });
           if (r.a) sB.dot(Math.abs(CA[1]), r.a / aArea, { r: 6, color: 'orange', label: 'Africa', labelPos: 'ne', math: false });
-          if (r.g0) sB.dot(Math.abs(home[1]), r.g0 / gArea, { r: 6, color: 'accent', hollow: true, label: 'Greenland at home', labelPos: 'w', math: false });
+          if (r.g0) sB.dot(Math.abs(home[1]), r.g0 / gArea, { r: 6, color: 'accent', hollow: true, label: 'Greenland at home', labelPos: mer ? 'w' : 'n', math: false });
           if (r.g) sB.dot(Math.abs(H.lat), r.g / gArea, { r: 6, color: 'accent', label: Math.abs(H.lat - home[1]) > 4 ? 'copy' : undefined, labelPos: 'se', math: false });
           v.legend([['orange', 'Africa', { area: true }], ['accent', 'Greenland, moved rigidly', { area: true }], ['accent', 'Greenland at home', { dash: true }], [mer ? 'red' : 'green', mer ? 'sec²φ (Mercator)' : '1 (equal-area)']]);
         });
@@ -645,7 +645,7 @@ which depends only on the distance $x$ from the central meridian (about 0.4% at 
           }
           sB.line(-PI, 84 * D2R, PI, 84 * D2R, { color: 'purple', width: 1, dash: [3, 3] }); sB.line(-PI, -80 * D2R, PI, -80 * D2R, { color: 'purple', width: 1, dash: [3, 3] });
           // scale across the zone at P's latitude
-          sC.hband(0.999, 1.001, { color: 'green', alpha: 0.08 });
+          sC.hband(0.999, 1.001, { color: 'green', alpha: 0.05 });
           sC.hline(1, { color: 'green', width: 1.4, dash: [6, 4] }); sC.hline(0.9996, { color: 'faint', width: 1 });
           const pts = []; let e3 = null, w3 = null;
           for (let d = -4.6; d <= 4.6 + 1e-9; d += 0.05) { const u = utmXY(P.lat, c0 + d, c0); pts.push([(u.E - 500000) / 1000, u.k]); }

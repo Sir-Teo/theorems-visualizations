@@ -171,7 +171,7 @@ minimised near $h^\ast\approx(3u|f|/|f'''|)^{1/3}$ with error $\approx u^{2/3}$ 
           sE.text('h* predicted', base.hstar[i], 3, { dx: 5, align: 'left', size: 11.5, color: 'gold', weight: 600 });
           // bars
           sB.hband(1e-14, prec === 64 ? 1e-7 : 1e-3, { color: 'green', alpha: 0.07 });
-          base.bars.forEach((e, k) => { const col = LC[GC_ROLE[k].l]; sB.rect(k + 1 - 0.36, 1e-14, k + 1 + 0.36, fl(e), { fill: col, fillAlpha: k === i ? 0.85 : 0.45, color: col, width: k === i ? 2 : 1 }); });
+          base.bars.forEach((e, k) => { const col = LC[GC_ROLE[k].l]; sB.rect(k + 1 - 0.36, 1e-14, k + 1 + 0.36, Math.max(fl(e), 3e-14), { fill: col, fillAlpha: k === i ? 0.85 : 0.45, color: col, width: k === i ? 2 : 1 }); });
           sB.text('pass', GC_THETA.length + 0.5, prec === 64 ? 1e-7 : 1e-3, { align: 'right', dy: 10, size: 11, color: 'green', weight: 600 });
           const passing = base.bars.filter((e) => e < (prec === 64 ? 1e-7 : 1e-3)).length, role = GC_ROLE[i];
           info = { i, role, best, hstar: base.hstar[i], errStar: base.bars[i], g: base.g[i], passing, prec, bug, ops: base.ops };
@@ -202,7 +202,7 @@ and similarly for $U$ and $b$; the shared weight's gradient is the **sum of per-
         const TS = v.slider('steps $T$', 5, 60, 40, { int: true });
         const sU = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true, title: 'unrolled graph: $h_{t}=\\phi(w\\,h_{t-1}+x_t+b)$, shaded by $|\\partial L/\\partial h_t|$' });
         const sG = v.stage({ x: [0.5, 60.5], y: [1e-12, 1e6], ylog: true, height: 280, axes: 'box', gutter: true, xlabel: 'time step $t$', weight: 1.25, minWidth: 320, title: 'gradient through time' });
-        const sD = v.stage({ x: [0.5, 30.5], y: [1e-16, 1e2], ylog: true, height: 280, axes: 'box', gutter: true, xlabel: 'layer $\\ell$ (30 = output side)', weight: 0.9, minWidth: 250, title: 'through depth: $\\lVert\\partial L/\\partial z_\\ell\\rVert$' });
+        const sD = v.stage({ x: [0.5, 30.5], y: [1e-16, 1e4], ylog: true, height: 280, axes: 'box', gutter: true, xlabel: 'layer $\\ell$ (30 = output side)', weight: 0.9, minWidth: 250, title: 'through depth: $\\lVert\\partial L/\\partial z_\\ell\\rVert$' });
         const ACT = { tanh: [Math.tanh, (a, h) => 1 - h * h], sigmoid: [sigm, (a, h) => h * (1 - h)], relu: [(a) => (a > 0 ? a : 0), (a) => (a > 0 ? 1 : 0)], linear: [(a) => a, () => 1] };
         const xs = (() => { const r = rand(hashStr('bptt-x')); return Array.from({ length: 61 }, (_, t) => 0.45 * Math.sin(t / 2.3) + 0.35 * r.normal()); })();
         const B = 0.1, ytgt = (t) => 0.4 * Math.cos(t / 3);
@@ -227,12 +227,12 @@ and similarly for $U$ and $b$; the shared weight's gradient is the **sum of per-
             if (t < T) sU.line(X(t), 0.62, X(t + 1), 0.62, { color: 'muted', width: 1.2 });
             sU.line(X(t), 0.2, X(t), 0.62, { color: 'faint', width: 1 });
             const k = clamp((lg(R.delta[t]) - mn) / (mx - mn || 1), 0, 1);
-            sU.dot(X(t), 0.62, { r: rr, color: v.ramp(0.15 + 0.85 * k, 'accent') }); sU.dot(X(t), 0.62, { r: rr, hollow: true, color: 'ink', width: 1, alpha: 0.6 });
+            sU.dot(X(t), 0.62, { r: rr + 1.2, color: 'muted' }); sU.dot(X(t), 0.62, { r: rr, color: v.ramp(0.08 + 0.92 * k, 'accent') });
             sU.dot(X(t), 0.2, { r: Math.max(2, rr * 0.45), color: 'muted' });
             if (mode === 'all' || t === T) sU.line(X(t), 0.62, X(t), 0.86, { color: 'red', width: 1, alpha: 0.6 });
           }
           sU.text('L', 0.955, 0.62, { size: 14, color: 'red', weight: 700, align: 'center' }); sU.line(X(T) + 0.008, 0.62, 0.94, 0.62, { color: 'red', width: 1.4 });
-          sU.text('x_t', X(1), 0.2, { dx: -rr - 4, align: 'right', size: 11, color: 'muted' }); sU.text('h_t', X(1), 0.62, { dx: -rr - 4, align: 'right', size: 11, color: 'muted' });
+          sU.text('$x_t$', X(1), 0.2, { dx: -rr - 4, align: 'right', size: 11, color: 'muted' }); sU.text('$h_t$', X(1), 0.62, { dx: -rr - 4, align: 'right', size: 11, color: 'muted' });
           // gradient through time
           sG.setView([0.5, T + 0.5], [1e-12, 1e6]);
           const fl = (z) => Math.max(1.2e-12, Math.abs(z));
@@ -246,13 +246,13 @@ and similarly for $U$ and $b$; the shared weight's gradient is the **sum of per-
             for (const a of ['sigmoid', 'tanh', 'relu']) {
               const net = makeNet([8, ...new Array(29).fill(24), 1], { act: a, seed: 11 });
               lossGrad(net, [x], [0.5], 'mse', { W: net.W.map((w) => new Float64Array(w.length)), b: net.b.map((u) => new Float64Array(u.length)) });
-              out[a] = Array.from({ length: 29 }, (_, k) => { const d = net.ws.d[k + 1]; let s = 0; for (const z of d) s += z * z; return [k + 1, Math.max(1e-16, Math.sqrt(s))]; });
-              const dL = net.ws.d[30]; out[a].push([30, Math.max(1e-16, Math.abs(dL[0]))]);
+              out[a] = Array.from({ length: 29 }, (_, k) => { const d = net.ws.d[k + 1]; let s = 0; for (const z of d) s += z * z; return [k + 1, Math.sqrt(s)]; });
+              const dL = net.ws.d[30]; out[a].push([30, Math.abs(dL[0])]);
             }
             return out;
           });
           const DC = { sigmoid: 'purple', tanh: 'teal', relu: 'green' };
-          for (const a of ['sigmoid', 'tanh', 'relu']) { const on = a === act; sD.path(D[a], { color: DC[a], width: on ? 3 : 1.6, alpha: on || act === 'linear' ? 1 : 0.55 }); sD.text(a === 'relu' ? 'ReLU (He)' : a + ' (Xavier)', 1.2, D[a][0][1], { dy: a === 'sigmoid' ? 12 : -9, size: 11.5, color: DC[a], weight: 600 }); }
+          for (const a of ['sigmoid', 'tanh', 'relu']) { const on = a === act; sD.path(D[a].map(([l, g]) => [l, Math.max(1.05e-16, g)]), { color: DC[a], width: on ? 3 : 1.6, alpha: on || act === 'linear' ? 1 : 0.55 }); const at = a === 'sigmoid' ? 15 : 1; sD.text(a === 'relu' ? 'ReLU (He)' : a + ' (Xavier)', at + 0.3, Math.max(1e-15, D[a][at - 1][1]), { dy: a === 'tanh' ? 14 : -10, dx: a === 'sigmoid' ? -10 : 0, align: a === 'sigmoid' ? 'right' : 'left', size: 11.5, color: DC[a], weight: 600, plate: true }); }
           const span = Math.abs(R.delta[1]) / Math.max(1e-300, Math.abs(R.delta[T]));
           const facs = R.fac.slice(2, T + 1).map(Math.abs), gm = Math.exp(facs.reduce((s, q) => s + Math.log(Math.max(q, 1e-300)), 0) / Math.max(1, facs.length));
           info = { gw: R.gw, fd, span, gm, mode, D, act };

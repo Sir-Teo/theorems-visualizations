@@ -232,7 +232,7 @@ It is the part of the marginal cost curve above the shutdown point, together wit
             s.path(sample((pk) => pk, F.pShut, p, 60).map(([, pk]) => [F.qMC(pk), pk]), { color: 'green', width: 5 });
             s.dot(0, F.pShut, { r: 5, color: 'green', hollow: true }); s.dot(F.qShut, F.pShut, { r: 5, color: 'green' });
           }
-          for (const [q, pk] of pts) if (pk <= p + 1e-9) s.dot(q, pk, { r: 3.6, color: 'gold' });
+          for (const [q, pk] of pts) if (pk <= p + 1e-9) s.dot(q, pk, { r: 2.6, color: 'gold' });
           priceLine(s, p, `p = ${v.fix(p, 1)}`, { width: 1.6 });
           s.dot(qs, p, { r: 7, color: 'gold' });
           plateText(s, `shutdown point (${v.fix(F.qShut, 2)}, ${v.fix(F.pShut, 2)})`, F.qShut, F.pShut, { dx: -12, dy: 16, color: 'teal', align: 'right' });

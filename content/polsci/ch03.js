@@ -603,5 +603,328 @@ Since the whole electorate is decisive by Pareto, repeated contraction ends with
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 3.5
+    {
+      num: '3.5',
+      kind: 'Theorem',
+      name: 'Sen’s liberal paradox',
+      statement: String.raw`Call a social decision rule **minimally liberal** if at least two individuals each have a *right*: a pair of alternatives over which that individual is decisive in both directions (if she prefers $x$ to $y$, society does, and vice versa). Sen’s theorem: no rule with unrestricted domain satisfies weak Pareto and minimal liberalism while always leaving a best alternative (a social relation without cycles). Sen’s example: a copy of *Lady Chatterley’s Lover* can be read by the Prude ($a$), by the Lewd ($b$), or by no one ($c$). The Prude ranks $c \succ a \succ b$; the Lewd ranks $a \succ b \succ c$. The Prude’s right over $\{a, c\}$ gives $c \succ a$; the Lewd’s right over $\{b, c\}$ gives $b \succ c$; both prefer $a$ to $b$, so Pareto gives $a \succ b$ — a cycle $a \succ b \succ c \succ a$ with no best outcome.`,
+      idea: String.raw`Rights are a weak form of decisiveness for individuals, and Pareto is decisiveness for everyone; Arrow’s contraction argument (polsci-3.4) already showed that decisive coalitions cannot coexist freely. Sen’s proof needs only one profile: if the two rights concern pairs $\{x, y\}$ and $\{z, w\}$ with a common alternative, say $x = w$, let person 1 rank $x \succ y \succ z$ and person 2 rank $y \succ z \succ x$; then the rights give $x \succ y$ and $z \succ x$, Pareto gives $y \succ z$, and the three preferences form a cycle. With four distinct alternatives the same idea uses a chain of two Pareto comparisons. Neither IIA nor transitivity of social preference is needed — only that some outcome is unbeaten — which is why the result is about the clash between Pareto and liberalism itself.`,
+      caption: String.raw`The triangle shows the strict social preferences forced by each principle — the Prude’s right, the Lewd’s right, Pareto — as arrows from the preferred to the less preferred outcome. A gold ring marks an unbeaten outcome; when every outcome is beaten the arrows form a cycle and there is nothing to choose. **Click an outcome** in a person’s ranking to move it up, reassign the rights, or switch Pareto off. The grid runs all 36 pairs of rankings: red cells leave no best outcome. With Pareto and two rights there is always at least one red cell (Sen’s theorem); without Pareto there is none.`,
+      deps: ['polsci-3.2'],
+      see: ['polsci-3.4', 'polsci-3.3'],
+      refs: ['T&P ch. 7', 'Sen (1970), The impossibility of a Paretian liberal, J. Political Economy 78: 152–157'],
+      tags: ['Sen', 'liberalism', 'Pareto'],
+      credit: 'Amartya Sen, 1970',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Liberal_paradox' },
+      viz(v) {
+        const Gs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 330, title: 'social preferences forced by rights and Pareto' });
+        const Es = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 300, title: 'the two rankings · click an outcome to move it up' });
+        const Ms = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: 'all 36 pairs of rankings · red: no best outcome · click a cell' });
+        const NAME = ['Prude reads', 'Lewd reads', 'no one reads'], SH = ['a', 'b', 'c'];
+        const PNAME = ['Prude', 'Lewd'], PCOL = ['teal', 'pink'];
+        const PAIRS = [[0, 1], [1, 2], [0, 2]], pairLab = (k) => `{${SH[PAIRS[k][0]]}, ${SH[PAIRS[k][1]]}}`;
+        let rk = [[2, 0, 1], [0, 1, 2]];
+        const r1 = v.select('Prude’s right', PAIRS.map((_, k) => ({ value: k, label: pairLab(k) })), 2);
+        const r2 = v.select('Lewd’s right', PAIRS.map((_, k) => ({ value: k, label: pairLab(k) })), 1);
+        const par = v.toggle('Pareto', true);
+        v.button('Sen’s example', () => { rk = [[2, 0, 1], [0, 1, 2]]; r1.set(2); r2.set(1); par.value = true; });
+        /** Strict social preferences: [{ x, y, src: [...] }] with x ≻ y. */
+        function arrows(R) {
+          const m = new Map(), add = (x, y, s) => { const k = x * 3 + y; if (!m.has(k)) m.set(k, { x, y, src: [] }); m.get(k).src.push(s); };
+          [r1.value, r2.value].forEach((pk, i) => { const [x, y] = PAIRS[pk]; if (above(R[i], x, y)) add(x, y, i); else add(y, x, i); });
+          if (par.value) for (const [x, y] of PAIRS) { if (R.every((r) => above(r, x, y))) add(x, y, 'P'); else if (R.every((r) => above(r, y, x))) add(y, x, 'P'); }
+          return [...m.values()];
+        }
+        const bestOf = (A) => [0, 1, 2].filter((z) => !A.some((a) => a.y === z));
+        const srcName = (s) => (s === 'P' ? 'Pareto' : `${PNAME[s]}’s right`), srcCol = (s) => (s === 'P' ? 'green' : PCOL[s]);
+        let edGeo = null, gridGeo = null;
+        Es.onClick((x, y) => {
+          if (!edGeo) return; const px = Es.X(x), py = Es.Y(y);
+          for (let i = 0; i < 2; i++) for (let k = 1; k < 3; k++) { const [X, Y] = edGeo(i, k); if (Math.hypot(px - X, py - Y) < 18) { const r = rk[i].slice(); [r[k - 1], r[k]] = [r[k], r[k - 1]]; rk = rk.map((q, j) => (j === i ? r : q)); return; } }
+        });
+        Ms.onClick((x, y) => { if (!gridGeo) return; const px = Ms.X(x), py = Ms.Y(y), j = Math.floor((px - gridGeo.X0) / gridGeo.cw), i = Math.floor((py - gridGeo.Y0) / gridGeo.ch); if (i >= 0 && i < 6 && j >= 0 && j < 6) rk = [R3[i].slice(), R3[j].slice()]; });
+        v.render(() => {
+          const A = arrows(rk), B = bestOf(A), c = Gs.ctx, W = Gs.width, H = Gs.height;
+          const Rr = Math.min(W * 0.3, H * 0.33), cx = W / 2, cy = H / 2 + 12;
+          const pos = [0, 1, 2].map((k) => [cx + Rr * Math.sin((2 * Math.PI * k) / 3), cy - Rr * Math.cos((2 * Math.PI * k) / 3)]);
+          const cyc = B.length === 0;
+          for (const a of A) {
+            const opp = A.some((b) => b.x === a.y && b.y === a.x);
+            const M = arrowPx(v, c, pos[a.x][0], pos[a.x][1], pos[a.y][0], pos[a.y][1], { color: cyc || opp ? 'red' : srcCol(a.src[0]), width: 2.6, t0: 26, t1: 28, head: 11, bend: opp ? 16 : -Rr * 0.12 });
+            pill(v, c, a.src.map(srcName).join(' + '), M.mx, M.my, { color: srcCol(a.src[0]), size: 10.5 });
+          }
+          [0, 1, 2].forEach((k) => {
+            chip(v, c, pos[k][0], pos[k][1], k, { r: 22, label: SH[k], ring: B.includes(k) ? 'gold' : null });
+            txt(v, c, NAME[k], pos[k][0], pos[k][1] + (k === 0 ? -36 : 37), { size: 11, weight: 650, color: 'muted' });
+          });
+          txt(v, c, cyc ? 'every outcome is beaten: no best choice' : `best: ${B.map((k) => NAME[k]).join(' / ')}`, W / 2, H - 12, { size: 12, weight: 750, color: cyc ? 'red' : 'green' });
+          // ---- editor
+          const d = Es.ctx, EW = Es.width, colX = (i) => EW * (i ? 0.7 : 0.3);
+          edGeo = (i, k) => [colX(i), 70 + k * 56];
+          [0, 1].forEach((i) => {
+            txt(v, d, PNAME[i], colX(i), 22, { size: 13, weight: 750, color: PCOL[i] });
+            const pk = [r1.value, r2.value][i];
+            txt(v, d, `right over ${pairLab(pk)}`, colX(i), 40, { size: 10.5, weight: 600, color: 'muted' });
+            rk[i].forEach((o, k) => {
+              const [X, Y] = edGeo(i, k), inRight = PAIRS[pk].includes(o);
+              chip(v, d, X, Y, o, { r: 17, label: SH[o], ring: inRight ? PCOL[i] : null });
+              txt(v, d, NAME[o], X, Y + 26, { size: 10, weight: 600, color: 'muted' });
+              if (k < 2) txt(v, d, '▾', X, Y + 40, { size: 10, color: 'faint' });
+            });
+          });
+          // ---- grid of all 36 profiles
+          const e = Ms.ctx, MW = Ms.width, MH = Ms.height;
+          const cw = Math.min(56, (MW - 260) / 6), ch = Math.min(28, (MH - 46) / 6), X0 = 110, Y0 = 34;
+          gridGeo = { X0, Y0, cw, ch };
+          let red = 0;
+          for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) {
+            const R = [R3[i], R3[j]], Bq = bestOf(arrows(R)), bad = Bq.length === 0; if (bad) red++;
+            const X = X0 + j * cw, Y = Y0 + i * ch, cur = R3[i].every((q, k) => q === rk[0][k]) && R3[j].every((q, k) => q === rk[1][k]);
+            e.fillStyle = v.color(bad ? 'red' : 'green', bad ? 0.55 : 0.12); e.fillRect(X + 1, Y + 1, cw - 2, ch - 2);
+            if (cur) { e.strokeStyle = v.color('gold'); e.lineWidth = 3; e.strokeRect(X + 1.5, Y + 1.5, cw - 3, ch - 3); }
+          }
+          for (let k = 0; k < 6; k++) {
+            txt(v, e, R3[k].map((q) => SH[q]).join('>'), X0 - 8, Y0 + (k + 0.5) * ch, { size: 10, weight: 600, color: 'teal', align: 'right' });
+            txt(v, e, R3[k].map((q) => SH[q]).join('>'), X0 + (k + 0.5) * cw, Y0 - 9, { size: 9.5, weight: 600, color: 'pink' });
+          }
+          txt(v, e, 'Prude ↓', 30, Y0 + 3 * ch, { size: 11, weight: 700, color: 'teal' });
+          txt(v, e, 'Lewd →', X0 + 6 * cw + 30, Y0 - 9, { size: 11, weight: 700, color: 'pink' });
+          const tx = X0 + 6 * cw + 34;
+          txt(v, e, `${red} of 36`, tx, Y0 + 2 * ch, { size: 22, weight: 800, color: red ? 'red' : 'green', align: 'left' });
+          txt(v, e, red ? 'pairs of rankings leave' : 'pairs of rankings leave', tx, Y0 + 2 * ch + 24, { size: 11, weight: 600, color: 'muted', align: 'left' });
+          txt(v, e, 'no best outcome', tx, Y0 + 2 * ch + 40, { size: 11, weight: 600, color: 'muted', align: 'left' });
+        });
+        v.legend([['teal', 'Prude’s right'], ['pink', 'Lewd’s right'], ['green', 'Pareto'], ['red', 'cycle / conflict'], ['gold', 'unbeaten outcome', { dot: true }]]);
+        v.readout(() => {
+          const A = arrows(rk), B = bestOf(A);
+          let red = 0; for (const a of R3) for (const b of R3) if (!bestOf(arrows([a, b])).length) red++;
+          const s = A.map((a) => `${SH[a.x]} ≻ ${SH[a.y]} (${a.src.map(srcName).join(', ')})`).join('; ');
+          const same = r1.value === r2.value;
+          return `Forced: ${s}. ${B.length ? `Choosable: ${B.map((k) => NAME[k]).join(', ')}.` : '**No outcome is unbeaten.**'} Over all 36 profiles, ${red} leave no best outcome${par.value && !same ? ' — at least one always does, whatever pairs the rights cover: Sen’s theorem.' : !par.value && !same ? ': without Pareto, two rights alone can never cycle.' : ': both rights cover the same pair, so they can contradict each other directly.'}`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 3.6
+    {
+      num: '3.6',
+      kind: 'Theorem',
+      name: 'Gibbard–Satterthwaite theorem',
+      statement: String.raw`Let a **voting rule** choose a single winner from every profile of strict rankings of the alternatives. If the rule can produce at least three different winners (its range has $\ge 3$ elements) and it is **strategy-proof** — no voter, at any profile, can obtain a winner she prefers by reporting a ranking other than her true one — then it is a **dictatorship**: one fixed voter’s top choice always wins. Equivalently, every non-dictatorial rule with three or more possible outcomes is **manipulable** at some profile. With only two possible outcomes, majority rule is strategy-proof and non-dictatorial.`,
+      idea: String.raw`Strategy-proofness forces *strong monotonicity*: if $x$ wins and some voters move $x$ up relative to the others, $x$ must still win, for otherwise a voter could switch between the two profiles and gain. With a range of at least three outcomes, monotonicity also gives unanimity, and the Muller–Satterthwaite theorem (polsci-3.8) turns a strongly monotone, unanimous rule into a dictatorship by the same decisive-set reasoning as Arrow’s theorem (polsci-3.3). So the only way to remove every incentive to lie is to let one voter decide or to restrict the outcomes to two. The theorem says manipulation is *possible*, not that it is easy or frequent — how often it pays depends on the rule (polsci-3.7).`,
+      caption: String.raw`Edit the ballots (drag a bar to change a bloc’s size, click a letter to move it up) and pick a rule. The search tries every voter and every possible false ranking and shows the most profitable lie: the voter’s true ballot, the ballot she reports, and the winner before and after. *Find a profitable lie* searches random electorates when the current one has none. Below, an exhaustive count over **all** electorates of 2 to 7 voters with three candidates (weighted as in the impartial culture): every rule with three possible winners is manipulable somewhere — except the dictatorship, and the two-outcome “A vs B” rule, which break the hypotheses.`,
+      deps: ['polsci-3.3', 'polsci-1.2', 'polsci-1.5', 'polsci-1.4'],
+      see: ['polsci-3.7', 'polsci-3.8', 'polsci-3.9'],
+      refs: ['T&P ch. 7', 'Gibbard (1973), Econometrica 41: 587–601', 'Satterthwaite (1975), J. Economic Theory 10: 187–217'],
+      tags: ['strategy-proofness', 'manipulation', 'Gibbard–Satterthwaite'],
+      credit: 'Allan Gibbard, 1973; Mark Satterthwaite, 1975',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gibbard%E2%80%93Satterthwaite_theorem' },
+      viz(v) {
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 360, title: 'ballots' });
+        const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, minWidth: 330, title: 'the most profitable lie' });
+        const X = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 180, full: true, title: 'share of all electorates (3 candidates) where some voter can gain by lying — exhaustive' });
+        const PRE = { 3: mkProfile(3, [[2, 'ACB'], [2, 'CAB'], [1, 'BAC'], [2, 'BCA']]), 4: mkProfile(4, [[1, 'CADB'], [2, 'ACBD'], [2, 'CDBA'], [3, 'BACD']]) };
+        const P = copyProfile(PRE[3]);
+        const ruleS = v.select('rule', SCF.map((r) => ({ value: r.id, label: r.label })), 'borda');
+        v.select('candidates', [{ value: 3, label: '3' }, { value: 4, label: '4' }], 3, { onChange: (m) => setProfile(P, PRE[m]) });
+        let seed = 11, msg = '';
+        const rule = () => SCF.find((r) => r.id === ruleS.value);
+        const voters = (Q) => { const out = []; Q.blocs.forEach((b) => { for (let k = 0; k < b.n; k++) out.push(b.r); }); return out; };
+        const win = (Q) => (total(Q) ? rule().w(voters(Q)) : 0);
+        /** Best single-voter lie at bloc level: { i, lie, before, after, gain } or null. */
+        function bestLie(Q) {
+          const w0 = win(Q), R = perms(Q.m); let best = null;
+          Q.blocs.forEach((b, i) => {
+            if (!b.n) return;
+            for (const lie of R) {
+              if (lie.every((c, k) => c === b.r[k])) continue;
+              const w1 = win(shift(Q, i, 1, lie));
+              if (w1 !== w0 && above(b.r, w1, w0)) { const gain = b.r.indexOf(w0) - b.r.indexOf(w1); if (!best || gain > best.gain) best = { i, lie, before: w0, after: w1, gain }; }
+            }
+          });
+          return best;
+        }
+        v.button('Find a profitable lie', () => {
+          const r = v.rng(seed++), R = perms(P.m);
+          for (let t = 0; t < 400; t++) {
+            const nb = 3 + Math.floor(r() * 2);
+            const Q = { m: P.m, blocs: range(nb).map(() => ({ n: 1 + Math.floor(r() * 3), r: R[Math.floor(r() * R.length)].slice() })) };
+            if (bestLie(Q)) { setProfile(P, tidy(Q)); msg = `found after ${t + 1} random electorates`; return; }
+          }
+          msg = 'no profitable lie in 400 random electorates';
+        });
+        const ed = blocEditor(v, E, P, { max: 6, rank: true, rowMax: 40, onEdit: () => { msg = ''; } });
+        // exhaustive manipulability share over all anonymous profiles of n voters, 3 candidates, IC weights
+        const cache = new Map();
+        const lf = range(10).map((k) => (k ? Math.log(k) : 0)).map((_, k, a) => a.slice(0, k + 1).reduce((s, x) => s + x, 0));
+        function share(id, n) {
+          const key = id + n; if (cache.has(key)) return cache.get(key);
+          const w = SCF.find((r) => r.id === id).w, cnt = Array(6).fill(0); let tot = 0, man = 0, nprof = 0, nman = 0;
+          const rec = (k, left) => {
+            if (k === 5) {
+              cnt[5] = left; const prof = []; cnt.forEach((c, t) => { for (let j = 0; j < c; j++) prof.push(R3[t]); });
+              const wt = Math.exp(lf[n] - sum(cnt.map((c) => lf[c])) - n * Math.log(6)); tot += wt; nprof++;
+              const w0 = w(prof); let bad = false;
+              for (let t = 0; t < 6 && !bad; t++) {
+                if (!cnt[t]) continue; const i = prof.findIndex((r) => r === R3[t]);
+                for (const lie of R3) { if (lie === R3[t]) continue; const q = prof.slice(); q[i] = lie; const w1 = w(q); if (w1 !== w0 && above(R3[t], w1, w0)) { bad = true; break; } }
+              }
+              if (bad) { man += wt; nman++; }
+              return;
+            }
+            for (let c = 0; c <= left; c++) { cnt[k] = c; rec(k + 1, left - c); }
+          };
+          rec(0, n);
+          const out = { p: man / tot, nprof, nman }; cache.set(key, out); return out;
+        }
+        v.render(() => {
+          ed.draw();
+          const c = M.ctx, W = M.width, H = M.height, best = total(P) ? bestLie(P) : null, w0 = win(P);
+          txt(v, c, `${rule().label} elects`, W / 2 - 14, 20, { size: 12, weight: 650, color: 'muted', align: 'right' });
+          chip(v, c, W / 2 + 4, 20, w0, { r: 11 });
+          txt(v, c, 'sincerely', W / 2 + 20, 20, { size: 12, weight: 650, color: 'muted', align: 'left' });
+          if (!best) {
+            txt(v, c, 'no voter can gain by lying here', W / 2, H / 2 - 10, { size: 13, weight: 750, color: 'green' });
+            txt(v, c, rule().dictator ? 'a dictatorship is strategy-proof' : rule().two ? 'only two possible winners: strategy-proof' : 'try another profile, or search', W / 2, H / 2 + 12, { size: 11.5, color: 'muted' });
+            if (msg) txt(v, c, msg, W / 2, H - 14, { size: 10.5, color: 'muted' });
+          } else {
+          const b = P.blocs[best.i], x1 = W * 0.2, x2 = W * 0.45;
+          txt(v, c, 'true ranking', x1, 50, { size: 11, weight: 650, color: 'muted' });
+          txt(v, c, 'reported', x2, 50, { size: 11, weight: 650, color: 'gold' });
+          drawBallot(v, c, x1, 74, b.r, { r: 12, gap: 30, ring: (cc) => (cc === best.after ? 'green' : cc === best.before ? 'red' : null) });
+          drawBallot(v, c, x2, 74, best.lie, { r: 12, gap: 30, ring: (cc) => (cc === best.after ? 'green' : cc === best.before ? 'red' : null) });
+          b.r.forEach((cc, k) => { const k2 = best.lie.indexOf(cc); if (k2 !== k) arrowPx(v, c, x1 + 16, 74 + k * 30, x2 - 16, 74 + k2 * 30, { color: 'gold', width: 1.4, head: 6, alpha: 0.8 }); });
+          const xr = W * 0.76;
+          txt(v, c, 'winner', xr, 50, { size: 11, weight: 650, color: 'muted' });
+          txt(v, c, 'honest', xr - 30, 74, { size: 10.5, weight: 600, color: 'muted' }); chip(v, c, xr + 18, 74, best.before, { r: 12, ring: 'red' });
+          arrowPx(v, c, xr + 18, 90, xr + 18, 118, { color: 'gold', width: 2, head: 8 });
+          txt(v, c, 'lying', xr - 30, 134, { size: 10.5, weight: 600, color: 'gold' }); chip(v, c, xr + 18, 134, best.after, { r: 12, ring: 'green' });
+          const ord = ['first', 'second', 'third', 'fourth'];
+          txt(v, c, `one voter of the ${rkStr(b.r, '')} bloc: ${ord[b.r.indexOf(best.before)]} choice → ${ord[b.r.indexOf(best.after)]} choice`, W / 2, H - 34, { size: 11.5, weight: 700, color: 'green' });
+          if (msg) txt(v, c, msg, W / 2, H - 14, { size: 10.5, color: 'muted' });
+          }
+          // ---- exhaustive bars
+          const e = X.ctx, XW = X.width, XH = X.height, ns = [2, 3, 4, 5, 6, 7], bw = (XW - 120) / ns.length;
+          const y0 = 18, y1 = XH - 30, Yv = (p) => y1 - p * (y1 - y0);
+          [0, 0.25, 0.5, 0.75, 1].forEach((p) => { hl(v, e, 60, XW - 20, Yv(p), 'grid'); txt(v, e, pct(p), 52, Yv(p), { size: 9.5, color: 'muted', align: 'right', weight: 500 }); });
+          ns.forEach((n, k) => {
+            const S = share(ruleS.value, n), Xc = 70 + (k + 0.5) * bw;
+            rr(e, Xc - bw * 0.3, Yv(S.p), bw * 0.6, Math.max(1.5, y1 - Yv(S.p)), 3); e.fillStyle = v.color(S.nman ? 'red' : 'green', 0.5); e.fill();
+            txt(v, e, S.nman ? pct(S.p, 1) : '0 — strategy-proof', Xc, Math.min(Yv(S.p) - 9, y1 - 9), { size: 10.5, weight: 700, color: S.nman ? 'ink' : 'green', halo: true });
+            txt(v, e, `n = ${n}`, Xc, y1 + 12, { size: 10.5, weight: 600, color: 'muted' });
+          });
+        });
+        v.legend([['red', 'honest winner', { dot: true }], ['green', 'winner after the lie', { dot: true }], ['gold', 'the reported ballot']]);
+        v.readout(() => {
+          const best = total(P) ? bestLie(P) : null, r = rule(), S7 = share(ruleS.value, 7), S5 = share(ruleS.value, 5);
+          const head = best ? `**${r.label}** is manipulable here: one ${rkStr(P.blocs[best.i].r)} voter reports ${rkStr(best.lie)} and turns ${LET[best.before]} into ${LET[best.after]}, whom she prefers.` : `At this electorate no single voter can gain under **${r.label}**.`;
+          return `${head} Exhaustively, with 3 candidates: ${S5.nman} of ${S5.nprof} electorates of 5 voters and ${S7.nman} of ${S7.nprof} of 7 voters are manipulable (${pct(S7.p, 1)} of impartial-culture probability). ${r.dictator || r.two ? 'Zero, as the theorem allows: this rule is a dictatorship or has only two possible winners.' : 'Never zero: the rule has three possible winners and no dictator.'}`;
+        });
+      },
+    },
+
+    // ───────────────────────────────────────────────────────────── 3.7
+    {
+      num: '3.7',
+      kind: 'Phenomenon',
+      name: 'Strategic voting under plurality, Borda and IRV',
+      statement: String.raw`Rules differ greatly in how often strategic voting pays. Call an electorate **coalitionally manipulable** under a rule if some candidate $y$ and the group of voters who all prefer $y$ to the sincere winner could make $y$ win by changing their ballots. The characteristic strategies are **compromising** under plurality (abandoning a hopeless favourite for a viable second choice), **burying** under the Borda count (ranking the main rival last) and **push-over** under instant runoff (ranking a weak candidate first to change who is eliminated). In simulations with three candidates, instant runoff is manipulable far less often than plurality, and the Borda count most often; under the impartial culture the shares for plurality and Borda approach 1 as the electorate grows, while that of IRV stays low.`,
+      idea: String.raw`Gibbard–Satterthwaite (polsci-3.6) guarantees manipulable profiles but says nothing about their frequency. Borda rewards a coalition for every place it moves a rival down, so a group preferring $y$ to the winner $w$ can nearly always close the gap by burying $w$. Plurality ignores all but first places, so the coalition simply concentrates its first places on $y$, which works whenever $y$ is the strongest candidate among those voters. IRV is harder to steer: the coalition can only change who is eliminated first, and that helps only when $y$ beats the remaining finalist head to head — which is why IRV and Condorcet–IRV hybrids came out as the most manipulation-resistant common rules in large simulation studies.`,
+      caption: String.raw`The chart estimates, for each electorate size, the share of random electorates (three candidates) that a coalition can manipulate, computed **exactly** for each sampled electorate by trying every useful coalition strategy. Switch between the impartial culture (every ranking equally likely) and a one-dimensional spatial electorate (voters and candidates on a left–right line, so preferences are single-peaked); bars are ±2 standard errors. Pick an electorate size with the slider: the triangle shows one sampled electorate (how many voters hold each ranking) and the strategy that works under each rule, if any. *New sample* draws another electorate of that size.`,
+      deps: ['polsci-3.6', 'polsci-1.2', 'polsci-1.5', 'polsci-1.4'],
+      see: ['polsci-2.5', 'polsci-6.4'],
+      refs: ['T&P ch. 7', 'Green-Armytage, Tideman & Cosman (2016), Statistical evaluation of voting rules, Social Choice and Welfare 46: 183–212'],
+      tags: ['strategic voting', 'manipulation', 'simulation'],
+      scope: String.raw`Holds for the models simulated here: three candidates, voters with complete strict rankings, sincere voting by everyone outside the coalition, and full information about the ballots. Real electorates also differ in information and coordination, which make manipulation harder than these shares suggest.`,
+      viz(v) {
+        const L = v.stage({ x: [3, 120], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 320, minWidth: 360, xlabel: 'voters n', ylabel: 'share manipulable', title: 'coalitional manipulability, 3 candidates' });
+        const Rt = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 340, title: 'one sampled electorate' });
+        const cult = v.select('electorate', [{ value: 'ic', label: 'impartial culture' }, { value: 'sp', label: '1-D spatial' }], 'ic');
+        const NS = [3, 5, 7, 11, 15, 21, 31, 51, 75, 101];
+        const nS = v.slider('voters $n$ (sample)', 0, NS.length - 1, 4, { int: true, fmt: (k) => String(NS[k]) });
+        let sampleSeed = 1;
+        v.button('New sample', () => { sampleSeed++; });
+        const RK = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+        const idx = (a, b) => RK.findIndex((q) => q[0] === a && q[1] === b);
+        const first = (s) => { let w = 0; for (let c = 1; c < 3; c++) if (s[c] > s[w]) w = c; return w; };
+        const plur = (cnt) => { const s = [0, 0, 0]; RK.forEach((r, k) => { s[r[0]] += cnt[k]; }); return first(s); };
+        const borda = (cnt) => { const s = [0, 0, 0]; RK.forEach((r, k) => { s[r[0]] += 2 * cnt[k]; s[r[1]] += cnt[k]; }); return first(s); };
+        const irv3 = (cnt) => {
+          const s = [0, 0, 0]; RK.forEach((r, k) => { s[r[0]] += cnt[k]; });
+          const n = s[0] + s[1] + s[2], lead = first(s); if (s[lead] > n / 2) return lead;
+          let lo = 0; for (let c = 1; c < 3; c++) if (s[c] <= s[lo]) lo = c;
+          const [a, b] = [0, 1, 2].filter((c) => c !== lo); let va = 0, vb = 0;
+          RK.forEach((r, k) => { const t = r.find((c) => c !== lo); if (t === a) va += cnt[k]; else vb += cnt[k]; });
+          return vb > va ? b : a;
+        };
+        const METH = [{ id: 'plur', label: 'plurality', f: plur, col: 'blue' }, { id: 'borda', label: 'Borda', f: borda, col: 'orange' }, { id: 'irv', label: 'IRV', f: irv3, col: 'purple' }];
+        /** Exact coalitional manipulation for three candidates; returns { y, k, how, kind } or null. */
+        function manip(id, cnt) {
+          const f = METH.find((m) => m.id === id).f, w = f(cnt);
+          for (const y of [0, 1, 2]) {
+            if (y === w) continue;
+            const z = 3 - w - y, Mn = RK.map((r, k) => (r.indexOf(y) < r.indexOf(w) ? cnt[k] : 0)), k = sum(Mn);
+            if (!k) continue;
+            const base = cnt.map((c, i) => c - Mn[i]);
+            if (id === 'plur') { const c2 = base.slice(); c2[idx(y, z)] += k; if (plur(c2) === y) return { y, w, k, kind: 'compromise', how: `all ${k} voters who prefer ${LET[y]} to ${LET[w]} vote ${LET[y]} first` }; }
+            else if (id === 'borda') { for (let j = 0; j <= k; j++) { const c2 = base.slice(); c2[idx(y, w)] += j; c2[idx(y, z)] += k - j; if (borda(c2) === y) return { y, w, k, kind: 'burying', how: `the ${k} voters preferring ${LET[y]} to ${LET[w]} rank ${LET[y]} first and ${k - j} of them bury ${LET[w]} last` }; } }
+            else for (let b = 0; b <= k; b++) for (let c = 0; b + c <= k; c++) {
+              const c2 = base.slice(); c2[idx(y, z)] += k - b - c; c2[idx(z, y)] += b; c2[idx(w, y)] += c;
+              if (irv3(c2) === y) return { y, w, k, kind: b || c ? 'push-over' : 'compromise', how: b || c ? `${b ? `${b} rank ${LET[z]}` : `${c} rank ${LET[w]}`} first (then ${LET[y]}) to change who is eliminated` : `the ${k} voters preferring ${LET[y]} to ${LET[w]} rank ${LET[y]} first` };
+            }
+          }
+          return null;
+        }
+        /** Random electorate of n voters as counts over the six rankings. */
+        function sample(r, n, culture) {
+          const cnt = [0, 0, 0, 0, 0, 0];
+          if (culture === 'ic') { for (let i = 0; i < n; i++) cnt[Math.floor(r() * 6)]++; return cnt; }
+          const cand = [0, 1, 2].map(() => (r() * 2 - 1) * 1.4);
+          for (let i = 0; i < n; i++) {
+            const u = Math.max(1e-12, r()), x = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r());
+            const ord = [0, 1, 2].sort((a, b) => Math.abs(x - cand[a]) - Math.abs(x - cand[b]));
+            cnt[idx(ord[0], ord[1])]++;
+          }
+          return cnt;
+        }
+        const cache = new Map();
+        function rates(culture) {
+          if (cache.has(culture)) return cache.get(culture);
+          const r = v.rng(culture === 'ic' ? 2024 : 77), T = 260;
+          const out = NS.map((n) => { const hits = [0, 0, 0]; for (let t = 0; t < T; t++) { const cnt = sample(r, n, culture); METH.forEach((m, i) => { if (manip(m.id, cnt)) hits[i]++; }); } return hits.map((h) => h / T); });
+          const res = { out, T }; cache.set(culture, res); return res;
+        }
+        v.render(() => {
+          const Rs = rates(cult.value), k0 = nS.value;
+          L.vband(NS[k0] / 1.12, NS[k0] * 1.12, { color: 'gold', alpha: 0.12 });
+          METH.forEach((m, i) => {
+            const pts = NS.map((n, k) => [n, Rs.out[k][i]]);
+            L.path(pts, { color: m.col, width: 2.4 });
+            pts.forEach(([n, p]) => { const se = 2 * Math.sqrt((p * (1 - p)) / Rs.T); L.line(n, Math.max(0, p - se), n, Math.min(1, p + se), { color: m.col, width: 1.3, alpha: 0.6 }); L.dot(n, p, { r: 3.5, color: m.col }); });
+            const last = pts[pts.length - 1];
+            L.text(m.label, 104, last[1], { color: m.col, size: 11.5, align: 'left', dx: 4, baseline: 'middle' });
+          });
+          // sampled electorate
+          const r = v.rng(1000 * sampleSeed + k0 * 7 + (cult.value === 'ic' ? 0 : 500)), n = NS[k0], cnt = sample(r, n, cult.value);
+          const c = Rt.ctx, W = Rt.width, H = Rt.height;
+          drawRepTriangle(v, Rt, cnt, [8, 0, W - 8, H * 0.58], { pairs: false });
+          let Y = H * 0.62 + 6;
+          METH.forEach((m) => {
+            const w = m.f(cnt), res = manip(m.id, cnt);
+            txt(v, c, m.label, 12, Y, { size: 11.5, weight: 750, color: m.col, align: 'left' });
+            txt(v, c, `elects ${LET[w]}`, 84, Y, { size: 11.5, weight: 650, align: 'left' });
+            txt(v, c, res ? `${res.kind} → ${LET[res.y]}` : 'not manipulable', 158, Y, { size: 11.5, weight: 750, color: res ? 'red' : 'green', align: 'left' });
+            if (res) txt(v, c, res.how, 12, Y + 15, { size: 9.5, weight: 500, color: 'muted', align: 'left' });
+            Y += res ? 36 : 24;
+          });
+        });
+        v.legend(METH.map((m) => [m.col, m.label]));
+        v.readout(() => {
+          const Rs = rates(cult.value), k0 = nS.value, n = NS[k0], rr2 = Rs.out[k0];
+          return `With ${n} voters (${cult.value === 'ic' ? 'impartial culture' : '1-D spatial'}, ${Rs.T} electorates per point): plurality **${pct(rr2[0])}**, Borda **${pct(rr2[1])}**, IRV **${pct(rr2[2])}** of electorates can be manipulated by a coalition. ${rr2[2] < rr2[0] && rr2[2] < rr2[1] ? 'IRV resists best' : 'IRV does not resist best here'}; ${rr2[1] >= rr2[0] ? 'Borda is the easiest to steer, by burying the winner.' : 'here plurality is the easiest to steer.'}`;
+        });
+      },
+    },
   ],
 };

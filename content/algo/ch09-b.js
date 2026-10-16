@@ -48,7 +48,7 @@ function astar(G, s, t, h) {
   while (open.size) {
     let u = null; for (const x of open) { const fx = g[x] + h(x), fu = u == null ? INF : g[u] + h(u); if (u == null || fx < fu - 1e-9 || (near(fx, fu) && g[x] > g[u])) u = x; }
     open.delete(u); closed.push(u);
-    if (u === K(t)) { found = true; snap({ u, line: [3, 4], end: true, note: `${u} = t has the least $f$: stop. $g[t] = ${fmt(g[u])}$, after ${plural(closed.length, 'expansion')}.` }); break; }
+    if (u === K(t)) { found = true; snap({ u, line: [3, 4], end: true, note: `The target ${u} has the least $f$: stop. $g[t] = ${fmt(g[u])}$, after ${plural(closed.length, 'expansion')}.` }); break; }
     snap({ u, line: [3, 5], note: `Expand **${u}**: least $f = g + h = ${fmt(g[u])} + ${fmt(h(u))} = ${fmt(g[u] + h(u))}$ among the open vertices.` });
     for (const { id, edge, w } of G.adj(u)) {
       const v = K(id); if (closed.includes(v)) continue;
@@ -72,7 +72,7 @@ const FW_CODE = [
 
 // ---------------------------------------------------------------- 9.14 Johnson
 const P914 = { a: [0.9, 3.6], b: [3.8, 5.4], c: [7.2, 5.4], d: [9.3, 3.4], e: [5.4, 2.7], q: [5.0, 0.45] };
-const E914 = [['a', 'b', 3], ['a', 'e', 8], ['b', 'c', -2], ['b', 'e', 4], ['e', 'c', -1], ['c', 'd', 2], ['e', 'd', -3], ['d', 'a', 6]];
+const E914 = [['a', 'b', 3], ['a', 'e', 8], ['b', 'c', -2], ['b', 'e', 4], ['e', 'c', -1], ['c', 'd', 2], ['e', 'd', -3], ['d', 'a', { w: 6, bend: -38 }]];
 const JOHNSON_CODE = [
   'add a vertex q and an edge q → v of weight 0 for every v',
   'Bellman–Ford from q:  h(v) ← δ(q, v)      ▷ stop if it finds a negative cycle',
@@ -258,12 +258,11 @@ For every path $P$ from $s$ to $t$, the sum telescopes: $w_h(P)=w(P)+h(s)-h(t)$.
         v.render(() => {
           for (const n of G.nodes) { n.x = X911[K(n.id)]; n.y = clamp(Math.round(n.y * 2) / 2, -1, 12); }
           const h = (id) => G.node(id).y, wh = (e) => W(e) + h(e.from) - h(e.to);
-          for (const n of G.nodes) s.line(n.x, 0, n.x, n.y, { color: 'faint', width: 1.4, dash: [3, 3] });
+          for (const n of G.nodes) { s.line(n.x, 0, n.x, n.y, { color: 'faint', width: 1.4, dash: [3, 3] }); s.text(`h(${n.id}) = ${fmt(n.y)}`, n.x, -0.8, { align: 'center', size: 11.5, color: 'purple', weight: 600 }); }
           s.hline(0, { color: 'faint', width: 1 });
           const paths = simplePaths(G, 's', 't').sort((a, b) => a.w - b.w), best = paths[0], be = new Set(pathEdges(G, best.nodes));
           G.draw({
             nodeFill: (id) => (K(id) === 's' || K(id) === 't' ? 'accent' : null),
-            nodeNote: (id) => `h = ${fmt(h(id))}`, noteColor: () => 'purple',
             edgeLabel: (e) => fmt(lab.value === 'red' ? wh(e) : W(e)),
             edgeColor: (e) => (lab.value === 'red' && wh(e) < -1e-9 ? 'red' : be.has(e) ? 'gold' : lab.value === 'red' && near(wh(e), 0) ? 'green' : null),
             edgeWidth: (e) => (be.has(e) ? 4 : null),
@@ -300,11 +299,11 @@ For every path $P$ from $s$ to $t$, the sum telescopes: $w_h(P)=w(P)+h(s)-h(t)$.
       num: '9.12',
       kind: 'Algorithm',
       name: 'A* search with a consistent heuristic',
-      statement: String.raw`**Input:** a graph with nonnegative weights, a source $s$, a target $t$, and a **heuristic** $h:V\to\R_{\ge0}$ estimating the remaining distance to $t$. **A\*** is Dijkstra's algorithm that orders the queue by $f(v)=g(v)+h(v)$ instead of $g(v)$, where $g(v)$ is the best known distance from $s$, and stops when $t$ is extracted.
+      statement: String.raw`**Input:** a graph with nonnegative weights, a source $s$, a target $t$, and a **heuristic** $h:V\to\R_{\ge0}$ estimating the remaining distance to $t$. $A^*$ is Dijkstra's algorithm that orders the queue by $f(v)=g(v)+h(v)$ instead of $g(v)$, where $g(v)$ is the best known distance from $s$, and stops when $t$ is extracted.
 
-Call $h$ **consistent** if $h(t)=0$ and $h(u)\le w(u,v)+h(v)$ for every edge. Equivalently, the reduced costs $w(u,v)-h(u)+h(v)$ (the potential $-h$ in 9.11) are all nonnegative. Then A\* is exactly Dijkstra's algorithm on the reduced costs, so it returns a shortest $s$–$t$ path and never needs to reopen a closed vertex. It expands only vertices with $\delta(s,v)+h(v)\le\delta(s,t)$, never more than Dijkstra. On a road map, straight-line distance to $t$ is consistent whenever each road is at least as long as the straight line.`,
-      idea: String.raw`With reduced costs $\hat w(u,v)=w(u,v)-h(u)+h(v)$, an $s$–$v$ path weighs $\hat w(P)=w(P)-h(s)+h(v)$ (9.11). So Dijkstra on $\hat w$ extracts vertices in order of $g(v)+h(v)$, up to the constant $h(s)$, which is A\*'s order. Consistency is precisely $\hat w\ge0$, the hypothesis of Dijkstra's correctness (9.9). A good heuristic makes $\hat w$ small along edges that head toward $t$ and large along edges that head away, so the search runs along the goal direction. With $h\equiv0$ it is plain Dijkstra. Scaling $h$ by $\alpha>1$ breaks consistency, and the path found may no longer be shortest.`,
-      caption: String.raw`A road map: each road's weight is its length rounded up, and $h(v)$ is the straight-line distance from $v$ to $t$, scaled by the **slider** $\alpha$. Step through A\*: filled vertices are closed, orange-ringed ones open, with their $f=g+h$. The faint dashed lines are the heuristic's straight-line guesses from the open vertices to $t$. At the end, purple rings mark the vertices Dijkstra would also have expanded. Show the **reduced costs** $w-\alpha|h(u)-h(v)|$: they are all $\ge0$ for $\alpha\le1$. Push $\alpha$ to 3: red edges appear, and A\* returns a longer path. **Drag nodes** to reshape the map.`,
+Call $h$ **consistent** if $h(t)=0$ and $h(u)\le w(u,v)+h(v)$ for every edge. Equivalently, the reduced costs $w(u,v)-h(u)+h(v)$ (the potential $-h$ in 9.11) are all nonnegative. Then $A^*$ is exactly Dijkstra's algorithm on the reduced costs, so it returns a shortest $s$–$t$ path and never needs to reopen a closed vertex. It expands only vertices with $\delta(s,v)+h(v)\le\delta(s,t)$, never more than Dijkstra. On a road map, straight-line distance to $t$ is consistent whenever each road is at least as long as the straight line.`,
+      idea: String.raw`With reduced costs $\hat w(u,v)=w(u,v)-h(u)+h(v)$, an $s$–$v$ path weighs $\hat w(P)=w(P)-h(s)+h(v)$ (9.11). So Dijkstra on $\hat w$ extracts vertices in order of $g(v)+h(v)$, up to the constant $h(s)$, which is $A^*$'s order. Consistency is precisely $\hat w\ge0$, the hypothesis of Dijkstra's correctness (9.9). A good heuristic makes $\hat w$ small along edges that head toward $t$ and large along edges that head away, so the search runs along the goal direction. With $h\equiv0$ it is plain Dijkstra. Scaling $h$ by $\alpha>1$ breaks consistency, and the path found may no longer be shortest.`,
+      caption: String.raw`A road map: each road's weight is its length rounded up, and $h(v)$ is the straight-line distance from $v$ to $t$, scaled by the **slider** $\alpha$. Step through $A^*$: filled vertices are closed, orange-ringed ones open, with their $f=g+h$. The faint dashed lines are the heuristic's straight-line guesses from the open vertices to $t$. At the end, purple rings mark the vertices Dijkstra would also have expanded. Show the **reduced costs** $w-\alpha|h(u)-h(v)|$: they are all $\ge0$ for $\alpha\le1$. Push $\alpha$ to 3: red edges appear, and $A^*$ returns a longer path. **Drag nodes** to reshape the map.`,
       deps: ['algo-9.11', 'algo-9.9'],
       refs: ['Erickson Ch. 9'],
       tags: ['shortest paths', 'search', 'heuristics'],
@@ -416,10 +415,10 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
       tags: ['shortest paths', 'all pairs', 'potentials'],
       credit: 'Johnson, 1977',
       viz(v) {
-        const s = v.stage({ x: [0, 10], y: [0, 6.1], axes: false, equal: true, height: 320, weight: 1.15 });
-        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.85 });
+        const s = v.stage({ x: [0, 10], y: [0, 6.1], axes: false, equal: true, height: 340, weight: 1.15 });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.85 });
         const V = ['a', 'b', 'c', 'd', 'e'];
-        const nodes = nodesAt(P914, { a: { notePos: 'n' }, b: { notePos: 'n' }, c: { notePos: 'n' }, d: { notePos: 'n' }, e: { notePos: 'n' }, q: { notePos: 'e', hidden: true } });
+        const nodes = nodesAt(P914, { a: { notePos: 'w' }, b: { notePos: 'n' }, c: { notePos: 'n' }, d: { notePos: 'n' }, e: { notePos: 's' }, q: { notePos: 'e', hidden: true } });
         const G = v.graph(s, { directed: true, weights: true, layout: 'none', draggable: false, editable: { editWeight: true, minWeight: -9, maxWeight: 12 }, nodes, edges: E914.map(([a, b, w]) => [a, b, w]).concat(V.map((x) => ['q', x, { w: 0, dash: [4, 4] }])) });
         G.onClick = ({ edge }) => (edge && K(edge.from) === 'q');
         let run = null;
@@ -447,16 +446,16 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
         };
         const S = v.steps({ frames, code: JOHNSON_CODE, codeTitle: 'Johnson(G)', codePos: 'below', speed: 0.8, start: 'end', still: 5 });
         G.onChange = () => S.reset({ at: 'keep' });
-        const T = v.table(ts, { rows: 5, cols: 5, maxCell: 44, size: 14, rowLabels: (i) => V[i], colLabels: (j) => V[j], cornerLabel: 'from \\ to' });
+        const T = v.table(ts, { rows: 5, cols: 5, maxCell: 40, size: 14, rowLabels: (i) => V[i], colLabels: (j) => V[j], cornerLabel: 'u \\ v', region: [0, 0.36, 1, 1] });
         v.render(() => {
           const f = S.frame, ph = f.ph ?? 0;
           G.node('q').hidden = ph < 1;
           const cyc = f.cycle ? new Set(pathEdges(G, f.cycle.concat([f.cycle[0]]))) : new Set();
           const showH = ph >= 2 && run.h, showWh = ph >= 3 && run.wh;
-          if (showH) for (const x of V) { const n = G.node(x), hv = run.h[x], len = -hv * 0.32; s.rect(n.x + 0.42, n.y - len, n.x + 0.62, n.y, { fill: 'purple', fillAlpha: 0.55, color: 'purple', width: 1 }); s.text(`h ${fmt(hv)}`, n.x + 0.72, n.y - len, { size: 11.5, color: 'purple', align: 'left', baseline: 'middle' }); }
           G.draw({
             nodeFill: (id) => (K(id) === f.u ? 'gold' : K(id) === 'q' ? 'muted' : null),
             nodeColor: (id) => (f.cycle && f.cycle.includes(K(id)) ? 'red' : null),
+            nodeNote: (id) => (showH && K(id) !== 'q' ? `h ${fmt(run.h[K(id)])}` : null), noteColor: () => 'purple',
             edgeLabel: (e) => (K(e.from) === 'q' ? (ph >= 3 ? null : '0') : fmt(showWh ? run.wh(e) : W(e))),
             edgeColor: (e) => (cyc.has(e) ? 'red' : f.tree && f.tree.has(e) ? 'green' : K(e.from) === 'q' ? (ph >= 3 ? 'faint' : 'purple') : showWh && near(run.wh(e), 0) ? 'green' : !showWh && W(e) < 0 ? 'red' : null),
             edgeWidth: (e) => (cyc.has(e) ? 5 : f.tree && f.tree.has(e) ? 4 : null),
@@ -465,6 +464,16 @@ If there is no negative cycle, $D^{(n)}[i][j]=\delta(i,j)$ for all pairs. The up
           T.draw({
             value: (i, j) => (f.rows && f.rows[V[i]] ? f.rows[V[i]][j] : null),
             fill: (i, j) => (f.u === V[i] ? ['gold', 0.3] : null),
+          });
+          // the potentials as bars hanging below a zero line
+          const Wd = ts.width, Ht = ts.height, Y0 = Ht - 96, bw = Math.min(46, (Wd - 120) / V.length), X0 = (Wd - V.length * bw) / 2;
+          TX(ts, showH ? 'potentials h(v) = δ(q, v)' : 'potentials: after Bellman–Ford', Wd / 2, Y0 - 16, { align: 'center', size: 12, weight: 600, color: 'muted' });
+          R(ts, X0 - 10, Y0, X0 + V.length * bw + 10, Y0 + 1.2, { fill: 'ink', fillAlpha: 0.6, stroke: false });
+          V.forEach((x, k) => {
+            const X = X0 + k * bw + bw / 2, hv = showH ? run.h[x] : 0, len = -hv * 16;
+            if (len > 0) R(ts, X - bw * 0.3, Y0, X + bw * 0.3, Y0 + len, { fill: 'purple', fillAlpha: 0.55, color: 'purple', width: 1.2, radius: 2 });
+            TX(ts, x, X, Y0 - 3, { align: 'center', baseline: 'bottom', size: 11.5, weight: 600, color: 'ink' });
+            if (showH) TX(ts, fmt(hv), X, Y0 + len + 9, { align: 'center', size: 11, weight: 700, color: 'purple' });
           });
         });
         v.legend([['purple', 'zero edges from q / potentials h'], ['red', 'negative weight / negative cycle'], ['green', 'reduced weight 0 / current Dijkstra tree'], ['gold', 'current source', { dot: true }]]);
@@ -497,7 +506,7 @@ So Bellman–Ford decides feasibility and finds a solution in $O(nm)$ time. Solu
         const inp = v.input('constraints', C915, { width: 560 });
         const cS = v.slider('c in  x1 − x5 ≤ c', -6, 8, 4, { int: true });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340, weight: 1 });
-        const ns = v.stage({ x: [-6, 2], y: [-1.6, 8.6], axes: 'box', gutter: { l: 104, b: 30, t: 10, r: 14 }, height: 340, weight: 1.15, xlabel: 'value' });
+        const ns = v.stage({ x: [-6, 2], y: [-1.6, 8.6], axes: 'box', gutter: { l: 104, b: 46, t: 10, r: 14 }, height: 340, weight: 1.15, xlabel: 'value' });
         const G = v.graph(s, { directed: true, weights: true, layout: 'none', draggable: false, r: 14 });
         let info = null, lastKey = '';
         v.render(() => {
@@ -518,7 +527,7 @@ So Bellman–Ford decides feasibility and finds a solution in $O(nm)$ time. Solu
             nodeNote: (id) => (bf.cycle || K(id) === 'v0' ? null : fmt(x[K(id)])), noteColor: () => 'accent',
             edgeLabel: (e) => (e.zero ? null : fmt(W(e))),
             edgeColor: (e) => (cyc.has(e) ? 'red' : e.zero ? 'faint' : tight(e) ? 'green' : null),
-            edgeWidth: (e) => (cyc.has(e) ? 4.5 : tight(e) ? 3 : null),
+            edgeWidth: (e) => (cyc.has(e) ? 4.5 : e.zero ? 1.4 : tight(e) ? 3 : null),
           });
           // constraint rows over the number line
           const m = list.length;
@@ -527,7 +536,8 @@ So Bellman–Ford decides feasibility and finds a solution in $O(nm)$ time. Solu
             ns.setView([lo, hi], [-1.6, m + 0.4]);
             ns.setTicks(null, list.map((c, k) => [m - k, `${c.j} − ${c.i} ≤ ${fmt(c.c)}`]));
             ns.hline(-0.6, { color: 'ink', width: 1.4 });
-            vars.forEach((y) => { ns.vline(x[y], { color: 'faint', width: 1, dash: [2, 4] }); ns.dot(x[y], -0.6, { r: 5, color: 'accent', label: y, labelPos: 's' }); });
+            const groups = new Map(); vars.forEach((y) => { const k = fmt(x[y]); groups.set(k, (groups.get(k) || []).concat([y])); });
+            for (const g of groups.values()) { const xv = x[g[0]]; ns.vline(xv, { color: 'faint', width: 1, dash: [2, 4] }); ns.dot(xv, -0.6, { r: 5, color: 'accent' }); ns.text(g.join(', '), xv, -0.6, { dy: 14, align: 'center', baseline: 'top', size: 12, color: 'accent', weight: 600 }); }
             list.forEach((c, k) => {
               const a = x[c.i], b = x[c.j], yy = m - k, ok = b - a <= c.c + 1e-9, tg = near(b - a, c.c), col = !ok ? 'red' : tg ? 'green' : 'accent';
               if (Math.abs(b - a) > 1e-9) ns.arrow(a, yy, b, yy, { color: col, width: 2.2, head: 7 }); else ns.dot(a, yy, { r: 4, color: col });

@@ -288,7 +288,7 @@ For first-countable $X$ (metric spaces, say) they are also equivalent to sequent
             drawVSet(s, cfA, XI, { color: 'green', width: 9 });
             drawVSet(s, fcA, XI - 0.17, { color: 'orange', width: 4 });
             const top = (A) => Math.min(2.45, Math.max(-1.5, ...A.bp.filter((y) => y < 2.6)) + 0.28);
-            s.text('f(cl A)', XI - 0.2, top(fcA) + 0.2, { size: 10.5, color: 'orange', align: 'right' }); s.text('cl f(A)', XI - 0.2, top(fcA) - 0.05, { size: 10.5, color: 'green', align: 'right' });
+            s.text('f(cl A)  cl f(A)', XI + 0.1, top(fcA) + 0.12, { size: 10.5, color: 'muted', align: 'right', plate: true });
             const bad = []; for (let i = 0; i < extra.bp.length; i++) if (extra.pt[i]) bad.push(extra.bp[i]);
             for (const y of bad) { s.hline(y, { color: 'red', width: 1.2, dash: [4, 4], alpha: 0.7 }); s.dot(XI - 0.17, y, { r: 6.5, color: 'red' }); }
             st = { mode, A, cA, fcA, cfA, ok: bad.length === 0, bad };

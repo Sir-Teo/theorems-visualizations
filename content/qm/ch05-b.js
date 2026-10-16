@@ -119,7 +119,6 @@ where $\Delta A=\norm{(A-\langle A\rangle)\psi}$. For $A=\hat x$, $B=\hat p$ thi
           SR.dot(bd, pr, { r: 6.5, color: 'gold' });
           // sphere: axes, tight locus, state
           sc.begin(); sphereOutline(SB, sc); blochFrame(sc, { labels: false });
-          const ab = [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
           // tight set: (1 − α²)(1 − β²) − ((a×b)·r)² = (a·b − αβ)² = 0, located as sign changes of a·b − αβ on a (θ, φ) grid
           const ab0 = M.dot(a, b), F = (r) => ab0 - M.dot(a, r) * M.dot(b, r), NT = 90, NP = 180, P3 = (i, j) => { const th = (Math.PI * i) / NT, ph = (TAU * j) / NP; return [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]; };
           const lerpS = (p, q, fp, fq) => { const t = fp / (fp - fq), m = p.map((c, k) => c + t * (q[k] - c)), l = Math.hypot(...m) || 1; return m.map((c) => c / l); };
@@ -159,10 +158,10 @@ the time for $\langle Q\rangle$ to change by one standard deviation (**Mandelsta
       tags: ['energy-time uncertainty', 'Mandelstam–Tamm', 'quantum speed limit'],
       viz(v) {
         const kind = v.select('spectrum', [{ value: 'two', label: 'two levels' }, { value: 'gauss', label: 'Gaussian band' }, { value: 'flat', label: 'flat band' }, { value: 'rnd', label: 'random levels' }], 'gauss');
-        const wsl = v.slider('spread (two levels: weight of the upper level)', 0.05, 1, 0.5, { step: 0.01 });
+        const wsl = v.slider('spread (or upper-level weight)', 0.05, 1, 0.5, { step: 0.01 });
         const SS = v.stage({ x: [-0.5, 10.5], y: [0, 0.6], axes: 'box', gutter: true, height: 150, full: true, xlabel: 'energy E', ylabel: '|cₙ|²' });
         const SP = v.stage({ x: [0, 6], y: [0, 1.05], axes: 'box', gutter: true, height: 280, xlabel: 't', ylabel: 'survival probability', title: '$P(t)\\ge\\cos^2(\\Delta E\\,t)$' });
-        const ST = v.stage({ x: [0, 6], y: [0, 3], axes: 'box', gutter: true, height: 280, xlabel: 't', ylabel: 'ΔE·τ_Q', title: '$\\Delta E\\,\\tau_Q\\ge\\frac12$' });
+        const ST = v.stage({ x: [0, 6], y: [0, 3], axes: 'box', gutter: true, height: 280, xlabel: 't', ylabel: 'ΔE·τ', title: '$\\Delta E\\,\\tau_Q\\ge\\frac12$' });
         let st = null;
         v.render(() => {
           const w = wsl.value; let E = [], p = [];
@@ -204,14 +203,14 @@ the time for $\langle Q\rangle$ to change by one standard deviation (**Mandelsta
       name: 'Compatible observables share eigenbases',
       statement: String.raw`Two observables $A,B$ on a finite-dimensional space **commute**, $[A,B]=0$, if and only if there is an orthonormal basis of common eigenvectors. Then they are **compatible**: measuring $A$, then $B$, then $A$ again returns the first value of $A$ with certainty, and the joint outcome $(a,b)$ has probability $\norm{P^A_aP^B_b\psi}^2$ independent of the order. If $A$ has a degenerate eigenvalue, its eigenbasis is not unique, and $B$ selects the shared basis inside each eigenspace; a **complete set of commuting observables** is one whose joint eigenvalues label a basis uniquely. For unbounded operators "commute" means their spectral projections commute.`,
       idea: String.raw`If $AB=BA$ and $Av=av$, then $A(Bv)=B(Av)=a\,Bv$: $B$ maps each eigenspace of $A$ into itself, and the restriction of $B$ there is still Hermitian, so it can be diagonalized inside it (ladr-5.76). Collecting these bases over all eigenvalues of $A$ gives a common eigenbasis; the converse is immediate because diagonal matrices commute. Perturb $B$ by a non-commuting term and the restriction argument breaks: the eigenbases rotate apart by an amount proportional to the perturbation.`,
-      caption: String.raw`Real symmetric $3\times3$ observables drawn in $\R^3$ (drag the background to rotate): the blue lines are the eigen-axes of $A$ (a blue disc marks a degenerate eigen*plane*), the orange lines those of $B=B_0+\varepsilon K$, where $B_0$ commutes with $A$ and $K$ is a fixed random symmetric matrix. At $\varepsilon=0$ every orange axis lies along a blue one (or inside the blue plane); **raise $\varepsilon$** and the frames split. The middle panel shows $[A,B]$ entry by entry; the bottom plot follows $\norm{[A,B]}$ and the defect $\max_k\norm{Av_k-\langle v_k|A|v_k\rangle v_k}$ of $B$'s eigenvectors $v_k$ as functions of $\varepsilon$. **Degenerate $A$**: $A$'s own eigenvectors in the plane are arbitrary, but $B$'s still diagonalize $A$.`,
+      caption: String.raw`Real symmetric $3\times3$ observables drawn in $\R^3$ (drag the background to rotate): the blue lines are the eigen-axes of $A$ (a blue disc marks a degenerate eigenplane), the orange lines those of $B=B_0+\varepsilon K$, where $B_0$ commutes with $A$ and $K$ is a fixed random symmetric matrix. At $\varepsilon=0$ every orange axis lies along a blue one (or inside the blue plane); **raise $\varepsilon$** and the frames split. The middle panel shows $[A,B]$ entry by entry; the bottom plot follows $\norm{[A,B]}$ and the defect $\max_k\norm{Av_k-\langle v_k|A|v_k\rangle v_k}$ of $B$'s eigenvectors $v_k$ as functions of $\varepsilon$. **Degenerate $A$**: $A$'s own eigenvectors in the plane are arbitrary, but $B$'s still diagonalize $A$.`,
       deps: ['qm-5.9', 'ladr-5.76', 'qm-5.4'],
       refs: ['Sakurai ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Complete_set_of_commuting_observables' },
       tags: ['commuting observables', 'simultaneous diagonalization', 'compatibility'],
       viz(v) {
         const M = v.M;
-        const eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0, { step: 0.01 });
+        const eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0.2, { step: 0.01 });
         const deg = v.toggle('$A$ degenerate', false);
         const S3 = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: false, height: 330, weight: 1.15, title: 'eigen-axes in $\\mathbb R^3$' });
         const SC = v.stage({ x: [-0.7, 3.3], y: [-0.5, 3.45], equal: true, axes: false, height: 330, weight: 0.85, title: 'the commutator $[A,B]$' });
@@ -241,11 +240,12 @@ the time for $\langle Q\rangle$ to change by one standard deviation (**Mandelsta
           sc.flush();
           // commutator cells
           const C = cplx(M.matMul(A, B).map((row, i) => row.map((x, j) => x - M.matMul(B, A)[i][j])));
-          cells(v, SC, C, [0, 0, 3, 3], { max: 0.6, text: (z) => v.fix(z[0], 3), size: 10.5 });
+          cells(v, SC, C, [0, 0, 3, 3], { max: 0.6, text: (z) => fz(v, z[0], 3), size: 10.5 });
           // curves
           const es = Array.from({ length: 51 }, (_, i) => i / 50);
-          SE.path(es.map((e) => { const q = build(e, deg.value); return [e, cnorm(q.A, q.B)]; }), { color: 'purple', width: 2 });
-          SE.path(es.map((e) => { const q = build(e, deg.value); return [e, defect(q.A, q.B)]; }), { color: 'orange', width: 2 });
+          const cv = es.map((e) => { const q = build(e, deg.value); return [e, cnorm(q.A, q.B)]; }), dv = es.map((e) => { const q = build(e, deg.value); return [e, defect(q.A, q.B)]; });
+          SE.setView([0, 1], [0, 1.1 * Math.max(...cv.map((p) => p[1]), ...dv.map((p) => p[1]))]);
+          SE.path(cv, { color: 'purple', width: 2 }); SE.path(dv, { color: 'orange', width: 2 });
           const cn = cnorm(A, B), df = defect(A, B);
           SE.dot(eps.value, cn, { r: 5, color: 'purple' }); SE.dot(eps.value, df, { r: 5, color: 'orange' });
           st = { cn, df, deg: deg.value };
@@ -281,10 +281,10 @@ the time for $\langle Q\rangle$ to change by one standard deviation (**Mandelsta
           cells(v, SC, Cm, [0, 0, 6, 6], { max: rnd.value ? maxAbs(Cm) : Math.max(1, N - 1), minR: 0.3, text: N <= 8 ? (z) => texC(v, z, rnd.value ? 1 : 0).replace(/-/g, '−') : null, size: Math.max(8, 13 - N * 0.5) });
           // diagonal bars and running trace
           const d = Cm.map((row, k) => row[k][1]); let run = 0; const runs = [];
-          const lo = Math.min(-1.5, ...d) * 1.15, hi = Math.max(2, ...d) * 1.2;
+          const cum = d.reduce((acc, y) => { acc.push((acc.length ? acc[acc.length - 1] : 0) + y); return acc; }, []), lo = Math.min(-1.5, ...d, ...cum) * 1.15, hi = Math.max(2, ...d, ...cum) * 1.15;
           SD.setView([-0.6, N - 0.4], [lo, hi]);
           SD.hline(0, { color: 'muted' }); SD.hline(1, { color: 'green', dash: [5, 4], width: 1.3 });
-          SD.text('iħ: target', N - 0.5, 1, { align: 'right', dy: -10, size: 10.5, color: 'green' });
+          SD.text('target iħ', -0.5, 1, { align: 'left', dy: -10, size: 10.5, color: 'green', plate: true });
           d.forEach((y, k) => { SD.rect(k - 0.32, Math.min(0, y), k + 0.32, Math.max(0, y), { fill: y >= 0 ? 'pink' : 'green', fillAlpha: 0.55, color: y >= 0 ? 'pink' : 'green', width: 1.2 }); run += y; runs.push([k + 0.32, run]); });
           SD.path([[-0.32, 0], ...runs], { color: 'ink', width: 2 }); SD.dots(runs, { r: 3, color: 'ink' });
           const tr = trace(Cm), dist = fnorm(msub(Cm, mscale(eye(N), [0, 1])));
@@ -357,7 +357,7 @@ $$U(t)=e^{-iHt/\hbar},\qquad U(s)U(t)=U(s+t),\quad U(0)=I,\quad U(t)^\dagger=U(t
 where the generator $H$ is the self-adjoint Hamiltonian; differentiating gives the Schrödinger equation $i\hbar\,\dot\psi=H\psi$ (qm-2.4). Conversely, by Stone's theorem every such group has a unique self-adjoint generator. Unitarity means all inner products are conserved, $\langle U\varphi|U\psi\rangle=\langle\varphi|\psi\rangle$: the configuration of all states moves rigidly, probabilities are conserved, and evolution is reversible.`,
       scope: String.raw`For closed systems. An open system (one exchanging energy or information with an environment it does not track) evolves non-unitarily — decay, decoherence — as in the effective non-Hermitian toggle of the picture; the full system plus environment is still unitary.`,
       idea: String.raw`$H=H^\dagger$ makes $\tfrac{d}{dt}\langle\varphi(t)|\psi(t)\rangle=\tfrac i\hbar\langle H\varphi|\psi\rangle-\tfrac i\hbar\langle\varphi|H\psi\rangle=0$, so inner products are constant; norm conservation (qm-2.5) is the special case $\varphi=\psi$. The group law is the exponential law for commuting exponents, computed from the spectral decomposition $e^{-iHt}=\sum e^{-iE_kt}P_k$ (5.5) — each eigencomponent just turns its phase (ladr-7.53, fa-13.38). For a qubit, $H=\tfrac\omega2\,\mathbf n\cdot\boldsymbol\sigma$ and $U(t)$ rotates the whole Bloch sphere rigidly about $\mathbf n$ at angular speed $\omega$.`,
-      caption: String.raw`Five qubit states (gold, joined into a polygon) evolve together under $H=\tfrac\omega2\,\mathbf n\cdot\boldsymbol\sigma$ (axis $\mathbf n$ in purple, tilt on the slider). **Press play:** the polygon turns rigidly about $\mathbf n$; right, the overlaps $|\langle\psi_i(t)|\psi_j(t)\rangle|$ stay frozen. Toggle **non-unitary decay** (an effective $H-\tfrac{i\Gamma}2|1\rangle\langle1|$): norms shrink (the diagonal fades), the normalized states (drawn) slide toward $|0\rangle$, and the polygon deforms — the configuration is no longer rigid. The readout also checks the group law $U(s)U(t)=U(s+t)$ numerically.`,
+      caption: String.raw`Five qubit states (gold, joined by great-circle arcs into a spherical polygon) evolve together under $H=\tfrac\omega2\,\mathbf n\cdot\boldsymbol\sigma$ (axis $\mathbf n$ in purple, tilt on the slider). **Press play:** the polygon turns rigidly about $\mathbf n$; right, the overlaps $|\langle\psi_i(t)|\psi_j(t)\rangle|$ stay frozen. Toggle **non-unitary decay** (an effective $H-\tfrac{i\Gamma}2|1\rangle\langle1|$): norms shrink (the diagonal fades), the normalized states (drawn) slide toward $|0\rangle$, and the polygon deforms — the configuration is no longer rigid. The readout also checks the group law $U(s)U(t)=U(s+t)$ numerically.`,
       deps: ['qm-2.4', 'fa-13.38', 'ladr-7.53', 'qm-5.5'],
       refs: ['Sakurai ch. 2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Time_evolution#In_quantum_mechanics' },
@@ -381,7 +381,8 @@ where the generator $H$ is the self-adjoint Hamiltonian; differentiating gives t
           sc.begin(); sphereOutline(SB, sc); blochFrame(sc, { labels: true });
           sc.arrow([0, 0, 0], nH.map((c) => 1.32 * c), { color: 'purple', width: 2.4 }); sc.tex('\\mathbf n', nH.map((c) => 1.47 * c), { color: 'purple' });
           for (const p of init) { const tr = []; for (let k = 0; k <= 40; k++) { const s = (t * k) / 40, q = mvec(expmC(M, mscale(Heff, [0, -s])), p); tr.push(blochOf(q)); } sc.path(tr, { color: 'gold', width: 1.2, alpha: 0.45 }); }
-          sc.path([...nb, nb[0]], { color: 'gold', width: 2 });
+          const slerp = (p, q) => { const out = []; for (let k = 0; k <= 16; k++) { const m = p.map((c, i) => c + ((q[i] - c) * k) / 16), l = Math.hypot(...m) || 1; out.push(m.map((c) => c / l)); } return out; };
+          nb.forEach((b, k) => sc.path(slerp(b, nb[(k + 1) % nb.length]), { color: 'gold', width: 2 }));
           nb.forEach((b, k) => { sc.dot(b, { r: 5, color: 'gold' }); });
           sc.flush();
           const G = mat(5, 5, (i, j) => [cabs(ip(psi[i], psi[j])), 0]);
