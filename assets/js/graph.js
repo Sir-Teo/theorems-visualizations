@@ -3,6 +3,14 @@ import { resolveColor, withAlpha, inlineHTML, richHTML, escapeHTML } from './viz
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = (tag, attrs = {}, parent) => { const el = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) if (v != null) el.setAttribute(k, v); if (parent) parent.append(el); return el; };
+function zoomControls(host, zoom, reset) {
+  const tools = document.createElement('div'); tools.className = 'canvas-tools';
+  tools.setAttribute('role', 'group'); tools.setAttribute('aria-label', 'View controls');
+  tools.innerHTML = '<button class="btn btn-icon" type="button" data-zoom="1.4" aria-label="Zoom in">+</button><button class="btn btn-icon" type="button" data-zoom="0.7142857143" aria-label="Zoom out">−</button>' + (reset ? '<button class="btn" type="button" data-reset-view>Reset</button>' : '');
+  tools.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => zoom(+b.dataset.zoom)));
+  tools.querySelector('[data-reset-view]')?.addEventListener('click', reset);
+  host.append(tools);
+}
 let A = null; // the atlas state built by app.js (collections, items, …)
 /** Register the atlas so labels and colours can be looked up by collection id. */
 export function setAtlas(G) { A = G; }
@@ -67,7 +75,7 @@ function edgePath(x1, y1, x2, y2) {
 }
 
 function nodeGroup(parent, it, x, y, w, h, { target = false, compact = false, onClick, external = false, extra = '' } = {}) {
-  const g = svg('g', { class: 'gnode', transform: `translate(${x},${y})`, tabindex: 0, role: 'link', 'aria-label': `${fullLabel(it)}: ${plainName(it.name, 80)}` }, parent);
+  const g = svg('g', { class: 'gnode', transform: `translate(${x},${y})`, tabindex: onClick ? 0 : null, role: onClick ? 'link' : 'img', 'aria-label': `${fullLabel(it)}: ${plainName(it.name, 80)}` }, parent);
   const col = COLV(it.col);
   const isDef = it.kind === 'Definition';
   if (it.planned) g.classList.add('planned');
@@ -93,10 +101,12 @@ function nodeGroup(parent, it, x, y, w, h, { target = false, compact = false, on
 function wireHover(svgEl, nodeEls, edgeEls) {
   // highlight the edges touching a hovered node
   for (const [id, g] of nodeEls) {
-    g.addEventListener('mouseenter', () => {
+    const highlight = () => {
       for (const e of edgeEls) { const on = e.dataset.a === id || e.dataset.b === id; e.classList.toggle('hot', on); e.style.opacity = on ? 1 : 0.25; }
-    });
-    g.addEventListener('mouseleave', () => { for (const e of edgeEls) { e.classList.remove('hot'); e.style.opacity = ''; } });
+    };
+    const clear = () => { for (const e of edgeEls) { e.classList.remove('hot'); e.style.opacity = ''; } };
+    g.addEventListener('mouseenter', highlight); g.addEventListener('focus', highlight);
+    g.addEventListener('mouseleave', clear); g.addEventListener('blur', clear);
   }
 }
 
@@ -135,7 +145,7 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
   const W = compact ? 104 : 196, H = compact ? 26 : 40, CG = compact ? 44 : 64, RG = compact ? 8 : 12;
   const { pos, nCols, maxRows } = layered(ids, edges, (x) => L.get(x), (x) => G.order.get(x));
   const width = nCols * W + (nCols - 1) * CG + 16, height = maxRows * (H + RG) + 16;
-  const root = svg('svg', { class: 'lineage-svg', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `Dependency lineage of ${fullLabel(me)}` }, host);
+  const root = svg('svg', { class: 'lineage-svg', width, height, viewBox: `0 0 ${width} ${height}`, role: 'group', 'aria-label': `Dependency lineage of ${fullLabel(me)}` }, host);
   const X = (p) => 8 + p.col * (W + CG), Y = (p) => height / 2 + p.row * (H + RG) - H / 2;
   const eg = svg('g', { fill: 'none' }, root);
   const edgeEls = [];
@@ -153,7 +163,7 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
   }
   wireHover(root, nodeEls, edgeEls);
   // scroll so the target is visible
-  requestAnimationFrame(() => { const p = pos.get(id); host.scrollLeft = Math.max(0, X(p) - host.clientWidth * 0.6); host.scrollTop = Math.max(0, Y(p) + H / 2 - host.clientHeight / 2); });
+  requestAnimationFrame(() => { const p = pos.get(id); host.scrollLeft = Math.max(0, X(p) + W / 2 - host.clientWidth / 2); host.scrollTop = Math.max(0, Y(p) + H / 2 - host.clientHeight / 2); });
   return { count: ids.length, ancestors: anc.length - 1, dependents: down.length };
 }
 
@@ -185,7 +195,7 @@ export function renderChapterGraph(host, G, col, ch, { onOpen, onOpenChapter } =
   const W = 186, H = 40, CG = 58, RG = 10, EW = 150;
   const colX = (c) => c === 0 && extNodes.length ? 8 : 8 + (extNodes.length ? EW + CG : 0) + (c - (extNodes.length ? 1 : 0)) * (W + CG);
   const width = colX(nCols - 1) + W + 16, height = maxRows * (H + RG) + 20;
-  const root = svg('svg', { class: 'lineage-svg', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Chapter dependency graph' }, host);
+  const root = svg('svg', { class: 'lineage-svg', width, height, viewBox: `0 0 ${width} ${height}`, role: 'group', 'aria-label': 'Chapter dependency graph' }, host);
   const Y = (p) => 10 + p.idx * (H + RG);
   const wOf = (x) => x.startsWith('ext:') ? EW : W;
   const eg = svg('g', { fill: 'none' }, root);
@@ -227,7 +237,7 @@ export function renderFlow(host, { columns, edges, onOpen, ariaLabel = 'How the 
   const width = cols.length * colW + (cols.length - 1) * GAP + 80;
   const rows = Math.max(...cols.map((C) => C.rows.length));
   const height = TOP + rows * ROWH + 16;
-  const root = svg('svg', { class: 'flow-svg', viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': ariaLabel }, host);
+  const root = svg('svg', { class: 'flow-svg', viewBox: `0 0 ${width} ${height}`, role: 'group', 'aria-label': ariaLabel }, host);
   root.style.minWidth = Math.min(width, one ? 520 : 860) + 'px';
   const P = new Map();
   cols.forEach((C, ci) => {
@@ -306,7 +316,7 @@ export class MapView {
     ];
     const fieldsHere = G.fields.filter((F) => this.nodes.some((n) => this.fieldOf.get(n.it.col) === F.id));
     host.innerHTML = `
-      <canvas aria-label="Map of all results and their dependencies"></canvas>
+      <canvas tabindex="0" aria-label="Map of all results and their dependencies. Use arrow keys to pan, plus and minus to zoom, and 0 to fit."></canvas>
       <div class="map-ui">
         <div class="card"><span class="eyebrow">Show</span>
           ${fieldsHere.map((F) => `<label><input type="checkbox" data-f="${F.id}" checked> <span class="col-dot" data-field="${F.id}" style="--bc:var(--f-${F.id})"></span>${escapeHTML(F.short)}</label>`).join('')}
@@ -317,7 +327,7 @@ export class MapView {
         <button class="btn" data-fit type="button">Fit</button>
       </div>
       <div class="map-tip"></div>
-      <div class="map-side card"></div>
+      <div class="map-side card" role="region" aria-label="Selected idea"></div>
       <div class="map-legend card">
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-accent)" stroke-width="2.5"/></svg>builds on (ancestors)</span>
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-green)" stroke-width="2.5"/></svg>used by (descendants)</span>
@@ -333,7 +343,7 @@ export class MapView {
     host.querySelector('input[data-planned]')?.addEventListener('change', (e) => { this.show.planned = e.target.checked; this.draw(); });
     host.querySelector('[data-fit]').addEventListener('click', () => this.fit(true));
     const qi = host.querySelector('.map-q input');
-    if (qi) { let t = null; qi.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => onQuery(qi.value, true), 220); }); qi.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(t); onQuery(qi.value, true); } }); }
+    if (qi) { qi.addEventListener('input', () => { clearTimeout(this.queryTimer); this.queryTimer = setTimeout(() => onQuery(qi.value, true), 220); }); qi.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(this.queryTimer); onQuery(qi.value, true); } }); }
     this.k = 1; this.tx = 0; this.ty = 0; this.hover = null; this.sel = null;
     this.byId = new Map(this.nodes.map((n) => [n.it.id, n]));
     this.edges = [];
@@ -351,13 +361,14 @@ export class MapView {
     this.centers = centers; this.bundles = [...bundles.values()];
     this.maxBundle = Math.max(1, ...this.bundles.map((e) => e.n));
     this._bind();
+    zoomControls(host, (factor) => this.zoom(factor));
     this.ro = new ResizeObserver(() => { this.resize(); if (!this.userMoved && !this.sel) this.fit(false); else this.draw(); });
     this.ro.observe(host);
     this.resize(); this.fit(false);
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
     this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
   }
-  destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); }
+  destroy() { this.dead = true; clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
   visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
   /** Emphasize a set of ids (null clears); fit = zoom to them. */
   setHighlight(ids, { fit = false, label = '' } = {}) {
@@ -383,10 +394,18 @@ export class MapView {
   }
   flyTo(k, tx, ty, animate = true) {
     cancelAnimationFrame(this.anim);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) animate = false;
     if (!animate) { this.k = k; this.tx = tx; this.ty = ty; this.draw(); return; }
     const s = { k: this.k, tx: this.tx, ty: this.ty }, t0 = performance.now(), D = 600;
     const step = (now) => { const u = Math.min(1, (now - t0) / D), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; this.k = s.k + (k - s.k) * e; this.tx = s.tx + (tx - s.tx) * e; this.ty = s.ty + (ty - s.ty) * e; this.draw(); if (u < 1) this.anim = requestAnimationFrame(step); };
     this.anim = requestAnimationFrame(step);
+  }
+  zoom(factor) {
+    cancelAnimationFrame(this.anim); this.userMoved = true;
+    const k = Math.min(8, Math.max(0.01, this.k * factor)), r = k / this.k;
+    this.tx = this.W / 2 - (this.W / 2 - this.tx) * r;
+    this.ty = this.H / 2 - (this.H / 2 - this.ty) * r;
+    this.k = k; this.draw();
   }
   focusNode(n) { const k = Math.max(this.k, 1.6); this.flyTo(k, this.W / 2 - n.x * k - (this.side.classList.contains('open') && this.W > 700 ? 180 : 0), this.H / 2 - n.y * k); }
   sx(x) { return x * this.k + this.tx; } sy(y) { return y * this.k + this.ty; }
@@ -459,7 +478,19 @@ export class MapView {
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     cv.addEventListener('pointerleave', () => { this.hover = null; this._tip(null); this.draw(); });
     cv.addEventListener('dblclick', (e) => { const p = pos(e); const n = this.hit(p[0], p[1]); if (n) this.onOpen?.(n.it.id); });
-    this._key = (e) => { if (e.key === 'Escape') this.select(null); };
+    this._key = (e) => {
+      if (e.key === 'Escape') this.select(null);
+      if (e.target !== cv || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === '+' || e.key === '=') this.zoom(1.4);
+      else if (e.key === '-') this.zoom(1 / 1.4);
+      else if (e.key === '0') this.fit(false);
+      else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        cancelAnimationFrame(this.anim); this.userMoved = true;
+        this.tx += e.key === 'ArrowLeft' ? 48 : e.key === 'ArrowRight' ? -48 : 0;
+        this.ty += e.key === 'ArrowUp' ? 48 : e.key === 'ArrowDown' ? -48 : 0; this.draw();
+      } else return;
+      e.preventDefault();
+    };
     window.addEventListener('keydown', this._key);
   }
   _tip(n, p) {
@@ -626,7 +657,7 @@ function squarify(items, x, y, w, h) {
 export function renderTreemap(host, G, { field = null, onField, onCollection, onChapter, height = 520 } = {}) {
   host.innerHTML = '';
   const W = Math.max(320, host.clientWidth || 1000), H = field ? Math.round(height * 1.05) : height;
-  const root = svg('svg', { class: 'treemap-svg', width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Treemap of every field and collection' }, host);
+  const root = svg('svg', { class: 'treemap-svg', width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'group', 'aria-label': 'Treemap of every field and collection' }, host);
   const size = (C) => Math.max(40, (C.count || 0) + (C.planned || 0) || 80);
   const fields = (field ? G.fields.filter((F) => F.id === field) : G.fields).map((F) => {
     const cols = G.collections.filter((C) => C.field === F.id);
@@ -639,10 +670,13 @@ export function renderTreemap(host, G, { field = null, onField, onCollection, on
     svg('rect', { x: fx, y: fy, width: fw, height: fh, rx: 8, fill: `var(--f-${F.id})`, 'fill-opacity': 0.08, stroke: `var(--f-${F.id})`, 'stroke-opacity': 0.5 }, g);
     const showHead = fh > 40 && fw > 60;
     if (showHead) {
-      const t = svg('text', { x: fx + 8, y: fy + 15, 'font-size': 11.5, 'font-weight': 700, 'letter-spacing': '0.06em', fill: `var(--f-${F.id})` }, g);
+      const t = svg('text', { 'pointer-events': 'none', x: fx + 8, y: fy + 15, 'font-size': 11.5, 'font-weight': 700, 'letter-spacing': '0.06em', fill: `var(--f-${F.id})` }, g);
       const label = (fw > 180 ? F.title : F.short).toUpperCase(); t.textContent = label.length * 7.6 > fw - 16 ? F.short.toUpperCase() : label;
     }
-    if (!field) { g.addEventListener('click', (e) => { if (!e.target.closest('.tm-col')) onField?.(F.id); }); svg('title', {}, g).textContent = `${F.title} — click to zoom in`; }
+    if (!field) {
+      const control = svg('rect', { x: fx, y: fy, width: fw, height: showHead ? HEAD : fh, rx: 4, fill: 'transparent', class: 'tm-field-control', tabindex: 0, role: 'button', 'aria-label': `Zoom into ${F.title}` }, g);
+      control.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onField?.(F.id); } });
+      g.addEventListener('click', (e) => { if (!e.target.closest('.tm-col')) onField?.(F.id); }); svg('title', {}, g).textContent = `${F.title} — click to zoom in`; }
     const inner = squarify(cols.map((C) => ({ C, value: size(C) })).sort((a, b) => b.value - a.value), fx + 4, fy + (showHead ? HEAD : 4), fw - 8, fh - (showHead ? HEAD : 4) - 4);
     for (const cr of inner) {
       const C = cr.it.C; const x = cr.x + 1.5, y = cr.y + 1.5, w = Math.max(0, cr.w - 3), h = Math.max(0, cr.h - 3);
@@ -654,18 +688,19 @@ export function renderTreemap(host, G, { field = null, onField, onCollection, on
       if (field && C.chapters.length && w > 40 && h > 40) {
         const chs = squarify(C.chapters.map((Ch) => ({ Ch, value: Math.max(1, (Ch.count || 0) + (Ch.planned || 0)) })).sort((a, b) => b.value - a.value), x + 3, y + 22, w - 6, h - 25);
         for (const r of chs) {
-          const Ch = r.it.Ch; const rr = svg('rect', { x: r.x + 0.5, y: r.y + 0.5, width: Math.max(0, r.w - 1), height: Math.max(0, r.h - 1), rx: 2, fill: 'var(--panel)', 'fill-opacity': Ch.count ? 0.18 : 0.5, stroke: 'var(--panel)', 'stroke-opacity': 0.9, class: 'tm-ch' }, cg);
+          const Ch = r.it.Ch; const rr = svg('rect', { x: r.x + 0.5, y: r.y + 0.5, width: Math.max(0, r.w - 1), height: Math.max(0, r.h - 1), rx: 2, fill: 'var(--panel)', 'fill-opacity': Ch.count ? 0.18 : 0.5, stroke: 'var(--panel)', 'stroke-opacity': 0.9, class: 'tm-ch', tabindex: 0, role: 'link', 'aria-label': `${C.title}, chapter ${Ch.n}: ${Ch.title}` }, cg);
           svg('title', {}, rr).textContent = `${C.short} ${Ch.n} · ${Ch.title} — ${Ch.count || 0} written${Ch.planned ? `, ${Ch.planned} planned` : ''}`;
           rr.addEventListener('click', (e) => { e.stopPropagation(); onChapter?.(C.id, Ch.n); });
+          rr.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.stopPropagation(); onChapter?.(C.id, Ch.n); } });
           if (r.w > 70 && r.h > 16) { const t = svg('text', { x: r.x + 4, y: r.y + 12, 'font-size': 10, fill: Ch.count && frac > 0.5 ? 'var(--bg)' : 'var(--ink-2)', 'pointer-events': 'none' }, cg); const mx = Math.floor((r.w - 8) / 5.6); t.textContent = (`${Ch.n} ${Ch.title}`).slice(0, mx); }
         }
       }
       if (w > 34 && h > 16) {
         const big = w > 120 && h > 34; const lab = big ? C.title : C.short;
         const mx = Math.floor((w - 10) / (big ? 6.4 : 6));
-        const t = svg('text', { x: x + 5, y: y + 13, 'font-size': big ? 12 : 10.5, 'font-weight': 600, fill: frac > 0.92 && !field ? 'var(--bg)' : 'var(--ink)', 'pointer-events': 'none' }, cg);
+        const t = svg('text', { x: x + 5, y: y + 13, 'font-size': big ? 12 : 10.5, 'font-weight': 600, class: 'tm-label', fill: 'var(--ink)', 'pointer-events': 'none' }, cg);
         t.textContent = lab.length > mx ? (big && C.short.length <= mx ? C.short : lab.slice(0, Math.max(1, mx - 1)) + '…') : lab;
-        if (h > 34 && w > 60 && !field) { const n = svg('text', { x: x + 5, y: y + 27, 'font-size': 10, 'font-family': 'var(--font-mono)', fill: frac > 0.92 ? 'var(--bg)' : 'var(--ink-3)', 'pointer-events': 'none' }, cg); n.textContent = C.count ? `${C.count}${C.planned ? ` +${C.planned}` : ''}` : C.planned ? `${C.planned} planned` : 'planned'; }
+        if (h > 34 && w > 60 && !field) { const n = svg('text', { x: x + 5, y: y + 27, 'font-size': 10, 'font-family': 'var(--font-mono)', class: 'tm-label', fill: 'var(--ink-2)', 'pointer-events': 'none' }, cg); n.textContent = C.count ? `${C.count}${C.planned ? ` +${C.planned}` : ''}` : C.planned ? `${C.planned} planned` : 'planned'; }
       }
       svg('title', {}, cg).textContent = `${C.title} — ${C.count} written${C.planned ? `, ${C.planned} planned` : ''}`;
       cg.addEventListener('click', (e) => { e.stopPropagation(); onCollection?.(C.id); });
@@ -694,11 +729,13 @@ export class TimelineView {
     host.classList.add('timeline-page');
     this.items = (items || G.items).filter((it) => it.yr != null);
     this.fields = G.fields.filter((F) => this.items.some((it) => G.colById.get(it.col)?.field === F.id));
-    host.innerHTML = `<canvas aria-label="Timeline of ideas"></canvas><div class="map-tip"></div>
+    host.innerHTML = `<canvas tabindex="0" aria-label="Timeline of ideas. Use left and right arrows to pan, plus and minus to zoom, and 0 to reset."></canvas><div class="map-tip"></div>
       <div class="map-help">${this.items.length} ${what} · scroll to zoom in time · drag to pan · click a dot to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d'); this.tip = host.querySelector('.map-tip');
     this.u0 = 0; this.u1 = 1; this.hover = null;
     if (fit && this.items.length) { const us = this.items.map((it) => tAxis(it.yr)); const a = Math.min(...us), b = Math.max(...us), pad = Math.max(0.02, (b - a) * 0.06); this.u0 = Math.max(0, a - pad); this.u1 = Math.min(1, b + pad); }
+    this.initialRange = [this.u0, this.u1];
+    zoomControls(host, (factor) => this.zoom(factor), () => { [this.u0, this.u1] = this.initialRange; this.layout(); this.draw(); });
     this.ro = new ResizeObserver(() => { this.resize(); this.layout(); this.draw(); }); this.ro.observe(host);
     this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
     this._bind(); this.resize(); this.layout(); this.draw();
@@ -707,7 +744,14 @@ export class TimelineView {
   /** Emphasize a set of ids (null clears). */
   setHighlight(ids) { this.hl = ids && ids.size ? ids : null; this.draw(); }
   resize() { const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1); this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d; this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d; }
-  X(u) { const L = 150, R = this.W - 30; return L + ((u - this.u0) / (this.u1 - this.u0)) * (R - L); }
+  get left() { return this.W < 600 ? 86 : 150; }
+  get right() { return this.W - (this.W < 600 ? 16 : 30); }
+  zoom(factor) {
+    const width = Math.max(0.004, Math.min(1, (this.u1 - this.u0) / factor)), mid = (this.u0 + this.u1) / 2;
+    this.u0 = Math.max(0, Math.min(1 - width, mid - width / 2)); this.u1 = this.u0 + width;
+    this.layout(); this.draw();
+  }
+  X(u) { const L = this.left, R = this.right; return L + ((u - this.u0) / (this.u1 - this.u0)) * (R - L); }
   layout() {
     // one lane per field; inside a lane, a beeswarm so dots never overlap at the current zoom
     const avail = this.H - 110; const laneH = Math.min(170, avail / Math.max(1, this.fields.length));
@@ -728,17 +772,30 @@ export class TimelineView {
   }
   _bind() {
     const cv = this.canvas; let drag = null;
+    cv.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === '+' || e.key === '=') this.zoom(1.4);
+      else if (e.key === '-') this.zoom(1 / 1.4);
+      else if (e.key === '0') { [this.u0, this.u1] = this.initialRange; this.layout(); this.draw(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const width = this.u1 - this.u0, delta = width * 0.12 * (e.key === 'ArrowLeft' ? -1 : 1);
+        this.u0 = Math.max(0, Math.min(1 - width, this.u0 + delta)); this.u1 = this.u0 + width; this.layout(); this.draw();
+      } else return;
+      e.preventDefault();
+    });
+    const hit = (p) => { let best = null, bd = 10; for (const lane of this.lanes || []) for (const q of lane.pts) { if (q.x < this.left || q.x > this.right) continue; const d = Math.hypot(q.x - p[0], q.y - p[1]); if (d < bd) { bd = d; best = q; } } return best; };
     const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-    cv.addEventListener('wheel', (e) => { e.preventDefault(); const [px] = pos(e); const L = 150, R = this.W - 30; const u = this.u0 + ((px - L) / (R - L)) * (this.u1 - this.u0); const f = Math.exp(e.deltaY * 0.0015); let w = Math.min(1, Math.max(0.004, (this.u1 - this.u0) * f)); let a = u - (u - this.u0) * (w / (this.u1 - this.u0)); a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); }, { passive: false });
+    cv.addEventListener('wheel', (e) => { e.preventDefault(); const [px] = pos(e); const L = this.left, R = this.right; const u = this.u0 + ((px - L) / (R - L)) * (this.u1 - this.u0); const f = Math.exp(e.deltaY * 0.0015); let w = Math.min(1, Math.max(0.004, (this.u1 - this.u0) * f)); let a = u - (u - this.u0) * (w / (this.u1 - this.u0)); a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); }, { passive: false });
     cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); drag = { x: pos(e)[0], u0: this.u0, u1: this.u1, moved: false }; });
     cv.addEventListener('pointermove', (e) => {
       const p = pos(e);
-      if (drag) { const dx = p[0] - drag.x; if (Math.abs(dx) > 3) drag.moved = true; const w = drag.u1 - drag.u0; let a = drag.u0 - (dx / (this.W - 180)) * w; a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); return; }
-      let best = null, bd = 8; for (const l of this.lanes || []) for (const q of l.pts) { const d = Math.hypot(q.x - p[0], q.y - p[1]); if (d < bd) { bd = d; best = q; } }
+      if (drag) { const dx = p[0] - drag.x; if (Math.abs(dx) > 3) drag.moved = true; const w = drag.u1 - drag.u0; let a = drag.u0 - (dx / (this.right - this.left)) * w; a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); return; }
+      const best = hit(p);
       if (best !== this.hover) { this.hover = best; cv.style.cursor = best ? 'pointer' : 'grab'; this.draw(); }
-      if (best) { const it = best.it; const C = this.G.colById.get(it.col); this.tip.innerHTML = `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))} · ${fmtYear(it.yr)}${it.au ? ` · ${escapeHTML(it.au)}` : ''}${it.planned ? ' · planned' : ''}</div><div class="nm">${inlineHTML(it.name)}</div>`; this.tip.style.display = 'block'; const w = this.tip.offsetWidth; this.tip.style.left = Math.min(this.W - w - 8, p[0] + 14) + 'px'; this.tip.style.top = (p[1] + 14) + 'px'; } else this.tip.style.display = 'none';
+      if (best) { const it = best.it; const C = this.G.colById.get(it.col); this.tip.innerHTML = `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))} · ${fmtYear(it.yr)}${it.au ? ` · ${escapeHTML(it.au)}` : ''}${it.planned ? ' · planned' : ''}</div><div class="nm">${inlineHTML(it.name)}</div>`; this.tip.style.display = 'block'; const w = this.tip.offsetWidth; this.tip.style.left = Math.max(8, Math.min(this.W - w - 8, p[0] + 14)) + 'px'; this.tip.style.top = Math.max(8, Math.min(this.H - this.tip.offsetHeight - 8, p[1] + 14)) + 'px'; } else this.tip.style.display = 'none';
     });
-    cv.addEventListener('pointerup', (e) => { if (drag && !drag.moved && this.hover) this.onOpen?.(this.hover.it.id); drag = null; });
+    cv.addEventListener('pointerup', (e) => { const point = hit(pos(e)); if (drag && !drag.moved && point) this.onOpen?.(point.it.id); drag = null; });
+    cv.addEventListener('pointercancel', () => { drag = null; });
     cv.addEventListener('pointerleave', () => { this.hover = null; this.tip.style.display = 'none'; this.draw(); });
   }
   draw() {
@@ -749,14 +806,14 @@ export class TimelineView {
     const steps = [1000, 500, 100, 50, 25, 10, 5, 1];
     const cand = []; for (const st of steps) for (let y = Math.ceil(yA / st) * st; y <= yB; y += st) if (!cand.some((q) => q.y === y)) cand.push({ y, st });
     const placed = [];
-    for (const q of cand) { const x = this.X(tAxis(q.y)); if (x < 140 || x > this.W - 20) continue; if (placed.some((p) => Math.abs(p - x) < 56)) continue; placed.push(x);
+    for (const q of cand) { const x = this.X(tAxis(q.y)); if (x < this.left || x > this.right) continue; if (placed.some((p) => Math.abs(p - x) < 56)) continue; placed.push(x);
       c.strokeStyle = withAlpha('grid', 1); c.lineWidth = 1; c.beginPath(); c.moveTo(x, this.lanes[0].y0); c.lineTo(x, this.axisY); c.stroke(); c.fillStyle = resolveColor('muted'); c.fillText(fmtYear(q.y), x, this.axisY + 4); }
     for (const l of this.lanes) {
       c.fillStyle = withAlpha('field-' + l.F.id, 0.05); c.fillRect(0, l.y0 + 1, this.W, l.y1 - l.y0 - 2);
       c.fillStyle = withAlpha('field-' + l.F.id, 1); c.textAlign = 'left'; c.textBaseline = 'middle'; c.font = '600 11.5px Inter, system-ui, sans-serif';
       c.fillText(l.F.short.toUpperCase(), 14, (l.y0 + l.y1) / 2);
       for (const q of l.pts) {
-        if (q.x < 140 || q.x > this.W - 10) continue;
+        if (q.x < this.left || q.x > this.right) continue;
         const on = !this.hl || this.hl.has(q.it.id), a = q === this.hover ? 1 : on ? 0.85 : 0.12;
         c.beginPath(); c.arc(q.x, q.y, q.r + (this.hl && on ? 1.2 : 0), 0, Math.PI * 2);
         if (q.it.planned) { c.fillStyle = withAlpha('panel', 1); c.fill(); c.lineWidth = 1.6; c.strokeStyle = withAlpha(q.it.col, a); c.stroke(); } // not yet written: hollow
@@ -766,7 +823,7 @@ export class TimelineView {
     }
     // labels for the most important ideas in view, without overlap
     const occ = []; const free = (x, y, w, h) => { for (const o of occ) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occ.push([x, y, w, h]); return true; };
-    const dots = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > 140 && q.x < this.W - 10);
+    const dots = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > this.left && q.x < this.right);
     const blockers = dots.map((q) => [q.x - q.r, q.y - q.r, 2 * q.r, 2 * q.r]);
     const freeOfDots = (x, y, w, h, self) => !blockers.some((b, i) => dots[i] !== self && x < b[0] + b[2] && x + w > b[0] && y < b[1] + b[3] && y + h > b[1]);
     const all = dots.filter((q) => !this.hl || this.hl.has(q.it.id)).sort((a, b) => (b.it.kind === 'Paper') - (a.it.kind === 'Paper') || (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
@@ -774,7 +831,7 @@ export class TimelineView {
     for (const q of all) {
       const t = plainName(q.it.name, 34); const w = c.measureText(t).width;
       for (const [dx, dy] of [[6, 0], [6, -11], [6, 11], [-w - 10, 0]]) {
-        const x = q.x + dx, y = q.y + dy; if (x < 140 || x + w > this.W - 6) continue;
+        const x = q.x + dx, y = q.y + dy; if (x < this.left || x + w > this.W - 6) continue;
         if (!freeOfDots(x, y - 7, w + 4, 14, q) || !free(x, y - 7, w + 4, 14)) continue;
         c.lineWidth = 3; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(t, x, y); c.fillStyle = resolveColor('muted'); c.fillText(t, x, y); break;
       }
@@ -799,7 +856,7 @@ export function renderChord(host, { fields, edges, onField, size = 560 }) {
   const T = keep.reduce((s, i) => s + tot[i], 0); if (!T) { host.innerHTML = '<p class="muted">No cross-field links yet.</p>'; return; }
   const S = size, cx = S / 2, cy = S / 2, R = S / 2 - 78, ring = 13, gap = 0.035;
   const span = 2 * Math.PI - gap * keep.length;
-  const root = svg('svg', { viewBox: `0 0 ${S} ${S}`, class: 'chord', role: 'img', 'aria-label': 'How the fields depend on one another' }, host);
+  const root = svg('svg', { viewBox: `0 0 ${S} ${S}`, class: 'chord', role: 'group', 'aria-label': 'How the fields depend on one another' }, host);
   const P = (a, r) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
   const arcD = (a0, a1, r0, r1) => { const lg = a1 - a0 > Math.PI ? 1 : 0, [x0, y0] = P(a0, r1), [x1, y1] = P(a1, r1), [x2, y2] = P(a1, r0), [x3, y3] = P(a0, r0); return `M${x0},${y0}A${r1},${r1} 0 ${lg} 1 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 ${lg} 0 ${x3},${y3}Z`; };
   // angular layout: each field's arc, subdivided into one segment per partner (partners in circular order)

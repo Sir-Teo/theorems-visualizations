@@ -33,6 +33,7 @@ npm run build        # generate data/ (index, per-collection shards, colours); r
 npm run serve        # http://localhost:8173
 npm run check        # validate content and run every visualization headless
 node scripts/smoke.mjs   # load every kind of page headless and fail on console errors
+npm run test:ui         # responsive layouts, keyboard/touch input, and navigation regressions
 ```
 
 `npm run check` needs `npm install` (for `playwright-core`) and a Chromium: it uses

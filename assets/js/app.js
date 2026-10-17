@@ -4,8 +4,11 @@ import { buildIndex, runSearch, highlight, norm } from './search.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, renderChord, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
+document.querySelector('.skip-link').addEventListener('click', (e) => { e.preventDefault(); app.focus(); app.scrollIntoView(); });
 const SITE = 'Ideas, Visualized';
 let G = null;           // atlas state built from data/index.json
+let routeVersion = 0;
+const viewIsCurrent = () => { const version = routeVersion; return () => version === routeVersion; };
 let cleanup = null;     // teardown for the current page
 const modCache = new Map();
 
@@ -83,7 +86,7 @@ const h = (html) => { const t = document.createElement('template'); t.innerHTML 
 let curCol = null;
 const link = (it, cls = 'chip') => `<a class="${cls}${it.planned ? ' planned' : ''}" data-col="${it.col}" href="#/t/${it.id}" title="${escapeHTML(fullLabel(it))}${it.planned ? ' (planned)' : ''}"><span class="col-dot"></span><span class="num">${it.col !== curCol ? colShort(it.col) + ' ' : ''}${displayNum(it)}</span><span class="nm">${inlineHTML(it.name)}</span></a>`;
 function setTitle(t) { document.title = t ? `${t} · ${SITE}` : `${SITE} — the ideas of human knowledge, illustrated`; }
-function setNav(key) { document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('on', a.dataset.nav === key)); }
+function setNav(key) { document.querySelectorAll('[data-nav]').forEach((a) => { const on = a.dataset.nav === key; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 const go = (hash) => { location.hash = hash; };
 const ICON_HAND = '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.8-2.4L4.2 15a1.6 1.6 0 0 1 2.5-2L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -112,6 +115,7 @@ function buildNav() {
   const det = document.getElementById('fields-nav');
   menu.addEventListener('click', (e) => { if (e.target.closest('a')) det.open = false; });
   document.addEventListener('click', (e) => { if (det.open && !e.target.closest('#fields-nav')) det.open = false; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && det.open) { det.open = false; det.querySelector('summary').focus(); } });
 }
 
 // ------------------------------------------------------------ pages
@@ -129,25 +133,27 @@ function pageHome() {
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const el = h(`<div>
     <section class="wrap hero">
-      <div class="eyebrow">Mathematics · Science · Society · Arts · Humanities</div>
-      <h1>Ideas, <em>visualized.</em></h1>
-      <p class="lede">The load-bearing ideas of human knowledge — theorems and laws, models and mechanisms, inventions and paradoxes — each with an interactive picture you can push and pull, all wired into one web of dependencies.</p>
-      <div class="hero-stats">
-        <span><b>${G.items.length.toLocaleString('en')}</b>ideas</span>
-        <span><b>${nViz.toLocaleString('en')}</b>interactive visualizations</span>
-        <span><b>${G.edgeCount.toLocaleString('en')}</b>dependency links</span>
-        ${G.plannedCount ? `<span><b>${G.plannedCount.toLocaleString('en')}</b>more on the syllabus</span>` : ''}
-        ${G.paperCount ? `<span><b>${G.paperCount.toLocaleString('en')}</b><a href="#/papers">landmark papers</a></span>` : ''}
-        <span><b>${G.live.length}</b>of ${G.collections.length} collections live</span>
-        <span><b>${G.fields.length}</b>fields</span>
+      <div class="hero-layout">
+        <div class="hero-intro">
+          <h1>Ideas, <em>visualized.</em></h1>
+          <p class="lede">Interactive explanations of ideas across mathematics, science, society, the arts and the humanities.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#/map">Explore the map <span aria-hidden="true">↗</span></a>
+            <a class="hero-browse" href="#fields">Browse the fields <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="hero-discover">
+          <label class="sr-only" for="hero-query">Search the atlas</label>
+          <form class="hero-search" role="search" id="hero-search"><input id="hero-query" type="search" name="q" placeholder="Search ideas, people, fields…" aria-label="Search the atlas"><button class="btn primary" type="submit" aria-label="Search the atlas"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></form>
+          <div class="hero-try"><span>Start with</span><a href="#/search?q=entropy">Entropy</a><a href="#/search?q=fixed%20point">Fixed points</a><a href="#/search?q=kind%3Aparadox">Paradoxes</a></div>
+        </div>
       </div>
-      <form class="hero-search" role="search" id="hero-search"><input type="search" name="q" placeholder="Search ideas, papers and fields: entropy, Noether, kind:paradox…" aria-label="Search the atlas"><button class="btn primary" type="submit">Search</button></form>
-      <div class="hero-try">Try <a href="#/search?q=${encodeURIComponent('kind:paradox')}">kind:paradox</a> · <a href="#/search?q=${encodeURIComponent('fixed point')}">fixed point</a> · <a href="#/search?q=${encodeURIComponent('year:1900-1930 field:physics')}">physics 1900–1930</a> · <a href="#/papers">landmark papers</a> · <a href="#/map?q=${encodeURIComponent('entropy')}">entropy on the map</a></div>
-      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
-        <a class="btn primary" href="#/map">Explore the map →</a>
-        <a class="btn" href="#fields">Browse the fields</a>
-        <a class="btn" href="#/timeline">Timeline</a>
-        <a class="btn" href="#/status">What's coming</a>
+      <div class="hero-stats">
+        <div><b>${G.items.length.toLocaleString('en')}</b><span>ideas</span></div>
+        <div><b>${nViz.toLocaleString('en')}</b><span>visualizations</span></div>
+        <div><b>${G.edgeCount.toLocaleString('en')}</b><span>connections</span></div>
+        <a href="#fields"><b>${G.live.length}</b><span>collections</span></a>
+        <a href="#fields"><b>${G.fields.length}</b><span>fields</span></a>
       </div>
     </section>
     <section class="wrap">
@@ -268,10 +274,12 @@ function pageField(f) {
 }
 
 async function pageCollection(id) {
+  const isCurrent = viewIsCurrent();
   const C = G.colById.get(id); if (!C) return pageNotFound();
   const F = G.fieldById.get(C.field);
   setTitle(C.title); setNav('fields'); curCol = id;
   if (C.chapters.length) await loadShard(id);
+  if (!isCurrent()) return;
   const refs = C.source?.type === 'course' ? C.source.refs || [] : [];
   const el = h(`<div class="wrap" data-col="${C.id}">
     <div class="page-head">
@@ -297,13 +305,16 @@ async function pageCollection(id) {
 }
 
 async function pageChapter(col, c) {
+  const isCurrent = viewIsCurrent();
   const C = G.colById.get(col); const Ch = chapterOf(col, c); if (!C || !Ch) return pageNotFound();
   setTitle(`${C.short} ${chapterLabel(col, c)}: ${Ch.title}`); setNav('fields'); curCol = col;
   await Promise.all([loadShard(col), ensurePlanned()]);
+  if (!isCurrent()) return;
   const items = G.items.filter((it) => it.col === col && it.c === c);
   const planned = G.planned.filter((it) => it.col === col && it.c === c);
   const cross = (Ch.cross || []).map(([num, to]) => [num, G.byId.get(to)]).filter(([, it]) => it);
   await loadShards(cross.map(([, it]) => it.col));
+  if (!isCurrent()) return;
   const idx = C.chapters.indexOf(Ch); const prev = C.chapters[idx - 1], next = C.chapters[idx + 1];
   const extDeps = new Set(); for (const it of items) for (const d of it.deps) if (!items.some((x) => x.id === d)) extDeps.add(d);
   const el = h(`<div class="wrap" data-col="${col}">
@@ -311,7 +322,7 @@ async function pageChapter(col, c) {
       <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/f/${C.field}">${escapeHTML(G.fieldById.get(C.field).title)}</a><span class="sep">/</span><a href="#/c/${col}">${escapeHTML(C.short)}</a><span class="sep">/</span><span>${chapterLabel(col, c)}</span></div>
       <div class="thm-head">
         <div><div class="eyebrow" style="color:var(--bc)">${escapeHTML(C.short)} · ${chapterLabel(col, c)}</div><h1>${escapeHTML(Ch.title || '')}</h1></div>
-        <div class="thm-nav">${prev ? `<a class="btn" href="#/c/${col}/${prev.n}" title="${escapeHTML(prev.title || '')}">← ${prev.n}</a>` : ''}${next ? `<a class="btn" href="#/c/${col}/${next.n}" title="${escapeHTML(next.title || '')}">${next.n} →</a>` : ''}</div>
+        <div class="thm-nav">${prev ? `<a class="btn" href="#/c/${col}/${prev.n}" aria-label="Previous chapter: ${escapeHTML(prev.title || '')}" title="${escapeHTML(prev.title || '')}">← ${prev.n}</a>` : ''}${next ? `<a class="btn" href="#/c/${col}/${next.n}" aria-label="Next chapter: ${escapeHTML(next.title || '')}" title="${escapeHTML(next.title || '')}">${next.n} →</a>` : ''}</div>
       </div>
       <p class="sub">${inlineHTML(Ch.summary || '')}</p>
       <div class="stats-row"><span><b>${items.length}</b> results</span><span><b>${items.filter((i) => i.viz).length}</b> visualizations</span>${items.length ? `<span><b>${extDeps.size}</b> results used from elsewhere</span>` : ''}${planned.length ? `<span><b>${planned.length}</b> planned</span>` : ''}${cross.length ? `<span><b>${cross.length}</b> cross-listed</span>` : ''}</div>
@@ -370,25 +381,29 @@ function lineageBlock(it) {
   return `<div class="card lineage-card">
     <div class="lineage-head"><h2>Lineage</h2>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="muted" style="font-size:13px">prerequisites, steps back:</span>
-        <div class="seg" id="depth"><button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button><button data-d="99">all</button></div>
+        <div class="seg" id="depth" role="group" aria-label="Prerequisite depth"><button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button><button data-d="99">all</button></div>
         <a class="btn" href="#/map?focus=${it.id}">Show on map</a><a class="btn" href="#/path/${it.id}">Plan a path</a></div>
     </div>
-    <div class="lineage-svg-wrap" id="lineage"></div>
+    <p class="graph-hint" id="lineage-hint" hidden>Scroll horizontally to explore the graph.</p><div class="lineage-svg-wrap" id="lineage"></div>
   </div>`;
 }
 function wireLineage(el, it) {
   let depth = 2; try { depth = +(localStorage.getItem('lineageDepth') || 2); } catch { /* ignore */ }
   const drawLineage = () => {
-    el.querySelectorAll('#depth button').forEach((b) => b.classList.toggle('on', +b.dataset.d === depth));
-    renderLineage(el.querySelector('#lineage'), G, it.id, { depth, onOpen: (x) => go(`#/t/${x.id}`) });
+    el.querySelectorAll('#depth button').forEach((b) => { const on = +b.dataset.d === depth; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+    const host = el.querySelector('#lineage');
+    renderLineage(host, G, it.id, { depth, onOpen: (x) => go(`#/t/${x.id}`) });
+    el.querySelector('#lineage-hint').hidden = host.scrollWidth <= host.clientWidth;
   };
   el.querySelectorAll('#depth button').forEach((b) => b.addEventListener('click', () => { depth = +b.dataset.d; try { localStorage.setItem('lineageDepth', depth); } catch { /* ignore */ } drawLineage(); }));
   drawLineage();
 }
 
 async function pagePlanned(it) {
+  const isCurrent = viewIsCurrent();
   const C = G.colById.get(it.col); const Ch = chapterOf(it.col, it.c);
   await loadShard(it.col);
+  if (!isCurrent()) return;
   setTitle(`${C.short} ${it.num}: ${it.name.replace(/\$/g, '')} (planned)`); setNav('fields'); curCol = it.col;
   const deps = depsOf(it).map((d) => G.byId.get(d)).filter(Boolean);
   const users = (G.allChildren.get(it.id) || []).map((d) => G.byId.get(d));
@@ -415,12 +430,15 @@ async function pagePlanned(it) {
 }
 
 async function pageTheorem(id) {
+  const isCurrent = viewIsCurrent();
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   const it = G.byId.get(id); if (!it) return pageNotFound();
   if (it.planned) return await pagePlanned(it);
   const C = G.colById.get(it.col); const Ch = chapterOf(it.col, it.c);
   setTitle(`${C.short} ${fullLabel(it)}: ${it.name.replace(/\$/g, '')}`); setNav('fields'); curCol = it.col;
   await loadShard(it.col);
+  if (!isCurrent()) return;
   const same = G.items.filter((x) => x.col === it.col);
   const idx = same.indexOf(it); const prev = same[idx - 1], next = same[idx + 1];
   const deps = it.deps.map((d) => G.byId.get(d)).filter(Boolean);
@@ -435,8 +453,8 @@ async function pageTheorem(id) {
     <div class="thm-head">
       <div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))}${it.credit ? ` · ${escapeHTML(it.credit)}` : ''}${it.verify ? ' <span class="faint" title="Numbering reconstructed — not yet checked against the source">· number unverified</span>' : ''}</div><h1>${inlineHTML(it.name)}</h1>${provenance(it)}</div>
       <div class="thm-nav">
-        ${prev ? `<a class="btn" href="#/t/${prev.id}" title="${escapeHTML(fullLabel(prev))}">← ${displayNum(prev)}</a>` : ''}
-        ${next ? `<a class="btn" href="#/t/${next.id}" title="${escapeHTML(fullLabel(next))}">${displayNum(next)} →</a>` : ''}
+        ${prev ? `<a class="btn" href="#/t/${prev.id}" aria-label="Previous idea: ${escapeHTML(prev.name)}" title="${escapeHTML(fullLabel(prev))}">← ${displayNum(prev)}</a>` : ''}
+        ${next ? `<a class="btn" href="#/t/${next.id}" aria-label="Next idea: ${escapeHTML(next.name)}" title="${escapeHTML(fullLabel(next))}">${displayNum(next)} →</a>` : ''}
       </div>
     </div>
     ${paperBlock(it)}
@@ -466,7 +484,7 @@ async function pageTheorem(id) {
   wireLineage(el, it);
   // keyboard prev/next
   const onKey = (e) => {
-    if (e.target.closest('input, textarea, [contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest('input, textarea, select, button, summary, .lineage-svg-wrap, .stage-box, [contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === 'ArrowLeft' && prev) go(`#/t/${prev.id}`);
     if (e.key === 'ArrowRight' && next) go(`#/t/${next.id}`);
   };
@@ -489,8 +507,10 @@ async function pageTheorem(id) {
 }
 
 async function pageMap(params) {
+  const isCurrent = viewIsCurrent();
   setTitle('Map'); setNav('map'); curCol = null;
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   const host = document.createElement('div');
   app.replaceChildren(host);
   const q0 = params.get('q') || '';
@@ -521,7 +541,9 @@ function prerequisites(id) {
   return out;
 }
 async function pagePath(id) {
+  const isCurrent = viewIsCurrent();
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   const target = G.byId.get(id); if (!target) return pageNotFound();
   setTitle(`Path to ${target.name.replace(/\$/g, '')}`); setNav(''); curCol = null;
   const order = prerequisites(id);
@@ -541,7 +563,7 @@ async function pagePath(id) {
     el.querySelector('[data-reset]')?.addEventListener('click', () => { for (const x of order) known.delete(x); saveKnown(known); draw(); });
     // group consecutive ideas from the same chapter
     const groups = []; for (const x of order) { const it = G.byId.get(x); const k = `${it.col}/${it.c}`; if (!groups.length || groups[groups.length - 1].k !== k) groups.push({ k, its: [] }); groups[groups.length - 1].its.push(it); }
-    el.querySelector('#path-list').innerHTML = (order.length ? groups.map((g) => { const [col, c] = g.k.split('/'); const Ch = chapterOf(col, +c); const allKnown = g.its.every((it) => known.has(it.id)); return `<section class="path-group" data-col="${col}"><h3><span class="col-dot"></span>${escapeHTML(colShort(col))} · ${chapterLabel(col, +c)} · ${escapeHTML(Ch?.title || '')}<button class="mark-all" type="button" data-group="${g.its.map((it) => it.id).join(',')}" data-on="${allKnown ? 0 : 1}">${allKnown ? 'unmark all' : 'I know all of these'}</button></h3><ul>${g.its.map((it) => `<li class="${known.has(it.id) ? 'known' : frontier.has(it.id) ? 'next' : ''}${it.planned ? ' planned' : ''}"><label><input type="checkbox" data-id="${it.id}" ${known.has(it.id) ? 'checked' : ''}><span class="num">${displayNum(it)}</span></label><a href="#/t/${it.id}"><span class="kind">${kindAbbr(it.kind)}</span> ${inlineHTML(it.name)}</a>${frontier.has(it.id) ? '<span class="tag">learn next</span>' : ''}${it.planned ? '<span class="tag faint">planned</span>' : ''}</li>`).join('')}</ul></section>`; }).join('') : '<p class="empty-note">Nothing comes before it in the graph: a starting point.</p>')
+    el.querySelector('#path-list').innerHTML = (order.length ? groups.map((g) => { const [col, c] = g.k.split('/'); const Ch = chapterOf(col, +c); const allKnown = g.its.every((it) => known.has(it.id)); return `<section class="path-group" data-col="${col}"><h3><span class="col-dot"></span>${escapeHTML(colShort(col))} · ${chapterLabel(col, +c)} · ${escapeHTML(Ch?.title || '')}<button class="mark-all" type="button" data-group="${g.its.map((it) => it.id).join(',')}" data-on="${allKnown ? 0 : 1}">${allKnown ? 'unmark all' : 'I know all of these'}</button></h3><ul>${g.its.map((it) => `<li class="${known.has(it.id) ? 'known' : frontier.has(it.id) ? 'next' : ''}${it.planned ? ' planned' : ''}"><label><input type="checkbox" data-id="${it.id}" ${known.has(it.id) ? 'checked' : ''}><span class="num">${displayNum(it)}</span><span class="sr-only">I know ${inlineHTML(it.name)}</span></label><a href="#/t/${it.id}"><span class="kind">${kindAbbr(it.kind)}</span> ${inlineHTML(it.name)}</a>${frontier.has(it.id) ? '<span class="tag">learn next</span>' : ''}${it.planned ? '<span class="tag faint">planned</span>' : ''}</li>`).join('')}</ul></section>`; }).join('') : '<p class="empty-note">Nothing comes before it in the graph: a starting point.</p>')
       + `<section class="path-group target" data-col="${target.col}"><h3><span class="col-dot"></span>Goal</h3><ul><li class="${frontier.size === 0 && order.length ? 'next' : ''}"><span class="num">${displayNum(target)}</span><a href="#/t/${id}"><span class="kind">${kindAbbr(target.kind)}</span> ${inlineHTML(target.name)}</a></li></ul></section>`;
     el.querySelectorAll('#path-list [data-group]').forEach((b) => b.addEventListener('click', () => { for (const x of b.dataset.group.split(',')) { if (b.dataset.on === '1') known.add(x); else known.delete(x); } saveKnown(known); draw(); }));
     el.querySelectorAll('#path-list input[data-id]').forEach((cb) => cb.addEventListener('change', () => { if (cb.checked) known.add(cb.dataset.id); else known.delete(cb.dataset.id); saveKnown(known); draw(); }));
@@ -564,10 +586,13 @@ function pageBridges() {
   <div class="col-grid">${(G.bridges || []).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div></div>`));
 }
 async function pageBridge(slug) {
+  const isCurrent = viewIsCurrent();
   const B = (G.bridges || []).find((x) => x.slug === slug); if (!B) return pageNotFound();
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   setTitle(B.title); setNav('bridges'); curCol = null;
   await loadShards(B.steps.map((st) => G.byId.get(st.id)?.col).filter(Boolean));
+  if (!isCurrent()) return;
   const el = h(`<div class="wrap bridge-page"><div class="page-head">
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/bridges">Bridges</a><span class="sep">/</span><span>${escapeHTML(B.title)}</span></div>
     <div class="eyebrow">Bridge · ${B.steps.length} steps ${fieldDots(B)}</div>
@@ -585,8 +610,10 @@ async function pageBridge(slug) {
 }
 
 async function pageTimeline(params) {
+  const isCurrent = viewIsCurrent();
   setTitle('Timeline'); setNav('timeline'); curCol = null;
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   const items = [...G.items, ...G.planned].filter((it) => it.yr != null);
   if (!items.length) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
   const q = params?.get('q') || '';
@@ -607,8 +634,8 @@ function pageStatus() {
     <div class="stats-row"><span><b>${tot.n.toLocaleString('en')}</b> written</span><span><b>${(G.plannedCount ?? tot.p).toLocaleString('en')}</b> planned on syllabi</span><span><b>${tot.v.toLocaleString('en')}</b> visualizations</span><span><b>${G.live.length}</b> / ${G.collections.length} collections live</span></div>
   </div>
   ${G.fields.map((F) => `<section class="status-field" data-field="${F.id}" style="--fc:var(--f-${F.id})"><h2><a href="#/f/${F.id}">${escapeHTML(F.title)}</a></h2>
-    <table class="status-table"><thead><tr><th>Collection</th><th>Type</th><th class="r">Written</th><th class="r">Planned</th><th class="r">Viz</th><th>Progress</th></tr></thead><tbody>
-    ${fieldCols(F).map((C) => `<tr data-col="${C.id}" class="${C.count ? '' : 'soon'}"><td><a href="#/c/${C.id}"><span class="col-dot"></span>${escapeHTML(C.title)}</a></td><td class="faint">${C.source?.type === 'book' ? 'book' : 'course'}</td><td class="r">${C.count || '–'}</td><td class="r">${C.planned || '–'}</td><td class="r">${C.viz || '–'}</td><td>${progress(C) || '<span class="faint">no syllabus yet</span>'}</td></tr>`).join('')}
+    <table class="status-table" aria-label="${escapeHTML(F.title)} collection progress"><thead><tr><th>Collection</th><th>Type</th><th class="r" scope="col">Written</th><th class="r" scope="col">Planned</th><th class="r">Viz</th><th>Progress</th></tr></thead><tbody>
+    ${fieldCols(F).map((C) => `<tr data-col="${C.id}" class="${C.count ? '' : 'soon'}"><td><a href="#/c/${C.id}"><span class="col-dot"></span><span class="st-title">${escapeHTML(C.title)}</span></a></td><td class="faint">${C.source?.type === 'book' ? 'book' : 'course'}</td><td class="r">${C.count || '–'}</td><td class="r">${C.planned || '–'}</td><td class="r">${C.viz || '–'}</td><td>${progress(C) || '<span class="faint">no syllabus yet</span>'}</td></tr>`).join('')}
     </tbody></table></section>`).join('')}
   </div>`);
   app.replaceChildren(el);
@@ -659,7 +686,8 @@ function pageNotFound() {
 }
 
 // ------------------------------------------------------------ router
-async function route() {
+async function route(event) {
+  const version = ++routeVersion;
   cleanup?.(); cleanup = null;
   const raw = location.hash.replace(/^#/, '') || '/';
   if (raw === 'fields') { if (location.hash !== '#/') { history.replaceState(null, '', '#/'); await route(); } document.getElementById('fields')?.scrollIntoView(); return; }
@@ -672,7 +700,7 @@ async function route() {
   try {
     if (!parts.length) pageHome();
     else if (parts[0] === 'f' && parts[1]) pageField(parts[1]);
-    else if (parts[0] === 'c' && parts.length === 2) pageCollection(parts[1]);
+    else if (parts[0] === 'c' && parts.length === 2) await pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
     else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}`);
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
@@ -688,10 +716,16 @@ async function route() {
     else if (parts[0] === 'audit') pageAudit();
     else pageNotFound();
   } catch (e) {
+    if (version !== routeVersion) return;
     console.error(e);
     app.replaceChildren(h(`<div class="wrap page-head"><h1>Something went wrong</h1><p class="sub">${escapeHTML(e.message)}</p></div>`));
   }
+  if (version !== routeVersion) return;
   if (parts[0] !== 'map' && parts[0] !== 'timeline') window.scrollTo(0, 0);
+  if (event?.type === 'hashchange') {
+    const focusTarget = parts[0] === 'search' ? app.querySelector('.search-big input') : app;
+    focusTarget?.focus({ preventScroll: true });
+  }
 }
 
 // ------------------------------------------------------------ search
@@ -702,13 +736,17 @@ const searchHref = (q) => `#/search?q=${encodeURIComponent(q)}`;
 function resultRow(it, Q, i, sel) {
   const C = G.colById.get(it.col);
   const sub = it.kind === 'Paper' ? `${escapeHTML(it.au || '')}${it.yr != null ? ` · ${it.yr}` : ''}` : `${escapeHTML(fullLabel(it))} · ${escapeHTML(chapterOf(it.col, it.c)?.title || '')}`;
-  return `<div class="sr-item${i === sel ? ' sel' : ''}${it.planned ? ' planned' : ''}" role="option" data-href="#/t/${it.id}" data-col="${it.col}"><span class="sr-num"><span class="col-dot"></span> ${escapeHTML(C.short)} ${displayNum(it)}</span><span class="sr-name">${highlight(inlineHTML(it.name), Q)}${it.planned ? ' <span class="sr-tag">planned</span>' : ''}${it.kind === 'Paper' ? ' <span class="sr-tag paper">paper</span>' : ''}</span><span class="sr-sub">${sub}</span></div>`;
+  return `<a href="#/t/${it.id}" class="sr-item${i === sel ? ' sel' : ''}${it.planned ? ' planned' : ''}" data-href="#/t/${it.id}" data-col="${it.col}"><span class="sr-num"><span class="col-dot"></span> ${escapeHTML(C.short)} ${displayNum(it)}</span><span class="sr-name">${highlight(inlineHTML(it.name), Q)}${it.planned ? ' <span class="sr-tag">planned</span>' : ''}${it.kind === 'Paper' ? ' <span class="sr-tag paper">paper</span>' : ''}</span><span class="sr-sub">${sub}</span></a>`;
 }
 function pageRow(e, Q, i, sel) {
   const [href, label, title] = e.t === 'field' ? [`#/f/${e.F.id}`, 'Field', e.F.title] : e.t === 'col' ? [`#/c/${e.C.id}`, e.C.short, e.C.title] : e.t === 'ch' ? [`#/c/${e.C.id}/${e.Ch.n}`, `${e.C.short} ${chapterLabel(e.C.id, e.Ch.n)}`, e.Ch.title] : [`#/bridge/${e.B.slug}`, 'Bridge', e.B.title];
-  return `<div class="sr-item sr-page${i === sel ? ' sel' : ''}" role="option" data-href="${href}" ${e.C ? `data-col="${e.C.id}"` : e.F ? `data-field="${e.F.id}"` : ''}><span class="sr-num">${escapeHTML(label)}</span><span class="sr-name">${highlight(escapeHTML(title), Q)}</span><span class="sr-sub">${e.t === 'col' ? escapeHTML(G.fieldById.get(e.C.field)?.short || '') : e.t === 'ch' ? escapeHTML(e.C.title) : ''}</span></div>`;
+  return `<a href="${href}" class="sr-item sr-page${i === sel ? ' sel' : ''}" data-href="${href}" ${e.C ? `data-col="${e.C.id}"` : e.F ? `data-field="${e.F.id}"` : ''}><span class="sr-num">${escapeHTML(label)}</span><span class="sr-name">${highlight(escapeHTML(title), Q)}</span><span class="sr-sub">${e.t === 'col' ? escapeHTML(G.fieldById.get(e.C.field)?.short || '') : e.t === 'ch' ? escapeHTML(e.C.title) : ''}</span></a>`;
 }
 const sInput = document.getElementById('search'), sBox = document.getElementById('search-results');
+sInput.setAttribute('role', 'combobox');
+sInput.setAttribute('aria-autocomplete', 'list');
+sInput.setAttribute('aria-controls', 'search-results');
+sInput.setAttribute('aria-expanded', 'false');
 let sSel = 0, sHrefs = [];
 function renderSearch() {
   const q = sInput.value; if (!q.trim()) { closeSearch(); return; }
@@ -719,27 +757,34 @@ function renderSearch() {
   let i = 0;
   const rows = [...pages.map((e) => pageRow(e, R.Q, i++, sSel)), ...R.items.map((it) => resultRow(it, R.Q, i++, sSel))];
   sBox.innerHTML = (rows.length ? rows.join('') : '<div class="sr-item"><span></span><span class="faint">No matches. Try fewer words, or kind:, field:, year:, by:</span></div>')
-    + `<div class="sr-item sr-all${i === sSel ? ' sel' : ''}" role="option" data-href="${searchHref(q)}"><span></span><span>${R.total > R.items.length ? `All ${R.total.toLocaleString('en')} results` : 'Open the results page'} · map · timeline →</span></div>`;
+    + `<a href="${searchHref(q)}" class="sr-item sr-all${i === sSel ? ' sel' : ''}" role="option" data-href="${searchHref(q)}"><span></span><span>${R.total > R.items.length ? `All ${R.total.toLocaleString('en')} results` : 'Open the results page'} · map · timeline →</span></a>`;
   sHrefs = [...sBox.querySelectorAll('[data-href]')].map((el) => el.dataset.href);
+  sBox.querySelectorAll('[data-href]').forEach((el, index) => { el.id = `search-option-${index}`; el.setAttribute('role', 'option'); el.tabIndex = -1; el.setAttribute('aria-selected', String(index === sSel)); });
   sBox.classList.add('open');
+  sInput.setAttribute('aria-expanded', 'true');
+  sInput.setAttribute('aria-activedescendant', `search-option-${sSel}`);
 }
-function closeSearch() { sBox.classList.remove('open'); }
+function closeSearch() { sBox.classList.remove('open'); sInput.setAttribute('aria-expanded', 'false'); sInput.removeAttribute('aria-activedescendant'); sHrefs = []; }
 function goSearch(href) { go(href); sInput.value = ''; sInput.blur(); closeSearch(); }
 sInput.addEventListener('input', () => { sSel = 0; renderSearch(); });
-sInput.addEventListener('focus', () => { ensurePlanned().then(() => { if (!SIDX.some((e) => e.planned)) buildSearch(); if (sInput.value.trim()) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
+sInput.addEventListener('focus', () => { ensurePlanned().then(() => { if (!SIDX.some((e) => e.planned)) buildSearch(); if (sInput.value.trim() && document.activeElement === sInput) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
 sInput.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); e.preventDefault(); }
-  else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); e.preventDefault(); }
+  if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
   else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel]; if (href) goSearch(href); }
   else if (e.key === 'Escape') { sInput.blur(); closeSearch(); }
 });
-sBox.addEventListener('mousedown', (e) => { const r = e.target.closest('[data-href]'); if (r) { e.preventDefault(); goSearch(r.dataset.href); } });
+sInput.addEventListener('blur', closeSearch);
+sBox.addEventListener('mousedown', (e) => { const r = e.target.closest('[data-href]'); if (r && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) { e.preventDefault(); goSearch(r.dataset.href); } });
 document.addEventListener('click', (e) => { if (!e.target.closest('.search')) closeSearch(); });
-window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.target.closest('input, textarea')) { e.preventDefault(); sInput.focus(); } });
+window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !e.target.closest('input, textarea, select, [contenteditable]')) { e.preventDefault(); sInput.focus(); } });
 
 /** Full results page: facets, results, and the matches shown on the map and timeline. */
 async function pageSearch(params) {
-  await ensurePlanned().catch(() => {}); buildSearch();
+  const isCurrent = viewIsCurrent();
+  await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
+  buildSearch();
   const q = params.get('q') || '';
   setTitle(q ? `Search: ${q}` : 'Search'); setNav(''); curCol = null;
   const R = runSearch(SIDX, q, G, { limit: 100000 });
@@ -748,11 +793,11 @@ async function pageSearch(params) {
   const el = h(`<div class="wrap search-page">
     <div class="page-head"><h1>Search</h1>
       <form class="search-big" role="search"><input type="search" name="q" value="${escapeHTML(q)}" placeholder="entropy · kind:paper field:physics · year:1900-1950 · by:noether · is:planned" aria-label="Search the atlas" autofocus><button class="btn" type="submit">Search</button></form>
-      <p class="sub search-help">Words match names and descriptions (prefix, one typo allowed). Filters: <code>kind:theorem</code> <code>field:biology</code> <code>col:mech</code> <code>year:1900-1950</code> <code>year:&lt;1700</code> <code>by:shannon</code> <code>is:planned</code> <code>is:paper</code> <code>"exact phrase"</code></p>
+      <details class="search-help"><summary>Search tips &amp; filters</summary><p>Words match names and descriptions (prefix, one typo allowed). Filters: <code>kind:theorem</code> <code>field:biology</code> <code>col:mech</code> <code>year:1900-1950</code> <code>year:&lt;1700</code> <code>by:shannon</code> <code>is:planned</code> <code>is:paper</code> <code>"exact phrase"</code></p></details>
       ${q ? `<div class="stats-row"><span><b>${R.total.toLocaleString('en')}</b> ideas</span><span><b>${R.facets.status.written.toLocaleString('en')}</b> written</span><span><b>${R.facets.status.planned.toLocaleString('en')}</b> planned</span>${R.total ? `<a class="btn" href="#/map?q=${encodeURIComponent(q)}">Show on the map</a><a class="btn" href="#/timeline?q=${encodeURIComponent(q)}">Show on the timeline</a>` : ''}</div>` : ''}
     </div>
-    ${q ? `<div class="search-layout">
-      <aside class="facets card">${facet('Field', R.facets.field, 'field', (k) => G.fieldById.get(k)?.short || k)}${facet('Kind', R.facets.kind, 'kind', (k) => k)}${facet('Status', R.facets.status, 'is', (k) => k)}</aside>
+    ${q ? `<div class="search-layout${!R.total ? ' no-results' : ''}">
+      <details class="facet-panel card" ${!R.total ? 'hidden' : ''} ${matchMedia('(min-width: 761px)').matches ? 'open' : ''}><summary>Refine results</summary><aside class="facets">${facet('Field', R.facets.field, 'field', (k) => G.fieldById.get(k)?.short || k)}${facet('Kind', R.facets.kind, 'kind', (k) => k)}${facet('Status', R.facets.status, 'is', (k) => k)}</aside></details>
       <div>
         ${R.pages.length ? `<div class="sr-list sr-pages">${R.pages.map((e, i) => pageRow(e, R.Q, i, -1)).join('')}</div>` : ''}
         <div class="sr-list" id="sr-list"></div>
@@ -762,7 +807,6 @@ async function pageSearch(params) {
   </div>`);
   app.replaceChildren(el);
   el.querySelector('form').addEventListener('submit', (e) => { e.preventDefault(); go(searchHref(new FormData(e.target).get('q'))); });
-  el.addEventListener('click', (e) => { const r = e.target.closest('.sr-item[data-href]'); if (r) go(r.dataset.href); });
   const list = el.querySelector('#sr-list'), more = el.querySelector('#sr-more');
   const showMore = () => {
     const next = R.all.slice(shown, shown + PAGE); shown += next.length;
@@ -775,7 +819,9 @@ async function pageSearch(params) {
 
 /** Landmark papers across all fields: timeline strip + lists by field. */
 async function pagePapers(params) {
+  const isCurrent = viewIsCurrent();
   await ensurePlanned().catch(() => {});
+  if (!isCurrent()) return;
   setTitle('Landmark papers'); setNav('papers'); curCol = null;
   const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper').sort((a, b) => (a.yr ?? 9999) - (b.yr ?? 9999) || a.name.localeCompare(b.name));
   const fieldOf = (it) => G.colById.get(it.col)?.field;
@@ -820,8 +866,8 @@ async function pagePapers(params) {
     groupsEl.innerHTML = groups.length ? groups.map((g) => `<div class="section-title"><h2 style="color:${g.color}">${escapeHTML(g.title)}</h2><span class="muted">${g.ps.length} paper${g.ps.length === 1 ? '' : 's'}</span></div><div class="papers-list">${g.ps.map((p) => row(p, Q)).join('')}</div>`).join('')
       : `<div class="card empty-shelf"><p>No paper matches “${escapeHTML(state.q)}”. <a href="#/search?q=${encodeURIComponent(state.q)}">Search all ideas instead</a>.</p></div>`;
     countEl.textContent = shown.length === papers.length ? '' : `${shown.length} of ${papers.length}`;
-    for (const b of el.querySelectorAll('.field-chips .chip')) b.classList.toggle('on', b.dataset.field === state.field);
-    for (const b of el.querySelectorAll('.seg button')) b.classList.toggle('on', b.dataset.by === state.by);
+    for (const b of el.querySelectorAll('.field-chips .chip')) { const on = b.dataset.field === state.field; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }
+    for (const b of el.querySelectorAll('.seg button')) { const on = b.dataset.by === state.by; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }
     view?.setHighlight(state.field || words.length ? new Set(shown.map((p) => p.id)) : null);
     const qs = new URLSearchParams(); if (state.field) qs.set('field', state.field); if (state.q) qs.set('q', state.q); if (state.by === 'era') qs.set('by', 'era');
     history.replaceState(null, '', '#/papers' + (qs.toString() ? '?' + qs : ''));
@@ -829,12 +875,25 @@ async function pagePapers(params) {
   el.querySelector('.field-chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; state.field = b.dataset.field; render(); });
   el.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.by = b.dataset.by; render(); });
   let t = 0; input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = input.value; render(); }, 120); });
+  const dispose = cleanup; cleanup = () => { clearTimeout(t); dispose?.(); };
   render();
 }
 
 // ------------------------------------------------------------ theme
+function syncThemeButton() {
+  const dark = (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  const button = document.getElementById('theme-btn');
+  button.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+  button.title = button.getAttribute('aria-label');
+  const background = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => { meta.content = background; });
+  button.innerHTML = dark
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>'
+    : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg>';
+}
 function applyTheme(t) {
   if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  syncThemeButton();
   resetColors(); window.dispatchEvent(new Event('themechange'));
 }
 document.getElementById('theme-btn').addEventListener('click', () => {
@@ -844,6 +903,7 @@ document.getElementById('theme-btn').addEventListener('click', () => {
   applyTheme(t);
 });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.dataset.theme) applyTheme(null); });
+syncThemeButton();
 
 // ------------------------------------------------------------ boot
 (async () => {

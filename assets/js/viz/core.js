@@ -1232,6 +1232,7 @@ function makeSound(rt) {
 }
 
 // ================================================================== controls
+let controlId = 0;
 function controlBox(rt, cls) { const el = h('div', 'ctl ' + cls); rt.controlsEl.append(el); return el; }
 function makeSlider(rt, label, min, max, value, o = {}) {
   const el = controlBox(rt, 'ctl-slider');
@@ -1256,7 +1257,7 @@ function makeSlider(rt, label, min, max, value, o = {}) {
     set value(x) { cur = x; input.value = toInput(x); sync(); },
     set(x) { cur = x; input.value = toInput(x); sync(); rt.invalidate(); },
   };
-  const sync = () => { out.textContent = format(ctl.value); };
+  const sync = () => { out.textContent = format(ctl.value); input.setAttribute('aria-valuetext', out.textContent); };
   input.addEventListener('input', () => { const x = fromInput(+input.value); cur = log ? roundSig(x, o.sig ?? 3) : x; sync(); o.onChange?.(ctl.value); rt.invalidate(); });
   sync(); el.append(lab, input, out);
   return ctl;
@@ -1274,13 +1275,14 @@ function makeInput(rt, label, value = '', o = {}) {
   const el = controlBox(rt, 'ctl-input');
   if (label) { const lab = h('span', 'ctl-label'); lab.innerHTML = inlineHTML(label); el.append(lab); }
   const input = h('input'); input.type = 'text'; input.value = value; input.spellcheck = false; input.autocomplete = 'off';
+  input.setAttribute('aria-label', String(label || '').replace(/\$/g, '') || o.placeholder || 'Expression');
   if (o.placeholder) input.placeholder = o.placeholder; if (o.width) input.style.width = typeof o.width === 'number' ? o.width + 'px' : o.width;
-  const msg = h('span', 'ctl-input-err'); el.append(input, msg);
+  const msg = h('span', 'ctl-input-err'); msg.id = `viz-input-error-${++controlId}`; msg.setAttribute('role', 'alert'); input.setAttribute('aria-describedby', msg.id); el.append(input, msg);
   let fn = null, error = null, cur = String(value);
   const compile = (src) => {
     if (!o.vars) { fn = null; error = null; return true; }
     const r = M.compileExpr(src, o.vars); error = r.error; if (r.f) fn = r.f;
-    el.classList.toggle('bad', !!error); msg.textContent = error || ''; return !error;
+    el.classList.toggle('bad', !!error); input.setAttribute('aria-invalid', String(!!error)); msg.textContent = error || ''; return !error;
   };
   compile(cur);
   let t = 0;
@@ -1293,10 +1295,11 @@ function makeSelect(rt, label, options, value, o = {}) {
   const el = controlBox(rt, 'ctl-select');
   if (label) { const lab = h('span', 'ctl-label'); lab.innerHTML = inlineHTML(label); el.append(lab); }
   const seg = h('div', 'seg'); el.append(seg);
+  seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', String(label || '').replace(/\$/g, '') || 'Options');
   const opts = options.map((x) => typeof x === 'object' ? x : { value: x, label: String(x) });
   let cur = value ?? opts[0].value; const btns = [];
   const ctl = { el, get value() { return cur; }, set value(v) { ctl.set(v); }, set(v, so = {}) { if (v === cur) return; cur = v; sync(); if (so.fire) o.onChange?.(cur); if (!rt._inFrame) rt.invalidate(); } };
-  const sync = () => btns.forEach((b, i) => b.classList.toggle('on', opts[i].value === cur));
+  const sync = () => btns.forEach((b, i) => { const on = opts[i].value === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
   opts.forEach((op) => {
     const b = h('button'); b.type = 'button'; b.innerHTML = inlineHTML(op.label);
     b.addEventListener('click', () => { cur = op.value; sync(); o.onChange?.(cur); rt.invalidate(); });
