@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 208,
+  "remainingFlags": 206,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,6 @@
     "energy": 1,
     "robot": 1,
     "micro": 12,
-    "macro": 2,
     "fin": 12,
     "game": 18,
     "behav": 5,
@@ -407,36 +406,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Price_discrimination"
-      }
-    },
-    {
-      "id": "macro-4.1",
-      "file": "content/macro/ch04.js",
-      "name": "Ramsey\u2013Cass\u2013Koopmans optimal growth",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Romer ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Ramsey%E2%80%93Cass%E2%80%93Koopmans_model"
-      }
-    },
-    {
-      "id": "macro-4.2",
-      "file": "content/macro/ch04.js",
-      "name": "The Diamond overlapping-generations model",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Romer ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Overlapping_generations_model"
       }
     },
     {
@@ -3363,8 +3332,6 @@
   "changesFromBaseline": {
     "addedFlags": [
       "circ-4.17",
-      "macro-4.1",
-      "macro-4.2",
       "art-3.12",
       "art-3.13"
     ],
@@ -8003,6 +7970,18 @@
       "status": "resolved",
       "report": "docs/verification/energy-radiative-followup.md",
       "note": "Explicit ideal spectral-window absorption/emission extension independently derived and checked; actual electrical spectral density and current-constrained series optimization replace unsupported generic tandem/infinite-limit claims. Parent4 math and8 native groups pass, including independent-loading bound,rank colors,equal gaps,drag/search and screenshots; historical papers are not claimed reproduced."
+    },
+    {
+      "id": "macro-4.1",
+      "status": "resolved",
+      "report": "docs/verification/macro-optimal-growth-followup.md",
+      "note": "Read Acemoglu optimal-growth model and transversality sections plus separate historical records; replaced projected shooting path with a backward stable arm and corrected double-scaled physical phase arrows. Parent independent exact-family/residual/off-arm tests and all eight native groups, static checks and final screenshot inspection pass."
+    },
+    {
+      "id": "macro-4.2",
+      "status": "resolved",
+      "report": "docs/verification/macro-optimal-growth-followup.md",
+      "note": "Read the complete Acemoglu OLG lecture and specified original Diamond model sections; explicitly identify the full-depreciation log-utility specialization, positive fixed point, exact log contraction and feasible resource allocation. Parent independent household-budget, convergence and finite resource-gain tests plus all eight native groups, static checks and final screenshot inspection pass."
     }
   ]
 }

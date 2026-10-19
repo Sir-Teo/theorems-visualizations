@@ -1,39 +1,12 @@
 // Macroeconomics — Chapter 4: Growth II: optimal saving, ideas and history (items 4.1–4.5; 4.6–4.9 are in ch04-b.js)
 import { clamp, pc, fx, capitalSavingPath } from './ch04.shared.js';
+import {ramseyGrowthAudit,diamondGrowthAudit} from './source-audit-optimal-growth.js';
+// 4.1: Acemoglu MIT14.452 (2020), environment/optimal-growth/steady-state/
+// transitional sections slides25–54, CRRA slides60–62, read in full.
+// 4.2: Acemoglu OLG (2018), complete46-slide authored lecture read;
+// Diamond1965 original sections1–10,1126–1135 and reference list read.
+// Original Diamond assumes zero depreciation; the displayed variant assumes full depreciation.
 
-/** Ramsey–Cass–Koopmans with f(k) = A k^a: steady state, golden rule, saddle-path table and trajectories by RK4 shooting. */
-function rckModel(A, a, d, rho, th) {
-  const f = (k) => A * k ** a, fp = (k) => a * A * k ** (a - 1);
-  const ks = (a * A / (d + rho)) ** (1 / (1 - a)), kg = (a * A / d) ** (1 / (1 - a));
-  const F = (k, c) => [f(k) - d * k - c, (c * (fp(k) - d - rho)) / th];
-  /** Integrate from (k0, c0); stop when the verdict is clear: 'high' (k̇ turns the wrong way / k crosses k* the wrong way) or 'low'. */
-  function traj(k0, c0, T = 160, dt = 0.25, keep = true) {
-    const dir = k0 <= ks ? 1 : -1, pts = [[0, k0, c0]];
-    let k = k0, c = c0, verdict = 'ok';
-    for (let t = dt; t <= T + 1e-9; t += dt) {
-      const k1 = F(k, c), k2 = F(k + 0.5 * dt * k1[0], c + 0.5 * dt * k1[1]), k3 = F(k + 0.5 * dt * k2[0], c + 0.5 * dt * k2[1]), k4 = F(k + dt * k3[0], c + dt * k3[1]);
-      k += (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); c += (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
-      if (!(isFinite(k) && isFinite(c))) { if (verdict === 'ok') verdict = 'high'; break; }
-      if (keep) pts.push([t, k, c]);
-      if (k <= 1e-3 || c <= 1e-6 || c > 4 * f(kg)) { if (verdict === 'ok') verdict = k <= 1e-3 ? 'high' : 'low'; break; }
-      if (verdict === 'ok') {
-        const kd = f(k) - d * k - c;
-        if (dir > 0) { if (k >= ks) verdict = 'low'; else if (kd < 0) verdict = 'high'; }
-        else { if (k <= ks) verdict = 'high'; else if (kd > 0) verdict = 'low'; }
-        if (verdict !== 'ok' && !keep) break;
-      }
-    }
-    return { pts, verdict };
-  }
-  /** Saddle-path consumption c_s(k0) by bisection on the verdict. */
-  function saddle(k0) {
-    if (Math.abs(k0 - ks) < 1e-9 * ks) return f(ks) - d * ks;
-    let lo = 0, hi = 2 * f(k0) + 1;
-    for (let i = 0; i < 38; i++) { const m = (lo + hi) / 2; if (traj(k0, m, 260, 0.4, false).verdict === 'high') hi = m; else lo = m; }
-    return (lo + hi) / 2;
-  }
-  return { f, fp, ks, kg, F, traj, saddle, cs: f(ks) - d * ks };
-}
 
 export default {
   collection: 'macro',
@@ -43,134 +16,73 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num: '4.1', kind: 'Model', name: 'Ramsey–Cass–Koopmans optimal growth',
-      statement: String.raw`A representative household with infinite horizon chooses consumption $c(t)$ to maximise $\int_0^\infty e^{-\rho t}\,\frac{c^{1-\theta}}{1-\theta}\,dt$ subject to the resource constraint of the Solow economy,
-$$\dot k = f(k) - \delta k - c .$$
-The first-order condition is the consumption Euler equation $\dot c / c = \big(f'(k) - \delta - \rho\big)/\theta$. The system $(k, c)$ has a unique steady state $k^*$ with $f'(k^*) = \delta + \rho$, and it is a **saddle point**: for each $k_0$ exactly one initial consumption $c_0 = c_s(k_0)$ puts the economy on the **stable arm** that converges to $(k^*, c^*)$. Any higher $c_0$ exhausts the capital stock in finite time; any lower $c_0$ overshoots $k^*$ and ends with consumption falling toward zero, which violates the transversality condition. Because $\rho > 0$ the steady state lies *below* the Solow golden rule, $k^* < k_{\mathrm{gold}}$ where $f'(k_{\mathrm{gold}}) = \delta$.
-
-Scope: a closed, one-good economy with no growth in technology or labour (adding them rescales the variables per effective worker), complete markets and a social planner or equivalent competitive equilibrium.`,
-      idea: String.raw`The planner trades consumption today against more capital tomorrow; the Euler equation says consumption rises exactly when the marginal product of capital, net of depreciation, exceeds impatience $\rho$ (scaled by how much the household dislikes an uneven path, $\theta$). Along $\dot c = 0$ the marginal product is pinned down, so that locus is vertical at $k^*$; along $\dot k = 0$ consumption equals net output, a hump. Linearising at their intersection gives one stable and one unstable eigenvalue (a saddle), so convergence needs the jump variable $c$ to land on the stable arm. The two-period Euler equation of the Fisher problem reappears here in continuous time, and the capital dynamics are the Solow model with the saving rate now chosen.`,
-      caption: String.raw`**Left:** the phase diagram in $(k, c)$. The red hump is $\dot k = 0$, the vertical gold line is $\dot c = 0$, arrows show the flow and the green curve is the saddle path (computed by shooting). Drag the **gold handle** to choose starting capital $k_0$ and consumption $c_0$; the trajectory turns green only if you sit on the saddle path. Tick *start on the saddle path* to let the household choose $c_0$ optimally. **Right:** $k(t)$ and $c(t)$ relative to their steady-state values. Raise $\rho$ and watch the steady state move left of the golden rule.`,
-      deps: ['macro-3.2', 'macro-2.11'], refs: ['Romer ch. 2'], tags: ['growth', 'optimal control', 'saddle path'],
-      verify: true, // Historical credit and textbook pointers await primary-source review.
-      credit: 'Frank Ramsey, 1928; David Cass and Tjalling Koopmans, 1965',
-      scope: String.raw`Closed economy, infinitely lived representative household, CRRA utility, no technological progress in the version drawn here.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ramsey%E2%80%93Cass%E2%80%93Koopmans_model' },
-      viz(v) {
-        const rhoS = v.slider('impatience $\\rho$', 0.005, 0.1, 0.03, { step: 0.001 });
-        const thS = v.slider('curvature $\\theta$', 0.5, 5, 2, { step: 0.05 });
-        const aS = v.slider('capital share $\\alpha$', 0.2, 0.5, 0.33, { step: 0.01 });
-        const onS = v.toggle('start on the saddle path', false);
-        const P = v.stage({ x: [0, 40], y: [0, 3], axes: 'box', gutter: true, height: 360, weight: 1.15, minWidth: 290, xlabel: 'capital per worker k', ylabel: 'consumption per worker c', title: 'phase diagram' });
-        const T = v.stage({ x: [0, 120], y: [0, 2], axes: 'box', gutter: true, height: 360, weight: 0.85, minWidth: 250, xlabel: 'years', ylabel: 'relative to steady state', title: 'time paths from the handle' });
-        const h = P.handle(5, 1, { color: 'gold', label: 'start', labelPos: 'se' });
-        let M = null, key = '', tab = null, st = null, first = true;
-        const A = 1, d = 0.05;
-        v.button('snap to saddle path', () => { if (M && tab) h.set(h.x, M.saddle(h.x)); });
-        v.render(() => {
-          const rho = rhoS.value, th = thS.value, a = aS.value, k2 = `${rho}|${th}|${a}`;
-          if (k2 !== key) {
-            key = k2; M = rckModel(A, a, d, rho, th);
-            const kmax = 2 * M.kg, N = 36; tab = [];
-            for (let i = 0; i <= N; i++) { const k = Math.max(0.05 * M.ks, (kmax * i) / N); tab.push([k, M.saddle(k)]); }
-            tab.sort((p, q) => p[0] - q[0]);
-            if (first) { first = false; h.set(0.45 * M.ks, 1.1 * M.saddle(0.45 * M.ks)); }
-          }
-          const kmax = 2 * M.kg, cmax = 1.3 * (M.f(M.kg) - d * M.kg);
-          P.setView([0, kmax], [0, cmax]);
-          const csAt = (k) => { if (k <= tab[0][0]) return tab[0][1]; for (let i = 1; i < tab.length; i++) if (k <= tab[i][0]) { const f = (k - tab[i - 1][0]) / (tab[i][0] - tab[i - 1][0]); return tab[i - 1][1] + f * (tab[i][1] - tab[i - 1][1]); } return tab[tab.length - 1][1]; };
-          const k0 = clamp(h.x, 0.03 * kmax, 0.98 * kmax);
-          const c0 = onS.value ? csAt(k0) : clamp(h.y, 0.02, cmax * 0.98);
-          h.set(k0, c0);
-          P.fn((k) => M.f(k) - d * k, { color: 'red', width: 2.4, domain: [0, Math.min(kmax, (A / d) ** (1 / (1 - a)))], n: 300 });
-          P.vline(M.ks, { color: 'gold', width: 2.2 });
-          P.vline(M.kg, { color: 'faint', dash: [4, 4] });
-          P.path(tab.filter((p) => p[0] >= 0.05 * M.ks), { color: 'green', width: 2.8 });
-          P.field((k, c) => { const [u, w] = M.F(k, c); const n1 = Math.hypot(u / kmax, w / cmax) || 1; return [(u / kmax) / n1, (w / cmax) / n1]; }, { spacing: 44, color: 'faint' });
-          P.dot(M.ks, M.cs, { r: 6, color: 'gold' });
-          P.text('k*', M.ks, 0, { dy: -10, dx: 4, align: 'left', color: 'gold', weight: 700, size: 12 });
-          P.text('golden rule', M.kg, 0, { dy: -10, dx: 4, align: 'left', color: 'muted', size: 11 });
-          P.text('k̇ = 0', 0.18 * kmax, M.f(0.18 * kmax) - d * 0.18 * kmax, { dy: -10, color: 'red', weight: 700, align: 'left' });
-          P.text('ċ = 0', M.ks, cmax, { dx: 6, dy: 12, align: 'left', color: 'gold', weight: 700 });
-          P.text('saddle path', 0.7 * M.ks, csAt(0.7 * M.ks), { dx: 8, dy: 16, align: 'left', color: 'green', weight: 700, size: 12 });
-          let path, verdict;
-          if (onS.value) {
-            // drift-free: follow the 1-D flow on the saddle curve
-            path = [[0, k0, c0]]; let k = k0; const dt = 0.5;
-            for (let t = dt; t <= 160; t += dt) { const g1 = M.f(k) - d * k - csAt(k); k = Math.max(1e-3, k + dt * g1); path.push([t, k, csAt(k)]); }
-            verdict = 'saddle';
-          } else { const r = M.traj(k0, c0, 160, 0.25, true); path = r.pts; verdict = r.verdict; }
-          const col = verdict === 'saddle' ? 'green' : verdict === 'ok' ? 'accent' : 'purple';
-          P.path(path.map((p) => [p[1], p[2]]), { color: col, width: 2.4 });
-          const sh = path.filter((p) => p[0] <= 120);
-          const ymax = Math.max(1.5, ...sh.map((p) => Math.max(p[1] / M.ks, p[2] / M.cs)));
-          T.setView([0, 120], [0, Math.min(ymax * 1.05, 4)]);
-          T.hline(1, { color: 'faint', dash: [4, 4] });
-          T.path(sh.map((p) => [p[0], p[1] / M.ks]), { color: 'orange', width: 2.4 });
-          T.path(sh.map((p) => [p[0], p[2] / M.cs]), { color: 'accent', width: 2.4 });
-          T.text('k / k*', 2, sh[0][1] / M.ks, { color: 'orange', weight: 700, size: 12, dy: 16, dx: 4, align: 'left' });
-          T.text('c / c*', 2, sh[0][2] / M.cs, { color: 'accent', weight: 700, size: 12, dy: -10, dx: 4, align: 'left' });
-          st = { verdict, k0, c0, cs: csAt(k0), end: path[path.length - 1] };
+      num:'4.1',kind:'Model',name:'Ramsey–Cass–Koopmans optimal growth',
+      statement:String.raw`A closed one-good economy has production $f(k)=Ak^\alpha$, with $A>0$, $0<\alpha<1$, fixed labour and no technological change. An infinitely lived household chooses positive consumption to maximize
+$$\int_0^\infty e^{-\rho t}u_\theta(c(t))\,dt,$$
+where $\rho,\theta>0$, $k(0)>0$ and
+$$u_\theta(c)=\begin{cases}(c^{1-\theta}-1)/(1-\theta),&\theta\ne1,\\ \ln c,&\theta=1.\end{cases}$$
+For depreciation $\delta>0$, an interior optimum satisfies
+$$\begin{aligned}\dot k&=Ak^\alpha-\delta k-c,\\\dot c/c&=(\alpha Ak^{\alpha-1}-\delta-\rho)/\theta,\end{aligned}$$
+and the transversality condition $\lim_{t\to\infty}e^{-\rho t}c(t)^{-\theta}k(t)=0$. There is one positive steady state, with $f'(k^*)=\delta+\rho$ and $c^*=f(k^*)-\delta k^*$. It is a saddle: for each positive starting capital, one initial consumption lies on the optimal stable arm. The Euler equations alone also admit paths that fail feasibility or transversality. Since $\rho>0$, $k^*$ lies below the golden-rule capital defined by $f'(k_{\rm gold})=\delta$.`,
+      idea:String.raw`The current-value Hamiltonian is $u_\theta(c)+\mu[f(k)-\delta k-c]$. Its conditions give $\mu=c^{-\theta}$ and $\dot\mu/\mu=\rho+\delta-f'(k)$, hence the consumption Euler equation. Strict concavity makes the feasible path satisfying transversality optimal. At the steady state the Jacobian is
+$$\begin{pmatrix}\rho&-1\\c^*f''(k^*)/\theta&0\end{pmatrix}.$$
+Its determinant is negative, so one eigenvalue is negative and one positive. Capital is predetermined; consumption can jump to the unique stable arm. The terminal condition rules out leaving unused wealth indefinitely.`,
+      caption:String.raw`Drag the gold starting point or choose **start on the stable arm**. Left: net-output curve in red, the consumption-stationary line in gold and a numerical approximation to the stable arm in green. The snap button chooses the computed arm at your capital. Right: capital and consumption relative to their steady states for up to 120 model years. Off-arm traces stop at the phase-window boundary or numerical cutoff; their finite traces do not establish their eventual fate.`,
+      deps:['macro-3.2','macro-2.11'],refs:['Daron Acemoglu, MIT 14.452 Neoclassical Growth (2020), slides 25–54 and CRRA slides 60–62'],tags:['growth','optimal control','saddle path'],
+      credit:'Frank Ramsey, 1928; David Cass and Tjalling Koopmans, 1965',verify: false,
+      scope:String.raw`Cobb–Douglas production, positive discount/depreciation/utility curvature, no population or technology growth, no uncertainty, competitive markets or equivalent planner. Utility becomes logarithmic at curvature one. Stable curves are numerical: backward integration from a stable-eigenvector approximation near the exact steady state, with interpolated paths and a local linear tail. Green denotes this computed stable arm, not an exact numerical certificate. Off-arm solutions are censored at the displayed phase window or positivity/integration cutoff. A=1 and depreciation 0.05 in the picture; units are illustrative.`,
+      links:{source:'https://economics.mit.edu/sites/default/files/inline-files/Economic%20Growth%20Lectures%205%20-7%202020.pdf',ramsey:'https://doi.org/10.2307/2224098',cass:'https://academic.oup.com/restud/issue/32/3',koopmans:'https://cowles.yale.edu/sites/default/files/2022-08/r1964-67.pdf'},
+      viz(v){
+        const rhoS=v.slider('impatience $\\rho$',.005,.1,.03,{step:.001}),thS=v.slider('curvature $\\theta$',.5,5,2,{step:.05}),aS=v.slider('capital share $\\alpha$',.2,.5,.33,{step:.01}),onS=v.toggle('start on the stable arm',false);
+        const P=v.stage({x:[0,40],y:[0,3],axes:'box',gutter:true,height:360,weight:1.15,minWidth:290,xlabel:'capital per worker k',ylabel:'consumption per worker c',title:'phase diagram'}),T=v.stage({x:[0,120],y:[0,2],axes:'box',gutter:true,height:360,weight:.85,minWidth:250,xlabel:'model years',ylabel:'relative to steady state',title:'time paths from the handle'});
+        const h=P.handle(5,1,{color:'gold',r:7});let M=null,key='',st=null,first=true;
+        v.button('snap to stable arm',()=>{if(M)h.set(clamp(h.x,.03*2*M.kg,.98*2*M.kg),M.saddle(clamp(h.x,.03*2*M.kg,.98*2*M.kg)));});
+        v.render(()=>{
+          const k2=`${rhoS.value}|${thS.value}|${aS.value}`;
+          if(k2!==key){key=k2;M=ramseyGrowthAudit({rho:rhoS.value,theta:thS.value,alpha:aS.value});if(first){first=false;h.set(.45*M.ks,1.1*M.saddle(.45*M.ks));}}
+          const kmax=2*M.kg,cmax=1.15*Math.max(M.f(M.kg)-.05*M.kg,...M.phase.map(p=>p[1])),k0=clamp(h.x,.03*kmax,.98*kmax),arm=M.saddle(k0),c0=onS.value?arm:clamp(h.y,.02*M.cs,.98*cmax),stable=onS.value||Math.abs(c0-arm)<1e-9*M.cs;h.set(k0,c0);
+          P.setView([-.06*kmax,1.06*kmax],[-.08*cmax,1.08*cmax]);
+          P.fn(k=>M.f(k)-.05*k,{color:'red',width:2.4,domain:[0,kmax],n:300});P.vline(M.ks,{color:'gold',width:2});P.vline(M.kg,{color:'faint',dash:[4,4]});P.path(M.phase,{color:'green',width:2.8});
+          P.field((k,c)=>{if(k<=0||k>kmax||c<=0||c>cmax)return[0,0];return M.F(k,c);},{spacing:44,color:'faint'});
+          P.dot(M.ks,M.cs,{r:6,color:'gold'});P.text('k*',M.ks,0,{dy:-10,dx:4,align:'left',color:'gold',weight:700,size:12});P.text('golden rule',M.kg,.18*cmax,{dy:0,align:'center',color:'muted',size:11});
+          const result=stable?{pts:M.stablePath(k0),status:'computed stable arm'}:M.trajectory(k0,c0,120,.5,{kmax,cmax}),path=result.pts;
+          P.path(path.map(p=>[p[1],p[2]]),{color:stable?'green':'purple',width:2.4});
+          const ymax=Math.max(1.2,...path.map(p=>Math.max(p[1]/M.ks,p[2]/M.cs)));T.setView([-5,125],[-.06*ymax,1.12*ymax]);T.hline(1,{color:'faint',dash:[4,4]});T.path(path.map(p=>[p[0],p[1]/M.ks]),{color:'orange',width:2.4});T.path(path.map(p=>[p[0],p[2]/M.cs]),{color:'accent',width:2.4});
+          const last=path.at(-1);T.dot(last[0],last[1]/M.ks,{color:'orange',r:4});T.dot(last[0],last[2]/M.cs,{color:'accent',r:4});
+          st={k0,c0,arm,status:result.status,last,stable};
         });
-        v.legend([['red', 'k̇ = 0'], ['gold', 'ċ = 0 (k*)'], ['green', 'saddle path'], ['purple', 'off the saddle path']]);
-        v.readout(() => {
-          if (!st) return '';
-          const w = { saddle: 'On the stable arm: $c$ and $k$ converge to $(k^*, c^*)$.', high: 'Consumption too high: capital is run down to zero in finite time.', low: 'Consumption too low: capital overshoots $k^*$ and consumption heads for zero (transversality fails).', ok: 'Still approaching the steady state.' }[st.verdict];
-          return `$k^* = ${fx(M.ks, 2)}$, $c^* = ${fx(M.cs, 2)}$; golden rule $k_{\\mathrm{gold}} = ${fx(M.kg, 2)}$ (${pc(M.ks / M.kg - 1, 0)} relative). At $k_0 = ${fx(st.k0, 2)}$ the optimal $c_0 = ${fx(st.cs, 3)}$; yours is ${fx(st.c0, 3)}. ${w}`;
-        });
+        v.legend([['red','capital stationary'],['gold','consumption stationary'],['green','computed stable arm'],['purple','off-arm trajectory'],['orange','k/k*'],['accent','c/c*']]);
+        v.readout(()=>{if(!st)return'';const position=st.stable?'On the computed stable arm.':st.c0>st.arm?'Initial consumption is above the computed arm.':'Initial consumption is below the computed arm.';return `$k^*=${fx(M.ks,2)}$, $c^*=${fx(M.cs,2)}$; golden rule $k_{\\rm gold}=${fx(M.kg,2)}$. At $k_0=${fx(st.k0,2)}$, numerical stable-arm consumption is ${fx(st.arm,3)}; yours is ${fx(st.c0,3)}. ${position} Trace ends at ${fx(st.last[0],1)} model years (${st.status}).`;});
       },
     },
     // ------------------------------------------------------------------ 4.2
     {
-      num: '4.2', kind: 'Model', name: 'The Diamond overlapping-generations model',
-      statement: String.raw`Each period a cohort of $1+n$ times the previous size is born. A young person supplies one unit of labour, earns the wage $w_t$, saves and consumes the savings with interest when old; with log utility $\ln c_1 + \beta \ln c_2$ the saving of the young is $s_t = \frac{\beta}{1+\beta}\,w_t$. With Cobb–Douglas production $y = k^{\alpha}$ and full depreciation of capital within a period, wages are $w = (1-\alpha)k^{\alpha}$ and the capital stock per young worker evolves by
-$$k_{t+1} = \frac{\beta}{(1+\beta)(1+n)}\,(1-\alpha)\,k_t^{\alpha}.$$
-This map has a unique positive fixed point $k^* = \big[\tfrac{\beta(1-\alpha)}{(1+\beta)(1+n)}\big]^{1/(1-\alpha)}$ that is globally stable. Competition need not deliver the best steady state: steady-state consumption per worker $k^\alpha - (1+n)k$ is largest at $k_{\mathrm{gold}} = (\alpha/(1+n))^{1/(1-\alpha)}$, and when $\frac{\beta(1-\alpha)}{1+\beta} > \alpha$ we have $k^* > k_{\mathrm{gold}}$: the economy is **dynamically inefficient** and could make everyone better off by saving less.
+      num:'4.2',kind:'Model',name:'The Diamond overlapping-generations model',
+      statement:String.raw`Consider the **full-depreciation, log-utility variant** of a two-period overlapping-generations economy. Young workers earn $w_t$, consume $c_{1,t}$ and save $s_t$; when old they consume the gross return $R_{t+1}s_t$. With utility $\ln c_1+\beta\ln c_2$, $\beta>0$, saving is $s_t=\beta w_t/(1+\beta)$. Competitive Cobb–Douglas production has $f(k)=k^\alpha$, $0<\alpha<1$, and wages $w=(1-\alpha)k^\alpha$. For cohort growth $1+n>0$,
+$$k_{t+1}=\frac{\beta(1-\alpha)}{(1+\beta)(1+n)}k_t^\alpha.$$
+Every $k_0>0$ converges monotonically to the unique positive fixed point
+$$k^*=\left[\frac{\beta(1-\alpha)}{(1+\beta)(1+n)}\right]^{1/(1-\alpha)}.$$
+Total steady-state consumption per young worker is $C(k)=k^\alpha-(1+n)k$, maximized at $k_{\rm gold}=[\alpha/(1+n)]^{1/(1-\alpha)}$. Thus $k^*>k_{\rm gold}$ precisely when $\beta(1-\alpha)/(1+\beta)>\alpha$, equivalently $R^*=f'(k^*)<1+n$. This is overaccumulation: a feasible reduction of capital can increase the consumption resources available to all cohorts. Diamond’s 1965 original instead assumes no depreciation and general utility; the displayed specialization follows Acemoglu's authored exposition.`,
+      idea:String.raw`The household's first-order condition is $1/(w-s)=\beta/s$, so log utility makes the saving share independent of the return. Market clearing gives $(1+n)k_{t+1}=s_t$. Writing the capital map in logs gives $\ln(k_{t+1}/k^*)=\alpha\ln(k_t/k^*)$, proving convergence for every positive start. Unlike an infinitely lived dynasty, each household plans only its own two periods, so equilibrium can accumulate more than the golden-rule capital.
 
-Scope: log utility, Cobb–Douglas technology and full depreciation (one period is a generation, about 30 years); the inefficiency condition depends on those functional forms.`,
-      idea: String.raw`Young workers save out of wages for retirement, and the next generation's capital equals what they saved. The saving map is increasing and concave with $k_{t+1}(0)=0$ and infinite slope there, so iterating it converges monotonically to its single fixed point, as in the Solow model. The difference from Solow is that nobody chooses the *aggregate* saving rate for the good of the dynasty: each household saves for its own retirement, so the fixed point has no reason to sit at or below the golden rule. When it lies above it, the dynamic-inefficiency result of Solow's model holds in a genuine competitive equilibrium, and a pay-as-you-go pension or government debt that crowds out capital would be a Pareto improvement.`,
-      caption: String.raw`**Left:** the saving map $k_{t+1}(k_t)$ (blue) against the 45° line, with the cobweb from the **gold handle** $k_0$ for the number of generations you choose. **Right:** steady-state consumption per worker as a function of $k$; the fixed point is green when it lies below the golden rule and red when beyond it. Raise $\beta$ (patience over a generation) or lower $\alpha$ until the dot slips past the peak. With a 30-year period, $\beta$ near 1 means little impatience over a lifetime.`,
-      deps: ['macro-3.5', 'macro-2.10'], refs: ['Romer ch. 2'], tags: ['growth', 'overlapping generations', 'dynamic inefficiency'],
-      verify: true, // Historical credit and textbook pointers await primary-source review.
-      credit: 'Peter Diamond, 1965 (after Samuelson, 1958)',
-      scope: String.raw`Log utility, Cobb–Douglas production, full depreciation, two-period-lived households (young, then old); no bequests.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Overlapping_generations_model' },
-      viz(v) {
-        const aS = v.slider('capital share $\\alpha$', 0.1, 0.6, 0.25, { step: 0.005 });
-        const bS = v.slider('patience $\\beta$ (per generation)', 0.2, 3, 0.9, { step: 0.01 });
-        const nS = v.slider('population growth $n$ (per generation)', 0, 0.8, 0.2, { step: 0.01 });
-        const gS = v.slider('generations shown', 2, 30, 12, { step: 1, int: true });
-        const P = v.stage({ x: [0, 0.2], y: [0, 0.2], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'capital per worker  kₜ', ylabel: 'kₜ₊₁', title: 'the saving map and its cobweb' });
-        const C = v.stage({ x: [0, 0.4], y: [0, 0.4], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'capital per worker k', ylabel: 'steady-state consumption per worker', title: 'what a steady state delivers' });
-        const h = P.handle(0.02, 0, { color: 'gold', label: 'k₀', labelPos: 'n', constrain: (x) => [Math.max(0.0005, x), 0] });
-        let st = null;
-        v.render(() => {
-          const a = aS.value, b = bS.value, n = nS.value, g = gS.value;
-          const sv = (b * (1 - a)) / ((1 + b) * (1 + n)), map = (k) => sv * k ** a;
-          const ks = sv ** (1 / (1 - a)), kg = (a / (1 + n)) ** (1 / (1 - a)), kmax = 2 * Math.max(ks, kg);
-          P.setView([0, kmax], [0, kmax]);
-          P.fn(map, { color: 'accent', width: 2.6, domain: [0, kmax], n: 300 });
-          P.line(0, 0, kmax, kmax, { color: 'ink', width: 1.2, dash: [5, 4] });
-          const k0 = clamp(h.x, 0.01 * kmax, 0.98 * kmax); h.set(k0, 0);
-          let k = k0; const pts = [[k0, 0]];
-          for (let i = 0; i < g; i++) { const kn = map(k); pts.push([k, kn], [kn, kn]); k = kn; }
-          P.path(pts, { color: 'gold', width: 1.6 });
-          P.dot(ks, ks, { r: 6, color: ks > kg ? 'red' : 'green' });
-          P.vline(kg, { color: 'faint', dash: [3, 3] });
-          P.text('k*', ks, ks, { dx: 8, dy: 14, align: 'left', color: ks > kg ? 'red' : 'green', weight: 700, size: 12 });
-          P.text('golden rule', kg, 0, { dx: 4, dy: -10, align: 'left', color: 'muted', size: 11 });
-          const cf = (x) => x ** a - (1 + n) * x, cg = cf(kg), kz = (1 + n) ** (-1 / (1 - a));
-          C.setView([0, 1.05 * kz], [0, cg * 1.25]);
-          C.fn(cf, { color: 'accent', width: 2.6, domain: [0, kz] });
-          C.vline(kg, { color: 'muted', dash: [4, 4] });
-          C.dot(kg, cg, { r: 5, color: 'gold' });
-          C.dot(ks, Math.max(cf(ks), 0), { r: 6, color: ks > kg ? 'red' : 'green' });
-          C.text('golden rule', kg, cg, { dy: -12, color: 'gold', weight: 700, align: 'center', size: 12 });
-          C.text('competitive k*', ks, Math.max(cf(ks), 0), { dy: ks > kg ? 18 : 16, dx: ks > kg ? 6 : -6, align: ks > kg ? 'left' : 'right', color: ks > kg ? 'red' : 'green', weight: 700, size: 12 });
-          st = { ks, kg, c: cf(ks), cg, k };
+If $k^*>k_{\rm gold}$, choose $0<\Delta<k^*-k_{\rm gold}$. Lower next period's capital to $k^*-\Delta$ and keep it there. This releases $(1+n)\Delta$ resources initially and $C(k^*-\Delta)-C(k^*)>0$ at each later date. Suitable transfers can divide these gains among young and old so every affected cohort benefits. This is a feasible allocation argument; an arbitrary pension or debt policy need not implement it.`,
+      caption:String.raw`Drag starting capital and choose the number of generations. Left: the log-utility saving map, the identity line and its cobweb. Right: total steady-state consumption per young worker, including old-age consumption divided by cohort growth. The competitive fixed point is red above golden-rule capital. Change utility weight, capital share or cohort growth; the readout compares the gross return with 1+n and, when overaccumulation occurs, gives a feasible resource-gain example.`,
+      deps:['macro-3.5','macro-2.10'],refs:['Acemoglu, MIT 14.452 Overlapping Generations (2018), slides 9–45, especially Eqs. 19–20 and slides 32–36','Diamond 1965, original pp. 1126–1135: no-depreciation/general-utility model; historical background'],tags:['growth','overlapping generations','dynamic inefficiency'],verify: false,
+      credit:'Peter Diamond, 1965; consumption-loan predecessor Paul Samuelson, 1958',
+      scope:String.raw`Deterministic two-period households, log utility, competitive Cobb–Douglas production, no bequests and full capital depreciation per period. A period is a generation with no calibrated duration. The utility weight beta may exceed one in this mathematical extension; no empirical lifetime discount factor is claimed. The saving map has an additional zero fixed point, excluded by the positive initial-capital assumption. Resource gains require starting from the competitive steady state and allocating the released resources through appropriate transfers; no specific government policy is simulated.`,
+      links:{source:'https://economics.mit.edu/sites/default/files/inline-files/Lecture%208%20-%20Overlapping%20Generations_0.pdf',original:'https://www.aeaweb.org/aer/top20/55.5.1126-1150.pdf'},
+      viz(v){
+        const aS=v.slider('capital share $\\alpha$',.1,.6,.25,{step:.005}),bS=v.slider('old-age utility weight $\\beta$',.2,3,.9,{step:.01}),nS=v.slider('cohort growth $n$ (per generation)',0,.8,.2,{step:.01}),gS=v.slider('generations shown',2,30,12,{step:1,int:true});
+        const P=v.stage({x:[0,.2],y:[0,.2],axes:'box',gutter:true,height:340,weight:1,minWidth:270,xlabel:'capital per young worker kₜ',ylabel:'kₜ₊₁',title:'the saving map and its cobweb'}),C=v.stage({x:[0,.4],y:[0,.4],axes:'box',gutter:true,height:340,weight:1,minWidth:260,xlabel:'capital per young worker k',ylabel:'total consumption per young worker',title:'what a steady state delivers'});
+        const h=P.handle(.02,0,{color:'gold',r:7,constrain:x=>[Math.max(.0005,x),0]});let st=null;
+        v.render(()=>{
+          const m=diamondGrowthAudit(aS.value,bS.value,nS.value),kmax=2*Math.max(m.ks,m.kg),k0=clamp(h.x,.02*kmax,.98*kmax);h.set(k0,0);P.setView([-.08*kmax,1.08*kmax],[-.08*kmax,1.08*kmax]);P.fn(m.map,{color:'accent',width:2.6,domain:[0,kmax],n:300});P.line(0,0,kmax,kmax,{color:'ink',width:1.2,dash:[5,4]});
+          let k=k0;const points=[[k0,0]];for(let i=0;i<gS.value;i++){const next=m.map(k);points.push([k,next],[next,next]);k=next;}P.path(points,{color:'gold',width:1.6});P.dot(m.ks,m.ks,{r:6,color:m.ks>m.kg?'red':'green'});P.vline(m.kg,{color:'faint',dash:[3,3]});
+          const kz=(1+nS.value)**(-1/(1-aS.value));C.setView([-.05*kz,1.05*kz],[-.08*m.cg,1.25*m.cg]);C.fn(m.consumption,{color:'accent',width:2.6,domain:[0,kz]});C.vline(m.kg,{color:'muted',dash:[4,4]});C.dot(m.kg,m.cg,{r:5,color:'gold'});C.dot(m.ks,m.c,{r:6,color:m.ks>m.kg?'red':'green'});
+          st={...m,k,k0};
         });
-        v.legend([['accent', 'saving map'], ['gold', 'cobweb path'], ['green', 'efficient steady state', { dot: true }], ['red', 'dynamically inefficient', { dot: true }]]);
-        v.readout(() => st && `fixed point $k^* = ${fx(st.ks, 4)}$ vs golden rule $k_{\\mathrm{gold}} = ${fx(st.kg, 4)}$: ${st.ks > st.kg ? '**oversaving** (' + pc(st.c / st.cg - 1, 0) + ' consumption relative to the golden rule)' : 'efficient (' + pc(st.c / st.cg, 0) + ' of golden-rule consumption)'}. After ${gS.value} generations $k = ${fx(st.k, 4)}$.`);
+        v.legend([['accent','saving map / steady consumption'],['gold','cobweb and golden rule'],['green','competitive capital at/below golden rule',{dot:true}],['red','overaccumulation',{dot:true}]]);
+        v.readout(()=>{if(!st)return'';const m=st;return `$k^*=${fx(m.ks,4)}$; golden rule $k_{\\rm gold}=${fx(m.kg,4)}$. Gross return $R^*=${fx(m.R,3)}$ versus cohort factor $1+n=${fx(1+nS.value,3)}$: ${m.ks>m.kg?'**overaccumulation**':'no overaccumulation'}. Total steady consumption ${fx(m.c,4)} per young worker (${pc(m.c/m.cg,1)} of the golden-rule maximum). After ${gS.value} generations, $k=${fx(m.k,4)}$.`+(m.cut>0?` A feasible capital reduction to ${fx(m.reduced,4)} releases ${fx(m.initialGain,4)} resources initially and ${fx(m.laterGain,4)} at each later date, before allocating transfers.`:'');});
       },
     },
     // ------------------------------------------------------------------ 4.3
