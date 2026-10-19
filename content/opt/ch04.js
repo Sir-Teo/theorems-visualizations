@@ -179,7 +179,7 @@ Geometrically, $-\nabla f_0(x)$ makes an obtuse (or right) angle with every feas
 (b) **Slack variables.** $f_i(x)\le0$ is equivalent to $f_i(x)+s_i=0,\ s_i\ge0$. The new equality is affine only when $f_i$ is affine, so this reformulation preserves convexity only for affine inequalities.
 Epigraph form moves all nonlinearity into the constraints and gives a linear objective, which is why it is the working form of conic solvers.`,
       idea: String.raw`For (a): at the optimum of the new problem $t=f_0(x)$, otherwise $t$ could be lowered; so optimal $x$ coincide and the values agree. The feasible set of the new problem is $\operatorname{epi}f_0$ intersected with the original constraints (opt-3.1), which is convex when $f_0$ is. For (b): the map $x\mapsto(x,-f_i(x))$ identifies the two feasible sets. If $f_i$ is convex but not affine, $\{(x,s):f_i(x)+s=0\}$ is the graph of $-f_i$, which is not an affine set, and the slack form is not a convex problem as written.`,
-      caption: String.raw`**Left (epigraph):** the shaded region is $\{(x,t):t\ge\max_kf_k(x)\}$. Slide the level $t$: the horizontal line meets the epigraph in the green interval $\{x:\max_kf_k(x)\le t\}$, which is empty for $t<t^\star$ and shrinks to the single point $x^\star$ at $t=t^\star$, the optimal value of both problems. **Right (slack):** minimize $(x-2.2)^2$ subject to $x^2\le b$; the slack $s=b-x^2$ must be $\ge0$. Move $b$: the optimal $x$ is $\min(2.2,\sqrt b)$ whichever way it is computed.`,
+      caption: String.raw`**Left (epigraph):** the shaded region is $\{(x,t):t\ge\max_kf_k(x)\}$. Slide the level $t$: the horizontal line meets the epigraph in the green interval $\{x:\max_kf_k(x)\le t\}$, which is empty for $t<t^\star$ and at $t=t^\star$ is the set of minimizers, possibly an interval rather than a single point. This is the optimal value of both problems. **Right (slack):** minimize $(x-2.2)^2$ subject to $x^2\le b$; the slack $s=b-x^2$ must be $\ge0$. Move $b$: the exact optimizer is $\min(2.2,\sqrt b)$ in both formulations. The plotted optimizers and interval endpoints use an $x$-grid of spacing $0.002$; grid optima may have positive slack even when the exact constraint is active.`,
       deps: ['opt-4.1'],
       refs: ['Boyd–Vandenberghe §4.1'],
       tags: ['epigraph form', 'slack variable', 'reformulation'],
@@ -207,7 +207,7 @@ Epigraph form moves all nonlinearity into the constraints and gives a linear obj
           const t = tS.value; L.hline(t, { color: 'ink', alpha: 0.6, width: 1.2 });
           const xs = XS.filter((x) => F(x) <= t);
           if (xs.length) { L.segment([xs[0], t], [xs[xs.length - 1], t], { color: 'green', width: 5 }); }
-          L.dot(xstar, tstar, { r: 6, color: 'gold', label: '$(x^\\star,t^\\star)$', labelPos: 'se' });
+          L.dot(xstar, tstar, { r: 6, color: 'gold', label: 'grid minimum', labelPos: 'se' });
           // slack panel
           const b = bS.value, f0 = (x) => (x - 2.2) ** 2, s = (x) => b - x * x;
           R.fn(f0, { color: 'accent', width: 2.4, n: 300 });
@@ -223,10 +223,10 @@ Epigraph form moves all nonlinearity into the constraints and gives a linear obj
           R.dot(orig, s(orig), { r: 5, color: 'orange' });
           info = { tstar, xstar, t, feas: xs.length ? [xs[0], xs[xs.length - 1]] : null, orig, slBest, exact: Math.min(2.2, Math.sqrt(b)), sOpt: s(orig) };
         });
-        v.legend([['accent', '$\\max_kf_k$'], ['green', 'feasible $x$ at the level / for the budget', {}], ['gold', 'optimum', { dot: true }], ['orange', 'slack $s=b-x^2$']]);
+        v.legend([['accent', '$\\max_kf_k$'], ['green', 'feasible $x$ at the level / for the budget', {}], ['gold', 'grid optimum', { dot: true }], ['orange', 'slack $s=b-x^2$']]);
         v.readout(() => {
           const i = info;
-          return `Epigraph: $t^\\star=${f3(v, i.tstar)}$ at $x^\\star=${f3(v, i.xstar)}$. At level $t=${f3(v, i.t, 2)}$ the feasible set is ${i.feas ? `$[${f3(v, i.feas[0], 2)},${f3(v, i.feas[1], 2)}]$` : 'empty (below $t^\\star$)'}.\nSlack: original optimum $x=${f3(v, i.orig)}$, slack-form optimum $x=${f3(v, i.slBest)}$, closed form $\\min(2.2,\\sqrt b)=${f3(v, i.exact)}$; slack there is $${f3(v, i.sOpt)}$ ($=0$ exactly when the constraint is active).`;
+          return `Epigraph grid minimum: $t\\approx${f3(v, i.tstar)}$ at $x\\approx${f3(v, i.xstar)}$. At level $t=${f3(v, i.t, 2)}$: ${i.feas ? `feasible grid points span $[${f3(v, i.feas[0], 3)},${f3(v, i.feas[1], 3)}]$` : 'no feasible grid points (a very narrow feasible interval can be missed)'}.\nSlack grid optima: original $x\\approx${f3(v, i.orig)}$, slack form $x\\approx${f3(v, i.slBest)}$. Exact optimizer: $\\min(2.2,\\sqrt b)=${f3(v, i.exact)}$. Slack at the grid optimizer: $${f3(v, i.sOpt)}$; this grid residual need not vanish at an active exact optimum.`;
         });
       },
     },

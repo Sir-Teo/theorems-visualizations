@@ -39,6 +39,9 @@ maps between dimensions (agent sample statement/hypothesis review).
 For remainder algorithms, test an exact first division and define whether the initial
 divisor counts as the last nonzero remainder. A deliberately empty initial table and
 subpixel geometric examples should be explained rather than treated as render failures.
+For grid searches, label the grid optimum and residual separately from an exact solution.
+No feasible grid points does not establish an empty feasible set, and a rounded grid
+optimizer can have positive slack while the exact constraint is active.
 
 ## Physics & astronomy, Earth & environment, engineering
 

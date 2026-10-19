@@ -413,14 +413,19 @@
     {
       "id": "opt-4.3",
       "file": "content/opt/ch04.js",
-      "textHash": "7bb687f54c368a0031ef248149e6029b968b35bcf18295f5d9a33b3dba0c2680",
-      "textReview": "The opening now states the affine restriction on slack equalities instead of promising unconditional convexity preservation. The epigraph and slack examples remain unchanged.",
-      "visualReview": "An isolated native recapture shows the intended distinct epigraph and slack panels. An initial PNG duplicated the left panel; nine fresh pages and eighteen initial/settled captures did not reproduce that artifact. At b=2.5 the grid optimum 1.580 differs from the closed value 1.581, leaving slack 0.004 despite an active exact constraint. Approximation labels need correction.",
+      "textHash": "4003287f529c3eaec43a465ab6a72a461890e01251390d5006576bf203f9af6a",
+      "textReview": "The affine restriction on convex slack equalities remains explicit. The caption now distinguishes grid estimates from the exact optimizer, and describes a general optimizer set without assuming uniqueness. All three specific presets currently have unique minima; the third piecewise-linear function has slope 0.15, not zero.",
+      "visualReview": "Inspected all three presets in both themes. The epigraph and slack panels are distinct and readable. At b=2.5 the original/slack grid optima are labelled approximate 1.580, the exact optimizer is 1.581, and the displayed 0.004 grid slack is explicitly allowed at an active exact optimum. The piecewise-linear preset reports its unique minimum (-1.120,1.432).",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "Epigraph equivalence and the slack mapping are correct; nonlinear slack equalities are expressly not a convex standard-form representation. The wording 'two reformulations keep convexity' should be conditional on the affine restriction already stated below.",
       "initialTextHash": "d444b255bbedc9af1007fa99a599e7b12914a0e01d5c2a43a89ff248fa85a48b",
-      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md",
+      "followUpFinding": "An isolated native recapture shows the intended distinct epigraph and slack panels. An initial PNG duplicated the left panel; nine fresh pages and eighteen initial/settled captures did not reproduce that artifact. At b=2.5 the grid optimum 1.580 differs from the closed value 1.581, leaving slack 0.004 despite an active exact constraint. Approximation labels need correction.",
+      "correctionReports": [
+        "docs/verification/agent-text-hypotheses-review.md",
+        "docs/verification/agent-optimization-grid-review.md"
+      ]
     },
     {
       "id": "toc-4.13",
@@ -1371,6 +1376,222 @@
       "initialFinding": "The gcd invariant and decreasing integer remainders prove termination. If the first division is exact, the answer is the initial divisor b, so 'last nonzero remainder' needs that convention explicitly. The irrational-ratio view displays a finite prefix of a mathematically nonterminating process, not a numerical certification of irrationality.",
       "initialTextHash": "e852dab866323c3bc1abb6d526ef690bf633a2270da117233f7aa99b39f31fa7",
       "correctionReport": "docs/verification/agent-controls-review.md"
+    },
+    {
+      "id": "circ-2.2",
+      "file": "content/circ/ch02.js",
+      "textHash": "bfa3dcdc63dbda8264588a012215a1299314a16d83816410a69fb6a7ce9d8cd7",
+      "textReview": "KVL is correctly restricted to the no-linked-changing-flux lumped model and its violation is related to Faraday induction. The derivation should distinguish model terminal voltages and induced emf; the named em-6.8 prerequisite is itself a planned Kirchhoff item rather than the Faraday law cited in the idea. Check the flux sign and seven-loop claims in the live solver.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-2.1",
+      "file": "content/fa/ch02.js",
+      "textHash": "93c2b239fc0de778e47826bd82f4216517a8b89163f4c1dc31f87a31c1d034cb",
+      "textReview": "Nowhere-dense and meagre definitions and the four closure properties are correct in the ambient space S. A fat Cantor example can be nowhere dense with measure one half, whereas Q is dense and meagre. The finite drawing must label its approximations and avoid claiming a longest open hole exists for an arbitrary selected set without inspecting the specific construction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-3.6.7",
+      "file": "content/prob/ch03-d.js",
+      "textHash": "71fad68e9a3fd7fe499a07aeabfca3c4059af506ad404123e596d264b1ac0b25",
+      "textReview": "The total-variation convention is one half the l1 difference: direct summation gives p(1-exp(-p)) <= p². Product/convolution contraction yields the independent-sum bound. At lambda=1 the positive first-order binomial-minus-Poisson discrepancies occur at k=1 and k=2, summing to 3/(4en), consistent with the caption. Numerical truncation and log-floor behaviour remain to inspect.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-9.16",
+      "file": "content/ladr/ch09-b.js",
+      "textHash": "f29308ab7f3bcde2ef42c7ff25bc176091c57e1f0ded500323a0c6cddbe66b6d",
+      "textReview": "Expanding alpha(u+w,u+w) proves alternating implies skew symmetry; the converse needs characteristic different from two, as the proof explicitly notes. State the underlying real/complex field convention in the standalone statement if it is not inherited visibly. The R3 example's normal (0,-1,1) gives exactly the listed bilinear form.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "micro-7.7",
+      "file": "content/micro/ch07.js",
+      "textHash": "260d62621fb62339ca3c9c96e088175a4741a05dd5cca4e2718b4c8cc61acd87",
+      "textReview": "The cost problem and interior tangency argument are standard for positive input prices and a smooth regular isoquant. Differentiability and quasi-concavity alone do not exclude zero marginal products, so the displayed ratio needs a nonzero-denominator/constraint qualification. Perfect substitutes with equal output per unit cost have an entire optimal segment rather than a forced unique corner.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-7.14",
+      "file": "content/qm/ch07-c.js",
+      "textHash": "6bf88b20c07e78e2d37275fc0ee6b47539af26032cdb3a7d35ed6cf580669ba6",
+      "textReview": "The tensor-product angular-momentum decomposition and multiplicity-one dimension count are correct for nonnegative half-integer j1,j2. Highest-weight lowering explains the construction. The classical vector-length comparison is an analogy, not an identification of quantum lengths j with sqrt(j(j+1)). Check the numerical J² multiplicities and endpoint M controls.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "vcalc-4.5",
+      "file": "content/vcalc/ch04.js",
+      "textHash": "ee2f0aba5d7f623d542b5727a38e8bd3bf27206fe18347c9b2bb2e1f8dcce6ef",
+      "textReview": "The C1 local image-area limit is correct, with local invertibility handling nonzero determinant and a thin-neighbourhood bound handling singular derivatives. A shoelace polygon computes oriented boundary area: for a folded or multiply covered image it need not equal the area of the image set. The squaring map near zero is a concrete multiplicity case to inspect; finite-h plots need this distinction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "robot-3.2",
+      "file": "content/robot/ch03.js",
+      "textHash": "db3e7e12c1c4e1f562a117be12652716b4fe390eba09ba8ba11826b8ac490893",
+      "textReview": "The stated classical DH transform has the usual four factors, but x_i must be a common perpendicular to both consecutive z axes, not merely perpendicular to and intersecting z_(i-1). Parallel, intersecting and coincident axes have convention choices. Verify the claim about Lynch–Park's convention against its actual appendix and check that both frame rules in the live readout match the full geometric definition.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-0.3",
+      "file": "content/rca/ch00.js",
+      "textHash": "e903911ffdc601893f0d7c6237e7a29c74f2a9cfcf1766c4acfb5da3bc8152f9",
+      "textReview": "The addition formula reduces the derivative to the exponential series at zero. The bound sum_(n>=2) r^(n-1)/n! <= (r/2)exp(r) follows termwise from n!>=2(n-2)! and is uniform in the complex direction. Equality in the tighter radial series bound occurs for positive real h. Inspect small-h cancellation and the plotted all-direction loop numerics.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "cm-3.11",
+      "file": "content/cm/ch03-b.js",
+      "textHash": "81481a7391ab8f2aab8d271065c21c2b8a568b8549988271dc085e5d4c654bb4",
+      "textReview": "The Debye mean-square formula reduces to 9 hbar² T/(m kB Theta²) at high temperature, giving the printed melting estimate. The empirical criterion, three-dimensional rms convention and secondary/memory table provenance are candidly scoped; the verification flag remains. The claimed mass trend holds only with d, Theta and c fixed: isotope-dependent Theta can compensate it.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ml-4.1",
+      "file": "content/ml/ch04.js",
+      "textHash": "50ace0a6742e360a9c449541feff1a103a7432d5647a7e33a6dea1e2c140fcb2",
+      "textReview": "The definition correctly quantifies simultaneously over all hypotheses for one fixed sample and distinguishes this from a fixed-h law of large numbers. The 101-threshold finite grid and numerical risk integration are explicit. General nonnegative losses need finite risks for the stated LLN explanation; increasing m improves representativeness probabilistically, not monotonically on every redraw.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "bioinf-2.13",
+      "file": "content/bioinf/ch02-c.js",
+      "textHash": "c74c64d595013b89b69c80ab5ee693e556a8631da06ea3588982e0c61c034c3b",
+      "textReview": "The zero-floored recurrence gives optimal local alignment for the specified gap penalties; the gap maxima should be read over valid indices k<=i,l<=j. Negative random-pair mean is a statistical scoring condition rather than necessary for the finite dynamic program's correctness. The one-third units match the stated substitution and gap weights. Original-paper example and global comparison still need live/source inspection; no source credit added.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pharm-2.9",
+      "file": "content/pharm/ch02-b.js",
+      "textHash": "e355b15c35c3c71a9de29a93e437613ce0a0ee9318475d184b2531fb680ff9dd",
+      "textReview": "Algebraically swapping ka and k with V'=Vk/ka leaves the Bateman curve unchanged, and the smaller positive rate controls the terminal slope. Equal rates require the limiting t exp(-kt) formula. IV information distinguishes the twins, but the word 'only' in the idea is too exclusive: known formulation or independent parameter information can also identify the rates, as the scope already acknowledges.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "nla-4.8",
+      "file": "content/nla/ch04-b.js",
+      "textHash": "833526ec025faa204b703e0af898b5833d01e3cfabb4a9c2c310780c28dd4e62",
+      "textReview": "The no-growth bound follows columnwise from a_jj=sum r_ij² and a_jj<=||A||2. The completion/breakdown qualification is explicit, so backward stability is not claimed to guarantee successful Cholesky on every ill-conditioned rounded input. O(machine epsilon) hides dimension-dependent constants. Inspect the p-bit arithmetic and breakdown crosses rather than treating the random matrix plot as a proof.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "polsci-1.2",
+      "file": "content/polsci/ch01.js",
+      "textHash": "f68f81dc8631cd1bf9dbb38b449d25d1fd5568bceec1088e23d50af961efdc29",
+      "textReview": "Plurality reads first preferences and its largest tally is at least n/m by pigeonhole; a strict first-place majority wins. Ties require the stated fixed rule. 'Its only guarantee' is unnecessarily absolute since other properties exist. The every-added-candidate winner change is a claim about the chosen example, not plurality in general, and needs interaction verification.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-12.25",
+      "file": "content/mech/ch12-c.js",
+      "textHash": "a9fe2726b8ddfa14e3f0e6458b5482d8370708c27ab7692b40613a87a139448b",
+      "textReview": "The averaged hoop connection gives <a>=2A/L and the geometric shift -8pi² A/L²; the isoperimetric bound gives magnitude at most 2pi. This is an adiabatic leading-order result away from problematic orbits, not exact return for a finite-speed cycle. A sliding bead on a circular rotating wire does not generally stay put in space: it retains its free motion, with an extra relative phase -2pi. Correct that parenthesis.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-9.17",
+      "file": "content/pma/ch09-a3.js",
+      "textHash": "eb841d62095dbfdd79bb698890a77053a6c6de92da8d96f3b65c91b3584f8de2",
+      "textReview": "Restricting the Frechet derivative limit to coordinate directions gives each partial and the matrix columns. Componentwise convergence follows from coordinate projections being bounded. The text correctly warns that existing partials alone do not imply differentiability. The polar example should show the second column collapsing at r=0 without implying a converse.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "behav-1.11",
+      "file": "content/behav/ch01-b.js",
+      "textHash": "f4fd1a9cff498c47e271e248b4bc15cd012b47584e5cb89214b05ff7429c4fde",
+      "textReview": "The two expected-utility differences coincide, so strict A over B and strict D over C cannot both maximize expected utility; ties can permit those selected actions without strict preference, so qualify 'no maximizer can'. The common-core decomposition is correct. The fanning-out geometry and historical prize amounts require separate visual/source checks.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-13.2",
+      "file": "content/mech/ch13.js",
+      "textHash": "bf74646081d56dc1f84ba19c1dc045603020c355c8d725f6923e23ac3709db06",
+      "textReview": "The return map is defined only for points whose future trajectory returns transversally, not automatically on all of Sigma. On a regular two-degree-of-freedom energy surface the canonical section preserves dx dp_x. Closed-curve/finitely-many/area-filling pictures are typical diagnostics, not exhaustive theorems about every torus intersection or every chaotic invariant set. The uncoupled section includes degenerate periodic-orbit endpoints rather than every orbit being a nondegenerate circle.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "dist-2.10",
+      "file": "content/dist/ch02-b.js",
+      "textHash": "192a923d4436fa62090fc740eb8e96d693d8bfe7440d48593032ddfe03b38b2d",
+      "textReview": "The cut property supplies safe fragment edges and the size-at-least-2^level invariant bounds levels. The text explicitly separates the fragment animation from the full asynchronous message protocol and assigns the message bound to the latter. Inspect waiting/absorption scheduling and agreement with Kruskal; no message-level correctness is established by the abstract animation.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-13.10",
+      "file": "content/mech/ch13-b.js",
+      "textHash": "f3b08de3a10202cbc46fd952392ffb94dfb7e817cc1b7aa99a119c19fd5d39fc",
+      "textReview": "Birkhoff coordinates need a signed angle to make p=sin(alpha) range over negative and positive values. Circle and ellipse invariants explain regular sections; the stadium's chaos/ergodicity is an almost-everywhere claim with exceptional periodic trajectories, and requires a genuine stadium rather than its circle limit. Mushroom regular/chaotic regions also need their measure-zero exceptions. A finite trajectory spraying dots is a diagnostic, not proof that each orbit fills the whole portrait.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "physio-1.3",
+      "file": "content/physio/ch01.js",
+      "textHash": "224f5aa3823cf384c3564fad83f448ac8f12c99ac5fc1f1ed75a619b8eb9df79",
+      "textReview": "The membrane permeability and two-bath time constant follow from a quasi-steady linear profile with equal partition coefficients at both faces. No sources alone does not force a transient profile to be steady. The lag time thickness²/(6D) belongs to a particular step-feed/sink permeation setup and should not be presented as a universal equilibration time for all closed compartments. Inspect random-walk boundary probabilities and membrane storage assumptions.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "epi-2.12",
+      "file": "content/epi/ch02-b.js",
+      "textHash": "c955b76b2959f7ed60dd59ee81336a3888380bfe5da9f50b7e8f6e35dbcf0e11",
+      "textReview": "The counterfactual definition distinguishes overdiagnosis from false positives and ordinary lead time. Excess incidence persisting after sufficient follow-up can estimate it in controlled comparisons. Rising incidence without falling mortality is suggestive, not uniquely diagnostic without accounting for true disease trends, treatment, follow-up and statistical power. The quoted percentages and Korean time-series claim still require original evidence verification.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "astro-10.20",
+      "file": "content/astro/ch10-papers.js",
+      "textHash": "803878efe376cf13a85e2edfda694bee786a1a010ed09567e1c5d70301f680d0",
+      "textReview": "The temperature budget and single-frequency versus blackbody-spectrum distinction are sensibly separated; the sub-0.1 K backlobe and rounded budget explain the approximate residual. The phrase 'no one looked for it' is too sweeping as a historical claim and should be replaced by a precise statement about this serendipitous detection and the Princeton search. The reconstructed elevation curve is candidly distinguished from an unpublished scan; inspect FIRAS data and brightness/radiance conversion separately.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }
