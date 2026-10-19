@@ -1225,11 +1225,15 @@
     {
       "id": "ml-4.6",
       "file": "content/ml/ch04.js",
-      "textHash": "6ac04edd0f0a031069eb6a1ec015b5901f81e854228952f642e05867064c9ea3",
-      "textReview": "Hoeffding plus the union bound gives the stated fixed-sample-size guarantee. The caption incorrectly implies simultaneous coverage of each entire m-curve with probability 1−δ; each point has that guarantee separately, and scanning many sample sizes needs another argument. The discrete population and replacement sampling correctly make the population risks exact here.",
-      "visualReview": "Inspected both themes: finite-population half-planes and six sampled risk-gap curves are legible. The readout explicitly maps marker 100 to nearest grid size 117. A per-m probability bound does not justify the caption's whole-curve probability claim.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "4c0f15bcfbb5aedf7426984c580d214003cd815510818e73413a8fd50ca80692",
+      "textReview": "The finite class is nonempty and fixed independently of the sample. The probability bound is uniform over hypotheses at a fixed m; whole curves/all six runs require the extra union bound delta/(6J), explicitly distinguished from the plotted line. The readout now identifies first grid size at least the marker rather than nearest, separates grid summary from actual red-classifier sample size, and labels the upper median. Bernoulli noise probability and400 displayed population points are explicit. The formulas and sample generation are unchanged.",
+      "visualReview": "Inspected eight controlled native captures in both themes: default, minimum/maximum k-delta-m endpoints and resampling. Data, classifier lines, gap curves and fixed-m bounds are distinct and legible. Default marker100 uses grid117 for summary and100 for red-classifier risk, now stated explicitly; default bound.165 and endpoint bounds.480/.069 match the independent formula.",
+      "interactionReview": "Native Home/End controls exercise k1/3000,delta.02/.5,m10/1000 in both themes, with default k30,delta.1,marker100. Eight states have finite readouts, correct grid labels and independently computed displayed bounds; resampling changes empirical results. No runtime/TeX failures. These finite tests do not certify the probability theorem by simulation.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Hoeffding plus the union bound gives the stated fixed-sample-size guarantee. The caption incorrectly implies simultaneous coverage of each entire m-curve with probability 1−δ; each point has that guarantee separately, and scanning many sample sizes needs another argument. The discrete population and replacement sampling correctly make the population risks exact here.",
+      "initialTextHash": "6ac04edd0f0a031069eb6a1ec015b5901f81e854228952f642e05867064c9ea3",
+      "initialVisualFinding": "Inspected both themes: finite-population half-planes and six sampled risk-gap curves are legible. The readout explicitly maps marker 100 to nearest grid size 117. A per-m probability bound does not justify the caption's whole-curve probability claim.",
+      "correctionReport": "docs/verification/agent-learning-bound-review.md"
     },
     {
       "id": "fa-10.31",
@@ -1290,9 +1294,9 @@
       "file": "content/cm/ch03.js",
       "textHash": "276c33a8abca2311ff0f52bae43dd92317780b9b9575cf74c75bdd69e4af6595",
       "textReview": "The cube-sum explanation needs correction or direct checking: a fixed net charge ±e at distance of order N contributes order 1/N, not order one. Sharp cubic Madelung sums can converge slowly with shrinking alternating error; they must not be conflated with the badly behaved spherical grouping. Inspect the actual sums and the claimed Evjen tolerance.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: lattice slice, alternating sharp-cube sums, off-scale spherical sums and Evjen sum are distinct. Default N4 Evjen value1.74772 differs from1.747565 by.00016 as displayed. Finite plotting does not support the pending claim that sharp-cube errors wander forever rather than decay.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ling-1.4",
@@ -1311,81 +1315,81 @@
       "file": "content/nt/ch03-b.js",
       "textHash": "67109631a610ab2bfe5c644655a6aebe7383aeef3ea77d14d1985dae613787e6",
       "textReview": "Korselt's statement is correct, but the proof falsely says all prime-power unit groups are cyclic. First exclude even n using the base −1; then the odd prime-power cyclic theorem supplies the claimed exponent argument. Powers of two need not be cyclic.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: n561 factors3*11*17, all320 coprime bases pass, and the divisibility checks match560. The finite grid/readout agree; the pending general proof's even prime-power unit-group issue is separate.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "comb-4.8",
       "file": "content/comb/ch04.js",
       "textHash": "d3df65bfeea6dea03a834c27f765fb62c3061b119ea2217e41b764a7c61c2343",
       "textReview": "Needs correction: dividing labelled counts by n! is normalization, not generally an orbit count when objects have symmetries. Decreasing terms alone do not imply convergence; at x=1/e the n^n EGF terms decay like n^(−1/2) but the series diverges. The stated real domain x<1/e should distinguish the power-series disk from analytic continuation.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: for a_n=n!,x=.4 the OGF terms/sums grow while EGF partial sum1.66667 matches1/(1-.4). This default convergent example does not justify a general decreasing-terms convergence criterion or an orbit interpretation of n!.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fin-4.9",
       "file": "content/fin/ch04-b.js",
       "textHash": "9414840d96aff90f0937b8b1bd9d895cd2b74bb5ee48e3adcdfb2e5dd5dc29eb",
       "textReview": "Needs qualification: the zero-beta portfolio need not exist for the global minimum-variance portfolio, which is included by 'any efficient portfolio'. The linear beta relation characterizes the minimum-variance frontier under regularity, including its lower branch, not automatically only the upper efficient branch. Inspect the displayed proxy range and degenerate regression handling.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default efficient proxy has R2=1 but intercept1.81percent differs from risk-free2percent. The readout correctly distinguishes cross-sectional linearity from the stronger risk-free CAPM line. The invented asset parameters are identified as simulated.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "sysbio-4.7",
       "file": "content/sysbio/ch04-b.js",
       "textHash": "40a647c712d9d7e5cc52bb37c9ad03bc8e0ec96525fc1f78f22bf4a0d27f4d41",
       "textReview": "The finite-noise −ln P stationary landscape is not generally a literal force potential or the scaled small-noise Freidlin–Wentzell quasipotential. The text should distinguish these uses, its finite-domain boundary conditions and approximate relaxation. Noisy fate residence is not absolute irreversible commitment.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the relaxed -lnP heatmap, noisy trajectory and valley-floor section are distinct; three deterministic attractors and a fate-x trajectory are visible. Pseudo-time/relative-depth approximation is disclosed. Nongradient force interpretation and boundary conditions remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "dist-1.7",
       "file": "content/dist/ch01-b.js",
       "textHash": "bff383ae63ec0e6c02fc78e3bcac55987e65e153a9dfc7062d6548ffe9f37657",
       "textReview": "The same-view principle follows from determinism. Agreement propagates decisions across the alternating-message executions and conflicts with the endpoint validity conditions; the finite illustration does not by itself enumerate arbitrary adaptive protocols. Termination/finite-decision assumptions matter for the two-generals impossibility interpretation.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid dark capture and fresh isolated light recapture: five execution panels and decision table are distinct; the default enumerates64 rule pairs with zero satisfying its finite constraints. The initial light PNG duplicated page content, recorded in agent-capture-anomalies.md. This finite example does not by itself establish the unrestricted protocol theorem.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-18.10a",
       "file": "content/rca/ch18-a2.js",
       "textHash": "58b9cd105a0216219674c937e7639678ef93158a3cf360134a959c10fbd36948",
       "textReview": "The boundary condition makes V relatively clopen in W. Intersecting a component with V and its open complement forces the component to be entirely in or out; no local-connectedness assumption is needed for this direction. The editorial source is identified.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: two component intersections have red relative-boundary arcs and the third is disjoint; the readout correctly says the no-boundary hypothesis fails. The drawing distinguishes component inclusion from partial intersection.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "aero-2.6",
       "file": "content/aero/ch02.js",
       "textHash": "bdf4a2d9e305aece5243bcf7deef7a484e0ed163a7c36a635a2cef74af339b6d",
       "textReview": "The flap integral and stall-speed relation have the right model roles. The idea's claim that a slat does nothing to inviscid lift is not universal: the displayed model holds the lift line fixed while moving stall, whereas real multi-element circulation can change it. Distinguish this from an empirical general law.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: flap/slat schematic, configured/clean lift curves and stall-speed curves are legible. Default CLmax1.26->1.92 gives62.3->50.6m/s at W/S3000, as displayed. Slat effects in the implemented lift law and operating-domain qualifications remain pending model review.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ladr-3.8",
       "file": "content/ladr/ch03.js",
       "textHash": "cf9f4c575243c538058a38be0a7db7db48ebfa4fcd3a7ba4ebd82e7044194c43",
       "textReview": "Associativity and distributivity follow by evaluation on a vector, with linearity needed for distributing S over the argument sum. The two identity maps correctly belong to the source and target spaces; noncommutativity is demonstrated only where both compositions are defined.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: grouping the same R,H,D order gives coincident green images and zero matrix difference; swapping factor order gives a distinct red house. The default matrices/readout distinguish associativity from commutativity.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qinfo-4.8",
       "file": "content/qinfo/ch04-b.js",
       "textHash": "5c7965ced425b7e603d92b9eeabbc14c0b3be04e30c56ff7fb42afd510fb37bc",
       "textReview": "The XOR oracle is a self-inverse permutation and phase kickback with |−⟩ gives the sign oracle without exposing every function value. Query cost is correctly distinguished from the gate cost of constructing the oracle, and the truth-table implementation uses controls on both zero and one.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid light capture and fresh isolated dark recapture: truth table, output bars and four controlled-NOT columns are distinct; four true rows match four gates. The initial dark PNG duplicated page content, documented in agent-capture-anomalies.md. Full truth-table edits/target phase controls are separate checks.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "nt-1.3",
@@ -1404,108 +1408,108 @@
       "file": "content/circ/ch02.js",
       "textHash": "bfa3dcdc63dbda8264588a012215a1299314a16d83816410a69fb6a7ce9d8cd7",
       "textReview": "KVL is correctly restricted to the no-linked-changing-flux lumped model and its violation is related to Faraday induction. The derivation should distinguish model terminal voltages and induced emf; the named em-6.8 prerequisite is itself a planned Kirchhoff item rather than the Faraday law cited in the idea. Check the flux sign and seven-loop claims in the live solver.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the selected bridge loop has drops4.286 and5.714 against a10V rise and zero residual. Circuit nodes and voltage waterfall agree. Flux-on and reversed-loop controls plus the mispointed Faraday prerequisite remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-2.1",
       "file": "content/fa/ch02.js",
       "textHash": "93c2b239fc0de778e47826bd82f4216517a8b89163f4c1dc31f87a31c1d034cb",
       "textReview": "Nowhere-dense and meagre definitions and the four closure properties are correct in the ambient space S. A fat Cantor example can be nowhere dense with measure one half, whereas Q is dense and meagre. The finite drawing must label its approximations and avoid claiming a longest open hole exists for an arbitrary selected set without inspecting the specific construction.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Cantor-set marks, chosen window and zoomed green hole align at default width.045, hole.0123. Finite approximations and the asserted longest-hole choice at other windows remain pending, rather than certified by this picture.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "prob-3.6.7",
       "file": "content/prob/ch03-d.js",
       "textHash": "71fad68e9a3fd7fe499a07aeabfca3c4059af506ad404123e596d264b1ac0b25",
       "textReview": "The total-variation convention is one half the l1 difference: direct summation gives p(1-exp(-p)) <= p². Product/convolution contraction yields the independent-sum bound. At lambda=1 the positive first-order binomial-minus-Poisson discrepancies occur at k=1 and k=2, summing to 3/(4en), consistent with the caption. Numerical truncation and log-floor behaviour remain to inspect.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Bernoulli/Poisson distance .19673 at p=.5 agrees with p(1-exp(-p)); binomial/Poisson curves stay below displayed bounds. Default n2000,lambda2 distance2.26e-4 versus LeCam.002 is legible. This is not independent validation of all-tail numerical summation.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ladr-9.16",
       "file": "content/ladr/ch09-b.js",
       "textHash": "f29308ab7f3bcde2ef42c7ff25bc176091c57e1f0ded500323a0c6cddbe66b6d",
       "textReview": "Expanding alpha(u+w,u+w) proves alternating implies skew symmetry; the converse needs characteristic different from two, as the proof explicitly notes. State the underlying real/complex field convention in the standalone statement if it is not inherited visibly. The R3 example's normal (0,-1,1) gives exactly the listed bilinear form.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default alternating form gives cross terms plus/minus1.404, zero diagonal terms and zero sum; 3D vectors/parallelogram and four bars are distinct. The characteristic-two converse caveat remains a text follow-up.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "micro-7.7",
       "file": "content/micro/ch07.js",
       "textHash": "260d62621fb62339ca3c9c96e088175a4741a05dd5cca4e2718b4c8cc61acd87",
       "textReview": "The cost problem and interior tangency argument are standard for positive input prices and a smooth regular isoquant. Differentiability and quasi-concavity alone do not exclude zero marginal products, so the displayed ratio needs a nonzero-denominator/constraint qualification. Perfect substitutes with equal output per unit cost have an entire optimal segment rather than a forced unique corner.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: two cost100 crossings and the cheaper tangent bundle(3.10,5.16),cost61.97 align across isoquant and cost panels. Default TRS1.667 agrees with w/r. Smoothness/positive-price conditions and tied linear optima remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qm-7.14",
       "file": "content/qm/ch07-c.js",
       "textHash": "6bf88b20c07e78e2d37275fc0ee6b47539af26032cdb3a7d35ed6cf580669ba6",
       "textReview": "The tensor-product angular-momentum decomposition and multiplicity-one dimension count are correct for nonnegative half-integer j1,j2. Highest-weight lowering explains the construction. The classical vector-length comparison is an analogy, not an identification of quantum lengths j with sqrt(j(j+1)). Check the numerical J² multiplicities and endpoint M controls.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: j1=1,j2=1.5 produces12 product states and multiplets J=.5,1.5,2.5 of dimensions2,4,6; M=.5 has three states/rungs. The quantum counting is legible; any classical-vector analogy needs its own scope.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "vcalc-4.5",
       "file": "content/vcalc/ch04.js",
       "textHash": "ee2f0aba5d7f623d542b5727a38e8bd3bf27206fe18347c9b2bb2e1f8dcce6ef",
       "textReview": "The C1 local image-area limit is correct, with local invertibility handling nonzero determinant and a thin-neighbourhood bound handling singular derivatives. A shoelace polygon computes oriented boundary area: for a folded or multiply covered image it need not equal the area of the image set. The squaring map near zero is a concrete multiplicity case to inspect; finite-h plots need this distinction.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default smooth-map image, derivative parallelogram and area/h^2 convergence curve are distinct. At h=.5 ratio.8713 versus local determinant.9568 is a finite-size difference, not a contradiction. Folded-map signed shoelace versus set-area interpretation remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "robot-3.2",
       "file": "content/robot/ch03.js",
       "textHash": "db3e7e12c1c4e1f562a117be12652716b4fe390eba09ba8ba11826b8ac490893",
       "textReview": "The stated classical DH transform has the usual four factors, but x_i must be a common perpendicular to both consecutive z axes, not merely perpendicular to and intersecting z_(i-1). Parallel, intersecting and coincident axes have convention choices. Verify the claim about Lynch–Park's convention against its actual appendix and check that both frame rules in the live readout match the full geometric definition.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: elbow-arm frames and highlighted DH row are legible; default frame-axis residuals near1e-16 and DH/product-of-exponentials difference4.3e-16 are finite. Those numerics do not resolve the pending common-perpendicular/convention wording.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-0.3",
       "file": "content/rca/ch00.js",
       "textHash": "e903911ffdc601893f0d7c6237e7a29c74f2a9cfcf1766c4acfb5da3bc8152f9",
       "textReview": "The addition formula reduces the derivative to the exponential series at zero. The bound sum_(n>=2) r^(n-1)/n! <= (r/2)exp(r) follows termwise from n!>=2(n-2)! and is uniform in the complex direction. Equality in the tighter radial series bound occurs for positive real h. Inspect small-h cancellation and the plotted all-direction loop numerics.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: complex increment circle, difference-quotient loop, derivative vector and error-bound circle are distinct. At |h|=.9 observed error.825 is below bound.882. Small-h cancellation and rounded numerical quotient remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "cm-3.11",
       "file": "content/cm/ch03-b.js",
       "textHash": "81481a7391ab8f2aab8d271065c21c2b8a568b8549988271dc085e5d4c654bb4",
       "textReview": "The Debye mean-square formula reduces to 9 hbar² T/(m kB Theta²) at high temperature, giving the printed melting estimate. The empirical criterion, three-dimensional rms convention and secondary/memory table provenance are candidly scoped; the verification flag remains. The claimed mass trend holds only with d, Theta and c fixed: isotope-dependent Theta can compensate it.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid dark capture and fresh isolated light recapture: the Debye-temperature curve and nine-element ratio bars are distinct. Default Cu ratio.110 at1358K gives predicted1356K at chosen c=.110. The initial light PNG duplicated content; fixed-parameter extrapolation and source constants remain pending model/evidence checks.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ml-4.1",
       "file": "content/ml/ch04.js",
       "textHash": "50ace0a6742e360a9c449541feff1a103a7432d5647a7e33a6dea1e2c140fcb2",
       "textReview": "The definition correctly quantifies simultaneously over all hypotheses for one fixed sample and distinguishes this from a fixed-h law of large numbers. The 101-threshold finite grid and numerical risk integration are explicit. General nonnegative losses need finite risks for the stated LLN explanation; increasing m improves representativeness probabilistically, not monotonically on every redraw.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the empirical step risk, true smooth risk and epsilon tube are distinct. Default max gap.119 exceeds.08, with14/101 thresholds outside and34/200 repeated samples representative. A single draw need not improve monotonically as m grows; expected-loss scope remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "bioinf-2.13",
       "file": "content/bioinf/ch02-c.js",
       "textHash": "c74c64d595013b89b69c80ab5ee693e556a8631da06ea3588982e0c61c034c3b",
       "textReview": "The zero-floored recurrence gives optimal local alignment for the specified gap penalties; the gap maxima should be read over valid indices k<=i,l<=j. Negative random-pair mean is a statistical scoring condition rather than necessary for the finite dynamic program's correctness. The one-third units match the stated substitution and gap weights. Original-paper example and global comparison still need live/source inspection; no source credit added.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: local DP traceback, local alignment and full global alignment are distinct. Default local score10/3 and global4/3 are visibly labelled with rescoring confirmation. Gap-index conventions and negative-mean statistical assumptions remain separate pending findings.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pharm-2.9",

@@ -34,3 +34,11 @@ in their names. Fresh isolated native captures passed and were visually
 inspected: relativity shows distinct carried-axis and velocity-loop panels;
 information theory shows distinct simplex and probability panels. The cause
 remains unresolved; these observations do not establish a production defect.
+
+Three further default PNGs duplicated page content: `dist-1.7.png`,
+`cm-3.11.png` and `qinfo-4.8.dark.png`. Their bad originals were preserved
+under `/tmp/agent-review/` with `-duplicated` in the filename. Automated
+checks had passed. Fresh isolated native recaptures passed and were
+visually inspected: five execution panels/decision table, Debye curve/
+element bars, and truth table/output bars/circuit respectively. The
+cause is still unresolved; no renderer change is inferred from these PNGs.

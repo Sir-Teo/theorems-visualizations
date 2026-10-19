@@ -117,6 +117,10 @@ sampling error. Compare an estimator with the truth for its own target group.
 
 ## Computer science
 
+Say which variables a probability guarantee is uniform over. A bound at one
+fixed sample size does not automatically cover an entire curve, repeated runs
+or a sample-dependent hypothesis class. Match summary grid sizes to labels.
+
 Match integer recursion trees to rounded recurrences. Separate exact operation
 counts from asymptotic leading terms, and count leaf rows separately from edge
 depth. A sufficient balance condition need not be necessary.
