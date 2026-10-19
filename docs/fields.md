@@ -192,6 +192,9 @@ right first nonzero prime-power term and a separate order argument.
   parameters. A pipe-flow Reynolds threshold does not classify every speech jet.
   Test the actual noise gate below onset and across its transition; this runtime's
   `smoothstep` takes one normalized argument, not two edges and a value.
+- In social-network experiments, distinguish found acquaintance chains from graph
+  shortest paths. Forwarding one folder to one chosen acquaintance is local routing;
+  breadth-first search explores neighbours in successive distance layers.
 - **Deps** in the history of technology are *enabling* dependencies: what an invention needed to
   exist (the printing press needs movable type, ink, paper and the screw press), plus the
   physics that explains how it works. Give `credit` with inventor and approximate date.

@@ -2044,6 +2044,117 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-11.20",
+      "file": "content/rca/ch11-a3.js",
+      "textHash": "8fd717da77867587f09ea074ba849fc2e1975acdd72c66ba04555a220405241f",
+      "textReview": "The nontangential maximal bound reduces to total variation and a kernel majorant; the radial inequality with constant one follows from the even decreasing Poisson kernel. The conservative cone constant is identified as proof-derived rather than fitted. The caption carefully distinguishes finite sampled suprema from exact maxima and truncates the unbounded atom case. Inspect the stated geometric constant against the actual cone definition and the numerical atom neighbourhoods.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "vcalc-3.3",
+      "file": "content/vcalc/ch03.js",
+      "textHash": "20326db245b11f7846cb77b2eea99f7fde91bcdebad3181d040bedf725855868",
+      "textReview": "The gradient-field definition, constant ambiguity on connected domains and vanishing closed-loop integral are correct for the stated C1 potential. Rotating a gradient by 90 degrees does not always destroy conservativity: on a simply connected planar domain a harmonic potential has conservative rotated gradient, for example phi=x gives the constant gradient of y. Restrict the example claim to the selected bump fields and loops; numerical circulation may have quadrature error rather than only roundoff. Zero gradients have no unique steepest direction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-4.2.7a",
+      "file": "content/graph/ch04-a2.js",
+      "textHash": "2c9cc9b424ab44feb0fd0febaf473209147b8cfb7c74fc182208d7a260f722a0",
+      "textReview": "Under the collection's simple plane-graph convention, maximality is about adding an arc through a common face, not just a straight segment. A triangular face has all vertex pairs already adjacent, and the converse explicitly refers to order at least three. Inspect nonconvex face routing, disconnected drawings and the outer face before certifying the saturation algorithm.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-3.4",
+      "file": "content/fa/ch03.js",
+      "textHash": "0b60c9b8264067c547c8d8a59f8b92f3589249d07c54815a23b02df6c2f6e0bd",
+      "textReview": "The disjoint convex-set separation statements have the standard openness and compact-versus-closed/local-convexity hypotheses. The Minkowski/Hahn–Banach argument and compact uniform gap explain them. The finite disc-versus-convex-hull picture should report overlap or touching rather than claim strict separation in a violated-hypothesis state. No new mathematical defect found in the text.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "vcalc-4.7",
+      "file": "content/vcalc/ch04-b.js",
+      "textHash": "81743f75c7bdf468e3bdfb877b017660f653a551444b105dfd388f493672e39e",
+      "textReview": "The coordinate Jacobians and ball integrals 4pi/3 and 8pi/15 are correct. Only spherical coordinates give constant ball limits; cylindrical z limits depend on r. The actual cylindrical midpoint integrand contains sqrt(1-r²), so the claimed N^-2 rate for both adapted systems is false. Independent N-doubling of that implemented formula gives rates 1.53 down to 1.51, approaching N^-3/2. The caption should distinguish Cartesian/cylindrical/spherical in the ball comparison from the initial list including two-dimensional polar coordinates.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-7.12",
+      "file": "content/pma/ch07-a2.js",
+      "textHash": "bad4300e44bf231b9ad4c34373b121d8ac8535c03aa9716124ab5e602c2d7c36",
+      "textReview": "The uniform-limit continuity theorem and epsilon/3 proof are correct; nx/(1+n²x²) is a valid continuous-limit nonuniform converse counterexample. Source inspection confirms the displayed Rudin 7.3 family is instead the geometric partial sum with discontinuous limit (1+x² off zero, zero at zero), so the caption's failed continuity box at zero is consistent. The separate arctangent family also has a discontinuous limit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "stoch-1.5",
+      "file": "content/stoch/ch01.js",
+      "textHash": "bd95e75a5f59b4fc0c44379fe335d2af259a2dc267a858e66a706a20b297110a",
+      "textReview": "Accessibility including n=0 is reflexive, mutual accessibility gives communicating classes, and Chapman–Kolmogorov supplies transitivity. The condensation graph is acyclic. In a finite chain every nonclosed communicating class is transient and eventual occupancy lies in closed classes, though a finite 5000-step run only illustrates that limit. Inspect graph editing when a state loses every outgoing edge and make its stochastic interpretation explicit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "solid-1.4",
+      "file": "content/solid/ch01.js",
+      "textHash": "d287350420649138596569a35b19264a23384f3c866babf400cffbdb8cec27e0",
+      "textReview": "Hooke's linear approximation follows from a first-order differentiability expansion about the unstressed state, not from every smooth function having a convergent Taylor series. A single-valued reversible constitutive law is an additional elastic-model assumption. Typical steel moduli are near 200–210 GPa rather than literally all steels sharing exactly 210; concrete and other handbook numbers vary. The 0.5% departure criterion is a chosen numerical test, not a universal sharp physical proportional limit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "top-4.8",
+      "file": "content/top/ch04-b.js",
+      "textHash": "a5b4fcbee794bf9fa014d613bf9bcce8df4cb12e9a8c3a226f039983fd25504d",
+      "textReview": "The compact-factor closed-projection proof by the tube lemma is correct for arbitrary X. The hyperbola with Y=R is a valid failure example. The parenthetical 'for noncompact Y this fails' should say compactness cannot be omitted in general: a fixed projection can still be closed with noncompact Y, for instance when X is a point. The diagram formula |x|>=a/L assumes its positive-a parameter range.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "toc-4.12",
+      "file": "content/toc/ch04-c.js",
+      "textHash": "491fa99b1a5f8f9b49fe6df9c4c26750c0df4d90f8d7486103fb9c367aec16d7",
+      "textReview": "The nondeterministic Buchi definition and infinitely-often acceptance are correct. A reachable accepting cycle/lasso decides existence in the finite product for a fixed ultimately periodic word, while the idea explicitly avoids saying all infinite accepting runs repeat a cycle. Require a nonempty loop word or reject empty v in the editor. The original 1962 proceedings text remains a flagged source gap; bibliographic search results alone do not close it.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "soc-4.17",
+      "file": "content/soc/ch04-papers.js",
+      "textHash": "9f3ecf544f7fe4770a77c39d34eaa94180708c59235962138656201b59b42df5",
+      "textReview": "The experiment is now described as one locally selected acquaintance chain per folder. Completed-chain length is distinguished from shortest-path distance and from exhaustive BFS exploration. The existing distance prerequisite still supplies the upper-bound comparison; the structural Watts–Strogatz statement and replication comparisons are scoped more precisely.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The completed-chain data, dropout correction and the separation between found paths and graph shortest paths are explicit. The idea nevertheless incorrectly calls the experiment breadth-first search: each folder follows one locally selected acquaintance at a time rather than exploring all vertices in distance layers. Replace that algorithm claim with decentralized single-chain routing; the distance definition in soc-2.2 still supports the shortest-path upper-bound comparison.",
+      "initialTextHash": "46a6f19d24954040c57af536e196bcaf7ccdcc0ce5485d01a70cea68ce89c5dd",
+      "correctionReport": "docs/verification/agent-small-world-routing-review.md"
+    },
+    {
+      "id": "game-4.5",
+      "file": "content/game/ch04.js",
+      "textHash": "b301d63df498cdf8b598db465e1120ef891da6cf57374488766a312dfd31aeaa",
+      "textReview": "Backward induction on a finite perfect-information tree gives a pure subgame-perfect equilibrium, with arbitrary optimal tie breaking generating exactly the pure SPE profiles. Strict continuation-payoff comparisons give uniqueness. If chance nodes are included their continuation value is the fixed probability-weighted expectation. Inspect the verifier and corrupted off-path choice example; no new defect found in the player-decision induction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }
