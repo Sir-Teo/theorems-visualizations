@@ -1,10 +1,10 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part d: 4.16–4.20)
+import { harveyArithmetic, veinState, VEIN } from './physio-source-audit-harvey.js';
+import { passiveFlow, regulatedFlow, myogenicStep } from './physio-source-audit-myogenic.js';
 import { cardiacFlow, venousFlow, circulationParameters, circulationEquilibrium } from './physio-source-audit-guyton.js';
 import { oncoticPressure, frozenFiltration } from './physio-source-audit-starling.js';
 import { stenosisFlow, BERNOULLI_MMHG } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, PA_PER_MMHG } from './ch04.shared.js';
-
-const DRAM_ML = 3.7; // an apothecary dram (3.89 g) of blood is about 3.7 mL (density 1.06 g/mL)
 
 export default {
   collection: 'physio',
@@ -15,17 +15,17 @@ export default {
       num: '4.16',
       kind: 'Phenomenon',
       name: 'Myogenic autoregulation of blood flow',
-      statement: String.raw`Over a wide range of perfusion pressure (roughly 60–160 mmHg in the brain, kidney and many other organs) the blood flow through an organ stays nearly constant instead of rising in proportion to pressure as it would through passive tubes. Vascular smooth muscle in the arterioles contracts when it is stretched by a rise in pressure and relaxes when pressure falls, so the resistance changes in step with pressure; the radius adjusts until the flow returns to its set level, and since $Q\propto P\,r^4$ (physio-4.2) a decrease of radius by only $\tfrac14$ of the proportional rise of $P$ is enough. The response takes some seconds, so a pressure step first gives a flow transient that then relaxes. Outside the range, when the muscle is fully contracted or fully relaxed, flow follows pressure again.`,
-      idea: String.raw`This is negative feedback (physio-1.2) with the stretch of the wall as the sensed variable: the controller is the vessel's own muscle, the actuator its radius, and the fourth-power law (physio-4.3) makes the gain of the loop large for a modest radius change. The quality of the regulation is expressed by the autoregulatory gain $g=1-\Delta\ln Q_\text{reg}/\Delta\ln Q_\text{pass}$, which is 0 for passive vessels and 1 for perfect regulation. The first observation of a local arterial reaction to the internal pressure is Bayliss's (1902); the flow plateau of whole organs was demonstrated later.`,
-      caption: String.raw`**Left:** flow (relative to its set value at 100 mmHg) against perfusion pressure for passive vessels (dashed) and for vessels with myogenic tone (solid); drag the **pressure** handle. The plateau ends where the muscle runs out of range: reduce the **reserve** and the plateau narrows. **Right:** a step of pressure at 5 s: the flow jumps with the passive distension and then relaxes, with the time constant you choose. Set the **myogenic gain** to 0 for a passive bed.`,
-      scope: String.raw`A model in which the muscle adjusts the vessel radius toward the value that would hold flow at its set point, with a first-order delay and with limits of constriction and dilation: it reproduces the shape of the phenomenon (plateau, limits, transient), not any organ's data. The passive distensibility, the limits (about −30% and +35% in radius at full reserve) and the time constant are illustrative. Metabolic and flow-dependent controls act in parallel in real tissues.`,
+      statement: String.raw`Arterial smooth muscle can contract after increased wall stretch and relax after a reduction in tension. This local **myogenic response** can oppose passive pressure distension and help regulate tissue flow. For a fixed-length Poiseuille model, $Q\propto P r^4$, so holding flow constant requires $r\propto P^{-1/4}$; for small changes, $d\ln r=-\tfrac14d\ln P$. Finite constriction/dilation limits restrict compensation. The range and speed of whole-organ autoregulation depend on the tissue and other controls; no universal pressure plateau is assumed here.`,
+      idea: String.raw`Bayliss's 1902 paper reports pressure-induced arterial reactions in denervated limbs and excised arteries, and interprets them as myogenic. The displayed curves are a later chosen model, not a reproduction of his volume traces. Passive radius increases with pressure; an active multiplier moves toward $Q_{pass}^{-g/4}$ within chosen bounds. Without those bounds, the steady flow is $Q_{pass}^{1-g}$, making $g$ the reduction in logarithmic flow sensitivity. The measured gain across 80–140 mmHg can differ from the control when a radius limit is active.`,
+      caption: String.raw`The **left** panel compares passive and regulated flow over the complete pressure range; drag the gold **pressure** handle. Change gain and radius reserve to see where compensation reaches a limit. The **right** panel applies a pressure step at 5 seconds: passive radius changes immediately, while the active multiplier follows an exact first-order exponential with time constant $\tau$. The readout distinguishes the initial jump, the value 55 seconds later and the eventual target.`,
+      scope: String.raw`Illustrative fixed-length resistance-vessel model with chosen passive distensibility, active radius limits of −30%/+35% times the reserve control, and a first-order response time. Flow and radius are relative to the 100 mmHg state. Its plateau, time constants and ±10% band are mathematical properties of these chosen functions, not measured brain, kidney or human pressure ranges. Bayliss's original evidence concerns local wall reactions; metabolic, neural, endothelial and pulsatile effects are omitted here.`,
       deps: ['physio-4.2', 'physio-1.2'],
       see: ['physio-4.3', 'physio-7.12'],
-      refs: ['Guyton–Hall'],
+      refs: ['Bayliss (1902), On the local reactions of the arterial wall to changes of internal pressure, J Physiol 28:220–231; pp.220–222 experiments, pp.230–231 interpretation and summary; DOI 10.1113/jphysiol.1902.sp000911; response curves chosen here'],
       tags: ['autoregulation', 'feedback', 'arterioles'],
       credit: 'W. M. Bayliss, 1902',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1902.sp000911' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sG = v.slider('myogenic gain', 0, 1, 0.9, { step: 0.05, fmt: (x) => v.fix(x, 2) });
         const sRes = v.slider('reserve of constriction / dilation', 0.2, 1.4, 1, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
@@ -34,30 +34,23 @@ export default {
         const a = v.stage({ x: [20, 220], y: [0, 3.2], height: 300, axes: 'box', gutter: true, xlabel: 'perfusion pressure (mmHg)', ylabel: 'flow Q / Q_set', weight: 1.1 });
         const b = v.stage({ x: [0, 60], y: [0, 3.2], height: 300, axes: 'box', gutter: true, xlabel: 'time (s)', ylabel: 'flow, radius (relative)', weight: 1 });
         const h = a.handle(160, 1, { color: 'gold', label: 'P', constrain: (x) => [clamp(x, 20, 220), 1] });
-        const rp = (P) => 1 + (0.25 * (P - 100)) / 100, qp = (P) => (P / 100) * rp(P) ** 4;
-        let o = null;
-        v.render(() => {
-          const g = sG.value, res = sRes.value, rmin = 1 - 0.3 * res, rmax = 1 + 0.35 * res;
-          const ratio = (P) => clamp(Math.pow(1 / qp(P), g / 4), rmin, rmax), qr = (P) => (P / 100) * (rp(P) * ratio(P)) ** 4;
-          a.fn(qp, { color: 'muted', width: 2, dash: [6, 4], domain: [20, 220] });
-          a.fn(qr, { color: 'accent', width: 2.8, domain: [20, 220] });
-          a.hline(1, { color: 'faint', dash: [3, 4] });
-          const P = h.x; h.set(P, qr(P)); a.dot(P, qp(P), { r: 5, hollow: true, color: 'muted' }); a.line(P, qp(P), P, qr(P), { color: 'orange', dash: true });
-          // plateau: pressures where flow lies within ±10% of the set value
-          let lo = null, hi = null; for (let p = 20; p <= 220; p += 1) if (Math.abs(qr(p) - 1) <= 0.1) { if (lo === null) lo = p; hi = p; }
-          if (lo !== null && hi - lo > 5) a.hband(0.9, 1.1, { color: 'green', alpha: 0.08 });
-          // gain over the 80–140 mmHg range
-          const gm = 1 - (Math.log(qr(140)) - Math.log(qr(80))) / (Math.log(qp(140)) - Math.log(qp(80)));
-          // step response
-          const P1 = sStep.value, tau = sTau.value, pts = [], rr = [], pp = [];
-          let rho = 1; const dt = 0.1;
-          for (let k = 0; k <= 600; k++) { const t = k * dt, Pt = t < 5 ? 100 : P1; const tgt = ratio(Pt); rho += ((tgt - rho) * dt) / tau; pts.push([t, (Pt / 100) * (rp(Pt) * rho) ** 4]); rr.push([t, rp(Pt) * rho]); pp.push([t, Pt / 100]); }
-          b.path(pp, { color: 'faint', width: 1.6, dash: [4, 4] }); b.path(pts, { color: 'accent', width: 2.8 }); b.path(rr, { color: 'purple', width: 2 });
-          b.hline(1, { color: 'faint', dash: [3, 4] });
-          o = { P, q: qr(P), qpass: qp(P), lo, hi, gm, peak: Math.max(...pts.map((p) => p[1])), end: pts[pts.length - 1][1] };
+        const qp=passiveFlow;
+        let o=null;
+        v.render(()=>{
+          const g=sG.value,res=sRes.value,qr=P=>regulatedFlow(P,g,res),P=h.x;
+          a.setView([10,230],[-.2,Math.max(qp(220),qr(220))*1.2]);
+          a.fn(qp,{color:'muted',width:2,dash:[6,4],domain:[20,220]});a.fn(qr,{color:'accent',width:2.8,domain:[20,220]});a.hline(1,{color:'faint',dash:[3,4]});
+          h.set(P,qr(P));a.dot(P,qp(P),{r:5,hollow:true,color:'muted'});a.line(P,qp(P),P,qr(P),{color:'orange',dash:true});
+          let lo=null,hi=null;for(let p=20;p<=220;p++)if(Math.abs(qr(p)-1)<=.1){if(lo===null)lo=p;hi=p;}a.hband(.9,1.1,{color:'green',alpha:.08});
+          const gm=1-Math.log(qr(140)/qr(80))/Math.log(qp(140)/qp(80)),P1=sStep.value,tau=sTau.value,pts=[],rr=[],pp=[];
+          for(let k=0;k<=600;k++){const t=k*.1;if(k===50){pts.push([5,1]);rr.push([5,1]);pp.push([5,1]);}const z=myogenicStep(P1,g,res,tau,t);pts.push([t,z.flow]);rr.push([t,z.radius]);pp.push([t,z.pressure]);}
+          b.setView([-2,62],[-.2,Math.max(...pts.map(p=>p[1]),...rr.map(p=>p[1]),...pp.map(p=>p[1]))*1.2]);
+          b.path(pp,{color:'faint',width:1.6,dash:[4,4]});b.path(pts,{color:'accent',width:2.8});b.path(rr,{color:'purple',width:2});b.hline(1,{color:'faint',dash:[3,4]});
+          o={P,q:qr(P),qpass:qp(P),lo,hi,gm,jump:qp(P1),end:pts.at(-1)[1],target:qr(P1)};
         });
-        v.legend([['muted', 'passive vessels', { dash: true }], ['accent', 'with myogenic tone / flow'], ['purple', 'radius (right)'], ['faint', 'pressure (right, ÷100)', { dash: true }]]);
-        v.readout(() => `at ${v.fix(o.P, 0)} mmHg: flow ${v.fix(o.q, 2)} of set value (passive would be ${v.fix(o.qpass, 2)});  plateau within ±10% from ${o.lo ?? '–'} to ${o.hi ?? '–'} mmHg;  autoregulatory gain over 80–140 mmHg ≈ ${v.fix(o.gm, 2)}\nafter the step the flow jumps to ${v.fix(o.peak, 2)} and relaxes to ${v.fix(o.end, 2)} within 55 s`);
+        v.legend([['muted','passive vessels',{dash:true}],['accent','with chosen tone / flow'],['purple','radius (right)'],['faint','pressure (right, ÷100)',{dash:true}]]);
+        v.readout(()=>`at ${v.fix(o.P,0)} mmHg: regulated flow ${v.fix(o.q,2)}, passive ${v.fix(o.qpass,2)}; chosen ±10% band ${o.lo}–${o.hi} mmHg (1 mmHg sampling); logarithmic gain over 80–140 mmHg ${v.fix(o.gm,2)}\nafter pressure step: initial flow ${v.fix(o.jump,2)}, at 55 seconds ${v.fix(o.end,2)}, eventual target ${v.fix(o.target,2)} (all relative)`);
+
       },
     },
     // ------------------------------------------------------------------ 4.17
@@ -160,17 +153,17 @@ export default {
       name: 'Exercitatio Anatomica de Motu Cordis et Sanguinis',
       paper: { authors: 'William Harvey', year: 1628, title: 'Exercitatio Anatomica de Motu Cordis et Sanguinis in Animalibus', venue: 'Frankfurt: William Fitzer', url: 'https://archive.org/details/exercitatioanat00harv' },
       introduces: ['physio-3.6'],
-      statement: String.raw`Harvey argued that the blood **circulates**: it is driven by the heart out through the arteries to the body and returns through the veins to the heart, in a closed circuit, instead of being made in the liver and consumed by the tissues as Galen's doctrine taught. His quantitative argument takes a lower bound for the output of the left ventricle: he reasoned that the ventricle, which in a dead body holds more than two ounces, expels at each beat only a part of its charge, so that at a very low estimate of one drachm per beat and a rate of more than a thousand beats in half an hour more blood passes through the heart than the whole body contains: far more than could be made from food or consumed by the tissues, so the same blood must return again and again. His second argument, from the one-way valves of the veins, shows that in a limb the venous blood can flow only toward the heart.`,
-      idea: String.raw`The accepted view had the blood continually generated and used up, which fixes the quantity required at the rate of nutrition. Harvey replaced it with a calculation: stroke volume times rate gives a flow (the cardiac output, physio-3.6) that exceeds any plausible rate of production, and a simple consequence of continuity is that the same blood is pumped repeatedly. The experiments on the valves of the veins (a ligature on the arm, and a vein emptied by pressure with the finger and then watched as it refills) supplied the return path, which he could not see: capillaries were not seen until Malpighi in 1661. The paper marks the start of experimental, quantitative physiology. The quoted numbers are those of the 1628 text (Willis's 19th-century translation was consulted for the passage; the Latin was not checked), and it is flagged for verification.`,
-      caption: String.raw`**Top:** Harvey's arithmetic with his own cautious numbers (capacity of the ventricle, the share expelled per beat, beats in half an hour) and the blood of a sheep or dog, about four pounds by his estimate; the line shows the weight of blood pumped through the heart against time and where it passes the whole body's blood. **Middle:** the same quantities in millilitres next to today's measured stroke volume. **Bottom:** the experiment on the valves of the veins, in four steps (pick the step, then move the finger): stripped toward the heart a vein stays empty when stroked the other way, because the valve closes, and refills only from the hand side.`,
-      scope: String.raw`The figures are Harvey's own (apothecary weights: 8 drachms to the ounce, 12 ounces to the pound, which is how his "ten pounds five ounces" arises from 1000 drachms) and are conservative; the conversion 1 drachm of blood ≈ 3.7 mL assumes a blood density near 1.06 g/mL and the apothecary drachm of 3.89 g. The modern values (stroke volume about 70 mL, blood volume about 5 L) are standard textbook values (physio-3.6). The vein experiment is drawn schematically, not from Harvey's plates.`,
+      statement: String.raw`Harvey's 1628 argument compared blood ejected repeatedly with the amount available in the body. In Chapter IX he supposes, for example, one drachm per beat and 1000 beats in half an hour: the total is ten pounds and five ounces in the weight reckoning used by the text. He also reports that a sheep's blood content was no more than four pounds. These are assumptions and observations used to argue for repeated circulation, not a measurement of a universal stroke volume. Chapter XIII describes vein-valve experiments: blood can be pressed toward the heart, reverse pressing is blocked at a valve, and an emptied segment refills from the hand side when the lower finger is lifted.`,
+      idea: String.raw`The quantitative reasoning is conservation: a one-way throughput much larger than the available supply cannot be sustained by continual replacement from food. Harvey explicitly leaves the precise quantity expelled per beat for further determination. The vein-valve experiment supports directed return toward the heart; it does not itself reveal the microscopic arterial-to-venous connection. The text read here is Robert Willis's 1847 English translation, reprinted in the 1906 edition digitized by Project Gutenberg. The Latin original and its historical metrology are not independently reconstructed.`,
+      caption: String.raw`The **left** plot multiplies chosen drachms per beat by beats per minute and shows when cumulative throughput exceeds the chosen body supply. The **right** converts the same choices using an illustrative 3.7 mL/drachm convention and compares them with a chosen 70 mL,75/min,5 L reference. The lower cartoon follows the four vein-experiment steps; during reverse pressing, the moving finger stops above the closed valve and the segment below remains empty. These parameter explorations and the cartoon are not reconstructions of measured traces.`,
+      scope: String.raw`Primary support: Chapters VIII–IX and XIII of Harvey's work in the identified translation. The arithmetic uses 8 drachms/ounce and 12 ounces/pound, the reckoning consistent with the text's 1000 drachms =10 pounds5 ounces. Controls include additional chosen values beyond Harvey's examples; capacity and expelled quantity are independently adjustable. The 3.7 mL/drachm conversion is a modern illustrative convention, not a verified 1628 unit conversion; the blue reference values are chosen comparisons, not observations of "today" or a test of Harvey's accuracy. The vein drawing abstracts the reported directions of filling and valve blockage, not an original plate or a fluid simulation.`,
       deps: [],
       see: ['physio-3.6'],
-      refs: [],
+      refs: ['Harvey (1628), De Motu Cordis, Chapters VIII–IX and XIII; Robert Willis translation (1847), reprinted J.M.Dent1906; Project Gutenberg67065'],
       tags: ['Harvey', 'circulation', 'history'],
       credit: 'William Harvey, 1628',
-      links: { archive: 'https://archive.org/details/exercitatioanat00harv' },
-      verify: true,
+      links: { source: 'https://www.gutenberg.org/ebooks/67065' },
+      verify: false,
       viz(v) {
         const sCap = v.slider('ventricle capacity', 1, 3, 2, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} oz` });
         const sDr = v.slider('blood expelled per beat', 0.25, 4, 1, { step: 0.25, fmt: (x) => `${v.fix(x, 2)} drachm` });
@@ -179,45 +172,36 @@ export default {
         const step = v.select('vein experiment', [{ value: 1, label: '1 tied arm' }, { value: 2, label: '2 strip to heart' }, { value: 3, label: '3 stroke back' }, { value: 4, label: '4 release' }], 2);
         const sF = v.slider('finger position', 0, 1, 0.6, { step: 0.02, fmt: (x) => v.fix(x, 2) });
         const a = v.stage({ x: [0, 30], y: [0, 14], height: 270, axes: 'box', gutter: true, xlabel: 'minutes', ylabel: 'blood pumped through the heart (lb)', weight: 1.1 });
-        const b = v.stage({ x: [0, 4], y: [1, 1e6], ylog: true, height: 270, axes: 'box', gutter: true, ylabel: 'mL (log scale)', xticks: [[1, 'per beat'], [2, 'in 30 min'], [3, 'whole body']], weight: 0.9, minWidth: 240 });
+        const b = v.stage({ x: [0, 4], y: [0.1, 1e6], ylog: true, height: 270, axes: 'box', gutter: true, ylabel: 'mL (log scale)', xticks: [[1, 'per beat'], [2, 'in 30 min'], [3, 'whole body']], weight: 0.9, minWidth: 240 });
         const c = v.stage({ x: [0, 10], y: [0.3, 3.7], height: 240, axes: false, full: true });
         let o = null;
         v.render(() => {
-          const perBeat = sDr.value, N = sB.value, body = sBody.value, rate = N / 30;
-          const lbAt = (t) => (perBeat * rate * t) / 96;
-          a.fn(lbAt, { color: 'red', width: 2.8, domain: [0, 30] });
-          a.hline(body, { color: 'accent', width: 2.2 }); a.text(`all the blood of the body (${body} lb)`, 29.5, body + 0.5, { size: 12, color: 'accent', align: 'right', weight: 700 });
-          const tx = (body * 96) / (perBeat * rate);
-          if (tx < 30) { a.vline(tx, { color: 'green', dash: [5, 4] }); a.dot(tx, body, { r: 7, color: 'green' }); a.text(`passes it after ${v.fix(tx, 1)} min`, tx + 0.5, body - 0.9, { size: 11, color: 'green', align: 'left' }); }
-          const tot = lbAt(30); a.text(`${v.fix(tot, 1)} lb`, 29.5, Math.min(tot, 13) - 0.6, { size: 12, color: 'red', align: 'right', weight: 700 });
-          // modern comparison
-          const mlH = perBeat * DRAM_ML, totH = perBeat * N * DRAM_ML, bodyH = body * 12 * 8 * DRAM_ML;
-          const bars = [[1, mlH, 70, 'Harvey', 'today'], [2, totH, 70 * 75 * 30, '', ''], [3, bodyH, 5000, '', '']];
-          for (const [x, h, m] of bars) { b.rect(x - 0.38, 1, x - 0.02, h, { fill: 'red', fillAlpha: 0.35, color: 'red' }); b.rect(x + 0.02, 1, x + 0.38, m, { fill: 'accent', fillAlpha: 0.35, color: 'accent' }); b.text(Math.round(h).toLocaleString('en'), x - 0.2, h * 1.5, { size: 10, color: 'red', align: 'center' }); b.text(Math.round(m).toLocaleString('en'), x + 0.2, m * 1.5, { size: 10, color: 'accent', align: 'center' }); }
-          // veins
-          const stp = +step.value, s = sF.value, a0 = 2.0, b0 = 7.6, valve = 4.8, f = a0 + s * (b0 - a0);
-          c.rect(0.1, 0.6, 9.9, 3.5, { fill: 'gold', fillAlpha: 0.1, stroke: false, radius: 14 });
-          const full = (x) => { // is the vein filled at x
-            if (stp === 1) return true;
-            if (stp === 2) return !(x > a0 && x < f);
-            if (stp === 3) return !(x > a0 && x < b0);
-            return !(x > f && x < b0);
-          };
+          const perBeat=sDr.value,N=sB.value,body=sBody.value,rate=N/30,arith=harveyArithmetic(perBeat,N,body,sCap.value),tot=arith.totalPounds,tx=arith.crossingMinutes;
+          const lbAt=t=>perBeat*rate*t/96,top=Math.max(tot,body)*1.25+1;
+          a.setView([-1.5,31.5],[-top*.08,top]);a.fn(lbAt,{color:'red',width:2.8,domain:[0,30]});a.hline(body,{color:'accent',width:2.2});a.text(`chosen body supply (${body} lb)`,29.5,body+top*.05,{size:12,color:'accent',align:'right',weight:700});
+          if(tx<30){a.vline(tx,{color:'green',dash:[5,4]});a.dot(tx,body,{r:7,color:'green'});a.text(`crossing at ${v.fix(tx,1)} min`,tx,body-top*.1,{size:11,color:'green',align:'center'});}
+          a.text(`${v.fix(tot,1)} lb in 30 min`,29.5,tot-top*.06,{size:12,color:'red',align:'right',weight:700});
+          const mlH=arith.perBeatMl,totH=arith.totalMl,bodyH=arith.bodyMl,bars=[[1,mlH,70],[2,totH,70*75*30],[3,bodyH,5000]];
+          for(const[x,h,m]of bars){b.rect(x-.38,.1,x-.02,h,{fill:'red',fillAlpha:.35,color:'red'});b.rect(x+.02,.1,x+.38,m,{fill:'accent',fillAlpha:.35,color:'accent'});b.text(v.fix(h,h<10?2:0),x-.2,h*1.5,{size:10,color:'red',align:'center'});b.text(Math.round(m).toLocaleString('en'),x+.2,m*1.5,{size:10,color:'accent',align:'center'});}
+          const stp=+step.value,s=sF.value,{lower:a0,upper:b0,valve}=VEIN,state=veinState(stp,s),f=state.f,full=state.filled;
+          c.rect(.1,.6,9.9,3.5,{fill:'gold',fillAlpha:.1,stroke:false,radius:14});
           const segs = []; let cur = null; for (let k = 0; k <= 200; k++) { const x = 0.4 + (k / 200) * 9.2, fl = full(x); if (!cur || cur.fl !== fl) { cur = { fl, pts: [] }; segs.push(cur); } cur.pts.push([x, 2]); }
           segs.forEach((sg, i) => { if (i > 0) sg.pts.unshift(segs[i - 1].pts[segs[i - 1].pts.length - 1]); c.path(sg.pts, { color: sg.fl ? 'purple' : 'faint', width: sg.fl ? 14 : 2.5, alpha: sg.fl ? 0.75 : 1 }); });
-          { const vx = valve, shut = stp === 3 || (stp === 4 && f < vx), tipY = shut ? 0.02 : 0.2, tipX = shut ? vx + 0.15 : vx + 0.3;
+          { const vx = valve, shut = state.closed, tipY = shut ? 0.02 : 0.2, tipX = shut ? vx + 0.15 : vx + 0.3;
             for (const sgn of [1, -1]) c.line(vx - 0.2, 2 + sgn * 0.17, tipX, 2 + sgn * tipY, { color: 'ink', width: 3 }); }
           c.text('valve', valve, 1.5, { size: 11, color: 'muted', align: 'center' });
           c.text('hand', 0.4, 1.0, { size: 12, color: 'muted', align: 'left' }); c.text('heart →', 9.8, 1.0, { size: 12, color: 'muted', align: 'right' });
-          c.dot(a0, 2, { r: 8, color: 'orange', hollow: stp === 1 }); c.text('lower finger', a0, 1.45, { size: 11, color: 'orange', align: 'center' });
+          if(stp!==4)c.dot(a0, 2, { r: 8, color: 'orange', hollow: stp === 1 }); c.text(stp===4?'lower finger lifted':'lower finger', a0, 1.45, { size: 11, color: 'orange', align: 'center' });
           if (stp === 2) { c.dot(f, 2, { r: 8, color: 'gold' }); c.arrow(f - 0.9, 2.9, f + 0.1, 2.9, { color: 'gold', width: 2 }); }
-          if (stp === 3) { const g2 = b0 - s * (b0 - a0); c.dot(g2, 2, { r: 8, color: 'gold' }); c.arrow(g2 + 0.9, 2.9, g2 - 0.1, 2.9, { color: 'gold', width: 2 }); c.text('valve shuts: nothing comes back', 6.5, 3.35, { size: 12, color: 'red', align: 'center', weight: 700 }); }
+          if (stp === 3) { const g2=state.reverseFinger; c.dot(g2, 2, { r: 8, color: 'gold' }); c.arrow(g2 + 0.9, 2.9, g2 - 0.1, 2.9, { color: 'gold', width: 2 }); c.text('valve shuts: nothing comes back', 6.5, 3.35, { size: 12, color: 'red', align: 'center', weight: 700 }); }
           if (stp === 4) c.text('lower finger lifted: the vein fills from the hand side', 5, 3.35, { size: 12, color: 'green', align: 'center', weight: 700 });
           if (stp === 2) c.text('blood is pushed through the valve toward the heart', 5, 3.35, { size: 12, color: 'gold', align: 'center', weight: 700 });
           if (stp === 1) c.text('arm tied: the veins swell', 5, 3.35, { size: 12, color: 'purple', align: 'center', weight: 700 });
-          o = { tot, tx, mlH, totH, bodyH, perBeat };
+          o = { tot, tx, mlH, totH, bodyH, perBeat, arith, stp, s, reverseFinger:state.reverseFinger };
         });
-        v.readout(() => `${v.fix(sCap.value, 1)} oz holds ${v.fix(sCap.value * 8, 0)} drachms; Harvey's ${v.fix(o.perBeat, 2)} drachm per beat is ${v.fix(100 * o.perBeat / (sCap.value * 8), 0)}% of it → ${sB.value} beats pump ${v.fix(o.tot * 12, 0)} oz = ${v.fix(o.tot, 1)} lb in half an hour${o.tot > sBody.value ? ` (${v.fix(o.tot / sBody.value, 1)}× the whole body)` : ' (less than the body holds)'}\nin modern units ${v.fix(o.mlH, 1)} mL per beat against a measured stroke volume of about 70 mL; his total, ${v.fix(o.totH / 1000, 1)} L in 30 min, against about ${v.fix((70 * 75 * 30) / 1000, 0)} L today (the 1628 estimate is low by a factor ${v.fix(70 / o.mlH, 0)})`);
+        v.legend([['red','chosen historical-unit arithmetic'],['accent','chosen modern-unit reference']]);
+        v.readout(()=>`${v.fix(sCap.value,1)} oz = ${v.fix(sCap.value*8,1)} drachms capacity; chosen ejection ${v.fix(o.perBeat,2)} drachm = ${v.fix(100*o.arith.fraction,1)}% of capacity\n${sB.value} beats → ${v.fix(o.arith.totalDrachms,0)} drachms = ${o.arith.wholePounds} lb + ${v.fix(o.arith.remainingOunces,2)} oz (${v.fix(o.tot,2)} lb); ${o.tot>sBody.value?`exceeds chosen supply by ${v.fix(o.tot/sBody.value,2)}×`:'does not exceed chosen body supply within 30 min'}\nillustrative conversion: ${v.fix(o.mlH,2)} mL/beat and ${v.fix(o.totH/1000,2)} L/30min; blue reference uses 70 mL/beat ×75/min =5.25 L/min`);
+
       },
     },
     // ------------------------------------------------------------------ 4.20

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 248,
+  "remainingFlags": 244,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,9 +17,8 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 3,
     "pharm": 9,
-    "imaging": 2,
+    "imaging": 1,
     "circ": 1,
     "energy": 12,
     "solid": 7,
@@ -148,54 +147,6 @@
         "Murray I ch. 3"
       ],
       "links": {}
-    },
-    {
-      "id": "physio-3.1",
-      "file": "content/physio/ch03.js",
-      "name": "The cardiac cycle and the Wiggers diagram",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Wiggers_diagram"
-      }
-    },
-    {
-      "id": "physio-4.16",
-      "file": "content/physio/ch04-d.js",
-      "name": "Myogenic autoregulation of blood flow",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1113/jphysiol.1902.sp000911"
-      }
-    },
-    {
-      "id": "physio-4.19",
-      "file": "content/physio/ch04-d.js",
-      "name": "Exercitatio Anatomica de Motu Cordis et Sanguinis",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "idea",
-          "text": "The accepted view had the blood continually generated and used up, which fixes the quantity required at the rate of nutrition. Harvey replaced it with a calculation: stroke volume times rate gives a flow (the cardiac output, physio-3.6) that exceeds any plausible rate of production, and a simple consequence of continuity is that the same blood is pumped repeatedly. The experiments on the valves of the veins (a ligature on the arm, and a vein emptied by pressure with the finger and then watched as it refills) supplied the return path, which he could not see: capillaries were not seen until Malpighi in 1661. The paper marks the start of experimental, quantitative physiology. The quoted numbers are those of the 1628 text (Willis's 19th-century translation was consulted for the passage; the Latin was not checked), and it is flagged for verification."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "archive": "https://archive.org/details/exercitatioanat00harv"
-      }
     },
     {
       "id": "pharm-3.7",
@@ -348,25 +299,6 @@
       "links": {
         "nobel": "https://www.nobelprize.org/prizes/medicine/1979/hounsfield/lecture/"
       }
-    },
-    {
-      "id": "imaging-4.5",
-      "file": "content/imaging/ch04-b.js",
-      "name": "SPECT",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Parallel-hole geometry, 96 views over $360^\\circ$, uniform attenuation inside the body outline (elliptical, 34 cm \u00d7 26 cm in a 40 cm field of view; illustrative size), no scatter, no depth-dependent collimator blur, noise-free data. The value 0.153 cm\u207b\u00b9 for water at 140 keV is computed from the chapter-2 attenuation model (NIST XCOM gives 0.1505 cm\u00b2/g at 150 keV). The year of Chang's method is quoted from memory and was not checked."
-        }
-      ],
-      "refs": [
-        "Prince\u2013Links ch. 9",
-        "Kak\u2013Slaney \u00a74.2"
-      ],
-      "links": {}
     },
     {
       "id": "circ-4.17",
@@ -4558,7 +4490,11 @@
       "physio-4.17",
       "physio-4.13",
       "imaging-4.9",
-      "imaging-4.10"
+      "imaging-4.10",
+      "physio-3.1",
+      "physio-4.16",
+      "physio-4.19",
+      "imaging-4.5"
     ]
   },
   "additionalFollowups": [
@@ -8305,6 +8241,30 @@
       "status": "resolved",
       "report": "docs/verification/imaging-patlak-followup.md",
       "note": "Primary/author source and model limitations checked. Parent independently reran mathematical and native light/dark suites and inspected full-size final screenshots. Corrected false runaway state, event-mass/sampling bias or irreversible tracer identity as documented."
+    },
+    {
+      "id": "physio-3.1",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-cycle-followup.md",
+      "note": "Primary/author text and chosen-model claims checked; parent independently reran mathematical and native light/dark input suites and inspected final full-size screenshots. Corrected sampled valve states/timing, exact myogenic response, historical arithmetic/valve direction or attenuation approximations as documented."
+    },
+    {
+      "id": "physio-4.16",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-myogenic-followup.md",
+      "note": "Primary/author text and chosen-model claims checked; parent independently reran mathematical and native light/dark input suites and inspected final full-size screenshots. Corrected sampled valve states/timing, exact myogenic response, historical arithmetic/valve direction or attenuation approximations as documented."
+    },
+    {
+      "id": "physio-4.19",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-harvey-followup.md",
+      "note": "Primary/author text and chosen-model claims checked; parent independently reran mathematical and native light/dark input suites and inspected final full-size screenshots. Corrected sampled valve states/timing, exact myogenic response, historical arithmetic/valve direction or attenuation approximations as documented."
+    },
+    {
+      "id": "imaging-4.5",
+      "status": "resolved",
+      "report": "docs/verification/imaging-spect-followup.md",
+      "note": "Primary/author text and chosen-model claims checked; parent independently reran mathematical and native light/dark input suites and inspected final full-size screenshots. Corrected sampled valve states/timing, exact myogenic response, historical arithmetic/valve direction or attenuation approximations as documented."
     }
   ]
 }

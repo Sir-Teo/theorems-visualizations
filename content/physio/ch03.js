@@ -1,6 +1,7 @@
 // Human Physiology — Chapter 3: The heart as a pump (part a: 3.1–3.6)
 import { clamp, trace, heartBeat, beatAt, beatIdx, phases, phaseLoop, ecgAt, soundAt, drawLoop, cornerPoints, HEART } from './ch03.shared.js';
 
+import { valveStates, cycleDurations } from './physio-source-audit-cycle.js';
 import { OUTPUT_PRESETS, integrateSamples } from './physio-source-audit-cardiac.js';
 
 // ---------- helpers for this file ----------
@@ -20,17 +21,16 @@ export default {
       num: '3.1',
       kind: 'Concept',
       name: 'The cardiac cycle and the Wiggers diagram',
-      statement: String.raw`One heartbeat of the left heart is a fixed sequence of five mechanical phases, set by when the two valves open and close. (1) **Atrial systole** tops up the ventricle. (2) The ventricle starts to contract; as soon as its pressure exceeds the atrial pressure the **mitral valve closes** (first heart sound), and the ventricle contracts at constant volume, **isovolumically**. (3) When ventricular pressure exceeds aortic pressure the **aortic valve opens** and blood is **ejected**. (4) The ventricle relaxes; when its pressure falls below the aortic pressure the **aortic valve closes** (second heart sound) and pressure falls at constant volume again. (5) When ventricular pressure drops below atrial pressure the **mitral valve opens** and the ventricle **fills**. Valves are passive: each one opens and shuts because of the sign of the pressure difference across it. A Wiggers diagram plots aortic, ventricular and atrial pressure, ventricular volume, the ECG and the heart sounds on one time axis so that these events can be read off vertically.`,
-      idea: String.raw`The only active thing in the diagram is the muscle: the ventricular wall stiffens (physio-2.9's long plateau keeps all cells contracting together) and then relaxes. Everything else follows from pressure comparisons: a valve is open exactly when the pressure behind it exceeds the pressure ahead. That is why the pressure curves cross at each valve event, and why the isovolumic phases appear: both valves are shut, so the volume cannot change while pressure moves. The curves below are computed from a lumped model (one atrium, one ventricle, ideal valves, a Windkessel arterial load) integrated by RK4 until it is periodic, not drawn by hand.`,
-      caption: String.raw`The cursor sweeps the beat in slow motion (five times slower than life). Watch the shaded phases: the **green** line (atrium) and the **accent** line (ventricle) cross at the mitral events, the ventricular and **red** aortic curves cross at the aortic ones. The ECG and sound traces below are schematic, positioned from the model's own timings. Change the **heart rate**: diastole shortens much more than systole, and the filling phase shrinks first.`,
-      scope: String.raw`A teaching model of the left heart for a resting adult; the right heart follows the same sequence at lower pressures. Absolute values (about $115/80$ mmHg, stroke volume 65 mL) are illustrative, not a patient's. Real valves close with a slight lag because of blood inertia, so the "isovolumic" periods are not perfectly at constant volume.`,
+      statement: String.raw`A normally coordinated left-heart beat can be divided into five mechanical phases. **Atrial systole** adds filling. As the ventricle contracts and its pressure exceeds atrial pressure, the **mitral valve closes**; with both valves shut, pressure rises at nearly constant volume (**isovolumic contraction**). When ventricular pressure exceeds aortic pressure, the **aortic valve opens** and ejection starts. As ventricular pressure falls below aortic pressure, the **aortic valve closes**, followed by **isovolumic relaxation**. When ventricular pressure falls below atrial pressure, the mitral valve opens and ventricular filling resumes. A Wiggers-style diagram aligns the pressure, volume, ECG and sound traces on one time axis.`,
+      idea: String.raw`The atrial and ventricular muscle activations change chamber pressure; the ideal model valves then respond to pressure differences. When both are closed, neither inflow nor outflow changes ventricular volume. Patterson and Starling's 1914 discussion describes ventricular contraction, aortic opening, ejection and closure during relaxation; the panel illustrates that mechanical sequence with a chosen lumped atrium/ventricle/arterial-load model. Its first- and second-sound bursts are synthetic marks near the model's mitral and aortic closure times, and its Gaussian ECG is schematic, not a simulated electrical recording.`,
+      caption: String.raw`Each model beat takes **four display seconds**. Follow the cursor and shaded phases across the aligned curves; gold dots mark the sampled valve events. Change the **heart rate** to compare the model's systolic and filling intervals. Toggle phase shading or pause the cursor to inspect the pressure comparisons. The display slowdown therefore varies with the chosen beat duration.`,
+      scope: String.raw`Chosen left-heart model with instantaneous one-way resistive valves and a two-element Windkessel load. RK4 uses 1 ms steps and 12 warmup beats; the displayed last beat has a small residual end-to-start volume difference, reported below, rather than a guaranteed exact periodic orbit. Event times are sampled at approximately 1 ms resolution. Numerical pressures, volumes, ECG amplitudes and sound frequencies are illustrative; valve inertia, the right heart and measured acoustic/electrical signals are absent. This is not a patient trace or a reconstruction of an original Wiggers plate.`,
       deps: ['physio-2.9'],
       see: ['physio-3.2', 'physio-4.7'],
-      refs: ['Guyton–Hall'],
+      refs: ['Patterson & Starling (1914), On the mechanical factors which determine the output of the ventricles, J Physiol 48:357–379, pp.358–359 mechanical valve sequence; DOI 10.1113/jphysiol.1914.sp001669', 'Keener & Sneyd, author manuscript, section11.4 pp.490–492 and Fig.11.5, pressure–volume phase interpretation'],
       tags: ['cardiac cycle', 'heart'],
-      credit: 'The diagram is named for the American physiologist Carl J. Wiggers; the date of its first publication was not confirmed',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Wiggers_diagram' },
-      verify: true,
+      links: { source: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC1420422/' },
+      verify: false,
       viz(v) {
         const hr = v.slider('heart rate', 50, 120, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
         const bands = v.toggle('shade the phases', true);
@@ -43,7 +43,8 @@ export default {
         v.animate((t) => {
           R = heartBeat({ HR: hr.value }); T = R.T;
           tc = (((t / 4) % 1) * T);
-          for (const s of [sP, sV, sE, sS]) s.setView([0, T], undefined);
+          for (const s of [sP,sV,sE,sS]) s.setView([-.02,T+.02],undefined);
+          sV.setView(undefined,[Math.min(...R.V)-8,Math.max(...R.V)+8]);
           const ph = phases(R);
           for (const s of [sP, sV, sE, sS]) {
             if (bands.value) for (const p of ph) s.vband(p.t0, p.t1, { color: p.color, alpha: 0.1, edges: false });
@@ -67,8 +68,8 @@ export default {
         v.readout(() => {
           if (!R) return '';
           const i = beatIdx(R, tc), ph = phases(R).find((p) => tc >= p.t0 && tc < p.t1) || phases(R)[4];
-          const mit = R.Qm[i] > 1 ? 'open' : 'shut', ao = R.Q[i] > 1 ? 'open' : 'shut';
-          return `**${NAMES[ph.key]}** · mitral valve **${mit}**, aortic valve **${ao}** · $P_{\\mathrm{LV}} = ${v.fix(R.P[i], 0)}$, $P_{\\mathrm{Ao}} = ${v.fix(R.Pa[i], 0)}$, $P_{\\mathrm{LA}} = ${v.fix(R.Pat[i], 0)}$ mmHg, $V = ${v.fix(R.V[i], 0)}$ mL\ncycle ${v.fix(R.T * 1000, 0)} ms: isovolumic contraction ${v.fix((R.tAVO - R.tMVC) * 1000, 0)} ms, ejection ${v.fix((R.tAVC - R.tAVO) * 1000, 0)} ms, isovolumic relaxation ${v.fix((R.tMVO - R.tAVC) * 1000, 0)} ms, filling ${v.fix((R.T - R.tMVO) * 1000, 0)} ms`;
+          const {mitral:mit,aortic:ao}=valveStates(R,i),d=cycleDurations(R);
+          return `**${NAMES[ph.key]}** · mitral valve **${mit}**, aortic valve **${ao}** · $P_{\\mathrm{LV}} = ${v.fix(R.P[i], 0)}$, $P_{\\mathrm{Ao}} = ${v.fix(R.Pa[i], 0)}$, $P_{\\mathrm{LA}} = ${v.fix(R.Pat[i], 0)}$ mmHg, $V = ${v.fix(R.V[i], 0)}$ mL\ncycle ${v.fix(R.T*1000,0)} ms: isovolumic contraction ${v.fix(d.contraction*1000,0)} ms, ejection ${v.fix(d.ejection*1000,0)} ms, isovolumic relaxation ${v.fix(d.relaxation*1000,0)} ms, filling ${v.fix(d.filling*1000,0)} ms; end-to-start volume difference ${v.fix(R.drift,3)} mL`;
         });
       },
     },
