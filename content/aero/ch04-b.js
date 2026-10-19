@@ -1,22 +1,13 @@
-// Aerospace Engineering — Chapter 4 (part b): items 4.5-4.8. Sources and caveats: see the header of ch04.js and ch04.shared.js.
-//   4.5 Oblique shock theta-beta-M relation, Prandtl-Meyer function (gamma = 1.4): standard, recomputed (jump relations cross-checked in the readout against the normal-shock formulas of the normal Mach component).
-//       History: T. Meyer's 1908 Goettingen dissertation (supervised by Prandtl; Prandtl had shown schlieren images of the flow in 1907) -- from Wikipedia's Prandtl-Meyer expansion fan article (secondary), verify: true.
-//   4.6 Ackeret's linear theory: J. Ackeret, 1925, Zeitschrift fuer Flugtechnik und Motorluftschiffahrt 16, 72-74 (title "Luftkraefte auf Fluegel, die mit groesserer als Schallgeschwindigkeit bewegt werden"): verified in the
-//       original article in the NACA TM 317 translation (NASA NTRS 19930087085, pp. 1 and 5–6), checked 2026-10-16. Exact comparison: shock-expansion theory (ch04.shared.js), checked
-//       against Ackeret's flat-plate result 4 alpha^2/beta at small angles.
-//   4.7 Sutton-Graves: K. Sutton and R. A. Graves Jr., NASA TR R-376 (Nov 1971), title/scope checked (NTRS); the constant k = 1.7415e-4 (SI) was recalled, a secondary source quotes the rounded 1.75e-4 for Earth air:
-//       verify: true. Fay-Riddell: J. Aerospace Sci. 25(2), 73-85 (1958), DOI 10.2514/8.7517 (checked, Crossref). Material limits from the Space Shuttle thermal protection system (NASA pages and Wikipedia):
-//       aluminium structure kept below 350 F (450 K), black HRSI tiles about 2300 F (1530 K), reinforced carbon-carbon about 3000 F (1920 K); the titanium value (about 870 K) is an approximate engineering figure, not checked.
-//   4.8 Whitcomb, NACA RM L52H08 (1952): record checked on NTRS (title, author, ID 19930087283, publication date 1952-09-03 as listed there); "also NACA Report 1273 (1956)" is the syllabus's wording and could not be confirmed.
-//       Collier Trophy for the discovery and experimental verification of the area rule, 1955 (NASA/AFHF pages, secondary); the area rule stayed classified until 1955 (same sources).
-
-import {
-  clamp, DEG, atmo, G, GM1, cpCrit, thetaOf, thetaMax, shockAngles, obliqueJump, nuPM, NU_MAX, machFromNu, isenP,
-  shockExpansionDiamond, ackeretDiamond, LBODY, fusIdeal, wingHump, areaCoeffs, dragOfK, sears,
-} from './ch04.shared.js';
+// Aerospace Engineering — Chapter4 partb. Corner relations checked against NACA Report1135;
+// heating against Sutton–Graves1971 and NASA TFAWS2012; Whitcomb 1952 read completely.
+// Ackeret4.6 retains its existing original-article review and model.
+import {DEG,thetaOf,thetaMax,nuPM,NU_MAX,shockExpansionDiamond,ackeretDiamond} from './ch04.shared.js';
+import {cornerState} from './source-audit-corner.js';
+import {heatingState,NASA_HEATING_EXAMPLE} from './source-audit-heating.js';
+import {WHITCOMB_BODIES,bodyRadius,whitcombStation} from './source-audit-whitcomb.js';
 
 const fx = (x, d = 2) => (Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d).replace('-', '\u2212');
-const SIGMA_SB = 5.670374e-8;
+
 
 export default {
   collection: 'aero',
@@ -24,112 +15,77 @@ export default {
   items: [
     // ───────────────────────────────────────────────────────────────────────────────────── 4.5
     {
-      num: '4.5',
-      kind: 'Model',
-      name: 'Oblique shocks and Prandtl–Meyer expansion',
-      statement: String.raw`A supersonic stream (Mach number $M_1>1$) turned by a solid boundary adjusts through waves that are slanted to the flow.
+      num:'4.5',kind:'Model',name:'Oblique shocks and Prandtl–Meyer expansion',
+      statement:String.raw`For steady, two-dimensional inviscid flow of a calorically perfect gas, a supersonic stream turned into a compression corner can support an attached oblique shock. Upstream Mach number $M_1$, turn $\theta>0$ and shock angle $\beta$ obey
+$$\tan\theta=\frac{2\cot\beta(M_1^2\sin^2\beta-1)}{M_1^2(\gamma+\cos2\beta)+2}.$$
+Below the maximum attached turn there are weak and strong branches. The weak branch may become subsonic near attachment loss; the strong branch requires suitable downstream conditions. If no attached root exists, these equations do not determine the detached shock shape.
 
-(a) **Compression corner** (turn $\theta$ into the flow): an attached **oblique shock** at angle $\beta$ to the upstream flow, related to the turn by
-$$\tan\theta=\frac{2\cot\beta\,(M_1^2\sin^2\beta-1)}{M_1^2(\gamma+\cos2\beta)+2}.$$
-For $\theta$ below a maximum $\theta_{\max}(M_1)$ there are two solutions, **weak** (the one seen in practice; $M_2>1$ nearly always) and **strong**; above $\theta_{\max}$ the shock detaches. Across it the normal Mach number $M_{n1}=M_1\sin\beta$ obeys the normal-shock relations, e.g. $p_2/p_1=1+\tfrac{2\gamma}{\gamma+1}(M_{n1}^2-1)$, and the stagnation pressure drops.
-
-(b) **Expansion corner** (turn $|\theta|$ away from the flow): a centred fan of Mach waves, through which the flow is isentropic and $\nu(M_2)=\nu(M_1)+|\theta|$ with the Prandtl–Meyer function
-$$\nu(M)=\sqrt{\tfrac{\gamma+1}{\gamma-1}}\arctan\sqrt{\tfrac{\gamma-1}{\gamma+1}(M^2-1)}-\arctan\sqrt{M^2-1},$$
-whose maximum is $\approx130.5^\circ$ for $\gamma=1.4$ (beyond it the flow would turn into vacuum).`,
-      idea: String.raw`A disturbance in supersonic flow cannot travel upstream, so it is confined to Mach waves of angle $\mu=\arcsin(1/M)$ (9.13); a finite turn is the sum of many small ones. Compressive small turns steepen into a shock (9.14): across a shock only the component normal to it is decelerated, and the tangential component is unchanged, which with the Rankine–Hugoniot conditions gives the $\theta$–$\beta$–$M$ relation. For an expansion each infinitesimal turn $\mathrm d\theta$ is a Mach wave across which $\mathrm d\theta=\sqrt{M^2-1}\,\mathrm dV/V$; integrating gives $\nu(M)$. Expansion is reversible; compression of the same size loses stagnation pressure, by an amount that grows as $\theta^3$.`,
-      caption: String.raw`Drag the Mach number and the corner angle (positive = compression, negative = expansion). Left: the flow over the corner, with streamlines bending through the shock (red) or fan (blue). Right: for a compression, the $\theta$–$\beta$ curve of this Mach number (with faint curves for other Mach numbers): the horizontal line at your turn crosses it at the weak and strong shock angles; slide past the top of the curve and the shock detaches. For an expansion, the Prandtl–Meyer function with $M_1$ and $M_2$ marked.`,
-      deps: ['fluid-9.14', 'fluid-9.13', 'aero-1.6'],
-      refs: ['Anderson ch. 4'],
-      tags: ['shock waves', 'supersonic', 'gas dynamics'],
-      scope: String.raw`Steady, two-dimensional, inviscid supersonic flow of a calorically perfect gas ($\gamma=1.4$) past a sharp corner or wedge, with the shock attached. Real flows add boundary layers and shock–boundary-layer interaction; at hypersonic speed the perfect-gas relations become inaccurate (4.7).`,
-      credit: 'T. Meyer, doctoral thesis, Göttingen, 1908 (supervised by L. Prandtl)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Prandtl%E2%80%93Meyer_expansion_fan', wikipedia2: 'https://en.wikipedia.org/wiki/Oblique_shock' },
-      viz(v) {
-        const Ms = v.slider('Mach number $M_1$', 1.1, 6, 2.5, { step: 0.05 });
-        const th = v.slider('corner angle $\\theta$ (°; negative = expansion)', -35, 40, 12, { step: 0.5 });
-        const br = v.select('compression branch', [{ value: 'weak', label: 'weak' }, { value: 'strong', label: 'strong' }], 'weak');
-        const A = v.stage({ x: [-1, 2], y: [-0.7, 1.85], equal: true, axes: false, height: 340, minWidth: 340, title: 'flow over the corner' });
-        const B = v.stage({ x: [0, 90], y: [0, 50], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'shock angle $\\beta$ (°)', ylabel: 'turn $\\theta$ (°)', title: '$\\theta$–$\\beta$–$M$' });
-        const C = v.stage({ x: [1, 6], y: [0, 100], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'Mach number $M$', ylabel: '$\\nu$ (°)', title: 'Prandtl–Meyer function' });
-        let info = {};
-        v.render(() => {
-          const M1 = Ms.value, t = th.value * DEG, mu1 = Math.asin(1 / M1);
-          const comp = t > 0, tm = thetaMax(M1);
-          B.el.style.display = comp ? '' : 'none'; C.el.style.display = comp ? 'none' : '';
-          let dirf = () => 0, res = {};
-          // wall and corner
-          const Lw = 2.2, wallEnd = [Lw * Math.cos(t), Lw * Math.sin(t)];
-          if (comp) {
-            const sa = shockAngles(t, M1);
-            if (sa) {
-              const beta = br.value === 'weak' ? sa.weak : sa.strong, j = obliqueJump(M1, beta);
-              res = { kind: 'shock', beta, sa, j, tm };
-              dirf = (x, y) => (Math.atan2(y, x) < beta ? t : 0);
-              const ex = 2.0;
-              const yTop = 1.55, xs = Math.min(ex, yTop / Math.tan(beta)), ys = xs * Math.tan(beta);
-              A.poly([[0, 0], [xs, ys], [xs + 0.0, ys], [wallEnd[0], wallEnd[1]]], { fill: 'orange', fillAlpha: 0.12, stroke: false });
-              A.line(0, 0, xs, ys, { color: 'red', width: 3 });
-              A.text(`$\\beta=${fx(beta / DEG, 1)}^\\circ$`, xs * 0.6 + 0.05, ys * 0.6 + 0.12, { color: 'red', size: 12, align: 'left' });
-            } else res = { kind: 'detached', tm };
-          } else if (t < 0) {
-            const tt = -t, nu1 = nuPM(M1), nu2 = nu1 + tt, vac = nu2 >= NU_MAX, M2 = vac ? Infinity : machFromNu(nu2), mu2 = vac ? 0 : Math.asin(1 / M2);
-            res = { kind: 'fan', M2, nu1, nu2, vac };
-            const tail = vac ? 0 : mu2 - tt;
-            const phiOf = (M) => Math.asin(1 / M) - (nuPM(M) - nu1);
-            dirf = (x, y) => {
-              const phi = Math.atan2(y, x);
-              if (phi >= mu1) return 0; if (!vac && phi <= tail) return -tt;
-              let lo = M1, hi = vac ? 60 : M2; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (phiOf(m) > phi) lo = m; else hi = m; }
-              return -(nuPM((lo + hi) / 2) - nu1);
-            };
-            for (let k = 0; k <= 6; k++) { const ph = mu1 + (tail - mu1) * k / 6; A.line(0, 0, 1.9 * Math.cos(ph), 1.9 * Math.sin(ph), { color: 'blue', width: k === 0 || k === 6 ? 2.4 : 1.2, alpha: k === 0 || k === 6 ? 1 : 0.7 }); }
-          } else res = { kind: 'none' };
-          // wall
-          A.path([[-1, 0], [0, 0], wallEnd], { color: 'ink', width: 3.2 });
-          A.poly([[-1, 0], [0, 0], wallEnd, [wallEnd[0], -0.7], [-1, -0.7]], { fill: 'ink', fillAlpha: 0.12, stroke: false });
-          // streamlines
-          if (res.kind !== 'detached') {
-            for (let k = 0; k < 9; k++) {
-              let x = -1, y = 0.09 + 0.17 * k; const pts = [[x, y]];
-              for (let n = 0; n < 700 && x < 1.95 && y < 1.6; n++) { const d = dirf(x, y); x += 0.006 * Math.cos(d); y += 0.006 * Math.sin(d); if (y < 0 && x >= 0) { const wy = Math.tan(t) * x; if (y < wy) break; } pts.push([x, y]); }
-              A.path(pts, { color: 'accent', width: 1.6 });
+For a convex expansion corner, $\theta<0$, the isentropic relation is $\nu(M_2)=\nu(M_1)+|\theta|$, where
+$$\begin{aligned}
+\nu(M)={}&\sqrt{\frac{\gamma+1}{\gamma-1}}\arctan\sqrt{\frac{\gamma-1}{\gamma+1}(M^2-1)}\\
+&-\arctan\sqrt{M^2-1}.
+\end{aligned}$$
+The limiting value is $\nu_{\max}=\frac\pi2(\sqrt{(\gamma+1)/(\gamma-1)}-1)$; the available turn from $M_1$ is $\nu_{\max}-\nu(M_1)$. Here $\gamma=1.4$.`,
+      idea:String.raw`Resolve velocity into components normal and tangent to a straight shock. Mass, normal momentum and energy conservation give the normal-shock jump; tangential velocity stays unchanged. Recombining the components gives the turn and downstream Mach number. A finite shock increases entropy and reduces stagnation pressure. An expansion is instead built from continuous Mach waves; integrating $\mathrm d\nu/\mathrm dM=\sqrt{M^2-1}/[M(1+(\gamma-1)M^2/2)]$ gives the Prandtl–Meyer function and preserves stagnation pressure.`,
+      caption:String.raw`Change upstream Mach number, signed turn and shock branch. The left panel is a **corner/wave schematic**, with arrows showing flow direction. It does not solve a detached shock or a complete viscous flow field. The compression graph shows both roots and the attached-turn maximum. For expansion, the graph expands to include the computed $M_2$, even when it exceeds 6. Zero turn leaves a uniform stream.`,
+      deps:['fluid-9.14','fluid-9.13','aero-1.6'],
+      refs:['NACA Report 1135, pp620–626: equations115–147,168,171–174'],
+      tags:['shock waves','supersonic','gas dynamics'],
+      scope:String.raw`Steady two-dimensional inviscid, calorically perfect gas with $\gamma=1.4$; a sharp corner and a uniform upstream stream. Attached shock relations or a centred expansion without interfering waves. No boundary layers, real-gas chemistry, detached-shock geometry or downstream condition selecting a strong branch are computed.`,
+      verify: false,
+      links:{source:'https://ntrs.nasa.gov/api/citations/19930091059/downloads/19930091059.pdf'},
+      viz(v){
+        const Ms=v.slider('upstream Mach number $M_1$',1.1,6,2.5,{step:.05});
+        const th=v.slider(String.raw`turn $\theta$ (°; negative = expansion)`,-35,40,12,{step:.5});
+        const br=v.select('compression branch',[{value:'weak',label:'weak'},{value:'strong',label:'strong'}],'weak');
+        const A=v.stage({x:[-1.2,2.5],y:[-1.75,2.55],equal:true,axes:false,height:340,minWidth:320,title:'corner and wave directions (schematic)'});
+        const B=v.stage({x:[-3,93],y:[-2,50],axes:'box',gutter:true,height:340,minWidth:300,xlabel:'shock angle β (°)',ylabel:'turn θ (°)',title:'attached oblique-shock roots'});
+        const C=v.stage({x:[.5,6.5],y:[-4,136],axes:'box',gutter:true,height:340,minWidth:300,xlabel:'Mach number M',ylabel:'ν (°)',title:'Prandtl–Meyer expansion'});
+        let info;
+        v.render(()=>{
+          const M1=Ms.value,t=th.value*DEG,res=cornerState(M1,t,br.value),comp=t>0,mu1=Math.asin(1/M1);
+          B.el.style.display=comp?'':'none';C.el.style.display=comp?'none':'';
+          const wall=[2.2*Math.cos(t),2.2*Math.sin(t)];
+          A.poly([[-1.1,0],[0,0],wall,[wall[0],-1.65],[-1.1,-1.65]],{fill:'ink',fillAlpha:.12,stroke:false});
+          A.path([[-1.1,0],[0,0],wall],{color:'ink',width:3});
+          A.arrow(-1.05,.65,-.35,.65,{color:'accent',width:2.2});
+          A.text(`M₁ = ${fx(M1,2)}`,-1.05,.91,{color:'accent',size:12,align:'left'});
+          let flowAngle=null;
+          if(res.kind==='shock'){
+            A.line(0,0,2.25*Math.cos(res.beta),2.25*Math.sin(res.beta),{color:'red',width:3});
+            flowAngle=(t+res.beta)/2;
+          }else if(res.kind==='fan'){
+            const available=NU_MAX-res.nu1,tail=res.vac?-available:Math.asin(1/res.M2)+t;
+            for(let i=0;i<=8;i++){
+              const phi=mu1+(tail-mu1)*i/8;
+              A.line(0,0,2.25*Math.cos(phi),2.25*Math.sin(phi),{color:'blue',width:i===0||i===8?2.4:1.2});
             }
-          } else {
-            const bow = []; for (let i = -10; i <= 10; i++) { const yy = 0.7 * i / 10; bow.push([-0.5 + 0.9 * yy * yy, yy + 0.4]); }
-            A.path(bow, { color: 'red', width: 3, dash: true });
-            A.text('detached bow shock: no attached solution', -0.9, 1.7, { color: 'red', size: 12, align: 'left' });
+            if(!res.vac)flowAngle=t+.5*Math.asin(1/res.M2);
+          }else if(res.kind==='detached')A.text('no attached solution; shape not solved',-.95,2.22,{color:'red',size:11,align:'left'});
+          else flowAngle=.3;
+          if(flowAngle!==null){const x=1.15*Math.cos(flowAngle),y=1.15*Math.sin(flowAngle);A.arrow(x,y,x+.7*Math.cos(t),y+.7*Math.sin(t),{color:'accent',width:2.2});}
+          if(comp){
+            for(const M of[1.5,2,3,5])B.fn(b=>thetaOf(b*DEG,M)/DEG,{color:'faint',width:1.2,domain:[Math.asin(1/M)/DEG,90]});
+            B.fn(b=>thetaOf(b*DEG,M1)/DEG,{color:'accent',width:2.8,domain:[mu1/DEG,90]});
+            const tm=thetaMax(M1);B.hline(th.value,{color:'gold',dash:true});
+            B.dot(tm.beta/DEG,tm.theta/DEG,{r:5,color:'orange'});
+            if(res.sa){B.dot(res.sa.weak/DEG,th.value,{r:6,color:'green'});B.dot(res.sa.strong/DEG,th.value,{r:6,color:'red'});}
+          }else{
+            const end=Math.max(6.5,res.kind==='fan'&&!res.vac?res.M2*1.12:6.5);
+            C.setView([.5,end],[-4,136]);
+            C.fn(M=>nuPM(M)/DEG,{color:'accent',width:2.8,domain:[1,end]});C.hline(NU_MAX/DEG,{color:'muted',dash:true});
+            C.dot(M1,nuPM(M1)/DEG,{r:5.5,color:'gold'});
+            if(res.kind==='fan'&&!res.vac)C.dot(res.M2,res.nu2/DEG,{r:5.5,color:'green'});
           }
-          A.arrow(-0.98, 1.62, -0.5, 1.62, { color: 'accent', width: 2 }); A.text(`$M_1=${fx(M1, 2)}$`, -0.45, 1.62, { color: 'accent', size: 12, align: 'left' });
-          // right graphs
-          if (comp) {
-            B.setView([0, 90], [0, Math.max(30, tm.theta / DEG * 1.15 + 3)]);
-            for (const mm of [1.5, 2, 3, 5]) { if (Math.abs(mm - M1) > 0.2) B.fn((b) => thetaOf(b * DEG, mm) / DEG, { color: 'faint', width: 1.2, domain: [Math.asin(1 / mm) / DEG, 90] }); }
-            B.fn((b) => thetaOf(b * DEG, M1) / DEG, { color: 'accent', width: 2.8, domain: [mu1 / DEG, 90] });
-            B.hline(th.value, { color: 'gold', dash: true, width: 1.4 });
-            B.dot(tm.beta / DEG, tm.theta / DEG, { r: 5, color: 'orange', label: `$\\theta_{\\max}=${fx(tm.theta / DEG, 1)}^\\circ$`, labelPos: 'n' });
-            if (res.sa) { B.dot(res.sa.weak / DEG, th.value, { r: 6, color: 'green', label: 'weak', labelPos: 'nw' }); B.dot(res.sa.strong / DEG, th.value, { r: 6, color: 'red', label: 'strong', labelPos: 'nw' }); }
-          } else {
-            C.fn((m) => nuPM(m) / DEG, { color: 'accent', width: 2.8, domain: [1, 6] });
-            C.hline(NU_MAX / DEG, { color: 'faint', dash: true });
-            C.dot(M1, nuPM(M1) / DEG, { r: 5.5, color: 'gold', label: '$M_1$', labelPos: 'nw' });
-            if (res.kind === 'fan' && !res.vac && res.M2 < 6) C.dot(res.M2, nuPM(res.M2) / DEG, { r: 5.5, color: 'green', label: '$M_2$', labelPos: 'nw' });
-          }
-          info = { M1, t, res };
+          info={M1,t,branch:br.value,res};
         });
-        v.legend([['accent', 'streamlines'], ['red', 'oblique shock'], ['blue', 'expansion fan (Mach waves)'], ['gold', 'your setting']]);
-        v.readout(() => {
-          const { M1, t, res } = info;
-          if (res.kind === 'detached') return `Turn $${fx(t / DEG, 1)}^\\circ$ exceeds the maximum $\\theta_{\\max}=${fx(res.tm.theta / DEG, 2)}^\\circ$ for $M_1=${fx(M1, 2)}$ (reached at $\\beta=${fx(res.tm.beta / DEG, 1)}^\\circ$): there is no attached oblique shock; a curved bow shock stands ahead of the corner.`;
-          if (res.kind === 'shock') {
-            const { beta, j, sa } = res, mn = M1 * Math.sin(beta);
-            const nuM = machFromNu(nuPM(M1) - t);
-            return `$\\beta=${fx(beta / DEG, 2)}^\\circ$ (weak ${fx(sa.weak / DEG, 2)}°, strong ${fx(sa.strong / DEG, 2)}°); $M_{n1}=M_1\\sin\\beta=${fx(mn, 3)}$; downstream $M_2=${fx(j.M2, 3)}$; $p_2/p_1=${fx(j.p, 3)}$ (normal-shock formula on $M_{n1}$: $${fx(1 + 2 * G / (G + 1) * (mn * mn - 1), 3)}$), $\\rho_2/\\rho_1=${fx(j.rho, 3)}$, $T_2/T_1=${fx(j.T, 3)}$, $p_{02}/p_{01}=${fx(j.p0, 4)}$.\n`
-              + `Check: the turn recomputed from $\\beta$ is $${fx(thetaOf(beta, M1) / DEG, 3)}^\\circ$. An isentropic compression through the same turn would give $p_2/p_1=${fx(isenP(M1, nuM), 3)}$ — the difference is the entropy generated by the shock.`;
-          }
-          if (res.kind === 'fan') return res.vac ? `The turn would need $\\nu=${fx(res.nu2 / DEG, 1)}^\\circ$, more than the maximum $\\nu_{\\max}=${fx(NU_MAX / DEG, 1)}^\\circ$: the flow separates from the wall and a vacuum forms.`
-            : `$\\nu(M_1)=${fx(res.nu1 / DEG, 2)}^\\circ$, turn $${fx(-t / DEG, 1)}^\\circ$ → $\\nu(M_2)=${fx(res.nu2 / DEG, 2)}^\\circ$, $M_2=${fx(res.M2, 3)}$. The fan opens from the Mach angle $\\mu_1=${fx(Math.asin(1 / M1) / DEG, 1)}^\\circ$ to $\\mu_2-|\\theta|=${fx((Math.asin(1 / res.M2) + t) / DEG, 1)}^\\circ$; isentropic: $p_2/p_1=${fx(isenP(M1, res.M2), 4)}$, $T_2/T_1=${fx((1 + 0.2 * M1 * M1) / (1 + 0.2 * res.M2 * res.M2), 4)}$.`;
-          return 'A straight wall: no turn, no waves (only Mach waves of angle $\\mu=\\arcsin(1/M_1)$).';
+        v.legend([['accent','flow direction / relation'],['red','shock / strong root'],['blue','expansion Mach rays'],['green','weak root / downstream expansion'],['gold','chosen turn / upstream state']]);
+        v.readout(()=>{
+          const {M1,t,res}=info;
+          if(res.kind==='detached')return String.raw`Turn $${fx(t/DEG,1)}^\circ$ exceeds $\theta_{\max}=${fx(res.tm.theta/DEG,3)}^\circ$ at $M_1=${fx(M1,2)}$. No attached root exists; detached-shock geometry is outside this model.`;
+          if(res.kind==='shock')return String.raw`Weak $\beta=${fx(res.sa.weak/DEG,3)}^\circ$; strong $\beta=${fx(res.sa.strong/DEG,3)}^\circ$. Selected $M_2=${fx(res.j.M2,4)}$; $p_2/p_1=${fx(res.j.p,4)}$, $\rho_2/\rho_1=${fx(res.j.rho,4)}$, $T_2/T_1=${fx(res.j.T,4)}$, $p_{02}/p_{01}=${fx(res.j.p0,5)}$. Recomputed turn $${fx(res.j.theta/DEG,4)}^\circ$. ${res.j.M2<1?'The selected downstream state is subsonic.':'The selected downstream state is supersonic.'}`;
+          if(res.kind==='fan')return res.vac?String.raw`The requested turn exceeds the finite-pressure expansion limit $${fx((NU_MAX-res.nu1)/DEG,3)}^\circ$ from this upstream state.`:String.raw`$\nu_1=${fx(res.nu1/DEG,3)}^\circ$, $\nu_2=${fx(res.nu2/DEG,3)}^\circ$; $M_2=${fx(res.M2,4)}$. $p_2/p_1=${fx(res.p,5)}$, $T_2/T_1=${fx(res.T,5)}$, $p_{02}/p_{01}=1$. Fan tail $\mu_2+\theta=${fx((Math.asin(1/res.M2)+t)/DEG,3)}^\circ$. Available expansion from $M_1$: $${fx((NU_MAX-res.nu1)/DEG,3)}^\circ$.`;
+          return 'Zero turn: the stream stays uniform; no shock or expansion is required.';
         });
       },
     },
@@ -202,109 +158,86 @@ Lift and wave drag are non-zero even in inviscid flow, and thickness adds wave d
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.7
     {
-      num: '4.7',
-      kind: 'Phenomenon',
-      name: 'Hypersonic aerodynamic heating',
-      statement: String.raw`A body moving at hypersonic speed converts the flow's kinetic energy into heat in the boundary layer and at the stagnation point. For a perfect gas the stagnation temperature is
-$$T_0=T_\infty\Big(1+\tfrac{\gamma-1}{2}M_\infty^2\Big),$$
-which reaches thousands of kelvin well below orbital speed, far beyond the limits of aluminium and titanium structures. The convective heat flux at the stagnation point of a blunt nose of radius $R_n$ scales as
-$$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
-(the Sutton–Graves form, with $k\approx1.7\times10^{-4}$ in SI units for Earth air), so it grows as the cube of speed, falls with nose radius, and is why re-entry vehicles are blunt. A surface radiating to space reaches an equilibrium wall temperature $T_w=(\dot q_s/\varepsilon\sigma)^{1/4}$. At these speeds the gas dissociates and ionises, so the perfect-gas $T_0$ is an overestimate.`,
-      idea: String.raw`A decelerated fluid element has to put its kinetic energy $V^2/2$ somewhere; adiabatically the enthalpy rises by that amount, $c_pT_0=c_pT+V^2/2$, which gives the formula for $T_0$ (and the $M^2$ growth). Close to the wall the gas cannot be brought to rest without conducting heat into the surface, with a flux proportional to the thickness of the thin layer and the velocity gradient there; the boundary-layer theory of the stagnation point (Fay–Riddell, 1958) yields a flux proportional to $\sqrt{\rho_e\mu_e\,\mathrm du_e/\mathrm dx}\,(h_0-h_w)$ and, for a sphere, to $\sqrt{\rho/R_n}\,V^3$. Above about Mach 5 the energy goes partly into dissociating $\mathrm O_2$ and $\mathrm N_2$ rather than into temperature, which is why the real temperature behind a strong shock is far lower than $T_0$ of the perfect gas.`,
-      caption: String.raw`Left: perfect-gas stagnation temperature against Mach number at the chosen altitude (the temperature there comes from the standard atmosphere of chapter 1), with the approximate temperature limits of structural materials and thermal-protection systems as horizontal lines; the grey region marks speeds where the perfect-gas model is unreliable. Right: radiative-equilibrium wall temperature at the stagnation point of a nose of the chosen radius, from the Sutton–Graves heat flux (dashed where it is used below the speeds it was fitted to). Increase the nose radius and watch the wall temperature fall; fly higher and it falls again as the air thins.`,
-      deps: ['aero-4.5', 'aero-1.6'],
-      refs: ['Anderson ch. 10'],
-      tags: ['hypersonic', 'heating', 're-entry'],
-      scope: String.raw`The stagnation temperature is the adiabatic value for a perfect gas (valid up to about Mach 4–5); the Sutton–Graves formula was fitted to equilibrium-gas results for entry flight (enthalpies from about 2.3 to 116 MJ/kg), for a cold wall and a sphere-like nose, laminar flow, and is accurate to a few tens of percent; the equilibrium wall temperature assumes all heat is radiated away (no conduction, no catalysis). Material limits are approximate engineering figures, not design allowables.`,
-      credit: 'K. Sutton and R. A. Graves Jr., NASA TR R-376, 1971; J. A. Fay and F. R. Riddell, J. Aerospace Sci. 25 (1958) 73–85',
-      verify: true,
-      links: { doi: 'https://doi.org/10.2514/8.7517', wikipedia: 'https://en.wikipedia.org/wiki/Atmospheric_entry' },
-      viz(v) {
-        const hS = v.slider('altitude (km)', 20, 90, 50, { step: 1 });
-        const rS = v.slider('nose radius $R_n$ (m)', 0.01, 3, 0.3, { step: 0.01, log: true });
-        const eS = v.slider('surface emissivity $\\varepsilon$', 0.4, 0.95, 0.85, { step: 0.01 });
-        const kS = v.slider('constant $k$ (×10⁻⁴, SI)', 1.5, 2.0, 1.74, { step: 0.01 });
-        const A = v.stage({ x: [1, 12], y: [0, 6000], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: '$T_0$ (K)', title: 'perfect-gas stagnation temperature' });
-        const B = v.stage({ x: [1, 25], y: [0, 3500], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: '$T_w$ (K)', title: 'radiative-equilibrium wall temperature' });
-        const LIM = [['aluminium structure', 450, 'blue'], ['titanium alloy', 870, 'green'], ['silica tile (HRSI)', 1530, 'orange'], ['reinforced carbon–carbon', 1920, 'red']];
-        let info = {}; const Mh = { M: 6 };
-        const hd = A.handle(6, 1000, { color: 'gold', r: 8, constrain: (x) => [clamp(x, 1, 12), 0] }); hd.onDrag = () => { Mh.M = hd.x; };
-        v.render(() => {
-          const at = atmo(hS.value * 1000), T = at.T, a = at.a, rho = at.rho, Rn = rS.value, eps = eS.value, k = kS.value * 1e-4;
-          A.setView([1, 12], [0, 6000]);
-          A.rect(5, 0, 12, 6000, { fill: 'muted', fillAlpha: 0.08, stroke: false });
-          A.text('dissociation: perfect gas unreliable', 11.8, 5600, { color: 'muted', size: 11, align: 'right' });
-          for (const [nm, T0, c] of LIM) { A.hline(T0, { color: c, dash: true, width: 1.4 }); A.text(nm, 1.1, T0 + 80, { color: c, size: 10.5, align: 'left' }); }
-          A.fn((M) => T * (1 + 0.2 * M * M), { color: 'accent', width: 2.8, domain: [1, 12] });
-          const M0 = clamp(Mh.M, 1, 12); hd.set(M0, T * (1 + 0.2 * M0 * M0)); hd.y = T * (1 + 0.2 * M0 * M0);
-          const q = (M) => k * Math.sqrt(rho / Rn) * (M * a) ** 3, Tw = (M) => Math.pow(q(M) / (eps * SIGMA_SB), 0.25);
-          const Vfit = Math.sqrt(2 * 2.3e6) / a;
-          B.setView([1, 25], [0, 3500]);
-          for (const [nm, T0, c] of LIM) B.hline(T0, { color: c, dash: true, width: 1.4 });
-          B.fn(Tw, { color: 'accent', width: 2.8, domain: [Math.max(1, Vfit), 25] });
-          if (Vfit > 1) B.fn(Tw, { color: 'accent', width: 1.6, dash: true, domain: [1, Vfit] });
-          B.dot(clamp(M0 * 1, 1, 25), Math.min(3400, Tw(M0)), { r: 6, color: 'gold' }); B.vline(M0, { color: 'gold', dash: true, width: 1 });
-          info = { T, a, rho, Rn, M0, T0: T * (1 + 0.2 * M0 * M0), q: q(M0), Tw: Tw(M0), V: M0 * a, h0: (M0 * a) ** 2 / 2, Vfit };
+      num:'4.7',kind:'Model',name:'Hypersonic aerodynamic heating',
+      statement:String.raw`A useful cold-wall approximation for convective heat flux at the stagnation point of an effective spherical nose is
+$$\dot q_s=k\sqrt{\rho_\infty/R_n}\,V_\infty^3.$$
+For Earth air, the NASA course used here gives $k=1.7415\times10^{-4}$ in SI units: density in kg/m³, radius in m, velocity in m/s and flux in W/m². It assumes a fully catalytic surface. Increasing radius reduces this convective estimate, while increasing velocity has a cubic effect.
+
+If that heat input were balanced only by emission to much colder surroundings, a **radiation-balance reference temperature** would be
+$$T_{\rm ref}=\left(\dot q_s/(\varepsilon\sigma)\right)^{1/4}.$$
+This separate balance does not update the cold-wall heating correlation for the resulting hot wall. It is not a coupled thermal-protection calculation.`,
+      idea:String.raw`The original report defines its coefficient by $\dot q_s=K\sqrt{p_s/R_n}(h_s-h_w)$, where $p_s,h_s$ are stagnation conditions and $h_w$ is wall enthalpy. Holding that coefficient approximately fixed, the high-speed scalings $p_s\propto\rho_\infty V^2$ and $h_s-h_w\propto V^2$ produce $\dot q_s\propto\sqrt{\rho_\infty/R_n}V^3$. Its equilibrium-mixture derivation supplies the transport dependence; the fixed Earth coefficient used here is documented in NASA's later course. Emitted radiation scales with $T^4$, so the separate balance temperature scales as $V^{3/4}\rho^{1/8}R_n^{-1/8}\varepsilon^{-1/4}$.`,
+      caption:String.raw`Vary density, effective radius, emissivity and speed. Left: the convective correlation; right: its radiation-balance reference. Both complete curves and the selected points stay in view. The **NASA example** button sets the course's exact inputs and reproduces approximately $13.6$ W/cm² and $1316$ K. The sliders explore the algebra over a wider range; no validity threshold or material approval is inferred from their endpoints.`,
+      deps:['aero-1.6'],
+      refs:['Sutton and Graves, NASA TR R-376 (1971), analysis/results pp8–21, equation33 and approximations','NASA TFAWS2012 Aerothermodynamics Course, Lecture1 slides14–21,28–29'],
+      tags:['hypersonic','heating','re-entry'],
+      scope:String.raw`A simplified cold-wall, fully catalytic, laminar stagnation-point convective estimate for Earth air and an effective spherical nose. Radius must represent the relevant velocity gradient, not an arbitrary geometric radius on another shape. No incoming shock-layer radiation, hot-wall feedback, conduction, ablation, transition, rarefaction or non-equilibrium correction is computed. The original report's broad equilibrium-gas study is not a certification of this entire slider range. The radiation balance neglects all other heat paths and time dependence; it gives no material design allowable.`,
+      credit:'K. Sutton and R. A. Graves Jr., NASA TR R-376, November 1971',
+      verify: false,
+      links:{source:'https://tfaws.nasa.gov/TFAWS12/Proceedings/Aerothermodynamics%20Course.pdf',ntrs:'https://ntrs.nasa.gov/citations/19720003329'},
+      viz(v){
+        const rho=v.slider(String.raw`density $\rho_\infty$ (kg/m³)`,1e-6,.1,3.1459e-4,{log:true,sig:5,fmt:x=>x.toExponential(4)});
+        const rn=v.slider('effective nose radius $R_n$ (m)',.01,3,1,{log:true,sig:3});
+        const eps=v.slider(String.raw`emissivity $\varepsilon$`,.4,.95,.8,{step:.01});
+        const speed=v.slider('speed (km/s)',1,12,3.535,{step:.001,fmt:x=>fx(x,3)});
+        v.button('NASA example',()=>{rho.set(NASA_HEATING_EXAMPLE.density);rn.set(1);eps.set(.8);speed.set(3.535);});
+        const A=v.stage({x:[.7,12.6],y:[0,1],axes:'box',gutter:true,height:340,xlabel:'speed V (km/s)',ylabel:'convective flux (MW/m²)',title:'Earth-air stagnation-point correlation'});
+        const B=v.stage({x:[.7,12.6],y:[0,2000],axes:'box',gutter:true,height:340,xlabel:'speed V (km/s)',ylabel:'reference temperature (K)',title:'cold-wall input balanced by emission'});
+        let info;
+        v.render(()=>{
+          const at=V=>heatingState(rho.value,rn.value,V*1000,eps.value),p=at(speed.value),top=at(12);
+          A.setView([.7,12.6],[-.06*top.heatFlux/1e6,top.heatFlux*1.12/1e6]);
+          B.setView([.7,12.6],[-.06*top.radiationTemperature,top.radiationTemperature*1.12]);
+          A.fn(V=>at(V).heatFlux/1e6,{color:'accent',width:2.8,domain:[1,12],n:160});
+          B.fn(V=>at(V).radiationTemperature,{color:'orange',width:2.8,domain:[1,12],n:160});
+          A.dot(speed.value,p.heatFlux/1e6,{r:6,color:'gold'});B.dot(speed.value,p.radiationTemperature,{r:6,color:'gold'});
+          info=p;
         });
-        v.legend([['accent', 'model'], ['blue', 'aluminium'], ['green', 'titanium'], ['orange', 'tile'], ['red', 'RCC']]);
-        v.readout(() => {
-          const { T, a, rho, M0, T0, q, Tw, V, h0, Vfit } = info;
-          const ok = LIM.filter(([, lim]) => Tw <= lim).map(([n]) => n);
-          return `At ${hS.value} km: $T_\\infty=${fx(T, 1)}$ K, $a=${fx(a, 0)}$ m/s, $\\rho=${fx(rho * 1e3, 3)}\\times10^{-3}$ kg/m³. At $M_\\infty=${fx(M0, 2)}$ ($V=${fx(V / 1000, 2)}$ km/s, $h_0=V^2/2=${fx(h0 / 1e6, 2)}$ MJ/kg): perfect-gas $T_0=${fx(T0, 0)}$ K; stagnation-point flux $\\dot q_s=${fx(q / 1e6, 3)}$ MW/m² (Sutton–Graves, $k=${fx(kS.value, 2)}\\times10^{-4}$); radiative-equilibrium wall temperature $T_w=${fx(Tw, 0)}$ K.\n`
-            + `Materials whose limit is above this wall temperature: ${ok.length ? ok.join(', ') : 'none (too hot for every listed material)'}. The formula was fitted for $h_0\\ge2.3$ MJ/kg ($M_\\infty\\ge${fx(Vfit, 1)}$ here); below that the dashed part is an extrapolation.`;
-        });
+        v.legend([['accent','convective correlation'],['orange','radiation-balance reference'],['gold','chosen speed']]);
+        v.readout(()=>{const [mantissa,exponent]=rho.value.toExponential(4).split('e');return String.raw`$\rho=${mantissa}\times10^{${Number(exponent)}}$ kg/m³, $R_n=${fx(rn.value,3)}$ m, $V=${fx(speed.value,3)}$ km/s: $\dot q_s=${fx(info.heatFlux/1e4,3)}$ W/cm² ($${fx(info.heatFlux/1e6,4)}$ MW/m²), $T_{\rm ref}=${fx(info.radiationTemperature,1)}$ K. Emission $\varepsilon\sigma T_{\rm ref}^4=${fx(info.emitted/1e4,3)}$ W/cm² matches this input by construction. This is a cold-wall reference balance, with no material qualification or coupled wall response.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.8
     {
-      num: '4.8',
-      kind: 'Paper',
-      name: 'Drag-Rise Characteristics of Wing-Body Combinations',
-      paper: {
-        authors: 'Richard T. Whitcomb', year: 1952, title: 'A Study of the Zero-Lift Drag-Rise Characteristics of Wing-Body Combinations Near the Speed of Sound',
-        venue: 'NACA Research Memorandum RM L52H08 (also NACA Report 1273, 1956)', url: 'https://ntrs.nasa.gov/citations/19930087283',
-      },
-      introduces: ['aero-4.4'],
-      statement: String.raw`Whitcomb's wind-tunnel study of wing–body combinations at Mach numbers close to 1 led to what became the **area rule**: the zero-lift transonic drag rise of a wing–body combination is nearly that of a body of revolution with the same longitudinal distribution of cross-sectional area (area measured in planes normal to the stream, including the wing). Smoothing that distribution, for example by narrowing the fuselage where the wing is attached, lowers the drag rise; the principle was stated, tested and then used to redesign existing aircraft. (This summary follows the usual modern account of the paper; its details, such as the particular models and the quoted drag figures, were not re-checked against the report itself.)`,
-      idea: String.raw`Before the paper, transonic drag was treated component by component and wing and fuselage designs were optimised separately, so adding a thin swept wing to a streamlined body produced an unexplained and large drag rise near Mach 1. Slender-body theory (4.4, von Kármán's integral) had shown that for a slender body the wave drag at Mach 1 depends on the area distribution alone; Whitcomb's wind-tunnel results at Langley showed that this equivalence also holds for wings that are far from slender, so the whole aircraft can be treated as a body of revolution to be shaped. The result became the design rule behind the 'coke-bottle' fuselages of 1950s supersonic fighters, and it introduced the idea of area ruling (4.4).`,
-      caption: String.raw`A **reconstruction in a model**, not Whitcomb's data. Left: the area distribution of a wing–body combination for the straight fuselage ($k=0$), for your indentation $k$, and for the equivalent body of revolution (dotted: it has the same $S(x)$ as your setting by definition). Right: a model drag-rise curve $\Delta C_D(M)$ whose height at $M=1$ comes from the slender-body wave drag of each area distribution and whose onset Mach number follows Korn's relation for the chosen wing thickness; the shape of the rise below $M=1$ is a smooth fit, not data. Slide $k$ to indent the fuselage and the drag peak falls toward that of the smooth Sears–Haack body.`,
-      deps: ['aero-4.2'],
-      refs: [],
-      tags: ['area rule', 'transonic', 'history'],
-      scope: String.raw`Slender wing–body combinations at zero lift near $M=1$. The wave-drag magnitudes come from the slender-body formula applied to an idealised area distribution (a Sears-Haack-like fuselage plus a $\sin^2$ wing hump, reference area $0.12\,l^2$); the curve between $M\approx0.85$ and $1$ is an interpolation, and no value in this picture is from the paper.`,
-      credit: 'R. T. Whitcomb, NACA Langley, 1952 (NACA RM L52H08; Collier Trophy 1955 for the area rule)',
-      verify: true,
-      links: { ntrs: 'https://ntrs.nasa.gov/citations/19930087283', wikipedia: 'https://en.wikipedia.org/wiki/Richard_T._Whitcomb' },
-      viz(v) {
-        const kS = v.slider('indentation $k$', 0, 1, 0.6, { step: 0.01 });
-        const awS = v.slider('wing area hump $A_w/A_f$', 0.1, 0.6, 0.35, { step: 0.01 });
-        const tcS = v.slider('wing thickness $t/c$', 0.04, 0.12, 0.06, { step: 0.005 });
-        const Af = 0.006, ww = 0.4, xw = 0.35, SREF = 0.12;
-        const A = v.stage({ x: [0, 1], y: [0, Af * 1.5], axes: 'box', gutter: true, height: 320, minWidth: 320, xlabel: 'station $x/l$', ylabel: 'area $S(x)$', title: 'area distribution' });
-        const B = v.stage({ x: [0.7, 1.3], y: [0, 0.06], axes: 'box', gutter: true, height: 320, minWidth: 320, xlabel: 'Mach number', ylabel: '$\\Delta C_D$ (model)', title: 'transonic drag rise (model)' });
-        let info = {};
-        v.render(() => {
-          const k = kS.value, Aw = awS.value * Af, co = areaCoeffs(Af, Aw, xw, ww), tc = tcS.value;
-          const wing = (x) => wingHump(x, Aw, xw, ww), tot = (kk) => (x) => fusIdeal(x, Af) + (1 - kk) * wing(x);
-          A.fn(tot(0), { color: 'red', width: 2.4, domain: [0, 1] });
-          A.fn(tot(k), { color: 'accent', width: 2.8, domain: [0, 1] });
-          A.fn(tot(k), { color: 'green', width: 1.6, dash: [2, 5], domain: [0, 1] });
-          A.fn((x) => fusIdeal(x, Af), { color: 'muted', width: 1.4, domain: [0, 1] });
-          const mdd = 0.87 - tc, M0 = Math.max(0.6, mdd - 0.04);
-          const cw = (kk) => dragOfK(co, kk) / SREF, g = (M) => { const u = clamp((M - M0) / (1 - M0), 0, 1); return u * u * (3 - 2 * u); };
-          const dc = (kk) => (M) => cw(kk) * g(M) * (M > 1.1 ? Math.max(0.55, 1 - 1.5 * (M - 1.1)) : 1);
-          B.setView([0.7, 1.3], [0, Math.max(0.01, cw(0) * 1.15)]);
-          B.fn(dc(0), { color: 'red', width: 2.6, domain: [0.7, 1.3] });
-          B.fn(dc(1), { color: 'muted', width: 1.8, domain: [0.7, 1.3] });
-          B.fn(dc(k), { color: 'accent', width: 2.8, domain: [0.7, 1.3] });
-          B.dot(1, cw(k), { r: 6, color: 'green' }); B.vline(1, { color: 'faint', dash: true });
-          info = { cw0: cw(0), cwk: cw(k), cw1: cw(1), M0, mdd };
+      num:'4.8',kind:'Paper',name:'Drag-Rise Characteristics of Wing-Body Combinations',
+      paper:{authors:'Richard T. Whitcomb',year:1952,title:'A Study of the Zero-Lift Drag-Rise Characteristics of Wing-Body Combinations Near the Speed of Sound',venue:'NACA Research Memorandum RM L52H08',url:'https://ntrs.nasa.gov/citations/19930087283'},
+      introduces:['aero-4.4'],
+      statement:String.raw`Whitcomb compared four thin, low-aspect-ratio wing–body configurations with bodies of revolution constructed to have the same axial distribution of cross-sectional area normal to the stream. The Langley 8-foot tunnel experiments covered $M=0.85$–$1.10$ at zero lift. The report concluded that near-sonic drag rise depends primarily on this total area distribution; the equivalence is approximate, with discrepancies for swept-wing cases.
+
+Indenting a cylindrical body to offset a wing's area reduced the **wing-associated drag-rise increment** by approximately 60% for the unswept and delta cases near sonic speed. For the swept case the report described this increment as eliminated through $M=1.04$. These are not percentages of total aircraft drag, and they do not imply zero drag for the indented configuration.`,
+      idea:String.raw`The paper used drag balances, base-pressure measurements, schlieren surveys and tunnel-wall Mach distributions to compare complete configurations with their equivalent bodies. Drag-rise increments were formed by subtracting each configuration's value near $M=0.85$, largely removing skin-friction offsets. The author explicitly discussed discrepancies, boundary-layer displacement and decreasing equivalence as Mach number rose. The key design comparison concerns combined area, so improving wing and body separately need not improve their combination.`,
+      caption:String.raw`Choose one of the three cylindrical-body wing cases and move the station. Left: body-only areas $\pi r^2$ computed from the original basic, equivalent and indented-body radii in Tables I–III; radii are linearly interpolated between their reported stations. This is a view of the paper's geometry, **not a reconstruction of total indented wing–body area**. Right: the author's approximate near-sonic wing-increment comparison, normalised to 1 for the original combination. These bars summarise the report's text; they are not digitised drag curves or predictions at arbitrary Mach number.`,
+      deps:['aero-4.2'],
+      refs:['Whitcomb 1952 NACA RM L52H08: full report read; Methods pp2–5, Discussion pp5–12, Conclusions p13, Tables I–III pp16–19, Figures1–10 pp21–41'],
+      tags:['area rule','transonic','history'],
+      scope:String.raw`The report's zero-lift thin low-aspect-ratio models near sonic speed. The diagram uses the three cylindrical-body cases, omitting the swept-wing/curved-body geometry. The reported absolute drag-coefficient uncertainty was approximately ±0.0005; measurements near $M=1.05$ were omitted because of wall-reflected disturbances. The interpolated radii and derived body volume are mathematical reconstructions of rounded geometry entries, not measured flow predictions. No general-purpose drag law, exact area-equivalence identity, Korn onset curve, same-volume Sears–Haack optimum, later aircraft redesign or award claim is supplied.`,
+      credit:'R. T. Whitcomb, NACA RM L52H08, September 3, 1952',
+      verify: false,
+      links:{ntrs:'https://ntrs.nasa.gov/citations/19930087283'},
+      viz(v){
+        const kind=v.select('reported wing case',[{value:'unswept',label:'unswept'},{value:'delta',label:'delta'},{value:'swept',label:'45° swept'}],'unswept');
+        const station=v.slider('body station $x$ (in)',22.5,43,27.5,{step:.125,fmt:x=>fx(x,3)});
+        const A=v.stage({x:[22,43.5],y:[0,17],axes:'box',gutter:true,height:340,xlabel:'station x (in)',ylabel:'body-only area πr² (in²)',title:'geometry from original Tables I–III'});
+        const B=v.stage({x:[-.2,2.2],y:[-.08,1.22],axes:'box',gutter:true,height:340,xlabel:'configuration',ylabel:'wing-associated increment / original',title:'reported near-sonic comparison (approx.)',xticks:[[.5,'original'],[1.5,'indented']]});
+        v.legend([['muted','basic cylinder / original reference'],['accent','equivalent body of revolution'],['green','indented body / reported reduction']]);
+        let info;
+        v.render(()=>{
+          const b=WHITCOMB_BODIES[kind.value],p=whitcombStation(kind.value,station.value),area=(points,x)=>Math.PI*bodyRadius(points,x)**2;
+          A.fn(()=>p.basicArea,{color:'muted',width:1.8,domain:[22.5,43]});
+          A.fn(x=>area(b.equivalent,x),{color:'accent',width:2.6,domain:[22.5,43],n:300});
+          A.fn(x=>area(b.indented,x),{color:'green',width:2.6,domain:[22.5,43],n:300});
+          A.dots(b.equivalent.map(([x,r])=>[x,Math.PI*r*r]),{r:2.5,color:'accent'});
+          A.dots(b.indented.map(([x,r])=>[x,Math.PI*r*r]),{r:2.5,color:'green'});
+          A.vline(p.x,{color:'gold',dash:true});A.dot(p.x,p.indentedArea,{r:6,color:'gold'});
+          B.rect(.22,0,.78,1,{color:'muted',fill:'muted',fillAlpha:.45});
+          B.rect(1.22,0,1.78,p.remaining,{color:'green',fill:'green',fillAlpha:.45});
+          if(p.remaining===0)B.dot(1.5,0,{r:5,color:'green',hollow:true});
+          B.text('100%',.5,1.08,{color:'muted',size:13,align:'center'});
+          B.text(p.remaining?'≈40% remains':'reported eliminated',1.5,p.remaining+.12,{color:'green',size:12,align:'center'});
+          B.text(p.remaining?'near sonic speed':'through M = 1.04',1.5,p.remaining+.26,{color:'green',size:11,align:'center'});
+          info=p;
         });
-        v.legend([['red', 'wing + straight fuselage'], ['accent', 'your indentation'], ['green', 'equivalent body of revolution (same $S(x)$)'], ['muted', 'body alone / fully ruled']]);
-        v.readout(() => {
-          const { cw0, cwk, cw1, M0, mdd } = info;
-          return `Model drag rise at $M=1$ (slender-body wave drag over $S_{ref}=0.12\\,l^2$): straight fuselage $${fx(cw0, 4)}$, your setting $${fx(cwk, 4)}$ (equivalent body of revolution: the same, by the equivalence the paper asserts), fully area-ruled $${fx(cw1, 4)}$ — the Sears–Haack body for this volume.\nThe indentation removes $${fx(100 * (1 - cwk / cw0), 1)}\\%$ of the model's drag rise. Onset of the rise (Korn, $\\kappa=0.87$, $C_L=0$): $M_{dd}=${fx(mdd, 3)}$, curve starts at $${fx(M0, 3)}$. The paper's own figures are not reproduced here.`;
-        });
+        v.readout(()=>String.raw`At $x=${fx(info.x,3)}$ in: equivalent-body radius $${fx(info.equivalentRadius,3)}$ in, indented-body radius $${fx(info.indentedRadius,3)}$ in. Body-only areas: basic $${fx(info.basicArea,3)}$, equivalent $${fx(info.equivalentArea,3)}$, indented $${fx(info.indentedArea,3)}$ in². The linear-radius reconstruction removes approximately $${fx(info.removedBodyVolume,2)}$ in³ of body volume over stations 22.5–43 in. ${info.remaining?'The report describes approximately 60% reduction of the wing-associated drag-rise increment near sonic speed.':'The report describes the swept-wing-associated increment as eliminated through M = 1.04.'} The complete indented wing–body area and a drag curve are not computed here.`);
       },
     },
   ],

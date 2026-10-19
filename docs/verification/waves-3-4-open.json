@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 217,
+  "remainingFlags": 214,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,6 @@
     "circ": 1,
     "energy": 4,
     "robot": 1,
-    "aero": 3,
     "micro": 15,
     "macro": 2,
     "fin": 12,
@@ -276,52 +275,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "aero-4.5",
-      "file": "content/aero/ch04-b.js",
-      "name": "Oblique shocks and Prandtl\u2013Meyer expansion",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Anderson ch. 4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Prandtl%E2%80%93Meyer_expansion_fan",
-        "wikipedia2": "https://en.wikipedia.org/wiki/Oblique_shock"
-      }
-    },
-    {
-      "id": "aero-4.7",
-      "file": "content/aero/ch04-b.js",
-      "name": "Hypersonic aerodynamic heating",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Anderson ch. 10"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.2514/8.7517",
-        "wikipedia": "https://en.wikipedia.org/wiki/Atmospheric_entry"
-      }
-    },
-    {
-      "id": "aero-4.8",
-      "file": "content/aero/ch04-b.js",
-      "name": "Drag-Rise Characteristics of Wing-Body Combinations",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "ntrs": "https://ntrs.nasa.gov/citations/19930087283",
-        "wikipedia": "https://en.wikipedia.org/wiki/Richard_T._Whitcomb"
       }
     },
     {
@@ -4126,7 +4079,10 @@
       "solid-4.8",
       "solid-4.9",
       "aero-3.7",
-      "energy-4.1"
+      "energy-4.1",
+      "aero-4.5",
+      "aero-4.7",
+      "aero-4.8"
     ]
   },
   "additionalFollowups": [
@@ -8077,6 +8033,24 @@
       "status": "resolved",
       "report": "docs/verification/energy-solar-spectrum-followup.md",
       "note": "Full original IAU B3/Kopp\u2013Lean reading; parent independently reran3math/4native groups and inspected source tables/measurement pages plus representative final layouts; analytic fractions, nominal/2008 distinction, full reference curve and separated absorption labels."
+    },
+    {
+      "id": "aero-4.5",
+      "status": "resolved",
+      "report": "docs/verification/aero-corner-followup.md",
+      "note": "Full authored primary-source sections/original tables read; parent independently reran7math/12native batch, inspected original equations/tables and representative final screenshots; Ackeret4.6preserved."
+    },
+    {
+      "id": "aero-4.7",
+      "status": "resolved",
+      "report": "docs/verification/aero-heating-followup.md",
+      "note": "Full authored primary-source sections/original tables read; parent independently reran7math/12native batch, inspected original equations/tables and representative final screenshots; Ackeret4.6preserved."
+    },
+    {
+      "id": "aero-4.8",
+      "status": "resolved",
+      "report": "docs/verification/aero-whitcomb-followup.md",
+      "note": "Full authored primary-source sections/original tables read; parent independently reran7math/12native batch, inspected original equations/tables and representative final screenshots; Ackeret4.6preserved."
     }
   ]
 }

@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 880 edges. Even
+written ideas in a different field**. Their combined shortfall is 879 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -35,4 +35,8 @@ No source-review flags were cleared by adding these links.
 
 ## Supporting planes in plastic collapse
 
-The audited argument for `solid-4.10` now explicitly uses the outward normal cone and supporting-hyperplane inequality of `opt-2.8` to obtain maximum plastic dissipation under associated flow. The chapter and syllabus both identify this written prerequisite. Solid mechanics now has7published cross-field edges; the overall published shortfall is880, with54of64collections still below25.
+The audited argument for `solid-4.10` now explicitly uses the outward normal cone and supporting-hyperplane inequality of `opt-2.8` to obtain maximum plastic dissipation under associated flow. The chapter and syllabus both identify this written prerequisite. At that checkpoint, solid mechanics had 7 published cross-field edges and the overall published shortfall was 880, with 54 of 64 collections still below 25.
+
+## Orthogonal projection in swept-wing velocity components
+
+The audited vector construction in `aero-4.3` now explicitly applies the unit-vector projection formula from written `ladr-6.55`. The normal and spanwise components are orthogonal and sum to the free-stream velocity. The chapter and syllabus both identify that prerequisite. Aerospace engineering now has 11 published cross-field edges; the overall published shortfall is 879. The gate remains open for 54 of 64 non-math collections, including 27 still below target across the complete syllabus.
