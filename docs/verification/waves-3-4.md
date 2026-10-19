@@ -580,3 +580,11 @@ Closed solid-4.7–4.9 against primary engineering model documentation and NIST 
 ## Fusion partial checkpoint — October19,2026
 
 Corrected energy-3.10 using the complete Lawson1957 and Bosch–Hale1992 originals and the relevant modern authored power-balance derivation. Parent independently reran four mathematical and four native groups, inspected original formulas and final layouts, and confirmed the fit is used only within its printed domain. The later1993 erratum remains inaccessible and unread, so this item stays flagged. See [fusion audit and access limitation](energy-fusion-followup.md). **219 source reviews remain**.
+
+## Completed validation checkpoint — 2026-10-19, through d8c7215
+
+The completed checkpoint passes **1,362 default mathematical/verification tests** and **six UI tests**, with zero failures, cancellations or skipped tests. Strict build checks 6,684 written items plus 6,890 planned in 450 chapters and 85 collections with zero errors/warnings; full static validation checks 6,621 items with zero errors/warnings. The home payload is 112,818 bytes gzipped, below the 300 KB gate.
+
+A **17-route changed-page sweep** passes home/map/about plus the latest corrected aerospace, energy, pharmacology and solid-mechanics entries. This subset is additional evidence; it is not a new full 272- or 440-route sweep. Logs: `/tmp/atlas-latest-checkpoint-{tests,build,static,ui,smoke}.log`. Source-specific independent mathematics, native inputs and inspected screenshots remain documented in their individual reports. Later uncommitted ground-effect, solar and map-transition work is not represented as complete by this checkpoint.
+
+Human review requirements have been removed. Source verification, broader automated audio/input coverage, justified cross-field prerequisites, proof-stepper semantics/visual coverage and the full map performance gate continue. Wave 5 remains prepared and has not started.

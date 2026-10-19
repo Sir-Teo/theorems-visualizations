@@ -58,6 +58,8 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    remain separate from that result.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
+The completed checkpoint through `d8c7215` passes **1,362 tests**, the six UI tests and a **17-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,818 bytes gzipped. This route subset does not replace the earlier broader route audit. Subsequent ground-effect, solar-spectrum and map-transition changes remain under verification.
+
 ### Where we started
 
 
