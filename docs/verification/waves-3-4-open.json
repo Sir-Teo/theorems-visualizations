@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 264,
+  "remainingFlags": 257,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,15 +17,13 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 9,
+    "physio": 8,
     "pharm": 9,
     "imaging": 6,
-    "sig": 2,
-    "ctrl": 2,
     "circ": 1,
     "energy": 12,
     "solid": 7,
-    "robot": 3,
+    "robot": 1,
     "aero": 7,
     "micro": 15,
     "macro": 2,
@@ -164,21 +162,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Young%E2%80%93Laplace_equation"
-      }
-    },
-    {
-      "id": "physio-3.9",
-      "file": "content/physio/ch03-b.js",
-      "name": "The ECG as a rotating cardiac dipole (Einthoven\u2019s triangle)",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Einthoven%27s_triangle"
       }
     },
     {
@@ -523,60 +506,6 @@
       "links": {}
     },
     {
-      "id": "sig-4.6",
-      "file": "content/sig/ch04-b.js",
-      "name": "Parseval\u2019s relation for periodic signals",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Oppenheim\u2013Willsky \u00a73.5"
-      ],
-      "links": {}
-    },
-    {
-      "id": "sig-4.13",
-      "file": "content/sig/ch04-d.js",
-      "name": "Continuous signals with divergent Fourier series",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Oppenheim\u2013Willsky \u00a73.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Convergence_of_Fourier_series"
-      }
-    },
-    {
-      "id": "ctrl-4.8",
-      "file": "content/ctrl/ch04-b.js",
-      "name": "Dominant-pole approximation",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Franklin\u2013Powell \u00a73.5"
-      ],
-      "links": {}
-    },
-    {
-      "id": "ctrl-4.4",
-      "file": "content/ctrl/ch04.js",
-      "name": "Specifications as regions of the s-plane",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Franklin\u2013Powell \u00a73.4"
-      ],
-      "links": {}
-    },
-    {
       "id": "circ-4.17",
       "file": "content/circ/ch04-c.js",
       "name": "Nanowatt Logic Using Field-Effect MOS Triodes",
@@ -883,37 +812,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "robot-4.7",
-      "file": "content/robot/ch04-b.js",
-      "name": "Manipulability measures",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Lynch\u2013Park \u00a75.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Robot_kinematics"
-      }
-    },
-    {
-      "id": "robot-4.8",
-      "file": "content/robot/ch04-b.js",
-      "name": "Redundancy and null-space self-motion",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Lynch\u2013Park \u00a76.3",
-        "Siciliano ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Robot_kinematics"
       }
     },
     {
@@ -4781,7 +4679,14 @@
       "physio-4.14",
       "physio-4.15",
       "physio-4.18",
-      "physio-3.6"
+      "physio-3.6",
+      "physio-3.9",
+      "sig-4.6",
+      "sig-4.13",
+      "ctrl-4.4",
+      "ctrl-4.8",
+      "robot-4.7",
+      "robot-4.8"
     ]
   },
   "additionalFollowups": [
@@ -8432,6 +8337,48 @@
       "status": "resolved",
       "report": "docs/verification/physio-source-audit-cardiac-followup.md",
       "note": "Original ASE2015 method-specific reference tables checked; corrected /1000 output conversion, inconsistent preset comparison and pressure average. Four independent model/unit groups and two native theme groups pass; parent reran both suites and inspected final full-size screenshot."
+    },
+    {
+      "id": "physio-3.9",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-ecg-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "sig-4.6",
+      "status": "resolved",
+      "report": "docs/verification/sig-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "sig-4.13",
+      "status": "resolved",
+      "report": "docs/verification/sig-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "ctrl-4.4",
+      "status": "resolved",
+      "report": "docs/verification/ctrl-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "ctrl-4.8",
+      "status": "resolved",
+      "report": "docs/verification/ctrl-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "robot-4.7",
+      "status": "resolved",
+      "report": "docs/verification/robot-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+    },
+    {
+      "id": "robot-4.8",
+      "status": "resolved",
+      "report": "docs/verification/robot-source-audit-followup.md",
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
     }
   ]
 }

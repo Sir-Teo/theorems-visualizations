@@ -22,20 +22,7 @@ function wall(V, Vw) {
   return { ri, ro, h: ro - ri };
 }
 
-// Frontal-plane heart vector: sum of Gaussian waves, each with a fixed direction (clinical angle: 0° = lead I, +90° = pointing down).
-const WAVES = [
-  { n: 'P', mu: 0.045, sd: 0.02, amp: 0.15, ang: 60 }, { n: 'Q', mu: 0.07, sd: 0.007, amp: 0.13, ang: 150 }, { n: 'R', mu: 0.088, sd: 0.011, amp: 1.0, ang: 60 },
-  { n: 'S', mu: 0.108, sd: 0.01, amp: 0.3, ang: -135 }, { n: 'T', mu: 0.3, sd: 0.05, amp: 0.32, ang: 45 },
-];
-/** Heart vector [x, y] (screen coordinates, y up) at time t, with the whole family of directions rotated by `rot` degrees. */
-function hvec(t, rot, which) {
-  let x = 0, y = 0;
-  for (const w of WAVES) { if (which && !which.includes(w.n)) continue; const a = ((w.ang + rot) * Math.PI) / 180, g = w.amp * gauss(t, w.mu, w.sd); x += g * Math.cos(a); y -= g * Math.sin(a); }
-  return [x, y];
-}
-const LEADS = [{ n: 'I', ang: 0, color: 'accent' }, { n: 'II', ang: 60, color: 'green' }, { n: 'III', ang: 120, color: 'orange' }];
-const leadAxis = (ang) => [Math.cos((ang * Math.PI) / 180), -Math.sin((ang * Math.PI) / 180)];
-const proj = (H, ang) => { const u = leadAxis(ang); return H[0] * u[0] + H[1] * u[1]; };
+import { ECG_LEADS as LEADS, leadAxis, projectLead as proj, heartVector as hvec } from './physio-source-audit-ecg.js';
 
 export default {
   collection: 'physio',
@@ -152,22 +139,22 @@ $$\sigma = \frac{P\,r}{2h}.$$
       num: '3.9',
       kind: 'Concept',
       name: 'The ECG as a rotating cardiac dipole (Einthoven’s triangle)',
-      statement: String.raw`The electrical activity of the heart, as seen from the body surface, behaves like a single current dipole whose moment, the **heart vector** $\mathbf{H}(t)$, changes in size and direction through the beat. Far from a dipole the potential is $\phi \propto \mathbf p\cdot\hat{\mathbf r}/r^2$, so an electrode records the component of $\mathbf H$ along the line from the heart to it. A **limb lead** is the potential difference between two limb electrodes; with the right arm (RA), left arm (LA) and left leg (LL) at the corners of **Einthoven's triangle** in the frontal plane, lead I (RA→LA) lies along $0^\circ$, lead II (RA→LL) along $60^\circ$ and lead III (LA→LL) along $120^\circ$, and each lead records the projection of $\mathbf H$ on its axis. As differences of three potentials, the leads satisfy **Einthoven's law**, $\mathrm{I} + \mathrm{III} = \mathrm{II}$. In a normal heart the mean QRS vector points down and to the left, an electrical axis between about $-30^\circ$ and $+90^\circ$ (some sources say $+105^\circ$).`,
+      statement: String.raw`In a simplified volume-conductor model, the electrical activity of the heart is represented by a single current dipole whose moment, the **heart vector** $\mathbf{H}(t)$, changes in size and direction through the beat. Far from a dipole the potential is $\phi \propto \mathbf p\cdot\hat{\mathbf r}/r^2$, so an electrode records the component of $\mathbf H$ along the line from the heart to it. A **limb lead** is the potential difference between two limb electrodes; with the right arm (RA), left arm (LA) and left leg (LL) at the corners of **Einthoven's triangle** in the frontal plane, lead I (RA→LA) lies along $0^\circ$, lead II (RA→LL) along $60^\circ$ and lead III (LA→LL) along $120^\circ$, and each lead records the projection of $\mathbf H$ on its axis. As differences of three potentials, the leads satisfy **Einthoven's law**, $\mathrm{I} + \mathrm{III} = \mathrm{II}$. The lead identity follows from subtraction of electrode potentials and does not require an equilateral torso or a single-dipole approximation; the simple projection picture does require idealized lead vectors.`,
       idea: String.raw`Depolarization spreads through the ventricles as a wavefront; a wavefront of depolarized tissue is a sheet of dipoles, whose sum is one resultant vector (the dipole of em-2.14, summed). As the wave sweeps from septum to the apex and then to the base, that vector grows, rotates and shrinks, tracing a loop; repolarization traces a slower, smaller loop (the T wave). Projecting the moving arrow on three fixed axes gives three scalar traces at once: the ECG leads. The triangle is a model of the body as a homogeneous conductor in which the three limb electrodes are equidistant from a point-like heart, which is why the triangle is drawn as equilateral and the three projections are consistent with each other.`,
-      caption: String.raw`The red arrow is the heart vector in the frontal plane, in slow motion; its tip leaves a trail (P, QRS and T loops). The coloured bars on the triangle's sides are the projections of the arrow on lead axes I, II and III; the traces on the right are those projections over time (the P, QRS and T waves) and the cursor shows the same instant. **Rotate** the heart's electrical axis until the mean QRS axis in the readout reaches about $-60^\circ$ (left-axis deviation) and the lead II complex turns negative; at about $+110^\circ$ (right-axis deviation) it is lead I that turns negative. Check Einthoven's law in the readout at any instant.`,
-      scope: String.raw`A schematic frontal-plane model: the vector loop is built from five Gaussian waves of chosen directions and sizes (it is not a recording or a bidomain simulation), the torso is taken as a homogeneous volume conductor, and only the frontal plane is shown. The normal axis range is conventional (about $-30^\circ$ to $+90^\circ$, sometimes up to $+105^\circ$). Not for interpreting a real ECG.`,
+      caption: String.raw`The red arrow is the heart vector in the frontal plane, in slow motion; its tip leaves a trail (P, QRS and T loops). The coloured bars on the triangle's sides are the projections of the arrow on lead axes I, II and III; the traces on the right are those projections over time (the P, QRS and T waves) and the cursor shows the same instant. **Rotate** the vector loop: the three traces change together while $I+III=II$ remains exact. A lead changes sign when the vector crosses the direction perpendicular to that lead. The readout gives the mean direction of this chosen model QRS interval; it is not a diagnostic axis classification.`,
+      scope: String.raw`A schematic frontal-plane model: the vector loop is built from five Gaussian waves of chosen directions and sizes (it is not a recording or a bidomain simulation), the torso is taken as a homogeneous volume conductor, and only the frontal plane is shown. The Gaussian timings, amplitudes and QRS averaging interval are chosen teaching inputs. The heart is not exactly a single dipole and a real torso does not give exactly equilateral lead vectors. No clinical axis cutoff is applied.`,
       deps: ['physio-2.9', 'em-2.14'],
       see: ['physio-3.1'],
-      refs: ['Guyton–Hall'],
+      refs: ['Einthoven, Nobel lecture, 11 Dec 1925, printed p. 102: lead definitions and III = II − I', 'Keener–Sneyd, author manuscript §12.1.2, pp. 533–539, equations (12.5)–(12.11), Fig. 12.5'],
       tags: ['ECG', 'dipole'],
-      credit: 'Willem Einthoven (string galvanometer, c. 1901–03; the triangle scheme, c. 1912; Nobel Prize 1924); the dates are from secondary sources and some accounts differ',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Einthoven%27s_triangle' },
-      verify: true,
+      credit: 'Willem Einthoven; lead identity discussed in his Nobel lecture delivered 11 December 1925',
+      links: { source: 'https://www.nobelprize.org/uploads/2018/06/einthoven-lecture.pdf#page=9' },
+      verify: false,
       viz(v) {
         const rot = v.slider('rotate the heart’s electrical axis', -120, 90, 0, { step: 1, fmt: (x) => `${x > 0 ? '+' : x < 0 ? '−' : ''}${fmt0(Math.abs(x))}°` });
         const sT = v.stage({ x: [-1.7, 1.7], y: [-1.75, 1.2], equal: true, axes: false, height: 360, weight: 1, minWidth: 280, title: 'frontal plane' });
-        const sL = v.stage({ x: [0, 0.8], y: [-3.9, 3.9], height: 360, axes: 'box', gutter: { l: 44, r: 10, t: 16, b: 34 }, xlabel: 't (s)', ylabel: 'leads', yticks: [], weight: 1.2, minWidth: 300 });
-        const RA = [-1.15, 0.7], LA = [1.15, 0.7], LL = [0, -1.3], C = [0, -0.1], SC = 0.95;
+        const sL = v.stage({ x: [-.02, .82], y: [-3.9, 3.9], height: 360, axes: 'box', gutter: { l: 44, r: 10, t: 16, b: 34 }, xlabel: 't (s)', ylabel: 'leads', yticks: [], weight: 1.2, minWidth: 300 });
+        const RA = [-1.15, 0.7], LA = [1.15, 0.7], LL = [0, .7 - Math.sqrt(3) * 1.15], C = [0, (1.4 + LL[1]) / 3], SC = 0.95;
         const tip = (t) => { const H = hvec(t, rot.value); return [C[0] + SC * H[0], C[1] + SC * H[1]]; };
         let tc = 0, info = null;
         v.animate((t) => {
@@ -211,7 +198,7 @@ $$\sigma = \frac{P\,r}{2h}.$$
         v.readout(() => {
           if (!info) return '';
           const [a, b, c] = info.vals, ax = info.axis;
-          const kind = ax > 105 ? 'right-axis deviation' : ax < -30 ? 'left-axis deviation' : 'within the conventional normal range';
+          const kind = 'chosen model interval 55–130 ms, relative signal units';
           return `at the cursor: I = ${v.fix(a, 2)}, II = ${v.fix(b, 2)}, III = ${v.fix(c, 2)} → I + III = ${v.fix(a + c, 2)} = II (Einthoven's law) · mean QRS axis **${v.fix(ax, 0)}°** (${kind})`;
         });
       },

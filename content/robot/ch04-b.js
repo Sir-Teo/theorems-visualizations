@@ -4,6 +4,8 @@ import {
   wrapPi, planarFK, planarJ, ik2R, svd2xn, ellipsePts,
 } from './ch04.shared.js';
 
+import { planarSpectrum, bestPlanarAngle } from './robot-source-audit.shared.js';
+
 const cn = (x, d = 2) => fx(x, d).replace('-', '−');
 const JC = ['accent', 'orange', 'purple', 'teal', 'pink', 'gold'];
 
@@ -151,18 +153,18 @@ It has **the same principal axes $u_i$** as the manipulability ellipsoid $\mathc
       num: '4.7',
       kind: 'Definition',
       name: 'Manipulability measures',
-      statement: String.raw`A **manipulability measure** condenses the ellipsoid of 4.5 into one number that tells how well-conditioned a posture is. With the singular values $\sigma_1\ge\dots\ge\sigma_m>0$ of the Jacobian (for a task whose coordinates share one unit) the standard choices are:
+      statement: String.raw`A **manipulability measure** condenses the ellipsoid of 4.5 into one number that tells how well-conditioned a posture is. With the singular values $\sigma_1\ge\dots\ge\sigma_m>0$ of the Jacobian (for a task whose coordinates share one unit, and a fixed Euclidean joint-rate budget) the standard choices are:
 (a) Yoshikawa's index $w=\sqrt{\det(JJ^{\mathsf T})}=\sigma_1\cdots\sigma_m$, proportional to the volume of the ellipsoid, which vanishes exactly at singularities;
 (b) the smallest singular value $\sigma_m$, the speed in the worst direction;
 (c) the condition number $\kappa=\sigma_1/\sigma_m\ge1$, or its inverse $1/\kappa\in(0,1]$ (the *isotropy*); $\kappa=1$ means an **isotropic** posture, where the ellipsoid is a ball and the tool moves equally easily in every direction.
 For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on $\theta_2$ alone: $w=\ell_1\ell_2|\sin\theta_2|$, and the eigenvalues of $JJ^{\mathsf T}$ are $\tfrac12\big(t\pm\sqrt{t^2-4w^2}\big)$ with $t=\ell_1^2+2\ell_2^2+2\ell_1\ell_2\cos\theta_2$. The condition number reaches $1$ only if $\ell_1=\sqrt2\,\ell_2$, at $\theta_2=\pm135^\circ$.`,
       idea: String.raw`All three are functions of the spectrum of $JJ^{\mathsf T}$, which for the $2$R arm has trace $t$ and determinant $w^2$ (columns of lengths $|c_1|^2=\ell_1^2+\ell_2^2+2\ell_1\ell_2\cos\theta_2$ and $|c_2|^2=\ell_2^2$, inner product $\ell_2^2+\ell_1\ell_2\cos\theta_2$), so the eigenvalues follow from the quadratic formula and depend on $\theta_2$ only. They disagree about what “best” means: $w$ is largest at an elbow of $90^\circ$ whatever the lengths, $\sigma_{\min}$ and $\kappa$ are optimised elsewhere. Isotropy requires the two columns to be orthogonal ($\cos\theta_2=-\ell_2/\ell_1$) and of equal length ($\cos\theta_2=-\ell_1/(2\ell_2)$), and both hold only for $\ell_1^2=2\ell_2^2$.`,
-      caption: String.raw`The map colours the tool's workspace by the chosen measure (bright = good); because only $\theta_2$ matters the colour depends only on distance from the base, giving the concentric bands. Drag the tool handle and read the numbers; the plot on the right shows the measure against the elbow angle with the best angle marked. Slide $\ell_2/\ell_1$: for $\ell_1=\sqrt2\,\ell_2$ (ratio $0.707$) the condition number touches $1$ at $\theta_2=\pm135^\circ$.`,
+      caption: String.raw`The map colours the tool's workspace by the chosen measure (bright = good); because only $\theta_2$ matters the colour depends only on distance from the base, giving the concentric bands. Drag the tool handle and read the numbers; the plot on the right shows the measure against the elbow angle with the best angle marked. Slide $\ell_2/\ell_1$ or use the exact isotropic ratio button: for $\ell_1=\sqrt2\,\ell_2$ (ratio $0.707$) the condition number touches $1$ at $\theta_2=\pm135^\circ$. The condition-number curve is clipped at 8; the readout retains its actual value.`,
       deps: ['robot-4.5'],
-      refs: ['Lynch–Park §5.4'],
+      refs: ['Lynch–Park §5.4 (condition number of J is the square root of that of JJᵀ)', 'Yoshikawa, Manipulability of Robotic Mechanisms (1985), pp. 3–5, Eqs. (5)–(23)'],
       tags: ['manipulability', 'condition number', 'isotropy'],
-      credit: 'Manipulability index: Yoshikawa, 1985; condition number as a measure: Salisbury & Craig, 1982',
-      verify: true,
+      credit: 'Manipulability index: Yoshikawa, 1983 proposal and 1985 journal account',
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
       viz(v) {
         const meas = v.select('measure', [
@@ -172,15 +174,12 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
           { value: 'kappa', label: 'condition number $\\kappa$' },
         ], 'w');
         const rat = v.slider('link ratio $\\ell_2/\\ell_1$', 0.3, 1.6, 0.8, { step: 0.01 });
+        v.button('Isotropic link ratio', () => rat.set(1 / Math.sqrt(2)));
         const A = v.stage({ x: [-2.7, 2.7], y: [-2.7, 2.7], equal: true, axes: false, height: 400, minWidth: 330, title: 'workspace coloured by the measure' });
         const B = v.stage({ x: [0, 180], y: [0, 1], axes: 'box', gutter: true, xlabel: 'elbow angle θ₂ (°)', ylabel: 'measure', xticks: [0, 45, 90, 135, 180], height: 400, minWidth: 280, title: 'the measure as a function of θ₂' });
         const th = [0.5, 1.2];
         const hT = toolHandle(A, 1, 0.8, th, () => 0);
-        const spec = (l1, l2, t2) => {
-          const c = Math.cos(t2), tr = l1 * l1 + 2 * l2 * l2 + 2 * l1 * l2 * c, w = l1 * l2 * Math.abs(Math.sin(t2));
-          const disc = Math.sqrt(Math.max(0, tr * tr / 4 - w * w)), a = tr / 2 + disc, b = Math.max(0, tr / 2 - disc);
-          return [Math.sqrt(a), Math.sqrt(b)];
-        };
+        const spec = planarSpectrum;
         const val = (m, s) => (m === 'w' ? s[0] * s[1] : m === 'smin' ? s[1] : m === 'inv' ? (s[0] > 0 ? s[1] / s[0] : 0) : (s[1] > 1e-9 ? s[0] / s[1] : Infinity));
         // cap used for the colour scale and the curve
         const scale = (m, l1, l2) => (m === 'w' ? l1 * l2 : m === 'smin' ? Math.min(l1, l2) * 1.0 : m === 'inv' ? 1 : 8);
@@ -188,7 +187,7 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
         v.render(() => {
           const l1 = 1, l2 = rat.value, m = meas.value, R = l1 + l2;
           hT.constrain = (x, y) => {
-            const r = Math.hypot(x, y), rr = clamp(r, Math.abs(l1 - l2) + 1e-3, R - 1e-3), k = r < 1e-9 ? 1 : rr / r; x *= k; y *= k;
+            const r = Math.hypot(x, y), rr = clamp(r, Math.abs(l1 - l2) + 1e-3, R - 1e-3), k = r < 1e-9 ? 0 : rr / r; x = r < 1e-9 ? rr : x * k; y *= k;
             const sol = ik2R(l1, l2, x, y); if (sol) { th[0] = sol[0][0]; th[1] = sol[0][1]; }
             return [x, y];
           };
@@ -213,20 +212,19 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
           const ymax = m === 'kappa' ? 8 : m === 'w' ? Math.max(0.1, l1 * l2) * 1.1 : m === 'smin' ? Math.min(l1, l2) * 1.1 : 1.05;
           B.setView([0, 180], m === 'kappa' ? [1, ymax] : [0, ymax]);
           B.fn((x) => Math.min(f(x), ymax), { color: 'accent', width: 2.4, n: 360 });
-          let best = { x: 0, y: m === 'kappa' ? Infinity : -Infinity };
-          for (let d = 0.5; d < 180; d += 0.5) { const y = f(d); if (!Number.isFinite(y)) continue; if (m === 'kappa' ? y < best.y : y > best.y) best = { x: d, y }; }
+          const bestAngle = bestPlanarAngle(l2 / l1, m) / DEG, best = { x: bestAngle, y: f(bestAngle) };
           B.dot(best.x, Math.min(best.y, ymax), { color: 'green', r: 6 });
           B.text(`best ${fx(best.x, 1)}°`, best.x, Math.min(best.y, ymax), { size: 11.5, color: 'green', dx: 8, dy: m === 'kappa' ? -18 : 20 });
           const t2 = Math.abs(th[1]) / DEG;
           B.vline(t2, { color: 'gold', width: 1.5 });
           B.dot(t2, Math.min(f(t2), ymax), { color: 'gold', r: 6 });
-          let kmin = Infinity; for (let d = 0.5; d < 180; d += 0.5) kmin = Math.min(kmin, val('kappa', spec(l1, l2, d * DEG)));
+          const kmin = val('kappa', spec(l1, l2, bestPlanarAngle(l2 / l1, 'kappa')));
           st = { sv, best, kmin, t2 };
         });
         v.readout(() => {
           if (!st) return '';
           const { sv } = st;
-          return `At the tool: $\\sigma=(${fx(sv.s[0], 3)},${fx(sv.s[1], 3)})$, $w=${fx(sv.s[0] * sv.s[1], 3)}$, $\\kappa=${sv.s[1] > 1e-6 ? fx(sv.s[0] / sv.s[1], 2) : '\\infty'}$, $1/\\kappa=${fx(sv.s[1] / sv.s[0], 3)}$ at $\\theta_2=${fx(st.t2, 0)}^\\circ$.\nOver all elbow angles the best value of the chosen measure is reached at $\\theta_2=${fx(st.best.x, 1)}^\\circ$; the smallest possible condition number for this arm is $\\kappa_{\\min}=${fx(st.kmin, 3)}$ ($=1$ only for $\\ell_2/\\ell_1=0.707$).`;
+          return `At the tool: $\\sigma=(${fx(sv.s[0], 3)},${fx(sv.s[1], 3)})$, $w=${fx(sv.s[0] * sv.s[1], 3)}$, $\\kappa=${sv.s[1] > 1e-6 ? fx(sv.s[0] / sv.s[1], 2) : '\\infty'}$, $1/\\kappa=${fx(sv.s[1] / sv.s[0], 3)}$ at $\\theta_2=${fx(st.t2, 0)}^\\circ$.\nOver all elbow angles the best value of the chosen measure is reached at $\\theta_2=${fx(st.best.x, 1)}^\\circ$; the smallest possible condition number for this arm is $\\kappa_{\\min}=${fx(st.kmin, 3)}$ ($=1$ only for $\\ell_2/\\ell_1=1/\\sqrt2\\approx0.707107$).`;
         });
       },
     },
@@ -235,16 +233,16 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
       num: '4.8',
       kind: 'Concept',
       name: 'Redundancy and null-space self-motion',
-      statement: String.raw`An arm is **kinematically redundant** for a task when it has more joints than the task has coordinates: $n>m$, for instance a planar three-joint arm positioning its tool point in the plane ($n=3$, $m=2$). At any configuration where $J(\theta)\in\R^{m\times n}$ has rank $m$, rank–nullity (ladr-3.21) gives $\dim\ker J=n-m\ge1$. A joint velocity $\dot\theta\in\ker J$ is a **self-motion**: the joints move and the tool does not. The set of configurations reaching one fixed tool position is a curve (a union of loops, for the planar 3R arm) in joint space, and every solution of $J\dot\theta=V$ has the form
+      statement: String.raw`An arm is **kinematically redundant** for a task when it has more joints than the task has coordinates: $n>m$, for instance a planar three-joint arm positioning its tool point in the plane ($n=3$, $m=2$). At any configuration where $J(\theta)\in\R^{m\times n}$ has rank $m$, rank–nullity (ladr-3.21) gives $\dim\ker J=n-m\ge1$. A joint velocity $\dot\theta\in\ker J$ is an instantaneous **self-motion**: it produces zero tool velocity. The implicit function theorem makes each regular local level set a manifold of dimension $n-m$. For a planar 3R arm without joint limits and a regular tool-position value, the complete level set is a union of loops on the torus of joint angles (a rectangular angle chart can cut these loops into arcs), and every solution of $J\dot\theta=V$ has the form
 $$\dot\theta=J^{+}V+(I-J^{+}J)\,z,\qquad z\in\R^n\ \text{arbitrary},$$
-the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta)$ for a secondary objective $H$ (distance from joint limits, from obstacles, a manipulability index of 4.7) uses the freedom without disturbing the task.`,
+the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta)$ for a smooth cost uses the freedom without changing the instantaneous task velocity. For a stationary task ($V=0$), $\dot H=-\|(I-J^+J)\nabla H\|^2\le0$; with a moving task, its primary component can also change $H$. To increase manipulability use a cost such as $H=-w$. A finite Euler displacement along a null vector preserves the task only to first order.`,
       idea: String.raw`Rank–nullity counts the freedom: $n$ joint rates, $m$ of them needed to produce the task velocity, $n-m$ left over. The matrix $I-J^{+}J$ is the orthogonal projector onto $\ker J$, so adding any vector it produces changes no tool velocity, and $J^{+}V$ is the shortest solution because it is orthogonal to the kernel. For the planar 3R arm the self-motion is easy to draw without Jacobians: fix the tool point $p$ and let the tool's heading $\phi$ vary; for each $\phi$ the wrist point $p-\ell_3(\cos\phi,\sin\phi)$ is fixed and the first two links reach it in at most two ways (4.3 and 3.3), so the family of postures is one-dimensional. Its tangent is the null vector of $J$.`,
-      caption: String.raw`The tool is pinned at $p$ (drag the gold handle to move $p$). The slider $\phi$ is the tool's heading, the single parameter of the self-motion: as you move it, the elbow sweeps through a family of postures while the tool stays put (faint ghosts show the whole family for the chosen elbow branch). The right plot is the self-motion manifold in joint space $(\theta_1,\theta_2)$: a closed loop per elbow branch. The readout checks that the joint velocity along the loop is annihilated by $J$ and parallel to the null vector. Drag $p$ toward the edge of the workspace: the loop shrinks and breaks into arcs when the first two links can no longer reach.`,
+      caption: String.raw`The tool is pinned at $p$ (drag the gold handle to move $p$). The slider $\phi$ is the tool's heading, the single parameter of the self-motion: as you move it, the elbow sweeps through a family of postures while the tool stays put (faint ghosts show the whole family for the chosen elbow branch). The right plot is the angle chart of the self-motion level set in $(\theta_1,\theta_2)$. Periodic cuts can produce arcs; reachable-heading endpoints can join the two elbow branches. The readout checks that the joint velocity along the family is annihilated by $J$ and parallel to the null vector. Drag $p$ toward the edge of the workspace: some headings become unreachable and the chart shows only their feasible intervals; this does not establish that the complete level set has broken.`,
       deps: ['robot-4.1', 'ladr-3.21'],
-      refs: ['Lynch–Park §6.3', 'Siciliano ch. 3'],
+      refs: ['Lynch–Park §6.2 (Moore–Penrose solution)', 'Liégeois (1977), pp. 868–869, Eqs. (7)–(12), theorem and gradient-projection consequence'],
       tags: ['redundancy', 'null space', 'self-motion'],
       credit: 'Null-space projection of a secondary objective: Liégeois, 1977',
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
       viz(v) {
         const L = [1.0, 0.9, 0.6];
@@ -290,7 +288,7 @@ the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta
             fk.pts.slice(0, 3).forEach((q) => A.circle(q[0], q[1], 0.07, { fill: 'panel', fillAlpha: 1, color: 'ink', width: 2 }));
             A.arrow(p[0], p[1], p[0] + 0.5 * Math.cos(ph), p[1] + 0.5 * Math.sin(ph), { color: 'orange', width: 3, head: 9 });
             B.dot(cur[0] / DEG, cur[1] / DEG, { color: 'gold', r: 7 });
-          } else A.corner('this heading cannot be reached: the first two links fall short of the wrist point', 'tl', { color: 'red', plate: true });
+          } else A.corner('This heading is out of reach.', 'tl', { color: 'red', plate: true });
           A.dot(p[0], p[1], { color: 'gold', r: 6 });
           // self-motion check: d theta/d phi by central difference, J times it, comparison with the null vector of J
           let chk = null;
@@ -304,12 +302,12 @@ the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta
               chk = { dth, Jd: Math.hypot(...Jd), cosang, dn };
             }
           }
-          st = { cur, chk, ph };
+          st = { cur, chk, ph, positionError: cur ? Math.hypot(...planarFK(L, cur).tip.map((x, i) => x - p[i])) : null };
         });
         v.readout(() => {
           if (!st || !st.cur) return 'Heading out of reach for this tool position.';
           const c = st.cur, k = st.chk;
-          return `Joint angles $(${c.map((x) => fx(x / DEG, 1)).join(',\\;')})^\\circ$ for tool position $p=(${fx(p[0], 2)},${fx(p[1], 2)})$ — the same $p$ at every heading $\\phi$.\n${k ? `Self-motion velocity $d\\theta/d\\phi=(${k.dth.map((x) => cn(x, 2)).join(',\\;')})$: $\\|J\\,d\\theta/d\\phi\\|=${v.sci(k.Jd + 1e-17, 1)}$ (no tool motion), and it is parallel to the null vector of $J$ ($|\\cos|=${Number.isFinite(k.cosang) ? fx(k.cosang, 6) : '—'}$).` : ''}`;
+          return `Joint angles $(${c.map((x) => fx(x / DEG, 1)).join(',\\;')})^\\circ$ for tool position $p=(${fx(p[0], 2)},${fx(p[1], 2)})$ — at every feasible heading $\\phi$, position residual $${v.sci(st.positionError + 1e-17, 1)}$.\n${k ? `Self-motion velocity $d\\theta/d\\phi=(${k.dth.map((x) => cn(x, 2)).join(',\\;')})$: $\\|J\\,d\\theta/d\\phi\\|=${v.sci(k.Jd + 1e-17, 1)}$ (central-difference residual), and it is parallel to the null vector of $J$ ($|\\cos|=${Number.isFinite(k.cosang) ? fx(k.cosang, 6) : '—'}$).` : ''}`;
         });
       },
     },

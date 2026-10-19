@@ -3,7 +3,7 @@
   "wave": 5,
   "status": "prepared-not-started",
   "gates": {
-    "sourceReviewsPending": 264,
+    "sourceReviewsPending": 257,
     "humanVisualReview": "pending",
     "humanListeningReview": "pending",
     "note": "Planning does not authorize the authoring phase to bypass MASTER_PLAN §7.3. Source evidence, human exports and remaining wave gates must be checked before starting."

@@ -648,8 +648,8 @@
       "file": "content/robot/ch04-b.js",
       "visual": true,
       "audio": false,
-      "sourceReviewPending": true,
-      "fingerprint": "79e0385d5392f33b4b97b8c67d24d96c2b399eb98588f605c87e5420ebee743a"
+      "sourceReviewPending": false,
+      "fingerprint": "735063a2d2330087364c72ed8b28590a62b7c41429af46d52f10bb5661036907"
     },
     {
       "id": "info-4.7",
@@ -3460,5 +3460,5 @@
       "fingerprint": "004640cd5a0c4cef64d5e1801ed2675ab26c588be6ac56741716f81863f3a109"
     }
   ],
-  "fingerprint": "23112455628707dec94e870067f52fe61ebe414e805cf84eea47f9bc611d2ebe"
+  "fingerprint": "98db42811f27760eb77590a4fe2e1c6004ba3b9e239dbacce7406bf69367c5fc"
 }
