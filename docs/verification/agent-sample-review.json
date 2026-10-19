@@ -2885,11 +2885,15 @@
     {
       "id": "geog-2.4",
       "file": "content/geog/ch02.js",
-      "textHash": "76d051cc2c9f412280a407400a250d180b49908f58e7a56a98452797881de396",
-      "textReview": "The noon-Sun north/south branches follow H=90-|phi-delta| when the Sun is above the horizon; the Polaris correction is first order in its polar distance. Absolute invisibility south of the equator is too strong: a star with nonzero polar distance can rise slightly south of it, with refraction adding another caveat. Southern/small-altitude and near-zenith cases need native/scope checks.",
-      "visualReview": "Inspected both themes: true latitude40degrees,Polaris altitude40.328 and corrected39.998 agree; noon Sun73.44/declination23.44 independently gives40.00. Observer cross-section and meridian sky are distinct. Southern-equatorial visibility qualification remains pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "adc4078cef4e3668a249325cd87281952bcb66d2b0965089f2fb1fd316f7c2a7",
+      "textReview": "Polaris visibility now follows calculated geometric altitude rather than hemisphere. Near-equatorial southern rising is permitted, northern below-horizon cases are excluded, and polar-night Sun observations are explicitly unavailable. The caption distinguishes the north celestial pole from Polaris; scope fixes p to an illustrative 2018 value, states first-order correction limits and excludes refraction/dip/terrain. The schematic exaggerated circle does not determine visibility.",
+      "visualReview": "Inspected 24 native light/dark captures covering correction and exaggeration toggles, southern rise/set, northern set, southern hidden, both polar winters, northern summer and near-zenith Sun. At latitude-.30, Polaris rises at altitude+.360 and corrected latitude is-.300; at opposite hour angle altitude-.960 is unavailable. The celestial pole is below the northern horizon at negative latitude.",
+      "interactionReview": "Native observer drags, date/hour-angle sliders and both toggles pass across 12 states per theme. Two actual-widget regressions cover near-equatorial visibility and polar-night rejection; six existing geography math groups pass. No runtime/TeX failures. The original spherical altitude formula is unchanged.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The noon-Sun north/south branches follow H=90-|phi-delta| when the Sun is above the horizon; the Polaris correction is first order in its polar distance. Absolute invisibility south of the equator is too strong: a star with nonzero polar distance can rise slightly south of it, with refraction adding another caveat. Southern/small-altitude and near-zenith cases need native/scope checks.",
+      "initialTextHash": "76d051cc2c9f412280a407400a250d180b49908f58e7a56a98452797881de396",
+      "initialVisualFinding": "Inspected both themes: true latitude40degrees,Polaris altitude40.328 and corrected39.998 agree; noon Sun73.44/declination23.44 independently gives40.00. Observer cross-section and meridian sky are distinct. Southern-equatorial visibility qualification remains pending.",
+      "correctionReport": "docs/verification/agent-navigation-horizon-review.md"
     },
     {
       "id": "thermo-3.5",

@@ -6,6 +6,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Everywhere
 
+Observation controls should follow the calculated visibility condition,
+including near-horizon exceptions. Distinguish a nearby star from a celestial
+pole, an epoch-specific constant from a current ephemeris, and a schematic
+exaggeration from the quantity used in the readout.
+
 When labels are noisy, distinguish population loss against fresh noisy labels
 from disagreement with a clean latent rule. A noisy finite sample can still
 have zero training loss. Optimization controls must handle empty optima as

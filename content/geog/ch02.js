@@ -357,13 +357,14 @@ The true position adds whatever the log and compass do not see: steering noise, 
       statement: String.raw`An observer's latitude can be read from the sky with an instrument that measures altitude above the horizon.
 (a) **Polaris.** The north celestial pole stands at an altitude equal to the observer's latitude $\varphi$. Polaris lies within about $0.7^\circ$ of the pole (0.66° in 2018), so its altitude $H$ gives $\varphi \approx H - p\cos t$, where $p$ is its polar distance and $t$ its local hour angle; without the correction the error is at most $p$, about 40 nautical miles.
 (b) **The noon Sun.** When the Sun crosses the meridian at declination $\delta$, its altitude is $H_\odot = 90^\circ - |\varphi - \delta|$, so $\varphi = \delta + (90^\circ - H_\odot)$ when the Sun bears south and $\varphi = \delta - (90^\circ - H_\odot)$ when it bears north. The declination for the date comes from an almanac; it swings between about $\pm 23.44^\circ$, the obliquity of the ecliptic.
-Polaris is invisible south of the equator, where only the Sun (or southern stars) can be used.`,
-      idea: String.raw`The stars are so far away that the direction to the celestial pole is the direction of the Earth's axis everywhere. The horizon is perpendicular to the local vertical, which makes the angle $\varphi$ with the equatorial plane (1.2); turning both by a right angle shows that the horizon makes the angle $\varphi$ with the axis, so the pole's altitude is $\varphi$. The Sun's rays are parallel too and make the angle $\delta$ with the equatorial plane, so its zenith distance at noon is the difference $|\varphi - \delta|$ — the same parallel-ray geometry Eratosthenes used (1.1). One minute of arc of altitude error is one nautical mile of latitude error, which is why the nautical mile was defined that way.`,
-      caption: String.raw`Drag the observer around the Earth's cross-section (left). The horizon (dashed) makes the angle $\varphi$ with the direction to Polaris, parallel to the axis, and the noon Sun's rays arrive at the declination $\delta$ set by the date. The dome (right) is the observer's meridian, north horizon to south horizon: Polaris (with its small daily circle about the pole, exaggerated ×20 if you like) and the noon Sun. The readout recovers the latitude from each, with and without the Polaris correction.`,
+With polar distance $p$, Polaris can rise slightly south of the equator: near the equator its maximum geometric altitude is $\varphi+p$. It stays below the geometric horizon if $\varphi<-p$; near the equator visibility depends on hour angle. Atmospheric refraction and local obstructions change practical visibility.`,
+      idea: String.raw`The stars are so far away that the direction to the celestial pole is the direction of the Earth's axis everywhere. The horizon is perpendicular to the local vertical, which makes the angle $\varphi$ with the equatorial plane (1.2); turning both by a right angle shows that the horizon makes the angle $\varphi$ with the axis, so the pole's altitude is $\varphi$. The Sun's rays are parallel too and make the angle $\delta$ with the equatorial plane, so its zenith distance at noon is the difference $|\varphi - \delta|$ — the same parallel-ray geometry Eratosthenes used (1.1). One minute of arc of altitude error corresponds to about one nautical mile of latitude error, the historical basis for that unit.`,
+      caption: String.raw`Drag the observer around the Earth's cross-section (left). The horizon (dashed) makes the signed angle $\varphi$ with the direction to the north celestial pole, parallel to the axis, and the noon Sun's rays arrive at the declination $\delta$ set by the date. The dome (right) is the observer's meridian, north horizon to south horizon: Polaris (with its small daily circle about the pole, exaggerated ×20 if you like) and the noon Sun. The readout recovers the latitude from each, with and without the Polaris correction.`,
       deps: ['geog-1.2'],
       see: ['geog-1.1', 'geog-1.9'],
       refs: ['Haggett'],
       tags: ['navigation', 'astronomy'],
+      scope: String.raw`Spherical geometric model without refraction, horizon dip, terrain or instrument corrections. Polaris' polar distance is fixed at the illustrative 2018 value $p=0.66^\circ$, not a current ephemeris; its latitude correction is first order in $p$ and is most accurate away from the poles. Observations require positive geometric altitude. The exaggerated daily circle is schematic; visibility and readouts always use the true, unexaggerated altitude.`,
       viz(v) {
         const day = v.slider('date', 1, 365, 172, { step: 1, int: true, fmt: (d) => { const dt = new Date(Date.UTC(2026, 0, d)); return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }); } });
         const lha = v.slider("Polaris' hour angle $t$", 0, 360, 60, { step: 1, int: true, fmt: (x) => x.toFixed(0) + '°' });
@@ -403,7 +404,7 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           sA.arrow(ox, oy, ox * 1.5, oy * 1.5, { color: 'muted', width: 1.2, head: 6 });
           sA.text('zenith', ox * 1.52, oy * 1.52, { size: 10.5, color: 'muted', dx: 4 });
           sA.arrow(ox, oy, ox, oy + 0.62, { color: 'teal', width: 2, head: 7 });
-          sA.text('★ to Polaris', ox, oy + 0.66, { size: 11.5, color: 'teal', weight: 600, align: 'center', baseline: 'bottom' });
+          sA.text('to north celestial pole', ox, Math.min(oy + 0.66, 1.48), { size: 11.5, color: 'teal', weight: 600, align: 'center', baseline: 'bottom' });
           const aN = Math.atan2(tN[1], tN[0]);
           if (f > 0.5) { sA.path(arcPts(ox, oy, 0.26, Math.PI / 2, aN, 16), { color: 'teal', width: 2 }); sA.tex('\\varphi', ox + 0.38 * Math.cos((Math.PI / 2 + aN) / 2), oy + 0.38 * Math.sin((Math.PI / 2 + aN) / 2), { color: 'teal', size: 13 }); }
           const sunSouth = f >= d, hS = 90 - Math.abs(f - d), tS = sunSouth ? [Math.sin(fr), -Math.cos(fr)] : tN, aS = Math.atan2(tS[1], tS[0]);
@@ -420,16 +421,16 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           sB.line(0, 0.96, 0, 1.04, { color: 'muted', width: 1 }); sB.text('zenith', 0, 0.93, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
           for (const a of [30, 60]) for (const n of [true, false]) { const q = dome(a, n); sB.line(q[0] * 0.96, q[1] * 0.96, q[0] * 1.04, q[1] * 1.04, { color: 'muted', width: 1 }); }
           // celestial pole + Polaris
-          const poleAlt = f, pv = dome(Math.abs(poleAlt), f >= 0);
+          const poleAlt = f, pv = dome(poleAlt, true);
           const Hp = polarisAlt(f, lha.value);
-          if (f >= 0) {
+          if (f + P_DIST >= 0) {
             sB.line(0, 0, pv[0], pv[1], { color: 'teal', width: 1, dash: [3, 3] });
             const k = exag.value ? 20 : 1, rr = P_DIST * D2R * k, along = [Math.sin(poleAlt * D2R), Math.cos(poleAlt * D2R)], side = [along[1], -along[0]];
             sB.path(arcPts(pv[0], pv[1], rr, 0, 2 * Math.PI, 48), { color: 'teal', width: 1, alpha: 0.6 });
             sB.dot(pv[0], pv[1], { r: 2.5, color: 'ink' });
             const tl = lha.value * D2R, px = pv[0] + rr * (Math.cos(tl) * along[0] + Math.sin(tl) * side[0]), py = pv[1] + rr * (Math.cos(tl) * along[1] + Math.sin(tl) * side[1]);
-            sB.text('★', px, py, { size: 15, color: 'teal', align: 'center', baseline: 'middle' });
-            sB.text(`Polaris ${Hp.toFixed(2)}°`, pv[0] + 0.08, pv[1] + 0.14, { size: 11.5, color: 'teal', weight: 600 });
+            sB.text('★', px, py, { size: 15, color: Hp > 0 ? 'teal' : 'muted', align: 'center', baseline: 'middle' });
+            sB.text(`Polaris ${Hp.toFixed(2)}°${Hp <= 0 ? ' (not above horizon)' : ''}`, pv[0] + 0.08, pv[1] + 0.14, { size: 11.5, color: 'teal', weight: 600 });
             sB.path(arcPts(0, 0, 0.3, Math.PI, Math.PI - poleAlt * D2R, 20), { color: 'teal', width: 2 });
           } else {
             sB.text('Polaris is below the horizon', -0.62, -0.22, { size: 11.5, color: 'muted', align: 'center' });
@@ -448,8 +449,8 @@ Polaris is invisible south of the equator, where only the Sun (or southern stars
           const f = phi, d = decl(day.value), hS = 90 - Math.abs(f - d), Hp = polarisAlt(f, lha.value);
           const fS = f >= d ? d + (90 - hS) : d - (90 - hS);
           const fP = corr.value ? Hp - P_DIST * Math.cos(lha.value * D2R) : Hp, eP = (fP - f) * 60;
-          const sun = `Noon Sun: altitude $H_\\odot = ${hS.toFixed(2)}^\\circ$ bearing ${f >= d ? 'south' : 'north'}, declination $\\delta = ${d.toFixed(2)}^\\circ$ ⇒ $\\varphi = ${d.toFixed(2)}^\\circ ${f >= d ? '+' : '-'} ${(90 - hS).toFixed(2)}^\\circ = ${fS.toFixed(2)}^\\circ$.`;
-          const pol = f >= 0 ? `Polaris: altitude ${Hp.toFixed(3)}° ⇒ $\\varphi \\approx ${fP.toFixed(3)}^\\circ$ ${corr.value ? `(after subtracting $p\\cos t = ${(P_DIST * Math.cos(lha.value * D2R)).toFixed(3)}^\\circ$)` : '(uncorrected)'}, off by **${Math.abs(eP).toFixed(1)}′ = ${Math.abs(eP).toFixed(1)} nmi**.` : 'Polaris is not visible from the southern hemisphere.';
+          const sun = hS <= 0 ? `Noon Sun: geometric altitude ${hS.toFixed(2)}° — not above the horizon; no usable noon-altitude observation.` : `Noon Sun: altitude $H_\\odot = ${hS.toFixed(2)}^\\circ$ bearing ${f >= d ? 'south' : 'north'}, declination $\\delta = ${d.toFixed(2)}^\\circ$ ⇒ $\\varphi = ${d.toFixed(2)}^\\circ ${f >= d ? '+' : '-'} ${(90 - hS).toFixed(2)}^\\circ = ${fS.toFixed(2)}^\\circ$.`;
+          const pol = Hp > 0 ? `Polaris: altitude ${Hp.toFixed(3)}° ⇒ $\\varphi \\approx ${fP.toFixed(3)}^\\circ$ ${corr.value ? `(after subtracting $p\\cos t = ${(P_DIST * Math.cos(lha.value * D2R)).toFixed(3)}^\\circ$)` : '(uncorrected)'}, off by **${Math.abs(eP).toFixed(1)}′ = ${Math.abs(eP).toFixed(1)} nmi**.` : `Polaris: geometric altitude ${Hp.toFixed(3)}° — not above the horizon at this hour angle.`;
           return `True latitude **${f.toFixed(2)}°**. ${pol} ${sun}`;
         });
       },
