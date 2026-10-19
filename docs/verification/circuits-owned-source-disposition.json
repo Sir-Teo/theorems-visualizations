@@ -3,7 +3,7 @@
   "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
   "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
   "initialSourceFlags": 203,
-  "retainedCount": 102,
+  "retainedCount": 101,
   "genuinelyUnreviewed": [],
   "collections": {
     "circ": {
@@ -182,7 +182,6 @@
         11
       ],
       "retained": [
-        "algo-11.12",
         "algo-11.22",
         "algo-11.23"
       ],
@@ -865,13 +864,6 @@
       "report": "docs/verification/engineering-source-review.md"
     },
     {
-      "id": "algo-11.12",
-      "status": "reviewed_blocked",
-      "file": "content/algo/ch11-b.js",
-      "missingFullSourceOrClaim": "Full König1931/Egerváry1931 originals supporting the attribution and independence claim. Flow/matching mathematics checked, including all512 bipartite3×3 graphs; no original-paper closure inferred.",
-      "report": "docs/verification/computing-source-review.md"
-    },
-    {
       "id": "algo-11.22",
       "status": "reviewed_blocked",
       "file": "content/algo/ch11-d.js",
@@ -1045,6 +1037,14 @@
       "status": "closed",
       "report": "docs/verification/computing-bounded-primary-followup.md",
       "evidence": "Complete original648–651 read from official UNL institutional archive, including proof/figures/applications. Removed optional unsupported Dehn-priority aside rather than certifying it."
+    },
+    {
+      "id": "algo-11.12",
+      "status": "closed",
+      "file": "content/algo/ch11-b.js",
+      "report": "docs/verification/konig-egervary-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Complete 1931 originals read. Corrected independence claim: Egervary explicitly starts with Konig theorem, provides a new proof and weighted generalization."
     }
   ]
 }

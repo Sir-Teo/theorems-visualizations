@@ -280,10 +280,10 @@ where a **vertex cover** is a set of vertices touching every edge. (In any graph
       idea: String.raw`Take a maximum matching $M$ (a maximum flow in the unit network) and let $Z$ be the set of vertices reachable from $s$ in the final residual graph, that is, reachable from the unmatched left vertices by alternating paths. Put $K=(L\setminus Z)\cup(R\cap Z)$. An edge $l r$ with $l\in Z$ and $r\notin Z$ would be an unmatched edge leaving $Z$ with spare capacity — impossible — so every edge is covered. Every vertex of $K$ is matched (otherwise there would be an augmenting path), and no matched edge has both ends in $K$; so $|K|=|M|$. This is the minimum cut of 11.6 read off as vertices: $\min$ cut $=\max$ flow becomes $\tau=\nu$.`,
       caption: String.raw`Bold green edges are a maximum matching. The red vertices are the König cover $K$ read off the residual reachability set (teal ring: $Z$); every edge touches a red vertex and the count equals the matching size. Click vertices to build **your own** cover: uncovered edges turn into dashed red lines, and you can never get below $|M|$. The readout compares with exhaustive search over all vertex subsets.`,
       deps: ['algo-11.10', 'algo-11.6'],
-      refs: ['Erickson Ch. 11'],
+      refs: ['Erickson Ch. 11', 'König, Graphok és mátrixok, Mat. Fiz. Lapok38 (1931), pp.116–119', 'Egerváry, Matrixok kombinatorius tulajdonságairól, Mat. Fiz. Lapok38 (1931), pp.16–28, especially pp.16–17 and §§1–2'],
       tags: ['matching', 'duality'],
-      credit: 'D. König, 1931 (independently J. Egerváry, 1931)',
-      verify: true,
+      credit: 'D. König, 1931; J. Egerváry, 1931 (new proof and weighted generalization, explicitly crediting König)',
+      links: { source: 'https://real-j.mtak.hu/7307/1/MTA_MatematikaiEsPhysikaiLapok_38.pdf', translation: 'https://arxiv.org/abs/2009.03780' },
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340 });
         let nL = 5, nR = 5, E = bipPreset('hall').E, seed = 1, mine = new Set();

@@ -534,7 +534,7 @@ export default {
           pic: 'Draw edges between two columns of vertices; a source and sink are attached, unit augmentations add bold matching edges, and each augmenting path alternates in and out of the matching.' },
         { num: '11.11', kind: 'Theorem', name: 'Hall’s theorem via max-flow min-cut', deps: ['algo-11.10', 'algo-11.6'], refs: ['KT §7.5'], tags: ['matching'],
           pic: 'When no perfect matching exists, the minimum cut is translated into a left-side set S whose neighbourhood N(S) is smaller, and both are highlighted as the Hall violator.' },
-        { num: '11.12', kind: 'Theorem', name: 'König’s theorem: matchings and vertex covers', deps: ['algo-11.10', 'algo-11.6'], refs: ['Erickson Ch. 11'], tags: ['matching', 'duality'],
+        { num: '11.12', kind: 'Theorem', name: 'König’s theorem: matchings and vertex covers', deps: ['algo-11.10', 'algo-11.6'], refs: ['Erickson Ch. 11', 'König, Graphok és mátrixok, Mat. Fiz. Lapok38 (1931), pp.116–119', 'Egerváry, Matrixok kombinatorius tulajdonságairól, Mat. Fiz. Lapok38 (1931), pp.16–28, especially pp.16–17 and §§1–2'], tags: ['matching', 'duality'],
           pic: 'Beside a maximum matching, the vertex cover read off the residual reachability set is marked; every edge touches a cover vertex and the two counts agree.' },
         { num: '11.13', kind: 'Theorem', name: 'Menger’s theorem: disjoint paths and cuts', deps: ['algo-11.7', 'algo-11.6'], refs: ['KT §7.6', 'Erickson Ch. 11'], tags: ['flow', 'connectivity'],
           pic: 'Choose s and t: decomposing an integral maximum flow yields edge-disjoint paths in distinct colours, alongside a separating edge set of the same size.' },
