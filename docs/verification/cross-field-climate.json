@@ -1821,6 +1821,23 @@
       "target_field": "stats",
       "target_written": true,
       "syllabus_mirrored": true
+    },
+    {
+      "source": "bioinf-3.8",
+      "target": "prob-1.6.1",
+      "claim_anchor": "Write the finite hit count as a sum of overlapping placement indicators and apply expectation linearity; no independence between indicators is assumed.",
+      "source_file": "content/bioinf/ch03-b.js",
+      "source_name": "Spaced seeds and search sensitivity",
+      "source_refs": [
+        "Durbin ch. 2"
+      ],
+      "target_file": "content/prob/ch01-d.js",
+      "target_name": "Linearity and monotonicity of expectation",
+      "source_field": "bio",
+      "target_field": "stats",
+      "target_written": true,
+      "syllabus_mirrored": true,
+      "followUpReport": "docs/verification/agent-spaced-seeds-review.md"
     }
   ],
   "verification": {
@@ -1984,6 +2001,14 @@
         "climate-1.8",
         "sig-3.10"
       ]
+    }
+  ],
+  "subsequentPrerequisiteFollowups": [
+    {
+      "source": "bioinf-3.8",
+      "target": "prob-1.6.1",
+      "report": "docs/verification/agent-spaced-seeds-review.md",
+      "meaning": "New directly used finite-indicator expectation step; original prerequisite-only collection snapshots remain historical. No new original-source acquisition or independent peer-review claim."
     }
   ]
 }

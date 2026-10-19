@@ -547,14 +547,14 @@
       "field": "bio",
       "writtenItems": 47,
       "betweenFields": {
-        "writtenToWritten": 25,
-        "writtenToAll": 29,
-        "allToAll": 45
+        "writtenToWritten": 26,
+        "writtenToAll": 30,
+        "allToAll": 46
       },
       "betweenCollections": {
-        "writtenToWritten": 25,
-        "writtenToAll": 29,
-        "allToAll": 48
+        "writtenToWritten": 26,
+        "writtenToAll": 30,
+        "allToAll": 49
       }
     },
     {

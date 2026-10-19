@@ -1,7 +1,7 @@
 // Bioinformatics Algorithms — Chapter 3, part b: bit scores and E-values, BLAST, spaced seeds, the BLAST paper (items 3.6–3.9)
 import {
   AA, PROT, NCBI, B62OPT, align, homologPairs, mkRng, randAA, codes, seqOf, matFlat, swScore, bitScore, rawFromBits, expect,
-  neighborMap, neighborsOf, blastSearch, makeDb, SEEDS, seedWeight, seedData, seedSensitivity, seedExact, fx,
+  neighborMap, neighborsOf, blastSearch, makeDb, SEEDS, seedWeight, randomSeedOfWeight, seedData, seedSensitivity, seedExact, fx,
 } from './ch03.shared.js';
 
 const expFmt = (x) => (x >= 0.1 && x < 1000 ? String(+x.toPrecision(2)) : x.toExponential(0).replace('e+', 'e'));
@@ -175,12 +175,12 @@ export default {
       num: '3.8',
       kind: 'Concept',
       name: 'Spaced seeds and search sensitivity',
-      statement: String.raw`A *seed* is a pattern of $1$s and $0$s; a hit is a place where the two sequences agree at every position marked $1$ (the $0$s are "don't care"). A contiguous seed and a spaced seed of the same weight $w$ have exactly the same chance $4^{-w}$ per position of a hit between unrelated DNA, yet on homologous regions with independent per-position similarity $p$ the spaced seed usually has a *higher probability of at least one hit* because its hits at nearby positions are less correlated. For example, in a region of length $64$ with $p=0.7$ the contiguous weight-$11$ seed hits with probability $0.30$ and the spaced seed $111010010100110111$ with probability $0.47$.`,
-      idea: String.raw`The expected number of hits in a region is the same for every seed of weight $w$ (linearity of expectation), so a better seed cannot have more hits on average; it has them *spread over more regions*. A contiguous seed's hits come in runs, since one long stretch of matches gives many overlapping hits, while a spaced seed's overlapping placements involve mostly different positions, so hits behave closer to independent trials and $P(\text{at least one})$ is larger. The probability can be computed exactly by dynamic programming over the last $\text{span}-1$ match bits. Seeds are the first step of the algorithm of item 3.7.`,
+      statement: String.raw`A *seed* is a pattern of $1$s and $0$s; a hit is a place where the two sequences agree at every position marked $1$ (the $0$s are "don't care"). A contiguous seed and a spaced seed of the same weight $w$ have exactly the same chance $4^{-w}$ of a hit at any valid placement between unrelated uniform DNA. On homologous regions with independent per-position similarity $p$, a well-chosen spaced seed can have a *higher probability of at least one hit* by reducing clusters of overlapping hits. This is not a guarantee for every spaced pattern. For example, in a region of length $64$ with $p=0.7$ the contiguous weight-$11$ seed hits with probability $0.30$ and the spaced seed $111010010100110111$ with probability $0.47$.`,
+      idea: String.raw`A weight-$w$ seed of span $s$ has expected hit count $\max(0,L-s+1)p^w$ in a region of length $L$, by linearity of expectation. Equal weights give equal per-placement probabilities, but longer seeds have fewer valid placements. Here the contiguous seed has mean $54(0.7)^{11}\approx1.068$, while the span-18 seed has mean $47(0.7)^{11}\approx0.929$. Despite that lower mean, the spaced seed reaches more regions: its hits cluster less than the contiguous seed's runs of overlapping hits. The hit probability is computed exactly by dynamic programming over the last $s-1$ match bits. Seeds are the first step of the algorithm of item 3.7.`,
       caption: String.raw`Click the cells of the template to switch positions on and off, or use the presets; the comparison seed is always the contiguous seed of the same weight. The sample strip is one random alignment region (green = match, red = mismatch) with the placements where each seed hits. Drag $p$ and the length; the right curves show the probability that at least one hit occurs, from 4000 simulated regions, while the readout gives the exact values from dynamic programming. "Random seed" draws a spaced pattern of the same weight and shows that most random patterns are not the best.`,
       scope: String.raw`Model: independent positions each matching with probability $p$ (a simple model; real alignments have correlated conservation). Unrelated DNA is taken as uniform four-letter sequences. The numbers $0.30$ and $0.47$ for $p=0.7$, length $64$ are the ones reported by the PatternHunter authors (0.466 for the spaced seed), and the exact dynamic programme below reproduces them.`,
       credit: 'Ma, Tromp & Li, 2002 (PatternHunter)',
-      deps: ['bioinf-3.7'],
+      deps: ['bioinf-3.7', 'prob-1.6.1'],
       refs: ['Durbin ch. 2'],
       tags: ['spaced seeds', 'PatternHunter', 'sensitivity'],
       links: { doi: 'https://doi.org/10.1093/bioinformatics/18.3.440', wikipedia: 'https://en.wikipedia.org/wiki/Spaced_seed' },
@@ -191,7 +191,7 @@ export default {
         const lS = v.slider('region length', 32, 128, 64, { int: true, step: 4 });
         v.button('contiguous 11', () => { pat = SEEDS.contiguous.padEnd(SPAN, '0'); });
         v.button('PatternHunter', () => { pat = SEEDS.patternhunter.padEnd(SPAN, '0'); });
-        v.button('random seed of same weight', () => { const w = seedWeight(pat), r = mkRng(rseed++ * 7919 + 3), a = ['1']; const mids = []; for (let i = 1; i < 17; i++) mids.push(i); for (let i = mids.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [mids[i], mids[j]] = [mids[j], mids[i]]; } const arr = Array(18).fill('0'); arr[0] = '1'; arr[17] = '1'; mids.slice(0, Math.max(0, w - 2)).forEach((i) => { arr[i] = '1'; }); pat = arr.join('').padEnd(SPAN, '0'); });
+        v.button('random seed of same weight', () => { pat = randomSeedOfWeight(seedWeight(pat), rseed++ * 7919 + 3).padEnd(SPAN, '0'); });
         v.button('new region', () => { sample++; });
         const sE = v.stage({ x: [0, SPAN], y: [0, 1], axes: false, height: 110, full: true, title: 'seed template (click to toggle)' });
         const sS = v.stage({ x: [-15, 65], y: [0, 5], axes: false, height: 190, full: true, title: 'one alignment region and the seeds that hit it' });
@@ -230,7 +230,7 @@ export default {
         v.legend([['accent', 'contiguous seed, same weight'], ['gold', 'spaced seed (template)'], ['green', 'match', { area: true }], ['red', 'mismatch', { area: true }]]);
         v.readout(() => {
           const { pt, w, a, b, hc, hs, ex, L, p } = info, fmt = (x) => fx(x, 3);
-          return `seed ${pt}, weight $w=${w}$, span ${pt.length} · chance of a hit between unrelated DNA at one position: $4^{-${w}}=${sciTex(4 ** -w)}$ for **both** seeds\nregion of ${L} positions at $p=${fx(p, 2)}$: P(at least one hit) contiguous **${ex[0] === null ? fmt(a.sens) : fmt(ex[0])}**, spaced **${ex[1] === null ? fmt(b.sens) : fmt(ex[1])}** ${ex[1] === null ? '(simulated)' : '(exact)'} · mean number of hits ${fx(a.hits, 2)} against ${fx(b.hits, 2)} (simulated) · this region: ${hc} contiguous and ${hs} spaced placements`;
+          return `seed ${pt}, weight $w=${w}$, span ${pt.length} · chance of a hit between unrelated DNA at one valid placement: $4^{-${w}}=${sciTex(4 ** -w)}$ for **both** seeds\nregion of ${L} positions at $p=${fx(p, 2)}$: P(at least one hit) contiguous **${ex[0] === null ? fmt(a.sens) : fmt(ex[0])}** (${ex[0] === null ? 'simulated' : 'exact'}), spaced **${ex[1] === null ? fmt(b.sens) : fmt(ex[1])}** (${ex[1] === null ? 'simulated' : 'exact'}) · exact expected hit counts ${fx(Math.max(0, L - w + 1) * p ** w, 3)} against ${fx(Math.max(0, L - pt.length + 1) * p ** w, 3)}; simulated means ${fx(a.hits, 2)} against ${fx(b.hits, 2)} · this region: ${hc} contiguous and ${hs} spaced placements`;
         });
       },
     },

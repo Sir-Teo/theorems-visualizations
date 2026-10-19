@@ -124,6 +124,9 @@ optimizer can have positive slack while the exact constraint is active.
 - **Break it**: small N (drift), non-random mating, selection, migration, delays, stochasticity.
 - Sequences and trees: alignments as DP tables (`v.table`), phylogenies with the `tree` kit,
   genealogies backwards in time (coalescent).
+- Equal seed weight means equal hit chance per valid placement, not equal expected
+  hits in a fixed-length region. Account for span via `(L − span + 1) p^weight`,
+  and test same-weight randomizers at the minimum and maximum editable weights.
 
 ## Medicine & health
 

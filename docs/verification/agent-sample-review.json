@@ -374,11 +374,15 @@
     {
       "id": "bioinf-3.8",
       "file": "content/bioinf/ch03-b.js",
-      "textHash": "1ba887e7744ce30fe3bf1a218295d42516d9090f1cbd474c27f7ec8c23cbcd9c",
-      "textReview": "Needs correction: equal weight gives equal per-placement hit probability, but different spans yield different numbers of placements in a fixed-length region. Therefore equal expected total hits is not generally true; separate expectation from reduced overlap correlations.",
-      "visualReview": "The finite strip shows the spaced hit and the exact at-least-one-hit probabilities 0.300 versus 0.467. The displayed mean hit counts 1.08 versus 0.93 expose the text claim of equal expectations: equal weight with unequal spans gives unequal numbers of placements. Correction pending.",
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "531c970ac816e45f5ff9a63984bb949dbd2c1b80a6444a4b13fb8bf3262bcec1",
+      "textReview": "Expected hit counts now include span-dependent placement counts, with the explicit 1.068 versus 0.929 example. The statement qualifies the sensitivity improvement to well-chosen seeds. The actual finite-indicator linearity step supplies prob-1.6.1 as a directly used mirrored prerequisite.",
+      "visualReview": "Inspected corrected default captures in both themes: the seed template, sample hit strip, two sensitivity curves, exact expected counts and simulated means are legible and distinct. Each detection probability is separately labelled exact or simulated.",
+      "interactionReview": "Native cell editing reaches weights 1,20,19, then the same-weight randomizer preserves each. Default exact expected counts, finite readouts, TeX and runtime checks pass in both themes. See tests/verification-spaced-seeds-browser.mjs.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Needs correction: equal weight gives equal per-placement hit probability, but different spans yield different numbers of placements in a fixed-length region. Therefore equal expected total hits is not generally true; separate expectation from reduced overlap correlations.",
+      "initialTextHash": "1ba887e7744ce30fe3bf1a218295d42516d9090f1cbd474c27f7ec8c23cbcd9c",
+      "followUpFinding": "The finite strip shows the spaced hit and the exact at-least-one-hit probabilities 0.300 versus 0.467. The displayed mean hit counts 1.08 versus 0.93 expose the text claim of equal expectations: equal weight with unequal spans gives unequal numbers of placements. Correction pending.",
+      "correctionReport": "docs/verification/agent-spaced-seeds-review.md"
     },
     {
       "id": "vcalc-1.3",
@@ -1589,6 +1593,222 @@
       "file": "content/astro/ch10-papers.js",
       "textHash": "803878efe376cf13a85e2edfda694bee786a1a010ed09567e1c5d70301f680d0",
       "textReview": "The temperature budget and single-frequency versus blackbody-spectrum distinction are sensibly separated; the sub-0.1 K backlobe and rounded budget explain the approximate residual. The phrase 'no one looked for it' is too sweeping as a historical claim and should be replaced by a precise statement about this serendipitous detection and the Princeton search. The reconstructed elevation curve is candidly distinguished from an unpublished scan; inspect FIRAS data and brightness/radiance conversion separately.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "top-3.12",
+      "file": "content/top/ch03-b.js",
+      "textHash": "ed1fbce3a77f314bf462ce5bae41047cf13359c6234e47be86c89c9b699b5178",
+      "textReview": "The clopen polygonal-reachability proof is correct for open connected subsets of Rn, and local path connectedness makes path components open and closed. The visualization's bounded-path-length reachable set is different from the full reachable component: boundary points of a closed length ball need not have a neighbourhood within that bounded-length set. Check whether the claimed gold ball at the front illustrates the full component or overstates openness of the finite-length front.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-10.19",
+      "file": "content/algo/ch10-c.js",
+      "textHash": "0dd075d4d0a89859bf4c9e0ef6a0a953f469e3a8ad20530c351fdb36cde92c98",
+      "textReview": "The finite independence axioms and equal-size basis proof are correct. In a disconnected graphic matroid bases are spanning forests, not spanning trees, so qualify the example by connectedness or use forests. The greedy maximum-weight independent-set characterization requires nonnegative weights or stopping before negative-weight additions; maximum-weight bases are a different formulation. Inspect exact vector independence and the C5 matching exchange witness.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "imaging-1.3",
+      "file": "content/imaging/ch01.js",
+      "textHash": "6ed709386d8b2a5765006c6a95231b0df86a37f09a591c8d7554eb40e486c721",
+      "textReview": "The spatial-frequency interpretation and real-image Hermitian symmetry are correct. Transform/inversion and Parseval need appropriate L1/L2 hypotheses; a finite digital image avoids those analytic issues but should not silently supply them to the continuous formula. Zero frequency has no finite period. Inspect normalization, symmetric spike pairs and the single-plane-wave direction/readout.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-10.31a",
+      "file": "content/fa/ch10-a3.js",
+      "textHash": "f46c73e2a36b3eec047cbb015b1c48eff04413ccf33b44b61303851e3c711548",
+      "textReview": "The locally constant holomorphic functional calculus gives an idempotent commuting with x; spectral mapping gives both 0 and 1, hence nontriviality. The corner-algebra spectrum statement uses unit e1 rather than the ambient unit. Check contour-through-eigenvalue handling, coincident eigenvalues and near-parallel eigenvectors in the numerical projection example.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "tech-2.10",
+      "file": "content/tech/ch02-b.js",
+      "textHash": "9fbecb1d3852019755ecafa5e42975103e9a3beba516f00bab3d6c601391478d",
+      "textReview": "The slider-crank position formula is correct for the indicated branch with rod length exceeding crank radius. Its derivative has a sign depending on the chosen motion direction. The torque formula with division by cos(beta) uses force along the slider, not force along the connecting rod: a rod force gives torque F*r*sin(theta+beta). The idea currently conflates them. Historical archaeological claims still require their cited originals; no source closure credited.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pl-1.6",
+      "file": "content/pl/ch01.js",
+      "textHash": "b6acccc1a1f60fadaf900c53b1bdc34f0ae34a1927b8df16c7449f7a667c3523",
+      "textReview": "For the stated closed arithmetic/boolean language, values are normal forms, and remaining normal forms are stuck. The examples have wrong-kind operands and the classification prepares the progress theorem. The claim about exhaustive counts and rarity is computational and needs inspection against the actual size grammar and enumeration, not inferred from the definitions alone.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-17.10",
+      "file": "content/rca/ch17-a2.js",
+      "textHash": "1bf2617362f61dbf6ea0979147a086ad6c3525ce0756bda6d77acbcf79617ad3",
+      "textReview": "Dividing by the zero Blaschke product gives a zero-free holomorphic quotient on the disc, whose logarithm defines h and its fractional power consistently. The norm identity and H1 factorization follow from the preceding quotient theorem; the zero function can be handled separately. The caption correctly separates finite-radius means from boundary norms. Missing prose spaces around several inline formulas need readability follow-up.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "polsci-4.7",
+      "file": "content/polsci/ch04.js",
+      "textHash": "27cdeb80c6a34d0a5047dcf57df0df0e91a8e1876652d6143015db1ba47ca0b0",
+      "textReview": "Yolk and covering definitions are sensible under the Euclidean/odd-voter assumptions. The dominance implication in the idea uses a complete strict tournament; spatial indifferences/ties require explicit handling. An agenda restricted to a subset only constrains its outcome to that subset's uncovered set, not automatically the whole policy space's set. Computing the yolk from only median lines through pairs may give a restricted-line approximation rather than the exact yolk; inspect the algorithm and source theorem before certifying the 4r overlay.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "alg-4.14",
+      "file": "content/alg/ch04.js",
+      "textHash": "bac6b44d4daca8f319c21b272f8fbaae272d8f6b3ca2194cf8a88b7ea0cbb1af",
+      "textReview": "The order formula n/gcd(r,n) gives exactly the unit residue classes as additive generators for n>1, and phi(n) counts them. Prime n makes every nonzero class a generator. Listing 'powers' is additive repeated addition in Zn; inspect the thumbnails/order labels and zero class so the notation does not suggest multiplicative units instead.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-8.7",
+      "file": "content/pma/ch08-a2.js",
+      "textHash": "57a33dda3911b59f051776b32386f33be2039eb6704ca421bebd5b739841948e",
+      "textReview": "The derivative identities and boundedness force C to have a first positive zero. Monotonicity before that zero fixes S=1 there, and the addition formula supplies the quarter-turn identities and period. Quadrant monotonicity and IVT give unique parametrization on [0,2pi). The arc-length statement follows from unit speed; inspect the drag wrap at t=0/2pi.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-5.66",
+      "file": "content/ladr/ch05-c.js",
+      "textHash": "c1d57d644b7164de39d7797840486206f881aad51daf1aa038327c718edf452e",
+      "textReview": "The row-sum radius definition is correct, including the distinction between a complex disc and its real-field interval version. The disks depend on the chosen basis. If a real-matrix mode also plots nonreal eigenvalues, it must distinguish complexification from the real-field disk definition; the caption itself makes no spectral-inclusion claim beyond the next theorem.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ode-4.9",
+      "file": "content/ode/ch04-b.js",
+      "textHash": "5d98b1d19d63439c3dc25ef83d60b2bfb9d8e9613bd1403acbdaeea850540793",
+      "textReview": "Separated regular Sturm–Liouville conditions give real simple eigenvalues, weighted orthogonality and the stated leading Weyl law with the cited smooth p,w assumptions. The compact-inverse proof needs a spectral shift when zero is an eigenvalue; an unshifted Green inverse need not exist for every regular problem. Verify that 4.7 supplies separated and positive-weight hypotheses visibly, and inspect shooting/quadrature rather than assuming the advertised 1e-8 off-diagonal errors.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pl-4.11",
+      "file": "content/pl/ch04-c.js",
+      "textHash": "bae933c4546f91a40803239bc377eaaebf6ac65c0506df83866514617af261f1",
+      "textReview": "Strong normalization for simply typed lambda calculus and the primitive terminating constants is correct; confluence gives unique normal form. The reducibility proof needs its usual neutral-term/closure lemmas, which the idea acknowledges as closure properties rather than spelling out. Red untyped marks explicitly combine cycles and search-limit growth, so they do not certify nontermination. Inspect whether typed samples ever hit computational search limits and how those cases are labelled.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-2.2.2",
+      "file": "content/graph/ch02.js",
+      "textHash": "0de4bcc47d16a76ba974b47ede85dccbf2610baf30a33af99e85e664cadfaff9",
+      "textReview": "The parity argument makes every odd component's cut have odd size, and bridgelessness raises it from one to at least three. Summing cuts gives 3q<=e(S,V-S)<=3|S| and Tutte yields a perfect matching. This remains valid for disconnected bridgeless cubic graphs under the standard graph conventions. Inspect the claimed three-bridge counterexample and selected-set cut counts.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "tech-1.6",
+      "file": "content/tech/ch01-b.js",
+      "textHash": "240861f779eef7483b28f25c6fafe0cf35ab2e80faf43df6697d2bd94971c66c",
+      "textReview": "The chronology explicitly qualifies the contested Denisova date and distinguishes older awls from eyed needles. The heat-resistance model is marked illustrative rather than an archaeological reconstruction. A positive model heat deficit means cooling under the fixed skin-temperature assumptions, not cooling without limit: real heat loss changes as the body cools. The thermal survival claim also depends on duration, shelter, activity and physiology; original chronology/ISO claims remain separate source work.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "causal-3.10",
+      "file": "content/causal/ch03-b.js",
+      "textHash": "a218a1ee17a746c69f0915fa59a75ccd1cd29ab46280674a2221a8eb69d0ddf0",
+      "textReview": "Conditioning on a collider can induce association, but admission increasing with both conditions alone does not guarantee negative association. For independent binary causes the selected odds ratio is proportional to s11*s00/(s10*s01), which can exceed one under a supermultiplicative selection rule. The specific noisy-OR selection model in the scope does produce a nonpositive association, so restrict the statement's sign claim to that model. Finite sampled population correlations are approximate rather than exactly zero.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "opt-4.1",
+      "file": "content/opt/ch04.js",
+      "textHash": "dcfe8f61309f584967ce42b5da28cb069c460c78d9fe5666a4a108aa90c6251e",
+      "textReview": "The standard-form convexity definition and intersection proof are correct; a nonconvex function can indeed describe a convex feasible set. A finite seeded chord test cannot certify convexity, and the caption's 'called convex only when every piece passes' needs to be labelled as a numerical diagnostic or supported by analytic certificates for the known functions. The nonconvex hole example correctly fails convexity.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rel-3.7",
+      "file": "content/rel/ch03.js",
+      "textHash": "7db8bd48a53768f49f1a647b1f66289a2ec459dc47075439e67f59dfc3b08b68",
+      "textReview": "The eternally accelerated worldline and horizon x=ct are correct, and lab ticks with te<0 arrive at proper times diverging like -log(-te). For a +x pulse from an arbitrary draggable event, xe-te>0 is necessary but not sufficient for future reception: its algebraic intersection can precede emission if the event lies to the right of the ship. Check emission-relative reception time and select direction toward the ship, or restrict the allowed event region. Reusing c for the null-line intercept is also confusing beside light speed.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-3.3",
+      "file": "content/qm/ch03.js",
+      "textHash": "5e7bfdee62c1914fc1d7c6e2753f8418d554251242153ed2ea00754b7e4d37a9",
+      "textReview": "The Dirichlet eigenstates, nodes, normalization, n²/L² scaling and electron 1-nm ground energy about 0.376 eV are correct. Positive kinetic energy is more precise than saying a stationary zero-current ground state 'can never be at rest'. The photon transition must be disabled for n=1; finite-depth confinement only retains levels below its barrier. Check the plotted n² scaling and width-halving control.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-1.2",
+      "file": "content/comb/ch01.js",
+      "textHash": "2a7ebb076120aa0c873915edfd019b6dac40305f1acbd0cc40e77926047f2f98",
+      "textReview": "The ceil(n/k) bound and proof by summing capacities are correct for nonnegative integer n and positive integer k. The sharp even distribution exists, and the strict n>mk version follows immediately. The scope should make k>=1 explicit if controls could reach zero. Inspect removal/history updates and the emptiest-box strategy at ties and n=0.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-16.15",
+      "file": "content/rca/ch16-a2.js",
+      "textHash": "017debe86075be8cb11ae7cf14155462c9e5f4b8c24aea9a88931093e5bde298",
+      "textReview": "Continuation along every path plus simple connectedness gives path-independent terminal elements, hence a global holomorphic function. The idea correctly invokes homotopy invariance and local agreement. The log example separates a slit/disc branch from annular monodromy and labels paths leaving the domain invalid. Inspect winding increments and return values for edited corners without treating an invalid red path as a counterexample.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "crypto-4.9",
+      "file": "content/crypto/ch04-c.js",
+      "textHash": "c0bfe44466db80ee4c0537c44c5d38d1bc5c871b494a85092fdea4641153e59f",
+      "textReview": "For an injective fixed-key block cipher the equality pattern is preserved exactly, and the equal-versus-distinct two-block challenge breaks EAV security. Randomized CBC and nonce-unique CTR require their usual IV/nonce and cipher assumptions; the toy model is explicitly 8-bit and its CTR mixer idealized. Tiny-block collisions may remain in CBC/CTR displays, so 'becomes noise' is illustrative and cannot imply equality-free ciphertext.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-10.29",
+      "file": "content/pma/ch10-b1.js",
+      "textHash": "91fab757fe415ed36e3c27c8ca05d678e2b0281c5bc29166772c54adb303b686",
+      "textReview": "The alternating face formula, oriented triangle circuit and double-boundary cancellation are correct. Reversal of the whole simplex orientation reverses all boundary orientations together; outward versus inward depends on that choice as the idea states. The fixed tetrahedron caption can legitimately show outward orientation. Inspect signed endpoint cancellation and the shared-edge arrows in both modes.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-3.7",
+      "file": "content/music/ch03-b.js",
+      "textHash": "12e11f0ae49e0ea0748bcc6498faaa0b4f0c25e5db81017ab8223f877019fc92",
+      "textReview": "The Bessel zeros, mode frequencies, nodal counts and ten listed ratios agree with the ideal fixed circular membrane model. The sine branch must exclude m=0 because sin(0theta) is the zero function, not an eigenmode. Inharmonic partials usually weaken a common pitch but do not logically imply no perceived pitch for every blow. Inspect whether a strike excites both degenerate angular components and whether n is labelled radial order rather than literal number of interior nodal circles. Subjective listening is still unsupported.",
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
