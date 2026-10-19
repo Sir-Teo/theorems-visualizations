@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 238,
+  "remainingFlags": 236,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "pharm": 7,
+    "pharm": 5,
     "imaging": 1,
     "circ": 1,
     "energy": 8,
@@ -149,19 +149,6 @@
       "links": {}
     },
     {
-      "id": "pharm-3.7",
-      "file": "content/pharm/ch03-b.js",
-      "name": "First-pass effect",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Rowland\u2013Tozer"
-      ],
-      "links": {}
-    },
-    {
       "id": "pharm-3.9",
       "file": "content/pharm/ch03-b.js",
       "name": "Physiologically based pharmacokinetic (PBPK) models",
@@ -206,20 +193,6 @@
       "explicitUncertainty": [],
       "refs": [
         "Goodman\u2013Gilman ch. 2"
-      ],
-      "links": {}
-    },
-    {
-      "id": "pharm-4.5",
-      "file": "content/pharm/ch04.js",
-      "name": "Therapeutic window and target concentration",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Rowland\u2013Tozer",
-        "Goodman\u2013Gilman ch. 3"
       ],
       "links": {}
     },
@@ -4426,7 +4399,9 @@
       "energy-3.1",
       "energy-3.3",
       "energy-3.7",
-      "energy-3.8"
+      "energy-3.8",
+      "pharm-3.7",
+      "pharm-4.5"
     ]
   },
   "additionalFollowups": [
@@ -8239,6 +8214,18 @@
       "status": "resolved",
       "report": "docs/verification/energy-kinetics-followup.md",
       "note": "Exact constant-reactivity substeps and adaptive ramp/feedback approximation independently checked; true ceiling/end-time and scram boundary reported. Parent reran6mathematical and4native theme groups for3.7/3.8, inspected final plots and DOE Table3; coefficients remain an illustrative point model."
+    },
+    {
+      "id": "pharm-3.7",
+      "status": "resolved",
+      "report": "docs/verification/pharm-firstpass-followup.md",
+      "note": "Complete Jusko\u2013Li2021 authored mathematical analysis read; corrected all-extraction oral AUC cancellation and exact gut/central tail. Root independently reran3math and2native theme groups after shared-log endpoint fix, reviewed helpers/claims and final high-capacity dark screenshot."
+    },
+    {
+      "id": "pharm-4.5",
+      "status": "resolved",
+      "report": "docs/verification/pharm-window-followup.md",
+      "note": "Relevant complete official theophylline/digoxin label sections read, clinical limits distinguished from chosen comparison bands. Corrected true periodic profile, exact extrema/crossing duration and dose-unit/bioavailability centering. Root independently reran3math and2native theme groups and inspected final centred dark screenshot."
     }
   ]
 }

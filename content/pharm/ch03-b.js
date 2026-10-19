@@ -1,10 +1,9 @@
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part b: items 3.7–3.12)
+import { firstPassMetrics, firstPassTail } from './source-audit-firstpass.js';
 import { recirculation, recirculationPeaks, RECIRCULATION } from './source-audit-recirculation.js';
 import { LN2, clamp, logSlope, trapz, trapzLog, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal, cshtHold, cshtRate, cHoldTrace, ANAES, jacobiSym, bateman } from './ch03.shared.js';
 
 const nice = (x) => (x >= 100 ? Math.round(x) : x >= 10 ? Math.round(x * 10) / 10 : Math.round(x * 100) / 100);
-/** Well-stirred hepatic clearance (L/h) from flow Q and capacity x = fu·CLint. */
-const clWS = (Q, x) => (Q * x) / (Q + x);
 
 export default {
   collection: 'pharm',
@@ -15,14 +14,15 @@ export default {
       num: '3.7',
       kind: 'Concept',
       name: 'First-pass effect',
-      statement: String.raw`A drug absorbed from the gut reaches the systemic circulation only after the portal blood has passed through the gut wall and the liver, where enzymes may remove part of it. The oral bioavailability is the product of three fractions, $F=F_{abs}\,F_{gut}\,F_{H}$, and in the well-stirred model the hepatic factor is $F_H=1-E=\dfrac{Q}{Q+f_u\mathrm{CL}_{int}}$ (3.6). A high-extraction drug loses most of an oral dose to the liver, and for such a drug that is eliminated only by the liver the oral exposure is $\mathrm{AUC}_{po}=F\,D/\mathrm{CL}_H=F_{abs}F_{gut}\,D/(f_u\mathrm{CL}_{int})$, which does not contain the liver blood flow $Q$ at all, so oral exposure is very sensitive to enzyme changes.`,
-      idea: String.raw`Dose enters the portal vein first, so the same extraction ratio $E$ that sets hepatic clearance (3.6) acts on the whole absorbed dose before the systemic circulation sees any of it; the fraction that survives is $1-E$. Bioavailability is defined as the ratio of oral to intravenous AUC with the same dose (1.6), and $\mathrm{AUC}_{iv}=D/\mathrm{CL}_H$ with $\mathrm{CL}_H=QE$, so $\mathrm{AUC}_{po}/\mathrm{AUC}_{iv}=F$ gives the identity above: the factor $Q E$ in clearance and the factor $1-E$ in $F$ cancel except for $f_u\mathrm{CL}_{int}$. For a low-extraction drug $F_H\approx1$ and enzyme changes barely matter to exposure.`,
-      caption: String.raw`Left: the dose as a flow, from the swallowed tablet, through incomplete absorption and the gut wall (grey) and the liver (orange), to what reaches the circulation (blue). Right: plasma concentration after an intravenous dose and after an oral dose of the same size (one-compartment body that is cleared only by the liver); the areas under them are computed by the trapezoid rule and their ratio is $F$. Set the enzyme capacity $f_u\mathrm{CL}_{int}$ high or low and switch the enzymes to **inhibited** ($\mathrm{CL}_{int}\div4$) or **induced** ($\times3$): for a high-extraction drug the oral AUC changes by almost the whole factor, for a low-extraction one hardly at all, whatever the blood flow.`,
-      scope: String.raw`One-compartment body, linear metabolism, drug eliminated by the liver only, absorption first order and complete except for the stated fractions. The gut-wall factor is an input here, not computed. The blood flow of about 90 L/h is a commonly quoted round figure that I did not re-check against a primary source.`,
+      statement: String.raw`An orally absorbed drug may be lost in the gut wall and liver before reaching systemic blood. In this model $F=F_{abs}F_{gut}F_H$, and the well-stirred hepatic survival fraction is $F_H=Q/(Q+f_u\mathrm{CL}_{int})$. With linear **liver-only elimination**, $\mathrm{CL}_H=Qf_u\mathrm{CL}_{int}/(Q+f_u\mathrm{CL}_{int})$, so $\mathrm{AUC}_{po}=FD/\mathrm{CL}_H=F_{abs}F_{gut}D/(f_u\mathrm{CL}_{int})$. This cancellation of flow holds at both low and high extraction under these assumptions.`,
+      idea: String.raw`Enzyme capacity affects two terms: first-pass survival and systemic clearance. At low extraction, hepatic survival is already near one, so its fractional change is small; clearance still changes with capacity. Therefore low extraction does **not** make oral AUC insensitive to enzymes in this liver-only model. Dividing capacity by four multiplies oral AUC by four, and multiplying capacity by three divides oral AUC by three, for every flow and extraction setting shown. Additional elimination routes, saturation or changing gut absorption would change this identity.`,
+      caption: String.raw`The **left** panel accounts for fractions of the chosen swallowed dose. The **right** compares intravenous and oral concentration profiles for equal doses, with a faint oral baseline when enzyme capacity is changed. The numerical areas use trapezoids plus the exact remaining gut/central exposure after the plotted window. Compare enzyme inhibition and induction at low and high capacity: the oral exposure factor is the same, while bioavailability and clearance change by different amounts.`,
+      scope: String.raw`Chosen one-compartment body with dose 100 mg, volume 100 L and absorption rate 1 h$^{-1}$; hepatic blood-flow default 90 L/h is illustrative. Only the liver eliminates drug after systemic entry; $F_{abs}$ and $F_{gut}$ are independent chosen inputs. Flow and clearance use one blood-concentration basis. Instantaneous hepatic extraction, linear metabolism and a fixed unbound fraction are model assumptions, not a claim of in-vivo equivalence between liver models. No numerical values are fitted to a named drug.`,
       deps: ['pharm-3.6', 'pharm-1.6'],
-      refs: ['Rowland–Tozer'],
+      refs: ['Jusko & Li (2021), AAPS J24:5, In Vivo Pharmacokinetics section: oral dose/AUC and model-dependent intrinsic clearance, equations2/3/8/9; DOI 10.1208/s12248-021-00656-z; cancellation derived here'],
+      links: { source: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9639621/' },
       tags: ['bioavailability', 'first pass'],
-      verify: true,
+      verify: false,
       viz(v) {
         const D = 100, V = 100, ka = 1.0;
         const fa = v.slider('fraction absorbed $F_{abs}$', 0.2, 1, 0.9, { step: 0.01 });
@@ -30,13 +30,10 @@ export default {
         const Q = v.slider('hepatic blood flow $Q$ (L/h)', 40, 160, 90, { step: 5 });
         const X = v.slider('capacity $f_u$CL$_{int}$ (L/h)', 1, 5000, 150, { log: true, sig: 2 });
         const en = v.select('enzymes', [{ value: 'n', label: 'normal' }, { value: 'i', label: 'inhibited (÷4)' }, { value: 'u', label: 'induced (×3)' }], 'n');
-        const sF = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 340, weight: 1, minWidth: 260 });
+        const sF = v.stage({ x: [0, 10], y: [-1, 11.5], axes: false, height: 340, weight: 1, minWidth: 260 });
         const sC = v.stage({ x: [0, 24], y: [0, 2], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340, weight: 1, minWidth: 250 });
         const mult = () => (en.value === 'i' ? 0.25 : en.value === 'u' ? 3 : 1);
-        const prof = (xv) => {
-          const cl = clWS(Q.value, xv), E = cl / Q.value, k = cl / V, FH = 1 - E;
-          return { cl, E, k, FH, F: fa.value * fg.value * FH };
-        };
+        const prof=xv=>firstPassMetrics(fa.value,fg.value,Q.value,xv,D,V);
         let info = null;
         v.render(() => {
           const x = X.value * mult(), P = prof(x), P0 = prof(X.value);
@@ -44,10 +41,10 @@ export default {
           const ts = Array.from({ length: 1201 }, (_, i) => (i / 1200) * tEnd);
           const civ = ts.map((t) => (D / V) * Math.exp(-P.k * t));
           const cpo = ts.map((t) => bateman(P.F, D, V, ka, P.k, t));
-          const aivN = trapz(ts, civ) + civ[civ.length - 1] / P.k, apoN = trapz(ts, cpo) + cpo[cpo.length - 1] / P.k;
+          const aivN = trapz(ts, civ) + civ[civ.length - 1] / P.k, apoN=trapz(ts,cpo)+firstPassTail(P.F,D,V,P.k,ka,tEnd,cpo.at(-1));
           info = { P, P0, x, aivN, apoN, pred: (fa.value * fg.value * D) / x, ratio: apoN / aivN };
           // flow diagram: widths proportional to fractions of the dose
-          const H = 4.2, y0 = 4.0, xs = [0.6, 2.9, 5.2, 7.5], Wd = 1.7;
+          const H = 4.2, y0 = 4.8, xs = [0.6, 2.9, 5.2, 7.5], Wd = 1.7;
           const levels = [1, fa.value, fa.value * fg.value, P.F];
           const names = ['dose', 'absorbed', 'past gut wall', 'reaches blood'];
           const cols = ['ink', 'muted', 'muted', 'accent'];
@@ -65,15 +62,15 @@ export default {
               sF.text(lab, (xs[i] + Wd + xs[i + 1]) / 2, y0 - 0.9 - lost, { size: 10, color: col, align: 'center', baseline: 'middle' });
             }
           }
-          sF.text(`$F_H=1-E=${v.fix(P.FH, 2)}$   ($E=${v.fix(P.E, 2)}$)`, 5, 9.4, { size: 12, color: 'orange', align: 'center', baseline: 'middle' });
-          sC.setView([0, tEnd], [0, Math.max(...civ) * 1.1]);
+          sF.text(`$F_H=1-E=${v.fix(P.FH, 2)}$   ($E=${v.fix(P.E, 2)}$)`, 5, 10.5, { size: 12, color: 'orange', align: 'center', baseline: 'middle' });
+          sC.setView([-tEnd*.015,tEnd*1.015],[-.05,Math.max(...civ)*1.15]);
           sC.path(ts.map((t, i) => [t, civ[i]]), { color: 'orange', width: 2.2 });
           sC.between((t) => bateman(P.F, D, V, ka, P.k, t), () => 0, 0, tEnd, { fill: 'accent', fillAlpha: 0.16 });
           sC.path(ts.map((t, i) => [t, cpo[i]]), { color: 'accent', width: 2.4 });
           if (en.value !== 'n') sC.path(ts.map((t) => [t, bateman(P0.F, D, V, ka, P0.k, t)]), { color: 'muted', dash: [5, 4], width: 1.6 });
         });
         v.legend([['orange', 'intravenous'], ['accent', 'oral'], ['muted', 'oral, normal enzymes', { dash: true }]]);
-        v.readout(() => `$E=${v.fix(info.P.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.P.cl, 1)}$ L/h. $F=F_{abs}F_{gut}(1-E)=${v.fix(info.P.F, 3)}$; trapezoid AUC ratio oral/IV $=${v.fix(info.ratio, 3)}$.\n$\\mathrm{AUC}_{po}=${v.fix(info.apoN, 2)}$ mg·h/L by trapezoids vs $F_{abs}F_{gut}D/(f_u\\mathrm{CL}_{int})=${v.fix(info.pred, 2)}$ (no $Q$ in it).${en.value !== 'n' ? ` Compared with normal enzymes, oral $F$ changes by $\\times${v.fix(info.P.F / info.P0.F, 2)}$ while hepatic clearance changes by $\\times${v.fix(info.P.cl / info.P0.cl, 2)}$.` : ''}`);
+        v.readout(() => `$E=${v.fix(info.P.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.P.cl, 1)}$ L/h. $F=F_{abs}F_{gut}(1-E)=${v.fix(info.P.F,info.P.F<.01?5:3)}$; trapezoid AUC ratio oral/IV $=${v.fix(info.ratio,info.ratio<.01?5:3)}$.\n$\\mathrm{AUC}_{po}=${v.fix(info.apoN,info.apoN<.01?5:2)}$ mg·h/L by trapezoids vs $F_{abs}F_{gut}D/(f_u\\mathrm{CL}_{int})=${v.fix(info.pred,info.pred<.01?5:2)}$ (no $Q$ in it).${en.value !== 'n' ? ` Compared with normal enzymes, oral $F$ changes by $\\times${v.fix(info.P.F / info.P0.F, 2)}$ while hepatic clearance changes by $\\times${v.fix(info.P.cl / info.P0.cl, 2)}$.` : ''}`);
       },
     },
     // ------------------------------------------------------------------ 3.8

@@ -1,3 +1,4 @@
+import { WINDOW_PRESETS, windowProfile, centeredWindowDose } from './source-audit-window.js';
 // Pharmacology — Chapter 4: Dosing regimens
 import { LN2, clamp, memo, DRUGS, BODY, clOf, cSingle, cMulti, cSS, meanOver, extrema, odeDoses, nPrev } from './ch04.shared.js';
 
@@ -187,53 +188,42 @@ export default {
       num: '4.5',
       kind: 'Concept',
       name: 'Therapeutic window and target concentration',
-      statement: String.raw`A **therapeutic window** is the band of plasma concentrations between a minimum effective level and a minimum toxic level, within which most patients get benefit without unacceptable harm. A regimen is designed so the steady-state trough stays above the lower edge and the peak below the upper one; the dosing rate follows from a target average concentration, $\text{dose rate}=\mathrm{CL}\,\bar C_{\text{target}}/F$ (pharm-4.3), and the interval is chosen so the swing fits inside the band.`,
-      idea: String.raw`Two constraints compete. The average level (set by dose rate and clearance) must sit inside the band, and the peak-to-trough swing (set by $\tau/t_{1/2}$ and by absorption, pharm-4.4) must be narrow enough to fit. A narrow window and a short half-life force frequent doses or a slow-release form; a wide window tolerates a once-daily tablet. Windows are population statistics, not sharp thresholds: individuals differ in sensitivity (chapters 6 and 7).`,
-      caption: String.raw`Pick a drug, then drag the dose and interval until the steady-state sawtooth (accent) lies in the green band. **Centre on target** sets the dose rate so the mean sits at the geometric middle of the band. The readout gives the fraction of the steady-state cycle spent inside the band.`,
-      scope: String.raw`The windows used here are commonly quoted textbook ranges (theophylline about 10–20 mg/L, digoxin about 0.5–2 ng/mL), which differ between sources, indications and decades; the pharmacokinetic values are rounded teaching figures (pharm-1.x presets) and ka values are assumed. Not dosing advice.`,
-      verify: true,
+      statement: String.raw`A **therapeutic window** summarizes concentration ranges associated with benefit and adverse effects. Its limits depend on indication, sampling time and individual sensitivity; they are not switches that guarantee efficacy or toxicity. In a linear model, the mean steady concentration is $\bar C=FD/(\mathrm{CL}\tau)$, while absorption and the interval shape the peak and trough. A comparison band lets us study these mathematical constraints without turning a concentration curve into a clinical outcome prediction.`,
+      idea: String.raw`Changing dose scales the whole curve; changing interval also changes its shape. Centring the mean inside a chosen band does not ensure that every point lies inside it. The drug labels illustrate why interpretation matters: theophylline's label discusses a 10–15 mg/L peak range for balancing benefit and risk and adverse effects even below 20 mg/L; digoxin's label relates lower efficacy to levels below 0.5 ng/mL and higher risk above 2 ng/mL, while noting that toxicity can occur lower and that sample timing matters. The displayed green bands are chosen reference comparisons, not universal treatment targets.`,
+      caption: String.raw`Choose a preset and vary dose and interval. The solid curve shows the **periodic steady state**; the faint dashed curve shows accumulation from an initially drug-free model. **Centre on target** puts the model mean at the geometric middle of the chosen band. The readout gives the exact peak, trough and fraction of a steady cycle inside that band.`,
+      scope: String.raw`One compartment, first-order absorption and elimination, chosen 70 kg body mass and rounded teaching pharmacokinetic presets; no nonlinear clearance, distribution phase or individual response model. Bands remain 10–20 mg/L for theophylline and 0.5–2 ng/mL for digoxin solely as comparison ranges. The directly read labels do not establish that remaining in these bands is safe, that all values outside are ineffective/toxic, or that the same range applies to peaks and troughs. The model's dose and interval controls are mathematical inputs, not patient-specific recommendations.`,
+      verify: false,
       deps: ['pharm-4.4'],
-      refs: ['Rowland–Tozer', 'Goodman–Gilman ch. 3'],
+      refs: ['Theophylline extended-release official label, DailyMed setid9591d4db-2b88-4f0f-b61e-64ba67626e3d, Clinical Pharmacology/Serum Concentration-Effect Relationship and Adverse Reactions', 'Digoxin official label, DailyMed setidf9897bec-c16f-2728-e053-6394a90aecb7, sections2.5 and5.3; both read2026-10-19'],
+      links: { source: 'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9591d4db-2b88-4f0f-b61e-64ba67626e3d' },
       tags: ['therapeutic window', 'target concentration'],
       viz(v) {
-        const cfg = {
-          theo: { d: DRUGS.theophylline, lo: 10, hi: 20, ka: 1.0, unit: 'mg/L', dose: 500, tau: 12, dmax: 2000, step: 25, mg: 'mg' },
-          digo: { d: DRUGS.digoxin, lo: 0.5, hi: 2, ka: 1.0, unit: 'ng/mL', dose: 0.25, tau: 24, dmax: 1, step: 0.0125, mg: 'mg' },
-        };
+        const cfg=WINDOW_PRESETS;
         const drug = v.select('drug (teaching preset)', [{ value: 'theo', label: 'theophylline' }, { value: 'digo', label: 'digoxin' }], 'theo');
-        const dose = v.slider('dose per administration (mg)', 0.0125, 2000, 500, { step: 0.0125, log: true, sig: 3 });
+        const dose = v.slider('dose per administration (mg)', 0.0125, 2000, 500, { step: 0.0125, log: true, sig: 3, fmt:x=>v.fix(x,x<1?4:2) });
         const tau = v.slider('interval $\\tau$ (h)', 2, 48, 12, { step: 1 });
-        v.button('centre on target', () => {
-          const c = cfg[drug.value], CL = clOf(c.d), mid = Math.sqrt(c.lo * c.hi);
-          // mean C (mg/L or ng/mL) = F D /(CL tau); ng/mL = mg/L for mg-scaled digoxin x1000
-          const sc = drug.value === 'digo' ? 1000 : 1;
-          dose.set(clamp((mid * CL * tau.value) / (c.d.F * sc), 0.0125, 2000));
-        });
+        v.button('centre on target',()=>dose.set(clamp(centeredWindowDose(cfg[drug.value],tau.value),.0125,2000)));
         let last = 'theo';
         const s = v.stage({ x: [0, 120], y: [0, 30], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C', height: 340 });
         let info = null;
         v.render(() => {
           const c = cfg[drug.value];
           if (last !== drug.value) { last = drug.value; dose.set(c.dose); tau.set(c.tau); }
-          const sc = drug.value === 'digo' ? 1000 : 1;
-          const V = c.d.V * BODY.kg, k = LN2 / c.d.t12, T = tau.value, D = dose.value * c.d.F * sc;
-          const tShow = clamp(6 * c.d.t12, 4 * T, 300);
-          const times = []; for (let t = 0; t < tShow; t += T) times.push(t);
-          const f = (t) => cMulti(t, times, V, k, c.ka, 0, D);
-          const ss = (t) => cSS(t, T, D, V, k, c.ka);
-          const ex = extrema(ss, 0, T, 400);
-          let inside = 0; const M = 600; for (let i = 0; i < M; i++) { const y = ss((T * (i + 0.5)) / M); if (y >= c.lo && y <= c.hi) inside++; }
-          s.setView([0, tShow], [0, Math.max(c.hi * 1.4, ex.hi * 1.1)]);
+          const profile=windowProfile(c,dose.value,tau.value),{V,k,T,D}=profile,tShow=clamp(6*c.d.t12,4*T,300),times=[];
+          for(let t=0;t<tShow;t+=T)times.push(t);
+          const f=t=>cMulti(t,times,V,k,c.ka,0,D),ss=t=>profile.C(((t%T)+T)%T),ex={hi:profile.peak,lo:profile.trough};
+          s.setView([-tShow*.015,tShow*1.015],[-Math.max(c.hi,ex.hi)*.04,Math.max(c.hi*1.4,ex.hi*1.15)]);
           s.setLabels(undefined, `C (${c.unit})`);
           s.hband(c.lo, c.hi, { color: 'green', alpha: 0.16 });
           s.hline(c.lo, { color: 'green', width: 1.2, dash: true }); s.hline(c.hi, { color: 'red', width: 1.2, dash: true });
-          s.fn(f, { domain: [0, tShow], color: 'accent', width: 2.5, n: 900 });
-          s.text('toxic above', tShow, c.hi, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
-          s.text('ineffective below', tShow, c.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
-          info = { ex, inside: inside / M, mean: (c.d.F * dose.value * sc) / (clOf(c.d) * T), c };
+          s.fn(f,{domain:[0,tShow],color:'muted',dash:[5,4],width:1.4,n:900});s.fn(ss,{domain:[0,tShow],color:'accent',width:2.5,n:900});
+          s.text('upper reference', tShow, c.hi, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
+          s.text('lower reference', tShow, c.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
+          info = { ex, inside:profile.inside, mean:profile.mean, c };
         });
-        v.legend([['accent', 'concentration'], ['green', 'therapeutic window (assumed)', { area: true }]]);
-        v.readout(() => `Steady state: peak $${fx(info.ex.hi)}$, trough $${fx(info.ex.lo)}$, mean $${fx(info.mean)}$ ${info.c.unit} (window ${info.c.lo}–${info.c.hi}). Fraction of the cycle inside the window: $${v.fix(100 * info.inside, 0)}\\%$ ${info.ex.hi > info.c.hi ? '(peak above the toxic edge)' : ''} ${info.ex.lo < info.c.lo ? '(trough below the effective edge)' : ''}`);
+        v.legend([['accent','periodic steady state'],['muted','accumulation from zero',{dash:true}],['green','chosen comparison band',{area:true}]]);
+        v.readout(()=>`Steady model: peak ${fx(info.ex.hi)}, trough ${fx(info.ex.lo)}, mean ${fx(info.mean)} ${info.c.unit}; chosen band ${info.c.lo}–${info.c.hi}. Fraction of a cycle in the band: ${v.fix(100*info.inside,2)}%${info.ex.hi>info.c.hi?'; peak exceeds upper reference':''}${info.ex.lo<info.c.lo?'; trough below lower reference':''}`);
+
       },
     },
     // ------------------------------------------------------------------ 4.6
