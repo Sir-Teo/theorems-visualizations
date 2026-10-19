@@ -125,6 +125,10 @@ an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
 
 ## Chemistry & materials
 
+- Separate a restricted trial family's energy error from correlation energy,
+  which uses the fully optimized Hartree–Fock reference. A variational upper
+  bound above a dissociation threshold fails to prove binding; it cannot
+  prove nonbinding.
 - A general electron wavefunction is a spatial spinor; product spatial/spin states
   are special cases. Angular-momentum projection counts describe measurement outcomes,
   not a set of definite three-dimensional vector directions.
