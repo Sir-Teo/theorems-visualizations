@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 213,
+  "remainingFlags": 210,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 3,
     "robot": 1,
-    "micro": 15,
+    "micro": 12,
     "macro": 2,
     "fin": 12,
     "game": 18,
@@ -379,51 +379,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Cournot_competition"
-      }
-    },
-    {
-      "id": "micro-10.13",
-      "file": "content/micro/ch10-c.js",
-      "name": "Stackelberg leadership",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 28"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Stackelberg_competition"
-      }
-    },
-    {
-      "id": "micro-10.14",
-      "file": "content/micro/ch10-c.js",
-      "name": "Bertrand competition",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 28"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Bertrand_competition"
-      }
-    },
-    {
-      "id": "micro-10.15",
-      "file": "content/micro/ch10-c.js",
-      "name": "Bertrand paradox",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 28"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Bertrand_paradox_(economics)"
       }
     },
     {
@@ -4069,7 +4024,10 @@
       "aero-4.5",
       "aero-4.7",
       "aero-4.8",
-      "energy-4.2"
+      "energy-4.2",
+      "micro-10.13",
+      "micro-10.14",
+      "micro-10.15"
     ]
   },
   "additionalFollowups": [
@@ -8044,6 +8002,24 @@
       "status": "resolved",
       "report": "docs/verification/energy-solar-geometry-followup.md",
       "note": "Complete NOAA2-page source and independent vector/integral model; parent reran3math/4native groups, original local-geometry equation and final representative screenshot inspection, including exact marker strokes; actual-tilt365-day annual mean and declared3-degree optimum grid."
+    },
+    {
+      "id": "micro-10.13",
+      "status": "resolved",
+      "report": "docs/verification/micro-oligopoly-followup.md",
+      "note": "Read MIT14.12 Chapter9 \u00a79.5 and independently derived constrained Stackelberg branches; exact follower-exit corner replaces invalid interior output. Parent6 mathematical groups and12 native theme/viewport groups pass, with full profit/reaction bounds and screenshots inspected."
+    },
+    {
+      "id": "micro-10.14",
+      "status": "resolved",
+      "report": "docs/verification/micro-oligopoly-followup.md",
+      "note": "Read MIT14.12 Chapter7 \u00a7\u00a77.2\u20137.2.1; continuous-price undercut supremum is distinguished from illustrative finite cuts. Parent6 mathematical groups and12 native groups pass, including below-cost losses, jump limits, path endpoints and screenshots."
+    },
+    {
+      "id": "micro-10.15",
+      "status": "resolved",
+      "report": "docs/verification/micro-oligopoly-followup.md",
+      "note": "Read Yildiz Example5.5 and Levitan\u2013Shubik1970 complete SectionsI\u2013II; independently derived differentiated and efficient-rationing capacity regimes. Parent6 mathematical groups and12 native groups pass, including exact capacity boundaries, full deviation payoffs and screenshots; no mixed-strategy/source-full-paper claim."
     }
   ]
 }
