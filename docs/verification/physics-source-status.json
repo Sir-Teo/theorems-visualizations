@@ -18,13 +18,6 @@
   ],
   "reviewedBlocked": [
     {
-      "id": "aero-4.1",
-      "name": "Prandtl–Glauert compressibility correction",
-      "file": "content/aero/ch04.js",
-      "missingFullSourceOrClaim": "Exact displayed Laitone comparison formula still lacks a complete matched primary passage. Complete Glauert1928 pp113–119 recovered/read from public IA scan; complete NACA TN3970 pp16–18 Eqs32–36 confirms Karman–Tsien. See bounded acquisition report for URLs/hashes.",
-      "report": "docs/verification/aero-ch04.md"
-    },
-    {
       "id": "energy-3.10",
       "name": "Fusion and the Lawson criterion",
       "file": "content/energy/ch03-b.js",
@@ -166,5 +159,6 @@
     }
   ],
   "genuinelyUnreviewed": [],
-  "latestAcquisitionPass": "docs/verification/physics-source-acquisition-pass.json"
+  "latestAcquisitionPass": "docs/verification/physics-source-acquisition-pass.json",
+  "latestFollowup": "aero-4.1 closed against complete Laitone1951 Eq7. Closure and prior Glauert/Karman–Tsien evidence: physics-source-acquisition-pass.json; report: laitone-primary-followup.md."
 }

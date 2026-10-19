@@ -19,6 +19,16 @@ test('Prandtl–Meyer formula agrees with independently integrated turning diffe
  for(const m of[1.1,1.5,2,4,6]){const integral=integrate(v=>Math.sqrt(v*v-1)/(v*(1+.2*v*v)),1,m,50000);near(nuPM(m),integral,3e-7);near(machFromNu(nuPM(m)),m,1e-12);}
  near(NU_MAX/DEG,130.45407685048605,1e-12);
 });
+test('compressibility readout rejects nonpositive pressure instead of reporting an infinite local Mach number',()=>{
+ const r=record(main.items.find(i=>i.num==='4.1'));
+ r.controls[0].value=.9;r.controls[1].value=6;r.draw();
+ assert.match(r.text(),/nonpositive absolute pressure/);
+ assert.match(r.text(),/no isentropic local Mach estimate exists/);
+ assert.doesNotMatch(r.text(),/NaN|Infinity/);
+ r.controls[0].value=.1;r.controls[1].value=0;r.draw();
+ assert.match(r.text(),/Subcritical/);
+ assert.doesNotMatch(r.text(),/NaN|Infinity|Unphysical/);
+});
 test('weak and strong shocks satisfy turning, mass, momentum and total-enthalpy conservation',()=>{
  for(const m of[1.15,1.5,2,4,6]){const tm=thetaMax(m);assert.equal(shockAngles(tm.theta*1.001,m),null);
  for(const theta of[tm.theta*.2,tm.theta*.95]){const bs=shockAngles(theta,m);assert.ok(bs.weak<bs.strong);

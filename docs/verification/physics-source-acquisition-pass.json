@@ -21,11 +21,9 @@
     },
     {
       "id": "aero-4.1",
-      "status": "reviewed-blocked",
-      "missingEvidence": [
-        "Complete primary passage matching the exact explicit Laitone comparison formula still displayed."
-      ],
-      "report": "docs/verification/physics-source-acquisition-pass.md",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/laitone-primary-followup.md",
       "verifiedSubgaps": [
         {
           "sourceURL": "https://archive.org/download/in.ernet.dli.2015.240251/2015.240251.Proccedings-Of_text.pdf",
@@ -36,6 +34,11 @@
           "sourceURL": "https://ntrs.nasa.gov/api/citations/19930084679/downloads/19930084679.pdf",
           "sha256": "f64c3b8fed43559d72afd7f76335c193544a87f0d8cc0fda387a4cd092eb4681",
           "anchors": "NACA TN3970 complete comparison/derivation printed16–18/Eqs32–36; local-Mach counterpart AppendixA72–73 is not the exact Laitone formula."
+        },
+        {
+          "sourceURL": "https://archive.org/download/sim_journal-of-the-aerospace-sciences_1951-05_18_5/page/n65.jpg",
+          "sha256": "5577f83297948e4d1a9fed01af8e8c1cef0d7a31a2d82c228846c17ac49e8f8e",
+          "anchors": "Complete one-page Laitone1951 note, printed p350, both columns; Eqs1–8 and references read, Eq7 visually inspected. Matches laitoneCorr exactly. Approximation limitations retained; no blanket superiority claim adopted."
         }
       ]
     },
@@ -81,5 +84,6 @@
     "karmanTsienAlgebra": "32points,max absolute discrepancy1.11e-16"
   },
   "reviewedBlockedRemaining": 21,
-  "genuinelyUnreviewed": 0
+  "genuinelyUnreviewed": 0,
+  "latestFollowup": "Laitone original recovered and aero-4.1 closed; see laitone-primary-followup.md. Earlier pass metadata below remains historical."
 }

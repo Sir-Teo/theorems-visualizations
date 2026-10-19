@@ -2,7 +2,8 @@
 //
 // Sources and what is from memory (Oct 2026). "checked" = confirmed against the cited record during writing.
 //   4.1 Full Glauert1928 original pp113–119 read in the public library scan, IA in.ernet.dli.2015.240251; §3 pp117–119/Eq16 and limitations visually checked.
-//       Karman–Tsien matches full Spreiter–Alksne NACA TN3970 pp16–18, Eqs32–36. The exact Laitone comparison formula remains open (verify:true).
+//       Karman–Tsien matches full Spreiter–Alksne NACA TN3970 pp16–18, Eqs32–36.
+//       Laitone1951 full one-page original p350, Eq7, read and visually inspected in public IA issue sim_journal-of-the-aerospace-sciences_1951-05_18_5, leaf65.
 //       Both higher corrections remain comparison models; the incompressible Cp comes from this atlas's panel method (chapter 1), not measured data.
 //       Critical pressure coefficient: Cp* = 2/(gamma M^2) [((1 + 0.2 M^2)/1.2)^3.5 - 1], derived from the isentropic relations and recomputed in the readout.
 //   4.2,4.3 Reviewed2026-10-18: Mason Configuration Aerodynamics §§7.2,7.4.3,7.5.2, Eqs7-2–7-9; full Jones NACA TN1033 pp1–7 for normal flow and sweep history.
@@ -53,13 +54,12 @@ export default {
 $$C_p=\frac{C_{p,0}}{\sqrt{1-M_\infty^2}},\qquad c_l=\frac{c_{l,0}}{\sqrt{1-M_\infty^2}},\qquad c_{l,\alpha}=\frac{2\pi}{\sqrt{1-M_\infty^2}}.$$
 The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\infty\to1$, which is where the linearisation fails: the rule is useful up to about $M_\infty\approx0.7$ for thin sections and is not valid in transonic flow.`,
       idea: String.raw`The linearised potential equation for a small disturbance, $(1-M_\infty^2)\phi_{xx}+\phi_{yy}=0$, becomes Laplace's equation (the incompressible case) after stretching the $y$ coordinate by $\beta$. The disturbance velocity potential of the compressible flow past the original airfoil equals that of an incompressible flow past an airfoil whose thickness and incidence are reduced by the same factor, so the pressure coefficient, which is proportional to the streamwise perturbation $u'/V_\infty=\phi_x/V_\infty$, is $1/\beta$ times the incompressible value for the same shape. It builds on the speed of sound (1.6) and on the incompressible lift curve (2.2).`,
-      caption: String.raw`Left: $-C_p$ round the section (grey incompressible, from the atlas's panel method; blue corrected). The red dashed line is the critical pressure coefficient $C_p^*$: wherever the blue curve rises above it the local flow is supersonic. Right: the suction peak against $M_\infty$ for three correction laws (Prandtl–Glauert, Kármán–Tsien and Laitone, the last two as comparison models) and the critical value $-C_p^*(M_\infty)$; their crossing is the critical Mach number. Raise $M_\infty$ and watch the Prandtl–Glauert curve race ahead as $M_\infty\to1$, where the approximation has no right to be trusted.`,
+      caption: String.raw`Left: $-C_p$ round the section (grey incompressible, from the atlas's panel method; blue corrected). The red dashed line is the critical pressure coefficient $C_p^*$: blue above red crosses the predicted sonic threshold, beyond which this linear approximation is invalid. Right: the suction peak against $M_\infty$ for three correction laws (Prandtl–Glauert, Kármán–Tsien and Laitone, the last two as comparison models) and the critical value $-C_p^*(M_\infty)$; their crossing estimates the critical Mach number. Raise $M_\infty$ and watch the Prandtl–Glauert curve race ahead as $M_\infty\to1$, where it can even predict nonpositive absolute pressure.`,
       deps: ['aero-2.2', 'aero-1.6', 'pde-1.10'],
-      refs: ['Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251', 'Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36); exact Laitone comparison still unreviewed'],
+      refs: ['Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251', 'Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36)', 'Laitone, New Compressibility Correction for Two-Dimensional Subsonic Flow (1951), J. Aeronaut. Sci.18(5), p.350, Eq.(7); DOI10.2514/8.1951'],
       tags: ['compressibility', 'subsonic', 'similarity'],
       scope: String.raw`Small disturbances (thin section, small incidence), subsonic and not near sonic: roughly $M_\infty\lesssim0.7$ and never close to $1$. The incompressible $C_{p,0}$ here is a full panel-method solution for a symmetric NACA 00xx section, so the 'thin' hypothesis is only approximate for the thicker sections; the Kármán–Tsien and Laitone curves are comparison models, and no experimental data are plotted.`,
       credit: 'H. Glauert, 1928 (Proc. R. Soc. A118,113–119); Ackeret (1925), NACA TM317 p.1, cites an unpublished Göttingen lecture by Prandtl',
-      verify: true,
       links: { doi: 'https://doi.org/10.1098/rspa.1928.0039', wikipedia: 'https://en.wikipedia.org/wiki/Prandtl%E2%80%93Glauert_transformation' },
       viz(v) {
         const M = v.slider('free-stream Mach number $M_\\infty$', 0.1, 0.95, 0.6, { step: 0.005 });
@@ -86,7 +86,7 @@ The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\in
           B.fn((x) => -ktCorr(cpm, x), { color: 'green', width: 2, domain: [0.2, 0.995] });
           B.fn((x) => -laitoneCorr(cpm, x), { color: 'purple', width: 2, domain: [0.2, 0.995] });
           const mc = { pg: machCritical(cpm, pgCorr), kt: machCritical(cpm, ktCorr), lait: machCritical(cpm, laitoneCorr) };
-          if (mc.pg) B.dot(mc.pg, -cpCrit(mc.pg), { r: 5.5, color: 'ink', label: `$M_{cr}=${fx(mc.pg, 3)}$`, labelPos: 'nw' });
+          if (mc.pg) B.dot(mc.pg, -cpCrit(mc.pg), { r: 5.5, color: 'ink', label: `$M_{cr}=${fx(mc.pg, 3)}$`, labelPos: 'se' });
           B.vline(m, { color: 'gold', width: 1.6, dash: true });
           B.dot(m, Math.min(2.95, -cpPG), { r: 5, color: 'gold' });
           info = { m, d, cpm, cpPG, crit, mc, sup, mloc: machFromCp(cpPG, m), a: al.value };
@@ -95,7 +95,8 @@ The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\in
         v.readout(() => {
           const { m, d, cpm, cpPG, crit, mc, sup, mloc } = info, b = Math.sqrt(1 - m * m);
           return `$\\beta=\\sqrt{1-M_\\infty^2}=${fx(b, 3)}$, $1/\\beta=${fx(1 / b, 3)}$. Suction peak: $C_{p,0}=${fx(cpm, 3)}$ → $C_p=C_{p,0}/\\beta=${fx(cpPG, 3)}$; critical $C_p^*=${fx(crit, 3)}$. `
-            + (cpPG < crit ? `**Supersonic pocket:** the corrected peak is below $C_p^*$ (local Mach about $${fx(mloc, 2)}$ on the isentropic relation; ${sup} panels), so the linear rule no longer describes the flow.` : `Subcritical (local Mach at the peak about $${fx(mloc, 2)}$).`)
+            + (!Number.isFinite(mloc) ? `**Unphysical pressure prediction:** the corrected peak implies nonpositive absolute pressure, so no isentropic local Mach estimate exists. The linear rule has left its regime of validity.`
+              : cpPG < crit ? `**Sonic threshold crossed:** the corrected peak is below $C_p^*$ (local Mach about $${fx(mloc, 2)}$ on the isentropic relation; ${sup} panels), so the linear rule no longer describes the flow.` : `Subcritical (local Mach at the peak about $${fx(mloc, 2)}$).`)
             + `\n$c_{l,0}=${fx(d.cl, 3)}$ → $c_l=${fx(d.cl / b, 3)}$, lift slope $2\\pi/\\beta=${fx(2 * Math.PI / b, 2)}$ per rad. Critical Mach number: Prandtl–Glauert ${mc.pg ? fx(mc.pg, 3) : '> 0.995'}, Kármán–Tsien ${mc.kt ? fx(mc.kt, 3) : '> 0.995'}, Laitone ${mc.lait ? fx(mc.lait, 3) : '> 0.995'}.`;
         });
       },

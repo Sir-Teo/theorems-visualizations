@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 243,
-    "reviewedBlocked": 243,
+    "open": 242,
+    "reviewedBlocked": 242,
     "unreviewed": 0,
-    "ledgerRecords": 665,
-    "recordedClosed": 391,
+    "ledgerRecords": 664,
+    "recordedClosed": 392,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 243,
-    "liveRemaining": 243,
+    "recordedRemaining": 242,
+    "liveRemaining": 242,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -25,11 +25,6 @@
     "matchesLive": true
   },
   "byCollection": {
-    "aero": {
-      "open": 1,
-      "reviewedBlocked": 1,
-      "unreviewed": 0
-    },
     "algo": {
       "open": 3,
       "reviewedBlocked": 3,
@@ -342,14 +337,14 @@
     {
       "path": "docs/verification/physics-source-acquisition-pass.json",
       "exists": true,
-      "sha256": "13cb8214b4f6e6eea4ece36e0858a87a965b738e706b33cac35a845150433927",
+      "sha256": "bfa0780fd3a92efd9cf6c00970a00a71ad9268e694a9ffaef5fbe848ee70a3d5",
       "records": 3
     },
     {
       "path": "docs/verification/physics-source-status.json",
       "exists": true,
-      "sha256": "016631c21be7051deea2aad8e5c6d14ecacda227faf50c79fdd9ab7376e7656f",
-      "records": 21
+      "sha256": "078add0685ae9ba7f1960ec721e7d5bfa5a03cd0fba61d1d636602a41a0c90db",
+      "records": 20
     },
     {
       "path": "docs/verification/pure-math-source-alignment.json",
@@ -359,25 +354,6 @@
     }
   ],
   "open": [
-    {
-      "id": "aero-4.1",
-      "file": "content/aero/ch04.js",
-      "name": "Prandtl–Glauert compressibility correction",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/physics-source-acquisition-pass.json#/entries/1",
-        "docs/verification/physics-source-status.json#/reviewedBlocked/0"
-      ],
-      "reports": [
-        "docs/verification/aero-ch04.md",
-        "docs/verification/physics-source-acquisition-pass.md"
-      ],
-      "missingEvidence": [
-        "Complete primary passage matching the exact explicit Laitone comparison formula still displayed.",
-        "Exact displayed Laitone comparison formula still lacks a complete matched primary passage. Complete Glauert1928 pp113–119 recovered/read from public IA scan; complete NACA TN3970 pp16–18 Eqs32–36 confirms Karman–Tsien. See bounded acquisition report for URLs/hashes."
-      ]
-    },
     {
       "id": "algo-11.12",
       "file": "content/algo/ch11-b.js",
@@ -1361,7 +1337,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/1"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/0"
       ],
       "reports": [
         "docs/verification/energy-ch03.md"
@@ -1377,7 +1353,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/2"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/1"
       ],
       "reports": [
         "docs/verification/energy-ch03.md"
@@ -1393,7 +1369,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/3"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/2"
       ],
       "reports": [
         "docs/verification/energy-ch03.md"
@@ -1409,7 +1385,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/4"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/3"
       ],
       "reports": [
         "docs/verification/energy-ch03.md"
@@ -1425,7 +1401,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/5"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/4"
       ],
       "reports": [
         "docs/verification/energy-ch04.md"
@@ -2323,7 +2299,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/6"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/5"
       ],
       "reports": [
         "docs/verification/mat.md"
@@ -2339,7 +2315,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/7"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/6"
       ],
       "reports": [
         "docs/verification/mat.md"
@@ -2355,7 +2331,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/8"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/7"
       ],
       "reports": [
         "docs/verification/mat.md"
@@ -2372,7 +2348,7 @@
       "remainsOpen": true,
       "evidence": [
         "docs/verification/physics-source-acquisition-pass.json#/entries/2",
-        "docs/verification/physics-source-status.json#/reviewedBlocked/9"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/8"
       ],
       "reports": [
         "docs/verification/mat.md",
@@ -2391,7 +2367,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/10"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/9"
       ],
       "reports": [
         "docs/verification/mat.md"
@@ -2407,7 +2383,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/11"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/10"
       ],
       "reports": [
         "docs/verification/mat.md"
@@ -2952,7 +2928,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/12"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/11"
       ],
       "reports": [
         "docs/verification/pchem.md"
@@ -2968,7 +2944,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/13"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/12"
       ],
       "reports": [
         "docs/verification/pchem.md"
@@ -2984,7 +2960,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/14"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/13"
       ],
       "reports": [
         "docs/verification/pchem.md"
@@ -3000,7 +2976,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/15"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/14"
       ],
       "reports": [
         "docs/verification/pchem.md"
@@ -3016,7 +2992,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/16"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/15"
       ],
       "reports": [
         "docs/verification/pchem.md"
@@ -3564,7 +3540,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/17"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/16"
       ],
       "reports": [
         "docs/verification/qchem.md"
@@ -3580,7 +3556,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/18"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/17"
       ],
       "reports": [
         "docs/verification/qchem.md"
@@ -3596,7 +3572,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/19"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/18"
       ],
       "reports": [
         "docs/verification/qm.md"
@@ -3612,7 +3588,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/physics-source-status.json#/reviewedBlocked/20"
+        "docs/verification/physics-source-status.json#/reviewedBlocked/19"
       ],
       "reports": [
         "docs/verification/rel.md"
@@ -4268,31 +4244,14 @@
       "ledger": "docs/verification/physics-source-acquisition-pass.json",
       "pointer": "#/entries/1",
       "id": "aero-4.1",
-      "rawStatus": "reviewed-blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/physics-source-acquisition-pass.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/laitone-primary-followup.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Complete primary passage matching the exact explicit Laitone comparison formula still displayed."
-      ],
+      "missingEvidence": [],
       "ref": "docs/verification/physics-source-acquisition-pass.json#/entries/1",
       "reportExists": true,
-      "substantiveBlockedRecord": true
-    },
-    {
-      "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/0",
-      "id": "aero-4.1",
-      "rawStatus": "reviewed-blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/aero-ch04.md",
-      "reportOrigin": "record",
-      "missingEvidence": [
-        "Exact displayed Laitone comparison formula still lacks a complete matched primary passage. Complete Glauert1928 pp113–119 recovered/read from public IA scan; complete NACA TN3970 pp16–18 Eqs32–36 confirms Karman–Tsien. See bounded acquisition report for URLs/hashes."
-      ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/0",
-      "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/pure-math-source-alignment.json",
@@ -5626,7 +5585,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/1",
+      "pointer": "#/reviewedBlocked/0",
       "id": "energy-3.10",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -5635,13 +5594,13 @@
       "missingEvidence": [
         "Full Bosch–Hale cross-section coefficient transcription; bremsstrahlung coefficient/convention; original Lawson paper and experimental gain definitions."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/1",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/0",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/2",
+      "pointer": "#/reviewedBlocked/1",
       "id": "energy-3.4",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -5650,13 +5609,13 @@
       "missingEvidence": [
         "Full row-level energy-density sources/conventions: cell versus pack, LHV/HHV, pressure and containment mass/volume."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/2",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/1",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/3",
+      "pointer": "#/reviewedBlocked/2",
       "id": "energy-3.6",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -5665,13 +5624,13 @@
       "missingEvidence": [
         "U235 thermal fission585b,nu2.43 and moderator slowing-down powers40/5.3/.75b; complete nuclear dataset still needed. NIST absorption table alone is reviewed."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/3",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/2",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/4",
+      "pointer": "#/reviewedBlocked/3",
       "id": "energy-3.9",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -5680,13 +5639,13 @@
       "missingEvidence": [
         "Original Way–Wigner1948 full derivation/table for coefficient.066,10s–100day domain and historical shutdown percentages."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/4",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/3",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/5",
+      "pointer": "#/reviewedBlocked/4",
       "id": "energy-4.6",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -5695,7 +5654,7 @@
       "missingEvidence": [
         "Full Henry/DeVos tandem literature passages for the exact benchmark comparison."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/5",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/4",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -9815,7 +9774,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/6",
+      "pointer": "#/reviewedBlocked/5",
       "id": "mat-3.11",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9824,13 +9783,13 @@
       "missingEvidence": [
         "Full source rows for Ti/Mg/Zn/Cd axial-ratio markers1.588/1.624/1.856/1.886 and complete BCC1/sqrt2 twin derivation. Full APS2020 HCP shear/shuffle formulation and GhoshLecture9 FCC twin geometry reviewed; no longer claims twinning needs no dislocations."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/6",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/5",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/7",
+      "pointer": "#/reviewedBlocked/6",
       "id": "mat-3.13",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9839,13 +9798,13 @@
       "missingEvidence": [
         "Complete Taylor1934 PartI pp362–387 DOI10.1098/rspa.1934.0106, and claimed PartII observational comparison. RoyalSociety PDF returned challenge HTML; modern finite-chain FK demonstration is explicitly operational and not Taylor data."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/7",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/6",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/8",
+      "pointer": "#/reviewedBlocked/7",
       "id": "mat-4.11",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9854,7 +9813,7 @@
       "missingEvidence": [
         "Full sharp-indenter representative-strain0.08 and steel tensile3.45HB correlation regime, plus original test-priority statements. Complete relevant NIST2001 Rockwell §§2.2–2.4 and Chang2018 spherical representative-stress/strain formulation read. No inferred HV-to-HRC or Meyer-to-HB conversion remains."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/8",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/7",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -9876,7 +9835,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/9",
+      "pointer": "#/reviewedBlocked/8",
       "id": "mat-4.7",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9885,13 +9844,13 @@
       "missingEvidence": [
         "Full Schiotz–Jacobsen2003 Science301,1357–1359 DOI10.1126/science.1086636 exact10–15nm maximum and original Chokshi1989 experimental/priority claim. Citeseer503; DTU metadata/abstract not accepted. Full1999 primary mechanism and finite-temperature comparison read."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/9",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/8",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/10",
+      "pointer": "#/reviewedBlocked/9",
       "id": "mat-4.8",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9900,13 +9859,13 @@
       "missingEvidence": [
         "Full Friedel isolated-obstacle statistical derivation and Labusch1970 collective c^(2/3) regime/coefficient; complete original attribution passages. Full MITSchuhLecture16 supports size/modulus and sqrt(c) scaling, but not all regimes. Missing b in dimensioned stress formula corrected independently."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/10",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/9",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/11",
+      "pointer": "#/reviewedBlocked/10",
       "id": "mat-4.9",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -9915,7 +9874,7 @@
       "missingEvidence": [
         "Full original LSW late-stage coarsening regime and claimed precipitation/shearing benchmark/priority passages (Wilm,Guinier/Preston,Orowan). Independent model geometry/calibrated lower envelope reviewed; all absolute strengths and aging times remain illustrative."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/11",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/10",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -11378,7 +11337,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/12",
+      "pointer": "#/reviewedBlocked/11",
       "id": "pchem-3.13",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -11387,13 +11346,13 @@
       "missingEvidence": [
         "Complete Atkins chapter2 and species coefficient tables underlying all reaction inputs, including NH3−46.11 versus CODATA−45.94kJ/mol."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/12",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/11",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/13",
+      "pointer": "#/reviewedBlocked/12",
       "id": "pchem-3.8",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -11402,13 +11361,13 @@
       "missingEvidence": [
         "Complete Clayton–Giauque CO1932 DOI10.1021/ja01346a004 for1.12±.10cal/molK and Giauque–Stout ice1936 DOI10.1021/ja01298a023 for.82±.05. ACS supplied only previews."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/13",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/12",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/14",
+      "pointer": "#/reviewedBlocked/13",
       "id": "pchem-3.9",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -11417,13 +11376,13 @@
       "missingEvidence": [
         "Full liquid-Ar calorimetric sourceCp44.6J/molK, Debye92K regime, fusion/vaporization1182/6437J/mol."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/14",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/13",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/15",
+      "pointer": "#/reviewedBlocked/14",
       "id": "pchem-4.1",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -11432,13 +11391,13 @@
       "missingEvidence": [
         "Full precise CO2 critical304.13K/73.77bar,273.15K/34.85bar and melting-line calibration source; reviewed NIST critical rows do not establish these exact anchors."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/15",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/14",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/16",
+      "pointer": "#/reviewedBlocked/15",
       "id": "pchem-4.3",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -11447,7 +11406,7 @@
       "missingEvidence": [
         "Full matched-condition water latent6010/40660J/mol and30.12L/mol volume jump; CO2 fusion9020J/mol/9cm3/mol and sublimation26150J/mol at194.69K."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/16",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/15",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12361,7 +12320,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/17",
+      "pointer": "#/reviewedBlocked/16",
       "id": "qchem-3.13",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -12370,13 +12329,13 @@
       "missingEvidence": [
         "Original Russian1869 Zhurnal Russkago Khimicheskago Obshchestva1,60–77; primary German Zeitschrift fur Chemie12,405–406 exact tables;1871 predictions/discovery comparisons."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/17",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/16",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/18",
+      "pointer": "#/reviewedBlocked/17",
       "id": "qchem-3.8",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -12385,7 +12344,7 @@
       "missingEvidence": [
         "Accessible full primary microscopic Hund-rule calculation/relaxed-orbital explanation. Complete NIST measured levels reviewed; fixed-orbital exchange interpretation explicitly limited."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/18",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/17",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12404,7 +12363,7 @@
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/19",
+      "pointer": "#/reviewedBlocked/18",
       "id": "qm-7.9",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -12413,13 +12372,13 @@
       "missingEvidence": [
         "Complete Werner etal PRL35(1975)1053–1055 DOI10.1103/PhysRevLett.35.1053 and Rauch etal PLA54(1975)425–427 DOI10.1016/0375-9601(75)90798-7 experimental formulations/observations. Temple503,RPI/APS blocked, unstable indexed transcript not accepted. Ideal math verified."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/19",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/18",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/physics-source-status.json",
-      "pointer": "#/reviewedBlocked/20",
+      "pointer": "#/reviewedBlocked/19",
       "id": "rel-1.3",
       "rawStatus": "reviewed-blocked",
       "status": "reviewed-blocked",
@@ -12428,7 +12387,7 @@
       "missingEvidence": [
         "Complete original de Sitter1913 KNAW15(2),1297–1298; Brecher1977 PRL39,1051 DOI10.1103/PhysRevLett.39.1051; Alväger1964 PhysicsLetters12,260–262 DOI10.1016/0031-9163(64)91095-9 empirical formulations. Einstein postulate and counterfactual kinematics reviewed."
       ],
-      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/20",
+      "ref": "docs/verification/physics-source-status.json#/reviewedBlocked/19",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },

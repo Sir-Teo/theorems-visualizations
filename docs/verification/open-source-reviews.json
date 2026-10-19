@@ -2,10 +2,9 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 243,
+  "remaining": 242,
   "originalAnalysis": 0,
   "byCollection": {
-    "aero": 1,
     "algo": 3,
     "arch": 10,
     "art": 1,
@@ -55,15 +54,6 @@
     "toc": 7
   },
   "queue": [
-    {
-      "id": "aero-4.1",
-      "file": "content/aero/ch04.js",
-      "name": "Prandtl–Glauert compressibility correction",
-      "refs": [
-        "Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251",
-        "Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36); exact Laitone comparison still unreviewed"
-      ]
-    },
     {
       "id": "algo-11.12",
       "file": "content/algo/ch11-b.js",
