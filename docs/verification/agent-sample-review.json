@@ -1363,11 +1363,14 @@
     {
       "id": "nt-1.3",
       "file": "content/nt/ch01.js",
-      "textHash": "e852dab866323c3bc1abb6d526ef690bf633a2270da117233f7aa99b39f31fa7",
-      "textReview": "The gcd invariant and decreasing integer remainders prove termination. If the first division is exact, the answer is the initial divisor b, so 'last nonzero remainder' needs that convention explicitly. The irrational-ratio view displays a finite prefix of a mathematically nonterminating process, not a numerical certification of irrationality.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "7e4e7d3876c03b621b42c653942245d9de4927c3fc47a8cec033710acef79187",
+      "textReview": "The final-divisor formulation and r0=b convention now cover an exact first division. The caption explicitly labels the empty initial table, finite drawing resolution and eight floating-point dissection steps for irrational presets.",
+      "visualReview": "Native initial and divisor-one captures inspected. The initial division table is intentionally empty; at 462 by 1 the rectangle is subpixel-thin but the visible table gives 462=462·1+0 and gcd=1, with a grid resolution warning.",
+      "interactionReview": "The default-mode audit exercised all three visible range endpoints without runtime/TeX errors. Native follow-up used the step endpoints and a=1 to inspect the only blank-canvas flags; they are intentional empty-table/subpixel states, not incorrect gcd results. See agent-controls-review.md.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The gcd invariant and decreasing integer remainders prove termination. If the first division is exact, the answer is the initial divisor b, so 'last nonzero remainder' needs that convention explicitly. The irrational-ratio view displays a finite prefix of a mathematically nonterminating process, not a numerical certification of irrationality.",
+      "initialTextHash": "e852dab866323c3bc1abb6d526ef690bf633a2270da117233f7aa99b39f31fa7",
+      "correctionReport": "docs/verification/agent-controls-review.md"
     }
   ]
 }

@@ -284,11 +284,11 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
       num: '1.3',
       kind: 'Algorithm',
       name: 'Euclidean algorithm',
-      statement: String.raw`**Input:** integers $a\ge b\ge1$. **Step:** divide with remainder, $a=qb+r$ with $0\le r<b$ (1.1), and replace $(a,b)$ by $(b,r)$. **Stop** when the remainder is $0$; the last nonzero remainder is $\gcd(a,b)$. Written out:
-$$a=q_1b+r_1,\quad b=q_2r_1+r_2,\quad r_1=q_3r_2+r_3,\quad\dots,\quad r_{n-2}=q_nr_{n-1}+0,$$
-and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stops after at most $b$ steps (in fact $O(\log b)$ steps).`,
+      statement: String.raw`**Input:** integers $a\ge b\ge1$. **Step:** divide with remainder, $a=qb+r$ with $0\le r<b$ (1.1), and replace $(a,b)$ by $(b,r)$. **Stop** when the remainder is $0$; the divisor in that final division is $\gcd(a,b)$. This includes $b$ itself when the first division is exact. More uniformly, set $r_{-1}=a$, $r_0=b$ and write
+$$r_{j-2}=q_jr_{j-1}+r_j\quad(1\le j\le n),\qquad r_n=0.$$
+Then $\gcd(a,b)=r_{n-1}$. The positive remainders strictly decrease, so the algorithm stops after at most $b$ steps (in fact $O(\log(b+1))$ steps).`,
       idea: String.raw`If $a=qb+r$, then a number divides both $a$ and $b$ exactly when it divides both $b$ and $r=a-qb$. So the *set* of common divisors — and in particular the gcd — never changes from one line to the next, and at the end $\gcd(r_{n-1},0)=r_{n-1}$. Geometrically: cut as many $b\times b$ squares as possible off an $a\times b$ rectangle, then repeat on the leftover rectangle. The last square fits a whole number of times into every earlier square, so its side measures both $a$ and $b$. The process stops because the sides are positive *integers* that keep decreasing; with incommensurable sides (the golden rectangle, $\sqrt2:1$) it goes on for ever.`,
-      caption: String.raw`Step through with ◀ ▶ (it opens on the finished tiling). Each step cuts squares of one colour and adds one line $a=q\cdot b+r$ to the table; the final frame lays a grid of side $\gcd(a,b)$ over the rectangle — it tiles every square. Change $a$ and $b$, or pick a rectangle with irrational ratio: the squares then shrink for ever and no last square exists.`,
+      caption: String.raw`Step through with ◀ ▶ (it opens on the finished tiling). Each step cuts squares of one colour and adds one line $a=q\cdot b+r$ to the table; the final frame lays a grid of side $\gcd(a,b)$ over the rectangle — it tiles every square. Change $a$ and $b$, or pick a rectangle with irrational ratio: its mathematical dissection never ends; the picture shows only eight steps using floating-point coordinates. At the initial frame the division table is empty. Very thin rectangles and fine gcd grids may be below the drawing resolution.`,
       deps: ['nt-1.2', 'nt-1.1'],
       see: ['algo-1.7'],
       tags: ['gcd', 'algorithms'],

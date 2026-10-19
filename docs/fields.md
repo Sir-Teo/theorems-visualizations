@@ -36,6 +36,9 @@ not establish an every-state claim; zero vectors, coincident subspaces and ill-t
 may change the conclusion. Distinguish pointwise properties of representatives from
 almost-everywhere norms, and coordinate changes within a fixed dimension from arbitrary
 maps between dimensions (agent sample statement/hypothesis review).
+For remainder algorithms, test an exact first division and define whether the initial
+divisor counts as the last nonzero remainder. A deliberately empty initial table and
+subpixel geometric examples should be explained rather than treated as render failures.
 
 ## Physics & astronomy, Earth & environment, engineering
 
