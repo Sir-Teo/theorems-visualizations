@@ -3046,11 +3046,15 @@
     {
       "id": "ode-4.2",
       "file": "content/ode/ch04.js",
-      "textHash": "508ddd504eb9685119dc50a112830b4415fa64525d91bf2b60cf4886ab5c3cf5",
-      "textReview": "Ordinary/regular-singular definitions and indicial polynomial are correct. Repeated/resonant roots can require logarithmic factors, so two pure t^r asymptotics are not universal. Complex exponents give oscillations in log t; log absolute real/imaginary solutions does not approach two straight lines with complex slopes. The caption and actual local-solution algorithm need a focused follow-up.",
-      "visualReview": "Inspected both themes: default indicial roots+.707/-.707 agree with measured near-singularity slopes .707/-.706. Resonant logarithms and complex-root log-amplitude oscillations invalidate universal straight-line wording; follow-up pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "6271bbb144ef3489d3ac395a31cdd50dd90a70c94dd3ffc2e6a60cfb0721ec30",
+      "textReview": "Indicial roots now determine power factors with logarithmic exceptions explicit. The widget omits inconsistent smaller-root series and duplicate repeated-root branches,explaining that the logarithmic partner is not computed here. The complex-modulus graph is distinguished from oscillating real/imaginary components,with limiting slope Re r and finite-truncation scope.",
+      "visualReview": "Inspected ten controlled captures in both themes: generic real roots,integer resonance,repeated root,complex roots and slider endpoint. Invalid and duplicate series are omitted; complex real/imaginary curves have one modulus curve. Warnings/readouts and panels agree.",
+      "interactionReview": "Ten native two-slider states exercise generic/resonant/repeated/complex/endpoint cases in both themes,with finite readouts and no runtime/TeX errors. Seven ODE groups pass,including actual-render regression checks on valid branch/component counts.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Ordinary/regular-singular definitions and indicial polynomial are correct. Repeated/resonant roots can require logarithmic factors, so two pure t^r asymptotics are not universal. Complex exponents give oscillations in log t; log absolute real/imaginary solutions does not approach two straight lines with complex slopes. The caption and actual local-solution algorithm need a focused follow-up.",
+      "initialTextHash": "508ddd504eb9685119dc50a112830b4415fa64525d91bf2b60cf4886ab5c3cf5",
+      "initialVisualFinding": "Inspected both themes: default indicial roots+.707/-.707 agree with measured near-singularity slopes .707/-.706. Resonant logarithms and complex-root log-amplitude oscillations invalidate universal straight-line wording; follow-up pending.",
+      "correctionReport": "docs/verification/agent-frobenius-review.md"
     },
     {
       "id": "prob-5.8.5",

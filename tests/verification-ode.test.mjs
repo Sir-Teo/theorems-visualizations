@@ -52,3 +52,22 @@ test('Actual oscillation panel retains a genuine zero in the final grid cell but
     lam.value=l;for(const s of stages)s.calls.length=0;draw();assert.match(read(),new RegExp(`interior zeros of \\$u\\$: ${n};`));
   }
 });
+
+test('Regular-singular display omits obstructed or duplicate Frobenius branches and plots the complex modulus once', async()=>{
+  const chapter=(await import('../content/ode/ch04.js')).default;
+  const stages=[],controls=new Map();let draw,read;
+  const v={fix:(x,n=3)=>Number(x).toFixed(n),legend(){},slider(label,a,b,value){const q={value};controls.set(label,q);return q},stage(){const calls=[];const s=new Proxy({calls,handle(x,y){return{x,y}},clip(f){f()}},{get(t,k){return k in t?t[k]:(...args)=>{calls.push([k,...args]);return s}}});stages.push(s);return s},render(f){draw=f},readout(f){read=f}};
+  chapter.items.find(i=>i.num==='4.2').viz(v);
+  const p=controls.get('$p_0$'),q=controls.get('$q_0$');
+  for(const [p0,q0,leftPaths,modulusPaths,notice] of [
+    [1,-.5,2,2,/Measured log-modulus/],
+    [1,-.25,1,1,/Integer resonance:.*invalid series is omitted/],
+    [1,0,1,1,/Repeated root:.*independent logarithmic partner is not computed/],
+    [1,1,2,1,/oscillation comes from/],
+  ]){
+    p.value=p0;q.value=q0;for(const s of stages)s.calls.length=0;draw();
+    assert.equal(stages[0].calls.filter(c=>c[0]==='path').length,leftPaths);
+    assert.equal(stages[1].calls.filter(c=>c[0]==='path').length,modulusPaths);
+    assert.match(read(),notice);
+  }
+});

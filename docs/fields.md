@@ -30,6 +30,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+For series solutions, propagate recurrence failure into the display: an
+obstructed coefficient sequence is not a solution. Repeated roots can need
+a logarithmic partner. Distinguish a complex modulus from its oscillating
+real and imaginary components when interpreting log-amplitude slopes.
+
 Check zero vectors, zero-dimensional spaces and singular matrices before
 claiming rank one, a positive exponent or a positive determinant. State the
 field when a real quadratic-form counterexample fails over complex scalars.

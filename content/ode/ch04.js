@@ -67,9 +67,10 @@ export default {
       name: 'Regular singular points',
       statement: String.raw`Write a second-order linear equation as $u''+p(z)u'+q(z)u=0$. A point $z_0$ is an *ordinary point* if $p,q$ are analytic there. It is a *regular singular point* if it is not ordinary but $(z-z_0)p(z)$ and $(z-z_0)^2q(z)$ are analytic at $z_0$ (poles of order at most $1$ and $2$); in terms of $t=z-z_0$ the equation then reads
 $$t^2u''+t\,P(t)\,u'+Q(t)\,u=0,\qquad P(t)=\sum_{k\ge0}p_kt^k,\ Q(t)=\sum_{k\ge0}q_kt^k.$$
-The *indicial equation* is $s(s-1)+p_0s+q_0=0$; its roots $r_1,r_2$ are the exponents of the local solutions $u\sim t^{r}$. A singular point that is not regular is *irregular*.`,
+The *indicial equation* is $s(s-1)+p_0s+q_0=0$; its roots $r_1,r_2$ determine the power factors in Frobenius solutions. When roots coincide or differ by an integer, an independent second solution may require a logarithm rather than a second pure-power series. A singular point that is not regular is *irregular*.`,
       idea: String.raw`Freeze the coefficients at their leading values: near $t=0$ the equation behaves like the Euler equation $t^2u''+p_0tu'+q_0u=0$, which is solved by powers $t^s$ exactly when $s(s-1)+p_0s+q_0=0$. The orders 1 and 2 are the *largest* poles for which this still works, since then both $t^2u''$ and $tp_0u'$ scale like $t^s$. Stronger poles make the dominant balance different (essential singularities of solutions, as for $u''+t^{-2}u'=0$).`,
-      caption: String.raw`Drag the singular point $s$ along the axis and move the exponents with the sliders $p_0,q_0$ (the full equation is $(x-s)^2u''+(x-s)(p_0+0.6(x-s))u'+(q_0+0.8(x-s))u=0$). Left: the two local solutions (the real and imaginary parts when the roots are complex). Right: $\ln|u|$ against $\ln(x-s)$; as $x\to s$ the curves become straight lines whose slopes are the indicial roots, which the readout measures.`,
+      caption: String.raw`Drag the singular point $s$ along the axis and move the exponents with the sliders $p_0,q_0$ (the full equation is $(x-s)^2u''+(x-s)(p_0+0.6(x-s))u'+(q_0+0.8(x-s))u=0$). Left: truncated Frobenius solutions, or the real and imaginary parts of one complex solution. For repeated roots only one series is drawn; if the smaller-root recurrence is inconsistent, that invalid series is omitted. This widget does not compute the logarithmic partner (see 4.3). Right: the log modulus of each displayed Frobenius branch against $\ln(x-s)$. Its slope approaches $\operatorname{Re}r$ near the singular point. For complex roots this is the modulus of the complex solution; the individual real and imaginary parts oscillate in $\ln(x-s)$ and do not have straight log-amplitude graphs.`,
+      scope: String.raw`Series use 40 terms. A repeated root or an obstructed integer resonance needs a logarithmic second solution, which this display omits. Near-singularity slopes are finite-interval estimates, not exact exponents at finite distance. The series are evaluated for $t=x-s>0$, fixing the real logarithm in $t^r$.`,
       deps: ['ode-4.1'],
       refs: ['Teschl §4.2'],
       tags: ['singular points', 'indicial equation'],
@@ -77,23 +78,23 @@ The *indicial equation* is $s(s-1)+p_0s+q_0=0$; its roots $r_1,r_2$ are the expo
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Regular_singular_point' },
       viz(v) {
         const s1 = v.stage({ x: [-0.5, 3.5], y: [-2.6, 2.6], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'u', title: 'local solutions near the singular point', weight: 1.1, minWidth: 270 });
-        const s2 = v.stage({ x: [-7.4, 1], y: [-14, 14], axes: 'box', gutter: true, height: 320, xlabel: 'ln(x − s)', ylabel: 'ln |u|', title: 'log–log: slope = exponent', weight: 1, minWidth: 250 });
+        const s2 = v.stage({ x: [-7.4, 1], y: [-14, 14], axes: 'box', gutter: true, height: 320, xlabel: 'ln(x − s)', ylabel: 'ln |u|', title: 'log modulus: slope approaches Re r', weight: 1, minWidth: 250 });
         const S = s1.handle(0.6, 0, { color: 'red', label: '$s$', labelPos: 'nw', constrain: (x, y) => [Math.min(1.6, Math.max(-0.2, x)), 0] });
         const p0 = v.slider('$p_0$', -1.5, 3, 1, { step: 0.05 }), q0 = v.slider('$q_0$', -3, 3, -0.5, { step: 0.05 });
-        v.legend([['accent', 'first exponent (or real part)'], ['orange', 'second exponent (or imaginary part)'], ['ink', 'slope = exponent', { dash: true }]]);
+        v.legend([['accent', 'larger-root branch (or real part)'], ['orange', 'smaller-root branch when valid (or imaginary part)'], ['ink', 'slope = Re r', { dash: true }]]);
         let info = null;
         v.render(() => {
           const s = S.x, P = [p0.value, 0.6, 0], Q = [q0.value, 0.8, 0], roots = indicialRoots(P[0], Q[0]);
           s1.setView([s - 0.9, s + 3], [-2.6, 2.6]);
           const cplx = Math.abs(roots[0][1]) > 1e-12, cs = cplx ? [frobCoef(P, Q, roots[0], 40)] : roots.map((r) => frobCoef(P, Q, r, 40));
           s1.vline(s, { color: 'red', width: 1.6, dash: [6, 4] }); s1.tex('\\text{singular}', s, -2.2, { color: 'red', size: 12, dx: 8, align: 'left' });
-          const slopes = [];
-          (cplx ? [0] : [0, 1]).forEach((i) => {
+          const slopes = [], repeated = !cplx && Math.abs(roots[0][0]-roots[1][0]) < 1e-10;
+          const omitted = !cplx && cs[1].log.length > 0;
+          (cplx || repeated || omitted ? [0] : [0, 1]).forEach((i) => {
             const r = cplx ? roots[0] : roots[i], c = cs[i], pts1 = [], pts2 = [], lg = [];
             for (let k = 1; k <= 400; k++) { const t = 0.004 * Math.pow(1.0165, k); if (t > 3) break; const u = frobEval(c, r, t); pts1.push([s + t, u[0]]); pts2.push([s + t, u[1]]); }
             const keep = (a) => { const o = []; let br = false; for (const p of a) { if (Math.abs(p[1]) > 40) { if (!br) o.push(null); br = true; } else { o.push(p); br = false; } } return o; };
-            s1.clip(() => { s1.path(keep(pts1), { color: 'accent', width: 2.4 }); if (cplx) s1.path(keep(pts2), { color: 'orange', width: 2.4 }); else if (i === 1) { /* second root drawn in orange below */ } });
-            if (!cplx && i === 1) { s1.clip(() => { s1.path(keep(pts1), { color: 'orange', width: 2.4 }); }); }
+            s1.clip(() => { s1.path(keep(pts1), { color: cplx || i === 0 ? 'accent' : 'orange', width: 2.4 }); if (cplx) s1.path(keep(pts2), { color: 'orange', width: 2.4 }); });
             // log–log modulus
             for (let x = -7.4; x <= 1; x += 0.05) { const t = Math.exp(x), u = frobEval(c, r, t), m = Math.hypot(u[0], u[1]); lg.push([x, Math.log(m)]); }
             s2.clip(() => s2.path(lg, { color: cplx || i === 0 ? 'accent' : 'orange', width: 2.4 }));
@@ -102,12 +103,12 @@ The *indicial equation* is $s(s-1)+p_0s+q_0=0$; its roots $r_1,r_2$ are the expo
             s2.line(-7.4, r[0] * -7.4, 1, r[0] * 1, { color: 'ink', dash: [5, 4], width: 1, alpha: 0.6 });
           });
           const resn = cs.map((c) => c.res.length > 0);
-          info = { roots, slopes, cplx, resn, s };
+          info = { roots, slopes, cplx, resn, repeated, omitted, s };
         });
         v.readout(() => {
           if (!info) return '';
           const { roots, slopes, cplx } = info, f2 = (r) => (Math.abs(r[1]) < 1e-12 ? v.fix(r[0], 3) : `${v.fix(r[0], 3)}${r[1] >= 0 ? '+' : '-'}${v.fix(Math.abs(r[1]), 3)}i`);
-          return `The point $s=${v.fix(info.s, 2)}$ is regular singular: $(x-s)p$ and $(x-s)^2q$ are analytic there. Indicial equation $r(r-1)+${v.fix(p0.value, 2)}\\,r+(${v.fix(q0.value, 2)})=0$, roots $r_1=${f2(roots[0])}$, $r_2=${f2(roots[1])}$.\nMeasured slopes of $\\ln|u|$ against $\\ln(x-s)$ on $[e^{-8},e^{-6}]$: ${slopes.map((x) => '$' + v.fix(x, 3) + '$').join(', ')}${cplx ? ' (the modulus has slope Re $r$; the oscillation comes from the factor $e^{i\\,\\mathrm{Im}\\,r\\,\\ln t}$)' : ''}.${info.resn.some(Boolean) ? '\nThe roots differ by a positive integer: the series for the smaller root hits a vanishing denominator (see 4.3).' : ''}`;
+          return `The point $s=${v.fix(info.s, 2)}$ is regular singular: $(x-s)p$ and $(x-s)^2q$ are analytic there. Indicial equation $r(r-1)+${v.fix(p0.value, 2)}\\,r+(${v.fix(q0.value, 2)})=0$, roots $r_1=${f2(roots[0])}$, $r_2=${f2(roots[1])}$.\nMeasured log-modulus slopes of the displayed branches against $\\ln(x-s)$ on $[e^{-8},e^{-6}]$: ${slopes.map((x) => '$' + v.fix(x, 3) + '$').join(', ')}${cplx ? ' (the modulus has slope Re $r$; the oscillation comes from the factor $e^{i\\,\\mathrm{Im}\\,r\\,\\ln t}$)' : ''}.${info.repeated ? '\nRepeated root: one Frobenius series is shown; the independent logarithmic partner is not computed here (see 4.3).' : info.omitted ? '\nInteger resonance: the smaller-root recurrence is inconsistent. Its invalid series is omitted; a logarithmic partner is needed (see 4.3).' : info.resn.some(Boolean) ? '\nThe smaller-root recurrence has a compatible resonance; its free coefficient is set to zero.' : ''}`;
         });
       },
     },
