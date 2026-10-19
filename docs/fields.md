@@ -47,6 +47,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   For example, the black-body slope at an effective emission temperature does not by itself
   give the assessed atmospheric Planck response. Check numerical comparisons in the explanation
   as carefully as values in the simulation (agent sample finding: climate 3.4).
+- Classify a filter by its actual impulse response: feedback can have exact pole–zero
+  cancellation. A finite plotted or summed window cannot establish stability or the full
+  truncation error; use an analytic tail bound where available and distinguish zero-state
+  behavior from internal stability (agent sample finding: sig 3.12).
 
 ## Statistics & data science
 
