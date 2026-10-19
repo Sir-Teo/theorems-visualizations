@@ -1,4 +1,5 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly (items 10.1–10.6; 10.7–10.12 in ch10-b.js, 10.13–10.17 in ch10-c.js, 10.18–10.22 in ch10-d.js)
+import {screeningBenefit,screeningOptimum,screeningMenuState} from './source-audit-screening.js';
 import {monopolyWelfareState,finiteDiscriminationState} from './source-audit-monopoly-welfare.js';
 import { clamp, GUIDE, fx, bisect, argmax, slopeLine, plateText, lin, iso, mstage, tag, integ, grid } from './ch10.shared.js';
 
@@ -234,41 +235,46 @@ With divisible demand, the corresponding efficient quantity satisfies $P(Q^c)=c$
     },
     // ------------------------------------------------------------------ 10.6
     {
-      num: '10.6', kind: 'Concept', name: 'Second-degree price discrimination',
-      statement: String.raw`When the seller cannot tell high-demand from low-demand buyers, it can offer a **menu of packages** $(Q_L, T_L)$ and $(Q_H, T_H)$ (quantity and total payment) so that each type picks its own. Buyer type $i$ with benefit $V_i(Q)$ gets net surplus $V_i(Q) - T$. The menu must satisfy two **participation** constraints (each type does at least as well as buying nothing) and two **self-selection** constraints (each type prefers its package to the other's). At the optimum the high type gets the efficient quantity, $V_H'(Q_H) = c$; the low type is held to zero surplus and gets an **inefficiently small** package, $V_L'(Q_L) < c$, to make it less attractive to the high type.`,
-      idea: String.raw`The binding constraints are the low type's participation and the high type's temptation to take the low package. Since the high type values quantity more, handing it a rent $(\theta_H - \theta_L)Q_L$ for pretending to be low is unavoidable, and the rent grows with $Q_L$. Trimming $Q_L$ below the efficient size loses a little surplus on the low type (second-order, as marginal benefit equals cost at the efficient size) but cuts the rent given to the high type (first-order). With benefit $V_i(Q) = \theta_i Q - Q^2/2$ and a share $\varphi$ of high types, $Q_H = \theta_H - c$ and $Q_L = \theta_L - c - \tfrac{\varphi}{1-\varphi}(\theta_H - \theta_L)$.`,
-      caption: String.raw`The curves are the two types' **willingness to pay** $V_L(Q)$ (orange) and $V_H(Q)$ (blue) in the plane of quantity and total payment; a package is a point, and each type prefers points below its own curve and closer to it. **Drag the two packages.** The readout ticks or crosses each of the four constraints; profit counts $\varphi$ high and $1-\varphi$ low buyers at unit cost $c$. The hollow dots mark the optimal menu; press **optimal menu** to move the packages there: $Q_H$ is efficient, $Q_L$ is cut below the efficient size (dashed) and both payments sit on the constraints.`,
-      deps: ['micro-10.5'],
-      refs: ['Varian Ch. 26'], tags: ['price discrimination', 'information'],
-      credit: 'M. Mussa & S. Rosen, Monopoly and Product Quality, Journal of Economic Theory 18 (2): 301–317, 1978; E. Maskin & J. Riley, Monopoly with Incomplete Information, RAND Journal of Economics 15 (2): 171–196, 1984',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Price_discrimination#Second-degree_price_discrimination' },
-      viz(v) {
-        const pS = v.slider('share of high type $\\varphi$', 0.1, 0.8, 0.3, { step: 0.01 });
-        const tS = v.slider('low type $\\theta_L$', 3, 8, 6, { step: 0.05 });
-        const TH = 10, c = 2;
-        const s = v.stage({ x: [0, 10.5], y: [0, 52], axes: 'box', gutter: true, xlabel: 'quantity in the package $Q$', ylabel: 'total payment $T$', height: 400, title: 'menu of two packages' });
-        v.legend([['orange', 'low type: $V_L(Q)$'], ['accent', 'high type: $V_H(Q)$'], ['gold', 'low package', { dot: true }], ['green', 'high package', { dot: true }]]);
-        const HL = s.handle(3, 12, { color: 'gold', r: 9, label: 'L', labelPos: 'se' });
-        const HH = s.handle(6, 30, { color: 'green', r: 9, label: 'H', labelPos: 'nw' });
-        let st = {};
-        const V = (th) => (q) => th * q - (q * q) / 2;
-        const opt = () => { const phi = pS.value, th = tS.value, qH = TH - c, qL = Math.max(0, th - c - (phi / (1 - phi)) * (TH - th)); return { qH, qL, TL: V(th)(qL), TH: V(TH)(qH) - (TH - th) * qL }; };
-        const prof = (qL, tL, qH, tH) => (1 - pS.value) * (tL - c * qL) + pS.value * (tH - c * qH);
-        v.button('optimal menu', () => { const o = opt(); HL.set(o.qL, o.TL); HH.set(o.qH, o.TH); });
-        v.render(() => {
-          const th = tS.value, VL = V(th), VH = V(TH), qL = HL.x, tL = HL.y, qH = HH.x, tH = HH.y;
-          const o = opt();
-          s.fn(VL, { domain: [0, 10.5], color: 'orange', width: 2.4 }); s.fn(VH, { domain: [0, 10.5], color: 'accent', width: 2.4 });
-          s.fn((q) => c * q, { domain: [0, 10.5], color: 'muted', width: 1.5, dash: [3, 3] });
-          s.vline(th - c, { color: 'orange', width: 1, dash: [3, 3] });
-          tag(s, 'cost line $T = cQ$', 10.4, 2 * 10.4 - 5, 'muted', { align: 'right' });
-          const sL = VL(qL) - tL, sH = VH(qH) - tH;
-          const okIRL = sL >= -0.05, okIRH = sH >= -0.05, okICL = sL >= VL(qH) - tH - 0.05, okICH = sH >= VH(qL) - tL - 0.05;
-          s.dot(o.qL, o.TL, { r: 5, hollow: true, color: 'orange' }); s.dot(o.qH, o.TH, { r: 5, hollow: true, color: 'accent' });
-          st = { okIRL, okIRH, okICL, okICH, p: prof(qL, tL, qH, tH), po: prof(o.qL, o.TL, o.qH, o.TH), o, qL, qH };
+      num:'10.6',kind:'Model',name:'Second-degree price discrimination',
+      statement:String.raw`A seller with unobservable buyer types can offer the same menu of quantity/payment pairs to everyone. A type must prefer its intended package to buying nothing (**IR**) and to the other package (**IC**). Here $0.1\le\varphi\le0.8$ gives type shares $1-\varphi$ and $\varphi$, benefits are $V_i(Q)=\theta_iQ-Q^2/2$, unit cost is $c=2$, $\theta_H=10$ and $3\le\theta_L\le8$. Resale is blocked, and indifferent buyers choose their intended package. The optimal menu has
+$$\begin{aligned}
+Q_H^*&=8,\\
+Q_L^*&=\max\left\{0,\frac{\theta_L-2-8\varphi}{1-\varphi}\right\}.
+\end{aligned}$$
+Its low payment is $T_L^*=V_L(Q_L^*)$; the high payment is $T_H^*=V_H(8)-(10-\theta_L)Q_L^*$. The low type receives zero surplus. When $Q_L^*>0$, its quantity is below the efficient $\theta_L-2$, so $V_L'(Q_L^*)>c$; the high type retains information rent $(10-\theta_L)Q_L^*$. At $\varphi\ge(\theta_L-2)/8$, the low package becomes $(0,0)$ and that rent is zero.`,
+      idea:String.raw`At an optimum, low participation and the high type's temptation to select the low package bind. These constraints give the stated payments. Substitute them into expected profit: it becomes the sum of two strictly concave quadratic functions of the quantities. The high quantity maximizes total gains for that type. The low quantity trades off gains from low buyers against the extra rent owed to high buyers; its unconstrained optimum must be clipped at zero. The resulting ordered quantities also satisfy low IC and high IR, so this upper bound on profit is attainable. The equality cases use the stated choice rule, rather than strict incentives.`,
+      caption:String.raw`The curves are total benefits. A buyer prefers a **larger vertical gap below its own curve**, not a point closer to it. Drag the gold low-package or green high-package handle, or use the package sliders when handles coincide. Vertical segments show the intended buyer's surplus; purple rings mark the exact optimum. Right: the four actual IR/IC slacks, with negative bars showing failed constraints. **Optimal menu** sets all four package controls; **low-type exclusion boundary** selects the exact share and its zero low package. Assigned profit is implementable only when every constraint holds under the choice rule.`,
+      deps:['micro-10.5'],refs:['Maskin & Riley (1984), RAND Journal of Economics 15:171–196, §2 and finite-type self-selection argument in §3','S. Ellison, MIT 14.27 Lecture 13 (2014), two-type screening pp4–5','G. Ellison, MIT 14.271 Lecture 3 (2022), two-type model slides13–18'],tags:['price discrimination','information'],
+      credit:'E. Maskin & J. Riley, Monopoly with Incomplete Information, RAND Journal of Economics 15 (2):171–196, 1984 (screening framework)',
+      scope:String.raw`An explicit two-type quadratic-benefit model with a known high-type share 0.1–0.8, zero outside utility, nonnegative quantities, constant unit cost, no resale and intended-package choice at indifference. The quadratic benefits are used on the whole displayed range, including beyond their peaks. The plot shows nonnegative payments; the stated optimum is feasible there. This does not assert that every screening problem has the same binding constraints or that low types always buy positive quantities.`,
+      links:{source:'https://ocw.mit.edu/courses/14-27-economics-and-e-commerce-fall-2014/01454b51f87e5907b6097de412687b59_MIT14_27F14_Lec13.pdf',doi:'https://doi.org/10.2307/2555674'},
+      viz(v){
+        const initial=screeningOptimum(.3,6);
+        const share=v.slider('high-type share $\\varphi$',.1,.8,.3,{step:.01,decimals:3}),theta=v.slider('low type $\\theta_L$',3,8,6,{step:.05});
+        const ql=v.slider('low package quantity $Q_L$',0,10,initial.qLow,{step:.05,decimals:3}),tl=v.slider('low package payment $T_L$',0,50,initial.tLow,{step:.05,decimals:3});
+        const qh=v.slider('high package quantity $Q_H$',0,10,initial.qHigh,{step:.05,decimals:3}),th=v.slider('high package payment $T_H$',0,50,initial.tHigh,{step:.05,decimals:3});
+        const A=v.stage({x:[-1,11],y:[-8,56],axes:'box',gutter:true,xlabel:'package quantity $Q$',ylabel:'total payment / benefit',height:400,title:'compare packages using vertical utility gaps',minWidth:250});
+        const B=v.stage({x:[-.65,3.65],y:[-5,5],axes:'box',gutter:true,xticks:[],xlabel:'IR: participation; IC: self-selection',ylabel:'constraint slack',height:400,title:'nonnegative slacks make the menu feasible',minWidth:250});
+        const low=A.handle(initial.qLow,initial.tLow,{color:'gold',r:9,constrain:(x,y)=>[clamp(x,0,10),clamp(y,0,50)],onDrag:h=>{ql.set(h.x);tl.set(h.y);}});
+        const high=A.handle(initial.qHigh,initial.tHigh,{color:'green',r:9,constrain:(x,y)=>[clamp(x,0,10),clamp(y,0,50)],onDrag:h=>{qh.set(h.x);th.set(h.y);}});
+        const place=()=>{const o=screeningOptimum(share.value,theta.value);ql.set(o.qLow);tl.set(o.tLow);qh.set(o.qHigh);th.set(o.tHigh);};
+        v.button('optimal menu',place);v.button('low-type exclusion boundary',()=>{share.set((theta.value-2)/8);place();});
+        v.legend([['orange','low total benefit'],['orange','efficient low quantity',{dash:true}],['accent','high total benefit'],['muted','cost $2Q$'],['gold','your low package / low slacks',{dot:true}],['green','your high package / high slacks',{dot:true}],['purple','optimal menu (hollow)',{dot:true}],['red','failed constraint']]);
+        let info={};
+        v.render(()=>{
+          const p=screeningMenuState(share.value,theta.value,ql.value,tl.value,qh.value,th.value),o=p.optimum;
+          low.set(p.qLow,p.tLow);high.set(p.qHigh,p.tHigh);
+          A.setView([-1,11],[Math.min(-8,screeningBenefit(p.theta,10)-5),56]);
+          A.fn(q=>screeningBenefit(p.theta,q),{domain:[0,10],color:'orange',width:2.5});A.fn(q=>screeningBenefit(10,q),{domain:[0,10],color:'accent',width:2.5});A.fn(q=>2*q,{domain:[0,10],color:'muted',width:1.4,dash:[3,3]});
+          A.vline(o.efficientLow,{color:'orange',width:1,dash:[3,3]});
+          A.line(p.qLow,p.tLow,p.qLow,p.benefitLow,{color:p.uLow>=0?'gold':'red',width:2});A.line(p.qHigh,p.tHigh,p.qHigh,p.benefitHigh,{color:p.uHigh>=0?'green':'red',width:2});
+          A.dot(o.qLow,o.tLow,{r:12,hollow:true,color:'purple'});A.dot(o.qHigh,o.tHigh,{r:12,hollow:true,color:'purple'});
+          const dataLo=Math.min(-1,1.2*Math.min(...p.slacks)),hi=Math.max(2,1.2*Math.max(...p.slacks)),lo=dataLo-.15*(hi-dataLo),labelY=lo+.04*(hi-lo);
+          B.setView([-.65,3.65],[lo,hi]);B.hline(0,{color:'muted',width:1});const names=['IR L','IR H','IC L','IC H'];
+          p.slacks.forEach((s,i)=>{const col=s<0?'red':i%2?'green':'gold';B.rect(i-.3,Math.min(0,s),i+.3,Math.max(0,s),{fill:col,fillAlpha:.5,color:col,width:1});B.text(names[i],i,labelY,{size:11,align:'center',color:'muted'});});
+          info=p;
         });
-        const m = (ok, t) => `${ok ? '✓' : '✗'} ${t}`;
-        v.readout(() => `Constraints: ${m(st.okIRL, 'low participates')}, ${m(st.okIRH, 'high participates')}, ${m(st.okICL, 'low prefers L')}, ${m(st.okICH, 'high prefers H')}.\nProfit of your menu $${fx(st.p)}$ (it is only meaningful when all four hold); optimal menu $Q_H = ${fx(st.o.qH)}$ (efficient), $Q_L = ${fx(st.o.qL)}$ versus efficient $${fx(tS.value - 2)}$, profit $${fx(st.po)}$.`);
+        v.readout(()=>`IR L/H: ${fx(info.slacks[0],6)} / ${fx(info.slacks[1],6)}; IC L/H: ${fx(info.slacks[2],6)} / ${fx(info.slacks[3],6)}. ${info.feasible?'All four hold within numerical precision under intended-package choice.':'At least one constraint fails: the intended assignments are not implementable.'}\nAssigned-menu profit $${fx(info.assignedProfit,6)}$ ${info.feasible?'(implementable under the choice rule)':'(counterfactual assignment only)'}. Exact optimal profit $${fx(info.optimum.profit,6)}$ at $Q_L=${fx(info.optimum.qLow,6)}$, $Q_H=8$.\nOptimal low quantity versus efficient: ${fx(info.optimum.qLow,6)} versus ${fx(info.optimum.efficientLow,6)}; high-type rent $${fx(info.optimum.rentHigh,6)}$. Total-surplus loss relative to full information $${fx(info.optimum.loss,6)}$. ${info.optimum.excluded?'At the optimum the low package is (0,0) and the high-type information rent is zero.':'At the optimum the low type buys a downward-distorted quantity and the high type retains positive information rent.'}`);
       },
     },
   ],

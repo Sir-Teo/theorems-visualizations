@@ -661,3 +661,14 @@ inference. No source flag or production renderer changed.
 ## Discounting source/model follow-up — 2026-10-19
 
 The [discounting audit](behav-discounting-followup.md) resolves two original flags. Thaler form C's plotted one-year median is corrected from the mixed-form $60 to $50; form A's separate magnitude series is preserved. Instantaneous and average rates, the specific exponential-rate mixture, approximate log-rate fit and linear-money benchmark are distinguished. The full amount/control family, increasing schedules and large compensation ratios remain visible. A genuine exponential-distribution prerequisite is added in both chapter and syllabus. Parent independently passes five mathematical and eight native groups plus scoped static checks and inspects source text and final screenshots. **196 source reviews remain**.
+
+## Additional screening follow-up — 2026-10-19
+
+The [two-type screening audit](micro-screening-followup.md) repairs an additional
+unflagged neighbor, `micro-10.6`. It corrects the low-type marginal-benefit sign,
+vertical utility-gap comparison, exclusion boundary and counterfactual-profit
+labels. A direct global profit bound, independent payment LP and four actual
+IR/IC slacks establish the specified quadratic model, including intended-package
+choice at indifference. Parent independently passes four mathematical and eight
+native groups plus scoped static checks and inspects final screenshots. This
+adds a resolved follow-up without subtracting from the original queue;196 remain.

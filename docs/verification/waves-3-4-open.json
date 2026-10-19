@@ -7895,6 +7895,12 @@
       "status": "resolved",
       "report": "docs/verification/behav-discounting-followup.md",
       "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein\u2013Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
+    },
+    {
+      "id": "micro-10.6",
+      "status": "resolved",
+      "report": "docs/verification/micro-screening-followup.md",
+      "note": "Additional previously unflagged neighboring-item audit; no original queue closure or flag-count change. Parent independently checked Maskin\u2013Riley finite-type sections and both MIT derivations, global concave profit bound and four IR/IC slacks; passed four math, eight native and scoped static groups and inspected final wide/narrow light/dark screenshots. Corrects reversed distortion/utility inequalities, exclusion, weak-choice conventions and bounded menu geometry."
     }
   ]
 }
