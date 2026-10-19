@@ -2298,11 +2298,15 @@
     {
       "id": "demo-2.9",
       "file": "content/demo/ch02-b.js",
-      "textHash": "2474f3e8d6ca275065b9f118b570145c200b5f51fff13e97e2a4cdee47c866df",
-      "textReview": "The text rightly rejects interpreting low life expectancy at birth as the typical adult age at death. Its claim that historical differences are overwhelmingly childhood rather than adult mortality conflicts with its own model where swapping under-five rates closes only about a third of the gap. Adult mortality can contribute substantially; qualify the generalization. The Siler table is illustrative and the swap order can matter, not necessarily only a little. Conditional adult longevity ranges need context rather than universal historical coverage.",
-      "visualReview": "Inspected both themes: childhood replacement through age5 changes life expectancy33.4 to49.8 against target83.1,33% of the49.7-year gap. This directly conflicts with the broad childhood-dominance claim recorded in the text review; correction pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "d75a7ad1778b1026d574f29d4873ca7ed6967085383cc7564126c997a5b7f185",
+      "textReview": "Removed the universal historical dominance claim contradicted by the default model (33% childhood contribution). Childhood and later mortality both contribute; schedule replacement is order-dependent and is not a causal intervention estimate. The illustrative historical model, grouped-table approximations and retained 85+ rate are explicit.",
+      "visualReview": "Inspected all 24 native captures across four populations, cut-offs 0/5/85 and both themes. At cut-off 0 the hybrid agrees with the chosen curve; childhood replacements close 33%,24%,16%,15% of the respective gaps; retained 85+ rates explain the residual gaps at 85.",
+      "interactionReview": "Both themes: all four population buttons and cut-off 0/5/85 states pass with finite readouts, no runtime or TeX failures. Two existing demography source/math groups pass. Numerical life-table code is unchanged.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The text rightly rejects interpreting low life expectancy at birth as the typical adult age at death. Its claim that historical differences are overwhelmingly childhood rather than adult mortality conflicts with its own model where swapping under-five rates closes only about a third of the gap. Adult mortality can contribute substantially; qualify the generalization. The Siler table is illustrative and the swap order can matter, not necessarily only a little. Conditional adult longevity ranges need context rather than universal historical coverage.",
+      "initialTextHash": "2474f3e8d6ca275065b9f118b570145c200b5f51fff13e97e2a4cdee47c866df",
+      "initialVisualFinding": "Inspected both themes: childhood replacement through age5 changes life expectancy33.4 to49.8 against target83.1,33% of the49.7-year gap. This directly conflicts with the broad childhood-dominance claim recorded in the text review; correction pending.",
+      "correctionReport": "docs/verification/agent-childhood-mortality-review.md"
     },
     {
       "id": "imaging-3.14",

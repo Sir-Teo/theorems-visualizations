@@ -6,6 +6,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Everywhere
 
+A model-specific contribution is not a universal historical explanation.
+Check comparative claims against every available population and endpoint.
+Distinguish age-schedule replacement from causal intervention, and disclose
+open-ended age groups that a replacement control retains.
+
 - **The picture must be about this idea and must let the reader test it.** In every field there
   is an equivalent of "break a hypothesis and watch the conclusion fail". Find it and put it on a
   control.

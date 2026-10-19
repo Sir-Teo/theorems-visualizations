@@ -85,14 +85,14 @@ export default {
     {
       num: '2.9',
       kind: 'Phenomenon',
-      name: 'Infant mortality dominates historical life expectancy',
-      statement: String.raw`Differences in $e_0$ between high-mortality and low-mortality populations are produced overwhelmingly by deaths in infancy and childhood, not by a lower age at death among adults. Historically (and in poor regions today) an $e_0$ near 30–40 meant a quarter to a third of births dying before age five, while those who reached adulthood could expect to live into their fifties or sixties. Replacing only the rates below age 5 of a high-mortality table by those of a modern one closes a large share of the gap in $e_0$ (about a third of it in the 1750-like model below).`,
-      idea: String.raw`By 2.4, $e_0$ is the area under $\ell(x)$. A death at age 1 removes about 80 person-years relative to a death at 80, so a cohort-share $q_5$ of early deaths is worth $80\,q_5$ years of $e_0$, and $q_5$ was in the tens of percent. The decomposition below swaps the rates age group by age group rather than adding them up exactly, so the order of swapping matters a little; this is a transparent counterfactual, not Arriaga's exact decomposition.`,
-      caption: String.raw`Choose a pair of tables (UN estimates, plus a 1750-like model). Slide the age: all death rates *below* it are replaced by the modern ones. The dashed curve is the resulting survival, and the right panel shows $e_0$ as a function of the cut-off age. Compare how much the first group (ages 0–4) alone closes with what the whole schedule of later ages adds.`,
+      name: 'Childhood mortality and life expectancy',
+      statement: String.raw`Deaths in infancy and childhood can substantially lower life expectancy at birth, because $e_0$ averages over all births, including early deaths. A low $e_0$ therefore does not mean that most adults die at that age. The contribution of childhood mortality to a difference between two populations depends on both populations' full age-specific death schedules; it need not account for most of the gap. In the illustrative 1750-like model below, replacing only rates below age 5 with Sweden 2019 rates closes about one third of the gap in $e_0$; later-age mortality accounts for much of the remainder.`,
+      idea: String.raw`By 2.4, $e_0$ is the area under normalized survival. Moving a death from age 1 to age 80 adds 79 person-years to the cohort total, illustrating why early deaths can matter greatly. A rate-replacement calculation also allows those who survive childhood to face the later hazards of the chosen population. Swap rates cumulatively, age group by age group: this is a counterfactual comparison of schedules, not a causal estimate of an intervention or Arriaga's exact decomposition. Attributing increments to individual groups depends on the order of replacement.`,
+      caption: String.raw`Choose a population to compare with Sweden 2019 (grouped UN estimates, plus an illustrative 1750-like model). Slide the cut-off age: rates in five-year groups *below* it are replaced by Sweden 2019 rates. The dashed curve is the resulting survival, and the right panel shows $e_0$ against the cut-off. Compare the contribution of ages 0–4 with the gains from replacing later rates. At the maximum cut-off of 85, the chosen population's open-ended 85+ rate is still retained, so the curves need not coincide.`,
       deps: ['demo-2.4'],
       refs: ['PHG ch. 3'],
       tags: ['infant mortality', 'life expectancy'],
-      scope: String.raw`Tables computed here from 18 five-year groups with $a_{0\text{–}4} = 1$ year, so $e_0$ can differ from published values by a few tenths of a year; "1750-like" is the Siler model of 2.8, not a measured table.`,
+      scope: String.raw`Grouped-table approximation: 18 age groups (0–4 through 80–84, then 85+), with $a_{0\text{–}4}=1$ year and 2.5 years in subsequent closed groups. These assumptions can change $e_0$ relative to published life tables. "1750-like" is the illustrative Siler schedule of 2.8, not a measured historical population. Its childhood contribution is model-specific; no universal historical fraction is asserted.`,
       viz(v) {
         const rich = WPP.SWE2019.m;
         const PAIRS = {
@@ -102,7 +102,7 @@ export default {
         const sel = v.select('population (vs Sweden 2019)', Object.entries(PAIRS).map(([k, o]) => ({ value: k, label: o.label })), 'mod');
         const cut = v.slider('replace rates below age', 0, 85, 5, { step: 5, int: true });
         const s = v.stage({ x: [0, 100], y: [0, 1.02], axes: 'box', gutter: true, xlabel: 'age x', ylabel: 'survival ℓ(x)/ℓ(0)', height: 340, title: 'Survival curves' });
-        const g = v.stage({ x: [-2, 90], y: [0, 100], axes: 'box', gutter: true, xlabel: 'replace the rates below this age', ylabel: 'e₀ (years)', height: 340, title: 'Life expectancy when the young are swapped' });
+        const g = v.stage({ x: [-2, 90], y: [0, 100], axes: 'box', gutter: true, xlabel: 'replace the rates below this age', ylabel: 'e₀ (years)', height: 340, title: 'Life expectancy as age-group rates are replaced' });
         let info = null;
         v.render(() => {
           const P = PAIRS[sel.value], tp = tab18(P.m), tr = tab18(rich);
