@@ -35,8 +35,12 @@ const matchT = (t, it) => {
   if (t.includes('*')) return new RegExp('^' + t.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$').test(it.file);
   return t === it.id || t === it.col || t === `${it.col}/${it.chapter}` || t === it.file || (it.col && t === fieldOf.get(it.col));
 };
-const sel = items.filter((it) => typeof it.viz === 'function').filter((it) => !targets.length || targets.some((t) => matchT(t, it)));
-const relevant = P.filter((p) => !targets.length || targets.some((t) => matchT(t, { file: p.where.split(' ')[0], id: null, col: null })) || items.filter((it) => targets.some((t) => matchT(t, it))).some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
+// Resolve the requested items once, including definitions without a picture.
+// Repeating this scan for every diagnostic made a large review sample quadratic
+// in the number of targets and content items before Chromium could even start.
+const selectedItems = items.filter((it) => !targets.length || targets.some((t) => matchT(t, it)));
+const sel = selectedItems.filter((it) => typeof it.viz === 'function');
+const relevant = P.filter((p) => !targets.length || targets.some((t) => matchT(t, { file: p.where.split(' ')[0], id: null, col: null })) || selectedItems.some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
 console.log(`static check: ${sel.length} item(s)`);
 const st = printProblems(relevant, { quiet: flags.has('--quiet') });
 console.log(`  ${st.errors} error(s), ${st.warnings} warning(s)`);
