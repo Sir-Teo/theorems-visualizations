@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 229,
+  "remainingFlags": 227,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "imaging": 1,
     "circ": 1,
     "energy": 6,
-    "solid": 5,
+    "solid": 3,
     "robot": 1,
     "aero": 7,
     "micro": 15,
@@ -356,36 +356,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Goodman_relation"
-      }
-    },
-    {
-      "id": "solid-4.3",
-      "file": "content/solid/ch04.js",
-      "name": "Maximum normal stress criterion for brittle materials",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gere\u2013Goodno \u00a77.3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Maximum_normal_stress_theory"
-      }
-    },
-    {
-      "id": "solid-4.4",
-      "file": "content/solid/ch04.js",
-      "name": "Mohr\u2013Coulomb criterion",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Timoshenko\u2013Goodier ch. 7"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Mohr%E2%80%93Coulomb_theory"
       }
     },
     {
@@ -4301,7 +4271,9 @@
       "pharm-4.9",
       "solid-3.9",
       "energy-3.9",
-      "solid-4.10"
+      "solid-4.10",
+      "solid-4.3",
+      "solid-4.4"
     ]
   },
   "additionalFollowups": [
@@ -8168,6 +8140,18 @@
       "status": "resolved",
       "report": "docs/verification/solid-collapse-followup.md",
       "note": "Complete authored Bower6.3.1\u20133/5 arguments read; associated-flow/positive-work assumptions explicit, supporting-hyperplane argument derived using read opt2.8. Root3math+4finalnative groups pass; independent agent reread source/proof, reran3math and inspected wide-bound/equality screenshots without substantive finding. Adaptive upper range, downward mechanism and equality action correct; unsupported priority claims removed."
+    },
+    {
+      "id": "solid-4.3",
+      "status": "resolved",
+      "report": "docs/verification/solid-failure-followup.md",
+      "note": "Read complete primary engineering Rankine criterion and its limits; independently reran three mathematical groups and four native groups across both criteria, reviewed helper/content diff and inspected high-shear, maximum-envelope and degenerate screenshots. Chosen tensile threshold and undefined zero-stress direction are explicit."
+    },
+    {
+      "id": "solid-4.4",
+      "status": "resolved",
+      "report": "docs/verification/solid-failure-followup.md",
+      "note": "Read primary Itasca Mohr-Coulomb criterion, signs and omitted tensile/flow branches; independently reran sign-converted principal traction/tangency checks and all native slider corners. Full configured circles and visible envelope segments fit, with no unique plane in the degenerate hydrostatic case."
     }
   ]
 }

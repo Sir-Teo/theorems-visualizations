@@ -1,10 +1,10 @@
+import {normalStressState,mohrCoulombState} from './source-audit-failure.js';
 // Solid Mechanics & Structures — Chapter 4: Failure, plasticity and fatigue (items 4.1–4.5; 4.6–4.10 are in ch04-b.js)
 //
-// Everything here is computed from the formulas in the statements. The yield stress Y = 250 MPa, the cast-iron tensile strength
-// 207 MPa (ASTM A48 class 30 minimum) and the soil numbers are round illustrative values. Steel curve in 4.5: S355 data of chapter 1.
+// Everything here is computed from the formulas in the statements. The yield stress Y = 250 MPa, the
+// 207 MPa tensile threshold in 4.3 and the soil numbers are chosen illustrations. Steel curve in 4.5: S355 data of chapter 1.
 // Credits checked: Tresca 1864 and Huber 1904 / von Mises 1913 / Hencky 1924 (Wikipedia "Yield surface"); Taylor & Quinney 1931
-// (Crossref 10.1098/rsta.1932.0009). Rankine (1857) and Mohr (c. 1900) are from memory and flagged verify; Coulomb's essay is dated 1776
-// (published) per Wikipedia "Mohr–Coulomb theory".
+// (Crossref 10.1098/rsta.1932.0009). Items 4.3–4.4 cite directly read engineering model documentation; no historical date or material fit is claimed.
 
 import { num as num0, prin2, rad, deg, vm2, tresca2, tresca3, hexagon, ellipse, rayVM, rayTresca, curveOf, MATS } from './ch04.shared.js';
 
@@ -108,123 +108,55 @@ Equivalently the elastic energy of distortion (shape change at constant volume) 
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.3
     {
-      num: '4.3',
-      kind: 'Principle',
-      name: 'Maximum normal stress criterion for brittle materials',
-      statement: String.raw`A brittle material such as grey cast iron, glass or ceramic is assumed to fracture when the largest principal tensile stress reaches the tensile strength $\sigma_{ut}$ measured in a tension test:
-$$\sigma_1=\sigma_{ut}.$$
-The crack then opens perpendicular to the direction of $\sigma_1$. For a shaft under tension $\sigma$ and torsion $\tau$ (plane stress), $\sigma_1=\tfrac\sigma2+\sqrt{\tfrac{\sigma^2}4+\tau^2}$ and the direction of $\sigma_1$ makes the angle $\theta_p=\tfrac12\arctan\!\tfrac{2\tau}{\sigma}$ with the axis, so pure torsion cracks along a $45^\circ$ helix and pure tension cracks straight across. The compressive side needs its own limit (typically several times $\sigma_{ut}$ for cast iron); this item covers the tensile one.`,
-      idea: String.raw`In a brittle solid there is no yielding to relieve the stress at flaws, so the weakest flaw that is pulled open widest fails first: the plane of greatest normal tension, which is the principal plane of $\sigma_1$ (3.2). The shear stress matters only through its contribution to $\sigma_1$. This is what Rankine proposed for brittle failure; it works well for tension-dominated states in cast iron and glass and poorly in compression.`,
-      caption: String.raw`Choose the mix angle $\beta$ between pure tension ($0^\circ$) and pure torsion ($90^\circ$) and raise the combined stress level $S$ ($\sigma=S\cos\beta$, $\tau=S\sin\beta$). Left: the bar with the plane on which it will crack; it turns solid red once $\sigma_1$ reaches $\sigma_{ut}$. Middle: Mohr's circle; the bar breaks when the circle touches the vertical line $\sigma=\sigma_{ut}$. Right: the level $S_f$ that breaks the bar for every mix, and where yours sits on it.`,
-      deps: ['solid-3.2', 'solid-1.7'],
-      refs: ['Gere–Goodno §7.3'],
-      tags: ['failure', 'brittle', 'principal stress'],
-      credit: 'W. J. M. Rankine, 1850s',
-      verify: true,
-      scope: String.raw`Brittle materials under tension-dominated states. Unreliable when two principal stresses are compressive, where friction between crack faces and the very different compressive strength matter (see Mohr–Coulomb, 4.4). The value $\sigma_{ut}=207$ MPa is the ASTM A48 class 30 grey-iron minimum, used as a round illustrative number.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Maximum_normal_stress_theory' },
-      viz(v) {
-        const sut = 207;
-        const beta = v.slider('mix angle $\\beta$ (°)', 0, 90, 60, { step: 1 });
-        const S = v.slider('combined stress $S$ (MPa)', 0, 260, 150, { step: 1 });
-        const A = v.stage({ x: [-3.9, 3.9], y: [-2.1, 2.1], equal: true, axes: false, height: 340, title: 'the bar and its crack plane' });
-        const B = v.stage({ x: [-120, 280], y: [-170, 170], equal: true, axes: true, height: 340, title: 'Mohr’s circle', xlabel: 'σ', ylabel: 'τ' });
-        const C = v.stage({ x: [0, 90], y: [0, 260], axes: 'box', gutter: true, height: 340, xlabel: 'mix angle β (°)', ylabel: 'breaking level S_f (MPa)', xticks: [0, 15, 30, 45, 60, 75, 90], title: 'breaking level for every mix' });
-        const Sf = (b) => sut / (0.5 * Math.cos(rad(b)) + Math.hypot(0.5 * Math.cos(rad(b)), Math.sin(rad(b))));
-        const st = () => { const sg = S.value * Math.cos(rad(beta.value)), ta = S.value * Math.sin(rad(beta.value)); return { sg, ta, p: prin2(sg, 0, ta) }; };
-        v.legend([['accent', 'Mohr circle'], ['red', 'σ = σut'], ['orange', 'S_f(β)']]);
-        v.render(() => {
-          const { sg, ta, p } = st(), fail = p.s1 >= sut - 1e-9, th = p.thp;
-          // bar
-          A.rect(-3, -0.75, 3, 0.75, { color: 'ink', width: 2, fill: 'accent', fillAlpha: fail ? 0.04 : 0.12 });
-          const u = [Math.cos(th), Math.sin(th)], cr = [-u[1], u[0]]; // crack direction ⟂ σ1
-          const L = 0.95 / Math.max(0.3, Math.abs(cr[1]));
-          const pts = [[-cr[0] * L, -cr[1] * L], [cr[0] * L, cr[1] * L]];
-          A.line(pts[0][0], pts[0][1], pts[1][0], pts[1][1], { color: 'red', width: fail ? 4 : 2, dash: fail ? false : [6, 5], alpha: fail ? 1 : 0.7 });
-          if (fail) { A.line(pts[0][0] + 0.15, pts[0][1], pts[1][0] + 0.15, pts[1][1], { color: 'red', width: 1.2 }); }
-          // loads
-          const f = (S.value / 260) * 1.1 * Math.cos(rad(beta.value)), g = (S.value / 260) * 1.2 * Math.sin(rad(beta.value));
-          if (f > 0.04) { A.arrow(3, 0, 3 + f + 0.2, 0, { color: 'accent', width: 3 }); A.arrow(-3, 0, -3 - f - 0.2, 0, { color: 'accent', width: 3 }); }
-          if (g > 0.04) { A.arrow(3.15, -0.6, 3.15, -0.6 + g, { color: 'orange', width: 3 }); A.arrow(-3.15, 0.6, -3.15, 0.6 - g, { color: 'orange', width: 3 }); }
-          A.text('tension', 0, 1.55, { size: 12, color: 'accent', align: 'center' }); A.text('torque', 0, -1.55, { size: 12, color: 'orange', align: 'center' });
-          A.arrow(-0.4, -0.35, -0.4 + 0.9 * u[0], -0.35 + 0.9 * u[1], { color: 'green', width: 2 });
-          A.tex(String.raw`\sigma_1`, -0.4 + 1.15 * u[0] - 0.25, -0.35 + 1.15 * u[1] + 0.12, { size: 13, color: 'green' });
-          // Mohr
-          B.vline(sut, { color: 'red', width: 2, dash: [6, 4] }); B.tex(String.raw`\sigma_{ut}`, sut + 14, 150, { size: 12, color: 'red' });
-          if (p.R > 0.5) B.circle(p.c, 0, p.R, { color: fail ? 'red' : 'accent', width: 2.4, fill: fail ? 'red' : 'accent', fillAlpha: 0.08 });
-          B.dot(sg, ta, { r: 5, color: 'ink' }); B.dot(0, -ta, { r: 5, color: 'ink' }); B.line(sg, ta, 0, -ta, { color: 'muted', width: 1, dash: [3, 3] });
-          B.dot(p.s1, 0, { r: 6, color: 'green' }); B.dot(p.s2, 0, { r: 5, color: 'muted' });
-          // failure level
-          C.fn(Sf, { color: 'orange', width: 2.6, domain: [0, 90], n: 91 });
-          C.hline(S.value, { color: 'muted', width: 1, dash: [4, 4] });
-          C.dot(beta.value, S.value, { r: 7, color: fail ? 'red' : 'gold' });
+      num:'4.3',kind:'Model',name:'Maximum normal stress criterion for brittle materials',
+      statement:String.raw`The tensile branch of the **maximum principal stress (Rankine) criterion** declares a model limit when $\sigma_{\max}=\sigma_t$. A full Rankine criterion also needs a separate compressive strength; only the tensile branch is displayed here. For the chosen surface stress tensor $\begin{pmatrix}\sigma&\tau\\\tau&0\end{pmatrix}$, $\sigma_{\max}=\sigma/2+\sqrt{\sigma^2/4+\tau^2}$. Its direction is $\theta=\tfrac12\operatorname{atan2}(2\tau,\sigma)$ when the stress is nonzero. A line perpendicular to that direction illustrates an opening-plane hypothesis.`,
+      idea:String.raw`Principal stresses are the extrema of normal traction over all planes. Comparing the largest tensile value with a chosen tensile threshold gives a simple criterion without crack-size or postfailure mechanics. With $\sigma=S\cos\beta$ and $\tau=S\sin\beta$, solving the criterion for $S$ gives the plotted limiting curve. Its pure-tension and pure-shear endpoints coincide, while mixed loading can reach the threshold at a smaller $S$.`,
+      caption:String.raw`Choose the mix of axial tension and surface shear and vary its common scale. The strip illustrates the principal direction and perpendicular candidate plane; red means this model's tensile limit is reached. The middle panel shows the corresponding Mohr circle and tensile threshold. The right panel compares the current scale with the computed threshold for every mix. At zero stress, no principal direction is selected.`,
+      deps:['solid-3.2','solid-1.7'],refs:['COMSOL Structural Mechanics Module User’s Guide6.3, Safety Factor Evaluation/Rankine Criterion, p779; full criterion and surrounding failure-index definition read 2026-10-19'],tags:['failure','brittle','principal stress'],verify: false,
+      scope:String.raw`A local, isotropic stress criterion used here only for its tensile branch; it does not model flaws, crack propagation, statistical strength, compression failure or a three-dimensional fracture surface. The 207 MPa tensile threshold is chosen for this illustration, not a measured cast-iron fit or an ASTM conformity claim. The source documents a mathematical engineering criterion, not universal agreement with brittle-material tests.`,links:{source:'https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_theory.06.049.html'},
+      viz(v){
+        const strength=207,beta=v.slider('mix angle $\\beta$ (°)',0,90,60,{step:1}),level=v.slider('stress scale $S$ (MPa)',0,260,150,{step:1});
+        const A=v.stage({x:[-4.6,4.6],y:[-2.1,2.1],equal:true,axes:false,height:340,title:'surface strip and candidate plane'}),B=v.stage({x:[-300,350],y:[-300,300],equal:true,axes:true,height:340,title:'Mohr circle and tensile limit',xlabel:'σ',ylabel:'τ'}),C=v.stage({x:[-6,96],y:[-12,280],axes:'box',gutter:true,height:340,xlabel:'mix angle β (°)',ylabel:'limiting scale S (MPa)',xticks:[0,15,30,45,60,75,90],title:'chosen tensile criterion'});let info;
+        v.legend([['accent','Mohr circle'],['red','chosen tensile threshold'],['orange','limiting scale']]);
+        v.render(()=>{
+          const p=normalStressState(beta.value,level.value,strength),pad=.06*Math.max(strength,2*p.radius),ymax=Math.max(p.radius,35)*1.13;
+          B.setView([Math.min(p.minimum,0)-pad,Math.max(strength,p.maximum)+pad],[-ymax,ymax]);
+          A.rect(-3,-.75,3,.75,{color:'ink',width:2,fill:'accent',fillAlpha:p.failed?.04:.12});
+          if(p.direction!==null){const u=[Math.cos(p.direction),Math.sin(p.direction)],cr=[-u[1],u[0]],length=.75/Math.abs(cr[1]);A.line(-cr[0]*length,-cr[1]*length,cr[0]*length,cr[1]*length,{color:'red',width:p.failed?4:2,dash:p.failed?false:[6,5]});A.arrow(-.4,-.35,-.4+.9*u[0],-.35+.9*u[1],{color:'green',width:2});A.tex(String.raw`\sigma_{\max}`,-.4+1.15*u[0]-.25,-.35+1.15*u[1]+.12,{size:12,color:'green'});}
+          else A.text('zero stress: direction undefined',0,0,{size:11,color:'muted',align:'center'});
+          const f=level.value/260*1.1*Math.cos(rad(beta.value)),g=level.value/260*1.2*Math.sin(rad(beta.value));if(f>.04){A.arrow(3,0,3+f+.2,0,{color:'accent',width:3});A.arrow(-3,0,-3-f-.2,0,{color:'accent',width:3});}if(g>.04){A.arrow(3.15,-.6,3.15,-.6+g,{color:'orange',width:3});A.arrow(-3.15,.6,-3.15,.6-g,{color:'orange',width:3});}
+          A.text('axial tension',0,1.55,{size:12,color:'accent',align:'center'});A.text('surface shear',0,-1.55,{size:12,color:'orange',align:'center'});
+          B.vline(strength,{color:'red',width:2,dash:[6,4]});B.tex(String.raw`\sigma_t`,strength,ymax*.8,{size:12,color:'red',align:'center'});if(p.radius>0)B.circle(p.center,0,p.radius,{color:p.failed?'red':'accent',width:2.4,fill:p.failed?'red':'accent',fillAlpha:.08});
+          B.dot(p.sigma,p.tau,{r:5,color:'ink'});B.dot(0,-p.tau,{r:5,color:'ink'});B.line(p.sigma,p.tau,0,-p.tau,{color:'muted',width:1,dash:[3,3]});B.dot(p.maximum,0,{r:6,color:'green'});B.dot(p.minimum,0,{r:5,color:'muted'});
+          C.fn(b=>normalStressState(b,1,strength).failureLevel,{color:'orange',width:2.6,domain:[0,90],n:181});C.hline(level.value,{color:'muted',width:1,dash:[4,4]});C.dot(beta.value,level.value,{r:7,color:p.failed?'red':'gold'});info={...p,beta:beta.value,level:level.value};
         });
-        v.readout(() => {
-          const { sg, ta, p } = st();
-          return `$\\sigma=${num(sg, 0)}$, $\\tau=${num(ta, 0)}$ MPa → $\\sigma_1=${num(p.s1, 1)}$ MPa against $\\sigma_{ut}=${sut}$ (${p.s1 >= sut ? '**fracture**' : 'intact'}); direction of $\\sigma_1$: ${num(deg(p.thp), 1)}° from the axis, so the crack runs ${num(deg(p.thp), 1)}° from the cross-section. · Breaking level for this mix: $S_f=${num(Sf(beta.value), 1)}$ MPa; pure tension ${num(Sf(0), 0)}, pure torsion ${num(Sf(90), 0)} MPa (equal: in pure shear $\\sigma_1=\\tau$).`;
-        });
+        v.readout(()=>`σ=${num(info.sigma,2)}, τ=${num(info.tau,2)} MPa; maximum principal stress ${num(info.maximum,3)} MPa, tensile index ${num(info.index,4)} (${info.failed?'model limit reached':'below model limit'}). Limiting scale ${num(info.failureLevel,3)} MPa. ${info.direction===null?'Zero stress has no unique principal direction.':`Principal direction ${num(deg(info.direction),2)}° from the axis; candidate plane perpendicular to it.`}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.4
     {
-      num: '4.4',
-      kind: 'Principle',
-      name: 'Mohr–Coulomb criterion',
-      statement: String.raw`Soils, rocks and concrete fail by sliding, and the shear stress a plane can carry grows with the compression pressing it together. The **Mohr–Coulomb criterion** states that failure occurs on a plane when its shear stress reaches
-$$\tau=c+\sigma\tan\varphi,$$
-where $\sigma$ is the normal compression on the plane, $c$ the cohesion and $\varphi$ the angle of internal friction. In terms of the principal stresses (compression positive, $\sigma_1\ge\sigma_3$) this is
-$$\frac{\sigma_1-\sigma_3}{2}=\frac{\sigma_1+\sigma_3}{2}\sin\varphi+c\cos\varphi\quad\Longleftrightarrow\quad\sigma_1=\sigma_3\,\frac{1+\sin\varphi}{1-\sin\varphi}+\frac{2c\cos\varphi}{1-\sin\varphi},$$
-the largest Mohr circle at failure is tangent to the line, and the failure plane makes the angle $45^\circ+\varphi/2$ with the plane of the major principal stress. For $\varphi=0$ it reduces to Tresca's criterion with $c=Y/2$.`,
-      idea: String.raw`A plane with normal at angle $\theta$ to the $\sigma_1$ direction carries $(\sigma,\tau)$ on Mohr's circle (3.3). Failure first occurs on the plane whose point first touches the line $\tau=c+\sigma\tan\varphi$, i.e. where the circle is tangent to it. The distance from the circle's centre $(\sigma_1+\sigma_3)/2$ to the line is $c\cos\varphi+\tfrac{\sigma_1+\sigma_3}2\sin\varphi$; setting it equal to the radius gives the formula above. The tangent point sits at $2\theta=90^\circ+\varphi$ round the circle, hence the plane angle $45^\circ+\varphi/2$. The friction law is Coulomb's; Mohr's contribution was to draw it on the stress circles.`,
-      caption: String.raw`Each circle is a triaxial test run to failure at a different confining pressure $\sigma_3$ (compression to the right). Their common tangent is the envelope $\tau=c+\sigma\tan\varphi$: change $\varphi$ and $c$ and the failure stress $\sigma_1$ of every test moves with it. The tangency residual in the readout is computed independently from the circle and the line and stays at zero. Right: the specimen of the last test with its failure plane at $45^\circ+\varphi/2$ from the horizontal. Set $\varphi=0$ for a metal-like Tresca limit.`,
-      deps: ['solid-3.3'],
-      refs: ['Timoshenko–Goodier ch. 7'],
-      tags: ['failure', 'soil mechanics', 'friction'],
-      credit: 'C. A. Coulomb, 1776; O. Mohr, c. 1900',
-      verify: true,
-      scope: String.raw`Granular and brittle-frictional materials in compression (soils, rocks, concrete, powders); the intermediate principal stress $\sigma_2$ is ignored; ignores tensile cut-off and dilatancy. Soil parameters here ($c$ in kPa, $\varphi$ in degrees) are illustrative.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Mohr%E2%80%93Coulomb_theory' },
-      viz(v) {
-        const phi = v.slider('friction angle $\\varphi$ (°)', 0, 45, 30, { step: 1 });
-        const cc = v.slider('cohesion $c$ (kPa)', 0, 80, 25, { step: 1 });
-        const nt = v.slider('number of tests', 1, 5, 4, { step: 1, int: true });
-        const A = v.stage({ x: [-120, 960], y: [-420, 420], equal: true, axes: true, height: 380, title: 'Mohr circles at failure (compression positive)', xlabel: 'σ (kPa)', ylabel: 'τ (kPa)' });
-        const B = v.stage({ x: [-3, 3], y: [-3.3, 3.3], equal: true, axes: false, height: 380, title: 'last specimen' });
-        const s3s = [50, 100, 150, 200, 250];
-        const fail = (s3) => { const sn = Math.sin(rad(phi.value)); return (s3 * (1 + sn) + 2 * cc.value * Math.cos(rad(phi.value))) / (1 - sn); };
-        v.legend([['accent', 'failure circles'], ['red', 'τ = c + σ tan φ'], ['green', 'tangent points']]);
-        v.render(() => {
-          const ph = rad(phi.value), c = cc.value;
-          const x0 = -c / Math.tan(ph || 1e-9); // envelope hits σ axis here
-          const xe = 960;
-          A.line(Math.max(x0, -120), c + Math.max(x0, -120) * Math.tan(ph), xe, c + xe * Math.tan(ph), { color: 'red', width: 2.4 });
-          A.line(Math.max(x0, -120), -(c + Math.max(x0, -120) * Math.tan(ph)), xe, -(c + xe * Math.tan(ph)), { color: 'red', width: 1.2, alpha: 0.5 });
-          for (let i = 0; i < nt.value; i++) {
-            const s3 = s3s[i], s1 = fail(s3), m = (s1 + s3) / 2, R = (s1 - s3) / 2;
-            A.circle(m, 0, R, { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.05 });
-            const tx = m - R * Math.sin(ph), ty = R * Math.cos(ph); // tangent point
-            A.dot(tx, ty, { r: 4.5, color: 'green' });
-            A.dot(s3, 0, { r: 3.5, color: 'ink' }); A.dot(s1, 0, { r: 3.5, color: 'ink' });
-          }
-          // specimen
-          const s3 = s3s[nt.value - 1], s1 = fail(s3);
-          B.rect(-1, -2, 1, 2, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.08 });
-          const pa = Math.PI / 4 + ph / 2, dx = Math.cos(pa), dy = Math.sin(pa), t = Math.min(1 / dx, 2 / dy);
-          B.line(-dx * t, -dy * t, dx * t, dy * t, { color: 'red', width: 3 });
-          B.arrow(0, 2.9, 0, 2.05, { color: 'accent', width: 3 }); B.arrow(0, -2.9, 0, -2.05, { color: 'accent', width: 3 });
-          B.arrow(-2.2, 0, -1.05, 0, { color: 'orange', width: 2 }); B.arrow(2.2, 0, 1.05, 0, { color: 'orange', width: 2 });
-          B.tex(String.raw`\sigma_1=${num(s1, 0)}`, 1.2, 2.9, { size: 12, color: 'accent', align: 'left' }); B.tex(String.raw`\sigma_3=${s3}`, 2.2, -0.45, { size: 12, color: 'orange', align: 'right' });
-          B.tex(String.raw`45^\circ+\varphi/2=${num(45 + phi.value / 2, 1)}^\circ`, -1.2, 1.3, { size: 12, color: 'red', align: 'right' });
+      num:'4.4',kind:'Model',name:'Mohr–Coulomb criterion',
+      statement:String.raw`A **Mohr–Coulomb shear envelope** models pressure-dependent strength by $|\tau|\le c+\sigma_n\tan\varphi$, with compression positive. For ordered principal compressions $\sigma_1\ge\sigma_3$, tangency of the largest Mohr circle gives $\sigma_1=\sigma_3N_\varphi+2c\sqrt{N_\varphi}$, where $N_\varphi=(1+\sin\varphi)/(1-\sin\varphi)$. These are model relations for prescribed cohesion and friction angle. For $\varphi=0$, the shear envelope reduces to the pressure-independent Tresca form with $c=Y/2$.`,
+      idea:String.raw`The circle has centre $m=(\sigma_1+\sigma_3)/2$ and radius $R=(\sigma_1-\sigma_3)/2$. Its distance to the upper envelope is $c\cos\varphi+m\sin\varphi$. Setting this equal to $R$ yields the principal-stress relation. The tangent coordinates are $(m-R\sin\varphi,R\cos\varphi)$, corresponding to a construction plane $45^\circ+\varphi/2$ from the major principal plane. At zero radius this construction selects no unique plane.`,
+      caption:String.raw`Each circle is a **computed limiting state**, not a measured triaxial test. Vary friction, cohesion and the number of chosen confinement cases; the full circles and their visible envelope segments stay in view. Green points mark tangencies. The final case is shown as a specimen with the idealized tangency plane. With zero cohesion and zero friction the states are hydrostatic and the orientation is undefined.`,
+      deps:['solid-3.3'],refs:['Itasca Software9.2, Mohr-Coulomb Model, Composite Failure Criterion equations4–8 and complete tension-cutoff/flow-rule discussion; 3DEC Joint Model formulation equations1–2; read 2026-10-19'],tags:['failure','soil mechanics','friction'],verify: false,
+      scope:String.raw`Only the idealized compressive shear envelope is shown, with dry-material stresses or appropriately interpreted effective stresses. It ignores intermediate-principal-stress effects, tensile cutoff and postyield flow/dilatancy; real shear-band orientation need not equal the geometric tangency plane. All kPa values are chosen examples. The cited Itasca continuum model uses compression-negative stresses and a tensile cutoff; signs are converted explicitly here and its complete constitutive model is not reproduced. Historical first-publication dates are not asserted.`,links:{source:'https://docs.itascacg.com/itasca920/common/models/mohr/doc/modelmohr.html'},
+      viz(v){
+        const phi=v.slider('friction angle $\\varphi$ (°)',0,45,30,{step:1}),cc=v.slider('cohesion $c$ (kPa)',0,80,25,{step:1}),count=v.slider('number of model cases',1,5,4,{step:1,int:true});
+        const A=v.stage({x:[-120,2000],y:[-1000,1000],equal:true,axes:true,height:380,title:'computed limiting circles (compression positive)',xlabel:'σ (kPa)',ylabel:'τ (kPa)'}),B=v.stage({x:[-3,3],y:[-3.3,3.3],equal:true,axes:false,height:380,title:'last model case'});let info;
+        v.legend([['accent','computed circles'],['red','shear envelope'],['green','tangencies']]);
+        v.render(()=>{
+          const states=[50,100,150,200,250].slice(0,count.value).map(s3=>mohrCoulombState(phi.value,cc.value,s3)),last=states.at(-1),right=last.major*1.1+10,left=-right*.06,ymax=Math.max(...states.map(p=>p.radius),cc.value,10)*1.15,ph=rad(phi.value),slope=Math.tan(ph);
+          A.setView([left,right],[-ymax,ymax]);
+          const lo=slope?Math.max(left,-cc.value/slope):left,hi=slope?Math.min(right,(ymax-cc.value)/slope):right;
+          if(hi>=lo){A.line(lo,cc.value+lo*slope,hi,cc.value+hi*slope,{color:'red',width:2.4});A.line(lo,-cc.value-lo*slope,hi,-cc.value-hi*slope,{color:'red',width:1.2,alpha:.5});}
+          for(const p of states){if(p.radius>1e-12)A.circle(p.center,0,p.radius,{color:'accent',width:2,fill:'accent',fillAlpha:.05});A.dot(p.tx,p.ty,{r:4.5,color:'green'});A.dot(p.minor,0,{r:3.5,color:'ink'});A.dot(p.major,0,{r:3.5,color:'ink'});}
+          B.rect(-1,-2,1,2,{color:'ink',width:2,fill:'accent',fillAlpha:.08});
+          if(last.plane!==null){const dx=Math.cos(last.plane),dy=Math.sin(last.plane),t=Math.min(1/dx,2/dy);B.line(-dx*t,-dy*t,dx*t,dy*t,{color:'red',width:3});B.text(`${num(deg(last.plane),1)}°`,-1.2,1.3,{size:11,color:'red',align:'right'});}else B.text('no unique plane',0,0,{size:12,color:'muted',align:'center'});
+          B.arrow(0,2.9,0,2.05,{color:'accent',width:3});B.arrow(0,-2.9,0,-2.05,{color:'accent',width:3});B.arrow(-2.2,0,-1.05,0,{color:'orange',width:2});B.arrow(2.2,0,1.05,0,{color:'orange',width:2});B.tex(`\\sigma_1=${num(last.major,0)}`,1.1,2.9,{size:12,color:'accent',align:'left'});B.tex(`\\sigma_3=${last.minor}`,2.2,-.45,{size:12,color:'orange',align:'right'});
+          info={states,last,phi:phi.value,c:cc.value,count:count.value};
         });
-        v.readout(() => {
-          const ph = rad(phi.value), c = cc.value, rows = [];
-          for (let i = 0; i < nt.value; i++) {
-            const s3 = s3s[i], s1 = fail(s3), m = (s1 + s3) / 2, R = (s1 - s3) / 2;
-            const dist = (c + m * Math.tan(ph)) * Math.cos(ph); // distance from centre to the line
-            rows.push(`$\\sigma_3=${s3}\\to\\sigma_1=${num(s1, 0)}$ (gap ${Math.abs(dist - R) < 1e-9 ? '0' : num(dist - R, 6)})`);
-          }
-          return `${rows.join(' · ')} kPa. The “gap” is distance(centre, line) − radius, computed independently: 0 means tangent. · $N_\\varphi=\\frac{1+\\sin\\varphi}{1-\\sin\\varphi}=${num((1 + Math.sin(ph)) / (1 - Math.sin(ph)), 3)}$; failure plane at $${num(45 + phi.value / 2, 1)}^\\circ$ to the major principal plane. · Unconfined strength ($\\sigma_3=0$): $${num(fail(0), 1)}$ kPa.`;
-        });
+        v.readout(()=>`${info.states.map(p=>`σ3=${p.minor} → σ1=${num(p.major,3)} kPa (tangency residual ${Math.abs((info.c+p.center*Math.tan(rad(info.phi)))*Math.cos(rad(info.phi))-p.radius).toExponential(1)} kPa)`).join('; ')}. Nφ=${num(info.last.N,4)}. ${info.last.plane===null?'Zero-radius circles: no unique tangency plane.':`Idealized plane ${num(deg(info.last.plane),2)}° from the major principal plane.`}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.5

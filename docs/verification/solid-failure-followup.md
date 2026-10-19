@@ -1,0 +1,21 @@
+# Solid-mechanics failure-criterion source audit
+
+Resolved: **solid-4.3 and solid-4.4**. Parent mathematical/native reruns, content review and screenshot inspection passed; source flags and ledger are reconciled.
+
+## Primary engineering documentation actually read
+
+For **4.3**, read COMSOL's official **Structural Mechanics Module User's Guide 6.3**, [Safety Factor Evaluation / Rankine Criterion](https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_theory.06.049.html), including the surrounding failure-index definitions and the complete Rankine tensile/compressive criterion. Downloaded the [complete official PDF](https://doc.comsol.com/6.3/doc/com.comsol.help.sme/StructuralMechanicsModuleUsersGuide.pdf), rendered and inspected printed **p779** (PDF index778) to read the actual principal-stress formula. This is primary documentation of an implemented engineering model, not a historical first-publication claim or validation for all brittle materials. The unverified Rankine date and ASTM grade/conformity claim are removed; 207 MPa is explicitly a chosen threshold.
+
+For **4.4**, read Itasca's official [Mohr-Coulomb Model 9.2](https://docs.itascacg.com/itasca920/common/models/mohr/doc/modelmohr.html), particularly **Composite Failure Criterion**, equations **4–8**, sign convention, complete tension-cutoff/flow-rule explanation and limitations of the displayed shear branch. Also read the official [3DEC Joint Model formulation](https://docs.itascacg.com/pfc700/3dec/docproject/source/theory/mohrcoulomb/mohrcoulomb.html), equations **1–2** and normal/tensile-stress context. Itasca's continuum documentation orders compression-negative principal stresses; changing signs gives the displayed compression-positive relation. The atlas displays that idealized compressive branch, without claiming Itasca's full constitutive response or a measured triaxial dataset.
+
+Read October19,2026. Local source hashes: `/tmp/atlas-solid-comsol63.pdf` `ddba583ad3ee0ccdcb9a5e4ad1f477a497e4d0b7ae8a19df73afcb36b3e29ed5`; `/tmp/atlas-solid-mohr-itasca.html` `b8dc7323d70ca7d10e9cf1dc0543d7db2aadfcf9f6731dcd3958bd3497054575`; `/tmp/atlas-solid-mohr-joint.html` `d4ce0ecfe3de51284e3a10c6012c33603c0670a0f7e60541991220e9152aadf5`. Inspected source rendering `/tmp/atlas-solid-rankine-comsol-page778.png`.
+
+## Corrections and evidence
+
+**4.3:** The full tensile branch and omitted compression/failure mechanics are explicit. A zero stress tensor has no selected principal direction. Adaptive Mohr bounds contain the formerly clipped high-shear circle, and padded plot/strip bounds contain endpoint dots and axial-load arrows. The drawn line represents a candidate opening plane, rather than a validated three-dimensional crack shape.
+
+**4.4:** The largest configured circle can extend past1843 kPa; the old960-kPa view clipped it and the envelope. Entire circles and finite visible envelope segments now fit. Computed limiting states are labelled model cases. Zero friction plus zero cohesion gives zero-radius hydrostatic circles and no unique construction plane. The source's tensile cutoff/sign convention and the difference between geometric tangency and actual shear-band localization are explicit.
+
+- `node --test tests/verification-solid-failure.test.mjs`: **3 groups pass**. All integer mix angles at three stress levels independently verify characteristic polynomial, direct traction eigenvectors and a20000-direction Rayleigh scan; threshold endpoints/interior minimum and crossing states; independently rotated principal tractions, circle/line residuals and slope stationarity over friction/cohesion/confinement cases, including degeneracy.
+- `node tests/verification-solid-failure.mjs`: **4 native groups pass**, both items in light and dark after the shared local KaTeX/fonts and final diagram-label adjustment. All actual slider corners, additional tensile boundary/interior cases and all five confinement-count positions; full circles, curves, finite envelope segments, load arrows and specimen geometry checked inside bounds. No page/math/readout errors.
+- Inspected full-size high-shear/light, maximum-friction/cohesion/dark and degenerate/dark screenshots: `/tmp/atlas-solid-failure-{4.3,4.4}-*-{light,dark}.png`.
