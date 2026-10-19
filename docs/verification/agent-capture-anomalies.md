@@ -49,3 +49,9 @@ The dark batch capture and a fresh isolated light capture show distinct
 stadium flights and Birkhoff portrait, and both were inspected. Automated
 checks passed before and after recapture. The rendering/capture cause
 remains unresolved.
+
+The next dark batch duplicated content in `causal-3.10.dark.png` and
+`qm-3.3.dark.png`. Bad PNGs were saved under `/tmp/agent-review/` with
+`-duplicated` in their names. Fresh isolated native captures passed and
+were inspected: admissions scatter/contingency table and box-eigenfunction/
+log-energy panels are distinct. The cause remains unresolved.

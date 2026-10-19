@@ -1736,135 +1736,135 @@
       "file": "content/pl/ch04-c.js",
       "textHash": "bae933c4546f91a40803239bc377eaaebf6ac65c0506df83866514617af261f1",
       "textReview": "Strong normalization for simply typed lambda calculus and the primitive terminating constants is correct; confluence gives unique normal form. The reducibility proof needs its usual neutral-term/closure lemmas, which the idea acknowledges as closure properties rather than spelling out. Red untyped marks explicitly combine cycles and search-limit growth, so they do not certify nontermination. Inspect whether typed samples ever hit computational search limits and how those cases are labelled.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: shortest/longest normalization lengths and80 typed-term readouts are legible; all80 normalize with longest13steps at this draw. This finite search does not identify nontermination when an untyped term hits a cutoff; that caption overclaim remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "graph-2.2.2",
       "file": "content/graph/ch02.js",
       "textHash": "0de4bcc47d16a76ba974b47ede85dccbf2610baf30a33af99e85e664cadfaff9",
       "textReview": "The parity argument makes every odd component's cut have odd size, and bridgelessness raises it from one to at least three. Summing cuts gives 3q<=e(S,V-S)<=3|S| and Tutte yields a perfect matching. This remains valid for disconnected bridgeless cubic graphs under the standard graph conventions. Inspect the claimed three-bridge counterexample and selected-set cut counts.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: selected S has4 vertices,2 odd components with3 and7 incident edges, giving6<=10<=12 as displayed. The one-factor existence result is consistent with the bridgeless Petersen example. Editable sets and bridge preset remain pending native checks.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "tech-1.6",
       "file": "content/tech/ch01-b.js",
       "textHash": "240861f779eef7483b28f25c6fafe0cf35ab2e80faf43df6697d2bd94971c66c",
       "textReview": "The chronology explicitly qualifies the contested Denisova date and distinguishes older awls from eyed needles. The heat-resistance model is marked illustrative rather than an archaeological reconstruction. A positive model heat deficit means cooling under the fixed skin-temperature assumptions, not cooling without limit: real heat loss changes as the body cools. The thermal survival claim also depends on duration, shelter, activity and physiology; original chronology/ISO claims remain separate source work.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: clothing heat-loss curves, wind markers, temperature thresholds and historical timeline are distinct. At-10C/wind5, fitted clothing245W is below260W walking heat; other outfits exceed it. The caption's unlimited-cooling language remains a model-scope issue, and historical dates need their own evidence.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "causal-3.10",
       "file": "content/causal/ch03-b.js",
       "textHash": "a218a1ee17a746c69f0915fa59a75ccd1cd29ab46280674a2221a8eb69d0ddf0",
       "textReview": "Conditioning on a collider can induce association, but admission increasing with both conditions alone does not guarantee negative association. For independent binary causes the selected odds ratio is proportional to s11*s00/(s10*s01), which can exceed one under a supermultiplicative selection rule. The specific noisy-OR selection model in the scope does produce a nonpositive association, so restrict the statement's sign claim to that model. Finite sampled population correlations are approximate rather than exactly zero.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid light capture and fresh isolated dark recapture: admissions scatter and2x2 probabilities are distinct. Default selected odds ratio.17 and correlation-.30 illustrate this admission mechanism. The initial dark PNG duplicated content, disclosed in the anomaly report. Monotone selection does not universally imply a negative association; the claim needs mechanism-specific scope.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "opt-4.1",
       "file": "content/opt/ch04.js",
       "textHash": "dcfe8f61309f584967ce42b5da28cb069c460c78d9fe5666a4a108aa90c6251e",
       "textReview": "The standard-form convexity definition and intersection proof are correct; a nonconvex function can indeed describe a convex feasible set. A finite seeded chord test cannot certify convexity, and the caption's 'called convex only when every piece passes' needs to be labelled as a numerical diagnostic or supported by analytic certificates for the known functions. The nonconvex hole example correctly fails convexity.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: convex default feasible disc/half-plane and objective contours align with one grid minimizer. The badge reports convex after finite seeded chord tests, which cannot certify arbitrary editable objectives/constraints. Sampled minima and formal convexity must remain distinct.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rel-3.7",
       "file": "content/rel/ch03.js",
       "textHash": "7db8bd48a53768f49f1a647b1f66289a2ec459dc47075439e67f59dfc3b08b68",
       "textReview": "The eternally accelerated worldline and horizon x=ct are correct, and lab ticks with te<0 arrive at proper times diverging like -log(-te). For a +x pulse from an arbitrary draggable event, xe-te>0 is necessary but not sufficient for future reception: its algebraic intersection can precede emission if the event lies to the right of the ship. Check emission-relative reception time and select direction toward the ship, or restrict the allowed event region. Reusing c for the null-line intercept is also confusing beside light speed.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: hyperbola, horizon wedge and divergent reception-time curve are distinct and legible. Default event has x-ct=-1.30 behind the rightward horizon. General event direction/future-intersection conditions remain pending; these default plots do not resolve them.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qm-3.3",
       "file": "content/qm/ch03.js",
       "textHash": "5e7bfdee62c1914fc1d7c6e2753f8418d554251242153ed2ea00754b7e4d37a9",
       "textReview": "The Dirichlet eigenstates, nodes, normalization, n²/L² scaling and electron 1-nm ground energy about 0.376 eV are correct. Positive kinetic energy is more precise than saying a stationary zero-current ground state 'can never be at rest'. The photon transition must be disabled for n=1; finite-depth confinement only retains levels below its barrier. Check the plotted n² scaling and width-halving control.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid light capture and fresh isolated dark recapture: box eigenfunctions, n-squared log plot and678.3nm4->3 transition are distinct. The initial dark PNG duplicated the left panel, documented in the anomaly report. Default E4=4.1781eV equals16E1; kinetic-versus-at-rest wording remains a text follow-up.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "comb-1.2",
       "file": "content/comb/ch01.js",
       "textHash": "2a7ebb076120aa0c873915edfd019b6dac40305f1acbd0cc40e77926047f2f98",
       "textReview": "The ceil(n/k) bound and proof by summing capacities are correct for nonnegative integer n and positive integer k. The sharp even distribution exists, and the strict n>mk version follows immediately. The scope should make k>=1 explicit if controls could reach zero. Inspect removal/history updates and the emptiest-box strategy at ties and n=0.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes:11 balls in5 boxes distribute3,2,2,2,2, reaching ceil(11/5)=3, with the maximum-history staircase matching. The k>=1 domain qualification remains pending; zero boxes cannot support this formula.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-16.15",
       "file": "content/rca/ch16-a2.js",
       "textHash": "017debe86075be8cb11ae7cf14155462c9e5f4b8c24aea9a88931093e5bde298",
       "textReview": "Continuation along every path plus simple connectedness gives path-independent terminal elements, hence a global holomorphic function. The idea correctly invokes homotopy invariance and local agreement. The log example separates a slit/disc branch from annular monodromy and labels paths leaving the domain invalid. Inspect winding increments and return values for edited corners without treating an invalid red path as a counterexample.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: annular loop winds once around0, and its log lift ends2pi i above its start; planar and surface panels are distinct. Simply-connected alternatives and path segments leaving the domain still need focused controls.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "crypto-4.9",
       "file": "content/crypto/ch04-c.js",
       "textHash": "c0bfe44466db80ee4c0537c44c5d38d1bc5c871b494a85092fdea4641153e59f",
       "textReview": "For an injective fixed-key block cipher the equality pattern is preserved exactly, and the equal-versus-distinct two-block challenge breaks EAV security. Randomized CBC and nonce-unique CTR require their usual IV/nonce and cipher assumptions; the toy model is explicitly 8-bit and its CTR mixer idealized. Tiny-block collisions may remain in CBC/CTR displays, so 'becomes noise' is illustrative and cannot imply equality-free ciphertext.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: ECB smiley plaintext/ciphertext retain the equality outline, with2 distinct values and about92percent adjacent equality. This is an8-bit teaching permutation; CBC/CTR nonce/counter exhaustion and security scope remain pending and are not validated by the picture looking noisy.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pma-10.29",
       "file": "content/pma/ch10-b1.js",
       "textHash": "91fab757fe415ed36e3c27c8ca05d678e2b0281c5bc29166772c54adb303b686",
       "textReview": "The alternating face formula, oriented triangle circuit and double-boundary cancellation are correct. Reversal of the whole simplex orientation reverses all boundary orientations together; outward versus inward depends on that choice as the idea states. The fixed tetrahedron caption can legitimately show outward orientation. Inspect signed endpoint cancellation and the shared-edge arrows in both modes.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: signed triangle boundary arrows form one circuit, and tetrahedron face orientations are legible. The second boundary mode's pairwise cancellation still needs control inspection; the default picture is consistent with the algebraic sign convention.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "music-3.7",
       "file": "content/music/ch03-b.js",
       "textHash": "12e11f0ae49e0ea0748bcc6498faaa0b4f0c25e5db81017ab8223f877019fc92",
       "textReview": "The Bessel zeros, mode frequencies, nodal counts and ten listed ratios agree with the ideal fixed circular membrane model. The sine branch must exclude m=0 because sin(0theta) is the zero function, not an eigenmode. Inharmonic partials usually weaken a common pitch but do not logically imply no perceived pitch for every blow. Inspect whether a strike excites both degenerate angular components and whether n is labelled radial order rather than literal number of interior nodal circles. Subjective listening is still unsupported.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: membrane nodal pattern, J1 zeros, excitation bars and harmonic references are distinct. Default j11=3.831706 and ratio1.5933 yield239Hz for f01=150Hz. The axisymmetric m0 case and pitch-language scope remain pending. No subjective listening credit is assigned.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-4.9",
       "file": "content/fa/ch04.js",
       "textHash": "1ecbb6468634acb98a0e01aa6e65dc3dd32171155840109e219321d7853624e6",
       "textReview": "The dual/quotient isometries follow correctly from norm-preserving Hahn–Banach extension and factorization through the quotient. The open unit ball maps onto the quotient's open unit ball, so the norms agree without assuming an infimum is attained. The caption's strip between level lines assumes a nonzero annihilating functional; inspect the zero-functional handle case separately.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: primal diamond/dual square and extension line are distinct. Default functional norm.7000 matches its quotient infimum, while the selected extension has larger norm.9517. Zero-functional and other norm controls remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "epi-4.2",
       "file": "content/epi/ch04.js",
       "textHash": "c2a5d6b5faae31224e9c47f165d41520e82901402a1bcfd16d6a3b347669774b",
       "textReview": "The causal-pie idea correctly shows that attributable fractions can sum to more than one, but the displayed P(D|component absent) is observational conditioning rather than the required intervention in general. Independence in the illustrative population can make them agree, not in arbitrary causal settings. Sharing pies does not force the sum above one: if A,B,C are all present and any pair suffices, removing any single component prevents no cases. Replace the universal claim and use intervention probabilities.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: sufficient-cause pies, selected completed pie and prevention bars are legible. The simulated31percent baseline risk and component removals sum236percent. Interpretation requires specified component-removal interventions and does not make every overlap force a sum above100percent; scope remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "nt-3.3",
       "file": "content/nt/ch03.js",
       "textHash": "b6bf643e49dbc2f4bc0811c3c4d23212bda6bc90c2485cd9587ea90367df588c",
       "textReview": "The classification is unchanged. The proof now chooses h from g,g+p with h^(p-1) not equal to one modulo p² before binomial exponent lifting, instead of attributing order growth to Hensel root lifting. CRT and the power-of-two obstruction remain explicit, and CRT is mirrored as an actual prerequisite.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: n8 unit orders1,2,2,2 give maximal order2 belowphi8=4. The0-mismatch finite inventory of primitive-root moduli through200 is explicitly brute force, distinct from proving the general classification.",
       "interactionReview": null,
-      "status": "text-corrected-full-page-follow-up-pending",
+      "status": "text-and-visual-reviewed-follow-up-pending",
       "initialFinding": "The primitive-root modulus classification is correct, including the conventional trivial unit group at n=1. The proof's lift is not supplied by ordinary Hensel lifting: a primitive residue mod p may lift to an element with smaller order mod p². Choose a representative with h^(p-1) not equal to one mod p², using g or g+p, and then use binomial exponent lifting. Mirror the actually used CRT prerequisite rather than a misleading Hensel dependency.",
       "initialTextHash": "77e043179bbf3ce074b6f0b05c0c5536296b4b68a4a8ab45022a49d1d6983788",
       "correctionReport": "docs/verification/agent-primitive-root-review.md"
@@ -1874,63 +1874,67 @@
       "file": "content/tech/ch04-b.js",
       "textHash": "e9c7a062fc6895bce15fbc60def3c0cfc67d24f90bb54effc63b5ea87c56c42d",
       "textReview": "The statement carefully separates original Smeaton tables, six sail angles and empirical maxims from the modern illustrative water/blade models. Its original locators and model-scaling caveat are specific. The variable load-times-speed effect is the right quantity, and the power/head comparison is distinct from whole descent. Inspect the replay arithmetic and blade-angle conventions; this semantic reading does not acquire another original source.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: illustrative overshot model's load/effect curve and Smeaton empirical bands are distinct. Default load50percent gives effect53percent; numerical maximum60percent at78percent load differs from historical ranges, with model/data separation stated. No new primary-source certification is assigned.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pma-3.41",
       "file": "content/pma/ch03-b2.js",
       "textHash": "65dcfe7a1a7c9b6b3b5cc0606bd6e294cfd670b8730c03066aaa7ff49b081d14",
       "textReview": "The finite summation-by-parts identity is correct, including its A_(p-1) boundary term and the empty interior sum when p=q. Substituting a_n=A_n-A_(n-1) and shifting indices proves it directly. The diagram assumes positive a_n but explicitly allows negative row differences when b increases; inspect signed-area accounting and handle ordering.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: column and row decompositions give matching9.01250 sums, with the terminal slab retained. Default positive/decreasing data make ordinary areas valid; the negative-row case needs its control check.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "geol-4.6",
       "file": "content/geol/ch04-b.js",
       "textHash": "62487d97b99df2c92e9a48daafd16e43234d9e47ceb9b3c2a8e686b2b0fb4141",
       "textReview": "Subtracting the linear steady geotherm gives initial transient 1-z/a, whose sine coefficients are 2/(n*pi), so the finite-plate heat series is correct for positive time. The long-time first-mode scale is a²/(pi²*kappa), about 32 Myr for 100 km and kappa=1e-6 m²/s. The boundary/initial incompatibility at the ridge is a standard t=0 limit. Empirical depth fits remain an explicitly flagged source question.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: plate temperature, bathymetry and heat-flow panels are distinct. Default100km plate gives32Myr timescale and41mW/m2 asymptote; at60Myr plate/half-space heat fluxes are both near53. Empirical fits are identified separately from the model.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-11.2",
       "file": "content/fa/ch11.js",
-      "textHash": "ec3b9364c57e192914c2a5d7328a8679d9a9456907bc6e28dd604c68ae6fdbe0",
-      "textReview": "An ideal containing a unit contains one, and continuity preserves ideal operations under closure, so the proposition is correct. In the caption, f1²+f2² has no zero only for the selected real-valued functions or an equivalent positivity condition; arbitrary complex functions with no common zero can have cancelling squares. State the real-valued example functions explicitly and inspect the coincident-zero transition.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "a4255de808ac940f5d4a332bc71d754cb86c5671b0677e5bba858b5b5dd51088",
+      "textReview": "Both duplicated examples now identify their generators as real-valued inside complex C[0,1], give the conjugate-square construction for general complex functions, and use the explicit lower bound g(t)>=.18(a-b)^2. The sampled minimum is no longer an invertibility certificate. A common zero makes the ideal proper because every ideal member vanishes there. The exact off-grid common-zero marker replaces its sampled approximation; merely small positive minima are not colored as actual zeros.",
+      "visualReview": "Inspected16 controlled captures across both example pages/themes: default, off-grid zero, near-distinct zeros and coincident zeros. Default sampled minimum about.082 is separated from analytic lower bound.018432. Near-distinct cases retain a green positive marker and bound; coincidence puts the red marker at the true zero even off the sampling grid.",
+      "interactionReview": "Eight real pointer drags and four coincidence-button clicks across fa11.2/11.3 in both themes pass, with16 checked states. Instrumented common-zero markers have exactly y0 and x equal to the actual shared handle coordinate; distinct-case samples exceed their positive lower bounds. Runtime/TeX/finite checks and six existing FA11 groups pass. Only fa11.2 belongs to the fixed sample and receives sample credit.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "An ideal containing a unit contains one, and continuity preserves ideal operations under closure, so the proposition is correct. In the caption, f1²+f2² has no zero only for the selected real-valued functions or an equivalent positivity condition; arbitrary complex functions with no common zero can have cancelling squares. State the real-valued example functions explicitly and inspect the coincident-zero transition.",
+      "initialTextHash": "ec3b9364c57e192914c2a5d7328a8679d9a9456907bc6e28dd604c68ae6fdbe0",
+      "initialVisualFinding": "Inspected both initial themes: real-valued plotted functions give positive green square sum and approximate minimum.082. The general complex-algebra wording was insufficient because ordinary squares can cancel; also the sampled minimum is not an invertibility certificate. A focused correction follows with a real-valued scope and analytic lower bound.",
+      "correctionReport": "docs/verification/agent-ideal-squares-review.md"
     },
     {
       "id": "logic-2.11",
       "file": "content/logic/ch02-b.js",
       "textHash": "2bf5f6f71cb02de9469b69811d7bbae2b37acafb88388cc7262c89458fdfcbea",
       "textReview": "Compactness in countably many letters follows from the infinite finitely branching assignment tree. To justify a surviving node at each level despite infinitely many formulas on that finite set of letters, a failed level would supply one refuting formula per finitely many assignment, yielding a finite unsatisfiable subset. That finite-witness step is implicit but valid. The six-variable display illustrates an infinite theorem and cannot certify arbitrary infinite satisfiability by itself.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: alternation tree leaves two of64 partial assignments after12 formulas and selects the gold leftmost surviving branch. The last formula mentions the next variable, so a surviving finite-witness extension is implicit. Infinite compactness follows from the stated finite-witness argument, not the finite drawing alone.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "micro-2.5",
       "file": "content/micro/ch02.js",
       "textHash": "918e2edfa90b9cf4f9882dd497eb00295ab3e2dd7f834d62ded51a89c94a41bf",
       "textReview": "The equilibrium and short-side rationing interpretation are standard under strictly downward demand and upward supply. Weakly monotone or flat curves can give multiple crossings, no strict surplus, or equality of the traded and equilibrium quantities away from one selected price, so the strict inequalities need corresponding assumptions. Bisection also requires a bracketed sign change; inspect nonintersection and clipped-zero cases.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: equilibrium Q53.8/P52.5 and pinned price34 give demand74.3,supply32.8 and shortage41.5 as plotted. Monotonicity/uniqueness conditions remain pending text qualifications; bisection itself does not establish them.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "music-8.3",
       "file": "content/music/ch08.js",
       "textHash": "106ca74afc4bca3e4923439e6898e760dd00e0f40d398c1ced3133ecb1e338c5",
       "textReview": "The proof now uses the nonconstant cyclic word of prime length seven to distinguish all rotations; it no longer invents an adjacent semitone pair. The fifths-window comparison fixes a tonic, and the historical scope distinguishes conventions without asserting different starting degrees for every shared medieval name.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Ionian clock/keyboard use C,D,E,F,G,A,B,C and gap pattern2,2,1,2,2,2,1 sums12. Relative/parallel modes and audio still require their own checks. This sample page is distinct from the separately corrected diatonic-rotation page.",
       "interactionReview": null,
-      "status": "text-corrected-full-page-follow-up-pending",
+      "status": "text-and-visual-reviewed-follow-up-pending",
       "initialFinding": "The seven diatonic modes and relative-versus-parallel distinction are correct. The proof incorrectly invokes a pair of adjacent semitones SS: TTSTTTS has no adjacent S pair. Its seven rotations are distinct because length seven is prime and the nonconstant cyclic word cannot have a smaller period. Qualify the fifths-window claim by holding a tonic fixed, and distinguish medieval authentic/plagal conventions without claiming every shared modern name started on a different degree.",
       "initialTextHash": "977eec924d93a97e0b0c7325fcd82d7bdf2f31e79805c0bfebc59702dc7b0f74",
       "correctionReport": "docs/verification/agent-diatonic-review.md"
@@ -1940,18 +1944,18 @@
       "file": "content/thermo/ch01.js",
       "textHash": "c0b6bdb1df6f301cd5727e986964f1d34eb33cfa4bcccf0547d39c2fbc2e841b",
       "textReview": "Ideal partial pressures add because each species contributes its own wall-momentum flux and equipartition fixes m<v_x²>=kT. The ideal/low-density restriction and finite-size departure are explicit. The crowded mixture's alone comparison must use each species' nonideal standalone pressure, distinct from its ideal density formula, as the caption's three bars intend. Inspect the multicomponent hard-sphere EOS and finite impact sampling.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: three species, measured/alone/ideal pressure bars and mixture-theory line are distinct. Default measured.0698 plus/minus.0047 exceeds ideal.0584, ratio1.126; finite density/counting error should not be described as exact Dalton equality. The rendered projection alone does not determine the simulation's spatial dimensionality.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "macro-2.2",
       "file": "content/macro/ch02.js",
       "textHash": "45e718d9fc22804aed0af4a2599d577f5ebe31ba34ebf23c7d485c700c50feca",
       "textReview": "Differentiation gives the two Cobb–Douglas shares and Euler's theorem gives exhaustion for differentiable degree-one homogeneous production. Require positive K,L,A and nondegenerate 0<alpha<1 for the stated marginal products and unit-elasticity characterization. Degenerate one-factor limits do not furnish a varying-share CES counterexample. The plotted historical labour share and its adjustments still need their source provenance checked separately.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default Cobb-Douglas labor share65percent is flat, payment bars sum1.152 output, and historical series vary separately. Positive K,L/productivity and alpha range are necessary scope conditions; the default illustration does not validate all CES endpoints.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qm-4.7",

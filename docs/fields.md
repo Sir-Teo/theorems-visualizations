@@ -30,6 +30,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+In complex function algebras, use conjugate squares for positivity. State when
+a drawing uses real-valued generators. A sampled positive minimum does not
+certify invertibility; supply a bound or an exact zero argument, including
+known zeros between sample points.
+
 Separate a finite search budget from unrestricted mathematical reachability.
 A bounded-length front need not be open; local extension can increase the
 budget. Use actual region clearance for claimed inscribed balls, and label
