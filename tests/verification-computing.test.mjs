@@ -171,15 +171,63 @@ test('Double reversal preserves a DFA whose existing state is named z, including
 });
 
 import {dEngine} from '../content/dist/ch04-b.js';
-test('A weakly fair scheduler can starve one dining philosopher while both neighbours repeatedly eat',()=>{
-  const E=dEngine(3,{rule:'coin',rng:()=>.75});E.stepOne(0);assert.equal(E.side[0],1);
-  for(let round=0;round<100;round++){
-    // Neighbour1 reaches eating; philosopher0 gets a genuine scheduled test, always sees fork1 held.
-    E.stepOne(1);E.stepOne(1);E.stepOne(1);assert.equal(E.pc[1],3);E.stepOne(0);E.stepOne(1);
-    // The other neighbour also completes a meal, so all three processes take infinitely many steps on repetition.
-    E.stepOne(2);E.stepOne(2);E.stepOne(2);E.stepOne(2);
-    assert.equal(E.pc[0],1);assert.equal(E.eat[0],0);assert.equal(E.eat[1],round+1);assert.equal(E.eat[2],round+1);
-    assert.deepEqual(E.own,[-1,-1,-1]);
+test('A weakly fair scheduler starves one philosopher for either first-fork choice and arbitrary later draws',()=>{
+  const choices=new Set();
+  for(let seed=1;seed<=20;seed++){
+    const E=dEngine(3,{rule:'coin',rng:M.rng(seed)});E.stepOne(0);E.stepOne(0);assert.equal(E.pc[0],2);choices.add(E.side[0]);
+    const anchor=E.side[0]===0?2:1,other=3-anchor;
+    const meal=p=>{for(let step=0;step<4;step++)E.stepOne(p);assert.equal(E.pc[p],4);};
+    const release=p=>{for(let step=0;step<3;step++)E.stepOne(p);assert.equal(E.pc[p],0);};
+    for(let round=0;round<100;round++){
+      // Only past draws select the neighbour; later choices cannot affect the schedule.
+      meal(anchor);E.stepOne(0);release(anchor);meal(other);release(other);
+      assert.equal(E.pc[0],2);assert.equal(E.eat[0],0);
+      assert.equal(E.eat[1],round+1);assert.equal(E.eat[2],round+1);
+      assert.deepEqual(E.own,[-1,-1,-1]);
+    }
+  }
+  assert.deepEqual([...choices].sort(),[0,1]);
+});
+
+test('Dining steps affect at most one fork and retain exclusive ownership through partial releases',()=>{
+  for(const n of [2,3,5,8])for(const rule of ['hold','polite','coin']){
+    const r=M.rng(317+n),E=dEngine(n,{rule,rng:r});
+    for(let t=0;t<4000;t++){
+      const before=E.own.slice(),p=Math.floor(r()*n);E.stepOne(p);
+      assert.ok(E.own.filter((x,j)=>x!==before[j]).length<=1);
+      for(let i=0;i<n;i++){
+        for(let f=0;f<n;f++)if(E.own[f]===i)assert.ok(f===i||f===(i+1)%n);
+        if([4,6].includes(E.pc[i])){assert.equal(E.own[i],i);assert.equal(E.own[(i+1)%n],i);}
+        if(E.pc[i]===7){assert.equal(E.own[(i+1)%n],i);assert.notEqual(E.own[i],i);}
+        if(E.pc[i]===4)assert.notEqual(E.pc[(i+1)%n],4);
+      }
+    }
+  }
+});
+
+test('Dining retry and completed-meal releases remain separately schedulable',()=>{
+  const E=dEngine(3,{rule:'polite'});
+  for(let round=0;round<3;round++)E.lockstep();
+  assert.deepEqual(E.pc,[3,3,3]);assert.deepEqual(E.own,[0,1,2]);
+  E.stepOne(0);assert.equal(E.pc[0],5);assert.equal(E.own[0],0);
+  E.stepOne(0);assert.equal(E.pc[0],1);assert.equal(E.own[0],-1);
+  const F=dEngine(3,{rule:'coin',rng:()=>.75});
+  for(let step=0;step<5;step++)F.stepOne(0);
+  assert.equal(F.pc[0],6);assert.deepEqual(F.own,[0,0,-1]);
+  F.stepOne(0);assert.equal(F.pc[0],7);assert.deepEqual(F.own,[-1,0,-1]);
+  // The other neighbour can take the released fork before the final release.
+  for(let step=0;step<3;step++)F.stepOne(2);
+  assert.equal(F.own[0],2);assert.equal(F.own[1],0);
+  F.stepOne(0);assert.deepEqual(F.own,[2,-1,-1]);
+});
+
+test('Serving complete philosopher turns breaks the deterministic symmetry',()=>{
+  for(const n of [3,5,8])for(const rule of ['hold','polite']){
+    const serial=dEngine(n,{rule}),lock=dEngine(n,{rule});
+    for(let round=0;round<10;round++){serial.sequential();lock.lockstep();}
+    assert.deepEqual(serial.eat,Array(n).fill(10));
+    assert.deepEqual(serial.own,Array(n).fill(-1));
+    assert.deepEqual(lock.eat,Array(n).fill(0));
   }
 });
 

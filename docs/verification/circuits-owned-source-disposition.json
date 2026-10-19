@@ -3,7 +3,7 @@
   "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
   "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
   "initialSourceFlags": 203,
-  "retainedCount": 97,
+  "retainedCount": 95,
   "genuinelyUnreviewed": [],
   "collections": {
     "circ": {
@@ -239,10 +239,7 @@
       "chapters": [
         4
       ],
-      "retained": [
-        "dist-4.6",
-        "dist-4.7"
-      ],
+      "retained": [],
       "genuinelyUnreviewed": []
     },
     "robot": {
@@ -958,20 +955,6 @@
       "report": "docs/verification/computing-source-review.md"
     },
     {
-      "id": "dist-4.6",
-      "status": "reviewed_blocked",
-      "file": "content/dist/ch04-b.js",
-      "missingFullSourceOrClaim": "Full Lehmann–Rabin1981 original and precise primitive/scheduler model for deterministic symmetric impossibility. HUJI returned an access-error HTML page and alternate PDF attempts failed. Atomic multi-fork operations explicitly excluded.",
-      "report": "docs/verification/computing-source-review.md"
-    },
-    {
-      "id": "dist-4.7",
-      "status": "reviewed_blocked",
-      "file": "content/dist/ch04-b.js",
-      "missingFullSourceOrClaim": "Full Lehmann–Rabin1981 original progress proof and its fairness/atomicity model. False individual lockout-freedom claim removed with an actual-engine fair-schedule starvation counterexample. Positive-probability system-progress proof still awaits original comparison.",
-      "report": "docs/verification/computing-source-review.md"
-    },
-    {
       "id": "robot-3.7",
       "status": "reviewed_blocked",
       "file": "content/robot/ch03.js",
@@ -1059,6 +1042,22 @@
       "report": "docs/verification/sheffer-peirce-primary-followup.md",
       "missingEvidence": [],
       "reason": "Full Sheffer1913 original read, especially §2 Theorem1 and final NAND-duality footnote; full Peirce original text in Collected Papers4.12–20 read. Credit distinguishes NOR and NAND and qualifies c1880 as editorial dating; no autograph inspection claimed."
+    },
+    {
+      "id": "dist-4.6",
+      "status": "closed",
+      "file": "content/dist/ch04-b.js",
+      "report": "docs/verification/lehmann-rabin-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Complete POPL1981 original read, including symmetric initial conditions, proper scheduling, free/courteous protocols and progress sketch (omitted lemma proofs explicitly disclosed). Simulator now separates coin draws, failed tests and individual releases; safety/partial-release/starvation regressions pass."
+    },
+    {
+      "id": "dist-4.7",
+      "status": "closed",
+      "file": "content/dist/ch04-b.js",
+      "report": "docs/verification/lehmann-rabin-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Complete POPL1981 original read, including symmetric initial conditions, proper scheduling, free/courteous protocols and progress sketch (omitted lemma proofs explicitly disclosed). Simulator now separates coin draws, failed tests and individual releases; safety/partial-release/starvation regressions pass."
     }
   ]
 }

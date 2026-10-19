@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 237,
-    "reviewedBlocked": 237,
+    "open": 235,
+    "reviewedBlocked": 235,
     "unreviewed": 0,
     "ledgerRecords": 664,
-    "recordedClosed": 397,
+    "recordedClosed": 399,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 237,
-    "liveRemaining": 237,
+    "recordedRemaining": 235,
+    "liveRemaining": 235,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -73,11 +73,6 @@
     "demo": {
       "open": 1,
       "reviewedBlocked": 1,
-      "unreviewed": 0
-    },
-    "dist": {
-      "open": 2,
-      "reviewedBlocked": 2,
       "unreviewed": 0
     },
     "ecol": {
@@ -301,7 +296,7 @@
     {
       "path": "docs/verification/circuits-owned-source-disposition.json",
       "exists": true,
-      "sha256": "b28f8c7fb20bf95e77ae2cb512a665776541a87691d91e624acf1aa49ef2c3d5",
+      "sha256": "6606dd0fdf63842a82fa543bfcbe1c7b59ff8c3f49c26190b2afa919878f2da1",
       "records": 105
     },
     {
@@ -665,7 +660,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/94"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/92"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -681,7 +676,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/95"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/93"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -1104,38 +1099,6 @@
       ],
       "missingEvidence": [
         "Complete Coale–Trussell1974 original inaccessible; UN ManualX1983 pp23–25/EqsE1–E7/Table3 read, corrected standards and fit, but cannot close original attribution."
-      ]
-    },
-    {
-      "id": "dist-4.6",
-      "file": "content/dist/ch04-b.js",
-      "name": "No symmetric deterministic dining philosophers",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/91"
-      ],
-      "reports": [
-        "docs/verification/computing-source-review.md"
-      ],
-      "missingEvidence": [
-        "Full Lehmann–Rabin1981 original and precise primitive/scheduler model for deterministic symmetric impossibility. HUJI returned an access-error HTML page and alternate PDF attempts failed. Atomic multi-fork operations explicitly excluded."
-      ]
-    },
-    {
-      "id": "dist-4.7",
-      "file": "content/dist/ch04-b.js",
-      "name": "Randomized dining philosophers (Lehmann–Rabin)",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/92"
-      ],
-      "reports": [
-        "docs/verification/computing-source-review.md"
-      ],
-      "missingEvidence": [
-        "Full Lehmann–Rabin1981 original progress proof and its fairness/atomicity model. False individual lockout-freedom claim removed with an actual-engine fair-schedule starvation counterexample. Positive-probability system-progress proof still awaits original comparison."
       ]
     },
     {
@@ -2928,7 +2891,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/96"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/94"
       ],
       "reports": [
         "docs/verification/pde-source-review.md"
@@ -3524,7 +3487,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/93"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/91"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4776,7 +4739,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/94",
+      "pointer": "#/retained/92",
       "id": "cg-3.3",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4785,7 +4748,7 @@
       "missingEvidence": [
         "Full de Berg§2.2 source passage and original DCEL attribution. Connected-graph scope repaired; general faces with holes need multiple boundary-component pointers. Complete de Berg/Mount source was not obtained."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/94",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/92",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -4804,7 +4767,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/95",
+      "pointer": "#/retained/93",
       "id": "cg-4.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4813,7 +4776,7 @@
       "missingEvidence": [
         "Full zone-theorem original(s), correct constant/edge-count convention and charging proof. Unverified best9.5m claim and unsupported five-new-edges induction removed. Explicitly separates tested arrangement counts from an uninspected linear-bound proof."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/95",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/93",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -5339,33 +5302,29 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/91",
+      "pointer": "#/additionalReviewedClosed/8",
       "id": "dist-4.6",
-      "rawStatus": "reviewed_blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/computing-source-review.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/lehmann-rabin-primary-followup.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Full Lehmann–Rabin1981 original and precise primitive/scheduler model for deterministic symmetric impossibility. HUJI returned an access-error HTML page and alternate PDF attempts failed. Atomic multi-fork operations explicitly excluded."
-      ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/91",
+      "missingEvidence": [],
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/additionalReviewedClosed/8",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/92",
+      "pointer": "#/additionalReviewedClosed/9",
       "id": "dist-4.7",
-      "rawStatus": "reviewed_blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/computing-source-review.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/lehmann-rabin-primary-followup.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Full Lehmann–Rabin1981 original progress proof and its fairness/atomicity model. False individual lockout-freedom claim removed with an actual-engine fair-schedule starvation counterexample. Positive-probability system-progress proof still awaits original comparison."
-      ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/92",
+      "missingEvidence": [],
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/additionalReviewedClosed/9",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/geology-owned-source-ledger.json",
@@ -11322,7 +11281,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/96",
+      "pointer": "#/retained/94",
       "id": "pde-3.12",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -11331,7 +11290,7 @@
       "missingEvidence": [
         "Full Tychonoff1935 original Mat.Sb.42 pp199–216, historical attribution and precise original growth classes. Full Evans1st§2.3.3 pp57–59 read, but it refers to John for the construction. Uniform-strip growth error and invalid numerical rounding/tail certificate repaired; Gevrey construction derived independently. Official MathNet issue attempt returned403."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/96",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/94",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12485,7 +12444,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/93",
+      "pointer": "#/retained/91",
       "id": "robot-3.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -12494,7 +12453,7 @@
       "missingEvidence": [
         "Full Denavit–Hartenberg1955 original. Modern R/P-chain transforms and convention scope reviewed; broad multi-DoF/lower-pair claim narrowed. Full original-paper comparison remains open. Bounded new public Penn/GWU leads both resolved to modern lecture slides rather than the1955 original; no source closure inferred."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/93",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/91",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },

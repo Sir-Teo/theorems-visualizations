@@ -24,38 +24,52 @@ function runRA({ n, req, seed, spread, defer, dur = 1.6 }) {
 }
 
 // ---------------------------------------------------------------------------------------------- 4.6 / 4.7: dining philosophers engine
-// Philosopher i has fork i on its left and fork (i+1) mod n on its right. pc: 0 thinking, 1 hungry (wants its first fork), 2 holds one fork (wants the second), 3 eating.
-// rule: 'hold' (wait for the second fork while holding the first), 'polite' (put the first fork down if the second is taken), 'coin' (Lehmann–Rabin: like polite, but the first fork is chosen by a coin flip each time).
+// Philosopher i has fork i on its left and fork (i+1) mod n on its right.
+// Each step accesses at most one fork; coin draws and failed second-fork tests
+// are separate from releases, as in Lehmann–Rabin §5. Meals finish in one
+// local step, then the forks are released individually (left-first here).
 export function dEngine(n, o) {
   const E = { n, pc: Array(n).fill(0), own: Array(n).fill(-1), eat: Array(n).fill(0), rng: o.rng || (() => 0.5) };
-  E.side = range(n).map((i) => (o.rule === 'coin' ? (E.rng() < 0.5 ? 0 : 1) : o.lefty && i === n - 1 ? 1 : 0));
+  E.side = range(n).map((i) => (o.lefty && i === n - 1 ? 1 : 0));
   const first = (i) => (E.side[i] === 0 ? i : (i + 1) % n), second = (i) => (E.side[i] === 0 ? (i + 1) % n : i);
   const intent = (i, own) => {
-    const c = E.pc[i];
-    if (c === 0) return { i, rel: [], next: 1, flip: true };
-    if (c === 1) return own[first(i)] < 0 ? { i, take: first(i), next: 2 } : { i, stay: true };
-    if (c === 2) {
-      if (own[second(i)] < 0) return { i, take: second(i), next: 3 };
-      return o.rule === 'hold' ? { i, stay: true } : { i, rel: [first(i)], next: 1, flip: true };
+    switch (E.pc[i]) {
+      case 0: return { i, next: 1 };
+      case 1: return { i, next: 2, flip: true };
+      case 2: return own[first(i)] < 0 ? { i, take: first(i), next: 3 } : { i, stay: true };
+      case 3:
+        if (own[second(i)] < 0) return { i, take: second(i), next: 4, failed: o.rule === 'hold' ? 3 : 5 };
+        return o.rule === 'hold' ? { i, stay: true } : { i, next: 5 };
+      case 4: return { i, next: 6 }; // finish the finite meal
+      case 5: return { i, release: first(i), next: 1 }; // unsuccessful attempt
+      case 6: return { i, release: i, next: 7 };
+      case 7: return { i, release: (i + 1) % n, next: 0 };
+      default: throw new Error('Invalid philosopher state');
     }
-    return { i, rel: [i, (i + 1) % n], next: 0 };
   };
   const apply = (it) => {
     const i = it.i;
     if (it.stay) return;
-    if (it.take !== undefined) { if (E.own[it.take] < 0) { E.own[it.take] = i; E.pc[i] = it.next; if (it.next === 3) E.eat[i]++; } return; }
-    it.rel.forEach((f) => { E.own[f] = -1; });
+    if (it.take !== undefined) {
+      if (E.own[it.take] < 0) { E.own[it.take] = i; E.pc[i] = it.next; if (it.next === 4) E.eat[i]++; }
+      else if (it.failed !== undefined) E.pc[i] = it.failed;
+      return;
+    }
+    if (it.release !== undefined) E.own[it.release] = -1;
     E.pc[i] = it.next;
     if (it.flip && o.rule === 'coin') E.side[i] = E.rng() < 0.5 ? 0 : 1;
   };
   E.stepOne = (i) => apply(intent(i, E.own));
+  // A batched round: attempted acquisitions precede local steps/releases.
+  // Conflicting acquisitions are serialized by seat index, not simultaneous.
   E.lockstep = () => { const its = range(n).map((i) => intent(i, E.own.slice())); its.filter((t) => t.take !== undefined).forEach(apply); its.filter((t) => t.take === undefined).forEach(apply); };
-  E.sequential = () => { for (let i = 0; i < n; i++) E.stepOne(i); };
+  // Seven consecutive steps let an uncontended philosopher finish a meal.
+  E.sequential = () => { for (let i = 0; i < n; i++) for (let t = 0; t < 7; t++) E.stepOne(i); };
   E.key = () => E.pc.join('') + '|' + E.own.join(',') + '|' + E.side.join('');
   return E;
 }
-const PHCOL = ['faint', 'gold', 'orange', 'green'];
-const PHNAME = ['thinking', 'hungry', 'holds one fork', 'eating'];
+const PHCOL = ['faint', 'gold', 'gold', 'orange', 'green', 'orange', 'purple', 'purple'];
+const PHNAME = ['thinking', 'choose first fork', 'wait for first fork', 'try second fork', 'eating', 'release after failed attempt', 'release left fork', 'release right fork'];
 
 function drawTable(s, n, E) {
   s.circle(0, 0, 0.78, { fill: 'grid', fillAlpha: 0.25, color: 'grid', width: 1 });
@@ -122,12 +136,12 @@ export default {
     },
     {
       num: '4.6', kind: 'Theorem', name: 'No symmetric deterministic dining philosophers',
-      statement: String.raw`Let $n\ge2$ identical philosophers sit around a table, with a fork between each neighbouring pair, each philosopher running the *same deterministic program* that depends only on its own state and on which of its two adjacent forks are free. Then no such program solves the problem (every hungry philosopher eventually eats, and no fork is held by two). More precisely, for every program there is a fair schedule in which no philosopher ever eats, or two neighbours violate the exclusion of forks.`,
+      statement: String.raw`Let $n\ge2$ identical philosophers start in the same state around a table with identical initial fork states, with a fork between each neighbouring pair, each philosopher running the *same deterministic program* that depends only on its own state and on which of its two adjacent forks are free. Then no such program solves the problem (every hungry philosopher eventually eats, and no fork is held by two). More precisely, for every program there is a fair schedule in which no philosopher ever eats, or two neighbours violate the exclusion of forks.`,
       idea: String.raw`Use the fully symmetric schedule: let all philosophers take their next step in lockstep. By induction every philosopher is in exactly the same state after every round, because they run the same program and see the same local picture. If one philosopher ever began to eat, all of them would at once, but neighbours share forks, which is impossible. So nobody ever eats while the schedule goes on forever, which is perfectly fair. This is an indistinguishability argument (1.7), and the same trap as the leader-election impossibility of 2.3: identical deterministic processes cannot break symmetry. Randomness (4.7) or a difference between seats escapes it.`,
-      caption: String.raw`Choose a rule and scrub through the rounds. With *hold and wait* all philosophers grab their left fork and wait for the right one: deadlock after round 2. With *polite* they put the fork down when the right one is taken, and again take it, forever: livelock (the strip shows identical rows). In *one at a time* order the symmetry is broken by the scheduler itself and philosophers do eat; and with *left-handed seat $n-1$* the programs are no longer identical, so the theorem does not apply (forks are then resolved by seat number when two philosophers ask at once). The readout reports when the configuration starts repeating with no meal.`,
-      deps: ['dist-4.1', 'dist-2.3'], refs: ['Lynch §11.2'], tags: ['symmetry', 'impossibility', 'resource sharing'],
-      scope: String.raw`Deterministic anonymous identical processes in an oriented ring, with separate acquisition of individual forks and no atomic operation acquiring both forks at once; the adversary is the lockstep schedule. It does not apply to randomized programs, to programs with distinct identifiers, or to schedulers that happen to break the symmetry.`,
-      credit: 'Lehmann & Rabin, 1981', verify: true, links: { doi: 'https://doi.org/10.1145/567532.567547' },
+      caption: String.raw`Choose a rule and scrub through the rounds. With *hold and wait* all philosophers grab their left fork and wait for the right one: they cannot acquire their second forks. With *polite* they put the fork down when the right one is taken, and again take it, forever: livelock (the strip shows identical rows). In *one at a time* order each seat receives seven consecutive steps before the next seat runs; this scheduler breaks the symmetry and philosophers do eat; and with *left-handed seat $n-1$* the programs are no longer identical, so the theorem does not apply (forks are then resolved by seat number when two philosophers ask at once). The readout reports when the configuration starts repeating with no meal.`,
+      deps: ['dist-4.1', 'dist-2.3'], refs: ['Lynch §11.2', 'Lehmann & Rabin (1981), POPL, pp. 134–135, §§3–4, Theorem 1'], tags: ['symmetry', 'impossibility', 'resource sharing'],
+      scope: String.raw`Deterministic anonymous identical processes in an oriented ring with a rotationally symmetric initial configuration, with separate acquisition of individual forks and no atomic operation acquiring both forks at once; the adversary is the lockstep schedule. It does not apply to randomized programs, to programs with distinct identifiers, or to schedulers that happen to break the symmetry.`,
+      credit: 'Lehmann & Rabin, 1981', links: { doi: 'https://doi.org/10.1145/567532.567547', source: 'https://www.lix.polytechnique.fr/~catuscia/teaching/papers_and_books/ft_gateway.cfm.pdf' },
       viz(v) {
         const nS = v.slider('philosophers $n$', 3, 8, 5, { int: true });
         const rule = v.select('program', [{ value: 'hold', label: 'hold and wait' }, { value: 'polite', label: 'polite (put fork back)' }], 'hold');
@@ -165,11 +179,11 @@ export default {
     {
       num: '4.7', kind: 'Algorithm', name: 'Randomized dining philosophers (Lehmann–Rabin)',
       statement: String.raw`Each hungry philosopher repeats: flip a fair coin to choose a side; wait until the fork on that side is free and take it; if the other fork is free take it too and eat, otherwise put the first fork down and start over. Against every fair scheduler (including an adversarial one that sees all past coin flips) no two neighbours eat with the same fork, and with probability 1 some hungry philosopher eventually eats. This simple retry algorithm gives **system-wide progress**, not individual lockout-freedom under every weakly fair scheduler.`,
-      idea: String.raw`The symmetric adversary of 4.6 works only because identical processes behave identically; random coins make the states diverge. The proof (Lehmann and Rabin) shows that from every reachable configuration there is a short sequence of coin outcomes, with a positive lower-bound probability in the appropriate progress argument, after which somebody eats, whatever the scheduler does; repeating this argument gives progress with probability 1. A weakly fair scheduler can nevertheless starve one philosopher: schedule its first-fork test only while a neighbour is eating, then let each neighbour complete a whole release/reacquire cycle between those tests. Both neighbours keep eating, while the hungry philosopher repeatedly sees its chosen first fork occupied. A starvation-free variant needs an additional mechanism or a stronger fairness assumption. The exact original progress proof remains a source-review gap.`,
-      caption: String.raw`Run the philosophers for the chosen number of steps. *Random order* is a fair scheduler choosing a philosopher at random each step; *lockstep* is the adversary of 4.6 (all philosophers move simultaneously). With coins the bars show meals for everyone under both schedulers, and the histogram (300 seeded runs) shows how many steps pass before the first meal. Switch *program* to the deterministic left-first rule: under lockstep nobody ever eats (red count), the exact failure of 4.6.`,
-      deps: ['dist-4.6', 'prob-2.1.1a'], refs: ['Lynch §11.4'], tags: ['randomization', 'symmetry breaking'],
-      scope: String.raw`The progress claim assumes fair process scheduling, finite meals, and a non-anticipating scheduler that may observe past coin flips. Weak process fairness does not guarantee individual fork access; the picture shows two particular schedulers and a finite number of steps, not the proof against all adversaries. Time to first meal in the histogram is measured in philosopher steps (a lockstep round counts $n$ steps).`,
-      credit: 'Lehmann & Rabin, 1981', verify: true, links: { doi: 'https://doi.org/10.1145/567532.567547' },
+      idea: String.raw`Random draws break the recurring symmetry. The original proof sketch first argues that, on a deadlocked run, every philosopher must keep acquiring forks. It then uses successive, disjoint configurations of coin choices: outward-facing choices by adjacent philosophers give a positive chance of progress, contradicting a positive probability of perpetual collective starvation. This is not a bound on elapsed scheduler steps. The paper omits the proofs of its supporting lemmas. It separately states that the simple protocol is not lockout-free and introduces a *courteous* variant with neighbour signals and last-meal information to prevent individual starvation. The visualization implements the simple protocol.`,
+      caption: String.raw`Run the philosophers for a finite number of scheduler steps. *Random order* samples a philosopher at each step; the corresponding infinite scheduler is fair with probability 1. *Lockstep* uses batched rounds: acquisitions precede releases, with conflicting fork requests serialized by seat index. Neither finite picture proves the theorem for every fair adversary. The bars count meals and the histogram uses 300 seeded runs. Switch to the deterministic left-first rule: under lockstep nobody eats. Coin draws, failed second-fork tests and individual fork releases are separate steps.`,
+      deps: ['dist-4.6', 'prob-2.1.1a'], refs: ['Lynch §11.4', 'Lehmann & Rabin (1981), POPL, pp. 134–138, §§3, 5–7, Theorems 2–5'], tags: ['randomization', 'symmetry breaking'],
+      scope: String.raw`Atomic test-and-take of one fork at a time, finite meals, independent fair coins, and a proper non-anticipating scheduler: for every coin sequence, each live process is activated infinitely often. The scheduler may observe all past draws, but not future draws. Thinking processes may stop. The simple protocol guarantees collective progress with probability 1, without guaranteeing individual access. The original extended abstract provides a proof sketch with omitted lemma proofs. Here thinking and meal duration are simplified to local steps, releases are left-first, and the finite seeded simulations are illustrative. A lockstep round counts $n$ process steps; it is not an elapsed-time unit.`,
+      credit: 'Lehmann & Rabin, 1981', links: { doi: 'https://doi.org/10.1145/567532.567547', source: 'https://www.lix.polytechnique.fr/~catuscia/teaching/papers_and_books/ft_gateway.cfm.pdf' },
       viz(v) {
         const nS = v.slider('philosophers $n$', 3, 8, 5, { int: true });
         const T = v.slider('steps', 50, 5000, 600, { log: true, sig: 2, int: true });
@@ -182,7 +196,7 @@ export default {
         const run = (n, steps, sd) => {
           const rng = mulberry32(sd * 7919 + n * 31 + (prog.value === 'coin' ? 1 : 2)), E = dEngine(n, { rule: prog.value, rng });
           let first = null;
-          if (sched.value === 'lock') { for (let r = 0; r < Math.ceil(steps / n); r++) { E.lockstep(); if (first === null && E.eat.some((x) => x > 0)) first = (r + 1) * n; } }
+          if (sched.value === 'lock') { for (let r = 0; r < Math.floor(steps / n); r++) { E.lockstep(); if (first === null && E.eat.some((x) => x > 0)) first = (r + 1) * n; } }
           else for (let t = 0; t < steps; t++) { E.stepOne(Math.floor(rng() * n)); if (first === null && E.eat.some((x) => x > 0)) first = t + 1; }
           return { E, first };
         };

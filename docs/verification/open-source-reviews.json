@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 237,
+  "remaining": 235,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
@@ -15,7 +15,6 @@
     "cplx": 3,
     "crypto": 3,
     "demo": 1,
-    "dist": 2,
     "ecol": 7,
     "energy": 5,
     "epi": 1,
@@ -451,22 +450,6 @@
       "name": "Natural versus controlled fertility (Coale–Trussell)",
       "refs": [
         "PHG ch. 9"
-      ]
-    },
-    {
-      "id": "dist-4.6",
-      "file": "content/dist/ch04-b.js",
-      "name": "No symmetric deterministic dining philosophers",
-      "refs": [
-        "Lynch §11.2"
-      ]
-    },
-    {
-      "id": "dist-4.7",
-      "file": "content/dist/ch04-b.js",
-      "name": "Randomized dining philosophers (Lehmann–Rabin)",
-      "refs": [
-        "Lynch §11.4"
       ]
     },
     {
