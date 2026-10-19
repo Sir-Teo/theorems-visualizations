@@ -82,7 +82,11 @@ test('treemap fields and chapters can be opened with the keyboard', async () => 
     await page.keyboard.press('Space');
     await page.locator('#tm-crumbs').filter({ hasText: 'Mathematics' }).waitFor();
     const chapter = page.locator('.tm-col[aria-label^="Principles of Mathematical Analysis:"] .tm-ch').first();
-    await chapter.focus(); await page.keyboard.press('Enter');
+    await chapter.focus();
+    await page.setViewportSize({ width: 1050, height: 900 });
+    await page.waitForTimeout(250); // ResizeObserver redraw must preserve keyboard focus.
+    assert.ok(await chapter.evaluate(el => document.activeElement === el));
+    await page.keyboard.press('Enter');
     await page.waitForURL((url) => /^#\/c\/pma\/\d+$/.test(url.hash));
     await page.locator('.ch-graph-card').waitFor();
   });

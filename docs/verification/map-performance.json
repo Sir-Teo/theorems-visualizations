@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-19T21:00:48.679Z",
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "method": "120 controlled RAF pan frames per mode, 20 warm-up draws; all fields, written/planned nodes and definitions enabled. Native pointer pan checked separately. Draw timings are CPU submission time, frame cadence includes browser scheduling; headless results do not certify every GPU or device. Warm-up excludes cache reconstruction; this is steady panning evidence, not every hover/zoom transition.",
+  "results": [
+    {
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.034166671832402545,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.19999980926513672
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.665833333333335,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 16.800000000000182
+      },
+      "fps": 60.003000150007495
+    },
+    {
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview-selected",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.04166666070620219,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666664,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00000000000001
+    },
+    {
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "detail",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03833332459131877,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666668,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "fps": 59.99999999999999
+    },
+    {
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "selected",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.026666667064030966,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.664999999999996,
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "max": 16.80000000000109
+      },
+      "fps": 60.00600060006002
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03916666309038798,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333333,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00300015000751
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview-selected",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03166667024294535,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666668,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "fps": 59.99999999999999
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "detail",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03416666388511658,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333334,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00300015000748
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "selected",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.04500000675519308,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333333,
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "max": 16.80000000000109
+      },
+      "fps": 60.00300015000751
+    }
+  ]
+}

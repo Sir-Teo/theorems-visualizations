@@ -305,6 +305,7 @@ export function collectionFlow(G, groups, { includePlanned = true } = {}) {
 }
 
 // ------------------------------------------------------------ global map (canvas)
+const MAX_MAP_RASTER_PIXELS = 16_000_000, MAX_MAP_RASTER_EDGE = 8192;
 export class MapView {
   constructor(host, G, { onOpen, focus, loadShard, onQuery, query = '' } = {}) {
     this.host = host; this.G = G; this.onOpen = onOpen; this.loadShard = loadShard; this.hl = null;
@@ -366,12 +367,15 @@ export class MapView {
     this.ro.observe(host);
     this.resize(); this.fit(false);
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
-    this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
+    this.onTheme = () => { this.mapRaster = null; this.draw(); }; window.addEventListener('themechange', this.onTheme);
+    this.onFonts = () => { if (!this.dead) { this.mapRaster = null; this.draw(); } };
+    document.fonts?.ready.then(this.onFonts); document.fonts?.addEventListener('loadingdone', this.onFonts);
   }
-  destroy() { this.dead = true; clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
+  destroy() { this.dead = true; this.mapRaster = null; clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); document.fonts?.removeEventListener('loadingdone', this.onFonts); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
   visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
   /** Emphasize a set of ids (null clears); fit = zoom to them. */
   setHighlight(ids, { fit = false, label = '' } = {}) {
+    this.mapRaster = null;
     this.hl = ids && ids.size ? ids : null;
     const n = this.host.querySelector('.map-q-n'); if (n) n.textContent = ids ? (ids.size ? `${ids.size.toLocaleString('en')} match${ids.size === 1 ? '' : 'es'}` : 'no matches') : label;
     if (fit && this.hl) this.fit(true); else this.draw();
@@ -427,7 +431,21 @@ export class MapView {
   /** Statements live in per-collection shards; fetch on demand and refresh `then`. */
   needSt(it, then) {
     if (it.st != null || it.planned || !this.loadShard) return;
-    this.loadShard(it.col).then(() => { if (!this.dead) then(); });
+    this.loadShard(it.col).then(() => { if (!this.dead) then(); }).catch(() => {
+      if (this.dead) return;
+      if (this.sel?.it === it) {
+        const box = this.side.querySelector('.st');
+        if (box) {
+          box.textContent = 'Statement unavailable. ';
+          const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'btn'; retry.textContent = 'Retry statement';
+          retry.addEventListener('click', () => this.needSt(it, then)); box.append(retry);
+        }
+      }
+      if (this._tipN?.it === it) {
+        const box = this.tip.querySelector('.st');
+        if (box) box.textContent = 'Statement unavailable. Move away and return to retry.';
+      }
+    });
   }
   select(n, fly) {
     this.sel = n; this.selClosure = n ? this.closure(n) : null;
@@ -470,10 +488,12 @@ export class MapView {
       this._tip(n, p);
     });
     const up = (e) => {
+      const panned = drag && moved;
       const p = pos(e); ptrs.delete(e.pointerId);
       if (ptrs.size < 2) pinch = null;
       if (drag && !moved) { const n = this.hit(p[0], p[1]); this.select(n || null, false); }
       drag = null;
+      if (panned) { this.mapRaster = null; this.draw(); }
     };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     cv.addEventListener('pointerleave', () => { this.hover = null; this._tip(null); this.draw(); });
@@ -508,6 +528,35 @@ export class MapView {
     this._raf = requestAnimationFrame(() => { this._raf = 0; this._draw(); });
   }
   _draw() {
+    // The map has thousands of translucent marks and dependency edges. Reuse
+    // their raster while panning; include a margin so newly exposed pixels exist.
+    // Zoom, filters, highlights, resize and theme changes rebuild the raster.
+    const pad = 256, width = this.W + 2 * pad, height = this.H + 2 * pad;
+    const pixelWidth = Math.ceil(width * this.dpr), pixelHeight = Math.ceil(height * this.dpr);
+    if (pixelWidth * pixelHeight > MAX_MAP_RASTER_PIXELS || Math.max(pixelWidth, pixelHeight) > MAX_MAP_RASTER_EDGE) {
+      this.mapRaster = null; this._paint(); return;
+    }
+    const key = [this.k, this.W, this.H, this.dpr, this.show.defs, this.show.planned, [...this.show.fields].join(','), this.hover?.it.id, this.sel?.it.id].join('|');
+    let cache = this.mapRaster;
+    const dx = cache ? this.tx - cache.tx : 0, dy = cache ? this.ty - cache.ty : 0;
+    if (!cache || cache.key !== key || cache.highlight !== this.hl || Math.abs(dx) > cache.pad || Math.abs(dy) > cache.pad) {
+      const canvas = cache?.canvas || document.createElement('canvas');
+      if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+      if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+      const saved = { ctx: this.ctx, W: this.W, H: this.H, tx: this.tx, ty: this.ty };
+      try {
+        this.ctx = canvas.getContext('2d'); this.W = width; this.H = height; this.tx += pad; this.ty += pad;
+        this._paint();
+      } finally { Object.assign(this, saved); }
+      cache = this.mapRaster = { key, highlight: this.hl, pad, canvas, tx: this.tx, ty: this.ty, width, height };
+    }
+    const c = this.ctx;
+    c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
+    const x = Math.round((this.tx - cache.tx) * this.dpr) / this.dpr - cache.pad;
+    const y = Math.round((this.ty - cache.ty) * this.dpr) / this.dpr - cache.pad;
+    c.drawImage(cache.canvas, x, y, cache.width, cache.height);
+  }
+  _paint() {
     const c = this.ctx, k = this.k; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
     const focus = this.hover || this.sel;
     const fc = focus ? (focus === this.sel ? this.selClosure : this.closure(focus)) : null;
@@ -655,6 +704,7 @@ function squarify(items, x, y, w, h) {
  * (written + planned), solid = written, pale = planned. Click a field to zoom in, a collection to open it.
  */
 export function renderTreemap(host, G, { field = null, onField, onCollection, onChapter, height = 520 } = {}) {
+  const active = host.contains(document.activeElement) ? document.activeElement.getAttribute('aria-label') : null;
   host.innerHTML = '';
   const W = Math.max(320, host.clientWidth || 1000), H = field ? Math.round(height * 1.05) : height;
   const root = svg('svg', { class: 'treemap-svg', width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'group', 'aria-label': 'Treemap of every field and collection' }, host);
@@ -707,6 +757,7 @@ export function renderTreemap(host, G, { field = null, onField, onCollection, on
       cg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onCollection?.(C.id); });
     }
   }
+  if (active) [...host.querySelectorAll('[tabindex]')].find(node => node.getAttribute('aria-label') === active)?.focus({ preventScroll: true });
 }
 
 // ------------------------------------------------------------ timeline of ideas (canvas)
