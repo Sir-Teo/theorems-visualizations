@@ -10900,10 +10900,10 @@
       "collection": "fin",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 14,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 30,
-      "publishedShortfall": 11,
+      "writtenToWritten": 16,
+      "writtenToKnown": 21,
+      "wholeSyllabus": 32,
+      "publishedShortfall": 9,
       "unknown": [],
       "edges": [
         {
@@ -11000,6 +11000,20 @@
         {
           "item": "fin-3.2",
           "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-4.11",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-4.11",
+          "prerequisite": "prob-2.7.1a",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -11274,10 +11288,10 @@
       "collection": "behav",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 9,
-      "writtenToKnown": 13,
-      "wholeSyllabus": 15,
-      "publishedShortfall": 16,
+      "writtenToWritten": 10,
+      "writtenToKnown": 14,
+      "wholeSyllabus": 16,
+      "publishedShortfall": 15,
       "unknown": [],
       "edges": [
         {
@@ -11367,6 +11381,13 @@
         {
           "item": "behav-5.1",
           "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-5.3",
+          "prerequisite": "prob-1.2.4",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

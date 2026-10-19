@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 879 edges. Even
+written ideas in a different field**. Their combined shortfall is 876 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -40,3 +40,15 @@ The audited argument for `solid-4.10` now explicitly uses the outward normal con
 ## Orthogonal projection in swept-wing velocity components
 
 The audited vector construction in `aero-4.3` now explicitly applies the unit-vector projection formula from written `ladr-6.55`. The normal and spanwise components are orthogonal and sum to the free-stream velocity. The chapter and syllabus both identify that prerequisite. Aerospace engineering now has 11 published cross-field edges; the overall published shortfall is 879. The gate remains open for 54 of 64 non-math collections, including 27 still below target across the complete syllabus.
+
+## Normal moments and exponential-rate mixtures
+
+The audited `fin-4.11` moment-matching argument now explicitly uses written
+`prob-1.2.5` for the standard normal and `prob-2.7.1a` for its moment-generating
+function. The `behav-5.3` mixture calculation explicitly integrates the written
+`prob-1.2.4` exponential density with its stated mean. Each prerequisite is used
+in the argument, with chapter and syllabus synchronized. The [finance audit](fin-factor-premium-followup.md)
+and [discounting audit](behav-discounting-followup.md) document the independent
+source/model checks. Finance now has16 published cross-field edges and behavior10.
+The refreshed shortfall is876;54 of64 collections remain below25 published edges
+and27 remain below25 over the complete syllabus. The quota gate remains open.
