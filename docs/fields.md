@@ -30,6 +30,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+Separate a finite search budget from unrestricted mathematical reachability.
+A bounded-length front need not be open; local extension can increase the
+budget. Use actual region clearance for claimed inscribed balls, and label
+grid connectivity or path lengths as numerical approximations.
+
 As in AUTHORING.md. Book-anchored collections (`pma`, `rca`, `fa`, `ladr`, …) use the book's
 numbering exactly. For linear algebra, work in ℝ² and ℝ³ with draggable vectors and matrices
 you can edit by dragging the images of basis vectors; use the n×n routines in `v.M` (eigen,

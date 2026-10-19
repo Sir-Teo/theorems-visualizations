@@ -1516,216 +1516,220 @@
       "file": "content/pharm/ch02-b.js",
       "textHash": "e355b15c35c3c71a9de29a93e437613ce0a0ee9318475d184b2531fb680ff9dd",
       "textReview": "Algebraically swapping ka and k with V'=Vk/ka leaves the Bateman curve unchanged, and the smaller positive rate controls the terminal slope. Equal rates require the limiting t exp(-kt) formula. IV information distinguishes the twins, but the word 'only' in the idea is too exclusive: known formulation or independent parameter information can also identify the rates, as the scope already acknowledges.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: depot concentration, red terminal fit and linear plot are legible. At ka=.12,k=.6 the apparent5.78h half-life matches absorption rather than elimination1.16h, a fivefold difference. IV-only identification and equal-rate limiting behavior remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "nla-4.8",
       "file": "content/nla/ch04-b.js",
       "textHash": "833526ec025faa204b703e0af898b5833d01e3cfabb4a9c2c310780c28dd4e62",
       "textReview": "The no-growth bound follows columnwise from a_jj=sum r_ij² and a_jj<=||A||2. The completion/breakdown qualification is explicit, so backward stability is not claimed to guarantee successful Cholesky on every ill-conditioned rounded input. O(machine epsilon) hides dimension-dependent constants. Inspect the p-bit arithmetic and breakdown crosses rather than treating the random matrix plot as a proof.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Cholesky-entry bounds and backward-error/breakdown panels are distinct. At n8,p24, largest scaled entry.959 is below1;12/90 simulated breakdowns occur at high conditioning. Dimension-dependent error factors/rounding assumptions remain pending and are not established by these dots.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "polsci-1.2",
       "file": "content/polsci/ch01.js",
       "textHash": "f68f81dc8631cd1bf9dbb38b449d25d1fd5568bceec1088e23d50af961efdc29",
       "textReview": "Plurality reads first preferences and its largest tally is at least n/m by pigeonhole; a strict first-place majority wins. Ties require the stated fixed rule. 'Its only guarantee' is unnecessarily absolute since other properties exist. The every-added-candidate winner change is a claim about the chosen example, not plurality in general, and needs interaction verification.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes:32 ballots give E8 votes (25percent) versus A/B/C7 and D3; the bars and plurality readout agree. The n/m line is correctly a minimum support guarantee, not a claim of majority support. Candidate-edit controls still need focused checking.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "mech-12.25",
       "file": "content/mech/ch12-c.js",
       "textHash": "a9fe2726b8ddfa14e3f0e6458b5482d8370708c27ab7692b40613a87a139448b",
       "textReview": "The averaged hoop connection gives <a>=2A/L and the geometric shift -8pi² A/L²; the isoperimetric bound gives magnitude at most 2pi. This is an adiabatic leading-order result away from problematic orbits, not exact return for a finite-speed cycle. A sliding bead on a circular rotating wire does not generally stay put in space: it retains its free motion, with an extra relative phase -2pi. Correct that parenthesis.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: hoop, accumulated shift and duration sweep are distinct. Default ellipse L7.0182,A3.1416 gives geometric -5.0360 versus measured -5.0356rad. Nonadiabatic short durations depart strongly, as visible. Initial-velocity/free-sliding assumptions remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pma-9.17",
       "file": "content/pma/ch09-a3.js",
       "textHash": "eb841d62095dbfdd79bb698890a77053a6c6de92da8d96f3b65c91b3584f8de2",
       "textReview": "Restricting the Frechet derivative limit to coordinate directions gives each partial and the matrix columns. Componentwise convergence follows from coordinate projections being bounded. The text correctly warns that existing partials alone do not imply differentiability. The polar example should show the second column collapsing at r=0 without implying a converse.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: coordinate lines map to the polar ray/circle, while finite difference quotients are distinct from derivative columns at t=.7. The displayed Jacobian entries agree with r=1.4,phi=.75; finite increments need not equal derivatives.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "behav-1.11",
       "file": "content/behav/ch01-b.js",
       "textHash": "f4fd1a9cff498c47e271e248b4bc15cd012b47584e5cb89214b05ff7429c4fde",
       "textReview": "The two expected-utility differences coincide, so strict A over B and strict D over C cannot both maximize expected utility; ties can permit those selected actions without strict preference, so qualify 'no maximizer can'. The common-core decomposition is correct. The fanning-out geometry and historical prize amounts require separate visual/source checks.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Allais probabilities sum to1, default u=.8 gives B/D, and the two expected-utility differences share one line with threshold10/11. The forbidden A/D pattern is explained through that equality. Fanning-out controls are separate pending interactions.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "mech-13.2",
       "file": "content/mech/ch13.js",
       "textHash": "bf74646081d56dc1f84ba19c1dc045603020c355c8d725f6923e23ac3709db06",
       "textReview": "The return map is defined only for points whose future trajectory returns transversally, not automatically on all of Sigma. On a regular two-degree-of-freedom energy surface the canonical section preserves dx dp_x. Closed-curve/finitely-many/area-filling pictures are typical diagnostics, not exhaustive theorems about every torus intersection or every chaotic invariant set. The uncoupled section includes degenerate periodic-orbit endpoints rather than every orbit being a nondegenerate circle.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes:3D orbit and section points are distinct, with finite-time Lyapunov.094 and reported energy error below8.6e-5. Finite section filling does not prove chaos, and the caption's universal circle claim at zero coupling still needs correction/qualification.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "dist-2.10",
       "file": "content/dist/ch02-b.js",
       "textHash": "192a923d4436fa62090fc740eb8e96d693d8bfe7440d48593032ddfe03b38b2d",
       "textReview": "The cut property supplies safe fragment edges and the size-at-least-2^level invariant bounds levels. The text explicitly separates the fragment animation from the full asynchronous message protocol and assigns the message bound to the latter. Inspect waiting/absorption scheduling and agreement with Kruskal; no message-level correctness is established by the abstract animation.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: colored fragments, levels, seven current tree edges and highlighted algorithm step are legible at wave2/step5. Finite cut checks/final Kruskal comparisons are model validation, not a proof of asynchronous scheduling correctness. No default panel defect was observed.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "mech-13.10",
       "file": "content/mech/ch13-b.js",
       "textHash": "f3b08de3a10202cbc46fd952392ffb94dfb7e817cc1b7aa99a119c19fd5d39fc",
       "textReview": "Birkhoff coordinates need a signed angle to make p=sin(alpha) range over negative and positive values. Circle and ellipse invariants explain regular sections; the stadium's chaos/ergodicity is an almost-everywhere claim with exceptional periodic trajectories, and requires a genuine stadium rather than its circle limit. Mushroom regular/chaotic regions also need their measure-zero exceptions. A finite trajectory spraying dots is a diagnostic, not proof that each orbit fills the whole portrait.",
-      "visualReview": null,
+      "visualReview": "Inspected the valid dark capture and a fresh isolated light recapture: stadium flights and Birkhoff section are distinct; the example visits96percent of40x20 bins in2500 bounces. The first light PNG duplicated content and is documented separately. Signed angle conventions and almost-everywhere rather than every-orbit chaos remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "physio-1.3",
       "file": "content/physio/ch01.js",
       "textHash": "224f5aa3823cf384c3564fad83f448ac8f12c99ac5fc1f1ed75a619b8eb9df79",
       "textReview": "The membrane permeability and two-bath time constant follow from a quasi-steady linear profile with equal partition coefficients at both faces. No sources alone does not force a transient profile to be steady. The lag time thickness²/(6D) belongs to a particular step-feed/sink permeation setup and should not be presented as a universal equilibration time for all closed compartments. Inspect random-walk boundary probabilities and membrane storage assumptions.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: membrane walkers, concentrations and Fick curves are distinct. Default208 net crossings versus211.5 predicted is compatible with finite-count variation; the reported40-step lag is model dependent. The d^2/(6D) boundary-condition qualification remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "epi-2.12",
       "file": "content/epi/ch02-b.js",
       "textHash": "c955b76b2959f7ed60dd59ee81336a3888380bfe5da9f50b7e8f6e35dbcf0e11",
       "textReview": "The counterfactual definition distinguishes overdiagnosis from false positives and ordinary lead time. Excess incidence persisting after sufficient follow-up can estimate it in controlled comparisons. Rising incidence without falling mortality is suggestive, not uniquely diagnostic without accounting for true disease trends, treatment, follow-up and statistical power. The quoted percentages and Korean time-series claim still require original evidence verification.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: onset2000, incidence/overdiagnosis stack, mortality, five-year survival and100 diagnoses are legible. The simulation's incidence1.86x, mortality.98x and48percent overdiagnosis illustrate the chosen model, not a diagnostic inference of overdiagnosis from those observations alone.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "astro-10.20",
       "file": "content/astro/ch10-papers.js",
       "textHash": "803878efe376cf13a85e2edfda694bee786a1a010ed09567e1c5d70301f680d0",
       "textReview": "The temperature budget and single-frequency versus blackbody-spectrum distinction are sensibly separated; the sub-0.1 K backlobe and rounded budget explain the approximate residual. The phrase 'no one looked for it' is too sweeping as a historical claim and should be replaced by a precise statement about this serendipitous detection and the Princeton search. The reconstructed elevation curve is candidly distinguished from an unpublished scan; inspect FIRAS data and brightness/radiance conversion separately.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: antenna noise budget and sky spectrum are distinct; the caption separates reconstructed elevation line from published numbers. A single1965 frequency point with large error is visually distinct from43 FIRAS points; antenna2.63K versus physical2.725K is stated. The no-one-looked historical aside remains pending source/text review.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "top-3.12",
       "file": "content/top/ch03-b.js",
-      "textHash": "ed1fbce3a77f314bf462ce5bae41047cf13359c6234e47be86c89c9b699b5178",
-      "textReview": "The clopen polygonal-reachability proof is correct for open connected subsets of Rn, and local path connectedness makes path components open and closed. The visualization's bounded-path-length reachable set is different from the full reachable component: boundary points of a closed length ball need not have a neighbourhood within that bounded-length set. Check whether the claimed gold ball at the front illustrates the full component or overstates openness of the finite-length front.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "270404a0499815eb9d01745e308d34ec4398c9419b1f32bc9c3fd4a8013b3cc8",
+      "textReview": "The valid clopen proof uses unrestricted finite polygonal paths. The caption/readout now separate that union from the fixed length-budget set, which need not be open. Grid distances/components/coverage are explicitly approximate. The gold disc uses80percent of exact distance to the region complement and may cross a finite-budget front. The C-region predicate excludes the removed cut boundary, matching the open-set hypothesis.",
+      "visualReview": "Inspected18 controlled captures: all three regions at budgets0,4,14 in both themes. Partial grid fronts can cross gold balls, correctly explained as extension within U with possibly larger budget. At14 the selected grid component fills; two blobs remain separate. The initial default picture exposed the original false fixed-budget openness claim.",
+      "interactionReview": "Actual region buttons and range inputs exercise18 states in both themes. Four real pointer drags move the basepoint into the excluded gap and then the other blob, producing the invalid-position message and switching the filled component. Runtime/TeX checks pass. Two focused geometry test groups validate complement clearance and gold-ball membership; full npm test passes.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The clopen polygonal-reachability proof is correct for open connected subsets of Rn, and local path connectedness makes path components open and closed. The visualization's bounded-path-length reachable set is different from the full reachable component: boundary points of a closed length ball need not have a neighbourhood within that bounded-length set. Check whether the claimed gold ball at the front illustrates the full component or overstates openness of the finite-length front.",
+      "initialTextHash": "ed1fbce3a77f314bf462ce5bae41047cf13359c6234e47be86c89c9b699b5178",
+      "initialVisualFinding": "Inspected both themes: default C-corridor flood reaches95percent of its grid component at budget4. The gold disc crosses the green budget frontier, contradicting the claim it is wholly in the fixed-budget reached set. Unrestricted path-component openness is a different mathematical statement; focused correction follows.",
+      "correctionReport": "docs/verification/agent-polygon-path-review.md"
     },
     {
       "id": "algo-10.19",
       "file": "content/algo/ch10-c.js",
       "textHash": "0dd075d4d0a89859bf4c9e0ef6a0a953f469e3a8ad20530c351fdb36cde92c98",
       "textReview": "The finite independence axioms and equal-size basis proof are correct. In a disconnected graphic matroid bases are spanning forests, not spanning trees, so qualify the example by connectedness or use forests. The greedy maximum-weight independent-set characterization requires nonnegative weights or stopping before negative-weight additions; maximum-weight bases are a different formulation. Inspect exact vector independence and the C5 matching exchange witness.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: K4 forest sets A{1,2},B{1,3,5} have the indicated augmentation edge3. Exhaustive finite display reports38 independent sets and463 size-ordered pairs. General disconnected-graphic-matroid and negative-weight statements remain text follow-ups.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "imaging-1.3",
       "file": "content/imaging/ch01.js",
       "textHash": "6ed709386d8b2a5765006c6a95231b0df86a37f09a591c8d7554eb40e486c721",
       "textReview": "The spatial-frequency interpretation and real-image Hermitian symmetry are correct. Transform/inversion and Parseval need appropriate L1/L2 hypotheses; a finite digital image avoids those analytic issues but should not silently supply them to the continuous formula. Zero frequency has no finite period. Inspect normalization, symmetric spike pairs and the single-plane-wave direction/readout.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: input phantom, centered Fourier magnitude and low-pass reconstruction are distinct. Displayed retained energy65.85percent agrees with the declared numerical Parseval check. Fourier function-space/zero-energy scope remains pending; the picture is a finite DFT example.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-10.31a",
       "file": "content/fa/ch10-a3.js",
       "textHash": "f46c73e2a36b3eec047cbb015b1c48eff04413ccf33b44b61303851e3c711548",
       "textReview": "The locally constant holomorphic functional calculus gives an idempotent commuting with x; spectral mapping gives both 0 and 1, hence nontriviality. The corner-algebra spectrum statement uses unit e1 rather than the ambient unit. Check contour-through-eigenvalue handling, coincident eigenvalues and near-parallel eigenvectors in the numerical projection example.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the default contour encloses only lambda-.8 and its projection has trace1, idempotence residual4e-16 and commutator1e-16. Plane decomposition and contour panels are distinct. Contours through eigenvalues and degenerate eigen-directions remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "tech-2.10",
       "file": "content/tech/ch02-b.js",
       "textHash": "9fbecb1d3852019755ecafa5e42975103e9a3beba516f00bab3d6c601391478d",
       "textReview": "The slider-crank position formula is correct for the indicated branch with rod length exceeding crank radius. Its derivative has a sign depending on the chosen motion direction. The torque formula with division by cos(beta) uses force along the slider, not force along the connecting rod: a rod force gives torque F*r*sin(theta+beta). The idea currently conflates them. Historical archaeological claims still require their cited originals; no source closure credited.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: slider-crank schematic, position deviation, rod-push turning factor and evidence timeline are distinct. Default stroke.70m/rod1.12m gives deviation.056m near the.055 approximation. The torque factor/force-direction qualification and source chronology remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pl-1.6",
       "file": "content/pl/ch01.js",
       "textHash": "b6acccc1a1f60fadaf900c53b1bdc34f0ae34a1927b8df16c7449f7a667c3523",
       "textReview": "For the stated closed arithmetic/boolean language, values are normal forms, and remaining normal forms are stuck. The examples have wrong-kind operands and the classification prepares the progress theorem. The claim about exhaustive counts and rarity is computational and needs inspection against the actual size grammar and enumeration, not inferred from the definitions alone.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the default if/succ-true term highlights its stuck subterm and is classified neither value nor stepping. Size6 bars/readout give3159 enumerated terms,1710 stuck and1448 stepping. The grammar/counting enumeration still needs independent validation; the current picture alone does not certify completeness.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-17.10",
       "file": "content/rca/ch17-a2.js",
       "textHash": "1bf2617362f61dbf6ea0979147a086ad6c3525ce0756bda6d77acbcf79617ad3",
       "textReview": "Dividing by the zero Blaschke product gives a zero-free holomorphic quotient on the disc, whose logarithm defines h and its fractional power consistently. The norm identity and H1 factorization follow from the preceding quotient theorem; the zero function can be handled separately. The caption correctly separates finite-radius means from boundary norms. Missing prose spaces around several inline formulas need readability follow-up.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: finite-radius |f|^p and |h|^2 means differ in the interior and approach the boundary equality, with pointwise factorization residual2e-16. The readout correctly separates pointwise factorization from norm equality. Missing prose spaces in the caption remain a readability follow-up.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "polsci-4.7",
       "file": "content/polsci/ch04.js",
       "textHash": "27cdeb80c6a34d0a5047dcf57df0df0e91a8e1876652d6143015db1ba47ca0b0",
       "textReview": "Yolk and covering definitions are sensible under the Euclidean/odd-voter assumptions. The dominance implication in the idea uses a complete strict tournament; spatial indifferences/ties require explicit handling. An agenda restricted to a subset only constrains its outcome to that subset's uncovered set, not automatically the whole policy space's set. Computing the yolk from only median lines through pairs may give a restricted-line approximation rather than the exact yolk; inspect the algorithm and source theorem before certifying the 4r overlay.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: five voter points, computed yolk, gridded uncovered set and120 agenda outcomes are distinct. Default farthest.91 lies inside nominal4r2.03. Tie handling, discrete-tournament assumptions and continuum theorem scope remain pending; finite pictures do not certify those bounds.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "alg-4.14",
       "file": "content/alg/ch04.js",
       "textHash": "bac6b44d4daca8f319c21b272f8fbaae272d8f6b3ca2194cf8a88b7ea0cbb1af",
       "textReview": "The order formula n/gcd(r,n) gives exactly the unit residue classes as additive generators for n>1, and phi(n) counts them. Prime n makes every nonzero class a generator. Listing 'powers' is additive repeated addition in Zn; inspect the thumbnails/order labels and zero class so the notation does not suggest multiplicative units instead.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: additive Z16 has eight odd generators, and selected3 visits all16 elements as listed. Non-generator stars close early with correct displayed orders. This is additive cyclic-group generation, distinct from multiplicative unit generators.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pma-8.7",
       "file": "content/pma/ch08-a2.js",
       "textHash": "57a33dda3911b59f051776b32386f33be2039eb6704ca421bebd5b739841948e",
       "textReview": "The derivative identities and boundedness force C to have a first positive zero. Monotonicity before that zero fixes S=1 there, and the addition formula supplies the quarter-turn identities and period. Quadrant monotonicity and IVT give unique parametrization on [0,2pi). The arc-length statement follows from unit speed; inspect the drag wrap at t=0/2pi.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: exponential-defined sine/cosine and unit-circle path align at the initial t0, with pi derived from the first positive cosine zero. The static initial capture does not test the full animation or circle dragging; numerical pi is illustrative.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ladr-5.66",
       "file": "content/ladr/ch05-c.js",
       "textHash": "c1d57d644b7164de39d7797840486206f881aad51daf1aa038327c718edf452e",
       "textReview": "The row-sum radius definition is correct, including the distinction between a complex disc and its real-field interval version. The disks depend on the chosen basis. If a real-matrix mode also plots nonreal eigenvalues, it must distinguish complexification from the real-field disk definition; the caption itself makes no spectral-inclusion claim beyond the next theorem.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: three Gershgorin row discs and per-entry complex-plane controls are distinct; radii1.21,1.37,1 match off-diagonal modulus sums. The default discs are legible. Real-matrix toggle and actual entry dragging remain separate pending interactions.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ode-4.9",
       "file": "content/ode/ch04-b.js",
       "textHash": "5d98b1d19d63439c3dc25ef83d60b2bfb9d8e9613bd1403acbdaeea850540793",
       "textReview": "Separated regular Sturm–Liouville conditions give real simple eigenvalues, weighted orthogonality and the stated leading Weyl law with the cited smooth p,w assumptions. The compact-inverse proof needs a spectral shift when zero is an eigenvalue; an unshifted Green inverse need not exist for every regular problem. Verify that 4.7 supplies separated and positive-weight hypotheses visibly, and inspect shooting/quadrature rather than assuming the advertised 1e-8 off-diagonal errors.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: six eigenfunctions, near-identity Gram matrix and twelve Weyl-ratio points are distinct. Default DD/heavy-end eigenvalues increase, max off-diagonal1.6e-8 and ratio.9991 at n12 are finite. Zero-mode Neumann and spectral-shift handling remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pl-4.11",

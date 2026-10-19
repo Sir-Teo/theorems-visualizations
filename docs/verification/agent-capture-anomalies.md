@@ -42,3 +42,10 @@ checks had passed. Fresh isolated native recaptures passed and were
 visually inspected: five execution panels/decision table, Debye curve/
 element bars, and truth table/output bars/circuit respectively. The
 cause is still unresolved; no renderer change is inferred from these PNGs.
+
+`mech-13.10.png` was another light-theme duplicated-panel artifact;
+its initial PNG was saved as `/tmp/agent-review/mech-13.10-duplicated.png`.
+The dark batch capture and a fresh isolated light capture show distinct
+stadium flights and Birkhoff portrait, and both were inspected. Automated
+checks passed before and after recapture. The rendering/capture cause
+remains unresolved.
