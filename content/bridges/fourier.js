@@ -2,7 +2,7 @@
 export default {
   slug: 'fourier',
   title: 'Fourier: one idea, many fields',
-  blurb: String.raw`Breaking a signal into pure frequencies began as a tool for heat flow. It became the analyst's theory of orthogonal expansions, the physicist's resonance, the musician's timbre, the engineer's sampling theorem and the computer scientist's fastest algorithm.`,
+  blurb: String.raw`Breaking a signal into pure frequencies links orthogonal approximation, resonance, musical timbre and fast computation. The same coefficients describe how much energy sits in each harmonic, how an oscillator responds, and how convolution becomes multiplication.`,
   steps: [
     { id: 'pma-8.10', note: String.raw`A periodic function is projected onto sines and cosines; each coefficient measures how much of one frequency the function contains.` },
     { id: 'pma-8.11', note: String.raw`Truncating the series gives the best approximation in the mean-square sense, which is why a few harmonics already capture most of a shape.` },
@@ -11,9 +11,8 @@ export default {
     { id: 'rca-9.13', note: String.raw`Plancherel extends the transform to every finite-energy signal and keeps energy exactly, making it a rotation of $L^2$.` },
     { id: 'mech-4.12', note: String.raw`A driven oscillator responds to each harmonic of a periodic force separately; resonance picks out the harmonic closest to the natural frequency.` },
     { id: 'music-2.6', note: String.raw`A vibrating string supports only whole-number multiples of its fundamental: the harmonic series is a Fourier series that nature plays.` },
-    { id: 'music-4.2', note: String.raw`What distinguishes a violin from a flute on the same note is the set of Fourier coefficients: timbre is a spectrum.` },
-    { id: 'music-4.4', note: String.raw`Parseval again, now audible: the loudness of a tone is shared among its harmonics.` },
-    { id: 'music-12.2', note: String.raw`The sampling theorem: a signal with no frequencies above $B$ is completely determined by samples taken $2B$ times a second. Digital audio rests on it.` },
+    { id: 'music-4.2', note: String.raw`For a steady periodic tone, the Fourier coefficients describe its harmonic amplitudes and phases. Different harmonic balances help distinguish instrumental sounds; a changing attack or decay also needs a description over time.` },
+    { id: 'music-4.4', note: String.raw`Parseval again, now for sound pressure: a tone’s mean-square pressure is the sum of the harmonic contributions. Phases can change peaks, but not that mean square; perceived loudness also involves hearing.` },
     { id: 'algo-4.11', note: String.raw`The fast Fourier transform computes $n$ frequency components in $O(n\log n)$ steps instead of $O(n^2)$, by halving the problem with roots of unity.` },
     { id: 'algo-4.15', note: String.raw`Multiplying two huge integers is a convolution of their digits, and convolution is multiplication of spectra: the FFT turns arithmetic into signal processing.` },
   ],
