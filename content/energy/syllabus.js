@@ -119,8 +119,8 @@ export default {
       items: [
         { num: '4.1', kind: 'Model', name: 'The solar spectrum and the solar constant', deps: ['qm-1.1'], refs: ['Tester ch. 13', 'MacKay ch. 6'],
           pic: 'Compare a chosen blackbody temperature with the 5772 K nominal reference, integrate its spectrum at one astronomical unit, and explore an illustrative atmospheric attenuation model. Nominal conversion constants and the measured 2008 solar-minimum irradiance are distinguished.' },
-        { num: '4.2', kind: 'Model', name: 'Solar geometry: insolation, latitude and tilt', deps: ['energy-4.1'], refs: ['Tester ch. 13', 'MacKay ch. 6'],
-          pic: 'Drag the latitude, date and panel tilt: the Sun’s path across the sky is drawn, and the daily energy on the panel follows the cosine of the incidence angle, peaking at a tilt near the latitude.' },
+        { num: '4.2', kind: 'Model', name: 'Solar geometry: insolation, latitude and tilt', deps: ['energy-4.1'], refs: ['NOAA General Solar Position Calculations: local vector geometry'],
+          pic: 'Explore a declared sinusoidal-declination model with fixed source irradiance and optional chosen attenuation. Compare daily energy and the mean of all 365 days at the actual selected tilt; optimum markers use a disclosed 3° grid.' },
         { num: '4.3', kind: 'Model', name: 'The photovoltaic cell: an illuminated diode', deps: ['circ-4.1', 'cm-4.7'], refs: ['Tester ch. 13'],
           pic: 'Shine light on a p–n junction: the diode curve shifts down by the photocurrent, and the resulting I–V curve crosses the axes at the short-circuit current and open-circuit voltage.' },
         { num: '4.4', kind: 'Definition', name: 'Maximum power point and fill factor', deps: ['energy-4.3', 'circ-3.5'], refs: ['Tester ch. 13'],

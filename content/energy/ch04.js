@@ -3,9 +3,8 @@
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
 //   4.1 Complete original IAU 2015 Resolution B3 and Kopp–Lean2011 read. Nominal conversion values are distinct from measured solar-minimum TSI.
 //     source-audit-solar.shared.js computes Planck spectra/fractions and an explicitly chosen attenuation toy; no measured spectral data or fitted atmospheric constants.
-//   4.2 Declination delta = 23.44 deg sin(360 (n - 81)/365) (standard approximation, good to about half a degree), no equation of time. Clear-sky beam model
-//     I = S (1 + 0.033 cos(360 n/365)) 0.7^(AM^0.678) (Meinel & Meinel, from memory — the form with a 0.7 base is equivalent to exp(-0.357 AM^0.678) in PyAstronomy's
-//     documentation of Meinel's formula); air mass from Kasten & Young (1989), from memory. Direct beam only: diffuse light is omitted.
+//   4.2 NOAA authored solar-position note read in full for local vector geometry. Sinusoidal declination, fixed1au and optical depth0.25 are declared choices.
+//     source-audit-solar-geometry.shared.js evaluates all365days at the actual tilt; optimum markers use a disclosed3degree grid.
 //   4.3 Single-diode cell with ILLUSTRATIVE silicon-like numbers (Jsc 40 mA/cm2 at 1 sun, J0 about 1e-12 A/cm2); nothing here is a measurement of a device.
 //   4.4 Green's empirical ideal fill factor FF0 = (v - ln(v + 0.72))/(v + 1), v = Voc/(n kT/q): M. A. Green, Solid-State Electronics 24 (1981), 788–789;
 //     formula and original attribution checked in PVEducation (https://www.pveducation.org/pvcdrom/solar-cell-operation/fill-factor), 2026-10-16.
@@ -13,37 +12,11 @@
 import { clamp, S0, T_SUN, KB, cell, ivCurve, ffGreen } from './ch04.shared.js';
 
 import {solarSpectrumAudit as specSun,solarPowerAudit,solarFractionAudit,solarTransmissionAudit as airT} from './source-audit-solar.shared.js';
+import {SOLAR_RAD_AUDIT as RAD,solarDeclinationAudit as decl,solarPositionAudit as sunPos,solarIncidenceAudit as cosInc,solarDayEnergyAudit as dayEnergy,solarYearEnergyAudit as yearEnergy} from './source-audit-solar-geometry.shared.js';
 
 const MONTHS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dateLabel = (n) => { let d = Math.round(n), m = 0; while (m < 11 && d > MONTHS[m]) { d -= MONTHS[m]; m++; } return `${d} ${MN[m]}`; };
 
-// ───────────────────────────────────────────── 4.2 helpers
-const RAD = Math.PI / 180;
-const decl = (n) => 23.44 * Math.sin((2 * Math.PI * (n - 81)) / 365); // degrees
-/** Sun position: altitude and azimuth (deg from north, clockwise) at latitude phi, day n, hour h (solar time). */
-function sunPos(phi, n, h) {
-  const d = decl(n) * RAD, p = phi * RAD, w = 15 * (h - 12) * RAD;
-  const sa = Math.sin(p) * Math.sin(d) + Math.cos(p) * Math.cos(d) * Math.cos(w), alt = Math.asin(clamp(sa, -1, 1));
-  const ca = Math.cos(alt) < 1e-9 ? 1 : (Math.sin(d) * Math.cos(p) - Math.cos(d) * Math.sin(p) * Math.cos(w)) / Math.cos(alt);
-  let az = Math.acos(clamp(ca, -1, 1)) / RAD; if (w > 0) az = 360 - az;
-  return { alt: alt / RAD, az, sa };
-}
-const airMass = (altDeg) => 1 / (Math.sin(altDeg * RAD) + 0.50572 * (altDeg + 6.07995) ** -1.6364);
-/** cos of the angle between sunlight and the normal of a panel tilted by beta (deg) and facing the equator. */
-function cosInc(phi, n, h, beta) {
-  const s = phi < 0 ? -1 : 1, p = Math.abs(phi) * RAD, d = s * decl(n) * RAD, w = 15 * (h - 12) * RAD, b = beta * RAD;
-  return Math.sin(d) * Math.sin(p - b) + Math.cos(d) * Math.cos(p - b) * Math.cos(w);
-}
-const irr = (n, altDeg, atm) => S0 * (1 + 0.033 * Math.cos((2 * Math.PI * n) / 365)) * (atm ? 0.7 ** (airMass(altDeg) ** 0.678) : 1);
-/** Daily beam energy on the panel, kWh/m2. */
-function dayEnergy(phi, n, beta, atm) {
-  let e = 0; const dh = 0.1;
-  for (let h = 0; h < 24; h += dh) {
-    const sp = sunPos(phi, n, h + dh / 2); if (sp.alt <= 0) continue;
-    const c = cosInc(phi, n, h + dh / 2, beta); if (c > 0) e += irr(n, sp.alt, atm) * c * dh;
-  }
-  return e / 1000;
-}
 
 export default {
   collection: 'energy',
@@ -122,67 +95,46 @@ The IAU's nominal irradiance $S_\odot^{\rm N}=1361$ W/m² is a separately define
 
     // ───────────────────────────────────────────────────────── 4.2
     {
-      num: '4.2',
-      kind: 'Model',
-      name: 'Solar geometry: insolation, latitude and tilt',
-      statement: String.raw`At latitude $\varphi$ on day $n$ the Sun's declination is $\delta\approx 23.44^\circ\sin\!\big(360^\circ\tfrac{n-81}{365}\big)$ and its altitude $\alpha$ at hour angle $\omega=15^\circ(t-12\,\text{h})$ satisfies $\sin\alpha=\sin\varphi\sin\delta+\cos\varphi\cos\delta\cos\omega$. A flat panel tilted by $\beta$ toward the equator receives the beam irradiance $I(\alpha)$ times the cosine of the angle of incidence,
-$$\cos\theta=\sin\delta\,\sin(\varphi-\beta)+\cos\delta\,\cos(\varphi-\beta)\cos\omega\quad(\varphi\ge0),$$
-so the daily energy is $E(\beta)=\int I\,\max(\cos\theta,0)\,dt$. The noon Sun is normal to the panel when $\beta=\varphi-\delta$; summed over the whole year, the best fixed tilt comes out close to (a little below) the latitude.
-
-Scope: direct beam only, clear sky, equator-facing fixed panel, solar time (no equation of time); real sites lose to clouds and gain some diffuse light.`,
-      idea: String.raw`Sunlight is a parallel beam, so a surface collects its irradiance times the cosine of the angle between the beam and the surface normal (the same geometry as a shadow). Tilting the panel by $\beta$ is the same as moving it to latitude $\varphi-\beta$ on a Sun of the same declination — which is why the noon Sun is overhead for a panel tilted $\varphi-\delta$. The air mass $1/\sin\alpha$ of the beam's path through the atmosphere (energy-4.1) dims low Sun, so hours near sunrise and sunset count for less than the cosine alone would say. Integrating over the day and the year turns a small cosine into the familiar rule “tilt about the latitude”.`,
-      caption: String.raw`**Left**: the sky as seen from the site, zenith at the centre; the three thin curves are the Sun's paths at the solstices and equinox, the thick one is the chosen day, and the gold dot is the Sun at the chosen **hour**. **Right**: daily energy on the panel against its tilt for that day (blue) and averaged over the year (green); the dot is your tilt, the rings the best tilts. Drag latitude and day, then compare the tilt that makes the noon Sun normal ($\varphi-\delta$) with the tilt that maximises the whole day. Switch off the atmosphere to see the pure geometry.`,
-      deps: ['energy-4.1'],
-      refs: ['Tester ch. 13', 'MacKay ch. 6'],
-      tags: ['solar', 'geometry', 'insolation'],
-      scope: String.raw`Beam irradiance on an equator-facing fixed plane under a clear-sky air-mass model; no diffuse sky light, clouds, shading or tracking.`,
-      verify: true,
-      viz(v) {
-        const lat = v.slider('latitude $\\varphi$ (°)', -60, 70, 40, { step: 1 });
-        const day = v.slider('day of year', 1, 365, 172, { step: 1, int: true, fmt: (x) => dateLabel(x) });
-        const tilt = v.slider('panel tilt $\\beta$ (°)', 0, 90, 40, { step: 1 });
-        const hour = v.slider('hour (solar time)', 0, 24, 12, { step: 0.1 });
-        const atm = v.toggle('clear-sky atmosphere (off: no air)', true);
-        const sky = v.stage({ x: [-108, 108], y: [-108, 108], equal: true, axes: false, height: 350, weight: 1, minWidth: 280, title: 'sun paths (looking down; north up)' });
-        const E = v.stage({ x: [0, 90], y: [0, 12], axes: 'box', gutter: true, height: 350, weight: 1.15, minWidth: 280, xlabel: 'panel tilt β (°)', ylabel: 'kWh m⁻² per day', title: 'energy on the panel' });
-        let annKey = '', ann = null, st = null;
-        const path = (phi, n) => { const pts = []; for (let h = 0; h <= 24.001; h += 0.1) { const p = sunPos(phi, n, h); pts.push(p.alt > 0 ? [(90 - p.alt) * Math.sin(p.az * RAD), (90 - p.alt) * Math.cos(p.az * RAD)] : null); } return pts; };
-        v.render(() => {
-          const phi = lat.value, n = day.value, b = tilt.value, A = atm.value;
-          for (const r of [30, 60, 90]) sky.circle(0, 0, r, { color: 'grid', width: r === 90 ? 1.6 : 1 });
-          for (let a = 0; a < 360; a += 45) sky.line(0, 0, 90 * Math.sin(a * RAD), 90 * Math.cos(a * RAD), { color: 'grid', width: 0.8 });
-          for (const [t, x, y] of [['N', 0, 99], ['E', 99, 0], ['S', 0, -99], ['W', -99, 0]]) sky.text(t, x, y, { size: 12, weight: 700, color: 'muted', align: 'center', baseline: 'middle' });
-          sky.text('alt 60°', 0, -30, { size: 10, color: 'muted', dy: 9 }); sky.text('alt 30°', 0, -60, { size: 10, color: 'muted', dy: 9 }); sky.text('horizon', 0, -90, { size: 10, color: 'muted', dy: 9 });
-          for (const d of [172, 80, 355]) sky.path(path(phi, d), { color: 'muted', width: 1, alpha: 0.6 });
-          sky.path(path(phi, n), { color: 'orange', width: 3 });
-          const sp = sunPos(phi, n, hour.value);
-          if (sp.alt > 0) sky.dot((90 - sp.alt) * Math.sin(sp.az * RAD), (90 - sp.alt) * Math.cos(sp.az * RAD), { r: 8, color: 'gold' });
-          // energy vs tilt
-          const key = `${phi}|${A}`;
-          if (key !== annKey) {
-            annKey = key; ann = [];
-            for (let bb = 0; bb <= 90; bb += 3) { let s = 0, c = 0; for (let d = 3; d <= 365; d += 7) { s += dayEnergy(phi, d, bb, A); c++; } ann.push([bb, s / c]); }
-          }
-          const cur = []; for (let bb = 0; bb <= 90; bb += 3) cur.push([bb, dayEnergy(phi, n, bb, A)]);
-          const mx = Math.max(...cur.map((p) => p[1]), ...ann.map((p) => p[1]));
-          E.setView([0, 90], [0, Math.max(2, Math.ceil(mx * 1.12))]);
-          E.vline(Math.min(90, Math.abs(phi)), { color: 'faint', width: 1.2, dash: [4, 4] });
-          E.text(`φ = ${v.fix(Math.abs(phi), 0)}°`, Math.min(90, Math.abs(phi)), 0, { dx: 5, dy: -8, align: 'left', size: 11, color: 'muted' });
-          E.path(cur, { color: 'accent', width: 2.4 });
-          E.path(ann, { color: 'green', width: 2.4 });
-          const bc = cur.reduce((a, p) => (p[1] > a[1] ? p : a)), ba = ann.reduce((a, p) => (p[1] > a[1] ? p : a));
-          E.dot(bc[0], bc[1], { r: 6, color: 'accent', hollow: true }); E.dot(ba[0], ba[1], { r: 6, color: 'green', hollow: true });
-          const eNow = dayEnergy(phi, n, b, A);
-          E.dot(b, eNow, { r: 7, color: 'gold' });
-          const c = cosInc(phi, n, hour.value, b);
-          st = { phi, n, b, eNow, bc, ba, annNow: ann[Math.round(b / 3)] ? ann[Math.min(ann.length - 1, Math.round(b / 3))][1] : 0, eHor: dayEnergy(phi, n, 0, A), c, alt: sp.alt, d: decl(n) };
+      num:'4.2',kind:'Model',name:'Solar geometry: insolation, latitude and tilt',
+      statement:String.raw`Choose a teaching model with declination
+$$\delta=23.44^\circ\sin\!\left(\frac{2\pi(n-81)}{365}\right)$$
+and hour angle $\omega=15^\circ(t-12\,\mathrm h)$ in **solar time**. The local Sun vector gives
+$$\begin{aligned}\sin\alpha&=\sin\varphi\sin\delta\\&\quad+\cos\varphi\cos\delta\cos\omega.\end{aligned}$$
+For an equator-facing panel, let $s=1$ at or north of the equator and $s=-1$ south of it, and $q=|\varphi|-\beta$. Its front collects the positive part of
+$$\begin{aligned}\cos\theta&=\sin(s\delta)\sin q\\&\quad+\cos\delta\cos q\cos\omega.\end{aligned}$$
+The daily energy integrates this projection during daylight. The optional attenuation is the **chosen** plane-parallel toy $I=I_0\exp[-0.25/\sin\alpha]$, with fixed $I_0\approx1361.16$ W/m². It is not a calibrated clear-sky or site-weather prediction.`,
+      idea:String.raw`Resolve a unit solar direction into east, north and up components. Its dot product with the local vertical gives $\sin\alpha$; its dot product with the panel normal gives $\cos\theta$. The panel normal is tilted toward the equator, so its north component changes sign across hemispheres. At noon the projection is $\cos(|\varphi|-\beta-s\delta)$: normal incidence requires $\beta=|\varphi|-s\delta$, and this is available only when that tilt lies between 0° and 90° and the Sun is above the horizon. The daily optimum weighs every daylight hour, rather than noon alone. An annual comparison must then average all the daily energies at the same selected tilt.`,
+      caption:String.raw`The polar sky map places the zenith at the centre and the horizon on the outer circle. Grey paths are reference days 81, 172 and 355; orange is the selected day and gold is the Sun at the selected solar hour. The energy curves sample tilts every 3°: blue is the chosen day's total, green the mean of all 365 days. Rings mark the maxima **on that grid**. Gold dots evaluate your actual selected tilt, including its yearly mean. Switching attenuation off leaves the geometric projection at fixed source irradiance.`,
+      deps:['energy-4.1'],refs:['NOAA Global Monitoring Division, General Solar Position Calculations, complete two-page authored note: local zenith and azimuth geometry','Independent solar-vector dot products and daily/annual energy integrals; explicit sinusoidal-declination and optical-depth choices'],
+      links:{geometry:'https://gml.noaa.gov/grad/solcalc/solareqns.PDF'},tags:['solar','geometry','insolation'],verify: false,
+      scope:String.raw`An equator-facing fixed plane with 0–90° tilt, a declared sinusoidal declination and fixed 1 au blackbody source. This is not NOAA's full ephemeris: its harmonic declination, equation of time, civil-time conversion and sunrise refraction correction are not implemented. The chosen plane-parallel attenuation neglects curvature, refraction, scattering, diffuse sky, clouds, shading, distance variation and tracking; its near-horizon path length is schematic. The annual mean includes all 365 model days. Displayed optimum rings are a 3° search grid; selected-tilt readouts use that tilt itself. The no-air daily integral is analytic; attenuated days use 160 midpoint samples over the daylight/front-facing interval.`,
+      viz(v){
+        const lat=v.slider('latitude $\\varphi$ (°)',-60,70,40,{step:1}),day=v.slider('day of year',1,365,172,{step:1,int:true,fmt:x=>dateLabel(x)}),tilt=v.slider('panel tilt $\\beta$ (°)',0,90,40,{step:1}),hour=v.slider('hour (solar time)',0,24,12,{step:.1}),atm=v.toggle('chosen attenuation (off: pure geometry)',true);
+        const sky=v.stage({x:[-108,108],y:[-108,108],equal:true,axes:false,height:350,weight:1,minWidth:280,title:'sky map: zenith at the centre'}),E=v.stage({x:[-5,95],y:[-1,12],axes:'box',gutter:{r:24},height:350,weight:1.15,minWidth:280,xlabel:'panel tilt β (°)',ylabel:'kWh m⁻² per day',title:'energy on the panel'});
+        let annKey='',ann=null,annAt=new Map(),st=null;
+        const path=(phi,n)=>{const pts=[];for(let h=0;h<=24.001;h+=.1){const p=sunPos(phi,n,h);pts.push(p.alt>0?[(90-p.alt)*Math.sin(p.az*RAD),(90-p.alt)*Math.cos(p.az*RAD)]:null);}return pts;};
+        v.render(()=>{
+          const phi=lat.value,n=day.value,b=tilt.value,A=atm.value;
+          for(const r of[30,60,90])sky.circle(0,0,r,{color:'grid',width:r===90?1.6:1});
+          for(let a=0;a<360;a+=45)sky.line(0,0,90*Math.sin(a*RAD),90*Math.cos(a*RAD),{color:'grid',width:.8});
+          for(const[t,x,y]of[['N',0,99],['E',99,0],['S',0,-99],['W',-99,0]])sky.text(t,x,y,{size:12,weight:700,color:'muted',align:'center',baseline:'middle'});
+          sky.text('alt 60°',0,-30,{size:10,color:'muted',dy:9});sky.text('alt 30°',0,-60,{size:10,color:'muted',dy:9});sky.text('horizon',63,-78,{size:10,color:'muted',align:'center'});
+          for(const d of[172,81,355])sky.path(path(phi,d),{color:'muted',width:1,alpha:.6});sky.path(path(phi,n),{color:'orange',width:3});
+          const sp=sunPos(phi,n,hour.value);if(sp.alt>0)sky.dot((90-sp.alt)*Math.sin(sp.az*RAD),(90-sp.alt)*Math.cos(sp.az*RAD),{r:8,color:'gold'});
+          const key=`${phi}|${A}`;
+          if(key!==annKey){annKey=key;ann=[];annAt=new Map();for(let bb=0;bb<=90;bb+=3){const e=yearEnergy(phi,bb,A);ann.push([bb,e]);annAt.set(bb,e);}}
+          if(!annAt.has(b))annAt.set(b,yearEnergy(phi,b,A));const annNow=annAt.get(b),cur=[];for(let bb=0;bb<=90;bb+=3)cur.push([bb,dayEnergy(phi,n,bb,A)]);
+          const eNow=dayEnergy(phi,n,b,A),mx=Math.max(eNow,annNow,...cur.map(p=>p[1]),...ann.map(p=>p[1])),top=Math.max(2,Math.ceil(mx*1.12));E.setView([-5,95],[-.08*top,top]);
+          E.vline(Math.abs(phi),{color:'faint',width:1.2,dash:[4,4]});E.text(`|φ| = ${v.fix(Math.abs(phi),0)}°`,Math.abs(phi),0,{dx:5,dy:-8,align:'left',size:11,color:'muted'});
+          E.path(cur,{color:'accent',width:2.4});E.path(ann,{color:'green',width:2.4});
+          const bc=cur.reduce((a,p)=>p[1]>a[1]?p:a),ba=ann.reduce((a,p)=>p[1]>a[1]?p:a);E.dot(bc[0],bc[1],{r:6,color:'accent',hollow:true});E.dot(ba[0],ba[1],{r:6,color:'green',hollow:true});E.dot(b,eNow,{r:7,color:'gold'});E.dot(b,annNow,{r:4,color:'gold'});
+          st={phi,n,b,eNow,bc,ba,annNow,eHor:dayEnergy(phi,n,0,A),c:cosInc(phi,n,hour.value,b),alt:sp.alt,d:decl(n)};
         });
-        v.legend([['accent', 'chosen day'], ['green', 'yearly average per day'], ['orange', 'sun path of chosen day'], ['muted', 'solstices and equinox']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { phi, n, b, eNow, bc, ba, annNow, eHor, c, alt, d } = st;
-          return `${dateLabel(n)}: declination $\\delta=${v.fix(d, 1)}^\\circ$ · noon altitude ${v.fix(90 - Math.abs(phi - d), 1)}° · tilt ${v.fix(b, 0)}°: **${v.fix(eNow, 2)} kWh/m²** that day (flat: ${v.fix(eHor, 2)}) · best tilt for the day ${v.fix(bc[0], 0)}° (noon Sun normal at $\\varphi-\\delta=${v.fix(Math.abs(phi) - (phi < 0 ? -d : d), 0)}^\\circ$), best fixed tilt for the year ${v.fix(ba[0], 0)}° (latitude ${v.fix(Math.abs(phi), 0)}°), yearly mean at your tilt ${v.fix(annNow, 2)}\n` +
-            (alt > 0 ? `At this hour the Sun is ${v.fix(alt, 0)}° above the horizon and the beam meets the panel at $\\cos\\theta=${v.fix(Math.max(c, 0), 2)}$.` : 'The Sun is below the horizon at this hour.');
+        v.legend([['accent','chosen day'],['green','mean of 365 days'],['gold','actual selected tilt / current Sun'],['orange','selected sun path'],['muted','reference dates']]);
+        v.readout(()=>{
+          if(!st)return'';const{phi,n,b,eNow,bc,ba,annNow,eHor,c,alt,d}=st,noonAlt=90-Math.abs(phi-d),normal=Math.abs(phi)-(phi<0?-d:d);
+          const normalText=noonAlt<=0?'The noon Sun is below the horizon.':normal>=0&&normal<=90?`Noon-normal equator-facing tilt ${v.fix(normal,1)}°.`:`The noon-normal tilt ${v.fix(normal,1)}° lies outside the available 0–90° range.`;
+          return `${dateLabel(n)}: declination $\\delta=${v.fix(d,1)}^\\circ$ · noon altitude ${v.fix(noonAlt,1)}° · tilt ${v.fix(b,0)}°: **${v.fix(eNow,2)} kWh/m²** that day (flat: ${v.fix(eHor,2)}). ${bc[1]>1e-10?`Day maximum on the 3° grid: ${v.fix(bc[0],0)}°.`:'There is no beam energy at any tilt that day.'} ${normalText}\nYear maximum on the 3° grid: ${v.fix(ba[0],0)}°; yearly mean at your tilt ${v.fix(annNow,2)} kWh/m² per day, averaging all 365 days.\n`+(alt>0?`At this hour the Sun is ${v.fix(alt,1)}° above the horizon and $\\cos\\theta=${v.fix(c,2)}$${c<=0?'; the panel front receives no beam':''}.`:'The Sun is below the horizon at this hour.');
         });
       },
     },

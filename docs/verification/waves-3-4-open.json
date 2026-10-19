@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 214,
+  "remainingFlags": 213,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 1,
     "imaging": 1,
     "circ": 1,
-    "energy": 4,
+    "energy": 3,
     "robot": 1,
     "micro": 15,
     "macro": 2,
@@ -249,20 +249,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Multi-junction_solar_cell"
       }
-    },
-    {
-      "id": "energy-4.2",
-      "file": "content/energy/ch04.js",
-      "name": "Solar geometry: insolation, latitude and tilt",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 13",
-        "MacKay ch. 6"
-      ],
-      "links": {}
     },
     {
       "id": "robot-3.7",
@@ -4082,7 +4068,8 @@
       "energy-4.1",
       "aero-4.5",
       "aero-4.7",
-      "aero-4.8"
+      "aero-4.8",
+      "energy-4.2"
     ]
   },
   "additionalFollowups": [
@@ -8051,6 +8038,12 @@
       "status": "resolved",
       "report": "docs/verification/aero-whitcomb-followup.md",
       "note": "Full authored primary-source sections/original tables read; parent independently reran7math/12native batch, inspected original equations/tables and representative final screenshots; Ackeret4.6preserved."
+    },
+    {
+      "id": "energy-4.2",
+      "status": "resolved",
+      "report": "docs/verification/energy-solar-geometry-followup.md",
+      "note": "Complete NOAA2-page source and independent vector/integral model; parent reran3math/4native groups, original local-geometry equation and final representative screenshot inspection, including exact marker strokes; actual-tilt365-day annual mean and declared3-degree optimum grid."
     }
   ]
 }
