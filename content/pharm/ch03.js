@@ -1,3 +1,4 @@
+import { hepaticClearance, hepaticElasticities } from './source-audit-hepatic.js';
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part a: items 3.1–3.6)
 import { LN2, clamp, logSlope, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal } from './ch03.shared.js';
 
@@ -359,14 +360,15 @@ export default {
       kind: 'Model',
       name: 'Well-stirred liver model and hepatic extraction',
       statement: String.raw`In the **well-stirred model** the liver is one mixed compartment fed by blood flow $Q$; the drug concentration inside it equals that in the leaving blood, and enzymes remove only the unbound drug with intrinsic clearance $\mathrm{CL}_{int}$ (the clearance the enzymes would show without any flow limit). Mass balance gives the hepatic clearance $\mathrm{CL}_H=\dfrac{Q\,f_u\mathrm{CL}_{int}}{Q+f_u\mathrm{CL}_{int}}$ and extraction ratio $E=\mathrm{CL}_H/Q=\dfrac{f_u\mathrm{CL}_{int}}{Q+f_u\mathrm{CL}_{int}}$. If $f_u\mathrm{CL}_{int}\ll Q$ (low extraction) then $\mathrm{CL}_H\approx f_u\mathrm{CL}_{int}$ and depends on enzymes and binding but not on flow; if $f_u\mathrm{CL}_{int}\gg Q$ (high extraction) then $\mathrm{CL}_H\to Q$ and depends on flow only. The elasticities are $\partial\ln\mathrm{CL}_H/\partial\ln Q=E$ and $\partial\ln\mathrm{CL}_H/\partial\ln(f_u\mathrm{CL}_{int})=1-E$.`,
-      idea: String.raw`Steady state: what enters the liver minus what leaves equals what the enzymes remove, $Q(C_{in}-C_{out})=f_u\mathrm{CL}_{int}\,C_{out}$ with $C_{out}$ the concentration in the liver. Solving for $C_{out}/C_{in}=Q/(Q+f_u\mathrm{CL}_{int})$ gives $E=1-C_{out}/C_{in}$, and $\mathrm{CL}_H=QE$ is the clearance defined in 1.4. The expression is a harmonic combination of the two resistances, delivery $Q$ and enzymatic capacity $f_u\mathrm{CL}_{int}$, so the smaller one decides, like two resistors in series. The alternative **parallel-tube** model (enzymes spread along flow-through sinusoids) gives $\mathrm{CL}_H=Q\bigl(1-e^{-f_u\mathrm{CL}_{int}/Q}\bigr)$; the two agree at low extraction and differ at high.`,
-      caption: String.raw`Left: hepatic clearance against $f_u\mathrm{CL}_{int}$ (log axis) for the current blood flow (blue) and for half and double that flow (faint): the curve follows the diagonal $\mathrm{CL}_H=f_u\mathrm{CL}_{int}$ at the left and flattens at $Q$ at the right. Right: the liver as a mixing chamber, blood in at concentration 1 and out at $1-E$, with bars showing what happens to $\mathrm{CL}_H$ if you **double the flow** or **double the enzyme capacity**, computed from the model, beside the predicted elasticities $E$ and $1-E$. Use the preset buttons for a low-, intermediate- and high-extraction drug, or switch the model to the parallel tube.`,
-      scope: String.raw`Assumes linear (unsaturated) metabolism, instantaneous equilibrium of unbound drug between blood and liver cells, a uniform liver, and the liver as the only eliminating organ. The flow value used here, about 90 L/h (1.5 L/min) of total hepatic blood flow, is a commonly quoted round textbook figure that I did not re-check against a primary source.`,
+      idea: String.raw`Steady state: what enters the liver minus what leaves equals what the enzymes remove, $Q(C_{in}-C_{out})=f_u\mathrm{CL}_{int}\,C_{out}$ with $C_{out}$ the concentration in the liver. Solving for $C_{out}/C_{in}=Q/(Q+f_u\mathrm{CL}_{int})$ gives $E=1-C_{out}/C_{in}$, and $\mathrm{CL}_H=QE$ is the clearance defined in 1.4. The expression is a harmonic combination of the two resistances, delivery $Q$ and enzymatic capacity $f_u\mathrm{CL}_{int}$, so the smaller one decides, like two resistors in series. The alternative **parallel-tube** model (enzymes spread along flow-through sinusoids) gives $\mathrm{CL}_H=Q\bigl(1-e^{-f_u\mathrm{CL}_{int}/Q}\bigr)$; both approach capacity at low extraction and flow at very high capacity; they differ between these limits.`,
+      caption: String.raw`Left: hepatic clearance against $f_u\mathrm{CL}_{int}$ (log axis) for the current blood flow (blue) and for half and double that flow (faint): the curve follows the diagonal $\mathrm{CL}_H=f_u\mathrm{CL}_{int}$ at the left and flattens at $Q$ at the right. Right: a schematic liver, with blood in at concentration1 and out at $1-E$, with bars showing what happens to $\mathrm{CL}_H$ if you **double the flow** or **double the enzyme capacity**, computed from the model, beside the exact elasticities for the selected model. Use the preset buttons for a low-, intermediate- and high-extraction drug, or switch the model to the parallel tube.`,
+      scope: String.raw`Steady linear metabolism with a chosen blood-unbound fraction $f_u$, rapid equilibration and no transporter limitation. Flow and clearance use a common blood-concentration basis. The 90 L/h default and all preset capacities are chosen examples, not independently fitted physiological measurements. The two models make different assumptions about concentrations inside the liver; applying the same numerical intrinsic clearance in both is a mathematical comparison, not a claim that separately fitted intrinsic clearances are interchangeable. The elasticity identities $E$ and $1-E$ apply to the well-stirred model; the parallel-tube elasticities are computed separately.`,
       credit: 'Rowland, Benet & Graham, 1973; Wilkinson & Shand, 1975 (physiological approach to hepatic clearance); Pang & Rowland, 1977 (comparison with the parallel-tube model)',
       deps: ['pharm-1.4', 'pharm-1.7'],
-      refs: ['Rowland–Tozer'],
+      refs: ['Jusko & Li (2021), Assessment of the Kochak-Benet Equation for Hepatic Clearance for the Parallel-Tube Model, AAPS J24:5, equations2/3/8/10, model assumptions and limitations; DOI 10.1208/s12248-021-00656-z'],
+      links: { source: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9639621/' },
       tags: ['hepatic clearance', 'extraction'],
-      verify: true,
+      verify: false,
       viz(v) {
         const Q = v.slider('hepatic blood flow $Q$ (L/h)', 20, 300, 90, { step: 5 });
         const fu = v.slider('unbound fraction $f_u$', 0.01, 1, 0.5, { log: true, sig: 2 });
@@ -378,17 +380,17 @@ export default {
         v.button('high extraction', set(0.8, 3000));
         const sL = v.stage({ x: [0.1, 1e4], y: [0, 330], xlog: true, axes: 'box', gutter: true, xlabel: 'enzyme capacity $f_u$CL$_{int}$ (L/h, log)', ylabel: 'CL$_H$ (L/h)', height: 330, weight: 1.1, minWidth: 260 });
         const sR = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 330, weight: 1, minWidth: 250 });
-        const CLH = (q, x) => (mod.value === 'ws' ? (q * x) / (q + x) : q * (1 - Math.exp(-x / q)));
+        const CLH=(q,x)=>hepaticClearance(q,x,mod.value);
         let info = null;
         v.render(() => {
           const q = Q.value, x = fu.value * CI.value, cl = CLH(q, x), E = cl / q;
           const dQ = CLH(2 * q, x) / cl, dX = CLH(q, 2 * x) / cl;
           // numerical elasticities by a 1 % change
           const eQ = Math.log(CLH(q * 1.01, x) / cl) / Math.log(1.01), eX = Math.log(CLH(q, x * 1.01) / cl) / Math.log(1.01);
-          info = { q, x, cl, E, dQ, dX, eQ, eX };
-          sL.setView([0.1, 1e4], [0, q * 2.05]);
-          const xs = Array.from({ length: 121 }, (_, i) => 10 ** (-1 + (i / 120) * 5));
-          sL.path(xs.map((t) => [t, t]), { color: 'orange', dash: [5, 4], width: 1.4 });
+          const exact=hepaticElasticities(q,x,mod.value);info = { q, x, cl, E, dQ, dX, eQ, eX, exact };
+          sL.setView([.005,40000],[-q*.1,q*2.4]);
+          const xs = Array.from({ length: 121 }, (_, i) => 10 ** (-2 + (i / 120) * Math.log10(2000000)));
+          sL.path(xs.filter(t=>t<q*2.2).map(t=>[t,t]), { color: 'orange', dash: [5, 4], width: 1.4 });
           sL.hline(q, { color: 'green', dash: [5, 4], width: 1.4 });
           sL.hline(q / 2, { color: 'faint', alpha: 0.7, dash: [3, 4] });
           sL.hline(2 * q, { color: 'faint', alpha: 0.7, dash: [3, 4] });
@@ -402,12 +404,12 @@ export default {
           sR.arrow(0.3, 8.1, 3, 8.1, { color: 'accent', width: aw, head: 10 });
           sR.text('blood in, $C=1$', 0.3, 9.4, { size: 11, color: 'accent', align: 'left', baseline: 'middle' });
           sR.rect(3, 6.7, 7, 9.7, { fill: 'orange', fillAlpha: 0.1 + 0.4 * E, color: 'ink', width: 2, radius: 10 });
-          sR.text('liver', 5, 9.25, { size: 12, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
+          sR.text(mod.value==='ws'?'well-stirred':'parallel tube', 5, 9.25, { size: 12, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
           sR.text(`E = ${v.fix(E, 2)}`, 5, 8.2, { size: 15, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
-          sR.text(`CL_H = ${v.fix(cl, 1)} L/h`, 5, 7.25, { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
+          sR.text(`CL_H = ${v.fix(cl,cl<.1?3:1)} L/h`, 5, 7.25, { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
           sR.arrow(7, 8.1, 9.7, 8.1, { color: 'accent', alpha: 0.25 + 0.75 * (1 - E), width: aw, head: 10 });
           sR.text(`out: $C=${v.fix(1 - E, 2)}$`, 9.7, 9.4, { size: 11, color: 'accent', align: 'right', baseline: 'middle' });
-          sR.text('what happens to CL$_H$ if you ...', 0.3, 5.9, { size: 11, color: 'muted', align: 'left', baseline: 'middle' });
+          sR.text('what happens to CL$_H$ if you ...', 0.3, 6.2, { size: 11, color: 'muted', align: 'left', baseline: 'middle' });
           const y0 = 2.3, hs = 3.0;
           sR.line(0.6, y0, 9.4, y0, { color: 'faint' });
           const bar = (xc, r, lab, pred, col) => {
@@ -416,11 +418,11 @@ export default {
             sR.text(lab, xc, y0 - 0.5, { size: 11, color: 'ink', align: 'center', baseline: 'middle' });
             sR.text(pred, xc, y0 - 1.1, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
           };
-          bar(3, dQ, 'double the flow', `elasticity $E$ = ${v.fix(E, 2)}`, 'accent');
-          bar(7, dX, 'double the enzymes', `elasticity $1-E$ = ${v.fix(1 - E, 2)}`, 'orange');
+          bar(3, dQ, 'double the flow', `exact flow elasticity ${v.fix(exact.flow,2)}`, 'accent');
+          bar(7, dX, 'double the enzymes', `exact capacity elasticity ${v.fix(exact.capacity,2)}`, 'orange');
         });
         v.legend([['accent', '$Q$ as set'], ['orange', '$f_u$CL$_{int}$ asymptote', { dash: true }], ['green', '$Q$ asymptote', { dash: true }], ['gold', 'this drug', { dot: true }]]);
-        v.readout(() => `$f_u\\mathrm{CL}_{int}=${v.fix(info.x, 1)}$ L/h against $Q=${v.fix(info.q, 0)}$ L/h: $E=${v.fix(info.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.cl, 1)}$ L/h (${info.E > 0.7 ? 'high extraction: flow-limited' : info.E < 0.3 ? 'low extraction: enzyme-limited' : 'intermediate'}).\nNumerical elasticities (+1 %): $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln Q=${v.fix(info.eQ, 3)}$ ${mod.value === 'ws' ? `(model: $E=${v.fix(info.E, 3)}$)` : ''}, $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln(f_u\\mathrm{CL}_{int})=${v.fix(info.eX, 3)}$ ${mod.value === 'ws' ? `(model: $1-E=${v.fix(1 - info.E, 3)}$)` : ''}.`);
+        v.readout(() => `$f_u\\mathrm{CL}_{int}=${v.fix(info.x,info.x<.1?3:1)}$ L/h against $Q=${v.fix(info.q, 0)}$ L/h: $E=${v.fix(info.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.cl,info.cl<.1?3:1)}$ L/h (${info.E > 0.7 ? 'high extraction: flow-limited' : info.E < 0.3 ? 'low extraction: enzyme-limited' : 'intermediate'}).\nNumerical elasticities (+1 %): $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln Q=${v.fix(info.eQ, 3)}$ (exact ${v.fix(info.exact.flow,3)}), $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln(f_u\\mathrm{CL}_{int})=${v.fix(info.eX, 3)}$ (exact ${v.fix(info.exact.capacity,3)}).`);
       },
     },
   ],

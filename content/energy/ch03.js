@@ -1,16 +1,12 @@
 // Energy Systems — Chapter 3: Fuels and nuclear energy (items 3.1–3.5)
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
-//   3.1 Heats of formation (kJ/mol): CO2(g) −393.51 (CODATA, NIST WebBook), H2O(g) −241.826 (CODATA, NIST WebBook), CH4(g) −74.6 (Manion 2002, NIST WebBook),
-//     n-octane(l) −250.2 (mean of the two NIST-listed values −250.3 and −250.0), C3H8(g) −104.7 (from memory; it reproduces the 50.33 MJ/kg HHV tabulated by Wikipedia).
-//     H2O(l) −285.83 = H2O(g) − 44.0 kJ/mol (enthalpy of vaporisation at 298 K; NIST Antoine data give ≈44 kJ/mol). Tabulated check values (Wikipedia "Heat of
-//     combustion"): H2 141.79 / 119.96, CH4 55.52 / 50.00, C3H8 50.33 / 46.35 MJ/kg. Coal and wood rows use HHV 32.5 (anthracite) and 21.7 (moisture- and ash-free wood)
-//     from the same table; their hydrogen contents (3 % and 6 %) are TYPICAL round numbers from memory, not measurements of a particular sample.
+//   3.1 Selected NIST SRD69 formation enthalpies and full stoichiometric bookkeeping are in source-audit-heating.shared.js.
+//     Read the species tables directly, including propane and liquid n-octane; solids are explicitly illustrative C/H/O/ash models.
 //   3.2 IPCC 2006 Guidelines default CO2 emission factors (kg/GJ, net calorific basis): natural gas 56.1, motor gasoline 69.3, gas/diesel oil 74.1, residual fuel oil 77.4,
 //     other bituminous coal 94.6 (confirmed from a reproduction of the default table; the crude-oil value was not confirmed and is left out).
-//   3.3 Regeneration duty of a 30 wt% MEA solvent: published values lie between about 3.0 and 4.2 GJ/t CO2 (3.6 is the usual benchmark); the 3.6 default is that benchmark.
-//     The plant efficiency 40 %, the steam-to-electricity worth 0.22 and the compressor efficiency 0.75 are ILLUSTRATIVE round numbers; the flue-gas CO2 fractions
-//     (coal ≈ 13 %, gas turbine ≈ 4 %) are typical values from memory. The thermodynamic minimum work is computed, not looked up.
+//   3.3 Knudsen et al. (2007), ECCE6 original Esbjerg pilot report: Table2 3.6–3.9GJ/t near90%capture; Table3 longer test3.7GJ/t at88%.
+//     The plant model is independent/illustrative. Reversible separation and ideal compression are audited in source-audit-capture.shared.js.
 //   3.4 Energy densities as tabulated in Wikipedia "Energy density" (petrol 46.4 MJ/kg, 34.2 MJ/L; diesel 45.6 and 38.6; hydrogen LHV 119.93 MJ/kg, 8.49 MJ/L liquid and
 //     4.5 MJ/L at 681 atm; Li-ion 0.36–0.875 MJ/kg and 0.9–2.63 MJ/L; lead-acid 0.17 and 0.56, a row the article does not source). Uranium rows are computed:
 //     200 MeV per fission of U-235 (Wikipedia "Nuclear fission": 202.8 MeV mean, about 200 MeV recoverable), metal density 19.05 g/cm³ and, as an ILLUSTRATIVE
@@ -18,6 +14,9 @@
 //   3.5 Binding energies: AME2020 (see ch03.shared.js). The 200 MeV total and ≈169 MeV fragment kinetic energy per U-235 fission are from Wikipedia "Nuclear fission".
 
 import { clamp, lerp, BEA, NUC, MEV_U, LV, MH2O_PER_H, beaOf, bOf } from './ch03.shared.js';
+
+import {captureMinimumAudit, capturePenaltyAudit} from './source-audit-capture.shared.js';
+import {HEATING_FUELS_AUDIT, fuelHeatingAudit, FUEL_LATENT_AUDIT} from './source-audit-heating.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 const KJ_C = 393.51, KJ_W = 285.83; // kJ/mol of CO2 and liquid water formed
@@ -33,40 +32,24 @@ export default {
       num: '3.1', kind: 'Definition', name: 'Heating value of fuels (HHV and LHV)',
       statement: String.raw`The **heating value** of a fuel is the heat released when a unit mass of it burns completely in oxygen and the products are brought back to the starting temperature (usually $25^{\circ}$C). The **higher heating value** (HHV, gross) counts the water produced by combustion as condensed liquid, so it includes the latent heat of vaporisation; the **lower heating value** (LHV, net) leaves that water as vapour and does not count it. For a fuel that produces $m_w$ kilograms of water per kilogram,
 $$\mathrm{HHV} = \mathrm{LHV} + L_v\, m_w,\qquad L_v \approx 2.44\ \mathrm{MJ/kg}\ (25^{\circ}\mathrm C),$$
-and for a fuel with hydrogen mass fraction $h$ (dry, ash-free), $m_w \approx 8.94\,h$ plus any moisture the fuel carries.`,
+For a dry fuel of hydrogen mass fraction $h$ mixed with a wet-basis moisture fraction $M$, the water per kilogram of wet fuel is $m_w\approx8.94h(1-M)+M$.`,
       idea: String.raw`Combustion is a chemical reaction, so the heat released is the difference of the enthalpies of formation of products and reactants (Hess's law, from the standard enthalpies of formation): $\Delta_cH = \sum \Delta_fH(\text{products}) - \sum\Delta_fH(\text{reactants})$. Whether the water is liquid or vapour changes its formation enthalpy by the enthalpy of vaporisation, $44$ kJ/mol, so the two heating values differ by exactly the latent heat of the water formed. Hydrogen-rich fuels (hydrogen, methane) therefore have a large gap between HHV and LHV, carbon has none, and wet wood loses extra heat just boiling its own moisture.`,
-      caption: String.raw`The bars are computed from formation enthalpies (the first four fuels) or taken from tabulated HHV (coal, wood), and the orange part of each bar is the latent heat of its water. Choose a fuel to see the mass balance of the burner, flip the toggle to count the latent heat or not, and slide the wood moisture: at 50 % moisture a kilogram of wood delivers less than half of its dry value.`,
+      caption: String.raw`The first four rows use selected NIST formation enthalpies; the coal and wood rows are **illustrative solid-fuel models** with stated elemental and ash fractions. The orange segment is the latent heat of product water. Select a fuel, toggle the reported heating-value basis and vary wet-basis wood moisture. The burner balance includes inert ash; oxygen comes from the air (nitrogen is omitted).`,
       deps: ['pchem-2.10'],
-      refs: ['Tester ch. 8'],
+      refs: ['NIST Chemistry WebBook SRD69: H₂O, CO₂, CH₄, propane and n-octane thermochemistry tables', 'Tester ch. 8'],
+      links: {water:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C7732185&Mask=3',propane:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C74986&Mask=1',octane:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C111659&Mask=2'},
       tags: ['heating value', 'combustion'],
-      scope: String.raw`Complete combustion at 25 °C and 1 atm. Pure-compound values are computed from NIST/CODATA formation enthalpies and reproduce the tabulated 141.79/119.96 (H$_2$), 55.52/50.00 (CH$_4$) and 50.33/46.35 MJ/kg (C$_3$H$_8$). The hydrogen content of the coal and wood rows (3 % and 6 %) is a typical round number, so their LHV is indicative only.`,
-      verify: true,
+      scope: String.raw`Standard formation enthalpies at 298.15 K are selected from inspected NIST tables: CO₂(g) −393.51, H₂O(l) −285.830, H₂O(g) −241.826, CH₄(g) −74.6, propane(g) −104.7 and n-octane(l) −250.3 kJ/mol. They are selected database values with uncertainties and differing source studies, not exact universal constants. Their liquid/vapour difference gives $L_v\approx2.4426\,\mathrm{MJ/kg}$. Dry coal-model fractions C/H/O/ash are 90/3/2/5%; dry wood-model fractions are 50/6/40/4%, with chosen HHV 32.5 and 21.7 MJ/kg. These solids do not represent measured samples. Wet moisture is liquid at the initial temperature. Complete combustion, no excess oxygen, air nitrogen, fuel nitrogen/sulfur or sensible exhaust heat is modelled.`,
+      verify: false,
       viz(v) {
-        const fuels = [
-          { key: 'H2', label: 'hydrogen H₂', M: 2.01588, nC: 0, nW: 1, dHf: 0 },
-          { key: 'CH4', label: 'methane CH₄', M: 16.043, nC: 1, nW: 2, dHf: -74.6 },
-          { key: 'C3H8', label: 'propane C₃H₈', M: 44.097, nC: 3, nW: 4, dHf: -104.7 },
-          { key: 'C8H18', label: 'octane C₈H₁₈ (petrol)', M: 114.23, nC: 8, nW: 9, dHf: -250.2 },
-          { key: 'coal', label: 'anthracite (3 % H)', hhv: 32.5, h: 0.03, c: 0.9 },
-          { key: 'wood', label: 'wood (6 % H, wet)', hhv: 21.7, h: 0.06, c: 0.5 },
-        ];
+        const fuels = HEATING_FUELS_AUDIT;
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, full: true, minWidth: 340 });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, minWidth: 340 });
         const sel = v.select('fuel', fuels.map((f) => ({ value: f.key, label: f.label })), 'CH4');
         const moist = v.slider('wood moisture (wet basis)', 0, 0.6, 0.2, { step: 0.01 });
         const eff = v.slider('boiler efficiency on an HHV basis', 0.6, 1, 0.9, { step: 0.01 });
         const cond = v.toggle('count the latent heat (condense the water)', true);
-        const calc = (f) => {
-          if (f.M) { // Hess's law from formation enthalpies of the compound
-            const hhv = (f.nC * KJ_C + f.nW * KJ_W + f.dHf) / f.M, mw = f.nW * 18.015 / f.M;
-            return { hhv, mw, lhv: hhv - LV * mw, co2: f.nC * 44.01 / f.M, o2: 0 };
-          }
-          if (f.key === 'wood') {
-            const M = moist.value, hhv = f.hhv * (1 - M), mw = M + MH2O_PER_H * f.h * (1 - M);
-            return { hhv, mw, lhv: hhv - LV * mw, co2: 3.664 * f.c * (1 - M) };
-          }
-          const mw = MH2O_PER_H * f.h; return { hhv: f.hhv, mw, lhv: f.hhv - LV * mw, co2: 3.664 * f.c };
-        };
+        const calc = f => fuelHeatingAudit(f, moist.value);
         let cur = null;
         v.render(() => {
           const c = s.ctx, W = s.width, H = s.height, L = 150, R = W - 18, top = 44, rowH = (H - top - 40) / fuels.length;
@@ -76,7 +59,7 @@ and for a fuel with hydrogen mass fraction $h$ (dry, ash-free), $m_w \approx 8.9
             s.textPx(String(t), xs(t), H - 24, { size: 11, color: 'muted', align: 'center' });
           }
           s.textPx('heating value, MJ per kg of fuel as burnt', (L + R) / 2, H - 8, { size: 11.5, color: 'muted', align: 'center' });
-          s.textPx(cond.value ? 'the calorimeter counts the latent heat: HHV' : 'exhaust leaves hot, water stays steam: LHV', (L + R) / 2, 16, { size: 13, weight: 700, color: cond.value ? 'orange' : 'accent', align: 'center' });
+          s.textPx(cond.value ? 'the calorimeter counts the latent heat: HHV' : 'product water remains vapour: LHV', (L + R) / 2, 16, { size: 13, weight: 700, color: cond.value ? 'orange' : 'accent', align: 'center' });
           fuels.forEach((f, i) => {
             const r = calc(f), y = top + i * rowH + rowH / 2, bh = Math.min(26, rowH * 0.6), on = f.key === sel.value;
             if (on) { c.fillStyle = v.color('gold', 0.12); c.fillRect(4, y - rowH / 2 + 2, W - 8, rowH - 4); }
@@ -93,18 +76,19 @@ and for a fuel with hydrogen mass fraction $h$ (dry, ash-free), $m_w \approx 8.9
         // mass balance of the chosen fuel
         v.render(() => {
           const f = fuels.find((q) => q.key === sel.value), r = calc(f), c = sM.ctx, W = sM.width, H = sM.height;
-          const o2 = f.M ? (f.nC + f.nW / 2) * 32 / f.M : (r.co2 * 32 / 44.01 + (r.mw - (f.key === 'wood' ? moist.value : 0)) * 16 / 18.015 - (f.key === 'wood' ? 0.4 * (1 - moist.value) : 0.02));
-          const items = [['1 kg fuel', 1, 'gold'], ['+ O₂', Math.max(o2, 0), 'muted'], ['→ CO₂', r.co2, 'purple'], ['+ H₂O', r.mw, 'accent']];
-          const k = (W - 40) / Math.max(1 + Math.max(o2, 0), r.co2 + r.mw, 1.5) / 1.0;
-          const row = (labs, y0) => { let x = 20; labs.forEach(([lab, m, col]) => { const w = Math.max(m * k, 2); c.fillStyle = v.color(col, 0.5); c.fillRect(x, y0, w, 34); c.strokeStyle = v.color(col); c.strokeRect(x, y0, w, 34); sM.textPx(`${lab}  ${f2(v, m)} kg`, x + w / 2, y0 + 17, { size: 11.5, weight: 600, color: 'ink', align: 'center', halo: false }); x += w + 2; }); };
+          const o2 = r.o2;
+          const items = [['1 kg fuel',1,'gold'],['+ O₂',o2,'muted'],['→ CO₂',r.co2,'purple'],['+ H₂O',r.mw,'accent'],['+ ash',r.ash,'faint']];
+          const k = (W - 40) / Math.max(1 + Math.max(o2, 0), r.co2 + r.mw + r.ash, 1.5) / 1.0;
+          const row = (labs, y0) => { let x = 20; labs.forEach(([lab, m, col]) => { const w = Math.max(m * k, 2); c.fillStyle = v.color(col, 0.5); c.fillRect(x, y0, w, 34); c.strokeStyle = v.color(col); c.strokeRect(x, y0, w, 34); if(w>85)sM.textPx(`${lab}  ${f2(v, m)} kg`, x + w / 2, y0 + 17, { size: 11.5, weight: 600, color: 'ink', align: 'center', halo: false }); x += w + 2; }); };
           sM.textPx('mass balance of the burner (per kg of fuel; oxygen from the air)', 20, 14, { size: 12, weight: 650, color: 'muted', align: 'left' });
-          row(items.slice(0, 2), 30); row(items.slice(2), 78);
-          sM.textPx(f.M ? `water formed: ${f2(v, r.mw)} kg/kg × ${f2(v, LV)} MJ/kg of latent heat = ${f2(v, LV * r.mw)} MJ` : `water: ${f2(v, r.mw)} kg/kg (from hydrogen${f.key === 'wood' ? ' and moisture' : ''}) × ${f2(v, LV)} MJ/kg = ${f2(v, LV * r.mw)} MJ`, 20, 140, { size: 12.5, weight: 650, color: 'orange', align: 'left' });
-          sM.textPx(`HHV − LHV = ${f2(v, r.hhv - r.lhv)} MJ/kg  (${f1(v, 100 * (r.hhv / r.lhv - 1))} % of the LHV)`, 20, 164, { size: 12.5, weight: 650, color: 'ink', align: 'left' });
+          row(items.slice(0, 2), 30); row(items.slice(2).filter(q=>q[1]>0), 78);
+          sM.textPx(`Products: CO₂ ${f2(v,r.co2)} kg; H₂O ${f2(v,r.mw)} kg; ash ${f2(v,r.ash)} kg.`,20,124,{size:11.5,color:'muted',align:'left'});
+          sM.textPx(f.M ? `water formed: ${f2(v, r.mw)} kg/kg × ${f2(v, FUEL_LATENT_AUDIT)} MJ/kg of latent heat = ${f2(v, FUEL_LATENT_AUDIT * r.mw)} MJ` : `water: ${f2(v, r.mw)} kg/kg (from hydrogen${f.key === 'wood' ? ' and moisture' : ''}) × ${f2(v, FUEL_LATENT_AUDIT)} MJ/kg = ${f2(v, FUEL_LATENT_AUDIT * r.mw)} MJ`, 20, 148, { size: 12.5, weight: 650, color: 'orange', align: 'left' });
+          sM.textPx(`HHV − LHV = ${f2(v, r.hhv - r.lhv)} MJ/kg  (${f1(v, 100 * (r.hhv / r.lhv - 1))} % of the LHV)`, 20, 174, { size: 12.5, weight: 650, color: 'ink', align: 'left' });
         });
         v.readout(() => {
           const f = fuels.find((q) => q.key === sel.value), r = calc(f);
-          return `${f.label}: HHV $= ${f2(v, r.hhv)}$ MJ/kg, LHV $= ${f2(v, r.lhv)}$ MJ/kg, $m_w = ${f2(v, r.mw)}$ kg/kg, so $\\mathrm{HHV}-\\mathrm{LHV} = L_v m_w = ${f2(v, LV * r.mw)}$ MJ/kg.\nA boiler that is ${f1(v, 100 * eff.value)} % efficient on the HHV basis is ${f1(v, 100 * eff.value * r.hhv / r.lhv)} % efficient on the LHV basis: **above 100 % on LHV is not a violation**, only a sign that a condensing boiler recovers latent heat the LHV never counted.`;
+          return `${f.label}: HHV $= ${f2(v, r.hhv)}$ MJ/kg, LHV $= ${f2(v, r.lhv)}$ MJ/kg, $m_w = ${f2(v, r.mw)}$ kg/kg, ash ${f2(v,r.ash)} kg/kg; mass closure ${f2(v,1+r.o2)} kg in = ${f2(v,r.co2+r.mw+r.ash)} kg out. Thus $\\mathrm{HHV}-\\mathrm{LHV} = L_v m_w = ${f2(v, FUEL_LATENT_AUDIT * r.mw)}$ MJ/kg.\nA boiler that is ${f1(v, 100 * eff.value)} % efficient on the HHV basis is ${f1(v, 100 * eff.value * r.hhv / r.lhv)} % efficient on the LHV basis: **above 100 % on LHV is not a violation**, only a sign that a condensing boiler recovers latent heat the LHV never counted.`;
         });
       },
     },
@@ -164,20 +148,19 @@ so each carbon atom gives exactly one CO$_2$ molecule, $44.01/12.011 = 3.664$ kg
     // ───────────────────────────────────────────────────────────────────────────── 3.3
     {
       num: '3.3', kind: 'Model', name: 'Carbon capture and its energy penalty',
-      statement: String.raw`Capturing CO$_2$ from flue gas costs energy for two reasons. First, **thermodynamics**: separating a fraction $r$ of the CO$_2$ present at mole fraction $y$ into a pure stream is an unmixing process whose minimum work, per mole of flue gas at temperature $T$, is
-$$W_{\min} = RT\Bigl[(1-ry)\,h(y') - h(y)\Bigr],\quad h(z)=z\ln z+(1-z)\ln(1-z),\quad y'=\frac{y(1-r)}{1-ry},$$
-which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger the more dilute the stream. Second, **practice**: a solvent plant needs about 3–4 GJ of low-pressure steam per tonne captured to regenerate the solvent, and the CO$_2$ must then be compressed for transport. Both are paid for by electricity the plant can no longer sell, so the net efficiency falls by several percentage points.`,
-      idea: String.raw`The minimum work is the Gibbs free energy of unmixing (the entropy of mixing of ideal gases) — an application of the exergy idea of 2.9: concentrating a dilute component costs work proportional to $RT\ln(1/y)$. A real solvent plant uses heat, not work, at a temperature near 120 °C, so each gigajoule of steam diverted from the turbine costs only about 0.2 GJ of electricity, but 3.6 GJ of steam per tonne is still more than twenty times the thermodynamic minimum in heat terms, and about five times in electricity terms: the process is far from reversible, and that gap is where research on better solvents works.`,
-      caption: String.raw`The top bar compares the plant without and with capture per unit of fuel; the dark sliver inside the red steam slice is the thermodynamic minimum. Slide the solvent's regeneration duty and the steam-to-electricity worth to see the penalty move. The right panel shows the minimum work against the CO$_2$ fraction of the gas: a gas turbine's flue gas is more dilute than coal's, and air is far more dilute still.`,
+      statement: String.raw`Separating a fraction $r$ of CO₂ from an ideal-gas feed of mole fraction $y$ into a pure stream at the feed pressure has a reversible minimum work. Per mole of feed at temperature $T$,
+$$W_{\min}=RT\{(1-ry)h(y')-h(y)\},\quad h(z)=z\ln z+(1-z)\ln(1-z),\quad y'=\frac{y(1-r)}{1-ry}.$$
+This is the Gibbs free-energy increase of the product and depleted streams; compression to a higher pressure requires additional work. Practical solvent regeneration consumes heat and can reduce a power plant's electricity output. As a specific reference, the Esbjerg 30 wt% MEA pilot reported 3.6–3.9 GJ of steam heat per tonne CO₂ across five solvent-flow tests near 90% capture (Knudsen et al., 2007, Table 2). That measured pilot result does not fix the efficiency penalty of a full plant.`,
+      idea: String.raw`Removing CO₂ incrementally from an ideal mixture costs $RT\ln(1/y_{\rm remaining})$ per mole extracted. The remaining gas becomes more dilute as capture proceeds, so high recovery costs more work per captured mole. Integrating this chemical-potential difference gives the formula above. Heat duty and reversible work are different measures: this schematic converts regeneration heat to lost electricity with an independently chosen steam-worth factor $\kappa$, then adds ideal-gas isothermal compression divided by an assumed compressor efficiency. Those proxies show how a penalty can arise, without modelling the coupled steam turbine or the solvent chemistry.`,
+      caption: String.raw`At the same fuel input, compare net electricity before and after capture. The dark segment is the **minimum separation work**; orange compression is additional. The right panel compares that minimum with the chosen heat-duty × steam-worth proxy. CO₂ fractions for coal, gas-turbine exhaust and 400 ppm reference air are illustrative markers. The readout includes both separation and compression in its ideal-work fraction of the total model loss.`,
       deps: ['energy-3.2', 'energy-2.9'],
-      refs: ['Tester ch. 8'],
+      refs: ['Knudsen, Jensen, Vilhelmsen & Biede (2007), ECCE6, Esbjerg pilot, §3.2 and Tables 2–3', 'Ideal-gas chemical-potential derivation; Tester ch. 8'],
+      links: {pilot:'https://skoge.folk.ntnu.no/prost/proceedings/ecce6_sep07/upload/3356.pdf'},
       tags: ['carbon capture', 'exergy', 'second law'],
-      scope: String.raw`A schematic coal plant with 90 % post-combustion capture on an amine solvent. The minimum work uses ideal gases at $T = 40^{\circ}$C and is exact for that assumption; the regeneration duty (3.0–4.2 GJ/t is the published range for monoethanolamine, 3.6 the usual benchmark), the steam worth, the compressor efficiency and the 40 % plant efficiency are illustrative round numbers. Published net penalties vary with solvent, integration and plant, so treat the result as an order of magnitude, not a forecast.`,
-      verify: true,
+      scope: String.raw`Read the complete original 2007 pilot report; Table 2 gives the five-point 3.6–3.9 GJ/t steam range, while the longer test averaged 3.7 GJ/t at 88% capture (Table 3), not exactly the 90% target. The visual is an independent schematic, not a reproduction of those tests. Separation is reversible ideal-gas unmixing at 313.15 K with pure CO₂ and a depleted tail at the feed pressure. Compression uses ideal-gas isothermal work from 1 to 110 bar at 313.15 K; real CO₂ at high pressure is nonideal. Baseline coal factor 94.6 kg CO₂/GJ, efficiency 40%, flue fraction 13%, heat duty 3.6 GJ/t, steam worth 0.22 and compressor efficiency 0.75 are independent illustrative inputs. Pumping, fans, solvent losses, plant redesign, upstream emissions and storage are omitted. The reported ideal-work fraction is an accounting proxy, not a measured full-process second-law efficiency.`,
+      verify: false,
       viz(v) {
-        const R = 8.314, T = 313.15, MC = 44.01;
-        // J per mol of flue gas, divided by (r y) mol of CO2 and 44.01 g/mol gives J/g = MJ/t; /1000 → GJ/t
-        const wmin = (y, r) => { const h = (z) => (z <= 0 || z >= 1 ? 0 : z * Math.log(z) + (1 - z) * Math.log(1 - z)); const yp = y * (1 - r) / (1 - r * y); return R * T * ((1 - r * y) * h(yp) - h(y)) / (r * y) / MC / 1000; };
+        const wmin = captureMinimumAudit;
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, full: true });
         const sP = v.stage({ x: [0.0003, 0.3], y: [0.05, 2], axes: 'box', gutter: true, xlog: true, ylog: true, height: 320, xlabel: 'CO₂ mole fraction in the gas', ylabel: 'minimum work, GJ per t CO₂', minWidth: 330 });
         const y = v.slider('CO₂ in flue gas, $y$', 0.02, 0.2, 0.13, { step: 0.005 });
@@ -186,20 +169,11 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
         const kap = v.slider('electricity lost per GJ of steam taken', 0.12, 0.35, 0.22, { step: 0.01 });
         const eta = v.slider('plant efficiency without capture', 0.3, 0.5, 0.4, { step: 0.01 });
         const ec = v.slider('compressor efficiency', 0.6, 0.9, 0.75, { step: 0.01 });
-        const model = () => {
-          const F = 3.6 / eta.value;                 // GJ fuel per MWh net without capture
-          const t = F * 94.6 / 1000, cap = r.value * t; // t CO2 per MWh emitted / captured
-          const wmGJ = wmin(y.value, r.value);          // GJ per t, minimum work
-          const eMin = wmGJ * cap;
-          const comp = R * 313.15 * Math.log(110) / MC / 1000 / ec.value; // GJ per t, isothermal compression 1 → 110 bar
-          const eC = comp * cap, eS = kap.value * q.value * cap, tot = eS + eC;
-          const net = 3.6 - tot;
-          return { F, t, cap, wmGJ, eMin, eS, eC, tot, net, etaNew: net / F, pen: eta.value - net / F, fuelUp: 3.6 / net - 1, comp, sec: eMin / Math.max(tot, 1e-9) };
-        };
+        const model = () => capturePenaltyAudit({y:y.value,r:r.value,q:q.value,kap:kap.value,eta:eta.value,ec:ec.value});
         v.render(() => {
           const m = model(), c = s.ctx, W = s.width, H = s.height, L = 130, Rr = W - 16, xs = (g) => L + (Rr - L) * g / m.F;
           s.textPx('energy per net megawatt-hour (3.6 GJ) of electricity before capture, GJ of fuel', 10, 16, { size: 12, weight: 650, color: 'muted', align: 'left' });
-          const bar = (yc, segs, lab) => { let x = 0; s.textPx(lab, L - 8, yc, { size: 12, weight: 650, color: 'ink', align: 'right', halo: false }); for (const [g, col, tx] of segs) { c.fillStyle = v.color(col, 0.6); c.fillRect(xs(x), yc - 22, xs(x + g) - xs(x), 44); c.strokeStyle = v.color(col); c.strokeRect(xs(x), yc - 22, xs(x + g) - xs(x), 44); if (tx && xs(x + g) - xs(x) > 34) s.textPx(tx, (xs(x) + xs(x + g)) / 2, yc, { size: 11, weight: 650, color: 'ink', align: 'center', halo: false }); x += g; } return x; };
+          const bar = (yc, segs, lab) => { let x = 0; s.textPx(lab, L - 8, yc, { size: 12, weight: 650, color: 'ink', align: 'right', halo: false }); for (const [g, col, tx] of segs) { c.fillStyle = v.color(col, 0.6); c.fillRect(xs(x), yc - 22, xs(x + g) - xs(x), 44); c.strokeStyle = v.color(col); c.strokeRect(xs(x), yc - 22, xs(x + g) - xs(x), 44); if (tx && xs(x + g) - xs(x) > 70) s.textPx(tx, (xs(x) + xs(x + g)) / 2, yc, { size: 11, weight: 650, color: 'ink', align: 'center', halo: false }); x += g; } return x; };
           bar(70, [[3.6, 'green', 'net electricity'], [m.F - 3.6, 'faint', 'waste heat']], 'no capture');
           bar(140, [[Math.max(m.net, 0), 'green', 'net electricity'], [m.eC, 'orange', 'compress'], [m.eS - m.eMin, 'red', 'steam'], [m.eMin, 'ink', ''], [m.F - 3.6, 'faint', 'waste heat']], 'with capture');
           s.textPx(`same fuel (${f1(v, m.F)} GJ): net efficiency ${f1(v, 100 * eta.value)} % → ${f1(v, 100 * m.etaNew)} %`, 10, 196, { size: 13, weight: 700, color: 'red', align: 'left' });
@@ -207,13 +181,13 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
           sP.fn((z) => wmin(z, r.value), { domain: [0.0003, 0.3], color: 'accent', width: 2.5 });
           sP.hline(q.value * kap.value, { color: 'red', dash: true });
           sP.text('solvent plant (steam × worth)', 0.0004, q.value * kap.value * 1.12, { size: 11, color: 'red', align: 'left' });
-          for (const [yy, lab, col] of [[0.0004, 'air', 'purple'], [0.04, 'gas turbine', 'teal'], [0.13, 'coal', 'gold']]) { sP.dot(yy, wmin(yy, r.value), { r: 5, color: col, label: lab, labelPos: yy < 0.001 ? 'ne' : 'sw' }); }
+          for (const [yy, lab, col] of [[0.0004, '400 ppm air', 'purple'], [0.04, 'gas turbine', 'teal'], [0.13, 'coal', 'gold']]) { sP.dot(yy, wmin(yy, r.value), { r: 5, color: col, label: lab, labelPos: yy < 0.001 ? 'ne' : 'sw' }); }
           sP.vline(y.value, { color: 'gold', alpha: 0.5, dash: true });
         });
         v.legend([['green', 'net electricity', { area: true }], ['orange', 'compression', { area: true }], ['red', 'regeneration steam (as electricity)', { area: true }], ['ink', 'thermodynamic minimum', { area: true }]]);
         v.readout(() => {
           const m = model();
-          return `Minimum separation work at $y=${f2(v, y.value)}$, $r=${f2(v, r.value)}$: **${f2(v, m.wmGJ)} GJ/t** CO$_2$ (computed from the entropy of mixing). The solvent plant spends $${f2(v, q.value)}\\times${f2(v, kap.value)} = ${f2(v, q.value * kap.value)}$ GJ of electricity-equivalent per tonne, so its second-law efficiency is about ${f1(v, 100 * m.wmGJ / (q.value * kap.value + m.comp))} % (counting compression).\nPer MWh: ${f2(v, m.cap)} t CO$_2$ captured costs ${f2(v, m.tot)} GJ of electricity: net efficiency falls by ${f1(v, 100 * m.pen)} points, and the plant burns ${f1(v, 100 * m.fuelUp)} % more fuel per MWh delivered.`;
+          return `Minimum separation work at $y=${f2(v, y.value)}$, $r=${f2(v, r.value)}$: **${f2(v, m.wmGJ)} GJ/t** CO$_2$ (computed from the entropy of mixing). The solvent plant spends $${f2(v, q.value)}\\times${f2(v, kap.value)} = ${f2(v, q.value * kap.value)}$ GJ of electricity-equivalent per tonne, Including ideal compression, minimum work / model electricity loss = ${f1(v,100*m.idealWorkFraction)}%; this is an accounting proxy.\nPer MWh: ${f2(v, m.cap)} t CO$_2$ captured costs ${f2(v, m.tot)} GJ of electricity: net efficiency falls by ${f1(v, 100 * m.pen)} points, and the plant burns ${f1(v, 100 * m.fuelUp)} % more fuel per MWh delivered.`;
         });
       },
     },

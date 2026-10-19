@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 243,
+  "remainingFlags": 240,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,10 +17,10 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "pharm": 8,
+    "pharm": 7,
     "imaging": 1,
     "circ": 1,
-    "energy": 12,
+    "energy": 10,
     "solid": 7,
     "robot": 1,
     "aero": 7,
@@ -210,19 +210,6 @@
       "links": {}
     },
     {
-      "id": "pharm-3.6",
-      "file": "content/pharm/ch03.js",
-      "name": "Well-stirred liver model and hepatic extraction",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Rowland\u2013Tozer"
-      ],
-      "links": {}
-    },
-    {
       "id": "pharm-4.5",
       "file": "content/pharm/ch04.js",
       "name": "Therapeutic window and target concentration",
@@ -371,32 +358,6 @@
       "links": {
         "crossref": "https://doi.org/10.1088/0370-1301/70/1/303"
       }
-    },
-    {
-      "id": "energy-3.1",
-      "file": "content/energy/ch03.js",
-      "name": "Heating value of fuels (HHV and LHV)",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 8"
-      ],
-      "links": {}
-    },
-    {
-      "id": "energy-3.3",
-      "file": "content/energy/ch03.js",
-      "name": "Carbon capture and its energy penalty",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 8"
-      ],
-      "links": {}
     },
     {
       "id": "energy-3.4",
@@ -4486,7 +4447,10 @@
       "physio-4.16",
       "physio-4.19",
       "imaging-4.5",
-      "pharm-3.11"
+      "pharm-3.11",
+      "pharm-3.6",
+      "energy-3.1",
+      "energy-3.3"
     ]
   },
   "additionalFollowups": [
@@ -8269,6 +8233,24 @@
       "status": "resolved",
       "report": "docs/verification/pharm-recirculation-followup.md",
       "note": "Official CELLCEPT label section12.3 read; chosen recirculation model now has exact between-meal propagation, all remaining-state future exposure and complete72h bounds. Parent read report, reran3mathematical and2native theme groups, and inspected final high-return screenshot."
+    },
+    {
+      "id": "pharm-3.6",
+      "status": "resolved",
+      "report": "docs/verification/pharm-hepatic-followup.md",
+      "note": "Authored Jusko-Li analysis and independent model derivations checked; exact parallel-tube elasticities replace incorrect well-stirred labels, with complete capacity bounds. Parent reran3mathematical and2native theme groups and inspected high-capacity screenshot."
+    },
+    {
+      "id": "energy-3.1",
+      "status": "resolved",
+      "report": "docs/verification/energy-heating-followup.md",
+      "note": "Direct NIST thermochemistry selections and chosen solid-fuel compositions checked; wet-basis water and inert-ash mass balance corrected. Parent reran4mathematical and2native theme groups and inspected final screenshot."
+    },
+    {
+      "id": "energy-3.3",
+      "status": "resolved",
+      "report": "docs/verification/energy-capture-followup.md",
+      "note": "Complete primary Esbjerg2007 pilot report checked; exact separation integral and consistent ideal-compression work accounting independently tested. Parent reran4mathematical and2native theme groups and inspected final screenshot; chosen plant proxy remains separate from pilot measurements."
     }
   ]
 }
