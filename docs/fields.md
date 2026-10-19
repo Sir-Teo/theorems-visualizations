@@ -170,6 +170,9 @@ right first nonzero prime-power term and a separate order argument.
 - Music theory items about structure (scales, chords, rhythm) use pitch-class clocks, the
   Tonnetz, piano rolls and necklaces; acoustics items use honest physics (standing waves solved,
   spectra computed by FFT).
+- Check the actual cyclic interval word before an adjacency argument: the diatonic
+  TTSTTTS word has no adjacent semitone pair. Fix a tonic when comparing parallel
+  modal collections as windows on the line of fifths.
 - Analyze the same sample buffer that the Listen control plays, and handle finite-window
   releases explicitly. A finite click or noise burst need not have a perfectly flat spectrum;
   distinguish these from ideal impulses and white-noise power spectra. State the integrability

@@ -603,7 +603,7 @@
       "file": "content/fa/ch10-a2.js",
       "textHash": "7a66d9ae2dd8d1fe7078b208b9a723f1d4433e489786cddbba14d9efeb6a0aaa",
       "textReview": "The local inversion estimate gives continuity on the open invertible group, and inversion being an involution supplies a continuous inverse. The plane-slice picture shares its numerical model with the preceding remainder theorem.",
-      "visualReview": null,
+      "visualReview": "The green invertibility radius is ||x^-1||^-1=0.499, with ||h||=0.189 inside its half-radius disc. The displayed quadratic error 0.4525 is below its 0.5734 bound, and the green disc stays inside the red singular curve. Base-handle singular states still need focused hypothesis handling checks.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -612,7 +612,7 @@
       "file": "content/prob/ch04-m1.js",
       "textHash": "e1550a46ec9996e42d0a492a2fe3e3e814674cb337cb46f4436e596d72670e80",
       "textReview": "Both example compensators now share the p=1/2 qualification; the zero-visit count explicitly ranges over 0≤m<n. The general conditional-drift decomposition remains valid for the other controls.",
-      "visualReview": null,
+      "visualReview": "At p=0.5 and g=|s|, the n=150 path has predictable compensator 7 and martingale part 13, with exact reconstruction residual zero. The 400-path martingale mean is near zero and the compensator is nondecreasing. The corrected caption restricts the explicit compensator examples to p=0.5.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "Conditional drift gives the predictable compensator, and the difference of two decompositions is a predictable martingale fixed by A0=0. The caption's absolute-value compensator is a zero-visit count only at p=1/2, so that qualification must cover both examples.",
@@ -624,7 +624,7 @@
       "file": "content/dist/ch01.js",
       "textHash": "d07a6d054b9fc65edd6c7f4232a54a20dfacfcd2c5892720f6bc63cf738e1111",
       "textReview": "One-register read/write steps are correctly distinguished from atomic read-modify-write. The dynamic-programming histogram claims exact interleaving counts, so its enumerator needs separate numerical comparison before accepting it as evidence.",
-      "visualReview": null,
+      "visualReview": "The P1,P2,P1,P2 read/write schedule loses one update and ends at x=1. The exact histogram counts four such interleavings versus two giving x=2, summing to all six schedules. The register, local reads and read/write timeline agree.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -633,7 +633,7 @@
       "file": "content/algo/ch03.js",
       "textHash": "33c8da982eacf2a303c4ecb0c2a9464ac901795e0ca87539978731db7fed42ca",
       "textReview": "Removed the false dependence claim for uniform-permutation record indicators. Relative ranks give an independent-uniform bijection proof; exhaustive counts of every record pattern for n=2 through 8 agree. Linearity still needs no independence.",
-      "visualReview": null,
+      "visualReview": "The record-hire staircase and per-position empirical bars are distinct from the 1/i expectation curve. With n=20 the displayed H20=3.598 differs from the 300-order empirical mean 3.427, clearly labelled as simulation. The independence correction is text, not a property proved by the picture.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "The indicator expectation and linearity claim are correct without independence, but the hiring example is wrong: record indicators in a uniform random permutation are mutually independent. A hire at position 2 does not make a hire at 3 less likely; replace the purported dependence example.",
@@ -645,7 +645,7 @@
       "file": "content/mfd/ch01-b.js",
       "textHash": "a971b06d39846fcac4b00218ae6b9580c89aceefac02a1106c2acacb8f19425a",
       "textReview": "Qualified the analytic comparison: a nonzero analytic function on a connected analytic chart cannot be flat to infinite order at a point. The smooth bump construction and finite-grid limitations remain explicit.",
-      "visualReview": null,
+      "visualReview": "The Cantor-gap bumps and finite Whitney-square construction are visible. The planar grid reports zeros within 0.071 of the drawn closed set at this resolution, rather than claiming the finite grid establishes the exact infinite zero set. Extremely small positive bump values are separately reported; the real-analytic restriction was corrected in the text.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "The decaying bump construction can realize any closed zero set on a standard second-countable smooth manifold. Uniform derivative convergence is the essential extra step at accumulation points; finite-resolution pictures cannot verify positivity at every off-set point. Qualify the blanket claim about analytic zero sets.",
@@ -657,7 +657,7 @@
       "file": "content/logic/ch01-b.js",
       "textHash": "874de2f25cb4f8ced20be13491d489dad24d5edc4033f326e18b8e696b8c62d6",
       "textReview": "The height enumeration and nested-interval argument are distinguished from the later diagonal proof. A finite list certifies only a finite prefix of the limiting construction, not that a displayed finite approximation is transcendental; remove the unsupported anecdote about the deliberately bland title or source it.",
-      "visualReview": null,
+      "visualReview": "The height counts match the three highlighted published initial values and the finite interval construction narrows to width 3.4e-4. The readout distinguishes the finite prefix and a few pinned digits from the full infinite construction that defines the transcendental limit. Historical anecdotes remain a separate text/source finding.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -666,7 +666,7 @@
       "file": "content/mfd/ch03-b.js",
       "textHash": "0194495f1cabc886ba249499291ec9653df6563ab3dee50e7605cde3fabe8f42",
       "textReview": "Localized Sard using same-dimensional smooth coordinate changes, not the false assertion that every smooth image of a null set is null. The line-segment projection counterexample makes the distinction explicit.",
-      "visualReview": null,
+      "visualReview": "The terrace example shows a large near-critical domain region (54.6%) mapping into narrow value bins (8.0%). The curve decreases as tolerance shrinks. The slider labelled level c actually gives a normalized fraction 0.500 while the physical readout gives c=0.000; clarify that label. Finite value-bin resolution must not be mistaken for exact classification of every regular value.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "The Sard statement has the correct Ck threshold and chart-wise null conclusion. Its proof incorrectly says arbitrary smooth maps preserve null sets; only the same-dimensional coordinate changes needed for localization have that property. For example a null line segment in R2 can project onto a positive-length interval.",
@@ -678,7 +678,7 @@
       "file": "content/micro/ch10-d.js",
       "textHash": "e4f464d2d0cf431393a192c631594d661670c58da57fd7f2f8de9f87d5edf1c4",
       "textReview": "The revenue conclusion is too broad: correlation alone does not decide bundling's benefit, and negative covariance does not necessarily make the sum less dispersed than either marginal. Perfectly coincident valuations give equivalence, but strongly positively correlated values can still favor a bundle. Separate the chosen sample distribution from a general theorem.",
-      "visualReview": null,
+      "visualReview": "The negative-alignment example has sampled correlation -0.85; the chosen bundle earns 4.37, while searched best bundle/separate revenues are 7.03/5.15. The customer colours and best-revenue curves distinguish the selected price from the searched optimum. This particular family does not establish the text's universal correlation claims.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -687,7 +687,7 @@
       "file": "content/ode/ch01.js",
       "textHash": "643e553d22c92cfeae1235d126b47258c6813d2c6f08b7ae6d80c3ebb719ce98",
       "textReview": "Corrected finite-endpoint blowup for x′=x² with x0>0: its maximal interval extends indefinitely into the past and ends at t0+1/x0 in the future.",
-      "visualReview": null,
+      "visualReview": "For x'=x sin(t), the selected initial point and tangent agree with the readout: x(2)=1.2113 and slope 1.1011. The RK4/exact discrepancy is labelled numerical and the curve is defined on the displayed window. The separate x² finite-time case was corrected in the text.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "The IVP, state-space domain and first-order reduction are sound for equations explicitly solved for the highest derivative. The x² example blows up at a finite endpoint but its maximal interval is not bounded on both ends; correct that wording and qualify x0≠0.",
@@ -699,7 +699,7 @@
       "file": "content/qchem/ch04.js",
       "textHash": "10c05c08f62e8b9231b62255d31444a3f9b343ed334536f02f0ff1ae066f6927",
       "textReview": "Differentiating the quadratic energy gives ζ=Z−5/16, and normalization of the 1s product is consistent with atomic units. The infinite-mass reference convention and failure to bind H− are explicit; the variational upper bound is not mistaken for proof of nonbinding.",
-      "visualReview": null,
+      "visualReview": "The batch PNG duplicated the left caption/energy plot over the right panel. Isolated native inspection confirms one host and two distinct canvases; its recapture correctly shows the broadened radial density. At Z=2 the minimum zeta=1.6875 gives E=-2.8477 hartree versus -2.9037 exact, 1.93% error and virial ratio -1.000. The initial capture artifact is not a confirmed page defect; its origin remains unresolved.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -708,7 +708,7 @@
       "file": "content/algo/ch03.js",
       "textHash": "8c659825a4b5af2fe124cc386df2014bab78ea967d2d83948125fc94f8a0e1af",
       "textReview": "The sorted-suffix/max-heap invariant and linear heap build give O(n log n). O(1) auxiliary space needs an iterative sift-down; a recursive implementation uses logarithmic stack space. Inspect the actual implementation before treating its memory claim as demonstrated.",
-      "visualReview": null,
+      "visualReview": "The paused heapsort step has just swapped maximum 45 into final position 10; root 8 is the temporary unsifted replacement, consistent with the highlighted loop step and next heapify. The sorted suffix and array/tree agree. The random-input comparison curve stays below 2 n log2 n; the text's constant-space claim still depends on iterative rather than recursive siftdown.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -717,7 +717,7 @@
       "file": "content/qm/ch02-b.js",
       "textHash": "e351c2e997caeb69904cec98b2bd3d45ae841f2aa3c9fd254048f6e2759c65a7",
       "textReview": "The preliminary note's proof correction to squared amplitude is clearly separated from the page-made scattering reconstruction. The displayed elastic amplitude and outgoing flux motivate |f|²; the explanation should explicitly normalize by incident flux when naming the differential cross-section.",
-      "visualReview": null,
+      "visualReview": "The recreated outgoing wave and sampled angular histogram follow |f|²; 3205 clicks give 5.30% beyond 90 degrees against the model's 5.83%. The readout explicitly normalizes outgoing flux per incident flux and distinguishes radius-independent |psi|² from the erroneous growing |psi| flux. The first-order scattering model is labelled a recreation, not original measured data.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -726,7 +726,7 @@
       "file": "content/qchem/ch01-b.js",
       "textHash": "47a331e692af8dba22256438b1cb581313d729ce3a450175f27ac0d9e62958a5",
       "textReview": "Needs correction: measurement outcomes need not be eigenvalues for continuous spectra, and a degenerate discrete outcome projects onto its whole eigenspace rather than an arbitrary single eigenfunction. Scope the nondegenerate sum and state the projector rule. A running sample mean is not guaranteed to stay inside one standard-error band.",
-      "visualReview": null,
+      "visualReview": "The four-level measurement histogram uses the coefficient probabilities, and the 2550-sample mean 2.002 eV is near the expected 2.013 with spread 1.778 eV. The finite sample and sigma/sqrt(N) band illustrate fluctuations rather than a guaranteed bound. The general continuous-spectrum/degeneracy qualifications remain text findings.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -735,7 +735,7 @@
       "file": "content/aero/ch04.js",
       "textHash": "7ecbe022f92c1b42a450a5ed6d8fd6fa747fd45280d4823e30fef3c2108f8c96",
       "textReview": "The schematic is zero-lift slender-body wave drag, not total aircraft drag. Current-volume normalization, nonnegative fuselage area and the missing supersonic oblique cuts are explicit, preventing a false fixed-volume or finite-Mach extrapolation.",
-      "visualReview": null,
+      "visualReview": "The default k=0.5 ratio is 1.123 times the same-current-volume Sears–Haack minimum. The quoted absolute drag at k=1 uses a smaller volume, so it need not exceed the minimum at the current k; the ratio curve recomputes its reference at each k. The source reveals a genuine reference-line error: the grey curve labelled straight fuselage uses (1-k) times the wing hump and duplicates the current total instead of the k=0 reference. Follow-up pending.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -744,7 +744,7 @@
       "file": "content/neuro/ch02.js",
       "textHash": "bb76e5fcc483ea90f03c8dcbb9377f58b04d2fa8456e3c387f3b1ff78305c4c0",
       "textReview": "The empirical m³h kinetics and slower inactivation correctly explain the transient under clamp. The modern claim of exactly three physical voltage sensors is not justified by a phenomenological exponent and needs correction; independence is already identified as a model limitation.",
-      "visualReview": null,
+      "visualReview": "The voltage-clamp plot shows activation m³ rising while h decays, producing a transient sodium conductance peak. At -10 mV from -65 mV, the available h fraction is 0.596 and the peak is 23.8 mS/cm² at 0.75 ms. The steady-state window product is visibly magnified by 20 as labelled. This phenomenological fit does not establish three physical voltage sensors.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -753,7 +753,7 @@
       "file": "content/geol/ch03-c.js",
       "textHash": "b73045c4863192cb0b720e7c55d93e5c6dca5690b763c13dedc2f78b97964923",
       "textReview": "A one-trench constant-rate cartoon is labelled rather than presented as a universal timescale or inevitable basin history. Growth depends on spreading minus consumption, not spreading alone. Keep the original Wilson evidence flag open.",
-      "visualReview": null,
+      "visualReview": "The current terminal-ocean frame is consistent with its width graph: spreading 40 minus subduction 50 shrinks the basin after 150 Myr; the ridge is consumed later and collision occurs at 349 Myr. The frame at 336 Myr has width 700 km. The schematic plate cycle is distinct from a reconstruction of a specific ocean's measured chronology.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -762,7 +762,7 @@
       "file": "content/graph/ch04-a2.js",
       "textHash": "0c8d170e177205d1d9faae830938ed632d6c150fb2bc60119b89d675e9a431e0",
       "textReview": "The 3n−6 statement and syllabus now explicitly assume a simple plane graph. The Euler/triangulation proof and picture are unchanged.",
-      "visualReview": null,
+      "visualReview": "The plane path has n=7,m=6, nine edges below 3n-6=15; the K5 comparison is correctly above the bound at (5,10). The corrected simple-graph qualification is explicit in the statement. Saturation and all re-embedded edge insertions still need semantic interaction inspection, beyond automatic button checks.",
       "interactionReview": null,
       "status": "text-corrected-full-page-follow-up-pending",
       "initialFinding": "Face incidence plus Euler gives the 3n−6 bound for a simple plane graph with n≥3. The collection's simple-graph convention matters: loops or unrestricted parallel edges would invalidate this statement; make the simplicity assumption explicit for clarity.",
@@ -774,7 +774,7 @@
       "file": "content/rca/ch00.js",
       "textHash": "9f982e95b5b03cc5b67ddf31f6c65e342a2fa4a30fa0655ef0604b38c09db627",
       "textReview": "The quadrant-by-quadrant intermediate-value argument proves surjectivity, and the exponential derivative gives unit-speed winding. Periodicity accounts for the displayed infinitely many preimages.",
-      "visualReview": null,
+      "visualReview": "The wound tangent line and gold preimages differ by 2pi while landing at the same circle point. For the chosen quadrant-II point the auxiliary first-quadrant cosine equation yields t*=0.6292 and total t=2.2, matching the displayed complex coordinates. The right panel shows the actual IVT construction rather than only an animated circle.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -783,7 +783,7 @@
       "file": "content/pma/ch04-a4.js",
       "textHash": "1979d107d26063a5eaa606f6a7fbc7a8465858166d3e52cef8efe23c61412f8e",
       "textReview": "Disjoint nonempty jump intervals inject into Q, proving countability. The construction has finitely many visible jumps at each N; density is an infinite-limit property, not something the finite image establishes.",
-      "visualReview": null,
+      "visualReview": "The selected jump at x=1/2 has endpoints 0.4156 and 0.5156 and its chosen rational tag 1/2 lies strictly inside. The 18 jump intervals are visibly disjoint and separately tagged, illustrating the injection of discontinuities into Q. The finite plot is identified with a finite prefix of Rudin's construction.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -792,7 +792,7 @@
       "file": "content/fa/ch10-a2.js",
       "textHash": "cff7228a21b3baf61bd840cb8d2effdbf4b7118dbbc6eb29a37dbe573533c4e7",
       "textReview": "The noncommutative order in the Neumann-series expansion is correct: the inverse factor is on the right. The geometric tail gives the factor-two quadratic remainder, and the slice uses an operator norm compatible with its perturbation radius.",
-      "visualReview": null,
+      "visualReview": "The same matrix slice used by the inversion corollary shows radius 0.499 and perturbation norm 0.189; the second-order error 0.4525 is below the stated 0.5734 bound in the half-radius disc. The red singular set and the reciprocal inverse-norm radius agree. The theorem does not promise the bound outside that inner disc.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -801,7 +801,7 @@
       "file": "content/mech/ch04.js",
       "textHash": "a44bd4fe13f42008933f2be25f5243628def988056e9c551d42337366818d82b",
       "textReview": "Needs correction: C3 regularity gives the harmonic limit but does not justify the stated universal O(a²) period shift. A potential x²/2+|x|^(7/2) is C3 and gives an a^(3/2) shift. Require C4 for the stronger estimate and correct the parity explanation for the force versus potential terms.",
-      "visualReview": null,
+      "visualReview": "The Morse-well period increases with amplitude: at 0.554 it is 7.2718 versus harmonic 6.2832, a 15.73% difference. The plot compares the integrated motion and osculating parabola and labels the degenerate quartic separately. The displayed O(a²) period correction needs stronger smoothness than the text's existing C3 assumption; that mathematical finding remains pending.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -810,7 +810,7 @@
       "file": "content/mfd/ch03.js",
       "textHash": "23377511c202332615f8194964cc48564170cf4f6012b4d3c1805902c7b3e82b",
       "textReview": "The local rank condition is correctly separated from global injectivity and subspace topology. Compactness plus Hausdorffness makes an injective immersion an embedding; the accumulating open-end example targets the missing global condition.",
-      "visualReview": null,
+      "visualReview": "The injective open-interval immersion has nonzero speed 2.404 but an extra parameter arc enters the selected image ball near the junction. The parameter-space and image-space panels make this failure of the embedding topology visible. The readout distinguishes injectivity/immersion from being a homeomorphism onto the image.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -819,7 +819,7 @@
       "file": "content/toc/ch01.js",
       "textHash": "011275017896af13e4d92494323cfe7f7b97d8753a58db5b9c65ed8088f1fddd",
       "textReview": "The empty word, empty language and singleton empty-word language are correctly distinguished. Product counting, n+1 prefix boundaries and concatenation identity are consistent with finite alphabets.",
-      "visualReview": null,
+      "visualReview": "For abba the prefix panel lists epsilon,a,ab,abb,abba and the readout counts five prefixes/suffixes. Palindrome membership counts 1,2,2,4,4 agree with total row sizes 1,2,4,8,16. The empty word and empty language are separately represented; the typed string is highlighted without implying membership in every selected language.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -828,7 +828,7 @@
       "file": "content/pchem/ch04.js",
       "textHash": "5bbe8f14c244f0f00bf4486cd572c42ce6279b82975a64c3f123d2924ccca529",
       "textReview": "The pressure depression and sign follow the local Clapeyron slope, and the assumed blade area is explicit. The scope correctly declines a large-pressure accuracy claim and separates friction's upper-bound energy budget from actual heat transfer.",
-      "visualReview": null,
+      "visualReview": "At -5 C the local linear melting model requires about 68 MPa against the blade's 6.9 MPa, nearly a tenfold shortfall; the separate energy budget gives 34 W and at most 0.10 g/s melted by friction. The title/caption distinguish a local slope model and an upper-bound heat calculation from a full explanation of skating.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -1903,11 +1903,14 @@
     {
       "id": "music-8.3",
       "file": "content/music/ch08.js",
-      "textHash": "977eec924d93a97e0b0c7325fcd82d7bdf2f31e79805c0bfebc59702dc7b0f74",
-      "textReview": "The seven diatonic modes and relative-versus-parallel distinction are correct. The proof incorrectly invokes a pair of adjacent semitones SS: TTSTTTS has no adjacent S pair. Its seven rotations are distinct because length seven is prime and the nonconstant cyclic word cannot have a smaller period. Qualify the fifths-window claim by holding a tonic fixed, and distinguish medieval authentic/plagal conventions without claiming every shared modern name started on a different degree.",
+      "textHash": "106ca74afc4bca3e4923439e6898e760dd00e0f40d398c1ced3133ecb1e338c5",
+      "textReview": "The proof now uses the nonconstant cyclic word of prime length seven to distinguish all rotations; it no longer invents an adjacent semitone pair. The fifths-window comparison fixes a tonic, and the historical scope distinguishes conventions without asserting different starting degrees for every shared medieval name.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The seven diatonic modes and relative-versus-parallel distinction are correct. The proof incorrectly invokes a pair of adjacent semitones SS: TTSTTTS has no adjacent S pair. Its seven rotations are distinct because length seven is prime and the nonconstant cyclic word cannot have a smaller period. Qualify the fifths-window claim by holding a tonic fixed, and distinguish medieval authentic/plagal conventions without claiming every shared modern name started on a different degree.",
+      "initialTextHash": "977eec924d93a97e0b0c7325fcd82d7bdf2f31e79805c0bfebc59702dc7b0f74",
+      "correctionReport": "docs/verification/agent-diatonic-review.md"
     },
     {
       "id": "thermo-1.5",

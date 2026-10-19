@@ -109,13 +109,13 @@ export default {
       kind: 'Concept',
       name: 'The diatonic scale and its modes',
       statement: String.raw`The **diatonic scale** is the seven-element subset $\{0,2,4,5,7,9,11\}\subset\Z/12$ (the white keys), whose consecutive gaps around the clock are $2,2,1,2,2,2,1$ semitones, written T T S T T T S. Starting the same cyclic pattern on its $r$-th note gives the seven **modes**: Ionian (major), Dorian, Phrygian, Lydian, Mixolydian, Aeolian (natural minor) and Locrian. Rotating the start of the scale (keeping the notes) changes the tonic; keeping the tonic and rotating the pattern (parallel modes) changes the notes.`,
-      idea: String.raw`The scale is a cyclic word of gaps $(2,2,1,2,2,2,1)$ summing to 12, and a mode is a rotation of that word: seven rotations, all different because the single pair of adjacent semitones S S would otherwise repeat. Which note is "home" is a matter of emphasis (a drone, a final cadence), not of the set; the tuning chapter showed the same seven notes as a chain of six fifths (7.1, 7.14), so the modes are also the seven windows of the line of fifths.`,
+      idea: String.raw`The scale is a cyclic word of gaps $(2,2,1,2,2,2,1)$ summing to 12, and a mode is a rotation of that word. The seven rotations are distinct: a cyclic word of prime length seven has period one or seven, and this word is not constant. Its two semitone gaps are separated, not adjacent. Which note is "home" depends on emphasis (a drone, a final cadence), not just the pitch-class set. The tuning chapter also builds a diatonic collection as a chain of six fifths (7.1, 7.14); with a fixed tonic, its seven possible positions within such a chain give the seven parallel modal collections.`,
       caption: String.raw`Slide the starting degree to rotate the mode. In *relative* view the notes stay the white keys and only the home note (gold) moves; in *parallel* view the tonic stays C and the notes change. The gap pattern is written between the notes; the keyboard strip shows which of the 13 semitone slots from the tonic to its octave are used. Play the mode over a drone on its tonic and listen to the colour change.`,
       deps: ['music-8.1', 'music-7.1'],
       see: ['music-8.4', 'music-8.19'],
       refs: ['Tymoczko ch. 4'],
       tags: ['scales', 'modes'],
-      scope: String.raw`The modes are named for the diatonic collection in modern usage; the medieval church modes of the same names started on different degrees and had different conventions, and the Greek names referred to different scales.`,
+      scope: String.raw`The names follow modern modal usage. Medieval church modes also distinguished authentic and plagal ranges and reciting tones; ancient Greek uses of these names did not denote the same modern pitch patterns.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mode_(music)' },
       viz(v) {
         const D = PRESETS.diatonic;
