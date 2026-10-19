@@ -1,5 +1,6 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.7–9.11; 9.1–9.6 in ch09.js)
 import { clamp, GUIDE, bisect, plateText, bar, W1, W2, pref, toBox, market, contractCurve, paretoSearch, improvements, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, slopeSeg, nearestOnPath, pathLength, f2 } from './ch09.shared.js';
+import { existenceExchangeState, exchangeExcessBranch, paddedRange } from './source-audit-exchange.js';
 
 const cd = (a) => pref('cd', { a });
 const ua = (F) => (x, y) => F.u(x, y);
@@ -24,51 +25,61 @@ export default {
     // ------------------------------------------------------------------ 9.7
     {
       num: '9.7', kind: 'Theorem', name: 'Existence of exchange equilibrium',
-      statement: String.raw`Consider an exchange economy in which every consumer has continuous, strictly convex and strongly monotone preferences and the total endowment of each good is positive. Then aggregate excess demand $z(p)$ is a continuous function on strictly positive prices, homogeneous of degree zero, satisfying Walras' law (9.6), and it explodes when a price tends to zero. Under these conditions there is a price vector $p^* \gg 0$ with
-$$z(p^*) = 0,$$
-a Walrasian equilibrium (9.5). With two goods this is the statement that the single continuous function $z_1(p_1/p_2)$, positive for small relative prices and negative for large ones, has a zero.`,
-      idea: String.raw`With two goods, Walras' law makes market 2 redundant and homogeneity reduces everything to the relative price $p = p_1/p_2$. As $p \to 0$ good 1 is almost free and everybody wants more, so $z_1 > 0$; as $p \to \infty$ the traders can afford little of it and sell what they have, so $z_1 < 0$; and $z_1$ is continuous because strictly convex preferences give each consumer a unique, continuously varying best bundle. The intermediate value theorem (Rudin 4.23) then yields a zero. With $n$ goods the same argument runs through Brouwer's fixed-point theorem applied to a price-adjustment map of the simplex (9.21). Convexity is not a technicality: when it fails, demand jumps and $z_1$ can leap over zero.`,
-      caption: String.raw`Left: $z_1(p)$ for $A$ (Cobb–Douglas) and a second trader $B$ whose preferences you choose. With **convex** preferences the curve runs continuously from $+$ to $-$ and crosses zero at $p^*$ (green). Switch to **non-convex** tastes for $B$ (indifference curves bulging away from the origin): $B$'s demand flips between two corners at $p = 1$, the curve jumps (dashed) over zero and no price clears the market. Right: the offer curves in the box; equilibrium is where they cross (in the non-convex case $B$'s corner demands lie outside the box, so only $A$'s curve is visible). Drag $\omega$ or the price.`,
-      deps: ['micro-9.6', 'pma-4.23', 'top-13.11'],
-      see: ['micro-9.21', 'micro-2.5'],
-      refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'existence'],
-      credit: 'Wald (1936), Arrow & Debreu, 1954 and McKenzie, 1954 (general proofs)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model' },
+      statement: String.raw`Consider finitely many consumers and goods, consumption sets $\R_+^L$, strictly positive individual endowments, and continuous, strictly convex, strongly monotone preferences. Aggregate excess demand is continuous on strictly positive prices, homogeneous of degree zero, bounded below, and satisfies Walras' law. At a nonzero boundary limit of normalized prices, its largest component tends to $+\infty$. These properties imply a strictly positive price vector with
+$$z(p^*)=0.$$
+Thus a Walrasian equilibrium exists. The same conclusion holds for any aggregate excess demand with these five properties. The two-good continuous-demand case reduces to the intermediate value theorem: after setting $p_2=1$, $z_1(p)$ has opposite signs at sufficiently low and high relative prices. Existence alone implies neither uniqueness nor convergence of price adjustment.`,
+      idea: String.raw`In two goods, choose a finite price bracket on which the continuous excess demand changes sign. The intermediate value theorem supplies a zero, and the positive-price form of Walras' law clears the other market. For many goods the reviewed proof uses Kakutani's theorem: on the price simplex it selects prices supported on goods with greatest excess demand; on its boundary it selects prices supported on zero-price goods. The boundary condition prevents a boundary fixed point, while Walras' law turns an interior fixed point into market clearing.
+
+The displayed Cobb–Douglas utilities have flat zero-utility indifference sets on the axes, so their preferences do not satisfy the theorem's stronger primitive conditions there. Their aggregate demand nevertheless satisfies all five excess-demand properties, as its explicit formulas verify. With non-convex tastes, the exact two demand branches prove nonexistence in this particular example, without a numerical root search.`,
+      caption: String.raw`Move the positive relative price and $A$'s endowment (the gold handle or either endowment slider). The complete left curves show $z_1$ on $0.2\le p\le5$. **Equilibrium / jump price** selects the exact Cobb–Douglas equilibrium or $p=1$ for non-convex $B$. At that jump both branch endpoints are attained, while the red dashed span's interior is not demanded. Right: the outlined rectangle is the feasible Edgeworth box; the blue ring and orange point are the consumers' desired allocations at the selected price, shown in $A$'s coordinates. Their positions can lie outside the box. A hollow orange point shows $B$'s second optimal corner at $p=1$. The view includes every chosen demand.`,
+      scope: String.raw`Totals are $(10,10)$, $\omega^A=(w_x,w_y)$ with $0.4\le w_x,w_y\le9.6$, and $\omega^B=(10-w_x,10-w_y)$; both endowments are strictly positive. Prices are $(p,1)$ with $p>0$. Consumer $A$ has utility $\sqrt{xy}$. Convex $B$ has $x^{0.4}y^{0.6}$; all positive-price optimal bundles in this case are interior. Its zero-utility axes prevent globally strong monotonicity and strict convexity of preferences, so existence uses the verified aggregate excess-demand properties. Non-convex $B$ has $x^2+y^2$ and chooses only budget endpoints. At $p=1$ both endpoints maximize; neither clears the markets for the offered endowments. This counterexample does not assert that all non-convex economies lack equilibrium.`,
+      deps: ['micro-9.6', 'pma-4.23', 'game-2.4'],
+      see: ['micro-9.21', 'micro-2.5', 'top-13.11'],
+      refs: ['Condie, Advanced Microeconomic Theory, complete §7.2: Propositions 7.1–7.3 and five-step Kakutani proof', 'https://scottcondie.github.io/teaching/580/chapters/ge-existence.html', 'Arrow & Debreu (1954), §§1.3–1.5: original assumptions and equilibrium statement'], tags: ['general equilibrium', 'existence'],
+      credit: 'Modern excess-demand formulation: Scott Condie, Advanced Microeconomic Theory, §7.2',
+      verify: false,
+      links: { source: 'https://scottcondie.github.io/teaching/580/chapters/ge-existence.html' },
       viz(v) {
         const kind = v.select('$B$’s preferences', [{ value: 'cd', label: 'convex (Cobb–Douglas)' }, { value: 'sq', label: 'non-convex' }], 'cd');
-        const pS = v.slider('relative price $p_1/p_2$', 0.2, 5, 0.7, { log: true, sig: 3 });
-        const L = v.stage({ x: [0.2, 5], y: [-8, 10], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand z₁', title: 'excess demand for good 1', weight: 1.15 });
-        const R = boxStage(v, { title: 'offer curves in the box', height: 380, weight: 1 });
-        v.legend([['blue', 'z₁(p)'], ['green', 'equilibrium'], ['gold', 'chosen price'], ['accent', 'A’s offer curve', { dash: true }], ['orange', 'B’s offer curve', { dash: true }]]);
-        const H = R.handle(7, 3, { color: 'gold', r: 8, label: 'ω', labelPos: 'ne', constrain: { x: [0.4, W1 - 0.4], y: [0.4, W2 - 0.4] } });
-        let st = {};
+        const pS = v.slider('relative price $p_1/p_2$', .2, 5, .7, { log: true, sig: 3 });
+        const xS = v.slider('$A$’s endowment of good 1', .4, 9.6, 7, { step: .05, decimals: 3 });
+        const yS = v.slider('$A$’s endowment of good 2', .4, 9.6, 3, { step: .05, decimals: 3 });
+        const L = v.stage({ x: [.16, 6.25], y: [-10, 55], xlog: true, axes: 'box', gutter: true, height: 390, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand z₁', title: 'continuity gives a zero; the jump leaves a gap' });
+        const R = v.stage({ x: [-2, 12], y: [-2, 12], axes: 'box', gutter: true, height: 390, xlabel: 'good 1 allocated to A', ylabel: 'good 2 allocated to A', title: 'chosen demands and the feasible box' });
+        v.legend([['blue', 'excess demand / A’s desired allocation'], ['orange', 'B’s desired allocation'], ['orange', 'B’s other optimal corner (hollow)'], ['green', 'equilibrium', { dot: true }], ['gold', 'endowment / selected price']]);
+        const H = R.handle(7, 3, { color: 'gold', r: 8, constrain: { x: [.4, 9.6], y: [.4, 9.6] } });
+        H.onDrag = () => { xS.set(H.x); yS.set(H.y); };
+        v.button('equilibrium / jump price', () => { const p = existenceExchangeState(pS.value, xS.value, yS.value, kind.value === 'sq'); pS.set(p.nonconvex ? 1 : p.equilibriumPrice); });
+        let info = {};
         v.render(() => {
-          const FA = cd(0.5), FB = kind.value === 'cd' ? cd(0.4) : pref('sq'), M = market(FA, FB, [H.x, H.y]), p = pS.value;
-          const cl = (q) => clamp(M.z1(q), -30, 30);
+          H.set(xS.value, yS.value);
+          const p = existenceExchangeState(pS.value, H.x, H.y, kind.value === 'sq'), branch = q => exchangeExcessBranch(q, H.x, H.y), left = q => exchangeExcessBranch(q, H.x, H.y, 'left'), right = q => exchangeExcessBranch(q, H.x, H.y, 'right');
+          const values = p.nonconvex ? [left(.2), left(1), right(1), right(5), 0] : [branch(.2), branch(5), 0];
+          L.setView([.16, 6.25], paddedRange(values, .15));
+          // Hold the view fixed while the endowment handle moves, for this price and preference choice.
+          const points = [];
+          for (const wx of [.4, 9.6]) for (const wy of [.4, 9.6]) {
+            const a = existenceExchangeState(p.p, wx, wy, p.nonconvex);
+            points.push(a.boxA, a.boxB, ...(a.alternateBoxB ? [a.alternateBoxB] : []));
+          }
+          R.setView(paddedRange([0, 10, ...points.map(q => q[0])], .2), paddedRange([0, 10, ...points.map(q => q[1])], .2));
           L.hline(0, { color: 'muted', width: 1 });
-          const sq = kind.value === 'sq';
-          if (sq) {
-            L.fn(cl, { domain: [0.2, 0.9995], color: 'blue', width: 2.8, n: 120 }); L.fn(cl, { domain: [1.0005, 5], color: 'blue', width: 2.8, n: 120 });
-            const a = M.z1(0.9999), b = M.z1(1.0001);
-            L.line(1, a, 1, b, { color: 'red', width: 2, dash: [4, 3] }); L.dot(1, a, { r: 4.5, color: 'blue' }); L.dot(1, b, { r: 4.5, color: 'blue', hollow: true });
-          } else L.fn(cl, { domain: [0.2, 5], color: 'blue', width: 2.8, n: 200 });
-          const roots = M.roots(0.2, 5);
-          for (const r of roots) { L.dot(r.p, 0, { r: 6.5, color: 'green' }); plateText(L, `p* = ${f2(r.p, 2)}`, r.p, 0, { dy: 20, dx: 6, color: 'green', align: 'left' }); }
-          L.vline(p, { color: 'gold', width: 2 }); L.dot(p, cl(p), { r: 5, color: 'gold' });
-          if (!roots.length) plateText(L, 'z₁ jumps over zero: no price clears market 1', 1.0, 6.5, { color: 'red', align: 'center' });
-          drawBox(R);
-          const [pa, pb] = offers(M);
-          R.path(pa, { color: 'accent', width: 2.2, dash: [5, 4] }); R.path(pb, { color: 'orange', width: 2.2, dash: [5, 4] });
-          for (const r of roots) R.dot(...M.demA(r.p), { r: 7, color: 'green' });
-          priceLineBox(R, H.x, H.y, p, { width: 1.4, alpha: 0.7 });
-          const dA = M.demA(p), dB = M.boxB(p);
-          R.dot(H.x, H.y, { r: 6, color: 'gold' }); R.dot(dA[0], dA[1], { r: 5.5, color: 'accent' }); R.dot(dB[0], dB[1], { r: 5.5, color: 'orange' });
-          st = { roots, zl: M.z1(0.2), zr: M.z1(5), jump: sq ? M.z1(0.9999) - M.z1(1.0001) : 0, sq, p, z: M.z1(p) };
+          if (p.nonconvex) {
+            L.fn(left, { domain: [.2, 1], color: 'blue', width: 2.6, n: 180 });
+            L.fn(right, { domain: [1, 5], color: 'blue', width: 2.6, n: 180 });
+            L.line(1, -p.jumpHalf, 1, p.jumpHalf, { color: 'red', width: 1.5, dash: [4, 4] });
+            L.dot(1, p.jumpHalf, { color: 'blue', r: 5 }); L.dot(1, -p.jumpHalf, { color: 'blue', r: 5 });
+          } else { L.fn(branch, { domain: [.2, 5], color: 'blue', width: 2.6, n: 260 }); L.dot(p.equilibriumPrice, 0, { color: 'green', r: 7 }); }
+          L.vline(p.p, { color: 'gold', width: 1.5 }); L.dot(p.p, p.z[0], { color: 'gold', r: 5 });
+          R.rect(0, 0, 10, 10, { color: 'muted', width: 1.5, fill: 'green', fillAlpha: .04 });
+          R.dot(...p.boxA, { color: 'blue', r: 11, hollow: true }); R.dot(...p.boxB, { color: 'orange', r: 6 });
+          if (p.alternateBoxB) R.dot(...p.alternateBoxB, { color: 'orange', r: 7, hollow: true });
+          if (!p.nonconvex && Math.abs(p.p - p.equilibriumPrice) < 1e-12) R.dot(...p.boxA, { color: 'green', r: 14, hollow: true });
+          info = p;
         });
         v.readout(() => {
-          const { roots, zl, zr, jump, sq, z, p } = st;
-          return `$z_1(0.2) = ${f2(zl)} > 0$ and $z_1(5) = ${f2(zr)} < 0$ at the ends of the window. ${roots.length ? `The curve is continuous and has **${roots.length} zero${roots.length > 1 ? 's' : ''}**: $p^* = ${roots.map((r) => f2(r.p, 3)).join(', ')}$.` : `Continuity fails: at $p = 1$ the demand of $B$ jumps and $z_1$ falls by ${f2(jump)} from a positive to a negative value, so **no price clears the market** although $z_1 > 0$ on the left and $< 0$ on the right.`} At the chosen price $z_1(${f2(p)}) = ${f2(z)}$.`;
+          const p = info, num = 4 + p.wy / 10, den = 6 - p.wx / 10;
+          return `$\\omega^A=(${f2(p.wx, 3)},${f2(p.wy, 3)})$, $\\omega^B=(${f2(10-p.wx, 3)},${f2(10-p.wy, 3)})$. At $p=${f2(p.p, 5)}$, incomes are ${f2(p.incomeA, 5)} and ${f2(p.incomeB, 5)}; desired own bundles: $A=(${p.demandA.map(q => f2(q, 5)).join(',')})$, $B=(${p.demandB.map(q => f2(q, 5)).join(',')})$.\n$z=(${p.z.map(q => f2(q, 6)).join(',')})$ and $p z_1+z_2=${f2(p.value, 6)}$. ${p.nonconvex ? `For every $p<1$, $z_1=-w_x/2+(10-w_y/2)/p>0$; for every $p>1$, $z_1=w_x/2+w_y/(2p)-10<0$. At $p=1$, the two optimal corners give $z_1=\\pm${f2(p.jumpHalf, 6)}$, neither zero. **No positive price clears the markets in this example.**` : `Exact demand gives $z_1=${f2(num, 5)}/p-${f2(den, 5)}$, so its unique zero is $p^*=${f2(p.equilibriumPrice, 7)}$. Both markets clear there by Walras’ law.`}`;
         });
       },
     },

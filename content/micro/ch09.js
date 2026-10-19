@@ -1,5 +1,6 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.1–9.6; 9.7–9.11 in ch09-b.js, 9.12–9.16 in ch09-c.js, 9.17–9.21 in ch09-d.js)
 import { clamp, GUIDE, fx, bisect, plateText, bar, W1, W2, W, pref, levelPts, toBox, market, contractCurve, improvements, improveTrail, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, slopeSeg, nearestOnPath, pathLength, f2 } from './ch09.shared.js';
+import { walrasBudgetState, paddedRange } from './source-audit-exchange.js';
 
 /** Trader preferences of the box items: Cobb–Douglas with weight `a` on good 1. */
 const cd = (a) => pref('cd', { a });
@@ -277,43 +278,44 @@ Every core allocation is Pareto efficient (the grand coalition cannot block) and
     // ------------------------------------------------------------------ 9.6
     {
       num: '9.6', kind: 'Proposition', name: 'Walras’ law',
-      statement: String.raw`Suppose every consumer spends his or her whole income, $p \cdot x^i(p) = p \cdot \omega^i$ (this holds if preferences are locally non-satiated). Then for **every** price vector $p$, not only equilibrium ones, the value of aggregate excess demand is zero:
-$$p \cdot z(p) = \sum_k p_k\, z_k(p) = 0 .$$
-Consequently, if all markets but one clear at $p$, the last one clears too; with $n$ goods only $n-1$ markets (and $n-1$ relative prices) are independent. In the two-good box, $p_1 z_1 + p_2 z_2 = 0$, so the excess demands always have opposite signs unless both vanish.`,
-      idea: String.raw`Add up the budget identities. Consumer $i$'s excess demand costs $p \cdot (x^i - \omega^i) = 0$ because the budget is exhausted, and the value of the sum is the sum of the values, so $p \cdot z = \sum_i p\cdot(x^i - \omega^i) = 0$. It is an accounting identity, not an equilibrium condition: it holds out of equilibrium too, and what the market does with the pieces (one good's surplus is another good's shortage) is the whole content. The proof uses non-satiation only to ensure that each budget is spent; a trader with a bliss point who stops buying leaves some income unspent and the identity becomes $p\cdot z \le 0$.`,
-      caption: String.raw`Left: the excess demands $z_1(p)$ and $z_2(p)$ as functions of the relative price $p = p_1/p_2$ (log axis), with the value $p\,z_1 + z_2$ in green; the gold line marks the chosen price. Right: the bars $p\,z_1$ and $z_2$ are mirror images, and their sum is zero at **every** $p$. Where one curve crosses zero, so does the other. Make trader $A$ **satiated** (a bliss point) and the bars stop cancelling at every price where $A$ can afford the bliss bundle and leaves income unspent.`,
+      statement: String.raw`In a finite pure exchange economy, let prices be strictly positive, $p\gg0$, and let consumer $i$ choose a budget-feasible bundle $x^i$ from income $p\cdot\omega^i$. If every consumer exhausts that budget, then the value of aggregate excess demand $z=\sum_i(x^i-\omega^i)$ is zero at every such price, including prices away from equilibrium:
+$$p\cdot z=\sum_k p_kz_k=0.$$
+Local non-satiation ensures budget exhaustion for a maximizing bundle. Consequently, if all but one market clear, the last market clears too. The positive price of the last good matters: at a zero price its excess supply can have zero value without vanishing. With good 2 as numéraire, $p_2=1$ and $p=p_1/p_2>0$, the identity is $p z_1+z_2=0$. More generally, if consumers leave a total amount $U$ of income unspent, budget accounting gives $p\cdot z=-U\le0$.`,
+      idea: String.raw`Add the individual budget identities: the value of a sum of net purchases is the sum of their values. Local non-satiation rules out a maximizing bundle strictly inside the budget, since a sufficiently small improvement would still be affordable. To infer that a remaining excess demand is zero, divide its zero value by its positive price. When a bliss point makes a consumer stop spending, the same accounting calculation still holds, but its right side is minus the unspent income.`,
+      caption: String.raw`The complete curves show both excess demands over $0.1\le p\le10$; their vertical scales include the endpoints. The bars show the two value terms at the selected price. **Clear market 1** selects its exact clearing price. With ordinary Cobb–Douglas tastes the two bars cancel and both markets clear together. Toggle $A$'s **bliss point**: once it is affordable, $A$ leaves income unspent and the sum is its negative. **Bliss affordability boundary** selects $p=2/3$; move one price step either way to cross it. Clearing market 1 then leaves excess supply in market 2. This breaks the budget-exhaustion hypothesis.`,
+      scope: String.raw`A two-good, two-consumer model with totals $(10,10)$, endowments $\omega^A=(7,2)$ and $\omega^B=(3,8)$, and strictly positive prices $(p,1)$. Ordinary utilities are $x^{0.35}y^{0.65}$ for $A$ and $x^{0.6}y^{0.4}$ for $B$. The toggle replaces $A$'s utility by $-[(x-4)^2+(y-4)^2]$, whose unconstrained optimum is $(4,4)$. Quantities and prices are illustrative.`,
       deps: ['micro-9.5'],
-      refs: ['Varian Ch. 32'], tags: ['general equilibrium'],
-      credit: 'Léon Walras, 1874 (the name "Walras’ law" is later: Oskar Lange, 1942)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Walras%27s_law' },
+      refs: ['Arrow & Debreu (1954), §§1.3–1.5, especially budget exhaustion §1.4.2 and free goods §1.4.1', 'https://web.stanford.edu/class/msande311/arrow-debreu.pdf', 'Condie, Advanced Microeconomic Theory, §7.2, Proposition 7.1'], tags: ['general equilibrium'],
+      credit: 'Budget-identity formulation; Arrow & Debreu, 1954, §1.4.2',
+      verify: false,
+      links: { source: 'https://web.stanford.edu/class/msande311/arrow-debreu.pdf' },
       viz(v) {
-        const pS = v.slider('relative price $p_1/p_2$', 0.1, 10, 1.4, { log: true, sig: 3 });
+        const pS = v.slider('relative price $p_1/p_2$', .1, 10, 1.4, { log: true, sig: 3 });
         const sat = v.toggle('$A$ is satiated (bliss point at (4, 4))', false);
-        const L = v.stage({ x: [0.1, 10], y: [-9, 9], xlog: true, axes: 'box', gutter: true, height: 350, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand', title: 'excess demands against the price', weight: 1.35 });
-        const R = v.stage({ x: [0.3, 3.7], y: [-9, 9], axes: 'box', gutter: true, height: 350, xlabel: '', ylabel: 'value of excess demand', title: 'bars at the chosen price', weight: 1, xticks: [[1, 'p·z₁'], [2, 'z₂'], [3, 'sum']] });
-        v.legend([['blue', 'z₁(p)'], ['orange', 'z₂(p)'], ['green', 'p·z₁ + z₂'], ['gold', 'chosen price']]);
-        const w = [7, 2];
-        let st = {};
+        const L = v.stage({ x: [.08, 12.5], y: [-10, 60], xlog: true, axes: 'box', gutter: true, height: 370, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand', title: 'complete excess-demand curves', weight: 1.2 });
+        const R = v.stage({ x: [.3, 3.7], y: [-10, 10], axes: 'box', gutter: true, height: 370, ylabel: 'value of excess demand', title: 'value terms at the chosen price', xticks: [[1, 'p·z₁'], [2, 'z₂'], [3, 'sum']] });
+        v.legend([['blue', 'z₁(p)'], ['orange', 'z₂(p)'], ['green', 'p·z₁ + z₂', { dash: true }], ['gold', 'chosen price']]);
+        v.button('clear market 1', () => pS.set(walrasBudgetState(pS.value, sat.value).market1Price));
+        v.button('bliss affordability boundary', () => pS.set(2 / 3));
+        let info = {};
         v.render(() => {
-          const FA = sat.value ? pref('sat', { bx: 4, by: 4 }) : cd(0.35), FB = cd(0.6), M = market(FA, FB, w);
+          const p = walrasBudgetState(pS.value, sat.value), f = q => walrasBudgetState(q, sat.value);
+          const values = [0];
+          for (let i = 0; i <= 240; i++) { const q = .1 * 100 ** (i / 240), a = f(q); values.push(...a.z, a.value); }
+          L.setView([.08, 12.5], paddedRange(values, .13));
+          R.setView([.3, 3.7], paddedRange([0, ...p.valueTerms, p.value], .22));
           L.hline(0, { color: 'muted', width: 1 });
-          L.fn((q) => clamp(M.z(q)[0], -12, 12), { domain: [0.1, 10], color: 'blue', width: 2.6, n: 200 });
-          L.fn((q) => clamp(M.z(q)[1], -12, 12), { domain: [0.1, 10], color: 'orange', width: 2.6, n: 200 });
-          L.fn((q) => { const z = M.z(q); return q * z[0] + z[1]; }, { domain: [0.1, 10], color: 'green', width: 2.4, n: 200, dash: [6, 4] });
-          const p = pS.value, z = M.z(p), val = p * z[0] + z[1];
-          L.vline(p, { color: 'gold', width: 2 });
-          L.dot(p, z[0], { r: 5, color: 'blue' }); L.dot(p, z[1], { r: 5, color: 'orange' });
+          L.fn(q => f(q).z[0], { domain: [.1, 10], color: 'blue', width: 2.6, n: 300 });
+          L.fn(q => f(q).z[1], { domain: [.1, 10], color: 'orange', width: 2.6, n: 300 });
+          L.fn(q => f(q).value, { domain: [.1, 10], color: 'green', width: 2.4, n: 300, dash: [6, 4] });
+          L.vline(p.p, { color: 'gold', width: 1.5 });
+          L.dot(p.p, p.z[0], { r: 5, color: 'blue' }); L.dot(p.p, p.z[1], { r: 5, color: 'orange' });
           R.hline(0, { color: 'muted', width: 1 });
-          bar(R, 1, 0.55, 0, p * z[0], 'blue'); bar(R, 2, 0.55, 0, z[1], 'orange'); bar(R, 3, 0.55, 0, val, Math.abs(val) < 1e-6 ? 'green' : 'red', { fillAlpha: 0.8 });
-          if (Math.abs(val) < 1e-6) R.text('= 0', 3, 0, { dy: -14, size: 12, weight: 700, color: 'green', align: 'center', plate: true });
-          st = { p, z, val, r: M.roots(0.1, 10) };
+          bar(R, 1, .55, 0, p.valueTerms[0], 'blue'); bar(R, 2, .55, 0, p.valueTerms[1], 'orange');
+          bar(R, 3, .55, 0, p.value, p.unspentA > 0 ? 'red' : 'green', { fillAlpha: .8 });
+          info = p;
         });
-        v.readout(() => {
-          const { p, z, val, r } = st;
-          return `At $p = ${f2(p)}$: $z_1 = ${f2(z[0])}$, $z_2 = ${f2(z[1])}$, so $p z_1 + z_2 = ${f2(p * z[0])} ${z[1] < 0 ? '−' : '+'} ${f2(Math.abs(z[1]))} = ${f2(val, 4)}$${Math.abs(val) < 1e-6 ? ': Walras’ law holds' : ': **the law fails** (A does not spend all of his or her income, so some income is left unspent)'}.${r.length ? ` Market 1 clears at $p^* = ${f2(r[0].p, 3)}$; there $z_2 = ${f2(M2(r[0].p, sat.value), 4)}$${Math.abs(M2(r[0].p, sat.value)) < 1e-6 ? ', so market 2 clears too (Walras’ law)' : ': market 2 does **not** clear, because the law fails'}.` : ''}`;
-        });
-        function M2(p, s) { const M = market(s ? pref('sat', { bx: 4, by: 4 }) : cd(0.35), cd(0.6), w); return M.z(p)[1]; }
+        v.readout(() => `At $p=${f2(info.p, 5)}$: $z_1=${f2(info.z[0], 6)}$, $z_2=${f2(info.z[1], 6)}$. Value terms: $p z_1=${f2(info.valueTerms[0], 6)}$, $z_2=${f2(info.valueTerms[1], 6)}$, sum $=${f2(info.value, 6)}$.\nIncome / expenditure: $A$ ${f2(info.incomeA, 6)} / ${f2(info.spendingA, 6)}, $B$ ${f2(info.incomeB, 6)} / ${f2(info.spendingB, 6)}. Unspent income $U=${f2(info.unspentA + info.unspentB, 6)}$, so the sum equals $-U$. ${info.unspentA > 0 ? 'Budget exhaustion fails: the bliss bundle is affordable.' : 'Both budgets are exhausted: Walras’ law holds.'}\nExact market-1 clearing price: $${info.satiated ? '8/7' : '22/23'}$. There $z_2=${f2(walrasBudgetState(info.market1Price, info.satiated).z[1], 6)}$: ${info.satiated ? 'market 2 has excess supply.' : 'both markets clear.'}`);
       },
     },
   ],
