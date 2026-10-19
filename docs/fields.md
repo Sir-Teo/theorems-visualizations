@@ -176,6 +176,10 @@ optimizer can have positive slack while the exact constraint is active.
 
 ## Humanities
 
+- In articulatory models, label chosen turbulence and voicing thresholds as model
+  parameters. A pipe-flow Reynolds threshold does not classify every speech jet.
+  Test the actual noise gate below onset and across its transition; this runtime's
+  `smoothstep` takes one normalized argument, not two edges and a value.
 - **Deps** in the history of technology are *enabling* dependencies: what an invention needed to
   exist (the printing press needs movable type, ink, paper and the screw press), plus the
   physics that explains how it works. Give `credit` with inventor and approximate date.

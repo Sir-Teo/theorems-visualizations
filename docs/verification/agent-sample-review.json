@@ -1282,11 +1282,14 @@
     {
       "id": "ling-1.4",
       "file": "content/ling/ch01.js",
-      "textHash": "0e758dfc5b0ba4a22fb2ed02d0821b106c3b72459f917478c35fb3a6350e4f7d",
-      "textReview": "The two-orifice Bernoulli pressure formula is a real derivation, but a universal speech turbulence threshold Re≈1800 is not justified by a pipe-flow analogy. The noise/area constants need model qualification. The manner list omits affricates and released/unreleased distinctions, and Reynolds number is not a universal classifier of articulation.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "15eda95232b42e8c0a6f94e86380a5aaafd5b57ed75b96058fe8765093419159",
+      "textReview": "The statement separates articulation from a universal Reynolds classifier, includes affricates/unreleased stops and qualifies transient voicing. The chosen orifice, onset and acoustic calibration model is explicit. Directly used continuity and Bernoulli steps are linked to written mirrored prerequisites; no empirical source verification is implied.",
+      "visualReview": "Inspected all six default/nasal/unvoiced captures in both themes: pressure/flow changes, the chosen Re=1800 marker, noise-proxy gauge and synthetic spectrogram remain legible. The nasal outlet lowers mouth pressure and the model noise proxy. No subjective audio finding is assigned.",
+      "interactionReview": "Native area range endpoints and both toggle reversals pass without runtime/TeX/blank/NaN flags. Unit checks cover the actual corrected noise gate below onset, across its transition and above saturation. Native playback instrumentation passes in both themes with no autoplay and finite normalized non-silent buffers. See agent-articulation-review.md; listening remains unsupported.",
+      "status": "corrected-agent-follow-up-recorded-listening-pending",
+      "initialFinding": "The two-orifice Bernoulli pressure formula is a real derivation, but a universal speech turbulence threshold Re≈1800 is not justified by a pipe-flow analogy. The noise/area constants need model qualification. The manner list omits affricates and released/unreleased distinctions, and Reynolds number is not a universal classifier of articulation.",
+      "initialTextHash": "0e758dfc5b0ba4a22fb2ed02d0821b106c3b72459f917478c35fb3a6350e4f7d",
+      "correctionReport": "docs/verification/agent-articulation-review.md"
     },
     {
       "id": "nt-3.11",

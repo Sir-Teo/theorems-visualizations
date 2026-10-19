@@ -922,14 +922,14 @@
       "field": "humanities",
       "writtenItems": 52,
       "betweenFields": {
-        "writtenToWritten": 20,
-        "writtenToAll": 22,
-        "allToAll": 35
+        "writtenToWritten": 22,
+        "writtenToAll": 24,
+        "allToAll": 37
       },
       "betweenCollections": {
-        "writtenToWritten": 20,
-        "writtenToAll": 22,
-        "allToAll": 36
+        "writtenToWritten": 22,
+        "writtenToAll": 24,
+        "allToAll": 38
       }
     },
     {
