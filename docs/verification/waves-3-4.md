@@ -589,6 +589,10 @@ A **17-route changed-page sweep** passes home/map/about plus the latest correcte
 
 Human review requirements have been removed. Source verification, broader automated audio/input coverage, justified cross-field prerequisites, proof-stepper semantics/visual coverage and the full map performance gate continue. Wave 5 remains prepared and has not started.
 
+## Broader automated sound coverage — 2026-10-19
+
+The [expanded sound audit](audio-input-followup.md) passes **53 items and 95 actions** with real Web Audio, finite samples, nonzero output and no autoplay. Source-driven selection includes every direct-audio item in the fixed wave files plus the earlier linguistic checks. It adds waves3.1/psych3.9 and eight actual beat-control corners; the new oscillator/gain checks caught and now prevent the equal-amplitude playback mismatch. Imported helper-only audio, other parameter/event combinations and broader visual/input coverage remain explicitly separate. Source flags are unchanged.
+
 ## Ground-effect source and display audit — 2026-10-19
 
 Resolved aero3.7 against the complete authored MIT33 notes and Mason ground-effect discussion. The sourced single-horseshoe centre estimate is distinguished from the re-solved rectangular lifting-line model; unsupported empirical/history claims are removed and complete downwash profiles replace clipped curves. Three independent mathematical groups and four native theme/width groups pass, with source/formula and final screenshot inspection. See [ground-effect audit](aero-ground-followup.md). **218 source reviews remain**.

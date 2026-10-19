@@ -16,7 +16,7 @@ export default {
 $$\cos 2\pi f_1t+\cos 2\pi f_2t=2\cos\big(\pi\,\Delta f\,t\big)\cos\big(2\pi\bar f t\big),\qquad \Delta f=|f_2-f_1|.$$
 The envelope $2|\cos\pi\Delta f t|$ has zeros every $1/\Delta f$, so the loudness (the intensity) pulsates at the **beat frequency** $\Delta f$, the difference of the two frequencies, not at half of it. With unequal amplitudes $a_1,a_2$ the envelope $\sqrt{a_1^2+a_2^2+2a_1a_2\cos 2\pi\Delta f t}$ still repeats every $1/\Delta f$ but no longer reaches zero.`,
       idea: String.raw`This is superposition (1.6) applied to two harmonic waves (1.4), and the identity behind it is the product-to-sum formula. The cleanest way to see it is with rotating arrows: each tone is an arrow turning at its own frequency, and the sum is the diagonal of the parallelogram. The arrows line up and the sum is longest once per relative turn, that is once per $1/\Delta f$, and point oppositely half a turn later, which is why the pulsation rate is the *difference* of the two frequencies.`,
-      caption: String.raw`Orange and purple are the two tones; blue is their sum with its envelope (green). The panel on the right shows the same two tones as arrows turning at $f_1$ and $f_2$: their vector sum (gold) is the instantaneous value, and its length oscillates between $a_1+a_2$ and $|a_1-a_2|$. Shrink $\Delta f$ and the beats slow down; lower $a_2/a_1$ and the nodes fill in. The speaker plays the same beat scaled up to 440 Hz.`,
+      caption: String.raw`Orange and purple are the two tones; blue is their sum with its envelope (green). The panel on the right shows the same two tones as arrows turning at $f_1$ and $f_2$: their vector sum (gold) is the instantaneous value, and its length oscillates between $a_1+a_2$ and $|a_1-a_2|$. Shrink $\Delta f$ and the beats slow down; lower $a_2/a_1$ and the nodes fill in. The speaker shifts the lower tone to 440 Hz while preserving the frequency difference and amplitude ratio.`,
       deps: ['waves-1.6'],
       see: ['music-2.3'],
       refs: ['Crawford ch. 6', 'Hecht ch. 7'],
@@ -28,7 +28,7 @@ The envelope $2|\cos\pi\Delta f t|$ has zeros every $1/\Delta f$, so the loudnes
         const f1S = v.slider('frequency $f_1$ (Hz)', 8, 16, 10, { step: 0.5 });
         const dS = v.slider('difference $\\Delta f=f_2-f_1$ (Hz)', 0.5, 3, 1, { step: 0.05 });
         const rS = v.slider('amplitude ratio $a_2/a_1$', 0.2, 1, 1, { step: 0.05 });
-        v.soundButton('hear the beat (scaled to 440 Hz)', (snd) => snd.chord(440, 440 + dS.value, { duration: 4 }));
+        v.soundButton('hear the beat (scaled to 440 Hz)', (snd) => snd.tone([[440, 1], [440 + dS.value, rS.value]], { duration: 4 }));
         const B = v.stage({ x: [0, T], y: [-2.3, 2.3], axes: 'box', gutter: true, xlabel: 'time (s)', yticks: [], height: 250, weight: 2.2, minWidth: 340, title: 'their sum' });
         const C = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 250, weight: 1, minWidth: 240, title: 'turning arrows' });
         const A = v.stage({ x: [0, T], y: [-1.15, 1.15], axes: 'box', gutter: true, xlabel: 'time (s)', yticks: [], height: 150, full: true, title: 'the two tones' });

@@ -1,0 +1,11 @@
+# Expanded automated sound coverage
+
+2026-10-19. `node tests/verification-interactions.mjs` passes **53 items and 95 actions**, with no failed actions or autoplay. The [recorded results](audio-input-inventory.json) include actual Web Audio oscillator/buffer starts, context states, finite source samples and nonzero analyser output. This extends the earlier 51-item/85-action run.
+
+Selection now follows the fixed Wave 3–4 changed-file scope while preserving the earlier linguistic checks. The two newly included entries are `waves-3.1` and `psych-3.9`. Explicit item IDs also select older written direct-audio entries and reject unknown IDs. Imported helper-only audio needs its own scenario inventory.
+
+The wider review found a mismatch in `waves-3.1`: the picture varied the second tone's amplitude while audio always used equal amplitudes. Playback now preserves the selected amplitude ratio and frequency difference, with the lower tone shifted to 440 Hz as disclosed in the caption. Eight actual slider corners inspect the production oscillators and their first gain nodes, requiring frequencies 440 and 440+Δf and gain ratio a₂/a₁. All eight generate nonzero finite output. The remaining 87 actions are the original speaker/canvas scenarios plus the two newly covered controls.
+
+The physiological synthetic-noise action retains its intentional laminar silence check before changing viscosity to trigger the chosen noise illustration. The `music-8.17` staff, keyboard and frequency-axis gestures remain exercised. The audit uses real Web Audio after browser gestures; its analyser observes the production signal.
+
+The two-item targeted run passes 10 actions; the complete default run passes 53/95. Logs are `/tmp/atlas-root-audio-{new,full}.log`, with the captured full results at `/tmp/atlas-root-audio-full-results.json`. The script also accepts `ATLAS_AUDIO_RESULTS` to select an explicit results file; its default remains the operating system's temporary directory. These checks do not establish perceptual quality, every control state or every model-to-audio correspondence. Human review and subjective listening are not required. Broader input and agent visual checks remain separate work.
