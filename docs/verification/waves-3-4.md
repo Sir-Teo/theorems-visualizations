@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **210 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 628 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **208 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 630 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **210 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **208 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -612,3 +612,7 @@ Resolved energy4.2 using the complete authored NOAA geometry note and independen
 ## Linear oligopoly boundaries and continuous-price payoffs — 2026-10-19
 
 Three source reviews are resolved against the specified MIT authored sections and the original Levitan–Shubik model/pure-equilibrium sections. Stackelberg handles the follower-exit corner; finite Bertrand cuts are explicitly illustrative; differentiated and capacity games retain their exact hypotheses and pure-equilibrium ranges. Parent verification independently repeats six mathematical and twelve native groups, plus source/helper inspection and representative mobile/desktop image review. The five-item combined static check reports zero errors or warnings. See [the oligopoly audit](micro-oligopoly-followup.md). **210 source reviews remain**.
+
+## Full radiative solar-cell balance and ideal spectral-window stacks — 2026-10-19
+
+Two solar-cell reviews are resolved after complete source reading, independent quadrature and current/power checks, eight parent native theme/viewport groups and screenshot inspection. The calculation retains the full Bose emission denominator, limits optical concentration geometrically and distinguishes its blackbody inputs from the cited AM1.5G table. Multijunction results now state their ideal spectral-filter assumptions and plot actual collected electrical power; gap searches are local candidates. The five-item combined static check has zero errors or warnings. See [the radiative audit](energy-radiative-followup.md). The fusion erratum follow-up retains its source flag. **208 source reviews remain**.

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 210,
+  "remainingFlags": 208,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 1,
     "imaging": 1,
     "circ": 1,
-    "energy": 3,
+    "energy": 1,
     "robot": 1,
     "micro": 12,
     "macro": 2,
@@ -217,37 +217,6 @@
       ],
       "links": {
         "crossref": "https://doi.org/10.1088/0370-1301/70/1/303"
-      }
-    },
-    {
-      "id": "energy-4.5",
-      "file": "content/energy/ch04-b.js",
-      "name": "Shockley\u2013Queisser limit",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 13",
-        "MacKay App. D"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Shockley%E2%80%93Queisser_limit"
-      }
-    },
-    {
-      "id": "energy-4.6",
-      "file": "content/energy/ch04-b.js",
-      "name": "Multijunction cells",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "De Soto five-parameter model, temperature dependence; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/single-diode-equivalent-circuit-models/de-soto-five-parameter-module-model/"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Multi-junction_solar_cell"
       }
     },
     {
@@ -4027,7 +3996,9 @@
       "energy-4.2",
       "micro-10.13",
       "micro-10.14",
-      "micro-10.15"
+      "micro-10.15",
+      "energy-4.5",
+      "energy-4.6"
     ]
   },
   "additionalFollowups": [
@@ -8020,6 +7991,18 @@
       "status": "resolved",
       "report": "docs/verification/micro-oligopoly-followup.md",
       "note": "Read Yildiz Example5.5 and Levitan\u2013Shubik1970 complete SectionsI\u2013II; independently derived differentiated and efficient-rationing capacity regimes. Parent6 mathematical groups and12 native groups pass, including exact capacity boundaries, full deviation payoffs and screenshots; no mixed-strategy/source-full-paper claim."
+    },
+    {
+      "id": "energy-4.5",
+      "status": "resolved",
+      "report": "docs/verification/energy-radiative-followup.md",
+      "note": "Complete Shockley\u2013Queisser1961, Herrmann\u2013W\u00fcrfel2005 author proof and R\u00fchle2016 read; full Bose emission replaces invalid high-concentration approximation, with separate AM1.5G references. Parent4 independent mathematical and8 native groups pass, including true concentration endpoints,105 budget samples,I\u2013V/MPP bounds and inspected screenshots."
+    },
+    {
+      "id": "energy-4.6",
+      "status": "resolved",
+      "report": "docs/verification/energy-radiative-followup.md",
+      "note": "Explicit ideal spectral-window absorption/emission extension independently derived and checked; actual electrical spectral density and current-constrained series optimization replace unsupported generic tandem/infinite-limit claims. Parent4 math and8 native groups pass, including independent-loading bound,rank colors,equal gaps,drag/search and screenshots; historical papers are not claimed reproduced."
     }
   ]
 }

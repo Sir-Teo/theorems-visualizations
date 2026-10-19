@@ -1,30 +1,29 @@
 // Energy Systems — Chapter 4: Solar energy, items 4.5–4.8 (Shockley–Queisser limit, multijunction cells, maximum power point tracking, temperature)
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
-//   4.5 Detailed-balance model of Shockley & Queisser, J. Appl. Phys. 32 (1961) 510–519 (DOI 10.1063/1.1736034, checked in the Crossref record), with a blackbody
-//     Sun of the IAU 2015 nominal temperature 5772 K and (R/d)^2 dilution so that the input is 1361 W/m2, cell at 300 K, emission from the front face only
-//     (rear mirror), as in the tabulation of S. Ruhle, Solar Energy 130 (2016) 139–147 (DOI 10.1016/j.solener.2016.02.015, confirmed from a citing paper). Ruhle's
-//     limit for the real AM1.5G spectrum, quoted in the readout, is about 33.7 % at 1.34 eV (value from a secondary web page; Wikipedia lists 33.16 % for the same
-//     gap from an earlier calculation, so the exact figure is flagged). The blackbody numbers are computed here, not looked up. Records are not quoted.
-//   4.6 Tandem detailed balance: C. H. Henry, J. Appl. Phys. 51 (1980) 4494–4500 (DOI 10.1063/1.328272) and A. De Vos, J. Phys. D 13 (1980) 839–846
-//     (DOI 10.1088/0022-3727/13/5/018), both confirmed in Crossref records. The model here is a reconstruction: blackbody Sun, front emission only, no photon
-//     recycling between junctions, no non-radiative loss. The numbers are computed, not copied from those papers; published values depend on the spectrum.
+//   4.5 Complete original Shockley–Queisser 1961, Rühle 2016 and Herrmann–Würfel 2005 author proof read. Full generalized Planck emission,
+//     source-audit-radiative.shared.js, replaces the Boltzmann exponential approximation at high concentration. Selected source is 5772 K blackbody.
+//     Rühle's separate AM1.5G/298.15 K limits are 33.16% for two emitting faces and 33.77% with a perfect rear reflector, both at 1.34 eV.
+//   4.6 Independently derived ideal spectrum-splitting extension: each junction absorbs AND emits only within its assigned energy window.
+//     Requires ideal spectral filters; no interjunction photon exchange, non-radiative loss or reproduction of Henry/De Vos numerical results.
+//     Series operation keeps all junctions in their forward photovoltaic quadrant. Gap-search candidates are local numerical searches.
 //   4.7 Perturb-and-observe is a standard hill-climbing controller. The irradiance history is an INVENTED illustrative cloud sequence; the cell is the illustrative
 //     single-diode model of 4.3.
 //   4.8 Cell temperature from ambient: T_cell = T_amb + (NOCT - 20) G/800 with NOCT = 45 C (a typical datasheet value, from memory; the definition of NOCT as
 //     the cell temperature at 800 W/m2, 20 C ambient, 1 m/s wind is confirmed by SAM/PVPMC (2026-10-16)). J0 follows n_i^2 ~ T^3 exp(-Eg/kT). Photocurrent temperature coefficient
 //     +0.05 %/K is an illustrative round number. Quoted commercial silicon power coefficients vary by technology (literature values between -0.2 and -0.4 %/K).
 
-import { clamp, KB, S0, QE, FW, T_SUN, SIGMA, phot, engy, junction, junctionMax, stack, pin, cell, ivCurve } from './ch04.shared.js';
+import { clamp, KB, S0, QE, FW, T_SUN, SIGMA, pin, cell, ivCurve } from './ch04.shared.js';
+import {radiativeJunctionAudit as junction,radiativeMaximumAudit as junctionMax,radiativeStackAudit as stack,radiativeEnergyAudit as engy,RADIATIVE_INPUTS_AUDIT as DB} from './source-audit-radiative.shared.js';
 
 const Tc0 = 300;
 /** Detailed-balance single junction at gap Eg: efficiency and loss shares of the incident power. */
 function sqPoint(Eg, o) {
   const Pin = pin(o.conc), j = junction(Eg, Infinity, o), mp = junctionMax(j);
   const absE = (FW * o.conc * engy(Eg, Infinity, T_SUN) * QE) / Pin;      // fraction of incident power in photons above the gap
-  const usable = (Eg * QE * j.A) / Pin;                                    // each absorbed photon keeps only Eg
+  const usable = (Eg * QE * j.solar) / Pin;                                    // each absorbed photon keeps only Eg
   const eta = mp.P / Pin;
-  return { eta, below: 1 - absE, therm: absE - usable, volt: usable - eta, Voc: j.Voc, Vmp: mp.V, j };
+  return { eta, below: 1 - absE, therm: absE - usable, conversion: usable - eta, Voc: j.Voc, Vmp: mp.V, j };
 }
 
 export default {
@@ -33,37 +32,34 @@ export default {
   items: [
     // ───────────────────────────────────────────────────────── 4.5
     {
-      num: '4.5',
-      kind: 'Theorem',
-      name: 'Shockley–Queisser limit',
-      statement: String.raw`Consider a single p–n junction with band gap $E_g$ at temperature $T_c$, lit by a blackbody Sun of temperature $T_s$ filling a small solid angle, and assume (i) every photon above $E_g$ creates exactly one electron–hole pair and lower-energy photons are not absorbed, (ii) the only recombination is the unavoidable radiative one, in equilibrium with a blackbody at $T_c$, and (iii) carriers are collected at the band edges. Then the current is
-$$J(V)=q\big[\dot N_s(E_g)-\dot N_c(E_g)\,(e^{qV/kT_c}-1)\big],$$
-with $\dot N$ the blackbody photon fluxes above $E_g$, and the efficiency $\eta(E_g)=\max_V JV/P_{in}$ has a single maximum of about **30–34 %** at $E_g\approx1.1$–$1.4$ eV. No single-junction cell, whatever its material quality, can exceed it under one unconcentrated Sun. The same calculation gives $V_{oc}<E_g/q$ by an amount that shrinks with concentration.
+      num:'4.5',kind:'Theorem',name:'Shockley–Queisser limit',
+      statement:String.raw`An ideal junction absorbs every photon above its gap $E_g$, creates one electron–hole pair per absorbed photon, and recombines only by emitting light. Let $\dot N(T,V)$ be the hemispherical photon flux above $E_g$ with photon chemical potential $qV$. For $F=C(R_\odot/d)^2\le1$ and $m$ emitting faces, our chosen thermal-background balance is
+$$\begin{aligned}G&=F[\dot N(T_s,0)-\dot N(T_c,0)],\\J(V)/q&=G-m[\dot N(T_c,V)-\dot N(T_c,0)].\end{aligned}$$
+The electrical limit at the selected gap is $\eta=\max_V VJ(V)/P_{\rm in}$. Emission, temperature and the illumination spectrum set the voltage and efficiency; increasing material quality alone cannot remove the radiative loss within these assumptions.
 
-Scope: one junction, one pair per photon, no concentration (the limit rises under concentration), no spectral conversion. The exact figure depends on the spectrum used (blackbody or air-mass 1.5).`,
-      idea: String.raw`Three losses are unavoidable. Photons below $E_g$ are not absorbed (the Sun's spectrum, energy-4.1, has a long tail); photons above $E_g$ lose the excess to heat within picoseconds, so each pair is worth only $E_g$; and a cell that absorbs light must by detailed balance (thermo-9.10) also emit it, which gives the dark current its $e^{qV/kT}$ growth (energy-4.3) and keeps $V_{oc}$ below $E_g/q$. A small gap collects many photons but at low voltage; a large gap gives high voltage but few photons, so the product peaks in between. Shockley and Queisser derived exactly this in 1961 (energy-4.12). The limit is a statement about thermodynamics and photon statistics, not about any material, which is what makes it the yardstick for every new absorber.`,
-      caption: String.raw`**Left**: where the incident sunlight goes as a function of the band gap: red, photons below the gap; orange, the excess above it lost to heat; purple, the voltage lost to radiative recombination; green, electrical output. The green area's upper edge is the Shockley–Queisser efficiency. Drag the **band gap** to read the budget. **Right**: the current–voltage curve of that ideal cell, its maximum-power rectangle, and the gap $E_g/q$ that $V_{oc}$ cannot reach. Raise the **concentration** or cool the cell and the limit rises; let the cell emit from both faces and it falls.`,
-      deps: ['energy-4.1', 'energy-4.3', 'cm-4.1'],
-      refs: ['Tester ch. 13', 'MacKay App. D'],
-      tags: ['photovoltaics', 'thermodynamics', 'efficiency'],
-      scope: String.raw`Single junction, blackbody Sun (5772 K) in this picture; for the standard AM1.5G spectrum the limit is about 33–34 % near 1.34 eV.`,
-      credit: 'William Shockley & Hans-Joachim Queisser, 1961',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Shockley%E2%80%93Queisser_limit' },
-      verify: true,
+The pictured 5772 K blackbody at one Sun, 300 K cell temperature and front-only emission gives a computed peak near **30.5% at 1.26 eV**. Rühle's separate **AM1.5G, 25°C** calculation gives 33.16% with both faces emitting, or 33.77% with a perfect rear reflector, both near 1.34 eV.`,
+      idea:String.raw`The full generalized Planck distribution is
+$$\begin{aligned}B(E,T,V)&=\frac{2\pi E^2}{h^3c^2}\\&\quad\times[\exp((E-qV)/kT)-1]^{-1},\end{aligned}$$
+and $\dot N=\int_{E_g}^{\infty}B\,dE$. The exponential diode law is recovered when $E-qV\gg kT$; retaining the denominator's minus one matters near the gap under strong concentration. For a sharp absorbing step, emission grows without bound as $qV$ approaches $E_g$, so a finite illumination reaches open circuit below that gap. Maximum power occurs at a lower voltage. A small gap captures many photons but discards more excess energy; a large gap offers higher voltage with fewer photons. Their balance creates the efficiency peak.`,
+      caption:String.raw`Left: a sunlight budget versus gap. Red is unabsorbed sub-gap power; orange is energy above the gap discarded on thermalization; purple is the remaining pair energy not delivered electrically, including recombination and the operating point; green is output. The ring marks the largest sampled efficiency on a 0.025 eV grid. Right: current normalized by short-circuit current, the maximum-power rectangle and the gap voltage. Vary concentration, cell temperature or emitting faces. The photon distribution retains its full Bose denominator throughout the range.`,
+      deps:['energy-4.1','energy-4.3','cm-4.1'],refs:['Shockley & Queisser 1961, complete original pp. 510–519, especially §§2–5','Herrmann & Würfel 2005, complete author proof, Eqs. 7/14','Rühle 2016, complete original pp. 139–147, generalized emission and emitting-face distinction'],
+      links:{original:'https://doi.org/10.1063/1.1736034',emission:'https://doi.org/10.1119/1.1904623',tabulation:'https://doi.org/10.1016/j.solener.2016.02.015'},tags:['photovoltaics','thermodynamics','efficiency'],
+      scope:String.raw`One pair per photon, step absorption/emission, fixed 5772 K blackbody Sun and selected cell temperature, with no non-radiative recombination, resistive loss or spectral conversion. Sunlight replaces a fraction F of the front hemisphere; the remaining front directions and exposed rear face receive blackbody ambient radiation at the cell temperature. Front-only emission corresponds to a perfect rear mirror. Concentration is limited to 1/(R/d)^2. The AM1.5G reference values use a different spectrum and 25°C; the picture computes its own blackbody values. The plotted peak indicator samples gaps every 0.025 eV. At extreme small-gap/full-concentration states the positive open-circuit gap may be too small to resolve in a rounded voltage display; it is retained separately in the computation.`,
+      credit:'Shockley & Queisser 1961; generalized Planck emission and numerical teaching extension',verify: false,
       viz(v) {
         const Eg = v.slider('band gap $E_g$ (eV)', 0.4, 3, 1.34, { step: 0.01 });
-        const lc = v.slider('concentration', 0, Math.log10(46200), 0, { step: 0.01, fmt: (x) => `${Math.round(10 ** x).toLocaleString('en-US')}×` });
+        const lc = v.slider('concentration', 1, DB.maxConcentration, 1, { log: true, fmt: (x) => `${Math.round(x).toLocaleString('en-US')}×` });
         const Tc = v.slider('cell temperature (K)', 250, 400, 300, { step: 1 });
         const faces = v.select('cell emits from', [{ value: '1', label: 'front only' }, { value: '2', label: 'both faces' }], '1');
-        const L = v.stage({ x: [0.4, 3], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1.25, minWidth: 290, xlabel: 'band gap $E_g$ (eV)', ylabel: 'share of incident sunlight', title: 'where the sunlight goes', yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
-        const R = v.stage({ x: [0, 1.5], y: [0, 60], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'voltage V (V)', ylabel: 'current density (mA/cm²)', title: 'the ideal cell at this gap' });
+        const L = v.stage({ x: [0.25, 3.15], y: [-.05, 1.05], axes: 'box', gutter: true, height: 340, weight: 1.25, minWidth: 290, xlabel: 'band gap $E_g$ (eV)', ylabel: 'share of incident sunlight', title: 'where the sunlight goes', yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
+        const R = v.stage({ x: [0, 1.5], y: [0, 60], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'voltage V (V)', ylabel: '$J/J_{sc}$', title: 'the ideal cell at this gap' });
         let key = '', tab = null, st = null;
         v.render(() => {
-          const o = { conc: 10 ** lc.value, Tc: Tc.value, faces: Number(faces.value) };
+          const o = { conc: lc.value, Tc: Tc.value, faces: Number(faces.value) };
           const k = `${o.conc}|${o.Tc}|${o.faces}`;
-          if (k !== key) { key = k; tab = []; for (let e = 0.4; e <= 3.0001; e += 0.025) tab.push([e, sqPoint(e, o)]); }
+          if (k !== key) { key = k; tab = []; for(let i=0;i<=104;i++){const e=.4+i*.025;tab.push([e,sqPoint(e,o)]);} }
           const lay = (f) => tab.map(([e, p]) => [e, f(p)]);
-          const c1 = lay((p) => p.eta), c2 = lay((p) => p.eta + p.volt), c3 = lay((p) => p.eta + p.volt + p.therm);
+          const c1 = lay((p) => p.eta), c2 = lay((p) => p.eta + p.conversion), c3 = lay((p) => p.eta + p.conversion + p.therm);
           const band = (top, bot, col, a) => { const pts = top.concat(bot.slice().reverse()); L.poly(pts, { fill: col, fillAlpha: a, stroke: false }); };
           band(c3.concat([[3, 1]]).slice(0, -1).map(([e, y]) => [e, 1]), c3, 'red', 0.4);
           band(c3, c2, 'orange', 0.45); band(c2, c1, 'purple', 0.4);
@@ -75,62 +71,57 @@ Scope: one junction, one pair per photon, no concentration (the limit rises unde
           L.vline(Eg.value, { color: 'gold', width: 1.6 });
           const p = sqPoint(Eg.value, o);
           L.dot(Eg.value, p.eta, { r: 7, color: 'gold' });
-          // I–V at this gap
-          const j = p.j, vt = j.vt, Jsc = QE * j.A * 0.1;
-          R.setView([0, Math.max(0.6, Eg.value * 1.05)], [0, Jsc * 1.2]);
-          const pts = []; for (let i = 0; i <= 200; i++) { const V = (j.Voc * 1.02 * i) / 200; pts.push([V, QE * (j.A - j.Em * Math.expm1(V / vt)) * 0.1]); }
-          const Jm = QE * (j.A - j.Em * Math.expm1(p.Vmp / vt)) * 0.1;
-          R.rect(0, 0, p.Vmp, Jm, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 1.6 });
-          R.rect(0, 0, j.Voc, Jsc, { fill: false, color: 'muted', dash: [5, 4], width: 1.2 });
-          R.path(pts, { color: 'accent', width: 3 });
-          R.vline(Eg.value, { color: 'gold', width: 1.4, dash: [5, 4] });
-          R.text('$E_g/q$', Eg.value, Jsc * 1.08, { dx: -5, align: 'right', size: 12, color: 'gold', weight: 700 });
-          R.dot(p.Vmp, Jm, { r: 6, color: 'green' });
+          // Normalize current so full concentration retains readable axes.
+          const j=p.j,Jsc=QE*j.A*.1;
+          R.setView([-.05*Math.max(.6,Eg.value*1.05),Math.max(.6,Eg.value*1.05)],[-.08,1.2]);
+          const pts=[];for(let i=0;i<=200;i++){const V=j.Voc*i/200;pts.push([V,i===200?0:Math.max(0,j.J(V)/j.A)]);}
+          const Jm=j.J(p.Vmp)/j.A;
+          R.rect(0,0,p.Vmp,Jm,{fill:'green',fillAlpha:.3,color:'green',width:1.6});
+          R.rect(0,0,j.Voc,1,{fill:false,color:'muted',dash:[5,4],width:1.2});R.path(pts,{color:'accent',width:3});
+          R.vline(Eg.value,{color:'gold',width:1.4,dash:[5,4]});R.text('$E_g/q$',Eg.value,1.08,{dx:-5,align:'right',size:12,color:'gold',weight:700});
+          R.dot(p.Vmp,Jm,{r:6,color:'green'});R.dot(j.Voc,0,{r:4,color:'red'});
           st = { p, best, o, Jsc };
         });
-        v.legend([['red', 'below the gap: not absorbed', { area: true }], ['orange', 'excess above the gap: heat', { area: true }], ['purple', 'voltage lost to recombination', { area: true }], ['green', 'electrical output', { area: true }]]);
+        v.legend([['red', 'below the gap: not absorbed', { area: true }], ['orange', 'excess above the gap: heat', { area: true }], ['purple', 'remaining conversion loss', { area: true }], ['green', 'electrical output', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { p, best, o } = st;
           const std = o.conc === 1 && o.Tc === 300 && o.faces === 1;
-          return `$E_g=${v.fix(Eg.value, 2)}$ eV: efficiency **${v.fix(100 * p.eta, 1)}%** = 100% − ${v.fix(100 * p.below, 1)}% (below gap) − ${v.fix(100 * p.therm, 1)}% (heat) − ${v.fix(100 * p.volt, 1)}% (recombination voltage loss) · $V_{oc}=${v.fix(p.Voc, 3)}$ V = ${v.fix((100 * p.Voc) / Eg.value, 0)}% of $E_g/q$ · maximum of this curve ${v.fix(100 * best[1].eta, 1)}% at ${v.fix(best[0], 2)} eV` +
-            (std ? `\nBlackbody-Sun model. For the real AM1.5G spectrum the tabulated limit is about 33.7% at 1.34 eV (Rühle 2016); the shape of the real spectrum, with its absorption bands, moves the optimum slightly.` : '');
+          return `$E_g=${v.fix(Eg.value, 2)}$ eV: efficiency **${v.fix(100 * p.eta, 1)}%** = 100% − ${v.fix(100 * p.below, 1)}% (below gap) − ${v.fix(100 * p.therm, 1)}% (heat) − ${v.fix(100 * p.conversion, 1)}% (remaining conversion loss) · $V_{oc}=${v.fix(p.Voc, 3)}$ V = ${v.fix((100 * p.Voc) / Eg.value, 0)}% of $E_g/q$ · largest sampled curve value ${v.fix(100 * best[1].eta, 1)}% at ${v.fix(best[0], 2)} eV` +
+            (std ? `\nBlackbody-Sun model. Rühle 2016 separately reports 33.77% at 1.34 eV for AM1.5G, 298.15 K and a perfect rear reflector; with both faces emitting the value is 33.16%.` : '');
         });
       },
     },
 
     // ───────────────────────────────────────────────────────── 4.6
     {
-      num: '4.6',
-      kind: 'Concept',
-      name: 'Multijunction cells',
-      statement: String.raw`A **multijunction** (tandem) cell stacks junctions of decreasing band gap $E_{g1}>E_{g2}>\dots$ so that each absorbs the part of the spectrum it can use best: the top cell takes photons above $E_{g1}$ and is transparent to the rest, the next takes those between $E_{g2}$ and $E_{g1}$, and so on. Each photon then loses less to heat and the low-energy photons are no longer wasted. In the detailed-balance model the limit rises with the number $N$ of junctions: with the blackbody Sun used here, from about 30 % for $N=1$ to about 42 % for $N=2$ and 48 % for $N=3$ at one Sun, and much higher under concentration, approaching the high-80s per cent for an infinite stack at full concentration (De Vos 1980; Henry 1980).
+      num:'4.6',kind:'Concept',name:'Multijunction cells',
+      statement:String.raw`Dividing the solar spectrum among junctions with decreasing gaps lets each junction convert a narrower photon-energy range. This picture uses an **ideal spectrum splitter and spectral filters**: each junction absorbs and emits only in its assigned window, with radiative balance from energy-4.5. This optical assumption defines the model; an unfiltered physical tandem additionally exchanges luminescent photons between junctions.
 
-Scope: ideal junctions with radiative recombination only; in a series-connected (two-terminal) stack the junctions must carry the **same current**, so the band gaps have to be chosen to match photon currents; in a four-terminal stack each junction works at its own power point. The numbers depend on the spectrum.`,
-      idea: String.raw`A single junction pays two spectral penalties — the sub-gap photons it ignores and the above-gap energy it throws away (energy-4.5). A stack splits the spectrum into slices, and within each slice the gap is closer to the photon energy, so the thermalisation loss shrinks as $\sim 1/N$ of the single-cell loss. The price is current matching: in series, the same current flows through every junction, so the smallest photon current in the stack limits the rest. The optimum gaps therefore balance currents rather than maximising each junction on its own. This picture of a spectrum-splitting stack, here a reconstruction with a blackbody Sun, is the principle behind the III–V triple-junction cells used on satellites and in concentrators.`,
-      caption: String.raw`Choose the number of junctions and drag the **gap handles** along the photon-energy axis (the axis of the figure is the Sun's spectrum). Each junction's colour band is the slice of the spectrum it absorbs; the darker part of the band is what it converts to electrical power, set by its voltage. Press **optimise** to search for the best gaps. The bars on the right compare the best $N=1,2,3$ stacks for the chosen connection and concentration. **Model values:** blackbody Sun, no photon recycling.`,
-      deps: ['energy-4.5'],
-      refs: ['De Soto five-parameter model, temperature dependence; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/single-diode-equivalent-circuit-models/de-soto-five-parameter-module-model/'],
-      tags: ['photovoltaics', 'tandem', 'efficiency'],
-      scope: String.raw`Detailed-balance model, blackbody Sun, ideal junctions; real stacks have lattice-matching, tunnel-junction and non-radiative losses.`,
-      credit: 'C. H. Henry, 1980; A. De Vos, 1980',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Multi-junction_solar_cell' },
-      verify: true,
+In a series-connected stack every junction carries one shared current. Here each operates in its forward photovoltaic range, so $0\le j\le\min G_i$ and $P_{\rm series}=qj\sum_iV_i(j)$. Independently loaded junctions choose their own power points, giving, for the **same gaps and optical model**,
+$$\max_j qj\sum_i V_i(j)\;\le\;\sum_i\max_{j_i}qj_iV_i(j_i).$$
+The independent configuration uses $2N$ terminals; a three-junction device has six.`,
+      idea:String.raw`Spectral windows reduce the mismatch between photon energy and band gap. They help only when their gaps and connections make use of that spectrum. In series, one junction's small available current can constrain the rest, so a poorly matched added junction can lower output. Independently loading every junction offers at least as much power for fixed gaps because the shared-current operating points form a subset of the independently available choices. Equality requires compatible individual maximum-power currents. Choosing gaps is a separate numerical search; the bars show search candidates rather than a proof of the globally optimal gaps.`,
+      caption:String.raw`Choose one to three junctions and drag the gap handles. Pale colours show absorbed spectral windows. Darker density allocates the **actual electrical output**, including the fraction of generated current collected at the chosen power point. The plot shows 0.3–4.2 eV; calculations integrate each full model window, including the high-energy tail. Press **optimise the gaps** for a numerical candidate. Bars compare searched candidates for one, two and three junctions under the selected connection and concentration. Gold marks the current selected configuration.`,
+      deps:['energy-4.5'],refs:['Independent spectral-window extension of generalized radiative balance in energy-4.5','Henry 1980 and De Vos 1980: historical bibliographic attribution only; their numerical results and coupled optical models are not reproduced'],
+      links:{balance:'https://doi.org/10.1063/1.1736034',emission:'https://doi.org/10.1119/1.1904623',history:'https://biblio.ugent.be/publication/207802'},tags:['photovoltaics','tandem','efficiency'],
+      scope:String.raw`A 5772 K blackbody source, 300 K cells, one emitting face per junction and ideal filters restricting each junction's absorption AND emission to its assigned interval. Remaining sky directions are at the cell temperature. No interjunction photon recycling, non-radiative recombination, lattice or tunnel-junction losses. These computed values are not a generic unfiltered-tandem limit or a reproduction of Henry/De Vos. Series searches are restricted to nonnegative junction voltages; independent loading uses each junction's own maximum. Gap-search candidates are local numerical results within 0.4–3.9 eV, without a certificate of global optimality. The displayed spectral range is cropped; electrical calculations integrate complete windows.`,
+      credit:'Multijunction history: C. H. Henry 1980; A. De Vos 1980. Ideal-filter model independently derived here.',verify: false,
       viz(v) {
         const M = v.M;
         const N = v.select('junctions', [{ value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' }], '2');
-        const conn = v.select('connection', [{ value: 'series', label: 'in series (2-terminal)' }, { value: 'indep', label: 'independent (4-terminal)' }], 'series');
-        const lc = v.slider('concentration', 0, Math.log10(46200), 0, { step: 0.01, fmt: (x) => `${Math.round(10 ** x).toLocaleString('en-US')}×` });
-        const S = v.stage({ x: [0.3, 4.2], y: [0, 1.12], axes: 'box', gutter: true, height: 340, weight: 1.4, minWidth: 300, xlabel: 'photon energy (eV)', ylabel: 'solar power per eV (relative)', title: 'the spectrum, sliced by the junctions' });
-        const B = v.stage({ x: [0.4, 3.6], y: [0, 0.7], axes: 'box', gutter: true, height: 340, weight: 0.8, minWidth: 240, xlabel: 'number of junctions', ylabel: 'efficiency', title: 'best stack of each size', xticks: [[1, '1'], [2, '2'], [3, '3']], yticks: [[0, '0'], [0.1, '10%'], [0.2, '20%'], [0.3, '30%'], [0.4, '40%'], [0.5, '50%'], [0.6, '60%'], [0.7, '70%']] });
+        const conn = v.select('connection', [{ value: 'series', label: 'in series (2-terminal)' }, { value: 'indep', label: 'independently loaded' }], 'series');
+        const lc = v.slider('concentration', 1, DB.maxConcentration, 1, { log: true, fmt: (x) => `${Math.round(x).toLocaleString('en-US')}×` });
+        const S = v.stage({ x: [.15, 4.25], y: [-.1, 1.12], axes: 'box', gutter: true, height: 340, weight: 1.4, minWidth: 300, xlabel: 'photon energy (eV)', ylabel: 'solar power per eV (relative)', title: 'the spectrum, sliced by the junctions' });
+        const B = v.stage({ x: [0.4, 3.6], y: [0, 0.7], axes: 'box', gutter: true, height: 340, weight: 0.8, minWidth: 240, xlabel: 'number of junctions', ylabel: 'efficiency', title: 'gap-search candidates', xticks: [[1, '1'], [2, '2'], [3, '3']], yticks: [[0, '0'], [0.1, '10%'], [0.2, '20%'], [0.3, '30%'], [0.4, '40%'], [0.5, '50%'], [0.6, '60%'], [0.7, '70%']] });
         const hs = [S.handle(1.8, 0.03, { color: 'blue', r: 8, constrain: { x: [0.4, 3.9], y: [0.03, 0.03] } }), S.handle(1.3, 0.03, { color: 'green', r: 8, constrain: { x: [0.4, 3.9], y: [0.03, 0.03] } }), S.handle(0.9, 0.03, { color: 'orange', r: 8, constrain: { x: [0.4, 3.9], y: [0.03, 0.03] } })];
         const opt = {}; let st = null;
-        const O = () => ({ conc: 10 ** lc.value, Tc: Tc0, faces: 1 });
+        const O = () => ({ conc: lc.value, Tc: Tc0, faces: 1 });
         const gaps = () => hs.slice(0, Number(N.value)).map((h) => h.x).sort((a, b) => b - a);
         const best = (n) => {
           const k = `${n}|${conn.value}|${lc.value}`; if (opt[k]) return opt[k];
           const o = O(), starts = { 1: [1.35], 2: [1.75, 1.1], 3: [1.95, 1.45, 0.95] }[n];
-          const f = (g) => (g.some((x) => x < 0.3 || x > 4) ? 1 : -stack(g, o, conn.value).eta);
+          const f = (g) => (g.some((x) => x < 0.4 || x > 3.9) ? 1 : -stack(g, o, conn.value).eta);
           const r = M.nelderMead(f, starts, { step: 0.15, tol: 1e-7, maxIt: 250 });
           return (opt[k] = { gaps: [...r.x].sort((a, b) => b - a), eta: -r.fx });
         };
@@ -141,11 +132,12 @@ Scope: ideal junctions with radiative recombination only; in a series-connected 
           const g = gaps(), res = stack(g, o, conn.value);
           const kT = KB * T_SUN, f = (x) => (x ** 3 / Math.expm1(x / kT)) / ((2.82144 * kT) ** 3 / Math.expm1(2.82144));
           const cols = ['blue', 'green', 'orange'];
+          hs.slice(0,n).sort((a,b)=>b.x-a.x).forEach((h,i)=>{h.color=cols[i];});
           S.between(f, () => 0, 0.3, g[n - 1], { fill: 'red', fillAlpha: 0.3 });
           g.forEach((E, i) => {
-            const hiE = i === 0 ? 4.2 : g[i - 1], V = res.parts[i].V;
+            const hiE = i === 0 ? 4.2 : g[i - 1], part=res.parts[i], work=part.solar>0?part.P/(QE*part.solar):0;
             S.between(f, () => 0, E, hiE, { fill: cols[i], fillAlpha: 0.25 });
-            S.between((x) => (f(x) * V) / x, () => 0, E, hiE, { fill: cols[i], fillAlpha: 0.6 });
+            S.between((x) => (f(x) * work) / x, () => 0, E, hiE, { fill: cols[i], fillAlpha: 0.6 });
             S.vline(E, { color: cols[i], width: 1.6 });
           });
           S.fn(f, { color: 'ink', width: 1.8, domain: [0.3, 4.2], n: 300 });
@@ -155,15 +147,14 @@ Scope: ideal junctions with radiative recombination only; in a series-connected 
           B.bars(bars, { x0: 1, dx: 1, color: (val, i) => (i + 1 === n ? 'green' : 'accent') });
           bars.forEach((b, i) => B.text(`${v.fix(100 * b, 1)}%`, i + 1, b, { dy: -8, align: 'center', size: 12, weight: 700, color: 'ink' }));
           B.hline(res.eta, { color: 'gold', width: 2, dash: [6, 4] });
+          v.legend([['red','below the lowest gap',{area:true}],...cols.slice(0,n).map((c,i)=>[c,n===1?'single junction':i===0?'top junction':i===n-1?'bottom junction':'middle junction',{area:true}])]);
           st = { res, g, o, bars, n };
         });
-        v.legend([['red', 'below the lowest gap: lost', { area: true }], ['blue', 'top junction', { area: true }], ['green', 'middle junction', { area: true }], ['orange', 'bottom junction', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { res, g, bars, n } = st;
-          const single = stack([1.34], { ...st.o }, conn.value).eta;
-          return `Gaps ${g.map((x) => v.fix(x, 2)).join(', ')} eV: efficiency **${v.fix(100 * res.eta, 1)}%** (${n === 1 ? 'single junction' : `${v.fix(100 * (res.eta - bars[0]), 1)} points relative to the best single junction ${v.fix(100 * bars[0], 1)}%`}) · junction voltages ${res.parts.map((p) => v.fix(p.V, 2) + ' V').join(', ')}` +
-            (conn.value === 'series' && n > 1 ? ` · photon currents ${res.parts.map((p) => v.fix(p.A * QE * 0.1, 1)).join(', ')} mA/cm² available, ${v.fix(res.j * QE * 0.1, 1)} mA/cm² shared` : '') + `\nBest stacks (model): ${bars.map((b, i) => `${i + 1} junction${i ? 's' : ''} ${v.fix(100 * b, 1)}%`).join(' · ')}.`;
+          return `Gaps ${g.map((x) => v.fix(x, 2)).join(', ')} eV: efficiency **${v.fix(100 * res.eta, 1)}%** (${n === 1 ? 'single junction' : `${v.fix(100 * (res.eta - bars[0]), 1)} points relative to the searched single-junction candidate ${v.fix(100 * bars[0], 1)}%`}) · junction voltages ${res.parts.map((p) => v.fix(p.V, 2) + ' V').join(', ')}` +
+            (conn.value === 'series' && n > 1 ? ` · net generation currents ${res.parts.map((p) => v.fix(p.A * QE * 0.1, 1)).join(', ')} mA/cm² available, ${v.fix(res.j * QE * 0.1, 1)} mA/cm² shared` : '') + `\nSearched candidates (model): ${bars.map((b, i) => `${i + 1} junction${i ? 's' : ''} ${v.fix(100 * b, 1)}%`).join(' · ')}.`;
         });
       },
     },
