@@ -1253,7 +1253,9 @@ function makeSlider(rt, label, min, max, value, o = {}) {
   const log = !!o.log;
   const toInput = (x) => log ? Math.log10(x) : x, fromInput = (u) => log ? Math.pow(10, u) : u;
   input.min = toInput(min); input.max = toInput(max);
-  input.step = log ? (toInput(max) - toInput(min)) / 400 : (o.step ?? (o.int ? 1 : (max - min) / 200));
+  // Keep the final log tick inside the browser's floating-point step grid.
+  // An exactly divided span can otherwise sanitize End to tick399 instead of400.
+  input.step = log ? (toInput(max) - toInput(min)) / 400 * (1 - 1e-9) : (o.step ?? (o.int ? 1 : (max - min) / 200));
   input.value = toInput(value);
   input.setAttribute('aria-label', label.replace(/\$/g, ''));
   const out = h('output', 'ctl-value');
@@ -1270,7 +1272,11 @@ function makeSlider(rt, label, min, max, value, o = {}) {
     set(x) { cur = x; input.value = toInput(x); sync(); rt.invalidate(); },
   };
   const sync = () => { out.textContent = format(ctl.value); input.setAttribute('aria-valuetext', out.textContent); };
-  input.addEventListener('input', () => { const x = fromInput(+input.value); cur = log ? roundSig(x, o.sig ?? 3) : x; sync(); o.onChange?.(ctl.value); rt.invalidate(); });
+  input.addEventListener('input', () => {
+    const u = +input.value, x = fromInput(u), halfStep = +input.step / 2;
+    cur = log ? (u <= +input.min + halfStep ? min : u >= +input.max - halfStep ? max : M.clamp(roundSig(x, o.sig ?? 3), min, max)) : x;
+    sync(); o.onChange?.(ctl.value); rt.invalidate();
+  });
   sync(); el.append(lab, input, out);
   rt.state.register('slider', label, { get: () => ctl.value,
     valid: x => Number.isFinite(x) && x >= min && x <= max && (!o.int || Number.isInteger(x)),
