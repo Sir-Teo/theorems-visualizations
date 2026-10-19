@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 257,
+  "remainingFlags": 254,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,9 +17,9 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 8,
+    "physio": 7,
     "pharm": 9,
-    "imaging": 6,
+    "imaging": 4,
     "circ": 1,
     "energy": 12,
     "solid": 7,
@@ -259,28 +259,6 @@
       }
     },
     {
-      "id": "physio-4.20",
-      "file": "content/physio/ch04-d.js",
-      "name": "Absorption of Fluids from the Connective Tissue Spaces",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "idea",
-          "text": "Before this paper the movement of fluid out of the capillaries had been put down to filtration and to secretion by the vessel wall; the knowledge that proteins exert an osmotic pressure came from physical chemistry (van 't Hoff, physio-1.4). Starling's step was to put the two together: the wall behaves as a membrane that is permeable to water and salts but not to proteins, so that capillary pressure is a force opposed by the oncotic pressure of the plasma, and the difference decides the direction. He supported it with experiments on the exchange of fluid in the limb of the dog, perfused with salt solution or with serum (as summarised in secondary accounts; I have not read the paper's own tables). The reconstruction here is **a model**, not his data: it plays the experiment with the modern form of his law."
-        },
-        {
-          "field": "scope",
-          "text": "A model calculation, not the paper's data. It uses $J=K_f[(P_c-P_i)-\\sigma(\\pi(c)-\\pi_i)]$ with $\\pi(c)=2.1c+0.16c^2+0.009c^3$ mmHg ($c$ in g/dL; the polynomial is quoted from memory of Landis and Pappenheimer, 1963, and flagged for verification), $K_f=0.01$ mL/min/mmHg per 100 g (a typical modern value for skeletal muscle), no feedback from tissue swelling, and $\\sigma=1$. In real tissue the interstitial pressure and protein change as fluid accumulates (physio-4.13), so only the first minutes are meaningful."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1113/jphysiol.1896.sp000596"
-      }
-    },
-    {
       "id": "pharm-3.7",
       "file": "content/pharm/ch03-b.js",
       "name": "First-pass effect",
@@ -415,19 +393,6 @@
       "links": {}
     },
     {
-      "id": "imaging-3.16",
-      "file": "content/imaging/ch03-d.js",
-      "name": "Fourier diffraction theorem",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Kak\u2013Slaney \u00a76.3"
-      ],
-      "links": {}
-    },
-    {
       "id": "imaging-3.18",
       "file": "content/imaging/ch03-d.js",
       "name": "Computerized Transverse Axial Scanning (Tomography): Part 1",
@@ -491,19 +456,6 @@
       "links": {
         "doi": "https://doi.org/10.1038/jcbfm.1983.1"
       }
-    },
-    {
-      "id": "imaging-4.4",
-      "file": "content/imaging/ch04.js",
-      "name": "Collimator resolution\u2013sensitivity trade-off",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Prince\u2013Links ch. 8"
-      ],
-      "links": {}
     },
     {
       "id": "circ-4.17",
@@ -4686,7 +4638,10 @@
       "ctrl-4.4",
       "ctrl-4.8",
       "robot-4.7",
-      "robot-4.8"
+      "robot-4.8",
+      "physio-4.20",
+      "imaging-3.16",
+      "imaging-4.4"
     ]
   },
   "additionalFollowups": [
@@ -8379,6 +8334,24 @@
       "status": "resolved",
       "report": "docs/verification/robot-source-audit-followup.md",
       "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
+    },
+    {
+      "id": "physio-4.20",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-starling-followup.md",
+      "note": "Primary source/model review with independent mathematical and native light/dark control checks; parent reran the dedicated suites and inspected the final full-size screenshot. No calibrated instrument/clinical-data claim is made."
+    },
+    {
+      "id": "imaging-3.16",
+      "status": "resolved",
+      "report": "docs/verification/imaging-diffraction-followup.md",
+      "note": "Primary source/model review with independent mathematical and native light/dark control checks; parent reran the dedicated suites and inspected the final full-size screenshot. No calibrated instrument/clinical-data claim is made."
+    },
+    {
+      "id": "imaging-4.4",
+      "status": "resolved",
+      "report": "docs/verification/imaging-collimator-followup.md",
+      "note": "Primary source/model review with independent mathematical and native light/dark control checks; parent reran the dedicated suites and inspected the final full-size screenshot. No calibrated instrument/clinical-data claim is made."
     }
   ]
 }

@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **257 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 581 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **254 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 584 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **257 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **254 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -489,3 +489,10 @@ Seven further source reviews resolve physio3.9,sig4.6/4.13,ctrl4.4/4.8,robot4.7/
 Parent read all four reports, independently reran15 mathematical and14native theme groups and inspected full-size ECG, zero-power, long-settling and exact-isotropy screenshots. The actual source flags and2,260-row ledger reconcile. Human/listening completion remains unclaimed.
 
 The broader wave-gate audit also measured an unmet home-data budget: the current generated catalog is430,911bytes gzipped, and startup schedules all detail shards in the background. The ≤300KBhome JSON gate therefore remains open; a demand-loading correction is in progress. A newly exercised first-frame crash in the LADR basis-reduction proof was corrected in commit`6b27d7a` with a native first-through-last browser regression. No new content wave has started.
+
+
+## Original fluid-absorption evidence, diffraction and collimator geometry — 2026-10-19
+
+Three further source reviews resolve physio4.20,imaging3.16andimaging4.4, leaving **254 pending =833 initial+5 added−584 original resolved**. [Starling original](physio-source-audit-starling-followup.md) corrects the actual perfusion/injected-fluid experimental distinction and restores unhidden model extremes. [Diffraction](imaging-diffraction-followup.md) checks the complete relevant Born/Fourier derivation and explicit finite sampled reconstruction; an oracle-spectrum backdrop is labelled as reference. [Collimator geometry](imaging-collimator-followup.md) corrects the hex-hole efficiency coefficient, nonconstant diameter-sweep exponent, near-field validity and missing source/blur range. Parent reran14independent math and6native light/dark groups and inspected final full-size screenshots.
+
+The user removed all human-review/subjective-listening requirements in commit`19f8d4c`; automated checks and agent visual/source review continue. The [proof-player audit](proof-steppers.md) now passes102/102native first/next/last checks after the basis-frame repair, without treating controls as proof-validity evidence.

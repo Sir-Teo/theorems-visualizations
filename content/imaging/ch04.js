@@ -3,7 +3,8 @@
 // Part 2 (ch04-b.js): 4.5 SPECT, 4.6 PET coincidence and lines of response, 4.7 PET attenuation correction.
 // Part 3 (ch04-c.js): 4.8 MLEM and OSEM, 4.9 time-of-flight PET, 4.10 tracer kinetics and the Patlak plot.
 // (4.1, radioactive decay as a stochastic first-order process, is cross-listed from the collection `kin`.)
-import { clamp, fx, mean, showImage, frame, rng32, gauss, MATS, mu, TUBES, tubeMeans, centroid } from './ch04.shared.js';
+import { clamp, fx, mean, showImage, frame, rng32, gauss, TUBES, tubeMeans, centroid } from './ch04.shared.js';
+import { collimatorAudit } from './source-audit-collimator.shared.js';
 
 const LN2 = Math.LN2;
 const fmtT = (h) => (h < 1 ? `${fx(h * 60, h * 60 < 10 ? 1 : 0)}\\ \\mathrm{min}` : h < 48 ? `${fx(h, h < 10 ? 2 : 1)}\\ \\mathrm{h}` : `${fx(h / 24, h / 24 < 10 ? 2 : 1)}\\ \\mathrm{d}`);
@@ -139,19 +140,20 @@ and the total $z=\sum_is_i$ is proportional to the deposited energy. A pulse-hei
       name: 'Collimator resolution–sensitivity trade-off',
       statement: String.raw`A parallel-hole collimator of hole diameter $d$, hole length $L$ and septal thickness $t$ lets through only photons travelling nearly along the holes. With effective length $L_e=L-2/\mu_{\rm Pb}$ (septal edges are partly transparent), a point source at distance $z$ is imaged with geometric resolution (FWHM)
 $$R_c\approx d\,\frac{L_e+z}{L_e},$$
-which worsens linearly with distance, and a fraction
-$$g\approx K^2\Big(\frac d{L_e}\Big)^2\Big(\frac{d}{d+t}\Big)^2$$
-of the emitted photons passes, nearly independent of $z$ ($K\approx0.24$ for hexagonal holes). Hence $g\propto R_c^{2}$ at a given distance: halving the blur costs a factor of four in counts. System resolution adds the intrinsic camera resolution in quadrature, $R_s=\sqrt{R_c^2+R_i^2}$.`,
-      idea: String.raw`A hole accepts rays within an angle of about $d/L_e$ of its axis, so the cone of lines the camera "sees" through one hole has width $d(L_e+z)/L_e$ at depth $z$. Narrower or longer holes shrink the cone and sharpen the picture, but they also shrink the solid angle each hole presents to the source, and with it the count rate, in proportion to $(d/L_e)^2$. Thicker septa stop more oblique photons but throw away detector area (the factor $(d/(d+t))^2$), so $t$ is chosen only just thick enough to stop septal penetration. Counts then set noise through Poisson statistics (imaging-1.7), which is why resolution and image quality pull against each other.`,
-      caption: String.raw`Set the **hole diameter, length and septal thickness** (or choose a preset design) and drag the gold source up and down. Left: holes that the source can see are shaded green, and the accepted cone widens with distance. Middle: resolution $R_c$ and $R_s$ against distance. Right: sensitivity against $R_c$ at the chosen distance as $d$ varies — a line of slope 2 on log–log axes — with your design marked.`,
+which worsens linearly with distance. For regular hexagonal holes with $d$ measured flat-to-flat, the geometric efficiency is
+$$g\approx\frac{\sqrt3}{8\pi}\Big(\frac d{L_e}\Big)^2\Big(\frac{d}{d+t}\Big)^2.$$
+These many-hole approximations require distance beyond $z_{\min}=L/2+Lt/d$; closer to the face, source position relative to individual holes matters. At fixed $L,z$ and fixed ratio $t/d$, $g\propto R_c^2$. Along the displayed sweep, however, **$t$ stays fixed**, so the log–log slope is $2+2t/(d+t)$, between 2 and 4, rather than exactly 2. The approximate system blur is $R_s=\sqrt{R_c^2+R_i^2}$.`,
+      idea: String.raw`The open area of one regular hexagonal hole is $A_o=\sqrt3d^2/2$, and its cell area is $A_u=\sqrt3(d+t)^2/2$. The geometric approximation $g=A_o^2/(4\pi L_e^2A_u)$ supplies the coefficient without a remembered shape constant. Narrower holes reduce both the acceptance angle and the open fraction if septa are kept fixed, explaining the extra change beyond a square law. The source paper also identifies the near-field distance below which a source cannot illuminate adjacent holes and this averaged efficiency ceases to apply. Quadrature addition of blur is another model approximation, rather than an exact convolution of arbitrary point-spread functions.`,
+      caption: String.raw`Set **hole diameter, length and septal thickness**, or choose an illustrative preset. Drag the gold source through its full 5–200 mm range. The left panel is a two-dimensional cross-section of acceptance geometry, not a count of a hexagonal array. Middle: formal resolution estimates against distance, with the near-field threshold marked. Right: the diameter sweep at fixed septa, whose changing log slope is reported. The readout flags near-field and septal-penetration limits; the geometric model does not simulate those effects.`,
       deps: ['imaging-4.3', 'imaging-1.9'],
       tags: ['collimator', 'gamma camera'],
-      refs: ['Prince–Links ch. 8'],
-      scope: String.raw`Parallel-hole collimator, 140 keV photons (lead $\mu\approx26\ \mathrm{cm^{-1}}$ from the chapter-2 attenuation model), point source in air, no septal penetration or scatter in the body. The formulae are the standard textbook approximations as recalled by the author and the value $K\approx0.24$ is quoted from patent literature for hexagonal holes (some texts give a slightly different constant); the three preset designs and the intrinsic resolution $R_i=3.5$ mm are illustrative round numbers, not any manufacturer's specification.`,
-      verify: true,
+      refs: ['Weinmann, Hruska & O’Connor (2009), General collimator theory, Eqs.1–6; Collimator near-field considerations'],
+      links: { original: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC2736746/', doi: 'https://doi.org/10.1118/1.3077119' },
+      scope: String.raw`Geometry-only parallel-hole approximation, point source in air, regular hexagonal holes, unit detector efficiency, no body scatter or computed septal-penetration contribution. Lead attenuation is the paper’s Table I input $\mu=26.32\ \mathrm{cm^{-1}}$ at 140 keV, not a new measurement. Near-field controls remain available but their formal many-hole estimates are marked outside that regime. The three presets and $R_i=3.5$ mm are illustrative, not manufacturer specifications. The shortest straight septal-path screen uses transmission $e^{-\mu tL/(2d+t)}$; exceeding 5% marks another limitation, not an implemented correction.`,
+      verify: false,
       viz(v) {
-        const muPb = mu(MATS.lead, 140) / 10; // per mm
-        const K = 0.24, Ri = 3.5;
+        const muPb = 26.32 / 10; // per mm; Weinmann et al. (2009), Table I
+        const Ri = 3.5;
         const A = v.stage({ x: [-40, 40], y: [-45, 125], equal: true, axes: false, height: 400, title: 'Collimator and point source', minWidth: 280 });
         const B = v.stage({ x: [0, 200], y: [0, 40], axes: 'box', gutter: true, height: 400, xlabel: 'source distance $z$ (mm)', ylabel: 'FWHM (mm)', title: 'Resolution vs distance', minWidth: 250 });
         const C = v.stage({ x: [2, 40], y: [1e-5, 3e-3], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, xlabel: 'resolution $R_c$ at $z$ (mm)', ylabel: 'sensitivity $g$', title: 'Sensitivity vs resolution', minWidth: 250 });
@@ -163,43 +165,49 @@ of the emitted photons passes, nearly independent of $z$ ($K\approx0.24$ for hex
         const L = v.slider('hole length $L$ (mm)', 12, 60, PRE.gp[1], { step: 1, onChange: () => { pre.value = 'c'; } });
         const t = v.slider('septal thickness $t$ (mm)', 0.1, 1.5, PRE.gp[2], { step: 0.05, onChange: () => { pre.value = 'c'; } });
         const zs = v.slider('source distance $z$ (mm)', 5, 200, 80, { step: 1 });
-        const hz = A.handle(0, 80, { color: 'gold', r: 9, constrain: (x, y) => [0, clamp(y, 5, 125)] });
+        const hz = A.handle(0, 80, { color: 'gold', r: 9, constrain: (x, y) => [0, clamp(y, 5, 200)] });
         hz.onDrag = () => { zs.set(hz.y); };
-        const gf = (dd, LL, tt) => { const Le = LL - 2 / muPb; return K * K * (dd / Le) ** 2 * (dd / (dd + tt)) ** 2; };
-        const Rc = (dd, LL, z) => { const Le = LL - 2 / muPb; return (dd * (Le + z)) / Le; };
+        const gf = (dd, LL, tt) => collimatorAudit(dd, LL, tt, 0, muPb, Ri).efficiency;
+        const Rc = (dd, LL, z) => collimatorAudit(dd, LL, 0, z, muPb, Ri).resolution;
         let info = {};
         v.render(() => {
           const dd = d.value, LL = L.value, tt = t.value, z = zs.value, Le = LL - 2 / muPb, reach = (z * dd) / Le;
-          hz.set(0, Math.min(z, 125));
+          const model = collimatorAudit(dd, LL, tt, z, muPb, Ri);
+          hz.set(0, z);
+          const halfWidth = Math.max(40, reach + dd / 2 + 10);
+          A.setView([-halfWidth, halfWidth], [-Math.max(45, LL + 12), Math.max(125, z + 18)]);
           // geometry
-          const pitch = dd + tt, nh = Math.floor(40 / pitch);
+          const pitch = dd + tt, nh = Math.floor(halfWidth / pitch) - 1;
           for (let k = -nh; k <= nh; k++) {
             const xc = k * pitch, see = Math.abs(xc) - dd / 2 <= reach;
             if (see) A.rect(xc - dd / 2, -LL, xc + dd / 2, 0, { fill: 'green', fillAlpha: 0.5, stroke: false });
             A.rect(xc + dd / 2, -LL, xc + dd / 2 + tt, 0, { fill: 'muted', fillAlpha: 0.9, stroke: false });
           }
-          A.rect(-40, -LL - 6, 40, -LL, { fill: 'accent', fillAlpha: 0.35, stroke: false });
+          A.rect(-halfWidth, -LL - 6, halfWidth, -LL, { fill: 'accent', fillAlpha: 0.35, stroke: false });
           A.text('crystal', -38, -LL - 3, { size: 10, align: 'left', baseline: 'middle' });
-          A.segment([0, Math.min(z, 125)], [-reach - dd / 2, 0], { color: 'orange', width: 1.2 });
-          A.segment([0, Math.min(z, 125)], [reach + dd / 2, 0], { color: 'orange', width: 1.2 });
-          if (z > 125) A.text(`source at ${z} mm ↑`, 0, 122, { size: 11, color: 'gold', align: 'center' });
-          else A.dot(0, z, { r: 7, color: 'gold' });
+          A.segment([0, z], [-reach - dd / 2, 0], { color: 'orange', width: 1.2 });
+          A.segment([0, z], [reach + dd / 2, 0], { color: 'orange', width: 1.2 });
+          A.dot(0, z, { r: 7, color: 'gold' });
           // resolution curves
+          B.setView([0, Math.max(200, model.minimumDistance * 1.05)], [0, Math.max(10, Math.hypot(Rc(dd, LL, Math.max(200, model.minimumDistance * 1.05)), Ri) * 1.1)]);
           B.fn((x) => Rc(dd, LL, x), { color: 'accent', width: 2.4, domain: [0, 200] });
           B.fn((x) => Math.hypot(Rc(dd, LL, x), Ri), { color: 'green', width: 2.4, domain: [0, 200] });
+          B.vline(model.minimumDistance, { color: 'red', dash: true, width: 1.3 });
           B.hline(Ri, { color: 'muted', dash: true });
           B.vline(z, { color: 'gold', dash: true });
           B.dot(z, Rc(dd, LL, z), { r: 5, color: 'accent' }); B.dot(z, Math.hypot(Rc(dd, LL, z), Ri), { r: 5, color: 'green' });
           // trade-off
-          const pts = []; for (let q = 0; q <= 60; q++) { const dq = 0.8 + (5.5 * q) / 60; pts.push([Rc(dq, LL, z), gf(dq, LL, tt)]); }
+          const pts = []; for (let q = 0; q <= 60; q++) { const dq = 0.8 + (5.2 * q) / 60; pts.push([Rc(dq, LL, z), gf(dq, LL, tt)]); }
+          const marks = [...Object.values(PRE).map(([a, b, c]) => [Rc(a, b, z), gf(a, b, c)]), [model.resolution, model.efficiency]];
+          const all = [...pts, ...marks];
+          C.setView([Math.min(...all.map(p => p[0])) / 1.2, Math.max(...all.map(p => p[0])) * 1.2], [Math.min(...all.map(p => p[1])) / 1.4, Math.max(...all.map(p => p[1])) * 1.4]);
           C.path(pts, { color: 'accent', width: 2.2 });
           for (const key of ['hr', 'gp', 'hs']) { const [a, b, c] = PRE[key]; C.dot(Rc(a, b, z), gf(a, b, c), { r: 4, color: 'muted', label: key.toUpperCase(), labelPos: 'se' }); }
           C.dot(Rc(dd, LL, z), gf(dd, LL, tt), { r: 8, color: 'gold' });
-          const tmin = (6 * dd) / (muPb * LL - 3);
-          info = { rc: Rc(dd, LL, z), rs: Math.hypot(Rc(dd, LL, z), Ri), g: gf(dd, LL, tt), Le, nh: Math.round((2 * reach) / pitch + 1), tmin, tt };
+          info = model;
         });
-        v.legend([['accent', 'collimator $R_c$'], ['green', 'system $R_s$ with $R_i=3.5$ mm'], ['gold', 'this source']]);
-        v.readout(() => `$L_e=${fx(info.Le, 1)}$ mm. At $z=${zs.value}$ mm: $R_c=${fx(info.rc, 1)}$ mm, $R_s=${fx(info.rs, 1)}$ mm, about ${info.nh} holes see the source. Sensitivity $g=${fx(1e4 * info.g, 2)}\\times10^{-4}$ (one photon in ${fx(1 / info.g, 0)}).\nOn the curve $g\\propto R_c^{2}$: doubling $R_c$ multiplies $g$ by ${fx(gf(2 * d.value, L.value, t.value) / gf(d.value, L.value, t.value), 1)} here.  Rule-of-thumb septal thickness for ≤5% penetration, $6d/(\\mu L-3)$, is $${fx(info.tmin, 2)}$ mm${info.tt < info.tmin ? ' — **your septa are thinner: expect septal penetration**' : ' — your septa satisfy it'}.`);
+        v.legend([['accent', 'formal collimator $R_c$'], ['green', 'formal system $R_s$, $R_i=3.5$ mm'], ['red', 'near-field threshold $z_{\\min}$'], ['gold', 'selected geometry']]);
+        v.readout(() => `$L_e=${fx(info.effective, 2)}$ mm, model lead attenuation ${fx(muPb, 3)} mm⁻¹. At $z=${zs.value}$ mm: formal $R_c=${fx(info.resolution, 2)}$ mm and $R_s=${fx(info.system, 2)}$ mm; geometric $g=${fx(1e4 * info.efficiency, 2)}\\times10^{-4}$. ${info.manyHole ? 'The source is beyond' : '**Outside the many-hole regime:** source is inside'} $z_{\\min}=${fx(info.minimumDistance, 1)}$ mm.\nAt fixed septa, the local log slope is ${fx(info.logSlope, 3)}, and doubling diameter (hence formal $R_c$) multiplies $g$ by ${fx(info.doubledEfficiencyRatio, 2)}, not exactly 4. Shortest-path septal transmission is ${fx(100 * info.septalTransmission, 2)}%; the 5% screen needs $t\\ge${fx(info.minimumSeptum, 3)}$ mm. ${info.septalTransmission > .05 ? '**Penetration exceeds the screen; its added counts and blur are not modelled.**' : 'This geometric screen does not replace a penetration simulation.'}`);
       },
     },
   ],

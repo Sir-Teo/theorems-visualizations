@@ -1,4 +1,5 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part d: 4.16–4.20)
+import { oncoticPressure, frozenFiltration } from './physio-source-audit-starling.js';
 import { stenosisFlow, BERNOULLI_MMHG } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, PA_PER_MMHG } from './ch04.shared.js';
 
@@ -224,42 +225,44 @@ export default {
       name: 'Absorption of Fluids from the Connective Tissue Spaces',
       paper: { authors: 'Ernest H. Starling', year: 1896, title: 'On the Absorption of Fluids from the Connective Tissue Spaces', venue: 'Journal of Physiology 19 (4): 312–326', doi: '10.1113/jphysiol.1896.sp000596' },
       introduces: ['physio-4.12'],
-      statement: String.raw`Starling asked why the blood vessels absorb the fluid of the tissue spaces, and answered it with a balance of forces across the capillary wall: the hydrostatic pressure of the blood in the capillaries tends to drive fluid and its dissolved crystalloids out, and is opposed by the osmotic pressure of the proteins of the blood plasma, which the wall holds back and which draws fluid in. According to the commonly quoted summary, he concluded that the absorption of isotonic salt solution from the extravascular space is determined by the osmotic pressure of the serum proteins, and that fluid passes out of the vessel where the capillary pressure exceeds it and into the vessel where it falls below it. The balance became the "Starling principle" (physio-4.12).`,
-      idea: String.raw`Before this paper the movement of fluid out of the capillaries had been put down to filtration and to secretion by the vessel wall; the knowledge that proteins exert an osmotic pressure came from physical chemistry (van 't Hoff, physio-1.4). Starling's step was to put the two together: the wall behaves as a membrane that is permeable to water and salts but not to proteins, so that capillary pressure is a force opposed by the oncotic pressure of the plasma, and the difference decides the direction. He supported it with experiments on the exchange of fluid in the limb of the dog, perfused with salt solution or with serum (as summarised in secondary accounts; I have not read the paper's own tables). The reconstruction here is **a model**, not his data: it plays the experiment with the modern form of his law.`,
-      caption: String.raw`Perfuse a limb with a fluid whose **protein concentration** you choose (0 g/dL is a salt solution, about 7 g/dL is plasma), at a capillary pressure you set by dragging the handle. The **left** panel is the net flux against capillary pressure: a line crossing zero at the pressure that just balances the proteins' osmotic pull. The **right** panel integrates the flux: the weight a limb of 1 kg gains in an hour. With salt solution it swells even at low pressure; with plasma it holds its fluid until the pressure exceeds about 25 mmHg. The osmotic pressure of the protein solution is from the empirical Landis–Pappenheimer polynomial.`,
-      scope: String.raw`A model calculation, not the paper's data. It uses $J=K_f[(P_c-P_i)-\sigma(\pi(c)-\pi_i)]$ with $\pi(c)=2.1c+0.16c^2+0.009c^3$ mmHg ($c$ in g/dL; the polynomial is quoted from memory of Landis and Pappenheimer, 1963, and flagged for verification), $K_f=0.01$ mL/min/mmHg per 100 g (a typical modern value for skeletal muscle), no feedback from tissue swelling, and $\sigma=1$. In real tissue the interstitial pressure and protein change as fluid accumulates (physio-4.13), so only the first minutes are meaningful.`,
+      statement: String.raw`In his 1896 paper, Starling investigated whether blood vessels could absorb isotonic fluid from tissue spaces. In paired isolated dog-limb perfusions with defibrinated blood, the blood passing through a limb made oedematous with salt solution became more dilute than blood passing through the control limb. He also measured serum-protein osmotic pressure using membrane osmometers. He argued that a difference in protein osmotic pressure could oppose capillary hydrostatic pressure and account for absorption of salt-rich tissue fluid. The paper explicitly distinguishes this from protein-rich tissue fluid, whose removal he associated mainly with lymphatics.`,
+      idea: String.raw`The argument concerns **selective permeability**: salts that readily cross a membrane do not sustain the same osmotic difference as retained proteins. The paper's limb experiments (pp. 314–316) and osmometer experiments (pp. 321–324) were distinct pieces of evidence. The panel below is a later classical flux model inspired by this force balance, not a reconstruction of his apparatus, his measured curves or a modern glycocalyx model. It keeps both compartments' pressures and composition fixed while the reader varies perfusate protein.`,
+      caption: String.raw`Choose the model perfusate's **protein concentration**, drag the **capillary-pressure** handle and choose a duration. The left panel plots signed classical filtration: positive is outward, negative is absorption. The right panel multiplies that constant flux by time and by ten 100-g tissue units to give the signed fluid-mass change for a nominal 1-kg limb (using 1 mL ≈ 1 g). The zero-flux pressure is computed from the chosen oncotic relation. The marker and full curves remain visible even when the model predicts a large gain or loss.`,
+      scope: String.raw`Frozen-compartment illustration: $J=K_f[(P_c-P_i)-\pi(c)]$, with chosen $K_f=0.01$ mL/min/mmHg per 100 g, $P_i=-3$ mmHg and zero interstitial oncotic pressure. The polynomial $\pi(c)=2.1c+0.16c^2+0.009c^3$ mmHg for $c$ in g/dL is the Landis–Pappenheimer relation as reproduced in Weinstein's 2017 computational kidney model, equation (46); the 1963 original fit was not independently inspected and this is not a new validation of it. The model omits changing tissue/plasma volume, protein redistribution, lymph flow and glycocalyx effects, so long-duration straight lines are mathematical extrapolations. The parameters are not asserted skeletal-muscle measurements.`,
       deps: ['physio-1.4'],
       see: ['physio-4.12', 'physio-4.13'],
-      refs: [],
+      refs: ['Starling (1896), J Physiol 19:312–326, pp. 314–316, 321–325; DOI 10.1113/jphysiol.1896.sp000596', 'Weinstein (2017), A mathematical model of the rat kidney: K+-induced natriuresis, Model Calculations, equation (46); PMCID PMC6148314'],
       tags: ['Starling', 'oncotic pressure', 'history'],
       credit: 'E. H. Starling, 1896',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1896.sp000596' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sC = v.slider('perfusate protein', 0, 10, 7, { step: 0.5, fmt: (x) => `${x} g/dL` });
         const sT = v.slider('duration', 5, 120, 60, { step: 5, fmt: (x) => `${x} min` });
         const KF = 0.01; // mL/min/mmHg per 100 g
-        const pi = (c) => 2.1 * c + 0.16 * c * c + 0.009 * c ** 3;
-        const a = v.stage({ x: [0, 50], y: [-1, 1], height: 320, axes: 'box', gutter: true, xlabel: 'capillary pressure (mmHg)', ylabel: 'net filtration (mL/min per 100 g)', weight: 1.1 });
-        const b = v.stage({ x: [0, 50], y: [-100, 100], height: 320, axes: 'box', gutter: true, xlabel: 'capillary pressure (mmHg)', ylabel: 'weight change of 1 kg limb (g)', weight: 1 });
+        const pi = oncoticPressure;
+        const a = v.stage({ x: [-2, 52], y: [-1, 1], height: 320, axes: 'box', gutter: true, xlabel: 'capillary pressure (mmHg)', ylabel: 'net filtration (mL/min per 100 g)', weight: 1.1 });
+        const b = v.stage({ x: [-2, 52], y: [-100, 100], height: 320, axes: 'box', gutter: true, xlabel: 'capillary pressure (mmHg)', ylabel: 'weight change of 1 kg limb (g)', weight: 1 });
         const h = a.handle(30, 0, { color: 'gold', label: 'Pc', constrain: (x) => [clamp(x, 0, 50), 0] });
-        const PI = -3, PII = 8; // mmHg
+        const PI = -3; // chosen interstitial pressure in mmHg
         let o = null;
         v.render(() => {
           const T = sT.value, Pc = h.x;
           const flux = (P, c) => KF * ((P - PI) - (pi(c) - 0));
           const Pstar = (c) => pi(c) + PI;
-          for (const [c, col, nm] of [[0, 'red', 'salt solution'], [3.5, 'orange', '3.5 g/dL'], [7, 'green', 'plasma, 7 g/dL']]) {
+          const extrema = [0, 3.5, 7, sC.value].flatMap(c => [0, 50].map(p => 10 * flux(p, c) * T));
+          b.setView([-2, 52], [Math.min(-1, ...extrema) * 1.2, Math.max(1, ...extrema) * 1.2]);
+          for (const [c, col, nm, labelX] of [[0, 'red', 'salt solution', 2], [3.5, 'orange', '3.5 g/dL', 20], [7, 'green', '7 g/dL model', 36]]) {
             a.fn((P) => flux(P, c), { color: col, width: 1.6, alpha: 0.55, domain: [0, 50] });
             b.fn((P) => 10 * flux(P, c) * T, { color: col, width: 1.6, alpha: 0.55, domain: [0, 50] });
-            a.text(nm, 1, flux(1, c) + 0.03, { size: 10, color: col, align: 'left', baseline: 'bottom' });
+            a.text(nm, labelX, flux(labelX, c) + 0.03, { size: 10, color: col, align: 'left', baseline: 'bottom' });
           }
           const c = sC.value;
           a.fn((P) => flux(P, c), { color: 'accent', width: 3, domain: [0, 50] }); a.hline(0, { color: 'muted', width: 1 });
           b.fn((P) => 10 * flux(P, c) * T, { color: 'accent', width: 3, domain: [0, 50] }); b.hline(0, { color: 'muted', width: 1 });
-          h.set(Pc, flux(Pc, c)); a.vline(Pstar(c), { color: 'green', dash: [4, 4] });
-          const gain = 10 * flux(Pc, c) * T; b.dot(Pc, clamp(gain, -100, 100), { r: 7, color: 'gold' });
-          o = { c, Pc, pi: pi(c), Pstar: Pstar(c), f: flux(Pc, c), gain, T };
+          h.set(Pc, flux(Pc, c)); if (Pstar(c) >= 0 && Pstar(c) <= 50) a.vline(Pstar(c), { color: 'green', dash: [4, 4] });
+          const gain = 10 * flux(Pc, c) * T; b.dot(Pc, gain, { r: 7, color: 'gold' });
+          o = { ...frozenFiltration(Pc, c, T), c, Pc, pi: pi(c), Pstar: Pstar(c), f: flux(Pc, c), gain, T };
         });
         v.readout(() => `${v.fix(o.c, 1)} g/dL protein → osmotic pressure ${v.fix(o.pi, 1)} mmHg; no net movement at capillary pressure ≈ ${v.fix(o.Pstar, 1)} mmHg (hydrostatic = oncotic, with the interstitial pressure of −3 mmHg)\nat ${v.fix(o.Pc, 0)} mmHg: ${o.f >= 0 ? 'filtration' : 'absorption'} of ${v.fix(Math.abs(o.f), 3)} mL/min per 100 g → ${o.gain >= 0 ? '+' : '−'}${v.fix(Math.abs(o.gain), 0)} g of limb weight in ${o.T} min`);
       },
