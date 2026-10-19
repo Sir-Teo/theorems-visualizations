@@ -6,17 +6,17 @@ import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionF
 const app = document.getElementById('app');
 document.querySelector('.skip-link').addEventListener('click', (e) => { e.preventDefault(); app.focus(); app.scrollIntoView(); });
 const SITE = 'Ideas, Visualized';
-let G = null;           // atlas state built from data/index.json
+let G = null;           // current atlas state; home.json is upgraded on demand to the complete index
+let homeCatalog = null, catalogFull = false, catalogP = null, homeP = null, searchP = null, searchReady = false;
 let routeVersion = 0;
 const viewIsCurrent = () => { const version = routeVersion; return () => version === routeVersion; };
 let cleanup = null;     // teardown for the current page
 const modCache = new Map();
 
 // ------------------------------------------------------------ data
-async function loadCatalog() {
-  const res = await fetch('data/index.json', { cache: 'no-cache' });
-  const cat = await res.json();
-  const byId = new Map(cat.items.map((it) => [it.id, it]));
+function installCatalog(cat) {
+  const planned = cat.planned || [];
+  const byId = new Map([...cat.items, ...planned].map((it) => [it.id, it]));
   const children = new Map(cat.items.map((it) => [it.id, []]));
   for (const it of cat.items) for (const d of it.deps) children.get(d)?.push(it.id);
   const colById = new Map(cat.collections.map((C) => [C.id, C]));
@@ -24,16 +24,33 @@ async function loadCatalog() {
   const fieldById = new Map(cat.fields.map((F) => [F.id, F]));
   // cross-listings: a chapter may list another collection's idea under its own number
   const alias = new Map(cat.collections.flatMap((C) => C.chapters.flatMap((Ch) => (Ch.cross || []).map(([num, to]) => [`${C.id}-${num}`, to]))));
-  G = { ...cat, planned: [], byId, children, colById, colIdx, fieldById, alias };
+  G = { ...cat, planned, byId, children, colById, colIdx, fieldById, alias };
   indexGraph();
   G.edgeCount = cat.items.reduce((s, it) => s + it.deps.length, 0);
   G.live = cat.collections.filter((C) => C.count);
   setAtlas(G);
   buildSearch();
+}
+async function fetchJSON(path) {
+  const res = await fetch(path, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`Could not load ${path} (${res.status})`);
+  return res.json();
+}
+function ensureHome() {
+  if (homeCatalog) return Promise.resolve(homeCatalog);
+  if (!homeP) homeP = fetchJSON('data/home.json').then(cat => (homeCatalog = cat)).catch(error => { homeP = null; throw error; });
+  return homeP;
+}
+function ensureCatalog() {
+  if (catalogFull) return Promise.resolve();
+  if (!catalogP) catalogP = fetchJSON('data/index.json').then(cat => { installCatalog(cat); catalogFull = true; }).catch(error => { catalogP = null; throw error; });
+  return catalogP;
+}
+async function loadCatalog() {
+  const raw = location.hash.replace(/^#/, '') || '/';
+  if (raw === '/' || raw === 'fields' || raw.startsWith('/?')) { const home = await ensureHome(); if (!catalogFull) installCatalog(home); }
+  else await ensureCatalog();
   buildNav();
-  // background: planned items (for the map, chapter pages, lineages) and statements (for search)
-  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1200));
-  idle(() => { ensurePlanned().catch(() => {}); Promise.all(G.live.map((C) => loadShard(C.id))).then(buildSearch).catch(() => {}); });
 }
 /** order and reverse edges over written + planned items */
 function indexGraph() {
@@ -48,28 +65,43 @@ function indexGraph() {
 let plannedP = null;
 /** Planned (not yet written) items live in data/planned.json and are merged into the graph on demand. */
 function ensurePlanned() {
-  if (!plannedP) plannedP = fetch('data/planned.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : { kinds: [], cols: {} })).then((P) => {
+  if (!plannedP) plannedP = ensureCatalog().then(() => fetchJSON('data/planned.json')).then((P) => {
     const list = [];
     for (const C of G.collections) for (const [num, c, k, name, deps, x, y, pa] of P.cols[C.id] || []) list.push({ id: `${C.id}-${num}`, col: C.id, c, num, kind: P.kinds[k], name, deps, x, y, planned: true, ...(pa ? { yr: pa.y, au: pa.a, intro: pa.i } : {}) });
     G.planned = list;
     for (const it of list) G.byId.set(it.id, it);
+    // A collection page can load its details before the planned graph is requested.
+    for (const [col, det] of shardData) applyShard(col, det);
     indexGraph();
   }).catch((e) => { plannedP = null; throw e; });
   return plannedP;
 }
 const shards = new Map();
+const shardData = new Map();
+function applyShard(col, det) {
+  const { _ch, ...rest } = det;
+  for (const [n, sum] of Object.entries(_ch || {})) { const Ch = chapterOf(col, +n); if (Ch) Ch.summary = sum; }
+  for (const [id, d] of Object.entries(rest)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
+}
 /** Per-collection details (statements, refs, …) are lazy-loaded from data/col/<id>.json. */
 function loadShard(col) {
   if (!shards.has(col)) {
-    shards.set(col, fetch(`data/col/${col}.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).then((det) => {
-      const { _ch, ...rest } = det;
-      for (const [n, sum] of Object.entries(_ch || {})) { const Ch = chapterOf(col, +n); if (Ch) Ch.summary = sum; }
-      for (const [id, d] of Object.entries(rest)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
+    shards.set(col, fetchJSON(`data/col/${col}.json`).then((det) => {
+      shardData.set(col, det);
+      applyShard(col, det);
     }).catch(() => { shards.delete(col); }));
   }
   return shards.get(col);
 }
 const loadShards = (cols) => Promise.all([...new Set(cols)].map(loadShard));
+/** Full statement/credit search is requested by an actual query, never by home-page idle work. */
+function ensureSearch() {
+  if (!searchP) searchP = ensurePlanned().then(() => loadShards(G.live.map(C => C.id))).then(() => {
+    if (G.live.some(C => !shardData.has(C.id))) throw new Error('Search details could not load');
+    buildSearch(); searchReady = true;
+  }).catch(error => { searchP = null; throw error; });
+  return searchP;
+}
 const chapterOf = (col, c) => G.colById.get(col)?.chapters.find((C) => C.n === c);
 const chapterLabel = (col, c) => G.colById.get(col)?.chapterLabels?.[c] || `Chapter ${c}`;
 async function loadModule(file) {
@@ -91,7 +123,6 @@ const go = (hash) => { location.hash = hash; };
 const ICON_HAND = '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.8-2.4L4.2 15a1.6 1.6 0 0 1 2.5-2L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const fieldCols = (F) => G.collections.filter((C) => C.field === F.id);
-const isTheoremLike = (it) => it.kind !== 'Definition';
 function sourceLine(C) {
   const s = C.source || {};
   if (s.type === 'book') return `${escapeHTML(s.author)}, <i>${escapeHTML(s.title)}</i>, ${escapeHTML(s.edition || '')}${s.license ? ` · ${s.url ? `<a href="${escapeHTML(s.url)}" target="_blank" rel="noopener">${escapeHTML(s.license)}</a>` : escapeHTML(s.license)}` : ''}`;
@@ -119,17 +150,14 @@ function buildNav() {
 }
 
 // ------------------------------------------------------------ pages
-function pageHome() {
+async function pageHome() {
+  const isCurrent = viewIsCurrent(), H = await ensureHome();
+  if (!isCurrent()) return;
   setTitle(''); setNav(''); curCol = null;
-  const nViz = G.items.filter((it) => it.viz).length;
-  // the longest chain of reasoning in the whole graph
-  const deepest = G.items.reduce((a, b) => (b.depth > a.depth ? b : a), G.items[0]);
-  const chain = [];
-  for (let cur = deepest; cur; ) { chain.unshift(cur); cur = cur.deps.map((d) => G.byId.get(d)).sort((a, b) => b.depth - a.depth)[0]; }
-  const cited = (it) => (G.children.get(it.id) || []).length;
-  // workhorses: the most-cited results, at most four per collection so every shelf shows up
-  const perCol = new Map();
-  const pillars = G.items.filter(isTheoremLike).sort((a, b) => cited(b) - cited(a) || b.desc - a.desc).filter((it) => { const n = perCol.get(it.col) || 0; if (n >= 4) return false; perCol.set(it.col, n + 1); return true; }).slice(0, 12);
+  const homeById = new Map([...H.items, ...H.planned].map(it => [it.id, it]));
+  const nViz = H.home.vizCount, chain = H.home.chain.map(id => homeById.get(id));
+  const cited = it => H.home.cited[it.id] || 0;
+  const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const el = h(`<div>
     <section class="wrap hero">
@@ -149,9 +177,9 @@ function pageHome() {
         </div>
       </div>
       <div class="hero-stats">
-        <div><b>${G.items.length.toLocaleString('en')}</b><span>ideas</span></div>
+        <div><b>${H.home.itemCount.toLocaleString('en')}</b><span>ideas</span></div>
         <div><b>${nViz.toLocaleString('en')}</b><span>visualizations</span></div>
-        <div><b>${G.edgeCount.toLocaleString('en')}</b><span>connections</span></div>
+        <div><b>${H.home.edgeCount.toLocaleString('en')}</b><span>connections</span></div>
         <a href="#fields"><b>${G.live.length}</b><span>collections</span></a>
         <a href="#fields"><b>${G.fields.length}</b><span>fields</span></a>
       </div>
@@ -176,7 +204,7 @@ function pageHome() {
     </section>` : ''}
     ${(G.bridges || []).length ? `<section class="wrap">
       <div class="section-title"><h2>Bridges</h2><span class="muted">one idea followed across fields · <a href="#/bridges">all bridges →</a></span></div>
-      <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div>
+      <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B, homeById)} ${B.steps.length} steps</div></a>`).join('')}</div>
     </section>` : ''}
     <section class="wrap" id="fields">
       <div class="section-title"><h2>The fields</h2><span class="muted">${G.collections.length} collections across ${G.fields.length} fields · faded shelves are planned</span></div>
@@ -210,16 +238,16 @@ function pageHome() {
   fl.innerHTML = top.map((e) => `<li data-a="${e.from}" data-b="${e.to}"><span class="fl-t"><span style="color:var(--f-${e.from})">${escapeHTML(G.fieldById.get(e.from).short)}</span> → <span style="color:var(--f-${e.to})">${escapeHTML(G.fieldById.get(e.to).short)}</span></span><span class="fl-bar"><i style="width:${(100 * e.n) / maxN}%;background:var(--f-${e.from})"></i></span><span class="fl-n">${e.n}</span></li>`).join('');
   for (const li of fl.children) { li.addEventListener('pointerenter', () => chord?.focus(li.dataset.a, li.dataset.b)); li.addEventListener('pointerleave', () => chord?.focus(null)); }
   // landmark papers: a compact timeline and a few to open (interactive ones first)
-  if (G.paperCount) ensurePlanned().then(() => {
+  if (G.paperCount) {
     const host = el.querySelector('#home-ptl'); if (!host?.isConnected) return;
-    const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper');
+    const papers = [...H.items, ...H.planned].filter((it) => it.kind === 'Paper');
     const view = new TimelineView(host, G, { items: papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) });
     const prev = cleanup; cleanup = () => { prev?.(); view.destroy(); };
     const pick = [...papers.filter((p) => !p.planned).sort((a, b) => (a.yr ?? 0) - (b.yr ?? 0))];
     const famous = ['info-5.18', 'toc-7.13', 'rel-1.14', 'astro-10.19', 'bioinf-1.13', 'popgen-1.17', 'game-1.11', 'ode-10.15'];
-    for (const id of famous) { const p = G.byId.get(id); if (p && !pick.includes(p)) pick.push(p); }
+    for (const id of famous) { const p = homeById.get(id); if (p && !pick.includes(p)) pick.push(p); }
     el.querySelector('#home-papers').innerHTML = pick.slice(0, 6).map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('');
-  }).catch(() => {});
+  }
   const chainEl = el.querySelector('#chain');
   if (chainEl) chainEl.innerHTML = chain.map((it) => link(it)).join('<span class="faint" aria-hidden="true">→</span>');
   const grid = el.querySelector('#field-grid');
@@ -514,9 +542,16 @@ async function pageMap(params) {
   const host = document.createElement('div');
   app.replaceChildren(host);
   const q0 = params.get('q') || '';
-  const apply = (q, fit) => {
+  let queryVersion = 0;
+  const apply = async (q, fit) => {
+    const version = ++queryVersion;
     if (!q.trim()) { view.setHighlight(null); history.replaceState(null, '', '#/map'); return; }
-    if (!SIDX.some((e) => e.planned)) buildSearch();
+    try { await ensureSearch(); }
+    catch {
+      if (isCurrent() && version === queryVersion) host.querySelector('.map-q-n').textContent = 'Search could not load';
+      return;
+    }
+    if (!isCurrent() || version !== queryVersion) return;
     const R = runSearch(SIDX, q, G, { limit: 1e6 }); view.setHighlight(new Set(R.all.map((it) => it.id)), { fit });
     history.replaceState(null, '', `#/map?q=${encodeURIComponent(q)}`);
   };
@@ -572,8 +607,8 @@ async function pagePath(id) {
 }
 
 function bridgesOf(id) { return (G.bridges || []).filter((B) => B.steps.some((st) => st.id === id)); }
-function fieldDots(B) {
-  const seq = []; for (const st of B.steps) { const it = G.byId.get(st.id); const f = it && G.colById.get(it.col)?.field; if (f && seq[seq.length - 1] !== f) seq.push(f); }
+function fieldDots(B, lookup = G.byId) {
+  const seq = []; for (const st of B.steps) { const it = lookup.get(st.id); const f = it && G.colById.get(it.col)?.field; if (f && seq[seq.length - 1] !== f) seq.push(f); }
   return `<span class="field-path">${seq.map((f) => `<span class="col-dot" style="--bc:var(--f-${f})" title="${escapeHTML(G.fieldById.get(f).title)}"></span>`).join('<span class="fp-sep"></span>')}</span>`;
 }
 function pageBridges() {
@@ -619,7 +654,7 @@ async function pageTimeline(params) {
   const q = params?.get('q') || '';
   const host = document.createElement('div'); app.replaceChildren(host);
   let hl = null;
-  if (q) { buildSearch(); const R = runSearch(SIDX, q, G, { limit: 1e6 }); hl = new Set(R.all.map((it) => it.id)); }
+  if (q) { await ensureSearch(); if (!isCurrent()) return; const R = runSearch(SIDX, q, G, { limit: 1e6 }); hl = new Set(R.all.map((it) => it.id)); }
   const view = new TimelineView(host, G, { items, highlight: hl, what: q ? `dated ideas · highlighting “${escapeHTML(q)}” (${hl.size})` : 'dated ideas and papers (hollow: planned)', onOpen: (id) => go(`#/t/${id}`) });
   cleanup = () => view.destroy();
 }
@@ -695,10 +730,12 @@ async function route(event) {
   const params = new URLSearchParams(qs || '');
   const parts = path.split('/').filter(Boolean);
   closeSearch();
+  app.replaceChildren(h('<div class="loading" role="status">Loading…</div>'));
   // old book routes
   if (parts[0] === 'book' && parts[1]) { location.replace(`#/c/${parts.slice(1).join('/')}`); return; }
   try {
-    if (!parts.length) pageHome();
+    if (parts.length) { await ensureCatalog(); if (version !== routeVersion) return; }
+    if (!parts.length) await pageHome();
     else if (parts[0] === 'f' && parts[1]) pageField(parts[1]);
     else if (parts[0] === 'c' && parts.length === 2) await pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
@@ -766,12 +803,28 @@ function renderSearch() {
 }
 function closeSearch() { sBox.classList.remove('open'); sInput.setAttribute('aria-expanded', 'false'); sInput.removeAttribute('aria-activedescendant'); sHrefs = []; }
 function goSearch(href) { go(href); sInput.value = ''; sInput.blur(); closeSearch(); }
-sInput.addEventListener('input', () => { sSel = 0; renderSearch(); });
-sInput.addEventListener('focus', () => { ensurePlanned().then(() => { if (!SIDX.some((e) => e.planned)) buildSearch(); if (sInput.value.trim() && document.activeElement === sInput) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
+async function updateSearch() {
+  const query = sInput.value;
+  if (!query.trim()) { closeSearch(); return; }
+  if (searchReady) { renderSearch(); return; }
+  sHrefs = []; sSel = 0;
+  sInput.setAttribute('aria-expanded', 'true'); sInput.removeAttribute('aria-activedescendant');
+  sBox.innerHTML = '<div class="sr-item"><span></span><span class="faint">Searching the atlas…</span></div>';
+  sBox.classList.add('open');
+  try {
+    await ensureSearch();
+    if (sInput.value === query && document.activeElement === sInput) renderSearch();
+  } catch {
+    if (sInput.value === query && document.activeElement === sInput) sBox.innerHTML = '<div class="sr-item"><span></span><span class="faint">Search could not load. Try again.</span></div>';
+  }
+}
+sInput.addEventListener('input', () => { sSel = 0; updateSearch(); });
+sInput.addEventListener('focus', updateSearch);
 sInput.addEventListener('keydown', (e) => {
+  if (!searchReady && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); return; }
   if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
   else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
-  else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel]; if (href) goSearch(href); }
+  else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel] || (sInput.value.trim() ? searchHref(sInput.value) : null); if (href) goSearch(href); }
   else if (e.key === 'Escape') { sInput.blur(); closeSearch(); }
 });
 sInput.addEventListener('blur', closeSearch);
@@ -782,10 +835,11 @@ window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.metaKey && !
 /** Full results page: facets, results, and the matches shown on the map and timeline. */
 async function pageSearch(params) {
   const isCurrent = viewIsCurrent();
-  await ensurePlanned().catch(() => {});
+  const q = params.get('q') || '';
+  if (q.trim()) await ensureSearch();
+  else await ensurePlanned();
   if (!isCurrent()) return;
   buildSearch();
-  const q = params.get('q') || '';
   setTitle(q ? `Search: ${q}` : 'Search'); setNav(''); curCol = null;
   const R = runSearch(SIDX, q, G, { limit: 100000 });
   const facet = (title, counts, key, label) => { const es = Object.entries(counts).filter(([, n]) => n).sort((a, b) => b[1] - a[1]); return es.length ? `<div class="facet"><div class="eyebrow">${title}</div>${es.map(([k, n]) => `<a class="facet-row" href="${searchHref(`${q} ${key}:${k}`.trim())}"${key === 'field' ? ` data-field="${k}"` : ''}><span>${key === 'field' ? `<span class="col-dot" style="--bc:var(--f-${k})"></span>` : ''}${escapeHTML(label(k))}</span><b>${n.toLocaleString('en')}</b></a>`).join('')}</div>` : ''; };

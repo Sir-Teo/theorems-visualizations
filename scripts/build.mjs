@@ -1,11 +1,14 @@
 // Build the atlas data from content/**:
 //   data/index.json      registry, chapters, light item records, graph statistics, map layout
+//   data/home.json       bounded home-page data, including all landmark papers and derived features
 //   data/col/<id>.json   per-collection detail (statements, refs, scope, …), lazy-loaded by the app
 //   data/atlas.css       collection and field colours (light + dark) as CSS custom properties
 //   node scripts/build.mjs [--strict] [--verbose]
 import { writeFile, mkdir, rm, rename } from 'node:fs/promises';
 import { join } from 'node:path';
+import { gzipSync } from 'node:zlib';
 import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
+import { makeHomeCatalog, HOME_JSON_BUDGET } from './home-catalog.mjs';
 
 const strict = process.argv.includes('--strict');
 const { fields, collections, chapters, items, planned, aliases, problems } = await loadAll();
@@ -273,11 +276,19 @@ const index = {
   fieldEdges: edgeList(fieldEdges),
   paperCount,
 };
+const homePlanned = ghosts.map(it => ({
+  id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps,
+  planned: true, yr: paperYear(it), au: it.paper?.authors ? shortAuthors(it.paper.authors) : undefined,
+  intro: it.introduces?.length ? it.introduces : undefined,
+}));
+const homeJSON = JSON.stringify(makeHomeCatalog(index, homePlanned)), homeGzipBytes = gzipSync(homeJSON).length;
+if (homeGzipBytes > HOME_JSON_BUDGET) throw new Error(`Home JSON exceeds its ${HOME_JSON_BUDGET}-byte gzip budget: ${homeGzipBytes} bytes`);
 // write into a private folder, then swap it in, so pages being served or checked never see a half-written data/
 const OUT = `data.tmp-${process.pid}`;
 await rm(join(ROOT, OUT), { recursive: true, force: true });
 await mkdir(join(ROOT, OUT, 'col'), { recursive: true });
 await writeFile(join(ROOT, OUT, 'index.json'), JSON.stringify(index));
+await writeFile(join(ROOT, OUT, 'home.json'), homeJSON);
 // planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y, paper?: {y, a, i}] grouped by collection
 const KIND_LIST = [...new Set(ghosts.map((it) => it.kind))];
 const plannedOut = { kinds: KIND_LIST, cols: {} };
@@ -303,4 +314,4 @@ const OLD = `data.old-${process.pid}`;
 await rename(join(ROOT, 'data'), join(ROOT, OLD)).catch(() => {});
 await rename(join(ROOT, OUT), join(ROOT, 'data'));
 await rm(join(ROOT, OLD), { recursive: true, force: true });
-console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);
+console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/home.json (${homeGzipBytes} bytes gzip), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);

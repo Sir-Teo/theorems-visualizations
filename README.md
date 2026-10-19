@@ -72,6 +72,11 @@ docs/syllabus.md              how to write a syllabus
 Adding a collection means adding a folder under `content/` with a `collection.js`; no code
 changes are needed.
 
+The home page loads `data/home.json`, a complete set of home summaries capped at 300 KB
+gzipped by the build. Other routes load the full index when needed. The first nonempty
+search loads written and planned records plus collection details; idle time and empty
+search focus do not download those details.
+
 ## Deploying
 
 `.github/workflows/pages.yml` rebuilds the data and publishes the site with GitHub Pages on

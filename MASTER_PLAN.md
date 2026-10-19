@@ -200,6 +200,10 @@ Chapter files rename the key `book:` to `collection:` in one mechanical commit; 
 - **Split the catalog.** `data/index.json` holds the registry, chapters and light item records
   (id, num, kind, name, deps, see, x/y, stats, flags). `data/col/<id>.json` holds statements and
   tags, lazy-loaded for tooltips, search and pages. Budget: index ≤ 300 KB gzipped at 10k items.
+- **Home transfer gate complete (2026-10-19).** `data/home.json` supplies all home summaries
+  in 112,823 gzip bytes, with a build-enforced 300,000-byte ceiling. Native HTTP checks cover
+  idle time, scrolling and empty search focus. The full index and search details load on demand;
+  the separate standalone index-size target remains open. See [budget audit](docs/verification/home-json-budget-followup.md).
 - Map layout generalised from the hard-coded `ROWS` (§4.4).
 - Collection colours come from the registry. Each field has a hue family; its collections are
   OKLCH shades within it, with light and dark variants, emitted as CSS custom properties.
