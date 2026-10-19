@@ -11,7 +11,8 @@
     "test:ui": "node --test tests/ui.test.mjs",
     "review:prepare": "node scripts/review-sample.mjs",
     "review:serve": "node scripts/serve.mjs",
-    "review:check": "node scripts/verify-human-review.mjs"
+    "review:check": "node scripts/verify-human-review.mjs",
+    "wave5:plan": "node scripts/plan-wave-five.mjs"
   },
   "devDependencies": {
     "playwright-core": "^1.64.0"
