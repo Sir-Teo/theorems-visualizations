@@ -34,7 +34,7 @@ try{
  for(const item of selected){
   errors=[];await page.goto(`http://localhost:${server.address().port}/tools/harness.html?file=${item.file}&id=${item.id}&wait=100`);await page.waitForFunction(()=>window.__done);
   if(item.id==='physio-4.14'){
-    const listen=page.getByRole('button',{name:'Listen (stethoscope)',exact:true});await listen.click();await page.waitForTimeout(120);
+    const listen=page.getByRole('button',{name:'Listen to synthetic noise',exact:true});await listen.click();await page.waitForTimeout(120);
     const silent=await page.evaluate(()=>window.__audioProbe.starts.length===0);
     if(!silent)throw new Error('Laminar stethoscope should be silent');
     await page.locator('input[type=range]').first().focus();await page.keyboard.press('Home');await page.waitForTimeout(120);

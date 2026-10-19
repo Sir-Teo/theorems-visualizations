@@ -1,4 +1,5 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part d: 4.16–4.20)
+import { stenosisFlow, BERNOULLI_MMHG } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, PA_PER_MMHG } from './ch04.shared.js';
 
 const DRAM_ML = 3.7; // an apothecary dram (3.89 g) of blood is about 3.7 mL (density 1.06 g/mL)
@@ -103,17 +104,17 @@ export default {
       num: '4.18',
       kind: 'Phenomenon',
       name: 'Bernoulli and the pressure drop across a stenosis',
-      statement: String.raw`When blood flows steadily through a narrowing, continuity (physio-4.10) makes the velocity rise from $v_1=Q/A_1$ in the normal vessel to $v_2=Q/A_2$ in the throat, and Bernoulli's theorem for the streamline gives a fall of pressure $\Delta P=\tfrac12\rho\,(v_2^2-v_1^2)$ at the throat. With $\rho=1060$ kg/m³ and velocities in m/s, $\Delta P\approx 4\,(v_2^2-v_1^2)$ mmHg, and when the upstream velocity is small, the **simplified Bernoulli equation** used with Doppler echocardiography is $\Delta P\approx 4v_2^2$. The pressure falls with the *square* of the velocity, so a tight stenosis (a small throat area) produces a large gradient: halving $A_2$ quadruples $\Delta P$. Part of the pressure is recovered where the vessel widens again, and part is lost to turbulence.`,
-      idea: String.raw`Bernoulli's theorem (fluid-2.9) says that along a streamline of a steady, inviscid flow the sum of the pressure and kinetic energy per unit volume, $P+\tfrac12\rho v^2$, is conserved. Where the flow speeds up through a narrowing, the pressure must fall by the increase in kinetic energy density; a pressure of 1 mmHg is 133 Pa, so a throat velocity of 1 m/s costs $\tfrac12\cdot1060\cdot1^2/133\approx4$ mmHg. The viscous loss in a short throat is small, which is why the inviscid formula works for the pressure *drop*; the downstream recovery depends on the shape of the expansion and on separation of the jet, both of which are not inviscid.`,
-      caption: String.raw`The vessel with its narrowing is on the **left** (arrow length is proportional to the velocity); the **right** panel plots pressure along it. Drag the **stenosis** from 0 to 90% of the area, raise the **flow** (exercise), and use the **recovery** slider to say how much of the pressure comes back downstream. The readout compares the exact Bernoulli drop with the clinical rule $4v^2$: they differ by the upstream term $4v_1^2$.`,
+      statement: String.raw`When blood flows steadily through a narrowing, continuity (physio-4.10) makes the velocity rise from $v_1=Q/A_1$ in the normal vessel to $v_2=Q/A_2$ in the throat, and Bernoulli's theorem for the streamline gives a fall of pressure $\Delta P=\tfrac12\rho\,(v_2^2-v_1^2)$ at the throat. With $\rho=1060$ kg/m³ and velocities in m/s, $\Delta P\approx 4\,(v_2^2-v_1^2)$ mmHg, and when the upstream velocity is small, the **simplified Bernoulli equation** used with Doppler echocardiography is $\Delta P\approx 4v_2^2$. The pressure falls with the *square* of the velocity, so a tight stenosis (a small throat area) produces a large gradient: halving $A_2$ quadruples the throat kinetic-pressure term at fixed flow; the total drop also subtracts the unchanged upstream term. Part of the pressure is recovered where the vessel widens again, and part is lost to turbulence.`,
+      idea: String.raw`Bernoulli's theorem (fluid-2.9) says that along a streamline of a steady, inviscid flow the sum of the pressure and kinetic energy per unit volume, $P+\tfrac12\rho v^2$, is conserved. Where the flow speeds up through a narrowing, the pressure must fall by the increase in kinetic energy density; a pressure of 1 mmHg is 133 Pa, so a throat velocity of 1 m/s costs $\tfrac12\cdot1060\cdot1^2/133\approx4$ mmHg. Neglecting viscous and local-acceleration terms is an assumption, not a guarantee for every stenosis. The chosen downstream recovery fraction illustrates how incomplete recovery leaves a residual loss; it is not calculated from jet turbulence. Hatle and colleagues applied the simplified rule to peak jet velocity and discussed beam-angle and proximal-velocity limitations.`,
+      caption: String.raw`The vessel with its narrowing is on the **left** (arrow length scales with velocity up to a display cap); the **right** panel plots pressure along it. Drag the **stenosis** from 0 to 90% of the area, raise the **flow** (exercise), and use the **recovery** slider to say how much of the pressure comes back downstream. The readout compares the exact Bernoulli drop with the clinical rule $4v^2$, separating omission of the upstream term from rounding the coefficient to 4.`,
       scope: String.raw`Steady, inviscid, one-dimensional flow with an assumed pressure recovery; real stenoses are pulsatile, the throat can be longer than the "streamline" idealisation, and eccentric lesions and jets add losses. The simplified rule $4v_2^2$ is for the peak velocity in the jet, neglects the proximal velocity (a reasonable approximation only when $v_1\ll v_2$) and has known limits in the clinic; the picture is not for diagnosis.`,
       deps: ['fluid-2.9', 'physio-4.10'],
       see: ['physio-4.14'],
-      refs: ['Guyton–Hall'],
+      refs: ['Hatle, Angelsen & Tromsdal (1980), Br Heart J 43:284–292, pp. 284–285 equation (1), pp. 291–292 discussion; DOI 10.1136/hrt.43.3.284'],
       tags: ['Bernoulli', 'stenosis', 'Doppler'],
-      credit: 'L. Hatle et al., Doppler application of the Bernoulli equation, late 1970s',
+      credit: 'L. Hatle, B. A. Angelsen and A. Tromsdal, 1980 (cited Doppler study)',
       links: { doi: 'https://doi.org/10.1136/hrt.43.3.284' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sS = v.slider('stenosis (area reduction)', 0, 90, 75, { step: 1, fmt: (x) => `${x}%` });
         const sQ = v.slider('flow $Q$', 50, 500, 250, { step: 10, fmt: (x) => `${x} mL/s` });
@@ -123,7 +124,8 @@ export default {
         const R1 = 1.2; // cm
         let o = null;
         v.render(() => {
-          const A1 = Math.PI * R1 * R1, A2 = A1 * (1 - sS.value / 100), Q = sQ.value, rec = sRec.value / 100;
+          const model = stenosisFlow(sS.value, sQ.value, sRec.value, R1);
+          const { A1, A2 } = model, Q = sQ.value, rec = sRec.value / 100;
           const shape = (x) => (x > 3.5 && x < 6.5 ? Math.cos(((x - 5) / 1.5) * (Math.PI / 2)) ** 2 : 0);
           const Aof = (x) => A1 - (A1 - A2) * shape(x), rof = (x) => Math.sqrt(Aof(x) / Math.PI);
           const vel = (x) => (Q / Aof(x)); // cm/s
@@ -142,11 +144,10 @@ export default {
           p.fn(Pof, { color: 'accent', width: 2.8, domain: [0, 10] });
           p.fn(Pin, { color: 'faint', width: 1.4, dash: [4, 4], domain: [0, 10] });
           p.hline(0, { color: 'muted', width: 1 }); p.dot(5, Pthr, { r: 6, color: 'orange' });
-          const dPex = -Pthr, d4 = 4 * vmax * vmax;
-          o = { v1: vel(0) / 100, v2: vmax, dPex, d4, dFinal: -Pof(10), A2 };
+          o = { ...model, dPex: -Pthr, d4: model.simplified, dFinal: -Pof(10) };
         });
         v.legend([['accent', 'pressure with recovery'], ['faint', 'inviscid (full recovery)', { dash: true }]]);
-        v.readout(() => `throat area ${v.fix(o.A2, 2)} cm²;  $v_2=${v.fix(o.v2, 2)}$ m/s → exact $\\Delta P=\\tfrac12\\rho(v_2^2-v_1^2)=${v.fix(o.dPex, 1)}$ mmHg;  clinical rule $4v_2^2=${v.fix(o.d4, 1)}$ mmHg (differs by $4v_1^2=${v.fix(4 * o.v1 * o.v1, 1)}$)\nresidual pressure loss after recovery: ${v.fix(o.dFinal, 1)} mmHg`);
+        v.readout(() => `throat area ${v.fix(o.A2, 2)} cm²; $v_1=${v.fix(o.v1, 2)}$, $v_2=${v.fix(o.v2, 2)}$ m/s → ideal $\\Delta P=${v.fix(o.dPex, 2)}$ mmHg (coefficient ${v.fix(BERNOULLI_MMHG, 4)})\nsimplified $4v_2^2=${v.fix(o.d4, 2)}$ mmHg = exact drop + omitted proximal term $4v_1^2=${v.fix(o.proximalRounded, 2)}$ + coefficient rounding ${v.fix(o.rounding, 2)} mmHg\nresidual loss for the chosen recovery fraction: ${v.fix(o.dFinal, 2)} mmHg`);
       },
     },
     // ------------------------------------------------------------------ 4.19

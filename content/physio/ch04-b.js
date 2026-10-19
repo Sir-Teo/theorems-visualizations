@@ -76,7 +76,7 @@ During diastole $Q=0$ and the pressure decays exponentially, $P(t)=P_{es}\,e^{-(
       refs: ['Keener–Sneyd, author manuscript §11.8.2, pp. 522–523, equation (11.161)', 'Westerhof, Lankhaar & Westerhof (2009), §§1–2, pp. 131–134'],
       tags: ['Windkessel', 'RC circuit'],
       links: { doi: 'https://doi.org/10.1007/s11517-008-0359-2' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sR = v.slider('peripheral resistance $R$', 0.4, 2, 1.05, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·s/mL` });
         const sC = v.slider('compliance $C$', 0.2, 8, 1.5, { log: true, sig: 2, fmt: (x) => `${v.fix(x, 2)} mL/mmHg` });
@@ -162,7 +162,7 @@ The direct term $Z_cQ$ gives a finite high-frequency pressure–flow response, u
       refs: ['Keener–Sneyd, author manuscript §11.8.3, p. 523, equations (11.162)–(11.166); thin-wall compliance derived here'],
       tags: ['waves', 'stiffness', 'reflection'],
       links: { source: 'https://www.math.utah.edu/~keener/books/control.pdf#page=523' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sE = v.slider('wall stiffness $E$', 0.2, 2.5, 1.8, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} MPa` });
         const sG = v.slider('reflection coefficient $\\Gamma$', 0, 1, 0.6, { step: 0.05 });

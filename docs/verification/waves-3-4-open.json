@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-18",
+  "date": "2026-10-19",
   "status": "in-progress",
   "scope": {
     "from": "d397552",
@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 270,
+  "remainingFlags": 265,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 15,
+    "physio": 10,
     "pharm": 9,
     "imaging": 6,
     "sig": 2,
@@ -230,36 +230,6 @@
       }
     },
     {
-      "id": "physio-4.7",
-      "file": "content/physio/ch04-b.js",
-      "name": "Two-element Windkessel model",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Keener\u2013Sneyd ch. 11"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1016/0022-2828(90)91459-K"
-      }
-    },
-    {
-      "id": "physio-4.9",
-      "file": "content/physio/ch04-b.js",
-      "name": "Pulse-wave velocity and wave reflection",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Keener\u2013Sneyd ch. 11"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1002/andp.18782411206"
-      }
-    },
-    {
       "id": "physio-4.13",
       "file": "content/physio/ch04-c.js",
       "name": "Oedema from unbalanced Starling forces",
@@ -271,36 +241,6 @@
         "Guyton\u2013Hall"
       ],
       "links": {}
-    },
-    {
-      "id": "physio-4.14",
-      "file": "content/physio/ch04-c.js",
-      "name": "Reynolds number, turbulence and bruits",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1098/rstl.1883.0029"
-      }
-    },
-    {
-      "id": "physio-4.15",
-      "file": "content/physio/ch04-c.js",
-      "name": "Womersley number and pulsatile flow",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Keener\u2013Sneyd ch. 11"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1113/jphysiol.1955.sp005276"
-      }
     },
     {
       "id": "physio-4.16",
@@ -330,21 +270,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1152/physrev.1955.35.1.123"
-      }
-    },
-    {
-      "id": "physio-4.18",
-      "file": "content/physio/ch04-d.js",
-      "name": "Bernoulli and the pressure drop across a stenosis",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1136/hrt.43.3.284"
       }
     },
     {
@@ -4865,7 +4790,12 @@
       "physio-4.10",
       "circ-4.14",
       "circ-4.16",
-      "imaging-3.17"
+      "imaging-3.17",
+      "physio-4.7",
+      "physio-4.9",
+      "physio-4.14",
+      "physio-4.15",
+      "physio-4.18"
     ]
   },
   "additionalFollowups": [
@@ -8480,6 +8410,36 @@
       "status": "resolved",
       "report": "docs/verification/imaging-cormack-followup.md",
       "note": "Complete original Cormack1963 read: corrected wrong later Lucite phantom to actual radial aluminium/alloy/oak specimen and original J(r), distinguishing measured/assumed coefficients and finite-beam intensity model. Six independent math and two native theme groups pass; root reran math and inspected final figures."
+    },
+    {
+      "id": "physio-4.7",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-dynamics-followup.md",
+      "note": "Primary Keener/Womersley source review, exact periodic pressure/pulse and independently checked Bessel solution; eight independent mathematical and eight native theme groups pass. Parent reran suites and inspected final screenshots."
+    },
+    {
+      "id": "physio-4.9",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-dynamics-followup.md",
+      "note": "Primary Keener/Womersley source review, exact periodic pressure/pulse and independently checked Bessel solution; eight independent mathematical and eight native theme groups pass. Parent reran suites and inspected final screenshots."
+    },
+    {
+      "id": "physio-4.14",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-flow-followup.md",
+      "note": "Primary Reynolds/Hatle source review; corrected dynamic-similarity, synthetic-sound and Bernoulli proximal/rounding claims; five independent mathematical and four native theme groups pass."
+    },
+    {
+      "id": "physio-4.15",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-dynamics-followup.md",
+      "note": "Primary Keener/Womersley source review, exact periodic pressure/pulse and independently checked Bessel solution; eight independent mathematical and eight native theme groups pass. Parent reran suites and inspected final screenshots."
+    },
+    {
+      "id": "physio-4.18",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-flow-followup.md",
+      "note": "Primary Reynolds/Hatle source review; corrected dynamic-similarity, synthetic-sound and Bernoulli proximal/rounding claims; five independent mathematical and four native theme groups pass."
     }
   ]
 }

@@ -1,4 +1,5 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part c: 4.11–4.15)
+import { reynolds, reynoldsLine } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, MU_BLOOD, priesRel, twoLayerRel, hnoise, womersleyU, womersleyCentre } from './ch04.shared.js';
 
 export default {
@@ -159,31 +160,31 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.14',
       kind: 'Concept',
       name: 'Reynolds number, turbulence and bruits',
-      statement: String.raw`The **Reynolds number** $\mathrm{Re}=\rho \bar u D/\mu$ compares inertial to viscous forces. Steady flow in a straight tube is laminar for $\mathrm{Re}$ below about 2000–2300 and turbulent well above that; in between it is unstable. In the body $\mathrm{Re}$ is large only in the aorta and big arteries and in narrowed or abnormal places (a stenosis, a high-output state), where the flow becomes turbulent. Turbulence makes the wall vibrate and is heard through the stethoscope as a **murmur** (in the heart) or a **bruit** (over a vessel); a lowered blood viscosity (anaemia) raises $\mathrm{Re}$ and can produce a flow murmur.`,
-      idea: String.raw`Dimensional analysis (the dynamic similarity of fluid-6.5) shows that the character of the flow depends on $\mathrm{Re}$ alone, not on the three variables separately: a thin fast jet and a wide slow vessel behave alike when $\mathrm{Re}$ agrees. Laminar flow keeps its parabolic profile (physio-4.2); beyond the critical value small disturbances grow, the profile flattens, momentum is exchanged across the stream, the wall shear and the pressure drop increase above the Poiseuille values, and the fluctuating pressure at the wall is what the ear picks up. The 2000 figure is an empirical number for steady flow in a smooth straight tube; pulsatile flow, curvature and a rough wall change it.`,
-      caption: String.raw`**Left:** the tube with dye particles (a schematic, not a flow simulation): in laminar flow they move on parallel paths with a parabolic speed profile, and above the critical Reynolds number they get a flat mean profile and random cross-stream motion. **Right:** a map of tube diameter against mean velocity with lines of constant $\mathrm{Re}$; drag the **handle** ("you") to choose a vessel, or look at the labelled points. Lower the **viscosity** (as in anaemia) to push the same vessel toward turbulence. The speaker button plays the noise your stethoscope would hear (silent when laminar).`,
-      scope: String.raw`The critical value (about 2000) is for steady flow in a long, straight, smooth tube; the pulsatile aorta can stay laminar in part of the cycle at a peak Re above that, and a stenotic jet becomes turbulent downstream of the narrowing. The animation is a cartoon of laminar vs turbulent flow, not a Navier–Stokes solution. The labelled vessel values are rounded orders of magnitude.`,
+      statement: String.raw`The **Reynolds number** $\mathrm{Re}=\rho\bar uD/\mu$ compares inertial and viscous scales for a Newtonian fluid. Raising speed or diameter raises this ratio; raising viscosity lowers it. Reynolds' pipe experiments linked the transition from straight dye streaks to eddying motion to this combination, and showed that the transition depends on inlet disturbances. A value near 2000 is a useful teaching reference for long straight pipes, **not a universal boundary for arteries**. A stenotic jet can produce unsteady fluctuations, but a Reynolds number by itself cannot predict an audible murmur or bruit.`,
+      idea: String.raw`Nondimensionalizing the steady incompressible momentum equation with length $D$ and speed $\bar u$ gives the viscous coefficient $1/\mathrm{Re}$. Equal Reynolds numbers support dynamic similarity only when geometry and boundary conditions also match; pulsatility adds further parameters such as Womersley number (physio-4.15). A smaller viscosity at fixed speed and diameter increases Re without proving that a particular vessel becomes turbulent. The particle cartoon uses a prescribed transition band and does not solve fluid equations or acoustic transmission.`,
+      caption: String.raw`**Left:** a schematic of parallel paths and a flatter, fluctuating pattern as the chosen transition reference is crossed. **Right:** a log map of diameter and mean speed; drag the gold handle and change viscosity to test $\mathrm{Re}=\rho\bar uD/\mu$. The labelled points are chosen examples at vessel-like scales, not measurements. The sound button plays synthetic pink noise above the selected reference; its sound and amplitude do not simulate a stethoscope recording.`,
+      scope: String.raw`The numerical Reynolds ratio is computed honestly; the classification band, vessel-scale points, density of 1060 kg/m³ and viscosity range are illustrative model inputs. The transition control is a teaching reference, not a validated clinical threshold. Arterial elasticity, non-Newtonian rheology, curvature, pulsatility and acoustic transmission are omitted. This panel cannot infer disease or absence of disease from sound or Re.`,
       deps: ['physio-4.2', 'fluid-6.5'],
       see: ['physio-4.18'],
-      refs: ['Guyton–Hall'],
+      refs: ['Reynolds (1883), pp. 937–943, §§4–6 and 11; pp. 946–947, pipe resistance experiments', 'Hatle, Angelsen & Tromsdal (1980), pp. 285 and 291–292 (observed jet-sound limitations)'],
       tags: ['Reynolds', 'turbulence', 'murmur'],
       credit: 'O. Reynolds, 1883',
       links: { doi: 'https://doi.org/10.1098/rstl.1883.0029' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sMu = v.slider('blood viscosity $\\mu$', 1.5, 6, 3.5, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mPa·s` });
-        const sCrit = v.slider('critical $\\mathrm{Re}$', 1500, 3000, 2000, { step: 50 });
+        const sCrit = v.slider('transition reference $\\mathrm{Re}$', 1500, 3000, 2000, { step: 50 });
         const snd = v.sound();
-        v.soundButton('Listen (stethoscope)', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
+        v.soundButton('Listen to synthetic noise', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
         const A = v.stage({ x: [0, 10], y: [-1.4, 1.4], height: 260, axes: false, weight: 1.1 });
-        const B = v.stage({ x: [0.005, 50], y: [1e-4, 10], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
+        const B = v.stage({ x: [0.004, 65], y: [5e-5, 20], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
         const h = B.handle(14, 0.4, { color: 'gold', label: 'you', labelPos: 'n', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
         const P = [
           { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.45 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.45 }, { n: 'capillary', D: 0.008, u: 0.0004 },
           { n: 'stenotic jet', D: 4, u: 4 },
         ];
         const cur = { Re: 0 };
-        const reOf = (D, u, mu) => (RHO_BLOOD * u * (D * 1e-3)) / (mu * 1e-3);
+        const reOf = reynolds;
         const prs = Array.from({ length: 70 }, (_, k) => ({ y: ((k * 0.6180339) % 1) * 2 - 1, x: (k * 0.4142135) % 1, ph: k * 2.399 }));
         v.animate((t) => {
           const mu = sMu.value, Rec = sCrit.value;
@@ -199,19 +200,23 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
             const x = (((p.x * 10 + t * spd * 3 * sp) % 10) + 10) % 10;
             const wob = turb * 0.45 * (hnoise(Math.floor(t * 7 + p.ph) + p.ph, 1) * (1 - 0.5 * Math.abs(p.y)));
             const y = clamp(p.y * 0.92 + wob * Math.sin(t * 9 + p.ph * 3), -0.95, 0.95);
-            A.dot(x, y, { r: 3, color: turb > 0.5 ? 'orange' : 'accent' });
+            A.dot(.12 + .976 * x, y, { r: 3, color: turb > 0.5 ? 'orange' : 'accent' });
           }
           A.text(turb > 0.5 ? 'turbulent' : turb > 0 ? 'transitional' : 'laminar', 0.2, 1.22, { size: 13, color: turb > 0.5 ? 'orange' : turb > 0 ? 'gold' : 'accent', align: 'left', weight: 700 });
-          A.text(`Re = ${v.fix(Re, Re < 10 ? 3 : 0)}`, 9.8, 1.22, { size: 13, color: 'ink', align: 'right', weight: 700 });
+          A.text(`Re = ${v.fmt(Re, 3)}`, 9.8, 1.22, { size: 13, color: 'ink', align: 'right', weight: 700 });
           // right: map
-          for (const r of [1, 100, 1e4]) { const f = (d) => (r * mu * 1e-3) / (RHO_BLOOD * d * 1e-3); B.fn(f, { color: 'faint', width: 1.2, dash: [4, 4], domain: [0.005, 50] }); }
-          B.fn((d) => (Rec * mu * 1e-3) / (RHO_BLOOD * d * 1e-3), { color: 'red', width: 2.4, domain: [0.005, 50] });
-          B.text('Re = 1', 0.0075, 1 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
-          B.text('Re = 100', 0.0075, 100 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
+          for (const r of [1, 100, 1e4, Rec]) {
+            const line = reynoldsLine(r, mu);
+            if (line.lo <= line.hi) B.fn(line.speed, { color: r === Rec ? 'red' : 'faint', width: r === Rec ? 2.4 : 1.2, dash: r === Rec ? false : [4, 4], domain: [line.lo, line.hi] });
+          }
+          for (const r of [1, 100]) {
+            const d = r === 1 ? .012 : .12, yy = reynolds(d, 1, mu);
+            B.text(`Re = ${r}`, d, r / yy * 1.2, { size: 10, color: 'muted', align: 'left' });
+          }
           for (const q of P) { B.dot(q.D, q.u, { r: 4, color: 'ink' }); B.text(q.n, q.D, q.u * (q.dy || 1.7), { size: 10, color: 'muted', align: 'center' }); }
         }, { period: 4, still: 1.7 });
-        v.legend([['red', 'critical Re: laminar below, turbulent above'], ['faint', 'Re = 1, 100, 10⁴', { dash: true }]]);
-        v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.fix(cur.Re, cur.Re < 10 ? 3 : 0)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'laminar: a quiet vessel' : cur.Re < sCrit.value * 1.2 ? 'transitional' : 'turbulent: expect a murmur / bruit'}\nat the normal viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.fix(cur.Re * sMu.value / 3.5, 0)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fix(cur.Re, 0)}`);
+        v.legend([['red', 'chosen pipe-flow transition reference'], ['faint', 'Re = 1, 100, 10⁴', { dash: true }]]);
+        v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.sci(cur.Re, 3)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'below the chosen reference' : cur.Re < sCrit.value * 1.2 ? 'within the schematic transition band' : 'above the chosen reference'}\nat the reference viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.sci(cur.Re * sMu.value / 3.5, 3)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fmt(cur.Re, 3)}`);
       },
     },
     // ------------------------------------------------------------------ 4.15
@@ -219,7 +224,7 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.15',
       kind: 'Concept',
       name: 'Womersley number and pulsatile flow',
-      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ has square $\alpha^2=\omega\rho R^2/\mu$, the ratio of unsteady inertial to viscous terms at the radius scale. For $\alpha\lesssim1$ the profile is a parabola that rises and falls in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of penetration depth $\delta=\sqrt{2\mu/(\rho\omega)}=\sqrt2R/\alpha$ at the wall. The exact solution for the velocity is
+      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ has square $\alpha^2=\omega\rho R^2/\mu$, the ratio of unsteady inertial to viscous terms at the radius scale. For $\alpha\ll1$ the profile is approximately a parabola that rises and falls nearly in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of penetration depth $\delta=\sqrt{2\mu/(\rho\omega)}=\sqrt2R/\alpha$ at the wall. The exact solution for the velocity is
 $$u(r,t)=\operatorname{Re}\!\Bigl\{\tfrac{-iG}{\rho\omega}\Bigl[1-\tfrac{J_0(\alpha i^{3/2}r/R)}{J_0(\alpha i^{3/2})}\Bigr]e^{i\omega t}\Bigr\}\quad\text{for } -\partial_z p=G\cos\omega t.$$
 Here the anatomical labels denote illustrative radii; the model computes $\alpha$ from those radii and the stated frequency, density and viscosity.`,
       idea: String.raw`Write $u=\operatorname{Re}[\hat u(r)e^{i\omega t}]$ in the axisymmetric momentum equation: $i\omega\rho\hat u=G+\mu(\hat u''+\hat u'/r)$, whose regular solution is a Bessel function of complex argument, $J_0(\alpha i^{3/2}r/R)$. For small $\alpha$ the viscous term wins and the series reproduces the Poiseuille parabola (physio-4.2) at each instant; for large $\alpha$ the inertia wins in the core, the velocity is $G/(i\omega\rho)$ there (90° behind the gradient), and the wall layer is thin. The reason that this matters is that the oscillatory flow in large arteries is not quasi-steady, so Poiseuille's law gives the wrong resistance to the pulsatile components of flow.`,
@@ -231,7 +236,7 @@ Here the anatomical labels denote illustrative radii; the model computes $\alpha
       tags: ['Womersley', 'pulsatile flow', 'Bessel'],
       credit: 'J. R. Womersley, 1955',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1955.sp005276' },
-      verify: true,
+      verify: false,
       viz(v) {
         const w = 2 * Math.PI * 1.25, aOf = (Rmm) => Rmm * 1e-3 * Math.sqrt((w * RHO_BLOOD) / MU_BLOOD);
         const sA = v.slider('Womersley number $\\alpha$', 0.01, 20, 4.6, { log: true, sig: 2, fmt: (x) => v.fix(x, x < 1 ? 2 : 1) });
