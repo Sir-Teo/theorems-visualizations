@@ -7,16 +7,12 @@
 //   The abstract (via IDEAS/RePEc) states the house-money and break-even effects. Later work (Peng, Miao & Xiao 2013, Judgment and
 //   Decision Making 8: 150–160, "Why are gainers more risk seeking") reports that some framings do not produce a house-money effect;
 //   only the title and a search snippet were read.
-// - Samuelson 1963 (Scientia 98: 108–113): the colleague who would not take a single 50-50 bet to lose \$100 or win \$200 but
-//   would take 100 of them, as described in secondary sources; the calculations below are done for this page.
-// - Redelmeier & Tversky 1992 (Psychological Science 3: 191–193): the claim that people reject a single gamble and accept
-//   its repetition is stated from the abstract snippet only; no figures are used.
-// - Read, Loewenstein & Rabin 1999 (J. Risk and Uncertainty 19: 171–197, "Choice bracketing"); Kahneman & Lovallo 1993
-//   (Management Science 39: 17–31): citations from memory, not opened (verify: true).
-// - Thaler 1985 (Marketing Science 4(3): 199–214): the beer on the beach with median willingness to pay \$2.65 (resort
-//   hotel) and \$1.50 (small run-down grocery store), from secondary summaries; the decomposition below is a model
-//   calibrated to those two medians, not an estimate.
-import { clamp, num, pct, usdC, usdR, vPT, wilson, errBar, bundle, bundleValue, bundleLossProb } from './ch04.shared.js';
+// - For 4.6, read original Samuelson 1963 CAS reprint §§3–8 and Read–Loewenstein–Rabin 1999 author scan pp171–181.
+//   Their p180 illustrative alpha=1/lambda=2.5 gives V1=-25 and V2=25; this is not an empirical parameter fit.
+// - For 4.7, read original Thaler 1985 §3.1 pp205–207 and weighted-model footnote7 in the full UF faculty-hosted PDF.
+//   Beer medians are $2.65/$1.50 from executive regular beer drinkers; the linear curves/reference parameters are authored.
+import { clamp, usdR, wilson, errBar } from './ch04.shared.js';
+import { bracketDistribution, bracketScenario, transactionParts, transactionWtp } from './source-audit-bracketing.js';
 
 export default {
   collection: 'behav',
@@ -84,119 +80,122 @@ export default {
     // ------------------------------------------------------------------ 4.6
     {
       num: '4.6', kind: 'Phenomenon', name: 'Narrow bracketing',
-      statement: String.raw`**Narrow bracketing** is evaluating each decision on its own rather than as part of the portfolio of decisions it belongs to. Samuelson (1963) reported a colleague who refused a single 50-50 bet to win \$200 or lose \$100, though the bet has positive expected value, but said he would take 100 such bets. The 100 bets together have expected gain \$5,000 and, because $\Pr(\text{total}<0)=\Pr(\text{wins}\le 33)$, a loss probability below 0.1%; an agent who accepts the bundle but declines each piece evaluates the pieces in isolation. With the prospect-theory value function, a loss-averse person applies it to each bet and rejects every one, but applying it to the total accepts the bundle once $n$ reaches a small threshold.`,
-      scope: String.raw`Applies when decisions are made one by one, and when they could be combined but the decision maker does not. The bundle-versus-piece contrast is robust in surveys (Redelmeier and Tversky, 1992; Kahneman and Lovallo, 1993; Read, Loewenstein and Rabin, 1999); the exact threshold $n^*$ here depends on assumed parameters $\alpha$ and $\lambda$.`,
-      idea: String.raw`Aggregation reduces risk: the total of $n$ independent bets has mean $50n$ in hundreds and standard deviation growing only like $\sqrt n$, so the chance of a net loss collapses (a law-of-large-numbers effect). A loss-averse value function (behav-2.2) penalizes the possibility of loss at the level of the evaluated prospect; evaluated alone, one bet has a 50% chance of a loss and is rejected, while the bundle has a negligible one. Myopic loss aversion (behav-2.12) is the same mechanism applied to the frequency of evaluating returns.`,
-      caption: String.raw`Slide the **number of bets $n$** (each wins \$200 or loses \$100 with probability 1/2). Left: the distribution of the total, losses in red. Middle: the value of the prospect for the narrow evaluator, who values each bet alone ($n\,V_1$, falling), and for the broad one who values the total ($V_n$, rising). Right: the chance of ending in loss. The value function uses $\alpha$ and $\lambda$ from the sliders (defaults are the median Tversky–Kahneman estimates, an assumption).`,
-      deps: ['behav-4.1', 'behav-2.12'], refs: ['Kahneman ch. 31'], tags: ['bracketing', 'loss aversion', 'portfolio'],
-      see: ['behav-1.8', 'behav-3.9'],
-      credit: 'Samuelson, 1963; Redelmeier & Tversky, 1992; Read, Loewenstein & Rabin, 1999',
+      statement: String.raw`**Narrow bracketing** evaluates choices separately; **broad bracketing** considers their combined consequences. Samuelson (1963) described a colleague who refused a fair-coin bet to win \$200 or lose \$100 but said he would accept 100 independent repetitions. The total has mean \$5,000 and loss probability about 0.0437%. That small probability alone is not an expected-utility argument: the maximum possible loss and absolute standard deviation grow with the number of bets.
+
+The picture uses an explicitly specified ordinary-probability value model,
+$$v(x)=\begin{cases}x^\alpha,&x\ge0,\\-\lambda(-x)^\alpha,&x<0.\end{cases}$$
+A narrow evaluator assigns $nV_1$ to $n$ isolated bets; a broad evaluator assigns $V_n=E[v(S_n)]$ to their total. One bet is rejected exactly when $\lambda>2^\alpha$ (and is indifferent at equality). The model can prefer a bundle while rejecting its pieces, but acceptance need not be monotone in the integer $n$.`,
+      scope: String.raw`These curves are a teaching calculation, not measured acceptance frequencies or an estimate of Samuelson's colleague's preferences. Defaults $\alpha=1$, $\lambda=2.5$ reproduce Read–Loewenstein–Rabin's (1999, p. 180) illustrative values $V_1=-25$, $V_2=25$. The broad evaluator applies $v$ to the net total at one fixed reference; the narrow evaluator resets that reference for each piece. A one-bet rejection at the initial reference alone does not rule out bundle acceptance under expected utility.`,
+      idea: String.raw`For $K_n\sim\operatorname{Binomial}(n,1/2)$, $S_n=300K_n-100n$ dollars. Thus $ES_n=50n$ dollars and $\operatorname{sd}(S_n)=150\sqrt n$ dollars; the standard deviation of the **average** is $150/\sqrt n$. The finite-variance weak law (prob-2.2.3) gives $S_n/n\to50$ in probability, so $P(S_n<0)\to0$. Absolute risk does not shrink, and finite loss probabilities can jump: $P(S_3<0)=1/8$, while $P(S_4<0)=5/16$.
+
+Samuelson's theorem has a stronger premise than rejecting one bet at today's wealth: if the expected utility of a single bet is no better than abstention **at every wealth level reachable within the specified range**, then no finite independent sequence staying in that range improves expected utility. Rejection only at the initial wealth does not establish that premise.`,
+      caption: String.raw`Choose an integer number of independent bets. **Left:** exact binomial probabilities of dollar totals, red for a net loss and green for zero or a gain. **Middle:** ordinary-probability values $nV_1$ (purple) and $V_n$ (blue); the broad-value marker is hollow so coincident predictions remain visible. **Right:** the exact chance of a strictly negative total. Lines connect discrete integer cases. The green line marks the **first** accepted bundle within 1–100, not a permanent threshold. The readout lists all accepted ranges in that finite window.
+
+Try $\alpha=0.5$, $\lambda=4$: three bets are accepted and four rejected. With $\lambda=1$ a single favorable bet can already be attractive, so the narrow line need not fall. Parameters are assumptions; no probability weighting is used.`,
+      deps: ['behav-4.1', 'prob-2.2.3'], refs: ['Samuelson (1963), §§3–8', 'Read, Loewenstein & Rabin (1999), §§2.1 and 3.1, pp. 174–180'], tags: ['bracketing', 'loss aversion', 'portfolio'],
+      see: ['behav-1.8', 'behav-3.9', 'behav-2.12'],
+      credit: 'Samuelson, 1963; Read, Loewenstein & Rabin, 1999',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Choice_bracketing' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const W = 200, L = 100;
-        const nS = v.slider('number of bets $n$', 1, 100, 1, { step: 1, int: true });
-        const aS = v.slider('curvature $\\alpha$', 0.5, 1, 0.88, { step: 0.01 });
-        const lS = v.slider('loss aversion $\\lambda$', 1, 4, 2.25, { step: 0.05 });
-        const A = v.stage({ x: [-110, 210], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1.2, xlabel: 'total net result (hundreds of dollars)', ylabel: 'probability', title: 'distribution of the total' });
-        const B = v.stage({ x: [1, 100], y: [-100, 100], axes: 'box', gutter: true, xlog: true, height: 300, xlabel: 'number of bets n', ylabel: 'value', title: 'value of the prospect' });
-        const C = v.stage({ x: [1, 100], y: [0, 0.5], axes: 'box', gutter: true, xlog: true, height: 300, xlabel: 'number of bets n', ylabel: 'P(net loss)', title: 'chance of ending in a loss' });
-        v.legend([['red', 'ends in a loss'], ['green', 'ends in a gain'], ['purple', 'narrow: $n\\,V_1$'], ['blue', 'broad: $V_n$']]);
-        let cache = { key: '', Vn: [], nstar: null };
+        const nS = v.slider('number of independent bets $n$', 1, 100, 2, { step: 1, int: true });
+        const aS = v.slider('curvature $\\alpha$', 0.5, 1, 1, { step: 0.01 });
+        const lS = v.slider('loss aversion $\\lambda$', 1, 4, 2.5, { step: 0.05 });
+        v.button('Read et al. example: α = 1, λ = 2.5', () => { nS.set(2); aS.set(1); lS.set(2.5); });
+        const A = v.stage({ x: [-500, 800], y: [-0.03, 0.6], axes: 'box', gutter: true, height: 340, minWidth: 270, weight: 1.2, xlabel: 'total net result (dollars)', ylabel: 'probability mass', title: 'exact distribution of the total' });
+        const B = v.stage({ x: [0.7, 145], y: [-100, 100], axes: 'box', gutter: true, xlog: true, height: 340, minWidth: 270, xlabel: 'number of bets n (integer)', ylabel: 'value (model units)', title: 'separate versus combined evaluation' });
+        const C = v.stage({ x: [0.7, 145], y: [-0.06, 0.59], axes: 'box', gutter: true, xlog: true, height: 340, minWidth: 270, xlabel: 'number of bets n (integer)', ylabel: 'P(total < 0)', title: 'loss chance can jump at small n' });
+        v.legend([['red', 'net loss / loss probability'], ['green', 'nonnegative total / first accepted n'], ['purple', 'narrow value nV₁'], ['blue', 'broad value Vₙ', { dot: true }]]);
+        let cached = null;
         const calc = () => {
-          const a = aS.value, l = lS.value, key = a + ',' + l;
-          if (cache.key !== key) {
-            const Vn = [null], Ls = [null];
-            let nstar = null;
-            for (let n = 1; n <= 100; n++) { Vn.push(bundleValue(n, W, L, a, l)); Ls.push(bundleLossProb(n, W, L)); if (nstar == null && Vn[n] > 0) nstar = n; }
-            cache = { key, Vn, Ls, nstar };
-          }
-          return cache;
+          const key = aS.value + ',' + lS.value;
+          if (cached?.key !== key) cached = { ...bracketScenario(aS.value, lS.value), key };
+          return cached;
         };
         v.render(() => {
-          const n = nS.value, { Vn, Ls, nstar } = calc();
-          const d = bundle(n, W, L), bw = Math.max(1, (W + L) / 2) * 0.9; // bar width: spacing is 3 per win (300 per win in dollars)
-          const scale = 100; // dollars per x unit
-          const maxP = Math.max(...d.map((o) => o.p));
-          A.setView([-L * n / scale - 1.5 * 3 - 2, W * n / scale + 3 + 2], [0, maxP * 1.15]);
-          const half = 1.5;
-          d.forEach((o) => A.rect(o.total / scale - half, 0, o.total / scale + half, o.p, { fill: o.total < 0 ? 'red' : 'green', fillAlpha: 0.65, stroke: false }));
-          A.vline(0, { color: 'ink', width: 1.4 });
-          const mean = (0.5 * W - 0.5 * L) * n / scale;
-          A.vline(mean, { color: 'gold', width: 1.4, dash: [4, 4] }); A.text('mean', mean, maxP * 1.15, { dx: 4, dy: 12, size: 11, color: 'gold', weight: 700 });
-          // value curves
-          const nar = [], bro = [];
-          for (let k = 1; k <= 100; k++) { nar.push([k, k * Vn[1]]); bro.push([k, Vn[k]]); }
-          const top = Math.max(60, ...bro.map((p) => p[1])) * 1.1, bot = Math.min(-60, ...nar.map((p) => p[1])) * 1.1;
-          B.setView([1, 100], [bot, top]);
-          B.hline(0, { color: 'ink', width: 1.2 });
+          const n = nS.value, m = calc(), d = bracketDistribution(n), maxP = Math.max(...d.map(o => o.probability));
+          const dollarMargin = Math.max(250, 0.08 * 300 * n);
+          A.setView([-100 * n - dollarMargin, 200 * n + dollarMargin], [-0.07 * maxP, 1.24 * maxP]);
+          d.forEach(o => A.rect(o.total - 125, 0, o.total + 125, o.probability, { fill: o.total < 0 ? 'red' : 'green', fillAlpha: 0.65, stroke: false }));
+          A.vline(0, { color: 'ink', width: 1.2 }); A.vline(50 * n, { color: 'gold', width: 1.4, dash: true });
+          A.text('mean', 50 * n, maxP, { dx: 5, dy: -10, size: 11, color: 'gold', weight: 700 });
+          const nar = m.rows.map(r => [r.n, r.n * m.singleValue]), bro = m.rows.map(r => [r.n, r.value]);
+          const vals = [0, ...nar.map(p => p[1]), ...bro.map(p => p[1])], lo = Math.min(...vals), hi = Math.max(...vals), span = Math.max(1, hi - lo);
+          B.setView([0.7, 145], [lo - 0.14 * span, hi + 0.14 * span]); B.hline(0, { color: 'ink', width: 1.2 });
           B.path(nar, { color: 'purple', width: 2.4 }); B.path(bro, { color: 'blue', width: 2.4 });
-          if (nstar) { B.vline(nstar, { color: 'green', width: 1.2, dash: [4, 4] }); B.text(`n* = ${nstar}`, nstar, top, { dx: 5, dy: 14, size: 11.5, weight: 800, color: 'green' }); }
-          B.dot(n, n * Vn[1], { r: 6, color: 'purple' }); B.dot(n, Vn[n], { r: 6, color: 'blue' });
-          const lp = []; for (let k = 1; k <= 100; k++) lp.push([k, Ls[k]]);
-          C.path(lp, { color: 'red', width: 2.4 }); C.hline(0.5, { color: 'muted', width: 1, dash: [3, 3] });
-          C.dot(n, Ls[n], { r: 6, color: 'red' });
+          if (m.firstAccepted !== null) B.vline(m.firstAccepted, { color: 'green', width: 1.2, dash: true });
+          B.dot(n, n * m.singleValue, { r: 6, color: 'purple' }); B.dot(n, m.rows[n - 1].value, { r: 8, color: 'blue', hollow: true });
+          C.path(m.rows.map(r => [r.n, r.lossProbability]), { color: 'red', width: 2.4 }); C.hline(0.5, { color: 'muted', width: 1, dash: true }); C.dot(n, m.rows[n - 1].lossProbability, { r: 6, color: 'red' });
         });
         v.readout(() => {
-          const n = nS.value, { Vn, Ls, nstar } = calc();
-          const totalMean = (0.5 * W - 0.5 * L) * n, sd = Math.sqrt(n) * (W + L) / 2;
-          return `$n=${n}$: expected total ${usdR(totalMean)}, standard deviation ${usdR(sd)}, chance of a net loss **${(100 * Ls[n]).toFixed(Ls[n] < 0.01 ? 3 : 1)}%**. The narrow evaluator's value ${v.fix(n * Vn[1], 1)} ${Vn[1] < 0 ? '(rejects every bet)' : ''}; the broad evaluator's value ${v.fix(Vn[n], 1)} (${Vn[n] > 0 ? 'accepts' : 'rejects'}). ${nstar ? 'The bundle is accepted from $n^*=' + nstar + '$ bets on.' : 'No bundle of up to 100 is accepted with these parameters.'}`;
+          const n = nS.value, m = calc(), r = m.rows[n - 1], name = d => d > 0 ? 'accepts' : d < 0 ? 'rejects' : 'indifferent';
+          const ranges = m.ranges.map(([a, b]) => a === b ? String(a) : a + '–' + b).join(', ');
+          return `n = ${n}: mean ${usdR(r.mean)}, absolute standard deviation ${usdR(r.sd, 2)}, maximum possible loss ${usdR(100 * n)}; strict loss probability ${(100 * r.lossProbability).toFixed(4)}%.\nNarrow value ${v.fix(n * m.singleValue, 3)} (${name(m.singleDecision)} each bet); broad value ${v.fix(r.value, 3)} (${name(r.decision)}).\nAccepted integer n within 1–100: ${ranges || 'none'}. ${m.firstAccepted === null ? 'No first accepted bundle in this finite window.' : 'First accepted n = ' + m.firstAccepted + '; this alone does not imply acceptance at every larger n.'} Equality is classified as indifferent (relative numerical tolerance 10⁻¹²).`;
         });
       },
     },
     // ------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Concept', name: 'Transaction utility and reference prices',
-      statement: String.raw`Thaler (1985) splits the value of a purchase into two parts. **Acquisition utility** is the value $V$ of the good minus what is paid, $V-p$: the only part in standard theory. **Transaction utility** is the pleasure or pain of the deal itself, the gap between the **reference price** $r$ (what the buyer thinks the good should cost in that setting) and the price paid, $\omega(r-p)$, with $\omega(z)=z$ for $z\ge0$ (a bargain) and $\omega(z)=\lambda z$ for $z<0$ (a rip-off, felt more strongly). The buyer buys iff $V-p+\omega(r-p)\ge0$. Two identical goods sold in settings with different reference prices therefore command different prices: in Thaler's beer-on-the-beach question, the median willingness to pay was \$2.65 if the beer came from a fancy resort hotel and \$1.50 if it came from a small run-down grocery store.`,
-      scope: String.raw`The decomposition is a model (Thaler's own formulation is more general). The medians come from a questionnaire given to executive-programme participants; the reference prices below are fitted to them with an assumed $V$.`,
-      idea: String.raw`Standard theory says the price you are willing to pay is the value of the good to you, whatever the seller; the same \$2 should buy the same beer anywhere. Reference-dependent evaluation (behav-2.1) instead measures the price against an expectation set by the setting, so overpaying relative to the reference is a loss and underpaying a gain. The model also explains why people drive across town to save \$5 on a cheap item and not an expensive one, and why a "list price" that is later cut feels like a bargain (behav-4.1).`,
-      caption: String.raw`Left: total utility of buying the beer at each price, in a hotel (reference price $r_h$) and in a grocery ($r_g$); the dots mark the maximum price each buyer would pay, which with the defaults reproduces the two reported medians. Drag the **price** handle to see the split into acquisition and transaction utility on the right. Set the weight $w$ on transaction utility to 0 and the two buyers become identical, the standard-theory case.`,
-      deps: ['behav-4.1', 'behav-2.1'], refs: ['W&K ch. 6'], tags: ['transaction utility', 'reference price', 'mental accounting'],
+      statement: String.raw`Thaler (1985, §3.1) separates **acquisition utility** from **transaction utility**: the value of receiving the good relative to its cost, and the perceived merits of the deal relative to an expected or fair price. In his beer-on-the-beach questionnaire, executive-program participants who were regular beer drinkers reported median willingness to pay of \$2.65 for beer bought at a resort hotel and \$1.50 for the same beer bought at a small run-down grocery. Consumption remained on the beach; no hotel atmosphere or bargaining was part of the scenario.
+
+Here an **authored piecewise-linear illustration**, rather than Thaler's full value-function model, uses
+$$U(p;r)=V-p+w\,\omega(r-p),$$
+$$\omega(z)=\begin{cases}z,&z\ge0,\\\lambda z,&z<0.\end{cases}$$
+The buyer buys when $U\ge0$. Parameters $V,r,w,\lambda$ are assumptions. With positive $V,r$, $w\ge0$ and $\lambda\ge1$, this continuous strictly decreasing function has a unique zero, the model's maximum willingness to pay.`,
+      scope: String.raw`The two historical questionnaire medians are empirical references, not observed reference prices. The defaults choose $V=1.50$, $w=1$, $r_h=3.80$ and $r_g=1.50$ to reproduce them; they do not identify or estimate those parameters. Thaler's original Eq. 2 uses more general acquisition/reference-dependent value functions and discusses a transaction-utility weight in footnote 7. Changing the sliders changes only this illustration.`,
+      idea: String.raw`If $V\le r$, the zero lies on the bargain branch and
+$$p^*(r)=\frac{V+wr}{1+w}.$$
+If $V\ge r$, it lies on the overpayment branch and
+$$p^*(r)=\frac{V+w\lambda r}{1+w\lambda}.$$
+Both formulas give $r$ at $V=r$, and $V$ when $w=0$. Thus different assumed reference prices can yield different reservation prices even with the same consumption value. The construction illustrates Thaler's distinction; the two medians alone cannot determine a unique decomposition.`,
+      caption: String.raw`**Left:** model total utility against asked price in the hotel and grocery settings; dots and labels show the **calculated** willingness to pay. Drag the orange handle or set the asked-price slider. The complete price domain is 0–6 dollars, and ranges include all model values. If $w=0$, both curves and reservation prices coincide.
+
+**Right:** acquisition value (gray), weighted transaction value (the setting's color) and their sum (horizontal black line) at the chosen price. All signs and extreme values remain visible. With the defaults, the model reproduces the historical \$2.65/\$1.50 medians; other settings are not additional empirical results.`,
+      deps: ['behav-4.1', 'behav-2.1'], refs: ['Thaler (1985), §3.1, pp. 205–207 and footnote 7'], tags: ['transaction utility', 'reference price', 'mental accounting'],
       see: ['behav-4.3'],
-      credit: 'Richard Thaler, 1985',
-      verify: true,
+      credit: 'Richard Thaler, 1985; authored linear illustration',
+      verify: false,
       links: { doi: 'https://doi.org/10.1287/mksc.4.3.199' },
       viz(v) {
-        const Vs = v.slider('value of the beer $V$ (\\$)', 0.5, 4, 1.5, { step: 0.05 });
-        const rh = v.slider('reference price at the resort hotel $r_h$', 1, 6, 3.8, { step: 0.05 });
-        const rg = v.slider('reference price at the grocery $r_g$', 0.5, 4, 1.5, { step: 0.05 });
-        const lam = v.slider('loss aversion $\\lambda$ for overpaying', 1, 4, 2.25, { step: 0.05 });
-        const w = v.slider('weight $w$ on transaction utility', 0, 1, 1, { step: 0.05 });
-        const A = v.stage({ x: [0, 6], y: [-4, 6], axes: true, height: 330, weight: 1.3, xlabel: 'price asked (dollars)', ylabel: 'total utility', title: 'utility of buying at each price' });
-        const B = v.stage({ x: [0, 4], y: [-5, 3], axes: false, height: 330, title: 'acquisition + transaction utility at the price asked' });
-        const price = A.handle(2.65, 0, { color: 'orange', r: 10, constrain: 'x' });
-        v.legend([['blue', 'resort hotel'], ['teal', 'small grocery'], ['muted', 'acquisition utility V − p', { dash: true }]]);
-        const om = (z) => (z >= 0 ? z : lam.value * z);
-        const U = (p, r) => Vs.value - p + w.value * om(r - p);
-        const wtp = (r) => v.M.bisect((p) => U(p, r), 0, 12, 1e-6);
-        let st = {};
+        const Vs = v.slider('consumption value $V$ (dollars)', 0.5, 4, 1.5, { step: 0.05 });
+        const rh = v.slider('assumed hotel reference $r_h$', 1, 6, 3.8, { step: 0.05 });
+        const rg = v.slider('assumed grocery reference $r_g$', 0.5, 4, 1.5, { step: 0.05 });
+        const lam = v.slider('overpayment loss multiplier $\\lambda$', 1, 4, 2.25, { step: 0.05 });
+        const w = v.slider('transaction weight $w$', 0, 1, 1, { step: 0.05 });
+        const asked = v.slider('asked price (dollars)', 0, 6, 2.65, { step: 0.05, fmt: x => '$' + x.toFixed(2) });
+        const A = v.stage({ x: [-0.5, 6.5], y: [-12, 8], axes: 'box', gutter: true, height: 350, minWidth: 290, weight: 1.3, xlabel: 'asked price p (dollars)', ylabel: 'total value (model units)', title: 'authored acquisition + transaction model' });
+        const B = v.stage({ x: [0, 4], y: [-8, 8], axes: false, height: 350, minWidth: 270, title: 'components at the asked price' });
+        const params = () => ({ value: Vs.value, lambda: lam.value, weight: w.value });
+        const show = (x, digits = 3) => (Math.abs(x) < 1e-10 ? 0 : x).toFixed(digits);
+        const price = A.handle(2.65, 0, { color: 'orange', r: 9, constrain: x => [clamp(x, 0, 6), 0] });
+        price.onDrag = () => asked.set(price.x);
+        v.legend([['blue', 'hotel total / transaction value'], ['teal', 'grocery total / transaction value'], ['muted', 'acquisition value V − p', { dash: true }], ['ink', 'sum of components']]);
         v.render(() => {
-          A.hline(0, { color: 'ink', width: 1 });
-          A.fn((p) => Vs.value - p, { color: 'muted', width: 1.4, dash: [5, 4] });
-          A.fn((p) => U(p, rh.value), { color: 'blue', width: 2.4, domain: [0, 6] });
-          A.fn((p) => U(p, rg.value), { color: 'teal', width: 2.4, domain: [0, 6] });
-          const wh = wtp(rh.value), wg = wtp(rg.value);
-          A.dot(wh, 0, { r: 7, color: 'blue', label: `$${wh.toFixed(2)}`, labelPos: 'ne' });
-          A.dot(wg, 0, { r: 7, color: 'teal', label: `$${wg.toFixed(2)}`, labelPos: 'nw' });
-          price.set(clamp(price.x, 0, 6), 0);
-          const p = price.x;
-          A.vline(p, { color: 'orange', width: 1, dash: [3, 3] });
-          // decomposition bars
-          [[1, 'hotel', rh.value, 'blue'], [3, 'grocery', rg.value, 'teal']].forEach(([x, nm, r, col]) => {
-            const acq = Vs.value - p, tr = w.value * om(r - p);
-            B.rect(x - 0.7, 0, x - 0.05, acq, { fill: 'muted', fillAlpha: 0.55, color: 'muted', width: 1 });
-            B.rect(x + 0.05, 0, x + 0.7, tr, { fill: col, fillAlpha: 0.6, color: col, width: 1 });
-            B.line(x - 0.7, acq + tr, x + 0.7, acq + tr, { color: 'ink', width: 2.4 });
-            B.text('acq.', x - 0.37, 0, { dy: acq >= 0 ? -12 : 14, align: 'center', size: 10.5, color: 'muted', weight: 700 });
-            B.text('trans.', x + 0.37, 0, { dy: tr >= 0 ? -12 : 14, align: 'center', size: 10.5, color: col, weight: 700 });
-            B.text(`${nm}: total ${(acq + tr >= 0 ? '+' : '−')}$${Math.abs(acq + tr).toFixed(2)}`, x, -4.6, { align: 'center', size: 11.5, weight: 800, color: acq + tr >= 0 ? 'green' : 'red' });
-          });
-          B.hline(0, { color: 'ink', width: 1 });
-          st = { wh, wg, p };
+          const o = params(), p = asked.value, refs = [rh.value, rg.value], U = (x, r) => transactionParts(x, r, o).total;
+          const ys = [0, o.value, o.value - 6, ...refs.flatMap(r => [U(0, r), U(6, r)])], lo = Math.min(...ys), hi = Math.max(...ys), span = Math.max(1, hi - lo);
+          A.setView([-0.5, 6.5], [lo - 0.16 * span - 0.1, hi + 0.16 * span + 0.1]); A.hline(0, { color: 'ink', width: 1 });
+          A.fn(x => o.value - x, { color: 'muted', width: 1.4, dash: true, domain: [0, 6] });
+          A.fn(x => U(x, rh.value), { color: 'blue', width: 2.4, domain: [0, 6] }); A.fn(x => U(x, rg.value), { color: 'teal', width: 2.4, domain: [0, 6] });
+          const wh = transactionWtp(rh.value, o), wg = transactionWtp(rg.value, o);
+          A.dot(wh, 0, { r: 6, color: 'blue' }); A.dot(wg, 0, { r: 8, color: 'teal', hollow: true });
+          A.text('hotel $' + wh.toFixed(2), wh, 0, { dy: -20, align: 'center', size: 11.5, color: 'blue', weight: 700 });
+          A.text('grocery $' + wg.toFixed(2), wg, 0, { dy: 24, align: 'center', size: 11.5, color: 'teal', weight: 700 });
+          price.set(p, 0); A.vline(p, { color: 'orange', width: 1, dash: true });
+          const parts = refs.map(r => transactionParts(p, r, o)), bs = [0, ...parts.flatMap(c => [c.acquisition, c.transaction, c.total])], blo = Math.min(...bs), bhi = Math.max(...bs), bspan = Math.max(1, bhi - blo);
+          B.setView([0, 4], [blo - 0.48 * bspan, bhi + 0.28 * bspan]);
+          [[1, 'hotel', parts[0], 'blue'], [3, 'grocery', parts[1], 'teal']].forEach(([x, name, c, color]) => {
+            B.rect(x - 0.7, 0, x - 0.05, c.acquisition, { fill: 'muted', fillAlpha: 0.55, color: 'muted', width: 1 });
+            B.rect(x + 0.05, 0, x + 0.7, c.transaction, { fill: color, fillAlpha: 0.6, color, width: 1 });
+            B.line(x - 0.7, c.total, x + 0.7, c.total, { color: 'ink', width: 2.4 });
+            B.text('acq.', x - 0.37, c.acquisition, { dy: c.acquisition >= 0 ? -10 : 20, align: 'center', size: 10.5, color: 'muted', weight: 700 });
+            B.text('deal', x + 0.37, c.transaction, { dy: c.transaction >= 0 ? -10 : 20, align: 'center', size: 10.5, color, weight: 700 });
+            B.text(name + ': total ' + show(c.total, 2), x, blo - 0.31 * bspan, { align: 'center', size: 11.5, color: c.total >= 0 ? 'green' : 'red', weight: 700 });
+          }); B.hline(0, { color: 'ink', width: 1 });
         });
         v.readout(() => {
-          const { wh, wg, p } = st; if (wh == null) return '';
-          return `At ${usdR(p, 2)}: hotel buyer ${U(p, rh.value) >= 0 ? '**buys**' : '**refuses**'}, grocery buyer ${U(p, rg.value) >= 0 ? '**buys**' : '**refuses**'}. Maximum willingness to pay: **${usdR(wh, 2)}** (hotel) and **${usdR(wg, 2)}** (grocery), a difference of ${usdR(wh - wg, 2)} for the same beer; the reported medians are \\$2.65 and \\$1.50. With $w=0$ both would pay exactly the value $V$ = ${usdR(Vs.value, 2)}.`;
+          const o = params(), p = asked.value, h = transactionParts(p, rh.value, o), g = transactionParts(p, rg.value, o), wh = transactionWtp(rh.value, o), wg = transactionWtp(rg.value, o);
+          return `Asked ${usdR(p, 2)}: hotel ${h.total >= -1e-10 ? 'buys' : 'refuses'}, grocery ${g.total >= -1e-10 ? 'buys' : 'refuses'} (numerical zero tolerance 10⁻¹⁰). Model willingness to pay: hotel ${usdR(wh, 2)}, grocery ${usdR(wg, 2)}.\nHotel: acquisition ${show(h.acquisition)} + deal ${show(h.transaction)} = ${show(h.total)}; grocery: acquisition ${show(g.acquisition)} + deal ${show(g.transaction)} = ${show(g.total)}.\nHistorical questionnaire medians: \\$2.65 / \\$1.50; reference-price sliders are assumed, not observed. ${w.value === 0 ? 'At w = 0 both reservation prices equal V.' : 'The curve and decomposition are authored assumptions.'}`;
         });
       },
     },

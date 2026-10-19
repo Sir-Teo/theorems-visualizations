@@ -4,7 +4,7 @@ Prepared, **not started**. This inventory selects the earliest chapter with plan
 
 80 collections; 1031 new items; 2 items already written in those chapters. The [machine-readable plan](wave-five-plan.json) includes every item, source reference, picture brief and dependency classified as written, within the chapter, elsewhere in this wave, later, or unknown. Later prerequisites are visible authoring/reconciliation work, not silently treated as already available.
 
-The source queue currently has **193 pending reviews**. User review and subjective listening are not required. Start authoring only after the source and automated verification gates in [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave) are satisfied. This plan does not claim that those gates have passed.
+The source queue currently has **191 pending reviews**. User review and subjective listening are not required. Start authoring only after the source and automated verification gates in [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave) are satisfied. This plan does not claim that those gates have passed.
 
 Regenerate with `npm run wave5:plan`. Syllabi remain authoritative; verify exact sources and hypotheses before authoring, keep dependencies acyclic, and review, reconcile and commit each collection separately.
 

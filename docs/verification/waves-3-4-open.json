@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 193,
+  "remainingFlags": 191,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,6 @@
     "micro": 5,
     "fin": 9,
     "game": 18,
-    "behav": 2,
     "psych": 17,
     "soc": 16,
     "polsci": 11,
@@ -707,36 +706,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Backward_induction"
-      }
-    },
-    {
-      "id": "behav-4.6",
-      "file": "content/behav/ch04-b.js",
-      "name": "Narrow bracketing",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Kahneman ch. 31"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Choice_bracketing"
-      }
-    },
-    {
-      "id": "behav-4.7",
-      "file": "content/behav/ch04-b.js",
-      "name": "Transaction utility and reference prices",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "W&K ch. 6"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1287/mksc.4.3.199"
       }
     },
     {
@@ -3776,7 +3745,9 @@
       "behav-5.9",
       "fin-5.11",
       "micro-9.6",
-      "micro-9.7"
+      "micro-9.7",
+      "behav-4.6",
+      "behav-4.7"
     ]
   },
   "additionalFollowups": [
@@ -7877,6 +7848,18 @@
       "status": "resolved",
       "report": "docs/verification/micro-exchange-followup.md",
       "note": "Parent independently read Condie complete7.2 five-step proof, original Arrow\u2013Debreu1.3\u20131.5 and formula images, derived both CD/bliss accounting and complete nonconvex demand branches; five math/eight final native/scoped static groups and final wide/narrow theme screenshots pass. CD boundary preference distinction added on parent review; exact global nonexistence proof retained rather than inferred from finite root search."
+    },
+    {
+      "id": "behav-4.6",
+      "status": "resolved",
+      "report": "docs/verification/behav-bracketing-followup.md",
+      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171\u2013181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
+    },
+    {
+      "id": "behav-4.7",
+      "status": "resolved",
+      "report": "docs/verification/behav-bracketing-followup.md",
+      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171\u2013181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
     }
   ]
 }
