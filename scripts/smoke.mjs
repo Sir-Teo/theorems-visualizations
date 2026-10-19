@@ -39,6 +39,7 @@ for (const r of routes) {
   const title = await page.title();
   const crashed = await page.locator('main h1', { hasText: 'Something went wrong' }).count();
   if (crashed) errs.push('page shows "Something went wrong"');
+  if (/\bNot found\b/i.test(title) && r !== '#/nope') errs.push('unexpected not-found page');
   if (flag('--shots')) await page.screenshot({ path: join(ROOT, 'shots', `page-${r.replace(/[#/?=.]+/g, '_').replace(/^_|_$/g, '') || 'home'}${flag('--dark') ? '.dark' : ''}.png`), fullPage: !r.startsWith('#/map') });
   console.log(`${errs.length ? '✗' : '✓'} ${r.padEnd(28)} ${title}`);
   for (const e of errs) console.log(`    ${e.split('\n').slice(0, 3).join(' | ')}`);

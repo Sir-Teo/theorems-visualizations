@@ -628,3 +628,7 @@ Resolved macro 4.1/4.2 after parent reading of source/model evidence, four indep
 ## Market power and Cournot adjustment — October 19, 2026
 
 Resolved micro 10.7/10.9/10.12 after parent source/model review, eight independent mathematical groups, twelve final native groups, scoped static checks and screenshot inspection. Exact closed-market pricing and continuous-entry tangency replace clipped or coarse results. Cournot statements separate local multipliers from clipped dynamics and justify cyclic convergence with a verified convex potential. See [the source and validation record](micro-market-power-followup.md). **203 source reviews remain**.
+
+## Combined checkpoint through fe4305d — October 19, 2026
+
+[The checkpoint](checkpoint-fe4305d.md) passes 1,397 default tests, including all six UI tests, strict build and full static checks with zero errors/warnings, and 35 valid changed routes with zero runtime errors. The home payload is 112,811 bytes gzipped. A smoke-runner guard now fails unexpected not-found pages; a deliberately mistyped route returns failure. The source ledger reconciles **203 pending =833 initial+3 added−633 original resolved**. The complete map performance, broader visual/proof and genuine prerequisite gates remain open; Wave5 has not started.
