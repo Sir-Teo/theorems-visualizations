@@ -1850,11 +1850,15 @@
     {
       "id": "fa-4.9",
       "file": "content/fa/ch04.js",
-      "textHash": "1ecbb6468634acb98a0e01aa6e65dc3dd32171155840109e219321d7853624e6",
-      "textReview": "The dual/quotient isometries follow correctly from norm-preserving Hahn–Banach extension and factorization through the quotient. The open unit ball maps onto the quotient's open unit ball, so the norms agree without assuming an infimum is attained. The caption's strip between level lines assumes a nonzero annihilating functional; inspect the zero-functional handle case separately.",
-      "visualReview": "Inspected both themes: primal diamond/dual square and extension line are distinct. Default functional norm.7000 matches its quotient infimum, while the selected extension has larger norm.9517. Zero-functional and other norm controls remain pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "84a5356ea1b8e536709b7e16021d56cd731a32d984be1f9f9802f8e3daa65f4b",
+      "textReview": "The quotient norm identity remains unchanged. The caption separates the zero functional from nonzero strip boundaries. The readout treats the zero quotient class explicitly instead of assigning an undefined norm ratio to the functional norm; declared nearby snaps make both zero cases reachable.",
+      "visualReview": "Fourteen native captures in both themes inspect extension/zero-extension/quotient/zero-class/zero-functional and p2/infinity cases. At the snapped zero class the readout labels the ratio undefined,while the functional norm remains valid; at zero functional both norms are zero.",
+      "interactionReview": "Fourteen native states exercise both modes,zero extension,exact snapped quotient class/functional and three norms. The actual-render regression confirms snapping onto M and avoids zero-norm division; runtime/TeX checks pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The dual/quotient isometries follow correctly from norm-preserving Hahn–Banach extension and factorization through the quotient. The open unit ball maps onto the quotient's open unit ball, so the norms agree without assuming an infimum is attained. The caption's strip between level lines assumes a nonzero annihilating functional; inspect the zero-functional handle case separately.",
+      "initialTextHash": "1ecbb6468634acb98a0e01aa6e65dc3dd32171155840109e219321d7853624e6",
+      "initialVisualFinding": "Inspected both themes: primal diamond/dual square and extension line are distinct. Default functional norm.7000 matches its quotient infimum, while the selected extension has larger norm.9517. Zero-functional and other norm controls remain pending.",
+      "correctionReport": "docs/verification/agent-dual-boundary-review.md"
     },
     {
       "id": "epi-4.2",
@@ -2904,11 +2908,15 @@
     {
       "id": "fa-4.6",
       "file": "content/fa/ch04.js",
-      "textHash": "a3d0020e96ca3c044275c303b8be4c103e8e70d0bb7c2105469f4302a879daf4",
-      "textReview": "The intersection-of-continuous-kernels argument proves both closure assertions, including weak-star closure of M-perp. The Hilbert identification and general dual-space distinction are correct. A zero functional has all X as its kernel rather than a plane, so the caption needs a nonzero qualification or an explicit visualization exclusion.",
-      "visualReview": "Inspected both themes: line M and dual annihilator plane have dimensions1+2=3; sample functional(.28,-.92,-.28) vanishes on M. Kernels of nonzero functionals are planes; the zero functional exception needs caption qualification.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "f3ae1354b854102cffbcd5e3089665f5493b40fba1bfbe9059e3ee53c0f60235",
+      "textReview": "The annihilator statement and kernel-intersection proof remain unchanged. The caption explicitly distinguishes nonzero functionals selected by this widget,whose kernels are planes,from the zero functional,whose kernel is all of X.",
+      "visualReview": "Six native light/dark captures inspect line/plane annihilators and rotated/tilted subspaces. Dimensions1+2 and2+1 and zero pairings agree; nonzero choices are explicit.",
+      "interactionReview": "Six native line/plane/rotation states exercise both subspace buttons and all three sliders in both themes,with finite readouts and no runtime/TeX failures.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The intersection-of-continuous-kernels argument proves both closure assertions, including weak-star closure of M-perp. The Hilbert identification and general dual-space distinction are correct. A zero functional has all X as its kernel rather than a plane, so the caption needs a nonzero qualification or an explicit visualization exclusion.",
+      "initialTextHash": "a3d0020e96ca3c044275c303b8be4c103e8e70d0bb7c2105469f4302a879daf4",
+      "initialVisualFinding": "Inspected both themes: line M and dual annihilator plane have dimensions1+2=3; sample functional(.28,-.92,-.28) vanishes on M. Kernels of nonzero functionals are planes; the zero functional exception needs caption qualification.",
+      "correctionReport": "docs/verification/agent-dual-boundary-review.md"
     },
     {
       "id": "algo-3.10",
@@ -3149,11 +3157,15 @@
     {
       "id": "fa-13.20",
       "file": "content/fa/ch13-a2.js",
-      "textHash": "591f488db7d0af61f512c7ed9d4ab4b4012c109a0d412981b75641c907be14bd",
-      "textReview": "For closed densely defined symmetric operators the deficiency-index criterion and Cayley-extension argument are correct, including unequal half-line first-derivative indices. The caption should not imply boundary choices always produce a self-adjoint operator: its own unequal-index case has no such extension. Compact-support domains are restrictions whose closures are used. Native root integrability/counting remains pending.",
-      "visualReview": "Inspected both themes: half-line first derivative has deficiency indices(1,0),one square-integrable exponential and no self-adjoint extension. Caption's blanket boundary-conditions-must-be-chosen claim contradicts this unequal-index case; correction pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "11bfb06c31a84631a98502e306a683326639ab3850dc86d8d394eacd512aeaf3",
+      "textReview": "The deficiency-index statement and computation remain unchanged. The caption now distinguishes equal-index interval/half-line-second-derivative extensions from the half-line first derivative with indices(1,0),where no self-adjoint extension exists.",
+      "visualReview": "Twelve native captures inspect both derivative orders on interval/half-line/whole-line in both themes. First-order indices are(1,1),(1,0),(0,0); second-order(2,2),(1,1),(0,0). Exponential integrability and extension readouts agree.",
+      "interactionReview": "Twelve native operator/domain selector states cover every combination in both themes. Ten existing FA13 groups and runtime/TeX checks pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "For closed densely defined symmetric operators the deficiency-index criterion and Cayley-extension argument are correct, including unequal half-line first-derivative indices. The caption should not imply boundary choices always produce a self-adjoint operator: its own unequal-index case has no such extension. Compact-support domains are restrictions whose closures are used. Native root integrability/counting remains pending.",
+      "initialTextHash": "591f488db7d0af61f512c7ed9d4ab4b4012c109a0d412981b75641c907be14bd",
+      "initialVisualFinding": "Inspected both themes: half-line first derivative has deficiency indices(1,0),one square-integrable exponential and no self-adjoint extension. Caption's blanket boundary-conditions-must-be-chosen claim contradicts this unequal-index case; correction pending.",
+      "correctionReport": "docs/verification/agent-dual-boundary-review.md"
     },
     {
       "id": "energy-3.1",

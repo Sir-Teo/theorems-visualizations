@@ -72,7 +72,7 @@ export default {
       deps: ['fa-13.19'],
       tags: ['deficiency indices', 'self-adjoint extensions'],
       refs: ['Rudin, Functional Analysis, 2nd ed., §13.20 (full relevant statement and proof inspected)'],
-      caption: String.raw`Compute the deficiency spaces on $C_c^\infty(I)$ for $T=-i\,d/dx$ or $T=-d^2/dx^2$. The candidates in $\mathscr N(T^*\mp i)$ are exponentials, whose moduli are drawn left: $e^{\mp x}$, or $e^{\pm x/\sqrt2}$ for the second-order operator. They count only if they are square-integrable on $I$; right: $\int|f|^2$ over growing pieces of $I$. On $\R$ nothing survives, so $T$ is essentially self-adjoint. On a half-line or an interval some survive, the deficiency indices $(n_+,n_-)$ are not $(0,0)$, and boundary conditions must be chosen.`,
+      caption: String.raw`Compute the deficiency spaces on $C_c^\infty(I)$ for $T=-i\,d/dx$ or $T=-d^2/dx^2$. The candidates in $\mathscr N(T^*\mp i)$ are exponentials, whose moduli are drawn left: $e^{\mp x}$, or $e^{\pm x/\sqrt2}$ for the second-order operator. They count only if they are square-integrable on $I$; right: $\int|f|^2$ over growing pieces of $I$. On $\R$ nothing survives, so $T$ is essentially self-adjoint. On the finite interval both operators have equal nonzero deficiency indices, so self-adjoint boundary conditions must be selected. On the half-line the second derivative has indices $(1,1)$ and admits such choices, while the first derivative has unequal indices $(1,0)$ and has no self-adjoint extension on this Hilbert space.`,
       viz(v) {
         const M = v.M;
         const op = v.select('$T=$', [{ value: 'd1', label: '$-i\\,d/dx$' }, { value: 'd2', label: '$-d^2/dx^2$' }], 'd1');

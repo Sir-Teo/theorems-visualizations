@@ -30,6 +30,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+A zero functional has kernel the entire space and cannot define two distinct
+strip boundaries. Exclude a zero denominator from quotient-norm ratios and
+make boundary cases reachable in controls. Unequal deficiency indices mean
+no self-adjoint extension; additional boundary conditions cannot fix them.
+
 For series solutions, propagate recurrence failure into the display: an
 obstructed coefficient sequence is not a solution. Repeated roots can need
 a logarithmic partner. Distinguish a complex modulus from its oscillating
